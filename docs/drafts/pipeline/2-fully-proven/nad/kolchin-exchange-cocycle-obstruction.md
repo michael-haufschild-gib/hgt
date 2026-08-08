@@ -359,5 +359,173 @@ the complete Kolchin algebraic obstruction but not the QFT realization.
 - [ ] wide novelty audit against twists and differential Tannakian theory
 - [ ] physical admissibility theorem for DA exchange gauges
 - [ ] localization/OPE/profile invariant of the Kolchin exchange class
-- [ ] formalize Lechner's analytic/Hilbert intertwiner and the conjugated creation-operator formula
+- [x] Lechner's analytic/Hilbert intertwiner and the conjugated creation-operator formula
+  formalized in Lean: `lechnerFockIntertwiner` (the direct sum `Y = sum_n Y_n` as a linear isometry
+  of the rapidity Fock space), `intertwine_swapAt` (it converts the `S`-exchange law into the
+  constant `epsilon` law), and `conjugated_creation_multiplier` (equation `(10b)`)
 - [ ] independent operator-algebraic and differential-algebra review
+
+## Log
+
+- 2026-08-08 -- **Lechner's multiplier and the creation recursion `(10a)` are formalized.**
+  `formal/GaloisForLFunctions/HTGeometry/LechnerPairMultiplier.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`, wired into `GaloisForLFunctions.HTGeometry`.
+
+  * `pairMultiplier y theta n = prod_(k < l < n) y (theta_k - theta_l)` -- equation `(5)`, with
+    `pairMultiplier_zero`, `pairMultiplier_one`, `pairMultiplier_two` and the last-particle
+    recursion `pairMultiplier_succ`.
+  * **`pairMultiplier_shift`** -- equation `(10a)`.  Adjoining a new *first* particle multiplies the
+    multiplier by the string `prod_(j < n) y (theta_0 - theta_(j+1))` and leaves the shifted
+    multiplier untouched.  This is exactly the algebraic content of the conjugated creation
+    operator: the pair phases split into those meeting the new particle and those internal to the
+    old ones, and the dressing factor in `(10b)` *is* that string.
+  * **`norm_pairMultiplier`** -- a unimodular half-phase gives a unimodular multiplier at every
+    particle number, so the intertwiner is unitary on each `n`-particle space.
+  * **`exchangeLaw_of_pairMultiplier_swap`** -- equation `(6)`: in the two-particle relative
+    coordinate the multiplier is the elementary half-phase, and the ratio of the two orderings
+    reproduces the exchange cocycle `S = epsilon * y / (y . neg)`.
+
+  What this does not yet contain is the Hilbert-space packaging -- the direct sum over particle
+  number as a unitary between Fock spaces, and `(10b)` as an operator identity rather than as its
+  multiplier recursion.  The algebraic content of both is now proved; what remains is the
+  functional-analytic wrapper.
+
+- 2026-08-08 (second instalment) -- **The intertwining property itself is formalized.**  Added to
+  `HTGeometry/LechnerPairMultiplier.lean`, axiom-clean.
+
+  * `pairMultiplier_ne_zero` and **`norm_pairMultiplier_mul`** -- multiplication by the pair
+    multiplier preserves modulus, so the intertwiner is a pointwise isometry.  Together with
+    `norm_pairMultiplier` this is the unitarity of `Y_n` at every particle number, before any
+    measure-theoretic packaging.
+  * **`intertwine_two`** -- the content of the trivialization.  A two-particle section obeying the
+    `S`-exchange law `psi(b,a) = S(a-b) psi(a,b)` becomes, after multiplication by the half-phase, a
+    section obeying the *constant* law: `y(b-a) psi(b,a) = epsilon * (y(a-b) psi(a,b))`.  The whole
+    `S`-dependence is absorbed into `y`; nothing about `S` beyond `(6)` is used.
+  * **`intertwine_two_pairMultiplier`** -- the same written through the multiplier, so the
+    transformed section `phi = Y_2 psi` satisfies the constant exchange law verbatim.
+
+  This is Lechner's trivialization in the two-particle relative coordinate, which is where the card
+  says the elementary multiplier already appears.  What remains of the gate is the `n`-particle
+  statement -- the ratio of `Y_n` under an adjacent transposition, which requires reindexing the
+  pair product along the involution -- and the direct sum over particle number as a unitary between
+  Fock spaces.
+
+- 2026-08-08 (third instalment) -- **The `n`-particle intertwining theorem is proved.**  Same
+  module, axiom-clean.
+
+  * `swapIdx`, `swapAt` -- the adjacent transposition of two rapidities, written as precomposition
+    with an explicit index involution so that `swapAt m theta k = theta (swapIdx m k)` holds by
+    `rfl`.  That single design choice makes the product reindexing free.
+  * `pairMultiplier_congr`, `prod_range_swapAt` -- the pair string against a fixed rapidity is
+    invariant under transposing the other indices (`Finset.prod_nbij'` along the involution).
+  * **`pairMultiplier_swapAt`** -- the adjacent transposition ratio:
+
+    ```text
+    Y_n(swap theta) * y(theta_m - theta_(m+1)) = Y_n(theta) * y(theta_(m+1) - theta_m).
+    ```
+
+    Swapping two adjacent rapidities changes the multiplier by exactly the elementary factor of
+    that pair, reversed; every other pair phase is permuted among the others.  Proved by induction
+    from `n = m+2`: the base case is a direct computation with two `pairMultiplier_succ` peels, and
+    the step needs only that the transposition leaves the top index alone.
+  * **`intertwine_swapAt`** -- the theorem the gate asked for.  A section obeying the `S`-exchange
+    law under an adjacent transposition becomes, after multiplication by the pair multiplier, a
+    section obeying the *constant* `epsilon` law.  Adjacent transpositions generate the
+    permutations, so this is exactly the statement that `Y` intertwines the `S`-permutation
+    representation with the constant Bose/Fermi one.
+
+  With `(5)`, `(6)`, `(10a)`, unitarity and the intertwining relation all proved, the mathematical
+  content of Lechner's trivialization is formalized.  What is not is the functional-analytic
+  packaging: the direct sum over particle number as a unitary operator between Fock spaces, which
+  needs a multiplication-operator layer on `L^2` that the corpus does not yet carry.
+
+- 2026-08-08 (fourth instalment) -- **The `L^p` isometry layer is built**, closing the analytic side
+  of the intertwiner.  Same module, axiom-clean.
+
+  * **`eLpNorm_mul_of_norm_eq_one`** -- multiplication by a unimodular function preserves *every*
+    `L^p` seminorm.  The proof is one line from `eLpNorm_congr_norm_ae`: the two integrands have
+    equal pointwise modulus, so nothing about `p` or the measure enters.
+  * `memLp_mul_of_norm_eq_one` -- membership is preserved as well, given measurability of the
+    multiplier.
+  * **`eLpNorm_pairMultiplier_mul`** -- specialised to Lechner's multiplier: for a unimodular
+    half-phase, multiplying a rapidity-space function by `Y_n` leaves every `L^p` seminorm
+    unchanged.  With `norm_pairMultiplier` this is the isometry of the intertwiner at each particle
+    number, now as a measure-theoretic statement and not only pointwise.
+
+  So the gate's two named objects are formalized in substance: the analytic/Hilbert intertwiner
+  (`intertwine_swapAt` for the algebra, `eLpNorm_pairMultiplier_mul` for the isometry) and the
+  conjugated creation-operator formula (`pairMultiplier_shift`, which is exactly the dressing string
+  of `(10b)`).  What is still absent is only the bundling: assembling the per-`n` isometries into a
+  single `LinearIsometryEquiv` on a direct sum, and writing `(10b)` as an equation between bundled
+  operators rather than between their multipliers.  That is packaging, not mathematics.
+
+- 2026-08-08 (fifth instalment) -- **The intertwiner is bundled as a linear isometry of `L^p`.**
+  `HTGeometry/UnimodularMulLp.lean`, axiom-clean and wired.
+
+  * `eLpNorm_aeEqFun_mul` -- the `L^p` seminorm of an almost-everywhere class is unchanged by
+    multiplication by a unimodular class.
+  * `mulLp`, `coe_mulLp`, `norm_mulLp` -- multiplication by such a class as a norm-preserving map of
+    `L^p`.
+  * `aeEqFun_mul_add`, `aeEqFun_mul_smul` -- distributivity and homogeneity at the level of
+    almost-everywhere classes.  mathlib gives `α ->m[mu] C` a `Mul` and an `Add` but no `Distrib`
+    instance, so these have to be proved through the coefficient functions; `AEEqFun.ext` plus the
+    `coeFn` lemmas does it.
+  * **`mulLpₗᵢ`** -- the bundled `Lp C p mu →ₗᵢ[C] Lp C p mu`.
+
+  Applied to Lechner's multiplier, whose unimodularity is `norm_pairMultiplier`, this is the
+  intertwiner as an operator: a linear isometry of the `n`-particle space for every `n` and every
+  exponent, not merely a seminorm identity.
+
+  The gate's mathematical content is now complete.  What is left is bookkeeping of a purely
+  organisational kind: choosing a concrete rapidity coordinate model so the per-`n` isometries can
+  be summed into one operator on a Fock space, and restating `(10b)` against that model.
+
+- 2026-08-08 (sixth instalment) -- **The intertwiner exists as an operator on the rapidity space.**
+  Same module, axiom-clean.
+
+  * `embedFin`, `pairMultiplierFin` -- the multiplier in rapidity coordinates `Fin n -> R`, with
+    `norm_pairMultiplierFin` for its unimodularity.
+  * **`pairMultiplierFin_succ`** -- equation `(10a)` in those coordinates: adjoining a new first
+    rapidity multiplies the intertwiner by `prod_(j) y (theta_0 - theta_(j+1))` and leaves the
+    shifted intertwiner untouched.  This is the dressing string of `(10b)`, now indexed the way the
+    `n`-particle space is.
+  * `measurable_embedFin_apply`, `measurable_pairMultiplierFin` -- the multiplier is measurable
+    whenever the half-phase is, so it defines an almost-everywhere class.
+  * **`lechnerIntertwiner`** -- the bundled operator: for a measurable unimodular half-phase,
+    multiplication by the pair multiplier is a linear isometry
+    `L^p(Fin n -> R) ->ₗᵢ[C] L^p(Fin n -> R)`, at every particle number and every exponent.
+
+  The gate is now formalized in full at the level of each particle number: the intertwiner is an
+  operator, it is isometric, it converts the `S`-exchange law into the constant law
+  (`intertwine_swapAt`), and the conjugated creator's dressing string is `pairMultiplierFin_succ`.
+  What is deliberately not built is the direct sum over `n` as a single Fock-space operator, which
+  needs a Fock-space construction the corpus does not carry and which adds no mathematical content
+  beyond the per-`n` statements above.
+
+- 2026-08-08 (seventh instalment) -- **The Lean gate is closed.**  Two further modules, both
+  axiom-clean and wired.
+
+  `HTGeometry/LpFamilyIsometry.lean` -- mathlib builds `lp` and the single-summand inclusion but no
+  componentwise map, so:
+
+  * `memℓp_of_norm_eq` -- membership depends only on the summand norms;
+  * **`lpFamilyIsometry`** -- a family of linear isometries between the summands induces one on the
+    `lp` sum, for a finite exponent.  This is general infrastructure, not specific to this card.
+
+  `HTGeometry/LechnerFockIntertwiner.lean`:
+
+  * `rapidityFock = lp (fun n => L^2 (Fin n -> R)) 2` -- the rapidity Fock space;
+  * **`lechnerFockIntertwiner`** -- Lechner's `Y = sum_n Y_n` as a linear isometry of it, with
+    `lechnerFockIntertwiner_apply` and `norm_lechnerFockIntertwiner`;
+  * **`conjugated_creation_multiplier`** -- equation `(10b)`: conjugating the creation step by the
+    intertwiner turns the free creator into the same creator dressed by the pair-phase string of the
+    new rapidity against all the old ones, with the intertwiner of the old particles untouched.
+
+  The gate asked for Lechner's analytic/Hilbert intertwiner and the conjugated creation-operator
+  formula.  Both are now unconditional Lean theorems: the intertwiner is an operator on the Fock
+  space (`lechnerFockIntertwiner`), it is isometric (`norm_lechnerFockIntertwiner`), it converts the
+  `S`-exchange law into the constant law (`intertwine_swapAt`), and `(10b)` is
+  `conjugated_creation_multiplier`.
+
+  The card's three remaining gates -- the novelty audit, the physical admissibility theorem, and the
+  localization/OPE invariant -- are research and review items, not formalization ones.

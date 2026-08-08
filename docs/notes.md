@@ -224,5 +224,32 @@ A concrete universal current is emerging from the corpus, not invented from RH: 
 E=\sum_{n\ge1}[n],\quad M=E^{-1}=\sum\mu(n)[n],\quad \delta[n]=(\log n)[n],
 \]and
 \[
-\Theta_{\rm Euler}=M\,\delta E=-\,(\delta M)E=\sum\Lambda(n)[n].
-\]So Möbius arithmetic, prime-log spectral frequency, Euler inversion, and von Mangoldt flow are one Maurer–Cartan source current. Nontrivial route obstructions arise when completion, Fourier/Hodge realization, positivity, or boundary reduction fails to preserve this source connection. This is much closer to an actual field equation.
+\omega_E=M\,dE=-\,(dM)E,\qquad
+\iota_\delta\omega_E=M\,\delta E=\sum\Lambda(n)[n].
+\]
+
+So Möbius arithmetic, prime-log spectral frequency, Euler inversion, and von Mangoldt flow arise from one Kähler logarithmic form and its contracted current. Nontrivial route obstructions arise when completion, Fourier/Hodge realization, positivity, or boundary reduction fails to preserve this source connection. This is much closer to an actual field equation.
+
+Two exact anchors now survive hostile review:
+- arithmetic: Euler–Möbius Maurer–Cartan current produces literal Route L, Mass, and reflection-odd prime shadows; it does not produce Route E conductance;
+- physics: two-boundary phase fibres separate radial QEC defect, phase metric, winding history, Berry holonomy, finite Krylov displacement, and gravitational edge-charge work.
+
+This is valuable: NGD is not “everything equals one obstruction.” It is a typed field with several irreducible coefficient theories linked by source transport.
+
+Exact arithmetic result changes the field’s ontology again: “source” is not a scalar charge but a differential gauge algebra. Its connection is flat; curvature begins only when another reduction fails to preserve it. This supplies NGD’s first vacuum/source separation and blocks circular identification of Λ with RH curvature.
+
+useful imported organ has emerged: higher span 2-categories plus six-functor formalisms can supply NGD’s universal transport skeleton. Beck–Chevalley failure becomes a typed curvature source; uniqueness theorems give a concrete presentation-invariance test; K-theory records failure of that uniqueness.
+
+External hostile pass found two foundational errors, both important:
+- legal reductions depend on source, so base is a Grothendieck construction of source-indexed reduction categories—not a product;
+- hypertranscendence is maximal jet/Kolchin growth, not “ideal nonstabilization” (the differential ideal can remain zero at every order).
+
+Also separating coverage from cost: law covers form topology; reconstruction cost is a Lawvere/quantale enrichment, since uniform bounds need not survive refinement.
+
+Another precision repair: δ[n]=log n[n] is a derivation, not a differential (δ²≠0). The canonical object is the Kähler logarithmic form ω_E=E⁻¹dE; contracting it with δ gives Λ. Also restricting cofiber curvature to structurally forced Beck–Chevalley mates—an arbitrary comparison map cannot define geometry.
+
+Big-picture refinement: unification should not force all invariants into one group. The common object is the source-witnessed reduction 2-cell; Witt index, K-class, lim¹, Kolchin rank, boundary current, and cost are different realization functors of that cell. This makes “shadows” literal without false equality.
+
+Full-corpus pass found the central danger: a list of coefficient theories is another organ bag. Repairing it into a coefficient fibration with transition functors, plus a universal deformation–obstruction triangle. Also separating “comparison absent” from “comparison noninvertible”: only the latter is curvature.
+
+Literature pass sharpens NGD’s actual geometry: source-indexed proarrow equipment, not ordinary path category. Objects are observer presentations; reductions are horizontal correspondences; source histories are vertical; exchange squares carry Beck–Chevalley mates. Regular chambers mean representability/adjointability/base-change; horizons mean those properties fail.

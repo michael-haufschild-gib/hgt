@@ -3,7 +3,7 @@
 - **ID:** `nomological-geometry-and-dynamics`
 - **Stage:** 1 — in progress
 - **Working name:** `NGD`
-- **Status:** `[NEW FIELD SYNTHESIS] [FOUNDATION CONJECTURAL] [EXACT LOCAL CHARTS EXIST]`
+- **Status:** `[FIELD PROGRAM — PRELIMINARY] [FOUNDATION TYPED] [EXACT LOCAL CHARTS EXIST]`
   `[ROUTE-COMPLETE DESIGN TARGET] [NOT RH] [NO LEAN WRITTEN]`
 - **Purpose:** Reinterpret arithmetic, spectral, geometric, analytic, topological, ordered, and
   physical proof routes as curved reductions of one source law rather than independent objects
@@ -17,10 +17,14 @@
 
 ## 0. One-sentence answer
 
-> The thousands of corpus theorems and no-gos are shadows of a **curved source-realizability
-> connection on the space of mathematical reductions**: arithmetic, Fourier/spectral, geometric,
-> positive, topological, cofinal, and physical descriptions are observer reductions of one source
-> law, and their failure to commute is the intrinsic curvature.
+> The thousands of corpus theorems and no-gos are shadows of a **source-indexed bivariant exchange
+> geometry of mathematical law**: arithmetic, Fourier/spectral, geometric, positive, topological,
+> cofinal, and physical descriptions are typed realizations of source-witnessed reduction cells;
+> failure of their canonical base-change exchange is curvature.
+
+This is the field hypothesis, not a proved universal theorem. The 51-unit publication census fits
+it extensionally. Intensional unification remains open until one coefficient-changing exchange or
+Jacobi theorem computes two genuinely nonisomorphic corpus organs.
 
 When the declared observer family is jointly conservative on source provenance, an obstruction
 does not disappear when one route exactifies it. It is transported into another degree or another
@@ -87,8 +91,8 @@ An NGD field is provisionally the typed datum
 
 \[
  \mathfrak N=
- \bigl(\mathcal S,\mathcal P(-),
- \pi:\mathcal W\to\mathcal B:=\!\int_{s\in\mathcal S}\mathcal P(s),
+ \bigl(\mathcal S,\mathbb B:=\!\int_{s\in\mathcal S}\mathcal P(s),
+ \pi:\mathcal W\to\mathbb B,
  \nabla,\mathbf O,\theta,\tau,\ell\bigr).
  \tag{NGD.1}
 \]
@@ -99,17 +103,25 @@ selection; relation rank does not determine cost.
 ### 2.1 Source histories `S`
 
 `S` is the category or higher category of literal source-law states and histories. Its arrows may
-change scale, incidence, coupling, provenance, or clock. Source labels, multiplicities,
-involutions, domains, and arithmetic operations live here before any route output is chosen.
+change scale, incidence, coupling, provenance, or clock. They are marked as passive histories,
+observer choices, or genuine source interventions. Source labels, multiplicities, involutions,
+domains, and arithmetic operations live here before any route output is chosen. Gauge equivalence
+must preserve responses to the declared source interventions; observational agreement alone is not
+identifiability.
 
-### 2.2 Source-indexed typed reduction computad `P(-)`
+### 2.2 Source-indexed bivariant exchange equipment `B`
 
-`P(s)` is the computad, double equipment, or `(infinity,2)`-category of reductions legal for source
-state `s`; legality can change along a source history. The base of the field is the Grothendieck
-construction `B=int_s P(s)`, not a product of source states with one universal reducer list and not
-the nerve of a category. Its arrows combine source change with compatible reduction transport,
-and its 2-cells compare reduction orders. Let `A` denote elementary reducer types. The corpus
-forces at least:
+`P(s)` is the reduction equipment legal for source state `s`; legality can change along a source
+history. Its double Grothendieck construction `B=int_s P(s)` is a double `(infinity,2)`-equipment,
+not an ordinary product, nerve, or category of paths:
+
+- objects are source-conditioned observer presentations;
+- vertical arrows are source histories, interventions, and reparametrizations;
+- horizontal proarrows are reductions, including partial maps, correspondences, closed relations,
+  completions, and reconstruction maps;
+- squares are source-witnessed exchange/base-change cells.
+
+Let `A` denote elementary reducer types. The corpus forces at least:
 
 ```text
 Q  quotient / exactification
@@ -121,10 +133,14 @@ M  marking / orientation / Real parity
 S  scalarization / determinant / trace / energy
 N  normalization / source selection
 T  physical clock, locality, or operational-cost observation.
+D  deformation / differential prolongation / jet expansion
+X  extension / reconstruction / gluing across observers
+I  source intervention / coupling change / identifiability test.
 ```
 
-A route is not a letter. It is a typed word or higher path in these reducers, with source-specific
-parameters and labels. Different paths may land in different mathematical categories.
+A route is not a letter or base object. It is a typed composite of horizontal proarrows and
+exchange cells between observer presentations, with source-specific parameters and labels.
+Different composites may land in different mathematical categories, and some orders are illegal.
 
 Working implementation: model legal source/reduction moves by a higher span 2-category. A regular
 square carries its structurally forced Beck--Chevalley mate. Invertibility is local flatness; its
@@ -132,46 +148,68 @@ normalized defect is the first curvature coefficient. An arbitrarily chosen comp
 curvature. Reducers outside adjointable/span charts remain legal but must declare an equally
 canonical comparison doctrine.
 
-### 2.3 Source-witnessed realization bifibration `pi`
+### 2.3 Source-witnessed realization double fibration `pi`
 
-The fibre of `pi` over a base object `(s,p)` is the category of realizations of source state `s`
-along reduction path `p`, retaining the witness that the output came from `s`. A record functor
+`pi` is a double fibration, equivalently a suitable lax double realization functor
+`Real:B->Corr(Cat_infinity)`. The fibre over a presentation `(s,o)` is the category of its
+source-supported realizations. Routes transport between fibres; fibres are not indexed by route
+paths. A record functor
 
 \[
- J_p:\mathcal W_{(s,p)}\longrightarrow\mathcal B_p
+ J_o:\mathcal W_{(s,o)}\longrightarrow\mathcal C_o
  \tag{NGD.2}
 \]
 
-forgets exactly the structure discarded by `p`. Simultaneous realizability lives in the
-source-witness fibre, not in a Cartesian product of route outputs. The earlier witness stack,
+is a record/re-encoding correspondence. Quotients may forget; Fourier transforms, continuation,
+and decoding may re-encode or extend, with unit/counit defects recording failure of reconstruction.
+Simultaneous realizability lives in the source-witness fibre, not in a Cartesian product of route outputs. The earlier witness stack,
 reduction field, realization maps, and law surface are derived fibres, transports, record
 functors, and witnessed essential images of `pi`; they are not separate primitives.
 
-### 2.4 Reduction connection `nabla`
+### 2.4 Reduction transport and connection `nabla`
 
-`nabla` is a cleavage or connection on `pi` which lifts source histories and reduction paths. It
-need not be flat. Its compositor compares two legal lifts and transports source charge, admitted
-domain, marked port, order structure, or capacity cone when representation changes.
+The fibration cleavage gives pseudofunctorial transport and is not itself curved. `nabla` denotes
+additional thin-path/higher transport data within regular presentation fibres. Source charge,
+admitted domain, marked port, order structure, and capacity cone move along it. NGD curvature is
+failure of canonical exchange/base-change mates in `B` or its realizations, not failure of a
+cleavage to be pseudofunctorial. Source records generally determine a torsor of connections, not a
+preferred point; selecting `nabla` requires intervention/response calibration or another literal
+source law.
 
-### 2.5 Multi-coefficient obstruction doctrine `O`
+### 2.5 Fibred multi-coefficient obstruction doctrine `O`
 
-No single abelian group can retain all corpus obstructions. `O` assigns a presentation-invariant
-invertibility defect to a comparison cell and admits several coefficient theories:
+No single abelian group can retain all corpus obstructions, but an unstructured list would merely
+recreate the rejected organ bag. The regular core is a stable bivariant coefficient stack
 
-| Coefficient theory | Corpus shadows |
-|---|---|
-| kernel pairs and setoids | boundary completeness, tomography, recurrence quotients |
-| relative and derived cohomology | relation kernels, orientation transgression, interaction layers |
-| topological/pro-relations | Hedenmalm radicals, cofinal Gamma, singular Gelfand defects |
-| Grothendieck--Witt/inertia | Julia--Euler--Weil and Stokes--Cartan index laws |
-| equivariant `K`/cyclic theory | Real-corona orientation and cyclic ports |
-| differential matroids/Kolchin polynomials | HT, fusion, Hurwitz, elliptic-Gamma families |
-| asymptotic/Rees type | source modular superselection and rank transmutation |
-| ordered cost/rate distortion | recurrence, Hall capacity, filling, operational work |
-| method-semigroup exponent geometry | Lindelof ceilings and stationary `1/8` floor |
+\[
+ \mathcal H:\mathbb B_{\rm reg}\longrightarrow\mathsf{Pr}^{L}_{\rm st}
+ \tag{NGD.2b}
+\]
+
+carrying pullback, pushforward, localization triangles, duality, and canonical exchange maps.
+Exact realization functors `rho_alpha:H->C_alpha` read homological, `K`-theoretic, Witt, cyclic,
+or pro-derived shadows. More generally let `Coeff` index these realizations and
+
+\[
+ q:\mathfrak D\longrightarrow\mathsf{Coeff}
+ \tag{NGD.2c}
+\]
+
+a fibration whose fibre `D_alpha` is the target of coefficient theory `alpha`. Morphisms in
+`Coeff` are named transition functors--forgetful maps, completion, Chern characters, index maps,
+or associated gradeds--with coherence. `O` assigns a presentation-invariant
+exchange defect as a compatible section/diagram. Nonstable modalities and numerical valuations
+remain typed but are not mislabeled as stable coefficient theories:
+
+| Layer | Examples | Corpus shadows |
+|---|---|---|
+| stable/exact realization | relative cohomology, pro-derived relations, Grothendieck--Witt, equivariant `K`/cyclic, Rees type | transgression, Hedenmalm/Gelfand defects, Stokes inertia, Real-corona, rank transmutation |
+| nonlinear modality | kernel pairs/setoids, admission/strictness, differential matroids/Kolchin growth | boundary completeness, tomography, recurrence quotient, HT/fusion/Hurwitz |
+| valuation on a realized defect | rank, multiplicity, inertia, filling cost, rate distortion, method exponent | relation budgets, Hall capacity, recurrence work, Lindelof ceilings and `1/8` floor |
 
 Comparison between coefficient theories must be a named functor or pairing. Calling two shadows
-"the same obstruction" without such a map is forbidden.
+"the same obstruction" without such a map is forbidden. A shadow family that violates transition
+coherence is not one NGD class.
 
 ### 2.6 Source charge `theta` and transgression `tau`
 
@@ -185,18 +223,18 @@ The corpus already contains exact examples: Möbius inversion, von Mangoldt loga
 Kummer valuation coframes, Euler--Gamma/Möbius transgression, Green boundary classes, and
 source-labelled incidence currents.
 
-#### Leading zeta current: Euler--Möbius Maurer--Cartan form
+#### Leading zeta current: Euler--Möbius Kähler logarithmic form
 
-Let the completed commutative Dirichlet/dilation algebra have basis `[n]`, convolution product, and
+Let the formal Dirichlet algebra have coordinate symbols `[n]`, coefficientwise formal sums,
+locally finite convolution, and
 logarithmic derivation
 
 \[
  \delta[n]=(\log n)[n].
 \]
 
-Make this a genuine one-dimensional differential calculus by adjoining a central `du`, setting
-`d_Df=(delta f)du`, `du wedge du=0`, and `Omega^k=0` for `k>=2`. Then `d_D^2=0`; `delta` itself is
-not falsely treated as a square-zero differential.
+Let `d:A->Omega^1_A` be its universal Kähler differential. The derivation `delta` induces a
+contraction `i_delta:Omega^1_A->A`; `delta` itself is not falsely treated as square-zero.
 
 Write
 
@@ -205,24 +243,27 @@ Write
  M=E^{-1}=\sum_{n\ge1}\mu(n)[n].
 \]
 
-The exact Dirichlet identity `mu*log=Lambda` gives the source Maurer--Cartan current
+The exact Dirichlet identity `mu*log=Lambda` gives a Kähler logarithmic form and its source current
 
 \[
  \boxed{
- \boldsymbol\Theta_{\rm Euler}
- =M\,d_DE
- =-(d_DM)E
- =\left(\sum_{n\ge1}\Lambda(n)[n]\right)du.}
+ \boldsymbol\omega_{\rm Euler}
+ =M\,dE
+ =-(dM)E,
+ \qquad
+ \iota_\delta\boldsymbol\omega_{\rm Euler}
+ =\sum_{n\ge1}\Lambda(n)[n].}
  \tag{NGD.2a}
 \]
 
-Write `Theta_E` for its coefficient `M delta E=Lambda`.
+Write `Theta_E=i_delta(omega_E)=M delta E=Lambda` for its logarithmic current. The Kähler form is
+genuinely Maurer--Cartan in the de Rham DGA; its contraction is the arithmetic current used below.
 
 This one unconditional object already has four faces:
 
 1. `M` is arithmetic inversion;
 2. `delta` has spectral eigenvalues `log n`;
-3. `Theta_Euler` is the positive von Mangoldt flow;
+3. `Theta_E=i_delta(omega_E)` is the positive von Mangoldt flow;
 4. acting in a dilation module turns it into a connection/current on source histories.
 
 Exponentiating `delta` produces the prime phase clocks `n^{it}`. The archimedean Gamma factor adds
@@ -238,12 +279,14 @@ physical Route-E allocation and normalized Gamma completion remain additional so
 bornological gauge, rate-distortion, energy, complexity, or `+infinity`. It is not automatically a
 field action and is not determined by relation rank. A variational field action, when it exists,
 is separate data whose Euler--Lagrange equation must be proved to recover the contracted field law.
+For composable Moore paths it satisfies `ell(gf)<=ell(f)+ell(g)` and `ell(id)=0`.
 
 ## 3. Reduction space and law surface
 
-For elementary reducers `a_1,...,a_n`, all orderings form a permutohedral or higher-cubical
-reduction complex. Vertices are composite observer charts. Edges swap adjacent reducers. Faces
-compare different orders. Examples include:
+For elementary reducers `a_1,...,a_n`, the legal orderings form an **admissible factorization
+subcomplex** of a permutohedral or higher-cubical complex. It is the full permutohedron only when
+every composite and exchange cell exists. Vertices are composite observer charts; edges swap
+adjacent legal reducers; faces compare legal orders. Examples include:
 
 ```text
 complete then quotient       versus quotient then complete
@@ -260,8 +303,36 @@ realizable while their joint point is not. The HT fracture hypercube and finite-
 interaction cohomology are exact existing models of this phenomenon.
 
 The new interpretation is dynamic: `M` is not a static compatibility locus. Source history moves
-it, the reduction connection transports its tangent and conormal data, and `g` measures the cost
+it, the reduction connection transports its tangent and conormal data, and `ell` measures the cost
 of remaining on it.
+
+### Universal deformation--obstruction triangle
+
+At a witness `w` over base presentation `b=(s,o)`, any stable infinitesimal chart must supply the tangent
+map of the realization bifibration and its exact triangle
+
+\[
+ \mathbb T_w\mathcal W
+ \xrightarrow{d\pi}
+ \mathbb T_b\mathcal B
+ \longrightarrow
+ \operatorname{Obs}_w(\pi)
+ \longrightarrow
+ \mathbb T_w\mathcal W[1].
+ \tag{NGD.2d}
+\]
+
+`fib(d pi)` is vertical witness freedom: different source-supported realizations invisible at the
+base. `Obs_w(pi)=cofib(d pi)` is the obstruction to lifting a source intervention or reduction
+deformation. Kernel-pair, cotangent, relative-cohomology, differential-rank, and reconstruction
+theories are functorial shadows of this triangle or its nonlinear replacement; cost is a separate
+valuation on a realized deformation or obstruction.
+This triangle is the local object tying the coefficient fibration together; without it `O` would
+remain a taxonomy.
+
+When the triangle is represented as a Jacobi complex, `H^(-1)` records stabilizer/gauge ambiguity,
+`H^0` compatible deformations, `H^1` first lift obstruction, and higher cohomology fracture or
+interaction. This makes witness fibres stabilizer groupoids rather than raw sets of histories.
 
 ## 4. Nomological curvature
 
@@ -273,6 +344,10 @@ has canonical Beck--Chevalley mate
  K_{a,b}(x)=\operatorname{cofib}(\beta_{a,b,x}).
  \tag{NGD.3}
 \]
+
+If one composite is illegal or no comparison cell exists, the datum is an **admission/typing
+horizon**, not nonzero curvature. Curvature begins only after both composites and their canonical
+comparison exist.
 
 If `beta` is chosen freely rather than forced by the square, `(NGD.3)` is presentation data, not
 curvature. If a chart instead supplies two structurally forced parallel morphisms with common source and target, their difference
@@ -286,6 +361,35 @@ For three or more reducers, curvature is the total boundary/total fibre of the c
 or permutohedron. Its faces are not required to live in one scalar group. A linearized interaction
 spectrum, strict topological defect, ordered Witt class, and cost singularity can be different
 shadows of one higher cell.
+
+For composable exchange maps `u,v` in a stable fibre, the octahedral axiom gives the exact
+migration triangle
+
+\[
+ \operatorname{cofib}(u)\to\operatorname{cofib}(vu)
+ \to\operatorname{cofib}(v)\to\Sigma\operatorname{cofib}(u).
+ \tag{NGD.3b}
+\]
+
+This, not a slogan, is the first local Bianchi/migration mechanism. Higher pasted cubes give total
+cofibres and filtered obstruction towers.
+
+### Shadow principle
+
+The common object is the source-witnessed reduction cell, not a scalar obstruction. For each
+coefficient theory `alpha`, a realization
+
+\[
+ \mathbf O_\alpha:\operatorname{Cell}(\mathcal B,\mathcal W)
+ \longrightarrow\mathcal D_\alpha
+ \tag{NGD.3a}
+\]
+
+reads one aspect of its invertibility defect. Kernel pairs, relative cohomology, Witt index,
+equivariant `K`-class, `lim^1`, and Kolchin rank may therefore be shadows of one cell without being
+equal or mutually recoverable. Boundary work and path cost are separate valuations on declared
+realizations. A claimed cross-shadow identity requires a natural transformation or proved
+constitutive inequality; otherwise NGD predicts only common source provenance and compatible incidence.
 
 ### Constraint uncertainty principle
 
@@ -321,8 +425,9 @@ domains need not be equivalent.
 ### Law II — witnessed realizability
 
 Physical or arithmetic states are source-witness points in fibres of `pi`, not arbitrary
-compatible bags. Selection is a global-section problem for `pi`, not a representation problem in
-one target chart.
+compatible bags. Selection asks for a Cartesian section over a specified admissible route
+sieve/subsite, not necessarily a global section over every presentation and not a representation
+problem in one target chart.
 
 ### Law III — contracted source--curvature equation
 
@@ -331,7 +436,7 @@ fixed natural contraction or **nomological Einstein operator** `E` and a fixed t
 with common codomain:
 
 \[
- \boxed{\mathbb E([\kappa_\nabla])=\tau([\theta]).}
+ \boxed{\mathbb E([\kappa_{\rm Ex}])=\tau([\theta]).}
  \tag{NGD.4}
 \]
 
@@ -340,21 +445,23 @@ not sourced by the declared charge. This correction is essential. Constant sourc
 coexist with quotient/completion curvature, just as vacuum spacetime can be curved. In local
 charts `(NGD.4)` becomes a contracted boundary formula, anomaly equation, connecting morphism,
 index pushforward, or constitutive balance. Both sides must live in one specified conserved
-obstruction theory.
+obstruction theory. Across the whole field, `(NGD.4)` is a compatible family indexed by
+`O_alpha`, not one heterogeneous equality.
+
+`[NON-TAUTOLOGY GATE]` `mathbb E` and `tau` must be defined globally on a source family before any
+target divisor or desired obstruction is chosen. They must be natural under source interventions,
+reducer refinement, and coefficient-transition functors. A chartwise definition
+`tau(theta):=mathbb E(kappa)` is forbidden. At least one independent non-zeta family must test the
+same operators, including a case where sourced and vacuum curvature separate.
 
 ### Law IV — Bianchi coherence, conservation, and nonerasure
 
 The oriented total boundary of every coherent additive reduction cube vanishes, with the analogous
 pasting identity in a higher category. This is a coherence law only; it does not imply nonerasure.
 
-Independently require the contracted Bianchi identities
-
-\[
- D\,\mathbb E([\kappa_\nabla])=0,
- \qquad d[\theta]=0,
-\]
-
-and chartwise transgressions whose totalization is jointly conservative on the declared source
+Within a specified localization triangle or exact couple, require the corresponding boundary-
+square/pasting identity and a source cycle. Generic symbols `D E(kappa)=0` and `d theta=0` have no
+meaning outside such a coefficient formalism. Also require chartwise transgressions whose totalization is jointly conservative on the declared source
 class. A particularly strong certificate is a split detector `epsilon` with
 `epsilon circ tau = id` on that class. Only under such a hypothesis does
 
@@ -380,14 +487,15 @@ Separately, a lifted history has operational cost
  \tag{NGD.5}
 \]
 
-The cost may be nonsmooth or infinite. Capacity, Hall load, graph filling, operator norm,
+when a local density `g` exists; otherwise `ell` is primitive and only subadditivity under
+concatenation is required. The cost may be nonsmooth or infinite. Capacity, Hall load, graph filling, operator norm,
 rate-distortion, Fisher action, and complexity are chartwise forms. Minimizers require explicit
 coercivity and existence hypotheses. No law permits relation rank alone to determine cost.
 
 ### Law VI — source selection as boundary-value problem
 
-Selection is not granted by the field axioms. It asks for a global section with prescribed source
-charge, admission, normalization, and marked ports. Existence, uniqueness, normalization, and
+Selection is not granted by the field axioms. It asks for a Cartesian section over a declared
+route sieve with prescribed source charge, admission, normalization, and marked ports. Existence, uniqueness, normalization, and
 nonerasure are separate conjectures. Homogeneous naturality can select at most a line; positivity
 can detect displacement but cannot supply unsquared orientation.
 
@@ -396,6 +504,14 @@ can detect displacement but cannot supply unsquared orientation.
 Physical time is a source-history direction whose lifted holonomy is observable. Returning to the
 same projected state need not return to the same witness or erase accumulated action. This
 separates quantum recurrence from interior/complexity growth without violating recurrence.
+
+### Law VIII — calibrated intervention dynamics
+
+Geometry, Bianchi coherence, and passive source records do not determine dynamics. A dynamical
+chart must supply an independently calibrated intervention-to-observer response functor, natural
+under the declared reduction exchanges. It selects at most a gauge class of connections unless the
+interventions are jointly identifying. Redefining source and curvature to force `(NGD.4)` is not a
+dynamical law.
 
 ## 6. Horizons and topology
 
@@ -409,7 +525,12 @@ become one stratified geometry:
 4. **capacity horizon:** a source primitive exits every uniformly bounded filling ball;
 5. **selection horizon:** witness fibre changes dimension but no point is normalized;
 6. **recurrence horizon:** projected orbit closes while lifted holonomy/action remains nontrivial;
-7. **physical horizon:** boundary restriction ceases to reconstruct a common interior witness.
+7. **physical horizon:** boundary restriction ceases to reconstruct a common interior witness;
+8. **comparison-domain horizon:** a legal exchange cell appears or disappears;
+9. **monodromy/resonance horizon:** continuation changes branch or character rank;
+10. **gauge-identifiability horizon:** observational records cease to distinguish source interventions;
+11. **correctability horizon:** reconstruction/decoding loses an adjoint, inverse, or bounded recovery;
+12. **method horizon:** a proof-operation semigroup reaches a stationary exponent face.
 
 Topology in NGD is thus topology of source-law liftability and reducer order, not merely topology
 of one carrier. Degeneracy and commuting loci may be algebraic, analytic, derived, pro-topological,
@@ -426,31 +547,29 @@ The horizon invariant is therefore vector-valued rather than one scalar discrimi
 
 ### 6.1 Nomological Grothendieck topology
 
-On a source-law state `x`, declare a family of observer reductions `{r_i}` to be a **law cover**
-only when their joint realization functor is:
+On a source-law presentation `x`, a family `{r_i}` is a candidate **law cover** when its joint
+realization gives effective descent for source witnesses and is conservative on their groupoid.
+This is the Grothendieck-topology layer only.
 
-1. conservative on source witnesses;
-2. strict on the declared bornological/topological arrows;
-3. faithful on labels, multiplicity, and marked orientation;
-4. cofinal on the stated pro-filtration.
-
-Ordinary faithful tomography may fail to be a law cover because it erases orientation, has
-nonclosed range, or loses a cofinal tail. This topology turns the corpus's repeated “all finite
-observers succeed but the limit fails” phenomenon into a covering failure rather than a paradox.
+Strictness/admission, label-orientation faithfulness, and cofinality are separate modalities or
+localizations on that site. An **admissible proof cover** is a law cover which also passes the
+modalities declared by the theorem. Ordinary faithful tomography can be a cover but fail proof
+admission because it erases orientation, has nonclosed range, or loses a cofinal tail.
 
 Cost is deliberately not a covering axiom: uniform cost need not survive arbitrary refinement.
 Instead `ell` gives the observer site a separate Lawvere/quantale enrichment. A family can be a law
 cover yet have infinite reconstruction cost; that distinction is the capacity horizon.
 
-The **nomological fundamental groupoid** is the holonomy groupoid of reduction paths inside one
-regular chamber, with paths identified only by source-witnessed comparison cells. A loop may be
-trivial on every scalar route output and nontrivial on the witness fibre. Higher homotopy groups
-come from the fracture/interaction total fibres. These are the candidate phase-topological
-invariants of time, recurrence, and cofinal proof obstruction.
+The **nomological thin path 2-groupoid** carries connection and holonomy inside one regular chamber,
+with paths identified only by source-witnessed thin comparison cells. Separately, a Moore path
+category retains duration, concatenation, and executed cost. Passing wholly to a groupoid would
+erase metric history. A loop may be trivial on every scalar route output and nontrivial in the
+witness transport. Higher homotopy comes from fracture/interaction total fibres.
 
-`[FOUNDATION OBLIGATION]` The four covering conditions must be proved stable under identity,
-refinement, and source-history pullback before the word “Grothendieck topology” is literal. Until
-then this subsection specifies the intended coverage law, not a completed site.
+`[FOUNDATION OBLIGATION]` Effective witness descent must be proved stable under identity,
+refinement, and source-history pullback before the word “Grothendieck topology” is literal. Each
+additional modality needs its own unit, multiplication, and base-change law. Until then this
+subsection specifies intended structures, not a completed site.
 
 ## 7. Exact foundation already present in the corpus
 
@@ -479,6 +598,14 @@ Dependency-closed NGD charts now live in the dedicated Pipeline-2 folder:
 - `../../2-fully-proven/nomological-geometry-and-dynamics/dirichlet-maurer-cartan-mellin-orbit-law.md`;
 - `../../2-fully-proven/nomological-geometry-and-dynamics/critical-euler-mass-weil-stokes-shadow-law.md`;
 - `../../2-fully-proven/nomological-geometry-and-dynamics/framed-two-boundary-phase-fibre-recurrence-and-history-separation.md`.
+
+The exhaustive 51-unit publication atlas and formal-namespace scope live in
+`whole-corpus-coefficient-atlas-and-closure-gates.md`. Placement passes; a cross-coefficient
+unification theorem does not yet.
+
+The make-or-break theorem is isolated in
+`universal-exchange-motive-and-localization-curvature-program.md`: construct one canonical strict-
+completion exchange cell with two nonisomorphic conservative realizations.
 
 ### First explicit NGD face
 
@@ -605,9 +732,9 @@ NGD gives the physical hunch a precise target.
 
 ### Phase geometry of time
 
-A clock is a source-history arrow in the path groupoid of a source-witness fibre. Before a
-connection is supplied, its intrinsic data are endpoint and homotopy/period class. Holonomy is
-defined only after choosing a lift connection. Nonconstant motion above a constant boundary
+A clock is a source-history arrow. Its Moore path retains duration and executed cost; its thin-path
+class is the input to connection holonomy. Before a connection is supplied, intrinsic data are
+endpoint, duration, and homotopy/period class. Nonconstant motion above a constant boundary
 reduction is vertical source motion, not boundary-determined holonomy. A one-dimensional clock may
 miss two-form curvature while still carrying winding and connection holonomy.
 
@@ -657,7 +784,7 @@ Finite Krylov complexity is therefore an endpoint/chordal shadow, not accumulate
 ### Black-hole surface and interior
 
 Boundary algebras are observer reductions. A finite interior **candidate** is a source-supported
-fibre together with its path groupoid, cotangent/charge data, and reconstruction maps. A fibre
+fibre together with thin-holonomy and Moore-path structures, cotangent/charge data, and reconstruction maps. A fibre
 alone is quantum-marginal ambiguity, not geometry. A horizon is a strictness/reconstruction
 horizon of the restriction functor; relative edge modes are candidate tangent directions.
 
@@ -698,9 +825,9 @@ zeros and many exact equivalent detectors. NGD reformulates the remaining theore
 > through strict arithmetic, Fourier/spectral, geometric/ordered, and cofinal charts; then solve the
 > source boundary-value problem with marked nonerasure.
 
-The desired central line is then not inserted as a metric optimum. It is the flat locus of a
-source-generated connection. Off-line zeros produce nonzero mixed holonomy/current in at least one
-faithful marked chart; source conservation prevents every chart from erasing it.
+The desired central line must then emerge as the zero locus of a source-calibrated contracted
+exchange class, not be inserted as a metric optimum. The still-open claim is that an off-line zero
+produces nonzero mixed exchange/current in at least one conservative marked realization.
 
 Until `theta_zeta`, `E`, `tau`, and the connection are constructed before divisor specialization,
 the phrase “flat exactly on the central line” merely renames RH. NGD currently identifies the
@@ -735,14 +862,90 @@ required theorem type and explains route-local stopping, not the theorem itself.
 8. **Recurrence prediction.** State recurrence plus persistent growth requires retained path class
    or executed action; any exact state-only monotone is impossible. The finite GHZ phase-fibre
    theorem proves this local prediction.
-9. **Holographic prediction.** A genuine two-boundary realization must identify an independently
-   defined recoverability/edge-mode quantity with the NGD witness-fibre action. Mere extension rank
-   will fail.
+9. **Holographic prediction.** A genuine two-boundary realization needs an operator intertwiner
+   between a declared boundary/history observable and an independently normalized bulk
+   length/charge, with higher-cumulant agreement. Neither extension rank nor recovery defect alone
+   suffices.
 10. **Source-selection prediction.** Representation-complete routes cluster into source-isogenous
     charts. New progress must change source current, admission, or constitutive section—not add a
     detector with the same radical.
+11. **Cofinal reconstruction trichotomy.** If compatible finite-prefix realizations are jointly
+    conservative, source representatives collapse cofinally, and a nonzero observer span survives,
+    then every closed faithful completion is multivalued or has unbounded reconstruction cost. A
+    bounded single-valued faithful completion falsifies this joint source-horizon/Hedenmalm/
+    Cholesky prediction.
+12. **Orientation grade-shift prediction.** A nonzero reflection-odd source class exactified by a
+    cover and passed through reflection-invariant completion must survive in relation-kernel `H^1`,
+    a graded cyclic class, or a declared singular relative port. Vanishing in all three under a
+    supposedly conservative coefficient transition falsifies NGD.
+13. **Fracture--recurrence rank budget.** For one source carrying both deletion-face differential
+    matroid data and phase-evaluation recurrence, first proper-face-invisible interaction rank maps
+    to rank gained in completed phase motion. One mismatch under a proved conservative transition
+    falsifies the common Jacobi-complex model.
+14. **Intervention wall-current prediction.** In affine quantum coupling or Euler/divisor surgery,
+    a cofinal invariant jump with continuous finite records is supported on the discriminant of the
+    source stabilizer/relation lattice and carries a pre-target transgressed wall current. A jump
+    with no such source class falsifies the field equation.
+15. **Method-horizon prediction.** A proof-operation semigroup trapped in one stationary
+    coefficient fibre cannot improve its exponent without importing a source operation outside
+    that fibre. A genuine same-semigroup improvement falsifies the method-curvature interpretation.
 
-## 14. First construction programme
+## 14. Anexact Geometry: field carried on NGD spacetime
+
+NGD is the kinematics: source histories, legal reductions, exchange cells, coefficient fibres,
+admission, and cost. **Anexact Geometry** is the proposed geometry carried on it. Its primitive is
+the phase-bearing compatibility of several exactifications, not another universal obstruction
+number.
+
+Each local law has an unsquared amplitude `s`, a dagger square `s^dagger s`, a groupoid of
+exactness trivializations, and coefficient-changing transports. The unsquared amplitude retains
+orientation but may have trivial singularity theory; the positive square creates doubled
+singularity while erasing phase. Target null-homotopy can be automatic although its lift through
+the source-realizable subcomplex has a nonzero relative class. This is the exact field-theoretic
+form of the corpus constraint uncertainty.
+
+Four dependency-closed paper theorems now anchor the field:
+
+1. smooth-versus-doubled exactness horizons, phase torsors, and relative Connes lifting;
+2. source-normal Hochschild/Maurer--Cartan clock curvature and unary-selector no-gos;
+3. exact half-density conjugacy from Route-L connection defect to odd Weil/Stokes distribution;
+4. sharp tempered-admission wall for that odd arithmetic distribution.
+
+The third is a genuine coefficient-changing theorem, not route placement. It also falsifies the
+original completion-cofiber story: the comparison is exact in distributions and unavailable,
+not noninvertible, below the strict admission wall. Next carrier is a source-native relative
+admission/Cartier class. Field remains preliminary until that class is constructed and its
+arithmetic, spectral, positive, and topological realizations are proved jointly conservative.
+
+## 15. First construction programme
+
+The field is organized around structural questions, not RH route patches:
+
+1. **Existence and universality.** Which source-indexed reduction equipments admit a universal
+   source-witnessed double fibration, and which corpus charts factor through it?
+2. **Nomological Ambrose--Singer conjecture.** In a regular finite chamber, is the holonomy
+   groupoid generated by transported Beck--Chevalley curvature cells? A loop with nontrivial
+   holonomy and zero generated curvature falsifies the naive form.
+3. **Nomological Chern--Weil problem.** Classify natural realization functors `O_alpha` from
+   universal reduction cells to cohomology, Witt, `K`, pro-topological, and differential-rank
+   invariants. Determine which characteristic families separate source-isogeny classes, then
+   classify independent cost valuations and constitutive inequalities on them.
+4. **Equivalence-principle normal forms.** Prove the precise regularity hypotheses under which one
+   reducer direction can be first-order flattened, and classify singular failures.
+5. **Presentation invariance.** Determine when source-preserving Tietze/Morita refinement leaves
+   localized curvature unchanged; use six-functor/span uniqueness or compute its `K`-theoretic
+   failure.
+6. **Einstein-operator classification.** Classify natural contractions `mathbb E` compatible with
+   Bianchi identities and source transgression; separate sourced from vacuum/Weyl curvature.
+7. **Horizon index theorem.** Relate jumps of the vector invariant `(NGD.5a)` to a single
+   source-witnessed connecting cell without forcing its coefficient shadows to agree.
+8. **Global-section/selection theorem.** Give existence, uniqueness, and nonerasure criteria for a
+   charged section of `pi`; identify the obstruction stack and its arithmetic boundary data.
+9. **Clock quantization.** Determine when path-groupoid winding, connection holonomy, Fisher cost,
+   and a physical length/charge operator are linked by an actual intertwiner.
+
+Each question has exact finite models in the corpus and a clear counterexample class. Solving this
+programme, rather than adding another RH detector, is what would establish NGD as a field.
 
 ### Step A — reduction atlas
 
@@ -789,7 +992,7 @@ The finite GHZ phase-fibre chart now equates Fisher lift action with quantum Fis
 separates it from recovery, Berry, winding, and Krylov shadows. Next construct a gravitational
 operator intertwiner and cumulant match; only then compare with wormhole time.
 
-## 15. Failure conditions
+## 16. Failure conditions
 
 NGD becomes theatre if any of the following persists:
 
@@ -804,18 +1007,18 @@ NGD becomes theatre if any of the following persists:
 9. no cross-route theorem is stronger than its separate coordinate statements;
 10. RH mapping only renames the missing source-zero theorem.
 
-## 16. Relation to prior field candidates
+## 17. Relation to prior field candidates
 
 - **Source--Observer Relativity** supplied horizontal/vertical viewpoint.
 - **FLD** supplied witness stack and proved bag packaging insufficient.
 - **HT fracture geometry** supplied higher proper-face interaction.
 - **MCTG/BLG** supplied local comparison curvature and constitutive defects.
 - **PCR** correctly censused independent route requirements but mistook the census for primitive.
-- **NGD** takes the source-witnessed bifibration, typed reductions, connection, multi-coefficient
+- **NGD** takes the source-witnessed double fibration, typed reductions, exchange transport, fibred coefficient
   obstruction doctrine, source charge/transgression, and operational cost as primitive. Old organs
   become chartwise coefficient theories rather than competing foundations.
 
-## 17. Current construction material
+## 18. Current construction material
 
 The field intentionally absorbs current parent mathematics.
 
@@ -845,6 +1048,20 @@ The field intentionally absorbs current parent mathematics.
 7. Quantum-information holonomy theory confirms the necessary distinction between a state path, a
    chosen connection, its horizontal lift, and geometric phase. This is the mature local model for
    NGD clock geometry: <https://arxiv.org/abs/1910.08140>.
+8. Free bifibrations and relative fibrations generate double categories with companions,
+   conjoints, normal forms, and word problems. This is directly relevant to source-indexed route
+   presentation: <https://arxiv.org/abs/2511.07314>. Correspondence `(infinity,2)`-categories give
+   the universal adjoint/base-change completion: <https://arxiv.org/abs/2005.10496>.
+9. Beck--Chevalley is not automatic even in modern logical hyperdoctrines. The 2026 counterexamples
+   make exchange failure a real mathematical condition rather than terminology:
+   <https://arxiv.org/abs/2607.06386>.
+10. Local six-functor formalisms with recollement and hypersheaf descent provide the right model for
+    localization source-curvature equations: <https://arxiv.org/abs/2309.11449>.
+11. Commuting maps on finitary matroids yield eventual polynomial rank growth and recover Kolchin
+    polynomials, supplying NGD's correct HT rank organ: <https://arxiv.org/abs/2208.01560>.
+12. Transport-functor descriptions of connections and higher Stokes/Ambrose--Singer theorems give
+    precise models for the proposed holonomy programme: <https://arxiv.org/abs/0705.0452> and
+    <https://arxiv.org/abs/1811.10060>.
 
 These results are ingredients and falsifiers. None by itself supplies the arithmetic source
 functor or `(NGD.6)`.
@@ -861,9 +1078,10 @@ functor or `(NGD.6)`.
 - [x] whole-corpus multi-route requirement recognized
 - [x] bag/organ foundation rejected
 - [x] non-Cartesian marginal geometry incorporated
-- [x] noncommuting reduction connection isolated as unifying primitive
+- [x] canonical exchange/base-change curvature isolated as unifying primitive
 - [x] source charge, transgression, and operational cost included intrinsically
 - [x] exact Route-E/Mass finite Stokes-capacity chart created
+- [x] all 51 canonical publication-ready units censused
 - [ ] citation-complete reducer word for every A--S route and publication unit
 - [x] first source-current comparison face with three faithful local shadows
 - [ ] presentation-invariant reduction curvature theorem

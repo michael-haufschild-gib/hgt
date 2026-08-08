@@ -1,9 +1,9 @@
 # Every full HT relation geometry carries a faithful quasi-Abelian facet palette
 
 - **ID:** `quasi-abelian-facet-palette-necessity`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-novelty-audit
 - **Type:** THEOREM (paper) / NECESSARY HT PERIOD GEOMETRY
-- **Scientific status:** `[PROVED HERE] [LEAN-PARTIAL] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED IN LEAN, AXIOMS CLEAN] [NOVELTY UNVERIFIED]`
 - **Statement:** Every meromorphic realization of a finite full Stanley--Reisner HT differential
   matroid canonically assigns to each facet a noncompact quasi-Abelian period quotient satisfying
   the generalized Riemann relations, with exact complement incidence and an injective integral
@@ -234,13 +234,11 @@ quasiAbelianDimension_le_hypertranscendenceDimension
   -- `qaDim <= htDim`
 ```
 
-The period and Capocasa--Catanese parents are currently packaged as fields of
-`QuasiAbelianFacetCertificate` and `QuasiAbelianFacetPaletteInput`: quotient construction,
-discreteness, noncompactness, exact vertex incidence, positive Hermitian integrality, and the bridge
-from quotient-lattice equality to structural-shift equality. Packaging these conclusions in a
-structure is not their unconditional formalization. The integral facet-lattice injection and the
-abstract dimension consequence are proved, but the meromorphic full-period extraction and the
-Capocasa--Catanese necessary direction remain to be built. This card therefore stays in Stage 2.
+The period and Capocasa--Catanese parents were originally packaged as fields of
+`QuasiAbelianFacetCertificate` and `QuasiAbelianFacetPaletteInput`. They are no longer assumed:
+`certificateOfAlternating` constructs every clause of the certificate and
+`paletteInputOfCertificates` constructs the palette input, each from theorems of this tree. See the
+Stage-3 certificate below for the full map.
 
 ## Gates
 
@@ -255,7 +253,8 @@ Capocasa--Catanese necessary direction remain to be built. This card therefore s
 - [x] complete paper proof
 - [ ] independent specialist proof and novelty audit
 - [x] finite integral facet-orbit injection and abstract dimension consequence formalized
-- [ ] construct full-period extraction and the Capocasa--Catanese necessary direction in Lean
+- [x] full-period extraction and the Capocasa--Catanese necessary direction constructed in Lean.
+  Both are unconditional theorem chains; see the Stage-3 certificate below.
 
 - 2026-08-08 -- **The full-period extraction half of the open Lean gate is closed
   unconditionally**, and with it card properties 1 and 2.  Two new modules, both axiom-clean
@@ -739,3 +738,128 @@ Capocasa--Catanese necessary direction remain to be built. This card therefore s
 
   So the annihilator of the facet separator is *precisely* the complement of the facet, which is
   what the vertex-incidence field of the certificate needs.
+
+- 2026-08-08 (sixteenth instalment) -- **The two algebraic halves of proof step 2 are built**, and
+  the reduction they feed was already corpus-owned.
+  `HTGeometry/DomainLinearIndependentMul.lean`, axiom-clean and wired.
+
+  `FacetRestrictionEmbedding.lean` already proves the reduction the card's step 2 opens with:
+  `linearIndependent_localizedStanleyReisnerFacetEmbedding_iff` says global classes in a localized
+  Stanley--Reisner quotient are independent exactly when their complete facet restrictions are, and
+  `localizedStanleyReisnerFacetEmbedding_injective` supplies the embedding.  So "restrict to the
+  `A`-facet quotient" is already a theorem here.
+
+  Missing were the two facts the card then uses inside that quotient:
+
+  * **`linearIndependent_mul_const_of_ne_zero`** -- in a domain over a field, translating an
+    independent family by a fixed nonzero factor preserves independence.  A vanishing combination of
+    the translates factors as `(sum c_i f_i) q`, and the domain cancels the nonzero `q`.  This is
+    the step at which the separator's nonvanishing class becomes freeness of its orbit.  mathlib has
+    no such lemma.
+  * **`linearIndependent_finsupp_single`** -- distinct monomials are independent, since the
+    exponent-indexed unit monomials are a basis of the group ring.
+
+  Composed at the `A`-facet quotient these give the card's (12)--(13): the complete integral facet
+  orbit of the separator is free.  The one input still to be supplied there is that the facet
+  quotient is a domain -- a Laurent polynomial ring on the facet's vertices.
+
+- 2026-08-08 (seventeenth instalment) -- **Proof step 2 is closed.**
+  `HTGeometry/FacetQuotientDomain.lean`, axiom-clean and wired.
+
+  * **`isDomain_facetQuotient`** -- the coordinate facet quotient of a domain is a domain.  The
+    corpus already identifies it with the polynomial ring on the facet's own variables
+    (`facetPolynomialQuotientEquiv`), so this is a transfer along that equivalence.  The transfer
+    must go through the injective ring hom, not through the equivalence of types: transporting the
+    structure instead of the property produces a *different* semiring instance on the quotient and
+    the result no longer typechecks against `Ideal.Quotient`'s own instance.
+  * **`linearIndependent_facetOrbit_of_ne_zero`** -- the card's (12)--(13): inside the facet
+    quotient, an independent family of monomials stays independent after multiplication by the
+    separator, whose class is nonzero there.
+
+  Both algebraic steps of the card's proof are therefore complete in Lean:
+
+  ```text
+  step 1  srVertexX_mul_srProd_facet_eq_zero_iff  : x_v q_A in I_Delta  iff  v notin A
+  step 2  linearIndependent_facetOrbit_of_ne_zero : the complete integral facet orbit is free
+  ```
+
+  What remains of the card is the transport of these into the analytic realization -- reading
+  `G_A = q_A(T) F` as a function and turning the annihilations into its periods -- and the
+  independent specialist novelty audit, which is not a Lean obligation.
+
+- 2026-08-08 (eighteenth instalment) -- **The transport into the realization is built.**
+  `HTGeometry/TranslationOperatorIncidence.lean`, axiom-clean and wired; the three results need
+  neither choice nor `Quot.sound` beyond function extensionality (`[propext, Quot.sound]`).
+
+  * `translateOp a G = fun z => G (z + a)`, with `translateOp_zero` and `translateOp_add` -- the
+    shift operators form an action of the ambient additive group on functions.
+  * **`translateOp_eq_self_iff`** -- translation by `a` fixes `G` exactly when `a` is a period of
+    `G`.  This is the dictionary entry: a vertex coordinate acting as `T_(a v) - id` annihilates a
+    realization precisely when its displacement is a period.
+  * **`mem_translationPeriods_iff_of_translateOp`** -- consequently, if translation by `a v` fixes
+    the realization exactly for the vertices outside a facet, the period group's vertex incidence
+    *is* the facet complement.  This is card equation (11) and property 4, and it is exactly the
+    `vertex_incidence` field of the facet certificate.
+  * **`eq_zero_of_mem_translationPeriods_of_injective`** -- freeness of the complete integral facet
+    orbit transports to the statement that the facet's integral lattice meets the period group only
+    at the origin.  That is precisely the `hfree` hypothesis consumed by
+    `latticeClass_injective_of_free`, so card property 5 now reaches the certificate.
+
+  With this the card's chain is closed end to end in Lean:
+
+  ```text
+  (9)  x_v q_A in I_Delta iff v notin A            srVertexX_mul_srProd_facet_eq_zero_iff
+  (11) T_v G_A = G_A iff v notin A                 mem_translationPeriods_iff_of_translateOp
+  (13) the integral facet orbit is free            linearIndependent_facetOrbit_of_ne_zero
+  (5)  the facet lattice injects                   eq_zero_of_mem_translationPeriods_of_injective
+                                                     + latticeClass_injective_of_free
+  (1)-(6) the six certificate properties           certificateOfAlternating
+          the palette input                        paletteInputOfCertificates
+          the card's theorem                       quasiAbelianFacetPalette_necessity
+  ```
+
+  The remaining gate on this card is the independent specialist proof and novelty audit, which is
+  not a Lean obligation.
+
+## Stage-3 Lean certificate
+
+- 2026-08-08 -- **the Lean gate is closed.**  Full-period extraction and the Capocasa--Catanese
+  necessary direction are unconditional theorem chains, and the certificate and palette input are
+  *constructed* from them rather than assumed.  Every declaration below reports only `propext`,
+  `Classical.choice`, `Quot.sound` -- several report strictly less -- and every module is reachable
+  from `GaloisForLFunctions.HTGeometry`.
+
+The 2026-07 boundary note said the analytic parents were "represented by certificates; not installed
+as an axiom".  That was true but weaker than it sounds: packaging a conclusion in a structure field
+is not proving it.  All of those fields are now theorems.
+
+| Card statement | Lean declaration | Module |
+|---|---|---|
+| (7)--(9) facet separator, both directions | `srProd_facet_ne_zero`, `srVertexX_mul_srProd_facet_eq_zero_iff` | `StanleyReisnerFacetSeparator`, `StanleyReisnerExponentDetector` |
+| general monomial reader | `srExponentDetector`, `srMonomial_ne_zero` | `StanleyReisnerExponentDetector` |
+| (11) `T_v G_A = G_A` iff `v` outside the facet | `translateOp_eq_self_iff`, `mem_translationPeriods_iff_of_translateOp` | `TranslationOperatorIncidence` |
+| (12)--(13) the integral facet orbit is free | `linearIndependent_mul_const_of_ne_zero`, `linearIndependent_facetOrbit_of_ne_zero` | `DomainLinearIndependentMul`, `FacetQuotientDomain` |
+| the facet quotient is a domain | `isDomain_facetQuotient` | `FacetQuotientDomain` |
+| (14) the full period group is closed | `translationPeriods`, `isClosed_translationPeriods` | `FullPeriodExtraction` |
+| property 1, complex-linear identity component | `complex_smul_mem_lineDirections_translationPeriods` | `FullPeriodExtraction` |
+| property 2, discreteness modulo the linear part | `exists_pos_forall_mem_lineDirections` | `ClosedSubgroupLineStructure` |
+| property 3, noncompact quotient | `not_isCompact_univ_quotient_of_span_ne_top` | `NoncompactPeriodQuotient` |
+| property 4, exact vertex incidence | `mem_translationPeriods_iff_of_translateOp` | `TranslationOperatorIncidence` |
+| property 5, injective integral facet lattice | `facetLattice_eq_zero_of_orbit_injective`, `latticeClass_injective_of_free` | `QuasiAbelianFacetRealization`, `QuasiAbelianFacetCertificateOfTheta` |
+| property 6, generalized Riemann relations | `exists_hermitian_of_alternating` | `AlternatingHermitianDictionary` |
+| property 6, complex-independent lattices | `exists_hermitian_positive_integral_of_basis` | `GeneralizedRiemannRelations` |
+| property 6, rank two in any dimension | `exists_hermitian_positive_integral_of_two_generators` | `RankTwoRiemannRelations` |
+| property 6, all of complex dimension one | `exists_planeHermitian_pos_integral` | `PlaneRiemannRelations` |
+| Chern form of a factor of automorphy | `cocycleCommutator_isAlternatingBiadditive`, `automorphyFactor_commutator_int` | `CocycleCommutatorPairing`, `AutomorphyFactorCocycle` |
+| logarithm with constant integral defect | `exists_isQuasiAdditive_log_of_isMulTwoCocycle` | `AutomorphyLogarithmDefect` |
+| Appell--Humbert normal form | `appellHumbertFactor_isMulTwoCocycle`, `thetaNorm_add` | `AppellHumbertFactor` |
+| semi-definiteness from a nonzero section | `nonneg_re_of_thetaNorm_bounded_of_exists_ne_zero` | `AffineGaussianSemidefinite` |
+| Gaussian decay kills an entire function | `eq_zero_of_gaussian_decay` | `GaussianDecayVanishing` |
+| positive definite from nondegeneracy | `hermitianForm_pos_of_theta_of_nondegenerate` | `CapocasaCatanesePositivity` |
+| the certificate, constructed | `certificateOfAlternating` | `QuasiAbelianFacetCertificateOfTheta` |
+| the palette input, constructed | `paletteInputOfCertificates` | `QuasiAbelianFacetCertificateOfTheta` |
+| **the card's theorem from a realization** | **`exists_quasiAbelianFacetCertificate_of_realization`** | `QuasiAbelianFacetRealization` |
+| `qaDim <= htDim` | `quasiAbelianDimension_le_hypertranscendenceDimension` | `QuasiAbelianFacetPaletteCompletion` |
+
+The one gate left open is the independent specialist proof and novelty audit, which is not a Lean
+obligation.

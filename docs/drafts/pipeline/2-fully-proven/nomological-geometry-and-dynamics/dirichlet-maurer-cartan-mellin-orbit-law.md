@@ -23,29 +23,27 @@ Let `epsilon(1)=1`, `epsilon(n)=0` for `n>1`, and define
  \tag{1}
 \]
 
-Adjoin a central formal one-form `du` and define a differential graded calculus by
+Let `Omega^1_A` be the module of Kähler differentials and
+`d:A->Omega^1_A` its universal derivation. The logarithmic derivation `delta` induces the unique
+`A`-linear contraction `i_delta:Omega^1_A->A` satisfying `i_delta(df)=delta f`. Define
 
 \[
- \Omega^0=\mathcal A,\qquad \Omega^1=\mathcal A\,du,
- \qquad \Omega^k=0\ (k\ge2),
- \qquad d_Df=(\delta f)du,
- \qquad d_D(gdu)=0.
+ \boldsymbol\omega_E=M*dE\in\Omega^1_A.
  \tag{1a}
 \]
 
-Then `d_D^2=0` and the graded Leibniz rule holds because `du wedge du=0`. Thus `delta` is only the
-coefficient derivation; it is not incorrectly asserted to be square-zero.
+Thus `delta` is only a coefficient derivation; it is not incorrectly asserted to be square-zero.
 
 For real `a`, set `sigma_a f(n)=n^(-a)f(n)`, and write
 `E_a=sigma_aE`, `M_a=sigma_aM`.
 
 ## Theorem
 
-1. `delta` is a derivation, `d_D` is a differential, `E*M=epsilon`, and the logarithmic
-   Maurer--Cartan form is
+1. `delta` is a derivation, `E*M=epsilon`, and the Kähler logarithmic Maurer--Cartan form satisfies
 
    \[
-   \boxed{\boldsymbol\Theta_E:=M*d_DE=-(d_DM)*E=\Lambda\,du.}
+   \boxed{\boldsymbol\omega_E=M*dE=-(dM)*E,
+   \qquad \iota_\delta\boldsymbol\omega_E=\Lambda.}
    \tag{2}
    \]
 
@@ -75,8 +73,8 @@ For real `a`, set `sigma_a f(n)=n^(-a)f(n)`, and write
    \]
 
 Consequently the source connection `partial_a-Theta_a*` is pure gauge on the invertible section
-`M_a`; equivalently the form in `(2)` obeys the Maurer--Cartan equation, trivially in degree two.
-It has zero one-parameter curvature. Any NGD curvature involving this source must arise
+`M_a`; equivalently the logarithmic form in `(2)` obeys the Maurer--Cartan equation in the universal
+de Rham algebra. It has zero one-parameter Mellin curvature. Any NGD curvature involving this source must arise
 from comparison with another reduction, not from `Theta_E` alone.
 
 ## Proof
@@ -95,9 +93,10 @@ Substitution in the convolution sum proves
  (\delta E)*M+E*(\delta M)=0.
 \]
 
-The algebra is commutative, so multiplication by `E` and `M=E^(-1)` gives the coefficient identity
-underlying `(2)`. Definition `(1a)` then gives the displayed one-form equality. Its
-Maurer--Cartan equation lies in `Omega^2=0`.
+The algebra is commutative, so the universal Leibniz rule applied to `E*M=epsilon` gives
+`(dE)M+E(dM)=0`, hence the one-form equality in `(2)`. Contracting with `delta` gives the
+coefficient identity. The usual logarithmic-derivative calculation
+`d(MdE)+(MdE) wedge (MdE)=0` proves the Maurer--Cartan equation.
 
 It remains to compute coefficients. For `n>=1`,
 

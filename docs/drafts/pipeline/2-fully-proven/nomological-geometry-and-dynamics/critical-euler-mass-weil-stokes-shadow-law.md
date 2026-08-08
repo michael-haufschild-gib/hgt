@@ -213,7 +213,7 @@ Equations `(12)`--`(14)` are direct. The left side of `(15)` is
 
 On `p^k`, the Stokes clock uses `log(p^k)=k log p`, whereas
 `Theta_E(p^k)=Lambda(p^k)=log p`. Thus Stokes sees the bare derivation `delta E`; Route L sees the
-Möbius-dressed Maurer--Cartan current `M*delta E`. They coincide on primitive primes, not on all
+contracted Kähler logarithmic current `M*delta E`. They coincide on primitive primes, not on all
 prime-power grades. At the central fibre `(12)` vanishes; only the full transverse family or its
 normal derivative is faithful.
 

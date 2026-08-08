@@ -31,11 +31,12 @@ theorem linearIndependent_mul_const_of_ne_zero {k A ι : Type*} [Field k] [CommR
     · exact absurd h hq
   exact hf s c hzero i hi
 
-/-- **Freeness of a separator orbit.**  If the translating family is independent and the separator
-has nonzero class in a domain, the whole orbit is independent. -/
-theorem linearIndependent_orbit_of_separator {k A ι : Type*} [Field k] [CommRing A] [IsDomain A]
-    [Algebra k A] {t : ι → A} (ht : LinearIndependent k t) {q : A} (hq : q ≠ 0) :
-    LinearIndependent k fun i => t i * q :=
-  linearIndependent_mul_const_of_ne_zero ht hq
+/-- **Distinct monomials are linearly independent.**  The exponent-indexed unit monomials form a
+basis of the group ring, so no nontrivial finite combination of distinct exponents vanishes. -/
+theorem linearIndependent_finsupp_single {k G : Type*} [Field k] :
+    LinearIndependent k fun g : G => (Finsupp.single g (1 : k) : G →₀ k) := by
+  have h := (Finsupp.basisSingleOne (ι := G) (R := k)).linearIndependent
+  rw [Finsupp.coe_basisSingleOne] at h
+  exact h
 
 end GaloisForLFunctions.HTGeometry

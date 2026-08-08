@@ -1645,3 +1645,21 @@ Relative marked-port filling profile is strongest survivor.
 
 Goal remains active. New ingredient priority is not a blocker; analogy without typed transfer,
 source construction, or prediction remains a blocker.
+
+## 2026-08-08 — supersession notice
+
+The NGD primitive and laws in the preceding entry were falsified by hostile typing. Do not reuse
+`(D,L,R,J,nabla,Theta,g)`, `K_nabla=T(Theta)`, ideal nonstabilization for HT, Bianchi-implies-
+nonerasure, or interior-equals-fibre.
+
+Authoritative continuation moved to:
+
+- `../nomological-geometry-and-dynamics/nomological-geometry-and-dynamics.md`;
+- `../nomological-geometry-and-dynamics/RESEARCH_LOG.md`;
+- `../nomological-geometry-and-dynamics/whole-corpus-coefficient-atlas-and-closure-gates.md`.
+
+Repaired core: source-indexed bivariant proarrow equipment, source-witnessed double fibration,
+canonical Beck--Chevalley exchange defects, fibred stable coefficient realizations plus separate
+modalities/valuations, Jacobi deformation--obstruction triangle, Kähler Euler logarithmic form,
+contracted non-tautological source equation with vacuum kernel, intervention-calibrated dynamics,
+and separate thin-holonomy/Moore-cost structures.

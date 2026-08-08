@@ -64,4 +64,3 @@ theorem finiteBuresOptimalReporter_transport
 end
 
 end GaloisForLFunctions.HTGeometry
-

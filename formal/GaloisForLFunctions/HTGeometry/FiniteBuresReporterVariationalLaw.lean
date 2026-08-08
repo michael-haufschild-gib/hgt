@@ -252,6 +252,41 @@ theorem trace_mul_finiteBuresOptimalReporter_inv_eq_root
   rw [show S⁻¹ * (S * S) = (S⁻¹ * S) * S by noncomm_ring]
   rw [Matrix.nonsing_inv_mul S hSdet, Matrix.one_mul]
 
+/-- The source trace channel of the optimal reporter equals Bures root
+fidelity.  This is the first equality in `(EQ2)`. -/
+theorem finiteBuresOptimalReporter_sourceTrace_eq_rootFidelity
+    {n : ℕ} {C M : Matrix (Fin n) (Fin n) ℂ}
+    (hC : C.PosDef) :
+    ((C * finiteBuresOptimalReporter C M).trace).re =
+      finiteBuresRootFidelity C M := by
+  unfold finiteBuresRootFidelity
+  exact congrArg Complex.re
+    (trace_mul_finiteBuresOptimalReporter_eq_root hC)
+
+/-- The target trace channel of the inverse optimal reporter equals Bures
+root fidelity.  This is the second equality in `(EQ2)`. -/
+theorem finiteBuresOptimalReporter_targetTrace_eq_rootFidelity
+    {n : ℕ} {C M : Matrix (Fin n) (Fin n) ℂ}
+    (hC : C.PosDef) (hM : M.PosDef) :
+    ((M * (finiteBuresOptimalReporter C M)⁻¹).trace).re =
+      finiteBuresRootFidelity C M := by
+  unfold finiteBuresRootFidelity
+  exact congrArg Complex.re
+    (trace_mul_finiteBuresOptimalReporter_inv_eq_root hC hM)
+
+/-- **Balanced Bures reporter law `(EQ2)`.**  The two opposite observation
+channels selected by the geometric-mean reporter have one common value: the
+Bures root fidelity. -/
+theorem finiteBuresOptimalReporter_balancedTrace
+    {n : ℕ} {C M : Matrix (Fin n) (Fin n) ℂ}
+    (hC : C.PosDef) (hM : M.PosDef) :
+    ((C * finiteBuresOptimalReporter C M).trace).re =
+        finiteBuresRootFidelity C M ∧
+      ((M * (finiteBuresOptimalReporter C M)⁻¹).trace).re =
+        finiteBuresRootFidelity C M := by
+  exact ⟨finiteBuresOptimalReporter_sourceTrace_eq_rootFidelity hC,
+    finiteBuresOptimalReporter_targetTrace_eq_rootFidelity hC hM⟩
+
 theorem finiteBuresOptimalReporter_product_eq_rootFidelity_sq
     {n : ℕ} {C M : Matrix (Fin n) (Fin n) ℂ}
     (hC : C.PosDef) (hM : M.PosDef) :

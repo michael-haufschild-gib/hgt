@@ -9,6 +9,7 @@ invariance under Hilbert adjoint, and recovers the existing square theory defini
 import GaloisForLFunctions.RHTower.TraceNorm
 import GaloisForLFunctions.RHTower.DeningerHilbertSchmidtNuclear
 import GaloisForLFunctions.HTGeometry.L2PairingEnergy
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.Analysis.Normed.Operator.Extend
 
@@ -601,6 +602,71 @@ theorem memRectSchattenClass_one_comp_of_hilbertSchmidt
       (by simpa [DeningerIsHilbertSchmidtOn] using hB.summable c)
   exact hN.memRectSchattenClass_one
 
+/-- **Unrestricted rectangular Hilbert--Schmidt product law.** A composite of Hilbert--Schmidt
+maps is Schatten one without separability of the intermediate Hilbert space.  Although an ambient
+Hilbert basis may live in a large universe, summability forces the active rank-one coefficient
+support to be countable.  Reindexing that support inside `ℕ` supplies the universe-zero nuclear
+decomposition required by `DeningerIsNuclear`. -/
+theorem memRectSchattenClass_one_comp_of_hilbertSchmidt_unrestricted
+    {G : Type*} [NormedAddCommGroup G] [InnerProductSpace ℂ G] [CompleteSpace G]
+    {A : E →L[ℂ] F} {B : F →L[ℂ] G}
+    (hA : A.IsHilbertSchmidt) (hB : B.IsHilbertSchmidt) :
+    MemRectSchattenClass 1 (B ∘L A) := by
+  let c := ContinuousLinearMap.hsBasis ℂ F
+  let phi := fun i => innerSL ℂ (adjoint A (c i))
+  let y := fun i => B (c i)
+  let w := fun i => ‖phi i‖ * ‖y i‖
+  have hphi : Summable (fun i => ‖adjoint A (c i)‖ ^ 2) := hA.adjoint.summable c
+  have hy : Summable (fun i => ‖B (c i)‖ ^ 2) := hB.summable c
+  have hw : Summable w := by
+    have hnorm : w = fun i => ‖adjoint A (c i)‖ * ‖B (c i)‖ := by
+      funext i
+      simp [w, phi, y, innerSL_apply_norm]
+    rw [hnorm]
+    exact deningerSummable_mul_of_sq hphi hy (fun _ => norm_nonneg _) (fun _ => norm_nonneg _)
+  let S := Function.support w
+  have hScountable : S.Countable := hw.countable_support
+  letI : Countable S := hScountable.to_subtype
+  letI : Encodable S := Encodable.ofCountable S
+  let e : S ≃ Set.range (Encodable.encode : S → ℕ) :=
+    Equiv.ofInjective Encodable.encode Encodable.encode_injective
+  have hwS : Summable (w ∘ (fun z : S => (z : _))) := hw.subtype (fun i => i ∈ S)
+  have hwJ : Summable ((w ∘ (fun z : S => (z : _))) ∘ e.symm) :=
+    (e.symm.summable_iff).2 hwS
+  have hN : DeningerIsNuclear (B.comp A) := by
+    refine ⟨Set.range (Encodable.encode : S → ℕ),
+      fun j => phi (e.symm j), fun j => y (e.symm j), ?_, ?_⟩
+    · exact hwJ.congr fun j => by rfl
+    · intro x
+      have h1 : HasSum (fun i => (c.repr (A x)) i • c i) (A x) := c.hasSum_repr (A x)
+      have h2 := B.hasSum h1
+      have hfull : HasSum (fun i => phi i x • y i) ((B.comp A) x) := by
+        have heq : (fun i => phi i x • y i) =
+            fun i => B ((c.repr (A x)) i • c i) := by
+          funext i
+          rw [map_smul]
+          congr 1
+          show inner ℂ (adjoint A (c i)) x = (c.repr (A x)) i
+          rw [c.repr_apply_apply, ContinuousLinearMap.adjoint_inner_left]
+        rw [heq]
+        exact h2
+      have hsupp : Function.support (fun i => phi i x • y i) ⊆ S := by
+        intro i hi
+        change w i ≠ 0
+        intro hwi
+        apply hi
+        have hzero : ‖phi i‖ = 0 ∨ ‖y i‖ = 0 := mul_eq_zero.mp hwi
+        rcases hzero with hzero | hzero
+        · have hphi0 : phi i = 0 := norm_eq_zero.mp hzero
+          simp [hphi0]
+        · have hy0 : y i = 0 := norm_eq_zero.mp hzero
+          simp [hy0]
+      have hsub : HasSum
+          ((fun i => phi i x • y i) ∘ (fun z : S => (z : _))) ((B.comp A) x) :=
+        (hasSum_subtype_iff_of_support_subset hsupp).2 hfull
+      exact (e.symm.hasSum_iff).2 hsub
+  exact hN.memRectSchattenClass_one
+
 end SquareBlockBridge
 
 /-! ## Rectangular Douglas factorization -/
@@ -880,16 +946,14 @@ theorem memRectSchattenClass_sheetTargetIncidence_iff_covarianceRootProduct
 
 /-- Hilbert--Schmidt source and target synthesis make the exact incidence operator trace class. -/
 theorem sheetTargetIncidence_memRectSchattenClass_one_of_hilbertSchmidt
-    [TopologicalSpace.SeparableSpace H]
     {U : E →L[ℂ] H} {V : F →L[ℂ] H}
     (hU : U.IsHilbertSchmidt) (hV : V.IsHilbertSchmidt) :
     MemRectSchattenClass 1 (sheetTargetIncidence U V) := by
-  exact memRectSchattenClass_one_comp_of_hilbertSchmidt hV hU.adjoint
+  exact memRectSchattenClass_one_comp_of_hilbertSchmidt_unrestricted hV hU.adjoint
 
 /-- Under the paper's separable Hilbert--Schmidt hypotheses, the covariance-root product is also
 trace class, with the same complete singular profile. -/
 theorem covarianceRootProduct_memSchattenClass_one_of_hilbertSchmidt
-    [TopologicalSpace.SeparableSpace H]
     {U : E →L[ℂ] H} {V : F →L[ℂ] H}
     (hU : U.IsHilbertSchmidt) (hV : V.IsHilbertSchmidt) :
     MemSchattenClass 1 (covarianceRootProduct U V) := by
@@ -910,15 +974,16 @@ variable {X Y H : Type*}
 variable [MeasurableSpace X] [MeasurableSpace Y]
 variable [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-/-- The Riesz-dual field of a Bochner `L²` vector field.  The construction is valid for an
+/- The Riesz-dual field of a Bochner `L²` vector field.  The construction is valid for an
 arbitrary measure; no finite-measure or sigma-finiteness premise is needed. -/
+omit [CompleteSpace H] in
 private theorem l2DualField_memLp (μ : Measure X) (u : Lp H 2 μ) :
     MemLp (fun x => InnerProductSpace.toDualMap ℂ H (u x)) 2 μ := by
   apply (Lp.memLp u).congr_norm
   · exact (InnerProductSpace.toDualMap ℂ H).continuous.comp_aestronglyMeasurable
       (Lp.aestronglyMeasurable u)
   · exact Filter.Eventually.of_forall fun x =>
-      (InnerProductSpace.toDualMap ℂ H).norm_map (u x)
+      ((InnerProductSpace.toDualMap ℂ H).norm_map (u x)).symm
 
 /-- Square-integrable field of Riesz functionals `x ↦ ⟪u(x), ·⟫`. -/
 noncomputable def l2DualField (μ : Measure X) (u : Lp H 2 μ) :
@@ -926,7 +991,8 @@ noncomputable def l2DualField (μ : Measure X) (u : Lp H 2 μ) :
   (l2DualField_memLp μ u).toLp
     (fun x => InnerProductSpace.toDualMap ℂ H (u x))
 
-/-- The dual field has its intended pointwise representative almost everywhere. -/
+/- The dual field has its intended pointwise representative almost everywhere. -/
+omit [CompleteSpace H] in
 theorem l2DualField_coeFn (μ : Measure X) (u : Lp H 2 μ) :
     (l2DualField μ u : X → H →L[ℂ] ℂ) =ᵐ[μ]
       fun x => InnerProductSpace.toDualMap ℂ H (u x) := by
@@ -936,6 +1002,44 @@ theorem l2DualField_coeFn (μ : Measure X) (u : Lp H 2 μ) :
 def dualEvaluation : (H →L[ℂ] ℂ) →L[ℂ] H →L[ℂ] ℂ :=
   ContinuousLinearMap.flip (ContinuousLinearMap.apply ℂ ℂ)
 
+/- A constant function belongs to `L∞` for an arbitrary measure.  Mathlib's bundled `Lp.const`
+currently carries a finite-measure premise because it is uniform in the exponent; the endpoint
+`p=∞` needs no such premise. -/
+omit [InnerProductSpace ℂ H] [CompleteSpace H] in
+private theorem constant_memLp_top (μ : Measure X) (v : H) :
+    MemLp (fun _ : X => v) ∞ μ := by
+  exact memLp_top_of_bound aestronglyMeasurable_const ‖v‖
+    (Filter.Eventually.of_forall fun _ => le_rfl)
+
+/-- Arbitrary-measure constant embedding into `L∞`. -/
+noncomputable def lInfConstLinear (μ : Measure X) : H →ₗ[ℂ] Lp H ∞ μ where
+  toFun v := (constant_memLp_top μ v).toLp (fun _ => v)
+  map_add' _ _ := MemLp.toLp_add _ _
+  map_smul' c _ := MemLp.toLp_const_smul c _
+
+/- The arbitrary-measure constant embedding has its intended representative. -/
+omit [CompleteSpace H] in
+theorem lInfConstLinear_coeFn (μ : Measure X) (v : H) :
+    (lInfConstLinear μ v : X → H) =ᵐ[μ] fun _ => v := by
+  change ((constant_memLp_top μ v).toLp (fun _ : X => v) : X → H) =ᵐ[μ] fun _ => v
+  exact MemLp.coeFn_toLp (constant_memLp_top μ v)
+
+/- Constant `L∞` embedding is contractive, including for the zero measure. -/
+omit [CompleteSpace H] in
+theorem norm_lInfConstLinear_le (μ : Measure X) (v : H) :
+    ‖lInfConstLinear μ v‖ ≤ ‖v‖ := by
+  change ‖(constant_memLp_top μ v).toLp (fun _ : X => v)‖ ≤ ‖v‖
+  rw [Lp.norm_toLp]
+  by_cases hμ : μ = 0
+  · simp [hμ]
+  · rw [eLpNorm_const v (by simp) hμ]
+    simp
+
+/-- Arbitrary-measure constant embedding as a continuous linear map. -/
+noncomputable def lInfConstL (μ : Measure X) : H →L[ℂ] Lp H ∞ μ :=
+  LinearMap.mkContinuous (lInfConstLinear μ) 1 fun v => by
+    simpa only [one_mul] using norm_lInfConstLinear_le μ v
+
 /-- Analysis map of a Bochner `L²` field: `v ↦ (x ↦ ⟪u(x),v⟫)`.
 
 Unlike the older finite-measure kernel-operator wrapper, this definition works for every measure:
@@ -943,17 +1047,20 @@ the constant argument belongs to `L∞`, and Hölder sends `L² · L∞` to `L²
 noncomputable def l2ObserverAnalysis (μ : Measure X) (u : Lp H 2 μ) :
     H →L[ℂ] Lp ℂ 2 μ :=
   ((dualEvaluation (H := H)).holderL μ 2 ∞ 2 (l2DualField μ u)) ∘L
-    Lp.constL ∞ μ ℂ
+    lInfConstL μ
 
-/-- Exact almost-everywhere analysis kernel. -/
+/- Exact almost-everywhere analysis kernel. -/
+omit [CompleteSpace H] in
 theorem l2ObserverAnalysis_coeFn (μ : Measure X) (u : Lp H 2 μ) (v : H) :
     (l2ObserverAnalysis μ u v : X → ℂ) =ᵐ[μ]
       fun x => inner ℂ (u x) v := by
   have hholder := (dualEvaluation (H := H)).coeFn_holder
-    (r := (2 : ENNReal)) (l2DualField μ u) (Lp.const ∞ μ v)
-  have hconst := Lp.coeFn_const (p := ∞) μ v
+    (r := (2 : ENNReal)) (l2DualField μ u) (lInfConstLinear μ v)
+  have hconst := lInfConstLinear_coeFn μ v
   filter_upwards [hholder, l2DualField_coeFn μ u, hconst] with x hh hu hv
-  rw [l2ObserverAnalysis, ContinuousLinearMap.comp_apply, hh, hu, hv]
+  change ((dualEvaluation (H := H)).holder 2 (l2DualField μ u)
+    (lInfConstLinear μ v) : X → ℂ) x = inner ℂ (u x) v
+  rw [hh, hu, hv]
   rfl
 
 /-- **Measure-universal Hilbert--Schmidt analysis law.** Every Bochner `L²` field induces a
@@ -967,7 +1074,6 @@ theorem l2ObserverAnalysis_isHilbertSchmidt (μ : Measure X) (u : Lp H 2 μ) :
   intro s
   simp_rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
   rw [← integral_finsetSum]
-  rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq μ u]
   · apply integral_mono_ae
     · exact integrable_finsetSum s fun i _ =>
         (memLp_two_iff_integrable_sq_norm
@@ -997,16 +1103,62 @@ theorem l2ObserverAnalysis_isHilbertSchmidt (μ : Measure X) (u : Lp H 2 μ) :
       (Lp.aestronglyMeasurable (l2ObserverAnalysis μ u (b i)))).mp
       (Lp.memLp (l2ObserverAnalysis μ u (b i)))
 
+/-- **Exact analysis energy.** On a separable Hilbert carrier, Parseval and monotone integration
+identify the Hilbert--Schmidt energy with the complete Bochner `L²` energy. -/
+theorem hsNormSq_l2ObserverAnalysis_eq_norm_sq
+    [TopologicalSpace.SeparableSpace H]
+    (μ : Measure X) (u : Lp H 2 μ) :
+    ContinuousLinearMap.hsNormSq (l2ObserverAnalysis μ u) = ‖u‖ ^ 2 := by
+  let b := ContinuousLinearMap.hsBasis ℂ H
+  letI : Countable (exists_hilbertBasis ℂ H).choose :=
+    b.orthonormal.countable_index
+  have hT := l2ObserverAnalysis_isHilbertSchmidt μ u
+  have hint (i) : Integrable (fun x => ‖inner ℂ (u x) (b i)‖ ^ 2) μ :=
+    (memLp_two_iff_integrable_sq_norm ((Lp.memLp u).inner_const (b i)).1).mp
+      ((Lp.memLp u).inner_const (b i))
+  have hnorm (i) : ‖l2ObserverAnalysis μ u (b i)‖ ^ 2 =
+      ∫ x, ‖inner ℂ (u x) (b i)‖ ^ 2 ∂μ := by
+    rw [HTGeometry.norm_l2_sq_eq_integral_norm_sq]
+    apply integral_congr_ae
+    filter_upwards [l2ObserverAnalysis_coeFn μ u (b i)] with x hx
+    rw [hx]
+  have hsum : Summable (fun i => ∫ x, ‖inner ℂ (u x) (b i)‖ ^ 2 ∂μ) := by
+    exact (hT.summable b).congr hnorm
+  have hsumNorm : Summable
+      (fun i => ∫ x, ‖‖inner ℂ (u x) (b i)‖ ^ 2‖ ∂μ) := by
+    refine hsum.congr (fun i => ?_)
+    apply integral_congr_ae
+    filter_upwards with x
+    exact (Real.norm_of_nonneg (sq_nonneg ‖inner ℂ (u x) (b i)‖)).symm
+  rw [ContinuousLinearMap.hsNormSq_eq hT b]
+  calc
+    ∑' i, ‖l2ObserverAnalysis μ u (b i)‖ ^ 2 =
+        ∑' i, ∫ x, ‖inner ℂ (u x) (b i)‖ ^ 2 ∂μ := by
+      exact tsum_congr hnorm
+    _ = ∫ x, ∑' i, ‖inner ℂ (u x) (b i)‖ ^ 2 ∂μ :=
+      integral_tsum_of_summable_integral_norm hint hsumNorm
+    _ = ∫ x, ‖u x‖ ^ 2 ∂μ := by
+      apply integral_congr_ae
+      filter_upwards with x
+      calc
+        ∑' i, ‖inner ℂ (u x) (b i)‖ ^ 2 =
+            ∑' i, ‖inner ℂ (b i) (u x)‖ ^ 2 := by
+          apply tsum_congr
+          intro i
+          rw [norm_inner_symm]
+        _ = ‖u x‖ ^ 2 := b.tsum_norm_inner_sq (u x)
+    _ = ‖u‖ ^ 2 := (HTGeometry.norm_l2_sq_eq_integral_norm_sq μ u).symm
+
 /-- Bochner synthesis `f ↦ ∫ x, f(x) • u(x)`. -/
 noncomputable def l2Synthesis (μ : Measure X) (u : Lp H 2 μ) :
     Lp ℂ 2 μ →L[ℂ] H :=
   ContinuousLinearMap.flip
-    ((ContinuousLinearMap.lsmul ℂ H).lpPairing μ 2 2) u
+    ((ContinuousLinearMap.lsmul ℂ ℂ : ℂ →L[ℂ] H →L[ℂ] H).lpPairing μ 2 2) u
 
 /-- Synthesis is exactly the Bochner integral of the scalar-weighted field. -/
 theorem l2Synthesis_apply (μ : Measure X) (u : Lp H 2 μ) (f : Lp ℂ 2 μ) :
     l2Synthesis μ u f = ∫ x, f x • u x ∂μ := by
-  change (ContinuousLinearMap.lsmul ℂ H).lpPairing μ 2 2 f u = _
+  change (ContinuousLinearMap.lsmul ℂ ℂ : ℂ →L[ℂ] H →L[ℂ] H).lpPairing μ 2 2 f u = _
   rw [ContinuousLinearMap.lpPairing_eq_integral]
   rfl
 
@@ -1033,6 +1185,15 @@ theorem l2Synthesis_isHilbertSchmidt (μ : Measure X) (u : Lp H 2 μ) :
   rw [← adjoint_l2ObserverAnalysis μ u]
   exact (l2ObserverAnalysis_isHilbertSchmidt μ u).adjoint
 
+/-- Exact Hilbert--Schmidt energy of Bochner synthesis. -/
+theorem hsNormSq_l2Synthesis_eq_norm_sq
+    [TopologicalSpace.SeparableSpace H]
+    (μ : Measure X) (u : Lp H 2 μ) :
+    ContinuousLinearMap.hsNormSq (l2Synthesis μ u) = ‖u‖ ^ 2 := by
+  rw [← adjoint_l2ObserverAnalysis μ u,
+    (l2ObserverAnalysis_isHilbertSchmidt μ u).hsNormSq_adjoint]
+  exact hsNormSq_l2ObserverAnalysis_eq_norm_sq μ u
+
 /-- The adjoint of synthesis is the pointwise observer analysis. -/
 theorem adjoint_l2Synthesis (μ : Measure X) (u : Lp H 2 μ) :
     adjoint (l2Synthesis μ u) = l2ObserverAnalysis μ u := by
@@ -1047,6 +1208,31 @@ theorem rangeCovariance_l2Synthesis_apply (μ : Measure X) (u : Lp H 2 μ) (v : 
   apply integral_congr_ae
   filter_upwards [l2ObserverAnalysis_coeFn μ u v] with x hx
   rw [hx]
+
+/-- Covariance of every Bochner `L²` field is trace class. -/
+theorem rangeCovariance_l2Synthesis_memSchattenClass_one
+    (μ : Measure X) (u : Lp H 2 μ) :
+    MemSchattenClass 1 (rangeCovariance (l2Synthesis μ u)) := by
+  rw [← memRectSchattenClass_iff_memSchattenClass]
+  exact memRectSchattenClass_one_comp_of_hilbertSchmidt_unrestricted
+    (l2Synthesis_isHilbertSchmidt μ u).adjoint
+    (l2Synthesis_isHilbertSchmidt μ u)
+
+/-- Exact trace of the positive Bochner covariance: `Tr C = ∫ ‖u(x)‖² dμ`. -/
+theorem re_opTrace_rangeCovariance_l2Synthesis_eq_norm_sq
+    [TopologicalSpace.SeparableSpace H]
+    (μ : Measure X) (u : Lp H 2 μ) :
+    Complex.re (ContinuousLinearMap.opTrace (rangeCovariance (l2Synthesis μ u))) =
+      ‖u‖ ^ 2 := by
+  let U := l2Synthesis μ u
+  have hU : U.IsHilbertSchmidt := l2Synthesis_isHilbertSchmidt μ u
+  calc
+    Complex.re (ContinuousLinearMap.opTrace (rangeCovariance U)) =
+        ContinuousLinearMap.hsNormSq (adjoint U) := by
+      rw [rangeCovariance]
+      simpa using ContinuousLinearMap.re_opTrace_adjoint_comp_self hU.adjoint
+    _ = ContinuousLinearMap.hsNormSq U := hU.hsNormSq_adjoint
+    _ = ‖u‖ ^ 2 := hsNormSq_l2Synthesis_eq_norm_sq μ u
 
 /-- Concrete sheet--target incidence between two arbitrary Bochner `L²` fields. -/
 noncomputable def l2SheetTargetIncidence
@@ -1086,7 +1272,6 @@ theorem rectTraceNorm_l2SheetTargetIncidence_eq_operatorBuresRootFidelity
 
 /-- The concrete Bochner incidence kernel is trace class in rectangular Schatten sense. -/
 theorem l2SheetTargetIncidence_memRectSchattenClass_one
-    [TopologicalSpace.SeparableSpace H]
     (μ : Measure X) (ν : Measure Y) (u : Lp H 2 μ) (v : Lp H 2 ν) :
     MemRectSchattenClass 1 (l2SheetTargetIncidence μ ν u v) := by
   exact sheetTargetIncidence_memRectSchattenClass_one_of_hilbertSchmidt
@@ -1094,7 +1279,6 @@ theorem l2SheetTargetIncidence_memRectSchattenClass_one
 
 /-- The covariance-root product associated with two Bochner `L²` fields is trace class. -/
 theorem l2CovarianceRootProduct_memSchattenClass_one
-    [TopologicalSpace.SeparableSpace H]
     (μ : Measure X) (ν : Measure Y) (u : Lp H 2 μ) (v : Lp H 2 ν) :
     MemSchattenClass 1
       (covarianceRootProduct (l2Synthesis μ u) (l2Synthesis ν v)) := by

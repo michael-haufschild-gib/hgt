@@ -442,7 +442,20 @@ Layer plan, bottom up.
 | C1 | the **entropy core** of `(8)`/`(13)`: `(∏ nᵢ!)·M^R ≤ 2^R·R!·M!` for any composition of `M` with no part above `M−R` — and its real `r`-th power | `HTGeometry/FactorialCompositionBound.lean` | **done** |
 | C2 | the **remainder bound**: `TruncDom r a K B c G : ∀n, ‖[X^n]G‖·C(n,n−K)^r ≤ c(n+1)^B (n!)^r a^n`, stable under sums and under multiplying by a jet truncated at `K`; hence `exists_truncDom_aeval` for every differential polynomial, with `B, c` independent of `K` | `HTGeometry/TruncatedJetCoeffBound.lean` | **done** |
 | F1 | the card's hypothesis `(2)` as a structure `FactorialSlope`, its normalisation `slopeNorm → 1`, and **`(3)`**: `a_{N+h}/(a_N·Λ^h·(αN)^{αh}) → 1` for every fixed forward shift `h` | `HTGeometry/FactorialSlopeCoeffRatio.lean` | **done** |
-| F2 | final assembly: divide `(15)` by `a_N N^M`, feed the surviving trigonometric polynomial to `trigPoly_coeff_eq_zero_of_tendsto_natLog`, contradict `(14)` | — | open |
+| F2 | the jet coefficient formula `(6)`: `[X^n]F^{(j)} = [X^{n+j}]F · (n+j)_j`, and the vanishing of the `X`-slot away from degree one | `HTGeometry/PowerSeriesJetCoeff.lean` | **done** |
+| F3 | **chirp independence**: a finite sum `∑ᵢ Aᵢ N^{ρᵢ} e^{i t kᵢ log N} εᵢ(N)` whose normalisation by `N^{smax}` tends to zero has `Aᵢ = 0` at every index with `ρᵢ = smax`, provided `kᵢ` separates that layer | `HTGeometry/ChirpSumIndependence.lean` | **done** |
+| F4 | glue lemmas: `(M+u)_j/M^j → 1`, existence of a maximal exponent among nonzero coefficients, and the separation `j₁+r(j₁−q₁) = j₂+r(j₂−q₂) ∧ j₁−q₁ = j₂−q₂ ⟹ (j₁,q₁) = (j₂,q₂)` | `HTGeometry/EndpointChirpGlue.lean` | **done** |
+| F5 | **the endpoint term is a chirp**: `C·(M+u)_j·a_{M+u}/a_M = chirpTerm (Im α) (j+(Re α)u) u (CΛ^u α^{αu}) (log M) · ε(M)` with `ε → 1`, exactly for every `M ≥ 1` with `a_M ≠ 0` | `HTGeometry/EndpointChirpTerm.lean` | **done** |
+| F6 | the **coefficient envelope**: `‖aₙ‖ ≍ n^{±B}·facEnv (Re α) 𝔞 n`, `𝔞 = ‖Λ‖e^{Re(α log α)}` — the form the remainder estimate divides by | `HTGeometry/FactorialSlopeEnvelope.lean` | **done** |
+| F7 | the **remainder bound at the base index**: `facEnv r 𝔞 (M+R) ≤ (2^R R!)^r 𝔞^R C(M+R,R)^r facEnv r 𝔞 M`, hence a `TruncDom`-controlled coefficient at `M+R` truncated at `M` is bounded by `const(R)·(M+R+1)^B·facEnv r 𝔞 M` | `HTGeometry/FacEnvShiftBound.lean` | **done** |
+| F8 | **the normalised remainder vanishes**: `‖E_M‖/(‖a_M‖·M^{smax}) ≤ const·M^{B+B'−smax} → 0` whenever `smax > B + B'` — this is exactly the hypothesis `chirp_coeff_eq_zero_of_tendsto` asks for | `HTGeometry/RemainderRatioVanishing.lean` | **done** |
+| F9 | the endpoint sum runs over the **derivative slots only** (the `X` slot vanishes for `R ≥ 2`, `N ≥ 2R`), rewritten through the jet coefficient formula; and the reindexing `(M+R)−q+j = M+(R−q+j)` | `HTGeometry/EndpointJetSum.lean` | **done** |
+| F10 | the **chirp data of an endpoint pair** — shift `u = R−q+j ≥ 1`, exponent `ρ = j + (Re α)u`, frequency `u`, coefficient `c_{j,q}Λ^u α^{αu}` — their separation, the termwise chirp identity, and the double-sum-to-`Fin(m+1)×Fin R` reindexing | `HTGeometry/EndpointChirpData.lean` | **done** |
+| F11 | the **normalised endpoint identity**: `[X^{M+R}]P(jets)/a_M = ∑_{(j,q)} chirp(j,q)(log M)·ε_{(j,q)}(M) + [X^{M+R}]P(S)/a_M`, the sum over the finite type of endpoint pairs | `HTGeometry/NormalisedEndpointIdentity.lean` | **done** |
+| F12 | **the jets are envelope-dominated**: `‖[X^n]F^{(j)}‖ ≤ K(n+1)^B·facEnv r 𝔞 n` — the hypothesis `exists_truncDom_aeval` needs | `HTGeometry/JetCoeffEnvelope.lean` | **done** |
+| F13 | the **univariate shadow**: a differential polynomial whose monomials involve no jet variable has a nonzero shadow under `X₀ ↦ X`, jets `↦ 0` — the base case that forbids a minimal relation from being jet-free | `HTGeometry/UnivariateShadow.lean` | **done** |
+| F14 | **`(14)` at a jet slot**: a jet-free nonzero polynomial does not annihilate (`aeval_jetFree_ne_zero`), hence a minimal relation has `∃ j ≠ 0` with `(∂ⱼP)(jets) ≠ 0` | `HTGeometry/JetFreeNonvanishing.lean` | **done** |
+| F15 | final assembly: choose `R`, feed F11 + F8 to F3, contradict F14 | — | open |
 | D1 | first-order Taylor expansion of an `MvPolynomial` at a perturbed point, defect in `J²` | `HTGeometry/MvPolynomialFirstOrderTaylor.lean` | **done** |
 | D2 | **`(15)`**: the endpoint expansion `[X^N]P(jets) = ∑ⱼ∑_{q<R} [X^q]((∂ⱼP)(jets))·[X^{N−q}](jetsⱼ) + [X^N]P(S)`, **exact** for `N ≥ 2R` | `HTGeometry/PowerSeriesEndpointExpansion.lean` | **done** |
 | D3 | **`(14)`**: a minimal nonzero relation has a nonvanishing separant | `HTGeometry/MinimalAnnihilator.lean` | **done** |
@@ -485,6 +498,58 @@ highest jet" selection by two exact algebraic facts.
   occurring in it, `∂ⱼP ≠ 0` for that variable (characteristic zero, via `coeff_pderiv`), its total
   degree is strictly smaller (`totalDegree_pderiv_add_one_le`, absent from mathlib), and minimality
   forbids it from being a relation.
+
+F14 delivers the separant in the form the endpoint argument actually needs, superseding the
+generic `exists_annihilator_with_nonvanishing_pderiv`: the derivative slot is guaranteed to be a
+*jet* slot, not the variable slot.  `univShadow` (F13) records the same fact in the polynomial ring;
+the power-series form used downstream is `aeval_jetFree_ne_zero`, whose proof extracts the
+coefficient at `μ₀ i₀` directly in `k⟦X⟧`.
+
+**Why F13 is needed.**  The separant selection `(14)` produces *some* `j` with
+`(∂ⱼP)(jets) ≠ 0`, but the chirp argument needs `j ≠ 0`: the `X` slot's endpoint terms vanish
+identically (F9), so a relation whose only non-annihilated derivative is `∂/∂z` would yield no
+contradiction.  Minimal total degree rules this out only once one knows that a jet-free `P` cannot
+annihilate — which is exactly `univShadow_ne_zero`, since for a jet-free `P` the evaluation at the
+jets coincides with the univariate shadow.
+
+**Where the saving lives** (settled while proving F6, and worth recording because the naive
+reading is wrong): the endpoint remainder must be normalised by `a_N` at the *coefficient* index
+`N`, not by `a_M` at the shifted index `M = N − R`.  Against `a_N` the estimate is
+`‖E‖/‖a_N‖ ≲ N^{B+B'}/C(N,R)^r ≲ N^{B+B'−rR}`; against `a_M` the factorial ratio
+`facEnv(N)/facEnv(M) ≈ M^{rR}` exactly cancels the binomial saving.  The assembly therefore divides
+by `a_M · M^{smax}`, and the growth of `smax = max(j + r·u)` with `u = R − q + j` supplies the
+decay instead: `smax ≥ r(R − q₀)` where `q₀` is the (fixed) first nonzero coefficient index of the
+non-annihilated derivative, so `R` large forces `B + B' − smax → −∞`.
+
+F5 is an *exact* identity, not an asymptotic one: all the limiting content is isolated in the
+named factor `slopeShiftDefect`, whose convergence to `1` is `(3)` times the descending-factorial
+weight.  Opening the complex power is confined to `natCast_cpow_eq_chirp`:
+`M^w = e^{(Re w)·log M}·e^{i(Im w)·log M}` for `M ≥ 1`.
+
+**Reindexing trick for the assembly.**  Write the coefficient index as `N = M + R`.  Then every
+endpoint index `N − q + j` with `q < R` equals `M + u`, `u = R − q + j ≥ 1` — a *forward* shift from
+`M`, so the one-sided `(3)` suffices and no negative shifts or `zpow` bookkeeping appear.  The
+complex exponent of the term is `j + αu`, i.e. `ρ = j + r u` and frequency `t u`; the separation
+lemma applies verbatim with `q ↦ R − u + j`.
+
+F3 is the reusable form of steps 5–6 below.  Its hypothesis is stated *with the normalisation
+already divided out*, which is exactly what the remainder estimate delivers: the endpoint identity
+gives `∑(endpoint terms)/a_M = −E/a_M`, so dividing by `M^{smax}` produces a sequence tending to `0`
+without ever needing `M^{smax}` itself to converge.
+
+What the final glue still has to do, with everything it needs now in place:
+
+1. take a minimal nonzero relation `P` (`exists_annihilator_with_nonvanishing_pderiv`), so some
+   `∂ⱼP` is not annihilated; pick `R` beyond the first nonzero coefficient of that series;
+2. apply `coeff_aeval_endpoint_expansion` at `N ≥ 2R`; the `j = 0` (i.e. `X`) slot drops out by
+   `coeff_formalJetsOver_zero_of_ne` once `R ≥ 2`;
+3. rewrite each surviving endpoint term with `coeff_formalJetsOver_mk_succ` and
+   `tendsto_coeff_shift_ratio_split`, giving `c_{j,q}(Λα^α)^{j−q}N^{j+α(j−q)}(1+o(1))`;
+4. bound the remainder with `exists_truncDom_aeval` against `exists_factorialRayEnvelope`;
+5. divide by `N^M`, `M = max{j + r(j−q) : c_{j,q} ≠ 0}`; the map `(j,q) ↦ j−q` is injective on the
+   maximising set (equal real exponents plus equal frequencies force `j₁ = j₂`), so what survives is
+   a nonzero `trigPoly` with distinct integer frequencies;
+6. `trigPoly_coeff_eq_zero_of_tendsto_natLog` forces all its coefficients to vanish — contradiction.
 
 Layer F1 splits `(3)` into three factors that each tend to `1`, so no uniform error bookkeeping is
 needed: the normalisation `aₙ/(C Λⁿ Γ(1+αn))`, whose defect is the hypothesis' `e^{-cn}`; the

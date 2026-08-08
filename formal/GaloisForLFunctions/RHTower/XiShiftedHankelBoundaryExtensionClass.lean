@@ -61,6 +61,115 @@ theorem xiShiftedHankelBoundaryQuadratureError_monic_eq_monicRemainder
   exact HTGeometry.finiteHankelBoundaryQuadratureError_monic_eq_monicRemainder
     (fun k => (xiShiftedReciprocalMoment y k).re) c
 
+/-- The shifted-Xi extension coordinate is the first raw moment missed by canonical positive flat
+quadrature. -/
+theorem xiShiftedHankelBoundaryMonicRemainder_eq_firstUnseenMomentError
+    {y : ℝ} {n : ℕ} (c : Fin (n + 1) → ℝ)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    xiShiftedHankelBoundaryMonicRemainder y c =
+      (xiShiftedReciprocalMoment y (2 * n + 1)).re -
+        ∑ x ∈ HTGeometry.finiteHankelBoundaryNodes c,
+          HTGeometry.finiteHankelBoundaryWeight
+            (fun k => (xiShiftedReciprocalMoment y k).re) c x * x ^ (2 * n + 1) := by
+  exact HTGeometry.finiteHankelBoundaryMonicRemainder_eq_firstUnseenMomentError
+    (fun k => (xiShiftedReciprocalMoment y k).re) c hhead hc hlast
+
+/-- Canonical finite-atomic Möbius transport reproduces the shifted-Xi source tangent in every
+moment coordinate still visible on the current face. -/
+theorem xiShiftedHankelBoundaryAtomicMobiusMomentTangent_visible
+    {y : ℝ} {n k : ℕ} (c : Fin (n + 1) → ℝ)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) (hk : k < 2 * n) :
+    HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTangent
+        (fun j => (xiShiftedReciprocalMoment y j).re) c k =
+      -((k + 1 : ℕ) : ℝ) * (xiShiftedReciprocalMoment y (k + 1)).re := by
+  exact HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTangent_visible
+    (fun j => (xiShiftedReciprocalMoment y j).re) c hhead hc hlast hk
+
+/-- **Visible source/atomic contact.**  Through degree `2n-1`, the actual shifted-Xi moment orbit
+and canonical Möbius evolution of its flat quadrature have exactly the same first jet. -/
+theorem xiShiftedHankelBoundary_sourceAtomicTangency_visible
+    {y : ℝ} (hy : 0 < y) {n k : ℕ} (c : Fin (n + 1) → ℝ)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) (hk : k < 2 * n) :
+    HasDerivAt (fun v : ℝ => (xiShiftedReciprocalMoment v k).re)
+        (HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTangent
+          (fun j => (xiShiftedReciprocalMoment y j).re) c k) y ∧
+      HasDerivAt
+        (HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTrajectory
+          (fun j => (xiShiftedReciprocalMoment y j).re) c k)
+        (HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTangent
+          (fun j => (xiShiftedReciprocalMoment y j).re) c k) 0 := by
+  have htangent :=
+    xiShiftedHankelBoundaryAtomicMobiusMomentTangent_visible
+      c hhead hc hlast hk
+  constructor
+  · rw [htangent]
+    have hsource := hasDerivAt_re_xiShiftedReciprocalMoment hy k
+    convert! hsource using 1
+    push_cast
+    ring
+  · exact HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTrajectory_hasDerivAt
+      (fun j => (xiShiftedReciprocalMoment y j).re) c k
+
+/-- **First-unseen Xi normal defect.**  Actual source velocity minus canonical finite-atomic
+velocity is exactly `-(2n+1)` times the projective face-extension coordinate. -/
+theorem xiShiftedHankelBoundaryAtomicMobiusMomentTangent_firstUnseenDefect
+    {y : ℝ} {n : ℕ} (c : Fin (n + 1) → ℝ)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    (-((2 * n + 1 : ℕ) : ℝ) *
+          (xiShiftedReciprocalMoment y (2 * n + 1)).re) -
+        HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTangent
+          (fun j => (xiShiftedReciprocalMoment y j).re) c (2 * n) =
+      -((2 * n + 1 : ℕ) : ℝ) * xiShiftedHankelBoundaryMonicRemainder y c := by
+  exact HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTangent_firstUnseenDefect
+    (fun j => (xiShiftedReciprocalMoment y j).re) c hhead hc hlast
+
+/-- Positive Xi extension orientation says exactly that completed-source velocity lies strictly
+below canonical finite-atomic velocity in the first unseen coordinate. -/
+theorem xiShiftedHankelBoundaryMonicRemainder_pos_iff_sourceTangent_lt_atomic
+    {y : ℝ} {n : ℕ} (c : Fin (n + 1) → ℝ)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    0 < xiShiftedHankelBoundaryMonicRemainder y c ↔
+      -((2 * n + 1 : ℕ) : ℝ) *
+          (xiShiftedReciprocalMoment y (2 * n + 1)).re <
+        HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTangent
+          (fun j => (xiShiftedReciprocalMoment y j).re) c (2 * n) := by
+  exact HTGeometry.finiteHankelBoundaryMonicRemainder_pos_iff_sourceTangent_lt_atomic
+    (fun j => (xiShiftedReciprocalMoment y j).re) c hhead hc hlast
+
+/-- At a right-hand first crossing, canonical atomic continuation lies below the actual Xi source
+tangent.  Excluding first crossings is therefore a strict transversality theorem, not a capacity
+estimate. -/
+theorem xiShiftedHankelFirstCrossing_atomicTangent_le_sourceTangent
+    {y : ℝ} (hy : 0 < y) (n : ℕ) (c : Fin (n + 1) → ℝ)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hcne : c ≠ 0)
+    (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
+    (hmin : IsLocalMinOn
+      (fun t => xiShiftedMomentHankelQuadratic t (n + 1) c) (Ici y) y) :
+    HTGeometry.finiteHankelBoundaryAtomicMobiusMomentTangent
+        (fun j => (xiShiftedReciprocalMoment y j).re) c (2 * n) ≤
+      -((2 * n + 1 : ℕ) : ℝ) *
+        (xiShiftedReciprocalMoment y (2 * n + 1)).re := by
+  have hlast := xiShiftedHankelNullVector_terminal_ne_zero_of_head_posDef
+    y n c hhead hcne hc
+  have hnonpos := xiShiftedHankelFirstCrossing_monicRemainder_nonpos
+    hy n c hhead hcne hc hmin
+  have hdefect :=
+    xiShiftedHankelBoundaryAtomicMobiusMomentTangent_firstUnseenDefect
+      c hhead hc hlast
+  have hfactor : (0 : ℝ) < ((2 * n + 1 : ℕ) : ℝ) := by positivity
+  nlinarith
+
 /-- **Shifted-square realization.** On a singular shifted-Xi face, the canonical extension class
 is the moment of `X` times the square of the monic null polynomial.  It is exactly the first local
 Stieltjes defect on the current Hankel kernel. -/
@@ -91,6 +200,32 @@ theorem xiShiftedHankelBoundary_christoffelPortDifference_eq_monicRemainder
           (((X - C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) =
       4 * a * xiShiftedHankelBoundaryMonicRemainder y c := by
   exact HTGeometry.finiteHankelBoundary_christoffelPortDifference_eq_monicRemainder
+    (fun k => (xiShiftedReciprocalMoment y k).re) c a hc hlast
+
+/-- **Shifted-Xi capacity/orientation split.**  On null incidence, the two Christoffel ports share
+the same even second-extension capacity; their sole asymmetric coordinate is the monic remainder.
+This separates source capacity estimates from the marked orientation still needed for RH. -/
+theorem xiShiftedHankelBoundary_christoffelPortCapacityOrientation
+    {y : ℝ} {n : ℕ} (c : Fin (n + 1) → ℝ) (a : ℝ)
+    (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    HTGeometry.momentFunctional
+        (fun k => (xiShiftedReciprocalMoment y k).re)
+        (((X + C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) =
+          HTGeometry.momentFunctional
+              (fun k => (xiShiftedReciprocalMoment y k).re)
+              (X ^ 2 * HTGeometry.finiteHankelNullMonicPolynomial c *
+                HTGeometry.finiteHankelNullMonicPolynomial c) +
+            2 * a * xiShiftedHankelBoundaryMonicRemainder y c ∧
+      HTGeometry.momentFunctional
+        (fun k => (xiShiftedReciprocalMoment y k).re)
+        (((X - C a) * HTGeometry.finiteHankelNullMonicPolynomial c) ^ 2) =
+          HTGeometry.momentFunctional
+              (fun k => (xiShiftedReciprocalMoment y k).re)
+              (X ^ 2 * HTGeometry.finiteHankelNullMonicPolynomial c *
+                HTGeometry.finiteHankelNullMonicPolynomial c) -
+            2 * a * xiShiftedHankelBoundaryMonicRemainder y c := by
+  exact HTGeometry.finiteHankelBoundary_christoffelPortCapacityOrientation
     (fun k => (xiShiftedReciprocalMoment y k).re) c a hc hlast
 
 /-- Positivity of the shifted-face extension coordinate is exactly strict forward unit-port

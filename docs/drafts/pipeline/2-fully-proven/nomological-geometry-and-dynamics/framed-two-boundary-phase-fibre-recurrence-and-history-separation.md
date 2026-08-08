@@ -277,9 +277,9 @@ The strongest positive survivor is the typed decomposition
  \tag{14}
 \]
 
-A physical interior geometry therefore requires, beyond a marginal fibre, a path groupoid or
-universal cover, source generator or connection, cost/metric, cotangent charge, and reconstruction
-map. This conclusion is unconditional for the finite model; it does not identify that geometry
+A physical interior geometry therefore requires, beyond a marginal fibre, a thin path groupoid for
+holonomy, a Moore path category or universal cover for executed history, source generator or
+connection, cost/metric, cotangent charge, and reconstruction map. This conclusion is unconditional for the finite model; it does not identify that geometry
 with a black-hole interior.
 
 ## NGD consequence

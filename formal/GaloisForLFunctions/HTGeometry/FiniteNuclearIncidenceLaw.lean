@@ -8,6 +8,7 @@ the trace of a positive square root with the corresponding singular-value sum.
 -/
 import GaloisForLFunctions.HTGeometry.ComplexIntegralGram
 import GaloisForLFunctions.HTGeometry.ReplicaHilbertCoareaIncidenceLaw
+import GaloisForLFunctions.HTGeometry.ReturnExcisedOptimalDesignCoareaLaw
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.ConjSqrt
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Isometric
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
@@ -166,6 +167,26 @@ theorem finiteWeightedSynthesisMatrix_mul_conjTranspose
           (vector j a * star (vector j b)) := by ring
     _ = (weight j : ℂ) * (vector j a * star (vector j b)) := by rw [hsq]
 
+/-- Every finite nonnegatively weighted covariance is positive semidefinite. -/
+theorem finiteWeightedCovarianceMatrix_posSemidef
+    {h i : Type*} [Fintype h] [Fintype i] [DecidableEq h]
+    (weight : i → ℝ≥0) (vector : i → h → ℂ) :
+    (finiteWeightedCovarianceMatrix weight vector).PosSemidef := by
+  rw [← finiteWeightedSynthesisMatrix_mul_conjTranspose]
+  exact Matrix.posSemidef_self_mul_conjTranspose
+    (finiteWeightedSynthesisMatrix weight vector)
+
+/-- The NNReal-weighted covariance is the existing real-weighted design
+Gram after the canonical scalar coercion. -/
+theorem finiteWeightedCovarianceMatrix_eq_finiteDesignGram
+    {i : Type*} [Fintype i] {n : ℕ}
+    (weight : i → ℝ≥0) (vector : i → Fin n → ℂ) :
+    finiteWeightedCovarianceMatrix weight vector =
+      finiteDesignGram vector (fun j => (weight j : ℝ)) := by
+  classical
+  ext a b
+  simp [finiteWeightedCovarianceMatrix, finiteDesignGram]
+
 /-- Finite weighted sheet--target incidence matrix `UᴴV`. -/
 noncomputable def finiteWeightedIncidenceMatrix
     {h x y : Type*} [Fintype h] [Fintype x] [Fintype y]
@@ -319,6 +340,286 @@ theorem finiteMatrixNuclearNorm_sq_le_rank_mul_hilbertSchmidtSq
     _ = (K.rank : ℝ) * finiteMatrixHilbertSchmidtSq K := by
       rw [hcard, hsquares, htrace]
       rfl
+
+/-- Hilbert--Schmidt mass is always bounded by squared nuclear mass. -/
+theorem finiteMatrixHilbertSchmidtSq_le_nuclearNorm_sq
+    {m n : Type*} [Fintype m] [Fintype n] [DecidableEq n]
+    (K : Matrix m n ℂ) :
+    finiteMatrixHilbertSchmidtSq K ≤ finiteMatrixNuclearNorm K ^ 2 := by
+  classical
+  let G : Matrix n n ℂ := Kᴴ * K
+  let hG : G.PosSemidef := Matrix.posSemidef_conjTranspose_mul_self K
+  let e : n → ℝ := hG.1.eigenvalues
+  have hsquares : (∑ j, Real.sqrt (e j) ^ 2) = ∑ j, e j := by
+    apply Finset.sum_congr rfl
+    intro j _
+    exact Real.sq_sqrt (hG.eigenvalues_nonneg j)
+  have htrace : (∑ j, e j) = G.trace.re := by
+    have ht := hG.1.trace_eq_sum_eigenvalues
+    simpa [e] using (congrArg Complex.re ht).symm
+  have hsum : (∑ j, Real.sqrt (e j) ^ 2) ≤
+      (∑ j, Real.sqrt (e j)) ^ 2 := by
+    simpa using (Finset.sum_sq_le_sq_sum_of_nonneg
+      (s := Finset.univ) (f := fun j => Real.sqrt (e j))
+      (fun j _ => Real.sqrt_nonneg (e j)))
+  calc
+    finiteMatrixHilbertSchmidtSq K = G.trace.re := rfl
+    _ = ∑ j, e j := htrace.symm
+    _ = ∑ j, Real.sqrt (e j) ^ 2 := hsquares.symm
+    _ ≤ (∑ j, Real.sqrt (e j)) ^ 2 := hsum
+    _ = finiteMatrixNuclearNorm K ^ 2 := rfl
+
+/-- A finite matrix of rank at most one has nuclear mass squared exactly
+equal to its Hilbert--Schmidt mass. -/
+theorem finiteMatrixNuclearNorm_sq_eq_hilbertSchmidtSq_of_rank_le_one
+    {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n]
+    (K : Matrix m n ℂ) (hK : K.rank ≤ 1) :
+    finiteMatrixNuclearNorm K ^ 2 = finiteMatrixHilbertSchmidtSq K := by
+  apply le_antisymm
+  · calc
+      finiteMatrixNuclearNorm K ^ 2 ≤
+          (K.rank : ℝ) * finiteMatrixHilbertSchmidtSq K :=
+        finiteMatrixNuclearNorm_sq_le_rank_mul_hilbertSchmidtSq K
+      _ ≤ 1 * finiteMatrixHilbertSchmidtSq K := by
+        apply mul_le_mul_of_nonneg_right
+        · exact_mod_cast hK
+        · rw [finiteMatrixHilbertSchmidtSq_eq_sum_norm_sq]
+          positivity
+      _ = finiteMatrixHilbertSchmidtSq K := one_mul _
+  · exact finiteMatrixHilbertSchmidtSq_le_nuclearNorm_sq K
+
+/-- **Pure-source Bures identity.**  Fidelity against a rank-one source ray
+is exactly its quadratic expectation in the target, including singular and
+unnormalized vectors. -/
+theorem finiteBuresTrace_sq_rankOne_left
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (u : n → ℂ) {M : Matrix n n ℂ} (hM : M.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt (Matrix.vecMulVec u (star u)) M)).trace.re ^ 2 =
+      (finiteComplexInner u (M *ᵥ u)).re := by
+  classical
+  let U : Matrix n Unit ℂ := fun i _ => u i
+  let V : Matrix n n ℂ := CFC.sqrt M
+  let K : Matrix Unit n ℂ := Uᴴ * V
+  have hVH : Vᴴ = V := by
+    simpa [V, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg M).star_eq
+  have hV2 : V * V = M := by
+    simpa [V, pow_two] using CFC.sq_sqrt M hM.nonneg
+  have hcovU : U * Uᴴ = Matrix.vecMulVec u (star u) := by
+    ext i j
+    simp [U, Matrix.mul_apply, Matrix.vecMulVec_apply]
+  have hcovV : V * Vᴴ = M := by rw [hVH, hV2]
+  have hfid : finiteMatrixNuclearNorm K =
+      (CFC.sqrt (CFC.conjSqrt (Matrix.vecMulVec u (star u)) M)).trace.re := by
+    have h := finiteMatrixNuclearNorm_conjTranspose_mul_eq_buresTrace U V
+    rw [hcovU, hcovV] at h
+    simpa [K] using h
+  have hKrank : K.rank ≤ 1 := by
+    simpa using Matrix.rank_le_card_height K
+  have hKKH : K * Kᴴ = Uᴴ * M * U := by
+    simp only [K, Matrix.conjTranspose_mul,
+      Matrix.conjTranspose_conjTranspose, hVH]
+    calc
+      (Uᴴ * V) * (V * U) = Uᴴ * (V * V) * U := by
+        simp [Matrix.mul_assoc]
+      _ = Uᴴ * M * U := by rw [hV2]
+  have hhs : finiteMatrixHilbertSchmidtSq K =
+      (finiteComplexInner u (M *ᵥ u)).re := by
+    unfold finiteMatrixHilbertSchmidtSq
+    apply congrArg Complex.re
+    rw [Matrix.trace_mul_comm, hKKH]
+    rw [Matrix.trace_mul_cycle Uᴴ M U,
+      Matrix.trace_mul_cycle U Uᴴ M, Matrix.mul_assoc, hcovU]
+    unfold Matrix.trace finiteComplexInner Matrix.mulVec
+    simp only [Matrix.diag_apply, Matrix.mul_apply,
+      Matrix.vecMulVec_apply]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [dotProduct, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j _
+    simp only [Pi.star_apply, starRingEnd_apply]
+    ring
+  calc
+    (CFC.sqrt (CFC.conjSqrt (Matrix.vecMulVec u (star u)) M)).trace.re ^ 2 =
+        finiteMatrixNuclearNorm K ^ 2 := by rw [hfid]
+    _ = finiteMatrixHilbertSchmidtSq K :=
+      finiteMatrixNuclearNorm_sq_eq_hilbertSchmidtSq_of_rank_le_one K hKrank
+    _ = (finiteComplexInner u (M *ᵥ u)).re := hhs
+
+theorem star_dotProduct_eq_finiteComplexInner
+    {n : Type*} [Fintype n] (u v : n → ℂ) :
+    star u ⬝ᵥ v = finiteComplexInner u v := by
+  unfold dotProduct finiteComplexInner
+  apply Finset.sum_congr rfl
+  intro i _
+  simp only [Pi.star_apply, RCLike.star_def]
+
+/-- Pure-source fidelity against a nonnegative occupied-ray mixture is the
+weighted average of squared endpoint overlaps. -/
+theorem finiteBuresTrace_sq_weightedTargetMixture
+    {i : Type*} [Fintype i] {n : ℕ}
+    (weight : i → ℝ≥0) (target : i → Fin n → ℂ) (u : Fin n → ℂ) :
+    (CFC.sqrt (CFC.conjSqrt (Matrix.vecMulVec u (star u))
+      (finiteWeightedCovarianceMatrix weight target))).trace.re ^ 2 =
+      ∑ j, (weight j : ℝ) * ‖finiteComplexInner u (target j)‖ ^ 2 := by
+  classical
+  rw [finiteBuresTrace_sq_rankOne_left u
+    (finiteWeightedCovarianceMatrix_posSemidef weight target)]
+  rw [finiteWeightedCovarianceMatrix_eq_finiteDesignGram]
+  have hquad := finiteDesignGram_quadratic_expand
+    target (fun j => (weight j : ℝ)) u
+  rw [← star_dotProduct_eq_finiteComplexInner]
+  calc
+    (star u ⬝ᵥ (finiteDesignGram target
+        (fun j => (weight j : ℝ))).mulVec u).re =
+        (((∑ j, (weight j : ℝ) *
+          ‖finiteComplexInner u (target j)‖ ^ 2 : ℝ) : ℂ)).re :=
+      congrArg Complex.re hquad
+    _ = ∑ j, (weight j : ℝ) *
+        ‖finiteComplexInner u (target j)‖ ^ 2 := by
+      apply Finset.sum_congr rfl
+      intro j _
+      rfl
+
+/-- Values obtained from every probability mixture of a finite occupied
+target family against one pure source ray. -/
+def finitePureBuresMixtureValueSet
+    {i : Type*} [Fintype i] {n : ℕ}
+    (u : Fin n → ℂ) (target : i → Fin n → ℂ) : Set ℝ :=
+  {q | ∃ weight : i → ℝ≥0, (∑ j, weight j) = 1 ∧
+    q = (CFC.sqrt (CFC.conjSqrt (Matrix.vecMulVec u (star u))
+      (finiteWeightedCovarianceMatrix weight target))).trace.re ^ 2}
+
+/-- Largest squared overlap with a finite occupied target family. -/
+def finitePureTargetFidelityMaximum
+    {i : Type*} [Fintype i] [Nonempty i] {n : ℕ}
+    (u : Fin n → ℂ) (target : i → Fin n → ℂ) : ℝ :=
+  Finset.univ.sup' Finset.univ_nonempty
+    (fun j => ‖finiteComplexInner u (target j)‖ ^ 2)
+
+theorem finitePureTargetFidelity_le_maximum
+    {i : Type*} [Fintype i] [Nonempty i] {n : ℕ}
+    (u : Fin n → ℂ) (target : i → Fin n → ℂ) (j : i) :
+    ‖finiteComplexInner u (target j)‖ ^ 2 ≤
+      finitePureTargetFidelityMaximum u target := by
+  exact Finset.le_sup'
+    (fun k => ‖finiteComplexInner u (target k)‖ ^ 2)
+    (Finset.mem_univ j)
+
+/-- **Deterministic-source occupied-body law `(11)`.**  Among all probability
+mixtures of finitely many occupied rays, pure-source Bures fidelity squared
+has a greatest value, and it is exactly the largest squared overlap with one
+occupied endpoint.  Mixtures cannot improve on the hardest ray. -/
+theorem finitePureBuresMixtureValueSet_isGreatest
+    {i : Type*} [Fintype i] [Nonempty i] {n : ℕ}
+    (u : Fin n → ℂ) (target : i → Fin n → ℂ) :
+    IsGreatest (finitePureBuresMixtureValueSet u target)
+      (finitePureTargetFidelityMaximum u target) := by
+  classical
+  obtain ⟨c, _, hc⟩ := Finset.exists_mem_eq_sup'
+    Finset.univ_nonempty
+    (fun j => ‖finiteComplexInner u (target j)‖ ^ 2)
+  let weight : i → ℝ≥0 := Pi.single c 1
+  have hweight : (∑ j, weight j) = 1 := by
+    simp [weight]
+  have hattain :
+      (CFC.sqrt (CFC.conjSqrt (Matrix.vecMulVec u (star u))
+        (finiteWeightedCovarianceMatrix weight target))).trace.re ^ 2 =
+        finitePureTargetFidelityMaximum u target := by
+    rw [finiteBuresTrace_sq_weightedTargetMixture]
+    calc
+      (∑ x, (weight x : ℝ) * ‖finiteComplexInner u (target x)‖ ^ 2) =
+          ‖finiteComplexInner u (target c)‖ ^ 2 := by
+        rw [Finset.sum_eq_single c]
+        · simp [weight]
+        · intro b _ hbc
+          simp [weight, hbc]
+        · simp
+      _ = finitePureTargetFidelityMaximum u target := hc.symm
+  constructor
+  · exact ⟨weight, hweight, hattain.symm⟩
+  · rintro q ⟨w, hw, rfl⟩
+    rw [finiteBuresTrace_sq_weightedTargetMixture]
+    calc
+      (∑ j, (w j : ℝ) * ‖finiteComplexInner u (target j)‖ ^ 2) ≤
+          ∑ j, (w j : ℝ) * finitePureTargetFidelityMaximum u target := by
+        apply Finset.sum_le_sum
+        intro j _
+        exact mul_le_mul_of_nonneg_left
+          (finitePureTargetFidelity_le_maximum u target j)
+          (NNReal.coe_nonneg (w j))
+      _ = finitePureTargetFidelityMaximum u target := by
+        rw [← Finset.sum_mul]
+        have hwReal : (∑ j, (w j : ℝ)) = 1 := by
+          exact_mod_cast hw
+        rw [hwReal, one_mul]
+
+theorem sSup_finitePureBuresMixtureValueSet
+    {i : Type*} [Fintype i] [Nonempty i] {n : ℕ}
+    (u : Fin n → ℂ) (target : i → Fin n → ℂ) :
+    sSup (finitePureBuresMixtureValueSet u target) =
+      finitePureTargetFidelityMaximum u target :=
+  (finitePureBuresMixtureValueSet_isGreatest u target).csSup_eq
+
+/-- **Rank-sensitive Bures comparison.**  For arbitrary positive semidefinite
+finite matrices, Bures root fidelity squared is bounded by target rank times
+the source--target Hilbert--Schmidt pairing.  Singular matrices are included;
+the rank is the actual target rank rather than ambient dimension. -/
+theorem finiteBuresTrace_sq_le_rank_mul_traceProduct
+    {n : Type*} [Fintype n] [DecidableEq n]
+    {C M : Matrix n n ℂ} (hC : C.PosSemidef) (hM : M.PosSemidef) :
+    (CFC.sqrt (CFC.conjSqrt C M)).trace.re ^ 2 ≤
+      (M.rank : ℝ) * (C * M).trace.re := by
+  let U : Matrix n n ℂ := CFC.sqrt C
+  let V : Matrix n n ℂ := CFC.sqrt M
+  let K : Matrix n n ℂ := Uᴴ * V
+  have hUH : Uᴴ = U := by
+    simpa [U, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg C).star_eq
+  have hVH : Vᴴ = V := by
+    simpa [V, Matrix.star_eq_conjTranspose] using
+      (CFC.sqrt_nonneg M).star_eq
+  have hU2 : U * U = C := by
+    simpa [U, pow_two] using CFC.sq_sqrt C hC.nonneg
+  have hV2 : V * V = M := by
+    simpa [V, pow_two] using CFC.sq_sqrt M hM.nonneg
+  have hcovU : U * Uᴴ = C := by rw [hUH, hU2]
+  have hcovV : V * Vᴴ = M := by rw [hVH, hV2]
+  have hfid : finiteMatrixNuclearNorm K =
+      (CFC.sqrt (CFC.conjSqrt C M)).trace.re := by
+    simpa [K, hcovU, hcovV] using
+      (finiteMatrixNuclearNorm_conjTranspose_mul_eq_buresTrace U V)
+  have hVrank : V.rank = M.rank := by
+    calc
+      V.rank = (Vᴴ * V).rank := (Matrix.rank_conjTranspose_mul_self V).symm
+      _ = M.rank := by rw [hVH, hV2]
+  have hKrank : K.rank ≤ M.rank := by
+    calc
+      K.rank ≤ V.rank := by
+        exact Matrix.rank_mul_le_right Uᴴ V
+      _ = M.rank := hVrank
+  have hKgram : Kᴴ * K = V * C * V := by
+    simp only [K, Matrix.conjTranspose_mul, hUH, hVH]
+    calc
+      (V * U) * (U * V) = V * (U * U) * V := by noncomm_ring
+      _ = V * C * V := by rw [hU2]
+  have hhs : finiteMatrixHilbertSchmidtSq K = (C * M).trace.re := by
+    unfold finiteMatrixHilbertSchmidtSq
+    rw [hKgram, Matrix.trace_mul_cycle V C V,
+      Matrix.trace_mul_cycle V V C, Matrix.mul_assoc, hV2]
+  have hhs0 : 0 ≤ finiteMatrixHilbertSchmidtSq K := by
+    rw [finiteMatrixHilbertSchmidtSq_eq_sum_norm_sq]
+    positivity
+  have hnuclear := finiteMatrixNuclearNorm_sq_le_rank_mul_hilbertSchmidtSq K
+  rw [hfid] at hnuclear
+  calc
+    (CFC.sqrt (CFC.conjSqrt C M)).trace.re ^ 2 ≤
+        (K.rank : ℝ) * finiteMatrixHilbertSchmidtSq K := hnuclear
+    _ ≤ (M.rank : ℝ) * finiteMatrixHilbertSchmidtSq K := by
+      exact mul_le_mul_of_nonneg_right (by exact_mod_cast hKrank) hhs0
+    _ = (M.rank : ℝ) * (C * M).trace.re := by rw [hhs]
 
 end
 
