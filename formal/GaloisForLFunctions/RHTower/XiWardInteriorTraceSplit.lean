@@ -133,20 +133,8 @@ theorem continuedXiAntiCausalWardResponse_eq_logDeriv_XiC_sub
 
 /-- Logarithmic-derivative reflection from the functional equation. -/
 theorem logDeriv_xi_one_sub (s : ℂ) :
-    logDeriv xi (1 - s) = -logDeriv xi s := by
-  have hcomp : xi = xi ∘ (fun t : ℂ => 1 - t) :=
-    funext fun t => by
-      simp only [Function.comp_apply]
-      exact (xi_one_sub t).symm
-  have hg : HasDerivAt (fun t : ℂ => 1 - t) (-1) s := by
-    simpa using (hasDerivAt_id s).const_sub 1
-  have h2 := logDeriv_comp (xi_differentiable (1 - s))
-    hg.differentiableAt
-  rw [hg.deriv] at h2
-  have h1 : logDeriv xi s = logDeriv xi (1 - s) * (-1) := by
-    conv_lhs => rw [hcomp]
-    exact h2
-  linear_combination h1
+    logDeriv xi (1 - s) = -logDeriv xi s :=
+  logDeriv_xi_reciprocity s
 
 /-- Rotation head: the rotated `XiC` logarithmic derivative is the plain
 `xi` logarithmic derivative at the reflected interior point. -/

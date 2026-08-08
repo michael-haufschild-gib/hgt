@@ -1,7 +1,7 @@
 # Finite-resolution Wigner--Smith measurements evict every fixed differential-law window
 
 - **ID:** `wigner-smith-finite-resolution-law-escape`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-audit
 - **Type:** CANDIDATE THEOREM / OPERATIONAL HT / QUANTUM SCATTERING
 - **Scientific status:** `[PROVED HERE FROM PARENT TIME-DELAY THEORY]`
   `[OPERATIONAL SYNTHESIS NOVELTY UNVERIFIED]`
@@ -450,3 +450,35 @@ theorem, not wrappers around the existing logarithmic-derivative or evaluation-p
   `jetEval_injective_iff`.  The wigner-smith card's Lean content is now fully threaded — abstract
   `injMod` law escape, `(17a)` kernel measurability, `Ev`/HT algebraic layer, the finite-resolution
   measurement theorem, and this bridge — all connected end to end.
+
+## Lean completion — 2026-08-08
+
+The missing physical/analytic interface is now unconditional in
+`formal/GaloisForLFunctions/HTGeometry/WignerSmithFiniteResolutionLawEscape.lean`:
+
+- `compactPacketAmplitude` is a literal normalized compactly supported smooth amplitude;
+  `compactPacketDensity = compactPacketAmplitude²`, with exact unit mass, shrinking support, and
+  square-integrable amplitude derivative (`compactPacket_firstDerivativeData`).
+- `compactPacket_timePairing_eq_average` proves the actual centered packet derivative and exact
+  Wigner--Smith time-pairing/convolution identity, rather than assuming a measurement reporter.
+- `deriv_compactPacketAverage` proves derivative/convolution commutation by whole-line integration
+  by parts for every `C¹` source. No compact-support premise is imposed on the delay.
+- `iteratedDeriv_compactPacketAverage_tendsto` and
+  `compactPacketWignerSmithFiniteJet_sample_tendsto` derive all fixed-order sampled-jet convergence
+  from the concrete packet family; no `Tendsto` hypothesis remains.
+- `exists_fullRank_real_evaluation_packet`, `lawEmbed_injective_of_injective`, and
+  `exists_compactPacket_finiteResolution_lawEscape` select finitely many center energies and prove
+  eventual positive injectivity modulus plus the deterministic lower noise bound for every fixed
+  injective monomial law window.
+- `ErlangWignerSmithPacket.lean` and `ErlangBoundedSource.lean` retain the complementary exact
+  positive finite-width branch: normalized one-sided Erlang packet, exact time pairing,
+  `(1-εD)³R=Q`, and DA/HT equivalence at every nonzero width.
+
+Verification: direct `lake env lean` passes; targeted
+`lake build GaloisForLFunctions.HTGeometry.WignerSmithFiniteResolutionLawEscape` passes; six
+representative capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`; umbrella
+reachability is present. Global formal lint reaches this module and reports only seven unrelated
+concurrent umbrella gaps (`RHTower.PrimeMassSharpUpper`, `RHTower.ProlateCanonicalSeparationLimit`,
+`RHTower.RouteRBurnolXiPrimeTwoCompletionNormalDissipation`,
+`RHTower.XiMassCriticalCenteredCosineCone`, `RHTower.XiMassCriticalPrimeCone`,
+`HTGeometry.CriticalSchurUniformizer`, and `HTGeometry.ScaledMollifierMoments`).

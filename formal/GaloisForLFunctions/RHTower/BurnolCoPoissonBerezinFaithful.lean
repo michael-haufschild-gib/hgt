@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.BurnolCoPoissonBerezin
 import GaloisForLFunctions.RHTower.RealCharacterDenseL2
 import GaloisForLFunctions.RHTower.EvenL2LogUnitary
 import GaloisForLFunctions.RHTower.PositiveOperatorKernel
+import GaloisForLFunctions.RHTower.BurnolCoPoissonMellinNonvanishing
 import Mathlib.MeasureTheory.Function.JacobianOneDim
 
 /-!
@@ -109,13 +110,8 @@ theorem soninMellinEvaluation_eq_logFourier
   exact exp_smul_mellinIntegrand_eq_character_mul_density sigma tau t f
 
 theorem mellinCompletionFactor_ne_zero_of_re_pos
-    {w : ℂ} (hw : 0 < w.re) : mellinCompletionFactor w ≠ 0 := by
-  rw [mellinCompletionFactor]
-  apply mul_ne_zero
-  · exact Complex.cpow_ne_zero_iff.mpr
-      (Or.inl (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero))
-  · apply Complex.Gamma_ne_zero_of_re_pos
-    simpa [Complex.div_re] using (half_pos hw)
+    {w : ℂ} (hw : 0 < w.re) : mellinCompletionFactor w ≠ 0 :=
+  mellinCompletionFactor_ne_zero hw
 
 /-- Completed Mellin evaluations throughout the right strip separate the actual quotient. -/
 theorem burnolCoPoissonQuotientEvaluation_separates

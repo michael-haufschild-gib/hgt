@@ -812,7 +812,7 @@ theorem primaryTBAOccupation_lipschitz
   simpa [f, primaryTBAOccupation, Real.norm_eq_abs] using hmv
 
 theorem geometricCDDTBAKernel_nonneg
-    {q C : ℝ} (hq0 : 0 < q) (hq1 : q < 1) (hC : 1 < C) (θ : ℝ) :
+    {q C : ℝ} (hq0 : 0 < q) (_hq1 : q < 1) (hC : 1 < C) (θ : ℝ) :
     0 ≤ geometricCDDTBAKernel q C θ := by
   exact tsum_nonneg fun k => geometricCDDTBAKernelTerm_nonneg hq0.le (zero_lt_one.trans hC) θ k
 
@@ -821,7 +821,7 @@ def geometricCDDTBAKernelBound (q C : ℝ) : ℝ :=
   8 * Real.sqrt (1 + C ^ 2) / (C * (1 - q))
 
 theorem geometricCDDTBAKernelBound_pos
-    {q C : ℝ} (hq0 : 0 < q) (hq1 : q < 1) (hC : 1 < C) :
+    {q C : ℝ} (_hq0 : 0 < q) (hq1 : q < 1) (hC : 1 < C) :
     0 < geometricCDDTBAKernelBound q C := by
   unfold geometricCDDTBAKernelBound
   positivity
@@ -1040,7 +1040,7 @@ theorem norm_primaryTBAIntegralOperator_sub_le
     have hprofile : |h θ' - g θ'| ≤ ‖h - g‖ := by
       simpa [Real.norm_eq_abs] using (h - g).norm_coe_le_norm θ'
     dsimp [D]
-    rw [norm_mul, Real.norm_eq_abs]
+    rw [abs_mul]
     calc
       |geometricCDDTBAKernel q C (θ - θ')| *
           |primaryTBAOccupation r h θ' - primaryTBAOccupation r g θ'| ≤
@@ -1132,31 +1132,42 @@ theorem exists_unique_primaryTBAMap_fixedPoint
     refine ⟨(by exact_mod_cast hfactor), LipschitzWith.of_dist_le_mul ?_⟩
     intro x y
     have hxnorm : ‖(x.1 : TBACorrectionProfile)‖ ≤ 1 := by
-      change dist (x.1 : TBACorrectionProfile) 0 ≤ 1 at x.2
-      simpa [dist_zero_right] using x.2
+      have hxmem := x.2
+      change (x.1 : TBACorrectionProfile) ∈ Metric.closedBall 0 1 at hxmem
+      rw [Metric.mem_closedBall] at hxmem
+      simpa [dist_zero_right] using hxmem
     have hynorm : ‖(y.1 : TBACorrectionProfile)‖ ≤ 1 := by
-      change dist (y.1 : TBACorrectionProfile) 0 ≤ 1 at y.2
-      simpa [dist_zero_right] using y.2
+      have hymem := y.2
+      change (y.1 : TBACorrectionProfile) ∈ Metric.closedBall 0 1 at hymem
+      rw [Metric.mem_closedBall] at hymem
+      simpa [dist_zero_right] using hymem
     have hxy := norm_primaryTBAMap_sub_le hq0 hq1 hC hr
       (h := x.1) (g := y.1) hxnorm hynorm
-    simpa [T, Set.MapsTo.restrict, dist_eq_norm, K] using hxy
+    change dist (T x.1) (T y.1) ≤ (K : ℝ) * dist x.1 y.1
+    have hKcoe : (K : ℝ) = primaryTBAContractionFactor q C r := rfl
+    rw [hKcoe]
+    simpa [T, dist_eq_norm] using hxy
   obtain ⟨h, hh, hfix, -, -⟩ := hcontract.exists_fixedPoint'
     (Metric.isClosed_closedBall.isComplete : IsComplete s) hmaps
-    (x := (0 : TBACorrectionProfile)) (by simp [s]) (edist_ne_top _ _)
+    (x := (0 : TBACorrectionProfile)) (by simp) (edist_ne_top _ _)
   have hhnorm : ‖h‖ ≤ 1 := by
     simpa [s, Metric.mem_closedBall, dist_zero_right] using hh
   have hfix' : primaryTBAMap q C r hq0 hq1 hC hr h = h := by
-    simpa [T] using hfix
+    change T h = h at hfix
+    exact hfix
   refine ⟨h, ⟨hhnorm, hfix'⟩, ?_⟩
   intro g hg
   have hsub := norm_primaryTBAMap_sub_le hq0 hq1 hC hr hhnorm hg.1
   rw [hfix', hg.2] at hsub
-  have hfac0 := primaryTBAContractionFactor_nonneg hq0 hq1 hC
+  have hfac0 : 0 ≤ primaryTBAContractionFactor q C r :=
+    primaryTBAContractionFactor_nonneg (r := r) hq0 hq1 hC
   have hnorm0 : ‖h - g‖ = 0 := by
     by_contra hne
     have hpos : 0 < ‖h - g‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
     nlinarith
-  exact (sub_eq_zero.mp (norm_eq_zero.mp hnorm0)).symm
+  have hsubzero : h - g = 0 := norm_eq_zero.mp hnorm0
+  have heq : h = g := sub_eq_zero.mp hsubzero
+  exact heq.symm
 
 /-- Pseudoenergy represented by a bounded correction to the free driving term. -/
 def primaryTBAPseudoenergy (r : ℝ) (h : TBACorrectionProfile) (θ : ℝ) : ℝ :=

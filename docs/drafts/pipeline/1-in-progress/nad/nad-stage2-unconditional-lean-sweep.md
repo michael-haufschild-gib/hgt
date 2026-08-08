@@ -65,6 +65,19 @@ work are not formalization debt unless the card labels them proved.
   trace-norm obstruction and its nonsummable family form, and exact finite-prime mixed-packet
   survivor implemented in one wired module. Direct source check, targeted build, and eight-capstone
   standard-foundation-only axiom audit passed. Card promoted to `3-formalized/needs-audit`.
+- `geometric-cdd-finite-real-tba-obstruction`: exact infinite kernel, positive global floor and
+  bound, literal finite-free-energy solution class, explicit small-radius exclusion for every real
+  physical branch, bounded-continuous contraction map, and unique sufficiently-large-radius
+  primary solution implemented in one wired module. Direct source check, targeted build, and
+  five-capstone standard-foundation-only axiom audit passed. Card promoted to
+  `3-formalized/needs-audit`.
+- `wigner-smith-finite-resolution-law-escape`: literal normalized compact squared-amplitude packet,
+  actual energy derivative and exact time-pairing/convolution reporter, integration-by-parts
+  derivative commutation, all-order sampled-jet convergence, finite full-rank energy selection,
+  positive injectivity modulus and deterministic noise margin implemented in one wired module.
+  Existing Erlang modules close exact finite-width DA/HT recovery. Direct source check, targeted
+  build, and six-capstone standard-foundation-only axiom audit passed. Card promoted to
+  `3-formalized/needs-audit`.
 
 ## Open core
 
@@ -89,3 +102,11 @@ work are not formalization debt unless the card labels them proved.
 - 2026-08-08 — Semilocal one-prime harmonic defect card closed without surrogate inputs: exact
   series quotient, explicit asymptotic error, Euler divergence, trace-class nonsummability, and
   positive global mixed-packet survivor all passed Lean and final targeted audit.
+- 2026-08-08 — Geometric CDD finite-real-TBA card closed at its full paper strength: exact
+  low-radius all-solution obstruction plus constructive unique large-radius primary branch. Leaf,
+  targeted build, umbrella, and axiom gates pass; global lint reaches it and reports only four
+  unrelated concurrent umbrella gaps.
+- 2026-08-08 — Wigner--Smith finite-resolution card closed without an assumed convergence bridge:
+  compact smooth physical packet, exact reporter, `C^r` jet convergence, finite sample selection,
+  robust law escape, and Erlang finite-width HT recovery all pass Lean, targeted build, umbrella,
+  and axiom gates. Global lint reaches the module and reports only seven unrelated concurrent gaps.

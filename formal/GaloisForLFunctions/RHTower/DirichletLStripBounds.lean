@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DirichletCompletedLConjugate
 import GaloisForLFunctions.HTGeometry.GammaVerticalModulus
+import GaloisForLFunctions.HTGeometry.WaveTraceSpectrum
 
 /-!
 # Edge bounds for the Dirichlet L-function
@@ -127,28 +128,8 @@ theorem gammaFactor_eq_Gammaℝ (χ : DirichletCharacter ℂ N) :
 
 omit [NeZero N] in
 /-- The sine is bounded by the exponential of the imaginary part. -/
-theorem norm_sin_le (z : ℂ) : ‖Complex.sin z‖ ≤ Real.exp |z.im| := by
-  have h1 : ‖Complex.exp (-z * Complex.I)‖ = Real.exp z.im := by
-    rw [Complex.norm_exp]; congr 1; simp
-  have h2 : ‖Complex.exp (z * Complex.I)‖ = Real.exp (-z.im) := by
-    rw [Complex.norm_exp]; congr 1; simp
-  have hexp : Complex.sin z
-      = (Complex.exp (-z * Complex.I) - Complex.exp (z * Complex.I)) * Complex.I / 2 := by
-    rw [Complex.sin]
-  rw [hexp, norm_div, norm_mul, Complex.norm_I, mul_one, show ‖(2 : ℂ)‖ = 2 by norm_num]
-  have htri : ‖Complex.exp (-z * Complex.I) - Complex.exp (z * Complex.I)‖
-      ≤ Real.exp z.im + Real.exp (-z.im) := by
-    refine (norm_sub_le _ _).trans ?_
-    rw [h1, h2]
-  have hcosh : Real.exp z.im + Real.exp (-z.im) ≤ 2 * Real.exp |z.im| := by
-    rcases abs_cases z.im with ⟨h, _⟩ | ⟨h, _⟩
-    · rw [h]
-      have hm : Real.exp (-z.im) ≤ Real.exp z.im := Real.exp_le_exp.mpr (by linarith)
-      linarith
-    · rw [h]
-      have hm : Real.exp z.im ≤ Real.exp (-z.im) := Real.exp_le_exp.mpr (by linarith)
-      linarith
-  linarith
+theorem norm_sin_le (z : ℂ) : ‖Complex.sin z‖ ≤ Real.exp |z.im| :=
+  GaloisForLFunctions.HTGeometry.norm_csin_le_exp_abs_im z
 
 omit [NeZero N] in
 /-- **Uniform bound for `Γ` on a vertical strip away from the real axis.**  Shifting right past the

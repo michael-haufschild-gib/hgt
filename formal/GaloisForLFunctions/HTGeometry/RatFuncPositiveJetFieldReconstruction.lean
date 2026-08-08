@@ -1,0 +1,349 @@
+import GaloisForLFunctions.HTGeometry.RatFuncPositiveJetBranchSeparation
+import GaloisForLFunctions.HTGeometry.FreeDifferentialProtocolTimeLaw
+import GaloisForLFunctions.HTGeometry.DifferentialClockEmbeddingCovariance
+import Mathlib.FieldTheory.Normal.Closure
+import Mathlib.FieldTheory.IsAlgClosed.Basic
+
+open scoped Differential
+open Polynomial IntermediateField
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+theorem isAlgebraic_ratFuncEval_over_adjoin
+    {C E : Type*} [Field C] [Field E] [Algebra C E]
+    {y : E} (hy : Transcendental C y) {r : RatFunc C}
+    (hr : ¬ ∃ a : C, r = RatFunc.C a) :
+    IsAlgebraic (IntermediateField.adjoin C ({ratFuncEval y hy r} : Set E)) y := by
+  let H₀ : IntermediateField C (RatFunc C) :=
+    IntermediateField.adjoin C ({r} : Set (RatFunc C))
+  let H : IntermediateField C E :=
+    IntermediateField.adjoin C ({ratFuncEval y hy r} : Set E)
+  let ev : RatFunc C →ₐ[C] E := ratFuncEval y hy
+  have hmap : H₀.map ev = H := by
+    dsimp only [H₀, H]
+    rw [IntermediateField.adjoin_map]
+    simp only [Set.image_singleton, ev]
+  let e : H₀ ≃ₐ[C] H :=
+    (H₀.equivMap ev).trans (IntermediateField.equivOfEq hmap)
+  have hcomp :
+      RingHom.comp (algebraMap H E) e.toRingHom =
+        RingHom.comp ev.toRingHom (algebraMap H₀ (RatFunc C)) := by
+    ext a
+    rfl
+  have hX₀ : IsAlgebraic H₀ (RatFunc.X : RatFunc C) :=
+    r.isAlgebraic_adjoin_simple_X hr
+  have hX := hX₀.ringHom_of_comp_eq e.toRingHom ev.toRingHom e.injective hcomp
+  change IsAlgebraic H y
+  change IsAlgebraic H (ev RatFunc.X) at hX
+  simpa only [ev, ratFuncEval_X] using hX
+
+theorem ratFuncEval_algHom
+    {C A E : Type*} [Field C] [Field A] [Field E]
+    [Algebra C A] [Algebra C E] (f : A →ₐ[C] E)
+    {y : A} (hy : Transcendental C y) (r : RatFunc C) :
+    ratFuncEval (f y)
+        (by
+          intro h
+          exact hy ((isAlgebraic_algHom_iff f f.injective).mp h)) r =
+      f (ratFuncEval y hy r) := by
+  letI : Algebra A E := f.toAlgebra
+  letI : IsScalarTower C A E :=
+    IsScalarTower.of_algebraMap_eq fun c ↦ (f.commutes c).symm
+  exact ratFuncEval_algebraMap hy r
+
+theorem isAlgebraic_freeGenerator_over_rational_positiveJet_observation
+    {C : Type*} [Field C] [CharZero C] {r : RatFunc C}
+    (hr : ¬ ∃ a : C, r = RatFunc.C a) (n : ℕ) :
+    IsAlgebraic
+      (differentialAdjoin C
+        ({ratFuncEval (JetField.jet ((), 0))
+            (JetField.algebraicIndependent_jet_free.transcendental ((), 0)) r,
+          differentialJet n (JetField.jet ((), 0))} : Set (JetField C Unit)))
+      (JetField.jet ((), 0) : JetField C Unit) := by
+  let A := JetField C Unit
+  let x : A := JetField.jet ((), 0)
+  have hxtrans : Transcendental C x :=
+    JetField.algebraicIndependent_jet_free.transcendental ((), 0)
+  let rx : A := ratFuncEval x hxtrans r
+  let H : IntermediateField C A := IntermediateField.adjoin C ({rx} : Set A)
+  let K : IntermediateField C A :=
+    differentialAdjoin C ({rx, differentialJet n x} : Set A)
+  have hxH : IsAlgebraic H x := isAlgebraic_ratFuncEval_over_adjoin hxtrans hr
+  have hHK : H ≤ K := by
+    change IntermediateField.adjoin C ({rx} : Set A) ≤ K
+    rw [IntermediateField.adjoin_le_iff]
+    intro y hy
+    rw [Set.mem_singleton_iff] at hy
+    subst y
+    exact subset_differentialAdjoin C _ (by simp)
+  have hxK : IsAlgebraic K x :=
+    IsAlgebraic.tower_top_of_subalgebra_le
+      (A := H.toSubalgebra) (B := K.toSubalgebra) hHK hxH
+  simpa only [A, x, rx, K, hxtrans] using hxK
+
+theorem finiteDimensional_freeField_over_rational_positiveJet_observation
+    {C : Type*} [Field C] [CharZero C] {r : RatFunc C}
+    (hr : ¬ ∃ a : C, r = RatFunc.C a) (n : ℕ) :
+    FiniteDimensional
+      (differentialAdjoin C
+        ({ratFuncEval (JetField.jet ((), 0))
+            (JetField.algebraicIndependent_jet_free.transcendental ((), 0)) r,
+          differentialJet n (JetField.jet ((), 0))} : Set (JetField C Unit)))
+      (JetField C Unit) := by
+  let A := JetField C Unit
+  let x : A := JetField.jet ((), 0)
+  have hxtrans : Transcendental C x :=
+    JetField.algebraicIndependent_jet_free.transcendental ((), 0)
+  let rx : A := ratFuncEval x hxtrans r
+  let K : IntermediateField C A :=
+    differentialAdjoin C ({rx, differentialJet n x} : Set A)
+  have hxK : IsAlgebraic K x :=
+    isAlgebraic_freeGenerator_over_rational_positiveJet_observation hr n
+  letI : Differential C := ⟨0⟩
+  letI : DifferentialAlgebra C A := ⟨fun c ↦ by
+    change (algebraMap C A c)′ = algebraMap C A 0
+    rw [JetField.deriv_algebraMap, map_zero]⟩
+  letI : Differential K :=
+    derivationClosedDifferential K (derivationClosed_differentialAdjoin C _)
+  letI : DifferentialAlgebra K A :=
+    ⟨fun c ↦ derivationClosedDifferential_apply K
+      (derivationClosed_differentialAdjoin C _) c⟩
+  let L : IntermediateField K A := IntermediateField.adjoin K ({x} : Set A)
+  haveI hfin : FiniteDimensional K L :=
+    IntermediateField.adjoin.finiteDimensional hxK.isIntegral
+  letI : Differential L := Differential.differentialFiniteDimensional K L
+  letI : DifferentialAlgebra K L := Differential.differentialAlgebraFiniteDimensional
+  letI : DifferentialAlgebra L A := inferInstance
+  have hLclosed : DerivationClosed L := by
+    intro y hy
+    have hder : (algebraMap L A (⟨y, hy⟩ : L))′ =
+        algebraMap L A ((⟨y, hy⟩ : L)′) := deriv_algebraMap (⟨y, hy⟩ : L)
+    change y′ ∈ L
+    change y′ = (((⟨y, hy⟩ : L)′ : L) : A) at hder
+    exact hder.symm ▸ ((⟨y, hy⟩ : L)′).property
+  have hgen : differentialAdjoin C ({x} : Set A) = ⊤ := by
+    simpa only [A, x] using
+      (GaloisForLFunctions.HTGeometry.differentialAdjoin_jet_zero_eq_top (C := C))
+  have hLtopC : L.restrictScalars C = ⊤ := by
+    apply top_unique
+    rw [← hgen]
+    exact differentialAdjoin_le C
+      (by
+        intro y hy
+        rw [Set.mem_singleton_iff] at hy
+        subst y
+        exact IntermediateField.subset_adjoin K _ rfl)
+      hLclosed
+  have hLtop : L = ⊤ :=
+    IntermediateField.restrictScalars_injective C (by simpa using hLtopC)
+  rw [hLtop] at hfin
+  exact (IntermediateField.topEquiv.toLinearEquiv).finiteDimensional
+
+theorem adjoin_freeGenerator_over_rational_positiveJet_observation_eq_top
+    {C : Type*} [Field C] [CharZero C] {r : RatFunc C}
+    (hr : ¬ ∃ a : C, r = RatFunc.C a) (n : ℕ) :
+    let x : JetField C Unit := JetField.jet ((), 0)
+    let hxtrans : Transcendental C x :=
+      JetField.algebraicIndependent_jet_free.transcendental ((), 0)
+    let K : IntermediateField C (JetField C Unit) :=
+      differentialAdjoin C
+        ({ratFuncEval x hxtrans r, differentialJet n x} : Set (JetField C Unit))
+    IntermediateField.adjoin K ({x} : Set (JetField C Unit)) = ⊤ := by
+  dsimp only
+  let A := JetField C Unit
+  let x : A := JetField.jet ((), 0)
+  have hxtrans : Transcendental C x :=
+    JetField.algebraicIndependent_jet_free.transcendental ((), 0)
+  let rx : A := ratFuncEval x hxtrans r
+  let K : IntermediateField C A :=
+    differentialAdjoin C ({rx, differentialJet n x} : Set A)
+  have hxK : IsAlgebraic K x :=
+    isAlgebraic_freeGenerator_over_rational_positiveJet_observation hr n
+  letI : Differential C := ⟨0⟩
+  letI : DifferentialAlgebra C A := ⟨fun c ↦ by
+    change (algebraMap C A c)′ = algebraMap C A 0
+    rw [JetField.deriv_algebraMap, map_zero]⟩
+  letI : Differential K :=
+    derivationClosedDifferential K (derivationClosed_differentialAdjoin C _)
+  letI : DifferentialAlgebra K A :=
+    ⟨fun c ↦ derivationClosedDifferential_apply K
+      (derivationClosed_differentialAdjoin C _) c⟩
+  let L : IntermediateField K A := IntermediateField.adjoin K ({x} : Set A)
+  haveI : FiniteDimensional K L :=
+    IntermediateField.adjoin.finiteDimensional hxK.isIntegral
+  letI : Differential L := Differential.differentialFiniteDimensional K L
+  letI : DifferentialAlgebra K L := Differential.differentialAlgebraFiniteDimensional
+  letI : DifferentialAlgebra L A := inferInstance
+  have hLclosed : DerivationClosed L := by
+    intro y hy
+    have hder : (algebraMap L A (⟨y, hy⟩ : L))′ =
+        algebraMap L A ((⟨y, hy⟩ : L)′) := deriv_algebraMap (⟨y, hy⟩ : L)
+    change y′ ∈ L
+    change y′ = (((⟨y, hy⟩ : L)′ : L) : A) at hder
+    exact hder.symm ▸ ((⟨y, hy⟩ : L)′).property
+  have hgen : differentialAdjoin C ({x} : Set A) = ⊤ := by
+    simpa only [A, x] using
+      (GaloisForLFunctions.HTGeometry.differentialAdjoin_jet_zero_eq_top (C := C))
+  have hLtopC : L.restrictScalars C = ⊤ := by
+    apply top_unique
+    rw [← hgen]
+    exact differentialAdjoin_le C
+      (by
+        intro y hy
+        rw [Set.mem_singleton_iff] at hy
+        subst y
+        exact IntermediateField.subset_adjoin K _ rfl)
+      hLclosed
+  exact IntermediateField.restrictScalars_injective C (by simpa using hLtopC)
+
+theorem rational_positiveJet_observation_eq_top
+    {C : Type*} [Field C] [CharZero C] [IsAlgClosed C]
+    {r : RatFunc C} (hr : ¬ ∃ a : C, r = RatFunc.C a)
+    {n : ℕ} (hn : 0 < n) :
+    differentialAdjoin C
+        ({ratFuncEval (JetField.jet ((), 0))
+            (JetField.algebraicIndependent_jet_free.transcendental ((), 0)) r,
+          differentialJet n (JetField.jet ((), 0))} : Set (JetField C Unit)) = ⊤ := by
+  let A := JetField C Unit
+  let x : A := JetField.jet ((), 0)
+  have hxtrans : Transcendental C x :=
+    JetField.algebraicIndependent_jet_free.transcendental ((), 0)
+  let rx : A := ratFuncEval x hxtrans r
+  let K : IntermediateField C A :=
+    differentialAdjoin C ({rx, differentialJet n x} : Set A)
+  have hfinKA : FiniteDimensional K A :=
+    finiteDimensional_freeField_over_rational_positiveJet_observation hr n
+  letI : FiniteDimensional K A := hfinKA
+  letI : Differential C := ⟨0⟩
+  letI : DifferentialAlgebra C A := ⟨fun c ↦ by
+    change (algebraMap C A c)′ = algebraMap C A 0
+    rw [JetField.deriv_algebraMap, map_zero]⟩
+  letI : Differential K :=
+    derivationClosedDifferential K (derivationClosed_differentialAdjoin C _)
+  letI : DifferentialAlgebra K A :=
+    ⟨fun c ↦ derivationClosedDifferential_apply K
+      (derivationClosed_differentialAdjoin C _) c⟩
+  letI : Algebra.IsAlgebraic K A := Algebra.IsAlgebraic.of_finite K A
+  let AC := AlgebraicClosure K
+  let φ : A →ₐ[K] AC := IsAlgClosed.lift
+  letI : Nonempty (A →ₐ[K] AC) := ⟨φ⟩
+  let Ω : IntermediateField K AC := IntermediateField.normalClosure K A AC
+  letI algKΩ : Algebra K Ω := Ω.algebra'
+  letI hnorm : IsNormalClosure K A Ω := inferInstance
+  let φΩ : A →ₐ[K] Ω :=
+    { toFun := fun a ↦ ⟨φ a, φ.fieldRange_le_normalClosure ⟨a, rfl⟩⟩
+      map_one' := Subtype.ext φ.map_one
+      map_mul' := fun a b ↦ Subtype.ext (φ.map_mul a b)
+      map_zero' := Subtype.ext φ.map_zero
+      map_add' := fun a b ↦ Subtype.ext (φ.map_add a b)
+      commutes' := fun k ↦ Subtype.ext (φ.commutes k) }
+  letI hfinKΩ : FiniteDimensional K Ω := inferInstance
+  letI : Algebra.IsAlgebraic K Ω := Algebra.IsAlgebraic.of_finite K Ω
+  letI : Differential Ω := Differential.differentialFiniteDimensional K Ω
+  letI : DifferentialAlgebra K Ω := Differential.differentialAlgebraFiniteDimensional
+  letI : Algebra C Ω := ((algebraMap K Ω).comp (algebraMap C K)).toAlgebra
+  letI : IsScalarTower C K Ω := IsScalarTower.of_algebraMap_eq fun _ ↦ by
+    apply Subtype.ext
+    rfl
+  letI : Algebra A Ω := φΩ.toAlgebra
+  have hφval (a : A) : ((algebraMap A Ω a : Ω) : AC) = φ a := rfl
+  have hKval (k : K) : ((algebraMap K Ω k : Ω) : AC) = algebraMap K AC k :=
+    IntermediateField.coe_algebraMap_apply Ω k
+  let φK : A →ₐ[K] Ω :=
+    { toRingHom := algebraMap A Ω
+      commutes' := fun k ↦ by
+        apply Subtype.ext
+        calc
+          ((algebraMap A Ω (algebraMap K A k) : Ω) : AC) =
+              φ (algebraMap K A k) := hφval _
+          _ = algebraMap K AC k := φ.commutes k
+          _ = ((algebraMap K Ω k : Ω) : AC) := (hKval k).symm }
+  letI : IsScalarTower C A Ω := IsScalarTower.of_algebraMap_eq fun c ↦ by
+    change algebraMap C Ω c = φK (algebraMap C A c)
+    calc
+      algebraMap C Ω c = algebraMap K Ω (algebraMap C K c) := rfl
+      _ = φK (algebraMap K A (algebraMap C K c)) := (φK.commutes _).symm
+      _ = φK (algebraMap C A c) := by
+        rw [IsScalarTower.algebraMap_apply C K A]
+  letI : DifferentialAlgebra A Ω := ⟨fun a ↦ by
+    change (φK a)′ = φK a′
+    exact (Differential.algHom_deriv' φK φK.injective a).symm⟩
+  have hrxK : rx ∈ K := subset_differentialAdjoin C _ (by simp)
+  have hxnK : differentialJet n x ∈ K :=
+    subset_differentialAdjoin C _ (by simp)
+  let krx : K := ⟨rx, hrxK⟩
+  let kxn : K := ⟨differentialJet n x, hxnK⟩
+  have hemb : ∀ σ : A →ₐ[K] Ω, σ = φK := by
+    intro σ
+    let σC : A →ₐ[C] Ω := σ.restrictScalars C
+    have hztrans : Transcendental C (σ x) := by
+      intro hz
+      exact hxtrans ((isAlgebraic_algHom_iff σC σC.injective).mp hz)
+    have hzalg : IsAlgebraic A (σ x) := by
+      have hzK : IsAlgebraic K (σ x) := Algebra.IsAlgebraic.isAlgebraic (σ x)
+      exact hzK.ringHom_of_comp_eq (algebraMap K A) (RingHom.id Ω)
+        (algebraMap K A).injective (by
+          ext k
+          exact congrArg Subtype.val (φK.commutes k))
+    have hrat : ratFuncEval (σ x) hztrans r =
+        algebraMap A Ω (ratFuncEval x hxtrans r) := by
+      calc
+        ratFuncEval (σ x) hztrans r = σC (ratFuncEval x hxtrans r) :=
+          ratFuncEval_algHom σC hxtrans r
+        _ = σ (algebraMap K A krx) := by rfl
+        _ = algebraMap K Ω krx := σ.commutes krx
+        _ = φK (algebraMap K A krx) := (φK.commutes krx).symm
+        _ = algebraMap A Ω (ratFuncEval x hxtrans r) := by rfl
+    have hσderiv : ∀ a : A, σC a′ = (σC a)′ := fun a ↦
+      Differential.algHom_deriv' σ σ.injective a
+    have hjet : differentialJet n (σ x) =
+        algebraMap A Ω (differentialJet n x) := by
+      calc
+        differentialJet n (σ x) = σC (differentialJet n x) :=
+          (differentialJet_algHom σC hσderiv x n).symm
+        _ = σ (algebraMap K A kxn) := by rfl
+        _ = algebraMap K Ω kxn := σ.commutes kxn
+        _ = φK (algebraMap K A kxn) := (φK.commutes kxn).symm
+        _ = algebraMap A Ω (differentialJet n x) := by rfl
+    have hxeq : σ x = φK x :=
+      algebraic_branch_eq_of_ratFunc_and_positive_jet () hr hzalg hztrans hn hrat hjet
+    apply AlgHom.ext
+    intro a
+    have hadjoin : IntermediateField.adjoin K ({x} : Set A) = ⊤ :=
+      adjoin_freeGenerator_over_rational_positiveJet_observation_eq_top hr n
+    have ha : a ∈ IntermediateField.adjoin K ({x} : Set A) := by
+      rw [hadjoin]
+      exact IntermediateField.mem_top
+    apply IntermediateField.adjoin_induction (F := K) (s := ({x} : Set A))
+      (p := fun y _ ↦ σ y = φK y)
+    · intro y hy
+      rw [Set.mem_singleton_iff] at hy
+      simpa only [hy] using hxeq
+    · intro k
+      rw [σ.commutes, φK.commutes]
+    · intro y z _ _ hy hz
+      rw [map_add, map_add, hy, hz]
+    · intro y _ hy
+      rw [map_inv₀, map_inv₀, hy]
+    · intro y z _ _ hy hz
+      rw [map_mul, map_mul, hy, hz]
+    · exact ha
+  letI : Unique (A →ₐ[K] Ω) :=
+    ⟨⟨φK⟩, fun σ ↦ hemb σ⟩
+  have hcard : Fintype.card (A →ₐ[K] Ω) = 1 := Fintype.card_unique
+  have hsplit : ∀ a : A, ((minpoly K a).map (algebraMap K Ω)).Splits :=
+    hnorm.splits
+  have hcardeq := AlgHom.card_of_splits K A Ω hsplit
+  have hfinrank : Module.finrank K A = 1 := by omega
+  have hsurj : Function.Surjective (algebraMap K A) :=
+    (Algebra.finrank_eq_one_iff_bijective_algebraMap.mp hfinrank).2
+  apply top_unique
+  intro a _
+  obtain ⟨k, hk⟩ := hsurj a
+  rw [← hk]
+  exact k.property
+
+end
+end GaloisForLFunctions.HTGeometry

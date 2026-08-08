@@ -702,19 +702,35 @@ theorem exists_fixedRatioCurvatureFloor {k p q : ℝ}
       exact mul_ne_zero (pow_ne_zero _ hfarBase) hfarSqrt
     have hnearRadCont : ContinuousAt
         (fun w : ℝ × ℝ => (w.2 ^ 2 - w.1) / (w.2 ^ 2 - 1)) z := by
-      exact (by fun_prop).div (by fun_prop) hnearBase
+      have hnum : ContinuousAt (fun w : ℝ × ℝ => w.2 ^ 2 - w.1) z := by
+        fun_prop
+      have hden : ContinuousAt (fun w : ℝ × ℝ => w.2 ^ 2 - 1) z := by
+        fun_prop
+      exact hnum.div hden hnearBase
     have hfarRadCont : ContinuousAt
         (fun w : ℝ × ℝ => ((k * w.2) ^ 2 - w.1) / ((k * w.2) ^ 2 - 1)) z := by
-      exact (by fun_prop).div (by fun_prop) hfarBase
+      have hnum : ContinuousAt (fun w : ℝ × ℝ => (k * w.2) ^ 2 - w.1) z := by
+        fun_prop
+      have hden : ContinuousAt (fun w : ℝ × ℝ => (k * w.2) ^ 2 - 1) z := by
+        fun_prop
+      exact hnum.div hden hfarBase
     have hnearTerm : ContinuousAt (fun w : ℝ × ℝ =>
         w.2 * (w.1 - 1) /
           ((w.2 ^ 2 - 1) ^ 2 * Real.sqrt ((w.2 ^ 2 - w.1) / (w.2 ^ 2 - 1)))) z := by
-      exact (by fun_prop).div ((by fun_prop).mul hnearRadCont.sqrt) hnearDen
+      have hnum : ContinuousAt (fun w : ℝ × ℝ => w.2 * (w.1 - 1)) z := by
+        fun_prop
+      have hbase : ContinuousAt (fun w : ℝ × ℝ => (w.2 ^ 2 - 1) ^ 2) z := by
+        fun_prop
+      exact hnum.div (hbase.mul hnearRadCont.sqrt) hnearDen
     have hfarTerm : ContinuousAt (fun w : ℝ × ℝ =>
         k * w.2 * (w.1 - 1) /
           (((k * w.2) ^ 2 - 1) ^ 2 *
             Real.sqrt (((k * w.2) ^ 2 - w.1) / ((k * w.2) ^ 2 - 1)))) z := by
-      exact (by fun_prop).div ((by fun_prop).mul hfarRadCont.sqrt) hfarDen
+      have hnum : ContinuousAt (fun w : ℝ × ℝ => k * w.2 * (w.1 - 1)) z := by
+        fun_prop
+      have hbase : ContinuousAt (fun w : ℝ × ℝ => ((k * w.2) ^ 2 - 1) ^ 2) z := by
+        fun_prop
+      exact hnum.div (hbase.mul hfarRadCont.sqrt) hfarDen
     apply ContinuousAt.continuousWithinAt
     dsimp only [F]
     unfold xiSpeedDeriv xiSpeed

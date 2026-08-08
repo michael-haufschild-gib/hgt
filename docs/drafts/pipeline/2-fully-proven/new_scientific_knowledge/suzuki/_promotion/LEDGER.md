@@ -4890,3 +4890,341 @@ identification of `R_sigma` with multiplication by `r_sigma` on the Fourier side
 remaining paper steps; that step is now unnecessary for `(11)`, because the numerical range is
 visible without ever transforming.  What section 4 still needs is the mollifier bookkeeping
 `(16)`--`(21)` feeding `HTGeometry/WeakLimitBoundedFamily.lean`.
+
+## EO. The integrated numerical range, and what mathlib is missing
+
+`RHTower/SuzukiShiftedGammaForm.lean` finishes the physical-space route to `(11)`:
+
+```text
+shiftedGammaForm sigma F = int_{s>0} (int_L shiftedSecondDifference sigma F L s * F L) k(s) ds
+```
+
+with `neg_suzukiGammaShiftKappa_mul_le_shiftedGammaForm`:
+
+```text
+-(kappa_sigma * ||F||^2) <= shiftedGammaForm sigma F
+```
+
+and `shiftedGammaForm_zero_nonneg` for the unshifted case.  The proof integrates the per-scale
+bound against the kernel — **no Fubini across `s` and `L` is needed**, because the pairing is done
+in `L` first and only then integrated in `s`.  That is the right order: the naive joint integrand is
+*not* absolutely integrable near `s = 0` (the kernel is `~1/s` there and `int |second difference . F| dL`
+does not decay), which is exactly why the operator is defined by a second difference.  Anyone
+tempted to prove this by Fubini will fail; the fix is to keep the `L`-integral inside.
+
+The one hypothesis is `IntegrableOn (fun s => pairing s * k s) (Ioi 0)` — membership in the form
+domain, object regularity, not an assumed theorem.
+
+### mathlib has no Young's inequality for convolution
+
+Checked: `Mathlib/Analysis/Convolution.lean` carries `convolution`, associativity and the
+smoothness lemmas, but **no** `‖k ⋆ f‖_p ≤ ‖k‖_1 ‖f‖_p`.  Several remaining cards need it ("weighted
+convolution on `L^2`", "block `L^2` convolution estimates").  The `p = 2` case does not need
+Minkowski's integral inequality: Cauchy--Schwarz against the measure `|k(y)| dy` gives
+`|(k⋆f)(x)|^2 <= ||k||_1 int |k(y)| |f(x-y)|^2 dy`, and Tonelli on the nonnegative right-hand side
+finishes.  Build it that way.
+
+### The convolution brick bottoms out lower than expected
+
+Probing for the pieces of Young's inequality found that mathlib has **no real-integral
+Cauchy--Schwarz** either: `MeasureTheory/Integral/MeanInequalities.lean` carries only the `ℝ≥0∞`
+and `ℝ≥0` Hoelder lemmas (`ENNReal.lintegral_mul_le_Lp_mul_Lq`,
+`NNReal.lintegral_mul_le_Lp_mul_Lq`), and neither
+
+```text
+(int f g)^2 <= (int f^2)(int g^2)                    -- real integrals
+(int w g)^2 <= (int w)(int w g^2)                    -- weighted form
+```
+
+is available.  Both must be routed through `MemLp.toLp` and `inner_mul_le_norm_mul_norm` in the
+`Lp` inner-product API, or built from the two-variable expansion
+`0 <= int int w(y) w(z) (g(y) - g(z))^2`.  So the order of construction for the convolution layer is:
+
+```text
+1. real-integral Cauchy--Schwarz, via Lp inner products
+2. its weighted form (w = |k|)
+3. Young for p = 2: |(k*f)(x)|^2 <= ||k||_1 int |k(y)| |f(x-y)|^2 dy, then Tonelli
+4. mollifier scaling bounds (20) and the convolution derivative identity (19)
+5. section 4 of gamma-weighted-tail-coercivity, feeding HTGeometry/WeakLimitBoundedFamily.lean
+```
+
+Steps 1--3 are reusable far beyond this card and belong in `HTGeometry/`.
+
+## EP. Convolution layer, steps 1--2 built
+
+`HTGeometry/IntegralCauchySchwarz.lean`:
+
+```text
+sq_le_mul_of_quadratic_nonneg   a nonnegative real quadratic has nonpositive discriminant
+integrable_mul_of_sq_integrable a product of square-integrable functions is integrable
+sq_integral_mul_le              (int f g)^2 <= (int f^2)(int g^2)          -- step 1
+sq_integral_weighted_le         (int w g)^2 <= (int w)(int w g^2), w >= 0  -- step 2
+```
+
+Axioms `[propext, Classical.choice, Quot.sound]`.  **The Lp inner-product API is not used**: the
+quadratic `t |-> int (f + t g)^2` is nonnegative and its discriminant is nonpositive, which is a
+three-line argument once the expansion is integrable.  The weighted form splits `w = sqrt w . sqrt w`.
+This is the cheapest correct route and it avoids `MemLp.toLp` entirely.
+
+Step 3 (Young for `p = 2`) is next.  Its shape:
+
+```text
+|(k*f)(x)|  <= int |k(y)| |f(x-y)| dy                        -- norm_integral_le_integral_norm
+            => |(k*f)(x)|^2 <= ||k||_1 int |k(y)| f(x-y)^2 dy   -- sq_integral_weighted_le
+            => ||k*f||_2^2 <= ||k||_1 int |k(y)| ||f||_2^2 dy = ||k||_1^2 ||f||_2^2
+```
+
+The last step is the only hard one: it is Tonelli on `(x,y) |-> |k(y)| f(x-y)^2`, which is
+nonnegative, so it must go through `lintegral_lintegral_swap` in `ENNReal` and be transferred back —
+`integral_integral_swap` is unusable here because its joint-integrability hypothesis is the very
+thing being computed.
+
+## EQ. Step 3's Tonelli half is built
+
+`HTGeometry/YoungConvolutionL2.lean`: `lineConvolution k f x = int_y k y * f (x - y)`, and
+
+```text
+lintegral_weighted_translate_sq :
+  int^- x int^- y ofReal (|k y| * f (x-y)^2) = (int^- y ofReal |k y|) * int^- x ofReal (f x ^ 2)
+```
+
+for measurable `k`, `f`.  This is the outer half of Young for `p = 2` and it is where the real
+difficulty sat: `lintegral_lintegral_swap` on the nonnegative integrand, then
+`lintegral_const_mul` and `lintegral_sub_right_eq_self` for the inner translate.  Two Lean traps
+here: `lintegral_lintegral_swap` needs the *uncurried* measurability as one `Measurable` on the
+product, and `lintegral_const_mul` will not rewrite against a measurability proof built by `.comp`
+— bind it to a `have` with an explicit lambda type first.
+
+What remains of step 3 is the pointwise half — `|(k*f)(x)|^2 <= ||k||_1 int |k(y)| f(x-y)^2 dy`,
+which is `norm_integral_le_integral_norm` followed by `sq_integral_weighted_le` — and the transfer
+of the `lintegral` identity back to Bochner integrals.
+
+Step 3's pointwise half is built too: `sq_lineConvolution_le`,
+
+```text
+(k*f)(x)^2 <= (int |k|) * int_y |k y| f(x-y)^2
+```
+
+from `abs_integral_le_integral_abs` and `sq_integral_weighted_le`.  Traps: `.abs` on an
+`AEStronglyMeasurable` resolves to `Exists.abs` — go through `.norm` and `Real.norm_eq_abs`; and the
+reflected translate's measurability is `(volume : Measure ℝ).measurePreserving_sub_left x`, dot
+notation **on the measure**, which `exact?` does not find.
+
+Young for `p = 2` is now one assembly step: integrate `sq_lineConvolution_le` in `x` and feed
+`lintegral_weighted_translate_sq`, transferring the `lintegral` identity back to Bochner integrals.
+
+## ER. Young's inequality for `L^2` convolution — DONE
+
+`HTGeometry/YoungConvolutionL2.lean` now carries the whole of step 3:
+
+```text
+lineConvolution k f x            = int_y k y * f (x - y)
+lintegral_weighted_translate_sq  Tonelli identity in ENNReal
+sq_lineConvolution_le            pointwise Cauchy-Schwarz against |k|
+integrable_weighted_translate_sq joint integrability, from the Tonelli identity
+integral_double_translate_sq     int_x int_y |k y| f(x-y)^2 = (int |k|)(int f^2)
+integral_sq_lineConvolution_le   int (k*f)^2 <= (int |k|)^2 int f^2      -- YOUNG
+```
+
+All `[propext, Classical.choice, Quot.sound]`.  mathlib has none of this.
+
+The dependency order that worked, and the reason each step is where it is:
+1. `sq_integral_weighted_le` (IntegralCauchySchwarz) — the pointwise step needs a *weighted*
+   Cauchy-Schwarz, not the plain one.
+2. `lintegral_weighted_translate_sq` — must be in `ENNReal`, since it is what proves finiteness.
+3. `integrable_weighted_translate_sq` — reads the finiteness off step 2.  Do **not** assume joint
+   integrability as a hypothesis; it is a theorem, and assuming it would be assuming the result.
+4. `integral_integral_swap` is now usable, because step 3 supplies its hypothesis.
+5. `integral_mono_ae`, not `integral_mono`: `Integrable.prod_right_ae` gives the slicewise
+   integrability only almost everywhere.
+
+Remaining for section 4 of `gamma-weighted-tail-coercivity`: the mollifier scaling bounds `(20)`
+(`||k_eps'||_1 <= C_rho`, `||k_eps||_1 <= C_rho eps`), the convolution derivative identity `(19)`,
+and the assembly into `HTGeometry/WeakLimitBoundedFamily.lean`.
+
+## ES. Mollification is an `L^2` contraction
+
+`HTGeometry/MollifierL2Contraction.lean`.  The corpus mollifier is *literally* the line
+convolution — `mollify rho u x = int_t rho t * u (x - t) = lineConvolution rho u x`, true by `rfl` —
+so Young applies with no adaptation:
+
+```text
+integral_sq_mollify_le                        int (mollify rho u)^2 <= (int |rho|)^2 int u^2
+integral_sq_mollify_le_of_isProbabilityDensity int (mollify rho u)^2 <= int u^2
+```
+
+The second is the uniform bound section 4 needs: a mollified family of a fixed `L^2` profile is
+bounded by that profile's energy, uniformly in the width, which is exactly the hypothesis of
+`exists_weakLimit_of_bounded`.
+
+Note `HTGeometry/BumpMollifierFamily.lean` already proves `(20)`'s first-moment half —
+`integral_abs_firstMomentKernel_bump_le : int |firstMomentKernel (bumpMollifier heps) t| <= eps` —
+so of the card's `(20)` only `||k_eps'||_1 <= C_rho` is missing, and `(19)` is an integration by
+parts moving the derivative from the profile onto the kernel.
+
+## ET. The card's `(19)` — DONE
+
+`HTGeometry/CompactSupportIntegrationByParts.lean`:
+
+```text
+deriv_eq_zero_of_notMem_tsupport         off the support the derivative vanishes
+integral_deriv_eq_zero_of_hasCompactSupport   int_R g' = 0 for compactly supported C^1 g
+lineConvolution_deriv_eq                 int k(t) V'(x-t) dt = int k'(t) V(x-t) dt
+lineConvolution_sub_smul                 linearity in the profile
+lineConvolution_weightedDeriv            (19): k * (V' - sigma V) = k' * V - sigma (k * V)
+```
+
+All `[propext, Classical.choice, Quot.sound]`.  `(19)` is the step that removes the profile's
+derivative from the mollified equation, which is what makes section 4 non-circular: `V'` is only a
+distribution, and after this identity it never appears.
+
+Traps: `HasDerivAt.comp` against `fun t => x - t` produces an instance-path mismatch that `simpa`
+cannot bridge — state the composed `HasDerivAt` with its type ascribed and let elaboration unify.
+`HasCompactSupport k'` is not a hypothesis: it follows from `deriv_eq_zero_of_notMem_tsupport`.
+
+Remaining for section 4: `(20)`'s second bound `||k_eps'||_1 <= C_rho` (the first,
+`||k_eps||_1 <= C_rho eps`, is already `integral_abs_firstMomentKernel_bump_le` in
+`BumpMollifierFamily.lean`), and then the assembly — mollify the equation, bound `U_eps` uniformly
+with `integral_sq_mollify_le_of_isProbabilityDensity` and the coercive estimate, and pass to the
+limit with `exists_weakLimit_of_bounded`.
+
+## EU. The card's `(20)` — DONE
+
+`HTGeometry/ScaledMollifierMoments.lean`, with `scaledMollifier rho eps t = eps^{-1} rho (t/eps)`:
+
+```text
+firstMomentKernel_scaled              k_eps(t) = firstMomentKernel rho (t/eps)
+integral_scaledMollifier              int rho_eps = int rho
+integral_abs_firstMomentKernel_scaled ||k_eps||_1 = eps * ||k_1||_1          -- (20) mass half
+hasDerivAt_firstMomentKernel_scaled   k_eps'(t) = eps^{-1} (rho + u rho')(t/eps)
+integral_abs_firstMomentDeriv_scaled  ||k_eps'||_1 = ||k_1'||_1              -- (20) derivative half
+```
+
+The content is one observation: `k_eps` is the *same* profile read at scale `eps`, because the
+`eps^{-1}` of the density cancels against the `t` of the moment.  So its mass scales linearly and
+its derivative's mass is scale invariant — the `eps^{-1}` from differentiating cancels the `eps`
+from the substitution.  That pairing is exactly what section 4 needs: a vanishing zero-order defect
+against a bounded first-order one.
+
+Trap: `Measure.integral_comp_div` lives in `MeasureTheory.Measure`, and its higher-order pattern
+`int x, ?g (x / ?a)` will not unify against a composite integrand — pass `g` explicitly.  Same
+`HasDerivAt.comp` instance-path trap as `(19)`; ascribe the composed statement with `∘` first and
+re-ascribe to the lambda form.
+
+## EV. 81/103 — `bv-copoisson-sharp-critical-half-weight-log-flux` promoted
+
+Its `## Lean closure and provider disposition` section already said "the unconditional formal
+boundary is now dependency-closed", with five modules.  All five exist; six terminal theorems
+spot-checked and clean.  Companion written, card moved.
+
+**This is the fourth free promotion found by reading the card's own Lean section first.**  The
+others were `two-port-return-redundancy`, `residual-overcrowding`, `finite-aperture-boundary-phase-locking`.
+Before planning any Lean for a card, read its `## Lean …` section and `grep -c
+"formal/GaloisForLFunctions"` over the folder — that costs seconds and has repeatedly found
+finished work.
+
+### Named infrastructure targets, collated from the remaining 22
+
+Every one of these is stated by the cards themselves, and several are shared:
+
+```text
+vector-valued Paley--Wiener strip translation   forced-gamma-upper-strip-gluing,
+                                                scalar-analytic-forcing-trace-zero-h1
+Gamma-ratio strip modulus                       same two
+physical s = e^{-L} chart                       carleman-flat-port, wiener-cutoff,
+                                                paired-seam-carleman
+Carleman kernel + logistic approximate identity carleman-flat-port, paired-seam-carleman
+l^2(Z^d) weighted shifts + Borel--Cantelli      tempered-orbit-dichotomy,
+                                                log-recurrence-trichotomy
+valuation convolution, infinite Neumann series,
+  scalar Plancherel                             wiener-nuclear-boundary-carrier
+unbounded multiplier a_a(D), sharp interval
+  projection, Carleman cross block              wiener-cutoff-closed-graph-relation
+Hilbert-valued oscillatory Gamma theorem        gamma-three-grade-delay-root-observability
+Matveev / Baker linear forms in logarithms      log-recurrence-trichotomy
+```
+
+Each card explicitly rejects a wrapper in place of these.  `wiener-nuclear-boundary-carrier` is
+partially closed already: its load-bearing obstruction is formal in
+`SuzukiPhysicalLogBoundaryMomentLock.lean`.
+
+## EW. Target 3 of 9 — the physical `s = e^{-L}` chart — DONE
+
+`HTGeometry/PhysicalLogChart.lean`:
+
+```text
+logChart L                        = exp (-L)
+image_logChart_Ioi                logChart '' Ioi 0 = Ioo 0 1
+integral_Ioo_eq_integral_logChart int_{Ioo 0 1} f = int_{Ioi 0} exp(-L) f(exp(-L))
+integral_sq_logChart              int_{Ioo 0 1} u^2 = int_{Ioi 0} (exp(-L/2) u(exp(-L)))^2
+```
+
+The last one is the reason the *half* weight is the critical one and no other: `exp(-L/2)` is
+exactly the conjugation that makes the chart an `L^2` isometry, so the boundary energy of a profile
+on the unit interval is the ordinary energy of its half-weighted transport on the ray.  Three cards
+name this chart (`carleman-flat-port`, `wiener-cutoff`, `paired-seam-carleman`).
+
+Route: `integral_image_eq_integral_abs_deriv_smul` with `g = exp(-.)` on `Ioi 0`, injective there,
+image `Ioo 0 1`, `|g'| = exp(-L)`.  Trap: `(hasDerivAt_id L).neg` lands in the wrong instance path;
+use `hasDerivAt_neg L`, and `show` the unfolded `logChart` before `simpa`.
+
+## EX. Target 4 of 9 — the Carleman kernel's Schur weight — DONE
+
+`HTGeometry/CarlemanSchurWeight.lean`:
+
+```text
+carlemanSchurPrimitive s t   = (2/sqrt s) arctan (sqrt t / sqrt s)
+integral_carlemanSchurWeight : int_{Ioi 0} dt / ((s + t) sqrt t) = pi / sqrt s
+```
+
+`t^{-1/2}` is the Schur weight of the Carleman kernel `1/(s+t)`, and the `pi` in this identity is
+where the sharp constant of `||S|| <= pi` comes from.  Because the integrand is nonnegative,
+`integral_Ioi_of_hasDerivAt_of_nonneg` applies and **no separate integrability argument is needed** —
+that variant carries the integrability internally, which is worth knowing for every improper
+integral of a positive kernel in this corpus.
+
+Two cards name the Carleman kernel (`carleman-flat-port`, `paired-seam-carleman`).  What this
+does not yet give is Schur's test itself, which mathlib also lacks; with the weight identity in
+hand it is the standard two-line Cauchy--Schwarz argument against `w(t) = t^{-1/2}`.
+
+## EY. Schur's test, pointwise step
+
+`HTGeometry/SchurTestPointwise.lean`, `sq_kernelIntegral_le`:
+
+```text
+(int k(s,t) f(t) dt)^2 <= C w(s) int k(s,t) f(t)^2 / w(t) dt
+```
+
+given a nonnegative kernel row `kr = k(s,.)`, a positive weight `w`, and the row bound
+`int kr w <= C w(s)`.  The mechanism is the split `k f = (k w) . (f / w)` followed by
+`sq_integral_weighted_le` against the measure `k(s,.) w(.)`.
+
+mathlib has neither Schur's test nor its ingredients.  What remains of the full test is the outer
+step — integrate this in `s`, swap, and apply the column bound — which is the same Tonelli pattern
+already carried out in `YoungConvolutionL2.lean`; the swap must again run in `ENNReal`, since the
+joint integrability is what the swap proves rather than what it assumes.
+
+With `integral_carlemanSchurWeight` (`int dt/((s+t) sqrt t) = pi/sqrt s`) as both row and column
+bound at `w(t) = t^{-1/2}`, `C = pi`, this yields `||S|| <= pi` for the Carleman transform.
+
+## EZ. Target 5 of 9 — weighted valuation shifts on the lattice energy
+
+`HTGeometry/WeightedShiftEnergy.lean`, for an arbitrary `AddCommGroup` index (so `Z^d` is a case):
+
+```text
+tsum_sq_comp_add            sum Z(nu+s)^2 = sum Z(nu)^2
+summable_sq_comp_add        summability transfers along the translation
+tsum_sq_weightedShift_le    sum (alpha_nu Z(nu+s))^2 <= M^2 sum Z(nu)^2   for |alpha| <= M
+tsum_sq_weightedShift_le_of_le  the same against an energy bound
+```
+
+A weighted shift moves no energy: translation is a bijection of the index group.  **No `lp`
+structure is needed** — summability and `Equiv.addRight` suffice, which is what makes this the cheap
+half of the `l^2(Z^d)` stack the orbit-recurrence cards name.
+
+Trap: `(Equiv.addRight s).tsum_eq` and `.summable_iff` both hit a `(deterministic) timeout at
+isDefEq` at the default 200000 heartbeats on a general `AddCommGroup`; route through
+`simpa [Function.comp_def]` and raise `maxHeartbeats`.
+
+What this does not give is Borel--Cantelli over the prime-log recurrence, which is the other half
+of that target and is genuinely probabilistic.

@@ -42,18 +42,6 @@ def CCMContinuedCauchyDomain (z : ℂ) : Prop :=
   1 / 2 + (starRingEnd ℂ) z * I ≠ 1 ∧
   riemannZeta (1 / 2 + (starRingEnd ℂ) z * I) ≠ 0
 
-/-- Schwarz reality in the centered Xi coordinate. -/
-theorem XiC_conj (z : ℂ) :
-    XiC ((starRingEnd ℂ) z) = (starRingEnd ℂ) (XiC z) := by
-  rw [XiC, XiC]
-  have harg : 1 / 2 + (starRingEnd ℂ) z * I =
-      1 - (starRingEnd ℂ) (1 / 2 + z * I) := by
-    apply Complex.ext
-    · simp
-      ring
-    · simp
-  rw [harg, xi_one_sub, xi_conj]
-
 /-- A regular point with the same imaginary centered coordinate as an actual Xi
 divisor point belongs to the full continued source domain.  Real pole motion
 therefore preserves both open-strip source evaluations. -/

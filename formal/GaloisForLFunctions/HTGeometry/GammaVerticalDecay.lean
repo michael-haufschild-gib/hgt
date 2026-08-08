@@ -4,6 +4,7 @@ import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Fourier.RiemannLebesgueLemma
 import Mathlib.MeasureTheory.Function.Jacobian
 import Mathlib.Topology.Order.Compact
+import GaloisForLFunctions.HTGeometry.GammaVerticalModulus
 
 /-!
 # Gamma on a vertical line, through the Beta integral
@@ -26,13 +27,8 @@ open Set
 
 /-- **The Gamma function is dominated by its real part's Gamma value.** -/
 theorem norm_Gamma_le_real_Gamma_re {s : ℂ} (hs : 0 < s.re) :
-    ‖Complex.Gamma s‖ ≤ Real.Gamma s.re := by
-  rw [Complex.Gamma_eq_integral hs, Complex.GammaIntegral, Real.Gamma_eq_integral hs]
-  refine le_trans (norm_integral_le_integral_norm _) ?_
-  refine le_of_eq (setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_)
-  have hx0 : (0:ℝ) < x := hx
-  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
-    Complex.norm_cpow_eq_rpow_re_of_pos hx0, Complex.sub_re, Complex.one_re]
+    ‖Complex.Gamma s‖ ≤ Real.Gamma s.re :=
+  GaloisForLFunctions.HTGeometry.norm_Gamma_le_Gamma_re hs
 
 
 /-- On a vertical line the Gamma values at conjugate points are conjugate. -/

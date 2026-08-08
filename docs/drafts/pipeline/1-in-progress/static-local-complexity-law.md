@@ -5248,3 +5248,37 @@ receive a new title and an independent significance audit.
   return level with small `P(R)` and prove growing-replica decay of
   `A_(r,Z)(mu;R)` for the ordinary fixed-`q` Gaussian static ensemble strongly
   enough to beat `h_r`.
+- 2026-08-08 -- Replaced the projection-collision endpoint by a maximal-volume
+  skeleton of actual occupied circuit endpoints.  Physical pair-fidelity
+  domination of the compressed kernel was falsified: orthogonal vectors can
+  have parallel projections.  The positive survivor selects `h_r` occupied
+  replica targets by maximal determinant; Cramer's rule gives coefficient
+  norm at most one for every other occupied target.  Lean now proves, after
+  independently fixed return excision,
+  `P(E_a) <= P(R) + h_r a^(-r) sum_(j<=h_r) M_r(z_j)` and the uniform form
+  `P(E_a) <= P(R) + h_r^2 a^(-r) M_r`.  No circuit-description union or
+  compressed pair cancellation remains; every `M_r(z_j)` is a genuine
+  fixed-endpoint replica moment over the original restricted source measure,
+  retaining every fibre sheet.  Module:
+  `HTGeometry/MaximalVolumeReplicaTargetSkeletonLaw.lean`; card:
+  `../3-formalized/maximal-volume-replica-target-skeleton-law.md`.  Classical
+  max-volume/Cramer linear algebra is not claimed novel.  Exact remaining
+  ordinary-local-Hamiltonian core is now targetwise and quantitative: prove a
+  growing-replica ceiling on each selected physical endpoint moment strong
+  enough to beat `h_r^2`, together with a small independent return tail.
+- 2026-08-08 -- Removed a genuine overcount from the return-excised quenched
+  coarea law.  After fixing target-independent return set `R`, let `U_R` be
+  span of occupied-target projections of all surviving source replicas and
+  `iota_R = dim U_R`.  Lean now proves `U_R` is unique least exact reporter,
+  `iota_R <= h_r`, and, without changing off-return pair action `A_R`,
+  `P(E_a) <= P(R) + a^(-r) sqrt(iota_R A_R)`.  Source space is not
+  quotiented: fibre-sheet multiplicity and occupied endpoint image remain in
+  original double-source integral.  Factor `iota_R` is universally sharp by
+  uniform orthogonal-sheet example; any smaller universal coefficient fails.
+  Duplicate labels and positive-order exact-zero residuals leave carrier and
+  rank unchanged.  Module:
+  `HTGeometry/ReturnExcisedMinimalIncidenceRankLaw.lean`; card:
+  `../3-formalized/return-excised-minimal-incidence-rank-law.md`.  This does
+  not close ordinary-local-Hamiltonian frontier: remaining hard theorem is
+  growing-replica decay of unchanged `A_R`, now required only against exact
+  surviving source--target incidence rank `iota_R`, not full target rank.

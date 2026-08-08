@@ -21,6 +21,19 @@ critical line `Re s = ½` and rotates the functional-equation reflection `s ↦ 
 `z ↦ −z`. -/
 noncomputable def XiC (z : ℂ) : ℂ := xi (1 / 2 + z * Complex.I)
 
+/-- **Schwarz reality in the centered coordinate.**  `ΞC(conj z) = conj (ΞC z)`, from the
+functional equation and the Schwarz reflection of `ξ`. -/
+theorem XiC_conj (z : ℂ) :
+    XiC ((starRingEnd ℂ) z) = (starRingEnd ℂ) (XiC z) := by
+  rw [XiC, XiC]
+  have harg : 1 / 2 + (starRingEnd ℂ) z * Complex.I =
+      1 - (starRingEnd ℂ) (1 / 2 + z * Complex.I) := by
+    apply Complex.ext
+    · simp
+      ring
+    · simp
+  rw [harg, xi_one_sub, xi_conj]
+
 /-- `ΞC` is entire: it is `ξ` precomposed with the affine (hence entire) map `z ↦ ½ + z·i`. -/
 theorem XiC_differentiable : Differentiable ℂ XiC := by
   have haff : Differentiable ℂ (fun z : ℂ => 1 / 2 + z * Complex.I) := by fun_prop

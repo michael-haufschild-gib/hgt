@@ -710,3 +710,63 @@ TripticOrderBound                 colCoeff_eq_rowCoeff — the backward column s
 
 Both coordinates of the normal-form index set — the lines and the orders — are therefore finite and
 explicitly bounded, in each of the two lattice directions.
+
+
+## Built: the weighted atom sum and the atoms' class membership
+
+```text
+TripticAtomSum          sameLine / lineCount / rowAtomSum — the atoms of one order in one direction,
+                         each weighted by the row field at its own base point divided by its own
+                         principal coefficient `(-1)ʲ j!` AND by the number of list members on the
+                         same line.  The multiplicity division makes the construction independent of
+                         how many representatives of a line the finite list happens to contain, so no
+                         choice of canonical representatives is needed;
+                        laurentCoeff_rowAtomSum_of_ne_order — invisible at every other order
+                         (the jets are pure);
+                        laurentCoeff_rowAtomSum_self — at its own order it reproduces the row field
+                         exactly, at every point of the plane
+TripticJetAtomShift     the zero set of theta is CLOSED, so the atom's shift law holds on an open
+                         set; jets of an identity on an open set agree there, so every derivative
+                         satisfies the same law with the constant differentiated away.  Hence
+                         jetAtom_shift_succ and jetAtom_mixed_eq_zero: every jet atom has vanishing
+                         mixed second difference off its own poles — a COUNTABLE set, listed
+                         explicitly as `q + (1+σ)/2 + ℤ + ℤσ`
+```
+
+`iteratedDeriv_comp_add_const` was found already in mathlib and the local duplicate removed.
+
+The remaining step is the outer assembly: sum the per-order atom sums over the bounded order range in
+both directions, subtract from `F`, and observe that the difference has no Laurent coefficient of
+negative index anywhere — every ingredient of that computation is now a proved lemma.
+
+
+## CLOSED: the kernel identification (cards 2 and 3)
+
+The assembly is finished.  Two capstones, both wired and axiom-clean:
+
+```text
+TripticKernelNormalForm       exists_totalAtomSum_no_principal_part — a source of vanishing orbital
+                               divisor has, AT EVERY POINT OF THE PLANE and at every negative index,
+                               exactly the Laurent coefficients of an explicit finite combination of
+                               theta-source jets.  The two transverse fields split the principal
+                               part; the order bound makes the order range finite; the line-class
+                               finiteness makes each order's index list finite; the weighted atom sum
+                               reproduces both fields; and the jets are pure, so no order interferes
+                               with another
+TripticKernelIdentification   exists_const_sub_totalAtomSum_of_vanishing_divisor — hence the source
+                               EQUALS that finite atom sum plus a constant off a countable set, and
+                               its mixed constant `C` is forced to `0`.  The difference has no
+                               principal part, so its canonical normal form is entire; that normal
+                               form is exactly `1`-periodic (both the source and the atom sum are)
+                               and has constant mixed second difference off the countable union of
+                               the atoms' pole lattices with the source's non-analytic points; and
+                               pole-free rigidity makes it constant
+```
+
+Both `Cst = 0` and the explicit finite decomposition come out of the same theorem: nothing about the
+mixed constant had to be assumed, and no augmentation law was needed on this path.
+
+Since every atom is a jet of a translate of `δ log θ`, and jets and translates of a differentially
+algebraic germ are differentially algebraic, the kernel of the orbital divisor consists of
+differentially algebraic functions.  That is statement `(4)` of `triptic-ht-kummer-content-root-classification`
+and the completeness half of `triptic-orbit-residue-reciprocity`.

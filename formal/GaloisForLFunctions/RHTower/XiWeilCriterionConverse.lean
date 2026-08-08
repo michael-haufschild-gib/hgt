@@ -179,15 +179,8 @@ theorem xiWeilDiagonalCoeff_ne_zero {z : ℂ} (hz0 : z ≠ 0) (him : z.im ≠ 0)
 
 /-- Schwarz reality in the centered coordinate. -/
 theorem XiC_conj' (z : ℂ) :
-    XiC ((starRingEnd ℂ) z) = (starRingEnd ℂ) (XiC z) := by
-  rw [XiC, XiC]
-  have harg : 1 / 2 + (starRingEnd ℂ) z * Complex.I =
-      1 - (starRingEnd ℂ) (1 / 2 + z * Complex.I) := by
-    apply Complex.ext
-    · simp
-      ring
-    · simp
-  rw [harg, xi_one_sub, xi_conj]
+    XiC ((starRingEnd ℂ) z) = (starRingEnd ℂ) (XiC z) :=
+  XiC_conj z
 
 /-- Continuity of the diagonal coefficient away from the origin and the real
 axis. -/

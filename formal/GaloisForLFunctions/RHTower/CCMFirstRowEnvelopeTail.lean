@@ -362,6 +362,15 @@ theorem mapsTo_mul_left_Ioi {k : ℝ} (hk : 2 ≤ k) :
   have : (1 : ℝ) < k * x := by nlinarith
   exact this
 
+/-- A strict dilation preserves the exterior ray. -/
+theorem mapsTo_mul_left_Ioi_fixedRatio {k : ℝ} (hk : 1 < k) :
+    Set.MapsTo (fun x : ℝ => k * x) (Ioi 1) (Ioi 1) := by
+  intro x hx
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hxk : x < k * x := by
+    simpa [one_mul] using mul_lt_mul_of_pos_right hk hx0
+  exact hx.trans hxk
+
 theorem continuousOn_envelopeProduct {s c k : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 0 ≤ c)
     (hk : 2 ≤ k) : ContinuousOn (envelopeProduct s c k) (Ioi 1) := by
   have hlin : ContinuousOn (fun x : ℝ => k * x) (Ioi 1) :=
@@ -827,6 +836,7 @@ theorem integral_Ioc_ampFourthRoot_le_fixedRatio {s k X : ℝ}
   refine hmono.trans ?_
   rw [MeasureTheory.integral_const_mul, integral_Ioc_rpow_sub_one_gen hX]
   ring_nf
+  exact le_rfl
 
 theorem integrableOn_ampFourthRoot {s k X : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
     (hX : 1 ≤ X) : IntegrableOn (ampFourthRoot s k) (Ioc 1 X) volume := by
@@ -905,6 +915,14 @@ theorem continuousOn_xiDiffPhase {s k : ℝ} (hs0 : 0 ≤ s) (hk : 2 ≤ k) :
   have hkx : (1 : ℝ) < k * x := by nlinarith
   exact ((hasDerivAt_xiDiffPhase hs0 hx1 hkx).continuousAt).continuousWithinAt
 
+/-- Continuity of the difference phase for every strict fixed dilation. -/
+theorem continuousOn_xiDiffPhase_fixedRatio {s k : ℝ} (hs0 : 0 ≤ s) (hk : 1 < k) :
+    ContinuousOn (xiDiffPhase s k) (Ioi 1) := by
+  intro x hx
+  have hx1 : (1 : ℝ) < x := hx
+  have hkx : (1 : ℝ) < k * x := by nlinarith
+  exact ((hasDerivAt_xiDiffPhase hs0 hx1 hkx).continuousAt).continuousWithinAt
+
 /-- The complex integrand of a block is interval integrable: both factors are continuous on the open
 ray, and every block sits inside it. -/
 theorem intervalIntegrable_ampCexp {s c k a b : ℝ} (hs1 : s ≤ 1 / 2) (hs0 : 0 ≤ s) (hk : 2 ≤ k)
@@ -923,6 +941,28 @@ theorem intervalIntegrable_ampCexp {s c k a b : ℝ} (hs1 : s ≤ 1 / 2) (hs0 : 
   have hph : ContinuousOn (fun x : ℝ => ((σ * (c * xiDiffPhase s k x) : ℝ) : ℂ)) (uIcc a b) :=
     Complex.continuous_ofReal.comp_continuousOn
       (continuousOn_const.mul (continuousOn_const.mul ((continuousOn_xiDiffPhase hs0 hk).mono hsub)))
+  exact hamp.mul (Complex.continuous_exp.comp_continuousOn (hph.mul continuousOn_const))
+
+/-- Fixed-ratio version of block integrability, valid for every `k > 1`. -/
+theorem intervalIntegrable_ampCexp_fixedRatio {s c k a b : ℝ}
+    (hs1 : s ≤ 1 / 2) (hs0 : 0 ≤ s) (hk : 1 < k)
+    (hab : a ≤ b) (ha : 1 < a) (σ : ℝ) :
+    IntervalIntegrable
+      (fun x => (ampFourthRoot s k x : ℂ)
+        * Complex.exp (((σ * (c * xiDiffPhase s k x) : ℝ) : ℂ) * Complex.I)) volume a b := by
+  have hsub : uIcc a b ⊆ Ioi 1 := by
+    rw [uIcc_of_le hab]
+    intro x hx
+    exact lt_of_lt_of_le ha hx.1
+  refine ContinuousOn.intervalIntegrable ?_
+  have hamp : ContinuousOn (fun x : ℝ => (ampFourthRoot s k x : ℂ)) (uIcc a b) :=
+    Complex.continuous_ofReal.comp_continuousOn
+      ((continuousOn_ampFourthRoot_fixedRatio hs1 hk).mono hsub)
+  have hph : ContinuousOn (fun x : ℝ => ((σ * (c * xiDiffPhase s k x) : ℝ) : ℂ))
+      (uIcc a b) :=
+    Complex.continuous_ofReal.comp_continuousOn
+      (continuousOn_const.mul
+        (continuousOn_const.mul ((continuousOn_xiDiffPhase_fixedRatio hs0 hk).mono hsub)))
   exact hamp.mul (Complex.continuous_exp.comp_continuousOn (hph.mul continuousOn_const))
 
 /-! ## The four-way assembly -/

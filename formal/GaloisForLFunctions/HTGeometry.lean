@@ -3960,6 +3960,7 @@ import GaloisForLFunctions.HTGeometry.ObserverTriangleInequality
 import GaloisForLFunctions.HTGeometry.ObserverVisibleLocalTimeDimension
 import GaloisForLFunctions.HTGeometry.OccupationFactorInjective
 import GaloisForLFunctions.HTGeometry.OccupationSubsetPrimitivity
+import GaloisForLFunctions.HTGeometry.OccupationSubsetJohnson
 import GaloisForLFunctions.HTGeometry.OccupationVacuumAnomalyReciprocity
 import GaloisForLFunctions.HTGeometry.OddDirichletKernel
 import GaloisForLFunctions.HTGeometry.OddHarmonicBoundaryValue
@@ -4917,6 +4918,7 @@ import GaloisForLFunctions.HTGeometry.ResultantDegreeBound
 import GaloisForLFunctions.HTGeometry.RiemannSumCell
 import GaloisForLFunctions.HTGeometry.RieszBrothersReduction
 import GaloisForLFunctions.HTGeometry.RieszBrothersRieszFischer
+import GaloisForLFunctions.HTGeometry.RieszProjectionRange
 import GaloisForLFunctions.HTGeometry.RieszSingularSzegoCollapse
 import GaloisForLFunctions.HTGeometry.RightFlipScattering
 import GaloisForLFunctions.HTGeometry.RightHalfPlaneWitnesses
@@ -6119,3 +6121,4 @@ import GaloisForLFunctions.HTGeometry.ScaledMollifierMoments
 import GaloisForLFunctions.HTGeometry.PhysicalLogChart
 import GaloisForLFunctions.HTGeometry.CarlemanSchurWeight
 import GaloisForLFunctions.HTGeometry.SchurTestPointwise
+import GaloisForLFunctions.HTGeometry.WeightedShiftEnergy

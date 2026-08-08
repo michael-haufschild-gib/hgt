@@ -1,10 +1,10 @@
 # Maximal-volume replica target-skeleton law
 
 - **ID:** `maximal-volume-replica-target-skeleton-law`
-- **Stage:** 2 -- fully proven on paper
-- **Type:** THEOREM (paper)
-- **Parent:** `../3-formalized/return-excised-replica-coarea-incidence-law.md`
-- **Status:** `[PROVED HERE] [LEAN TARGET FROZEN] [APPLICATION NOVELTY UNVERIFIED]`
+- **Stage:** 3 -- formalized in Lean 4
+- **Type:** THEOREM (Lean)
+- **Parent:** `return-excised-replica-coarea-incidence-law.md`
+- **Status:** `[PROVED HERE] [LEAN-PROVED] [FRONTIER ADVANCE] [APPLICATION NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-07
 - **Statement:** A maximal-volume basis of the occupied replica target image replaces the complete target union by at most its Hilbert-number many fixed-target moments, with a universal Hilbert-number Cauchy cost and no circuit-label entropy.
 
@@ -23,7 +23,7 @@ to which the existing spectral-action and weighted-crowding machinery can apply.
 
 - [x] 0 -> 1 in-progress: exact conjecture, falsification chain, proof, and Door passport fixed
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof below
-- [ ] 2 -> 3 formalized: maximal-volume coefficient theorem and complete-incidence capstone
+- [x] 2 -> 3 formalized: maximal-volume coefficient theorem and complete-incidence capstone
 - [ ] 3 -> 4 publication-ready: only after ordinary-local-Hamiltonian moment decay and priority audit
 
 ## Frozen theorem
@@ -192,6 +192,17 @@ a polynomial bound for any circuit model until its Hilbert function is separatel
   fixed-target moments, avoiding both circuit-label entropy and projection-covariance cancellation.
 - Targeted searches did not locate this recurrence/complexity composition.  Search noncollision is
   not priority evidence; status remains `[APPLICATION NOVELTY UNVERIFIED]`.
+- A 2026-08-08 collision audit covered maximal-volume/Auerbach basis selection, replica moments,
+  quantum circuit anti-concentration, circuit lower bounds, and Hilbert-function circuit images.
+  It recovered classical max-volume algorithms and the established random-circuit/design literature,
+  but no use of an occupied Veronese endpoint skeleton to replace the complete shallow-circuit union
+  in a return-excised recurrence bound.  This narrows the collision risk but still does not authorize
+  a priority claim.
+- Brown--Freedman--Lin--Susskind prove saturation and recurrence for random circuits and stochastic
+  local-Hamiltonian evolution, and explicitly identify purely local Hamiltonian dynamics without
+  continuously injected randomness as the desired realistic extension.  The present theorem removes
+  target-union entropy from that extension; it does not supply the remaining ordinary-Hamiltonian
+  fixed-target moment decay.
 - This law does not prove ordinary-local-Hamiltonian anti-concentration.  A hostile reviewer must
   reject any claim that `(MV4)` alone establishes Brown--Susskind growth.
 
@@ -204,7 +215,7 @@ a polynomial bound for any circuit model until its Hilbert function is separatel
 - **Door 3:** formalize maximal determinant selection, Cramer coefficient bound, pointwise replica
   incidence, integrated law, and uniform-moment corollary.
 
-## Lean target
+## Lean realization
 
 - Module: `GaloisForLFunctions.HTGeometry.MaximalVolumeReplicaTargetSkeletonLaw`
 - Coordinate matrix: `finiteTargetMatrix`
@@ -213,8 +224,30 @@ a polynomial bound for any circuit model until its Hilbert function is separatel
 - Quenched capstone: `measure_completeTargetCapture_le_maxVolumeSkeletonMoments`
 - Uniform-moment corollary: `measure_completeTargetCapture_le_hilbert_sq_mul_fixedMoment`
 
+The formal quenched law uses the restricted original source measure on `R^c`, so no source points
+or fibre sheets are identified.  Its selected targets are members of the original occupied target
+family.  The only assumptions beyond finite dimensionality are positive replica order and threshold,
+measurability of the independently fixed return set, and integrability of the displayed moments.
+No randomness, independence, locality, spectral gap, transversality, or unproved asymptotic premise
+enters the theorem.
+
+## Verification
+
+- `lake env lean GaloisForLFunctions/HTGeometry/MaximalVolumeReplicaTargetSkeletonLaw.lean`: PASS.
+- `lake build GaloisForLFunctions.HTGeometry.MaximalVolumeReplicaTargetSkeletonLaw`: PASS,
+  8669/8669 jobs.
+- Axiom audit of the maximal-volume basis, replica skeleton, pointwise, quenched, and uniform-moment
+  theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
+- Forbidden-token scan of the new module: PASS.
+- Area umbrella import: wired through `GaloisForLFunctions.HTGeometry`.
+- Global formal lint reaches the new module and reports no defect in it.  Repository lint remains red
+  only on concurrently added, unrelated unwired modules
+  `RHTower.ProlateCanonicalSeparationLimit` and `RHTower.XiMassCriticalCenteredCosineCone`.
+
 ## Log
 
 - 2026-08-07 -- C0 physical-fidelity domination falsified by projection cancellation.  C1 arbitrary
   target basis falsified by conditioning.  C2 maximal-volume target skeleton paper proof closed.
   C3 D-optimal improvement identified as known design theory and excluded from novelty claim.
+- 2026-08-08 -- C2 formalized end to end, including actual replica endpoints, complete-union
+  pointwise domination, return-excised quenched integration, and uniform `h_r^2` moment corollary.

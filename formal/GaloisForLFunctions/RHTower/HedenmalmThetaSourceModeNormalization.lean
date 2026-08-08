@@ -31,19 +31,8 @@ open HedenmalmQuantile HedenmalmPrimeTranslation
 /-- The source-pointed mode at a theta-source zero is Lebesgue integrable. -/
 theorem integrable_sourceModeU_thetaSource {z : ℂ} (hz : |z.im| < 1)
     (hzero : xiC thetaSource z = 0) :
-    Integrable (sourceModeU thetaSource z) (volume : Measure ℝ) := by
-  have hgap : (0 : ℝ) < 1 - |z.im| := by linarith
-  have hC : 0 ≤ thetaBound / (1 - |z.im|) :=
-    div_nonneg thetaBound_nonneg hgap.le
-  have hmajor : Integrable
-      (fun x : ℝ => thetaBound / (1 - |z.im|) * Real.exp (-|x|))
-      (volume : Measure ℝ) := by
-    simpa using
-      (integrable_exp_neg_mul_abs (c := (1 : ℝ)) one_pos).const_mul
-        (thetaBound / (1 - |z.im|))
-  refine hmajor.mono' (continuous_sourceModeU hz).aestronglyMeasurable ?_
-  filter_upwards with x
-  exact norm_sourceModeU_le hz hzero x
+    Integrable (sourceModeU thetaSource z) (volume : Measure ℝ) :=
+  integrable_sourceModeU hz hzero
 
 /-- The right mode `f_z = -z u_z` at a theta-source zero is Lebesgue integrable. -/
 theorem integrable_sourceModeF_thetaSource {z : ℂ} (hz : |z.im| < 1)
@@ -56,22 +45,14 @@ theorem integrable_sourceModeF_thetaSource {z : ℂ} (hz : |z.im| < 1)
 /-- The theta-source mode vanishes at the left endpoint. -/
 theorem tendsto_sourceModeU_thetaSource_atBot {z : ℂ} (hz : |z.im| < 1)
     (hzero : xiC thetaSource z = 0) :
-    Tendsto (sourceModeU thetaSource z) atBot (𝓝 0) := by
-  refine squeeze_zero_norm (fun x => norm_sourceModeU_le hz hzero x) ?_
-  have habs : Tendsto (fun x : ℝ => -|x|) atBot atBot :=
-    tendsto_neg_atTop_atBot.comp tendsto_abs_atBot_atTop
-  simpa using (Real.tendsto_exp_atBot.comp habs).const_mul
-    (thetaBound / (1 - |z.im|))
+    Tendsto (sourceModeU thetaSource z) atBot (𝓝 0) :=
+  tendsto_sourceModeU_atBot hz hzero
 
 /-- The theta-source mode vanishes at the right endpoint. -/
 theorem tendsto_sourceModeU_thetaSource_atTop {z : ℂ} (hz : |z.im| < 1)
     (hzero : xiC thetaSource z = 0) :
-    Tendsto (sourceModeU thetaSource z) atTop (𝓝 0) := by
-  refine squeeze_zero_norm (fun x => norm_sourceModeU_le hz hzero x) ?_
-  have habs : Tendsto (fun x : ℝ => -|x|) atTop atBot :=
-    tendsto_neg_atTop_atBot.comp tendsto_abs_atTop_atTop
-  simpa using (Real.tendsto_exp_atBot.comp habs).const_mul
-    (thetaBound / (1 - |z.im|))
+    Tendsto (sourceModeU thetaSource z) atTop (𝓝 0) :=
+  tendsto_sourceModeU_atTop hz hzero
 
 /-- **Canonical source-mode normalization.**  At every theta-source zero in the strip, the right
 mode carries exactly the full source mass.  The equality is forced by the two endpoint values and

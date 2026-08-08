@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.MovingCanonicalFullTranslationFreeness
 import GaloisForLFunctions.HTGeometry.CompactCauchyRowPacketAtlas
 import GaloisForLFunctions.HTGeometry.CarrierCauchy
 import Mathlib.Analysis.Complex.CauchyIntegral
+import GaloisForLFunctions.HTGeometry.AnalyticConjReflection
 
 /-!
 # Finite-jet submersion for the even moving canonical carrier
@@ -89,14 +90,8 @@ theorem analyticAt_conj_comp_conj_evenLocal
     {H : ℂ → ℂ} {w : ℂ}
     (hH : AnalyticAt ℂ H ((starRingEnd ℂ) w)) :
     AnalyticAt ℂ
-      (fun z => (starRingEnd ℂ) (H ((starRingEnd ℂ) z))) w := by
-  rw [Complex.analyticAt_iff_eventually_differentiableAt]
-  have hpull :=
-    (Complex.continuous_conj.tendsto w).eventually
-      (Complex.analyticAt_iff_eventually_differentiableAt.mp hH)
-  filter_upwards [hpull] with z hz
-  have h := hz.conj_conj
-  rwa [Complex.conj_conj] at h
+      (fun z => (starRingEnd ℂ) (H ((starRingEnd ℂ) z))) w :=
+  hH.conj_comp_conj
 
 /-- The moving canonical carrier is analytic at every nonreal point, in either half-plane. -/
 theorem analyticAt_movingCanonicalLogDerivative_of_im_ne_zero

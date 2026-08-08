@@ -1,7 +1,7 @@
 # Sharp BV co-Poisson critical-half-weight logarithmic flux
 
 - **ID:** `bv-copoisson-sharp-critical-half-weight-log-flux`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT SOURCE NO-GO + POSITIVE LOG-FLUX SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [CANDIDATE NEW NO-GO] [POSITIVE SURVIVOR] [NOT RH PROGRESS]`
 - **Parent:**

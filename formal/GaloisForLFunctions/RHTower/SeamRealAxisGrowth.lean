@@ -109,12 +109,8 @@ theorem one_le_re_riemannZeta_ofReal (σ : ℝ) (h : 1 < σ) : (1:ℝ) ≤ (riem
 /-- Off the poles `{0, 1}`, the entire completion equals `½·s(s−1)` times the meromorphic completed
 zeta: `ξ(s) = ½·s(s−1)·Λ(s)`. -/
 theorem xi_eq_half_mul_completed {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1) :
-    xi s = s * (s - 1) / 2 * completedRiemannZeta s := by
-  have h1s : (1 : ℂ) - s ≠ 0 := sub_ne_zero.mpr (Ne.symm h1)
-  unfold xi
-  rw [completedRiemannZeta_eq s]
-  field_simp
-  ring
+    xi s = s * (s - 1) / 2 * completedRiemannZeta s :=
+  xi_eq_half_mul h0 h1
 
 /-- `‖ξ(σ₀ + 2n)‖ → ∞` for `σ₀ ≥ 4π`.  With `ξ = ½·s(s−1)·ζ·Γℝ`, the polynomial and `ζ` factors are
 `≥ 1` on the real axis, so `‖ξ‖ ≥ ‖Γℝ‖ → ∞`. -/

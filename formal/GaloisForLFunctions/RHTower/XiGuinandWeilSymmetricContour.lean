@@ -22,13 +22,8 @@ noncomputable section
 
 /-- The bilateral two-edge transform is even in its Laplace variable. -/
 theorem rectangularTwoEdgeTransform_neg (L a : ℝ) (w : ℂ) :
-    rectangularTwoEdgeTransform L a (-w) = rectangularTwoEdgeTransform L a w := by
-  unfold rectangularTwoEdgeTransform
-  have hpos : (a : ℂ) * -w = -(a : ℂ) * w := by ring
-  have hneg : -(a : ℂ) * -w = (a : ℂ) * w := by ring
-  rw [hpos, hneg]
-  simp only [neg_neg]
-  ring
+    rectangularTwoEdgeTransform L a (-w) = rectangularTwoEdgeTransform L a w :=
+  rectangularTwoEdgeTransform_even L a w
 
 /-- The centered Xi-coordinate form of the rectangular transform is even. -/
 theorem xiRectangularTwoEdgeTransform_neg (L a : ℝ) (z : ℂ) :

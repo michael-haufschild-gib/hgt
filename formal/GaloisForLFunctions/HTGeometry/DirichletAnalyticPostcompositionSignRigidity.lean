@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DirichletHalfPlaneSignRigidity
 import Mathlib.Analysis.Analytic.Order
 import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.Analysis.Calculus.Deriv.Star
+import GaloisForLFunctions.HTGeometry.AnalyticConjReflection
 
 /-!
 # Real-analytic postcomposition sign rigidity for ordinary Dirichlet series
@@ -78,13 +79,8 @@ theorem natCast_cpow_neg_quarter_phase_pow
 
 theorem analyticAt_conj_comp_conj_local {H : ℂ → ℂ} {w : ℂ}
     (hH : AnalyticAt ℂ H ((starRingEnd ℂ) w)) :
-    AnalyticAt ℂ (fun z => (starRingEnd ℂ) (H ((starRingEnd ℂ) z))) w := by
-  rw [analyticAt_iff_eventually_differentiableAt]
-  have hpull := (Complex.continuous_conj.tendsto w).eventually
-    (analyticAt_iff_eventually_differentiableAt.mp hH)
-  filter_upwards [hpull] with z hz
-  have h := hz.conj_conj
-  rwa [Complex.conj_conj] at h
+    AnalyticAt ℂ (fun z => (starRingEnd ℂ) (H ((starRingEnd ℂ) z))) w :=
+  hH.conj_comp_conj
 
 theorem eventually_conj_symmetry_of_analyticAt_eventually_real
     {Phi : ℂ → ℂ} {c : ℂ}

@@ -35,16 +35,31 @@ theorem exists_targetTuple_det_ne_zero_of_span_eq_top
   let A : Matrix (Fin n) (Fin (Fintype.card C)) ℂ :=
     fun i j ↦ target (e.symm j) i
   have hspanA : Submodule.span ℂ (Set.range A.col) = ⊤ := by
-    simpa [A, Matrix.col, e] using hspan
+    have hcol : Set.range A.col = Set.range target := by
+      ext x
+      constructor
+      · rintro ⟨j, rfl⟩
+        exact ⟨e.symm j, by ext i; rfl⟩
+      · rintro ⟨c, rfl⟩
+        refine ⟨e c, ?_⟩
+        ext i
+        simp [A]
+    rw [hcol, hspan]
   have hsurj : Function.Surjective A.mulVec := by
-    rw [← LinearMap.range_eq_top]
-    rw [A.range_mulVecLin]
-    exact hspanA
+    have hrange : LinearMap.range A.mulVecLin = ⊤ := by
+      rw [A.range_mulVecLin, hspanA]
+    have hs : Function.Surjective A.mulVecLin :=
+      LinearMap.range_eq_top.mp hrange
+    intro y
+    obtain ⟨x, hx⟩ := hs y
+    refine ⟨x, ?_⟩
+    change A.mulVec x = y at hx
+    exact hx
   obtain ⟨cols, hcols⟩ :=
     matrix_exists_submatrix_det_ne_zero_of_mulVec_surjective A hsurj
   refine ⟨fun j ↦ e.symm (cols j), ?_⟩
-  simpa [finiteTargetMatrix, A, e, Matrix.submatrix]
-    using hcols
+  change (A.submatrix id cols).det ≠ 0
+  exact hcols
 
 /-- Maximal-volume target skeleton.  Every target has coefficients of norm at
 most one in the selected ordered basis. -/
@@ -66,18 +81,19 @@ theorem exists_maxVolumeTargetBasis_coeff_norm_le_one
     intro hbzero
     have hle := hbmax b₀ (Finset.mem_univ b₀)
     rw [hbzero, norm_zero] at hle
-    exact (norm_pos_iff.mpr hb₀).not_le hle
+    exact (not_le_of_gt (norm_pos_iff.mpr hb₀)) hle
   refine ⟨b, hbdet, ?_⟩
   intro c
   let B := finiteTargetMatrix target b
-  let a : Fin n → ℂ := B⁻¹ *ᵥ target c
+  let a : Fin n → ℂ := (B⁻¹).mulVec (target c)
   have hunit : IsUnit B.det := isUnit_iff_ne_zero.mpr hbdet
   refine ⟨a, ?_, ?_⟩
-  · have hmul : B *ᵥ a = target c := by
-      rw [a, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv B hunit,
+  · have hmul : B.mulVec a = target c := by
+      change B.mulVec ((B⁻¹).mulVec (target c)) = target c
+      rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv B hunit,
         Matrix.one_mulVec]
     ext i
-    simpa [B, finiteTargetMatrix, Matrix.mulVec, mul_comm] using
+    simpa [B, finiteTargetMatrix, Matrix.mulVec, dotProduct, mul_comm] using
       (congrFun hmul i).symm
   · intro j
     let b' : Fin n → C := Function.update b j c
@@ -95,8 +111,8 @@ theorem exists_maxVolumeTargetBasis_coeff_norm_le_one
       rw [← norm_mul, hcramer]
     have hle := hbmax b' (Finset.mem_univ b')
     rw [← hnorm] at hle
-    exact (mul_le_mul_left (norm_pos_iff.mpr hbdet)).mp (by
-      simpa only [mul_one] using hle)
+    exact le_of_mul_le_mul_left (by
+      simpa only [mul_one] using hle) (norm_pos_iff.mpr hbdet)
 
 /-- An occupied replica target, regarded as a vector in its own span. -/
 def replicaTargetVectorInSpan
@@ -171,7 +187,7 @@ theorem exists_replicaTarget_maxVolumeSkeleton
         ∑ j, a j • replicaTargetVectorInSpan r target (b j) := by
     apply (replicaTargetCoordinateEquiv r target).injective
     simpa [replicaTargetCoordinateVector, map_sum, map_smul] using ha
-  exact congrArg Subtype.val hsubtype
+  simpa [replicaTargetVectorInSpan] using congrArg Subtype.val hsubtype
 
 /-- Matched replica fidelity is the squared norm of the Hilbert-space inner
 product of the two Euclidean tensor powers. -/
@@ -304,17 +320,18 @@ theorem measure_completeTargetCapture_le_maxVolumeSkeletonMoments
   have hqnonneg : 0 ≤ᵐ[ν] q :=
     Filter.Eventually.of_forall fun x ↦ by
       dsimp [q]
-      positivity
+      exact mul_nonneg (Nat.cast_nonneg _) <|
+        Finset.sum_nonneg fun j _ ↦
+          pow_nonneg (sq_nonneg _) r
   have hmarkov := mul_meas_ge_le_integral_of_nonneg
     hqnonneg hintq (threshold ^ r)
-  have hprod : ν.real E * threshold ^ r ≤ ∫ x, q x ∂ν := by
+  have hprod : threshold ^ r * ν.real E ≤ ∫ x, q x ∂ν := by
     calc
-      ν.real E * threshold ^ r ≤
-          ν.real {x | threshold ^ r ≤ q x} * threshold ^ r := by
-        gcongr
-        exact measureReal_mono hEQ
-      _ = threshold ^ r * ν.real {x | threshold ^ r ≤ q x} :=
-        mul_comm _ _
+      threshold ^ r * ν.real E ≤
+          threshold ^ r * ν.real {x | threshold ^ r ≤ q x} := by
+        exact mul_le_mul_of_nonneg_left
+          (measureReal_mono hEQ (by finiteness))
+          (pow_nonneg hthreshold.le r)
       _ ≤ ∫ x, q x ∂ν := hmarkov
   have hresidual :
       ν.real E ≤
@@ -324,7 +341,7 @@ theorem measure_completeTargetCapture_le_maxVolumeSkeletonMoments
               threshold ^ r := by
     apply (le_div_iff₀' (pow_pos hthreshold r)).2
     calc
-      ν.real E * threshold ^ r ≤ ∫ x, q x ∂ν := hprod
+      threshold ^ r * ν.real E ≤ ∫ x, q x ∂ν := hprod
       _ = (Module.finrank ℂ (replicaTargetSpan r target) : ℝ) *
           ∑ j, ∫ x,
             finitePureStateFidelity (state x) (target (b j)) ^ r ∂ν := by
@@ -336,6 +353,69 @@ theorem measure_completeTargetCapture_le_maxVolumeSkeletonMoments
     μ target state threshold returnSet hreturn
   exact hcut.trans (by
     simpa [E, ν] using add_le_add_left hresidual (μ.real returnSet))
+
+/-- Uniform fixed-endpoint moment form.  The complete target union costs at
+most the square of occupied replica rank, never target-label cardinality. -/
+theorem measure_completeTargetCapture_le_hilbert_sq_mul_fixedMoment
+    {X C α : Type*} [MeasurableSpace X] [Fintype C] [Fintype α]
+    (μ : Measure X) [IsFiniteMeasure μ]
+    {r : ℕ} (hr : 0 < r)
+    (target : C → α → ℂ) (state : X → α → ℂ)
+    (threshold : ℝ) (hthreshold : 0 < threshold)
+    (returnSet : Set X) (hreturn : MeasurableSet returnSet)
+    (fixedMoment : ℝ) (_hfixedMoment : 0 ≤ fixedMoment)
+    (hint : ∀ c, Integrable
+      (fun x ↦ finitePureStateFidelity (state x) (target c) ^ r)
+        (μ.restrict returnSetᶜ))
+    (hmoment : ∀ c,
+      (∫ x, finitePureStateFidelity (state x) (target c) ^ r
+        ∂(μ.restrict returnSetᶜ)) ≤ fixedMoment) :
+    μ.real {x | ∃ c,
+        threshold ≤ finitePureStateFidelity (state x) (target c)} ≤
+      μ.real returnSet +
+        ((Module.finrank ℂ (replicaTargetSpan r target) : ℝ) ^ 2 *
+          fixedMoment) / threshold ^ r := by
+  classical
+  obtain ⟨b, hcap⟩ :=
+    measure_completeTargetCapture_le_maxVolumeSkeletonMoments
+      μ hr target state threshold hthreshold returnSet hreturn hint
+  have hsum :
+      (∑ j, ∫ x,
+        finitePureStateFidelity (state x) (target (b j)) ^ r
+          ∂(μ.restrict returnSetᶜ)) ≤
+        (Module.finrank ℂ (replicaTargetSpan r target) : ℝ) *
+          fixedMoment := by
+    calc
+      (∑ j, ∫ x,
+          finitePureStateFidelity (state x) (target (b j)) ^ r
+            ∂(μ.restrict returnSetᶜ)) ≤
+          ∑ _j : Fin (Module.finrank ℂ (replicaTargetSpan r target)),
+            fixedMoment := by
+        exact Finset.sum_le_sum fun j _ ↦ hmoment (b j)
+      _ = (Module.finrank ℂ (replicaTargetSpan r target) : ℝ) *
+          fixedMoment := by simp
+  have hscaled :
+      (Module.finrank ℂ (replicaTargetSpan r target) : ℝ) *
+          (∑ j, ∫ x,
+            finitePureStateFidelity (state x) (target (b j)) ^ r
+              ∂(μ.restrict returnSetᶜ)) ≤
+        (Module.finrank ℂ (replicaTargetSpan r target) : ℝ) ^ 2 *
+          fixedMoment := by
+    calc
+      (Module.finrank ℂ (replicaTargetSpan r target) : ℝ) *
+          (∑ j, ∫ x,
+            finitePureStateFidelity (state x) (target (b j)) ^ r
+              ∂(μ.restrict returnSetᶜ)) ≤
+          (Module.finrank ℂ (replicaTargetSpan r target) : ℝ) *
+            ((Module.finrank ℂ (replicaTargetSpan r target) : ℝ) *
+              fixedMoment) :=
+        mul_le_mul_of_nonneg_left hsum (Nat.cast_nonneg _)
+      _ = (Module.finrank ℂ (replicaTargetSpan r target) : ℝ) ^ 2 *
+          fixedMoment := by ring
+  have hdiv :=
+    (div_le_div_iff_of_pos_right (pow_pos hthreshold r)).2 hscaled
+  exact hcap.trans (by
+    simpa [add_comm] using add_le_add_left hdiv (μ.real returnSet))
 
 end
 

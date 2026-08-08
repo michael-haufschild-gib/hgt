@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CoshPolynomialPeriodClassification
 import GaloisForLFunctions.U0.PolyAsymptotics
+import GaloisForLFunctions.HTGeometry.BesselOrderIntegral
 
 /-!
 # Exact order-one growth of polynomially weighted cosh envelopes
@@ -23,16 +24,8 @@ noncomputable section
 
 /-- Complex `cosh` is bounded by the exponential of the argument norm. -/
 theorem norm_cosh_le_exp_norm (z : ℂ) :
-    ‖Complex.cosh z‖ ≤ Real.exp ‖z‖ := by
-  rw [Complex.cosh, norm_div, show ‖(2 : ℂ)‖ = 2 by norm_num]
-  have htri := norm_add_le (Complex.exp z) (Complex.exp (-z))
-  rw [Complex.norm_exp, Complex.norm_exp, Complex.neg_re] at htri
-  have hre : z.re ≤ ‖z‖ := Complex.re_le_norm z
-  have hnre : -z.re ≤ ‖z‖ := by
-    simpa using Complex.re_le_norm (-z)
-  have h1 := Real.exp_le_exp.mpr hre
-  have h2 := Real.exp_le_exp.mpr hnre
-  linarith
+    ‖Complex.cosh z‖ ≤ Real.exp ‖z‖ :=
+  GaloisForLFunctions.HTGeometry.norm_complex_cosh_le_exp_norm z
 
 /-- Global exponential-type bound for the displaced cosh quartet envelope. -/
 theorem norm_coshQuartetEnvelope_le (a : ℝ) (z : ℂ) :

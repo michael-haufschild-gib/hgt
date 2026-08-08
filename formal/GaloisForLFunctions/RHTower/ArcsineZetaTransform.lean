@@ -1,6 +1,7 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.ArcsineSeries
 import GaloisForLFunctions.RHTower.ZetaDerivDirichlet
+import GaloisForLFunctions.RHTower.Sieve.MertensFirst
 
 /-!
 # The arcsine dilation charge is a central-binomial spectrum of even log-Dirichlet sums
@@ -19,20 +20,8 @@ theorem log_natCast_nonneg (k : ℕ) : 0 ≤ Real.log k := by
   · exact Real.log_nonneg (by exact_mod_cast h)
 
 /-- `∑ log k / k^2` converges, from the absolute convergence of `ζ'` at `s = 2`. -/
-theorem summable_log_div_sq : Summable (fun k : ℕ => Real.log k / (k : ℝ) ^ 2) := by
-  have habs : LSeries.abscissaOfAbsConv (1 : ℕ → ℂ) < ((2 : ℂ).re : EReal) := by
-    rw [LSeries.abscissaOfAbsConv_one, Complex.re_ofNat]; exact_mod_cast one_lt_two
-  have hS : Summable (LSeries.term (LSeries.logMul 1) 2) := LSeriesSummable_logMul_of_lt_re habs
-  rw [← Complex.summable_ofReal]
-  apply hS.congr
-  intro n
-  rw [LSeries.term_def]
-  by_cases hn : n = 0
-  · simp [hn]
-  · have hlog : Complex.log (n : ℂ) = ((Real.log n : ℝ) : ℂ) := by
-      rw [← Complex.ofReal_natCast n]; exact (Complex.ofReal_log (Nat.cast_nonneg n)).symm
-    simp only [hn, if_false, LSeries.logMul, Pi.one_apply, mul_one, hlog]
-    norm_cast
+theorem summable_log_div_sq : Summable (fun k : ℕ => Real.log k / (k : ℝ) ^ 2) :=
+  _root_.RHTower.Sieve.summable_log_div_sq
 
 /-- Per-`k` slice: `∑_j c_j·log k / k^{2j+2} = (log k / k)·arcsin(1/k)`. -/
 theorem arcsine_transform_slice (k : ℕ) :

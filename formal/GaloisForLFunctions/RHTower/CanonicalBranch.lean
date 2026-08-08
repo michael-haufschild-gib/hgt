@@ -20,6 +20,7 @@ stage admits a global square root.
 -/
 import GaloisForLFunctions.RHTower.SweepSelection
 import GaloisForLFunctions.RHTower.DiscWindow
+import GaloisForLFunctions.HTGeometry.AnalyticConjReflection
 
 noncomputable section
 
@@ -130,14 +131,8 @@ theorem lineReflection_mem_chartLA {μ : ℝ} {a : ℂ} {r₀ R : ℝ} (ha : a.r
 its conjugate-reflected function is analytic at `w`. -/
 theorem analyticAt_conj_comp_conj {H : ℂ → ℂ} {w : ℂ}
     (hH : AnalyticAt ℂ H ((starRingEnd ℂ) w)) :
-    AnalyticAt ℂ (fun z => (starRingEnd ℂ) (H ((starRingEnd ℂ) z))) w := by
-  rw [analyticAt_iff_eventually_differentiableAt]
-  have hpull : ∀ᶠ z in nhds w, DifferentiableAt ℂ H ((starRingEnd ℂ) z) :=
-    (Complex.continuous_conj.tendsto w).eventually
-      (analyticAt_iff_eventually_differentiableAt.mp hH)
-  filter_upwards [hpull] with z hz
-  have h := hz.conj_conj
-  rwa [Complex.conj_conj] at h
+    AnalyticAt ℂ (fun z => (starRingEnd ℂ) (H ((starRingEnd ℂ) z))) w :=
+  hH.conj_comp_conj
 
 /-- The canonical reflected root: the Schwarz reflection of a chart root across
 the vertical symmetry line. -/

@@ -1780,16 +1780,16 @@ Closed in Lean, with no premises on the final fixed-index statements:
 * `tendsto_integral_Ioi_signedModeRadialDensity_unconditional`: every fixed canonical radial tail
   converges to the exact CCM arcsine density tail divided by `pi`.
 * `tendsto_integral_Ioi_signedModeFirstRowRadialProduct_unconditional`: fixed first-row canonical
-  overlaps vanish for dilation ratio at least two.
+  overlaps vanish for every strict dilation ratio.
 * `signedModeRadialGramEntry_diag_eq` and
   `tendsto_signedModeRadialGramEntry_diag`: exact dilation change of variables and unconditional
   diagonal limit `arcsin(1/k)/(pi*k)`.
 * `signedModeRadialGramEntry_scale_left` and `signedModeRadialGramEntry_comm`: exact positive
   dilation covariance and Gram symmetry.
-* `tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from`: cancellation remains true after
-  discarding any fixed tail prefix whose base is at least two.
-* `tendsto_signedModeRadialGramEntry_of_separated`: every fixed canonical pair separated by a
-  factor of at least two has zero off-diagonal limit.
+* `tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from_fixedRatio`: cancellation remains true
+  after discarding any fixed exterior prefix, for every strict dilation ratio.
+* `tendsto_signedModeRadialGramEntry_of_ne`: every distinct pair of exterior dilations has zero
+  off-diagonal limit.
 
 The source module passes `lake env lean` in full.  A prior final-module build passed before the
 last Gram extensions; final `lake build` is intentionally deferred to the pipeline audit.
@@ -1820,7 +1820,13 @@ needs `k > 1`.  New axiom-clean infrastructure, each source-checked with `lake e
   `k > 1`, the corresponding `(x-1)^(-1/4)` majorant, endpoint integrability, and the exact
   `O((X-1)^(3/4))` endpoint-mass bound.
 
-Thus inner, stationary, outer, and endpoint estimates required for every fixed ratio `k > 1` are
-now individually formalized.  Remaining assembly work is to combine them with the already-proved
-sum-phase and Dunster exact-to-Bessel transfer, then lift through dilation covariance to every
-unequal integer Gram pair.  No mathematical nondegeneracy gap remains in this branch.
+The assembly is now also closed.  `ProlateDunsterBesselOffDiagonal.lean` proves compact
+leading-product cancellation, Bessel transfer, exact Dunster transfer, endpoint control, uniform
+tail domination, and `tendsto_integral_Ioi_firstRowRadialProduct_fixedRatio` for every fixed
+`k > 1`.  `ProlateCanonicalRadialFamily.lean` transfers that theorem to canonical signed modes.
+`ProlateCanonicalSeparationLimit.lean` then proves fixed-prefix tail cancellation and
+`tendsto_signedModeRadialGramEntry_of_ne` by exact dilation covariance.  All three source modules
+pass `lake env lean`; the three capstone axiom audits report only `propext`, `Classical.choice`, and
+`Quot.sound`.  Remaining radial gate is actual-mode
+identification: prove that the selected canonical joint radial line equals the chosen signed
+finite-Fourier representative, via spectral simplicity or an equivalent transfer theorem.

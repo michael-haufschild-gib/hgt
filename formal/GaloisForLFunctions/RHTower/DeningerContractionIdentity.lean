@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerStageDeRham
 import Mathlib.Analysis.Normed.Module.Alternating.Curry
+import GaloisForLFunctions.HTGeometry.AlternatingContraction
 
 /-!
 # Contraction against a closed form
@@ -25,17 +26,8 @@ variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 /-- Removing a later entry of a tuple with a prepended entry. -/
 theorem deningerRemoveNth_succ_cons {α : Type*} (x : α) (v : Fin (n + 1) → α)
     (j : Fin (n + 1)) :
-    Fin.removeNth j.succ (Fin.cons x v : Fin (n + 2) → α) = Fin.cons x (Fin.removeNth j v) := by
-  funext i
-  induction i using Fin.cases with
-  | zero =>
-      show (Fin.cons x v : Fin (n + 2) → α) (j.succ.succAbove 0) = x
-      rw [Fin.succ_succAbove_zero]
-      exact Fin.cons_zero _ _
-  | succ k =>
-      show (Fin.cons x v : Fin (n + 2) → α) (j.succ.succAbove k.succ) = v (j.succAbove k)
-      rw [Fin.succ_succAbove_succ]
-      exact Fin.cons_succ _ _ _
+    Fin.removeNth j.succ (Fin.cons x v : Fin (n + 2) → α) = Fin.cons x (Fin.removeNth j v) :=
+  GaloisForLFunctions.HTGeometry.removeNth_succ_cons x v j
 
 /-- **Contraction of an alternating form against a vector**, as a continuous linear map in the
 form. -/

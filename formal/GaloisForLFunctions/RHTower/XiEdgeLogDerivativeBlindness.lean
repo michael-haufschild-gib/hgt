@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Reflection
+import GaloisForLFunctions.RHTower.CompletedFluxGradedReality
 
 /-!
 # Edge blindness of the full Xi logarithmic derivative
@@ -52,15 +53,8 @@ theorem deriv_conj_reflect {f : ℂ → ℂ} (hf : Differentiable ℂ f) (s : �
 
 /-- The derivative of ξ is conjugation-equivariant. -/
 theorem deriv_xi_conj (s : ℂ) :
-    deriv xi ((starRingEnd ℂ) s) = (starRingEnd ℂ) (deriv xi s) := by
-  have hfun : (fun z => (starRingEnd ℂ) (xi ((starRingEnd ℂ) z))) = xi := by
-    funext z
-    rw [xi_conj]
-    simp
-  have h := deriv_conj_reflect xi_differentiable s
-  rw [hfun] at h
-  have := congrArg (starRingEnd ℂ) h
-  simpa using this.symm
+    deriv xi ((starRingEnd ℂ) s) = (starRingEnd ℂ) (deriv xi s) :=
+  xi_deriv_conj s
 
 /-- The derivative of ξ is odd across the functional-equation reflection. -/
 theorem deriv_xi_one_sub (s : ℂ) :

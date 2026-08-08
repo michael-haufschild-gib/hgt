@@ -310,24 +310,8 @@ theorem exists_xiRightZeroCopy_of_shiftedRegularizedZeta_eq_zero
 /-- Route-local multiplicity witness for a shifted Xi zero in `Re s > 1`. -/
 theorem exists_xiRightZeroCopy_of_xi_shifted_eq_zero
     {s : ℂ} (hs : 1 < s.re) (hzero : xi (s - 1 / 2) = 0) :
-    ∃ q : XiRightZeroCopy, xiRightShiftedPole q = s := by
-  let ρ : XiDivisorSupport :=
-    ⟨s - 1 / 2, mem_xi_divisor_support_of_eq_zero hzero⟩
-  have hm : 0 < Int.toNat
-      ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)) := by
-    have hpos := xi_divisor_pos_on_support ρ
-    omega
-  let q0 : XiZeroCopy := ⟨ρ, ⟨0, hm⟩⟩
-  have hq0 : 0 < (I * xiSpectralPoint q0).re := by
-    rw [I_mul_xiSpectralPoint]
-    dsimp only [q0, ρ]
-    norm_num [Complex.sub_re]
-    linarith
-  let q : XiRightZeroCopy := ⟨q0, hq0⟩
-  refine ⟨q, ?_⟩
-  rw [xiRightShiftedPole, xiRightCenteredZero, I_mul_xiSpectralPoint]
-  dsimp only [q, q0, ρ]
-  ring
+    ∃ q : XiRightZeroCopy, xiRightShiftedPole q = s :=
+  exists_xiRightZeroCopy_shiftedPole_eq_of_xi_shifted_eq_zero hs hzero
 
 /-- The simple-pole support of the dyadic continued source is exactly the shifted right Xi
 divisor support. There are no extraneous source poles on `Re s > 1`. -/

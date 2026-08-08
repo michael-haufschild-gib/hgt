@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.CompactOperatorDiscreteSpectrum
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 import Mathlib.Analysis.InnerProductSpace.Positive
 import Mathlib.Analysis.Normed.Operator.Compact.Basic
+import GaloisForLFunctions.HTGeometry.CfcEigenvector
 
 /-!
 # Operator lift of the finite-Morse resolvent completion
@@ -252,17 +253,8 @@ theorem suzukiFiniteMorse_operatorCompletion_re_inner_nonneg
 omit [CompleteSpace H] in
 /-- Powers act on an eigenvector by powers of the eigenvalue. -/
 theorem pow_apply_of_eigenvector {R : H →L[ℂ] H} {x : ℝ} {v : H}
-    (hv : R v = ((x : ℝ) : ℂ) • v) (n : ℕ) : (R ^ n) v = (((x ^ n : ℝ)) : ℂ) • v := by
-  induction n with
-  | zero => simp
-  | succ k ih =>
-      have hstep : (R ^ (k + 1)) v = (R ^ k) (R v) := by
-        rw [pow_succ]
-        rfl
-      have hsc : ((x : ℝ) : ℂ) * (((x ^ k : ℝ)) : ℂ) = (((x ^ (k + 1) : ℝ)) : ℂ) := by
-        push_cast
-        ring
-      rw [hstep, hv, ContinuousLinearMap.map_smul, ih, smul_smul, hsc]
+    (hv : R v = ((x : ℝ) : ℂ) • v) (n : ℕ) : (R ^ n) v = (((x ^ n : ℝ)) : ℂ) • v :=
+  GaloisForLFunctions.HTGeometry.pow_apply_of_eigenvector' hv n
 
 omit [CompleteSpace H] in
 /-- Real scalars act on a complex space through the coercion. -/

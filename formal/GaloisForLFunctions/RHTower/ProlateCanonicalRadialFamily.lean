@@ -157,14 +157,14 @@ remaining separation asymptotic is proved. -/
 theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct
     (n : ℕ)
     (hs : Tendsto (fun a : ℝ => (signedModeRadialData a n).s) atTop (nhds 0))
-    {k : ℝ} (hk : 2 ≤ k) :
+    {k : ℝ} (hk : 1 < k) :
     Tendsto (fun a : ℝ => ∫ x in Ioi (1 : ℝ),
       GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
         (signedModeRadialData a n).R k x) atTop (nhds 0) := by
   let D : ℝ → SignedModeRadialData := fun a => signedModeRadialData a n
   let DR : ℝ → ℝ → ℝ := fun a => deriv (D a).R
   let DDR : ℝ → ℝ → ℝ := fun a => deriv (deriv (D a).R)
-  exact GaloisForLFunctions.RHTower.tendsto_integral_Ioi_firstRowRadialProduct
+  exact GaloisForLFunctions.RHTower.tendsto_integral_Ioi_firstRowRadialProduct_fixedRatio
     (R := fun a => (D a).R) (DR := DR) (DDR := DDR)
     tendsto_signedModeRadialBandwidth_atTop hs
     (eventually_signedModeRadialData_s_nonneg n)

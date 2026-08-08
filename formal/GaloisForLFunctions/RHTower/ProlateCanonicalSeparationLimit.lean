@@ -153,7 +153,7 @@ theorem tendsto_integral_Ioi_signedModeRadialDensity_unconditional
 
 /-- Unconditional fixed off-diagonal vanishing for canonical signed radial modes. -/
 theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct_unconditional
-    (n : ℕ) {k : ℝ} (hk : 2 ≤ k) :
+    (n : ℕ) {k : ℝ} (hk : 1 < k) :
     Tendsto (fun a : ℝ => ∫ x in Ioi (1 : ℝ),
       GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
         (signedModeRadialData a n).R k x) atTop (nhds 0) :=
@@ -212,7 +212,107 @@ theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from
       (by simpa [D, DR] using eventually_signedModeRadialData_hasDerivAt n)
       (by simpa [D, DR, DDR] using eventually_signedModeRadialData_hasSecondDerivAt n)
       (by simpa [D, DR, DDR] using eventually_signedModeRadialData_ode n)
-      hk hbB hb1 hLowerStationary
+      (by linarith : (1 : ℝ) < k) hbB hb1
+  have hcompactSmall : ∀ᶠ a : ℝ in atTop,
+      |∫ x in b..B,
+        GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R k x| < ε / 2 := by
+    simpa [Real.dist_eq] using
+      (Metric.tendsto_nhds.mp hcompact) (ε / 2) (by positivity : 0 < ε / 2)
+  have hsHalf : ∀ᶠ a : ℝ in atTop, (signedModeRadialData a n).s ≤ 1 / 2 :=
+    (tendsto_signedModeRadialData_s_zero n).eventually
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2)) |>.mono fun _ h => h.le
+  have hc5 : ∀ᶠ a : ℝ in atTop, 5 ≤ signedModeRadialBandwidth a :=
+    tendsto_signedModeRadialBandwidth_atTop.eventually (eventually_ge_atTop 5)
+  have hcross := GaloisForLFunctions.RHTower.tendsto_dunsterEndpointCrossing_comp_atTop_one
+    tendsto_signedModeRadialBandwidth_atTop
+  have hcrossB : ∀ᶠ a : ℝ in atTop,
+      GaloisForLFunctions.RHTower.dunsterEndpointCrossing (signedModeRadialBandwidth a) ≤ B :=
+    (hcross.eventually (eventually_lt_nhds (hb1.trans_le hbB))).mono fun _ h => h.le
+  filter_upwards [hcompactSmall, eventually_signedModeRadialData_s_nonneg n, hsHalf, hc5,
+      hcrossB, eventually_signedModeRadialData_R_one n,
+      eventually_signedModeRadialData_hasDerivAt n,
+      eventually_signedModeRadialData_hasSecondDerivAt n,
+      eventually_signedModeRadialData_ode n] with
+      a hcompactA hs0 hs1 hc hcrossA hR1 hR hDR hode
+  have htail := GaloisForLFunctions.RHTower.abs_integral_Ioi_firstRowRadialProduct_le
+    hs0 hs1 (by linarith : (1 : ℝ) < k) hc
+      (hb1.trans_le hbB) hcrossA hR1 hR hDR hode
+  have hRc : Continuous (signedModeRadialData a n).R :=
+    continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
+  have hcont : Continuous
+      (GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R k) := by
+    unfold GaloisForLFunctions.RHTower.firstRowRadialProduct
+      GaloisForLFunctions.RHTower.radialProlateRescaledProfile
+    fun_prop
+  have hInt : IntervalIntegrable
+      (GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R k) volume b B :=
+    hcont.intervalIntegrable b B
+  have hIoc : IntegrableOn
+      (GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R k) (Ioc b B) := by
+    rwa [← intervalIntegrable_iff_integrableOn_Ioc_of_le hbB]
+  have hIoi := GaloisForLFunctions.RHTower.integrableOn_firstRowRadialProduct_Ioi
+    hs0 hs1 (by linarith : (1 : ℝ) < k) hc
+      (hb1.trans_le hbB) hcrossA hR1 hR hDR hode
+  have hsplit : (∫ x in Ioi b,
+      GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R k x) =
+      (∫ x in b..B,
+        GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R k x) +
+        ∫ x in Ioi B,
+          GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+            (signedModeRadialData a n).R k x := by
+    rw [intervalIntegral.integral_of_le hbB]
+    rw [← Ioc_union_Ioi_eq_Ioi hbB]
+    exact setIntegral_union Ioc_disjoint_Ioi_same measurableSet_Ioi hIoc hIoi
+  rw [Real.dist_eq, sub_zero, hsplit]
+  have hsum := add_lt_add hcompactA (htail.trans_lt hTailB)
+  apply (abs_add_le _ _).trans_lt
+  linarith
+
+/-- Fixed-ratio tail cancellation for every `k > 1` and every exterior cut `b ≥ 1`. -/
+theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from_fixedRatio
+    (n : ℕ) {k b : ℝ} (hk : 1 < k) (hb : 1 ≤ b) :
+    Tendsto (fun a : ℝ => ∫ x in Ioi b,
+      GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R k x) atTop (nhds 0) := by
+  rcases eq_or_lt_of_le hb with hbeq | hb1
+  · subst b
+    exact tendsto_integral_Ioi_signedModeFirstRowRadialProduct_unconditional n hk
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hTailTendsto : Tendsto (fun B : ℝ =>
+      4 * GaloisForLFunctions.RHTower.radialProlateDensityEnvelopeConstant *
+        ∫ x in Ioi B, GaloisForLFunctions.RHTower.profileDensity x) atTop (nhds 0) := by
+    simpa using
+      GaloisForLFunctions.RHTower.tendsto_integral_Ioi_profileDensity_atTop_zero.const_mul
+        (4 * GaloisForLFunctions.RHTower.radialProlateDensityEnvelopeConstant)
+  have hTailSmall : ∀ᶠ B : ℝ in atTop,
+      4 * GaloisForLFunctions.RHTower.radialProlateDensityEnvelopeConstant *
+        ∫ x in Ioi B, GaloisForLFunctions.RHTower.profileDensity x < ε / 2 :=
+    hTailTendsto.eventually (eventually_lt_nhds (by positivity : 0 < ε / 2))
+  have hCutLarge : ∀ᶠ B : ℝ in atTop, b ≤ B := eventually_ge_atTop b
+  obtain ⟨B, hTailB, hbB⟩ := (hTailSmall.and hCutLarge).exists
+  let D : ℝ → SignedModeRadialData := fun a => signedModeRadialData a n
+  let DR : ℝ → ℝ → ℝ := fun a => deriv (D a).R
+  let DDR : ℝ → ℝ → ℝ := fun a => deriv (deriv (D a).R)
+  have hcompact : Tendsto (fun a : ℝ => ∫ x in b..B,
+      GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R k x) atTop (nhds 0) := by
+    exact GaloisForLFunctions.RHTower.tendsto_integral_firstRowRadialProduct
+      (R := fun a => (D a).R) (DR := DR) (DDR := DDR)
+      tendsto_signedModeRadialBandwidth_atTop
+      (tendsto_signedModeRadialData_s_zero n)
+      (eventually_signedModeRadialData_s_nonneg n)
+      (by simpa [D] using eventually_signedModeRadialData_R_one n)
+      (by simpa [D, DR] using eventually_signedModeRadialData_hasDerivAt n)
+      (by simpa [D, DR, DDR] using eventually_signedModeRadialData_hasSecondDerivAt n)
+      (by simpa [D, DR, DDR] using eventually_signedModeRadialData_ode n)
+      hk hbB hb1
   have hcompactSmall : ∀ᶠ a : ℝ in atTop,
       |∫ x in b..B,
         GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
@@ -245,14 +345,11 @@ theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from
     unfold GaloisForLFunctions.RHTower.firstRowRadialProduct
       GaloisForLFunctions.RHTower.radialProlateRescaledProfile
     fun_prop
-  have hInt : IntervalIntegrable
-      (GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
-        (signedModeRadialData a n).R k) volume b B :=
-    hcont.intervalIntegrable b B
   have hIoc : IntegrableOn
       (GaloisForLFunctions.RHTower.firstRowRadialProduct (signedModeRadialBandwidth a)
         (signedModeRadialData a n).R k) (Ioc b B) := by
-    rwa [← intervalIntegrable_iff_integrableOn_Ioc_of_le hbB]
+    rw [← intervalIntegrable_iff_integrableOn_Ioc_of_le hbB]
+    exact hcont.intervalIntegrable b B
   have hIoi := GaloisForLFunctions.RHTower.integrableOn_firstRowRadialProduct_Ioi
     hs0 hs1 hk hc (hb1.trans_le hbB) hcrossA hR1 hR hDR hode
   have hsplit : (∫ x in Ioi b,
@@ -268,9 +365,8 @@ theorem tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from
     rw [← Ioc_union_Ioi_eq_Ioi hbB]
     exact setIntegral_union Ioc_disjoint_Ioi_same measurableSet_Ioi hIoc hIoi
   rw [Real.dist_eq, sub_zero, hsplit]
-  have hsum := add_lt_add hcompactA (htail.trans_lt hTailB)
   apply (abs_add_le _ _).trans_lt
-  linarith
+  linarith [htail.trans_lt hTailB]
 
 /-! ## Canonical radial dilation Gram entries -/
 
@@ -379,11 +475,48 @@ theorem signedModeRadialGramEntry_one_left
 
 /-- Unconditional canonical first-row off-diagonal cancellation. -/
 theorem tendsto_signedModeRadialGramEntry_one_left
-    (n : ℕ) {k : ℝ} (hk : 2 ≤ k) :
+    (n : ℕ) {k : ℝ} (hk : 1 < k) :
     Tendsto (fun a : ℝ => signedModeRadialGramEntry a n 1 k) atTop (nhds 0) := by
   apply (tendsto_integral_Ioi_signedModeFirstRowRadialProduct_unconditional n hk).congr'
   filter_upwards with a
   exact (signedModeRadialGramEntry_one_left a n k).symm
+
+/-- Every strictly ordered pair of exterior dilations has vanishing canonical radial overlap. -/
+theorem tendsto_signedModeRadialGramEntry_of_lt
+    (n : ℕ) {j k : ℝ} (hj : 1 ≤ j) (hjk : j < k) :
+    Tendsto (fun a : ℝ => signedModeRadialGramEntry a n j k) atTop (nhds 0) := by
+  have hj0 : 0 < j := lt_of_lt_of_le zero_lt_one hj
+  have hratio : 1 < k / j := by
+    rw [lt_div_iff₀ hj0]
+    simpa using hjk
+  have htail :=
+    (tendsto_integral_Ioi_signedModeFirstRowRadialProduct_from_fixedRatio
+      n hratio hj).const_mul j⁻¹
+  have hentry :
+      Tendsto (fun a : ℝ => signedModeRadialGramEntry a n j k) atTop
+        (nhds (j⁻¹ * 0)) := by
+    apply htail.congr'
+    filter_upwards with a
+    exact (signedModeRadialGramEntry_scale_left a n hj0 k).symm
+  simpa using hentry
+
+/-- Symmetric strictly ordered fixed-ratio cancellation. -/
+theorem tendsto_signedModeRadialGramEntry_of_gt
+    (n : ℕ) {j k : ℝ} (hk : 1 ≤ k) (hkj : k < j) :
+    Tendsto (fun a : ℝ => signedModeRadialGramEntry a n j k) atTop (nhds 0) := by
+  have h := tendsto_signedModeRadialGramEntry_of_lt n hk hkj (j := k) (k := j)
+  apply h.congr'
+  filter_upwards with a
+  exact (signedModeRadialGramEntry_comm a n j k).symm
+
+/-- Orientation-free cancellation for every pair of distinct exterior dilations. -/
+theorem tendsto_signedModeRadialGramEntry_of_ne
+    (n : ℕ) {j k : ℝ} (hj : 1 ≤ j) (hk : 1 ≤ k) (hjk : j ≠ k) :
+    Tendsto (fun a : ℝ => signedModeRadialGramEntry a n j k) atTop (nhds 0) := by
+  rcases lt_trichotomy j k with hjk' | heq | hkj
+  · exact tendsto_signedModeRadialGramEntry_of_lt n hj hjk'
+  · exact (hjk heq).elim
+  · exact tendsto_signedModeRadialGramEntry_of_gt n hk hkj
 
 /-- Every fixed pair whose larger dilation is at least twice the smaller one has vanishing
 canonical radial overlap. -/

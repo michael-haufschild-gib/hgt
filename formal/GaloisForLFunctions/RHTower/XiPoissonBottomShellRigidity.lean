@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiPoissonShell
 import GaloisForLFunctions.HTGeometry.RealExponentialSumRigidity
+import GaloisForLFunctions.HTGeometry.AbstractSpectralShell
 
 /-!
 # Rigidity of the bottom Poisson shell
@@ -49,14 +50,8 @@ theorem mem_xiPoissonBottomShell {q : XiZeroCopy} :
 theorem xiPoisson_line_factor (σ u R Jq : ℝ) :
     Complex.exp (-((σ : ℂ) + (u : ℂ) * I) * ((R : ℂ) + (Jq : ℂ) * I)) =
       Complex.exp (-((σ : ℂ) + (u : ℂ) * I) * (R : ℂ)) *
-        (Complex.exp (-(σ : ℂ) * I * (Jq : ℂ)) * ((Real.exp (u * Jq) : ℝ) : ℂ)) := by
-  have hu : ((Real.exp (u * Jq) : ℝ) : ℂ) = Complex.exp ((u : ℂ) * (Jq : ℂ)) := by
-    rw [Complex.ofReal_exp]
-    norm_cast
-  rw [hu, ← Complex.exp_add, ← Complex.exp_add]
-  congr 1
-  have hI : (I : ℂ) ^ 2 = -1 := Complex.I_sq
-  linear_combination (-(u : ℂ) * (Jq : ℂ)) * hI
+        (Complex.exp (-(σ : ℂ) * I * (Jq : ℂ)) * ((Real.exp (u * Jq) : ℝ) : ℂ)) :=
+  _root_.HTGeometry.vertLine_factor σ u R Jq
 
 /-- The bottom-shell sum on the vertical line `Re t = sigma`. -/
 def xiPoissonBottomShellSum (σ u : ℝ) : ℂ :=

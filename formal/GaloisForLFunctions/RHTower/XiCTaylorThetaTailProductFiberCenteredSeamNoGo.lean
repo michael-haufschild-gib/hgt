@@ -45,14 +45,8 @@ window or polarization term is estimated separately. -/
 theorem thetaProductFiberActualPhaseCurrent_le_centeredCorrectedPhaseSeam
     (k : ℕ) {c : ℝ} (hc : 0 ≤ c) {z : ℂ} (hz : 0 < z.im) :
     thetaProductFiberActualPhaseCurrent k z ≤
-      thetaProductFiberCenteredCorrectedPhaseSeamCurrent k c z := by
-  rw [thetaProductFiberCenteredCorrectedPhaseSeamCurrent_eq_actual_sub_penalty
-    k hc hz.le]
-  have hphase :=
-    xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent_nonpos_all
-      k hz (thetaCuspTailSecondDensityAtomOnePhaseTail c z)
-  unfold xiCTaylorThetaTailCoreProductFiberCoherentPhaseBaseCurrent at hphase
-  linarith
+      thetaProductFiberCenteredCorrectedPhaseSeamCurrent k c z :=
+  thetaProductFiberActualPhaseCurrent_le_correctedCenteredSeam k hc hz
 
 /-- Conditional centre comparison: the corrected seam is monotone in the squared norm of the
 chosen common tail. -/

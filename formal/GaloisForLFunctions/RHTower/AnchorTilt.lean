@@ -27,6 +27,7 @@ discrete set.
 -/
 import GaloisForLFunctions.RHTower.AnchorHead
 import GaloisForLFunctions.RHTower.MirrorEdgeSymmetry
+import GaloisForLFunctions.HTGeometry.SectorPowerMassLower
 
 open Complex Metric
 
@@ -89,10 +90,8 @@ private theorem abs_im_eulerFactor_le {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
 
 /-- On the open right half plane the principal argument is `arctan(Im/Re)`. -/
 theorem arg_eq_arctan_of_re_pos {z : ℂ} (hz : 0 < z.re) :
-    z.arg = Real.arctan (z.im / z.re) := by
-  obtain ⟨h1, h2⟩ := abs_lt.mp (Complex.abs_arg_lt_pi_div_two_iff.mpr (Or.inl hz))
-  rw [← Complex.tan_arg]
-  exact (Real.arctan_tan h1 h2).symm
+    z.arg = Real.arctan (z.im / z.re) :=
+  GaloisForLFunctions.HTGeometry.complexArg_eq_arctan_of_re_pos hz
 
 /-- The arctangent is dominated by its argument in absolute value. -/
 private theorem abs_arctan_le_abs (x : ℝ) : |Real.arctan x| ≤ |x| := by

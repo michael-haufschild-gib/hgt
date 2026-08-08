@@ -31,15 +31,8 @@ def xiHedenmalmDeBrangesESharp (z : ℂ) : ℂ :=
 
 /-- Schwarz reality in the centered Xi coordinate, proved within the Hilbert--Polya route. -/
 theorem xiHedenmalm_XiC_conj (z : ℂ) :
-    XiC ((starRingEnd ℂ) z) = (starRingEnd ℂ) (XiC z) := by
-  rw [XiC, XiC]
-  have harg : 1 / 2 + (starRingEnd ℂ) z * I =
-      1 - (starRingEnd ℂ) (1 / 2 + z * I) := by
-    apply Complex.ext
-    · simp
-      ring
-    · simp
-  rw [harg, xi_one_sub, xi_conj]
+    XiC ((starRingEnd ℂ) z) = (starRingEnd ℂ) (XiC z) :=
+  XiC_conj z
 
 /-- Schwarz reality passes from `XiC` to its complex derivative. -/
 theorem deriv_XiC_conj (z : ℂ) :

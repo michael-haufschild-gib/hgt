@@ -62,6 +62,23 @@ theorem hasDerivAt_log_norm_comp {g : ℝ → ℂ} {g' : ℂ} {u : ℝ}
   rw [Complex.div_re]
   field_simp
 
+/-- **Log-energy product current.**  At a point where both factors are nonzero, the transverse
+current of a product is exactly the sum of the two factor currents.  This is the scalar Green
+product rule used to separate a coefficient-faithful completion anomaly from its source factor. -/
+theorem hasDerivAt_two_log_norm_mul
+    {f g : ℝ → ℂ} {f' g' : ℂ} {u : ℝ}
+    (hf : HasDerivAt f f' u) (hg : HasDerivAt g g' u)
+    (hf0 : f u ≠ 0) (hg0 : g u ≠ 0) :
+    HasDerivAt (fun v => 2 * Real.log ‖f v * g v‖)
+      (2 * ((f' / f u).re + (g' / g u).re)) u := by
+  have hlog := hasDerivAt_log_norm_comp (hf.mul hg) (mul_ne_zero hf0 hg0)
+  have hscaled := hlog.const_mul (2 : ℝ)
+  have hquot :
+      (f' * g u + f u * g') / (f u * g u) =
+        f' / f u + g' / g u := by
+    field_simp [hf0, hg0]
+  simpa only [Pi.mul_apply, hquot, Complex.add_re] using hscaled
+
 /-- **The horizontal log-modulus identity.**  Along a horizontal segment on which `f` does not
 vanish, the integral of the real part of the logarithmic derivative is the increment of `log‖f‖`.
 No branch of the logarithm is used. -/

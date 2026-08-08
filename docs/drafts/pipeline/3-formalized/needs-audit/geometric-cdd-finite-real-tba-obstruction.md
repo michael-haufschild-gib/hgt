@@ -1,9 +1,9 @@
 # The geometric hypertranscendental CDD theory has a finite real-TBA obstruction
 
 - **ID:** `geometric-cdd-finite-real-tba-obstruction`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-audit
 - **Type:** CANDIDATE THEOREM / FINITE-VOLUME QFT / ANALYTIC HAGEDORN OBSTRUCTION
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
 - **Scope:** general hypertranscendental factorizing QFT; no RH or distinguished special-function
   input; no numerical evidence
 - **Parents:** `geometric-cdd-hypertranscendental-local-qft.md` and
@@ -318,17 +318,31 @@ obstruction no longer depends on them.
 
 ## Lean boundary
 
-The reusable theorem surface is an integral-inequality no-go for nonlinear TBA fixed points.  It
-requires real integration on the whole line, exponential-tail differentiation under the integral,
-and a convolution interface.  The current HTGeometry corpus proves the scattering kernel and its
-finite phase positivity, but not the infinite analytic bounds needed by `(4)` and `(20)`.
+The exact theorem is formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/GeometricCDDFiniteRealTBA.lean`, imported by the
+`GaloisForLFunctions.HTGeometry` umbrella.  The module defines the literal infinite geometric CDD
+kernel and literal normalized finite-free-energy TBA solution class, rather than replacing either
+with a finite truncation or abstract hypothesis package.
 
-Formalizing only the elementary constant estimate would not certify the TBA theorem.  A Lean batch
-should begin only after the paper audit fixes the solution class and packages the infinite kernel
-as a bounded measurable function with positive floor.  No conditional theorem or axiom placeholder
-is acceptable.
+Named capstones include:
 
-No Lean edit, build, scratch compilation, lint, axiom check, or numerical computation was run.
+1. `geometricCDDTBAKernel_floor` and `geometricCDDTBAKernel_upper` for `(4)` and `(8a)`;
+2. `no_realFiniteFreeEnergyTBASolution_geometricCDD_of_smallRadius` for `(18)`--`(19)`;
+3. `exists_unique_primaryGeometricCDDTBASolution` for the strict contraction regime;
+4. `exists_largeRadius_unique_primaryGeometricCDDTBASolution` for every sufficiently large radius;
+5. `geometricCDD_finiteRealTBA_obstruction_and_primaryBranch` for the full separation `(24)`.
+
+The large-radius proof constructs the nonlinear convolution operator on bounded continuous real
+profiles, proves its exact unit-ball self-map and Lipschitz estimates, applies Banach's fixed-point
+theorem, and converts the fixed point back to the original normalized TBA equation.  The
+small-radius proof excludes every measurable real finite-free-energy solution, not only primary
+fixed points.
+
+Audit results: direct `lake env lean` passed; targeted
+`lake build GaloisForLFunctions.HTGeometry.GeometricCDDFiniteRealTBA` passed; five representative
+`#print axioms` checks report only `propext`, `Classical.choice`, and `Quot.sound`.  Repository lint
+reaches this module and reports no proof debt or reachability error for it; the global run remains
+red only on four unrelated concurrently added modules in other workstreams.
 
 ## Primary literature
 

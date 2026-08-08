@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerCechSplit
 import Mathlib.Data.Fin.Tuple.Basic
+import GaloisForLFunctions.HTGeometry.CechFineAcyclicModule
 
 /-!
 # The contracting homotopy of a fine Čech complex in every degree
@@ -60,11 +61,8 @@ omit [Fintype ι] in
 /-- The later faces of a tuple with a prepended index keep the prepended index. -/
 theorem deningerFace_succ {q : ℕ} (k : ι) (σ : Fin (q + 2) → ι) (r : Fin (q + 2)) :
     (Fin.cons k σ : Fin (q + 3) → ι) ∘ Fin.succAbove r.succ
-      = Fin.cons k (σ ∘ Fin.succAbove r) := by
-  funext s
-  refine Fin.cases ?_ (fun t => ?_) s
-  · simp
-  · simp only [Function.comp_apply, Fin.succ_succAbove_succ, Fin.cons_succ]
+      = Fin.cons k (σ ∘ Fin.succAbove r) :=
+  _root_.HTGeometry.cechFace_succ k σ r
 
 omit [TopologicalSpace X] [Fintype ι] in
 /-- The differential of a cochain, evaluated on a tuple with a prepended index, separates the

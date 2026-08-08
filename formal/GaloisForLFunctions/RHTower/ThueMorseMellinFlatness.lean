@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.RHTower.Sieve.PrimeWindowDyadic
 
 /-!
 # Thue--Morse radial flatness discharges the entire Mellin interface
@@ -390,16 +391,8 @@ lemma one_sub_exp_neg_mul_le (a x : ℝ) :
 /-- On the unit interval the elementary exponential defect retains at least half of its linear
 size.  The proof uses `exp u ≥ 1+u`, hence `exp(-u) ≤ (1+u)⁻¹`. -/
 lemma half_le_one_sub_exp_neg {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
-    u / 2 ≤ 1 - Real.exp (-u) := by
-  have hden : 0 < 1 + u := by linarith
-  have hexp : 1 + u ≤ Real.exp u := by simpa [add_comm] using Real.add_one_le_exp u
-  have hinv : (Real.exp u)⁻¹ ≤ (1 + u)⁻¹ :=
-    (inv_le_inv₀ (Real.exp_pos u) hden).2 hexp
-  rw [← Real.exp_neg] at hinv
-  calc
-    u / 2 ≤ u / (1 + u) := div_le_div_of_nonneg_left hu0 hden (by linarith)
-    _ = 1 - (1 + u)⁻¹ := by field_simp; ring
-    _ ≤ 1 - Real.exp (-u) := by linarith
+    u / 2 ≤ 1 - Real.exp (-u) :=
+  _root_.RHTower.Sieve.one_sub_exp_neg_ge hu0 hu1
 
 /-- The finite Thue--Morse kernel is nonnegative on the positive real axis. -/
 theorem thueMorseFiniteKernel_nonneg (m : ℕ) {x : ℝ} (hx : 0 ≤ x) :
