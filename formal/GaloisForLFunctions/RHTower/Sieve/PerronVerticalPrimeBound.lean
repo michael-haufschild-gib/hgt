@@ -78,3 +78,55 @@ theorem integral_norm_perron_integrand_le {a : ℕ → ℂ} {s : Finset ℕ} (hs
 
 end RHTower.Sieve
 end
+
+noncomputable section
+namespace RHTower.Sieve
+open Complex MeasureTheory Set
+
+/-- The modulus of the Perron kernel is even in the height. -/
+theorem perron_kernel_norm_neg (x σ t : ℝ) :
+    x ^ σ / ‖(σ : ℂ) + ((-t : ℝ) : ℂ) * I‖ = x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖ := by
+  rw [Complex.norm_add_mul_I, Complex.norm_add_mul_I]
+  congr 2
+  ring
+
+/-- On the whole line the Perron kernel is at most `x^σ/σ`. -/
+theorem perron_kernel_norm_le_const {x σ : ℝ} (hx : 0 < x) (hσ : 0 < σ) (t : ℝ) :
+    x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖ ≤ x ^ σ / σ := by
+  refine div_le_div_of_nonneg_left (Real.rpow_nonneg hx.le σ) hσ ?_
+  have hre : ((σ : ℂ) + (t : ℝ) * I).re = σ := by simp
+  calc σ = |((σ : ℂ) + (t : ℝ) * I).re| := by rw [hre, abs_of_pos hσ]
+    _ ≤ ‖(σ : ℂ) + (t : ℝ) * I‖ := Complex.abs_re_le_norm _
+
+/-- **The vertical Perron integral of a prime-supported series over a symmetric range.**  Both flanks
+carry the dyadic bound — the negative one because the kernel is even and the mean square reflection
+invariant — and the low range `|t| ≤ t₀` carries the bounded-kernel term.  Only the block count `M`
+depends on the height of the truncation. -/
+theorem integral_symm_norm_perron_integrand_le {a : ℕ → ℂ} {s : Finset ℕ} (hs0 : 0 ∉ s)
+    (hsupp : ∀ n : ℕ, a n ≠ 0 → n ∈ s) (hprime : ∀ n ∈ s, a n ≠ 0 → n.Prime)
+    {σ x t₀ : ℝ} (hσ : 0 < σ) (hx : 0 < x) (ht₀ : 1 ≤ t₀)
+    (z Y : ℕ) (hY : 1 ≤ Y) (hYz : Y ≤ z) (hz : 2 ≤ z) (hlog : 0 < Real.log Y) (M : ℕ) :
+    (∫ t in (-(t₀ * 2 ^ M))..(t₀ * 2 ^ M),
+        ‖LSeries a ((σ : ℂ) + (t : ℝ) * I)
+          * ((x : ℂ) ^ ((σ : ℂ) + (t : ℝ) * I) / ((σ : ℂ) + (t : ℝ) * I))‖)
+      ≤ 2 * ((x ^ σ * Real.sqrt (sieveMeanSquareConst a s σ Y) * Real.sqrt 2 / Real.sqrt t₀)
+                * (1 - Real.sqrt 2 / 2)⁻¹
+              + 2 * x ^ σ * Real.sqrt (sieveMeanSquareRate a s σ z Y) * M)
+          + (x ^ σ / σ) * (Real.sqrt (2 * t₀)
+              * Real.sqrt (sieveMeanSquareConst a s σ Y + sieveMeanSquareRate a s σ z Y * t₀)) := by
+  have ht₀0 : (0 : ℝ) < t₀ := by linarith
+  have hD : Continuous fun t : ℝ => LSeries a ((σ : ℂ) + (t : ℝ) * I) :=
+    continuous_LSeries_line_of_support hs0 hsupp σ
+  rw [intervalIntegral.integral_congr (g := fun t : ℝ =>
+      ‖LSeries a ((σ : ℂ) + (t : ℝ) * I)‖ * (x ^ σ / ‖(σ : ℂ) + (t : ℝ) * I‖))
+    (fun t _ => norm_perron_integrand hx _ σ t)]
+  refine GaloisForLFunctions.HTGeometry.integral_symm_norm_mul_kernel_le hD
+    (continuous_perron_kernel_norm hσ) (fun t => perron_kernel_norm_neg x σ t)
+    (Real.rpow_nonneg hx.le σ) (by positivity)
+    (sieveMeanSquareConst_nonneg a s σ hlog) (sieveMeanSquareRate_nonneg a s σ hz hlog) ht₀0
+    (perron_kernel_norm_le_const hx hσ) (fun t ht => ?_) (fun U hU => ?_) M
+  · exact perron_kernel_norm_le hx (lt_of_lt_of_le ht₀0 ht)
+  · exact integral_Icc_normSq_LSeries_le_affine hs0 hsupp hprime σ (by linarith) z Y hY hYz hz hlog
+
+end RHTower.Sieve
+end

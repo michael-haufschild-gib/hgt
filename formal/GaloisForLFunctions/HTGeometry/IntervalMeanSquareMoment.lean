@@ -124,3 +124,215 @@ theorem integral_norm_mul_kernel_le_of_affine_meanSquare {D : ℝ → ℂ} (hD :
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open Complex MeasureTheory Set
+
+/-- The mean square over a symmetric range is invariant under reflection. -/
+theorem integral_Icc_normSq_comp_neg (D : ℝ → ℂ) {U : ℝ} (hU : 0 ≤ U) :
+    (∫ t in Set.Icc (-U) U, ‖D (-t)‖ ^ 2) = ∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2 := by
+  have hle : -U ≤ U := by linarith
+  have hconv : ∀ f : ℝ → ℝ, (∫ t in Set.Icc (-U) U, f t) = ∫ t in (-U)..U, f t := by
+    intro f
+    rw [intervalIntegral.integral_of_le hle, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
+  rw [hconv (fun t => ‖D (-t)‖ ^ 2), hconv (fun t => ‖D t‖ ^ 2)]
+  rw [intervalIntegral.integral_comp_neg (fun t => ‖D t‖ ^ 2)]
+  norm_num
+
+/-- **The low range of a vertical integral.**  On `|t| ≤ t₀` the kernel is bounded, so Cauchy–Schwarz
+against the mean square at height `t₀` bounds the contribution by `C₀·√(2t₀)·√(Q + κt₀)`. -/
+theorem integral_norm_mul_kernel_low_le {D : ℝ → ℂ} (hD : Continuous D) {G : ℝ → ℝ}
+    (hGc : Continuous G) {C₀ Q κ t₀ : ℝ} (hC₀ : 0 ≤ C₀) (ht₀ : 0 < t₀)
+    (hGlow : ∀ t, G t ≤ C₀)
+    (hms : (∫ t in Set.Icc (-t₀) t₀, ‖D t‖ ^ 2) ≤ Q + κ * t₀) :
+    (∫ t in (-t₀)..t₀, ‖D t‖ * G t) ≤ C₀ * (Real.sqrt (2 * t₀) * Real.sqrt (Q + κ * t₀)) := by
+  have hle : -t₀ ≤ t₀ := by linarith
+  have hmono : (∫ t in (-t₀)..t₀, ‖D t‖ * G t) ≤ ∫ t in (-t₀)..t₀, ‖D t‖ * C₀ := by
+    refine intervalIntegral.integral_mono_on hle ((hD.norm.mul hGc).intervalIntegrable _ _)
+      ((hD.norm.mul continuous_const).intervalIntegrable _ _) ?_
+    intro t _
+    exact mul_le_mul_of_nonneg_left (hGlow t) (norm_nonneg _)
+  rw [intervalIntegral.integral_mul_const] at hmono
+  have hcs : (∫ t in (-t₀)..t₀, ‖D t‖)
+      ≤ Real.sqrt (t₀ - -t₀) * Real.sqrt (∫ t in (-t₀)..t₀, ‖D t‖ ^ 2) :=
+    integral_norm_le_sqrt_length_mul_sqrt_meanSquare hD hle
+  have hlen : t₀ - -t₀ = 2 * t₀ := by ring
+  rw [hlen] at hcs
+  have hmsint : (∫ t in (-t₀)..t₀, ‖D t‖ ^ 2) ≤ Q + κ * t₀ := by
+    rw [intervalIntegral.integral_of_le hle, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
+    exact hms
+  have hsq : Real.sqrt (∫ t in (-t₀)..t₀, ‖D t‖ ^ 2) ≤ Real.sqrt (Q + κ * t₀) :=
+    Real.sqrt_le_sqrt hmsint
+  calc (∫ t in (-t₀)..t₀, ‖D t‖ * G t)
+      ≤ (∫ t in (-t₀)..t₀, ‖D t‖) * C₀ := hmono
+    _ ≤ (Real.sqrt (2 * t₀) * Real.sqrt (∫ t in (-t₀)..t₀, ‖D t‖ ^ 2)) * C₀ :=
+        mul_le_mul_of_nonneg_right hcs hC₀
+    _ ≤ (Real.sqrt (2 * t₀) * Real.sqrt (Q + κ * t₀)) * C₀ :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left hsq (Real.sqrt_nonneg _)) hC₀
+    _ = C₀ * (Real.sqrt (2 * t₀) * Real.sqrt (Q + κ * t₀)) := by ring
+
+/-- **The vertical integral over a symmetric range.**  The dyadic bound applies to both flanks — the
+negative one after reflection, under which a symmetric kernel and the mean square are invariant — and
+the low range contributes the bounded-kernel term.  Nothing but the block count `M` depends on the
+height. -/
+theorem integral_symm_norm_mul_kernel_le {D : ℝ → ℂ} (hD : Continuous D) {G : ℝ → ℝ}
+    (hGc : Continuous G) (hGsym : ∀ t, G (-t) = G t)
+    {C C₀ Q κ t₀ : ℝ} (hC : 0 ≤ C) (hC₀ : 0 ≤ C₀) (hQ : 0 ≤ Q) (hκ : 0 ≤ κ) (ht₀ : 0 < t₀)
+    (hGlow : ∀ t, G t ≤ C₀) (hG : ∀ t, t₀ ≤ t → G t ≤ C / t)
+    (hms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D t‖ ^ 2) ≤ Q + κ * U) (M : ℕ) :
+    (∫ t in (-(t₀ * 2 ^ M))..(t₀ * 2 ^ M), ‖D t‖ * G t)
+      ≤ 2 * ((C * Real.sqrt Q * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
+              + 2 * C * Real.sqrt κ * M)
+          + C₀ * (Real.sqrt (2 * t₀) * Real.sqrt (Q + κ * t₀)) := by
+  have hone : (1 : ℝ) ≤ 2 ^ M := one_le_pow₀ (by norm_num)
+  have hb : t₀ ≤ t₀ * 2 ^ M := by nlinarith [ht₀.le]
+  have hb0 : (0 : ℝ) < t₀ * 2 ^ M := by positivity
+  have hint : ∀ u v : ℝ, IntervalIntegrable (fun t => ‖D t‖ * G t) volume u v :=
+    fun u v => (hD.norm.mul hGc).intervalIntegrable _ _
+  -- the three ranges
+  have hsplit1 := intervalIntegral.integral_add_adjacent_intervals
+    (f := fun t => ‖D t‖ * G t) (μ := volume) (a := -(t₀ * 2 ^ M)) (b := -t₀) (c := t₀)
+    (hint _ _) (hint _ _)
+  have hsplit2 := intervalIntegral.integral_add_adjacent_intervals
+    (f := fun t => ‖D t‖ * G t) (μ := volume) (a := -(t₀ * 2 ^ M)) (b := t₀)
+    (c := t₀ * 2 ^ M) (hint _ _) (hint _ _)
+  -- the positive flank
+  have hpos : (∫ t in t₀..(t₀ * 2 ^ M), ‖D t‖ * G t)
+      ≤ (C * Real.sqrt Q * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
+          + 2 * C * Real.sqrt κ * M :=
+    integral_norm_mul_kernel_le_of_affine_meanSquare hD hGc hQ hκ hC ht₀ hms hG M
+  -- the negative flank, after reflection
+  have hrefl : (∫ t in (-(t₀ * 2 ^ M))..(-t₀), ‖D t‖ * G t)
+      = ∫ t in t₀..(t₀ * 2 ^ M), ‖D (-t)‖ * G (-t) := by
+    rw [intervalIntegral.integral_comp_neg (fun t => ‖D t‖ * G t)]
+  have hnegms : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖D (-t)‖ ^ 2) ≤ Q + κ * U := by
+    intro U hU
+    rw [integral_Icc_normSq_comp_neg D (by linarith)]
+    exact hms U hU
+  have hnegG : ∀ t, t₀ ≤ t → G (-t) ≤ C / t := by
+    intro t ht
+    rw [hGsym t]
+    exact hG t ht
+  have hneg : (∫ t in t₀..(t₀ * 2 ^ M), ‖D (-t)‖ * G (-t))
+      ≤ (C * Real.sqrt Q * Real.sqrt 2 / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
+          + 2 * C * Real.sqrt κ * M :=
+    integral_norm_mul_kernel_le_of_affine_meanSquare (hD.comp continuous_neg)
+      (hGc.comp continuous_neg) hQ hκ hC ht₀ hnegms hnegG M
+  -- the low range
+  have hlow : (∫ t in (-t₀)..t₀, ‖D t‖ * G t)
+      ≤ C₀ * (Real.sqrt (2 * t₀) * Real.sqrt (Q + κ * t₀)) :=
+    integral_norm_mul_kernel_low_le hD hGc hC₀ ht₀ hGlow (hms t₀ le_rfl)
+  rw [hrefl] at hsplit1
+  linarith [hsplit1, hsplit2]
+
+end GaloisForLFunctions.HTGeometry
+end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open Complex MeasureTheory Set
+
+/-- Cauchy–Schwarz on an interval, for two functions. -/
+theorem integral_norm_mul_norm_le_sqrt_mul_sqrt {A B : ℝ → ℂ} (hA : Continuous A)
+    (hB : Continuous B) {a b : ℝ} (hab : a ≤ b) :
+    (∫ t in a..b, ‖A t‖ * ‖B t‖)
+      ≤ Real.sqrt (∫ t in a..b, ‖A t‖ ^ 2) * Real.sqrt (∫ t in a..b, ‖B t‖ ^ 2) := by
+  have hm1 : AEStronglyMeasurable A (volume.restrict (Set.Icc a b)) :=
+    hA.aestronglyMeasurable.restrict
+  have hm2 : AEStronglyMeasurable B (volume.restrict (Set.Icc a b)) :=
+    hB.aestronglyMeasurable.restrict
+  have h1 : Integrable (fun y => ‖A y‖ ^ 2) (volume.restrict (Set.Icc a b)) :=
+    (hA.norm.pow 2).integrableOn_Icc
+  have h2 : Integrable (fun y => ‖B y‖ ^ 2) (volume.restrict (Set.Icc a b)) :=
+    (hB.norm.pow 2).integrableOn_Icc
+  have hcs := integral_mul_le_sqrt_mul_sqrt_measure (μ := volume.restrict (Set.Icc a b))
+    hm1 hm2 h1 h2
+  have hconv : ∀ f : ℝ → ℝ, (∫ t in a..b, f t) = ∫ t in Set.Icc a b, f t := by
+    intro f
+    rw [intervalIntegral.integral_of_le hab, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
+  rw [hconv (fun t => ‖A t‖ * ‖B t‖), hconv (fun t => ‖A t‖ ^ 2), hconv (fun t => ‖B t‖ ^ 2)]
+  exact hcs
+
+/-- The root mean square over a subinterval of `[0, b]` from an affine mean square at height `b`. -/
+theorem sqrt_integral_normSq_le_affine {D : ℝ → ℂ} (hD : Continuous D) {Q κ : ℝ} (hQ : 0 ≤ Q)
+    (hκ : 0 ≤ κ) {a b : ℝ} (hms : (∫ t in Set.Icc (-b) b, ‖D t‖ ^ 2) ≤ Q + κ * b) (ha : 0 ≤ a)
+    (hab : a ≤ b) (hb : 0 < b) :
+    Real.sqrt (∫ t in a..b, ‖D t‖ ^ 2) ≤ Real.sqrt Q + Real.sqrt κ * Real.sqrt b := by
+  have hsq : Integrable (fun y => ‖D y‖ ^ 2) (volume.restrict (Set.Icc (-b) b)) :=
+    (hD.norm.pow 2).integrableOn_Icc
+  have hmono : (∫ t in a..b, ‖D t‖ ^ 2) ≤ ∫ t in Set.Icc (-b) b, ‖D t‖ ^ 2 := by
+    rw [intervalIntegral.integral_of_le hab]
+    refine MeasureTheory.setIntegral_mono_set hsq ?_ ?_
+    · filter_upwards with t
+      positivity
+    · refine Filter.Eventually.of_forall fun t ht => ?_
+      exact Set.mem_Icc.2 ⟨by linarith [ht.1], ht.2⟩
+  calc Real.sqrt (∫ t in a..b, ‖D t‖ ^ 2) ≤ Real.sqrt (Q + κ * b) :=
+        Real.sqrt_le_sqrt (le_trans hmono hms)
+    _ ≤ Real.sqrt Q + Real.sqrt (κ * b) := sqrt_add_le_sqrt_add_sqrt' hQ (by positivity)
+    _ = Real.sqrt Q + Real.sqrt κ * Real.sqrt b := by rw [Real.sqrt_mul hκ b]
+
+/-- **The first moment of a product from two affine mean squares.**  Cauchy–Schwarz multiplies the two
+root mean squares, and the product of two affine square roots is a constant, a `√(height)` term and a
+linear term. -/
+theorem integral_norm_mul_norm_le_general_affine {A B : ℝ → ℂ} (hA : Continuous A)
+    (hB : Continuous B) {QA κA QB κB : ℝ} (hQA : 0 ≤ QA) (hκA : 0 ≤ κA) (hQB : 0 ≤ QB)
+    (hκB : 0 ≤ κB) {a b : ℝ}
+    (hmsA : (∫ t in Set.Icc (-b) b, ‖A t‖ ^ 2) ≤ QA + κA * b)
+    (hmsB : (∫ t in Set.Icc (-b) b, ‖B t‖ ^ 2) ≤ QB + κB * b)
+    (ha : 0 ≤ a) (hab : a ≤ b) (hb : 0 < b) :
+    (∫ t in a..b, ‖A t‖ * ‖B t‖)
+      ≤ Real.sqrt QA * Real.sqrt QB
+          + (Real.sqrt QA * Real.sqrt κB + Real.sqrt κA * Real.sqrt QB) * Real.sqrt b
+          + Real.sqrt κA * Real.sqrt κB * b := by
+  have hbb : Real.sqrt b * Real.sqrt b = b := Real.mul_self_sqrt hb.le
+  have hA' : Real.sqrt (∫ t in a..b, ‖A t‖ ^ 2) ≤ Real.sqrt QA + Real.sqrt κA * Real.sqrt b :=
+    sqrt_integral_normSq_le_affine hA hQA hκA hmsA ha hab hb
+  have hB' : Real.sqrt (∫ t in a..b, ‖B t‖ ^ 2) ≤ Real.sqrt QB + Real.sqrt κB * Real.sqrt b :=
+    sqrt_integral_normSq_le_affine hB hQB hκB hmsB ha hab hb
+  calc (∫ t in a..b, ‖A t‖ * ‖B t‖)
+      ≤ Real.sqrt (∫ t in a..b, ‖A t‖ ^ 2) * Real.sqrt (∫ t in a..b, ‖B t‖ ^ 2) :=
+        integral_norm_mul_norm_le_sqrt_mul_sqrt hA hB hab
+    _ ≤ (Real.sqrt QA + Real.sqrt κA * Real.sqrt b)
+          * (Real.sqrt QB + Real.sqrt κB * Real.sqrt b) := by
+        refine mul_le_mul hA' hB' (Real.sqrt_nonneg _) (by positivity)
+    _ = Real.sqrt QA * Real.sqrt QB
+          + (Real.sqrt QA * Real.sqrt κB + Real.sqrt κA * Real.sqrt QB) * Real.sqrt b
+          + Real.sqrt κA * Real.sqrt κB * b := by
+        linear_combination (Real.sqrt κA * Real.sqrt κB) * hbb
+
+/-- **The vertical integral of a product against a first-order kernel.**  Two affine mean squares give
+a block moment of the general shape, so the dyadic split bounds the integral by a constant plus a
+logarithm in the height.  A third factor bounded by `V` on the range is absorbed by using the kernel
+bound `V·C/t`: the statement is applied with `C` replaced by `V·C`. -/
+theorem integral_norm_mul_norm_mul_kernel_le {A B : ℝ → ℂ} (hA : Continuous A) (hB : Continuous B)
+    {G : ℝ → ℝ} (hGc : Continuous G) {QA κA QB κB C t₀ : ℝ} (hQA : 0 ≤ QA) (hκA : 0 ≤ κA)
+    (hQB : 0 ≤ QB) (hκB : 0 ≤ κB) (hC : 0 ≤ C) (ht₀ : 0 < t₀)
+    (hmsA : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖A t‖ ^ 2) ≤ QA + κA * U)
+    (hmsB : ∀ U : ℝ, t₀ ≤ U → (∫ t in Set.Icc (-U) U, ‖B t‖ ^ 2) ≤ QB + κB * U)
+    (hG : ∀ t, t₀ ≤ t → G t ≤ C / t) (M : ℕ) :
+    (∫ t in t₀..(t₀ * 2 ^ M), (‖A t‖ * ‖B t‖) * G t)
+      ≤ 2 * (C * (Real.sqrt QA * Real.sqrt QB) / t₀)
+          + (C * (Real.sqrt QA * Real.sqrt κB + Real.sqrt κA * Real.sqrt QB) * Real.sqrt 2
+              / Real.sqrt t₀) * (1 - Real.sqrt 2 / 2)⁻¹
+          + 2 * C * (Real.sqrt κA * Real.sqrt κB) * M := by
+  have hpow : ∀ m : ℕ, (0 : ℝ) < t₀ * 2 ^ m := fun m => by positivity
+  have hge : ∀ m : ℕ, t₀ ≤ t₀ * 2 ^ m := by
+    intro m
+    have h1 : (1 : ℝ) ≤ 2 ^ m := one_le_pow₀ (by norm_num)
+    nlinarith [ht₀.le]
+  have hstep : ∀ m : ℕ, t₀ * 2 ^ m ≤ t₀ * 2 ^ (m + 1) := by
+    intro m
+    exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ (by norm_num) (by omega)) ht₀.le
+  refine integral_mul_kernel_le_of_general_block_moment (F := fun t => ‖A t‖ * ‖B t‖) ht₀ hC
+    (by positivity) (by positivity) (fun t => by positivity) hG
+    (fun m _ => ((hA.norm.mul hB.norm).intervalIntegrable _ _))
+    (fun m _ => (((hA.norm.mul hB.norm).mul hGc).intervalIntegrable _ _))
+    (fun m _ => ?_)
+  exact integral_norm_mul_norm_le_general_affine hA hB hQA hκA hQB hκB
+    (hmsA _ (hge (m + 1))) (hmsB _ (hge (m + 1))) (hpow m).le (hstep m) (hpow (m + 1))
+
+end GaloisForLFunctions.HTGeometry
+end

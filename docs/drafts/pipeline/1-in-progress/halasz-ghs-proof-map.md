@@ -2561,3 +2561,35 @@ depends on the height of the range except the block count `M`.
 
 Remaining for the route: the low range `|t| ≤ t₀` (kernel bounded by `x^σ/σ`), the reflection to
 negative heights, and the choice of `z, Y` per dyadic coefficient block.
+
+## The whole symmetric range, and the product shape
+
+`VerticalKernelDyadicSplit.lean` (third part) and `IntervalMeanSquareMoment.lean` (second and third
+parts), with the Perron instance in `PerronVerticalPrimeBound.lean`:
+
+- `integral_Icc_normSq_comp_neg` — the mean square over a symmetric range is reflection invariant
+  (no continuity needed: it is a change of variables).
+- `integral_norm_mul_kernel_low_le` — the low range `|t| ≤ t₀`: bounded kernel times Cauchy–Schwarz,
+  `≤ C₀·√(2t₀)·√(Q + κt₀)`.
+- `integral_symm_norm_mul_kernel_le` — the full symmetric range: both flanks carry the dyadic bound,
+  the negative one after reflection (`intervalIntegral.integral_comp_neg`) under which an even kernel
+  and the mean square are invariant, plus the low range.
+- `perron_kernel_norm_neg`, `perron_kernel_norm_le_const` — the Perron kernel is even and bounded by
+  `x^σ/σ` on the whole line.
+- `integral_symm_norm_perron_integrand_le` — the instance: the vertical Perron integral of a
+  prime-supported series over `|t| ≤ t₀2^M`, bounded with only the block count depending on the height.
+
+For the triple convolution the integrand is a *product*, so the block moment acquires a third shape:
+
+- `integral_mul_kernel_le_of_general_block_moment` — a block moment `J + K√(height) + L·(height)` is
+  charged two geometric series (`(1/2)^m` for `J`, `(√2/2)^m` for `K`) and one constant per block.
+- `integral_norm_mul_norm_le_sqrt_mul_sqrt`, `sqrt_integral_normSq_le_affine`,
+  `integral_norm_mul_norm_le_general_affine` — Cauchy–Schwarz multiplies two affine root mean squares
+  into exactly that shape: `√(Q_AQ_B) + (√(Q_Aκ_B) + √(κ_AQ_B))√b + √(κ_Aκ_B)·b`.
+- `integral_norm_mul_norm_mul_kernel_le` — the composite for a product of two Dirichlet polynomials
+  each with an affine mean square.  A third factor bounded by `V` costs nothing structurally: apply it
+  with the kernel bound `V·C/t`, i.e. with `C` replaced by `V·C`.
+
+This is the shape the GHS triple convolution needs: the two prime weights supply the two affine mean
+squares through the sieve, and the third factor `f` supplies only a pointwise bound on the range —
+which is where a distance/Euler saving enters.
