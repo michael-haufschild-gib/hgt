@@ -99,6 +99,9 @@ neither Hadamard's inequality nor exterior powers.
 formal/GaloisForLFunctions/HTGeometry/SchurTriangulation.lean
 formal/GaloisForLFunctions/HTGeometry/FiniteRegularizedDeterminant.lean
 formal/GaloisForLFunctions/HTGeometry/EntireOrderTwoSeries.lean
+formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEntire.lean
+formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtContinuity.lean
+formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtTruncation.lean
 ```
 
 | step | statement | Lean declaration |
@@ -118,14 +121,27 @@ formal/GaloisForLFunctions/HTGeometry/EntireOrderTwoSeries.lean
 | 3 | an order-two coefficient bound is everywhere summable | `summable_of_orderTwo_bound` |
 | 3 | and defines an entire function | `entireOfCoeffs`, `hasDerivAt_entireOfCoeffs`, `differentiable_entireOfCoeffs` |
 | 3 | **the Carleman coefficient bound**, uniform in the matrix size | `norm_taylorCoeff_finiteDet2_le` |
+| 4 | the Hilbert--Schmidt kernels are a normed space | `isHS_add`, `isHS_sub`, `hsNorm_add_le`, `hsNorm_neg`, `hsNorm_sub_le` |
+| 4 | composition is bilinear and submultiplicative | `hsComp_sub_left`, `hsComp_sub_right`, `hsNorm_hsComp_le` |
+| 4 | the inner product is additive in each slot | `hsInner_sub_left`, `hsInner_sub_right` |
+| 4 | **powers are Lipschitz on a norm ball** | `hsNorm_hsPow_sub_le` |
+| 4 | **the power traces are Lipschitz on a norm ball** | `hsTrace_hsPow_sub_norm_le` |
+| 4 | truncation to a finite block | `truncKernel`, `isHS_truncKernel`, `hsNorm_truncKernel_le`, `hsNormSq_split` |
+| 4 | square blocks are cofinal among finite sets of pairs | `tendsto_finset_product_atTop` |
+| 4 | **truncations converge in Hilbert--Schmidt norm** | `tendsto_hsNorm_sub_truncKernel` |
+| 4 | **hence every power trace is the limit of the truncated traces** | `tendsto_hsTrace_hsPow_truncKernel` |
+| — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
 - [x] 0 -> 1  the obstruction is identified exactly and the corpus object is classified
 - [x] Schur triangulation in Lean
 - [x] finite `det_2` and its order-two growth bound in Lean
 - [x] Cauchy/Carleman coefficient bound, and entirety of such a series, in Lean
-- [ ] truncation of a Hilbert--Schmidt kernel: `‖K_s‖_HS <= ‖K‖_HS` and `tr(K_s^m) -> tr(K^m)`
-- [ ] entire `det_2` defined for a Hilbert--Schmidt kernel, agreeing with `fredholmDet` on the disc
+- [x] truncation of a Hilbert--Schmidt kernel: `‖K_s‖_HS <= ‖K‖_HS` and `tr(K_s^m) -> tr(K^m)`
+- [x] the definition and uniqueness of the entire `det_2`, and the criterion that recognises it
+- [ ] the matrix/kernel bridge: `finiteDet2` of the block matrix is `fredholmDet` of the truncated
+      kernel on the disc, so the limit coefficients exist
+- [ ] entire `det_2` **exists** for every Hilbert--Schmidt kernel
 - [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue
 - [ ] order of vanishing = algebraic multiplicity
 - [ ] Plemelj identity on the full resolvent set
@@ -160,3 +176,10 @@ construction; the general construction is what the *multiplicity* clause needs.
 - 2026-08-08 — Route C fixed and its first three steps formalized: Schur triangulation, the finite
   regularized determinant with its order-two growth bound, and the Cauchy/Carleman coefficient
   layer.  Schur triangulation is absent from mathlib and is new corpus infrastructure.
+- 2026-08-08 — step 4 formalized on the kernel side: the Hilbert--Schmidt power traces are Lipschitz
+  on a norm ball (`hsTrace_hsPow_sub_norm_le`, from the telescoping identity
+  `A^{m+1} - B^{m+1} = A(A^m - B^m) + (A-B)B^m` and Cauchy--Schwarz), and finite-block truncations
+  converge to the kernel in Hilbert--Schmidt norm, so `tr(K_s^m) -> tr(K^m)`.  Also added the
+  definition, uniqueness and recognition criterion of the entire determinant
+  (`IsRegularizedDet`).  What is left of step 4 is purely the bookkeeping bridge between the
+  block matrix and the truncated kernel.
