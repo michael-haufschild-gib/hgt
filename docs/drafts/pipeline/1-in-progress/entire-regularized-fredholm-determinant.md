@@ -111,6 +111,7 @@ formal/GaloisForLFunctions/HTGeometry/HurwitzZeroLimit.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalues.lean
 formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtBlockEigenvector.lean
 formal/GaloisForLFunctions/HTGeometry/CompactOperatorSpectrumLimit.lean
+formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalueLimit.lean
 ```
 
 | step | statement | Lean declaration |
@@ -166,6 +167,10 @@ formal/GaloisForLFunctions/HTGeometry/CompactOperatorSpectrumLimit.lean
 | 7 | the represented operators converge in **operator** norm | `toOperator_sub`, `norm_toOperator_sub_le`, `tendsto_norm_toOperator_truncKernel_sub` |
 | 7 | cluster points survive an asymptotically vanishing perturbation | `mapClusterPt_of_tendsto_dist_zero` |
 | 7 | **a limit of eigenvalues of nearby operators is an eigenvalue of the compact limit** | `exists_eigenvector_of_tendsto_of_isCompactOperator` |
+| 8 | the block spectrum as a closed set, and its eigenvector characterisation | `blockSpectrum`, `isClosed_blockSpectrum`, `mem_blockSpectrum_iff` |
+| 8 | the zeros of the entire determinant are isolated (its value at the origin is `1`) | `eventually_entireDet2_ne_zero`, `exists_radius_isolating` |
+| 8 | the distance from `1/z_0` to the block spectrum tends to zero | `tendsto_infDist_blockSpectrum`, `eventually_blockSpectrum_nonempty` |
+| 8 | **a zero of the entire determinant is a reciprocal eigenvalue of the kernel operator** | `exists_eigenvector_of_entireDet2_eq_zero` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -189,12 +194,11 @@ formal/GaloisForLFunctions/HTGeometry/CompactOperatorSpectrumLimit.lean
       (`toOperator_truncKernel_liftBlockLp`), the operator-norm convergence
       (`tendsto_norm_toOperator_truncKernel_sub`), and the spectral limit theorem
       (`exists_eigenvector_of_tendsto_of_isCompactOperator`), all absent from mathlib
-- [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue **of `K` itself**.  Only the *assembly* is
-      left, and its exact shape is now visible: Hurwitz gives, for **each** radius `r`, an eventual
-      block eigenvalue in `ball z_0 r`, while the spectral limit theorem consumes a **single**
-      family `lam s -> z_0⁻¹`.  Producing that family from the family-of-radii statement is a
-      diagonal argument over the filter, which needs `atTop` on `Finset ι` to be countably
-      generated — true for `ι = ℕ`, which is the case of the theta kernel
+- [x] **`det_2(1 - zK) = 0` implies `1/z` is an eigenvalue of `K`**
+      (`exists_eigenvector_of_entireDet2_eq_zero`).  No diagonal argument was needed: taking, for
+      each block, the point of its spectrum **nearest** to `1/z_0` gives the single convergent
+      family directly, because the block spectrum is closed and `ℂ` is proper
+- [ ] the converse: an eigenvalue of `K` is a zero of `det_2`
 - [ ] order of vanishing = algebraic multiplicity
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
@@ -263,3 +267,8 @@ construction; the general construction is what the *multiplicity* clause needs.
   The proof uses `IsCompact.exists_mapClusterPt` plus the finer filter `p ⊓ comap u (nhds w)`,
   whose non-triviality is `Filter.push_pull` + `Filter.map_neBot_iff`.  Together with the `l^2`
   lift of block eigenvectors, only the diagonal assembly is left.
+- 2026-08-08 — assembled: **`exists_eigenvector_of_entireDet2_eq_zero`**.  A zero `z_0 != 0` of the
+  entire regularized determinant of a Hilbert--Schmidt kernel is a reciprocal eigenvalue of the
+  kernel operator on `l^2`.  The diagonal argument turned out to be unnecessary: the *nearest point
+  of the block spectrum* to `1/z_0` is a single convergent family, since the block spectrum is
+  closed (zero set of the characteristic polynomial) and `ℂ` is proper.

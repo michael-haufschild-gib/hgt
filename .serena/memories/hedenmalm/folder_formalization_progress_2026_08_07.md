@@ -1753,3 +1753,26 @@ gives, for *each* radius `r`, an eventual block eigenvalue in `ball z_0 r`; the 
 theorem consumes a *single* family `lam s -> z_0⁻¹`.  Producing that family is a diagonal argument
 over the filter, needing `atTop` on `Finset ι` countably generated — true for `ι = ℕ`, which is the
 theta case.
+
+### 2026-08-08 — zeros of the entire determinant ARE reciprocal eigenvalues
+
+`HTGeometry/RegularizedDeterminantEigenvalueLimit.lean`:
+
+```text
+exists_eigenvector_of_entireDet2_eq_zero :
+  IsHS K -> z_0 ≠ 0 -> entireDet2 K z_0 = 0 -> ∃ w ≠ 0, toOperator hK w = z_0⁻¹ • w
+```
+
+**No diagonal argument was needed.**  The obstacle recorded last round — Hurwitz gives a witness
+per radius, the spectral limit theorem wants one convergent family — dissolves by taking, for each
+block, the point of `blockSpectrum K s` **nearest** to `1/z_0`: the block spectrum is closed (zero
+set of `charpoly.eval`), `ℂ` is proper, so `IsClosed.exists_infDist_eq_dist` supplies the minimiser,
+and Hurwitz says `infDist -> 0`.
+
+Supporting: `blockSpectrum`, `isClosed_blockSpectrum`, `mem_blockSpectrum_iff`,
+`eventually_entireDet2_ne_zero` (zeros isolated, because `entireDet2 K 0 = 1` rules out the
+identically-zero branch of `AnalyticAt.eventually_eq_zero_or_eventually_ne_zero`),
+`exists_radius_isolating`, `tendsto_infDist_blockSpectrum`, `eventually_blockSpectrum_nonempty`.
+`exists_eigenvector_of_tendsto_of_isCompactOperator` was weakened to **eventual** hypotheses.
+
+Next: the converse (an eigenvalue is a zero), then order of vanishing = algebraic multiplicity.
