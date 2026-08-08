@@ -1,8 +1,9 @@
 # Quenched shortcut--annular equivalence
 
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [BRIDGE] [LEAN PROOF OPEN]`
+- **Stage:** 3-formalized
+- **Status:** `[PAPER-PROVED] [BRIDGE] [LEAN-FORMALIZED]`
 - **Parent:** `../1-in-progress/quenched-observer-spectral-action-law.md`
+- **Formalized companion:** `quenched-shortcut-annular-equivalence-formalized.md`
 - **Date:** 2026-08-05
 
 ## Statement
@@ -135,3 +136,22 @@ recurrence-component growth problem untouched.
 Formalize the abstract Gaussian dilation identity and the scale invariance of
 the completed one-parameter orbit closure. Do not encode `(8)` as a
 hypothesis and call the conjecture proved.
+
+## Gates
+
+- [x] 0 -> 1: well-posed and hostile-tested
+- [x] 1 -> 2: complete proof above
+- [x] 2 -> 3: Lean theorems and axiom audit — see
+  `quenched-shortcut-annular-equivalence-formalized.md`.  `(4)`, `(5)` and `(7)` are all
+  formalized; `(8)` appears nowhere, as required.
+- [ ] 3 -> 4: manuscript use only after the resolved volume-growth law `(8)` is settled
+
+## Log
+
+- 2026-08-09 — Formalized unconditionally in Lean 4.  Scale invariance of the
+  completed orbit is `completedRayOrbit_smul`; the exact reduction `(4)` is
+  `gaussianMass_resolvedShortcut_timeEvent`; `(5)` is
+  `measure_resolvedShortcut_inter_closedBall_le`; `(7)` is
+  `gaussianMass_resolvedShortcut_le_tsum`.  All statements are in `ℝ≥0∞`, so
+  no integrability premise enters, and no measurability of `I` is needed —
+  the rarity functional is an arbitrary function of the completed orbit.
