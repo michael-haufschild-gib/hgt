@@ -1697,3 +1697,34 @@ zero/multiplicity statements to `entireDet2` one needs (a) to upgrade
 bound already gives, by the same `2^-n` majorant argument applied uniformly on a disc — and (b)
 Hurwitz, provable from the argument principle (`Complex.circleIntegral` + `logDeriv`), which mathlib
 does have the ingredients for.
+
+### 2026-08-08 — Hurwitz's theorem, built from the maximum modulus principle
+
+`HTGeometry/HurwitzZeroLimit.lean`:
+
+```text
+eventually_exists_zero_of_tendstoUniformlyOn :
+  0 < r -> (∀ a, DiffContOnCl ℂ (F a) (ball c r)) -> ContinuousOn f (sphere c r) ->
+  TendstoUniformlyOn F f p (closedBall c r) -> f c = 0 -> (∀ z ∈ sphere c r, f z ≠ 0) ->
+  ∀ᶠ a in p, ∃ z ∈ ball c r, F a z = 0
+```
+
+**No argument principle and no Rouche are needed** — apply the maximum modulus principle
+(`Complex.norm_le_of_forall_mem_frontier_norm_le`) to `1/F a`: if `F a` had no zero in the closed
+disc then `‖1/F a (c)‖ <= 2/mn`, i.e. `‖F a c‖ >= mn/2`, contradicting `‖F a c - f c‖ < mn/2`.
+Mathlib has neither Hurwitz nor Montel; this is new corpus infrastructure.
+
+Also: `tendstoUniformlyOn_finiteDet2_entireDet2` upgrades the block-determinant convergence from
+pointwise to **uniform on every closed disc**.  The trick is that the estimate is *scalar*: bound
+`‖∑ (a_s n - a n) z^n‖` by `∑ ‖a_s n - a n‖ ρ^n`, which is independent of `z`, and send that to
+zero by Tannery with majorant `2E·2^-n`.
+
+Combining them, `HTGeometry/RegularizedDeterminantEigenvalues.lean`:
+
+```text
+eventually_exists_blockEigenvalue_near : a zero z_0 of entireDet2 K, isolated on a circle of radius
+  r < ‖z_0‖, is a limit of reciprocal eigenvalues of the finite blocks blockMatrix K s.
+```
+
+Next obstruction: passing block eigenvectors to the limit, i.e. **upper semicontinuity of the
+spectrum of compact operators under norm convergence** — also absent from mathlib.

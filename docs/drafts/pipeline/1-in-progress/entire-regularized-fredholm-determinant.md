@@ -107,6 +107,8 @@ formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantLogSeries.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantExists.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantLimit.lean
 formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantZeros.lean
+formal/GaloisForLFunctions/HTGeometry/HurwitzZeroLimit.lean
+formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalues.lean
 ```
 
 | step | statement | Lean declaration |
@@ -154,6 +156,10 @@ formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantZeros.lean
 | 5 | **it is the pointwise limit of the finite block determinants** | `tendsto_finiteDet2_entireDet2` |
 | 6 | the zeros of a finite determinant are the reciprocal eigenvalues | `finiteDet2_eq_zero_iff_det`, `finiteDet2_eq_zero_iff_exists_eigenvector` |
 | 6 | **the order of vanishing of a finite determinant is the eigenvalue multiplicity** | `finiteDet2_factor` |
+| 6 | **the block determinants converge uniformly on every closed disc** | `norm_detCoeff_mul_pow_le`, `norm_detCoeff_truncKernel_mul_pow_le`, `tendsto_tsum_norm_detCoeff_sub`, `tendstoUniformlyOn_finiteDet2_entireDet2` |
+| 6 | the boundary minimum of a nonvanishing function on a circle | `exists_pos_le_norm_on_sphere` |
+| 6 | **Hurwitz's theorem, the zero-persistence half** | `eventually_exists_zero_of_tendstoUniformlyOn` |
+| 6 | **a zero of the entire determinant is a limit of reciprocal block eigenvalues** | `eventually_exists_blockEigenvalue_near` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -168,11 +174,15 @@ formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantZeros.lean
 - [x] entire `det_2` **exists** for every Hilbert--Schmidt kernel (`exists_isRegularizedDet`)
 - [x] the *finite* case of both zero statements (`finiteDet2_eq_zero_iff_exists_eigenvector`,
       `finiteDet2_factor`), and the limit that must carry them (`tendsto_finiteDet2_entireDet2`)
-- [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue.  The pointwise limit is in place; what is
-      missing is **Hurwitz's theorem**, absent from mathlib: a locally uniform limit of nowhere-zero
-      analytic functions is nowhere zero or identically zero, and zeros of the limit are limits of
-      zeros with matching multiplicity.  Note `tendsto_finiteDet2_entireDet2` is currently only
-      *pointwise*; upgrading it to locally uniform is the prerequisite
+- [x] uniform convergence on every closed disc (`tendstoUniformlyOn_finiteDet2_entireDet2`)
+- [x] **Hurwitz's theorem**, built here because mathlib lacks it
+      (`eventually_exists_zero_of_tendstoUniformlyOn`), and its first consequence:
+      a zero of `entireDet2 K` is a limit of reciprocal eigenvalues of the finite blocks
+      (`eventually_exists_blockEigenvalue_near`)
+- [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue **of `K` itself**.  What remains is passing the
+      block eigenvectors to the limit: `‖K_s - K‖_HS -> 0` gives norm convergence of the operators,
+      so upper semicontinuity of the spectrum of compact operators applies, but that theorem is not
+      in mathlib either
 - [ ] order of vanishing = algebraic multiplicity
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
@@ -229,3 +239,9 @@ construction; the general construction is what the *multiplicity* clause needs.
   factorization `finiteDet2_factor` giving the order of vanishing as the number of Schur diagonal
   entries equal to `-1/z_0`.  Carrying these to the limit needs Hurwitz's theorem, which mathlib
   does not have.
+- 2026-08-08 — **Hurwitz built** (`HurwitzZeroLimit.lean`), from the maximum modulus principle
+  applied to `1/f_n`: no argument principle and no Rouche needed.  The convergence
+  `tendsto_finiteDet2_entireDet2` was upgraded to **uniform on every closed disc**, and the two
+  combine into `eventually_exists_blockEigenvalue_near`: a zero of `entireDet2 K` is a limit of
+  reciprocal eigenvalues of the finite blocks.  The remaining step to the operator statement is
+  upper semicontinuity of the spectrum under norm convergence of compact operators.
