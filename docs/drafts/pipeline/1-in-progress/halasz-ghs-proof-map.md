@@ -3729,3 +3729,36 @@ What is settled and reusable regardless: the pole supplier, `charSepLower`, and 
 (this session), and the fact that `1/(σ−1)` is the exact pointwise ceiling.  What is now precisely
 located: (★), with a known instrument and a known constant (`c = 1`, since `c < 1` makes the scale sum
 diverge and `c > 1` is not needed).
+
+## Retraction: (★) is false
+
+Do not build on (★).  Take `f(p) = e^{iφ}·n^{it₀}(p)` for a fixed phase `φ` bounded away from `0`, i.e. `f`
+a character rotated by a constant.  Then
+
+`𝔻(f, n^{it}; z)² = ∑_{p ≤ z}(1 − cos(φ − u log p))/p`,   `u = t − t₀`,
+
+so `m = 𝔻(f, n^{it₀}; z)² = (1 − cos φ)·L` at the minimiser, while for `|u| ≍ 1` the phases `u log p` are
+spread over the whole circle and `𝔻(f, n^{it}; z)² ≈ L`.  But (★) would demand
+`𝔻² ≥ m + S(u) − C ≈ (1 − cos φ)L + L = (2 − cos φ)L`, which exceeds `L` by a positive multiple of `L`.
+So (★) fails by a factor of the same order as the quantity itself, not by a constant.
+
+(The earlier apparent counterexample with `f = n^{it₁}` and `t₀ ≠ t₁` was not one: there `t₁` *is* the
+minimiser, and (★) holds with equality once `t₀` is taken to be the minimiser.  The rotated-character
+example is a genuine failure, because the minimum is positive and the far-field value is *not* the sum.)
+
+So both candidate mechanisms for Halász's `(1+m)` are ruled out from the corpus's present tools: the
+triangle inequality is too weak (its cross term `2√(Sm)` swallows `S` on every small scale) and additive
+growth over the minimum is false.  The honest state of the route:
+
+* **Proved and sharp**: the pointwise ceiling.  `∑_{p ≤ z}Re(f(p)p^{−it})/p = logLog z − 𝔻(t)²` gives
+  `|L(f,σ+it)| ≍ (log z)e^{−𝔻(t)²}` with `log z ≍ 1/(σ−1)`, so every route that bounds the vertical
+  integral by `max|L| × (kernel mass)` is capped at `(log z)e^{−m}`.  For the Liouville function that is
+  `O(1)` — a constant multiple of the trivial bound.
+* **Unreduced**: the gap to Halász's `(1+m)e^{−m}`, a factor `log z/(1+m)`.  It is a real gap, not an
+  accounting slack: no rearrangement of the kernel and no consequence of the metric axioms closes it, and
+  the natural strengthening of the distance-growth input is false.
+
+What this session did settle, and what stands: the whole Cesàro architecture (exact averaging identity,
+explicit truncation error with no factor `N`, exact cutoff differencing in place of a Tauberian step, the
+logarithmic-not-linear Perron bound), the pole supplier and `charSepLower`, and the triangle transfer.
+Those are unconditional and reusable whatever mechanism eventually supplies the `(1+m)`.
