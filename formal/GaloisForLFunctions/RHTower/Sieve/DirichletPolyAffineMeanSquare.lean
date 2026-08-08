@@ -3,6 +3,8 @@ import GaloisForLFunctions.RHTower.Sieve.PerronPrimeSumBound
 import GaloisForLFunctions.RHTower.Sieve.TwistedSeriesAsDirichletPoly
 import GaloisForLFunctions.RHTower.Sieve.DirichletIntegralMeanValue
 import GaloisForLFunctions.RHTower.Sieve.HalaszMeanSquare
+import GaloisForLFunctions.RHTower.Sieve.MoebiusSmoothCancellation
+import GaloisForLFunctions.RHTower.Sieve.PerronNearDiagonal
 import GaloisForLFunctions.HTGeometry.IntervalMeanSquareMoment
 
 /-!
@@ -205,6 +207,183 @@ theorem integral_norm_dirPoly_halasz_affine (N : ℕ) (a : Fin N → ℂ) {T V M
           + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * T) / V ^ 2 := by
     ring
   linarith [hdiv ▸ hstep]
+
+/-- **The affine mean square with no lower bound on the height.**  For `T ≤ 1` the range sits inside
+`[-1, 1]`, where the estimate at `T = 1` applies. -/
+theorem integral_Icc_normSq_dirPoly_le_affine_max {N : ℕ} (a : Fin N → ℂ) (T : ℝ) :
+    (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ 2)
+      ≤ 5 * Real.pi * Real.exp 1 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2)
+        + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * max T 1 := by
+  rcases le_total 1 T with h | h
+  · rw [max_eq_left h]
+    exact integral_Icc_normSq_dirPoly_le_affine a h
+  · rw [max_eq_right h]
+    have hsub : (∫ t in Set.Icc (-T) T, ‖dirPoly N a t‖ ^ 2)
+        ≤ ∫ t in Set.Icc (-1 : ℝ) 1, ‖dirPoly N a t‖ ^ 2 := by
+      refine MeasureTheory.setIntegral_mono_set
+        (((continuous_dirPoly N a).norm.pow 2).integrableOn_Icc)
+        (Filter.Eventually.of_forall fun t => by positivity)
+        (Filter.Eventually.of_forall fun t ht => ?_)
+      exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+    have h1 := integral_Icc_normSq_dirPoly_le_affine a (le_refl (1 : ℝ))
+    linarith
+
+
+section
+variable {f : ℕ → ℂ}
+
+/-- Each twisted coefficient square is at most `1/n²`. -/
+theorem norm_sq_twistedTruncCoeff_le (hbdd : ∀ n, ‖f n‖ ≤ 1) {σ : ℝ} (hσ : 1 ≤ σ) (L : ℕ)
+    (m : Fin L) :
+    ‖twistedTruncCoeff f σ L m‖ ^ 2 ≤ 1 / (((m : ℕ) : ℝ) + 1) ^ 2 := by
+  have hb : (1 : ℝ) ≤ ((m : ℕ) : ℝ) + 1 := by
+    have : (0 : ℝ) ≤ ((m : ℕ) : ℝ) := Nat.cast_nonneg _
+    linarith
+  have h1 := norm_twistedTruncCoeff_le hbdd σ L m
+  have hstep : (((m : ℕ) : ℝ) + 1) ^ (-σ) ≤ 1 / (((m : ℕ) : ℝ) + 1) := by
+    have hmono : (((m : ℕ) : ℝ) + 1) ^ (-σ) ≤ (((m : ℕ) : ℝ) + 1) ^ (-1 : ℝ) :=
+      Real.rpow_le_rpow_of_exponent_le hb (by linarith)
+    have hval : (((m : ℕ) : ℝ) + 1) ^ (-1 : ℝ) = 1 / (((m : ℕ) : ℝ) + 1) := by
+      rw [Real.rpow_neg (by linarith), Real.rpow_one, one_div]
+    rwa [hval] at hmono
+  have hle : ‖twistedTruncCoeff f σ L m‖ ≤ 1 / (((m : ℕ) : ℝ) + 1) := le_trans h1 hstep
+  have hsq := pow_le_pow_left₀ (norm_nonneg _) hle 2
+  calc ‖twistedTruncCoeff f σ L m‖ ^ 2 ≤ (1 / (((m : ℕ) : ℝ) + 1)) ^ 2 := hsq
+    _ = 1 / (((m : ℕ) : ℝ) + 1) ^ 2 := by rw [div_pow, one_pow]
+
+/-- The plain mass of the twisted coefficients is at most `2`. -/
+theorem sum_norm_sq_twistedTruncCoeff_le_two (hbdd : ∀ n, ‖f n‖ ≤ 1) {σ : ℝ} (hσ : 1 ≤ σ)
+    (L : ℕ) :
+    ∑ m : Fin L, ‖twistedTruncCoeff f σ L m‖ ^ 2 ≤ 2 := by
+  have hstep : ∑ m : Fin L, ‖twistedTruncCoeff f σ L m‖ ^ 2
+      ≤ ∑ m : Fin L, 1 / (((m : ℕ) : ℝ) + 1) ^ 2 :=
+    Finset.sum_le_sum fun m _ => norm_sq_twistedTruncCoeff_le hbdd hσ L m
+  have hcast : ∑ m : Fin L, 1 / (((m : ℕ) : ℝ) + 1) ^ 2
+      = ∑ k ∈ Finset.Icc 1 L, 1 / (k : ℝ) ^ 2 := by
+    rw [← sum_fin_eq_sum_Icc L (fun k => 1 / (k : ℝ) ^ 2)]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    push_cast
+    ring
+  have htwo := sum_inv_sq_le_two_of_pos (P := Finset.Icc 1 L)
+    (fun n hn => (Finset.mem_Icc.1 hn).1)
+  rw [hcast] at hstep
+  linarith
+
+/-- The `n`-weighted mass of the twisted coefficients costs one logarithm. -/
+theorem sum_mul_norm_sq_twistedTruncCoeff_le (hbdd : ∀ n, ‖f n‖ ≤ 1) {σ : ℝ} (hσ : 1 ≤ σ)
+    (L : ℕ) :
+    ∑ m : Fin L, (((m : ℕ) : ℝ) + 1) * ‖twistedTruncCoeff f σ L m‖ ^ 2 ≤ 1 + Real.log L := by
+  have hstep : ∑ m : Fin L, (((m : ℕ) : ℝ) + 1) * ‖twistedTruncCoeff f σ L m‖ ^ 2
+      ≤ ∑ m : Fin L, 1 / (((m : ℕ) : ℝ) + 1) := by
+    refine Finset.sum_le_sum fun m _ => ?_
+    have hb : (1 : ℝ) ≤ ((m : ℕ) : ℝ) + 1 := by
+      have : (0 : ℝ) ≤ ((m : ℕ) : ℝ) := Nat.cast_nonneg _
+      linarith
+    have h := norm_sq_twistedTruncCoeff_le hbdd hσ L m
+    calc (((m : ℕ) : ℝ) + 1) * ‖twistedTruncCoeff f σ L m‖ ^ 2
+        ≤ (((m : ℕ) : ℝ) + 1) * (1 / (((m : ℕ) : ℝ) + 1) ^ 2) :=
+          mul_le_mul_of_nonneg_left h (by linarith)
+      _ = 1 / (((m : ℕ) : ℝ) + 1) := by
+          field_simp
+  have hcast : ∑ m : Fin L, 1 / (((m : ℕ) : ℝ) + 1) = ∑ k ∈ Finset.Icc 1 L, 1 / (k : ℝ) := by
+    rw [← sum_fin_eq_sum_Icc L (fun k => 1 / (k : ℝ))]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    push_cast
+    ring
+  have hlog : ∑ k ∈ Finset.Icc 1 L, 1 / (k : ℝ) ≤ 1 + Real.log L :=
+    sum_inv_comp_le_one_add_log (φ := id) (fun _ _ _ _ h => h) (fun a ha => ha)
+  rw [hcast] at hstep
+  linarith
+
+/-- **The Halász mean-value bound for the truncated twisted series, with the affine mean square.**
+The `L(1 + log L)` of `integral_norm_dirPoly_twisted_halasz` becomes `1 + log L`: the mass of the
+twisted coefficients is `n`-weighted, and `∑_n n·n^{-2σ} ≍ log L` where `∑_n n^{-2σ} ≍ 1`. -/
+theorem integral_norm_dirPoly_twisted_halasz_affine
+    (hf1 : f 1 = 1) (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n)
+    (hbdd : ∀ n, ‖f n‖ ≤ 1) (hf0 : f 0 = 0)
+    {σ : ℝ} (hσ : 1 < σ) {z : ℕ} (hz : 1 ≤ z) {δ : ℝ} (hδ : 0 ≤ δ)
+    {L : ℕ} (hL : 1 ≤ L) {T V : ℝ} (hT : 1 ≤ T) (hV : 0 < V)
+    (hunif : ∀ t : ℝ, |t| ≤ T →
+      δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z))) :
+    ∫ u in Set.Ioc (0 : ℝ) T, ‖dirPoly L (twistedTruncCoeff f σ L) u‖
+      ≤ V * T
+        + ((1 + 1 / (σ - 1)) *
+              Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2)
+            + ((L : ℝ)) ^ (1 - σ) / (σ - 1))
+          * (5 * Real.pi * Real.exp 1 * (1 + Real.log L) + 5 * Real.pi * T) / V ^ 2 := by
+  set damped : ℝ := (1 + 1 / (σ - 1)) *
+    Real.exp (7 / 2 + 2 * (σ - 1) * (Real.log z + Real.log 4) - δ ^ 2) with hdamped
+  set trunc : ℝ := ((L : ℝ)) ^ (1 - σ) / (σ - 1) with htrunc
+  have hσ1 : (0 : ℝ) < σ - 1 := by linarith
+  have hT0 : (0 : ℝ) < T := by linarith
+  have hdamped0 : 0 ≤ damped := by
+    rw [hdamped]
+    positivity
+  have htrunc0 : 0 ≤ trunc := by
+    rw [htrunc]
+    have hL0 : (0 : ℝ) ≤ ((L : ℕ) : ℝ) := Nat.cast_nonneg L
+    positivity
+  have hsup : ∀ u ∈ Set.Ioc (0 : ℝ) T,
+      ‖dirPoly L (twistedTruncCoeff f σ L) u‖ ≤ damped + trunc := by
+    intro u hu
+    have hid : ∑ n ∈ Finset.range (L + 1),
+        twistedSummand f (((σ : ℝ) : ℂ) + (((-u : ℝ)) : ℂ) * Complex.I) n
+        = dirPoly L (twistedTruncCoeff f σ L) u := by
+      rw [sum_range_twistedSummand_eq_dirPoly hf0 σ (-u) L, neg_neg]
+    have hsre : (1 : ℝ) < (((σ : ℝ) : ℂ) + (((-u : ℝ)) : ℂ) * Complex.I).re := by
+      rw [re_ofReal_add_mul_I]
+      exact hσ
+    have habs : |(-u : ℝ)| ≤ T := by
+      rw [abs_neg, abs_of_pos hu.1]
+      exact hu.2
+    have hfull : ‖∑' n : ℕ,
+        twistedSummand f (((σ : ℝ) : ℂ) + (((-u : ℝ)) : ℂ) * Complex.I) n‖ ≤ damped :=
+      norm_tsum_twistedSummand_le_damped_of_uniform hf1 hmul hbdd hσ hz hδ hunif habs
+    have htail : ‖(∑' n : ℕ,
+          twistedSummand f (((σ : ℝ) : ℂ) + (((-u : ℝ)) : ℂ) * Complex.I) n) -
+        ∑ n ∈ Finset.range (L + 1),
+          twistedSummand f (((σ : ℝ) : ℂ) + (((-u : ℝ)) : ℂ) * Complex.I) n‖ ≤ trunc := by
+      have h := norm_tsum_sub_sum_range_le_pow hbdd hsre hL
+      rwa [re_ofReal_add_mul_I] at h
+    rw [← hid]
+    have hsplit := norm_sub_le
+      (∑' n : ℕ, twistedSummand f (((σ : ℝ) : ℂ) + (((-u : ℝ)) : ℂ) * Complex.I) n)
+      ((∑' n : ℕ, twistedSummand f (((σ : ℝ) : ℂ) + (((-u : ℝ)) : ℂ) * Complex.I) n) -
+        ∑ n ∈ Finset.range (L + 1),
+          twistedSummand f (((σ : ℝ) : ℂ) + (((-u : ℝ)) : ℂ) * Complex.I) n)
+    rw [sub_sub_cancel] at hsplit
+    linarith
+  have hbase := integral_norm_dirPoly_halasz_affine L (twistedTruncCoeff f σ L) hT hV
+    (by linarith : (0 : ℝ) ≤ damped + trunc) hsup
+  have hmass1 := sum_mul_norm_sq_twistedTruncCoeff_le hbdd hσ.le L
+  have hmass2 := sum_norm_sq_twistedTruncCoeff_le_two hbdd hσ.le L
+  have hV2 : (0 : ℝ) < V ^ 2 := by positivity
+  have hnum : 5 * Real.pi * Real.exp 1
+        * (∑ m : Fin L, (((m : ℕ) : ℝ) + 1) * ‖twistedTruncCoeff f σ L m‖ ^ 2)
+      + (5 * Real.pi / 2) * (∑ m : Fin L, ‖twistedTruncCoeff f σ L m‖ ^ 2) * T
+      ≤ 5 * Real.pi * Real.exp 1 * (1 + Real.log L) + 5 * Real.pi * T := by
+    have h1 : 5 * Real.pi * Real.exp 1
+          * (∑ m : Fin L, (((m : ℕ) : ℝ) + 1) * ‖twistedTruncCoeff f σ L m‖ ^ 2)
+        ≤ 5 * Real.pi * Real.exp 1 * (1 + Real.log L) :=
+      mul_le_mul_of_nonneg_left hmass1 (by positivity)
+    have h2 : (5 * Real.pi / 2) * (∑ m : Fin L, ‖twistedTruncCoeff f σ L m‖ ^ 2) * T
+        ≤ (5 * Real.pi / 2) * 2 * T := by
+      have hstep : (5 * Real.pi / 2) * (∑ m : Fin L, ‖twistedTruncCoeff f σ L m‖ ^ 2)
+          ≤ (5 * Real.pi / 2) * 2 := mul_le_mul_of_nonneg_left hmass2 (by positivity)
+      exact mul_le_mul_of_nonneg_right hstep hT0.le
+    have hval : (5 * Real.pi / 2) * 2 * T = 5 * Real.pi * T := by ring
+    linarith
+  have hfrac : (damped + trunc)
+        * (5 * Real.pi * Real.exp 1
+            * (∑ m : Fin L, (((m : ℕ) : ℝ) + 1) * ‖twistedTruncCoeff f σ L m‖ ^ 2)
+          + (5 * Real.pi / 2) * (∑ m : Fin L, ‖twistedTruncCoeff f σ L m‖ ^ 2) * T) / V ^ 2
+      ≤ (damped + trunc) * (5 * Real.pi * Real.exp 1 * (1 + Real.log L) + 5 * Real.pi * T)
+          / V ^ 2 := by
+    refine div_le_div_of_nonneg_right ?_ hV2.le
+    exact mul_le_mul_of_nonneg_left hnum (by linarith)
+  linarith [hbase, hfrac]
+
+end
 
 end RHTower.Sieve
 end

@@ -54,3 +54,41 @@ All unconditional: `[propext, Classical.choice, Quot.sound]`.
 ## Log
 - 2026-08-08 — created in 3-formalized; the stale "missing Hilbert inequality" claim in
   `DirichletDiagonal.lean` corrected to point at the affine mean square.
+
+## The twisted series: a factor `L`
+
+`HalaszMeanSquare.integral_norm_dirPoly_twisted_halasz` feeds the sup bound `damped + trunc` into the
+`(T + 4L(1 + log L))∑|a_m|²` mean square. With the affine mean square and the explicit coefficient
+masses — `∑_m (m+1)‖a_m‖² ≤ 1 + log L` and `∑_m ‖a_m‖² ≤ 2` for `|f| ≤ 1` and `σ ≥ 1`, since
+`∑_n n·n^{-2σ} ≍ log L` where `∑_n n^{-2σ} ≍ 1` —
+
+`∫_0^T ‖F_L(σ+iu)‖ du ≤ V·T + (damped + L^{1−σ}/(σ−1))·(5πe(1 + log L) + 5πT)/V²`
+
+(`integral_norm_dirPoly_twisted_halasz_affine`). The mean-square factor drops from `L log L + T` to
+`log L + T`: a whole factor `L`. This is the form the large-values and sixth-moment routes consume, and
+it is not touched by the modulus-first no-go
+(`docs/drafts/pipeline/5-failed/modulus-first-vertical-integral-no-go.md`), which concerns the vertical
+integral of a *contour* representation, not the mean value of a Dirichlet polynomial.
+
+| Statement | Module |
+|---|---|
+| `norm_sq_twistedTruncCoeff_le` | `RHTower/Sieve/DirichletPolyAffineMeanSquare.lean` |
+| `sum_norm_sq_twistedTruncCoeff_le_two` | `RHTower/Sieve/DirichletPolyAffineMeanSquare.lean` |
+| `sum_mul_norm_sq_twistedTruncCoeff_le` | `RHTower/Sieve/DirichletPolyAffineMeanSquare.lean` |
+| `integral_norm_dirPoly_twisted_halasz_affine` | `RHTower/Sieve/DirichletPolyAffineMeanSquare.lean` |
+
+## The regime that changes
+
+With `σ − 1 = A/log L` both parts of the sup are `≍ log L` — the damped size because
+`1 + 1/(σ−1) ≍ log L/A`, and the truncation error `L^{1−σ}/(σ−1) = e^{−A}(log L)/A` because the tail of
+the twisted series past `L` does not decay in `L` at that abscissa. Optimising `V` in `V·T + K/V²`
+gives `≍ (K T²)^{1/3}`, so
+
+* affine mean square: `K ≍ (log L)(log L + T)`, optimum `≍ ((log L)(log L + T)T²)^{1/3}`, which beats
+  the trivial `T log L` for every `T ≳ log L`;
+* previous mean square: `K ≍ (log L)(T + L log L)`, optimum `≍ (L(log L)²T²)^{1/3}` for `T ≤ L log L`,
+  which beats `T log L` only for `T ≳ L/log L`.
+
+So the bound moves from a height range no Perron truncation uses to the range they all use. The
+`√T`-free `max T 1` form (`integral_Icc_normSq_dirPoly_le_affine_max`) removes the last constraint
+`T ≥ 1`.
