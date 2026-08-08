@@ -269,3 +269,120 @@ instance deningerCoordMulVanish_mono : Mono (deningerCoordMulVanish Ω) := by
 end Factorisation
 
 end RHTower
+
+namespace RHTower
+
+open CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite TopCat Complex HTGeometry
+
+section Surjective
+
+variable {n : ℕ} {Ω : Opens (Fin (n + 1) → ℂ)}
+
+/-- **A local quotient by the last coordinate.**  On a small ball around a point of the domain the
+model of a section vanishing on the divisor is the coordinate times an analytic function: at a point
+of the divisor this is the division theorem on a polydisc centred there, and away from it the
+coordinate does not vanish. -/
+theorem exists_local_coord_quotient {g : SetForm (n + 1)} {Wset : Set (Fin (n + 1) → ℂ)}
+    (hWopen : IsOpen Wset) (han : AnalyticOnNhd ℂ (g ∅) Wset)
+    (hvan : ∀ z ∈ Wset, z (Fin.last n) = 0 → g ∅ z = 0)
+    {c : Fin (n + 1) → ℂ} (hc : c ∈ Wset) :
+    ∃ R > 0, Metric.ball c R ⊆ Wset ∧ ∃ u : (Fin (n + 1) → ℂ) → ℂ,
+      AnalyticOnNhd ℂ u (Metric.ball c R) ∧
+      ∀ z ∈ Metric.ball c R, z (Fin.last n) * u z = g ∅ z := by
+  obtain ⟨R₀, hR₀, hR₀sub⟩ := Metric.isOpen_iff.1 hWopen c hc
+  by_cases hlast : c (Fin.last n) = 0
+  · refine ⟨R₀, hR₀, hR₀sub, coordDivQuotient (g ∅), ?_, ?_⟩
+    · exact coordDivQuotient_analyticOnNhd (han.mono hR₀sub) hlast
+    · exact fun z hz => coordDivQuotient_mul (han.mono hR₀sub) hlast
+        (fun w hw hw0 => hvan w (hR₀sub hw) hw0) hz
+  · obtain ⟨R₁, hR₁, hR₁ball⟩ : ∃ R₁ > 0, ∀ z ∈ Metric.ball c R₁, z (Fin.last n) ≠ 0 := by
+      obtain ⟨R₁, hR₁, hsub⟩ := Metric.isOpen_iff.1
+        ((isOpen_compl_singleton).preimage (continuous_apply (Fin.last n))) c hlast
+      exact ⟨R₁, hR₁, fun z hz => hsub hz⟩
+    refine ⟨min R₀ R₁, lt_min hR₀ hR₁,
+      subset_trans (Metric.ball_subset_ball (min_le_left _ _)) hR₀sub,
+      fun z => g ∅ z / z (Fin.last n), ?_, ?_⟩
+    · intro z hz
+      refine AnalyticAt.div (han z (hR₀sub (Metric.ball_subset_ball (min_le_left _ _) hz))) ?_ ?_
+      · exact (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin (n + 1) => ℂ)
+          (Fin.last n)).analyticAt z
+      · exact hR₁ball z (Metric.ball_subset_ball (min_le_right _ _) hz)
+    · intro z hz
+      exact mul_div_cancel₀ _ (hR₁ball z (Metric.ball_subset_ball (min_le_right _ _) hz))
+
+/-- The global smooth model of a local quotient: cut off with a bump. -/
+noncomputable def deningerQuotientModel (c : Fin (n + 1) → ℂ) (R : ℝ) (hR : 0 < R)
+    (u : (Fin (n + 1) → ℂ) → ℂ) : SetForm (n + 1) :=
+  fun S z => if S = ∅ then
+    (((⟨R / 3, R / 2, by positivity, by linarith⟩ : ContDiffBump c) : (Fin (n + 1) → ℂ) → ℝ) z : ℂ)
+      * u z else 0
+
+theorem deningerQuotientModel_deg (c : Fin (n + 1) → ℂ) (R : ℝ) (hR : 0 < R)
+    (u : (Fin (n + 1) → ℂ) → ℂ) : SetFormDeg 0 (deningerQuotientModel c R hR u) := by
+  intro S hS z
+  exact if_neg (fun hc => hS (by rw [hc]; rfl))
+
+theorem deningerQuotientModel_eq_of_mem {c : Fin (n + 1) → ℂ} {R : ℝ} (hR : 0 < R)
+    {u : (Fin (n + 1) → ℂ) → ℂ} {z : Fin (n + 1) → ℂ}
+    (hz : z ∈ Metric.closedBall c (R / 3)) :
+    deningerQuotientModel c R hR u ∅ z = u z := by
+  rw [deningerQuotientModel, if_pos rfl,
+    (⟨R / 3, R / 2, by positivity, by linarith⟩ : ContDiffBump c).one_of_mem_closedBall hz]
+  norm_num
+
+theorem deningerQuotientModel_smooth {c : Fin (n + 1) → ℂ} {R : ℝ} (hR : 0 < R)
+    {u : (Fin (n + 1) → ℂ) → ℂ} (hu : AnalyticOnNhd ℂ u (Metric.ball c R)) :
+    SmoothSetForm (deningerQuotientModel c R hR u) := by
+  intro S
+  by_cases hS : S = ∅
+  · subst hS
+    set bp : ContDiffBump c := ⟨R / 3, R / 2, by positivity, by linarith⟩ with hbp
+    have hfun : deningerQuotientModel c R hR u ∅
+        = fun z => (((bp : (Fin (n + 1) → ℂ) → ℝ) z : ℂ)) * u z := by
+      funext z
+      rw [deningerQuotientModel, if_pos rfl]
+    rw [hfun]
+    refine contDiff_iff_contDiffAt.2 fun z => ?_
+    by_cases hz : z ∈ Metric.ball c R
+    · exact ((Complex.ofRealCLM.contDiff.comp bp.contDiff).contDiffAt).mul
+        (((hu z hz).contDiffAt).restrict_scalars ℝ)
+    · have hout : (fun w => (((bp : (Fin (n + 1) → ℂ) → ℝ) w : ℂ)) * u w)
+          =ᶠ[nhds z] fun _ => (0 : ℂ) := by
+        have hopen : IsOpen ((Metric.closedBall c (R / 2))ᶜ) :=
+          Metric.isClosed_closedBall.isOpen_compl
+        have hzc : z ∈ (Metric.closedBall c (R / 2))ᶜ := by
+          intro hzin
+          exact hz (Metric.mem_ball.2
+            (lt_of_le_of_lt (Metric.mem_closedBall.1 hzin) (by linarith)))
+        filter_upwards [hopen.mem_nhds hzc] with w hw
+        have hbz : (bp : (Fin (n + 1) → ℂ) → ℝ) w = 0 := by
+          by_contra hne
+          have hsupp : w ∈ Function.support (bp : (Fin (n + 1) → ℂ) → ℝ) := hne
+          rw [bp.support_eq] at hsupp
+          exact hw (Metric.ball_subset_closedBall hsupp)
+        rw [hbz]
+        norm_num
+      exact ContDiffAt.congr_of_eventuallyEq contDiffAt_const hout
+  · rw [show deningerQuotientModel c R hR u S = fun _ => (0 : ℂ) from funext fun w => if_neg hS]
+    exact contDiff_const
+
+theorem setDbar_deningerQuotientModel {c : Fin (n + 1) → ℂ} {R : ℝ} (hR : 0 < R)
+    {u : (Fin (n + 1) → ℂ) → ℂ} (hu : AnalyticOnNhd ℂ u (Metric.ball c R))
+    {z : Fin (n + 1) → ℂ} (hz : z ∈ Metric.ball c (R / 3)) (S : Finset (Fin (n + 1))) :
+    setDbar (deningerQuotientModel c R hR u) S z = 0 := by
+  refine Finset.sum_eq_zero fun k _ => mul_eq_zero_of_right _ ?_
+  by_cases hk : S.erase k = ∅
+  · rw [hk]
+    have heq : deningerQuotientModel c R hR u ∅ =ᶠ[nhds z] u := by
+      filter_upwards [Metric.isOpen_ball.mem_nhds hz] with w hw
+      exact deningerQuotientModel_eq_of_mem hR (Metric.ball_subset_closedBall hw)
+    rw [dzbarAt_congr_of_eventuallyEq heq]
+    exact dzbarAt_eq_zero_of_differentiableAt
+      ((hu z (Metric.ball_subset_ball (by linarith) hz)).differentiableAt) k
+  · rw [show deningerQuotientModel c R hR u (S.erase k) = fun _ => (0 : ℂ) from
+      funext fun w => if_neg hk]
+    exact dzbarAt_zero k z
+
+end Surjective
+
+end RHTower
