@@ -42,5 +42,21 @@
 - **Status:** internal; dependency-closed and formalized. `lake build` green, axioms
   `[propext, Classical.choice, Quot.sound]` on every statement above.
 
+## The same cap applies to the unconditional replacement
+
+The mean-square route that replaces the modulus-first estimates is capped in the same way, and by the
+same argument rather than by a new one. `norm_sum_Icc_mul_log_div_le_cesaro_dyadic`'s right-hand side —
+arithmetic error plus `8x^σ√(5πe(1 + log N)) + 12x^σ√(5π)` — mentions no coefficient, because `Q` and `κ`
+are built from `‖a_n‖`. Instantiating at `f ≡ 1` and `x = N`, where the left side is `∑_{n ≤ N}log(N/n)`
+and every `n ≤ N/2` contributes at least `log 2`:
+
+`⌊N/2⌋·log 2 ≤ ∑_{n ≤ N}E(σ,T,N/n) + (1/2π)(8N^σ√(5πe(1 + log N)) + 12N^σ√(5π))`
+
+(`CesaroDyadicTrivialCap.trivial_le_cesaro_dyadic_bound`, with `sum_Icc_log_div_ge`). So the chain cannot
+assert `o(N)` for any `f`. The `log N → √(log N)` improvements are improvements *within* a capped family;
+recording the cap alongside them is what keeps that honest.
+
 ## Log
 - 2026-08-08 — created; the killing lower bound formalized, and the surviving upper bounds recorded.
+- 2026-08-09 — the cap extended to the unconditional mean-square replacement, by instantiation at the
+  constant sequence.
