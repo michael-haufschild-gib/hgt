@@ -238,3 +238,47 @@ several-variable statement `analyticAt_of_differentiableOn` — mathlib's
 sequence — read a section of the structure sheaf killed by the restriction as an analytic function
 on a polydisc, divide, and read the quotient back as a section, which is the local-model machinery
 already used for `deningerDivisorRestrict_locallySurjective`.
+
+## The ideal sheaf, and the one statement left
+
+`formal/GaloisForLFunctions/RHTower/DeningerDivisorIdeal.lean`.  Axiom audit
+`propext, Classical.choice, Quot.sound`.
+
+Exactness of `0 → O --·z--> O --restrict--> i_* O_D → 0` in the middle is now a *factorisation*
+question rather than a gluing one.  The sections vanishing on the divisor are cut out by a
+**pointwise** condition, so they form a subsheaf `deningerVanishSheaf` by the corpus's local-predicate
+machinery, and:
+
+- `deningerVanishIncl_comp_restrict` — a section vanishing on the divisor restricts to zero;
+- `deningerVanishPred_of_restrict_eq_zero` — conversely a section killed by restriction vanishes on
+  the divisor, because restriction is evaluation at the divisor's points and every point of the
+  domain lying on the divisor is in the image of its parametrisation (this is where the divisor's
+  domain has to be the full preimage);
+- `deningerVanishKernelLift`, **`deningerVanishIncl_isKernel`** — so the ideal sheaf *is* a kernel of
+  restriction, by the same "same underlying map, corestricted" device the corpus uses for the
+  closed forms;
+- `deningerCoordMulVanish`, `deningerCoordMulVanish_comp`, `deningerCoordMulVanish_mono` — and
+  multiplication by the coordinate factors through it, monomorphically.
+
+**The one statement left** is that `deningerCoordMulVanish` is an epimorphism, i.e.
+`TopCat.Presheaf.IsLocallySurjective (deningerCoordMulVanish Ω).1`.  Then it is mono and epi in an
+abelian category, hence an isomorphism; composing the inverse with the kernel lift discharges
+`KernelFork.IsLimit.ofι` for `deningerCoordMul`, and `ShortComplex.exact_of_f_is_kernel` closes the
+sequence.
+
+Its proof, with every input already built:
+
+1. take the local model `g` of the section on an open `N`, and put `W = N ∩ deningerAmb U`;
+2. `g ∅` is *globally* smooth (`SmoothSetForm` is global) and its antiholomorphic derivatives vanish
+   on `W` (`deningerDivisorModel_dzbar_eq_zero`, which is stated for an arbitrary dimension and so
+   applies with `n := n+1`), so `analyticOnNhd_of_dzbarAt_eq_zero_on` makes it analytic on `W`;
+3. pick a ball `B = ball c₀ R ⊆ W` at `c₀ = x`.  If `x` lies on the divisor the ball is *centred on
+   it*, which is what `coordDivQuotient_analyticOnNhd` needs, and `u₀ = coordDivQuotient (g ∅)`;
+   otherwise shrink `B` to avoid the divisor and take `u₀ = g ∅ / z_last`, analytic because the
+   denominator does not vanish.  Either way `z_last · u₀ = g ∅` on `B`;
+4. the section is `y ↦ u₀ y` on `V = deningerRestrictOpen Ω (ball c₀ (R/3)) ⊓ U`, and its *global*
+   smooth model is `ψ · u₀` for a `ContDiffBump c₀` with `rIn = R/3`, `rOut = R/2` — the corpus
+   already uses `ContDiffBump` on `Fin n → ℂ` in `exists_polydisc_bumps`, so the instance is there.
+   Global smoothness is smoothness on `B` and on the complement of the bump's support, two opens
+   that cover;
+5. its `∂̄` vanishes because `ψ ≡ 1` near each point of `V` and `u₀` is complex differentiable there.
