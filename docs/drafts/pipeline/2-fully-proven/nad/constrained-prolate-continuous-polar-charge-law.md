@@ -509,7 +509,9 @@ separates the representative/regularity problem from the completed Abel machiner
   real extraction, symmetric-Lebesgue regularity, and source-specific identity `(19a)` are already
   formalized for every nonzero eigenmode pair
 - [x] prove the fixed-mode source variation bound `(19e)` on paper by one-turning-point Sturm
-  oscillation; Lean specialization remains open
+  oscillation; the Lean specialization is closed unconditionally by
+  `RHTower.prolate_boundedVariationOn` (bounded variation of every nontrivial prolate mode on every
+  compact subinterval of the open aperture)
 - [ ] promote `(18)` and `(32)` after the primitive and source-regularity audits
 - [ ] formalize the concrete radial-PSWF primitive theorem and its polar consequence in Lean
 - [ ] true even ground/gap comparison
@@ -729,6 +731,9 @@ estimates, this proves the seed law `(32)` on paper.
 - [x] prove the continuous polar charge `(18)` on paper
 - [x] prove the exterior seed law `(32)` on paper
 - [ ] formalize the concrete radial-PSWF/Bessel realization and `(51)` unconditionally in Lean
+  (partially closed: `(44)` by `abs_besselJ1_le_min`, `(45)` by `abs_integral_mul_besselJ0_le`,
+  and the `(50)` integration-by-parts mechanism by `norm_integral_cexp_le_of_frequency_lower_bound`;
+  the Dunster exterior expansion `(48)` and the assembly `(47)`, `(51)` remain)
 - [ ] prove the true cofinal Weil floor (RH-bearing)
 
 - 2026-08-08 -- **The ordered-partition bridge of Lean-plan item 7 is built.**
@@ -1107,3 +1112,205 @@ estimates, this proves the seed law `(32)` on paper.
   occupy the actual constrained spectrum -- a question about that operator's eigenvalues, not about
   the dimension of its eigenspaces.  But the simplicity input that `(19e)` needed is now a theorem
   rather than a hypothesis.
+
+- 2026-08-08 (eighteenth instalment) -- **The prolate eigenspace is one-dimensional.**  New module
+  `RHTower/ProlateProportionality.lean`, wired into the `RHTower` umbrella, all three declarations
+  axiom-clean.
+
+  The corpus already owned the conserved prolate Wronskian, its vanishing at the singular endpoint,
+  and the resulting first-order relation `psi_1 psi_2' = psi_2 psi_1'` inside the band
+  (`ProlateWronskian.lean`), and interior ODE uniqueness based at an arbitrary regular point
+  (`ProlateEndpointNonvanishing.lean`).  What was missing was the step that turns the first-order
+  relation into an actual identification of the two solutions -- the relation says the pair is
+  degenerate but not what either one is.
+
+  * **`prolateSLAction_const_mul`** -- a constant multiple of a prolate solution solves the same
+    eigenvalue problem.
+  * **`prolate_eqOn_const_mul`** -- two solutions bounded near the endpoint are proportional on the
+    whole aperture as soon as one is nonzero at a single interior point.  The proof feeds value and
+    derivative matching at that point into interior uniqueness; the derivative match is exactly the
+    first-order relation divided by the nonzero value.
+  * **`prolate_eq_zero_of_eq_zero`** -- the vanishing corollary.
+
+  This closes the simplicity input.  The seventeenth instalment showed abstractly that a vanishing
+  weight at an endpoint forces the Wronskian to vanish; this instalment carries the prolate case the
+  rest of the way to one-dimensionality.  Simplicity of the prolate eigenvalue is therefore a
+  theorem of this project, not an appeal to classical spheroidal theory -- which is what the
+  commuting-eigenvector transfer of the ninth instalment needed in order to move the finite Fourier
+  transform's eigenvector onto the differential operator's.
+
+  Note the one honest limitation: the hypothesis is boundedness of the solution and its derivative
+  on `[0,1)`, not membership in the constrained spectrum.  So this settles *degeneracy*, and leaves
+  the card's `h_0, h_4` gate -- which classical modes actually occur -- untouched.
+
+- 2026-08-08 (nineteenth instalment) -- **`(19e)` is closed in Lean.**  New module
+  `RHTower/ProlateModeVariation.lean`, wired into the umbrella, all declarations axiom-clean, plus
+  one further theorem in `ProlateProportionality.lean`.
+
+  * **`prolate_deriv_ne_zero_of_eq_zero`** -- the zeros of a nontrivial prolate mode are simple.
+    Interior uniqueness run against the zero solution: a double zero at an interior point would
+    annihilate the mode on the whole aperture.
+  * **`finite_zeros_prolate_quadratic`** -- `chi + c^2 y^2` vanishes finitely often unless it
+    vanishes identically, by the difference-of-squares factorisation against any one root.
+  * **`prolate_boundedVariationOn`** -- a nontrivial prolate mode has bounded variation on every
+    compact subinterval of `(-1,1)`.
+
+  The chain is now complete end to end and unconditional.  The Sturm right-hand side
+  `(chi + c^2 y^2) psi` is a product of two factors each with finitely many zeros, so it has
+  finitely many sign cells; the per-cell law already in `ProlateOneTurningVariation.lean` allows at
+  most one stationary point in each; the universal finite-monotonicity theorem converts finitely
+  many monotone cells plus a sup bound into bounded variation.  The sup bound is free, since a
+  continuous function on a compact interval is bounded.
+
+  The hypotheses are exactly smoothness, the eigen-equation, nontriviality, and non-degeneracy of
+  the quadratic -- no asymptotics, no spectral index, no RH input, and in particular no boundedness
+  assumption at the endpoint, which the earlier drafts of this argument carried.  The card's
+  variation gate can be read as closed.
+
+- 2026-08-08 (twentieth instalment) -- **The integration-by-parts step behind `(50)`.**  New module
+  `RHTower/VanDerCorputIBP.lean`, wired into the umbrella, all three declarations axiom-clean.
+
+  The corpus already owned first- and second-derivative van der Corput tests
+  (`RHTower/VanDerCorput.lean`, `VanDerCorputWeighted*.lean`), but all of them assume the phase
+  derivative is monotone (`phi'' >= 0`).  The card's `(49)` does not give that: it gives
+  `xi_sigma' >= 1` together with `|(1/xi_sigma')'| <= C x^(-2)`, that is, controlled *variation* of
+  the reciprocal frequency rather than a sign for its derivative.  So the existing tests do not
+  apply to `(50)` and the mechanism had to be isolated.
+
+  * **`norm_integral_cexp_le_of_antiderivative`** -- if `B (i phi') = A` on the interval, then
+    `‖int A exp(i phi)‖ <= ‖B b‖ + ‖B a‖ + int ‖B'‖`.  One integration by parts, no monotonicity, no
+    lower bound on the frequency -- the relation `B (i phi') = A` carries the nonvanishing.
+  * **`norm_antiderivative_le`** -- the boundary terms obey `‖B‖ <= M / lambda` under
+    `|phi'| >= lambda` and `‖A‖ <= M`, read straight off the relation without dividing.
+  * **`norm_integral_cexp_le_of_frequency_lower_bound`** -- hence the bound
+    `2M/lambda + int ‖B'‖`, which is exactly the shape of `(50)`: amplitude over frequency at the
+    two endpoints, plus the total variation of the amplitude-over-frequency profile.
+
+  Taking `B` and `B'` as given data rather than as `A/(i phi')` and its derivative is deliberate.
+  It removes any need for `phi` to be twice differentiable or for `phi'` to be globally nonvanishing,
+  and it lets the caller supply whichever antiderivative profile it can actually estimate.  For the
+  card that profile is `a_(epsilon,n,c)(x)/(sqrt x xi_sigma'(x))`, whose variation is what `(48)`
+  and `(49)` bound.
+
+  This is infrastructure for the `(51)` gate, not the gate itself: the Bessel/Dunster amplitude
+  asymptotics `(47)`--`(49)` are still to be built before `(50)` can be instantiated.
+
+- 2026-08-08 (twenty-first instalment) -- **The Bessel recurrence `(44)`.**  New module
+  `RHTower/BesselJOneRecurrence.lean`, wired into the umbrella, all declarations axiom-clean.
+
+  The corpus already owned `besselJ0` through its integral representation, its first two derivatives
+  by differentiation under the integral sign, Bessel's equation, and the envelope decay
+  `|J_0(u)| <= 72 sqrt 2 / sqrt u` for `u >= 1` (`BesselJZeroODE.lean`, `BesselJZeroEnvelope.lean`).
+  It had no order-one function at all.
+
+  * **`besselJ1`** -- defined as minus the derivative of `besselJ0`, so its integral representation
+    `(1/pi) int_0^pi sin(theta) sin(u sin theta) d theta` is immediate.
+  * **`besselJ1_eq_mul`** -- `J_1(u) = u (J_0''(u) + J_0(u))`.  This is precisely the
+    integration-by-parts identity `integral_sin_mul_sin_eq` that the corpus had already proved on
+    the way to Bessel's equation, read in the other direction.
+  * **`hasDerivAt_mul_besselJ1`** -- the recurrence `(u J_1(u))' = u J_0(u)`, at every real point.
+    Note it needs no `u != 0`, unlike Bessel's equation itself, because the singular `J_0'/u` term
+    is exactly what the product form absorbs.
+  * **`hasDerivAt_mul_besselJ1_scaled`** -- the scaled form `d/dr [r J_1(c r)] = c r J_0(c r)` used
+    in the card, including the degenerate case `c = 0`.
+  * **`abs_besselJ1_le`** -- `|J_1(u)| <= |u|/2`, from `|sin x| <= |x|` under the integral.
+
+  This is the first half of `(44)`.  The second half, the decay branch `|J_1(u)| <= C u^(-1/2)`, is
+  not yet built; the corpus has that envelope for `J_0` but not for `J_1`, and the order-one case is
+  not a corollary of the order-zero one.  With `(44)` in hand the `(45)` integration by parts becomes
+  a matter of splitting at `r = c^(-1)` and applying the mechanism of the twentieth instalment.
+
+- 2026-08-09 (twenty-second instalment) -- **`(44)` is complete: the order-one Bessel envelope.**
+  New module `RHTower/BesselJOneEnvelope.lean`, wired into the umbrella, axiom-clean.
+
+  The corpus owned the order-zero envelope `|J_0(u)| <= 72 sqrt 2 / sqrt u` for `u >= 1`, proved by
+  splitting the quarter period at `pi/4` and running the first-derivative test on `[0,pi/4]` (where
+  `|phi'| = u|cos|` is bounded below) and the second-derivative test on `[pi/4,pi/2]` (where
+  `phi'' = u sin` is bounded below).  Both blocks were stated with the constant amplitude `1`.
+
+  The order-one function has the same phase and the amplitude `sin theta`, so the same two blocks
+  apply once the amplitude budget `‖A(b)‖ + ‖A(a)‖ + int ‖A'‖` of the general tests is estimated.
+  On a quarter period that budget is at most `3`, since `|sin| <= 1`, `|cos| <= 1`, and
+  `pi/4 <= 1`.
+
+  * **`besselAmp`, `contDiff_besselAmp`, `deriv_besselAmp`, `besselAmp_budget_le`** -- the amplitude
+    and its budget.
+  * **`integral_besselAmp_eq_neg_im`** -- the real order-one integrand is minus the imaginary part
+    of the complex phase integrand, the order-one counterpart of the corpus's real-part identity.
+  * **`besselJ1_eq_two_div_pi_mul`** -- the half-period reduction, by the reflection
+    `theta -> pi - theta` under which the order-one integrand is invariant.
+  * **`norm_integral_besselAmp_first`, `norm_integral_besselAmp_second`** -- the two blocks.
+  * **`abs_besselJ1_le_envelope`** -- `|J_1(u)| <= 108 sqrt 2 / sqrt u` for `u >= 1`.
+  * **`abs_besselJ1_le_min`** -- with the twenty-first instalment's `|J_1(u)| <= |u|/2`, this is
+    exactly `(44)`.
+
+  The square-root exponent is again the loss of the single nondegenerate stationary point of
+  `u sin theta` at `theta = pi/2`; the amplitude vanishing at the origin costs nothing because the
+  stationary point is at the other end.  Both halves of `(44)` are now unconditional theorems of
+  this project, and `(45)` is the remaining step of that branch: split at `r = c^(-1)` and apply the
+  twentieth instalment's integration by parts with `r J_1(c r)` as the antiderivative datum.
+
+- 2026-08-09 (twenty-third instalment) -- **`(45)` is proved in Lean, unconditionally.**  New module
+  `RHTower/BesselWeightedPrimitive.lean`, wired into the umbrella, all declarations axiom-clean.
+
+  * **`abs_besselJ1_le_sqrt`** -- `|J_1(u)| <= 108 sqrt 2 / sqrt u` at *every* positive argument.
+  * **`abs_mul_besselJ1_scaled_le`** -- hence `|r J_1(c r)| <= 108 sqrt 2 sqrt r / sqrt c`.
+  * **`abs_integral_mul_besselJ0_le`** -- for `0 <= R <= 2` and a `C^1` weight bounded with its
+    derivative by `M`,
+    `|int_0^R r B(r) J_0(c r) dr| <= 648 M / (c sqrt c)`, uniformly in the endpoint `R`.
+
+  This is `(45)`, with an explicit constant.  The proof is one integration by parts against the
+  exact antiderivative `r J_1(c r)` of `c r J_0(c r)`, followed by the envelope bound on the
+  boundary term and on the remaining integral.
+
+  **The paper proof can be simplified.**  The card prescribes "integration by parts, first on
+  `0 <= r <= min(R, c^(-1))` and then on `c^(-1) <= r <= R`", i.e. a split at the scale where the
+  Bessel amplitude bound gives way to the decay bound.  That split is unnecessary.  The two branches
+  of `(44)` combine into the *single* estimate `|J_1(u)| <= C / sqrt u` valid at every `u > 0`: for
+  `u >= 1` it is the envelope, and for `u < 1` the amplitude bound `|J_1(u)| <= u/2` is already far
+  below `C / sqrt u` because the right side is then at least `C`.  With one estimate covering the
+  whole range, one integration by parts on all of `[0,R]` suffices, and the boundary term at the
+  origin vanishes identically because the antiderivative `r J_1(c r)` does.
+
+  Note what carries the uniformity in `R`: not decay of the integrand, but the fact that the radius
+  range is bounded, which is where the `sqrt R` growth of the antiderivative is absorbed.  This is
+  faithful to the card, whose `(47)` takes the supremum over the compact range `1 <= X <= 2`.
+
+- 2026-08-09 (twenty-fourth instalment) -- **`(46)` joins `(45)`.**  Same module, axiom-clean.
+
+  * **`abs_besselJ0_le_sqrt`** -- `|J_0(u)| <= 72 sqrt 2 / sqrt u` at every positive argument.  The
+    order-zero counterpart of the previous instalment's single envelope: for `u >= 1` it is the
+    corpus envelope, and for `u < 1` the trivial bound `|J_0| <= 1` is already below it.
+  * **`integral_abs_mul_besselJ0_le`** -- `int_0^R |r B(r) J_0(c r)| dr <= 288 M / sqrt c` for
+    `0 <= R <= 2` and `|B| <= M`.  This is `(46)`.
+
+  Note the same simplification as for `(45)`: the card writes the majorant as
+  `C_n int_0^R r (1 + c r)^(-1/2) dr`, an interpolation between the two Bessel regimes.  It is not
+  needed.  The single envelope `C / sqrt u` dominates both regimes, and the resulting integrand
+  `sqrt r / sqrt c` is bounded on a bounded radius range without any rpow integration.
+
+  `(45)` and `(46)` are now both unconditional theorems with explicit constants.  What separates
+  them from `(47)` is the endpoint normalization `(37)` and the pole-uniform reduction `(38)`, and
+  from there the exterior branch needs Dunster's expansion `(48)`.
+
+- 2026-08-09 (twenty-fifth instalment) -- **The two passage steps of `(11)`.**  New module
+  `HTGeometry/L2PairingLimit.lean`, wired into the umbrella, axiom-clean.
+
+  The card closes `(11)` by two moves: "the `k`-majorant is summable", then "passing first from
+  finite radial sums to `R_lambda` in `L2(0,H)` and then taking the supremum in `H`".  Both moves
+  are statements about a pairing against a fixed vector, and neither needs anything about the
+  vectors beyond convergence in norm.
+
+  * **`norm_inner_le_of_tendsto`** -- a uniform bound on the pairings against a convergent sequence
+    passes to the limit, by continuity of the pairing.
+  * **`norm_inner_tsum_le`** -- a summable majorant of the channel pairings bounds the pairing
+    against the sum, because pairing against a fixed vector is a continuous linear map.
+  * **`norm_inner_le_tsum_of_tendsto`** -- the two composed: the summed majorant bounds the pairing
+    against any norm limit of the partial sums.
+
+  Stated in an arbitrary inner product space, so it applies to `L2(0,H)` and to the compact-interval
+  `L2` layer the corpus already owns (`HTGeometry/CompactIntervalL2Pairing.lean`), and the supremum
+  in `H` is then free because the bound does not depend on `H`.
+
+  What remains between this and `(11)` is not analysis of this kind: it is the exterior estimate
+  `(16)` supplying the majorant `C sqrt(d_1(lambda)) / (c k^2)` for each channel.

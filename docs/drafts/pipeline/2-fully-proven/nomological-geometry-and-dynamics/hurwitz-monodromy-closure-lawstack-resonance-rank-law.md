@@ -2,11 +2,18 @@
 
 - **ID:** `clg-hurwitz-monodromy-closure-resonance-rank`
 - **Stage:** 2 — fully proved on paper
-- **Status:** `[PAPER-PROVED] [SECOND NON-RH HT LAWSTACK] [FORMAL PARENT READ-ONLY]`
+- **Status:** `[PAPER-PROVED LOCAL ORBIT ALGEBRA] [MC SUFFICIENT CHAMBER ONLY]`
+  `[SUPERSEDED AS AN EXACT HT MODEL] [FORMAL PARENT READ-ONLY]`
   `[NO LEAN WRITTEN OR BUILT]`
-- **Purpose:** package the published joint Hurwitz monodromy-character proof into a canonical
-  monodromy quotient whose orbit-closure dimension, residual character observer, and differential
-  independence theorem are exact parts of one non-RH mechanism.
+- **Purpose:** package the published monodromy-character sufficient chamber into a canonical local
+  orbit quotient.  The later exact differential-matroid theorem proves that local orbit-closure
+  rank is **not** Hurwitz differential rank.  The corrected branch-history geometry is in
+  `restricted-history-completion-and-robust-polynomial-saturation-law.md`.
+
+> **Hostile correction.**  The algebraic statements about `[T/Z]`, `H_q`, and `R_q` below are
+> correct.  Their use as an exact hypertranscendence geometry is false.  Full monomial
+> independence `R_q=0` is sufficient, not necessary; independently looped branch columns erase
+> higher monomial resonances.
 
 ## 1. Marked monodromy object
 
@@ -171,10 +178,15 @@ so cyclic monodromy explores only the proper deformation variety `H_q^(N+1)`, wh
 the residual character torus of rank `rank R_q`. This is a sharp boundary of the proof, **not a
 converse**: resonance does not by itself produce a differential relation among Hurwitz functions.
 
+The later corpus theorem closes that warning sharply.  For nonintegral exponents, Hurwitz
+differential independence is equivalent only to pairwise distinct monodromy values `q_i`, not to
+`R_q=0`.  For example, admissible `q=(2,4)` has a rank-one monomial resonance and one-dimensional
+local orbit closure, but the two Hurwitz functions are differentially independent.  More strongly,
+`s=(3/2,4/3)` has finite common monodromy orbit of order six and still gives differential rank two.
+
 ## 4. CLG consequence
 
-This is a second non-RH hypertranscendental calibration with a mechanism different from the
-multiple-Gamma period quotient:
+This is an exact local-orbit calibration:
 
 \[
  \boxed{
@@ -185,21 +197,24 @@ multiple-Gamma period quotient:
 \]
 
 When the residual affine observer is a point, common-loop holonomy is maximally Zariski dense and
-the independently defined Hurwitz ladder is jointly differentially free. When resonance appears,
-the affine observer gains characters exactly as monodromy deformation dimension is lost.
+the independently defined Hurwitz ladder is jointly differentially free.  When resonance appears,
+the affine observer gains characters exactly as **local common-loop** deformation dimension is
+lost.  This does not compute differential rank.
 
-Unlike the multiple-Gamma card, this theorem contains a genuine analytic realization mechanism:
+Unlike the multiple-Gamma card, this theorem imports a genuine analytic sufficient mechanism:
 branch continuation acts on the Hurwitz functions, the orbit closure is fed through an explicit
-invertible Vandermonde map, and full closure proves differential independence. It still supplies
-only a one-way theorem in resonant chambers.
+invertible Vandermonde map, and full closure proves differential independence.  The exact mechanism
+is stronger: unbounded independently marked branch history plus degree-robust additive saturation.
+That realization is atlas-covariant but has not been proved to descend as a presentation-invariant
+CLG functor.
 
 ## 5. Hostile limits
 
 1. `A_q` is an affine character observer, not a positive, Hausdorff, or metric quotient.
 2. The quotient stack `[T/Z]` retains common-loop history, but no path cost or constitutive metric
    is constructed.
-3. Differential freedom follows when `R_q=0`; no equality between differential transcendence
-   degree and `dim H_q` is proved for resonant chambers.
+3. Differential freedom follows when `R_q=0`, but differential transcendence degree can exceed
+   `dim H_q`, even when `dim H_q=0`.
 4. Replacing the Hurwitz ladder by unrelated functions with the same `q` destroys Theorem 3.1;
    the explicit branch-deformation representation is essential.
 5. No RH or Xi input occurs.

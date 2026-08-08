@@ -314,3 +314,77 @@ RH statement remains circular until that construction precedes Xi-zero specializ
   Hurwitz jet ladder.
 - Resonant chambers remain one-way. Smaller `H_q` limits this proof's deformation space but does
   not itself imply a differential relation.
+
+## 2026-08-08 — hostile correction: HT is open branch history, not local holonomy noncompactness
+
+- Later formal corpus supersedes the publication paper's monodromy-character sufficient chamber.
+  For finite nonintegral Hurwitz exponents, exact differential rank is the number of distinct
+  values `q_i=exp(-2 pi i s_i)`, not the dimension of the common cyclic orbit closure.
+- Fatal local-holonomy counterexample: `s=(3/2,4/3)` has finite common monodromy orbit of order six
+  but the two ordinary Hurwitz functions are jointly differentially algebraically independent.
+  Thus hypertranscendence cannot be defined by orbit dimension, resonance rank, or local
+  noncompactness.  The full marked resonance lattice still recovers the exact equality partition
+  through the coordinate differences `e_i-e_j`.
+- Exact analytic proof replacement: a degree-`D` polynomial relation among `N`-jets is tested on `N+D+1`
+  independently looped branch columns.  After deletion of any `D` columns, consecutive increments
+  still span the full jet-value space; degree-lowering translation induction forces the relation
+  to vanish.
+- New route-independent Stage-2 theorem:
+  `restricted-history-completion-and-robust-polynomial-saturation-law.md`.  A finite-support history
+  group is dense and nonclosed in its compact product observer completion; every fixed observer
+  stabilizes while support cost diverges.  Robust polynomial saturation is the constitutive law
+  that turns this open support into Hurwitz HT.
+- Field correction: CLG requires both observer completion and source-history filtration.
+  Recurrence/compactness of local observers and open lifted history are compatible.  Positivity or
+  endpoint recurrence cannot control history cost without a separate coercivity theorem.
+- Open gate: branch-history atlas realization is explicit but not invariant under the history
+  quotient; construct target analytic-continuation groupoid and Morita-natural descent before
+  calling it a CLG realization functor.
+
+## 2026-08-08 — native observer theorem and constitutive non-determination
+
+- Proved route-independent observer kinematics in any infinity-category with pullbacks and Cech
+  realizations: `Coim(q)=|N(q)|`; a charge factors through the declared observer exactly when it
+  has coherent Cech descent and extends across `Coim(q)->O`.
+- Serial postprocessing only adds identifications.  Parallel observers intersect kernel relations
+  and can restore conservativity.  Relative isotropy and vertical history occupy different
+  homotopy degrees of one observer fibre.
+- Calibrated across five nonisomorphic organs: multiple-Gamma, Hurwitz branch history, framed GHZ,
+  Stokes inertia, and singular completion.
+- Same-observer countermodels prove a sharp limit: the full Cech nerve and homotopy fibre do not
+  determine metric cost, inertia phase, differential-algebraic depth, normalized reflection, or a
+  topology/norm forgotten from the declared category.  Native effectivity is determined once the
+  native observer is fixed.  Therefore bare lawstack geometry is kinematics only.
+- New Stage-2 card:
+  `native-observer-descent-effectivity-and-constitutive-nondetermination-law.md`.
+- Exact no-mixing law from Hurwitz, GHZ, and Stokes determinant holonomy:
+  differential prolongation does not imply radial escape; positive radial data do not determine
+  phase periodicity or holonomy; compact recurrence does not imply lifted-history cost.  In determinant rank one,
+  positivity is radial energy after quotienting unitary phase, but this does not describe general
+  Hodge/Witt/coarea positivity.
+- New open core: construct a source-normalized constitutive structure on the Cech nerve that
+  controls vertical coercivity, source choice of enrichment, analytic realization, polarization,
+  and composition.  Native effectivity is already determined after the category and observer are
+  fixed.  Without source normalization, constitutive freedom is arbitrary and CLG is theatre.
+
+## 2026-08-09 — minimal constitutive package and infinite-action completion boundary
+
+- A single heterogeneous/scalar field equation is impossible.  Independent product charts realize
+  arbitrary triples of HT rank, inertia defect, and recurrence rank, so any universal polynomial
+  scalar relation among them is identically zero.
+- Minimal typed package has three independent laws: `D` full Cech/Bianchi response coherence;
+  `S_D` vertical-symbol conservativity on complexity-`D` tests; `P` relative inf-compactness of
+  lifted action.  Exact one-dimensional examples satisfy any two while failing the third.
+- Proved weighted-history completion theorem.  For dense local groups with proper integer lengths
+  and weights tending to infinity, every finite-support action sublevel is finite.  In compact
+  product completion, lower-semicontinuous relaxed action is finite exactly on source histories and
+  `+infinity` on every new boundary history.
+- New Stage-2 card:
+  `weighted-history-action-and-infinite-completion-boundary-law.md`.
+- Three exact organs separate cleanly: Hurwitz deletion-robust increments prove `S_D`; Stokes
+  vertical positivity gives finite-dimensional coercivity and the rank-port inertia bound; GHZ or
+  deck recurrence needs marked lift action for `P`.  None causes the others.
+- Exact next field construction: a source transgression
+  `tau_s:Theta_s->Z^1(N(q);E_s)` defined before target specialization, Morita-natural, whose named
+  realizations yield at least two nonisomorphic corpus symbols and whose source polarization derives
+  action.  Without this, CLG remains a typed recipe rather than a field.

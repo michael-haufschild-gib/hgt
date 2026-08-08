@@ -8171,3 +8171,137 @@ coefficient in `X_2` is `−q₂·a²·[W(Q_1,v_1) + q₂·α₂·Q_1²Q_1']` �
 `scaledLogWronskian_add_cross_ne_zero`, using `deg W ≤ 2q−2` from
 `natDegree_scaledLogWronskian_le_sub_two`.  The remaining step at this height is the transfer from that
 leading coefficient to nonvanishing in the field.
+
+### Log — height three closed, unconditionally, for every polynomial-coefficient cascade
+
+The transfer from the leading coefficient to nonvanishing in the field is done
+(`HTGeometry/LogJetHeightThreeNonvanishing.lean`, axiom-clean), and with it the whole height-three
+chain:
+
+```
+exactDifferentialOrder_expPolyCascade_three :
+  (∀ k, c k ≠ 0) → (∀ k, 1 ≤ (A k).natDegree) →
+    ExactDifferentialOrder (entireCascade (expPoly A c d) 3) 3
+```
+
+axioms `propext, Classical.choice, Quot.sound`.  This is the card's law at length three for the
+whole family `f_k(w) = d_k + c_k·exp(A_k(w))` with `A_k` an arbitrary nonconstant polynomial — not
+just the exponential tower `A_k = X`, which was the only previously available infinite family, and
+not just length two.
+
+The transfer needed one new idea and three small computations.
+
+* `separatedPair_ne_zero` — the cleared determinant is a **separated pair**
+  `a₁(X₁)b₁(X₂) − a₂(X₁)b₂(X₂)`.  Mapping `X₁ ↦ C X`, `X₂ ↦ X` into `ℂ[X][Y]` turns it into
+  `C a₁·(b₁ ⊗ C) − C a₂·(b₂ ⊗ C)`, whose `n`-th `Y`-coefficient is
+  `a₁·C(b₁.coeff n) − a₂·C(b₂.coeff n)`.  So one coefficient of one coordinate certifies
+  nonvanishing, with no multivariate degree theory at all.
+* the two top coefficients at `n = 2·deg Q₂ − 1`: `coeff_mul_derivative_top` gives
+  `(Q₂Q₂').coeff n = deg Q₂ · (lead Q₂)²`, and `coeff_derivative_sq_mul_top` gives
+  `((Q₂')²v₂).coeff n = (deg Q₂)²(lead Q₂)²·lead v₂`.  The Wronskian contributes nothing there,
+  by the sharp bound `deg W ≤ 2 deg Q₂ − 2` already in the tree.
+* the combination is `−deg Q₂·(lead Q₂)²·(W(Q₁,v₁) + deg Q₂·lead v₂·Q₁²Q₁')`, and the bracket is
+  `scaledLogWronskian_add_cross_ne_zero`.
+
+`logJetJacobian_one_det_ne_zero` is stated for an arbitrary product law — `Q i ≠ 0`, `Q 1`, `Q 2`
+nonconstant, `v 1` at most linear and `v 2` exactly linear — so it is not tied to `expPoly`;
+`headJetJacobian_two_det_ne_zero` is the instantiation.
+
+**What is left for the gate.**  Only the general height.  `exactDifferentialOrder_expPolyCascade`
+already reduces every height to `(headJetJacobian (polyQ A d) (polyV d) m).det ≠ 0`, and
+`headJetJacobian_det_ne_zero_of_log` reduces that to `(logJetJacobian Q v n).det ≠ 0`.  At `n = 1`
+the matrix has one non-border row and `fpderiv_logSum_row` gives it in closed form; at `n ≥ 2` the
+rows `∂_(j+1) δ^r L` for `r ≥ 1` need the product derivation iterated on the logarithmic sum, which
+is the next layer to build.
+
+### Log — the general-height matrix is one operator orbit
+
+The open gate is `(logJetJacobian Q v n).det ≠ 0` at general `n`, and the obstacle was that only the
+`r = 0` row had a closed form.  That is now gone: **the whole matrix is a single orbit**, and the
+statement carries no hypothesis at all.
+
+```
+logJetJacobian_eq_orbit :
+  logJetJacobian Q v n
+    = Matrix.of fun i j => (gradShift Q v (n+1))^[i] (logBorder Q (n+1)) (j+1)
+```
+
+axioms `propext, Classical.choice, Quot.sound` (`HTGeometry/JetGradientRecursion.lean`).
+
+The mechanism is a commutator identity, proved structurally rather than by computation.
+
+* **The responses are triangular** (`jetResponse_of_lt`, `jetResponse_self`, `jetResponse_of_gt`):
+  `∂_k(δX_l)` is `0` for `l < k`, is `A_k = (∏_{i<k}Q_i)·v_k'` for `l = k`, and is
+  `(Q_k'/Q_k)(X_k)·δX_l` for `l > k`.  Only the middle case was previously isolated
+  (`TopCoordinateCommutator.lean`, for the newest coordinate).
+* **The commutator of two derivations is a derivation.**  So
+  `Θ_k F := ∂_k δF − δ∂_k F − ∑_{l≤m} ∂_k(δX_l)·∂_l F` is a derivation (the correction is a finite
+  sum of multiples of derivations), and `Derivation.eqOn_adjoin` reduces `Θ_k = 0` on `lowSub` to
+  its values on the coordinates.  The inverse generators cost nothing — a derivation carries
+  inverses by its own quotient rule.  This replaces what would otherwise be a four-case
+  `Algebra.adjoin` induction with an explicit `field_simp` computation at each inverse generator.
+* **Hence the gradient recursion** `∂(δF) = δ(∂F) + M·∂F` with `M` upper triangular, diagonal `A_k`
+  (`gradient_prodDerivation_eq`, `gradient_iterate_eq`).
+* **And the border row generates the rest**: `∂(logSum) = S(w)` where `w` is the truncated vector of
+  logarithmic derivatives (`gradient_logSum_eq`).  The identity at level `k` is exactly
+  `δc_k + A_k c_k = (∏_{i<k}Q_i)·W(Q_k,v_k)/Q_k²` — the Wronskian of the level reappears as the
+  derivative of its own logarithmic derivative plus the diagonal response.
+
+Also recorded: `prodDerivation_logSum` (the first derivative of the logarithmic sum in closed form),
+`derivation_logFactor` (any derivation sends `Q'/Q` to `W(Q,1)·D(X)/Q²`), and
+`fpderiv_iterate_logSum_tail` — every row sees only the tail of the sum above its own coordinate,
+at every order, which is the flag statement the peeling uses.
+
+**What is left.**  One statement, with no analytic content:
+
+> the orbit `w, Sw, …, Sⁿw` of the border row under `S : u ↦ δu + Mu` is a nonsingular matrix in the
+> columns `1..n+1`.
+
+At `n = 1` this is `logJetJacobian_one_det_ne_zero`.  For general `n` the two inputs are in place —
+`M` is upper triangular with diagonal `A_k`, and the newest column is an iterate of the single
+shifted operator `G ↦ δG + A_{n+1}G` applied to `(∏_{i≤n}Q_i)·W(Q_{n+1},v_{n+1})/Q_{n+1}²`
+(`fpderiv_iterate_logSum_top_closed`) — so the peeling induction now has a matrix to peel.
+
+### The peeling of the orbit matrix, worked out `[PAPER]`
+
+With `logJetJacobian_eq_orbit` the gate is: the orbit `w, Sw, …, Sⁿw` of the border row under
+`S u = δu + Mu` is nonsingular in columns `1..m`, `m = n+1`.  Here is the induction step, derived so
+that the next Lean layer has a concrete target.
+
+Let `K` be the subfield generated by `X_0,…,X_{m−1}` (it is `δ`-stable, because `δX_i` involves only
+`X_0..X_i`), and grade by the degree in `X_m` of a rational function over `K`.  Write `H_k = ∏_{i<k}Q_i`,
+`q_k = deg Q_k`, `a_k = lead Q_k`, `α = lead v_m`, and `L` for the value at `X_m = ∞` on the
+degree-`≤ 0` part.
+
+1. **The last column is one scalar orbit.**  `M_{m,l} = 0` for `l < m`, so
+   `(Su)_m = δu_m + A_m u_m =: E(u_m)` with `A_m = α·H_m ∈ K`.  Hence `(Sⁱw)_m = Eⁱ(c_m)`,
+   `c_m = Q_m'/Q_m`.
+2. **Degrees.**  `E` does not raise the `X_m`-degree (`v_m` linear makes `δ` degree-preserving), and
+   `E(c_m) = H_m·W(Q_m,v_m)/Q_m²` has degree `≤ −2` because `deg W ≤ 2q_m − 2`.  So
+   `deg(Sⁱw)_m ≤ −1` for `i = 0`, `≤ −2` for `i ≥ 1`, while every entry outside the last column has
+   degree `≤ 0`.
+3. **Only row 0 can supply the last column at top degree.**  Every permutation term of the
+   determinant takes exactly one entry from the last column, so the degree-`(−1)` part of `det`
+   comes only from terms using `(S⁰w)_m = c_m`, whose residue is `res c_m = q_m ≠ 0`.
+4. **The minor.**  On vectors whose last entry has zero residue, `L∘S = S'∘L`, where `S'` is the
+   same operator one level down.  Since `res (Sⁱw)_m = 0` for `i ≥ 1` by step 2, and
+   `res c_m = q_m`, the rows `i = 1..n` of the minor are
+
+   `L(Sⁱw)|_{k<m} = S'^{i−1}(y)`,   `y := S'w' + κ·w'`,  `κ := α q_m H_m ∈ K`,
+
+   with `w'` the border row one level down.  So **the peel changes the starting vector, not the
+   operator** — exactly the phenomenon the terminal-linear Bell reduction shows on the output side.
+5. **The new starting vector has the shape the induction needs.**  Its last entry is
+
+   `y_{m−1} = H_{m−1}·[ W(Q_{m−1},v_{m−1})/Q_{m−1}² + α q_m·Q_{m−1}' ]`,
+
+   of degree `q_{m−1} − 1 ≥ 0` in `X_{m−1}`: the Wronskian is dominated by the **cross term**, which
+   is exactly `scaledLogWronskian_add_cross_ne_zero`.  At `n = 1` this bracket *is* the whole proof
+   (`LogJetHeightThreeNonvanishing.lean`).
+
+So the induction hypothesis to formalize is not "the orbit of the border row is nonsingular" but the
+stronger statement carrying the shape of `y`: at each level the starting vector is
+`H_k·[ W(Q_k,v_k)/Q_k² + c·Q_k' ]` in its own top slot with `c ≠ 0`, and the degree of the cross term
+exceeds the Wronskian's.  **The missing Lean layer is the `X_k`-degree filtration on the model** —
+the degree of a rational function over the subfield generated by the lower coordinates, the leading
+map `L`, and the two facts `deg δ ≤ deg` and `L∘S = S'∘L` on zero-residue vectors.

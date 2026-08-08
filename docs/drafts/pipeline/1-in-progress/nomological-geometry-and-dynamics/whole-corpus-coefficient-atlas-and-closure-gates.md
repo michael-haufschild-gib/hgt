@@ -132,8 +132,14 @@ must be explicitly absorbed or declared support-only before a whole-formal-corpu
   history action while both boundary observers remain fixed
 - [x] universal Hausdorff reflection computes exactly what every continuous group observer loses;
   multiple-Gamma observer dimension obeys exact three-way rank conservation
-- [x] Hurwitz common-loop lawstack computes monodromy-closure/resonance rank and its explicit
-  branch-deformation realization proves joint differential freedom in the full-closure chamber
+- [x] Hurwitz local action computes monodromy-closure/resonance rank, while the exact branch-history
+  atlas and robust additive saturation separately prove the `C/Z` partition differential matroid;
+  finite local holonomy can coexist with full differential rank
+- [x] native Cech observer theorem computes descent, effectivity, serial/parallel loss, and relative
+  homotopy across five organs; same-observer countermodels separate metric, inertia, DA depth, and
+  normalization
+- [x] weighted finite-support history action has finite sublevels and assigns infinite relaxed
+  action to every new compact-completion boundary history
 - [ ] one presentation-invariant descent/stability theorem proved across nonisomorphic families
 - [ ] one Jacobi complex simultaneously computes two publication invariants
 - [ ] one source intervention independently calibrates connection/dynamics

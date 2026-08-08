@@ -921,10 +921,20 @@ Field gate is now non-RH and route-independent. The multiple-Gamma translation q
 is the first exact source object: its isotropy, coarse separation, effective period excess, and
 reflection produce four distinct shadows, with conservation
 `d_DA + rank(stabilizer)=1`, where DA equality and normalized reflection use independent
-special-function theorems. Hurwitz monodromy supplies a second HT chart with
-`dim(orbit closure)+rank(resonance)=|I|` and an explicit analytic deformation realization; framed
-GHZ supplies phase-history homotopy and canonical Fubini--Study cost. Still open are a global
-constitutive response equation, presentation-invariant family/pro-descent, and optional
+special-function theorems.  Hurwitz supplies a second HT chart, but hostile review separates its
+local orbit law `dim(closure)+rank(resonance)=|I|` from its exact differential matroid.  HT rank is
+the number of distinct monodromy values.  Full marked holonomy relations recover that partition;
+unbounded independently marked branch support plus degree-robust saturation supplies its analytic
+realization.  Finite local monodromy can still give full differential rank.  Framed GHZ supplies
+phase-history homotopy and canonical Fubini--Study cost.
+
+Universal kinematics is now exact: native Cech descent, native effectivity, and relative homotopy.
+Same-observer countermodels show these do not determine metric, inertia, DA depth, or normalization.
+Minimal dynamics is therefore the independent typed package `D` (coherent source response), `S_D`
+(vertical-symbol conservativity), and `P` (relative action coercivity).  Weighted finite-support
+history proves `P` can place every new compact-completion history at infinite action.  Still open
+is one source transgression producing two nonisomorphic corpus symbols and deriving their action,
+plus presentation-invariant family/pro-descent and optional
 non-isotrivial twistor gluing. A source-native RH selector is forbidden as foundational input.
 
 ## 15. First construction programme
