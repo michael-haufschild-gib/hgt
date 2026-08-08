@@ -15,15 +15,12 @@ namespace RHTower.Sieve
 
 open Finset
 
-/-- **A cap on the number of large values.** -/
-theorem card_largeValues_le (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {lam : ℕ → ℝ} {δ T V : ℝ}
-    (hδ : 0 < δ) (hT : 0 ≤ T) (hV : 0 < V)
-    (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
-    (hhigh : lam R + δ / 2 ≤ T)
-    (hbig : ∀ r ∈ Finset.range (R + 1), V ≤ ‖dirPoly N a (lam r)‖) :
-    ((R : ℝ) + 1) * V ^ 2
-      ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * (1 / δ + 2 * Real.log N)
-          * ∑ m : Fin N, ‖a m‖ ^ 2 := by
+/-- **A cap on the number of large values, from any bound on the discrete mean square.**  Only the
+mean-square bound enters; the spacing hypotheses are what produce it, not what it needs. -/
+theorem card_largeValues_le_of_bound (N : ℕ) (a : Fin N → ℂ) {lam : ℕ → ℝ} {V B : ℝ} (hV : 0 < V)
+    (R : ℕ) (hbig : ∀ r ∈ Finset.range (R + 1), V ≤ ‖dirPoly N a (lam r)‖)
+    (hmv : ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖ ^ 2 ≤ B) :
+    ((R : ℝ) + 1) * V ^ 2 ≤ B := by
   have hterm : ∀ r ∈ Finset.range (R + 1), V ^ 2 ≤ ‖dirPoly N a (lam r)‖ ^ 2 := by
     intro r hr
     exact pow_le_pow_left₀ (le_of_lt hV) (hbig r hr) 2
@@ -33,6 +30,18 @@ theorem card_largeValues_le (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {lam : 
     rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     push_cast
     ring
-  exact le_trans hcount (largeValues_dirPoly N hN a hδ hT hgap hlow R hhigh)
+  exact le_trans hcount hmv
+
+/-- **A cap on the number of large values.**  The instance at the mean value theorem. -/
+theorem card_largeValues_le (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {lam : ℕ → ℝ} {δ T V : ℝ}
+    (hδ : 0 < δ) (hT : 0 ≤ T) (hV : 0 < V)
+    (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
+    (hhigh : lam R + δ / 2 ≤ T)
+    (hbig : ∀ r ∈ Finset.range (R + 1), V ≤ ‖dirPoly N a (lam r)‖) :
+    ((R : ℝ) + 1) * V ^ 2
+      ≤ (T + 4 * (N : ℝ) * (1 + Real.log N)) * (1 / δ + 2 * Real.log N)
+          * ∑ m : Fin N, ‖a m‖ ^ 2 :=
+  card_largeValues_le_of_bound N a hV R hbig
+    (largeValues_dirPoly N hN a hδ hT hgap hlow R hhigh)
 
 end RHTower.Sieve

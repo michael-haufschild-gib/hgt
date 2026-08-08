@@ -166,3 +166,16 @@ it is now stated with them as parameters (`largeValues_dirPoly_of_energy`):
 using `∑_m(m+1)‖(dirDerivCoeff a)_m‖² ≤ (log N)²∑_m(m+1)|a_m|²`
 (`sum_mul_normSq_dirDerivCoeff_le`, the `n`-weighted companion of the existing plain-mass bound). So the
 whole large-values chain — count, measure, Halász mean value — now runs on the `n`-weighted mass.
+
+## The count and the first moment need only the bound
+
+`card_largeValues_le` and `sum_norm_dirPoly_le_sqrt` carried six hypotheses each — `2 ≤ N`, `0 < δ`,
+`0 ≤ T`, the gap condition, and the two endpoint conditions — none of which their proofs use: those
+hypotheses exist only to produce the discrete mean-square bound. Stated with the bound as a parameter,
+
+* `card_largeValues_le_of_bound` — `(R+1)V² ≤ B` from `∀ r, V ≤ ‖F(λ_r)‖` and `∑_r‖F(λ_r)‖² ≤ B`;
+* `sum_norm_dirPoly_le_sqrt_of_bound` — `∑_r‖F(λ_r)‖ ≤ √((R+1)B)` from `∑_r‖F(λ_r)‖² ≤ B`;
+
+each keeps one hypothesis. The originals are the instances at the mean value theorem, and
+`card_largeValues_le_affine` / `sum_norm_dirPoly_le_sqrt_affine` are the instances at the affine mean
+square. Nothing downstream changed statement.

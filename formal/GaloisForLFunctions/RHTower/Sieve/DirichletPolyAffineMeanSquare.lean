@@ -9,6 +9,7 @@ import GaloisForLFunctions.HTGeometry.IntervalMeanSquareMoment
 import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.AffineMeanSquareL1
 import GaloisForLFunctions.RHTower.Sieve.DirichletLargeValuesCount
+import GaloisForLFunctions.RHTower.Sieve.DirichletLargeValuesL1
 import GaloisForLFunctions.RHTower.Sieve.DirichletDerivEnergy
 
 /-!
@@ -372,6 +373,33 @@ theorem largeValues_dirPoly_affine (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) 
   refine le_trans hmain (le_of_eq ?_)
   field_simp
   ring
+
+
+/-- **A cap on the number of large values, with the affine mean square.** -/
+theorem card_largeValues_le_affine (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {lam : ℕ → ℝ}
+    {δ T V : ℝ} (hδ : 0 < δ) (hT : 0 ≤ T) (hV : 0 < V)
+    (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
+    (hhigh : lam R + δ / 2 ≤ T)
+    (hbig : ∀ r ∈ Finset.range (R + 1), V ≤ ‖dirPoly N a (lam r)‖) :
+    ((R : ℝ) + 1) * V ^ 2
+      ≤ (1 / δ + 2 * Real.log N)
+          * (5 * Real.pi * Real.exp 1 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2)
+            + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * max T 1) :=
+  card_largeValues_le_of_bound N a hV R hbig
+    (largeValues_dirPoly_affine N hN a hδ hT hgap hlow R hhigh)
+
+/-- **The first moment over a separated set, with the affine mean square.** -/
+theorem sum_norm_dirPoly_le_sqrt_affine (N : ℕ) (hN : 2 ≤ N) (a : Fin N → ℂ) {lam : ℕ → ℝ}
+    {δ T : ℝ} (hδ : 0 < δ) (hT : 0 ≤ T)
+    (hgap : ∀ i, lam i + δ ≤ lam (i + 1)) (hlow : δ / 2 ≤ lam 0) (R : ℕ)
+    (hhigh : lam R + δ / 2 ≤ T) :
+    ∑ r ∈ Finset.range (R + 1), ‖dirPoly N a (lam r)‖
+      ≤ Real.sqrt (((R : ℝ) + 1)
+          * ((1 / δ + 2 * Real.log N)
+            * (5 * Real.pi * Real.exp 1 * (∑ m : Fin N, (((m : ℕ) : ℝ) + 1) * ‖a m‖ ^ 2)
+              + (5 * Real.pi / 2) * (∑ m : Fin N, ‖a m‖ ^ 2) * max T 1))) :=
+  sum_norm_dirPoly_le_sqrt_of_bound N a R
+    (largeValues_dirPoly_affine N hN a hδ hT hgap hlow R hhigh)
 
 
 section
