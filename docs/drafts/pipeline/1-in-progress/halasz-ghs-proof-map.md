@@ -2433,3 +2433,33 @@ shifted first moment applies to each block with `n = 2^m`.
 Square-root growth of the block moment is the shape a mean-value estimate produces, and it is exactly
 half the growth of the length: a kernel decaying like `1/t` therefore beats it by a factor `√2/2` per
 block.  This is the mechanism that removes the `√T` growth diagnosed in the uniform-kernel accounting.
+
+## Perron's lemma: the sharp cutoff without a smoothing penalty
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronLemma.lean`:
+
+- `perronVertical σ T y = (1/2π)∫_{−T}^{T} y^{σ+it}/(σ+it) dt`.
+- `norm_perronVertical_sub_one_le` — for `y > 1`, `σ > 0`, `T > 0`: `‖perronVertical σ T y − 1‖ ≤ y^σ/(πT log y)`.
+- `norm_perronVertical_le` — for `0 < y < 1`: `‖perronVertical σ T y‖ ≤ y^σ/(πT|log y|)`.
+
+The assembly the corpus was already carrying the parts for: `PerronKernelResidue.rectangleIntegral'_cpow_div_eq_one`
+supplies the residue `1` at the origin, `PerronKernelSegments` the two horizontal edges and the far vertical
+edge, and the shift `A → ∞` is taken along the integers with `ge_of_tendsto`.
+
+Why this matters for the accounting, and why it changes the route.  The smoothed kernel's constant is
+`N^σ·(N/H)`, and the window error `H(log N)^4` forces `H ≪ N/(log N)^5`, so the smoothing costs a factor
+`(log N)^5` in every term of the vertical integral.  The sharp-cutoff kernel `x^s/s` has constant `x^σ`
+and no window at all: its whole cost is the factor `1/(T|log(x/n)|)`, and at `T = N` the total truncation
+error over a coefficient sequence of polylogarithmic size is `∑_n ‖c_n‖(x/n)^σ/(πT|log(x/n)|) ≍ (log N)^5`
+— an additive polylog, not a multiplicative one.  Every smooth-weight device pays the multiplicative
+`(N/H)`, including a Cesàro/`x^s/(s(s+1))` kernel followed by differencing, because the price is the
+near-diagonal mass of the weight; only the sharp cutoff avoids it, and it avoids it because `|log(x/n)| ≥ c/N`
+off the diagonal makes the harmonic sum converge to `O(log N)`.
+
+Accounting recorded before the next brick: with the sharp kernel, first-order decay `1/|s|` and the dyadic
+height split, the analytic term is `x^σ·sup|F|·(∑_m 2^{−m}·block moment)`.  Against the corpus's
+prime-sieve mean square — whose leading term `∑_n n‖a_n n^{−σ}‖²/log Y` is *independent of `T`*
+(`TruncatedPrimeSieveMeanSquare`, `TruncatedBlockMeanSquare`) — a block moment is
+`√(length)·√(mean square) ≍ K√(height)`, exactly the hypothesis of
+`integral_mul_kernel_le_of_sqrt_block_moment`.  The remaining loss is a single `log T` from using a
+pointwise bound on the third factor on every block; that is what the large-values estimate is for.
