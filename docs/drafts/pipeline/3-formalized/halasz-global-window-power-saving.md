@@ -212,3 +212,28 @@ The Dirichlet-series version is the instance at `Q`, `κ` from `GeneralAffineMea
 `docs/drafts/pipeline/3-formalized/dirichlet-polynomial-affine-mean-square.md`
 (`integral_symm_norm_dirPoly_mul_cesaroKernel_le`). Any further object with an affine mean square
 inherits the bound for free.
+
+## The zero-free region contributes nothing to this chain
+
+`dampedSize σ δ z L = (1 + 1/(σ−1))e^{7/2 + 2(σ−1)(log z + log 4) − δ²} + L^{1−σ}/(σ−1)` carries a
+truncation tail that does not see `δ` at all. Writing `A = (σ − 1)log L` and `δ² = c·logLog L`, the two
+parts are `≍ (log L/A)(log L)^{−c}e^{2A}` and `≍ (log L/A)e^{−A}`; balancing at `A ≍ (c/3)logLog L` gives
+
+`dampedSize ≍ (log L)^{1 − c/3}/logLog L`,
+
+which even at the largest possible `c = 1` — the whole prime mass — is `≍ (log L)^{2/3}`. The corpus's
+actual input is smaller: `liouvilleDelta` gives `δ² = logLog z − 7 log log T − C` under
+`1/log z ≤ zetaLowerA/log^9 T`, so `c ≥ 2/9`, hence `(log L)^{1−2/27}`.
+
+The unconditional dyadic mean-square bound gives `≍ x^σ√(log L)` for the same analytic term, and
+`(log L)^{1/2} < (log L)^{2/3}`. So the zero-free strip is not merely weak here — it is *dominated* by an
+estimate that uses no arithmetic input at all, and the damped route can be replaced by the unconditional
+one with a strictly better exponent. The Liouville instance is
+`LiouvilleCesaroUnconditional.norm_sum_Icc_liouvilleC_mul_log_div_le_cesaro_dyadic`: same conclusion shape
+as `exists_norm_sum_Icc_liouvilleC_mul_log_div_le_cesaro`, no distance hypothesis, no sieve level, no
+zero-free strip.
+
+The reason is the truncation tail, not the damping: `e^{−δ²}` does improve the first part, but the tail
+`L^{1−σ}/(σ−1)` forces `σ − 1` up, and the factor `e^{2(σ−1)log z}` then charges that back. Any route
+using a sharp cutoff at `L` pays this; the Cesàro kernel's second-order decay is what removes the analogous
+tail on the *arithmetic* side, and nothing plays that role for the damped size.

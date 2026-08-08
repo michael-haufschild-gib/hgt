@@ -149,6 +149,7 @@ import GaloisForLFunctions.RHTower.BerryKeating
 import GaloisForLFunctions.RHTower.BesselBoundWitnesses
 import GaloisForLFunctions.RHTower.BesselJZeroConstant
 import GaloisForLFunctions.RHTower.BesselJZeroEnvelope
+import GaloisForLFunctions.RHTower.BesselJOneRecurrence
 import GaloisForLFunctions.RHTower.BesselJZeroODE
 import GaloisForLFunctions.RHTower.BesselJZeroPhase
 import GaloisForLFunctions.RHTower.BesselJZeroSecondSolution
@@ -3337,6 +3338,8 @@ import GaloisForLFunctions.RHTower.ProlateSecularEquation
 import GaloisForLFunctions.RHTower.ProlateSignedLeakageOrdering
 import GaloisForLFunctions.RHTower.ProlateWKBIntegral
 import GaloisForLFunctions.RHTower.ProlateWKBSubsolution
+import GaloisForLFunctions.RHTower.ProlateProportionality
+import GaloisForLFunctions.RHTower.ProlateModeVariation
 import GaloisForLFunctions.RHTower.ProlateWronskian
 import GaloisForLFunctions.RHTower.PsiDefectSqrtBound
 import GaloisForLFunctions.RHTower.PsiRatioDescent
@@ -5233,6 +5236,7 @@ import GaloisForLFunctions.RHTower.ValuationProfile
 import GaloisForLFunctions.RHTower.ValueDistributionIsZeroBlind
 import GaloisForLFunctions.RHTower.ValueOrbit
 import GaloisForLFunctions.RHTower.VanDerCorput
+import GaloisForLFunctions.RHTower.VanDerCorputIBP
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted
@@ -6322,3 +6326,4 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeAffineFirstMoment
 import GaloisForLFunctions.RHTower.Sieve.GhsMasterTrivialCap
 import GaloisForLFunctions.RHTower.Sieve.MoebiusPairDamping
 import GaloisForLFunctions.RHTower.Sieve.MoebiusFejerDistance
+import GaloisForLFunctions.RHTower.Sieve.LiouvilleCesaroUnconditional
