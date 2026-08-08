@@ -4,9 +4,9 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / NEW CORPUS CONSEQUENCE / DERIVED SELECTION GEOMETRY
 - **Scientific status:** `[PAPER-PROVED] [NO LEAN WRITTEN OR BUILT] [NOT RH]`
-- **Novelty status:** the algebraic ingredients are classical; the coherent-family identification,
-  derived-fibre law, and equality of the reflected Stokes energy ideal with the Fitting ideal are
-  not stated in the audited corpus. External priority remains provisional.
+- **Novelty status:** the algebraic ingredients and the broad monodromy-torsion/Fitting/tangent-cone
+  package are classical.  The exact Riemann-source/physical/Stokes factorization proved here is not
+  stated in the audited corpus.  External priority for that conjunction remains provisional.
 - **Parents:**
   - `../../4-publication-ready/riemann-arithmetic-source-dagger-route/main.tex`;
   - `../../4-publication-ready/riemann-source-orientation-transgression/main.tex`;
@@ -645,6 +645,125 @@ statement is
 which is RH.  The new theorem classifies the only type of object capable of carrying the missing
 selection information; it does not manufacture the source boundary which annihilates it.
 
+## 8A. Support-selection no-go and the ambient-dynamics boundary
+
+This section closes a tempting but circular next move: use the derived class itself to force the
+Riemann section onto its support.  The class records a collision after it occurs; internal
+operations on it cannot select the collision.
+
+### Theorem 8A.1 — arbitrary derived pullback
+
+Let `A` be a commutative `k`-algebra and let `f:\operatorname{Spec}A\to X` correspond to a unit
+`u=f^\sharp(q)\in A^\times`.  Then
+
+\[
+ Lf^*\mathcal Q_{\mathrm{src}}
+ \simeq [A\xrightarrow{\ u-1\ }A],
+ \qquad
+ Lf^*\mathcal Q
+ \simeq [A^2\xrightarrow{\ (u-1)\operatorname{id}\ }A^2],
+\tag{8A.1}
+\]
+
+with the displayed complexes in cohomological degrees `-1,0`.  Hence
+
+\[
+ H^{-1}(Lf^*\mathcal Q_{\mathrm{src}})=\operatorname{Ann}_A(u-1),
+ \qquad
+ H^0(Lf^*\mathcal Q_{\mathrm{src}})=A/(u-1),
+\tag{8A.2}
+\]
+
+and the physical groups are two copies of these groups.
+
+In particular, for a field extension `K/k` and a point `q=\lambda\in K^\times`, one has
+
+\[
+ Lf_\lambda^*\mathcal Q_{\mathrm{src}}
+ \simeq
+ \begin{cases}
+  0,&\lambda\ne1,\\
+  K\oplus K[1],&\lambda=1,
+ \end{cases}
+\qquad
+ Lf_\lambda^*\mathcal Q
+ \simeq
+ \begin{cases}
+  0,&\lambda\ne1,\\
+  K^2\oplus K^2[1],&\lambda=1.
+ \end{cases}
+\tag{8A.3}
+\]
+
+#### Proof
+
+Use the free resolution
+
+\[
+ 0\longrightarrow R\xrightarrow{q-1}R\longrightarrow R/I\longrightarrow0.
+\]
+
+Tensoring it with `A` replaces `q-1` by `u-1` and gives `(8A.1)`.  Kernel and cokernel give
+`(8A.2)`.  For a field point, multiplication by `\lambda-1` is invertible when `\lambda\ne1`
+and is zero when `\lambda=1`.  The physical statement follows from
+`\mathcal Q\cong(R/I)^2`.  No flatness assumption is used.  QED.
+
+### Theorem 8A.2 — internal support preservation
+
+Let `\mathscr T_H` be the smallest thick subcategory of `D^b_{\mathrm{coh}}(R)` containing
+`\mathcal Q_{\mathrm{src}}` and closed under derived tensor and derived `\operatorname{Hom}` with
+perfect `R`-complexes.  Every cohomology module of every object of `\mathscr T_H` is supported on
+`H`.  Moreover,
+
+\[
+ \operatorname{End}_R(\mathcal Q_{\mathrm{src}})\cong R/I.
+\tag{8A.4}
+\]
+
+Consequently:
+
+1. an endomorphism, Bockstein, `Ext`, `Tor`, Fitting construction, cone, dual, or perfect twist
+   formed only after passage to `\mathcal Q_{\mathrm{src}}` cannot move or enlarge its support;
+2. after pullback to a point `q=\lambda\ne1`, every such derived object is zero, so every internal
+   equality between its morphisms holds vacuously;
+3. requiring an internal class to be nonzero at a field point is equivalent to requiring
+   `\lambda=1` and therefore is not an independent selection mechanism.
+
+#### Proof
+
+Outside `H`, `q-1` is a unit and `\mathcal Q_{\mathrm{src}}` localizes to zero.  Localization is
+exact and commutes with finite sums, shifts, cones, direct summands, perfect tensor products, and
+perfect derived duals.  Induction over the construction of `\mathscr T_H` therefore proves the
+support statement.  An `R`-linear endomorphism of `R/I` is determined by the image of `1`; every
+element of `R/I` is annihilated by `I`, so every choice is multiplication by a unique element of
+`R/I`.  This proves `(8A.4)`.  The three consequences follow from the support statement and
+Theorem 8A.1.  Fitting ideals are included only as invariants of the same supported coherent
+modules, not as additional derived operations.  QED.
+
+### Corollary 8A.3 — exact anti-circularity at Riemann fibres
+
+At the Riemann specialization `q=\delta_n(\rho)`, the assertion
+
+\[
+ Lf_\rho^*\mathcal Q_{\mathrm{src}}\ne0
+\tag{8A.5}
+\]
+
+is equivalent to `\delta_n(\rho)=1`, hence to
+`\operatorname{Re}\rho=\tfrac12`.  Proving `(8A.5)` for every completed-Xi divisor point is RH,
+not a route to RH.
+
+Thus the derived selection sheaf is **kinematics**.  Any noncircular dynamics must be defined on
+the ambient `R`-family or on a pre-quotient arithmetic source complex and must imply `q-1=0`
+while independently preserving a nonzero source witness such as the ordinary-prime trace-one
+class.  A law written only in `\operatorname{End}(\mathcal Q_{\mathrm{src}})` or its derived
+category cannot do this.
+
+#### Proof
+
+For `n>1`, `\delta_n(\rho)=n^{2\operatorname{Re}\rho-1}=1` exactly when
+`2\operatorname{Re}\rho-1=0`.  Apply `(8A.3)`.  QED.
+
 ## 9. Falsifiers and hostile audit
 
 The theorem package is falsified by any of:
@@ -663,6 +782,15 @@ splittings, and exterior products are classical.  The candidate-new result is th
 identification `(3.1)`--`(5.3)` for the already constructed Riemann/Stokes source family and the
 resulting proof that its positive energy is a determinant shadow of its singular relative class.
 This is new corpus knowledge, not yet an external priority claim.
+
+There is a closer classical collision.  Alexander modules already put monodromy torsion over a
+Laurent ring, use Fitting ideals to define characteristic varieties, and identify tangent cones at
+the identity with resonance data; universal monodromy modules already factor torsion invariants of
+many fibres.  Coframe geometry also classically treats a coframe as prior to its induced metric.
+Therefore the phrases **monodromy torsion**, **Fitting support**, **identity tangent cone**, and
+**coframe before metric** carry no novelty.  Only the exact source-line/physical-extension/
+ambidexterity-curvature/Stokes-energy factorization and the no-go in Section 8A survive this
+collision as corpus-specific results.
 
 `[ANTI-CIRCULARITY FIREWALL]` Pulling the universal sheaf back along the Xi divisor only
 re-expresses the known location question.  A future RH advance must construct a pre-divisor

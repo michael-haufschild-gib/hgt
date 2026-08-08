@@ -1,10 +1,10 @@
 # Return-excised optimal-design coarea law
 
 - **ID:** `return-excised-optimal-design-coarea-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / quenched incidence-normalized coarea law
 - **Parent:** `../3-formalized/return-excised-minimal-incidence-rank-law.md`
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN OPEN]`
+- **Status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-08
 
 ## Open core
@@ -133,9 +133,9 @@ leverage and may be removed.
 - The factor `h` is exact, but `h` may still grow too quickly.  Circuit-image Hilbert growth and
   static-local-Hamiltonian moment decay remain independent quantitative obligations.
 
-## Lean formalization map
+## Lean realization
 
-Proposed module:
+Verified module:
 `GaloisForLFunctions.HTGeometry.ReturnExcisedOptimalDesignCoareaLaw`.
 
 - `exists_finiteOptimalDesign`: formalize existence, positive definiteness, and endpoint leverage at most
@@ -167,7 +167,14 @@ not a priority claim.
 - [x] Exact conjecture frozen before Lean
 - [x] Counterexamples to C0, C1, and coefficient below `h`
 - [x] Dependency-closed paper proof fully audited
-- [ ] Lean proof of optimal design existence and leverage bound
-- [ ] Lean proof of replica complete-incidence and return-excision capstones
-- [ ] Targeted build and axiom audit
-- [ ] Umbrella wiring
+- [x] Lean proof of optimal design existence and leverage bound
+- [x] Lean proof of replica complete-incidence and return-excision capstones
+- [x] Targeted module check and axiom audit
+- [x] Umbrella wiring
+
+Verification on 2026-08-08:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/ReturnExcisedOptimalDesignCoareaLaw.lean` passes;
+- all seven advertised capstones report only `propext`, `Classical.choice`, and `Quot.sound` under
+  `#print axioms`;
+- `GaloisForLFunctions.HTGeometry` imports the module.

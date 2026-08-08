@@ -4943,14 +4943,266 @@ second landing theorem: factor this explicit double boundary kernel through an a
 observation that forgets line-reflection orientation.  Any argument merely symmetrizing the two
 columns kills the desired determinant by definition and supplies no factorization.
 
+### C43-AM — exact Cauchy transgression isolates a one-dimensional obstruction
+
+There is a stronger hostile audit of that gate.  Write
+
+\[
+ C_z(x)=B_0(x,z),\qquad
+ A(x)=\frac1{2\pi i}\bigl(G_0(x+i)-G_0(x-i)\bigr),
+ \qquad k=\frac{i}{2\pi}.
+\]
+
+Since `G_1(w)=kwG_0(w)` and `w/(z-w)=z/(z-w)-1`, the first boundary jet has the exact affine
+decomposition
+
+\[
+ B_1(x,z)=k\bigl(zC_z(x)-A(x)\bigr).                    \tag{24.183}
+\]
+
+Therefore its two-point exterior kernel is not opaque:
+
+\[
+ \begin{aligned}
+ D_{z,z'}(x,y)
+ &:=B_1(x,z)C_{z'}(y)-C_z(x)B_1(y,z')\\
+ &=k\bigl((z-z')C_z(x)C_{z'}(y)
+       +C_z(x)A(y)-A(x)C_{z'}(y)\bigr).                \tag{24.184}
+ \end{aligned}
+\]
+
+Gaussian contour shift gives `integral A=0`: the integrals of `G_0` on the two horizontal safe
+lines are equal, with vanishing vertical sides.  Hence the last two terms in (24.184) are exact
+tensor coboundaries and
+
+\[
+ \iint D_{z,z'}(x,y)\,dx\,dy
+   =k(z-z')G_0(z)G_0(z').                               \tag{24.185}
+\]
+
+For `z'=z_(q#)=conj(z_q)`, (24.185) is precisely (24.177).  This proves more than failure of an
+automatic symmetry: modulo all consequences of entire Cauchy deformation, the boundary
+Wronskian has one surviving class, the horizontal orbit difference `z-z#`.  Analytic contour
+manipulation, absolute convergence, or safe-line symmetrization can remove only the `A`
+coboundaries; it cannot touch this class.
+
+Newest universal projective-descent corpus confirms the logical boundary: factoring the Gaussian
+logarithmic jet through even the finest line-reflection orbit observation is equivalent to RH.
+Thus abstract invariant factorization is not a reduced proof burden and is retired.  The positive
+survivor is more concrete: a successful source theorem must supply an arithmetic identity that
+annihilates the non-coboundary coefficient in (24.184) before Cauchy landing.  Equivalently, it
+must prove equality of the prime--Gamma first/zero-jet ratios on the two safe-line transports;
+no amount of post-landing invariant packaging can do this.
+
+### C43-AN — oscillator action forbids bootstrapping the ultraviolet wedge
+
+Conjecture: use positivity in `t(deg P+1)<=eta`, approximate
+`Q(w)e^{-Tw/2}` by `P_t(w)e^{-tw/2}` as `t` tends to zero, and transport the wedge to one fixed
+positive time `T`; all-degree positivity there would prove RH.  This fails for a structural reason.
+
+Let
+
+\[
+ \mathcal V_{N,t}=\{P(x^2)e^{-tx^2/2}:\deg P\le N\}
+ \subset L^2(\mathbb R).
+\]
+
+This is the even part of the first `2N+1` oscillator levels at frequency `t`.  Let `g_(d,T)` be the
+normalized even Hermite eigenstate of level `2d` and frequency `T`; it has the required form
+`Q_d(x^2)e^{-Tx^2/2}` with `deg Q_d=d`.  Its Fourier momentum moments are
+
+\[
+ \mathbb E_{g_{d,T}}\xi^2=T(2d+1/2),\qquad
+ \mathbb E_{g_{d,T}}\xi^4
+ =\frac{3T^2}{4}\bigl(8d^2+4d+1\bigr).                  \tag{24.186}
+\]
+
+Hence Paley--Zygmund gives a universal positive amount of its `L^2` mass in
+`xi^2 >= (1/2)T(2d+1/2)`.  Conversely, the oscillator quadratic form gives every
+`f in V_(N,t)`
+
+\[
+ \int \xi^2|\widehat f(\xi)|^2d\xi
+ \le t(4N+1)\|f\|_2^2.                                  \tag{24.187}
+\]
+
+Markov's inequality on the same momentum region and the triangle inequality now imply universal
+constants `c,delta>0` such that
+
+\[
+ t(N+1)\le cT(d+1)
+ \quad\Longrightarrow\quad
+ \inf_{f\in\mathcal V_{N,t}}\|f-g_{d,T}\|_2\ge\delta.   \tag{24.188}
+\]
+
+This is a paper proof, not a semiclassical analogy: (24.186) follows from creation--annihilation
+identities; their ratio gives a uniform Paley--Zygmund constant, and (24.187) follows from
+`-partial_x^2 <= -partial_x^2+t^2x^2` on the first oscillator block.
+
+Therefore stable Gaussian `L^2` transport of a degree-`d` probe from time `T` to time `t` costs
+`tN` of order at least `Td`.  The available wedge spends at most `eta`.  For every fixed `T>0`,
+high enough target degree lies outside every transported wedge, even though `N` may tend to
+infinity as `t` tends to zero.  Heat-semigroup density does not enlarge the source cone.
+
+Positive survivor: `t deg P` is an invariant oscillator action, not an artifact of estimates
+(24.135)--(24.138).  Any continuation beyond the wedge must inject arithmetic information as
+prime frequencies enter; a purely analytic squeezing/semigroup argument cannot cross it.  This
+returns the route to coherent prime--Gamma covariance, but now with a proof that ultraviolet
+positivity cannot be recycled to avoid that theorem.
+
+### C43-AO — positive-root shell filters turn the late prime packet into a probability law
+
+The shell filter used in C43-AC need not be an arbitrary CRT interpolant.  If `A` is the first
+noncritical squared shell, let `S_A` be the finite set of real squared divisor points with real
+part at most `A`.  They are positive, and
+
+\[
+ Q_A(X)=\prod_{\lambda\in S_A}(X-\lambda)
+\]
+
+kills every competing real point while remaining nonzero at every nonreal point on shell `A`.
+This positive-root choice has a new source consequence.
+
+For any real polynomial `Q` with no zero on `(-infinity,0]`, set
+`R(u)=Q(-u^2)^2`.  Completing the Gaussian square gives the exact Fourier factorization
+
+\[
+ \widehat{Q(x^2)^2e^{-tx^2}}(\xi)
+ =\sqrt{\frac\pi t}e^{-\xi^2/(4t)}
+ \left[e^{-(4t)^{-1}\partial_u^2}R(u)\right]_
+ {u=\xi/(2t)}.                                           \tag{24.189}
+\]
+
+Here the exponential is a finite sum because `R` is polynomial.  Since `R(u)>0` on the real
+axis and every ratio `|R^(j)(u)|/R(u)` is bounded (continuous on compact sets and vanishing at
+infinity for `j>0`), there is `T_Q` such that
+
+\[
+ t\ge T_Q\quad\Longrightarrow\quad
+ \widehat{Q(x^2)^2e^{-tx^2}}(\xi)>0
+ \quad(\xi\in\mathbb R).                                 \tag{24.190}
+\]
+
+Thus the exact off-line-detecting filter `Q_A` makes the entire late prime packet positive, not
+merely its finite compression.  Put
+
+\[
+ p_n(t)=\frac{\Lambda(n)}{\pi\sqrt n}
+   \widehat{Q_A(x^2)^2e^{-tx^2}}(\log n),\qquad
+ P=\sum_np_n,qquad \mu_n=p_n/P.
+\]
+
+For late `t`, define channel score `s_n=-p_n'/p_n` and channel curvature
+`c_n=p_n''/p_n-s_n^2`.  Absolute differentiated convergence gives the exact coherent law
+
+\[
+ \frac{P_1}{P}=\mathbb E_\mu s,qquad
+ \frac{P_0P_2-P_1^2}{P^2}
+ =\mathbb E_\mu c+\operatorname{Var}_\mu(s).             \tag{24.191}
+\]
+
+The variance is precisely the cross-prime covariance lost by every independent-channel Schur
+ansatz.  It is now a positive scalar statistic; all remaining local sign is isolated in
+`E_mu c`.
+
+The polar--Gamma part `A=A_0` is also positive for all sufficiently late `t`, because
+`Q_A(-1/4) ne 0`, its polar term grows as `e^(t/4)`, and its fixed-polynomial Gamma integral is
+only polynomial in `t`.  Write
+
+\[
+ m_A=A_1/A,\quad v_A=A_2/A-m_A^2,\qquad
+ m_P=P_1/P,\quad v_P=P_2/P-m_P^2.
+\]
+
+Then the whole completed curvature (24.148), with `H=A-P`, is exactly
+
+\[
+ \boxed{\quad
+ \Delta_{Q_A}=H\,(Av_A-Pv_P)-AP(m_A-m_P)^2,
+ \qquad v_P=\mathbb E_\mu c+\operatorname{Var}_\mu(s).
+ \quad}                                                   \tag{24.192}
+\]
+
+This is a genuine reduction of the surviving source theorem: for the filters that detect every
+possible first off-line shell, infinite double-prime covariance is equivalent to one positive
+score variance, one mean local curvature, and one prime--Gamma score mismatch.  It also prevents
+theatre.  Neither positivity of the prime weights nor the variance term proves (24.192); the
+negative mismatch square and local curvature remain load-bearing.  Under a false RH, bottom-shell
+Cesaro recurrence forces this exact compensation inequality to fail.  New target is therefore a
+late-time Fisher--Stein comparison for the positive-root prime law against the polar--Gamma law,
+not arbitrary polynomial Fourier sign control.
+
+### C43-AP — heat covariance is a two-dimensional Floquet Gram difference
+
+Newest Deninger corpus identifies critical prime-circle vacuum subtraction with the exact von
+Mangoldt autocorrelation current and proves a universal two-bump sign wall for every nonnegative
+diagonal prime weighting.  The mass heat packet fits that theorem exactly after retaining its
+half-density repetition damping.
+
+Choose Fourier normalization so cross-correlation satisfies
+`C_(f,g)(a)=widehat(U_f conjugate(U_g))(a)`.  For fixed `Q,t`, let `u_0,u_1` be the all-weight Meyer
+sources with Fourier profiles
+
+\[
+ U_0(x)=Q(x^2)e^{-tx^2/2},\qquad U_1(x)=x^2U_0(x).
+\]
+
+Define the half-density damped Floquet form
+
+\[
+ \mathfrak F_{1/2}(f,g)
+ =\frac1{2\pi}\sum_{n\ge2}\frac{\Lambda(n)}{\sqrt n}
+   \left(C_{f,g}(\log n)+\overline{C_{g,f}(\log n)}\right). \tag{24.193}
+\]
+
+Gaussian decay makes it absolutely convergent.  Prime-circle unfolding and reindexing
+`n=p^m` identify (24.193) with the off-diagonal Floquet current whose repetition `m` carries the
+literal half-density monodromy `p^{-m/2}`.  Since
+`U_i conjugate(U_j)=F_(Q,i+j,t)`, one obtains the exact matrix identity
+
+\[
+ \bigl(\mathfrak F_{1/2}(u_i,u_j)\bigr)_{0\le i,j\le1}
+ =\begin{pmatrix}P_0&P_1\\P_1&P_2\end{pmatrix}.          \tag{24.194}
+\]
+
+The polar--Gamma terms similarly define a Hermitian source form `mathfrak A` on the same plane,
+with matrix `(A_(i+j))`.  Therefore
+
+\[
+ \boxed{\quad
+ \Delta_Q(t)=\det\left(
+   (\mathfrak A-\mathfrak F_{1/2})\big|_{
+     \operatorname{span}\{u_0,u_1\}}
+ \right).
+ \quad}                                                   \tag{24.195}
+\]
+
+This is the exact cross-corpus bridge requested by the new Floquet work.  Its sign wall rules out
+extending `mathfrak F_(1/2)` to a globally positive diagonal form: compact two-bump Meyer sources
+already give both signs, and one negative witness is a literal Euler coboundary.  But it does not
+rule out (24.195), because only the source-selected Gaussian jet plane and the non-diagonal
+polar--Gamma completion occur.
+
+The resulting avenue is precise.  New four-rate Gamma-sewn Cauchy--Binet corpus already produces
+positive boundary-pair Pluecker weights and an exact complementary Fisher/dispersion Schur law.
+What remains is not a full Mercer representation: construct a coefficient-faithful map from the
+plane `{u_0,u_1}` into that Gamma-sewn boundary cell whose Schur residual is exactly
+`mathfrak A-mathfrak F_(1/2)`.  Three-prime Lorentz compression shows at most three aggregate
+prime rates need enter each moment packet.  A successful four-rate identification would prove
+(24.195); absent the exact residual equality, generic Schur positivity is unrelated and must not
+be counted as progress.
+
 **Novelty audit.**  `PrimeHeatBumpLocation` already contains the single-atom peak law, and the
 digamma asymptotic and Gaussian Fourier identities are classical.  Corpus and arXiv searches found
 no statement combining exact mass-parabolic source, the polar residue repair, superexponential
 complete-prime-jet suppression, strict finite-degree heat-Hankel positivity, the universal
 degree--time wedge, filtered-Turan completeness, prime information cone, eventual curvature, and
 exponential-height repair, three-prime Lorentz compression, prime-square mean--variance defect,
-Cartan--parabolic source transmutation, Gaussian Wronskian--Turan identity, and the moment-jet
-prime--Gamma double-boundary landing.  Novelty claim is synthesis (24.128)--(24.182), not any ingredient in
+Cartan--parabolic source transmutation, Gaussian Wronskian--Turan identity, the moment-jet
+prime--Gamma double-boundary landing, and its one-dimensional Cauchy-transgression obstruction.
+Novelty claim also includes the oscillator-action no-bootstrap law tying the universal wedge to
+stable heat transport and eventual Fourier positivity/Fisher reduction for positive-root shell
+filters, plus the Gaussian two-jet/Floquet Gram bridge.  Synthesis is (24.128)--(24.195), not any ingredient in
 isolation.  Closest located arXiv neighbours concern de Bruijn--Newman deformation
 ([arXiv:1904.12438](https://arxiv.org/abs/1904.12438)), Jensen-polynomial hyperbolicity
 ([arXiv:1910.01227](https://arxiv.org/abs/1910.01227)), and a coefficient-side uniform Toeplitz
@@ -5143,3 +5395,22 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   is an absolutely convergent double boundary formula for the horizontal Wronskian.  Landing
   itself retains orientation; only factorization through a line-reflection-invariant arithmetic
   observation remains open.
+- 2026-08-08 — `[FAILED WITH POSITIVE SURVIVOR]` exact affine Cauchy transgression splits the
+  double boundary Wronskian into two contour coboundaries plus one surviving horizontal-orbit
+  coefficient.  Universal projective descent proves abstract invariant factorization is
+  RH-equivalent.  Only a pre-landing arithmetic equality of reflected prime--Gamma logarithmic
+  jets can remove the surviving class.
+- 2026-08-08 — `[FAILED WITH POSITIVE SURVIVOR]` oscillator momentum moments prove a quantitative
+  no-bootstrap theorem: stable transport of a degree-`d`, time-`T` Gaussian polynomial into the
+  time-`t`, degree-`N` wedge requires `tN` comparable to `Td`.  Degree--time action is invariant;
+  ultraviolet positivity cannot be squeezed to one all-degree positive time.
+- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` first-off-line-shell filters can be chosen with only
+  positive real roots; their Gaussian-square Fourier transforms are strictly positive for all
+  sufficiently late times.  The coherent prime packet is then an honest probability law, and
+  completed Turan curvature reduces exactly to polar--Gamma/prime curvature compensation minus a
+  score-mismatch square, with cross-prime coherence retained as score variance.
+- 2026-08-08 — `[CORPUS TRANSPLANT + PROVED BRIDGE; LEAN DEFERRED]` critical Floquet unfolding
+  identifies the three heat prime moments as the Gram matrix of the half-density damped von
+  Mangoldt autocorrelation form on the two-dimensional Gaussian jet plane.  Universal two-bump
+  indefiniteness forbids global diagonal positivity.  Surviving avenue is an exact Gamma-sewn
+  Schur residual on this plane, needing at most three compressed aggregate prime rates.
