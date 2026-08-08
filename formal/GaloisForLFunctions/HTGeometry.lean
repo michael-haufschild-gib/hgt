@@ -268,6 +268,7 @@ import GaloisForLFunctions.HTGeometry.BarnesLadderStepDA
 import GaloisForLFunctions.HTGeometry.BarnesMellinRepresentation
 import GaloisForLFunctions.HTGeometry.BarnesMultiLadderRatio
 import GaloisForLFunctions.HTGeometry.BarnesNormalCrossingRealization
+import GaloisForLFunctions.HTGeometry.BarnesSourceFaceTor
 import GaloisForLFunctions.HTGeometry.BarnesOrderOnePartialFractions
 import GaloisForLFunctions.HTGeometry.BarnesPoleAvoidance
 import GaloisForLFunctions.HTGeometry.BarnesRayKernelShift
@@ -1265,6 +1266,7 @@ import GaloisForLFunctions.HTGeometry.DatumQuotient
 import GaloisForLFunctions.HTGeometry.DatumToJetShape
 import GaloisForLFunctions.HTGeometry.DbarAltForms
 import GaloisForLFunctions.HTGeometry.DbarCoordinateProduct
+import GaloisForLFunctions.HTGeometry.EntireZeroFactorization
 import GaloisForLFunctions.HTGeometry.HolomorphicCoordinateDivision
 import GaloisForLFunctions.HTGeometry.DbarExhaustionSolve
 import GaloisForLFunctions.HTGeometry.DbarFormsBasic
@@ -6078,3 +6080,5 @@ import GaloisForLFunctions.HTGeometry.WeakLimitBoundedFamily
 import GaloisForLFunctions.HTGeometry.FinsumIntSplit
 import GaloisForLFunctions.HTGeometry.GammaJumpTranslationEnergy
 import GaloisForLFunctions.HTGeometry.TripticLineSupportFinite
+import GaloisForLFunctions.HTGeometry.MeromorphicLaurentOrderVanishing
+import GaloisForLFunctions.HTGeometry.TripticOrderBound
