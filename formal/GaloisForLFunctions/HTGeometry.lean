@@ -4907,6 +4907,7 @@ import GaloisForLFunctions.HTGeometry.ResolvedReplicaRecurrenceWallLaw
 import GaloisForLFunctions.HTGeometry.ResolvedSourceAugmentationConservativityLaw
 import GaloisForLFunctions.HTGeometry.ResolventFamilyJet
 import GaloisForLFunctions.HTGeometry.ResolventFamilyWitness
+import GaloisForLFunctions.HTGeometry.ResolventPerturbation
 import GaloisForLFunctions.HTGeometry.Resonance
 import GaloisForLFunctions.HTGeometry.ResonanceCeiling
 import GaloisForLFunctions.HTGeometry.ResonanceCountExponents
@@ -6117,3 +6118,4 @@ import GaloisForLFunctions.HTGeometry.CompactSupportIntegrationByParts
 import GaloisForLFunctions.HTGeometry.ScaledMollifierMoments
 import GaloisForLFunctions.HTGeometry.PhysicalLogChart
 import GaloisForLFunctions.HTGeometry.CarlemanSchurWeight
+import GaloisForLFunctions.HTGeometry.SchurTestPointwise
