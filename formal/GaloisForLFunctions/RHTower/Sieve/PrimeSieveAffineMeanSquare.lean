@@ -65,19 +65,17 @@ theorem mul_exp_sub_exp_neg_le {T : ℝ} (hT : 1 ≤ T) :
 
 /-- **From a square-root bound to an affine one.**  A bound `√(MS U) ≤ A + B√U` gives
 `MS U ≤ (A² + AB) + (AB + B²)U`, because `2√U ≤ 1 + U`. -/
-theorem le_affine_of_sqrt_le {MS : ℝ → ℝ} {A B : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B)
-    (hMS : ∀ U : ℝ, 0 ≤ MS U)
-    (h : ∀ U : ℝ, 0 < U → Real.sqrt (MS U) ≤ A + B * Real.sqrt U) :
-    ∀ U : ℝ, 0 < U → MS U ≤ (A ^ 2 + A * B) + (A * B + B ^ 2) * U := by
-  intro U hU
+theorem le_affine_of_sqrt_le {MS A B : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) (hMS : 0 ≤ MS) {U : ℝ}
+    (hU : 0 < U) (h : Real.sqrt MS ≤ A + B * Real.sqrt U) :
+    MS ≤ (A ^ 2 + A * B) + (A * B + B ^ 2) * U := by
   have hsU : (0 : ℝ) ≤ Real.sqrt U := Real.sqrt_nonneg U
   have hsUsq : Real.sqrt U ^ 2 = U := Real.sq_sqrt hU.le
-  have hsq : Real.sqrt (MS U) ^ 2 = MS U := Real.sq_sqrt (hMS U)
+  have hsq : Real.sqrt MS ^ 2 = MS := Real.sq_sqrt hMS
   have h2 : 2 * Real.sqrt U ≤ 1 + U := by
     nlinarith [sq_nonneg (Real.sqrt U - 1)]
-  have hmono : Real.sqrt (MS U) ^ 2 ≤ (A + B * Real.sqrt U) ^ 2 := by
-    have hnn : (0 : ℝ) ≤ Real.sqrt (MS U) := Real.sqrt_nonneg _
-    nlinarith [h U hU]
+  have hmono : Real.sqrt MS ^ 2 ≤ (A + B * Real.sqrt U) ^ 2 := by
+    have hnn : (0 : ℝ) ≤ Real.sqrt MS := Real.sqrt_nonneg _
+    nlinarith [h]
   rw [hsq] at hmono
   nlinarith [hmono, mul_nonneg hA hB, sq_nonneg B]
 

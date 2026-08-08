@@ -6255,3 +6255,4 @@ import GaloisForLFunctions.RHTower.Sieve.GhsPerronL1Low
 import GaloisForLFunctions.RHTower.Sieve.TwistTransfer
 import GaloisForLFunctions.RHTower.Sieve.TwistedSequence
 import GaloisForLFunctions.RHTower.Sieve.LiouvilleChain
+import GaloisForLFunctions.RHTower.Sieve.BlockAffineMeanSquare

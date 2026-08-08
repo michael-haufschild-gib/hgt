@@ -2899,3 +2899,31 @@ chain needs: this composition cannot yet beat the trivial bound, and the deficit
 `(log N)^{5/4}`.  Getting below `log N` would make the first coupling work; the two arithmetic obstructions
 already recorded (the sieve level cap, and the outer weight's mass near `p = N`) are exactly what stands in
 the way.
+
+## Lifting the sieve level cap: one level per dyadic block
+
+`formal/GaloisForLFunctions/RHTower/Sieve/BlockAffineMeanSquare.lean`:
+
+- `blockMeanSquareConst a M σ Yl = ∑_j √(sieveMeanSquareConst (block j) …)`,
+  `blockMeanSquareRate a M σ Z Yl = ∑_j √(sieveMeanSquareRate (block j) …)`.
+- `sqrt_integral_Icc_normSq_LSeries_le_block_affine` — Minkowski over the coefficient blocks, each block's
+  mean square in affine form: `√(MS U) ≤ A + B√U`.
+- `integral_Icc_normSq_LSeries_le_block_affine` — the affine form, through `le_affine_of_sqrt_le`
+  (generalised in this pass from a `∀ U` statement to a single point, which is all it is ever used at):
+
+  `∫_{|y| ≤ U} ‖L(a,σ+iy)‖² ≤ (A² + AB) + (AB + B²)U`.
+
+Why this is the binding constraint, and why blocks lift it.  Three independent balance computations now
+agree: the chain's loss is `≍ √(Q_AQ_B)`, with `Q ≍ (mass)/log Y`, so everything turns on how large the
+sieve level may be.  A *global* level is capped because `selbergFibreError = Y²e^{4c}(log z)^4` must stay
+under a count that is `O(1)` per prime pair — hence `log Y = O(1)` and `Q_B ≍ (log M)²`.  Block by block the
+count is not `O(1)`: the primes of the `j`-th block sit in a multiplicative window carrying `≍ 2^j`
+integers, so the level there may grow with the block and the leading term is divided by `log Y_j ≍ j log 2`.
+
+With `log Y_j ≍ log p`, the accounting becomes `Q_A ≍ 1/log N`, `Q_B ≍ log N`, hence `√(Q_AQ_B) ≍ 1` — a
+*bounded* loss, against a distance saving `e^{−δ²} ≍ 1/log N` from the zero-free strip at
+`log z ≍ log N`, `T ≍ (log N)^{10}`.  That is the first parameter regime in which the chain would beat the
+trivial bound, and it also identifies the remaining prerequisite precisely: the Perron truncation error must
+be the *near-diagonal* one (`1/|log(x/n)| ≤ max(x,n)/|x−n|`, giving `≍ Nx^{σ−1}B(1+log M)/T`), because the
+crude uniform separation used so far needs `T ≳ N`, and at that height the strip's `7 log log T` wipes out
+the distance.
