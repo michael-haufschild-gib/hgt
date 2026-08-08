@@ -282,3 +282,29 @@ Its proof, with every input already built:
    Global smoothness is smoothness on `B` and on the complement of the bump's support, two opens
    that cover;
 5. its `∂̄` vanishes because `ψ ≡ 1` near each point of `V` and `u₀` is complex differentiable there.
+
+### The epi: all four inputs built
+
+`exists_local_coord_quotient`, `deningerQuotientModel`, `deningerQuotientModel_smooth`,
+`deningerQuotientModel_eq_of_mem` and `setDbar_deningerQuotientModel` are landed in
+`DeningerDivisorIdeal.lean`.  What is left is only their assembly into
+
+    theorem deningerCoordMulVanish_locallySurjective (Ω) :
+        TopCat.Presheaf.IsLocallySurjective (deningerCoordMulVanish Ω).1
+
+following `deningerDivisorRestrict_locallySurjective` line for line: take the model `g` on `N`, put
+`Wset = N ∩ deningerAmb U`, get `dzbarAt (g ∅) j = 0` there from
+`deningerDivisorModel_dzbar_eq_zero` (instantiated at dimension `n+1`) and hence
+`AnalyticOnNhd ℂ (g ∅) Wset` from `analyticOnNhd_of_dzbarAt_eq_zero_on`; get the vanishing of `g ∅`
+on the divisor from the section's own vanishing through the model; feed both to
+`exists_local_coord_quotient` at the centre `x`; take
+`V = deningerRestrictOpen Ω (ball x (R/3)) ⊓ U` and the section `y ↦ u y`, whose model is
+`deningerQuotientModel x R hR u` — smooth by `deningerQuotientModel_smooth`, equal to `u` on the
+smaller ball by `deningerQuotientModel_eq_of_mem`, and `∂̄`-closed by
+`setDbar_deningerQuotientModel`.  The identity `z_last · u = g ∅ = h` on `V` is `humul` composed
+with the model equality.
+
+Then `deningerCoordMulVanish` is mono and epi, hence iso; its inverse after
+`deningerVanishKernelLift` discharges `KernelFork.IsLimit.ofι` for `deningerCoordMul`, and
+`ShortComplex.exact_of_f_is_kernel` gives the short exact ideal sequence — and with it the residue
+sequence and steps 1--4 of this card.
