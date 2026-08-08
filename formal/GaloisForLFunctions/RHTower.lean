@@ -5239,6 +5239,14 @@ import GaloisForLFunctions.RHTower.ValueDistributionIsZeroBlind
 import GaloisForLFunctions.RHTower.ValueOrbit
 import GaloisForLFunctions.RHTower.VanDerCorput
 import GaloisForLFunctions.RHTower.VanDerCorputIBP
+import GaloisForLFunctions.RHTower.OscillatoryDecayPrimitive
+import GaloisForLFunctions.RHTower.ExteriorProfileBounds
+import GaloisForLFunctions.RHTower.XiReciprocalSpeed
+import GaloisForLFunctions.RHTower.ExteriorXiPrimitive
+import GaloisForLFunctions.RHTower.XiAmplitudeDecay
+import GaloisForLFunctions.RHTower.ExteriorDunsterPrimitive
+import GaloisForLFunctions.RHTower.XiCoordinate
+import GaloisForLFunctions.RHTower.XiTransportedPrimitive
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted
@@ -6335,3 +6343,4 @@ import GaloisForLFunctions.RHTower.Sieve.DampedSizeFloor
 import GaloisForLFunctions.RHTower.Sieve.UniformDistanceAverage
 import GaloisForLFunctions.RHTower.Sieve.MertensFirstBlock
 import GaloisForLFunctions.RHTower.Sieve.PrimeInvLogTail
+import GaloisForLFunctions.RHTower.Sieve.PerronExponentBudget

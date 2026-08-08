@@ -214,3 +214,24 @@ the Euler bound's `Θ(1)` borderline is now closed in both directions. Note this
 sign-sensitive Fejér family from the other card, which produces levels `(1 − 1/K)A` at multiples of a
 frequency — also `A` up to a factor. Every mechanism in the folder, blind or sign-sensitive, lands on the
 same level, which is why the borderline is structural rather than an artefact of one estimate.
+
+## The exponent budget, machine-checked
+
+`HTGeometry/CorrelationExponentBridge.lean` records exponent budgets as rational arithmetic so that a
+balance computation becomes a checked identity. The ranking of the Perron analytic terms above was prose,
+and prose is where an arithmetic slip hides — I made one earlier in this session before catching it. It is
+now `RHTower/Sieve/PerronExponentBudget.lean`, in the same style: the analytic term is `x^σ(log L)^e` and
+
+| route | `e` |
+|---|---|
+| pointwise Euler bound | `1` |
+| Cauchy–Schwarz against the affine mean square | `1/2` |
+| damped, uniform level `c = 1` (the prime mass) | `2/3` |
+| damped, corpus zero-free level `c = 2/9` | `1 − 2/27` |
+| damped, single-frequency level `c = 2` (not uniformly available) | `1/3` |
+
+with `dampedExponent c = 1 − c/3` from the abscissa balance. The checked content is
+`all_exponents_pos` — every exponent is strictly positive, so the analytic term is never `o(x^σ)` and at
+`x = N` never `o(N)`, which is the arithmetic form of the cap — together with `meanSquare_is_least`, the
+statement that the unconditional mean square beats every damped variant. That last comparison is exactly
+why the zero-free region is inert in this chain, and it is now an identity rather than an assertion.
