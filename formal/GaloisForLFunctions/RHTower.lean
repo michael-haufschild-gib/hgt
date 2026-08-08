@@ -4191,7 +4191,10 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeFibre
 import GaloisForLFunctions.RHTower.Sieve.PrimeInterval
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogQuotientSum
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogSqLower
+import GaloisForLFunctions.RHTower.Sieve.ExpProfileRegularity
 import GaloisForLFunctions.RHTower.Sieve.PrimeLeakageEstimates
+import GaloisForLFunctions.RHTower.Sieve.PrimeLeakageProfileVanishing
+import GaloisForLFunctions.RHTower.Sieve.PrimeLeakageProductLimit
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogWindowCount
 import GaloisForLFunctions.RHTower.Sieve.PrimeProfileExponentTransfer
 import GaloisForLFunctions.RHTower.Sieve.PrimeProfileIntegralBound
@@ -6280,3 +6283,4 @@ import GaloisForLFunctions.RHTower.Sieve.CesaroLogWeightBound
 import GaloisForLFunctions.RHTower.Sieve.CesaroDampedChain
 import GaloisForLFunctions.RHTower.Sieve.CesaroPartialSumBound
 import GaloisForLFunctions.RHTower.Sieve.PerronVerticalLogBound
+import GaloisForLFunctions.RHTower.Sieve.CharacterDistanceGrowth

@@ -3629,3 +3629,39 @@ narrow rather than the distance small.
 With `T ≍ (log N)(log log N)^7` the error sum is `o(N)` and the bound is
 `‖∑_{n ≤ N}λ(n)‖/N ≲ dampedSize ≍ e^{7/2 + C}(log log N)^7` — trivial by a **poly-log-log** factor, not
 by a power of `log N`.  Sharp Halász is `log log N/log N`.  Both gaps close with the same single input.
+
+## The missing supplier, built
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CharacterDistanceGrowth.lean`:
+
+- `norm_riemannZeta_le_inv_abs_im` — `‖ζ(s)‖ ≤ 5 + 1/|Im s|` for `1 ≤ Re s ≤ 2`, `0 < |Im s| ≤ 2`.
+  Euler–Maclaurin at `N = 1`: the carrier is `1 + 1/(s−1)`, whose pole term has `‖s−1‖ ≥ |Im s|`, and the
+  remainder `‖s‖·1^{−σ}/σ` is at most `4`.  This is the *pole* bound — the small-frequency counterpart of
+  the corpus's `norm_riemannZeta_le_log_add`, which needs `|t| ≥ 2`.
+- `tsum_re_prime_cpow_le_of_log_le` — the prime series against `log‖ζ‖` **from above**, the exact mirror of
+  `ZetaStripPrimeSum.le_tsum_re_prime_cpow_of_log_le`; both halves of the corpus's
+  `abs_log_norm_riemannZeta_sub_tsum_re_le` were available, only one was used.
+- `tsum_re_prime_cpow_le_small_freq` — `∑'_p Re(p^{−σ−it}) ≤ log(5 + 1/|t|) + π²/6`.
+- `le_mulDistSqPair_charFn_small_freq` — the distance growth:
+
+  `D(n^{it}, n^{iu}; z)² ≥ logLog z − log(5 + 1/|t−u|) − C`   for `0 < |t−u| ≤ 2`, `z ≥ 3`,
+
+  where `C` is the explicit sum of Mertens' and the truncation constants.  Up to those constants the right
+  side is `log(|t−u|·log z)`: the distance between two characters grows like the logarithm of their
+  separation measured in units of `1/log z`.
+
+`CharacterDistanceLower.le_mulDistSqPair_charFn` had no instance in the whole folder — it was a parametric
+law waiting for exactly this.  The hypothesis `1 + 1/log z ≤ 2` is discharged internally from `z ≥ 3`.
+
+### What this unlocks
+
+With `sqrt_mulDistSqPair_triangle_disc` (the triangle inequality for `D`, already owned) this gives, for
+`f` at distance `√m` from `charFn t₀`,
+
+`D(f, charFn t)² ≥ (√(log(|t−t₀|·log z) − C) − √m)²`,
+
+so `𝔻(t)² ≈ m` only while `|t − t₀| ≲ e^{C+m}/log z` — a window of width `≍ 1/log z` for bounded `m`.
+That window's narrowness is worth precisely the factor `1/(σ−1) ≍ log z` that every pointwise route pays,
+and it is the content of Halász's `1 + m`.  The remaining assembly is: split the vertical integral into the
+near-`t₀` window and its complement, charge the window the pointwise damped bound and the complement the
+distance growth, and add.
