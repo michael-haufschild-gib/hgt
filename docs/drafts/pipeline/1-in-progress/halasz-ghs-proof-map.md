@@ -3143,3 +3143,54 @@ The deficit is unchanged at a factor `log N`, and the reason is now visible in o
 because `∑_n Λ(n)²/n ≍ (log N)²`, and the distance supplies only `e^{−δ²} ≍ 1/log N`.  Closing it needs
 the `(1+m)e^{−m}` shape, which comes from the second moment of `L(f)` itself rather than from a
 pointwise bound on it — the next device to build.
+
+## The threefold recursion is not needed: one convolution suffices
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LogWeightVonMangoldtPair.lean`:
+
+- `vonMangoldtSeq f n = f n·Λ(n)`, with its support and norm bounds.
+- `convolution_vonMangoldtSeq_truncSeq_eq` — for a completely multiplicative `f` and any `L ≥ n`,
+
+  `((f·Λ_{≤L}) ⍟ f_{≤L})(n) = f(n)·log n`.
+
+  Every divisor of `n` is at most `n`, so the truncation is invisible; `f(a)f(b) = f(n)` collapses each
+  antidiagonal term to `f(n)Λ(a)`; and `∑_{a ∣ n} Λ(a) = log n`.  The corpus already owned the *summed,
+  divisor-swapped* form of this identity (`sum_mul_log_eq_vonMangoldt`); what the Perron passage needs is
+  the sequence-level one, because Perron's formula is applied to a convolution and not to a double sum.
+- `norm_convolution_vonMangoldtSeq_le_uniform` — `‖(c ⍟ g)(n)‖ ≤ log(L²)` everywhere, since the
+  coefficients are bounded by `∑_{a ∣ n} Λ(a) = log n` and the support ends at `L²`.
+- `norm_sum_Icc_mul_log_le_pair_general` — the capstone:
+
+  `‖∑_{n ≤ N} f(n)‖·log N ≤ N + (near-diagonal truncation error) + (1/2π)·perronVerticalPairBound`,
+
+  the analytic side charging the `Λ`-weighted factor one general affine mean square and the factor `f` a
+  pointwise bound `V`.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LiouvillePairChain.lean`:
+`norm_sum_Icc_mul_log_le_pair_damped` (at `V = dampedSize σ δ z N`) and
+`exists_norm_sum_Icc_liouvilleC_mul_log_pair_le` (at the Liouville function, distance from the zero-free
+strip).
+
+### What this replaces
+
+The elementary half of the argument was previously `norm_sum_Icc_mul_log_sub_ghsTriple_le`: three steps
+of the Granville–Harper–Soundararajan recursion, error `O(N log log N)`, and a threefold convolution
+whose analytic treatment needs two prime-sieve mean squares and Cauchy–Schwarz between them.  The pair
+route replaces all of it by
+
+* one identity, `f·log = (f·Λ) ⍟ f`, exact;
+* one elementary cost, `∑_{n ≤ N}(log N − log n) = N log N − log N! ≤ N` — already in the corpus as
+  `norm_sum_Icc_mul_log_sub_le`;
+* one mean square, the general affine one, with no primality and no sieve.
+
+The accounting improves in two places and is unchanged in the third.  The recursion error drops from
+`N log log N` to `N`.  The height-linear rate drops from `√(κ_Aκ_B)·K` with
+`κ ⊇ selbergFibreError z Y + z` to `√κ_c·K` with `κ_c = (5π/2)∑_{n ≤ N}Λ(n)²n^{−2σ} = O(1)`.  The
+height-independent constant is `Q_c = 5πe∑_{n ≤ N}Λ(n)²n^{1−2σ} ≍ (log N)²/2`, so `√Q_c ≍ log N` — the
+same as the `√(Q_AQ_B)` of the split route with the outer weight restricted.
+
+So the `log N` deficit is confirmed to be a property of the *mass* `∑_n Λ(n)²/n ≍ (log N)²` and not of any
+particular grouping.  At `σ = 1 + A/log N`, where `x^σ(1 + 1/(σ−1)) ≍ eN log N` is minimal, the analytic
+term is `≍ N log N·√Q_c·e^{−δ²}/√t₀ ≍ N(log N)²e^{−δ²}`, and the strip supplies `e^{−δ²} ≍ 1/log N`.
+Closing the last logarithm requires the second moment of `L(f)` in place of a pointwise bound on it —
+Halász's `(1+m)e^{−m}` — which is now the single remaining device.
