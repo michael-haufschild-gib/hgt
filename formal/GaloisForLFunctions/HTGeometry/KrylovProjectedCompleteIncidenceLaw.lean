@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FiniteHorizonCStarPerturbationLaw
 import GaloisForLFunctions.HTGeometry.KrylovCausalReplicaSieveLaw
+import GaloisForLFunctions.HTGeometry.SymmetricReplicaRankLaw
 
 /-!
 # Krylov projected complete-incidence law
@@ -218,6 +219,18 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 def boundedHamiltonianOrbit (H : E →L[ℂ] E) (ψ : E) (t : ℝ) : E :=
   exp (t • ((-Complex.I) • H)) ψ
 
+/-- Self-adjoint real-time evolution preserves the state norm exactly. -/
+theorem norm_boundedHamiltonianOrbit_eq
+    (H : E →L[ℂ] E) (hH : IsSelfAdjoint H) (ψ : E) (t : ℝ) :
+    ‖boundedHamiltonianOrbit H ψ t‖ = ‖ψ‖ := by
+  let _ : NormedAlgebra ℚ (E →L[ℂ] E) := .restrictScalars ℚ ℂ (E →L[ℂ] E)
+  have hskew : (-Complex.I) • H ∈ skewAdjoint (E →L[ℂ] E) := by
+    rw [skewAdjoint.mem_iff, star_smul, hH.star_eq]
+    simp
+  unfold boundedHamiltonianOrbit
+  exact (exp (t • ((-Complex.I) • H))).norm_map_of_mem_unitary
+    (exp_mem_unitary_of_mem_skewAdjoint (skewAdjoint.smul_mem t hskew)) ψ
+
 /-- Taylor state of the same bounded Hamiltonian orbit. -/
 def boundedHamiltonianTaylorState
     (H : E →L[ℂ] E) (ψ : E) (K : ℕ) (t : ℝ) : E :=
@@ -350,6 +363,59 @@ theorem norm_boundedHamiltonianOrbit_sub_krylovProjection_le_boundary
     _ ≤ (B * T) ^ (K + 1) / (K + 1).factorial :=
       div_le_div_of_nonneg_right hpow hfac.le
     _ = krylovFactorialBoundary B T K := rfl
+
+/-! ## Complete projection-before-replica incidence -/
+
+/-- **Causal projection before replicas.**  Every complete occupied-image
+replica incidence action on a bounded Hamiltonian orbit is dominated by the
+same action on the projected occupied image, plus one sharp factorial boundary
+paid after the full target union. -/
+theorem replicaTargetProjectionMass_boundedHamiltonianOrbit_le_krylov
+    {C α : Type*} [Fintype α] [DecidableEq α]
+    (H : EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (hH : IsSelfAdjoint H) {ψ : EuclideanSpace ℂ α} (hψ : ‖ψ‖ ≤ 1)
+    (target : C → α → ℂ) {r : ℕ} (hr : 0 < r) (K : ℕ)
+    {B T t : ℝ} (hB : 0 ≤ B) (hHnorm : ‖H‖ ≤ B) (ht : |t| ≤ T) :
+    replicaTargetProjectionMass r target
+        (fun x => boundedHamiltonianOrbit H ψ t x) ≤
+      replicaTargetProjectionMass r
+          (projectedReplicaTarget (boundedHamiltonianKrylovSubspace H ψ K) target)
+          (fun x => boundedHamiltonianKrylovProjection H ψ K t x) +
+        2 * (r : ℝ) * krylovFactorialBoundary B T K := by
+  let orbit := boundedHamiltonianOrbit H ψ t
+  let S := boundedHamiltonianKrylovSubspace H ψ K
+  have horbitCoord : WithLp.toLp 2 (fun x => orbit x) = orbit := by
+    ext x
+    rfl
+  have horbitNorm : ‖WithLp.toLp 2 (fun x => orbit x)‖ ≤ 1 := by
+    rw [horbitCoord, norm_boundedHamiltonianOrbit_eq H hH]
+    exact hψ
+  have hdefect :
+      ‖WithLp.toLp 2 (fun x => orbit x) -
+          S.starProjection (WithLp.toLp 2 (fun x => orbit x))‖ ≤
+        krylovFactorialBoundary B T K := by
+    simpa [horbitCoord, orbit, S, boundedHamiltonianKrylovProjection] using
+      norm_boundedHamiltonianOrbit_sub_krylovProjection_le_boundary
+        H hH hψ K hB hHnorm ht
+  simpa [orbit, S, boundedHamiltonianKrylovProjection] using
+    replicaTargetProjectionMass_le_projected_add_error
+      hr S target (fun x => orbit x) horbitNorm hdefect
+
+/-- The projected complete target image obeys both exact paper rank caps:
+rank contraction from the original occupied image and the stars-and-bars
+dimension of the causal Krylov carrier. -/
+theorem finrank_projectedReplicaTargetSpan_le_krylov_min
+    {C α : Type*} [Fintype α] [DecidableEq α]
+    (H : EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (ψ : EuclideanSpace ℂ α) (K r : ℕ) (target : C → α → ℂ) :
+    Module.finrank ℂ
+        (replicaTargetSpan r
+          (projectedReplicaTarget
+            (boundedHamiltonianKrylovSubspace H ψ K) target)) ≤
+      min (Module.finrank ℂ (replicaTargetSpan r target))
+        ((Module.finrank ℂ (boundedHamiltonianKrylovSubspace H ψ K) + r - 1).choose r) :=
+  finrank_projectedReplicaTargetSpan_le_min r
+    (boundedHamiltonianKrylovSubspace H ψ K) target
 
 end FiniteDimensional
 

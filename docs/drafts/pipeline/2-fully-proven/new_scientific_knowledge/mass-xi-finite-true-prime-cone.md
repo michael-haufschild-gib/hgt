@@ -5577,6 +5577,92 @@ that the reweighted Gamma cross in (24.220) equals the polar--prime mixed coeffi
 and prove its Gamma/polar coefficient equality.  Capacity and heat reweighting no longer need to
 be invented.
 
+### C43-AY — unit-shift cofinal finite part is the natural completed heat source
+
+The heat diagonal points to a better source normalization than the completed `+2` innovation.
+Let
+
+\[
+ d_1(n)=\Lambda(n)(1-n^{-1}).
+\]
+
+This is corpus's actual transverse shift-one arithmetic source, and on the Euler half-plane it is
+the corrected `+1` defect of `xi'/xi`.  Pointwise for every `n>=2`, positivity and a geometric
+series give
+
+\[
+ \boxed{\quad
+ \frac{\Lambda(n)}{\sqrt n}
+   =d_1(n)\sum_{j\ge0}n^{-j-1/2}.
+ \quad}                                                   \tag{24.222}
+\]
+
+Consequently Gaussian absolute convergence permits Tonelli for every eventually positive
+positive-root shell filter and gives
+
+\[
+ P_{Q,0}(t)=\frac1\pi\sum_{j\ge0}\sum_{n\ge2}
+   d_1(n)n^{-j-1/2}
+   \widehat{Q(x^2)^2e^{-tx^2}}(\log n).                  \tag{24.223}
+\]
+
+The equivalent one-step Radon--Nikodym density is
+
+\[
+ R^{(1)}_{Q,t}(n)=\frac{\sqrt n}{\pi(n-1)}
+   \widehat{Q(x^2)^2e^{-tx^2}}(\log n).                  \tag{24.224}
+\]
+
+For `Q=1` this becomes
+
+\[
+ R^{(1)}_t(n)=
+ \frac{e^{t/4-(\log n-t)^2/(4t)}}{\sqrt{\pi t}(n-1)},
+ \qquad 0<R^{(1)}_t(n)\le\frac{e^{t/4}}{\sqrt{\pi t}}.  \tag{24.225}
+\]
+
+Unlike the depth-innovation density (24.212), this coefficient-level density is centered exactly
+at the true prime saddle `log n=t` and lives at the exact polar scale `e^(t/4)`.  Thus the
+half-density and polar residue are two faces of the unit-shift cofinal inverse.
+
+The apparent disadvantage of shift one is actually its decisive feature.  If
+`A_infty(s)=logDeriv(archFactor)(s)`, corpus proves
+
+\[
+ G_1(s):=A_\infty(s+1)-A_\infty(s)
+ =\frac1{s+1}-\frac1{s-1}
+   +\frac12\psi\!\left(\frac{s+1}{2}\right)
+   -\frac12\psi\!\left(\frac s2\right),                \tag{24.226}
+\]
+
+and proves this correction is not rational.  Telescoping plus the standard digamma asymptotic,
+already present in corpus, gives the exact cofinal finite-part law
+
+\[
+ \lim_{N\to\infty}\left[
+   \sum_{j=0}^{N}G_1(s+j)-\frac12\log\frac{N+1}{2\pi}
+ \right]=-A_\infty(s),                                  \tag{24.227}
+\]
+
+for fixed `s` away from the archimedean poles.  Indeed the sum is
+`A_infty(s+N+1)-A_infty(s)`, while
+`A_infty(s+N+1)-(1/2)log((N+1)/(2pi))->0`.
+
+This reinterprets the missing completion.  Rationalizing one even `+2` cell hides the Gamma seam;
+the cofinal unit-shift ladder reconstructs the full polar--Gamma logarithmic derivative as its
+canonical finite part, while (24.222) reconstructs the literal half-density prime current with
+positive coefficients.  Since determinant is nonlinear, the ladder must be completed **before**
+taking its two-jet exterior square; telescoping first discards precisely the mixed terms sought in
+(24.148).
+
+The new exact frontier is a renormalized-cofinal Schur theorem: on the two Gaussian jet vectors,
+form finite unit-shift source Grams, subtract the universal rank-one logarithmic endpoint in
+(24.227), and prove that their exterior-square limit is nonnegative.  Its coefficient limit is
+forced to be `mathfrak A-mathfrak F_(1/2)` by (24.222)--(24.227).  This is the first avenue here
+that produces prime, Gamma, polar, and mixed channels from one actual completed-Xi source rather
+than asking for an exogenous conductor match.  Positivity of that finite-part exterior limit is
+not yet proved.
+
 **Novelty audit.**  `PrimeHeatBumpLocation` already contains the single-atom peak law, and the
 digamma asymptotic and Gaussian Fourier identities are classical.  Corpus and arXiv searches found
 no statement combining exact mass-parabolic source, the polar residue repair, superexponential
@@ -5593,7 +5679,8 @@ Euler-square/Fisher clock identification, and the fixed-aperture nonconfluence t
 also includes the bounded positive reweighting of literal Xi-shift valuation innovations and its
 endpoint-collapse obstruction, plus the log-convex/log-concave aperture-mixture separation.  It is
 also includes heat-diagonal stability of coherent `9/8` Gamma capacity.  The synthesis is
-(24.128)--(24.221), not any ingredient in isolation.  Closest located arXiv neighbours concern de Bruijn--Newman deformation
+(24.128)--(24.227), including unit-shift cofinal finite-part reconstruction, not any ingredient in
+isolation.  Closest located arXiv neighbours concern de Bruijn--Newman deformation
 ([arXiv:1904.12438](https://arxiv.org/abs/1904.12438)), Jensen-polynomial hyperbolicity
 ([arXiv:1910.01227](https://arxiv.org/abs/1910.01227)), and a coefficient-side uniform Toeplitz
 wedge ([arXiv:2607.16795](https://arxiv.org/abs/2607.16795)); none states divisor-heat

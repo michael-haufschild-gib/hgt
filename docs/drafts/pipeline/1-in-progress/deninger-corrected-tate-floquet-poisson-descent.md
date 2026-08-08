@@ -10,10 +10,13 @@
   its unsquared Green--Stokes chain identity. Its kernel must be exactly the literal
   Meyer--Poisson boundary range, and its descended geometry must have raw arithmetic weight one
   and real-Fourier compatibility.
-- **Upstream open premise:** strict cofinal Euler--Gamma/Möbius gauge-defect sewing, or an
-  equivalent non-diagonal source differential, formed before Hermitian polarization.
-- **Upstream owner:** `DAC_ENHANCED_ADIABATIC_MILNOR_CALDERON_VANISHING_CYCLE`, narrowed to its
-  all-prime enhanced Euler-gauge defect and unsquared Green--Stokes clauses.
+- **Source differential status:** closed on paper by
+  `DAC_DENINGER_EULER_GAMMA_MOBIUS_CONNECTION_TRANSGRESSION`: strict all-prime-first endpoint,
+  physical/Fourier contragredient connection, unsquared covariant Green--Stokes identity, and
+  boundary image equal to the Möbius--Fourier commutator.
+- **Upstream open premise:** independent arithmetic incidence carrying the fixed resolved
+  prime-2/prime-3 Green boundary into the literal Poisson kernel before polarization,
+  `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`.
 
 ## Goal
 
@@ -24,11 +27,13 @@ boundary, completed Green primitive, Green transport, conservative admission, ph
 coefficient, and Calderón--Witt incidence are already constructed. None selects the vanishing
 locus.
 
-The first open operation lies upstream: construct the strict cofinal defect of the finite
-gauge-exact Poisson--Kummer connection and prove its non-diagonal unsquared Green--Stokes identity
-annihilates the resolved Green defect before Hermitian polarization. This card records the exact
-Tate--Floquet/Möbius boundary theorem which that source construction must induce. Constructing an
-independent singular target or another Gamma transport does not close the source gate.
+The strict cofinal defect of the finite gauge-exact Poisson--Kummer connection is now constructed
+on paper.  Its non-diagonal unsquared covariant Green--Stokes identity has endpoint exactly the
+Möbius--Fourier commutator and annihilates every literal Meyer--Poisson boundary with the exact
+kernel below.  The first open operation is narrower: prove from independent arithmetic incidence
+that the already-resolved Green boundary lies in this literal kernel before Hermitian
+polarization. Constructing another singular target or another Gamma transport does not close that
+source-incidence gate.
 
 No divisor, zeta-zero sampling, RH-equivalent positivity premise, abstract Hilbert embedding, or
 post-completion projection may enter the construction.
@@ -239,8 +244,9 @@ A candidate fails if any one occurs:
 ## Gates
 
 - [x] 0 → 1 in-progress: exact object, dependencies, topology, and falsifiers fixed
-- [ ] upstream dependency: construct strict all-prime Euler--Gamma/Möbius source differential and
-  prove unsquared Green--Stokes annihilation unconditionally
+- [x] upstream source differential: strict all-prime Euler--Gamma/Möbius transgression, exact
+  Gamma/co-Poisson boundary image, and literal-boundary Green--Stokes annihilation proved on paper
+- [ ] upstream RH-bearing incidence: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] 1 → 2 fully-proven: derive `(5)` from that source differential and prove `(6)`--`(8)`
   unconditionally
 - [ ] 2 → 3 formalized: paused until Lean corpus refactor ends
@@ -261,3 +267,9 @@ A candidate fails if any one occurs:
   actual Gamma/co-Poisson Green transport and Calderón--Witt incidence already constructed. First
   source gate moved upstream to strict cofinal Euler--Gamma/Möbius gauge-defect sewing and its
   non-diagonal unsquared Green--Stokes annihilation identity.
+- 2026-08-08 — `DAC_DENINGER_EULER_GAMMA_MOBIUS_CONNECTION_TRANSGRESSION` constructed the
+  all-prime-first source family, proved its strict PNT endpoint, derived the forced
+  physical/Fourier connection difference and unsquared covariant identity, and identified its
+  endpoint boundary image with the Möbius--Fourier commutator.  Remaining upstream premise is no
+  longer construction of that source operation; it is independent arithmetic incidence of the
+  fixed resolved two-prime Green boundary in the literal kernel.

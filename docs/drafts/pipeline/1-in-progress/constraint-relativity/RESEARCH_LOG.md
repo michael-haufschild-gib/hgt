@@ -300,3 +300,92 @@ filtration.
 Second no-go: every normalized fixed finite-code recovery/CMI/Choi valuation is bounded, while
 DSSYK wormhole length grows unboundedly. Equality for all time requires cofinal dimension growth,
 extensive observable, or restricted time window. Fitted time-dependent observer state is banned.
+
+## 2026-08-08 — internal priority collision: Lawstack demoted
+
+Hostile comparison against the repository's earlier Source--Observer Relativity, polarized strict
+descent, and normalized anomaly-fracture stack found that Framed Lawstack Dynamics was mostly a
+repackaging. The external ingredients are also occupied by filtered/derived categories,
+bornological and condensed mathematics, pro-objects, equivariance, algebraic theories,
+institutions, observer fibrations, descent, and provenance.
+
+Exact bag test: the homotopy fibre product of independent organ categories has jointly
+conservative coordinate projections because equivalences in a categorical limit are computed
+componentwise. New content can only live in a nontrivial realizability comparison
+
+\[
+J:\mathcal L\to\mathcal B
+\]
+
+and its fibres. No mixed compatibility law defining `mathcal L` is currently known. New-field
+claim withdrawn. This is a decisive anti-theatre pivot, not a cosmetic status change.
+
+Strongest existing non-bag corpus law is the publication-ready cyclic-to-paracyclic residue
+transgression
+
+\[
+\operatorname{Res}(D_{n,\rho}x)
+=(\delta_n(\rho)-1)c_\rho\varepsilon_0^{(1)}(x).
+\]
+
+It couples literal prime provenance, completion, multiplicity separation, source/physical
+synchronization, and dagger polarization on one chain. Missing selection remains exactly a source
+theorem making the physical paracyclic defect null-homologous or residue-zero; globally that
+statement is RH-bearing, not a routine bridge.
+
+## 2026-08-08 — source-word selection no-go and cofinal-observer law
+
+For a fixed filtered action and seed,
+
+\[
+P_n=A_{\le n}\otimes V,\qquad R_n=\ker\operatorname{ev}_n,
+\qquad K_n=A_{\le n}V
+\]
+
+satisfy
+
+\[
+R_{n+1}\cap P_n=R_n,
+\qquad
+0\to R_n/R_{n-1}\to P_n/P_{n-1}\to K_n/K_{n-1}\to0.
+\]
+
+Therefore word-depth growth has zero killed-old-freedom term. Longer source words cannot perform
+RH selection under a fixed action. Selection must change action, admission, quotient, or source
+law. In degree-one filtrations one plateau forces permanent stabilization, so Brown--Susskind
+growth beyond finite Krylov saturation needs metric, spectral-weight, path, or growing-frame data.
+
+For a complete nonstabilizing filtered law, finite truncation observers are jointly conservative
+exactly only when their indices are cofinal; no bounded observer family sees a tail object. This
+couples pro-tail, filtration, involution, prolongation, and pointing, but remains classical
+inverse-limit mathematics rather than a new field.
+
+## 2026-08-08 — next-level conjecture: recurrent phase base, unwrapped law lift
+
+The combined no-gos suggest a different primitive. Complexity/time cannot be a bounded state
+function or finite rank; it must be path-dependent lift data. Candidate exact model:
+
+\[
+\mathbb T_{\mathbb P}=\prod_p S^1,
+\qquad
+\Phi_t((z_p)_p)=(p^{it}z_p)_p.
+\]
+
+Unique prime factorization makes every finite frequency set rationally independent, so the flow
+is dense and recurrent in the product topology. Its logarithmic lift
+`(t log p)_p` retains unbounded oriented time while every finite phase observer recurs. Pontryagin
+dual is the finitely supported exponent lattice, canonically `Q_{>0}^times`; Fourier characters
+are arithmetic rational frequencies.
+
+For a divisor point `rho=beta+i gamma`, the complexified prime coordinate
+
+\[
+z_p(\rho)=p^{\rho-1/2}
+\]
+
+has phase `gamma log p` and radial drift `(beta-1/2)log p`; the dagger multiplier is a power of
+the associated radial holonomy. Critical-line placement is compact/unitary phase motion, while
+off-line placement has noncompact radial drift. This is currently a geometric reformulation, not
+selection and not RH. Research target: determine whether the literal arithmetic cyclic source
+forces its physical landing to descend from the recurrent phase base rather than an arbitrary
+radial extension. If not, retire the physical interpretation.

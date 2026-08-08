@@ -191,19 +191,25 @@ Positive survivor is exact invariant
 Whole-anchor \(E_3\) remains useful for sparse exceptional sources or local sign correction.
 Central-density route now has four honest options:
 
-1. prove product-truncated high-band reservoir family has enough harmonic row mass and enough
-   physical columns while remaining on \(t=X^{o(1)}\);
+1. use product-truncated high-band reservoir family, whose harmonic row mass is now proved in
+   `route-e-product-truncated-reservoir-harmonic-mass-law.md`, and prove its missing fine physical
+   columns while remaining on \(t=X^{o(1)}\);
 2. use growing token arity with \(X^{1-o(1)}\) population without large reservoir;
 3. use genuinely many-to-many physical operation not reducible to one reservoir times one
    fixed-arity token;
 4. cancel before ordinary-integer column projection and prove source-faithful descent which does
    not reintroduce (4).
 
-Option 1 is newly exposed open problem; current corpus has no such joint theorem.
+Option 1 is no longer a joint mass/capacity problem.  Exact finite truncation inequality proves a
+fixed proportion of elementary-symmetric harmonic mass survives.  Its sole remaining obstruction
+is local structured-token density versus inverse \(\omega=s\) layer incidence, with factorial
+constants sharp enough for unit physical columns.
 
 ## 8. Status
 
 [PROVED HERE] [NOVELTY UNVERIFIED] for full-allocation band. Proof uses finite mass conservation,
 fixed-order global almost-prime upper bound, reciprocal-prime Mertens law, and displacement
 scaling. It does not use RH, computation, unique decoding, structured-token lower bounds, or any
-unproved Route E premise.
+unproved Route E premise.  Child theorem
+`route-e-product-truncated-reservoir-harmonic-mass-law.md` proves full-allocation no-go does not
+extend to harmonically weighted product truncation; it does not overturn physical-capacity law.

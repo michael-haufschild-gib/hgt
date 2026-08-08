@@ -554,13 +554,18 @@ choice is (4), and it already satisfies:
 - exact real-Fourier covariance;
 - strict Euler-depleted transport through existing Green inverse.
 
-First open theorem is correspondingly narrower:
+The source-to-boundary identification part is now closed on paper by
+`DAC_DENINGER_EULER_GAMMA_MOBIUS_CONNECTION_TRANSGRESSION`: the all-prime-first Möbius family has
+a strict PNT endpoint, its forced physical/Fourier connection difference satisfies an unsquared
+covariant Green--Stokes law, and its endpoint Gamma/co-Poisson boundary is exactly `(4)`.
+
+First open theorem is correspondingly narrower still:
 
 **MOBIUS-FOURIER-COMMUTATOR-GREEN-STOKES-IDENTIFICATION**
 
-> Construct strict cofinal Euler--Gamma/Möbius source differential and prove that its boundary
-> image through already-constructed Gamma/co-Poisson Green chain is exactly
-> \(\mathfrak S_\mu\), with an unsquared chain homotopy annihilating resolved Green defect.
+> Prove from independent arithmetic incidence that the already-resolved canonical prime-2/prime-3
+> Green boundary is carried by that strict source differential into
+> \(\ker\mathfrak S_\mu=Z(H_\cap)\), while retaining both prime labels and the leading Xi jet.
 
 Only after that identification may one polarize and prove closability with radical precisely
 \(Z(H_\cap)\), raw arithmetic weight one, and no raw-Floquet bounded extension. Missing knowledge
@@ -580,8 +585,9 @@ chain-map equality and its non-diagonal polarization.
   synthesis through (26).
 - **No scalar theatre.** Leading scalar/distributional anomaly is proved universally blind in
   (41); survivor compares opposite collars before squaring.
-- **No false Green claim.** Theorem does not identify (4) with existing physical Gamma/co-Poisson
-  Green transport and does not assert positivity. That equality is new open core.
+- **No false resolved-Green claim.** The source transgression identifies (4) with the
+  Gamma/co-Poisson boundary image, but does not put the independently resolved Xi Green boundary
+  in its kernel and does not assert positivity. That incidence is the new open core.
 - **Literature boundary.** Burnol proves general multiplicative-convolution/Fourier intertwining,
   Property \(S\), and Mellin characterizations. Those are not claimed as new. Corpus-wide search
   did not locate exact global Meyer-domain theorem (11)--(18) together with kernel bootstrap
@@ -604,8 +610,9 @@ chain-map equality and its non-diagonal polarization.
 - [x] 0 → 1 in-progress: source operator, domain, falsifiers, and literature boundary fixed
 - [x] 1 → 2 fully-proven: estimates (10)--(16), exact kernel (5), covariance (6), and causal wall
   (34)--(41) proved
-- [ ] source Green gate: identify (4) as boundary image of strict Euler--Gamma/Möbius differential
-  and prove unsquared Green--Stokes chain homotopy
+- [x] source Green identification: strict Euler--Gamma/Möbius transgression, unsquared covariant
+  identity, and boundary image `(4)` proved on paper
+- [ ] resolved Green gate: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] 2 → 3 formalized: paused during Lean corpus refactor
 - [ ] 3 → 4 publication-ready
 
@@ -616,3 +623,7 @@ chain-map equality and its non-diagonal polarization.
   Meyer--Poisson kernel and Fourier covariance. Proved leading causal von Mangoldt anomaly is
   universally blind after Möbius inversion. Narrowed Route L from construction of an unspecified
   singular detector to one explicit source-to-Gamma Green chain-map identification.
+- 2026-08-08 — All-prime-first adiabatic Möbius transgression identified this operator as the
+  exact Gamma/co-Poisson endpoint of the forced physical/Fourier Euler-connection difference.
+  Remaining gate is arithmetic incidence of the fixed resolved two-prime Green boundary in its
+  literal kernel, not construction of the operator or source connection.

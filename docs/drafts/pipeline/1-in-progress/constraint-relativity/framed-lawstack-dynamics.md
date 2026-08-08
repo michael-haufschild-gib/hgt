@@ -2,13 +2,42 @@
 
 - **ID:** `framed-lawstack-dynamics`
 - **Stage:** 1-in-progress
-- **Type:** NEW MATHEMATICAL FIELD / META-THEORY
+- **Type:** RESEARCH ARCHITECTURE / CANDIDATE REALIZABILITY PROBLEM
 - **Short name:** `FLD`
-- **Scientific status:** `[BOLD CONJECTURAL] [PARTIAL NO-GOS AND LOCAL LAWS PROVED]`
+- **Scientific status:** `[NOVELTY CLAIM WITHDRAWN] [BAG CLASSIFICATION NO-GO]`
+  `[PARTIAL NO-GOS AND LOCAL LAWS PROVED]`
   `[NOT RH] [NOT PHYSICAL GRAVITY] [NO LEAN AUTHORIZED]`
 - **Parent program:** `constraint-relativity-and-relation-completion-spacetime.md`.
 
 ## 1. Founding verdict
+
+### Hostile correction: this is not yet a new field
+
+Internal priority audit found that the proposed organs and observer architecture substantially
+repackage three earlier corpus programs: Source--Observer Relativity, polarized strict descent,
+and the normalized anomaly-fracture stack. External parent theories also already supply filtered
+derived objects, bornological and condensed exactness, pro-objects, equivariance, algebraic
+theories, observer fibrations, descent, and provenance.
+
+Let `C_j -> C` be the category of carriers with organ `j`. The uncoupled object classified by
+`(FLD.1)` is the homotopy fibre product
+
+\[
+ \mathcal B=\mathcal C_1\times^h_{\mathcal C}\cdots
+ \times^h_{\mathcal C}\mathcal C_8.
+ \tag{FLD.0}
+\]
+
+Its coordinate projections are jointly conservative because equivalences in a limit of
+categories are componentwise. Therefore a useful theory requires a comparison
+
+\[
+ J:\mathcal L\longrightarrow\mathcal B
+\]
+
+whose nontrivial realizability fibres measure mixed compatibility. No such `mathcal L`, `J`, or
+mixed compatibility law is currently constructed. Until one is, `FLD` is a research architecture,
+not a new mathematical field. This activates Fatal Tests 1--3 and 10.
 
 No single carrier, cohomology group, metric, relation lattice, or completion defect explains the
 corpus. Hostile audit finds eight logically independent gates. Collapsing them into one word such
@@ -69,7 +98,12 @@ The organs are:
 5. `tau_x`: reflection or orientation involution and odd/even decomposition;
 6. `mathfrak p_x`: source pointing—prime labels, multiplicities, trace-one atoms, first nonzero
    jets;
-7. `mathcal A_x`: source-operation algebra or monoid which creates questions and relations;
+7. a framed presentation and action
+   \[
+   (\widetilde{\mathcal A}_x\twoheadrightarrow\mathcal A_x,
+    S_x,w_x,\rho_x,V_x),
+   \]
+   retaining raw source words, effective operations, generator costs, action, and seed;
 8. `mathcal P_x`: polarization/positive-cone data, explicitly downstream of orientation.
 
 No organ may be silently forgotten. A quasi-isomorphism which loses prime labels or a bounded map
@@ -214,6 +248,41 @@ coordinate reader.
 
 Quantum operator growth is the physical analogue of question generation. Exact laws move under
 unitary dynamics; intersection with a low-cost observer filtration is generically minimal.
+
+### Fixed-action word-depth no-go
+
+The framed presentation gives a canonical cutoff only relative to its generators and costs. Put
+
+\[
+ P_n=\widetilde{\mathcal A}_{\le n}\otimes V,
+ \qquad R_n=\ker(\operatorname{ev}_n),
+ \qquad K_n=\operatorname{im}(\operatorname{ev}_n).
+ \tag{FLD.10a}
+\]
+
+For a fixed action and admission target,
+
+\[
+ R_{n+1}\cap P_n=R_n
+\]
+
+and hence
+
+\[
+ 0\to R_n/R_{n-1}\to P_n/P_{n-1}
+ \to K_n/K_{n-1}\to0.
+ \tag{FLD.10b}
+\]
+
+The killed-old-freedom term is identically zero. Increasing word cutoff creates new realized
+directions and exposes new formal relations, but it cannot turn a previously realized direction
+into a law. Any RH-bearing selection event must change the action, the admission target, or the
+source law itself. This refutes the naive claim that longer source words alone generate selection.
+
+In one degree-one generated operator, one plateau forces permanent stabilization. Thus sustained
+Brown--Susskind growth after finite Krylov saturation requires metric, spectral-weight, or path
+data; it is not rank growth. The nonlinear differential case needs order--degree bifiltration and
+Kolchin/characteristic-set data, not the linear minimal-polynomial analogy.
 
 ## 10. Why the apparent uncertainty occurs
 
@@ -363,3 +432,8 @@ Retire `FLD` as a new field if:
 - [x] prove finite copy-code provenance/recovery equality and exact-admission insufficiency
 - [ ] realize approximate-code proto-area/backreaction with quantitative framed channel data
 - [ ] construct arithmetic source current only after preceding gates
+- [x] withdraw new-field claim after internal SOR/strict-descent/anomaly-stack collision
+- [x] prove fixed-action word-depth selection no-go
+- [x] prove cofinal-observer necessity for nonstabilizing pro-tails
+- [ ] define a nontrivial realizability fibre of `J : mathcal L -> mathcal B`
+- [ ] replace state/rank complexity by a source-framed path or certificate cocycle
