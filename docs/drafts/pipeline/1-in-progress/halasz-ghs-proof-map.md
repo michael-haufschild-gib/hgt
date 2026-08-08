@@ -2691,3 +2691,23 @@ arithmetic, not analysis: choose `σ = 1 + 1/log N`, `t₀ ≥ 1`, `2^K ≍ N²`
 `(z_B, Y_B)` per the earlier accounting, bound `B_c` by `(log n)^4/(log 2)^3` (already in
 `GhsCoefficients.norm_ghsTriple_le`), and bound `V` — the only place where a saving on the multiplicative
 function's Dirichlet series can enter.
+
+## The GHS Perron step, every input closed
+
+`formal/GaloisForLFunctions/RHTower/Sieve/GhsPerronSum.lean`:
+
+- `truncSeq f L` — `f` truncated to `[1, L]`, with `truncSeq_support` and `norm_truncSeq_le`.
+- `norm_LSeries_truncSeq_line_le` — the third factor's size on the line: its damped `ℓ¹` mass, at most
+  `1 + log L`, via `norm_LSeries_line_le_l1`, `n^{−σ} ≤ 1/n` for `σ ≥ 1`, and the harmonic bound.
+- `norm_ghsTriple_trunc_le_uniform` — the coefficients of `ghsOuter f N₀ ⍟ (ghsInner f M ⍟ truncSeq f L)`
+  are bounded *uniformly* by `(log(N₀ML))^4/(log 2)^3`: the corpus polylogarithmic bound at the largest
+  point of the support, and zero beyond it.
+- `norm_sum_Icc_ghsTriple_le` — **the Perron step of the recursion, unconditional**, with every input
+  discharged: supports and primality from `GhsCoefficients`, the coefficient bound from
+  `PrimeSupportedConvolutionBound`, the third factor's size from the harmonic sum.  The only free
+  parameters left are `σ`, `t₀`, `K` (the height `t₀2^K`), the cutoff `N`, and the two sieve pairs.
+
+Only the hypothesis `∀ n, ‖f n‖ ≤ 1` is assumed of `f`; multiplicativity is not needed for this step,
+because the third factor enters through its `ℓ¹` mass rather than through an Euler product.  A saving
+would enter by replacing `1 + log L` with a smaller bound on `sup_{|t| ≤ T} ‖L(truncSeq f L, σ+it)‖` — that
+substitution is the only change the rest of the chain would need.
