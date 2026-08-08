@@ -143,3 +143,39 @@ holomorphic on the disc because `f` vanishes at `ζ = 0`.
 With that in hand the residue sequence is the direct sum of `C(n,k-1)` copies of the ideal sequence
 and `C(n,k) - C(n,k-1)` copies of the identity, its terms are free analytic sheaves of finite rank
 and so acyclic by `deningerFree_ext_eq_zero`, and steps 1--4 of this card are closed.
+
+## The division: the quotient is written down
+
+`formal/GaloisForLFunctions/HTGeometry/HolomorphicCoordinateDivision.lean`.  Axiom audit
+`propext, Classical.choice, Quot.sound`.
+
+The circle-integral route above is not needed.  The quotient has a closed form: contracting the last
+coordinate to zero along a segment and integrating the last partial derivative,
+
+    u(x) = ∫₀¹ (∂ₙ₊₁ f)(x₁,…,xₙ, t·xₙ₊₁) dt,
+
+and `xₙ₊₁·u = f` is the fundamental theorem of calculus along that segment — the constant term is
+`f` at the endpoint on the divisor, which vanishes by hypothesis.
+
+- `coordContract` — the contraction of the last coordinate, as a complex linear map;
+  **`coordContract_mem_ball`**: it preserves a polydisc *centred on the divisor*, because the last
+  coordinate of the centre is zero and the contraction only shortens the last coordinate's distance
+  to it.  This is why the statement is local at a point of the divisor.
+- `hasDerivAt_coordContract` — the contraction is an affine path with constant velocity
+  `Pi.single (last) xₙ₊₁`.
+- `coordDeriv`, `coordDivQuotient` — the last partial derivative and the quotient.
+- `coordDeriv_analyticOnNhd` — the last partial derivative of an analytic function is analytic,
+  since `fderiv` of an analytic function is analytic and evaluation is continuous linear.
+- `hasDerivAt_comp_coordContract`, `continuousOn_coordDeriv_path` — the chain rule along the path
+  and the continuity that makes the integral exist.
+- **`coordDivQuotient_mul`** — `xₙ₊₁ · u = f` on the whole polydisc.
+
+**What is left on this card**: that `u` is holomorphic.  It is a parametric integral over `[0,1]` of
+a family of holomorphic functions, so this is one application of
+`hasFDerivAt_integral_of_dominated_loc_of_lip`: the Lipschitz bound is the supremum of
+`‖fderiv (coordDeriv f)‖` on a compact sub-polydisc, uniform in `t` because the contraction is a
+contraction; the derivative family is continuous in `t`, hence measurable.  With `fderiv ℝ u`
+computed as `∫₀¹ fderiv ℝ (F · t)`, the antiholomorphic derivatives of `u` vanish because the
+antiholomorphic Wirtinger functional is continuous linear and so commutes with the integral, and
+each integrand is holomorphic.  Then `analyticOnNhd_of_dzbarAt_eq_zero` makes `u` analytic and the
+residue sequence is exact.
