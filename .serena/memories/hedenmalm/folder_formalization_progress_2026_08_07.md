@@ -1983,3 +1983,18 @@ Mathlib supplies `resolvent`, `resolventSet`, `spectrum.hasDerivAt_resolvent_con
 **no Riesz projection**.  Route recorded on the card: resolvent identity -> idempotence ->
 commutation with `a` -> range = generalized eigenspace -> finite-section stability of the rank.
 Only the last is what the determinant card needs.
+
+### 2026-08-08 — the resolvent identity
+
+`HTGeometry/RieszProjection.lean` now also has `isUnit_of_mem_resolventSet`, `resolvent_mul_sub`,
+`sub_mul_resolvent` and
+
+```text
+resolvent_sub_resolvent : resolvent a l - resolvent a m = (m - l) • (resolvent a l * resolvent a m)
+```
+
+Mathlib has **no** resolvent identity.  It is three lines from `Ring.inverse_mul_cancel`,
+`Ring.mul_inverse_cancel` and `Algebra.algebraMap_eq_smul_one`, since `resolventSet` membership
+*is* `IsUnit (algebraMap - a)` definitionally.
+
+Lean note: `omit [...] in` must come **after** the docstring, not before it.

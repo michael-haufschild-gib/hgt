@@ -37,6 +37,8 @@ eigenspace, and the continuity of the projection under norm perturbation.
 | the projection `P = (2 pi i)^-1 int (lam - a)^-1 dlam` | `rieszProjection` |
 | the resolvent is circle-integrable on a contour in the resolvent set | `circleIntegrable_resolvent` |
 | a spectrum-free disc gives the zero projection (Cauchy) | `rieszProjection_eq_zero_of_closedBall_subset` |
+| `R(l) (l - a) = 1` and `(l - a) R(l) = 1` | `resolvent_mul_sub`, `sub_mul_resolvent` |
+| **the resolvent identity** `R(l) - R(m) = (m - l) R(l) R(m)` | `resolvent_sub_resolvent` |
 
 ## Route
 
@@ -55,7 +57,7 @@ Step 5 is the one the determinant card needs; 1--4 are its prerequisites.
 
 ## Gates
 - [x] definition, circle integrability, and the Cauchy vanishing
-- [ ] resolvent identity
+- [x] resolvent identity (`resolvent_sub_resolvent`); mathlib has none
 - [ ] idempotence
 - [ ] commutation with `a`
 - [ ] range = generalized eigenspace
@@ -63,3 +65,7 @@ Step 5 is the one the determinant card needs; 1--4 are its prerequisites.
 
 ## Log
 - 2026-08-08 — created; definition and the Cauchy vanishing formalized.
+- 2026-08-08 — the resolvent identity formalized.  mathlib has `resolvent` and
+  `spectrum.hasDerivAt_resolvent_const_left` but **no resolvent identity**; it follows in three
+  lines from `Ring.inverse_mul_cancel`/`Ring.mul_inverse_cancel` and
+  `Algebra.algebraMap_eq_smul_one`.
