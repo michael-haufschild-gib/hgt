@@ -1728,3 +1728,28 @@ eventually_exists_blockEigenvalue_near : a zero z_0 of entireDet2 K, isolated on
 
 Next obstruction: passing block eigenvectors to the limit, i.e. **upper semicontinuity of the
 spectrum of compact operators under norm convergence** — also absent from mathlib.
+
+### 2026-08-08 — the l2 lift and the compact-operator spectral limit
+
+`HTGeometry/HilbertSchmidtBlockEigenvector.lean`: `liftBlock` / `liftBlockLp` (zero extension of a
+block vector), `liftBlockLp_ne_zero`, **`toOperator_truncKernel_liftBlockLp`** (a block eigenvector
+is an `l^2` eigenvector of the truncated operator with the same eigenvalue), `toOperator_sub`,
+`norm_toOperator_sub_le`, **`tendsto_norm_toOperator_truncKernel_sub`** (the represented operators
+converge in *operator* norm, not just Hilbert--Schmidt norm).
+
+`HTGeometry/CompactOperatorSpectrumLimit.lean`: **`exists_eigenvector_of_tendsto_of_isCompactOperator`** —
+if `‖S_a - T‖ -> 0`, `T` compact, `S_a v_a = lam_a v_a` with `‖v_a‖ = 1`, and `lam_a -> l != 0`,
+then `l` is an eigenvalue of `T`.  Mathlib has no spectral semicontinuity for compact operators.
+
+Lean idiom worth remembering: to work "along a subsequence" for a general filter, do **not** try to
+extract one.  Take the cluster point `w` from `IsCompact.exists_mapClusterPt`, then use the finer
+filter `q := p ⊓ comap u (nhds w)`; its non-triviality is exactly
+`Filter.push_pull` + `Filter.map_neBot_iff` + `inf_comm`, `q ≤ p` is `inf_le_left`, and
+`Tendsto u q (nhds w)` is `Filter.map_mono inf_le_right` composed with `Filter.map_comap_le`.
+Also proved: `mapClusterPt_of_tendsto_dist_zero`.
+
+**The one remaining step** for "zeros of `entireDet2 K` = reciprocal eigenvalues of `K`": Hurwitz
+gives, for *each* radius `r`, an eventual block eigenvalue in `ball z_0 r`; the spectral limit
+theorem consumes a *single* family `lam s -> z_0⁻¹`.  Producing that family is a diagonal argument
+over the filter, needing `atTop` on `Finset ι` countably generated — true for `ι = ℕ`, which is the
+theta case.

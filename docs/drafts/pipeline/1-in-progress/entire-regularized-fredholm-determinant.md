@@ -109,6 +109,8 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantLimit.lean
 formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantZeros.lean
 formal/GaloisForLFunctions/HTGeometry/HurwitzZeroLimit.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalues.lean
+formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtBlockEigenvector.lean
+formal/GaloisForLFunctions/HTGeometry/CompactOperatorSpectrumLimit.lean
 ```
 
 | step | statement | Lean declaration |
@@ -160,6 +162,10 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalues.lean
 | 6 | the boundary minimum of a nonvanishing function on a circle | `exists_pos_le_norm_on_sphere` |
 | 6 | **Hurwitz's theorem, the zero-persistence half** | `eventually_exists_zero_of_tendstoUniformlyOn` |
 | 6 | **a zero of the entire determinant is a limit of reciprocal block eigenvalues** | `eventually_exists_blockEigenvalue_near` |
+| 7 | a block eigenvector, extended by zero, is an `l^2` eigenvector of the truncation | `liftBlock`, `liftBlockLp`, `liftBlockLp_ne_zero`, `toOperator_truncKernel_liftBlockLp` |
+| 7 | the represented operators converge in **operator** norm | `toOperator_sub`, `norm_toOperator_sub_le`, `tendsto_norm_toOperator_truncKernel_sub` |
+| 7 | cluster points survive an asymptotically vanishing perturbation | `mapClusterPt_of_tendsto_dist_zero` |
+| 7 | **a limit of eigenvalues of nearby operators is an eigenvalue of the compact limit** | `exists_eigenvector_of_tendsto_of_isCompactOperator` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -179,10 +185,16 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalues.lean
       (`eventually_exists_zero_of_tendstoUniformlyOn`), and its first consequence:
       a zero of `entireDet2 K` is a limit of reciprocal eigenvalues of the finite blocks
       (`eventually_exists_blockEigenvalue_near`)
-- [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue **of `K` itself**.  What remains is passing the
-      block eigenvectors to the limit: `‖K_s - K‖_HS -> 0` gives norm convergence of the operators,
-      so upper semicontinuity of the spectrum of compact operators applies, but that theorem is not
-      in mathlib either
+- [x] the two halves of that passage: the `l^2` lift of a block eigenvector
+      (`toOperator_truncKernel_liftBlockLp`), the operator-norm convergence
+      (`tendsto_norm_toOperator_truncKernel_sub`), and the spectral limit theorem
+      (`exists_eigenvector_of_tendsto_of_isCompactOperator`), all absent from mathlib
+- [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue **of `K` itself**.  Only the *assembly* is
+      left, and its exact shape is now visible: Hurwitz gives, for **each** radius `r`, an eventual
+      block eigenvalue in `ball z_0 r`, while the spectral limit theorem consumes a **single**
+      family `lam s -> z_0⁻¹`.  Producing that family from the family-of-radii statement is a
+      diagonal argument over the filter, which needs `atTop` on `Finset ι` to be countably
+      generated — true for `ι = ℕ`, which is the case of the theta kernel
 - [ ] order of vanishing = algebraic multiplicity
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
@@ -245,3 +257,9 @@ construction; the general construction is what the *multiplicity* clause needs.
   combine into `eventually_exists_blockEigenvalue_near`: a zero of `entireDet2 K` is a limit of
   reciprocal eigenvalues of the finite blocks.  The remaining step to the operator statement is
   upper semicontinuity of the spectrum under norm convergence of compact operators.
+- 2026-08-08 — that semicontinuity is now built:
+  `exists_eigenvector_of_tendsto_of_isCompactOperator`.  If `‖S_a - T‖ -> 0` with `T` compact,
+  `S_a v_a = lam_a v_a` with `‖v_a‖ = 1`, and `lam_a -> l != 0`, then `l` is an eigenvalue of `T`.
+  The proof uses `IsCompact.exists_mapClusterPt` plus the finer filter `p ⊓ comap u (nhds w)`,
+  whose non-triviality is `Filter.push_pull` + `Filter.map_neBot_iff`.  Together with the `l^2`
+  lift of block eigenvectors, only the diagonal assembly is left.
