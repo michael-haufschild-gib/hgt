@@ -112,6 +112,8 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalues.lean
 formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtBlockEigenvector.lean
 formal/GaloisForLFunctions/HTGeometry/CompactOperatorSpectrumLimit.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalueLimit.lean
+formal/GaloisForLFunctions/HTGeometry/ArgumentPrincipleSingleZero.lean
+formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
 ```
 
 | step | statement | Lean declaration |
@@ -171,6 +173,8 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalueLimit.lean
 | 8 | the zeros of the entire determinant are isolated (its value at the origin is `1`) | `eventually_entireDet2_ne_zero`, `exists_radius_isolating` |
 | 8 | the distance from `1/z_0` to the block spectrum tends to zero | `tendsto_infDist_blockSpectrum`, `eventually_blockSpectrum_nonempty` |
 | 8 | **a zero of the entire determinant is a reciprocal eigenvalue of the kernel operator** | `exists_eigenvector_of_entireDet2_eq_zero` |
+| 8 | instantiated at the arithmetic source | `thetaEntireDet2`, `isRegularizedDet_thetaEntireDet2`, `eq_thetaEntireDet2_of_isRegularizedDet`, `exists_eigenvector_of_thetaEntireDet2_eq_zero` |
+| 9 | **the logarithmic-derivative residue at a zero of order `d`** | `circleIntegral_logDeriv_of_factor` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -199,7 +203,13 @@ formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEigenvalueLimit.lean
       each block, the point of its spectrum **nearest** to `1/z_0` gives the single convergent
       family directly, because the block spectrum is closed and `ℂ` is proper
 - [ ] the converse: an eigenvalue of `K` is a zero of `det_2`
-- [ ] order of vanishing = algebraic multiplicity
+- [ ] order of vanishing = algebraic multiplicity.  mathlib has **no argument principle** (and no
+      Rouche, no Montel), so the counting form of Hurwitz has to be built.  Its computational core
+      is now in place: `circleIntegral_logDeriv_of_factor` gives
+      `∮ f'/f = 2 pi i d` when `f = (z - c)^d g` with `g` analytic and nonvanishing on the disc.
+      What is left of the argument principle is the *global* factorization of an analytic function
+      with finitely many zeros in a disc, and then the passage to the limit in
+      `∮ f_n'/f_n -> ∮ f'/f`
 - [ ] Plemelj identity on the full resolvent set
 - [ ] 1 -> 2  paper proof complete
 - [ ] 2 -> 3  Lean
@@ -272,3 +282,7 @@ construction; the general construction is what the *multiplicity* clause needs.
   kernel operator on `l^2`.  The diagonal argument turned out to be unnecessary: the *nearest point
   of the block spectrum* to `1/z_0` is a single convergent family, since the block spectrum is
   closed (zero set of the characteristic polynomial) and `ℂ` is proper.
+- 2026-08-08 — the general construction was instantiated at the arithmetic source
+  (`thetaEntireDet2`), and the computational core of the argument principle was built
+  (`circleIntegral_logDeriv_of_factor`), since mathlib has neither the argument principle nor
+  Rouche nor Montel.

@@ -1793,3 +1793,25 @@ transported through `thetaCoord` using `toOperator_matrixOf`.  The card
 `hedenmalm-theta-source-compressed-inverse-determinant` was updated: its `(8)` no longer waits on a
 missing object, only on the **trace formula** `Xi_C'/Xi_C = -resolventTrace(-B)` on the disc, after
 which `isRegularizedDet_of_logDeriv_eq` + `eq_thetaEntireDet2_of_isRegularizedDet` close it.
+
+### 2026-08-08 — the computational core of the argument principle
+
+`HTGeometry/ArgumentPrincipleSingleZero.lean`:
+
+```text
+circleIntegral_logDeriv_of_factor :
+  (∀ z ∈ ball c R, f z = (z - c)^d * g z) -> g analytic and nonvanishing on ball c R ->
+  0 < r < R -> ∮ z in C(c,r), deriv f z / f z = 2 pi I d
+```
+
+Mathlib has **no argument principle, no Rouche, no Montel** (verified by grep).  This is the piece
+that the multiplicity-counting form of Hurwitz needs.  Ingredients used:
+`circleIntegral.integral_sub_inv_of_mem_ball`, `circleIntegral_eq_zero_of_differentiable_on_off_countable`,
+`circleIntegral.integral_add`, `ContinuousOn.circleIntegrable`.
+
+Trap: `circleIntegrable_sub_inv_iff.mpr (Or.inl rfl)` sends the elaborator into a whnf blow-up
+(1M heartbeats not enough).  Prove circle integrability of `(z - c)⁻¹` on the sphere through
+`ContinuousOn.circleIntegrable` instead — instant.
+
+Still missing for "order of vanishing = algebraic multiplicity": the *global* factorization of an
+analytic function with finitely many zeros in a disc, and the passage `∮ f_n'/f_n -> ∮ f'/f`.
