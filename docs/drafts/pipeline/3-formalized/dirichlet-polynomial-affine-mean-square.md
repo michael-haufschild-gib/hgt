@@ -108,3 +108,26 @@ gives
 first moment; its value lies only in *counting* large values, where the rarity of the exceptional set
 is the point. The reflection identity used here is stated once for an arbitrary integrand
 (`HTGeometry.integral_Icc_comp_neg`), with the mean-square version as its instance.
+
+## Gallagher's base case
+
+`GallagherMeanValue.lean` calls its short-interval bound "the base case that every arithmetic
+improvement is measured against", and it consumes the frequency mean square of the Gallagher polynomial
+through `gallagher_split_integral`, which takes that mean square as a parameter. Since
+`logPoly a (Icc 1 N) w = dirPoly N a' (2πw)`, the frequency mean square is a rescaled
+Dirichlet-polynomial mean square — an identity now stated on its own
+(`integral_Icc_normSq_logPoly_eq`), with the old bound as one instance and the affine one as another:
+
+`∫_{|w| ≤ W}‖logPoly a w‖²dw ≤ (2π)⁻¹(5πe∑_m(m+1)|a_{m+1}|² + (5π/2)(∑_m|a_{m+1}|²)max(2πW,1))`,
+
+against `(2πW + 4N(1 + log N))/π·∑_m|a_{m+1}|²`. The height-linear parts agree up to a constant; the
+height-free parts are `∑(m+1)|a_{m+1}|²` against `N(1 + log N)∑|a_{m+1}|²` — a whole logarithm for
+coefficients of constant size. Gallagher's bound inherits it verbatim
+(`gallagher_meanValue_le_affine`).
+
+| Statement | Module |
+|---|---|
+| `integral_Icc_normSq_logPoly_eq` | `RHTower/Sieve/LogPolyDirPoly.lean` |
+| `integral_Icc_normSq_logPoly_le_affine` | `RHTower/Sieve/GallagherAffineMeanSquare.lean` |
+| `gallagher_meanValue_le_affine` | `RHTower/Sieve/GallagherAffineMeanSquare.lean` |
+| `integral_Icc_norm_dirPoly_le_sqrt_affine` | `RHTower/Sieve/DirichletPolyAffineMeanSquare.lean` |

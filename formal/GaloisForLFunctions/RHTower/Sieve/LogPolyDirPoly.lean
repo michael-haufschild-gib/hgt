@@ -82,15 +82,15 @@ theorem logPoly_eq_dirPoly (a : ℕ → ℂ) (N : ℕ) (w : ℝ) :
   rw [hcast, show (2 * Real.pi * (w * Real.log (((m : ℕ) : ℝ) + 1)))
       = 2 * Real.pi * w * Real.log (((m : ℕ) : ℝ) + 1) from by ring]
 
-/-- **The frequency mean square of the Gallagher polynomial.** -/
-theorem integral_Icc_normSq_logPoly_le (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW : 0 ≤ W) :
+/-- **The frequency mean square of the Gallagher polynomial is a rescaled Dirichlet-polynomial mean
+square.**  The frequency scaling `t = 2πw` is the whole content. -/
+theorem integral_Icc_normSq_logPoly_eq (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW : 0 ≤ W) :
     (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
-      ≤ (2 * Real.pi * W + 4 * (N : ℝ) * (1 + Real.log N)) / Real.pi
-          * ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2 := by
+      = (2 * Real.pi)⁻¹ * ∫ t in Set.Icc (-(2 * Real.pi * W)) (2 * Real.pi * W),
+          ‖dirPoly N (fun n : Fin N => a ((n : ℕ) + 1)) t‖ ^ 2 := by
   classical
   set c : Fin N → ℂ := fun n : Fin N => a ((n : ℕ) + 1) with hc
   set g : ℝ → ℝ := fun t => ‖dirPoly N c t‖ ^ 2 with hg
-  have hcg : Continuous g := ((continuous_dirPoly N c).norm).pow 2
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   have hle : -W ≤ W := by linarith
   have hstep : (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
@@ -98,8 +98,7 @@ theorem integral_Icc_normSq_logPoly_le (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hle]
     refine intervalIntegral.integral_congr fun w _ => ?_
     rw [hg, logPoly_eq_dirPoly a N w]
-  rw [hstep]
-  rw [intervalIntegral.integral_comp_mul_left g (ne_of_gt hpi)]
+  rw [hstep, intervalIntegral.integral_comp_mul_left g (ne_of_gt hpi)]
   have hsub : (∫ t in (2 * Real.pi * -W : ℝ)..(2 * Real.pi * W), g t)
       = ∫ t in Set.Icc (-(2 * Real.pi * W)) (2 * Real.pi * W), g t := by
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
@@ -107,12 +106,18 @@ theorem integral_Icc_normSq_logPoly_le (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW
     congr 1
     ring
   rw [hsub, smul_eq_mul]
-  have hsymm := integral_Icc_normSq_dirPoly_symm_le N c
+
+/-- **The frequency mean square of the Gallagher polynomial.** -/
+theorem integral_Icc_normSq_logPoly_le (a : ℕ → ℂ) (N : ℕ) {W : ℝ} (hW : 0 ≤ W) :
+    (∫ w in Set.Icc (-W) W, ‖logPoly a (Finset.Icc 1 N) w‖ ^ 2)
+      ≤ (2 * Real.pi * W + 4 * (N : ℝ) * (1 + Real.log N)) / Real.pi
+          * ∑ m : Fin N, ‖a ((m : ℕ) + 1)‖ ^ 2 := by
+  rw [integral_Icc_normSq_logPoly_eq a N hW]
+  have hsymm := integral_Icc_normSq_dirPoly_symm_le N (fun n : Fin N => a ((n : ℕ) + 1))
     (T := 2 * Real.pi * W) (by positivity)
   have hinv : (0 : ℝ) < (2 * Real.pi)⁻¹ := by positivity
   have hmul := mul_le_mul_of_nonneg_left hsymm hinv.le
   refine le_trans hmul (le_of_eq ?_)
   field_simp
-  ring
 
 end RHTower.Sieve
