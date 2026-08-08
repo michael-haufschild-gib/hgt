@@ -6236,3 +6236,4 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeSieveAffineMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.PerronVerticalPrimeBound
 import GaloisForLFunctions.RHTower.DeningerThreeTermHodgeDataBridge
 import GaloisForLFunctions.RHTower.Sieve.PerronPrimeSumBound
+import GaloisForLFunctions.RHTower.Sieve.PerronVerticalTripleBound

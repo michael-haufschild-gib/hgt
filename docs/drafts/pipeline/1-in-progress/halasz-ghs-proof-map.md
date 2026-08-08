@@ -2616,3 +2616,22 @@ What remains for a Halász-type conclusion is the *choice* of those parameters t
 product form: `integral_norm_mul_norm_mul_kernel_le` already accepts two affine mean squares and a
 kernel constant scaled by a pointwise bound on the third factor, so the GHS triple convolution needs
 only its two prime weights fed through the sieve and its third factor fed a distance bound.
+
+## GHS step four's analytic half, in the sharp-Perron architecture
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronVerticalTripleBound.lean`:
+
+- `norm_perron_triple_integrand` — `‖L(A)L(B)L(f)·x^s/s‖ = (‖L(A)‖‖L(B)‖)·(‖L(f)‖·x^σ/‖s‖)`: the third
+  factor belongs with the kernel, the first two with the product moment.
+- `perronVerticalProductBound A B sA sB σ x t₀ V zA YA zB YB M` — the analytic bound, named.
+- `integral_norm_perron_triple_le` — for `A, B` supported on primes in finite sets and any pointwise
+  bound `V` on `‖L(f,σ+it)‖`, the vertical integral over a dyadic range is at most
+  `perronVerticalProductBound`.  The two prime weights enter only through their sieve constants.
+- `integral_norm_perron_triple_euler_le` — with `V` discharged by the corpus Euler bound
+  `(1 + 1/(σ−1))e^{7/2}`: no hypothesis on `f` beyond `f 1 = 1`, multiplicativity on coprimes and
+  `‖f‖ ≤ 1`.
+
+This is the analytic half of GHS step four with the smoothing layer replaced by the sharp cutoff.  The
+third factor's *trivial* size is what is used here; the distance/Euler saving that Halász's theorem needs
+enters at exactly one place — the hypothesis `hFbound` of `integral_norm_perron_triple_le` — so any
+improvement on `sup_{|t| ≤ T} ‖L(f,σ+it)‖` propagates to the conclusion with no change to the rest.
