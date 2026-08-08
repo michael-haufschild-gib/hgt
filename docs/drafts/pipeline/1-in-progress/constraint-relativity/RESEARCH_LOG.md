@@ -1499,3 +1499,149 @@ Technical core **Marked Constitutive Transgression Geometry** requires:
 Field is not established. Exact open core is first source-derived constitutive section killing both
 Haar and target-coefficient ambiguities, followed by one cross-route total transgression theorem.
 Route-R selection remains RH-bearing if asserted. Goal remains active.
+
+## 2026-08-08 — full-corpus rejection of one-class MCTG and PCR pivot
+
+User correctly rejected Route-R regression and required Route G, L, O, Mass Shift, all A--S
+branches, hundreds of RH endpoints, and thousands of theorems.
+
+Three independent read-only censuses were run:
+
+1. full `rh-current-frontier-map.md` A--S quotient;
+2. every publication-ready top-level manuscript/unit, with claim/hostile reports;
+3. formal-corpus declaration/obstruction mining (`7,839` modules, `83,854` declarations,
+   `66,859` theorem/lemma declarations, `688` RH obstruction clusters, `18` primitive walls).
+
+### One-object theories falsified
+
+Relation-history excess directly explains relation/kernel/differential-matroid and part of
+recurrence/cofinal families. It does not derive:
+
+- admission/nonclosability/profile escape (C1, N, O, G);
+- unit Hall/Carleson load and four-unit capacity (E, CCM-FU);
+- boundary propagation and outgoing flux (Mass, D2, G, E);
+- cone/inertia/index constants (`1/8`, `8pi`, negative rank one, `1/84`, square-root Abel);
+- marked orientation/nonerasure;
+- topology/radical/closed-relation effects;
+- source-normalized selection;
+- clock/locality/rate-distortion cost.
+
+Therefore single total `Theta_src`, five migrations, or `Nat(R,V)` cannot be universal. MCTG is
+demoted to local R/L marked-observer sector.
+
+### New field foundation: Polyadic Constraint Relativity
+
+Created `polyadic-constraint-relativity-field-geometry.md`.
+
+PCR primitive has ten typed organs:
+
+```text
+(source, relation, admission, capacity, propagation/flux,
+ cone/inertia, marked ports, cofinal filtration, selection torsor, clock/cost metric).
+```
+
+Source histories and observer changes are distinct arrow directions. Curvature is typed vector of
+defects, not scalar. Proposed equations are dynamical Stokes balance, admission triangle,
+capacity-compatible correspondence, polarized port index, constitutive rigidity/nonerasure,
+clock/cost balance, and organwise Bianchi coherence.
+
+First exact cross-route obligations:
+
+1. Route-E seam flux versus Mass-shift outgoing class;
+2. common admission triangle for C1/N/O/G;
+3. marked-index schema for Julia/Stokes/Real-corona/Weil;
+4. recurrence rank/cost horizon outside quantum model;
+5. source-isogeny quotient basis of nominal routes.
+
+PCR is not established field until it proves one three-organ invariant, one cross-route balance
+theorem, one non-RH prediction, one nonfitted selection theorem, and one typed physics transfer.
+
+### Exact local theorems retained but demoted
+
+`two-endpoint-prime-orbit-stokes-moduli-and-infinite-coinvariant-law.md` passed hostile audit:
+two endpoints kill Haar regulator line but leave infinite-dimensional prime-orbit-phase moduli.
+Result is Poisson-motivated, not Poisson-natural; no Fourier/all-prime action claimed.
+
+`prime-isotropy-vertical-shear-gauge-torsor-and-nonerasure-dichotomy.md` required typing repairs:
+coordinate-fixing vertical group is algebraic coinvariant dual, Stokes primitives form affine
+torsor, Real-compatible Haar subgroup is real, and invariance under Haar shears forces retained
+class erasure.
+
+`cofinal-gamma-linear-relation-and-finite-stage-invisibility-law.md` hostile audit removed false
+finite-equalizer claim and corrected `ell1` from ideal to subspace. Exact survivor is `LinRel`
+kernel/multivalued defect exchange, all-real preservation wall, finite target diagonal identity,
+and source-coinvariant classification. Existing Stage-3 normalizer law owns much of scalar wall;
+new card is bridge.
+
+### Active theorem attacks
+
+- hostile foundation audit of PCR;
+- exact E/Mass boundary-current comparison or no-go;
+- inverse-instanton recurrence observer conditioning theorem/novelty audit.
+
+Goal remains active. Do not return to route-local expansion unless it tests or supplies one PCR
+organ coupling.
+
+## 2026-08-08 — PCR retraction and Nomological Geometry/Dynamics synthesis
+
+Independent hostile audit rejected PCR as a field. Ten organs formed only the uncoupled FLD bag;
+their arity was editorial, the source/observer base was ill-typed, E1--E7 lacked common carrier
+categories, two predictions were false, and the route table was not a citation-complete A--S or
+Stage-4 audit. PCR card was demoted to a route-coverage requirements register. Route-R cofinal
+constitutive card was also demoted and its all-prime target corrected from ordinary maps to the
+canonical `LinRel` Gamma relation.
+
+The first replacement idea—non-Cartesian source-law image and proper-marginal interaction—was found
+already fully developed inside the corpus: FLD's `J:L_src->B`, the HT fracture hypercube's total
+proper-face fibre, pointed-polarized essential-image programme, and formal finite-quotient
+interaction cohomology. This is retained as foundation, not discarded.
+
+User corrected the research criterion: do not demand priority novelty of every ingredient. The
+target is a GR-scale synthesis whose bricks may be established mathematics. Explanatory coherence,
+typed field laws, predictions, and RH/physics leverage are decisive.
+
+Created `nomological-geometry-and-dynamics.md`. Working field:
+
+> **Nomological Geometry and Dynamics (NGD)** studies a curved source-realizability connection on
+> the space of mathematical reductions. Arithmetic, Fourier/spectral, geometric, analytic,
+> positive, topological, cofinal, and physical descriptions are ordered observer reductions of one
+> source law. Their noncommutation is curvature; no-gos are chartwise curvature/horizon shadows;
+> source current migrates among relation, admission, boundary flux, orientation, index, derived
+> limit, selection, and cost.
+
+NGD primitive is `(D,L,R,J,nabla,Theta,g)`: source/observer equipment, source-witness stack,
+reduction field, realization maps, reduction connection, literal source current, and extended
+capacity/action metric. Its proposed Einstein-type law is typed source transgression
+`K_nabla=T(Theta)`, with Bianchi migration, witnessed realizability, source selection/nonerasure,
+constitutive action, and clock holonomy. Hypertranscendence becomes nonstabilizing prolongation
+curvature. Quantum recurrence closes a state marginal but may retain witness holonomy/action.
+Black-hole interior is a boundary joint-realization fibre; wormhole length requires equality with
+an independently defined operational lift action.
+
+### First exact cross-route chart
+
+Created and hostile-repaired Stage-2 card
+`polarized-incidence-stokes-and-e-mass-capacity-phase-law.md`.
+
+Exact finite theorems:
+
+1. on opposite-sign bipartite graph, `S_epsilon B^+=partial`;
+2. algebraic residual obeys `S_epsilon w=partial q+S_epsilon r` and signed cut Stokes law;
+3. finite ordered-prime mass satisfies `z_N=partial q_N+b_N`, exactly C39 Abel decomposition;
+4. Mass prefix primitive has `T_(n+1)/t_(n+1)->infinity` and divergent log-gap work.
+
+Scope corrections: Route-E realization is only symmetric opposite-sign conductance sector; signed
+Möbius cut flux is not automatically directed normalized physical seam; Mass terminal `b_N` is not
+full outgoing current; no-go is path-local capacity congestion, not broad E/Mass equivalence.
+Relative marked-port filling profile is strongest survivor.
+
+### Active NGD attacks
+
+1. mathematical typing and full A--S explanatory audit of NGD;
+2. literal three-shadow zeta source current mapping to strict Euler--Gamma, Mass/E boundary, and
+   reflection-odd Weil/Stokes charts;
+3. exact recurrence/horizon/wormhole model equating witness action or holonomy to an independent
+   operational quantity.
+
+Goal remains active. New ingredient priority is not a blocker; analogy without typed transfer,
+source construction, or prediction remains a blocker.

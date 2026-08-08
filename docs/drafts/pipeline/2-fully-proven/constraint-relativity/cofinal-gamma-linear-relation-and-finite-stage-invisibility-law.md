@@ -152,48 +152,89 @@ For every finite `K` and every `t in R`,
 For every `a in S`, difference `C_(t,K)a-a` is supported on finite set `K`, hence belongs to `I`.
 Thus `q(C_(t,K)a)=q(a)`, so `(CGR.8)` follows. `[PROVED HERE]`
 
-### Corollary E — finite equalizer nonselection
+### Corollary E — exact finite-source coinvariant classification
 
-Any finite-source constitutive equalizer whose target generators consist only of finite-prime
-Gamma relations sees those generators as identities on `V`. If retained source class `eta` is fixed
-by other declared source arrows, every assignment
+Let `R` be complex vector space with source endomorphisms `g_j`. Give target `V` diagonal relation
+for every `j`. A linear map `P:R->V` intertwines source and target generators exactly when
 
 \[
- P_v(\eta)=v,\qquad v\in V,
+ P(g_j-\operatorname{id})=0\qquad\text{for every }j,
+\]
+
+equivalently exactly when it factors through source coinvariants
+
+\[
+ R_\Gamma
+ =R\Big/\sum_j\operatorname{im}(g_j-\operatorname{id}).
  \tag{CGR.9}
 \]
 
-that already intertwines non-Gamma arrows continues to intertwine all finite Gamma arrows. Finite
-Gamma stages therefore impose no additional equation selecting `v`.
+### Proof
 
-This corollary is conditional only on stated invariance of `eta` under non-Gamma generators; it
-does not assert that a not-yet-defined full finite category has no other selector.
+Since target relation is diagonal, intertwining equation is `P g_j=P`. This is equivalent to
+vanishing on each `im(g_j-id)`, hence to unique factorization through `(CGR.9)`. `[PROVED HERE]`
 
-## 5. Rank transmutation into relation excess
-
-For `t<0`, forward relation is multivalued. Its vertical fibre at zero is
+Consequently finite target Gamma relations supply no target-side operator, but finite source
+coinvariants can still identify or annihilate coefficients. For retained class `eta`, evaluation
 
 \[
- M_t=\{v\in V:(0,v)\in\Gamma_t\}=q(C_tI).
+ \operatorname{Hom}(R_\Gamma,V)\to V,
+ \qquad P\mapsto P([\eta]),
+\]
+
+is surjective exactly when `[eta] ne0` (for nonzero `V`): extend `[eta]` to algebraic basis and map
+it to arbitrary `v`. Thus arbitrary `P(eta)=v` requires separate source-survival theorem.
+
+## 5. Kernel--multivalued defect exchange
+
+For every `t`, relation has full domain and range and
+
+\[
+ \operatorname{mul}\Gamma_t
+ :=\{y:(0,y)\in\Gamma_t\}=q(C_tI),
+ \qquad
+ \ker\Gamma_t
+ :=\{x:(x,0)\in\Gamma_t\}=q(C_{-t}I).
  \tag{CGR.10}
 \]
 
-For `t>0`, inverse relation has vertical fibre `q(C_(-t)I)`. These excess fibres vanish precisely
-on functional side of trichotomy. Thus radial crossing does not destroy cofinal information; it
-moves information between map and multivalued excess. This is exact local model of constraint
-relativity: obstruction changes mathematical type under observer change.
+Indeed `q(a)=0` iff `a in I`, giving first formula; second follows from
+`q(C_ta)=0` iff `a in C_(-t)I`. Therefore
 
-No dimension or closure claim about `M_t` is made here.
+\[
+ \operatorname{mul}\Gamma_t=0\Longleftrightarrow t\ge0,
+ \qquad
+ \ker\Gamma_t=0\Longleftrightarrow t\le0.
+ \tag{CGR.11}
+\]
+
+Nonzero directions use same witness as Lemma B. Hence:
+
+1. if `t>0`, `Gamma_t` is graph of surjective noninjective quotient map;
+2. if `t<0`, `Gamma_t^(-1)` is graph of surjective noninjective quotient map;
+3. if `t=0`, both defects vanish and `Gamma_0=Delta_V`.
+
+Every full-domain/full-range linear relation induces canonical isomorphism
+
+\[
+ V/\ker\Gamma_t\xrightarrow{\sim}V/\operatorname{mul}\Gamma_t,
+ \qquad [x]\longmapsto[y]\quad((x,y)\in\Gamma_t).
+ \tag{CGR.12}
+\]
+
+Well-definedness uses multivalued quotient, injectivity uses kernel, and surjectivity uses full
+range. This is precise conservation law: crossing center exchanges kernel defect with multivalued
+defect while preserving reduced relational carrier. No dimension or closure claim is made.
 
 ## 6. Consequences for MCTG
 
-1. Fixed-quotient cofinal Gamma transport must be valued in linear relations, not ordinary modules
-   and maps, before radial center is known.
+1. Fixed-quotient cofinal Gamma transport in this carrier must be valued in linear relations, not
+   ordinary modules and maps, before radial center is known.
 2. Requiring two ordinary maps is circular because Theorem C makes that equivalent to `t=0`.
-3. Finite stages cannot approximate selection algebraically: every finite relation is already
-   diagonal, while full cofinal relation can be multivalued.
-4. Any multiplicity-one theorem must use `Gamma_t` as singular generator and prove an intertwiner
-   statement in `LinRel`.
+3. Finite target Gamma relations cannot themselves detect cofinal target defect. Selection may
+   still arise from finite source coinvariants or non-Gamma arrows.
+4. A multiplicity-one theorem using this fixed quotient and Gamma family must use `Gamma_t` as
+   singular generator and prove intertwiner statement in `LinRel`; other carriers are not excluded.
 5. A topology in which cofinal relation is forced as closed limit of diagonals would erase this
    singular information; such topology is a falsifier for proposed selector.
 
@@ -203,8 +244,8 @@ No dimension or closure claim about `M_t` is made here.
 2. **Use inverse orientation instead.** `FALSE AS GLOBAL REPAIR`: inverse works exactly on opposite
    half-line.
 3. **Demand both orientations.** `CIRCULAR`: equivalent to `t=0`.
-4. **Recover cofinal behavior from finite stages.** `FALSE ALGEBRAICALLY`: every finite relation is
-   `Delta_V`.
+4. **Recover target-side cofinal behavior from finite target stages.** `FALSE ALGEBRAICALLY`: every
+   finite target relation is `Delta_V`; source actions remain separate.
 5. **Replace map by relation.** `SURVIVES`: `(CGR.3)` exists canonically for all `t`.
 6. **Relation-level multiplicity one selects arithmetic observer.** `OPEN`: requires literal source
    category and equalizer computation.
@@ -212,9 +253,12 @@ No dimension or closure claim about `M_t` is made here.
 ## 8. Novelty boundary
 
 Quotient relations, graph criteria, weighted `ell1` multipliers, and finite-support invisibility are
-classical ingredients. Claimed result is exact new-to-corpus coupling to Route-R cofinal Gamma
-target. External novelty unverified. No RH consequence follows without source-defined constitutive
-intertwiner and portwise nonerasure.
+classical ingredients. Existing Stage-3
+`fixed-trace-ideal-gamma-cofinal-normalizer-law.md` already proves moderate-strip half-grade wall,
+two-sided normalization iff center, and finite-prime identity. Exact residue here is all-real
+extension, canonical `LinRel` packaging, source-coinvariant correction, and kernel/multivalued-part
+exchange. This is bridge, not established new scientific knowledge. No RH consequence follows
+without source-defined constitutive intertwiner and portwise nonerasure.
 
 ## Lean-return note
 
@@ -228,10 +272,10 @@ intertwiner and portwise nonerasure.
 
 - [x] dependency-closed paper proof
 - [x] exact graph criterion
-- [x] ideal-preservation trichotomy
+- [x] summable-subspace-preservation trichotomy
 - [x] finite-stage diagonal theorem
 - [x] circularity boundary stated
-- [ ] independent hostile audit
+- [x] independent hostile audit
 - [ ] external priority verification
 - [ ] relation-level cofinal equalizer
 
@@ -239,3 +283,6 @@ intertwiner and portwise nonerasure.
 
 - 2026-08-08 — `Mod`-valued cofinal transport rejected; canonical `LinRel` replacement and exact
   finite/cofinal discontinuity proved.
+- 2026-08-08 — hostile audit removed false finite-equalizer corollary, corrected `ell1` from ideal
+  to subspace, and sharpened result to kernel/multivalued defect exchange plus source-coinvariant
+  classification.

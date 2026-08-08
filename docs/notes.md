@@ -182,3 +182,47 @@ Strongest invariant survived hostile attack in cleaner form: ordinary relative c
 Source attack closes another false route: even period-one Stokes normalization is nonunique. Exact \(H^1(C_p)\cong Q_p\oplus\mathbb C\) with \(Q_p\neq0\), and resolved comparison kills all \(H^1\). Duality gives an entire observer space; physical coefficient is chosen, not forced. New sharp geometry is doubled observer discriminant: duality ensures vector avoids origin at every grade, while RH is avoidance of coordinate axes—strictly stronger.
 
 Physics attack produced first honest continuum chart and a hard boundary. For Banach/two-boundary exactification, observer cotangent has extra weak-* descent radical; finite-vector duality is only closed-range limit. For nested horizon cuts, layer and normal observer quotient are exact predual pair, transported invariantly by modular time. This is genuine horizon mathematics. Same incidence occurs in finite TFD without gravity, so it cannot diagnose wormhole.
+
+corpus does not primarily show missing representations; it shows relativity of exactness. A class can be exact in one chart, measurable in another, and topologically invisible in a third. New field must conserve that obstruction across chart changes and make observer-support horizons—not zero loci—the basic geometry. I am testing whether this is genuinely more than repackaged homological algebra.
+
+Hostile foundation audit rejected “general covariance” under arbitrary linear chart changes: a shear sends full two-port support onto an axis. Exact replacement is marked-port covariance. I am promoting its sharp theorem: normal-crossing support is preserved precisely by monomial gauge transformations, and diagonality plus nonerasure are logically independent field equations.
+
+Second hostile audit found the next real center of gravity: not an abstract universal curvature class yet, but a concrete rigidity problem for natural constitutive observers. I am typing the field specification accordingly; after that, next hard attack is to classify natural transformations of the literal rational-adelic source and see whether Haar and target-coefficient freedoms survive.
+
+### Pivot: geometry of source-conditioned joint realizability
+Big-picture correction now clear: hidden “something” cannot be one relation, curvature, or obstruction class. Corpus constants already falsify that reduction.
+
+Emerging GR analogue is a coupled constraint field with irreducible organs: incidence, admission, capacity, polarization, orientation, completion, flux, source selection, and clock/cost. Routes are coordinate gauges that make different organs sharp. No-go theorems are transformation laws showing information migrates between organs. RH asks for a source-generated constitutive equation coupling them—not another carrier.
+
+Forced conclusion: “all of this” is not shadow of one hidden relation. It is shadow of a multi-organ constraint field. At minimum, independent organs are:
+- relation/incidence,
+- admission/domain/escape,
+- capacity/load,
+- propagation/boundary flux,
+- ordered cone/inertia/determinant,
+- marked orientation/ports,
+- pro/cofinal filtration,
+- topology/radical/closedness,
+- source-normalization/selection,
+- clock/cost/locality.
+
+Routes are coordinate gauges of this field. Each sharpens some organs and hides others. Missing RH step is a constitutive coupling law across organs. This is materially closer to GR: metric, connection, curvature, stress-energy, and causal structure are different types coupled by equations—not one magic object.
+
+Hostile audit rejected it: ten named “organs” do not yet constitute new mathematics. I’m retracting that claim and shifting to the harder object forced by the whole corpus: geometry of source-conditioned joint realizability—why individually valid structures cannot coexist, and what invariant measures that non-product failure across unrelated routes.
+
+The new candidate is not “ten organs.” It is the curved, non-cartesian locus of jointly realizable laws inside the product of their arithmetic, spectral, geometric, analytic, and physical marginals. Routes are projections—like marginals of an entangled state. The sought invariant must vanish exactly when those marginals lift to one source law, and must contain genuinely mixed information invisible to every proper subset. I’m now attacking that as mathematics, not terminology.
+
+First real cross-route result survived. Route E and Mass Shift share an exact polarized Stokes law: Möbius sign turns signless endpoint incidence into ordinary boundary, and both “unused Hall capacity” and “outgoing mass class” are the same \(H_0\) boundary remainder type. But their capacity geometries provably diverge—Mass needs an unbounded primitive relative to local prime capacity. That is useful: common algebraic shadow, different law phase. I’m promoting only this exact theorem, not calling it the new field.
+
+### Nomological equivalence principle
+Nomological equivalence principle: any single route can often choose a local/finite observer in which its defect disappears—just as gravity can be removed in a local inertial frame. What cannot be removed is mixed curvature: go around “complete / quotient / transform / polarize / cofinalize” in another order and the defect returns as topology, boundary flux, orientation, or cost. Corpus’s thousands of near-proofs are local inertial frames; the no-gos are tidal curvature.
+
+Correctness audit found a real flaw, and it improves the theory: Bianchi coherence alone does not conserve information. A coherent cube can send a nonzero source class to zero on every face. NGD therefore needs an independent jointly conservative provenance/current totalization—its analogue of stress-energy conservation. I’m separating “cube coherence” from “nonerasure,” rather than deriving one from the other.
+
+A concrete universal current is emerging from the corpus, not invented from RH: in the completed Dirichlet dilation algebra,
+\[
+E=\sum_{n\ge1}[n],\quad M=E^{-1}=\sum\mu(n)[n],\quad \delta[n]=(\log n)[n],
+\]and
+\[
+\Theta_{\rm Euler}=M\,\delta E=-\,(\delta M)E=\sum\Lambda(n)[n].
+\]So Möbius arithmetic, prime-log spectral frequency, Euler inversion, and von Mangoldt flow are one Maurer–Cartan source current. Nontrivial route obstructions arise when completion, Fourier/Hodge realization, positivity, or boundary reduction fails to preserve this source connection. This is much closer to an actual field equation.

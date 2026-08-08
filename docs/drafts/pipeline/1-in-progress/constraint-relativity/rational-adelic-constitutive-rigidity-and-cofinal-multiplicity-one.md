@@ -2,19 +2,20 @@
 
 - **ID:** `rational-adelic-constitutive-rigidity-and-cofinal-multiplicity-one`
 - **Stage:** 1 — in progress
-- **Type:** CENTRAL MCTG CONJECTURE / SOURCE-NATURALITY CLASSIFICATION
+- **Type:** LOCAL ROUTE-R REALIZABILITY TEST / SOURCE-NATURALITY CLASSIFICATION
 - **Status:** `[EXACT FINITE-SOURCE NONRIGIDITY] [VERTICAL GAUGE TORSOR PROVED]`
   `[TWO-ENDPOINT INFINITE MODULI PROVED] [FULL ADELIC FOURIER ARROW MISSING]`
   `[COFINAL MULTIPLICITY ONE CONJECTURAL] [SOURCE CHARGE OPEN] [NOT RH] [NO LEAN WRITTEN]`
-- **Field role:** first concrete make-or-break theorem for Constraint Relativity/MCTG.
+- **Field role:** local NGD/MCTG calibration only; not foundation of a route-complete field.
 - **Paper anchors:**
   `../../2-fully-proven/constraint-relativity/prime-isotropy-vertical-shear-gauge-torsor-and-nonerasure-dichotomy.md`,
   `../../2-fully-proven/constraint-relativity/two-endpoint-prime-orbit-stokes-moduli-and-infinite-coinvariant-law.md`,
-  `../../2-fully-proven/constraint-relativity/rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law.md`.
+  `../../2-fully-proven/constraint-relativity/rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law.md`,
+  `../../2-fully-proven/constraint-relativity/cofinal-gamma-linear-relation-and-finite-stage-invisibility-law.md`.
 - **Statement:** Finite-prime linear naturality cannot select Route-R observer. Exact ambiguity is
   representation on dilation coinvariants and target fixed-ideal ports. Proposed first genuine
-  field theorem is singular cofinal multiplicity one: one pre-divisor all-prime arrow shrinks
-  natural-transformation equalizer to a normalized line, while finite subcategory retains large
+  local conjecture is singular cofinal multiplicity one: one pre-divisor all-prime arrow shrinks
+  relation-intertwiner space to one line, while finite subcategory retains large
   moduli.
 
 ## 1. Exact problem after hostile closure
@@ -116,7 +117,26 @@ space of ambiguity representation, especially orbit-phase distributions
 
 An endpoint-swapping involution may only conjugate shears and leave nonzero invariant subspace.
 
-## 4. Singular cofinal source category
+## 4. Singular cofinal source category must be relation-valued
+
+Put
+
+\[
+ S=\mathbb C^{\mathcal P},\qquad I=\ell^1(\mathcal P),\qquad V=S/I,
+\]
+
+and for radial grade `t` let `C_t(a)_p=p^{-2t}a_p`. The canonical cofinal target is the linear
+relation
+
+\[
+ \Gamma_t=(q\oplus q)(\operatorname{graph}C_t)\subset V\oplus V.
+ \tag{CRM.7}
+\]
+
+The Stage-2 cofinal-Gamma theorem proves that `Gamma_t` is a forward graph exactly for `t>=0`, its
+inverse is a graph exactly for `t<=0`, and both are graphs exactly for `t=0`. Every finite-prime
+truncation induces `Delta_V` for every `t`. Hence an ordinary module/map-valued cofinal functor
+would assume the desired center. The correct target category is `LinRel_C`.
 
 `[BOLD CONSTRUCTION PROGRAM]` Enlarge to `mathsf S_infinity` by adding:
 
@@ -124,22 +144,27 @@ An endpoint-swapping involution may only conjugate shears and leave nonzero inva
 2. full Fourier/Poisson unit and counit if `(CRM.5)` closes;
 3. analytic dagger/reflection;
 4. ordered all-prime Euler--Gamma port transport;
-5. one genuine singular all-prime/cofinal boundary arrow that acts nontrivially on fixed
-   `ell1` quotient.
+5. the genuine all-prime relation `Gamma_t`, plus any independently sourced cofinal boundary arrow.
 
 Finite-prime corrections vanish/trivialize in physical fixed quotient. Therefore item 5 is
 load-bearing: without it, arbitrary target coefficient survives.
 
-Define
+Let retained source and target assignments take generators to linear relations. For a family of
+linear maps `sigma_x:R(x)->V(x)`, write `Gr(sigma_x)` for its graph. Define the cofinal intertwiner
+space by the typed relation equalities
 
 \[
- \mathcal N_\infty
- =\bigcap_{g\in G_\infty}
- \ker\left(
- \mathcal V(g)\circ(-)-(-)\circ\mathcal R(g)
- \right).
- \tag{CRM.7}
+ \mathcal E_{\rm cof}=
+ \left\{(\sigma_x)_x:\
+ \mathcal V(g)\circ\operatorname{Gr}(\sigma_x)
+ =\operatorname{Gr}(\sigma_y)\circ\mathcal R(g)
+ \text{ for every }g:x\to y\right\}.
+ \tag{CRM.8}
 \]
+
+At finite target stages `V(g)=Delta_V`; the exact condition is factorization through the relevant
+source coinvariants. Diagonal target relations alone neither force arbitrary coefficients nor
+select one. Source survival must be proved separately.
 
 ## 5. Cofinal adelic constitutive multiplicity-one conjecture
 
@@ -148,8 +173,8 @@ Define
 There exists explicitly constructed pre-divisor Euler--Gamma observer `sigma_EG` such that
 
 \[
- \boxed{\mathcal N_\infty=\mathbb C\,\sigma_{\mathrm{EG}}.}
- \tag{CRM.8}
+ \boxed{\mathcal E_{\rm cof}=\mathbb C\,\sigma_{\mathrm{EG}}.}
+ \tag{CRM.9}
 \]
 
 Moreover:
@@ -160,13 +185,14 @@ Moreover:
 4. one source-side normalization independent of Xi zeros selects unique element of line;
 5. restriction to `mathsf S_fin` recovers higher-dimensional observer space.
 
-This theorem would produce first nontrivial constitutive natural transformation of MCTG. It would
-select observer coefficient, not prove its two ports are both nonzero. RH still requires separate
-port-support/nonerasure theorem.
+This theorem would produce a nontrivial local Route-R constitutive relation. It would select an
+observer line, not a normalized point and not prove its two ports are both nonzero. RH still
+requires separate source charge and port-support/nonerasure theorem. Even if proved, it would not
+establish the higher field: it concerns one route and one realizability marginal.
 
 ## 6. Why linear naturality alone cannot finish
 
-Intertwiner equalizer is vector space. If `sigma` is natural, so is `c sigma`. Central scalar target
+Intertwiner space is vector space. If `sigma` is natural, so is `c sigma`. Central scalar target
 automorphisms commute with all linear transports. Hence multiplicity one yields a line, not
 distinguished nonzero point. Required normalization must be inhomogeneous source charge or period
 condition defined before divisor. If normalization references Xi zero or target nonvanishing, it is
@@ -188,7 +214,7 @@ circular.
 6. Cartier/Poitou--Tate dualities provide perfect pairing, not distinguished vector
    (arXiv:2512.13856, 2504.14153).
 
-No exact collision with `(CRM.8)` found. Ingredients occupied; literal source-cofinal equality is
+No exact collision with `(CRM.9)` found. Ingredients occupied; literal source-cofinal equality is
 unoccupied under current audit.
 
 ## 8. Conjecture / proof / fail loops
@@ -204,7 +230,7 @@ unoccupied under current audit.
 8. **Fourier/Poisson kills shear.** `OPEN/NOT YET TYPED`.
 9. **Finite Gamma transport selects `v`.** `FALSE`: homogeneous target transport preserves scalar
    freedom and finite corrections are fixed-quotient trivial.
-10. **Singular cofinal multiplicity one.** `OPEN`: next genuine theorem.
+10. **Singular cofinal multiplicity one.** `OPEN`: next local Route-R theorem, not field theorem.
 
 ## 9. Hostile falsifiers
 
@@ -223,8 +249,9 @@ unoccupied under current audit.
 3. construct or obstruct full adelic Fourier cochain arrow;
 4. compute Fourier action on orbit-phase quotient;
 5. identify actual singular cofinal arrow from existing tail/Roos/completion corpus;
-6. compute `N_infinity`;
-7. only then return to total transgression/index.
+6. compute `E_cof`;
+7. only then return to total transgression/index;
+8. do not promote this local result as route-complete field foundation.
 
 ## Lean-return note
 
@@ -251,5 +278,6 @@ unoccupied under current audit.
 ## Log
 
 - 2026-08-08 — constitutive problem reduced from vague source naturality to explicit intertwiner
-  equalizer; finite nonrigidity exact, cofinal multiplicity one isolated as first genuine field law.
-
+  equalizer; finite nonrigidity exact, cofinal multiplicity one isolated as a local conjecture.
+- 2026-08-08 — field claim withdrawn after whole-corpus audit. Cofinal target corrected from
+  map-valued functor to canonical `LinRel` relation; conjecture retained only as Route-R local test.

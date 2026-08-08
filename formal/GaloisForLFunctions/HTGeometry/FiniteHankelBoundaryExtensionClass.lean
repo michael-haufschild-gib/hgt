@@ -82,6 +82,184 @@ theorem finiteHankelBoundaryQuadratureError_monic_eq_monicRemainder
   rw [finiteHankelBoundaryQuadratureError, hsum, sub_zero,
     finiteHankelBoundaryMonicRemainder]
 
+/-! ### The extension class is a shifted-square energy -/
+
+/-- On a Hankel null vector, the shifted square of its raw null polynomial is exactly the
+terminal coefficient times the first unseen moment pairing.  All other coefficients disappear by
+the current kernel equations. -/
+theorem momentFunctional_X_mul_finiteHankelNullPolynomial_sq
+    (s : ℕ → ℝ) {n : ℕ} (c : Fin (n + 1) → ℝ)
+    (hc : momentHankelMatrix s (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    momentFunctional s
+        (X * finiteHankelNullPolynomial c * finiteHankelNullPolynomial c) =
+      c (Fin.last n) *
+        momentFunctional s (X ^ (n + 1) * finiteHankelNullPolynomial c) := by
+  let P := finiteHankelNullPolynomial c
+  let a := c (Fin.last n)
+  let q := X * P - C a * X ^ (n + 1)
+  have hPne : P ≠ 0 := finiteHankelNullPolynomial_ne_zero c hlast
+  have hPdeg : P.degree = (n : WithBot ℕ) := by
+    rw [Polynomial.degree_eq_natDegree hPne,
+      finiteHankelNullPolynomial_natDegree c hlast]
+  have hXPne : X * P ≠ 0 := mul_ne_zero X_ne_zero hPne
+  have hXPdeg : (X * P).degree = ((n + 1 : ℕ) : WithBot ℕ) := by
+    rw [Polynomial.degree_mul, Polynomial.degree_X, hPdeg]
+    rw [add_comm]
+    norm_cast
+  have hmonomialNe : C a * X ^ (n + 1) ≠ 0 := by
+    exact mul_ne_zero (Polynomial.C_ne_zero.mpr hlast) (pow_ne_zero _ X_ne_zero)
+  have hmonomialDeg : (C a * X ^ (n + 1)).degree = ((n + 1 : ℕ) : WithBot ℕ) := by
+    exact Polynomial.degree_C_mul_X_pow _ hlast
+  have hlead : (X * P).leadingCoeff = (C a * X ^ (n + 1)).leadingCoeff := by
+    rw [Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_X,
+      one_mul, Polynomial.leadingCoeff_C_mul_X_pow]
+    exact finiteHankelNullPolynomial_leadingCoeff_eq_terminal c hlast
+  have hqdeg : q.degree < ((n + 1 : ℕ) : WithBot ℕ) := by
+    dsimp [q]
+    have h := Polynomial.degree_sub_lt
+      (by rw [hXPdeg, hmonomialDeg]) hXPne hlead
+    rwa [hXPdeg] at h
+  have hqnat : q.natDegree < n + 1 := by
+    by_cases hqzero : q = 0
+    · simp [hqzero]
+    · exact (Polynomial.natDegree_lt_iff_degree_lt hqzero).mpr hqdeg
+  have horth : momentInner s P q = 0 := by
+    exact momentInner_finiteHankelNullPolynomial_eq_zero_of_kernel hc hqnat
+  have hsplit : X * P = q + C a * X ^ (n + 1) := by
+    dsimp [q]
+    ring
+  change momentFunctional s (X * P * P) =
+    a * momentFunctional s (X ^ (n + 1) * P)
+  calc
+    momentFunctional s (X * P * P) = momentInner s P (X * P) := by
+      rw [momentInner_def]
+      congr 1
+      ring
+    _ = momentInner s P (q + C a * X ^ (n + 1)) := by rw [← hsplit]
+    _ = momentInner s P q + momentInner s P (C a * X ^ (n + 1)) := by
+      rw [momentInner_add_right]
+    _ = momentInner s P (C a * X ^ (n + 1)) := by rw [horth, zero_add]
+    _ = a * momentFunctional s (X ^ (n + 1) * P) := by
+      rw [momentInner_def, show P * (C a * X ^ (n + 1)) =
+          a • (X ^ (n + 1) * P) by
+        simp only [Polynomial.smul_eq_C_mul]
+        ring,
+        momentFunctional_smul]
+
+/-- **Stieltjes boundary-energy law.** The projective extension coordinate is exactly the moment
+of `X` times the square of the monic null polynomial.  The mass-shifted spectral-face problem is
+therefore one shifted-Hankel square on the current Hankel kernel. -/
+theorem finiteHankelBoundaryMonicRemainder_eq_shiftedSquare
+    (s : ℕ → ℝ) {n : ℕ} (c : Fin (n + 1) → ℝ)
+    (hc : momentHankelMatrix s (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    finiteHankelBoundaryMonicRemainder s c =
+      momentFunctional s
+        (X * finiteHankelNullMonicPolynomial c * finiteHankelNullMonicPolynomial c) := by
+  have hraw := momentFunctional_X_mul_finiteHankelNullPolynomial_sq s c hc hlast
+  rw [finiteHankelBoundaryMonicRemainder_eq_inv_mul_raw s c hlast]
+  rw [finiteHankelNullMonicPolynomial,
+    finiteHankelNullPolynomial_leadingCoeff_eq_terminal c hlast]
+  rw [show X *
+      (finiteHankelNullPolynomial c * C (c (Fin.last n))⁻¹) *
+      (finiteHankelNullPolynomial c * C (c (Fin.last n))⁻¹) =
+        (c (Fin.last n))⁻¹ ^ 2 •
+          (X * finiteHankelNullPolynomial c * finiteHankelNullPolynomial c) by
+    simp only [Polynomial.smul_eq_C_mul]
+    rw [map_pow]
+    ring,
+    momentFunctional_smul, hraw]
+  field_simp [hlast]
+
+/-! ### The shifted square is an oriented Christoffel-port imbalance -/
+
+/-- **Universal Christoffel-port polarization.**  For every moment functional, the difference
+between the forward and backward affine-multiplier square energies is exactly four times the
+adjacent Hankel energy.  No positivity or moment-representability assumption is used. -/
+theorem momentFunctional_christoffelPortDifference
+    (s : ℕ → ℝ) (p : Polynomial ℝ) (a : ℝ) :
+    momentFunctional s (((X + C a) * p) ^ 2) -
+        momentFunctional s (((X - C a) * p) ^ 2) =
+      4 * a * momentFunctional s (X * p * p) := by
+  have hC4 : C (4 : ℝ) = (4 : Polynomial ℝ) := by
+    exact map_natCast (Polynomial.C : ℝ →+* Polynomial ℝ) 4
+  have hpoly :
+      ((X + C a) * p) ^ 2 - ((X - C a) * p) ^ 2 =
+        (4 * a) • (X * p * p) := by
+    simp only [Polynomial.smul_eq_C_mul]
+    rw [map_mul, hC4]
+    ring
+  have hlinear :
+      momentFunctional s (((X + C a) * p) ^ 2) -
+          momentFunctional s (((X - C a) * p) ^ 2) =
+        momentFunctional s
+          (((X + C a) * p) ^ 2 - ((X - C a) * p) ^ 2) := by
+    symm
+    calc
+      momentFunctional s
+          (((X + C a) * p) ^ 2 - ((X - C a) * p) ^ 2) =
+          momentFunctional s
+            (((X + C a) * p) ^ 2 + -((X - C a) * p) ^ 2) := by
+              rw [sub_eq_add_neg]
+      _ = momentFunctional s (((X + C a) * p) ^ 2) +
+          momentFunctional s (-((X - C a) * p) ^ 2) := by
+            rw [momentFunctional_add]
+      _ = momentFunctional s (((X + C a) * p) ^ 2) -
+          momentFunctional s (((X - C a) * p) ^ 2) := by
+            rw [show -((X - C a) * p) ^ 2 =
+                (-1 : ℝ) • (((X - C a) * p) ^ 2) by rw [neg_one_smul],
+              momentFunctional_smul]
+            ring
+  rw [hlinear, hpoly, momentFunctional_smul]
+
+/-- On a flat Hankel face, the canonical extension coordinate is exactly the normalized
+forward-minus-backward Christoffel-port imbalance of its monic null polynomial. -/
+theorem finiteHankelBoundary_christoffelPortDifference_eq_monicRemainder
+    (s : ℕ → ℝ) {n : ℕ} (c : Fin (n + 1) → ℝ) (a : ℝ)
+    (hc : momentHankelMatrix s (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    momentFunctional s
+          (((X + C a) * finiteHankelNullMonicPolynomial c) ^ 2) -
+        momentFunctional s
+          (((X - C a) * finiteHankelNullMonicPolynomial c) ^ 2) =
+      4 * a * finiteHankelBoundaryMonicRemainder s c := by
+  rw [momentFunctional_christoffelPortDifference,
+    ← finiteHankelBoundaryMonicRemainder_eq_shiftedSquare s c hc hlast]
+
+/-- **Port-orientation criterion.**  Positivity of the first extension coordinate is equivalent
+to strict dominance of the forward unit Christoffel port over the backward unit port. -/
+theorem finiteHankelBoundaryMonicRemainder_pos_iff_christoffelPortOrder
+    (s : ℕ → ℝ) {n : ℕ} (c : Fin (n + 1) → ℝ)
+    (hc : momentHankelMatrix s (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    0 < finiteHankelBoundaryMonicRemainder s c ↔
+      momentFunctional s
+          (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ 2) <
+        momentFunctional s
+          (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ 2) := by
+  have hdiff :=
+    finiteHankelBoundary_christoffelPortDifference_eq_monicRemainder
+      s c 1 hc hlast
+  norm_num at hdiff
+  constructor
+  · intro h
+    have h' :
+        momentFunctional s
+            (((X - 1) * finiteHankelNullMonicPolynomial c) ^ 2) <
+          momentFunctional s
+            (((X + 1) * finiteHankelNullMonicPolynomial c) ^ 2) := by
+      linarith
+    simpa using h'
+  · intro h
+    have h' :
+        momentFunctional s
+            (((X - 1) * finiteHankelNullMonicPolynomial c) ^ 2) <
+          momentFunctional s
+            (((X + 1) * finiteHankelNullMonicPolynomial c) ^ 2) := by
+      simpa using h
+    linarith
+
 /-! ### The extension coordinate is invisible to the current face -/
 
 /-- Perturb one coordinate of a moment sequence additively. -/
@@ -170,6 +348,38 @@ theorem exists_momentSequence_same_face_monicRemainder_eq
   rw [finiteHankelBoundaryMonicRemainder_momentCoordinatePerturbation s c hlast]
   dsimp [δ]
   ring
+
+/-- **Port-orientation face no-go.**  Keeping the complete current Hankel face fixed, the
+forward-minus-backward unit Christoffel-port imbalance can be assigned any prescribed real value.
+Thus no theorem depending only on current-face incidence can select its orientation. -/
+theorem exists_momentSequence_same_face_christoffelPortDifference_eq
+    (s : ℕ → ℝ) {n : ℕ} (c : Fin (n + 1) → ℝ)
+    (hc : momentHankelMatrix s (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) (d : ℝ) :
+    ∃ t : ℕ → ℝ,
+      momentHankelMatrix t (n + 1) = momentHankelMatrix s (n + 1) ∧
+        momentFunctional t
+              (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ 2) -
+            momentFunctional t
+              (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ 2) = d := by
+  obtain ⟨t, hface, hremainder⟩ :=
+    exists_momentSequence_same_face_monicRemainder_eq s c hlast (d / 4)
+  have hct : momentHankelMatrix t (n + 1) *ᵥ c = 0 := by
+    rw [hface]
+    exact hc
+  refine ⟨t, hface, ?_⟩
+  have hdiff :=
+    finiteHankelBoundary_christoffelPortDifference_eq_monicRemainder
+      t c 1 hct hlast
+  norm_num at hdiff
+  rw [hremainder] at hdiff
+  calc
+    momentFunctional t
+          (((X + C 1) * finiteHankelNullMonicPolynomial c) ^ 2) -
+        momentFunctional t
+          (((X - C 1) * finiteHankelNullMonicPolynomial c) ^ 2) =
+        4 * (d / 4) := by simpa using hdiff
+    _ = d := by ring
 
 /-- The monic extension class depends only on the projective null line, not on a nonzero choice of
 kernel-vector scale. -/

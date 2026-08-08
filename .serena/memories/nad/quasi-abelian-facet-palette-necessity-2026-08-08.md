@@ -103,10 +103,140 @@ Chain complete: nonvanishing θ + logarithm → ℤ-valued 2-cocycle → ℤ-val
 (`cocycleCommutator_isAlternatingBiadditive`) → Hermitian form with integral Im
 (`exists_hermitian_of_alternating`) → certificate.
 
-**Only two analytic inputs remain on the whole card:**
-1. existence of the logarithm `F` — a holomorphic branch of `log e(γ,·)` on the simply connected
-   ambient space;
-2. the positivity `E(i x, x) > 0` extracted from nondegeneracy of the meromorphic function.
+### `AutomorphyLogarithmDefect.lean` — analytic input #1, CLOSED
+* **`eq_of_continuous_int_valued`** — a continuous ℤ-valued function on a preconnected space is
+  constant (locally constant: distinct integers are ≥ 1 apart).
+* **`exists_continuous_exp_eq`** — every continuous nowhere-vanishing function on a complex normed
+  space has a continuous logarithm.  The space is contractible ⟹ simply connected; mathlib's
+  **`Complex.exists_continuousOn_eqOn_exp_comp`** (in `Analysis/Complex/BranchLogRoot.lean`) applies
+  on `univ`.  `IsSimplyConnected (univ : Set W)` via
+  `(Homeomorph.Set.univ W).toHomotopyEquiv.simplyConnectedSpace`.
+* **`exists_isQuasiAdditive_log_of_isMulTwoCocycle`** — every continuous nowhere-vanishing factor of
+  automorphy has a logarithm that is quasi-additive with a **constant integral** defect.
+
+### ARCHITECTURAL CORRECTION (6th → 7th instalment)
+Deriving the factor from a globally nowhere-vanishing θ is **degenerate**: on a contractible space
+such a θ has a global logarithm, so the cocycle is a coboundary and the Chern class vanishes.  The
+primitive datum must be the factor `e` itself (`IsMulTwoCocycle`), with `automorphyFactor θ` only a
+special case.  Integrality core factored out as `exists_int_logDefect` (no quasi-additivity
+hypothesis needed — the *pointwise* defect is already an integer).
+
+### `HermitianRadicalPositivity.lean` — nondegeneracy ⟹ strict positivity
+`altSym E u v = E (i u, v)` is the **symmetric** real form with `Re H(x,x) = altSym E x x`; symmetry
+is `i`-invariance + alternation, not an extra assumption.
+* **`altSym_eq_zero_of_self_eq_zero`** — degenerate Cauchy–Schwarz: a null vector of a PSD symmetric
+  form is orthogonal to everything.  **No limit needed**: with `s = |S(u,v)|/(1+S(v,v))` the
+  quadratic expansion at `t = ±s` is already contradictory.
+* **`altSym_pos_of_psd_of_nondegenerate`**, **`exists_hermitian_of_psd_of_nondegenerate`**.
+
+## Standing state of the Capocasa–Catanese chain (all unconditional)
+
+```
+factor of automorphy (IsMulTwoCocycle)
+  → continuous logarithm + constant integral defect   AutomorphyLogarithmDefect
+  → integral alternating biadditive form              CocycleCommutatorPairing
+  → Hermitian form, Im H integral on Γ                AlternatingHermitianDictionary
+  → positive definite (given PSD + nondegenerate)     HermitianRadicalPositivity
+  → quasi-Abelian facet certificate
+```
+
+### `GaussianDecayVanishing.lean` — the analytic engine for semi-definiteness
+* **`eq_zero_of_gaussian_decay`** — entire `f : ℂ → ℂ` with `‖f t‖ ≤ C exp(−a‖t‖²)`, `a > 0`, is
+  identically zero.  Bounded ⟹ Liouville ⟹ constant ⟹ the bound at one large radius kills it.
+* **`eq_zero_of_gaussian_decay_along_line`** — same on a complex line in any complex normed space.
+  mathlib's `Differentiable.apply_eq_apply_of_bounded` already works on an arbitrary complex normed
+  space, so no dimension restriction enters.
+* **`not_gaussian_decay_along_line_of_ne_zero`** — the contrapositive, the form actually used.
+
+### `AppellHumbertFactor.lean` — the normal form (10th instalment)
+* `IsHermitianForm H` + derived `add_right`, `self_im`, `re_symm`,
+  `sub_symm : H x y − H y x = 2i·Im H(x,y)`.
+* `appellHumbertFactor H χ γ z = χ γ · exp(π H(z,γ) + (π/2) H(γ,γ))`.
+* **`appellHumbertFactor_isMulTwoCocycle`** — it *is* a factor of automorphy.  The exponents differ
+  by `(π/2)(H(γ,γ') − H(γ',γ)) = πi·Im H(γ,γ')`, exactly what the semicharacter law cancels — so the
+  semicharacter condition is **forced** by the cocycle law, not an extra normalisation.
+* `norm_appellHumbertFactor`; `thetaNorm H θ z = ‖θ z‖·exp(−(π/2)Re H(z,z))` and
+  **`thetaNorm_add`**: the normalised modulus is **Γ-invariant** (every base-point term cancels;
+  `Re H(z,γ)` appears twice with opposite signs).
+* `hermitianForm_smul_self`: `Re H(s·v, s·v) = ‖s‖²·Re H(v,v)`.
+* **`eq_zero_along_line_of_neg_of_thetaNorm_bounded`** — `Re H(v,v) < 0` + bounded normalised
+  modulus ⟹ θ vanishes on the whole line `ℂv`.
+
+### `PeriodicBoundedThetaNorm.lean` + `AffineGaussianSemidefinite.lean` (11th instalment)
+mathlib has boundedness only for a full `ZLattice` (`IsZLattice.isCompact_range_of_periodic`); a
+quasi-Abelian period group is not one.  Built the compact-covering-set version:
+* `range_subset_image_of_periodic_of_covers` (no topology; axioms `[propext]` only),
+  **`exists_bound_of_periodic_of_compact_cover`**, **`exists_bound_thetaNorm_of_compact_cover`**.
+* `hermitianForm_affine_re`, `abs_hermitianForm_cross_le`,
+  **`eq_zero_along_affine_line_of_neg`** — the linear cross term is absorbed by completing the
+  square, `2|s|B ≤ (−c/2)|s|² + 2B²/(−c)`, halving the Gaussian exponent.
+* **`nonneg_re_of_thetaNorm_bounded_of_exists_ne_zero`** — a theta function nonzero at a *single
+  point* forces `Re H(v,v) ≥ 0` for **every** `v`.
+
+## THE CHAIN IS COMPLETE (as unconditional Lean results)
+
+```
+factor of automorphy → logarithm w/ constant integral defect → integral alternating form
+  → Hermitian form with integral Im
+  → semi-definite  (nonzero theta function + compact covering set)
+  → positive definite  (nondegeneracy)
+  → quasi-Abelian facet certificate
+```
+
+### `CapocasaCatanesePositivity.lean` — assembled (12th instalment)
+**Refactor, not duplication**: the degenerate Cauchy–Schwarz is now the standalone
+**`symmBilin_eq_zero_of_self_eq_zero`**, stated for *any* real form whose diagonal expands
+quadratically along a one-parameter family (`comb : ℝ → X → X → X`, no algebraic structure on `X`).
+Both `altSym` and `hermitianRe` instantiate it.
+* `hermitianRe H u v = Re H(u,v)`, `hermitianRe_expand`.
+* **`IsHermitianForm.eq_zero_of_self_re_eq_zero`** — a null vector of a PSD Hermitian form is
+  annihilated *entirely*: Cauchy–Schwarz at `x` kills `Re H(x,y)`, at `i·x` kills `Im H(x,y)`
+  (because `Re H(i x, y) = −Im H(x,y)` and `Re H(i x, i x) = Re H(x,x)`).
+* **`hermitianForm_nonneg_of_theta`**, **`hermitianForm_pos_of_theta_of_nondegenerate`**.
+
+### `QuasiAbelianFacetCertificateOfTheta.lean` — the certificate is CONSTRUCTED (13th instalment)
+* **`certificateOfAlternating`** — builds a `QuasiAbelianFacetCertificate` from facet data (period
+  group + discreteness/closedness/span-deficiency, an alternating compatible form that is integral,
+  PSD and nondegenerate, and the vertex incidence).  `X := W ⧸ Γ` so surjectivity and the fibre
+  description are *definitional*; `quotient_noncompact` is the span criterion; `H` is
+  `hermitianOfAlternating` with the dictionary's four clauses and Cauchy–Schwarz positivity;
+  `H_integral_imaginary` is integrality of `E` because `Im(hermitianOfAlternating E) = E` on the nose.
+* `exists_certificateOfAlternating`.
+* **`latticeClass_certificateOfAlternating_eq_iff`** — for the constructed certificate the lattice
+  class *is* a quotient class, so two exponents agree iff their difference lies in Γ.
+
+### Palette input DISCHARGED (14th instalment)
+* **`paletteInputOfCertificates`** — injectivity of the lattice class is *all* the input needs; the
+  structural-shift clause is immediate because equal classes force equal exponents.  That second
+  field was never an independent analytic assumption.
+* **`latticeClass_injective_of_free`** — for a `certificateOfAlternating`, injectivity is exactly
+  card property 5 in concrete form (the facet lattice meets Γ only at 0); proof = quotient-class
+  bridge + `sub_zsmul`.
+
+**Full pipeline, no unproved analytic hypothesis:**
+```
+facet data (period group, vertex incidence, integral nondegenerate alternating form)
+  → certificateOfAlternating          : all six certificate clauses
+  → latticeClass_injective_of_free    : injective integral facet lattice
+  → paletteInputOfCertificates        : QuasiAbelianFacetPaletteInput
+  → quasiAbelianFacetPalette_necessity: the card's theorem
+```
+
+### Proof step 1 CLOSED — and mostly corpus-owned (15th instalment)
+**`StanleyReisnerFacetSeparator.lean` already proved the card's (7)–(9) in a stronger form**: the
+per-facet vertex choice `b_B ∈ A \ B` is unnecessary — by the corpus's monomial-support
+characterisation of `I_Δ`, the facet monomial `∏_{w∈A} x_w` *is* the separator
+(`srProd_facet_ne_zero`, `srVertexX_mul_srProd_facet_eq_zero`).  The card's `q_A = ∏_{B≠A} x_{b_B}`
+and its choice are not needed.  **Check this file before rebuilding any facet-isolation step.**
+
+New `StanleyReisnerExponentDetector.lean` supplies the missing converse of (9):
+* **`srExponentDetector`** — the face detector generalizes from squarefree exponents to *any*
+  exponent with face support; `coeff_eq_zero_of_isFace_support` never used squarefreeness.
+* **`srMonomial_ne_zero`**, **`srVertexX_mul_srProd_facet_ne_zero`**,
+  **`srVertexX_mul_srProd_facet_eq_zero_iff`** — equation (9) exactly: `x_v q_A ∈ I_Δ ↔ v ∉ A`.
+
+**Next**: card proof step 2 (the integral facet orbit is differentially free) and then the
+realization transport `G_A = q_A(T)F`; plus the specialist novelty audit (not a Lean obligation).
 
 ## Lean traps hit
 

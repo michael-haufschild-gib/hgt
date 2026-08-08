@@ -388,7 +388,7 @@ nonerasure dichotomy. External priority unverified; no new general-theorem claim
 
 ## Gates
 
-- [x] full vertical group
+- [x] full coordinate-fixing vertical subgroup
 - [x] Stokes primitive torsor
 - [x] Haar shear source-symmetry compatibility
 - [x] resolved-comparison homotopy

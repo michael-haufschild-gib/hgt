@@ -155,11 +155,13 @@ theorem finiteWeightedSynthesisMatrix_mul_conjTranspose
       (NNReal.sqrt (weight j) : ℂ) := by simp
   have hsq : (NNReal.sqrt (weight j) : ℂ) *
       (NNReal.sqrt (weight j) : ℂ) = (weight j : ℂ) := by
-    exact_mod_cast NNReal.sq_sqrt (weight j)
+    have hsquare := NNReal.sq_sqrt (weight j)
+    rw [pow_two] at hsquare
+    exact_mod_cast hsquare
   rw [hstar, smul_eq_mul]
   calc
     (NNReal.sqrt (weight j) : ℂ) * vector j a *
-          (NNReal.sqrt (weight j) : ℂ) * star (vector j b) =
+          ((NNReal.sqrt (weight j) : ℂ) * star (vector j b)) =
         ((NNReal.sqrt (weight j) : ℂ) * (NNReal.sqrt (weight j) : ℂ)) *
           (vector j a * star (vector j b)) := by ring
     _ = (weight j : ℂ) * (vector j a * star (vector j b)) := by rw [hsq]
@@ -239,6 +241,84 @@ theorem finiteWeightedReplicaIncidenceMatrix_apply
   rw [finiteWeightedIncidenceMatrix_apply,
     ← inner_toLp_eq_finiteComplexInner,
     inner_finitePureTensorPowerEuclidean]
+
+/-! ## Rank-sensitive Hilbert--Schmidt comparison -/
+
+/-- Squared Hilbert--Schmidt mass of a finite rectangular matrix. -/
+noncomputable def finiteMatrixHilbertSchmidtSq
+    {m n : Type*} [Fintype m] [Fintype n] [DecidableEq n]
+    (K : Matrix m n ℂ) : ℝ :=
+  ((Kᴴ * K).trace).re
+
+/-- The Gram trace is the explicit entrywise Hilbert--Schmidt mass. -/
+theorem finiteMatrixHilbertSchmidtSq_eq_sum_norm_sq
+    {m n : Type*} [Fintype m] [Fintype n] [DecidableEq n]
+    (K : Matrix m n ℂ) :
+    finiteMatrixHilbertSchmidtSq K = ∑ i, ∑ j, ‖K i j‖ ^ 2 := by
+  classical
+  unfold finiteMatrixHilbertSchmidtSq Matrix.trace
+  simp only [Matrix.diag_apply, Matrix.mul_apply, Matrix.conjTranspose_apply]
+  rw [Complex.re_sum, Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Complex.re_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [RCLike.star_def, RCLike.conj_mul]
+  change ((‖K i j‖ : ℂ) ^ 2).re = ‖K i j‖ ^ 2
+  rw [← Complex.ofReal_pow, Complex.ofReal_re]
+
+/-- **Rank-sensitive nuclear/Hilbert--Schmidt law (INC5):** the exact loss in replacing nuclear
+incidence mass by collision mass is occupied incidence rank, not ambient source or target size. -/
+theorem finiteMatrixNuclearNorm_sq_le_rank_mul_hilbertSchmidtSq
+    {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+    (K : Matrix m n ℂ) :
+    finiteMatrixNuclearNorm K ^ 2 ≤
+      (K.rank : ℝ) * finiteMatrixHilbertSchmidtSq K := by
+  classical
+  let G : Matrix n n ℂ := Kᴴ * K
+  let hG : G.PosSemidef := Matrix.posSemidef_conjTranspose_mul_self K
+  let e : n → ℝ := hG.1.eigenvalues
+  let live : Finset n := Finset.univ.filter fun j => e j ≠ 0
+  have hsum_live : (∑ j, Real.sqrt (e j)) = ∑ j ∈ live, Real.sqrt (e j) := by
+    simp only [live, Finset.sum_filter]
+    apply Finset.sum_congr rfl
+    intro j _
+    by_cases hj : e j = 0
+    · simp [hj]
+    · simp [hj]
+  have hcs : (∑ j ∈ live, Real.sqrt (e j)) ^ 2 ≤
+      (live.card : ℝ) * ∑ j ∈ live, Real.sqrt (e j) ^ 2 := by
+    simpa using
+      (sq_sum_le_card_mul_sum_sq (s := live) (f := fun j => Real.sqrt (e j)))
+  have hcard : live.card = K.rank := by
+    rw [← Matrix.rank_conjTranspose_mul_self K,
+      hG.1.rank_eq_card_non_zero_eigs]
+    simp [live, e, Fintype.card_subtype]
+  have hsquares : (∑ j ∈ live, Real.sqrt (e j) ^ 2) = ∑ j, e j := by
+    calc
+      (∑ j ∈ live, Real.sqrt (e j) ^ 2) = ∑ j ∈ live, e j := by
+        apply Finset.sum_congr rfl
+        intro j _
+        exact Real.sq_sqrt (hG.eigenvalues_nonneg j)
+      _ = ∑ j, e j := by
+        simp only [live, Finset.sum_filter]
+        apply Finset.sum_congr rfl
+        intro j _
+        by_cases hj : e j = 0
+        · simp [hj]
+        · simp [hj]
+  have htrace : (∑ j, e j) = G.trace.re := by
+    have ht := hG.1.trace_eq_sum_eigenvalues
+    simpa [e] using (congrArg Complex.re ht).symm
+  calc
+    finiteMatrixNuclearNorm K ^ 2 = (∑ j, Real.sqrt (e j)) ^ 2 := by
+      rfl
+    _ = (∑ j ∈ live, Real.sqrt (e j)) ^ 2 := by rw [hsum_live]
+    _ ≤ (live.card : ℝ) * ∑ j ∈ live, Real.sqrt (e j) ^ 2 := hcs
+    _ = (K.rank : ℝ) * finiteMatrixHilbertSchmidtSq K := by
+      rw [hcard, hsquares, htrace]
+      rfl
 
 end
 

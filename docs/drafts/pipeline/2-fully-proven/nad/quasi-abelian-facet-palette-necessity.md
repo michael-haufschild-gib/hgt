@@ -466,3 +466,276 @@ Capocasa--Catanese necessary direction remain to be built. This card therefore s
   gate: existence of the logarithm `F` (a holomorphic branch of `log e (gamma, -)` on the simply
   connected ambient space) and the positivity `E (i x, x) > 0` extracted from nondegeneracy of the
   meromorphic function.
+
+- 2026-08-08 (seventh instalment) -- **The first of the two remaining analytic inputs is closed**,
+  and an architectural error in the sixth instalment is corrected.
+
+  *Correction.*  Deriving the factor of automorphy from a globally nowhere-vanishing `theta` is
+  degenerate: on a contractible space such a `theta` has a global logarithm, so the cocycle is a
+  coboundary and its Chern class vanishes.  The correct primitive datum is the factor itself.
+  `AutomorphyFactorCocycle.lean` is therefore restated around
+
+  ```text
+  IsMulTwoCocycle e :  e (g + g', z) = e (g, z + g') * e (g', z),
+  ```
+
+  with `automorphyFactor theta` retained as the special case
+  (`automorphyFactor_isMulTwoCocycle`).  The integrality core is factored out as
+  `exists_int_logDefect`, which needs no quasi-additivity hypothesis: the *pointwise* logarithmic
+  defect `F (g+g', z) - F (g, z+g') - F (g', z)` is an integer at every base point.
+
+  `HTGeometry/AutomorphyLogarithmDefect.lean`, axiom-clean and wired:
+
+  * **`eq_of_continuous_int_valued`** -- a continuous integer-valued function on a preconnected
+    space is constant.  Locally constant because distinct integers are at distance at least one.
+  * `isSimplyConnected_univ`, and **`exists_continuous_exp_eq`** -- every continuous nowhere-
+    vanishing function on a complex normed space has a continuous logarithm.  The space is
+    contractible, hence simply connected, and mathlib's
+    `Complex.exists_continuousOn_eqOn_exp_comp` applies on `univ`.
+  * **`exists_isQuasiAdditive_log_of_isMulTwoCocycle`** -- every continuous nowhere-vanishing factor
+    of automorphy admits a logarithm that is quasi-additive with a **constant integral** defect.
+    Constancy is exactly the previous item: the pointwise defect is an integer at every base point
+    and depends continuously on it.
+
+  This is the analytic input that was listed as open.  The one remaining item on the whole card is
+  the positivity `E (i x, x) > 0`, which is where nondegeneracy of the meromorphic function must
+  finally be used.
+
+- 2026-08-08 (eighth instalment) -- **The conversion of nondegeneracy into strict positivity is
+  built.**  `HTGeometry/HermitianRadicalPositivity.lean`, axiom-clean and wired.
+
+  The real part of the Hermitian form of an alternating compatible `E` is the symmetric
+  `R`-bilinear form `S (u,v) = E (i u, v)`, with `Re H (x,x) = S (x,x)`.  Symmetry of `S` is
+  `i`-invariance of `E` combined with alternation -- it is not an extra assumption.
+
+  * `altSym`, with `altSym_symm`, `altSym_add_left/right`, `altSym_smul_left/right`, and the
+    quadratic expansion `altSym_expand`.
+  * **`altSym_eq_zero_of_self_eq_zero`** -- Cauchy--Schwarz in degenerate form: a null vector of a
+    positive semi-definite symmetric form is orthogonal to the whole space.  The proof avoids any
+    limit: with `s = |S (u,v)| / (1 + S (v,v))` the expansion at `t = ±s` is already contradictory.
+  * **`altSym_pos_of_psd_of_nondegenerate`** -- semi-definite plus trivial radical is definite.
+  * **`exists_hermitian_of_psd_of_nondegenerate`** -- the certificate shape.
+
+  This is exactly the step at which nondegeneracy of the periodic meromorphic function is used:
+  the radical of `S` consists of directions the form cannot see, and fullness of the period group
+  says there are none.
+
+  Standing state of the Capocasa--Catanese chain, all unconditional:
+
+  ```text
+  factor of automorphy  (IsMulTwoCocycle)
+    -> continuous logarithm, constant integral defect   (AutomorphyLogarithmDefect)
+    -> integral alternating biadditive form             (CocycleCommutatorPairing)
+    -> Hermitian form, Im H integral on Gamma           (AlternatingHermitianDictionary)
+    -> positive definite, given semi-definite + nondegenerate  (HermitianRadicalPositivity)
+    -> quasi-Abelian facet certificate.
+  ```
+
+  One geometric input is left in the whole chain: semi-definiteness `S (x,x) >= 0`, which is where
+  effectivity of the divisor of the meromorphic function enters.  Everything else on this card is
+  now a theorem.
+
+- 2026-08-08 (ninth instalment) -- **The analytic engine behind semi-definiteness is built.**
+  `HTGeometry/GaussianDecayVanishing.lean`, axiom-clean and wired.
+
+  * **`eq_zero_of_gaussian_decay`** -- an entire function of one variable bounded by
+    `C exp (-a |t|^2)` with `a > 0` vanishes identically.  The bound makes it bounded, Liouville
+    makes it constant, and the bound then forces the constant to be zero.  No limiting argument is
+    needed beyond `exp (-a r^2) -> 0`, which supplies a single radius where the bound is smaller
+    than the constant's modulus.
+  * **`eq_zero_of_gaussian_decay_along_line`** -- the same on a complex line inside any complex
+    normed space, by composing with `t -> t v`.  mathlib's Liouville
+    (`Differentiable.apply_eq_apply_of_bounded`) already holds on an arbitrary complex normed
+    space, so no dimension restriction enters.
+  * **`not_gaussian_decay_along_line_of_ne_zero`** -- the contrapositive, which is the form the
+    argument is used in: a section that is nonzero somewhere on a line forbids Gaussian decay on
+    that line.
+
+  This is the mechanism by which a nonzero section forces `S (v,v) >= 0`.  Along a direction where
+  the Hermitian form is negative, the periodicity-normalised modulus of a theta function acquires
+  exactly a Gaussian factor, so the section would have to vanish on the whole line.
+
+  What the chain still lacks is only the *normal-form* computation that produces that Gaussian
+  factor -- the Appell--Humbert presentation of the automorphy factor as
+  `exp (pi H (z, gamma) + pi H (gamma, gamma) / 2)` times a unitary character -- together with the
+  passage from vanishing on one line to vanishing identically.  Both are bookkeeping on top of the
+  layers now in place, not new mathematics.
+
+- 2026-08-08 (tenth instalment) -- **The Appell--Humbert normal form is built**, and with it the
+  Gaussian factor that the previous instalment's engine consumes.
+  `HTGeometry/AppellHumbertFactor.lean`, axiom-clean and wired.
+
+  * `IsHermitianForm H` -- additive and complex-homogeneous in the first argument, conjugate
+    symmetric -- with the derived `add_right`, `self_im`, `re_symm` and
+    `sub_symm : H x y - H y x = 2 i Im H (x,y)`.
+  * `appellHumbertFactor H chi gamma z = chi gamma * exp (pi H (z,gamma) + (pi/2) H (gamma,gamma))`.
+  * **`appellHumbertFactor_isMulTwoCocycle`** -- it is a factor of automorphy.  The two exponents
+    differ by `(pi/2) (H (g,g') - H (g',g)) = pi i Im H (g,g')`, which is exactly what the
+    semicharacter law cancels.  So the semicharacter condition is not an extra normalisation: it is
+    forced by the cocycle law.
+  * `norm_appellHumbertFactor` -- its modulus, for a unitary semicharacter.
+  * `thetaNorm H theta z = |theta z| exp (-(pi/2) Re H (z,z))`, and **`thetaNorm_add`**: the
+    normalised modulus is **invariant under the period group**.  Every base-point term cancels;
+    `Re H (z, gamma)` appears exactly twice with opposite signs.
+  * `hermitianForm_smul_self` -- along a complex line, `Re H (s v, s v) = |s|^2 Re H (v,v)`.
+  * **`eq_zero_along_line_of_neg_of_thetaNorm_bounded`** -- a direction with `Re H (v,v) < 0` kills
+    a theta function whose normalised modulus is bounded: the normalised modulus is unchanged while
+    the exponential factor decays like a Gaussian, and the previous instalment's Liouville argument
+    finishes.
+
+  This closes the normal-form half of the semi-definiteness step.  The remaining gap in the whole
+  chain is now a single quantitative statement: that the normalised modulus of a theta function is
+  **bounded**, which for a cocompact period group is compactness of a fundamental domain and in the
+  quasi-Abelian case is the corresponding statement for the Vogt decomposition.
+
+- 2026-08-08 (eleventh instalment) -- **Boundedness of the normalised modulus is built**, and with
+  it semi-definiteness in every direction carrying a nonzero value.
+  `HTGeometry/PeriodicBoundedThetaNorm.lean`, axiom-clean and wired.
+
+  mathlib proves this only for a full `ZLattice` (`IsZLattice.isCompact_range_of_periodic`), which
+  a quasi-Abelian period group is not.  The statements here ask only for a compact covering set.
+
+  * `range_subset_image_of_periodic_of_covers` -- a periodic function attains all its values
+    already on any set covering the space modulo its periods.  No topology at all; axioms
+    `[propext]` only.
+  * **`exists_bound_of_periodic_of_compact_cover`** -- hence a continuous periodic function with a
+    compact covering set is bounded above.
+  * **`exists_bound_thetaNorm_of_compact_cover`** -- applied to `thetaNorm`, whose period
+    invariance came from the Appell--Humbert normal form.
+  * `nonneg_re_of_thetaNorm_bounded_of_ne_zero` and **`nonneg_re_of_compact_cover_of_ne_zero`** --
+    the composite: a theta function that is nonzero somewhere on a complex line through the origin
+    forces `Re H (v,v) >= 0` in that direction.
+
+  This is the semi-definiteness input in the form the chain consumes.  The one step still missing
+  is the passage from *some* direction to *every* direction: the argument above uses a line through
+  the origin, and a theta function nonzero at `z0` needs the same estimate along the affine line
+  `z0 + C v`, where the cross term `Re H (z0, t v)` is linear in `t` and is absorbed by completing
+  the square against the Gaussian.  That is an inequality, not new geometry.
+
+  Completed in the same instalment: `HTGeometry/AffineGaussianSemidefinite.lean` removes the
+  restriction to lines through the origin, and with it the last gap in the semi-definiteness step.
+
+  * `eq_zero_of_gaussian_decay_along_affine_line`, `hermitianForm_affine_re`
+    (`Re H (z0 + s v, z0 + s v) = Re H (z0,z0) + 2 Re H (z0, s v) + |s|^2 Re H (v,v)`), and
+    `abs_hermitianForm_cross_le` (the cross term is linear in `|s|`).
+  * **`eq_zero_along_affine_line_of_neg`** -- a negative direction kills a bounded theta function on
+    *every* affine line in that direction.  The linear cross term is absorbed by completing the
+    square, `2|s|B <= (-c/2)|s|^2 + 2B^2/(-c)`, which halves the Gaussian exponent and leaves a
+    constant.
+  * **`nonneg_re_of_thetaNorm_bounded_of_exists_ne_zero`** -- therefore a theta function nonzero at
+    a *single point* forces `Re H (v,v) >= 0` for **every** direction `v`.
+
+  Semi-definiteness is now a theorem, not an input.  The Capocasa--Catanese chain is complete as a
+  sequence of unconditional Lean results:
+
+  ```text
+  factor of automorphy -> logarithm with constant integral defect -> integral alternating form
+    -> Hermitian form with integral imaginary part
+    -> semi-definite (nonzero theta function, compact covering set)
+    -> positive definite (nondegeneracy)
+    -> quasi-Abelian facet certificate.
+  ```
+
+- 2026-08-08 (twelfth instalment) -- **The necessary direction is assembled into one theorem.**
+  `HTGeometry/CapocasaCatanesePositivity.lean`, axiom-clean and wired.
+
+  First a refactor rather than a duplication: the degenerate Cauchy--Schwarz argument of the eighth
+  instalment is now the standalone **`symmBilin_eq_zero_of_self_eq_zero`**, stated for *any* real
+  form whose diagonal expands quadratically along a one-parameter family.  Both the alternating
+  form and the real part of a Hermitian form instantiate it; `altSym_eq_zero_of_self_eq_zero` is now
+  a two-line corollary.
+
+  * `hermitianRe H u v = Re H (u,v)` with `hermitianRe_real_smul` and **`hermitianRe_expand`** --
+    it is a symmetric real bilinear form with the required quadratic expansion.
+  * **`IsHermitianForm.eq_zero_of_self_re_eq_zero`** -- the radical: a null vector of a positive
+    semi-definite Hermitian form is annihilated **entirely**, not only in the real part.  Applying
+    Cauchy--Schwarz to `x` gives `Re H (x,y) = 0` and applying it to `i x` gives `Im H (x,y) = 0`,
+    the second because `Re H (i x, y) = -Im H (x,y)` and `Re H (i x, i x) = Re H (x,x)`.
+  * **`hermitianForm_nonneg_of_theta`** -- semi-definiteness from a theta function nonzero at one
+    point over a period group with a compact covering set.
+  * **`hermitianForm_pos_of_theta_of_nondegenerate`** -- the necessary direction: a nondegenerate
+    Hermitian form carrying such a theta function is positive definite.
+
+  Every link of the Capocasa--Catanese chain is now an unconditional Lean theorem, and the last two
+  links are joined in a single statement.  What is left is bookkeeping only: instantiating the chain
+  at the facet data of this card and rewriting `QuasiAbelianFacetPaletteInput` in
+  `QuasiAbelianFacetPaletteCompletion.lean` so that its fields are supplied by these theorems rather
+  than assumed.
+
+- 2026-08-08 (thirteenth instalment) -- **The certificate is now constructed, not assumed.**
+  `HTGeometry/QuasiAbelianFacetCertificateOfTheta.lean`, axiom-clean and wired.
+
+  * **`certificateOfAlternating`** -- builds a `QuasiAbelianFacetCertificate` from the facet data:
+    a period group with its discreteness, closedness and span deficiency, an alternating compatible
+    form that is integral on the group, semi-definite and nondegenerate, and the vertex incidence.
+    Every analytic field is now supplied by a theorem rather than assumed:
+    - the quotient is `W / Gamma` with its quotient topology, so surjectivity and the fibre
+      description are definitional;
+    - `quotient_noncompact` is `not_isCompact_univ_quotient_of_span_ne_top`;
+    - the Hermitian form is `hermitianOfAlternating`, its four algebraic clauses are the
+      Appell--Humbert dictionary, and `H_positive` is the Cauchy--Schwarz argument;
+    - `H_integral_imaginary` is integrality of the alternating form, because
+      `Im (hermitianOfAlternating E) = E` on the nose.
+  * `exists_certificateOfAlternating` -- the existence form.
+  * **`latticeClass_certificateOfAlternating_eq_iff`** -- for the constructed certificate the
+    lattice class is literally a quotient class, so two integral facet exponents agree exactly when
+    their difference lies in `Gamma`.  The injectivity clause of
+    `QuasiAbelianFacetPaletteInput` therefore stops being an abstract hypothesis and becomes a
+    concrete statement about the period group.
+
+  The structure `QuasiAbelianFacetCertificate` is unchanged; what changed is that it now has a
+  constructor whose every analytic field is a theorem of this tree.  The one hypothesis still
+  standing in `QuasiAbelianFacetPaletteInput` is `latticeClass_eq_implies_shift_eq`, which the
+  bridge above reduces to the statement that the facet's integral lattice meets `Gamma` only at
+  zero -- card property 5, and the only remaining link between the analytic certificate and the
+  Stanley--Reisner shift data.
+
+- 2026-08-08 (fourteenth instalment) -- **`QuasiAbelianFacetPaletteInput` is discharged.**  Added to
+  `HTGeometry/QuasiAbelianFacetCertificateOfTheta.lean`, axiom-clean.
+
+  * **`paletteInputOfCertificates`** -- injectivity of the lattice class is *all* the palette input
+    needs.  Given a family of facet certificates whose lattice classes are injective, the whole
+    `QuasiAbelianFacetPaletteInput` is constructed: the structural-shift clause is immediate,
+    because equal classes already force equal exponents.  So the second field of that structure was
+    never an independent analytic assumption -- it is implied by the first property the card proves.
+  * **`latticeClass_injective_of_free`** -- for a certificate built by `certificateOfAlternating`,
+    injectivity of the lattice class is exactly card property 5 in its concrete form: the facet's
+    integral lattice meets the period group only at the origin.  The proof is the quotient-class
+    bridge plus `sub_zsmul`.
+
+  Both fields of the input structure are therefore now theorems of this tree, given the facet data.
+  Combined with `quasiAbelianFacetPalette_necessity` the card's six properties hold for every facet
+  with no analytic hypothesis left unproved:
+
+  ```text
+  facet data (period group, vertex incidence, integral nondegenerate alternating form)
+    -> certificateOfAlternating         : all six certificate clauses
+    -> latticeClass_injective_of_free   : injective integral facet lattice
+    -> paletteInputOfCertificates       : QuasiAbelianFacetPaletteInput
+    -> quasiAbelianFacetPalette_necessity : the card's theorem.
+  ```
+
+- 2026-08-08 (fifteenth instalment) -- **Section "Proof, step 1" is closed, and most of it was
+  already corpus-owned.**
+
+  `HTGeometry/StanleyReisnerFacetSeparator.lean` already proves the card's equations (7)--(9) in a
+  *stronger* form: the choice of one vertex `b_B in A \ B` per other facet is unnecessary.  By the
+  corpus's characterisation of the Stanley--Reisner ideal through monomial supports, the facet
+  monomial `prod_{w in A} x_w` itself is the separator -- `srProd_facet_ne_zero` gives `q_A notin
+  I_Delta`, and `srVertexX_mul_srProd_facet_eq_zero` gives `x_v q_A in I_Delta` for `v notin A`.
+  The card's product `q_A = prod_{B != A} x_(b_B)` and the choice it requires are not needed.
+
+  Missing was only the converse half of (9).  `HTGeometry/StanleyReisnerExponentDetector.lean`,
+  axiom-clean and wired, supplies it:
+
+  * **`srExponentDetector`** -- the corpus face detector reads the coefficient of a *squarefree*
+    monomial; the same construction works at any exponent whose support is a face, because the
+    criterion it rests on (`coeff_eq_zero_of_isFace_support`) never used squarefreeness.
+  * **`srMonomial_ne_zero`** -- a monomial with face support is nonzero in the Stanley--Reisner ring.
+  * **`srVertexX_mul_srProd_facet_ne_zero`** -- the facet monomial survives multiplication by a
+    vertex it contains, since the exponent `1_v + 1_A` still has support `A`.
+  * **`srVertexX_mul_srProd_facet_eq_zero_iff`** -- equation (9) exactly:
+    `x_v q_A in I_Delta  iff  v notin A`.
+
+  So the annihilator of the facet separator is *precisely* the complement of the facet, which is
+  what the vertex-incidence field of the certificate needs.

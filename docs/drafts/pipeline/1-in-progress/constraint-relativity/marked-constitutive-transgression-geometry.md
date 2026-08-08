@@ -2,12 +2,13 @@
 
 - **ID:** `marked-constitutive-transgression-geometry`
 - **Stage:** 1 — in progress
-- **Type:** BOLD CANDIDATE NEW MATHEMATICAL FIELD / FOUNDATIONAL PROGRAM
-- **Field:** **Constraint Relativity**
+- **Type:** LOCAL R/L CONSTITUTIVE SECTOR / PRECURSOR PROGRAM
+- **Field:** **Nomological Geometry and Dynamics**, local marked-observer sector
 - **Technical core:** **Marked Constitutive Transgression Geometry (MCTG)**
-- **Status:** `[BOLD FIELD PROGRAM] [EXACT KINEMATICS] [DYNAMICS CONJECTURAL]`
+- **Status:** `[LOCAL SECTOR] [EXACT KINEMATICS] [DYNAMICS CONJECTURAL]`
   `[MARKED PORTS REQUIRED] [TOTAL TRANSGRESSION OPEN] [GLOBAL INDEX OPEN]`
   `[NOT YET A FOUNDED FIELD] [NOT RH] [NO LEAN WRITTEN]`
+- **Higher replacement:** `../nomological-geometry-and-dynamics/nomological-geometry-and-dynamics.md`.
 - **Kinematic precursor:** `constraint-relativity-curved-relative-observer-geometry.md`.
 - **Exact paper anchors:**
   `../../2-fully-proven/constraint-relativity/relative-law-observer-descent-duality.md`,
@@ -16,12 +17,15 @@
   `../../2-fully-proven/constraint-relativity/source-soldering-transport-defect-cocycle-and-law-symbol.md`,
   `../../2-fully-proven/constraint-relativity/factor-framed-tensor-jacobian-defect-law.md`,
   `../../2-fully-proven/constraint-relativity/banach-two-boundary-observer-radical-and-horizon-layer-duality.md`.
-- **Statement:** Corpus points to relativity of mathematical exactness under marked observers.
+- **Statement:** R/L/marked-observer sector points to relativity of mathematical exactness under
+  marked observers.
   Arithmetic source classes, geometric relative lifts, spectral covectors, completion ideals,
   polarization, and physical charges are different faces of a constitutive transgression system.
   Obstruction may change degree/carrier under observer change but cannot be declared erased until
-  total source class and all marked-port pairings vanish. A genuine field begins only when these
-  faces arise from one source-derived total class and global index law.
+  total source class and all marked-port pairings vanish. Full-corpus census has falsified claim
+  that one total class/global index suffices universally. NGD retains capacity, admission,
+  propagation, order, cofinality, selection, and physical cost as typed curvature/action shadows of
+  a source-witnessed reduction field rather than components of one scalar MCTG class.
 
 ## 0. Direct answer: what all of this is a shadow of
 
@@ -137,6 +141,10 @@ Fix covariant realization functors on admissible source subcategory `mathsf S^ep
  \tag{MCTG.3a}
 \]
 
+This `Mod`-valued chart applies only where target transports descend as maps. Full cofinal Gamma
+transport on fixed quotient is generally a linear relation off center. Its NGD realization must use
+`LinRel`/correspondences and cannot be inserted into `(MCTG.3a)` by assuming two-sided descent.
+
 MCTG adds source-derived **marked constitutive observer**, a natural transformation
 
 \[
@@ -186,11 +194,18 @@ Before total class, classify constrained natural-transformation space
  \tag{MCTG.5a}
 \]
 
-subject to fixed ideals, block-port covariance, reflection, polarization, and source normalization.
-Its existence/uniqueness torsor is concrete. Literal Route R forces test: does full source naturality
+subject to fixed subspaces, block-port covariance, reflection, and polarization. This is vector
+space/equalizer. Source normalization is separate affine slice
+
+\[
+ \{\sigma:\nu(\sigma_{a_0}(\eta))=1\},
+\]
+
+where `eta,nu` must already be pre-divisor source data. Its existence/uniqueness torsor is concrete.
+Literal Route R forces test: does full source naturality
 kill both `R_p+lambda epsilon_1` and arbitrary `P_v`? If space remains large, MCTG fails as selector;
 if empty, physical observer is not source-natural in proposed category; if normalized singleton,
-first genuine constitutive field object exists.
+first genuine MCTG sector object exists.
 
 ## 4. Total transgression class — proposed curvature
 
@@ -236,10 +251,19 @@ admissibility derives unique `sigma`. Therefore `(MCTG.6)` is open, not an axiom
 
 ## 5. Field equation requires index and charge
 
-One Gauss equality is insufficient. For closed source two-cell `Sigma`, first define relative face
+One Gauss equality is insufficient. For closed source two-cell `Sigma`, first construct realization
 
 \[
- r_\Sigma=\tau_{\mathrm{rel},\Sigma}([\Theta_{\mathrm{src}}]),
+ e_\Sigma:
+ \operatorname{target}(\tau_{\mathrm{rel},\Sigma})
+ \longrightarrow \mathcal R^n(a_\Sigma),
+ \tag{MCTG.8r}
+\]
+
+and only then define relative face
+
+\[
+ r_\Sigma=e_\Sigma\tau_{\mathrm{rel},\Sigma}([\Theta_{\mathrm{src}}]),
  \qquad
  s_\pm=\pi_\pm\sigma(r_\Sigma).
  \tag{MCTG.8a}
@@ -288,7 +312,7 @@ Both pushforwards must be built without right sides from pre-divisor source oper
 equations are tautological. For Route R, `(MCTG.9)` would be `beta_t=0`; `(MCTG.10)` is independent source
 nonerasure. Assuming them only at Xi zeros is RH-equivalent.
 
-`[NONERASING_SOURCE_INDEX_CONJECTURE]` Literal rational-adelic source has closed two-cell and
+`[RH-EQUIVALENT ENDPOINT CONJECTURE, NOT SOURCE MECHANISM]` Literal rational-adelic source has closed two-cell and
 normalized charge satisfying `(MCTG.9)`--`(MCTG.10)`.
 
 Hard falsifier: generalized-prime cell obeying all proposed source axioms with nonzero charge but
@@ -444,13 +468,14 @@ typed maps and one class.
    proof application?
 12. Can source index theorem explain why determinant/positivity routes see origin avoidance but not
    portwise support?
-13. What is exact normalized natural-transformation space `(MCTG.5a)` for smallest literal
-    rational-adelic source category generated by scaling, prime isotropy, Fourier/Poisson,
-    reflection, zero/Haar endpoints, and Euler--Gamma port transport?
+13. What is exact unnormalized intertwiner space for smallest literal rational-adelic source
+    category generated by scaling, prime isotropy, Fourier/Poisson, reflection, zero/Haar endpoints,
+    finite Euler--Gamma transport, and singular all-prime/cofinal relation? What independent source
+    charge cuts it to normalized affine slice?
 
 ## 12. Falsifiable predictions
 
-1. Successful RH route must destroy literal Haar ambiguity; trace, scaling, period one, and
+1. Successful Route-R/MCTG selector must destroy literal Haar ambiguity; trace, scaling, period one, and
    reflection alone cannot.
 2. It must produce ordered fixed-ideal constitutive section before zero specialization.
 3. It must prove both port diagonality and nonzero source charge.

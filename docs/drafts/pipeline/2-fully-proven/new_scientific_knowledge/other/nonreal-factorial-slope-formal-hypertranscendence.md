@@ -438,9 +438,15 @@ Layer plan, bottom up.
 | G3 | `(3)`: `Γ(1+αn+w)/(Γ(1+αn)(1+αn)^w) → 1`; principal-log additivity `(αn)^w = α^w n^w` | `HTGeometry/GammaRayShiftAsymptotic.lean` | **done** |
 | E1 | ray-log split `Re(α log(1+αn)) = Re(α log α) + r log n + O(1/n)`; one-step Gamma ratio in log form; the defect recursion `D(n+1) − D(n) = (α log(1+(αn)⁻¹)).re − (r log(1+(rn)⁻¹)) + ReE_α(n) − ReE_r(n)` | `HTGeometry/GammaRayRealEnvelope.lean` | **done** |
 | E2 | **`(5)`**: the two-sided envelope `exists_rayEnvelope` | `HTGeometry/GammaRayRealEnvelope.lean` | **done** |
-| C | `(8)`/`(13)`: the uniform factorial-convolution endpoint bound | — | open |
-| D | `(15)`/`(14)`: endpoint expansion of an ADE coefficient and the separant | — | open |
-| T | `(20)`/`(21)`: a nonzero periodic trigonometric polynomial cannot vanish at infinity | — | open |
+| E3 | the **factorial** form: `Γ(1+rn) ≍ n^{±B}(n!)^r r^{rn}` and hence `‖Γ(1+αn)‖ ≍ n^{±B}(n!)^r Λ^n`, `Λ = e^{Re(α log α)}`; plus the reusable telescoping lemma `exists_log_bound_of_step` | `HTGeometry/FactorialRayEnvelope.lean` | **done** |
+| C1 | the **entropy core** of `(8)`/`(13)`: `(∏ nᵢ!)·M^R ≤ 2^R·R!·M!` for any composition of `M` with no part above `M−R` — and its real `r`-th power | `HTGeometry/FactorialCompositionBound.lean` | **done** |
+| C2 | the **remainder bound**: `TruncDom r a K B c G : ∀n, ‖[X^n]G‖·C(n,n−K)^r ≤ c(n+1)^B (n!)^r a^n`, stable under sums and under multiplying by a jet truncated at `K`; hence `exists_truncDom_aeval` for every differential polynomial, with `B, c` independent of `K` | `HTGeometry/TruncatedJetCoeffBound.lean` | **done** |
+| F1 | the card's hypothesis `(2)` as a structure `FactorialSlope`, its normalisation `slopeNorm → 1`, and **`(3)`**: `a_{N+h}/(a_N·Λ^h·(αN)^{αh}) → 1` for every fixed forward shift `h` | `HTGeometry/FactorialSlopeCoeffRatio.lean` | **done** |
+| F2 | final assembly: divide `(15)` by `a_N N^M`, feed the surviving trigonometric polynomial to `trigPoly_coeff_eq_zero_of_tendsto_natLog`, contradict `(14)` | — | open |
+| D1 | first-order Taylor expansion of an `MvPolynomial` at a perturbed point, defect in `J²` | `HTGeometry/MvPolynomialFirstOrderTaylor.lean` | **done** |
+| D2 | **`(15)`**: the endpoint expansion `[X^N]P(jets) = ∑ⱼ∑_{q<R} [X^q]((∂ⱼP)(jets))·[X^{N−q}](jetsⱼ) + [X^N]P(S)`, **exact** for `N ≥ 2R` | `HTGeometry/PowerSeriesEndpointExpansion.lean` | **done** |
+| D3 | **`(14)`**: a minimal nonzero relation has a nonvanishing separant | `HTGeometry/MinimalAnnihilator.lean` | **done** |
+| T | **`(20)`/`(21)`**: a trigonometric polynomial vanishing along `log N` has zero coefficients — `trigPoly_coeff_eq_zero_of_tendsto_natLog` | `HTGeometry/TrigPolyLogVanishing.lean` | **done** |
 
 Design notes fixed by the audit of the paper proof:
 
@@ -465,6 +471,64 @@ terms of `rayEnvelopeDefect_succ_sub` are bounded by `2/n`, `2/n`, `‖α‖(6+2
 so `|D(n+1) − D(n)| ≤ K/n ≤ 2K/(n+1)`; `1/(n+1) ≤ log(n+1) − log n` telescopes this to
 `|D n| ≤ C₀ + 2K log n` (`abs_rayEnvelopeDefect_le`), a `Finset.sup'` over `Finset.range (n₀+1)`
 absorbs `n ≤ n₀` (`exists_rayEnvelopeDefect_bound`), and `B := ⌈2K⌉₊` exponentiates it.
+
+Layers D1–D3 replace the card's combinatorial `(15)` and its "least order, then least degree in the
+highest jet" selection by two exact algebraic facts.
+
+* `(15)` is **not** an asymptotic statement.  Split each jet at degree `K = N − R` into low part `S`
+  and high part `L`; the `Lⱼ` generate `(X^{K+1})`, and `(X^{K+1})² = (X^{2K+2})` is invisible to
+  `[X^N]` once `N ≥ 2R`.  So the *first-order Taylor expansion* of `P` at `S` is an exact identity
+  for that one coefficient, and the endpoint coefficient is literally `[X^q]((∂ⱼP)(jets))` —
+  multiplicities for repeated factors are supplied by the derivative, not by bookkeeping.
+* `(14)` needs only **minimal total degree**: a relation of total degree `0` is a constant, which
+  cannot be annihilated when the structure map is injective; so a minimal relation has a variable
+  occurring in it, `∂ⱼP ≠ 0` for that variable (characteristic zero, via `coeff_pderiv`), its total
+  degree is strictly smaller (`totalDegree_pderiv_add_one_le`, absent from mathlib), and minimality
+  forbids it from being a relation.
+
+Layer F1 splits `(3)` into three factors that each tend to `1`, so no uniform error bookkeeping is
+needed: the normalisation `aₙ/(C Λⁿ Γ(1+αn))`, whose defect is the hypothesis' `e^{-cn}`; the
+oblique Gamma shift ratio `tendsto_gamma_ray_shift_ratio`; and the base-point comparison
+`(1+αN)^w/(αN)^w → 1`, which is `exp(w log(1+1/(αN)))` by the principal-log splitting already
+proved in `GammaRayRealEnvelope`.  `tendsto_coeff_shift_ratio_split` then separates
+`(αN)^{αh} = α^{αh}·N^{αh}`, which is the form the chirp needs.
+
+Layer C2 avoids compositions entirely.  Instead of expanding `[X^N]P(S)` over `Fin d`-tuples, the
+saving is carried as an *invariant of an induction on the polynomial*: the predicate
+`TruncDom` multiplies correctly because of the purely combinatorial
+
+`C(n, n∸K) ≤ C(n,q)·C(n−q, (n−q)∸K)`   for `q ≤ min(n,K)`   (`choose_sub_le_mul_choose`),
+
+which holds with **no** hypothesis relating `n` to `K`: when `n−q > K` it is the exact identity
+`C(n,q)C(n−q,(n−q)−K) = C(n,n−K)C(n−K,q)`, and when `n−q ≤ K` it is the factorial valley, whose
+guard `n ≤ 2K` is automatic there.  Combined with `(p!)^r(q!)^r C(n,q)^r = (n!)^r` this makes the
+whole remainder bound a three-case induction (`C`, `+`, `·X`).
+
+Layer C1 is sharper and simpler than the card's `(11)`–`(13)`: no convexity of `x log x`, no
+case split at `√N`, no Stirling.  With `s = M − max nᵢ`, the multinomial bound gives
+`(∏ nᵢ!)·C(M,s) ≤ M!` (`prod_factorial_mul_choose_le` — true for *any* index, the max is only used
+afterwards); every part being `≤ M−R` together with `max ≥ M/d` puts `s` in `[R, M−R]`, where the
+*factorial valley* `s ↦ s!(M−s)!` is at most its endpoint value (`factorial_valley_le`), so
+`C(M,s) ≥ C(M,R)` (`choose_le_choose_of_between`, absent from mathlib); and
+`M^R ≤ 2^R R! C(M,R)` from `Nat.pow_sub_le_descFactorial`.  The exponent is `rR`, not the card's
+non-sharp `rR/2`.
+
+Layer T needs no Lipschitz and no equidistribution input: for fixed `x`, the integers
+`⌊e^{x+kp}⌋` reproduce `x` modulo the period `p = 2π/|λ|` with error `≤ 1/⌊e^{x+kp}⌋`, so
+periodicity + continuity alone give `T(x) = 0` (`eq_zero_of_periodic_of_tendsto_natLog`).
+Coefficient extraction is the substitution `w = e^{iλx}`, turning `T` into a Laurent polynomial with
+infinitely many roots on the unit circle (`trigPoly_coeff_eq_zero`).
+
+**Reformulation that carries layers C and D** — now proved, as `exists_factorialRayEnvelope`:
+
+```
+‖Γ(1+αn)‖ ≍ n^{±B} · (n!)^r · Λ^n,    Λ = e^{Re(α log α)} = |α^α|,  r = Re α.
+```
+
+So `(8)`/`(13)` becomes a statement about `(n!)^r`, whose entropy bound is the elementary binomial
+inequality — no Stirling series for `Real.Gamma` is needed there either.  The reusable telescoping
+step `exists_log_bound_of_step` (`|D(n+1) − D(n)| ≤ K/n ⟹ |D n| ≤ C + 2K log n`, small `n` absorbed
+by a `Finset.sup'`) is now available for any further comparison of this shape.
 
 * `(5)` does **not** need the sharp Stirling constant.  A two-sided envelope with a fixed polynomial
   factor, `c₁ n^{-B₀} A^n Γ(1+rn) ≤ ‖Γ(1+αn)‖ ≤ C₁ n^{B₀} A^n Γ(1+rn)`, is enough: the endpoint

@@ -98,4 +98,3 @@ theorem deningerMemSchattenClass_one_comp_of_hilbertSchmidt (c : HilbertBasis ι
 end TraceClass
 
 end RHTower
-
