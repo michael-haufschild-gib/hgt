@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ArithmeticDilationProjectiveLimit
-import GaloisForLFunctions.RHTower.FredholmDeterminantZeta
+import GaloisForLFunctions.HTGeometry.FredholmDeterminantZeta
 import GaloisForLFunctions.RHTower.NuclearRankOneSchatten
 import GaloisForLFunctions.RHTower.SuzukiDiagonalResolventInstantiation
 import GaloisForLFunctions.RHTower.TraceClassCyclicity

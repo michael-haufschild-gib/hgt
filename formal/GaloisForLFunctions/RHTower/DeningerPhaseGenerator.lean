@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.MaximalRealDiagonalSelfAdjoint
+import GaloisForLFunctions.HTGeometry.MaximalRealDiagonalSelfAdjoint
 import GaloisForLFunctions.RHTower.DeningerBoundaryHodgeOperator
 
 /-!

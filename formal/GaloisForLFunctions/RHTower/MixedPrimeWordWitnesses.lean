@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.PrimeWordSupportSelector
+import GaloisForLFunctions.HTGeometry.PrimeWordSupportSelector
 
 /-!
 # Realizations of the mixed prime-word interface

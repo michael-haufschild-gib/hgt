@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.EulerFisherCurvature
 import GaloisForLFunctions.RHTower.HighExponentShellOrthogonalDivisorReplication
 import GaloisForLFunctions.RHTower.MobiusPlueckerNormalConeDiagonalLift
 import GaloisForLFunctions.RHTower.SquarefreeFixedCurrentLocalization
-import GaloisForLFunctions.RHTower.FredholmDeterminantZeta
+import GaloisForLFunctions.HTGeometry.FredholmDeterminantZeta
 import GaloisForLFunctions.RHTower.FermionicFockIsospectrality
 import Mathlib.Analysis.Calculus.FDeriv.WithLp
 import Mathlib.Analysis.Complex.LocallyUniformLimit

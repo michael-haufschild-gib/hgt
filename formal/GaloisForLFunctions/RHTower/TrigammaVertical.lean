@@ -9,7 +9,7 @@ derivative at the center is too.  Hence `ψ′(σ+it)` is the limit of the parti
 itself: `‖ψ′(σ+it)‖ ≤ 1/t² + π/(2t)` — the curvature-scale datum of the archimedean winding.
 -/
 import GaloisForLFunctions.RHTower.ArchEnvelope
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 
 open Complex Filter Metric
 

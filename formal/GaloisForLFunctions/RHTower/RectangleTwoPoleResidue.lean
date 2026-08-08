@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.RectangleResidue
+import GaloisForLFunctions.HTGeometry.RectangleResidue
 
 /-!
 # A two-pole rectangle residue theorem

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.HTGeometry.Peeling
 
 /-!
 # Peeling an arbitrary finite analytic zero packet

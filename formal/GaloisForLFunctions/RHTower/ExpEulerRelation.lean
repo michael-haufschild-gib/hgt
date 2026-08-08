@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.IntegralizedConjugateSet
 import GaloisForLFunctions.RHTower.ReducedSubsetSumPoly
 import GaloisForLFunctions.RHTower.OrbitSumDegree
-import GaloisForLFunctions.RHTower.ScaledHermiteContradiction
+import GaloisForLFunctions.HTGeometry.ScaledHermiteContradiction
 
 /-!
 # The non-monic Lindemann–Weierstrass contradiction

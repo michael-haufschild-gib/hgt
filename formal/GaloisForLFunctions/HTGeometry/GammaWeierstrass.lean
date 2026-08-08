@@ -22,7 +22,7 @@ Weierstrass product, hence the reciprocal `(s · e^{γ s} · Γ(s))⁻¹` of the
 archimedean `1/Γ` factor realized as the characteristic determinant of an explicit operator, the
 archimedean analogue of `ζ(s)⁻¹ = det₁(1 − diagMul(p ↦ p^{−s}))` (`fredholmDet1_eq_inv_riemannZeta`).
 -/
-import GaloisForLFunctions.RHTower.FredholmDeterminantZeta
+import GaloisForLFunctions.HTGeometry.FredholmDeterminantZeta
 import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 import Mathlib.Analysis.SpecialFunctions.Log.Summable

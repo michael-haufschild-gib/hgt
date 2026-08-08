@@ -18,7 +18,7 @@ enclosed order sum (the deck charge) and the cumulative on-line order up to the 
 crossing is even (the seam sign, read off parity).
 -/
 import GaloisForLFunctions.RHTower.WindingXiCircle
-import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.HTGeometry.Peeling
 import GaloisForLFunctions.RHTower.SeamSignParity
 import GaloisForLFunctions.RHTower.RealRootTower
 import GaloisForLFunctions.RHTower.RiemannTower

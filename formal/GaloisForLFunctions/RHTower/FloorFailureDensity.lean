@@ -25,7 +25,7 @@ equidistribution engine instead:
   model measure is discharged by `block_smallball_condition`; equidistribution moves it to
   the line.
 -/
-import GaloisForLFunctions.RHTower.WeylEquidistribution
+import GaloisForLFunctions.HTGeometry.WeylEquidistribution
 import GaloisForLFunctions.RHTower.RouteBBlockStep
 import GaloisForLFunctions.RHTower.BohrTransfer
 

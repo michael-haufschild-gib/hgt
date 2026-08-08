@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CanonicalEulerLog
+import GaloisForLFunctions.HTGeometry.CanonicalEulerLog
 import GaloisForLFunctions.RHTower.HeatApertureEchoLadder
 
 /-!

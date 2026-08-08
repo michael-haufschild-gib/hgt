@@ -35,7 +35,7 @@ class constructed from `ξ` beyond the conversion-constant dictionary `idx ↦ o
 -/
 import GaloisForLFunctions.RHTower.WeldChargeFaithfulness
 import GaloisForLFunctions.RHTower.WeldChargeConnecting
-import GaloisForLFunctions.RHTower.WeldCircleFaithfulness
+import GaloisForLFunctions.HTGeometry.WeldCircleFaithfulness
 import GaloisForLFunctions.RHTower.XiDeckCharge
 
 open scoped BigOperators

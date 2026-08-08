@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CanonicalProductPredicateSplit
+import GaloisForLFunctions.HTGeometry.CanonicalProductPredicateSplit
 import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardHardyTransport
 
 /-!

@@ -1,5 +1,5 @@
 import Mathlib.NumberTheory.PrimeCounting
-import GaloisForLFunctions.RHTower.ArchimedeanCorank
+import GaloisForLFunctions.HTGeometry.ArchimedeanCorank
 import GaloisForLFunctions.HTGeometry.KroneckerFlow
 
 /-!

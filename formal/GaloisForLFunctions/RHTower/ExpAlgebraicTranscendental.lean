@@ -28,8 +28,8 @@ exponent uniquely attained with coefficient the pure product `a_0^{d−|·|} a_n
 -/
 
 import Mathlib
-import GaloisForLFunctions.RHTower.ScaledHermiteContradiction
-import GaloisForLFunctions.RHTower.SymmetricConjugateIntegral
+import GaloisForLFunctions.HTGeometry.ScaledHermiteContradiction
+import GaloisForLFunctions.HTGeometry.SymmetricConjugateIntegral
 
 open Polynomial MvPolynomial Filter Complex
 open scoped Classical Nat

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ZeroEstimate
+import GaloisForLFunctions.HTGeometry.ZeroEstimate
 import GaloisForLFunctions.RHTower.FriableAuxiliary
 import GaloisForLFunctions.HTGeometry.ExponentialSumDA
 

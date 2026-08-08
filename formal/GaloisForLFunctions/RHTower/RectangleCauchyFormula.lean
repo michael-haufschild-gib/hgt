@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.RectangleResidue
+import GaloisForLFunctions.HTGeometry.RectangleResidue
 import GaloisForLFunctions.RHTower.CarrierSlope
 
 /-!

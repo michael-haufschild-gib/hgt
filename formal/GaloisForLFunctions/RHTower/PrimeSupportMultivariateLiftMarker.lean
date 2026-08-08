@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeSupportLiftParityNoGo
-import GaloisForLFunctions.RHTower.PrimeWordSupportSelector
+import GaloisForLFunctions.HTGeometry.PrimeWordSupportSelector
 import GaloisForLFunctions.HTGeometry.SquarefreeVeroneseIdeal
 
 /-!

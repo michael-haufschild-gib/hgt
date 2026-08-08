@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CayleyDefectDynamicalVisibility
-import GaloisForLFunctions.RHTower.WCoordinate
+import GaloisForLFunctions.HTGeometry.WCoordinate
 import GaloisForLFunctions.RHTower.XiWardEndpointSourceIndex
 
 /-!

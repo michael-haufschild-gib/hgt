@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SoninAnnulusPacket
-import GaloisForLFunctions.RHTower.SoninCosineRiemannLebesgue
+import GaloisForLFunctions.HTGeometry.SoninCosineRiemannLebesgue
 
 /-!
 # High-frequency asymptotics of the annular wavepacket

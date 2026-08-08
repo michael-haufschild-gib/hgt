@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance
-import GaloisForLFunctions.RHTower.SeamSpectrumTranscendence
+import GaloisForLFunctions.HTGeometry.SeamSpectrumTranscendence
 
 /-!
 # Weld-spectrum geometric-layer hypertranscendence universality

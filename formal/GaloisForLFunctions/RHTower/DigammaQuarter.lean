@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DigammaBounds
+import GaloisForLFunctions.HTGeometry.DigammaBounds
 import GaloisForLFunctions.HTGeometry.GammaLogDeriv
 
 /-!

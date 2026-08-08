@@ -2,7 +2,7 @@
 
 - **ID:** `ROUTE-E-GRADE-RECURRENT-SPARSE-RESERVOIR-CUBE-001`
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / EXPLICIT SOURCE RELATION / ROW-ADMISSION SURVIVOR
+- **Type:** THEOREM (paper) / EXPLICIT SOURCE RELATION / OPPOSITE-SIGN NEAR-HALL SURVIVOR
 - **Parent:** `../../1-in-progress/route-e-squarefree-exponential-gibbs-parity.md`
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
@@ -14,8 +14,9 @@
   source-predeclared family of multiplicative cubes whose coordinate replacements reverse parity,
   change Wold breadth by exactly one with total terminal drift zero or one, keep every corner
   central, spread their subpower-prime reservoirs over a source-independent pool, and have total
-  mixed Gibbs cost
-  (X^{-1/2+o(1)}) per anchored cube.
+  mixed Gibbs cost (X^{-1/2+o(1)}) per anchored cube. After physical collision quotient, every
+  anchor family has at least \(\#A\,X^{-o(1)}\) distinct opposite-sign neighbors; on
+  one-large-prime anchors these can all be forced through moving \(1\to0\) seam.
 
 ## Goal
 
@@ -47,8 +48,8 @@ hypergraph simultaneously passes:
 6. the common-terminal-divisor obstruction for deterministic reservoirs; and
 7. the harmonic-sparsity obstruction for small reservoir pools.
 
-It does **not** prove incoming physical capacity or co-moving cutoff flux.  Those are isolated at
-the end as one exact conjecture on this explicit hypergraph.
+It does **not** prove unit incoming physical capacity or normalized co-moving cutoff flux. Those
+are isolated at end as exact subpower-to-unit Carleson/flux conjecture on this explicit hypergraph.
 
 ## Gates
 
@@ -542,7 +543,7 @@ is at most
 Here (e_K) is the elementary symmetric polynomial.  Indeed,
 
 \[
- {f1}_{\omega_{\cal P}(v)\ge K}
+ {\bf 1}_{\omega_{\cal P}(v)\ge K}
  \le {\omega_{\cal P}(v)\choose K};
 \]
 
@@ -759,7 +760,7 @@ longer an existential (R_X): the only permitted edges and higher cells are those
 ## 9. Scientific status
 
 `[PAPER-PROVED] [NOVELTY UNVERIFIED]` for Lemma 1 and the row-admission/mixed-cost theorem
-`(8)`--`(34)` and for Propositions 2--5.
+`(8)`--`(34)` and for Propositions 2--12, including opposite-sign and seam-compatible near-Hall.
 
 `[CONJECTURE]` for the capacity and co-moving-flux statement in §8.
 
@@ -809,3 +810,388 @@ weighted and seam survivors.
   `Sieve/HarmonicReservoirCapacity.lean`: physical target-to-divisor-subset incidence, reciprocal
   elementary-symmetric layer weight, and factorial harmonic capacity.  Targeted module build and
   axiom audit pass; no full build run.
+
+## 10. Physical collision quotient and near-Hall expansion
+
+The preceding audit left open whether representation collisions could collapse each row by a
+power of \(X\). They cannot. Structured \(E_3\) row supply and its inverse interval width have
+matching square-root exponents after quotienting all labels.
+
+Let \({\cal A}_X\) be any family of central squarefree anchors satisfying (9), and let
+\({\cal N}_X({\cal A}_X)\) be the set of distinct ordinary integers which occur as **full
+terminal corners** \(v_I\) of cubes based at anchors in \({\cal A}_X\). Multiple reservoir,
+block, and \(E_3\) labels producing same integer are counted once.
+
+### Proposition 6 `[PAPER-PROVED PHYSICAL CO-DEGREE]`
+
+Uniformly for every physical integer \(v\) in the extended multiplicative window containing all
+full terminals,
+
+\[
+ \#\{n:\ v\text{ is a full terminal of a cube anchored at }n\}
+ \le X^{1/2+o(1)}.
+\tag{54}
+\]
+
+#### Proof
+
+Fix \(v\). Every terminal is squarefree and has \(O(L)\) prime factors by (27a). To describe an
+incoming anchor, first assign prime factors of \(v\) to inactive part \(a\) and to at most
+\(3\sqrt L\) labeled terminal blocks \(q_i\). Number of assignments is at most
+
+\[
+ (3\sqrt L+1)^{O(L)}=\exp(O(L\log L))=X^{o(1)}.
+\tag{55}
+\]
+
+For each \(q_i\), reservoir \(t_i\) is a divisor of \(q_i\), and all possible choices of its
+prime support contribute another
+
+\[
+ 2^{O(L)}=X^{o(1)}
+\tag{56}
+\]
+
+possibilities. Once \(q_i\) and \(t_i\) are fixed, structured token is fixed as
+\(m_i=q_i/t_i\). Inequality (24) and \(u_i<q_i\) imply
+
+\[
+ 0<q_i-u_i
+ \ll \sqrt{q_it_i}(\log X)^{1.55}.
+\tag{57}
+\]
+
+Thus number of possible integer values of source block \(u_i\) is at most right side of (57)
+plus one. Ignoring squarefreeness, breadth, and ordered-block restrictions only increases count.
+Multiplying over replaced blocks gives
+
+\[
+ \begin{aligned}
+ \prod_{i\in I}O\!\left(\sqrt{q_it_i}(\log X)^{1.55}+1\right)
+ &\le X^{o(1)}\sqrt{\prod_{i\in I}q_i\prod_{i\in I}t_i}\\
+ &\le X^{o(1)}\sqrt{vT}\\
+ &\le X^{1/2+o(1)},
+ \end{aligned}
+\tag{58}
+\]
+
+using \(v\asymp X\) and \(T=X^{o(1)}\) from (18a). Once \(a\), unreplaced data, and all \(u_i\)
+are fixed, anchor \(n\) is fixed. Factors (55)--(56) are absorbed in \(X^{o(1)}\), proving
+(54). ∎
+
+### Proposition 7 `[PAPER-PROVED ROW DEGREE]`
+
+Every central anchor \(n\) has at least
+
+\[
+ X^{1/2-o(1)}
+\tag{59}
+\]
+
+distinct physical full terminals.
+
+#### Proof
+
+Fix one admissible reservoir allocation (17). At every active block, Lemma 1 supplies
+
+\[
+ \gg \frac{\sqrt{y_i}}{(\log y_i)^{0.45}\log\log y_i}
+\tag{60}
+\]
+
+admissible sequential \(E_3\) tokens after all source, reservoir, and previous-token exclusions.
+Therefore number of labeled terminal tuples is at least
+
+\[
+ \begin{aligned}
+ \prod_{i\in I}
+ \frac{\sqrt{y_i}}{(\log y_i)^{0.45}\log\log y_i}
+ &=X^{-o(1)}\sqrt{\prod_{i\in I}\frac{u_i}{t_i}}\\
+ &=X^{-o(1)}\sqrt{\frac{n}{aT}}
+ =X^{1/2-o(1)}.
+ \end{aligned}
+\tag{61}
+\]
+
+Here \(a=X^{o(1)}\) by (14), \(T=X^{o(1)}\) by (18a), and product of at most
+\(3\sqrt L\) logarithmic losses is \(X^{o(1)}\).
+
+Distinct tuples can still give same ordinary terminal only by repartitioning its \(O(L)\) prime
+factors among at most \(3\sqrt L\) labeled blocks. By (55), every physical terminal has at most
+\(X^{o(1)}\) such tuple labels. Quotienting them from (61) leaves (59). ∎
+
+### Corollary 8 `[PAPER-PROVED NEAR-HALL LAW]`
+
+Uniformly for every anchor family \({\cal A}_X\),
+
+\[
+ \boxed{
+ \#{\cal N}_X({\cal A}_X)
+ \ge \#{\cal A}_X\,X^{-o(1)}.}
+\tag{62}
+\]
+
+Indeed, count distinct anchor--terminal incidences. Proposition 7 gives at least
+\(\#{\cal A}_X X^{1/2-o(1)}\) incidences, while Proposition 6 gives each physical terminal at most
+\(X^{1/2+o(1)}\) incoming anchors. Division proves (62).
+
+Because (30) keeps every terminal in a \(1+o(1)\) multiplicative enlargement of its anchor,
+(62) also holds for every physical interval after enlarging only by that co-moving boundary
+width. No global codebook or representation multiplicity enters proof.
+
+## 11. Hostile interpretation of near-Hall law
+
+(62) is real progress but is not fractional Hall capacity. Exact Route E use needs essentially
+\(\#{\cal N}(A)\ge\#A-O(X^{1/2+o(1)})\), with compatible nonnegative loads and endpoint signs.
+Factor \(X^{-o(1)}\) cannot be renamed harmless: for a positive-density family it still permits
+\(X^{1-o(1)}\) uncovered anchors.
+
+What (54)--(62) close is different and sharp:
+
+1. physical collision quotient loses no fixed power beyond square-root row scale;
+2. row supply and worst incoming co-degree meet at same exponent \(1/2\);
+3. remaining Hall deficit is subpower conditioning/constant control, not missing
+   \(X^\delta\)-scale entropy;
+4. co-moving signed seam flux remains completely separate and open.
+
+Thus exact fixed-relation frontier is now:
+
+`SUBPOWER-LOSSLESS-INTERVAL-HALL-AND-COMOVING-FLUX`.
+
+Upgrade near-Hall (62) to load-one interval Hall with only \(X^{1/2+o(1)}\) uncovered Gibbs
+mass, then orient those same weights through seam law (53). Propositions 6--7 cannot supply
+either upgrade by themselves.
+
+## Log extension
+
+- 2026-08-08 — proved physical full-terminal co-degree \(X^{1/2+o(1)}\), row degree
+  \(X^{1/2-o(1)}\), and collision-quotiented near-Hall expansion
+  \(\#N(A)\ge\#A\,X^{-o(1)}\) for every central anchor family. No Lean changed during corpus
+  refactor.
+
+## 12. Parity-sensitive correction and weighted odd-corner near-Hall
+
+Full-terminal expansion (62) is unsigned: checkerboard law (26) makes full terminal opposite to
+anchor only when \(d=|I|\) is odd. Treating (62) itself as opposite-sign Hall would be false.
+Scale-weighted collision count repairs this without losing near-linear expansion.
+
+For each anchor, choose source-defined odd coordinate set
+
+\[
+ S_\star(n)\in\arg\max_{\substack{S\subseteq I\\|S|\ {\rm odd}}}
+ \prod_{i\in S}u_i,
+\tag{63}
+\]
+
+breaking ties lexicographically. Since every \(u_i>1\), this is \(I\) when \(d\) is odd and
+\(I\setminus\{i_0\}\), with \(u_{i_0}\) minimal, when \(d\) is even. Put
+
+\[
+ U_n=\prod_{i\in S_\star(n)}u_i.
+\tag{64}
+\]
+
+Choose one lexicographically first admissible reservoir allocation before inspecting any Möbius
+imbalance. At coordinates outside \(S_\star(n)\), choose one admissible \(E_3\) token at each
+sequential stage; at coordinates in \(S_\star(n)\), retain every admissible token. This defines a
+source-predeclared subrelation \({\cal R}^{\rm odd}_X\subset{\cal R}^{\rm gr}_X\). Every target in
+this subrelation has sign
+
+\[
+ \mu(v_{S_\star})=-\mu(n).
+\tag{65}
+\]
+
+### Proposition 9 `[PAPER-PROVED ODD ROW SUPPLY]`
+
+Every central anchor has
+
+\[
+ \deg_{\rm odd}(n)\ge U_n^{1/2}X^{-o(1)}
+\tag{66}
+\]
+
+distinct opposite-sign physical targets in \({\cal R}^{\rm odd}_X\).
+
+#### Proof
+
+At selected coordinate \(i\), Lemma 1 gives lower bound (60); at unselected coordinates only
+existence is used. Uniform forbidden-support statement permits this sequential choice. Product of
+selected lower bounds is
+
+\[
+ X^{-o(1)}
+ \sqrt{\prod_{i\in S_\star}\frac{u_i}{t_i}}
+ =U_n^{1/2}X^{-o(1)},
+\tag{67}
+\]
+
+because selected reservoir product is \(X^{o(1)}\). As in Proposition 7, at most \(X^{o(1)}\)
+selected tuples can produce one ordinary integer, since target has \(O(L)\) prime factors and at
+most \(3\sqrt L\) labeled blocks. Quotienting proves (66). ∎
+
+### Proposition 10 `[PAPER-PROVED SCALE-WEIGHTED CO-DEGREE]`
+
+Uniformly for every physical target \(v\),
+
+\[
+ \boxed{
+ \sum_{\substack{n:\ (n,v)\in{\cal R}^{\rm odd}_X}}
+ U_n^{-1/2}
+ \le X^{o(1)}.}
+\tag{68}
+\]
+
+#### Proof
+
+Fix assignment of \(v\)'s prime factors to unchanged source factors and selected terminal blocks
+\(q_i\), and fix reservoir divisors \(t_i\mid q_i\). Number of such structural assignments is
+\(X^{o(1)}\), exactly as in (55)--(56). Put
+
+\[
+ Q=\prod_{i\in S_\star}q_i,\qquad
+ T_\star=\prod_{i\in S_\star}t_i.
+\tag{69}
+\]
+
+Inverse interval count (57) gives at most
+
+\[
+ X^{o(1)}\sqrt{QT_\star}
+\tag{70}
+\]
+
+candidate selected source-block tuples. Relation (29) implies \(Q/U_n=1+o(1)\), uniformly.
+After weighting each candidate by \(U_n^{-1/2}\), (70) becomes
+
+\[
+ X^{o(1)}\sqrt{T_\star}=X^{o(1)}
+\tag{71}
+\]
+
+by (18a). Summing over \(X^{o(1)}\) structural assignments proves (68). ∎
+
+### Corollary 11 `[PAPER-PROVED OPPOSITE-PARITY NEAR-HALL]`
+
+For every central anchor family \(A\), its distinct opposite-sign neighbor set in fixed
+source relation satisfies
+
+\[
+ \boxed{\#N_{\rm odd}(A)\ge\#A\,X^{-o(1)}.}
+\tag{72}
+\]
+
+Give each edge from anchor \(n\) weight \(U_n^{-1/2}\). By (66), weighted outgoing mass of every
+anchor is at least \(X^{-o(1)}\). By (68), weighted incoming mass of every physical target is at
+most \(X^{o(1)}\). Double counting proves (72).
+
+This correction is stronger than unsigned (62) in Route E direction and does not assume active
+blocks share multiplicative mass evenly. Even when two active blocks each carry square-root
+source mass, row and incoming exponents cancel through weight \(U_n^{-1/2}\).
+
+### Revised hostile verdict
+
+(72) proves arbitrary-subset opposite-parity expansion up to subpower loss for explicit ordinary
+integer relation. It still falls short of Hall's coefficient \(1\), interval load one, and
+co-moving seam orientation. Exact remaining physical premise stays
+
+`SUBPOWER-LOSSLESS-INTERVAL-HALL-AND-COMOVING-FLUX`,
+
+now with parity already built into near-Hall input.
+
+A concrete sufficient next theorem is now visible. Write
+\(D_n=\deg_{\rm odd}(n)\) and give every odd edge canonical row weight \(D_n^{-1}\). Row sums are
+exactly one. It would suffice to prove interval-uniform column Carleson bound
+
+\[
+ \sup_v\sum_{n\to v}\frac1{D_n}\le1+o(1),
+\tag{73}
+\]
+
+with an \(X^{1/2+o(1)}\) exceptional Gibbs budget and compatible seam orientation. Propositions
+9--10 prove only \(X^{o(1)}\) in place of right side of (73). Thus remaining quantitative gap is
+an exact subpower-to-unit upgrade, not another power-saving theorem.
+
+- 2026-08-08 — hostile parity audit corrected full-terminal near-Hall by maximal odd-corner
+  selection and scale-weighted co-degree; proved opposite-sign near-Hall (72) without balanced
+  active-block hypothesis.
+
+## 13. Seam-compatible odd near-Hall
+
+Proposition 5 gave seam admission one row at a time; Corollary 11 gave odd near-Hall without
+requiring its selected corner to contain seam coordinate. These properties can be imposed
+simultaneously.
+
+Let \(A_1\) be any family of anchors with exactly one prime factor above critical aperture \(z\).
+For \(n\in A_1\), let \(j(n)\in I\) be forced-active block containing that prime, as in
+Proposition 5. Choose
+
+\[
+ S_\dagger(n)\in
+ \arg\max_{\substack{S\subseteq I,\ |S|\ {\rm odd}\\j(n)\in S}}
+ \prod_{i\in S}u_i,
+\qquad
+ U_n^\dagger=\prod_{i\in S_\dagger(n)}u_i,
+\tag{74}
+\]
+
+again with lexicographic tie breaking. Restrict relation exactly as in §12, varying all admissible
+\(E_3\) tokens on \(S_\dagger(n)\) and choosing source-predeclared tokens outside it.
+
+### Proposition 12 `[PAPER-PROVED SEAM-COMPATIBLE ODD NEAR-HALL]`
+
+Every selected target has:
+
+\[
+ \mu(v_{S_\dagger})=-\mu(n),\qquad
+ \#\{p>z:p\mid v_{S_\dagger}\}=0.
+\tag{75}
+\]
+
+Moreover,
+
+\[
+ \deg_\dagger(n)\ge (U_n^\dagger)^{1/2}X^{-o(1)},\qquad
+ \sup_v\sum_{n\to v}(U_n^\dagger)^{-1/2}\le X^{o(1)},
+\tag{76}
+\]
+
+and hence
+
+\[
+ \boxed{\#N_\dagger(A_1)\ge\#A_1\,X^{-o(1)}.}
+\tag{77}
+\]
+
+#### Proof
+
+Odd cardinality of \(S_\dagger\) and checkerboard law (26) give first identity in (75).
+Constraint \(j(n)\in S_\dagger\), forced-active seam law (53), and \(z\)-smoothness of every
+replacement give second identity.
+
+Proofs of (66) and (68) use only that selected coordinate set is source-defined, nonempty, and
+has odd cardinality. Replacing \(S_\star,U_n\) by \(S_\dagger,U_n^\dagger\) proves (76).
+Weighted double count from Corollary 11 proves (77). ∎
+
+Thus simultaneous opposite parity, physical collision quotient, arbitrary-subset near-Hall, and
+literal \(1\to0\) moving-seam crossing are now closed at \(X^{-o(1)}\) loss. Remaining seam
+theorem is quantitative: improve scale-weighted incoming factor in (76) from \(X^{o(1)}\) to
+unit Carleson load while reproducing normalized sector charges. Existence of enough
+seam-compatible physical cells is no longer open.
+
+- 2026-08-08 — imposed forced-active seam coordinate inside maximal odd-corner selection and
+  proved seam-compatible opposite-sign near-Hall (77). Co-moving unit flux remains open.
+
+## 14. Successor: parity coalescence removes selected-mass loss
+
+The maximal odd-set subrelation in §§12--13 is no longer strongest fixed-relation survivor.
+`route-e-parity-coalesced-full-mass-reservoir-cube-law.md` proves that when active count is even,
+coalescing two active blocks into one shift-(-1) replacement coordinate makes cube arity odd
+without deleting either block.  Coalesced (E_3) argument is at least (Y^2), full terminal has
+opposite Möbius sign and Wold drift (-1), all active mass participates, every row has
+(X^{1/2-o(1)}) distinct physical targets, and seam block is automatically replaced.  Mixed cost
+and physical co-degree retain exponents (-1/2) and (+1/2).
+
+Thus scale weight (U_n^{-1/2}) and constrained selections (S_\star,S_\dagger) are valid but
+obsolete proof interfaces.  Current fixed-relation core is unweighted
+`FULL-MASS-ODD-CUBE-UNIT-CARLESON-AND-COMOVING-FLUX`.

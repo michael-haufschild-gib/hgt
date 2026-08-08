@@ -22,7 +22,7 @@ charge.  It does **not** assert that a *specific* `𝓜⁺` weld class equals `�
 apex obstructions are independent (`ω = 0` does not force RH).  The shared object is the *framework*
 (evaluation charges), not the individual class.
 -/
-import GaloisForLFunctions.RHTower.OmegaObstruction
+import GaloisForLFunctions.HTGeometry.OmegaObstruction
 import GaloisForLFunctions.RHTower.DeckChargeCalculus
 
 open scoped BigOperators

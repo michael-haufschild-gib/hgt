@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmEigenbasis
-import GaloisForLFunctions.RHTower.FredholmDeterminantZeta
+import GaloisForLFunctions.HTGeometry.FredholmDeterminantZeta
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact
 

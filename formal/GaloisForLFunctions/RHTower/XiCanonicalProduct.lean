@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CanonicalProduct
+import GaloisForLFunctions.HTGeometry.CanonicalProduct
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 import GaloisForLFunctions.RHTower.XiEntireReal
 

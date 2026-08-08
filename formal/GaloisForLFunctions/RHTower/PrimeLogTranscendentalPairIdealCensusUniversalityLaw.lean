@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PairIdealCensusAlgebra
-import GaloisForLFunctions.RHTower.SeamSpectrumTranscendence
+import GaloisForLFunctions.HTGeometry.SeamSpectrumTranscendence
 
 /-!
 # Prime-log transcendental pair-ideal census universality

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SoninSemilocalGammaLogKernel
 import GaloisForLFunctions.RHTower.SoninSemilocalAllEvenJacobiResidue
-import GaloisForLFunctions.RHTower.CausalFourierBridge
+import GaloisForLFunctions.HTGeometry.CausalFourierBridge
 import GaloisForLFunctions.RHTower.L2FourierIntegralBridge
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 

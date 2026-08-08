@@ -1,5 +1,5 @@
 import Mathlib
-import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.HTGeometry.WeldRateLattice
 
 /-!
 # Schanuel's conjecture welds the prime spectrum into an algebraically independent set

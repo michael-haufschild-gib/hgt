@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.TrigammaExpansionVertical
 import GaloisForLFunctions.HTGeometry.PolygammaShift
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 
 /-!
 # The polygamma expansions to any order on a vertical line

@@ -22,7 +22,7 @@ real form and the weld corollary `log_ratio_transcendental` are unconditional.
 
 import Mathlib
 import GaloisForLFunctions.RHTower.GelfondSchneiderProof.Statement
-import GaloisForLFunctions.RHTower.WeldClassTable
+import GaloisForLFunctions.HTGeometry.WeldClassTable
 
 open scoped Classical
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaXiHybridWeierstrassFredholmUniversalityLaw
-import GaloisForLFunctions.RHTower.FredholmDeterminantZeta
+import GaloisForLFunctions.HTGeometry.FredholmDeterminantZeta
 
 /-!
 # Gamma--prime hybrid Euler--Weierstrass--Fredholm universality

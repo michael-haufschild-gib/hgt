@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PoleLocalizedExactNegativeSquares
 import GaloisForLFunctions.HTGeometry.MovingCanonicalFullTranslationFreeness
-import GaloisForLFunctions.RHTower.CanonicalProductPredicateSplit
+import GaloisForLFunctions.HTGeometry.CanonicalProductPredicateSplit
 
 namespace GaloisForLFunctions.HTGeometry
 

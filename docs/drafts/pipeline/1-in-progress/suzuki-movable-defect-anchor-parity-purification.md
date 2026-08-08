@@ -191,7 +191,7 @@ all selected from the finite Suzuki source, such that the corresponding phase-in
 defects tend to one.  No uniform lower bound on a Laplace overlap is needed: arbitrarily small
 nonzero overlap is amplified by taking `lambda_n` sufficiently close to the attained floor.
 
-## 5. Exact parity-locking dichotomy and actual remaining source theorem
+## 5. Parity-locking dichotomy and its corrected scope
 
 Write
 
@@ -204,25 +204,57 @@ There is an exhaustive logical dichotomy:
 1. for every `A` there exists `a>A` with `d(a)!=0`; or
 2. there exists `A` such that `d(a)=0` for every `a>A`.
 
-Theorem C completely solves first-defect source selection in branch 1.  Therefore the only
-remaining obstruction at this stage is the rigid statement
+Theorem C solves the fixed-interior-anchor ground-pole selection problem in branch 1.  The rigid
+statement
 
 ```text
 SUZUKI-EVENTUAL-PARITY-FLOOR-LOCKING:
   lambda_a^+ = lambda_a^- for every sufficiently large a. (13)
 ```
 
-Route G must now either disprove `(13)` from the literal prime--Gamma screw kernel, or analyze the
-permanently two-parity ground bundle and construct a two-angle selector directly through it.
+was initially recorded as the remaining first-defect obstruction.  That scope is too strong.
+`suzuki-coalescing-anchor-parity-locking-reduction.md` now analyzes the permanently two-parity
+ground bundle directly.  If `r` and `s` are its first visible even and odd polynomial degrees,
+then collapsing the defect base `c downarrow 0` gives ground-polarization gap
+`O(c^(2|r-s|))`, while the movable Xi target has the exact gap
 
-This is strictly sharper than the old bottom-reflection cone:
+```text
+1-kappa_Xi(c)=2 tau_0 c^2+O(c^4),       tau_0>0.
+```
+
+Because `|r-s|` is odd, every nonadjacent case has `|r-s|>=3` and automatically reaches the Xi
+first-jet value at sufficiently large locked apertures.  This is target reachability, not source
+admission.  The only ground-edge residue is the adjacent
+case `|r-s|=1`, where the exact leading coefficient `eta_a` must be compared with `tau_0`; equality
+moves the decision to fourth order.  A finite-shift interior excursion remains possible even when
+that adjacent comparison is unfavorable.
+
+The same theorem proves that the deterministic antipodal blow-up
+
+```text
+(z^2/c) (1-Theta_(Xi,c))/(1+Theta_(Xi,c))
+```
+
+converges meromorphically to a positive scalar multiple of `z^2 xi/xi'`.  Thus a shrinking anchor
+does not create a target-category obstruction.  Exact jet matching now gives off-axis normality by
+Schwarz--Pick, but real-axis Clark-count tightness, source provenance, and full identification
+remain obligations for the finite Suzuki quotients.
+
+The fixed-anchor theorem remains strictly sharper than the old bottom-reflection cone in branch 1:
 
 - no pointwise visibility assumption remains;
 - no uniform observability estimate remains;
 - one fixed interior defect anchor works on the whole selected cofinal sequence;
 - no fixed even-ground assumption remains;
 - no signed `81/85` requirement remains before extension-angle normalization;
-- no torque, safe Hankel minor, or second-jet calculation is relevant until `(13)` is resolved.
+- no torque or safe Hankel minor is needed for fixed-anchor visibility.
+
+It no longer licenses treating `(13)` itself as Route G's frontier.  Reduced-resolvent boundary
+layers now give pre-divisor exact schedules for every sufficiently large nonadjacent locked floor.
+Correct surviving first-jet wall is the cofinal adjacent joint inequality
+`eta_a>=tau_src` and `D/C>=tau_src` where the reduced coefficient applies, plus equality/higher-order
+resonance and failure of every finite-shift interior excursion.  Full route remains at real-axis
+meromorphic normality and source-derived Xi/de Branges identification.
 
 ## 6. Relation to source conservation and verticality
 
@@ -234,22 +266,24 @@ literal finite-aperture ground vectors and exponential defect sources.
 The maximally vertical boundary theorem in `source-horizon-riemann-divisor/main.tex` explains why
 even a fixed-anchor nondegenerate scalar limit cannot by itself be advertised as a bounded
 prime-normal synthesis.  Retaining complete prime-normal rank still forces a singular,
-relation-valued, or topology-changing completion.  Theorem C supplies admission into the scalar
-two-angle family; it does not supply separation of the complete arithmetic source.
+relation-valued, or topology-changing completion.  The coalescing theorem supplies finite-source
+target reachability and off-axis compactness for any exactly matched scalar two-angle family; it
+does not supply source admission or separation of the complete arithmetic source.
 
 ## 7. Hostile audit
 
 1. **Does this prove RH?** No.  It removes finite-aperture and cofinal fixed-anchor visibility as
-   obstructions whenever parity floors are not eventually locked.  Eventual locking and
-   Xi/de Branges identification remain.
+   obstructions whenever parity floors are not eventually locked.  Eventual locking is now reduced
+   further by the coalescing-anchor theorem; Xi/de Branges identification remains.
 2. **Is arbitrary defect-base choice classical?** Yes.  It is parent operator theory and not
    claimed novel.
 3. **Is the Taylor argument classical?** Yes.  Hilbert-valued Taylor expansion and polynomial
    density are parent analysis.
 4. **What may be new?** The exact Suzuki application: projected exponential defect sources purify
    any reflection-invariant ground eigenspace, while countable zero-divisor avoidance chooses one
-   fixed defect anchor on every strict-parity cofinal sequence.  This reduces the selector problem
-   to eventual parity-floor locking.
+   fixed defect anchor on every strict-parity cofinal sequence.  This reduces the fixed-anchor
+   selector problem to eventual parity-floor locking; it does not reduce the full movable-anchor
+   or two-angle problem to that statement.
 5. **Could tiny overlaps defeat ground selection?** No.  The floor is attained and the shift may
    approach it after the source-only overlap is known; the pole amplifies every nonzero overlap.
 6. **Could one choose `c_j` from Xi?** That would violate source admission.  `(11)` is deliberately

@@ -13,7 +13,7 @@ contour integral of the logarithmic derivative reads off the exact integer total
 enclosed off-line zeros: `∮_{∂R} (completedGN)'/(completedGN) = 2πi · Σ_w (order at w)`.  The mod-`n`
 deck cocycle sees only that total mod `n`; the contour integral recovers the full integer count.
 -/
-import GaloisForLFunctions.RHTower.RectangleResidue
+import GaloisForLFunctions.HTGeometry.RectangleResidue
 import GaloisForLFunctions.RHTower.ZetaCarrier
 
 open Complex Set

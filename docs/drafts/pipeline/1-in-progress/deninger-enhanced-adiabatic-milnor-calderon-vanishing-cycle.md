@@ -624,12 +624,21 @@ core because \(Z_{P,h}\) is an invertible gauge for every finite
 2. prove that finite Euler gauges become trivial in the boundary
    quotient while their cofinal connection has the already-proved
    nonzero Mertens-jet and first-trace exponential grades;
-3. identify the Gamma-completed boundary of that single connection
-   with the source logarithmic Green current, hence with Xi divisor
-   support and total multiplicity at the meromorphic level;
-4. prove the two-sided moderate/rapid Beck--Chevalley comparison with
+3. prove that the strict defect maps, before Hermitian polarization,
+   into the already-constructed Gamma/co-Poisson Green transport and
+   its coefficient-faithful Calderón--Witt incidence; the consumer is
+   known, but this source identification is not;
+4. prove the resulting unsquared Green--Stokes chain identity
+   annihilates the resolved Green defect without importing its
+   RH-equivalent physical vanishing;
+5. derive corrected Tate--Floquet/Möbius Poisson descent with literal
+   boundary kernel and real-Fourier seam.  Critical diagonal Floquet
+   subtraction cannot supply this step: it is exactly the von
+   Mangoldt autocorrelation current and has a universal compact
+   two-bump sign wall;
+6. prove the two-sided moderate/rapid Beck--Chevalley comparison with
    the already-constructed arithmetic Poisson--zeta complex; and
-5. prove strictness and presentation independence under prime
+7. prove strictness and presentation independence under prime
    enlargement and admissible cofinal exhaustions.
 
 Success gives the first source-specific passage from a finite-exact
@@ -649,7 +658,7 @@ or loss of the Green pairing.
 - Clause 4 may not be inserted as “regular singularity”; it must be
   proved from ordinary-prime Tate--Milnor incidence and source Green
   data.
-- Clauses 4--5 are RH-equivalent after passage to
+- Clauses 4 and 6--7 are RH-bearing after passage to
   \(O(U)/(\Lambda)\).  They must be obtained from the source comparison,
   not assumed as continuity of the divisor orbit.
 - A positive metric fitted to each spectral character is circular.
@@ -669,7 +678,7 @@ moderate nearby cycle is Meyer's complete zeta quotient and whose
 rapid sector contains every nonzero real irregular slope.  This is
 search noncollision, not a priority certificate.
 
-Potentially new frontier statement is clauses 2--5:
+Potentially new frontier statement is clauses 2--7:
 **ordinary-prime incidence sewing makes the complete source-effective
 Xi conormal moderate while expelling nonzero real adiabatic slopes.**
 
@@ -697,9 +706,17 @@ Xi conormal moderate while expelling nonzero real adiabatic slopes.**
 - [x] require independent source/reporter variables and an
       operator-valued singular graph
 - [x] derive exact RH consumer
+- [x] classify critical Floquet subtraction as the exact von Mangoldt
+      autocorrelation current and prove its universal diagonal sign wall
+- [x] audit actual Gamma/co-Poisson Green transport, physical coefficient,
+      admitted sector, and Calderón--Witt incidence as already constructed
 - [ ] construct all-prime enhanced Euler-gauge defect as the positive
       singular Rees/Tate graph over `(13c)`
-- [ ] identify its Gamma-completed Green boundary and conormal residues
+- [ ] identify that strict defect with the existing Gamma-completed Green
+      boundary and conormal residues
+- [ ] prove its unsquared Green--Stokes annihilation identity before
+      Hermitian polarization
+- [ ] derive corrected Tate--Floquet/Möbius Poisson descent
 - [ ] prove prime-enlargement and cofinal-exhaustion compatibility
 - [ ] construct strict nuclear all-prime enhanced Ind-object
 - [ ] identify moderate boundary with arithmetic Poisson--zeta complex

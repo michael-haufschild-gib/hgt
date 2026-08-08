@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.HTGeometry.Peeling
 import GaloisForLFunctions.HTGeometry.EntireLogarithm
 
 /-!

@@ -14,7 +14,7 @@ the squared roots is the square of the class — the dyadic tower structure, cf.
 Everything is derivative-free: the engine is `pow_root_unique` (identity theorem +
 geometric-sum factorisation), anchored at a single point where f does not vanish.
 -/
-import GaloisForLFunctions.RHTower.KummerObstruction
+import GaloisForLFunctions.HTGeometry.KummerObstruction
 
 namespace RHTower
 

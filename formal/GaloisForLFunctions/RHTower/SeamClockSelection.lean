@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.HTGeometry.WeldRateLattice
 import GaloisForLFunctions.RHTower.SigmaOrbit
 
 /-!

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.BoundedRelationConfinement
 import GaloisForLFunctions.HTGeometry.MagnitudeBalancedAtomExistence
 import GaloisForLFunctions.HTGeometry.MagnitudeAtomBounds
-import GaloisForLFunctions.RHTower.FiniteAlgebraicCoefficientLindemannWeierstrass
+import GaloisForLFunctions.HTGeometry.FiniteAlgebraicCoefficientLindemannWeierstrass
 
 /-!
 # Bounded-relation exponential survival

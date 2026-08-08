@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ExplicitDigammaHerglotzPalette
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 
 /-!
 # Canonical selection of the explicit digamma Herglotz source

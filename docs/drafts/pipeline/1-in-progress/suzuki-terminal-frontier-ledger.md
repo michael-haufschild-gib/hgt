@@ -5,9 +5,26 @@
 - **Terminal objective:** prove RH, disprove RH, or prove a source-complete no-go for Suzuki's
   operator mechanism.
 - **Current terminal result:** none. One-angle holomorphic-gauge, BV/co-Poisson, and regular
-  finite-Rees post-fusion reflected-sewing subclasses are closed. Exact Xi identification now
-  forces a strict first-defect/parity cone and persistent ground leakage, but source admission into
-  that cone is open; two-angle meromorphic Livšic/Hermite--Biehler producer remains live.
+  finite-Rees post-fusion reflected-sewing subclasses are closed. Parity-floor locking is not
+  terminal, and exact jet matching already forces off-axis normality of the singular two-angle
+  quotient. Reduced-resolvent boundary layers give pre-divisor exact schedules for every
+  sufficiently large nonadjacent locked floor. Generic real-axis closure is sharply false: Clark
+  turns may fragment into arbitrarily many vanishing source coherences. On exact boundary layers
+  that coherence converges to a normalized Fourier overlap of the first visible literal ground
+  vector. Its forced origin zero is removable; projective angular speed of the ground Fourier line
+  is the exact overlap-sensitive torque. Fourier-window ground spaces make this speed arbitrarily
+  large on one fixed interval, even for bounded even convolution, so abstract
+  support/parity/source analyticity cannot help. In the literal equation the common prime--Gamma
+  multiplier cancels from projective speed; only low-frequency return coherence of the two actual
+  exterior Hardy ports can supply the arithmetic bound. Exact exterior differentiation leaves
+  projective port coalescence, order-aperture derivative countertransport, and shrinking-set
+  concentration as the regular survival mechanisms. The exact exterior logarithmic tail upgrades
+  actual ports to local `H1` away from zero, removing rough-port escape on every nonzero target
+  window. Cofinal
+  adjacent/resonant control, a subcritical arithmetic angular
+  budget or another restricted-Weil anti-fragmentation theorem, divisor noncancellation, and full theta/Xi
+  identification remain open;
+  two-angle meromorphic Livšic/Hermite--Biehler producer remains live.
 - **Knowledge control:** `suzuki-source-realization-knowledge-ledger.md` classifies every attempted
   mechanism as parent theory, corpus-known, formal closure, failed class, or live source theorem.
   Read it before changing this file.
@@ -587,3 +604,19 @@ Before each new action, answer in this file's log:
   centered-energy law `H_y>0`. The live two-jet question is now the explicit dispersion floor at
   that rational scale; strict positivity alone is insufficient. Paper and unconditional Lean are
   closed.
+- **2026-08-08 parity-locking/frontier correction.** Eventual equality of Suzuki's even and odd
+  floors is not the class-complete first-jet obstruction. At a locked aperture, collapsing the
+  intrinsic defect base `+-ic` compares first visible even/odd ground moments against the movable
+  Xi target. Nonadjacent degrees reach the target first jet because their endpoint gap is `o(c^2)`;
+  this scalar crossing is not source admission. Only adjacent degrees retain coefficient wall
+  `eta_a>=tau_0`, and a finite-shift interior excursion remains possible. Antipodal peeling with
+  deterministic `z^2/c` preserves `z^2 xi/xi'`. Schwarz--Pick closes singular normality on `C\R`.
+  A sharp rational-inner counterfamily proves generic HB/Schur data cannot close the real axis.
+  For literal Suzuki carriers the Clark weight is exactly squared anchor/eigenvector coherence, so
+  overcrowding means source-probability fragmentation; torque alone does not control the missing
+  overlap. Reduced-resolvent boundary layers give exact pre-divisor schedules for every sufficiently
+  large nonadjacent locked floor and expose joint adjacent wall
+  `eta_a>=tau_src`, `D/C>=tau_src`. On these layers Clark coherence converges to one normalized
+  ground Fourier overlap; its projective angular speed gives the sharp sufficient real-axis torque
+  budget. Exact live core: cofinal adjacent/resonant control, literal anti-fragmentation,
+  noncancellation, and theta/Xi identification. No RH claim; Lean corpus read only.

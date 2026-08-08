@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ArchimedeanCorank
+import GaloisForLFunctions.HTGeometry.ArchimedeanCorank
 
 /-!
 # Infinite prime-frequency rank and the differential-transcendence criterion (eq. 6, 30–32)

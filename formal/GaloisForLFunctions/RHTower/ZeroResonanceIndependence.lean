@@ -24,7 +24,7 @@ prime-resonance exponents/values can detect an off-line zero.  A putative off-li
 carried by the *analytic* vanishing relation `ζ(ρ) = 0` coupling an already-generic family, never by
 the family's transcendence type.
 -/
-import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.HTGeometry.WeldRateLattice
 import GaloisForLFunctions.RHTower.SchanuelWeldApex
 
 open Complex

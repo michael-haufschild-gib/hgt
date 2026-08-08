@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.PrimeWordSupportSelector
+import GaloisForLFunctions.HTGeometry.PrimeWordSupportSelector
 
 /-!
 # Marked-support diagonalization of a finite quadratic incidence

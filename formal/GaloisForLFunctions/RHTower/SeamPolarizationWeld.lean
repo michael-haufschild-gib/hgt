@@ -17,7 +17,7 @@ single off-line direction drags in its `J`-partner, so the negative index is `0`
 No carrier is built; the polarization is a *given* compatible structure and the pairing is what it
 forces on the negative cone.
 -/
-import GaloisForLFunctions.RHTower.OmegaComplexStructure
+import GaloisForLFunctions.HTGeometry.OmegaComplexStructure
 import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 
 open GaloisForLFunctions GaloisForLFunctions.RHTower

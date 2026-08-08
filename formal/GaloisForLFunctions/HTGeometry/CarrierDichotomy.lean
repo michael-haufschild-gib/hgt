@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ExponentialSumDA
 import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
-import GaloisForLFunctions.RHTower.SeamKreinStructure
+import GaloisForLFunctions.HTGeometry.SeamKreinStructure
 
 /-!
 # The bounded-carrier criterion: falsification and the corank reformulation

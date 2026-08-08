@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationAnalyticSuperselection
-import GaloisForLFunctions.RHTower.LSeriesPolynomialWeightUniqueness
+import GaloisForLFunctions.HTGeometry.LSeriesPolynomialWeightUniqueness
 import Mathlib.RingTheory.Localization.FractionRing
 
 /-!

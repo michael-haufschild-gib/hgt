@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CountableSpectralDepthFirstReturnLaw
-import GaloisForLFunctions.RHTower.MaximalRealDiagonalSelfAdjoint
+import GaloisForLFunctions.HTGeometry.MaximalRealDiagonalSelfAdjoint
 
 /-!
 # Hamiltonian realization of the universal countable spectral-depth law

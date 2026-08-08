@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.OrbitDiagonalReflectionIntertwiner
-import GaloisForLFunctions.RHTower.SquarefreeDensityLowerBound
+import GaloisForLFunctions.HTGeometry.SquarefreeDensityLowerBound
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Analysis.PSeries
 

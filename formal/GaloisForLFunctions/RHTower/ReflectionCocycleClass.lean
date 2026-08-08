@@ -25,7 +25,7 @@ Thus the functional equation enters the weld category as a class to be computed:
 members carry the nonzero weld ray `log Q`, additive under convolution, while `ζ`'s datum is purely
 archimedean.
 -/
-import GaloisForLFunctions.RHTower.WeldClassTable
+import GaloisForLFunctions.HTGeometry.WeldClassTable
 import GaloisForLFunctions.RHTower.DegreeZeroOffline
 import GaloisForLFunctions.RHTower.IntegralFEPolynomial
 import Mathlib.NumberTheory.LSeries.RiemannZeta

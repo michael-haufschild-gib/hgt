@@ -1,0 +1,805 @@
+# Arithmetic static-local hardness--recurrence window law
+
+- **ID:** `arithmetic-static-local-hardness-recurrence-window-law`
+- **Stage:** 2 -- fully proved on paper
+- **Type:** effective quenched plateau-entry / recurrence-window theorem
+- **Parent:** `../1-in-progress/static-local-complexity-law.md`
+- **Inputs:** `local-clifford-return-excised-phase-incidence-law`,
+  `generic-two-local-spectral-monodromy`
+- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY CANDIDATE]
+  [LEAN DEFERRED BY CORPUS REFACTOR]`
+- **Date:** 2026-08-08
+
+## Public sentence
+
+A single time-independent two-local Hamiltonian with integer couplings can be selected
+algorithmically so that its Choi/thermofield-double orbit reaches the full `2^n/log n` spectral-
+phase complexity scale in **every sufficiently long time window**, while approximate quantum
+returns also occur in every sufficiently long time window.  The same Hamiltonian gives a weaker
+exponential law from one fixed product state.  All window lengths are finite and computable from
+the Hamiltonian.
+
+This is the first explicit computable upper bound on the syndeticity constant in the static-local
+programme.  Its deadline is enormous and it does not prove Brown--Susskind linear growth or the
+conjectured exponential physical time scale.
+
+## What is new relative to the preceding card
+
+`computable-static-local-exponential-state-complexity-law` selected integer local Hamiltonians and
+hard endpoints by a terminating search, but it gave no upper bound on the endpoint time.  The
+present theorem finds the missing clock.  Finite algebraic description prevents every bounded
+integer spectral action from being too small.  A finite Fejer packet then converts that arithmetic
+separation into a uniform moving-window phase-hitting law.  Combining this with the completed-phase
+circuit obstruction gives an effective, quenched, approximate-complexity plateau theorem.
+
+The conclusion is stronger than one first hitting time: a definite fraction of every long enough
+window lies in one robust hard phase cell.
+
+## Theorem A -- arithmetic moving-window phase law
+
+Let `D>=2`, put `d=D-1`, and let `H` be a `D` by `D` Hermitian matrix whose characteristic
+polynomial lies in `Z[X]`.  Label its distinct eigenvalues `E_1,...,E_D` and assume the projective
+frequencies
+
+\[
+ \omega_j=E_{j+1}-E_1\qquad(1\le j\le d)               \tag{1}
+\]
+
+are rationally independent.  Put
+
+\[
+ R=\max(1,\|H\|_{\mathrm{op}}).                         \tag{2}
+\]
+
+For `0<rho<=1`, define
+
+\[
+ \mu_\rho=\left({\rho\over2\pi}\right)^d,
+ \qquad
+ N_\rho=\left\lceil
+   \left({8\pi d\over\rho\mu_\rho}\right)^2
+ \right\rceil,                                          \tag{3}
+\]
+
+and
+
+\[
+ \boxed{
+ \mathcal T(D,R,\rho)=
+ 8(2N_\rho+1)^d(2dN_\rho R)^{D!-1}.}                    \tag{4}
+\]
+
+Let `T^d=(R/2pi Z)^d`, with angular sup-distance `dist_infty`.  For every phase centre
+`theta_* in T^d` and every starting time `u>=0`,
+
+\[
+ \boxed{
+ \left|\left\{t\in[u,u+\mathcal T(D,R,\rho)]:
+ \operatorname{dist}_\infty(t\omega,\theta_*)<\rho
+ \right\}\right|
+ \ge {\mu_\rho\over2}\mathcal T(D,R,\rho).}             \tag{5}
+\]
+
+Thus every phase cube of radius `rho` is visited in every interval of length `(4)`, and it is
+occupied for at least the explicit fraction `mu_rho/2` of that interval.
+
+### Proof of Theorem A
+
+#### 1. Algebraic description bounds every truncated spectral action
+
+Every `E_j` is an algebraic integer.  Let `L` be the splitting field of the characteristic
+polynomial.  It is Galois over `Q`, has degree at most `D!`, and every automorphism of `L` permutes
+the eigenvalues.  Because all roots of the characteristic polynomial are eigenvalues of the
+Hermitian matrix,
+
+\[
+ |\sigma(E_j)|\le R                                      \tag{6}
+\]
+
+for every `sigma in Gal(L/Q)`.
+
+Fix a nonzero `k in Z^d` with `||k||_infty<=N`.  Rational independence makes
+
+\[
+ \beta_k=k\mathbin\cdot\omega\ne0.                       \tag{7}
+\]
+
+It is an algebraic integer, and every conjugate satisfies
+
+\[
+ |\sigma(\beta_k)|
+ \le\sum_{j=1}^d|k_j|\,|\sigma(E_{j+1})-\sigma(E_1)|
+ \le2dNR.                                                \tag{8}
+\]
+
+The field norm of `beta_k` is a nonzero rational integer.  Dividing that norm by all conjugates
+except the identity gives
+
+\[
+ \boxed{
+ |k\mathbin\cdot\omega|
+ \ge(2dNR)^{-(D!-1)}}                                    \tag{9}
+\]
+
+uniformly for `0<||k||_infty<=N`.  This is the arithmetic input.  A minimum pairwise spectral gap
+would not imply `(9)`.
+
+#### 2. A finite Fejer packet detects a phase cube
+
+On `T=R/2pi Z`, let
+
+\[
+ q_\rho(x)=\max\left(1-{|x|_T\over\rho},0\right),
+ \qquad
+ f(\theta)=\prod_{j=1}^dq_\rho(\theta_j-\theta_{*,j}).   \tag{10}
+\]
+
+Then `0<=f<=1`, its positivity set is the open cube in `(5)`, and
+
+\[
+ \int_{T^d}f\,dm=\mu_\rho.                               \tag{11}
+\]
+
+Let `F_N` be the order-`N` Fejer kernel, normalized to have Haar integral one, and put
+
+\[
+ P=f*(F_N^{\otimes d}).                                  \tag{12}
+\]
+
+The polynomial `P` has Fourier support `||k||_infty<=N`, constant coefficient `mu_rho`, and
+
+\[
+ |\widehat P(k)|\le\int f\,dm=\mu_\rho.                 \tag{13}
+\]
+
+For completeness, the one-dimensional Fejer displacement obeys
+
+\[
+ \int_T|x|_T F_N(x)\,dm(x)\le {2\pi\over\sqrt{N+1}}.    \tag{14}
+\]
+
+Indeed, for the representative `|x|<=pi`, split at
+`delta=pi/sqrt(N+1)`.  The inner contribution is at most `delta`.  Outside it use
+
+\[
+ F_N(x)\le{\pi^2\over(N+1)x^2};                          \tag{15}
+\]
+
+the tail mass is at most `pi/((N+1)delta)`, and multiplying it by the maximal distance `pi`
+proves `(14)`.
+
+The product tent in `(10)` is `1/rho`-Lipschitz for the `l^1` distance.  Therefore `(14)` and
+`(3)` give
+
+\[
+ \|P-f\|_\infty
+ \le {2\pi d\over\rho\sqrt{N_\rho+1}}
+ \le {\mu_\rho\over4}.                                 \tag{16}
+\]
+
+#### 3. Every shifted time window has positive cube occupation
+
+For a nonzero Fourier mode, `(9)` implies, uniformly in the starting time `u`,
+
+\[
+ \left|{1\over T}\int_u^{u+T}e^{itk\cdot\omega}\,dt\right|
+ \le {2\over T|k\cdot\omega|}
+ \le {2(2dN_\rho R)^{D!-1}\over T}.                     \tag{17}
+\]
+
+There are fewer than `(2N_rho+1)^d` nonconstant modes.  Combining `(13)`, `(17)`, and the choice
+`T=mathcal T(D,R,rho)` gives
+
+\[
+ {1\over T}\int_u^{u+T}P(t\omega)\,dt
+ \ge\mu_\rho-{\mu_\rho\over4}={3\mu_\rho\over4}.      \tag{18}
+\]
+
+Equation `(16)` now yields
+
+\[
+ {1\over T}\int_u^{u+T}f(t\omega)\,dt
+ \ge{\mu_\rho\over2}.                                  \tag{19}
+\]
+
+Since `f<=1` and vanishes outside the cube, `(19)` proves `(5)`.  Notice that the estimate is
+unchanged by shifting the time interval.  This is what upgrades a first-hit theorem to a
+moving-window law.  QED.
+
+## Theorem B -- effective hard windows and recurrence windows
+
+Fix a unit input `Omega` with spectral weights
+
+\[
+ p_j=|\langle e_j,\Omega\rangle|^2,
+ \qquad C_H(\Omega)=\sum_jp_j^2.                       \tag{20}
+\]
+
+Let `Z` be a finite family of unit target states.  For `r>=1`, let
+
+\[
+ h_r(Z)=\dim_\mathbb C\operatorname{span}
+       \{z^{\otimes r}:z\in Z\}.                       \tag{21}
+\]
+
+Choose `0<a_0<a_1<=1` and assume
+
+\[
+ \boxed{
+ h_r(Z)r!\left({16C_H(\Omega)\over a_0^2}\right)^r<1.} \tag{22}
+\]
+
+Set
+
+\[
+ \rho={a_1-a_0\over4}.                                  \tag{23}
+\]
+
+Then there is a relative phase centre `theta_*` such that, for every `u>=0`,
+
+\[
+ \boxed{
+ \begin{aligned}
+ \big|\{t\in[u,u+\mathcal T(D,R,\rho)]:
+  |\langle e^{-itH}\Omega,z\rangle|^2<a_1
+  \text{ for every }z\in Z\}\big|\\
+ \ge {\mu_\rho\over2}\mathcal T(D,R,\rho).
+ \end{aligned}}                                         \tag{24}
+\]
+
+Independently, for every `0<delta<=1`, every interval of length
+`mathcal T(D,R,delta)` contains a set of times of measure at least
+`mu_delta mathcal T(D,R,delta)/2` on which
+
+\[
+ \inf_{\alpha\in\mathbb R}
+ \|e^{-itH}\Omega-e^{i\alpha}\Omega\|<\delta.          \tag{25}
+\]
+
+Thus robust target avoidance and approximate recurrence are both syndetic: neither can disappear
+for an arbitrarily long time.
+
+### Proof of Theorem B
+
+The completed-phase incidence theorem gives
+
+\[
+ m\{\theta:\exists z\in Z,
+ |\langle\Phi_H(\theta),z\rangle|^2\ge a_0\}
+ \le h_r(Z)r!\left({16C_H(\Omega)\over a_0^2}\right)^r<1. \tag{26}
+\]
+
+The event is invariant under common phase, so `(26)` descends unchanged to the relative
+`d`-torus.  Choose `theta_*` outside it.  If
+`dist_infty(theta,theta_*)<rho`, then
+
+\[
+ \|\Phi_H(\theta)-\Phi_H(\theta_*)\|\le\rho.            \tag{27}
+\]
+
+For every unit `z`,
+
+\[
+ \left||\langle\Phi_H(\theta),z\rangle|^2
+       -|\langle\Phi_H(\theta_*),z\rangle|^2\right|
+ \le2\rho.                                               \tag{28}
+\]
+
+Hence all target overlaps in that cube are strictly smaller than
+
+\[
+ a_0+2\rho={a_0+a_1\over2}<a_1.                          \tag{29}
+\]
+
+Theorem A proves `(24)`.
+
+For `(25)`, apply Theorem A to the cube of radius `delta` centred at the relative origin.  After
+factoring out `e^{-itE_1}`, the norm difference from the initial state is at most the angular
+sup-distance, proving the claim.  QED.
+
+## Theorem C -- ordinary integer two-local Hamiltonians
+
+Fix `n>=2`, `D=2^n`, and `Omega=|0>^{tensor n}`.  There is an integer-coefficient traceless
+two-local Pauli Hamiltonian
+
+\[
+ H_n=\sum_{1\le |S|\le2}\ \sum_{\alpha\in\{X,Y,Z\}^S}
+ A_{S,\alpha}P_{S,\alpha},
+ \qquad A_{S,\alpha}\in\mathbb Z,                       \tag{30}
+\]
+
+with all-to-all two-site supports allowed, such that:
+
+1. its characteristic polynomial has Galois group `S_D` over `Q`;
+2. `Omega` has nonzero overlap with every eigenvector; and
+3. its spectral collision satisfies
+
+\[
+ C_{H_n}(\Omega)<4(2/3)^n.                               \tag{31}
+\]
+
+The sequence `H_n` may be selected by one terminating algorithm.
+
+Now fix a finite dictionary of local gates.  Let `M_n>=2` bound the number of padded gate choices,
+including locations, at one word position, and put `ell_n=ceil(log_2 M_n)`.  For
+`0<epsilon<1/2`, define
+
+\[
+ a_0=1-4\epsilon^2,
+ \quad a_1=1-\epsilon^2,
+ \quad
+ r_n=\left\lfloor{a_0^2\over128}(3/2)^n\right\rfloor,    \tag{32}
+\]
+
+and, whenever `r_n>=4ell_n`,
+
+\[
+ s_n=\left\lfloor{r_n\over4\ell_n}\right\rfloor-1,
+ \qquad
+ \rho_\epsilon={3\epsilon^2\over4}.                     \tag{33}
+\]
+
+Write `C_epsilon` for ancilla-free state-preparation complexity from `Omega`, up to projective
+Euclidean error `epsilon`, over that dictionary.  With
+
+\[
+ R_n=\max(1,\|H_n\|_{\mathrm{op}})
+ \le\max\left(1,\sum_{S,\alpha}|A_{S,\alpha}|\right),    \tag{34}
+\]
+
+every time window of the computable length
+
+\[
+ T_n^{\mathrm{hard}}=
+ \mathcal T(2^n,R_n,\rho_\epsilon)                       \tag{35}
+\]
+
+obeys
+
+\[
+ \boxed{
+ \left|\{t\in[u,u+T_n^{\mathrm{hard}}]:
+ C_\epsilon(e^{-itH_n}\Omega)>s_n\}\right|
+ \ge{1\over2}
+ \left({\rho_\epsilon\over2\pi}\right)^{2^n-1}
+ T_n^{\mathrm{hard}}}                                    \tag{36}
+\]
+
+for every `u>=0`.  In particular, one reaches approximate state complexity
+
+\[
+ s_n=\Omega\left({(3/2)^n\over\log M_n}\right)           \tag{37}
+\]
+
+by a finite computable deadline, and hard endpoints continue to occur with bounded gaps forever.
+
+For every `0<delta<=1`, projective `delta`-returns to `Omega` also occur in every interval of the
+computable length
+
+\[
+ T_n^{\mathrm{return}}(\delta)=
+ \mathcal T(2^n,R_n,\delta),                              \tag{38}
+\]
+
+with the positive moving-window occupation supplied by `(25)`.
+
+### Proof of Theorem C
+
+#### 1. Simultaneous collision, cyclicity, and symmetric Galois group
+
+Consider the real Gaussian ensemble containing every one-site and every two-site Pauli
+orientation, with equal variance on each fixed support.  Product-local Clifford invariance and the
+product-stabilizer second-moment identity give
+
+\[
+ \mathbb E_H C_H(\Omega)\le(2/3)^n.                       \tag{39}
+\]
+
+Consequently the set where `(31)` holds has positive measure.  Simple spectrum and cyclicity of
+`Omega` are generic.  On the simple-spectrum locus collision is continuous, so there is a rational
+open coefficient box `B` on which simplicity, cyclicity, and `(31)` all hold.
+
+The generic characteristic polynomial of the full two-local Pauli family has Galois group `S_D`
+over its rational-function field by `generic-two-local-spectral-monodromy`.  We need an `S_D`
+rational specialization inside `B`, not merely somewhere in coefficient space.  The following
+short quantitative Hilbert argument supplies it.
+
+Write `B=prod_i(a_i,b_i)` with rational endpoints and make the birational substitution
+
+\[
+ T_i={a_i+b_iY_i\over1+Y_i}.                             \tag{40}
+\]
+
+Every positive integral `Y_i` maps into `B`, and `Q(T_1,...,T_m)=Q(Y_1,...,Y_m)`, so the generic
+Galois group remains `S_D`.  After clearing denominators, Castillo--Dietmann's quantitative Hilbert
+irreducibility theorem bounds specializations `Y in Z^m`, `||Y||_infty<=H`, whose Galois group is
+a fixed proper subgroup `K<S_D` by
+
+\[
+ O_{f,\eta}(H^{m-1+[S_D:K]^{-1}+\eta}).                 \tag{41}
+\]
+
+There are finitely many subgroups of `S_D`, and every proper subgroup has index at least two.
+Choose `eta<1/2`.  The union of all bad specializations, together with discriminant and
+denominator zeros, is `o(H^m)`, whereas the positive box `{1,...,H}^m` contains `H^m` points.
+For large `H` there is therefore a positive integral specialization with group `S_D`.  Its image
+under `(40)` is a rational point of `B` satisfying all three required properties.
+
+Clear the common denominators of its Pauli coefficients.  Scaling preserves eigenvectors,
+collision, cyclicity, and the Galois group, and produces `(30)`.  Since Pauli matrices have entries
+in the Gaussian integers and the scaled matrix is Hermitian, its monic characteristic polynomial
+has coefficients in `Z`.
+
+The `S_D` relation-rigidity argument shows that the only rational eigenvalue relation is the trace
+relation.  Hence the `D-1` projective frequencies are rationally independent, as required by
+Theorem A.
+
+#### 2. The circuit union leaves a robust hard phase cell
+
+Let `Z_(n,s_n)` be all outputs of words of length at most `s_n`.  Then
+
+\[
+ h_{r_n}(Z_{(n,s_n)})\le|Z_{(n,s_n)}|
+ \le M_n^{s_n+1}\le2^{r_n/4}.                            \tag{42}
+\]
+
+By `(31)--(32)` and `r!<=r^r`,
+
+\[
+ r_n!\left({16C_{H_n}(\Omega)\over a_0^2}\right)^{r_n}
+ <\left({64r_n(2/3)^n\over a_0^2}\right)^{r_n}
+ \le2^{-r_n}.                                            \tag{43}
+\]
+
+Thus the left side of Theorem B's condition `(22)` is smaller than
+`2^{-3r_n/4}<1`.
+
+Apply Theorem B with `a_0=1-4epsilon^2` and `a_1=1-epsilon^2`.  If a target `z` projectively
+approximates a unit state `psi` within `epsilon`, then
+
+\[
+ |\langle\psi,z\rangle|^2
+ \ge(1-\epsilon^2/2)^2\ge1-\epsilon^2=a_1.              \tag{44}
+\]
+
+Therefore target avoidance at threshold `a_1` implies `C_epsilon>s_n`.  Equations `(24)` and
+`(23)` now give `(35)--(36)`.  The recurrence claim is `(25)`.  QED.
+
+#### 3. Uniform computability
+
+Enumerate rational two-local Pauli coefficient vectors.  For each candidate, all required tests
+are decidable:
+
+- the characteristic polynomial and its Galois group are effective over `Q`;
+- the Krylov determinant deciding cyclicity is rational;
+- for a simple algebraic spectrum, the projectors
+
+\[
+ P_j=\prod_{k\ne j}{H-E_kI\over E_j-E_k}                 \tag{45}
+\]
+
+are algebraic, so the collision is a real algebraic number and comparison with `(31)` is
+decidable.
+
+The existence proof makes the search terminate for every `n`.  Clearing denominators then gives
+`H_n`; `(3)--(4)` compute both window lengths from its integer coefficients.  This proves the
+uniform-computability statement without performing a numerical search in the proof.
+
+## Theorem D -- effective full-scale Choi/thermofield-double alternation
+
+Use the same integer two-local Hamiltonian `H_n` from Theorem C.  On two `n`-qubit registers let
+
+\[
+ |\Phi_D\rangle={1\over\sqrt D}\sum_{x\in\{0,1\}^n}|x\rangle|x\rangle,
+ \qquad
+ |\Phi_{H_n}(t)\rangle=(e^{-itH_n}\otimes I)|\Phi_D\rangle. \tag{47}
+\]
+
+In an eigenbasis of `H_n`, basis independence of the maximally entangled vector gives
+
+\[
+ |\Phi_{H_n}(t)\rangle
+ ={1\over\sqrt D}\sum_{j=1}^D e^{-itE_j}
+       |e_j\rangle|\overline{e_j}\rangle.                \tag{48}
+\]
+
+Thus this trajectory has the same projective frequency vector as Theorems A--C and exactly uniform
+spectral weights.
+
+Let `Delta` be pure-state trace distance.  Fix
+
+\[
+ 0<\delta_0<\delta_1<1/2,
+ \qquad
+ \eta_{\delta_1}=1-\sqrt{1-4\delta_1^2},                 \tag{49}
+\]
+
+and define
+
+\[
+ B_D(\delta_1)=D e^{D/2}
+   \left({\pi\eta_{\delta_1}\over2}\right)^{(D-1)/2},
+ \qquad
+ \kappa_{\delta_1}=-{1\over2}
+  -{1\over2}\log\left({\pi\eta_{\delta_1}\over2}\right). \tag{50}
+\]
+
+Assume `kappa_(delta_1)>0`.  For a finite local gate dictionary on the `2n` qubits, let `M_n>=2`
+bound padded gate choices per word position.  Whenever
+
+\[
+ A_n=\kappa_{\delta_1}(D-1)-\log D-{1\over2}>0,          \tag{51}
+\]
+
+put
+
+\[
+ s_n^{\rm Choi}=
+ \left\lfloor{A_n\over2\log M_n}\right\rfloor-1         \tag{52}
+\]
+
+and assume the displayed floor is at least one.  Then
+
+\[
+ s_n^{\rm Choi}=\Omega\left({2^n\over\log M_n}\right).  \tag{53}
+\]
+
+Set
+
+\[
+ \rho_{\rm Choi}=\delta_1-\delta_0,
+ \qquad
+ T_n^{\rm Choi}=\mathcal T(D,R_n,\rho_{\rm Choi}).       \tag{54}
+\]
+
+If `C_(delta_0)^(Phi)` denotes circuit complexity from the reference state `|Phi_D>` at trace error
+`delta_0`, then every shifted window obeys
+
+\[
+ \boxed{
+ \begin{aligned}
+ &\left|\left\{t\in[u,u+T_n^{\rm Choi}]:
+ C_{\delta_0}^{\Phi}(|\Phi_{H_n}(t)\rangle)>s_n^{\rm Choi}
+ \right\}\right|\\
+ &\hspace{35mm}\ge{1\over2}
+ \left({\rho_{\rm Choi}\over2\pi}\right)^{D-1}
+ T_n^{\rm Choi}
+ \end{aligned}}                                         \tag{55}
+\]
+
+for every `u>=0`.
+
+The reference `|Phi_D>` is a tensor product of `n` Bell pairs.  If the chosen dictionary has an
+exact product-to-`|Phi_D>` preparation of cost `b_n`, then product-reference complexity of the same
+endpoints is at least `s_n^(Choi)-b_n`.  For a standard dictionary containing a Bell-pair creator,
+`b_n=O(n)`, so `(53)` is unchanged.
+
+For any `0<delta_R<=1`, set
+
+\[
+ T_n^R=\mathcal T(D,R_n,\delta_R).                       \tag{56}
+\]
+
+Every interval of length `T_n^R` contains positive-measure projective `delta_R`-returns to
+`|Phi_D>`.  In particular, partitioning time after any `u` into three consecutive blocks of lengths
+
+\[
+ T_n^R,\qquad T_n^{\rm Choi},\qquad T_n^R               \tag{57}
+\]
+
+gives times
+
+\[
+ u\le t_R<t_H<t_R'\le
+ u+2T_n^R+T_n^{\rm Choi}                                \tag{58}
+\]
+
+at which the Choi orbit respectively returns within `delta_R`, has complexity greater than
+`s_n^(Choi)` at error `delta_0`, and returns within `delta_R` again.  Each admissible set has positive
+measure in its block, so the times can be chosen away from block endpoints and the inequalities are
+strict.  The cycle can be restarted after `t_R'` and therefore repeats forever with an explicit
+computable upper bound on every three-regime cycle.
+
+### Proof of Theorem D
+
+The universal Choi phase-target entropy law states that, for every normalized target `z`,
+independently of the eigenbasis,
+
+\[
+ m\{\theta:\Delta(\Phi(\theta),z)\le\delta_1\}
+ \le B_D(\delta_1).                                      \tag{59}
+\]
+
+Words of length at most `s` produce at most `M_n^(s+1)` targets, so
+
+\[
+ m\{\theta:C_{\delta_1}^{\Phi}(\Phi(\theta))\le s\}
+ \le M_n^{s+1}B_D(\delta_1).                             \tag{60}
+\]
+
+The logarithm of the right side is
+
+\[
+ (s+1)\log M_n+\log D+{1\over2}
+       -\kappa_{\delta_1}(D-1).                          \tag{61}
+\]
+
+Equations `(51)--(52)` make `(61)` at most `-A_n/2<0`.  Therefore the circuit
+`delta_1`-balls do not cover the relative phase torus.  Choose a centre `theta_*` outside their
+union.
+
+If `dist_infty(theta,theta_*)<rho_Choi`, the corresponding normalized Choi vectors differ in
+Euclidean norm by at most `rho_Choi`; their pure-state trace distance is no larger.  Were
+`Phi(theta)` within trace distance `delta_0` of one circuit target, the triangle inequality would
+place the centre within
+
+\[
+ \delta_0+\rho_{\rm Choi}=\delta_1                      \tag{62}
+\]
+
+of the same target, a contradiction.  The phase cube is thus uniformly hard at error `delta_0`.
+Theorem A gives `(55)`.
+
+The return statement follows by applying Theorem A to the relative-origin cube of radius
+`delta_R`, exactly as in Theorem B.  Apply that return law to the first and third blocks in `(57)`
+and the hard law to the middle block.  This proves `(58)` and the repeatable explicit alternation.
+QED.
+
+### Exact relation to the prior Choi theorem
+
+`universal-static-choi-complexity-plateau` already proves:
+
+1. completed-time complexity `Omega(D/log M)` for almost every maximally projective static
+   Hamiltonian;
+2. qualitative syndetic hard endpoints; and
+3. ordered recurrence--hardness--recurrence alternation.
+
+It explicitly leaves the syndeticity constant `L` and every quantitative alternation gap open.
+Theorem D does not reclaim those qualitative conclusions as new.  It supplies their first explicit
+computable `L` for an algorithmically selected static two-local integer Hamiltonian and strengthens
+mere hits to positive occupation in every such window.
+
+## Conjecture--failure--repair log
+
+### C0. Bandwidth plus projective rank bounds first plateau entry
+
+**Conjecture.** Fixed dimension, bounded operator norm, and maximal projective rational rank give a
+uniform phase-filling deadline.
+
+**Verdict:** `[FALSE]`.  Rational independence is qualitative.  Frequencies may approach a
+rational hyperplane arbitrarily closely while the operator norm stays bounded, making the filling
+time arbitrarily large.
+
+### C1. Minimum spectral-gap anti-concentration is enough
+
+**Conjecture.** A lower bound on all pairwise energy gaps controls phase filling.
+
+**Verdict:** `[FALSE]`.  The frequency vector `(1,2+eta)` has pairwise energy gaps at least one in
+the spectrum `{0,1,2+eta}`, but the bounded action `2omega_1-omega_2=-eta` is arbitrarily small.
+This independently confirms that the previously retired minimum-gap invariant is structurally
+wrong.
+
+### C2. Truncated spectral action is the correct finite invariant
+
+**Conjecture.** If
+
+\[
+ \Delta_N=\min_{0<\|k\|_\infty\le N}|k\cdot\omega|>0.    \tag{63}
+\]
+
+then a degree-`N` Fejer detector forces every robust phase cell to be occupied in every window of
+length `O((2N+1)^d/Delta_N)`.
+
+**Verdict:** `[PROVED]` in Theorem A, Steps 2--3.  Abstract quantitative torus filling is known;
+the proof is included to close dependencies and preserve explicit constants.
+
+### C3. Finite integer description supplies the missing action bound
+
+**Conjecture.** Algebraic integrality and maximal projective rank force an explicit lower bound on
+`Delta_N` from dimension and spectral height alone.
+
+**Verdict:** `[PROVED]` in `(6)--(9)`.  The field norm gives exponent `D!-1`.
+
+### C4. A collision-good local Hamiltonian can simultaneously be arithmetic-generic
+
+**Conjecture.** One can choose a rational full-two-local Hamiltonian inside the open
+collision-good, cyclic locus while retaining generic `S_D` spectral Galois group.
+
+**First attempt:** Zariski density alone.  **Verdict:** `[INSUFFICIENT ARGUMENT]`; Zariski density
+does not by itself state the required Euclidean local specialization.
+
+**Repair:** Map the positive integral orthant birationally into the open box and use quantitative
+Hilbert irreducibility.  **Verdict:** `[PROVED]` in `(40)--(41)`.
+
+### C5. The arithmetic clock quantifies Choi hardness--recurrence alternation
+
+**Conjecture.** Applying Theorem A to the equal-weight Choi orbit turns the prior qualitative
+syndeticity theorem into an explicit moving-window law at the full spectral-phase complexity scale.
+
+**Verdict:** `[PROVED]` in Theorem D.  It gives positive hard occupation in every window, explicit
+return windows, and an explicit repeatable recurrence--hardness--recurrence cycle.  The qualitative
+syndeticity and alternation were already known in the corpus and are not reclaimed as new.
+
+### C6. The algebraic deadline has Brown--Susskind scale
+
+**Conjecture.** The resulting deadline is exponential in Hilbert-space dimension.
+
+**Verdict:** `[NOT PROVED; CURRENT BOUND FAR WORSE]`.  A generic bounded action can have a full
+`S_D` orbit, so the norm argument naturally pays degree up to `D!`.  The theorem proves effective
+entry and bounded gaps, not the conjectured physical scale, linear ramp, or ramp ordering.
+
+## Novelty and literature audit
+
+1. Dumas--Fischler, *Filling times for linear flow on the torus with truncated Diophantine
+   conditions* (arXiv:2112.11786), reviews and proves sharper abstract filling estimates.  Torus
+   filling itself is therefore **not** claimed as new.
+2. Castillo--Dietmann, *On Hilbert's irreducibility theorem* (arXiv:1602.00314), supplies `(41)`.
+   Arithmetic specialization itself is not new.
+3. Jia--Wolf, *Hay from the haystack* (arXiv:2205.06977), constructs constant-description families
+   with exponential exact complexity and proves approximate hardness for most family members.  It
+   does not give the autonomous orbit/window theorem above.
+4. Haferkamp et al., *Linear growth of quantum circuit complexity* (Nature Physics 2022), proves
+   linear growth for random circuits, explicitly distinguishing those circuits from ordinary
+   time-independent Hamiltonian dynamics.
+5. Bohdanowicz--Brandao, *Universal Hamiltonians for exponentially long simulation*
+   (arXiv:1710.02625), obtains steady static-local complexity growth under computational-complexity
+   assumptions.  The present theorem is unconditional but much weaker in time scaling and growth
+   shape.
+
+The exact novelty candidate is the composition: one algorithmically selectable ordinary static
+two-local integer Hamiltonian, an explicit arithmetic bound on the previously nonquantitative
+syndeticity constant, full spectral-phase-scale robust Choi/thermofield-double complexity, and explicit positive
+occupation in every sufficiently long window, together with effective ordered recurrence windows.
+The product-input theorem is a second, weaker corollary.  No matching theorem was located in
+targeted title/abstract/concept searches.  This is not yet a priority certification.
+
+## Hostile review
+
+### What survives
+
+1. **Unconditional:** no ETH, chaos, random-matrix, complexity-class, or thermodynamic-limit
+   assumption occurs in Theorems A--C.
+2. **Quenched:** one Hamiltonian is selected and then held fixed forever.
+3. **Approximate:** `(36)` excludes the complete finite circuit union at fixed positive error.
+4. **Effective:** after the integer coefficients are selected, the window horizons are explicit and
+   computable.
+5. **Persistent:** the conclusion holds in every shifted window, not only along a sparse sequence.
+6. **Recurrence included:** hard windows and return windows are two consequences of the same
+   arithmetic phase law.
+7. **Full spectral-phase scale:** the Choi/thermofield-double complexity lower bound is
+   `Omega(2^n/log M_n)`, matching the dimension of its `2^n-1` phase torus up to logarithmic
+   factors.
+
+### What a hostile general-journal reviewer must reject if overstated
+
+1. The bound `(4)` is astronomically larger than the Brown--Susskind time scale; it has a `D!`
+   exponent and a phase-volume penalty.
+2. The theorem does not show monotone or linear growth, the first local maximum, maximal
+   complexity, plateau duration at physical scale, or the expected recurrence scale.
+3. The `Omega(2^n/log n)` conclusion is full scale for the `2^n-1`-dimensional spectral-phase
+   orbit, not for arbitrary states on `2n` qubits, whose ambient state space is much larger.  The
+   fixed-product-input theorem reaches only `Omega((3/2)^n/log n)`.
+4. Hamiltonians are two-local in interaction order but all-to-all; geometric finite-range remains
+   open for the arithmetic specialization used here.
+5. The selected integer couplings have no useful uniform height bound in `n`; the construction is
+   computable, not experimentally feasible.
+6. The result concerns state complexity over a fixed finite dictionary, not basis-independent
+   unitary complexity.
+7. Abstract torus filling and Hilbert specialization are known.  Publication novelty rests on the
+   static-local approximate-complexity composition and requires an external specialist priority
+   audit.
+
+**Programme verdict:** genuine frontier movement from non-effective existence to effective
+moving-window occupation, but not yet the full Brown--Susskind growth--plateau--recurrence law and
+not yet sufficient for the master paper's Nature-level claim.
+
+## Formal status
+
+No Lean file was written or built because the corpus is under refactor.  Existing Lean inputs were
+read only.  Future formalization should split into:
+
+1. algebraic-integer field-norm spectral-action bound;
+2. product-Fejer moving-window lemma;
+3. robust phase-cell transfer;
+4. quantitative-Hilbert specialization bridge; and
+5. circuit-window corollary.

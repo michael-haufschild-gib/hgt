@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SmoothNumbers
+import GaloisForLFunctions.HTGeometry.SmoothNumbers
 import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 

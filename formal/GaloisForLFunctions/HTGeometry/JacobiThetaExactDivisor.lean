@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.JacobiThetaRectangleCharge
-import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.HTGeometry.Peeling
 
 open Complex Set Metric Filter
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SchwartzSpectralPullbackForm
-import GaloisForLFunctions.RHTower.CausalFourierBridge
+import GaloisForLFunctions.HTGeometry.CausalFourierBridge
 
 /-!
 # Polynomial differential autocorrelation frames on Schwartz space

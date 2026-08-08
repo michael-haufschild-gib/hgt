@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailProductFiberGlobalReflection
-import GaloisForLFunctions.RHTower.SmoothNumbers
+import GaloisForLFunctions.HTGeometry.SmoothNumbers
 
 /-!
 # The canonical theta packet defines an infinite-rank reflection functional

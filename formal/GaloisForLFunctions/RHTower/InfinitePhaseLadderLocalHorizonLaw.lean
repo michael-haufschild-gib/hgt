@@ -17,7 +17,7 @@ diagonal Hamiltonian.  That Hamiltonian is norm-unbounded on its domain and has 
 distinct energy levels over every finite spectral coordinate.  The capstone theorem combines this
 genuine infinite system with the exact finite nearest-neighbour local record.
 -/
-import GaloisForLFunctions.RHTower.MaximalRealDiagonalSelfAdjoint
+import GaloisForLFunctions.HTGeometry.MaximalRealDiagonalSelfAdjoint
 import GaloisForLFunctions.RHTower.LocalHorizonQuantumReturnLaw
 
 open scoped BigOperators InnerProductSpace LinearPMap

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
-import GaloisForLFunctions.RHTower.CanonicalProductGrowth
+import GaloisForLFunctions.HTGeometry.CanonicalProductGrowth
 import Mathlib.Analysis.Complex.ValueDistribution.FirstMainTheorem
 import Mathlib.Analysis.Complex.BorelCaratheodory
 import Mathlib.Analysis.Complex.Harmonic.Poisson

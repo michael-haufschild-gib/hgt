@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 
 /-!
 # Sharp digamma vertical-line asymptotic

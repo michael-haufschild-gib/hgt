@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.DiagonalEllTwoOperator
-import GaloisForLFunctions.RHTower.MaximalRealDiagonalSelfAdjoint
+import GaloisForLFunctions.HTGeometry.MaximalRealDiagonalSelfAdjoint
 import Mathlib.Analysis.PSeries
 
 /-!

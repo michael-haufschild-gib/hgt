@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticJetFrobenius
 import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
 import GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle
-import GaloisForLFunctions.RHTower.DigammaGaussSeries
+import GaloisForLFunctions.HTGeometry.DigammaGaussSeries
 import Mathlib.Analysis.Distribution.Distribution
 import Mathlib.Analysis.Calculus.Deriv.Support
 import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier

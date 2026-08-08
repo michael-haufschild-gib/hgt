@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.BohrCoefficientUniqueness
+import GaloisForLFunctions.HTGeometry.BohrCoefficientUniqueness
 
 /-!
 # Regular character tomography

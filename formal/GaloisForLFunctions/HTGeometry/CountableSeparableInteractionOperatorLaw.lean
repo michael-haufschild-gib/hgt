@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.EvenEntireSquareFactor
 import GaloisForLFunctions.HTGeometry.FredholmDeterminantInfinite
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 import GaloisForLFunctions.HTGeometry.ReplicaCollisionExtremality
-import GaloisForLFunctions.RHTower.MaximalRealDiagonalSelfAdjoint
+import GaloisForLFunctions.HTGeometry.MaximalRealDiagonalSelfAdjoint
 import GaloisForLFunctions.RHTower.TraceNormBound
 
 /-!

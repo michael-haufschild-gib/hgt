@@ -1,6 +1,6 @@
 import Mathlib.NumberTheory.EulerProduct.Basic
 import GaloisForLFunctions.RHTower.Sieve.EulerDamping
-import GaloisForLFunctions.RHTower.SquarefreeDensityLowerBound
+import GaloisForLFunctions.HTGeometry.SquarefreeDensityLowerBound
 
 /-!
 # The Euler bound for a bounded multiplicative Dirichlet series

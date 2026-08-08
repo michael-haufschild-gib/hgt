@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SymmetricConjugateIntegral
+import GaloisForLFunctions.HTGeometry.SymmetricConjugateIntegral
 import GaloisForLFunctions.RHTower.IntegralizedConjugateSet
 
 /-!

@@ -13,7 +13,7 @@ tail telescopes (partial fraction, shift `2i+2`) to `(i+1)²/M` (`trunc_rational
 `A_trunc = Σ_{k≥d−i} poleExcess(ahead_k) ≤ (i+1)²/(d−i)` (`trunc_ahead_le`) — the `i²/d` scale.
 -/
 import GaloisForLFunctions.RHTower.LegStripThreshold
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 open Real Filter Topology
 noncomputable section
 namespace RHTower

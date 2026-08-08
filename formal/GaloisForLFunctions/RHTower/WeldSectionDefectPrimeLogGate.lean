@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.SeamSpectrumTranscendence
-import GaloisForLFunctions.RHTower.WeldClassTable
+import GaloisForLFunctions.HTGeometry.SeamSpectrumTranscendence
+import GaloisForLFunctions.HTGeometry.WeldClassTable
 
 /-!
 # A section defect that fails the prime-log gate

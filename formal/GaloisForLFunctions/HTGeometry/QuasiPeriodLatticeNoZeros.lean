@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.QuasiPeriodLatticeZeros
 import GaloisForLFunctions.HTGeometry.QuasiPeriodDifferentialAlgebraicity
-import GaloisForLFunctions.RHTower.ExponentialTypeZeroDensity
+import GaloisForLFunctions.HTGeometry.ExponentialTypeZeroDensity
 
 /-!
 # An entire function with constant multipliers over a lattice has no zeros

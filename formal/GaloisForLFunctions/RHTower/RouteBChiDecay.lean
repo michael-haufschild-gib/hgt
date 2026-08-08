@@ -9,7 +9,7 @@ On the critical line `‖zetaChi‖ = 1`; off it the χ-factor decays. Using the
 χ-factor is discharged, and the off-line floor `ε < ‖gN‖` holds whenever the Dirichlet part dominates
 its reflection.
 -/
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 import GaloisForLFunctions.RHTower.RouteBOfflineDomination
 
 open Complex Set intervalIntegral MeasureTheory Real

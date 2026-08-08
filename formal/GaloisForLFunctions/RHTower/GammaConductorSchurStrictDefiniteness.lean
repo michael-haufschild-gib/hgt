@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaOddJacobiCapacity
-import GaloisForLFunctions.RHTower.ZeroEstimate
+import GaloisForLFunctions.HTGeometry.ZeroEstimate
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!

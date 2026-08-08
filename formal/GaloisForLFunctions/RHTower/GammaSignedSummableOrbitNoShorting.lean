@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSignedFiniteOrbitNoShorting
-import GaloisForLFunctions.RHTower.BohrCoefficientUniqueness
+import GaloisForLFunctions.HTGeometry.BohrCoefficientUniqueness
 
 /-!
 # Signed summable Gamma-orbit no-shorting

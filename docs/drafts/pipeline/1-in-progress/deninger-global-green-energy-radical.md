@@ -189,6 +189,44 @@ is formalized in
 `RHTower.deningerCauchyQuotientRestrictions_eq_zero_iff` and
 `RHTower.deningerLocalCauchyEnergy_zero_iff_globalClass_zero`.
 
+## Direct Euler-depleted conservative sector
+
+`DAC_DENINGER_EULER_DEPLETED_MEYER_PERIODIZATION_EXTENSION` removes `(5)` from the direct
+one-prime source route.  For every prime (p), put
+\[
+ \Delta_p=1-\tau_{\log p},\qquad Z^{(p)}=\Delta_pZ,
+ \qquad M_\zeta^{(p)}=H_-/Z^{(p)}(H_\cap).
+\]
+It proves the split strict sequence
+\[
+ 0\to M_\zeta\xrightarrow{\iota_p}M_\zeta^{(p)}
+ \xrightarrow{\overline{\operatorname{Per}}_p}
+ C^\infty(\mathbb R/\log p\,\mathbb Z)\to0,
+\]
+with
+\[
+ \iota_p(M_\zeta)=\ker\overline{\operatorname{Per}}_p,
+ \qquad
+ \Delta_pg\in Z^{(p)}(H_\cap)
+ \Longleftrightarrow g\in Z(H_\cap).
+\tag{6}
+\]
+Thus one depleted prime already gives a strict boundary-preserving conservative restriction on
+the actual coefficient; neither an all-prime simultaneous-kernel argument nor the retired
+endpoint-only fibre law is needed for detection.
+
+The same theorem blocks the naive energy. Every form factoring through
+\(\overline{\operatorname{Per}}_p\), including the full compact prime-circle Dirichlet form, is
+zero on all of \(\iota_p(M_\zeta)\). The direct remaining theorem is therefore a relative form
+\[
+ \mathcal E_p:\ker\overline{\operatorname{Per}}_p^2\to\mathbb C
+\tag{7}
+\]
+whose cochain pullback has radical exactly \(\Delta_pZ(H_\cap)\), and which is compatible with the
+real Fourier seam and centered flow. Once `(7)` is constructed, `(6)` supplies faithfulness
+without any further boundary classification. The full-Cauchy/Bessel method remains an alternative
+construction of `(7)`, not the primary conservativity gate.
+
 ## Attack on `(2)`
 
 Let \(x\) be a middle cocycle with every local energy zero.
@@ -220,24 +258,44 @@ energy.
 
 ## Exact remaining inputs
 
-1. Prove `(4)` on every defining Banach disk of the actual mixed restricted
+1. The noncompact centered-flow seminorm is now concrete:
+   \(r_p(h)=\inf_f p_{1/2}(G_ph-Zf)\) on the Euler-depleted kernel. It is nonzero,
+   prime-independent, and controls translated Gaussian escape; its radical is
+   \(\Delta_p(H_-\cap\overline{Z(H_\cap)}^{\,L^1(e^{t/2}dt)})\).
+   Half-density Floquet periodization now also gives a continuous positive-definite weight-one
+   all-prime Hilbert energy on the full cochain space. The uncorrected quotient retains only exact
+   critical prime-lattice resonances, and every bounded Hilbert correction factors through it.
+   The cofinal lift of the existing secondary two-collar regulator has exact radical equal to the
+   full reflected Calderón graph, which strictly contains the Poisson range. Canonical Möbius right
+   inversion now identifies that range exactly by $H_\cap$ regularity of its preimage. Critical
+   prime-circle subtraction is exactly the von Mangoldt autocorrelation current but is universally
+   indefinite for diagonal nonnegative weights. Actual Gamma/co-Poisson Green transport is already
+   constructed and nonselective. First construct the strict cofinal Euler--Gamma/Möbius gauge
+   defect and prove its non-diagonal unsquared Green--Stokes annihilation. Then derive
+   `DAC_DENINGER_CORRECTED_TATE_FLOQUET_POISSON_DESCENT` with exactly the depleted boundary as
+   kernel before Hilbert closure. The induced correction simultaneously gives relative half-density closedness and the
+   compatible Green/Paugam polarization; then prove real-Fourier/all-divisor admission.
+   Cofinal prime-periodization tomography is
+   algebraically faithful but has nonclosed product range; compact rotation-invariant trace energy
+   is excluded both by the trace-Hodge no-go and its weight-zero covariance.
+2. If the alternative all-place Bessel realization is used, prove `(4)` on every defining Banach disk of the actual mixed restricted
    \(L^1/L^2\) nuclear topology. Quantitative graph-disk escape and the full
    maximum-tail estimate with exact \((\log p)^{-2}\) local norms are proved on the orthogonal
    full-packet block model. Bessel assembly proves it is enough to construct the local full-packet
    restrictions and establish their square-sum bound on each relevant source disk. The comparison
    kernel is automatically their simultaneous kernel. Remaining work is the arithmetic Bessel
    estimate and compatibility with residue, corestriction, Milnor, cup, generic, and real sectors.
-2. Prove the full Cauchy restriction maps commute with every
+3. For that alternative, prove the full Cauchy restriction maps commute with every
    Rost--Schmid differential, Milnor attaching map,
    residue/corestriction, and real orientation descent.  This gives
    boundary preservation needed for quotient descent.  Assembly of
    the six componentwise identities into a three-term chain map is
    already formalized by
    `deningerTwoColumnSignatureCauchyChainMap`.
-3. Prove the conservative boundary law `(5)`: simultaneous local
+4. For that alternative, prove the conservative boundary law `(5)`: simultaneous local
    boundary classes leave only the endpoint sector, then apply
    `DAC_COMPLETED_ARAKELOV_TRACE_KERNEL`.
-4. Prove Green--Stokes vanishing on algebraic finite-support
+5. Prove Green--Stokes vanishing on algebraic finite-support
    boundaries and continuity of `(1)`; the formal closed-boundary
    passage then applies.
 

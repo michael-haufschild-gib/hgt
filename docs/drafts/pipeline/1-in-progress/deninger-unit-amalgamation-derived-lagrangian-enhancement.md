@@ -224,13 +224,41 @@ atoms enter.
 - Full functorial relative Sullivan/Milnor cell resolution: proved
   algebraically.
 - Analytic weight-one Calderón graph: proved Lagrangian.
+- Global rational free-unit analytic leg: now proved on the nuclear prime-log height-Köthe
+  completion.  Its Green inverse has a one-source-height-step estimate, its graph is closed
+  Lagrangian, its Hardy projectors are exact, and all centered Mellin jets remain continuous.
+- Entire rational Milnor word leg: now proved on the product-letter-height/exponential-length bar
+  completion.  Every arithmetic-character sector is split strictly exact; prime-log Green/Hodge
+  operators extend as chain operators, and the balanced sector is contracted by extra degeneracy.
+- First commutative Sullivan leg: linearized quadratic attachment and normalized exterior
+  coproduct now give a continuous primitive for the full completed base Milnor ideal, including
+  balanced character zero.
+- Direct actual-coefficient admission: the Euler-depleted Meyer periodization theorem gives at
+  every prime a split strict extension with $M_\zeta$ as the canonical zero-periodization
+  kernel. It proves one-prime boundary conservativity and rules out every compact prime-trace
+  energy on the admitted sector.
+- Ambient cochain Hodge energy: half-density Floquet periodization and its $p^{-2}$ all-prime sum
+  give continuous positive-definite weight-one energy. Its ordinary Euler-boundary leakage and
+  matching-depletion annihilation alternative are computed exactly. Its Hilbert quotient is
+  resonance-only and every bounded repair factors through it. The cofinal secondary two-collar
+  lift has exact radical equal to the reflected Calderón graph, strictly larger than the Poisson
+  range. Canonical Möbius right inversion identifies the range exactly by $H_\cap$ regularity of
+  its preimage.
 - Finite positive graph--conormal fibre: proved transverse and
   acyclic, including formal complementary-sum theorem in Lean.
 - Finite positive Hodge--Koszul fibre: explicit cdga contraction
   proved.
 - Canonical shifted cotangent/conormal theorem: literature-proved in
   the derived-Artin category.
-- Analytic and Milnor lifts in the finite pro-Stein model: open.
+- Cofinal linearized completion of genuine multiplicative syzygies beyond the first Sullivan
+  attachment, and its strict comparison with the height-Köthe bar/pro-Stein conormal: open but no
+  longer a carrier-admission gate. It is one possible geometric realization of the upstream strict
+  cofinal Euler--Gamma/Möbius gauge defect and its non-diagonal Green--Stokes source differential.
+  The actual Gamma/co-Poisson Green transport already exists; corrected Tate--Floquet/Möbius
+  endpoint/Fourier descent is a downstream interface induced by the missing source differential. The
+  comparison must carry Green contraction on nonzero character and incidence contraction on
+  balanced words; algebraic augmentation to the same two-term target does not prove strictness
+  after completion.
 - Hodge-intersection construction and relative fibre acyclicity: open.
 - Nuclear analytic PTVV passage: open.
 - Paugam comparison: open.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ExponentialTypeZeroDensity
+import GaloisForLFunctions.HTGeometry.ExponentialTypeZeroDensity
 import Mathlib.NumberTheory.Chebyshev
 
 /-!

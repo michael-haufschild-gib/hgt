@@ -26,8 +26,8 @@ densely.  This is the spectral counterpart of clock non-localization (`SeamClock
 weld's own rate spectrum offers nothing discrete to localize on.  It sees no zero of anything; it is
 a property of the primes' logarithms as they sit inside `ℝ`.
 -/
-import GaloisForLFunctions.RHTower.WeldClassTable
-import GaloisForLFunctions.RHTower.ExpNatIrrational
+import GaloisForLFunctions.HTGeometry.WeldClassTable
+import GaloisForLFunctions.HTGeometry.ExpNatIrrational
 
 open Real
 

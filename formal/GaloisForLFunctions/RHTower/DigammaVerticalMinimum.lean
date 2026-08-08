@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DigammaGaussSeries
+import GaloisForLFunctions.HTGeometry.DigammaGaussSeries
 import GaloisForLFunctions.HTGeometry.ExplicitDigammaHerglotzPalette
 import GaloisForLFunctions.RHTower.XiWardInteriorTraceSplit
 

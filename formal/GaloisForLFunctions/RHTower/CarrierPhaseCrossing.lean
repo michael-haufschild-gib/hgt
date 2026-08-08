@@ -11,7 +11,7 @@ import GaloisForLFunctions.RHTower.CarrierTransverseZero
 import GaloisForLFunctions.RHTower.LateralWindingFloor
 import GaloisForLFunctions.RHTower.EulerTailWinding
 import GaloisForLFunctions.RHTower.EdgeEventSynthesis
-import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.HTGeometry.Peeling
 
 namespace RHTower
 

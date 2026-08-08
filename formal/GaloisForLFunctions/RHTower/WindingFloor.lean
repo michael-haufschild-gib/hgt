@@ -9,7 +9,7 @@ over any segment.  Feeding this into the winding cancellation bound makes the re
 moment of the completed carrier decay like `1/log α` with fully explicit constants.
 -/
 import GaloisForLFunctions.RHTower.ArchWinding
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 
 open Complex Metric
 

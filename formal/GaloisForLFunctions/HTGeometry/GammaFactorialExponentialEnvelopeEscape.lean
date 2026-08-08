@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaFactorialThirdJetHarmonicResidue
-import GaloisForLFunctions.RHTower.PolygammaReflection
+import GaloisForLFunctions.HTGeometry.PolygammaReflection
 
 /-!
 # Escape from the exponential-reciprocal envelope

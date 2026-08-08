@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.WeldClassTable
+import GaloisForLFunctions.HTGeometry.WeldClassTable
 import GaloisForLFunctions.RHTower.SuzukiCriticalWallFieldSquareRootWeld
 
 /-!

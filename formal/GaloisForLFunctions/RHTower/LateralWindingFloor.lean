@@ -18,7 +18,7 @@ input is unconditional and explicit, and the residual hypotheses are finite Diri
 data on the edge.
 -/
 import GaloisForLFunctions.RHTower.ArchWinding
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 import GaloisForLFunctions.RHTower.EulerTailWinding
 
 open Complex Metric MeasureTheory

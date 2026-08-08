@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.DissipativeQuantumReturnInformationTransition
-import GaloisForLFunctions.RHTower.UniversalOperationalMemoryFloor
+import GaloisForLFunctions.HTGeometry.UniversalOperationalMemoryFloor
 
 /-!
 # Exact operational memory of finite contractions

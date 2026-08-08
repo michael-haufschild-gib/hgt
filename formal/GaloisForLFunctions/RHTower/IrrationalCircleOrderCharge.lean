@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.CompletedSEMContourBoundary
 import GaloisForLFunctions.RHTower.RHLadderTheory
-import GaloisForLFunctions.RHTower.WeldCircleFaithfulness
+import GaloisForLFunctions.HTGeometry.WeldCircleFaithfulness
 
 /-!
 # A single irrational circle phase detects an integer Xi order

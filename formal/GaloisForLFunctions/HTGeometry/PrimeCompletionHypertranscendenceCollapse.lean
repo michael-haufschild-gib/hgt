@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.ArgumentScalingInvariance
 import GaloisForLFunctions.HTGeometry.InfiniteMultipleEllipticGamma
 import GaloisForLFunctions.HTGeometry.PeriodIntegralIndependenceWitness
 import GaloisForLFunctions.HTGeometry.TrigLinearDA
-import GaloisForLFunctions.RHTower.SmoothNumbers
+import GaloisForLFunctions.HTGeometry.SmoothNumbers
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
 
 /-!

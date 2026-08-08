@@ -25,7 +25,7 @@ exact reflection symmetry across the center.
   symmetric series is constantly `1` on its half-plane of convergence.
 -/
 import Mathlib
-import GaloisForLFunctions.RHTower.WeylEquidistribution
+import GaloisForLFunctions.HTGeometry.WeylEquidistribution
 
 open MeasureTheory intervalIntegral Filter Topology Complex
 

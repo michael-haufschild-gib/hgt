@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
 import GaloisForLFunctions.HTGeometry.MeromorphicPoleOrbitBoundary
 import GaloisForLFunctions.HTGeometry.OrbitBalanceAdditive
-import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.HTGeometry.DigammaAsymptotic
 import GaloisForLFunctions.RHTower.TrigammaVertical
 import GaloisForLFunctions.RHTower.WindingAmplitude
 

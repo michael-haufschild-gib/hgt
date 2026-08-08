@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFourier
-import GaloisForLFunctions.RHTower.DigammaGaussSeries
+import GaloisForLFunctions.HTGeometry.DigammaGaussSeries
 
 /-!
 # Resolvent evaluation against the sharp rectangular Fourier square

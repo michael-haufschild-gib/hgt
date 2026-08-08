@@ -225,6 +225,52 @@ third completion.  A source-faithful construction must additionally
 retain the singular local-cohomology/hyperfunction class at the
 Poisson-time boundary.
 
+## 8 August 2026 height-tame generic Kummer closure
+
+`DAC_PRIME_LOG_HEIGHT_KOTHE_CALDERON_SOURCE` closes the gapless rational Kummer-character sector
+without inventing a spectral gap.  On the signed prime-exponent lattice it uses the already-forced
+multiplicative height
+\[
+ H(m)=\prod_p p^{|m_p|}
+\]
+to form the nuclear Köthe source with seminorms
+\[
+ p_k(a)=\sum_m H(m)^k|a_m|.
+\]
+The exact bound
+\[
+ H(m)^{-1}\le\left|\sum_pm_p\log p\right|\le H(m)
+\]
+makes both the prime-log generator and its Green inverse continuous with one seminorm loss.  On
+this source the all-prime free-unit Dirichlet-to-Neumann graph is a closed Lagrangian relation, the
+odd Hodge sign and both Hardy projectors are exact and continuous, and every centered Mellin jet is
+continuous.  Thus the lack of a uniform signed multi-prime gap is no longer itself an obstruction
+to the pro-Hodge topology.
+
+This does not close item 1 below in full: algebraic-number Kummer faces must still be compared with
+the rational height completion.  `DAC_BALANCED_WORD_HEIGHT_BAR_STRICT_CONTRACTION` now equips the
+rational two-term Milnor target with an entire product-letter-height bar resolution.  Every
+arithmetic-character sector is split strictly exact: prime-log Green controls nonzero total
+character and continuous extra degeneracy controls balanced words.
+`DAC_LINEARIZED_MILNOR_FIRST_SULLIVAN_STRICT_PRIMITIVE` also constructs the first commutative
+attachment and a canonical continuous primitive for the full completed base Milnor ideal.
+`DAC_DENINGER_EULER_DEPLETED_MEYER_PERIODIZATION_EXTENSION` now bypasses further syzygies for
+carrier admission: each prime admits the full actual $M_\zeta$ as a strict closed
+zero-periodization sector and gives exact one-prime boundary conservativity. It also proves that
+the complete scalar prime-circle trace energy is zero on that whole sector.
+`DAC_DENINGER_HALF_DENSITY_FLOQUET_EXACT_SEQUENCE` constructs a positive-definite weight-one
+all-prime Hilbert energy on Meyer cochains. Its exact leakage on an ordinary depleted boundary is
+the nonzero factor \((1-p^{-1/2})\operatorname{Per}_{p,1/2}Zf\); matching twisted depletion instead
+kills the whole admitted sector. Raw Hilbert quotient and every bounded correction are
+resonance-only. The cofinal lift of the existing secondary two-collar regulator has exact radical
+equal to the full reflected Calderón graph, strictly larger than the Poisson range. Canonical
+Möbius right inversion identifies that range exactly by endpoint/Fourier regularity of its
+preimage. What remains load-bearing is a nuclear-topology-singular Gamma/co-Poisson Green--Stokes
+realization of this regularity defect, with exactly the depleted boundaries as kernel and
+compatibility with real Fourier. Cofinal
+Sullivan/pro-Stein, generic Kummer, real-apex, and radial Poisson incidence are now an optional
+geometric construction of this form.
+
 The circle-horizontal sector
 \[
  L^2(B_p)\widehat\otimes\mathbf1_{S_p}
@@ -334,7 +380,8 @@ certificate.
 - [x] distinguish transverse prime-orbit energy from leafwise Kummer
       Hodge energy
 - [x] identify the source-curved Euler-time boundary fracture
-- [ ] construct generic Kummer positive-time form estimates
+- [ ] extend the proved rational prime-log height-Köthe Green/Hodge source to every generic
+      algebraic Kummer face and identify it with the pro-Stein source topology
 - [ ] control Milnor and Meyer Toeplitz cross terms at every \(r>0\)
 - [ ] prove full-Cauchy conservativity for the common source core
 - [ ] identify the pro-Hodge family topology with the Meyer quotient

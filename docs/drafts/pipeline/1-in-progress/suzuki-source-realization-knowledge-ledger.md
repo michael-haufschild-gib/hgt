@@ -21,9 +21,25 @@
   cross-orbit response dispersion minus a nonnegative transverse charge whose zero radical is
   exactly RH. `SR-62` proves the dispersion is strictly positive, damps the complete shifted charge
   below `116/7,968,750,000`, and isolates that same rational value as a sufficient missing
-  dispersion floor; it does not prove the floor or required domination. The pole-compatible two-angle
-  meromorphic Livšic/Hermite--Biehler producer remains Suzuki and is exact live Route-G core;
-  source admission into that cone is unproved.
+  dispersion floor; it does not prove the floor or required domination. `SR-65` removes parity-floor
+  locking and off-axis singular compactness as abstract obstructions. Its reduced-resolvent
+  boundary layers now give pre-divisor exact schedules for every sufficiently large nonadjacent
+  locked floor, while sharply isolating real-axis Clark overcrowding as source-coherence
+  fragmentation. On those boundary layers the coherence limit is one normalized Fourier overlap
+  of the first visible literal ground vector, reducing the wall to a quantitative cofinal sublevel
+  estimate. Its forced origin zero is removable, and its exact projective angular speed isolates an
+  overlap-sensitive ground-frame torque sufficient for the count bound. A sharp Fourier-window
+  ground-space countermodel shows compact support, parity, generic even convolution, finite rank, and exponential sourcing do
+  not bound this torque. In the literal ground equation, the common prime--Gamma multiplier cancels
+  from projective speed, relocating arithmetic content to low-frequency return coherence between
+  the two exterior Hardy ports. Their exact exterior-wedge identity has leading aperture term
+  `2a(u wedge v)` when the ports are locally absolutely continuous. It leaves port coalescence,
+  order-`a` derivative countertransport, shrinking-set concentration, or failure of port
+  regularity as survival mechanisms. The exact logarithmic tail upgrades actual ports to local
+  `H^1` away from zero, eliminating rough-port escape on every nonzero target window. The pole-compatible
+  two-angle meromorphic Livšic/Hermite--Biehler producer remains
+  Suzuki and is exact live Route-G core; cofinal adjacent/resonant control, real-axis
+  anti-fragmentation, noncancellation, and full theta/Xi identification remain unproved.
 - **Read first:** this file, `suzuki-terminal-frontier-ledger.md`, and every cited failed card.
 
 ## Admission rule
@@ -117,6 +133,7 @@ they are not novel scientific knowledge.
 | `SR-60` | `ADVANCE` / `FAILED-CLASS` / `FORMAL-CLOSURE` | For every `a>log(2)/2`, the first-prime atom `-(log 2)/sqrt 2 delta_(x+y-log 2)` is an interior weighted reflection. Arbitrarily many disjoint narrow reflected-even bump pairs give strictly negative directions and reflected-odd pairs give strictly positive directions; the regular-kernel error vanishes with width and all other seams can be avoided. Hence the full literal parity difference has both positive and negative index infinite cofinally. | Kills the positive-index-one/global one-sided min--max survivor suggested by `SR-59`, and every finite-index comparison in either orientation. It does not exclude arithmetic infinite-seam oscillation/variation-diminishing laws, direct credit/debt transport, source transforms, or the two-angle meromorphic producer. Generic delta-Hankel reflection theory is classical; candidate novelty is the exact first-prime Suzuki consequence. | `3-formalized/new_scientific_knowledge/suzuki/suzuki-prime-seam-parity-hankel-strong-indefiniteness.md`; `SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean` |
 | `SR-61` | `TARGET-CLASSIFICATION` / `FORMAL-CLOSURE` | For every positive safe squared shift, the complete multiplicity-exact first reciprocal-moment minor is `H_y-Q_y`: `H_y` is a nonnegative weighted response-slope Hilbert dispersion, `Q_y` is a nonnegative transverse charge, and `Q_y=0` exactly iff RH. At Suzuki's `y=1` prime--Gamma source specialization, the two-jet wall is exactly `Q_1<=H_1`. A singleton off-line atom has strictly negative minor `-Im(lambda)^2|lambda|^2`, so atomwise sector positivity cannot prove the gate. | This is candidate new target classification, not a source-admission advance under this ledger's rule. It exposes the only cancellation mechanism and turns the opaque two-jet wall into one exact source inequality. It proves neither `Q_1<=H_1` nor its failure, source-selected cofinal shifts, common-gauge normality, Xi/Hermite--Biehler identification, or RH. | `3-formalized/new_scientific_knowledge/suzuki-safe-shift-response-charge-cancellation.md`; `SuzukiSafeShiftResponseChargeCancellation.lean` |
 | `SR-62` | `TARGET-QUANTIFICATION` / `FORMAL-CLOSURE` | Safe shifting strictly decreases every response mass and damps each transverse density by `4/85` relative to central orientation. Hence `Q_1<116/7,968,750,000`. Independently, shifted slopes vanish cofinally but remain positive, so infinite Xi support gives the exact centered-energy law `H_y=Re M_0(y) sum a_q(tau_q-bar_tau_y)^2>0`. | This is candidate new quantitative target knowledge, not source admission. It replaces two unscaled nonnegative terms by strict positive dispersion and an explicit charge ceiling. The sufficient floor `116/7,968,750,000<=H_1` remains unproved; qualitative `H_1>0` cannot substitute for it. Cofinal selection, normality, Xi/Hermite--Biehler identification, and RH remain open. | `3-formalized/new_scientific_knowledge/suzuki-safe-shift-transverse-charge-budget.md`; `SuzukiSafeShiftTransverseChargeBudget.lean` |
+| `SR-65` | `ADVANCE` / `FRONTIER-CORRECTION` | At a locked parity floor, first visible degrees give endpoint gap `c^(2|r-s|)`, while Xi has gap `2 tau_0 c^2+O(c^4)`. The intrinsic tangent is `q_a(lambda)=<X,(A_a-lambda)^(-1)X>/<1,(A_a-lambda)^(-1)1>` and theta gives `tau_src=mu_1/2-mu_2/(6mu_1)=tau_0`. A simple tangent root lifts uniquely to an exact analytic branch. Reduced-resolvent boundary layers give singular schedules `lambda_0-lambda~rho c^(2s+2)` in odd-leading sectors and `~rho c^(2r)` in even-leading sectors. Every sufficiently large nonadjacent locked floor therefore has a pre-divisor exact schedule. For adjacent even-leading floors, `min{eta_a,D/C}<tau_src` also guarantees matching; only the joint unfavorable wall can defeat automatic selection. Exact matching implies normality of the blown quotient on `C\R`, but rational-inner finite HB families show sharp real-axis failure. For literal Suzuki, each Clark atom is squared resolvent-vector coherence `C(x)=|<v_(ic),v_x>_T|^2/(||v_(ic)||_T^2||v_x||_T^2)` and phase speed is `2c/((x^2+c^2)C(x))`; overcrowding forces source-probability fragmentation. | Refutes parity-floor locking, nonadjacent scheduling, and generic off-axis compactness as terminal obstructions. Scalar matching is not source admission. Still open: cofinal adjacent joint-wall/resonant control, literal real-axis Clark-count tightness or another anti-fragmentation theorem, divisor noncancellation, full theta/Xi carrier identification, higher-jet reality, and RH. No Lean files were changed during corpus refactor. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`; `1-in-progress/suzuki-movable-defect-anchor-parity-purification.md` |
 
 ## Level lift forced by `SR-35`--`SR-49`: cyclic mechanism retired, `SR-41` terminalized
 
@@ -638,3 +655,25 @@ Before claiming progress, record all answers:
   `Q_1<116/7,968,750,000`. Cofinite slope decay plus infinite Xi support upgrades `H_y>=0` to the
   exact centered-energy law `H_y>0`. Unconditional Lean is closed. The rational dispersion floor
   sufficient for strict wall passage remains the live quantitative gate.
+- **2026-08-08 — coalescing-anchor locking correction (`SR-65`).** Two conjectures were killed
+  before promotion. Prime-seam shape differentiation is unavailable on Suzuki's `H^log` ground
+  domain, and equality of parity floors is not a class-complete obstruction to the two-angle
+  producer. At a locked aperture, first visible even/odd polynomial degrees give exact ground-gap
+  order `c^(2|r-s|)` under defect-base collapse, whereas the movable Xi target has universal gap
+  `2 tau_0 c^2+O(c^4)`. Every nonadjacent collision therefore reaches the target first jet; this is
+  not source admission. The adjacent collision reduces sharply to `eta_a<tau_0`, with equality
+  deferred to fourth order. Exact antipodal peeling retains `z^2 xi/xi'`, and Schwarz--Pick proves
+  the blown matching family normal on `C\R`. A sharp rational-inner counterfamily kills any generic
+  extension through the real divisor. The literal movable Clark mass is exactly resolvent-vector
+  coherence, so remaining real overcrowding is source-probability fragmentation. The pre-divisor
+  source interface is `q_a(lambda)` versus `tau_src=mu_1/2-mu_2/(6mu_1)`. Changed live row:
+  every simple tangent root canonically lifts to an exact analytic branch in `c^2`; generic
+  positivity does not force simplicity. Reduced-resolvent boundary layers close exact pre-divisor
+  scheduling for every sufficiently large nonadjacent locked floor and expose joint adjacent wall
+  `eta_a>=tau_src`, `D/C>=tau_src`. Boundary-layer Clark coherence converges to a normalized ground
+  Fourier overlap. Its forced origin zero is removable, and its projective angular speed gives an
+  exact overlap-sensitive ground-frame torque; a subcritical path budget is sufficient for the
+  literal real-axis wall.
+  Remaining: cofinal adjacent/resonant control, anti-fragmentation, noncancellation, and full
+  theta/Xi identification. Paper proof closed; Lean
+  corpus read only and no formal files changed.

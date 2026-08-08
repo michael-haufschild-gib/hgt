@@ -195,7 +195,7 @@ ensures it sees every generalized zeta-zero functional.  Meyer's
 spectral theorem
 then yields RH, including exclusion of off-line generalized blocks.
 
-## Corrected first subgate: source Calderón orientation before scalar trace
+## Downstream subgate: source Calderón orientation before scalar trace
 
 Arithmetic carrier and additive Poisson comparison are no longer conjectural.  Pro-Stein residue
 fibre is strictly represented by
@@ -233,8 +233,12 @@ whereas Paugam's oriented half-trace `(8)` is nondegenerate.  Swapping halves ne
 nonzero scalar pairing descends from unoriented raw complex.  Full proof and positive survivor are
 recorded in `../5-failed/deninger-relevant-green-paugam-chain-transgression.md`.
 
-First open source object is therefore clauses 2--4 of
-`DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`:
+This card is no longer the first Route-L source gate. Critical Floquet subtraction is exactly the
+von Mangoldt current but is diagonally indefinite, while actual Gamma/co-Poisson Green transport
+and Calderón--Witt incidence are already constructed and nonselective. The upstream gate is the
+strict cofinal Euler--Gamma/Möbius gauge defect and its non-diagonal unsquared Green--Stokes
+annihilation. Once that source theorem induces corrected Tate--Floquet/Möbius Poisson descent, the
+remaining orientation chain is:
 
 1. glue local Kummer, prime-cusp, and real-apex Calderón data through every Tate--Milnor and
    residue/corestriction attachment to a closed global Lagrangian relation;

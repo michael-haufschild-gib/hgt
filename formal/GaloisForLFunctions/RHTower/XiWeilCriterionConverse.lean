@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilResolventGram
-import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.HTGeometry.Peeling
 
 /-!
 # Rank-one detection of an off-critical zero by the Weil form

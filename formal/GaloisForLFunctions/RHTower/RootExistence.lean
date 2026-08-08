@@ -12,7 +12,7 @@ root from the banked construction `U0KummerBranch.exists_analyticOnNhd_pow_eq`, 
 piece-roots at the marked point, and glue along the convex exhaustion
 `Ω ∩ ball z₀ (R+1)` using root rigidity (`pow_root_unique`).
 -/
-import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.HTGeometry.Peeling
 import GaloisForLFunctions.U0.U0KummerBranch
 
 namespace RHTower

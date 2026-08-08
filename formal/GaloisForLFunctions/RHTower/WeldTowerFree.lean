@@ -29,7 +29,7 @@ level.  The link between the free finite weld and ξ's conditional tower is the 
 continuation across the wall), never a pinned finite constraint.
 -/
 import GaloisForLFunctions.RHTower.PrimeDivisorAtomsNoGo
-import GaloisForLFunctions.RHTower.KummerObstruction
+import GaloisForLFunctions.HTGeometry.KummerObstruction
 import GaloisForLFunctions.RHTower.CoherentTower
 import GaloisForLFunctions.Bottcher.HolomorphicBranch
 

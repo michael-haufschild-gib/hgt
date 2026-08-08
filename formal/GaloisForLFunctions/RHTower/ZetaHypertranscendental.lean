@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.LSeriesPolynomialWeightUniqueness
+import GaloisForLFunctions.HTGeometry.LSeriesPolynomialWeightUniqueness
 import GaloisForLFunctions.RHTower.ZetaJetExtraction
 import GaloisForLFunctions.HTGeometry.Hypertranscendence
 

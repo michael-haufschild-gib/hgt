@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.OmegaObstruction
+import GaloisForLFunctions.HTGeometry.OmegaObstruction
 
 /-!
 # Prime-indexed log cochain formulas exist, and are exactly the prime-log cochains

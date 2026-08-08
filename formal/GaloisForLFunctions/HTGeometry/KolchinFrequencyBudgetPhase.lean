@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.ShortExactRankConservation
 import GaloisForLFunctions.HTGeometry.CoveringDimension
 import GaloisForLFunctions.HTGeometry.GammaProjectivePrimeTorusCarrier
-import GaloisForLFunctions.RHTower.GaussPairedChannelSchattenDepth
+import GaloisForLFunctions.HTGeometry.GaussPairedChannelSchattenDepth
 
 /-!
 # Singular and nonautonomous Kolchin-frequency budgets

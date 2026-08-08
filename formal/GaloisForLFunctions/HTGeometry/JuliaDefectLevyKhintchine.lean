@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HyperbolicLevyKhintchine
 import GaloisForLFunctions.HTGeometry.HyperbolicBounds
 import GaloisForLFunctions.HTGeometry.JuliaDefectSpectralEquilibrium
-import GaloisForLFunctions.RHTower.SoninCosineRiemannLebesgue
+import GaloisForLFunctions.HTGeometry.SoninCosineRiemannLebesgue
 
 /-!
 # Lévy--Khintchine law for the Julia compression profile

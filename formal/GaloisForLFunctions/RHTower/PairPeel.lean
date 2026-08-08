@@ -15,7 +15,7 @@ With this, tier (T2)'s general machinery is complete; what remains is
 per-instance (the Rouché count "exactly two zeros in the disc" — doc 48 §2's
 checkable hypothesis) and the analytic supply of the carrier data.
 -/
-import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.HTGeometry.Peeling
 import GaloisForLFunctions.RHTower.DepthUpdate
 
 namespace RHTower

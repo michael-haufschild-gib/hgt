@@ -21,7 +21,7 @@ against the weld frequencies above, an off-line pole is therefore a resonance of
 lattice, not of any finite algebraic sub-collection.
 -/
 import Mathlib
-import GaloisForLFunctions.RHTower.WeldClassTable
+import GaloisForLFunctions.HTGeometry.WeldClassTable
 
 open Complex
 

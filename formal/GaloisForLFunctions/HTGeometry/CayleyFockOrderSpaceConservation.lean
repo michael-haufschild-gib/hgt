@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.WCoordinate
+import GaloisForLFunctions.HTGeometry.WCoordinate
 import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!

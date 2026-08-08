@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaShiftMultiLaw
-import GaloisForLFunctions.RHTower.WeldCircleFaithfulness
+import GaloisForLFunctions.HTGeometry.WeldCircleFaithfulness
 
 /-!
 # The translation-saturated prime-log consequence

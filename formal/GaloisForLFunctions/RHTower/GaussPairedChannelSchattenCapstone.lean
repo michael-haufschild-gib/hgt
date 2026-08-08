@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.GaussPairedChannelSchattenDepth
+import GaloisForLFunctions.HTGeometry.GaussPairedChannelSchattenDepth
 import GaloisForLFunctions.RHTower.WeakSchattenResidue
 
 /-!

@@ -33,8 +33,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards:  docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/sonin
-  
+formalize UNCONDITIONALLY in lean any proven theorem from these cards:  docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other
+
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications.
 
 Lean rules:
@@ -63,7 +63,7 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem for docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other/isogeny-tail-maurer-cartan-holography.md
+formalize UNCONDITIONALLY in lean any proven theorem for docs/drafts/pipeline/2-fully-proven/nad
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done - no simplifications.
 
@@ -88,21 +88,12 @@ goal is met when lean codebase is unconditional.
 if you are not idle, keep going.
 else your task is:
 
-Audit lean corpus for opportunities to:
-1. reuse existing formal results to discharge or simplify a premise
-2. create and formally prove missing connector theorems
-3. subsume theorems under a larger universal law which is nontrivial
-4. open new proof routes or simplify proof routes towards a lean proof of the riemann hypothesis
+Audit lean corpus for opportunities to reuse existing formal results to discharge or simplify a hypothesis, prop interface, premise.
 
 lean corpus:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 - formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
-
-read-only corpus:
-- formal/GaloisForLFunctions/QuantumAlg for lean related to quantum algorithm around prime numbers
-- formal/GaloisForLFunctions/QECLean.lean for lean related to Quantum Error Correction
-- formal/GaloisForLFunctions/PNTPlus.lean for lean related to Prime Number Theorem
   
 lean rules:
 1. You always build in the foreground, 1 build process at a time - other agents are also building in parallel.
@@ -110,7 +101,7 @@ lean rules:
 3. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
 4. make sure you don't leave stale lean processes running - clean up after yourself
 
-Mandatory:
+Mandatory work rules:
 1. no computations.
 2. LEAN PROOFS MUST BE UNCONDTIONAL!!!
 3. no subagents or background tasks
@@ -119,8 +110,6 @@ Mandatory:
    1. If it cannot be done in a single session -> Does not matter. Do it!
    2. If it cannot be done in a single context window -> Does not matter. Do it!
    3. If it takes months -> Does not matter. Do it!
-
-You are not allowed to change the cron timing.
 
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
 
@@ -194,17 +183,16 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about this topic: docs/reports/mass-shifted-spectral-trace-route.md 
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about:
 
-attack the "### 9.3 Exact open core" by using a heavy loop of conjecturing -> proof or fail -> conjecturing -> proof or fail -> conjecturing -> ...
-
-collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route or drift into classical routes. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you.
+collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. 
 
 research rules:
 - use heavy conjecturing
 - always check that you do not play theatre and actually are creating new knowledge
 - focus on hard problems, NO THEATRE, NO INFRASTRUCTURE, EVERY STEP MUST DELIVER PROGRESS
 - take a step back and look at the big picture and conjecture how you could reinterpret everything we know so far and where the reasons we got stuck are shadows of a higher universal principle
+- pivot when necessary.
 
 add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications.
 
@@ -332,3 +320,61 @@ Mandatory:
 You are not allowed to change the cron timing.
 
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
+
+## research paper only
+
+/goal 
+
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about this problem:
+
+"All our attempts and different routes towards a proof of the Riemann Hypothesis indicate that the key to the problem is to develop a completely new, unknown to literature, geometry or topology in which all the obstacles we have met translate into a new representation object that becomes clear and solvable."
+
+research rules:
+- you can and should also check lean corpus, but not write lean  
+- for creating that missing knowledge use a heavy loop of conjecturing -> proof or fail -> conjecturing -> proof or fail -> conjecturing -> ...
+- always check that you do not play theatre and actually are creating new knowledge
+- focus on hard problems, NO THEATRE, EVERY STEP MUST DELIVER PROGRESS
+- take a step back and look at the big picture and conjecture how you could reinterpret everything we know so far and where the reasons we got stuck are shadows of a higher universal principle
+- pivot when necessary.
+- use arxiv search with wide keywords and look for latest preprints - search is good when it returns a lot of useless results. never search for stupid narrow searches that are basically "please give me the solution to my problem". 
+
+collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. 
+
+DO NOT WRITE LEAN CODE OR BUILD LEAN. ONLY WRITE PAPER PROOFS FOR STEP 2 IN THE PIPELINE. PAPER PROOFS MUST BE AS CLOSED AND UNCONDITIONAL AS POSSIBLE SO THAT THEY ARE AS EASY AS POSSIBLE TO FORMALIZE IN LEAN LATER. (leave notes if you already know what lean files to use or edit)
+
+goal is met when after careful and hostile review you truly cannot add anything new to the research topic.
+
+
+······
+Prove, unconditionally, Brown–Susskind’s full growth–plateau–recurrence law for ordinary time-independent local Hamiltonians, and prove that maximal complexity occurs while locality remains permanently distinguishable from Haar randomness.
+
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+
+ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
+
+where mathematical knowledge is missing, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to find and create it.
+
+
+
+
+### Formalize paper research
+
+/goal 
+
+formalize everything significant you have found until here in the paper-only research session.
+
+add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications.
+
+Lean rules:
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.

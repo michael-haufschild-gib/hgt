@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.JacobiThetaParallelogramCharge
 import GaloisForLFunctions.HTGeometry.JacobiThetaBoundaryRegular
-import GaloisForLFunctions.RHTower.RectangleResidue
+import GaloisForLFunctions.HTGeometry.RectangleResidue
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
 
 open Complex Set intervalIntegral MeasureTheory

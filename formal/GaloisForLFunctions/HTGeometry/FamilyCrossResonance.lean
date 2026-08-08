@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BohrGenerators
-import GaloisForLFunctions.RHTower.ZeroEstimate
+import GaloisForLFunctions.HTGeometry.ZeroEstimate
 
 /-!
 # Family cross-resonance modulus split

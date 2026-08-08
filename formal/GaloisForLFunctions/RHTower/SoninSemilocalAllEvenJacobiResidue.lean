@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SoninSemilocalTwoPlaceAssociation
-import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.HTGeometry.WeldRateLattice
 import Mathlib.Analysis.Normed.Ring.InfiniteSum
 import Mathlib.Topology.Algebra.InfiniteSum.NatInt
 

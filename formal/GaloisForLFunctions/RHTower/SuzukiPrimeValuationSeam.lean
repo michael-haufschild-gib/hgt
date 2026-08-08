@@ -17,7 +17,7 @@ the exact seam-coordinate interface needed by the completed zero-mode route:
 These are unconditional arithmetic and affine statements.  They do not assert existence or
 convergence of Suzuki's analytic log-conormal expansion.
 -/
-import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.HTGeometry.WeldRateLattice
 
 open Real
 

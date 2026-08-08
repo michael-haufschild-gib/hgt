@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SmoothNumbers
+import GaloisForLFunctions.HTGeometry.SmoothNumbers
 
 /-!
 # Bounded smooth frequencies: witnesses and their exact count

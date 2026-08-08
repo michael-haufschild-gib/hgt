@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MatrixPrincipalSymbolSpectralDifferentialUniversalityLaw
-import GaloisForLFunctions.RHTower.DSSDeterminant
+import GaloisForLFunctions.HTGeometry.DSSDeterminant
 
 /-!
 # Differential null-mode holography for flat matrix principal laws

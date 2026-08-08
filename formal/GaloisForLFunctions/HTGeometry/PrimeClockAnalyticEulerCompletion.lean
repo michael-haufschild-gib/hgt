@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PrimeClockCompletionCorrespondence
 import GaloisForLFunctions.HTGeometry.FiniteAbscissaRationalCoordinateIndependence
-import GaloisForLFunctions.RHTower.CanonicalEulerLog
+import GaloisForLFunctions.HTGeometry.CanonicalEulerLog
 
 /-!
 # Analytic Euler completion from the prime-clock module

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.OrbitFreeness
-import GaloisForLFunctions.RHTower.ExpNatIrrational
+import GaloisForLFunctions.HTGeometry.ExpNatIrrational
 import GaloisForLFunctions.RHTower.StieltjesWeld
 
 /-!

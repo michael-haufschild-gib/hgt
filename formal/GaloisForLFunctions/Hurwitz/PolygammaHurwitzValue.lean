@@ -9,7 +9,7 @@ far-field decay in `GammaProjectiveBoundary`, and the convergent complex-shift H
 import GaloisForLFunctions.HTGeometry.GammaProjectiveBoundary
 import GaloisForLFunctions.Hurwitz.HurwitzZeta
 import GaloisForLFunctions.HTGeometry.PolygammaMultiplication
-import GaloisForLFunctions.RHTower.PolygammaReflection
+import GaloisForLFunctions.HTGeometry.PolygammaReflection
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 
 namespace GaloisForLFunctions

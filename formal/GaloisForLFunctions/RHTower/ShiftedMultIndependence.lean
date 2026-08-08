@@ -10,7 +10,7 @@ proper relation subtorus.
 -/
 import GaloisForLFunctions.RHTower.LogIndependence
 import GaloisForLFunctions.RHTower.ValueOrbit
-import GaloisForLFunctions.RHTower.WeylEquidistribution
+import GaloisForLFunctions.HTGeometry.WeylEquidistribution
 import GaloisForLFunctions.HTGeometry.NamedTranscendental
 
 open Real Complex Filter Topology

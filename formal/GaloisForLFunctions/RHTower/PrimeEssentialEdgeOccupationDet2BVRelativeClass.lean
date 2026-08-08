@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeFirstTraceEssentialEdgeSchattenThreshold
 import GaloisForLFunctions.HTGeometry.PrimeOccupationPolarizedGammaPhaseSurvival
-import GaloisForLFunctions.RHTower.FredholmDeterminantZeta
+import GaloisForLFunctions.HTGeometry.FredholmDeterminantZeta
 import GaloisForLFunctions.RHTower.PrimeWoldBVAdjacentDecimation
 
 /-!

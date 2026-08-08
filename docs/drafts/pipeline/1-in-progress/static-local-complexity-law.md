@@ -5284,22 +5284,288 @@ receive a new title and an independent significance audit.
   surviving source--target incidence rank `iota_R`, not full target rank.
 - 2026-08-08 -- Closed the dimension loss in complete endpoint incidence by
   replacing maximal-volume basis selection with one determinant-optimal
-  probability design `lambda` on actual occupied replica endpoints.  Lean
-  proves every endpoint has design leverage at most occupied Hilbert number
+  probability design `lambda` on actual occupied replica endpoints.  A
+  dependency-closed paper proof gives every endpoint design leverage at most occupied Hilbert number
   `h_r`, hence, after any independently fixed measurable return excision,
   `a^r P_(R^c)(E_a) <= h_r sum_z lambda_z M_r(z;R)` and
   `P(E_a) <= P(R) + h_r a^(-r) sum_z lambda_z M_r(z;R)`.  Under a uniform
   fixed-endpoint ceiling this costs `h_r`, improving the previous `h_r^2`.
   Weights live on physical occupied endpoints; all integrals remain on the
   original restricted source measure, so repeated fibre sheets retain full
-  multiplicity.  An orthonormal endpoint family formally proves no universal
+  multiplicity.  An orthonormal endpoint family proves no universal
   probability-design coefficient below `h_r` is possible.  Classical
   D/G-optimal equivalence supplies the finite design mechanism; new frontier
-  advance is its exact composition with growing replicas, complete endpoint
-  capture, and source-first return excision.  Module:
-  `HTGeometry/ReturnExcisedOptimalDesignCoareaLaw.lean`; card:
-  `../3-formalized/return-excised-optimal-design-coarea-law.md`.  This closes
+  advance candidate is its exact composition with growing replicas, complete endpoint
+  capture, and source-first return excision.  Lean formalization is open; card:
+  `../2-fully-proven/return-excised-optimal-design-coarea-law.md`.  This closes on paper
   the complete-circuit-union geometry, not Brown--Susskind O4: remaining
   ordinary-local-Hamiltonian theorem is a quenched growing-replica ceiling on
   the resulting design-averaged fixed-endpoint moment strong enough to beat
   `h_r`, plus a small independent return tail.
+- 2026-08-08 -- Proved that missing growing-replica ceiling on the completed
+  spectral phase orbit for an ordinary bounded-degree static-local ensemble.
+  For a fixed Hamiltonian/input with spectral collision
+  `C_H = sum_j p_j^2`, remove once the common heavy spectral sector
+  `{p_j > 4C_H/a}`.  Its norm is at most `sqrt(a)/2`; every surviving target
+  capture therefore forces light overlap at least `sqrt(a)/2`.  Exact
+  general-tensor Steinhaus orthogonality, projection into the least surviving
+  light-source incidence carrier, and one projected-endpoint optimal design then give the
+  return-excised, complete-incidence law
+  `m_H(Q) <= m_H(R) + iota_(r,R)^L r! (16 C_H/a^2)^r`,
+  where `Q\R` is the return-removed residual capture event and
+  `iota_(r,R)^L <= h_r` is the exact minimal surviving source--target rank.
+  Phase-source integration is never quotiented, so all fibre sheets remain;
+  circuit duplicates and exact-zero residuals change neither `h_r` nor
+  `iota_(r,R)^L`; `R` is
+  paid once.  For the support-isotropic Gaussian Pauli ensemble on any graph
+  containing a spanning path, product-local-Clifford invariance and the exact
+  six-state one-qubit 2-design imply
+  `E_H C_H(|0^n>) <= (2/3)^n`, hence
+  `P{C_H > L(2/3)^n} <= 1/L`.  Generic path-local spectral maximality and a
+  nonzero Krylov witness transfer the phase law to quenched physical-time
+  density for almost every one fixed Hamiltonian.  Optimizing
+  `r = floor((1-epsilon^2)^2 (3/2)^n/(32L))` yields a fixed-product-input
+  completed-time plateau of approximate circuit depth
+  `Omega((3/2)^n/(L log n))`, outside return density plus
+  `exp(-Omega((3/2)^n/L))` time density.  This is the first theorem in this
+  route giving an exponential state-complexity plateau for an ordinary
+  nearest-neighbour static Gaussian spin Hamiltonian without eigenvector
+  universality.  It does not close O4: projective equidistribution is
+  non-effective, so first-hard-time, linear growth, plateau onset, and first
+  recurrence scales remain open.  Paper proof and hostile audit:
+  `../2-fully-proven/local-clifford-return-excised-phase-incidence-law.md`.
+  Lean was deliberately not modified during the active corpus refactor.
+- 2026-08-08 -- Converted the quenched completed-time plateau into the first
+  common-fixed-time nonuniform endpoint lower bound on this route.  Restricting
+  the Gaussian nearest-neighbour ensemble to a bounded coefficient box leaves
+  probability at least `1/2` of Hamiltonians with completed easy-time density
+  at most `eta_n=2^(-3r_n/4)`, where
+  `r_n=Theta((3/2)^n)`.  Fatou and Tonelli then prove
+  `liminf_(T->infinity) T^(-1) integral_0^T P_H{C_(2epsilon)(e^(-itH)Omega)>s_n}dt
+  >= (1/2)(1-eta_n)` for
+  `s_n=Omega((3/2)^n/log n)`.  Hence an unbounded sequence of deterministic
+  times, common to the ensemble, has positive Gaussian mass of exponentially
+  hard endpoints.  A uniform Duhamel margin on a bounded coefficient box
+  moves one such common time to a rational time while retaining positive
+  Hamiltonian mass.  Strict finite-word separation and coefficient continuity
+  then yield bounded rational nearest-neighbour coefficients with the same
+  exponential lower bound at error `epsilon`; exhaustive certified search
+  selects one such pair for every `n`, so the witness family is uniformly
+  computable.  This crosses existence of autonomous static-local exponential
+  nonuniform state complexity, but not effective Brown--Susskind timing: no
+  bound on first common time, coefficient/time bit length, or linear ramp is
+  proved.  Paper proof and hostile audit:
+  `../2-fully-proven/computable-static-local-exponential-state-complexity-law.md`.
+  Lean remains deliberately untouched during corpus refactoring.
+- 2026-08-08 -- Quantified the previously non-effective syndeticity constant
+  for an algorithmically selectable static two-local Hamiltonian.  If an
+  integer Hermitian `D`-level Hamiltonian has rationally independent
+  projective frequencies and spectral norm at most `R`, then every relative
+  phase cube of radius `rho` occupies at least
+  `(rho/(2pi))^(D-1)/2` of every window of the explicit length
+  `8(2N+1)^(D-1)(2(D-1)NR)^(D!-1)`, with
+  `N=ceil((8pi(D-1)/(rho(rho/(2pi))^(D-1)))^2)`.  Proof:
+  algebraic-integral field norm bounds every truncated spectral action;
+  one product Fejer packet converts that bound into a shifted-window
+  occupation law.  Minimum spectral gap is again falsified as the wrong
+  invariant: spectrum `{0,1,2+eta}` has pairwise gap at least one but bounded
+  action `2omega_1-omega_2=-eta`.  A birational positive-orthant map into a
+  collision-good real box plus quantitative Hilbert irreducibility supplies
+  a rational `S_(2^n)` full-two-local specialization there; scaling gives
+  integer couplings.  The resulting fixed-product orbit has
+  `Omega((3/2)^n/log n)` approximate state complexity for positive measure in
+  every computably long window.  More strongly, applying the same arithmetic
+  clock to the equal-weight Choi/thermofield-double orbit quantifies the open
+  constant `L` in `universal-static-choi-complexity-plateau`: every long
+  window has positive occupation at complexity
+  `Omega(2^n/log n)`, and explicit recurrence--hardness--recurrence blocks
+  repeat forever.  Qualitative Choi syndeticity and alternation were already
+  formalized and are not claimed new; advance is the first explicit
+  computable `L` for one selected integer static two-local Hamiltonian.  The
+  deadline is catastrophically nonphysical (`D!` in the exponent), the
+  Hamiltonian is all-to-all two-local with uncontrolled coefficient height,
+  and no linear ramp or Brown--Susskind time scale follows.  Paper proof and
+  hostile audit:
+  `../2-fully-proven/arithmetic-static-local-hardness-recurrence-window-law.md`.
+  Lean was read only and no build was run during corpus refactoring.
+- 2026-08-08 -- Removed both random-time averaging and Gaussian radial scale
+  mixing from the common-late-time plateau.  On the unit coefficient sphere
+  of the full one-site plus nearest-neighbour two-site Pauli family, proved
+  that no nonzero integer projective spectral action is constant on any open
+  simple-spectrum patch.  New rigidity mechanism: strengthen the local path
+  witness to a complete endpoint transition graph; if a zero-sum branch
+  action obeyed `(sum_j c_j E_j)^2 = kappa D^(-1)Tr(H^2)`, a cross-block edge
+  perturbation and two derivatives would give
+  `L_0(z)L_xx(z,0)=kappa Q(V)`.  Unique old gaps isolate every residue;
+  because `L_0` has at most one zero, the complete bipartite equality graph
+  minus at most one edge forces all branch coefficients equal and hence zero.
+  Symmetrization over eigenvalue labels globalizes this chart rigidity and
+  excludes flat actions anywhere on the fixed shell.  Coarea plus
+  Riemann--Lebesgue then proves angular-phase weak convergence
+  `(theta,t omega(theta))_*sigma -> sigma tensor Haar` without varying
+  interaction rate.  Composing with the completed-phase heavy-sector
+  incidence theorem yields, for
+  `r_n=floor((1-epsilon^2)^2(3/2)^n/(32L))`,
+  `limsup_(t->infinity) P_theta{C_epsilon(e^(-itH(theta))Omega)<=s}
+  <=1/L+2^(-r_n/2)` whenever
+  `s+1<=r_n log(2)/(2log M_n)`.  Thus every sufficiently late common time,
+  not merely a subsequence, has high probability of
+  `Omega((3/2)^n/(L log n))` state complexity in an ordinary fixed-strength
+  nearest-neighbour static ensemble.  The same times remain efficiently
+  non-Haar by the permanent local two-query separator.  Quantifiers are
+  sharp: recurrence forbids one fixed full-measure Hamiltonian set from being
+  hard for all late times.  O4 remains open because angular Fourier decay is
+  non-effective in `n`; no initial linear growth or Brown plateau-onset scale
+  is proved.  Paper proof and hostile audit:
+  `../2-fully-proven/fixed-shell-angular-dephasing-static-local-plateau-law.md`.
+  Lean remained read only; no source or build was touched during refactoring.
+- 2026-08-08 -- Upgraded the fixed-time fixed-shell result to a same-pair,
+  continuous, doubly-exponential plateau and removed the product-input
+  `(3/2)^n` loss.  Seed the ordinary `n`-qubit chain by one uniformly sampled
+  stabilizer state, prepared once by a polynomial Clifford circuit.  The
+  exact global stabilizer two-design identity gives, against every
+  eigenbasis,
+  `E_chi sum_j |<e_j,chi>|^4=2/(2^n+1)`.  Thus the collision is at most
+  `2L/(2^n+1)` with pair probability at least `1-1/L`.  More generally this
+  exposes the collision-to-lifetime law:
+  on any time-independent pair set with spectral collision at most `c`,
+  plateau depth is `Omega(1/(c log M_n))` while the logarithm of continuous
+  plateau lifetime is `Omega(1/c)`.  Product, stabilizer and Choi plateaux are
+  three specializations of this one mechanism.  For stabilizer seeds, with pair probability at
+  least `1-1/L`, the completed-phase heavy-sector incidence theorem works at
+  replica order
+  `r=floor((1-epsilon_+^2)^2(2^n+1)/(64L))` and makes the complete depth-`s`
+  shortcut probability at most `2^(-r/2)` for
+  `s+1<=r log(2)/(2log M_n)`.  Crucially, the collision-bad pair set is fixed
+  before time is sampled and is paid once, not once per time.  Fixed-shell
+  angular dephasing transfers the restricted estimate to every sufficiently
+  late common time.  A grid of
+  `N<=2^(r/4)` times then survives the complete temporal union, and
+  `||H(theta)||_op<=sqrt(12n-9)` plus trace-distance stability fills every
+  grid gap.  For every sufficiently late block origin, with probability at
+  least `1-1/L-2^(-r/4)-q`, one fixed Hamiltonian--stabilizer pair has
+  complexity above `s` at every instant of a block of length
+  `(epsilon_+-epsilon_-)(2^(r/4)-2)/sqrt(12n-9)`.  Fixed `L` gives depth
+  `Omega(2^n/log n)` for duration `2^(Omega(2^n))`; slowly growing `L` makes
+  success probability tend to one.  Generic cyclicity and maximal
+  projective rank give a later low-complexity recurrence for the same pair,
+  so the block is also a doubly-exponential post-plateau recurrence-gap lower
+  bound.  The local two-query non-Haar separator remains valid at every time.
+  This closes pathwise plateau duration at the Brown--Susskind scale for an
+  ordinary time-independent nearest-neighbour ensemble.  It still does not
+  quantify first onset or prove the initial linear ramp.  Paper proof and
+  hostile audit:
+  `../2-fully-proven/stabilizer-seeded-static-local-double-exponential-plateau-law.md`.
+  Lean remained read only; no source or build was touched during refactoring.
+- 2026-08-08 -- Replaced the unnamed fixed-shell Riemann--Lebesgue onset
+  threshold by an exact spectral-transversality condition number.  At replica
+  order `r`, every fixed-target fidelity moment has an ordered spectral-action
+  expansion whose total absolute coefficient mass is at most one:
+  `sum_(alpha,beta)|A_(alpha,beta)|=(sum_j|<z,Pi_j chi>|)^(2r)<=1`.
+  The generic paired-replica equality is already Lean-proved in
+  `HTGeometry/TracelessReplicaDyadicActionShellLaw.lean`; its spectral-projector
+  contraction and filtered specialization remain paper proofs during refactoring.
+  This removes the `D^(2r)`/character-count remainder at growing replicas;
+  derivative constants may still depend on `D` and `r`.  For discriminant cutoff `zeta` and action-gradient threshold
+  `g`, define `Q_r(zeta,g)` as spherical mass near the degeneracy locus or a
+  critical point of any nonzero balanced action of height at most `r`.
+  Fixed-shell nowhere-flatness gives
+  `lim_(zeta->0) lim_(g->0) Q_r(zeta,g)=0`.  More sharply, Nash
+  eigenvalue geometry, the semialgebraic Lojasiewicz inequality and tube
+  volume give at every fixed `n,r`
+  `Q_r(zeta,g)<=A_0 zeta^alpha_0+A_(r,zeta)g^alpha_(r,zeta)`.
+  A common smooth light-sector filter removes spectral weights above the
+  collision-adaptive scale, costs only half the capture amplitude, and retains
+  the sharp completed moment `r!(8C/(1-epsilon_+^2))^r`; this avoids the false
+  `C^(r/2)` scale of the raw full-overlap moment.  A cutoff
+  integration-by-parts argument with vector field
+  `grad(phi)/|grad(phi)|^2` proves finite-time defect at most
+  `Q_r(zeta,g)+B|t|^(-1)(g^(-1)+g^(-2))`, where `B` is an exact finite
+  derivative maximum on the discriminant-separated compact set.  A soft
+  collision cutoff preserves the one-time bad-pair payment.  With
+  `r=floor((1-epsilon_+^2)^2(2^n+1)/(256L))`, circuit entropy
+  `N_s<=M_n^(s+1)<=2^(r/2)`, and
+  `Q_r<=q((1-epsilon_+^2)/4)^r/(2N_s)`, every time beyond
+  `T_tr=2BN_s(q((1-epsilon_+^2)/4)^r)^(-1)(g^(-1)+g^(-2))` has restricted
+  shortcut probability at most `2^(-r/2)+q`.  Substitution of `q/N_W`
+  makes the prior continuous-block onset quantitative in finite geometric
+  data, without random radius, minimum action, random time or fresh noise.
+  Collision controls capacity/lifetime; spectral-action transversality
+  controls onset.  Composing the existing Lean-proved autonomous word cone
+  with the stabilizer plateau gives every robust hard endpoint the envelope
+  `C_(epsilon_-)(psi_(T-u)) > s-S_H(u,epsilon_+-epsilon_-)`.
+  Nearly optimal nearest-neighbour simulation forces an exponential
+  `2^(n(1-o(1)))` hardening shoulder below a depth
+  `Omega(2^n/(L log n))` plateau, but not monotone growth from laboratory
+  time zero.  This log entry's proposed next step is now retired: the capture
+  denominator in `T_tr` itself forces `exp(Theta(r))` time, so no upper bound
+  on its transversality constants can make it Brown-scale at `r=Theta(D)`.
+  Replacement core is recorded in the next entry.  Paper proof and hostile audit:
+  `../2-fully-proven/fixed-shell-transversality-onset-hardening-cone-law.md`.
+  Lean corpus was inspected read only; no Lean source or process was touched.
+- 2026-08-08 -- Retired individual-action and positive first-gradient
+  dephasing as Brown-scale mechanisms, and replaced the vague survivor by an
+  exact signed convolution lift.  For `D` spectral velocities in an observer
+  space of dimension `d=12n-10`, the `binom(D+r-1,r)` replica multiplicity
+  sums lie in a ball of radius `r sqrt(12n-9)`.  Euclidean packing therefore
+  forces a nonzero balanced action gradient of size at most
+  `2r sqrt(m)/(binom(D+r-1,r)^(1/d)-1)`, which is
+  `exp(-Omega(D/n))` at `r=Theta(D)`.  A weighted central-bin theorem is
+  stronger: for the collision-good seed target, the absolute coefficient mass
+  of off-diagonal actions with gradient at most `D^(-1)` is at least
+  `(9/16)^r exp(-O(n^2))`; relative to the required capture scale
+  `((1-epsilon_+^2)/4)^r`, this grows exponentially.  Independently, the
+  parent's onset formula obeys
+  `T_tr>=(2/q)(4/(1-epsilon_+^2))^r` for fixed `0<q<=1`.  Hence neither better
+  `Q_r`, better derivative constants, minimum gaps, Jacobians, nor a positive
+  amplitude-weighted first-gradient cutoff can produce Brown time.
+  The exact surviving representation is finite and unconditional.  With
+  `mu_1=sum_j c_j delta_(e_j,v_j,E_j)`, conjugate reflection `star`, and
+  `nu_1=mu_1*mu_1^star`, the full signed replica lift is
+  `nu_r=nu_1^{*r}`.  Equal-multiplicity return is exactly the hidden lattice
+  sector `k=0`, so source-first removal is the single final projection
+  `P_(k ne 0)(nu_1^{*r})`; observer pushforward then preserves fibre-sheet
+  multiplicity and performs signed addition before any norm.  Stepwise killed
+  transfer operators are invalid because return projection does not commute
+  with convolution.  Fourier evaluation is exact:
+  `hat(nu_r)(xi,t)=|sum_j c_j exp(-i(tE_j+<xi,v_j>))|^(2r)`, with
+  the diagonal multinomial mass subtracted after final return removal.  For the
+  seed target the lift is positive, so cancellation comes from this character,
+  not from total variation.  Exact open core: construct the duplication-invariant
+  occupied-incidence quotient norm of this final-projected signed lift and
+  prove or falsify scale-matched contraction through `r=Theta(D)`.  This is a
+  conjecture, not a claimed Brown theorem; higher-order phase mechanisms not
+  reducible to a positive first-order majorant remain logically possible.
+  Paper proofs and hostile audits:
+  `../2-fully-proven/observer-dimension-replica-action-crowding-law.md` and
+  `scale-matched-signed-action-packet-law.md`.  Lean corpus remained read only;
+  no Lean source, build, or process was touched.
+- 2026-08-08 -- Removed the exterior signed packet from O4's genuine open
+  core.  For every bounded static Hamiltonian, seed, finite occupied target
+  image `Z`, Krylov order `K` and replica order `r`, let `P_K` project onto
+  `span{psi_0,Hpsi_0,...,H^Kpsi_0}`.  Taylor's unitary integral remainder,
+  tensor telescoping, and projection geometry give the complete-union law
+  `q_r(t)<=q_(K,r)(t)+2r(BT)^(K+1)/(K+1)!`, where `q_r` is the original
+  occupied-Veronese incidence action and `q_(K,r)` is formed only after
+  projecting both orbit and actual occupied endpoint image by `P_K`.
+  Crucially,
+  `span{(P_Kz)^(tensor r)}=P_K^(tensor r)span{z^(tensor r)}` exactly, so the
+  reduction is invariant under circuit-label duplication, retains every
+  source fibre sheet, and pays any target-independent return set once.  Its
+  projected Hilbert rank is at most both the original occupied-image rank and
+  `binom(dim K_K+r-1,r)`, but hostile review proves rank alone cannot yield
+  decay: one target parallel to the carrier makes rank-one action maximal.
+  A second exact rigidity closes radial/Krylov mixing.  For every homogeneous
+  linear local family `H(x)`, nonzero scaling satisfies
+  `K_K(H(cx))=K_K(H(x))` and
+  `q_(K,r,cx)(t)=q_(K,r,x)(ct)`; Gaussian disorder is therefore exactly a
+  positive radial time mixture of fixed-shell carrier incidence actions, not
+  a source of new carrier directions.  Failed conjecture loop: an undefined
+  full packet norm was circular; targetwise moment stability reintroduced
+  circuit entropy; causal projection before the Veronese lift succeeds;
+  dimension-only and radial-Fourier closures fail.  O4 is now strictly the
+  quenched growing-`K,r` upper bound on the projected carrier incidence action
+  for the actual shallow-circuit image.  Paper proof and hostile audit:
+  `../2-fully-proven/radial-krylov-projected-complete-incidence-law.md`.
+  Lean corpus was inspected read only; no Lean file, build, or process was
+  touched during refactoring.

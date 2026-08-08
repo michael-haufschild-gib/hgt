@@ -2,7 +2,7 @@ import GaloisForLFunctions.HTGeometry.GammaDifferentialFE
 import GaloisForLFunctions.HTGeometry.AffineCollisionMatroid
 import GaloisForLFunctions.HTGeometry.ReflectedDigammaAnomaly
 import GaloisForLFunctions.HTGeometry.UniversalOrientedHerglotz
-import GaloisForLFunctions.RHTower.DigammaGaussSeries
+import GaloisForLFunctions.HTGeometry.DigammaGaussSeries
 
 /-!
 # An explicit digamma Herglotz palette

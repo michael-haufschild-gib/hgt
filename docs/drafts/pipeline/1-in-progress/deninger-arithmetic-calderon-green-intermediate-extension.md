@@ -35,6 +35,63 @@ extension.  It is the global incidence law that glues these
 Lagrangian boundary packets through the full Tate--Milnor relative
 cells and the restricted prime/real totalization.
 
+The gapless all-prime rational Kummer analytic leg is no longer part of that missing law.
+`DAC_PRIME_LOG_HEIGHT_KOTHE_CALDERON_SOURCE` constructs a canonical nuclear completion using
+multiplicative prime-exponent height.  Prime-log generator and its Green inverse are continuous
+with one height-seminorm loss; global free-unit Calderón graph is closed Lagrangian; Hodge sign,
+Hardy projectors, power maps, reflection, and every centered Mellin jet are continuous.
+`DAC_BALANCED_WORD_HEIGHT_BAR_STRICT_CONTRACTION` further constructs the entire rational Milnor
+word source: product-of-letter height plus every exponential length seminorm makes its augmented
+bar complex nuclear and split strictly exact in every arithmetic-character sector.  Prime-log
+Green contracts nonzero total character, while continuous extra degeneracy contracts balanced
+words without division.  The first unbuilt incidence is now a strict character- and
+word-height-compatible cofinal Sullivan comparison.  Its first commutative layer is already
+strict by `DAC_LINEARIZED_MILNOR_FIRST_SULLIVAN_STRICT_PRIMITIVE`, whose normalized exterior
+coproduct gives the full completed base Milnor ideal a continuous primitive.
+
+That comparison is no longer the first hard source gate.
+`DAC_DENINGER_EULER_DEPLETED_MEYER_PERIODIZATION_EXTENSION` works directly on the actual strict
+Poisson coefficient. For every prime (p), with
+\[
+ \Delta_p=1-\tau_{\log p},\qquad Z^{(p)}=\Delta_pZ,
+\]
+it proves a split strict source sequence
+\[
+ 0\longrightarrow M_\zeta\longrightarrow M_\zeta^{(p)}
+ \xrightarrow{\overline{\operatorname{Per}}_p}
+ C^\infty(\mathbb R/\log p\,\mathbb Z)\longrightarrow0,
+\]
+whose canonical kernel is the full $M_\zeta$.  Equivalently,
+\[
+ \Delta_pg\in Z^{(p)}(H_\cap)
+ \quad\Longleftrightarrow\quad g\in Z(H_\cap).
+\]
+Thus one prime already closes carrier admission and conservative boundary classification.  It
+also proves that every energy factoring through the complete compact prime-circle trace vanishes
+on the entire admitted middle sector.
+`DAC_DENINGER_HALF_DENSITY_FLOQUET_EXACT_SEQUENCE` supplies the missing ambient weight:
+half-density Floquet periodization is the unique compact trace with weight one, and its
+`p^{-2}` all-prime square sum is a continuous positive-definite Hilbert energy on $H_-$.
+Its exact boundary error is
+\[
+ \operatorname{Per}_{p,1/2}\Delta_p
+ =(1-p^{-1/2})\operatorname{Per}_{p,1/2}.
+\]
+Matching twisted depletion kills this error but also the entire admitted $M_\zeta$ sector.
+Completing the uncorrected energy does not help: its Poisson quotient is exactly the Hilbert space
+of critical zeros that coincide with prime Floquet Mellin nodes, with only zero-order values.
+Nonresonant modes and higher jets are erased.
+Every correction bounded in that raw Floquet Hilbert norm factors through the same resonance-only
+quotient. The existing secondary Meyer--Poisson regulator has now been lifted around every prime
+circle; its exact all-prime radical is the full reflected Calderón graph, which strictly contains
+the literal Poisson boundary graph. Canonical Möbius inversion is now a pointwise right inverse on
+every Meyer cochain and proves that the literal range is exactly the cochains whose Möbius
+preimage extends as an $H_\cap$ function. The hard object is now the source Gamma/co-Poisson
+Green--Stokes realization of that singular endpoint/Fourier regularity defect **before Hilbert
+closure**. Cofinal
+Sullivan/pro-Stein, generic, real, and
+Poisson incidence remain possible geometric constructions of that correction.
+
 ## Conjecture
 
 `[CONJECTURE] [DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION]`
@@ -185,44 +242,70 @@ with a closed differential \(Q\), satisfying the following clauses.
 
 ## Exact proof program
 
-1. Form the restricted nuclear direct sum of local boundary test
-   spaces, retaining place support and the product-formula
-   \(L^1\)-channel.
-2. Lift each relative Tate--Milnor cell to a correspondence between
-   local Calderón graphs.  Construct
+1. Use the proved Euler-depleted extension to fix the canonical source sector
+   \(\mathcal K_p=\ker\overline{\operatorname{Per}}_p\cong M_\zeta\).  No divisor, Hilbert
+   completion, or cofinal syzygy choice enters this carrier.
+2. Use `DAC_DENINGER_COFINAL_PRIME_PERIODIZATION_TOMOGRAPHY` only as algebraic comparison:
+   every infinite family of other prime circles separates this cochain kernel and induces an
+   algebraic boundary-quotient injection, while every finite family fails. The cofinal trace map
+   has nonclosed range, and its rotation-invariant energies have flow weight zero.
+3. Use the existing half-density seminorm through the difference Green inverse:
+   \(r_p(h)=\inf_f p_{1/2}(G_ph-Zf)\). It is already nonzero, centered-flow isometric,
+   prime-independent, and controls an explicit translated Gaussian sequence invisible in every
+   compact prime trace. Prove its exact open radical identity
+   \[
+   H_-\cap\overline{Z(H_\cap)}^{\,L^1(e^{t/2}dt)}=Z(H_\cap).
+   \]
+4. Start from the proved Poisson--Kummer source connection, exact critical Floquet/von-Mangoldt
+   current, universal diagonal sign wall, cofinal secondary regulator, Möbius regularity
+   classification, and already-constructed actual Gamma/co-Poisson Green transport. Construct the
+   strict cofinal Euler--Gamma/Möbius gauge defect and prove its non-diagonal unsquared
+   Green--Stokes identity annihilates the resolved Green defect before polarization. Then derive
+   `DAC_DENINGER_CORRECTED_TATE_FLOQUET_POISSON_DESCENT` before completion: its boundary operator
+   realizes the endpoint/Fourier singularity of the canonical Möbius preimage, with kernel exactly
+   \(Z(H_\cap)\), transported by \(\Delta_p\). The induced incidence must be continuous in the
+   nuclear Meyer topology but cannot extend as a bounded repair of the raw Floquet Hilbert
+   completion or arise from diagonal prime-circle renormalization.
+   Prove the descended form is positive and faithful on \(\mathcal K_p\), is independent of the
+   auxiliary prime after the canonical cross-prime depletion comparison, and is compatible with
+   the real Fourier seam and centered dilation flow.
+5. Produce from this relative form the Hodge-symmetric nuclear almost-involution and the closed
+   global Calderón relation.  One possible geometric construction is to continue the proved
+   height-Köthe/bar/first-Sullivan source through cofinal multiplicative syzygies, generic Kummer,
+   real, and Poisson incidence.  If that method is used, construct
    `DAC_UNIT_AMALGAMATION_DERIVED_LAGRANGIAN_ENHANCEMENT`: the analytic
    leg is the exact graph of Poisson energy and the Milnor leg is the
    shifted conormal encoded by the full relative Sullivan resolution.
-3. Prove higher-cell compatibility inductively from the homotopy
-   pushout universal property; only then close the total Cauchy
-   relation.
-4. Use `DAC_POSITIVE_HODGE_KOSZUL_CONTRACTION` to remove the
+6. Close the total Cauchy relation after the chosen construction: its nonzero-character Green
+   contraction and balanced-word extra-degeneracy contraction are already explicit on the bar
+   side, but must survive the commutative conormal, real, and Poisson attachments.
+7. Use `DAC_POSITIVE_HODGE_KOSZUL_CONTRACTION` to remove the
    finite-packet position--momentum fibre, then prove that its
    contracting homotopies pass strictly through the nonuniform
    nuclear system.
-5. Establish maximal isotropy of `(2)` by a global Green formula and
+8. Establish maximal isotropy of `(2)` by a global Green formula and
    exactness of the arithmetic boundary complex.
-6. Use local Dirichlet decompositions to construct the global harmonic
+9. Use local Dirichlet decompositions to construct the global harmonic
    projection and Green operator.  Prove `(3a)` and a uniform estimate
    on every finite field/place/lattice stage, then apply
    `DAC_STRICT_NUCLEAR_HODGE_PROJECTOR_PASSAGE` to pass both operators
    through the strict nuclear system.
-7. Smoothly suspend before completing.  Apply the already-proved
+10. Smoothly suspend before completing.  Apply the already-proved
    projective-ray augmentation resolution and Poisson complex
    comparison.
-8. Prove `(5)` on elementary Kummer/Schwartz packets.  Both sides are
+11. Prove `(5)` on elementary Kummer/Schwartz packets.  Both sides are
    source trace expressions; extend by nuclear continuity.
    Construct and compare the global Calderón Hardy polarization
    relation as
    specified by
    `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`; a trace formula
    without the relative-polarization comparison is insufficient.
-9. Construct the arithmetic Hodge--Schwartz graph core, prove its
+12. Construct the arithmetic Hodge--Schwartz graph core, prove its
    density in the nuclear Meyer quotient, and prove off-axis
    parameter-elliptic resolvent estimates that preserve it.  This
    gives the order-zero and every higher generalized-jet statement at
    once.
-10. Apply abstract Hilbert-complex Hodge decomposition and
+13. Apply abstract Hilbert-complex Hodge decomposition and
    `DAC_TWISTED_KAHLER_RIEMANN_FLOW_PURITY`.
 
 ## Falsifiers
@@ -250,7 +333,10 @@ with a closed differential \(Q\), satisfying the following clauses.
 - Nuclear smooth suspension and algebraic ray augmentation: proved.
 - Strict source complex comparison with \(C^\bullet_{\mathrm{PZ}}\):
   proved before Hodge completion.
-- Global Milnor-incidence Lagrangian closure: open.
+- One-prime Euler-depleted strict admission of all $M_\zeta$, exact conservative boundary
+  classification, and full compact prime-trace Hodge no-go: proved on paper.
+- Global Milnor-incidence Lagrangian closure: open; it is now an optional geometric realization
+  of the relative source form, not a carrier-admission gate.
 - Green supertrace/cup identity: open.
 - Global Green-energy radical classification: open; abstract
   nonuniform local-to-global passage is proved and Lean-formalized.

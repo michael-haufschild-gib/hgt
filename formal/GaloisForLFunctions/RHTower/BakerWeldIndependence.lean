@@ -33,7 +33,7 @@ each `IsAlgebraic ℤ`, and proves the reductions that consume it.  The downstre
 
 import Mathlib
 import GaloisForLFunctions.RHTower.GelfondSchneider
-import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.HTGeometry.WeldRateLattice
 
 open scoped Classical
 

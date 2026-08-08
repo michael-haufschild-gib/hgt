@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DigammaGaussSeries
+import GaloisForLFunctions.HTGeometry.DigammaGaussSeries
 import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 
 /-!

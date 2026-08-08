@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BlaschkeLocalizedClockAsymptotic
-import GaloisForLFunctions.RHTower.MaximalRealDiagonalSelfAdjoint
+import GaloisForLFunctions.HTGeometry.MaximalRealDiagonalSelfAdjoint
 
 /-!
 # Self-adjoint Hamiltonian realization of the Blaschke return clock

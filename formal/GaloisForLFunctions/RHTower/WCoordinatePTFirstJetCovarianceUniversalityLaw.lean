@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PTInvolution
-import GaloisForLFunctions.RHTower.WCoordinate
+import GaloisForLFunctions.HTGeometry.WCoordinate
 import Mathlib.Analysis.Calculus.Deriv.Inv
 
 /-!

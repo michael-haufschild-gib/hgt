@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.RadialAngularRecurrenceCompletionLaw
-import GaloisForLFunctions.RHTower.FiniteKrausRecurrenceFutureFanLaw
+import GaloisForLFunctions.HTGeometry.FiniteKrausRecurrenceFutureFanLaw
 
 /-!
 # Operational future fan for finite quantum recurrence

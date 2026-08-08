@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.OmegaObstruction
+import GaloisForLFunctions.HTGeometry.OmegaObstruction
 
 /-!
 # Realizations of the action-stability interface
