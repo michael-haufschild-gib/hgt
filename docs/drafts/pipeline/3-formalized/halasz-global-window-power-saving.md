@@ -138,3 +138,37 @@ explicit mean square `Q ≤ 5πe(1 + log N) + 5πT` the Cesàro chain becomes
 | `integral_symm_norm_cesaro_le_of_meanSquare` | `RHTower/Sieve/CesaroWeightedL1.lean` |
 | `integral_Icc_normSq_LSeries_truncSeq_le` | `RHTower/Sieve/CesaroWeightedL1.lean` |
 | `norm_sum_Icc_mul_log_div_le_cesaro_meanSquare` | `RHTower/Sieve/CesaroWeightedL1.lean` |
+
+## The analytic side is height-free
+
+Cauchy–Schwarz pays the mean square of the whole range, so it keeps a `√(Q + κT)`. The dyadic split
+pays it once per block against a kernel constant that decays with the block: for the second-order
+kernel `x^σ/‖σ+it‖² ≤ (x^σ/(σ2^m))/|t|` on `σ2^m ≤ |t| ≤ σ2^{m+1}`, so both geometric sums have ratio
+`≤ 1/2` and the height disappears:
+
+`∫_{|t| ≤ T} ‖L(g,σ+it)x^s/s²‖ dt ≤ 8x^σ√Q + 12x^σ√κ`   for every `T`, `1 ≤ σ ≤ 2`.
+
+This is `integral_symm_norm_mul_kernel_var_le` of `HTGeometry/VerticalKernelBlockConstants.lean`
+instantiated at the Cesàro kernel — the machine was already there; only the block constants were
+missing. For `|f| ≤ 1` truncated at `N` the Cesàro chain becomes
+
+`‖∑_{n ≤ N} f(n)log(x/n)‖ ≤ ∑_{n ≤ N} E(σ,T,x/n)
+    + (1/2π)(8x^σ√(5πe(1+log N)) + 12x^σ√(5π))`,
+
+so the three analytic terms of the route now stand as
+
+| route | analytic term |
+|---|---|
+| pointwise Euler bound | `x^σ log N` |
+| Cauchy–Schwarz against `1` | `x^σ√(T + log N)` |
+| dyadic blocks, kernel constant per block | `x^σ√(log N)`, uniformly in `T` |
+
+Since `T` may now be taken as large as one likes at no analytic cost, the arithmetic error
+`∑_{n ≤ N} E(σ,T,x/n) ≍ N(log T)/T + x^σ(log N)/T` is free. What remains is `x^σ√(log N) ≫ x^σ`: the
+Euler-bound wall, untouched by any of the three.
+
+| Statement | Module |
+|---|---|
+| `sqrt_two_le_three_halves`, `sum_range_block_kernel_le` | `RHTower/Sieve/CesaroDyadicMeanSquare.lean` |
+| `integral_symm_norm_cesaro_le_of_meanSquare_dyadic` | `RHTower/Sieve/CesaroDyadicMeanSquare.lean` |
+| `norm_sum_Icc_mul_log_div_le_cesaro_dyadic` | `RHTower/Sieve/CesaroDyadicMeanSquare.lean` |
