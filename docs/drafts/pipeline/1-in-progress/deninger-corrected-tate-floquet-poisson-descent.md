@@ -14,9 +14,10 @@
   `DAC_DENINGER_EULER_GAMMA_MOBIUS_CONNECTION_TRANSGRESSION`: strict all-prime-first endpoint,
   physical/Fourier contragredient connection, unsquared covariant Green--Stokes identity, and
   boundary image equal to the Möbius--Fourier commutator.
-- **Upstream open producer:** `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, the
-  rational-Witt/Milnor relevant-complex chain identity landing resolved source boundaries in the
-  literal Poisson kernel. `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT` is its fixed
+- **Upstream open producer:** `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, source-derived
+  vanishing of the explicit lift obstruction
+  `Omega_(mu,Gamma)=S_mu G_Gamma D`. Canonical Möbius inversion then lands resolved
+  rational-Witt/Milnor boundaries in literal Poisson kernel. `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT` is its fixed
   RH-equivalent endpoint test, not an independent source premise.
 
 ## Goal
@@ -248,6 +249,7 @@ A candidate fails if any one occurs:
 - [x] 0 → 1 in-progress: exact object, dependencies, topology, and falsifiers fixed
 - [x] upstream source differential: strict all-prime Euler--Gamma/Möbius transgression, exact
   Gamma/co-Poisson boundary image, and literal-boundary Green--Stokes annihilation proved on paper
+- [x] canonical degree-one Möbius prelift and exact source--Poisson lift obstruction
 - [ ] upstream source producer: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
 - [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] 1 → 2 fully-proven: derive `(5)` from that source differential and prove `(6)`--`(8)`

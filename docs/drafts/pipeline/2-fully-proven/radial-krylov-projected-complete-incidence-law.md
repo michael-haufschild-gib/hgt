@@ -283,7 +283,7 @@ The action in `(8)` is nonnegative, exact returns survive, and growing-replica s
 crowd near zero.  A worst-gap or one-dimensional Riemann--Lebesgue estimate cannot survive through
 `r=Theta(dim mathcal H)`.
 
-**Positive survivor / exact open core:** prove a quenched growing-replica upper bound for
+**Positive survivor / former sufficient core:** prove a quenched growing-replica upper bound for
 
 ```text
 integral_(R^c) q_(K,r)(t) dmu(t)                            (15)
@@ -293,6 +293,30 @@ for the ordinary fixed-strength local shell, with `K` scale-matched to `BT`, aft
 shallow-circuit image has been projected into the same random Krylov flag.  This one positive
 quantity retains occupied endpoint image and every source sheet, charges recurrence once, and has
 no exterior Taylor, targetwise-union, raw-pseudodeterminant, or minimum-gap defect.
+
+### C6 -- full projected-span action is the minimal source-aware invariant
+
+**Verdict:** `[FALSIFIED AS MINIMAL; STRICTLY SHARPENED]`.
+
+The paper-proved `bures-incidence-minimax-coarea-law.md` replaces `(15)` on every fixed-carrier
+source fibre by
+
+```text
+max {F(C_(K,r,R),M)^2 :
+     M in closedConv{|v_(K,r)(z)><v_(K,r)(z)| : z in Z}},   (15')
+```
+
+where `C_(K,r,R)` is the return-restricted covariance of
+`phi_K(t)^(tensor r)`.  The complete capture mass is bounded by `(15')` divided by the projected
+replica threshold.  Fidelity Cauchy--Schwarz proves `(15') <= integral_(R^c)q_(K,r)(t)dmu(t)`, and
+deterministic anisotropic examples make the inequality arbitrarily strict.
+
+**New exact open core:** prove Bures separation of conditional quenched orbit covariance from every
+convex mixture of actual occupied projected circuit rays.  For an ensemble in which `P_K(H)`
+varies with `H`, first disintegrate by a context that makes the carrier fixed; it is invalid to
+average variable projected target bodies as though they were one set.  The ordinary ensemble may
+instead use the unprojected seed-conditional covariance, as frozen in
+`../1-in-progress/quenched-krylov-circuit-incidence-front-law.md`.
 
 ## Quantitative consequence for the remaining core
 

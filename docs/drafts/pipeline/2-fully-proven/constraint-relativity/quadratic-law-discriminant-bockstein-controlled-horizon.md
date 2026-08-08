@@ -144,11 +144,12 @@ With Euclidean norm on `C^2`,
  \tag{10}
 \]
 
-Polynomial `eta(eta-h)` has discriminant `h^2`; hence fibre discriminant is `c^2`, and
+Polynomial `eta(eta-h)` in chosen family basis `(1,eta)` has discriminant `h^2`; hence framed
+fibre discriminant is `c^2`, and
 
 \[
  \boxed{
- \sqrt{|\operatorname{Disc}(A_c)|}\,\|D_c\|=\sqrt2.}
+ \sqrt{|\operatorname{Disc}(\eta(\eta-c);1,\eta)|}\,\|D_c\|=\sqrt2.}
  \tag{11}
 \]
 
@@ -185,6 +186,71 @@ forcing `(12)`. QED.
 Therefore bounded uniform descent is structurally incompatible with continuously approached law
 horizon losing direction. Correct notion is source-renormalized controlled singularity.
 
+## Theorem 6: relative cotangent equals nonreduced discriminant shadow
+
+For quadratic family `(1)`, relative Kähler differential module satisfies
+
+\[
+ \boxed{
+ \Omega_{A/B}
+ \cong B/(h^2)\,d\eta.}
+ \tag{13}
+\]
+
+Consequently
+
+\[
+ \operatorname{Fitt}_0^B(\Omega_{A/B})
+ =(h^2)
+ =\operatorname{Disc}(A/B),
+ \tag{14}
+\]
+
+up to conventional unit in discriminant.
+
+### Proof
+
+For presentation
+
+\[
+ A=B[\eta]/(\eta^2-h\eta),
+\]
+
+conormal sequence gives
+
+\[
+ \Omega_{A/B}
+ \cong A\,d\eta/\bigl((2\eta-h)d\eta\bigr).
+\]
+
+Impose `2eta-h=0`, so `eta=h/2`. Original relation becomes
+
+\[
+ \eta(\eta-h)=-h^2/4=0.
+\]
+
+Since `4` is unit in `C`, quotient is `B/(h^2)`, proving `(13)`. Cyclic presentation gives
+zeroth Fitting ideal `(h^2)`. Discriminant of monic polynomial with roots `0,h` is squared root
+difference `h^2`, proving `(14)`. QED.
+
+This one relative-law object casts four exact shadows:
+
+\[
+ \begin{array}{c|c}
+ \text{shadow}&\text{quadratic coordinate}\\ \hline
+ \text{oriented family defect}&h\\
+ \text{positive/Fitting energy}&h^2\\
+ \text{topological support wall}&V(h)\\
+ \text{hidden decoder conditioning}&|h|^{-1}
+ \end{array}
+ \tag{15}
+\]
+
+Derived observer specialization recovers reduced conormal `B/(h)` through Tor, while cotangent
+retains nonreduced order-two thickening `B/(h^2)`. Positivity squares away orientation; support
+forgets multiplicity; ordinary fibre forgets nilpotent direction; inverse conditioning remembers
+distance but not source sign. This is exact prototype of heterogeneous shadow uncertainty.
+
 ## Arithmetic specialization and precise prediction
 
 Set formally
@@ -193,14 +259,14 @@ Set formally
  h=\delta_n(\rho)-1,
  \qquad
  \delta_n(\rho)=n^{2\Re\rho-1},
- \tag{13}
+ \tag{16}
 \]
 
 or use algebra
 
 \[
  A_\delta=\mathbb C[u]/((u-1)(u-\delta)).
- \tag{14}
+ \tag{17}
 \]
 
 Critical equality is collision of source-inverse and analytic-adjoint character sheets. Ordinary
@@ -212,11 +278,11 @@ Conditional simple-quadratic prediction:
 \[
  K_{\mathrm{hidden}}
  \asymp|\operatorname{Disc}|^{-1/2}.
- \tag{15}
+ \tag{18}
 \]
 
 Different exponent, higher Jordan order, or absent Tor class falsifies this universality class.
-Substitution `(13)` does not force `h=0` and does not prove RH. Live theorem is to construct actual
+Substitution `(16)` does not force `h=0` and does not prove RH. Live theorem is to construct actual
 arithmetic Bockstein landing in Tor-generated conormal from source before divisor specialization.
 
 ## Physics prediction
@@ -234,6 +300,8 @@ holes realize model.
 3. Defining `h=delta-1` is representation, not selector.
 4. Source construction of nonzero Tor landing is open and RH-bearing.
 5. Higher-rank arithmetic defect may require higher discriminant/Jordan universality class.
+6. Framed discriminant and conditioning use chosen family generator, basis, and Euclidean norm;
+   abstract nonzero fibre `C times C` alone does not determine `c^2` or decoder norm.
 
 ## Lean-return note
 

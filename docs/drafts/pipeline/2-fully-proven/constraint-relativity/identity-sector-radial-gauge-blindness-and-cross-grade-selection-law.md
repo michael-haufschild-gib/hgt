@@ -176,7 +176,7 @@ QED.
 Thus asymmetric one-leg valuation detection already exists. Missing datum is not another cyclic
 cocycle; it must fail diagonal radial equivariance.
 
-## Theorem 4: cross-grade stabilizer selects zero drift
+## Theorem 4: fixed cross-grade stabilizer is trivial
 
 Let `g,h` be positive rational grades with `g != h`, and choose nonzero
 
@@ -210,6 +210,35 @@ More generally, stabilizer of finite nonhomogeneous vector is intersection of eq
 conditions across its grade support. Two distinct positive absolute grades already make it
 trivial.
 
+## Theorem 5: cross-grade relations form radial torsor
+
+Theorem 4 does **not** select one relation. For `lambda>0`, set
+
+\[
+ L_\lambda=\mathbb C(x_g+\lambda x_h).
+ \tag{14}
+\]
+
+Then
+
+\[
+ \Gamma_cL_\lambda
+ =L_{\lambda(h/g)^c}.
+ \tag{15}
+\]
+
+If `g!=h`, radial action is transitive on family `{L_lambda:lambda>0}`. Every member has trivial
+stabilizer, yet no member is selected by radial-equivariant data.
+
+### Proof
+
+Scale `Gamma_c(x_g+lambda x_h)=g^c x_g+lambda h^c x_h` by nonzero scalar `g^(-c)` to obtain
+`x_g+lambda(h/g)^c x_h`, proving `(15)`. Since positive number `(h/g)^c` ranges over all positive
+reals as `c` ranges over `R`, action is transitive. Stabilizer statement is Theorem 4. QED.
+
+Thus cross-grade line is a gauge slice, not gauge-breaking law, unless source independently
+calibrates its coefficient. “Trivial stabilizer” is necessary but not sufficient.
+
 ## Countermodel: reciprocity and indefinite reflection remain blind
 
 Take `A=C[Q_{>0}^times]` with coefficient-at-one trace and prime atom
@@ -220,14 +249,14 @@ space set
  T_c=\begin{pmatrix}p^c&0\\0&p^{-c}\end{pmatrix},
  \qquad
  J=\begin{pmatrix}0&1\\1&0\end{pmatrix}.
- \tag{14}
+ \tag{16}
 \]
 
 Then
 
 \[
  T_c^*JT_c=J
- \tag{15}
+ \tag{17}
 \]
 
 for every real `c`. Hence reciprocal product, reflection, nondegenerate indefinite pairing,
@@ -239,7 +268,7 @@ Adelic product formula is equally blind:
 
 \[
  \prod_v|q|_v^c=1
- \tag{16}
+ \tag{18}
 \]
 
 for every principal idele `q` and every `c`.
@@ -254,46 +283,48 @@ At Xi divisor `rho`, established physical residue is
  \qquad
  \delta_n(\rho)=e^{(2\Re\rho-1)\log n},
  \qquad c_\rho\ne0.
- \tag{17}
+ \tag{19}
 \]
 
 Current source provides trace-one atom, genuine nonzero Kummer homology class, all-degree
 boundary compatibility, Xi landing, Bockstein readout, and non-erasure. The class is nonzero; it
 is not concealed higher cyclic boundary. Theorem 1 proves all current homogeneous operations are
-equivariant under radial gauge family that `(17)` measures after physical landing.
+equivariant under radial gauge family that `(19)` measures after physical landing.
 
 Therefore exact missing selector is:
 
-> a source-native, non-Morita-trivial law relation or operation not equivariant under
-> `Gamma_c`, produced before divisor specialization.
+> a source-native, non-Morita-trivial **absolute radial calibration/anomaly** not equivariant
+> under `Gamma_c`, produced before divisor specialization.
 
-Theorem 4 gives smallest algebraic normal form: a relation coupling at least two distinct total
-absolute grades. Equivalent possibilities are source-star/analytic-dagger identification or a
-nonprincipal prime--infinity boundary anomaly whose radial gauge stabilizer is trivial.
+Theorem 4 gives smallest symmetry-breaking carrier, while Theorem 5 proves carrier family is
+radial torsor. Source must select its coefficient, not merely construct some cross-grade line.
+Equivalent possibilities are source-star/analytic-dagger identification with fixed absolute
+normalization or nonprincipal prime--infinity boundary anomaly with source-derived affine origin.
 
 ## Seven conjecture/failure loops
 
 1. **Trace one plus cyclicity:** fails by `(10)`.
-2. **Adelic reciprocity:** fails by `(16)`.
-3. **Reflection/Real structure:** fails by `(14)`--`(15)`.
+2. **Adelic reciprocity:** fails by `(18)`.
+3. **Reflection/Real structure:** fails by `(16)`--`(17)`.
 4. **Finite-prime normality:** fails because finite positive measures with full support are
    mutually absolutely continuous; it cannot distinguish radial parameter.
 5. **All-prime Kakutani normality:** can select zero drift, but proving Xi conormal lies in that
    normal source sector is RH-bearing missing premise, not derivation.
 6. **Prime-torus recurrence:** phase torus sees angular characters, not radial multiplier `p^c`.
 7. **Higher Hochschild/cyclic degree or Kummer class:** fails by Theorems 1 and 3 in all degrees.
+8. **Any two-grade relation with trivial stabilizer:** insufficient by Theorem 5; all coefficients
+   lie in one transitive radial orbit. Absolute calibration is missing.
 
 ## Nomotopy consequence
 
 Current arithmetic objects are not under-represented. They are over-symmetric: every existing
-observer descends through same diagonal radial gauge orbit. First genuine Nomotopy event must be
-**birth of nonhomogeneous arithmetic relation** that reduces law stabilizer from `R` to `{0}`.
-This is change of admissible law, not new representative inside old law.
+observer descends through same diagonal radial gauge orbit. First genuine Nomogenic event must
+produce **absolute calibration of a nonhomogeneous arithmetic relation**, not merely relation
+with trivial point stabilizer. Otherwise it chooses coordinate in radial torsor by hand.
 
 Falsifier: exhibit existing literal, divisor-independent source relation spanning distinct total
-absolute grades whose image is physical dagger defect and prove its radial stabilizer trivial. If
-such relation already exists, claimed source-axiom impossibility is incomplete and card must be
-revised.
+absolute grades, prove its coefficient is canonically normalized by source rather than gauge
+choice, and show its physical image is dagger defect. Trivial stabilizer alone is insufficient.
 
 ## Hostile audit
 

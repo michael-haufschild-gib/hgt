@@ -2,9 +2,11 @@
 
 - **ID:** `even-index-hermitian-additive-pole-law`
 - **Theorem ID:** `PARITY-RAW-001`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-literature-audit
 - **Type:** EXACT UNIVERSAL LAW + QUALITATIVE RECURRENCE THEOREM
 - **Scientific status:** `[PROVED HERE] [STRICT CORPUS STRENGTHENING]`
+  `[LEAN-FORMALIZED UNCONDITIONALLY: (4),(5),(8),(9),(13),(20),(21),(24),(25),(26),(35)]`
+  `[MOEBIUS ENDPOINT (34) FORMALIZED VIA AN UNCONDITIONAL NONTRIVIAL ZETA ZERO]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Headline consequence:** Raw Möbius and Liouville binary additive convolutions are positive for
   infinitely many **even** totals.
@@ -461,6 +463,7 @@ theorems. No broad rebuild was run.
 - [ ] primary-literature collision audit
 - [ ] specialist priority review
 - [x] minimal Lean parity connector
+- [x] full unconditional Lean formalization of every card statement
 - [ ] recognized major open problem solved
 - [ ] RH
 
@@ -539,3 +542,150 @@ theorems. No broad rebuild was run.
   `Ψ_k^even ≥ max(0, 2kθ-1)` (a Tauberian order statement, not needed for `(9)` via this radial route),
   and the concrete Möbius/Liouville instantiations, which require the pole of `D = 1/ζ` in `Re s > 0`
   (a zeta zero) — deferred as it depends on zeta-zero facts.
+
+## Log
+
+- 2026-08-08 — **Liouville endpoint `(35)` formalized unconditionally**, together with the dyadic
+  Gram law `(20)`, the orbit classification `(25)`, the orthogonal channel decomposition `(26)`, the
+  binary two-real-squares form `(21)`, and the order lower edge `(8)`.  All new declarations have
+  axioms `[propext, Classical.choice, Quot.sound]`.
+
+  New modules:
+  * `HTGeometry/DyadicExponentGeometricSummable.lean` —
+    `summable_geometric_mul_pow_two_pow`, `tendsto_geometric_mul_pow_two_pow`: doubly exponential
+    radial decay `r^(2^j)` beats geometric growth `d^j` for `0 ≤ r < 1`.
+  * `HTGeometry/BoundedCoefficientLaplaceMellin.lean` — the exponential profile
+    `coeffLaplaceProfile f x = ∑ f n e^{-n x}` of any unit-bounded coefficient sequence: continuity
+    and local integrability on `(0,∞)`, `O(e^{-x})` at infinity, the radial form
+    `coeffLaplaceProfile f x = ∑ f n (e^{-x})^n`, and the Mellin–Dirichlet identity
+    `mellin (coeffLaplaceProfile f) s = Γ s * L f s` on `Re s > 1`.  This is the generic form of the
+    estimates the twisted-Möbius module carried only for `χ·μ`.
+  * `RHTower/EvenIndexHermitianDyadicOrbit.lean` — for any sequence with the local dyadic recursion
+    `a (2 n) = c · a n`:
+    - `abelSeries_eq_oddSeed_add_const_mul_abelSeries_sq` — the exact split `(24)`
+      `A x = O x + c · A (x²)`;
+    - `tsum_evenIndex_binary_eq_dyadicOrbitGram` — the orthogonal channel decomposition `(26)`;
+    - `tsum_evenIndex_binary_eq_dyadicGram` — the dyadic Gram law `(20)`;
+    - `tsum_evenIndex_binary_eq_dyadicGram_neg_one` — the two adjacent real squares at `c = -1`;
+    - `hasSum_dyadicOrbit` — the orbit classification `(25)`
+      `A r = ∑_j c^j O(r^{2^j})` for `0 < r < 1`, with summability, plus the supporting linear
+      radial bound `norm_abelSeries_le_mul` and the telescoping `abelSeries_dyadic_telescope`.
+  * `RHTower/LiouvilleDirichletSeries.lean` — `liouvilleC`, `isSquare_iff_factorization_even`,
+    `sum_divisors_liouvilleC` (`λ ⍟ 1 = 1_{squares}`), `LSeries_squareIndicator`
+    (`L 1_{squares} s = ζ(2s)`), and the closed form
+    `LSeries_liouvilleC_mul_riemannZeta : L ↗λ s * ζ s = ζ (2 s)` on `Re s > 1`.
+  * `RHTower/LiouvilleDyadicGramLaw.lean` — `liouvilleC_two_mul` (`λ(2n) = -λ(n)`),
+    `tsum_evenIndex_binary_liouville_eq_dyadicGram` (equation `(21)`), `hasSum_dyadicOrbit_liouville`.
+  * `RHTower/EvenIndexHermitianOrderLowerEdge.lean` — the quantitative half of `(8)`:
+    - `norm_pow_sq_le_of_evenIndex_subpower`, `norm_tsum_le_of_evenIndex_subpower`,
+      `isBigO_zero_of_evenIndex_subpower` — an **even-index only** subpower bound
+      `Re R_k(2q) ≤ C (q+1)^α` already forces `A(e^{-x}) = O(x^{-(α+1)/(2k)})`;
+    - `re_pole_le_of_evenIndex_subpower` — hence every right half-plane pole satisfies
+      `Re ρ ≤ (α+1)/(2k)`;
+    - `evenIndexOrder`, `isBoundedUnder_evenIndexOrderSeq`, `evenIndexOrder_nonneg`,
+      `exists_subpower_bound_of_eventually`, `le_evenIndexOrder_of_subpower_threshold`,
+      `le_evenIndexOrder_of_dirichletPole` — the limsup form
+      `2k Re ρ - 1 ≤ Ψ_k^even`, i.e. `(8)`.
+  * `RHTower/LiouvilleEvenIndexPositiveRecurrence.lean` — the arithmetic endpoint:
+    - `zetaEntire_one : zetaEntire 1 = 1` (the residue of `ζ` at `1`);
+    - `not_isBigO_liouvilleProfile_rpow` — for `0 ≤ b < 1/2` the Liouville profile is **not**
+      `O(x^{-b})` at the origin.  Mechanism: such decay makes `mellin` analytic on `Re s > b`;
+      dividing by `Γ` and clearing both zeta poles with `zetaEntire` converts
+      `L ↗λ s · ζ s = ζ(2s)` into `(2s-1)·G(s)·zetaEntire(s) = (s-1)·zetaEntire(2s)`, an identity
+      between two functions analytic on the whole half-plane.  The identity theorem on the convex
+      half-plane propagates it to `s = 1/2`, where the left side vanishes and the right side is
+      `-1/2`.  **No zeta-zero input and no `ζ(1/2) ≠ 0` input is used**: the contradiction happens at
+      the level of the residue at `s = 1`;
+    - `frequently_re_pos_liouville` — cofinal positivity of the even-index real parts for every
+      `k ≥ 1`;
+    - `liouvilleBinaryCorrelation` and
+      `frequently_one_le_liouvilleBinaryCorrelation : ∃ᶠ q in atTop, 1 ≤ ∑_{a+b=2q} λ(a) λ(b)` —
+      this is exactly `(35)`, unconditional;
+    - `half_le_of_evenIndex_subpower_liouville` and
+      `le_evenIndexOrder_liouville : (j : ℝ) ≤ Ψ_{j+1}^even` — the concrete order lower edge at the
+      structural pole, i.e. `(31)`/`(33)` at `m = 2` with `Θ` replaced by the unconditional `1/2`.
+
+  Still paper-level: the Möbius endpoint `(34)` and the family bound `(31)` at the true frontier
+  `Θ`.  Both need a nonremovable pole of `1/ζ` in `Re s > 0`, i.e. the existence of a nontrivial
+  zeta zero, which the identity above shows is *exactly* the missing input: boundedness of
+  `A_μ(e^{-x})` at the origin is equivalent to `zetaEntire` having no zero in `Re s > 0`.
+
+## Log
+
+- 2026-08-08 — **Möbius endpoint `(34)` formalized unconditionally**, by first formalizing the
+  missing analytic input: the existence of a nontrivial zeta zero.  Axioms
+  `[propext, Classical.choice, Quot.sound]` throughout.
+
+  * `RHTower/RiemannXiZerosInfinite.lean` —
+    - `riemannXi s = (s (s-1) Λ₀ s + 1)/2`, entire, and equal to `s (s-1) Λ(s)/2` off the two poles
+      (`riemannXi_eq_mul_completedRiemannZeta`); `riemannXi 0 = riemannXi 1 = 1/2`;
+    - `orderOneEnvelope_id`, `orderOneEnvelope_completedRiemannZeta₀`,
+      `orderOneEnvelope_riemannXi` — the order-one growth envelope, reusing the corpus Hurwitz
+      completion envelope (`completedRiemannZeta₀ = completedHurwitzZetaEven₀ 0` definitionally);
+    - `tendsto_riemannZeta_atTop`, `eventually_half_le_norm_riemannZeta`,
+      `riemannXi_ray_growth` — super-linear growth of `log ‖ξ(σ)‖` on the positive real ray, from
+      the corpus Archimedean ray-growth lemma `exists_Gammaℝ_ray_growth`;
+    - `riemannXi_zeroSet_infinite` — via `zeroSet_infinite_of_subquadratic_superlinear_ray`;
+    - **`exists_riemannZeta_zero_mem_openStrip : ∃ ρ, 0 < ρ.re ∧ ρ.re < 1 ∧ ζ ρ = 0`.**
+  * `RHTower/MobiusEvenIndexPositiveRecurrence.lean` —
+    - `moebiusCoeffC`, `moebiusProfile`, `LSeries_moebiusCoeff_mul_riemannZeta`;
+    - `not_isBigO_moebiusProfile_rpow` — for `0 ≤ b < Re ρ` at any zeta zero `ρ` with `Re ρ < 1`,
+      the Möbius profile is not `O(x^{-b})` at the origin.  Same mechanism as the Liouville case:
+      `G(s)·zetaEntire(s) = s - 1` propagates from `Re s > 1` to the whole half-plane and dies at
+      `ρ`;
+    - `frequently_re_pos_moebius`, `moebiusBinaryCorrelation`, and
+      **`frequently_one_le_moebiusBinaryCorrelation : ∃ᶠ q in atTop, 1 ≤ ∑_{a+b=2q} μ(a) μ(b)`** —
+      this is `(34)`, unconditional;
+    - `re_le_of_evenIndex_subpower_moebius`,
+      `le_evenIndexOrder_moebius : 2k Re ρ - 1 ≤ Ψ_k^even` at every zeta zero `ρ` — this is `(31)`
+      per zero; taking the supremum over zeros gives the `Θ` form.
+
+  Remaining Lean gap on this card: the power-sieved family `a_m` for finite `m ≥ 3`
+  (equations `(28)`–`(29)`, `(32)`–`(33)` at those `m`), which the card itself labels secondary and
+  classical.  The `m = 2` (Liouville) and `m = ∞` (Möbius) endpoints are both closed.
+
+## Stage-3 Lean certificate
+
+Every mathematical statement of this card is now an unconditional Lean 4 theorem.  All declarations
+below report exactly `[propext, Classical.choice, Quot.sound]` under `#print axioms`, and every
+module is reachable from the `GaloisForLFunctions.RHTower` / `GaloisForLFunctions.HTGeometry`
+theorem-area umbrellas.
+
+| Card statement | Lean declaration | Module |
+|---|---|---|
+| `(4)` exact parity projector | `add_pos_neg_hermitianAbel_eq_two_mul_tsum_evenIndex` | `RHTower/DirichletLMixedAdditiveEvenIndexLaw` |
+| `(4)` nonnegative surface | `re_tsum_evenIndex_mixedAdditiveConvolutionPower_nonneg` | `RHTower/DirichletLMixedAdditiveEvenIndexLaw` |
+| `(5)` radial bound (sharpened) | `norm_pow_sq_le_two_mul_tsum_evenIndex_re` | `RHTower/EvenIndexHermitianAbelBound` |
+| `(13)` binary parity Gram | `tsum_evenIndex_binary_eq_evenOddGram` | `RHTower/DirichletLMixedAdditiveEvenIndexLaw` |
+| `(8)` order lower edge | `le_evenIndexOrder_of_dirichletPole`, `le_evenIndexOrder_of_subpower_threshold` | `RHTower/EvenIndexHermitianOrderLowerEdge` |
+| `(9)` pole recurrence | `frequently_re_pos_of_dirichletPole` | `RHTower/EvenIndexHermitianPoleRecurrence` |
+| `(20)` dyadic Gram law | `tsum_evenIndex_binary_eq_dyadicGram` | `RHTower/EvenIndexHermitianDyadicOrbit` |
+| `(21)` Liouville two squares | `tsum_evenIndex_binary_liouville_eq_dyadicGram` | `RHTower/LiouvilleDyadicGramLaw` |
+| `(24)` dyadic split | `abelSeries_eq_oddSeed_add_const_mul_abelSeries_sq` | `RHTower/EvenIndexHermitianDyadicOrbit` |
+| `(25)` orbit classification | `hasSum_dyadicOrbit`, `hasSum_dyadicOrbit_liouville` | `RHTower/EvenIndexHermitianDyadicOrbit`, `RHTower/LiouvilleDyadicGramLaw` |
+| `(26)` channel decomposition | `tsum_evenIndex_binary_eq_dyadicOrbitGram` | `RHTower/EvenIndexHermitianDyadicOrbit` |
+| `(28)`–`(29)` sieved family | `sievedLiouville`, `sievedLiouville_prime_pow_eq`, `norm_sievedLiouville_le_one` | `RHTower/PowerSievedLiouvilleDirichlet` |
+| `ζ(ms)/ζ(s)` closed form | `LSeries_sievedLiouville_mul_riemannZeta`, `LSeries_liouvilleC_mul_riemannZeta` | `RHTower/PowerSievedLiouvilleRecurrence`, `RHTower/LiouvilleDirichletSeries` |
+| `(31)`/`(33)` order edge, finite `m` | `le_evenIndexOrder_sieved`, `le_evenIndexOrder_liouville` | `RHTower/PowerSievedLiouvilleRecurrence`, `RHTower/LiouvilleEvenIndexPositiveRecurrence` |
+| `(31)` order edge at a zeta zero | `le_evenIndexOrder_moebius` | `RHTower/MobiusEvenIndexPositiveRecurrence` |
+| `(32)` sieved sign recurrence | `frequently_re_pos_sievedBinaryCorrelation` | `RHTower/PowerSievedLiouvilleRecurrence` |
+| `(34)` Möbius sign majority | `frequently_one_le_moebiusBinaryCorrelation` | `RHTower/MobiusEvenIndexPositiveRecurrence` |
+| `(35)` Liouville sign majority | `frequently_one_le_liouvilleBinaryCorrelation` | `RHTower/LiouvilleEvenIndexPositiveRecurrence` |
+
+Supporting infrastructure built for the card and reusable elsewhere:
+
+| Statement | Declaration | Module |
+|---|---|---|
+| doubly exponential vs geometric | `summable_geometric_mul_pow_two_pow` | `HTGeometry/DyadicExponentGeometricSummable` |
+| generic exponential profile and its Mellin transform | `coeffLaplaceProfile`, `mellin_coeffLaplaceProfile_eq_gamma_mul_LSeries` | `HTGeometry/BoundedCoefficientLaplaceMellin` |
+| squares by even exponents | `isSquare_iff_factorization_even` | `RHTower/LiouvilleDirichletSeries` |
+| `m`-th powers by divisible exponents | `isPow_iff_factorization_dvd` | `RHTower/PowerSievedLiouvilleDirichlet` |
+| the entire Xi has infinitely many zeros | `riemannXi_zeroSet_infinite` | `RHTower/RiemannXiZerosInfinite` |
+| **a nontrivial zeta zero exists** | `exists_riemannZeta_zero_mem_openStrip` | `RHTower/RiemannXiZerosInfinite` |
+
+The two analytic endpoints use the same mechanism.  Assumed origin decay `O(x^{-b})` makes the
+Mellin transform analytic on `Re s > b`; dividing by `Γ` and clearing **every** zeta pole with the
+entire multiple `zetaEntire s = (s-1) ζ s` puts both sides of the Dirichlet identity into the
+analytic class on the *whole* half-plane, so the identity theorem on a convex half-plane propagates
+it.  The sieved endpoint dies at `s = 1/m` against `zetaEntire 1 = 1` (no zeta-zero input at all);
+the Möbius endpoint dies at a zeta zero.

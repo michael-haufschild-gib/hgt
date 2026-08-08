@@ -2,7 +2,7 @@
 
 - **ID:** `deninger-two-prime-oriented-boundary-wall`
 - **Stage:** 3-formalized
-- **Type:** THEOREM / exact Route-L frontier reduction
+- **Type:** THEOREM / exact Route-L endpoint classifier
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY-PROVISIONAL] [NOT RH]`
 - **Source:** `DeningerCalderonWittOrientedSource`,
   `DeningerOneSidedFramedMateCurvatureTransgression`, and the current Route-L
@@ -136,20 +136,22 @@ This removes three false descriptions of the open core.
    respects this one boundary.  The displayed reporter proves it does not do
    so formally off the critical line.
 
-The exact surviving Route-L producer is therefore:
+The exact theorem is therefore Route L's endpoint falsifier:
 
-`[OPEN CORE — XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT]`
+`[ENDPOINT FALSIFIER — XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT]`
 
-> Construct, before divisor specialization, the singular Gamma/co-Poisson
-> chain transport whose degree-two specialization is the reporter (4) and
-> prove that it annihilates the canonical Green boundary (5), while retaining
-> the nonzero leading Xi jet and both prime labels.  The construction may not
-> assume (7), identify the two gains by fiat, or choose its domain after
-> reading a divisor.
+> Any upstream source theorem must, before divisor specialization, force the
+> singular Gamma/co-Poisson transport to annihilate canonical Green boundary
+> (5), while retaining nonzero leading Xi jet and both prime labels. On this
+> fixed boundary that conclusion is already (7), so it audits a proposed
+> producer but cannot serve as its premise.
 
 This is a strict weakening of requiring boundary compatibility on the whole
 completed BV/Green source: only one fixed finite source boundary is needed.
-It is not a proof of that boundary compatibility.
+It is not a proof of that boundary compatibility. Current upstream producer is
+`DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`; canonical Möbius inversion reduces it to
+source-derived vanishing of
+`Omega_(mu,Gamma)=S_mu G_Gamma D`.
 
 ## Hostile audit
 

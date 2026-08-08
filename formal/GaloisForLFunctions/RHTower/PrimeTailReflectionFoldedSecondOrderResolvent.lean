@@ -1111,3 +1111,120 @@ theorem primeFoldEven_secondOrder_distribution (P : ℂ → ℂ) (lam : ℂ) :
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+open Complex Filter Function MeasureTheory Set TopologicalSpace
+open scoped BigOperators Distributions ENNReal
+
+/-! ## Reflection invariance of the folded modes -/
+
+/-- The even global mode depends on the folded parameter only through `mu = lam²`. -/
+theorem primeFoldEvenMode_neg (lam : ℂ) (m : ℕ) :
+    primeFoldEvenMode (-lam) m = primeFoldEvenMode lam m := by
+  funext L
+  rw [primeFoldEvenMode, primeFoldEvenMode, show (-lam) * (L : ℂ) = -(lam * (L : ℂ)) from by ring,
+    Complex.cosh_neg]
+
+/-- The odd global mode depends on the folded parameter only through `mu = lam²`. -/
+theorem primeFoldOddMode_neg (lam : ℂ) (m : ℕ) :
+    primeFoldOddMode (-lam) m = primeFoldOddMode lam m := by
+  funext L
+  rcases eq_or_ne lam 0 with rfl | hlam
+  · simp
+  · rw [primeFoldOddMode_eq_of_ne_zero hlam, primeFoldOddMode_eq_of_ne_zero (neg_ne_zero.mpr hlam),
+      show (-lam) * (L : ℂ) = -(lam * (L : ℂ)) from by ring, Complex.sinh_neg]
+    field_simp
+
+/-! ## The Xi monodromy datum -/
+
+theorem continuous_xi : Continuous xi :=
+  continuous_iff_continuousAt.mpr fun s => (xi_analyticOnNhd_univ s (Set.mem_univ s)).continuousAt
+
+/-- Small circles about any point are nonvanishing `Xi`-loops. -/
+theorem xi_circle_isLoop (ρ₀ : ℂ) :
+    ∃ R₀ > 0, ∀ r : ℝ, 0 < r → r < R₀ →
+      IsLoop (fun θ : ℝ => xi (ρ₀ + (r : ℂ) * Complex.exp (Complex.I * (θ : ℂ))))
+        0 (2 * Real.pi) := by
+  obtain ⟨R₀, hR₀, h, _hha, hh0, hfact⟩ := xi_peel_ball ρ₀
+  refine ⟨R₀, hR₀, fun r hr hrR => ?_⟩
+  have hmem : ∀ θ : ℝ, ρ₀ + (r : ℂ) * Complex.exp (Complex.I * (θ : ℂ)) ∈ Metric.ball ρ₀ R₀ := by
+    intro θ
+    have hnorm : ‖(r : ℂ) * Complex.exp (Complex.I * (θ : ℂ))‖ = r := by
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr,
+        Complex.norm_exp]
+      simp
+    simp only [Metric.mem_ball, Complex.dist_eq, add_sub_cancel_left, hnorm]
+    exact hrR
+  refine ⟨?_, ?_, ?_⟩
+  · exact continuous_xi.comp (by fun_prop)
+  · intro θ
+    rw [hfact _ (hmem θ)]
+    refine mul_ne_zero (pow_ne_zero _ ?_) (hh0 _ (hmem θ))
+    have hne : ((r : ℂ) * Complex.exp (Complex.I * (θ : ℂ))) ≠ 0 :=
+      mul_ne_zero (by exact_mod_cast ne_of_gt hr) (Complex.exp_ne_zero _)
+    simpa using hne
+  · have h0 : Complex.exp (Complex.I * ((0 : ℝ) : ℂ)) = 1 := by simp
+    have h2π : Complex.exp (Complex.I * ((2 * Real.pi : ℝ) : ℂ)) = 1 := by
+      rw [show Complex.I * ((2 * Real.pi : ℝ) : ℂ) = 2 * (Real.pi : ℂ) * Complex.I from by
+        push_cast; ring]
+      exact Complex.exp_two_pi_mul_I
+    rw [h0, h2π]
+
+/-- **Equation (15).**  Any continuous logarithm of `Xi` along a small circle about a point
+increases by exactly `2πi` times the vanishing order there. -/
+theorem xi_logBranch_increment (ρ₀ : ℂ) :
+    ∃ R₀ > 0, ∀ r : ℝ, 0 < r → r < R₀ →
+      ∀ Q : ℝ → ℂ, Continuous Q →
+        (∀ θ : ℝ, Complex.exp (Q θ) =
+          xi (ρ₀ + (r : ℂ) * Complex.exp (Complex.I * (θ : ℂ)))) →
+        Q (2 * Real.pi) - Q 0 =
+          primeFoldMonodromyCoefficient (analyticOrderAt xi ρ₀).toNat := by
+  obtain ⟨R₁, hR₁, hloop⟩ := xi_circle_isLoop ρ₀
+  obtain ⟨R₂, hR₂, hwind⟩ := windingNumber_xi_zero ρ₀
+  refine ⟨min R₁ R₂, lt_min hR₁ hR₂, fun r hr hrR Q hQc hQe => ?_⟩
+  have hr1 : r < R₁ := lt_of_lt_of_le hrR (min_le_left _ _)
+  have hr2 : r < R₂ := lt_of_lt_of_le hrR (min_le_right _ _)
+  have hincr := contLog_increment (hloop r hr hr1) hQc hQe
+  rw [hwind r hr hr2] at hincr
+  rw [hincr, primeFoldMonodromyCoefficient]
+  push_cast
+  ring
+
+/-- **Equations (16)–(17), even part.**  Continuing the homogeneous datum once around a `Xi` zero
+changes the even fold by exactly the even global mode of `mu = lam²`, with the multiplicity as
+its exact coefficient. -/
+theorem primeFoldEven_xi_monodromy (ρ₀ : ℂ) :
+    ∃ R₀ > 0, ∀ r : ℝ, 0 < r → r < R₀ →
+      ∀ Q : ℝ → ℂ, Continuous Q →
+        (∀ θ : ℝ, Complex.exp (Q θ) =
+          xi (ρ₀ + (r : ℂ) * Complex.exp (Complex.I * (θ : ℂ)))) →
+        ∀ (P : ℂ → ℂ) (lam : ℂ) (L : ℝ),
+          primeFoldEven (fun w => P w + (Q (2 * Real.pi) - Q 0)) lam L -
+              primeFoldEven P lam L =
+            primeFoldEvenMode lam (analyticOrderAt xi ρ₀).toNat L := by
+  obtain ⟨R₀, hR₀, hincr⟩ := xi_logBranch_increment ρ₀
+  refine ⟨R₀, hR₀, fun r hr hrR Q hQc hQe P lam L => ?_⟩
+  rw [hincr r hr hrR Q hQc hQe]
+  exact primeFoldEven_monodromy P _ lam L
+
+/-- **Equations (16)–(17), odd part.** -/
+theorem primeFoldOdd_xi_monodromy (ρ₀ : ℂ) :
+    ∃ R₀ > 0, ∀ r : ℝ, 0 < r → r < R₀ →
+      ∀ Q : ℝ → ℂ, Continuous Q →
+        (∀ θ : ℝ, Complex.exp (Q θ) =
+          xi (ρ₀ + (r : ℂ) * Complex.exp (Complex.I * (θ : ℂ)))) →
+        ∀ (P : ℂ → ℂ) {lam : ℂ}, lam ≠ 0 → ∀ L : ℝ,
+          primeFoldOdd (fun w => P w + (Q (2 * Real.pi) - Q 0)) lam L -
+              primeFoldOdd P lam L =
+            primeFoldOddMode lam (analyticOrderAt xi ρ₀).toNat L := by
+  obtain ⟨R₀, hR₀, hincr⟩ := xi_logBranch_increment ρ₀
+  refine ⟨R₀, hR₀, fun r hr hrR Q hQc hQe P lam hlam L => ?_⟩
+  rw [hincr r hr hrR Q hQc hQe]
+  exact primeFoldOdd_monodromy P _ hlam L
+
+end
+
+end RHTower

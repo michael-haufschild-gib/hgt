@@ -76,6 +76,39 @@ for every Xi divisor point \(\rho\), preserving its leading nonzero jet. Equatio
 \(\mathcal R_2(Dw_{23})\) in \(Z(H_\cap)=\ker\mathfrak S_\mu\), so the left side of `(2)` is zero.
 Because \(c_\rho\ne0\), the fixed two-prime wall then gives \(\Re\rho=1/2\).
 
+## Canonical obstruction reduction
+
+There is no longer freedom to guess \(\mathcal R_1\). Once the degree-two singular realization
+\(\mathcal G_\Gamma=\mathcal R_2\) is fixed, canonical Möbius inversion gives
+
+\[
+ \mathcal P_\Gamma(w)=Ef_{\mathcal G_\Gamma(Dw)}
+ \in L^1_{\rm even}(\mathbb R)
+\]
+
+with every polynomial moment, zero mass, and the required positive-ray Poisson identity. Define
+
+\[
+ \Omega_{\mu,\Gamma}
+   =\mathfrak S_\mu\mathcal G_\Gamma D.
+\tag{2a}
+\]
+
+The paper-proved canonical chain-lift obstruction theorem gives
+
+\[
+ \Omega_{\mu,\Gamma}|_V=0
+ \Longleftrightarrow
+ \mathcal P_\Gamma(V)\subset H_\cap
+ \Longleftrightarrow
+ \mathcal G_\Gamma D|_V=Z\mathcal P_\Gamma|_V.
+\tag{2b}
+\]
+
+Thus exact open identity is \(\Omega_{\mu,\Gamma}(w_{23})=0\), or its stronger resolved-family
+version, from independent source arithmetic. Its Xi-jet evaluation is exactly `(2)`. See
+`../2-fully-proven/new_scientific_knowledge/deninger/deninger-source-poisson-chain-lift-obstruction.md`.
+
 Equivalently, construct a jointly conservative family of source observations \(A_j\) on the
 resolved Green carrier such that
 
@@ -113,6 +146,11 @@ frontier.
 6. **Conjecture:** local Euler scattering is unitary at every prime. **Rejected as a producer.**
    Its all-prime consequence forces critical line, but no independent source theorem proving that
    unitarity was found. Stating it is another RH-equivalent selector.
+7. **Conjecture:** source chain descent requires inventing an additional degree-one realization.
+   **Construction succeeds; selector remains open.** Canonical Möbius inversion already supplies
+   the unique source-compatible prelift with unconditional all-moment control. Exact kernel
+   theorem reduces descent to opposite-collar Fourier defect `(2a)`. This is real narrowing, but
+   its vanishing at `w_23` is still the RH-bearing arithmetic identity and is not claimed.
 
 These failures leave one narrow architecture: a genuinely cross-prime, source-derived,
 coefficient-faithful relation in rational-Witt/Milnor relevant complex, formed before
@@ -141,6 +179,7 @@ A proposed closure fails if it:
 - [x] actual Gamma/co-Poisson Green transport and resolved incidence
 - [x] all-prime Euler--Gamma/Möbius source differential and strict PNT endpoint
 - [x] Möbius--Fourier boundary operator with exact literal kernel
+- [x] canonical Möbius chain prelift and exact opposite-collar lift obstruction
 - [ ] `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, equations `(1)`--`(2)`
 - [ ] consequent endpoint test `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] ambient nuclear/Hodge comparison, oriented Paugam identification, and resolvent-faithful

@@ -563,16 +563,20 @@ First open source producer is correspondingly narrower still:
 
 **`DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`**
 
-> Construct from rational-Witt/Milnor incidence the relevant-complex chain map into
-> \(\ker\mathfrak S_\mu=Z(H_\cap)\), and identify its boundary value coefficient-faithfully with
-> the already-resolved singular Gamma/Calderón Green transport.
+> Identify the degree-two rational-Witt/Milnor Gamma realization and prove
+> \(\Omega_{\mu,\Gamma}=\mathfrak S_\mu\mathcal G_\Gamma D=0\). Canonical Möbius inversion then
+> supplies the degree-one chain prelift into
+> \(\ker\mathfrak S_\mu=Z(H_\cap)\). Its boundary value must agree coefficient-faithfully with
+> already-resolved singular Gamma/Calderón Green transport.
 
 Its fixed prime-2/prime-3 consequence is RH-equivalent endpoint test
 `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`. Only after source annihilator and comparison
 are constructed may one polarize and prove closability with radical precisely
 \(Z(H_\cap)\), raw arithmetic weight one, and no raw-Floquet bounded extension. Missing knowledge
-is no longer existence or set-theoretic specification of singular detector. It is source-to-Green
-chain-map equality and its non-diagonal polarization.
+is no longer existence or set-theoretic specification of singular detector, nor construction of
+an arbitrary degree-one lift. Exact lift obstruction and canonical prelift are proved in
+`deninger-source-poisson-chain-lift-obstruction.md`; missing content is source-derived vanishing of
+that obstruction and its non-diagonal polarization.
 
 ## 9. Hostile audit
 

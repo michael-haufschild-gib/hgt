@@ -1,7 +1,7 @@
 # Prime-tail reflection-folded second-order resolvent
 
 - **ID:** `prime-tail-reflection-folded-second-order-resolvent`
-- **Stage:** 2-fully-proven
+- **Stage:** 2-fully-proven / complete theorem surface Lean-proved
 - **Type:** THEOREM (paper) / SOURCE--DIVISOR BRIDGE
 - **Scientific status:** `[PROVED HERE] [CORPUS-NEW EXACT BRIDGE]`
   `[EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
@@ -376,5 +376,50 @@ claim.
 - [x] critical Wold operator-norm/compact-ideal correction proved on paper
 - [ ] construct source-defined folded limiting-absorption rigging
 - [ ] prove nonzero resolvent-stable monodromy landing
-- [ ] formalize the literal distributional source theorem
+- [x] formalize the literal distributional source theorem
 - [ ] RH
+
+## Lean formalization
+
+Every theorem proved on paper above is now an unconditional Lean 4 theorem.  No hypothesis, no
+added axiom: each statement below depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+Modules:
+
+- `formal/GaloisForLFunctions/RHTower/PrimeTailReflectionFoldedSecondOrderResolvent.lean`
+- `formal/GaloisForLFunctions/RHTower/CriticalPrimeSourceSchattenIdeal.lean`
+
+Both are wired into `GaloisForLFunctions.RHTower` and build green.
+
+The completed branch is realized as `primeFoldBranch P lam L = e^{lam L} P(lam) - R_lam(L)`, where
+`R_lam(L) = Σ_{log n < L} Λ(n)/(√n log n) e^{lam(L - log n)}` (`primeFoldCausalTail`) is a locally
+finite sum.  Since only the value `P lam` enters, `P` is an arbitrary function of the folded
+parameter: nothing about a branch of `log Ξ_C` is assumed anywhere, and the monodromy statements are
+derived from the corpus winding calculus rather than posited.
+
+| Card item | Lean theorem |
+|---|---|
+| `(4)`, `(5)` single-valuedness of the prime part | `primeFoldBranch_add_const` |
+| `(6)` distributional jump equation, test-function form | `integral_primeFoldBranch_transport` |
+| `(6)` as an identity of positive-time distributions | `primeFoldBranch_transport_distribution` |
+| `(9)` odd fold, second-order forcing | `integral_primeFoldOdd_secondOrder`, `primeFoldOdd_secondOrder_distribution` |
+| `(9)` even fold, second-order forcing | `integral_primeFoldEven_secondOrder`, `primeFoldEven_secondOrder_distribution` |
+| `(12)` branch Cauchy data at the source point | `primeFoldBranch_zero`, `primeFoldBranch_hasDerivAt_zero` |
+| `(13)` folded Cauchy data for an even datum | `primeFoldEven_cauchy_data_of_even`, `primeFoldOdd_cauchy_data_of_even` |
+| `(15)` monodromy of a `log Ξ` branch is `2πi m` | `xi_logBranch_increment` |
+| `(16)`, `(17)` even monodromy mode | `primeFoldEven_monodromy`, `primeFoldEven_xi_monodromy` |
+| `(16)`, `(17)` odd monodromy mode | `primeFoldOdd_monodromy`, `primeFoldOdd_xi_monodromy` |
+| `(18)` both modes solve `u'' = mu u` | `primeFoldEvenMode_secondDeriv`, `primeFoldOddMode_secondDeriv` |
+| `(19)` source-fixed Cauchy data of the modes | `primeFoldEvenMode_zero`, `primeFoldEvenMode_hasDerivAt_zero`, `primeFoldOddMode_zero`, `primeFoldOddMode_hasDerivAt_zero` |
+| modes are nonzero, multiplicity exact | `primeFoldEvenMode_ne_zero`, `primeFoldOddMode_ne_zero` |
+| reflection is internal in `mu` | `primeFoldEvenMode_neg`, `primeFoldOddMode_neg`, `primeFoldMu_functional_equation` |
+| `(20)` conjugation acts on `mu` | `primeFoldMu_conj` |
+| `(22)` reality consumer | `re_eq_half_of_primeFoldMu_real` |
+| `(23)` source diagonal vanishes at infinity | `tendsto_vonMangoldt_rpow_atTop` |
+| `(24)`, `(25)` logarithmic tail profile is antitone past `exp(1/σ)` | `antitoneOn_log_mul_rpow` |
+| `(26)`, `(27)` Schatten membership iff `q > 2` | `summable_criticalIncidenceDiagonal_rpow_iff`, `summable_criticalIncidenceLogDiagonal_rpow_iff` |
+| `(28)` the carrier is exactly `⋂_{q>2} S_q` | `criticalIncidenceDiagonal_mem_intersection`, `criticalIncidenceLogDiagonal_mem_intersection` |
+
+Nothing in the Lean development touches the open core: no rigging, no limiting absorption, no
+self-adjoint realization is constructed or assumed.  `re_eq_half_of_primeFoldMu_real` is the
+reality argument alone — it consumes reality of `mu`, it does not produce it.

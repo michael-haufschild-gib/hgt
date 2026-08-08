@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.LiouvilleDirichletSeries
 import GaloisForLFunctions.RHTower.EvenIndexHermitianPoleRecurrence
+import GaloisForLFunctions.RHTower.EvenIndexHermitianOrderLowerEdge
 import GaloisForLFunctions.RHTower.BoundedExponentPoissonNonlanding
 import GaloisForLFunctions.HTGeometry.BoundedCoefficientLaplaceMellin
 
@@ -65,22 +66,23 @@ theorem convex_decayHalfPlane (b : ℝ) : Convex ℝ {s : ℂ | b < s.re} := by
     rw [hu', hv']
     linarith
 
-/-- **The Liouville exponential profile is unbounded at the origin.**  A bounded profile would
-continue `Γ · L ↗λ` holomorphically past the structural pole of `ζ(2s)` at `s = 1/2`. -/
-theorem not_isBigO_liouvilleProfile :
-    ¬ (liouvilleProfile =O[𝓝[>] (0 : ℝ)] fun x : ℝ => x ^ (-(0 : ℝ))) := by
+/-- **The Liouville exponential profile has no origin decay below the half-line.**  Decay
+`O(x^{-b})` with `0 ≤ b < 1/2` would continue `Γ · L ↗λ` holomorphically past the structural pole of
+`ζ(2s)` at `s = 1/2`. -/
+theorem not_isBigO_liouvilleProfile_rpow {b : ℝ} (hb0 : 0 ≤ b) (hbhalf : b < 1 / 2) :
+    ¬ (liouvilleProfile =O[𝓝[>] (0 : ℝ)] fun x : ℝ => x ^ (-b)) := by
   intro hO
   have hb : ∀ n : ℕ, ‖liouvilleC n‖ ≤ 1 := norm_liouvilleC_le_one
   have hint : LocallyIntegrableOn liouvilleProfile (Ioi 0) volume :=
     GaloisForLFunctions.HTGeometry.coeffLaplaceProfile_locallyIntegrableOn hb
   have htop : liouvilleProfile =O[atTop] fun x : ℝ => Real.exp (-1 * x) :=
     GaloisForLFunctions.HTGeometry.coeffLaplaceProfile_isBigO_exp_neg hb liouvilleC_zero
-  set U : Set ℂ := {s : ℂ | 0 < s.re} with hUdef
+  set U : Set ℂ := {s : ℂ | b < s.re} with hUdef
   have hUopen : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
-  have hUconn : IsPreconnected U := (convex_decayHalfPlane 0).isPreconnected
+  have hUconn : IsPreconnected U := (convex_decayHalfPlane b).isPreconnected
   have hnotpole : ∀ s ∈ U, ∀ m : ℕ, s ≠ -(m : ℂ) := by
     intro s hs m hcon
-    have hsre : 0 < s.re := hs
+    have hsre : b < s.re := hs
     rw [hcon] at hsre
     simp at hsre
     linarith
@@ -90,7 +92,7 @@ theorem not_isBigO_liouvilleProfile :
     Complex.Gamma_ne_zero (hnotpole s hs)
   have hMellinDiff : ∀ s ∈ U, DifferentiableAt ℂ (mellin liouvilleProfile) s := by
     intro s hs
-    exact mellin_differentiableAt_of_isBigO_rpow_exp (a := 1) (b := 0) (by norm_num)
+    exact mellin_differentiableAt_of_isBigO_rpow_exp (a := 1) (b := b) (by norm_num)
       hint htop hO hs
   set G : ℂ → ℂ := fun s => mellin liouvilleProfile s / Complex.Gamma s with hGdef
   have hGdiff : ∀ s ∈ U, DifferentiableAt ℂ G s := fun s hs =>
@@ -112,7 +114,7 @@ theorem not_isBigO_liouvilleProfile :
     filter_upwards [hVopen.mem_nhds h2V] with s hs
     have hs1 : (1 : ℝ) < s.re := hs
     have hsU : s ∈ U := by
-      have : (0 : ℝ) < s.re := by linarith
+      have : b < s.re := by linarith
       exact this
     have hsne : s ≠ 1 := by
       intro h
@@ -134,17 +136,25 @@ theorem not_isBigO_liouvilleProfile :
     rw [hGs, zetaEntire_eq hsne, zetaEntire_eq h2sne]
     linear_combination ((2 * s - 1) * (s - 1)) * hLz
   have h2U : (2 : ℂ) ∈ U := by
-    show (0 : ℝ) < (2 : ℂ).re
-    simp
+    show b < (2 : ℂ).re
+    simp only [Complex.re_ofNat]
+    linarith
   have hhalfU : ((1 : ℂ) / 2) ∈ U := by
-    show (0 : ℝ) < ((1 : ℂ) / 2).re
-    simp
+    show b < ((1 : ℂ) / 2).re
+    simp only [Complex.div_re]
+    norm_num
+    linarith
   have heq := hF1.eqOn_of_preconnected_of_eventuallyEq hF2 hUconn h2U hagree
   have hhalf := heq hhalfU
   simp only at hhalf
   rw [show (2 : ℂ) * (1 / 2) - 1 = 0 by ring, zero_mul, zero_mul,
     show (2 : ℂ) * (1 / 2) = 1 by ring, zetaEntire_one] at hhalf
   norm_num at hhalf
+
+/-- **The Liouville exponential profile is unbounded at the origin.** -/
+theorem not_isBigO_liouvilleProfile :
+    ¬ (liouvilleProfile =O[𝓝[>] (0 : ℝ)] fun x : ℝ => x ^ (-(0 : ℝ))) :=
+  not_isBigO_liouvilleProfile_rpow le_rfl (by norm_num)
 
 /-- Radial blow-up of the Liouville Abel series at the boundary of the unit disc. -/
 theorem exists_norm_gt_liouville (B : ℝ) :
@@ -191,6 +201,47 @@ theorem frequently_one_le_liouvilleBinaryCorrelation :
   rw [mixedAdditiveConvolutionPower_liouville_re] at hq
   have hz : (0 : ℤ) < liouvilleBinaryCorrelation (2 * q) := by exact_mod_cast hq
   omega
+
+/-! ### The Liouville order lower edge -/
+
+/-- **No even-index subpower bound below the half-line.**  A subpower bound of exponent `α` on the
+even-index Hermitian Liouville coefficients forces `(α + 1) / (2k) ≥ 1/2`. -/
+theorem half_le_of_evenIndex_subpower_liouville {k : ℕ} {α C : ℝ} (hk : 0 < k) (hα : 0 ≤ α)
+    (hC : 0 ≤ C)
+    (hupper : ∀ q : ℕ,
+      (mixedAdditiveConvolutionPower (fun n : ℕ => liouvilleC n) k (2 * q)).re
+        ≤ C * ((q : ℝ) + 1) ^ α) :
+    (1 : ℝ) / 2 ≤ (α + 1) / (2 * (k : ℝ)) := by
+  by_contra hcon
+  push Not at hcon
+  have hkR : (0 : ℝ) < 2 * (k : ℝ) := by
+    have : (0 : ℝ) < (k : ℝ) := Nat.cast_pos.mpr hk
+    linarith
+  have hb0 : (0 : ℝ) ≤ (α + 1) / (2 * (k : ℝ)) := by positivity
+  refine not_isBigO_liouvilleProfile_rpow hb0 hcon ?_
+  have hbig := isBigO_zero_of_evenIndex_subpower (a := fun n : ℕ => liouvilleC n) hk hα hC
+    (fun r hr0 hr1 => GaloisForLFunctions.HTGeometry.summable_norm_coeff_mul_pow
+      norm_liouvilleC_le_one hr0 hr1) hupper
+  refine hbig.congr' ?_ EventuallyEq.rfl
+  filter_upwards with x
+  exact (GaloisForLFunctions.HTGeometry.coeffLaplaceProfile_eq_tsum_pow _ x).symm
+
+/-- **The Liouville even-index order lower edge `(8)` at the structural pole.**  The pole of
+`ζ(2s)/ζ(s)` at `s = 1/2` forces the even-index logarithmic order exponent of the Liouville
+Hermitian `2k`-fold convolution powers to be at least `k - 1`. -/
+theorem le_evenIndexOrder_liouville (j : ℕ) :
+    (j : ℝ) ≤ evenIndexOrder (fun n : ℕ => liouvilleC n) (j + 1) := by
+  have hthr : ∀ α C : ℝ, 0 ≤ α → 0 ≤ C →
+      (∀ q : ℕ, (mixedAdditiveConvolutionPower (fun n : ℕ => liouvilleC n) (j + 1) (2 * q)).re
+        ≤ C * ((q : ℝ) + 1) ^ α) →
+      (1 : ℝ) / 2 ≤ (α + 1) / (2 * ((j : ℝ) + 1)) := by
+    intro α C hα hC hbound
+    have hkey := half_le_of_evenIndex_subpower_liouville (k := j + 1) (Nat.succ_pos j) hα hC hbound
+    have hcast : ((j + 1 : ℕ) : ℝ) = (j : ℝ) + 1 := by push_cast; ring
+    rwa [hcast] at hkey
+  have h := le_evenIndexOrder_of_subpower_threshold norm_liouvilleC_le_one hthr
+  calc (j : ℝ) = 2 * ((j : ℝ) + 1) * (1 / 2) - 1 := by ring
+    _ ≤ _ := h
 
 end
 

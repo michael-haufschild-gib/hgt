@@ -420,9 +420,11 @@ The following Route-L items are now constructed on paper:
 The remaining first source producer is no longer construction of this differential or its
 analytic boundary image. It is `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`:
 
-> construct from rational-Witt/Milnor incidence a relevant-complex chain map whose source boundary
-> lands in literal kernel `(14)`, and identify its image coefficient-faithfully with the
-> already-resolved singular Gamma/Calderón Green transport.
+> identify the degree-two rational-Witt/Milnor Gamma realization and prove the explicit
+> source--Poisson obstruction `Omega_(mu,Gamma)=S_mu G_Gamma D` vanishes. Canonical Möbius
+> inversion then supplies the degree-one chain prelift and lands the boundary in literal kernel
+> `(14)`. Its Xi-jet image must agree coefficient-faithfully with already-resolved singular
+> Gamma/Calderón Green transport.
 
 On fixed prime-2/prime-3 boundary, physical value is \(g_2(s)-g_3(s)\). Hence
 `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT` is sharp RH-equivalent endpoint test of the

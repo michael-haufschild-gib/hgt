@@ -4,9 +4,10 @@
 - **Stage:** 1-in-progress
 - **Working field name:** **Nomogenesis**
 - **Technical name:** source-selected, Tor-aware, controlled-singular law transgression
-- **Type:** CANDIDATE NEW MATHEMATICAL FIELD / FOUNDATIONAL RESEARCH PROGRAMME
-- **Status:** `[BOLD CONJECTURAL] [ONE UNoccupied CORE] [NOT YET A NEW FIELD]`
+- **Type:** RESTRICTIVE/ANOMALY SECTOR OF SOURCE EXECUTION GEOMETRY
+- **Status:** `[UNIVERSAL OBSTRUCTION-ONLY CLAIM FALSIFIED] [USEFUL RH SECTOR]`
   `[EXACT MODEL THEOREMS PROVED] [LIVE RH PRODUCER OPEN] [NO LEAN WRITTEN]`
+- **Universal successor:** `source-execution-geometry.md`.
 - **Supersedes as novelty claim:** generic Nomotopy/law-space kinematics. Those remain useful
   language but are occupied by higher theories, deformation theory, and heterogeneous logic.
 
@@ -34,6 +35,12 @@ Analogue of Einstein equation is not metric on space of theories. It is source-t
 Left side is obstruction charge generated before successor is known. Right side is full relative
 cotangent/law object of non-Morita event. Field exists only if meaningful classes of sources make
 `(NG)` a theorem rather than definition.
+
+Hostile HT correction: neutral fusion canonically creates nonzero relative law with cotangent
+complex concentrated degree zero and no obstruction homology. Therefore `(NG)` cannot be universal
+field equation if `O` means obstruction/anomaly. Nomogenesis is restrictive associated-grade
+sector. Source Execution Geometry replaces raw homological identification by source-framed
+creative/restrictive bifiltration plus discrete sector, and keeps observer singularity separate.
 
 ## 1. Why this is not generic geometry of laws
 
@@ -79,7 +86,7 @@ A **nomogenic execution** is pair
 
 It is genuine when `u` is noninvertible after Morita localization.
 
-## 3. Eight axioms that would define field
+## 3. Nine axioms that would define field
 
 ### NG1. Source independence
 
@@ -139,6 +146,22 @@ exponents.
 Doctrine determining legal events is external meta-mathematics until source reconstructs it.
 “Obstruction creates its own law” is empty unless initiality, invariance, and no-surplus are
 proved. This axiom prevents autogenic theatre.
+
+### NG9. Symmetry-anomaly necessity
+
+Initiality cannot break exact source symmetry: every group autoequivalence of execution category
+canonically acts on initial execution. Therefore symmetry-breaking successor requires explicit
+source anomaly, nonunique phase plus independent selection, or enlarged source framing. For
+infinitesimal radial generator `partial_log`, any successful new differential must satisfy
+
+\[
+ [d_{\mathrm{new}},\partial_{\log}]\ne0.
+ \tag{4a}
+\]
+
+When target event breaks group `G`, field equation `(NG)` must be strengthened: obstruction object
+must include independently constructed symmetry anomaly, and `theta` must identify it with full
+relative law. Unique symmetric completion cannot be advertised as selector.
 
 ## 4. Nomogenic geometry and topology
 
@@ -241,8 +264,10 @@ Literal total-grade-one cyclic source is fixed pointwise by
 \]
 
 Endpoint traces, all cyclic degrees, Kummer cocycle, reciprocity, reflection, and present
-Bockstein operations are equivariant. Hence old law cannot select `c=0`. First viable event must
-break diagonal radial gauge by canonical cross-grade or prime--infinity relation.
+Bockstein operations are equivariant. A cross-grade family has trivial point stabilizers but is
+itself transitive radial torsor, so does not select origin. First viable event must supply
+source-derived absolute radial calibration/anomaly, likely prime--infinity or fixed
+analytic-dagger operation.
 
 ### Prime valuation coframe
 
@@ -265,14 +290,16 @@ At Xi zero `rho`, physical obstruction has coefficient
  \tag{12}
 \]
 
-in every prime valuation coordinate. Existing source represents, detects, and lands it but cannot
-annihilate it because `(10)` is exact symmetry.
+in every prime valuation coordinate. Existing source represents, detects, and lands it. It now also
+has strict all-prime Euler--Gamma/Mobius differential and exact-kernel Möbius--Fourier detector.
+What remains unproved is literal flatness of source--Poisson lift obstruction, not construction of
+generic non-equivariant event.
 
-First field-defining Nomogenesis theorem would construct before divisor specialization:
+Current field-defining restrictive theorem must construct before divisor specialization:
 
-1. canonical non-`Gamma_c`-equivariant source event `u_src`;
-2. obstruction object `O_src` containing valuation coframe and nonzero Xi jet;
-3. equivalence
+1. actual rational-Witt/Milnor degree-two realization retaining prime coframe and nonzero Xi jet;
+2. comparison with prime-radial excess Koszul/Smith object;
+3. source-framed equivalence
 
    \[
    O_{\mathrm{src}}
@@ -280,16 +307,17 @@ First field-defining Nomogenesis theorem would construct before divisor speciali
    \tag{13}
    \]
 
-4. independent source conservation/initiality law whose physical shadow forces diagonal defect
-   zero;
-5. Tor-aware Cartier landing identifying relative conormal with unique Stokes orientation port.
+4. independent source identity
+   `Omega_(mu,Gamma)(w_23)=S_mu G_Gamma D(w_23)=0`;
+5. coefficient-faithful Cartier/Gamma landing identifying derived excess and unique Stokes port.
 
 This would not “solve RH by new language.” It would prove arithmetic source cannot sustain radial
 gauge deformation because that obstruction has already executed as incompatible successor law.
 
-Exact smallest target: two-prime-plus-infinity relation with trivial radial stabilizer, preserving
-ordered prime orientations and landing coefficient-faithfully on source-normal
-Bockstein/dagger port.
+Exact smallest target: compare canonical `H_1(K_{2,3})` weighted prime-root generator with ordered
+Green/Bockstein boundary `w_23`, retain Smith jets before scalarization, then prove explicit lift
+obstruction vanishes from independent source relation. Another nonzero commutator is no longer the
+frontier.
 
 ## 7. Hypertranscendental prediction
 
@@ -333,7 +361,8 @@ its exponent without inserting bulk doctrine.
 6. Is there Nomogenic Bianchi identity for triple promotions?
 7. Which observer families reconstruct Tor conormal but exclude identity/source-storing charts?
 8. Can law-event cobordism classify hypertranscendental prolongation growth?
-9. Is prime--infinity cross-grade transgression initial in rational-adelic source?
+9. Does rational-adelic source produce absolute radial calibration/anomaly rather than gauge
+   orbit of cross-grade relations?
 10. Does source-selected controlled singularity determine holographic interior complexity exponent?
 11. Can generalized-prime systems falsify proposed arithmetic initiality?
 12. Is source completeness itself reconstructible or irreducible meta-law?
@@ -347,8 +376,9 @@ its exponent without inserting bulk doctrine.
 3. **Quadratic exponent:** two-sheet collision yields `Disc^(-1/2)` hidden reconstruction.
 4. **Higher collision:** Jordan length `m` yields a distinct rational conditioning exponent and
    Tor amplitude; determine formula rather than assume universality.
-5. **Arithmetic selector:** viable source law first appears as nonhomogeneous prime--infinity
-   relation, not new homogeneous cyclic degree.
+5. **Arithmetic selector:** viable source law first appears as absolutely calibrated
+   nonhomogeneous prime--infinity anomaly, not new homogeneous cyclic degree or arbitrary
+   cross-grade gauge slice.
 6. **Coframe transgression:** each prime valuation cocycle transgresses separately; scalar Kummer
    formula is contraction only.
 7. **HT growth:** hypertranscendental functions exhibit non-Noetherian relative law tower under
@@ -372,10 +402,11 @@ Retire Nomogenesis as new field if hostile review shows:
 
 ## 12. Current verdict
 
-Nomogenesis is not yet new field. It is a precise unoccupied research question surrounded by
-exact no-gos and one complete quadratic universality model. It earns field status only after first
-nontrivial source-selected event is constructed and transfers an unconditional theorem unavailable
-inside parent doctrine. RH source-normal transgression is decisive test, not assumed example.
+Nomogenesis is falsified as universal theory: law birth need not arise from obstruction, and
+observer horizons need not reflect law birth. It remains restrictive/anomaly sector. Local
+replacement is source-framed bifiltered SEG; global infinite replacement is Completion Relativity.
+RH source-normal flatness `(Omega_(mu,Gamma)=0)` remains decisive restrictive test, not assumed
+example.
 
 ## Literature collision boundary
 
@@ -395,6 +426,8 @@ Paper-proved:
 - `../../2-fully-proven/constraint-relativity/rank-one-source-naturality-rigidity-and-framing-law.md`;
 - `../../2-fully-proven/constraint-relativity/quadratic-law-discriminant-bockstein-controlled-horizon.md`;
 - `../../2-fully-proven/constraint-relativity/identity-sector-radial-gauge-blindness-and-cross-grade-selection-law.md`;
+- `../../2-fully-proven/constraint-relativity/initial-execution-symmetry-inheritance-and-anomaly-necessity.md`;
+- `../../2-fully-proven/constraint-relativity/radial-affine-torsor-and-cross-prime-flatness-no-go.md`;
 - `../../2-fully-proven/constraint-relativity/prime-valuation-cyclic-coframe-and-diagonal-dagger-defect-law.md`.
 
 Open producer:

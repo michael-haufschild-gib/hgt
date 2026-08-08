@@ -3,10 +3,12 @@
 - **ID:** `nomotopy-autogenic-theory-geometry`
 - **Stage:** 1-in-progress
 - **Working name:** `Nomotopy` (`nomos`, law; topology/homotopy of law change)
-- **Type:** CANDIDATE NEW FIELD AFTER HOSTILE CORPUS COLLISIONS
-- **Scientific status:** `[BOLD CONJECTURAL] [NOT YET A NEW FIELD]`
+- **Type:** OCCUPIED KINEMATICAL PRECURSOR / LANGUAGE FOR LAW SPACE
+- **Scientific status:** `[HOSTILE NOVELTY CLAIM RETRACTED] [USEFUL KINEMATICS]`
   `[THREE ZERO-PROMOTION NO-GOS PROVED] [TWO EXACT BRIDGES PROVED]`
   `[NO RH CLAIM] [NO LEAN AUTHORIZED]`
+- **Novel core moved to:** local bifiltered sector `source-execution-geometry.md`; infinite
+  source-history sector `completion-relativity-source-history-geometry.md`.
 - **Parents:** the corpus's autogenic-obstruction, actuality-creates-future-law,
   self-witnessing, cross-history recognizer, Source--Observer Relativity, strict-descent, and
   anomaly-fracture programs.
@@ -124,17 +126,19 @@ to the stated equivalence.
 
 ## 3. Provisional tangent and topology
 
-For a finite presentation of `(N.2)`, its relative presentation complex has:
+For finite presentation of `(N.2)`, retain source-framed cell filtration whose associated grades
+record:
 
 \[
- H_0=\text{new generators modulo old term operations},
+ \operatorname{gr}_{\rm cr}=\text{new generator/operation cells},
  \qquad
- H_1=\text{new relations modulo old consequences},
+ \operatorname{gr}_{\rm res}=\text{new relation cells},
  \tag{N.3}
 \]
 
-with higher homology recording syzygies among new laws. Presentation-independent replacement
-should be a relative cotangent/deformation object
+with higher cells recording syzygies. These are not generally homology groups; totalization can
+cancel a generator--relation pair. Presentation-independent infinitesimal comparison should be a
+relative cotangent/deformation object
 
 \[
  \mathbb L_{\mathbb T_+/\mathbb T_-}.
@@ -208,7 +212,7 @@ content requires one source-minimal observer nerve spanning heterogeneous analyt
 spectral, and operational realizations, plus a theorem that `(N.4a)` survives their incompatible
 topologies without hiding the source in an observer.
 
-### Uniform deformation descent
+### Uniform deformation descent `[FALSIFIED ACROSS LAW HORIZONS]`
 
 Derived equivalence still sees only exact kernels and cokernels. Given calibrated deformation
 realizations `q:S->B` and `p:S->I`, define
@@ -233,7 +237,25 @@ In finite-dimensional linear tangent models with observer derivative `J`,
 
 Thus exact descent, derived descent, and uniform descent are distinct layers. A cofinal family can
 remain faithful at every finite stage while `sigma_min(J_N)->0`; its law becomes unreconstructible
-at uniform resolution. This is the precise candidate meaning of a horizon in Nomotopy.
+at uniform resolution.
+
+Hostile correction: bounded uniform descent cannot extend across any continuously approached
+finite-dimensional law horizon where observer loses a direction. For unit `x in ker J_0`, every
+left inverse obeys
+
+\[
+ 1\le\|D_t\|\,\|J_tx\|,
+\]
+
+so `||D_t||->infinity`. Correct invariant is source-derived **controlled singularity**: weight
+decoder by discriminant exponent. Quadratic law horizon proves
+
+\[
+ \sqrt{|\operatorname{Disc}|}\,\|D_{\rm hidden}\|=\sqrt2.
+\]
+
+Raw uniformity is therefore not founding axiom. Tor-aware base change plus invariant blow-up rate
+replaces it in Nomogenesis.
 
 ## 4. Causal geometry of law change
 
@@ -489,8 +511,13 @@ Retire Nomotopy as a new field if:
 
 ## 12. Current verdict
 
-Nomotopy is the first current candidate whose base points are laws rather than carriers,
-observers, or completions. It is not yet a new field. Its first genuine result is negative:
-faithful failure-coordinate re-encoding, fixed-action word growth, and fixed-transformation
-defect closure have zero law-promotion content. The next make-or-break result is one source-forced,
-presentation-invariant, non-Morita-trivial theory event.
+Hostile literature audit retracts Nomotopy novelty claim. Categories/geometries/deformations of
+theories are occupied by higher algebraic theories, operadic deformation, formal moduli,
+heterogeneous institutions, and quantitative equational logic. Existing zero-promotion and
+conditioning theorems remain useful kinematics.
+
+Obstruction-only Nomogenesis is itself falsified as universal by neutral fusion. Plausible residue
+splits into source-framed bifiltered execution descent (creative/restrictive/discrete sectors) and
+Completion Relativity (mixed observer/base-change curvature of ordered infinite source histories).
+See `source-execution-geometry.md` and `completion-relativity-source-history-geometry.md`. Until a
+nonclassical source-curvature theorem is proved, this card is not new-field claim.

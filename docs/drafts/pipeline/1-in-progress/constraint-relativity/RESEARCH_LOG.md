@@ -564,3 +564,477 @@ For RH, missing statement is now sharply phrased but not solved: prove from lite
 source that a nonzero radial prime-character direction is not a jointly realizable deformation of
 source law. This must occur before divisor specialization. Defining deformation theory to exclude
 that direction would be RH in disguise.
+
+## 2026-08-08 — residue anomaly and exact two-leg rank
+
+For chain residue `R` and defect family `Z`, any cell attachment killing `Z` preserves residue
+exactly when `RZ=0`. With compensator `A`, condition is
+
+\[
+ RZ+Sq=0,
+ \qquad
+ \operatorname{anomrank}_R(Z)=\operatorname{rank}(RZ).
+\]
+
+Rank-minimal fitted scalar compensation splits as contractible pair. For actual Xi source,
+coordinate-stable faithful compensator is infinite-dimensional; holomorphic/meromorphic
+compensation fails because defect coefficient depends genuinely on `s,bar s`.
+
+Before reflection diagonal, charge
+
+\[
+ (n^{s+t-1}-1)c(s)
+\]
+
+has holomorphic separation rank exactly two: explicit two-term decomposition gives upper bound,
+and a nonzero `2 by 2` evaluation determinant gives lower bound. Ordered two-leg carrier is
+necessary but not selector.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/residue-preserving-law-promotion-anomaly-trilemma.md`.
+
+## 2026-08-08 — literal source radial-gauge impossibility
+
+For rational-scaling grade `q`,
+
+\[
+ \Gamma_c(a_q)=|q|^ca_q
+\]
+
+is algebra automorphism. Every total-grade-one cyclic chain is pointwise fixed; all Hochschild and
+cyclic operations preserve grade. Endpoint traces and literal prime/inverse-prime atom are fixed.
+Kummer derivation commutes with `Gamma_c`, so even genuine nonzero Kummer homology class is blind.
+
+Therefore present homogeneous cyclic source, in every degree, cannot select `c=0`. Smallest
+selector normal form is canonical relation spanning two distinct total absolute grades; its radial
+stabilizer is trivial. Adjoining relation by hand is circular.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/identity-sector-radial-gauge-blindness-and-cross-grade-selection-law.md`.
+
+## 2026-08-08 — prime valuation coframe and no cancellation
+
+For every prime `ell`, valuation derivation gives cyclic cocycle `phi_ell` with
+
+\[
+ \phi_\ell([u_p])=-\delta_{\ell p}.
+\]
+
+Prime classes form coordinate basis in current signed cyclic/Hochschild-boundary quotient.
+Scalar Kummer is only logarithmic contraction of this coframe. Physical off-line dagger defect is
+diagonal with nonzero coefficient in every prime coordinate, so finite cross-prime cancellation
+and faithful completion of old differential cannot work. Missing law must make valuation cocycles
+transgress.
+
+Paper proof and open producer:
+
+- `../../2-fully-proven/constraint-relativity/prime-valuation-cyclic-coframe-and-diagonal-dagger-defect-law.md`;
+- `source-normal-valuation-coframe-transgression.md`.
+
+## 2026-08-08 — Nomotopy novelty retracted; pivot to Nomogenesis
+
+Broad 2025--2026 literature audit shows spaces/categories/deformations/metrics of theories are
+occupied by higher algebraic theories, formal moduli, dg-operad cotangent complexes,
+heterogeneous institutions, and metric equational theories. Raw Nomotopy is useful kinematics but
+not a new field.
+
+Unoccupied make-or-break residue is **Nomogenesis/source-law transgression**:
+
+\[
+ \theta_{S,\mathbb T}:O(S,\mathbb T)
+ \xrightarrow{\simeq}
+ \mathbb L_{\mathbb T^+/\mathbb T}[1].
+\]
+
+Obstruction must be defined independently; successor must be initial, non-Morita, no-loss,
+no-surplus, residue-conserving, Tor-aware, and controlled-singular. Without independently
+constructed `theta`, this is only research question.
+
+Rank-one naturality theorem: unframed source line canonically permits only square-zero extension.
+With frame, quadratic discriminant distinguishes split `C times C` from dual numbers; rank alone
+does not select law.
+
+Exact quadratic family
+
+\[
+ B=\mathbb C[h],
+ \qquad
+ A=B[\eta]/(\eta(\eta-h))
+\]
+
+has exact two-character descent off `h=0`, dual-number collision at zero, lost nilpotent direction
+recovered by `Tor_1`, and sharp controlled singularity
+
+\[
+ \sqrt{|\operatorname{Disc}|}\,\|D_{\rm hidden}\|=\sqrt2.
+\]
+
+This falsifies bounded uniform descent across law horizon and predicts a measurable exponent for
+arithmetic/holographic two-sheet collisions.
+
+Cards:
+
+- `nomogenesis-source-law-transgression.md`;
+- `../../2-fully-proven/constraint-relativity/rank-one-source-naturality-rigidity-and-framing-law.md`;
+- `../../2-fully-proven/constraint-relativity/quadratic-law-discriminant-bockstein-controlled-horizon.md`.
+
+Current open core: construct source-native non-`Gamma_c`-equivariant prime--infinity event before
+divisor specialization, or prove literal source category cannot contain one and pivot higher.
+
+## 2026-08-08 — symmetry-inheritance and cross-grade torsor correction
+
+Any group action by autoequivalences on execution category canonically acts on initial execution:
+every translate of initial object is initial, uniqueness gives coherent equivariant isomorphisms.
+Thus initiality cannot break exact source symmetry. A radial-selecting Nomogenic event requires
+source symmetry anomaly, nonunique phase plus independent selection, or larger pre-divisor source
+framing. Necessary infinitesimal condition is
+
+\[
+ [d_{\mathrm{new}},\partial_{\log}]\ne0,
+\]
+
+refined primewise by `[d_new,partial_ell]`.
+
+Hostile countermodel corrects earlier inference from trivial stabilizer. For
+
+\[
+ L_\lambda=\mathbb C(x_g+\lambda x_h),
+\]
+
+one has
+
+\[
+ \Gamma_cL_\lambda=L_{\lambda(h/g)^c}.
+\]
+
+Every line has trivial stabilizer but family is transitive radial torsor. Choosing `lambda=1` is
+gauge fixing unless source independently calibrates coefficient. Likewise cross-prime slopes
+`b_p=2a log p` have zero pairwise curvature for every `a`; multi-prime consistency identifies
+one common radial slope but cannot force its absolute zero.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/initial-execution-symmetry-inheritance-and-anomaly-necessity.md`.
+
+Revised open core: construct source-derived **absolute radial calibration/anomaly**, not merely a
+cross-grade relation.
+
+## 2026-08-08 — obstruction-only Nomogenesis falsified; Source Execution Geometry
+
+Publication-ready finite-fusion HT source gives exact counterexample to obstruction-only law
+birth. Neutral fusion by source unit canonically creates next layer of differential transcendence
+rank `|A|`. Relative cotangent complex is free in degree zero and has no positive homology. Thus
+law creation can be unobstructed.
+
+Conversely fixed-theory sinc reporter has inverse square-root horizon:
+
+\[
+ \frac{19}{120}(T\delta)^2
+ \le1-\operatorname{sinc}(T\delta)
+ \le\frac16(T\delta)^2,
+\]
+
+with no non-Morita change and no Tor conormal. General observer exponent equals decoder blow-up
+order divided by reporter vanishing order, hence is observer-dependent.
+
+Universal split is therefore:
+
+\[
+ \text{creative law birth}
+ \ne\text{restrictive/anomaly law}
+ \ne\text{observer singularity}.
+\]
+
+New highest candidate: **Source Execution Geometry**, with source-prior execution complex
+
+\[
+ \Theta_{S,\mathbb T,e}:\mathcal E_S(e)
+ \xrightarrow{\simeq}
+ \mathbb L_{\mathbb T_e^+/\mathbb T},
+\]
+
+creative `H_0`, restrictive `H_1`, and separate observer profile
+`(ramification, Tor, lifting modulus)`. Nomogenesis remains restrictive sector only.
+
+Cards:
+
+- `source-execution-geometry.md`;
+- `../../2-fully-proven/constraint-relativity/neutral-fusion-unobstructed-relative-cotangent-law.md`;
+- `../../2-fully-proven/constraint-relativity/observer-ramification-horizon-exponent-no-go.md`;
+- `../../2-fully-proven/constraint-relativity/cofinal-ht-to-recurrence-rank-transfer-bound.md`.
+
+## 2026-08-08 — global prime--infinity capacity law
+
+For `N` prime units and `r` invertible infinity ports, every diagonal algebraic relation has
+valuation transgression matrix
+
+\[
+ \Omega=I_N+BM^T,
+ \qquad
+ \operatorname{rank}\Omega\ge N-r.
+\]
+
+Strict coframe descent requires `r>=N`; rank-one common anomaly requires `r>=N-1`. One infinity
+port yields rank `N-1`. Symmetric two-prime half-density line is `A_1` case of mean-zero
+`A_(N-1)` root conormal, not global rank-one law.
+
+Surviving architecture:
+
+\[
+ A_\infty\text{ raw prime--infinity conormal}
+ \to\text{singular source cohomology}
+ \to\text{one physical Stokes port}.
+\]
+
+No fixed finite-rank infinity port can do this.
+
+Cards:
+
+- `../../2-fully-proven/constraint-relativity/prime-infinity-port-capacity-and-root-conormal-law.md`;
+- `infinite-prime-infinity-root-conormal-transgression.md`.
+
+## 2026-08-08 — stronger radial independence results
+
+Finite-prime radial one-parameter subgroup `(p^t)_p` is Zariski dense in algebraic torus by unique
+factorization and independence of real exponentials. Hence every rational radial invariant is
+constant. Logarithmic cross-prime curvatures exist only analytically and classify orbit, not
+origin.
+
+Trace-one tensor `omega=x tensor y` leaves factorization torsor
+
+\[
+ (x,y)\mapsto(rx,r^{-1}y),
+\]
+
+which moves every transverse line. Product normalization does not frame individual legs.
+
+Generalized-prime group algebra tensored with quadratic horizon gives compound countermodel where
+cyclicity, trace-one atoms, valuation coframe, reflection, indefinite Stokes, anomaly rank one,
+Tor recovery, and controlled discriminant blow-up coexist with nonzero radial drift. Abstract
+organ conjunction cannot select RH; literal rational-adelic/Gaussian boundary datum is mandatory.
+
+Cards:
+
+- `../../2-fully-proven/constraint-relativity/radial-affine-torsor-and-cross-prime-flatness-no-go.md`;
+- `../../2-fully-proven/constraint-relativity/generalized-prime-compound-countermodel-to-universal-selector.md`.
+
+## 2026-08-08 — monogenic five-shadow discriminant theorem
+
+For any finite monogenic law `A=B[T]/(f)`, exact cross-face theorem is
+
+\[
+ \Omega_{A/B}\cong A/(f')\,dt,
+ \qquad
+ \operatorname{Fitt}_0^B(\Omega)=(\operatorname{Disc}f).
+\]
+
+On split complex fibre, character observer is Vandermonde `V_f` and
+
+\[
+ \det V_f=\prod_{i<j}(r_j-r_i),
+ \qquad
+ |\det V_f|^2=|\operatorname{Disc}f|,
+ \qquad
+ \prod_i\sigma_i(V_f)=|\operatorname{Disc}f|^{1/2}.
+\]
+
+Thus relative law cotangent, ordered arithmetic orientation, spectral conditioning, positive
+energy, and ramification topology are exact forgetful shadows of one discriminant section.
+Quadratic `f=(T-1)(T-delta)` gives oriented `delta-1` and energy `(delta-1)^2`, matching corpus.
+This is strongest exact answer to multi-field shadow phenomenon so far, but remains kinematics:
+it does not force discriminant to vanish.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/monogenic-law-discriminant-observer-shadow-theorem.md`.
+
+## 2026-08-08 — hostile correction: SEG was still a collage
+
+External/current-literature and paper-proof audit forced two structural retractions.
+
+1. Generic `H_0=created generators`, `H_1=created relations` is false. In hypersurface cotangent
+   complex, `H_1` is annihilator/syzygy; contractible generator--relation pair has zero homology.
+   Replacement is source-framed creative/restrictive **bifiltration**, with totalization compared
+   to cotangent.
+2. Cotangent complex misses discrete/etale non-Morita events; e.g. finite etale extension has
+   `L=0`. SEG needs separate discrete sector.
+
+Generalized theories, algebraic effects, cotangent deformation, polygraphs, rewriting,
+institutions, contextuality, and determinant lines occupy almost every generic SEG ingredient.
+Small unoccupied problem specification is source-framed bifiltered execution descent with mixed
+observer/base-change curvature and source-normal determinant section. SEG is local synthesis, not
+new field.
+
+Monogenic theorem also corrected: orientation, singular values, and positive magnitude require
+split fibre, root ordering, bases, and Hermitian norms. Cotangent/discriminant is intrinsic only up
+to relevant units/line; conditioning is framed. RH substitution is not source comparison.
+
+## 2026-08-08 — latest Route-L frontier correction
+
+Strict all-prime Euler--Gamma/Mobius source differential, Möbius--Fourier detector, exact kernel,
+and canonical prelift are constructed. Missing object is no longer generic `d_new`. Exact live
+curvature is
+
+\[
+ \Omega_{\mu,\Gamma}
+ =\mathfrak S_\mu\mathcal G_\Gamma D.
+\]
+
+Its vanishing is equivalent to literal Meyer--Poisson chain lift. At `w_23`, coefficient-faithful
+Xi evaluation is `c_rho(g_2(rho)-g_3(rho))`, `c_rho!=0`; proving source flatness is RH-bearing.
+New field must explain/prove this exact boundary identity, not add representation.
+
+## 2026-08-08 — prime-coframe topology-selection uncertainty
+
+Let `V=c_00(primes)`, augmentation `epsilon=sum`, and `A_infinity=ker epsilon`. For every dense
+Hausdorff locally convex realization `V->X`:
+
+\[
+ X/\overline{A_\infty}
+ \cong
+ \begin{cases}
+  \mathbb C,&\epsilon\text{ extends continuously},\\
+  0,&\text{otherwise}.
+ \end{cases}
+\]
+
+Therefore `ell^1` retains one unweighted port, while `ell^p`, `p>1`, and `c_0` make port
+nonseparated and kill it after Hausdorffization. No topology retaining continuous augmentation can
+also contain convergent positive raw radial net with weights `log p` or `|1-p^(2a)|`.
+
+Hostile correction: this is not completion/quotient noncommutation under induced quotient
+topology; algebraic quotient already has zero quotient seminorm. Exact law is topology
+incompatibility and nonseparation.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/prime-coframe-completion-port-uncertainty-law.md`.
+
+## 2026-08-08 — prime-radial excess intersection and Smith staircase
+
+For `R=C[[a]]` and pre-divisor radial defects
+
+\[
+ f_p(a)=p^{Ma}-1=a u_p(a),
+ \qquad u_p(0)=M\log p,
+\]
+
+finite prime Koszul object satisfies
+
+\[
+ H_\bullet(K_F)
+ \cong
+ \mathbb C\otimes\bigwedge^\bullet\mathcal A_F,
+ \qquad
+ \mathcal A_F=\{(d_p):\sum d_p=0\}.
+\]
+
+Thus `H_0` is one common horizon port, `H_1` is full type-`A_(N-1)` root conormal, and higher
+homology stores exterior syzygies. No false equality of prime units and no conjectural rank
+collapse.
+
+Monogenic evaluation observer has exact Smith form
+
+\[
+ J_F\sim\operatorname{diag}(1,a,\ldots,a^{N-1}),
+ \qquad
+ \operatorname{coker}J_F
+ \cong\bigoplus_{j=1}^{N-1}R/(a^j).
+\]
+
+Normal-grade dimensions `N-1,...,1` equal positive-root height distribution of `A_(N-1)`.
+Observer orientation Fitting ideal squares to relative-law discriminant:
+
+\[
+ \operatorname{Fitt}_0(\operatorname{coker}J_F)^2
+ =\operatorname{Fitt}_0(\Omega_{A_F/R})
+ =(\operatorname{Disc}P_F).
+\]
+
+Normalized discriminant divisor equals `[a=0]` at every prime cutoff. Adding prime adds one
+persistence bar `R/(a^N)`. Underived ideal is `(a)` after one prime, so all extra prime leverage is
+derived excess/jet depth, never stronger radical selection. Infinite exterior algebra has no top
+degree; source-normal semi-infinite determinant/Tate polarization remains open.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/prime-radial-excess-intersection-discriminant-law.md`.
+
+## 2026-08-08 — global pivot: Completion Relativity
+
+Current universal candidate is not SEG alone. **Completion Relativity** treats precompletion
+source history as invariant and completions/quotients/Fourier/base-change as observer charts.
+Curvature is independently computed defect of exchanging observer operations; phase is
+determinant/orientation of curvature; chronology is order retained when all-prime/adiabatic limits
+are nonabsolute.
+
+Exact first literal curvature is Route-L `Omega_(mu,Gamma)`. Exact first multi-face model is
+prime-radial excess/Smith theorem. Exact topology law is augmentation-port uncertainty. Field
+equation remains open: independently constructed source current must compare to completion
+curvature and force flatness by source conservation, not definition.
+
+Card: `completion-relativity-source-history-geometry.md`.
+
+## 2026-08-08 — exact phase-torus law and one-clock limitation
+
+Phase-decorated prime defects
+
+\[
+ f_p(a,\theta)=e^{i\theta_p}(p^{Ma}-1)
+\]
+
+retain all Koszul/Smith/discriminant laws. Horizon excess spaces form trivial rank-`N-1` bundle
+over prime phase torus. Standard prime-coordinate Hermitian metric induces Grassmann connection
+
+\[
+ A=-i\sum_pQ_p d\theta_p,
+ \qquad
+ F=-\sum_{p<q}[Q_p,Q_q]d\theta_p\wedge d\theta_q.
+\]
+
+For `N=2`, `F=0`. For `N>=3`, every pair commutator is nonzero, but `tr F=0`. Thus determinant
+and first-Chern scalar miss traceless non-Abelian phase curvature. One-dimensional time path pulls
+back every curvature two-form to zero, though path-ordered holonomy may survive.
+
+Hostile limit: bundle is algebraically trivial and curvature depends on orthogonal/source metric.
+No physics claim until literal arithmetic or holographic source forces that metric/projection.
+
+## 2026-08-08 — canonical root frame and forced half-density
+
+Units `u_p=(p^(Ma)-1)/a` canonically normalize prime legs `s_p=u_p^(-1)e_p`. Differences
+`eta_pq=s_p-s_q` identify full excess module over formal radial disk with ordinary type-`A`
+augmentation kernel, not only at horizon.
+
+Relative logarithmic radial connection satisfies
+
+\[
+ (\partial_a\log u_p-\partial_a\log u_q)|_{a=0}
+ =\frac M2(\log p-\log q).
+\]
+
+Same coefficient follows from Bernoulli--Todd series `x/(e^x-1)` paired with log/Kummer covector.
+Thus `1/2` half-density is forced by exponential prime holonomy plus canonical unit normalization.
+This explains existing Floquet/Stokes half-density normal form but does not compare to literal
+Gamma/Mobius source or force Xi divisor to radial identity.
+
+## 2026-08-08 — universal simple-horizon rank-to-depth transmutation
+
+Prime theorem abstracts to any DVR family `f_i=a u_i` with pairwise distinct leading units.
+Underived ideal is `(a)` after one equation, but exact derived/observer laws are
+
+\[
+ H_\bullet K(f_i)=k\otimes\bigwedge^\bullet A_{N-1},
+ \qquad
+ \operatorname{coker}J=\bigoplus_{j=1}^{N-1}R/(a^j),
+\]
+
+\[
+ \operatorname{Fitt}_0(\operatorname{coker}J)^2
+ =\operatorname{Fitt}_0(\Omega_{A/R}),
+ \qquad
+ \operatorname{ordDisc}=N(N-1).
+\]
+
+Adding one constraint adds persistence bar `R/(a^N)`. Universal principle: at simple common-normal
+horizon, extra transverse rank is not lost and does not strengthen zero locus; it is transmuted
+into type-`A` derived excess and normal jet depth. This is first general predictive local law of
+Completion Relativity.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/simple-horizon-rank-to-depth-transmutation-law.md`.
