@@ -1589,3 +1589,35 @@ Two Lean traps recorded:
 Also: the lint gate flagged `HedenmalmThetaSourceEntropyBoundaryWeld` as unreachable from the
 `RHTower` umbrella — a concurrent session had created the module without wiring it.  Wired.  The
 other ~24 unreachable-module lint errors belong to other sessions' in-flight work, not to this one.
+
+### 2026-08-08, step 4 closed except the limit assembly
+
+* `HTGeometry/HilbertSchmidtBlockMatrix.lean` — `ofBlock` (zero-extension of a matrix on `↥s`),
+  `blockMatrix`, `truncKernel_eq_ofBlock`, `hsComp_ofBlock`, `hsPow_ofBlock`,
+  **`hsTrace_hsPow_truncKernel`** (kernel power traces = matrix power traces),
+  `matHSNormSq_blockMatrix`, `matHSNormSq_blockMatrix_le`.
+* `HTGeometry/FiniteDeterminantLogSeries.lean` — `tsum_pow_div_add_two`
+  (`sum_k w^(k+2)/(k+2) = -log(1-w) - w`), `exp_neg_tsum_pow_div_add_two`,
+  `norm_diag_le_of_schur`, **`exp_neg_traceSeries_eq_finiteDet2_neg`** and
+  **`fredholmDet_truncKernel_eq`**.
+* `FiniteRegularizedDeterminant.lean` and the Carleman coefficient bound now hold for a matrix over
+  **any** finite index type, by reindexing to `Fin (card m)` (`finiteDet2_submatrix`,
+  `matHSNormSq_submatrix`, `trace_submatrix_equiv`, `trace_pow_submatrix`).
+
+The remaining assembly, with its estimate already worked out on paper:
+
+```text
+|fredholmExp K_s z - fredholmExp K z|
+  <= sum_k r^(k+2)/(k+2) * (k+2) M^(k+1) ‖K_s - K‖_HS
+   = ‖K_s - K‖_HS * r^2 M / (1 - rM)     on |z| <= r,  rM < 1, M = ‖K‖_HS.
+```
+
+The `(k+2)` of `hsTrace_hsPow_sub_norm_le` **cancels** the `1/(k+2)` of `fredholmExp`, so the
+convergence is uniform on the closed disc with an explicit constant.  Then `exp` is uniformly
+continuous on the bounded set the exponents live in, Cauchy's estimate applied to the *difference*
+gives convergence of the Taylor coefficients, those inherit
+`‖a_n‖ <= exp(R^2 ‖K‖_HS^2/2)/R^n` for every `R > 0`, and `entireOfCoeffs` of the limit is the
+entire `det_2`.
+
+Lean names to reuse: `norm_taylorCoeff_le` (Cauchy), `summable_of_orderTwo_bound`,
+`differentiable_entireOfCoeffs`, `Complex.hasSum_taylorSeries_on_ball`, `fredholmDet_differentiableOn`.

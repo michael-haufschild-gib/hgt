@@ -102,6 +102,8 @@ formal/GaloisForLFunctions/HTGeometry/EntireOrderTwoSeries.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantEntire.lean
 formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtContinuity.lean
 formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtTruncation.lean
+formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtBlockMatrix.lean
+formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantLogSeries.lean
 ```
 
 | step | statement | Lean declaration |
@@ -130,6 +132,15 @@ formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtTruncation.lean
 | 4 | square blocks are cofinal among finite sets of pairs | `tendsto_finset_product_atTop` |
 | 4 | **truncations converge in Hilbert--Schmidt norm** | `tendsto_hsNorm_sub_truncKernel` |
 | 4 | **hence every power trace is the limit of the truncated traces** | `tendsto_hsTrace_hsPow_truncKernel` |
+| 4 | a truncated kernel is the zero extension of a block matrix | `ofBlock`, `blockMatrix`, `truncKernel_eq_ofBlock` |
+| 4 | the kernel algebra of blocks is the matrix algebra | `hsComp_ofBlock`, `hsPow_ofBlock` |
+| 4 | **the kernel power traces of a truncation are the matrix power traces** | `hsTrace_hsPow_truncKernel` |
+| 4 | the block energy is at most the kernel energy | `matHSNormSq_blockMatrix`, `matHSNormSq_blockMatrix_le` |
+| 4 | `sum_k w^(k+2)/(k+2) = -log(1-w) - w` | `tsum_pow_div_add_two`, `exp_neg_tsum_pow_div_add_two` |
+| 4 | each eigenvalue is bounded by the Hilbert--Schmidt norm | `norm_diag_le_of_schur` |
+| 4 | **the determinant exponent of a finite matrix is its regularized determinant** | `exp_neg_traceSeries_eq_finiteDet2_neg` |
+| 4 | reindexing the determinant, energy and trace | `finiteDet2_submatrix`, `matHSNormSq_submatrix`, `trace_submatrix_equiv`, `trace_pow_submatrix` |
+| 4 | **the corpus determinant of a truncation is the finite one** | `fredholmDet_truncKernel_eq` |
 | — | the definition and uniqueness of the entire determinant | `IsRegularizedDet`, `.unique`, `.eq_one_at_zero`, `isRegularizedDet_of_logDeriv_eq` |
 
 ## Gates
@@ -139,9 +150,15 @@ formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtTruncation.lean
 - [x] Cauchy/Carleman coefficient bound, and entirety of such a series, in Lean
 - [x] truncation of a Hilbert--Schmidt kernel: `‖K_s‖_HS <= ‖K‖_HS` and `tr(K_s^m) -> tr(K^m)`
 - [x] the definition and uniqueness of the entire `det_2`, and the criterion that recognises it
-- [ ] the matrix/kernel bridge: `finiteDet2` of the block matrix is `fredholmDet` of the truncated
-      kernel on the disc, so the limit coefficients exist
-- [ ] entire `det_2` **exists** for every Hilbert--Schmidt kernel
+- [x] the matrix/kernel bridge: `finiteDet2` of the block matrix is `fredholmDet` of the truncated
+      kernel on the disc
+- [ ] entire `det_2` **exists** for every Hilbert--Schmidt kernel.  What remains is the assembly:
+      the exponent difference obeys
+      `|fredholmExp K_s z - fredholmExp K z| <= ‖K_s - K‖_HS * r^2 M/(1 - rM)` on `|z| <= r`
+      (the factor `k+2` in `hsTrace_hsPow_sub_norm_le` cancels the `1/(k+2)` of the series), so the
+      truncated determinants converge **uniformly** on a small closed disc; Cauchy's estimate on the
+      difference then makes the Taylor coefficients converge, they inherit the order-two bound, and
+      `entireOfCoeffs` of the limit is the entire determinant
 - [ ] `det_2(1 - zK) = 0` iff `1/z` is an eigenvalue
 - [ ] order of vanishing = algebraic multiplicity
 - [ ] Plemelj identity on the full resolvent set
@@ -183,3 +200,8 @@ construction; the general construction is what the *multiplicity* clause needs.
   definition, uniqueness and recognition criterion of the entire determinant
   (`IsRegularizedDet`).  What is left of step 4 is purely the bookkeeping bridge between the
   block matrix and the truncated kernel.
+- 2026-08-08 — the bridge is closed: `hsTrace_hsPow_truncKernel` identifies the kernel power traces
+  of a truncation with the matrix power traces of its block, and `fredholmDet_truncKernel_eq`
+  identifies the corpus determinant of a truncation with `finiteDet2` of the block, on the disc.
+  The link is the scalar identity `sum_{k>=2} w^k/k = -log(1-w) - w` applied to each Schur
+  eigenvalue.  Only the limit assembly is left.
