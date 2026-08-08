@@ -14,6 +14,8 @@ zero projection.
 Main results:
 * `resolvent_sub_resolvent` — the **resolvent identity**.
 * `commute_resolvent`, `rieszProjection_commute` — the projection commutes with `a`.
+* `rieszProjection_eq_of_annulus` — **contour independence**: the projection depends only on which
+  part of the spectrum the circle encloses.
 * `rieszProjection` — the definition.
 * `circleIntegrable_resolvent` — the resolvent is circle-integrable on a contour in the resolvent
   set.
@@ -134,5 +136,20 @@ theorem rieszProjection_commute (a : A) {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
     circleIntegral_mul_left hci, circleIntegral_mul_right hci]
   congr 1
   exact circleIntegral.integral_congr hr fun lam hlam => commute_resolvent a (h lam hlam)
+
+/-! ## Contour independence -/
+
+/-- **The Riesz projection is unchanged by deforming the contour through the resolvent set.**  If
+the closed annulus between two circles avoids the spectrum, the two projections agree. -/
+theorem rieszProjection_eq_of_annulus (a : A) {c : ℂ} {r R : ℝ} (h0 : 0 < r) (hle : r ≤ R)
+    (h : ∀ lam ∈ closedBall c R \ ball c r, lam ∈ resolventSet ℂ a) :
+    rieszProjection a c R = rieszProjection a c r := by
+  rw [rieszProjection, rieszProjection]
+  congr 1
+  refine Complex.circleIntegral_eq_of_differentiable_on_annulus_off_countable h0 hle
+    Set.countable_empty (fun lam hlam => ?_) (fun lam hlam => ?_)
+  · exact ((spectrum.hasDerivAt_resolvent_const_left (h lam hlam)).continuousAt).continuousWithinAt
+  · refine (spectrum.hasDerivAt_resolvent_const_left (h lam ?_)).differentiableAt
+    exact ⟨ball_subset_closedBall hlam.1.1, fun hb => hlam.1.2 (ball_subset_closedBall hb)⟩
 
 end GaloisForLFunctions.HTGeometry
