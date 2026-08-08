@@ -5,6 +5,7 @@
 - **Type:** THEOREM (paper) / METRIC-FREE PHASE GEOMETRY / ALL-FITTING BRIDGE
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO RH CLAIM] [NO LEAN WRITTEN]`
   `[REAL-CHAMBER SQUARE LAW] [COMPLEX-PHASE JUMP LAW]`
+  `[ACTUAL PRIME PHASE WALL] [KRONECKER WALL-CLOSURE]`
 - **Statement:** at common-contact horizon, real separated slopes force Kähler persistence to be
   exact double of observer persistence in every Fitting degree, while complex phase cancellation
   creates subdiscriminant walls invisible to total discriminant and observer barcode.
@@ -145,6 +146,88 @@ one, and only higher coefficients also occur. Thus changing southwest row functi
 `k` trace functionals has determinant `+/-1`. Resulting block is moment matrix
 `(sum_i u_i^(p+q))_(p,q)`. Reducing modulo `a` proves `(11)`. QED.
 
+More precisely, ordering southwest rows increasingly gives sign
+`(-1)^(k(k-1)/2)` in `(11)`. Identity holds over `R` with moments `sum_i u_i^ell`; reduction is
+used only to test whether determinant is a unit.
+
+## Theorem 2A: canonical self-dual observer--cotangent sandwich in the monogenic chart
+
+Let `A^sharp` be trace-dual lattice inside split generic fibre `K^N`, and put
+
+\[
+ C^\dagger=\operatorname{Hom}_R(C,K/R).
+\]
+
+There are canonical inclusions
+
+\[
+ A\subset R^N\subset A^\sharp,
+ \qquad
+ A^\sharp=(P')^{-1}A,
+ \tag{11a}
+\]
+
+and canonical exact sequence
+
+\[
+ \boxed{
+ 0\longrightarrow C
+ \longrightarrow\Omega_{A/R}
+ \longrightarrow C^\dagger
+ \longrightarrow0.}
+ \tag{11b}
+\]
+
+### Proof
+
+Generic evaluation identifies `A tensor_R K` with `K^N`; coordinate trace makes `R^N` self-dual.
+Since `A subset R^N`, duality reverses inclusion and gives `R^N subset A^sharp`. Monogenic different
+computation gives `A^sharp=(P')^(-1)A`.
+
+Multiplication by `P'` identifies
+
+\[
+ A^\sharp/A\cong A/(P')\cong\Omega_{A/R}.
+\]
+
+Quotienting sandwich `A subset R^N subset A^sharp` gives
+
+\[
+ 0\to R^N/A\to A^\sharp/A\to A^\sharp/R^N\to0.
+\]
+
+First term is `C`. Trace pairing modulo `R` is perfect between `R^N/A` and `A^sharp/R^N`, so last
+term is `C^dagger`. This proves `(11b)`. QED.
+
+Sequence `(11b)` exists without real-rootedness. Its extension class
+
+\[
+ [\xi_A]\in\operatorname{Ext}_R^1(C^\dagger,C)
+ \tag{11c}
+\]
+
+is intrinsic to source--observer sandwich and is lost by total discriminant. Varying complex
+tangent nodes can keep isomorphism type of `C` fixed while changing middle-module Smith type of
+this extension.
+
+The monogenic hypothesis is essential for identifying the middle term with `Omega_(A/R)`. For a
+general finite split order the canonical trace-dual middle is `A^sharp/A`, but it need not be the
+Kähler module. For example, over `R=C[[a]]`,
+
+\[
+ A=R(1,1,1)+aR^3\subset R^3
+\]
+
+has `length(A^sharp/A)=4`, while direct differentiation of
+`A\cong R[x,y]/(x^2-ax,y^2-ay,xy)` gives
+
+\[
+ \Omega_{A/R}\cong R/(a^2)\oplus R/(a^2)\oplus R/(a)
+\]
+
+of length `5`. Thus `(11b)` is a theorem of setup `(3)`, not a theorem about arbitrary split
+orders.
+
 ## Theorem 3: real chamber all-Fitting square law
 
 Assume residue field is embedded in `C` and all `lambda_i` are distinct real numbers. Then
@@ -199,7 +282,7 @@ valuation at least `r k(k-1)`.
 For real distinct residues, moment matrix in `(6)` is Gram matrix of vectors
 
 \[
- (1,\lambda_i,\ldots,\lambda_i^{k-1})in\mathbb R^k.
+ (1,\lambda_i,\ldots,\lambda_i^{k-1})\in\mathbb R^k.
 \]
 
 It is positive definite for `k<=N`, hence `H_k(lambda)>0`. Lemma 2 says southwest minor reaches
@@ -225,6 +308,10 @@ while those of `Omega` repeat each level twice. Equivalently every type-`A_(N-1)
 height acquires factor-two normal lifetime in relative-law/Kähler observer.
 
 This is exact algebraic dilation statement. No physical time interpretation is assumed.
+
+Module-theoretically, real chamber makes canonical extension `(11b)` maximally non-split at level
+of invariant factors: equal observer and dual-observer bars of length `rj` glue into bars of length
+`2rj`. No canonical decomposition into independently paired bars is asserted.
 
 ## Theorem 5: complex phase walls invisible to total discriminant
 
@@ -277,6 +364,202 @@ Multiplication by `P'` on basis `(1,T,T^2)` has nonzero entries `3`, `3c^3`, `3c
 Here `H_2=0`, but roots are distinct and ordinary discriminant is nonzero away from `c=0`.
 Observer total length and Kähler total length retain `3r` and `6r`; distribution among depths changes.
 
+### Complete constant-tangent three-sheet classification
+
+Let `R=C[[a]]`, `c=a^r` times a unit, and let `u_i=lambda_i in C` be constant, distinct tangent
+nodes. Then exactly two Kähler Smith types occur:
+
+\[
+ \boxed{
+ H_2(\lambda)\ne0
+ \Longrightarrow
+ \Omega\cong R/(a^{2r})\oplus R/(a^{4r}),}
+ \tag{22b}
+\]
+
+\[
+ \boxed{
+ H_2(\lambda)=0
+ \Longrightarrow
+ \Omega\cong R/(a^{3r})\oplus R/(a^{3r}).}
+ \tag{22c}
+\]
+
+#### Proof
+
+If `H_2!=0`, `k=2` southwest minor is unit after removing `c^2`; its determinantal-divisor
+valuation is `2r`. Total determinant valuation is `6r`, so nonzero Smith exponents are `2r,4r`.
+
+Suppose `H_2=0`. Set
+
+\[
+ m=\frac{\lambda_1+\lambda_2+\lambda_3}{3},
+ \qquad \mu_i=\lambda_i-m.
+\]
+
+Then
+
+\[
+ H_2=3\sum_i\mu_i^2.
+\]
+
+Thus `sum mu_i=0=sum mu_i^2`. Newton identities give first two elementary symmetric functions of
+`mu_i` equal zero, so
+
+\[
+ \prod_i(X-\mu_i)=X^3-d
+\]
+
+with `d!=0` because nodes are distinct. Choose `s^3=d`. After affine change
+`T'=s^(-1)(T-cm)`, an invertible `R`-basis change, polynomial is associated to
+`T'^3-c^3`. Multiplication by derivative `3T'^2` has Smith exponents `0,3r,3r`, proving `(22c)`.
+QED.
+
+Therefore `N=3` phase stack image has generic maximal-gluing stratum and one equianharmonic balanced
+wall. Additional intermediate partitions require higher `a`-jets of tangent nodes, not constant
+three-node configuration.
+
+### Theorem: fixed-radius three-phase wall criterion
+
+Let `rho_1,rho_2,rho_3>0`. There exist phases `theta_i` for which distinct nodes
+
+\[
+ z_i=\rho_i e^{i\theta_i}
+\]
+
+satisfy `H_2(z)=0` if and only if
+
+\[
+ \boxed{
+ \left(\sum_{i=1}^3\rho_i^2\right)^2
+ \ge 2\sum_{i=1}^3\rho_i^4.}
+ \tag{22d}
+\]
+
+#### Proof
+
+By three-sheet classification, `H_2(z)=0` exactly when nodes are vertices
+
+\[
+ z_i=m+s\omega^i
+\]
+
+of affine equilateral triple, with `s!=0`. Put `y_i=rho_i^2`,
+
+\[
+ A=\frac{y_1+y_2+y_3}{3},
+ \qquad d_i=y_i-A.
+\]
+
+Every real zero-sum triple `(d_i)` has unique representation, up to indexing convention,
+
+\[
+ d_i=2\operatorname{Re}(q\omega^i),
+ \qquad
+ |q|^2=\frac16\sum_i d_i^2.
+ \tag{22e}
+\]
+
+Squared moduli of equilateral vertices obey
+
+\[
+ |m+s\omega^i|^2=|m|^2+|s|^2
+ +2\operatorname{Re}(m\bar s\,\bar\omega^i).
+\]
+
+Thus required vertices exist exactly when nonnegative `x=|m|`, `t=|s|` solve
+
+\[
+ x^2+t^2=A,
+ \qquad xt=|q|.
+\]
+
+Such solution exists exactly when `A>=2|q|`. If `q!=0`, both `x,t` may be chosen positive; at
+equality they are equal and positive. If `q=0`, choose `x=0` and `t=sqrt(A)>0`. Hence `s!=0` in
+every case. Squaring and using `(22e)` gives
+
+\[
+ \frac{(\sum y_i)^2}{9}
+ \ge\frac23\left(\sum y_i^2-\frac{(\sum y_i)^2}{3}\right),
+\]
+
+equivalent to `(22d)`. Positive prescribed radii and `s!=0` give distinct nonzero nodes. QED.
+
+For literal prime radii `rho_p=M log p` with `M>0`, scale `M` cancels. Triple `(101,103,107)` satisfies
+criterion strictly. Indeed
+
+\[
+ 107^3<101^4
+ \Longrightarrow
+ \log107<\frac43\log101<\sqrt2\log101,
+\]
+
+so `(log107)^2<2(log101)^2<(log101)^2+(log103)^2`. Hence largest `y_i` is smaller than sum of other
+two; then `max y_i<(sum y)/2`, and
+
+\[
+ \sum_i y_i^2\le(\max_i y_i)\sum_i y_i<\frac12(\sum_i y_i)^2,
+\]
+
+exactly strict `(22d)`.
+
+Therefore actual independent prime phase torus meets balanced three-sheet Kähler wall. This does
+not imply one-parameter orbit `theta_p=t log p` meets it.
+
+### Corollary: one-clock recurrence shadows phase wall
+
+For any distinct primes `p_1,...,p_N`, flow
+
+\[
+ t\longmapsto(e^{it\log p_1},\ldots,e^{it\log p_N})
+ \tag{22f}
+\]
+
+is dense in `N`-torus. Indeed, annihilating integer character would give
+
+\[
+ \sum_i m_i\log p_i=0
+ \Longrightarrow
+ \prod_i p_i^{m_i}=1,
+\]
+
+so unique factorization forces all `m_i=0`; Kronecker density theorem applies.
+
+For prime triple `(101,103,107)`, fixed-radius criterion gives phase point `theta^star` with
+`H_2=0`. By density and continuity there is sequence `t_n` such that
+
+\[
+ \boxed{
+ H_2\left((\log p_i)e^{it_n\log p_i}\right)\longrightarrow0.}
+ \tag{22g}
+\]
+
+Equivalently
+
+\[
+ \inf_{t\in\mathbb R}
+ \left|H_2\left((\log p_i)e^{it\log p_i}\right)\right|=0.
+ \tag{22h}
+\]
+
+This proves one-clock orbit has balanced phase wall in closure. It does not prove exact finite
+`t` intersection. If no exact zero occurs, Kähler Smith type remains generic at every time while
+time orbit approximates balanced extension stratum arbitrarily closely. This is exact recurrence
+without law change, not physical wormhole theorem.
+
+For `N=4`, nodes `(1,i,-1,-i)` give `P(T)=T^4-c^4`, `P'(T)=4T^3`, and
+
+\[
+ C\cong R/(a^r)\oplus R/(a^{2r})\oplus R/(a^{3r}),
+ \qquad
+ \Omega\cong(R/(a^{4r}))^3.
+ \tag{22a}
+\]
+
+Here `H_2=H_3=0` while `H_4!=0`. Cumulative Kähler valuations change from real-chamber
+`(0,2r,6r,12r)` to `(0,4r,8r,12r)`. This independently confirms conservation of total defect with
+phase redistribution of internal depths.
+
 ### Proof
 
 The example proves existence of phase jump and exact profile. In general, Lemma 2 shows vanishing
@@ -309,6 +592,9 @@ As long as phase nodes `M log p e^(i theta_p)` are distinct:
 
 This phase geometry is source-coordinate and metric-free. It is distinct from optional Berry or
 Grassmann connection introduced after choosing Hermitian projection.
+
+Actual unequal-radius prime phase torus intersection is proved above for three primes. One-clock
+orbit approaches wall arbitrarily closely by `(22g)`; exact intersection remains open.
 
 ## Natural successor exact sequence
 
@@ -345,6 +631,8 @@ successor persistence bar. Exact sequence, unlike direct-sum identification, is 
 4. Horizon fibre `C/aC` and `Omega/aOmega` both have dimension `N-1`, but their deformation
    thickness differs by factor two. Fibrewise identification is therefore provably lossy.
 5. Rank-one/scalar and determinant-only routes miss intermediate phase-subdiscriminant walls.
+6. Cotangent defect canonically glues observer defect to its torsion dual; phase controls extension,
+   while determinant records only conserved total length.
 
 ### Not explained
 
@@ -360,9 +648,24 @@ successor persistence bar. Exact sequence, unlike direct-sum identification, is 
 - Hermite moment matrices, subdiscriminants, Kähler different, Smith theory, and Cauchy--Binet are
   classical ingredients.
 - New-to-corpus exact residue is coupling of phase subdiscriminant strata to full Kähler Smith tower
-  of literal prime-holonomy observer, plus all-Fitting square law in real chamber.
+  of literal prime-holonomy observer, self-dual sandwich `(11b)`, plus all-Fitting square law in real
+  chamber.
 - No literature-first claim until specialist search closes; current card is theorem, not priority
   assertion.
+
+Primary parents checked:
+
+- https://arxiv.org/abs/1911.01745
+- https://arxiv.org/abs/2003.13008
+- https://arxiv.org/abs/1207.2434
+- https://arxiv.org/abs/math/0609524
+- https://arxiv.org/abs/2506.21528
+- https://arxiv.org/abs/1302.2015
+- https://arxiv.org/abs/2111.03700
+- https://arxiv.org/abs/1402.4969
+- https://arxiv.org/abs/1405.0923
+- https://arxiv.org/abs/1907.00384
+- https://arxiv.org/abs/2604.02213
 
 ## Conjecture/failure loops
 
@@ -377,6 +680,8 @@ successor persistence bar. Exact sequence, unlike direct-sum identification, is 
 7. **All-Fitting square selects radial origin.** False: it holds for every `c`, including off horizon.
 8. **One scalar port sees all phases.** False: intermediate `H_k`, `2<=k<N`, are independent of total
    determinant data.
+9. **Cotangent defect equals observer defect after passing to support.** False as deformation law:
+   `(11b)` shows support equality hides self-dual extension and twice total length.
 
 ## Predictions
 
@@ -384,9 +689,9 @@ successor persistence bar. Exact sequence, unlike direct-sum identification, is 
    vanishes; any theory using only total determinant predicts no event and is falsified.
 2. In positive real prime chamber, measured Kähler invariant factors must be exactly double observer
    invariant factors. Any mismatch means common-contact monogenic model is wrong.
-3. Physical time restricted to one parameter can detect wall crossings of scalar `H_k(t)` even though
-   it cannot pull back curvature two-forms; subdiscriminant stratification is therefore better
-   one-clock observable than Berry curvature in this local model.
+3. Physical time restricted to one parameter can detect any wall crossing of scalar `H_k(t)` even
+   though it cannot pull back curvature two-forms; whether literal prime recurrence orbit hits such
+   wall is open.
 4. Global Completion Relativity needs transport law for Smith partitions across phase walls, not only
    determinant line.
 
@@ -408,4 +713,5 @@ counterexample. Search Kähler different, subdiscriminant, and Smith corpus firs
 ## Log
 
 - 2026-08-08 -- upgraded total Fitting square to all indices; found metric-free phase walls and exact
-  cube-root redistribution counterexample.
+  cube-/fourth-root redistribution counterexamples; identified phase as canonical self-dual
+  extension class.

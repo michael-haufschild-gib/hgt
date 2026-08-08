@@ -1038,3 +1038,311 @@ Completion Relativity.
 
 Paper proof:
 `../../2-fully-proven/constraint-relativity/simple-horizon-rank-to-depth-transmutation-law.md`.
+
+## 2026-08-08 — arbitrary ultrametric horizon energy determines observer barcode
+
+Simple common-order staircase extends to every finite family of distinct DVR sheets `x_1,...,x_N`.
+Define minimum `k`-sheet collision energy
+
+\[
+ d_k=\min_{|I|=k}\sum_{\{i,j\}\subset I}v(x_i-x_j),
+ \qquad d_0=d_1=0.
+\]
+
+Alternant divisibility proves `k`-th Vandermonde determinantal divisor has valuation exactly `d_k`.
+Therefore full sheet-evaluation Smith spectrum is
+
+\[
+ s_k=d_k-d_{k-1}.
+\]
+
+This is exact four-face dictionary: ultrametric cluster geometry, spectral invariant factors,
+normal persistence, and discriminant/Fitting data. In separated mixed-order profile
+`r_1<=...<=r_N`,
+
+\[
+ s_k=r_1+\cdots+r_{k-1},
+\]
+
+while underived ideal sees only shallowest `a^(r_1)`. New deepest sheet contributes persistence bar
+whose length is accumulated prior history, not its own depth. Generic algebra collides with
+Vandermonde/Smith/Bhargava `p`-ordering parents; corpus contribution is exact horizon dictionary,
+not priority claim.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/ultrametric-horizon-energy-smith-correspondence.md`.
+
+## 2026-08-08 — phase is self-dual extension, not determinant angle
+
+For finite split monogenic source order `A`, normalization `O=R^N`, trace-dual lattice `A^sharp`,
+observer defect `C=O/A`, and cotangent defect `Omega=Omega_(A/R)`, canonical order sandwich
+
+\[
+ A\subset O\subset A^\sharp
+\]
+
+gives exact sequence
+
+\[
+ \boxed{0\to C\to\Omega\to C^\dagger\to0},
+ \qquad C^\dagger=\operatorname{Hom}_R(C,K/R).
+\]
+
+This identifies intrinsic phase datum as extension class
+
+\[
+ [\xi_A]\in\operatorname{Ext}_R^1(C^\dagger,C).
+\]
+
+Determinant/discriminant records only conserved total length. For common-contact real slopes—prime
+slopes `M log p` included—every Fitting level squares:
+
+\[
+ \operatorname{Fitt}_i^R(\Omega)=\operatorname{Fitt}_i^R(C)^2.
+\]
+
+Observer bars `r,2r,...,(N-1)r` maximally glue to duals as Kähler bars
+`2r,4r,...,2(N-1)r`. Complex phase changes extension gluing while `C` and total discriminant remain
+fixed. Hankel subdiscriminants
+
+\[
+ H_k=\det\left(\sum_i z_i^{p+q}\right)_{0\le p,q<k}
+\]
+
+cut exact Kähler Smith walls. For cube roots, Kähler bars `(2r,4r)` redistribute to `(3r,3r)`;
+for fourth roots, `(2r,4r,6r)` redistribute to `(4r,4r,4r)`. Phase geometry is metric-free and
+invisible to determinant. A later exact radius criterion proves fixed-radius prime phase torus
+intersection; exact incidence of Kronecker one-clock orbit remains open, while wall-closure is
+proved.
+
+This is strongest current exact organ for Completion Relativity: arithmetic source order, spectral
+normalization defect, geometric cotangent/different, topology via persistence, phase via duality
+extension, and time via ordered motion through extension strata. It does not select radial horizon
+and is not RH proof.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/phase-subdiscriminant-kahler-smith-stratification-law.md`.
+
+Three-sheet constant-tangent image is completely classified. `H_2!=0` gives Kähler bars
+`(2r,4r)`. If `H_2=0`, centering nodes makes first two power sums zero, forcing affine cube-root
+triple and bars `(3r,3r)`. Thus local phase moduli has exactly generic and equianharmonic strata at
+`N=3`; richer extension topology begins at `N>=4` or with higher normal jets.
+
+Fixed-radius three-phase wall criterion is
+
+\[
+ \left(\sum_i\rho_i^2\right)^2\ge2\sum_i\rho_i^4.
+\]
+
+It is necessary and sufficient for phases `z_i=rho_i e^(i theta_i)` with `H_2(z)=0`. Literal prime
+triple `(101,103,107)` satisfies strictly, proving independent prime phase torus intersects balanced
+Kähler wall. Unique factorization makes prime log frequencies rationally independent, so Kronecker
+flow is dense and single orbit `theta_p=t log p` approaches this wall arbitrarily closely:
+`inf_t |H_2(t)|=0`. Exact finite-time hit remains open. This rigorously separates recurrence-near
+law event from actual law event.
+
+## 2026-08-08 — hostile phase correction: trace law is universal, Kähler law is not
+
+Hostile audit found a decisive overgeneralization. For arbitrary finite split order `A subset O`,
+canonical duality object is
+
+\[
+ L_{A,O}=A^\sharp/A,
+ \qquad
+ 0\to O/A\to L_{A,O}\to\operatorname{Hom}_R(O/A,K/R)\to0.
+\]
+
+Identification `L_(A,O)\cong Omega_(A/R)` requires extra monogenic/Gorenstein hypersurface
+geometry. It fails for
+
+\[
+ R=\mathbb C[[a]],\qquad A=R(1,1,1)+aR^3\subset O=R^3.
+\]
+
+Here `C=O/A\cong (R/(a))^2`, so `length(L_(A,O))=4`, whereas
+
+\[
+ A\cong R[x,y]/(x^2-ax,y^2-ay,xy),\qquad
+ \Omega_{A/R}\cong R/(a^2)\oplus R/(a^2)\oplus R/(a)
+\]
+
+has length `5`. This preserves DDPG only after ontological repair:
+
+- universal phase = gluing inside trace-law defect `L_(A,O)`;
+- Kähler phase = monogenic/lci realization requiring comparison theorem;
+- residues do not determine realization; phase configuration must retain unit lifts or choose a
+  coefficient section;
+- determinantal depth subsets are standard strata, not a new topology until families,
+  specialization, and continuity are defined.
+
+Stage-2 monogenic theorem survives unchanged. This counterexample becomes required hostile test for
+every proposed universal source--observer field axiom.
+
+## 2026-08-08 — curved bivariant law geometry and obstruction-transgression pivot
+
+### Fatal failure of flat BLG and repair
+
+Initial transport defect
+
+\[
+ Q_f=T_f f_!(s_A)-s_BK_f
+\]
+
+was not by itself curvature: unconstrained `s=0` is globally natural, and `Q=delta s` is exact.
+Calling its class nontrivial was theatre. Repair is mandatory:
+
+1. each source carries source-derived constitutive groupoid/torsor `mathscr S_A`, not arbitrary
+   Hom-space;
+2. admissible solderings must be normalized/nondegenerate or lift fixed nonzero symbol;
+3. gauges must be specified morphisms preserving constitutive data;
+4. source currents must lie in image of constrained soldering equation, not merely satisfy Bianchi.
+
+Finite-group representation chart now gives exact nontrivial test. For unitary source-history laws
+`rho_K,rho_T` and unitary constitutive soldering `s`, Reynolds projection `Pi` satisfies
+
+\[
+ \mathcal E(s)=\frac1{2|G|}\sum_g\|\rho_T(g)s-s\rho_K(g)\|_{HS}^2
+ =\|s\|^2-\|\Pi s\|^2.
+\]
+
+Energy vanishes iff representations are unitarily equivalent. Trivial-versus-sign `C_2` laws have
+exact gap `1`. This is classical infrastructure, not novelty claim.
+
+### Corpus forces intrinsic two-curvature
+
+Strict composition is false in literal Route R. For depths `e=0,1,2` at prime `2`,
+
+\[
+ \theta_{01}=\tfrac34\log2,
+ \qquad
+ \theta_{12}=\tfrac12\log2,
+ \qquad
+ \theta_{02}=\tfrac{11}{8}\log2,
+\]
+
+so triangle residue is
+
+\[
+ \theta_{01}+\theta_{12}-\theta_{02}=-\tfrac18\log2.
+\]
+
+For nonstrict transports define
+
+\[
+ F^K_{g,f}=K_g g_!K_f-K_{gf},
+ \qquad
+ F^T_{g,f}=T_g g_!T_f-T_{gf}.
+\]
+
+Direct expansion proves curved Bianchi/transgression identity
+
+\[
+ \boxed{
+ T_g g_!Q_f+Q_g g_!K_f-Q_{gf}
+ =F^T_{g,f}(gf)_!s_A-s_CF^K_{g,f}.}
+\]
+
+This is first literal Route-R organ in new field. If `Q=0` and `s` invertible, law becomes curvature
+compatibility `F^T s=sF^K`, not flatness. Source current equation `Q=J` must obey same curved law.
+
+### Exact tensor-source composition anomaly
+
+Let
+
+\[
+ A_d=\bigotimes_{i=1}^dR[f_i]/(f_i^2-a^2),
+ \qquad F=\prod_i f_i.
+\]
+
+Each factor is monogenic and has exact trace--cotangent soldering. Factor-compatible tensor map
+
+\[
+ s_d:\bigoplus_iA_d/(f_i)\,df_i\longrightarrow A_d/(F),
+ \qquad
+ df_i\longmapsto F/f_i
+\]
+
+is not exact for `d>=2`. Paper proof gives full mixed-pole module
+
+\[
+ \operatorname{coker}s_d
+ \cong
+ \bigoplus_{t=0}^{d-2}
+ \left(R/(a^{2(d-1-t)})\right)^{\binom dt},
+\]
+
+and
+
+\[
+ \operatorname{length}\ker s_d
+ =\operatorname{length}\operatorname{coker}s_d
+ =2^d(d-2)+2.
+\]
+
+For `d=2`, anomaly is `R/(a^2)`; for `d=3`, it is
+`R/(a^4) direct-sum (R/(a^2))^3`. This is first exact infinite family where individually precise
+laws fail under composition and mixed obstruction grows exponentially. It is factor-framed;
+presentation independence and comparison to classical fundamental classes remain open.
+
+Further exact identification: assignment `nabla_F(f_i)=F/f_i mod F` is derivation because it sends
+each relation `f_i^2-a^2` to `2F=0 mod F`. Induced map on Kähler differentials is exactly `s_d`.
+Therefore mixed module is relative Jacobian/critical algebra `A_d/(F,nabla F)`, with closed-horizon
+dimension `2^d-d-1`. Joint law composition creates critical locus although every factor is flat.
+Its basis is faces `T` below facets of `(d-1)`-simplex, and face `T` has persistence depth
+`2(d-1-|T|)`, twice simplex codimension minus one. Closed fibre is commutative squarefree face
+algebra with square-zero vertices on `(d-3)`-skeleton. This is exact
+arithmetic--topology--Smith--critical four-face dictionary.
+
+Unequal factor contacts `f_i^2=a^(2r_i)` also close. Face with missing set `M` has exact depth
+`2(sum_(i in M)r_i-max_(i in M)r_i)`. Cokernel length is sum of these weights over `|M|>=2`, and
+kernel has same length because trace and cotangent determinants still agree. Exact interpretation:
+one missing direction is absorbable; all additional missing depths survive jointly.
+
+Closed-horizon face algebra has exact finite quantum chart: on truncated hard-core Fock space
+`span{|T>:|T|<=d-2}`, compressed creators realize vertex generators faithfully. Number Hamiltonian
+with weights `log p_i` rotates face `T` by `exp(it sum_(i in T)log p_i)`. This exactly joins
+multi-source critical algebra, simplex topology, and prime quantum recurrence. It remains finite
+type-I and gives no horizon/wormhole identification.
+
+### Universal-field hypothesis after hostile route audit
+
+Working umbrella remains **Constraint Relativity**. Exact algebraic core is now **Curved Bivariant
+Law Geometry**. Proposed universal principle is obstruction transgression:
+
+> Source obstruction is not tied to one representation. Exactification, completion, polarization,
+> and source transport can move it between degree and carrier. Apparent solution in one observer
+> chart may be transgression into another.
+
+Current ladder:
+
+- degree `0`: first-infinitesimal law symbol;
+- degree `1`: constitutive edge mismatch `Q`;
+- degree `2`: intrinsic transport curvature `F`;
+- global: Stokes/admission periods;
+- completion: radical, nonclosed range, multivalued relation, ideal grade;
+- polarization: sign, inertia, unique negative square, norm energy;
+- HT tail: nonstabilizing resolution/cotangent history.
+
+This explains why making arithmetic, spectral, or geometric face exact can make another face
+singular: obstruction changes carrier rather than disappearing. It is not yet theorem of universal
+conservation. Typed transgression maps remain required.
+
+### Physics/time boundary
+
+Finite Gibbs matrix model exactly realizes prime modular clock and `H_2` reader, including
+`inf_t|H_2|=0` for primes `(101,103,107)`, but has split extensions. Half-sided modular inclusion
+gives conormal persistence `C_a=M/M(a)` with hyperbolic cutoff `a mapsto e^(2pi t)a`; bounded exact
+dilation forces generator zero. Thus finite recurrence and horizon time require topology/type
+change. No wormhole-length equality is claimed.
+
+### Honest route-completeness status
+
+- Route L square has edge-defect pattern but no typed trace/cotangent realization.
+- Route R triangle is exact `F`; retained Stokes `H^1` cannot be global exact `Q`.
+- singular Cartier needs filtered/graded two-morphism and coefficient fidelity.
+- Hedenmalm nonclosability/maximal verticality require relations and topology.
+- Stokes--Cartan one-negative-port law requires polarization/inertia.
+- HT requires pro-resolution tail, not finite `Omega`.
+
+Goal remains open. Current work is significant exact field foundation, not Newton-to-GR completion
+and not RH proof.

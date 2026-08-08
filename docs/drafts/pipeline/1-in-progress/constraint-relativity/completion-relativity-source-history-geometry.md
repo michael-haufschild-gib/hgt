@@ -2,14 +2,19 @@
 
 - **ID:** `completion-relativity-source-history-geometry`
 - **Stage:** 1-in-progress
-- **Working field name:** **Completion Relativity (CR)**
+- **Umbrella field:** **Constraint Relativity (CR)**
+- **Active global sector:** **Completion Relativity**
 - **Technical name:** source-framed curvature geometry of noncommuting completion, quotient,
   base-change, and observation
 - **Type:** CANDIDATE NEW MATHEMATICAL FIELD / HIGHER PIVOT
 - **Status:** `[BOLD CONJECTURAL] [EXACT RANK-TO-DEPTH LOCAL LAW]`
-  `[EXACT TOPOLOGY UNCERTAINTY] [LIVE ROUTE-L CURVATURE IDENTIFIED]`
+  `[EXACT TOPOLOGY UNCERTAINTY] [EXACT DEFECT-DUALITY PHASE LAW]`
+  `[LIVE ROUTE-L CURVATURE IDENTIFIED]`
   `[GLOBAL FIELD EQUATION OPEN] [NO LEAN WRITTEN]`
+- **Core law field:** `source-soldering-bivariant-law-geometry.md`.
 - **Local-dynamics sector:** `source-execution-geometry.md`.
+- **Polarized/operator law sector:** `source-framed-polarized-law-kernel-geometry.md`.
+- **Nonsemisimple phase chart:** `defect-duality-phase-geometry.md`.
 - **Paper anchors:**
   `../../2-fully-proven/constraint-relativity/prime-coframe-completion-port-uncertainty-law.md`,
   `../../2-fully-proven/constraint-relativity/monogenic-law-discriminant-observer-shadow-theorem.md`.
@@ -19,7 +24,8 @@
 > **Completed mathematical objects are observer charts, not invariant reality. Invariant object is
 > source-ordered history together with comparison defects among all legal ways of completing,
 > quotienting, reflecting, and observing it. Curvature is failure of those operations to commute;
-> phase is orientation of that curvature; time is order retained by nonabsolute completion.**
+> phase is source-framed polarization of duality and response; time is ordered transport through
+> completion, pairing, and law strata.**
 
 This is proposed universal field behind corpus. Arithmetic side retains source labels and order.
 Spectral/Fourier side diagonalizes one completion chart. Geometric/topological side retains support
@@ -32,10 +38,11 @@ Completion Relativity keeps precompletion source diagram primary and treats comp
 coordinate choices. Its analogue of curvature is not matrix commutator inside one chart but exact
 defect of exchanging two source-legal operations.
 
-First exact local analogue of “source curves geometry” is rank-to-depth transmutation: when `N`
-source constraints share one simple normal horizon, underived codimension stops at one, while
-remaining `N-1` units reappear as derived root rank and observer jet depth. Constraint density
-curves normal infinitesimal geometry rather than adding more zero equations.
+First exact local analogue of “source curves geometry” is rank-to-depth transmutation: at collision
+horizon, underived codimension can stop growing while lost constraint rank reappears as derived root
+rank and observer jet depth. For arbitrary finite DVR sheet family, full observer barcode is discrete
+derivative of minimum ultrametric collision energy. Constraint density curves normal infinitesimal
+geometry rather than adding more zero equations.
 
 ## 1. Primitive object
 
@@ -119,6 +126,68 @@ Infinite rank is not assigned zeta determinant by default. Determinant/Fredholm 
 be source-produced, order-sensitive, and compatible with finite truncations. Otherwise phase is
 chosen after target and is circular.
 
+Determinant phase is only scalar shadow. Finite split monogenic horizon supplies deeper canonical
+object. Let source order `A` embed through sheet observer into normalization `O=R^N`, let
+`C=O/A`, and let `A^sharp` be trace-dual lattice. Then
+
+\[
+ A\subset O\subset A^\sharp,
+ \qquad
+ \boxed{0\to C\to\Omega_{A/R}\to C^\dagger\to0},
+ \tag{CR.6b}
+\]
+
+where `C^dagger=Hom_R(C,K/R)`. Therefore finite source--observer phase coordinate is extension class
+
+\[
+ \boxed{
+ [\xi_A]\in\operatorname{Ext}_R^1(C^\dagger,C).}
+ \tag{CR.6c}
+\]
+
+Scope is essential. For an arbitrary finite split order, trace duality still gives
+
+\[
+ 0\to C\to L_{A,O}=A^\sharp/A\to C^\dagger\to0,
+ \tag{CR.6u}
+\]
+
+but `L_(A,O)` need not equal `Omega_(A/R)`. The three-sheet order
+`A=R(1,1,1)+aR^3` has `length(L_(A,O))=4` and `length(Omega_(A/R))=5`. Thus trace-law phase is
+universal in split-order charts; Kähler phase is the monogenic/Gorenstein realization. Any global
+field equating them without a comparison theorem is false.
+
+Correct metric-affine chart retains both duality and response:
+
+\[
+ \boxed{
+ (A\subset O,\ \mathbb L_{A/R},\ \det\mathbb L_{A/R},\
+ \omega_{A/R}=A^\sharp,\ \tau:A\to\omega,\ C,\ \mathcal F_\bullet).}
+ \tag{CR.6v}
+\]
+
+Exact hierarchy is strict. Relative Gorenstein scalarizes `omega`; lci aligns determinant/different;
+only monogenicity identifies `L=A^sharp/A` with `Omega` under split DVR hypotheses. Codimension-two
+complete intersection has same support and total length but trace bars `(2,2,4)` versus cotangent
+bars `(2,2,2,2)`.
+
+Diagonal congruence order supplies sharper uncertainty law. At `N=3`, Kähler and Dedekind
+differents agree, yet every source-linear comparison
+
+\[
+ \phi:\Omega_{A/R}\to L
+\]
+
+has image in `aL`, so induced tangent-head map is zero. Thus determinant equality cannot solder
+duality to directional response. Horizon cotangent fibre also contains canonical antisymmetric pair
+sector `Lambda^2 C` beginning at three sheets.
+
+Total discriminant records only length of middle term. Intermediate subdiscriminants record how
+observer defect and dual are glued. At invariant-factor level, real positive chamber maximally
+glues each persistence bar to its dual, doubling all Fitting depths. Complex phases can redistribute
+same conserved total length among different bars while `C` and ordinary discriminant stay fixed. Thus phase is extension
+geometry before it is angle, metric, or determinant.
+
 Finite prime-radial model has sharper phase fact. With independent prime phases, orthogonal excess
 bundle has Grassmann curvature
 
@@ -133,6 +202,19 @@ It vanishes for two primes and every pair component is nonzero for `N>=3`. Thus 
 misses traceless non-Abelian curvature. Any one-dimensional time pullback kills curvature 2-form,
 though connection holonomy can remain. This is exact observer model; connection depends on chosen
 prime-coordinate Hermitian metric, so arithmetic must source metric before physics interpretation.
+
+Metric-free extension phase `(CR.6c)` survives this objection. For complex tangent nodes `z_i`, its
+middle-module Smith strata are cut by algebraic Hankel subdiscriminants
+
+\[
+ \mathfrak D_k(z)
+ =\det\left(\sum_i z_i^{r+s}\right)_{0\le r,s<k}.
+ \tag{CR.6d}
+\]
+
+Root-of-unity examples prove nontrivial strata for `N>=3`. A sharp three-radius criterion proves
+actual fixed-radius prime phase torus intersection, e.g. primes `(101,103,107)`. Kronecker density
+puts wall in closure of one-clock orbit; exact intersection remains open.
 
 ## 4. First exact uncertainty law
 
@@ -184,6 +266,36 @@ For every DVR family `f_i=a u_i` with distinct leading units, not only primes,
 Adding one sheet adds persistence bar `R/(a^N)`. This is general constraint-horizon local normal
 form. Prime family supplies canonical root/Todd/phase refinements below.
 
+### Exact ultrametric horizon energy law
+
+For arbitrary distinct DVR sheets `x_1,...,x_N`, define minimum `k`-sheet collision energy
+
+\[
+ d_k=\min_{|I|=k}\sum_{\{i,j\}\subset I}v(x_i-x_j),
+ \qquad d_0=d_1=0.
+ \tag{CR.8u}
+\]
+
+If `s_k` are Smith exponents of sheet-evaluation observer, all Vandermonde determinantal divisors
+give exact law
+
+\[
+ \boxed{s_k=d_k-d_{k-1}.}
+ \tag{CR.8v}
+\]
+
+Thus ultrametric cluster geometry, spectral invariant factors, normal persistence, orientation, and
+discriminant/Fitting data are exact shadows of one local collision object. Under separated mixed
+orders `r_1<=...<=r_N`,
+
+\[
+ s_k=r_1+\cdots+r_{k-1},
+ \tag{CR.8w}
+\]
+
+while underived ideal sees only `a^(r_1)`. Mixed constraint history is transmuted into accumulated
+observer depth.
+
 ### Exact derived prime-horizon law
 
 For source-prior radial family `f_p(a)=p^(Ma)-1`, finite prime Koszul object satisfies
@@ -231,6 +343,21 @@ over full disk. Their relative radial connection obeys
 and Bernoulli--Todd regulator `x/(e^x-1)` gives same `1/2`. This is exact structural origin for
 half-density coefficient in model; comparison with literal Floquet/Gamma half-density remains
 open.
+
+For real prime slopes, stronger all-Fitting law holds:
+
+\[
+ \boxed{
+ \operatorname{Fitt}_i^R(\Omega_{A/R})
+ =\operatorname{Fitt}_i^R(\operatorname{coker}J_F)^2
+ \quad\text{for every }i.}
+ \tag{CR.8e}
+\]
+
+Equivalently observer bars `1,...,N-1` become Kähler bars `2,4,...,2(N-1)`. This realizes
+self-dual extension `(CR.6b)`. Complex phase nodes can change Kähler partition while conserving
+total discriminant length; `(1,omega,omega^2)` changes Kähler bars `(2,4)` to `(3,3)` while
+observer bars remain `(1,2)`.
 
 This is first exact nontrivial source-history model joining one port, infinite conormal growth,
 observer thickness, discriminant phase, and topology constraint. Generic Koszul/Smith algebra is
@@ -335,9 +462,12 @@ permuting noncommuting completion path changes holonomy.
 
 This supplies precise bridge to physical hunch:
 
-- phase time is holonomy of determinant/orientation line `(CR.5)` along observer history;
+- phase time is ordered motion of self-dual extension class `(CR.6c)`; determinant holonomy is its
+  scalar shadow;
 - three-prime excess model predicts first local non-Abelian phase curvature beyond determinant
   scalar; one-clock trajectory cannot by itself identify its two-form;
+- independent prime phases can cross scalar subdiscriminant walls and change Kähler Smith partition
+  without total-discriminant zero; actual one-clock prime orbit intersection is open;
 - recurrence is closed path inside fixed completed chart and need not change law;
 - wormhole/Krylov length can measure lifting complexity of history hidden by boundary observer;
 - holographic surface is quotient chart; interior information is comparison curvature and decoder
@@ -355,14 +485,49 @@ bulk modular/spectral-flow invariant with source history holonomy and survive re
 | Fourier reflection | opposite completion collar | constructed Route L |
 | geometry/topology | support/branch shadow of oriented section | exact monogenic model |
 | positivity | norm-square scalarization | exact; nonselective |
+| phase | framed polarization: Ext/Smith in DVR chart, pairing/generator in operator chart | exact chart dependence |
+| phase walls | Kähler Smith redistribution at subdiscriminant zero | paper-proved complexified model |
 | Stokes one-port | augmentation quotient after source topology | exact dichotomy |
 | prime radial horizon | excess Koszul `H_0/H_1`, Smith jet staircase | paper-proved |
+| arbitrary finite collision | ultrametric minimum energy -> full Smith barcode | paper-proved |
 | Hilbert/Schatten no-go | port erased or essential sectors incompatible | corpus-proved |
 | hypertranscendence | nonstabilizing creative history | exact fusion tower |
 | quantum recurrence | loop inside fixed observer chart | exact counterexamples |
 | holographic reconstruction | boundary completion plus lifting modulus | transfer open |
 | RH Route L obstruction | completion curvature `Omega_(mu,Gamma)` | exact, flatness open |
 | RH Route R obstruction | singular Cartier/base-change curvature | formulation open |
+
+### Exact obstruction ledger
+
+Current local laws explain repeated route failures as distinct forgetful projections:
+
+| Route operation | What it retains | What it necessarily loses in proved model | Consequence |
+|---|---|---|---|
+| radical/support/zero locus | common horizon `[a=0]` | all bar lengths and extension class | support agreement cannot prove selection |
+| total discriminant/Fitting-0 | conserved total defect length | internal Smith partition | positive scalar can miss phase wall |
+| equality of Kähler/Dedekind differents | support and determinant alignment | tangent-head soldering | scalar agreement can coexist with zero directional comparison |
+| spectral sheet observer | `C=R^N/A` | gluing of `C^dagger` inside `L_(A,O)` | fixed spectrum need not fix trace law |
+| real positivity | maximal all-Fitting square chamber | reason radial parameter should vanish | positivity detects chamber, not horizon |
+| add more prime constraints | derived rank and jet depth | stronger underived ideal | all-prime radical method saturates after one prime |
+| one-clock recurrence | dense phase-orbit closure | exact wall incidence | arbitrarily close law shadow need not be law event |
+| Hilbert completion | square-summable coframe | continuous unweighted one-port | no single ordinary completion contains both precisions |
+| finite determinant line | top orientation at cutoff | stable infinite top degree | infinite prime phase requires source-Tate polarization |
+
+Thus corpus “uncertainty” is not one numerical inequality. It is family of exact nonconservative
+forgetful maps from source--observer package
+
+\[
+ (A,\ C,\ \mathbb L_{A/R},\ \omega_{A/R},\ \tau,\ L_{A,O},\
+ \text{polarization},\ \text{source topology},\ \text{chronology})
+ \tag{CR.13a}
+\]
+
+to scalar/support charts. General-relativistic move is to treat package and its transports as
+covariant object, not seek preferred scalar completion.
+
+This ledger explains stalls but does not close RH. Route L still requires independent arithmetic
+identity forcing actual curvature `(CR.11)` flat. Self-dual/Kähler `Omega_(A/R)` and Route-L
+`Omega_(mu,Gamma)` are different objects until source comparison theorem is constructed.
 
 ## 10. Conjecture / proof-or-failure loop
 
@@ -385,7 +550,11 @@ bulk modular/spectral-flow invariant with source history holonomy and survive re
 9. **Curvature is always obstruction.** Failed: neutral HT fusion is creative with no positive
    cotangent homology.
 10. **Observer blow-up proves law horizon.** Failed: sinc recurrence has same exponent in fixed law.
-11. **Surviving conjecture:** source-prior comparison curvature plus Bianchi/source conservation
+11. **Phase is determinant angle.** Failed: same observer and total discriminant admit different
+    Kähler Smith partitions; phase lives in self-dual extension class.
+12. **Cotangent and observer agree after support reduction.** Failed as deformation statement:
+    canonical sandwich has twice total length and nontrivial gluing.
+13. **Surviving conjecture:** source-prior comparison curvature plus Bianchi/source conservation
     yields noncircular flatness theorem for literal Route-L class.
 
 ## 11. First research questions
@@ -393,7 +562,8 @@ bulk modular/spectral-flow invariant with source history holonomy and survive re
 1. Define doctrine-independent category/equipment of heterogeneous completion squares.
 2. Prove presentation/Morita invariance of source history and curvature.
 3. Construct derived completion curvature retaining non-Hausdorff quotient instead of erasing it.
-4. Classify mixed-order/colliding-slope constraint horizons by valuation partitions/Newton data.
+4. Classify transport of self-dual extension classes and Smith partitions across arbitrary nested
+   ultrametric collision trees.
 5. Classify topologies on prime coframe for which augmentation, Kummer covector, and source weights
    are continuous.
 6. Build source-normal determinant line for `A_infinity` without post-hoc zeta regularization.
@@ -406,6 +576,8 @@ bulk modular/spectral-flow invariant with source history holonomy and survive re
     dynamics.
 12. Build generalized-prime histories realizing every axiom except source-current identity.
 13. Decide whether chronology can be reconstructed from holonomy or must remain primitive.
+14. Decide whether phase-subdiscriminant wall is hit exactly by Kronecker one-clock prime orbit;
+   independent intersection and arbitrary recurrence-nearness are now proved.
 
 ## 12. Fatal tests
 
@@ -425,11 +597,28 @@ Retire field claim if:
 ## 13. Novelty boundary
 
 All ingredients have classical parents: pro/ind objects, derived completion, nonexact completion,
-Beck--Chevalley defects, determinant lines, Stokes phenomena, anomalies, and filtered histories.
-Exact theorem `(CR.7)` is elementary functional analysis. Candidate-new residue is conjunction:
+Beck--Chevalley defects, determinant lines, trace-dual lattices, differents, Stokes phenomena,
+anomalies, persistence, and filtered histories. Exact theorem `(CR.7)` is elementary functional
+analysis. Ultrametric/Smith and Hermite-subdiscriminant ingredients are also classical. Candidate-new
+residue is conjunction:
 
 > source-prior law execution + heterogeneous noncommuting completions + orientation/determinant
-> phase + chronology retained as invariant + independently sourced curvature equation.
+> shadows of a self-dual defect-extension phase + chronology retained as invariant + independently
+> sourced curvature equation.
+
+Strongest paper-proved local evidence is now:
+
+\[
+ \text{source order }A
+ \subset
+ \text{observer normalization }R^N
+ \subset
+ \text{trace-dual law lattice }A^\sharp,
+\]
+
+whose quotient sandwich gives phase extension `(CR.6b)`, full all-Fitting square in real prime
+chamber, and conserved-but-redistributed Kähler depth across complex phase walls. This is an actual
+four-face theorem, not merely vocabulary. It remains local and does not source-select horizon.
 
 Until general category and one nonclassical source-curvature theorem exist, Completion Relativity
 is research programme, not established new field.
@@ -437,11 +626,14 @@ is research programme, not established new field.
 ## Linked cards
 
 - `source-execution-geometry.md`;
+- `defect-duality-phase-geometry.md`;
 - `infinite-prime-infinity-root-conormal-transgression.md`;
 - `source-normal-valuation-coframe-transgression.md`;
 - `../../2-fully-proven/constraint-relativity/prime-coframe-completion-port-uncertainty-law.md`;
 - `../../2-fully-proven/constraint-relativity/prime-radial-excess-intersection-discriminant-law.md`;
 - `../../2-fully-proven/constraint-relativity/simple-horizon-rank-to-depth-transmutation-law.md`;
+- `../../2-fully-proven/constraint-relativity/ultrametric-horizon-energy-smith-correspondence.md`;
+- `../../2-fully-proven/constraint-relativity/phase-subdiscriminant-kahler-smith-stratification-law.md`;
 - `../../2-fully-proven/constraint-relativity/prime-infinity-port-capacity-and-root-conormal-law.md`;
 - `../../2-fully-proven/constraint-relativity/monogenic-law-discriminant-observer-shadow-theorem.md`;
 - `../../2-fully-proven/new_scientific_knowledge/deninger/deninger-source-poisson-chain-lift-obstruction.md`;
@@ -452,3 +644,6 @@ is research programme, not established new field.
 - 2026-08-08 — opened after exact completion-port uncertainty showed raw coframe and one-port
   precision are incompatible in ordinary Hausdorff completion; latest Route-L lift obstruction
   identified as first literal completion curvature.
+- 2026-08-08 — upgraded local geometry: arbitrary ultrametric collision energy determines full
+  observer barcode; canonical self-dual observer--cotangent sandwich makes phase an extension class;
+  real chamber doubles every Fitting depth and complex phase redistributes conserved depth.

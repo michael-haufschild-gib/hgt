@@ -249,3 +249,30 @@ theorem; raw lower-bound sieve alone is insufficient.
 (7).  Natural-density threshold (24), unit load, and seam flux are conjectural.  No external
 literature search was performed under current instruction.  No Lean was written or built while
 corpus refactor is active.
+
+## 9. 2026-08-08 quantitative correction
+
+Claim in §7 that `(24)` is exact density threshold is false after factorial normalization is
+spent sharply. At central breadth, product-truncated reservoir mass is
+
+\[
+ H_b\asymp \frac{\log X}{g(L)L^{3/2}},
+\]
+
+and incoming exact squarefree breadth layer has density \(\asymp L^{-1/2}\). Square-root Jacobian
+cancellation therefore leaves column scale
+
+\[
+ \mathcal L_X\asymp\frac{g(L)L}{\delta_X\log X}
+\]
+
+for token density \(\delta_X\). Thus \(\delta_X=1/\log X\) leaves divergent factor \(g(L)L\); it
+does not imply unit load. Corrected fixed-breadth threshold is
+\(\delta_X\gtrsim g(L)L/\log X\). Full natural \(E_3\) density \(L^2/\log X\) would suffice for
+\(g=o(L)\), but current structured all-interval support is much thinner.
+
+Positive successor is `route-e-entropy-complement-breadth-mixture-load-law.md`: vary reservoir
+breadth and complementary rough-token breadth together across their natural conditional window
+while keeping total terminal breadth exactly \(s\pm1\). This correction does not alter proved
+relation (3)--(23) or its polylogarithmic column bound; it retracts only claimed sufficiency and
+“exactness” of `(24)`.

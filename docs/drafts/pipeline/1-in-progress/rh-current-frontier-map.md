@@ -7992,3 +7992,91 @@ formed, so accumulation equivalence (A10) is not reused as its own proof.
 Paper proof:
 `../2-fully-proven/new_scientific_knowledge/route-e-source-faithful-euler-tilt-unit-shell-law.md`.
 No Lean file was edited or built.  Route E and RH remain open.
+
+## 2026-08-08 Route E entropy-complement breadth-mixture correction
+
+Product-truncated whole-anchor frontier had one quantitative error. Writing
+\(L=\log\log X\), retained reservoir mass at central breadth is
+
+\[
+ H_b\asymp\frac{\log X}{g(L)L^{3/2}}.
+\]
+
+After square-root Jacobian cancellation, incoming exact squarefree breadth layer contributes
+density \(L^{-1/2}\). If admissible tokens have physical interval density \(\delta_X\), column
+load has sharp scale
+
+\[
+ \boxed{\mathcal L_X\asymp
+ \frac{L^{-1/2}}{H_b\delta_X}
+ \asymp\frac{g(L)L}{\delta_X\log X}.}                  \tag{E-69}
+\]
+
+Hence former target \(\delta_X\gg1/\log X\) leaves load \(\asymp g(L)L\); it is not unit.
+Correct fixed-breadth threshold is
+
+\[
+ \boxed{\delta_X\gtrsim g(L)L/\log X.}                \tag{E-70}
+\]
+
+Full natural \(E_3\) density \(L^2/\log X\) would pass when \(g=o(L)\), while current structured
+all-interval family has only \((\log X)^{-2}\) density.
+
+New source-predeclared escape uses complementary entropy rather than fixed \(E_3\). Choose
+\(g\to\infty\) with \(\log(gL)=o(\sqrt L)\), and put
+
+\[
+ P=X^{1/(gL)},\qquad S_0=\sum_{p\le P,\ p\nmid n}p^{-1},
+ \qquad R=L-S_0=\log(gL)+O(\log\log L).
+\]
+
+For reservoir breadth \(b\), require rough-token breadth
+\(r=s+\varepsilon-b\), \(\varepsilon=\pm1\). Every branch then has terminal breadth
+\(s+\varepsilon\), hence opposite Möbius sign. Exact positive convolution gives
+
+\[
+ \boxed{
+ \sum_b\frac{S_0^b}{b!}\frac{R^{s+\varepsilon-b}}
+ {(s+\varepsilon-b)!}
+ =\frac{(S_0+R)^{s+\varepsilon}}{(s+\varepsilon)!}.}   \tag{E-71}
+\]
+
+A fixed split loses \(R^{-1/2}\). Summing natural conditional breadth window
+\(|b-S_0(s+\varepsilon)/(S_0+R)|\le C\sqrt R\) recovers
+\((1-C^{-2}+o(1))\) of (E-71) by Chebyshev. Reservoir product remains
+\(t\le P^{2L}\le X^{2/g}=X^{o(1)}\). Restricting token primes to
+\(P<p\le z\), \(z=X^{1/2+o(1)}\), preserves complementary reciprocal mass \(R+O(1)\) and forces
+literal one-large-prime to friable seam crossing.
+
+All reservoir and token primes are required coprime to source. Above \(P\), this deletes reciprocal
+mass at most \(2L/P=o(1)\); below \(P\), deletion is already included in \(S_0\).
+
+Revised live premise is
+
+`ENTROPY-COMPLEMENT-UNIT-SHELL-ROUGH-CONVOLUTION`:
+
+1. prove joint short-interval lower mass for coupled breadth branches before parity scalarization,
+   outside \(X^{1/2+o(1)}\) Gibbs mass;
+2. prove weighted unit load, or more weakly unmatched mass \(U\le X^{1/2+o(1)}\) and global
+   source-predeclared column chi-square \(\mathsf X^2\le X^{o(1)}\), for same relation;
+3. retain normalized seam charge; and
+4. push same weights through prime-dilation recurrence with alternating finite-volume signs and
+   total quadratic displacement \(X^{o(1)}\).
+
+Finite Hellinger identity now proves item 2 at these weaker scales is sufficient: if \(P,N\) are
+positive/negative Gibbs masses and \(\rho,\nu\) are matched source-pushforward/target masses, then
+
+\[
+ |P-N|\le U+
+ \sqrt{2(P_m+N_m)\sum_v(\sqrt{\rho_v}-\sqrt{\nu_v})^2},
+\]
+
+and Hellinger square is at most \(\mathsf X^2\). Since \(P+N\asymp X\), stated bounds give
+\(|J|/Z\le X^{-1/2+o(1)}=x^{1/2-o(1)}\). This is a consumer, not source proof: choosing
+\(\rho\) from endpoint imbalance would be circular.
+
+This moves frontier from insufficient fixed-token density statement to entropy-complete joint
+convolution. Joint local main term, column balance, recurrence accumulation, Route E, and RH remain
+open. Paper proof:
+`../2-fully-proven/new_scientific_knowledge/route-e-entropy-complement-breadth-mixture-load-law.md`.
+No Lean was changed or built during corpus refactor.

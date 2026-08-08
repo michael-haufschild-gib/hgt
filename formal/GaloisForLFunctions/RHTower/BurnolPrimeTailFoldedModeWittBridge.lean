@@ -385,6 +385,8 @@ theorem routeRFoldedHalfLaplacePort_oddMode
 
 /-! ## Landing on the Burnol heads and current -/
 
+/-- An open-critical-strip divisor has centered real part strictly inside the half-rate Laplace
+aperture. -/
 theorem abs_re_routeRFoldedCenteredParameter_lt_half
     {rho : ℂ} (hzero : 0 < rho.re) (hone : rho.re < 1) :
     |(routeRFoldedCenteredParameter rho).re| < 1 / 2 := by

@@ -1,10 +1,10 @@
 # Kubalalika Parity-Corrected Main-Term Cancellation
 
 - **ID:** `kubalalika-parity-corrected-main-term-cancellation`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-novelty-audit
 - **Type:** THEOREM (paper) / exact obstruction to a claimed RH disproof
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [SIGNIFICANT ROUTE KILL]`
-  `[SECTION 4 CORE FORMALIZED IN LEAN, AXIOMS CLEAN]`
+  `[SECTIONS 1--4 FORMALIZED IN LEAN, AXIOMS CLEAN]`
 - **Source:** Tatenda Kubalalika, *The Riemann Hypothesis is False*, equations (15)--(17),
   (27)--(32), (53)--(57); the prime number theorem; the odd-harmonic Fourier series
 - **Statement:** Restoring the parity condition omitted in the near-diagonal substitution replaces
@@ -138,8 +138,14 @@ the claimed nonzero main term vanishes.
   `sin theta != 0 -> sum_(k<N) sin((2k+1) theta)/(2k+1) -> (pi/4) sgn(sin theta)`, unconditional,
   via Abel's limit theorem; supporting boundary value in
   `HTGeometry.OddHarmonicBoundaryValue.im_half_log_ratio`.
-- [ ] Section 3 remains outside scope: prime number theorem plus the preprint's contour machinery,
-  neither in the corpus.
+- [x] Section 3, equation (5), formalized in Lean:
+  `GaloisForLFunctions.RHTower.DilatedVonMangoldtSignLimit.tendsto_dilated_vonMangoldt_sign_sum`
+  proves `(1/T) sum_(m <= T) Lambda(m) sgn(sin(alpha T/m)) -> 1 - 2 alpha log 2/pi` for every
+  `0 < alpha <= pi`, and `tendsto_dilated_vonMangoldt_sign_sum_integral` restates the limit as
+  `J(alpha) = alpha int_alpha^infinity sgn(sin x)/x^2 dx`, equation (6).  The odd restriction of
+  equation (4) is `tendsto_dilated_vonMangoldt_sign_sum_odd`.  Unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`.  The preprint's contour machinery is not needed: the
+  card's own reduction makes (5) a statement about the dilated von Mangoldt square wave alone.
 
 ## Log
 
@@ -385,3 +391,218 @@ the claimed nonzero main term vanishes.
   **Card status: Sections 1 and 2 fully formalized and unconditional.** Section 3 remains out of
   scope as recorded earlier: it needs the prime number theorem together with the preprint's contour
   machinery, neither of which the corpus carries.
+
+- 2026-08-08 -- **Section 3 reopened; the prime number theorem is in fact corpus-owned.**  The
+  2026-07-24 note deferred Section 3 as "prime number theorem plus the preprint's contour machinery,
+  neither in the corpus".  Half of that is stale: `RHTower.Sieve.tendsto_sum_vonMangoldt_div`
+  proves `psi(x)/x -> 1` unconditionally in the tree.  And Section 3's own content does **not** need
+  the preprint's contour machinery: equation `(4)` is the *definition* of `A_Y` that Sections 1--2
+  supply, and `(5)` is the self-contained statement
+
+  ```text
+  (1/T) sum_(m<=T) Lambda(m) sgn(sin(alpha T/m))
+    -> alpha * integral_[alpha,infinity] sgn(sin x)/x^2 dx.
+  ```
+
+  That is a partial-summation limit against a dilated step weight, and it is formalizable.
+
+  First instalment built: `GaloisForLFunctions/RHTower/ChebyshevPsiScaling.lean`, unconditional,
+  axioms `[propext, Classical.choice, Quot.sound]`, wired into the umbrella:
+  * `chebyshevPsiReal_eq_sum_range`, `tendsto_chebyshevPsiReal_div` -- the corpus PNT transported to
+    the step-function `chebyshevPsiReal` that carries the Chebyshev--Stieltjes measure;
+  * **`tendsto_chebyshevPsiReal_scaled`** -- `psi(cT)/T -> c` for each fixed `c > 0`.  This is the
+    value of a single block of the dilated weight;
+  * **`exists_chebyshevPsiReal_le_linear`** -- `psi(x) <= C x` for `x >= 1`, the uniform tail
+    control.
+
+  Remaining for `(5)`, with the route now fixed:
+  1. Block decomposition.  `sgn(sin(alpha T/m))` is constant `(-1)^k` on
+     `m in (alpha T/((k+1) pi), alpha T/(k pi))`, so the sum telescopes into
+     `sum_k (-1)^k (psi(c_k) - psi(c_(k+1)))` with `c_0 = T`, `c_k = alpha T/(k pi)`.
+     `RHTower/ChebyshevStieltjesMeasure.lean` already carries the measure
+     (`vonMangoldtAtomMeasure`, `vonMangoldtAtomMeasure_Ioc`,
+     `chebyshevPsiStieltjes_measure_eq`), so the decomposition is an integral over a disjoint
+     interval family rather than a Finset partition.
+  2. Boundary indices.  At `m = alpha T/(k pi)` the sign is `0` while the block formula gives `+-1`;
+     the discrepancy is at most `Lambda(m) <= log T` per block, hence `O(K log T) = o(T)` for fixed
+     `K`.
+  3. Head limit.  Apply `tendsto_chebyshevPsiReal_scaled` to each of the `K` blocks and match
+     `(-1)^k (alpha/(k pi) - alpha/((k+1) pi))` with
+     `integral_[k pi]^[(k+1) pi] sgn(sin x)/x^2 dx`.
+  4. Tail.  `m < alpha T/(K pi)` contributes at most `psi(alpha T/(K pi)) <= C alpha T/(K pi)` by
+     `exists_chebyshevPsiReal_le_linear`; send `T -> infinity` first, then `K -> infinity`.
+
+  Nothing in this list is an open problem; it is a bounded analysis build.
+
+  Second instalment, same cycle: the two combinatorial ingredients of step 1, both unconditional,
+  axioms `[propext, Classical.choice, Quot.sound]`, wired into the `HTGeometry` umbrella.
+
+  * `HTGeometry/SignSinBlock.lean` -- `sin_nat_mul_pi_add`
+    (`sin(k pi + y) = (-1)^k sin y`, by induction on `Real.sin_add_pi`) and
+    **`sign_sin_of_mem_Ioo`** -- `k pi < x < (k+1) pi  ->  sgn(sin x) = (-1)^k`.  This is the
+    constancy of the weight on a half-period block, i.e. exactly what makes the dilated von
+    Mangoldt sum telescope.  Also `abs_sign_sin_le_one` for the tail estimate.
+  * `HTGeometry/AntitoneBlockTelescope.lean` -- **`sum_Ioc_eq_sum_blocks`**: for an antitone
+    endpoint sequence `n : nat -> nat`,
+    `sum_(Ioc (n K) (n 0)) f = sum_(k < K) sum_(Ioc (n (k+1)) (n k)) f`, in any `AddCommMonoid`.
+    Proved by induction on `K` from `Finset.sum_Ioc_consecutive`.  Endpoints will be instantiated
+    at `n k = min (floor T) (floor (alpha T/(k pi)))`, which is antitone in `k` and makes the
+    blocks below the first half period automatically empty -- so no case split on `floor(alpha/pi)`
+    is needed and the argument is uniform in `alpha > 0`.
+
+  Next: the per-block value.  On `Ioc (n (k+1)) (n k)` the weight is `(-1)^k` except at the single
+  index `m = alpha T/(k pi)` when that is an integer, where `sgn(sin) = 0`; the discrepancy is one
+  term of size `Lambda(m) <= log m`, so the block sum equals
+  `(-1)^k (psi (n k) - psi (n (k+1)))` up to `O(log T)`, and `K log T/T -> 0` at fixed `K`.
+
+  Third instalment: **the per-block value**, `RHTower/VonMangoldtSignBlock.lean`, unconditional,
+  axioms `[propext, Classical.choice, Quot.sound]`, wired into the umbrella.
+
+  * `card_filter_dilate_eq_le_one` -- the indices of a block at which the dilated sine vanishes form
+    a subsingleton: `alpha T/m = k pi` determines `m`.  (`div_eq_div_iff` then
+    `mul_left_cancel_0`; no `field_simp`, which cancels too far and leaves a nonlinear goal.)
+  * **`abs_sum_block_vonMangoldt_sign_sub_le`** -- for `k >= 1` and a block `Ioc a b` with
+    `b <= alpha T/(k pi)` and `alpha T/((k+1) pi) <= a`,
+
+    ```text
+    | sum_(m in Ioc a b) Lambda(m) sgn(sin(alpha T/m))
+        - (-1)^k (psi b - psi a) |  <=  log b.
+    ```
+
+    The endpoint hypotheses put every index of the block in the `k`-th half period, so
+    `sign_sin_of_mem_Ioo` gives the constant weight `(-1)^k`; the only defect is the single index
+    with `alpha T/m = k pi` exactly, where the sign is `0`, and that costs one
+    `Lambda(m) <= log m <= log b`.
+
+  Step 1 of the four-step route is therefore complete: decomposition
+  (`sum_Ioc_eq_sum_blocks`), block weight (`sign_sin_of_mem_Ioo`), and block value with its error
+  term.  Steps 2--4 (head limit via `tendsto_chebyshevPsiReal_scaled`, matching the block integral,
+  and the `psi(x) <= C x` tail) remain, all with their inputs already in the tree.
+
+  Fourth instalment: **steps 1 and 2 of the four-step route are complete**, all in
+  `RHTower/VonMangoldtSignBlock.lean`, unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  * `blockEndpoint alpha T k = if k = 0 then floor T else min (floor T) (floor (alpha T/(k pi)))`,
+    with `blockEndpoint_antitone`.  Blocks below the first half period are empty automatically, so
+    the argument is uniform in `alpha > 0` with no `floor(alpha/pi)` case split.
+  * `abs_sum_block_vonMangoldt_sign_sub_le` generalised to pointwise interval hypotheses, so it now
+    covers `k = 0` as well.
+  * **`abs_sum_blocks_vonMangoldt_sign_sub_le`** -- step 1 complete:
+
+    ```text
+    | sum_(m in Ioc (n K) (floor T)) Lambda(m) sgn(sin(alpha T/m))
+        - sum_(k < K) (-1)^k (psi (n k) - psi (n (k+1))) |  <=  K log(floor T).
+    ```
+
+  * `blockScale alpha k = if k = 0 then 1 else min 1 (alpha/(k pi))`, and
+    `blockEndpoint_eq_floor_scale : blockEndpoint alpha T k = floor (blockScale alpha k * T)`.
+    Note `blockScale alpha k = alpha / max alpha (k pi)` -- the form that matches the integral.
+  * `tendsto_chebyshevPsi_blockEndpoint_div` -- each endpoint carries its proportion,
+    `psi (n k)/T -> blockScale alpha k`, from `tendsto_chebyshevPsiReal_scaled`.
+  * **`tendsto_head_blocks`** -- step 2 complete: the alternating telescope over the first `K` half
+    periods satisfies
+
+    ```text
+    (1/T) sum_(k < K) (-1)^k (psi (n k) - psi (n (k+1)))
+      -> sum_(k < K) (-1)^k (blockScale alpha k - blockScale alpha (k+1)).
+    ```
+
+  Combined with step 1 (whose error `K log T/T -> 0` at fixed `K`) this already gives, for each
+  fixed `K`, the limit of the truncated dilated sum.
+
+  Steps 3 and 4 remain:
+  3. the per-block integral identity
+     `int_(max(alpha,k pi))^(max(alpha,(k+1) pi)) sgn(sin x)/x^2 dx
+        = (-1)^k (1/max(alpha,k pi) - 1/max(alpha,(k+1) pi))`,
+     which telescopes the step-2 limit into `alpha int_alpha^(max(alpha,K pi)) sgn(sin x)/x^2 dx`;
+  4. the two tails, both `O(1/K)`: the sum tail by
+     `psi (n K) <= C blockScale(alpha,K) T <= C alpha T/(K pi)`
+     (`exists_chebyshevPsiReal_le_linear`), and the integral tail by
+     `alpha/max(alpha,K pi) <= alpha/(K pi)`.
+     Then the usual `T -> infinity` before `K -> infinity` interchange.
+
+- 2026-08-08 (fifth instalment) -- **Section 3, equation (5), is closed unconditionally.**  The
+  2026-07-24 note that Section 3 needs "the preprint's contour machinery" was wrong twice over: the
+  prime number theorem is corpus-owned (`RHTower.Sieve.tendsto_sum_vonMangoldt_div`), and (5) is a
+  statement about the dilated von Mangoldt square wave alone -- equation (4) is the *definition* of
+  `A_Y` supplied by Sections 1--2, so no contour input enters.
+
+  New module `GaloisForLFunctions.RHTower.DilatedVonMangoldtSignLimit`:
+
+  * **`tendsto_dilated_vonMangoldt_sign_sum`** -- for `0 < alpha <= pi`,
+
+    ```text
+    (1/T) sum_(0 < m <= T) Lambda(m) sgn(sin(alpha T/m))  ->  1 - 2 alpha log 2/pi.
+    ```
+
+  * `tendsto_dilated_vonMangoldt_sign_sum_integral` -- the same limit written as
+    `J(alpha) = alpha int_alpha^infinity sgn(sin x)/x^2 dx`, equation (6), by composing with the
+    Section-4 evaluation `integral_sign_sin_mul_inv_sq_Ici`.
+  * `tendsto_dilated_vonMangoldt_sign_sum_one`, `..._two` -- the card's two dilations, with limits
+    `1 - 2 log 2/pi` and `1 - 4 log 2/pi`.
+  * **`tendsto_dilated_vonMangoldt_sign_sum_difference`** -- the two dilations differ in the limit
+    by exactly `(2/pi) log 2`, the sum-side form of equations (7)--(8) and the coefficient that
+    cancels the small-`n` Landau--Gonek term.
+  * `sum_Ioc_not_odd_vonMangoldt_le_log` -- the even part of a von Mangoldt sum is at most
+    `log N`, since it is carried by the powers of two (`Nat.log` counts them, each of weight
+    `log 2`).  Hence **`tendsto_dilated_vonMangoldt_sign_sum_odd`**: restricting equation (4) to odd
+    `m`, as the parity condition (1) demands, does not change the limit.
+
+  Supporting module `GaloisForLFunctions.HTGeometry.SignedHarmonicPair`:
+  **`hasSum_signedHarmonicPair`**, the *ungrouped* alternating gap series
+
+  ```text
+  sum_(k >= 1) (-1)^k (1/k - 1/(k+1)) = 1 - 2 log 2,
+  ```
+
+  which is what the block telescope produces.  Its terms are `(-1)^k/(k(k+1))`, so unlike the
+  alternating harmonic series it converges absolutely and the value is a genuine `HasSum`; pairing
+  consecutive terms gives the already-built `alternatingHarmonicPair` value `log 2` and its
+  complement `1 - log 2`, and absolute convergence transfers the paired value back.
+
+  Route, for the record: the square wave is constant `(-1)^k` on each block
+  `alpha T/(k+1)pi < m <= alpha T/(k pi)`, so the sum telescopes into an alternating difference of
+  `psi` at the block endpoints with total discrepancy `<= K log T` (step 1); each endpoint carries
+  its proportion `alpha/(k pi)` by the prime number theorem (step 2); the resulting alternating
+  telescope of proportions is the signed harmonic gap series (step 3); and both the Chebyshev tail
+  `psi(alpha T/(K pi)) <= C alpha T/(K pi)` and the series tail are `O(1/K)` (step 4).  `T -> infinity`
+  first, then `K -> infinity`.
+
+  All new declarations build green and carry axioms `[propext, Classical.choice, Quot.sound]`.
+  The only gate left open on this card is the independent novelty/priority audit, which is not a
+  Lean obligation.
+
+## Stage-3 Lean certificate
+
+- 2026-08-08 -- **the full formalization gate is closed.**  Sections 1, 2, 3 and 4 are unconditional
+  Lean theorems.  Every declaration below reports only `propext`, `Classical.choice`, `Quot.sound`,
+  and every module is reachable from `GaloisForLFunctions.RHTower` or
+  `GaloisForLFunctions.HTGeometry`.
+
+The 2026-07-24 log deferred Sections 1--3 as "tied to the preprint's contour machinery not in the
+corpus".  That was wrong on both counts.  The prime number theorem is corpus-owned
+(`RHTower.Sieve.tendsto_sum_vonMangoldt_div`), and no contour input enters Section 3 at all:
+equation (4) is the *definition* of `A_Y` handed over by Sections 1--2, so (5) is a statement about
+the dilated von Mangoldt square wave and nothing else.
+
+| Card statement | Lean declaration | Module |
+|---|---|---|
+| (1) parity condition on the near-diagonal substitution | `range_nearDiagonalSubst`, `range_nearDiagonalSubst_of_odd` | `HTGeometry/NearDiagonalParity` |
+| even von Mangoldt support is the powers of two | `exists_pow_two_of_even_of_vonMangoldt_ne_zero` | `HTGeometry/NearDiagonalParity` |
+| (2) odd-harmonic Fourier identity | `tendsto_sum_oddHarmonicSine` | `RHTower/OddHarmonicAbel` |
+| `sgn(sin)` is constant on a half period | `sign_sin_of_mem_Ioo` | `HTGeometry/SignSinBlock` |
+| antitone block telescope | `sum_Ioc_eq_sum_blocks` | `HTGeometry/AntitoneBlockTelescope` |
+| prime number theorem, scaling form | `tendsto_chebyshevPsiReal_scaled`, `exists_chebyshevPsiReal_le_linear` | `RHTower/ChebyshevPsiScaling` |
+| (4) block decomposition of the dilated sum | `abs_sum_blocks_vonMangoldt_sign_sub_le` | `RHTower/VonMangoldtSignBlock` |
+| endpoint proportions `alpha/(k pi)` | `tendsto_head_blocks` | `RHTower/VonMangoldtSignBlock` |
+| `sum_(k>=1) (-1)^k (1/k - 1/(k+1)) = 1 - 2 log 2` | `hasSum_signedHarmonicPair` | `HTGeometry/SignedHarmonicPair` |
+| (5) endpoint asymptotic | `tendsto_dilated_vonMangoldt_sign_sum` | `RHTower/DilatedVonMangoldtSignLimit` |
+| (5) restricted to odd `m`, as (1) demands | `tendsto_dilated_vonMangoldt_sign_sum_odd` | `RHTower/DilatedVonMangoldtSignLimit` |
+| even part of a von Mangoldt sum is `O(log N)` | `sum_Ioc_not_odd_vonMangoldt_le_log` | `RHTower/DilatedVonMangoldtSignLimit` |
+| (6) `J(alpha) = alpha int_alpha^infinity sgn(sin x)/x^2 dx` | `tendsto_dilated_vonMangoldt_sign_sum_integral` | `RHTower/DilatedVonMangoldtSignLimit` |
+| (8) grouped alternating harmonic value `log 2` | `hasSum_alternatingHarmonicPair` | `HTGeometry/AlternatingHarmonicPair` |
+| (7)--(8) `I(a) = 1/a - (2/pi) log 2`, `J(1) - J(2) = (2/pi) log 2` | `integral_sign_sin_mul_inv_sq_Ici`, `sgnSin_endpoint_difference` | `HTGeometry/SgnSinIntegral` |
+| (9) the cancelling coefficient, sum side | `tendsto_dilated_vonMangoldt_sign_sum_difference` | `RHTower/DilatedVonMangoldtSignLimit` |
+
+The one gate left open is the independent novelty/priority audit, which is not a Lean obligation.

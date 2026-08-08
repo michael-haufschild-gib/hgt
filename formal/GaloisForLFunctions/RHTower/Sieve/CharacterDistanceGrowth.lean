@@ -207,5 +207,62 @@ theorem le_mulDistSqPair_charFn_of_close {f : ℕ → ℂ} (hf : ∀ n, ‖f n�
   rw [← hsq]
   exact pow_le_pow_left₀ (by linarith) hstep 2
 
+/-- **Two characters cannot both be close to the same function.**  If `f` is within `√m` of both
+`n^{it}` and `n^{iu}`, the triangle inequality forces `charSepLower z (t−u) ≤ 4m`.
+
+This is the *global* form of the close-frequency dichotomy.  `HalaszDichotomy.eq_of_both_close` needs a
+spacing hypothesis `|(t−u)·log p| ≤ π`, which confines it to a single multiplicative cell; here the only
+hypothesis is `|t−u| ≤ 2`, because the separation bound comes from the pole of `ζ` rather than from a
+cell-by-cell comparison. -/
+theorem charSepLower_le_four_mul_of_both_close {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {z : ℕ}
+    (hz : 3 ≤ z) {t u m : ℝ} (hd : |t - u| ≤ 2) (hd0 : t - u ≠ 0)
+    (ht : mulDistSqPair f (charFn t) (Nat.primesLE z) ≤ m)
+    (hu : mulDistSqPair f (charFn u) (Nat.primesLE z) ≤ m) :
+    charSepLower z (t - u) ≤ 4 * m := by
+  have hP : ∀ p ∈ Nat.primesLE z, 0 < p := fun p hp => (Nat.prime_of_mem_primesLE hp).pos
+  have hm0 : (0 : ℝ) ≤ m :=
+    le_trans (mulDistSqPair_nonneg_disc (fun p _ => hf p)
+      (fun p _ => (norm_charFn t p).le) hP) ht
+  rcases le_or_gt (charSepLower z (t - u)) 0 with hneg | hpos
+  · linarith
+  · have hgrow := charSepLower_le_mulDistSqPair hz hd hd0
+    have htri := sqrt_mulDistSqPair_triangle_disc (f := charFn t) (g := f) (h := charFn u)
+      (fun p _ => (norm_charFn t p).le) (fun p _ => hf p)
+      (fun p _ => (norm_charFn u p).le) hP
+    have hcomm : mulDistSqPair (charFn t) f (Nat.primesLE z)
+        = mulDistSqPair f (charFn t) (Nat.primesLE z) := mulDistSqPair_comm _ _ _
+    rw [hcomm] at htri
+    have h1 : Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)) ≤ Real.sqrt m :=
+      Real.sqrt_le_sqrt ht
+    have h2 : Real.sqrt (mulDistSqPair f (charFn u) (Nat.primesLE z)) ≤ Real.sqrt m :=
+      Real.sqrt_le_sqrt hu
+    have hlow : Real.sqrt (charSepLower z (t - u))
+        ≤ Real.sqrt (mulDistSqPair (charFn t) (charFn u) (Nat.primesLE z)) :=
+      Real.sqrt_le_sqrt hgrow
+    have hsum : Real.sqrt (charSepLower z (t - u)) ≤ 2 * Real.sqrt m := by
+      linarith [htri, hlow, h1, h2]
+    have hsq : Real.sqrt (charSepLower z (t - u)) ^ 2 = charSepLower z (t - u) :=
+      Real.sq_sqrt hpos.le
+    have hms : Real.sqrt m ^ 2 = m := Real.sq_sqrt hm0
+    nlinarith [hsum, hsq, hms, Real.sqrt_nonneg (charSepLower z (t - u)), Real.sqrt_nonneg m]
+
+/-- **Close frequencies are confined to a window of width `≍ e^{4m}/log z`.**  The additive form of the
+global dichotomy: unwinding `charSepLower`, two frequencies both within `√m` of `f` satisfy
+
+`logLog z − C − 4m ≤ log(5 + 1/|t−u|)`,
+
+so `|t−u|` cannot exceed a constant multiple of `e^{4m}/log z`. -/
+theorem log_le_of_both_close {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {z : ℕ}
+    (hz : 3 ≤ z) {t u m : ℝ} (hd : |t - u| ≤ 2) (hd0 : t - u ≠ 0)
+    (ht : mulDistSqPair f (charFn t) (Nat.primesLE z) ≤ m)
+    (hu : mulDistSqPair f (charFn u) (Nat.primesLE z) ≤ m) :
+    logLog z - mertensSecondLowerConst - Real.pi ^ 2 / 6
+        - 2 * (Real.log 2 + 2 * (2 * mertensFirstConst + 1 / 2)) / Real.log 2
+        - (1 + Real.log 4) - 4 * m
+      ≤ Real.log (5 + 1 / |t - u|) := by
+  have h := charSepLower_le_four_mul_of_both_close hf hz hd hd0 ht hu
+  rw [charSepLower] at h
+  linarith
+
 end RHTower.Sieve
 end

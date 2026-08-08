@@ -1,9 +1,9 @@
 # Möbius even-additive zero-abscissa order law
 
 - **ID:** `mobius-even-additive-zero-abscissa-order-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-priority-review
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED UNCONDITIONALLY: (E3),(E4),(E5a),(E8),(E10),(E16)]` `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Source:** Möbius--Laplace continuation wall / Mertens additive-convolution hierarchy
 - **Statement:** Every even additive-convolution order of the Mertens function has a one-sided
@@ -296,3 +296,116 @@ not yet formalize `Theta` or the classical full zero-abscissa version of Littlew
 
 - 2026-07-22 -- formalized all-order Abel hierarchy, critical source-to-RH bridge, conditional
   converse, and quadratic/quartic connectors; targeted cached build and axiom audit pass.
+
+## Lean milestone -- the zero abscissa and the one-sided lower edge
+
+- 2026-08-08 -- **`Theta` is now formalized, and the lower half of `(E3)` is unconditional.**
+  All new declarations report only `propext`, `Classical.choice`, `Quot.sound`.
+
+New modules:
+
+```text
+formal/GaloisForLFunctions/RHTower/ZetaZeroAbscissa.lean
+formal/GaloisForLFunctions/RHTower/MobiusMertensEvenConvolutionOrderLowerEdge.lean
+```
+
+`ZetaZeroAbscissa.lean` defines
+
+```text
+zetaZeroAbscissa = sSup { Re rho : zeta rho = 0 }
+```
+
+and proves it is well defined and pinned:
+
+- `bddAbove_zetaZeroReSet`, `zetaZeroReSet_nonempty` -- nonemptiness is the corpus's unconditional
+  zero-existence theorem `exists_riemannZeta_zero_mem_openStrip`;
+- `re_le_zetaZeroAbscissa`, `riemannZeta_ne_zero_of_zetaZeroAbscissa_lt`,
+  `exists_zetaZero_lt_re`, `exists_zetaZero_mem_openStrip_lt_re`;
+- `riemannZeta_one_sub_eq_zero_of_mem_openStrip` -- the functional equation reflects a nontrivial
+  zero across the critical line;
+- `half_le_zetaZeroAbscissa : 1/2 <= Theta`, `zetaZeroAbscissa_le_one`, `zetaZeroAbscissa_pos`.
+
+`MobiusMertensEvenConvolutionOrderLowerEdge.lean` proves the genuinely one-sided half of the law:
+
+- `norm_pow_even_mobiusDiscreteLaplaceTransform_le_of_subpower` -- `(E7)` plus the exponential
+  moment bound: a global positive-part bound `Re C_k(N) <= C (N+1)^lambda` gives
+  `|Phi(x)|^(2k) <= C K_lambda x^(2k-lambda-1)` on `0 < x <= 1`;
+- **`le_of_mertensEvenConvolution_subpower`** -- the lower edge in subpower form: any such global
+  bound forces `lambda >= 2k(1+Theta)-1`.  Mechanism: the radial bound gives
+  `Phi = O(x^(-b))` with `b = (lambda+1-2k)/(2k) < Theta`, and
+  `not_isBigO_moebiusProfile_rpow` (the half-plane identity theorem for `G . zetaEntire = s-1`,
+  evaluated at a zeta zero with `Re rho > b`) forbids it;
+- `mertensEvenConvolutionOrder` -- the limsup `Lambda_k` of `(E2)`, with boundedness
+  (`isBoundedUnder_mertensEvenConvolutionOrderSeq`, from the crude cubic bound on the second-Cesaro
+  sequence and the corpus order transfer) and nonnegativity;
+- **`le_mertensEvenConvolutionOrder`** -- `(E16)`: `2k(1+Theta)-1 <= Lambda_k`;
+- **`frequently_rpow_le_mertensEvenConvolution`** -- `(E5a)`, unconditional: for every `k >= 1` and
+  every `eps > 0`,
+  `C_k(N) >= (N+1)^(3k-1-eps)` at infinitely many `N`.
+  This uses only `Theta >= 1/2`, which is now a theorem, not an assumption.
+
+Reusable infrastructure added:
+`HTGeometry/LogOrderLimsupBound.exists_global_subpower_of_eventually`,
+`exists_global_subpower_of_eventually_le`, `log_one_add_max_div_log_nonneg`.
+
+Remaining for the exact law `(E3)`: the upper inequality `(E10)`, which needs the classical
+Littlewood bound `M(N) = O(N^(Theta+eps))` at the true abscissa.  The corpus already owns the
+`Theta = 1/2` instance (`riemannHypothesis_implies_mobiusMertensAllStrictHalfPowerBound`) and the
+universal transfer `partialSumSeq_subpower_of_smoothPerron`, which is already stated for a general
+`Theta`; what is missing is the `Theta`-parameterized version of the reciprocal-zeta shift data
+(`exists_invZeta_shift_data_of_rh` and the three-circles lower bound feeding it), whose only use of
+RH is `zeta s != 0` for `Re s > 1/2`.  For `Theta = zetaZeroAbscissa` that hypothesis is the
+unconditional `riemannZeta_ne_zero_of_zetaZeroAbscissa_lt`.
+
+## Stage-3 Lean certificate
+
+- 2026-08-08 -- **the exact law `(E3)` is closed unconditionally**, together with its Riemann
+  form `(E4)` and the classical Littlewood input at the true abscissa.  Every declaration below
+  reports only `propext`, `Classical.choice`, `Quot.sound`, and every module is reachable from
+  `GaloisForLFunctions.RHTower`.
+
+| Card statement | Lean declaration | Module |
+|---|---|---|
+| `Theta` | `zetaZeroAbscissa` | `RHTower/ZetaZeroAbscissa` |
+| `Theta >= 1/2`, `Theta <= 1` | `half_le_zetaZeroAbscissa`, `zetaZeroAbscissa_le_one` | `RHTower/ZetaZeroAbscissa` |
+| `Lambda_k` | `mertensEvenConvolutionOrder` | `RHTower/MobiusMertensEvenConvolutionOrderLowerEdge` |
+| `(E6)`--`(E7)` Abel law | `mobiusDiscreteLaplaceTransform_pow_even_eq_one_sub_exp_pow_even_mul_tsum`, `norm_pow_even_mobiusDiscreteLaplaceTransform_le_of_subpower` | `RHTower/MobiusMertensEvenConvolutionOrderLaw`, `.../OrderLowerEdge` |
+| `(E8)` Littlewood at `Theta` | `mobiusMertens_subpower_zetaZeroAbscissa` | `RHTower/MobiusMertensAbscissaLittlewood` |
+| `(E9)`--`(E10)` upper edge | `norm_mobiusMertensEvenConvolution_le_of_subpower`, `mertensEvenConvolutionOrder_le` | `RHTower/MobiusMertensEvenConvolutionExactOrder` |
+| `(E11)`--`(E16)` lower edge | `le_of_mertensEvenConvolution_subpower`, `le_mertensEvenConvolutionOrder` | `RHTower/MobiusMertensEvenConvolutionOrderLowerEdge` |
+| **`(E3)`** exact affine law | **`mertensEvenConvolutionOrder_eq`** | `RHTower/MobiusMertensEvenConvolutionExactOrder` |
+| **`(E4)`** RH form | **`riemannHypothesis_iff_mertensEvenConvolutionOrder_eq`** | `RHTower/MobiusMertensEvenConvolutionExactOrder` |
+| **`(E5a)`** unconditional omega-plus | **`frequently_rpow_le_mertensEvenConvolution`** | `RHTower/MobiusMertensEvenConvolutionOrderLowerEdge` |
+
+The missing classical input named in the earlier log -- the full zero-abscissa version of
+Littlewood's theorem -- is now a theorem of the tree.  The RH-specific reciprocal-zeta chain was
+generalised to an arbitrary zero-free frontier in
+
+```text
+formal/GaloisForLFunctions/RHTower/InvZetaAbscissaSubpolynomial.lean
+```
+
+(`exists_three_circles_zeta_lower_bound_of_zeroFree`,
+`exists_zeta_lower_bound_subpolynomial_of_zeroFree`, `exists_invZeta_shift_data_of_zeroFree`,
+`zetaResidueUnit_ne_zero_of_zeroFree`).  Only two things change from the RH version: the three
+circles are centred at `4 + i t` instead of `3 + i t`, so that the outer radius still overshoots
+`Re s = Theta + delta/4` for every `Theta <= 1`; and the zero-free input is the hypothesis
+`zeta z != 0` for `Re z > Theta`, which at `Theta = zetaZeroAbscissa` is the unconditional
+`riemannZeta_ne_zero_of_zetaZeroAbscissa_lt`.  Feeding that datum to the corpus's universal
+`partialSumSeq_subpower_of_smoothPerron` gives `M(N) = O(N^(Theta+eps))` with no unproved premise.
+
+## Gates
+
+- [x] source and corpus audit
+- [x] exact conjecture stated
+- [x] hostile proof audit
+- [x] dependency-closed paper proof, conditional only on named classical Littlewood theorem
+- [x] initial literature search
+- [ ] specialist priority review
+- [x] formalize generic even-power Abel law
+- [x] formalize fixed-`k` positive-part source-to-zero-free theorem
+- [x] connect `k=1,2` to existing quadratic and quartic modules
+- [x] formalize `Theta` and the classical Littlewood theorem at the true abscissa
+- [x] formalize the exact law `(E3)`, the RH form `(E4)`, and the unconditional omega-plus law `(E5a)`
+- [ ] prove `Theta=1/2` unconditionally
+- [ ] RH

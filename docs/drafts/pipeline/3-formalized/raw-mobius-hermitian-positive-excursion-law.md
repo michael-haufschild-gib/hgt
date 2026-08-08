@@ -1,9 +1,9 @@
 # Raw Möbius Hermitian positive-excursion law
 
 - **ID:** `raw-mobius-hermitian-positive-excursion-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-priority-review
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED UNCONDITIONALLY: (R3),(R4),(R5),(R6),(R7),(R8)]` `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [UNCONDITIONAL] [NOT RH]`
 - **Dominance status:** strict even-index strengthening proved in
   `even-index-hermitian-additive-pole-law.md`; do not reuse unrestricted recurrence as newest claim.
@@ -1540,3 +1540,54 @@ paper-level.  No duplicate Lean wrapper is warranted.
     `‖2 pi sum_n chi(n) mu(n) w(n)‖ <= Kb * (sup over the line of the two bounds) * (an integral
     of (2+|y|)^{eps} ((1+y^2)^m)^{-1})`,
   finite by `integrable_rpow_mul_inv_pow`.
+
+## Stage-3 Lean certificate
+
+- 2026-08-08 -- **the full analytic formalization gate is closed.**  `(R3)`, `(R4)`, `(R5)` and
+  `(R6)` are unconditional Lean theorems for the zeta case and for every nontrivial primitive
+  twist.  Every declaration below reports only `propext`, `Classical.choice`, `Quot.sound`, and
+  every module is reachable from `GaloisForLFunctions.RHTower`.
+
+The 2026-07-27 log left the twisted Perron route at "bound the shifted integral and combine".  That
+assembly has since been completed in the tree by the universal Littlewood law
+(`SmoothPerronLittlewood.partialSumSeq_subpower_of_smoothPerron` fed by `DirichletLShiftData`),
+and the zeta counterpart is now available too
+(`RHTower/MobiusMertensAbscissaLittlewood.mobiusMertens_subpower_zetaZeroAbscissa`).  This card
+needs neither: its lower edge runs through the **raw** radial Abel bound, not through partial sums.
+
+| Card statement | Lean declaration | Module |
+|---|---|---|
+| `Theta_chi`, `Theta` | `zeroAbscissa χ`, `zetaZeroAbscissa` | `RHTower/DirichletZeroAbscissa`, `RHTower/ZetaZeroAbscissa` |
+| `Psi_(chi,k)` (zeta case) | `mobiusRawHermitianOrder` | `RHTower/RawMobiusHermitianExcursionLaw` |
+| `(R7)`--`(R8)` radial law | `pow_mul_star_pow_eq_tsum_mixedAdditiveConvolutionPower_mul_pow`, `norm_sq_pow_le_tsum_of_mixedAdditiveConvolutionPower_upper` | `RHTower/DirichletLMixedAdditiveZeroAbscissaLaw` |
+| `(R10)`--`(R11)` subpower to decay | `norm_tsum_le_of_mixedAdditiveConvolutionPower_subpower` | `RHTower/MixedConvolutionSubpowerAbelBound` |
+| `(R9)`+`(R12)` pole obstruction, zeta | `zetaZeroAbscissa_le_of_rawMixed_subpower` | `RHTower/RawMobiusHermitianExcursionLaw` |
+| `(R3)` lower, zeta | `le_mobiusRawHermitianOrder` | `RHTower/RawMobiusHermitianExcursionLaw` |
+| `(R3)` upper (any unit-bounded sequence) | `limsup_log_mixedAdditiveConvolutionPower_re_le` | `RHTower/EvenIndexHermitianOrderUpperBound` |
+| **`(R3)`** two-sided, zeta | **`rawOrder_moebius_bounds`** | `RHTower/RawMobiusHermitianExcursionLaw` |
+| **`(R3)`** two-sided, twist | **`rawOrder_twisted_bounds`** | `RHTower/RawMobiusHermitianExcursionLaw` |
+| `(R4)` recurrence, zeta | `frequently_re_pos_moebius` (even indices, strictly stronger) | `RHTower/MobiusEvenIndexPositiveRecurrence` |
+| `(R4)` recurrence, twist | `infinite_pos_twistedMixedAdditiveConvolutionPower` | `RHTower/TwistedMobiusPositiveExcursion` |
+| **`(R5)`** omega-plus, zeta | **`frequently_rpow_le_rawMixed_moebius`** | `RHTower/RawMobiusHermitianExcursionLaw` |
+| **`(R5)`** omega-plus, twist | **`frequently_rpow_le_rawMixed_twisted`** | `RHTower/RawMobiusHermitianExcursionLaw` |
+| **`(R6)`** binary endpoint | **`frequently_one_le_moebiusBinaryCorrelation_raw`** | `RHTower/RawMobiusHermitianExcursionLaw` |
+
+`(R5)` is stated with the card's hypothesis `k >= 2` (`1 <= j`), which is exactly where the
+exponent argument bites: at `k = 1` and `Theta = 1/2` the lower edge is `0`, and the card's own
+proof of the binary endpoint goes through the separate recurrence argument instead.  That endpoint
+is `(R6)`, obtained here from the even-index integral positivity
+`frequently_one_le_moebiusBinaryCorrelation` by restricting to even totals.
+
+## Gates
+
+- [x] corpus search
+- [x] exact theorem and endpoint proof
+- [x] complex-character audit
+- [x] initial 2025--2026 collision search
+- [x] dependency-closed paper proof
+- [x] generic Hermitian Abel core already formalized
+- [ ] specialist priority review
+- [ ] MathSciNet/Zentralblatt search
+- [x] full analytic Lean formalization
+- [ ] binary Chowla cancellation
+- [ ] RH

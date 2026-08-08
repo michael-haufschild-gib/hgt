@@ -77,12 +77,17 @@ theorem xiShiftedFarRightNormalizedHankelMatrix_eq_congruence
             xiShiftedFarRightDilation w n) := by
   have hw0 : w ≠ 0 := ne_of_gt (lt_trans zero_lt_one hw)
   have hlog : Real.log w ≠ 0 := ne_of_gt (Real.log_pos hw)
+  have hstar : star (xiShiftedFarRightDilation w n) =
+      xiShiftedFarRightDilation w n := by
+    rw [star_eq_conjTranspose]
+    simp [xiShiftedFarRightDilation]
   ext i j
+  rw [hstar]
   simp only [xiShiftedFarRightNormalizedHankelMatrix,
     _root_.HTGeometry.momentHankelMatrix, xiShiftedFarRightNormalizedMoment,
     xiShiftedFarRightDilation, xiShiftedMomentHankelMatrix,
-    finiteHankelMatrix, Matrix.smul_apply, smul_eq_mul]
-  simp [Matrix.mul_apply, star, Matrix.conjTranspose, pow_add]
+    Matrix.smul_apply, smul_eq_mul]
+  simp [Matrix.diagonal_mul, Matrix.mul_diagonal, finiteHankelMatrix, pow_add]
   field_simp [hlog, hw0]
   ring
 

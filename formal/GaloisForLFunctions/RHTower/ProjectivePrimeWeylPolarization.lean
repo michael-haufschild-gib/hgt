@@ -900,6 +900,27 @@ theorem norm_sq_projNatural_deriv (h : 2 ≤ Fintype.card X) (a : X) :
   rw [norm_sq_projTwoValue, div_pow, mul_pow, hssq, neg_pow, div_pow, mul_pow, hssq]
   field_simp
 
+/-! ## Leading prime-density expansion of the leakage -/
+
+omit [DecidableEq X] in
+/-- **Equation (16).**  The exact compression leakage differs from its leading prime-density term
+`(e^z - 1)²/p` by a remainder of size `O(p⁻²)`, uniformly on bounded weight ranges. -/
+theorem abs_projLeakageValue_sub_le (h : 2 ≤ Fintype.card X) (z : ℝ) :
+    |projLeakageValue X z - (Real.exp z - 1) ^ 2 / projDeg X| ≤
+      (Real.exp z - 1) ^ 2 * (1 + Real.exp z ^ 2) / projDeg X ^ 2 := by
+  have hp : (0 : ℝ) < projDeg X := projDeg_pos (X := X) h
+  have hE : (0 : ℝ) < Real.exp z := Real.exp_pos z
+  have hden : (0 : ℝ) < projDeg X + Real.exp z ^ 2 := by positivity
+  have hkey : projLeakageValue X z - (Real.exp z - 1) ^ 2 / projDeg X =
+      -((Real.exp z - 1) ^ 2 * (1 + Real.exp z ^ 2) /
+        (projDeg X * (projDeg X + Real.exp z ^ 2))) := by
+    rw [projLeakageValue]
+    field_simp
+    ring
+  rw [hkey, abs_neg, abs_of_nonneg (by positivity)]
+  refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
+  nlinarith [sq_nonneg (Real.exp z)]
+
 end
 
 end RHTower

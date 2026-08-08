@@ -1,7 +1,7 @@
 # Projective-prime Weyl leakage realizes the squarefree Fock normal cone
 
 - **ID:** `projective-prime-weyl-leakage-fock-normal-cone`
-- **Stage:** 2-fully-proven / external novelty audit preliminary
+- **Stage:** 2-fully-proven / complete theorem surface Lean-proved, external novelty audit preliminary
 - **Type:** EXACT FINITE PRODUCER--REPORTER COMPARISON / ALL-PRIME NORMAL-CONE LIMIT
 - **Scientific status:** `[PAPER PROOF COMPLETE] [SOURCE-PURE] [NOT RH]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [SIGNIFICANCE PASS]`
@@ -716,3 +716,180 @@ Primary collision:
 - M. Greenfield, M. Marcolli, K. Teh, *Twisted Spectral Triples and Quantum Statistical
   Mechanical Systems*, \(p\)-Adic Numbers, Ultrametric Analysis and Applications 6 (2014),
   81--104, DOI `10.1134/S2070046614020010`, Proposition 4.8.
+
+## Lean formalization (complete)
+
+Modules (all wired into `GaloisForLFunctions.RHTower`, all built green, all capstones depend only
+on `propext`, `Classical.choice`, `Quot.sound`).  Core modules:
+
+- `formal/GaloisForLFunctions/RHTower/ProjectivePrimeWeylPolarization.lean` — the finite projective
+  clock on an abstract point set of cardinality `p + 1`;
+- `formal/GaloisForLFunctions/RHTower/ProjectivePrimeWeylModel.lean` — the concrete
+  `P¹(F_p) = Option (ZMod p)` model, the residue Weyl inversion, and the global Gram product;
+- `formal/GaloisForLFunctions/RHTower/SquarefreeMoebiusCrossGram.lean` — the producer/reporter
+  cross-Gram diagonal and its operator;
+- `formal/GaloisForLFunctions/RHTower/ProjectiveTensorAperture.lean` — the finite tensor aperture,
+  its Hilbert norm, and the aperture polarization intersection;
+- `formal/GaloisForLFunctions/RHTower/Sieve/ApertureWeylCompressionLimit.lean` — the aperture Weyl
+  compression coefficient and its all-prime limit.
+
+| Card item | Lean theorem |
+|---|---|
+| `(6)` critical state is the uniform projective vector | `projNatural_zero` |
+| `(7)` polarization intersection is the source line | `projPolarization_inf`, `weylProducer_inf_weylReporter` |
+| `(8)` Weyl transport of the whole package | `projPermute_projUniform`, `projPermute_projNatural`, `projPermute_projTransverse`, `mem_projPolarization_permute`, `mem_weylReporter_iff` |
+| `(8b)` transverse seam `-1/p` | `inner_projTransverse`, `inner_weylTransverse` |
+| `(8c)` safe Gram determinant `1 - p⁻²` | `det_projTransverseGram`, `det_weylTransverseGram` |
+| `(8c1)` global product is `1/ζ(2) = 6/π²` | `tprod_weylGramDet`, `tprod_weylGramDet_eq` |
+| `(8d)` marked tangent is the Fisher direction, capacity `p/(p+1)²` | `hasDerivAt_projNatural_zero`, `projNatural_deriv_eq_transverse`, `norm_sq_projNatural_deriv` |
+| `(8e)`–`(8f)` critical Möbius phase `(p-1)/(p+1)` | `inner_projUniform_signReflect` |
+| `(8g)` Weyl transport of the sign reflection | `projPermute_signReflect` |
+| `(9)` exact compression leakage | `projWeylLeakage` (with `starProjection_projPolarization` identifying the compression with the orthogonal projection) |
+| `(10)` complementary compressed norm; zero leakage exactly at the critical state | `projWeylCompressionNorm`, `projLeakageValue_zero`, `projLeakageValue_pos` |
+| `(11)` Hellinger affinity Gram coefficient | `inner_projNatural_same` |
+| `(31)` tensored seam is the Möbius cross-Gram | `prod_transverseSeam_eq_crossGram` |
+| `(28)`, `(29)` cross-Gram operator, norm exactly `1/2` | `crossGramOperator`, `norm_crossGramOperator`, `norm_inner_crossGram_le` |
+| injectivity of the transverse cross-Gram | `crossGramOperator_injective` |
+| `(32)` Hilbert–Schmidt | `summable_squarefreeTransverseWeight_two` |
+| `(33)` not trace class — the first-trace wall | `not_summable_squarefreeTransverseWeight_one` |
+| `(30)` closed inverse graph domain | `mem_range_crossGramOperator_iff`, `crossGramDiagonal_mul_inverse` |
+| `(34)` unsigned spectral trace `ζ(s)/ζ(2s)` | `tsum_crossGram_unsigned_trace` |
+| `(35)` signed spectral trace `1/ζ(s)` | `LSeries_crossGram_signed_trace` |
+
+Fourth module: `formal/GaloisForLFunctions/RHTower/ProjectiveVisualBoundaryCosh.lean` — the
+two-atom visual shadow model of the `p`-adic boundary.
+
+| Card item | Lean theorem |
+|---|---|
+| `(39)` visual Radon–Nikodym Jacobian, probability normalization | `visualJacobian`, `visualShadowMeasure_univ` |
+| `(43)` spherical moment `(p^s + p^{1-s})/(p+1)` as a visual integral | `integral_visualJacobian_cpow` |
+| `(44)` Riemann reflection `m_p(s) = m_p(1-s)` | `visualSphericalMoment_reflection` |
+| `(44)` Tate character `m_p(s)/m_p(1/2) = cosh((s-1/2) log p)` | `visualSphericalMoment_div_half` |
+| `(41)`–`(42)` half-density norm `p^{|c|}`; contractive iff `Re s = 1/2` | `visualJacobian_rpow_sup`, `visualJacobian_rpow_sup_eq_one_iff` |
+
+`(16)`, the leading prime-density expansion of the leakage with its `O(p⁻²)` remainder, is
+`abs_projLeakageValue_sub_le`.
+
+The all-prime limit `(14)` and its inputs:
+
+- `(16)` is `abs_projLeakageValue_sub_le`, above.  The
+  number-theoretic input `(18)` needs is **already corpus-owned** — not, as first recorded here,
+  missing:
+
+  | statement | Lean theorem |
+  |---|---|
+  | `\|mertensS N − logLog N − meisselMertensConst\| ≤ C/log N` | `RHTower.Sieve.abs_mertensS_sub_logLog_sub_const_le` |
+  | `\|Σ_{z<p≤b} 1/p − (logLog b − logLog z)\| ≤ C/log b + C/log z` | `RHTower.Sieve.abs_sum_inv_bigPrimeSet_sub_le` |
+  | defect tail `≤ 1/(N log N)` | `RHTower.Sieve.tsum_logLogDefect_add_le` |
+
+  (in `Sieve/MertensSecondSharp.lean`, `Sieve/MertensWindowSharp.lean`,
+  `Sieve/MertensDefectTail.lean`).  The old two-sided `mertensS_le` / `le_mertensS` are superseded.
+
+  The transfer layer is now partly built, in
+  `formal/GaloisForLFunctions/RHTower/Sieve/PrimeWindowExponentLimit.lean` and
+  `formal/GaloisForLFunctions/RHTower/Sieve/PrimeProfileExponentTransfer.lean`:
+
+  | statement | Lean theorem |
+  |---|---|
+  | `log ⌊N^c⌋ = c log N + O(1)` | `abs_log_exponentCutoff_sub_le` |
+  | `log ⌊N^c⌋ / log N → c` | `tendsto_log_exponentCutoff_div` |
+  | `logLog ⌊N^c⌋ − logLog N → log c` | `tendsto_logLog_exponentCutoff_sub` |
+  | **`Σ_{N^a<p≤N^b} 1/p → log b − log a`** (the step case of `(18)`) | `tendsto_sum_inv_exponentWindow` |
+  | primes of `(⌊N^a⌋, ⌊N^b⌋]` have exponent exactly in `(a,b]` — no floor slop | `exponent_mem_Ioc_of_mem_bigPrimeSet` |
+  | window approximation by the left endpoint value | `abs_primeProfileWindowSum_sub_le` |
+  | small-prime head `≤ C·c + O(1/log N)` for `\|g t\| ≤ C t` | `abs_primeProfileSum_head_le'` |
+
+  The partition and the integral comparison are now built too, in
+  `Sieve/PrimeProfilePartitionSum.lean` and `Sieve/ProfileStepIntegralComparison.lean`:
+
+  | statement | Lean theorem |
+  |---|---|
+  | exact partition of the profile sum at the exponents `j/m` | `primeProfileSum_partition` |
+  | each window is a step of the profile up to `L/m` | `abs_primeProfileWindowSum_sub_step_le` |
+  | **profile sum = head + step sum, up to `(L/m)·Σ_j W_j`** | `abs_primeProfileSum_sub_stepSum_le` |
+  | cell weight `∫_{j/m}^{(j+1)/m} dt/t = log(j+1) − log j` | `integral_one_div_cell` |
+  | cellwise step-vs-integral comparison | `abs_integral_cell_sub_step_le` |
+  | **step sum = `∫_{1/m}^1 g(t) dt/t`, up to `(L/m)·log m`** | `abs_stepSum_sub_integral_le` |
+
+  **`(18)` is now proved.**  `Sieve/PrimeProfileIntegralBound.lean` assembles the pieces into one
+  explicit finite inequality, and `Sieve/PrimeProfileTransferLimit.lean` takes the two limits:
+
+  | statement | Lean theorem |
+  |---|---|
+  | `t ↦ g t / t` is integrable through the origin when `\|g t\| ≤ C t` | `intervalIntegrable_profile_div` |
+  | integral head `\|∫₀^r g/t\| ≤ C·r` | `abs_integral_profile_head_le` |
+  | **explicit master bound**, all five error sources displayed | `abs_primeProfileSum_sub_integral_le` |
+  | window mass `W_j → log(j+1) − log j` | `tendsto_exponentWindowMass` |
+  | fixed-`m` error `→ 2L·log m/m + 2C/m` | `tendsto_profileErrorBound` |
+  | **`Σ_{p≤N} g(log p/log N)/p → ∫₀¹ g(t) dt/t`** | `tendsto_primeProfileSum` |
+
+  Hypotheses: `g` continuous, `L`-Lipschitz, and `\|g t\| ≤ C t` for `t ≥ 0` — exactly the card's
+  class, since `g = (e^f − 1)²` with `f ∈ C¹([0,1])`, `f(0) = 0` satisfies all three.  No prime
+  number theorem is used anywhere: only Mertens' first theorem and the corpus's sharp Mertens.
+
+  The leakage layer on top of `(18)` is now started, in
+  `Sieve/PrimeSumDominatedVanishing.lean` and `Sieve/PrimeLeakageEstimates.lean`:
+
+  | statement | Lean theorem |
+  |---|---|
+  | dominated vanishing of `Σ_{p≤N} a N p` (moving range **and** moving summands) | `tendsto_sum_primesLE_of_dominated` |
+  | `L_p` as a function of the prime; identified with the projective-clock leakage | `primeLeakage`, `primeLeakage_eq_projLeakageValue` |
+  | `0 ≤ L_p ≤ (e^z−1)²/p` | `primeLeakage_nonneg`, `primeLeakage_le_div` |
+  | `L_p ≤ (E²+1)/(2+E²) < 1` uniformly when `e^z ≤ E` | `primeLeakage_le_theta`, `theta_lt_one` |
+  | `\|L_p − (e^z−1)²/p\| ≤ (e^z−1)²(1+e^{2z})/p²` | `abs_primeLeakage_sub_div_le` |
+  | `\|log(1−u) + u\| ≤ u²/(1−θ)` for `0 ≤ u ≤ θ < 1` | `abs_log_one_sub_add_le` |
+
+  The uniform bound `L_p ≤ θ < 1` is what makes `(19)` work: it keeps `1 − L_p` away from zero for
+  *every* prime, including the small ones, so the quadratic logarithmic defect is dominated by
+  `C/p²` with no exceptional set.
+
+  **`(17)` and `(19)` are now proved**, in `Sieve/PrimeLeakageProfileVanishing.lean`, together with
+  the profile regularity they feed, in `Sieve/ExpProfileRegularity.lean`:
+
+  | statement | Lean theorem |
+  |---|---|
+  | `(17)` `Σ_{p≤N} (L_p(f(t_p)) − (e^{f(t_p)}−1)²/p) → 0` | `tendsto_sum_leakageExpansion` |
+  | `(19)` `Σ_{p≤N} (log(1−L_p) + L_p) → 0` | `tendsto_sum_leakageLogDefect` |
+  | uniform bounds `(e^z−1)² ≤ (e^F−1)²`, `e^{2z} ≤ e^{2F}` | `sq_exp_sub_one_le`, `exp_sq_le` |
+  | `exp` is `e^F`-Lipschitz on `[−F,F]` | `abs_exp_sub_exp_le` |
+  | the profile `g = (e^f−1)²` is globally Lipschitz | `expProfile_lipschitz` |
+  | the profile vanishes linearly at the origin, `\|g t\| ≤ C t` | `expProfile_le_linear` |
+
+  Hypotheses on the weight: `f` continuous, bounded (`\|f t\| ≤ F`), globally Lipschitz, `f(0)=0` —
+  the class obtained by truncating a `C¹([0,1])` weight, which is exactly the card's `𝓕₀` after
+  restriction to the exponent range `(0,1]`.
+
+  **`(14)` is now proved**, in `Sieve/PrimeLeakageProductLimit.lean`:
+
+  | statement | Lean theorem |
+  |---|---|
+  | `1 − L_p > 0` for every prime | `one_sub_primeLeakage_pos` |
+  | `∏_{p≤N} √(1−L_p) = exp(½ Σ log(1−L_p))` | `prod_sqrt_one_sub_primeLeakage` |
+  | `Σ log(1−L_p) = Σ logDefect − Σ expansion − primeProfileSum g N` | `sum_log_one_sub_primeLeakage` |
+  | **`∏_{p≤N} √(1 − L_p(f(log p/log N))) → exp(−½ ∫₀¹ (e^{f t}−1)² dt/t)`** | `tendsto_prod_sqrt_one_sub_primeLeakage` |
+
+  This is the card's all-prime Weyl-leakage normal-cone limit: the compression coefficient of the
+  exact projective comparison converges to the squarefree Hellinger–Fock kernel `𝓚(f,0)`.
+
+  The tensor layer `(13)`, the exact finite identity `(15)`, and the aperture intersection `(21)`
+  are proved in `ProjectiveTensorAperture.lean` and `Sieve/ApertureWeylCompressionLimit.lean`:
+
+  | statement | Lean theorem |
+  |---|---|
+  | product coordinates of the aperture tensor product; tensors are determined by them | `apertureBasis`, `apertureCoord_tprod`, `apertureTensor_ext` |
+  | the one-slot exchange walk | `apertureCoord_congr_of_step` |
+  | `⨂ᵢ E_{a i}` is exactly slotwise constancy off the marked points | `tensorSubspace_projPolarization` |
+  | **`(21)` `(⨂_{p≤x} E_{∞,p}) ∩ (⨂_{p≤x} E_{0,p}) = ℂ·⨂_{p≤x} u_p⁰`** | `tensorSubspace_projPolarization_inf`, `tensorSubspace_weylProducer_inf_weylReporter` |
+  | the Hilbert tensor norm: `‖⨂ᵢ v_i‖ = ∏ᵢ ‖v_i‖` | `apertureModel`, `apertureNorm`, `apertureNorm_tprod` |
+  | `(13)` the aperture operators `Q_x`, `W_x`, `U_x(f)` | `apertureCompress`, `aperturePermute`, `apertureNatural` |
+  | **`(15)` `‖Q_x W_x U_x(f)‖ = ∏_{p≤x} √(1−L_p)`** | `apertureNorm_compress_permute_natural`, `apertureNorm_weylCompression` |
+  | **`(14)` in operator form: `‖Q_N W_N U_N(f)‖ → exp(−½∫₀¹(e^{f t}−1)² dt/t)`** | `tendsto_apertureNorm_weylCompression` |
+
+  The aperture tensor product is mathlib's `PiTensorProduct`; its Hilbert norm is defined through
+  the product coordinate basis `apertureBasis`, and `apertureNorm_tprod` — `‖⨂ v_i‖ = ∏ ‖v_i‖` — is
+  precisely the defining property of the Hilbert tensor norm, so at finite aperture no separate
+  metric completion is needed.  `(21)` needs `p + 1 ≥ 3` in every slot, exactly as `(7)` does: the
+  proof exchanges one slot through a third point that is invisible to both polarizations at once,
+  which forces the coordinate function of a common tensor to be constant.
+
+  Nothing on this card is left unformalized.

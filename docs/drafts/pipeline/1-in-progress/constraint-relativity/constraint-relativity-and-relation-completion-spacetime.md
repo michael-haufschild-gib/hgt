@@ -5,7 +5,9 @@
 - **Type:** NEW MATHEMATICAL FIELD / FOUNDATIONAL RESEARCH PROGRAM
 - **Short name:** `CR`
 - **Scientific status:** `[BOLD CONJECTURAL FIELD] [PARTIAL MODEL THEOREMS EXIST]`
-  `[EXTERNAL PRIORITY OPEN] [NOT RH] [NO LEAN AUTHORIZED]`
+  `[SUPERSEDED AS ACTIVE FOUNDATION] [EXTERNAL PRIORITY OPEN] [NOT RH] [NO LEAN AUTHORIZED]`
+- **Active successor:** `completion-relativity-source-history-geometry.md`, where exact ultrametric
+  horizon and self-dual defect-extension phase laws replace scalar/provenance-only foundation.
 - **Statement:** Relations do not merely cut subsets from a fixed background. Source-framed
   relation events generate completed realization geometry. Their primitive comparison defect is
   an oriented provenance class; topology, metric, energy, and complexity are observer-dependent

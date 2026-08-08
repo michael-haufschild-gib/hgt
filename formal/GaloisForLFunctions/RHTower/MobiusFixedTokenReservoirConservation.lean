@@ -267,6 +267,67 @@ theorem reservoirFree_source_le_tokens_add_excursion
     le_abs_self _
   linarith
 
+/-- **Sharp reservoir-free parity consequence.** If every fixed-token coordinate reverses
+parity, then source breadth is controlled by corner excursion alone.  This eliminates arity
+from the final obstruction: `d ≤ 2E` and `K ≤ r d + E` combine to give
+`K ≤ (2r+1)E`. -/
+theorem reservoirFree_parity_source_le_twoToken_add_one_mul_excursion
+    (sourceBreadth : ι → ℕ) (tokenBreadth : ℕ)
+    (hodd : ∀ i,
+      Odd (fixedTokenShift sourceBreadth (fun _ => 0) tokenBreadth i)) :
+    fixedTokenSourceTotal sourceBreadth ≤
+      (2 * (tokenBreadth : ℤ) + 1) *
+        subsetShiftExcursion
+          (fixedTokenShift sourceBreadth (fun _ => 0) tokenBreadth) := by
+  let δ := fixedTokenShift sourceBreadth (fun _ => 0) tokenBreadth
+  have hsource :
+      fixedTokenSourceTotal sourceBreadth ≤
+        (tokenBreadth : ℤ) * Fintype.card ι + subsetShiftExcursion δ := by
+    simpa [δ] using reservoirFree_source_le_tokens_add_excursion
+      sourceBreadth tokenBreadth
+  have harity :
+      (Fintype.card ι : ℤ) ≤ 2 * subsetShiftExcursion δ := by
+    exact card_le_two_mul_excursion_of_odd δ (by simpa [δ] using hodd)
+  have hscaled :
+      (tokenBreadth : ℤ) * Fintype.card ι ≤
+        (tokenBreadth : ℤ) * (2 * subsetShiftExcursion δ) :=
+    mul_le_mul_of_nonneg_left harity (by positivity)
+  calc
+    fixedTokenSourceTotal sourceBreadth ≤
+        (tokenBreadth : ℤ) * Fintype.card ι + subsetShiftExcursion δ := hsource
+    _ ≤ (tokenBreadth : ℤ) * (2 * subsetShiftExcursion δ) +
+        subsetShiftExcursion δ := add_le_add hscaled le_rfl
+    _ = (2 * (tokenBreadth : ℤ) + 1) * subsetShiftExcursion δ := by ring_nf
+
+/-- **Finite central-scaling bridge.** If source breadth differs from reference breadth by at
+most `error`, token arity costs at most `error`, and every corner excursion costs at most
+`error`, then reservoir breadth differs from reference breadth by at most `3 * error`.
+
+This is the exact epsilon-free statement underlying the paper's
+`K = (1-o(1))L`, `rd = o(L)`, `E = o(L)` implication `B = (1-o(1))L`. -/
+theorem fixedToken_reservoir_centralScaling_bound
+    (sourceBreadth reservoirBreadth : ι → ℕ) (tokenBreadth : ℕ)
+    (reference error : ℤ)
+    (hsource :
+      |fixedTokenSourceTotal sourceBreadth - reference| ≤ error)
+    (htokens :
+      (tokenBreadth : ℤ) * Fintype.card ι ≤ error)
+    (hexcursion :
+      subsetShiftExcursion
+          (fixedTokenShift sourceBreadth reservoirBreadth tokenBreadth) ≤ error) :
+    |fixedTokenReservoirTotal reservoirBreadth - reference| ≤ 3 * error := by
+  let δ := fixedTokenShift sourceBreadth reservoirBreadth tokenBreadth
+  have hconservation :
+      |fixedTokenReservoirTotal reservoirBreadth -
+          (fixedTokenSourceTotal sourceBreadth -
+            (tokenBreadth : ℤ) * Fintype.card ι)| ≤ error :=
+    (fixedToken_reservoir_conservation
+      sourceBreadth reservoirBreadth tokenBreadth).trans hexcursion
+  have htoken_nonneg :
+      0 ≤ (tokenBreadth : ℤ) * Fintype.card ι := by positivity
+  rw [abs_le] at hconservation hsource ⊢
+  constructor <;> omega
+
 end FixedToken
 
 end RHTower

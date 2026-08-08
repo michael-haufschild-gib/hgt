@@ -1863,6 +1863,7 @@ import GaloisForLFunctions.RHTower.DigammaSeries
 import GaloisForLFunctions.RHTower.DigammaUniform
 import GaloisForLFunctions.RHTower.DigammaVerticalLogAsymptotic
 import GaloisForLFunctions.RHTower.DigammaVerticalMinimum
+import GaloisForLFunctions.RHTower.DilatedVonMangoldtSignLimit
 import GaloisForLFunctions.RHTower.DilationFrobeniusShift
 import GaloisForLFunctions.RHTower.DipKillsWiring
 import GaloisForLFunctions.RHTower.DirectAdaptiveStaticChoiCrowdingLaw
@@ -3311,6 +3312,7 @@ import GaloisForLFunctions.RHTower.ProjectiveIntervalMeasureWitnesses
 import GaloisForLFunctions.RHTower.ProjectiveOperationalEffectiveSupport
 import GaloisForLFunctions.RHTower.ProjectivePrimeWeylModel
 import GaloisForLFunctions.RHTower.ProjectivePrimeWeylPolarization
+import GaloisForLFunctions.RHTower.ProjectiveTensorAperture
 import GaloisForLFunctions.RHTower.ProjectiveVisualBoundaryCosh
 import GaloisForLFunctions.RHTower.ProjectiveSmallBallComplexityLaw
 import GaloisForLFunctions.RHTower.ProjectiveWeightedBoundedDensityQuantile
@@ -3726,6 +3728,7 @@ import GaloisForLFunctions.RHTower.Sieve.AbelTail
 import GaloisForLFunctions.RHTower.Sieve.AlmostOrthogonality
 import GaloisForLFunctions.RHTower.Sieve.AmGmDirichlet
 import GaloisForLFunctions.RHTower.Sieve.AmGmIntegral
+import GaloisForLFunctions.RHTower.Sieve.ApertureWeylCompressionLimit
 import GaloisForLFunctions.RHTower.Sieve.AntisymmetricSymbol
 import GaloisForLFunctions.RHTower.Sieve.AsymptoticMatching
 import GaloisForLFunctions.RHTower.Sieve.AverageBalancedDivisors

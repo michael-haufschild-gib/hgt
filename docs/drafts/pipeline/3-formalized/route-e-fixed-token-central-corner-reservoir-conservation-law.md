@@ -1,13 +1,15 @@
 # Route E fixed-token central-corner reservoir conservation law
 
 - **ID:** `ROUTE-E-FIXED-TOKEN-RESERVOIR-CONSERVATION-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[THEOREM (paper)]` / `[SHARP ARCHITECTURE LAW]` / `[POSITIVE NO-GO SURVIVOR]`
 - **Parent:** `route-e-grade-recurrent-sparse-reservoir-cube-admission.md`
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** intentionally not started during corpus refactor
+- **Lean status:** dependency-closed in
+  `formal/GaloisForLFunctions/RHTower/MobiusFixedTokenReservoirConservation.lean` and
+  `formal/GaloisForLFunctions/RHTower/Sieve/HarmonicReservoirCapacity.lean`
 
 ## 1. Result
 
@@ -252,7 +254,11 @@ balancing endpoint grade is theatre after `(3)`.
 
 ## 8. Scientific and formal status
 
-`[PAPER-PROVED] [NOVELTY UNVERIFIED]`.  Equations `(3)`--`(12)` are exact finite identities.  The
+`[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`.  Equations `(3)`--`(12)` are exact finite identities.  The
 harmonic consequence uses already-proved physical divisor-incidence bound from parent Route E
-card.  No external literature search was performed under current instruction.  No Lean was
-written or built while corpus refactor is active.
+card.  No external literature search was performed under current instruction.
+
+Lean additionally proves the sharpened reservoir-free bound
+`K ≤ (2r+1)E` and an exact finite central-scaling theorem: source error, token-arity cost,
+and corner excursion each at most `error` force reservoir error at most `3*error`.  These make
+the paper's asymptotic consequences dependency-closed without introducing asymptotic premises.

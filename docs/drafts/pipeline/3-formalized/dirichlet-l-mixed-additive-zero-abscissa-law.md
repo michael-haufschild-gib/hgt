@@ -1,9 +1,9 @@
 # Dirichlet-L mixed additive zero-abscissa law
 
 - **ID:** `dirichlet-l-mixed-additive-zero-abscissa-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized / needs-priority-review
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED UNCONDITIONALLY: (D3),(D4),(D4a),(D5),(D6),(D7)]` `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT GRH]`
 - **Source:** Möbius even-additive zero-abscissa order law / primitive Dirichlet twists
 - **Statement:** Positive excursions of every mixed even additive convolution of a twisted
@@ -379,3 +379,57 @@ identity `(D3)` remain paper-level.
     `additiveConvolutionPower_im_eq_zero` and the semigroup law).
   Remaining gates are non-formalizable or GRH-level (`prove the GRH-value source unconditionally`,
   `Dirichlet GRH`, `RH`) plus the non-Lean specialist priority review.
+
+## Stage-3 Lean certificate
+
+- 2026-08-08 -- **the exact law `(D3)`, the GRH form `(D4)` and the unconditional omega-plus law
+  `(D4a)` are all closed in Lean, with no premises.**  Every declaration below reports only
+  `propext`, `Classical.choice`, `Quot.sound`, and every module is reachable from
+  `GaloisForLFunctions.RHTower`.
+
+The earlier log entry ("The character definitions, `Theta_chi`, classical twisted Littlewood
+theorem, and exact limsup identity `(D3)` remain paper-level") was stale: `Theta_chi`, the twisted
+Littlewood theorem and `(D3)` had all been built in the meantime.  What this cycle adds is `(D4)`
+and `(D4a)`.
+
+| Card statement | Lean declaration | Module |
+|---|---|---|
+| `M_chi` | `partialSumSeq (↗χ * ↗μ)` | `RHTower/TwistedMertensOrderLowerBound` |
+| `C_(chi,k)` of `(D1)` | `mixedAdditiveConvolutionPower (partialSumSeq (↗χ * ↗μ)) k` | `RHTower/DirichletLMixedAdditiveZeroAbscissaLaw` |
+| `Theta_chi` | `zeroAbscissa χ` | `RHTower/DirichletZeroAbscissa` |
+| `Theta_chi >= 1/2` | `half_le_zeroAbscissa` | `RHTower/DirichletZeroAbscissa` |
+| `(D5)`--`(D6)` mixed Abel law | `pow_mul_star_pow_eq_tsum_mixedAdditiveConvolutionPower_mul_pow`, `norm_sq_pow_le_tsum_of_mixedAdditiveConvolutionPower_upper` | `RHTower/DirichletLMixedAdditiveZeroAbscissaLaw` |
+| `(D7)` twisted Littlewood at `Theta_chi` | `twistedMertensSubpowerBound_zeroAbscissa` | `RHTower/TwistedMertensLittlewood` |
+| lower half of `(D3)` | `two_mul_one_add_zeroAbscissa_sub_one_le_limsup_mertens` | `RHTower/TwistedOrderLawTheta` |
+| upper half of `(D3)` | `limsup_mertens_le_of_subpowerBound` | `RHTower/TwistedOrderLawTheta` |
+| **`(D3)`** exact law | **`limsup_mertens_eq_zeroAbscissa`** | `RHTower/TwistedMertensLittlewood` |
+| **`(D4a)`** unconditional omega-plus | **`frequently_rpow_le_twistedMertensEvenConvolution`** | `RHTower/TwistedOrderLawExact` |
+| GRH predicate | `DirichletGRH` | `RHTower/TwistedOrderLawExact` |
+| `GRH_chi <-> Theta_chi = 1/2` | `zeroAbscissa_eq_half_iff_dirichletGRH` | `RHTower/TwistedOrderLawExact` |
+| **`(D4)`** GRH form | **`dirichletGRH_iff_limsup_mertens_eq`** | `RHTower/TwistedOrderLawExact` |
+
+The new module also supplies the two structural lemmas the GRH form needs:
+`gammaFactor_ne_zero_of_re_pos` and `completedLFunction_eq_zero_of_LFunction_eq_zero` (an
+`L`-zero in the right half-plane is a completed zero), and
+`LFunction_eq_zero_conj_one_sub` -- the reflection sending a zero of `L(.,chi)` at `rho` in the open
+strip to a zero at `conj (1 - rho)`, obtained by composing the completed functional equation
+(which lands on `chi` inverse) with the conjugation symmetry `conj_completedLFunction` (which brings
+it back to `chi`).  This is what makes `Theta_chi = 1/2` equivalent to GRH rather than merely
+implied by it.
+
+## Gates
+
+- [x] source and corpus audit
+- [x] exact theorem stated for real and complex primitive characters
+- [x] dependency-closed paper proof using named classical fixed-character Littlewood input
+- [x] functional-equation and exceptional-zero audit
+- [x] initial external collision search
+- [ ] specialist priority review
+- [x] formalize generic mixed complex Abel law
+- [x] connect the zeta specialization to the existing all-even-order Lean module
+  (`mixedAdditiveConvolutionPower_eq_additiveConvolutionPower_two_mul_of_real`)
+- [x] formalize `Theta_chi` and the twisted Littlewood theorem at the true abscissa
+- [x] formalize the exact law `(D3)`, the GRH form `(D4)`, and the omega-plus law `(D4a)`
+- [ ] prove the GRH-value source unconditionally
+- [ ] Dirichlet GRH
+- [ ] RH
