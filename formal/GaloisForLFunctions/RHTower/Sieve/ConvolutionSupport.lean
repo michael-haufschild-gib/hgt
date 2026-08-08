@@ -15,11 +15,12 @@ noncomputable section
 namespace RHTower.Sieve
 open Complex Finset
 
-/-- **The support of a convolution of two finitely supported sequences.**  A nonzero coefficient of `a ⍟ b` at `k`
-forces a factorisation `k = de` with both factors in the support, so `k ≤ M²`. -/
-theorem convolution_mem_Icc_of_support {a b : ℕ → ℂ} {M : ℕ}
-    (ha : ∀ k : ℕ, a k ≠ 0 → k ∈ Finset.Icc 1 M) (hb : ∀ k : ℕ, b k ≠ 0 → k ∈ Finset.Icc 1 M)
-    {k : ℕ} (hk : (LSeries.convolution a b) k ≠ 0) : k ∈ Finset.Icc 1 (M * M) := by
+/-- **The support of a convolution, with independent bounds.**  A nonzero coefficient of `a ⍟ b` at `k`
+forces a factorisation `k = de` with `d` in the support of `a` and `e` in that of `b`, so a convolution of
+sequences supported in `[1, M]` and `[1, L]` is supported in `[1, ML]`. -/
+theorem convolution_mem_Icc_of_support_mul {a b : ℕ → ℂ} {M L : ℕ}
+    (ha : ∀ k : ℕ, a k ≠ 0 → k ∈ Finset.Icc 1 M) (hb : ∀ k : ℕ, b k ≠ 0 → k ∈ Finset.Icc 1 L)
+    {k : ℕ} (hk : (LSeries.convolution a b) k ≠ 0) : k ∈ Finset.Icc 1 (M * L) := by
   classical
   rw [LSeries.convolution_def] at hk
   obtain ⟨x, hx, hxne⟩ := Finset.exists_ne_zero_of_sum_ne_zero hk
@@ -42,6 +43,12 @@ theorem convolution_mem_Icc_of_support {a b : ℕ → ℂ} {M : ℕ}
     exact Nat.one_le_iff_ne_zero.2 (by omega)
   · rw [← hx.1]
     exact Nat.mul_le_mul h1.2 h2.2
+
+/-- The equal-bound case: a convolution of two sequences supported in `[1, M]` is supported in `[1, M²]`. -/
+theorem convolution_mem_Icc_of_support {a b : ℕ → ℂ} {M : ℕ}
+    (ha : ∀ k : ℕ, a k ≠ 0 → k ∈ Finset.Icc 1 M) (hb : ∀ k : ℕ, b k ≠ 0 → k ∈ Finset.Icc 1 M)
+    {k : ℕ} (hk : (LSeries.convolution a b) k ≠ 0) : k ∈ Finset.Icc 1 (M * M) :=
+  convolution_mem_Icc_of_support_mul ha hb hk
 
 /-- The convolution of two prime-supported sequences is supported on the products of two primes. -/
 theorem convolution_support_prime_mul {a b : ℕ → ℂ}

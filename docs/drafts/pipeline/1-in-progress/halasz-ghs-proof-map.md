@@ -2664,3 +2664,30 @@ Next brick: identify the Dirichlet polynomial of the triple convolution with the
 — for a *truncated* `f`, so that all three factors are finitely supported and the corpus's
 `DirichletTruncationError.norm_tsum_sub_sum_range_le` pays the tail — and feed the result into
 `norm_sum_Icc_sub_perron_integral_le`.
+
+## The triple convolution's partial sum, bounded
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TripleConvolutionPerronSum.lean`:
+
+- `norm_LSeries_line_le_l1` — a finitely supported Dirichlet series is bounded on a line by the damped
+  `ℓ¹` mass `∑_n ‖g_n‖n^{−σ}`; this is one way to supply the third factor's size.
+- `LSeries_convolution_triple_of_support` — for finitely supported factors,
+  `L(A ⍟ (B ⍟ g), w) = L(A,w)L(B,w)L(g,w)`, from `LSeries_convolution'` twice with summability from
+  finite support.
+- `norm_sum_Icc_triple_le` — **the Perron step of GHS, unconditional**: for `A` supported on primes in
+  `[1, M_A]`, `B` on primes in `[1, M_B]`, `g` supported in `[1, M_g]`, `M_AM_BM_g ≤ N`, `σ ≥ 1`,
+  `t₀ ≥ 1`, coefficient bound `B_c` on the convolution and any pointwise bound `V` on `‖L(g,σ+it)‖`,
+
+  `‖∑_{n ≤ M_AM_BM_g} (A ⍟ (B ⍟ g))(n)‖
+     ≤ 2(N+1)B_c x^σ(1 + log(M_AM_BM_g))/(π t₀2^K) + (1/2π)(2·perronVerticalProductBound + low range)`.
+
+Also generalised: `ConvolutionSupport.convolution_mem_Icc_of_support_mul` now carries independent bounds
+(`[1,M] ⍟ [1,L] ⊆ [1,ML]`), with the equal-bound statement a one-line corollary — the three factors of
+the GHS convolution have three different lengths, and the product of the three is what the Perron cutoff
+must dominate.
+
+The Perron half of GHS step four is therefore complete and joined to the analytic half.  What is left is
+arithmetic, not analysis: choose `σ = 1 + 1/log N`, `t₀ ≥ 1`, `2^K ≍ N²`, the sieve pairs `(z_A, Y_A)`,
+`(z_B, Y_B)` per the earlier accounting, bound `B_c` by `(log n)^4/(log 2)^3` (already in
+`GhsCoefficients.norm_ghsTriple_le`), and bound `V` — the only place where a saving on the multiplicative
+function's Dirichlet series can enter.

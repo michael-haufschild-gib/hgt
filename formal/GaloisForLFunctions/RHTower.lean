@@ -6240,3 +6240,4 @@ import GaloisForLFunctions.RHTower.DeningerThreeTermHodgeDataBridge
 import GaloisForLFunctions.RHTower.Sieve.PerronPrimeSumBound
 import GaloisForLFunctions.RHTower.Sieve.PerronVerticalTripleBound
 import GaloisForLFunctions.RHTower.XiSpectralSupportCriterion
+import GaloisForLFunctions.RHTower.Sieve.TripleConvolutionPerronSum
