@@ -2866,3 +2866,36 @@ restriction on `f` but a choice of frame: given a close frequency `τ`, apply th
 `twistSeq f τ`, whose distance from the trivial character is what `f`'s distance from `n^{iτ}` was, and
 transfer back.  All three properties the master bound demands of its input (`g 1 = 1`, complete
 multiplicativity, `‖g‖ ≤ 1`) are supplied by the lemmas above.
+
+## The first concrete instance: the Liouville function
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LiouvilleChain.lean`:
+
+- `liouvilleC n = (−1)^{Ω(n)}` (zero at `0`), with `liouvilleC_one`, `norm_liouvilleC_le`,
+  `liouvilleC_prime` (`= −1` at every prime) and `liouvilleC_mul` — **completely** multiplicative, which
+  the Möbius function is not, so `λ` and not `μ` is the function the logarithmic recursion admits.
+- `exists_liouvilleC_mulDistSqPair_ge_uniform` — the corpus's `exists_mulDistSqPair_ge_uniform` is stated
+  for *any* sequence equal to `−1` on the primes up to `z`, so it applies to `λ` verbatim: no new
+  frequency analysis was needed, only the observation that the hypothesis is about prime values.
+- `exists_norm_sum_Icc_liouvilleC_mul_log_le` — **the whole chain, instantiated**: an unconditional bound
+  for `‖∑_{n ≤ N} λ(n)‖·log N` with every hypothesis discharged — complete multiplicativity by
+  `liouvilleC_mul`, the uniform distance by the zero-free strip, the analytic side by the sharp Perron
+  formula and the Selberg-sieve mean squares.  Only the parameters `N, z, K, σ, t₀` and the two sieve pairs
+  remain free.
+
+### The parameter balance, computed
+
+The distance available from the zero-free strip is `δ² ≥ log log z − 7 log log T − C`, valid once
+`log z ≳ (log T)^9`.  Two couplings then fight:
+
+* the damped size carries `exp(2(σ−1)(log z + log 4))`, so a large sieve level demands a small abscissa:
+  `(σ−1) log z ≲ 1`;
+* the damped size also carries `1 + 1/(σ−1)`, so a small abscissa is itself expensive.
+
+At `log z ≍ (log T)^9` and `(σ−1) ≍ (log N)^{−9}` the saving is `e^{−δ²} ≍ (log N)^{−2}` but the prefactor
+is `(log N)^9`; at `log z ≍ log N` the prefactor is `log N` but `δ² ≍ log log z − 7 log log T ≤ 0`.  So the
+zero-free-strip distance and the Euler damping at a fixed abscissa are *not* compatible at the scales the
+chain needs: this composition cannot yet beat the trivial bound, and the deficit is the assembled loss
+`(log N)^{5/4}`.  Getting below `log N` would make the first coupling work; the two arithmetic obstructions
+already recorded (the sieve level cap, and the outer weight's mass near `p = N`) are exactly what stands in
+the way.
