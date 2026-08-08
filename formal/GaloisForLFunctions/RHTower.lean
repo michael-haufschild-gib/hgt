@@ -4191,6 +4191,7 @@ import GaloisForLFunctions.RHTower.Sieve.PrimeFibre
 import GaloisForLFunctions.RHTower.Sieve.PrimeInterval
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogQuotientSum
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogSqLower
+import GaloisForLFunctions.RHTower.Sieve.PrimeLeakageEstimates
 import GaloisForLFunctions.RHTower.Sieve.PrimeLogWindowCount
 import GaloisForLFunctions.RHTower.Sieve.PrimeProfileExponentTransfer
 import GaloisForLFunctions.RHTower.Sieve.PrimeProfileIntegralBound
@@ -4202,6 +4203,7 @@ import GaloisForLFunctions.RHTower.Sieve.PrimePowerSum
 import GaloisForLFunctions.RHTower.Sieve.PrimePowerSupport
 import GaloisForLFunctions.RHTower.Sieve.PrimePowerWeightTail
 import GaloisForLFunctions.RHTower.Sieve.PrimeRangeSplit
+import GaloisForLFunctions.RHTower.Sieve.PrimeSumDominatedVanishing
 import GaloisForLFunctions.RHTower.Sieve.PrimeSigmaShift
 import GaloisForLFunctions.RHTower.Sieve.PrimeSupportedConvolutionBound
 import GaloisForLFunctions.RHTower.Sieve.PrimeTailBound
@@ -6277,3 +6279,4 @@ import GaloisForLFunctions.RHTower.Sieve.CesaroFiniteSum
 import GaloisForLFunctions.RHTower.Sieve.CesaroLogWeightBound
 import GaloisForLFunctions.RHTower.Sieve.CesaroDampedChain
 import GaloisForLFunctions.RHTower.Sieve.CesaroPartialSumBound
+import GaloisForLFunctions.RHTower.Sieve.PerronVerticalLogBound

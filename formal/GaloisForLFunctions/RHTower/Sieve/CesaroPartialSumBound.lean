@@ -49,7 +49,7 @@ theorem sum_Icc_mul_log_sub_eq {f : ℕ → ℂ} {N : ℕ} {x x' : ℝ} (hx : 0 
 /-- **The partial sum from the Cesàro route, with no Tauberian step.**  The logarithmically weighted
 bound is applied at two cutoffs and differenced. -/
 theorem norm_sum_Icc_le_cesaro_difference {f : ℕ → ℂ} (hbdd : ∀ n, ‖f n‖ ≤ 1) {N : ℕ}
-    (hN : 1 ≤ N) {V σ T x x' : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 1 ≤ T) (hV : 0 ≤ V)
+    (hN : 1 ≤ N) {V σ T x x' : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 2 ≤ T) (hV : 0 ≤ V)
     (hxN : (N : ℝ) ≤ x) (hxx' : x ≤ x')
     (hgV : ∀ t : ℝ, |t| ≤ T → ‖LSeries (truncSeq f N) ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V) :
     ‖∑ n ∈ Finset.Icc 1 N, f n‖ * Real.log (x' / x)
@@ -82,7 +82,7 @@ theorem norm_sum_Icc_le_cesaro_difference {f : ℕ → ℂ} (hbdd : ∀ n, ‖f 
 /-- **The partial sum with the damped factor.**  The distance enters only through `dampedSize`. -/
 theorem norm_sum_Icc_le_cesaro_damped {f : ℕ → ℂ} (hf1 : f 1 = 1)
     (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
-    {N : ℕ} (hN : 1 ≤ N) {σ T δ x x' : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2) (hT : 1 ≤ T) (hδ : 0 ≤ δ)
+    {N : ℕ} (hN : 1 ≤ N) {σ T δ x x' : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2) (hT : 2 ≤ T) (hδ : 0 ≤ δ)
     {z : ℕ} (hz : 1 ≤ z) (hxN : (N : ℝ) ≤ x) (hxx' : x ≤ x')
     (hunif : ∀ t : ℝ, |t| ≤ T →
       δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z))) :
@@ -100,7 +100,7 @@ strip, the analytic side by the integrable second-order decay of `x^s/s²`, and 
 logarithmic weight to the partial sum by differencing the cutoff.  No sieve, no mean square, no dyadic
 split, no recursion, and no Tauberian step. -/
 theorem exists_norm_sum_Icc_liouvilleC_le_cesaro :
-    ∃ C : ℝ, ∀ (N z : ℕ) (σ T x x' : ℝ), 1 ≤ N → 3 ≤ z → 1 < σ → σ ≤ 2 → 1 ≤ T → 9 ≤ T →
+    ∃ C : ℝ, ∀ (N z : ℕ) (σ T x x' : ℝ), 1 ≤ N → 3 ≤ z → 1 < σ → σ ≤ 2 → 2 ≤ T → 9 ≤ T →
       (N : ℝ) ≤ x → x ≤ x' → 1 / Real.log z ≤ zetaLowerA / Real.log T ^ 9 →
       ‖∑ n ∈ Finset.Icc 1 N, liouvilleC n‖ * Real.log (x' / x)
         ≤ ((∑ n ∈ Finset.Icc 1 N, cesaroError σ T (x / n))

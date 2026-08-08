@@ -27,7 +27,7 @@ def cesaroVertical (σ T y : ℝ) : ℂ :=
 
 /-- The explicit error of the truncated Cesàro Perron formula. -/
 def cesaroError (σ T y : ℝ) : ℝ :=
-  (4 / (Real.pi * σ) + 1 / T)
+  (4 * (1 + Real.log (T / σ)) / Real.pi + 1) / T
     + (4 / (Real.pi * T)) * (Real.log (Real.log 2) - Real.log (Real.log (1 + 1 / T)))
     + y ^ σ / (Real.pi * T * σ * Real.log 2)
     + 1 / (Real.pi * T)
@@ -63,7 +63,7 @@ theorem integral_cesaroTerm_eq {y σ T : ℝ} (a : ℂ) :
 
 /-- **The truncated Cesàro Perron formula at one frequency.**  The explicit error, obtained from the
 averaged form by adding back the pure second-order pole. -/
-theorem norm_cesaroVertical_sub_log_le {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 1 ≤ T)
+theorem norm_cesaroVertical_sub_log_le {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 2 ≤ T)
     {y : ℝ} (hy : 1 ≤ y) :
     ‖cesaroVertical σ T y - ((Real.log y : ℝ) : ℂ)‖ ≤ cesaroError σ T y := by
   have hT0 : (0 : ℝ) < T := by linarith
@@ -106,7 +106,7 @@ theorem norm_cesaroVertical_sub_log_le {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ
 
 /-- **The Cesàro Perron formula for a finite Dirichlet polynomial with support below the cutoff.** -/
 theorem norm_sum_Icc_mul_log_div_sub_cesaro_le {c : ℕ → ℂ} {M : ℕ} {x : ℝ} (hx : 0 < x)
-    (hxM : (M : ℝ) ≤ x) {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 1 ≤ T) :
+    (hxM : (M : ℝ) ≤ x) {σ T : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (hT : 2 ≤ T) :
     ‖(∑ n ∈ Finset.Icc 1 M, c n * ((Real.log (x / n) : ℝ) : ℂ))
         - ((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ t in (-T)..T,
             (∑ n ∈ Finset.Icc 1 M, c n * ((n : ℂ) ^ (-((σ : ℂ) + (t : ℝ) * I))))

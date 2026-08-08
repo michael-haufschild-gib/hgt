@@ -21,7 +21,7 @@ open Complex Finset
 /-- **The logarithmically weighted partial sum with the damped factor.** -/
 theorem norm_sum_Icc_mul_log_div_le_cesaro_damped {f : ℕ → ℂ} (hf1 : f 1 = 1)
     (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
-    {N : ℕ} (hN : 1 ≤ N) {σ T δ x : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2) (hT : 1 ≤ T) (hδ : 0 ≤ δ)
+    {N : ℕ} (hN : 1 ≤ N) {σ T δ x : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2) (hT : 2 ≤ T) (hδ : 0 ≤ δ)
     {z : ℕ} (hz : 1 ≤ z) (hxN : (N : ℝ) ≤ x)
     (hunif : ∀ t : ℝ, |t| ≤ T →
       δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z))) :
@@ -35,7 +35,7 @@ theorem norm_sum_Icc_mul_log_div_le_cesaro_damped {f : ℕ → ℂ} (hf1 : f 1 =
 is discharged: complete multiplicativity by `liouvilleC_mul`, the distance by the zero-free strip, and the
 analytic side by the integrable second-order decay of `x^s/s²`.  Only the parameters remain free. -/
 theorem exists_norm_sum_Icc_liouvilleC_mul_log_div_le_cesaro :
-    ∃ C : ℝ, ∀ (N z : ℕ) (σ T x : ℝ), 1 ≤ N → 3 ≤ z → 1 < σ → σ ≤ 2 → 1 ≤ T → 9 ≤ T →
+    ∃ C : ℝ, ∀ (N z : ℕ) (σ T x : ℝ), 1 ≤ N → 3 ≤ z → 1 < σ → σ ≤ 2 → 2 ≤ T → 9 ≤ T →
       (N : ℝ) ≤ x → 1 / Real.log z ≤ zetaLowerA / Real.log T ^ 9 →
       ‖∑ n ∈ Finset.Icc 1 N, truncSeq liouvilleC N n * ((Real.log (x / n) : ℝ) : ℂ)‖
         ≤ (∑ n ∈ Finset.Icc 1 N, cesaroError σ T (x / n))

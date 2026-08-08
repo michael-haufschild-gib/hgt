@@ -3538,3 +3538,39 @@ Two consequences worth recording.  First, the `1/σ` term (from `cesaro_piece_on
 sharpening the *only* obstruction left is the factor `1/(σ−1)` inside `dampedSize`: every route in this
 folder — mean square, pair, block, Cesàro — is capped at `(log N)e^{−m}` by it, and Halász's `(1+m)e^{−m}`
 must come from integrating the distance against the kernel rather than from a single uniform `m`.
+
+## The truncated Perron integral is logarithmic in the height, not linear
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronVerticalLogBound.lean`:
+
+- `inv_norm_line_le_inv_sigma`, `inv_norm_line_le_inv_abs` — `1/‖σ+it‖ ≤ 1/σ` everywhere and `≤ 1/|t|`
+  off the real axis (both are the corpus's kernel bounds at `x = 1`).
+- `integral_inv_norm_line_le`, `integral_symm_inv_norm_line_le` — splitting the range at `|t| = σ`:
+
+  `∫_{|t| ≤ T} dt/‖σ+it‖ ≤ 2(1 + log(T/σ))`.
+
+- `norm_perronVertical_le_log` — hence `‖perronVertical σ T y‖ ≤ y^σ(1 + log(T/σ))/π`, and
+  `norm_perronVerticalClamped_sub_one_le_log` in clamped form.
+
+The previous bound `y^σT/(πσ)` came from using the kernel's size at the real axis over the whole range;
+it is linear in the height where the truth is logarithmic.  That mattered in exactly one place, and
+decisively: the neighbourhood `[1, 1+1/T]` of the cutoff, where Perron's lemma degenerates and the trivial
+bound has to be used.  That interval has length `1/T`, so a bound of size `log T` there costs `log T/T`,
+while a bound of size `T/σ` costs `Θ(1/σ) = Θ(1)`.
+
+`cesaroError`'s first term is therefore now `(4(1 + log(T/σ))/π + 1)/T` in place of `4/(πσ) + 1/T`, and
+`cesaro_piece_one_le`, `norm_perron_cesaro_sub_log_le_explicit`, `norm_cesaroVertical_sub_log_le` and the
+whole downstream chain carry it (hypothesis `T ≥ 1` strengthened to `T ≥ 2`, which gives `σ ≤ 2 ≤ T`).
+
+### The accounting after the sharpening
+
+`∑_{n ≤ N} E(σ,T,x/n) ≍ N(1 + log T)/T + x^σ log N/(σT)`, so with `T = (log N)^{10}` and `x ≍ N` the whole
+error sum is `≍ N/(log N)^9` — negligible.  The bound is now
+
+`‖∑_{n ≤ N} f(n)‖/N ≲ 1/(log N)^9 + dampedSize σ δ z N`,
+
+so **every term except `dampedSize` is beaten**, and the single remaining obstruction is the factor
+`1 + 1/(σ−1) ≍ log N` inside `dampedSize`: with `e^{−δ²} ≍ 1/log N` from the strip the bound is `O(1)`
+where Halász gives `log log N/log N`.  That factor is sharp for a *pointwise* bound on `L(f,σ+it)`, so the
+last step must integrate the distance against the kernel — the distance growing away from the minimising
+frequency — rather than use one uniform `δ`.
