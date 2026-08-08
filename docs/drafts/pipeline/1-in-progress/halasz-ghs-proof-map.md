@@ -3311,3 +3311,52 @@ one-page analytic side.
 
 Both are named, self-contained, and independent of everything built so far; the vertical bound above is
 already unconditional and waits only on the first.
+
+## The Cesàro kernel is the logarithmic average of the sharp kernel — built
+
+The double pole never has to be handled by a residue theorem.  `∫_1^y u^{s−1}du = (y^s − 1)/s` turns the
+second-order kernel into a `du/u`-average of the first-order one, and the interchange is Fubini on a
+compact box.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroKernelPrimitives.lean`:
+
+- `line_ne_zero`, `hasDerivAt_inv_line`, `continuous_inv_sq_line` — `t ↦ i/(σ+it)` is a primitive of
+  `t ↦ 1/(σ+it)²`.
+- `integral_inv_sq_line_eq` and `norm_integral_inv_sq_line_le` —
+  `∫_{-T}^{T} dt/(σ+it)² = i/(σ+iT) − i/(σ−iT)`, of norm `≤ 2/T`.  The pure second-order pole
+  contributes only a truncation error, so `y^s/s²` and `(y^s − 1)/s²` differ by `O(1/T)`.
+- `hasDerivAt_cpow_div`, `integral_cpow_sub_one_eq` — `∫_1^y u^{s−1}du = y^s/s − 1/s`, from mathlib's
+  `hasDerivAt_ofReal_cpow_const'` at `r = s − 1`.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CesaroPerronBridge.lean`:
+
+- `interval_integral_swap_of_continuous_vec` — the complex-valued counterpart of the corpus's
+  `interval_integral_swap_of_continuous`.
+- `cesaroBox`, `continuous_cesaroBox` — the integrand with the cutoff variable clamped by `max u 1`, which
+  makes it continuous on the whole plane while agreeing with `u^{s−1}/s` on `u ≥ 1`; the clamp is what
+  lets the global-continuity Fubini be used with no `ContinuousOn` plumbing.
+- `integral_cesaro_eq_integral_perron` and `perron_cesaro_eq_average`:
+
+  `(1/2π)∫_{|t| ≤ T} (y^s − 1)/s² dt = ∫_1^y perronVertical σ T u · du/u`.
+
+An exact identity, unconditional, for every `σ > 0`, `T ≥ 0`, `y ≥ 1`.
+
+### What this buys
+
+Every estimate for the sharp-cutoff kernel now transfers to the Cesàro kernel by averaging, and the
+averaging is where the sharp kernel's worst feature disappears.  The corpus's
+`norm_perronVertical_sub_one_le` gives `‖perronVertical σ T u − 1‖ ≤ u^σ/(πT log u)`, whose factor
+`1/log u` blows up at `u = 1` — that blow-up is exactly why the sharp route needed the near-diagonal
+analysis and the factor `N`.  Under `∫_1^y … du/u` the same factor is *integrable* away from a
+neighbourhood of `1`, and on `[1, 1+1/T]` the trivial bound suffices, so
+
+`‖(1/2π)∫_{|t| ≤ T}(y^s − 1)/s²dt − log y‖ ≪ (1 + log T + y^σ)/T`,
+
+with no `1/log y` and no factor `N`.  Adding the `O(1/T)` of the pure pole gives the truncated Cesàro
+Perron formula.  Summed against coefficients bounded by `B` and supported in `[1,M]`, the truncation
+error is `≍ B x^σ(1 + log M)/T` — the near-diagonal error of the sharp route, obtained for free.
+
+The remaining step in this brick is that piecewise integration (`[1, 1+1/T]` trivially, `[1+1/T, 2]` and
+`[2, y]` against `norm_perronVertical_sub_one_le`), after which the Cesàro Perron formula is complete and
+the analytic side is already built (`integral_symm_norm_cesaro_le`).  Then only the Tauberian passage
+from `∫_1^N S(t)dt/t` to `S(N)` separates the chain from sharp Halász.
