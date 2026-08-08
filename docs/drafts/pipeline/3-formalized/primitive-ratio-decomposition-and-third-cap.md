@@ -82,3 +82,22 @@ a Möbius sum whose weight is indexed by the *unitary divisors* of `k`. That is 
 produces which is not a function of the coefficient moduli. Formalising the coprime-pair ↔
 (integer, unitary divisor) bijection is the concrete next step; whether the resulting weight is tractable
 is open, and it should be costed against `cost-work-from-what-lemmas-consume` before any Lean is written.
+
+## Addendum (same day): the collapse is not about `log`
+
+`HTGeometry/GeneralizedDirichletRatioForm.lean` puts the decomposition at the level of the corpus's
+*general* exact identity `GeneralizedDirichletMeanValue.genPoly_meanValue` (arbitrary real frequencies):
+
+* `genPoly_meanValue_ratio` — if the frequency map is **completely additive on the positive integers**,
+  `λ(dm) = λ(d) + λ(m)`, then the off-diagonal of the mean square over `[1,N]` is a sum over coprime pairs,
+  each carrying one oscillatory integral `oscInt(λ(n) − λ(m))` times the coefficient correlation along that
+  ratio;
+* `genPoly_meanValue_ratio_log` — the classical case `λ_n = log n`.
+
+So the two exact identities named by the triage are one identity: complete additivity of the frequency
+map is the whole hypothesis, and `log` plays no other role. This also draws the line the parent file's
+introduction describes: for `λ_n = n^{1/d}` the collapse fails, and it fails *precisely* because `n^{1/d}`
+is not completely additive. Both are axiom-clean.
+
+Reusable index lemmas added for this: `RHTower.Sieve.sum_offDiagPairs_eq_double` and
+`sum_offDiagPairs_eq_sum_ratio`.

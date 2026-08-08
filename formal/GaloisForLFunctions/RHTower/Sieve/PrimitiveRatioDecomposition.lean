@@ -119,6 +119,18 @@ theorem sum_offDiagPairs_eq_sum_primitiveTriples {M : Type*} [AddCommMonoid M] (
     rw [hmul, hmul']
 
 
+/-- The off-diagonal pairs as an iterated sum over `[1, N]`. -/
+theorem sum_offDiagPairs_eq_double {M : Type*} [AddCommMonoid M] (N : ℕ) (f : ℕ → ℕ → M) :
+    ∑ p ∈ offDiagPairs N, f p.1 p.2
+      = ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m, f m n := by
+  classical
+  rw [offDiagPairs, Finset.sum_filter, Finset.sum_product]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  rw [← Finset.sum_filter]
+  refine Finset.sum_congr ?_ (fun _ _ => rfl)
+  ext n
+  simp [Finset.mem_erase, ne_comm, and_comm]
+
 /-! ### From a `Fin N` off-diagonal double sum to the pairs -/
 
 /-- The off-diagonal of a `Fin N` double sum, as a sum over the product. -/
@@ -218,6 +230,17 @@ theorem sum_primitiveTriples_eq_sum_primitivePairScales {M : Type*} [AddCommMono
     rw [Finset.mem_coe, primitiveTriples, Finset.mem_filter, Finset.mem_product,
       Finset.mem_product]
     exact ⟨⟨ht.1.2, ht.1.1.1, ht.1.1.2⟩, ht.2⟩
+
+/-- **The off-diagonal in primitive-ratio form**, at the level of index pairs in `[1, N]`. -/
+theorem sum_offDiagPairs_eq_sum_ratio {M : Type*} [AddCommMonoid M] (N : ℕ) (f : ℕ → ℕ → M) :
+    ∑ p ∈ offDiagPairs N, f p.1 p.2
+      = ∑ q ∈ primitiveRatioPairs N, ∑ d ∈ ratioScales N q.1 q.2, f (d * q.1) (d * q.2) := by
+  classical
+  rw [sum_offDiagPairs_eq_sum_primitiveTriples,
+    sum_primitiveTriples_eq_sum_primitivePairScales (F := fun d m n => f (d * m) (d * n))]
+  exact Finset.sum_finset_product' (primitivePairScales N) (primitiveRatioPairs N)
+    (fun q => ratioScales N q.1 q.2) (mem_primitivePairScales_iff N)
+    (f := fun (q : ℕ × ℕ) (d : ℕ) => f (d * q.1) (d * q.2))
 
 /-- **The off-diagonal in primitive-ratio form.**  A `Fin N`-indexed off-diagonal double sum equals a
 sum over primitive ratios of a sum over the available scales. -/
