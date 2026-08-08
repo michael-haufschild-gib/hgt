@@ -54,6 +54,21 @@ theorem norm_taylorCoeff_le {f : ℂ → ℂ} (hf : Differentiable ℂ f) {R C :
   calc ‖iteratedDeriv n f 0‖ ≤ ((Nat.factorial n : ℕ) : ℝ) * C / R ^ n := h
     _ = ((Nat.factorial n : ℕ) : ℝ) * (C / R ^ n) := by ring
 
+/-- **Cauchy's estimate on a disc.**  The same bound for a function only analytic on `ball 0 R`
+and continuous on its closure. -/
+theorem norm_taylorCoeff_le' {f : ℂ → ℂ} {R C : ℝ} (hR : 0 < R)
+    (hf : DiffContOnCl ℂ f (ball (0 : ℂ) R)) (hC : ∀ z : ℂ, ‖z‖ = R → ‖f z‖ ≤ C) (n : ℕ) :
+    ‖taylorCoeff f n‖ ≤ C / R ^ n := by
+  have hsphere : ∀ z ∈ sphere (0 : ℂ) R, ‖f z‖ ≤ C := by
+    intro z hz
+    exact hC z (by simpa using mem_sphere_iff_norm.mp hz)
+  have h := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le (c := (0 : ℂ)) (C := C)
+    n hR hf hsphere
+  have hfac : (0 : ℝ) < ((Nat.factorial n : ℕ) : ℝ) := by exact_mod_cast n.factorial_pos
+  rw [taylorCoeff, norm_mul, norm_inv, Complex.norm_natCast, inv_mul_le_iff₀ hfac]
+  calc ‖iteratedDeriv n f 0‖ ≤ ((Nat.factorial n : ℕ) : ℝ) * C / R ^ n := h
+    _ = ((Nat.factorial n : ℕ) : ℝ) * (C / R ^ n) := by ring
+
 /-! ## Order-two coefficient bounds -/
 
 /-- The coefficient bound of an entire function of order two makes every power series value
