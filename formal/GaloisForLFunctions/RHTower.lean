@@ -6328,3 +6328,4 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusPairDamping
 import GaloisForLFunctions.RHTower.Sieve.MoebiusFejerDistance
 import GaloisForLFunctions.RHTower.Sieve.LiouvilleCesaroUnconditional
 import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicTrivialCap
+import GaloisForLFunctions.RHTower.Sieve.CoefficientFreeCap
