@@ -12,9 +12,12 @@ and hence
 
 `‖∫_0^T |F|² - T ∑_n |a_n|²‖ ≤ ∑_m ∑_{n ≠ m} |a_m| |a_n| · 2/|log(m/n)|`.
 
-This is the mean value theorem for Dirichlet polynomials reduced to a single inequality: the entire
-content still missing is a bound for the right-hand side, which is a Hilbert inequality for the
-frequencies `log n`.
+This is the mean value theorem for Dirichlet polynomials reduced to a single inequality.  Bounding the
+right-hand side term by term charges the largest frequency gap to every coefficient, which costs the
+factor `N(1 + log N)` of `DirichletIntegralMeanValue.lean`.  The `n`-weighted form
+`∫_{|t| ≤ T}|F|² ≤ 5πe∑_m (m+1)|a_m|² + (5π/2)T∑_m |a_m|²` is
+`DirichletPolyAffineMeanSquare.integral_Icc_normSq_dirPoly_le_affine`, obtained by reading `F` as a
+Dirichlet series with abscissa `0` and applying the almost-diagonal mean value theorem.
 -/
 
 namespace RHTower.Sieve

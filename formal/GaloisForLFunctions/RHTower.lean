@@ -6316,3 +6316,4 @@ import GaloisForLFunctions.RHTower.Sieve.CesaroWeightedL1
 import GaloisForLFunctions.RHTower.Sieve.CesaroDyadicMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.CesaroExplicitChain
 import GaloisForLFunctions.RHTower.Sieve.MoebiusModulusFirstNoGo
+import GaloisForLFunctions.RHTower.Sieve.DirichletPolyAffineMeanSquare
