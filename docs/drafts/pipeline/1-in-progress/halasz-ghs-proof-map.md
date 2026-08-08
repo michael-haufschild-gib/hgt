@@ -3044,3 +3044,42 @@ remains between this and the sharp form is arithmetic only — evaluating `block
 `∑_{p ≤ N/2}(log p/log(N/p))²/p ≍ log N`, `∑_{q ≤ M}(log q)²/q ≍ (log M)²`, `∑_p (log p)²p^{−2σ} = O(1)`,
 `ℓ¹(ghsOuter) ≍ log log N`, `ℓ¹(ghsInner) ≍ log M`), the restriction of the outer weight to `p ≤ √N`
 with GHS's induction on the discarded range, and the exceptional-frequency composition.
+
+## Correction: the per-block level is exactly neutral
+
+The claim recorded above — that one sieve level per dyadic block lifts the level cap and turns
+`√(Q_AQ_B)` into a bounded loss — is **false**.  Minkowski over the blocks costs precisely the factor
+the per-block level gains.  The computation:
+
+* the inner prime weight `a_q = f(q)log q` has block mass
+  `mass_j = ∑_{q ∈ [2^j, 2^{j+1})} (log q)²q^{1−2σ} ≍ (j log 2)²·∑_{q ∈ B_j} q^{−1} ≍ j(log 2)²`,
+  since Mertens gives `∑_{q ∈ B_j} 1/q ≍ log((j+1)/j) ≍ 1/j`;
+* the admissible level in block `j` is `Y_j ≲ 2^j`, i.e. `log Y_j ≍ j log 2` — the count the sieve
+  error must stay under is the number of integers in the block's multiplicative window;
+* hence `Q_j = sieveMeanSquareConst(block j) ≍ mass_j/log Y_j ≍ log 2`, **bounded**, as expected;
+* but `blockMeanSquareConst = ∑_{j ≤ J} √Q_j ≍ J√(log 2)`, and the affine constant is its *square*:
+  `blockAffineConst ≍ J² log 2 ≍ (log M)²`.
+
+The global level, capped at `log Y = O(1)`, gives `Q ≍ mass/log Y ≍ (log M)²` — the same.  Both
+`mass_j` and `log Y_j` grow linearly in `j`, so the ratio is constant and Minkowski's `(∑√Q_j)² = J²Q̄`
+exactly cancels the gain against the global `∑_j mass_j = J·mass̄`.  A level `log Y_j ≍ j²` *would* give
+`(∑_j 1/√j)² ≍ J`, a genuine factor `log M`, but no level beyond `2^j` is admissible in a block of that
+size.
+
+What this rules out and what it does not.  The Lean layer built above is unaffected and strictly more
+general: `integral_symm_norm_perron_triple_affine_le` and the chain over it accept *any* affine mean
+square, so a better mean square substitutes with no further work.  What is ruled out is getting the
+improvement from the block decomposition of the *same* mean-square inequality.
+
+The remaining deficit, computed.  With `Q_A ≍ log N` (or `O(1)` if the outer weight is restricted to
+`p ≤ √N`), `Q_B ≍ (log N)²` and `σ = 1 + A/log N` — where `x^σ/(σ−1) ≍ eN log N/A` is minimal — the
+analytic term is `≍ N log N·√(Q_AQ_B)·e^{−δ²}`.  The target is `≲ N`, so one needs
+`e^{−δ²} ≲ 1/(log N·√(Q_AQ_B))`, that is `δ² ≥ 2 log log N` even in the best case `Q_A ≍ O(1)`.  The
+zero-free strip supplies only `δ² ≍ log log N`.  **The deficit is a factor `log N`, and it is intrinsic
+to the Montgomery–Vaughan/Selberg mean square of the inner prime weight**, whose `n`-weighted mass
+`∑_{q ≤ M}(log q)²/q ≍ (log M)²/2` is what produces `Q_B`.
+
+So the next device cannot be another arrangement of the mean square.  It has to be the large-values
+route — `RHTower.Sieve.integral_norm_LSeries_le_largeValues`, whose first moment involves only the
+number of cells and an `ℓ²` mass, with the trivial size of the integrand appearing nowhere — which is
+also where the sharp `(1+m)e^{−m}` shape of Halász's theorem comes from.
