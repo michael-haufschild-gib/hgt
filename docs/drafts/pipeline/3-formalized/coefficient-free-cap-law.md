@@ -128,6 +128,17 @@ an absolute constant:
 contributes `(k+1)log 2 + log 4`, the lower bound at `2^k` removes `k log 2 − 1 − 2·logSqTailConst`, and
 the `k log 2` cancels.
 
-That is the per-block input the tail sum needs: on the `k`-th block `1/(p log p) ≤ ((log p)/p)/(k log 2)²`,
-so the block bound converts `∑_p 1/(p log p)` into `∑_k 1/k²`. What remains is the assembly — covering
-`primesLE x` by the blocks and summing `1/k²` — which is bookkeeping over a `biUnion`, not a new estimate.
+That is the per-block input the tail sum needs, and the assembly is now done. Grouping the primes by
+`k = Nat.log 2 p` — a fibrewise decomposition, not a `biUnion`, so it is an identity rather than an
+inequality (`Finset.sum_fiberwise_of_maps_to`) — the fibre at `k` has `2^k ≤ p < 2^{k+1}`, hence
+`log p ≥ k log 2` and `1/(p log p) ≤ ((log p)/p)/(k log 2)²`. For `k ≥ 2` the fibre sits inside the dyadic
+block `(2^k, 2^{k+1}]`, because the endpoint `2^k` is not prime; for `k = 1` it sits inside `primesLE 4`,
+whose mass is at most `2 log 4`. Summing `1/k²` over `k ≤ Nat.log 2 x` with the corpus's
+`sum_inv_sq_le_two`:
+
+`∑_{p ≤ x} 1/(p log p) ≤ 2·max(mertensBlockConst, 2 log 4)/(log 2)²`
+
+(`PrimeInvLogTail.sum_prime_inv_mul_log_le`), uniformly in `x`. So the frequency-average error of
+`UniformDistanceAverage` is `O(1/T)` after all, and the average of the distance over `[0,T]` is
+`∑_{p ∈ P}1/p + O(1/T)`: the uniform distance is the prime mass up to an error that vanishes with the
+height, with no dependence on `z` at all.
