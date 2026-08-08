@@ -6320,3 +6320,4 @@ import GaloisForLFunctions.RHTower.Sieve.DirichletPolyAffineMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.GallagherAffineMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.PrimeAffineFirstMoment
 import GaloisForLFunctions.RHTower.Sieve.GhsMasterTrivialCap
+import GaloisForLFunctions.RHTower.Sieve.MoebiusPairDamping
