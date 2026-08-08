@@ -117,19 +117,20 @@ theorem hasDerivAt_entireOfCoeffs {a : ℕ → ℂ} {c : ℝ}
       mul_le_mul han hy1 (by positivity) (by positivity)
     have hkey : (Real.exp E / R ^ n) * r ^ (n - 1) = Real.exp E / r * (1 / 2) ^ n := by
       have hn1 : r ^ n = r ^ (n - 1) * r := by
-        rw [← pow_succ, Nat.succ_pred_eq_of_pos hn]
+        rw [← pow_succ]
+        congr 1
+        omega
       have hRn : R ^ n = 2 ^ n * r ^ n := by rw [hRdef, mul_pow]
       have hrne : r ^ (n - 1) ≠ 0 := by positivity
       rw [hRn, hn1, div_pow, one_pow]
       field_simp
-      ring
     calc (n : ℝ) * ‖a n‖ * ‖y‖ ^ (n - 1) = (n : ℝ) * (‖a n‖ * ‖y‖ ^ (n - 1)) := by ring
       _ ≤ (n : ℝ) * (Real.exp E / r * (1 / 2) ^ n) :=
           mul_le_mul_of_nonneg_left (hmul.trans_eq hkey) (Nat.cast_nonneg n)
       _ = Real.exp E / r * ((n : ℝ) * (1 / 2) ^ n) := by ring
   have hz0 : z ∈ ball (0 : ℂ) r := by rwa [mem_ball_zero_iff]
   exact hasDerivAt_tsum_of_isPreconnected hu isOpen_ball (convex_ball 0 r).isPreconnected
-    hterm hbound hz0 (summable_of_orderTwo_bound h 0) hz0
+    hterm hbound hz0 (summable_of_orderTwo_bound h z) hz0
 
 theorem differentiable_entireOfCoeffs {a : ℕ → ℂ} {c : ℝ}
     (h : ∀ R : ℝ, 0 < R → ∀ n, ‖a n‖ ≤ Real.exp (R ^ 2 * c / 2) / R ^ n) :
