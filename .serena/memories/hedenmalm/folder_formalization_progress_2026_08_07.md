@@ -1835,3 +1835,16 @@ two-prime frame card) applied to the divisor of `(z - c)^d` — `d` at `c` and `
 Left for the counting Hurwitz: the several-zero case (for the block determinants, whose Schur
 product factors explicitly) and `∮ f_n'/f_n -> ∮ f'/f`, needing uniform convergence of `f_n` *and*
 `f_n'` on the circle plus `f != 0` there.
+
+### 2026-08-08 — the block determinant's logarithmic derivative
+
+`HTGeometry/FiniteDeterminantArgumentPrinciple.lean`: `logDeriv_schurFactor`
+(`logDeriv ((1 + w t) e^(-w t)) = t/(1 + z t) - t`), **`logDeriv_finiteDet2`** (the sum over the
+Schur diagonal), `circleIntegral_const_eq_zero`, and **`circleIntegral_schurFactor_inside`** /
+**`circleIntegral_schurFactor_outside`**: each factor contributes `2 pi I` exactly when `-1/t_i`
+lies inside the circle, and `0` otherwise, because `t/(1 + z t) = (z - (-1/t))⁻¹`.
+
+Lean traps recorded: `logDeriv_mul` and `logDeriv_prod` both mis-unify unless `f`, `g`, `x` are
+given by name; and `logDeriv_prod`'s left side elaborates to the **beta-reduced**
+`logDeriv (fun x => prod ... x)`, so a calc step must be written in that form, not as
+`logDeriv (prod of lambdas)`.
