@@ -2507,3 +2507,25 @@ corpus's prime-sieve mean square (`TruncatedPrimeSieveMeanSquare.integral_Icc_no
 has exactly this shape, its `Q` being `≍ ∑_n n‖a_n n^{−σ}‖²/log Y` and its `κ` the additive
 `(5/4)·2π·(selbergFibreError + z)·∑‖a_n n^{−σ}‖²`, so the composite applies to it directly with
 `C = x^σ` — the constant of the sharp Perron kernel.
+
+## Raising the height is cheaper than sharpening the separation
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PerronTruncationError.lean`:
+
+- `one_sub_inv_le_log` — `log y ≥ 1 − 1/y`, the reflection of `log y ≤ y − 1` at `1/y`.
+- `inv_le_abs_log_div_half_integer` — `|log((N+1/2)/n)| ≥ 1/(2N+2)` for every integer `n ≥ 1`: below
+  the cutoff `1 − n/x ≥ (1/2)/x`, above it `1 − x/n ≥ (1/2)/(N+1)`.
+- `perron_truncation_error_le` — with `‖c_n‖ ≤ B` and support in `[1, M]`,
+  `∑_n ‖c_n‖(x/n)^σ/(πT|log(x/n)|) ≤ 2(N+1)·B·x^σ·(1 + log M)/(πT)`, using
+  `(x/n)^σ ≤ x^σ/n` for `σ ≥ 1` and `HarmonicLogBound.sum_Icc_one_div_le_one_add_log`.
+- `filter_lt_half_integer` — the cutoff at `N + 1/2` selects exactly `Icc 1 (min M N)`.
+- `norm_sum_Icc_sub_perron_integral_le` — the assembled statement: for `M ≤ N`,
+
+  `‖∑_{n ≤ M} c_n − (1/2π)∫_{−T}^{T} D(σ+it)·x^{σ+it}/(σ+it) dt‖ ≤ 2(N+1)B x^σ(1 + log M)/(πT)`.
+
+The accounting that chose this shape.  At `T = N` the error above would be `≍ B x^σ log M`, of the same
+size as the main term, so a truncation at `T = N` demands the near-diagonal harmonic analysis
+`1/|log(x/n)| ≤ x/(x−n)`.  At `T = N²` the crude uniform separation already gives
+`≍ B x^{σ−1}(1 + log M)`, polylogarithmic when `B` is; and the height enters the main term only through
+the *number* of dyadic blocks, `M ≍ log₂ T`, so doubling `log T` costs one factor of two in a single
+additive term.  Cheap height therefore replaces a sharp near-diagonal estimate entirely.
