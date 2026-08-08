@@ -124,7 +124,7 @@ theorem hermitian_dyadic_parallelogram (x c z : ℂ) :
 /-- Even/odd generating-function split: `A(x) = E(x²) + x·O(x²)`, where `E` and `O` are the
 even- and odd-index Abel series.  The summand is kept folded so the even/odd tsum split unifies
 cheaply. -/
-private theorem generatingFunction_even_odd_split (a : ℕ → ℂ) (x : ℂ)
+theorem generatingFunction_even_odd_split (a : ℕ → ℂ) (x : ℂ)
     (hx : Summable (fun N : ℕ => ‖a N * x ^ N‖)) :
     (∑' N : ℕ, a N * x ^ N)
       = (∑' q : ℕ, a (2 * q) * (x ^ 2) ^ q)

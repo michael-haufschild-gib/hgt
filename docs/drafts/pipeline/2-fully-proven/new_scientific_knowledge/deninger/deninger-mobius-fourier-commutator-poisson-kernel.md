@@ -559,15 +559,17 @@ The source-to-boundary identification part is now closed on paper by
 a strict PNT endpoint, its forced physical/Fourier connection difference satisfies an unsquared
 covariant Green--Stokes law, and its endpoint Gamma/co-Poisson boundary is exactly `(4)`.
 
-First open theorem is correspondingly narrower still:
+First open source producer is correspondingly narrower still:
 
-**MOBIUS-FOURIER-COMMUTATOR-GREEN-STOKES-IDENTIFICATION**
+**`DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`**
 
-> Prove from independent arithmetic incidence that the already-resolved canonical prime-2/prime-3
-> Green boundary is carried by that strict source differential into
-> \(\ker\mathfrak S_\mu=Z(H_\cap)\), while retaining both prime labels and the leading Xi jet.
+> Construct from rational-Witt/Milnor incidence the relevant-complex chain map into
+> \(\ker\mathfrak S_\mu=Z(H_\cap)\), and identify its boundary value coefficient-faithfully with
+> the already-resolved singular Gamma/Calderón Green transport.
 
-Only after that identification may one polarize and prove closability with radical precisely
+Its fixed prime-2/prime-3 consequence is RH-equivalent endpoint test
+`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`. Only after source annihilator and comparison
+are constructed may one polarize and prove closability with radical precisely
 \(Z(H_\cap)\), raw arithmetic weight one, and no raw-Floquet bounded extension. Missing knowledge
 is no longer existence or set-theoretic specification of singular detector. It is source-to-Green
 chain-map equality and its non-diagonal polarization.
@@ -612,7 +614,8 @@ chain-map equality and its non-diagonal polarization.
   (34)--(41) proved
 - [x] source Green identification: strict Euler--Gamma/Möbius transgression, unsquared covariant
   identity, and boundary image `(4)` proved on paper
-- [ ] resolved Green gate: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
+- [ ] source annihilator gate: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
+- [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] 2 → 3 formalized: paused during Lean corpus refactor
 - [ ] 3 → 4 publication-ready
 

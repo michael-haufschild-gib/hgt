@@ -2020,6 +2020,7 @@ import GaloisForLFunctions.RHTower.EulerUnitTangent
 import GaloisForLFunctions.RHTower.EvenBoundedMultiplier
 import GaloisForLFunctions.RHTower.EvenHorizontalCauchyResidue
 import GaloisForLFunctions.RHTower.EvenIndexHermitianAbelBound
+import GaloisForLFunctions.RHTower.EvenIndexHermitianDyadicOrbit
 import GaloisForLFunctions.RHTower.EvenIndexHermitianOrderUpperBound
 import GaloisForLFunctions.RHTower.EvenIndexHermitianPoleRecurrence
 import GaloisForLFunctions.RHTower.EvenIndexHermitianRecurrence
@@ -6221,3 +6222,4 @@ import GaloisForLFunctions.RHTower.XiMassCriticalCenteredCosineCone
 import GaloisForLFunctions.RHTower.XiMassCriticalIntegerFace
 import GaloisForLFunctions.RHTower.XiMassCriticalPrimeCone
 import GaloisForLFunctions.RHTower.XiMassCriticalPrimeSquareTail
+import GaloisForLFunctions.RHTower.Sieve.PerronNearDiagonal

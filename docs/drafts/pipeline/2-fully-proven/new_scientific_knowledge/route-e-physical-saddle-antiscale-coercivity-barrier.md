@@ -374,3 +374,28 @@ this card proves their shell coordinate may not be integrated out first.
 - Positive survivor is not called a proof. Physical-shell-conditioned odd-cube transversality
   and physical Hall/co-moving flux remain unproved.
 - No Lean file was changed or built.
+
+## 7. Subsequent shell-conditioned closure
+
+The first positive survivor above is no longer open in its Gaussian-shell form.  Paper theorem
+**route-e-physical-shell-conditioned-parity-energy-regression-law.md** conditions literal Euler
+subsets by a positive Gaussian at
+
+\[
+ \log m_T=\log X+O(\sqrt{\log X\log Y})
+\]
+
+before parity scalarization and proves
+
+\[
+ \frac{|Z_Y^{\rm sh}(t_Y^*)|^2-|M_Y^{\rm sh}(t_Y^*)|^2}
+ {(P_Y^{\rm sh})^2}
+ =-X^{-\pi^2/(a^2(\log Y)^3)+o((\log Y)^{-3})}.
+\]
+
+Its exact parity--energy Schur complement is invariant under Gaussian energy conditioning, and
+Fourier inversion retains every odd grade.  Therefore
+**PHYSICAL-SHELL-CONDITIONED-GROWING-ODD-CUBE-TRANSVERSALITY** is discharged for this positive
+shell. Remaining analytic Route E core is source-faithful descent of conditioned determinant to
+literal co-moving ordinary-integer kernel, normalized Gibbs denominator, and
+friable/one-large-prime seam. Route E and RH remain open.

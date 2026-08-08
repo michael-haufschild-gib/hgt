@@ -726,3 +726,55 @@ Paper and unconditional Lean:
 `../3-formalized/new_scientific_knowledge/route-e-terminal-leg-multilinear-resonance.md` and
 `RHTower/RouteETerminalLegMultilinearResonance.lean`.  Targeted build `9722/9722`; axioms only
 `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-08-08 physical-shell parity--energy regression splice
+
+New paper theorem **route-e-physical-shell-conditioned-parity-energy-regression-law.md**
+constructs literal positive Gaussian shell before Euler parity scalarization.  Under independent
+Euler occupancies,
+
+\[
+ N=\sum B_p,\qquad E=\sum B_p\log p,
+\]
+
+its exact antiscale residual is parity--energy Schur complement
+
+\[
+ D_Y=\pi^2\left(\operatorname{Var}N-
+   \frac{\operatorname{Cov}(N,E)^2}{\operatorname{Var}E}\right)
+ =\frac{\pi^2}{a^3}\frac{Y^a}{(\log Y)^3}(1+o(1)).
+\]
+
+At regression frequency and physical center, shell-conditioned odd determinant satisfies
+
+\[
+ \frac{|Z_Y^{\rm sh}|^2-|M_Y^{\rm sh}|^2}{(P_Y^{\rm sh})^2}
+ =-X^{-\pi^2/(a^2(\log Y)^3)+o((\log Y)^{-3})}.
+\]
+
+This is an independent finite Euler source theorem, not equation (A10) rewritten.  It proves
+conditioned odd-cube transversality but does not control prime-insertion variables \(d_j\) in
+(A7), because Euler Bernoulli law and physical exponential Gibbs law are different measures.
+
+Simplest descent is impossible.  A positive mixture of raw Laplace kernels is decreasing in
+integer energy, whereas centered log shell increases below center.  Any signed shell
+decomposition leaves exact off-diagonal polarization
+
+\[
+ |Z|^2-|M|^2
+ =\iint\left(Z_y\overline{Z_z}-M_y\overline{M_z}\right)
+       d\alpha(y)d\overline{\alpha}(z).
+\]
+
+Therefore revised independent source target is
+**RECURRENCE-WEIGHTED-SHELL-COVARIANCE-ACCUMULATION**: derive from literal exponential Gibbs source
+a lower frame law for this cross-shell kernel under actual recurrence weights and prime-dilation
+intervals, before invoking (A7) or (A10).  Merely concluding
+
+\[
+ |W_k-A_{1:k}|\ll x^{1/2-o(1)}
+\]
+
+remains circular by existing theorem.
+
+Lean corpus was inspected read-only.  No Lean edit or build was performed for this splice.

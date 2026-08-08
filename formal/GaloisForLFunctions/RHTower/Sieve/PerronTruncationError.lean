@@ -16,11 +16,11 @@ support inside `[1, M]`, the Perron error is therefore
 
 the harmonic sum `∑_{n ≤ M} n^{-σ} ≤ 1 + log M` absorbing the whole support.
 
-The factor `N` this costs is bought back by the height: at `T = N²` the error is
-`O(B·x^{σ−1}(1 + log M))`, polylogarithmic for polylogarithmic coefficients, while the height enters
-the main term only through the *number* of dyadic blocks, `log₂ T`.  The near-diagonal harmonic
-analysis that a truncation at `T = N` would require is thus unnecessary: raising the height is
-cheaper than sharpening the separation.
+The factor `N` this costs can be bought back by the height — at `T = N²` the error is
+`O(B·x^{σ−1}(1 + log M))`, and the height enters the main term only through the *number* of dyadic
+blocks, `log₂ T` — but only when nothing else in the estimate degrades with `T`.  The sharper bound
+without that factor, obtained by replacing the uniform separation with the exact local behaviour of
+the logarithm, is `perron_truncation_error_near_le`.
 -/
 
 noncomputable section

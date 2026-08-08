@@ -113,5 +113,37 @@ theorem norm_sum_Icc_ghsTriple_damped_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
     zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
     (fun t ht => norm_LSeries_truncSeq_line_le_damped hf1 hmul hbdd hσ hz hδ hunif hL ht)
 
+/-- **The Perron step of the recursion with the damped third factor at the near-diagonal truncation
+error.**  The `e^{−δ²}` saving, carried through a truncation error whose only dependence on the length
+of the sum is logarithmic. -/
+theorem norm_sum_Icc_ghsTriple_damped_near_le {f : ℕ → ℂ} (hf1 : f 1 = 1)
+    (hmul : ∀ {m n : ℕ}, Nat.Coprime m n → f (m * n) = f m * f n) (hbdd : ∀ n, ‖f n‖ ≤ 1)
+    {N₀ M L N : ℕ} (hprod : 1 ≤ N₀ * (M * L)) (hL : 1 ≤ L)
+    {σ t₀ δ : ℝ} (hσ : 1 < σ) (ht₀ : 1 ≤ t₀) (hδ : 0 ≤ δ) {z : ℕ} (hz : 1 ≤ z) (K : ℕ)
+    (hunif : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ K →
+      δ ≤ Real.sqrt (mulDistSqPair f (charFn t) (Nat.primesLE z)))
+    (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
+    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) :
+    ‖∑ n ∈ Finset.Icc 1 (min (N₀ * (M * L)) N),
+        (LSeries.convolution (ghsOuter f N₀)
+          (LSeries.convolution (ghsInner f M) (truncSeq f L))) n‖
+      ≤ ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+              * (((N : ℝ) + 1 / 2)) ^ σ
+              * (5 * (1 + Real.log ((N₀ * (M * L) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
+              / (Real.pi * (t₀ * 2 ^ K))
+          + (1 / (2 * Real.pi))
+              * (2 * perronVerticalProductBound (ghsOuter f N₀) (ghsInner f M)
+                    (Finset.Icc 1 N₀) (Finset.Icc 1 M) σ ((N : ℝ) + 1 / 2) t₀
+                    (dampedSize σ δ z L) zA YA zB YB K
+                  + ((dampedSize σ δ z L) * ((N : ℝ) + 1 / 2) ^ σ / σ)
+                      * (Real.sqrt (sieveMeanSquareConst (ghsOuter f N₀) (Finset.Icc 1 N₀) σ YA
+                            + sieveMeanSquareRate (ghsOuter f N₀) (Finset.Icc 1 N₀) σ zA YA * t₀)
+                          * Real.sqrt (sieveMeanSquareConst (ghsInner f M) (Finset.Icc 1 M) σ YB
+                            + sieveMeanSquareRate (ghsInner f M) (Finset.Icc 1 M) σ zB YB
+                                * t₀))) :=
+  norm_sum_Icc_ghsTriple_of_bound_near_le hbdd hprod (dampedSize_nonneg hσ z L) hσ.le ht₀
+    zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
+    (fun _ ht => norm_LSeries_truncSeq_line_le_damped hf1 hmul hbdd hσ hz hδ hunif hL ht)
+
 end RHTower.Sieve
 end

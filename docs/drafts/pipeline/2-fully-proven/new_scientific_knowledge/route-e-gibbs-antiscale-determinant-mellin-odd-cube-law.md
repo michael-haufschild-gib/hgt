@@ -605,3 +605,29 @@ before Euler fusion:
 
 Without this conditioning, increasing batch capacity merely moves saddle away from product scale
 \(X\), while centering saddle restores explicit antiscale escape (41). Route E and RH remain open.
+
+## 14. Subsequent microcanonical closure
+
+Paper theorem **route-e-physical-shell-conditioned-parity-energy-regression-law.md** constructs
+required pre-scalarization shell explicitly.  Gaussian Fourier inversion changes equation (16)
+into
+
+\[
+ \prod_p(B_p(\tau)+U_p(\tau,t))-\prod_p(B_p(\tau)-U_p(\tau,t))
+ =2\sum_{|R|\ {\rm odd}}\prod_{p\in R}U_p
+   \prod_{p\notin R}B_p,
+\]
+
+so complete odd cube survives exactly with one common energy frequency.  Its finite Bernoulli
+form identifies alternating sign with \(e^{i\pi N}\), physical shell with energy \(E\), and sharp
+escape with parity--energy Schur complement
+
+\[
+ \pi^2\left(\operatorname{Var}N-
+ \frac{\operatorname{Cov}(N,E)^2}{\operatorname{Var}E}\right).
+\]
+
+At physical center, conditioned determinant is
+\(-X^{-\pi^2/(a^2(\log Y)^3)+o((\log Y)^{-3})}\).  Thus shell-conditioned transversality is
+proved; missing theorem is its source-faithful ordinary-integer/Gibbs-denominator/seam descent,
+not construction of conditioned odd cube.

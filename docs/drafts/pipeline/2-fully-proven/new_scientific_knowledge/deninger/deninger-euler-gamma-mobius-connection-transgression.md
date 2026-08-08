@@ -417,16 +417,17 @@ The following Route-L items are now constructed on paper:
 - unsquared covariant Green--Stokes identity `(10)`;
 - strict annihilation and exact kernel on every literal Meyer--Poisson boundary.
 
-The remaining first RH-bearing theorem is no longer construction of this differential or its
-analytic boundary image.  It is:
+The remaining first source producer is no longer construction of this differential or its
+analytic boundary image. It is `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`:
 
-> prove from independent arithmetic incidence that the already-resolved Green boundary is carried
-> into the literal kernel `(14)`; equivalently, prove the singular source-to-physical chain map on
-> the fixed prime-2/prime-3 Green boundary while retaining both labels and the leading Xi jet.
+> construct from rational-Witt/Milnor incidence a relevant-complex chain map whose source boundary
+> lands in literal kernel `(14)`, and identify its image coefficient-faithfully with the
+> already-resolved singular Gamma/Calderón Green transport.
 
-On that boundary, the physical value is \(g_2(s)-g_3(s)\), so this theorem is exactly
-`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`.  It must not be replaced by source exactness,
-Fourier oddness, target-cycle nilpotence, or a quotient declaring the Green vector regular.
+On fixed prime-2/prime-3 boundary, physical value is \(g_2(s)-g_3(s)\). Hence
+`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT` is sharp RH-equivalent endpoint test of the
+producer, not a substitute construction. Producer must not be replaced by source exactness,
+Fourier oddness, target-cycle nilpotence, or a quotient declaring Green vector regular.
 
 ## 8. Hostile audit and novelty boundary
 
@@ -463,7 +464,8 @@ Fourier oddness, target-cycle nilpotence, or a quotient declaring the Green vect
 - [x] 1 → 2 fully-proven: dependency-closed proof `(7)`--`(14)` and hostile audit complete
 - [ ] 2 → 3 formalized: paused during Lean corpus refactor
 - [ ] 3 → 4 publication-ready
-- [ ] RH-bearing successor: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
+- [ ] source successor: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
+- [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 
 ## Log
 

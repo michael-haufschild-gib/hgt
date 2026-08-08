@@ -170,5 +170,69 @@ theorem norm_sum_Icc_ghsTriple_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1
     zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
     (fun t _ => norm_LSeries_truncSeq_line_le hf L hσ t)
 
+/-- **The Perron step of the recursion at the near-diagonal truncation error, with the third factor's
+size free.**  The same inputs, with the truncation error freed of its factor `N`. -/
+theorem norm_sum_Icc_ghsTriple_of_bound_near_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {N₀ M L N : ℕ}
+    (hprod : 1 ≤ N₀ * (M * L))
+    {V σ t₀ : ℝ} (hV : 0 ≤ V) (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀)
+    (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
+    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (K : ℕ)
+    (hgV : ∀ t : ℝ, |t| ≤ t₀ * 2 ^ K →
+      ‖LSeries (truncSeq f L) ((σ : ℂ) + (t : ℝ) * I)‖ ≤ V) :
+    ‖∑ n ∈ Finset.Icc 1 (min (N₀ * (M * L)) N),
+        (LSeries.convolution (ghsOuter f N₀)
+          (LSeries.convolution (ghsInner f M) (truncSeq f L))) n‖
+      ≤ ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+              * (((N : ℝ) + 1 / 2)) ^ σ
+              * (5 * (1 + Real.log ((N₀ * (M * L) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
+              / (Real.pi * (t₀ * 2 ^ K))
+          + (1 / (2 * Real.pi))
+              * (2 * perronVerticalProductBound (ghsOuter f N₀) (ghsInner f M)
+                    (Finset.Icc 1 N₀) (Finset.Icc 1 M) σ ((N : ℝ) + 1 / 2) t₀ V
+                    zA YA zB YB K
+                  + (V * ((N : ℝ) + 1 / 2) ^ σ / σ)
+                      * (Real.sqrt (sieveMeanSquareConst (ghsOuter f N₀) (Finset.Icc 1 N₀) σ YA
+                            + sieveMeanSquareRate (ghsOuter f N₀) (Finset.Icc 1 N₀) σ zA YA * t₀)
+                          * Real.sqrt (sieveMeanSquareConst (ghsInner f M) (Finset.Icc 1 M) σ YB
+                            + sieveMeanSquareRate (ghsInner f M) (Finset.Icc 1 M) σ zB YB
+                                * t₀))) :=
+  norm_sum_Icc_triple_near_le (A := ghsOuter f N₀) (B := ghsInner f M) (g := truncSeq f L)
+    (fun _ hn => ghsOuter_mem_Icc hn) (fun _ _ hn => ghsOuter_support hn)
+    (fun _ hn => ghsInner_mem_Icc hn) (fun _ _ hn => ghsInner_support hn)
+    (fun _ hn => truncSeq_support hn)
+    (norm_ghsTriple_trunc_le_uniform hf hprod) hV hσ ht₀
+    zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K hgV
+
+/-- **The Perron step at the near-diagonal error with the third factor at its `ℓ¹` size.** -/
+theorem norm_sum_Icc_ghsTriple_near_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {N₀ M L N : ℕ}
+    (hprod : 1 ≤ N₀ * (M * L))
+    {σ t₀ : ℝ} (hσ : 1 ≤ σ) (ht₀ : 1 ≤ t₀)
+    (zA YA zB YB : ℕ) (hYA : 1 ≤ YA) (hYzA : YA ≤ zA) (hzA : 2 ≤ zA) (hlogA : 0 < Real.log YA)
+    (hYB : 1 ≤ YB) (hYzB : YB ≤ zB) (hzB : 2 ≤ zB) (hlogB : 0 < Real.log YB) (K : ℕ) :
+    ‖∑ n ∈ Finset.Icc 1 (min (N₀ * (M * L)) N),
+        (LSeries.convolution (ghsOuter f N₀)
+          (LSeries.convolution (ghsInner f M) (truncSeq f L))) n‖
+      ≤ ((Real.log ((N₀ * (M * L) : ℕ) : ℝ)) ^ 4 / (Real.log 2) ^ 3)
+              * (((N : ℝ) + 1 / 2)) ^ σ
+              * (5 * (1 + Real.log ((N₀ * (M * L) : ℕ) : ℝ)) + 4 * (1 + Real.log N))
+              / (Real.pi * (t₀ * 2 ^ K))
+          + (1 / (2 * Real.pi))
+              * (2 * perronVerticalProductBound (ghsOuter f N₀) (ghsInner f M)
+                    (Finset.Icc 1 N₀) (Finset.Icc 1 M) σ ((N : ℝ) + 1 / 2) t₀ (1 + Real.log L)
+                    zA YA zB YB K
+                  + ((1 + Real.log L) * ((N : ℝ) + 1 / 2) ^ σ / σ)
+                      * (Real.sqrt (sieveMeanSquareConst (ghsOuter f N₀) (Finset.Icc 1 N₀) σ YA
+                            + sieveMeanSquareRate (ghsOuter f N₀) (Finset.Icc 1 N₀) σ zA YA * t₀)
+                          * Real.sqrt (sieveMeanSquareConst (ghsInner f M) (Finset.Icc 1 M) σ YB
+                            + sieveMeanSquareRate (ghsInner f M) (Finset.Icc 1 M) σ zB YB
+                                * t₀))) := by
+  have hL0 : (0 : ℝ) ≤ Real.log L := by
+    rcases Nat.eq_zero_or_pos L with rfl | hL
+    · simp
+    · exact Real.log_nonneg (by exact_mod_cast hL)
+  exact norm_sum_Icc_ghsTriple_of_bound_near_le hf hprod (by linarith) hσ ht₀
+    zA YA zB YB hYA hYzA hzA hlogA hYB hYzB hzB hlogB K
+    (fun t _ => norm_LSeries_truncSeq_line_le hf L hσ t)
+
 end RHTower.Sieve
 end

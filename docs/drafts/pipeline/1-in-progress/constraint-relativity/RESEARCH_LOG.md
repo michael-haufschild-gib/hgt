@@ -389,3 +389,178 @@ off-line placement has noncompact radial drift. This is currently a geometric re
 selection and not RH. Research target: determine whether the literal arithmetic cyclic source
 forces its physical landing to descend from the recurrent phase base rather than an arbitrary
 radial extension. If not, retire the physical interpretation.
+
+## 2026-08-08 — autogenic priority collision and three zero-promotion theorems
+
+Wider foundational corpus already contains event-driven type promotion, dynamic separability,
+cross-history recognizers, autogenic monoidal geometry, “future is a rule,” and recursion
+
+\[
+ \mathcal L_{\alpha+1}
+ \simeq
+ \mathsf{Gen}^+_{\mathcal L_\alpha}(\mathsf{Ob}_\alpha).
+\]
+
+Therefore “laws change” is not new even internally. First task is distinguishing genuine theory
+change from richer coordinates inside one fixed theory.
+
+Three exact no-promotion results now compose:
+
+1. deeper words in a fixed action never kill old freedom;
+2. an injective feature encoding with transported operations is clone-conjugate to source;
+3. adjoining every fixed-action defect `T^*f-f` equals minimal invariant orbit algebra and
+   stabilizes after one successor.
+
+Last result follows because `T^*f-f` and `T^*f` generate same algebra over one containing `f`.
+Consequently corpus prime crossing-time/reset-and-carry construction is an informationally
+complete source chart and canonical face resolution, not proved birth of an operation type. Any
+genuine successor must prove non-definability from old clone, non-Morita-triviality, presentation
+invariance, and no surplus.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/fixed-transformation-defect-closure-no-promotion.md`.
+
+## 2026-08-08 — exactness is a support shadow, not a selector
+
+For physical two-leg model
+
+\[
+ D=c(\delta-1)E_{21},
+ \qquad
+ \Gamma=[D,T_\delta D],
+\]
+
+one has
+
+\[
+ \Gamma\Gamma^*=|c(\delta-1)|^2I,
+ \qquad
+ B_{\min}=0\ \text{at }\delta=1,
+ \quad B_{\min}=\mathbb C^2\ \text{otherwise}.
+\]
+
+Since literal arithmetic source residue is `a=c(delta-1)`, exact three-shadow tower is
+
+```text
+oriented arithmetic residue a
+  -> positive Hilbert shadow |a|^2
+  -> exact/topological support [a=0].
+```
+
+Phase and coorientation are lost at first arrow; magnitude is lost at second. All audited route
+walls factor through same scalar `kappa=2 Re(rho)-1`, so their product adds no independent
+constraint. Moduli of exact structures is rejected as producer. Useful theory must retain framed
+source section and transport before norm/support scalarization.
+
+## 2026-08-08 — law as jointly realizable deformation, not observer object
+
+Foundational census found one missing organ shared across pretemporal, observer-time, causal
+closure, Source--Observer Relativity, strict descent, anomaly fracture, Lawstack, and derived
+selection programmes:
+
+> characterize which synchronized changes of heterogeneous observers are deformations of one
+> source law.
+
+Static joint conservativity cannot do this. For `A=k[epsilon]/(epsilon^2)`, restriction
+`A-Mod_fin -> k-Vect_fin` is faithful, exact, and conservative but kills nonsplit class
+
+\[
+ 0\to k\to A\to k\to0,
+ \qquad
+ \operatorname{Ext}^1_A(k,k)\cong k,
+ \quad
+ \operatorname{Ext}^1_k(k,k)=0.
+\]
+
+Positive survivor: an `A`-module is `(V,N)` with `N^2=0`; with `F=ker N`, mixed cell
+
+\[
+ \theta_N:V/F\to F,
+ \qquad [v]\mapsto Nv
+\]
+
+is injective and reconstructs `N` exactly. Law information lives in synchronization of observer
+deformations, not marginal values.
+
+Founding Nomotopy conjecture now asks for heterogeneous deformation descent
+
+\[
+ \operatorname{Def}_{\mathsf{Law}}^{\rm fr}(L;A)
+ \simeq
+ \operatorname*{holim}_{\sigma\in N\operatorname{Obs}_{\rm src}(L)}
+ \operatorname{Def}^{\rm str,fil,pol}_\sigma(J_\sigma L;A),
+\]
+
+with identity/source-storing observers excluded. This risks collision with formal moduli,
+Tannaka, and derived descent. Candidate novelty requires one source-minimal heterogeneous observer
+nerve spanning incompatible analytic/arithmetic/operational topologies and proof source is not
+smuggled into observers.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/dual-number-static-observer-deformation-erasure-law.md`.
+
+## 2026-08-08 — uniform descent and holographic recurrence horizon
+
+Exact deformation descent still ignores conditioning. For source histories `S` with boundary map
+`q:S->B` and independent interior/law-history map `p:S->I`, define
+
+\[
+ \Lambda_{p\mid q}(\varepsilon)
+ =\sup_{d_B(qx,qy)\le\varepsilon}d_I(px,py).
+\]
+
+In a linear tangent model `J:E->B`,
+
+\[
+ \Lambda_{\mathrm{id}\mid J}(\varepsilon)
+ =\infty\ \text{if }\ker J\ne0,
+ \qquad
+ \Lambda_{\mathrm{id}\mid J}(\varepsilon)
+ ={\varepsilon\over\sigma_{\min}(J)}\ \text{if }J\text{ is injective}.
+\]
+
+Thus an observer family can remain exact and faithful at every finite stage while losing uniform
+descent as `sigma_min(J_N)->0`. This is a precise non-topological horizon.
+
+Finite recurrent phase example
+
+\[
+ q_n(k)=\exp\!\left({2\pi i k\over n+1/n}\right),
+ \qquad p_n(k)=k
+\]
+
+has injective `q_n` and trivial exact kernel at every `n`, but
+
+\[
+ |q_n(n)-q_n(0)|=2\sin{\pi\over n^2+1}\to0,
+ \qquad |p_n(n)-p_n(0)|=n,
+\]
+
+forcing decoder Lipschitz constant asymptotic at least `n^3/(2 pi)`. Long interior separation at
+increasingly accurate boundary recurrence therefore requires singular reconstruction even without
+an exact hidden sector. This is ordinary inverse-modulus mathematics until `p` is independently
+proved to measure a non-Morita law history.
+
+Paper proof:
+`../../2-fully-proven/constraint-relativity/cross-observer-lifting-modulus-and-singular-horizon-law.md`.
+
+## 2026-08-08 — current higher synthesis and RH target
+
+Current three-level picture:
+
+```text
+model fibre: carriers, spectra, positive forms, exact structures
+deformation atlas: jointly realizable heterogeneous observer changes
+uniform law geometry: conditioning, horizons, oriented one-port history
+```
+
+Arithmetic residue, positive energy, and exact wall are not three independent constraints. They
+are oriented source, norm, and support shadows. Quantum boundary recurrence and long interior are
+not separated by a hidden exact sector in general; divergent lifting condition can separate them.
+Hypertranscendence is conjecturally failure of finite-prolongation uniform deformation descent,
+not merely failure of finite representation.
+
+For RH, missing statement is now sharply phrased but not solved: prove from literal arithmetic
+source that a nonzero radial prime-character direction is not a jointly realizable deformation of
+source law. This must occur before divisor specialization. Defining deformation theory to exclude
+that direction would be RH in disguise.

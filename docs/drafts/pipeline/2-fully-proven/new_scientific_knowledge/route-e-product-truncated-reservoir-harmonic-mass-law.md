@@ -12,22 +12,22 @@
 
 ## 1. Exact theorem
 
-Let \({\cal P}\) be a nonempty finite prime set and put
+Let \({\mathcal P}\) be a nonempty finite prime set and put
 
 \[
- S=\sum_{p\in{cal P}}\frac1p,
+ S=\sum_{p\in{\mathcal P}}\frac1p,
  \qquad
- Q=\sum_{p\in{cal P}}\frac1{p^2},
+ Q=\sum_{p\in{\mathcal P}}\frac1{p^2},
  \qquad
- A=\sum_{p\in{cal P}}\frac{\log p}{p}.
+ A=\sum_{p\in{\mathcal P}}\frac{\log p}{p}.
 \tag{1}
 \]
 
 For \(b\ge1\) and \(T>1\), define exact-breadth product-truncated harmonic mass
 
 \[
- H_b(T;{cal P})
- =\sum_{\substack{R\subseteq{cal P}\\|R|=b\\\prod_{p\in R}p\le T}}
+ H_b(T;{\mathcal P})
+ =\sum_{\substack{R\subseteq{\mathcal P}\\|R|=b\\\prod_{p\in R}p\le T}}
    \prod_{p\in R}\frac1p.
 \tag{2}
 \]
@@ -43,7 +43,7 @@ Then unconditional finite inequality is
 
 \[
  \boxed{
- H_b(T;{cal P})
+ H_b(T;{\mathcal P})
  \ge \frac{S^b}{b!}
  \left(1-\eta_b-\frac{bA}{S\log T}\right).}
 \tag{4}
@@ -61,7 +61,7 @@ then
 
 \[
  \boxed{
- H_b(T;{cal P})
+ H_b(T;{\mathcal P})
  \ge(1-cR-o(1))\frac{S^b}{b!}.}
 \tag{6}
 \]
@@ -76,7 +76,7 @@ Expanding \(S^b\) counts ordered \(b\)-tuples of primes, with repetition.  Order
 all entries distinct contribute exactly
 
 \[
- b!\,e_b((1/p)_{p\in{cal P}}).
+ b!\,e_b((1/p)_{p\in{\mathcal P}}).
 \tag{7}
 \]
 
@@ -84,7 +84,7 @@ For a fixed pair of positions, repeated-coordinate contribution is \(QS^{b-2}\).
 over \(\binom b2\) pairs gives
 
 \[
- S^b-b!e_b((1/p)_{p\in{cal P}})
+ S^b-b!e_b((1/p)_{p\in{\mathcal P}})
  \le\binom b2QS^{b-2}.
 \tag{8}
 \]
@@ -93,7 +93,7 @@ Therefore
 
 \[
  \boxed{
- e_b((1/p)_{p\in{cal P}})
+ e_b((1/p)_{p\in{\mathcal P}})
  \ge(1-\eta_b)\frac{S^b}{b!}.}
 \tag{9}
 \]
@@ -105,7 +105,7 @@ This estimate is effective whenever prime weights have negligible second moment 
 Let
 
 \[
- M_b=\sum_{\substack{R\subseteq{cal P}\\|R|=b}}
+ M_b=\sum_{\substack{R\subseteq{\mathcal P}\\|R|=b}}
  \left(\prod_{p\in R}\frac1p\right)
  \log\left(\prod_{p\in R}p\right).
 \tag{10}
@@ -115,8 +115,8 @@ Mark one prime in each subset.  Then
 
 \[
  M_b
- =\sum_{p\in{cal P}}\frac{\log p}{p}
-   e_{b-1}((1/q)_{q\in{cal P}\setminus\{p\}})
+ =\sum_{p\in{\mathcal P}}\frac{\log p}{p}
+   e_{b-1}((1/q)_{q\in{\mathcal P}\setminus\{p\}})
  \le A\frac{S^{b-1}}{(b-1)!},
 \tag{11}
 \]
@@ -155,7 +155,7 @@ where
 Choose one fixed \(c\in(0,1/4)\) and
 
 \[
- {cal P}_X=\{p:W<p\le T^c\}.
+ {\mathcal P}_X=\{p:W<p\le T^c\}.
 \tag{15}
 \]
 
@@ -175,7 +175,7 @@ Uniformly for \(L/2\le b\le2L\), one has \(b/S_X\le3\) for large \(X\), and
 
 \[
  \boxed{
- H_b(T;{cal P}_X)
+ H_b(T;{\mathcal P}_X)
  \ge\left(\frac7{10}-o(1)\right)\frac{S_X^b}{b!}}
 \tag{17}
 \]
@@ -195,7 +195,7 @@ At normal breadth \(b=L+O(\sqrt L)\), Stirling and `(16)` give representative sc
 
 \[
  \boxed{
- H_b(T;{cal P}_X)
+ H_b(T;{\mathcal P}_X)
  \ge \frac{\log X}{g(L)L^{3/2}}
        \exp\!\left(-O\left(\frac{(b-L)^2+(\log L+\log g)^2}{L}\right)
              -O(1)\right).}
@@ -221,7 +221,7 @@ In particular, if token theorem supplies \(N_R\) choices in a physical interval 
 
 \[
  \frac{h_R}{t_RN_R}\,
- \frac{\text{local source-layer density}}{H_b(T;{cal P}_X)}.
+ \frac{\text{local source-layer density}}{H_b(T;{\mathcal P}_X)}.
 \tag{20}
 \]
 

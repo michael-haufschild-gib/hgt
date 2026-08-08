@@ -125,7 +125,7 @@ whereas for one constant \(c_{a,\lambda}>0\),
 \[
  \boxed{
  \frac{|Z_Y^{\rm sh}(t_Y^*)|^2}{(P_Y^{\rm sh})^2}
- \le \exp\!\left(-c_{a,\lambda}\frac{Y^a}{\ell}ight).}
+ \le \exp\!\left(-c_{a,\lambda}\frac{Y^a}{\ell}\right).}
 \tag{12}
 \]
 
@@ -571,3 +571,76 @@ addresses these four tasks.
 - It removes one previously open analytic premise and names remaining descent theorem without
   weakening it.
 - No literature search, computation, Lean edit, or Lean build was performed.
+
+## 11. Positive-Laplace descent wall and exact covariance survivor
+
+A final hostile loop rules out simplest descent.
+
+Let \(\nu\) be a nonnegative measure on \((0,\infty)\) for which
+
+\[
+ K_\nu(m)=\int_0^\infty e^{-mx}\,d\nu(x)
+\tag{45}
+\]
+
+is finite.  If \(0<m_1\le m_2\), then \(e^{-m_2x}\le e^{-m_1x}\) pointwise, hence
+
+\[
+ \boxed{K_\nu(m_2)\le K_\nu(m_1).}
+\tag{46}
+\]
+
+Thus every positive Laplace mixture is decreasing.  Centered Gaussian log shell
+
+\[
+ G_{X,\Delta}(m)
+ =\exp\!\left(-\frac{(\log m-\log X)^2}{2\Delta^2}\right)
+\tag{47}
+\]
+
+is strictly increasing on \(0<m<X\) and strictly decreasing on \(m>X\).  Therefore no nonzero
+positive measure \(\nu\) satisfies \(K_\nu=G_{X,\Delta}\), even on any interval crossing \(X\).
+More generally, no positive Laplace mixture can suppress low-product prefix while retaining
+interior physical shell.
+
+Consequently source-faithful descent from equation (9) cannot be a positivity-only Tauberian
+averaging of raw kernels \(e^{-mx}\).  It must use signed scale differences, logarithmic
+derivatives, or exact recurrence weights.
+
+This creates unavoidable cross-shell problem.  For any signed shell decomposition
+
+\[
+ Z=\int Z_y\,d\alpha(y),\qquad M=\int M_y\,d\alpha(y),
+\tag{48}
+\]
+
+one has exact polarization
+
+\[
+ |Z|^2-|M|^2
+ =\iint\left(Z_y\overline{Z_z}-M_y\overline{M_z}\right)
+       d\alpha(y)d\overline{\alpha}(z).
+\tag{49}
+\]
+
+Diagonal estimates \(y=z\), including equation (13), do not bound off-diagonal integral.
+Two-shell choice with opposite phases already cancels diagonal mass.  Required survivor is
+therefore exact:
+
+**RECURRENCE-WEIGHTED-SHELL-COVARIANCE-ACCUMULATION**:
+
+prove a cofinal lower frame bound for kernel in equation (49) under literal recurrence weights and
+prime-dilation intervals, while preserving alternating finite-volume signs and normalized Gibbs
+denominator.  This is source-faithful content of
+**SHELL-CONDITIONED-DETERMINANT-SOURCE-FAITHFUL-DESCENT**.
+
+### Loop F: positive shell averaging descends to Laplace current
+
+[CONJECTURE] Express Gaussian shell as positive mixture of raw Laplace scales and integrate
+conditioned determinant.
+
+[FALSIFIED] Monotonicity (46) excludes representation.  Even a signed representation leaves
+off-diagonal covariance (49), so shellwise lower bounds cannot be summed independently.
+
+Positive survivor (49) is not a restatement of RH: it is exact finite polarization identity
+specifying additional cross-scale theorem required before any Mertens conclusion.

@@ -5656,12 +5656,186 @@ taking its two-jet exterior square; telescoping first discards precisely the mix
 (24.148).
 
 The new exact frontier is a renormalized-cofinal Schur theorem: on the two Gaussian jet vectors,
-form finite unit-shift source Grams, subtract the universal rank-one logarithmic endpoint in
-(24.227), and prove that their exterior-square limit is nonnegative.  Its coefficient limit is
-forced to be `mathfrak A-mathfrak F_(1/2)` by (24.222)--(24.227).  This is the first avenue here
-that produces prime, Gamma, polar, and mixed channels from one actual completed-Xi source rather
-than asking for an exogenous conductor match.  Positivity of that finite-part exterior limit is
-not yet proved.
+form finite unit-shift source Grams, subtract the universal logarithmic endpoint in (24.227) at
+matrix level, and prove that their exterior-square limit is nonnegative.  Equations
+(24.222)--(24.227) force the prime and archimedean coefficient candidates, but do **not** by
+themselves justify Gaussian-test/finite-part interchange, identify the endpoint as the claimed
+rank-one jet row, or preserve positivity after subtraction.  Those are proof obligations, not
+consequences of telescoping.  This is nevertheless the first avenue here that produces prime,
+Gamma, polar, and mixed channels from one actual completed-Xi source rather than asking for an
+exogenous conductor match.
+
+### C43-AZ — finite unit ladder and exact endpoint leverage obstruction
+
+The cofinal inverse in (24.222) has a dependency-closed finite form.  For every `N>=0`,
+
+\[
+ d_1(n)\sum_{j=0}^{N}n^{-j-1/2}
+ =\Lambda(n)n^{-1/2}\bigl(1-n^{-N-1}\bigr).              \tag{24.228}
+\]
+
+Hence, writing `W(n)=widehat F_(Q,t)(log n)`,
+
+\[
+ \begin{aligned}
+ P^{[N]}_{Q,0}(t)
+ &:=\frac1\pi\sum_{n\ge2}d_1(n)W(n)
+       \sum_{j=0}^{N}n^{-j-1/2},\\
+ P_{Q,0}(t)-P^{[N]}_{Q,0}(t)
+ &=\frac1\pi\sum_{n\ge2}\Lambda(n)n^{-N-3/2}W(n).       \tag{24.229}
+ \end{aligned}
+\]
+
+Absolute Gaussian decay proves convergence without a prime number theorem.  Whenever the late
+positive-root filter makes `W(n)>=0`, the approximation is monotone from below and the remainder
+is positive.  Thus the prime face of the unit ladder has no limiting ambiguity.
+
+The archimedean finite part has a different obstruction.  If a finite raw source Gram is positive
+definite and its proposed endpoint counterterm is `L_N u u*`, then elementary congruence gives
+
+\[
+ \boxed{\quad
+ G_N-L_Nuu^*\succeq0
+ \quad\Longleftrightarrow\quad
+ L_N\,u^*G_N^{-1}u\le1.
+ \quad}                                                   \tag{24.230}
+\]
+
+Therefore positivity of the raw ladder does not survive finite-part subtraction for free.  The
+missing theorem is an endpoint **leverage bound**, together with the coefficient theorem saying
+that the logarithmic counterterm really is the required rank-one row on the chosen jet plane.
+This corrects the stronger informal claim after (24.227).  The new cofinal Ward corpus proves an
+analogous four-unit boundary-leverage law is equivalent to RH, so importing that target column
+would merely rename the theorem.
+
+### C43-BA — Gamma averaging identifies the shift-one Hankel cone with a rational mass cone
+
+Newest reciprocal-Hankel corpus gives a more useful completion of the unit-shift idea.  Put
+`w_q=alpha_q^2` and
+
+\[
+ \lambda_{y,q}:=\frac{\xiZeroCopyReciprocalSquare(q)}
+ {1+y\,\xiZeroCopyReciprocalSquare(q)}
+ =\frac1{w_q+y},
+ \qquad
+ \mu_m(y):=\sum_q\lambda_{y,q}^{m+1}.                    \tag{24.231}
+\]
+
+For `p(X)=sum_(i=0)^d c_iX^i`, cutoff `M>=0`, and
+
+\[
+ Q_{p,d,y}(W):=(W+y)^d p\bigl((W+y)^{-1}\bigr)
+ =\sum_{i=0}^dc_i(W+y)^{d-i},                            \tag{24.232}
+\]
+
+absolute divisor convergence and the Gamma integral give the exact transmutation
+
+\[
+ \boxed{\begin{aligned}
+ \sum_{i,j=0}^dc_ic_j\mu_{2M+i+j}(y)
+ &=\sum_q\lambda_{y,q}^{2M+1}p(\lambda_{y,q})^2\\
+ &=\sum_q\frac{Q_{p,d,y}(w_q)^2}
+                 {(w_q+y)^{2(M+d)+1}}\\
+ &=\frac1{(2M+2d)!}\int_0^\infty
+    t^{2M+2d}e^{-yt}\,\mathcal H_{Q_{p,d,y}}(t)\,dt.
+ \end{aligned}}                                         \tag{24.233}
+\]
+
+This is not an analogy: it is a positive Gamma average of the same polynomial-filtered mass heat
+trace from (24.114).  Corpus theorem
+`primeArchShiftedReciprocalHankelTailNonnegative_one_iff_riemannHypothesis`, at `M=0`, therefore
+becomes the new exact mass criterion
+
+\[
+ \boxed{\quad
+ \mathrm{RH}\ \Longleftrightarrow\
+ \forall d\ \forall Q\in\mathbb R[W],\ \deg Q\le d:\quad
+ \Re\frac1{(2d)!}\int_0^\infty t^{2d}e^{-t}
+        \mathcal H_Q(t)\,dt\ge0.
+ \quad}                                                   \tag{24.234}
+\]
+
+The polynomial maps in (24.232) are inverse on degree at most `d`:
+`p(X)=X^dQ(X^(-1)-y)`.  Thus no test has been discarded.
+
+On the explicit source line, Gamma averaging collapses the Gaussian family to one rational test:
+
+\[
+ \frac1{(2d)!}\int_0^\infty t^{2d}e^{-t}
+ Q(x^2)^2e^{-tx^2}\,dt
+ =\frac{Q(x^2)^2}{(1+x^2)^{2d+1}}
+ =\frac{p((1+x^2)^{-1})^2}{1+x^2}.                      \tag{24.235}
+\]
+
+Its only poles are at `+-i`; residue calculus gives Fourier decay `e^(-|L|)` times a polynomial.
+After the critical half-density, the prime series is therefore bounded by an absolutely
+convergent `Lambda(n)n^(-3/2) poly(log n)` series.  Criterion (24.234) removes the moving heat-time
+parameter and the PNT superresolution wall: every test now lives at the fixed absolute-Euler
+shift `s=3/2`, where corpus already identifies the zeroth moment with `xi'/xi(3/2)` and every
+higher entry with the explicit prime--Gamma negative-binomial tower.
+
+### C43-BB — averaging and polynomial filtering do not commute positively
+
+A hostile check explains why the filtered Gamma lift in (24.233) is load-bearing.  Expanding the
+same shifted Hankel quadratic against the *unfiltered* heat trace gives
+
+\[
+ \sum_{i,j}c_ic_j\mu_{2M+i+j}(y)
+ =\int_0^\infty e^{-yt}\mathcal H_1(t)K_{M,p}(t)\,dt,
+ \qquad
+ K_{M,p}(t)=\sum_{i,j}c_ic_j
+ \frac{t^{2M+i+j}}{(2M+i+j)!}.                           \tag{24.236}
+\]
+
+The divided-factorial matrix here is not positive semidefinite.  At `M=0` its first `2x2` block
+is
+
+\[
+ \begin{pmatrix}1&t\\t&t^2/2\end{pmatrix},
+ \qquad \det=-t^2/2<0,
+\]
+
+and `p(X)=1-X` gives `K_(0,p)(1)=-1/2`.  Consequently scalar heat positivity, or any positive
+mixture of unfiltered diagonal heat slices, cannot prove the shifted Hankel cone.  Formula
+(24.233) succeeds because it absorbs the whole polynomial into `Q` **before** Gamma averaging.
+This is the resolvent analogue of completing the unit-shift ladder before taking exterior square.
+
+### C43-BC — exact use and exact limit of the new Suzuki/Ward corpus
+
+Three new corpus results now meet at the same boundary.
+
+1. `XiShiftedReciprocalHankelTailCriterion` proves that the source-only shift-one Hankel tail is
+   equivalent to RH after every finite cutoff.  This validates (24.234) as a complete source
+   criterion, but supplies no unconditional sign.
+2. `SuzukiTwoJetShiftedHankelGate` identifies the first safe-shift minor exactly:
+
+   \[
+    \operatorname{SuzukiSlack}
+    =16\frac{\mu_0(1)\mu_2(1)-\mu_1(1)^2}{\mu_0(1)^2}.  \tag{24.237}
+   \]
+
+   `SuzukiCoalescingXiSourceRate` and `SuzukiCoalescingParityLocking` now give the exact first-jet
+   rate and endpoint selector.  But `SuzukiCoalescingBlaschkeFragmentation` proves arbitrary
+   Blaschke degree can hide in the same first jet, and the two-jet gate controls only this first
+   minor.  No finite-jet bootstrap to the cofinal Hankel cone is possible.
+3. `GammaSewnMobiusXiWardHardyNonexpansive` proves unconditional non-diagonal target-Hardy
+   contractivity.  The actual cofinal rank-one boundary lift, however, satisfies
+
+   \[
+    4G_P-r_Pr_P^*\succeq0\ \text{ for every finite packet }P
+    \quad\Longleftrightarrow\quad\mathrm{RH},             \tag{24.238}
+   \]
+
+   by `GammaSewnMobiusXiWardCofinalBoundaryLift`; the corpus also proves the fixed transport is
+   expansive in the physical source norm.  Target multiplier contractivity therefore cannot
+   supply the leverage inequality (24.230).
+
+The genuine new avenue is narrower than the finite-part exterior conjecture after (24.227): prove
+the Gamma-averaged rational inequalities (24.234) directly as unit-shift **source-side** Schur
+residuals, with finite prime ladder (24.228) and archimedean counterterm removed before Schur
+elimination.  This avoids pointwise late-time PNT precision and asks for one coefficient-exact
+source leverage theorem.  It remains open; identifying it with the existing Xi Ward boundary
+column would be circular by (24.238).
 
 **Novelty audit.**  `PrimeHeatBumpLocation` already contains the single-atom peak law, and the
 digamma asymptotic and Gaussian Fourier identities are classical.  Corpus and arXiv searches found
@@ -5677,9 +5851,11 @@ filters, the Gaussian two-jet/Floquet Gram bridge, the even-Gaussian Suzuki seco
 the two-time Laplace--Hankel atlas, reversal of radical-anchor coercivity under heat order, the
 Euler-square/Fisher clock identification, and the fixed-aperture nonconfluence theorem.  Synthesis
 also includes the bounded positive reweighting of literal Xi-shift valuation innovations and its
-endpoint-collapse obstruction, plus the log-convex/log-concave aperture-mixture separation.  It is
-also includes heat-diagonal stability of coherent `9/8` Gamma capacity.  The synthesis is
-(24.128)--(24.227), including unit-shift cofinal finite-part reconstruction, not any ingredient in
+endpoint-collapse obstruction, plus the log-convex/log-concave aperture-mixture separation.  It
+also includes heat-diagonal stability of coherent `9/8` Gamma capacity, the finite unit-ladder
+leverage obstruction, and Gamma-averaged equivalence between the shift-one reciprocal Hankel cone
+and the rational mass cone.  The synthesis is (24.128)--(24.238), including unit-shift cofinal
+finite-part reconstruction, not any ingredient in
 isolation.  Closest located arXiv neighbours concern de Bruijn--Newman deformation
 ([arXiv:1904.12438](https://arxiv.org/abs/1904.12438)), Jensen-polynomial hyperbolicity
 ([arXiv:1910.01227](https://arxiv.org/abs/1910.01227)), and a coefficient-side uniform Toeplitz
@@ -5694,11 +5870,16 @@ the universal rest mass and retains the squared divisor as Gaussian heat.  The f
 transport/type problem; the latter is a reflection-positivity problem.  Earlier failures were
 shadows of using the transport topology after its inverse had become exponentially ill-conditioned.
 The parabolic face is the first route here that simultaneously preserves the full Xi geometry and
-keeps the literal source absolutely convergent.  Its remaining obstacle is now sharply isolated:
-prove coherent completed curvature (24.148)--(24.150), equivalently the confluent Gram sign of
-`mathfrak B_H`, not another mass asymptotic or scalar trace estimate.  Resolvent compactification
-and heat order reverse which spectral atoms are coercive; treating them as the same topology was
-the hidden reason radical payment and positive scalar averaging both failed.
+keeps the literal source absolutely convergent.  Gamma averaging reveals that its heat and
+resolvent charts are related by a degree-dependent positive transform: degree `d` is sent to a
+Gamma clock concentrated at time of order `2d`, and the resulting rational test sits at the fixed
+absolute-Euler shift.  This transform kills the PNT superresolution problem but preserves the
+entire RH cone.  Earlier failures were shadows of collapsing polynomial filtering, time averaging,
+and endpoint subtraction in the wrong order.  Remaining obstacle can now be stated in either of
+two exactly equivalent source charts: coherent completed heat curvature (24.148)--(24.150), or
+unit-shift Gamma-averaged leverage (24.230), (24.234).  Resolvent compactification and heat order
+reverse which spectral atoms are coercive; treating them as the same topology was the hidden
+reason radical payment and positive scalar averaging both failed.
 
 **Higher principle.**  Three failures are one phenomenon.  Local Lipschitz control, ordinary floor
 averaging, and finite-aperture mean square each erase the primitive scalar mode in a topology whose

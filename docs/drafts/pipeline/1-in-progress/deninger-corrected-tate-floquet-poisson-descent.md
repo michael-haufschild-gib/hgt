@@ -14,9 +14,10 @@
   `DAC_DENINGER_EULER_GAMMA_MOBIUS_CONNECTION_TRANSGRESSION`: strict all-prime-first endpoint,
   physical/Fourier contragredient connection, unsquared covariant Green--Stokes identity, and
   boundary image equal to the Möbius--Fourier commutator.
-- **Upstream open premise:** independent arithmetic incidence carrying the fixed resolved
-  prime-2/prime-3 Green boundary into the literal Poisson kernel before polarization,
-  `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`.
+- **Upstream open producer:** `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, the
+  rational-Witt/Milnor relevant-complex chain identity landing resolved source boundaries in the
+  literal Poisson kernel. `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT` is its fixed
+  RH-equivalent endpoint test, not an independent source premise.
 
 ## Goal
 
@@ -30,10 +31,11 @@ locus.
 The strict cofinal defect of the finite gauge-exact Poisson--Kummer connection is now constructed
 on paper.  Its non-diagonal unsquared covariant Green--Stokes identity has endpoint exactly the
 Möbius--Fourier commutator and annihilates every literal Meyer--Poisson boundary with the exact
-kernel below.  The first open operation is narrower: prove from independent arithmetic incidence
-that the already-resolved Green boundary lies in this literal kernel before Hermitian
-polarization. Constructing another singular target or another Gamma transport does not close that
-source-incidence gate.
+kernel below. The first open operation is narrower: construct the independent rational-Witt/Milnor
+relevant-complex chain map whose source boundary lands in this literal kernel, then identify that
+landing with the already-resolved Green transport before Hermitian polarization. Constructing
+another singular target or proving the fixed two-prime endpoint equivalence does not close that
+source-annihilator gate.
 
 No divisor, zeta-zero sampling, RH-equivalent positivity premise, abstract Hilbert embedding, or
 post-completion projection may enter the construction.
@@ -246,7 +248,8 @@ A candidate fails if any one occurs:
 - [x] 0 → 1 in-progress: exact object, dependencies, topology, and falsifiers fixed
 - [x] upstream source differential: strict all-prime Euler--Gamma/Möbius transgression, exact
   Gamma/co-Poisson boundary image, and literal-boundary Green--Stokes annihilation proved on paper
-- [ ] upstream RH-bearing incidence: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
+- [ ] upstream source producer: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
+- [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] 1 → 2 fully-proven: derive `(5)` from that source differential and prove `(6)`--`(8)`
   unconditionally
 - [ ] 2 → 3 formalized: paused until Lean corpus refactor ends
@@ -270,6 +273,7 @@ A candidate fails if any one occurs:
 - 2026-08-08 — `DAC_DENINGER_EULER_GAMMA_MOBIUS_CONNECTION_TRANSGRESSION` constructed the
   all-prime-first source family, proved its strict PNT endpoint, derived the forced
   physical/Fourier connection difference and unsquared covariant identity, and identified its
-  endpoint boundary image with the Möbius--Fourier commutator.  Remaining upstream premise is no
-  longer construction of that source operation; it is independent arithmetic incidence of the
-  fixed resolved two-prime Green boundary in the literal kernel.
+  endpoint boundary image with the Möbius--Fourier commutator. Remaining upstream work is no
+  longer construction of that source operation; it is relevant-complex source annihilator and
+  coefficient-faithful comparison. Fixed resolved two-prime landing is its RH-equivalent endpoint
+  audit.

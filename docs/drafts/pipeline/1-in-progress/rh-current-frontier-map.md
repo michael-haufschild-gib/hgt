@@ -151,11 +151,12 @@ Thus the non-diagonal source differential and its Gamma/co-Poisson boundary imag
 missing: the endpoint is exactly \(\mathfrak S_\mu\), and its strict kernel on literal source
 boundaries is exactly `Z(H_cap)`.  The construction deliberately takes the all-prime object before
 adiabatic specialization; unordered critical primewise `L1` convergence is false as an absolute
-argument and enhanced aperture limits retain Stokes-path data.  What remains RH-bearing is the
-independent arithmetic-incidence theorem carrying the already-resolved Green boundary into this
-literal kernel before Hermitian polarization.  By the two-prime wall it is enough to prove this on
-the fixed canonical prime-2/prime-3 Green boundary while retaining both labels and the leading Xi
-jet: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`.  Exact Poisson kernel, real-Fourier seam,
+argument and enhanced aperture limits retain Stokes-path data.  Actual open producer is now
+`DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`: construct from rational-Witt/Milnor incidence a
+literal relevant-complex chain map into the Möbius--Poisson source, and prove its source boundary
+lands in `Z(H_cap)` before Hermitian polarization.  Fixed canonical prime-2/prime-3 theorem
+`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT` is sharp RH-equivalent endpoint falsifier of
+that producer, not an upstream premise.  Exact Poisson kernel, real-Fourier seam,
 Euler-depleted boundary transport, source Green identification, and the linear Green--Stokes law
 are paper-proved; resolved-boundary annihilation, weight-one polarization, and closability remain
 open. Relative
@@ -241,10 +242,12 @@ The shortest current chains are:
   to the fixed same-fibre physical Xi conormal; transported positivity, Stokes flatness, strict
   resolved chain provenance, and the source-pure norm-conservative selection theorem already hold;
 - Route L: use the now paper-proved strict all-prime Euler--Gamma/Möbius transgression and its
-  exact boundary image \(\mathfrak S_\mu\) to prove that independent arithmetic incidence carries
-  the canonical resolved prime-2/prime-3 Green boundary into the literal Poisson kernel before
-  scalarization. This is `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`; it must retain both
-  prime labels and the leading Xi jet. The source differential, unsquared covariant
+  exact boundary image \(\mathfrak S_\mu\) to construct
+  `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, the rational-Witt/Milnor relevant-complex
+  chain identity landing source boundaries in the literal Poisson kernel before scalarization.
+  Its fixed prime-2/prime-3 endpoint audit is
+  `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`; it must retain both prime labels and leading
+  Xi jet. Source differential, unsquared covariant
   Green--Stokes law, exact depleted-boundary kernel, and real-Fourier seam are constructed;
   resolved-boundary annihilation, weight-one polarization, and closability remain open. Existing
   Gamma/Calderón Green transport is coefficient-faithful but cannot supply that incidence alone;
@@ -545,7 +548,7 @@ marked explicitly; all others remain live at their stated open core.
 | I | retired | exact collision with Route C2 width |
 | J | retired | unrenormalized and residual Julia-capacity mechanisms are closed; successor changes primitive |
 | K | retired | all-order continuation is Route P |
-| L | open | actual `M_zeta` carrier, strict Euler-depleted admission, cofinal tomography, and weight-one Floquet geometry are constructed. Critical prime-circle subtraction is exactly the von Mangoldt prime-power autocorrelation current, but a universal compact two-bump sign wall makes every nonnegative diagonal prime weighting indefinite. The globally defined Möbius--Fourier commutator has exact kernel `Z(H_cap)`, exact real-Fourier covariance, and exact Euler-depleted boundary kernel; leading causal endpoint anomaly is universally blind after Möbius inversion. The all-prime-first adiabatic Möbius family now has a paper-proved strict PNT endpoint, exact physical/Fourier contragredient connection, non-diagonal unsquared Green--Stokes law, and boundary image equal to that commutator. Actual Gamma/co-Poisson boundary, Green primitive, source transport, conservative admission, and Calderón--Witt incidence are constructed and coefficient-faithful but nonselective. First unresolved source premise: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`, carrying the fixed canonical prime-2/prime-3 resolved Green boundary into the literal Poisson kernel from independent arithmetic incidence while retaining labels and leading Xi jet. Then prove nuclear weight-one closability/radical, chirality-kernel exactness, oriented Paugam comparison, and resolvent-faithful Hodge--Schwartz completion. Endpoint descents remain tests, not premises |
+| L | open | actual `M_zeta` carrier, strict Euler-depleted admission, cofinal tomography, and weight-one Floquet geometry are constructed. Critical prime-circle subtraction is exactly the von Mangoldt prime-power autocorrelation current, but a universal compact two-bump sign wall makes every nonnegative diagonal prime weighting indefinite. The globally defined Möbius--Fourier commutator has exact kernel `Z(H_cap)`, exact real-Fourier covariance, and exact Euler-depleted boundary kernel; leading causal endpoint anomaly is universally blind after Möbius inversion. The all-prime-first adiabatic Möbius family now has a paper-proved strict PNT endpoint, exact physical/Fourier contragredient connection, non-diagonal unsquared Green--Stokes law, and boundary image equal to that commutator. Actual Gamma/co-Poisson boundary, Green primitive, source transport, conservative admission, and Calderón--Witt incidence are constructed and coefficient-faithful but nonselective. First unresolved producer: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, a rational-Witt/Milnor relevant-complex chain identity landing the resolved source boundary in the literal Poisson kernel while preserving labels and leading Xi jet. `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT` is its sharp RH-equivalent endpoint test, not mechanism. Then prove ambient nuclear weight-one closability, oriented Paugam comparison, and resolvent-faithful Hodge--Schwartz completion. Endpoint descents remain tests, not premises |
 | M | terminalized coordinate | anchored cofinal flatness is exactly RH |
 | N | open | uniform source-domain prime-normal sub-log-square bound |
 | O | open | source-derived low-energy profile exhaustion/reduced-resolvent control of the entire restricted-Weil ground space; then orient the surviving boundary channel or prove the true floor nonnegative |
@@ -564,7 +567,7 @@ zero-fed spectra, or determinant limits:
 |---|---|---|
 | pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
 | nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs produce an independent equal-grade graded-`det2` counterboundary; resolved frames carry a positive definite parallel Hermitian metric; its fixed-source excess is the exact square `a²θ(i,j)²|c|²/(λ_i²λ_j²)` | constructed Route R corrected square, positive resolved Stokes polarization, and sharp fixed-Cartier descent obstruction; source rigidity of the two metrics remains open |
-| strict all-prime Euler--Gamma/Möbius source differential before polarization | the pro-Stein coefficient and strict Poisson model give `H^1=M_zeta`; finite Euler gauges are exact; the all-prime-first Möbius family has a strict PNT endpoint; its forced physical/Fourier connection difference satisfies an unsquared covariant Green--Stokes law whose endpoint is the source-defined Möbius--Fourier commutator with exact Poisson kernel and real-Fourier covariance; actual Gamma/Calderón Green transport is coefficient-faithful but nonselective | source differential and boundary image closed on paper; live Route L core is independent arithmetic incidence carrying fixed resolved `w_23` Green boundary into literal kernel (`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`), then weight-one closable radical/chirality, oriented Paugam comparison, and resolvent-faithful Hodge completion |
+| strict all-prime Euler--Gamma/Möbius source differential before polarization | the pro-Stein coefficient and strict Poisson model give `H^1=M_zeta`; finite Euler gauges are exact; the all-prime-first Möbius family has a strict PNT endpoint; its forced physical/Fourier connection difference satisfies an unsquared covariant Green--Stokes law whose endpoint is the source-defined Möbius--Fourier commutator with exact Poisson kernel and real-Fourier covariance; actual Gamma/Calderón Green transport is coefficient-faithful but nonselective | source differential and boundary image closed on paper; live Route L producer is `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, a relevant-complex chain map from rational-Witt/Milnor incidence into literal kernel; fixed `w_23` strict transport is endpoint falsifier, followed by ambient weight-one Hodge/Paugam/resolvent comparison |
 | prelimit noncompact one-corner incidence | the lower Fisher cutoff corner carries exactly four critical energy units, the critical channel converges weakly but not strongly, every fixed compact synthesis kills it, and every internal Xi jet has a physical `ell2` horizon | live unlettered CCM-FU lane; construct the moving Gamma/Sonin/Hodge incidence and identify its Ward column |
 | exact closed CCM class-space quotient with Real/Clifford structure | the literal nonunital strong cyclic target, closed restriction quotient, descended invertible Lefschetz action, even Real structure, nonzero Haar--Mellin separator, exact Real-parity no-go, and canonical anti-Real `iL` survivor are constructed | concrete C1-CCM carrier; bivariant/intersection pairing, Hodge sign, and Weil-form identification remain open |
 | moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
@@ -3889,14 +3892,16 @@ They are conservative transports, not an arithmetic reason for its vanishing. He
    with exact kernel `Z(H_cap)`. This closes the source differential, physical/Fourier
    contragredient connection, Gamma/co-Poisson boundary image, and analytic part of corrected
    Tate--Floquet descent. Lean is intentionally paused during corpus refactor;
-2. **first unresolved RH-bearing source incidence —
-   `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`:** prove from independent arithmetic
-   incidence that the existing singular transport carries the fixed canonical
-   `w_23=H(j_2(1)-j_3(1))` Green boundary into the literal kernel from clause 1, before Hilbert
-   closure and before Hermitian polarization. Both prime labels and the nonzero leading Xi jet
-   must survive. Source exactness, target-cycle nilpotence, Fourier oddness, or a quotient-defined
-   regularity domain do not prove this: its fixed physical value remains `g_2(s)-g_3(s)`, zero
-   exactly at `Re(s)=1/2`;
+2. **first unresolved source producer —
+   `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`:** construct from independent
+   rational-Witt/Milnor arithmetic incidence a relevant-complex map
+   `R_2 : C_rel^2 -> H_-` and a source lift `R_1 : C_rel^1 -> H_cap` satisfying the literal chain
+   identity `R_2 D = Z R_1`, and identify its Möbius--Fourier image coefficient-faithfully with
+   existing singular Gamma/Calderón transport. Both prime labels and nonzero leading Xi jet must
+   survive. Its minimal endpoint falsifier is `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT` on
+   `w_23=H(j_2(1)-j_3(1))`. Source exactness, target-cycle nilpotence, Fourier oddness, or a
+   quotient-defined regularity domain do not prove chain comparison: fixed physical value remains
+   `g_2(s)-g_3(s)`, zero exactly at `Re(s)=1/2`;
 3. prove the resulting source Green energy is closable with radical exactly closed middle-boundary space, kill
    chirality kernel, and use polar sign to obtain exact Hardy projectors. Full-packet Cauchy/Bessel
    conservativity is one sufficient method for this clause, not a required endpoint-only
@@ -3909,7 +3914,7 @@ They are conservative transports, not an arithmetic reason for its vanishing. He
 6. apply already-formalized purity implications. The physical Green--BV and fixed two-prime
    transports are sharp RH-equivalent endpoint tests, not source inputs.
 
-Clauses 2--4 contain the RH-bearing resolved-boundary annihilation and second Riemann bilinear relation;
+Clauses 2--4 contain the RH-bearing source annihilator, resolved-boundary comparison, and second Riemann bilinear relation;
 declaring a divisor-indexed Hilbert space or a positive ambient coefficient does not discharge
 them. Exact new local closure:
 prime-circle modes are uniformly coercive; signed two-prime Kummer bounded transform has dense
@@ -4734,6 +4739,19 @@ sharpened endpoint test is
 `XI_BV_GREEN_STOKES_STRICT_DESCENT`. Source exactness alone does not prove it; the physical
 reporter is boundary-blind on `w_23` exactly at the desired critical-line endpoint.
 
+**8 August 2026 hard-core reorientation.** The theorem just displayed is the minimal endpoint
+classifier, not the missing producer: on `w_23` its assertion is already pointwise equivalent to
+the critical-line equation. Route L now names the upstream scientific problem
+`DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`. It must construct from rational-Witt/Milnor
+relevant incidence a chain map `R_2 D = Z R_1` into Meyer's literal Poisson boundary and identify
+its Möbius--Fourier image with existing singular Gamma/Calderón transport while retaining labels
+and leading Xi jet. Conserved direct/inverse Euler Wronskians reduce to inverse-gauge identities;
+maximal pullback Hilbert domains add transport but no zero identity; adiabatic weights separate
+labels only after assuming missing vanishing; multiprime Euler connection is flat; codiagonal
+radialization erases antidiagonal; local scattering unitarity is another RH-equivalent selector.
+None receives closure credit. Full conjecture/failure ledger is
+`deninger-resolved-green-source-annihilator.md`.
+
 Adjacent-grade Hellinger--Beta coface, finite telescoping, raw completed-norm Xi landing, and
 multiplicity retention are already constructed. One-marginal closed graph descent cannot finish:
 a nonzero conserved endpoint charge appears as a vertical element in graph closure, so graph is
@@ -4790,9 +4808,10 @@ modes, annihilates the whole admitted sector. Therefore the missing relation can
 energy on its compact quotient. The critical Floquet/von-Mangoldt sign wall now also excludes
 diagonal scalar renormalization. The strict cofinal Euler--Gamma/Möbius gauge defect, its
 non-diagonal unsquared covariant Green--Stokes identity, exact `Delta_p Z(H_cap)` kernel, and
-real-Fourier boundary image are now constructed on paper. The first open source operation is the
-independent arithmetic incidence carrying the fixed resolved `w_23` Green boundary into that
-literal kernel before polarization. Extending the Sullivan/bar
+real-Fourier boundary image are now constructed on paper. First open source operation is
+`DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, the relevant-complex chain map from independent
+rational-Witt/Milnor incidence into that literal kernel before polarization. Fixed `w_23`
+comparison is its endpoint audit. Extending the Sullivan/bar
 model through enhanced generic, real, and Poisson incidence remains one possible construction,
 not the theorem itself.
 
@@ -6364,9 +6383,11 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
   coefficient, and Calderón--Witt incidence are constructed and nonselective. Strict all-prime
   Euler--Gamma/Möbius gauge-defect sewing is now paper-proved: its all-prime-first PNT endpoint,
   non-diagonal physical/Fourier connection, unsquared Green--Stokes law, and boundary image equal
-  to the Möbius--Fourier commutator are explicit. The first source theorem is now independent
-  arithmetic incidence carrying the fixed resolved prime-2/prime-3 Green boundary into the
-  literal Poisson kernel before polarization (`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`).
+  to the Möbius--Fourier commutator are explicit. First source theorem is now
+  `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, constructing the relevant-complex chain map
+  from independent rational-Witt/Milnor incidence into literal Poisson kernel before
+  polarization. Fixed prime-2/prime-3 comparison
+  (`XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`) is endpoint falsifier.
   Corrected Tate--Floquet Poisson descent is the induced boundary interface, not an additional
   producer.
   Exact Green-energy radical must kill the resulting chirality
@@ -7809,7 +7830,7 @@ unchanged.  Fourier inversion also proves conditioning preserves complete odd cu
 \[
  \prod_p(B_p(\tau)+U_p(\tau,t))-
  \prod_p(B_p(\tau)-U_p(\tau,t))
- =2\sum_{|R|\ {m odd}}\prod_{p\in R}U_p\prod_{p\notin R}B_p.
+ =2\sum_{|R|\ \mathrm{odd}}\prod_{p\in R}U_p\prod_{p\notin R}B_p.
 \tag{E-62}
 \]
 
@@ -7836,3 +7857,35 @@ Paper proof:
 
 Lean corpus was inspected read-only.  No Lean file was edited and no Lean process or build was
 started during this update.
+
+### Positive-Laplace descent wall
+
+Shell transversality cannot descend by positive averaging of raw Laplace scales.  Every kernel
+
+\[
+ K_\nu(m)=\int_0^\infty e^{-mx}\,d\nu(x),\qquad \nu\ge0,
+\]
+
+is decreasing in \(m\), whereas centered Gaussian log shell increases below its center and
+decreases above it.  Hence no positive Laplace mixture can suppress low-product prefix while
+retaining interior physical shell.
+
+Any signed recurrence decomposition instead obeys exact polarization
+
+\[
+ |Z|^2-|M|^2
+ =\iint\left(Z_y\overline{Z_z}-M_y\overline{M_z}\right)
+       d\alpha(y)d\overline{\alpha}(z).
+\tag{E-63}
+\]
+
+Diagonal shell transversality (E-61) gives no control of off-diagonal covariance in (E-63);
+two-shell phase cancellation is already a countermodel.  Therefore exact analytic open core is
+equivalently
+
+**RECURRENCE-WEIGHTED-SHELL-COVARIANCE-ACCUMULATION**:
+
+prove cofinal lower frame bound for (E-63) retaining literal recurrence weights,
+prime-dilation intervals, alternating finite-volume signs, normalized Gibbs denominator, and
+co-moving seam.  This is precise source-faithful content of shell descent, not generic Tauberian
+positivity.

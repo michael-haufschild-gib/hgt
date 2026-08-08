@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.FiniteHorizonCStarPerturbationLaw
 import GaloisForLFunctions.HTGeometry.KrylovCausalReplicaSieveLaw
-import GaloisForLFunctions.HTGeometry.SymmetricReplicaRankLaw
+import GaloisForLFunctions.HTGeometry.ProjectedReplicaReturnExcisionLaw
+import GaloisForLFunctions.HTGeometry.GaussianAngularPolarDisintegrationLaw
 
 /-!
 # Krylov projected complete-incidence law
@@ -417,8 +418,352 @@ theorem finrank_projectedReplicaTargetSpan_le_krylov_min
   finrank_projectedReplicaTargetSpan_le_min r
     (boundedHamiltonianKrylovSubspace H ψ K) target
 
+/-! ## Return-excised complete capture laws -/
+
+/-- Shifted-threshold return-excised Krylov incidence law.  Every original
+capture at fidelity `a` is controlled by one projected occupied-image moment
+at the exact amplitude loss `sqrt a - eta_K(T)`. -/
+theorem measureReal_boundedHamiltonian_capture_le_return_add_krylovMoment
+    {X C α : Type*} [MeasurableSpace X] [Fintype α] [DecidableEq α]
+    (μ : MeasureTheory.Measure X) [MeasureTheory.IsFiniteMeasure μ]
+    {r : ℕ} (hr : 0 < r)
+    (H : EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (hH : IsSelfAdjoint H) {ψ : EuclideanSpace ℂ α} (hψ : ‖ψ‖ ≤ 1)
+    (target : C → α → ℂ)
+    (htarget : ∀ c, ‖WithLp.toLp 2 (target c)‖ ≤ 1)
+    (time : X → ℝ) (K : ℕ) {B T a : ℝ}
+    (hB : 0 ≤ B) (hHnorm : ‖H‖ ≤ B)
+    (htime : ∀ x, |time x| ≤ T)
+    (hboundary : krylovFactorialBoundary B T K < Real.sqrt a)
+    (returnSet : Set X) (hreturn : MeasurableSet returnSet)
+    (hint : MeasureTheory.Integrable
+      (fun x => replicaTargetProjectionMass r
+        (projectedReplicaTarget (boundedHamiltonianKrylovSubspace H ψ K) target)
+        (fun i => boundedHamiltonianKrylovProjection H ψ K (time x) i))
+      (μ.restrict returnSetᶜ)) :
+    μ.real {x | ∃ c, a ≤ finitePureStateFidelity
+        (fun i => boundedHamiltonianOrbit H ψ (time x) i) (target c)} ≤
+      μ.real returnSet +
+        (∫ x, replicaTargetProjectionMass r
+          (projectedReplicaTarget (boundedHamiltonianKrylovSubspace H ψ K) target)
+          (fun i => boundedHamiltonianKrylovProjection H ψ K (time x) i)
+            ∂(μ.restrict returnSetᶜ)) /
+          (Real.sqrt a - krylovFactorialBoundary B T K) ^ (2 * r) := by
+  let state : X → α → ℂ := fun x i => boundedHamiltonianOrbit H ψ (time x) i
+  let S := boundedHamiltonianKrylovSubspace H ψ K
+  have hdefect : ∀ x,
+      ‖WithLp.toLp 2 (state x) - S.starProjection (WithLp.toLp 2 (state x))‖ ≤
+        krylovFactorialBoundary B T K := by
+    intro x
+    have hcoord : WithLp.toLp 2 (state x) =
+        boundedHamiltonianOrbit H ψ (time x) := by
+      ext i
+      rfl
+    simpa [state, S, hcoord, boundedHamiltonianKrylovProjection] using
+      norm_boundedHamiltonianOrbit_sub_krylovProjection_le_boundary
+        H hH hψ K hB hHnorm (htime x)
+  simpa [state, S, boundedHamiltonianKrylovProjection] using
+    measureReal_capture_le_return_add_projectedMoment
+      μ hr S target state htarget hboundary hdefect returnSet hreturn (by
+        simpa [state, S, boundedHamiltonianKrylovProjection] using hint)
+
+/-- Additive return-excised Krylov incidence law.  It retains the original
+fidelity threshold and pays the factorial defect once, after the complete
+target union and before integration over the return-free source. -/
+theorem measureReal_boundedHamiltonian_capture_le_return_add_krylovMoment_error
+    {X C α : Type*} [MeasurableSpace X] [Fintype α] [DecidableEq α]
+    (μ : MeasureTheory.Measure X) [MeasureTheory.IsFiniteMeasure μ]
+    {r : ℕ} (hr : 0 < r)
+    (H : EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (hH : IsSelfAdjoint H) {ψ : EuclideanSpace ℂ α} (hψ : ‖ψ‖ ≤ 1)
+    (target : C → α → ℂ)
+    (htarget : ∀ c, ‖WithLp.toLp 2 (target c)‖ ≤ 1)
+    (time : X → ℝ) (K : ℕ) {B T a : ℝ}
+    (hB : 0 ≤ B) (hHnorm : ‖H‖ ≤ B)
+    (htime : ∀ x, |time x| ≤ T) (ha : 0 < a)
+    (returnSet : Set X) (hreturn : MeasurableSet returnSet)
+    (hintOriginal : MeasureTheory.Integrable
+      (fun x => replicaTargetProjectionMass r target
+        (fun i => boundedHamiltonianOrbit H ψ (time x) i))
+      (μ.restrict returnSetᶜ))
+    (hintProjected : MeasureTheory.Integrable
+      (fun x => replicaTargetProjectionMass r
+        (projectedReplicaTarget (boundedHamiltonianKrylovSubspace H ψ K) target)
+        (fun i => boundedHamiltonianKrylovProjection H ψ K (time x) i))
+      (μ.restrict returnSetᶜ)) :
+    μ.real {x | ∃ c, a ≤ finitePureStateFidelity
+        (fun i => boundedHamiltonianOrbit H ψ (time x) i) (target c)} ≤
+      μ.real returnSet +
+        ((∫ x, replicaTargetProjectionMass r
+          (projectedReplicaTarget (boundedHamiltonianKrylovSubspace H ψ K) target)
+          (fun i => boundedHamiltonianKrylovProjection H ψ K (time x) i)
+            ∂(μ.restrict returnSetᶜ)) +
+          2 * (r : ℝ) * krylovFactorialBoundary B T K * μ.real returnSetᶜ) /
+            a ^ r := by
+  let state : X → α → ℂ := fun x i => boundedHamiltonianOrbit H ψ (time x) i
+  let S := boundedHamiltonianKrylovSubspace H ψ K
+  have hstate : ∀ x, ‖WithLp.toLp 2 (state x)‖ ≤ 1 := by
+    intro x
+    have hcoord : WithLp.toLp 2 (state x) =
+        boundedHamiltonianOrbit H ψ (time x) := by
+      ext i
+      rfl
+    rw [hcoord, norm_boundedHamiltonianOrbit_eq H hH]
+    exact hψ
+  have hdefect : ∀ x,
+      ‖WithLp.toLp 2 (state x) - S.starProjection (WithLp.toLp 2 (state x))‖ ≤
+        krylovFactorialBoundary B T K := by
+    intro x
+    have hcoord : WithLp.toLp 2 (state x) =
+        boundedHamiltonianOrbit H ψ (time x) := by
+      ext i
+      rfl
+    simpa [state, S, hcoord, boundedHamiltonianKrylovProjection] using
+      norm_boundedHamiltonianOrbit_sub_krylovProjection_le_boundary
+        H hH hψ K hB hHnorm (htime x)
+  have htargetReplica : ∀ c,
+      ‖finitePureTensorPowerEuclidean r (target c)‖ ≤ 1 := fun c =>
+    norm_finitePureTensorPowerEuclidean_le_one r (target c) (htarget c)
+  simpa [state, S, boundedHamiltonianKrylovProjection] using
+    measureReal_capture_le_return_add_projectedMoment_error
+      μ hr S target state htargetReplica hstate ha hdefect returnSet hreturn
+        (by simpa [state] using hintOriginal)
+        (by simpa [state, S, boundedHamiltonianKrylovProjection] using hintProjected)
+
 end FiniteDimensional
 
 end Hilbert
+
+/-! ## Radial rigidity of Krylov incidence -/
+
+theorem boundedHamiltonianKrylovSubspace_smul
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E]
+    (H : E →L[ℂ] E) (ψ : E) (K : ℕ) {c : ℂ} (hc : c ≠ 0) :
+    boundedHamiltonianKrylovSubspace (c • H) ψ K =
+      boundedHamiltonianKrylovSubspace H ψ K := by
+  apply le_antisymm
+  · rw [boundedHamiltonianKrylovSubspace]
+    refine Submodule.span_le.mpr ?_
+    rintro _ ⟨k, rfl⟩
+    change (((c • H) ^ (k : ℕ)) ψ) ∈ _
+    rw [smul_pow]
+    simp only [smul_apply]
+    exact Submodule.smul_mem _ _
+      (boundedHamiltonianKrylovPower_mem H ψ (Nat.le_of_lt_succ k.isLt))
+  · rw [boundedHamiltonianKrylovSubspace]
+    refine Submodule.span_le.mpr ?_
+    rintro _ ⟨k, rfl⟩
+    change ((H ^ (k : ℕ)) ψ) ∈ _
+    have hpow : c ^ (k : ℕ) ≠ 0 := pow_ne_zero _ hc
+    have hmem := boundedHamiltonianKrylovPower_mem (c • H) ψ
+      (Nat.le_of_lt_succ k.isLt)
+    rw [smul_pow] at hmem
+    simp only [smul_apply] at hmem
+    have hscaled := Submodule.smul_mem
+      (boundedHamiltonianKrylovSubspace (c • H) ψ K) (c ^ (k : ℕ))⁻¹ hmem
+    simpa [← smul_assoc, hpow] using hscaled
+
+theorem boundedHamiltonianOrbit_real_smul
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E]
+    (H : E →L[ℂ] E) (ψ : E) (c t : ℝ) :
+    boundedHamiltonianOrbit ((c : ℂ) • H) ψ t =
+      boundedHamiltonianOrbit H ψ (c * t) := by
+  unfold boundedHamiltonianOrbit
+  congr 2
+  ext x
+  simp only [smul_apply]
+  module
+
+theorem boundedHamiltonianKrylovProjection_real_smul
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E] [FiniteDimensional ℂ E]
+    (H : E →L[ℂ] E) (ψ : E) (K : ℕ) {c : ℝ} (hc : c ≠ 0) (t : ℝ) :
+    boundedHamiltonianKrylovProjection ((c : ℂ) • H) ψ K t =
+      boundedHamiltonianKrylovProjection H ψ K (c * t) := by
+  unfold boundedHamiltonianKrylovProjection
+  simp only [boundedHamiltonianKrylovSubspace_smul H ψ K
+    (Complex.ofReal_ne_zero.mpr hc), boundedHamiltonianOrbit_real_smul]
+
+theorem projectedReplicaTarget_krylov_real_smul
+    {C α : Type*} [Fintype α]
+    (H : EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (ψ : EuclideanSpace ℂ α) (K : ℕ) (target : C → α → ℂ)
+    {c : ℝ} (hc : c ≠ 0) :
+    projectedReplicaTarget
+        (boundedHamiltonianKrylovSubspace ((c : ℂ) • H) ψ K) target =
+      projectedReplicaTarget
+        (boundedHamiltonianKrylovSubspace H ψ K) target := by
+  simp only [boundedHamiltonianKrylovSubspace_smul H ψ K
+    (Complex.ofReal_ne_zero.mpr hc)]
+
+theorem replicaTargetProjectionMass_krylov_real_smul
+    {C α : Type*} [Fintype α]
+    (H : EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (ψ : EuclideanSpace ℂ α) (K r : ℕ) (target : C → α → ℂ)
+    {c : ℝ} (hc : c ≠ 0) (t : ℝ) :
+    replicaTargetProjectionMass r
+        (projectedReplicaTarget
+          (boundedHamiltonianKrylovSubspace ((c : ℂ) • H) ψ K) target)
+        (fun i => boundedHamiltonianKrylovProjection
+          ((c : ℂ) • H) ψ K t i) =
+      replicaTargetProjectionMass r
+        (projectedReplicaTarget
+          (boundedHamiltonianKrylovSubspace H ψ K) target)
+        (fun i => boundedHamiltonianKrylovProjection H ψ K (c * t) i) := by
+  rw [projectedReplicaTarget_krylov_real_smul H ψ K target hc]
+  congr 2
+  funext i
+  exact congrArg (fun v : EuclideanSpace ℂ α => v i)
+    (boundedHamiltonianKrylovProjection_real_smul H ψ K hc t)
+
+def realLinearHamiltonianFamily
+    {J E : Type*} [Fintype J]
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (A : J → E →L[ℂ] E) (x : J → ℝ) : E →L[ℂ] E :=
+  ∑ j, ((x j : ℝ) : ℂ) • A j
+
+theorem realLinearHamiltonianFamily_smul
+    {J E : Type*} [Fintype J]
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (A : J → E →L[ℂ] E) (c : ℝ) (x : J → ℝ) :
+    realLinearHamiltonianFamily A (c • x) =
+      (c : ℂ) • realLinearHamiltonianFamily A x := by
+  unfold realLinearHamiltonianFamily
+  rw [Finset.smul_sum]
+  apply Finset.sum_congr rfl
+  intro j hj
+  simp only [Pi.smul_apply, smul_smul]
+  congr 1
+  rw [smul_eq_mul]
+  push_cast
+  rfl
+
+theorem realLinearHamiltonianFamily_krylovSubspace_smul
+    {J E : Type*} [Fintype J]
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (A : J → E →L[ℂ] E) (x : J → ℝ) (ψ : E) (K : ℕ)
+    {c : ℝ} (hc : c ≠ 0) :
+    boundedHamiltonianKrylovSubspace
+        (realLinearHamiltonianFamily A (c • x)) ψ K =
+      boundedHamiltonianKrylovSubspace
+        (realLinearHamiltonianFamily A x) ψ K := by
+  rw [realLinearHamiltonianFamily_smul]
+  exact boundedHamiltonianKrylovSubspace_smul _ ψ K
+    (Complex.ofReal_ne_zero.mpr hc)
+
+theorem realLinearHamiltonianFamily_orbit_smul
+    {J E : Type*} [Fintype J]
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    (A : J → E →L[ℂ] E) (x : J → ℝ) (ψ : E)
+    (c t : ℝ) :
+    boundedHamiltonianOrbit
+        (realLinearHamiltonianFamily A (c • x)) ψ t =
+      boundedHamiltonianOrbit
+        (realLinearHamiltonianFamily A x) ψ (c * t) := by
+  rw [realLinearHamiltonianFamily_smul]
+  exact boundedHamiltonianOrbit_real_smul _ ψ c t
+
+theorem realLinearHamiltonianFamily_krylovProjection_smul
+    {J E : Type*} [Fintype J]
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    [FiniteDimensional ℂ E]
+    (A : J → E →L[ℂ] E) (x : J → ℝ) (ψ : E) (K : ℕ)
+    {c : ℝ} (hc : c ≠ 0) (t : ℝ) :
+    boundedHamiltonianKrylovProjection
+        (realLinearHamiltonianFamily A (c • x)) ψ K t =
+      boundedHamiltonianKrylovProjection
+        (realLinearHamiltonianFamily A x) ψ K (c * t) := by
+  rw [realLinearHamiltonianFamily_smul]
+  exact boundedHamiltonianKrylovProjection_real_smul _ ψ K hc t
+
+theorem realLinearHamiltonianFamily_incidence_smul
+    {J C α : Type*} [Fintype J] [Fintype α]
+    (A : J → EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (x : J → ℝ) (ψ : EuclideanSpace ℂ α) (K r : ℕ)
+    (target : C → α → ℂ) {c : ℝ} (hc : c ≠ 0) (t : ℝ) :
+    replicaTargetProjectionMass r
+        (projectedReplicaTarget
+          (boundedHamiltonianKrylovSubspace
+            (realLinearHamiltonianFamily A (c • x)) ψ K) target)
+        (fun i => boundedHamiltonianKrylovProjection
+          (realLinearHamiltonianFamily A (c • x)) ψ K t i) =
+      replicaTargetProjectionMass r
+        (projectedReplicaTarget
+          (boundedHamiltonianKrylovSubspace
+            (realLinearHamiltonianFamily A x) ψ K) target)
+        (fun i => boundedHamiltonianKrylovProjection
+          (realLinearHamiltonianFamily A x) ψ K (c * t) i) := by
+  rw [realLinearHamiltonianFamily_smul]
+  exact replicaTargetProjectionMass_krylov_real_smul
+    (realLinearHamiltonianFamily A x) ψ K r target hc t
+
+/-- Projected complete-incidence action of a finite real-linear Hamiltonian
+dictionary. -/
+def realLinearHamiltonianKrylovIncidenceAction
+    {J C α : Type*} [Fintype J] [Fintype α]
+    (A : J → EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (ψ : EuclideanSpace ℂ α) (K r : ℕ) (target : C → α → ℂ)
+    (x : J → ℝ) (t : ℝ) : ℝ :=
+  replicaTargetProjectionMass r
+    (projectedReplicaTarget
+      (boundedHamiltonianKrylovSubspace
+        (realLinearHamiltonianFamily A x) ψ K) target)
+    (fun i => boundedHamiltonianKrylovProjection
+      (realLinearHamiltonianFamily A x) ψ K t i)
+
+/-- Radial coefficient scaling changes only the clock of the complete Krylov
+incidence action. -/
+theorem realLinearHamiltonianKrylovIncidenceAction_smul
+    {J C α : Type*} [Fintype J] [Fintype α]
+    (A : J → EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (ψ : EuclideanSpace ℂ α) (K r : ℕ) (target : C → α → ℂ)
+    (x : J → ℝ) {c : ℝ} (hc : c ≠ 0) (t : ℝ) :
+    realLinearHamiltonianKrylovIncidenceAction A ψ K r target (c • x) t =
+      realLinearHamiltonianKrylovIncidenceAction A ψ K r target x (c * t) := by
+  exact realLinearHamiltonianFamily_incidence_smul
+    A x ψ K r target hc t
+
+/-- **Gaussian fixed-shell temporal mixture.**  A standard Gaussian
+Hamiltonian coefficient vector is exactly a chi-radius mixture of uniform
+fixed-shell Krylov incidence actions, with radius transported into time. -/
+theorem integral_stdGaussian_realLinearHamiltonianKrylovIncidenceAction
+    {m : ℕ} (hm : 0 < m) {C α : Type*} [Fintype α]
+    (A : Fin m → EuclideanSpace ℂ α →L[ℂ] EuclideanSpace ℂ α)
+    (ψ : EuclideanSpace ℂ α) (K r : ℕ) (target : C → α → ℂ)
+    (t : ℝ)
+    (hpolar : MeasureTheory.Integrable
+      (fun p : Metric.sphere (0 : EuclideanSpace ℝ (Fin m)) 1 × Set.Ioi (0 : ℝ) =>
+        ((Real.sqrt (2 * Real.pi))⁻¹ ^ m *
+          Real.exp (-p.2.1 ^ 2 / 2)) •
+          realLinearHamiltonianKrylovIncidenceAction
+            A ψ K r target (p.2.1 • p.1.1) t)
+      ((MeasureTheory.volume : MeasureTheory.Measure
+          (EuclideanSpace ℝ (Fin m))).toSphere.prod
+        (MeasureTheory.Measure.volumeIoiPow (m - 1)))) :
+    (∫ x, realLinearHamiltonianKrylovIncidenceAction
+        A ψ K r target x t
+      ∂(ProbabilityTheory.stdGaussian (EuclideanSpace ℝ (Fin m)))) =
+      ∫ radius in Set.Ioi (0 : ℝ), gaussianRadialDensity m radius •
+        gaussianSphereAverage m (fun direction =>
+          realLinearHamiltonianKrylovIncidenceAction
+            A ψ K r target direction.1 (radius * t)) := by
+  have hcoord (direction : Metric.sphere
+      (0 : EuclideanSpace ℝ (Fin m)) 1) (radius : ℝ) :
+      (fun j => (radius • direction.1 : EuclideanSpace ℝ (Fin m)) j) =
+        radius • (fun j => direction.1 j) := by
+    funext j
+    rfl
+  refine integral_stdGaussian_radialTimeMixture hm
+    (fun x time => realLinearHamiltonianKrylovIncidenceAction
+      A ψ K r target (fun j => x j) time) ?_ t ?_
+  · intro direction radius hradius time
+    rw [hcoord]
+    exact realLinearHamiltonianKrylovIncidenceAction_smul
+      A ψ K r target (fun j => direction.1 j) hradius.ne' time
+  · apply hpolar.congr
+    filter_upwards with p
+    congr 2
 
 end GaloisForLFunctions.HTGeometry
