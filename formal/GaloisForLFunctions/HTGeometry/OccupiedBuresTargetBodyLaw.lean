@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CompactBuresTargetMinimaxLaw
 import Mathlib.Analysis.Convex.TotallyBounded
+import Mathlib.Analysis.Normed.Group.Bounded
 
 /-!
 # Occupied target body Bures law
@@ -267,3 +268,229 @@ end
 
 end GaloisForLFunctions.HTGeometry
 
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-! ## Arbitrary bounded occupied target images -/
+
+/-- In finite dimension, closing a bounded target set before taking occupied
+rays does not alter its closed convex ray body. -/
+theorem finiteBuresOccupiedTargetBody_closure_of_isBounded
+    {n : ℕ} {V : Set (Fin n → ℂ)} (hVbounded : Bornology.IsBounded V) :
+    finiteBuresOccupiedTargetBody (closure V) =
+      finiteBuresOccupiedTargetBody V := by
+  unfold finiteBuresOccupiedTargetBody
+  have hVcompact : IsCompact (closure V) :=
+    Metric.isCompact_iff_isClosed_bounded.mpr
+      ⟨isClosed_closure, hVbounded.closure⟩
+  rw [image_closure_of_isCompact hVcompact
+    continuous_finiteBuresTargetRay.continuousOn]
+  exact closedConvexHull_closure_eq_closedConvexHull
+
+/-- Every bounded occupied target image has a compact closed convex ray body
+in finite dimension. -/
+theorem finiteBuresOccupiedTargetBody_isCompact_of_isBounded
+    {n : ℕ} {V : Set (Fin n → ℂ)} (hVbounded : Bornology.IsBounded V) :
+    IsCompact (finiteBuresOccupiedTargetBody V) := by
+  have hVcompact : IsCompact (closure V) :=
+    Metric.isCompact_iff_isClosed_bounded.mpr
+      ⟨isClosed_closure, hVbounded.closure⟩
+  rw [← finiteBuresOccupiedTargetBody_closure_of_isBounded hVbounded]
+  exact finiteBuresOccupiedTargetBody_isCompact hVcompact
+
+theorem finiteBuresOccupiedLeverageValueSet_bddAbove_of_isBounded
+    {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ)
+    {V : Set (Fin n → ℂ)} (hVbounded : Bornology.IsBounded V) :
+    BddAbove (finiteBuresOccupiedLeverageValueSet A V) := by
+  have hVcompact : IsCompact (closure V) :=
+    Metric.isCompact_iff_isClosed_bounded.mpr
+      ⟨isClosed_closure, hVbounded.closure⟩
+  exact (finiteBuresOccupiedLeverageValueSet_bddAbove A hVcompact).mono <| by
+    rintro q ⟨v, hv, rfl⟩
+    exact ⟨v, subset_closure hv, rfl⟩
+
+theorem finiteBuresTargetLeverage_le_occupiedTargetMaximum_of_isBounded
+    {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ)
+    {V : Set (Fin n → ℂ)} (hVbounded : Bornology.IsBounded V)
+    {v : Fin n → ℂ} (hv : v ∈ V) :
+    finiteBuresTargetLeverage A v ≤ finiteBuresOccupiedTargetMaximum A V := by
+  unfold finiteBuresOccupiedTargetMaximum
+  exact le_csSup
+    (finiteBuresOccupiedLeverageValueSet_bddAbove_of_isBounded A hVbounded)
+    ⟨v, hv, rfl⟩
+
+/-- A continuous leverage functional has the same supremum on a nonempty
+bounded set and its closure. -/
+theorem finiteBuresOccupiedTargetMaximum_closure_eq
+    {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ)
+    {V : Set (Fin n → ℂ)} (hVne : V.Nonempty)
+    (hVbounded : Bornology.IsBounded V) :
+    finiteBuresOccupiedTargetMaximum A (closure V) =
+      finiteBuresOccupiedTargetMaximum A V := by
+  have hClosureBounded : Bornology.IsBounded (closure V) := hVbounded.closure
+  have hClosureNe : (closure V).Nonempty := hVne.mono subset_closure
+  apply le_antisymm
+  · unfold finiteBuresOccupiedTargetMaximum
+    apply csSup_le (finiteBuresOccupiedLeverageValueSet_nonempty A hClosureNe)
+    rintro q ⟨v, hv, rfl⟩
+    have hsub : V ⊆ {w : Fin n → ℂ |
+        finiteBuresTargetLeverage A w ≤
+          sSup (finiteBuresOccupiedLeverageValueSet A V)} := by
+      intro w hw
+      exact le_csSup
+        (finiteBuresOccupiedLeverageValueSet_bddAbove_of_isBounded A hVbounded)
+        ⟨w, hw, rfl⟩
+    have hclosed : IsClosed {w : Fin n → ℂ |
+        finiteBuresTargetLeverage A w ≤
+          sSup (finiteBuresOccupiedLeverageValueSet A V)} :=
+      isClosed_le (continuous_finiteBuresTargetLeverage A) continuous_const
+    exact (closure_minimal hsub hclosed) hv
+  · unfold finiteBuresOccupiedTargetMaximum
+    apply csSup_le (finiteBuresOccupiedLeverageValueSet_nonempty A hVne)
+    rintro q ⟨v, hv, rfl⟩
+    exact le_csSup
+      (finiteBuresOccupiedLeverageValueSet_bddAbove_of_isBounded A hClosureBounded)
+      ⟨v, subset_closure hv, rfl⟩
+
+/-- Reporter maximum over an arbitrary nonempty bounded occupied image equals
+the supremum over its actual target rays. -/
+theorem compactBuresTargetMaximum_occupiedBody_eq_of_isBounded
+    {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ)
+    {V : Set (Fin n → ℂ)} (hVne : V.Nonempty)
+    (hVbounded : Bornology.IsBounded V) :
+    compactBuresTargetMaximum A (finiteBuresOccupiedTargetBody V) =
+      finiteBuresOccupiedTargetMaximum A V := by
+  have hVcompact : IsCompact (closure V) :=
+    Metric.isCompact_iff_isClosed_bounded.mpr
+      ⟨isClosed_closure, hVbounded.closure⟩
+  rw [← finiteBuresOccupiedTargetBody_closure_of_isBounded hVbounded,
+    compactBuresTargetMaximum_occupiedBody_eq A
+      (hVne.mono subset_closure) hVcompact,
+    finiteBuresOccupiedTargetMaximum_closure_eq A hVne hVbounded]
+
+/-- Explicit reporter minimax for every nonempty bounded occupied target
+image, without a compactness assumption on the original parameter image. -/
+theorem compactBuresProductCapacity_occupiedBody_eq_reporterInfimum_of_isBounded
+    {n : ℕ} (source : Matrix (Fin n) (Fin n) ℂ)
+    {V : Set (Fin n → ℂ)} (hVne : V.Nonempty)
+    (hVbounded : Bornology.IsBounded V) :
+    compactBuresProductCapacity source (finiteBuresOccupiedTargetBody V) =
+      sInf {q : ℝ | ∃ A : Matrix (Fin n) (Fin n) ℂ, A.PosDef ∧
+        q = finiteBuresSourcePairing source A *
+          finiteBuresOccupiedTargetMaximum A V} := by
+  unfold compactBuresProductCapacity compactBuresProductValueSet
+  congr 2
+  ext q
+  constructor
+  · rintro ⟨A, hA, rfl⟩
+    exact ⟨A, hA, by
+      rw [compactBuresTargetMaximum_occupiedBody_eq_of_isBounded
+        A hVne hVbounded]⟩
+  · rintro ⟨A, hA, rfl⟩
+    exact ⟨A, hA, by
+      rw [compactBuresTargetMaximum_occupiedBody_eq_of_isBounded
+        A hVne hVbounded]⟩
+
+/-- **Universal bounded occupied-image Bures incidence law.**  No topology or
+enumerability assumption is imposed on target labels; boundedness alone is
+enough in the finite-dimensional carrier. -/
+theorem occupiedTargetBures_completeIncidence_minimax_bound_of_isBounded
+    {X C : Type*} [MeasurableSpace X] [Nonempty C] {n : ℕ}
+    (mu : Measure X) [IsFiniteMeasure mu]
+    (target : C → Fin n → ℂ) (state : X → Fin n → ℂ)
+    (threshold : ℝ) (hthreshold : 0 < threshold)
+    (hTargetBounded : Bornology.IsBounded (Set.range target))
+    (hprod : ∀ i j, Integrable
+      (fun x ↦ state x i * star (state x j)) mu) :
+    threshold * mu.real
+        (finitePositiveReporterCaptureEvent target state threshold) ≤
+      compactBuresDualCapacity
+        (finitePositiveReporterSourceCovariance mu state)
+        (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 := by
+  let V : Set (Fin n → ℂ) := Set.range target
+  have hVne : V.Nonempty := Set.range_nonempty target
+  exact compactBures_completeIncidence_minimax_bound
+    mu target state threshold hthreshold
+      (finiteBuresOccupiedTargetBody_nonempty hVne)
+      (finiteBuresOccupiedTargetBody_isCompact_of_isBounded hTargetBounded)
+      (finiteBuresOccupiedTargetBody_convex V)
+      (finiteBuresOccupiedTargetBody_posSemidef V)
+      (fun c => finiteBuresTargetRay_mem_occupiedTargetBody
+        (Set.mem_range_self c)) hprod
+
+theorem occupiedTargetBures_returnExcisedIncidence_minimax_bound_of_isBounded
+    {X C : Type*} [MeasurableSpace X] [Nonempty C] {n : ℕ}
+    (mu : Measure X) [IsFiniteMeasure mu]
+    (target : C → Fin n → ℂ) (state : X → Fin n → ℂ)
+    (threshold : ℝ) (hthreshold : 0 < threshold)
+    (returnSet : Set X) (hreturn : MeasurableSet returnSet)
+    (hTargetBounded : Bornology.IsBounded (Set.range target))
+    (hprod : ∀ i j, Integrable
+      (fun x ↦ state x i * star (state x j))
+        (mu.restrict returnSetᶜ)) :
+    mu.real (finitePositiveReporterCaptureEvent target state threshold) ≤
+      mu.real returnSet +
+        compactBuresDualCapacity
+          (finitePositiveReporterSourceCovariance
+            (mu.restrict returnSetᶜ) state)
+          (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 / threshold := by
+  let V : Set (Fin n → ℂ) := Set.range target
+  have hVne : V.Nonempty := Set.range_nonempty target
+  exact compactBures_returnExcisedIncidence_minimax_bound
+    mu target state threshold hthreshold returnSet hreturn
+      (finiteBuresOccupiedTargetBody_nonempty hVne)
+      (finiteBuresOccupiedTargetBody_isCompact_of_isBounded hTargetBounded)
+      (finiteBuresOccupiedTargetBody_convex V)
+      (finiteBuresOccupiedTargetBody_posSemidef V)
+      (fun c => finiteBuresTargetRay_mem_occupiedTargetBody
+        (Set.mem_range_self c)) hprod
+
+/-- Closed-unit-ball specialization of the universal bounded-target law. -/
+theorem occupiedTargetBures_completeIncidence_minimax_bound_of_norm_le_one
+    {X C : Type*} [MeasurableSpace X] [Nonempty C] {n : ℕ}
+    (mu : Measure X) [IsFiniteMeasure mu]
+    (target : C → Fin n → ℂ) (state : X → Fin n → ℂ)
+    (threshold : ℝ) (hthreshold : 0 < threshold)
+    (hTargetNorm : ∀ c, ‖target c‖ ≤ 1)
+    (hprod : ∀ i j, Integrable
+      (fun x ↦ state x i * star (state x j)) mu) :
+    threshold * mu.real
+        (finitePositiveReporterCaptureEvent target state threshold) ≤
+      compactBuresDualCapacity
+        (finitePositiveReporterSourceCovariance mu state)
+        (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 := by
+  apply occupiedTargetBures_completeIncidence_minimax_bound_of_isBounded
+    mu target state threshold hthreshold
+  · rw [isBounded_iff_forall_norm_le]
+    exact ⟨1, by rintro v ⟨c, rfl⟩; exact hTargetNorm c⟩
+  · exact hprod
+
+
+/-- Closed-unit-ball specialization of the return-excised universal law. -/
+theorem occupiedTargetBures_returnExcisedIncidence_minimax_bound_of_norm_le_one
+    {X C : Type*} [MeasurableSpace X] [Nonempty C] {n : ℕ}
+    (mu : Measure X) [IsFiniteMeasure mu]
+    (target : C → Fin n → ℂ) (state : X → Fin n → ℂ)
+    (threshold : ℝ) (hthreshold : 0 < threshold)
+    (returnSet : Set X) (hreturn : MeasurableSet returnSet)
+    (hTargetNorm : ∀ c, ‖target c‖ ≤ 1)
+    (hprod : ∀ i j, Integrable
+      (fun x ↦ state x i * star (state x j))
+        (mu.restrict returnSetᶜ)) :
+    mu.real (finitePositiveReporterCaptureEvent target state threshold) ≤
+      mu.real returnSet +
+        compactBuresDualCapacity
+          (finitePositiveReporterSourceCovariance
+            (mu.restrict returnSetᶜ) state)
+          (finiteBuresOccupiedTargetBody (Set.range target)) ^ 2 / threshold := by
+  apply occupiedTargetBures_returnExcisedIncidence_minimax_bound_of_isBounded
+    mu target state threshold hthreshold returnSet hreturn
+  · rw [isBounded_iff_forall_norm_le]
+    exact ⟨1, by rintro v ⟨c, rfl⟩; exact hTargetNorm c⟩
+  · exact hprod
+
+end
+
+end GaloisForLFunctions.HTGeometry

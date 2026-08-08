@@ -2,15 +2,17 @@
 
 - **ID:** `constraint-relativity-curved-relative-observer-geometry`
 - **Stage:** 1 — in progress
-- **Type:** CANDIDATE NEW MATHEMATICAL FIELD / FOUNDATIONAL PROGRAM
+- **Type:** KINEMATIC PRECURSOR / FOUNDATIONAL RESEARCH PROGRAM
 - **Field name:** **Constraint Relativity**
-- **Status:** `[BOLD UNIVERSAL FIELD] [EXACT LOCAL COVARIANCE LAW]`
-  `[EXACT ROUTE-R THREE-FACE CHART] [SOURCE GAUSS LAW CONJECTURAL]`
-  `[PHYSICS REALIZATION OPEN] [NOVELTY UNVERIFIED] [NOT RH] [NO LEAN WRITTEN]`
+- **Status:** `[KINEMATIC PRECURSOR] [EXACT LOCAL PAIRING LAW]`
+  `[EXACT ROUTE-R THREE-FACE CHART] [SOURCE GAUSS LAW REJECTED AS SUFFICIENT]`
+  `[SUPERSEDED AS FIELD FOUNDATION BY MCTG] [NOVELTY UNVERIFIED] [NOT RH] [NO LEAN WRITTEN]`
+- **Successor:** `marked-constitutive-transgression-geometry.md`.
 - **Algebraic core:** `source-soldering-bivariant-law-geometry.md`.
 - **Paper anchors:**
   `../../2-fully-proven/constraint-relativity/relative-law-observer-descent-duality.md`,
   `../../2-fully-proven/constraint-relativity/route-r-raw-resolved-relative-cone-character-law.md`,
+  `../../2-fully-proven/constraint-relativity/rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law.md`,
   `../../2-fully-proven/constraint-relativity/source-soldering-transport-defect-cocycle-and-law-symbol.md`,
   `../../2-fully-proven/constraint-relativity/factor-framed-tensor-jacobian-defect-law.md`,
   `../../2-fully-proven/constraint-relativity/prime-coframe-completion-port-uncertainty-law.md`.
@@ -18,6 +20,11 @@
   universal geometry consists of source laws, exactification-relative tangent classes,
   non-descending observer cotangents, curved transport, and completion-dependent pairings. A
   scalar theorem is a chart evaluation of this geometry, not primitive object.
+
+**Hostile status correction.** This card proves useful kinematics but does not yet define a field:
+unmarked covariance is false, observer non-descent is not curvature, declared-section topology is
+arbitrary, raw HT nontermination is presentation-dependent, and one Gauss equality does not imply
+nonerasure. Successor retains exact organs and adds marked constitutive/transgression requirements.
 
 ## 0. What “all of this” is a shadow of
 
@@ -42,8 +49,10 @@ Constraint Relativity:
   -> endogenous topology, curvature, horizons, measured scalars
 ```
 
-No carrier is privileged. General covariance means invariance under change of primitive and
-addition of any observer already visible in resolved chart.
+No ambient arithmetic/spectral carrier is privileged. Fixed observer ports and ideals are
+privileged constitutive structure. Covariance is restricted to their monomial stabilizer, not full
+linear change; evaluation remains invariant under change of cone primitive and addition of
+descending observer.
 
 ## 1. Law-spacetime chart
 
@@ -192,11 +201,11 @@ and soldering edge `Q_f` obey exact curved Bianchi law
  \tag{CRG.10}
 \]
 
-### Admission/observer curvature
+### Admission/observer non-descent
 
 Even when source law becomes exact in `X`, observer may remain nonzero on relative cone. Its class
-in `O` is admission curvature: failure of measurement to factor through exactified absolute chart.
-Unlike `W`, it is ordinary relative cohomological data.
+in `O` is static failure of measurement to factor through exactified absolute chart. It is not
+curvature without parameter, loop, or typed transgression map.
 
 No theorem yet proves these three are images of one universal curvature functor. Treating them as
 identical before typed maps are built is rejected.
@@ -241,7 +250,62 @@ This is real explanatory gain:
 - fixed trace ideal determines admission topology;
 - physical scalar is invariant pairing.
 
-## 5. Endogenous observer topology
+### Duality is availability, not selection
+
+Full source computation strengthens and limits chart. Put
+
+\[
+ Q_p=\ker\varepsilon_0/\operatorname{im}(\alpha_p-1).
+ \tag{CRG.12a}
+\]
+
+Then
+
+\[
+ H^1(C_p)\cong Q_p\oplus\mathbb C,
+ \qquad Q_p\ne0,
+ \qquad H^1(\Phi_p)=0\text{ on all }H^1(C_p).
+ \tag{CRG.12b}
+\]
+
+Therefore observer cotangent is entire
+
+\[
+ \mathcal O\cong\operatorname{Hom}(Q_p,V)\oplus V.
+ \tag{CRG.12c}
+\]
+
+Physical observer is one rank-one choice in this large space. Even normalized scalar Stokes
+covector is nonunique: literal Haar trace `epsilon_1` yields family
+`R_(p,lambda)=R_p+lambda epsilon_1`, all boundary-killing and period one. Thus no abstract duality,
+trace, or normalization selects physical coefficient.
+
+Reflection-doubled observer
+
+\[
+ s_{t,\rho}=(c_\rho[F_{-t}],c_\rho[F_t])\in V\oplus V
+ \tag{CRG.12d}
+\]
+
+avoids origin every grade. Let
+
+\[
+ \mathfrak D=(V\oplus\{0\})\cup(\{0\}\oplus V).
+ \tag{CRG.12e}
+\]
+
+Exact law is
+
+\[
+ s_{t,\rho}\notin\mathfrak D\iff t=0.
+ \tag{CRG.12f}
+\]
+
+Hence explicitly constructed doubled physical coefficient plus summability gives origin avoidance;
+abstract duality itself permits zero coefficient and gives neither origin nor axis avoidance. RH
+requires observer-discriminant transversality. This is current sharp selection boundary.
+
+## 5. Observer-support stratification — arbitrary-topology no-go
 
 Let `B` parameterize source histories or phase grades and let `sigma_b` be source-admissible
 observer sections in quotients `V_b=S_b/I_b`. Declare vanishing loci
@@ -251,9 +315,10 @@ observer sections in quotients `V_b=S_b/I_b`. Declare vanishing loci
  \tag{CRG.13}
 \]
 
-closed subbasic sets of **observer-admission topology**. This is proposed topology, not yet proved
-canonical. It depends on source-declared sections and fixed ideals; allowing arbitrary sections
-would make topology unfalsifiable.
+closed subbasic sets only after coherence conditions are supplied. Without them this construction is
+arbitrary: any subset `Z subset B` is zero locus of section equal zero on `Z` and one outside. Thus
+no new topology is defined here. Successor requires coherent source-derived constitutive map and
+Fitting/rank degeneracy locus.
 
 For Route R phase base `B=(-1,1)`, exact admission strata are
 
@@ -285,11 +350,11 @@ For hypertranscendental source, finite algebraic/differential observers form tow
  \tag{CRG.15}
 \]
 
-Working hypothesis:
+Presentation-dependent hypothesis (rejected as stated):
 
-> Hypertranscendence is nontermination of law spacetime: no finite observer exactification is
-> terminal, and decisive invariant may live in pro-relative law, derived-limit defect, or
-> completion-dependent observer cotangent rather than any finite equation.
+> Raw nontermination cannot characterize hypertranscendence: contractible summands make any tower
+> nonterminating and adjoining a named HT function can make presentation terminal. Any surviving
+> invariant must live after pro-quasi/Morita localization in source-minimal observer category.
 
 Exact corpus cautions:
 
@@ -312,9 +377,9 @@ Predictions:
 
 ### Phase time
 
-Time is not assumed scalar parameter on fixed Hilbert space. It is source-admissible path through
-observer atlas, transporting `R`, `O`, ideals, and polarization. Phase is holonomy of observer
-cotangent along path; curvature requires at least compositional triangle or higher control surface.
+Time is not assumed scalar parameter on fixed Hilbert space. A path through charts alone has no
+holonomy; it requires source transport of `R`, `O`, ideals, and polarization. Curvature requires at
+least compositional triangle or higher control surface.
 
 Finite Gibbs prime model realizes phases `e^(it log p)` but has split extensions. Half-sided
 modular inclusion realizes hyperbolic conormal persistence but not arithmetic pairing. A physical
@@ -330,9 +395,10 @@ For boundary exactifications `Phi_L:C->X_L`, `Phi_R:C->X_R`, define joint relati
  \tag{CRG.16}
 \]
 
-It is represented by cone of `C->X_L direct-sum X_R`. A source law can vanish in both boundary
-absolute charts yet remain nonzero in joint relative geometry. Boundary observer cotangents pair
-with same interior law.
+It is represented by cone of `C->X_L direct-sum X_R`. A source law can vanish in both chosen
+boundary absolute charts yet remain nonzero in chosen joint relative geometry. This is not invariant:
+choosing both targets zero yields all `H(C)`, while identity charts yield zero. Source-specified
+cofinal boundary system and refinement-invariance are required before calling it interior.
 
 Call this a **relation interior**, not wormhole. A wormhole interpretation requires additional
 theorems:
@@ -354,12 +420,12 @@ Finite-dimensional valuation, Ext flag, or copy-code defect is bounded and canno
 wormhole length. Constraint Relativity predicts length, if real, must arise from cofinal growth of
 relative-law persistence/observer depth. No such equality is currently proved.
 
-## 8. Source Gauss law — bold field equation
+## 8. Source Gauss law — underdefined precursor
 
 Local pairing does not select RH; off-line generalized-prime models carry same constructions. New
 field needs global source conservation.
 
-`[BOLD CONJECTURE — SOURCE_RELATIVE_OBSERVER_GAUSS_LAW]`
+`[REJECTED AS SUFFICIENT — REPLACED BY INDEX PLUS NONZERO CHARGE IN MCTG]`
 
 > For every closed source-history two-cell carrying normalized relative law, oriented sum of
 > transported observer-descent flux is source-exact before divisor selection. Boundary flux is
@@ -388,8 +454,10 @@ Stokes source edge. Its boundary flux difference is explicit
  \tag{CRG.18}
 \]
 
-If source exactness forced flux zero, then `beta_t=0`, hence `t=0`. But existence of required
-source two-cell and current is entirely open; asserting it only at actual zeros is RH-equivalent.
+If source exactness forced flux zero, then `beta_t=0`; however zero doubled observer also has zero
+flux and lies on discriminant. Selection therefore needs both diagonality and independently
+normalized nonzero source charge. Existence of required source two-cell, current, and charge is
+entirely open; asserting them only at actual zeros is insufficient/RH-equivalent.
 
 Falsifier: off-line generalized-prime carrier satisfying all proposed source-cell axioms with
 `beta_t ne0`. A valid axiom must fail there for explicit source reason, not because target is
@@ -408,8 +476,13 @@ declared inadmissible.
    nonzero radial drift.
 7. **Positivity forces selection.** Failed: square/norm detects support/distance and erases
    orientation.
-8. **Exact survivor.** Relative-law/observer-descent duality `(CRG.2)`--`(CRG.6)`.
-9. **Open higher conjecture.** Source Gauss law `(CRG.17)` with generalized-prime falsifier.
+8. **Duality selects physical covector.** Failed: `O=Hom(Q_p,V) direct-sum V`; target coefficient
+   and even normalized scalar Stokes covector are nonunique.
+9. **Doubled nonzero observer selects centre.** Failed: doubled state avoids origin every grade.
+10. **Exact survivor.** Observer-discriminant transversality `(CRG.12d)`--`(CRG.12f)`, invariant
+    only under marked-port monomial gauge.
+11. **One Gauss law selects.** Failed: zero doubled observer has zero flux. Successor requires
+    source index/diagonality plus independent nonzero charge, with generalized-prime falsifier.
 
 ## 10. Research questions worthy of new field
 
@@ -432,6 +505,8 @@ declared inadmissible.
 9. What are moduli, characteristic classes, and cobordisms of law spacetimes?
 10. Which other L-functions, partition functions, and HT objects exhibit same
     kernel--relative--observer trinity?
+11. What source universal property selects one observer covector from
+    `Hom(Q_p,V) direct-sum V`, and why does it force axis rather than only origin avoidance?
 
 ## 11. Predictions and falsifiers
 
@@ -456,6 +531,7 @@ declared inadmissible.
 4. Physical wormhole claim lacks Type III/Tate limit and unbounded metric theorem.
 5. Universal field merely renames each corpus obstruction without typed maps or new prediction.
 6. Source current is defined using Xi zero/critical line or desired pairing vanishing.
+7. Source “duality” only proves doubled observer nonzero and never controls coordinate projections.
 
 ## 12. Novelty boundary
 
@@ -489,6 +565,8 @@ formalize Source Gauss law before paper-level source two-cell and current are co
 - [x] exact literal arithmetic--geometric--spectral chart
 - [x] raw/resolved/relative distinctions hostile-audited
 - [x] arbitrary-stabilization countermodel integrated
+- [x] full Route-R `H1` and observer-coefficient freedom
+- [x] origin-avoidance versus observer-discriminant transversality
 - [x] HT and physics predictions separated from claims
 - [ ] source-natural higher category/minimality theorem
 - [ ] second literal cross-route chart

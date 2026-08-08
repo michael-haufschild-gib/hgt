@@ -1072,6 +1072,48 @@ theorem finiteBuresProductCapacity_eq_dualCapacity_sq
   rw [finiteBuresProductCapacity_eq_primalCapacity_sq hsource target,
     finiteBuresPrimalCapacity_eq_dualCapacity hsource target]
 
+theorem finiteBuresPositiveWeight_targetLeverage_eq_targetMaximum
+    {C : Type*} [Fintype C] [Nonempty C] {n : ℕ}
+    {p : C → ℝ} (hp : p ∈ stdSimplex ℝ C)
+    (A : Matrix (Fin n) (Fin n) ℂ)
+    (target : C → Fin n → ℂ)
+    (haverage : (∑ i, p i * finiteBuresTargetLeverage A (target i)) =
+      finiteBuresTargetMaximum A target)
+    (c : C) (hpc : 0 < p c) :
+    finiteBuresTargetLeverage A (target c) = finiteBuresTargetMaximum A target := by
+  apply le_antisymm (finiteBuresTargetLeverage_le_targetMaximum A target c)
+  by_contra hnot
+  have hlt : finiteBuresTargetLeverage A (target c) < finiteBuresTargetMaximum A target :=
+    lt_of_not_ge hnot
+  have hgap_nonneg : ∀ i : C,
+      0 ≤ p i * (finiteBuresTargetMaximum A target - finiteBuresTargetLeverage A (target i)) := by
+    intro i
+    exact mul_nonneg (hp.1 i)
+      (sub_nonneg.mpr (finiteBuresTargetLeverage_le_targetMaximum A target i))
+  have hgap_sum :
+      (∑ i, p i * (finiteBuresTargetMaximum A target - finiteBuresTargetLeverage A (target i))) = 0 := by
+    calc
+      (∑ i, p i * (finiteBuresTargetMaximum A target - finiteBuresTargetLeverage A (target i))) =
+          finiteBuresTargetMaximum A target * (∑ i, p i) -
+            ∑ i, p i * finiteBuresTargetLeverage A (target i) := by
+        simp_rw [mul_sub]
+        rw [Finset.sum_sub_distrib]
+        rw [Finset.mul_sum]
+        congr 1
+        apply Finset.sum_congr rfl
+        intro i _
+        ring
+      _ = 0 := by rw [hp.2, haverage]; ring
+  have htermpos : 0 < p c *
+      (finiteBuresTargetMaximum A target - finiteBuresTargetLeverage A (target c)) :=
+    mul_pos hpc (sub_pos.mpr hlt)
+  have htermle : p c *
+      (finiteBuresTargetMaximum A target - finiteBuresTargetLeverage A (target c)) ≤
+      ∑ i, p i * (finiteBuresTargetMaximum A target - finiteBuresTargetLeverage A (target i)) := by
+    exact Finset.single_le_sum (fun i _ => hgap_nonneg i) (Finset.mem_univ c)
+  rw [hgap_sum] at htermle
+  linarith
+
 end
 
 end GaloisForLFunctions.HTGeometry

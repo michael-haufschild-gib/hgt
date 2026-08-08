@@ -176,5 +176,9 @@ Hostile review found a real error and a stronger theorem. “Secondary operation
 
 New geometry is neither “curved complexes” nor “secondary operations.” It is geometry of exactification-relative tangent laws and non-descending observer cotangents, with gauge-invariant pairing. Raw curvature can always be stabilized algebraically; field content must therefore be source-natural/minimal transport and global flux, not existence of another carrier. 
 
+Strongest invariant survived hostile attack in cleaner form: ordinary relative cone class plus two physical characters. Crucial new warning from source audit: \(H^1(C_p)\) is larger than retained line; pairing theorem gives whole cotangent space but does not canonically choose physical rank-one direction. That blocks another possible theatre move—“duality selects RH.”
 
+### doubled observer discriminant
+Source attack closes another false route: even period-one Stokes normalization is nonunique. Exact \(H^1(C_p)\cong Q_p\oplus\mathbb C\) with \(Q_p\neq0\), and resolved comparison kills all \(H^1\). Duality gives an entire observer space; physical coefficient is chosen, not forced. New sharp geometry is doubled observer discriminant: duality ensures vector avoids origin at every grade, while RH is avoidance of coordinate axes—strictly stronger.
 
+Physics attack produced first honest continuum chart and a hard boundary. For Banach/two-boundary exactification, observer cotangent has extra weak-* descent radical; finite-vector duality is only closed-range limit. For nested horizon cuts, layer and normal observer quotient are exact predual pair, transported invariantly by modular time. This is genuine horizon mathematics. Same incidence occurs in finite TFD without gravity, so it cannot diagnose wormhole.

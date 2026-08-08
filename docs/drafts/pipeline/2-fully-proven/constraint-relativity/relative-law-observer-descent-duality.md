@@ -307,7 +307,7 @@ sequence and dual exactness before selecting files.
 - [x] 1 → 2: dependency-closed proof over vector spaces
 - [x] literal arithmetic--geometric--spectral instantiation
 - [x] circularity boundary stated
-- [ ] independent hostile audit
+- [x] independent hostile audit
 - [ ] continuous/filtered version
 - [ ] source-derived simultaneous nonvanishing on distinguished retained classes
 - [ ] Lean formalization

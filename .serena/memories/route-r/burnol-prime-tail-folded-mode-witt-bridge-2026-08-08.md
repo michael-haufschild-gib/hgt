@@ -1,0 +1,13 @@
+Formalized Stage-3 card `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/burnol/burnol-prime-tail-folded-mode-witt-bridge.md`.
+
+Lean modules:
+- `formal/GaloisForLFunctions/HTGeometry/HermitianWittEigenvalueReality.lean`: `IsFormallySelfAdjoint`, `WittIndexAtMostOne`, common-eigenvalue reality from two independent eigenvectors. Formal feedback: conjugate symmetry is unnecessary; bare complex sesquilinearity + formal self-adjointness + no independent totally isotropic pair suffices.
+- `formal/GaloisForLFunctions/RHTower/BurnolPrimeTailFoldedModeWittBridge.lean`: explicit folded mode independence/common second order; genuine half-rate Bochner Laplace ports including removable odd zero case; exact Burnol heads/current/Cayley quotient; right-half strict expansion; Cauchy-faithful and injective Witt landing critical-line consequences.
+
+Capstone declarations include `routeRFoldedHalfLaplacePort_add_lightCone`, `routeRFoldedHalfLaplacePort_sub_lightCone`, `burnolCartierDividedShiftHeadFlux_eq_foldedLaplacePort`, `routeRFoldedHalfLaplacePort_forward_div_reflected`, `primeFoldMu_im_eq_zero_of_cauchyFaithfulWittLanding`, `re_eq_half_of_cauchyFaithfulWittLanding`. Axiom audit: `[propext, Classical.choice, Quot.sound]`. `lake env lean` target and final `lake build GaloisForLFunctions.RHTower.BurnolPrimeTailFoldedModeWittBridge` passed. Both modules wired into area umbrellas.
+
+Exact open scientific producer remains `ROUTE_R_FOLDED_CAUCHY_STOKES_HERMITICITY`: source-natural transport of both actual folded Cauchy coordinates into fixed coefficient-generated Witt carrier, preserving their independence and intertwining common second-order operator. Do not replace by scalar Laplace/current estimate.
+
+`docs/notes.md` is useful only as corrected producer boundary. Earlier 'secondary operation forced' claim is retracted. Ordinary relative-cone character already reads physical value; arbitrary curvature-corrected stabilization exists. Thus new cone/carrier/exactification is insufficient. Required missing datum is source-natural/minimal transport plus global flux. Relative cone papers: `route-r-raw-resolved-relative-cone-character-law.md` and `relative-law-observer-descent-duality.md`.
+
+Global `scripts/formal_tools.py lint --check-generated` during concurrent refactor reported only unrelated newly added unwired modules and generated-index drift; neither new module appeared in errors. Do not claim global lint green until concurrent modules are wired and index regenerated.

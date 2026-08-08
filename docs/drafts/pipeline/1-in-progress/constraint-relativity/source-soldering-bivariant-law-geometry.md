@@ -4,9 +4,9 @@
 - **Stage:** 1-in-progress
 - **Working field name:** **Curved Bivariant Law Geometry (CBLG)**
 - **Umbrella field:** **Constraint Relativity**
-- **Role:** core dynamics of trace/deformation law transport across source histories
-- **Type:** CANDIDATE NEW MATHEMATICAL FIELD / SOURCE-SOLDERING PROGRAM
-- **Status:** `[BOLD CONJECTURAL FIELD] [EXACT COCYCLE LAW]`
+- **Role:** algebraic local-transport sector of Marked Constitutive Transgression Geometry
+- **Type:** CANDIDATE ALGEBRAIC SECTOR / SOURCE-SOLDERING PROGRAM
+- **Status:** `[MCTG LOCAL SECTOR] [EXACT COCYCLE LAW]`
   `[EXACT FIRST-INFINITESIMAL OBSTRUCTION] [EXACT RELATIVE-OBSERVER DUALITY]`
   `[LITERAL RH SOURCE COMPARISON OPEN]`
   `[CLASSICAL PARENTS] [NOVELTY UNVERIFIED] [NO LEAN WRITTEN]`
@@ -15,10 +15,12 @@
   `../../2-fully-proven/constraint-relativity/constitutive-soldering-intertwiner-energy-law.md`,
   `../../2-fully-proven/constraint-relativity/route-r-raw-resolved-relative-cone-character-law.md`,
   `../../2-fully-proven/constraint-relativity/relative-law-observer-descent-duality.md`,
+  `../../2-fully-proven/constraint-relativity/rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law.md`,
   `../../2-fully-proven/constraint-relativity/factor-framed-tensor-jacobian-defect-law.md`,
   `../../2-fully-proven/constraint-relativity/congruence-order-trace-kahler-exterior-square-nonmetricity-law.md`,
   `../../2-fully-proven/constraint-relativity/gorenstein-trace-kahler-monogenic-equivalence-and-corank-two-splitting-law.md`.
 - **Polarized/physical sector:** `source-framed-polarized-law-kernel-geometry.md`.
+- **Active field foundation:** `marked-constitutive-transgression-geometry.md`.
 
 ## Founding principle
 
@@ -389,6 +391,15 @@ and their exact pairing is `c_rho[F_(-t)]`, with reflected value `c_rho[F_t]`. T
 three faces need not share one carrier: their merger is kernel--relative-lift--dual-observer
 pairing.
 
+Full `H1` computation proves `H^1(Phi_p)=0` on all source `H1` and
+`H^1(C_p)≈Q_p direct-sum C` with `Q_p ne0`. Thus observer space is
+`Hom(Q_p,V) direct-sum V`; duality makes observers available but does not select physical rank-one
+coefficient. Haar trace generates one-parameter family of period-one boundary-killing Stokes
+covectors. Reflection-doubled physical observer avoids origin every grade; avoiding coordinate
+axes is equivalent to `t=0`. This criterion is invariant only after fixed orientation ports/ideals
+are marked; allowed gauge is their monomial/block stabilizer. Any field equation must force stronger discriminant
+transversality, not generic nonzero pairing.
+
 The companion distinction is equally exact. Raw scalar reporter has `D^2 ne 0` off centre;
 resolved exactification makes `[eta_p]` a boundary; every ordinary cochain character of resolved
 **absolute** complex kills it; physical quotient retains it in at least one orientation. Relative
@@ -414,7 +425,7 @@ no unrestricted anti-complex claim survives.
   alone.
 - Stokes--Cartan one-negative-port law requires polarization/inertia, not additive defect alone.
 
-Thus CBLG is exact algebraic core of Constraint Relativity, not yet route-complete field.
+Thus CBLG is exact local algebraic sector of MCTG/Constraint Relativity, not route-complete field.
 
 ## 9. Relation to polarized phase and physics
 

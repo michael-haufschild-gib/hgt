@@ -415,3 +415,58 @@ factorial-slope theorem forces it to be HT at every off-critical point.  The dis
   and isolated the source implication as the exact RH-bearing gap.
 - 2026-07-28 — Independently audited the complex envelope, mixed derivative weights, endpoint
   uniqueness, separant, and entropy remainder; promoted the exact theorem to Stage 2.
+
+## Lean formalization (in progress)
+
+Target statement.  With `formalJetsOver` (in `HTGeometry/AlgebraicallyIndependentCoefficientFormalGerm.lean`)
+the card's conclusion "satisfies no nonzero algebraic differential equation over `ℂ(z)`" is
+
+```
+∀ (m : ℕ) (P : MvPolynomial (Fin (m+2)) ℂ), P ≠ 0 →
+  MvPolynomial.aeval (formalJetsOver m (PowerSeries.mk a)) P ≠ 0
+```
+
+(clearing a rational denominator and a power of `z` turns a relation over `ℂ(z)` into one with
+polynomial coefficients, which is exactly an `MvPolynomial` in `X` together with the jets).
+
+Layer plan, bottom up.
+
+| layer | content | module | status |
+|---|---|---|---|
+| G1 | `ψ(z) = log z − 1/(2z) + O(‖z‖⁻²)` on the **whole** right half plane (the corpus had only the vertical form) | `HTGeometry/DigammaHalfPlaneAsymptotic.lean` | **done** |
+| G2 | `Γ(z+w) = Γ(z)·exp(∫₀¹ w ψ(z+uw) du)` for a **complex** shift | `HTGeometry/GammaComplexShiftIntegral.lean` | **done** |
+| G3 | `(3)`: `Γ(1+αn+w)/(Γ(1+αn)(1+αn)^w) → 1`; principal-log additivity `(αn)^w = α^w n^w` | `HTGeometry/GammaRayShiftAsymptotic.lean` | **done** |
+| E1 | ray-log split `Re(α log(1+αn)) = Re(α log α) + r log n + O(1/n)`; one-step Gamma ratio in log form; the defect recursion `D(n+1) − D(n) = (α log(1+(αn)⁻¹)).re − (r log(1+(rn)⁻¹)) + ReE_α(n) − ReE_r(n)` | `HTGeometry/GammaRayRealEnvelope.lean` | **done** |
+| E2 | **`(5)`**: the two-sided envelope `exists_rayEnvelope` | `HTGeometry/GammaRayRealEnvelope.lean` | **done** |
+| C | `(8)`/`(13)`: the uniform factorial-convolution endpoint bound | — | open |
+| D | `(15)`/`(14)`: endpoint expansion of an ADE coefficient and the separant | — | open |
+| T | `(20)`/`(21)`: a nonzero periodic trigonometric polynomial cannot vanish at infinity | — | open |
+
+Design notes fixed by the audit of the paper proof:
+
+* Only the **sequential** ray asymptotic is needed, not uniform Stirling in a sector: `(3)` is used
+  through `T(log N) → 0`, so `1 + o(1)` errors suffice everywhere except in the envelope `(5)`.
+Named objects now in the tree: `rayPoint`, `rayShiftExponent`, `norm_rayShiftExponent_le`
+(the quantitative `O(1/n)` form — this is what E2 consumes), `tendsto_gamma_ray_shift_ratio`,
+`rayEnvelopeSlope`, `rayEnvelopeDefect`, `rayEnvelopeDefect_succ_sub`, `re_mul_log_rayPoint`,
+`abs_re_mul_log_one_add_inv_le`, `log_mul_natCast_of_re_pos`, `cpow_mul_natCast_of_re_pos`.
+
+The envelope, in the exact form the endpoint lemma will consume:
+
+```
+exists_rayEnvelope (hre : 0 < α.re) :
+  ∃ (B : ℕ) (C : ℝ), 0 < C ∧ ∀ n ≥ 1,
+      ‖Γ(1+αn)‖ ≤ C · n^B · (e^{n·S} · Γ(1+rn))
+    ∧ e^{n·S} · Γ(1+rn) ≤ C · n^B · ‖Γ(1+αn)‖,      S = rayEnvelopeSlope α = Re(α log α) − r log r
+```
+
+Mechanism actually used: with `R_n = (rayPoint α n).re = 1 + n r`, once `2‖α‖ + 4 ≤ R_n`, the four
+terms of `rayEnvelopeDefect_succ_sub` are bounded by `2/n`, `2/n`, `‖α‖(6+2‖α‖)/(n r)`, `(6+2r)/n`,
+so `|D(n+1) − D(n)| ≤ K/n ≤ 2K/(n+1)`; `1/(n+1) ≤ log(n+1) − log n` telescopes this to
+`|D n| ≤ C₀ + 2K log n` (`abs_rayEnvelopeDefect_le`), a `Finset.sup'` over `Finset.range (n₀+1)`
+absorbs `n ≤ n₀` (`exists_rayEnvelopeDefect_bound`), and `B := ⌈2K⌉₊` exponentiates it.
+
+* `(5)` does **not** need the sharp Stirling constant.  A two-sided envelope with a fixed polynomial
+  factor, `c₁ n^{-B₀} A^n Γ(1+rn) ≤ ‖Γ(1+αn)‖ ≤ C₁ n^{B₀} A^n Γ(1+rn)`, is enough: the endpoint
+  lemma already absorbs fixed polynomial weights into its exponent `B`.  That form follows from the
+  ratio estimate `ρ_{n+1}/ρ_n = 1 + O(1/n)`, i.e. from G1–G3 and nothing stronger.

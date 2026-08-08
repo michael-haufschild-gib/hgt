@@ -1,15 +1,17 @@
 # Burnol current as a folded prime-tail Laplace port and the rank-one double-mode obstruction
 
 - **ID:** `burnol-prime-tail-folded-mode-witt-bridge`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / CROSS-ROUTE SOURCE BRIDGE / FINITE HERMITICITY REDUCTION
-- **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW SYNTHESIS] [NOT RH]`
+- **Scientific status:** `[LEAN-PROVED] [CORPUS-NEW SYNTHESIS] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** R, using the prime-tail reflection fold and coefficient-generated Stokes Witt law
 - **Parents:**
   - `burnol-gamma-bockstein-first-wall-extraction-law.md`;
   - `../other/prime-tail-reflection-folded-second-order-resolvent.md`;
   - `../../../4-publication-ready/polarized-stokes-microlocal-witt-law/main.tex`.
-- **Lean:** deliberately deferred while `HTGeometry` and `RHTower` are being refactored.
+- **Lean:**
+  - `formal/GaloisForLFunctions/HTGeometry/HermitianWittEigenvalueReality.lean`;
+  - `formal/GaloisForLFunctions/RHTower/BurnolPrimeTailFoldedModeWittBridge.lean`.
 
 ## 1. Result
 
@@ -301,6 +303,14 @@ compose to `(19)`:
 The remaining map is smaller than the former full physical comparison but still RH-bearing. It
 must be created from literal source incidence.
 
+The corrected relative-cone analysis in `docs/notes.md` and
+`constraint-relativity/relative-law-observer-descent-duality.md` further restricts that creation.
+An ordinary relative-cone character already carries fixed physical value, and arbitrary raw
+curvature can be killed by a noncanonical stabilization. Therefore another carrier, cone, or
+formal exactification does not construct `(19)`. Required input is source-natural transport of
+both Cauchy coordinates into the fixed Witt carrier, with global flux preserving their
+independence. This is compatible with Theorem 2 but does not discharge its landing premises.
+
 ## 5. Heavy conjecture / proof-or-failure loop
 
 1. **Diagonal Poisson coercivity should force inverse-completed jets into `ell2`.**
@@ -334,11 +344,43 @@ must be created from literal source incidence.
     `[FAILED]` It retains the common monodromy coefficient but may codiagonalize the two Cauchy
     slots. Cauchy-faithful injectivity is new content and cannot be inferred from period one.
 11. **Strongest survivor.**
-    `[PAPER-PROVED]` The physical Route-R current is the Lorentzian fixed-Laplace shadow of the
+    `[LEAN-PROVED]` The physical Route-R current is the Lorentzian fixed-Laplace shadow of the
     global folded prime-tail doublet, and any Cauchy-faithful Hermitian landing of that doublet in
     the existing one-port Stokes carrier forces critical-line placement.
 
-## 6. Anti-theatre audit
+## 6. Lean formalization
+
+Formalization splits at reusable algebra/source boundary.
+
+`HTGeometry/HermitianWittEigenvalueReality.lean` proves:
+
+- `pairing_eq_zero_of_common_eigenvalue_not_star_fixed`;
+- `common_eigenvalue_star_fixed_of_wittIndexAtMostOne`;
+- `common_eigenvalue_im_eq_zero_of_wittIndexAtMostOne`;
+- `common_eigenvalue_im_eq_zero_of_injective_intertwiner`.
+
+Lean exposes a strict strengthening of paper statement: conjugate symmetry of form is unused.
+Sesquilinearity, formal self-adjointness, and exclusion of an independent totally isotropic pair
+already force common eigenvalue to be fixed by conjugation. `WittIndexAtMostOne` is defined
+directly by absence of such a pair, so statement remains correct for infinite-dimensional
+carriers and does not rely on a misleading natural-number `finrank` default.
+
+`RHTower/BurnolPrimeTailFoldedModeWittBridge.lean` proves:
+
+- independence and common second-order eigenvalue of explicit even/odd folded modes;
+- genuine Bochner integrability and exact half-rate Laplace formulas for both light-cone
+  combinations and each individual mode, including removable centered odd value;
+- exact forward/reflected Burnol head, Lorentz-current, and Cayley-quotient identities;
+- strict right-half Cayley expansion beyond `1` and `log 2`;
+- `primeFoldMu_im_eq_zero_of_cauchyFaithfulWittLanding`, whose premise is exactly linear
+  independence of the two actual landed folded modes rather than global injectivity;
+- `re_eq_half_of_cauchyFaithfulWittLanding`, plus global-injectivity corollaries.
+
+Both modules are imported by area umbrellas. Targeted final builds pass. `/tmp` axiom audit reports
+exactly `[propext, Classical.choice, Quot.sound]` for all capstones; no project axiom, `sorry`,
+`admit`, `opaque`, or `unsafe` declaration is used.
+
+## 7. Anti-theatre audit
 
 - Every object in `(1)`--`(13)` is explicit and already source-defined before the new comparison.
 - The Laplace integrals converge in the whole open critical strip; no analytic continuation is
@@ -363,8 +405,11 @@ must be created from literal source incidence.
 - [x] Cayley-orientation falsifier
 - [x] rank-one double-mode Hermiticity theorem
 - [x] full-resolvent requirement reduced to finite two-mode comparison
+- [x] reusable Witt-index-one eigenvalue-reality theorem formalized
+- [x] exact folded-mode Laplace/current/Cayley bridge formalized
+- [x] exact Cauchy-faithful and sufficient injective landing interfaces formalized
+- [x] modules wired into `HTGeometry.lean` and `RHTower.lean`
 - [ ] construct `ROUTE_R_FOLDED_CAUCHY_STOKES_HERMITICITY` from pre-divisor source incidence
-- [ ] formalize after corpus refactor
 - [ ] RH
 
 ## Log
@@ -372,3 +417,6 @@ must be created from literal source incidence.
 - 2026-08-08 — identified the Burnol first-wall current with the fixed Laplace port of the
   reflection-folded prime-tail monodromy doublet; proved the rank-one two-mode Hermiticity
   obstruction and reduced full spectral landing to one finite Cauchy-faithful source comparison.
+- 2026-08-08 — formalized complete theorem package in `HTGeometry` and `RHTower`; Lean weakened
+  Hermitian-form premise to bare sesquilinearity plus formal self-adjointness and Witt-index-one,
+  and isolated exact Cauchy-faithfulness from stronger global injectivity.

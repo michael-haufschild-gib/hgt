@@ -1346,3 +1346,156 @@ change. No wormhole-length equality is claimed.
 
 Goal remains open. Current work is significant exact field foundation, not Newton-to-GR completion
 and not RH proof.
+
+## 2026-08-08 — relative-observer closure and marked-constitutive field pivot
+
+### Exact Route-R three-face law and forced failures
+
+Literal source/resolution calculation now separates three nonidentical organs:
+
+\[
+ [\eta_p]\in\ker H^1(\Phi_p),
+ \qquad
+ [(L_p,\eta_p)]\in H^0(\operatorname{Cone}\Phi_p),
+ \qquad
+ [P_{t,\rho}]\in\mathcal O^1_{\Phi_p}(V).
+\]
+
+Arithmetic source class, geometric relative lift, and spectral/physical covector merge by pairing,
+not common carrier. Two bold conjectures failed under explicit countermodels:
+
+1. raw Route-R reporter cannot fit an ordinary complex — false; curvature-corrected stabilization
+   always produces one;
+2. physical value must be secondary/Toda operation — false; ordinary mapping-cone character reads
+   shifted source coordinate.
+
+Correct exact theorem is relative-law/observer-descent duality. For map `f`,
+
+\[
+ R_f=H^{n-1}(\operatorname{Cone}f)/\operatorname{im}H^{n-1}(X)
+ \cong\ker H^n(f),
+\]
+
+\[
+ O_f(V)=\operatorname{coker}[\operatorname{Hom}(H^nX,V)
+ \to\operatorname{Hom}(H^nC,V)]\cong\operatorname{Hom}(R_f,V).
+\]
+
+Pairing is invariant under cone-primitive change and addition of descending observer. Paper cards:
+`route-r-raw-resolved-relative-cone-character-law.md` and
+`relative-law-observer-descent-duality.md`.
+
+### Observer freedom closes false selection hope
+
+For literal rational-adelic complex, with `T=alpha_p-1`, Stokes primitive `R_pT=epsilon_0`, and
+`Q_p=ker epsilon_0/im T`, paper proof gives
+
+\[
+ H^1(C_p)\cong Q_p\oplus\mathbb C,
+ \qquad Q_p\ne0,
+ \qquad H^1(\Phi_p)=0\text{ on all }H^1(C_p).
+\]
+
+Hence observer space is entire `Hom(Q_p,V) direct-sum V`; duality guarantees availability, never
+selects physical covector. Literal Haar trace gives normalized Stokes family
+`R_(p,lambda)=R_p+lambda epsilon_1`, so even scalar boundary-killing period-one observer is
+nonunique. This is exact unconditional leverage: any successful source selector must destroy Haar
+direction and target-coefficient freedom by new source identity.
+
+Reflection-doubled physical value
+
+\[
+ s_t=(c_\rho[F_{-t}],c_\rho[F_t])
+\]
+
+avoids origin for every physical grade but avoids coordinate-axis discriminant exactly at `t=0`.
+RH selection is portwise support/transversality, not existence or total nonzero norm. Paper card:
+`rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law.md`.
+
+### Continuous completion and physics boundary
+
+Banach two-boundary exactification has exact observer sequence
+
+\[
+ 0\to K^\perp/(Y_L^\perp+Y_R^\perp)
+ \to E^*/(Y_L^\perp+Y_R^\perp)
+ \to K^*\to0,
+\]
+
+with `K^perp=weak-star closure(Y_L^perp+Y_R^perp)`. Hostile correction: radical is invisible on
+retained law; it records nonclosed descent, not detection. For nested von Neumann cuts,
+
+\[
+ M(a)/M(b)\quad\leftrightarrow\quad M(b)^\perp/M(a)^\perp
+\]
+
+are canonical relative layer and normal observer predual; co-moving modular pairing is invariant.
+Finite thermofield model realizes boundary-erased line, bilocal observer, and modular phase without
+gravity, falsifying inference from incidence to wormhole. Card:
+`banach-two-boundary-observer-radical-and-horizon-layer-duality.md`.
+
+Chandrasekaran--Flanagan arXiv:2601.07915 supplies genuine perturbative split-horizon chart. At
+matched embedding, cross-corner channel has coefficient
+
+\[
+ W=\mathcal L_\ell(\boldsymbol\mu\Theta),
+\]
+
+and full moving-cut first variation
+
+\[
+ d\mathscr P_\alpha(h,-h)
+ =\frac1{8\pi}\int\alpha e^{\Gamma_0^+}hW.
+\]
+
+Initial frozen-cut `1/(4pi)` derivative was hostile-falsified and corrected. Same `W` controls
+displayed cross-corner symplectic term; stationary special case kills this channel. Split/dressing
+invariance is open. This is horizon bridge, not two-asymptotic wormhole/interior/length law. Card:
+`gravitational-horizon-edge-relative-law-and-charge-pairing.md`.
+
+### Curved relative-observer geometry failed as complete field
+
+Hostile audit proved original field foundation remained classical metatheory:
+
+1. axis avoidance is not general-linear invariant: shear maps `(1,1)` to `(0,1)`;
+2. observer non-descent exists without curvature;
+3. arbitrary declared sections generate arbitrary topology;
+4. raw HT nontermination changes under contractible stabilization;
+5. joint interior depends arbitrarily on boundary maps;
+6. one Gauss equality permits zero doubled observer.
+
+Exact marked-port theorem repairs first issue. Over infinite field, stabilizer of coordinate
+normal-crossing discriminant is monomial group; ordered ports reduce it to diagonal torus plus
+declared reflection. Selection needs independent laws
+
+\[
+ s_+=s_-
+ \qquad\text{and}\qquad
+ s_++s_-\ne0.
+\]
+
+Paper card:
+`marked-port-normal-crossing-covariance-and-selection-independence-law.md`.
+
+### Higher pivot: MCTG
+
+Active field foundation is now
+`marked-constitutive-transgression-geometry.md`:
+
+> **Constraint Relativity is proposed study of conservation/transgression of constraint under
+> change of marked mathematical observer.**
+
+Technical core **Marked Constitutive Transgression Geometry** requires:
+
+1. pre-divisor source-history 2-site;
+2. marked ordered ports, ideals, polarization, and restricted gauge;
+3. source-derived constitutive coevaluation `sigma`, not unrestricted Hom observer;
+4. one total class `Theta_src` whose typed faces recover reporter, transport, relative,
+   completion, and polarization defects;
+5. global index/diagonality plus independent nonzero charge;
+6. coherent Fitting/rank horizons;
+7. Morita/pro invariance for HT and interior claims.
+
+Field is not established. Exact open core is first source-derived constitutive section killing both
+Haar and target-coefficient ambiguities, followed by one cross-route total transgression theorem.
+Route-R selection remains RH-bearing if asserted. Goal remains active.
