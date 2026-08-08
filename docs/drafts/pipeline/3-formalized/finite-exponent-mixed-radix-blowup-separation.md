@@ -1,8 +1,9 @@
 # Finite-exponent mixed-radix blow-up separation
 
 - **ID:** finite-exponent-mixed-radix-blowup-separation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[BRIDGE]` / `[REDISCOVERED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean), `[BRIDGE]` / `[REDISCOVERED]`
+- **Formalized companion:** `finite-exponent-mixed-radix-blowup-separation-formalized.md`
 - **Source:** `prop-interface-discharge-audit` full-rank residue
 - **Statement:** For every injective finite family
   `e : κ → (Fin n →₀ ℕ)`, there is `d : Fin n → ℕ` such that
@@ -19,7 +20,8 @@ full-rank realization for every injectively indexed finite monomial box.
 
 - [x] 0 → 1 in-progress: exact collision obstruction and survivor isolated
 - [x] 1 → 2 fully-proven: dependency-closed mixed-radix proof below
-- [ ] 2 → 3 formalized: exact Lean theorem and axiom audit
+- [x] 2 → 3 formalized: exact Lean theorem and axiom audit — see
+  `finite-exponent-mixed-radix-blowup-separation-formalized.md`
 - [ ] 3 → 4 publication-ready: not applicable; classical encoding bridge
 
 ## Frontier and hostile audit
@@ -66,7 +68,7 @@ weights prove it sufficient for separation by a nonnegative integral linear func
 - **New insight:** analytic full-rank construction splits into two independent obligations:
   combinatorial exponent separation (closed here) and carrier-specific realization of those pole
   rates.
-- **Status:** `[PAPER-PROVED]`; Lean pending.
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED]`.
 
 ## Log
 
