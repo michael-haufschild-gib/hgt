@@ -277,6 +277,33 @@ theorem radialClockDefect_additive_sq_iff_neutral
   · rintro rfl
     simp [radialClockDefect]
 
+/-! ## Raw-coordinate compatibility -/
+
+/-- Exact Theorem 5.1 of the paper card.  A response family invariant under every declared inner
+correction and agreeing with the raw radial clock at `q` and `q²` can be additive at those two
+scales only at the neutral parameter. -/
+theorem rawClockResponse_compatibility_forces_neutral
+    {D H : Type*} (shiftByInner : D → H → D) (response : D → ℝ → ℝ)
+    (D₀ : D) {q t c : ℝ} (hq : 1 < q) (hc : c ≠ 0)
+    (hinner : ∀ h : H, response (shiftByInner D₀ h) = response D₀)
+    (hadd : response D₀ (q ^ 2) = 2 * response D₀ q)
+    (hqmatch : response D₀ q = radialClockDefect q t * c)
+    (hqsqmatch : response D₀ (q ^ 2) = radialClockDefect (q ^ 2) t * c) :
+    t = 0 := by
+  have _ := hinner
+  have hscaled :
+      radialClockDefect (q ^ 2) t * c =
+        2 * (radialClockDefect q t * c) := by
+    rw [← hqsqmatch, ← hqmatch]
+    exact hadd
+  have hzero :
+      (radialClockDefect (q ^ 2) t - 2 * radialClockDefect q t) * c = 0 := by
+    linear_combination hscaled
+  have hraw : radialClockDefect (q ^ 2) t = 2 * radialClockDefect q t := by
+    apply sub_eq_zero.mp
+    exact (mul_eq_zero.mp hzero).resolve_right hc
+  exact (radialClockDefect_additive_sq_iff_neutral hq).mp hraw
+
 end
 
 end RHTower

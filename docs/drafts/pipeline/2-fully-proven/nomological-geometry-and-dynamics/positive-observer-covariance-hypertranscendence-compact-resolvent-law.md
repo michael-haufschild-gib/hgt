@@ -1,11 +1,11 @@
-# Positive observer covariance, hypertranscendence, and compact-resolvent completeness
+# Positive observer covariance, relative jet freedom, and compact-resolvent completeness
 
 - **ID:** `clg-positive-observer-covariance-compact-resolvent`
 - **Stage:** 2 — fully proven on paper
-- **Type:** THEOREM (paper) / FOUR-SECTOR BRIDGE / COMPACTNESS CRITERION
+- **Type:** THEOREM (paper) / FIVE-SECTOR BRIDGE / COMPACTNESS CRITERION
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [RELATIVE-JET-FREEDOM/POSITIVITY/RECURRENCE/COMPLETION]`
   `[CONNECTED-FILTER DEFECT] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
-- **Statement:** For a faithful differential conditional observer, relative jet-freeness forces
+- **Statement:** For a faithful differential conditional observer, relative jet-freedom forces
   infinite positive covariance rank; its canonical norm is noncoercive, and compact resolvent is
   exactly the additional datum needed for compact action sublevels.
 
@@ -86,7 +86,7 @@ from `(3)`: for finite scalars `z_i`,
 
 QED.
 
-## 3. Relative HT forces infinite covariance rank
+## 3. Relative jet freedom forces infinite covariance rank
 
 Call `f in A_0` **relatively jet-free over `B_0`** when, for every `N`,
 
@@ -264,7 +264,7 @@ If `E` is multiplicative, `(4)` gives `Gamma_E=0`. For `a in ker E`, faithfulnes
 
 \[
  \boxed{
- \text{a faithful observer cannot erase nonzero HT modes and remain multiplicative}.}
+ \text{a faithful multiplicative observer has no nonzero relative hidden modes}.}
 \tag{18}
 \]
 
@@ -272,11 +272,11 @@ Nonmultiplicativity is not an error here. It is the observer covariance defect m
 of products to pass through observation. Calling it physical interaction requires a separate
 realization theorem.
 
-## 8. Four-sector interpretation
+## 8. Five-sector interpretation
 
 | Sector | Exact shadow |
 |---|---|
-| HT/prolongation | relative jet freedom forces `rank G_N=N+1` |
+| relative prolongation | relative jet freedom forces `rank G_N=N+1` |
 | positivity/Stokes-type coarea | covariance is a positive Gram kernel; identifying a literal Stokes form with it remains open |
 | recurrence/history | periodic observer projection coexists with escaping compact-resolvent lift |
 | completion/properness | positivity is noncoercive; compact resolvent is exactly the repair criterion |
@@ -307,7 +307,8 @@ bimodules. A single chosen GNS space is only a local frame.
    cannot give compact sublevels for a graph action `(11)`.
 4. A graph action `(11)` has compact sublevels exactly under the compact-resolvent condition
    `(12)`.
-5. A faithful multiplicative quotient cannot be the universal observer for a nontrivial HT tower.
+5. A faithful multiplicative quotient cannot be the universal observer for a nontrivial relative
+   jet tower satisfying `(5)`.
 6. If concrete HT, Stokes, and recurrence charts require incompatible positive observers, the
    field must pivot from one GNS geometry to a stack of CP correspondences.
 
@@ -330,7 +331,7 @@ covariance identities alone are not gravity.
 ## Gates
 
 - [x] positive covariance identity
-- [x] relative-HT infinite-rank theorem
+- [x] relative-jet-freedom infinite-rank theorem
 - [x] positivity/noncompactness theorem
 - [x] compact-resolvent iff classification
 - [x] recurrent observer/escaping lift construction

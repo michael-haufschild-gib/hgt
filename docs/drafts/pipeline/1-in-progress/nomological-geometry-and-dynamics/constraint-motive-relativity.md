@@ -6,7 +6,8 @@
 - **Type:** CANDIDATE GENERAL FIELD / HIGHER EQUIVALENCE PRINCIPLE
 - **Status:** `[CONJECTURAL FIELD] [EXACTNESS-DOCTRINE GEOMETRY]`
   `[PERFECT FIVE-SHADOW LAW PROVED] [OBSTRUCTION-BIANCHI TOWER PROVED]`
-  `[POSITIVE-COVARIANCE DYNAMICS PROVED] [WHOLE-CORPUS REALIZATION OPEN]`
+  `[POSITIVE-COVARIANCE/COMPACTNESS CRITERION PROVED] [SOURCE DYNAMICS OPEN]`
+  `[WHOLE-CORPUS REALIZATION OPEN]`
   `[NOT RH] [NO LEAN WRITTEN OR BUILT]`
 - **Local atlas:** `constitutive-lawstack-geometry.md`.
 - **Exact finite laws:**
@@ -14,19 +15,19 @@
   `../../2-fully-proven/nomological-geometry-and-dynamics/tate-fracture-obstruction-bianchi-amplitude-law.md`;
   `../../2-fully-proven/nomological-geometry-and-dynamics/positive-observer-covariance-hypertranscendence-compact-resolvent-law.md`;
   `../../2-fully-proven/nomological-geometry-and-dynamics/euler-prime-orbit-prolongation-recurrence-polar-cofinal-law.md`.
-- **Statement:** Mathematical exactness, topology, positivity, and history cost are observer
-  doctrines rather than a fixed background; one source-selected self-dual fracture motive is
-  realized differently in each doctrine, and the failure of doctrine changes to commute is its
-  geometry.
+- **Conjectural statement:** Mathematical exactness, topology, positivity, and history cost should
+  be treated as observer doctrines rather than a fixed background. A successful theory would
+  construct one source-selected marked constraint section, its doctrine realizations, and the
+  typed failures of doctrine changes to commute. No such common section is yet constructed.
 
 ## 0. The higher answer
 
-> **Conjecture.** All RH/HT proof routes are local doctrine charts of a source-selected constraint
-> motive. Arithmetic, spectral, geometric, positive, topological, and recurrence objects are not
-> forced into one ambient category. Their ambient exactness structures are themselves coordinates.
-> The analogue of spacetime is the fibration of these doctrines; the analogue of a field is a
-> self-dual source section; the analogue of curvature is the obstruction tower for changing
-> doctrine and totalizing that section.
+> **Conjecture.** All RH/HT proof routes are local doctrine charts or irreversible doctrine
+> realizations of one source-selected marked constraint section. Arithmetic, spectral, geometric,
+> positive, topological, and recurrence objects are not forced into one ambient category. Their
+> ambient exactness structures are themselves coordinates. The analogue of spacetime is the
+> fibration of these doctrines. A self-dual fracture realization and its obstruction tower are
+> candidate local field carriers, not data currently obtained from the source.
 
 This is one level above Constitutive Lawstack Geometry. CLG fixes a lawstack and studies its
 observers. CMR lets the notions of object, exact sequence, admissibility, completion, duality,
@@ -38,7 +39,7 @@ realizations.
 
 ## 1. Constraint spacetime
 
-A provisional **constraint spacetime** is a bicartesian/stable fibration
+A provisional **constraint spacetime** is a cartesian doctrine fibration
 
 \[
  p:\mathscr E\longrightarrow\mathscr D,
@@ -49,11 +50,12 @@ where:
 
 1. `D` is an infinity-category of observer doctrines: algebraic/exact, analytic/topological,
    spectral, Hermitian/ordered, pro-complete, and history-costed;
-2. each fibre `E_d` is stable and idempotent-complete, or is an admitted exact category equipped
-   with a specified stable derived envelope; it retains its native exactness, admissibility,
-   duality, and completion;
-3. admitted arrows in `D` carry realization/change-of-doctrine functors and named
-   Beck--Chevalley comparison cells;
+2. each fibre `E_d` retains its native exactness and admissibility; when cofibres are used, the
+   datum additionally names a stable core or derived envelope `S_d`; order, complete positivity,
+   topology, and cost may instead be enrichments or proarrows and are not declared stable by fiat;
+3. admitted arrows in `D` carry realization/change-of-doctrine functors and typed comparison
+   cells; such a cell is called a Beck--Chevalley mate only when the required adjoints have been
+   specified;
 4. the law is a marked section
 
    \[
@@ -61,23 +63,35 @@ where:
    \tag{2}
    \]
 
-   with source current `theta`, self-duality, orientation/root line, history automorphism `T`, and
-   source-normalized action filtration when those data exist.
+   with any independently constructed source current `theta`, fibrewise duality, orientation/root
+   line, history automorphism `T`, or source-normalized action filtration recorded as additional
+   structure rather than assumed consequences.
 
-The section must be source-first. A direct product of route objects or a section chosen to enforce
-RH is invalid.
+The section must be source-first. An ad hoc product of completed route objects is insufficient
+unless it has a source universal property and comparison maps explaining why those objects are its
+realizations. A section chosen to enforce RH is invalid.
 
 ## 2. Constraint equivalence principle
 
-For a specified doctrine square, let
+For a specified doctrine square
+
+\[
+\begin{matrix}
+d_{00}&\longrightarrow&d_{01}\\
+\downarrow&&\downarrow\\
+d_{10}&\longrightarrow&d_{11},
+\end{matrix}
+\]
+
+let `R_1,R_2:E_{d00}->E_{d11}` be its two realization composites. A declared comparison cell is
 
 \[
  \beta_\square(\Delta):R_1(\Delta)\longrightarrow R_2(\Delta)
 \tag{3}
-\]
+\].
 
-be its typed Beck--Chevalley mate between the two realization composites in a stable fibre or
-stable derived envelope. Define exchange curvature
+When the requisite adjoints exist it may be a Beck--Chevalley mate. In a declared stable core or
+stable derived envelope define exchange curvature
 
 \[
  \kappa_\square(\Delta)=\operatorname{cofib}(\beta_\square(\Delta)).
@@ -87,21 +101,24 @@ stable derived envelope. Define exchange curvature
 If no common coefficient fibre or comparison cell exists, the square has a **fracture defect**;
 there is no curvature class to fabricate.
 
-> **Constraint equivalence principle.** A source deformation and observer change are locally
-> indistinguishable on the law exactly when their exchange mate is invertible on the thick
-> subcategory generated by `Delta`. Their global distinction is exchange curvature, doctrine
-> holonomy, nondualizability, orientation loss, or completion boundary.
+> **Constraint equivalence principle (definition/design gate).** A source deformation and observer
+> change are locally indistinguishable on the law when the specified comparison cell is invertible
+> on the thick subcategory generated by `Delta` in the relevant stable core. Away from that local
+> sector they may differ by exchange curvature, holonomy, nondualizability, orientation loss,
+> completion boundary, or another typed defect; this list is not exhaustive.
 
 This is a design principle until a source-canonical `Delta` and doctrine fibration are constructed.
 It is falsifiable: any claimed equivalence must exhibit the mate and prove invertibility.
 
 ## 3. Constitutive Morita equivalence
 
-Two presentations are equivalent only if an equivalence of doctrine bases and bicartesian
-fibrations:
+Two presentations are **constitutively Morita equivalent** only when there is a tuple consisting
+of an equivalence of doctrine bases, an equivalence of total cartesian fibrations over it, and
+coherent equivalences of their named stable cores/envelopes, such that the tuple:
 
 1. sends `Delta` to `Delta'`;
-2. preserves source current and self-duality;
+2. preserves every declared fibrewise duality and coherent equivalence
+   `Delta_d ~= D_d(Delta_d)` with its degree/sign convention, as well as source current;
 3. preserves the orientation/root line and admissibility;
 4. intertwines history transport and every exchange cell;
 5. preserves the action filtration, not merely its zero locus.
@@ -109,45 +126,66 @@ fibrations:
 Equality of rank, determinant, energy, zero set, or recurrence period is insufficient. This is the
 field's coordinate-invariance gate.
 
-## 4. Local geometric carrier: self-dual Tate fracture totalization
+## 4. Candidate local carrier: filtered fracture totalization
 
-An ordinary defect complex cannot simultaneously carry nonzero curvature and cohomology, cannot
-see the sum/product completion boundary, and does not determine order or holonomy. The proposed
-local carrier is therefore a self-dual Tate fracture totalization with higher components
+For the same operator `d`, the equations `d^2=0` and `d^2!=0` cannot both hold. Thus raw curved
+route data and its derived cohomology cannot be the same ordinary cochain complex. A typed local
+repair starts with a bigraded object `A^{p,q}` and maps
 
 \[
- D=\sum_{r\ge0}D_r,\qquad D^2=0.
+ D_r:A^{p,q}\longrightarrow A^{p+r,q+1-r},\qquad D=\sum_{r\geq 0}D_r.
+\]
+
+The flat completed totalization equation is
+
+\[
+ D^2=0.
 \tag{5}
 \]
 
-Its first obstruction is `O_2=D_1^2`; a choice of `D_2` nullhomotopes it; the next obstruction is
-`O_3=D_1D_2+D_2D_1`. In general `[O_n]` is the exact obstruction to adjoining `D_n`. The same
-carrier has:
+For `n>=2`, set
 
-- `D_0`-cohomology for isotropy and derived thickness;
-- the `O_n` tower for curvature/admission/coherence;
-- `cofib(Tot_direct-sum -> Tot_product)` for completion/nonproperness;
-- integrated representation-up-to-homotopy for holonomy;
-- self-dual Witt/signature data for order/inertia;
+\[
+ O_n=\sum_{\substack{r+s=n\\r,s\geq1}}D_rD_s,
+ \qquad \partial f=D_0f-(-1)^{|f|}fD_0.
+\]
+
+Under the hypotheses proved in the linked obstruction card, `\partial O_n=0` after the lower
+equations have been solved, and `D_n` exists exactly when `[O_n]=0`. In particular
+`O_2=D_1^2` and `O_3=D_1D_2+D_2D_1`. Higher obstruction classes have the stated Massey-type
+indeterminacy under changes of earlier nullhomotopies.
+
+This theorem does **not** construct a source-derived Tate object, self-duality, fracture diagram,
+or holonomy. A candidate realization would additionally have to construct:
+
+- `D_0`-cohomology for one derived-thickness reading;
+- the `O_n` tower for successive extension/admission tests;
+- a source-relevant sum/product totalization boundary, if one exists;
+- integrable representation-up-to-homotopy data for holonomy;
+- independently sourced self-duality and Witt/signature data for order/inertia;
 - fracture/type defects when comparison cells do not exist.
 
-Finite vertical amplitude kills high `D_r` and makes sum/product totalization coincide. Thus
-indefinitely migrating obstruction and nonzero completion boundary require an unbounded-amplitude
-object. HT is a candidate source of that amplitude, but is neither defined by nor implied by
-nonperfectness alone.
+Finite vertical amplitude kills high `D_r`; for the standard bounded bigrading it also makes direct
+sum and direct product totalization coincide. Consequently that particular boundary cannot occur
+there. This does not classify every completion boundary or every route no-go. Hypertranscendence
+may force an unbounded realization, but unboundedness is neither its definition nor a proof of it.
+Moreover `D^2=0` is flatness of the completed totalization: interpreting a local Cartan curvature
+as a `D_0`-exact component killed by higher fields is still conjectural.
 
 ## 5. Exact finite conservation law
 
-The perfect-defect theorem supplies the first doctrine-independent conservation law. A finite
-perfect complex `(C,T)` has one Euler/K-theory class, derived cohomology, all spectral supertraces
+The perfect-defect theorem supplies a conservation law for realizations compatible with finite
+perfect-complex formalism. A finite perfect complex `(C,T)` has one Euler/K-theory class, derived
+cohomology, all spectral supertraces
 and superdeterminants, positive modulus-square determinant, and holonomy powers. Boundary terms
 cancel in every realization. For unitary `T`, positive determinant energy is identically one while
 traces retain phase, proving positive observation cannot reconstruct recurrence orientation.
 
-This is finite Newtonian calibration, not the whole field. HT begins where the all-prolongation
-object is nonperfect and the theorem must be replaced by Tate/fracture totalization.
+This is finite Newtonian calibration, not the whole field. A hypertranscendental realization may
+require an unbounded prolongation object, but neither nonperfectness nor a Tate replacement proves
+hypertranscendence.
 
-## 6. Dynamics: positive observer correspondences
+## 6. Positive observer correspondences and dynamical admissibility
 
 Quotient maps are too narrow for positive/filter sectors. A conditional observer
 `E:A->B` has covariance
@@ -157,55 +195,60 @@ Quotient maps are too narrow for positive/filter sectors. A conditional observer
 \tag{6}
 \]
 
-For a faithful differential observer, relative jet-freeness forces all jet Gram matrices to be
+For the hypotheses of the linked C*-algebra theorem, relative jet-freeness forces all finite jet
+Gram matrices to be
 positive definite with rank `N+1`. Positivity then makes the hidden unit shell noncompact rather
-than complete. For Hilbert histories, action sublevels are compact exactly when the added positive
-generator has compact resolvent.
+than compact. For Hilbert histories equipped with the theorem's graph action, action sublevels are
+compact exactly when the positive generator has compact resolvent.
 
-Therefore the positive doctrine should be a stack of completely positive observer
-correspondences with covariance and compact-resolvent data, not one globally chosen GNS space.
-Nonmultiplicativity is its connected interaction tensor.
+This motivates a candidate positive doctrine of completely positive observer correspondences with
+covariance and compact-resolvent data, rather than one globally chosen GNS space. The proved
+covariance is multiplicative-domain failure; identifying it with a physical connected interaction
+tensor requires an independent realization. The theorem proves no source dynamics.
 
 ## 7. First source-orbit calibration
 
-The Euler prime-log orbit supplies a source-first local section with six computed shadows:
+The Euler prime-log compatible finite family supplies a source-first **calibration tuple** with six
+computed shadows:
 
 1. arithmetic prime coefficient `log p`;
 2. spectral prime-log generator;
-3. full finite prolongation rank by Vandermonde;
+3. full finite *linear* prolongation rank by Vandermonde;
 4. compact recurrent Kronecker phase projection;
 5. phase-blind positive energy;
 6. unbounded phase lift and cofinal half-density Hilbert wall.
 
-Abstractly, any self-adjoint simple integrally independent generator with a cyclic vector has the
-same finite history-polar normal form. This proves CMR has nontrivial kinematics. It does not yet
-construct the doctrine fibration or common HT/horizon realization.
+Abstractly, any finite self-adjoint generator with simple integrally independent spectrum and a
+vector meeting every eigenspace has the same finite history-polar normal form. This is one exact
+multi-shadow calibration; it does not define hypertranscendence, construct the CMR section, or
+produce a common HT/horizon realization.
 
 ## 8. What the field would explain
 
-| Corpus phenomenon | CMR interpretation |
-|---|---|
-| arithmetic/spectral/geometric mismatch | different exactness doctrines of one source section |
-| making one face exact blocks another | noninvertible or absent doctrine-change mate |
-| no-go migration | successive obstruction classes `[O_n]`, not one scalar defect |
-| positivity erases orientation | positive realization forgets phase/root/coorientation data |
-| HT towers | failure of every finite prolongation doctrine to be conservative; unbounded amplitude |
-| finite success/cofinal failure | nonexact realization, Tate boundary, or incoherent finite inverses |
-| recurrence with open history | closed doctrine projection with nontrivial holonomy/lift and proper action |
-| one negative Stokes port | Witt shadow of self-duality, if a source realization is constructed |
-| quantum filter/wormhole connected term | covariance defect of a nonmultiplicative positive observer |
+| Corpus phenomenon | Candidate CMR interpretation | Status |
+|---|---|---|
+| arithmetic/spectral/geometric mismatch | different exactness doctrines of one source section | `[TARGET]` |
+| making one face exact blocks another | noninvertible or absent doctrine-change cell | `[TARGET]` |
+| no-go migration | successive obstruction classes, with indeterminacy, rather than one scalar defect | `[TARGET]` |
+| positivity erases orientation | phase-invariant/even positive realization forgets root/coorientation data | `[TARGET]` |
+| HT towers | failure of a named finite-prolongation observer family to be conservative | `[TARGET]` |
+| finite success/cofinal failure | nonexact realization, a constructed completion boundary, or incoherent inverses | `[TARGET]` |
+| recurrence with open history | closed observer projection with nontrivial lifted history and proper action | `[TARGET]` |
+| one negative Stokes port | Witt shadow of source-derived self-duality | `[TARGET]` |
+| quantum filter connected term | covariance defect of a source-derived nonmultiplicative positive observer | `[TARGET]` |
+| black-hole/wormhole interior | admitted star-paired history plus independently derived edge charge/length reconstruction | `[OPEN]` |
 
 These are explanations only after the corresponding functors and invariants are constructed. The
 table is a research contract, not proof by renaming.
 
-## 9. Field equations
+## 9. Candidate law slots
 
 CMR has no honest single scalar Einstein equation. Its candidate equations are typed:
 
 1. source section/constitution equation selecting `Delta`;
 2. higher Maurer--Cartan equation `D^2=0` with obstruction tower;
 3. Beck--Chevalley exchange equations for doctrine squares;
-4. self-duality/polarization equation and orientation line;
+4. fibrewise self-duality/polarization data and a separately typed orientation line;
 5. compactness/proper-action equation in the history doctrine;
 6. source-current equation in each compatible local Cartan chart, subject to the curved Bianchi
    identity.
@@ -221,8 +264,10 @@ route output is theatre.
 4. The same source motive with actions `A` and `2A` has different history geometry.
 5. Flat exchange curvature can coexist with nontrivial doctrine holonomy.
 6. Nonperfect infinite direct sums need not be HT.
-7. A strict positive square-zero one-layer transport is trivial.
-8. A faithful multiplicative observer cannot erase nonzero HT modes.
+7. On a Hilbert space, a positive operator `T` with `T^2=0` is zero; positivity alone therefore
+   cannot encode a nontrivial one-layer square-zero transport.
+8. For unital C*-algebras and a faithful state, a multiplicative conditional observer has zero
+   covariance and cannot simultaneously provide faithful erasure of nonzero relative modes.
 
 ## 11. Acceptance gates
 
@@ -236,8 +281,8 @@ CMR becomes an answer, rather than a blueprint, only after all gates pass:
 5. prove constitutive Morita invariance;
 6. derive self-duality, positivity, and root/orientation data from source;
 7. derive action/cost and compactness rather than append weights;
-8. prove HT iff failure of every finite prolongation observer to be conservative, with a
-   non-finite-presentation theorem;
+8. name a finite-prolongation observer family for a specified HT class and prove exact equivalence
+   between its failure of conservativity and a standard differential-algebraic HT criterion;
 9. use one obstruction tower to compute two publication invariants and predict a third not used in
    construction;
 10. defeat alternative source sections preserving existing route shadows but changing topology,
@@ -271,10 +316,12 @@ simultaneous realization and predictive coupling across HGT/RH/HT doctrines.
 
 `[SURVIVES PRELIMINARY HIGHER-LEVEL ATTACK] [FIELD NOT YET CONSTRUCTED]`.
 
-CMR is a larger jump than CLG: exactness itself becomes relative. It already has three exact local
-laws—five-shadow conservation, obstruction--Bianchi tower, and covariance/compact-resolvent
-dynamics—and one six-shadow arithmetic orbit. It still lacks the source-first `Delta`, doctrine
-transitions, constitutive uniqueness, and third-route prediction required for a GR-level field.
+CMR is a larger jump than CLG because exactness itself becomes relative. At present it has four
+independent abstract calibrations: perfect-complex shadow conservation, a filtered obstruction
+tower, a positive covariance/compact-resolvent criterion, and a six-shadow arithmetic orbit. It
+does **not** yet have a common `Delta`, doctrine transitions, source-derived self-duality/action,
+constitutive uniqueness, or a cross-realization prediction. It is therefore a falsifiable field
+programme, not a constructed GR-level theory.
 
 ## Lean-return note
 

@@ -4,7 +4,7 @@
 - **Stage:** 2 — fully proven on paper
 - **Type:** THEOREM (paper) / HIGHER-DEFECT OBSTRUCTION LAW
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [CURVATURE/ADMISSION/COHERENCE]`
-  `[SUM/PRODUCT TOTALIZATION BOUNDARY] [POSITIVE STRICTNESS NO-GO] [NOT RH]`
+  `[STANDARD SUM/PRODUCT TOTALIZATION BOUNDARY] [POSITIVE STRICTNESS NO-GO] [NOT RH]`
   `[NO LEAN WRITTEN OR BUILT]`
 - **Statement:** In a filtered twisted complex, curvature is the first closed extension
   obstruction, higher Bianchi defects form its obstruction tower, and finite vertical amplitude

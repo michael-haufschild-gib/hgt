@@ -1,4 +1,5 @@
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Nat.GCD.Basic
 import Mathlib.Order.Interval.Finset.Nat
@@ -125,7 +126,7 @@ theorem sum_fin_erase_eq_sum_filter {M : Type*} [AddCommMonoid M] (N : ℕ) (g :
     ∑ m : Fin N, ∑ n ∈ (Finset.univ : Finset (Fin N)).erase m, g m n
       = ∑ p ∈ Finset.filter (fun p : Fin N × Fin N => p.1 ≠ p.2) Finset.univ, g p.1 p.2 := by
   classical
-  rw [Finset.sum_filter, ← Finset.univ_product_univ, Finset.sum_product']
+  rw [Finset.sum_filter, ← Finset.univ_product_univ, Finset.sum_product]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [← Finset.sum_filter]
   refine Finset.sum_congr ?_ (fun _ _ => rfl)
@@ -142,7 +143,7 @@ theorem sum_fin_offDiag_eq_sum_offDiagPairs {M : Type*} [AddCommMonoid M] (N : �
   refine Finset.sum_nbij (fun p : Fin N × Fin N => (((p.1 : ℕ) + 1), ((p.2 : ℕ) + 1)))
     ?_ ?_ ?_ ?_
   · intro p hp
-    rw [Finset.mem_coe, Finset.mem_filter] at hp
+    rw [Finset.mem_filter] at hp
     rw [offDiagPairs, Finset.mem_filter, Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc]
     refine ⟨⟨⟨Nat.le_add_left 1 _, ?_⟩, Nat.le_add_left 1 _, ?_⟩, ?_⟩
     · exact Nat.succ_le_of_lt p.1.isLt
@@ -160,8 +161,7 @@ theorem sum_fin_offDiag_eq_sum_offDiagPairs {M : Type*} [AddCommMonoid M] (N : �
       Finset.mem_Icc] at hq
     obtain ⟨⟨⟨hm1, hmN⟩, hn1, hnN⟩, hne⟩ := hq
     refine ⟨(⟨q.1 - 1, by omega⟩, ⟨q.2 - 1, by omega⟩), ?_, ?_⟩
-    · rw [Finset.mem_coe, Finset.mem_filter]
-      refine ⟨Finset.mem_univ _, ?_⟩
+    · refine Finset.mem_coe.mpr (Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩)
       intro h
       exact hne (by have := congrArg (fun z : Fin N => (z : ℕ)) h; simp at this; omega)
     · exact Prod.ext (by simp; omega) (by simp; omega)
@@ -201,7 +201,7 @@ theorem sum_primitiveTriples_eq_sum_primitivePairScales {M : Type*} [AddCommMono
   classical
   refine Finset.sum_nbij (fun t : ℕ × ℕ × ℕ => ((t.2.1, t.2.2), t.1)) ?_ ?_ ?_ (fun _ _ => rfl)
   · intro t ht
-    rw [Finset.mem_coe, primitiveTriples, Finset.mem_filter, Finset.mem_product,
+    rw [primitiveTriples, Finset.mem_filter, Finset.mem_product,
       Finset.mem_product] at ht
     rw [primitivePairScales, Finset.mem_filter, Finset.mem_product, Finset.mem_product]
     exact ⟨⟨⟨ht.1.2.1, ht.1.2.2⟩, ht.1.1⟩, ht.2⟩
@@ -227,7 +227,8 @@ theorem sum_fin_offDiag_eq_sum_ratio {M : Type*} [AddCommMonoid M] (N : ℕ) (f 
   classical
   rw [sum_fin_offDiag_eq_sum_offDiagPairs, sum_offDiagPairs_eq_sum_primitiveTriples,
     sum_primitiveTriples_eq_sum_primitivePairScales (F := fun d m n => f (d * m) (d * n))]
-  exact Finset.sum_finset_product' _ _ _ (mem_primitivePairScales_iff N)
-    (f := fun q d => f (d * q.1) (d * q.2))
+  exact Finset.sum_finset_product' (primitivePairScales N) (primitiveRatioPairs N)
+    (fun q => ratioScales N q.1 q.2) (mem_primitivePairScales_iff N)
+    (f := fun (q : ℕ × ℕ) (d : ℕ) => f (d * q.1) (d * q.2))
 
 end RHTower.Sieve

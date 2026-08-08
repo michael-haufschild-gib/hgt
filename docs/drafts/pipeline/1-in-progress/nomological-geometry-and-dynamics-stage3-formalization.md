@@ -12,7 +12,7 @@
 | Card | Exact mapping | Lean status | Final audit |
 |---|---|---|---|
 | critical Euler/Mass/Weil/Stokes shadow | mapping | pending | pending |
-| Dirichlet Maurer--Cartan Mellin orbit | mapping | pending | pending |
+| Dirichlet Maurer--Cartan Mellin orbit | `DirichletMaurerCartanMellinOrbitLaw` covers Dirichlet derivation, Kähler inverse identity/contraction, Mellin automorphism and derivative, both gauge equations, Julia orbit, pure gauge, one-parameter curvature | partial: universal de Rham Maurer--Cartan assembly remains | pending |
 | Euler prime-orbit prolongation/recurrence/polar/cofinal | mapping | pending | pending |
 | finite law-relation wall synchronization/phase loss | mapping | pending | pending |
 | framed two-boundary phase fibre/history separation | mapping | pending | pending |
@@ -36,6 +36,7 @@
 ## Owned new Lean modules
 
 - `formal/GaloisForLFunctions/HTGeometry/ParachainConnesComparisonLaw.lean`
+- `formal/GaloisForLFunctions/HTGeometry/DirichletMaurerCartanMellinOrbitLaw.lean`
 - `formal/GaloisForLFunctions/RHTower/SourceNormalClockCurvatureLaw.lean`
 
 ## Open core

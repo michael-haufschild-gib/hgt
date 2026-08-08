@@ -531,3 +531,37 @@ RH statement remains circular until that construction precedes Xi-zero specializ
   operator follows without source-derived `E` and `L`.
 - New Stage-2 card:
   `positive-observer-covariance-hypertranscendence-compact-resolvent-law.md`.
+
+## 2026-08-09 — hostile higher-pivot correction and anti-regression lock
+
+- Route-local arithmetic selection, source-nullhomology, and construction of another RH-equivalent
+  detector are now explicitly classified as calibration work, not construction of the higher
+  field. They advance CMR only when they also construct a doctrine transition, comparison cell,
+  conservativity theorem, constitutive uniqueness statement, or cross-realization prediction.
+- Corrected the proposed base from a globally stable/bicartesian fibration to a general cartesian
+  doctrine fibration. Native algebraic, topological, ordered, completely positive, pro-complete,
+  and costed fibres retain different admissibility structures. A stable core or derived envelope
+  must be named only where cofibres are used.
+- Corrected the central object from an allegedly constructed self-dual Tate motive to an unknown
+  source-selected marked constraint section `Delta`. Fibrewise self-duality, orientation/root
+  line, history action, cost, and Tate structure are additional source-derived targets, not
+  automatic structure.
+- The constraint equivalence principle is presently a definition/design gate: local
+  indistinguishability means invertibility of a specified comparison cell on the
+  `Delta`-generated thick sector. It is not yet a theorem because neither common `Delta` nor the
+  required doctrine transitions have been constructed.
+- The exact higher-defect result is narrower and typed: in a bigraded filtered twisted complex,
+  `O_n=sum_(r+s=n,r,s>=1)D_rD_s` is closed after lower equations are solved, and `[O_n]=0` is
+  equivalent to adjoining `D_n`. Later classes have Massey-type indeterminacy. Standard
+  direct-sum/product totalizations agree at bounded vertical amplitude; this does not classify all
+  nonproperness or all corpus no-gos.
+- A self-dual Tate fracture totalization remains a design target. The theorem does not construct
+  its Tate structure, self-duality, integration, source comparison, or corpus realization.
+- Corrected the positive-observer result from an “HT dynamics” theorem to a relative-jet-freedom
+  covariance theorem plus a graph-action compact-resolvent criterion. It proves no source dynamics
+  and no wormhole geometry. Likewise the prime-log theorem proves unbounded finite-cutoff linear
+  prolongation, not analytic hypertranscendence.
+- Current honest state: four independent abstract calibrations, no common `Delta`, no doctrine
+  transition system, no source-derived self-duality/action, and no third invariant predicted from
+  a shared realization. CMR remains a falsifiable field programme, not a GR-level theory already
+  constructed.

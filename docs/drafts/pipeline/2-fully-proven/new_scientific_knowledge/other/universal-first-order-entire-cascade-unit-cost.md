@@ -8473,3 +8473,40 @@ so `Matrix.det_mul` and `Matrix.det_of_lowerTriangular` give the power directly 
 lower columns' limits, one level down plus the correction), `topLim_det` and `topLim_unique`
 (transport and reflect), `Matrix.det_succ_column` at `j = Fin.last` (expand; only row 0 survives),
 and `det_jetOrbitMatrix_smul` (renormalise the next starting vector).
+
+### Log — correction: the rescaling factor, and the right invariant
+
+The previous entry's claim that dividing by `Q_{m'}(X_{m'})` restores the profile is **incomplete**,
+and the profile is the wrong invariant.  Working the second peel out in full:
+
+Write `f := α·q_m·(∏_{i<m'}Q_i)`, which is free of `X_{m'}`.  The peeled vector has
+`y_{m'} = (∏_{i<m'}Q_i)[W(Q_{m'},v_{m'})/Q_{m'}² + α q_m Q_{m'}']`, so `y_{m'}/Q_{m'} = f·c_{m'} + O(-2)`
+— degree `−1` as claimed, but the leading part carries the *factor* `f`, and
+
+`E'(f·c) = (δf)·c + f·E'(c)`.
+
+The second term has degree `−2`, but `(δf)·c` has degree `−1` with residue `(δf)·deg Q_{m'} ≠ 0`.
+So at the second level the residues below the border do **not** all vanish, the newest column of the
+limit matrix has several nonzero entries, and the expansion is a sum of minors rather than one.
+Degree profile alone is therefore not a workable induction hypothesis.
+
+**The fix.**  Divide by `Q_{m'}(X_{m'})·f`, not by `Q_{m'}(X_{m'})` alone.  Then
+
+`ŷ_{m'} = y_{m'}/(Q_{m'}·f) = (Q_{m'}'/Q_{m'}) + W(Q_{m'},v_{m'})/(α q_m Q_{m'}³) = c_{m'} + O(-3)`,
+
+and the lower entries keep degree `0`.  By `det_jetOrbitMatrix_smul` that extra division is still
+free, since `f ≠ 0`.
+
+**So the induction hypothesis is not a degree profile but an exact leading term:**
+
+> `I(m,u)`:  `u_l = 0` for `l > m`;  `u_m − Q_m'/Q_m` has degree `≤ −2`;  the lower entries have
+> degree `≤ 0`.
+
+`I(m,u)` gives what the peel actually needs, because the shifted operator is additive and
+`E(Q_m'/Q_m) = (∏_{i<m}Q_i)·W(Q_m,v_m)/Q_m²` already has degree `−2`: hence every entry of the newest
+column below the border has degree `−2`, so all residues below the border vanish, and the newest
+column's limit is `(deg Q_m, 0, …, 0)` exactly as required.  And `ŷ` satisfies `I(m',·)` again,
+because `c_{m'}` appears in it with coefficient exactly one.
+
+The border row `logBorder Q m` satisfies `I(m,·)` with the `O(-2)` term equal to zero, which is why
+the first peel worked without any rescaling and the difficulty only appeared at the second.
