@@ -115,3 +115,19 @@ sits on the borderline by construction, and no choice of abscissa moves it off.
 What remains open is the tail sum `∑_p 1/(p log p) = O(1)`, needed to make the error term above absolute
 rather than `O(logLog z/T)`; by Mertens per dyadic block it is `≍ ∑_k 1/k²`, so it is a bounded quantity,
 but the corpus does not yet carry it.
+
+### First piece of the missing tail sum
+
+The two-sided Mertens first theorem is in the corpus (`MertensFirst.mertensFirst_upper`,
+`mertensFirst_lower`), so differencing it at consecutive powers of two bounds a dyadic block of primes by
+an absolute constant:
+
+`∑_{2^k < p ≤ 2^{k+1}} (log p)/p ≤ log 2 + log 4 + 1 + 2·logSqTailConst`
+
+(`MertensFirstBlock.sum_prime_log_div_block_le`), uniformly in `k` — the upper bound at `2^{k+1}`
+contributes `(k+1)log 2 + log 4`, the lower bound at `2^k` removes `k log 2 − 1 − 2·logSqTailConst`, and
+the `k log 2` cancels.
+
+That is the per-block input the tail sum needs: on the `k`-th block `1/(p log p) ≤ ((log p)/p)/(k log 2)²`,
+so the block bound converts `∑_p 1/(p log p)` into `∑_k 1/k²`. What remains is the assembly — covering
+`primesLE x` by the blocks and summing `1/k²` — which is bookkeeping over a `biUnion`, not a new estimate.
