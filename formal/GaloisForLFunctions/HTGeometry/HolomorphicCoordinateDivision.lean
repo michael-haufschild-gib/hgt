@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DbarCoordinateProduct
 import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 import Mathlib.Analysis.Calculus.FDeriv.Analytic
+import GaloisForLFunctions.HTGeometry.PolydiscWeierstrass
 
 /-!
 # Dividing a holomorphic function by a coordinate
@@ -151,7 +152,7 @@ section Division
 variable {n : ℕ} {f : (Fin (n + 1) → ℂ) → ℂ} {c : Fin (n + 1) → ℂ} {r : ℝ}
 
 /-- The last partial derivative of an analytic function is analytic. -/
-theorem coordDeriv_analyticOnNhd (hf : AnalyticOnNhd ℂ f (Metric.ball c r)) :
+theorem lastCoordDeriv_analyticOnNhd (hf : AnalyticOnNhd ℂ f (Metric.ball c r)) :
     AnalyticOnNhd ℂ (lastCoordDeriv f) (Metric.ball c r) := by
   have hev : AnalyticOnNhd ℂ (⇑(ContinuousLinearMap.apply ℂ ℂ
       ((Pi.single (Fin.last n) (1 : ℂ) : Fin (n + 1) → ℂ)))) Set.univ :=
@@ -200,7 +201,7 @@ theorem continuousOn_coordDeriv_path (hf : AnalyticOnNhd ℂ f (Metric.ball c r)
   show ContinuousWithinAt ((fun z => lastCoordDeriv f z) ∘ fun s : ℝ => coordContract (s : ℂ) x)
     (Set.Icc 0 1) t
   exact ContinuousAt.comp_continuousWithinAt
-    ((coordDeriv_analyticOnNhd hf) _ (coordContract_mem_ball hc hx ht)).continuousAt
+    ((lastCoordDeriv_analyticOnNhd hf) _ (coordContract_mem_ball hc hx ht)).continuousAt
     hpath.continuousWithinAt
 
 /-- **The division identity.**  The last coordinate times the quotient is the function, because the
@@ -297,5 +298,140 @@ theorem coordContract_dist_le {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) (x y : 
     exact dist_le_pi_dist x y i
 
 end Holomorphy
+
+end HTGeometry
+
+namespace HTGeometry
+
+open Complex MeasureTheory intervalIntegral
+
+section Differentiability
+
+variable {n : ℕ} {f : (Fin (n + 1) → ℂ) → ℂ} {c : Fin (n + 1) → ℂ} {r : ℝ}
+
+/-- The derivative of the integrand of the quotient in its base point. -/
+noncomputable def coordDivDeriv (f : (Fin (n + 1) → ℂ) → ℂ) (x : Fin (n + 1) → ℂ) (t : ℝ) :
+    (Fin (n + 1) → ℂ) →L[ℂ] ℂ :=
+  (fderiv ℂ (lastCoordDeriv f) (coordContract (t : ℂ) x)).comp (coordContract (t : ℂ))
+
+theorem continuous_coordContract_apply (x : Fin (n + 1) → ℂ) :
+    Continuous fun t : ℝ => coordContract (t : ℂ) x :=
+  continuous_iff_continuousAt.2 fun t => (hasDerivAt_coordContract x t).continuousAt
+
+set_option maxHeartbeats 1000000 in
+/-- **The quotient is holomorphic.**  It is a parametric integral over a compact interval of a
+family of holomorphic functions: their derivatives are continuous in the parameter, and their
+Lipschitz constants are uniform in it because the contraction does not increase distances and lands
+in a compact sub-polydisc on which the derivative of the last partial derivative is bounded. -/
+theorem coordDivQuotient_differentiableAt (hf : AnalyticOnNhd ℂ f (Metric.ball c r))
+    (hc : c (Fin.last n) = 0) {x₀ : Fin (n + 1) → ℂ} (hx₀ : x₀ ∈ Metric.ball c r) :
+    DifferentiableAt ℂ (coordDivQuotient f) x₀ := by
+  have hx₀d : dist x₀ c < r := Metric.mem_ball.1 hx₀
+  set ρ : ℝ := (dist x₀ c + r) / 2 with hρdef
+  have hρx : dist x₀ c < ρ := by rw [hρdef]; linarith
+  have hρr : ρ < r := by rw [hρdef]; linarith
+  have hρ0 : 0 < ρ := lt_of_le_of_lt dist_nonneg hρx
+  have hx₀ρ : x₀ ∈ Metric.ball c ρ := Metric.mem_ball.2 hρx
+  have hKsub : Metric.closedBall c ρ ⊆ Metric.ball c r := fun z hz =>
+    Metric.mem_ball.2 (lt_of_le_of_lt (Metric.mem_closedBall.1 hz) hρr)
+  have hDan : AnalyticOnNhd ℂ (lastCoordDeriv f) (Metric.ball c r) :=
+    lastCoordDeriv_analyticOnNhd hf
+  obtain ⟨C, hC⟩ : ∃ C, ∀ z ∈ Metric.closedBall c ρ, ‖fderiv ℂ (lastCoordDeriv f) z‖ ≤ C :=
+    (isCompact_closedBall c ρ).exists_bound_of_continuousOn
+      (fun z hz => (hDan.fderiv z (hKsub hz)).continuousAt.continuousWithinAt)
+  have hC0 : 0 ≤ C := le_trans (norm_nonneg _) (hC c (Metric.mem_closedBall_self hρ0.le))
+  have hmemK : ∀ x ∈ Metric.ball c ρ, ∀ t ∈ Set.Icc (0 : ℝ) 1,
+      coordContract (t : ℂ) x ∈ Metric.closedBall c ρ := fun x hx t ht =>
+    Metric.mem_closedBall.2 (le_of_lt (Metric.mem_ball.1 (coordContract_mem_ball hc hx ht)))
+  have hLipD : ∀ z ∈ Metric.closedBall c ρ, ∀ y ∈ Metric.closedBall c ρ,
+      ‖lastCoordDeriv f y - lastCoordDeriv f z‖ ≤ C * ‖y - z‖ := fun z hz y hy =>
+    (convex_closedBall c ρ).norm_image_sub_le_of_norm_hasFDerivWithin_le
+      (f' := fun w => fderiv ℂ (lastCoordDeriv f) w)
+      (fun w hw => ((hDan w (hKsub hw)).differentiableAt.hasFDerivAt).hasFDerivWithinAt)
+      (fun w hw => hC w hw) hz hy
+  set μ : Measure ℝ := volume.restrict (Set.Ioc (0 : ℝ) 1) with hμdef
+  set F : (Fin (n + 1) → ℂ) → ℝ → ℂ :=
+    fun x t => lastCoordDeriv f (coordContract (t : ℂ) x) with hFdef
+  have hIoc : Set.Ioc (0 : ℝ) 1 ⊆ Set.Icc (0 : ℝ) 1 := Set.Ioc_subset_Icc_self
+  have hFcontOn : ∀ x ∈ Metric.ball c ρ, ContinuousOn (F x) (Set.Icc (0 : ℝ) 1) := by
+    intro x hx t ht
+    show ContinuousWithinAt ((fun z => lastCoordDeriv f z) ∘ fun s : ℝ => coordContract (s : ℂ) x)
+      (Set.Icc 0 1) t
+    exact ContinuousAt.comp_continuousWithinAt
+      ((hDan _ (hKsub (hmemK x hx t ht))).continuousAt)
+      (continuous_coordContract_apply x).continuousWithinAt
+  have hF'cont : ContinuousOn (coordDivDeriv f x₀) (Set.Icc (0 : ℝ) 1) := by
+    have h1 : ContinuousOn
+        (fun t : ℝ => fderiv ℂ (lastCoordDeriv f) (coordContract (t : ℂ) x₀))
+        (Set.Icc (0 : ℝ) 1) := by
+      intro t ht
+      show ContinuousWithinAt ((fun z => fderiv ℂ (lastCoordDeriv f) z)
+        ∘ fun s : ℝ => coordContract (s : ℂ) x₀) (Set.Icc 0 1) t
+      exact ContinuousAt.comp_continuousWithinAt
+        ((hDan.fderiv _ (hKsub (hmemK x₀ hx₀ρ t ht))).continuousAt)
+        (continuous_coordContract_apply x₀).continuousWithinAt
+    exact h1.clm_comp continuous_coordContract.continuousOn
+  have hquot : coordDivQuotient f = fun x => ∫ t, F x t ∂μ :=
+    funext fun x => intervalIntegral.integral_of_le zero_le_one
+  rw [hquot]
+  refine (hasFDerivAt_integral_of_dominated_loc_of_lip (F := F) (F' := coordDivDeriv f x₀)
+    (bound := fun _ => C) (s := Metric.ball c ρ)
+    (Metric.isOpen_ball.mem_nhds hx₀ρ)
+    (Filter.eventually_of_mem (Metric.isOpen_ball.mem_nhds hx₀ρ) fun x hx =>
+      ((hFcontOn x hx).mono hIoc).aestronglyMeasurable measurableSet_Ioc)
+    (((hFcontOn x₀ hx₀ρ).integrableOn_Icc).mono_set hIoc)
+    ((hF'cont.mono hIoc).aestronglyMeasurable measurableSet_Ioc)
+    ?_ (((continuous_const.continuousOn).integrableOn_Icc).mono_set hIoc) ?_).2.differentiableAt
+  · refine (ae_restrict_mem measurableSet_Ioc).mono fun t ht => ?_
+    refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+    have hCabs : ((Real.nnabs C : NNReal) : ℝ) = C := by
+      rw [Real.coe_nnabs, abs_of_nonneg hC0]
+    rw [hCabs, dist_eq_norm]
+    calc ‖lastCoordDeriv f (coordContract (t : ℂ) x) - lastCoordDeriv f (coordContract (t : ℂ) y)‖
+        ≤ C * ‖coordContract (t : ℂ) x - coordContract (t : ℂ) y‖ :=
+          hLipD _ (hmemK y hy t (hIoc ht)) _ (hmemK x hx t (hIoc ht))
+      _ = C * dist (coordContract (t : ℂ) x) (coordContract (t : ℂ) y) := by rw [dist_eq_norm]
+      _ ≤ C * dist x y :=
+          mul_le_mul_of_nonneg_left (coordContract_dist_le (hIoc ht) x y) hC0
+  · refine (ae_restrict_mem measurableSet_Ioc).mono fun t ht => ?_
+    have hz : coordContract (t : ℂ) x₀ ∈ Metric.ball c r :=
+      hKsub (hmemK x₀ hx₀ρ t (hIoc ht))
+    exact ((hDan _ hz).differentiableAt.hasFDerivAt).comp x₀
+      (coordContract (t : ℂ)).hasFDerivAt
+
+end Differentiability
+
+end HTGeometry
+
+namespace HTGeometry
+
+open Complex MeasureTheory
+
+section Capstone
+
+variable {n : ℕ} {f : (Fin (n + 1) → ℂ) → ℂ} {c : Fin (n + 1) → ℂ} {r : ℝ}
+
+/-- **A holomorphic function vanishing on the divisor of the last coordinate is that coordinate
+times a holomorphic function.**  The quotient is explicit: the integral of the last partial
+derivative along the segment contracting that coordinate to zero.  The polydisc must be centred on
+the divisor, which is what makes the contraction preserve it. -/
+theorem coordDivQuotient_analyticOnNhd (hf : AnalyticOnNhd ℂ f (Metric.ball c r))
+    (hc : c (Fin.last n) = 0) :
+    AnalyticOnNhd ℂ (coordDivQuotient f) (Metric.ball c r) := by
+  have hdiff : DifferentiableOn ℂ (coordDivQuotient f) (Metric.ball c r) :=
+    fun x hx => (coordDivQuotient_differentiableAt hf hc hx).differentiableWithinAt
+  exact fun x hx => GaloisForLFunctions.HTGeometry.analyticAt_of_differentiableOn
+    Metric.isOpen_ball hdiff hx
+
+/-- **The division theorem**, as an existence statement. -/
+theorem exists_analyticOnNhd_coord_mul (hf : AnalyticOnNhd ℂ f (Metric.ball c r))
+    (hc : c (Fin.last n) = 0)
+    (hvanish : ∀ z ∈ Metric.ball c r, z (Fin.last n) = 0 → f z = 0) :
+    ∃ u : (Fin (n + 1) → ℂ) → ℂ, AnalyticOnNhd ℂ u (Metric.ball c r) ∧
+      ∀ x ∈ Metric.ball c r, x (Fin.last n) * u x = f x :=
+  ⟨coordDivQuotient f, coordDivQuotient_analyticOnNhd hf hc,
+    fun _ hx => coordDivQuotient_mul hf hc hvanish hx⟩
+
+end Capstone
 
 end HTGeometry

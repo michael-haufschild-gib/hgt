@@ -206,3 +206,35 @@ linear and no `∂̄` argument is needed) then needs, with `μ = volume.restrict
 Then `coordDivQuotient f` is complex differentiable on the polydisc, hence analytic, hence a section
 of the structure sheaf, and `deningerCoordMul` composed with it recovers the given section — which
 is exactness of the ideal sequence in the middle, and with it the residue sequence.
+
+## The division theorem: proved
+
+**`exists_analyticOnNhd_coord_mul`** in
+`formal/GaloisForLFunctions/HTGeometry/HolomorphicCoordinateDivision.lean`.  Axiom audit
+`propext, Classical.choice, Quot.sound`.
+
+> A holomorphic function on a polydisc centred on the divisor of the last coordinate, vanishing on
+> that divisor, is that coordinate times a holomorphic function on the same polydisc.
+
+The quotient is `coordDivQuotient`, the segment integral above.  Its holomorphy is
+`coordDivQuotient_differentiableAt`: one application of
+`hasFDerivAt_integral_of_dominated_loc_of_lip` at `𝕜 = ℂ`, with
+
+- `s = ball c ρ` for `dist x₀ c < ρ < r`, so `closedBall c ρ` is a compact subset of the polydisc;
+- the bound `C = sup ‖fderiv ℂ (lastCoordDeriv f)‖` on that compact ball, and the Lipschitz estimate
+  `‖F x t − F y t‖ ≤ C‖x − y‖` from `Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le` together
+  with `coordContract_dist_le` — uniform in `t`, which is the hypothesis that would fail for any
+  non-contracting path;
+- measurability of the integrand and of the derivative family through
+  `ContinuousOn.aestronglyMeasurable` on `Ioc 0 1`, the derivative family being continuous by
+  `ContinuousOn.clm_comp` out of `continuous_coordContract` and the continuity of the derivative of
+  an analytic function.
+
+Passing from complex differentiability on the polydisc to analyticity is the corpus's own
+several-variable statement `analyticAt_of_differentiableOn` — mathlib's
+`DifferentiableOn.analyticOnNhd` is one variable only.
+
+**What is left on this card**: only the bookkeeping that turns this into exactness of the sheaf
+sequence — read a section of the structure sheaf killed by the restriction as an analytic function
+on a polydisc, divide, and read the quotient back as a section, which is the local-model machinery
+already used for `deningerDivisorRestrict_locallySurjective`.
