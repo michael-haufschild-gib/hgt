@@ -288,3 +288,30 @@ theorem integral_mul_kernel_le_of_general_block_moment {F G : ℝ → ℝ} {C J 
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open Complex MeasureTheory Set
+
+/-- **The three-piece splitting of a symmetric vertical integral.**  Purely a splitting: the two flanks
+`±[t₀, b]` and the low range `[−t₀, t₀]`, the negative flank read through the reflection
+`t ↦ −t`.  Any bound on the two flanks and the low range assembles into one on the whole range. -/
+theorem integral_symm_le_of_flanks {F G : ℝ → ℝ} (hFc : Continuous F) (hGc : Continuous G)
+    {P Lo t₀ b : ℝ}
+    (hpos : (∫ t in t₀..b, F t * G t) ≤ P)
+    (hneg : (∫ t in t₀..b, F (-t) * G (-t)) ≤ P)
+    (hlow : (∫ t in (-t₀)..t₀, F t * G t) ≤ Lo) :
+    (∫ t in (-b)..b, F t * G t) ≤ 2 * P + Lo := by
+  have hint : ∀ u v : ℝ, IntervalIntegrable (fun t => F t * G t) volume u v :=
+    fun u v => ((hFc.mul hGc).intervalIntegrable _ _)
+  have hsplit1 := intervalIntegral.integral_add_adjacent_intervals
+    (f := fun t => F t * G t) (μ := volume) (a := -b) (b := -t₀) (c := t₀) (hint _ _) (hint _ _)
+  have hsplit2 := intervalIntegral.integral_add_adjacent_intervals
+    (f := fun t => F t * G t) (μ := volume) (a := -b) (b := t₀) (c := b) (hint _ _) (hint _ _)
+  have hrefl : (∫ t in (-b)..(-t₀), F t * G t) = ∫ t in t₀..b, F (-t) * G (-t) := by
+    rw [intervalIntegral.integral_comp_neg (fun t => F t * G t)]
+  rw [hrefl] at hsplit1
+  linarith [hsplit1, hsplit2]
+
+end GaloisForLFunctions.HTGeometry
+end

@@ -336,3 +336,49 @@ theorem integral_norm_mul_norm_mul_kernel_le {A B : ℝ → ℂ} (hA : Continuou
 
 end GaloisForLFunctions.HTGeometry
 end
+
+noncomputable section
+namespace GaloisForLFunctions.HTGeometry
+open Complex MeasureTheory Set
+
+/-- **The low range of a product integral.**  On `|t| ≤ t₀` the kernel is bounded, so Cauchy–Schwarz
+against the two mean squares at height `t₀` bounds the contribution. -/
+theorem integral_norm_mul_norm_low_le {A B : ℝ → ℂ} (hA : Continuous A) (hB : Continuous B)
+    {G : ℝ → ℝ} (hGc : Continuous G) {C₀ QA κA QB κB t₀ : ℝ} (hC₀ : 0 ≤ C₀) (ht₀ : 0 < t₀)
+    (hGlow : ∀ t, G t ≤ C₀)
+    (hmsA : (∫ t in Set.Icc (-t₀) t₀, ‖A t‖ ^ 2) ≤ QA + κA * t₀)
+    (hmsB : (∫ t in Set.Icc (-t₀) t₀, ‖B t‖ ^ 2) ≤ QB + κB * t₀) :
+    (∫ t in (-t₀)..t₀, (‖A t‖ * ‖B t‖) * G t)
+      ≤ C₀ * (Real.sqrt (QA + κA * t₀) * Real.sqrt (QB + κB * t₀)) := by
+  have hle : -t₀ ≤ t₀ := by linarith
+  have hconv : ∀ f : ℝ → ℝ, (∫ t in (-t₀)..t₀, f t) = ∫ t in Set.Icc (-t₀) t₀, f t := by
+    intro f
+    rw [intervalIntegral.integral_of_le hle, ← MeasureTheory.integral_Icc_eq_integral_Ioc]
+  have hmono : (∫ t in (-t₀)..t₀, (‖A t‖ * ‖B t‖) * G t)
+      ≤ ∫ t in (-t₀)..t₀, (‖A t‖ * ‖B t‖) * C₀ := by
+    refine intervalIntegral.integral_mono_on hle
+      (((hA.norm.mul hB.norm).mul hGc).intervalIntegrable _ _)
+      (((hA.norm.mul hB.norm).mul continuous_const).intervalIntegrable _ _) ?_
+    intro t _
+    exact mul_le_mul_of_nonneg_left (hGlow t) (by positivity)
+  rw [intervalIntegral.integral_mul_const] at hmono
+  have hcs : (∫ t in (-t₀)..t₀, ‖A t‖ * ‖B t‖)
+      ≤ Real.sqrt (∫ t in (-t₀)..t₀, ‖A t‖ ^ 2) * Real.sqrt (∫ t in (-t₀)..t₀, ‖B t‖ ^ 2) :=
+    integral_norm_mul_norm_le_sqrt_mul_sqrt hA hB hle
+  have hA' : Real.sqrt (∫ t in (-t₀)..t₀, ‖A t‖ ^ 2) ≤ Real.sqrt (QA + κA * t₀) := by
+    refine Real.sqrt_le_sqrt ?_
+    rw [hconv (fun t => ‖A t‖ ^ 2)]
+    exact hmsA
+  have hB' : Real.sqrt (∫ t in (-t₀)..t₀, ‖B t‖ ^ 2) ≤ Real.sqrt (QB + κB * t₀) := by
+    refine Real.sqrt_le_sqrt ?_
+    rw [hconv (fun t => ‖B t‖ ^ 2)]
+    exact hmsB
+  calc (∫ t in (-t₀)..t₀, (‖A t‖ * ‖B t‖) * G t)
+      ≤ (∫ t in (-t₀)..t₀, ‖A t‖ * ‖B t‖) * C₀ := hmono
+    _ ≤ (Real.sqrt (QA + κA * t₀) * Real.sqrt (QB + κB * t₀)) * C₀ := by
+        refine mul_le_mul_of_nonneg_right (le_trans hcs ?_) hC₀
+        exact mul_le_mul hA' hB' (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+    _ = C₀ * (Real.sqrt (QA + κA * t₀) * Real.sqrt (QB + κB * t₀)) := by ring
+
+end GaloisForLFunctions.HTGeometry
+end

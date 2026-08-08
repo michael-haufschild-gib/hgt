@@ -2635,3 +2635,32 @@ This is the analytic half of GHS step four with the smoothing layer replaced by 
 third factor's *trivial* size is what is used here; the distance/Euler saving that Halász's theorem needs
 enters at exactly one place — the hypothesis `hFbound` of `integral_norm_perron_triple_le` — so any
 improvement on `sup_{|t| ≤ T} ‖L(f,σ+it)‖` propagates to the conclusion with no change to the rest.
+
+## The splitting law, and the triple product over the whole range
+
+`integral_symm_le_of_flanks` (in `VerticalKernelDyadicSplit.lean`) is the splitting stripped of all
+analytic content: for any `F, G` continuous,
+
+`∫_{−b}^{b} F·G ≤ 2P + Lo`   whenever   `∫_{t₀}^{b} F·G ≤ P`, `∫_{t₀}^{b} F(−·)G(−·) ≤ P`,
+`∫_{−t₀}^{t₀} F·G ≤ Lo`,
+
+with no positivity, no ordering of `t₀` and `b`, and no relation between the pieces — the two flanks and
+the low range, the negative flank read through `t ↦ −t`.  It subsumes the symmetric assembly used for a
+single Dirichlet series and serves the product case unchanged.
+
+`integral_norm_mul_norm_low_le` (in `IntervalMeanSquareMoment.lean`) is the product's low range:
+bounded kernel, Cauchy–Schwarz, two mean squares at height `t₀`.
+
+`integral_symm_norm_perron_triple_le` (in `PerronVerticalTripleBound.lean`) is the triple Perron
+integral over the whole symmetric range `|t| ≤ t₀2^M`:
+
+`≤ 2·perronVerticalProductBound + (Vx^σ/σ)·√(Q_A + κ_At₀)·√(Q_B + κ_Bt₀)`.
+
+The negative flank costs nothing extra: the Perron kernel is even (`perron_kernel_norm_neg`), the mean
+squares are reflection invariant (`integral_Icc_normSq_comp_neg`), and the pointwise bound on the third
+factor holds on the whole line.
+
+Next brick: identify the Dirichlet polynomial of the triple convolution with the product `L(A)L(B)L(f)`
+— for a *truncated* `f`, so that all three factors are finitely supported and the corpus's
+`DirichletTruncationError.norm_tsum_sub_sum_range_le` pays the tail — and feed the result into
+`norm_sum_Icc_sub_perron_integral_le`.
