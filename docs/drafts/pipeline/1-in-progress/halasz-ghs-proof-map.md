@@ -2846,3 +2846,23 @@ spacing hypothesis `|(t−u)log p| ≤ π` confines the statement to one cell, s
 bound does not follow from uniqueness.  The standard resolution is to twist by the close frequency `τ` and
 estimate the twisted function, which *is* far from every character near the origin; this transfer is what
 carries the resulting bound back to `∑_{n ≤ N} f(n)`, and it needs nothing about `g` at all.
+
+## The twisted sequence: the exceptional case made usable
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TwistedSequence.lean`:
+
+- `twistSeq f τ n = f(n)·n^{−iτ}`, with `twistSeq_apply`.
+- `norm_twistSeq_le` — the twist has modulus one on the positive integers, so a coefficient bound is
+  preserved (the `n = 0` case splits on `τ = 0`, where the twist is `1`, and `τ ≠ 0`, where `0^w = 0`).
+- `twistSeq_one`, `twistSeq_mul` — the twist preserves the value at `1` and complete multiplicativity, by
+  multiplicativity of the complex power on the nonnegative reals.
+- `twistSeq_mul_cpow`, `sum_Icc_eq_sum_twistSeq_mul_cpow` — untwisting recovers the original sequence.
+- `norm_sum_Icc_le_of_twisted_bound` — **the exceptional case**:
+
+  `‖∑_{n ≤ N} f(n)‖ ≤ (1 + |τ| log N)·S`   whenever every twisted partial sum is at most `S`.
+
+So the hypothesis of the master bound — uniform distance from all characters in the range — is no longer a
+restriction on `f` but a choice of frame: given a close frequency `τ`, apply the master bound to
+`twistSeq f τ`, whose distance from the trivial character is what `f`'s distance from `n^{iτ}` was, and
+transfer back.  All three properties the master bound demands of its input (`g 1 = 1`, complete
+multiplicativity, `‖g‖ ≤ 1`) are supplied by the lemmas above.
