@@ -1,9 +1,11 @@
 # Global product-Clifford twirl range law
 
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY NOT CLAIMED]`
+- **Stage:** 3-formalized
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [BRIDGE] [NOVELTY NOT CLAIMED]`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, O4.12z25
-- **Lean target:** `HTGeometry/TwoReplicaGlobalCliffordTwirlRange.lean`
+- **Lean certificate:** `global-product-clifford-twirl-range-law-formalized.md`
+- **Lean:** `HTGeometry/TwoReplicaGlobalCliffordTwirlRange.lean` (range, idempotence),
+  `HTGeometry/GlobalCliffordTwirlRangeCanonical.lean` (dimension, empty register, direct split)
 
 ## Exact statement
 
@@ -103,6 +105,36 @@ maximizer, so their average does too.  For `x in U_*`, write
 The first term belongs to `U_* cap ran T_V`; idempotence places the second in
 `U_* cap ker T_V`.  Their intersection is zero, proving the displayed direct
 sum.
+
+## Formal status
+
+Closed, unconditionally.
+
+`ran T_V = S_V` is `finiteProductCliffordTwoReplicaTwirl_range_eq` and `T_V² = T_V` is
+`finiteProductCliffordTwoReplicaTwirl_idempotent`.  The sitewise factorisation the card's proof
+performs by hand is carried by `finiteProductCliffordTwoReplicaTwirl_localMatrix` together with
+`finiteTwoReplicaMatrix_eq_sum_localUnits` — every global matrix unit is a product of local ones, so
+no separate tensor-basis diagonalisation argument is needed.
+
+`dim_ℂ S_V = 2^{|V|}` is `finrank_finiteProductCliffordTwoReplicaTwirl_range`.  Linear independence
+of the swap words is exactly injectivity of the coefficient embedding
+(`finiteTwoReplicaSwapInvariantEmbed_injective`, from the Möbius extractor), so the dimension is the
+dimension of the coefficient space `(V → Bool) → ℂ`.  The empty register is the instance
+`finrank_..._range_empty`, where `2^0 = 1`: the scalars, as the card says.
+
+The split is closed at the canonical obstruction, with no hypothesis, now that the greatest
+maximizer is a named subspace.  `canonicalTwoReplicaQLocalObstruction_twirl_split` is the join and
+`canonicalTwoReplicaQLocalObstruction_twirl_disjoint` is the disjointness, which is the card's `⊕`.
+Disjointness needs nothing about the obstruction: the range and kernel of an idempotent meet in
+zero, so any two subspaces contained in them do.
+
+The two summands are the `canonicalTwoReplicaVisibleSource` and `canonicalTwoReplicaHiddenLayer`
+already used by `aggregate-pauli-visible-quotient-detector-law` and
+`paired-pauli-zero-twirl-invariance-law`; this card supplies the fact that they exhaust the
+obstruction and meet only in zero.
+
+Umbrella build passes; the axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Hostile audit
 
