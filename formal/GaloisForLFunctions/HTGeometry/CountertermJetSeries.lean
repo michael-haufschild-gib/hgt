@@ -171,4 +171,65 @@ theorem tendsto_jetSeries {ι : Type*} [Infinite ι] (g : ℕ) (p : ι → ℂ)
   have := hdiff.add hhead
   simpa using this
 
+
+/-- The tail left by the counterterm split is the nome product to the `N`th power times the jet
+series.  Stated multiplicatively, so no nonvanishing hypothesis is needed. -/
+theorem sectionLogTail_tail_eq {ι : Type*} (g : ℕ) (p : ι → ℂ) (S : Finset ι) (x : ℂ)
+    {N j : ℕ} (hj : j + (g + 1) = N) :
+    (∑' k : ℕ, ((∏ a ∈ S, p a) / x) ^ ((k + j) + (g + 1)) /
+        (((k + j) + (g + 1) : ℕ) : ℂ) * ∏ a ∈ S, (1 - p a ^ ((k + j) + (g + 1)))⁻¹)
+      = (∏ a ∈ S, p a) ^ N * jetSeries p S x⁻¹ N := by
+  have hidx : ∀ k : ℕ, (k + j) + (g + 1) = k + N := by
+    intro k
+    omega
+  have hterm : ∀ k : ℕ,
+      ((∏ a ∈ S, p a) / x) ^ ((k + j) + (g + 1)) / (((k + j) + (g + 1) : ℕ) : ℂ) *
+          ∏ a ∈ S, (1 - p a ^ ((k + j) + (g + 1)))⁻¹
+        = (∏ a ∈ S, p a) ^ N *
+            ((∏ a ∈ S, p a) ^ k * (x⁻¹) ^ (k + N) / ((k + N : ℕ) : ℂ) *
+              ∏ a ∈ S, (1 - p a ^ (k + N))⁻¹) := by
+    intro k
+    have hpow : ∀ m : ℕ, ((∏ a ∈ S, p a) / x) ^ m
+        = (∏ a ∈ S, p a) ^ m * (x⁻¹) ^ m := by
+      intro m
+      rw [div_eq_mul_inv, mul_pow]
+    rw [hidx k, hpow (k + N)]
+    ring
+  rw [tsum_congr hterm, tsum_mul_left, jetSeries]
+
+/-- **The all-order counterterm jet.**  Subtracting the counterterms through order `N-1` from the
+free energy of a finite section and dividing by the `N`th power of the nome product converges to the
+`N`th jet coefficient. -/
+theorem tendsto_countertermJet {ι : Type*} [Infinite ι] (g : ℕ) (p : ι → ℂ)
+    (hp_ne : ∀ a, p a ≠ 0) (hp_lt : ∀ a, ‖p a‖ < 1)
+    (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) (x : ℂ)
+    {N j : ℕ} (hj : j + (g + 1) = N) :
+    Tendsto (fun S : Finset ι =>
+        (-sectionLogTail g p S ((∏ a ∈ S, p a) / x)
+          + ∑ m ∈ Finset.range j, ((∏ a ∈ S, p a) / x) ^ (m + (g + 1)) /
+              ((m + (g + 1) : ℕ) : ℂ) * ∏ a ∈ S, (1 - p a ^ (m + (g + 1)))⁻¹) /
+          (∏ a ∈ S, p a) ^ N)
+      atTop (𝓝 (-((x⁻¹) ^ N / (N : ℂ) * ∏' a, (1 - p a ^ N)⁻¹))) := by
+  classical
+  have hQne : ∀ S : Finset ι, (∏ a ∈ S, p a) ≠ 0 := by
+    intro S
+    exact Finset.prod_ne_zero_iff.mpr fun a _ => hp_ne a
+  have hjet := (tendsto_jetSeries g p hp_lt hsum x⁻¹ (by omega : g + 1 ≤ N)).neg
+  refine hjet.congr' ?_
+  have hQ := tendsto_nomeProduct_atTop_zero g p hp_lt hsum
+  have hn : Tendsto (fun S : Finset ι => ‖(∏ a ∈ S, p a) / x‖) atTop (𝓝 0) :=
+    tendsto_zero_iff_norm_tendsto_zero.mp (by simpa using hQ.div_const x)
+  have hev : ∀ᶠ S : Finset ι in atTop, ‖(∏ a ∈ S, p a) / x‖ < 1 :=
+    hn.eventually (eventually_lt_nhds (by norm_num))
+  filter_upwards [hev] with S hS
+  have hsplit := sectionLogTail_split g p hp_lt hsum S hS j
+  have htail := sectionLogTail_tail_eq g p S x hj
+  have hnum : -sectionLogTail g p S ((∏ a ∈ S, p a) / x)
+      + ∑ m ∈ Finset.range j, ((∏ a ∈ S, p a) / x) ^ (m + (g + 1)) /
+          ((m + (g + 1) : ℕ) : ℂ) * ∏ a ∈ S, (1 - p a ^ (m + (g + 1)))⁻¹
+      = -((∏ a ∈ S, p a) ^ N * jetSeries p S x⁻¹ N) := by
+    rw [hsplit, ← htail]
+    ring
+  rw [hnum, neg_div, mul_div_cancel_left₀ _ (pow_ne_zero N (hQne S))]
+
 end HTGeometry

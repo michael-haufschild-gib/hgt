@@ -692,6 +692,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 7, (9) — uniform bound on the finite Euler products | `multipliable_realEulerFactor`, `norm_finiteEulerProduct_le` |
 | Lemma 7, the jet series and its geometric domination | `jetSeries`, `norm_jetSeries_term_le`, `summable_jetSeries` |
 | Lemma 7, the jet limit | `norm_jetSeries_sub_head_le`, `tendsto_jetSeries` |
+| Lemma 7, (C3)/(20) — the all-order counterterm jet | `sectionLogTail_tail_eq`, `tendsto_countertermJet` |
 | Lemma 7, the counterterm split | `sectionLogTail`, `summable_sectionLogTail`, `sectionLogTail_split` |
 | Lemma 7, (17) — the finite-section free energy | `finiteNomeSection_eq_restricted`, `finiteNomeSection_eq_exp_neg_moments` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
@@ -714,29 +715,7 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 
 ### Open in Lean
 
-1. Lemma 7, the jet (C3)/(20).  Its input (17) is closed: a finite section is the infinite product
-   of the restricted nome family (`finiteNomeSection_eq_restricted`), so its free energy is the
-   moment series with the finite Euler products `M_{S,m} = ∏_{a∈S}(1-p_a^m)^{-1}` as coefficients.
-   Its other input (9) is closed too: `norm_finiteEulerProduct_le` bounds every `M_{S,k}` by
-   `∏'_a (1-‖p_a‖^{g+1})^{-1}`, uniformly in the nome set *and* in the order `k ≥ g+1`.
-   The counterterm split is closed (`sectionLogTail_split`), and so is the divided remainder: the
-   `jetSeries` at `y = x^{-1}` is exactly the tail divided by `Q_S^N`, and
-   `norm_jetSeries_term_le` dominates its `k`th term by `(B/N)|y|^N (|Q_S||y|)^k`, whence
-   `summable_jetSeries` whenever `|Q_S||y| < 1`.
-
-   Steps (a) and (b) are closed: `norm_jetSeries_sub_head_le` bounds the series minus its leading
-   term by `(B/N)|y|^N (|Q_S||y|)/(1-|Q_S||y|)`, and `tendsto_jetSeries` gives
-   `jetSeries p S y N → y^N M_{A,N}/N`.  Nonvanishing of the nomes is *not* needed for either.
-
-   One step remains: identify `jetSeries p S x⁻¹ N` with the tail of `sectionLogTail_split` at
-   `t = Q_S/x`, divided by `Q_S^N`.  That is the only place `Q_S ≠ 0` is used, and it holds because
-   every nome is nonzero.  Composing it with `tendsto_jetSeries` and (17) is then (C3)/(20).
-
-   No constraint on `|x|` beyond `x ≠ 0` enters: the geometric ratio is `|Q_S|/|x|`, eventually
-   below one for any fixed nonzero `x`.  The card states Lemma 7 on a compact `K ⊂ ℂ^×` with
-   `δ = min_{x∈K}|x|`; pointwise in `x` that compactness is not needed, and only the
-   locally-uniform phrasing will require it.
-2. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
+1. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
 
 The uniform-in-`S` route worked as predicted: `norm_finiteNomeSection_sub_one_le` bounds every
@@ -745,7 +724,7 @@ centred factors of every section are dominated by one fixed summable family.  Le
 upgrading.  Two hypotheses turned out to be unnecessary and were dropped: `tendsto_forwardNomeFactor_one`
 and `tendsto_parityNormalizedSection` hold at every `x`, including `x = 0`.
 
-Lemmas 2, 4 and 6 are now closed.  Local uniformity was never needed: the moving-coordinate limit
+Lemmas 2, 4, 6 and 7 are now closed.  Local uniformity was never needed: the moving-coordinate limit
 follows from dominated convergence for infinite products, once the centred primary factor is bounded
 on an arbitrary disc rather than only the unit disc.  That radius-general bound
 (`exists_primaryFactor_sub_one_bound`) combines the vanishing order at the origin with plain
