@@ -7,8 +7,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 74274 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 63446 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 74276 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 63449 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 5391 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
@@ -43149,6 +43149,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `hasDerivAt_bandTransform` | `GaloisForLFunctions.RHTower.ProlateCommutationKernel` | `formal/GaloisForLFunctions/RHTower/ProlateCommutationKernel.lean:163` | Differentiation under the band integral.** The kernel has modulus one and its `x`-derivative modulus `|c t| ≤ |c|` on the band, so the dominated-convergence differentiation applies |
 | theorem | `intervalIntegrable_kernelMul` | `GaloisForLFunctions.RHTower.ProlateCommutationKernel` | `formal/GaloisForLFunctions/RHTower/ProlateCommutationKernel.lean:220` |  |
 | theorem | `hasDerivAt_bandTransformDeriv` | `GaloisForLFunctions.RHTower.ProlateCommutationKernel` | `formal/GaloisForLFunctions/RHTower/ProlateCommutationKernel.lean:239` |  |
+| theorem | `intervalIntegrable_bandKernel_mul` | `GaloisForLFunctions.RHTower.ProlateCommutationKernel` | `formal/GaloisForLFunctions/RHTower/ProlateCommutationKernel.lean:276` |  |
+| theorem | `prolateAction_bandTransform_eq` | `GaloisForLFunctions.RHTower.ProlateCommutationKernel` | `formal/GaloisForLFunctions/RHTower/ProlateCommutationKernel.lean:288` | The prolate operator, applied to the band transform, moves onto the kernel's second variable.** Combining the two differentiations with the pointwise kernel identity. |
 | theorem | `differentiable_bandTransform` | `GaloisForLFunctions.RHTower.ProlateDiagonalization` | `formal/GaloisForLFunctions/RHTower/ProlateDiagonalization.lean:27` | The band transform of a `C¹` input is everywhere differentiable. |
 | theorem | `differentiable_deriv_bandTransform` | `GaloisForLFunctions.RHTower.ProlateDiagonalization` | `formal/GaloisForLFunctions/RHTower/ProlateDiagonalization.lean:31` |  |
 | theorem | `bandTransform_eigen_smul_on` | `GaloisForLFunctions.RHTower.ProlateDiagonalization` | `formal/GaloisForLFunctions/RHTower/ProlateDiagonalization.lean:41` | The band transform is scalar on prolate eigenlines.** If `ψ` is a pointwise prolate eigenfunction, then on every compact subinterval of the band where `ψ` does not vanish the trans |
@@ -108138,6 +108140,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `le_linearFamilyGreatestMaximizer` | `GaloisForLFunctions.HTGeometry.LinearFamilyGreatestMaximizer` | `formal/GaloisForLFunctions/HTGeometry/LinearFamilyGreatestMaximizer.lean:42` | The canonical maximizer is greatest.** This is the shape every conditional two-replica statement assumes. |
 | theorem | `eq_linearFamilyGreatestMaximizer` | `GaloisForLFunctions.HTGeometry.LinearFamilyGreatestMaximizer` | `formal/GaloisForLFunctions/HTGeometry/LinearFamilyGreatestMaximizer.lean:48` | The canonical maximizer is the only subspace with both properties.** |
 | theorem | `linearFamilyHall_iff_greatestMaximizer_defect_eq_zero` | `GaloisForLFunctions.HTGeometry.LinearFamilyGreatestMaximizer` | `formal/GaloisForLFunctions/HTGeometry/LinearFamilyGreatestMaximizer.lean:56` | The all-subspaces Hall condition is the vanishing of the canonical maximizer's deficiency. |
+| theorem | `linearFamilyGreatestMaximizer_map_eq_of_invariant` | `GaloisForLFunctions.HTGeometry.LinearFamilyGreatestMaximizer` | `formal/GaloisForLFunctions/HTGeometry/LinearFamilyGreatestMaximizer.lean:61` | Every deficiency-preserving automorphism fixes the canonical maximizer.** |
+| theorem | `linearFamilyGreatestMaximizer_map_eq_of_covariant` | `GaloisForLFunctions.HTGeometry.LinearFamilyGreatestMaximizer` | `formal/GaloisForLFunctions/HTGeometry/LinearFamilyGreatestMaximizer.lean:69` | Every simultaneous covariance of the family fixes the canonical maximizer.** |
+| theorem | `linearFamilyGreatestMaximizer_map_eq_of_spanCovariant` | `GaloisForLFunctions.HTGeometry.LinearFamilyGreatestMaximizer` | `formal/GaloisForLFunctions/HTGeometry/LinearFamilyGreatestMaximizer.lean:86` | Every span-preserving symmetry fixes the canonical maximizer.** This covers continuous mixing of the generators, not only permutations of them. |
 | theorem | `matrixAlgEquiv_X` | `GaloisForLFunctions.HTGeometry.LinearFormPrime` | `formal/GaloisForLFunctions/HTGeometry/LinearFormPrime.lean:37` |  |
 | theorem | `prime_toMvPolynomial` | `GaloisForLFunctions.HTGeometry.LinearFormPrime` | `formal/GaloisForLFunctions/HTGeometry/LinearFormPrime.lean:42` | A row form of an invertible matrix is prime.** |
 | theorem | `blockTriangular_avgShearMatrix` | `GaloisForLFunctions.HTGeometry.LinearFormPrime` | `formal/GaloisForLFunctions/HTGeometry/LinearFormPrime.lean:63` |  |

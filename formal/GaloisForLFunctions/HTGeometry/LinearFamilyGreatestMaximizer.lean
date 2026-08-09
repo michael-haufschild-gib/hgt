@@ -57,6 +57,43 @@ theorem linearFamilyHall_iff_greatestMaximizer_defect_eq_zero (A : J → X →�
     LinearFamilyHall A ↔ linearFamilyDefect A (linearFamilyGreatestMaximizer A) = 0 :=
   linearFamilyHall_iff_maximizer_defect_eq_zero A _ (linearFamilyDefect_le_greatestMaximizer A)
 
+/-- **Every deficiency-preserving automorphism fixes the canonical maximizer.** -/
+theorem linearFamilyGreatestMaximizer_map_eq_of_invariant (A : J → X →ₗ[𝕜] Y) (g : X ≃ₗ[𝕜] X)
+    (hinvariant : ∀ V : Submodule 𝕜 X,
+      linearFamilyDefect A (V.map (g : X →ₗ[𝕜] X)) = linearFamilyDefect A V) :
+    (linearFamilyGreatestMaximizer A).map (g : X →ₗ[𝕜] X) = linearFamilyGreatestMaximizer A :=
+  linearFamilyDefect_greatestMaximizer_map_eq_of_invariant A (linearFamilyGreatestMaximizer A) g
+    (le_linearFamilyGreatestMaximizer A) hinvariant
+
+/-- **Every simultaneous covariance of the family fixes the canonical maximizer.** -/
+theorem linearFamilyGreatestMaximizer_map_eq_of_covariant (A : J → X →ₗ[𝕜] Y)
+    (gX : X ≃ₗ[𝕜] X) (gY : Y ≃ₗ[𝕜] Y) (σ : J ≃ J)
+    (hcov : ∀ j, (A (σ j)).comp (gX : X →ₗ[𝕜] X) = (gY : Y →ₗ[𝕜] Y).comp (A j)) :
+    (linearFamilyGreatestMaximizer A).map (gX : X →ₗ[𝕜] X) = linearFamilyGreatestMaximizer A :=
+  linearFamilyDefect_greatestMaximizer_map_eq_of_covariant A (linearFamilyGreatestMaximizer A)
+    gX gY σ (le_linearFamilyGreatestMaximizer A) hcov
+
 end
+
+section SpanCovariant
+
+variable {𝕜 X Y J : Type*} [Field 𝕜]
+  [AddCommGroup X] [Module 𝕜 X] [AddCommGroup Y] [Module 𝕜 Y]
+  [FiniteDimensional 𝕜 X] [FiniteDimensional 𝕜 Y]
+
+/-- **Every span-preserving symmetry fixes the canonical maximizer.**  This covers continuous
+mixing of the generators, not only permutations of them. -/
+theorem linearFamilyGreatestMaximizer_map_eq_of_spanCovariant (A : J → X →ₗ[𝕜] Y)
+    (gX : X ≃ₗ[𝕜] X) (gY : Y ≃ₗ[𝕜] Y)
+    (hforward : ∀ j,
+      (((gY : Y →ₗ[𝕜] Y).comp (A j)).comp (gX.symm : X →ₗ[𝕜] X)) ∈ linearFamilyOperatorSpan A)
+    (hbackward : ∀ j,
+      (((gY.symm : Y →ₗ[𝕜] Y).comp (A j)).comp (gX : X →ₗ[𝕜] X)) ∈ linearFamilyOperatorSpan A) :
+    (linearFamilyGreatestMaximizer A).map (gX : X →ₗ[𝕜] X) = linearFamilyGreatestMaximizer A :=
+  linearFamilyDefect_greatestMaximizer_map_eq_of_spanCovariant A
+    (linearFamilyGreatestMaximizer A) gX gY (le_linearFamilyGreatestMaximizer A)
+    hforward hbackward
+
+end SpanCovariant
 
 end GaloisForLFunctions.HTGeometry

@@ -1,7 +1,9 @@
 # Canonical symmetry-reduced Hall gluing law
 
 - **ID:** canonical-symmetry-reduced-hall-gluing-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL]`
+- **Lean certificate:** `canonical-symmetry-reduced-hall-gluing-law-formalized.md`
 - **Type:** THEOREM (paper)
 - **Source:** `static-local-complexity-law.md`, gate O4.12z25
 - **Statement:** Every finite linear family has a unique largest maximum-defect subspace; it is fixed by every invertible symmetry preserving the family span, and disjoint forward/reverse Hall channels glue across two layers whenever the reverse channel pays exactly for forward-output overlap.
@@ -16,7 +18,7 @@ physical forward and reverse Pauli channels are verified.
 
 - [x] 0 → 1 in-progress: finite-dimensional defect and symmetry action are well posed
 - [x] 1 → 2 fully-proven: dependency-closed proofs below
-- [ ] 2 → 3 formalized: targeted modules compile and axiom audit is clean; final umbrella build intentionally deferred to final audit
+- [x] 2 → 3 formalized: modules compile in the umbrella and the axiom audit is clean
 - [ ] 3 → 4 publication-ready: use only after concrete local-Pauli span covariance and reverse-overlap Hall hypotheses are discharged
 
 ## Theorems and proofs
@@ -95,6 +97,25 @@ image repays precisely the part already hidden in the second layer.
 - Targeted `lake env lean <file>` checks pass. Axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound` where finite-dimensional subspace selection is used; the
   two-involution theorem uses only `propext`.
+
+## Closing note
+
+The card's headline — "every finite linear family has a unique largest maximum-defect subspace; it
+is fixed by every invertible symmetry preserving the family span" — is now a statement about a
+*term*.  `HTGeometry/LinearFamilyGreatestMaximizer.lean` names it `linearFamilyGreatestMaximizer`,
+records that no other subspace has both defining properties, restates the one-equation Hall
+criterion at it, and proves the three invariance statements with no greatest-maximizer premise:
+
+- `linearFamilyGreatestMaximizer_map_eq_of_invariant` — deficiency-preserving automorphisms;
+- `linearFamilyGreatestMaximizer_map_eq_of_covariant` — simultaneous covariances permuting the
+  family;
+- `linearFamilyGreatestMaximizer_map_eq_of_spanCovariant` — span-preserving symmetries, which is
+  the continuous-mixing case the card emphasises.
+
+The two concrete tasks named below are closed: the product-Clifford reducing decomposition of the
+canonical maximizer is `global-product-clifford-twirl-range-law`, and the graded visible quotient
+detector is `aggregate-pauli-visible-quotient-detector-law`.  Their assembly is
+`visible-kernel-recovery-hall-law`.
 
 ## Exact surviving frontier
 

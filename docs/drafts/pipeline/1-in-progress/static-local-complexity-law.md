@@ -4713,7 +4713,7 @@ receive a new title and an independent significance audit.
   gates; arbitrary singlet/nonsinglet mixing is no longer the correct
   formulation. Proofs and
   formal status are recorded in
-  `../2-fully-proven/canonical-symmetry-reduced-hall-gluing-law.md`.
+  `../3-formalized/canonical-symmetry-reduced-hall-gluing-law.md`.
 - 2026-08-04 -- Refreshed the five publication-ready manuscripts newer than
   `riemann-hellinger-hodge-green-descent`. `two-sided-singular-gelfand-defects` contributes the
   unconditional countable coercivity--defect dichotomy, already formalized in
@@ -5644,4 +5644,23 @@ receive a new title and an independent significance audit.
   Brown time/depth after target-independent return excision.  Paper proof and
   hostile audit:
   `../2-fully-proven/low-replica-complete-incidence-influence-law.md`.  Lean
+  remained read only during corpus refactoring.
+- 2026-08-09 -- Proved that arbitrary-target physical-graph mixing is still
+  too weak a frontier because it omits preparation structure.  The time-`t`
+  endpoint map of an `m`-parameter unit local shell is
+  `|t|sqrt(m)`-Lipschitz, so its entire image has an `epsilon`-net of at most
+  `(1+2|t|sqrt(m)/epsilon)^m` actual endpoints.  At `m=Theta(n)` and Brown
+  time `t=Theta(D/poly(n))`, this cover has log-size only `O(n^2)` yet captures
+  the whole Hamiltonian ensemble; allowed Brown-depth circuit words have
+  entropy `Theta(D)`.  Therefore Jacobian, coarea, source dimension, target
+  count, occupied rank, and target covering entropy cannot close O4 unless
+  they encode local circuit preparation.  Exact positive survivor: the
+  complete circuit fidelity and bounded binomial reporter obey a max-plus
+  Bellman recursion under one local gate.  A metric-robust calibration
+  `Phi(gv)<=Phi(v)+1`, `|Phi(v)-Phi(w)|<=L d(v,w)` gives
+  `C_epsilon(v)>=Phi(v)-Phi(chi)-L epsilon`.  O4 is now the construction of a
+  quenched recurrence-compatible nonlinear calibration with Brown-rate
+  growth; arbitrary endpoint incidence is a proved dead route.  Paper proof
+  and hostile audit:
+  `../2-fully-proven/static-orbit-net-no-go-and-circuit-bellman-law.md`.  Lean
   remained read only during corpus refactoring.
