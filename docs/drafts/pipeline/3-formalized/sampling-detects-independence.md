@@ -12,13 +12,21 @@ answers it and reduces the answer to a single identity.
 
 ## What is proved
 
-`RHTower/SamplingDeterminant.lean` — general, any field, any domain, no structure assumed:
+`RHTower/SamplingDeterminant.lean` — stated for an arbitrary *separating* family of functionals, with only
+`Field K` assumed: no topology, no finite-dimensionality, no structure on the index set:
 
-* **`exists_det_ne_zero_of_linearIndependent`** — a linearly independent family `f : Fin n → (α → K)` has
-  sample points `x` with `det [fᵢ(xⱼ)] ≠ 0`. Induction on `n`: expand along the last column, which presents
-  `t ↦ det[fᵢ(x₁),…,fᵢ(xₙ₋₁),fᵢ(t)]` as the combination `∑ᵢ cᵢ fᵢ` whose last coefficient is the smaller
-  determinant supplied by the induction hypothesis, so independence forbids it from vanishing identically;
-* `not_linearIndependent_of_forall_det_eq_zero` — the contrapositive, the usable direction.
+* **`exists_det_ne_zero_of_linearIndependent_of_separating`** — if functionals `Φ : ι → (V →ₗ[K] K)` kill no
+  nonzero vector, a linearly independent `f : Fin n → V` has indices `x` with `det [Φ_{xⱼ}(fᵢ)] ≠ 0`.
+  Induction on `n`: expand along the last column, which by **linearity** presents the determinant as
+  `Φ_t(∑ᵢ cᵢ fᵢ)` whose last coefficient is the smaller determinant supplied by the induction hypothesis;
+  independence makes that combination a nonzero *vector*, and separation finds an index not killing it;
+* **`exists_det_ne_zero_of_linearIndependent`** — the point-evaluation case (`Φ = LinearMap.proj`, separating
+  because a nonzero function is nonzero somewhere): a linearly independent family of `K`-valued functions has
+  sample points with `det [fᵢ(xⱼ)] ≠ 0`;
+* `not_linearIndependent_of_forall_det_eq_zero` — the contrapositive, the usable direction;
+* `exists_det_inner_ne_zero_of_linearIndependent` — the inner-product case (`Φ = innerSL`, separating by
+  `inner_self_eq_zero`): independent vectors have an invertible cross-Gram matrix against some finite sample
+  of test vectors.
 
 `RHTower/BorderDeterminantVanishing.lean` — applied to the sampled pairings:
 
@@ -32,7 +40,7 @@ answers it and reduces the answer to a single identity.
   > If no sample of `N+1` points certifies a floor, there are coefficients `c`, not all zero, with
   > `(∑ᵢ cᵢ(θᵢ^s − θᵢ))·ζ(s) = c_N` at **every** point of the strip.
 
-All five declarations are `#print axioms`-clean.
+All eight declarations are `#print axioms`-clean.
 
 ## Why it matters
 
@@ -62,6 +70,8 @@ than an arithmetic estimate.
 
 ## Reuse
 
-`exists_det_ne_zero_of_linearIndependent` is stated for arbitrary functions into a field with no structure
-on the domain, so it applies to every "does sampling see the whole space" question in the corpus. It is the
-converse half of mathlib's `Matrix.linearIndependent_rows_iff_isUnit`, which sees only a fixed matrix.
+`exists_det_ne_zero_of_linearIndependent_of_separating` is the general law: any separating family of
+functionals — point evaluations, inner products, moments, jets — detects independence by a finite sample. It
+is the converse half of mathlib's `Matrix.linearIndependent_rows_iff_isUnit`, which sees only a fixed matrix,
+and it answers every "does a finite sample see the whole space" question uniformly. The proof needs only
+linearity of the functionals plus separation, which is why it carries no topological hypotheses.
