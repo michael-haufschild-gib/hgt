@@ -18,12 +18,14 @@ This is the structural reason behind both, and it holds for arbitrary finite fam
 
 The route is now factored so that a family other than Báez-Duarte's inherits it by proving one hypothesis:
 
-* **`exists_detector_floor_of_linearIndependent_pairings`** (in `BorderDeterminantVanishing`) — the law for
-  an *arbitrary* family in the carrier: if the Mellin detectors pair with a finite family `G` and a target `x`
-  through linearly independent functions on the strip, then some carrier element `w` annihilates `G`, pairs
-  with `x` at exactly `1`, and certifies the **floor** `1/‖w‖ ≤ dist(x, span G)`. Sampling makes the pairing
-  matrix invertible; solving against the last basis vector produces `w`, and the duality bound turns its
-  pairing into the floor. `infDist_pos_of_linearIndependent_pairings` is the qualitative form;
+* **`exists_detectorCombination_floor_of_linearIndependent_pairings`** (in `BorderDeterminantVanishing`) —
+  the law for an *arbitrary* family in the carrier: if the Mellin detectors pair with a finite family `G` and a
+  target `x` through linearly independent functions on the strip, then there are sample points `y` in the strip
+  and coefficients `a` whose detector combination annihilates `G`, pairs with `x` at exactly `1`, and certifies
+  two floors for `dist(x, span G)` — the sharp `1/‖w‖` and the elementary
+  `1 / ∑ⱼ ‖aⱼ‖/√(2 Re yⱼ − 1)`, which mentions only the coefficients and the real parts of the sample points.
+  `exists_detector_floor_of_linearIndependent_pairings` and `infDist_pos_of_linearIndependent_pairings` are the
+  weaker forms;
 * `bdDist_pos_of_linearIndependent_borderRowFun` — the Báez-Duarte instance, supplying the two pairing
   identities `inner_bdDetector_bdGen` and `inner_bdDetector_bdTarget`;
 * `muentz_relation_of_not_linearIndependent` — the converse computation, isolated from the determinant
@@ -79,10 +81,10 @@ It says: for a *fixed* finite section the distance is positive, so `d_N → 0` c
 consistent with, and required by, the Nyman–Beurling criterion. It gives no rate: the constant it produces is
 not explicit, since it comes from a determinant obtained by contradiction rather than from a chosen sample.
 
-The quantitative side stays where `finite-section-zeta-interpolation-dichotomy.md` left it: pick sample
-points and coefficients making `‖∑ⱼ conj(aⱼ)/ρⱼ‖` large against `∑ⱼ ‖aⱼ‖/√(2 Re ρⱼ − 1)`. What this card adds
-is that the qualitative obstruction is now proved for *every* finite family, so any future rate is an
-estimate of a quantity already known to be positive.
+The quantitative side is now packaged rather than open-coded: the obstruction law itself hands back sample
+points `y`, coefficients `a` solving the sampled system, and the floor
+`1 / ∑ⱼ ‖aⱼ‖/√(2 Re yⱼ − 1)`. Every ingredient of that expression is elementary; what remains is choosing the
+sample so the bound is large, which is an estimate of a quantity already known to be positive.
 
 ## Both restrictions removed
 

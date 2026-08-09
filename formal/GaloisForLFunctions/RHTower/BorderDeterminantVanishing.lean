@@ -18,13 +18,19 @@ and `sampledBorderMatrix` is their evaluation matrix.  Hence
 **`exists_relation_of_forall_det_eq_zero` — if every bordered determinant vanishes there are coefficients
 `c`, not all zero, with `(∑ᵢ cᵢ(θᵢ^s − θᵢ))·ζ(s) = c_N` at every point of the strip.**
 
-Read forwards, the same independence is the reusable interface, and it is stated for an arbitrary family:
-`exists_detector_floor_of_linearIndependent_pairings` — if the Mellin detectors pair with a finite family `G`
-and a target `x` through linearly independent functions on the strip, then some carrier element `w`
-annihilates `G`, pairs with `x` at exactly `1`, and certifies the floor `1/‖w‖ ≤ dist(x, span G)`.  Sampling
-makes the pairing matrix invertible and solving against the last basis vector produces `w`; the duality bound
-of `DetectorDuality` turns the pairing into the floor.  `infDist_pos_of_linearIndependent_pairings` is the
-qualitative form and `bdDist_pos_of_linearIndependent_borderRowFun` the Báez-Duarte instance.
+Read forwards, the same independence is the reusable interface, and it is stated for an arbitrary family.
+`exists_detectorCombination_floor_of_linearIndependent_pairings`: if the Mellin detectors pair with a finite
+family `G` and a target `x` through linearly independent functions on the strip, then there are sample points
+`y` in the strip and coefficients `a` whose detector combination annihilates `G`, pairs with `x` at exactly
+`1`, and certifies two floors for `dist(x, span G)` — the sharp `1/‖w‖` and the elementary
+
+`1 / ∑ⱼ ‖aⱼ‖/√(2 Re yⱼ − 1)`,
+
+which mentions only the coefficients and the real parts of the sample points.  Sampling makes the pairing
+matrix invertible, solving against the last basis vector produces `a`, the duality bound of `DetectorDuality`
+turns the pairing into the first floor, and `norm_detectorCombination_le` turns it into the second.
+`exists_detector_floor_of_linearIndependent_pairings` and `infDist_pos_of_linearIndependent_pairings` are the
+weaker forms, and `bdDist_pos_of_linearIndependent_borderRowFun` the Báez-Duarte instance.
 
 So a finite section escapes every determinant certificate only if the Müntz system `θ^s − θ` inverts `ζ` by
 a *single* relation valid on the whole strip — not merely sample by sample. That is a rigid identity between
@@ -138,6 +144,8 @@ theorem exists_detectorCombination_floor_of_linearIndependent_pairings {N : ℕ}
     ∃ (y : Fin (N + 1) → StripPoint) (a : Fin (N + 1) → ℂ),
       (∀ i, inner ℂ (detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a) (G i) = 0)
         ∧ inner ℂ (detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a) x = 1
+        ∧ 1 / ‖detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a‖
+            ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier)
         ∧ 1 / (∑ j, ‖a j‖ / Real.sqrt (2 * ((y j : ℂ)).re - 1))
             ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
   classical
@@ -185,14 +193,13 @@ theorem exists_detectorCombination_floor_of_linearIndependent_pairings {N : ℕ}
     rw [h, inner_zero_left] at hwx
     exact zero_ne_one hwx
   have hwpos : 0 < ‖w‖ := norm_pos_iff.mpr hwne
-  refine ⟨y, a, hwG, hwx, ?_⟩
-  have htri : ‖w‖ ≤ ∑ j, ‖a j‖ / Real.sqrt (2 * ((y j : ℂ)).re - 1) := by
-    rw [hw]
-    exact norm_detectorCombination_le (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a
   have hfloor : 1 / ‖w‖ ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
     rw [div_le_iff₀ hwpos, mul_comm]
     exact hbound
-  exact le_trans (one_div_le_one_div_of_le hwpos htri) hfloor
+  have htri : ‖w‖ ≤ ∑ j, ‖a j‖ / Real.sqrt (2 * ((y j : ℂ)).re - 1) := by
+    rw [hw]
+    exact norm_detectorCombination_le (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a
+  exact ⟨y, a, hwG, hwx, hfloor, le_trans (one_div_le_one_div_of_le hwpos htri) hfloor⟩
 
 /-- The floor in terms of the combination itself. -/
 theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier)
@@ -203,14 +210,9 @@ theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N
     (hli : LinearIndependent ℂ M) :
     ∃ w : BDCarrier, (∀ i, inner ℂ w (G i) = 0) ∧ inner ℂ w x = 1 ∧
       1 / ‖w‖ ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
-  obtain ⟨y, a, hwG, hwx, hfloor⟩ :=
+  obtain ⟨y, a, hwG, hwx, hfloor, -⟩ :=
     exists_detectorCombination_floor_of_linearIndependent_pairings G x M hM hMx hli
-  refine ⟨detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a, hwG, hwx, ?_⟩
-  refine le_trans (one_div_le_one_div_of_le ?_ ?_) hfloor
-  · refine norm_pos_iff.mpr fun h => ?_
-    rw [h, inner_zero_left] at hwx
-    exact zero_ne_one hwx
-  · exact norm_detectorCombination_le (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a
+  exact ⟨_, hwG, hwx, hfloor⟩
 
 /-- **The abstract obstruction.**  Independence of the pairing functions puts the target at positive distance
 from the span. -/
