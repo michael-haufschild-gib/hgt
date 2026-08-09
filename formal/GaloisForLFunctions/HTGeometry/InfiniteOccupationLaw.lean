@@ -65,12 +65,12 @@ private theorem tsum_pi_geometric {ι : Type*} [Fintype ι] (u : ι → ℝ≥0�
         (fun j => (1 - u (e.symm j))⁻¹)
         (fun i => (1 - u i)⁻¹) (by simp)
 
-private def finsetSubtypeEmbedding {ι : Type*} (S : Finset ι) : S ↪ ι :=
+def finsetSubtypeEmbedding {ι : Type*} (S : Finset ι) : S ↪ ι :=
   ⟨Subtype.val, Subtype.val_injective⟩
 
 /-- A function on a finite set is the same as a finitely supported occupation whose support lies
 in that set. -/
-private noncomputable def supportedOccupationEquiv {ι : Type*} (S : Finset ι) :
+noncomputable def supportedOccupationEquiv {ι : Type*} (S : Finset ι) :
     (S → ℕ) ≃ {ν : ι →₀ ℕ // ν.support ⊆ S} where
   toFun f :=
     ⟨Finsupp.embDomain (finsetSubtypeEmbedding S)

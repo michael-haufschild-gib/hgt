@@ -685,6 +685,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 6, moving-coordinate convergence | `exists_primaryFactor_sub_one_bound`, `tendsto_finiteNomeSection_moving` |
 | Lemma 6, the full table (15)/(16) | `tendsto_scalingTable` |
 | finite-index geometric identity over ℂ | `hasSum_pi_geometric`, `summable_norm_pi_geometric` |
+| occupation Euler product over ℂ | `hasSum_supported_nomeMonomial`, `hasProd_inv_one_sub_nome`, `tsum_nomeMonomial_eq_tprod` |
 | Lemma 2, (8) in summed-tail form | `norm_primaryLogTail_le`, `hasProd_cexp`, `infiniteMultipleEllipticGamma_eq_exp_neg_tsum` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
@@ -695,7 +696,8 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaScaling.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaMovingPoint.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaFreeEnergy.lean`,
-`HTGeometry/PiGeometricSeries.lean`.
+`HTGeometry/PiGeometricSeries.lean`,
+`HTGeometry/OccupationEulerProduct.lean`.
 
 ### Open in Lean
 
@@ -703,15 +705,12 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
    `𝒢_{A,g}(x) = exp(-∑_ν primaryLogTail g (x p^ν))` on `‖x‖ < 1`.  What remains is to expand each
    tail and interchange, `∑_ν ∑_{m≥d} (x p^ν)^m/m = ∑_{m≥d} x^m M_{A,m}/m`, which needs the
    occupation Euler product `∑_ν (p^ν)^m = ∏_a (1-p_a^m)^{-1}` in ℂ.  Its finite-index half is now
-   closed (`hasSum_pi_geometric`).  Three steps remain:
-   (a) transport the finite-index identity along the corpus equivalence
-       `supportedOccupationEquiv S : (S → ℕ) ≃ {ν // ν.support ⊆ S}` — currently `private` in
-       `InfiniteOccupationLaw.lean` and needing de-privatisation, with a `nomeMonomial` companion
-       to `occupationWeight_supportedOccupationEquiv`;
-   (b) pass to the limit in `S` by `tendsto_tsum_of_dominated_convergence`, dominating with
-       `‖nomeMonomial u ν‖` (summable by `summable_nomeMonomial_pow_iff` at genus `0`);
-   (c) apply the result at `u := fun a => p a ^ m` and interchange, using
-       `(nomeMonomial p ν)^m = nomeMonomial (p ^ m) ν`.
+   closed: `tsum_nomeMonomial_eq_tprod` gives `∑_ν u^ν = ∏_a (1-u_a)^{-1}` over an arbitrary index
+   set.  What remains is to apply it at `u := fun a => p a ^ m`, using
+   `(nomeMonomial p ν)^m = nomeMonomial (p ^ m) ν`, and then interchange the `ν` and `m` sums in
+   `∑_ν ∑_{m≥d} (x p^ν)^m/m`.  The interchange is `Summable.tsum_comm` on
+   `(ι →₀ ℕ) × ℕ`, whose absolute summability follows from
+   `∑_ν ∑_m ‖x‖^{m+d}‖p^ν‖^{m+d}/(m+d) ≤ (1-‖x‖)^{-1}(g+1)^{-1} ‖x‖^{d} ∑_ν ‖p^ν‖^{d}`.
 2. Lemma 7: the all-order counterterm jet (C3)/(20).
 3. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
