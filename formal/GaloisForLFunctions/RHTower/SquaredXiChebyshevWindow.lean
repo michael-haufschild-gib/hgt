@@ -144,6 +144,32 @@ theorem integral_radialBesselKernel {n : ℕ} {s : ℝ} (hs : 1 < s) :
   rw [integral_const_mul, integral_pow_mul_exp_neg_mul_Ioi ha j]
   ring
 
+/-- The reverse-Bessel radial kernel is integrable on the Euler ray.  This is the analytic
+companion of `integral_radialBesselKernel`, exposed for finite coefficient packets whose source
+discrepancies must be combined before integration. -/
+theorem integrableOn_radialBesselKernel {n : ℕ} {s : ℝ} (hs : 1 < s) :
+    IntegrableOn (radialBesselKernel n s) (Ioi (1 : ℝ)) := by
+  apply Integrable.of_integral_ne_zero
+  rw [integral_radialBesselKernel hs]
+  have hpos : 0 < ∑ j ∈ Finset.range (n + 1),
+      (squaredRadialJetWeight n j : ℝ) * (j.factorial : ℝ) *
+        (s - 1 / 2) ^ j / (s - 1) ^ (j + 1) := by
+    apply Finset.sum_pos'
+    · intro j hj
+      have hjn : j ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
+      have hb : (0 : ℝ) < (squaredRadialJetWeight n j : ℝ) := by
+        exact_mod_cast squaredRadialJetWeight_pos n j hjn
+      have hs1 : 0 < s - 1 := by linarith
+      have hshalf : 0 < s - 1 / 2 := by linarith
+      exact (div_pos (mul_pos (mul_pos hb (by positivity)) (pow_pos hshalf j))
+        (pow_pos hs1 (j + 1))).le
+    · refine ⟨0, by simp, ?_⟩
+      have hb : (0 : ℝ) < (squaredRadialJetWeight n 0 : ℝ) := by
+        exact_mod_cast squaredRadialJetWeight_pos n 0 (Nat.zero_le n)
+      have hs1 : 0 < s - 1 := by linarith
+      simpa using div_pos hb hs1
+  exact hpos.ne'
+
 /-! ### The Gamma-mixture weights and their exact adjacent ratio -/
 
 /-- **Equation (8).**  The unnormalized Gamma-mixture weight `c_{n,j} = b_{n,j} j! (w/a)^j`. -/

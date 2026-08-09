@@ -6,7 +6,7 @@
 - **Parents:** `../3-formalized/replica-hilbert-coarea-incidence-law.md`,
   `../3-formalized/return-excised-optimal-design-coarea-law.md`,
   `radial-krylov-projected-complete-incidence-law.md`
-- **Status:** `[PAPER-PROVED] [LEAN FROZEN BY USER] [EXTERNAL PRIORITY UNVERIFIED]`
+- **Status:** `[PAPER-PROVED] [LEAN PARTIAL: FINITE MINIMAX + SEPARABLE CAPACITY CLOSED] [EXTERNAL PRIORITY UNVERIFIED]`
 - **Date:** 2026-08-08
 
 ## Public sentence
@@ -676,10 +676,20 @@ constructed local/history observer.
 
 ## Lean status
 
-Per explicit user instruction during corpus refactoring, Lean was inspected read-only and no Lean
-file or build process was started.  Future formalization should occur only after the refactor and
-after checking whether the existing positive-matrix and finite optimal-design interfaces can carry
-the fidelity minimax without importing a second matrix library.
+Formalization now closes all finite-dimensional Bures reporter/minimax, return-excised,
+Krylov-projected, conditional, data-processing, and observer-tilt statements, plus the separable
+compact-body capacity law.  In particular,
+`GaloisForLFunctions/HTGeometry/SeparableBuresCompactTargetBody.lean` proves trace-norm compactness,
+dense literal probability designs, uniform Hilbert--Schmidt root control, Bures continuity,
+attainment, exact equality of the probability-design capacity with the compact-body maximum, and
+the return-excised attained capture bound.
+
+The infinite-dimensional positive-reporter identity in items 5--6 of “Separable trace-class
+extension” is not yet formalized.  It needs a bounded-operator trace pairing, inversion convexity,
+the singular infinite-dimensional Alberti formula, and Sion exchange on that interface.  Therefore
+this broad card remains in Stage 2.  The dependency-closed separable compact-capacity portion is
+tracked independently in `separable-compact-bures-capacity-attainment-law.md` and is formalized in
+Stage 3.
 
 ## Gates
 
@@ -689,4 +699,6 @@ the fidelity minimax without importing a second matrix library.
 - [x] Return-excised, conditional, fixed-carrier Krylov, and ordinary-ensemble corollaries
 - [x] Hostile internal audit
 - [ ] External theorem-level priority audit
-- [ ] Lean formalization after corpus refactor
+- [x] Finite-dimensional minimax and physical corollaries formalized
+- [x] Separable compact-body probability-design capacity and attained return law formalized
+- [ ] Infinite-dimensional positive-reporter/Alberti/Sion equality formalized

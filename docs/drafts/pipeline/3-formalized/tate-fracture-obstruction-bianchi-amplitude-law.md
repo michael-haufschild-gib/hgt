@@ -1,11 +1,12 @@
 # Tate fracture obstruction, Bianchi, and amplitude law
 
 - **ID:** `cmr-tate-fracture-obstruction-bianchi-amplitude`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / HIGHER-DEFECT OBSTRUCTION LAW
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [CURVATURE/ADMISSION/COHERENCE]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [AXIOM-AUDITED]`
+  `[UMBRELLA-BUILT] [CURVATURE/ADMISSION/COHERENCE]`
   `[STANDARD SUM/PRODUCT TOTALIZATION BOUNDARY] [POSITIVE STRICTNESS NO-GO] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+- **Lean module:** `GaloisForLFunctions.HTGeometry.TateFractureObstructionBianchiAmplitudeLaw`
 - **Statement:** In a filtered twisted complex, curvature is the first closed extension
   obstruction, higher Bianchi defects form its obstruction tower, and finite vertical amplitude
   forbids both indefinitely migrating coherence and a direct-sum/product completion boundary.
@@ -280,23 +281,45 @@ Tate objects, and relative self-duality. Relevant interfaces:
 No novelty claim is made. New mathematics, if any, must be the source-canonical HGT totalization
 and its cross-doctrine realization theorem.
 
-## Gates
+## Formalization gates
 
 - [x] ordinary-one-object impossibility audit
 - [x] obstruction--Bianchi theorem
 - [x] amplitude/completion theorem
 - [x] positive strictness no-go
+- [x] literal bundled bigraded composition and obstruction tower
+- [x] terminal-obstruction and unbounded-amplitude consequences
+- [x] canonical sum-to-product linear equivalence and zero quotient boundary
+- [x] strict-conjugation transport and higher-survival counterexample
+- [x] direct elaboration, targeted build, umbrella build, and axiom audit
+
+## Separate future source-realization program
+
+These are design targets explicitly not asserted by this theorem and are not prerequisites for
+formalizing its dependency-closed paper claims:
+
 - [ ] construct and type a genuine self-dual Tate fracture realization
 - [ ] construct one source-canonical fracture totalization
 - [ ] prove presentation invariance
 - [ ] compute two publication invariants and predict a third from one obstruction tower
-- [ ] formalize only after field-level target stabilizes
 
 ## Lean-return note
 
-No Lean code was written or built. Later formalization can separate finite obstruction identities,
-bounded-support totalization, and the finite-dimensional Hilbert no-go.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/TateFractureObstructionBianchiAmplitudeLaw.lean`.
+The module contains the generic ordered obstruction algebra and literal `H²` quotient, a bundled
+bigraded-module realization with exact terminality, standard totalization linear equivalence and
+zero cokernel boundary, strict-conjugation covariance, an explicit `O₂=0`, `O₃≠0` witness, and the
+finite-dimensional Hilbert no-go. Direct `lake env lean`, targeted `lake build`, and full
+`GaloisForLFunctions.HTGeometry` umbrella build pass. Exhaustive `#print axioms` reports only
+Lean/mathlib foundations `propext`, `Classical.choice`, and `Quot.sound`; no project-added axiom.
+Repository-wide formal lint's declaration scan passes this module, while its global reachability
+gate remains red from unrelated pre-existing Bures/Nuclear and RHTower modules not imported by
+their umbrellas.
 
 ## Log
 
 - 2026-08-09 — higher pivot from a defect list to one partial Maurer--Cartan obstruction tower.
+- 2026-08-09 — all dependency-closed paper claims formalized exactly and unconditionally; typed
+  amplitude/terminality, zero completion boundary, conjugation transport, hostile counterexample,
+  Hilbert no-go, build, umbrella, and axiom audits complete; promoted to Stage 3.

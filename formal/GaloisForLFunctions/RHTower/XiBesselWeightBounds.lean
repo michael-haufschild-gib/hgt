@@ -73,4 +73,54 @@ theorem xiBesselWeight_le_two {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (h
   rw [xiBesselWeight, ← hxdef, div_le_iff₀ (by positivity)]
   nlinarith [hden, hupos]
 
+/-- **The weight is bounded below on a compact phase range.**  This bound uses only the upper half of
+the phase bracket, and again holds right up to the endpoint. -/
+theorem inv_le_xiBesselWeight {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hr : 0 < r)
+    (hxle : xiInverse s r ≤ 2) :
+    1 / (2 * Real.sqrt 2) ≤ xiBesselWeight s r := by
+  have hx1 : (1 : ℝ) < xiInverse s r := xiInverse_mem_Ioi hs0 hs1 hr
+  have hxi : xiEndpointPhase s (xiInverse s r) = r := xiEndpointPhase_xiInverse hs0 hs1 hr
+  set x : ℝ := xiInverse s r with hxdef
+  have hu : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hvpos : (0 : ℝ) < x ^ 2 - s := by nlinarith
+  have hv4 : x ^ 2 - s ≤ 4 := by nlinarith
+  have hhigh : r ≤ Real.sqrt (x ^ 2 - 1) := by
+    have h := (xiEndpointPhase_bounds hs0 (by linarith) (le_of_lt hx1)).2
+    rwa [hxi] at h
+  have hq : Real.sqrt r ≤ Real.sqrt (Real.sqrt (x ^ 2 - 1)) := Real.sqrt_le_sqrt hhigh
+  have hupos : (0 : ℝ) < Real.sqrt (Real.sqrt (x ^ 2 - 1)) :=
+    Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hu)
+  have hsv : Real.sqrt (x ^ 2 - s) ≤ 2 := by
+    rw [show (2 : ℝ) = Real.sqrt 4 by
+      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+    exact Real.sqrt_le_sqrt hv4
+  have hssv : Real.sqrt (Real.sqrt (x ^ 2 - s)) ≤ Real.sqrt 2 := Real.sqrt_le_sqrt hsv
+  have hs2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hden : Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s))
+      ≤ Real.sqrt (Real.sqrt (x ^ 2 - 1)) * (2 * Real.sqrt 2) := by
+    calc Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s))
+        ≤ Real.sqrt (Real.sqrt (x ^ 2 - 1)) * 2 * Real.sqrt 2 := by
+          gcongr
+      _ = Real.sqrt (Real.sqrt (x ^ 2 - 1)) * (2 * Real.sqrt 2) := by ring
+  have hdpos : (0 : ℝ) < Real.sqrt r * Real.sqrt (x ^ 2 - s) * Real.sqrt (Real.sqrt (x ^ 2 - s)) :=
+    by positivity
+  rw [xiBesselWeight, ← hxdef, le_div_iff₀ hdpos, div_mul_eq_mul_div, one_mul,
+    div_le_iff₀ (by positivity : (0 : ℝ) < 2 * Real.sqrt 2)]
+  linarith [hden]
+
+/-- The compact-range form of the lower bound. -/
+theorem inv_le_xiBesselWeight_of_le {s r : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hr : 0 < r)
+    (hrle : r ≤ xiEndpointPhase s 2) :
+    1 / (2 * Real.sqrt 2) ≤ xiBesselWeight s r := by
+  refine inv_le_xiBesselWeight hs0 hs1 hr ?_
+  have h2 : (0 : ℝ) < xiEndpointPhase s 2 := by
+    rw [← xiEndpointPhase_one s]
+    exact strictMonoOn_xiEndpointPhase hs0 hs1 (mem_Ici.mpr le_rfl) (mem_Ici.mpr (by norm_num))
+      (by norm_num)
+  have hinv : xiInverse s (xiEndpointPhase s 2) = 2 :=
+    xiInverse_xiEndpointPhase hs0 hs1 (by norm_num)
+  have := (strictMonoOn_xiInverse hs0 hs1).monotoneOn (mem_Ioi.mpr hr) (mem_Ioi.mpr h2) hrle
+  rwa [hinv] at this
+
+
 end GaloisForLFunctions.RHTower

@@ -565,3 +565,415 @@ RH statement remains circular until that construction precedes Xi-zero specializ
   transition system, no source-derived self-duality/action, and no third invariant predicted from
   a shared realization. CMR remains a falsifiable field programme, not a GR-level theory already
   constructed.
+- Added a full-corpus anti-tunnel completeness basis with eight independent organs: source,
+  relation/capacity, deformation/prolongation, admission/effectivity, order/positivity,
+  topology/completion, holonomy/history/cost, and comparison/local-to-global/physical
+  reconstruction. A result confined to one or two organs is henceforth a local calibration even
+  when mathematically strong.
+- Corrected the motivating slogan itself: not every route is a gauge, not every no-go is curvature,
+  HT is not all noncompactness, and positivity is not always a phase quotient. The field target is
+  a doctrine-relative typed defect spectrum with irreversible realizations, not forced scalar
+  unification.
+
+## 2026-08-09 — cotangent anomaly attack and topology pivot
+
+- First conjecture `killed laws = dual observer anomaly` was rejected as rediscovered. Corpus
+  Stage-2 `relative-law-observer-descent-duality.md` already proves the exact cone/kernel/descent
+  pairing; finite linear duality is classical.
+- Proved local Witt budget: a boundary-isotropic target with negative index plus radical `r` cannot
+  contain more than `r` jointly injected killed-law directions. A form descending to homology gives
+  the sharper radical-only bound. Hyperbolic completion of a killed-law space has the expected
+  split signature.
+- Hostile audit killed the inference that this forces a singular or Tate transition. For
+  `I=ker(lambda)` in one Lagrangian half of `H(K)`, regular coisotropic reduction gives
+  `I^perp/I ~= H(C)` for arbitrarily large finite `K`.
+- Pivoted higher from Witt rank to the order-of-operations square. For literal prime
+  `K_0=c00(P)` and augmentation kernel `I_0`, algebraic reduction is one hyperbolic port.
+  Completion in `ell^1` preserves it. In `ell^p`, `p>1`, and `c0`, `I_0` is dense; continuous
+  annihilator is zero and Hausdorff reduction vanishes.
+- Defined typed mate defect from primal comparison
+  `K_0/I_0 -> X/closure(I_0)` and dual restriction
+  `(closure(I_0))^perp -> I_0^perp`. It is zero for `ell^1` and exactly `H(C)` for `ell^p`,
+  `p>1`, and `c0`.
+- New Stage-1 field card:
+  `../constraint-motive-relativity/polarized-constraint-cotangent-geometry.md`.
+- New Stage-2 theorem card:
+  `../../2-fully-proven/constraint-motive-relativity/prime-port-algebraic-continuous-separation-law.md`.
+- Field interpretation: observer topology is dynamical geometry. Same algebraic constraint can be
+  regular, non-Hausdorff, or invisible depending on completion; a route is specified by reduction
+  plus topology plus action, not its endpoint scalar.
+- Anti-regression gate remains active. Next theorem must transport an independent spectral,
+  recurrence, HT, capacity, or physical invariant through this same reduction--completion square.
+  Another source selector or RH-equivalent vanishing law does not count.
+
+## 2026-08-09 — time-dependent port geometry
+
+- Transported Mellin/Fourier clock through same prime reduction square using
+  `epsilon_t(x)=sum_p p^(-it)x_p`.
+- For every time `t`, algebraic and `ell^1` coisotropic reduction leaves one hyperbolic port;
+  every unweighted `ell^p`, `p>1`, and `c0` completion makes kernel dense and Hausdorff reduction
+  zero. Completion curvature is uniform along time orbit.
+- Every finite prime projection is dense/recurrent by unique factorization plus Kronecker--Weyl.
+  Full port orbit is dense in infinite product torus, whose topology equals weak-star topology
+  inherited from `ell^infinity=(ell^1)'`.
+- Logarithmic history lift is unbounded and finite lift action diverges along recurrent return
+  sequences, while positive port norm stays one.
+- First `N` time jets at an `N`-prime cutoff form full dual basis by Vandermonde. Cofinally, no
+  fixed jet order is conservative.
+- Global weak-star port path is continuous but has no weak-star derivative in `ell^infinity`:
+  coordinate tests force derivative `(-i log p)`, which is unbounded. Weighted logarithmic
+  preduals admit derivatives. This is exact recurrent-observation/singular-infinitesimal-time
+  geometry, not analytic HT by itself.
+- New Stage-2 card:
+  `../../2-fully-proven/constraint-motive-relativity/prime-phase-port-recurrence-completion-law.md`.
+- Current coverage from one literal source orbit: source, relation/reduction, spectral time,
+  recurrence/history, positivity, topology/completion, deformation/prolongation, and admission.
+  Physical reconstruction remains genuinely open. Hostile review demoted phase transport to a
+  compatibility bridge because `I_t=U_t^(-1)I_0` is exact isometric conjugacy.
+
+## 2026-08-09 — hostile correction and weighted capacity law
+
+- Corrected topology interpretation: if algebraic quotient `K_0/I_0` receives quotient seminorm
+  induced by `X`, its Hausdorff completion is `X/closure(I_0)`. Thus completion and reduction
+  commute. Prior “commutator curvature” language was false.
+- Exact surviving object is algebraic-to-continuous separation pair:
+  primal kernel of `K_0/I_0 -> X/closure(I_0)` plus dual cokernel of
+  `(closure(I_0))^perp -> I_0^perp`. It is `H(C)` for `ell^p`, `p>1`, and `c0`, and zero for
+  `ell^1`.
+- Uniform time-dependent phase law is isometric transport of static law, not new topology-time
+  interaction. Corrected infinite orbit: orbit is dense and relatively weak-star compact; compact
+  object is its closure.
+- Proved weighted capacity law for `H_w`, phase port `lambda_t=sum a_p p^(-it)x_p`:
+  `Cap_F=sum |a_p|^2/w_p`, minimum energy for value `z` is `|z|^2/Cap_F`, global port is
+  continuous iff total capacity finite, and divergent capacity makes finite-support kernel dense.
+- Proved norm recurrence when total capacity is finite and exact jet-domain hierarchy
+  `C_n=sum |a_p|^2(log p)^(2n)/w_p`.
+- Example `a_p=1`, `w_p=p(log p)^2`: global port is norm-continuous and compact recurrent while
+  prime-log generator is inadmissible (`C_0<infinity`, `C_1=sum_p1/p=infinity`).
+- New Stage-2 card:
+  `../../2-fully-proven/constraint-motive-relativity/weighted-port-capacity-admission-recurrence-law.md`.
+- Hostile all-organ verdict: exact and strong 5/8-organ calibration, not common route realization.
+  Weights and coefficients are inputs; literal Route E incidence, Stokes Schur gap, and Mass
+  first-unseen moment are not derived. Next pivot: operator-valued cofinal inverse-capacity metric
+  whose nullspace equals multivalued graph fibre, instantiated in at least two literal routes.
+
+## 2026-08-09 — polydual pivot and first cross-doctrine law
+
+- Whole-corpus hostile audit falsified `K direct-sum K^*` as universal field carrier. Exact
+  countermodels preserve its isomorphism class while changing three decisive native data:
+  Mass affine next-moment orientation, recurrence integral relation lattice, and HT relative
+  differential transcendence rank.
+- Explicit Mass witness: current moments `(s_0,s_1,s_2)=(1,10,100)` have positive rank-one Hankel
+  face and null line `C(-10,1)`. Successors `s_3=1004` and `s_3=984` leave the face fixed but give
+  monic remainder `4` and `-16`.
+- Explicit recurrence witness: real detuning kernels for `(1,2)` and `(1,sqrt(2))` are both
+  one-dimensional, while integral relation lattices have ranks one and zero; corresponding phase
+  orbit is periodic versus dense in `T^2`.
+- Explicit HT witness: differential field inclusions
+  `k -> k<y_1,...,y_r>` have zero ordinary kernel for every `r` but differential transcendence
+  degree and relative differential cotangent rank `r`.
+- Retired universal PCCG. Retained it as local finite linear/stable doctrine with exact
+  kernel/coframe, hyperbolic, Witt, and Hausdorff-separation theorems.
+- New working higher field: **Polarized Constraint-Duality Geometry (PCDG)**. Duality type is a
+  field coordinate. Required native charts currently include linear/stable, affine extension,
+  integral/Pontryagin, differential/prolongation, ordered/positive, and topological-relation
+  dualities. Only an invertible marked paired correspondence is a gauge change.
+- PCDG is not permission to form an ad hoc product of routes. A valid field realization still
+  needs one source-selected section and explicit comparison correspondences. Current status is a
+  typed programme plus falsifiers, not a constructed GR-level theory.
+- Proved nested quotient-seminorm/vertical-fibre law. For increasing finite normed domains and a
+  finite port, the minimum-lift norms `q_n` decrease and satisfy
+  `mul closure(Graph T)=ker q_infinity`. In Hilbert charts,
+  `q_n(y)^2=<Q_n y,y>` with `Q_n=(T_nT_n^*)^(-1)`, hence the same fibre is
+  `ker Q_infinity`.
+- Literal instantiations: prime augmentation has `G_n=n`, `Q_n=1/n`, full scalar vertical fibre.
+  Published Pointed Cartan graph-null lifts force `q_infinity=0`; if evaluation already sees the
+  seminorm radical, the relation is vertical before closure, while otherwise it descends and the
+  quotient-seminorm theorem applies. This is the first dependency-closed comparison between
+  filling metric and topological-relation doctrines. It proves no Xi-zero location statement.
+- New cards:
+  `../constraint-motive-relativity/polarized-constraint-duality-geometry.md`;
+  `../../2-fully-proven/constraint-motive-relativity/cofinal-inverse-capacity-vertical-fibre-law.md`;
+  `../../2-fully-proven/constraint-motive-relativity/linear-hyperbolic-double-three-doctrine-nonconservativity-law.md`.
+- Literature boundary: indexed Grothendieck constructions and virtual equipments are available as
+  categorical infrastructure for doctrine-indexed correspondences; infinite-dimensional regular
+  and singular symplectic reduction is also established. They do not supply HGT's source section
+  or mixed comparison laws. No novelty credit is required, but these parents prevent us from
+  calling generic fibrational/correspondence machinery the new mathematics.
+- Terminology corrections preserved: old log phrases `completion curvature`, `compact recurrent
+  orbit`, and `lift action` are superseded by `algebraic-to-continuous separation defect`,
+  `recurrent orbit with compact closure`, and `finite squared lift length`, respectively.
+- Next hard gate: replace PCDG's provisional tuple by one composable coordinate-free equipment or
+  prove that a single such primitive is unjustified; then construct a second cross-doctrine law
+  involving affine, integral, or differential data rather than another topology/capacity chart.
+
+## 2026-08-09 — relational Chu core and source-rational verticality conjecture
+
+- Replaced PCDG's six-component tuple by the smallest justified common primitive: a
+  doctrine-indexed relational Chu virtual equipment. Universal data are only law sort,
+  contravariant reporter sort, native evaluation, paired correspondences, and compatibility
+  multicells. Affine, lattice, differential, ordered, topological, and cost structures stay native
+  to fibres.
+- Composition kinematics are exact when represented:
+  `(P_2,Q_2,theta_2) circle (P_1,Q_1,theta_1)
+   =(P_2 odot P_1,Q_1 odot Q_2,theta_2 star theta_1)`.
+  Closed relation composition is not silently closed; an unrepresented composite remains virtual.
+- Proved finite-reporter admission theorem. For dense `j:X_0->X`, finite
+  `L subset X_0^vee`, `I=L^perp`, and admitted subspace `L_X`,
+  `closure(jI)=intersection_(lambda in L_X)ker tilde(lambda)` and
+  `X/closure(jI)=L_X^vee`.
+- Algebraic and continuous reductions are `H(L^vee)` and `H(L_X^vee)`. Their Chu mate loses the
+  exact perfect pair `H((L/L_X)^vee)`.
+- Serial reporter flags `L_2 subset L_1 subset L_0` give canonical exact loss sequences, not a
+  canonical direct sum. This is first nontrivial composition law for doctrine transitions.
+- Corrected recurrence object: for frequency relation lattice `Lambda`, phase hull is
+  `Ann(Lambda)=widehat(Z^d/Lambda)`, not `widehat(Lambda)`.
+- New Stage-2 card:
+  `../../2-fully-proven/constraint-motive-relativity/finite-reporter-admission-hyperbolic-reduction-composition-law.md`.
+- Strongest new field conjecture: if one literal source simultaneously produces vertical fibre
+  `M=ker q_infinity` and marked lattice `Lambda`, source compatibility should force
+  `M=span_R(M intersect Lambda)`. This would yield a Pontryagin-dual exact sequence tying vertical
+  ambiguity to lost recurrence phase.
+- Generic conjecture is false. For `Y=R^2`, `Lambda=Z^2`, `v=(1,sqrt(2))`, and nested capacities
+  `G_n=I+nvv^T`, inverse capacities converge to `P_(v^perp)`, so vertical fibre is `Rv` but has
+  zero intersection with the lattice. Any positive result must derive rationality from literal
+  source incidence/grading, not category theory.
+- Current honest status: higher pivot now has typed kinematics, two exact transition laws, and one
+  risky cross-field prediction with sharp generic falsifier. No source section, nonidentity
+  heterogeneous source multicell, physical action, or RH implication is constructed.
+
+## 2026-08-09 — indexed typing repair and four-doctrine rationality theorem
+
+- Hostile review found the proposed “one virtual equipment per doctrine” ill-typed across fibres.
+  Replaced it by an **indexed relational Chu variance schema** requiring an indexed monoidal
+  virtual equipment, coherent base-change adjunctions, coefficient transport, and typed
+  evaluation multicells. This combined equipment is not constructed. Shulman-style Chu and
+  virtual/profunctor frameworks are separate parents, not an automatic solution.
+- Strict represented comparison now has typed compatibility
+  `e_e(f(u_!x),o')=chi_u(u_!e_d(x,bar(g)(u^*o')))`. Composition carries forward law,
+  backward reporter, coefficient, and compatibility data. Noninvertible doctrine changes are
+  reductions; only invertible instances are gauges.
+- Hostile review accepted the finite-reporter Chu theorem and cofinal quotient-seminorm theorem
+  after explicit reduction, density, and ambient-closure proofs.
+- Generic source-rational verticality is false: `G_n=I+nvv^T` with irrational `v` gives an
+  irrational vertical line.
+- Stronger failure: even lattice-generated capacity at every finite cutoff is insufficient.
+  Choose rational unit directions `u_n` converging exponentially to an irrational direction and
+  `G_N=I+sum_(n<=N)u_nu_n^T`. Every increment is a positive multiple of `a_na_n^T` for
+  `a_n in Z^2`, but inverse capacities converge with irrational one-dimensional kernel. Cofinal
+  direction-type history cannot be discarded.
+- Proved finite-direction survivor. For fixed lattice vectors `a_1,...,a_r` and nondecreasing
+  weights,
+  `G_n=G_0+sum_i c_i(n)a_ia_i^T` has
+  `ker(lim G_n^(-1))=span_R{a_i:c_i(n)->infinity}`. Block Schur inversion gives the exact limit.
+  The kernel is lattice-rational, equals the closed-graph vertical fibre, and its primitive
+  sublattice yields the canonical Pontryagin exact sequence.
+- This is first dependency-closed law joining four doctrines at once: positive Gram capacity,
+  topological relation verticality, integral provenance, and compact recurrence phase. It does
+  not show any RH route has the required fixed finite lattice-direction realization.
+- New Stage-2 card:
+  `../../2-fully-proven/constraint-motive-relativity/finite-lattice-direction-capacity-verticality-pontryagin-law.md`.
+- Next gate: find a second literal corpus family satisfying the finite-direction hypotheses, or
+  prove source direction types necessarily proliferate. Do not return to source-nullhomology or
+  another equivalent RH selection condition until this cross-doctrine gate is resolved.
+
+## 2026-08-09 — global gauge-collapse pivot, polar horizon, and observer uncertainty
+
+- Proved the requested literal “all routes are gauges” principle impossible. If a doctrine
+  pseudofunctor is conjugate to one carrier by fibrewise equivalences, every transition is an
+  equivalence. Corpus transitions include noninvertible affine, integral, differential,
+  topological, orientation, and history losses. The global field must therefore be directed and
+  stratified; only maximal invertible overlap groupoids are gauge sectors.
+- Installed the Grothendieck total category `E=int_D F` and a bounded literal source-probe functor
+  `J:P_src->E`. Its observation nerve `N_J(X)(p)=Hom_E(Jp,X)` is fully faithful exactly when every
+  object is reconstructed as the colimit of its source probes. **Joint source-observer density** is
+  now the global conjecture. Using every object as a probe is forbidden as tautological.
+- Proved dense-source non-descent. If the complete dense nerve factors through a doctrine exit
+  `L`, then `L` is faithful, reflects isomorphisms, and reflects object isomorphism. A later serial
+  observer cannot repair earlier complete-nerve loss; parallel observers can avoid it only when
+  jointly conservative. This yields one exact law simultaneously covering Mass affine collapse,
+  recurrence/history projection, finite-jet forgetting, Hausdorff reporter loss, relation
+  vertical-quotient loss, and positive orientation scalarization once each is realized in the same
+  literal source category.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/gauge-collapse-stratified-observation-density-reconstruction-law.md`.
+- Proved intrinsic finite capacity-polar law. Increasing positive metrics `g_n` have decreasing
+  cometrics `q_n->q`; bounded direct-capacity space is `ran q=(ker q)^ann`, its reduced metric is
+  the inverse form induced by `q`, and capacity is infinite off that space. In Hilbert charts the
+  complement is exactly the graph's vertical fibre `ker Q_infinity`. This is one coordinate-free
+  horizon law, not a claim that every route is Gram geometry.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/cofinal-capacity-polar-horizon-moore-penrose-law.md`.
+- Closed three literal finite-direction realizations: weighted prime port, positive Stokes
+  multi-Rees conormals, and rooted prime-support HT Hodge--Green. Their recurrence carriers do not
+  coincide with the lattice forced by the capacity theorem. Same-lattice recurrence remains open;
+  nearby compact tori cannot be substituted.
+- Proved compact-observer uncertainty. A compact Hilbert observer injective on every finite member
+  of a dense nested source tower has positive finite singular floors `sigma_n`, but
+  `sigma_n->0`; all inverse-gauge norms and least reconstruction energies diverge. Its positive
+  shadow `K^*K` has the same horizon and forgets output-unitary phase. Every bounded lifted history
+  has compact observed image, while an orthonormal source history can remain nonprecompact.
+  Compactness alone does not imply recurrence.
+- Conditional HT prediction: if persistent independent jet directions admit such a compact
+  Hilbert reporter, finite-jet exactness and uniform reconstruction cannot coexist. HT remains jet
+  freedom, not noncompactness; compact observation is what turns that tower into a horizon.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/compact-observer-local-gauge-cofinal-horizon-law.md`.
+- Proved finite physical observer-density calibration on framed GHZ phase fibres. Separate
+  marginals are constant; pairwise coherence reporters reconstruct the phase point exactly when
+  their graph is connected; a spanning tree is minimal among pairwise probes. Lifted edge
+  histories reconstruct winding, but executed Fubini--Study action requires the full
+  time-parametrized quotient path. No bulk/wormhole identification is claimed.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/ghz-coherence-graph-state-and-history-reconstruction-law.md`.
+- Higher interpretation: algebraic observer density and topological/cost coercivity are independent
+  field equations. “Making one face precise makes another imprecise” is now an exact
+  density--coercivity complementarity in compact-observer charts, not a metaphor or RH selector.
+- Proved a literal marked Euler-shell mixed source chart. For each `m>=12`, the binary
+  largest-prime-exponent shell yields genuine relative HT, a positive Mellin--GNS moment object,
+  compact-resolvent spectral flow, norm-precompact recurrence, and divergent unwrapped history.
+  Its pure-prime derivative skeleton recovers Mass half-density, reflection-odd Weil tangent, and
+  prime phase coefficients by exact formulas and natural finite restrictions.
+- Proved the normalization wall: the full positive shell is finite only for `sigma>1`, while
+  matching its pure-power GNS coordinate to `(log p)/sqrt(p)` forces `m sigma=1`. At that fibre the
+  shell mass and target Mass norm diverge. Positive GNS and physical half-density are therefore
+  different normalization/completion fibres, not bounded gauges.
+- Exact card:
+  `../../2-fully-proven/constraint-motive-relativity/marked-euler-shell-mellin-gns-ht-recurrence-normalization-wall-law.md`.
+- Hostile correction: prime reporters are faithful only on the marked pure-prime skeleton. They do
+  not reconstruct an ambient coefficient source; fixed-shell mixed coefficients require the
+  global shell law. This is one real source chart, not a universal field constitution.
+- Next hard gate: construct a literal source probe category spanning at least three unrelated
+  doctrines and either prove one nontrivial density statement or exhibit the first mixed invisible
+  automorphism. Parallel gate: construct one same-lattice capacity/recurrence realization. Do not
+  regress to a route-specific source-nullhomology search.
+
+## 2026-08-09 — atomic source density and Mellin normalization-response seed
+
+- Constructed the smooth positive coefficient source cone
+  `C_sigma^infinity` inside the weighted-log-moment Fréchet space. Countable rational atom probes
+  `q e_n` have a fully faithful restricted nerve: their downsets recover every coefficient and
+  every source order relation. This closes a literal, non-tautological density theorem for one
+  source doctrine.
+- Constructed three explicit reporters from the same source: Mellin/vertical jets `S_c`, marked
+  positive measure `(Z_c,P_c)`, and phase correlation `C_c(t)=S_c(sigma+it)/S_c(sigma)`.
+- Proved the local normalization exchange
+  `DP_c[h]=Z_c^(-1)(mu_h-H_0(h)P_c)`. Its ambient derivative kernel is exactly the radial source
+  line. Normalization is a positive-scale quotient in this chart, not a phase quotient.
+- Proved constitutive response
+  `DC_c[h](t)=int e^(-itx)dDP_c[h]`; for bounded scores `h=cr`, this is bilinear covariance.
+  Hermitian Cauchy--Schwarz gives the Fisher bound
+  `|DC|^2<=Var(r)(1-|C(t)|^2)`.
+- Proved identifiability no-go: `c` and `lambda c` have identical unmarked positive state and phase
+  history, while response to the same absolute intervention scales by `lambda^(-1)`. Marked total
+  mass is load-bearing.
+- Hostile scope correction: this is a real local Mellin--measure--Fourier compatibility, not yet a
+  represented heterogeneous PCDG multicell. Source interventions are not yet arrows of the
+  coordinatewise source poset; full Mellin and marked-measure reporters are each already
+  coefficient-faithful.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/marked-mellin-normalization-exchange-response-law.md`.
+- New Stage-1 field gate:
+  `../constraint-motive-relativity/literal-three-doctrine-source-descent-exchange-conjecture.md`.
+- Highest non-regressive next theorem: construct an intervention category and actual indexed
+  differential/positive/history fibres using individually nonconservative admitted reporters;
+  represent two comparison multicells and their composite; then predict signed Stokes one-port
+  orientation/inertia response to a fixed coefficient intervention and verify it independently.
+  Another Mellin moment, Mass scalar, or Fourier response does not pass this gate.
+
+## 2026-08-09 — withheld Stokes test, two-level dynamics, and fixed-observer admission horizon
+
+- Ran the withheld Stokes response test instead of searching for another RH selector. It falsified
+  the proposed smooth bridge: inertia is locally constant on a law stratum, and the literal common
+  arithmetic twist `lambda_i=delta_n(s)` leaves Puiseux contacts, coarea, capacity gap, and inertia
+  exactly fixed while changing determinant holonomy. An arbitrary Euler/Mellin coefficient
+  intervention has no constructed map to Puiseux contacts; its Stokes-gap response is undefined.
+- Proved the Puiseux cluster-split event law. Raising cross-cluster contact from `ell` to `k` changes
+  the Cartan form by
+  `-2(k-ell)X_U X_V=((k-ell)/2)((X_U-X_V)^2-M^2)`, while the one rank port and determinant exponent
+  stay fixed. On `ker M`, the event contribution is positive. For a regular one-port wall the exact
+  signed response is the crossing form
+  `u_0^T dot(Q)_0 u_0=c_0^2 dot(Omega)_0`, hence local spectral flow, not a derivative of inertia.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/puiseux-cluster-split-one-port-lorentz-exchange-law.md`.
+- Proved the Gamma/corona intervention classification. Raw `G_t=M_(p^(-2t))` is a two-sided
+  coefficient group generated by twice the signed Kummer period. On the fixed corona
+  `C^P/ell^1`, it descends exactly for `t>=0`; it is surjective/noninjective for `t>0`. Its finite
+  holonomy is `G_tF_t-F_t=beta_t`. Moving the ideal to `I_t=G_tI` makes transport flat, but return
+  to the fixed observer is one-sided and noninjective/inadmissible. Scalar normalization,
+  finite-support changes, conservative diagonal multipliers, and moving-ideal transport cannot
+  annihilate the fixed-fibre class.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/kummer-gamma-one-sided-corona-flow-intervention-rigidity-law.md`.
+- Higher pivot: CMR dynamics must separate horizontal response inside a law stratum, vertical law
+  events at a discriminant, and fixed-observer admission holonomy. Calling all three curvature, or
+  all route exits gauges, is false. Three exact charts constrain this architecture but do not prove
+  an all-route realization.
+- New Stage-1 field card:
+  `../constraint-motive-relativity/stratified-source-response-and-law-event-geometry.md`.
+- Universal kinematic laws now isolated: a degree-zero reporter kills radial derivative; a locally
+  constant discrete invariant changes only at a discriminant; a reporter erased by an event cannot
+  factor through the post-event object. These are route-independent but do not yet constitute the
+  desired field equation.
+- Anti-theatre gate strengthened. Any proposed arithmetic Fredholm--Stokes functor must define its
+  source/target categories, wall correspondence, gap, topology, and boundary-observable class
+  independently; construct gap and boundary current separately; predict atomwise response before
+  comparison; produce a nonzero crossing; and compare determinant and Bockstein orientation
+  torsors at line level. Equation `D Omega=int W d(D pi)` alone is tautological duality.
+- Literature audit: Malgrange/JMU response, normalization geometry, spectral flow, derived and
+  infinite-dimensional Stokes theory, vanishing cycles, and determinant/orientation machinery are
+  occupied parent tools. This is acceptable Frankenstein material. Open content is a literal
+  arithmetic source functor satisfying the anti-tautology gate and one same-form theorem in two
+  nonisomorphic route realizations.
+- No Lean was written or built. Goal remains open. Next non-regressive gate: build one pre-zero,
+  source-natural event functor or falsify its existence; do not search for source null-homology at
+  Xi zeros.
+
+## 2026-08-09 — reporter-rank law, pre-zero Fredholm receivers, and pro-valuated event pivot
+
+- Audited literal pre-Xi Fourier, Poisson, co-Poisson, Gamma, Cartier, Bockstein, and
+  prime--infinity candidates. No existing non-diagonal degree-one chain event kills the full prime
+  presentation while preserving its valuation coframe. Arakelov graph coupling is split and has
+  zero reporter anomaly.
+- Proved the finite coframe operation-defect law on a general presentation complex. Killing `N`
+  independently coframed classes forces coframe-transport anomaly rank `N`; a rank-one linear port
+  cannot factor it. The top exterior anomaly is a canonical determinant-line shadow after matched
+  finite bases. Corrected arithmetic scope: literal prime tensors are used in the signed-relation
+  presentation quotient at degree zero, not asserted to be Hochschild 1-cycles.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/valuation-coframe-operation-defect-rank-and-determinant-line-law.md`.
+- Proved a coefficient-faithful global Fredholm receiver. For `a in ell^1_d`, the Helson operator
+  `K_a(j,k)=a_(jk)` is trace class and recovers every coefficient. At a simple real eigenvalue
+  wall, the independently defined eigenline gives crossing covector
+  `h -> -sum_n h_n sum_(jk=n) conjugate(u_j)u_k`. This supplies genuine pre-zero spectral
+  response, but does not source-select threshold/eigenline or the local Stokes comparison.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/helson-coefficient-fredholm-crossing-response-law.md`.
+- Corpus audit found a stronger source-normal Fredholm seed already present: source-Grushin
+  elimination gives `G_z G_0^(-1)=I+zB`, with pencil kernel equivalent to reciprocal point spectrum;
+  theta specialization constructs compact `B` solely from the completed source density. Open
+  pieces are global determinant trace/multiplicity and local boundary compatibility.
+- Derived a new literal cross-chart theorem. At prime `p`, Gamma determinant transgression and
+  adjacent-depth Rees normal satisfy
+  `beta_p(t)=-gtilde_p(t)w_p(t)`, with analytic event slope
+  `L_p=4p^3(log p)^2/((p+1)^2(p-1)(2p-1))`. Existing formal factor is set to `1` at the event and
+  is therefore discontinuous; its zero-radical theorems remain correct.
+- Proved `L_p~2(log p)^2/p->0`. Primewise event charts are orientation-equivalent, but their
+  diagonal comparison has no bounded inverse on unweighted `ell^2`, `c0`, or `ell^infinity`; its
+  range is nonclosed on `ell^2` and `c0`. A cofinal comparison requires source-selected weights,
+  pro/bornological topology, nonclosed correspondence, or admitted Tate data.
+- New exact card:
+  `../../2-fully-proven/constraint-motive-relativity/prime-gamma-bockstein-rees-event-germ-and-cofinal-normal-nonuniformity-law.md`.
+- Hostile audit falsified determinant-first ontology. Finite positive determinant orientations
+  can all agree while cofinal normal slopes collapse. Pivoted event hierarchy to
+  `source comparison complex -> Fitting discriminant -> Rees/valued normal -> Fredholm determinant
+  section -> real crossing orientation`. Determinant holography survives only as one-port shadow.
+- Rewritten Stage-1 card:
+  `../constraint-motive-relativity/determinantal-constraint-holography-and-singular-reporter-correspondence-conjecture.md`.
+- Anti-tunnel boundary: this pro-valuated source-Grushin sector connects arithmetic reporter rank,
+  spectral/Fredholm events, Gamma/Rees normal geometry, Stokes orientation, positivity, and
+  topology. It does not subsume Mass affine successor, Route-E capacity, HT differential rank, or
+  recurrence cost. Those remain native CMR organs.
+- No Lean was written or built. Goal remains open. Next gate: construct one finite--infinity source
+  comparison complex, compute its Fitting/Rees tower, and derive source-selected weighted/pro
+  topology plus global/local response compatibility on a non-RH test family.

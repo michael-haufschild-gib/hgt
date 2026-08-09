@@ -1,9 +1,9 @@
 # Dirichlet Maurer--Cartan and Mellin-orbit law
 
 - **ID:** `ngd-dirichlet-maurer-cartan-mellin-orbit`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [SOURCE-PURE] [NOT RH] [NO LEAN WRITTEN]`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [SOURCE-PURE] [NOT RH]`
 - **Statement:** The differential Dirichlet gauge algebra has flat source current
   `M * delta(E) = Lambda`; its Mellin orbit is the Julia von-Mangoldt orbit.
 
@@ -157,14 +157,25 @@ positivity, central-line substitution, or divisor-dependent normalization occurs
 - [x] source flow and gauge identity proved
 - [x] Julia--Mellin orbit identified
 - [x] flatness scope stated
-- [ ] formalized in Lean 4
+- [x] formalized in Lean 4
 
-## Lean-return note
+## Lean formalization
 
-No Lean code was written or built. A later formalization should first search existing arithmetic
-function/convolution declarations and the formalized Möbius--von-Mangoldt weld before choosing a
-module path.
+- `formal/GaloisForLFunctions/HTGeometry/DirichletMaurerCartanMellinOrbitLaw.lean`
+  formalizes the logarithmic Dirichlet derivation, Möbius--von-Mangoldt contraction, Kähler inverse
+  rule, Mellin algebra automorphism, full coefficient derivative through both complex components,
+  both gauge equations, Julia orbit, pure-gauge law, and one-parameter curvature vanishing.
+- `formal/GaloisForLFunctions/HTGeometry/UniversalDeRham.lean` constructs the missing canonical
+  degree-one universal de Rham differential from the cotangent presentation `I / I²`, proves its
+  tensor representative annihilates `I²`, and proves `d(a db)=da∧db`.
+- The card module proves the literal equation
+  `d(M dE) + (M dE) ∧ (M dE) = 0`, with both summands separately identified and proved zero.
+- Direct elaboration, both targeted module builds, the `GaloisForLFunctions.HTGeometry` umbrella
+  build, forbidden-declaration scan, and exhaustive theorem axiom audit pass.  Axiom output contains
+  only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-08-08 — paper proof closed and split from the open reduction-comparison problem.
+- 2026-08-09 — exact unconditional Lean formalization completed, universal de Rham infrastructure
+  added, modules wired into the HT umbrella, and final target/umbrella/axiom audits passed.

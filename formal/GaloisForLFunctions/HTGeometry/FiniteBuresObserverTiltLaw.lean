@@ -14,6 +14,9 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+open MeasureTheory Matrix Set
+open scoped ComplexConjugate ComplexOrder MatrixOrder Matrix.Norms.L2Operator
+
 /-! ## Hermitian opposite-tilt reporters -/
 
 /-- Exponentiating a Hermitian finite-dimensional observable produces a

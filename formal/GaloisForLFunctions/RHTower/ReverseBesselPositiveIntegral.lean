@@ -114,6 +114,26 @@ theorem reverseBesselPoly_eq_positiveIntegral (n : ℕ) (x : ℝ) :
     change Integrable _ (volume.restrict (Ioi (0 : ℝ)))
     simpa [mul_assoc, mul_left_comm, mul_comm] using hbase.const_mul (x ^ j)
 
+/-- The positive reverse-Bessel Gamma kernel is integrable on the positive ray.  This is the
+analytic companion of `reverseBesselPoly_eq_positiveIntegral`, exposed for finite source
+superpositions whose Gamma integrals must be exchanged with a coefficient sum. -/
+theorem integrableOn_reverseBesselPositiveIntegrand (n : ℕ) (x : ℝ) :
+    IntegrableOn
+      (fun u : ℝ => Real.exp (-u) * u ^ n * (x + u / 2) ^ n)
+      (Ioi (0 : ℝ)) := by
+  have hsum : IntegrableOn
+      (fun u : ℝ => ∑ j ∈ Finset.range (n + 1),
+        ((n.choose j : ℝ) / (2 : ℝ) ^ (n - j) * x ^ j) *
+          (u ^ (2 * n - j) * Real.exp (-u)))
+      (Ioi (0 : ℝ)) := by
+    exact integrable_finsetSum (Finset.range (n + 1)) fun j hj => by
+      have hbase := reverseBessel_integrand_integrable n j
+      change Integrable _ (volume.restrict (Ioi (0 : ℝ)))
+      simpa [mul_assoc, mul_left_comm, mul_comm] using hbase.const_mul (x ^ j)
+  exact hsum.congr_fun
+    (fun u _ => (reverseBessel_integrand_expand n x u).symm)
+    measurableSet_Ioi
+
 /-- The positive integral representation in particular certifies `B_n(x) > 0` for `x ≥ 0`. -/
 theorem reverseBesselPoly_pos (n : ℕ) {x : ℝ} (hx : 0 ≤ x) :
     0 < reverseBesselPoly n x := by

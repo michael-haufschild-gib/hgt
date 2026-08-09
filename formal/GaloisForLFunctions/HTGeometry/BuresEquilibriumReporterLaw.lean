@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteBuresReporterVariationalLaw
+import GaloisForLFunctions.HTGeometry.FiniteBuresTargetMinimaxCore
 
 /-!
 # Bures equilibrium reporter law
@@ -8,7 +9,7 @@ optimal: it transports source covariance exactly to target covariance.
 -/
 
 open Matrix
-open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
+open scoped BigOperators ComplexOrder MatrixOrder Matrix.Norms.L2Operator
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -60,6 +61,50 @@ theorem finiteBuresOptimalReporter_transport
         (P⁻¹ * P) * M * (P * P⁻¹) by noncomm_ring,
         Matrix.nonsing_inv_mul P hPdet, Matrix.mul_nonsing_inv P hPdet]
       simp
+
+/-- **Positive-design complementary slackness `(EQ3)`.**  If a probability
+mixture attains the largest target leverage, every endpoint carrying positive
+design weight attains that same largest leverage.  No extremality or
+uniqueness of the design representation is required. -/
+theorem finiteBuresEquilibrium_positiveWeight_eq_maxLeverage
+    {C : Type*} [Fintype C] [Nonempty C] {n : ℕ}
+    (p : C → ℝ) (hp : p ∈ stdSimplex ℝ C)
+    (target : C → Fin n → ℂ) (A : Matrix (Fin n) (Fin n) ℂ)
+    (B : ℝ)
+    (hle : ∀ c, finiteBuresTargetLeverage A (target c) ≤ B)
+    (hattain : finiteBuresTargetPairing
+        (finiteBuresTargetMixture p target) A = B) :
+    ∀ c, 0 < p c → finiteBuresTargetLeverage A (target c) = B := by
+  classical
+  intro c hc
+  have havg : (∑ j, p j * finiteBuresTargetLeverage A (target j)) = B := by
+    rw [← finiteBuresTargetMixture_pairing_eq_average]
+    exact hattain
+  apply le_antisymm (hle c)
+  by_contra hnot
+  have hlt : finiteBuresTargetLeverage A (target c) < B :=
+    lt_of_not_ge hnot
+  have hnonneg : ∀ j ∈ (Finset.univ : Finset C),
+      0 ≤ p j * (B - finiteBuresTargetLeverage A (target j)) := by
+    intro j _
+    exact mul_nonneg (hp.1 j) (sub_nonneg.mpr (hle j))
+  have hpos : 0 < ∑ j, p j *
+      (B - finiteBuresTargetLeverage A (target j)) := by
+    apply Finset.sum_pos' hnonneg
+    exact ⟨c, Finset.mem_univ c, mul_pos hc (sub_pos.mpr hlt)⟩
+  have hsum : ∑ j, p j = 1 := hp.2
+  have hzero : ∑ j, p j *
+      (B - finiteBuresTargetLeverage A (target j)) = 0 := by
+    calc
+      (∑ j, p j * (B - finiteBuresTargetLeverage A (target j))) =
+          B * (∑ j, p j) -
+            ∑ j, p j * finiteBuresTargetLeverage A (target j) := by
+        simp_rw [mul_sub]
+        rw [Finset.sum_sub_distrib, ← Finset.sum_mul]
+        ring
+      _ = 0 := by rw [hsum, havg]; ring
+  rw [hzero] at hpos
+  exact (lt_irrefl 0) hpos
 
 end
 

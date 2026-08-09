@@ -1,7 +1,9 @@
 import GaloisForLFunctions.HTGeometry.TraceDerivationCyclicCocycleLaw
+import GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort
 import GaloisForLFunctions.RHTower.MobiusThetaPhysicalParacyclicSourceNullHomology
 import GaloisForLFunctions.RHTower.RouteRPreDivisorRationalAdelicMultiplierKOneHomology
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.RingTheory.PowerSeries.Log
 import Mathlib.Tactic.Ring
 
 /-!
@@ -78,6 +80,34 @@ theorem traceDerivCocycle_innerCorrection
   rw [← mul_assoc a b h, datum.trace_cyclic (a * b) h]
   simp only [mul_assoc]
   abel
+
+/-- Inner correction preserves the pairing on every finite Hochschild one-cycle, not only on a
+single inverse-unit pair.  A list of pure tensors is a cycle exactly when the sum of its
+commutators vanishes. -/
+theorem traceDerivCocycle_innerCorrection_finiteCycle
+    (datum : TraceDerivationDatum A K) (h : A) (chain : List (A × A))
+    (hcycle : (chain.map fun p => p.1 * p.2 - p.2 * p.1).sum = 0) :
+    (chain.map fun p =>
+      traceDerivCocycle datum.trace (datum.derivation + innerDerivation h) p.1 p.2 -
+        traceDerivCocycle datum.trace datum.derivation p.1 p.2).sum = 0 := by
+  have hsum :
+      (chain.map fun p =>
+        traceDerivCocycle datum.trace (datum.derivation + innerDerivation h) p.1 p.2 -
+          traceDerivCocycle datum.trace datum.derivation p.1 p.2).sum =
+        -innerTraceCochain datum.trace h
+          (chain.map fun p => p.1 * p.2 - p.2 * p.1).sum := by
+    clear hcycle
+    induction chain with
+    | nil => simp
+    | cons p chain ih =>
+        simp only [List.map_cons, List.sum_cons]
+        rw [traceDerivCocycle_innerCorrection, ih]
+        simp only [hochschildCoboundaryZero, map_add, map_sub]
+        abel
+  calc
+    _ = -innerTraceCochain datum.trace h
+        (chain.map fun p => p.1 * p.2 - p.2 * p.1).sum := hsum
+    _ = 0 := by rw [hcycle]; simp
 
 /-- Inner correction leaves the trace--derivation pairing unchanged on an inverse unit pair. -/
 theorem traceDerivCocycle_innerCorrection_inversePair
@@ -167,6 +197,51 @@ theorem normalizedClockSimplex_productTrace
     simp
   rw [hprod, τ.map_one]
 
+/-! ### Literal rational-adelic multiplier simplex -/
+
+open RouteRMultiplierKOne
+
+/-- The coefficient-at-identity trace pulled back to the exact rational-adelic multiplier algebra
+is cyclic and normalized. -/
+def rationalAdelicMultiplierNormalizedTrace :
+    NormalizedLinearTrace ℂ Mult where
+  trace := kummerGroupRingTrace.comp multiplierToKummerGroupRing.toLinearMap
+  cyclic a b := by
+    simp only [LinearMap.comp_apply, AlgHom.toLinearMap_apply, map_mul]
+    exact kummerGroupRingTrace_isTrace _ _
+  map_one := by
+    simp [kummerGroupRingTrace]
+
+/-- Literal unit-valued representation `k ↦ dilUnit k` of the rational-adelic scaling group. -/
+def rationalAdelicDilUnitRepresentation : CCMRationalAdelicScaling →* Multˣ :=
+  (SkewMonoidAlgebra.of MCore CCMRationalAdelicScaling).toHomUnits
+
+@[simp]
+theorem rationalAdelicDilUnitRepresentation_apply (k : CCMRationalAdelicScaling) :
+    rationalAdelicDilUnitRepresentation k = dilUnit k := rfl
+
+/-- Equation (3.4) on the card's literal `dilUnit` simplex and exact normalized source trace. -/
+theorem rationalAdelicDilUnitClockSimplex_productTrace
+    (g h : CCMRationalAdelicScaling) :
+    hochschildDegreeOneProductTrace rationalAdelicMultiplierNormalizedTrace.trace
+        (hochschildBoundaryTwoPure
+          (rationalAdelicDilUnitRepresentation g : Mult)
+          (rationalAdelicDilUnitRepresentation h : Mult)
+          (↑((rationalAdelicDilUnitRepresentation (g * h))⁻¹) : Mult)) = 1 := by
+  exact normalizedClockSimplex_productTrace rationalAdelicMultiplierNormalizedTrace
+    rationalAdelicDilUnitRepresentation g h
+
+/-- Product trace is not an ordinary Hochschild homology cocycle on the literal source simplex. -/
+theorem rationalAdelicDilUnitClockSimplex_productTrace_ne_zero
+    (g h : CCMRationalAdelicScaling) :
+    hochschildDegreeOneProductTrace rationalAdelicMultiplierNormalizedTrace.trace
+        (hochschildBoundaryTwoPure
+          (rationalAdelicDilUnitRepresentation g : Mult)
+          (rationalAdelicDilUnitRepresentation h : Mult)
+          (↑((rationalAdelicDilUnitRepresentation (g * h))⁻¹) : Mult)) ≠ 0 := by
+  rw [rationalAdelicDilUnitClockSimplex_productTrace]
+  exact one_ne_zero
+
 /-! ## Finite multiplicative clock and ordinary group coboundary -/
 
 variable {F : Type*} [CommRing F]
@@ -239,6 +314,99 @@ theorem logarithm_linearizes_multiplicativeFormalGroup
   rw [show 1 + (x + y + x * y) = (1 + x) * (1 + y) by ring,
     Real.log_mul hxpos.ne' hypos.ne']
 
+/-! ### Formal logarithmic linearization over `ℚ` -/
+
+/-- Multiplicative formal-group coordinate obtained from the formal exponential. -/
+def formalMultiplicativeExpCoordinate (a : ℚ) : PowerSeries ℚ :=
+  PowerSeries.rescale a (PowerSeries.exp ℚ) - 1
+
+/-- The derivative of the formal logarithm is the inverse of `1+X`, written without choosing an
+inverse operation. -/
+theorem derivative_formalLog_mul_one_add_X :
+    PowerSeries.derivative ℚ (PowerSeries.log ℚ) * (1 + PowerSeries.X) = 1 := by
+  rw [PowerSeries.deriv_log, mul_add, mul_one]
+  ext n
+  cases n with
+  | zero => simp
+  | succ n => simp [PowerSeries.coeff_mk, pow_succ]
+
+/-- The formal series `log(1+X)` is a left compositional inverse of `exp(X)-1` over `ℚ`. -/
+theorem formalLog_subst_exp_sub_one :
+    (PowerSeries.log ℚ).subst (PowerSeries.exp ℚ - 1) = PowerSeries.X := by
+  let g : PowerSeries ℚ := PowerSeries.exp ℚ - 1
+  have hg0 : PowerSeries.constantCoeff g = 0 := by simp [g]
+  have hg : PowerSeries.HasSubst g :=
+    PowerSeries.HasSubst.of_constantCoeff_zero' hg0
+  apply PowerSeries.derivative.ext
+  · rw [PowerSeries.derivative_subst ℚ hg, PowerSeries.derivative_X]
+    have hdg : PowerSeries.derivative ℚ g = PowerSeries.exp ℚ := by
+      simp [g, PowerSeries.derivative_exp]
+    have hsubOneAddX :
+        ((1 + PowerSeries.X : PowerSeries ℚ).subst g) = PowerSeries.exp ℚ := by
+      rw [PowerSeries.subst_add hg, PowerSeries.subst_X hg]
+      rw [show (1 : PowerSeries ℚ) = PowerSeries.C 1 by simp, PowerSeries.subst_C]
+      simp [g]
+    rw [hdg]
+    calc
+      (PowerSeries.derivative ℚ (PowerSeries.log ℚ)).subst g * PowerSeries.exp ℚ =
+          (PowerSeries.derivative ℚ (PowerSeries.log ℚ)).subst g *
+            ((1 + PowerSeries.X : PowerSeries ℚ).subst g) := by rw [hsubOneAddX]
+      _ = (PowerSeries.derivative ℚ (PowerSeries.log ℚ) *
+          (1 + PowerSeries.X)).subst g := by
+            rw [PowerSeries.subst_mul hg]
+      _ = 1 := by
+        rw [derivative_formalLog_mul_one_add_X]
+        rw [show (1 : PowerSeries ℚ) = PowerSeries.C 1 by simp, PowerSeries.subst_C]
+        simp
+  · have hzero := PowerSeries.constantCoeff_subst_eq_zero hg0
+        (PowerSeries.log ℚ) PowerSeries.constantCoeff_log
+    rw [PowerSeries.constantCoeff_eq]
+    simpa [g] using hzero
+
+/-- Exponential coordinates carry addition to the formal group `F(X,Y)=X+Y+XY`. -/
+theorem formalMultiplicativeExpCoordinate_groupLaw (a b : ℚ) :
+    formalMultiplicativeExpCoordinate a + formalMultiplicativeExpCoordinate b +
+        formalMultiplicativeExpCoordinate a * formalMultiplicativeExpCoordinate b =
+      formalMultiplicativeExpCoordinate (a + b) := by
+  rw [formalMultiplicativeExpCoordinate, formalMultiplicativeExpCoordinate,
+    formalMultiplicativeExpCoordinate]
+  calc
+    _ = PowerSeries.rescale a (PowerSeries.exp ℚ) *
+          PowerSeries.rescale b (PowerSeries.exp ℚ) - 1 := by ring
+    _ = _ := by rw [PowerSeries.exp_mul_exp_eq_exp_add]
+
+/-- The same formal logarithm reads an exponential coordinate as the additive coordinate `aX`. -/
+theorem formalLog_subst_formalMultiplicativeExpCoordinate (a : ℚ) :
+    (PowerSeries.log ℚ).subst (formalMultiplicativeExpCoordinate a) =
+      a • PowerSeries.X := by
+  let q : PowerSeries ℚ := a • PowerSeries.X
+  have hq : PowerSeries.HasSubst q := PowerSeries.HasSubst.smul_X' a
+  have hg : PowerSeries.HasSubst (PowerSeries.exp ℚ - 1) := by
+    apply PowerSeries.HasSubst.of_constantCoeff_zero'
+    simp
+  have hcoord : formalMultiplicativeExpCoordinate a =
+      (PowerSeries.exp ℚ - 1).subst q := by
+    rw [formalMultiplicativeExpCoordinate, PowerSeries.rescale_eq_subst]
+    rw [PowerSeries.subst_sub hq]
+    congr 1
+    rw [show (1 : PowerSeries ℚ) = PowerSeries.C 1 by simp, PowerSeries.subst_C]
+    simp
+  rw [hcoord, ← PowerSeries.subst_comp_subst_apply hg hq,
+    formalLog_subst_exp_sub_one, PowerSeries.subst_X hq]
+
+/-- Formal counterpart of the global analytic identity: `log(1+X)` linearizes
+`F(X,Y)=X+Y+XY` over `ℚ`. -/
+theorem formalMultiplicativeLogarithm_linearizes (a b : ℚ) :
+    (PowerSeries.log ℚ).subst
+        (formalMultiplicativeExpCoordinate a + formalMultiplicativeExpCoordinate b +
+          formalMultiplicativeExpCoordinate a * formalMultiplicativeExpCoordinate b) =
+      (PowerSeries.log ℚ).subst (formalMultiplicativeExpCoordinate a) +
+        (PowerSeries.log ℚ).subst (formalMultiplicativeExpCoordinate b) := by
+  rw [formalMultiplicativeExpCoordinate_groupLaw,
+    formalLog_subst_formalMultiplicativeExpCoordinate,
+    formalLog_subst_formalMultiplicativeExpCoordinate,
+    formalLog_subst_formalMultiplicativeExpCoordinate, add_smul]
+
 /-- Exact radial Riemann-chart logarithmic coordinate `log(q^t)=t log q`. -/
 theorem logarithmicClock_real_rpow {q : ℝ} (hq : 0 < q) (t : ℝ) :
     Real.log (q ^ t) = t * Real.log q :=
@@ -249,6 +417,20 @@ theorem logarithmicClock_real_rpow {q : ℝ} (hq : 0 < q) (t : ℝ) :
 /-- Raw real radial clock `κ_t(q)=q^t-1`. -/
 def radialClockDefect (q t : ℝ) : ℝ :=
   q ^ t - 1
+
+/-- Hostile boundary for a binary-curvature interpretation.  At every `q>1`, the off-neutral
+parameter `t=1` has nonzero raw quadratic defect while its logarithmic square-clock defect is
+exactly zero. -/
+theorem offNeutral_rawQuadratic_nonzero_logarithmicClock_flat
+    {q : ℝ} (hq : 1 < q) :
+    radialClockDefect q 1 ^ 2 ≠ 0 ∧
+      Real.log ((q ^ 2) ^ (1 : ℝ)) - 2 * Real.log (q ^ (1 : ℝ)) = 0 := by
+  have hqpos : 0 < q := lt_trans zero_lt_one hq
+  constructor
+  · apply pow_ne_zero
+    simpa [radialClockDefect] using sub_ne_zero.mpr (ne_of_gt hq)
+  · rw [Real.log_rpow (sq_pos_of_pos hqpos), Real.log_rpow hqpos]
+    simp
 
 /-- Exact square-clock Maurer--Cartan identity. -/
 theorem radialClockDefect_sq {q : ℝ} (hq : 0 < q) (t : ℝ) :
@@ -276,6 +458,106 @@ theorem radialClockDefect_additive_sq_iff_neutral
     exact (mul_eq_zero.mp hlog).resolve_right (ne_of_gt (Real.log_pos hq))
   · rintro rfl
     simp [radialClockDefect]
+
+/-! ## Exact Riemann-source instantiation -/
+
+/-- Raw clock coordinate `κ_s(n)=χ_s(n)-1` of the actual Deninger half-density mate gain. -/
+def riemannSourceClockDefect (n : ℕ) (s : ℂ) : ℝ :=
+  deningerHalfDensityMateGain n s - 1
+
+/-- The actual positive radial source character is the real power with rate `2 Re(s)-1`. -/
+theorem deningerHalfDensityMateGain_eq_rpow
+    {n : ℕ} (hn : 0 < n) (s : ℂ) :
+    deningerHalfDensityMateGain n s = (n : ℝ) ^ (2 * s.re - 1) := by
+  rw [deningerHalfDensityMateGain, Real.rpow_def_of_pos (by exact_mod_cast hn)]
+  congr 1
+  ring
+
+/-- The paper's raw Riemann clock is literally the universal radial clock defect. -/
+theorem riemannSourceClockDefect_eq_radialClockDefect
+    {n : ℕ} (hn : 0 < n) (s : ℂ) :
+    riemannSourceClockDefect n s = radialClockDefect (n : ℝ) (2 * s.re - 1) := by
+  rw [riemannSourceClockDefect, radialClockDefect, deningerHalfDensityMateGain_eq_rpow hn]
+
+/-- Exact finite-clock Maurer--Cartan law on the actual positive radial Riemann source. -/
+theorem riemannSourceClockDefect_mul
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (s : ℂ) :
+    riemannSourceClockDefect (m * n) s - riemannSourceClockDefect m s -
+        riemannSourceClockDefect n s =
+      riemannSourceClockDefect m s * riemannSourceClockDefect n s := by
+  rw [riemannSourceClockDefect, riemannSourceClockDefect,
+    riemannSourceClockDefect, deningerHalfDensityMateGain_mul hm hn]
+  ring
+
+/-- Exact source realization (4.3): on two ordinary-prime clocks, the actual Riemann quadratic
+defect times the leading coefficient is the product trace of the correspondingly scaled literal
+`dilUnit` Hochschild boundary. -/
+theorem riemannSourceQuadraticClock_productTraceBoundary
+    (p q : Nat.Primes) (s : ℂ) (c : ℂ) :
+    ((riemannSourceClockDefect ((p : ℕ) * (q : ℕ)) s -
+        riemannSourceClockDefect (p : ℕ) s -
+        riemannSourceClockDefect (q : ℕ) s : ℝ) : ℂ) * c =
+      hochschildDegreeOneProductTrace rationalAdelicMultiplierNormalizedTrace.trace
+        ((((riemannSourceClockDefect (p : ℕ) s : ℂ) *
+          (riemannSourceClockDefect (q : ℕ) s : ℂ) * c)) •
+          hochschildBoundaryTwoPure
+            (rationalAdelicDilUnitRepresentation
+              (ccmRationalAdelicPrimeScaling p) : Mult)
+            (rationalAdelicDilUnitRepresentation
+              (ccmRationalAdelicPrimeScaling q) : Mult)
+            (↑((rationalAdelicDilUnitRepresentation
+              (ccmRationalAdelicPrimeScaling p *
+                ccmRationalAdelicPrimeScaling q))⁻¹) : Mult)) := by
+  rw [riemannSourceClockDefect_mul p.2.pos q.2.pos]
+  rw [map_smul, rationalAdelicDilUnitClockSimplex_productTrace]
+  norm_cast
+  ring
+
+/-- On an actual ordinary-prime clock, vanishing of the quadratic source coefficient is exactly
+the critical-line condition.  This classifies the representative; it does not assert vanishing. -/
+theorem riemannSourcePrimeQuadraticClock_eq_zero_iff_re_eq_half
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    (riemannSourceClockDefect (p : ℕ) (rho : ℂ) : ℂ) ^ 2 *
+        thetaInternalJetLeadingSourceCoefficient rho = 0 ↔
+      (rho : ℂ).re = 1 / 2 := by
+  constructor
+  · intro h
+    have hc := thetaInternalJetLeadingSourceCoefficient_ne_zero rho
+    have hsq : (riemannSourceClockDefect (p : ℕ) (rho : ℂ) : ℂ) ^ 2 = 0 :=
+      (mul_eq_zero.mp h).resolve_right hc
+    have hkC : (riemannSourceClockDefect (p : ℕ) (rho : ℂ) : ℂ) = 0 :=
+      sq_eq_zero_iff.mp hsq
+    have hkR : riemannSourceClockDefect (p : ℕ) (rho : ℂ) = 0 :=
+      Complex.ofReal_eq_zero.mp hkC
+    have hgain : deningerHalfDensityMateGain (p : ℕ) (rho : ℂ) = 1 := by
+      exact sub_eq_zero.mp hkR
+    exact (deningerHalfDensityMateGain_eq_one_iff_re_eq_half p.2.two_le _).mp hgain
+  · intro hline
+    have hgain : deningerHalfDensityMateGain (p : ℕ) (rho : ℂ) = 1 :=
+      (deningerHalfDensityMateGain_eq_one_iff_re_eq_half p.2.two_le _).mpr hline
+    simp [riemannSourceClockDefect, hgain]
+
+/-- The logarithmic coordinate of the actual source character is globally linear and equals
+`(2 Re(s)-1) log n`, including off-centre parameters. -/
+theorem logarithm_deningerHalfDensityMateGain (n : ℕ) (s : ℂ) :
+    Real.log (deningerHalfDensityMateGain n s) =
+      (2 * s.re - 1) * Real.log n := by
+  simp [deningerHalfDensityMateGain]
+
+/-- Literal physical residue (4.2) on the trace-one ordinary-prime atom. -/
+theorem xiPrimeResidue_eq_sourceNormalClockDefect
+    (n : ℕ) (rho : XiDivisorSupport) (p : Nat.Primes) :
+    ccmRationalAdelicTwoLegCyclicResidue
+        ((GaloisForLFunctions.HTGeometry.cyclicParacyclicEquivarianceDefect
+          ccmRationalAdelicDegreeOneCyclicRotation
+          (sourceDaggerNormalizedDegreeOneRotationLinear n (rho : ℂ))
+          (ccmMobiusThetaXiJetTwoLegLanding
+            (xiSupportMultiplicity rho) (xiSpectralPointSupport rho)))
+          (ccmRationalAdelicOrdinaryPrimeCycleAtom p)) =
+      (((deningerHalfDensityMateGain n (rho : ℂ) : ℂ) - 1) *
+        thetaInternalJetLeadingSourceCoefficient rho) := by
+  rw [GaloisForLFunctions.IrregularStokes.ccmXiPrimeResidue_eq_centralHolonomyDefect]
+  rfl
 
 /-! ## Raw-coordinate compatibility -/
 

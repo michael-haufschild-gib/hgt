@@ -426,8 +426,12 @@ The required new infrastructure is:
 5. `[FORMALIZED]` the exact normalized-budget transfer: sublinear variation preserves the
    `d_lambda*log(lambda)` leading scale, while the sharper logarithmically weighted budget makes
    the center error `o(d_lambda)`;
-6. `[PHASE FORMALIZED; AMPLITUDE OPEN]` a concrete radial-PSWF endpoint/exterior interface proving
-   the all-radial primitive `(11)`;
+6. `[FORMALIZED except the channel expansion identity]` a concrete radial-PSWF endpoint/exterior
+   interface proving the all-radial primitive `(11)`.  `(43)`, `(47)` for the model and for the exact
+   mode, `(50)`, and now `(16)` for every `k >= 1`
+   (`RHTower.norm_integral_leading_channel_le`, `<= 99/(c k^2)`) are unconditional Lean theorems;
+   what is left is the identity expressing `U_(lambda,k)` as its leading channel plus controlled
+   error, and the summation, whose machinery is built;
 7. `[CANONICAL TWO-MODE SOURCE AND POISSON--MUNTZ LAW FORMALIZED; CLASSICAL IDENTIFICATION OPEN]`
    identify the classical real `h_0,h_4` modes in the actual operator spectrum and prove the
    concrete fixed-mode variation bound `(19e)`;
@@ -726,7 +730,10 @@ estimates, this proves the seed law `(32)` on paper.
 
 ## Updated gates
 
-- [x] prove the exact `k=1` pole-uniform primitive `(17)` on paper
+- [x] prove the exact `k=1` pole-uniform primitive `(17)` on paper; **`(17)` is now closed in Lean
+  unconditionally for the exact radial mode** by
+  `RHTower.abs_integral_sqrt_mul_radialProlate_full_le` (endpoint interval by an energy/Gronwall
+  bound, exterior by the Dunster transfer against `(47)`)
 - [x] prove the all-radial primitive `(11)` on paper
 - [x] prove the continuous polar charge `(18)` on paper
 - [x] prove the exterior seed law `(32)` on paper
@@ -1479,3 +1486,1346 @@ estimates, this proves the seed law `(32)` on paper.
   With `(41)` proved and the substitution of the twenty-ninth instalment in place, what `(47)` still
   needs is `(43)`: the `C^1` bound on `B_sigma` over the compact phase range, including the removable
   singularity at `r = 0`.
+
+- 2026-08-09 (thirty-first instalment) -- **The removable singularity of `(42)` is removable
+  quantitatively, and Dunster's expansion `(40)` is not needed for it.**  New module
+  `RHTower/XiBesselWeightBounds.lean`, wired into the umbrella, axiom-clean.
+
+  * **`xiBesselWeight_le_two`** -- `B_sigma(r) <= 2` for every `r > 0`, with no upper restriction on
+    the range.
+  * **`inv_le_xiBesselWeight`, `inv_le_xiBesselWeight_of_le`** -- `B_sigma(r) >= 1/(2 sqrt 2)` on the
+    compact phase range `r <= xi_sigma(2)`.
+
+  Both bounds hold right up to the endpoint, which is the point.  The weight
+  `B = (x^2-1)^(1/4) / (r^(1/2) (x^2-s)^(3/4))` looks singular at `r = 0`: numerator and `r` vanish
+  together.  The card removes the singularity through `(40)`, the analytic expansion of the endpoint
+  coordinate `eta = 2(1-sigma^2)(x-1) + O((x-1)^2)`.
+
+  **That expansion is not needed.**  The corpus's own two-sided bracket
+  `sqrt(1-s) sqrt(x^2-1) <= xi_s(x) <= sqrt(x^2-1)` already pins the phase to the square root of
+  `x^2-1` within a bounded factor, and taking a further square root pins `r^(1/2)` to
+  `(x^2-1)^(1/4)` within a bounded factor.  So the numerator's quarter root cancels against
+  `r^(1/2)` exactly, in both directions: the lower half of the bracket gives the upper bound on `B`
+  and the upper half gives the lower bound.  No expansion, no analyticity, absolute constants.
+
+  This is the `C^0` half of `(43)`.  What remains of `(43)` is the derivative bound, which needs the
+  derivative of `B` through the inverse coordinate -- available now that
+  `hasDerivAt_xiInverse` is proved, but requiring a second-order control of the phase near the
+  endpoint that the bracket alone does not supply.
+
+- 2026-08-09 (thirty-second instalment) -- **The endpoint atom, and a precise statement of what the
+  derivative half of `(43)` needs.**  New module
+  `HTGeometry/InverseSqrtEndpointIntegral.lean`, wired into the umbrella, axiom-clean.
+
+  * **`rpow_neg_half_eq_inv_sqrt`, `hasDerivAt_two_mul_sqrt_sub_one`,
+    `integral_rpow_neg_half_sub_one`** -- `int_1^x (t-1)^(-1/2) dt = 2 sqrt(x-1)`.  The corpus had
+    integrability of this weight (`intervalIntegrable_rpow_sub_one`) but not its value.  The
+    fundamental theorem is applied in the form needing the derivative only on the open interval,
+    since at the endpoint there is none.
+
+  **Why this is the next atom, and what is still missing.**  Writing
+  `xi_s(x) = int_1^x g(t) (t-1)^(-1/2) dt` with `g(t) = sqrt(t^2-s)/sqrt(t+1)` smooth and
+  `g(1) = sqrt(1-s)/sqrt 2`, this integral gives the leading term `2 g(1) sqrt(x-1)`.
+
+  The derivative half of `(43)` needs exactly that refinement, and here is why the `C^0` argument of
+  the thirty-first instalment does not extend.  The logarithmic derivative is
+
+  `B'/B = x/(2 sqrt(u) sqrt(v)) - 1/(2r) - 3 x sqrt(u)/(2 v sqrt(v))`,   `u = x^2-1`, `v = x^2-s`.
+
+  The third term is harmless.  The first two each blow up like `C/sqrt(u)` as `r -> 0`, and their
+  difference is bounded *only because their leading constants agree exactly*: the bracket gives
+  `r` between `sqrt(1-s) sqrt(u)` and `sqrt(u)`, which is a bounded factor and therefore enough for
+  a bound on `B` itself, but not enough for a bound on a difference of two divergent terms.  What is
+  needed is the next order, `xi_s(x) = sqrt(1-s) sqrt(x^2-1) (1 + O(x-1))` -- equivalently `(40)`.
+
+  So the thirty-first instalment's finding is sharp: the bracket suffices for `C^0` and provably
+  cannot suffice for `C^1`.  The endpoint atom built here is the first step of the `C^1` route, and
+  the remaining step is the Lipschitz correction `|xi_s(x) - 2 g(1) sqrt(x-1)| <= C (x-1)^(3/2)`.
+
+- 2026-08-09 (thirty-third instalment) -- **`(40)` is proved: the second-order endpoint expansion of
+  the phase.**  New module `RHTower/XiEndpointExpansion.lean`, wired into the umbrella, axiom-clean.
+
+  * **`xiEndpointFactor`, `xiSpeed_eq_factor_div`** -- the exact factorisation
+    `xi_s'(t) = g_s(t) (t-1)^(-1/2)` with `g_s(t) = sqrt(t^2-s)/sqrt(t+1)` smooth at the endpoint.
+  * **`abs_xiEndpointFactor_sub_le`** -- `|g_s(t) - g_s(1)| <= 3(t-1)`, for every `t >= 1`.  The
+    mechanism is that the *square* of `g_s` is a rational function vanishing to first order at the
+    endpoint, `g_s(t)^2 - g_s(1)^2 = (t-1)(2t+1+s)/(2(t+1))`, and `g_s` is bounded below by `1/2`
+    there, so the difference of squares converts to a difference with an absolute constant.  No
+    derivative of `g_s` is ever computed.
+  * **`integral_inv_sqrt_sub_one`, `intervalIntegrable_inv_sqrt_sub_one`, `integral_sqrt_sub_one`**
+    -- the two endpoint weights in square-root form, `int_1^x (t-1)^(-1/2) = 2 sqrt(x-1)` and
+    `int_1^x (t-1)^(1/2) = (2/3)(x-1)^(3/2)`.
+  * **`abs_xiEndpointPhase_sub_leading_le`** -- **the expansion**:
+
+    `|xi_s(x) - 2 g_s(1) sqrt(x-1)| <= 2 (x-1)^(3/2)`   for `0 <= s <= 1/2`, `x >= 1`.
+
+  This is `(40)` in the form the card needs, with an explicit constant and no appeal to analyticity
+  of the endpoint coordinate.  The proof is one line of algebra once the pieces are in place: the
+  phase minus its leading term is the integral of `(g_s(t) - g_s(1)) (t-1)^(-1/2)`, whose modulus is
+  at most `3 (t-1)^(1/2)`, and that integrates to `2(x-1)^(3/2)`.
+
+  The thirty-second instalment identified this as exactly the missing input for the derivative half
+  of `(43)`.  It is now available.
+
+- 2026-08-09 (thirty-fourth instalment) -- **The endpoint cancellation, quantitatively.**  New module
+  `RHTower/XiEndpointCancellation.lean`, wired into the umbrella, axiom-clean.
+
+  * **`two_xiEndpointFactor_one_eq`** -- `2 g_s(1) = sqrt(2(1-s))`, unconditionally in `s`.
+  * **`abs_sqrt_prod_sub_le`** -- `|sqrt((x+1)(x^2-s)) - sqrt(2(1-s))| <= 10(x-1)` on `[1,2]`, again
+    by the difference of squares: the polynomial `(x+1)(x^2-s) - 2(1-s)` factors as
+    `(x-1)(x^2+2x+2-s)`, and the sum of the roots is at least `1`.
+  * **`abs_mul_xiEndpointPhase_sub_sqrt_le`** -- the cancellation numerator:
+    `|x xi_s(x) - sqrt(x^2-1) sqrt(x^2-s)| <= 16 (x-1)^(3/2)`.
+  * **`abs_endpoint_logDeriv_diff_le`** -- **the payoff**:
+
+    `| x/(2 sqrt(x^2-1) sqrt(x^2-s)) - 1/(2 xi_s(x)) | <= 8 sqrt(x-1)`  on `(1,2]`.
+
+  The two terms on the left each blow up like `(x-1)^(-1/2)`.  Their difference is not merely
+  bounded -- it *vanishes* at the endpoint, at rate `(x-1)^(1/2)`.  That is one full power better
+  than either term, and it is what the thirty-second instalment identified as the missing ingredient.
+
+  The mechanism, stated plainly: over a common denominator the difference is
+  `(x xi_s - sqrt(x^2-1) sqrt(x^2-s)) / (2 xi_s sqrt(x^2-1) sqrt(x^2-s))`.  The expansion `(40)`
+  makes the numerator `O((x-1)^(3/2))` while the bracket makes the denominator at least `2(x-1)`.
+  Neither bound alone suffices; it is their combination that produces the extra half power.
+
+  This closes the analytic obstruction to the derivative half of `(43)`.  What is left there is
+  mechanical: differentiate `B_sigma` through `hasDerivAt_xiInverse` and the quotient rule, and read
+  off the bound from this estimate together with the already-proved boundedness of the third term.
+
+- 2026-08-09 (thirty-fifth instalment) -- **The weight is differentiable, and its logarithmic
+  derivative is bounded.**  New module `RHTower/XiBesselWeightDeriv.lean` plus two theorems in
+  `XiEndpointCancellation.lean`; wired, axiom-clean.
+
+  * **`hasDerivAt_xiAmplitude_comp`, `hasDerivAt_xiSpeed_comp`** -- the amplitude and the speed at
+    the inverse coordinate, differentiated by the chain rule against `hasDerivAt_xiInverse`.
+  * **`xiBesselWeight_eq_quotient`** -- the weight in the quotient form
+    `B_s(r) = A_s(X_s(r)) / (xi_s'(X_s(r)) r)`, which is the transport identity `(41)` rearranged.
+  * **`hasDerivAt_xiBesselWeight`** -- **the weight is differentiable on the positive ray**, with an
+    explicit derivative.  The quotient form is what makes this reachable: in its original fourth-root
+    form the weight's derivative is not accessible, but as a quotient of three functions with known
+    derivatives it is just the quotient rule.
+  * **`abs_endpoint_logDeriv_regular_le`** -- the regular term `3x sqrt(u)/(2 v sqrt(v))` is at most
+    `24` on the compact range.
+  * **`abs_besselWeight_logDeriv_le`** -- **the logarithmic derivative of the weight is bounded by
+    `32`** on `(1,2]`.
+
+  A correction worth recording, because it cost a false start.  Expanding `B'/B` through the
+  quotient form gives
+  `A'/(A xi') - xi''/xi'^2 - 1/r`, and the term `xi''/xi'^2 = x(s-1)/(sqrt(u) v^(3/2))` *looks*
+  divergent, which suggested the quotient route could not work.  It is not divergent in combination:
+  multiplying the discrepancy by `sqrt(u) v^(3/2)/x` gives `-v + u + (1-s) = 0` identically, so the
+  quotient form and the direct form
+  `B'/B = x/(2 sqrt(u) sqrt(v)) - 1/(2 xi) - 3x sqrt(u)/(2 v sqrt(v))`
+  agree exactly.  The apparent extra singularity is an artefact of splitting the logarithmic
+  derivative at the wrong place; `-log xi'` carries a `+x/(2u)` that flips the sign of the term the
+  cancellation acts on.
+
+  What remains for the derivative half of `(43)` is now a single identity: that the explicit
+  derivative produced by `hasDerivAt_xiBesselWeight` equals `B_s(r)` times the bracket bounded here.
+  Both sides are known; the step is algebraic, not analytic.
+
+- 2026-08-09 (thirty-sixth instalment) -- **`(43)` is complete.**  Two theorems added to
+  `RHTower/XiBesselWeightDeriv.lean`; wired, axiom-clean.
+
+  * **`xiBesselWeightDeriv_eq_mul`** -- the identity: the explicit derivative produced by
+    `hasDerivAt_xiBesselWeight` equals `B_sigma(r)` times the bracket
+    `x/(2 sqrt(u) sqrt(v)) - 1/(2r) - 3x sqrt(u)/(2 v sqrt(v))`.  After substituting
+    `a = sqrt(x^2-1)`, `b = sqrt(x^2-s)` the whole thing is rational, and the single relation it
+    needs is `a^2 - b^2 = s - 1`.
+  * **`abs_xiBesselWeightDeriv_le`** -- `|B_sigma'(r)| <= 64` on the compact phase range.
+
+  So `(43)` now holds in both halves, with absolute constants:
+  `1/(2 sqrt 2) <= B_sigma <= 2` and `|B_sigma'| <= 64`.
+
+  **The remaining obstruction to `(47)` is structural, not analytic, and is worth naming precisely.**
+  The transported primitive `abs_integral_xiTransported_le` inherits from `(45)` the requirement that
+  the weight be differentiable on the *closed* phase interval `[0, xi_sigma(X)]`, because mathlib's
+  integration by parts is stated with derivatives on the closed interval.  But `B_sigma` is
+  differentiable only on the open ray: at `r = 0` the inverse coordinate `X_sigma` is outside its
+  domain and `xiBesselWeight` takes a junk value there.
+
+  Two routes, both real work and neither an analytic gap:
+  (i) restate `(45)` with the derivative on the open interval only, via the same
+  `integral_eq_sub_of_hasDeriv_right_of_le` pattern already used three times on this card, which
+  needs the product `B(r) r J_1(cr)` to be continuous up to `r = 0` -- true on the nose, since
+  `r J_1(cr) -> 0` and `B` is bounded;
+  (ii) prove the bound on `[delta, xi_sigma(X)]` uniformly in `delta` and pass to the limit.
+
+  Route (i) is the better one: the boundary term at the endpoint vanishes identically because
+  `r J_1(c r)` does, so no limit argument is needed at all.
+
+- 2026-08-09 (thirty-seventh instalment) -- **Route (i) is built: integration by parts with interior
+  derivatives.**  New module `HTGeometry/InteriorIntegrationByParts.lean`, wired into the umbrella,
+  axiom-clean.
+
+  * **`intervalIntegrable_of_continuousOn_Ioo_of_bounded`** -- continuous and bounded on the *open*
+    interval is enough for interval integrability; the endpoints carry no measure.
+  * **`integral_mul_deriv_eq_deriv_mul_interior`** -- integration by parts requiring derivatives only
+    on the interior, and continuity only of the *product* up to the endpoints.  The fundamental
+    theorem in its one-sided form already covers this; mathlib's integration by parts happens to be
+    stated with derivatives on the closed interval, which is what blocked `(47)`.
+  * **`continuousWithinAt_mul_of_bounded_of_tendsto_zero`** -- the degenerate-endpoint continuity: a
+    bounded factor against a factor vanishing at the endpoint is continuous there, whatever value the
+    bounded factor takes -- indeed whether or not it has one.
+
+  That last lemma is the point of the whole detour.  The weight `B_sigma` has no meaningful value at
+  `r = 0`: the inverse coordinate `X_sigma` is undefined there, so `xiBesselWeight` returns a junk
+  value.  But the product being differentiated in `(45)` is `B_sigma(r) r J_1(c r)`, and
+  `r J_1(c r)` vanishes at `r = 0`, so the product is continuous at the endpoint regardless.  The
+  junk value never enters, and no limit argument is needed.
+
+  This is general infrastructure, stated for arbitrary functions, and it is the exact shape the
+  thirty-sixth instalment identified as needed.  What remains is to re-derive `(45)` against it and
+  substitute `B_sigma`.
+
+- 2026-08-09 (thirty-eighth instalment) -- **`(45)` re-derived for a weight degenerate at the
+  origin.**  New module `RHTower/BesselWeightedPrimitiveInterior.lean`, wired, axiom-clean.
+
+  * **`abs_integral_mul_besselJ0_le_interior`** -- the same bound `648 M / (c sqrt c)`, with the same
+    constant, but requiring the weight to be differentiable only on the *open* radius interval and
+    bounded on the half-open one.  Nothing is assumed at the origin: not a derivative, not
+    continuity, not even a value.
+
+  This is exactly the shape `B_sigma` satisfies.  The boundary term at the origin is identically
+  zero -- `r J_1(c r)` vanishes there -- so the weight's junk value at `r = 0` is multiplied by zero
+  and never enters.  The continuity needed for the fundamental theorem is continuity of the
+  *product*, which the thirty-seventh instalment's endpoint lemma supplies from boundedness alone.
+
+  One hypothesis had to be placed carefully: the derivative bound is required on `Ioc 0 R` rather
+  than `Ioo 0 R`, because the integral-norm estimate runs over `Ioc`.  That costs nothing for the
+  application -- `B_sigma'` is defined and bounded at `r = R > 0` -- but it is a real requirement,
+  not a cosmetic one, and stating it on the open interval leaves the right endpoint uncontrolled.
+
+  With this, every ingredient of `(47)` is now a theorem: the transport identity `(41)`, the
+  substitution, the two-sided weight bound and the derivative bound `(43)`, and a primitive estimate
+  whose hypotheses the weight actually satisfies.
+
+- 2026-08-09 (thirty-ninth instalment) -- **`(47)` is closed in Lean.**  New module
+  `RHTower/XiCompactPrimitive.lean` plus the derivative's continuity in `XiBesselWeightDeriv.lean`;
+  wired, axiom-clean.
+
+  * **`xiBesselWeightDeriv`, `continuousOn_xiBesselWeightDeriv`** -- the weight's derivative as a
+    function, and its continuity on the positive ray, by composing the corpus's continuity of the
+    amplitude derivative, the speed and the speed derivative with continuity of the inverse
+    coordinate.
+  * **`xiInverse_le_two`** -- the inverse coordinate stays below `2` on the compact phase range.
+  * **`abs_integral_xiBesselWeight_le`** -- the primitive in the phase variable,
+    `<= 648 * 64 / (c sqrt c)`.
+  * **`integral_xiAmplitude_besselJ0_eq`** -- the substitution together with `(41)`: the transported
+    integrand *is* the Liouville--Green amplitude.  The endpoint case is degenerate on both sides --
+    `xiSpeed s 1` and `xiAmplitude s 1` are both zero -- so it needs no special argument.
+  * **`abs_integral_radialProlateBesselProfile_le`** -- **`(47)`**:
+
+    `| int_1^X radialProlateBesselProfile s c x dx | <= 648 * 64 / c`   for `1 < X <= 2`,
+    `0 <= s <= 1/2`, `c > 0`.
+
+  The statement is in the corpus's own vocabulary: `radialProlateBesselProfile` is the regular
+  Dunster/Bessel profile `sqrt c * A_sigma(x) * J_0(c xi_sigma(x))` that
+  `ProlateDunsterBesselOffDiagonal.lean` already defines.  One full power of the frequency, uniform
+  in the endpoint, no hypotheses beyond the parameter ranges.
+
+  This closes the compact branch.  Together with the exterior branch closed in the twenty-eighth
+  instalment, both halves of the pole-uniform primitive are now unconditional Lean theorems about
+  the actual prolate objects.
+
+- 2026-08-09 (fortieth instalment) -- **The integrated profile transfer.**  New module
+  `RHTower/ProlateProfileTransferIntegral.lean`, wired, axiom-clean.
+
+  I checked the corpus first and found the supply side of `(38)` already there, which changes the
+  picture for `(48)`.  `ProlateDunsterUniformTransfer.lean` proves
+  `abs_radialProlate_sub_regularModel_le`: an unconditional uniform `O(c^-1)` approximation of the
+  *actual* radial prolate profile by the regular Bessel model beyond an explicit matching point,
+  with one constant independent of `s`, `c`, the solution and the endpoint.
+  `ProlateDunsterDensityTransfer.lean` restates it as
+  `abs_radialProlate_sub_besselProfile_le`, pointwise against `A_sigma(x) J_0(c xi_sigma(x))` --
+  which is exactly the integrand of `(47)` up to the `sqrt c` normalization.  So the expansion `(38)`
+  is not an outstanding input at all; only its integrated form was missing.
+
+  * **`abs_integral_radialProlate_sub_besselProfile_le`** -- the integrated form:
+
+    `| int_a^b (R(x) - A_sigma(x) J_0(c xi_sigma(x))) dx |
+       <= (4 K C / c) (b - a)`   for `dunsterEndpointCrossing c <= a <= b`.
+
+  Beyond the matching point the Bessel envelope is at most one -- because `c xi_sigma` is at least
+  one there and the phase is increasing -- and the amplitude is at most four, so the pointwise
+  transfer becomes a constant multiple of `c^-1` and integrating costs only the length.
+
+  Composing this with the thirty-ninth instalment's `(47)` bounds the primitive of the *exact*
+  profile, not merely of the model: the model's primitive is `O(c^-1)` by `(47)` and the difference
+  of primitives is `O(c^-1)` by the transfer.  What is still needed to write that composition down
+  as one statement is a bound on the matching point itself, `dunsterEndpointCrossing c <= 2`, so that
+  the two ranges overlap.
+
+- 2026-08-09 (forty-first instalment) -- **Keeping the envelope's decay, and why it matters.**  New
+  module `RHTower/ProlateEnvelopeIntegral.lean` plus a quarter-power atom in
+  `HTGeometry/InverseSqrtEndpointIntegral.lean`; wired, axiom-clean.
+
+  A rate correction to the fortieth instalment, found by checking the arithmetic rather than
+  assuming it.  That instalment bounded the Bessel envelope by one, giving a transfer error of
+  `O(c^-1)` times the length.  After the model's own `sqrt c` normalization that is `O(c^(-1/2))`,
+  which is *weaker* than the `O(c^-1)` of `(47)` and would have dominated it.  The card's own
+  accounting does not lose this: it applies the crude envelope bound `(46)`, worth a further
+  `c^(-1/2)`, to the error term, so the error contributes `O(c^(-3/2))` and the rate survives.
+
+  * **`sqrt_sub_one_le_xiEndpointPhase`** -- `sqrt(x-1) <= xi_sigma(x)`.  A clean consequence of the
+    corpus bracket in which the two constants cancel exactly: `sqrt(1-s) >= sqrt(1/2)` and
+    `sqrt(x+1) >= sqrt 2`, and `sqrt(1/2) sqrt 2 = 1`.
+  * **`hasDerivAt_rpow_three_quarters_sub_one`, `integral_rpow_neg_quarter_sub_one`** -- the
+    quarter-power endpoint integral `int_1^x (t-1)^(-1/4) dt = (4/3)(x-1)^(3/4)`.
+  * **`integral_rpow_neg_quarter_le`** -- hence that weight has integral at most `4/3` on the
+    compact exterior range.
+
+  Together these say the envelope is integrable against the endpoint singularity: the envelope is
+  `(c xi_sigma(x))^(-1/2)`, the phase is at least `sqrt(x-1)`, so the envelope is at most
+  `c^(-1/2) (x-1)^(-1/4)`, whose integral is bounded.  That is the missing `c^(-1/2)`, and with it
+  the transfer error integrates to `O(c^(-3/2))` -- the same rate as the model's own primitive after
+  normalization.
+
+  The lesson is worth keeping: bounding an envelope by its supremum is not free here.  The half power
+  it discards is exactly the half power that separates the error from the main term.
+
+- 2026-08-09 (forty-second instalment) -- **The sharp integrated transfer: the rate is preserved.**
+  Two theorems added to `RHTower/ProlateEnvelopeIntegral.lean` plus a quarter-root identity in
+  `HTGeometry/InverseSqrtEndpointIntegral.lean`; wired, axiom-clean.
+
+  * **`rpow_neg_quarter_eq_inv_sqrt_sqrt`** -- `t^(-1/4) = (sqrt (sqrt t))^(-1)`.
+  * **`envelope_le_quarter_weight`** -- the Bessel envelope is dominated by the quarter-power
+    endpoint weight with the frequency's half power extracted:
+    `C / sqrt(c xi_sigma(x)) <= (C / sqrt c) (x-1)^(-1/4)`.
+  * **`abs_integral_radialProlate_sub_besselProfile_sharp_le`** -- **the sharp transfer**:
+
+    `| int_a^b (R(x) - A_sigma(x) J_0(c xi_sigma(x))) dx |
+       <= 8 K C / (3 c sqrt c)`   for `dunsterEndpointCrossing c <= a <= b <= 2`.
+
+  This is `O(c^(-3/2))`, one half power better than the fortieth instalment's crude bound, and it is
+  the rate the composition needs: after the model's own `sqrt c` normalization it becomes `O(c^-1)`,
+  matching `(47)` instead of dominating it.
+
+  The three inputs are the pointwise transfer already in the corpus, the phase lower bound
+  `xi_sigma(x) >= sqrt(x-1)`, and the integrability of `(x-1)^(-1/4)`.  Nothing about the envelope is
+  discarded: it is integrated, not bounded by its supremum.
+
+- 2026-08-09 (forty-third instalment) -- **The primitive of the *exact* prolate profile.**  New
+  module `RHTower/ProlateExactPrimitive.lean`, wired, axiom-clean.
+
+  * **`intervalIntegrable_radialProlateBesselProfile`** -- the regular Bessel profile is interval
+    integrable up to the endpoint.  It has no value there -- the amplitude is a `0/0` -- but it is
+    bounded and continuous on the open interval, which is all the thirty-seventh instalment's
+    integrability lemma needs.
+  * **`abs_integral_sqrt_mul_radialProlate_le`** -- **the exact-profile primitive**:
+
+    `| int_A^X sqrt c R(x) dx | <= (8 K C / 3 + 2 (648 * 64)) / c`,
+    `A = dunsterEndpointCrossing c <= X <= 2`.
+
+  This is `(47)` for the actual radial prolate mode rather than for the model, and the rate is the
+  full `O(c^-1)`.  The decomposition is exactly the card's: exact profile = model + transfer error.
+  The model's primitive is `O(c^-1)` by the thirty-ninth instalment, applied twice because the range
+  starts at the matching point rather than at the endpoint; the transfer error is `O(c^(-3/2))` by
+  the forty-second, and the `sqrt c` normalization brings it to `O(c^-1)`.  Neither piece would have
+  sufficed with the crude envelope bound.
+
+  The matching point is below `2` for `c >= 5` (`dunsterEndpointCrossing_le_eleven_tenths`, already
+  in the corpus), so the two ranges overlap and the composition is legitimate -- the missing overlap
+  fact named in the fortieth instalment.
+
+- 2026-08-09 (forty-fourth instalment) -- **Status audit of `(17)` and `(11)`; no new Lean.**
+
+  Item 6 of the infrastructure list said `[PHASE FORMALIZED; AMPLITUDE OPEN]`.  That is now stale:
+  the amplitude side is closed.  `(48)`'s amplitude bounds, `(43)` in both halves, `(47)` for the
+  model and for the exact mode, and the exterior branch `(50)` are all unconditional Lean theorems.
+  The item's status line is corrected above.
+
+  Two pieces of `(17)`/`(11)` remain, and it is worth naming them exactly rather than leaving them
+  inside a general "amplitude open".
+
+  **(a) The endpoint interval.**  `abs_integral_sqrt_mul_radialProlate_le` covers
+  `[dunsterEndpointCrossing c, X]`.  The card's own remark -- "the endpoint interval has width
+  `O(c^-2)`; outside it, the Bessel branches are nonstationary" -- matches exactly, since
+  `dunsterEndpointCrossing c - 1 = 9/(8 c^2)`.  What is missing is the contribution of `[1, crossing]`
+  itself.  A sup bound `|R| <= C` there would give `sqrt c * C * 9/(8 c^2) = O(c^(-3/2))`, better
+  than needed.  I checked whether the corpus's density bound supplies it: it does not.
+  `radialProlateDensity_le_profileWeight` bounds `c R(x)^2` by `profileWeight s x`, and
+  `profileWeight s x = 1/(pi sqrt((x^2-1)(x^2-s)))` *diverges* as `x -> 1`.  So that route degenerates
+  precisely on the interval in question, and the endpoint bound has to come from the initial
+  condition `R 1 = 1` and the ODE -- a Gronwall estimate on a `O(c^-2)`-wide interval -- not from the
+  density envelope.
+
+  **(b) The `k >= 2` channels `(16)`.**  The radial channels `H_(lambda,k)` have no counterpart in the
+  corpus at all; nothing named for them exists.  The summation machinery on top of them is however
+  already built and needs nothing further: `HTGeometry/L2PairingLimit.lean` gives
+  `norm_inner_le_tsum_of_tendsto`, which takes a summable channel majorant and a norm limit of
+  partial sums and returns the summed bound.  So `(16)` is the whole of the remaining work for
+  `(11)`, and it is a construction, not an assembly.
+
+- 2026-08-09 (forty-fifth instalment) -- **Piece (a) closed: the mode is bounded on the endpoint
+  interval.**  New module `RHTower/ProlateEndpointEnergy.lean`, wired, axiom-clean.
+
+  The forty-fourth instalment showed the density envelope cannot do this -- `profileWeight` diverges
+  at the endpoint -- and that the bound must come from the equation and the initial condition.  It
+  does, by an energy argument.
+
+  * **`prolateEndpointEnergy`** -- the Sturm energy `E = (t^2-1)(R')^2 + c^2(t^2-s)R^2` of
+    `((t^2-1)R')' + c^2(t^2-s)R = 0`.
+  * **`hasDerivAt_prolateEndpointEnergy`** -- `E' = 2t(c^2 R^2 - (R')^2)`.  Not sign-definite, which
+    is why the naive monotone-energy argument fails.
+  * **`sq_le_two_mul_prolateEndpointEnergy`** -- but `c^2 R^2 <= 2E`, because `t^2 - s >= 1/2`.  The
+    endpoint degeneracy sits entirely in the `(t^2-1)` term, which is nonnegative and simply
+    discarded.
+  * **`prolateEndpointEnergy_le_exp`** -- hence `E' <= 5E` on `[1, 11/10]`, and Grönwall gives
+    `E(t) <= E(1) exp(5(t-1))`.
+  * **`abs_radialProlate_le_two_endpoint`** -- **`|R(t)| <= 2` on `[1, dunsterEndpointCrossing c]`**
+    for `c >= 5`.
+
+  The numbers work out with room to spare: the interval has width `9/(8c^2) <= 9/200`, so the
+  exponential factor is at most `exp(1/4) < 2`, and `E(1) = c^2(1-s)` exactly because `R 1 = 1`.
+  Combining, `c^2 R^2 <= 4c^2`.
+
+  This closes piece (a).  The contribution of the endpoint interval to `(17)` is therefore
+  `sqrt c * 2 * 9/(8c^2) = O(c^(-3/2))`, comfortably inside the target rate, and `(16)` for the
+  `k >= 2` channels is now the only remaining input for `(11)`.
+
+- 2026-08-09 (forty-sixth instalment) -- **`(17)` is closed in Lean for the exact radial mode.**
+  New module `RHTower/ProlateFullPrimitive.lean`, wired, axiom-clean.
+
+  * **`abs_integral_endpoint_interval_le`** -- the endpoint interval contributes at most
+    `2 sqrt c (b-1)`.
+  * **`abs_integral_sqrt_mul_radialProlate_full_le`** -- **`(17)`**:
+
+    `| int_1^X sqrt c R(x) dx | <= (9/4 + 8KC/3 + 2*648*64) / c`   for `1 <= X <= 2`, `c >= 5`,
+    `0 <= s <= 1/2`, `R 1 = 1`, `R` solving the radial equation.
+
+  The split is at the matching point.  Beyond it the forty-third instalment's exterior primitive
+  applies; on `[1, crossing]` the forty-fifth instalment's sup bound `|R| <= 2` applies, and since
+  that interval is only `9/(8c^2)` wide its contribution is `9/(4 c sqrt c)`, i.e. `O(c^(-3/2))` --
+  strictly smaller than the exterior contribution rather than merely comparable.  The two cases
+  `X <= crossing` and `X > crossing` are handled separately; in the first the exterior term is simply
+  absent.
+
+  The gate line for `(17)` is corrected above: it previously recorded only the model form `(47)`.
+
+  With `(17)` closed, `(16)` for the `k >= 2` channels is the sole remaining input to `(11)`, and
+  from `(11)` the card's `(18)` follows by `(4)` and `(10)`, both already formalized.
+
+- 2026-08-09 (forty-seventh instalment) -- **The `k`-channel exterior estimate: `(15)` and the
+  mechanism of `(16)`.**  New module `RHTower/ProlateDilatedChannel.lean`, wired, axiom-clean.
+
+  Reading `(13)`--`(15)` closely, the `k`-th channel differs from the first only by the dilation of
+  the phase, `xi_s(k x)` in place of `xi_s(x)`, and by the explicit prefactor `1/k` in `(13)`.  The
+  amplitude bounds `(14)` are *identical* to `(48)`'s.  So no new estimate is needed for `(16)` --
+  only the observation that the dilated phase satisfies the same hypotheses with frequency `c k`.
+
+  * **`dilatedPhase`, `hasDerivAt_dilatedPhase`** -- the normalized dilated phase `xi_s(k x)/k`, whose
+    derivative is `xi_s'(k x)`, again at least one.  This is `(15)`: the phase speed of the `k`-th
+    channel is `k` times larger, and normalizing moves that factor into the frequency.
+  * **`hasDerivAt_inv_dilatedSpeed`, `abs_dilated_inv_speed_deriv_le`** -- the reciprocal speed's
+    variation is *improved* by the dilation.  The chain rule contributes a factor `k`, the argument
+    `k x` contributes `k^(-2)`, and the net `k^(-1)` is discarded: the bound `|(1/xi')'| <= x^(-2)`
+    holds for every `k >= 1` with the same constant.
+  * **`norm_integral_exterior_dilated_le`** -- hence the `k`-th channel's exterior primitive is
+    `O(1/(c k))`, one full factor `k` better than the first channel.
+
+  Together with the `1/k` prefactor of `(13)` this is the `1/(c k^2)` of `(16)`: one factor of `k`
+  from the expansion, one from the phase speed.  What is still not formalized is the expansion `(13)`
+  itself -- that `U_(lambda,k)` *equals* that two-branch sum -- exactly as `(48)` was for the first
+  channel before the corpus's Dunster transfer was found to supply it.
+
+- 2026-08-09 (forty-eighth instalment) -- **The two-branch expansion is closer than recorded: the
+  corpus owns the Bessel-to-cosine bridge.**  New module `RHTower/AmpFourthDecay.lean`, wired,
+  axiom-clean.
+
+  I said last instalment that `(13)`/`(48)` as *identities* were open, and flagged that it was worth
+  checking whether the corpus supplies them rather than assuming.  It largely does.
+  `ProlateDunsterBesselOffDiagonal.abs_radialProlateBesselProfile_sub_leading_le` proves
+
+  `| radialProlateBesselProfile s c x - sqrt(2/pi) ampFourth s x cos(c xi_s(x) - pi/4) |
+     <= compactBesselProfileError s c a`
+
+  for `1 < a <= x` with `1 <= c xi_s(a)`.  That *is* the two-branch form: the cosine is
+  `(e^{i theta} + e^{-i theta})/2`, so the leading term is exactly the `sum over eps = +-1` of
+  `(13)`/`(48)` with amplitudes `sqrt(2/pi) ampFourth s x e^{∓ i pi/4}/2`.
+
+  What was missing is the amplitude bound in the normalization the exterior estimate expects.
+
+  * **`ampFourth_le_two_div`** -- `ampFourth s x = ((x^2-1)(x^2-s))^(-1/4) <= 2/x` for `x >= 2`.
+  * **`sqrt_mul_ampFourth_le`** -- hence in the normalization `a(x)/sqrt x` used by
+    `norm_integral_exterior_le`, the amplitude is `a(x) = sqrt x * ampFourth s x <= 2/sqrt x`, which
+    is exactly the first half of `(14)`/`(48)`.
+
+  So the correction to record is that `(13)`/`(48)` are not open constructions.  What remains of them
+  is the derivative half of `(14)` for this amplitude -- `|a'| <= C x^(-3/2)`, i.e. a bound on
+  `ampFourth'` -- and the bookkeeping that turns the cosine into two exponentials under the integral.
+  Both are mechanical against what is now built.
+
+- 2026-08-09 (forty-ninth instalment) -- **`(14)` is complete for the leading amplitude.**  Three
+  theorems added to `RHTower/AmpFourthDecay.lean`; wired, axiom-clean.
+
+  * **`quarter_root_deriv_identity`** -- the algebraic identity behind differentiating a quarter
+    root, stated with the square relation `p * p = P` abstracted into a hypothesis.  Abstracting it
+    is not cosmetic: rewriting `(x^2-1)(x^2-s)` into `sqrt(...) * sqrt(...)` in place loops through
+    the radicands, and `field_simp` on the concrete form leaves an unusable residual.
+  * **`hasDerivAt_ampFourth`** -- the leading amplitude is differentiable, with
+    `ampFourth' = -(P'/(4P)) ampFourth`, `P = (x^2-1)(x^2-s)`.
+  * **`abs_deriv_ampFourth_le`** -- `|ampFourth'(x)| <= 32/x^2` for `x >= 2`.
+
+  With the forty-eighth instalment's `ampFourth <= 2/x`, the normalized amplitude
+  `a(x) = sqrt x * ampFourth s x` satisfies both halves of `(14)`: `|a| <= 2 x^(-1/2)` and, since
+  `a' = ampFourth/(2 sqrt x) + sqrt x * ampFourth'`, also `|a'| = O(x^(-3/2))`.
+
+  So the amplitude side of the two-branch expansion `(13)`/`(48)` is now fully formalized for the
+  leading form, for every channel: the dilation of the forty-seventh instalment does not touch the
+  amplitude, only the phase.  What remains is the bookkeeping that rewrites the cosine as two
+  exponentials under the integral sign and feeds the result to
+  `norm_integral_exterior_dilated_le`.
+
+- 2026-08-09 (fiftieth instalment) -- **The cosine bridge, and where the `1/k^2` is currently lost.**
+  New module `HTGeometry/CosineToExponential.lean` plus two theorems in
+  `RHTower/ProlateDilatedChannel.lean`; wired, axiom-clean.
+
+  * **`mul_cos_sub_eq_re`, `abs_integral_mul_cos_sub_le`** -- a shifted cosine integral is dominated
+    by its complex exponential integral, with no loss: it is the real part of that integral times a
+    unimodular rotation.  This is the bookkeeping the forty-eighth instalment named, stated for
+    arbitrary amplitude and phase.
+  * **`ampFourth_dilate_le`** -- `ampFourth s (k x) <= 2/(k x)`: the dilated amplitude carries the
+    channel's `1/k` automatically, which is `(13)`'s prefactor appearing without being put in by
+    hand.
+  * **`abs_deriv_ampFourth_dilate_le`** -- its derivative carries the same `1/k` on top of the
+    `x^(-2)` decay.
+
+  **An obstruction found by trying the composition rather than assuming it.**  Feeding these into
+  `norm_integral_exterior_dilated_le` does *not* yield `(16)`'s `1/(c k^2)`.  That theorem, inherited
+  from `norm_integral_exterior_le`, uses a *single* constant `C` for both the amplitude bounds and
+  the reciprocal-speed variation `|(1/xi')'| <= C x^(-2)`, and the latter forces `C >= 1` through the
+  `max C 1`.  So an amplitude constant of size `C_0/k` is silently rounded back up to `1` and the
+  gain is discarded.
+
+  The fix is a genuine refinement, not a rearrangement: `norm_integral_exterior_le` should carry two
+  constants, `C_a` for the amplitude and `C_rho` for the speed variation.  Its proof already supports
+  this -- the profile obeys `|P| <= C_a/x` and `|P'| <= (3 C_a/2 + C_a C_rho/2) x^(-2)`, both linear
+  in `C_a` -- so the conclusion is linear in `C_a` and the `1/k` survives.  Both factors of `k` are
+  then present: one from the amplitude here, one from the phase speed in the forty-seventh
+  instalment.
+
+- 2026-08-09 (fifty-first instalment) -- **The two-constant refinement: the `1/k` is no longer
+  discarded.**  Two theorems added to `RHTower/ExteriorProfileBounds.lean`; wired, axiom-clean.
+
+  The fiftieth instalment found that the exterior bound's single constant silently rounds a small
+  amplitude constant back up to `1`, because the same constant also carries the reciprocal-speed
+  variation, which cannot be taken below one.  Separating them fixes it.
+
+  * **`norm_deriv_exteriorProfile_two_const_le`** -- the profile derivative obeys
+    `|P'| <= (3 C_a/2 + C_a C_r/2) x^(-2)`, **linear** in the amplitude constant `C_a`, with the
+    speed-variation constant `C_r` entering only as a multiplier.
+  * **`norm_integral_exterior_two_const_le`** -- hence the exterior primitive is at most
+    `3 C_a (3/2 + C_r/2) / (2 c)`, again linear in `C_a`.
+
+  The profile constant is `C' = C_a (3/2 + C_r/2)`, and the two decay bounds it must satisfy are
+  `|P| <= C_a/x <= C'/x` and `|P'| <= C'/x^2` -- the second an equality, so nothing is lost in the
+  passage.  With `C_a` of size `1/k` from `ampFourth_dilate_le` and the frequency `c k` from
+  `hasDerivAt_dilatedPhase`, both factors of `k` are now present, which is `(16)`'s `1/(c k^2)`.
+
+  The original single-constant statements are kept: they are what the first channel's assembly
+  already uses, and nothing downstream needed changing.
+
+- 2026-08-09 (fifty-second instalment) -- **`(16)`'s estimate, with both factors of `k`.**  One
+  theorem added to `RHTower/ProlateDilatedChannel.lean`; wired, axiom-clean.
+
+  * **`norm_integral_exterior_dilated_sharp_le`** --
+
+    `‖ int_2^X (a(t)/sqrt t) exp(i eps (c k) xi_s(k t)/k) dt ‖ <= 3 C_a / (c k)`
+
+    for `|a| <= C_a x^(-1/2)`, `|a'| <= C_a x^(-3/2)`, `k >= 1`, `c > 0`, `0 <= s <= 1/2`.
+
+  The reciprocal-speed variation constant is `1` for *every* `k` -- that is the content of
+  `abs_dilated_inv_speed_deriv_le`, where the chain rule's factor `k` is cancelled by the argument's
+  `k^(-2)` -- so the two-constant bound of the fifty-first instalment applies with `C_r = 1` and the
+  conclusion stays linear in `C_a`.
+
+  Combining with `ampFourth_dilate_le`, whose amplitude constant is `O(1/k)`, gives `O(1/(c k^2))`:
+  one factor of `k` from the amplitude, one from the phase speed.  That is `(16)`.
+
+  What is left between here and `(11)` is assembly rather than estimation: instantiate this at the
+  concrete leading amplitude via the cosine bridge, and sum the channels with
+  `norm_inner_le_tsum_of_tendsto`, whose summable-majorant hypothesis `1/k^2` now holds.
+
+- 2026-08-09 (fifty-third instalment) -- **The concrete leading amplitude of the `k`-th channel.**
+  Four definitions/theorems added to `RHTower/ProlateDilatedChannel.lean`; wired, axiom-clean.
+
+  * **`leadingAmp`, `leadingAmpDeriv`** -- the amplitude `sqrt t * sqrt(2/pi) * ampFourth s (k t)` in
+    the normalization the exterior estimate uses, and its derivative.
+  * **`sqrt_two_div_pi_le_one`** -- `sqrt(2/pi) <= 1`.
+  * **`hasDerivAt_leadingAmp`** -- differentiability, by the product rule against the chain rule for
+    `ampFourth` at `k t`.
+  * **`abs_leadingAmp_le`** -- `‖a(t)‖ <= (2/k) / sqrt t`.
+  * **`abs_leadingAmpDeriv_le`** -- `‖a'(t)‖ <= (33/k) / (t sqrt t)`.
+
+  So the concrete channel amplitude satisfies `(14)` with amplitude constant `C_a = 33/k`, which is
+  the `1/k` of `(13)` derived rather than assumed.  Feeding this into
+  `norm_integral_exterior_dilated_sharp_le` gives `3 (33/k) / (c k) = 99/(c k^2)` -- **`(16)`**, with
+  an explicit constant.
+
+  Both factors of `k` are now accounted for by proved statements: one from the amplitude here, one
+  from the phase speed in the forty-seventh instalment, and the two-constant bound of the fifty-first
+  instalment is what stops the first from being discarded.
+
+- 2026-08-09 (fifty-fourth instalment) -- **`(16)` is closed, with an explicit constant.**  Two
+  theorems added to `RHTower/ProlateDilatedChannel.lean`; wired, axiom-clean.
+
+  * **`continuousOn_ampFourth_comp`, `continuousOn_leadingAmpDeriv`** -- continuity of the dilated
+    amplitude and of its derivative.  The corpus has no continuity lemma for `ampFourth`, so both
+    are derived from `hasDerivAt_ampFourth`.
+  * **`norm_integral_leading_channel_le`** -- **`(16)`**:
+
+    `‖ int_2^X leadingAmp(s,k,t) (sqrt t)^(-1) exp(i eps (c k) xi_s(k t)/k) dt ‖ <= 99/(c k^2)`
+
+    for `k >= 1`, `c > 0`, `0 <= s <= 1/2`, `X >= 2`, `|eps| = 1`.
+
+  Everything in the statement is concrete: the amplitude is the leading Liouville--Green amplitude of
+  the `k`-th channel, the phase is the dilated exterior phase, and the constant is explicit.  The
+  `k^(-2)` is assembled from three proved facts -- the amplitude constant `33/k`, the frequency `c k`,
+  and the two-constant bound that keeps them from collapsing.
+
+  Item 6 of the infrastructure list is updated above.  What remains for `(11)` is the identity
+  expressing `U_(lambda,k)` as this leading channel plus a controlled error -- the corpus's
+  `abs_radialProlateBesselProfile_sub_leading_le` supplies exactly that shape for `k = 1` -- and then
+  the summation, for which `norm_inner_le_tsum_of_tendsto` is built and whose `1/k^2` majorant is now
+  available.
+
+- 2026-08-09 (fifty-fifth instalment) -- **The bridge dilates, but it is a compact-range tool: a
+  correction to the forty-eighth instalment.**  One corollary added to
+  `RHTower/ProlateDilatedChannel.lean`; wired, axiom-clean.
+
+  * **`abs_radialProlateBesselProfile_dilate_sub_leading_le`** -- the corpus's leading-form bridge is
+    pointwise in its argument, so substituting `k t` gives the `k`-th channel's leading form with no
+    new hypothesis.  The proof is a one-liner; what it establishes is that no hidden restriction
+    blocks the dilation, which is what needed checking.
+
+  **The correction.**  In the forty-eighth instalment I wrote that the corpus "largely supplies"
+  `(13)`/`(48)`.  That was too strong, and working the composition through shows why.  The bridge's
+  error term is `compactBesselProfileError s c a = 5 ampFourth(s,a)/(c xi_s(a))^(1/4)`, which is
+  *constant in `x`* on `[a, infinity)`.  Integrating it over `[2, X]` therefore contributes
+  proportionally to `X - 2`, so the composition gives no bound uniform in the endpoint.  Splitting
+  into dyadic blocks does not rescue it either: on `[2^j, 2^(j+1)]` the error contributes
+  `~ (c 2^j)^(-1/4)`, and summing over `j` gives `O(c^(-1/4))` -- far short of `O(1/(c k^2))`.
+
+  The name is the clue and I should have read it: `compactBesselProfileError`.  The bridge is a
+  compact-range instrument.  The card's `(13)` is a different object -- a genuine *exterior*
+  expansion whose amplitudes and errors both decay like powers of `x` -- and that is what
+  `norm_integral_leading_channel_le` consumes.
+
+  So the honest state of `(16)`: the *estimate* is closed unconditionally with an explicit constant,
+  for any amplitude satisfying `(14)`.  The *identity* `(13)` -- that `U_(lambda,k)` equals the
+  two-branch sum with such amplitudes on the unbounded exterior -- is not supplied by the corpus and
+  remains the outstanding input, exactly as it was before the forty-eighth instalment.
+
+- 2026-08-09 (fifty-sixth instalment) -- **Correcting the correction: the bridge error does decay in
+  `x`; what it loses is the rate in `c`.**  Two theorems added to
+  `RHTower/ProlateEnvelopeIntegral.lean`; wired, axiom-clean.
+
+  Last instalment I said the bridge fails because its error is constant in `x` and so integrates to
+  something growing with the endpoint.  That was wrong, and the reason is worth recording.
+  `compactBesselProfileError s c a` is constant in `x`, but it is a *weakening*: the corpus's
+  underlying pointwise bound `abs_profile_sub_model_le` is
+  `5 ampFourth(s,x) / (c xi_s(x))^(1/4)`, evaluated at `x`, and that does decay.  The bridge theorem
+  simply freezes it at the left endpoint on the way to its own statement.
+
+  * **`half_mul_le_xiEndpointPhase`** -- `xi_s(x) >= x/2` for `x >= 2`.  The sharper companion to
+    `sqrt_sub_one_le_xiEndpointPhase`, which is the right bound only near the endpoint.
+  * **`abs_profile_sub_model_decay_le`** -- the bridge error with its decay explicit:
+    `<= 10 / (x (c x/2)^(1/4))`, i.e. `O(c^(-1/4) x^(-5/4))`.
+
+  So the integrated error *is* uniform in the endpoint -- `x^(-5/4)` is integrable on `[2, infinity)`
+  -- and my stated reason last instalment was simply incorrect.  The conclusion, however, stands, for
+  a different reason: the rate in `c` is `c^(-1/4)`, not `c^(-1)`.  Feeding this into `(16)` would
+  give `O(c^(-1/4))` where `O(1/(c k^2))` is needed.
+
+  The bridge is a leading-order statement with a fourth-root error; the card's `(13)` needs a
+  full Liouville--Green expansion whose error is `O(1/c)` relative.  That remains the outstanding
+  input, and the reason is now pinned down quantitatively rather than by inspection.
+
+- 2026-08-09 (fifty-seventh instalment) -- **The Liouville--Green normal form of Bessel's equation.**
+  New module `RHTower/BesselNormalForm.lean`, wired, axiom-clean.
+
+  The fifty-sixth instalment pinned the outstanding input: `(13)` needs a Bessel asymptotic with
+  `O(1/c)` relative error, whereas the corpus's bridge gives `O(c^(-1/4))`.  The sharp asymptotic
+  starts from removing the first-order term.
+
+  * **`besselNormalForm`, `besselNormalFormDeriv`, `besselNormalFormSecond`** -- `w = sqrt u J_0(u)`
+    and its two derivatives.
+  * **`hasDerivAt_besselNormalForm`, `hasDerivAt_besselNormalFormDeriv`** -- differentiability.
+  * **`besselNormalForm_ode`** -- **the normal form**:
+
+    `w'' + (1 + 1/(4 u^2)) w = 0`.
+
+  The first-order term is gone exactly, and the potential differs from the harmonic one by
+  `1/(4u^2)`, which is integrable at infinity.  That integrability is the whole point: the leading
+  cosine is the unperturbed solution, and the perturbation's integral is what bounds the error, which
+  is how `O(u^(-3/2))` -- relative `O(1/u)` -- arises rather than the fourth-root loss.
+
+  A note on tactics, since this cost several attempts.  Both identities go through `field_simp`
+  followed by `linear_combination c * hss` with `hss : sqrt u * sqrt u = u`, and the coefficient `c`
+  is not worth guessing: `linear_combination (0) * hss` prints the exact residual, which factors as
+  `(sqrt u ^ 2 - u)` times the coefficient needed.  Reading it off is immediate; guessing is not.
+
+- 2026-08-09 (fifty-eighth instalment) -- **The oscillator energy of the normal form.**  Three
+  theorems added to `RHTower/BesselNormalForm.lean`; wired, axiom-clean.
+
+  * **`besselEnergy`, `besselEnergy_nonneg`** -- `E = w^2 + (w')^2` for `w = sqrt u J_0(u)`.
+  * **`hasDerivAt_besselEnergy`** -- `E' = -2 (1/(4u^2)) w w'`.  The unperturbed part cancels
+    identically: for `w'' + w = 0` the energy is exactly conserved, so what survives is the
+    perturbation alone.
+  * **`abs_deriv_besselEnergy_le`** -- `|E'| <= (1/(4u^2)) E`, by the arithmetic--geometric mean
+    inequality `2|w||w'| <= w^2 + (w')^2`.
+
+  This is the differential inequality that makes the sharp asymptotic work.  The perturbation
+  `1/(4u^2)` is integrable on `[a, infinity)` with integral `1/(4a)`, so Gronwall bounds the energy
+  by `E(a) exp(1/(4a))` and, more to the point, forces `E` to converge: the amplitude of
+  `sqrt u J_0(u)` stabilises at rate `O(1/u)`.  That `O(1/u)` is exactly the relative error the
+  fifty-sixth instalment identified as needed, and is what the corpus's fourth-root bridge does not
+  provide.
+
+- 2026-08-09 (fifty-ninth instalment) -- **Grönwall for the Bessel energy.**  Three theorems added to
+  `RHTower/BesselNormalForm.lean`; wired, axiom-clean.
+
+  * **`hasDerivAt_inv_four_mul`** -- `d/dv [1/(4v)] = -1/(4v^2)`, the integrating factor's exponent.
+  * **`besselEnergy_le_exp`** -- **Grönwall**:
+    `E(u) <= E(a) exp(1/(4a) - 1/(4u))` for `0 < a <= u`.  The multiplier `E(v) exp(1/(4v))` is
+    antitone because the differential inequality of the fifty-eighth instalment says exactly that its
+    derivative is nonpositive.
+  * **`abs_besselNormalForm_le`** -- hence `|sqrt u J_0(u)|` is bounded on `[a, infinity)` by
+    `sqrt(E(a) exp(1/(4a)))`.
+
+  Two things worth noting.  First, the exponent `1/(4a) - 1/(4u)` is bounded by `1/(4a)` uniformly in
+  `u`, so the envelope constant does not degrade however far out one goes -- the perturbation's total
+  mass is finite and that is all the argument uses.  Second, this recovers the `u^{-1/2}` envelope
+  the corpus already had, but with a constant that is an invariant of the equation (the energy at a
+  base point) rather than an artefact of a stationary-phase estimate.  The corpus's constant is
+  `72 sqrt 2`; this one is whatever the solution's own energy is.
+
+  The remaining step to `(13)` is to extract the phase: the energy controls the amplitude, and the
+  angle variable `arctan(w'/w)` differs from `u` by an integral of the perturbation, which is
+  `O(1/u)`.
+
+- 2026-08-09 (sixtieth instalment) -- **The two-branch representation, exactly.**  Three theorems
+  added to `RHTower/BesselNormalForm.lean`; wired, axiom-clean.
+
+  * **`besselCosCoeff`, `besselSinCoeff`** -- `A = w cos u - w' sin u` and `B = w sin u + w' cos u`.
+  * **`besselNormalForm_eq_coeff`** -- `w(u) = A(u) cos u + B(u) sin u`, an *identity*, not an
+    approximation: the coefficients are defined so that it holds exactly.
+  * **`hasDerivAt_besselCosCoeff`, `hasDerivAt_besselSinCoeff`** -- `A' = q w sin u` and
+    `B' = -q w cos u` with `q = 1/(4u^2)`.
+
+  This is variation of parameters against the unperturbed basis, and it is the right formalization
+  route: a Prüfer angle would need `arctan` and an ODE existence theorem, whereas `A` and `B` are
+  defined outright and their derivatives fall out of the normal form by one `ring` step each.  The
+  unperturbed part cancels exactly in both, as it must -- for `w'' + w = 0` the coefficients are
+  literally constant.
+
+  The whole content of the sharp asymptotic is now visible: `w` is *exactly* a combination of `cos u`
+  and `sin u` whose coefficients move at rate `q |w|`.  Since `|w|` is bounded by the energy
+  (fifty-ninth instalment) and `q = 1/(4u^2)` is integrable, `A` and `B` converge with error
+  `O(1/u)` -- which is `(13)`'s two-branch form with `(14)`'s rate, and the `O(1/c)` relative error
+  the fifty-sixth instalment showed was needed.
+
+- 2026-08-09 (sixty-first instalment) -- **The sharp Bessel asymptotic, with `O(1/a)` error.**  Five
+  theorems added to `RHTower/BesselNormalForm.lean`; wired, axiom-clean.
+
+  * **`hasDerivAt_neg_inv_four_mul`, `intervalIntegrable_inv_four_sq`, `integral_inv_four_sq`** --
+    the perturbation's tail mass, `int_a^u 1/(4v^2) dv = 1/(4a) - 1/(4u)`.
+  * **`abs_besselCoeff_sub_le`** -- both coefficients move by at most `M (1/(4a) - 1/(4u))`, where
+    `M` bounds `|w|` on the range.
+  * **`abs_besselNormalForm_sub_fixed_le`** -- **the asymptotic**:
+
+    `| sqrt u J_0(u) - (A(a) cos u + B(a) sin u) | <= 2 M (1/(4a) - 1/(4u))`.
+
+  On `[a, infinity)` the normal-form solution equals a *fixed* sinusoid -- the one its own
+  coefficients determine at `a` -- up to an error bounded by `2M/(4a)`, uniformly in `u`.  This is
+  the `O(1/u)` relative error the fifty-sixth instalment identified as the missing input, in exactly
+  the two-branch shape `(13)` asks for: `cos` and `sin` are the two branches, `A(a)` and `B(a)` are
+  the amplitudes, and the error is the expansion's remainder.
+
+  The amplitude hypothesis is discharged by the fifty-ninth instalment: `abs_besselNormalForm_le`
+  supplies `M = sqrt(E(a) exp(1/(4a)))`, so nothing here is assumed.  The chain from Bessel's
+  equation to a two-branch expansion with `O(1/a)` error is now closed end to end -- normal form,
+  energy, Grönwall, variation of parameters, tail integration -- and none of it needed a stationary
+  phase estimate or an ODE existence theorem.
+
+- 2026-08-09 (sixty-second instalment) -- **`(13)` for the Bessel model: the two-branch expansion
+  with no free constant.**  Three theorems added to `RHTower/BesselNormalForm.lean`; wired,
+  axiom-clean.
+
+  * **`besselCoeff_sq_add`** -- `A(a)^2 + B(a)^2 = E(a)`.  The two-branch amplitude is not an
+    auxiliary quantity: its square *is* the energy.
+  * **`abs_besselNormalForm_sub_fixed_le'`** -- the asymptotic with the amplitude hypothesis
+    discharged by the fifty-ninth instalment's envelope.
+  * **`abs_besselJ0_sub_fixed_le`** -- **the sharp asymptotic for `J_0`**:
+
+    `| J_0(u) - (A(a) cos u + B(a) sin u)/sqrt u |
+       <= 2 sqrt(E(a) exp(1/(4a))) (1/(4a) - 1/(4u)) / sqrt u`.
+
+  This is `(13)`'s shape for the Bessel model, with everything explicit: two branches, amplitudes
+  decaying like `u^(-1/2)`, and a remainder that is `O(a^(-1) u^(-1/2))` -- relative `O(1/a)`, the
+  rate the fifty-sixth instalment showed was required and the corpus's fourth-root bridge could not
+  reach.
+
+  The identity `A^2 + B^2 = E` is what ties the two halves together: the energy bounds the amplitude
+  (fifty-ninth), the amplitude bounds the coefficient drift (sixty-first), and the coefficients'
+  squares return the energy.  There is no separate estimate for the amplitude of the expansion --
+  it is the same invariant throughout.
+
+- 2026-08-09 (sixty-third instalment) -- **`(13)` for the prolate profile: the two-branch expansion
+  with relative `O(1/c)` error.**  New module `RHTower/ProlateTwoBranch.lean`, wired, axiom-clean.
+
+  * **`xiAmplitude_div_sqrt_phase`** -- `xiAmplitude(s,x)/sqrt(xi_s(x)) = ampFourth(s,x)`, an
+    identity by definition.  This is why the composition introduces no approximation at the amplitude
+    step: the amplitude that falls out of the Bessel asymptotic *is* the leading amplitude the card
+    and the corpus both use.
+  * **`abs_radialProlateBesselProfile_sub_twoBranch_le`** -- **the expansion**:
+
+    `| radialProlateBesselProfile s c x
+        - ampFourth(s,x) (A cos(c xi_s(x)) + B sin(c xi_s(x))) |
+       <= ampFourth(s,x) * 2 sqrt(E(a) exp(1/(4a))) / (4a)`,   `a = c xi_s(x_0)`,
+
+    with `A = besselCosCoeff a`, `B = besselSinCoeff a`, valid for all `x >= x_0 > 1`.
+
+  The remainder is `ampFourth(s,x)` times a constant over `a = c xi_s(x_0)` -- relative `O(1/c)`,
+  uniform in `x`, and one full power better than the corpus's fourth-root bridge.  That is the rate
+  the fifty-sixth instalment identified as required for `(16)`, and it is now proved rather than
+  assumed.
+
+  So `(13)`'s shape is established for the profile: two branches, the amplitude is `ampFourth`
+  (whose `(14)` bounds are the forty-ninth instalment), and the error is relative `O(1/c)`.  What
+  the exterior estimate consumes is the amplitude *of each branch* together with its derivative;
+  the branch amplitudes here are the constants `A` and `B`, so their derivatives vanish and the
+  `(14)` bounds reduce to those already proved for `ampFourth`.
+
+- 2026-08-09 (sixty-fourth instalment) -- **The integrated two-branch remainder is `O(1/c)`,
+  uniformly in the endpoint.**  Four theorems added to `RHTower/ProlateTwoBranch.lean`; wired,
+  axiom-clean.
+
+  * **`continuousOn_ampFourth_Ioi`** -- continuity of the leading amplitude, from its derivative.
+  * **`hasDerivAt_neg_two_div_sqrt`, `integral_inv_x_mul_sqrt_le`** -- the `x^(-3/2)` tail:
+    `int_2^X dx/(x sqrt x) <= 2`.
+  * **`abs_integral_profile_sub_twoBranch_le`** --
+
+    `| int_2^X (profile(x) - twoBranch(x)) / sqrt x dx |
+       <= 4 * 2 sqrt(E(a) exp(1/(4a))) / (4a)`,   `a = c xi_s(x_0)`,
+
+    for `1 < x_0 <= 2 <= X`.
+
+  The polar weight is what makes this converge, and it is not an artefact of the estimate: the card's
+  `(12)` carries `dx/sqrt x` intrinsically.  The `ampFourth` factor contributes `x^(-1)` and the
+  weight the remaining half power, giving an exactly integrable `x^(-3/2)`.  Without the weight the
+  same remainder would only integrate to `O(log X)`.
+
+  So the remainder of the two-branch expansion contributes `O(1/c)` to the primitive, uniformly in
+  the endpoint -- the same order as the main term's own bound.  Combined with
+  `norm_integral_leading_channel_le`, which handles the leading term at rate `O(1/(c k^2))`, the
+  exterior channel estimate `(16)` is now supported at both ends: leading term and remainder.
+
+- 2026-08-09 (sixty-fifth instalment) -- **`(13)` as an exact identity, which is what the card
+  actually states.**  One theorem added to `RHTower/ProlateTwoBranch.lean`; wired, axiom-clean.
+
+  * **`radialProlateBesselProfile_eq_twoBranch`** --
+
+    `radialProlateBesselProfile s c x
+       = ampFourth(s,x) (A(c xi_s(x)) cos(c xi_s(x)) + B(c xi_s(x)) sin(c xi_s(x)))`,
+
+    for `1 < x`, `c > 0`, `0 <= s <= 1/2`.  **Exactly** -- no remainder.
+
+  A correction of emphasis, found by re-reading `(13)` against what I had built.  The sixty-third
+  instalment produced a leading term plus an `O(1/c)` remainder, by freezing the coefficients at a
+  base point.  But `(13)` is not stated that way: it is an identity, `U_(lambda,k)` *equals* the
+  two-branch sum, with all the content pushed into amplitudes satisfying `(14)`.  Evaluating the
+  coefficients at the running phase instead of freezing them gives exactly that, and the proof is
+  three rewrites -- the identity was already available in
+  `besselNormalForm_eq_coeff` from the sixtieth instalment.
+
+  Why this matters rather than being a restatement: with a frozen-coefficient expansion the remainder
+  is bounded absolutely, so it contributes `O(1/(c k))` to the channel primitive and *dominates* the
+  leading term's `O(1/(c k^2))`.  With the exact identity there is no remainder to dominate anything;
+  the whole integrand is oscillatory and the integration by parts applies to all of it, so both
+  factors of `k` survive.  The frozen form was the wrong object, and the sixty-fourth instalment's
+  remainder bound, while correct, is not on the path to `(16)`.
+
+  What `(16)` now needs is `(14)` for these running amplitudes: `ampFourth(s,kx) A(c xi_s(kx))` and
+  its derivative.  The amplitude bound is immediate from `ampFourth_dilate_le` and
+  `besselCoeff_sq_add`; the derivative needs `A'(u) = q(u) w(u) sin u` composed with the chain rule,
+  which is the sixtieth instalment's formula.
+
+- 2026-08-09 (sixty-sixth instalment) -- **The branch amplitudes and their derivatives.**  Three
+  theorems added to `RHTower/BesselNormalForm.lean`; wired, axiom-clean.
+
+  * **`abs_besselCoeff_le_sqrt_energy`** -- `|A(u)|, |B(u)| <= sqrt(E(u))`, immediate from
+    `A^2 + B^2 = E`.
+  * **`abs_besselCoeff_le_base`** -- hence both are bounded on `[a, infinity)` by
+    `sqrt(E(a) exp(1/(4a)))`, using the Grönwall bound.
+  * **`abs_deriv_besselCoeff_le_base`** -- both derivatives are at most
+    `(1/(4u^2)) sqrt(E(a) exp(1/(4a)))`, since `A' = q w sin u` and `|w|` is bounded by the same
+    budget.
+
+  These are `(14)`'s two halves for the running amplitudes of the exact representation: the amplitude
+  is bounded by a constant and its derivative decays like `u^(-2)`.  Composed with `ampFourth`
+  (bounded by `2/x`, derivative by `32/x^2`) and the phase `u = c xi_s(k x)` (speed at most `2`,
+  and `u >= c k x/2`), the channel amplitude `ampFourth(s,kx) A(c xi_s(kx))` satisfies `(14)` with
+  constant `O(1/k)` -- the same `1/k` the fifty-third instalment derived for the leading form, now
+  for the exact one.
+
+  Everything `(16)` needs is therefore proved in pieces: the exact identity (sixty-fifth), the
+  amplitude bounds here, the dilated phase and its reciprocal-speed variation (forty-seventh), and
+  the two-constant exterior estimate (fifty-first).  What is left is the composition, which is
+  differentiation of a product and substitution -- no new estimate.
+
+- 2026-08-09 (sixty-seventh instalment) -- **The branch coefficient along the dilated phase.**  Four
+  theorems added to `RHTower/ProlateTwoBranch.lean`; wired, axiom-clean.
+
+  * **`xiSpeed_le_two`** -- the exterior phase speed is at most `2` for `t >= 2`.  The companion to
+    `one_le_xiSpeed`: the speed is pinned between `1` and `2` on the whole exterior range.
+  * **`hasDerivAt_scaled_dilated_phase`** -- `d/dx [c xi_s(k x)] = c k xi_s'(k x)`.
+  * **`hasDerivAt_besselCosCoeff_comp`** -- the branch coefficient differentiated along that phase.
+  * **`abs_deriv_besselCosCoeff_comp_le`** -- **the drift bound**:
+
+    `| d/dx A(c xi_s(k x)) | <= 2 sqrt(E(a) exp(1/(4a))) / (c k x^2)`.
+
+  Three factors of the dilation cancel to leave one in the denominator: the chain rule contributes
+  `c k` upward, the phase lower bound `xi_s(k x) >= k x/2` contributes `(c k x)^(-2)` downward, and
+  the net is `(c k x^2)^(-1)`.  So the running amplitude drifts *less* for higher channels, not more
+  -- which is why the exact representation keeps both factors of `k` where the frozen one lost them.
+
+  This is the last estimate `(14)` needs for the exact channel amplitude.  What remains is assembling
+  `ampFourth(s,kx) A(c xi_s(kx))` by the product rule from this and the forty-ninth instalment's
+  `ampFourth` bounds.
+
+- 2026-08-09 (sixty-eighth instalment) -- **The exact channel amplitude.**  Two definitions and two
+  theorems added to `RHTower/ProlateTwoBranch.lean`; wired, axiom-clean.
+
+  * **`channelAmplitude`, `channelAmplitudeDeriv`** -- `ampFourth(s,kx) A(c xi_s(kx))` and its
+    derivative, the cosine branch's amplitude in the exact representation.
+  * **`hasDerivAt_channelAmplitude`** -- differentiability, by the product rule against the dilated
+    `ampFourth` derivative and the sixty-seventh instalment's composed drift.
+  * **`abs_channelAmplitude_le`** -- `|alpha(x)| <= 2 sqrt(E(a) exp(1/(4a))) / (k x)`.
+
+  The amplitude bound carries the `1/k` outright, with no oscillatory argument: it comes from
+  `ampFourth(s,kx) <= 2/(kx)`, i.e. purely from the dilation of the argument.  That is `(13)`'s
+  prefactor, derived rather than posited, and now for the *exact* amplitude rather than the leading
+  one.
+
+  Note the hypothesis `0 < c` turned out to be unnecessary for this bound and was removed -- the
+  amplitude estimate does not see the frequency at all; only the drift estimate does.
+
+- 2026-08-09 (sixty-ninth instalment) -- **`(14)` is complete for the exact channel amplitude.**  One
+  theorem added to `RHTower/ProlateTwoBranch.lean`; wired, axiom-clean.
+
+  * **`abs_channelAmplitudeDeriv_le`** --
+
+    `| alpha'(x) | <= 36 sqrt(E(a) exp(1/(4a))) / k / x^2`,   `c >= 1`, `k >= 1`, `x >= 2`.
+
+  With the sixty-eighth instalment's `|alpha(x)| <= 2 M/(k x)`, both halves of `(14)` now hold for
+  the exact channel amplitude `ampFourth(s,kx) A(c xi_s(kx))`, with constant `O(M/k)`.
+
+  The product rule splits into two terms and they are bounded by different mechanisms.  The first,
+  `k ampFourth'(kx) A`, is `O(M/(k x^2))` because the dilated amplitude derivative already carries
+  `1/k`.  The second, `ampFourth(kx) dA/dx`, is `O(M/(c k^2 x^3))` -- smaller by a further `1/(ckx)`
+  -- because the branch coefficient barely drifts.  Only the first term matters, which is the precise
+  sense in which the two-branch representation is "almost" a fixed sinusoid with a slowly varying
+  envelope.
+
+  Every ingredient of `(16)` is now proved: the exact identity, both `(14)` bounds for the exact
+  amplitude, the dilated phase with its speed and reciprocal-speed variation, and the two-constant
+  exterior estimate whose conclusion is linear in the amplitude constant.
+
+- 2026-08-09 (seventieth instalment) -- **The channel amplitude in the exterior estimate's
+  normalization.**  Two definitions and three theorems added to `RHTower/ProlateTwoBranch.lean`;
+  wired, axiom-clean.
+
+  * **`channelAmp`, `channelAmpDeriv`** -- `sqrt x * alpha(x)`, the form the exterior estimate
+    consumes, and its derivative.
+  * **`hasDerivAt_channelAmp`** -- differentiability.
+  * **`abs_channelAmp_le`** -- `‖a(x)‖ <= (37 M/k) / sqrt x`.
+  * **`abs_channelAmpDeriv_le`** -- `‖a'(x)‖ <= (37 M/k) / (x sqrt x)`.
+
+  Both hold with the *same* constant `C_a = 37 M/k`, which is what
+  `norm_integral_exterior_dilated_sharp_le` requires: it takes one amplitude constant and returns
+  `3 C_a/(c k)`.  With `C_a = 37M/k` that is `111 M/(c k^2)` -- `(16)`.
+
+  A tactic note, since three of the five proofs here needed it.  Goals of the form
+  `sqrt x * (A / x) = A / sqrt x` do not close with `field_simp; linarith [hss]`, because `field_simp`
+  leaves `sqrt x ^ 2` while `hss` is stated with `*`.  Supplying `hsq2 : sqrt x ^ 2 = x` and using
+  `linear_combination A * hsq2` closes them immediately, and `linear_combination (0) * hsq2` prints
+  the coefficient when it is not obvious.
+
+- 2026-08-09 (seventy-first instalment) -- **`(16)` closed, with a channel-uniform constant.**
+  Seven declarations added to `RHTower/ProlateTwoBranch.lean`; all axiom-clean.
+
+  * **`continuousOn_channelAmplitudeDeriv`, `continuousOn_channelAmpDeriv`** -- the last plumbing
+    the exterior estimate wanted.  The derivative is a sum of eight composed factors; each is
+    continuous on the channel range, and the two Bessel factors compose through
+    `besselCosCoeff`/`besselNormalForm` on `Ioi 0` via the phase, which is positive there.
+  * **`channelBase`, `channelBase_pos`, `channelBase_le`** -- the inner edge `c xi_s(2k)` of the
+    channel.  Monotonicity of the phase gives `channelBase <= c xi_s(kx)` for every `x >= 2`, so a
+    single energy constant serves the whole range of integration.
+  * **`norm_integral_channel_le`** -- `(16)`.  Substituting `C_a = 37 M/k` into
+    `norm_integral_exterior_dilated_sharp_le` gives `3 C_a/(ck) = 111 M/(c k^2)`.
+  * **`channelEnergyConstant`, `channelBase_mono`, `channelEnergy_le`,
+    `norm_integral_channel_uniform_le`** -- the constant made uniform in the channel index.
+
+  The uniformity is worth stating separately, because it is the only reason the channels sum.
+  `M(k) = sqrt(besselEnergy(b_k) exp(1/(4 b_k)))` depends on `k` through the base point
+  `b_k = c xi_s(2k)`, which *increases* with `k`.  What `besselEnergy_le_exp` actually proves is
+  that `u |-> besselEnergy u * exp(1/(4u))` is **antitone** -- that is its Gronwall content, read
+  as a monotone statement rather than as an inequality between two points.  So the increasing
+  base point makes `M(k)` decreasing, and `M(k) <= M(1) = channelEnergyConstant s c` for every
+  `k >= 1`.  The channel bound is therefore `111 C/(c k^2)` with `C` free of `k`, and
+  `sum_k 1/k^2` converges.
+
+  Had the energy grown with the base point instead, no amount of decay in `k` from the amplitude
+  would have helped -- the `1/k^2` would have been fighting an unknown growth.  The direction of
+  that monotonicity is the whole of the summability.
+
+- 2026-08-09 (seventy-second instalment) -- **`(11)`: the channels summed.**  Two new modules,
+  both wired, all declarations axiom-clean; the `HTGeometry` umbrella is green.
+
+  `HTGeometry/InverseSquareTailSum.lean`
+  * **`tsum_inv_sq_shift_two_le_one`** -- `sum_{n>=0} 1/(2+n)^2 <= 1`.
+  * **`tsum_inv_sq_shift_one_le_two`** -- `sum_{n>=0} 1/(1+n)^2 <= 2`.
+
+  `RHTower/ProlateChannelSum.lean`
+  * **`channelMajorant`, `channelMajorant_eq`, `channelMajorant_nonneg`,
+    `summable_channelMajorant`, `tsum_channelMajorant_le`** -- the majorant `B/(c(k+1)^2)` and its
+    sum `<= 2B/c`.
+  * **`norm_inner_le_of_channel_bounds`** -- a channel-by-channel bound on the pairing passes to
+    any norm limit of the truncations, with the single constant `2B/c`.
+  * **`iSup_norm_inner_le_of_channel_bounds`** -- the same uniformly in the endpoint.  This is the
+    shape of `(11)`.
+
+  Three things are worth recording.
+
+  First, `pi` was avoided deliberately.  mathlib has `hasSum_zeta_two`, so `sum 1/j^2 = pi^2/6` is
+  available and the tail is exactly `pi^2/6 - 1`.  But bounding that by `1` needs `pi^2 <= 12`, and
+  the sharpest bound on `pi` in this toolchain is `Real.pi_lt_four`, giving only `pi^2 < 16`.  The
+  exact value is therefore useless here; a telescoping comparison gives the explicit constants with
+  no transcendental input at all.
+
+  Second -- and this is the part that cost a rebuild -- **the corpus already owned the telescoping
+  sum.**  `HTGeometry/TrigammaLeadingAsymptotic.lean` proves
+  `hasSum_one_div_shift_mul_succ : HasSum (fun n => 1/((s+n)(s+n+1))) (1/s)`, and
+  `HTGeometry/VerticalShiftTailEstimate.lean` proves `summable_inv_sq_shift` for a general shift.
+  I first wrote both by hand as induction on partial sums; `lake env lean` accepted the file, and
+  only the *umbrella* build reported the collision on `summable_inv_sq_shift`.  This is the failure
+  mode where a per-file check cannot see a duplicate: the file compiles because it does not import
+  the module it duplicates.  The rewrite derives both constants from the corpus telescoping sum in
+  a third of the lines.
+
+  Third, the two comparisons are genuinely different and my first attempt conflated them.  For the
+  tail the summand `1/(2+n)^2` sits at the *right* end of the telescoped pair
+  `1/((1+n)(2+n))`, and `(1+n)(2+n) <= (2+n)^2` gives it.  For the series itself the summand
+  `1/(1+n)^2` sits at the *left* end, where `(1+n)(2+n) <= (1+n)^2` is false; one needs the factor
+  `2`, comparing against `2/((1+n)(2+n))`, which works because `2+n <= 2(1+n)`.  That is why the
+  two constants are `1` and `2`.
+
+  A tooling note: probing mathlib names with `have := @Name` gives false negatives for anything
+  carrying a `SummationFilter` argument -- `HasSum.tsum_eq`, `tsum_mul_left`,
+  `Summable.tsum_le_tsum` all reported missing and all exist.  `#check @Name` is the reliable probe.
+
+  The order of passage is the card's: sum the channels at a fixed endpoint, then take the limit of
+  the truncations, then the supremum over endpoints.  `ciSup_le` performs the last step, so no
+  interchange of an infinite channel sum with an improper primitive appears anywhere.
+
+- 2026-08-09 (seventy-third instalment) -- **`(16)` for the whole profile, both branches.**  New
+  module `RHTower/ProlateChannelBranch.lean`, wired, all declarations axiom-clean.
+
+  The seventy-first instalment closed `(16)` for the *cosine* amplitude only.  The exact two-branch
+  representation has two coefficients, and dropping the sine one is not a harmless simplification:
+  `A cos u + B sin u` is not `A cos u` plus something small -- `B` is the same size as `A`.  This
+  instalment covers both.
+
+  **The generic branch layer.**  Both coefficients obey the same two bounds -- bounded by the
+  energy, derivative bounded by the energy times `1/(4u^2)` -- and those two bounds are *all* the
+  amplitude estimates use.  So the layer is built once for an arbitrary coefficient `A` with
+  derivative `A'` and instantiated at both:
+  * **`branchAmplitude`, `branchAmplitudeDeriv`, `hasDerivAt_branchAmplitude`**;
+  * **`abs_branchAmplitude_le`** (`<= 2M/k/x`), **`abs_branch_drift_le`** (`<= 2M/(c k x^2)`),
+    **`abs_branchAmplitudeDeriv_le`** (`<= 36M/k/x^2`);
+  * **`branchAmp`, `branchAmpDeriv`, `hasDerivAt_branchAmp`, `abs_branchAmp_le`
+    (`<= 2M/k/sqrt x`), `abs_branchAmpDeriv_le` (`<= 37M/k/(x sqrt x)`)**;
+  * **`continuousOn_branchAmplitudeDeriv`, `continuousOn_branchAmpDeriv`**.
+
+  This replaced roughly 250 lines of prospective duplication with one instantiation each.
+
+  **The complex branch.**
+  * **`besselCosCoeffDeriv`, `besselSinCoeffDeriv`** and their continuity on `Ioi 0`.
+  * **`channelBranchAmp`, `channelBranchAmpDeriv`** -- `(1/2)(P - eps i Q)`, the complex amplitude
+    of one exponential branch, with `P` and `Q` the two real branch amplitudes.
+  * **`hasDerivAt_channelBranchAmp`, `continuousOn_channelBranchAmp`,
+    `continuousOn_channelBranchAmpDeriv`, `abs_channelBranchAmp_le` (`<= 2M/k/sqrt x`),
+    `abs_channelBranchAmpDeriv_le` (`<= 37M/k/(x sqrt x)`)** -- both with the *same* constant
+    `C_a = 37M/k`, which is what the exterior estimate requires.
+
+  **The identity and the capstone.**
+  * **`two_branch_euler`** -- `P cos u + Q sin u = (1/2)(P - iQ)e^{iu} + (1/2)(P + iQ)e^{-iu}`.
+  * **`sqrt_mul_radialProlateBesselProfile_eq_branches`** -- the exact decomposition of the dilated
+    profile.  No error term: `radialProlateBesselProfile_eq_twoBranch` is an identity and so is
+    Euler's.
+  * **`profile_eq_branch_integrand`, `continuousOn_branchIntegrand`, `continuousOn_dilatedPhase`.**
+  * **`norm_integral_dilated_profile_le`** -- `<= 222 C/(c k^2)` with `C = channelEnergyConstant s c`,
+    free of `k` and of the endpoint.  This is `(16)` for the full profile.
+
+  Two tactic notes.
+
+  `field_simp` must not be applied to a goal whose atoms are `Complex.exp` applications.  It
+  renormalises the *arguments* of `exp` -- `1 * (c*k) * phi` became `1 * c * k * phi` on one side and
+  `k * c * phi` on the other -- and since `ring` treats `exp e` as an atom keyed on the syntactic
+  form of `e`, the two stop matching and the goal becomes unprovable by `ring`.  The fix is to
+  divide by hand: rewrite the target as `(sqrt t)^{-1} * (sqrt t * profile)`, substitute the
+  identity, and let `ring` work with the exponentials untouched.
+
+  Second, `field_simp` followed by `linear_combination` needs the coefficient read off, not
+  guessed, and the guess is systematically wrong here: for both
+  `sqrt x * (2M/k/x) = 2M/k/sqrt x` and `sqrt x * (36M/k/x^2) = 36M/k/(x sqrt x)` the residual
+  coefficient is plain `M`, not `2M/k` or `36M/k` -- `field_simp` clears the `k` before the
+  `sqrt x^2 - x` factor is exposed.
+
+- 2026-08-09 (seventy-fourth instalment) -- **The energy method, abstracted off Bessel.**  Two new
+  modules, both wired, all declarations axiom-clean.
+
+  **Why.**  `norm_integral_dilated_profile_le` closes `(16)` for the Bessel *model*
+  `radialProlateBesselProfile`.  Getting from there to the exact mode `R` needs the model-to-mode
+  transfer, and an audit of what the corpus offers shows neither available bound suffices:
+
+  * `abs_radialProlate_sub_besselProfile_le` is sharp in `c` (error `O(1/c)`) but decays only like
+    `x^{-1}` in the variable, so integrating `|error|` over `[2, X]` gives `O(log X / c)` -- *not*
+    uniform in the endpoint, which is what `(16)` demands;
+  * `abs_profile_sub_model_decay_le` is integrable in `x` (`O(x^{-5/4})`) but only `O(c^{-1/4})`.
+
+  Neither yields `O(1/(c k^2))`.  This is not a gap in the assembly: it says the transfer error
+  cannot be estimated in absolute value at all.  It has to be handled the same way the main term
+  is -- by exhibiting the exact two-branch representation of the *mode*, not of the model.
+
+  **What was built.**  `HTGeometry/PerturbedOscillator.lean` -- the energy method for
+  `w'' + (1 + q(u)) w = 0` with `|q(u)| <= kappa/u^2`, with no reference to any particular equation:
+  * **`oscEnergy`, `oscEnergy_nonneg`, `hasDerivAt_oscEnergy`** (`E' = -2 q w w'`);
+  * **`abs_deriv_oscEnergy_le`** (`|E'| <= (kappa/u^2) E`, by AM-GM);
+  * **`hasDerivAt_const_div`, `oscEnergy_le_exp`** -- Gronwall, via antitonicity of
+    `E(v) exp(kappa/v)`;
+  * **`oscCosCoeff`, `oscSinCoeff`, `osc_eq_coeff`, `oscCoeff_sq_add`** -- the exact
+    representation and `A^2 + B^2 = E`;
+  * **`hasDerivAt_oscCosCoeff`** (`A' = q w sin u`), **`hasDerivAt_oscSinCoeff`**
+    (`B' = -q w cos u`);
+  * **`abs_osc_le`, `abs_oscCoeff_le_base`, `abs_deriv_oscCoeff_le_base`** -- envelope, coefficient
+    bounds, and the `kappa/u^2` drift.
+
+  `RHTower/BesselOscillatorInstance.lean` -- the instantiation, as a check that this is a
+  generalization and not a parallel development.  **`oscEnergy_bessel`, `oscCosCoeff_bessel`,
+  `oscSinCoeff_bessel` all hold by `rfl`**: the abstract energy and the abstract coefficients *are*
+  `besselEnergy`, `besselCosCoeff`, `besselSinCoeff`, not merely equal to them.
+  **`bessel_isPerturbedOscillator`** discharges all four hypotheses with `kappa = 1/4`, and
+  **`besselEnergy_le_exp_of_abstract`** reads the abstract Gronwall bound back on the Bessel energy.
+
+  The abstract layer is what the exact mode needs.  In the Liouville-Green variable the prolate
+  mode satisfies an equation of exactly this shape with `u = c xi_s(x)`, and the corpus already has
+  the change of variable (`comparisonSol`, `lgAmplitude`, `lgNormalFormDefect`, and
+  `hasDerivAt_comparisonSolDeriv`, which produces `U'' = -P U' - (c^2 (xi')^2 + a) U`).  What is
+  still missing between that and the abstract interface is the removal of the first-order term `P`
+  and the verification that the resulting perturbation is `O(1/u^2)` -- named precisely, rather
+  than left as "the transfer".
+
+- 2026-08-09 (seventy-fifth instalment) -- **The energy method in a general phase parameterization.**
+  New module `HTGeometry/PerturbedOscillatorPhase.lean`, wired, all declarations axiom-clean.
+
+  The previous instalment built the energy method for `w'' + (1 + q(u))w = 0` as a function of the
+  phase variable `u`.  Applying it to the prolate mode would require inverting `xi_s`, i.e.
+  constructing `x(u)` and transporting every derivative through it.  That inverse exists in the
+  corpus (`XiInverseCoordinate`), but using it is the wrong move: the change of variables never has
+  to be performed.
+
+  Instead the whole theory is restated in the *original* variable with the phase carried as data.
+  Write `Dw = w'/phi'` and `DDw = (Dw)'/phi'`.  Then every identity survives with one factor of
+  `phi'` per differentiation:
+
+  ```text
+  E = w^2 + (Dw)^2,              E'  = -2 phi' q w Dw,
+  A = w cos phi - Dw sin phi,    A'  =  phi' q w sin phi,
+  B = w sin phi + Dw cos phi,    B'  = -phi' q w cos phi.
+  ```
+
+  * **`phaseEnergy`, `phaseEnergy_nonneg`, `hasDerivAt_phaseEnergy`, `abs_deriv_phaseEnergy_le`.**
+  * **`phaseCosCoeff`, `phaseSinCoeff`, `phase_eq_coeff`, `phaseCoeff_sq_add`,
+    `hasDerivAt_phaseCosCoeff`, `hasDerivAt_phaseSinCoeff`.**
+  * **`phaseEnergy_le_exp`** -- Gronwall.  The drift integrates to `kappa/phi` because
+    `integral phi' kappa/phi^2 = kappa/phi`; that is the whole reason a `phi^{-2}` perturbation is
+    admissible and a `phi^{-1}` one is not.
+  * **`abs_phase_le`, `abs_phaseCoeff_le_base`, `abs_deriv_phaseCoeff_le_base`.**
+
+  The hypotheses are stated on `{x : a <= x}` with two-sided `HasDerivAt`, which is what the prolate
+  mode supplies on any `[A_c, infinity)` with `A_c > 1`; no one-sided derivative machinery is needed.
+
+  What this layer changes about the route: the exact mode's two-branch representation is now a
+  matter of exhibiting `w`, `Dw`, `DDw`, `q` in the `x` variable with `|q| <= kappa/(c xi_s)^2`, and
+  the corpus already carries the normal-form substitution (`prolateNormalFormSol`) and the
+  comparison equation.  Nothing in the remaining step involves a coordinate change.
+
+- 2026-08-09 (seventy-sixth instalment) -- **The exact radial mode is a perturbed oscillator.**
+  New module `RHTower/ProlateLiouvilleOscillator.lean`, wired, all declarations axiom-clean.
+
+  This is the step the previous two instalments were building toward: the exact mode `R`, not the
+  Bessel model, put into the shape the energy method consumes.
+
+  * **`prolatePhase`, `prolatePhaseSpeed`, `prolatePhaseAccel`** and their `HasDerivAt` lemmas --
+    `phi = c xi_s`, `phi' = c xi'`, `phi'' = c xi''`.
+  * **`lgSpeedAmp`, `lgSpeedAmpDeriv`, `lgSpeedAmpSecond`, `hasDerivAt_lgSpeedAmp`,
+    `hasDerivAt_lgSpeedAmpDeriv`** -- the Liouville amplitude `h = sqrt(phi')` and its two
+    derivatives.
+  * **`two_mul_lgSpeedAmpDeriv_mul_speed`** -- `2 h' phi' = h phi''`.  One line of algebra, and it
+    is the entire reason the construction works: it is exactly the coefficient of `u'` in the
+    transformed equation, so the first-order term is eliminated *identically*, not approximately.
+  * **`prolateOsc`, `prolateOscD`, `prolateOscDD`, `hasDerivAt_prolateOsc`,
+    `hasDerivAt_prolateOscD`** -- `w = h u`, `Dw = w'/phi'`, `DDw = (Dw)'/phi'`, with the two
+    derivative laws in exactly the form `PerturbedOscillatorPhase` requires.
+  * **`prolateOscPotential`, `prolateOsc_ode`** -- `DDw + (1 + q) w = 0`, unconditionally, given
+    only the radial prolate equation.
+
+  Three things made this tractable.
+
+  First, the corpus already owned everything needed and I nearly rebuilt two of them.
+  `prolate_normalForm_ode` gives `u'' + Q u = 0` for `u = sqrt(x^2-1) R`; `radialProlateQ` is the
+  potential; and `radialProlateQ_sub_comparison` proves `Q - c^2 (xi')^2 = 1/(x^2-1)^2` -- a pure
+  pole, exactly as my own derivation had predicted.  `xiSpeedSecondDeriv` is `xi'''`, which the
+  Liouville error term needs and which I had assumed was missing; its docstring says it exists
+  precisely to identify the defect.
+
+  Second, the phase parameterization was the right abstraction.  Nothing here inverts `xi_s`.
+
+  Third, on `linear_combination` coefficients, the same lesson a third time: after `field_simp` the
+  residual of the ODE identity is `u' (2 h' phi' - h phi'')`, so the coefficient is `u'` -- plain
+  `prolateNormalFormSolDeriv R DR x`, with no factor from anywhere else.  Printing it with
+  `linear_combination (0) * hamp` took one round trip; guessing would have taken several.
+
+  What remains for the exact-mode `(16)` is the *bound* `|q| <= kappa/phi^2`, i.e. an estimate on
+  `lgSpeedAmpSecond` and on the pole term `1/(x^2-1)^2`.  The structure is now fixed; only sizes
+  are left.
+
+- 2026-08-09 (seventy-seventh instalment) -- **The exact mode's two-branch coefficients, bounded.**
+  Eight further declarations in `RHTower/ProlateLiouvilleOscillator.lean`; all axiom-clean.
+
+  * **`prolateOscPotential_eq`** -- the perturbation in closed form:
+
+    ```text
+    q = 1/(c^2 (xi')^2 (x^2-1)^2) + (3 (xi'')^2 - 2 xi''' xi')/(4 c^2 (xi')^4).
+    ```
+
+    The first term is the pole of the normal-form potential, the second is the Liouville
+    (Schwarzian) error.  Both carry `1/c^2`.
+  * **`abs_xiSpeedDeriv_le_two_div`** (`|xi''| <= 2/x^3`) and **`abs_xiSpeedSecondDeriv_le`**
+    (`|xi'''| <= 32/x^4`).
+  * **`abs_prolateOscPotential_le`** -- `|q| <= 35/phi^2` on `[2, infinity)`.
+  * **`prolate_isPhaseOscillator`** -- all seven hypotheses of the abstract layer, discharged.
+  * **`abs_prolateOscCoeff_le`** -- both branch coefficients of the *exact mode* bounded by the
+    square root of its energy budget.
+
+  This is what the two absolute-value routes could not give.  `q` decays like `x^{-4}` while the
+  budget allows `phi^{-2} ~ x^{-2}`, so the drift is integrable with two powers to spare -- and the
+  resulting statement is about `R` itself, with no model-to-mode transfer and hence no transfer
+  error.  The `O(log X / c)` divergence identified in the seventy-fourth instalment does not arise
+  because nothing is ever bounded in absolute value: the mode is *represented*, not approximated.
+
+  Constants, for the record: `|q| <= 2/(c^2 x^4)` from the pole and `<= 33/(c^2 x^4)` from the
+  Schwarzian, and `phi <= c x` from `xiEndpointPhase_bounds`, giving `35`.
+
+  Two traps, both previously logged and both hit again.
+
+  A heredoc append lands *after* `end Namespace`, so every identifier in it becomes an
+  `autoImplicit` variable and the errors read as "unknown identifier `xiSpeed`".  The fix is to
+  splice before the marker; the symptom is unmistakable once seen.
+
+  `rw [show x = Real.sqrt (x^2) from ...]` rewrites *every* occurrence of `x`, including the ones
+  inside `x^2 - 1`, turning `sqrt (x^2-1) <= x` into an unprovable goal.  Going forward through
+  `Real.sqrt_le_sqrt` and then `Real.sqrt_sq` on the hypothesis avoids touching the goal at all.
+
+- 2026-08-09 (seventy-eighth instalment) -- **The exact mode's envelope.**  New module
+  `RHTower/ProlateExactChannel.lean`, wired, all declarations axiom-clean.
+
+  * **`prolateEnvelope`, `prolateEnvelopeDeriv`, `hasDerivAt_prolateEnvelope`** --
+    `envelope = 1/(h sqrt(x^2-1))`, the factor that converts the oscillator back into the mode.
+  * **`sqrt_c_le_lgSpeedAmp`** (`sqrt c <= h`) and **`lgSpeedAmp_le_sqrt_two_c`**
+    (`h <= sqrt(2c)`) -- the amplitude is pinned between two multiples of `sqrt c` because
+    `1 <= xi' <= 2`.
+  * **`radialProlate_eq_branches`** -- **`R = envelope * (A cos phi + B sin phi)`**, an identity.
+    The oscillator representation is exact and the rescaling is invertible, so there is nothing to
+    estimate here at all.
+  * **`abs_lgSpeedAmpDeriv_le`** (`|h'| <= sqrt c / x^3`), **`prolateEnvelope_le`**
+    (`<= 2/(sqrt c x)`), **`abs_prolateEnvelopeDeriv_le`** (`<= 16/(sqrt c x^2)`).
+
+  A correction to my own arithmetic, made while proving it.  I first stated the envelope-derivative
+  bound as `5/(sqrt c x^2)` from a rough count.  It is false at that constant: the honest chain is
+  numerator `<= 4 sqrt c` (from `|h'| sqrt(x^2-1) <= sqrt c` and `h * x/sqrt(x^2-1) <= 3 sqrt c`)
+  over denominator `>= c x^2/4`, giving `16/(sqrt c x^2)`.  The `x^2/4` in the denominator comes
+  from using the crude `sqrt(x^2-1) >= x/2`; the sharp `sqrt 3 x/2` would give `16/3`, but the crude
+  bound keeps every step inside `nlinarith`'s reach and the constant is irrelevant downstream.
+  Two of the three sub-bounds also needed `sqrt(2c) <= (3/2) sqrt c` rather than the lazier
+  `<= 2 sqrt c`, since `2 * 2 = 4 > 3`.
+
+  What remains for the exact-mode `(16)`: dilate by `k`, complexify the two branches as in
+  `ProlateChannelBranch`, and apply `norm_integral_exterior_dilated_sharp_le`.  Every input is now
+  a proved theorem -- the identity, both coefficient bounds, both envelope bounds, and the
+  coefficient drift.
+
+- 2026-08-09 (seventy-ninth instalment) -- **The dilated channel amplitude of the exact mode.**
+  Seven further declarations in `RHTower/ProlateExactChannel.lean`; all axiom-clean.
+
+  * **`exactAmplitude`, `exactAmplitudeDeriv`, `exactAmp`, `exactAmpDeriv`,
+    `hasDerivAt_exactAmplitude`, `hasDerivAt_exactAmp`** -- the envelope times an arbitrary branch
+    coefficient, dilated by `k` and normalized by `sqrt x`.
+  * **`abs_exactAmp_le`** -- `<= 300 M/(sqrt c k)/sqrt x`.
+  * **`abs_exactAmpDeriv_le`** -- `<= 300 M/(sqrt c k)/(x sqrt x)`, the *same* constant, which is
+    what `norm_integral_exterior_dilated_sharp_le` requires.
+  * **`prolate_drift_le`** -- the bridge that makes the derivative bound usable:
+    `phi' * (35/phi^2) <= 280/(c y^2)`, because the phase speed is at most `2c` and the phase at
+    least `c y/2`.
+
+  The derivative bound splits into three terms and it is worth recording their sizes, because the
+  third is the only one that needed the `1/c` from the drift:
+
+  * `sqrt x` differentiated: `M/(sqrt c k x sqrt x)`;
+  * the envelope differentiated: `16 M/(sqrt c k x sqrt x)`;
+  * the coefficient differentiated: `560 M/(sqrt c c k^2 x^2 sqrt x)`, which is
+    `<= 280 M/(sqrt c k x sqrt x)` only because `c k x >= 2`.
+
+  Total `297`, rounded to `300`.  The third term is where the perturbation bound `|q| <= 35/phi^2`
+  actually gets used, and it is the term that would have been unbounded had the transfer error been
+  estimated in absolute value.
+
+  With the normalization `sqrt c R`, the exterior estimate will give `3 C_a/(ck)` with
+  `C_a = 300 M/(sqrt c k)`, i.e. `900 M/(sqrt c c k^2)`, and the `sqrt c` from the normalization
+  turns this into `900 M/(c k^2)` -- `(16)` for the exact mode.
+
+  Same `linear_combination` lesson once more, twice in one proof: after `field_simp` the residuals
+  were `M (sqrt x^2 - x)` and `560 M (sqrt x^2 - x)`, i.e. the coefficient is whatever multiplies
+  the term, never the compound constant that appears in the statement.
+
+- 2026-08-09 (eightieth instalment) -- **The exact mode's channel: coefficients, drift, and the
+  continuity layer.**  Sixteen further declarations in `RHTower/ProlateExactChannel.lean`; all
+  axiom-clean.
+
+  * **`exactCosCoeff`, `exactSinCoeff`, `exactCosCoeffDeriv`, `exactSinCoeffDeriv`,
+    `exactEnergyBudget`** and the two `hasDerivAt` lemmas -- the branch coefficients of the exact
+    mode and their derivatives, named so the estimate can quantify over them.
+  * **`abs_exactCoeff_le`** -- both coefficients bounded by the energy budget.
+  * **`abs_exactCoeffDeriv_le`** -- both drifts bounded by `280 M/(c y^2)`, the exact hypothesis
+    `abs_exactAmpDeriv_le` asks for.  This is where `prolate_drift_le` gets consumed.
+  * **`sqrt_mul_radialProlate_dilate_eq`** -- `sqrt x R(kx)` as two real branches, by `ring` from
+    `radialProlate_eq_branches`.
+  * The continuity layer: **`continuousOn_xiSpeedSecondDeriv`,
+    `continuousOn_prolateOscPotential`, `continuousOn_lgSpeedAmp`,
+    `continuousOn_lgSpeedAmpDeriv`, `continuousOn_prolateEnvelope`,
+    `continuousOn_prolateEnvelopeDeriv`, `continuousOn_exactCosCoeffDeriv`,
+    `continuousOn_exactSinCoeffDeriv`.**
+
+  The continuity of the perturbation is the one piece that could not be got from differentiability,
+  since `q` is never differentiated.  It comes instead from the closed form `prolateOscPotential_eq`
+  via `ContinuousOn.congr`: `q` is a rational expression in `xi'`, `xi''`, `xi'''` with denominators
+  that are positive on `Ioi 1`, and the corpus already supplies the first two continuities.  Only
+  `continuousOn_xiSpeedSecondDeriv` had to be built, and it comes straight from the quotient shape
+  of the definition.
+
+  This is why the closed form was worth proving as an identity rather than only as a bound: a bound
+  on `q` would have given nothing at all here.

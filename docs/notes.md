@@ -336,3 +336,8 @@ A second, stronger cross-route law is now exact. Hurwitz branch increments and t
 First hostile verdict: field survives only as a serious Stage‑1 programme, not yet “GR established.” Two real repairs matter: separate three distinct phase/root quotients, and weaken “cofinal nonsplitting” to the theorem actually proved—loss of the canonical diagonal inverse. I’m patching those claims rather than defending inflated wording.
 
 Physics audit produced a useful correction and theorem: root parity is only a finite \(\mu_2\) memory, not Brown–Susskind history. Full winding \(n\in\mathbb Z\) plus a coercive action is required. I’m adding the exact recurrence/action inequality and explicitly separating split-real arithmetic positivity from compact-phase recurrence.
+
+### Constraint‑Motive Relativity
+The higher equivalence attack gives the real conceptual jump: not one lawstack with extra decorations, but geometry where the notion of exactness itself varies. Working name: Constraint‑Motive Relativity. Arithmetic, spectral, positive, topological, and costed worlds become doctrine fibres; CLG is a local atlas. Its equivalence principle is invertibility of doctrine-change Beck–Chevalley cells on the source-generated sector—not equality of route scalars.
+
+Defect-object attack forces another correction: no single ordinary complex can hold curvature, cohomology, completion boundary, order, and holonomy. The higher carrier is a self-dual Tate fracture totalization—a partially constructed twisted complex. Curvature becomes first obstruction \(D_1^2\); its nullhomotopy is \(D_2\); next Bianchi defect is \(D_1D_2+D_2D_1\); completion lives in \mathrm{cofib}(\mathrm{Tot}_\oplus\to\mathrm{Tot}_\prod). This is one obstruction tower, not a renamed route list.

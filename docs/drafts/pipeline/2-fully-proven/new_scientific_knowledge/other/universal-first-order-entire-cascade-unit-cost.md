@@ -453,6 +453,15 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
       (`exactDifferentialOrder_expTower`): the card's law on an explicit infinite family
 - [x] Lean: the column-pencil determinant calculus the tower induction runs on -- extraction,
       alternation, unit-row expansion (`ColumnPencilDeterminant`)
+- [x] Lean: observability (`helim`) for every **polynomial-coefficient** cascade at every height
+      (`exactDifferentialOrder_expPolyCascade_all`) -- the whole product-law peel, unconditional
+- [x] Lean: observability (`helim`) for every **linear first-order** cascade at every height
+      (`exactDifferentialOrder_linearCascade`) -- the two-coordinate peel, unconditional.  It
+      subsumes the polynomial-coefficient law (`exactDifferentialOrder_expPolyCascade_of_linear`)
+      and covers families outside it (`exactDifferentialOrder_linSolCascade`, for `h' = h + z`)
+- [x] Lean: observability (`helim`) for every first-order linear cascade with **rational**
+      coefficients at every height (`RatAffineFam.exactDifferentialOrder_ratCascade`) -- by
+      Malmquist this is the whole class of first-order equations *solved* for the derivative
 - [ ] Lean: observability (`helim`) on a general cascade -- Reduction III, where the derivative law is
       algebraic rather than polynomial and the Wiman initial data is needed
 
@@ -8510,3 +8519,843 @@ because `c_{m'}` appears in it with coefficient exactly one.
 
 The border row `logBorder Q m` satisfies `I(m,·)` with the `O(-2)` term equal to zero, which is why
 the first peel worked without any rescaling and the difficulty only appeared at the second.
+
+### Log — every row of the peeled Jacobian now has its limit
+
+`HTGeometry/PeelLimitVector.lean` (axiom-clean, in the umbrella) closes the last piece of new
+mathematics in the peel:
+
+```
+topLim_iterate_gradShift :
+  … → TopLim (m'+1) ((gradShift Q v (m'+1))^[i] u l) (limVec Q v m' α L (peelRes Q m') i l)
+```
+
+for a border-shaped starting vector `u` with limit vector `L`.  The limit vectors are defined by the
+recursion the lower-column lemma predicts —
+
+`limVec 0 = L`,  `limVec (i+1) k = (S' (limVec i)) k + (Q_k'/Q_k)·(∏_{i≤m'}Q_i)·α·(peelRes i)`
+for `k ≤ m'`, and `0` above —
+
+with `peelRes Q m' 0 = deg Q_{m'+1}` and `peelRes Q m' (r+1) = 0`: the residue is seen **only by the
+first step**, which is exactly why the peeled minor is a clean orbit rather than a sum of them.
+
+Supporting bookkeeping, all small and reusable: `lowSub_mono`, `gradShift_mem_lowSub`,
+`gradShift_vanish_above` and its iterate (a vector vanishing above its level keeps doing so, because
+`∂_k(δX_l) = 0` for `l < k`), and `topDegLE_iterate_top_of_borderShape` /
+`topLim_fx_mul_iterate_res`, which package the newest entry uniformly in the row index.
+
+One formalisation note worth keeping: the residue was first written as `if i = 0 then … else 0`
+inline, and every step then fought the `if`.  Naming it (`peelRes`) with its two defining equations
+removed the fight entirely and made the induction step a single application of
+`topLim_gradShift_lower` with no rewriting at all.
+
+**Remaining: pure matrix bookkeeping.**  Scale the newest column (`Matrix.det_updateCol_smul`),
+transport the entrywise limits (`topLim_det`), expand along that column
+(`Matrix.det_succ_column` at `j = Fin.last`, only row 0 surviving), identify the minor as the
+level-`m'` orbit of `limVec 1`, renormalise it by `Q_{m'}·α·q_m·∏_{i<m'}Q_i`
+(`det_jetOrbitMatrix_smul`), and reflect back with `topLim_unique`.
+
+### Log — the peel step is a theorem
+
+`HTGeometry/PeelStep.lean` (axiom-clean, in the umbrella) closes the induction step:
+
+```
+det_jetOrbitMatrix_ne_zero_of_peel :
+  … → (jetOrbitMatrix Q v m' m' (limVec Q v m' α L (peelRes Q m') 1)).det ≠ 0
+    → (jetOrbitMatrix Q v (m'+1) (m'+1) u).det ≠ 0
+```
+
+**A nonzero orbit determinant one level down forces one at the current level.**  The proof is the
+peel exactly as designed:
+
+1. scale the newest column by its coordinate — `Matrix.det_updateCol_smul` and
+   `Matrix.updateCol_eq_self` give `det ↦ X_m·det`;
+2. every entry of the scaled matrix converges: off the last column by `topLim_iterate_gradShift`,
+   on it by `topLim_fx_mul_iterate_res`.  `topLim_det` lifts this to the determinant;
+3. the limit matrix `peelLimitMatrix` has `peelRes` down its last column — `deg Q_{m'+1}` in the
+   border row and zero below — so `Matrix.det_succ_column` at `j = Fin.last` collapses to a single
+   term (`det_peelLimitMatrix`);
+4. the surviving minor is `jetOrbitMatrix Q v m' m' (limVec … 1)`, using
+   `Fin.succAbove_zero = Fin.succ`, `Fin.succAbove_last = Fin.castSucc`, and
+   `limVec_succ_eq_iterate` — from the second row on the limit vectors *are* an orbit, since the
+   residue is seen only by the first step;
+5. `topFree_det` and `topLim_unique` reflect the nonzero limit back: if the determinant vanished,
+   its limit would be both `0` and `± deg Q_{m'+1} · det(minor) ≠ 0`.
+
+**What is left is the induction itself**, and it is now purely formal: iterate this step down the
+flag, renormalising the starting vector at each level by `Q_{m'}·α·q_m·∏_{i<m'}Q_i`
+(`det_jetOrbitMatrix_smul`) so that `BorderShape` is restored, and stop at the `1×1` base case,
+where the determinant is the single entry `Q_1'/Q_1 ≠ 0`.
+
+### Log — the peel restores its own hypothesis
+
+`HTGeometry/PeelInvariant.lean` (axiom-clean, in the umbrella) verifies the last thing the induction
+needs — that one peel produces a vector of the same shape it consumed.
+
+`limVec_one_top` computes the newest entry of the first limit vector in closed form, given only that
+the incoming limit vector agrees with the logarithmic derivative there (`L_m = Q_m'/Q_m`):
+
+`limVec … 1 (m) = (∏_{i<m}Q_i)·[ W(Q_m,v_m)/Q_m² + Q_m'·α·q ]`,   `q = deg Q_{m+1}`.
+
+`borderShape_rescaled` then divides by `Q_m·(∏_{i<m}Q_i)·α·q` — free, by `det_jetOrbitMatrix_smul` —
+and shows the result is border-shaped again:
+
+`ŷ_m − Q_m'/Q_m = W(Q_m,v_m)/(α q Q_m³)`,  of degree `≤ 2 deg Q_m − 2 − 3 deg Q_m = −deg Q_m − 2 ≤ −3`.
+
+The two cancellations that make this work are both already in the tree: `prodHead_succ` turns
+`(Q_m'/Q_m)·∏_{i≤m}Q_i` into `(∏_{i<m}Q_i)·Q_m'` exactly, and
+`natDegree_scaledLogWronskian_le_sub_two` gives the sharp `deg W ≤ 2 deg Q_m − 2` that puts the
+correction three degrees below the leading term rather than two.
+
+**All the mathematics of the general-height proof is now formalized.**  What is left is to run the
+induction: `det_jetOrbitMatrix_ne_zero_of_peel` at each level, `borderShape_rescaled` plus
+`det_jetOrbitMatrix_smul` to re-enter the hypothesis, and the empty determinant `det = 1 ≠ 0` at
+level `0` as the base case.  The one bookkeeping item still to state is the propagation of the
+limit-vector condition `L_m = Q_m'/Q_m` from one level to the next; the computation is the same
+`prodHead_succ` cancellation, applied at index `m−1` instead of `m`.
+
+### Log — the side condition is self-sustaining, and the entry point is proved
+
+`HTGeometry/PeelEntry.lean` (axiom-clean, in the umbrella) closes the last open bookkeeping item.
+
+**The limit vector is always a border row.**  `topLim_rescaled_limVec` shows that the rescaled peeled
+vector converges, entry by entry, to `logBorder Q (m−1)`:
+
+* below the newest level, the correction term is *exactly* `c` — the rescaling factor — because
+  `prodHead Q (m+1)·α·q = Q_m(X_m)·(∏_{i<m}Q_i)·α·q = c` by `prodHead_succ`.  So the border entry
+  survives untouched, and what is left is `c⁻¹·(S'L)_k`, of degree `≤ −deg Q_m ≤ −1`;
+* at the newest level the limit is `0`, by `borderShape_rescaled` plus `topDegLE_logFactor`;
+* above it everything vanishes.
+
+So the side condition `L_m = Q_m'/Q_m` that `limVec_one_top` needs holds at **every** level, with no
+extra hypothesis: the limit of a border row is a border row.
+
+Supporting: `topDegLE_gradShift_zero` — the shifted operator keeps degree zero away from the newest
+coordinate, the one place where the newest jet's degree `1` is paid for by the newest entry's degree
+`−1`; `topFree_inv_prodHead`; `topDegLE_prodJet_top`.
+
+Also `logJetJacobian_eq_jetOrbitMatrix` — the Jacobian *is* the border row's orbit matrix — together
+with `logBorder_mem_lowSub`, `logBorder_of_gt`, `logBorder_sub_mem_lowSub`, `borderShape_logBorder'`
+and `topLim_logBorder`: the entry point of the induction, fully discharged.
+
+**Every hypothesis of `det_jetOrbitMatrix_ne_zero_of_peel` is now supplied at every level.**  What
+is left is to write the induction that chains them, with the empty determinant at level `0` as the
+base case.
+
+### Log — the peel closes: the unit-cost law at every height, unconditionally
+
+```
+exactDifferentialOrder_expPolyCascade_all :
+  (∀ k, c k ≠ 0) → (∀ k, 1 ≤ (A k).natDegree) →
+  ∀ m, ExactDifferentialOrder (entireCascade (expPoly A c d) (m+1)) (m+1)
+```
+
+axioms `propext, Classical.choice, Quot.sound` (`HTGeometry/ExpPolyAllHeights.lean`).  **The card's
+law now holds at every length for every cascade of first-order linear entire maps with polynomial
+coefficients** — previously only length ≤ 3 for that family, or all lengths for the single
+exponential tower.
+
+The determinant that stood in the way is gone:
+
+```
+logJetJacobian_det_ne_zero :
+  (∀ j, Q j ≠ 0) → (∀ j, 1 ≤ deg Q_(j+1)) → (∀ j, v_(j+1) linear with nonzero leading coefficient)
+  → ∀ n, (logJetJacobian Q v n).det ≠ 0
+```
+
+proved for an **arbitrary product law**, not only the cascade's.  `PeelInduction.lean` chains the
+peel step down the flag on the package `PeelHyp` — membership, vanishing above the level, the border
+shape, and convergence to the border row one level down — each of which the peel reproduces
+(`borderShape_rescaled`, `topLim_rescaled_limVec`), rescaling by `peelScale` at every level
+(`det_jetOrbitMatrix_smul`).  The base case is the `1×1` determinant, nonzero by
+`ne_zero_of_borderShape`: a border-shaped entry cannot vanish, because its scaled value at infinity
+is the degree of its denominator.
+
+Nothing analytic appears anywhere in the chain: after `logJetJacobian_eq_orbit` the whole argument
+is degree bookkeeping over `MvPolynomial.degreeOf` together with commutators of derivations.
+
+**What the remaining gate still asks.**  A *general* first-order entire cascade, where the
+derivative law is algebraic rather than polynomial, so the Wiman-place data of Reduction I is needed
+to put it in product form.  The product-law side is now complete and height-uniform, so that gate is
+exactly the reduction of an arbitrary first-order entire law to a product law — no longer anything
+about determinants.
+
+### The general cascade: what actually changes `[PAPER]`
+
+Verification pass on the delivered chain: `exactDifferentialOrder_expPolyCascade_all`,
+`logJetJacobian_det_ne_zero`, `logJetJacobian_eq_orbit`, `det_jetOrbitMatrix_ne_zero_of_peel`,
+`exactDifferentialOrder_expPolyCascade_three` and `..._two` are all axiom-clean
+(`propext, Classical.choice, Quot.sound`), umbrella green.  Seventeen modules, ~2900 lines.
+
+For the one remaining gate — a *general* first-order entire cascade — here is the structure, worked
+out so the next attempt does not have to rediscover it.
+
+**The law is already a product law.**  `deriv_entireCascade_prod` (long in the tree) gives
+
+`δX_k = ∏_{j<k} G_j`,  `G_j := f_j'` evaluated at the state `X_j`,
+
+and the constituent's equation `P_j(z, f_j, f_j') = 0` evaluated at `X_j` reads
+`P_j(X_j, X_{j+1}, G_j) = 0`.  So **each factor depends on two consecutive coordinates**, and is
+algebraic over `ℂ(X_j, X_{j+1})` rather than a polynomial in one coordinate.
+
+**Why the polynomial case is special.**  For `expPoly`, `G_j = A_j'(X_j)·(X_{j+1} − d_j)` *splits*,
+and the second piece is absorbed into `Q_{j+1}(X_{j+1})`.  That regrouping is exactly what makes
+every factor univariate.  A general algebraic `G_j` does not split.
+
+**The triangular response structure survives.**  Since `∂_k G_j ≠ 0` only for `j ∈ {k−1, k}`,
+
+* `∂_k(δX_l) = 0` for `l < k`;
+* `∂_k(δX_k) = (∂_kG_{k−1}/G_{k−1})·δX_k`;
+* `∂_k(δX_l) = c_k·δX_l` for `l > k`, with `c_k = ∂_kG_{k−1}/G_{k−1} + ∂_kG_k/G_k`.
+
+Cross-checked against the polynomial case: there `c_k = Q_k'/Q_k` with `Q_k = A_k'·(X − d_{k−1})`,
+and `A_k''/A_k' + 1/(X_k − d_{k−1})` is the same thing.  So `JetGradientRecursion`'s
+commutator-is-a-derivation argument and the whole orbit structure should carry over once these three
+laws are re-proved; only the *value* of `c_k` changes.
+
+**What genuinely changes** is the degree filtration.  `TopDegLE` is built on `MvPolynomial.degreeOf`
+in free coordinates; over a finite algebraic extension the `X_m`-degree valuation has several
+extensions and leading coefficients live in a residue extension.
+
+**The intermediate family to do first.**  Take `f_j' = p_j(z, f_j)` with `p_j` a *polynomial* in two
+variables.  Then `G_j = p_j(X_j, X_{j+1})` already lies in `CascadeField` — no algebraic extension,
+so the entire degree layer applies unchanged — and only the two-variable factor structure has to be
+redone.  That is strictly larger than `expPoly` and is the natural next step before the algebraic
+case.
+
+### Log — the two-coordinate product law, and its three response laws
+
+`HTGeometry/PairProductLaw.lean` (axiom-clean) starts the general case at the rung the roadmap
+identified: a first-order equation solved *polynomially* for the derivative, `f' = p(z,f)`, which
+gives the cascade states
+
+`δX_k = ∏_(j<k) p_j(X_j, X_(j+1))`  (`pairJet`),
+
+a product law whose factors involve two consecutive coordinates.  This stays inside `CascadeField` —
+no algebraic extension — so the whole degree layer applies unchanged, and it is strictly larger than
+the polynomial-coefficient family, whose law is univariate only because `p_j` there splits.
+
+The three response laws that carry the entire peel are proved for it:
+
+* `fpderiv_pairFactor_of_ne` — a two-coordinate factor is invisible to every other coordinate
+  (`pderiv_pairPoly_of_ne`, by induction on the two-variable polynomial);
+* `fpderiv_pairJet_of_gt` — a jet strictly below the coordinate does not respond;
+* **`fpderiv_pairJet_of_lt`** — jets above respond by a single logarithmic factor
+  `pairLog p k = δ_k(jet_k)/jet_k + δ_k(factor_k)/factor_k`, the two terms coming from the coordinate
+  occurring in the jet below it and in the factor at it.
+
+The response at the coordinate itself is the first summand of `pairLog`, so all three cases of the
+`jetResponse` trichotomy are available in the new law with the same shapes — which is what
+`JetGradientRecursion`'s commutator argument consumes.
+
+Next: transport `lowSub`, `jetResponse`, `gradShift` and the orbit identification to this law.  The
+degree layer (`TopCoordinateDegree`) needs no change at all, since the model ring is the same.
+
+### Log — the flag transports to the two-coordinate law
+
+`HTGeometry/PairLowSubalgebra.lean` (axiom-clean, in the umbrella) carries the low-subalgebra layer
+across.  The only structural change is the index bound: a factor at `j` occupies coordinates `j` and
+`j+1`, so it fits below level `m` when **`j + 1 ≤ m`**, not `j ≤ m`.
+
+* `pairDerivation` — the law as a derivation of the model, with `pairDerivation p (X_k) = pairJet p k`;
+* `pairLowSub` — generated by the coordinates up to `m` and the inverses of the fitting factors;
+* `algebraMap_pairPoly_mem`, `pairFactor_mem_pairLowSub`, `pairJet_mem_pairLowSub`,
+  `inv_pairJet_mem_pairLowSub`, `pairLog_mem_pairLowSub`;
+* **`pairDerivation_mem_pairLowSub`** and **`fpderiv_mem_pairLowSub`** — stability under the law and
+  under every coordinate derivation;
+* **`fpderiv_eq_zero_of_mem_pairLowSub`** — a coordinate above the level annihilates it.
+
+Those three are exactly what the commutator-is-a-derivation argument of `JetGradientRecursion`
+consumes, and the response trichotomy is now stated in the new law as `pairResponse_of_lt`,
+`pairResponse_of_gt` (the middle case being the first summand of `pairLog`).
+
+The proofs go by induction on the two-variable polynomial rather than by a bespoke computation:
+`pairPoly_C`, `pairPoly_add`, `pairPoly_mul_X` reduce every statement about a factor to the
+corresponding statement about `fx j` and `fx (j+1)`, and the `Fin 2` index contributes only
+`(i : ℕ) = 0 ∨ (i : ℕ) = 1`, discharged by `omega`.
+
+Next: the commutator and the gradient recursion in the new law — `mixCommutator` should transport
+verbatim, since it uses only the trichotomy and the two stability facts.
+
+### Log — the commutator and gradient recursion transport too
+
+`HTGeometry/PairGradientRecursion.lean` (axiom-clean, in the umbrella) carries the structural heart
+across to the two-coordinate law:
+
+* `pairJetMix` with its additivity, Leibniz and scalar rules;
+* **`pairMixCommutator`** — the corrected commutator `∂_k δ − δ ∂_k − ∑_l ∂_k(δX_l)·∂_l`, again a
+  derivation via `Derivation.mk'`;
+* `pairMixCommutator_eq_zero` — it vanishes on the low subalgebra, by `Derivation.eqOn_adjoin`;
+* **`fpderiv_pairDerivation_mixed`** — the exact mixed commutation law;
+* `pairGradShift`, `gradient_pairDerivation_eq`, **`gradient_iterate_pair_eq`**.
+
+The single new step is `derivation_algebraMap_pairPoly_eq_zero`: a derivation vanishing on the
+coordinates vanishes on every two-coordinate factor.  In the univariate law that was free, because
+the inverse generators were inverses of *coordinate* factors and `derivation_fact` handled them; here
+a generator is a two-variable polynomial, so its vanishing needs one induction — which reduces it to
+the `fx` case that `pairMixCommutator_fx` already supplies.
+
+Both modules compiled first try.  The two-coordinate law is not structurally harder than the
+univariate one; it is the same argument with the index bound `j + 1 ≤ m` in place of `j ≤ m`.
+
+**Still to transport** for the peel: the law-specific degree lemmas (`TopDegLE.prodDerivation`,
+`topFree_jetResponse`, `topDegLE_prodJet_top` and their kin).  `TopCoordinateDegree` itself is
+law-independent — `TopDegLE`/`TopFree`/`TopLim`, `topLim_det`, `topLim_unique` are statements about
+`CascadeField` alone — so it applies to the new law verbatim, with no change at all.
+
+### Log — the law-specific degree facts in the two-coordinate law
+
+`HTGeometry/PairDegree.lean` (axiom-clean, in the umbrella) transports the degree facts that are
+law-specific.  The rest of `TopCoordinateDegree` needed no change whatsoever, as expected.
+
+* `degreeOf_pairPoly_of_ne` — a placed two-variable polynomial has degree zero in every coordinate
+  other than `j` and `j+1`; hence `topFree_pairFactor`, `topFree_inv_pairFactor`;
+* **`topFree_of_mem_pairLowSub`** — the low subalgebra of a lower level is free of the newest
+  coordinate; hence `topFree_pairJet` and `topFree_pairResponse`, the inputs the lower-column
+  recursion consumes;
+* **`degreeOf_pairPoly_top`** — the newest coordinate carries the degree of the placed polynomial in
+  its **second** variable: `deg_(j+1) (pairPoly q j) ≤ deg_1 q`.
+
+That last bound is where the two-coordinate law's scope shows itself.  The product law does not
+raise the newest degree exactly when `deg_1 p_j ≤ 1`, i.e. when the constituent equation is
+`f' = a(z) + b(z)·f` — **linear** first order with polynomial coefficients.  That is strictly larger
+than the `expPoly` family: `f' = z + f` has the entire solution `c·e^z − z − 1`, which is not of the
+form `d + c·exp(A)`.  For `deg_1 p_j ≥ 2` (Riccati and beyond) the law raises the degree and the peel's
+degree analysis genuinely changes.
+
+So the next increment is the peel for the linear-coefficient family, and the scope boundary is now
+explicit rather than guessed.
+
+### Log — the chain rule, the closed border row, and the ambient field of the linear family
+
+Six modules, all axiom-clean and in the umbrella.
+
+`HTGeometry/PairChainRule.lean` closes the chain-rule layer of the two-coordinate law:
+`pairDerivation_eq_sum` (`δ f = ∑_(l ≤ m) (δX_l)·∂_l f` on the low subalgebra),
+`topDegLE_pairJet_top` (the newest jet carries `deg_1 p_(m−1)`), and **`TopDegLE.pairDerivation`** —
+the law does not raise the newest degree when `deg_1 p_j ≤ 1`.
+
+`HTGeometry/CoordinateDerivationCommute.lean` supplies what the univariate law never needed.  The
+univariate border row is diagonal — its `l`-th entry involves only `X_l` — so its gradient is
+trivially symmetric.  A two-coordinate factor is seen by three consecutive coordinates, so the row is
+coupled, and what replaces diagonality is **exactness**: the row is a gradient.  The module proves
+`pderiv_comm` (mixed partials of a multivariable polynomial commute — absent from mathlib; the
+commutator is a derivation killing every variable), `fpderiv_comm` (the same on the rational model,
+since a derivation of a fraction field vanishing on the subring vanishes), and
+**`fpderiv_logDeriv_symm`**: `∂_k(∂_l F / F)` is symmetric in `k` and `l`, with no hypothesis on `F`.
+
+`HTGeometry/PairBorderRow.lean` builds the row: `pairLogTerm`, **`pairLogBorder`** (the gradient of
+`∑_(j<m) log p_j`), `fpderiv_pairLogBorder_symm`, `pairResponse_eq_pairLogBorder` (every response is
+the border row of its own level times the jet), and **`gradient_pairLogSum_eq`** — the gradient of
+the law's value on the row is the shifted row, so the whole matrix grows from one vector.
+
+`HTGeometry/PairOrbitScaling.lean` transports the rescaling law verbatim: `pairShiftCoeff`,
+`iterate_pairGradShift_smul`, **`det_pairOrbitMatrix_smul`** (`det(f·u) = f^k·det(u)`).  Nothing in
+it uses the shape of the law.
+
+`HTGeometry/PairLinearFamily.lean` fixes the family: `firstVar`, **`affinePair a b`** — the factor of
+`h' = a(z)·h + b(z)` — with `pairFactor (affinePair a b) j = fact a j · X_(j+1) + fact b j`, so the
+whole univariate degree layer applies.  Nonvanishing is read off the newer coordinate
+(`pderiv_pairPoly_affinePair = univFactor a j`), the degree there is exactly one
+(`degreeOf_pairPoly_affinePair_top`), hence `topDegLE_inv_pairFactor_affine` and
+**`topLim_fx_mul_pairLogTerm_affine`**: the logarithmic residue at the border is `1`.
+
+`HTGeometry/PairCoordinateField.lean` replaces the low subalgebra by the **subfield generated by the
+coordinates up to `m`**.  This is forced: the limit of the border row acquires
+`a_(m−1)'(X_(m−1))/a_(m−1)(X_(m−1))`, whose denominator no subalgebra of the previous design
+contains.  The subfield's membership test is a single derivation condition
+(`mem_coordField_iff`), stability under the coordinate derivations *is* `fpderiv_comm`, stability
+under the law is the chain rule, and `topFree_of_mem_coordField` follows from `TopFree` being closed
+under inversion.  The mixed commutation law now needs no `adjoin_induction` at all — the corpus's
+`adjoin_le_derivationEqualizer` does it in four lines.
+
+`HTGeometry/PairHeadBorder.lean` carries the extra datum the limit produces: **`headBorder p g m`**,
+the gradient of `∑_(j<m) log p_j + log g(X_m)`, with a *head* univariate factor at the newest
+coordinate.  It is again a gradient, so `fpderiv_headBorder_symm` holds, and
+**`gradient_headSum_eq`** is unchanged.  `headBorder p 1 m = pairLogBorder p m`, so the honest border
+row is the head-free case.
+
+The scope boundary is now sharp on both sides.  The law does not raise the newest degree iff
+`deg_1 p_j ≤ 1`; the residue at the border is nonzero iff `deg_1 p_(m−1) ≥ 1`.  Together:
+`deg_1 p_j = 1`, i.e. the **linear** first-order family `h' = a(z)h + b(z)` with `a ≠ 0` — strictly
+larger than the `expPoly` family whose law is univariate.
+
+### Log — the peel closes for the linear first-order family, at every height
+
+Nine further modules, all axiom-clean, all in the `GaloisForLFunctions.HTGeometry` umbrella, which
+builds green.  The capstone is
+
+```
+pairLogJetJacobian_det_ne_zero :
+  (∀ j, p j = affinePair (a j) (b j)) → (∀ j, a j ≠ 0) →
+  ∀ n, (pairLogJetJacobian p n).det ≠ 0
+```
+
+— the unit-cost statement for the cascade of a **linear** first-order equation
+`h' = a(z)·h + b(z)` with polynomial coefficients and `a ≠ 0`, at every height, with no hypothesis
+beyond the shape of the family.  This strictly contains the `expPoly` family already closed
+(`f' = z + f` has solution `c·e^z − z − 1`, which is not `d + c·exp(A)`).
+
+**What the two-coordinate law forced.**  Three things in the univariate peel were accidents of
+diagonality and had to be replaced, not transported.
+
+1. *The border row is not diagonal.*  In the univariate law the `l`-th entry involves only `X_l`.
+   Here `p_j(X_j, X_(j+1))` is seen by three consecutive coordinates.  What replaces diagonality is
+   exactness: the row is a gradient, so `∂_k` of its `l`-th entry equals `∂_l` of its `k`-th.  That
+   single symmetry — `fpderiv_logDeriv_symm`, resting on the new `pderiv_comm`/`fpderiv_comm` — is
+   all the gradient recursion needs.
+2. *The ambient algebra must be a field.*  The limit of the border row acquires
+   `a_(m−1)'/a_(m−1)`, whose denominator no adjoin-generated subalgebra of the previous design
+   contains.  `coordField m` — the subfield generated by the coordinates up to `m` — replaces it, and
+   pays for itself: its membership test is one derivation condition, stability under the coordinate
+   derivations *is* `fpderiv_comm`, and the mixed commutation law becomes four lines through
+   `adjoin_le_derivationEqualizer`.
+3. *The class carries a head.*  The limit of `∑_(j<m) log p_j` is
+   `∑_(j<m−1) log p_j + log a_(m−1)(X_(m−1))`, so the peel class is `headBorder p g m`: the gradient
+   of `∑_(j<m) log p_j + log g(X_m)`.  The head is a genuine extra datum, and it is what the peel
+   reproduces — the head one level down is always the leading coefficient of the last factor.
+
+**The two cancellations.**  The scalar operator at the newest coordinate satisfies the exact
+identity `E(∂_mΦ/Φ) = ∂_m(δΦ/Φ)` (`pairTopShift_logDeriv`), which is the mixed commutation law
+rearranged.  Applying it to the two factors of `Φ = p_(m−1)·g` gives closed forms whose degrees are
+both `−2`:
+
+* the factor contributes `(∏_(i<m−1)p_i)·(α'β − αβ')` over `p_(m−1)²` — a Wronskian over a square;
+* the head contributes `α·P(g) + β·W(g)` over `g²`, with `W(g) = g''g − g'g'` and
+  `P(g) = X·W(g) + g'g`.  `W` drops by the usual Wronskian argument; `P` needs the cancellation of
+  its two leading terms, supplied by the identity `P(g) = R(g)'·g − g'·R(g)` with
+  `R(g) = X·g' − (deg g)·g` — the same Wronskian shape one step further in, on the polynomial whose
+  degree already drops.
+
+**The residue.**  The scaled border entry tends to `1 + deg g`, a positive integer: `1` from the
+factor, exactly linear in the newest coordinate with leading coefficient `α(X_(m−1)) ≠ 0`, and
+`deg g` from the head.  It is never zero — the univariate peel needed `1 ≤ deg Q_m` as a hypothesis
+here it is automatic.
+
+**The modules.**
+
+| Module | Content |
+|---|---|
+| `PairBorderShapeColumn` | `PairBorderShape`, the class; every entry below the border has degree `−2`; the base case `u_m ≠ 0` |
+| `PairColumnLimits` | `topLim_pairLogBorder` (the border row's own limit, with the head), `topLim_pairJet_mul`, `topLim_pairGradShift_lower` |
+| `PairPeelLimitVector` | `pairLimVec`, `pairPeelRes`, and `topLim_iterate_pairGradShift`: every row has the predicted limit |
+| `PairPeelStep` | `pairPeelLimitMatrix`, `det_pairPeelLimitMatrix`, and the step `det_pairOrbitMatrix_ne_zero_of_peel` |
+| `PairPeelInvariant` | `pairPeelScale`, `pairBorderShape_rescaled`, `topLim_headBorder`, `topLim_rescaled_pairLimVec` |
+| `PairPeelInduction` | `PairPeelHyp`, the induction, `pairLogJetJacobian`, and the capstone |
+| `PairTopColumn`, `PairTopDegree` | the scalar operator, the two exact identities, and their `−2` bounds |
+| `PairHeadDegree` | `headWr`, `headRed`, `headDefect` and their degree bounds |
+| `PairLinearFamily` | `affinePair`, nonvanishing, exact degree one, residue one |
+
+The remaining gate on this card is unchanged and analytic: observability (`helim`) on a general
+cascade — Reduction III — where the derivative law is algebraic rather than polynomial and the Wiman
+initial data is needed.  The algebraic half of that reduction is now closed one family further out
+than the card claimed.
+
+### Log — the analytic capstone: the unit-cost law for every linear first-order cascade
+
+Seven further modules, all axiom-clean, all in the `GaloisForLFunctions.HTGeometry` umbrella, which
+builds green.  The two-coordinate peel is now connected to the analytic conclusion:
+
+```
+exactDifferentialOrder_linearCascade :
+  (∀ k, TranscendentalEntire (h k)) →
+  (∀ k z, deriv (h k) z = (a k).eval z * h k z + (b k).eval z) →
+  (∀ k, a k ≠ 0) →
+  ∀ m, ExactDifferentialOrder (entireCascade h (m + 1)) (m + 1)
+```
+
+A cascade of transcendental entire maps, each solving `h' = a(z)·h + b(z)` with polynomial
+coefficients and `a ≠ 0`, has differential order exactly its length — at every length, with no
+hypothesis beyond the shape of the equation.  This is the card's law for a family strictly larger
+than the one previously closed.
+
+**Where the univariate chain generalised and where it did not.**  The corpus's affine-top reduction
+`det_ne_zero_of_affine_top_general` is stated for an arbitrary derivation, an arbitrary subalgebra
+and arbitrary affine coefficients, and the two-coordinate law is affine in the newest coordinate,
+
+`δ X_(m+1) = (∏_(j<m) p_j · α(X_m))·X_(m+1) + (∏_(j<m) p_j · β(X_m))`,
+
+so it applies verbatim.  What does *not* generalise is the univariate identification of the
+multiplier: there it is a complex scalar times a head product, here it *is* a head product with its
+own head factor `α(X_m)`.  That is exactly the head the peel was built to carry, and the two match:
+the multiplier of the affine top is `pairHead p α m = (∏_(j<m) p_j)·α(X_m)`, whose logarithmic
+gradient is `headBorder p α m` and whose own multiplier is `headSum p α m`.  So the Bell reduction
+of the head product's Jacobian lands precisely on `pairOrbitMatrix p m m (headBorder p α m)` — the
+determinant the peel proves nonzero.
+
+**The modules.**
+
+| Module | Content |
+|---|---|
+| `PairHeadProduct` | `pairHead`, its logarithmic gradient and multiplier, its jets as Bell values; `coordField m = lowFld m`, so the newest coordinate is transcendental over it |
+| `GenBellBorderedRows` | the Bell-row replacement for an **arbitrary** derivation: `fpderiv_genJetA_succ`, `genBellCoeff`, `uniformBordered_genBell_det_eq` |
+| `PairHeadJetJacobian` | the uniformly scaled shape, the head scaling out of the border row, and `pairHeadJetJacobian_det_ne_zero` |
+| `PairAffineTop` | `pairDerivation_fx_affine` and `pairOutput_det_ne_zero`: the output-jet Jacobian of the newest coordinate |
+| `PairPolynomialBridge` | `polyPairDerivation` and the transport back to the polynomial model |
+| `PairCascadeOrder` | the cascade's product law from the chain rule, and the capstone |
+| `LinearCascadeInstances` | the exponential family recovered, and `c·e^z − z − 1` solving `h' = h + z` as an instance outside it |
+
+The exponential family `d + c·exp(A)` is the proportional case `b = −a·d`
+(`exactDifferentialOrder_expPolyCascade_of_linear`), so the new law recovers the old one; and
+`h' = h + z` has the entire solution `c·e^z − z − 1` whose coefficient pair `(1, X)` is not
+proportional (`linSol_coefficients_not_proportional`), so the family is genuinely larger.
+
+The remaining gate is unchanged and analytic: observability on a general cascade, where the
+derivative law is algebraic rather than polynomial and the Wiman initial data is needed.  Note that
+for a first-order equation *solved polynomially for the derivative*, the degree in the unknown is
+forced to be at most one by Malmquist's theorem together with the fact that a Riccati equation with
+rational coefficients has no transcendental entire solution (its solutions are `y'/y` for a
+finite-order zero-free `y`, hence `e^{polynomial}`, hence rational).  The linear family closed here
+is therefore the whole solved-form case; what is left is the genuinely unsolved algebraic one.
+
+### Log — the rational-coefficient case: why it is next, and its foundation
+
+**Why.**  By Malmquist's theorem a first-order equation solved rationally for the derivative,
+`h' = R(z,h)`, has a transcendental meromorphic solution only if `R` is a polynomial in `h` of
+degree at most two; for a transcendental *entire* solution the degree-two case is also excluded (a
+Riccati solution is `y'/y` for a zero-free `y` solving a second-order linear equation with rational
+coefficients, hence of finite order, hence `e^{polynomial}` by Hadamard, so `y'/y` is a polynomial
+and the solution is rational).  So the whole solved-form class is
+
+`h' = a(z)·h + b(z)`,  `a, b ∈ C(z)`.
+
+The coefficients are **rational**, not polynomial.  The extension is not vacuous: `h = C·z·e^z`
+satisfies `h' = (1 + 1/z)h`, is transcendental entire, satisfies no linear equation with polynomial
+coefficients, and is not of the form `d + c·exp(A)`.
+
+**The shape.**  Clearing denominators, `h' = (a/α)h + (b/β)` places at the coordinates `j`, `j+1` the
+factor
+
+`(a_j β_j·X_(j+1) + b_j α_j) / (α_j β_j)`,
+
+a two-variable polynomial *linear in the newer variable* over a univariate denominator.  Two things
+follow.  First, the denominator is a univariate factor at the **older** coordinate, so it is free of
+the newest coordinate at every level where the peel looks — it never touches a degree estimate.
+Second, every logarithmic quantity the peel reads off a ratio is the **difference** of what it reads
+off numerator and denominator, so the hard degree computations (`headWr`, `headDefect`, the residue)
+are recovered by subtraction rather than redone.
+
+**Foundation built.**  Three modules, axiom-clean, in the umbrella, which builds green.
+
+* `HTGeometry/RationalCoordinateFactor.lean` — `ratFact n d j = fact n j / fact d j` and
+  `logRatFactor n d j = logFactor n j − logFactor d j`, with the whole polynomial degree layer
+  transported by subtraction: `topDegLE_ratFact` (degree `deg n − deg d`), `topDegLE_inv_ratFact`,
+  `topDegLE_logRatFactor` (degree `−1`), and **`topLim_fx_mul_logRatFactor`** — the residue at
+  infinity is the degree *difference*, an integer of either sign.  Two polynomial lemmas were
+  freed of their degree hypotheses on the way (`topDegLE_logFactor_all`,
+  `topLim_fx_mul_logFactor_all`), since a constant simply contributes zero.
+* `HTGeometry/PairFactorFamily.lean` — the interface the peel actually uses.  A `PairFam` is a
+  family of factors `fac j` that are nonzero, lie in `coordField (j+1)`, and are killed by every
+  coordinate derivation other than `j` and `j+1`.  Its jets, law, responses, logarithmic terms and
+  border row are built, together with **`response_eq_logBorder`**: every response is the border row
+  of its own level times the jet.  Nothing here mentions polynomials.
+* `HTGeometry/PairFamGradient.lean` — the chain rule, stability, the corrected commutator, the exact
+  mixed commutation law, the gradient recursion, the head product `jet m · H` for an arbitrary
+  nonzero head `H` one level down, **`gradient_headSum_eq`** and `gradient_iterate_headSum`, the
+  orbit matrix, the scalar operator at the newest coordinate, and **`topShift_logDeriv`**
+  (`E(∂_mΦ/Φ) = ∂_m(δΦ/Φ)`).
+
+That is the whole law-independent half of the peel, now stated once for any factor family.  What
+remains for the rational case is the law-*dependent* half at the top level: the affine shape
+`fac m = A·X_(m+1) + B` with `A, B` one level down and `A ≠ 0`, the two `−2` estimates, the residue
+`1 + d` with its nondegeneracy condition `d ≠ −1` (automatic for polynomial coefficients, a genuine
+condition for rational ones), and the analytic transfer, which for a rational law must carry
+denominators through `not_differentiallyAlgebraicOfOrder_of_model`.
+
+### Log — the affine factor family: the law-dependent half, with rational coefficients
+
+Four further modules, axiom-clean, in the umbrella, which builds green.  Together with the previous
+three they carry the whole peel's *local* content for the rational-coefficient family.
+
+`HTGeometry/AffineFactorFamily.lean` fixes the shape.  An `AffineFam` is a pair of coefficient
+families `lead j`, `cnst j`, each killed by every coordinate derivation other than `∂_j`, with
+`lead j ≠ 0`; the factor is `fac j = lead j·X_(j+1) + cnst j`.  Nothing is assumed polynomial.  Three
+facts follow: the factor is nonzero because `∂_(j+1) fac j = lead j`, it lies in `coordField (j+1)`
+and no other coordinate sees it — so an `AffineFam` *is* a `PairFam` — and
+
+**`topDegLE_inv_affine`**: an element `A·X_m + B` with `A, B` free of `X_m` and `A ≠ 0` has an
+inverse of degree `−1` in `X_m`.
+
+That last one replaces the polynomial `degreeOf = 1` computation.  Its proof clears the two
+denominators of `A` and `B` and reads the degree off `pderiv_m(N_A D_B X_m + N_B D_A) = N_A D_B ≠ 0`,
+so it needs only `A ≠ 0`.  A by-product worth keeping: **`TopFree.fpderiv_eq_zero`** — degree zero in
+a coordinate really does mean independence of it.
+
+`HTGeometry/AffineTopColumn.lean` gives the jet at the newest coordinate degree exactly one
+(`topDegLE_jet_top`), the response there (`response_top : jet n · lead n`), the fact that the law
+does not raise the newest degree (**`topDegLE_law`**), and the factor's contribution to the newest
+column:
+
+**`topShift_logTerm`**: `E(∂ fac/fac) = ((δ lead)·cnst − lead·(δ cnst)) / fac²` — a Wronskian over a
+square, hence degree `−2`.  Compared with the polynomial-coefficient computation the explicit jet
+factor disappears: it was an artefact of `δ(fact α m) = fact α' m · jet m`.
+
+`HTGeometry/AffineHeadColumn.lean` gives the head's contribution.  For a univariate head `g`,
+
+**`topShift_logFactor`**: `E(g'/g) = (∏_(j<m) fac j)·[lead·P(g) + cnst·W(g)] / g²`,
+
+the *same* two polynomials `W(g) = g''g − g'g'` and `P(g) = X·W(g) + g'g` as before, with the
+coefficients of the factor one level down in place of the two univariate factors.  Both are two
+degrees below `g²`, so the contribution is `−2`.  Then, because the scalar operator is linear and a
+rational head is a difference of two univariate ones,
+
+**`topDegLE_topShift_logRatFactor`** follows by subtraction — the rational head costs nothing.
+
+`HTGeometry/AffineBorderEntry.lean` assembles the border entry `headBorder (ratFact g₁ g₂ m) m m`:
+its image has degree `−2` (**`topDegLE_topShift_headBorder`**), it has degree `−1`, and its scaled
+value at infinity is
+
+**`topLim_fx_mul_headBorder`**: `1 + deg g₁ − deg g₂`,
+
+one from the factor — exactly linear in the newest coordinate — and the degree *difference* from the
+head.  This is where the rational case differs in substance: for a polynomial head the residue is a
+positive integer and never vanishes, while for a rational one it is an integer of either sign, so
+the peel will carry the nondegeneracy condition `deg g₁ − deg g₂ ≠ −1`.
+
+**Still to do for the rational capstone**: the peel itself for an `AffineFam` (border shape, column
+limits, limit vectors, step, invariant, induction — all of which now consume only the four results
+above and the law-independent layer), the affine-top output determinant, and the analytic transfer,
+which for a rational law must carry denominators through `not_differentiallyAlgebraicOfOrder_of_model`.
+
+### Log — the peel closes for the rational-coefficient family
+
+Seven further modules, axiom-clean, in the umbrella, which builds green.  The determinant capstone
+of the rational case:
+
+```
+RatAffineFam.det_orbitMatrix_logBorder_ne_zero :
+  (∀ j, (R.ld j).natDegree ≤ (R.ln j).natDegree) →
+  ∀ n, (orbitMatrix (n+1) (n+1) (logBorder (n+1))).det ≠ 0
+```
+
+A `RatAffineFam` is four polynomial families `ln, ld, cn, cd` giving the factor
+`(ln j/ld j)·X_(j+1) + (cn j/cd j)` — the cascade of `h' = a(z)h + b(z)` with rational coefficients.
+
+**The one new condition, and where it comes from.**  Two places in the peel now impose a degree
+condition on the leading coefficient `a_j = ln j / ld j`, and they turn out to be the same one.  Let
+`d = deg(ln j) − deg(ld j)` be its order at infinity.
+
+* the residue at the border is `1 + d`, and the base case of the peel needs it nonzero, so `d ≠ −1`;
+* the rescaling factor is `jet·lead·residue`, of degree `1 + d`, and its inverse must not raise a
+  degree, so `d ≥ 0`.
+
+The second implies the first, so the single hypothesis is `deg(ld j) ≤ deg(ln j)`.  It is automatic
+for polynomial coefficients (`ld = 1`), and it holds for the motivating rational example
+`h' = (1 + 1/z)h`, whose solution `C·z·e^z` is transcendental entire and satisfies no linear equation
+with polynomial coefficients.  It is not a gap in the argument: if `a` is rational with `d ≤ −1`
+then `∫a` is bounded at infinity, so `e^{∫a}` is, and every solution grows at most polynomially —
+hence is a polynomial, not a transcendental entire function.  Formalising *that* would need Liouville
+plus the explicit solution formula; as a hypothesis on the data it costs nothing.
+
+**The modules.**
+
+| Module | Content |
+|---|---|
+| `PairFamOrbitScaling` | the rescaling law `det(f·u) = f^k·det(u)`, for any factor family |
+| `AffineBorderShape` | `BorderShape`, the degree-`−2` column, the residue, and the base case `u_m ≠ 0` |
+| `AffineColumnLimits` | the factor's own logarithmic entry tends to the head (`topLim_logTerm_self`), the border row's limit, and the lower-column recursion |
+| `AffinePeelLimitVector` | `limVec`, `peelRes`, and `topLim_iterate_gradShift` |
+| `AffinePeelStep` | the limit matrix, its determinant, and the step |
+| `AffinePeelInvariant` | `RatAffineFam`, the rescaling factor, `borderShape_rescaled`, `topLim_rescaled_limVec` |
+| `AffinePeelInduction` | `PeelHyp`, the induction, and the border row's orbit determinant |
+
+Three points where the abstraction paid for itself.  The lower-column recursion needed no new
+computation: `topLim_logTerm_self` says the factor's own logarithmic entry tends to `(∂ lead)/lead`,
+which *is* the head one level down, for any affine family.  The rescaling law is stated once for a
+`PairFam` and used unchanged.  And the head at the top of the induction is `1`, which is
+`ratFact 1 1 m`, so the entry point is the same lemma as every later step.
+
+**Still open for the rational capstone**: the affine-top output determinant (the head product's jet
+Jacobian, its Bell reduction, and the affine-top reduction — all of which now have law-independent
+proofs available), and the analytic transfer, which for a rational law must carry denominators
+through `not_differentiallyAlgebraicOfOrder_of_model`.
+
+### Log — the output determinant, and the analytic transfer for a law with denominators
+
+Three further modules, axiom-clean, in the umbrella, which builds green.
+
+`HTGeometry/PairFamHeadJacobian.lean` proves, for **any** factor family, that the head product's jet
+Jacobian is a nonzero multiple of the peel's orbit determinant: the uniformly scaled shape, the head
+scaling out of the border row, the Bell rows replaced by the jet rows, and the resulting matrix
+identified with `orbitMatrix (n+1) (n+1) (headBorder H (n+1))`
+(**`headJetJacobian_det_ne_zero_of_orbit`**).  This is the law-independent version of what was
+previously proved only for the polynomial pair law.
+
+`HTGeometry/AffineOutputDeterminant.lean` closes the determinant side for a rational affine family:
+
+**`law_fx_affine`**: `δ X_(m+1) = (jet m · lead m)·X_(m+1) + (jet m · cnst m)`, both coefficients one
+level down, so the corpus's `det_ne_zero_of_affine_top_general` applies; and then
+
+**`output_det_ne_zero`**: the output-jet Jacobian of the newest coordinate is nonsingular at every
+height, for any `RatAffineFam` with `deg(ld j) ≤ deg(ln j)`.
+
+The multiplier of the affine top *is* the head product `jet m · lead m` — the leading coefficient of
+the factor is its head.  That is the second time the head the peel carries turns out to be exactly
+what the reduction needs; it is not a coincidence but the same object seen from two sides.
+
+`HTGeometry/RationalModelTransfer.lean` supplies the last structural piece, and it is the one place
+where a rational law genuinely cannot reuse the polynomial machinery.  The existing transfer needs
+the law to be polynomial in the states; with rational coefficients the jets are rational functions
+of them.  What survives is the cleared form: a common polynomial denominator `B` and numerators
+`A_i` with
+
+`B(states(z))·(d^i/dz^i)(Y_N)(z) = A_i(states(z))` pointwise,  and  `B·v_i = A_i` in the model.
+
+**`exists_clear`** then shows that any polynomial expression in the jets clears by a power of `B`,
+by an induction whose three cases are the three cases of a polynomial induction, producing a single
+numerator that is simultaneously correct in the model and pointwise.  Hence
+
+**`not_differentiallyAlgebraicOfOrder_of_ratModel`**: algebraic independence of the jets in the
+rational model, plus the nonvanishing of nonzero polynomials at the states, still excludes a
+differential equation of the lower order.  The proof is three lines once the clearing lemma is
+available: the cleared numerator is nonzero because the jets are independent, and it vanishes
+identically at the states because the equation does.
+
+**Still to do**: build the pair `(A, B)` for the rational affine cascade — the pointwise law with
+denominators and its model counterpart — and assemble the analytic capstone from `output_det_ne_zero`,
+the field Jacobian criterion, and `exists_evalAt_ne_zero_of_transcendental`.
+
+### Log — the analytic transfer for a denominator-carrying law is complete
+
+Four further modules, axiom-clean, in the umbrella, which builds green.  The abstract half of the
+rational capstone is now closed:
+
+```
+not_differentiallyAlgebraicOfOrder_of_clearedModel :
+  (∀ k, Differentiable ℂ (Y k)) → Y 0 = id →
+  Dtot ≠ 0 → Dtot ∈ lowPoly N → (∀ k ≤ N, δp (X k) ∈ lowPoly N) →
+  (∀ k ≤ N, ∀ z, Dtot(states)·(Y k)'(z) = (δp (X k))(states)) →
+  (∀ k ≤ N, Dtot·δ(X_k) = δp (X k)  in the rational model) →
+  (∀ Q ≠ 0, ∃ z, Q(states(z)) ≠ 0) →
+  AlgebraicIndependent ℂ (X_0, δ^i X_N) →
+  ¬ DifferentiallyAlgebraicOfOrder (Y N) m
+```
+
+**`FieldJetIndependence.lean`** — the Jacobian criterion in the rational model.  The base coordinate
+contributes a unit *column*, so expanding there reduces the determinant to the jets' Jacobian
+against the higher derivations (`algebraicIndependent_cons_of_output`).  This is the field analogue
+of the polynomial-model lemma, and it consumes the output determinant in exactly the `Fin.lastCases`
+shape the affine-top reduction produces.
+
+**`ClearedChainRule.lean`** — the observation that makes the rational case tractable.  A law with
+denominators becomes polynomial after multiplying by *one* common denominator, provided one stays
+inside `lowPoly N`, the polynomials in the coordinates the cascade uses.  On that subalgebra
+
+`Dtot(states)·(d/dz)[P(states)] = (δ̃P)(states)`   and   `Dtot·δ(P) = δ̃P`
+
+hold by the *same* induction — generators, constants, sums, products — with no support bookkeeping
+at all.  Using `Algebra.adjoin_induction` rather than `MvPolynomial.induction_on` is what removes it:
+the subalgebra hypothesis is carried by the induction instead of being a side condition.
+
+**`ClearedJets.lean`** — the recursion.  Each analytic jet of the last state and the corresponding
+jet of the rational model are represented by *one* numerator/denominator pair, built by the quotient
+rule with the denominator cleared once:
+
+`A_(i+1) = (δ̃A_i)·B_i − A_i·(δ̃B_i)`,   `B_(i+1) = Dtot·B_i²`.
+
+Both identities propagate through the same algebra — differentiating `B(states)·jet_i = A(states)`
+and multiplying by `Dtot(states)·B(states)` gives the analytic step, and the identical manipulation
+in the model gives the algebraic one.
+
+**`CommonClearedJets.lean`** — one denominator for the whole family (the product of the individual
+ones, with the base coordinate taking the denominator itself as its numerator), and the assembled
+transfer.
+
+**Still to do**: the concrete instantiation — for the cascade of `h' = a(z)h + b(z)` with rational
+coefficients, exhibit `δp` and `Dtot` and verify the two cleared laws — and then the capstone,
+combining it with `output_det_ne_zero`, `algebraicIndependent_cons_of_output`, and
+`exists_evalAt_ne_zero_of_transcendental`.
+
+### Log — the rational capstone closes
+
+Two further modules, axiom-clean, in the umbrella, which builds green.  The observability gate now
+closes for the whole *solved-form* first-order class:
+
+```
+RatAffineFam.exactDifferentialOrder_ratCascade :
+  (∀ k, TranscendentalEntire (h k)) →
+  (∀ k z, (ld k · cd k)(z)·h_k'(z) = (ln k · cd k)(z)·h_k(z) + (cn k · ld k)(z)) →
+  (∀ j, deg (ld j) ≤ deg (ln j)) →
+  ∀ m, ExactDifferentialOrder (entireCascade h (m + 1)) (m + 1)
+```
+
+A cascade of `m+1` transcendental entire maps, each solving `h' = a(z)·h + b(z)` with **rational**
+coefficients — written in cleared form, so the equation is a polynomial identity valid at every
+point, with no pole conditions anywhere — has differential order exactly `m+1`.
+
+By Malmquist's theorem together with the exclusion of Riccati for entire solutions, every first-order
+equation solved for the derivative reduces to this one.  What remains open on the card is therefore
+exactly the *unsolved* algebraic case: `P(z, f, f') = 0` with `deg_W P ≥ 2`, where `f'` is algebraic
+of degree `≥ 2` over `C(z, f)` and Reduction I's Wiman/Newton–Puiseux data is needed to pick a
+branch.
+
+`HTGeometry/RatCascadeLaw.lean` builds the cleared law.  The factor at level `j` has numerator
+`(ln·cd)(X_j)·X_(j+1) + (cn·ld)(X_j)` and denominator `(ld·cd)(X_j)`; the jet of level `k` is their
+product, and multiplying by the denominators of the levels the cascade has not yet reached
+(`∏_(j ∈ [k, N))`) makes one common denominator `denTot N` serve every level at once.  All the
+memberships in `lowPoly N` are immediate from the shape.
+
+`HTGeometry/RatCascadeOrder.lean` supplies the analytic half and the assembly.  The cleared product
+law `(∏_(j<k) den_j)(states)·(d/dz)(Y_k) = (∏_(j<k) num_j)(states)` is a chain-rule induction in
+which the cleared ODE is used *pointwise* at `Y_j(z)` — the reason the cleared form matters, since
+the rational coefficients may have poles that some state visits.  The first-order equation of each
+map is the cleared ODE itself, and it is nonzero because its `∂/∂W` is `(ld·cd)(X_0) ≠ 0`.
+
+The capstone then feeds `output_det_ne_zero` through `algebraicIndependent_cons_of_output` into
+`not_differentiallyAlgebraicOfOrder_of_clearedModel`, with the cleared law supplying both of that
+theorem's laws — the pointwise one from the chain rule, the model one from `algebraMap_clearedJet`.
+
+The nondegeneracy `deg (ld j) ≤ deg (ln j)` is the same condition the peel needed, and it is not a
+restriction on the theorem's reach: for a rational `a` of negative order at infinity, `∫a` is bounded
+there, so every solution grows at most polynomially and is a polynomial rather than a transcendental
+entire function.
+
+### Log — the rational family is strictly larger, with a witness
+
+`HTGeometry/RatCascadeInstance.lean` (axiom-clean, in the umbrella) exhibits the separation.  The
+equation `z·h' = (z+1)·h` — that is, `h' = (1 + 1/z)·h` — has the entire solution `c·z·e^z`, and
+
+* **`transcendentalEntire_ratExample`**: it is transcendental.  A polynomial solution `p` would give
+  `(X+1)·p = X·p'` as polynomials, which raises the degree by one on the left and cannot raise it on
+  the right; `p = 0` is excluded by evaluating at `1`.
+* **`exactDifferentialOrder_ratExampleCascade`**: the cascade of `c·z·e^z` has differential order
+  exactly its length, at every length.
+* **`ratExample_coefficient_not_polynomial`**: `X + 1 = p·X` is impossible (evaluate at `0`), so the
+  coefficient `(z+1)/z` is genuinely rational and the cascade lies outside the polynomial-coefficient
+  family — and outside `d + c·exp(A)`, since `z·e^z` is not of that shape.
+
+The chain of strict inclusions the card now carries formally is
+
+`expPoly ⊊ polynomial-coefficient linear ⊊ rational-coefficient linear = the whole solved-form class`,
+
+with a witness for each inclusion (`c·e^z − z − 1` for the first, `c·z·e^z` for the second).
+
+### The remaining frontier, precisely
+
+What is left is the **unsolved** algebraic case: `P(z, f, f') = 0` with `deg_W P ≥ 2`, so that `f'` is
+algebraic of degree `≥ 2` over `C(z, f)`.  Two things are missing, and they are of different kinds.
+
+1. **A model.**  The factor `G_k = f_k'(X_k)` satisfies `P_k(X_k, X_(k+1), G_k) = 0`, so it is
+   algebraic over `C(X_k, X_(k+1))` and does not live in `CascadeField`.  Adjoining it does not help
+   naively: `X_k`, `X_(k+1)` and `G_k` are then algebraically *dependent*, so the free-coordinate
+   presentation the whole peel rests on is lost.  The model must therefore be a finitely generated
+   algebraic extension of `CascadeField`, and two things have to be built on it:
+   * the unique extension of the law and of the coordinate derivations.  The bricks for this are in
+     mathlib: `Algebra.FormallyEtale.of_isSeparable` (a separable algebraic field extension is
+     formally étale), `derivationToSquareZeroEquivLift`, `Algebra.FormallySmooth.exists_lift` and
+     `Algebra.FormallyUnramified.lift_unique`.  At each fixed height the extension is finite, so
+     `EssFiniteType` holds and the theorems apply.
+   * the extension of the degree-at-infinity in `X_m`.  On `CascadeField` this is `degreeOf`; on an
+     algebraic extension it becomes a valuation with values in `(1/e)·Z` for the ramification index
+     `e`, and the whole `TopDegLE`/`TopFree`/`TopLim` layer has to be restated for it.  This is the
+     larger of the two pieces, and it is what makes the peel's degree bookkeeping meaningful for
+     Puiseux branches.
+
+2. **The analytic selection.**  Which branch of the algebraic curve the cascade actually follows is
+   Reduction I's content, and that is where the Wiman--Valiron place and the Newton--Puiseux
+   expansion enter.  The corpus already owns that layer; what it does not own is the classical input
+   (Goldberg's finite order, Strelitz's positive order) that Reduction I quotes.
+
+Neither is a gap in the paper proof: the paper's Reduction I supplies the branch and Reduction III
+runs the induction on it.  Both are genuine multi-session formalisation projects, and the first is
+purely algebraic — it can be built without any analytic input.

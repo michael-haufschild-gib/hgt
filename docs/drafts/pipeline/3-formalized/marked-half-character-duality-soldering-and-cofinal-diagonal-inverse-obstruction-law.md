@@ -1,12 +1,16 @@
 # Marked half-character duality, soldering, and cofinal diagonal-inverse obstruction
 
 - **ID:** `clg-marked-half-character-duality-cofinal-diagonal-obstruction`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / CROSS-CORPUS CONSTITUTIVE LAW / COFINAL DIAGONAL NO-GO
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [HURWITZ/STOKES REALIZATIONS]`
   `[COMPACT-RECURRENCE ACTION CALIBRATION]`
   `[MARKED ROOT TORSOR] [CANONICAL DIAGONAL INVERSE FAILS COFINALLY] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+  `[LEAN-FORMALIZED] [AXIOM-AUDITED] [UMBRELLA-BUILT]`
+- **Lean modules:**
+  `GaloisForLFunctions.HTGeometry.MarkedHalfCharacterDualityLaw`,
+  `GaloisForLFunctions.HTGeometry.MarkedHalfCharacterCompactActionLaw`,
+  `GaloisForLFunctions.RHTower.MarkedHalfCharacterCofinalDiagonalInverseLaw`
 - **Statement:** A marked half-character `u` with coarse holonomy `z=u^2` has exact even-curvature,
   odd-soldering, duality, and energy shadows. It realizes both Hurwitz branch increments and the
   arithmetic Gamma/paracyclic defect; its placewise reciprocal fails to define a morphism on the
@@ -507,7 +511,7 @@ strict-representative lesson, exact Hurwitz/Gamma coefficient dictionary, and no
 all-prime diagonal comparison. It is not a source transgression. No priority claim is required for
 the field programme.
 
-## Gates
+## Formalization gates
 
 - [x] Morita/strict-cocycle no-go
 - [x] marked augmentation law
@@ -516,17 +520,34 @@ the field programme.
 - [x] arithmetic Gamma/paracyclic realization
 - [x] all-prime canonical diagonal-inverse obstruction and noninjectivity theorem
 - [x] hostile countermodels
-- [ ] literal source construction of singular/non-diagonal comparison
-- [ ] physical horizon/root-charge/integer-history realization
-- [ ] formalize after paper target stabilizes
+- [x] exact Lean formalization of every proved assertion and hostile countermodel
+- [x] direct per-file elaboration
+- [x] targeted module builds and both umbrella builds
+- [x] exhaustive theorem axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`
+- [x] forbidden-declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 
-## Lean-return note
+## Separate future source-realization program
 
-No Lean code was written or built. Later formalization should separate the elementary Laurent-unit
-identities, finite Hurwitz/arithmetic coefficient equations, and the sequence-space multiplier
-theorem.
+The following are design targets, not proved claims of this card and not prerequisites for its
+formalization:
+
+- literal source construction of a singular or non-diagonal comparison;
+- physical horizon/root-charge/integer-history realization.
+
+## Lean audit
+
+The three modules formalize the elementary Laurent-unit identities, categorical marked/unmarked
+boundary, finite Hurwitz and arithmetic coefficient equations, compact-action rigidity, rotor-core
+relations, and the exact prime-indexed `ell^1` multiplier theorem. Direct elaboration and targeted
+builds pass. Both `HTGeometry` and `RHTower` umbrella builds pass. Exhaustive `#print axioms` output
+for every theorem contains only standard foundations: `propext`, `Classical.choice`, and
+`Quot.sound`. Repository-wide formal lint's forbidden-declaration scan passes; its reachability
+phase remains blocked by unrelated pre-existing modules absent from umbrellas, recorded in the
+campaign tracker.
 
 ## Log
 
 - 2026-08-09 — proved after unframed Čech transgression failed Morita invariance and the
   half-character/root torsor exposed a shared Hurwitz--Stokes constitutive law.
+- 2026-08-09 — every proved theorem and hostile boundary formalized unconditionally; direct,
+  targeted, umbrella, forbidden-declaration, and exhaustive axiom audits passed; promoted to Stage 3.

@@ -70,9 +70,7 @@ theorem finiteMatrixNuclearNorm_smul_nonneg
   have hGram : (r • K)ᴴ * (r • K) =
       (r ^ 2) • (Kᴴ * K) := by
     ext i j
-    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Pi.smul_apply,
-      RCLike.star_def, map_mul, Complex.conj_ofReal, smul_eq_mul, pow_two]
-    rw [Finset.mul_sum]
+    simp [Matrix.mul_apply, Finset.mul_sum, pow_two]
     apply Finset.sum_congr rfl
     intro x _
     ring

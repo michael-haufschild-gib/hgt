@@ -12,6 +12,7 @@ maximum is attained on the compact simplex.
 -/
 
 open Matrix Set
+open MeasureTheory
 open scoped BigOperators ComplexConjugate ComplexOrder MatrixOrder
 
 namespace GaloisForLFunctions.HTGeometry
@@ -201,7 +202,7 @@ mixture of the occupied target rays. -/
 theorem finiteBures_completeIncidence_minimax_bound
     {X C : Type*} [MeasurableSpace X]
     [Fintype C] [Nonempty C] {n : ℕ}
-    (mu : Measure X) [IsFiniteMeasure mu]
+    (mu : Measure X) [MeasureTheory.IsFiniteMeasure mu]
     (target : C → Fin n → ℂ) (state : X → Fin n → ℂ)
     (threshold : ℝ) (hthreshold : 0 < threshold)
     (hprod : ∀ i j, Integrable
@@ -234,7 +235,7 @@ capacity of the restricted covariance. -/
 theorem finiteBures_returnExcisedIncidence_minimax_bound
     {X C : Type*} [MeasurableSpace X]
     [Fintype C] [Nonempty C] {n : ℕ}
-    (mu : Measure X) [IsFiniteMeasure mu]
+    (mu : Measure X) [MeasureTheory.IsFiniteMeasure mu]
     (target : C → Fin n → ℂ) (state : X → Fin n → ℂ)
     (threshold : ℝ) (hthreshold : 0 < threshold)
     (returnSet : Set X) (hreturn : MeasurableSet returnSet)
