@@ -102,3 +102,41 @@ probability curiosity).
 
 - 2026-08-09 — charter opened; horizon calibration proved; collision boundary recorded;
   hunch frozen with the mandatory read-first list of §1.
+
+## 6. RESOLUTION — 2026-08-09 (same session): hunch true but insignificant as stated; closed
+
+### 6.1 Rank-horizon strengthening (proved; supersedes the elementary-target calibration)
+
+For every finite abelian p-group H and sigma > 1:
+
+    E_sigma[#Sur(A, H)] < infinity  <=>  rank(H) < sigma.
+
+Proof. #Hom(A,H) = prod_i p^{ s_i * G_i } with s_i = sum_j min(i, mu_j) over H's partition mu;
+mode-wise finiteness needs s_i < i*sigma for all i. At i = 1, s_1 = rank(H), giving the
+necessity threshold at rank(H) (the depth-1 modes carry it, via the PGF radius p^sigma). For
+finiteness when rank(H) < sigma: s_i <= i*rank(H) < i*sigma for all i, and #Sur <= #Hom. For
+infinity when r := rank(H) >= sigma: on the event {A contains H + (Z/p)^n} (probability
+>= c_H * w_{q_p,n} >= c * p^{-sigma n}: realize H on the deeper modes, n particles in mode
+(p,1)), the maps (id_H + psi) with psi in Hom((Z/p)^n, H) are pairwise distinct surjections, so
+#Sur(A,H) >= p^{n r}; hence E[#Sur] >= c * sum_n p^{-sigma n} p^{r n} = infinity since
+p^r >= p^sigma. QED. The horizon is exactly the RANK of the test group, at every depth.
+
+### 6.2 Sub-horizon indeterminacy (proved; but by collapse, hence insignificant)
+
+For sigma in (1,2) the finite test family is {H : rank H = 1} = cyclic targets. On laws
+supported on depths <= 2 (configurations (G_1, G_2)), the entire cyclic test family collapses to
+TWO functionals: E[p^{G_1+G_2}] (from H = Z/p) and E[p^{G_1+2G_2}] (from H = Z/p^j, any j >= 2 —
+all coincide since min(i,j) saturates at depth 2). Two linear constraints on the
+infinite-dimensional simplex of laws on N^2 leave explicit distinct positive laws matching the
+zeta gas's values (three-point signed perturbation with small epsilon). Hence the zeta measure
+at sigma in (1,2) is NOT determined by its finite Sur-moments.
+
+### 6.3 Verdict
+
+Per this card's own falsifier 2: the frozen hunch is TRUE but by an elementary collapse —
+verdict INSIGNIFICANT as a standalone discovery. Survivors kept: the rank-horizon theorem
+(§6.1, exact and clean) and the saturation-collapse mechanism (§6.2, the reason bare Sur-counts
+lose depth information above the horizon). The moment-organ direction is CLOSED unless a
+determinacy-restoring richer test family (Hall-algebra / Hecke-operator tests instead of bare
+Sur-counts) is proposed through a fresh hunch-formation pass with the Fulman/Sawin-Wood
+collision audit actually executed. Do not reopen with bare moments.

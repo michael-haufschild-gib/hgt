@@ -528,6 +528,9 @@ Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallRe
 | `(22)`, `(23)` forward | `tendsto_burnolCrossingWindow`, `tendsto_burnolCrossingResidue`, `xiDivisor_tendsto_burnolFirstWallResidue` |
 | `(29)` forward, pointwise | `xiDivisor_tendsto_burnolCrossingDepthProfile` |
 | `(15a)` source | `burnolReflectedRawSource`, `burnolReflectedRawSource_head`, `burnolReflectedRawSource_eq_harmonic`, `burnolHarmonicWindow`, `abs_burnolHarmonicWindow_sub_log_two_le`, `norm_burnolReflectedRawSource_le` |
+| `(29)` | `tendsto_burnolCrossingDepthProfile`, `xiDivisor_tendsto_burnolCrossingDepthProfile` |
+| `(30)` | `burnolCollarDepthReading`, `tendsto_burnolCollarDepthReading`, `xiDivisor_tendsto_burnolCollarDepthReading`, `xiDivisor_tendsto_burnolCollarDepthReading_reflected` |
+| Corollary 5 | `xiDivisor_burnolNoConstantPlateau` |
 | `(15b)` | `integral_burnolReflectedRawSource_cpow`, `integrableOn_burnolReflectedRawSource_cpow`, `xiDivisor_integral_burnolReflectedKernel_eq_zero` |
 | `(16)` reflected | `burnolAlternatingHarmonic_two_mul`, `burnolAlternatingHarmonic_eq`, `abs_burnolAltTail_sub_le`, `integral_burnolReflectedRawSource_eq`, `abs_burnolReflectedTruncMass_add_half_le`, `tendsto_integral_burnolReflectedRawSource` |
 | reflected primitive | `burnolReflectedSourceRC`, `burnolReflectedSourceRC_ae`, `continuousWithinAt_burnolReflectedSourceRC`, `burnolReflectedTruncMass_eq_integral`, `hasDerivWithinAt_burnolReflectedTruncMass` |
@@ -682,24 +685,35 @@ Built:
   Consequently `‖q^{-n} W_G(nL+r)‖ = e^{(s-r)/2}‖W_G(s)‖ ≤ ‖c‖ M e^{-r/2}` **uniformly in `n`**;
   no `L^2` theory and no Cauchy--Schwarz is needed.
 
-Remaining in this layer:
+Also built: **`burnolIntegrable_bocksteinKernel_mul_mode`** — `κ̇(r) e^{-r/2}` is integrable on the
+line, via `abs_burnolBocksteinKernel_mul_mode_le : |κ̇(r) e^{-r/2}| ≤ 400 e^{-|r|}`.  The two
+regions use `z ≤ π` (so the polynomial factor is bounded) and `z ≥ π` together with
+`e^{-r} ≤ e^{-2r} = z/π` for `r ≤ 0` — no square root is needed — plus
+`z^k e^{-z} = (z e^{-z/k})^k ≤ k^k` (`burnolPow3ExpBound`, `burnolPow4ExpBound`) from
+`w ≤ e^w`.
 
-1. `Integrable (fun r => burnolBocksteinKernel r * exp (-r/2))`.  With `z = π e^{-2r}` the
-   integrand is `2z(3z-4) · 2 e^{-r} e^{-z}`.  For `r ≥ 0` one has `z ≤ π`, so it is at most
-   `2π(3π+4)·2 e^{-r}`.  For `r ≤ 0` one has `z ≥ π`, `e^{-r} = (z/π)^{1/2} ≤ z`, so it is at most
-   `28 z^3 e^{-z} ≤ 28 · (sup_{z ≥ π} z^4 e^{-z}) / z = C e^{2r}/π`.  Both halves are dominated by
-   `K e^{-|r|}`.
-2. `tendsto_burnolCrossingDepthProfile` for an arbitrary aperture-constant `g` (the `ρ`-specific
-   version `xiDivisor_tendsto_burnolCrossingDepthProfile` is already built; generalise it exactly
-   as `tendsto_burnolCrossingResidue` generalises the residue).
-3. `MeasureTheory.tendsto_integral_of_dominated_convergence` with majorant
-   `‖c‖ M e^{-r/2} |κ̇(r)|` gives the Bockstein limit
-   `𝔅_n(G) = 2 q^{-n} ∫ κ̇(r) W_G(nL+r) dr → 2 Res_{1/2}(G) ∫ κ̇ e^{-r/2} = Res_{1/2}(G)`
-   using `integral_burnolBocksteinKernel_mul_mode`.  This is card 4 `(13)`/`(15)`.
-4. The same dominated convergence against `κ_*` instead of `κ̇`, together with
-   `integral_burnolCollarKernel_mul_mode` (`∫ κ_* e^{-r/2} = 0`), gives
-   `q^{-2n} Q_n → 0`, i.e. `(30)`; and Corollary 5 follows because the limit profile
-   `r_ρ e^{-r/2}` is nonconstant and `r_ρ ≠ 0` (`burnolFirstWallExteriorMass_ne_zero`).
-5. Card 4 `(16)` is then `burnolFirstWallResidue_sub_cosineResidue_re_eq_headFlux` applied to the
-   two Bockstein limits, and `(22)` combines it with
-   `burnolApertureCommutator_normSq_difference`.
+All of this layer is built: `continuous_burnolCrossingCorrelationW` (gluing the two collapsed
+branches, which agree at `s = 0` because the tail primitive vanishes there),
+`tendsto_burnolCrossingDepthProfile`, `burnolIntegrable_collarKernel_mul_mode`, and the two
+dominated-convergence limits `tendsto_burnolBocksteinReading` and
+`tendsto_burnolCollarDepthReading`.  The child card
+`burnol-gamma-bockstein-first-wall-extraction-law` is now fully formalized and promoted.
+
+## Exactly what is still open on this card
+
+Only the two *auxiliary sharpenings* `(12)` and `(31)`:
+
+- `(12)` `∫_T^∞ g_ρ = O(T^{-2})`.  The potential collapses this to
+  `∫_T^∞ g_ρ = T^{ρ} ∫_T^∞ Λ(y) y^{-ρ-1} dy` with `Λ(T) = ∫_T^∞ f_0` — the `Λ(T)` boundary terms
+  cancel *exactly* — and `|Λ(y)| ≤ 1/(2y)` gives only `O(1/T)`.  The extra order needs the
+  second primitive: `m = ∫_0^1 P`, `P_0 = P - m` (mean zero, continuous), `P_1 = ∫_0^t P_0`
+  (periodic, bounded, `C^1`), after which `Λ(T) = -P_0(T)/T + O(T^{-2})` and the `P_0/T` terms
+  cancel against the corresponding term of `T^ρ Head(T)`.
+- `(31)` `Q_n = O(8^{-n})` follows from `(12)`: with `X = 2^n e^r/2`, the depth error is
+  `E_n(r) = a e^{-r/2} conj(∫_X^∞ g_ρ) = O(4^{-n} e^{-5r/2})`, so
+  `burnolCollarDepthReading = O(q^{4n})` and `Q_n = q^{2n} · that = O(q^{6n}) = O(8^{-n})`.
+  This additionally needs `|κ_*(r)| e^{-5r/2}` integrable, by the same two-region argument as
+  `abs_burnolCollarKernel_mul_mode_le` with `z^7 e^{-z} ≤ 7^7`.
+
+Everything else on the card — `(1)`--`(11)`, `(13)`--`(30)`, and Corollary 5 — is unconditional in
+Lean.

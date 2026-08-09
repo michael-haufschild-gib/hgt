@@ -36,7 +36,7 @@ theorem woldActivationInfiniteDepth_on_divisor {ρ h : ℂ} (hρ : riemannZeta �
 
 /-! ### Local factorization of zeta away from its pole -/
 
-theorem analyticAt_riemannZeta {s : ℂ} (hs : s ≠ 1) : AnalyticAt ℂ riemannZeta s := by
+theorem analyticAt_riemannZeta_of_ne_one {s : ℂ} (hs : s ≠ 1) : AnalyticAt ℂ riemannZeta s := by
   have hopen : IsOpen ({(1 : ℂ)}ᶜ : Set ℂ) := isOpen_compl_singleton
   have hdiff : DifferentiableOn ℂ riemannZeta ({(1 : ℂ)}ᶜ) :=
     fun z hz => (differentiableAt_riemannZeta hz).differentiableWithinAt
@@ -50,7 +50,7 @@ theorem not_eventually_riemannZeta_eq_zero {ρ : ℂ} (hρ : ρ ≠ 1) :
     norm_num
   have hconn : IsPreconnected ({(1 : ℂ)}ᶜ : Set ℂ) :=
     (isConnected_compl_singleton_of_one_lt_rank hrank (1 : ℂ)).isPreconnected
-  have hAn : AnalyticOnNhd ℂ riemannZeta ({(1 : ℂ)}ᶜ) := fun z hz => analyticAt_riemannZeta hz
+  have hAn : AnalyticOnNhd ℂ riemannZeta ({(1 : ℂ)}ᶜ) := fun z hz => analyticAt_riemannZeta_of_ne_one hz
   have hzero : Set.EqOn riemannZeta 0 ({(1 : ℂ)}ᶜ) :=
     hAn.eqOn_zero_of_preconnected_of_eventuallyEq_zero hconn hρ hcon
   have h2mem : (2 : ℂ) ∈ ({(1 : ℂ)}ᶜ : Set ℂ) := by
@@ -69,7 +69,7 @@ theorem exists_riemannZeta_local_factorization {ρ : ℂ} (hρ : ρ ≠ 1) :
     ∃ (d : ℕ) (u : ℂ → ℂ), AnalyticAt ℂ u ρ ∧ u ρ ≠ 0 ∧
       ∀ᶠ s in 𝓝 ρ, riemannZeta s = (s - ρ) ^ d * u s := by
   obtain ⟨d, u, hu, hu0, hfg⟩ :=
-    (analyticAt_riemannZeta hρ).exists_eventuallyEq_pow_smul_nonzero_iff.mpr
+    (analyticAt_riemannZeta_of_ne_one hρ).exists_eventuallyEq_pow_smul_nonzero_iff.mpr
       (not_eventually_riemannZeta_eq_zero hρ)
   exact ⟨d, u, hu, hu0, hfg.mono fun s hs => by simpa [smul_eq_mul] using hs⟩
 

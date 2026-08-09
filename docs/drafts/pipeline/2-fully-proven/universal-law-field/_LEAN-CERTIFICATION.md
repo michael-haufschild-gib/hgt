@@ -26,6 +26,7 @@ Dedicated Lean umbrella:
 | ULF-PRD-PUMP-1 | Observer unitization forces recurrence, injective open history, linear action, and cost nondescendence | `HTGeometry.ConstitutiveObserverUnitization` |
 | ULF-DEFECT-2 | Same endpoint defects and size admit split/nonsplit events distinguished by carry and lifted-period holonomy | `HTGeometry.ConstitutiveExtensionCarry` |
 | ULF-NFD-2 | One periodic producer and quotient force recurrent observation, nonclosed lift, carry, decoder failure, and unbounded prefix history | `HTGeometry.NomogenicFixedPointCalibration` |
+| ULF-NPG-PIN-1 | Natural free-monoid interventions are uniform powers; ramification comparisons are inverse-depth; power naturality does not select radial origin | `HTGeometry.ConstitutiveNaturalPowerNormalization` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.

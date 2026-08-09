@@ -4,7 +4,7 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from these: docs/drafts/pipeline/2-fully-proven (not its subfolders, only cards directly from this folder)
+else: pick a card from these: docs/drafts/pipeline/2-fully-proven/universal-law-field (oldest card by modified at file date first)
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 

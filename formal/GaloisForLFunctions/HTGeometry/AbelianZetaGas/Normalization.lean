@@ -49,7 +49,21 @@ private theorem depth_exponent_gt_one (θ : AbelianZetaConvergentParameters) (n 
   rw [heq]
   linarith [θ.firstDepth]
 
-set_option maxHeartbeats 800000 in
+private theorem hasProd_inv₀ {ι : Type*} {f : ι → ℂ} {a : ℂ}
+    (h : HasProd f a) (ha : a ≠ 0) : HasProd (fun i => (f i)⁻¹) a⁻¹ := by
+  rw [HasProd] at h ⊢
+  simpa only [Finset.prod_inv_distrib] using h.inv₀ ha
+
+private theorem complex_ratio_eq_cpow
+    (θ : AbelianZetaConvergentParameters) (n : ℕ) (p : Nat.Primes) :
+    (θ.toAbelianZetaParameters.ratio (p, n) : ℂ) =
+      (p : ℂ) ^ (-((((n + 1 : ℕ) : ℝ) * θ.sigma + θ.tau : ℝ) : ℂ)) := by
+  rw [AbelianZetaParameters.ratio, AbelianZetaParameters.exponent]
+  simp only [AbelianZetaMode.depth_mk]
+  rw [Complex.ofReal_cpow (by exact_mod_cast p.prop.pos.le)]
+  congr 2
+  simp
+
 private theorem hasProd_prime_zeroFactor
     (θ : AbelianZetaConvergentParameters) (n : ℕ) :
     HasProd
@@ -59,19 +73,18 @@ private theorem hasProd_prime_zeroFactor
   let s : ℂ := ((((n + 1 : ℕ) : ℝ) * θ.sigma + θ.tau : ℝ) : ℂ)
   have hs : 1 < s.re := by
     simpa [s] using θ.depth_exponent_gt_one n
-  have h := (riemannZeta_eulerProduct_hasProd hs).inv
-  refine h.congr fun p => ?_
-  simp only [inv_inv]
-  have hratio : (θ.toAbelianZetaParameters.ratio (p, n) : ℂ) =
-      (p : ℂ) ^ (-s) := by
-    rw [AbelianZetaParameters.ratio, AbelianZetaParameters.exponent]
-    simp only [AbelianZetaMode.depth_mk]
-    rw [Complex.ofReal_cpow (by exact_mod_cast p.prop.pos.le)]
-    congr 2
-    simp [s]
-  rw [hratio]
+  have h := hasProd_inv₀ (riemannZeta_eulerProduct_hasProd hs)
+    (riemannZeta_ne_zero_of_one_lt_re hs)
+  have hfun :
+      (fun p : Nat.Primes => 1 - (θ.toAbelianZetaParameters.ratio (p, n) : ℂ)) =
+        (fun p : Nat.Primes => ((1 - (p : ℂ) ^ (-s))⁻¹)⁻¹) := by
+    funext p
+    rw [complex_ratio_eq_cpow]
+    change 1 - (p : ℂ) ^ (-s) = ((1 - (p : ℂ) ^ (-s))⁻¹)⁻¹
+    simp only [inv_inv]
+  rw [hfun]
+  exact h
 
-set_option maxHeartbeats 800000 in
 /-- **Erdős--Szekeres normalization.**  The exact countable zero-occupation constant is the
 inverse of the complete zeta ladder `prod_{j>=1} zeta(j sigma + tau)`. -/
 theorem complexNormalizer_eq_zetaPartition_inv (θ : AbelianZetaConvergentParameters) :
@@ -95,13 +108,35 @@ theorem complexNormalizer_eq_zetaPartition_inv (θ : AbelianZetaConvergentParame
         (riemannZeta ((((n + 1 : ℕ) : ℝ) * θ.sigma + θ.tau : ℝ) : ℂ))⁻¹)
       θ.complexNormalizer :=
     hreindexed.prod_fiberwise (θ.hasProd_prime_zeroFactor)
-  have hinv := houter.inv
+  have hnormalizer_ne : θ.complexNormalizer ≠ 0 := by
+    rw [complexNormalizer]
+    change (∏' m : AbelianZetaMode,
+      (1 + -((θ.toAbelianZetaParameters.ratio m : ℂ)))) ≠ 0
+    apply tprod_one_add_ne_zero_of_summable
+    · intro m
+      rw [← sub_eq_add_neg]
+      exact sub_ne_zero.mpr (by
+        intro h
+        have hr := congrArg Complex.re h
+        simp only [Complex.one_re, Complex.ofReal_re] at hr
+        linarith [θ.toAbelianZetaParameters.ratio_lt_one m])
+    · simpa only [norm_neg] using hsComplex.norm
+  have hinv := hasProd_inv₀ houter hnormalizer_ne
   have hzeta : HasProd
       (fun n : ℕ =>
         riemannZeta ((((n + 1 : ℕ) : ℝ) * θ.sigma + θ.tau : ℝ) : ℂ))
       θ.complexNormalizer⁻¹ := by
-    simpa only [inv_inv] using hinv
+    have hfun :
+        (fun n : ℕ =>
+          ((riemannZeta ((((n + 1 : ℕ) : ℝ) * θ.sigma + θ.tau : ℝ) : ℂ))⁻¹)⁻¹) =
+        (fun n : ℕ =>
+          riemannZeta ((((n + 1 : ℕ) : ℝ) * θ.sigma + θ.tau : ℝ) : ℂ)) := by
+      funext n
+      simp only [inv_inv]
+    rw [← hfun]
+    exact hinv
   rw [zetaPartition, hzeta.tprod_eq]
+  simp only [inv_inv]
 
 /-- Finite positive zero factor in the probability codomain. -/
 def nnZeroFactor (θ : AbelianZetaConvergentParameters) (m : AbelianZetaMode) : ℝ≥0 :=
@@ -154,36 +189,139 @@ theorem classMass_eq_ennNormalizer_mul_twoObservableWeight
     intro m hm
     by_contra hmsupp
     have hAm : A m = 0 := by simpa using hmsupp
-    exact hm (by ext; simp [gNN, hAm])
+    exact hm (Subtype.ext (by simp [gNN, hAm]))
   have hcgNN : Multipliable (fun m => cNN m * gNN m) := hcNN.mul hgNN
   have hlocal : (fun m : AbelianZetaMode =>
       ENNReal.ofReal ((θ.toAbelianZetaParameters.ratio m) ^ (A m) *
         (1 - θ.toAbelianZetaParameters.ratio m))) = fun m => c m * g m := by
     funext m
-    rw [ENNReal.ofReal_mul (pow_nonneg (θ.toAbelianZetaParameters.ratio_nonneg m) _)]
     simp only [c, g, gNN, nnZeroFactor, ENNReal.coe_nnreal_eq]
+    change ENNReal.ofReal
+      ((θ.toAbelianZetaParameters.ratio m) ^ (A m) *
+        (1 - θ.toAbelianZetaParameters.ratio m)) =
+      ENNReal.ofReal (1 - θ.toAbelianZetaParameters.ratio m) *
+        ENNReal.ofReal ((θ.toAbelianZetaParameters.ratio m) ^ (A m))
+    rw [ENNReal.ofReal_mul (pow_nonneg (θ.toAbelianZetaParameters.ratio_nonneg m) _)]
     rw [mul_comm]
   have htgNN : ((∏' m : AbelianZetaMode, gNN m : ℝ≥0) : ℝ≥0∞) =
       ENNReal.ofReal (abelianZetaModeWeight θ.toAbelianZetaParameters A) := by
     rw [tprod_eq_prod (s := A.support)]
-    · rw [ENNReal.coe_finsetProd]
+    · rw [ENNReal.ofNNReal_finsetProd]
+      simp only [ENNReal.coe_nnreal_eq]
+      change (∏ m ∈ A.support,
+          ENNReal.ofReal ((θ.toAbelianZetaParameters.ratio m) ^ (A m))) = _
       rw [← ENNReal.ofReal_prod_of_nonneg]
       · rfl
       · intro m hm
         exact pow_nonneg (θ.toAbelianZetaParameters.ratio_nonneg m) _
     · intro m hm
       have hAm : A m = 0 := by simpa using hm
-      ext
-      simp [gNN, hAm]
+      exact Subtype.ext (by simp [gNN, hAm])
   have hmap : ((∏' m : AbelianZetaMode, cNN m * gNN m : ℝ≥0) : ℝ≥0∞) =
       ∏' m : AbelianZetaMode, c m * g m := by
-    simpa [c, cNN, g] using
-      hcgNN.map_tprod ENNReal.ofNNRealHom.toMonoidHom ENNReal.continuous_coe
+    change ((∏' m : AbelianZetaMode,
+      θ.nnZeroFactor m * gNN m : ℝ≥0) : ℝ≥0∞) =
+        ∏' m : AbelianZetaMode, (θ.nnZeroFactor m : ℝ≥0∞) * (gNN m : ℝ≥0∞)
+    exact hcgNN.map_tprod ENNReal.ofNNRealHom.toMonoidHom ENNReal.continuous_coe
   rw [abelianZetaClassMass_eq_tprod, hlocal, ← hmap, hcNN.tprod_mul hgNN]
   change (θ.nnNormalizer : ℝ≥0∞) *
     ((∏' m : AbelianZetaMode, gNN m : ℝ≥0) : ℝ≥0∞) = _
   rw [htgNN]
+  simp only [ennNormalizer]
   rw [abelianZetaModeWeight_eq_twoObservableWeight]
+
+/-- Probability and complex-analytic normalizers are the same positive real product. -/
+theorem coe_nnNormalizer_eq_complexNormalizer (θ : AbelianZetaConvergentParameters) :
+    (θ.nnNormalizer : ℂ) = θ.complexNormalizer := by
+  have hc := θ.nnZeroFactor_multipliable
+  let e : ℝ≥0 →* ℂ :=
+    Complex.ofRealHom.toMonoidHom.comp NNReal.toRealHom.toMonoidHom
+  have hmap := hc.map_tprod e
+    (Complex.continuous_ofReal.comp NNReal.continuous_coe)
+  change e (∏' m : AbelianZetaMode, θ.nnZeroFactor m) = _
+  rw [hmap, complexNormalizer]
+  apply tprod_congr
+  intro m
+  change (((1 - θ.toAbelianZetaParameters.ratio m : ℝ)) : ℂ) =
+    1 - (θ.toAbelianZetaParameters.ratio m : ℂ)
+  rw [Complex.ofReal_sub, Complex.ofReal_one]
+
+theorem complexNormalizer_ne_zero (θ : AbelianZetaConvergentParameters) :
+    θ.complexNormalizer ≠ 0 := by
+  rw [← θ.coe_nnNormalizer_eq_complexNormalizer]
+  have hpos : 0 < (θ.nnNormalizer : ℝ) := by
+    have hlog : Summable (fun m : AbelianZetaMode =>
+        Real.log (1 - θ.toAbelianZetaParameters.ratio m)) := by
+      simpa only [sub_eq_add_neg] using
+        Real.summable_log_one_add_of_summable θ.summable_ratio.neg
+    have hreal := Real.rexp_tsum_eq_tprod
+      (fun m => sub_pos.mpr (θ.toAbelianZetaParameters.ratio_lt_one m)) hlog
+    have hc := θ.nnZeroFactor_multipliable
+    have hmap := hc.map_tprod NNReal.toRealHom.toMonoidHom NNReal.continuous_coe
+    rw [nnNormalizer]
+    have hmap' : ((∏' m : AbelianZetaMode, θ.nnZeroFactor m : ℝ≥0) : ℝ) =
+        ∏' m : AbelianZetaMode, (θ.nnZeroFactor m : ℝ) := by
+      simpa using hmap
+    rw [hmap']
+    have hfun : (fun m : AbelianZetaMode => (θ.nnZeroFactor m : ℝ)) =
+        fun m => 1 - θ.toAbelianZetaParameters.ratio m := by
+      funext m
+      rfl
+    rw [hfun]
+    rw [← hreal]
+    exact Real.exp_pos _
+  exact Complex.ofReal_ne_zero.mpr (ne_of_gt hpos)
+
+/-- The group-class atoms exhaust total probability. -/
+theorem tsum_classMass_eq_one (θ : AbelianZetaConvergentParameters) :
+    (∑' A : AbelianZetaGroupClass,
+      abelianZetaClassMass θ.toAbelianZetaParameters A) = 1 := by
+  have hdisj : Pairwise (fun A B : AbelianZetaGroupClass =>
+      Disjoint ({A.configuration} : Set (AbelianZetaMode → ℕ)) {B.configuration}) := by
+    intro A B hAB
+    rw [Set.disjoint_singleton]
+    intro hconf
+    apply hAB
+    ext m
+    exact congrFun hconf m
+  have hmeasure : θ.toAbelianZetaParameters.gasMeasure
+      (⋃ A : AbelianZetaGroupClass, ({A.configuration} : Set (AbelianZetaMode → ℕ))) = 1 := by
+    rw [show (⋃ A : AbelianZetaGroupClass,
+        ({A.configuration} : Set (AbelianZetaMode → ℕ))) =
+        {k | ∃! A : AbelianZetaGroupClass, A.configuration = k} by
+      ext k
+      simp only [mem_iUnion, mem_singleton_iff, mem_setOf_eq]
+      constructor
+      · rintro ⟨A, hA⟩
+        refine ⟨A, hA.symm, ?_⟩
+        intro B hB
+        ext m
+        exact congrFun (hB.trans hA) m
+      · rintro ⟨A, hA, _⟩
+        exact ⟨A, hA.symm⟩]
+    exact θ.measure_existsUnique_groupClass_eq_one
+  change (∑' A : AbelianZetaGroupClass,
+    θ.toAbelianZetaParameters.gasMeasure {A.configuration}) = 1
+  rw [← MeasureTheory.measure_iUnion hdisj (fun _ => MeasurableSet.singleton _)]
+  exact hmeasure
+
+/-- Complete intrinsic group partition sum equals the inverse probability normalizer. -/
+theorem tsum_twoObservableWeight_eq_ennNormalizer_inv
+    (θ : AbelianZetaConvergentParameters) :
+    (∑' A : AbelianZetaGroupClass,
+      ENNReal.ofReal (abelianZetaTwoObservableWeight θ.toAbelianZetaParameters A)) =
+        θ.ennNormalizer⁻¹ := by
+  have hmass := θ.tsum_classMass_eq_one
+  simp_rw [θ.classMass_eq_ennNormalizer_mul_twoObservableWeight] at hmass
+  rw [ENNReal.tsum_mul_left] at hmass
+  exact ENNReal.eq_inv_of_mul_eq_one_left (by rw [mul_comm]; exact hmass)
+
+/-- Zeta ladder and intrinsic group partition are one normalization, in their respective exact
+codomains. -/
+theorem zetaPartition_eq_complexNormalizer_inv (θ : AbelianZetaConvergentParameters) :
+    θ.zetaPartition = θ.complexNormalizer⁻¹ := by
+  rw [θ.complexNormalizer_eq_zetaPartition_inv]
+  simp only [inv_inv]
 
 end AbelianZetaConvergentParameters
 

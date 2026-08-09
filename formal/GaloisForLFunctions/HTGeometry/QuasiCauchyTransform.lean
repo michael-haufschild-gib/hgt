@@ -35,16 +35,16 @@ theorem quasiSecondKind_eval (s : ℕ → ℝ) (n : ℕ) (t x : ℝ) :
   rw [quasiSecondKind]; simp
 
 /-- The divided difference of the quasi-orthogonal polynomial. -/
-noncomputable def quasiDividedDiff_quasiCauchyTransform (s : ℕ → ℝ) (n : ℕ) (t z : ℝ) : Polynomial ℝ :=
+noncomputable def quasiTransformDividedDiff (s : ℕ → ℝ) (n : ℕ) (t z : ℝ) : Polynomial ℝ :=
   firstKindDividedDiff s (n + 1) z + C t * firstKindDividedDiff s n z
 
 /-- The defining identity: multiplying back by `X − z` returns the difference. -/
-theorem mul_quasiDividedDiff_quasiCauchyTransform (s : ℕ → ℝ) (n : ℕ) (t z : ℝ) :
-    (X - C z) * quasiDividedDiff_quasiCauchyTransform s n t z
+theorem mul_quasiTransformDividedDiff (s : ℕ → ℝ) (n : ℕ) (t z : ℝ) :
+    (X - C z) * quasiTransformDividedDiff s n t z
       = quasiOrtho s n t - C ((quasiOrtho s n t).eval z) := by
   have h1 := mul_firstKindDividedDiff s (n + 1) z
   have h2 := mul_firstKindDividedDiff s n z
-  rw [quasiDividedDiff_quasiCauchyTransform, quasiOrtho]
+  rw [quasiTransformDividedDiff, quasiOrtho]
   simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.C_add,
     Polynomial.C_mul]
   linear_combination h1 + C t * h2
@@ -72,7 +72,7 @@ theorem firstKindDividedDiff_degree_lt (s : ℕ → ℝ) (n : ℕ) (z : ℝ) :
     exact lt_of_lt_of_le hlt hdeg
 
 theorem quasiDividedDiff_degree_le (s : ℕ → ℝ) (n : ℕ) (t z : ℝ) :
-    (quasiDividedDiff_quasiCauchyTransform s n t z).degree ≤ (n : WithBot ℕ) := by
+    (quasiTransformDividedDiff s n t z).degree ≤ (n : WithBot ℕ) := by
   refine le_trans (Polynomial.degree_add_le _ _) (max_le ?_ ?_)
   · exact Order.le_of_lt_succ (firstKindDividedDiff_degree_lt s (n + 1) z)
   · refine le_trans (Polynomial.degree_mul_le _ _) ?_
@@ -84,12 +84,12 @@ theorem quasiDividedDiff_degree_le (s : ℕ → ℝ) (n : ℕ) (t z : ℝ) :
 
 /-- **The moment functional of the quasi divided difference.** -/
 theorem momentFunctional_quasiDividedDiff (h : PositiveMomentForm s) (n : ℕ) (t z : ℝ) :
-    momentFunctional s (quasiDividedDiff_quasiCauchyTransform s n t z)
+    momentFunctional s (quasiTransformDividedDiff s n t z)
       = s 0 * (quasiSecondKind s n t).eval z := by
   have hC : momentFunctional s (C t * firstKindDividedDiff s n z)
       = t * momentFunctional s (firstKindDividedDiff s n z) := by
     rw [momentFunctional_eq_inner_one, momentFunctional_eq_inner_one, momentInner_C_mul_left]
-  rw [quasiDividedDiff_quasiCauchyTransform, momentFunctional_add, hC,
+  rw [quasiTransformDividedDiff, momentFunctional_add, hC,
     momentFunctional_firstKindDividedDiff h, momentFunctional_firstKindDividedDiff h,
     quasiSecondKind_eval]
   ring
@@ -116,7 +116,7 @@ theorem quasiSum_cauchy_eq_ratio (h : PositiveMomentForm s) (n : ℕ) (t : ℝ) 
       = -(s 0 * (quasiSecondKind s n t).eval z) / (quasiOrtho s n t).eval z := by
   classical
   set P := quasiOrtho s n t with hP
-  set D := quasiDividedDiff_quasiCauchyTransform s n t z with hD
+  set D := quasiTransformDividedDiff s n t z with hD
   have hDdeg : D.degree ≤ ((2 * n : ℕ) : WithBot ℕ) :=
     le_trans (quasiDividedDiff_degree_le s n t z)
       (by exact_mod_cast (by omega : n ≤ 2 * n))
@@ -130,7 +130,7 @@ theorem quasiSum_cauchy_eq_ratio (h : PositiveMomentForm s) (n : ℕ) (t : ℝ) 
       have hxeq : x = z := by linarith [sub_eq_zero.mp hcon]
       rw [← hxeq]
       exact (mem_quasiNodes_iff n t x).mp hx
-    have hmul := congrArg (Polynomial.eval x) (mul_quasiDividedDiff_quasiCauchyTransform s n t z)
+    have hmul := congrArg (Polynomial.eval x) (mul_quasiTransformDividedDiff s n t z)
     simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_X,
       Polynomial.eval_C] at hmul
     rw [(mem_quasiNodes_iff n t x).mp hx] at hmul

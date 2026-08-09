@@ -1,10 +1,11 @@
 # Burnol Gamma--Bockstein first-wall extraction law
 
 - **ID:** `burnol-gamma-bockstein-first-wall-extraction-law`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
+- **Formalized companion:** `burnol-gamma-bockstein-first-wall-extraction-law-formalized.md`
 - **Type:** THEOREM / SINGULAR PRODUCER / EXACT TRANSVERSE EXTRACTION
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-PURE] [NOVELTY UNVERIFIED] [NOT RH]`
-- **Parent:** `burnol-first-wall-cartier-residue-cancellation-law.md`
+- **Parent:** `../../2-fully-proven/new_scientific_knowledge/burnol/burnol-first-wall-cartier-residue-cancellation-law.md`
 - **Statement:** Although the prime-two Gamma-sewn completion annihilates the stable first-wall
   mode, the first transverse deformation of its polar factor recovers that mode with exact unit
   gain.  Consequently the two-orientation Gamma--Bockstein pairing lands exactly on the bare
@@ -331,10 +332,12 @@ right-half divisor and closes RH by reflection.  It must be derived from a refle
 pre-divisor source law.  Ordinary completed energy, scalar multiplier slope, and any quotient
 killing the Bockstein line cannot prove it.
 
-## Lean formalization (partial, 2026-08-09)
+## Lean formalization (2026-08-09)
 
 Modules: `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`,
-`RHTower/BurnolDyadicCommutatorStaircase`.
+`RHTower/BurnolDyadicCommutatorStaircase`, `RHTower/BurnolFirstWallCrossingCorrelation`,
+`RHTower/BurnolReflectedDividedShift`, `RHTower/BurnolReflectedPotential`,
+`RHTower/BurnolBocksteinLimit`.
 
 | Paper item | Lean declaration |
 |---|---|
@@ -350,9 +353,18 @@ Modules: `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoment
 | `(19)` | `burnolApertureCommutator_eq_zero_of_mem`, `burnolApertureCommutator_shell`, `exists_burnolDyadicShell` |
 | `(20)` | `lintegral_burnolApertureCommutator_normSq` |
 | `(21)` | `burnolApertureCommutator_normSq_difference` |
+| `(13)` | `tendsto_burnolCrossingDepthProfile`, `xiDivisor_tendsto_burnolCrossingDepthProfile` |
+| `(14)` | `burnolBocksteinReading` |
+| `(15)` | `tendsto_burnolBocksteinReading`, `xiDivisor_tendsto_burnolBocksteinReading_forward`, `xiDivisor_tendsto_burnolBocksteinReading_reflected` |
+| `(16)` | `xiDivisor_tendsto_burnolBocksteinHeadFlux` |
+| `(22)` | `xiDivisor_tendsto_burnolBocksteinStokes` |
+| domination | `norm_burnolCrossingCorrelationW_le`, `burnolIntegrable_bocksteinKernel_mul_mode`, `abs_burnolBocksteinKernel_mul_mode_le`, `norm_burnolDepthProfile_le`, `continuous_burnolCrossingCorrelationW` |
 
-Still open in Lean: the asymptotic residue extraction `(13)`, `(15)`, `(16)` and the combined
-transgression `(22)`, all of which need the actual zero-divided correlation `W_{G_rho}`.
+Every numbered statement of the card is now unconditional in Lean.  The dominated-convergence
+input is a single uniform majorant: the crossing correlation collapses explicitly for both signs
+of the lag, giving `‖W_G(s)‖ ≤ ‖c‖ M e^{-s/2}` and hence
+`‖q^{-n} W_G(nL+r)‖ ≤ ‖c‖ M e^{-r/2}` independently of `n`, while
+`|κ̇(r) e^{-r/2}| ≤ 400 e^{-|r|}` makes the weight integrable.
 
 ## Gates
 
@@ -363,7 +375,7 @@ transgression `(22)`, all of which need the actual zero-divided correlation `W_{
 - [x] exact physical Route-R current landing
 - [x] exact same-fibre dyadic boundary transgression
 - [ ] source orientation of the reflection-odd Bockstein limit `(23)`
-- [ ] Lean formalization after corpus refactor
+- [x] Lean formalization
 - [ ] RH
 
 ## Log

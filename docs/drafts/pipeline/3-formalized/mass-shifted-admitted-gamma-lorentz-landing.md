@@ -1,8 +1,8 @@
 # Mass-shifted admitted Gamma--Lorentz landing
 
 - **ID:** MSST-AGLL-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / NO-GO CLASSIFICATION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4) / NO-GO CLASSIFICATION
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` §9.3, after conjecture 40
 - **Statement:** On each strict-right upper representative of an off-line Xi quartet, the actual
   cooriented `(2,3)` Gamma exterior and the odd shifted-Hankel mixed feature admit a canonical
@@ -19,7 +19,7 @@ the already-open adaptive null-feature sign.
 
 - [x] 0 → 1  in-progress: exact right-upper admission, source and target types, hostile attack
 - [x] 1 → 2  fully-proven: complete paper proof, `[PAPER-PROVED]`, no open dependency
-- [ ] 2 → 3  formalized: exact Lean theorem, direct and targeted builds, axiom audit
+- [x] 2 → 3  formalized: exact Lean theorem, direct and targeted builds, axiom audit
 - [ ] 3 → 4  publication-ready: standalone paper not claimed
 
 ## Internal frontier
@@ -208,7 +208,15 @@ quartet representative before aggregation.
 - **New insight:** Gamma and Lorentz orientations are one divisor coordinate in different positive
   gauges. Missing producer is not another orientation map; it is a source law on the remaining
   mixed amplitude or its adaptive aggregate.
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`; exact Lean module pending.
+- **Status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED]` in
+  `RHTower/XiShiftedHankelAdmittedGammaLorentzLanding.lean`. Direct `lake env lean` and targeted
+  module build pass. Six capstone declarations depend only on `propext`, `Classical.choice`, and
+  `Quot.sound`. Repository lint reaches the new module through the `RHTower` umbrella; its only
+  failures are unrelated concurrent reachability gaps for `HTGeometry.AbelianZetaGas.Core`,
+  `HTGeometry.AbelianZetaGas.GibbsLaw`, `HTGeometry.AbelianZetaGas.Normalization`,
+  `HTGeometry.ConstitutiveNaturalPowerNormalization`, `HTGeometry.ContinuousMapLocallyConvex`,
+  `HTGeometry.FiniteDimensionalOperatorAlbertiLaw`, and
+  `HTGeometry.SeparableBuresPositiveReporterLaw`.
 
 ## Log
 
@@ -216,3 +224,7 @@ quartet representative before aggregation.
   42 active.
 - 2026-08-09 — conjecture 42 paper proof closed; conjecture 43 killed by positive-gauge
   sign-equivalence; conjecture 44 killed by exact quartet recovery. Promoted to Stage 2 before Lean.
+- 2026-08-09 — exact paper theorem formalized. Targeted build passed (11,693 jobs); capstone axiom
+  audit reports only `propext`, `Classical.choice`, and `Quot.sound`. Promoted to Stage 3.
+- 2026-08-09 — global formal lint audited: new module is reachable; only seven unrelated
+  concurrent `HTGeometry` umbrella omissions remain.

@@ -1388,3 +1388,104 @@ What the uniqueness half still needs is therefore only the passage from the *ana
 `r' − r = (q − q')·W` on the disc to *polynomial* divisibility of `r' − r` by `W` — i.e. that a
 rational function whose poles all lie inside the disc and which is holomorphic there is a
 polynomial.
+
+Siegel chain, uniqueness of division — **closed**.  Three modules, all unconditional and
+axiom-clean:
+
+* `HTGeometry/PunctureCancellation.lean`, `eqOn_of_sub_mul_eqOn` — an identity
+  `(z − r)·F = (z − r)·G` on a disc gives `F = G` there.  Off `r` the factor cancels; at `r` a
+  sequence inside the disc and continuity close the gap.
+* `HTGeometry/AnalyticFactorDvd.lean`, `multisetProd_dvd_of_analytic_factor` — a polynomial agreeing
+  on a disc with a continuous function times `∏_{r ∈ M}(z − r)`, all of `M` inside the disc, is
+  divisible by `∏_{r ∈ M}(X − r)` **in `ℂ[X]`**.  Induction peeling one factor at a time: evaluation
+  at a root splits a linear factor off, the cancellation lemma removes it from the analytic
+  identity, and the situation repeats one degree down.  Repeated elements are peeled twice, so
+  multiplicity needs no separate treatment.
+* `HTGeometry/WeierstrassDivisionUniqueness.lean`, `divisionOnDisc_unique` — two decompositions
+  `W·q + ∑_{l < card M} a_l z^l` of the same function have equal remainder coefficients and equal
+  quotients.  Also `eqOn_of_multisetLinearProd_mul_eqOn`, cancelling the whole product from an
+  identity.
+
+This retires the gap flagged two entries earlier — the passage from the analytic identity to
+polynomial divisibility — and with it the uniqueness half of Weierstrass division.  Existence
+(`weierstrass_division`) and uniqueness are now both theorems, which is what the germ ring needs to
+be shown factorial.
+
+**Card accounting corrected.**  Earlier entries in this ledger reported "N/65".  That denominator
+was wrong.  Certificates for `2-fully-proven/new_scientific_knowledge/other` cards are written into
+`3-formalized/new_scientific_knowledge/` — sometimes into its `other/` subfolder, sometimes directly
+into the parent — and a count that looked only in `other/` misses the ones in the parent.  Checking
+both locations: of the 65 cards in stage 2, **18 have a certificate and 47 do not**.  A further 13
+certificates in `3-formalized/.../other/` belong to cards moved out of stage 2 under the older
+convention.
+
+`HTGeometry/ContinuousMapLocallyConvex.lean`, unconditional and axiom-clean:
+
+* `hasBasis_nhds_zero_continuousMap` — the sets `{f : ∀ x ∈ K, ‖f x‖ < ε}`, `K` compact and
+  `ε > 0`, are a neighbourhood basis of the origin for the compact-open topology;
+* `convex_nhds_zero_continuousMap`;
+* the instance **`LocallyConvexSpace ℝ C(X, ℂ)`**, for an arbitrary topological domain.
+
+mathlib does not have this instance.  It is the missing input for the weighted-euler card: the
+locally convex separation criteria in `LocallyConvexDenseOfVanishingDual.lean` apply to any locally
+convex factor, and the regular-flux factor `O(Q₊)_R` is a space of holomorphic functions carried as
+a subspace of `C(X, ℂ)` with the compact-open topology.  Without the instance the criteria could not
+be instantiated there at all; with it, the remaining work on that card is the concrete construction
+of the two factors rather than any topological-vector-space theory.
+
+The compact-carrier bridge for the weighted-euler card, two modules, both unconditional and
+axiom-clean:
+
+* `HTGeometry/CompactCarrierExistence.lean`, **`exists_compact_bound_of_continuousLinearMap`** —
+  a continuous functional on `C(X, ℂ)` with the compact-open topology satisfies
+  `‖L f‖ ≤ C·M` whenever `‖f‖ ≤ M` on a fixed compact `K`.  Continuity at the origin gives a basic
+  neighbourhood inside the unit ball; scaling `f` by `ε/(M+δε)` and letting `δ` shrink turns that
+  into the estimate, with `C = 1/ε`.
+* `HTGeometry/CompactCarrierRestriction.lean`, **`exists_compactCarrier_functional`** — hence `L`
+  is `L' ∘ (restriction to K)` for a continuous `L'` on `C(K, ℂ)`.  The bound kills the kernel of
+  the restriction map, so `L` descends to its range, where the same bound makes it bounded for the
+  sup norm; Hahn–Banach extends it.
+
+This is what connects the card's dual reduction to the corpus's compact-carrier layer.  The
+elimination theorems (`compactFourierBorel_eq_zero_of_primeLog_graph_annihilation_critical` and
+relatives) are stated for `L : C(K, ℂ) →L[ℂ] ℂ` with `K` compact, whereas the card's second factor
+is the Fréchet space `O(Q₊)_R` whose dual elements are not given on any compact set to begin with.
+The bridge produces the carrier instead of assuming it, so no compactness hypothesis has to be added
+to the card's statement.
+
+The two factors of the weighted-euler joint graph, built concretely and assembled.  Three modules,
+all unconditional and axiom-clean:
+
+* `HTGeometry/PrimeTangentSpace.lean` — `PrimeTangent := lp (fun _ : Nat.Primes => ℝ) 1`, with
+  `primeTangentWeight p = (log p)/p`, generators `primeTangentGen p = (log p)/p · δ_p`,
+  `norm_primeTangentGen`, and **`primeTangent_eq_zero_of_forall_gen`**: a continuous functional
+  killing every weighted generator is zero.  The weight is carried in the generator rather than in
+  the norm, which makes the space plain `ℓ¹` and lets `eq_zero_of_forall_apply_lp_single` apply
+  after one nonzero rescaling.
+* `HTGeometry/QuadrantHolomorphic.lean` — `criticalQuadrant = {1/2 < Re s < 1, Im s > 0}`, open and
+  **convex** (an intersection of three half-planes), locally compact; `holoQuadrant`, the real
+  subspace of `C(Q₊, ℂ)` of functions extending holomorphically; and the Euler unit tangents
+  `feEulerTangent p s = w_p(s) − w_p(1−s)` with `w_p(s) = (log p)p^{−s}/(1−p^{−s})²`, proved
+  holomorphic on `Q₊` — on `Q₊` both `|p^{−s}| = p^{−Re s}` and `|p^{−(1−s)}| = p^{−(1−Re s)}` are
+  `< 1`, so neither denominator vanishes.
+* `HTGeometry/PrimeQuadrantGraph.lean` — `primeQuadrantGen`, `primeQuadrantGraph = span` of them,
+  and **`topologicalClosure_primeQuadrantGraph_eq_top`**: the graph is dense in
+  `PrimeTangent × holoQuadrant` as soon as the annihilating analytic functional on the second factor
+  vanishes.
+
+The assembly makes the card's asymmetry precise.  The coefficient factor is *fully discharged*: it
+needs no hypothesis, because the graph relation converts the vanishing of the analytic functional
+into `f₁(gen p) = 0` for every prime, and the `ℓ¹` single-support argument finishes.  Everything the
+statement rests on is the second factor.
+
+Two instances had to be given by hand — `ContinuousAdd` and `ContinuousNeg` on `holoQuadrant`.
+Both follow from `IsTopologicalAddGroup`, which *is* found, but the projection is not reached by
+instance search on the subtype, and the product's `ContinuousAdd` fails without them.
+
+The single remaining input is the one the card's own proof names: after the carrier-separation
+argument gives `L = 0` on entire functions, "Runge density of entire functions in the convex domain
+`Q₊`" extends it to all of `O(Q₊)`.  That is polynomial approximation on a convex domain — Runge
+with pole-pushing — which mathlib does not have and the corpus owns only for the half-plane with
+the Cauchy coordinate (`holo_mem_topologicalClosure_adjoin_cauchyCoord`), a statement that does not
+transfer to `Q₊`.  `convex_criticalQuadrant` is recorded above precisely because it is the
+hypothesis that Runge layer will consume.
