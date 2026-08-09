@@ -93,6 +93,41 @@ theorem bdDist_sq_eq_of_realNormalEquations (θ : I → ℝ) (hθ : ∀ i, 0 < �
   rw [this]
   ring
 
+/-- **The explained mass of a finite Báez-Duarte section.**  The projection of the target onto the span
+carries exactly `−∑ᵢ cᵢ θᵢ log θᵢ` of the target's unit mass, the complement of the squared distance. -/
+theorem norm_sq_bdProjection_of_realNormalEquations (θ : I → ℝ) (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1)
+    (c : I → ℝ) (hc : ∀ i, ∑ j, bdGram (θ i) (θ j) * c j = -(θ i * Real.log (θ i))) :
+    ‖∑ j, ((c j : ℝ) : ℂ) • bdGen (θ j)‖ ^ 2 = -∑ i, c i * (θ i * Real.log (θ i)) := by
+  have hcC : ∀ i, ∑ j, ((bdGram (θ i) (θ j) : ℝ) : ℂ) * ((c j : ℝ) : ℂ)
+      = ((-(θ i * Real.log (θ i)) : ℝ) : ℂ) := by
+    intro i
+    rw [← hc i]
+    push_cast
+    rfl
+  have hnorm : ∀ i, inner ℂ (bdGen (θ i)) bdTarget = ((-(θ i * Real.log (θ i)) : ℝ) : ℂ) :=
+    fun i => inner_bdGen_bdTarget (hθ i).1 (hθ i).2
+  have hne : ∀ i, ∑ j, inner ℂ (bdGen (θ i)) (bdGen (θ j)) * ((c j : ℝ) : ℂ)
+      = inner ℂ (bdGen (θ i)) bdTarget := by
+    intro i
+    rw [hnorm i, ← hcC i]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [inner_bdGen_eq_bdGram]
+  rw [norm_sq_combination_of_normalEquations (fun i => bdGen (θ i)) bdTarget
+    (fun i => ((c i : ℝ) : ℂ)) hne]
+  have hsum : ∑ i, (starRingEnd ℂ) (((c i : ℝ) : ℂ)) * inner ℂ (bdGen (θ i)) bdTarget
+      = ((∑ i, c i * (-(θ i * Real.log (θ i))) : ℝ) : ℂ) := by
+    rw [Complex.ofReal_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hnorm i, Complex.conj_ofReal, ← Complex.ofReal_mul]
+  rw [hsum]
+  have : ((∑ i, c i * (-(θ i * Real.log (θ i))) : ℝ) : ℂ).re
+      = ∑ i, c i * (-(θ i * Real.log (θ i))) := Complex.ofReal_re _
+  rw [show RCLike.re (((∑ i, c i * (-(θ i * Real.log (θ i))) : ℝ) : ℂ))
+      = ∑ i, c i * (-(θ i * Real.log (θ i))) from this]
+  rw [← Finset.sum_neg_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  ring
+
 end RHTower
 
 end

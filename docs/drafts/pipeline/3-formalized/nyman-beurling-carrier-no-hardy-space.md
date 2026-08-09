@@ -260,3 +260,21 @@ So a *new* candidate family — Beurling's dilations of a single function, a Mö
 Balazard–Saias variant — now needs only two computations (the transforms of its members, and of its
 target) to inherit the criterion, the metric form, and the quantitative floor. That is the reusable part of
 this lane, and it costs one `MellinAnnihilated` proof per family.
+
+## Addendum 7 (same day): the bridge to mathlib's projector, and the explained mass
+
+Two additions to `LeastSquaresProjection`, both general:
+
+* `hasOrthogonalProjection_span` — the span of a finite family always has an orthogonal projection (it is
+  finite dimensional), so no instance hypothesis is needed anywhere;
+* `starProjection_eq_of_normalEquations` — **a solution of the normal equations computes mathlib's
+  `Submodule.starProjection`.**  So any corpus statement about the orthogonal projection onto a finite span
+  can now be evaluated from the Gram matrix and the pairing vector, and conversely mathlib's projector API
+  applies to my least-squares data;
+* `norm_sq_combination_of_normalEquations` — the *explained mass*
+  `‖∑cⱼvⱼ‖² = re ∑ᵢ conj(cᵢ)⟪vᵢ,x⟫`, the complement of `norm_sq_residual`.
+
+Instantiated for Báez-Duarte in `norm_sq_bdProjection_of_realNormalEquations`: the projection of the target
+onto a finite section carries exactly `−∑ᵢ cᵢθᵢ log θᵢ` of the target's unit mass. With
+`bdDist_sq_eq_of_realNormalEquations` (`d² = 1 + ∑ᵢcᵢθᵢlogθᵢ`) that is the Pythagorean split of the unit
+target, and the two formulas cross-check each other.

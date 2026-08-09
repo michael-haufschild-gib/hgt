@@ -92,6 +92,26 @@ theorem norm_sq_residual (v : n → H) (x : H) (c : n → 𝕜)
   rw [← hyre, hyy]
   ring
 
+/-- **The explained mass.**  The squared norm of the projection is the pairing form. -/
+theorem norm_sq_combination_of_normalEquations (v : n → H) (x : H) (c : n → 𝕜)
+    (hc : ∀ i, ∑ j, inner 𝕜 (v i) (v j) * c j = inner 𝕜 (v i) x) :
+    ‖∑ j, c j • v j‖ ^ 2 = RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x) := by
+  set y : H := ∑ j, c j • v j with hy
+  have hyy : inner 𝕜 y y = ∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x := by
+    rw [hy, sum_inner]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [inner_smul_left]
+    congr 1
+    rw [inner_sum]
+    have : ∑ j, inner 𝕜 (v i) (c j • v j) = ∑ j, inner 𝕜 (v i) (v j) * c j := by
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [inner_smul_right]
+      ring
+    rw [this, hc i]
+  have := inner_self_eq_norm_sq (𝕜 := 𝕜) y
+  rw [hyy] at this
+  exact this.symm
+
 /-- **The projection is the closest point.** -/
 theorem norm_residual_le (v : n → H) (x : H) (c : n → 𝕜)
     (hc : ∀ i, ∑ j, inner 𝕜 (v i) (v j) * c j = inner 𝕜 (v i) x)
@@ -110,6 +130,27 @@ theorem norm_residual_le (v : n → H) (x : H) (c : n → 𝕜)
     rw [hsplit, norm_add_sq (𝕜 := 𝕜), hortho]
     simp
   nlinarith [norm_nonneg (x - y), norm_nonneg (x - z), norm_nonneg (y - z), hsq]
+
+/-- The span of a finite family always has an orthogonal projection: it is finite dimensional. -/
+theorem hasOrthogonalProjection_span (v : n → H) :
+    (Submodule.span 𝕜 (Set.range v)).HasOrthogonalProjection := by
+  haveI : FiniteDimensional 𝕜 (Submodule.span 𝕜 (Set.range v)) :=
+    FiniteDimensional.span_of_finite 𝕜 (Set.finite_range v)
+  infer_instance
+
+/-- **The bridge to mathlib's projector.**  A solution of the normal equations computes the orthogonal
+projection onto the span, so any statement about `starProjection` on a finite span can be evaluated from the
+Gram matrix and the pairing vector. -/
+theorem starProjection_eq_of_normalEquations (v : n → H) (x : H) (c : n → 𝕜)
+    (hc : ∀ i, ∑ j, inner 𝕜 (v i) (v j) * c j = inner 𝕜 (v i) x) :
+    haveI := hasOrthogonalProjection_span (𝕜 := 𝕜) v
+    (Submodule.span 𝕜 (Set.range v)).starProjection x = ∑ j, c j • v j := by
+  haveI := hasOrthogonalProjection_span (𝕜 := 𝕜) v
+  refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ ?_
+  · refine Submodule.sum_mem _ fun j _ => ?_
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+  · intro w hw
+    exact inner_residual_span_eq_zero v x c hc hw
 
 /-- **The distance to the span, from the normal equations.** -/
 theorem infDist_span_eq (v : n → H) (x : H) (c : n → 𝕜)
