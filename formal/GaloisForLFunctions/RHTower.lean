@@ -6411,3 +6411,4 @@ import GaloisForLFunctions.RHTower.SingleGeneratorUseless
 import GaloisForLFunctions.RHTower.GramDiagonalSandwich
 import GaloisForLFunctions.RHTower.UniformDistanceBound
 import GaloisForLFunctions.RHTower.DistancePositivity
+import GaloisForLFunctions.RHTower.GramResidueDecomposition
