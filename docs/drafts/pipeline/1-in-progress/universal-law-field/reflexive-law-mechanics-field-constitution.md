@@ -5,7 +5,7 @@
 - **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
 - **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
   the laws by which consequences, failures, and conservation requirements revise the rulebook.
-- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [ELEVEN LAWS LEAN-CALIBRATED]
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [FOURTEEN LAWS LEAN-CALIBRATED]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
 
 ## 1. Founding shift
@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The eleven field laws
+## 2. The thirteen field laws
 
 ### RLM Law I -- typed exposure
 
@@ -143,6 +143,32 @@ law history. Serial revision stabilizes after one full round. Synchronous revisi
 typed change in future compatibility: generated test kinds, changed admission, resource-filtered
 polars, nonexact transport, or retained lineage. ULF-RLM-12 proves the complete dynamics in Lean.
 
+### RLM Law XII -- unrestricted endogeneity is vacuous
+
+Changing compatibility is necessary for open exact-polarity history, but arbitrary change is not
+a mechanism. For any state set and any prescribed transition relation, one singleton test and a
+state-indexed compatibility law realize that transition relation exactly as a polar. Thus
+"compatibility depends on state" can encode every dynamics and predicts none. Law genesis must be
+constrained by source-produced witnesses, locality, minimality, certificate conservation, repair
+exchange, and explicit resource accounting. ULF-ECM-1 proves the universality no-go in Lean.
+
+### RLM Law XIII -- finite monotone genesis terminates
+
+Strictly adding compatibility facts cannot sustain an infinite active history when the vocabulary
+of possible facts is finite.  The powerset of that vocabulary is finite, while strict monotonicity
+makes the history injective.  Hence predictive open genesis must grow vocabulary, withdraw old
+facts with conservation records, change admission, or retain lineage outside endpoint rulebooks.
+ULF-GTM-1 proves the termination boundary in Lean.
+
+### RLM Law XIV -- exact repair has no intrinsic least-work origin
+
+For a split repair problem, every repair selector differs from every other by a unique vertical
+shear. Nonzero shears fix no selector. Worse, every selector becomes the unique minimum on every
+fibre for a positive squared-norm cost manufactured around it. Hence "choose the least-work repair"
+is not a constitutive law until source interventions derive the work increments independently. The
+intrinsic datum is a repair torsor; selection requires a source-produced symmetry reduction or a
+source-revealed integrability law. ULF-DDE-1 proves the full boundary in Lean.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -177,6 +203,9 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-RLM-10 | contextual exchange decomposition, arity certificate, and unbounded horizon | certified |
 | ULF-RLM-11 | central-promotion/admission exchange and quotient obstruction | certified |
 | ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
+| ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
+| ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
+| ULF-DDE-1 | repair torsor, shear no-selector, and manufactured least-work no-go | certified |
 
 These theorems use finite sets, free law words, integer central extensions, additive cochains, and
 admitted sequence primitives as structurally different laboratories. No RH endpoint enters their
@@ -221,6 +250,10 @@ self-revising calculus and make cross-laboratory predictions. A list of analogie
     associator, detects this singular failure.
 11. **Exact-polarity collapse:** exact reciprocal rule--test generation has no open history; serial
     update closes in one round and synchronous update is post-first two-periodic.
+12. **Endogeneity vacuity:** state-dependent compatibility alone imposes no law; one test realizes
+    every transition system, so predictive revision must constrain compatibility birth.
+13. **Finite monotone termination:** bounded compatibility vocabulary and strict monotone active
+    repair cannot sustain open history; any infinite genesis must spend another named resource.
 
 ## 7. Fields-medalist research programme
 
@@ -275,9 +308,12 @@ mechanism tuple before its endpoint and predict one theorem not used to define t
 1. **Beyond-unary promotion exchange:** classify weak, partial, extension-valued, and higher-arity
    exchanges not reduced by ULF-RLM-10 to transported binary residuals or by ULF-RLM-11 to
    coefficient landing.
-2. **Endogenous compatibility genesis:** mechanism deriving future reporters, admission, and the
-   changing rule--test compatibility law, rather than declaring them.
-3. **Cost selector:** canonical directed work choosing among simultaneously permitted promotions.
+2. **Endogenous compatibility genesis:** derive future reporters, admission, and compatibility from
+   typed witnesses under locality, minimality, certification conservation, repair exchange, and
+   genesis accounting. Fixed compatibility collapses; arbitrary compatibility is universal, so
+   the live mechanism lies strictly between these certified boundaries.
+3. **Revealed-work integrability:** derive directed work from source interventions; positive work
+   cycles must falsify every scalar action rather than trigger a fitted metric change.
 4. **Infinite coherence:** convergence criterion for an unbounded promotion differential tower.
 5. **Renormalization:** effective law flow under observer coarsening, with nontrivial fixed-point
    predictions.
@@ -305,3 +341,9 @@ Retire RLM as theatre if:
 - 2026-08-09 -- added promotion/admission exchange as Law X: compensator landing, admitted-carrier
   closure, and quotient-residual vanishing are equivalent; exact coherence can coexist with
   singular nonadmission.
+- 2026-08-09 -- added unrestricted-endogeneity vacuity as Law XII: one test realizes every
+  transition system, forcing a structured compatibility-production mechanism.
+- 2026-08-09 -- added finite monotone termination as Law XIII, completing the first certified
+  law-genesis trilemma.
+- 2026-08-09 -- added repair-torsor no-selector as Law XIV: exactness supplies no origin, and every
+  selector can be made least-work by manufactured cost; source-revealed work integrability opened.

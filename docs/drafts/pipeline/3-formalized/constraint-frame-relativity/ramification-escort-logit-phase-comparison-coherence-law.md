@@ -1,9 +1,10 @@
 # Ramification escort--logit--phase comparison coherence law
 
 - **ID:** `cfr-ramification-escort-logit-phase`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GATE-III CALIBRATION / SCALAR NON-DESCENT
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [STRICT SEMIGROUP COHERENCE] [FINITE MARKED APERTURE] [FLAT GAUGE COMPARISON] [SCALAR-CAPACITY NON-DESCENT] [NOT A NONTRIVIAL GATE-III CELL] [NOT PHYSICAL TIME] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [STRICT SEMIGROUP COHERENCE] [FINITE MARKED APERTURE] [FLAT GAUGE COMPARISON] [SCALAR-CAPACITY NON-DESCENT] [NOT A NONTRIVIAL GATE-III CELL] [NOT PHYSICAL TIME] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `ramification-escort-logit-phase-comparison-coherence-law-formalized.md`
 - **Statement:** Ramification power acts on finite Gibbs probabilities by an escort map and on raw prime clocks by scalar dilation; log-odds is an equivariant analytic coordinate conjugating the two actions, and exponentiation gives the phase time-dilation square with strict multiplicative coherence.
 
 ## Goal

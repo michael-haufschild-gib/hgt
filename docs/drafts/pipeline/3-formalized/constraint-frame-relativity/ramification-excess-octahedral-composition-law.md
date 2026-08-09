@@ -1,9 +1,10 @@
 # Ramification marked split-defect composition and inherited-observer blindness law
 
 - **ID:** `cfr-ramification-excess-octahedral`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / MARKED SPLIT DEFECT / FORMATION NO-GO
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HOSTILE-AUDITED] [SOURCE-ASYMMETRIC SPLIT DEFECT] [STRICT COMPOSITION] [ANALYTIC EXCESS RETAINED] [FORMATION NO-GO FOR INHERITED OBSERVERS] [NOT CURVATURE] [NOT NONTRIVIAL COHOMOLOGY] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HOSTILE-AUDITED] [SOURCE-ASYMMETRIC SPLIT DEFECT] [STRICT COMPOSITION] [ANALYTIC EXCESS RETAINED] [FORMATION NO-GO FOR INHERITED OBSERVERS] [NOT CURVATURE] [NOT NONTRIVIAL COHOMOLOGY] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `ramification-excess-octahedral-composition-law-formalized.md`
 - **Statement:** A ramification power event splits the higher shell into inherited image and a
   nonzero new-law sector. For composable power events these excess sectors satisfy a canonical
   split exact sequence and crossed cocycle identity. Every observer factoring through perfect-power

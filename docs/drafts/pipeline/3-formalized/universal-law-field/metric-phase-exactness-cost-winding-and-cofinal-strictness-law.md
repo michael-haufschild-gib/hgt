@@ -1,8 +1,9 @@
 # Metric-phase exactness, cost, winding, and cofinal strictness law
 
 - **ID:** ULF-MPE-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveMetricPhaseExactness`
 - **Source:** universal-law-field speculative tournament
 - **Statement:** Algebraically identical acyclic laws can have independent conditioning, determinant phase, lifted winding, and cofinal strictness data.
 
@@ -16,9 +17,9 @@ failure.
 
 - [x] 0 → 1: explicit source-free finite family and cofinal system
 - [x] 1 → 2: dependency-closed proof below
-- [~] 2 → 3: Theorems 1 and 2 Lean-certified in
-  `GaloisForLFunctions.HTGeometry.ConstitutiveMetricPhaseExactness`; Theorem 3 (cofinal Hilbert
-  direct sum) still open
+- [x] 2 → 3: Theorems 1, 2 and 3 Lean-certified in
+  `GaloisForLFunctions.HTGeometry.ConstitutiveMetricPhaseExactness`, on the new reusable layer
+  `GaloisForLFunctions.HTGeometry.HilbertBlockOperator`
 - [ ] 3 → 4: no publication/priority claim
 
 ## 1. Finite exact-law family
@@ -180,23 +181,32 @@ statement. A universal field must retain this four-layer separation rather than 
 
 - 2026-08-09 — dependency-closed paper theorem created; no Lean, no route specialization.
 
-## Lean certification status (2026-08-09)
+## Lean certification status (2026-08-09) — COMPLETE
 
-Module: `GaloisForLFunctions.HTGeometry.ConstitutiveMetricPhaseExactness`
-(wired into `HTGeometry.UniversalLawField`).
+Modules: `GaloisForLFunctions.HTGeometry.ConstitutiveMetricPhaseExactness` and the new reusable
+layer `GaloisForLFunctions.HTGeometry.HilbertBlockOperator` (both wired into
+`HTGeometry.UniversalLawField`).
 
-Certified — Theorem 1: `det_metricPhaseLaw` (the determinant amplitude `e^{iφ} sin α`),
-`conjTranspose_mul_self` (`TᴴT = !![1, cos α; cos α, 1]`, phase-blind), `det_gramLaw` (`sin²α`),
-`gramLaw_mulVec_low` / `gramLaw_mulVec_high` (Gram eigenvectors `(1,∓1)` with eigenvalues
-`1 ∓ cos α`, the squared singular values), `det_metricPhaseLaw_ne_zero` (acyclicity for
-`0 < α ≤ π/2`), `gram_phase_erasure` together with `det_phase_separates` (the Gram reading erases
-the phase, the determinant does not).
+Theorem 1: `det_metricPhaseLaw`, `conjTranspose_mul_self`, `det_gramLaw`, `gramLaw_mulVec_low`,
+`gramLaw_mulVec_high`, `det_metricPhaseLaw_ne_zero`, `gram_phase_erasure`, `det_phase_separates`;
+the filling energy (4) is `apertureBlock_filling_energy` (upper bound with attainment).
 
-Certified — Theorem 2: `metricPhaseLaw_periodic` (exact `2π`-periodicity of the observed law),
-`exp_detLogLift` (the lift really lifts the determinant), `detLogLift_period` (advance `2πi` per
-observed period) and `detLogLift_winding` (winding `N` after `N` periods).
+Theorem 2: `metricPhaseLaw_periodic`, `exp_detLogLift`, `detLogLift_period`, `detLogLift_winding`.
 
-Open — Theorem 3: the cofinal Hilbert direct sum `⨁ T_{α_n,0}` on `ℓ²(ℕ;ℂ²)`, its boundedness,
-injectivity, dense nonclosed proper range, and the divergence of `‖T_N⁻¹‖²` and of the determinant
-free energy. This needs a Hilbert-direct-sum and closed-range layer that the corpus does not yet
-carry; the operator-norm form of (4) is likewise deferred to that layer.
+Theorem 3: `cofinal_exactness_wall` — the Hilbert direct sum `cofinalLaw` of the aperture blocks is
+bounded by `√2`, injective, has dense range, is not surjective, its range is not closed, and both
+`(1 − cos α_n)⁻¹` and the determinant free energy `−∑ log sin α_n` diverge.
+
+Supporting metric layer: `euclid2_norm_sq`, `apertureBlock_apply_zero/one`,
+`apertureBlock_norm_sq`, `apertureBlock_norm_sq_le`, `norm_apertureBlock_le`,
+`apertureBlock_norm_sq_ge`, `one_sub_cos_pos`, `apertureBlock_injective`,
+`apertureBlock_surjective`, `lowVector`/`lowUnit` and their norms.
+
+New corpus infrastructure: `HilbertBlockOperator` supplies the operator-valued block diagonal on a
+Hilbert direct sum — `blockOperator_memℓp`, `blockOperator`, `norm_blockOperator_le`,
+`blockOperator_injective`, `blockOperator_single`, `denseRange_blockOperator`,
+`not_surjective_blockOperator`, `range_blockOperator_ne_top`,
+`not_isClosed_range_blockOperator` — generalizing the corpus's scalar block diagonal to arbitrary
+uniformly bounded blocks.
+
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.

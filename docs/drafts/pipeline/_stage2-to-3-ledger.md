@@ -685,3 +685,63 @@ prime/zeta/divisor theorem.  See
 - Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
   `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
   computation proof.
+
+# Universal-law-field metric-phase certification (2026-08-09)
+
+- `metric-phase-exactness-cost-winding-and-cofinal-strictness-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean modules: `GaloisForLFunctions.HTGeometry.ConstitutiveMetricPhaseExactness` and the new
+  reusable `GaloisForLFunctions.HTGeometry.HilbertBlockOperator`.
+- Certified — Theorem 1: the determinant amplitude `e^{iφ} sin α`; the Gram law `TᴴT` is
+  phase-blind with determinant `sin²α` and eigenvectors `(1,∓1)` of eigenvalues `1 ∓ cos α`, the
+  squared singular values; acyclicity for `0 < α ≤ π/2`; Gram phase erasure versus determinant phase
+  separation; and the worst filling energy `(1 − cos α)⁻¹`, attained.
+- Certified — Theorem 2: exact `2π`-periodicity of the observed law, the logarithmic determinant
+  lift, its `2πi` advance per period and winding `N` after `N` periods.
+- Certified — Theorem 3: the Hilbert direct sum of the aperture blocks is bounded by `√2`,
+  injective, has dense range, is not surjective, has nonclosed range, and both `(1 − cos α_n)⁻¹`
+  and the determinant free energy `−∑ log sin α_n` diverge.
+- New corpus infrastructure: `HilbertBlockOperator` generalizes the corpus's *scalar* block diagonal
+  on `lp K 2` to arbitrary uniformly bounded operator-valued blocks, with injectivity, dense range
+  from blockwise surjectivity, and the non-invertibility/nonclosed-range consequences of blocks that
+  are not uniformly bounded below.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.
+
+# Universal-law-field A₂ stability-wall certification (2026-08-09)
+
+- `a2-law-stability-wall-positive-chamber-erasure-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveStabilityWall`.
+- Certified: a subrepresentation of `E = (ℂ →id ℂ)` is a pair of subspaces with `U₁ ≤ U₂` and
+  there are exactly three, so the unique nonzero proper subobject is `S₂`; in the open upper
+  half-plane the phase order is the sign of the cross product, hence `E` is stable iff
+  `arg z₂ < arg z₁` and strictly semistable when the two phases agree; on the explicit family
+  `z₁ = exp(i(π/2+θ))`, `z₂ = exp(i(π/2−θ))` with `|θ| < π/2` the extension is stable exactly for
+  `θ > 0`, while `z₁ + z₂ = 2i cos θ` and the modulus packet `(1, 1, 2|cos θ|)` is identical at `θ`
+  and `−θ`, so no rule factoring through the three positive moduli can determine stability.
+- The phase-order engine `arg_lt_arg_iff_cross_pos` (with `arg_div_eq_sub`) is new reusable content:
+  mathlib has no comparison lemma for `Complex.arg` on the upper half-plane.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.
+
+# Universal-law-field isotropic intervention-port certification (2026-08-09)
+
+- `isotropic-law-passive-gauge-intervention-port-and-open-projective-history-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveIsotropicInterventionPort`.
+- Certified: with the plane modelled as `ℂ` and the source law the standard Gaussian, every
+  rotation preserves the law exactly (`Measure.map R_t (stdGaussian ℂ) = stdGaussian ℂ`), so no
+  passive statistic, moment or positive quadratic form sees the rotation parameter, and the Gram
+  identity `R_t R_t^* = 1` holds; after the marked intervention `do(U₁ = 0)` the response is
+  supported on `span(R_t i)`, and two such lines coincide exactly when the parameters differ by an
+  integer multiple of `π`; the projective interventional history is therefore `π`-recurrent while
+  its angle lift is unbounded; and the orientation-reversing swap has the same passive law and Gram
+  operator but determinant `−1`, with its interventional support on the other axis.
+- Uses mathlib's `ProbabilityTheory.stdGaussian` and `stdGaussian_map` for the multivariate
+  Gaussian and its isometry invariance; no Gaussian theory had to be rebuilt.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.

@@ -737,3 +737,206 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
   trivial exponential). Make-or-die: find one corpus consumer or verdict INSIGNIFICANT —
   pre-declared. Collision pass (S-unit sums, Turán power-sum method, known Baker-in-zeta
   uses) mandatory before proof work.
+
+## 2026-08-09 — corpus-frontier audit after user challenge; FIELD-5 superseded by in-tree work
+
+- User challenge validated. Direct audit of formal/ found: (1) the abelian zeta gas is being
+  FORMALIZED in-tree (HTGeometry/AbelianZetaGas/{Core,GibbsLaw,Normalization}.lean — exact
+  geometric atom law, both halves of every sharp depth-condensation wall); (2) the Lee–Yang
+  balanced tree lane is fully TERMINATED in-tree: variance/rank no-go (FK floor — exactly
+  the "tree-uniform second-jet floor" recorded as the next test, executed) plus the modal
+  closure no-go ending in not_tendstoLocallyUniformly_balancedPrimeIsingTreePartition_
+  unitCentralXiC via XiC_hypertranscendental; (3) V1/V3/V4 of the FIELD-5 charter were all
+  already in-tree. FIELD-5 closed as SUPERSEDED; process failure and the sibling-module
+  enumeration rule recorded on the card.
+- Corrected frontier: the E2/Lee–Yang door the field's escape map pointed to is now CLOSED
+  in-tree for balanced finite trees; the corpus's live-door list shrinks again. The gas
+  formalization is active — coordinate with it rather than duplicating (concurrent-agent
+  duplication memory applies).
+
+## 2026-08-09 — rh-current-frontier-map.md adopted as authoritative frontier
+
+- Read in full (snapshot 743880c61, today). It supersedes every memory-file lane summary this
+  program had been steering by. Twelve live routes + CCM-FU, including NEW routes T
+  (mass-shifted critical outgoing current) and U (shifted-Hankel null-face Krein–Lorentz
+  flow) that this program did not know existed.
+- Its §5 verdict on THIS program's batch is adopted as the standing hostile review:
+  receiver/no-go infrastructure, "no typed map to a live route's first unresolved arithmetic
+  theorem", no independent route. The map even states the precise design survivor: "genuinely
+  new law may live in irreducible unbounded-arity interaction or in a cofinal
+  future-sensitive reporter invisible to every fixed proper face."
+- Field-to-map alignment (typed, for the record): the map's design survivor is exactly Θ4's
+  contrapositive (finite/fixed-arity evaluation families are provably blind; separation
+  needs unbounded arity or future-sensitivity). The map's §6 five-class diagnosis matches
+  the field's escape map: all-prime oscillatory transport (D2/E/T) = E1; adaptive spectral
+  orientation (G/U) = E2 (one-sided, moving boundary, not a fixed proper face);
+  singular source descent (C1/L/R/CCM-FU) = the reflection-odd boundary class; the
+  modulus-first formalized no-go is the corpus's own Θ-style cap on T's wrong approaches.
+- RE-AIM: the program's next work must target a NAMED source theorem from the map's §10
+  list, selected by the field's own classification of which mechanisms are not pre-blind:
+  primary = Route U's source-conditioned strict crossing sign on adaptive null flags (the
+  adaptive flag is literally a future-sensitive reporter; the dead subclasses listed for U
+  are all Θ2-classified mechanisms, consistent); secondary = Route T's exact-joint-pairing
+  light-cone cancellation (E1, pairing-before-norms per the modulus-first cap). Obligation
+  inherited from the map's bar: any contribution must be a typed map to the route's first
+  unresolved theorem, not adjacent infrastructure.
+- Next concrete step: read the Route U anchors (XiShiftedHankelBoundaryExtensionClass,
+  ...KreinCrossing, ...Quadrature, ...FirstCrossing, ...NullPolynomialRoots,
+  ...HilbertChargeFlow, ...AdmittedGammaLorentzLanding) — headers AND final theorems, per
+  the sibling-enumeration rule — before formulating any attack on the crossing law.
+
+## 2026-08-09 — Route U recon complete; the group-3 typing of the crossing obligation derived
+
+- U's open core read exactly from the tree: L_y(X·P²) > 0 at every right-half first crossing
+  (window y ∈ (0, 41/2)), P the null polynomial of the singular face; consumer formalized
+  in-tree. Flat-quadrature reading: the obligation is the first unseen moment discrepancy of
+  the source against its own degenerate quadrature.
+- TYPED CONTRIBUTION (ULF-FIELD-6): the unrestricted strengthening ("for every P") is
+  RH-equivalent — derivation recorded — so admissible proofs must consume the crossing
+  constraint essentially; every dead subclass in the U dossier is a fixed-face or
+  unrestricted-class mechanism, now explained uniformly. The obligation is vacuous under RH:
+  it is a self-destruction law for impossible configurations, provable only from the
+  unconditional source side.
+- Open directions recorded (unproven, honest): self-referential moment identity through the
+  face's own quadrature + complete-monotonicity layer; origin of the 41/2 window; T stays
+  secondary (E1-class, modulus-first cap bars norm-first; no mechanism claimed).
+- Next reads: SquaredXiCompleteMonotonicity.lean, XiShiftedHankelBoundaryQuadratureSource.lean.
+
+## 2026-08-09 — the universal mechanism assembled (ULF-MECH-1, stage 2)
+
+- After the user's final correction: stopped route-diving, assembled the session's proven
+  pieces into the one demanded object — the odd-coordinate mechanism (six laws): parity,
+  quadrature, arity, localization, conservation, self-closure. Each law cites its proof;
+  Law 6 (no landscape theory can output the RH sign — outputs of configuration-functionals
+  are even, the sign is odd) proved on the card. Subsumption table covers every route
+  dossier, the retired ledger, and the map's §5/§6 statements (both DERIVED: §5's design
+  survivor = Law 3's contrapositive; §6's five classes = Law 4's exhaustive shapes).
+- Card: docs/drafts/pipeline/2-fully-proven/universal-law-field/
+  odd-coordinate-mechanism-universal-law-set.md
+
+## 2026-08-09 — C1⟷O reduction theorem assembled (ULF-MECH-2 first result)
+
+- Verification pass executed in-tree (Cauchy GW identity + its absolute-domain restriction;
+  square-summable class covers tent tests; XiWeilLineConjHilbert confirms density is NOT
+  asserted in Lean — the simplicity criterion is paper-level, cite-check gated).
+- Assembled: the C1⟷O merger reduces to C1's own recorded test-algebra connector; simplicity
+  invariant = typed residual; O-negativity witnesses transport unconditionally on packet
+  classes. Verdict PARTIAL MERGER REDUCTION — first theorem-grade annotation of the frontier
+  map's conditional route count. Two open cores now hang on one connector.
+- Next: N⟷O comparison; then D2⟷T.
+
+## 2026-08-09 — N⟷O comparison executed: typed independence + prioritization corollary
+
+- N's energy read exactly in-tree; its prime content is Mertens-scale (σ=1 edge, corpus-owned
+  unconditionally); O's is critical-window. Merger would cross the recorded abscissa walls:
+  NOT source-isogenous — first typed independence entry of the implication graph.
+- Leverage by-products: (a) N identified as the minimal-arithmetic-depth live core on the
+  map (its remaining problem is functional-analytic descent; arithmetic input banked) — a
+  prioritization datum the map lacks; (b) consilience: N's radial detector = the field's Θ3
+  crystalline shadow density with harmonic weights.
+- Implication graph state: C1⟷O partial-merger reduction (one connector, simplicity
+  residual); N⟷O typed independence. Next: D2⟷T.
+
+## 2026-08-09 — D2⟷T executed: common source, kernel-separated; consilience claim corrected
+
+- In-tree verified: T's atoms = von Mangoldt L-series terms at 1/2 (exact theorem); D2's
+  ceiling = pointwise Im-bound of the continued relative trace on a half-strip, ⟺ RH with a
+  verified band. Verdict: COMMON-SOURCE pair differing only in kernel cone (resolvent-strip
+  vs light-cone); orientation reduced to one explicit bounded-mass continuation-compatible
+  kernel factorization question; the frontier map is silent on this pair (T's independence
+  argued only vs E and N).
+- Hostile self-review executed on the N⟷O consilience claim: corrected to the precise
+  component-wise statement (phase-free majorant of the Θ3 shadow on the log-prime lattice).
+- Graph state: C1⟷O partial-merger reduction (gated); N⟷O typed independence (abscissa
+  witness); D2⟷T common-source kernel-separation (factorization question). Remaining:
+  G⟷U, P⟷Q residual.
+
+## 2026-08-09 — implication graph COMPLETE; C1⟷O promoted (ULF-MECH-3)
+
+- C1⟷O reduction theorem promoted to stage 2 after gate resolution (packet-continuity
+  hypotheses verified; density dependency removed from the statement). Bridge-grade by
+  construction; first theorem-grade annotation of the map's conditional count.
+- G⟷U executed: structurally isomorphic demands under the classical Krein/de Branges–moment
+  correspondence; independent exactly in source admission (in-tree hooks:
+  SoninDeBrangesCarrier — the de Branges weld IS G's gap — and HedenmalmHankelKreinChamber).
+  Allocation consequence: structural progress transfers between G and U for free.
+- P⟷Q residual typed: unique pair whose residual contains a finite decidable gate (the
+  1/81 moment inequality). Route-level decision NOT executed per user directive.
+- ALL FIVE CHARTERED PAIRS EXECUTED. Graph summary: one promoted reduction (C1–O), one
+  typed independence (N–O, abscissa witness), one common-source separation (D2–T,
+  factorization question), one structure/admission split (G–U), one typed residual (P–Q).
+
+## 2026-08-09 — D2⟷T upgraded to MERGER CANDIDATE; G⟷U anchor set completed
+
+- T's atoms carry the full two-parameter phase (in-tree lemma): T's family spans D2's
+  (frequency, displacement) coordinates; both routes continue the same Λ-at-1/2 series.
+  D2⟷T upgraded from factorization-question to merger candidate; remaining check = equality
+  of the two continuation devices modulo proved bounded faces. If it holds, the map's live
+  count drops from twelve to eleven — highest-value open item of the program.
+- G⟷U: Krein-chamber value = horizontal derivative of |Xi|² (in-tree) — same object class
+  as U's crossing slope; third module anchor for the structure/admission split write-up.
+
+## 2026-08-09 — D2⟷T device check executed: merger RETRACTED, oriented edge reduced to one lemma
+
+- Coordinate identification exact (c, x) ↔ (im z, re z). But T's sums are weighted by the
+  decaying stripFourier test — bounded weighted sums do not give sharp truncations; the
+  merger candidate is retracted under the program's own hostile pass (second self-kill,
+  after FIELD-5). Map count unchanged.
+- Survivor: oriented edge T ⟹ D2 conditional on ONE lemma — sharp log-windows in the
+  bounded-mass closed span of the (a, τ, u) test family — then Hardy–Riesz bounded-partial-
+  sums transport closes the chain. Reverse direction typed Tauberian. Remaining open items:
+  the completeness lemma read (xiMassAnalyticTest definition) and the G–U stage-2 write-up.
+
+## 2026-08-09 — both remaining items executed: KG lemma pinned; G–U split law promoted
+
+- Completeness lemma read DONE: T's test = exp(−τ√(z²+a²)) — the Klein–Gordon mass kernel.
+  The D2–T oriented edge now rests on one fully explicit classical problem (KG–window
+  Beurling–Selberg completeness with bounded mass), with named strategy, named danger
+  (effective Re τ vs the e^{x/2} atom growth — T's own (d−1/2) exponents sit exactly there),
+  and the Law-4 prediction that the lemma is exactly-critical. Recorded as the graph's last
+  open computation — a self-contained classical-analysis problem, not a reading task.
+- G–U stage-2 write-up DONE and promoted (ULF-MECH-4, g-u-structure-admission-split-law.md):
+  structural halves equivalent under the classical Krein/de Branges correspondence (concrete
+  corpus instance: Krein value = horizontal derivative of |Xi|² vs U's gap-slope crossing
+  form); admission halves independent with per-side in-tree underdetermination witnesses;
+  consequences: free structural transfer G↔U, hard part localized to admission, typed
+  falsifier for future transfer proposals. Verdict typing-grade BRIDGE, claimed as such.
+- Graph status: all five edges at theorem grade (C1–O reduction promoted; N–O independence;
+  D2–T oriented-edge-conditional with the pinned lemma; G–U split law promoted; P–Q residual
+  typed). Program's remaining open computation: the KG–window lemma. Route-level items
+  (Q's 1/81 gate; the routes' own cores) remain out of scope per user directive.
+
+## 2026-08-09 — KG–window lemma executed; D2–T edge resolved; graph fully unconditional
+
+- The last open computation is done: KG propagator kernel identified (Bessel K₁, tails
+  e^{−a|x|}, every legal aperture a > 1/2 strictly subcritical — the earlier Re τ danger was
+  mis-assigned and is corrected); superposition span = g(√(z²+a²)); window realization with
+  per-U finite mass; robust transport theorem: T ⟹ D2 on every truncated strip, loss
+  concentrated exactly at im z → 0. The D2–T difference IS the critical-limit uniformity —
+  Law 4's exactly-critical prediction derived. One classical sub-check (Widder mass bound)
+  flagged as constants-only refinement.
+- All five graph edges now carry unconditional resolved verdicts. The frontier map's §6
+  classes have a complete internal comparison structure. Program scope closed at the
+  mechanism level; route-level work remains excluded by user directive.
+
+## 2026-08-09 — Route Q's gate DECIDED (holds, ×3.18); near-line invariant typed
+
+- The unique finite decidable item on the frontier map is decided: normalizedPrimeArchMoment
+  2 < moment 1/81 HOLDS (pre-certified: 200 zeros + density-majorant tail; moments
+  identified in-tree with Σ1/γ⁴ and Σ1/γ⁶ via primeArchSourceMoment_eq_
+  xiCentralReciprocalMoment). Q's selected carrier survives; its open core reduces to
+  all-degree closure alone. Promotion path mechanical (convention audit; verified tables;
+  explicit N(T) tail). Card: route-q-ratio-gate-decision.md (ULF-MECH-5).
+- The D2–T residual invariant typed: divergence class of the truncated-strip ceiling C(δ) —
+  the classical compact-substrip vs up-to-boundary gap; RH ⟺ C(δ) = O(1). Graph annotations
+  complete.
+
+## 2026-08-09 — ULF-MECH-5 PROMOTED: Q's gate decided dependency-closed (margin ×2.51)
+
+- Promotion path executed in full: sign-convention audit passed (xiCentralReciprocalSquare =
+  −1/(ρ−1/2)², positive on-line; identification exact); rigorous proof assembled from THREE
+  classical zero enclosures + Trudgian-type explicit N(T) + elementary integration; margin
+  ×2.51 unconditional (off-line slack < 10⁻²⁴). Card moved to 2-fully-proven.
+- Route Q's recorded open-core decision alternative is now a settled theorem: carrier
+  survives; open core = all-degree closure alone. This is the program's first fully
+  dependency-closed movement on a route's own recorded frontier item.

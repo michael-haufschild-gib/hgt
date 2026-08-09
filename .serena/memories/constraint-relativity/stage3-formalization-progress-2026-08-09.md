@@ -137,3 +137,36 @@ until their file is green again.
 Declaration names must be unique across the WHOLE `HTGeometry` umbrella. `transportDefect` in
 `ConstitutiveSoldering` collided with `ForgetfulTower.transportDefect` and only the umbrella build
 caught it. Prefix new names distinctively.
+
+
+## Checkpoint update (session continued)
+
+- 20 of 49 cards are now in stage 3.  29 remain in stage 2.
+- NEW: `generalized-prime-compound-countermodel-to-universal-selector` MOVED (group-algebra layer
+  completed).  Trap resolved: `AddMonoidAlgebra R M` is a structure with field `coeff : M →₀ R`;
+  build linear maps through `coeffLinearEquiv : PrimeAlgebra ι ≃ₗ[ℂ] (PrimeGrades ι →₀ ℂ)` and use
+  `AddMonoidAlgebra.single` / `single_mul_single` / `coeff_single` (all `rfl`).
+- NEW module `RankOneOrientation.lean` — card `rank-one-orientation-lorentzianization-law` MOVED.
+  Key reusable pieces: `IsAbsoluteSplitting` (D H + j T = 1) with `isCompl`/`quotEquiv`/
+  `observer_decomp`; Riesz port `portVector`/`portAxis`/`portForm`; and
+  `finrank_le_one_of_portForm_nonpos`, which states `ind₋ + dim Rad ≤ 1` uniformly as
+  "every subspace with Q ≤ 0 has finrank ≤ 1" — that formulation avoids all signature machinery.
+- NEW module `IdentitySectorRadialBlindness.lean` — card
+  `identity-sector-radial-gauge-blindness-and-cross-grade-selection-law` MOVED.  Reusable graded
+  layer: `gradeComponent`, `gradeDiag` (diagonal multiplier map), `gradeGaugeHom`/`gradeGauge`
+  (character ⇒ algebra automorphism), `gradeDiag_leibniz` (additive multiplier ⇒ derivation),
+  `identityTrace`, `kummerCocycle`, plus `totalGrade` list lemmas for Hochschild faces.
+
+### Lean traps found this window
+
+- `GradedRing.proj` is only an `AddMonoidHom`; for a `ℂ`-linear projection build it from
+  `DirectSum.component` + `decomposeLinearEquiv`, and prove the two component lemmas by
+  `have h1 : gradeComponent 𝒜 i x = ((DirectSum.decompose 𝒜 x i : 𝒜 i) : A) := rfl` and then
+  `DirectSum.decompose_of_mem_same` / `decompose_of_mem_ne`.
+- When a definition's implicit argument is only determined by a hypothesis of the form
+  `f 0 = 1`, unification is higher-order and fails: make `f` explicit.
+- `omit [Inst] in` must come BEFORE the docstring, never between docstring and `theorem`.
+- `Real.log_eq_zero_iff` does not exist; use `Real.eq_one_of_pos_of_log_eq_zero`.
+- `Real.finsetProd_rpow` (not `finset_prod_rpow`) is the finite-product rpow lemma.
+- mathlib HAS the adelic product formula: `Height.AdmissibleAbsValues`, instantiated for every
+  number field (so for `ℚ`).

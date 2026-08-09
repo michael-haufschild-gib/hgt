@@ -1,10 +1,10 @@
 # Neutral fusion and unobstructed relative cotangent law
 
 - **ID:** `neutral-fusion-unobstructed-relative-cotangent-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / UNIVERSALITY COUNTEREXAMPLE / POSITIVE SURVIVOR (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [HT CORPUS TRANSFER]`
-  `[NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[NO RH CLAIM] [LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
 - **Source:** publication-ready `finite-fusion-infinite-hypertranscendence/main.tex`.
 - **Role:** proves canonical source-selected law growth may be purely creative and unobstructed;
   falsifies obstruction-only Nomogenesis as universal theory.
@@ -132,8 +132,10 @@ source operation is independently known neutral creation.
 
 ## Lean-return note
 
-No Lean work authorized. Existing finite-fusion theorem is publication-ready. If later requested,
-formal work would require differential polynomial algebra infrastructure; no file proposed now.
+Formalized; see `neutral-fusion-unobstructed-relative-cotangent-law-formalized.md`.  The
+differential polynomial algebra infrastructure was already in the corpus
+(`DifferentialIndependentFieldUniversality`, `DifferentialSubfieldTransfer`); the only new piece
+needed was transport of a Kähler basis along an algebra isomorphism.
 
 ## Log
 

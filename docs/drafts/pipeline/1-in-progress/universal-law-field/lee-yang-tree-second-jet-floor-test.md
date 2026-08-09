@@ -78,3 +78,36 @@ classifying it.
 - 2026-08-09 — chartered; single-vertex mass computed ((log p)²/4, floor (log 2)²/4 vs Xi's
   ≈ 0.0462 with conventions unpinned); four verification obligations named, V2 (cavity
   monotonicity vs dilution) identified as the decisive one. No Lean.
+
+## SUPERSEDED BY IN-TREE WORK — card closed (2026-08-09, same day)
+
+Direct Lean-corpus audit (after the user's challenge "are you even looking at our lean
+corpus?") found the entire test EXECUTED AND SURPASSED in-tree:
+
+- `PrimeIsingTreeBalancedVarianceRankNoGo.lean`: the exact second-jet identity
+  (`iteratedDeriv_two_balancedPrimeIsingTreePartition_zero` — balanced jet = −(FK mean
+  cluster-square mass)/4), the uniform floor
+  (`vertexCount_mul_logTwo_sq_div_four_le_neg_re_iteratedDeriv_two_balanced` — V2's
+  monotonicity answered by FK cluster merging), the critical-scale collapse, and
+  `eventually_vertexCount_nat_bounded_of_balanced_tendstoLocallyUniformly`.
+- `PrimeIsingTreeFixedModalClosureNoGo.lean`: the terminal theorem
+  `not_tendstoLocallyUniformly_balancedPrimeIsingTreePartition_unitCentralXiC` — NO sequence
+  of balanced finite prime Ising trees converges locally uniformly to the pointed XiC,
+  unconditionally (bounded rank + spectral packet modal width ≤ 2^|V| + XiC
+  hypertranscendence, `XiC_hypertranscendental`).
+- V1 and V3 were also already in-tree (`centeredPrimeLeeYangField` = centered prime mark at
+  1/2 + iz in `PrimeLeeYangPolydisk.lean`; the moment layer in
+  `CentralReciprocalMoments.lean`); V4's transport lemma is used by the no-go modules
+  themselves.
+
+The lane-elimination memory's "next test: tree-uniform second-jet floor" note was STALE —
+the test was executed and the whole balanced lane TERMINATED in-tree. This card contributed
+nothing beyond the (independently computed, consistent) single-vertex mass (log p)²/4, which
+matches the in-tree FK floor mechanism.
+
+**Process failure recorded:** the charter was written from memory summaries and one module,
+without enumerating the mass-floor law's sibling modules by import graph. The corpus's own
+warnings (`card-lean-tables-can-be-stale`, `hedenmalm-corpus-already-owns-it`: grep before
+declaring) applied verbatim. Standing rule going forward: before chartering ANY attack that
+touches a corpus lane, enumerate the lane's modules (`grep -l` on its key identifiers) and
+read every sibling's header and final theorems first.

@@ -273,4 +273,163 @@ theorem apertureBlock_surjective (α : ℝ) (hs : Real.sin α ≠ 0) (hc : 0 ≤
 
 end CofinalWall
 
+section CofinalAssembly
+
+open Filter Topology
+
+/-- The least-stretch direction of an aperture block. -/
+noncomputable def lowVector : EuclideanSpace ℂ (Fin 2) :=
+  EuclideanSpace.single 0 1 - EuclideanSpace.single 1 1
+
+theorem lowVector_apply_zero : (lowVector : EuclideanSpace ℂ (Fin 2)) 0 = 1 := by
+  simp [lowVector]
+
+theorem lowVector_apply_one : (lowVector : EuclideanSpace ℂ (Fin 2)) 1 = -1 := by
+  simp [lowVector]
+
+theorem norm_lowVector_sq : ‖(lowVector : EuclideanSpace ℂ (Fin 2))‖ ^ 2 = 2 := by
+  rw [euclid2_norm_sq, lowVector_apply_zero, lowVector_apply_one]
+  norm_num
+
+theorem norm_lowVector : ‖(lowVector : EuclideanSpace ℂ (Fin 2))‖ = Real.sqrt 2 := by
+  rw [← Real.sqrt_sq (norm_nonneg (lowVector : EuclideanSpace ℂ (Fin 2))), norm_lowVector_sq]
+
+/-- The normalized least-stretch direction. -/
+noncomputable def lowUnit : EuclideanSpace ℂ (Fin 2) :=
+  (((Real.sqrt 2)⁻¹ : ℝ) : ℂ) • lowVector
+
+theorem norm_lowUnit : ‖(lowUnit : EuclideanSpace ℂ (Fin 2))‖ = 1 := by
+  have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  rw [lowUnit, norm_smul, norm_lowVector, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (le_of_lt (inv_pos.mpr h2))]
+  field_simp
+
+theorem apertureBlock_lowVector_norm_sq (a : ℝ) :
+    ‖apertureBlock a lowVector‖ ^ 2 = 2 * (1 - Real.cos a) := by
+  rw [apertureBlock_norm_sq, lowVector_apply_zero, lowVector_apply_one]
+  have h1 : (1 : ℂ) + (Real.cos a : ℂ) * (-1) = ((1 - Real.cos a : ℝ) : ℂ) := by
+    rw [Complex.ofReal_sub, Complex.ofReal_one]
+    ring
+  have h2 : (Real.sin a : ℂ) * (-1) = ((-Real.sin a : ℝ) : ℂ) := by
+    rw [Complex.ofReal_neg]
+    ring
+  rw [h1, h2, norm_ofReal_sq, norm_ofReal_sq]
+  have hpyth := Real.sin_sq_add_cos_sq a
+  nlinarith [hpyth]
+
+theorem apertureBlock_lowUnit_norm_sq (a : ℝ) :
+    ‖apertureBlock a lowUnit‖ ^ 2 = 1 - Real.cos a := by
+  have h2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  rw [lowUnit, map_smul, norm_smul, mul_pow, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (le_of_lt (inv_pos.mpr h2)), apertureBlock_lowVector_norm_sq]
+  have hinv : ((Real.sqrt 2)⁻¹) ^ 2 = (2 : ℝ)⁻¹ := by
+    rw [inv_pow, Real.sq_sqrt (by norm_num)]
+  rw [hinv]
+  ring
+
+/-- **Worst unit-target filling energy.**  Every filling of a target costs at most
+`(1 − cos α)⁻¹` times the squared target norm, and that bound is attained: this is the operator
+statement `sup_{‖y‖=1} inf_{Tx=y} ‖x‖² = ‖T⁻¹‖² = 1/(1 − cos α)`. -/
+theorem apertureBlock_filling_energy (a : ℝ) (hs : Real.sin a ≠ 0) (hc : 0 ≤ Real.cos a) :
+    (∀ x y : EuclideanSpace ℂ (Fin 2), apertureBlock a x = y →
+        ‖x‖ ^ 2 ≤ (1 - Real.cos a)⁻¹ * ‖y‖ ^ 2) ∧
+      (∃ x y : EuclideanSpace ℂ (Fin 2), apertureBlock a x = y ∧ ‖y‖ ≠ 0 ∧
+        ‖x‖ ^ 2 = (1 - Real.cos a)⁻¹ * ‖y‖ ^ 2) := by
+  have hgap : 0 < 1 - Real.cos a := one_sub_cos_pos a hs
+  constructor
+  · rintro x y rfl
+    have h := apertureBlock_norm_sq_ge a hc x
+    rw [inv_mul_eq_div, le_div_iff₀ hgap]
+    linarith
+  · refine ⟨lowUnit, apertureBlock a lowUnit, rfl, ?_, ?_⟩
+    · intro hzero
+      have h := apertureBlock_lowUnit_norm_sq a
+      rw [hzero] at h
+      simp at h
+      linarith
+    · rw [apertureBlock_lowUnit_norm_sq, inv_mul_cancel₀ (ne_of_gt hgap), norm_lowUnit]
+      norm_num
+
+/-- The cofinal aperture law: the Hilbert direct sum of the aperture blocks. -/
+noncomputable def cofinalLaw (α : ℕ → ℝ) (hc : ∀ n, 0 ≤ Real.cos (α n)) :
+    lp (fun _ : ℕ => EuclideanSpace ℂ (Fin 2)) 2 →L[ℂ]
+      lp (fun _ : ℕ => EuclideanSpace ℂ (Fin 2)) 2 :=
+  blockOperator (fun n => apertureBlock (α n)) (Real.sqrt_nonneg 2)
+    (fun n => norm_apertureBlock_le (α n) (hc n))
+
+/-- **Finite exactness does not imply cofinal strictness.**  The Hilbert direct sum of the aperture
+blocks is bounded and injective with dense, proper, nonclosed range, while the reciprocal least
+squared singular value and the determinant free energy both diverge. -/
+theorem cofinal_exactness_wall (α : ℕ → ℝ) (hpos : ∀ n, 0 < α n) (hle : ∀ n, α n ≤ Real.pi / 2)
+    (hlim : Tendsto α atTop (𝓝 0)) (hc : ∀ n, 0 ≤ Real.cos (α n)) :
+    ‖cofinalLaw α hc‖ ≤ Real.sqrt 2 ∧
+      Function.Injective (cofinalLaw α hc) ∧
+      DenseRange (cofinalLaw α hc) ∧
+      ¬ Function.Surjective (cofinalLaw α hc) ∧
+      ¬ IsClosed (Set.range (cofinalLaw α hc)) ∧
+      Tendsto (fun n => (1 - Real.cos (α n))⁻¹) atTop atTop ∧
+      Tendsto (fun N => ∑ n ∈ Finset.range N, -Real.log (Real.sin (α n))) atTop atTop := by
+  have hlt : ∀ n, α n < Real.pi := fun n =>
+    lt_of_le_of_lt (hle n) (by linarith [Real.pi_pos])
+  have hsinpos : ∀ n, 0 < Real.sin (α n) := fun n =>
+    Real.sin_pos_of_pos_of_lt_pi (hpos n) (hlt n)
+  have hsinne : ∀ n, Real.sin (α n) ≠ 0 := fun n => (hsinpos n).ne'
+  have hinj : ∀ n, Function.Injective (apertureBlock (α n)) := fun n =>
+    apertureBlock_injective (α n) (hsinne n) (hc n)
+  have hsurj : ∀ n, Function.Surjective (apertureBlock (α n)) := fun n =>
+    apertureBlock_surjective (α n) (hsinne n) (hc n)
+  have hcoslim : Tendsto (fun n => Real.cos (α n)) atTop (𝓝 1) := by
+    have h := (Real.continuous_cos.tendsto 0).comp hlim
+    rw [Real.cos_zero] at h
+    exact h
+  have hgaplim : Tendsto (fun n => 1 - Real.cos (α n)) atTop (𝓝 0) := by
+    have h : Tendsto (fun n : ℕ => (1 : ℝ) - Real.cos (α n)) atTop (𝓝 ((1 : ℝ) - 1)) :=
+      Tendsto.sub tendsto_const_nhds hcoslim
+    simpa using h
+  have hgappos : ∀ n, 0 < 1 - Real.cos (α n) := fun n => one_sub_cos_pos (α n) (hsinne n)
+  have hnull : ∀ ε : ℝ, 0 < ε →
+      ∃ (n : ℕ) (v : EuclideanSpace ℂ (Fin 2)), ‖v‖ = 1 ∧ ‖apertureBlock (α n) v‖ < ε := by
+    intro ε hε
+    have hev := hgaplim.eventually (eventually_lt_nhds (show (0 : ℝ) < ε ^ 2 by positivity))
+    obtain ⟨n, hn⟩ := hev.exists
+    refine ⟨n, lowUnit, norm_lowUnit, ?_⟩
+    have hsq : ‖apertureBlock (α n) lowUnit‖ ^ 2 < ε ^ 2 := by
+      rw [apertureBlock_lowUnit_norm_sq]
+      exact hn
+    nlinarith [norm_nonneg (apertureBlock (α n) lowUnit), hε]
+  refine ⟨norm_blockOperator_le _ _ _,
+    blockOperator_injective _ _ _ hinj,
+    denseRange_blockOperator _ _ _ hsurj,
+    not_surjective_blockOperator _ _ _ hinj hnull,
+    not_isClosed_range_blockOperator _ _ _ hinj hsurj hnull, ?_, ?_⟩
+  · have hgt : Tendsto (fun n => 1 - Real.cos (α n)) atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hgaplim
+        (Eventually.of_forall fun n => hgappos n)
+    exact hgt.inv_tendsto_nhdsGT_zero
+  · have hsinle : ∀ n, Real.sin (α n) ≤ 1 := fun n => Real.sin_le_one _
+    have hnonneg : ∀ n, 0 ≤ -Real.log (Real.sin (α n)) := fun n => by
+      have := Real.log_nonpos (hsinpos n).le (hsinle n)
+      linarith
+    have hsinlim : Tendsto (fun n => Real.sin (α n)) atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+        (by
+          have h := (Real.continuous_sin.tendsto 0).comp hlim
+          rw [Real.sin_zero] at h
+          exact h)
+        (Eventually.of_forall fun n => hsinpos n)
+    have hlog : Tendsto (fun n => Real.log (Real.sin (α n))) atTop atBot :=
+      Real.tendsto_log_nhdsGT_zero.comp hsinlim
+    have hneg : Tendsto (fun n => -Real.log (Real.sin (α n))) atTop atTop :=
+      tendsto_neg_atBot_atTop.comp hlog
+    have hnotsummable : ¬ Summable fun n => -Real.log (Real.sin (α n)) := by
+      intro hsum
+      have h0 := hsum.tendsto_atTop_zero
+      have h1 := hneg.eventually_ge_atTop 1
+      have h2 := h0.eventually (eventually_lt_nhds (show (0 : ℝ) < 1 by norm_num))
+      obtain ⟨n, hn1, hn2⟩ := (h1.and h2).exists
+      linarith
+    exact (not_summable_iff_tendsto_nat_atTop_of_nonneg hnonneg).mp hnotsummable
+
+end CofinalAssembly
+
 end GaloisForLFunctions.HTGeometry

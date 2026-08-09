@@ -1,9 +1,10 @@
 # Ramification binary Kummer carry, Boolean collision boundary, and marked three-storey holonomy law
 
 - **ID:** `cfr-ramification-witt-carry`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / KUMMER--WITT ADMISSION-BOUNDARY BRIDGE / MARKED HISTORY CALIBRATION
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HOSTILE-AUDITED] [SOURCE-DERIVED] [BOOLEAN-WITT CARRY] [ROUTE-E ADMISSION BOUNDARY] [MARKED HOLONOMY CALIBRATION] [NOT INTRINSIC CURVATURE] [NOT ORIENTATION] [NOT PHYSICAL TIME] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HOSTILE-AUDITED] [SOURCE-DERIVED] [BOOLEAN-WITT CARRY] [ROUTE-E ADMISSION BOUNDARY] [MARKED HOLONOMY CALIBRATION] [NOT INTRINSIC CURVATURE] [NOT ORIENTATION] [NOT PHYSICAL TIME] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `ramification-witt-carry-boolean-hardcore-recurrence-law-formalized.md`
 - **Statement:** For two successive quadratic ramification stages, the Kummer extension is the
   length-two Witt thickening of the Boolean prime lattice. Its canonical digit carry is Boolean
   intersection. Hard-core multiplication is exactly its zero-carry locus; retaining rejected

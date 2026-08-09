@@ -1,10 +1,10 @@
 # Cofinal HT-to-recurrence rank-transfer bound
 
 - **ID:** `cofinal-ht-to-recurrence-rank-transfer-bound`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CONDITIONAL THEOREM / NO-SHORTCUT BOUND (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL IMPLICATION]`
-  `[HT/PHYSICS BRIDGE] [NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[HT/PHYSICS BRIDGE] [NO RH CLAIM] [LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
 - **Role:** quantifies minimal growth of recurrence carrier needed for no-loss/no-surplus
   realization of neutral-fusion HT law tower.
 
@@ -95,8 +95,9 @@ HT law creation. Matching scalar growth rates does not transfer independent crea
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, generic finite-dimensional injection bound is trivial;
-substantive formal target is fusion differential-rank statement already publication-ready.
+Formalized; see `cofinal-ht-to-recurrence-rank-transfer-bound-formalized.md`.  The bound is not the
+trivial finite-dimensional injection: it is the two-sided differential-matroid rank estimate, and
+both halves are proved.
 
 ## Log
 

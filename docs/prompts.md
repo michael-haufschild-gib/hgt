@@ -4,7 +4,7 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from these: docs/drafts/pipeline/2-fully-proven/universal-law-field (oldest card by modified at file date first)
+else: pick a card from these: docs/drafts/pipeline/2-fully-proven (oldest card by modified at file date first, ignore subfolders)
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
@@ -33,9 +33,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards: 
+formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/constraint-frame-relativity
 
-  
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
@@ -166,8 +165,6 @@ use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist
 - the black hole interior volume paradox
 - Quantum Recurrence
 
-wtf are you wasting time on novelty research for single steps. your goal is clear: Prove, unconditionally, Brown–Susskind’s full growth–plateau–recurrence law for ordinary time-independent local Hamiltonians, and prove that maximal complexity occurs while locality remains permanently distinguishable from Haar randomness.
-
 collect enough novel and significant knowledge to write a paper that meets the publishing requirements of Nature: the paper must report a fundamental new insight or startling discovery that significantly shifts the scientific conversation across multiple fields.
 
 research rules:
@@ -190,12 +187,12 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about:
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about route N from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
 
 collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. 
 
 research rules:
-- use heavy conjecturing
+- use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
 - always check that you do not play theatre and actually are creating new knowledge
 - focus on hard problems, NO THEATRE, NO INFRASTRUCTURE, EVERY STEP MUST DELIVER PROGRESS
 - take a step back and look at the big picture and conjecture how you could reinterpret everything we know so far and where the reasons we got stuck are shadows of a higher universal principle
@@ -204,22 +201,26 @@ research rules:
 add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications.
 
 Lean rules:
-1. Proofs must be unconditional in lean.
-2. Always build in the foreground, 1 process per single agent. You can run builds in parallel to other agents, but only 1 at a time.
+1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
+2. Always build in the foreground, 1 process per single agent.
 3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
 4. No computations.
-5. Do not run full builds, build missing module olean when needed.
-6. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
-7. make sure you don't leave stale lean processes running - clean up after yourself.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+
+Non-negotiable working mode rules:
+1. If it cannot be done in a single session -> Does not matter. Do it!
+2. If it cannot be done in a single context window -> Does not matter. Do it!
+3. If it takes months -> Does not matter. Do it!
+4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
+5. Missing in mathlib -> Build it no matter the effort.
+6. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 
 folders to check for already existing research:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 - formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
-- formal/GaloisForLFunctions/QuantumAlg for lean related to quantum algorithm around prime numbers
-- formal/GaloisForLFunctions/QECLean.lean for lean related to Quantum Error Correction
-- formal/GaloisForLFunctions/PNTPlus.lean for lean related to Prime Number Theorem
-  
+
 goal is met when lean corpus has an uncondtional formal proof for rh.
 
 

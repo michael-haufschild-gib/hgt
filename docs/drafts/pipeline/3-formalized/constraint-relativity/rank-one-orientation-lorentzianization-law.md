@@ -1,9 +1,9 @@
 # Rank-one orientation and Lorentzianization law
 
 - **ID:** `rank-one-orientation-lorentzianization-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / CONSTRAINT RELATIVITY / COFRAME MODEL
-- **Scientific status:** `[PAPER-PROVED] [NO LEAN WRITTEN OR BUILT] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS] [NOT RH]`
 - **Novelty status:** abstract proof is classical splitting, Riesz representation, and rank-one
   inertia. Candidate significance is its exact corpus conjunction: one source orientation
   quotient, same sole Stokes metric port, central determinant exponent, and reflected arithmetic
@@ -309,6 +309,7 @@ This card does not imply:
 
 ## 10. Lean handoff notes
 
-No Lean code was written or built. Later formalization can split the algebraic direct-sum theorem
-from the finite-dimensional real inner-product rank-one inertia theorem. Corpus instantiation and
-source-covariant identification `(6.3)` must remain separate conjectural interfaces.
+Formalized; see `rank-one-orientation-lorentzianization-law-formalized.md`.  The algebraic
+direct-sum theorem and the real inner-product rank-one inertia theorem are separate sections, and
+the corpus instantiation of §6 together with the identification `(6.3)` is deliberately not
+formalized: it is conjectural, as the card states.

@@ -1,10 +1,10 @@
 # Identity-sector radial-gauge blindness and cross-grade selection law
 
 - **ID:** `identity-sector-radial-gauge-blindness-and-cross-grade-selection-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NO-GO / POSITIVE SURVIVOR (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [BRIDGE]`
-  `[SOURCE-AXIOM IMPOSSIBILITY] [NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[SOURCE-AXIOM IMPOSSIBILITY] [NO RH CLAIM] [LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
 - **Novelty:** group-graded gauge action and cyclic-sector decomposition are standard. New leverage is
   exact specialization to literal rational-adelic prime/inverse-prime source together with
   source-specific classification of first possible selector.
@@ -345,9 +345,11 @@ Infinite prime-torus recurrence refines angular dynamics, not radial selection; 
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, generic Theorems 1, 3, and 4 are suitable standalone
-formal targets. Literal crossed-product instantiation should reuse files listed by
-`route-r-kummer-cyclic-one-cocycle-detector.md`; do not rebuild source algebra.
+Formalized; see `identity-sector-radial-gauge-blindness-and-cross-grade-selection-law-formalized.md`.
+Theorems 1, 3, 4 and 5 are proved for an arbitrary graded algebra over an arbitrary abelian grading
+group.  The literal crossed-product instantiation of Corollary 2 is *not* rebuilt: the source
+algebra stays where it is, and the countermodel identities `(16)`–`(18)` are proved for the
+generalized-prime group algebra and for any field with an admissible family of absolute values.
 
 ## Log
 

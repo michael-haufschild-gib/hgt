@@ -1,8 +1,9 @@
 # A2 law-stability wall and positive chamber-erasure law
 
 - **ID:** ULF-LSW-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveStabilityWall`
 - **Source:** universal-law-field speculative tournament
 - **Statement:** One fixed exact law changes from stable to unstable across a phase wall while every natural modulus-only observer remains unchanged.
 
@@ -16,7 +17,7 @@ sizes are fixed.
 
 - [x] 0 → 1: finite quiver model and explicit wall
 - [x] 1 → 2: complete classification proof below
-- [ ] 2 → 3: no Lean formalization
+- [x] 2 → 3: Lean-certified in `GaloisForLFunctions.HTGeometry.ConstitutiveStabilityWall`
 - [ ] 3 → 4: no publication/priority claim
 
 ## 1. Fixed exact law
@@ -127,3 +128,27 @@ constitutive wall even while the underlying exact law stays fixed.
 ## Log
 
 - 2026-08-09 — complete (A_2) classification and positive chamber countermodel recorded; no Lean.
+
+## Lean certification status (2026-08-09) — COMPLETE
+
+Module: `GaloisForLFunctions.HTGeometry.ConstitutiveStabilityWall`
+(wired into `HTGeometry.UniversalLawField`).
+
+Theorem 1: `subrep_classification` and `subrep_proper_nonzero` — a subrepresentation of
+`E = (ℂ →id ℂ)` is a pair of subspaces with `U₁ ≤ U₂`, and there are exactly three, so the unique
+nonzero proper subobject is `S₂`. `stability_iff` proves the wall criterion
+`arg z₂ < arg (z₁ + z₂) ↔ arg z₂ < arg z₁` for charges in the open upper half-plane, and
+`arg_eq_of_arg_eq` proves strict semistability on the wall `arg z₁ = arg z₂`.
+
+The phase-order engine is `arg_lt_arg_iff_cross_pos`: in the open upper half-plane
+`arg w < arg z ↔ 0 < Im(z · conj w)`, proved through `arg_div_eq_sub`
+(`arg (z/w) = arg z − arg w` there). Since `Im(z₂ · conj z₂) = 0`, the criterion for the sum
+collapses to the criterion for `z₁`, which is exactly the card's "the argument of the sum of two
+non-collinear upper half-plane vectors lies strictly between their arguments".
+
+Theorem 2: `wallCharge₁`, `wallCharge₂`, `wallCharge_im_pos`, `wallCharge_cross`
+(`Im(z₁ conj z₂) = sin 2θ`), `wallFamily_stable_iff_pos` (stable exactly for `θ > 0`),
+`wallCharge_sum` (`z₁ + z₂ = 2i cos θ`), `wallFamily_modulus_packet` (`(1, 1, 2|cos θ|)`),
+`wallFamily_modulus_packet_symm` and the capstone `positive_chamber_erasure`.
+
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.

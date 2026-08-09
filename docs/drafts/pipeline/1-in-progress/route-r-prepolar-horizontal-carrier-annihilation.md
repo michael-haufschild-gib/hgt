@@ -165,3 +165,128 @@ the sewn rational-adelic conormal is unconditionally square-summable, while memb
 domain of the fixed inverse-completion operator is exactly the missing source admission. The next
 conjecture must derive that domain admission from a pre-divisor source topology or Cartier boundary,
 not restate it at Xi divisors.
+
+## Same-carrier heavy loop -- 2026-08-09
+
+### C7. Identify the two cyclic faces on the retained atom
+
+**Conjecture.** The two ordinary cyclic faces have the same source trace, so the analytic dagger
+must transport the retained coefficient through the same face.
+
+**Failure.** The source face pair is diagonal `(c,c)`, while the analytic paracyclic face pair is
+`(c, delta*c)`. Identifying these pairs is equivalent to `(delta-1)c=0`; coefficient faithfulness
+then makes this the critical-line conclusion. Cyclicity does not identify the analytic dagger.
+
+### C8. Symmetrize the ordinary-prime atom into a Hochschild cycle
+
+**Conjecture.** Adding the cyclic rotation removes the ordinary Hochschild boundary and makes the
+two transports chain-equal.
+
+**Failure.** Symmetrization can close the source chain, but the physical landing is not known to be
+a chain map for the analytic dagger. Adding that naturality square is the same missing equality.
+
+### C9. Use prime--infinity product-formula cancellation
+
+**Conjecture.** The adelic product formula identifies forward and reflected scale transports on one
+source carrier.
+
+**Failure.** The product formula gives reciprocal compatibility `alpha*beta=1` for every grade.
+Physical annihilation needs `alpha=beta`. The two conditions meet only after the desired neutral
+grade has already been supplied.
+
+### C10. Compare multiplicative source clock and additive analytic response
+
+**Conjecture.** The raw source clock law has a quadratic correction absent from the analytic
+response, forcing the response to be neutral.
+
+**Failure.** The logarithmic coordinate linearizes the multiplicative formal group exactly at
+every grade. The raw correction is a coordinate artifact, not a source anomaly.
+
+### C11. Transport the positive-shell conormal through finite ramified ambidexterity
+
+**Conjecture.** The source Koszul conormal and finite ramified top-conormal adjunction canonically
+identify the two physical Gamma transports.
+
+**Failure.** Both conormals exist before the Xi divisor, but the strict coefficient-faithful map
+from ramified power conormal to the singular physical Gamma dagger is absent. Finite
+ambidexterity alone does not survive the all-prime singular landing.
+
+### C12. Fisher-deconvolved fixed carrier
+
+**Conjecture.** Move the universal Euler--Fisher density into the source topology instead of
+inverting it after passage to the ordinary `ell^1` quotient. The remaining forward and reflected
+half-character transports should then act coefficient-faithfully on one fixed carrier in opposite
+horizontal chambers.
+
+**Verdict.** `[PAPER-PROVED] [BRIDGE] [NOT RH PROOF]`.
+
+Let `S = C^P`, where `P` is the set of ordinary primes, let
+
+```text
+d(p) = p/(p+1)^2,
+I_d = {x in S : p |-> d(p)x(p) is summable},
+Q_d = S/I_d.
+```
+
+This carrier is fixed before any spectral parameter. For a real centered grade `t`, define the
+normalized forward and reflected transports
+
+```text
+u_t(p) = 1 + p^(-t),
+u_t^vee(p) = u_(-t)(p) = 1 + p^t.
+```
+
+Every coefficient is strictly positive. The exact same-carrier theorem is
+
+```text
+M_(u_t) descends to a coefficient-faithful automorphism of Q_d  iff  0 <= t,
+M_(u_t^vee) descends to a coefficient-faithful automorphism of Q_d  iff  t <= 0,
+both descend on Q_d                                      iff  t = 0.
+```
+
+At `t=0` both transports are literally the same scalar multiplier `2`, not merely conjugate under
+reflection.
+
+#### Paper proof
+
+For any prime sequence `m`, diagonal multiplication by `m` preserves `I_d` exactly when `m` is
+bounded. If `m` is bounded, multiplication by `m` preserves summability and commutes with
+multiplication by `d`. Conversely, suppose it preserves `I_d`. Given an arbitrary summable
+sequence `y`, define `x(p)=y(p)/d(p)`. Positivity of `d(p)` gives `d*x=y`, hence `x in I_d`; the
+preservation hypothesis gives `m*y=d*(m*x)` summable. Thus `m` preserves every `ell^1` sequence,
+and the already-formalized diagonal multiplier theorem forces `m` bounded.
+
+If `t>=0`, then `0<p^(-t)<=1`, so `1<=u_t(p)<=2`. Therefore both `u_t` and `u_t^-1` are bounded;
+their descended maps are inverse automorphisms. If `t<0`, put `a=-t>0`. Ordinary primes tend to
+infinity, so `p^a` and hence `u_t(p)=1+p^a` are unbounded. This proves the first equivalence. The
+second follows after replacing `t` by `-t`; conjunction gives `t=0`. At zero both formulas reduce
+pointwise to `2`.
+
+The original comparison coefficient satisfies
+
+```text
+r_t(p) = d(p)u_t(p),
+b_t(p) = -d(p)u_t(p)(p^t-1).
+```
+
+Thus the construction preserves the literal prime coefficient and divisor multiplicity scalar;
+it changes only where the universal Fisher damping is stored. On `S/ell^1`, `M_(r_t)` is
+surjective but noninjective and its reciprocal does not descend. On `Q_d`, the normalized
+transport is an automorphism exactly in its oriented half-space. This is the required
+coefficient-faithful, non-equivariant same-carrier classification.
+
+#### Hostile audit and exact remaining producer
+
+This theorem holds for every real `t` and uses no Xi zero, line placement, or vanishing premise.
+It does **not** show that an actual Xi divisor supplies both quotient actions. Source involution
+only moves an orientation-dependent carrier to its reflected carrier; it does not prove that both
+normalized analytic actions preserve this fixed `I_d` carrier. Claiming simultaneous descent at
+every Xi divisor would be equivalent to RH by the theorem above.
+
+The remaining source law is therefore narrower and literal:
+
+`[OPEN CORE] FISHER_DECONVOLVED_TWO_ORIENTATION_SOURCE_DESCENT` -- construct, from the
+pre-divisor rational-adelic/Cartier source and before Xi scalarization, both normalized operations
+on `Q_d`; prove their representative actions are `u_t` and `u_-t` while retaining prime labels,
+divisor multiplicity, and the two reflection orientations. Equivariance, product formula, or an
+orientation-dependent norm is insufficient.

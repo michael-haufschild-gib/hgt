@@ -39,6 +39,9 @@ Dedicated Lean umbrella:
 | ULF-FLUX-1 | Abelian determinant-flux exact sequence, realizability iff trivial total charge, realization torsor, proper-face invisibility, positive coefficient quotient (cycle-basis isomorphism not constructed) | `HTGeometry.ConstitutiveAbelianDeterminantFlux` |
 | ULF-MOORE-1 | Moore law cell parity dichotomy: odd degree bijective, even degree kernel and cokernel both two-element, positive coefficients repair effectivity and erase memory | `HTGeometry.ConstitutiveMooreLawCell` |
 | ULF-INV-1 | Strict inversion/Cartier square has zero defect (`ε ∘ σ = ε`), the conormal class is odd, the positive displacement is the squared generator, and every radial gain is already a positive square | `HTGeometry.ConstitutiveStrictInversionCartier` |
+| ULF-MPE-1 | Metric-phase exactness: Gram phase quotient, singular values and filling energy, open determinant winding, and the cofinal Hilbert wall with dense nonclosed proper range | `HTGeometry.ConstitutiveMetricPhaseExactness` |
+| ULF-LSW-1 | A₂ stability wall: three subrepresentations, phase-order criterion, strict semistability on the wall, and a modulus packet identical on opposite chambers | `HTGeometry.ConstitutiveStabilityWall` |
+| ULF-IPE-1 | Isotropic Gaussian law: rotations invisible passively, seen modulo `π` by a marked intervention port, `π`-recurrent projective history with unbounded lift, and orientation erased by positive data | `HTGeometry.ConstitutiveIsotropicInterventionPort` |
 | ULF-OPM-2 | Failed unary exchange generates the least preserved congruence; induced quotient laws commute; every commuting observer factors uniquely through it; no smaller strict repair exists | `HTGeometry.ConstitutiveExchangeStrictification` |
 | ULF-OPM-3 | One exchange residual admits strict quotient and nonsplit central promotion; cocycle coherence, exact commutator carry, fixed lift residual, and no-section theorem | `HTGeometry.ConstitutiveExchangeCentralPromotion` |
 | ULF-OPM-4 | Reporter descends exactly when constant on generated exchange congruence; critical-pair detection forbids commuting strictification with reporter preservation; Heisenberg history reporter selects central promotion | `HTGeometry.ConstitutiveExchangePromotionSelection` |
@@ -58,14 +61,6 @@ Formalized cards and declaration-level records live in
 spanning, nonzero blind-direction existence, affine record equality, and qualitative open-interior
 robustness. Product-slot dimension formula and quantitative PSD spectral bound remain uncertified,
 so card stays in Stage 2.
-
-`ULF-MPE-1` has a certified finite core in `HTGeometry.ConstitutiveMetricPhaseExactness`:
-Theorem 1 (determinant amplitude, the phase-blind Gram law `TᴴT`, its determinant `sin²α`, the two
-Gram eigenvectors realizing the squared singular values `1 ± cos α`, acyclicity for `0 < α ≤ π/2`,
-Gram phase erasure versus determinant phase separation) and Theorem 2 (exact `2π`-periodicity of the
-observed law with the open logarithmic determinant lift and winding `N` after `N` periods).
-Theorem 3 — the cofinal Hilbert direct sum with dense nonclosed proper range and diverging inverse
-norm and determinant free energy — is not yet formalized, so the card stays in Stage 2.
 
 `ULF-EQG-1` has a certified local and finite core:
 
@@ -182,3 +177,35 @@ and nonclosure of the admitted carrier.  Axiom audit reports only `propext`, `Cl
 `ULF-RLM-12` passes direct foreground elaboration and the same umbrella's 11,410-job build. Its
 capstone certifies serial idempotence and synchronous `P^3=P` for every fixed compatibility
 relation. The axiom audit reports only `propext` and `Quot.sound`.
+
+## Session 2026-08-09 additions (Defect-Driven Exactification Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DDE-2A | Mandatory pointwise maximum of two scalar-exact work laws is scalar-integrable iff parent potentials differ by a constant; every disagreement creates a positive two-cycle; pointwise minimum always remains integrable | `HTGeometry.ConstitutiveCompetitiveWorkHistory` |
+
+Direct foreground elaboration and final Universal Law Field umbrella build pass. The final build
+completed 11,417 jobs. Significant declarations depend only on `propext`, `Classical.choice`, and
+`Quot.sound`; forbidden-token scan is clean.
+
+## Session 2026-08-09 additions (Endogenous Compatibility Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ECM-1 | Every state-indexed transition relation is exactly the universal one-test polar of an endogenous compatibility law; deterministic updates are the singleton case | `HTGeometry.ConstitutiveEndogenousCompatibility` |
+
+Direct foreground elaboration, final Universal Law Field umbrella build, forbidden-token scan, and
+axiom audit pass. The final umbrella build completed 11,412 jobs; significant declarations depend
+only on `propext` and `Quot.sound`. The theorem is a mechanism-vacuity boundary: state dependence
+alone imposes no dynamics.
+
+## Session 2026-08-09 additions (Genesis Termination Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-GTM-1 | No infinite strict compatibility-enrichment history on finite vocabulary; every monotone history has an adjacent stable step | `HTGeometry.ConstitutiveFiniteRevisionTermination` |
+| ULF-DDE-1 | Repair splittings form a simply transitive shear torsor; nonzero shears fix no selector; every selector is the unique minimizer of an explicit manufactured squared-norm cost | `HTGeometry.ConstitutiveRepairTorsorSelectorNoGo` |
+
+This certifies the finite-monotone leg of the law-genesis trilemma. Direct elaboration and the final
+11,413-job umbrella build pass. Significant declarations depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; the forbidden-token scan is clean.

@@ -1,8 +1,9 @@
 # Isotropic law, passive gauge, intervention port, and open projective history law
 
 - **ID:** ULF-IPE-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveIsotropicInterventionPort`
 - **Source:** synthesis of law-phase and counterfactual forks
 - **Statement:** A source symmetry can be completely invisible passively, observable under a marked intervention, recurrent after projectivization, and open on its lifted history.
 
@@ -15,7 +16,8 @@ orientation, recurrence, and open history. The same source symmetry controls eve
 
 - [x] 0 → 1: explicit Gaussian law with marked source port
 - [x] 1 → 2: exact distribution, support, quotient, and lift computations
-- [ ] 2 → 3: no Lean formalization
+- [x] 2 → 3: Lean-certified in
+  `GaloisForLFunctions.HTGeometry.ConstitutiveIsotropicInterventionPort`
 - [ ] 3 → 4: no publication/priority claim
 
 ## 1. Passive family
@@ -126,3 +128,30 @@ symmetry, exposes orientation, and changes recurrence from a closed quotient to 
 ## Log
 
 - 2026-08-09 — exact passive/interventional/projective synthesis recorded; no Lean.
+
+## Lean certification status (2026-08-09) — COMPLETE
+
+Module: `GaloisForLFunctions.HTGeometry.ConstitutiveIsotropicInterventionPort`
+(wired into `HTGeometry.UniversalLawField`).
+
+The plane is modelled as `ℂ` with source coordinates `1` and `i`, the first marked as the
+intervention port; `sourceLaw = stdGaussian ℂ` and `passiveRotation t = rotation (Circle.exp t)`.
+
+Theorem 1: `map_passiveRotation_sourceLaw` — `Measure.map (R_t) sourceLaw = sourceLaw` for every
+`t`, so the complete passive law and therefore every moment and every positive statistic is
+independent of `t`; `passiveRotation_inner` and `passiveRotation_norm` are the Gram identity
+`R_t R_t^* = 1`. `interventionResponse_eq` gives the `do(U₁ = 0)` response `u • R_t i`, whose
+support is `supportLine t = span ℝ {R_t i}`, and `supportLine_eq_iff` proves
+`supportLine t = supportLine s ↔ ∃ k : ℤ, t − s = kπ`.
+
+Theorem 2: `supportLine_periodic`, `supportLine_int_mul_pi`, `lift_unbounded`, bundled as
+`recurrent_shadow_open_lift`.
+
+Theorem 3: `swapSymmetry` is the orientation-reversing symmetry `z ↦ i·conj z`, i.e. the swap of
+the two source axes in the basis `(1, i)`. `map_swapSymmetry_sourceLaw` and `swapSymmetry_inner`
+give the identical passive law and Gram operator; `toMatrix_swapSymmetry` computes its matrix in
+`Complex.basisOneI` as the swap matrix and `det_swapSymmetry` gives `−1` against `det_id = 1`;
+`swap_support_ne` shows the interventional supports are the two different axes. The capstone is
+`positive_erases_orientation`.
+
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.

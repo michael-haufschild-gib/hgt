@@ -1,9 +1,10 @@
 # Ramification-power phase/history time-dilation law
 
 - **ID:** `cfr-ramification-power-phase-history`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / THIRD OBSERVER-DOCTRINE RESPONSE
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [PARENT-ROUTINE TIME REPARAMETRIZATION] [SAME SOURCE POWER MORPHISM] [NOT A WORMHOLE THEOREM] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [PARENT-ROUTINE TIME REPARAMETRIZATION] [SAME SOURCE POWER MORPHISM] [NOT A WORMHOLE THEOREM] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `ramification-power-phase-history-time-dilation-law-formalized.md`
 - **Statement:** Under the same shell power morphism `P_r:m->rm`, the observed finite-prime phase orbit and its torus closure are unchanged up to time reparametrization, while the marked universal-cover history, generator, and fixed-clock homogeneous costs dilate by exact powers of `r`.
 
 ## Goal

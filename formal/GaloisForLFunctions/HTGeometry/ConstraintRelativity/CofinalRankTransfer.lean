@@ -1,0 +1,166 @@
+import Mathlib
+import GaloisForLFunctions.HTGeometry.DifferentialSpanningBasis
+import GaloisForLFunctions.HTGeometry.DifferentialSubfieldTransfer
+
+/-!
+# Cofinal rank transfer
+
+A differentially independent family has at most as many members as the differential transcendence
+degree, and a family generating the whole differential field has at least as many.  Consequently a
+no-loss differential-coordinate realization of a tower with `n` independent directions needs a
+carrier with at least `n` phase coordinates.
+
+The arithmetic size of the source state set is the number of simultaneous unit residues, which is
+the product of the totients of the pairwise coprime moduli.
+-/
+
+open scoped Differential
+
+open GaloisForLFunctions
+
+namespace HTGeometry.ConstraintRelativity
+
+universe u
+
+/-! ## Two bounds on the differential transcendence degree -/
+
+section Bounds
+
+variable {F E : Type u} [Field F] [Field E] [Algebra F E]
+variable [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+
+omit [Differential F] [DifferentialAlgebra F E] [CharZero E] in
+/-- An element of a derivation-closed subfield is differentially algebraic over it. -/
+theorem differentialAlgebraicOver_of_mem (B : IntermediateField F E) [Differential ↥B]
+    [DifferentialAlgebra ↥B E] {y : E} (hy : y ∈ B) : DifferentialAlgebraicOver B y := by
+  intro hdiff
+  have htrans : Transcendental B y := hdiff.algebraicIndependent.transcendental Unit.unit
+  exact htrans (by simpa using (isAlgebraic_algebraMap (R := B) (A := E) ⟨y, hy⟩))
+
+/-- **A differentially independent family has at most `dtrdeg` members.** -/
+theorem cardinalMk_le_differentialTranscendenceDegree {ι : Type u} (x : ι → E)
+    (hx : DifferentialIndependent F x) :
+    Cardinal.mk ι ≤ differentialTranscendenceDegree F E := by
+  have hinj : Function.Injective x := hx.injective
+  have hind : (differentialMatroid F E).Indep (Set.range x) := by
+    rw [differentialMatroid_indep_iff]
+    exact diffIndepOn_range_of_differentialIndependent hx
+  have hcard := hind.cardinalMk_le_cRank
+  rwa [Cardinal.mk_range_eq x hinj] at hcard
+
+/-- **A generating family has at least `dtrdeg` members.** -/
+theorem differentialTranscendenceDegree_le_of_adjoin_eq_top {ι : Type u} [Finite ι] [Nonempty ι]
+    (y : ι → E) (hgen : differentialAdjoin F (Set.range y) = ⊤) :
+    differentialTranscendenceDegree F E ≤ Cardinal.mk ι := by
+  classical
+  set S : Set E := Set.range y with hS
+  have hSfin : S.Finite := Set.finite_range y
+  obtain ⟨I, hI⟩ := (differentialMatroid F E).exists_isBasis S
+  letI : Differential ↥(differentialAdjoin F I) :=
+    derivationClosedDifferential _ (derivationClosed_differentialAdjoin F I)
+  letI : DifferentialAlgebra ↥(differentialAdjoin F I) E :=
+    ⟨fun c => derivationClosedDifferential_apply _ (derivationClosed_differentialAdjoin F I) c⟩
+  have hIind : DiffIndepOn F I := hI.indep
+  haveI : Finite S := hSfin.to_subtype
+  haveI : Nonempty S := (Set.range_nonempty y).to_subtype
+  letI : Differential ↥(differentialAdjoin F S) :=
+    derivationClosedDifferential _ (derivationClosed_differentialAdjoin F S)
+  letI : DifferentialAlgebra ↥(differentialAdjoin F S) E :=
+    ⟨fun c => derivationClosedDifferential_apply _ (derivationClosed_differentialAdjoin F S) c⟩
+  have hSB : ∀ z : S, DifferentialAlgebraicOver (differentialAdjoin F I) (z : E) := fun z =>
+    (differentialMatroid_mem_closure_iff_of_indep hIind (z : E)).1 (hI.subset_closure z.2)
+  have hspan : ∀ w : E, DifferentialAlgebraicOver (differentialAdjoin F S) w := by
+    intro w
+    exact differentialAlgebraicOver_of_mem _ (by rw [hgen]; trivial)
+  have hall : ∀ w : E, DifferentialAlgebraicOver (differentialAdjoin F I) w := by
+    intro w
+    refine differentialAlgebraicOver_trans_finite_nonempty
+      (F := differentialAdjoin F I) (fun z : S => (z : E)) hSB w ?_
+    have hrange : Set.range (fun z : S => (z : E)) = S := Subtype.range_val
+    rw [hrange]
+    exact differentialAlgebraicOver_differentialAdjoin_adjoin (hspan w)
+  have hclosure : (differentialMatroid F E).closure I = (differentialMatroid F E).E := by
+    rw [differentialMatroid_ground]
+    exact Set.eq_univ_of_forall fun w =>
+      (differentialMatroid_mem_closure_iff_of_indep hIind w).2 (hall w)
+  have hbase : (differentialMatroid F E).IsBase I :=
+    (differentialMatroid F E).isBase_iff_indep_closure_eq.mpr ⟨hIind, hclosure⟩
+  have hIcard : Cardinal.mk I = differentialTranscendenceDegree F E := hbase.cardinalMk_eq_cRank
+  calc differentialTranscendenceDegree F E = Cardinal.mk I := hIcard.symm
+    _ ≤ Cardinal.mk S := Cardinal.mk_le_mk_of_subset hI.subset
+    _ ≤ Cardinal.mk ι := Cardinal.mk_range_le
+
+end Bounds
+
+/-! ## The rank transfer bound -/
+
+section Transfer
+
+variable {F E : Type u} [Field F] [Field E] [Algebra F E]
+variable [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+
+/-- **Card `(2)`.**  If a differentially independent family lands inside the differential field
+generated by a finite family of phase coordinates, the coordinate family is at least as large:
+a no-loss differential-coordinate realization cannot compress independent directions. -/
+theorem rank_transfer {ι κ : Type u} [Finite κ] [Nonempty κ]
+    (x : ι → E) (hx : DifferentialIndependent F x) (y : κ → E)
+    (hembed : ∀ i, x i ∈ differentialAdjoin F (Set.range y)) :
+    Cardinal.mk ι ≤ Cardinal.mk κ := by
+  letI : Differential ↥(differentialAdjoin F (Set.range y)) :=
+    derivationClosedDifferential _ (derivationClosed_differentialAdjoin F (Set.range y))
+  haveI : CharZero ↥(differentialAdjoin F (Set.range y)) :=
+    RingHom.charZero (algebraMap ↥(differentialAdjoin F (Set.range y)) E)
+  have hx' : DifferentialIndependent F fun i => (⟨x i, hembed i⟩ :
+      ↥(differentialAdjoin F (Set.range y))) :=
+    differentialIndependent_subfield (differentialAdjoin F (Set.range y))
+      (derivationClosed_differentialAdjoin F (Set.range y)) _ (by simpa using hx)
+  calc Cardinal.mk ι
+      ≤ differentialTranscendenceDegree F ↥(differentialAdjoin F (Set.range y)) :=
+        cardinalMk_le_differentialTranscendenceDegree _ hx'
+    _ ≤ Cardinal.mk κ :=
+        differentialTranscendenceDegree_le_of_adjoin_eq_top (adjoinLift F y)
+          (differentialAdjoin_adjoinLift_eq_top y)
+
+/-- **Card `(2)`, numerical form.**  A tower with `N·m` independent directions realized by `D − 1`
+phase coordinates forces `D ≥ N·m + 1`. -/
+theorem carrier_level_bound {N m D : ℕ}
+    (x : ULift.{u} (Fin (N * m)) → E) (hx : DifferentialIndependent F x)
+    (y : ULift.{u} (Fin D) → E) [Nonempty (ULift.{u} (Fin D))]
+    (hembed : ∀ i, x i ∈ differentialAdjoin F (Set.range y)) :
+    N * m + 1 ≤ D + 1 := by
+  have h := rank_transfer x hx y hembed
+  simp only [Cardinal.mk_uLift, Cardinal.mk_fin, Cardinal.lift_natCast, Nat.cast_le] at h
+  omega
+
+end Transfer
+
+/-! ## The arithmetic size of the source state set -/
+
+section SourceSize
+
+/-- The totient is multiplicative on a pairwise coprime finite family. -/
+theorem totient_prod_of_pairwise_coprime {ι : Type*} [DecidableEq ι] (s : Finset ι) (q : ι → ℕ)
+    (h : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → Nat.Coprime (q i) (q j)) :
+    Nat.totient (∏ i ∈ s, q i) = ∏ i ∈ s, Nat.totient (q i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    have hcop : Nat.Coprime (q a) (∏ i ∈ s, q i) :=
+      Nat.Coprime.prod_right fun i hi =>
+        h a (Finset.mem_insert_self a s) i (Finset.mem_insert_of_mem hi)
+          (fun hcon => ha (hcon ▸ hi))
+    rw [Finset.prod_insert ha, Nat.totient_mul hcop, Finset.prod_insert ha,
+      ih fun i hi j hj hij =>
+        h i (Finset.mem_insert_of_mem hi) j (Finset.mem_insert_of_mem hj) hij]
+
+/-- **Card `(3)`.**  The number of simultaneous unit residues modulo a pairwise coprime family is
+the product of the totients. -/
+theorem card_units_prod_eq_prod_totient {ι : Type*} [DecidableEq ι] (s : Finset ι) (q : ι → ℕ)
+    [NeZero (∏ i ∈ s, q i)] (h : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → Nat.Coprime (q i) (q j)) :
+    Fintype.card (ZMod (∏ i ∈ s, q i))ˣ = ∏ i ∈ s, Nat.totient (q i) := by
+  rw [ZMod.card_units_eq_totient, totient_prod_of_pairwise_coprime s q h]
+
+end SourceSize
+
+end HTGeometry.ConstraintRelativity

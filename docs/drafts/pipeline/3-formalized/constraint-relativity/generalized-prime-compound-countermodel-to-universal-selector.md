@@ -1,10 +1,10 @@
 # Generalized-prime compound countermodel to universal selector
 
 - **ID:** `generalized-prime-compound-countermodel-to-universal-selector`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** COUNTERMODEL / INDEPENDENCE THEOREM (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [META-NO-GO]`
-  `[NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[NO RH CLAIM] [LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
 - **Role:** proves displayed cyclic, Kummer, reflection, scalar-port, Tor, and controlled-horizon
   identities coexist with nonzero radial drift; their bare conjunction does not select zero.
 
@@ -170,8 +170,7 @@ entire completion within corpus.
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, formalize finite-index group-algebra countermodel and
-2-by-2 matrix calculation; tensor with existing quadratic law-horizon lemmas only after audit.
+Formalized; see `generalized-prime-compound-countermodel-to-universal-selector-formalized.md`.
 
 ## Log
 

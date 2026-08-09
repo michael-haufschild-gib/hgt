@@ -7,7 +7,7 @@ Working rule: take the **oldest card by mtime** in
 `docs/drafts/pipeline/_stage2-to-3-ledger.md`. All modules go into
 `HTGeometry.UniversalLawField`.
 
-## Certified and promoted (12 cards)
+## Certified and promoted (14 cards)
 
 | ID | Lean module |
 |---|---|
@@ -23,48 +23,62 @@ Working rule: take the **oldest card by mtime** in
 | ULF-FLUX-1 | `HTGeometry.ConstitutiveAbelianDeterminantFlux` |
 | ULF-MOORE-1 | `HTGeometry.ConstitutiveMooreLawCell` |
 | ULF-INV-1 | `HTGeometry.ConstitutiveStrictInversionCartier` |
+| ULF-MPE-1 | `HTGeometry.ConstitutiveMetricPhaseExactness` (+ `HTGeometry.HilbertBlockOperator`) |
+| ULF-LSW-1 | `HTGeometry.ConstitutiveStabilityWall` |
 
-## IN PROGRESS — resume here
+`#print axioms` clean on every capstone.
 
-**ULF-MPE-1** (`metric-phase-exactness-cost-winding-and-cofinal-strictness-law.md`, still Stage 2).
-Module `HTGeometry.ConstitutiveMetricPhaseExactness` is built, wired, axiom-clean and certifies
-**Theorem 1 and Theorem 2** in full (determinant amplitude, phase-blind Gram law and its
-determinant, Gram eigenvectors = squared singular values, acyclicity, phase erasure vs determinant
-separation, `2π`-periodicity, open log lift, winding `N`).
-**Remaining: Theorem 3** — the cofinal Hilbert direct sum `⨁ T_{α_n,0}` on `ℓ²(ℕ;ℂ²)`: bounded,
-injective, dense nonclosed proper range, `‖T_N⁻¹‖² → ∞`, determinant free energy `→ ∞`; plus the
-operator-norm form of (4), `‖T⁻¹‖² = 1/(1−cos α)`. Needs a Hilbert-direct-sum / closed-range layer
-(`lp (fun _ => EuclideanSpace ℂ (Fin 2)) 2` or similar) that the corpus does not yet carry.
-Do **not** promote the card until Theorem 3 is closed. Status recorded in the card's own
-"Lean certification status" section and in `_LEAN-CERTIFICATION.md` (partially certified list).
+## NEXT CARD
+
+`isotropic-law-passive-gauge-intervention-port-and-open-projective-history-law.md` (mtime 11:28).
 
 ## Reuse graph — READ BEFORE STARTING A NEW CARD
 
-- Parity/incidence over F₂: `ConstitutiveParityContextuality` (boundary, criterion, proper-face
-  solvability, rank `|V|-1`, halving principle).
-- Oriented multiplicative version over any abelian `A`: `ConstitutiveAbelianDeterminantFlux`.
-  Sign specialization with the `2^β₁` count: `ConstitutiveDeterminantGluing`.
+- F₂ parity/incidence: `ConstitutiveParityContextuality`.
+- Oriented multiplicative flux over any abelian `A`: `ConstitutiveAbelianDeterminantFlux`;
+  sign case with the `2^β₁` count: `ConstitutiveDeterminantGluing`.
 - Based two-term complexes / determinant history / winding: `ConstitutiveDeterminantTorsion`.
 - Minimal L∞ law, colour faces, arity truncation: `ConstitutiveIrreducibleInteraction`.
 - Van Kampen area / Heisenberg / reduced words: `ConstitutiveQuadraticFilling`.
 - Matching-map phases and diagrams: `ConstitutivePolyscopicMatching`.
 - `n`-th power law homology over ℝˣ / ℝ_{>0}: `ConstitutiveMooreLawCell`.
 - Laurent inversion/Cartier: `ConstitutiveStrictInversionCartier`.
+- 2×2 aperture blocks, Gram/singular values, filling energy, winding lift:
+  `ConstitutiveMetricPhaseExactness`.
+- **Operator-valued block diagonal on `lp K 2`**: `HTGeometry.HilbertBlockOperator`
+  (`blockOperator`, injective / dense range / not surjective / nonclosed range). Mathlib has none;
+  the corpus previously had only the *scalar* version
+  (`RHTower.DeningerPrimeBlockGreenSummability`).
+- **`Complex.arg` order on the upper half-plane**: `ConstitutiveStabilityWall`
+  (`arg_div_eq_sub`, `arg_lt_arg_iff_cross_pos` — phase order = sign of the cross product).
+  Mathlib has no arg-comparison lemma.
+- Other existing pieces worth knowing:
+  `HTGeometry.BoundedMultiplierHilbert.denseRange_of_orthogonal_trivial`,
+  `HTGeometry.CompactOperatorDiscreteSpectrum.denseRange_of_isSelfAdjoint_of_injective`,
+  `RHTower.DiagonalEllTwoOperator.diagonalOperator`,
+  `NomologicalHomotopyGeometry.MinimalLawLeadingJet` (`MinimalLaw`, `MinimalLawEquiv`).
 
-## Findings / corrections
+## Findings / scope notes
 
 - **ULF-MATCH-1 §4.1 corrected** (card §8): the parity Čech diagram over the subset poset is
   reconstructible, not contextual.
-- **ULF-FLUX-1 scope**: `ker ∂_A ≅ A^{β₁}` not certified (no spanning-tree cycle basis in mathlib);
+- **ULF-FLUX-1**: `ker ∂_A ≅ A^{β₁}` not certified (no spanning-tree cycle basis in mathlib);
   numeric count certified over F₂ in ULF-DGLU-1.
-- **ULF-INV-1 scope**: the derived equivalence (IC.4) and `Tor₁(S,S)` identification (IC.8) not
-  certified (no derived-functor layer); the ring-level inputs are.
+- **ULF-INV-1**: derived equivalence (IC.4) and `Tor₁(S,S)` (IC.8) not certified (no
+  derived-functor layer); the ring-level inputs are.
+- **ULF-MATCH-1** Cor 2.4 (higher homotopy) out of chart; 0-truncated content certified.
 
 ## Standing environment notes
 
-- The formal lint gate intermittently reports "owned module unreachable"/"stale generated file" for
-  modules a **concurrent agent** is mid-editing. Re-run `formal_tools.py index` then `lint`.
-- Useful traps met this sweep: `List.Chain'` → `List.IsChain`; `abs_add` → `abs_add_le`;
-  `Finset.card_insert_of_not_mem` → `..._of_notMem`; simp turns `↑(Real.cos α)` into
+- The lint gate intermittently reports "owned module unreachable"/"stale generated file" for modules
+  a **concurrent agent** is mid-editing (ConstraintRelativity, ConstraintFrameRelativity,
+  DerivedSelectionGeometry, RHTower Eigen*). Re-run `formal_tools.py index` then `lint`. Running
+  `lint --check-generated` twice in one command exceeds the 600 s tool timeout — run it once.
+- Traps met: `List.Chain'`→`List.IsChain`; `abs_add`→`abs_add_le`;
+  `Finset.card_insert_of_not_mem`→`..._of_notMem`; `pow_le_pow_left` needs `IsMulTorsionFree`
+  (use a `Real.pow_rpow_inv_natCast` helper on nonnegatives); simp turns `↑(Real.cos α)` into
   `Complex.cos ↑α` (block with `-Complex.ofReal_cos`); `Pi.single a 1 v` needs the whole function
-  ascribed; `exteriorPower` lives in namespace `ExteriorAlgebra`, notation `⋀[R]^n M`.
+  ascribed; `exteriorPower` lives in namespace `ExteriorAlgebra`, notation `⋀[R]^n M`;
+  `EuclideanSpace.single_apply` deprecated → `PiLp.single_apply`;
+  `(f).comp hlim` gives `Real.cos ∘ α` — `rw [Real.cos_zero] at h; exact h`, not `simpa`;
+  `push_neg` deprecated — use `rw [not_lt]` etc. (the lint gate fails on warnings).
