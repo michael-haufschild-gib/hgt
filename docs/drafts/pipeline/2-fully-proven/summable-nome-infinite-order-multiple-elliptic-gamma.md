@@ -689,6 +689,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | occupation Euler product over ℂ | `hasSum_supported_nomeMonomial`, `hasProd_inv_one_sub_nome`, `tsum_nomeMonomial_eq_tprod` |
 | Lemma 2, (8) in summed-tail form | `norm_primaryLogTail_le`, `hasProd_cexp`, `infiniteMultipleEllipticGamma_eq_exp_neg_tsum` |
 | Lemma 2, (8) in moment form | `norm_logTail_term_le`, `summable_logTail_family`, `tsum_logTail_family_occupation`, `infiniteMultipleEllipticGamma_eq_exp_neg_moments` |
+| Lemma 7, (17) — the finite-section free energy | `finiteNomeSection_eq_restricted`, `finiteNomeSection_eq_exp_neg_moments` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
@@ -701,11 +702,19 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/PiGeometricSeries.lean`,
 `HTGeometry/OccupationEulerProduct.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaMoments.lean`,
-`HTGeometry/InfiniteMultipleEllipticGammaMomentForm.lean`.
+`HTGeometry/InfiniteMultipleEllipticGammaMomentForm.lean`,
+`HTGeometry/FiniteNomeSectionRestriction.lean`.
 
 ### Open in Lean
 
-1. Lemma 7: the all-order counterterm jet (C3)/(20).
+1. Lemma 7, the jet (C3)/(20).  Its input (17) is closed: a finite section is the infinite product
+   of the restricted nome family (`finiteNomeSection_eq_restricted`), so its free energy is the
+   moment series with the finite Euler products `M_{S,m} = ∏_{a∈S}(1-p_a^m)^{-1}` as coefficients.
+   What remains: write `log F_{S,g}(x) = -∑_{m≥d} (Q_S/x)^m M_{S,m}/m` from that, subtract the
+   counterterms through order `N-1`, divide by `Q_S^N`, and show the remaining tail tends to zero
+   uniformly on a compact of `ℂ^×` while `M_{S,N} → M_{A,N}`.  The last convergence is already
+   available: `hasProd_inv_one_sub_nome` applied at `p^N` *is* the statement that the finite Euler
+   products converge to `M_{A,N}`.
 2. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
 
