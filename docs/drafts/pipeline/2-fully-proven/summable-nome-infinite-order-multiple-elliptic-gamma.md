@@ -684,6 +684,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 6, no scaling keeps two gamma halves | `scalingBoundary_half_collapses` |
 | Lemma 6, moving-coordinate convergence | `exists_primaryFactor_sub_one_bound`, `tendsto_finiteNomeSection_moving` |
 | Lemma 6, the full table (15)/(16) | `tendsto_scalingTable` |
+| Lemma 2, (8) in summed-tail form | `norm_primaryLogTail_le`, `hasProd_cexp`, `infiniteMultipleEllipticGamma_eq_exp_neg_tsum` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
@@ -691,12 +692,17 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaValues.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaCollapse.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaScaling.lean`,
-`HTGeometry/InfiniteMultipleEllipticGammaMovingPoint.lean`.
+`HTGeometry/InfiniteMultipleEllipticGammaMovingPoint.lean`,
+`HTGeometry/InfiniteMultipleEllipticGammaFreeEnergy.lean`.
 
 ### Open in Lean
 
-1. Lemma 2, free energy (8): `log 𝒢_{A,g}(x) = -∑_{m≥d} x^m M_{A,m}/m` on `|x|<1`, with
-   `M_{A,m} = ∏_a (1-p_a^m)^{-1}` and the occupation rearrangement `∑_ν (p^ν)^m = M_{A,m}`.
+1. Lemma 2, (8) in moment form.  The summed-tail form is closed:
+   `𝒢_{A,g}(x) = exp(-∑_ν primaryLogTail g (x p^ν))` on `‖x‖ < 1`.  What remains is to expand each
+   tail and interchange, `∑_ν ∑_{m≥d} (x p^ν)^m/m = ∑_{m≥d} x^m M_{A,m}/m`, which needs the
+   occupation Euler product `∑_ν (p^ν)^m = ∏_a (1-p_a^m)^{-1}` in ℂ.  The ℝ≥0∞ shadow of that
+   product is already `nomeOccupationMass_eq_iSup_finset`; the complex version needs the finite
+   identity `∑_{supp ν ⊆ S} p^ν = ∏_{a∈S}(1-p_a)^{-1}` by induction on `S`, then a limit.
 2. Lemma 7: the all-order counterterm jet (C3)/(20).
 3. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
