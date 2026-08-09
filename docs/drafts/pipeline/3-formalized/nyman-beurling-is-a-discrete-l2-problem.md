@@ -71,3 +71,26 @@ argument does not reach the full span. And the bound is worthless quantitatively
 it gives `d_N ≳ e^{-N}` against the true `≍ 1/√(log N)`. Its value is structural: the same
 "bounded functional kills the family but not the target" mechanism that produced the zero-based floor also
 runs on pure divisibility, with no zeta input at all.
+
+## Addendum 2 (same day): the first constructive input
+
+Everything on this lane so far has been an obstruction. `RHTower/MoebiusApproximantResidual.lean` supplies
+the other side, and it reuses a result the corpus already had:
+`MoebiusFloorSummatory.moebius_floor_summatory` (`∑_{d ≤ N} μ(d)⌊N/d⌋ = 1`).
+
+* `moebius_floor_summatory_le` — the same at an inner point, `∑_{d ≤ N} μ(d)⌊n/d⌋ = 1` for `1 ≤ n ≤ N`
+  (terms with `d > n` vanish);
+* `modSeq_eq_sub_floor` — `g_d(n) = n/d − ⌊n/d⌋`;
+* **`sum_moebius_modSeq` — `∑_{d ≤ N} μ(d)·g_d(n) = n·M₁(N) − 1` for `1 ≤ n ≤ N`**, where
+  `M₁(N) = ∑_{d ≤ N} μ(d)/d`;
+* **`moebius_residual_eq` — `1 − ∑_{d ≤ N}(−μ(d))·g_d(n) = n·M₁(N)`**: the combination with coefficients
+  `−μ(d)` reproduces the target sequence on all of `[1,N]` up to `n·M₁(N)`;
+* `abs_moebius_residual_le` — the residual is `≤ n`, from the corpus's `abs_sum_moebius_div_le_one`.
+
+What this does and does not give. It is the exact starting point for analysing any coefficient choice, and it
+identifies the single quantity that controls the undamped approximant: `M₁(N)`, whose vanishing is equivalent
+to the prime number theorem — which the corpus proves twice (`RHTower/Sieve/ChebyshevPNT.lean` and the
+vendored `PNTPlus`), so supplying `M₁(N) → 0` is a follow-up rather than a new obstacle. But even with
+`M₁(N) → 0` the residual grows linearly in `n` while the weights decay like `1/n²`, so the undamped Möbius
+approximant does **not** converge. The classical remedy is Vasyunin-type damping of the coefficients; this
+identity is what any such analysis starts from.
