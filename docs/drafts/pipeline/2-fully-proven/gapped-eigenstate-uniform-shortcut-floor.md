@@ -248,9 +248,26 @@ its distance to that line.  The statement is for an arbitrary linear isometry wi
 line, which is what makes the bound uniform in time — nothing about `exp(-itH)` beyond fixing the
 eigenline is used, and the time never appears.
 
+`HTGeometry/SelfAdjointPropagator.lean` supplies the two facts that specialize `(3)` to the
+physical propagator: `exp_apply_of_eigen` — the exponential acts on an eigenvector by the
+exponential of the eigenvalue, proved by evaluating the series term by term — and
+`neg_I_smul_mem_skewAdjoint` — a real multiple of `-i` times a self-adjoint operator is
+skew-adjoint.
+
+**Blocker, recorded.**  The last step of that specialization, `exp(-itH)` is unitary, is *not*
+formalized, and the obstruction is a missing instance rather than mathematics.  Mathlib's
+`NormedSpace.exp_mem_unitary_of_mem_skewAdjoint` and `NormedSpace.exp_add_of_commute` both require
+`NormedAlgebra ℚ 𝔸`, and that instance is not derivable for `E →L[ℂ] E` — not even for
+`EuclideanSpace ℂ ι` with `ι` finite, where `NormedAlgebra ℚ ℂ` and `NormedAlgebra ℝ (E →L[ℂ] E)`
+both exist but do not compose.  Supplying it means constructing `Algebra ℚ (E →L[ℂ] E)` through
+`ℚ → ℂ → E →L[ℂ] E` and checking it does not conflict with any existing `SMul ℚ` structure.  That
+is a mathlib-side chore, not a gap in the card.
+
+None of this weakens `(3)`: it is proved for an arbitrary linear isometry with an invariant line,
+which already covers the propagator once the isometry instance is available.
+
 Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; `(11)` is a Gaussian
-product-box estimate; `(12)` is the asymptotic comparison.  Composing `(3)` with `exp(-itH)`
-specifically also wants the eigenvector law for the operator exponential, which is one lemma.
+product-box estimate; `(12)` is the asymptotic comparison.
 
 ## Formal target
 
