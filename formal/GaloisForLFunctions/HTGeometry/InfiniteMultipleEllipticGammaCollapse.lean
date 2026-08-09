@@ -191,4 +191,155 @@ theorem tendsto_parityNormalizedSection {ι : Type*} [Infinite ι] (g : ℕ) (p 
   · simpa [hp] using h1
   · simpa [hp] using h2
 
+
+/-! ## The parity obstruction -/
+
+/-- The raw finite section, before parity normalization. -/
+noncomputable def rawSection {ι : Type*} (g : ℕ) (p : ι → ℂ) (S : Finset ι) (x : ℂ) : ℂ :=
+  if Even S.card then forwardNomeFactor g p S x / finiteNomeSection g p S x
+  else forwardNomeFactor g p S x * finiteNomeSection g p S x
+
+theorem rawSection_eq_inv_of_even {ι : Type*} (g : ℕ) (p : ι → ℂ) {S : Finset ι}
+    (hS : Even S.card) (x : ℂ) :
+    rawSection g p S x = (parityNormalizedSection g p S x)⁻¹ := by
+  rw [rawSection, parityNormalizedSection, if_pos hS, if_pos hS, inv_div]
+
+theorem rawSection_eq_of_odd {ι : Type*} (g : ℕ) (p : ι → ℂ) {S : Finset ι}
+    (hS : ¬ Even S.card) (x : ℂ) :
+    rawSection g p S x = parityNormalizedSection g p S x := by
+  rw [rawSection, parityNormalizedSection, if_neg hS, if_neg hS, mul_comm]
+
+/-- Both parity subposets of the finite nome sets are cofinal, so both parity subnets are genuine
+subnets: a fresh index can always be adjoined. -/
+instance evenCard_neBot {ι : Type*} [Infinite ι] :
+    (atTop ⊓ 𝓟 {S : Finset ι | Even S.card}).NeBot := by
+  classical
+  rw [inf_principal_neBot_iff]
+  intro U hU
+  obtain ⟨S₀, hS₀⟩ := Filter.mem_atTop_sets.mp hU
+  by_cases hpar : Even S₀.card
+  · exact ⟨S₀, hS₀ S₀ le_rfl, hpar⟩
+  · obtain ⟨a, ha⟩ := Infinite.exists_notMem_finset S₀
+    refine ⟨insert a S₀, hS₀ _ (Finset.subset_insert a S₀), ?_⟩
+    simp only [Set.mem_setOf_eq, Finset.card_insert_of_notMem ha, Nat.even_add_one]
+    exact hpar
+
+instance oddCard_neBot {ι : Type*} [Infinite ι] :
+    (atTop ⊓ 𝓟 {S : Finset ι | ¬ Even S.card}).NeBot := by
+  classical
+  rw [inf_principal_neBot_iff]
+  intro U hU
+  obtain ⟨S₀, hS₀⟩ := Filter.mem_atTop_sets.mp hU
+  by_cases hpar : Even S₀.card
+  · obtain ⟨a, ha⟩ := Infinite.exists_notMem_finset S₀
+    refine ⟨insert a S₀, hS₀ _ (Finset.subset_insert a S₀), ?_⟩
+    simp only [Set.mem_setOf_eq, Finset.card_insert_of_notMem ha, Nat.even_add_one, not_not]
+    exact hpar
+  · exact ⟨S₀, hS₀ S₀ le_rfl, hpar⟩
+
+/-- Along odd nome sets the raw section tends to the infinite-order product. -/
+theorem tendsto_rawSection_odd {ι : Type*} [Infinite ι] (g : ℕ) (p : ι → ℂ)
+    (hp_ne : ∀ a, p a ≠ 0) (hp_lt : ∀ a, ‖p a‖ < 1)
+    (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) (x : ℂ) :
+    Tendsto (fun S : Finset ι => rawSection g p S x)
+      (atTop ⊓ 𝓟 {S : Finset ι | ¬ Even S.card})
+      (𝓝 (infiniteMultipleEllipticGamma g p x)) := by
+  have h : Tendsto (fun S : Finset ι => parityNormalizedSection g p S x)
+      (atTop ⊓ 𝓟 {S : Finset ι | ¬ Even S.card})
+      (𝓝 (infiniteMultipleEllipticGamma g p x)) :=
+    (tendsto_parityNormalizedSection g p hp_ne hp_lt hsum x).mono_left inf_le_left
+  refine h.congr' (Filter.eventually_inf_principal.mpr ?_)
+  filter_upwards with S hS
+  exact (rawSection_eq_of_odd g p hS x).symm
+
+/-- Along even nome sets the raw section tends to the reciprocal of the infinite-order product. -/
+theorem tendsto_rawSection_even {ι : Type*} [Infinite ι] (g : ℕ) (p : ι → ℂ)
+    (hp_ne : ∀ a, p a ≠ 0) (hp_lt : ∀ a, ‖p a‖ < 1)
+    (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) {x : ℂ}
+    (hG : infiniteMultipleEllipticGamma g p x ≠ 0) :
+    Tendsto (fun S : Finset ι => rawSection g p S x)
+      (atTop ⊓ 𝓟 {S : Finset ι | Even S.card})
+      (𝓝 (infiniteMultipleEllipticGamma g p x)⁻¹) := by
+  have h0 : Tendsto (fun S : Finset ι => parityNormalizedSection g p S x)
+      (atTop ⊓ 𝓟 {S : Finset ι | Even S.card})
+      (𝓝 (infiniteMultipleEllipticGamma g p x)) :=
+    (tendsto_parityNormalizedSection g p hp_ne hp_lt hsum x).mono_left inf_le_left
+  have h := h0.inv₀ hG
+  refine h.congr' (Filter.eventually_inf_principal.mpr ?_)
+  filter_upwards with S hS
+  exact (rawSection_eq_inv_of_even g p hS x).symm
+
+/-- **The two parity cluster values are reciprocal.**  If the raw net converged at a point where the
+infinite-order product does not vanish, the limit would have to equal both the product and its
+reciprocal. -/
+theorem sq_eq_one_of_tendsto_rawSection {ι : Type*} [Infinite ι] (g : ℕ) (p : ι → ℂ)
+    (hp_ne : ∀ a, p a ≠ 0) (hp_lt : ∀ a, ‖p a‖ < 1)
+    (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) {x : ℂ}
+    (hG : infiniteMultipleEllipticGamma g p x ≠ 0) {L : ℂ}
+    (hL : Tendsto (fun S : Finset ι => rawSection g p S x) atTop (𝓝 L)) :
+    infiniteMultipleEllipticGamma g p x ^ 2 = 1 := by
+  have hLe : Tendsto (fun S : Finset ι => rawSection g p S x)
+      (atTop ⊓ 𝓟 {S : Finset ι | Even S.card}) (𝓝 L) := hL.mono_left inf_le_left
+  have hLo : Tendsto (fun S : Finset ι => rawSection g p S x)
+      (atTop ⊓ 𝓟 {S : Finset ι | ¬ Even S.card}) (𝓝 L) := hL.mono_left inf_le_left
+  have h1 : L = (infiniteMultipleEllipticGamma g p x)⁻¹ :=
+    tendsto_nhds_unique hLe (tendsto_rawSection_even g p hp_ne hp_lt hsum hG)
+  have h2 : L = infiniteMultipleEllipticGamma g p x :=
+    tendsto_nhds_unique hLo (tendsto_rawSection_odd g p hp_ne hp_lt hsum x)
+  have h3 : infiniteMultipleEllipticGamma g p x =
+      (infiniteMultipleEllipticGamma g p x)⁻¹ := h2.symm.trans h1
+  rw [sq]
+  nth_rewrite 1 [h3]
+  exact inv_mul_cancel₀ hG
+
+/-- A point where the infinite-order product is neither zero nor a square root of one: the real part
+of the product runs continuously from one to zero, so it takes the value one half. -/
+theorem exists_point_of_half {ι : Type*} (g : ℕ) (p : ι → ℂ)
+    (hp_ne : ∀ a, p a ≠ 0) (hp_lt : ∀ a, ‖p a‖ < 1)
+    (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) :
+    ∃ x : ℂ, infiniteMultipleEllipticGamma g p x ≠ 0 ∧
+      infiniteMultipleEllipticGamma g p x ^ 2 ≠ 1 := by
+  have hcont : Continuous (infiniteMultipleEllipticGamma g p) := by
+    have h := infiniteMultipleEllipticGamma_analytic g p hp_ne hp_lt hsum
+    rw [← continuousOn_univ]
+    exact h.continuousOn
+  set F : ℝ → ℝ := fun t => (infiniteMultipleEllipticGamma g p (t : ℂ)).re with hF
+  have hFcont : ContinuousOn F (Set.Icc 0 1) := by
+    refine Continuous.continuousOn ?_
+    exact Complex.continuous_re.comp (hcont.comp Complex.continuous_ofReal)
+  have hF0 : F 0 = 1 := by
+    simp [hF, infiniteMultipleEllipticGamma_at_zero]
+  have hF1 : F 1 = 0 := by
+    simp [hF, infiniteMultipleEllipticGamma_at_one g p hp_ne hp_lt hsum]
+  have hmem : (1 / 2 : ℝ) ∈ Set.Icc (F 1) (F 0) := by
+    rw [hF0, hF1]
+    constructor <;> norm_num
+  obtain ⟨t, _, ht⟩ := intermediate_value_Icc' (by norm_num : (0 : ℝ) ≤ 1) hFcont hmem
+  have ht' : (infiniteMultipleEllipticGamma g p (t : ℂ)).re = 1 / 2 := ht
+  refine ⟨(t : ℂ), ?_, ?_⟩
+  · intro hzero
+    rw [hzero] at ht'
+    norm_num at ht'
+  · intro hsq
+    have hcases : infiniteMultipleEllipticGamma g p (t : ℂ) = 1 ∨
+        infiniteMultipleEllipticGamma g p (t : ℂ) = -1 := by
+      have hfac : (infiniteMultipleEllipticGamma g p (t : ℂ) - 1) *
+          (infiniteMultipleEllipticGamma g p (t : ℂ) + 1) = 0 := by linear_combination hsq
+      rcases mul_eq_zero.mp hfac with h | h
+      · exact Or.inl (by linear_combination h)
+      · exact Or.inr (by linear_combination h)
+    rcases hcases with h | h <;> rw [h] at ht' <;> norm_num at ht'
+
+/-- **Parity normalization is necessary.**  At some point the raw net of finite sections has no
+limit at all: its two parity subnets cluster at reciprocal values that cannot coincide there. -/
+theorem exists_rawSection_not_convergent {ι : Type*} [Infinite ι] (g : ℕ) (p : ι → ℂ)
+    (hp_ne : ∀ a, p a ≠ 0) (hp_lt : ∀ a, ‖p a‖ < 1)
+    (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) :
+    ∃ x : ℂ, ¬ ∃ L : ℂ,
+      Tendsto (fun S : Finset ι => rawSection g p S x) atTop (𝓝 L) := by
+  obtain ⟨x, hx0, hxsq⟩ := exists_point_of_half g p hp_ne hp_lt hsum
+  refine ⟨x, ?_⟩
+  rintro ⟨L, hL⟩
+  exact hxsq (sq_eq_one_of_tendsto_rawSection g p hp_ne hp_lt hsum hx0 hL)
+
 end HTGeometry
