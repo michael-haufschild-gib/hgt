@@ -700,6 +700,17 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 9, (23) determinant identity | `regularizedFredholmDet_eq` |
 | Lemma 9, (24) trace expansion | `regularizedFredholmDet_eq_exp_neg_traceSeries` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
+| Lemma 8, (21) — the finite-section genus gauge | `finiteSectionGauge`, `finiteNomeSection_eq_zero_genus_mul_gauge`, `finiteNomeSection_eq_zero_iff_genus_zero` |
+| Lemma 9, the operator on `ℓ²(ι →₀ ℕ)` | `IndexedEllTwo`, `ellTwoDiagonal`, `BosonicFock`, `occupationBasis`, `bosonicSecondQuantization` |
+| Lemma 9, `Γ_s(P)e_ν = p^ν e_ν` | `bosonicSecondQuantization_occupationBasis` |
+| Lemma 9, the eigenvalue is a matrix element | `inner_occupationBasis_bosonicSecondQuantization`, `inner_coordinateBasis_ellTwoDiagonal` |
+| Lemma 9, `Pe_a = p_a e_a` and multiplicativity | `bosonicEigenvalue_single`, `bosonicEigenvalue_add` |
+| Lemma 9, contraction with `‖Γ_s(P)‖ = 1` | `norm_bosonicSecondQuantization_le_one`, `bosonicSecondQuantization_vacuum`, `norm_bosonicSecondQuantization_eq_one` |
+| Lemma 9, singular values are `r^ν` | `bosonicSingularValue_eq_norm_apply`, `adjoint_ellTwoDiagonal`, `adjoint_comp_self_ellTwoDiagonal`, `inner_occupationBasis_adjoint_comp_self` |
+| Lemma 9, (22) as a statement about the operator | `bosonicSchatten_iff_summable_apply`, `isHilbertSchmidt_bosonicSecondQuantization_iff` |
+| Lemma 9, (F1) at exponent two, coordinate-free | `hsNormSq_ellTwoDiagonal`, `hsNormSq_bosonicSecondQuantization` |
+| Lemma 9, (23) from the operator's own matrix elements | `regularizedFredholmDet_eq_tprod_inner` |
+| Lemma 9, (24) in genuine operator traces | `bosonicSecondQuantization_eq_diagOp`, `opTrace_bosonicSecondQuantization_pow`, `regularizedFredholmDet_eq_exp_neg_opTrace_series` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaSharpness.lean`,
@@ -716,20 +727,46 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/EulerFactorUniformBound.lean`,
 `HTGeometry/SectionLogTail.lean`,
 `HTGeometry/CountertermJetSeries.lean`,
-`HTGeometry/BosonicFockDiagonalModel.lean`.
+`HTGeometry/BosonicFockDiagonalModel.lean`,
+`HTGeometry/DiagonalEllTwoIndexed.lean`,
+`HTGeometry/BosonicFockOperatorRealization.lean`,
+`HTGeometry/BosonicFockOperatorTrace.lean`,
+`HTGeometry/FiniteNomeSectionSchemeGauge.lean`.
 
 ### Open in Lean
 
-1. Lemma 9, the Hilbert-space realization.  All four statements (F1), (22), (23), (24) are closed
-   *in the diagonal model as the card scopes it*: `Γ_s(P)` is specified by its eigenvalues `p^ν` on
-   the occupation index, its Schatten `σ`-membership is the summability of `‖p^ν‖^σ`, its Schatten
-   trace is that sum, and `det_d(I - xΓ)` is the primary-factor product at the eigenvalues.
+1. Lemma 7, (C3)/(20) is closed pointwise in `x`, for every counterterm order `N ≥ d`
+   (`tendsto_countertermJet`).  The card states it *locally uniformly* on `\(\mathbb C^\times\)`.
+   The uniform upgrade is not formalized: the estimate `(19)` that carries it is available
+   pointwise from `norm_jetSeries_sub_head_le` and `sectionLogTail_split`, but the passage to a
+   uniform bound on a compact subset of `\(\mathbb C^\times\)` has not been written.
 
-   What is *not* done is realizing `Γ_s(P)` as an actual bounded operator on the occupation Hilbert
-   space `lp (fun _ : ι →₀ ℕ => ℂ) 2` and deriving those four formulas from the operator rather than
-   taking them as the model's definitions.  Until that is built, the module is honest but its
-   Schatten and determinant notions are definitions, not theorems about an operator.  Mathlib has
-   `lp` spaces but no Schatten class and no regularized Fredholm determinant, so both would be new.
+2. Lemma 8, the differential-phase half.  The algebraic content is closed: `(21)` is
+   `finiteNomeSection_eq_zero_genus_mul_gauge`, the gauge is an explicit polynomial with no
+   constant term, and it never vanishes, so the divisor is genus-independent
+   (`finiteNomeSection_eq_zero_iff_genus_zero`).  What is *not* formalized is the transfer
+   sentence: that multiplying by this gauge preserves differential algebraicity, so the finite
+   rational-rank classification of `\(G_{S,0}\)` and `\(G'_{S,0}/G_{S,0}\)` carries over to every
+   genus.  The corpus already owns the classification itself
+   (`MultipleEllipticGammaPeriodRankDichotomy`: `multipleEllipticGamma_everyFiniteSection_exactRankThreeGraphLaw`,
+   `MultipleEllipticGammaAllFiniteSectionsDifferentialAlgebraic`), so what is missing is the
+   gauge-invariance step connecting the two, not the classification.
+
+Lemma 9 is closed.  The second quantization is now a constructed bounded operator on
+`lp (fun _ : ι →₀ ℕ => ℂ) 2` rather than a family of eigenvalues: the occupation vectors are a
+Hilbert basis, each is an eigenvector, and the eigenvalue is the diagonal matrix element.  The
+model's singular values are the norms of the images of those vectors and the square roots of the
+diagonal of `Γ* Γ`, which is itself the diagonal operator of the squared moduli.  Schatten
+membership is summability of those norms; at exponent two it is the coordinate-free Hilbert–Schmidt
+property, which holds exactly when the one-particle contraction is square-summable, and then the
+Hilbert–Schmidt norm is the occupation mass.  In that regime the operator is the corpus's
+Hilbert–Schmidt diagonal, so its power traces from the second power onward are genuine operator
+traces, and at every genus at least one the trace expansion `(24)` is an identity in operator
+traces.
+
+Mathlib supplies neither a Schatten class at a general exponent nor a regularized Fredholm
+determinant; both are taken here in their defining forms — summability of singular values, and the
+eigenvalue product — which is also how the card states them.
 
 The uniform-in-`S` route worked as predicted: `norm_finiteNomeSection_sub_one_le` bounds every
 finite section by `exp(e^g ‖t‖^{g+1} · ∑_ν ‖p^ν‖^{g+1}) - 1`, with no dependence on `S`, because the
