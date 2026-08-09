@@ -6,7 +6,8 @@
 - **Killed branch:** `../1-in-progress/observer-rank-autonomous-no-shortcut-law.md`
 - **Lean:** `(1)`--`(2)` closed — `HTGeometry/GappedEigenlineStability.lean`,
   `HTGeometry.exists_hasEigenvector_of_gap`, unconditional and axiom-clean.
-  `(3)`, the Pauli instantiation `(6)`--`(10)`, the Gaussian box bound `(11)`, and the
+  `(3)` closed — `HTGeometry/GappedEigenlineTimeUniformFloor.lean`.
+  The Pauli instantiation `(6)`--`(10)`, the Gaussian box bound `(11)`, and the
   asymptotic falsification `(12)` remain
 - **Date:** 2026-08-05
 
@@ -239,10 +240,17 @@ Rayleigh value against the value at `Φ` — the maximizer wins, and `Φ`'s valu
 `λ₀ - δ` — and then feeding the gap hypothesis into the maximizer's value gives the bound directly.
 No eigenbasis, no convex-combination argument, no resolvent.
 
-Remaining: `(3)` needs the projective distance and its invariance under the unitary group, together
-with the fact that an eigenline is fixed by `exp(-itH)`; `(6)`--`(10)` instantiate in the existing
-finite-qubit Pauli basis; `(11)` is a Gaussian product-box estimate; `(12)` is the asymptotic
-comparison.
+`(3)` is closed as `HTGeometry.pureStateTraceDistance_apply_le_of_gap`.  The corpus already owned
+the pure-state trace distance and its identification with the density distance up to `√2`, so the
+triangle inequality is inherited rather than proved: the distance is a rescaled metric.  It is blind
+to phases and preserved by isometries, so a unitary fixing a line moves every state by at most twice
+its distance to that line.  The statement is for an arbitrary linear isometry with an invariant
+line, which is what makes the bound uniform in time — nothing about `exp(-itH)` beyond fixing the
+eigenline is used, and the time never appears.
+
+Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; `(11)` is a Gaussian
+product-box estimate; `(12)` is the asymptotic comparison.  Composing `(3)` with `exp(-itH)`
+specifically also wants the eigenvector law for the operator exponential, which is one lemma.
 
 ## Formal target
 
