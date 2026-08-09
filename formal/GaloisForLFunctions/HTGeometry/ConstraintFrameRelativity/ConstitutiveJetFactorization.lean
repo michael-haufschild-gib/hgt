@@ -52,10 +52,11 @@ theorem constant_on_fibres_iff (A : V →ₗ[K] W) (B : V →ₗ[K] Z) :
 /-- The canonical factor of `B` through the fibres of `A`, defined on the quotient. -/
 noncomputable def factorQuot (A : V →ₗ[K] W) (B : V →ₗ[K] Z) (h : ker A ≤ ker B) :
     (V ⧸ ker A) →ₗ[K] Z :=
-  B.liftQ (ker A) h
+  (ker A).liftQ B h
 
 @[simp] theorem factorQuot_mk (A : V →ₗ[K] W) (B : V →ₗ[K] Z) (h : ker A ≤ ker B) (v : V) :
-    factorQuot A B h (Submodule.Quotient.mk v) = B v := rfl
+    factorQuot A B h (Submodule.Quotient.mk v) = B v :=
+  Submodule.liftQ_apply (ker A) B v
 
 /-- The canonical factor of `B` on the image of `A`. -/
 noncomputable def factorRange (A : V →ₗ[K] W) (B : V →ₗ[K] Z) (h : ker A ≤ ker B) :
@@ -108,11 +109,7 @@ theorem ker_le_ker_iff_range_dualMap_le [FiniteDimensional K V] [FiniteDimension
     [FiniteDimensional K Z] (A : V →ₗ[K] W) (B : V →ₗ[K] Z) :
     ker A ≤ ker B ↔ range B.dualMap ≤ range A.dualMap := by
   rw [range_dualMap_eq_dualAnnihilator_ker, range_dualMap_eq_dualAnnihilator_ker]
-  constructor
-  · intro h
-    exact Submodule.dualAnnihilator_le_dualAnnihilator_iff.mpr h
-  · intro h
-    exact Submodule.dualAnnihilator_le_dualAnnihilator_iff.mp h
+  exact Subspace.dualAnnihilator_le_dualAnnihilator_iff.symm
 
 /-! ## The quantitative and cofinal criterion -/
 
@@ -157,7 +154,7 @@ theorem no_uniform_response {A : V' →ₗ[ℝ] Z'} {B : V' →ₗ[ℝ] Z'} (e :
   have hCpos : 0 < C := by
     have h0 := hC (e 0)
     rw [he 0] at h0
-    rcases le_or_lt C 0 with hle | hlt
+    rcases le_or_gt C 0 with hle | hlt
     · have hAn : (0 : ℝ) ≤ ‖A (e 0)‖ := norm_nonneg _
       nlinarith
     · exact hlt

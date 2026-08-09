@@ -1,10 +1,10 @@
 # Finite-prime Gibbs modular phase realization
 
 - **ID:** `finite-prime-gibbs-modular-phase-realization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / OPERATOR REALIZATION / PRIME PHASE CLOCK
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [BRIDGE] [NO RH CLAIM]`
-  `[NO LEAN WRITTEN] [NO PHYSICS CLAIM]`
+  `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS] [NO PHYSICS CLAIM]`
 - **Arithmetic parent:** `phase-subdiscriminant-kahler-smith-stratification-law.md`.
 
 ## Theorem
@@ -142,9 +142,9 @@ Relevant parent: https://arxiv.org/abs/2604.02213.
 
 ## Lean-return note
 
-No Lean work authorized. Later formal proof uses diagonal matrix powers, matrix-unit conjugation,
-finite sums, and previously paper-proved Kronecker wall closure. Search existing KMS/prime-log Lean
-corpus first.
+Formalized; see `finite-prime-gibbs-modular-phase-realization-formalized.md`.  The existing
+prime-log Kronecker corpus was reused; the equilateral characterization of the subdiscriminant zero
+locus is new.
 
 ## Gates
 
@@ -153,7 +153,7 @@ corpus first.
 - [x] exact arithmetic scalar reader
 - [x] semisimple non-transfer boundary
 - [ ] independent hostile audit
-- [ ] Lean formalization
+- [x] Lean formalization
 
 ## Log
 

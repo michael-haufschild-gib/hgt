@@ -1,0 +1,257 @@
+# Complexity onset and quantum-recurrence dimension are independent
+
+- **ID:** `onset-recurrence-dimension-independence-law`
+- **Stage:** 2 -- fully proved on paper
+- **Type:** theorem / static-local complexity / quantum recurrence / finite-scale distortion
+- **Parents:** `capacity-compatible-fast-forwardable-incubation-law.md`,
+  `local-chain-metric-recurrence-exponents.md`,
+  `cubic-phase-seeded-static-local-full-scale-plateau-law.md`
+- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Date:** 2026-08-09
+
+## Public sentence
+
+A quantum system can take arbitrarily long to become complex even when its completed motion has
+the largest possible recurrence dimension, its eventual complexity is near maximal, and every
+spatial bond remains strong. Complexity onset and quantum recurrence are therefore independent
+clocks.
+
+## 1. Setup
+
+Put (D=2^n). Use the unit coefficient shell in the full one-site plus nearest-neighbour two-site
+Pauli family on an open (n)-qubit path,
+
+\[
+ H(x)=\sum_{a=1}^{12n-9}x_aP_a,
+ \qquad x\in S^{12n-10}.                                     \tag{1}
+\]
+
+Fix circuit errors (0\le\eta<\epsilon_-<\epsilon_+<1), a finite inverse-closed universal
+one- and two-qubit alphabet, and (kappa>0). For a simple-spectrum (H), order its eigenvalues
+(E_1<\cdots<E_D). For a cyclic unit seed (chi), define the first fidelity return after the
+first Poincare-clock half-winding by
+
+\[
+ T^{\rm fid}_{H,\chi}(\delta)
+ =\inf\left\{t\ge {\pi\over E_2-E_1}:
+ 1-|\langle\chi,e^{-itH}\chi\rangle|^2<\delta\right\}.       \tag{2}
+\]
+
+The lower cutoff removes the trivial initial neighbourhood of (t=0). Changing it by a fixed
+positive (H)-dependent factor does not change the logarithmic exponent below.
+
+## 2. Theorem -- maximal recurrence with arbitrary complexity incubation
+
+For every sufficiently large (n) and every sufficiently large prescribed delay (L), there are
+one fixed exactly (O(n^3))-preparable cubic-phase seed (chi_{n,L}) and a shell set
+(mathcal J_{n,L}) such that
+
+\[
+ \boxed{
+ \sigma(\mathcal J_{n,L})
+ \ge A_n\left(1-{96\over\kappa^2D}\right)L^{-(10n-8)},
+ \qquad A_n\ge e^{-O(n\log n)}.}                              \tag{3}
+\]
+
+Every (H\in\mathcal J_{n,L}) obeys all of the following.
+
+1. **Arbitrary finite-time incubation:**
+   \[
+    C_{\epsilon_-}(e^{-itH}\chi_{n,L})
+    \le O\!\left(n^3+n\log^c(n/\eta)\right)
+    \quad(0\le t\le L).                                      \tag{4}
+   \]
+2. **Maximal projective spectrum:** its projective rational rank is (D-1), and the seed is
+   cyclic.
+3. **Optimal spectral capacity:**
+   \[
+    \sum_{j=1}^D|\langle e_j,\chi_{n,L}\rangle|^4
+    \le {2+\kappa\over D}.                                   \tag{5}
+   \]
+4. **Full later plateau:** at a later epoch its state complexity exceeds
+   (cD/\log M_n) continuously for at least (exp(cD)) time.
+5. **Maximal continuous recurrence dimension:**
+   \[
+    \boxed{
+    \lim_{\delta\downarrow0}
+    {\log T^{\rm fid}_{H,\chi_{n,L}}(\delta)
+     \over\log(1/\delta)}
+    ={D-2\over2}.}                                            \tag{6}
+   \]
+6. **Later low-complexity recurrence:** the orbit returns arbitrarily close to the easy seed.
+7. **Permanent non-Haar locality:** the fixed local two-query protocol separates its propagator
+   from Haar randomness at every real time.
+8. **No weak spatial bond:** for a numerical (b_0>0),
+   \[
+    \min_{1\le i<n}\|V_i(H)\|_{\rm op}\ge {b_0\over2\sqrt n}. \tag{7}
+   \]
+
+Consequently no onset upper bound follows from the listed maximality properties and uniform
+collision, conductance, and plateau thresholds alone. All of those same thresholds remain valid
+while (L) is arbitrary. The theorem does not exclude a finer quantitative invariant that varies
+inside this class and genuinely resolves distance to shortcut carriers.
+
+## 3. Proof
+
+### 3.1 Incubation, capacity, plateau, and locality
+
+The capacity-compatible fast-forwardable incubation theorem uses the diagonal path carrier
+
+\[
+ H_0(a,b)=\sum_{i=1}^na_iZ_i+\sum_{i=1}^{n-1}b_iZ_iZ_{i+1}.   \tag{8}
+\]
+
+This carrier has dimension (2n-1) inside the (12n-9)-dimensional coefficient space, hence
+transverse codimension (10n-8). On a compact patch with
+(|b_i|\ge b_0/\sqrt n), commuting (Z) and (ZZ) rotations give a uniform compiler for the
+complete cubic-phase seed family. Duhamel stability on a tube of radius (O(1/L)) proves (4).
+The shell beta-tube law and finite-seed Fubini selection give (3), including
+(A_n\ge\exp[-O(n\log n)]).
+
+For the same fixed seed, basis-uniform cubic-phase collision concentration gives (5) outside a
+relative fraction (96/(\kappa^2D)). The conull simple-spectrum, maximal-projective-rank, and
+cyclic set then supplies the completed-phase plateau, later recurrence, and permanent local
+separator. The interaction block on each edge differs from its diagonal centre by operator norm
+at most three times the transverse coefficient radius, so the same tube gives (7). These are
+exactly the conclusions of the first and third parent cards.
+
+### 3.2 The recurrence exponent is conull on the same shell
+
+The local-chain metric recurrence theorem proves that for almost every path-local Hamiltonian the
+projective gap-ratio vector
+
+\[
+ \alpha(H)=\left({E_3-E_1\over E_2-E_1},\ldots,
+                  {E_D-E_1\over E_2-E_1}\right)              \tag{9}
+\]
+
+has simultaneous Diophantine exponent (1/(D-2)). Kleinbock--Margulis extremality then gives the
+continuous phase-radius first-return exponent (D-2). This conull property also holds on the unit
+coefficient shell: (alpha(cH)=alpha(H)), so its exceptional set is radial, and polar
+disintegration transfers ambient nullity to surface nullity.
+
+Let (p_j=|\langle e_j,\chi_{n,L}\rangle|^2). Cyclicity gives (p_j>0) for every (j). Near the
+identity phase, with the global phase divided out,
+
+\[
+ 1-\left|\sum_jp_je^{i\phi_j}\right|^2
+ ={1\over2}\sum_{j,k}p_jp_k(\phi_j-\phi_k)^2+O(\|\phi\|^3). \tag{10}
+\]
+
+The quadratic form is positive definite on the projective quotient: if it vanishes, every
+(phi_j) is equal because every (p_jp_k>0). Fidelity deficit is therefore locally equivalent
+to squared projective phase radius. Replacing phase radius (r) by (r\asymp\sqrt\delta) divides
+the return exponent by two and proves (6).
+
+Finally intersect the incubation/collision-good set with this conull metric-extremal set. Removing
+a null set changes neither the Fubini seed selection nor the lower bound (3). Every remaining
+Hamiltonian satisfies items 1--8.
+
+### 3.3 Independence conclusion
+
+Fix (n). The exponent in (6) and the uniform thresholds (5), (7), the plateau lower bound, and
+the locality witness do not depend on the prescribed value of (L). Yet (4) holds through that
+arbitrary (L). Therefore those conditions do not upper-bound onset. This is a literal
+independence theorem for the stated invariant class, not an inference from different ensembles or
+a comparison of typical scales.
+
+## 4. Conjecture-to-failure chain and representation change
+
+### C0 -- aggregate exponentially many entanglement cuts
+
+`[REDISCOVERED / INSUFFICIENT]`. A gate-normalized weighted sum of cut entropies has only
+polynomial range. Double-counting cut boundaries gives at most (O(n|E|)), and Eisert already
+states that entanglement bounds circuit cost only before entanglement saturation.
+
+### C1 -- use additive physical history action
+
+`[FALSIFIED AS AN ENDPOINT LOWER BOUND]`. Directed action can grow linearly, but it is the cost of
+one history and therefore upper-bounds, rather than lower-bounds, minimal endpoint complexity.
+The Lean-proved observer-unitization law explains why such action need not descend through a
+recurrent endpoint.
+
+### C2 -- maximal spectral recurrence dimension forces rapid onset
+
+`[FALSIFIED]` by the theorem above. The recurrence exponent remains ((D-2)/2) while incubation is
+arbitrary.
+
+### C3 -- finite-scale subgroup distortion is the correct representation
+
+`[SURVIVES PRELIMINARY ATTACK]`. Intrinsic Hamiltonian time is length along one physical flow;
+ambient local-circuit distance is its finite-resolution word/coset length. Brown growth is
+finite-scale undistortion, fast-forwarding and incubation are distortion, plateau is diameter
+saturation, and recurrence is eventual distortion collapse. This representation does not prove
+typical undistortion. It identifies the remaining theorem without confusing recurrence dimension
+with onset speed.
+
+The exact `[OPEN CORE]` remains: prove quenched finite-scale undistortion at the geometric Brown
+skeleton for the ordinary path-local shell after explicitly paying named weak-cut and
+fast-forwardable tubes.
+
+## 5. External frontier and novelty boundary
+
+- `[LITERATURE]` Brown and Susskind formulate growth, plateau, and recurrence as the expected
+  complexity history of chaotic quantum dynamics.
+- `[LITERATURE]` Haferkamp et al. prove linear complexity growth for random circuits by accessible
+  dimension. Fresh random gate parameters are load-bearing; the theorem does not cover repeated
+  reuse of one static Hamiltonian.
+- `[LITERATURE]` Kotowski et al. prove saturation and recurrence for random local quantum dynamics
+  and explicitly leave purely local time-independent Hamiltonians as the target beyond continuously
+  injected randomness.
+- `[LITERATURE]` Atia--Aharonov and Gu--Somma--Sahinoglu study fast-forwarding classes, but do not
+  join arbitrary incubation with maximal recurrence dimension and later full state complexity.
+- `[LITERATURE]` Kleinbock--Margulis supplies the metric-Diophantine parent of (6); that exponent is
+  not claimed as new here.
+- `[LOCAL-RESEARCH]` The incubation and recurrence parents own all separate mechanisms. Candidate
+  new content is their measure-preserving conjunction and the resulting onset--recurrence
+  independence theorem.
+
+No located primary source states items 1--8 together or proves that maximal local-chain recurrence
+dimension leaves complexity onset unbounded. Search absence is not priority evidence; status
+remains `[NOVELTY UNVERIFIED]` pending specialist review.
+
+Primary sources:
+
+- A. R. Brown and L. Susskind, *The second law of quantum complexity*,
+  [arXiv:1701.01107](https://arxiv.org/abs/1701.01107).
+- J. Haferkamp et al., *Linear growth of quantum circuit complexity*,
+  [Nature Physics 18 (2022)](https://www.nature.com/articles/s41567-022-01539-6).
+- M. Kotowski et al., *Saturation and recurrence of quantum complexity in random local quantum
+  dynamics*, [Physical Review X 14 (2024)](https://doi.org/10.1103/PhysRevX.14.041068).
+- Y. Atia and D. Aharonov, *Fast-forwarding of Hamiltonians and exponentially precise
+  measurements*, [arXiv:1610.09619](https://arxiv.org/abs/1610.09619).
+- S. Gu, R. D. Somma and B. Sahinoglu, *Fast-forwarding quantum evolution*,
+  [arXiv:2105.07304](https://arxiv.org/abs/2105.07304).
+- D. Kleinbock and G. Margulis, *Flows on homogeneous spaces and Diophantine approximation on
+  manifolds*, [Annals of Mathematics 148 (1998)](https://annals.math.princeton.edu/articles/12997).
+
+## 6. Hostile audit
+
+1. The theorem proves a positive-measure family with arbitrary incubation, not typical Brown
+   growth or a high-probability upper delay tail.
+2. Equation (6) takes (delta\downarrow0) at fixed (n,H). It does not justify interchanging this
+   limit with (n\to\infty), nor a uniform fixed-error recurrence constant.
+3. The seed may depend on (n,L). It remains fixed for the resulting evolution and is never
+   resampled in time.
+4. The delayed set is fine-tuned. Equation (3) quantifies its shell cost rather than hiding it.
+5. “Dimension” in (6) is a metric-Diophantine first-return exponent, not Hilbert-space dimension,
+   thermodynamic entropy, or a directly measured black-hole volume.
+6. Finite-scale subgroup distortion is a representation and research target, not a proved static
+   Brown law.
+7. Novelty can reside only in the conjunction and independence conclusion. Every component
+   mechanism is credited to its parent.
+8. No final-paper claim is authorized before the exact conjunction, including the imported metric
+   extremality dependency, is formalized and axiom-audited in Lean.
+
+## 7. Lean realization after corpus refactor
+
+No Lean source is authorized during the active refactor. Afterwards, reuse:
+
+1. the capacity-compatible incubation conjunction;
+2. path-local simple spectrum, cyclicity, and maximal projective rank;
+3. the metric-Diophantine recurrence theorem after its published dependency has an exact formal
+   replacement or formal import acceptable under project rules;
+4. the finite-dimensional Hessian identity (10);
+5. conull-set intersection and finite-seed Fubini selection.
+
+No Lean source, build, or process was touched in this research cycle.

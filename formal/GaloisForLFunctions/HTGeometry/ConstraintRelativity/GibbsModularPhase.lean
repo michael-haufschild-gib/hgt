@@ -360,7 +360,7 @@ theorem exists_norm_framedReader_lt {p : Fin 3 → ℝ} (hp : ∀ j, 0 < p j) {�
   have heq : framedReader (primeClock p β t) = phaseReader r u := by
     rw [framedReader_primeClock hp hβ]
     refine congrArg subdiscriminant (funext fun j => ?_)
-    simp only [hu, hv, phaseReader, expChar, hrdef]
+    simp only [hu, expChar, hrdef]
     rw [mul_comm t (Real.log (p j))]
   rwa [heq]
 
@@ -388,22 +388,38 @@ end Density
 section PrimeTriple
 
 /-- The prime triple `(101, 103, 107)`. -/
-def triplePrimes : Fin 3 → Nat.Primes :=
-  ![⟨101, by norm_num⟩, ⟨103, by norm_num⟩, ⟨107, by norm_num⟩]
+def triplePrimeNat : Fin 3 → ℕ := fun j => 101 + 2 * (j : ℕ) + (if (j : ℕ) = 2 then 2 else 0)
 
-theorem triplePrimes_injective : Function.Injective triplePrimes := by
+theorem triplePrimeNat_injective : Function.Injective triplePrimeNat := by
   intro a b hab
-  fin_cases a <;> fin_cases b <;>
-    simp_all [triplePrimes, Subtype.ext_iff]
+  have ha := a.isLt
+  have hb := b.isLt
+  simp only [triplePrimeNat] at hab
+  apply Fin.ext
+  split_ifs at hab <;> omega
+
+theorem triplePrimeNat_prime (j : Fin 3) : Nat.Prime (triplePrimeNat j) := by
+  fin_cases j <;> norm_num [triplePrimeNat]
+
+/-- The prime triple as members of the primes. -/
+def triplePrimes (j : Fin 3) : Nat.Primes := ⟨triplePrimeNat j, triplePrimeNat_prime j⟩
+
+theorem triplePrimes_injective : Function.Injective triplePrimes := fun _ _ hab =>
+  triplePrimeNat_injective (congrArg (fun q : Nat.Primes => (q : ℕ)) hab)
 
 /-- The radii of the prime triple. -/
 noncomputable def tripleRadii : Fin 3 → ℝ := fun j => ((triplePrimes j : Nat.Primes) : ℕ)
 
+theorem tripleRadii_eq (j : Fin 3) : tripleRadii j = ((triplePrimeNat j : ℕ) : ℝ) := rfl
+
 theorem tripleRadii_pos (j : Fin 3) : 0 < tripleRadii j := by
-  fin_cases j <;> norm_num [tripleRadii, triplePrimes]
+  rw [tripleRadii_eq]
+  exact_mod_cast (triplePrimeNat_prime j).pos
 
 theorem log_tripleRadii_pos (j : Fin 3) : 0 < Real.log (tripleRadii j) := by
-  fin_cases j <;> exact Real.log_pos (by norm_num [tripleRadii, triplePrimes])
+  refine Real.log_pos ?_
+  rw [tripleRadii_eq]
+  exact_mod_cast (triplePrimeNat_prime j).one_lt
 
 theorem tripleRadii_linearIndependent :
     LinearIndependent ℚ fun j => Real.log (tripleRadii j) :=
@@ -414,17 +430,13 @@ theorem log_triple_triangle :
     Real.log (tripleRadii 2) ≤ Real.log (tripleRadii 0) + Real.log (tripleRadii 1) ∧
     Real.log (tripleRadii 0) ≤ Real.log (tripleRadii 1) + Real.log (tripleRadii 2) ∧
     Real.log (tripleRadii 1) ≤ Real.log (tripleRadii 0) + Real.log (tripleRadii 2) := by
-  have h101 : tripleRadii 0 = (101 : ℝ) := by norm_num [tripleRadii, triplePrimes]
-  have h103 : tripleRadii 1 = (103 : ℝ) := by norm_num [tripleRadii, triplePrimes]
-  have h107 : tripleRadii 2 = (107 : ℝ) := by norm_num [tripleRadii, triplePrimes]
+  have h101 : tripleRadii 0 = (101 : ℝ) := by rw [tripleRadii_eq]; norm_num [triplePrimeNat]
+  have h103 : tripleRadii 1 = (103 : ℝ) := by rw [tripleRadii_eq]; norm_num [triplePrimeNat]
+  have h107 : tripleRadii 2 = (107 : ℝ) := by rw [tripleRadii_eq]; norm_num [triplePrimeNat]
   rw [h101, h103, h107]
-  refine ⟨?_, ?_, ?_⟩
-  · rw [← Real.log_mul (by norm_num) (by norm_num)]
-    exact Real.log_le_log (by norm_num) (by norm_num)
-  · rw [← Real.log_mul (by norm_num) (by norm_num)]
-    exact Real.log_le_log (by norm_num) (by norm_num)
-  · rw [← Real.log_mul (by norm_num) (by norm_num)]
-    exact Real.log_le_log (by norm_num) (by norm_num)
+  refine ⟨?_, ?_, ?_⟩ <;>
+    · rw [← Real.log_mul (by norm_num) (by norm_num)]
+      exact Real.log_le_log (by norm_num) (by norm_num)
 
 /-- **Card `(9)`, explicit form.**  For the prime triple `(101, 103, 107)` the framed two-copy
 reader on the Gibbs modular clock has infimum zero. -/

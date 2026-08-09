@@ -170,3 +170,27 @@ caught it. Prefix new names distinctively.
 - `Real.finsetProd_rpow` (not `finset_prod_rpow`) is the finite-product rpow lemma.
 - mathlib HAS the adelic product formula: `Height.AdmissibleAbsValues`, instantiated for every
   number field (so for `ℚ`).
+
+## Checkpoint (23/49 done, 26 remain)
+
+Moved since last note: neutral-fusion-unobstructed-relative-cotangent-law (NeutralFusionCotangent),
+cofinal-ht-to-recurrence-rank-transfer-bound (CofinalRankTransfer),
+finite-prime-gibbs-modular-phase-realization (GibbsModularPhase).
+
+New reusable Lean assets in ConstraintRelativity/:
+- `kaehlerBasisOfAlgEquiv` — transport of a Kähler basis along an algebra iso (mathlib lacks it);
+  proved via "an iso is formally étale" + `KaehlerDifferential.isBaseChange_of_formallyEtale`.
+- `cardinalMk_le_differentialTranscendenceDegree`, `differentialTranscendenceDegree_le_of_adjoin_eq_top`
+  — the two one-sided differential-matroid rank bounds (corpus only had the equality case).
+- `totient_prod_of_pairwise_coprime` — finite-product totient multiplicativity.
+- `diagonal_mul_single_mul_diagonal` — matrix-unit conjugation by diagonals.
+- `cubeRoot`, `subdiscriminant_three`, `exists_sum_eq_zero_of_triangle`,
+  `exists_phase_subdiscriminant_eq_zero` — equilateral criterion for H2 = 0 on concentric circles.
+
+### Traps
+- `fin_cases i` leaves indices as `⟨1, ⋯⟩`; `Matrix.cons_val_one` will NOT fire. Avoid `![...]`
+  definitions when you need per-index numerals: define `fun j => <arith in (j:ℕ)>` and finish with
+  `split_ifs <;> omega`.
+- `Real.log_eq_zero_iff` does not exist -> `Real.eq_one_of_pos_of_log_eq_zero`.
+- `Complex.norm_eq_sqrt_normSq` does not exist -> `Complex.normSq_eq_norm_sq` + `Real.sqrt_sq`.
+- `RingHom.charZero f` transfers CharZero to a subfield.

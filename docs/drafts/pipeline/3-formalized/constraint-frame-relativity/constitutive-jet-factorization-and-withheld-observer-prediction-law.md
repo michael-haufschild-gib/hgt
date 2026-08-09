@@ -1,9 +1,10 @@
 # Constitutive-jet factorization and withheld-observer prediction law
 
 - **ID:** `cfr-constitutive-jet-factorization`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / ROUTE-INDEPENDENT FIELD GATE
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LITERAL EULER-SHELL COUNTERMODEL] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LITERAL EULER-SHELL COUNTERMODEL] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `constitutive-jet-factorization-and-withheld-observer-prediction-law-formalized.md`
 - **Statement:** A withheld infinitesimal observer is determined by calibrated observers exactly when its response kills their common vertical tangent kernel; continuous cofinal prediction requires a uniform response inequality, not merely finite-level factorization.
 
 ## Goal

@@ -5719,3 +5719,34 @@ receive a new title and an independent significance audit.
   complement remains open.  Paper proof and hostile audit:
   `../2-fully-proven/capacity-compatible-fast-forwardable-incubation-law.md`.
   Lean remained read only during corpus refactoring.
+- 2026-08-09 -- Separated complexity onset from quantum-recurrence dimension.
+  Intersecting the capacity-compatible diagonal-carrier incubation tube with
+  the conull metric-Diophantine local-chain set costs no shell measure.  Thus,
+  for every prescribed delay `L`, a fixed cubic-phase seed and a path-local
+  shell subset of mass
+  `A_n(1-O(1/D))L^(-(10n-8))`, with
+  `A_n>=exp(-O(n log n))`, simultaneously remain polynomially easy through
+  `L`, keep every edge interaction `Omega(n^(-1/2))`, have collision
+  `O(1/D)`, maximal projective rank, a later `Omega(D/log n)` plateau of
+  `exp(Omega(D))` duration, recurrence, and permanent local non-Haar
+  separation.  The new conjunction adds the exact continuous fidelity-return
+  exponent
+  `lim_(delta->0) log T_fid(delta)/log(1/delta)=(D-2)/2` for every Hamiltonian
+  retained in the set.  Cyclicity makes the fidelity deficit a nondegenerate
+  quadratic form on the projective phase torus, so the phase-radius exponent
+  `D-2` from metric extremality divides by two.  Therefore maximal recurrence
+  dimension and all current uniform capacity/conductance thresholds do not
+  upper-bound onset; a finer carrier-distance invariant is unavoidable.
+  Hostile boundary: the recurrence limit is at fixed `n,H`, not a uniform
+  fixed-error large-`n` law, and the theorem is a delayed positive-measure
+  family rather than the missing typical Brown upper escape bound.  Failed
+  representation loop: all-cut entanglement is externally known to saturate
+  polynomially; additive history action upper-bounds one history rather than
+  lower-bounding endpoint complexity; recurrence dimension is now explicitly
+  falsified as an onset clock.  Surviving representation is finite-scale
+  subgroup distortion: growth is undistortion, fast-forwarding/incubation is
+  distortion, plateau is diameter saturation, and recurrence is distortion
+  collapse.  Exact remaining core is quenched finite-scale undistortion on the
+  geometric Brown skeleton after named shortcut tubes are paid.  Paper proof:
+  `../2-fully-proven/onset-recurrence-dimension-independence-law.md`.  Lean
+  remained read only during corpus refactoring.
