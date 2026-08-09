@@ -30,6 +30,10 @@ def constitutiveDisjunctiveWork (A B : ι → ℝ) (i j : ι) : ℝ :=
 def ConstitutiveScalarIntegrable (ω : ι → ι → ℝ) : Prop :=
   ∃ H : ι → ℝ, ∀ i j, ω i j ≤ constitutiveExactWork H i j
 
+/-- Scalar integrability restricted to a declared legal-transition relation. -/
+def ConstitutiveScalarIntegrableOn (R : ι → ι → Prop) (ω : ι → ι → ℝ) : Prop :=
+  ∃ H : ι → ℝ, ∀ i j, R i j → ω i j ≤ constitutiveExactWork H i j
+
 /-- Reversing an exact transition negates its work. -/
 theorem constitutiveExactWork_reverse (A : ι → ℝ) (i j : ι) :
     constitutiveExactWork A j i = -constitutiveExactWork A i j := by
@@ -52,6 +56,18 @@ theorem constitutiveExactWork_dominance_rigidity (A H : ι → ℝ)
   simp only [constitutiveExactWork] at hr ⊢
   linarith
 
+/-- Reversibility is the load-bearing hypothesis: dominance rigidity holds on every symmetric
+legal-transition relation. -/
+theorem constitutiveExactWork_dominance_rigidityOn (R : ι → ι → Prop)
+    [Std.Symm R] (A H : ι → ℝ)
+    (h : ∀ i j, R i j → constitutiveExactWork A i j ≤ constitutiveExactWork H i j) :
+    ∀ i j, R i j → constitutiveExactWork A i j = constitutiveExactWork H i j := by
+  intro i j hij
+  apply le_antisymm (h i j hij)
+  have hr := h j i (Std.Symm.symm i j hij)
+  simp only [constitutiveExactWork] at hr ⊢
+  linarith
+
 /-- **No strict scalar-integrable strengthening.** If a work law strengthens one exact law on
 every directed transition, then it remains scalar-integrable exactly when it equals that law. -/
 theorem constitutiveStrengthening_scalarIntegrable_iff_eq (A : ι → ℝ) (ω : ι → ι → ℝ)
@@ -70,6 +86,28 @@ theorem constitutiveStrengthening_scalarIntegrable_iff_eq (A : ι → ℝ) (ω :
     · exact hA i j
   · intro heq
     exact ⟨A, fun i j => le_of_eq (heq i j)⟩
+
+/-- On a reversible legal-transition sector, a strengthening remains scalar-integrable exactly
+when it is not strict anywhere on that sector. -/
+theorem constitutiveStrengthening_scalarIntegrableOn_iff_eq (R : ι → ι → Prop)
+    [Std.Symm R] (A : ι → ℝ) (ω : ι → ι → ℝ)
+    (hA : ∀ i j, R i j → constitutiveExactWork A i j ≤ ω i j) :
+    ConstitutiveScalarIntegrableOn R ω ↔
+      ∀ i j, R i j → ω i j = constitutiveExactWork A i j := by
+  constructor
+  · rintro ⟨H, hH⟩
+    have hAH : ∀ i j, R i j →
+        constitutiveExactWork A i j ≤ constitutiveExactWork H i j :=
+      fun i j hij => le_trans (hA i j hij) (hH i j hij)
+    have heq := constitutiveExactWork_dominance_rigidityOn R A H hAH
+    intro i j hij
+    apply le_antisymm
+    · calc
+        ω i j ≤ constitutiveExactWork H i j := hH i j hij
+        _ = constitutiveExactWork A i j := (heq i j hij).symm
+    · exact hA i j hij
+  · intro heq
+    exact ⟨A, fun i j hij => le_of_eq (heq i j hij)⟩
 
 /-- **Competitive two-cycle law.** Mandatory selection creates precisely the absolute discrepancy
 between the two parent increments. -/
@@ -159,5 +197,46 @@ theorem constitutiveMandatorySelectionCreatesHistory_iff (A B : ι → ℝ) (b :
     ConstitutiveScalarIntegrable (constitutiveConjunctiveWork A B) ↔
       ∀ i, A i - B i = A b - B b :=
   constitutiveConjunctiveWork_scalarIntegrable_iff_gaugeAt A B b
+
+/-! ## Directed-sector sharpness -/
+
+/-- Two states witnessing that symmetry is necessary for dominance rigidity. -/
+inductive ConstitutiveDirectedPair where
+  | source
+  | target
+  deriving DecidableEq
+
+/-- The only legal transition is `source → target`. -/
+def constitutiveDirectedPairStep : ConstitutiveDirectedPair → ConstitutiveDirectedPair → Prop
+  | .source, .target => True
+  | _, _ => False
+
+/-- Zero reference action on the directed pair. -/
+def constitutiveDirectedPairZeroAction : ConstitutiveDirectedPair → ℝ := fun _ => 0
+
+/-- Unit-production action on the directed pair. -/
+def constitutiveDirectedPairUnitAction : ConstitutiveDirectedPair → ℝ
+  | .source => 0
+  | .target => 1
+
+/-- **Sharp asymmetric countermodel.** On a genuinely one-way transition relation, the unit exact
+law is a strict strengthening of the zero exact law and remains scalar-integrable. Thus the
+symmetry hypothesis in reversible-sector rigidity cannot be removed. -/
+theorem constitutiveDirectedPair_strictStrengthening_isScalarIntegrable :
+    ConstitutiveScalarIntegrableOn constitutiveDirectedPairStep
+        (constitutiveExactWork constitutiveDirectedPairUnitAction) ∧
+      (∀ i j, constitutiveDirectedPairStep i j →
+        constitutiveExactWork constitutiveDirectedPairZeroAction i j ≤
+          constitutiveExactWork constitutiveDirectedPairUnitAction i j) ∧
+      constitutiveExactWork constitutiveDirectedPairZeroAction .source .target <
+        constitutiveExactWork constitutiveDirectedPairUnitAction .source .target := by
+  refine ⟨⟨constitutiveDirectedPairUnitAction, fun i j _ => le_rfl⟩, ?_, ?_⟩
+  · intro i j hij
+    cases i <;> cases j <;>
+      simp [constitutiveDirectedPairStep, constitutiveExactWork,
+        constitutiveDirectedPairZeroAction, constitutiveDirectedPairUnitAction] at hij ⊢
+  · simp only [constitutiveExactWork, constitutiveDirectedPairZeroAction,
+      constitutiveDirectedPairUnitAction, sub_zero]
+    exact zero_lt_one
 
 end GaloisForLFunctions.HTGeometry

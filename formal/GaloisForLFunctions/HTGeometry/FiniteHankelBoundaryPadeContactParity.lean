@@ -18,6 +18,7 @@ formal algebraic layer for stationary crossings.
 -/
 
 open scoped BigOperators
+open scoped Topology
 open Matrix Polynomial
 open Filter Asymptotics
 
@@ -250,13 +251,15 @@ theorem leading_scalar_coeff_pos_of_eventually_nonneg_right
     · exact Eventually.of_forall fun _ => rfl
   have hratio : Tendsto
       (fun u : ℝ => (f u - c d * u ^ d) / (‖u‖ ^ d))
-      (𝓝[≠] 0) (𝓝 0) := hsmall.tendsto_div_nhds_zero
-  have hratioRight := hratio.mono_left inf_le_left
+      (𝓝 0) (𝓝 0) := hsmall.tendsto_div_nhds_zero
+  have hratioRight : Tendsto
+      (fun u : ℝ => (f u - c d * u ^ d) / (‖u‖ ^ d))
+      (𝓝[>] 0) (𝓝 0) := hratio.mono_left inf_le_left
   have hquotient : Tendsto (fun u : ℝ => f u / u ^ d)
       (𝓝[>] 0) (𝓝 (c d)) := by
     have hrewrite : ∀ᶠ u in 𝓝[>] (0 : ℝ),
         f u / u ^ d = (f u - c d * u ^ d) / ‖u‖ ^ d + c d := by
-      filter_upwards with u hu
+      filter_upwards [self_mem_nhdsWithin] with u hu
       have hu0 : u ≠ 0 := ne_of_gt hu
       rw [Real.norm_eq_abs, abs_of_pos hu]
       field_simp
@@ -264,9 +267,9 @@ theorem leading_scalar_coeff_pos_of_eventually_nonneg_right
     rw [tendsto_congr' hrewrite]
     simpa using hratioRight.add_const (c d)
   have hquotNonneg : ∀ᶠ u in 𝓝[>] (0 : ℝ), 0 ≤ f u / u ^ d := by
-    filter_upwards [hnonneg] with u hfu
-    exact div_nonneg hfu (pow_nonneg u.le _)
-  exact lt_of_le_of_ne (le_of_tendsto hquotient hquotNonneg) (Ne.symm hfirst)
+    filter_upwards [hnonneg, self_mem_nhdsWithin] with u hfu hu
+    exact div_nonneg hfu (pow_nonneg hu.le _)
+  exact lt_of_le_of_ne (ge_of_tendsto hquotient hquotNonneg) (Ne.symm hfirst)
 
 /-- **Padé contact parity law.**  If the moving-null energy is analytic with the exact Möbius
 contact series, is nonnegative immediately to the right, and has first nonzero flat-shadow defect
@@ -285,7 +288,8 @@ theorem signed_first_defect_pos_of_right_nonnegative_contact
     intro j hj
     exact coeff_mobiusPadeContactSeries_eq_zero_before_contact hP hPdeg hzero hj
   have hcoeffFirst : coeff d ≠ 0 := by
-    rw [coeff, coeff_mobiusPadeContactSeries_at_first_contact hP hPdeg hd hzero]
+    change PowerSeries.coeff d (mobiusPadeContactSeries a P n) ≠ 0
+    rw [coeff_mobiusPadeContactSeries_at_first_contact hP hPdeg hd hzero]
     exact mul_ne_zero
       (mul_ne_zero (pow_ne_zero _ (by norm_num))
         (by exact_mod_cast Nat.ne_of_gt (Nat.choose_pos (by omega)))) hfirst

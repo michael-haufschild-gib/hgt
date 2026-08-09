@@ -1,9 +1,10 @@
 # Ramification anchor--defect incidence interchange and Bianchi law
 
 - **ID:** `cfr-ramification-anchor-defect-incidence`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NONFUNCTORIAL SUPPORT-QUOTIENT DEFECT
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HOSTILE-AUDITED] [SOURCE-NATIVE INCIDENCE] [NONZERO INTERCHANGE DEFECT] [EXACT BIANCHI] [ORDERED-FLAG STRICTIFICATION] [NOT INTRINSIC CURVATURE] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HOSTILE-AUDITED] [SOURCE-NATIVE INCIDENCE] [NONZERO INTERCHANGE DEFECT] [EXACT BIANCHI] [ORDERED-FLAG STRICTIFICATION] [NOT INTRINSIC CURVATURE] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `ramification-anchor-defect-incidence-interchange-and-bianchi-law-formalized.md`
 - **Statement:** Direct composite ramification incidence and literal whole-number stagewise
   incidence differ exactly when outer and latent-inner prime defects coexist. The defect has closed
   norm and boundary formulas and obeys an exact Bianchi identity. Retaining ordered Kummer

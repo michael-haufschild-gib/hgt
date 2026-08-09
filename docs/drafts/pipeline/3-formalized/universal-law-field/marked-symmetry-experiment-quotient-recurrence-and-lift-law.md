@@ -15,7 +15,7 @@ by constitutive experimental mathematics.
 
 - [x] 0 → 1: compact-group/source-law formulation
 - [x] 1 → 2: dependency-closed group-action proof
-- [ ] 2 → 3: no Lean formalization
+- [x] 2 → 3: Lean certified — `HTGeometry.ConstitutiveMarkedSymmetryQuotient`
 - [ ] 3 → 4: no novelty/priority claim
 
 ## Setup
@@ -150,3 +150,53 @@ Any universal-law claim that calls routes gauges without constructing this stabi
 ## Log
 
 - 2026-08-09 — coordinate-free marked-symmetry response theorem created; no Lean.
+
+## Lean certification status (2026-08-09) — COMPLETE
+
+Module: `GaloisForLFunctions.HTGeometry.ConstitutiveMarkedSymmetryQuotient`
+(wired into `HTGeometry.UniversalLawField`).
+
+**Theorem 1 — relative gauge and exact experiment quotient.**  Clause (2) is `passive_invisible`.
+Clause (3) is `smul_eq_smul_iff_mem_stabilizer`: `g • ν = h • ν ↔ h⁻¹g ∈ Stab_H(ν)`, stated for an
+arbitrary group action, hence for the pushforward action on laws.  Clause (4) is `markedResponse`,
+the descent of `g ↦ g • ν` to `H ⧸ Stab_H(ν)`, together with `markedResponse_injective`,
+`markedResponse_continuous`, and `markedResponse_isClosedEmbedding`, which upgrades it to a closed
+embedding when `H` is compact and the law space is Hausdorff.
+
+**Theorem 2 — compact response recurrence.**  `oneParameter_recurrence` proves the recurrence
+directly and unconditionally: for a continuous one-parameter subgroup `γ` of a compact topological
+group, every neighbourhood `U` of `1` and every bound `M > 0` admit a time `t ≥ M` with `γ t ∈ U`.
+The proof is a pigeonhole over the sample times `M, 2M, 3M, …` against a finite subcover of `H` by
+right translates of a symmetric neighbourhood `V` with `V·V⁻¹ ⊆ U`, using `oneParameter_sub`
+(`γ a · γ b⁻¹ = γ (a − b)`); this replaces the paper's closure-of-semigroup argument with an
+argument that does not require identifying the closure as a group.  `oneParameter_periodic` is the
+exact-periodicity clause `γ(t + T) • ν = γ(t) • ν` when `γ T ∈ Stab_H(ν)`.
+
+**Theorem 3 — closed response and open lifted history.**  `liftPath_one_eq_of_nullhomotopicRel`:
+a response loop null-homotopic rel endpoints has a closed lift in **any** covering of the response
+space.  `monodromy_eq_self_iff_eq_one`: for a *universal* (simply connected) covering the converse
+holds — the monodromy of a class fixes a point of the fibre exactly when the class is trivial — so
+the lift closes if and only if `[γ̄] = 0`, which is (6).
+
+The exact instantiation of §2 is certified concretely.  `halfTurnSubgroup` is the kernel of squaring
+on `Circle`; `mem_halfTurnSubgroup_iff` proves it is exactly `{1, −1}` and
+`exp_mem_halfTurnSubgroup_iff` proves it is exactly `πℤ` in the angle coordinate.
+`stabilizer_markedAxis` proves `Stab_{SO(2)}(marked axis) = halfTurnSubgroup`, i.e. `K` really is
+the stabilizer of a marking.  `responseQuotientEquiv : Circle ⧸ K ≃* Circle` identifies the
+experiment quotient with `ℝP¹ ≅ S¹`, with projection the squaring map.  `halfTurnPath` starts at `1`
+and ends at `−1 ∈ K` (`halfTurnPath_one_mem`), and `responseLoop_eq_sq` shows its projection is the
+once-around loop `responseLoop 1`.  `liftedAngle n` is the genuine mathlib path lift of
+`responseLoop n` along the covering `Circle.exp : ℝ → Circle`, computed exactly by
+`liftedAngle_eq`; `liftedAngle_one` gives endpoint `2πn`, `liftedAngle_one_zsmul` exhibits it as the
+`n`-th deck translation, `liftedAngle_one_injective` gives the escape through distinct deck
+transformations, and `responseLoop_not_nullhomotopicRel` concludes that the winding response loop is
+not null-homotopic.  `closed_response_open_lift` bundles all six clauses.
+
+**Corollary — positive phase erasure.**  `character_norm_one`: `‖χ(h)‖ = 1` for every `h`, so a
+positive character norm is constant and carries no phase history.
+
+`#print axioms` on `smul_eq_smul_iff_mem_stabilizer`, `markedResponse_injective`,
+`markedResponse_isClosedEmbedding`, `oneParameter_recurrence`, `oneParameter_periodic`,
+`liftPath_one_eq_of_nullhomotopicRel`, `monodromy_eq_self_iff_eq_one`, `stabilizer_markedAxis`,
+`responseQuotientEquiv`, `closed_response_open_lift`, and `character_norm_one` reports only
+`propext`, `Classical.choice`, and `Quot.sound`.

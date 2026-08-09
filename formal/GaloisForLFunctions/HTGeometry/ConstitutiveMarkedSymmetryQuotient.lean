@@ -14,6 +14,14 @@ experiment phase space is the homogeneous quotient `H ⧸ K`.
 * `oneParameter_recurrence` — a continuous one-parameter subgroup of a compact group returns to
   every neighbourhood of the identity at arbitrarily large times, and
   `oneParameter_periodic` gives exact periodicity when it meets `K`;
+* `liftPath_one_eq_of_nullhomotopicRel` and `monodromy_eq_self_iff_eq_one` — the response lift of a
+  loop is closed as soon as the loop is null-homotopic, and for a universal (simply connected)
+  covering the converse holds: the lift closes **exactly** when the class in the fundamental group
+  is trivial;
+* `halfTurnSubgroup`, `stabilizer_markedAxis`, `responseQuotientEquiv`, `halfTurnPath`,
+  `responseLoop`, `liftedAngle`, `closed_response_open_lift` — the exact instantiation
+  `H = SO(2)`, `K = {±1} = Stab(marked axis)`, `H/K ≅ S¹`: the half-turn intervention path projects
+  to a generating response loop whose angle lift escapes through distinct deck translations;
 * `character_norm_one` — a unitary character has constant positive modulus, so positive character
   data cannot carry phase history.
 -/
@@ -54,6 +62,7 @@ omit [TopologicalSpace H] [TopologicalSpace P] in
 @[simp] theorem markedResponse_mk (ν : P) (g : H) :
     markedResponse ν (QuotientGroup.mk g : H ⧸ MulAction.stabilizer H ν) = g • ν := rfl
 
+omit [TopologicalSpace H] [TopologicalSpace P] in
 /-- **The marked response is injective on the experiment quotient.** -/
 theorem markedResponse_injective (ν : P) :
     Function.Injective (markedResponse (H := H) ν) := by
@@ -197,8 +206,238 @@ section PositiveErasure
 cannot carry phase history. -/
 theorem character_norm_one {H : Type*} [Group H] (χ : H →* Circle) (h : H) :
     ‖(χ h : ℂ)‖ = 1 := by
-  simpa using (χ h).property
+  simp
 
 end PositiveErasure
+
+section UniversalLift
+
+open unitInterval
+
+variable {E X : Type*} [TopologicalSpace E] [TopologicalSpace X] {p : E → X}
+
+/-- **A null-homotopic response loop lifts to a closed path.**  If the response loop is homotopic
+rel endpoints to the constant loop, then its lift to any covering of the response space returns to
+its starting point. -/
+theorem liftPath_one_eq_of_nullhomotopicRel (cov : IsCoveringMap p) {γ : C(I, X)} {e : E}
+    (γ_0 : γ 0 = p e)
+    (h : γ.HomotopicRel (ContinuousMap.const I (p e)) {0, 1}) :
+    cov.liftPath γ e γ_0 1 = e := by
+  rw [cov.liftPath_apply_one_eq_of_homotopicRel h e γ_0 rfl, cov.liftPath_const rfl]
+  rfl
+
+/-- **Closed lift ⟺ trivial class, for a universal covering.**  When the covering space is simply
+connected the monodromy of a class fixes a point of the fibre exactly when the class is trivial;
+so the lifted history closes exactly when the response loop is null-homotopic. -/
+theorem monodromy_eq_self_iff_eq_one {G : Type*} [Group G] [MulAction G E]
+    (hp : IsQuotientCoveringMap p G) [SimplyConnectedSpace E] {x : X} (e : p ⁻¹' {x})
+    (γ : FundamentalGroup X x) :
+    hp.isCoveringMap.monodromy γ e = e ↔ γ = 1 := by
+  constructor
+  · intro h
+    have hid : hp.isCoveringMap.monodromy γ = id := (hp.monodromy_eq_id_iff e).mpr h
+    apply hp.monodromyPerm_injective
+    ext e'
+    rw [map_one]
+    simp only [IsCoveringMap.coe_monodromyPerm, hid, id_eq, Equiv.Perm.coe_one]
+  · rintro rfl
+    rw [FundamentalGroup.one_def]
+    exact congrFun hp.isCoveringMap.monodromy_refl e
+
+end UniversalLift
+
+section HalfTurnModel
+
+open unitInterval
+
+/-- The intervention stabilizer of the exact instantiation: the half-turn subgroup of the rotation
+group, realised as the kernel of squaring. -/
+noncomputable def halfTurnSubgroup : Subgroup Circle := (powMonoidHom 2 : Circle →* Circle).ker
+
+/-- The half-turn subgroup is exactly `{1, -1}`. -/
+theorem mem_halfTurnSubgroup_iff (z : Circle) : z ∈ halfTurnSubgroup ↔ z = 1 ∨ z = -1 := by
+  simp only [halfTurnSubgroup, MonoidHom.mem_ker, powMonoidHom_apply]
+  constructor
+  · intro h
+    have hz : (z : ℂ) ^ 2 = 1 := by
+      have := congrArg (Subtype.val) h
+      simpa using this
+    have h2 : ((z : ℂ) - 1) * ((z : ℂ) + 1) = 0 := by linear_combination hz
+    rcases mul_eq_zero.mp h2 with h3 | h3
+    · left; apply Subtype.ext; push_cast; linear_combination h3
+    · right; apply Subtype.ext; push_cast; linear_combination h3
+  · rintro (rfl | rfl)
+    · exact one_pow 2
+    · exact neg_one_sq
+
+/-- In the angle coordinate the stabilizer is exactly `πℤ`. -/
+theorem exp_mem_halfTurnSubgroup_iff (t : ℝ) :
+    Circle.exp t ∈ halfTurnSubgroup ↔ ∃ k : ℤ, t = k * Real.pi := by
+  simp only [halfTurnSubgroup, MonoidHom.mem_ker, powMonoidHom_apply]
+  rw [pow_two, ← Circle.exp_add, ← two_mul, Circle.exp_eq_one]
+  constructor
+  · rintro ⟨n, hn⟩; exact ⟨n, by linarith⟩
+  · rintro ⟨k, hk⟩; exact ⟨k, by rw [hk]; ring⟩
+
+/-- The marked intervention datum: the real axis, the support of the law obtained after the
+intervention that pins the first source coordinate. -/
+def markedAxis : Set ℂ := Set.range (fun r : ℝ => (r : ℂ))
+
+/-- **The half-turn subgroup is the stabilizer of the marked datum.**  This is clause (1) of the
+theorem in the exact instantiation: `K = Stab_H(ν)`. -/
+theorem stabilizer_markedAxis : MulAction.stabilizer Circle markedAxis = halfTurnSubgroup := by
+  ext z
+  rw [MulAction.mem_stabilizer_iff, mem_halfTurnSubgroup_iff]
+  constructor
+  · intro h
+    have h1 : (z : ℂ) ∈ markedAxis := by
+      rw [← h]
+      exact ⟨(1 : ℂ), ⟨1, by norm_num⟩, by simp⟩
+    obtain ⟨r, hr⟩ := h1
+    have hn : ‖(z : ℂ)‖ = 1 := by simp
+    rw [← hr] at hn
+    have habs : |r| = 1 := by simpa using hn
+    rcases (abs_eq (by norm_num : (0:ℝ) ≤ 1)).mp habs with h2 | h2
+    · left; apply Subtype.ext; push_cast; rw [← hr, h2]; norm_num
+    · right; apply Subtype.ext; push_cast; rw [← hr, h2]; norm_num
+  · rintro (rfl | rfl)
+    · exact one_smul _ _
+    · ext w
+      simp only [markedAxis, Set.mem_range]
+      constructor
+      · rintro ⟨u, ⟨r, rfl⟩, rfl⟩
+        exact ⟨-r, by simp⟩
+      · rintro ⟨r, rfl⟩
+        exact ⟨((-r : ℝ) : ℂ), ⟨-r, rfl⟩, by simp⟩
+
+/-- Squaring is surjective on the rotation group. -/
+theorem sq_surjective_circle : Function.Surjective (powMonoidHom 2 : Circle →* Circle) := by
+  intro w
+  obtain ⟨θ, rfl⟩ := Circle.exp_surjective w
+  refine ⟨Circle.exp (θ / 2), ?_⟩
+  simp only [powMonoidHom_apply]
+  rw [pow_two, ← Circle.exp_add]
+  congr 1
+  ring
+
+/-- **The experiment quotient of the exact instantiation is again a circle**, with the projection
+given by the squaring map — the double cover `S¹ → S¹ ≅ ℝP¹`. -/
+noncomputable def responseQuotientEquiv : Circle ⧸ halfTurnSubgroup ≃* Circle :=
+  QuotientGroup.quotientKerEquivOfSurjective _ sq_surjective_circle
+
+@[simp] theorem responseQuotientEquiv_mk (z : Circle) :
+    responseQuotientEquiv (QuotientGroup.mk z) = z ^ 2 := rfl
+
+/-- The half-turn intervention path: it starts at the identity and ends inside the stabilizer. -/
+noncomputable def halfTurnPath : C(I, Circle) :=
+  ⟨fun t => Circle.exp (Real.pi * t), by fun_prop⟩
+
+@[simp] theorem halfTurnPath_zero : halfTurnPath 0 = 1 := by
+  simp [halfTurnPath]
+
+@[simp] theorem halfTurnPath_one : halfTurnPath 1 = -1 := by
+  show Circle.exp (Real.pi * ((1 : I) : ℝ)) = -1
+  rw [Set.Icc.coe_one, mul_one]
+  apply Subtype.ext
+  rw [Circle.coe_exp]
+  push_cast
+  rw [Complex.exp_pi_mul_I]
+
+/-- The half-turn path lands in the stabilizer, so its projected response is a loop. -/
+theorem halfTurnPath_one_mem : halfTurnPath 1 ∈ halfTurnSubgroup := by
+  rw [halfTurnPath_one, mem_halfTurnSubgroup_iff]
+  exact Or.inr rfl
+
+/-- The projected response loop, wound `n` times around the experiment quotient. -/
+noncomputable def responseLoop (n : ℤ) : C(I, Circle) :=
+  ⟨fun t => Circle.exp (2 * Real.pi * n * t), by fun_prop⟩
+
+/-- The candidate angle lift of the response loop. -/
+noncomputable def angleLift (n : ℤ) : C(I, ℝ) :=
+  ⟨fun t => 2 * Real.pi * n * t, by fun_prop⟩
+
+theorem responseLoop_zero_eq (n : ℤ) : responseLoop n 0 = Circle.exp 0 := by
+  show Circle.exp (2 * Real.pi * n * ((0 : I) : ℝ)) = Circle.exp 0
+  norm_num
+
+/-- **The response is closed.** -/
+@[simp] theorem responseLoop_one (n : ℤ) : responseLoop n 1 = 1 := by
+  show Circle.exp (2 * Real.pi * n * ((1 : I) : ℝ)) = 1
+  rw [Set.Icc.coe_one, mul_one, Circle.exp_eq_one]
+  exact ⟨n, by ring⟩
+
+/-- The projection of the half-turn path is the once-around response loop: the quotient map
+`H → H/K ≅ S¹` is squaring. -/
+theorem responseLoop_eq_sq (t : I) : responseLoop 1 t = halfTurnPath t ^ 2 := by
+  show Circle.exp (2 * Real.pi * ((1 : ℤ) : ℝ) * t) = Circle.exp (Real.pi * t) ^ 2
+  rw [pow_two, ← Circle.exp_add]
+  congr 1
+  push_cast
+  ring
+
+/-- The lifted angle history of the response loop, in the universal cover `ℝ` of the response
+circle. -/
+noncomputable def liftedAngle (n : ℤ) : C(I, ℝ) :=
+  Circle.isCoveringMap_exp.liftPath (responseLoop n) 0 (responseLoop_zero_eq n)
+
+theorem liftedAngle_eq (n : ℤ) : liftedAngle n = angleLift n := by
+  refine ((Circle.isCoveringMap_exp.eq_liftPath_iff' _).mpr ⟨?_, ?_⟩).symm
+  · funext t; rfl
+  · show 2 * Real.pi * n * ((0 : I) : ℝ) = 0
+    norm_num
+
+@[simp] theorem liftedAngle_zero (n : ℤ) : liftedAngle n 0 = 0 := by
+  rw [liftedAngle_eq]
+  show 2 * Real.pi * n * ((0 : I) : ℝ) = 0
+  norm_num
+
+/-- **The lifted history is not closed: it ends at `2πn`.** -/
+@[simp] theorem liftedAngle_one (n : ℤ) : liftedAngle n 1 = 2 * Real.pi * n := by
+  rw [liftedAngle_eq]
+  show 2 * Real.pi * n * ((1 : I) : ℝ) = 2 * Real.pi * n
+  rw [Set.Icc.coe_one, mul_one]
+
+theorem liftedAngle_one_ne_zero {n : ℤ} (hn : n ≠ 0) : liftedAngle n 1 ≠ 0 := by
+  rw [liftedAngle_one]
+  exact mul_ne_zero (mul_ne_zero two_ne_zero Real.pi_ne_zero) (Int.cast_ne_zero.mpr hn)
+
+/-- **Distinct winding numbers escape through distinct deck translations.** -/
+theorem liftedAngle_one_injective : Function.Injective fun n : ℤ => liftedAngle n 1 := by
+  intro m n hmn
+  simp only [liftedAngle_one] at hmn
+  have h2 : (2 * Real.pi) ≠ 0 := mul_ne_zero two_ne_zero Real.pi_ne_zero
+  have hc : (m : ℝ) = (n : ℝ) := mul_left_cancel₀ h2 hmn
+  exact_mod_cast hc
+
+/-- The lifted endpoint is the `n`-th power of the generating deck translation by `2π`. -/
+theorem liftedAngle_one_zsmul (n : ℤ) : liftedAngle n 1 = n • (2 * Real.pi) := by
+  rw [liftedAngle_one, zsmul_eq_mul]
+  ring
+
+/-- **The response loop is not null-homotopic once it winds.** -/
+theorem responseLoop_not_nullhomotopicRel {n : ℤ} (hn : n ≠ 0) :
+    ¬ (responseLoop n).HomotopicRel (ContinuousMap.const I (Circle.exp 0)) {0, 1} := by
+  intro h
+  exact liftedAngle_one_ne_zero hn
+    (liftPath_one_eq_of_nullhomotopicRel Circle.isCoveringMap_exp (responseLoop_zero_eq n) h)
+
+/-- **Theorem 3 in the exact instantiation.**  The marked half-turn intervention gives a response
+that is exactly closed in the experiment quotient, an angle history that is open, endpoints that
+escape through distinct deck translations by `2π`, and hence a response loop with a nontrivial
+homotopy class. -/
+theorem closed_response_open_lift {n : ℤ} (hn : n ≠ 0) :
+    responseLoop n 0 = responseLoop n 1 ∧
+      liftedAngle n 0 = 0 ∧
+      liftedAngle n 1 = n • (2 * Real.pi) ∧
+      liftedAngle n 1 ≠ liftedAngle n 0 ∧
+      Function.Injective (fun m : ℤ => liftedAngle m 1) ∧
+      ¬ (responseLoop n).HomotopicRel (ContinuousMap.const I (Circle.exp 0)) {0, 1} := by
+  refine ⟨?_, liftedAngle_zero n, liftedAngle_one_zsmul n, ?_, liftedAngle_one_injective,
+    responseLoop_not_nullhomotopicRel hn⟩
+  · rw [responseLoop_one, responseLoop_zero_eq, Circle.exp_zero]
+  · rw [liftedAngle_zero]
+    exact liftedAngle_one_ne_zero hn
+
+end HalfTurnModel
 
 end GaloisForLFunctions.HTGeometry

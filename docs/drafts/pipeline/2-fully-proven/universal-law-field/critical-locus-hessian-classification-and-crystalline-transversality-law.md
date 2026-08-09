@@ -220,3 +220,30 @@ the asymmetry: one negative evaluation of a detector certifies N_off ≥ 1 (pres
 one-evaluation-robust), while certifying N_off = 0 requires the uniform full-diagonal
 inequality (group 3) — and Θ4 shows no finite evaluation family can substitute for it. The
 corpus's count-direction law is the Morse-theoretic asymmetry of a degenerate minimum.
+
+## Lean formalization status (2026-08-09)
+
+Module: `formal/GaloisForLFunctions/RHTower/CriticalLocusQuadrupleEvenness.lean` — wired into
+the `GaloisForLFunctions.RHTower` umbrella; umbrella build green (18119 jobs); axiom audit
+of every theorem exactly `[propext, Classical.choice, Quot.sound]`; formal lint gate clean
+for this module. Contents, all hypothesis-free:
+
+- `criticalQuadruple_neg` — Θ1's multiset evenness: the splitting quadruple is invariant
+  under t ↦ −t.
+- `apply_criticalQuadruple_neg` — Θ1 in full generality: EVERY function of the
+  configuration (arbitrary value sort, no regularity) is even in the displacement.
+- `deriv_criticalQuadrupleSum_zero` — the universal criticality law: the derivative of the
+  scalar quadruple functional vanishes at the critical locus for EVERY F : ℂ → ℂ, with no
+  differentiability assumption (junk-value calculus makes the statement unconditional).
+- `hasDerivAt_criticalQuadrupleSum_XiC`, `deriv_criticalQuadrupleSum_XiC` — the exact
+  first-derivative formula at the corpus's entire XiC.
+- `iteratedDeriv_two_criticalQuadrupleSum_XiC` — Θ2's second-jet identity at XiC: the
+  second central jet equals 2·(XiC″(1/2+γi) + XiC″(1/2−γi)) — the "first surviving
+  information" law, formalized.
+
+Not formalized (recorded honestly): Θ2's per-zero necessity and mixture statements (their
+natural formalization requires a detector-predicate layer), Θ3 (its exponential-independence
+core is already corpus-owned: `HurwitzExp.expLin_linearIndependent` — cite, do not rebuild),
+Θ4 (needs a configuration-family IFT layer), and the other stage-2 cards (ULF-MECH-3/4
+are assemblies over large existing layers; ULF-MECH-5's gate needs in-Lean zero enclosures,
+i.e. computation, excluded by the session's Lean rules).

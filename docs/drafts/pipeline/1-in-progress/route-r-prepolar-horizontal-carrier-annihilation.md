@@ -290,3 +290,50 @@ pre-divisor rational-adelic/Cartier source and before Xi scalarization, both nor
 on `Q_d`; prove their representative actions are `u_t` and `u_-t` while retaining prime labels,
 divisor multiplicity, and the two reflection orientations. Equivariance, product formula, or an
 orientation-dependent norm is insufficient.
+
+### C13. Put both normalized coefficient fields in the carrier before asking for endomorphisms
+
+**Conjecture.** The C12 endomorphism formulation asks too much: each orientation need not preserve
+`I_d` separately in order for both coefficient fields to be compared inside `Q_d`. Define
+
+```text
+U_t = [p |-> 1 + p^(-t)] in Q_d,
+U_t^vee = U_(-t) = [p |-> 1 + p^t] in Q_d.
+```
+
+Both classes exist unconditionally for every real `t` in the same fixed carrier. Their difference
+is not an abstract comparison:
+
+```text
+d(p) * (U_t(p) - U_t^vee(p)) = b_t(p)
+```
+
+prime by prime, where `b_t` is the literal signed Gamma Bockstein.
+
+**Verdict.** `[LEAN-PROVED] [BRIDGE] [NOT RH PROOF]`.
+
+Because membership in `I_d` is summability after multiplication by `d`, equality in `Q_d` gives
+
+```text
+U_t = U_t^vee
+  iff p |-> b_t(p) is absolutely summable
+  iff t = 0.
+```
+
+The last equivalence is the already proved sharp all-prime Gamma-Bockstein trace wall. This is
+strictly stronger than C12 as a representation result: both transports are now present on one
+fixed carrier for every grade, and their coefficient-wise difference is identified without
+inverting Fisher density in the ordinary quotient. Prime labels are never summed; a later nonzero
+Xi leading-jet scalar may be attached without changing the equality radical, so divisor
+multiplicity is retained.
+
+Lean module:
+`formal/GaloisForLFunctions/RHTower/FisherDeconvolvedSameCarrierOrientationLaw.lean`.
+Principal theorem: `fisherDeconvolvedOrientationClass_eq_reflected_iff`.
+
+**Exact remaining source producer.** C13 removes carrier and coefficient-identification gaps. The
+only missing statement is now a non-equivariant pre-divisor relation proving `U_t=U_t^vee` for the
+two analytic transports attached to each actual Xi divisor. Source involution gives
+`U_t at rho` corresponding to `U_-t at J(rho)`; it does not identify them in one fixed fibre.
+Any theorem making that final identification globally is RH-equivalent by C13 and must be derived
+from new rational-adelic/Cartier boundary input, not asserted as naturality.

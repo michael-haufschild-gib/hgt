@@ -267,4 +267,229 @@ theorem interchange_bianchi {E : Type*} [AddCommGroup E]
   rw [hTsub, hTsub, hT, mul_assoc t s r, mul_assoc s r m]
   abel
 
+/-! ## The arithmetic anchor and defect sets -/
+
+section Arithmetic
+
+variable {A : Finset ℕ}
+
+/-- The anchor set: primes of the aperture attaining the shell height. -/
+def anchorSet (A : Finset ℕ) (M N : ℕ) : Finset ℕ :=
+  A.filter fun p => N.factorization p = M
+
+/-- The defect set: primes of the aperture whose exponent is not divisible by `q`. -/
+def defectSet (A : Finset ℕ) (q N : ℕ) : Finset ℕ :=
+  A.filter fun p => ¬ q ∣ N.factorization p
+
+theorem mem_anchorSet {A : Finset ℕ} {M N p : ℕ} :
+    p ∈ anchorSet A M N ↔ p ∈ A ∧ N.factorization p = M := by
+  simp [anchorSet]
+
+theorem mem_defectSet {A : Finset ℕ} {q N p : ℕ} :
+    p ∈ defectSet A q N ↔ p ∈ A ∧ ¬ q ∣ N.factorization p := by
+  simp [defectSet]
+
+/-- **Anchors are disjoint from defects** when the divisor divides the shell height. -/
+theorem anchorSet_disjoint_defectSet {A : Finset ℕ} {M q N : ℕ} (hqM : q ∣ M) :
+    Disjoint (anchorSet A M N) (defectSet A q N) := by
+  rw [Finset.disjoint_left]
+  intro p hp hp'
+  obtain ⟨-, hM⟩ := mem_anchorSet.mp hp
+  obtain ⟨-, hq⟩ := mem_defectSet.mp hp'
+  exact hq (hM ▸ hqM)
+
+/-- **The defect set is empty exactly when every aperture exponent is a multiple of `q`.** -/
+theorem defectSet_eq_empty_iff {A : Finset ℕ} {q N : ℕ} :
+    defectSet A q N = ∅ ↔ ∀ p ∈ A, q ∣ N.factorization p := by
+  constructor
+  · intro h p hp
+    by_contra hq
+    have : p ∈ defectSet A q N := mem_defectSet.mpr ⟨hp, hq⟩
+    rw [h] at this
+    simp at this
+  · intro h
+    refine Finset.eq_empty_of_forall_notMem fun p hp => ?_
+    obtain ⟨hpA, hq⟩ := mem_defectSet.mp hp
+    exact hq (h p hpA)
+
+/-- **The direct defect set splits into outer and latent-inner layers.** -/
+theorem defectSet_mul_eq_union {A : Finset ℕ} {s r N : ℕ} :
+    defectSet A (s * r) N = defectSet A s N ∪ (defectSet A (s * r) N \ defectSet A s N) := by
+  refine (Finset.union_sdiff_of_subset ?_).symm
+  intro p hp
+  obtain ⟨hpA, hq⟩ := mem_defectSet.mp hp
+  refine mem_defectSet.mpr ⟨hpA, fun hdvd => hq ?_⟩
+  exact dvd_trans (Dvd.intro r rfl) hdvd
+
+theorem defectSet_disjoint_sdiff {A : Finset ℕ} {s r N : ℕ} :
+    Disjoint (defectSet A s N) (defectSet A (s * r) N \ defectSet A s N) :=
+  Finset.disjoint_sdiff
+
+/-! ## The three-prime witness -/
+
+theorem factorization_three_primes {p₀ p₁ p₂ : ℕ} (h0 : p₀.Prime) (h1 : p₁.Prime)
+    (h2 : p₂.Prime) (a b c q : ℕ) :
+    (p₀ ^ a * p₁ ^ b * p₂ ^ c).factorization q
+      = (if q = p₀ then a else 0) + (if q = p₁ then b else 0) + (if q = p₂ then c else 0) := by
+  have hn0 : (p₀ : ℕ) ^ a ≠ 0 := pow_ne_zero _ h0.ne_zero
+  have hn1 : (p₁ : ℕ) ^ b ≠ 0 := pow_ne_zero _ h1.ne_zero
+  have hn2 : (p₂ : ℕ) ^ c ≠ 0 := pow_ne_zero _ h2.ne_zero
+  rw [Nat.factorization_mul (Nat.mul_ne_zero hn0 hn1) hn2,
+    Nat.factorization_mul hn0 hn1, Nat.factorization_pow, Nat.factorization_pow,
+    Nat.factorization_pow, h0.factorization, h1.factorization, h2.factorization]
+  simp [Finsupp.single_apply, eq_comm]
+
+/-- **The unconditional nonzero witness.**  For three distinct primes and `m, r, s ≥ 2` the
+anchor set is `{p₀}`, the outer layer is `{p₂}` and the latent-inner layer is `{p₁}`. -/
+theorem witness_layers {p₀ p₁ p₂ m r s : ℕ} (h0 : p₀.Prime) (h1 : p₁.Prime) (h2 : p₂.Prime)
+    (h01 : p₀ ≠ p₁) (h02 : p₀ ≠ p₂) (h12 : p₁ ≠ p₂) (hm : 2 ≤ m) (hr : 2 ≤ r) (hs : 2 ≤ s) :
+    anchorSet {p₀, p₁, p₂} (s * r * m) (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1) = {p₀}
+      ∧ defectSet {p₀, p₁, p₂} s (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1) = {p₂}
+      ∧ defectSet {p₀, p₁, p₂} (s * r) (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1)
+          \ defectSet {p₀, p₁, p₂} s (p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1) = {p₁} := by
+  set N : ℕ := p₀ ^ (s * r * m) * p₁ ^ s * p₂ ^ 1 with hN
+  have hfac := factorization_three_primes h0 h1 h2 (s * r * m) s 1
+  have e0 : N.factorization p₀ = s * r * m := by
+    rw [hN, hfac]
+    simp [h01, h02]
+  have e1 : N.factorization p₁ = s := by
+    rw [hN, hfac]
+    simp [Ne.symm h01, h12]
+  have e2 : N.factorization p₂ = 1 := by
+    rw [hN, hfac]
+    simp [Ne.symm h02, Ne.symm h12]
+  have hsr_pos : 0 < s * r := by positivity
+  have hsrm_lb : 4 * s ≤ s * r * m := by nlinarith
+  have hsrm2 : 2 ≤ s * r * m := by nlinarith
+  have hdvd_s : s ∣ s * r * m := ⟨r * m, by ring⟩
+  have hdvd_sr : s * r ∣ s * r * m := ⟨m, rfl⟩
+  have hnd_s_one : ¬ s ∣ 1 := fun h => by
+    have hs1 := Nat.le_of_dvd one_pos h
+    omega
+  have hnd_sr_s : ¬ s * r ∣ s := fun h => by
+    have := Nat.le_of_dvd (by omega) h
+    nlinarith
+  have hnd_sr_one : ¬ s * r ∣ 1 := fun h => by
+    have := Nat.le_of_dvd one_pos h
+    nlinarith
+  refine ⟨?_, ?_, ?_⟩
+  · ext p
+    simp only [mem_anchorSet, Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · rintro ⟨hmem, hval⟩
+      rcases hmem with h | h | h
+      · exact h
+      · rw [h, e1] at hval
+        omega
+      · rw [h, e2] at hval
+        omega
+    · rintro rfl
+      exact ⟨Or.inl rfl, e0⟩
+  · ext p
+    simp only [mem_defectSet, Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · rintro ⟨hmem, hval⟩
+      rcases hmem with h | h | h
+      · rw [h, e0] at hval
+        exact absurd hdvd_s hval
+      · rw [h, e1] at hval
+        exact absurd dvd_rfl hval
+      · exact h
+    · rintro rfl
+      refine ⟨Or.inr (Or.inr rfl), ?_⟩
+      rw [e2]
+      exact hnd_s_one
+  · ext p
+    simp only [Finset.mem_sdiff, mem_defectSet, Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · rintro ⟨⟨hmem, hval⟩, hnot⟩
+      rcases hmem with h | h | h
+      · rw [h, e0] at hval
+        exact absurd hdvd_sr hval
+      · exact h
+      · exact absurd ⟨Or.inr (Or.inr h), by rw [h, e2]; exact hnd_s_one⟩ hnot
+    · rintro rfl
+      refine ⟨⟨Or.inr (Or.inl rfl), ?_⟩, ?_⟩
+      · rw [e1]
+        exact hnd_sr_s
+      · rintro ⟨-, hval⟩
+        rw [e1] at hval
+        exact hval dvd_rfl
+
+/-! ## Ordered first-failure flags -/
+
+/-- Defect sets increase along divisibility. -/
+theorem defectSet_mono {A : Finset ℕ} {d e N : ℕ} (h : d ∣ e) :
+    defectSet A d N ⊆ defectSet A e N := by
+  intro p hp
+  obtain ⟨hpA, hq⟩ := mem_defectSet.mp hp
+  exact mem_defectSet.mpr ⟨hpA, fun hdvd => hq (dvd_trans h hdvd)⟩
+
+/-- The ordered first-failure layer of a chain of divisors. -/
+def failureLayer (A : Finset ℕ) (d : ℕ → ℕ) (N i : ℕ) : Finset ℕ :=
+  defectSet A (d (i + 1)) N \ defectSet A (d i) N
+
+theorem chain_dvd {d : ℕ → ℕ} (hd : ∀ i, d i ∣ d (i + 1)) {i j : ℕ} (hij : i ≤ j) :
+    d i ∣ d j := by
+  induction j with
+  | zero => simp [Nat.le_zero.mp hij]
+  | succ n ih =>
+    rcases Nat.lt_or_ge i (n + 1) with h | h
+    · exact dvd_trans (ih (Nat.lt_succ_iff.mp h)) (hd n)
+    · have : i = n + 1 := le_antisymm hij h
+      simp [this]
+
+/-- **The ordered failure flags are pairwise disjoint.** -/
+theorem failureLayer_disjoint {A : Finset ℕ} {d : ℕ → ℕ} (hd : ∀ i, d i ∣ d (i + 1)) (N : ℕ)
+    {i j : ℕ} (hij : i < j) :
+    Disjoint (failureLayer A d N i) (failureLayer A d N j) := by
+  rw [Finset.disjoint_left]
+  intro p hp hp'
+  have hpi : p ∈ defectSet A (d (i + 1)) N := (Finset.mem_sdiff.mp hp).1
+  have hpj : p ∉ defectSet A (d j) N := (Finset.mem_sdiff.mp hp').2
+  exact hpj (defectSet_mono (chain_dvd hd (Nat.succ_le_of_lt hij)) hpi)
+
+/-- **The direct defect set is the base layer together with the ordered failure flags.** -/
+theorem defectSet_eq_union_failureLayers {A : Finset ℕ} {d : ℕ → ℕ} (hd : ∀ i, d i ∣ d (i + 1))
+    (N : ℕ) : ∀ k : ℕ,
+      defectSet A (d k) N
+        = defectSet A (d 0) N ∪ (Finset.range k).biUnion (failureLayer A d N) := by
+  intro k
+  induction k with
+  | zero => simp
+  | succ n ih =>
+    have hrange : Finset.range (n + 1) = insert n (Finset.range n) := by
+      ext j
+      simp
+      omega
+    rw [hrange, Finset.biUnion_insert]
+    ext p
+    simp only [Finset.mem_union]
+    constructor
+    · intro hp
+      by_cases hpn : p ∈ defectSet A (d n) N
+      · rw [ih] at hpn
+        rcases Finset.mem_union.mp hpn with h | h
+        · exact Or.inl h
+        · exact Or.inr (Or.inr h)
+      · exact Or.inr (Or.inl (Finset.mem_sdiff.mpr ⟨hp, hpn⟩))
+    · rintro (h | h | h)
+      · refine defectSet_mono (hd n) ?_
+        rw [ih]
+        exact Finset.mem_union_left _ h
+      · exact (Finset.mem_sdiff.mp h).1
+      · refine defectSet_mono (hd n) ?_
+        rw [ih]
+        exact Finset.mem_union_right _ h
+
+/-- **Refined incidence agrees with direct incidence.**  Splitting the defect set splits the
+incidence rectangle. -/
+theorem product_union (H O L : Finset ℕ) :
+    H ×ˢ (O ∪ L) = (H ×ˢ O) ∪ (H ×ˢ L) := by
+  ext e
+  simp only [Finset.mem_product, Finset.mem_union]
+  tauto
+
+end Arithmetic
+
 end HTGeometry.ConstraintFrameRelativity

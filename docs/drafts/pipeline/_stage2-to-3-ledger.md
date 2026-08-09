@@ -745,3 +745,29 @@ prime/zeta/divisor theorem.  See
 - Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
   `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
   computation proof.
+
+# Universal-law-field marked-symmetry experiment quotient certification (2026-08-09)
+
+- `marked-symmetry-experiment-quotient-recurrence-and-lift-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveMarkedSymmetryQuotient`.
+- Certified: for an arbitrary group action, two transformations have the same marked response
+  exactly on a right coset of the stabilizer, and the response descends to a continuous injection of
+  `H ⧸ Stab_H(ν)` which is a closed embedding when `H` is compact and the law space Hausdorff; for a
+  compact topological group, every continuous one-parameter subgroup returns to every neighbourhood
+  of the identity at arbitrarily large times, and meeting the stabilizer gives exact periodicity of
+  the marked response; a response loop that is null-homotopic has a closed lift along any covering,
+  and along a universal covering the lift closes exactly when the homotopy class is trivial.  The
+  exact instantiation is certified concretely: the half-turn subgroup of `SO(2)` is `{±1}`, is `πℤ`
+  in the angle coordinate, and is the stabilizer of the marked axis; `Circle ⧸ K ≃* Circle` with the
+  squaring map as projection; the half-turn intervention path projects to the once-around response
+  loop, whose mathlib path lift along `Circle.exp` ends at `2πn` — distinct deck translations for
+  distinct windings — so the response is closed while the lifted history is open, and the response
+  loop is therefore not null-homotopic.
+- Uses mathlib's covering-space and monodromy layer (`IsCoveringMap.liftPath`,
+  `IsQuotientCoveringMap.monodromyPerm_injective`, `Circle.isCoveringMap_exp`) directly; no covering
+  theory had to be rebuilt.  The recurrence proof replaces the paper's closure-of-semigroup argument
+  by a pigeonhole against a finite subcover, which needs no structure theory of compact groups.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`; no project
+  postulate, hypothesis interface, or computation proof.

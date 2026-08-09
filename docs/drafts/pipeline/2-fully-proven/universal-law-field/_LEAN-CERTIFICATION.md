@@ -209,3 +209,18 @@ alone imposes no dynamics.
 This certifies the finite-monotone leg of the law-genesis trilemma. Direct elaboration and the final
 11,413-job umbrella build pass. Significant declarations depend only on `propext`,
 `Classical.choice`, and `Quot.sound`; the forbidden-token scan is clean.
+
+## Session 2026-08-09 additions (Marked-Symmetry Experiment Quotient)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-MSQ-1 | Marking an intervention replaces the passive gauge group by its stabilizer; the homogeneous quotient embeds in the law space, one-parameter responses recur in every compact group, and the lifted history closes exactly when the response class is trivial | `HTGeometry.ConstitutiveMarkedSymmetryQuotient` |
+
+Direct foreground elaboration and the final 11,418-job Universal Law Field umbrella build pass with
+no warnings; the forbidden-token scan is clean and `#print axioms` on every capstone reports only
+`propext`, `Classical.choice`, and `Quot.sound`.  The recurrence clause is proved by a pigeonhole
+over sample times against a finite subcover, which is strictly more elementary than the paper's
+closure-of-semigroup argument.  The exact instantiation is certified concretely: `K` is proved to be
+the stabilizer of a marking, `Circle ⧸ K ≃* Circle`, and the angle lift of the response loop is the
+genuine mathlib path lift along `Circle.exp`, with endpoints escaping through distinct deck
+translations by `2π`.

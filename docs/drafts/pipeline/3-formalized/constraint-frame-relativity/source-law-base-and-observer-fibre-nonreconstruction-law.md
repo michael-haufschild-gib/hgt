@@ -1,9 +1,10 @@
 # Source-law base and observer-fibre nonreconstruction law
 
 - **ID:** `cfr-source-law-base-nonreconstruction`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / HIGHER-FIELD PIVOT
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HT AND STOKES CALIBRATIONS] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HT AND STOKES CALIBRATIONS] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `source-law-base-and-observer-fibre-nonreconstruction-law-formalized.md`
 - **Statement:** Coefficient-doctrine choice, prolongation index, aperture, and history do not determine the governing constraint law. The theorem forces an additional law variable; modeling it by a stratified base is provisional.
 
 ## Goal

@@ -940,3 +940,16 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
 - Route Q's recorded open-core decision alternative is now a settled theorem: carrier
   survives; open core = all-degree closure alone. This is the program's first fully
   dependency-closed movement on a route's own recorded frontier item.
+
+## 2026-08-09 — Lean formalization of the field's core laws; program STOPPED per user
+
+- New module CriticalLocusQuadrupleEvenness.lean: Θ1 fully formalized (multiset evenness +
+  every-function evenness + the universal criticality law for arbitrary F, hypothesis-free
+  via junk-value calculus); Θ2's second-jet identity formalized at XiC. Compile green;
+  wired into RHTower umbrella (alphabetical position); umbrella build green (18119 jobs);
+  axioms exactly [propext, Classical.choice, Quot.sound] on all five theorems; lint clean
+  for this module (the five unreachable-module lint errors belong to concurrent loops'
+  unwired work, incl. FiniteHankelBoundaryPadeContactParity).
+- Formalization boundaries recorded on the ULF-FIELD-2 card (necessity/mixture, Θ3 via
+  existing HurwitzExp independence, Θ4, and the assembly/computation-bound cards).
+- Program stopped at user instruction.

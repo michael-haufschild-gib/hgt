@@ -5,7 +5,11 @@
 - **Type:** THEOREM / ROUTE-U POSITIVE SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [NEW SCIENTIFIC KNOWLEDGE CANDIDATE] [NOVELTY NONCOLLISION] [NOT RH]`
 - **Parent:** `../1-in-progress/universal-law-field/route-u-crossing-attack-typing.md`
-- **Lean:** pending exact formalization
+- **Lean:** algebraic contact coefficients, one-sided analytic sign, shifted-Xi defects, and the
+  zero-free prime--archimedean consumer are formalized in
+  `formal/GaloisForLFunctions/HTGeometry/FiniteHankelBoundaryPadeContactParity.lean` and
+  `formal/GaloisForLFunctions/RHTower/XiShiftedHankelBoundaryPadeContactParity.lean`; the exact
+  identification of the normalized moving-null Xi energy with that analytic series remains open
 - **Statement:** A right-positive mass-shifted moment orbit can meet its canonical flat-quadrature
   orbit only with the alternating orientation fixed by the first nonzero Padé defect. The ordinary
   Route-U flux law is the contact-order-one case.
@@ -236,8 +240,11 @@ stationary first-crossing application. This is a novelty noncollision, not a pri
 - [x] fixed-vector false strengthening rejected
 - [x] exact stationary-crossing source conjecture `(U-Pade)` frozen
 - [x] primary-literature noncollision audit
-- [ ] formalize exact contact-parity theorem in Lean
-- [ ] formalize shifted-Xi specialization and stronger crossing consumer
+- [x] formalize defect-series coefficients and arbitrary first-contact parity in Lean
+- [x] formalize one-sided analytic leading-sign theorem in Lean
+- [x] formalize shifted-Xi/prime--archimedean defects and order-one Route-U coefficient
+- [ ] formalize exact normalized moving-null Xi energy identity and its analytic-series germ
+- [ ] formalize full shifted-Xi crossing consumer from actual right-cone positivity
 - [ ] prove `(U-Pade)` from completed prime--Gamma source
 
 ## Log

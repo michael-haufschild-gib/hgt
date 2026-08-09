@@ -39,7 +39,7 @@ theorem norm_inner_vacuum_infiniteMobiusSignedWeightLp_sq
     ‖inner ℂ ((HilbertSchmidt.lpBasis ℕ) 1) (infiniteMobiusSignedWeightLp sigma hsigma)‖ ^ 2 =
       (squarefreeMobiusTotal sigma)⁻¹ := by
   rw [HilbertSchmidt.lpBasis_apply, lp.inner_single_left]
-  simp only [RCLike.inner_apply, map_one, one_mul, infiniteMobiusSignedWeightLp_apply]
+  simp only [RCLike.inner_apply, map_one, mul_one, infiniteMobiusSignedWeightLp_apply]
   rw [norm_infiniteMobiusSignedWeight_sq hsigma, squarefreeMobiusProbability_one]
 
 /-- Every fixed coordinate modulus of the squarefree source vanishes at the Euler boundary. -/

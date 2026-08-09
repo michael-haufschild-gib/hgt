@@ -12,7 +12,9 @@
 - `constitutiveExactWork_reverse`;
 - `constitutiveExactWork_add_const`;
 - `constitutiveExactWork_dominance_rigidity`;
+- `constitutiveExactWork_dominance_rigidityOn`;
 - `constitutiveStrengthening_scalarIntegrable_iff_eq`;
+- `constitutiveStrengthening_scalarIntegrableOn_iff_eq`;
 - `constitutiveConjunctiveWork_twoCycle`;
 - `constitutiveConjunctiveWork_positive_twoCycle`;
 - `constitutiveConjunctiveWork_scalarIntegrable_iff`;
@@ -21,7 +23,8 @@
 - `constitutiveConjunctiveWork_scalarIntegrable_iff_gaugeAt`;
 - `constitutiveDisjunctiveWork_scalarIntegrable_left`;
 - `constitutiveDisjunctiveWork_scalarIntegrable_right`;
-- `constitutiveMandatorySelectionCreatesHistory_iff`.
+- `constitutiveMandatorySelectionCreatesHistory_iff`;
+- `constitutiveDirectedPair_strictStrengthening_isScalarIntegrable`.
 
 ## Verification
 
@@ -39,6 +42,10 @@ is scalar-integrable exactly when their potentials differ by one additive gauge 
 disagreement produces a strictly positive two-step cycle. Permissive pointwise minimum remains
 scalar-integrable. The theorem formally certifies a mechanism by which selection among exact laws
 creates directed history.
+
+Lean also certifies the exact polarization boundary: dominance rigidity holds on every symmetric
+legal-transition relation, while an explicit two-state one-way relation admits a strict
+scalar-integrable strengthening.
 
 ## Scope
 
