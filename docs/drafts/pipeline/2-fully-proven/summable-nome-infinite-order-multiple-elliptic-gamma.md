@@ -684,6 +684,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 6, no scaling keeps two gamma halves | `scalingBoundary_half_collapses` |
 | Lemma 6, moving-coordinate convergence | `exists_primaryFactor_sub_one_bound`, `tendsto_finiteNomeSection_moving` |
 | Lemma 6, the full table (15)/(16) | `tendsto_scalingTable` |
+| finite-index geometric identity over ℂ | `hasSum_pi_geometric`, `summable_norm_pi_geometric` |
 | Lemma 2, (8) in summed-tail form | `norm_primaryLogTail_le`, `hasProd_cexp`, `infiniteMultipleEllipticGamma_eq_exp_neg_tsum` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
@@ -693,16 +694,24 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaCollapse.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaScaling.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaMovingPoint.lean`,
-`HTGeometry/InfiniteMultipleEllipticGammaFreeEnergy.lean`.
+`HTGeometry/InfiniteMultipleEllipticGammaFreeEnergy.lean`,
+`HTGeometry/PiGeometricSeries.lean`.
 
 ### Open in Lean
 
 1. Lemma 2, (8) in moment form.  The summed-tail form is closed:
    `𝒢_{A,g}(x) = exp(-∑_ν primaryLogTail g (x p^ν))` on `‖x‖ < 1`.  What remains is to expand each
    tail and interchange, `∑_ν ∑_{m≥d} (x p^ν)^m/m = ∑_{m≥d} x^m M_{A,m}/m`, which needs the
-   occupation Euler product `∑_ν (p^ν)^m = ∏_a (1-p_a^m)^{-1}` in ℂ.  The ℝ≥0∞ shadow of that
-   product is already `nomeOccupationMass_eq_iSup_finset`; the complex version needs the finite
-   identity `∑_{supp ν ⊆ S} p^ν = ∏_{a∈S}(1-p_a)^{-1}` by induction on `S`, then a limit.
+   occupation Euler product `∑_ν (p^ν)^m = ∏_a (1-p_a^m)^{-1}` in ℂ.  Its finite-index half is now
+   closed (`hasSum_pi_geometric`).  Three steps remain:
+   (a) transport the finite-index identity along the corpus equivalence
+       `supportedOccupationEquiv S : (S → ℕ) ≃ {ν // ν.support ⊆ S}` — currently `private` in
+       `InfiniteOccupationLaw.lean` and needing de-privatisation, with a `nomeMonomial` companion
+       to `occupationWeight_supportedOccupationEquiv`;
+   (b) pass to the limit in `S` by `tendsto_tsum_of_dominated_convergence`, dominating with
+       `‖nomeMonomial u ν‖` (summable by `summable_nomeMonomial_pow_iff` at genus `0`);
+   (c) apply the result at `u := fun a => p a ^ m` and interchange, using
+       `(nomeMonomial p ν)^m = nomeMonomial (p ^ m) ν`.
 2. Lemma 7: the all-order counterterm jet (C3)/(20).
 3. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
