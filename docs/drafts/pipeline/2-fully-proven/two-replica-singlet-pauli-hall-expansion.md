@@ -297,10 +297,16 @@ Progress against that list:
   `finiteTwoReplicaPhysical_connectedGraph_kernel_iff`) and injectivity of `assemble` (which is the
   edge-sector orthogonality `(11)`).
 
-  Note on tactics: Hermiticity of `twoReplicaSwap` is *not* worth an entrywise proof — `split_ifs`
-  followed by `simp_all` or any `eq_comm` in the simp set loops on the symmetric index conditions.
-  Route it through `twoReplicaLocalCorrelation_eq_swap` and Hermiticity of the correlation term
-  instead.
+  Hermiticity of `twoReplicaSwap` is closed by that route — `isHermitian_twoReplicaSwap`, read off
+  `twoReplicaLocalCorrelation_eq_swap` and `isHermitian_twoReplicaLocalCorrelation`, since the two
+  differ by a real affine change and the correlation term is a sum of Kronecker squares.  Do not
+  attempt it entrywise: `split_ifs` followed by `simp_all`, or any `eq_comm` in the simp set, loops
+  on the symmetric index conditions.
+
+  With it, `trace_conjTranspose_swapDiff_mul_swapDiff` gives the swap translate the same
+  Hilbert--Schmidt square `8`, and `twoReplicaLocalDiff_pair_independent` shows the two mismatched
+  outputs at one endpoint are linearly independent.  That is the local rank input for the
+  fixed-orientation injectivity `(16)`.
 
 `HTGeometry/TwoReplicaCliffordTwirlHallSymmetryReduction.lean` additionally
 proves, in both exact matrix conventions, that the canonical greatest local

@@ -184,6 +184,68 @@ theorem isHermitian_twoReplicaLocalDiff (a : Fin 3) :
     (twoReplicaLocalDiff a).IsHermitian :=
   (isHermitian_twoReplicaPauliLeft a).sub (isHermitian_twoReplicaPauliRight a)
 
+theorem isHermitian_twoReplicaLocalCorrelation :
+    twoReplicaLocalCorrelation.IsHermitian := by
+  rw [Matrix.IsHermitian, twoReplicaLocalCorrelation, Matrix.conjTranspose_sum]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [conjTranspose_kronecker_local, finiteQubitPauli_isHermitian a]
+
+/-- The replica swap is Hermitian.  Read off the correlation term rather than the entries: the two
+differ by a real affine change, and the correlation term is a sum of Kronecker squares. -/
+theorem isHermitian_twoReplicaSwap : twoReplicaSwap.IsHermitian := by
+  have hcorr := isHermitian_twoReplicaLocalCorrelation
+  rw [Matrix.IsHermitian, twoReplicaLocalCorrelation_eq_swap,
+    Matrix.conjTranspose_sub, Matrix.conjTranspose_smul,
+    Matrix.conjTranspose_one] at hcorr
+  have h2 : (starRingEnd ℂ) 2 • twoReplicaSwapᴴ = (2 : ℂ) • twoReplicaSwap :=
+    sub_left_injective hcorr
+  rw [map_ofNat] at h2
+  exact smul_right_injective _ (by norm_num : (2 : ℂ) ≠ 0) h2
+
+/-- **The swap translate has the same Hilbert--Schmidt square.** -/
+theorem trace_conjTranspose_swapDiff_mul_swapDiff (a : Fin 3) :
+    Matrix.trace ((twoReplicaSwap * twoReplicaLocalDiff a)ᴴ *
+      (twoReplicaSwap * twoReplicaLocalDiff a)) = 8 := by
+  rw [Matrix.conjTranspose_mul, isHermitian_twoReplicaSwap,
+    isHermitian_twoReplicaLocalDiff a, Matrix.mul_assoc,
+    ← Matrix.mul_assoc twoReplicaSwap, twoReplicaSwap_sq, Matrix.one_mul,
+    trace_twoReplicaLocalDiff_sq]
+
+/-- **The two mismatched outputs are linearly independent.**  Testing a vanishing combination
+against each in turn isolates its coefficient: the diagonal Hilbert--Schmidt squares are `8` and
+both cross terms vanish. -/
+theorem twoReplicaLocalDiff_pair_independent (a : Fin 3) {c d : ℂ}
+    (h : c • twoReplicaLocalDiff a + d • (twoReplicaSwap * twoReplicaLocalDiff a) = 0) :
+    c = 0 ∧ d = 0 := by
+  have hDD : Matrix.trace ((twoReplicaLocalDiff a)ᴴ * twoReplicaLocalDiff a) = 8 := by
+    rw [isHermitian_twoReplicaLocalDiff a, trace_twoReplicaLocalDiff_sq]
+  have hDF : Matrix.trace ((twoReplicaLocalDiff a)ᴴ *
+      (twoReplicaSwap * twoReplicaLocalDiff a)) = 0 := by
+    rw [isHermitian_twoReplicaLocalDiff a,
+      trace_twoReplicaLocalDiff_mul_swap_mul_diff]
+  have hFD : Matrix.trace ((twoReplicaSwap * twoReplicaLocalDiff a)ᴴ *
+      twoReplicaLocalDiff a) = 0 := by
+    rw [Matrix.conjTranspose_mul, isHermitian_twoReplicaSwap,
+      isHermitian_twoReplicaLocalDiff a, Matrix.mul_assoc,
+      trace_twoReplicaLocalDiff_mul_swap_mul_diff]
+  have key : ∀ X : Matrix TwoReplicaLocalIndex TwoReplicaLocalIndex ℂ,
+      Matrix.trace (Xᴴ * (c • twoReplicaLocalDiff a +
+        d • (twoReplicaSwap * twoReplicaLocalDiff a))) = 0 := by
+    intro X
+    rw [h, Matrix.mul_zero, Matrix.trace_zero]
+  have h1 := key (twoReplicaLocalDiff a)
+  have h2 := key (twoReplicaSwap * twoReplicaLocalDiff a)
+  rw [Matrix.mul_add, Matrix.mul_smul, Matrix.mul_smul, Matrix.trace_add,
+    Matrix.trace_smul, Matrix.trace_smul, hDD, hDF, smul_eq_mul,
+    smul_eq_mul] at h1
+  rw [Matrix.mul_add, Matrix.mul_smul, Matrix.mul_smul, Matrix.trace_add,
+    Matrix.trace_smul, Matrix.trace_smul, hFD,
+    trace_conjTranspose_swapDiff_mul_swapDiff, smul_eq_mul,
+    smul_eq_mul] at h2
+  constructor
+  · linear_combination h1 / 8
+  · linear_combination h2 / 8
+
 end
 
 end GaloisForLFunctions.HTGeometry
