@@ -25,8 +25,11 @@ The value is fixed — it does not improve with `N` — and it cannot be improve
   shape waiting to be found: an upper bound on the collective gain staying away from `1` for all `N` would
   refute RH, and a bound reaching `1` is RH.
 
-Together with `ArithmeticEvaluationObstruction.dist_floor_of_forall_dvd` (a positive floor for each section, at
-`n₀ = N !` in the step-vector formulation) the picture is: each `d_N` is strictly positive, the whole sequence
-sits below the constant above from `N = 4` on, and **whether the infimum is `0` is exactly RH.**
+The complementary floor is now proved in the same formulation, not only for step vectors:
+`DistancePositivity.bdDistDiscrete_ge_factorial_floor` gives `√(1/(N!(N!+1))) ≤ d_N` and hence
+`bdDistDiscrete_pos : 0 < d_N` for every `N`, by transporting the arithmetic obstruction through
+`bdGen_bdDiscrete_eq_stepVec` and `bdTarget_eq_stepVec`.  So the picture is: each `d_N` is strictly positive,
+the whole sequence sits below the constant above from `N = 4` on, and **whether the infimum is `0` is exactly
+RH.**
 
 That is where the lane ends unconditionally, and this card is the statement of it.

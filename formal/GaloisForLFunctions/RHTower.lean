@@ -150,6 +150,7 @@ import GaloisForLFunctions.RHTower.BesselBoundWitnesses
 import GaloisForLFunctions.RHTower.BesselJZeroConstant
 import GaloisForLFunctions.RHTower.BesselJZeroEnvelope
 import GaloisForLFunctions.RHTower.BesselNormalForm
+import GaloisForLFunctions.RHTower.BesselOscillatorInstance
 import GaloisForLFunctions.RHTower.BesselJOneRecurrence
 import GaloisForLFunctions.RHTower.BesselJOneEnvelope
 import GaloisForLFunctions.RHTower.BesselWeightedPrimitive
@@ -6409,3 +6410,4 @@ import GaloisForLFunctions.RHTower.HalfQuarterGram
 import GaloisForLFunctions.RHTower.SingleGeneratorUseless
 import GaloisForLFunctions.RHTower.GramDiagonalSandwich
 import GaloisForLFunctions.RHTower.UniformDistanceBound
+import GaloisForLFunctions.RHTower.DistancePositivity
