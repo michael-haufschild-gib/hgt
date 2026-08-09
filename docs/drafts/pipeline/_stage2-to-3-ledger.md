@@ -31,6 +31,7 @@ Promotion recipe:
 | `route-e-forward-interval-hall-reduction` | interval sufficiency + quarter threshold | `HTGeometry/ForwardWindowHallMatching` (new) |
 | `exact-penalty-robust-circuit-bellman-duality` | Theorems A–C in full | `HTGeometry/ExactPenaltyCircuitBellman` (new) |
 | `static-orbit-net-no-go-and-circuit-bellman-law` | Theorems A–D in full | `HTGeometry/EuclideanSphereCoveringBound`, `HTGeometry/StaticOrbitNetBellmanLaw` (both new) |
+| `all-replica-local-casimir-hall-expansion` | boxed `(6)` bi-tightness and `(7)` off-kernel Hall | `HTGeometry/CentralCasimirComplementHallExpansion` (new) |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
 | `burnol-holonomy-cauchy-sector-separation` | none (verified only) | `RHTower/BurnolHolonomyCauchySectorSeparation` |
@@ -47,6 +48,11 @@ Promotion recipe:
 - `HTGeometry/EuclideanSphereCoveringBound` — volumetric packing bound for Euclidean balls,
   maximal separated nets, and the `(1 + 2L/ε)^m` Lipschitz-image net for the unit sphere.
   mathlib has the covering-number *definitions* but no ball-packing bound.
+- `HTGeometry/CentralCasimirComplementHallExpansion` — completing a Hermitian central-Casimir
+  family by its kernel projector; exact bi-tightness and exact Hall expansion off the kernel.
+  (Four RCLike scaling declarations in `CentralCasimirHallExpansion` were made public for this.)
+- `HTGeometry/CommutingTermTemporalRankBound` — additive spectra have at most the summed anchored
+  temporal rank; `m` commuting four-level terms give rank at most `3m`.
 - `HTGeometry/StaticOrbitNetBellmanLaw` — coefficient Hamiltonians, the `√m` and Duhamel Lipschitz
   bounds, the static orbit net, the min-plus layer recursion, the max-plus overlap recursion
   (general pullback form plus the unitary instance and the monotone-reader form), and the robust
@@ -66,6 +72,24 @@ Promotion recipe:
 - Pauli product-input observer rank constant: `HTGeometry.productInputObserverRank`.
 
 ## In flight
+
+`nearest-neighbor-chain-projective-spectral-maximality` — its main theorem `(2)`, simple spectrum,
+recurrence density `(17)` and the spanning-path corollary are all already in the corpus
+(`NearestNeighborQuditPathGenericityLaw`, `NearestNeighborQuditPathRecurrenceLaw`,
+`ArbitraryGraphLocalHamiltonianGenericityLaw.hermitianSuperspaceMaximalSet_…`,
+`MaximallyProjectiveEnergy.injective`, `maximallyProjectiveEnergy_orientedGap_injective`).
+Corollary 2 `(18)` is now `HTGeometry/CommutingTermTemporalRankBound.anchoredTemporalRank_sum_le_three_mul`
+(new).  What remains is a small assembly module stating the card's claims at `q = 2` and the
+operator-level step "commuting terms ⇒ additive spectrum" (simultaneous diagonalisation).
+
+`two-replica-singlet-pauli-hall-expansion` — remaining: reverse inclusion of `(12)`, global tensor
+form of `(11)`, and the assembly `(14)`–`(17)` into
+`HTGeometry.resolvedFiberAssembly_subspace_finrank` (interface already exists and is exactly
+shaped for it).
+
+`weak-interaction-singular-quantum-time-expansion` — remaining: `(7)`'s finite-family Hausdorff
+assembly (easy, given the already-formalized C* Heisenberg stability bound), and the local
+generator `(4)`–`(5)`, which is the sibling card `local-interaction-replica-collision-extremality`.
 
 `instant-exact-complexity-calibration-singularity-law` — its `(4)` is already
 `HTGeometry.le_lipschitzConstant_of_certificate`; its `(7)` needs equation `(6)` of the parent

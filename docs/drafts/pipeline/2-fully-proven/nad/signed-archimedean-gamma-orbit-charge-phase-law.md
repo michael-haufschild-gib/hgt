@@ -831,3 +831,24 @@ The general multi-orbit product is closed by `MeromorphicGammaSuperselection.lea
 frequency consequences are closed at their exact reusable interfaces by `GammaPhaseCompletion.lean`
 and `KolchinFrequencyBudgetPhase.lean`. These modules were checked by exact targeted builds when
 their `.olean` files were absent and by direct single-file elaboration; no full build was run.
+
+## Audit — the gate list and the Lean-status prose disagree about `(37)`
+
+Two facts, both checked.
+
+1. The headline dichotomy is genuinely unconditional.  The capstone
+   `hypertranscendentalOver_gammaCommonScaleProductMero_iff_exists_charge_ne_zero` carries exactly
+   one hypothesis, `hsep : ∀ c c', c ≠ c' → ∀ n : ℤ, b c − b c' ≠ n` — the pairwise integer
+   separation that *defines* a common-scale orbit family, not an imported classical theorem.  The
+   same holds for its three companions in `MeromorphicGammaSuperselection.lean`.  Axioms are
+   `propext`, `Classical.choice`, `Quot.sound`.
+
+2. The gate list records no open formalization item, but §12 of this card states that for the
+   phase-budget rank the lower bound `rank_ℚ Λ_N = π(N)` is proved
+   (`primeLog_primesBelow_linearIndependent`, `primesBelow_card_eq_primeCounting'`) while
+   *"the upper bound `π(N) ≤ δ_G + 2m(n+1)` still needs the ADE/Bohr-hull machinery"*.
+
+So `(37)` is a half-proved inequality that no gate tracks.  Until either the upper bound is
+formalized or `(37)` is explicitly demoted out of the card's theorem surface, the card is not
+eligible for Stage 3, and the gate line "complete Lean theorem-surface formalization from explicit
+named classical inputs" overstates the state.

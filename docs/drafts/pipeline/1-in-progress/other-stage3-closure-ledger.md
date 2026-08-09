@@ -307,3 +307,98 @@ All four declarations in the module are unconditional and axiom-clean, and it is
 Remaining for Siegel: step 2 (a finite polydisc cover of one fundamental parallelotope of `Λ`),
 step 3 (the `m^{n+1}` versus `N^n` dimension count, with `N ~ m^{1+1/n}`), step 4 (the periodicity
 comparison `S ≤ θ^N S`).
+
+### Siegel step 3 (abstract core) — DONE
+
+`formal/GaloisForLFunctions/HTGeometry/KernelOfDimensionDrop.lean`:
+
+- **`exists_ne_zero_apply_eq_zero_of_finrank_lt`** — a linear map into a space of strictly smaller
+  finite dimension kills a nonzero vector (rank--nullity plus `finrank_pos_iff`);
+- **`exists_ne_zero_forall_apply_eq_zero_of_finrank_lt`** — the form the count uses: fewer linear
+  conditions than the dimension of the coefficient space leaves a nonzero coefficient vector
+  satisfying all of them.
+
+Unconditional, axiom-clean, umbrella-wired. What step 3 still needs is arithmetic, not algebra: the
+two cardinalities — `#{α : Fin (n+1) → ℕ | ∑ α ≤ m}` for the source and the number of multi-indices
+of total degree `< N` in `n` variables for the target — and the inequality that makes the first
+exceed the second at `N ~ m^{1+1/n}`.
+
+### Siegel step 3 (counting) — DONE
+
+`formal/GaloisForLFunctions/HTGeometry/MultiIndexCounts.lean`:
+
+- **`card_le_pow_of_sum_lt`** — a family of multi-indices in `n` variables of total degree below
+  `N` has at most `N ^ n` members (each coordinate is then below `N`, so the family sits inside
+  `Fintype.piFinset (fun _ => range N)`);
+- **`pow_le_card_of_box_subset`** — a family containing the box `{β : ∀ i, β i ≤ m}` in `k`
+  variables has at least `(m + 1) ^ k` members.
+
+Unconditional, axiom-clean, umbrella-wired. With `KernelOfDimensionDrop`, step 3 is now complete as
+a self-contained unit: apply the box bound at `k = n + 1` to the coefficient space, the degree
+bound to the jet conditions, and `exists_ne_zero_forall_apply_eq_zero_of_finrank_lt` whenever
+`N ^ n < (m + 1) ^ (n + 1)` — which holds for `N ~ m^{1+1/n}`.
+
+Siegel now stands at: **step 1 done** (`OrderNSchwarz`), **step 3 done**
+(`KernelOfDimensionDrop` + `MultiIndexCounts`), steps 2 (finite polydisc cover of one fundamental
+parallelotope) and 4 (the periodicity comparison `S ≤ θ^N S`) open.
+
+### Siegel step 2 (geometry) — DONE
+
+`formal/GaloisForLFunctions/HTGeometry/FundamentalParallelotope.lean`:
+
+- `parallelotope b` — the image of the unit cube under `t ↦ ∑ tᵢ bᵢ`;
+- **`isCompact_parallelotope`** — it is compact, so any open cover of it has a finite subcover,
+  which is the polydisc cover the count consumes;
+- **`exists_intCombination_sub_mem_parallelotope`** — every point of the space is congruent, modulo
+  the integer span of a basis, to a point of that parallelotope; the integers are the floors of the
+  coordinates in the basis.
+
+Unconditional, axiom-clean, umbrella-wired.
+
+**Siegel status: steps 1, 2 and 3 are now built; step 4 (the periodicity comparison) is the only
+one open.** Step 4 is where compactness is load-bearing: the smallness bound obtained on the small
+polydiscs is compared with the global supremum over the fundamental parallelotope, which
+periodicity identifies with the supremum over the large polydiscs, giving `S ≤ θ^N S` and hence
+`S = 0`. Without it the same counting argument would "prove" `z` and `exp z` algebraically
+dependent on `ℂ`, so it is not optional bookkeeping.
+
+### Siegel step 4 (core) — DONE
+
+`formal/GaloisForLFunctions/HTGeometry/SelfImprovingBound.lean`:
+
+> **`eqOn_zero_of_le_mul_bound`** — if on a compact nonempty set every bound `M` for `‖G‖`
+> improves to `θ·M` with `θ < 1`, then `G` vanishes there. Compactness supplies the maximum, which
+> then satisfies `M ≤ θ·M`.
+
+Unconditional, axiom-clean, umbrella-wired.
+
+**All four Siegel steps now have their reusable cores in the tree.** What is left is the assembly,
+which is bookkeeping over the four:
+
+1. present `f_1,…,f_{n+1} ∈ M(ℂ^n/Λ)` as global quotients `A_j/B_j` (`Bottcher.analyticSubringGen`
+   already gives this), so `Q_P = (∏ B_j)^m · P(f)` is entire and `P(f) = 0 ↔ Q_P = 0`;
+2. cover the parallelotope (`isCompact_parallelotope`) by finitely many polydiscs `D_i ⊂⊂ D_i'`;
+3. count (`pow_le_card_of_box_subset`, `card_le_pow_of_sum_lt`,
+   `exists_ne_zero_forall_apply_eq_zero_of_finrank_lt`) to get a nonzero `P` whose `Q_P` has
+   vanishing jets of order `< N` at every centre, with `N ~ m^{1+1/n}`;
+4. apply `norm_le_of_iteratedFDeriv_vanish` on each `D_i` and feed the resulting
+   `θ^N`-improvement — with periodicity identifying the two suprema — to
+   `eqOn_zero_of_le_mul_bound`.
+
+The conclusion `trdeg_ℂ M(ℂ^n/Λ) ≤ n` then feeds `isEscapeSubgroup_meroPeriodSubgroupGen` and
+closes `noncompact-period-quotient-facet-escape-law`.
+
+### Siegel landing interface — DONE
+
+`formal/GaloisForLFunctions/HTGeometry/DifferentialAlgebraicFromRelation.lean`:
+
+> **`differentialAlgebraicOver_of_aeval_eq_zero`** — a nonzero `P ∈ MvPolynomial (Unit × ℕ) F`
+> with `aeval (fun p => differentialJet p.2 x) P = 0` gives `DifferentialAlgebraicOver F x`.
+
+Unconditional, axiom-clean, umbrella-wired. This is the interface a Siegel-type count lands on: the
+count produces a nonzero polynomial annihilating `G, δG, δ²G, …`, and this converts it into the
+corpus's differential-algebraicity predicate, which is what
+`not_compactSpace_quotient_meroPeriodSubgroup` and its several-variable analogue consume.
+
+So both ends of the Siegel argument are now Lean — the four analytic/combinatorial cores and the
+landing interface — and what is missing is only the middle assembly listed above.

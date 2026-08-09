@@ -1,10 +1,10 @@
 # Route-L odd current, Suzuki aperture, and Mass reconstruction law
 
 - **ID:** `ngd-route-l-suzuki-aperture-mass-reconstruction`
-- **Stage:** 2 — fully proved on paper
-- **Status:** `[PAPER-PROVED] [NORMAL-DERIVATIVE/D/P INVERTIBLE COEFFICIENT TRANSFORM]`
+- **Stage:** 3 — formalized in Lean 4
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED]`
+  `[NORMAL-DERIVATIVE/D/P INVERTIBLE COEFFICIENT TRANSFORM]`
   `[PRIMITIVE-PRIME PROJECTION] [NOT RH]`
-  `[NO LEAN WRITTEN]`
 - **Purpose:** prove that the full Suzuki prime-torque aperture profile is the hinge transform of
   the Route-L odd current and reconstructs its prime-power coefficients, including the Mass
   half-density prime current.
@@ -198,8 +198,35 @@ on the full current. This is a cross-route coefficient transform, not a common s
 - The Mass coefficient `t_p` is imported from `critical-euler-mass-weil-stokes-shadow-law.md`,
   Theorem 2.
 
-## 7. Lean boundary
+## 7. Lean-return note
 
-No Lean was written or built. A later proof can formalize finite aperture truncations and the
-piecewise-linear second-derivative identity after declaration research. No formal work is
-authorized at this stage.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/RouteLOddCurrentSuzukiApertureMassReconstructionLaw.lean`.
+The module constructs the actual locally finite positive-ramp distribution, proves the single-ramp
+identity `((L-a)_+)''=delta_a` by integration by parts on arbitrary smooth compactly supported test
+functions, lifts it to the full infinite logarithmic atom family, and proves that this distribution
+is literally integration against the pointwise-finite continuous profile `(3)`. It also proves the
+exact odd-current hinge pairing `(4)`, local finite-ramp/piecewise-linear realization, normalized
+coefficient-space linear equivalence and inverse, initial affine-kernel normalization, Route-L odd
+current coefficient identification, Mass formulas `(6)--(7)`, exact primitive-prime chain `(8)`,
+and higher-prime-power annihilation under the primitive-prime quotient.
+
+Audit:
+
+- direct elaboration passed without warnings using `lake env lean
+  GaloisForLFunctions/HTGeometry/RouteLOddCurrentSuzukiApertureMassReconstructionLaw.lean`;
+- final target build passed `9175/9175` using `lake build
+  +GaloisForLFunctions.HTGeometry.RouteLOddCurrentSuzukiApertureMassReconstructionLaw`;
+- all 42 exported theorems were checked with `#print axioms`; dependencies are only `propext`,
+  `Classical.choice`, and `Quot.sound`;
+- forbidden-declaration scan is clean;
+- `GaloisForLFunctions.HTGeometry` umbrella import is wired;
+- global formal lint reaches this module and reports no error in it; remaining failures are
+  unrelated shared-tree reachability debt for `ConstantProjectiveBoundaryWitness`,
+  `DifferentialBirationalCovariance`, `FiniteJetIndistinguishability`, and
+  `FundamentalParallelotope`.
+
+## Log
+
+- 2026-08-09 — full locally finite unconditional Lean formalization completed, directly
+  elaborated, target-built, axiom-audited, umbrella-wired, and promoted to Stage 3.

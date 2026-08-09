@@ -9,8 +9,8 @@ modules are wired into an area umbrella, the axiom audit reports only `propext`,
 |---|---|---|---|
 | 1 | `hypertranscendental-phase-infinite-topological-charge-rank` | **PROMOTED** | 6 new modules: `RealExponentialPolynomial`, `RealConstantCoefficientAnnihilator`, `AnseloneKorevaarTranslationRank`, `EntireExponentialCompositionDA`, `ActiveChargeRankHypertranscendence`, `ChargeRankDressingExamples` |
 | 2 | `affine-jet-packet-collision-completeness` | TODO | |
-| 3 | `asymmetric-binary-tree-channel-rg-clock-hypertranscendence` | TODO | |
-| 4 | `bethe-padic-holographic-rg-clock-hypertranscendence` | TODO | |
+| 3 | `asymmetric-binary-tree-channel-rg-clock-hypertranscendence` | AUDITED | branch likelihoods, rational family, projective identities and derivative cross-numerator unconditional in `AsymmetricBinaryTreeRG.lean`; blocked on the real interval first-crossing theorem and the external HT classification. |
+| 4 | `bethe-padic-holographic-rg-clock-hypertranscendence` | AUDITED | rational family (5), coprimality, all-temperature multiplier and cubic anchor (10) unconditional in `BetheHolographicIsingRG.lean`; blocked on the ordered fixed-point proof, Becker--Bergweiler, and the endpoint Möbius conjugacy (17). |
 | 5 | `cofinal-cholesky-carrier-selection-threshold-law` | TODO | |
 | 6 | `compact-local-form-factor-hypertranscendence-forcing` | TODO | |
 | 7 | `constrained-prolate-continuous-polar-charge-law` | TODO | |
@@ -26,19 +26,19 @@ modules are wired into an area umbrella, the axiom audit reports only `propext`,
 | 17 | `indeterminate-moment-fiber-maximal-translation-ht` | TODO | |
 | 18 | `kolchin-exchange-cocycle-obstruction` | IN PROGRESS | audit found the physical reflection anti-commutes with the derivation, so `DifferentialAlgEquiv` never applied to it; `AntiDifferentialAlgEquiv.lean` proves the orientation-reversing transport law unconditionally. `ReflectionAntiDifferential.lean` now packages `complexReflectionMeroEquiv c` as an `AntiDifferentialAlgEquiv ℂ (meroField Set.univ)`, and the whole obstruction chain (7)-(10) is ported to it. Algebraic layer complete. Open: the localization / admissible-gauge interface. |
 | 19 | `moment-polynomial-blind-resolvent-complete-boundary-splitting` | TODO | |
-| 20 | `neutral-gamma-ratio-full-differential-boundary-depth-law` | TODO | |
+| 20 | `neutral-gamma-ratio-full-differential-boundary-depth-law` | AUDITED | `HasPolynomialFunctionalProjectiveBoundary` is a hypothesis whose only term in the tree is the empty class. `ConstantProjectiveBoundaryWitness.lean` now inhabits it with the constant-function class (nonzero data), so the chain is non-vacuous. Next: the polynomial class (needs only pointwise → locally uniform in `poly_scaled_translate_tendsto`), then the Gamma-ratio class. |
 | 21 | `nevanlinna-boundary-bauer-retract-maximal-ht` | TODO | |
 | 22 | `nonautonomous-kolchin-frequency-budget-law` | TODO | |
 | 23 | `one-species-hypertranscendental-elastic-saturation` | IN PROGRESS | `HTGeometry/ElasticChannelSaturation.lean` proves the saturation lemma (2)-(4), unit modulus of every geometric factor on the real rapidity axis, and pole-freedom of the physical strip. Remaining: Lechner's inverse-scattering construction and the q-difference rational-or-HT dichotomy are external analytic parents. |
 | 24 | `open-family-hypertranscendental-cdd-qft` | TODO | |
 | 25 | `pick-defect-finite-selector-maximal-ht-phase-law` | TODO | |
-| 26 | `postselected-qubit-clock-integrability-fracture` | TODO | |
+| 26 | `postselected-qubit-clock-integrability-fracture` | AUDITED | rational-dynamics algebra is unconditional in `PostselectedQubitRationalDynamics.lean`; blocked on hyperbolicity, the Lattès critical-point classification, and Ritt--Becker--Bergweiler. |
 | 27 | `prime-log-jump-sonin-mellin-grade-frame` | TODO | |
 | 28 | `projective-constraint-topological-capacity-phase-law` | AUDITED | `HurwitzSurvivalWitnessInhabited.lean` proves both survival-witness classes inhabited by explicit integer families, so the phase theorems are non-vacuous **and** the witnesses carry no geometry. Open: construct the classical inputs. |
 | 29 | `projective-hurwitz-one-over-forty-two-phase-transition` | AUDITED | arithmetic `1/42` gap, its uniqueness at `(2,3,7)`, and Riemann--Hurwitz eq. (8) are unconditional; the survival witness is content-free (see card 28). Open: `Δ(2,3,7)` as a group with torsion-free finite-index subgroups of unbounded index. |
 | 30 | `q-ladder-reflectionless-reciprocal-jost-qft` | TODO | |
 | 31 | `sectoral-kolchin-signature-quantum-fields` | TODO | |
-| 32 | `signed-archimedean-gamma-orbit-charge-phase-law` | TODO | |
+| 32 | `signed-archimedean-gamma-orbit-charge-phase-law` | AUDITED | headline orbit-charge dichotomy is genuinely unconditional (`hsep` is a data condition, not an imported theorem); but `(37)`'s upper bound `π(N) ≤ δ_G + 2m(n+1)` is unproved and no gate tracks it. |
 | 33 | `singular-autonomous-ade-kolchin-frequency-law` | TODO | |
 | 34 | `singular-maximal-ht-schur-defect-collapse-law` | TODO | |
 | 35 | `singular-maximal-ht-toeplitz-weld-graph-saturation` | TODO | |
@@ -78,6 +78,49 @@ modules are wired into an area umbrella, the axiom audit reports only `propext`,
   `antiHalfPhase_hypertranscendental_of_exchangeLaw`.
 - `HTGeometry/ReflectionAntiDifferential.lean` — `reflectionAntiDifferentialAlgEquiv`,
   `differentialAlgebraicOver_complexReflectionMeroEquiv_iff`.
+- `HTGeometry/ConstantProjectiveBoundaryWitness.lean` — `constantFunctionClass`,
+  `hasPolynomialFunctionalProjectiveBoundary_constantFunctionClass`.
+
+## Promotion heuristic that works
+
+A card whose *only* unchecked gates are novelty / literature / specialist audits is a promotion
+candidate: the formalization is done and what remains is verifying the declaration list.  Two of the
+four promotions came from exactly this sweep (`xi-physical-prime-log-aperture-fusion-cross-kernel`,
+`xi-euler-ray-two-node-response-barrier`).  It is not sufficient, though — of the ten cards matching
+the pattern, `neutral-gamma-ratio-...` fails on a vacuous interface and
+`signed-archimedean-gamma-...` fails on an untracked half-proved inequality.  Always audit the
+declarations.
+
+## The second bottleneck: Becker--Bergweiler / Ritt (unblocks five cards)
+
+`asymmetric-binary-tree-channel-rg-clock-hypertranscendence`,
+`bethe-padic-holographic-rg-clock-hypertranscendence`,
+`diamond-ising-da-scheme-rg-generation-hypertranscendence`,
+`diamond-ising-family-rg-generation-hypertranscendence` and
+`postselected-qubit-clock-integrability-fracture` all have the *same* shape: their rational-dynamics
+algebra is already unconditional in Lean
+(`AsymmetricBinaryTreeRG.lean`, `BetheHolographicIsingRG.lean`,
+`PostselectedQubitRationalDynamics.lean` — no conditional theorem packages an external input), and
+the hypertranscendence conclusion in every case needs one external classification: the
+Ritt / Becker--Bergweiler theorem that a solution of `f ∘ R = R ∘ f` for a rational `R` of degree
+`≥ 2`, or of Schröder's / Böttcher's / Abel's equation, is hypertranscendental unless the map is
+special (Lattès, power, Chebyshev).  Cards 3, 4, 8 and 26 additionally need one real-calculus item
+each (ordered fixed point, first crossing, Poincaré existence, hyperbolicity).
+
+Lead checked and **negative**: the `Bottcher` theorem area (361 modules) contains no
+hypertranscendence statement at all — `grep -rl 'Hypertranscendental|hypertranscendent'` over
+`GaloisForLFunctions/Bottcher` hits only `STATUS.md`.  Its strongest result in this direction is
+`BottcherNotRational.bottcherCoord_not_rational`: the Böttcher coordinate satisfies no polynomial
+identity `q·φ = p`, i.e. it is *not rational*.  Non-rationality is strictly weaker than
+hypertranscendence, and the q62 capstones (`q62_independence`, `q62_phiMero_*`) are differential
+*independence* statements about a specific two-map configuration, not the general classification.
+So the Ritt / Becker--Bergweiler theorem has to be built; there is no shortcut through `Bottcher`.
+
+The realistic decomposition, in dependency order: (i) the linearizer functional equations
+(Schröder `φ ∘ R = λ·φ`, Böttcher `φ ∘ R = φ^k`, Abel `φ ∘ R = φ + 1`) as differential-field
+statements — the `Bottcher` area supplies the analytic existence side; (ii) the special-map
+trichotomy (Lattès / power / Chebyshev) as a decidable condition on `R`; (iii) the HT conclusion off
+that locus.  Step (ii) is the part with no corpus asset whatsoever.
 
 ## Standing audit rule discovered in this folder
 

@@ -275,6 +275,60 @@ theorem positiveRampProfileFunction_support_finite (c : ℕ → ℝ) (L : ℝ) :
       linarith
   · exact (hn (by simp only [if_neg hn2])).elim
 
+theorem positiveRampLocalIndices_finite (L : ℝ) :
+    Set.Finite {n : ℕ | 2 ≤ n ∧
+      Real.log (n : ℝ) ∈ Set.Icc 0 (L + 1)} :=
+  (positiveAtomicLocations_interval_finite 0 (L + 1)).subset (fun _ hn => hn.2)
+
+noncomputable def positiveRampLocalIndices (L : ℝ) : Finset ℕ :=
+  (positiveRampLocalIndices_finite L).toFinset
+
+@[simp] theorem mem_positiveRampLocalIndices (L : ℝ) (n : ℕ) :
+    n ∈ positiveRampLocalIndices L ↔
+      2 ≤ n ∧ Real.log (n : ℝ) ∈ Set.Icc 0 (L + 1) := by
+  rw [positiveRampLocalIndices, Set.Finite.mem_toFinset]
+  rfl
+
+/-- Every profile is locally a finite sum of affine ramps. This is the precise local
+piecewise-linearity assertion at the logarithmic knot set. -/
+theorem positiveRampProfileFunction_eventuallyEq_finset (c : ℕ → ℝ) (L : ℝ) :
+    positiveRampProfileFunction c =ᶠ[𝓝 L]
+      fun x => ∑ n ∈ positiveRampLocalIndices L,
+        c n * max (x - Real.log (n : ℝ)) 0 := by
+  filter_upwards [Iio_mem_nhds (show L < L + 1 by linarith)] with x hx
+  rw [positiveRampProfileFunction]
+  calc
+    (∑ᶠ n : ℕ, if 2 ≤ n then
+        c n * max (x - Real.log (n : ℝ)) 0 else 0) =
+        ∑ n ∈ positiveRampLocalIndices L, if 2 ≤ n then
+          c n * max (x - Real.log (n : ℝ)) 0 else 0 := by
+      apply finsum_eq_finsetSum_of_support_subset
+      intro n hn
+      change n ∈ positiveRampLocalIndices L
+      rw [mem_positiveRampLocalIndices]
+      simp only [Function.mem_support, ne_eq] at hn
+      by_cases hn2 : 2 ≤ n
+      · refine ⟨hn2, Real.log_nonneg (by exact_mod_cast (show 1 ≤ n by omega)), ?_⟩
+        by_contra hnot
+        have hgt : L + 1 < Real.log (n : ℝ) := lt_of_not_ge hnot
+        have hxlt : x < L + 1 := hx
+        have hnonpos : x - Real.log (n : ℝ) ≤ 0 := by linarith
+        exact hn (by simp only [if_pos hn2, max_eq_right hnonpos, mul_zero])
+      · exact (hn (by simp only [if_neg hn2])).elim
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro n hn
+      rw [if_pos (mem_positiveRampLocalIndices L n |>.mp hn).1]
+
+theorem continuous_positiveRampProfileFunction (c : ℕ → ℝ) :
+    Continuous (positiveRampProfileFunction c) := by
+  rw [continuous_iff_continuousAt]
+  intro L
+  have hfinite : ContinuousAt
+      (fun x : ℝ => ∑ n ∈ positiveRampLocalIndices L,
+        c n * max (x - Real.log (n : ℝ)) 0) L := by fun_prop
+  exact hfinite.congr_of_eventuallyEq (positiveRampProfileFunction_eventuallyEq_finset c L)
+
 theorem positiveRampProfileDistribution_apply_eq_integral
     (c : ℕ → ℝ) (f : 𝓓((⊤ : TopologicalSpace.Opens ℝ), ℝ)) :
     positiveRampProfileDistribution c f =
@@ -480,10 +534,10 @@ theorem reflectedOddAtomicPairing_hinge (w : ℕ → ℝ) (L : ℝ) :
   apply finsum_congr
   intro n
   by_cases hn : 2 ≤ n
-  · simp only [reflectedOddAtomicPairing, suzukiApertureProfile, if_pos hn]
+  · simp only [if_pos hn]
     rw [oddAtomicHinge_difference hn]
     ring
-  · simp only [reflectedOddAtomicPairing, suzukiApertureProfile, if_neg hn]
+  · simp only [if_neg hn]
 
 theorem suzukiApertureProfile_eq_positiveRampProfileFunction (w : ℕ → ℝ) :
     suzukiApertureProfile w =
@@ -491,7 +545,7 @@ theorem suzukiApertureProfile_eq_positiveRampProfileFunction (w : ℕ → ℝ) :
   funext L
   apply finsum_congr
   intro n
-  by_cases hn : 2 ≤ n <;> simp [suzukiApertureProfile, positiveRampProfileFunction, hn]
+  by_cases hn : 2 ≤ n <;> simp [hn]
 
 noncomputable def suzukiApertureProfileDistribution (w : ℕ → ℝ) :
     𝓓'((⊤ : TopologicalSpace.Opens ℝ), ℝ) :=
@@ -595,16 +649,20 @@ theorem normalizedApertureProfileFunction_vanishes_initially
     (L : {x : ℝ // 0 < x ∧ x ≤ Real.log 2}) :
     normalizedApertureProfileFunction m L = 0 := by
   unfold normalizedApertureProfileFunction positiveRampProfileFunction
-  rw [← finsum_zero]
-  apply finsum_congr
-  intro n
-  by_cases hn : 2 ≤ n
-  · rw [if_pos hn]
-    have hlog : Real.log 2 ≤ Real.log (n : ℝ) :=
-      Real.log_le_log (by norm_num) (by exact_mod_cast hn)
-    have hnonpos : (L : ℝ) - Real.log (n : ℝ) ≤ 0 := by linarith [L.prop.2]
-    rw [max_eq_right hnonpos, mul_zero]
-  · rw [if_neg hn]
+  calc
+    (∑ᶠ n : ℕ, if 2 ≤ n then
+        extendApertureMass m n * max ((L : ℝ) - Real.log (n : ℝ)) 0 else 0) =
+        ∑ᶠ _n : ℕ, (0 : ℝ) := by
+      apply finsum_congr
+      intro n
+      by_cases hn : 2 ≤ n
+      · rw [if_pos hn]
+        have hlog : Real.log 2 ≤ Real.log (n : ℝ) :=
+          Real.log_le_log (by norm_num) (by exact_mod_cast hn)
+        have hnonpos : (L : ℝ) - Real.log (n : ℝ) ≤ 0 := by linarith [L.prop.2]
+        rw [max_eq_right hnonpos, mul_zero]
+      · rw [if_neg hn]
+    _ = 0 := finsum_zero
 
 /-! ## Route-L and Mass coefficient weld -/
 

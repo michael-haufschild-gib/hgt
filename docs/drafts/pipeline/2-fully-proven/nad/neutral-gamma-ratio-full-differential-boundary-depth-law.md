@@ -372,3 +372,38 @@ verification.
 - [ ] full parent-literature and priority audit
 - [x] Lean formalization: exact two-stage boundary, frequency split, and arithmetic-complement
   consequences checked from explicit named analytic inputs
+
+## Audit — the projective-boundary interface is only known inhabited by the empty class
+
+`HasPolynomialFunctionalProjectiveBoundary K` is a hypothesis of
+`neutralGammaRatio_twoStageBoundary`, standing for the first-stage Gamma-ratio Poincaré theorem.
+A repository-wide search finds exactly one term of it:
+`ProjectiveBoundaryWitnesses.hasPolynomialFunctionalProjectiveBoundary_empty`, for `K = ∅`, which
+is vacuous.  So the two-stage boundary theorem is currently non-vacuous only in the empty case, and
+the card is not eligible for Stage 3.
+
+The natural non-vacuous witness is the class of polynomial functions, and most of it is already
+proved: `PolynomialOnePointRecession.poly_scaled_translate_tendsto` gives
+`q(z + iT)/(iT)^d → coeff_d q` for `deg q ≤ d`, and
+`finiteTuple_polynomial_onePoint_recession` selects the common degree `d` with a nonzero leading
+vector.  What is missing is only the upgrade of that convergence from pointwise in `z` to locally
+uniform, which is the form the interface demands; on a compact set the estimate is
+`(z + iT)^m/(iT)^d → δ_{m,d}` uniformly.
+
+Closing that upgrade would give
+`HasPolynomialFunctionalProjectiveBoundary {f | ∃ p : Polynomial ℂ, f = fun z => p.eval z}` and make
+the whole two-stage boundary chain non-vacuous.  Proving the interface for the actual Gamma-ratio
+class remains the full first-stage Poincaré obligation.
+
+### Update — the interface is now inhabited by a class with nonzero data `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/ConstantProjectiveBoundaryWitness.lean` proves
+`hasPolynomialFunctionalProjectiveBoundary_constantFunctionClass`: the class of constant functions
+satisfies `HasPolynomialFunctionalProjectiveBoundary`, with the identity normalization and the
+constant polynomials as limits, and a nonzero limit vector whenever the family is nonzero.
+Axioms `propext`, `Classical.choice`, `Quot.sound`; wired into the umbrella.
+
+So `neutralGammaRatio_twoStageBoundary` is no longer vacuous.  The two remaining steps are unchanged:
+the polynomial class (needs only the pointwise → locally uniform upgrade of
+`poly_scaled_translate_tendsto`), and then the Gamma-ratio class, which is the full first-stage
+Poincaré obligation.
