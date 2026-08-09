@@ -1,9 +1,14 @@
 # Multiple-Gamma period-action lawstack three-shadow theorem
 
 - **ID:** `clg-multiple-gamma-period-action-lawstack-three-shadow`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
 - **Status:** `[PAPER-PROVED] [NON-RH LAWSTACK THEOREM] [CLASSICAL STACK INGREDIENTS]`
-  `[FORMAL PARENTS READ-ONLY] [NO LEAN WRITTEN OR BUILT]`
+  `[LEAN-FORMALIZED] [AXIOM-AUDITED] [UMBRELLA-WIRED]`
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.MultipleGammaPeriodActionAnalyticLaw`,
+  `GaloisForLFunctions.HTGeometry.MultipleGammaPeriodActionLaw`,
+  `GaloisForLFunctions.HTGeometry.MultipleGammaPeriodActionRankLaw`,
+  `GaloisForLFunctions.HTGeometry.MultipleGammaPeriodActionProperLaw`, and
+  `GaloisForLFunctions.HTGeometry.MultipleGammaPeriodActionLawstack`
 - **Purpose:** replace an observer-dependent incidence operator by one canonical source action
   groupoid intrinsically producing isotropy, coarse topology, marked excess, and an affine
   involution; compare these to independently proved multiple-Gamma DA depth and normalized
@@ -315,11 +320,34 @@ The differential-depth equality and reflection identity are imported from:
 - `pipeline/3-formalized/new_scientific_knowledge/gamma/multiple-gamma-period-excess-closure-phase-transition.md`;
 - `pipeline/3-formalized/multiple-elliptic-gamma-parity-inversion.md`.
 
-Those files and their Lean corpus were read only. The action-groupoid and topology arguments are
-proved above. No Lean code was written or built.
+Those files and their Lean corpus supplied the independently proved analytic inputs. The new Lean
+modules formalize the marked action, topology, literal rationalized ranks, topological groupoid,
+properness transition, conservation law, and collected finite/boundary conclusions.
 
-## 8. Formalization boundary
+## 8. Formalization result
 
-Do not write Lean now. If later authorized, formalize only after choosing a library model for
-topological quotient groupoids/stacks; the elementary kernel, image-closure, and effective-rank
-lemmas can be separated first.
+Formalized exactly and unconditionally. The capstone contains literal topological groupoid source,
+target, identity, inverse, composition, continuity and groupoid laws; coarse-orbit equivalence with
+`C / range(p)`; involutive homeomorphic reflection automorphisms; exact finite and boundary theorem
+bundles; proper/cocompact effective boundary action; literal rationalized source/stabilizer ranks;
+DA-depth equalities and normalized product reflections; and Theorem 2.3 with real-span dimension
+plus source-basis and real-linear target-coordinate invariance.
+
+Verification:
+
+- [x] each new module passes `lake env lean <file>`;
+- [x] capstone passes `lake build +GaloisForLFunctions.HTGeometry.MultipleGammaPeriodActionLawstack`;
+- [x] `GaloisForLFunctions/HTGeometry.lean` passes direct elaboration with capstone imported;
+- [x] targeted forbidden-declaration scan finds no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`;
+- [x] `#print axioms` on capstone, properness, groupoid, complementarity, and conservation theorems
+  reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- [x] no stale task-owned Lean process remains;
+- [x] repository lint declaration checks pass these modules; global reachability gate remains red
+  only for five unrelated pre-existing HTGeometry modules:
+  `EuclideanDiagonalGappedForm`, `NonidentityPauliWordCount`, `PauliEnsembleBoxNorm`,
+  `PauliZGappedHamiltonian`, and `PauliZSetLabels`.
+
+## Log
+
+- 2026-08-09 — all dependency-closed claims formalized, capstone built, umbrella elaborated, axioms
+  audited, and card promoted to Stage 3.

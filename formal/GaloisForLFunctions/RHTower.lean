@@ -5246,6 +5246,7 @@ import GaloisForLFunctions.RHTower.VanDerCorput
 import GaloisForLFunctions.RHTower.VanDerCorputIBP
 import GaloisForLFunctions.RHTower.OscillatoryDecayPrimitive
 import GaloisForLFunctions.RHTower.ExteriorProfileBounds
+import GaloisForLFunctions.RHTower.ExteriorGeneralEndpoint
 import GaloisForLFunctions.RHTower.XiReciprocalSpeed
 import GaloisForLFunctions.RHTower.ExteriorXiPrimitive
 import GaloisForLFunctions.RHTower.XiAmplitudeDecay
@@ -5272,6 +5273,7 @@ import GaloisForLFunctions.RHTower.ProlateEndpointEnergy
 import GaloisForLFunctions.RHTower.ProlateFullPrimitive
 import GaloisForLFunctions.RHTower.AmpFourthDecay
 import GaloisForLFunctions.RHTower.ProlateDilatedChannel
+import GaloisForLFunctions.RHTower.ProlateDilatedLeftEndpoint
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted

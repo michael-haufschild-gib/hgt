@@ -69,7 +69,7 @@ The system `(1)` has the following properties.
 
    \[
     \kappa_n(\rho)
-    =\inf\{\|R\|:R\in\operatorname{Hom}(\mathbb C^n,\mathbb C^{n+1}),\ 
+    =\inf\{\|R\|:R\in\operatorname{Hom}(\mathbb C^n,\mathbb C^{n+1}),
       \mathscr A_n(\rho,e^{i\theta})R=I_n\}
    \tag{3}
    \]

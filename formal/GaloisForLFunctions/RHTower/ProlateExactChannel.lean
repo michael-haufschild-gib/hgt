@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateChannelBranch
+import GaloisForLFunctions.RHTower.ProlateChannelSum
 import GaloisForLFunctions.RHTower.ProlateLiouvilleOscillator
 
 /-!
@@ -262,11 +263,10 @@ theorem hasDerivAt_exactAmp {s c k x : ℝ} {A A' : ℝ → ℝ} (hs1 : s ≤ 1 
 
 /-- **The exact channel amplitude carries `1/(√c k)`.** -/
 theorem abs_exactAmp_le {s c k x M : ℝ} {A : ℝ → ℝ} (hs1 : s ≤ 1 / 2) (hc : 0 < c)
-    (hk : 1 ≤ k) (hx : 2 ≤ x) (hM : 0 ≤ M) (hAb : |A (k * x)| ≤ M) :
+    (hk : 1 ≤ k) (hx : 1 ≤ x) (hkx2 : 2 ≤ k * x) (hM : 0 ≤ M) (hAb : |A (k * x)| ≤ M) :
     |exactAmp s c k A x| ≤ 300 * M / (Real.sqrt c * k) / Real.sqrt x := by
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hx0 : (0 : ℝ) < x := by linarith
-  have hkx2 : (2 : ℝ) ≤ k * x := by nlinarith [hk, hx]
   have hkx : (1 : ℝ) < k * x := by linarith
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
@@ -295,13 +295,12 @@ theorem abs_exactAmp_le {s c k x M : ℝ} {A : ℝ → ℝ} (hs1 : s ≤ 1 / 2) 
 
 /-- **The exact channel amplitude's derivative carries the same constant.** -/
 theorem abs_exactAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
-    (hc : 1 ≤ c) (hk : 1 ≤ k) (hx : 2 ≤ x) (hM : 0 ≤ M)
+    (hc : 1 ≤ c) (hk : 1 ≤ k) (hx : 1 ≤ x) (hkx2 : 2 ≤ k * x) (hM : 0 ≤ M)
     (hAb : |A (k * x)| ≤ M) (hA'b : |A' (k * x)| ≤ 280 * M / (c * (k * x) ^ 2)) :
     |exactAmpDeriv s c k A A' x| ≤ 300 * M / (Real.sqrt c * k) / (x * Real.sqrt x) := by
   have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
   have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
   have hx0 : (0 : ℝ) < x := by linarith
-  have hkx2 : (2 : ℝ) ≤ k * x := by nlinarith [hk, hx]
   have hkx : (1 : ℝ) < k * x := by linarith
   have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc0
   have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
@@ -354,7 +353,7 @@ theorem abs_exactAmpDeriv_le {s c k x M : ℝ} {A A' : ℝ → ℝ} (hs0 : 0 ≤
       field_simp
       linear_combination (560 * M) * hss
     rw [hval]
-    have hckx : (2 : ℝ) ≤ c * k * x := by nlinarith [hc, hk, hx]
+    have hckx : (2 : ℝ) ≤ c * k * x := by nlinarith [hc, hkx2, hk0, hx0]
     rw [div_le_iff₀ (by positivity)]
     nlinarith [hT0, hckx]
   -- combine
@@ -737,8 +736,8 @@ theorem abs_exactBranchAmp_le {s c k eps x : ℝ} {R DR DDR : ℝ → ℝ} (hs0 
   set M : ℝ := exactEnergyBudget s c R DR 2 with hMdef
   have hM : (0 : ℝ) ≤ M := Real.sqrt_nonneg _
   obtain ⟨hA, hB⟩ := abs_exactCoeff_le (DDR := DDR) hs0 hs1 hc le_rfl hkx2 hR hDR hode
-  have hcos := abs_exactAmp_le (A := exactCosCoeff s c R DR) hs1 hc hk hx hM hA
-  have hsin := abs_exactAmp_le (A := exactSinCoeff s c R DR) hs1 hc hk hx hM hB
+  have hcos := abs_exactAmp_le (A := exactCosCoeff s c R DR) hs1 hc hk (by linarith) hkx2 hM hA
+  have hsin := abs_exactAmp_le (A := exactSinCoeff s c R DR) hs1 hc hk (by linarith) hkx2 hM hB
   rw [exactBranchAmp, norm_mul, show ‖(1 / 2 : ℂ)‖ = 1 / 2 by norm_num]
   have hsplit : ‖((exactAmp s c k (exactCosCoeff s c R DR) x : ℝ) : ℂ)
       - (eps : ℂ) * Complex.I * ((exactAmp s c k (exactSinCoeff s c R DR) x : ℝ) : ℂ)‖
@@ -777,9 +776,9 @@ theorem abs_exactBranchAmpDeriv_le {s c k eps x : ℝ} {R DR DDR : ℝ → ℝ} 
   obtain ⟨hA, hB⟩ := abs_exactCoeff_le (DDR := DDR) hs0 hs1 hc0 le_rfl hkx2 hR hDR hode
   obtain ⟨hA', hB'⟩ := abs_exactCoeffDeriv_le (DDR := DDR) hs0 hs1 hc0 le_rfl hkx2 hR hDR hode
   have hcos := abs_exactAmpDeriv_le (A := exactCosCoeff s c R DR)
-    (A' := exactCosCoeffDeriv s c R) hs0 hs1 hc hk hx hM hA hA'
+    (A' := exactCosCoeffDeriv s c R) hs0 hs1 hc hk (by linarith) hkx2 hM hA hA'
   have hsin := abs_exactAmpDeriv_le (A := exactSinCoeff s c R DR)
-    (A' := exactSinCoeffDeriv s c R) hs0 hs1 hc hk hx hM hB hB'
+    (A' := exactSinCoeffDeriv s c R) hs0 hs1 hc hk (by linarith) hkx2 hM hB hB'
   rw [exactBranchAmpDeriv, norm_mul, show ‖(1 / 2 : ℂ)‖ = 1 / 2 by norm_num]
   have hsplit : ‖((exactAmpDeriv s c k (exactCosCoeff s c R DR)
         (exactCosCoeffDeriv s c R) x : ℝ) : ℂ)
@@ -808,6 +807,191 @@ theorem abs_exactBranchAmpDeriv_le {s c k eps x : ℝ} {R DR DDR : ℝ → ℝ} 
           + 300 * M / (Real.sqrt c * k) / (x * Real.sqrt x)) :=
         mul_le_mul_of_nonneg_left hsplit (by norm_num)
     _ = 300 * M / (Real.sqrt c * k) / (x * Real.sqrt x) := by ring
+
+
+theorem continuousOn_exactBranchAmp {s c k eps X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
+    (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hX : 2 ≤ X)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    ContinuousOn (exactBranchAmp s c k eps R DR) (Set.uIcc (2 : ℝ) X) := by
+  intro x hx
+  rw [Set.uIcc_of_le hX] at hx
+  exact ((hasDerivAt_exactBranchAmp (DDR := DDR) hs0 hs1 hc hk hx.1 hR hDR
+    hode).continuousAt).continuousWithinAt
+
+theorem continuousOn_exactBranchAmpDeriv {s c k eps X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
+    (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hX : 2 ≤ X)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    ContinuousOn (exactBranchAmpDeriv s c k eps R DR) (Set.uIcc (2 : ℝ) X) := by
+  have hAc : ContinuousOn (exactCosCoeff s c R DR) (Set.Ioi (1 : ℝ)) :=
+    fun _ hy => ((hasDerivAt_exactCosCoeff hs0 hs1 hc hy hR hDR hode).continuousAt
+      ).continuousWithinAt
+  have hBc : ContinuousOn (exactSinCoeff s c R DR) (Set.Ioi (1 : ℝ)) :=
+    fun _ hy => ((hasDerivAt_exactSinCoeff hs0 hs1 hc hy hR hDR hode).continuousAt
+      ).continuousWithinAt
+  have hcos : ContinuousOn (fun x : ℝ => ((exactAmpDeriv s c k (exactCosCoeff s c R DR)
+      (exactCosCoeffDeriv s c R) x : ℝ) : ℂ)) (Set.uIcc (2 : ℝ) X) :=
+    Complex.continuous_ofReal.comp_continuousOn (continuousOn_exactAmpDeriv hs1 hc hk hX hAc
+      (continuousOn_exactCosCoeffDeriv (DR := DR) hs0 hs1 hc hR))
+  have hsin : ContinuousOn (fun x : ℝ => ((exactAmpDeriv s c k (exactSinCoeff s c R DR)
+      (exactSinCoeffDeriv s c R) x : ℝ) : ℂ)) (Set.uIcc (2 : ℝ) X) :=
+    Complex.continuous_ofReal.comp_continuousOn (continuousOn_exactAmpDeriv hs1 hc hk hX hBc
+      (continuousOn_exactSinCoeffDeriv (DR := DR) hs0 hs1 hc hR))
+  exact continuousOn_const.mul (hcos.sub (continuousOn_const.mul hsin))
+
+/-- The dilated exact mode in the exterior estimate's integrand shape. -/
+theorem radialProlate_dilate_eq_branch_integrand {s c k t : ℝ} {R DR : ℝ → ℝ} (hs1 : s ≤ 1 / 2)
+    (hc : 0 < c) (hk : 1 ≤ k) (ht : 2 ≤ t) :
+    ((R (k * t) : ℝ) : ℂ)
+      = (exactBranchAmp s c k 1 R DR t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
+          * Complex.exp (Complex.I * ((1 * (c * k) * dilatedPhase s k t : ℝ) : ℂ))
+        + (exactBranchAmp s c k (-1) R DR t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
+          * Complex.exp (Complex.I * ((-1 * (c * k) * dilatedPhase s k t : ℝ) : ℂ)) := by
+  have ht0 : (0 : ℝ) < t := by linarith
+  have hst : (0 : ℝ) < Real.sqrt t := Real.sqrt_pos.mpr ht0
+  have hne : ((Real.sqrt t : ℝ) : ℂ) ≠ 0 := by simpa using (ne_of_gt hst)
+  have hid := sqrt_mul_radialProlate_dilate_eq_branches (R := R) (DR := DR) hs1 hc hk ht
+  have hmul : ((Real.sqrt t : ℝ) : ℂ) * ((R (k * t) : ℝ) : ℂ)
+      = exactBranchAmp s c k 1 R DR t
+          * Complex.exp (Complex.I * ((1 * (c * k) * dilatedPhase s k t : ℝ) : ℂ))
+        + exactBranchAmp s c k (-1) R DR t
+          * Complex.exp (Complex.I * ((-1 * (c * k) * dilatedPhase s k t : ℝ) : ℂ)) := by
+    rw [← hid]
+    push_cast
+    ring
+  have hinv : (((Real.sqrt t)⁻¹ : ℝ) : ℂ) = (((Real.sqrt t : ℝ) : ℂ))⁻¹ := by push_cast; ring
+  rw [hinv]
+  have hsplit : ((R (k * t) : ℝ) : ℂ)
+      = (((Real.sqrt t : ℝ) : ℂ))⁻¹ * (((Real.sqrt t : ℝ) : ℂ) * ((R (k * t) : ℝ) : ℂ)) := by
+    field_simp
+  rw [hsplit, hmul]
+  ring
+
+
+theorem continuousOn_exactBranchIntegrand {s c k eps X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
+    (hs1 : s ≤ 1 / 2) (hc : 0 < c) (hk : 1 ≤ k) (hX : 2 ≤ X)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    ContinuousOn (fun t : ℝ => (exactBranchAmp s c k eps R DR t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
+      * Complex.exp (Complex.I * ((eps * (c * k) * dilatedPhase s k t : ℝ) : ℂ)))
+      (Set.uIcc (2 : ℝ) X) := by
+  have hx2 : ∀ x ∈ Set.uIcc (2 : ℝ) X, (2 : ℝ) ≤ x := by
+    intro x hx
+    rw [Set.uIcc_of_le hX] at hx
+    exact hx.1
+  have hinv : ContinuousOn (fun t : ℝ => (((Real.sqrt t)⁻¹ : ℝ) : ℂ)) (Set.uIcc (2 : ℝ) X) := by
+    refine Complex.continuous_ofReal.comp_continuousOn (ContinuousOn.inv₀
+      Real.continuous_sqrt.continuousOn ?_)
+    intro x hx
+    exact ne_of_gt (Real.sqrt_pos.mpr (by linarith [hx2 x hx]))
+  have hexp : ContinuousOn
+      (fun t : ℝ => Complex.exp (Complex.I * ((eps * (c * k) * dilatedPhase s k t : ℝ) : ℂ)))
+      (Set.uIcc (2 : ℝ) X) :=
+    Complex.continuous_exp.comp_continuousOn (continuousOn_const.mul
+      (Complex.continuous_ofReal.comp_continuousOn
+        (continuousOn_const.mul (continuousOn_dilatedPhase hs0 hk hX))))
+  exact ((continuousOn_exactBranchAmp (DDR := DDR) hs0 hs1 hc hk hX hR hDR hode).mul hinv).mul hexp
+
+/-- **`(16)` for the exact radial mode.**  The `k`-th channel primitive of the exact prolate mode
+is `O(1/(c^{3/2} k²))`, uniformly in the endpoint of integration, with a constant free of `k`.
+After the `√c` normalization this is the card's `(16)`: no model, no transfer, no error term. -/
+theorem norm_integral_radialProlate_dilate_le {s c k X : ℝ} {R DR DDR : ℝ → ℝ} (hs0 : 0 ≤ s)
+    (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 1 ≤ k) (hX : 2 ≤ X)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    ‖∫ t in (2 : ℝ)..X, ((R (k * t) : ℝ) : ℂ)‖
+      ≤ 1800 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ 2)) := by
+  have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
+  have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
+  have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc0
+  set M : ℝ := exactEnergyBudget s c R DR 2 with hMdef
+  have hM : (0 : ℝ) ≤ M := Real.sqrt_nonneg _
+  have hCa : (0 : ℝ) ≤ 300 * M / (Real.sqrt c * k) := by positivity
+  have hx2 : ∀ x ∈ Set.uIcc (2 : ℝ) X, (2 : ℝ) ≤ x := by
+    intro x hx
+    rw [Set.uIcc_of_le hX] at hx
+    exact hx.1
+  have hbranch : ∀ eps : ℝ, |eps| = 1 →
+      ‖∫ t in (2 : ℝ)..X, (exactBranchAmp s c k eps R DR t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
+          * Complex.exp (Complex.I * ((eps * (c * k) * dilatedPhase s k t : ℝ) : ℂ))‖
+        ≤ 3 * (300 * M / (Real.sqrt c * k)) / (c * k) := by
+    intro eps heps
+    exact norm_integral_exterior_dilated_sharp_le (Ca := 300 * M / (Real.sqrt c * k))
+      (a := exactBranchAmp s c k eps R DR) (a' := exactBranchAmpDeriv s c k eps R DR)
+      hX hCa hc0 hk heps hs0 hs1
+      (fun x hx => hasDerivAt_exactBranchAmp (DDR := DDR) hs0 hs1 hc0 hk (hx2 x hx) hR hDR hode)
+      (continuousOn_exactBranchAmp (DDR := DDR) hs0 hs1 hc0 hk hX hR hDR hode)
+      (continuousOn_exactBranchAmpDeriv (DDR := DDR) hs0 hs1 hc0 hk hX hR hDR hode)
+      (fun x hx => abs_exactBranchAmp_le (DDR := DDR) hs0 hs1 hc0 hk (hx2 x hx) heps hR hDR hode)
+      (fun x hx => abs_exactBranchAmpDeriv_le (DDR := DDR) hs0 hs1 hc hk (hx2 x hx) heps
+        hR hDR hode)
+  have hcongr : (∫ t in (2 : ℝ)..X, ((R (k * t) : ℝ) : ℂ))
+      = (∫ t in (2 : ℝ)..X, (exactBranchAmp s c k 1 R DR t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
+            * Complex.exp (Complex.I * ((1 * (c * k) * dilatedPhase s k t : ℝ) : ℂ)))
+        + ∫ t in (2 : ℝ)..X, (exactBranchAmp s c k (-1) R DR t * (((Real.sqrt t)⁻¹ : ℝ) : ℂ))
+            * Complex.exp (Complex.I * ((-1 * (c * k) * dilatedPhase s k t : ℝ) : ℂ)) := by
+    rw [← intervalIntegral.integral_add
+      ((continuousOn_exactBranchIntegrand (DDR := DDR) hs0 hs1 hc0 hk hX hR hDR
+        hode).intervalIntegrable)
+      ((continuousOn_exactBranchIntegrand (DDR := DDR) hs0 hs1 hc0 hk hX hR hDR
+        hode).intervalIntegrable)]
+    refine intervalIntegral.integral_congr (fun x hx => ?_)
+    exact radialProlate_dilate_eq_branch_integrand hs1 hc0 hk (hx2 x hx)
+  rw [hcongr]
+  refine le_trans (norm_add_le _ _) ?_
+  have h1 := hbranch 1 (by norm_num)
+  have h2 := hbranch (-1) (by norm_num)
+  have hsum : 3 * (300 * M / (Real.sqrt c * k)) / (c * k)
+      + 3 * (300 * M / (Real.sqrt c * k)) / (c * k)
+      = 1800 * M / (Real.sqrt c * (c * k ^ 2)) := by
+    field_simp
+    ring
+  linarith [h1, h2, hsum]
+
+
+/-- **The exterior channels of the exact mode sum.**  Because the constant is free of `k`, the
+`1/k²` decay of `(16)` makes the whole radial object's exterior primitive bounded by a single
+constant, uniformly in the endpoint of integration. -/
+theorem tsum_norm_integral_radialProlate_channels_le {s c X : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hX : 2 ≤ X)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    ∑' k : ℕ, ‖∫ t in (2 : ℝ)..X, ((R (((k : ℝ) + 1) * t) : ℝ) : ℂ)‖
+      ≤ 2 * (1800 * exactEnergyBudget s c R DR 2 / Real.sqrt c) / c := by
+  have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
+  have hsc : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc0
+  set M : ℝ := exactEnergyBudget s c R DR 2 with hMdef
+  have hM : (0 : ℝ) ≤ M := Real.sqrt_nonneg _
+  set B : ℝ := 1800 * M / Real.sqrt c with hBdef
+  have hB : (0 : ℝ) ≤ B := by rw [hBdef]; positivity
+  have hterm : ∀ k : ℕ, ‖∫ t in (2 : ℝ)..X, ((R (((k : ℝ) + 1) * t) : ℝ) : ℂ)‖
+      ≤ channelMajorant B c k := by
+    intro k
+    have hk : (1 : ℝ) ≤ (k : ℝ) + 1 := by
+      have : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+      linarith
+    have h := norm_integral_radialProlate_dilate_le (DDR := DDR) (k := (k : ℝ) + 1)
+      hs0 hs1 hc hk hX hR hDR hode
+    refine le_trans h (le_of_eq ?_)
+    rw [channelMajorant, hBdef, ← hMdef]
+    have hne : ((k : ℝ) + 1) ≠ 0 := by positivity
+    field_simp
+    ring
+  have hnn : ∀ k : ℕ, (0 : ℝ) ≤ ‖∫ t in (2 : ℝ)..X, ((R (((k : ℝ) + 1) * t) : ℝ) : ℂ)‖ :=
+    fun k => norm_nonneg _
+  have hsummable : Summable fun k : ℕ =>
+      ‖∫ t in (2 : ℝ)..X, ((R (((k : ℝ) + 1) * t) : ℝ) : ℂ)‖ :=
+    (summable_channelMajorant (c := c) B).of_nonneg_of_le hnn hterm
+  calc ∑' k : ℕ, ‖∫ t in (2 : ℝ)..X, ((R (((k : ℝ) + 1) * t) : ℝ) : ℂ)‖
+      ≤ ∑' k : ℕ, channelMajorant B c k :=
+        hsummable.tsum_le_tsum hterm (summable_channelMajorant (c := c) B)
+    _ ≤ 2 * B / c := tsum_channelMajorant_le hB hc0
 
 
 end GaloisForLFunctions.RHTower

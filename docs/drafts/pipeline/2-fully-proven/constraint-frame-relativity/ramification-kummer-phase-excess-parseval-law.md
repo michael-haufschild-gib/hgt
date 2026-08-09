@@ -240,7 +240,59 @@ Its Pontryagin dual is
 \tag{KP.17}
 \]
 
-### Theorem 4.1 — outer/transported sector decomposition
+### Theorem 4.1 — Kummer carry extension class
+
+In one valuation coordinate, the exact sequence
+
+\[
+ 0\to\mathbb Z/r\mathbb Z\xrightarrow{\times s}
+ \mathbb Z/(sr)\mathbb Z\to\mathbb Z/s\mathbb Z\to0
+\tag{KP.17a}
+\]
+
+represents
+
+\[
+ \boxed{
+ [\kappa_{r,s}]=[1]
+ \in H^2(\mathbb Z/s\mathbb Z;\mathbb Z/r\mathbb Z)
+ \cong(\mathbb Z/r\mathbb Z)/s(\mathbb Z/r\mathbb Z).}
+\tag{KP.17b}
+\]
+
+Consequently
+
+\[
+ \boxed{[\kappa_{r,s}]=0\quad\Longleftrightarrow\quad\gcd(r,s)=1.}
+\tag{KP.17c}
+\]
+
+For the standard representatives `0,...,s-1`, the cocycle is the carry
+
+\[
+ \kappa_{r,s}(a,b)
+ ={a+b-(a+b\bmod s)\over s}\pmod r.
+\tag{KP.17d}
+\]
+
+Changing a set-theoretic section by `sigma'(a)=sigma(a)+s t(a)` changes the carry by the
+coboundary `delta t`, leaving `(KP.17b)` invariant.
+
+### Proof
+
+Lift the generator `1 mod s` to `1 mod sr`. Multiplying the lift by `s` gives `s mod sr`, the
+image under `times s` of the kernel generator `1 mod r`; the extension class is therefore `[1]`
+in the standard cyclic-group classification `H^2(C_s;A)=A/sA` for trivial action. It vanishes
+exactly when multiplication by `s` is surjective on `Z/rZ`, equivalently when `s` is invertible
+modulo `r`. Formula `(KP.17d)` computes the same lift defect for standard representatives.
+Replacing the section produces the displayed coboundary. `[PROVED HERE]`
+
+Thus full residue-labelled composition is not always a product even though the support partition
+and Haar disintegration are flat. Coprime ramification stages split; repeated prime factors carry
+a genuine Kummer lifting obstruction. This is a torsion extension class, not a physical phase,
+time holonomy, or RH obstruction.
+
+### Theorem 4.2 — outer/transported sector decomposition
 
 The nontrivial `sr`-residue sectors split into:
 
@@ -287,11 +339,11 @@ power image is the trivial sector, excess is the nontrivial sector sum, and comp
 by `(KP.16)`. This is a viable exact chart inside Constraint-Frame Relativity, not a replacement
 name for the whole field.
 
-It is still flat. Haar transport reproduces the same split composition law, and Fourier inversion
-relates the two views. No incompatible comparison, curvature, physical cost, or field equation has
-appeared. The next serious test is whether a non-Fourier observer—Stokes contact, orientation, or
-boundary flux—carries a nontrivial Kummer sector with a composition law incompatible with this
-Haar-flat chart.
+Haar transport of the full sector profile is flat, and Fourier inversion relates the two views.
+However, residue lifting across composite stages has the extension class `(KP.17b)`, nonzero when
+the factors are not coprime. No non-Fourier observer, physical cost, or field equation has yet
+been coupled to that class. The next serious test is whether a non-Fourier observer—Stokes
+contact, orientation, or boundary flux—carries the same Kummer extension incompatibly.
 
 ## 6. Conjecture / proof / fail loops
 
@@ -302,7 +354,8 @@ Haar-flat chart.
 3. **One scalar phase energy carries composition.** Failed in general by aggregation cross-terms.
    **Survivor:** retain the full Kummer sector profile.
 4. **Kummer detection creates curvature.** Failed: Haar disintegration is flat and recovers the
-   split cocycle. **Survivor:** use this chart as the flat source-asymmetric baseline.
+   split support cocycle. **Survivor:** full residue lifting still has the torsion extension class
+   `(KP.17b)`, which vanishes exactly for coprime stages.
 5. **Nonzero Kummer energy proves hypertranscendence or RH leverage.** Failed: no such implication
    is established. **Survivor:** it proves only exact excess detection and finite inverse-loss.
 
@@ -338,6 +391,7 @@ Haar-flat chart.
 - [x] Haar extraction of inherited image
 - [x] Parseval excess detector and finite inverse-loss bounds
 - [x] strict composition through Kummer exact sequence
+- [x] exact Kummer carry class and coprime splitting criterion
 - [x] hostile flatness and scalar-energy scope
 - [ ] incompatible non-Fourier comparison
 - [ ] nonzero curvature/interchange defect

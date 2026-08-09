@@ -159,16 +159,21 @@ where mathematical knowledge is missing use the $hgt-fields-medalist skill to cr
 
 ## research paper
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about: 
+the last paper we have written: docs/drafts/pipeline/4-publication-ready/universal-quantum-recurrence-anatomy more research is already in the lean corpus or as paper proof in the pipeline.
 
-collect enough novel and significant knowledge to write a paper that meets the publishing requirements of a general renowned mathematical journal.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to continue our existing research and create novel and significant new knowledge about:
+- Brown–Susskind’s full growth–plateau–recurrence law
+- the black hole interior volume paradox
+- Quantum Recurrence
+
+collect enough novel and significant knowledge to write a paper that meets the publishing requirements of Nature: the paper must report a fundamental new insight or startling discovery that significantly shifts the scientific conversation across multiple fields.
 
 research rules:
 - use heavy conjecturing
 - always check that you do not play theatre and actually are creating new knowledge
 - focus on hard problems
 
-add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications.
+add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications. 
 
 Lean rules:
 1. Proofs must be unconditional in lean.
@@ -179,7 +184,8 @@ Lean rules:
 6. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
 7. make sure you don't leave stale lean processes running - clean up after yourself.
 
-goal is met when paper is written and passes a hostile review that confirms that the paper is on a quality level to be published in a general renowned mathematical journal.
+goal is met when paper is written and passes a hostile review that confirms that the paper is on a quality level to be published in Nature.
+
 
 ## research Route
 

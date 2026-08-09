@@ -3,7 +3,7 @@
 - **ID:** `constraint-frame-relativity`
 - **Stage:** 1 — in progress
 - **Type:** NEW FIELD PROGRAMME / COORDINATE-FREE GEOMETRY CONJECTURE
-- **Status:** `[HIGHER-LEVEL PIVOT] [EXACT FINITE CALIBRATIONS] [RESTRICTED THREE-DOCTRINE SOURCE-LAW EVENT] [FLAT COMPARISON CALIBRATED] [SOURCE-ASYMMETRIC KUMMER CHART CONSTRUCTED] [FULL CONSTITUTIVE FIELD OPEN] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[HIGHER-LEVEL PIVOT] [EXACT FINITE CALIBRATIONS] [RESTRICTED THREE-DOCTRINE SOURCE-LAW EVENT] [SOURCE-ASYMMETRIC KUMMER CHART CONSTRUCTED] [NONZERO SUPPORT-INTERCHANGE CALIBRATED] [FULL CONSTITUTIVE FIELD OPEN] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
 - **Public name:** **Constraint-Frame Relativity (CFR)**
 - **Statement:** CFR conjectures that a stratified source-law deformation space carries four observer-fibre directions whose local charts include a selected class of source-natural proof routes; current theorems establish finite compatibility and separation mechanisms, not existence or uniqueness of the global law object.
 
@@ -599,11 +599,94 @@ Composition is controlled by the Kummer exact sequence
  \to\Lambda/s\Lambda\to0.
 \]
 
+In one valuation coordinate, this extension has carry class
+
+\[
+ [\kappa_{r,s}]=[1]
+ \in H^2(\mathbb Z/s;\mathbb Z/r)
+ \cong(\mathbb Z/r)/s(\mathbb Z/r),
+\]
+
+so it splits exactly when `gcd(r,s)=1`. Support and Haar profiles can remain flat while full
+residue lifting is genuinely nonsplit.
+
 This yields the first second observer nonzero on `K_r`: a pro-toric Kummer-graded Adams chart.
 It remains flat, because Haar disintegration reproduces the same split cocycle and Fourier
 inversion relates it to coefficient residue sectors. The open core is now sharper: find a
 non-Fourier observer—contact, orientation, boundary flux, admission, or physical cost—that carries
 a nontrivial Kummer sector with an incompatible composition law.
+
+### 5.12 Anchor--defect incidence interchange
+
+A non-Fourier support observer sends each excess atom to the normalized bipartite current from its
+maximal-valuation anchor primes to its divisibility-defect primes. For stages `r` then `s`, direct
+`sr`-incidence and literal whole-number stagewise incidence differ exactly when an atom has both
+an outer defect and a latent inner defect. If their cardinalities are `d,ell>0`, then
+
+\[
+ \Omega_{m;s,r}
+ ={\ell\over d+\ell}(J_{\mathrm{latent}}-J_{\mathrm{outer}}),
+ \qquad
+ \|\Omega\|_1={2\ell\over d+\ell}.
+\]
+
+The atom `2^(srm)3^s5` gives
+
+\[
+ \Omega={1\over2}([2,3]-[2,5])\ne0.
+\]
+
+For three stages the exact Bianchi identity is
+
+\[
+ \Omega_{m;t,sr}+T_t\Omega_{m;s,r}
+ =\Omega_{m;ts,r}+\Omega_{rm;t,s}.
+\]
+
+This is the first explicit nonzero interchange defect in the pilot, but hostile strictification
+prevents a false field-strength claim. A Kummer-refined observer retains ordered first-failure
+layers and composes strictly; `Omega=delta J` is the defect of flattening those layers and then
+gating inner transport on a global root. It is observer nonfunctoriality, not intrinsic source
+curvature. The deeper source invariant is the full carry extension above.
+
+### 5.13 Binary Witt carry at the Route-E admission boundary
+
+For two quadratic stages, the Kummer composition sequence is the coordinatewise nonsplit
+extension
+
+\[
+ 0\longrightarrow(\mathbb Z/2)^F\xrightarrow{\times2}
+ (\mathbb Z/4)^F\longrightarrow(\mathbb Z/2)^F\longrightarrow0.
+\]
+
+With the canonical binary digit section, its carry is exactly Boolean meet:
+
+\[
+ \sigma(S)+\sigma(T)
+ =\sigma(S\triangle T)+2\sigma(S\cap T).
+\]
+
+For squarefree labels `k,l` with supports `S,T`, this has the literal shell factorization
+
+\[
+ k^m l^m=(k\mathbin{\triangle}l)^m\gcd(k,l)^{2m}.
+\]
+
+Thus Route-E hard-core multiplication is precisely the zero-carry locus. Retaining the rejected
+collision label `S intersect T` carries the full Kummer extension class; the admitted hard-core
+algebra alone does not. This is the first non-Fourier HGT organ to receive the genuine carry class
+without choosing a target formula. It lives on an admission boundary, not as curvature of the
+admitted algebra.
+
+The same extension has a marked history gauge `Z^F -> (Z/4)^F -> (Z/2)^F`: a two-step base return
+has kernel holonomy `2 sigma(S)`, while the integral lift remains open. This is the regular cyclic
+realization of the same class, not independent recurrence evidence or physical time.
+
+Local architectural prediction: Route-E incidence is a Boolean special fibre of a
+Witt-thickened constraint chart, and discarded collisions are higher digit directions. This is a
+real cross-organ theorem for the binary cell, but not yet a universal field law. Required next
+object is an anchor-natural, collision-labelled Route-E totalization whose carry remains coherent
+under source composition and then predicts a genuinely independent organ.
 
 ## 6. Corpus atlas and coverage ledger
 
@@ -612,7 +695,7 @@ corpus.
 
 | Organ | Candidate CFR frame | Literal source realization | Intervention / interchange / prediction status |
 |---|---|---|---|
-| Route E / incidence | Boolean rank/clock capacity; full balanced-pair chain remains route-local | ramification-diagonal shell pullback constructed | finite chosen Schur capacity and response derived; escort evolution provably does not descend to the capacity scalar; epistemic withheld test/Hall/seam/cofinal open |
+| Route E / incidence | Boolean rank/clock capacity; full balanced-pair chain remains route-local | ramification-diagonal shell pullback and binary Kummer carry constructed | hard-core product is the zero-carry locus; full carry survives only on collision-labelled admission boundary; Hall/seam/cofinal open |
 | Route D2 / prime--arch ceiling | continued source tail + admission/boundedness horizon | literal continued prime--Gamma source route-local | no source-derived high-frequency ceiling or comparison cell |
 | Route G / Suzuki | moment degrees + aperture modes + first-unseen Krein crossing | route-local only | first-extension fracture proved; comparison open |
 | Route L / Fourier | ordered cross-prime Koszul/completion complex + horizontal residue | prime-log coefficient shadow only | source current bridge partial; full comparison open |
@@ -629,7 +712,7 @@ corpus.
 | Stokes/contact | valued tree + Lorentz port | arithmetic determinant twist exists | structural contact intervention not sourced |
 | HT Euler shells | differential prolongation + characteristic symbols | Euler-shell literal; power law morphism, split defect, and Kummer grading constructed | exact analytic-excess cocycle and Parseval detector; no theorem that excess is HT or survives a non-Fourier observer |
 | Hurwitz branch history | equality-partition matroid + marked character history | separate exact calibration | no Euler-shell comparison |
-| quantum recurrence | period/history frame | Euler/prime phase literal; same power law morphism | ordinary phase is inherited-only; Kummer torsion phase detects excess but remains Haar-flat; physical cost open |
+| quantum recurrence | period/history frame | Euler/prime phase literal; same power law morphism | ordinary phase is inherited-only; binary carry has marked finite-quotient holonomy but adds no independent dynamics; physical cost open |
 | quantum localization/stabilizer/complexity | observed algebra, orbit-marker stabilizer, and history/action cost | exact finite route-local rigidity and localization laws | no common source-law or physical cost transport |
 | horizon/QEC | edge/symplectic frame | analogy and finite calibrations only | no HGT/gravity source or cost map |
 
@@ -700,7 +783,13 @@ defect, and forgets the source power map's non-surjective analytic complement. I
 descend through scalar Schur capacity is proved. The first comparison retaining source asymmetry
 is now constructed between marked coefficient excess and Kummer torsion-phase sectors. It remains
 flat and Fourier-equivalent, so it does not pass the incompatible cross-doctrine requirement. The
-first non-Fourier comparison carrying `K_r` remains open.
+anchor--defect support observer supplies a nonzero direct/stagewise interchange defect and Bianchi
+identity, but ordered Kummer flags strictify it; it is a nonfunctorial quotient calibration, not a
+presentation-invariant curvature class. The binary Route-E collision boundary now carries the
+genuine Kummer class, but ordinary admitted hard-core multiplication kills it and the marked
+history gauge adds no independent invariant. Gate III therefore remains open at the next level:
+construct a collision-labelled totalization whose carry is coherent under source composition and
+is detected by a genuinely independent observer doctrine.
 
 ### Gate IV — extension/flux balance
 
@@ -895,7 +984,9 @@ CFR becomes a real field rather than an organizing doctrine only after:
    factors through full Gibbs data and supplies no independent invariant; Kummer torsion phase
    supplies a second excess carrier but is Fourier-equivalent to the marked coefficient grading;
 4. proving two nontrivial observer-fibre comparison cells and their coherence — one flat
-   calibration and one flat Kummer/Dirichlet comparison are typed but do not count as incompatible;
+   calibration and one flat Kummer/Dirichlet comparison are typed; binary carry reaches the
+   Route-E collision boundary but no collision-labelled totalization or independent response is
+   yet coherent under source composition;
 5. deriving one epistemically withheld-organ response not used in construction;
 6. proving presentation/Morita invariance of the claimed common defect;
 7. constructing one non-fitted physical costed-history chart;
@@ -905,7 +996,10 @@ The engineered mixed chart passes only the consistency gate; the ramification-po
 restricted three-doctrine event clause, with the third Gibbs-determined and no independent
 invariant. Escort--logit gives a strict flat comparison and a scalar-capacity non-descent theorem,
 and Kummer torsion phase detects the marked split defect with quantitative Parseval bounds. Both
-comparisons remain flat. The field remains open.
+full comparisons remain flat; coarse support incidence has nonzero interchange but no invariant
+curvature class. Binary Witt carry is the first genuine cross-organ extension class, but it lives
+on Route E's rejected-collision boundary and its marked history is the same class in another
+gauge. The field remains open.
 
 ## 14. Immediate research programme
 
@@ -914,13 +1008,14 @@ comparisons remain flat. The field remains open.
    an explicit pair.
 3. Construct two non-HGT examples from mathematically disjoint domains and make an external
    withheld prediction.
-4. Construct a non-Fourier observer that is nonzero on the Kummer/excess sector—preferably affine
-   extension/flux or Stokes contact—without changing the source arrow.
+4. Construct an anchor-natural collision-labelled Route-E totalization carrying the full binary
+   Kummer cocycle and prove coherence under source composition.
 5. Prove whether the marked split defect survives presentation/Morita change; arbitrary
    depth-dependent translations trivialize it.
-6. Compute pairwise comparison defects only after one incompatible cell exists; escort--logit and
-   Kummer--Dirichlet transport are zero-defect baselines.
-7. Use Stokes as the next withheld HGT organ; Mass/Fourier scalar response is too close.
+6. Use the exact support-incidence `Omega` as a falsifier: any proposed field strength must survive
+   ordered-flag refinement, unlike this quotient coboundary.
+7. Make the binary carry predict a genuinely independent response, preferably Stokes contact or
+   affine extension/flux; marked cyclic history and Fourier phase are too close.
 8. Classify source transitions whose full constraint-frame holonomy is trivial but whose
    determinant holonomy is not, and conversely.
 9. Determine whether the first extension/flux balance has a source-only reciprocity equation.
@@ -946,3 +1041,6 @@ this is proved, the four-axis list is a motivated coordinate system, not a recon
 - 2026-08-09 — escort--logit conjugacy supplied a strict flat comparison calibration; hostile audit rejected it as nontrivial Gate III and proved escort evolution cannot descend through scalar Schur capacity.
 - 2026-08-09 — isolated the marked split-defect kernel `K_r`, proved its strict composition/analytic cocycle and inherited-observer blindness, and rejected curvature/cohomology claims because the cocycle is a coboundary.
 - 2026-08-09 — constructed Kummer torsion-phase detection of `K_r`: Haar extracts the inherited image, Parseval measures excess, and Kummer exact sequences carry composition; the chart remains flat/Fourier-equivalent.
+- 2026-08-09 — proved the Kummer carry class `[1]`, splitting iff ramification factors are coprime; separated genuine residue lifting obstruction from flat support/Haar transport.
+- 2026-08-09 — proved a nonzero anchor--defect support interchange tensor and Bianchi identity; hostile ordered-flag refinement showed it is observer nonfunctoriality, not intrinsic curvature.
+- 2026-08-09 — identified the nonsplit binary Kummer carry with Boolean meet. Route-E hard-core multiplication is exactly its zero-carry locus; full carry requires collision-labelled admission-boundary data, while marked recurrence is only another gauge of the same class.

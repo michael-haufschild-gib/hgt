@@ -426,12 +426,18 @@ The required new infrastructure is:
 5. `[FORMALIZED]` the exact normalized-budget transfer: sublinear variation preserves the
    `d_lambda*log(lambda)` leading scale, while the sharper logarithmically weighted budget makes
    the center error `o(d_lambda)`;
-6. `[FORMALIZED except the channel expansion identity]` a concrete radial-PSWF endpoint/exterior
-   interface proving the all-radial primitive `(11)`.  `(43)`, `(47)` for the model and for the exact
-   mode, `(50)`, and now `(16)` for every `k >= 1`
-   (`RHTower.norm_integral_leading_channel_le`, `<= 99/(c k^2)`) are unconditional Lean theorems;
-   what is left is the identity expressing `U_(lambda,k)` as its leading channel plus controlled
-   error, and the summation, whose machinery is built;
+6. `[FORMALIZED on the exterior range; endpoint range open for k >= 2]` a concrete radial-PSWF
+   endpoint/exterior interface proving the all-radial primitive `(11)`.  Unconditional Lean
+   theorems now: `(43)`, `(47)`, `(50)`; the exact two-branch representation of the mode itself
+   (`RHTower.sqrt_mul_radialProlate_dilate_eq_branches`, an identity, no error term); `(16)` for
+   every `k >= 1` on `[2, X]` for the **exact** mode
+   (`RHTower.norm_integral_radialProlate_dilate_le`, `<= 1800 M/(sqrt c (c k^2))` with `M` free of
+   `k` and of the endpoint); the channel summation
+   (`RHTower.tsum_norm_integral_radialProlate_channels_le`); and `(17)` on `[1,2]` for `k = 1`
+   (`RHTower.abs_integral_sqrt_mul_radialProlate_full_le`).  What is left is the range `t in [1,2]`
+   for `k >= 2` -- there `k t >= 2`, so the representation applies, but
+   `norm_integral_exterior_dilated_sharp_le` hard-codes `2` as its left endpoint and has to be
+   generalised to an arbitrary `A >= 1` with `k A >= 2`;
 7. `[CANONICAL TWO-MODE SOURCE AND POISSON--MUNTZ LAW FORMALIZED; CLASSICAL IDENTIFICATION OPEN]`
    identify the classical real `h_0,h_4` modes in the actual operator spectrum and prove the
    concrete fixed-mode variation bound `(19e)`;
@@ -2829,3 +2835,101 @@ estimates, this proves the seed law `(32)` on paper.
 
   This is why the closed form was worth proving as an identity rather than only as a bound: a bound
   on `q` would have given nothing at all here.
+
+- 2026-08-09 (eighty-first instalment) -- **`(16)` PROVED FOR THE EXACT RADIAL MODE.**  Nine
+  further declarations in `RHTower/ProlateExactChannel.lean`; all axiom-clean.
+
+  ```text
+  norm_integral_radialProlate_dilate_le :
+    ‖∫ t in 2..X, R (k t)‖ <= 1800 * exactEnergyBudget s c R DR 2 / (sqrt c * (c * k^2))
+  ```
+
+  unconditionally, for every `X >= 2`, every `k >= 1`, every `c >= 1` and every `0 <= s <= 1/2`,
+  given only that `R` solves the radial prolate equation.  With the card's `sqrt c` normalization
+  this is `O(1/(c k^2))` uniformly in the endpoint -- the card's `(16)`, for the exact mode.
+
+  * **`continuousOn_exactAmpDeriv`, `continuousOn_exactBranchAmp`,
+    `continuousOn_exactBranchAmpDeriv`, `continuousOn_exactBranchIntegrand`.**
+  * **`exactBranchAmp`, `exactBranchAmpDeriv`, `hasDerivAt_exactBranchAmp`.**
+  * **`sqrt_mul_radialProlate_dilate_eq_branches`** -- the exact mode as two complex exponential
+    branches.  Identity, not approximation.
+  * **`abs_exactBranchAmp_le`, `abs_exactBranchAmpDeriv_le`** -- both `<= 300 M/(sqrt c k)` over
+    `sqrt x` resp. `x sqrt x`, the same constant, which is what the estimate requires.
+  * **`radialProlate_dilate_eq_branch_integrand`, `norm_integral_radialProlate_dilate_le`.**
+
+  What this closes.  The seventy-fourth instalment recorded a genuine obstruction: the two
+  available model-to-mode transfers give `O(log X / c)` (not uniform in the endpoint) and
+  `O(c^{-1/4})` (not strong enough), so `(16)` could not be reached by estimating a transfer error
+  in absolute value.  The route taken instead was to represent the mode itself:
+
+  1. abstract the energy method off Bessel (`PerturbedOscillator`);
+  2. restate it in a phase parameterization so no coordinate inversion is needed
+     (`PerturbedOscillatorPhase`);
+  3. put the prolate mode in that form, with the first-order term eliminated identically by
+     `2 h' phi' = h phi''` (`ProlateLiouvilleOscillator`);
+  4. bound the resulting perturbation, `|q| <= 35/phi^2`, using `xi'''` which the corpus already
+     had;
+  5. carry the representation through the envelope, the dilation and the complexification
+     (`ProlateExactChannel`).
+
+  No step estimates a difference between the mode and a model, because at no point is a model
+  introduced.  That is the whole content of the eight instalments from the seventy-fourth to here.
+
+  The constant `1800` is `2 branches * 3 * 300`, and the `300` is `1 + 16 + 280` from the three
+  terms of the amplitude derivative, rounded.  It is uniform in `k` and in `X`; the only
+  `c`-dependence beyond the stated powers is inside `exactEnergyBudget s c R DR 2`, which is the
+  mode's own energy at the fixed base point `x = 2`.
+
+- 2026-08-09 (eighty-second instalment) -- **The exterior channels summed, and item 6 corrected.**
+
+  * **`tsum_norm_integral_radialProlate_channels_le`** --
+
+    ```text
+    sum_{k>=0} ‖integral_2^X R((k+1) t) dt‖ <= 2 (1800 M / sqrt c) / c,
+    ```
+
+    unconditionally, uniformly in `X >= 2`.  The whole radial object's exterior primitive is
+    bounded by one constant.  This works only because `M = exactEnergyBudget s c R DR 2` is
+    measured at the *fixed* base point `x = 2` and so does not depend on `k`; the `1/k^2` of `(16)`
+    then does the rest through `channelMajorant`.
+
+  **Item 6 of the Lean plan is corrected above.**  Its previous text said the channel expansion
+  identity and the summation were what remained.  Both are now done, and the identity is stronger
+  than the card asked for -- it is exact, with no error term, and about the mode rather than a
+  model.  What actually remains is narrower and had not been named: the range `t in [1,2]` for
+  `k >= 2`.  There `k t >= 2` so the representation applies unchanged, but
+  `norm_integral_exterior_dilated_sharp_le` hard-codes `2` as its left endpoint.  Generalising it
+  to an arbitrary `A >= 1` with `k A >= 2` is the remaining step, and it is a change to the
+  estimate's statement, not new analysis.
+
+  For `k = 1` that range is `(17)`, which has been an unconditional theorem since the sixty-ninth
+  instalment.
+
+- 2026-08-09 (eighty-third instalment) -- **The exterior estimate with a free left endpoint.**
+  New module `RHTower/ExteriorGeneralEndpoint.lean` (root `RHTower` namespace), wired, all five
+  declarations axiom-clean.
+
+  * **`integral_inv_sq_le_left`** -- `integral_L^X t^{-2} <= 1/L`.
+  * **`norm_integral_cexp_le_of_decay_left`** -- nonstationary phase over `[L, X]`: `<= 3K/L`.
+  * **`norm_integral_cexp_le_of_profile_left`** -- with a scaled phase: `<= 3C/(L c)`.
+  * **`norm_deriv_exteriorProfile_left`** -- the pointwise derivative bound from `x = 1` instead of
+    `x = 2`; the tail `Ca Cr/x^3` is absorbed into `Ca Cr/x^2` rather than half of it, so the
+    constant is `3Ca/2 + Ca Cr`.
+  * **`norm_integral_exterior_left`** -- `<= 3 (Ca (3/2 + Cr))/(L c)`.
+
+  Why this and not a `[1,2]` patch.  The eighty-second instalment identified the gap as "the range
+  `t in [1,2]` for `k >= 2`", to be closed by splitting the integral.  That framing was the wrong
+  one.  Substituting `y = k t`,
+
+  ```text
+  integral_1^X f(k t) dt = k^{-1} integral_k^{kX} f(y) dy,
+  ```
+
+  and the estimate over `[k, kX]` supplies a *second* factor `k^{-1}` through its left endpoint.
+  So the `1/k^2` of `(16)` is `k^{-1}` from the Jacobian times `k^{-1}` from the endpoint -- and
+  with the endpoint nailed to `2` only one of the two factors is ever visible.  Freeing it covers
+  `[1, X]` in one estimate with no splitting at all, and no separate endpoint treatment for
+  `k >= 2`.
+
+  The existing `[2, X]` theorems are untouched; the general ones are added alongside, since other
+  work depends on the fixed-endpoint forms.

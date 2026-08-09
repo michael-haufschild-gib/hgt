@@ -9359,3 +9359,112 @@ algebraic of degree `≥ 2` over `C(z, f)`.  Two things are missing, and they ar
 Neither is a gap in the paper proof: the paper's Reduction I supplies the branch and Reduction III
 runs the induction on it.  Both are genuine multi-session formalisation projects, and the first is
 purely algebraic — it can be built without any analytic input.
+
+### Log — the algebraic model, part 1: the differential structure transports
+
+The first of the two pieces the last entry named — *the unique extension of the law and of the
+coordinate derivations to an algebraic extension* — is built, unconditionally and axiom-clean.  It
+did not need the formally-étale route that entry sketched; the concrete construction is shorter and
+it computes.
+
+`HTGeometry/PolyCoeffDerivation.lean` puts a derivation `D` of a commutative ring `K` on `K[X]`
+coefficient by coefficient (`polyD D`), with `polyD D (C a) = C (D a)` and `polyD D X = 0`, and
+proves the chain rule that separates the motion of the coefficients from the motion of the point:
+for a derivation `D'` of a `K`-algebra `L` extending `D`, and any `α : L`,
+
+`D' (aeval α q) = aeval α (polyD D q) + aeval α (q') · D' α`   (`aeval_polyD`).
+
+mathlib's `Derivation.mapCoeffs` lands in `PolynomialModule` and its comparison map is only
+`R`-linear, so it cannot be pushed through `LinearMap.compDer`; building `polyD` from the
+coefficient description (`coeff (polyD D q) i = D (coeff q i)`) is a five-line Leibniz computation
+over the antidiagonal and gives the simp-normal form the rest of the layer wants.
+
+`HTGeometry/AdjoinRootDerivation.lean` is the extension itself.  For `K` a field of characteristic
+zero and `p` irreducible, the value at the root of `L = K[X]/(p)` is *forced* by differentiating
+`p(α) = 0`:
+
+`D' α = − p^D(α) / p'(α)`   (`rootShift`),
+
+where `p^D = polyD D p`.  The denominator is nonzero because an irreducible polynomial in
+characteristic zero is separable and `IsCoprime p p'` transports through `aeval` at the root.  The
+map `q ↦ aeval α (p^D q) + aeval α (q') · rootShift` is `R`-linear, satisfies the Leibniz rule with
+`aeval α` as the multiplier (`rootExtFun_mul`), kills `p` (`rootExtFun_self`) and hence kills the
+ideal `(p)`, so it descends: `Submodule.liftQ` on `Submodule.restrictScalars R (span {p})` composed
+with `Submodule.Quotient.restrictScalarsEquiv` lands on `AdjoinRoot p` definitionally, and
+`adjoinRootDerivLin_mk` is `rfl`.  The results:
+
+* `adjoinRootDeriv D p` — a derivation of `L` with `adjoinRootDeriv D p ∘ algebraMap = algebraMap ∘ D`
+  and `adjoinRootDeriv D p (root p) = rootShift D p`;
+* `eq_adjoinRootDeriv` — **uniqueness**: any derivation of `L` restricting to `D` is this one.  The
+  proof is one application of `aeval_polyD` to `q = p`, which pins `D' α`;
+* `adjoinRootDeriv_commutator` — **commuting derivations extend to commuting derivations**.  The
+  commutator of two extensions restricts to the commutator downstairs, so if that vanishes,
+  uniqueness of the extension of the zero derivation forces the commutator upstairs to vanish.
+
+The last item is the one that matters for the peel.  What the two-coordinate peel replaced
+diagonality with was *exactness* of the border row, and exactness is `fpderiv_comm`; the card's
+model layer therefore needs the extended coordinate derivations to commute, and they do, for free.
+
+`HTGeometry/AlgebraicCascadeModel.lean` specialises to the card's model.  `AlgCascadeField p` is
+`AdjoinRoot p` for `p` irreducible over `CascadeField`; `afpderiv p k` is the extended coordinate
+derivation, `eq_afpderiv` says it is the only one, `afpderiv_comm` says they commute,
+`algLaw p D` extends an arbitrary law and `algLaw_afpderiv_comm` says a law commuting with a
+coordinate derivation downstairs still does upstairs.  The extension is finite
+(`algCascadeField_finiteDimensional`), so the degree-at-infinity has a finite ramification index to
+work against.  `CascadeField` is a `ℂ`-algebra, so `CharZero` is automatic and the separability
+hypothesis never appears.
+
+All of `PolyCoeffDerivation`, `AdjoinRootDerivation`, `AlgebraicCascadeModel` are in the
+`GaloisForLFunctions.HTGeometry` umbrella, build green, and depend only on
+`propext, Classical.choice, Quot.sound`.
+
+### Log — the algebraic model, part 2: the degree layer is a valuation
+
+The second piece the last entry named is the degree-at-infinity.  The first step is to stop treating
+it as bookkeeping and identify it.  `HTGeometry/TopDegreeValuation.lean` proves
+
+`TopDegLE m d f  ↔  (−d : ℤ) ≤ topOrd m f`   (`topDegLE_iff_le_topOrd`),
+
+where `topOrd m f` is the excess of the denominator's `m`-degree over the numerator's, read off the
+localisation's chosen representative and shown representative-independent by cross-multiplying and
+using additivity of `degreeOf` on nonzero products.  With that identification the three facts the
+peel uses become the valuation axioms, and they are proved:
+
+* `topOrd_mul` — `topOrd m (f·g) = topOrd m f + topOrd m g` (an *equality*, which `TopDegLE.mul`
+  only gave as an inequality);
+* `topOrd_add` — `min (topOrd m f) (topOrd m g) ≤ topOrd m (f + g)`;
+* `topOrd_one`, `topOrd_zero`, `topOrd_eq_top_iff`,
+
+so `topOrdValuation m : AddValuation CascadeField (WithTop ℤ)` exists.  On the generators,
+`topOrd m (algebraMap N) = −deg_m N` and `topOrd m (X_m) = −1`.
+
+The two ways the coordinate derivations move along the valuation are recorded in the same language:
+
+* `topOrd_fpderiv_top` — `topOrd m f + 1 ≤ topOrd m (∂_m f)`: differentiating at the coordinate
+  itself raises the order by one;
+* `topOrd_fpderiv_of_ne` — `topOrd m f ≤ topOrd m (∂_l f)` for `l ≠ m`.
+
+This is what makes the remaining work statable without guesswork.  On an algebraic extension the
+degree layer is exactly *an extension of `topOrdValuation m` to `AlgCascadeField p`*, with values in
+`(1/e)·ℤ` for the ramification index `e`, and `TopFree` becomes *lying in a subfield on which the
+extended valuation is trivial* — which is automatic for anything algebraic over the coordinate-free
+subfield, since a valuation trivial on a field is trivial on every element algebraic over it.  The
+two derivation bounds above are the two axioms that do **not** follow from the valuation axioms: on
+a ramified place with uniformiser `t` and `u = 1/X_m` of value `e`, one has `v(∂_u f) ≥ v(f) − e` and
+hence `v(∂_{X_m} f) ≥ v(f) + e`, i.e. the degree still drops by one — but proving that needs the
+local structure of the place, not just the valuation.
+
+So the remaining frontier of Reduction III is now three named items, in dependency order:
+
+1. **A place above infinity.**  The valuation ring of `topOrdValuation m` is a DVR; its integral
+   closure in `AlgCascadeField p` is a Dedekind domain (`IsIntegralClosure.isDedekindDomain`) and
+   lying-over supplies a maximal ideal above the base's, hence a `HeightOneSpectrum` valuation
+   extending `topOrdValuation m`.  Purely algebraic; all the mathlib bricks exist.
+2. **The derivation bounds at that place** — `v(∂_{X_m} f) ≥ v(f) + e`.  This is the genuinely new
+   piece; it is the statement that the different is what it is, and it is where the ramification
+   index enters the peel's arithmetic.
+3. **The restatement of the peel** over the extended datum, and the analytic selection of *which*
+   place the cascade follows — Reduction I, which is where Goldberg's and Strelitz's theorems enter.
+
+Items 1 and 2 are purely algebraic and can be built with no analytic input; item 3's algebraic half
+is mechanical once 1 and 2 exist.

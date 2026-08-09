@@ -1,5 +1,6 @@
+import Mathlib.Analysis.InnerProductSpace.Dual
 import GaloisForLFunctions.RHTower.VanishingCostRCLike
-import GaloisForLFunctions.RHTower.BaezDuarteDistance
+import GaloisForLFunctions.RHTower.DistancePositivity
 
 /-!
 # The distance to a span is exactly a detector problem
@@ -20,7 +21,12 @@ the maximum being attained by the normalised component of `x` orthogonal to the 
 * `exists_detector_norm_inner_eq_infDist_span` — some unit vector orthogonal to the family pairs with
   the target *exactly* at the distance;
 * `infDist_span_eq_zero_iff`, `mem_topologicalClosure_span_iff` — approximability is equivalent to the
-  nonexistence of a separating detector.
+  nonexistence of a separating detector, and `topologicalClosure_span_eq_top_iff` — totality is the
+  nonexistence of any nonzero annihilator;
+* `forall_dual_eq_zero_iff_forall_inner_eq_zero`, `mem_topologicalClosure_span_iff_forall_dual` — the
+  Riesz bridge to the functional form, which makes the Hahn--Banach criteria of `DenseSpanDuality` and
+  `HTGeometry.DenseOfVanishingDual` sharp over a complete inner product space: there the vanishing-dual
+  condition is necessary as well as sufficient.
 
 For the Báez-Duarte lane this converts the approximation problem into a rigidity problem about the
 orthogonal complement of the generators:
@@ -31,9 +37,11 @@ orthogonal complement of the generators:
 * `riemannHypothesis_of_detector_bound` — the quantitative form: if the pairing of unit annihilators of
   the first `N` generators with the target can be made uniformly small, the Riemann hypothesis holds.
 
-The known obstructions `bdDetector` are annihilators exactly at the zeros of `ζ`, so the criterion says
-that the zeros in `Re s > ½` are the *only* possible obstructions — the detector floor of
-`BaezDuarteL2Carrier` is not merely a lower bound but the whole truth.
+`inner_bdDetector_bdGen` computes `⟪bdDetector (1−ρ), bdGen θ⟫ = −(θ^ρ − θ)·ζ(ρ)/ρ` for `½ < Re ρ < 1`, so
+each zero of `ζ` in that strip produces an annihilator separating the target from the whole family.
+Duality turns the criterion around: the target is approximable precisely when *no* annihilator separates,
+so the lower-bound method of `BaezDuarteL2Carrier` is not a weaker substitute for the truth — it is the
+truth, and what remains is to exclude separating annihilators.
 -/
 
 open MeasureTheory Set Complex Metric Filter Topology
@@ -157,14 +165,62 @@ theorem infDist_span_eq_zero_iff (S : Set H) (x : H) :
   · obtain ⟨w, hw, -, heq⟩ := exists_detector_norm_inner_eq_infDist_span (𝕜 := 𝕜) S x
     rw [← heq, h w hw, norm_zero]
 
+/-- **Membership in a topological closure, dually.**  A vector lies in the closure of a subspace iff every
+vector orthogonal to the subspace is orthogonal to it. -/
+theorem mem_topologicalClosure_iff (K : Submodule 𝕜 H) (x : H) :
+    x ∈ K.topologicalClosure ↔ ∀ w ∈ Kᗮ, inner 𝕜 w x = 0 := by
+  rw [← Submodule.orthogonal_orthogonal_eq_closure, Submodule.mem_orthogonal]
+
+/-- **Density, dually.**  A subspace is dense iff no nonzero vector is orthogonal to it. -/
+theorem topologicalClosure_eq_top_iff (K : Submodule 𝕜 H) :
+    K.topologicalClosure = ⊤ ↔ ∀ w ∈ Kᗮ, w = 0 := by
+  rw [← Submodule.orthogonal_orthogonal_eq_closure]
+  refine ⟨fun h w hw => ?_, fun h => ?_⟩
+  · have hmem : w ∈ Kᗮᗮ := h ▸ Submodule.mem_top
+    exact inner_self_eq_zero.1 (Submodule.inner_right_of_mem_orthogonal hw hmem)
+  · have hbot : Kᗮ = ⊥ := by
+      rw [eq_bot_iff]
+      intro w hw
+      exact (Submodule.mem_bot 𝕜).2 (h w hw)
+    rw [hbot, Submodule.bot_orthogonal_eq_top]
+
 /-- **Membership in the closed span, dually.**  A vector lies in the closure of the span iff every vector
 orthogonal to the family is orthogonal to it. -/
 theorem mem_topologicalClosure_span_iff (S : Set H) (x : H) :
     x ∈ (Submodule.span 𝕜 S).topologicalClosure
       ↔ ∀ w : H, (∀ s ∈ S, inner 𝕜 w s = 0) → inner 𝕜 w x = 0 := by
-  rw [← Submodule.orthogonal_orthogonal_eq_closure, Submodule.mem_orthogonal]
+  rw [mem_topologicalClosure_iff]
   exact ⟨fun h w hw => h w ((mem_orthogonal_span_iff S w).2 hw),
     fun h w hw => h w ((mem_orthogonal_span_iff S w).1 hw)⟩
+
+/-- **Totality, dually.**  The span of a family is dense iff no nonzero vector is orthogonal to every
+member of the family. -/
+theorem topologicalClosure_span_eq_top_iff (S : Set H) :
+    (Submodule.span 𝕜 S).topologicalClosure = ⊤
+      ↔ ∀ w : H, (∀ s ∈ S, inner 𝕜 w s = 0) → w = 0 := by
+  rw [topologicalClosure_eq_top_iff]
+  exact ⟨fun h w hw => h w ((mem_orthogonal_span_iff S w).2 hw),
+    fun h w hw => h w ((mem_orthogonal_span_iff S w).1 hw)⟩
+
+/-- **The Riesz bridge.**  Annihilation by continuous functionals and annihilation by vectors are the same
+condition: every functional is an inner product against a vector. -/
+theorem forall_dual_eq_zero_iff_forall_inner_eq_zero {I : Type*} (v : I → H) (x : H) :
+    (∀ L : H →L[𝕜] 𝕜, (∀ i, L (v i) = 0) → L x = 0)
+      ↔ ∀ w : H, (∀ i, inner 𝕜 w (v i) = 0) → inner 𝕜 w x = 0 := by
+  refine ⟨fun h w hw => h (innerSL 𝕜 w) hw, fun h L hL => ?_⟩
+  have hrep : ∀ y : H, inner 𝕜 ((InnerProductSpace.toDual 𝕜 H).symm L) y = L y :=
+    fun y => InnerProductSpace.toDual_symm_apply
+  rw [← hrep x]
+  exact h _ (fun i => (hrep (v i)).trans (hL i))
+
+/-- **The Hahn--Banach density criterion is sharp in a Hilbert space.**  `DenseSpanDuality` proves the
+sufficiency of the vanishing-dual condition for an arbitrary normed space; over a complete inner product
+space it is also necessary. -/
+theorem mem_topologicalClosure_span_iff_forall_dual {I : Type*} (v : I → H) (x : H) :
+    x ∈ (Submodule.span 𝕜 (Set.range v)).topologicalClosure
+      ↔ ∀ L : H →L[𝕜] 𝕜, (∀ i, L (v i) = 0) → L x = 0 := by
+  rw [forall_dual_eq_zero_iff_forall_inner_eq_zero, mem_topologicalClosure_span_iff]
+  simp only [Set.forall_mem_range]
 
 /-- The range form of the vanishing criterion, as an indexed family. -/
 theorem infDist_range_span_eq_zero_iff {I : Type*} (v : I → H) (x : H) :
@@ -251,6 +307,18 @@ theorem bdDistDiscrete_eq_sup_detector (N : ℕ) :
   · obtain ⟨w, hw, hnorm, heq⟩ :=
       exists_bdDetector_norm_inner_eq_bdDist (fun i : {x // x ∈ Finset.range N} => bdDiscrete i.1)
     exact ⟨w, fun n hn => hw ⟨n, Finset.mem_range.2 hn⟩, hnorm, heq⟩
+
+/-- **A separating detector exists at every finite level.**  Since `bdDistDiscrete_pos` gives a positive
+distance for every `N`, duality produces a carrier element orthogonal to the first `N` generators whose
+pairing with the target is nonzero: the finite-section problem always carries an obstruction, so the
+criterion can only be met in the limit. -/
+theorem exists_bdDetector_inner_ne_zero (N : ℕ) :
+    ∃ w : BDCarrier, (∀ n < N, inner ℂ w (bdGen (bdDiscrete n)) = 0) ∧ ‖w‖ ≤ 1 ∧
+      inner ℂ w bdTarget ≠ 0 := by
+  obtain ⟨w, hw, hnorm, heq⟩ := (bdDistDiscrete_eq_sup_detector N).2
+  refine ⟨w, hw, hnorm, fun h => ?_⟩
+  rw [h, norm_zero] at heq
+  exact absurd heq.symm (ne_of_gt (bdDistDiscrete_pos N))
 
 /-- **The quantitative detector criterion.**  If for every `ε > 0` some finite section has the property
 that all its unit annihilators pair with the target below `ε`, the Riemann hypothesis holds. -/

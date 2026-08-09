@@ -365,3 +365,82 @@ recovers the strict excess composition law. This is the first second observer no
 but Fourier inversion/Haar disintegration make it equivalent to the marked residue grading. It is
 still flat kinematics. New open core: find a non-Fourier observer—contact, orientation, boundary
 flux, admission, or physical cost—that carries a nontrivial Kummer sector incompatibly.
+
+## 2026-08-09 — carry class separates full residue lifting from flat sector transport
+
+The Kummer composition sequence has more structure than its support partition:
+
+`0 -> Z/r --times s--> Z/(sr) -> Z/s -> 0`.
+
+Its extension class is
+
+`[kappa_(r,s)]=[1] in H^2(Z/s;Z/r)=(Z/r)/s(Z/r)`.
+
+It vanishes exactly when `gcd(r,s)=1`. Standard residue representatives produce the ordinary
+carry cocycle; changing representatives changes that cocycle by a coboundary but does not change
+the class. Thus coprime ramification stages split, while repeated prime factors carry genuine
+residue-lifting memory. This class is source-derived and composition-level, but no physical phase,
+time, Stokes, or RH meaning is proved.
+
+## 2026-08-09 — nonzero support interchange, then hostile strictification
+
+The anchor--defect incidence observer gives a first nonzero direct/stagewise mismatch. At an atom
+with `d` outer and `ell` latent-inner defect primes,
+
+`Omega=(ell/(d+ell))(J_latent-J_outer)`,
+
+with `||Omega||_1=2ell/(d+ell)`. The witness `2^(srm)3^s5` gives
+
+`Omega=([2,3]-[2,5])/2`.
+
+Three-stage associativity forces the exact Bianchi law
+
+`Omega_(m;t,sr)+T_t Omega_(m;s,r)=Omega_(m;ts,r)+Omega_(rm;t,s)`.
+
+Hostile review rejected this as intrinsic curvature. Literal stagewise transport loses latent
+inner prime layers whenever any outer residue blocks a global root. Retaining ordered Kummer
+first-failure layers restores strict composition; `Omega=delta J` is the coboundary of the
+flattened support observer. This yields a robust anti-theatre criterion: a CFR field strength must
+survive ordered-flag refinement and presentation change. Current `Omega` does neither.
+
+Pivot: make a non-Fourier organ carry the genuine carry class, not merely the zero/nonzero support
+of residues. Until then, Stokes/contact and physical-history language would be fitted analogy.
+
+## 2026-08-09 — binary Witt carry reaches Route E, but only on its admission boundary
+
+For two quadratic stages, the Kummer sequence
+
+`0 -> (Z/2)^F -> (Z/4)^F -> (Z/2)^F -> 0`
+
+is nonsplit. The canonical binary section has exact carry
+
+`kappa(S,T)=S intersect T`.
+
+For squarefree labels `k,l`,
+
+`k^m l^m=(k triangle l)^m gcd(k,l)^(2m)`.
+
+Therefore Route-E hard-core multiplication is precisely the zero-carry locus. This is the first
+non-Fourier HGT organ to receive the genuine source carry class without fitting a route endpoint.
+Hostile audit forced the exact boundary: ordinary admitted hard-core multiplication discards every
+nonzero carry, so the full subset-valued class exists only in a collision-labelled ideal or
+multigrading on the admission boundary.
+
+For independent Gibbs replicas with one-prime probabilities `q_p,u_p`, the carry obeys
+
+`E|kappa|=sum_p q_p u_p`,
+
+`P(kappa=empty)=product_p (1-q_p u_p)`.
+
+For equal replicas, conditional carry given zero outer residue is the escort transform
+`q^2/(q^2+(1-q)^2)`, while unconditional carry is `q^2`; these cannot be conflated.
+
+The marked tower `Z^F -> (Z/4)^F -> (Z/2)^F` realizes the same class as finite quotient holonomy:
+the mod-two observer returns after two steps, the mod-four lift lands at `2S`, and the integral
+history remains open. This is not independent recurrence evidence or physical time; it is the
+regular cyclic gauge of the same extension.
+
+Higher pivot: treat Boolean incidence as special fibre of a Witt-thickened constraint chart, with
+rejected collisions as higher digit directions. Next non-theatrical gate is an anchor-natural,
+collision-labelled Route-E totalization coherent under source composition, followed by a withheld
+response in a genuinely independent organ such as Stokes contact or affine extension/flux.

@@ -88,7 +88,8 @@ theorem algLaw_afpderiv_comm (D : Derivation ℂ CascadeField CascadeField) (k :
     refine DFunLike.ext _ _ fun f => ?_
     rw [Derivation.commutator_apply, h, sub_self, Derivation.zero_apply]
   have hx : ⁅algLaw p D, afpderiv p k⁆ x = 0 := by
-    rw [adjoinRootDeriv_commutator (p := p) D (fpderiv k) hcomm, Derivation.zero_apply]
+    rw [algLaw, afpderiv, adjoinRootDeriv_commutator (p := p) D (fpderiv k) hcomm,
+      Derivation.zero_apply]
   rw [Derivation.commutator_apply] at hx
   exact sub_eq_zero.mp hx
 
