@@ -48,25 +48,24 @@ The escape route has collapsed from "for each sample there are coefficients" to 
 vector works on the whole strip". That is no longer an interpolation problem but a rigid identity between
 `ζ` and an entire function: `ζ(s) = c_N / P(s)` with `P(s) = ∑ᵢ cᵢ(θᵢ^s − θᵢ)` entire.
 
-Such an identity is false, and the contradiction is elementary rather than deep:
+Such an identity is false, and the refutation is elementary rather than deep. It is carried out in
+`no-finite-muentz-system-inverts-zeta.md` (`RHTower/MuentzZetaRelationImpossible.lean`), inside the **convex**
+half-plane `Re s < 1` — which avoids the pole at `1`, so the identity theorem needs only convexity rather
+than connectedness of a punctured plane:
 
-1. `P·ζ − c_N` is analytic on the connected set `ℂ \ {1}` and vanishes on the strip, hence identically
-   (identity theorem);
-2. at a trivial zero, `ζ(−2) = 0`, the identity gives `c_N = 0`;
-3. then `P·ζ ≡ 0`, and `ζ(2) = π²/6 ≠ 0` makes `ζ` nonvanishing near `2`, so `P ≡ 0` near `2` and hence
-   everywhere;
-4. `P(n) = 0` for `n = 0,…,N` gives `∑ᵢ cᵢ(θᵢ − 1)·θᵢⁿ = 0` for `n < N`, a Vandermonde system in the
-   distinct `θᵢ`, so every `cᵢ(θᵢ − 1) = 0` and — for `θᵢ ≠ 1` — every `cᵢ = 0`, contradicting `c ≠ 0`.
+1. `P·ζ − c_N` is analytic there and vanishes near `3/4`, hence on the whole half-plane;
+2. the trivial zero `ζ(−2) = 0` forces `c_N = 0`;
+3. `ζ(3/4) ≠ 0` makes `ζ` nonvanishing nearby, so the entire `P` vanishes near `3/4` and hence everywhere;
+4. Dedekind's independence of characters (extracted as `eq_zero_of_forall_sum_cpow_eq`, with the constant term
+   carried by the extra character `θ = 1`) forces `c = 0`.
 
-Steps 1–4 need only mathlib (`riemannZeta_neg_two_mul_nat_add_one`, `riemannZeta_two`,
-`Matrix.det_vandermonde_ne_zero_iff`, `Matrix.exists_vecMul_eq_zero_iff` — the last already used in
-`FiniteSectionBorderDeterminant`) and are the next increment. Their conclusion is the capstone
+The conclusion is the capstone
 
-> **every finite family of distinct dilations `θᵢ ∈ (0,1)` has positive Báez-Duarte distance,**
+> **every finite family of dilations in `(0,1]` has positive Báez-Duarte distance,**
 
-which subsumes the special cases already in the corpus (`bdDistDiscrete_pos` via the factorial floor,
-`bdDist_single_ge` for one generator) and proves them for arbitrary families by a structural argument rather
-than an arithmetic estimate.
+after `FiniteFamilyObstruction` removes the distinctness and `θ < 1` hypotheses. It subsumes the special cases
+already in the corpus (`bdDistDiscrete_pos` via the factorial floor, `bdDist_single_ge` for one generator) and
+proves them for arbitrary families by a structural argument rather than an arithmetic estimate.
 
 ## Reuse
 
