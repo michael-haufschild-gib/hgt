@@ -40,8 +40,7 @@ theorem exists_hasEigenvector_of_gap
     (hΦeig : H₀ Φ = (lam : ℂ) • Φ)
     (hgap : ∀ x : E, H₀.reApplyInnerSelf x ≤ lam * ‖x‖ ^ 2 - Δ * (‖x‖ ^ 2 - ‖⟪Φ, x⟫_ℂ‖ ^ 2))
     (hVnorm : ‖V‖ ≤ δ) :
-    ∃ ψ : E, ‖ψ‖ = 1 ∧
-      (∃ μ : ℂ, Module.End.HasEigenvector ((H₀ + V : E →L[ℂ] E) : Module.End ℂ E) μ ψ) ∧
+    ∃ ψ : E, ‖ψ‖ = 1 ∧ (∃ μ : ℝ, (H₀ + V) ψ = (μ : ℂ) • ψ) ∧
       1 - ‖⟪Φ, ψ⟫_ℂ‖ ^ 2 ≤ 2 * δ / Δ := by
   classical
   set H : E →L[ℂ] E := H₀ + V with hHdef
@@ -58,7 +57,8 @@ theorem exists_hasEigenvector_of_gap
     rw [h, norm_zero] at hψnorm
     exact zero_ne_one hψnorm
   have heig := hH.hasEigenvector_of_isMaxOn hψne (by rwa [hψnorm])
-  refine ⟨ψ, hψnorm, ⟨_, heig⟩, ?_⟩
+  refine ⟨ψ, hψnorm, ⟨⨆ x : {x : E // x ≠ 0}, H.rayleighQuotient x, ?_⟩, ?_⟩
+  · exact heig.apply_eq_smul
   -- the Rayleigh comparison
   have hmax : H.reApplyInnerSelf Φ ≤ H.reApplyInnerSelf ψ := hψmax hΦmem
   have hsplit : ∀ x : E, H.reApplyInnerSelf x

@@ -6,7 +6,9 @@
 - **Killed branch:** `../1-in-progress/observer-rank-autonomous-no-shortcut-law.md`
 - **Lean:** `(1)`--`(2)` closed — `HTGeometry/GappedEigenlineStability.lean`,
   `HTGeometry.exists_hasEigenvector_of_gap`, unconditional and axiom-clean.
-  `(3)` closed — `HTGeometry/GappedEigenlineTimeUniformFloor.lean`.
+  `(3)` closed at the physical propagator —
+  `HTGeometry/GappedEigenlineTimeUniformFloor.lean`, `HTGeometry/SelfAdjointPropagator.lean`,
+  `HTGeometry/GappedEigenlinePropagatorFloor.lean`.
   The Pauli instantiation `(6)`--`(10)`, the Gaussian box bound `(11)`, and the
   asymptotic falsification `(12)` remain
 - **Date:** 2026-08-05
@@ -263,8 +265,13 @@ scalars, with the norm inequality inherited from the complex one.  The instances
 they are opted into rather than imposed on the rest of the corpus.
 
 With that, `selfAdjointPropagator` is the propagator as a genuine linear isometry, and
-`selfAdjointPropagator_apply_eigen` says it fixes every eigenline of its generator.  Feeding those
-two into `(3)` gives the card's boxed statement at `exp(-itH)` itself.
+`selfAdjointPropagator_apply_eigen` says it fixes every eigenline of its generator.
+
+`HTGeometry/GappedEigenlinePropagatorFloor.lean` assembles the three pieces into the card's boxed
+`(3)` at `exp(-itH)` itself: `pureStateTraceDistance_propagator_le_of_gap`.  The eigenvalue returned
+by the Rayleigh construction is real, so the phase it contributes has modulus one and the eigenline
+is genuinely fixed rather than merely invariant.  The time appears only inside the propagator; the
+right-hand side is `2√(2δ/Δ)` with no `t` in it.
 
 Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; `(11)` is a Gaussian
 product-box estimate; `(12)` is the asymptotic comparison.
