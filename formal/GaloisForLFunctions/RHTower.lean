@@ -6414,3 +6414,4 @@ import GaloisForLFunctions.RHTower.UniformDistanceBound
 import GaloisForLFunctions.RHTower.DistancePositivity
 import GaloisForLFunctions.RHTower.GramResidueDecomposition
 import GaloisForLFunctions.RHTower.ZetaZerosBridge
+import GaloisForLFunctions.RHTower.TwoGeneratorImprovement
