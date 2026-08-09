@@ -1,17 +1,17 @@
-# Minimal law curvature, gauge invariance, and observer irreversibility law
+# Leading formal-law jet and serial tangent irreversibility law
 
 - **ID:** `nhg-minimal-law-curvature`
 - **Stage:** 2 — fully proven on paper
 - **Field:** Nomological Homotopy Geometry
 - **Type:** UNIVERSAL THEOREM / FORMAL-LAW KINEMATICS
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT]`
-  `[GAUGE-INVARIANT FIRST CURVATURE] [STRICTIFICATION OBSTRUCTION]`
-  `[SERIAL OBSERVER IRREVERSIBILITY] [NOT SOURCE SELECTION] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM]`
+  `[GAUGE-INVARIANT PRIMARY OPERATION] [HOMOTOPY-ABELIANITY OBSTRUCTION]`
+  `[SERIAL TANGENT IRREVERSIBILITY] [FRAMED POLAR THEOREM] [NOT RH]`
   `[NO LEAN WRITTEN OR BUILT]`
-- **Statement:** The arity and linear-conjugacy class of the first nonzero bracket in a minimal
-  `L_infinity` law model are invariant under every `L_infinity` coordinate change. A nonzero first
-  bracket cannot be removed by higher gauge terms. Any observer whose tangent map loses a law
-  direction can never be repaired by later serial observers.
+- **Statement:** Order of vanishing and leading homogeneous jet of a pointed formal homological
+  vector field are invariant under formal coordinate change. For minimal `L_infinity` laws this is
+  the first primary operation, not geometric curvature. Serial observers cannot repair tangent
+  directions already killed.
 
 ## 1. Minimal formal law germs
 
@@ -40,18 +40,17 @@ whose unary Taylor coefficient is zero. Let
 \tag{MLC.3}
 \]
 
-be its `n`-ary Taylor coefficient. Define the **minimal law-curvature order**
+be its `n`-ary Taylor coefficient. Define the **primary minimal-operation order**
 
 \[
  \rho(H,Q)=\inf\{n\geq2:q_n\ne0\}\in\{2,3,\ldots,\infty\}.
 \tag{MLC.4}
 \]
 
-If `rho=r<infinity`, call `q_r` the first minimal law-curvature tensor. If all `q_n` vanish, set
+If `rho=r<infinity`, call `q_r` the primary minimal operation. If all `q_n` vanish, set
 `rho=infinity` and call the germ formally abelian.
 
-This is a definition on a minimal formal law germ. It is not a claim that every mathematical
-obstruction is curvature.
+This is a definition on a minimal formal law germ. It is not connection or Atiyah curvature.
 
 ## 2. Gauge-invariance theorem
 
@@ -65,7 +64,7 @@ map
 
 satisfying `FQ=Q'F`. Let `f_n:S^n(sH)->sH'` be its Taylor coefficients.
 
-### Theorem 2.1 — first-curvature invariance
+### Theorem 2.1 — leading formal-jet invariance
 
 Assume `F` is an `L_infinity` isomorphism, equivalently its linear coefficient
 `f_1:sH->sH'` is invertible. Then
@@ -83,28 +82,32 @@ If their common finite value is `r`, then
 \tag{MLC.7}
 \]
 
-Therefore the `GL(H)`-orbit of the first nonzero bracket is an invariant of the formal law germ.
-For a pointed gauge transformation with `f_1=id`, the tensor `q_r` itself is unchanged.
+Therefore the isomorphism class of `(sH,q_r)` under degree-preserving linear isomorphisms is an
+invariant of the formal law germ. For a pointed gauge transformation with `f_1=id`, `q_r` itself is
+unchanged.
 
 ### Proof
 
-Project the identity `FQ=Q'F` to the cogenerators `sH'` and restrict it to coalgebra weight `n`.
-Let `m` be the smaller of the two first nonzero arities. For every weight below `m`, both sides
-contain only zero bracket coefficients.
+If both structures vanish, the conclusion is immediate. If exactly one vanishes, let `m` be the
+first nonzero arity of the other. If both are nonzero, let `m` be the smaller first nonzero arity.
+Project `FQ=Q'F` to the cogenerators `sH'` and restrict it to coalgebra weight `m`.
 
-At weight `m`, every summand involving a nonlinear coefficient `f_j`, `j>1`, also contains a
-bracket of arity below `m`, hence vanishes. The entire weight-`m` equation reduces to
+In the full coalgebra-morphism equation, every partition term other than
+`q'_m S^m(f_1)` contains a target bracket below arity `m`, and every source-side term other than
+`f_1q_m` contains a source bracket below arity `m`. They vanish by definition of `m`. The equation
+therefore reduces to
 
 \[
  f_1q_m=q'_mS^m(f_1).
 \tag{MLC.8}
 \]
 
-If exactly one of `q_m,q'_m` were nonzero, invertibility of `f_1` would contradict `(MLC.8)`.
-Thus their first nonzero arities agree. Equation `(MLC.7)` is then `(MLC.8)` at that arity.
+If exactly one of `q_m,q'_m` is nonzero, invertibility of `f_1` contradicts `(MLC.8)`. Thus either
+both structures vanish or their first nonzero arities agree. Equation `(MLC.7)` is `(MLC.8)` at
+that arity.
 `[PROVED HERE]`
 
-### Corollary 2.2 — strictification obstruction
+### Corollary 2.2 — homotopy-abelianity obstruction
 
 A minimal `L_infinity` algebra is `L_infinity`-isomorphic to an abelian one if and only if every
 Taylor coefficient `q_n`, `n>=2`, vanishes.
@@ -114,21 +117,28 @@ Taylor coefficient `q_n`, `n>=2`, vanishes.
 The reverse implication is immediate. If some `q_r` is first nonzero, Theorem 2.1 forbids an
 isomorphism to a structure with curvature order `infinity`. `[PROVED HERE]`
 
-This is the exact anti-theatre boundary. Higher coordinate terms can move later brackets and their
-representatives, but they cannot erase the first nonzero operation.
+This obstructs abelianization, not strictification to a dg Lie algebra. A nonabelian ordinary Lie
+algebra is already strict and has nonzero `q_2`. Higher coordinate terms can move later operations,
+but cannot erase the leading operation.
 
 ## 3. Intrinsic germ at a sourced law
 
-Let `L` be a complete filtered `L_infinity` algebra and let `alpha` be a Maurer--Cartan element.
-Twist the brackets by `alpha`; the unary bracket of the twist is the deformation differential at
-the sourced law. Suppose this complex admits a contraction onto its cohomology `H_alpha`.
+Let `L` have a complete separated descending filtration compatible with all brackets, let
+`alpha in F^1L` be Maurer--Cartan, and twist by the convergent series
 
-The homotopy-transfer theorem supplies a minimal `L_infinity` structure on `H_alpha`. Minimal-model
-uniqueness supplies an `L_infinity` isomorphism between the structures obtained from any two
-contractions, with linear part the canonical cohomology identification. Theorem 2.1 therefore
-gives:
+\[
+ \ell_n^\alpha(x_1,\ldots,x_n)=
+ \sum_{j\geq0}{1\over j!}
+ \ell_{n+j}(\alpha^{\otimes j},x_1,\ldots,x_n).
+\]
 
-### Corollary 3.1 — sourced formal-curvature invariant
+Assume the twisted complex has a filtered strong deformation retract onto `H_alpha` and any
+comparison of resolutions is supplied by a pointed filtered quasi-isomorphism or zigzag.
+
+Homotopy transfer supplies a minimal structure on `H_alpha`. Minimal-model uniqueness supplies an
+isomorphism after fixing the tangent-cohomology identification induced by the comparison zigzag.
+
+### Corollary 3.1 — sourced primary-operation invariant
 
 The value
 
@@ -137,13 +147,12 @@ The value
 \tag{MLC.9}
 \]
 
-and the linear-conjugacy class of its first nonzero bracket depend only on the formal moduli germ
-of the sourced law `alpha`, not on the chosen contraction, resolution, propagator, or local proof
-coordinates.
+and the linear-conjugacy class of its first nonzero bracket depend only on the pointed filtered
+formal-moduli germ with fixed tangent-cohomology identification, not on the compatible contraction
+or resolution.
 
-This corollary uses standard homotopy transfer and minimal-model uniqueness as parent theory. The
-new field definition is the decision to reserve **nomological curvature** for this invariant germ
-data, rather than for an arbitrary noncommuting observer square.
+This is primary nonformality data. Geometric curvature belongs to a relative connection/Atiyah
+class on an anchored law algebroid.
 
 ## 4. Observer irreversibility
 
@@ -156,7 +165,7 @@ Let
 
 be an `L_infinity` observer between minimal formal law germs. Its tangent reporter is `f_1:H->M`.
 
-### Theorem 4.1 — serial loss cannot be repaired
+### Theorem 4.1 — serial tangent non-equivalence
 
 If `f_1` is not injective, then for every later `L_infinity` observer
 
@@ -179,81 +188,76 @@ coefficient. `[PROVED HERE]`
 
 ### Corollary 4.2 — parallel infinitesimal reconstruction gate
 
-For observers `F_i:(H,Q)->(M_i,R_i)`, the product observer can be infinitesimally conservative only
-if
+For a finite family of observers `F_i:(H,Q)->(M_i,R_i)`, the componentwise product observer has
+injective tangent map if and only if
 
 \[
  \bigcap_i\ker(f_i)_1=0.
 \tag{MLC.12}
 \]
 
-This condition is necessary, not sufficient, for equivalence of formal moduli problems: nonlinear
-brackets, isotropy, topology, and global components can still be lost.
+This need not be an equivalence because injectivity need not be surjectivity. The abelian inclusion
+`k->k^2`, `x |-> (x,0)`, is the sharp countermodel. If the product tangent map is invertible, then an
+existing morphism of minimal conilpotent `L_infinity` algebras is an isomorphism.
 
-## 5. Curvature versus positive shadow
+## 5. Framed polar observer
 
-Assume now that the relevant graded pieces are finite-dimensional complex Hilbert spaces and let
-`q_r:S^r(sH)->sH` be the first curvature tensor. Its positive polar shadow is
+Let `D` and `W` be finite-dimensional Hermitian spaces and let `T:D->W`. Its framed Gram observer is
 
 \[
- G_r=q_r^*q_r\succeq0.
+ G_T=T^*T\succeq0.
 \tag{MLC.13}
 \]
 
-It records `ker q_r`, rank, and squared singular values. It does not recover the unsquared tensor:
+### Theorem 5.1 — polar fibre classification
+
+For maps `A,B:D->W`,
 
 \[
- (e^{i\theta}q_r)^*(e^{i\theta}q_r)=G_r
-\tag{MLC.14}
+ \boxed{A^*A=B^*B}
 \]
 
-for every `theta`. Over the reals, `q_r` and `-q_r` have the same shadow.
-
-### Theorem 5.1 — no gauge-invariant phase recovery from the polar shadow
-
-On any class containing a nonzero `q_r` and its full scalar phase orbit, there is no function of
-`G_r` alone that recovers the original phased tensor for every point of the orbit.
+if and only if there is a unitary `U:W->W` such that `B=UA`.
 
 ### Proof
 
-All phased tensors in the orbit have the same input `G_r`. A function of that input has one value,
-but recovery would require it to equal the distinct tensors `e^(i theta)q_r`. `[PROVED HERE]`
+If `B=UA`, equality is immediate. Conversely define `U_0(Ax)=Bx`. Equality of the Gram operators
+shows that `Ax=0` iff `Bx=0` and that `U_0` preserves inner products. It is therefore an isometry
+from `ran A` to `ran B`. Extend it to a unitary between their orthogonal complements. QED.
 
-This theorem does not say positivity always loses phase. It says the specific Gram scalarization
-of the invariant law-curvature tensor is a phase quotient.
+Thus Gram formation is a full left-unitary quotient. It is not an invariant under arbitrary formal
+coordinates: if `q'_r=Cq_rS^r(C^{-1})`, then its Gram contains the metric factor `C^*C`. The theorem
+is valid only after Hermitian frames and unitary gauge have been declared as part of the observer.
 
 ## 6. Hostile countermodels and limits
 
-1. **Global holonomy is independent.** A flat local system has all local minimal brackets zero and
-   can still have nontrivial global holonomy. `rho=infinity` does not classify the global law.
-2. **First curvature is incomplete.** Two minimal structures can have the same `q_r` and different
-   higher brackets. The theorem supplies a first invariant, not a complete moduli invariant.
+1. **Primary operation is not geometric curvature.** A flat nonabelian deformation problem may have
+   nonzero `q_2`. Conversely an abelian fibre can have nontrivial flat monodromy.
+2. **Leading operation is incomplete.** The theorem gives no conclusion about later operations.
 3. **Cohomology dimension is insufficient.** The same graded vector space supports an abelian
    structure and a nonabelian minimal Lie structure; they are not gauge equivalent.
-4. **Tangent injectivity is insufficient.** An observer can be tangent-injective and still identify
-   distinct global components or destroy topology, order, polarization, or action.
+4. **Tangent injectivity is not equivalence.** The abelian inclusion `k->k^2` is injective but not
+   invertible. Global topology lies outside this local theorem.
 5. **Source selection remains independent.** Choosing a Maurer--Cartan point after inspecting a
    desired theorem is circular. This card proves coordinate invariance only after a source point is
    supplied.
-6. **Arbitrary square defects are excluded.** A Beck--Chevalley cofiber, commutator, or chosen
-   comparison is not nomological curvature unless it is shown to represent the invariant minimal
-   bracket of a sourced formal law germ.
+6. **Metric Gram data are framed.** Formal coordinate scaling can change `q_r^*q_r`; no intrinsic
+   polar claim exists without a compatible metric and restricted gauge group.
 
 ## 7. Field consequence
 
-The theorem supplies Nomological Homotopy Geometry with a coordinate-free local curvature:
+The theorem supplies Nomological Homotopy Geometry with coordinate-free primary nonformality data:
 
 \[
  \boxed{
  \text{formal sourced law germ}
  \longmapsto
- (\rho_\alpha,[q_{\rho_\alpha}]).}
+ (\rho_\alpha,[H_\alpha,q_{\rho_\alpha}]).}
 \tag{MLC.15}
 \]
 
-Proof routes may choose different resolutions and contractions. If they describe the same sourced
-formal law, their first minimal curvature tensors must agree up to linear conjugacy. A disagreement
-is a falsifier of the claim that the routes are gauges of one law.
+Different compatible resolutions of one sourced formal law must agree on this leading-jet class.
+Actual Atiyah curvature and history require the anchored relative geometry developed separately.
 
 ## 8. Literature boundary
 
@@ -265,19 +269,18 @@ established parent mathematics. Relevant primary sources include:
 - Maunder, *Homotopy transfer for L-infinity structures and the BV-formalism*,
   <https://arxiv.org/abs/2408.12461>.
 
-The field-level delta is not parent machinery. It is the invariant acceptance rule: only the first
-nonzero transferred operation of a source-normalized law germ may be called intrinsic local
-nomological curvature.
+The field-level role is an acceptance rule for primary operations: arbitrary comparison defects are
+not invariants of a formal law germ.
 
 ## Gates
 
 - [x] coordinate-free definition on minimal formal law germs
 - [x] gauge-invariance proof
-- [x] strictification obstruction
-- [x] serial observer-loss theorem
-- [x] exact polar-shadow phase-loss theorem
+- [x] homotopy-abelianity obstruction
+- [x] serial tangent-loss theorem
+- [x] exact framed polar-fibre theorem
 - [x] hostile global/local and source-selection boundaries
-- [ ] construct a nontrivial source-normalized formal law stack
+- [ ] construct a nontrivial source-anchored relative law algebroid
 - [ ] prove cyclic/self-dual transfer in a source-selected example
 - [ ] formalize only after field foundations stabilize
 
@@ -288,5 +291,5 @@ coalgebras and weight filtrations, after checking existing mathlib support.
 
 ## Log
 
-- 2026-08-09 — extracted as first route-independent curvature theorem for Nomological Homotopy
-  Geometry after arbitrary observer-square curvature was rejected as presentation-dependent.
+- 2026-08-09 — leading-jet theorem retained; “curvature” interpretation demoted after flat
+  nonabelian countermodel. Relative Atiyah curvature moved to anchored field geometry.

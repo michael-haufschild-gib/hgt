@@ -1,9 +1,8 @@
 # Finite law-relation wall synchronization and phase loss
 
 - **ID:** `ltg-finite-law-relation-wall-synchronization-phase-loss`
-- **Stage:** 2 — fully proved on paper
-- **Status:** `[PAPER-PROVED] [ROUTE-INDEPENDENT CALIBRATION] [NOT RH]`
-  `[NO LEAN WRITTEN]`
+- **Stage:** 3 — formalized in Lean 4
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [ROUTE-INDEPENDENT CALIBRATION] [NOT RH]`
 - **Purpose:** prove that one degenerating law relation forces simultaneous algebraic, positive,
   topological-relation, determinant, and operational-cost shadows, while positivity loses phase.
 
@@ -196,8 +195,44 @@ same discriminant wall.
    not as arbitrary topological discontinuity.
 5. No source current, stability equation, hypertranscendence, or RH statement is proved.
 
-## 7. Lean boundary
+## 7. Lean formalization
 
-No Lean was written or built. Later formalization could use finite-dimensional kernels, adjoints,
-determinants, Grassmannian graphs, and compactness. Do not formalize until a paper-level corpus
-instantiation is selected.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/FiniteLawRelationWallSynchronization.lean`, imported by
+`formal/GaloisForLFunctions/HTGeometry.lean`.
+
+Exact coverage:
+
+- `FiniteGrassmannian` is the quotient of injective finite-dimensional frames by equality of
+  ranges, with quotient topology; `carrier_finrank` certifies its fixed rank.
+- `continuous_inverseGraphGrassmannian`, `inverseGraphGrassmannian_tendsto`, and
+  `inverseGraphGrassmannian_carrier` prove the relation-graph limit in that Grassmannian.
+- `inverseLawRelation_domain`, `inverseLawRelation_multivalued`, and
+  `inverseLawRelation_isClosed` prove the exact domain, multivalued fibre, and closedness claims.
+- `gramOperator_isPositive`, `gramOperator_ker`, `gramOperator_nullity`,
+  `gramOperator_det_eq_normDet_sq`, and `gramOperator_det_eq_norm_framedDet_sq` prove the positive,
+  nullity, and determinant identities. `normDet_tendsto_zero_of_tendsto_of_ker_ne_bot` and
+  `gramDet_tendsto_zero_of_tendsto_of_ker_ne_bot` prove both wall limits.
+- `inverseLiftCost_tendsto_atTop` proves the quantitative transverse lower bound and cost
+  divergence. `positiveInverseLift_spec`, `positiveInverseLift_unique`, and
+  `positiveInverseLift_minimal` identify the chosen lift with the unique minimal inverse lift.
+- `finiteLawRelationWall_fiveShadows` packages all five synchronized wall shadows.
+- `gramOperator_leftUnitary_invariant`, `scalarPhase_det`, and
+  `exists_same_gram_different_det` prove phase loss; `lawGramPair_injective` proves corrected
+  complementarity by recovery through first projection.
+- `LiftFiber` carries an actual `AddTorsor` instance under the kernel when nonempty;
+  `liftFiber_existsUnique_of_bijective`, `liftFiber_kernel_torsor_exact`, and
+  `liftFiber_isEmpty_iff` prove singleton/torsor/empty trichotomy.
+- `onePortMatrix_det`, `onePortMatrix_gram`, `onePortLinearMap_nullity`,
+  `onePortInverseLift_exact`, and `onePortInverseLift_cost` prove the sharp one-port normal form.
+
+Verification on 2026-08-09:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/FiniteLawRelationWallSynchronization.lean` — pass,
+  zero warnings.
+- `lake build +GaloisForLFunctions.HTGeometry.FiniteLawRelationWallSynchronization` — pass.
+- exhaustive `#print axioms` over all exported theorems — only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- forbidden-declaration scan — no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
+- repository lint recognizes this module through the theorem-area umbrella; current shared-tree
+  lint separately reports unrelated unwired module `HTGeometry.DedekindLocalUniformizer`.

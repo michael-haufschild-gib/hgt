@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.TopDegreeValuationRing
 import GaloisForLFunctions.HTGeometry.MvPolynomialPDerivDegree
+import GaloisForLFunctions.HTGeometry.AffineFactorFamily
 
 /-!
 # The sharp drop at order zero, and the derivation at the uniformiser
@@ -45,11 +46,15 @@ theorem coeff_X_mul_pderiv (m : ℕ) (P : MvPolynomial ℕ ℂ) (s : ℕ →₀ 
       · subst hi
         simp only [Finsupp.add_apply, Finsupp.tsub_apply, Finsupp.single_eq_same]
         omega
-      · simp [Finsupp.single_eq_of_ne (Ne.symm hi), hi]
-    have hval : (s - Finsupp.single m 1) m + 1 = s m := by
+      · simp [hi]
+    have hval : (s - Finsupp.single m 1 : ℕ →₀ ℕ) m + 1 = s m := by
       simp only [Finsupp.tsub_apply, Finsupp.single_eq_same]
       omega
-    rw [hadd, hval]
+    have hvalC : ((s - Finsupp.single m 1 : ℕ →₀ ℕ) m : ℂ) + 1 = (s m : ℂ) := by
+      rw [← hval]
+      push_cast
+      ring
+    rw [hadd, hvalC]
     ring
   · rw [if_neg hs]
     have hsm : s m = 0 := by
@@ -122,6 +127,7 @@ theorem degreeOf_wronskian_le (m : ℕ) {N D : MvPolynomial ℕ ℂ}
       omega
     have hXQ : MvPolynomial.degreeOf m (MvPolynomial.X m * Q) = 1 + MvPolynomial.degreeOf m Q := by
       rw [MvPolynomial.degreeOf_mul_eq (MvPolynomial.X_ne_zero m) h0, MvPolynomial.degreeOf_X]
+      simp
     have hid : MvPolynomial.X m * Q = D * topRed m N - N * topRed m D :=
       X_mul_wronskian_eq m heq
     have h1 : MvPolynomial.degreeOf m (D * topRed m N) ≤ 2 * d - 1 := by
@@ -188,16 +194,17 @@ theorem uDeriv_apply (m : ℕ) (f : CascadeField) :
 /-- **The derivation at the uniformiser preserves the valuation ring.** -/
 theorem uDeriv_mem_topInt {m : ℕ} {f : CascadeField} (h : f ∈ topInt m) :
     uDeriv m f ∈ topInt m := by
-  rw [mem_topInt, uDeriv_apply]
   have hsq : topOrd m (-((fx m) ^ 2)) = ((-2 : ℤ) : WithTop ℤ) := by
-    rw [topOrd_neg, sq, topOrd_mul, topOrd_fx]
+    rw [topOrd_neg, sq, topOrd_mul, topOrd_fx, ← WithTop.coe_add]
     norm_num
-  rw [topOrd_mul, hsq]
-  have hder := topOrd_fpderiv_of_mem_topInt h
-  have : ((-2 : ℤ) : WithTop ℤ) + ((2 : ℤ) : WithTop ℤ) ≤ ((-2 : ℤ) : WithTop ℤ)
-      + topOrd m (fpderiv m f) := add_le_add_left hder _
-  refine le_trans (le_of_eq ?_) this
-  rw [← WithTop.coe_add]
-  norm_num
+  rw [mem_topInt, uDeriv_apply, topOrd_mul, hsq]
+  rcases eq_or_ne (fpderiv m f) 0 with h0 | h0
+  · rw [h0, topOrd_zero]
+    simp
+  · have hder := topOrd_fpderiv_of_mem_topInt h
+    rw [topOrd_of_ne_zero h0, WithTop.coe_le_coe] at hder
+    rw [topOrd_of_ne_zero h0, ← WithTop.coe_add,
+      show (0 : WithTop ℤ) = ((0 : ℤ) : WithTop ℤ) by norm_num, WithTop.coe_le_coe]
+    omega
 
 end GaloisForLFunctions.HTGeometry

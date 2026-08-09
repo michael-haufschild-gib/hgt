@@ -1,10 +1,11 @@
 # Euler prime-orbit prolongation, recurrence, polar loss, and cofinal wall
 
 - **ID:** `clg-euler-prime-orbit-four-organ-law`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / HIGHER-LEVEL SOURCE-ORBIT CALIBRATION
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [ARITHMETIC/SPECTRAL/POSITIVE/TOPOLOGICAL]`
-  `[RECURRENCE/PROLONGATION] [NOT HT BY ITSELF] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [AXIOM-AUDITED] [DEPENDENCY-CLOSED]`
+  `[ARITHMETIC/SPECTRAL/POSITIVE/TOPOLOGICAL] [RECURRENCE/PROLONGATION]`
+  `[NOT HT BY ITSELF] [NOT RH]`
 - **Parents:** `critical-euler-mass-weil-stokes-shadow-law.md`;
   `../constraint-relativity/finite-prime-gibbs-modular-phase-realization.md`;
   `../../3-formalized/not_new_scientific_knowledge/prime-coherent-scale-factor-clock-duality.md`.
@@ -307,14 +308,52 @@ flows*, <https://arxiv.org/abs/2604.02213>.
 - [x] hostile non-implication audit
 - [ ] identify a common source-normalized action beyond finite Euclidean lift
 - [ ] construct observer functors from this chart to a non-prime HT family and physical horizon
-- [ ] formalize only after field-level target stabilizes
+- [x] every proved statement formalized in Lean 4
 
-## Lean-return note
+## Lean formalization audit
 
-No Lean code was written or built. Existing formal parents include prime-log frequency
-independence, finite-prime Kronecker density, and the half-density summability wall; reuse them
-rather than duplicating proofs.
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/EulerPrimeOrbitFourOrganLaw.lean` and imported by
+`formal/GaloisForLFunctions/HTGeometry.lean`.
+
+Exact declaration coverage:
+
+- `finiteDiagonalKrylovVector_linearIndependent`, `finiteDiagonalKrylovBasis`, and
+  `finiteDiagonalKrylov_span_ne_top_of_lt_card` prove the unitary-coordinate spectral normal form,
+  full weighted-Vandermonde prolongation basis, and fixed-order span obstruction;
+- `finiteDiagonalPhaseOrbit_approx`, `finiteEulerPrimePhase_forwardTail_dense`, and
+  `finiteEulerPrimePhase_recurrent` prove finite radius-torus density and recurrence after every
+  time threshold from the source prime-log independence theorem;
+- `finiteDiagonalEnergy_phaseOrbit`, `finiteDiagonalEnergy_eq_of_coordinate_norm_eq`, and
+  `finitePhaseLiftEnergy_unbounded` prove exact polar blindness and unbounded lifted history;
+- `eulerPrimitivePrimeCurrent_eq_vonMangoldt`, `finiteEulerPrimeGenerator`,
+  `iterate_finiteEulerPrimeGenerator_vector`, `finiteEulerPrimeKrylovBasis`, and
+  `neg_finiteEulerPrimeGenerator_vector_apply` identify the primitive Euler current, its diagonal
+  generator, every Krylov jet, and the reflection-odd first torque coefficient;
+- `eulerPrimeHalfDensityAmplitude_eq_log_div_sqrt`, `finiteEulerPrimeOrbit_apply`,
+  `finiteEulerPrimeOrbit_polarEnergy`, and `finiteEulerPrimeAutocorrelation_eq` prove the literal
+  half-density normalization, phase orbit, constant energy `(9)`, and autocorrelation `(10)`;
+- `summable_eulerPrimeCofinalMass_iff` and
+  `summable_normSq_eulerPrimeSigmaAmplitude_iff` prove the exact cofinal wall `(12)`;
+  `not_summable_normSq_eulerPrimeHalfDensityAmplitude` proves literal critical-source exclusion
+  from prime `ell^2`, and `reflected_eulerPrimeCofinalMass_both_not_summable_iff` proves the sharp
+  reflected critical-strip classification;
+- `eulerPrimeOrbit_fourOrgan_law` is the combined source-family capstone.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/EulerPrimeOrbitFourOrganLaw.lean` passes with zero
+  warnings;
+- `lake build +GaloisForLFunctions.HTGeometry.EulerPrimeOrbitFourOrganLaw` passes (`8824/8824`);
+- exhaustive `#print axioms` audit of every theorem reports only `propext`, `Classical.choice`, and
+  `Quot.sound`;
+- forbidden declaration scan finds no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
+- global formal lint recognizes this umbrella import and fails only on unrelated current
+  reachability debt for `HTGeometry.GlobalCliffordTwirlRangeCanonical` and
+  `HTGeometry.ValuationDerivationBound`.
 
 ## Log
 
 - 2026-08-09 — higher-level pivot from source-selector search to one-orbit six-shadow geometry.
+- 2026-08-09 — exact unconditional Lean formalization, umbrella wiring, target build, forbidden-token
+  scan, and exhaustive axiom audit completed; card promoted to Stage 3.

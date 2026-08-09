@@ -220,7 +220,11 @@ transgression. A splitting `s` instead produces the natural horizontal component
 \]
 
 which is an `r`-form and belongs to `(r-1)`-dimensional higher holonomy. Thus the original claim
-that arbitrary first minimal curvature generates loop holonomy was ill-typed.
+that an arbitrary primary minimal operation generates loop holonomy was ill-typed.
+
+Indeed, before choosing `s`, the tensor `q_r` has no base-cotangent input. Under the tangent scaling
+`lambda id_TM`, any natural two-form output scales by `lambda^-2`, while `q_r` is unchanged. Naturality
+for every nonzero `lambda` forces such an unsoldered output to vanish.
 
 For a compatible connection, every parallel transport preserves `q_r`. Infinitesimally,
 
@@ -267,4 +271,3 @@ Nomological Homotopy Geometry:
 2. binary loop curvature versus higher-arity higher curvature;
 3. restricted curvature-generated holonomy versus global monodromy;
 4. connection-dependent finite generation versus nonexistent universal jet cutoff.
-

@@ -274,8 +274,130 @@ Pauli-word growth and may need genuine collective replica structure.
   combined with the already proved plateau/recurrence/locality components without presenting a
   collage.
 
+## 2026-08-09 plateau-side closure
+
+The paper-proved cubic-phase seed law now removes the former `D/L` plateau tradeoff.  An exact
+`O(n^3)` seed ensemble has collision at most `(2+kappa)/D` against every Hamiltonian eigenbasis
+with failure `96/(kappa^2D)`.  Therefore, independently of this conjecture, full
+`Omega(D/log n)` height, `2^(Omega(D))` continuous lifetime, high probability, later recurrence,
+and permanent non-Haar locality are closed on paper for the same ordinary static-local ensemble.
+Fubini applied before the tail bound fixes one seed per `n`, simultaneously for every `kappa`, with
+the same bad-Hamiltonian measure; seed resampling is unnecessary.
+
+This does not weaken or alter `(4')`: cubic phases supply only finitely many seed moments and are
+themselves shallow at `t=0`.  The unique missing Brown--Susskind clause is now exactly the
+finite-onset replica front `(4')`, with no remaining plateau-probability excuse.
+
+## 2026-08-09 bounded-threshold frontier correction
+
+`(4')` remains sufficient but is no longer the minimal or preferred open claim.  The
+paper-proved `../2-fully-proven/beta-threshold-complete-incidence-law.md` replaces monomial Markov
+amplification by a bounded `r`-copy binomial projector.  With fidelity thresholds `b<a` and
+`k=ceil(r(a+b)/2)`, its complete occupied-target action `I_(r;a,b)` obeys
+
+```text
+(1-exp(-r(a-b)^2/2)) Pr{max_z X_z >= a}
+  <= I_(r;a,b)
+  <= Pr{max_z X_z >= b} + exp(-r(a-b)^2/2).
+```
+
+It also has the exact beta-coarea identity
+
+```text
+I_(r;a,b) = integral beta_(k,r-k+1)(u) Pr{max_z X_z >= u} du.
+```
+
+This retains every source sheet and the actual occupied endpoint union, is duplicate-invariant,
+and pays rare return/easy-carrier tubes at their true mass.  In contrast, `(4')` can overestimate a
+rare unit-overlap sheet by the exponential factor `a^(-r)`.
+
+The new minimal core is therefore to prove `I_(r;a,b)=o_n(1)` at scale-matched `r,t,s` after one
+target-independent easy/return excision.  This is still the genuine local-Hamiltonian
+anti-concentration problem; no growth claim is authorized.  Bures separation may remain one
+sufficient route, but failure of its exponentially stronger monomial bound no longer falsifies the
+Brown front.
+
 ## Pipeline
 
 - [ ] Stage 1 -> 2: prove or falsify `(4')`
 - [ ] Stage 2 -> 3: frozen; no Lean work during corpus refactor
 - [ ] Stage 3 -> 4: external priority and hostile journal audit
+
+## 2026-08-09 logarithmic-replica frontier correction
+
+The paper-proved
+`../2-fully-proven/low-replica-complete-incidence-influence-law.md` removes one more artificial
+requirement.  For fixed fidelity slack `delta=a-b`, the bounded reporter needs only
+
+```text
+r_n = ceil(4 log(n)/delta^2),
+```
+
+which makes its fixed-time threshold error at most `n^(-2)` independently of circuit depth and
+independently of the cardinality of the complete endpoint image.  A continuous Brown ramp through
+time `Theta(D)` needs a speed grid of `O(D poly(n))` points and therefore
+`r=O(log D)=O(n)` to pay the whole temporal union.  Thus the minimal open core still does **not**
+require replica order `Theta(D)`.  Growing-order observer crowding, worst spectral-character
+gradients, and nuclear-norm dimension loss remain obstructions to older sufficient reporters, not
+necessary obstructions to the physical circuit-tube probability.
+
+After one common light spectral filter, collision `C<=c/D` makes the complete bounded-incidence
+observable satisfy the target-cardinality-free phase law
+
+```text
+Var_phase(F_complete) <= 4 c r^2/(rho^2 D)
+                      = O((log n)^2/2^n)  at one time,
+                      = O(n^2/2^n)        on the Brown grid.
+```
+
+The exact remaining problem is now a fixed-shell mixing estimate for this **single** bounded,
+low-influence, complete-incidence observable at Brown time and depth, after one target-independent
+return excision.  Low phase-Haar variance alone is not enough: the physical Hamiltonian phase
+graph is singular and can in principle lie inside a Haar-rare set.  Any successful estimate must
+use the geometry of static-local spectral motion, but it no longer needs uniform control of all
+order-`D` replica characters.
+
+The first pipeline item above is retained only as an older sufficient route.  Stage 1 closes only
+after the logarithmic-replica physical-graph mixing statement is proved or a counterexample forces
+a sharper replacement.
+
+## 2026-08-09 orbit-net no-go and Bellman correction
+
+The paper-proved
+`../2-fully-proven/static-orbit-net-no-go-and-circuit-bellman-law.md` shows that even the preceding
+physical-graph formulation is too broad if it treats the target image as an arbitrary finite set.
+The coefficient-shell endpoint map is `|t| sqrt(m)`-Lipschitz.  Hence at fixed error its entire
+time-`t` image has an endpoint net of size
+
+```text
+(1 + 2 |t| sqrt(m)/epsilon)^m.
+```
+
+For `m=Theta(n)` and Brown time `t=Theta(D/poly(n))`, this net has log-cardinality only `O(n^2)` and
+captures every Hamiltonian endpoint.  Brown-depth circuit words have entropy `Theta(D)`.  Therefore
+no theorem based only on source Jacobian, coarea, occupied-image rank, target count, or target
+covering entropy can prove escape: an adversarial orbit net passes all those tests while capture
+mass is one.  Target preparation cost must enter structurally.
+
+For the actual finite gate alphabet, the complete fidelity target satisfies the exact max-plus
+Bellman recursion
+
+```text
+Y_(s+1)(v) = max(Y_s(v), max_(g in G) Y_s(g^* v)).
+```
+
+The bounded binomial reporter obeys the same recursion.  The new irreducible core is **autonomous
+Bellman escape**: compare this local recursive gate front with the static Hamiltonian flow, rather
+than compare the flow with an arbitrary endpoint set.
+
+An exact robust dual target is also frozen.  Construct `Phi` with
+
+```text
+Phi(g v) <= Phi(v)+1,
+|Phi(v)-Phi(w)| <= L d(v,w),
+```
+
+and prove quenched growth of `Phi(exp(-itH)chi)-Phi(chi)` beyond the Brown depth plus `L epsilon`.
+Then the formal Bellman calibration inequality gives the robust circuit lower bound immediately.
+Energy, fixed linear observables, target entropy, and unstructured Jacobian volume are proved dead
+calibrations.  The live object must be a nonlinear oriented-history/local-control calibration.

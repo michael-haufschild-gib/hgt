@@ -9523,3 +9523,333 @@ Dedekind-domain instances.
    valuation axioms and it is the only genuinely new algebraic input the peel needs.
 3. **The restatement of the peel** over the extended datum, plus Reduction I's analytic selection of
    the place.
+
+### Log — the algebraic model, part 4: the derivation bound, and what is left of it
+
+Item 2 of the frontier — how far the extended derivation can lower the order — is built in two
+halves, both unconditional and axiom-clean.  The first half is now complete; the second is reduced
+to a single classical statement about the place.
+
+**The base: the derivation at the uniformiser preserves the valuation ring.**
+`HTGeometry/TopDegreeSharpDrop.lean`.  Differentiating in `X_m` drops the `m`-degree by one, but at
+degree *zero* it drops by two, and that extra one is exactly what makes `∂/∂u` integral for
+`u = 1/X_m`.  The cancellation is carried by one polynomial operation,
+
+`topRed m P = X_m·∂_m P − (deg_m P)·P`,
+
+whose coefficient at a monomial `s` is `(s_m − deg_m P)·coeff s P` (`coeff_topRed`), hence vanishes
+at the top: `degreeOf_topRed_le`.  Writing `f = N/D` with `deg_m N = deg_m D`, the identity
+
+`X_m·(D·∂N − ∂D·N) = D·topRed N − N·topRed D`   (`X_mul_wronskian_eq`)
+
+bounds the Wronskian numerator by `2·deg_m D − 2` instead of the naive `2·deg_m D − 1`
+(`degreeOf_wronskian_le`); the case `deg_m N < deg_m D` is a direct count.  Hence
+
+* `TopDegLE.fpderiv_top_sharp` : `TopDegLE m 0 f → TopDegLE m (−2) (∂_m f)`;
+* `uDeriv m = −X_m²·∂_m` and `uDeriv_mem_topInt` : `f ∈ topInt m → uDeriv m f ∈ topInt m`.
+
+That is the unramified shadow of the bound: on the base the derivation at the uniformiser does not
+leave the valuation ring at all.
+
+**The extension: the different generator clears the extension.**
+`HTGeometry/AdjoinRootDerivationIntegral.lean` proves, for any subring `S ⊆ K` stable under `D` and
+any irreducible `p` with coefficients in `S`,
+
+`p'(α)·D'(S[α]) ⊆ S[α]`   (`rootEval_derivative_mul_adjoinRootDeriv_mem`),
+
+by `Algebra.adjoin_induction`: on the generator `p'(α)·D'α = −p^D(α)` and `p^D` again has
+coefficients in `S`; on a product the Leibniz rule keeps the single factor `p'(α)` outside; on the
+constants `D(S) ⊆ S`.  So the *entire* obstruction to integrality of the extended derivation is the
+one element `p'(α)` — classically the different generator of the order `S[α]`.
+
+`HTGeometry/AlgebraicCascadeDerivationBound.lean` instantiates this at `S = topInt m`,
+`D = uDeriv m` (the stability hypothesis is `uDeriv_mem_topInt`), and upgrades it: when `p` is monic
+with coefficients in the valuation ring, `AdjoinRoot.root p` is integral (`isIntegral_root_of_monic`,
+via `Polynomial.toSubring`), so the order sits inside the integral closure and at every place `Q`
+above the degree at infinity
+
+`Q.valuation (p'(α)·δ f) ≤ 1`   (`valuation_uDeriv_le_of_mem_adjoin`),
+
+i.e. `ord_Q(δ f) ≥ ord_Q(f) − ord_Q(p'(α))` for `f` in the order.
+
+**What is left of item 2 is one inequality: `ord_Q(p'(α)) ≤ e`.**  Then
+`ord_Q(∂_{X_m} f) = 2e + ord_Q(δ f) ≥ ord_Q(f) + e`, which is the degree drop the peel consumes.
+Classically `(p'(α)) = 𝔠·𝔡` with `𝔠` the conductor of `S[α]` in the maximal order and `𝔡` the
+different (mathlib: `conductor_mul_differentIdeal`), and in characteristic zero the ramification is
+tame, so `ord_Q(𝔡) = e − 1` (mathlib: `pow_sub_one_dvd_differentIdeal`, `dvd_differentIdeal_iff`).
+So the inequality holds as soon as `ord_Q(𝔠) = 0`, i.e. as soon as the order `S[α]` is maximal at
+`Q` — *local monogenicity of the extension at the place*.  That is the single remaining algebraic
+statement, and it is the one place where a local structure theorem (a coefficient field, or an
+equal-characteristic Cohen argument) genuinely enters; every other step of the model is now
+formalized.
+
+**The frontier is therefore:**
+
+2'. `ord_Q(p'(α)) ≤ e` for a suitable generator `α` of the extension — equivalently, local
+    monogenicity of the integral closure at `Q` (plus the tame different, which mathlib supplies).
+3.  The restatement of the peel over the extended datum, and Reduction I's analytic selection of the
+    place the cascade follows.
+
+### Log — where item 2' already exists
+
+A corpus/mathlib audit for item 2' (`ord_Q(p'(α)) ≤ e`) found that the **unramified half is already
+in mathlib**, in `Mathlib/RingTheory/LocalRing/Etale.lean`:
+
+* `exists_adjoin_eq_top` — a finite étale extension of local rings is monogenic;
+* `isUnit_aeval_derivative_minpoly_of_adjoin_eq_top` — if `R → S` is étale and `R[β] = S`, then
+  `f'(β)` is a **unit** of `S`, where `f = minpoly R β`.
+
+For an unramified place that is exactly `ord_Q(p'(α)) = 0 ≤ e`, so the derivation bound
+`ord_Q(∂_{X_m} f) ≥ ord_Q(f) + e` — hence the peel's degree drop — closes there with no further
+input.  What remains is the ramified case, where the classical route is the inertia tower: the
+unramified subextension is handled by the two lemmas above, and the totally ramified step is
+Eisenstein, for which a uniformiser generates and `ord_Q(p'(α)) = e − 1`.  So item 2' is now a
+decomposition problem with both ends supplied, not an open structural question.
+
+### Log — the algebraic model, part 5: the ring-to-field propagation, and local monogenicity
+
+Two more pieces of item 2', both unconditional and axiom-clean.
+
+**The propagation from the valuation ring to the field.**
+`HTGeometry/ValuationDerivationBound.lean`.  A derivation that lowers the order of the elements of a
+valuation ring by at most `c` lowers the order of *every* element of the fraction field by at most
+`c + 1`, and the proof is the logarithmic derivative:
+
+`pow_mul_logDeriv_mem` : if `t ∈ O`, `t^c·δ(O) ⊆ O` and every nonzero `f` is `t^k·g` with `g, g⁻¹ ∈ O`,
+then `t^(c+1)·(δf/f) ∈ O`.
+
+Writing `f = t^k·g` gives `δf/f = k·(δt/t) + δg/g`; multiplying by `t^(c+1)` puts the first summand in
+`O` because `t^c·δt` is there (one factor `t` is spent on the pole of `1/t`) and the second because
+`t^c·δg` is there and `g⁻¹` is a unit.  Nothing but the unit decomposition is used, and mathlib's
+`Derivation.leibniz_zpow` supplies the `ℤ`-power rule.  This is exactly the step that turns
+`ord_Q(δ b) ≥ −(e−1)` on the integral closure into `ord_Q(δ f) ≥ ord_Q(f) − e` on the whole field,
+which is the drop the peel consumes.
+
+The coordinate field itself is the first instance: `topInt_unit_decomp` (every nonzero element is
+`u^k` times a unit, with `k = topOrdRep`, using the new `topOrdRep_zpow`) together with
+`uDeriv_mem_topInt` gives `inv_fx_mul_logDeriv_uDeriv_mem_topInt` : `u·(δf/f) ∈ topInt m` for every
+nonzero `f`, with `u = 1/X_m` — the logarithmic form of the degree drop, now valid on the whole
+field and not only on the valuation ring.
+
+**Local monogenicity, ramified case included.**
+`HTGeometry/ArtinianLocalMonogenic.lean` proves what mathlib has only in the étale case:
+
+`exists_adjoin_eq_top_of_principal_nilpotent` : a local `k`-algebra whose maximal ideal is
+**principal and nilpotent** and whose residue field is finite separable over `k` is generated by a
+single element.
+
+The proof needs no completeness, no coefficient field and no Nakayama argument — nilpotence of the
+maximal ideal replaces all three.  Lift a primitive element `θ` of the residue extension to `γ₀`.
+Its minimal polynomial's value `h(γ₀)` lies in `𝔪`.  If it lies in `𝔪²`, replace `γ₀` by `γ₀ + t`:
+`Polynomial.binomExpansion` moves the value by `h'(γ₀)·t`, and `h'(γ₀)` is a unit because `h` is
+separable, while `t ∉ 𝔪²` (else `t(1 − st) = 0` with `1 − st` a unit).  Either way `h(γ) ∈ 𝔪 \ 𝔪²`,
+so `h(γ)` *generates* `𝔪`.  The residues of `k[γ]` fill the residue field, so `A = k[γ] + 𝔪`; since
+`𝔪 = (h(γ))` with `h(γ) ∈ k[γ]`, this improves to `A = k[γ] + 𝔪^j` for every `j`, and `𝔪^N = 0`
+finishes.
+
+This is the missing half of item 2'.  mathlib's `IsLocalRing.exists_adjoin_eq_top` covers the
+unramified (formally unramified) case; the theorem above covers the ramified one, and the case that
+matters for a place `Q` of the algebraic model is `A = B/uB` localised at `Q`, whose maximal ideal is
+principal (Dedekind) and nilpotent (its `e`-th power is `uB_Q`).  What remains to be assembled is the
+descent from `A = B_Q/uB_Q` monogenic to `B_Q = S[α]` (Nakayama, for which mathlib's
+`Submodule.le_of_le_smul_of_le_jacobson_bot` is the tool used in its own étale proof) and the
+identification `ord_Q(minpoly'(α)) = e − 1` (mathlib's `conductor_mul_differentIdeal` plus the tame
+different).
+
+### Log — the algebraic model, part 6: the descent step, and the mapped remainder
+
+`HTGeometry/NakayamaAdjoin.lean` supplies the descent that turns residual generation into genuine
+generation:
+
+`adjoin_eq_top_of_sub_aeval_mem_map_maximalIdeal` : if `B` is a finite algebra over a local ring `S`
+and every `b : B` agrees with some polynomial in `β` modulo `𝔪·B`, then `Algebra.adjoin S {β} = ⊤`.
+
+The hypothesis is deliberately element-wise, so no quotient algebra structure has to be carried; the
+proof is `Submodule.le_of_le_smul_of_le_jacobson_bot` together with `Ideal.smul_top_eq_map`, the same
+Nakayama route mathlib uses for the étale case, but with no unramifiedness hypothesis.
+
+With that, the route from local monogenicity to `ord_Q(p'(α)) ≤ e − 1` is now completely mapped, and
+every step except one is either proved here or available in mathlib:
+
+1. `B/𝔪B` is Artinian, and mathlib's `IsArtinianRing.quotNilradicalPowEquivPi` decomposes it as
+   `∏_I (B/𝔪B)/𝔪_I^n` — a finite product of **local** Artinian rings (the reduced version
+   `equivPi` is not the one needed).  Each factor has principal maximal ideal because `B` localised
+   at the corresponding place is a discrete valuation ring, and separable residue field because the
+   characteristic is zero.
+2. Each factor is monogenic — `exists_adjoin_eq_top_of_principal_nilpotent`, proved here.
+3. **A finite product of monogenic local algebras over an infinite field is monogenic.**  This is the
+   one remaining new piece.  The generators are shifted, `γ_i ↦ γ_i + c_i`, so that the minimal
+   polynomials become pairwise coprime; the residue field of `topInt m` contains `ℂ` and so is
+   infinite, and in characteristic zero a monic polynomial equals a shift of another for at most one
+   value of the shift (compare the second coefficient), so only finitely many choices are excluded.
+4. `adjoin_eq_top_of_sub_aeval_mem_map_maximalIdeal` lifts that to `B = S[α]`, proved here.
+5. `(minpoly'(α)) = 𝔡` for a monogenic order (mathlib: `conductor_mul_differentIdeal` with trivial
+   conductor) and `ord_Q(𝔡) = e − 1` in the tame case (mathlib: `pow_sub_one_dvd_differentIdeal`,
+   `not_dvd_differentIdeal_iff`).
+
+Then `pow_mul_logDeriv_mem` converts that into the field bound, and the whole degree drop the peel
+consumes takes the same shape at every place as at the base: `u·(δf/f)` is integral, `u = 1/X_m`.
+
+### Log — the algebraic model, part 7: the product step, and the end of the new algebra
+
+The last genuinely new algebraic ingredient of item 2' is built.
+
+**One shift separates a finite family.**  `HTGeometry/PolynomialShiftSeparation.lean`.  In
+characteristic zero a polynomial of positive degree has no nonzero period: if `h(X + d) = h` then `h`
+takes the value `h(0)` at every multiple of `d`, so `h − h(0)` has infinitely many roots and `h` is
+constant (`eq_zero_of_comp_add_C_eq_self`).  Hence `c ↦ h(X − c)` is injective
+(`comp_sub_C_injective`).  Consequently, for two polynomials of positive degree and two *distinct*
+multipliers `a ≠ b`, the equation `h₁(X − a·t) = h₂(X − b·t)` has at most one solution `t`
+(`shift_bad_subsingleton`): each solution forces `h₁ = h₂(X − (b − a)t)`, and the shift is unique.
+A finite family therefore excludes only a finite union of subsingletons, so over an infinite field a
+single `t` separates it (`exists_shift_separating`).
+
+**A finite product of monogenic local algebras is monogenic.**  `HTGeometry/ProductMonogenic.lean`.
+
+`exists_adjoin_pi_eq_top` : for `κ` of characteristic zero and a finite family of finite-dimensional
+**local** `κ`-algebras with nilpotent maximal ideals, each generated by one element, the product is
+generated by one element.
+
+The generators cannot be assembled naively: the minimal polynomial of a generator of a local algebra
+is a power of the residue's minimal polynomial `h_i`, and two factors sharing `h_i` collapse the
+degree.  Replacing `γ_i` by `γ_i + n_i·t` — where `n_i` is the image of `i` under an injection of the
+index set into `κ` — turns `h_i` into `h_i(X − n_i·t)`, and one `t` makes these pairwise distinct.
+Distinct monic irreducibles are coprime (`Irreducible.coprime_iff_not_dvd` plus
+`eq_of_monic_of_associated`), the shifted polynomials stay irreducible because substituting `X − c`
+is an algebra automorphism of `κ[X]` (`shiftAlgEquiv`, `irreducible_comp_sub_C`), and `H_i^{N_i}`
+kills `γ_i + n_i·t` because `h_i(γ_i)` lies in the maximal ideal.  The Chinese remainder theorem in
+`κ[X]` then produces one polynomial hitting every prescribed component, which is exactly surjectivity
+of `aeval α` on the product.
+
+With this, all three new pieces of the local-monogenicity route are formalized and axiom-clean:
+
+* `exists_adjoin_eq_top_of_principal_nilpotent` — each local factor is monogenic;
+* `exists_adjoin_pi_eq_top` — the product is monogenic;
+* `adjoin_eq_top_of_sub_aeval_mem_map_maximalIdeal` — that lifts to `B = S[α]`.
+
+What is left is assembly, not new mathematics: identify `B/𝔪B` with the product of its local factors
+via `IsArtinianRing.quotNilradicalPowEquivPi`, transport the generator back, and then read
+`ord_Q(minpoly'(α)) = e − 1` off mathlib's different API (`conductor_mul_differentIdeal` with trivial
+conductor, `pow_sub_one_dvd_differentIdeal` and `not_dvd_differentIdeal_iff` for tameness).
+
+### Log — the algebraic model, part 8: the monogenicity criterion, assembled
+
+`HTGeometry/QuotientPowerMonogenic.lean` closes the local-monogenicity chain into a single usable
+criterion.
+
+First the local factors are identified.  For `I` maximal and `n ≥ 1`, `R/Iⁿ` is a **local** ring:
+an element `mk a` is a unit exactly when `a ∉ I`, because `I` maximal gives `b·a + h = 1` with
+`h ∈ I`, and `mk h` is nilpotent so `1 − mk h` is a unit (`isUnit_mk_of_notMem`); conversely `mk a`
+for `a ∈ I` is nilpotent, hence not a unit.  So the non-units are closed under addition
+(`isLocalRing_quotientPow`), the maximal ideal is the image of `I` (`maximalIdeal_quotientPow`), and
+its `n`-th power vanishes (`maximalIdeal_quotientPow_pow`).
+
+Then the criterion:
+
+`exists_adjoin_eq_top_of_local_factors_principal` : a finite-dimensional commutative algebra `R` over
+a field of characteristic zero, with `(nilradical R)ⁿ = ⊥` and every `I·(R/Iⁿ)` principal, satisfies
+`∃ γ, Algebra.adjoin κ {γ} = ⊤`.
+
+The proof runs the whole chain: `R` is Artinian (`isArtinian_of_tower` from finite-dimensionality),
+so mathlib's `IsArtinianRing.quotNilradicalPowEquivPi` presents it as `∏_I R/Iⁿ`; each factor is
+local with principal nilpotent maximal ideal and separable residue field (characteristic zero), so
+`exists_adjoin_eq_top_of_principal_nilpotent` applies; `exists_adjoin_pi_eq_top` assembles the
+generators; and `exists_adjoin_eq_top_of_algEquiv` transports the result back along the isomorphism.
+
+So the route to `ord_Q(p'(α)) ≤ e − 1` now needs only these three specialisations, all of them
+standard Dedekind-domain facts rather than new mathematics:
+
+* `B/𝔪B` is finite-dimensional over the residue field of `S` (from `B` finite over `S`) and its
+  nilradical is nilpotent;
+* the local factors `B/Q_iⁿ` have principal maximal ideals — in a Dedekind domain any
+  `t ∈ Q \ Q²` generates `Q` modulo `Q^k`;
+* with `B = S[α]` in hand (`adjoin_eq_top_of_sub_aeval_mem_map_maximalIdeal`),
+  `conductor_mul_differentIdeal` gives `(minpoly'(α)) = 𝔡`, and tameness in characteristic zero gives
+  `ord_Q(𝔡) = e − 1`.
+
+Every genuinely new algebraic ingredient of item 2' is now formalized and axiom-clean.
+
+### Log — the algebraic model, part 9: the Dedekind specialisation
+
+`HTGeometry/DedekindLocalUniformizer.lean` turns the abstract criterion into a statement about the
+object the model actually has.
+
+The local uniformiser first.  In a Dedekind domain a nonzero prime strictly contains its square
+(`Ideal.pow_lt_self`), so there is `t ∈ Q \ Q²`; and then
+
+`span_sup_pow_eq` : `Ideal.span {t} ⊔ Qᵏ = Q` for every `k ≥ 1`.
+
+The ideal `J = (t) + Qᵏ` contains `Qᵏ`, hence divides it (`Ideal.dvd_iff_le`), hence is `Qᵐ` for some
+`m ≤ k` (`dvd_prime_pow`, with associated ideals equal because the only unit ideal is `⊤`).  It is
+contained in `Q`, so `m ≥ 1`; it contains `t ∉ Q²`, so `m < 2`.  Hence `m = 1`.
+
+Pushing that through a quotient map gives what the criterion needs.  For any `𝔞 ≠ ⊥` and any maximal
+ideal `I` of `B/𝔞`, pulling back to `Q` and mapping `span_sup_pow_eq` forward gives
+`I = span {s} ⊔ Iⁿ` (`exists_sup_pow_eq_of_maximal_quotient`), and then
+`map_pow_eq_span_of_sup` makes the image of `I` in `(B/𝔞)/Iⁿ` principal.  Feeding that into
+`exists_adjoin_eq_top_of_local_factors_principal`:
+
+`exists_adjoin_eq_top_quotient_dedekind` : **a finite-dimensional quotient of a Dedekind domain by a
+nonzero ideal, over a field of characteristic zero, is generated by a single element.**
+
+That is exactly `B/𝔪B` monogenic.  Together with `adjoin_eq_top_of_sub_aeval_mem_map_maximalIdeal`
+it gives `B = S[α]`: lift a generator of `B/𝔪B` to `α ∈ B`, lift the representing polynomial
+coefficient-wise along the surjection `S → κ`, and Nakayama does the rest.  The remaining step of
+item 2' is then purely mathlib assembly — `conductor_mul_differentIdeal` with trivial conductor for
+`(minpoly'(α)) = 𝔡`, and `pow_sub_one_dvd_differentIdeal` with `not_dvd_differentIdeal_iff` for
+`ord_Q(𝔡) = e − 1` in the tame case.
+
+### Log — the algebraic model, part 10: `B = S[α]`
+
+`HTGeometry/DedekindOrderMonogenic.lean` closes the monogenicity half of item 2'.
+
+`maxExt S B` is the extension `𝔪·B` of the maximal ideal.  The residue field of `S` acts on
+`B/𝔪B` through `Ideal.quotientMap`, and that action is compatible with the base
+(`residueQuotient_isScalarTower`), so two transfers become available:
+
+* `adjoin_base_eq_top_of_adjoin_residue` — generation of `B/𝔪B` over the residue field is generation
+  over `S`, because a representing polynomial over the residue field lifts coefficient-wise along the
+  surjection `S → S/𝔪` and `aeval` is insensitive to the lift;
+* `adjoin_eq_top_of_adjoin_quotient_eq_top` — residual generation over `S` promotes to genuine
+  generation, by the Nakayama lemma of part 6.
+
+Combining them with part 9's `exists_adjoin_eq_top_quotient_dedekind` (which had to be generalised
+from `[Algebra κ B]` to `[Algebra κ (B ⧸ 𝔞)]`, since the residue field acts only on the quotient):
+
+`exists_adjoin_eq_top_of_dedekind_finite` : **a Dedekind domain finite over a local ring with
+characteristic-zero residue field, with `𝔪·B ≠ 0`, is `S[α]` for a single `α`.**
+
+That is the local monogenicity the different computation needs.  With it,
+`conductor_eq_top_of_adjoin_eq_top` gives `conductor S α = ⊤`, so
+`conductor_mul_differentIdeal` collapses to
+
+`differentIdeal S B = span {aeval α (derivative (minpoly S α))}`,
+
+and the last quantity to pin down is `ord_Q` of that ideal.  mathlib supplies the lower bound
+(`pow_sub_one_dvd_differentIdeal` : `Q^{e−1} ∣ 𝔡`) and the ramification criterion
+(`not_dvd_differentIdeal_iff` : `Q ∤ 𝔡 ↔ unramified at Q`); what the peel needs is the upper bound
+`Q^{e+1} ∤ 𝔡`, which is exactly tameness in characteristic zero.  That single inequality is all that
+now separates the model from the degree drop `ord_Q(∂_{X_m} f) ≥ ord_Q(f) + e`.
+
+### Log — the algebraic model, part 11: the tame exponent, polynomial side
+
+The last quantity item 2' needs is `ord_Q(𝔡) = e − 1`.  mathlib supplies the lower bound
+(`pow_sub_one_dvd_differentIdeal`) and the ramification criterion (`not_dvd_differentIdeal_iff`) but
+not the upper bound, which is exactly tameness.  `HTGeometry/SeparableFactorDerivativeOrder.lean`
+proves its polynomial shadow, which is where the arithmetic actually happens.
+
+For `q = hᵉ·g` with `h` irreducible and `h ∤ g`, in characteristic zero:
+
+`derivative_pow_mul_eq` : `q' = h^(e−1)·(e·h'·g + h·g')`, hence `pow_sub_one_dvd_derivative`;
+`not_pow_dvd_derivative` : `hᵉ ∤ q'`.
+
+The second is the content.  Cancelling `h^(e−1)` reduces it to `h ∤ e·h'·g`, and `h` is prime, so it
+would have to divide one of the three factors: `e` is a nonzero constant hence a unit (this is the
+only place characteristic zero enters, and it is exactly tameness); `h'` is nonzero of strictly
+smaller degree; and `g` is excluded by hypothesis.
+
+This is the statement that, under the Dedekind–Kummer dictionary, reads `ord_Q(q'(α)) = e − 1` for
+the monogenic order `B = S[α]` produced in part 10 — `q̄ = ∏ h̄ᵢ^{eᵢ}` is the factorisation of the
+reduced minimal polynomial, the `h̄ᵢ` index the primes above, and `eᵢ` is the ramification index.
+What remains is exactly that dictionary: transporting the polynomial order at `h̄ᵢ` to the ideal
+order at `Qᵢ`, for which mathlib has `KummerDedekind`.

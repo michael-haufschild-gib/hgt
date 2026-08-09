@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.ExponentialSubstitution
 import GaloisForLFunctions.HTGeometry.HalfLineAutocorrelationPrimitive
 
 /-!
@@ -219,6 +220,159 @@ theorem abs_integral_cosh_mul_autocorrelation_source_le
   exact abs_integral_cosh_mul_autocorrelation_full_le R hH hN hA
     (fun h hh => abs_halfLineAutocorrelation_le R hh hR2 (hR2h h hh) (hprodh h hh))
     hlocal hprod hG hT hintg hintd
+
+
+/-- **The logarithmic primitive is the radial primitive.**  Transporting a source through
+`x = exp s` turns its growing half-line primitive into the `x^{-1/2}`-weighted radial primitive. -/
+theorem halfLineExpPrimitive_comp_exp (f : ℝ → ℝ) {t : ℝ} (ht : 0 ≤ t)
+    (hf : ContinuousOn f (Set.Icc 1 (Real.exp t))) :
+    halfLineExpPrimitive (fun s : ℝ => f (Real.exp s)) t
+      = ∫ x in (1 : ℝ)..Real.exp t, f x / Real.sqrt x :=
+  integral_exp_half_comp_exp f ht hf
+
+/-- **The bridge from the radial primitive to the polar source estimate's constant.**  A bound on
+the radial primitive, uniform in its endpoint, is exactly the bound on the growing half-line
+primitive that `(10)` consumes. -/
+theorem abs_halfLineExpPrimitive_le_of_radial (f : ℝ → ℝ) {M : ℝ}
+    (hf : ∀ Y : ℝ, 1 ≤ Y → ContinuousOn f (Set.Icc 1 Y))
+    (hbound : ∀ X : ℝ, 1 ≤ X → |∫ x in (1 : ℝ)..X, f x / Real.sqrt x| ≤ M) :
+    ∀ t : ℝ, 0 ≤ t → |halfLineExpPrimitive (fun s : ℝ => f (Real.exp s)) t| ≤ M := by
+  intro t ht
+  have hexp1 : (1 : ℝ) ≤ Real.exp t := by
+    calc (1 : ℝ) = Real.exp 0 := Real.exp_zero.symm
+      _ ≤ Real.exp t := Real.exp_le_exp.mpr ht
+  rw [halfLineExpPrimitive_comp_exp f ht (hf _ hexp1)]
+  exact hbound _ hexp1
+
+
+/-- The continuous polar charge of a real half-line source on the lower exterior tail. -/
+def polarCharge (R : ℝ → ℝ) (a : ℝ) : ℝ :=
+  4 * ∫ h in Ioc (0 : ℝ) (2 * a), Real.cosh (h / 2) * halfLineAutocorrelation R h
+
+theorem polarCharge_eq (R : ℝ → ℝ) (a : ℝ) :
+    polarCharge R a
+      = 2 * ∫ h in Ioc (0 : ℝ) (2 * a),
+          2 * Real.cosh (h / 2) * halfLineAutocorrelation R h := by
+  rw [polarCharge]
+  have hpull : (∫ h in Ioc (0 : ℝ) (2 * a),
+      2 * Real.cosh (h / 2) * halfLineAutocorrelation R h)
+      = 2 * ∫ h in Ioc (0 : ℝ) (2 * a),
+          Real.cosh (h / 2) * halfLineAutocorrelation R h := by
+    rw [← MeasureTheory.integral_const_mul]
+    refine integral_congr_ae ?_
+    filter_upwards with h
+    ring
+  rw [hpull]
+  ring
+
+/-- **The polar charge estimate.**  The card's `(10)`: the polar charge of a source with bounded
+growing primitive is at most `4 M ‖G‖₁ + 4 ‖R‖₂²`. -/
+theorem abs_polarCharge_le
+    (R : ℝ → ℝ) {a M : ℝ} (ha : 0 ≤ a)
+    (hA : ∀ t : ℝ, 0 ≤ t → |halfLineExpPrimitive R t| ≤ M)
+    (hR2 : IntegrableOn (fun s : ℝ => R s ^ 2) (Ioi 0))
+    (hR2h : ∀ h : ℝ, 0 ≤ h → IntegrableOn (fun s : ℝ => R (s + h) ^ 2) (Ioi 0))
+    (hprodh : ∀ h : ℝ, 0 ≤ h → IntegrableOn (fun s : ℝ => R (s + h) * R s) (Ioi 0))
+    (hlocal : ∀ x y : ℝ,
+      IntervalIntegrable (fun t : ℝ => Real.exp (t / 2) * R t) volume x y)
+    (hprod : Integrable
+      (Function.uncurry (fun h s : ℝ => Real.exp (h / 2) * R (s + h) * R s))
+      ((volume.restrict (Ioc (0 : ℝ) (2 * a))).prod (volume.restrict (Ioi (0 : ℝ)))))
+    (hG : IntegrableOn (fun s : ℝ => Real.exp (-s / 2) * R s) (Ioi 0))
+    (hT : IntegrableOn (fun s : ℝ => (Real.exp (-s / 2) * R s)
+      * (halfLineExpPrimitive R (s + 2 * a) - halfLineExpPrimitive R s)) (Ioi 0))
+    (hintg : IntegrableOn
+      (fun h : ℝ => Real.exp (h / 2) * halfLineAutocorrelation R h) (Ioc 0 (2 * a)))
+    (hintd : IntegrableOn
+      (fun h : ℝ => Real.exp (-h / 2) * halfLineAutocorrelation R h) (Ioc 0 (2 * a))) :
+    |polarCharge R a|
+      ≤ 4 * M * (∫ s in Ioi (0 : ℝ), |Real.exp (-s / 2) * R s|)
+        + 4 * ∫ s in Ioi (0 : ℝ), R s ^ 2 := by
+  have h2a : (0 : ℝ) ≤ 2 * a := by linarith
+  have hmain := abs_integral_cosh_mul_autocorrelation_source_le R h2a hA hR2 hR2h hprodh
+    hlocal hprod hG hT hintg hintd
+  rw [polarCharge_eq, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
+  linarith [hmain]
+
+
+/-- The growing primitive is additive over finite sums of sources. -/
+theorem halfLineExpPrimitive_finset_sum {S : ℕ → ℝ → ℝ} (N : ℕ) {t : ℝ}
+    (hint : ∀ k ∈ Finset.range N,
+      IntervalIntegrable (fun u : ℝ => Real.exp (u / 2) * S k u) volume 0 t) :
+    halfLineExpPrimitive (fun u : ℝ => ∑ k ∈ Finset.range N, S k u) t
+      = ∑ k ∈ Finset.range N, halfLineExpPrimitive (S k) t := by
+  rw [halfLineExpPrimitive]
+  have hcongr : (∫ u in (0 : ℝ)..t, Real.exp (u / 2) * ∑ k ∈ Finset.range N, S k u)
+      = ∫ u in (0 : ℝ)..t, ∑ k ∈ Finset.range N, Real.exp (u / 2) * S k u := by
+    refine intervalIntegral.integral_congr (fun u _ => ?_)
+    rw [Finset.mul_sum]
+  rw [hcongr, intervalIntegral.integral_finsetSum hint]
+  rfl
+
+/-- **The truncation bound.**  A summable family of primitives bounds every finite truncation by
+the same constant, so the bound survives the passage to the limit. -/
+theorem abs_halfLineExpPrimitive_finset_sum_le {S : ℕ → ℝ → ℝ} {B : ℝ} (N : ℕ) {t : ℝ}
+    (hint : ∀ k : ℕ, IntervalIntegrable (fun u : ℝ => Real.exp (u / 2) * S k u) volume 0 t)
+    (hsummable : Summable fun k : ℕ => |halfLineExpPrimitive (S k) t|)
+    (hbound : ∑' k : ℕ, |halfLineExpPrimitive (S k) t| ≤ B) :
+    |halfLineExpPrimitive (fun u : ℝ => ∑ k ∈ Finset.range N, S k u) t| ≤ B := by
+  rw [halfLineExpPrimitive_finset_sum N (fun k _ => hint k)]
+  refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
+  refine le_trans (hsummable.sum_le_tsum _ (fun k _ => abs_nonneg _)) hbound
+
+
+/-- **The bound passes to the limit.**  If the truncations' primitives converge, a bound uniform
+in the truncation is a bound on the limit. -/
+theorem abs_halfLineExpPrimitive_le_of_tendsto {S : ℕ → ℝ → ℝ} {T : ℝ → ℝ} {B t : ℝ}
+    (hconv : Filter.Tendsto (fun N : ℕ => halfLineExpPrimitive (S N) t) Filter.atTop
+      (nhds (halfLineExpPrimitive T t)))
+    (hbound : ∀ N : ℕ, |halfLineExpPrimitive (S N) t| ≤ B) :
+    |halfLineExpPrimitive T t| ≤ B :=
+  le_of_tendsto hconv.abs (Filter.Eventually.of_forall hbound)
+
+/-- **The primitive functional is Lipschitz on `L¹` of the compact range.**  The weight is bounded
+by `exp(t/2)` there, so the primitive of a difference is controlled by the difference's mass. -/
+theorem abs_halfLineExpPrimitive_sub_le {f g : ℝ → ℝ} {t : ℝ} (ht : 0 ≤ t)
+    (hf : IntervalIntegrable (fun s : ℝ => Real.exp (s / 2) * f s) volume 0 t)
+    (hg : IntervalIntegrable (fun s : ℝ => Real.exp (s / 2) * g s) volume 0 t)
+    (hd : IntervalIntegrable (fun s : ℝ => |f s - g s|) volume 0 t) :
+    |halfLineExpPrimitive f t - halfLineExpPrimitive g t|
+      ≤ Real.exp (t / 2) * ∫ s in (0 : ℝ)..t, |f s - g s| := by
+  have hsub : halfLineExpPrimitive f t - halfLineExpPrimitive g t
+      = ∫ s in (0 : ℝ)..t, Real.exp (s / 2) * (f s - g s) := by
+    rw [halfLineExpPrimitive, halfLineExpPrimitive, ← intervalIntegral.integral_sub hf hg]
+    refine intervalIntegral.integral_congr (fun s _ => ?_)
+    ring
+  rw [hsub]
+  have hprod : IntervalIntegrable (fun s : ℝ => Real.exp (s / 2) * (f s - g s)) volume 0 t := by
+    refine (hf.sub hg).congr ?_
+    intro s _
+    ring
+  have habs1 : |∫ s in (0 : ℝ)..t, Real.exp (s / 2) * (f s - g s)|
+      ≤ ∫ s in (0 : ℝ)..t, |Real.exp (s / 2) * (f s - g s)| :=
+    intervalIntegral.abs_integral_le_integral_abs (μ := volume) ht
+  have hmono : (∫ s in (0 : ℝ)..t, |Real.exp (s / 2) * (f s - g s)|)
+      ≤ ∫ s in (0 : ℝ)..t, Real.exp (t / 2) * |f s - g s| := by
+    refine intervalIntegral.integral_mono_on ht hprod.abs (hd.const_mul _) (fun s hs => ?_)
+    rw [abs_mul, abs_of_pos (Real.exp_pos _)]
+    have hle : Real.exp (s / 2) ≤ Real.exp (t / 2) :=
+      Real.exp_le_exp.mpr (by linarith [hs.2])
+    nlinarith [abs_nonneg (f s - g s)]
+  refine le_trans habs1 (le_trans hmono (le_of_eq ?_))
+  rw [intervalIntegral.integral_const_mul]
+
+
+/-- **The passage, assembled.**  A bound on every truncation, uniform in the truncation and in the
+point, together with pointwise convergence of the truncations' primitives, bounds the limit
+source's primitive by the same constant. -/
+theorem abs_halfLineExpPrimitive_limit_le {S : ℕ → ℝ → ℝ} {T : ℝ → ℝ} {B : ℝ}
+    (hbound : ∀ (N : ℕ) (t : ℝ), 0 ≤ t →
+      |halfLineExpPrimitive (fun u : ℝ => ∑ k ∈ Finset.range N, S k u) t| ≤ B)
+    (hconv : ∀ t : ℝ, 0 ≤ t → Filter.Tendsto
+      (fun N : ℕ => halfLineExpPrimitive (fun u : ℝ => ∑ k ∈ Finset.range N, S k u) t)
+      Filter.atTop (nhds (halfLineExpPrimitive T t))) :
+    ∀ t : ℝ, 0 ≤ t → |halfLineExpPrimitive T t| ≤ B :=
+  fun t ht => abs_halfLineExpPrimitive_le_of_tendsto (hconv t ht) (fun N => hbound N t ht)
 
 
 end HTGeometry

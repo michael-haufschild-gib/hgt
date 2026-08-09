@@ -436,17 +436,25 @@ The required new infrastructure is:
    (`RHTower.abs_integral_sqrt_mul_radialProlate_full_le`); and the assembled
    **`(11)`** itself (`RHTower.tsum_norm_integral_radialProlate_all_channels_le`), uniform in the
    endpoint of integration;
-7. `[CANONICAL TWO-MODE SOURCE AND POISSON--MUNTZ LAW FORMALIZED; CLASSICAL IDENTIFICATION OPEN]`
+7. `[(19e) FORMALIZED FOR ANY NONTRIVIAL MODE; SPECTRAL IDENTIFICATION OPEN]`
    identify the classical real `h_0,h_4` modes in the actual operator spectrum and prove the
-   concrete fixed-mode variation bound `(19e)`;
+   concrete fixed-mode variation bound `(19e)`.  The variation bound itself is now an
+   unconditional theorem for *every* nontrivial solution of the prolate eigen-equation
+   (`RHTower.prolate_boundedVariationOn_of_nontrivial`); what is open is only the identification of
+   `h_0, h_4` in the spectrum;
 8. the constrained-source and critical-Mellin specialization `(18)`--`(32)`.
 
-The universal variation endpoint of item 7 is now formalized in
-`HTGeometry/FiniteMonotonicityVariation.lean`: one-sign Sturm cells contain at most one critical
-point and an `n`-cell monotonicity partition has variation at most `2*n*||f||_infinity`.
-`RHTower/ProlateOneTurningVariation.lean` proves the exact prolate flux equation and both sign-cell
-critical-point specializations. The remaining Lean work is the classical spheroidal nodal-count
-instance, ordered partition assembly, and concrete representative.
+Item 7's variation content is complete.  `HTGeometry/FiniteMonotonicityVariation.lean` gives the
+`n`-cell law, `RHTower/ProlateOneTurningVariation.lean` the prolate flux equation and the sign-cell
+critical-point laws, `HTGeometry/DarbouxMonotoneCell.lean` the ordered partition assembly and the
+Darboux monotonicity step, `HTGeometry/GronwallUniqueness.lean` the uniqueness that makes zeros
+simple, `HTGeometry/IsolatedZeroFinite.lean` the isolation-to-finiteness step, and
+`RHTower/ProlateSturmVariation.lean` the assembled bound
+`RHTower.prolate_boundedVariationOn_of_nontrivial`.
+
+The classical spheroidal nodal count is **not** needed: Gronwall uniqueness supplies the finiteness
+of the zero set directly, without any spheroidal asymptotics.  What remains of item 7 is the
+spectral identification of `h_0, h_4` and the concrete representative.
 
 No abstract hypothesis wrapper is sufficient: the concrete prolate primitive, one-sided Poisson
 specialization, and fixed-mode variation estimate must be theorems before `(32)` can be promoted
@@ -477,6 +485,14 @@ evenness/integrability/compact support, half endpoints make the scaled periodiza
 zero, continuity supplies the symmetric-Lebesgue condition, and the exact square-root-normalized
 one-sided Poisson--Muntz physical-lattice law follows. The remaining part of `(35)` is therefore
 only identification of the classical real `h_0,h_4` modes inside the actual operator spectrum.
+
+The *mechanism* of that identification is now formalized.
+`RHTower.prolateAction_bandTransform_commutes` proves that the finite Fourier transform commutes
+with the prolate differential operator on the band, from the kernel identity, the two
+differentiations under the integral, and the symmetry of the operator where `1 - t^2` vanishes at
+both endpoints.  An eigenfunction of the band transform therefore satisfies the prolate
+eigen-equation up to regularity, and `RHTower.prolate_boundedVariationOn_of_nontrivial` then
+applies.  What is left is the regularity of the specific representative, not the mechanism.
 After that identification, the fixed-mode
 regularity law
 
@@ -484,9 +500,11 @@ regularity law
 Var(g_lambda^+)=O(1),                                          (19e)
 ```
 
-is paper-proved by the one-turning-point Sturm argument `(19f)`--`(19g)`, but its universal
-variation lemma and concrete spheroidal instance still require Lean formalization. It is then
-substituted into the already formalized BV envelope and clipped critical-Mellin pairing. This
+is **formalized**, for every nontrivial solution of the prolate eigen-equation and not only for the
+classical modes: `RHTower.prolate_boundedVariationOn_of_nontrivial`.  The one-turning-point Sturm
+argument `(19f)`--`(19g)` is in Lean, and the spheroidal nodal count it was thought to need is not
+needed at all -- Gronwall uniqueness gives the finiteness of the zero set directly.  The bound is
+then substituted into the already formalized BV envelope and clipped critical-Mellin pairing.  This
 separates the representative/regularity problem from the completed Abel machinery.
 
 ## Gates
@@ -515,13 +533,21 @@ separates the representative/regularity problem from the completed Abel machiner
   even time-band eigenmode and identify its pointwise Fourier transform
 - [ ] identify the classical real `h_0,h_4` pair in the actual spectrum; constrained contrast,
   real extraction, symmetric-Lebesgue regularity, and source-specific identity `(19a)` are already
-  formalized for every nonzero eigenmode pair
+  formalized for every nonzero eigenmode pair.  The *mechanism* is now closed:
+  `RHTower.prolateAction_bandTransform_commutes` (the transform commutes with the prolate operator
+  on the band), `RHTower.hasDerivAt_bandEigen` (a band eigenfunction is automatically twice
+  differentiable), and `RHTower.prolate_eq_const_mul_of_same_eigenvalue` (prolate eigenvalues are
+  simple, by the vanishing Wronskian and Gronwall).  What is left is exhibiting the two classical
+  modes, not proving that they are determined
 - [x] prove the fixed-mode source variation bound `(19e)` on paper by one-turning-point Sturm
   oscillation; the Lean specialization is closed unconditionally by
   `RHTower.prolate_boundedVariationOn` (bounded variation of every nontrivial prolate mode on every
   compact subinterval of the open aperture)
 - [ ] promote `(18)` and `(32)` after the primitive and source-regularity audits
-- [ ] formalize the concrete radial-PSWF primitive theorem and its polar consequence in Lean
+- [x] formalize the concrete radial-PSWF primitive theorem and its polar consequence in Lean:
+  `RHTower.norm_integral_radialProlate_dilate_left_le` is `(16)` for the exact mode over the full
+  channel range, `RHTower.tsum_norm_integral_radialProlate_all_channels_le` is `(11)`, and
+  `RHTower.abs_polarCharge_radialLimit_le` is the polar consequence, uniform in the endpoint
 - [ ] true even ground/gap comparison
 - [ ] locally uniform determinant convergence to `Xi`
 
@@ -3109,3 +3135,848 @@ estimates, this proves the seed law `(32)` on paper.
   A note on imports: `integral_add_right_eq_self` is not reachable from the narrow mathlib imports
   of `HalfLineAutocorrelationPrimitive`, and `lake env lean` reports it as an unknown identifier
   rather than a missing import.  Adding `import Mathlib` is what the other modules in this layer do.
+
+- 2026-08-09 (ninety-first instalment) -- **`(10)` with both constants concrete.**
+
+  * **`abs_integral_cosh_mul_autocorrelation_source_le`** --
+
+    ```text
+    |integral_{(0,H]} 2 cosh(h/2) C_R(h) dh|
+      <= 2 M integral_{(0,inf)} |exp(-s/2) R| + 2 integral_{(0,inf)} R^2,
+    ```
+
+    unconditionally in `H >= 0`, with `M` the bound on the growing primitive and nothing else free.
+    Both constants are now the card's: `M` is `‖A‖_infinity` and the square mass is `‖R‖_2^2`.
+
+  `(7)`--`(10)` are closed.  The polar source estimate is reduced to exactly one analytic input --
+  a uniform bound on `halfLineExpPrimitive R`, which is what `(11)` supplies -- plus the Fubini and
+  integrability side conditions for the particular source.
+
+  Status note: the `HTGeometry` umbrella built green through the ninetieth instalment and is now
+  red on `HTGeometry/TopDegreeSharpDrop.lean` (three errors, including an unknown constant
+  `TopFree.fpderiv_eq_zero`).  That file was modified at 08:30 by another agent and is not part of
+  this card's work; `HalfLineCoshPrimitive` and everything else here builds clean in isolation.
+
+- 2026-08-09 (ninety-second instalment) -- **`(12)`: the exponential substitution, and the bridge
+  it carries.**  New module `HTGeometry/ExponentialSubstitution.lean` plus two theorems in
+  `HalfLineCoshPrimitive`; wired; all axiom-clean.
+
+  * **`sqrt_exp`, `exp_image_subset_Icc`, `integral_exp_half_comp_exp`** --
+
+    ```text
+    integral_0^t exp(s/2) f(exp s) ds = integral_1^{exp t} f(x) x^{-1/2} dx.
+    ```
+
+    This is the card's `(12)`.  The weight `exp(s/2)` on the left is exactly `dx/sqrt x` on the
+    right, which is *why* the growing branch of the autocorrelation and the `x^{-1/2}`-weighted
+    radial primitive are the same object rather than merely comparable.
+  * **`halfLineExpPrimitive_comp_exp`** -- the same statement for the corpus's
+    `halfLineExpPrimitive`.
+  * **`abs_halfLineExpPrimitive_le_of_radial`** -- the bridge: a bound on the radial primitive,
+    uniform in its endpoint, *is* the bound `M` that `(10)` consumes.
+
+  The two halves of the card now meet.  `(11)`
+  (`RHTower.tsum_norm_integral_radialProlate_all_channels_le`) produces a bound on the radial
+  primitive uniform in the endpoint; `abs_halfLineExpPrimitive_le_of_radial` turns that into `M`;
+  and `abs_integral_cosh_mul_autocorrelation_source_le` turns `M` into the polar source estimate.
+
+  A tactic note: `intervalIntegral.integral_comp_smul_deriv` and its primed variants are deprecated
+  in this toolchain in favour of `integral_deriv_smul_comp`.  The doubly-primed form is the one to
+  reach for here, since the integrand `f x / sqrt x` is continuous only on the image of the
+  substitution, not on all of the line.
+
+- 2026-08-09 (ninety-third instalment) -- **The chain closed end to end: the polar source estimate
+  for a radial channel.**  New module `RHTower/ProlatePolarSource.lean`, wired, axiom-clean.
+
+  * **`channelSource`** -- the `k`-th channel in the logarithmic variable,
+    `u |-> sqrt(exp u) R(k exp u)`, i.e. the card's `H_(lambda,k)`.
+  * **`abs_halfLineExpPrimitive_channelSource_le`** --
+
+    ```text
+    |halfLineExpPrimitive (channelSource k R) t|
+      <= 4500 M / (sqrt c (c k^2))      for every t >= 0, every k >= 2.
+    ```
+
+    The growing half-line primitive of the channel source *is* the radial primitive
+    `integral_1^X R(k x) dx`, by `(12)`; so `(16)` for the exact mode bounds it directly, uniformly
+    in `t`.
+  * **`abs_integral_cosh_mul_autocorrelation_channelSource_le`** -- the polar source estimate with
+    every constant the mode's own.
+
+  This closes the reduction the card sets up in `(4)`--`(18)`.  Running the chain backwards:
+
+  1. the exact radial mode is a perturbed oscillator (`prolateOsc_ode`, `|q| <= 35/phi^2`);
+  2. hence it has an exact two-branch representation with bounded, slowly drifting coefficients;
+  3. hence `(16)`: `|integral_L^X R(k t) dt| <= 4500 M/(sqrt c (c k^2) L)`;
+  4. hence, by the exponential substitution `(12)`, the channel source's growing primitive is
+     bounded uniformly in the endpoint;
+  5. hence, by `(7)`--`(8)`, the growing branch of its autocorrelation is bounded;
+  6. hence, with `(9)` for the decaying branch, `(10)` holds for the channel source.
+
+  What remains between here and `(18)` is not analysis of this kind: it is the identification of
+  the constrained polar source with the radial channels (the card's `(4)`), the summation of the
+  channel estimates in the polar functional, and the integrability side conditions for the specific
+  source -- all bookkeeping over the machinery now in place, with one genuine input still open, the
+  spectral-occupancy gate of item 7.
+
+- 2026-08-09 (ninety-fourth instalment) -- **The channel sources' primitives sum.**
+
+  * **`tsum_abs_halfLineExpPrimitive_channelSource_le`** --
+
+    ```text
+    sum_{j>=0} |halfLineExpPrimitive (channelSource (2+j) R) t| <= 4500 M/(sqrt c * c)
+    ```
+
+    for every `t >= 0`, unconditionally.  The bound is free of `t`, so it survives the supremum.
+
+  This is the form the passage from finite radial sums needs: not "each channel's primitive is
+  small" but "the primitives are summable with a bound free of the point", which is what lets the
+  finite truncations be controlled uniformly before the `L^2` limit is taken.
+
+  Everything in the `k >= 2` half of the card's radial analysis is now unconditional Lean, from the
+  prolate ODE to the summed polar source primitive, with no hypothesis beyond `0 <= s <= 1/2`,
+  `1 <= c` and the ODE itself.
+
+- 2026-08-09 (ninety-fifth instalment) -- **All channel sources' primitives, summed.**
+
+  * **`abs_halfLineExpPrimitive_firstChannelSource_le`** -- the `k = 1` source, through the full
+    first-channel bound, so the endpoint term appears exactly once.
+  * **`tsum_abs_halfLineExpPrimitive_allChannelSource_le`** --
+
+    ```text
+    |halfLineExpPrimitive (channelSource 1 R) t|
+      + sum_{j>=0} |halfLineExpPrimitive (channelSource (2+j) R) t|
+        <= prolateEndpointConstant/(c sqrt c) + 6750 M/(sqrt c c),
+    ```
+
+    for every `t >= 0`, unconditionally.
+
+  The radial side of the card is complete: from the prolate ODE to a single constant bounding the
+  whole radial object's growing primitive, uniformly along the logarithmic half-line, with the
+  channel index summed out.  Every step is an identity or an estimate proved here; no model is
+  introduced and no transfer error is taken in absolute value anywhere in the chain.
+
+- 2026-08-09 (ninety-sixth instalment) -- **The polar charge and its estimate: the card's `(3)` and
+  `(10)` as stated objects.**
+
+  * **`polarCharge`** -- `(3)`: `4 integral_0^{2a} cosh(h/2) C_R(h) dh`.  The source is real, so the
+    real part in the card's statement is the identity and no complexification is needed.
+  * **`polarCharge_eq`** -- the factor-of-two bookkeeping between `(3)` and the `2 cosh` form the
+    estimate is proved in.
+  * **`abs_polarCharge_le`** -- **`(10)`**:
+
+    ```text
+    |PPol(R, a)| <= 4 M ‖G‖_1 + 4 ‖R‖_2^2,
+    ```
+
+    with `M` the bound on the growing primitive and `G(s) = exp(-s/2) R(s)`.  This is exactly the
+    card's inequality `4‖A‖_infinity‖R‖_2 + 4‖R‖_2^2`, with `‖G‖_1` in place of `‖R‖_2` -- the
+    honest `L^1` quantity, which Cauchy--Schwarz would weaken to `‖R‖_2` if that form were wanted.
+
+  With `(4)` (`‖R‖_2^2 = O(d_lambda)`) and the radial primitive bound of the ninety-fifth
+  instalment supplying `M`, `(18)` is now an instantiation of this single inequality.
+
+- 2026-08-09 (ninety-seventh instalment) -- **`(18)` per channel.**
+
+  * **`abs_polarCharge_channelSource_le`** -- for `k >= 2`:
+
+    ```text
+    |PPol(channelSource k R, a)|
+      <= 4 (4500 M/(sqrt c (c k^2))) ‖G_k‖_1 + 4 ‖channelSource k R‖_2^2.
+    ```
+
+  * **`abs_polarCharge_firstChannelSource_le`** -- the same for `k = 1`, with the endpoint constant
+    in place of the `k^{-2}` gain.
+
+  Both are instantiations of `abs_polarCharge_le` at the primitive bounds of the ninety-fifth
+  instalment, so the only content added here is that the constants line up.  The `1/k^2` sits where
+  the card says it should: multiplying the source's own `L^1` mass, so summing over channels needs
+  nothing further about the modes.
+
+  What is left for `(18)` proper: the card's `(4)`, `‖R_lambda‖_2^2 = O(d_lambda)`, which is a
+  statement about the operator's spectral data rather than about the radial ODE, and the
+  identification of the constrained source with the channel decomposition.  Neither is an estimate
+  of the kind this chain produces; both belong to item 7's spectral-occupancy gate.
+
+- 2026-08-09 (ninety-eighth instalment) -- **The passage from finite radial sums.**  Four
+  declarations across `HTGeometry/HalfLineCoshPrimitive.lean` and
+  `RHTower/ProlatePolarSource.lean`; all axiom-clean.
+
+  * **`halfLineExpPrimitive_finset_sum`** -- the growing primitive is additive over finite sums of
+    sources.
+  * **`abs_halfLineExpPrimitive_finset_sum_le`** -- a summable family of primitives bounds *every*
+    finite truncation by the same constant.
+  * **`summable_abs_halfLineExpPrimitive_channelSource`** -- the channel primitives are summable at
+    every point.
+  * **`abs_halfLineExpPrimitive_channelTruncation_le`** --
+
+    ```text
+    |halfLineExpPrimitive (sum_{j<N} channelSource (2+j) R) t| <= 4500 M/(sqrt c c)
+    ```
+
+    for every `N` and every `t >= 0`.
+
+  This is the card's own passage order, made precise: the bound is established on the truncations
+  *first*, uniformly in `N` and in the point, and only then is the limit taken.  Nothing here
+  interchanges an infinite channel sum with an improper primitive -- the finite sums are all that
+  ever appears, and the constant does not degrade as `N` grows.
+
+  The remaining step of the passage, `R_(lambda,N) -> R_lambda` in `L^2`, is the weighted
+  projective Gram theorem the card cites, and its `L^2` machinery is already formalized
+  (`HTGeometry.norm_inner_le_tsum_of_tendsto`, twenty-fifth instalment).
+
+- 2026-08-09 (ninety-ninth instalment) -- **The limit of the passage.**
+
+  * **`abs_halfLineExpPrimitive_le_of_tendsto`** -- a bound uniform in the truncation is a bound on
+    the limit, once the primitives converge.
+  * **`abs_halfLineExpPrimitive_sub_le`** --
+
+    ```text
+    |halfLineExpPrimitive f t - halfLineExpPrimitive g t| <= exp(t/2) integral_0^t |f - g|,
+    ```
+
+    the quantitative continuity of the primitive functional on the compact range.
+
+  The card invokes `L^2` continuity of `f |-> integral_0^H exp(s/2) f`.  The `L^1` form proved here
+  is what the argument actually needs and is elementary: on `[0, t]` the weight is bounded by
+  `exp(t/2)`, so no Cauchy--Schwarz and no `L^p` machinery is involved.  It is also strictly more
+  useful, since `L^1` convergence on compacts is implied by `L^2` convergence there and not
+  conversely.
+
+  With this the passage is complete as a chain of formalized steps: bound on truncations, uniform
+  in `N` and in the point; continuity of the functional; limit.  The only input still supplied from
+  outside is the convergence `R_(lambda,N) -> R_lambda` itself, which is the weighted projective
+  Gram theorem.
+
+- 2026-08-09 (hundredth instalment) -- **`(11)` for the limit radial object.**
+
+  * **`HTGeometry.abs_halfLineExpPrimitive_limit_le`** -- the passage assembled: a bound on every
+    truncation, uniform in the truncation and in the point, plus pointwise convergence of the
+    truncations' primitives, bounds the limit's primitive by the same constant.
+  * **`RHTower.abs_halfLineExpPrimitive_radialLimit_le`** --
+
+    ```text
+    |halfLineExpPrimitive T t| <= 4500 M/(sqrt c * c)      for every t >= 0,
+    ```
+
+    for any `T` that is the limit of the channel truncations in the sense that their primitives
+    converge to its.
+
+  This is the end of the radial chain.  Everything from the prolate ODE to this bound is
+  unconditional Lean, and the single input taken from outside is the convergence of the
+  truncations -- the card's weighted projective Gram theorem, which is a statement about the
+  operator's spectral decomposition and not about the radial ODE.
+
+  Feeding this constant into `abs_polarCharge_le` gives the card's `(10)` for the limit source, and
+  with `(4)` it gives `(18)`.  Both of those remaining inputs live on the spectral side, i.e. item
+  7 of the Lean plan.
+
+- 2026-08-09 (hundred-and-first instalment) -- **`(18)` for the limit radial object.**
+
+  ```text
+  abs_polarCharge_radialLimit_le :
+    |PPol(T, a)| <= 4 (4500 M/(sqrt c * c)) ‖exp(-u/2) T‖_1 + 4 ‖T‖_2^2
+  ```
+
+  for every `a >= 0`, where `T` is the limit of the channel truncations and
+  `M = exactEnergyBudget s c R DR 2`.  This is the card's `(18)` shape with every constant on the
+  right traced back to the radial ODE.
+
+  The reduction the card sets out in `(2)`--`(18)` is now a chain of formalized theorems.  Read
+  forwards, with the Lean names:
+
+  * `prolateOsc_ode`, `abs_prolateOscPotential_le` -- the mode is a perturbed oscillator;
+  * `sqrt_mul_radialProlate_dilate_eq_branches` -- exact two branches, no error term;
+  * `norm_integral_radialProlate_dilate_left_le` -- `(16)` on the full channel range;
+  * `tsum_norm_integral_radialProlate_all_channels_le` -- `(11)`;
+  * `integral_exp_half_comp_exp` -- `(12)`, the exponential substitution;
+  * `abs_halfLineExpPrimitive_channelTruncation_le`, `abs_halfLineExpPrimitive_limit_le` -- the
+    passage from finite radial sums;
+  * `integral_exp_half_mul_halfLineAutocorrelation_eq_primitive`,
+    `abs_integral_exp_half_mul_autocorrelation_le` -- `(7)`, `(8)`;
+  * `abs_halfLineAutocorrelation_le`, `abs_integral_exp_neg_half_mul_autocorrelation_le` -- `(9)`;
+  * `abs_polarCharge_le` -- `(10)`;
+  * `abs_polarCharge_radialLimit_le` -- `(18)`.
+
+  Two inputs are still taken from outside, and both are spectral rather than analytic: the
+  convergence `R_(lambda,N) -> R_lambda` (the weighted projective Gram theorem) and `(4)`,
+  `‖R_lambda‖_2^2 = O(d_lambda)`.  Both belong to item 7.
+
+- 2026-08-09 (hundred-and-second instalment) -- **Item 7: the ordered partition assembly.**  New
+  module `HTGeometry/DarbouxMonotoneCell.lean`, wired, all three declarations axiom-clean.
+
+  The card names three remaining pieces for `(19e)`: the classical spheroidal nodal count, the
+  ordered partition assembly, and the concrete representative.  This instalment closes the second.
+
+  * **`monotoneOn_or_antitoneOn_of_deriv_ne_zero`** -- a cell whose interior contains no critical
+    point is monotone in one direction.  Darboux gives the derivative the intermediate value
+    property, so not vanishing on the open cell forces a constant sign; the direction is then
+    `strictMonoOn_of_deriv_pos` or `strictAntiOn_of_deriv_neg`.
+  * **`partition_monotone_of_deriv_ne_zero`** -- the same for every cell of a monotone partition
+    index, which is the exact hypothesis shape `eVariationOn_le_of_piecewise_monotone` takes.
+  * **`eVariationOn_le_of_deriv_ne_zero_on_cells`** -- the composite: a monotone partition whose
+    cells avoid critical points in their interiors gives variation at most `2 n B`.
+
+  The gap this fills was real.  `FiniteMonotonicityVariation` proves the variation law *given*
+  monotonicity on each cell, and `ProlateOneTurningVariation` proves the prolate flux equation and
+  bounds the critical points per sign cell -- but nothing connected "the derivative has no zero
+  here" to "the function is monotone here".  That connection is Darboux, and mathlib has it as
+  `hasDerivWithinAt_forall_lt_or_forall_gt_of_forall_ne`.
+
+  What remains for `(19e)`: the nodal count for the even spheroidal modes `n = 0, 4` (a classical
+  Sturm statement about the number of zeros, giving the `n` in `2 n B`), and the concrete
+  representative.
+
+- 2026-08-09 (hundred-and-third instalment) -- **The ordered partition assembly, with its count.**
+
+  * **`exists_monotone_partition_of_finset`** -- a finite set `S` of critical points inside `[a,b]`
+    is enumerated in order into a monotone index `I : N -> R` with `I 0 = a`, `I n = b`,
+    `n <= |S| + 1`, and every cell interior free of `S`.  The construction is
+    `Finset.orderEmbOfFin` on `insert a (insert b (S.filter (. in [a,b])))`, with `I` extended
+    beyond the last index by the constant `b` so that monotonicity holds on all of `N`.
+  * **`eVariationOn_le_of_finite_critical_set`** --
+
+    ```text
+    Var_{[a,b]}(f) <= 2 (|S| + 1) B      whenever f' vanishes on (a,b) only inside S.
+    ```
+
+  This is `(19g)` in its abstract form, and it is the shape `(19e)` needs: the variation is bounded
+  by the *number of critical points*, so a mode whose critical count is bounded independently of
+  `lambda` has variation `O(1)` -- which is exactly the card's argument.
+
+  What is left for `(19e)` is now a single classical statement: the count itself for the even
+  spheroidal modes `n = 0, 4`.  Everything downstream of that count is formalized.
+
+- 2026-08-09 (hundred-and-fourth instalment) -- **The Sturm variation law.**
+
+  * **`finite_critical_of_cellwise_subsingleton`** -- if each cell of a monotone partition contains
+    at most one critical point, the whole range contains finitely many.  Induction on the number of
+    cells; the only subtlety is that the partition points themselves must be added at each step,
+    since `Ioo (J 0) (J (m+1))` is not the union of the open cells alone.
+  * **`eVariationOn_le_of_cellwise_subsingleton`** -- a function whose derivative vanishes at most
+    once per cell has finite total variation, bounded by twice the critical count.
+
+  This is exactly the card's `(19f)`--`(19g)` argument in abstract form.  The card's chain is: on a
+  cell where both factors of the Sturm right-hand side have fixed sign, the flux `(1-z^2) y'` is
+  strictly monotone, so `y'` vanishes at most once there; hence the critical count is bounded by
+  the number of sign cells; hence the variation is `O(1)` for a fixed mode.  Each of those "hence"
+  steps is now a theorem:
+
+  * flux strictly monotone on a fixed-sign cell -- `ProlateOneTurningVariation` (already present);
+  * at most one critical point per cell -- the subsingleton hypothesis, supplied by that flux
+    monotonicity;
+  * bounded count -- `finite_critical_of_cellwise_subsingleton`;
+  * bounded variation -- `eVariationOn_le_of_cellwise_subsingleton`.
+
+  The only remaining input for `(19e)` is the classical nodal count that says how many sign cells
+  the even spheroidal modes `n = 0, 4` have.
+
+- 2026-08-09 (hundred-and-fifth instalment) -- **`(19g)` for the prolate mode.**  New module
+  `RHTower/ProlateSturmVariation.lean`, wired, both declarations axiom-clean.
+
+  * **`prolate_eVariationOn_le_of_signCells`** --
+
+    ```text
+    Var_{[J 0, J m]}(psi) <= 2 (|S| + 1) B
+    ```
+
+    for any monotone partition `J` on whose open cells `(chi + c^2 y^2) psi` has fixed sign, where
+    `S` is the mode's critical set on that range.
+  * **`prolate_boundedVariationOn_of_signCells`** -- the mode is BV there.
+
+  This is the card's `(19g)`.  The two halves it joins were both already present and had never been
+  connected: `ProlateOneTurningVariation` gives at most one stationary point per fixed-sign cell (on
+  `Icc`, which restricts to `Ioo` for free), and the Darboux/partition layer of the last three
+  instalments turns "at most one per cell" into a variation bound.
+
+  The bound depends only on the *number of sign cells*, not on `c` or `chi`.  That is exactly the
+  property `(19e)` needs: a fixed even mode whose sign-cell count does not grow with the aperture
+  has variation `O(1)`.
+
+  So item 7's analytic content is now formalized end to end, and what remains of `(19e)` is a
+  single classical statement with no analysis in it: the number of sign cells of the even
+  spheroidal modes `n = 0, 4`, i.e. their nodal count.
+
+- 2026-08-09 (hundred-and-sixth instalment) -- **`(19g)` from a finite zero set: item 7's analytic
+  content closed.**
+
+  * **`HTGeometry.sign_fixed_of_no_zero`** -- a continuous function with no zero on an open cell has
+    fixed sign there, by the intermediate value theorem.
+  * **`RHTower.prolate_eVariationOn_le_of_finite_zeros`** --
+
+    ```text
+    Var_{[a,b]}(psi) <= 2 (|S| + 1) B
+    ```
+
+    whenever `(chi + c^2 y^2) psi` vanishes only on a finite set inside `(a,b)`.
+
+  The partition lemma was strengthened with a tail law (`n <= i -> I i = b`) so that the sign
+  hypothesis can be stated for *all* indices: past the last cell the interval is empty and the
+  requirement is vacuous.  Without that the composite could not be assembled, because
+  `prolate_eVariationOn_le_of_signCells` quantifies over all `i`.
+
+  This is item 7's analytic content, complete: from the prolate eigen-equation and a finite zero
+  set of its right-hand side to an explicit variation bound, with no asymptotics, no spectral
+  index, and no aperture-dependence in the constant.  The chain is
+
+  ```text
+  eigen-equation -> flux monotone on fixed-sign cells -> one critical point per cell
+    -> finite critical set -> monotone partition -> Var <= 2 (count + 1) sup.
+  ```
+
+  What `(19e)` still needs is the finite zero set itself for the even spheroidal modes `n = 0, 4`,
+  with a count independent of the aperture.  That is a classical Sturm oscillation statement about
+  spheroidal functions, and it is the only remaining input.
+
+- 2026-08-09 (hundred-and-seventh instalment) -- **Simple zeros are finitely many.**  New module
+  `HTGeometry/IsolatedZeroFinite.lean`, wired, all three declarations axiom-clean.
+
+  * **`finite_of_isolated_in_compact`** -- a compact set whose points are isolated is finite, via
+    `IsCompact.finite` and `isDiscrete_iff_forall_mem_exists_isOpen`.
+  * **`isolated_of_simple_zero`** -- a zero at which the derivative is nonzero has a punctured
+    neighbourhood free of zeros.
+  * **`finite_zeros_of_simple`** -- a differentiable function all of whose zeros in `[a,b]` are
+    simple has finitely many of them.
+
+  This supplies the finite zero set that `prolate_eVariationOn_le_of_finite_zeros` consumes,
+  reducing `(19e)` to *simplicity* of the zeros rather than to a count.  For a nontrivial solution
+  of a second-order linear ODE simplicity is automatic -- a double zero forces the solution to
+  vanish identically -- so the remaining input is nontriviality, not an oscillation theorem.
+
+  A naming trap worth recording: `HasDerivAt.eventually_ne` displays as
+  `∀ᶠ z in 𝓝[≠] x, f z ≠ c` with `c` an unconstrained section variable, which reads as false and is
+  unusable as stated.  `HasDerivAt.tendsto_nhdsNE`, `Tendsto f (𝓝[≠] x) (𝓝[≠] f x)`, is the
+  unambiguous form and gives the same content directly.
+
+- 2026-08-09 (hundred-and-eighth instalment) -- **Grönwall uniqueness: a double zero kills the
+  solution.**  New module `HTGeometry/GronwallUniqueness.lean`, wired, both declarations
+  axiom-clean.
+
+  * **`eq_zero_of_nonneg_of_deriv_le_mul`** -- a nonnegative energy vanishing at the left endpoint
+    and obeying `E' <= K E` vanishes on the whole interval, because `E exp(-K x)` is antitone,
+    nonnegative and zero at the left end.
+  * **`sq_add_sq_eq_zero_of_double_zero`** -- for `E = u^2 + (u')^2` and a second-order equation
+    whose second derivative is dominated by `K (|u| + |u'|)`, a double zero forces `u` and `u'` to
+    vanish on the whole interval.
+
+  This is the uniqueness half of the Cauchy problem in exactly the form the Sturm theory needs, and
+  it avoids `ODE_solution_unique` and its Lipschitz-vector-field machinery entirely: the same energy
+  and Grönwall pattern used for the Bessel and prolate oscillators serves here too.
+
+  The constant needed care.  Bounding `2 u' u'' <= 2|u'| K(|u| + |u'|)` and then by a multiple of
+  `u^2 + (u')^2` gives `3K`, not `2K`: the term `2K|u'|^2` alone already needs `2K(u^2 + (u')^2)`,
+  and the cross term needs a further `K`.  The first attempt used `2K` and was false.
+
+  With this, `(19e)`'s remaining input reduces to nontriviality of the mode: a solution that is not
+  identically zero has only simple zeros, hence finitely many, hence bounded variation by the chain
+  of the last four instalments.
+
+- 2026-08-09 (hundred-and-ninth instalment) -- **Nontrivial implies simple implies finite.**
+
+  * **`eq_zero_of_nonneg_of_neg_mul_le_deriv`** -- Grönwall backwards, from the right endpoint.
+  * **`eq_zero_of_double_zero_interior`** -- a double zero *anywhere* in `[a,b]` kills the solution
+    on the whole interval, forwards and backwards.
+  * **`simple_zeros_of_nontrivial`** -- a solution that is nonzero somewhere has only simple zeros.
+  * **`finite_zeros_of_nontrivial`** -- hence finitely many zeros.
+
+  The chain from the seventh through the hundred-and-ninth instalment is now closed as a single
+  implication:
+
+  ```text
+  nontrivial solution of a second-order equation with |u''| <= K(|u| + |u'|)
+    -> zeros simple      (Gronwall uniqueness)
+    -> zeros finite      (isolation in a compact interval)
+    -> sign cells finite (intermediate value theorem)
+    -> one critical point per cell   (Sturm flux monotonicity)
+    -> critical set finite            (induction over cells)
+    -> monotone partition             (Finset.orderEmbOfFin)
+    -> Var <= 2 (count + 1) sup.      (finite-monotonicity law)
+  ```
+
+  Every arrow is an unconditional Lean theorem.  For the prolate mode the coefficient bound
+  `|psi''| <= K(|psi| + |psi'|)` holds on any `[a,b]` strictly inside `(-1,1)` with
+  `K = (|chi| + c^2 + 2)/dist(b, 1)`, so `(19e)` for a fixed even mode reduces to that one
+  arithmetic bound plus nontriviality.
+
+- 2026-08-09 (hundred-and-tenth instalment) -- **The prolate coefficient bound, and finite zeros for
+  a nontrivial mode.**
+
+  * **`prolate_secondDeriv_bound`** --
+
+    ```text
+    |psi''(x)| <= ((|chi| + c^2 + 2)/(1 - r^2)) (|psi(x)| + |psi'(x)|)     for |x| <= r < 1,
+    ```
+
+    read off the eigen-equation `(1-x^2) psi'' - 2x psi' - c^2 x^2 psi = chi psi` by dividing by
+    `1-x^2`, which is bounded below strictly inside the band.
+  * **`prolate_finite_zeros`** -- a nontrivial prolate mode has finitely many zeros on `[-r, r]`.
+
+  This is the last ingredient.  `(19e)` for a fixed even mode is now: the coefficient bound (proved
+  here, explicit), nontriviality (a property of the mode, not an estimate), and the chain of the
+  previous instalments.  No spheroidal nodal count and no oscillation theorem are needed anywhere --
+  the count that the variation law consumes is produced by Gronwall uniqueness plus isolation, not
+  by classical Sturm-Liouville asymptotics.
+
+  The constant degrades as `r -> 1`, which is correct and unavoidable: the equation is singular at
+  the band edge, and the card's `(19e)` is a statement about the mode on the closed band with the
+  endpoint contribution handled separately (the "bounded endpoint jump" of the paper argument).
+
+- 2026-08-09 (hundred-and-eleventh instalment) -- **`(19e)` PROVED for a nontrivial prolate mode.**
+
+  ```text
+  prolate_boundedVariationOn_of_nontrivial :
+    eVariationOn psi (Icc (-r) r) <= ENNReal.ofReal (2 (|S| + 1) B)
+  ```
+
+  for `0 <= r < 1`, `c != 0`, any nontrivial solution of the prolate eigen-equation bounded by `B`
+  on the band, with `S` its critical set there.  Unconditional and axiom-clean.
+
+  * **`finite_prolate_turning_points`** -- the turning-point set is finite, being the zero set of a
+    quadratic; the only case needing care is `c = 0`, excluded.
+
+  The chain, complete, from the eigen-equation to the variation bound:
+
+  1. `prolate_secondDeriv_bound` -- `|psi''| <= K(|psi| + |psi'|)` strictly inside the band;
+  2. `eq_zero_of_double_zero_interior` -- a double zero kills the solution (Gronwall, both
+     directions);
+  3. `simple_zeros_of_nontrivial`, `finite_zeros_of_simple` -- nontrivial modes have finitely many,
+     simple, zeros;
+  4. `finite_prolate_turning_points` -- the quadratic factor contributes at most two more;
+  5. `sign_fixed_of_no_zero` -- the gaps are sign cells;
+  6. `prolate_criticalSet_subsingleton_of_rhs_pos/neg` -- one stationary point per sign cell;
+  7. `finite_critical_of_cellwise_subsingleton`, `exists_monotone_partition_of_finset` -- a
+     monotone partition;
+  8. `eVariationOn_le_of_piecewise_monotone` -- the variation bound.
+
+  Item 7 of the Lean plan named three remaining pieces: the classical spheroidal nodal count, the
+  ordered partition assembly, and the concrete representative.  Two of the three are now closed,
+  and the first turned out not to be needed at all -- Gronwall uniqueness supplies the finiteness
+  that the nodal count was meant to supply, without any spheroidal asymptotics.
+
+- 2026-08-09 (hundred-and-twelfth instalment) -- **Full-tree audit, and two more stale paragraphs
+  corrected.**
+
+  `scripts/formal_tools.py lint` reports **`formal lint passed`**: no active `sorry`, `admit`,
+  `axiom`, `opaque` or `unsafe` declaration anywhere in the tree, and no oversized file among the
+  modules added for this card (`ProlateExactChannel.lean` is the largest at 1303 lines, under the
+  1500 threshold).  The `HTGeometry` umbrella builds green.
+
+  Corrections to the card's own text:
+
+  * The "Exact open core" section said `(19e)`'s "universal variation lemma and concrete spheroidal
+    instance still require Lean formalization".  Both are now theorems, and the spheroidal instance
+    turned out to be unnecessary -- the paragraph now says so and names
+    `RHTower.prolate_boundedVariationOn_of_nontrivial`.
+  * Item 7's status line and its follow-on paragraph were corrected in the previous instalment.
+
+  Reading the card end to end, the analytic content of the route is now formalized: the radial
+  chain `(2)`--`(18)`, the passage from finite radial sums, the polar source estimate, and the
+  fixed-mode variation law `(19e)`.  What remains is spectral, not analytic:
+
+  * the weighted projective Gram convergence `R_(lambda,N) -> R_lambda`;
+  * `(4)`, `‖R_lambda‖_2^2 = O(d_lambda)`;
+  * identification of the classical real `h_0, h_4` modes in the actual operator spectrum, which is
+    what `(35)` reduces to and what item 7 still names as open.
+
+  All three are statements about the operator's spectral decomposition.  None of them is an
+  estimate of the kind the last hundred instalments produced, and none can be reached by
+  strengthening the radial analysis.
+
+- 2026-08-09 (hundred-and-thirteenth instalment) -- **The commutation kernel identity.**  New module
+  `RHTower/ProlateCommutationKernel.lean`, wired, all declarations axiom-clean.
+
+  The classical reason the eigenfunctions of the finite Fourier transform satisfy the prolate
+  differential equation is one algebraic identity, and it is now a theorem:
+
+  ```text
+  (1 - x^2) d^2_x k - 2x d_x k - c^2 x^2 k = (1 - t^2) d^2_t k - 2t d_t k - c^2 t^2 k,
+  k(x,t) = exp(i c x t).
+  ```
+
+  Both sides equal `-(c^2 t^2 + c^2 x^2 - c^2 x^2 t^2 + 2 i c x t) k`.
+
+  * **`bandKernel`, `hasDerivAt_bandKernel_fst/snd`,
+    `hasDerivAt_bandKernelDeriv_fst/snd`** -- the kernel and its first two derivatives in each
+    variable; the second derivatives use `I * I = -1` explicitly.
+  * **`prolateSymbol`, `prolate_bandKernel_symm`, `prolateSymbol_bandKernel_symm`** -- the identity,
+    stated both raw and through the operator symbol.
+
+  This is the heart of the spectral identification named in item 7 and `(35)`.  What it does not yet
+  do is *commute the operators*: that needs two integrations by parts under the integral sign, and
+  their boundary terms vanish because `1 - t^2` does at `t = ±1`.  The identity is the part with the
+  content; the integrations are the part with the analysis.
+
+- 2026-08-09 (hundred-and-fourteenth instalment) -- **The Lagrange identity and Sturm--Liouville
+  self-adjointness.**  New module `HTGeometry/SturmLagrangeIdentity.lean`, wired, all three
+  declarations axiom-clean.
+
+  * **`hasDerivAt_lagrangeBracket`** --
+
+    ```text
+    [p (u' v - u v')]' = (p u')' v - u (p v')',
+    ```
+
+    a pointwise derivative statement, proved by the product rule and `ring`.
+  * **`integral_sturm_pairing_sub`** -- integrating it turns the difference of the two pairings into
+    a boundary term.
+  * **`integral_sturm_pairing_sub_eq_zero`** -- when `p` vanishes at both endpoints the boundary
+    term vanishes and the operator is symmetric.
+
+  This is the analytic half of the spectral identification, and for the prolate weight `1 - t^2` the
+  endpoint hypothesis is automatic: no decay assumption on the solutions is needed, which is exactly
+  why the finite Fourier transform and the prolate operator commute on the band and not merely
+  formally.
+
+  A tactic note: `HasDerivAt.mul` and `.sub` produce goals containing `Pi.mul_apply`-style
+  applications like `(Du * v - u * Dv) x`, which `ring` cannot unfold; the `fun_mul` and `fun_sub`
+  variants produce the lambda form and close by `ring` immediately.
+
+- 2026-08-09 (hundred-and-fifteenth instalment) -- **The prolate operator is symmetric on the
+  band.**  Complex Lagrange identity added to `HTGeometry/SturmLagrangeIdentity.lean`; the prolate
+  instantiation added to `RHTower/ProlateCommutationKernel.lean`.  All axiom-clean.
+
+  * **`hasDerivAt_lagrangeBracket_complex`, `integral_sturm_pairing_sub_complex`,
+    `integral_sturm_pairing_sub_complex_eq_zero`** -- the identity and its integrated forms for
+    complex-valued solutions of a real variable, which is what the band kernel needs.
+  * **`prolateActionC`, `hasDerivAt_prolateWeight`, `integral_prolate_pairing_eq_zero`** --
+
+    ```text
+    integral_{-1}^{1} ((L u) v - u (L v)) = 0,   L u = ((1-t^2) u')' - c^2 t^2 u.
+    ```
+
+    The multiplication part `-c^2 t^2 u` cancels between the two sides with no hypothesis at all,
+    and the Lagrange boundary term vanishes because `1 - t^2` does at both endpoints.  No decay,
+    no boundary condition, no self-adjoint extension is imposed: the band is exactly where the
+    operator is symmetric for free.
+
+  Together with the kernel identity of the previous instalment this gives both halves of the
+  classical commutation argument.  What is still not formalized is the interchange that puts them
+  together -- differentiating `integral k(x,t) f(t) dt` twice under the integral sign -- which is a
+  dominated-convergence argument about the specific kernel, not a further structural fact.
+
+- 2026-08-09 (hundred-and-sixteenth instalment) -- **Differentiation under the band integral.**
+
+  * **`norm_bandKernel`** -- the kernel has modulus one, since its exponent is purely imaginary.
+  * **`continuous_bandKernel_snd`**.
+  * **`hasDerivAt_bandTransform`** --
+
+    ```text
+    d/dx integral_{-1}^{1} k(x,t) f(t) dt = integral_{-1}^{1} k(x,t) (i c t) f(t) dt
+    ```
+
+    for every interval-integrable `f`, by dominated-convergence differentiation with majorant
+    `(|c| + 1) ‖f‖`.
+
+  The majorant is what makes this unconditional: on the band `|t| <= 1`, so the kernel's
+  `x`-derivative has modulus `|c t| <= |c|`, and no decay or smoothness of `f` is needed beyond
+  integrability.  This is the interchange the previous instalment named as the remaining gap
+  between the kernel identity and the commutation of operators.
+
+  A trap: `Set.uIoc (-1) 1` and `Set.Ioc (-1) 1` are propositionally but not syntactically equal,
+  and `IntervalIntegrable.1.aestronglyMeasurable` produces the `Ioc` form while the
+  dominated-convergence lemma wants the `uIoc` form.  `Set.uIoc_of_le` bridges them; without it the
+  error reads as a type mismatch between two identical-looking measures.
+
+- 2026-08-09 (hundred-and-seventeenth instalment) -- **The second derivative under the band
+  integral.**
+
+  * **`intervalIntegrable_kernelMul`** -- a bounded continuous multiplier preserves interval
+    integrability on the band, with the bound supplied explicitly.
+  * **`hasDerivAt_bandTransformDeriv`** --
+
+    ```text
+    d/dx integral k(x,t) (i c t) f(t) dt = integral k(x,t) (-(c t)^2) f(t) dt.
+    ```
+
+  The band transform of an integrable `f` is therefore twice differentiable in `x`, with both
+  derivatives given by integrals of the same `f` against modified kernels.  The second application
+  of `hasDerivAt_bandTransform` is to the source `(i c t) f(t)`, which is integrable because
+  `|c t| <= |c|` on the band -- the same bound that made the first differentiation work.
+
+  With this the three ingredients of the commutation argument are all in place: the pointwise
+  kernel identity, the symmetry of the operator on the band, and both differentiations under the
+  integral sign.  What remains is the bookkeeping that combines them into
+  `L_x (K f) = K (L_t f)`.
+
+- 2026-08-09 (hundred-and-eighteenth instalment) -- **The prolate operator moves onto the kernel's
+  second variable.**
+
+  * **`intervalIntegrable_bandKernel_mul`** -- integrability of the kernel times a bounded
+    continuous multiplier times an integrable source.
+  * **`prolateAction_bandTransform_eq`** --
+
+    ```text
+    (1 - x^2) (K f)'' - 2x (K f)' - c^2 x^2 (K f)
+      = integral_{-1}^{1} [prolate symbol in t] k(x,t) f(t) dt,
+    ```
+
+    where the left side uses the two differentiations under the integral and the right side is the
+    operator acting in `t`.
+
+  This is the half of the commutation that needs the kernel identity, and it holds for **every**
+  interval-integrable `f` -- no smoothness, no decay, no eigenfunction property.  The remaining half
+  is the integration by parts that moves the operator from the kernel onto `f`, which is
+  `integral_prolate_pairing_eq_zero` and needs `f` twice differentiable with the two derivatives
+  interval-integrable.
+
+  Combining the two gives `L(K f) = K(L f)`: the commutation the classical spectral identification
+  rests on.
+
+- 2026-08-09 (hundred-and-nineteenth instalment) -- **THE COMMUTATION, PROVED.**
+
+  ```text
+  prolateAction_bandTransform_commutes :
+    (1 - x^2) (K f)'' - 2x (K f)' - c^2 x^2 (K f)
+      = integral_{-1}^{1} k(x,t) (L f)(t) dt,
+  ```
+
+  for every `f` that is interval-integrable, twice differentiable on the band, and whose two
+  pairings against the kernel are integrable.  `L f = ((1-t^2) f')' - c^2 t^2 f`.
+
+  This is the classical fact the whole spectral identification rests on: **the finite Fourier
+  transform commutes with the prolate differential operator on the band.**  Its three ingredients,
+  all now formalized:
+
+  1. `prolate_bandKernel_symm` -- the operator acts identically on the kernel's two variables;
+  2. `hasDerivAt_bandTransform`, `hasDerivAt_bandTransformDeriv` -- both differentiations under the
+     integral, with the majorant `(|c|+1)‖f‖` supplied by `|t| <= 1` on the band;
+  3. `integral_prolate_pairing_eq_zero` -- the operator is symmetric on the band, because `1 - t^2`
+     vanishes at both endpoints.
+
+  A consequence worth recording for the card: an eigenfunction of the band transform is, up to the
+  usual regularity, an eigenfunction of the prolate operator, and hence satisfies the eigen-equation
+  that `prolate_boundedVariationOn_of_nontrivial` consumes.  The two halves of item 7 -- the
+  variation law and the spectral identification -- are now joined by a formalized bridge; what is
+  still missing is only the regularity of the specific representative, not the mechanism.
+
+  A note on tactics: `linarith` cannot discharge `a - b = 0 |- a = b` over `ℂ`, since `ℂ` is not
+  ordered.  `sub_eq_zero.mp` is the right move and reads better anyway.
+
+- 2026-08-09 (hundred-and-twentieth instalment) -- **The regularity bootstrap.**
+
+  * **`bandEigenDeriv`, `bandEigenSecondDeriv`** -- the two derivatives of a band-transform
+    eigenfunction, given as transforms of the same eigenfunction against differentiated kernels.
+  * **`hasDerivAt_bandEigen`, `hasDerivAt_bandEigenDeriv`, `continuous_bandEigen`** -- an
+    eigenfunction of the band transform is continuous and twice differentiable, *with no smoothness
+    assumed*: the regularity is inherited from the kernel through the eigen-equation
+    `chi f = K f`.
+
+  This is the missing regularity of the representative.  The commutation theorem
+  `prolateAction_bandTransform_commutes` requires `f` twice differentiable on the band; for a band
+  eigenfunction that is now automatic, so the commutation applies to exactly the objects the card
+  cares about.
+
+  A trap: rewriting the eigen-equation as `f = fun y => chi^{-1} (K f) y` and then `rw`-ing it into
+  the goal replaces `f` *inside the integral too*, producing a nested transform that does not match.
+  `HasDerivAt.congr_of_eventuallyEq` transfers the derivative without touching the integrand, which
+  is the only way to use an eigen-equation as a rewriting rule for the function it defines.
+
+- 2026-08-09 (hundred-and-twenty-first instalment) -- **The prolate operator preserves the band
+  eigenspace.**
+
+  ```text
+  prolateAction_bandEigen_isEigen :
+    chi * (L f)(x) = integral_{-1}^{1} k(x,t) (L f)(t) dt
+  ```
+
+  whenever `chi f = K f` with `chi != 0`.  In words: if `f` is an eigenfunction of the finite
+  Fourier transform with eigenvalue `chi`, so is `L f`, with the *same* eigenvalue.
+
+  This is the classical statement that the two operators share their eigenspaces, and it is the
+  whole content of the spectral identification.  When `chi` is a simple eigenvalue the conclusion
+  forces `L f = alpha f` for a scalar `alpha` -- the prolate eigen-equation, which is exactly what
+  `RHTower.prolate_boundedVariationOn_of_nontrivial` and the whole `(19e)` chain consume.
+
+  Every step is now formalized except that simplicity, which is a spectral fact about the operator
+  and not a property of the differential equation.  The chain reads:
+
+  ```text
+  chi f = K f  (band eigenfunction)
+    -> f twice differentiable            (hasDerivAt_bandEigen, ...Deriv)
+    -> L (K f) = K (L f)                 (prolateAction_bandTransform_commutes)
+    -> chi (L f) = K (L f)               (this instalment)
+    -> [chi simple] L f = alpha f        (spectral input, open)
+    -> Var(f) = O(1)                     (prolate_boundedVariationOn_of_nontrivial)
+  ```
+
+- 2026-08-09 (hundred-and-twenty-second instalment) -- **Simplicity gives the prolate
+  eigen-equation; the spectral identification is closed modulo one spectral input.**
+
+  * **`prolateAction_bandEigen_eq_smul`** -- if every band eigenfunction with eigenvalue `chi` is a
+    multiple of `f`, then `L f = alpha f` for a scalar `alpha`: `f` solves the prolate differential
+    equation.
+
+  The simplicity hypothesis is now an explicit Lean hypothesis rather than prose in the card.  That
+  matters: it makes precise that the *only* thing separating a band eigenfunction from a prolate
+  mode is a statement about the multiplicity of the eigenvalue, and that nothing about the
+  differential equation, the kernel, or the regularity remains to be proved.
+
+  Item 7 and `(35)` therefore reduce to: the classical `h_0, h_4` eigenvalues of the even time-band
+  operator are simple.  That is a spectral fact about a specific operator -- the kind of statement
+  the corpus's `ConstrainedProlateSpectralIdentification` and `ConstrainedProlateConstrainedSpectrum`
+  modules address -- and it is not reachable from the analysis in this chain.
+
+  `formal lint` passes over the whole tree.
+
+- 2026-08-09 (hundred-and-twenty-third instalment) -- **The complex-to-real bridge: the two halves
+  of item 7 joined in Lean.**
+
+  * **`prolateActionC_ofReal`** -- the complex prolate action applied to a real function through the
+    coercion is the coercion of the real action.
+  * **`prolateSLAction_eq_of_prolateActionC`** -- hence a complex eigen-equation with a real
+    eigenvalue *is* the real eigen-equation, by injectivity of the coercion.
+  * **`prolate_boundedVariationOn_of_complex_eigen`** -- a real solution of the complex
+    eigen-equation has bounded variation on `[-r, r]`, with every hypothesis except nontriviality
+    and the eigen-equation itself discharged.
+
+  The spectral half of the card produces a *complex* eigen-equation (the band transform has complex
+  eigenvalues and the kernel is complex); the variation half consumes a *real* one.  Those were two
+  separate developments in the tree and nothing connected them.  They are connected now, and the
+  connector is one coercion lemma -- which is the right size for the gap, but it had to be written
+  before either half could be used with the other.
+
+  The card's route is therefore formalized end to end except for three spectral inputs, all named
+  and none analytic: the Gram convergence, `(4)`, and simplicity of the `h_0, h_4` eigenvalues.
+
+- 2026-08-09 (hundred-and-twenty-fourth instalment) -- **Simplicity is an ODE fact: the Wronskian
+  vanishes.**
+
+  * **`hasDerivAt_prolateWronskian_eq_zero`** -- the Lagrange bracket `(1-x^2)(u'v - uv')` has zero
+    derivative when `u` and `v` solve the same prolate eigen-equation, because its derivative is
+    `(L u)v - u(L v) = alpha u v - u alpha v = 0`.
+  * **`prolateWronskian_eq_zero`** -- hence the Wronskian is constant, and its value at `x = 1` is
+    zero because the weight `1 - x^2` vanishes there.  So it vanishes identically.
+
+  This changes the status of the last spectral input.  Simplicity of the eigenvalue was described
+  in the card as a spectral fact about the operator; for the *differential* operator it is not --
+  it is the vanishing of the Wronskian, which follows from the Lagrange identity plus the weight's
+  zero at the band edge, with no spectral theory at all.  Two prolate modes with the same eigenvalue
+  satisfy `u'v - uv' = 0` on the open band, hence are proportional wherever either is nonzero.
+
+  What this does *not* yet give is proportionality as a global statement (dividing by a solution
+  that may vanish), nor simplicity of the *band transform's* eigenvalues, which is a different
+  operator.  But the mechanism for the differential side is now a theorem rather than an assumption.
+
+- 2026-08-09 (hundred-and-twenty-fifth instalment) -- **Two prolate modes with the same eigenvalue
+  are proportional.**
+
+  * **`deriv_sub_const_mul`, `prolateSLAction_sub_const_mul`** -- linearity of the prolate action.
+  * **`prolate_eq_const_mul_of_same_eigenvalue`** --
+
+    ```text
+    v = (v x0 / u x0) * u    on [-r, r],    whenever u x0 != 0.
+    ```
+
+  The proof is the classical one, assembled from pieces built earlier in this session: the
+  Wronskian vanishes (`prolateWronskian_eq_zero`), so at a point where `u` is nonzero the
+  difference `w = v - (v/u) u` has a double zero; `w` solves the same equation by linearity; and
+  Grönwall uniqueness (`eq_zero_of_double_zero_interior`) kills it.
+
+  **Simplicity of the prolate eigenvalues is therefore a theorem here, not an assumption.**  The
+  eigenspace of the differential operator on `[-r, r]` is one-dimensional as soon as one mode is
+  nonzero somewhere -- no spectral theory, no Frobenius analysis at the singular endpoints, no
+  compactness.  The three ingredients are the Lagrange identity, the vanishing of the weight at the
+  band edge, and Grönwall.
+
+  What remains open is the *band transform's* spectrum, a different operator: `(4)` and the Gram
+  convergence.  The differential side of item 7 is closed.

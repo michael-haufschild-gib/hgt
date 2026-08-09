@@ -1,15 +1,15 @@
-# Observer holonomy boundary and prolongation horizon law
+# Observer component boundary and prolongation horizon law
 
 - **ID:** `nhg-observer-holonomy-prolongation-horizon`
 - **Stage:** 2 — fully proven on paper
 - **Field:** Nomological Homotopy Geometry
 - **Type:** UNIVERSAL THEOREM / OBSERVER FIBRATION KINEMATICS
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [ROUTE-INDEPENDENT]`
+- **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM]`
   `[RECURRENCE-LIFT EXACT SEQUENCE] [PROLONGATION-RANK HORIZON]`
   `[COST REQUIRES EXTRA PROPERNESS] [NOT HT EQUIVALENCE] [NOT RH]`
   `[NO LEAN WRITTEN OR BUILT]`
-- **Statement:** Closed observer recurrence has an open source lift exactly when the homotopy-fibre
-  connecting class is nontrivial. Unbounded source prolongation rank forces every fixed finite-rank
+- **Statement:** A closed observer loop cannot be closed by a fibre path exactly when the
+  homotopy-fibre component class is nontrivial. Unbounded source prolongation rank forces every fixed finite-rank
   observer family to lose infinitesimal law directions, but does not by itself force noncompact
   observed dynamics or nontrivial holonomy.
 
@@ -44,7 +44,7 @@ The standard long exact homotopy sequence contains
 
 ## 2. Closed observer, open lift
 
-### Theorem 2.1 — holonomy boundary criterion
+### Theorem 2.1 — component boundary criterion
 
 Let `gamma` be a loop in `Y` based at `y`, and lift it from `x` to a path `tilde gamma` in `X`.
 Then the endpoint `tilde gamma(1)` lies in `F`, and
@@ -56,8 +56,7 @@ Then the endpoint `tilde gamma(1)` lies in `F`, and
 \]
 
 The lifted path can be closed by a path inside the fibre if and only if `partial[gamma]` is the
-base component of `F`. Thus a closed observer loop has a genuinely open law lift exactly when its
-connecting class is nontrivial.
+base component of `F`. This is a component obstruction, not a connection-holonomy element.
 
 ### Proof
 
@@ -67,7 +66,8 @@ endpoint component in the fibre is trivial. `[PROVED HERE]`
 
 ### Corollary 2.2 — principal holonomy form
 
-If `p:X->Y` is a principal `G`-bundle with a specified path-lifting rule, there is a unique
+If `p:X->Y` is a principal `G`-bundle with a specified `G`-equivariant path-lifting rule compatible
+with path concatenation, there is a unique
 `h_gamma in G` satisfying
 
 \[
@@ -85,7 +85,7 @@ For the `n`-fold concatenation of the same loop,
 Consequently the observer can return after every loop while the marked source state advances
 through the powers of one vertical holonomy element.
 
-No curvature hypothesis is used. Flat bundles can have nontrivial holonomy.
+This holonomy statement uses the extra transport rule; it does not follow from the fibration LES.
 
 ## 3. Cost is additional constitutive data
 
@@ -184,11 +184,12 @@ Let `mathcal L` and `mathcal O` be formal moduli problems and let
 
 be an observer morphism. Replace it by a fibration without changing its homotopy fibre. Then:
 
-1. Theorem 2.1 measures observer-loop holonomy by the component boundary in the formal law fibre.
+1. Theorem 2.1 measures the obstruction to closing a lift by a fibre path. It does not measure
+   connection holonomy when the fibre is connected.
 2. Theorem 4.1 measures infinitesimal observer horizons using the tangent complexes of the
    prolongation tower.
-3. A complete theory must retain both. Local tangent curvature does not determine global
-   holonomy, and global recurrence does not determine tangent conservativity.
+3. A complete theory must retain component boundary, connection/higher holonomy, and prolongation
+   loss separately.
 
 This gives Nomological Homotopy Geometry two independent but compatible invariants:
 
@@ -196,7 +197,7 @@ This gives Nomological Homotopy Geometry two independent but compatible invarian
  \boxed{
  \text{local prolongation kernel}
  \quad\text{and}\quad
- \text{global holonomy boundary}.}
+ \text{global component boundary}.}
 \tag{OHP.14}
 \]
 
@@ -206,8 +207,9 @@ This gives Nomological Homotopy Geometry two independent but compatible invarian
    connecting map is zero.
 2. **Open lift need not have growing cost.** A nontrivial finite holonomy element has bounded
    powers. Divergence requires `(OHP.7)`.
-3. **Flatness does not kill holonomy.** A flat bundle associated to a nontrivial representation of
-   `pi_1(Y)` has zero local curvature and nontrivial boundary holonomy.
+3. **Component boundary can miss holonomy.** The trivial principal `U(1)` bundle over `S^1` can
+   carry a flat connection with nonidentity holonomy, while `pi_0(U(1))=0` forces the component
+   boundary to vanish.
 4. **HT does not force observed noncompactness.** An unbounded sequence `V_n` can map to the zero
    point observer, whose orbit is compact.
 5. **Noncompactness does not imply HT.** An infinite-dimensional topological vector space can be
@@ -215,8 +217,8 @@ This gives Nomological Homotopy Geometry two independent but compatible invarian
 6. **Finite rank loss need not be permanent under parallel refinement.** Adding observers with
    genuinely new tangent coordinates can make the product injective; serial observers cannot
    repair an already-lost direction.
-7. **Holonomy is not curvature by definition.** Local minimal curvature and global connecting
-   holonomy can vary independently.
+7. **Boundary is not holonomy.** Component boundary, connection holonomy, and relative Atiyah
+   curvature can vary independently.
 
 ## 7. Field consequence
 
@@ -224,7 +226,7 @@ The theorem replaces two false universal slogans by exact statements:
 
 \[
  \boxed{
- \text{closed observer + open lift}
+ \text{closed observer + no fibre-path closure}
  \iff
  \text{nonzero homotopy-fibre boundary},}
 \tag{OHP.15}
@@ -253,18 +255,18 @@ to homotopy are established parents. Relevant primary sources include:
 - Brahic--Ortiz, *Integration of 2-term representations up to homotopy via 2-functors*,
   <https://arxiv.org/abs/1608.00664>.
 
-The field-level content is the typed separation and coupling of observer recurrence, vertical
-holonomy, prolongation loss, and independently supplied action.
+The field-level content is the typed separation of observer recurrence, component boundary,
+connection holonomy, prolongation loss, and independently supplied cost.
 
 ## Gates
 
-- [x] exact recurrence/open-lift criterion
+- [x] exact fibre-component closure criterion
 - [x] cost-divergence boundary
 - [x] finite-observer prolongation horizon
 - [x] formal-law specialization
 - [x] hostile independence countermodels
 - [ ] construct one source-normalized law fibration with both nonzero invariants
-- [ ] prove a source-derived relation between minimal curvature and holonomy boundary
+- [ ] compare component boundary with independently defined connection/higher holonomy
 - [ ] formalize only after field foundations stabilize
 
 ## Lean-return note

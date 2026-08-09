@@ -129,14 +129,17 @@ vector has a solution; the corresponding detector combination annihilates every 
 pairing with the target at `1`, and the duality bound of `DetectorDuality` converts that into the floor
 `1/‖w‖`.  A family other than Báez-Duarte's inherits the whole route by supplying this one hypothesis for its
 own pairing functions. -/
-theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier)
-    (x : BDCarrier) (M : Fin (N + 1) → (StripPoint → ℂ))
+theorem exists_detectorCombination_floor_of_linearIndependent_pairings {N : ℕ}
+    (G : Fin N → BDCarrier) (x : BDCarrier) (M : Fin (N + 1) → (StripPoint → ℂ))
     (hM : ∀ (i : Fin N) (s : StripPoint),
       inner ℂ (bdDetector (one_sub_re_lt s.2.1)) (G i) = M i.castSucc s)
     (hMx : ∀ s : StripPoint, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
     (hli : LinearIndependent ℂ M) :
-    ∃ w : BDCarrier, (∀ i, inner ℂ w (G i) = 0) ∧ inner ℂ w x = 1 ∧
-      1 / ‖w‖ ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
+    ∃ (y : Fin (N + 1) → StripPoint) (a : Fin (N + 1) → ℂ),
+      (∀ i, inner ℂ (detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a) (G i) = 0)
+        ∧ inner ℂ (detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a) x = 1
+        ∧ 1 / (∑ j, ‖a j‖ / Real.sqrt (2 * ((y j : ℂ)).re - 1))
+            ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
   classical
   obtain ⟨y, hy⟩ := exists_det_ne_zero_of_linearIndependent M hli
   set A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ := Matrix.of fun i j => M i (y j) with hA
@@ -145,7 +148,9 @@ theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N
   have hsolve : A.mulVec b = e := by
     rw [hb, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv A (isUnit_iff_ne_zero.mpr hy),
       Matrix.one_mulVec]
-  set w : BDCarrier := ∑ j, (starRingEnd ℂ) (b j) • bdDetector (one_sub_re_lt (y j).2.1) with hw
+  set a : Fin (N + 1) → ℂ := fun j => (starRingEnd ℂ) (b j) with ha
+  set w : BDCarrier :=
+    detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a with hw
   have hrow : ∀ i : Fin (N + 1), ∑ j, b j * M i (y j) = e i := by
     intro i
     have h := congrFun hsolve i
@@ -159,7 +164,8 @@ theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N
           = b j * M i.castSucc (y j) := by
       intro j
       rw [inner_smul_left, RCLike.conj_conj, hM i (y j)]
-    rw [hw, sum_inner, Finset.sum_congr rfl fun j _ => hterm j, hrow i.castSucc, he]
+    rw [hw, detectorCombination, sum_inner, Finset.sum_congr rfl fun j _ => hterm j,
+      hrow i.castSucc, he]
     simp [Fin.castSucc_ne_last i]
   have hwx : inner ℂ w x = 1 := by
     have hterm : ∀ j : Fin (N + 1),
@@ -167,7 +173,8 @@ theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N
           = b j * M (Fin.last N) (y j) := by
       intro j
       rw [inner_smul_left, RCLike.conj_conj, hMx (y j)]
-    rw [hw, sum_inner, Finset.sum_congr rfl fun j _ => hterm j, hrow (Fin.last N), he]
+    rw [hw, detectorCombination, sum_inner, Finset.sum_congr rfl fun j _ => hterm j,
+      hrow (Fin.last N), he]
     simp
   have hbound := norm_inner_le_norm_mul_infDist_span (Set.range G) x w (by
     rintro _ ⟨i, rfl⟩
@@ -178,9 +185,32 @@ theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N
     rw [h, inner_zero_left] at hwx
     exact zero_ne_one hwx
   have hwpos : 0 < ‖w‖ := norm_pos_iff.mpr hwne
-  refine ⟨w, hwG, hwx, ?_⟩
-  rw [div_le_iff₀ hwpos, mul_comm]
-  exact hbound
+  refine ⟨y, a, hwG, hwx, ?_⟩
+  have htri : ‖w‖ ≤ ∑ j, ‖a j‖ / Real.sqrt (2 * ((y j : ℂ)).re - 1) := by
+    rw [hw]
+    exact norm_detectorCombination_le (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a
+  have hfloor : 1 / ‖w‖ ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
+    rw [div_le_iff₀ hwpos, mul_comm]
+    exact hbound
+  exact le_trans (one_div_le_one_div_of_le hwpos htri) hfloor
+
+/-- The floor in terms of the combination itself. -/
+theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier)
+    (x : BDCarrier) (M : Fin (N + 1) → (StripPoint → ℂ))
+    (hM : ∀ (i : Fin N) (s : StripPoint),
+      inner ℂ (bdDetector (one_sub_re_lt s.2.1)) (G i) = M i.castSucc s)
+    (hMx : ∀ s : StripPoint, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
+    (hli : LinearIndependent ℂ M) :
+    ∃ w : BDCarrier, (∀ i, inner ℂ w (G i) = 0) ∧ inner ℂ w x = 1 ∧
+      1 / ‖w‖ ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
+  obtain ⟨y, a, hwG, hwx, hfloor⟩ :=
+    exists_detectorCombination_floor_of_linearIndependent_pairings G x M hM hMx hli
+  refine ⟨detectorCombination (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a, hwG, hwx, ?_⟩
+  refine le_trans (one_div_le_one_div_of_le ?_ ?_) hfloor
+  · refine norm_pos_iff.mpr fun h => ?_
+    rw [h, inner_zero_left] at hwx
+    exact zero_ne_one hwx
+  · exact norm_detectorCombination_le (fun j => ((y j : ℂ))) (fun j => (y j).2.1) a
 
 /-- **The abstract obstruction.**  Independence of the pairing functions puts the target at positive distance
 from the span. -/
