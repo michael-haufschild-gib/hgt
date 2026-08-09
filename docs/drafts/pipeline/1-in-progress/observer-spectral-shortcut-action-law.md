@@ -196,7 +196,7 @@ than cosmetic.
    Fourier kernel evaluated at the dimensionless spectral action
    `t * Delta E`; the zero-action sector is exactly the completed plateau.
    This closes qualitative ensemble transfer but supplies no uniform rate.
-7. `../2-fully-proven/anticommuting-pauli-observer-rank-dominance.md`
+7. `../3-formalized/anticommuting-pauli-observer-rank-dominance.md`
    proves that every pairwise-anticommuting Pauli family has at most
    `2n+1` directions and, for `n,q>=2`, transverse codimension at least
    `v_(n,q)`.  The canonical noncommuting Clifford/spherical exact-return
