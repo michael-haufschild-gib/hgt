@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.BaezDuarteGram
+import GaloisForLFunctions.RHTower.NymanBeurlingCriterion
 
 /-!
 # The Báez-Duarte pairing with the target, in closed form
@@ -193,6 +194,85 @@ theorem sq_le_bdGram_self {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ ≤ 1) :
   calc (θ * Real.log θ) ^ 2 = (θ * |Real.log θ|) ^ 2 := by
         rw [mul_pow, mul_pow, sq_abs]
     _ ≤ ‖bdGen θ‖ ^ 2 := h2
+
+/-! ## The one-generator distance -/
+
+theorem bdGen_ne_zero {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1) : bdGen θ ≠ 0 := by
+  intro h
+  have hlow := norm_bdGen_lower hθ0 hθ1.le
+  rw [h, norm_zero] at hlow
+  have hlog : Real.log θ < 0 := Real.log_neg hθ0 hθ1
+  have : 0 < θ * |Real.log θ| := by
+    refine mul_pos hθ0 ?_
+    rw [abs_of_neg hlog]
+    linarith
+  linarith
+
+/-- **The exact distance to a single generator line.**  With the target a unit vector and the pairing
+`−θ log θ`, the best approximation by multiples of one generator leaves exactly
+`1 − (θ log θ)²/‖bdGen θ‖²`.  This is the `N = 1` case of the Báez-Duarte least-squares quantity, and the
+first *upper* bound on a Báez-Duarte distance in this file. -/
+theorem exists_norm_sq_sub_smul_bdGen {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1) :
+    ∃ c : ℂ, ‖bdTarget - c • bdGen θ‖ ^ 2
+      = 1 - (θ * Real.log θ) ^ 2 / ‖bdGen θ‖ ^ 2 := by
+  have hne : bdGen θ ≠ 0 := bdGen_ne_zero hθ0 hθ1
+  have hnpos : (0 : ℝ) < ‖bdGen θ‖ := norm_pos_iff.mpr hne
+  set m : ℝ := -(θ * Real.log θ) with hm
+  refine ⟨((m / ‖bdGen θ‖ ^ 2 : ℝ) : ℂ), ?_⟩
+  have hinner : inner ℂ bdTarget (((m / ‖bdGen θ‖ ^ 2 : ℝ) : ℂ) • bdGen θ)
+      = ((m / ‖bdGen θ‖ ^ 2 : ℝ) : ℂ) * ((m : ℝ) : ℂ) := by
+    rw [inner_smul_right]
+    congr 1
+    rw [← inner_conj_symm, inner_bdGen_bdTarget hθ0 hθ1.le, Complex.conj_ofReal, hm]
+  rw [norm_sub_sq (𝕜 := ℂ), hinner, norm_bdTarget, norm_smul, Complex.norm_real,
+    Real.norm_eq_abs]
+  have hre : RCLike.re (((m / ‖bdGen θ‖ ^ 2 : ℝ) : ℂ) * ((m : ℝ) : ℂ))
+      = m / ‖bdGen θ‖ ^ 2 * m := by
+    rw [← Complex.ofReal_mul]
+    show ((m / ‖bdGen θ‖ ^ 2 * m : ℝ) : ℂ).re = m / ‖bdGen θ‖ ^ 2 * m
+    exact Complex.ofReal_re _
+  rw [hre]
+  have habs : |m / ‖bdGen θ‖ ^ 2| * ‖bdGen θ‖ = |m| / ‖bdGen θ‖ := by
+    rw [abs_div, abs_of_pos (by positivity : (0:ℝ) < ‖bdGen θ‖ ^ 2)]
+    field_simp
+  rw [habs]
+  have hmsq : m ^ 2 = (θ * Real.log θ) ^ 2 := by rw [hm]; ring
+  have habs2 : (|m| / ‖bdGen θ‖) ^ 2 = m ^ 2 / ‖bdGen θ‖ ^ 2 := by
+    rw [div_pow, sq_abs]
+  rw [habs2, hmsq]
+  field_simp
+  ring
+
+/-- **A single-generator sufficient condition for the Riemann hypothesis.**  If Cauchy--Schwarz against the
+target is saturated by one generator — that is, if `‖bdGen θ‖` attains its lower bound `θ|log θ|` — then the
+target lies on that generator's line, hence in the closed span, hence the Riemann hypothesis holds.
+
+This is the `N = 1`, and therefore weakest, instance of the criterion, and the equality is expected to
+fail.  Its content is to identify what the criterion is sensitive to: the ratio `θ|log θ| / ‖bdGen θ‖`,
+i.e. the Gram diagonal `bdGram θ θ`.  Every quantitative statement about Báez-Duarte distances is a
+statement about how close that ratio (or its many-generator analogue) gets to `1`. -/
+theorem riemannHypothesis_of_norm_bdGen_eq {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1)
+    (h : ‖bdGen θ‖ = θ * |Real.log θ|) : RiemannHypothesis := by
+  have hne : bdGen θ ≠ 0 := bdGen_ne_zero hθ0 hθ1
+  have hnpos : (0 : ℝ) < ‖bdGen θ‖ := norm_pos_iff.mpr hne
+  obtain ⟨c, hc⟩ := exists_norm_sq_sub_smul_bdGen hθ0 hθ1
+  have hsq : (θ * Real.log θ) ^ 2 = ‖bdGen θ‖ ^ 2 := by
+    rw [h, mul_pow, mul_pow, sq_abs]
+  rw [hsq, div_self (by positivity : ‖bdGen θ‖ ^ 2 ≠ 0), sub_self] at hc
+  have hzero : bdTarget - c • bdGen θ = 0 := by
+    have : ‖bdTarget - c • bdGen θ‖ = 0 := by
+      nlinarith [norm_nonneg (bdTarget - c • bdGen θ), hc]
+    exact norm_eq_zero.mp this
+  have hmem : bdTarget ∈
+      Submodule.span ℂ (Set.range (fun i : bdIndex => bdGen i.1)) := by
+    have hval : bdTarget = c • bdGen θ := by
+      rw [← sub_eq_zero]
+      exact hzero
+    rw [hval]
+    refine Submodule.smul_mem _ c (Submodule.subset_span ?_)
+    exact ⟨⟨θ, hθ0, hθ1.le⟩, rfl⟩
+  exact riemannHypothesis_of_bdTarget_mem_closedSpan
+    (Submodule.le_topologicalClosure _ hmem)
 
 end RHTower
 

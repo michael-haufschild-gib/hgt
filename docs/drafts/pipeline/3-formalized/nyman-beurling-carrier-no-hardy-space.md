@@ -148,3 +148,14 @@ The evaluation uses no zeta function and — worth recording — **no Euler–Ma
 so the constant `∫_1^∞ {v}v^{−2}dv = 1 − γ` cancels between the two terms and never has to be evaluated.
 That cancellation is exactly what Báez-Duarte's normalisation `{θ/t} − θ{1/t}` is for, and it is why this
 step is elementary while the Gram entries are not.
+
+Two further consequences, in the same file:
+
+* `exists_norm_sq_sub_smul_bdGen` — the exact `N = 1` least-squares value: the best approximation of the
+  target by multiples of a single generator leaves `1 − (θ log θ)²/‖bdGen θ‖²`.  This is the first *upper*
+  bound on a Báez-Duarte distance in the corpus (everything else here is a lower bound).
+* `riemannHypothesis_of_norm_bdGen_eq` — if Cauchy–Schwarz is saturated by one generator, i.e.
+  `‖bdGen θ‖ = θ|log θ|`, then RH holds.  This is the weakest instance of the criterion and the equality is
+  expected to fail; its content is to name what the criterion is sensitive to — the ratio
+  `θ|log θ|/‖bdGen θ‖`, i.e. the Gram diagonal.  Every quantitative Báez-Duarte statement is a statement
+  about how close that ratio, or its many-generator analogue, gets to `1`.
