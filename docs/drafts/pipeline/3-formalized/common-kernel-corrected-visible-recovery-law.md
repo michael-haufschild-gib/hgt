@@ -1,10 +1,11 @@
 # Common-kernel-corrected visible recovery law
 
 - **ID:** common-kernel-corrected-visible-recovery-law
-- **Stage:** 2 — fully proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Parent:** `visible-kernel-recovery-hall-law.md`
-- **Status:** `[PROVED HERE] [FORMAL-SOURCE-CHECKED] [NOVELTY NOT CLAIMED]`
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [NOVELTY NOT CLAIMED]`
+- **Lean certificate:** `common-kernel-corrected-visible-recovery-law-formalized.md`
 
 ## Exact theorem
 
@@ -109,9 +110,17 @@ to final audit.
 
 `HTGeometry/TwoReplicaGraphVisibleRecovery.lean` instantiates the recovery
 map with the connected physical graph Casimir and proves (3) as
-`finiteTwoReplica_graphVisibleRecovery_finrank_mod_synchronized`. Targeted
-source elaboration passes; its axiom audit and the audit of graph-Casimir
-swap-range preservation report only the same three standard axioms.
+`finiteTwoReplica_graphVisibleRecovery_finrank_mod_synchronized`.
+
+`HTGeometry/GraphVisibleRecoveryTwoModeCorrection.lean` makes the card's headline reading exact.
+`finrank_inf_globalSynchronized_le_two` bounds the correction term by two for *any* source, since
+`N` is two-dimensional on a nonempty register, and
+`finiteTwoReplica_graphVisibleRecovery_finrank_le_shadow_add_two` restates `(3)` with that constant.
+"Loses no dimension beyond the two universal modes" is then a statement about a number, not about a
+subspace whose size is left open.
+
+Umbrella build passes; the axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Log
 
@@ -120,3 +129,4 @@ swap-range preservation report only the same three standard axioms.
 - 2026-08-05 — formal source and axiom audit complete.
 - 2026-08-05 — physical connected-graph mixed recovery theorem formalized
   for every `q >= 2`; remaining premises isolated exactly.
+- 2026-08-09 — umbrella build closed; correction term bounded by the constant 2.
