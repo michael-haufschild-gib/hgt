@@ -1,9 +1,11 @@
 # Visible-kernel recovery Hall law
 
 - **ID:** visible-kernel-recovery-hall-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `static-local-complexity-law.md`, two-replica gate O4.12z25
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL]`
+- **Lean certificate:** `visible-kernel-recovery-hall-law-formalized.md`
 - **Statement:** Forward overlap in a two-layer Hall problem need not be repaid at its full dimension. Visible quotient rank pays the exposed source directions, while an injective return map need recover only the kernel hidden inside already occupied output.
 
 ## Goal
@@ -140,10 +142,13 @@ therefore closes mixed singlet/nonsinglet Hall expansion for canonical obstructi
   Lie-invariant; that would be a fourth-moment leap. Casimir preservation instead uses the explicit
   finite-group-algebra identity `(5a)`.
 - Global identity and global swap must be quotiented before `K_2` is injective.
-- This closes two-replica Hall on paper. Lean now proves the one-site Clifford normalization,
-  twirl range `span{I,F}`, idempotent canonical split, and exact `Fin 2`/Boolean transport. Remaining
-  formal work is the product-local lift of those results, identity `(5a)` and `K_1` injectivity,
-  quotient detector `(7)`, and physical edge-Casimir restriction.
+- This closes two-replica Hall. All four items once listed as remaining are formalized: the
+  product-local lift (`global-product-clifford-twirl-range-law`), identity `(5a)`
+  (`finiteTwoReplicaSingleSiteCollectiveCommutator_square_groupAlgebra`) with `K_1` injectivity
+  (`finiteTwoReplicaSingleSiteCollectiveSquare_injective_on_productCliffordTwirl_ker`), the quotient
+  detector `(7)` (`aggregate-pauli-visible-quotient-detector-law`), and the physical edge-Casimir
+  restriction (`two-replica-global-physical-edge-casimir-law`,
+  `positive-graph-edge-casimir-kernel-law`).
 
 ## Formal target
 
@@ -156,6 +161,20 @@ rank from an injective assembly into output modulo occupied target input;
 `invariantSubspace_le_shadow_of_linearFamilySquare_injective` derives reproduction of invariant
 target input from injective quadratic return; and
 `quadraticHiddenKernelRecovery_of_visibleQuotient` combines all mechanisms.
+
+`HTGeometry/TwoReplicaSingleSiteZeroTwirlRecovery.lean` supplies `(5a)`'s consequence: the one-site
+collective family has a Hilbert--Schmidt energy identity, its squared sum `K_1` is injective on the
+zero-twirl sector, and therefore the zero-twirl layer reproduces itself — which is the premise the
+mixed recovery inequality was reduced to.
+
+`HTGeometry/TwoReplicaHallSaturationCanonical.lean` assembles the result at the canonical
+obstruction with no hypothesis beyond `q >= 2`, a nonempty register, and a preconnected graph:
+
+    canonicalTwoReplicaObstruction_finrank_le_shadow_add_two
+
+The canonical weight-at-most-`q` obstruction expands under its own family up to two dimensions --
+the global identity and the global replica swap -- whatever the register and whatever the
+preconnected interaction graph.
 `HTGeometry/TwoReplicaCliffordTwirlHallSymmetryReduction.lean` proves the exact one-site Clifford
 normalizer covariance, canonical-maximizer invariance, twirl range `span{I,F}`, the idempotent
 range/kernel split, and transport into the Boolean physical convention. Concrete product-local

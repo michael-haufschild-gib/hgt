@@ -54,9 +54,20 @@ is what the hostile audit demands.
    inequality holds with the constant `2`.  This is the form a Hall argument uses: the correction is
    an absolute constant, independent of the register.
 
+## `(3)` is discharged
+
+The card lists `(3)` as unproved, and it was when the card was written.  It is proved for the
+canonical obstruction in `HTGeometry/TwoReplicaSingleSiteZeroTwirlRecovery.lean`: the one-site
+collective family has a Hilbert–Schmidt energy identity, its squared sum is injective on the
+zero-twirl sector, and so the zero-twirl layer lies in its own one-step shadow.  The route is *not*
+nonzero-character Hall — the card is right that that would not suffice — but the one-site quadratic
+return, which sees the anisotropic directions too.
+
+`canonicalTwoReplicaObstruction_zeroTwirl_reproduced` states it at the canonical obstruction, and
+`canonicalTwoReplicaObstruction_finrank_le_shadow_add_two` is the resulting unconditional
+inequality.  See `visible-kernel-recovery-hall-law-formalized.md`.
+
 ## Not claimed
 
-The card's limits stand: this closes the mixed visible-recovery interface, not full two-replica
-Hall, and nothing about anti-concentration, complexity growth, plateau, or recurrence.  Discharging
-`(3)` for the complete canonical zero-twirl layer is the open problem, and the card is explicit that
-nonzero-character Hall alone does not imply it — zero-character anisotropic directions remain.
+The card's remaining limits stand: nothing about anti-concentration, complexity growth, plateau, or
+recurrence follows from these dimension counts.

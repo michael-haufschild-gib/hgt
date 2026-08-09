@@ -46,10 +46,17 @@ The distinction matters for the card's own claim: an absolute constant independe
 is what makes "unreduced all-subspaces Hall is false, but Hall modulo two modes holds" a usable
 statement rather than a bookkeeping identity.
 
+## Premise status
+
+`(3)` carries visible-rank, hidden-image, and `U_W`-reproduction premises.  All three are supplied
+for the canonical product-Clifford decomposition — the reproduction premise by the one-site
+quadratic return in `HTGeometry/TwoReplicaSingleSiteZeroTwirlRecovery.lean` — giving the
+unconditional inequality recorded on `visible-kernel-recovery-hall-law-formalized.md`.
+
+The safety property the card notes is unaffected: if the recovery map had zero modes outside `N`,
+the hypothesis would simply fail and the theorem would draw no false Hall conclusion.
+
 ## Not claimed
 
-The card's hostile audit stands.  `(3)` still carries its visible-rank, hidden-image, and
-`U_W`-reproduction premises; deriving them for the canonical product-Clifford decomposition is the
-open work, tracked on `product-clifford-visible-recovery-reduction-law` and
-`visible-kernel-recovery-hall-law`.  If the recovery map had zero modes outside `N`, the hypothesis
-would simply fail — the theorem draws no false Hall conclusion.
+Nothing about anti-concentration, complexity growth, plateau, or recurrence follows from these
+dimension counts.

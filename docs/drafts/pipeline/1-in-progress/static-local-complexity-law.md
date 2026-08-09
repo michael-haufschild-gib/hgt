@@ -4831,7 +4831,7 @@ receive a new title and an independent significance audit.
   `K_2` injective on the singlet layer after quotienting global identity and global swap. Visible
   range lies in nonsinglet layer and recovered kernel lies in singlet layer, hence their dimensions
   add and rank-nullity closes mixed Hall. Dependency-closed proof is in
-  `../2-fully-proven/visible-kernel-recovery-hall-law.md`. Abstract capstone
+  `../3-formalized/visible-kernel-recovery-hall-law.md`. Abstract capstone
   `visibleKernelRecovery_subspace_finrank` is formalized in
   `HTGeometry/VisibleKernelRecoveryHallExpansion.lean`. The same module formalizes quadratic return
   `linearFamilySquare`, proves hidden first images return inside one-step target shadow, and derives
@@ -5569,3 +5569,79 @@ receive a new title and an independent significance audit.
   `../2-fully-proven/radial-krylov-projected-complete-incidence-law.md`.
   Lean corpus was inspected read only; no Lean file, build, or process was
   touched during refactoring.
+- 2026-08-09 -- Removed the stabilizer seed's probability--height tradeoff
+  without a Haar seed or design-mixing theorem.  Sample a square-free
+  degree-at-most-three polynomial `h:{0,1}^n -> Z/8Z` and prepare the exact
+  cubic-phase state `D^(-1/2) sum_x exp(2 pi i h(x)/8)|x>`.  Reed--Muller dual
+  distance `16`, lifted through an odd minor to `Z/8Z`, makes any fifteen
+  distinct phases independent uniform eighth roots, while every seed has an
+  exact `O(n^3)` finite-alphabet circuit.  For every orthonormal basis `e`,
+  product-torus Poincare and the exact Steinhaus fourth/sixth moments give
+  `E_h sum_j|<e_j,chi_h>|^4 <= 2/D` and variance at most `96/D^3`.  Eight
+  coordinate moments suffice, so fifteen-wise finite phases inherit the
+  bounds exactly for an arbitrary complex Hamiltonian eigenbasis.  Hence
+  collision is at most `(2+kappa)/D` with failure at most
+  `96/(kappa^2 D)`.  Composing the existing collision-capacity law, fixed-shell
+  angular dephasing, continuum speed mesh, generic cyclicity/recurrence, and
+  permanent local two-query separator yields, with probability `1-O(1/D)`,
+  one fixed Hamiltonian--seed pair of depth `Omega(D/log n)` continuously for
+  `2^(Omega(D))` time, followed by low-complexity recurrence, while locality
+  remains distinguishable from Haar at every time.  Fubini over the finite
+  cubic family and the integrated positive-part second moment fix one
+  `O(n^3)`-preparable seed per `n`, simultaneously for every collision threshold, with the same
+  Hamiltonian-bad probability, so only the Hamiltonian need be sampled.  This closes full plateau
+  height, lifetime, high probability, recurrence, and locality simultaneously.
+  It does not bound first onset or prove the initial linear ramp; finite seed
+  moments cannot replace the open growing-replica dynamical incidence law.
+  Paper proof and hostile audit:
+  `../2-fully-proven/cubic-phase-seeded-static-local-full-scale-plateau-law.md`.
+  Nakata--Koashi--Murao already supply closely related diagonal-unitary
+  design/controlled-phase seed infrastructure, so seed preparation is not a
+  novelty claim.  Candidate new content starts at basis-uniform collision
+  concentration and its static-local plateau/recurrence/locality composition.
+  Lean remained read only during the active refactor.
+- 2026-08-09 -- Corrected the finite-onset invariant from an exponentially
+  amplified monomial/Bures moment to a bounded hypothesis test.  For squared
+  target overlap `x`, fidelity thresholds `b<a`, replica order `r`, and
+  `k=ceil(r(a+b)/2)`, the binomial-tail polynomial
+  `B_(r,k)(x)=P{Bin(r,x)>=k}` is the expectation of one literal orthogonal
+  projector on `r` replicas.  Hoeffding gives
+  `(1-eta_r)1_(x>=a)<=B_(r,k)(x)<=1_(x>=b)+eta_r`, with
+  `eta_r=exp(-r(a-b)^2/2)`.  Taking the maximum over the actual distinct
+  depth-`s` endpoint image before source integration yields a complete,
+  duplication-invariant incidence action sandwiched between the two physical
+  shortcut probabilities.  Differentiating the binomial tail telescopes to
+  the `Beta(k,r-k+1)` density, so this action is exactly a unit-mass
+  beta-window average of complete approximate-tube coarea mass.  A source
+  sheet of probability `p` and unit overlap contributes exactly `p`; the old
+  monomial reporter contributes `a^(-r)p`.  Thus Bures minimax remains exact
+  inside its ellipsoidal monomial class but is exponentially too strong as
+  the mandatory finite-onset invariant when rare return/easy sheets are
+  present.  The corrected open core is the weaker and radius-slack-sharp
+  bound `I_(r;a,b)=o_n(1)` at scale-matched `r,t,s`, with target-independent
+  easy/return excision.  Paper proof and hostile audit:
+  `../2-fully-proven/beta-threshold-complete-incidence-law.md`.  No Brown
+  growth claim follows yet; Lean remained read only during refactoring.
+- 2026-08-09 -- Removed scale-matched order `r=Theta(D)` from the mandatory
+  Brown-front formulation.  Fixed fidelity slack and the bounded binomial
+  reporter needs only `r_n=ceil(4 log(n)/(a-b)^2)` to approximate the complete
+  shortcut event at one fixed time within `n^(-2)`, regardless of target count
+  or circuit depth.  A continuous ramp through time `Theta(D)` has
+  `O(D poly(n))` speed-mesh points and needs only `r=O(log D)=O(n)` for the
+  complete temporal union, still exponentially below `Theta(D)`.
+  For an orthogonal spectral orbit with largest retained weight `p_*`, the
+  complete target maximum followed by the binomial test has phase gradient
+  squared at most `4r_n^2 p_*`; finite maxima preserve this constant without
+  circuit entropy.  One common light filter turns collision `C<=c/D` into
+  `p_*<=c/(rho^2D)`, hence conditional phase-Haar variance
+  `O((log n)^2/D)` at one time and `O(n^2/D)` on the full Brown grid, while
+  spending only fixed observational slack.  This
+  falsifies growing-replica observer crowding and all-character
+  pseudodeterminants as logically necessary invariants.  It does not close
+  growth: a singular static-Hamiltonian phase graph may still concentrate on
+  a Haar-rare circuit tube.  New minimal core is quantitative physical-graph
+  mixing for this one bounded, low-influence, complete-incidence observable at
+  Brown time/depth after target-independent return excision.  Paper proof and
+  hostile audit:
+  `../2-fully-proven/low-replica-complete-incidence-influence-law.md`.  Lean
+  remained read only during corpus refactoring.
