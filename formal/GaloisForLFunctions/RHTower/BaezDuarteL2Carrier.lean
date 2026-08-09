@@ -361,23 +361,36 @@ theorem inner_bdDetector_bdGen_eq_zero {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : 
   rw [inner_bdDetector_bdGen hρ hρ1 i.2.1 i.2.2, hzero]
   simp
 
-/-- **The concrete closure obstruction.**  At a zero of zeta off the critical line the Nyman--Beurling
-target is not in the closed span of the Báez-Duarte generators.  This is
+/-- **The closure obstruction for an arbitrary subfamily.**  At a zero of zeta off the critical line the
+Nyman--Beurling target is not in the closed span of *any* family of Báez-Duarte generators.  Passing to a
+subfamily makes the criterion stronger, so the family form is the one to use; the full family and the
+discrete family `θ = 1/n` are instances.  This is
 `HTGeometry.not_mem_closedSpan_of_continuous_evaluation` with the source realization supplied. -/
-theorem bdTarget_notMem_closedSpan_of_zero {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 1)
+theorem bdTarget_notMem_closedSpan_family_of_zero {I : Type*} (θ : I → ℝ)
+    (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 1)
     (hzero : riemannZeta ρ = 0) :
     bdTarget ∉
-      (Submodule.span ℂ (Set.range (fun i : bdIndex => bdGen i.1))).topologicalClosure := by
+      (Submodule.span ℂ (Set.range (fun i : I => bdGen (θ i)))).topologicalClosure := by
   have hρ0 : ρ ≠ 0 := by
     intro h
     rw [h, Complex.zero_re] at hρ
     linarith
   refine GaloisForLFunctions.HTGeometry.not_mem_closedSpan_of_continuous_evaluation
-    (innerSL ℂ (bdDetector (one_sub_re_lt hρ))) bdTarget (fun i : bdIndex => bdGen i.1)
-    (fun i => inner_bdDetector_bdGen_eq_zero hρ hρ1 hzero i) ?_
-  show inner ℂ (bdDetector (one_sub_re_lt hρ)) bdTarget ≠ 0
-  rw [inner_bdDetector_bdTarget hρ]
-  exact one_div_ne_zero hρ0
+    (innerSL ℂ (bdDetector (one_sub_re_lt hρ))) bdTarget (fun i : I => bdGen (θ i))
+    (fun i => ?_) ?_
+  · show inner ℂ (bdDetector (one_sub_re_lt hρ)) (bdGen (θ i)) = 0
+    rw [inner_bdDetector_bdGen hρ hρ1 (hθ i).1 (hθ i).2, hzero]
+    simp
+  · show inner ℂ (bdDetector (one_sub_re_lt hρ)) bdTarget ≠ 0
+    rw [inner_bdDetector_bdTarget hρ]
+    exact one_div_ne_zero hρ0
+
+/-- **The concrete closure obstruction** for the full generator family. -/
+theorem bdTarget_notMem_closedSpan_of_zero {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 1)
+    (hzero : riemannZeta ρ = 0) :
+    bdTarget ∉
+      (Submodule.span ℂ (Set.range (fun i : bdIndex => bdGen i.1))).topologicalClosure :=
+  bdTarget_notMem_closedSpan_family_of_zero (fun i : bdIndex => i.1) (fun i => i.2) hρ hρ1 hzero
 
 /-- **The quantitative floor at a point of the right half-plane.**  Every element of the carrier
 annihilated by the detector at `ρ` stays at distance at least `√(2Re ρ − 1)/|ρ|` from the target.  No
@@ -413,15 +426,25 @@ theorem bdTarget_dist_floor {ρ : ℂ} (hρ : 1 / 2 < ρ.re) {G : BDCarrier}
 combination of Báez-Duarte generators — and every `L²` limit of such — stays at distance at least
 `√(2Re ρ − 1)/|ρ|` from the target.  So the Báez-Duarte distances cannot tend to zero, with an explicit
 modulus. -/
+theorem bdTarget_dist_floor_of_mem_closedSpan_family {I : Type*} (θ : I → ℝ)
+    (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 1)
+    (hzero : riemannZeta ρ = 0) {G : BDCarrier}
+    (hG : G ∈ (Submodule.span ℂ (Set.range (fun i : I => bdGen (θ i)))).topologicalClosure) :
+    Real.sqrt (2 * ρ.re - 1) / ‖ρ‖ ≤ ‖bdTarget - G‖ := by
+  refine bdTarget_dist_floor hρ ?_
+  refine GaloisForLFunctions.HTGeometry.continuousLinearMap_eq_zero_on_closedSpan
+    (innerSL ℂ (bdDetector (one_sub_re_lt hρ))) (fun i : I => bdGen (θ i)) (fun i => ?_) hG
+  show inner ℂ (bdDetector (one_sub_re_lt hρ)) (bdGen (θ i)) = 0
+  rw [inner_bdDetector_bdGen hρ hρ1 (hθ i).1 (hθ i).2, hzero]
+  simp
+
+/-- The floor for the full generator family. -/
 theorem bdTarget_dist_floor_of_mem_closedSpan {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ1 : ρ.re < 1)
     (hzero : riemannZeta ρ = 0) {G : BDCarrier}
     (hG : G ∈ (Submodule.span ℂ (Set.range (fun i : bdIndex => bdGen i.1))).topologicalClosure) :
-    Real.sqrt (2 * ρ.re - 1) / ‖ρ‖ ≤ ‖bdTarget - G‖ := by
-  refine bdTarget_dist_floor hρ ?_
-  have hker := GaloisForLFunctions.HTGeometry.continuousLinearMap_eq_zero_on_closedSpan
-    (innerSL ℂ (bdDetector (one_sub_re_lt hρ))) (fun i : bdIndex => bdGen i.1)
-    (fun i => inner_bdDetector_bdGen_eq_zero hρ hρ1 hzero i) hG
-  exact hker
+    Real.sqrt (2 * ρ.re - 1) / ‖ρ‖ ≤ ‖bdTarget - G‖ :=
+  bdTarget_dist_floor_of_mem_closedSpan_family (fun i : bdIndex => i.1) (fun i => i.2) hρ hρ1 hzero
+    hG
 
 /-- **The floor is the corpus's `nbFloor`.**  The scalar bookkeeping of `QuantitativeNymanBeurling` is
 attached to the actual `L²` distances: the modulus `m` is `1/|ρ|` and the boundary distance `σ` is

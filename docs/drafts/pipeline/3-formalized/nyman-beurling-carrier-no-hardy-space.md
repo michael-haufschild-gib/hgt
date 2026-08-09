@@ -87,3 +87,43 @@ concrete follow-ups inside reach of this file:
    `⟪bdGen θ₁, bdGen θ₂⟫` is an explicit integral of fractional parts. Computing it is the entry point to
    the quantitative upper bounds, and it is exactly the kind of object `FractionalPartZeta` already
    handles.
+
+## Addendum (same day): the criterion, and the Gram object
+
+Both follow-ups named above are done.
+
+**1. The criterion, sufficient direction.** `RHTower/NymanBeurlingCriterion.lean`. The corpus already had
+the "where does a counterexample live" bookkeeping (`rh_iff_xi_ne_zero_right`, `xi_zero_re_mem_open_unit`,
+`xi_eq_zero_iff_riemannZeta_eq_zero_and_nontrivial`), so no new analysis was needed:
+
+* `exists_zetaZero_re_gt_half_of_not_riemannHypothesis` — failure of RH yields a zero of `ζ` with
+  `½ < Re ρ < 1`;
+* `riemannHypothesis_of_bdTarget_mem_closedSpan` — **if the target lies in the closed span of the
+  Báez-Duarte generators, the Riemann hypothesis holds**;
+* `riemannHypothesis_of_bdTarget_mem_closedSpan_family` — the same for an *arbitrary* subfamily of
+  dilations `θ ∈ (0,1]`, which is strictly stronger (a smaller span is harder to reach), so this is the
+  form to use;
+* `riemannHypothesis_of_bdTarget_mem_closedSpan_discrete` — the instance at `θ = 1/(n+1)`, the discrete
+  Báez-Duarte system the literature works with;
+* `exists_pos_bdDist_floor_of_not_riemannHypothesis` and its discrete counterpart — the quantitative
+  contrapositive: if RH fails, one positive constant lies below *every* Báez-Duarte distance, so the
+  approximation is obstructed rather than merely slow.
+
+This is the direction an actual proof of RH would consume: it reduces RH to a concrete approximation
+statement in an explicit `L²` space, with no zeta-side hypothesis anywhere in the chain.
+
+**2. The Gram object.** `RHTower/BaezDuarteGram.lean`. Every generator is real valued
+(`bdGenFun_eq_ofReal`), so the carrier inner product is the complexification of the classical real Gram
+integral
+
+`bdGram θ₁ θ₂ = ∫₁^∞ ({θ₁u} − θ₁{u})({θ₂u} − θ₂{u}) u^{-2} du`
+
+(`inner_bdGen_eq_bdGram`), which is symmetric (`bdGram_symm`), has the squared norms on its diagonal
+(`bdGram_self`), and is positive semidefinite with the quadratic form equal to the squared norm of the
+corresponding combination (`bdGram_quadraticForm_eq_norm_sq`, `bdGram_quadraticForm_nonneg`). Nothing here
+evaluates the integral — the point is that the least-squares object of the quantitative theory is now a
+well-posed unconditional definition in the corpus.
+
+**Still open, and this is the whole remaining content:** the converse direction, RH ⟹ the distances tend
+to zero. Evaluating `bdGram` in closed form is the classical entry point (for rational ratios it is a
+cotangent sum), and it is real analytic work, not bookkeeping.
