@@ -114,8 +114,8 @@ theorem interpolates_inv_zeta_or_exists_bdDist_floor {N M : ℕ} (θ : Fin N →
     (hρ1 : ∀ j, (ρ j).re < 1) :
     (∃ d : Fin N → ℂ, ∀ j, (∑ i, d i * (((θ i : ℝ) : ℂ) ^ ρ j - ((θ i : ℝ) : ℂ)))
         * riemannZeta (ρ j) = 1)
-      ∨ ∃ a : Fin M → ℂ, (∑ j, (starRingEnd ℂ) (a j) * (1 / ρ j) ≠ 0) ∧
-          ‖∑ j, (starRingEnd ℂ) (a j) * (1 / ρ j)‖ / ‖detectorCombination ρ hρ a‖ ≤ bdDist θ := by
+      ∨ (0 < bdDist θ ∧ ∃ a : Fin M → ℂ, (∑ j, (starRingEnd ℂ) (a j) * (1 / ρ j) ≠ 0) ∧
+          ‖∑ j, (starRingEnd ℂ) (a j) * (1 / ρ j)‖ / ‖detectorCombination ρ hρ a‖ ≤ bdDist θ) := by
   rcases exists_separating_or_mem_span_range (𝕜 := ℂ) (sampledGenRow θ ρ) (sampledTargetVec ρ) with
     ⟨b, hb, hbsep⟩ | hmem
   · -- a separating vector: read it as detector coefficients
@@ -138,8 +138,8 @@ theorem interpolates_inv_zeta_or_exists_bdDist_floor {N M : ℕ} (θ : Fin N →
           = ∑ j, (-(((θ i : ℝ) : ℂ) ^ ρ j - ((θ i : ℝ) : ℂ)) * (riemannZeta (ρ j) / ρ j))
               * b.ofLp j := Finset.sum_congr rfl fun j _ => mul_comm _ _
         _ = 0 := h
-    exact Or.inr ⟨fun j => (starRingEnd ℂ) (b.ofLp j), hsep,
-      (bdDist_pos_of_detectorCombination θ hθ ρ hρ hρ1 _ hann hsep).2⟩
+    have hpos := bdDist_pos_of_detectorCombination θ hθ ρ hρ hρ1 _ hann hsep
+    exact Or.inr ⟨hpos.1, fun j => (starRingEnd ℂ) (b.ofLp j), hsep, hpos.2⟩
   · -- the target row is a combination of the generator rows: read it as interpolation
     refine Or.inl ?_
     obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).1 hmem
@@ -179,11 +179,10 @@ theorem interpolates_inv_zeta_or_exists_bdDist_floor {N M : ℕ} (θ : Fin N →
 theorem bdDist_pos_of_zeta_eq_zero_at_sample {N M : ℕ} (θ : Fin N → ℝ)
     (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) (ρ : Fin M → ℂ) (hρ : ∀ j, 1 / 2 < (ρ j).re)
     (hρ1 : ∀ j, (ρ j).re < 1) {j₀ : Fin M} (hzero : riemannZeta (ρ j₀) = 0) :
-    ∃ a : Fin M → ℂ, (∑ j, (starRingEnd ℂ) (a j) * (1 / ρ j) ≠ 0) ∧
-      ‖∑ j, (starRingEnd ℂ) (a j) * (1 / ρ j)‖ / ‖detectorCombination ρ hρ a‖ ≤ bdDist θ := by
+    0 < bdDist θ := by
   rcases interpolates_inv_zeta_or_exists_bdDist_floor θ hθ ρ hρ hρ1 with ⟨d, hd⟩ | h
   · exact absurd (hd j₀) (by rw [hzero, mul_zero]; exact zero_ne_one)
-  · exact h
+  · exact h.1
 
 end RHTower
 

@@ -51,7 +51,19 @@ card carries that out and identifies what the resulting floor depends on.
 * `bdDist_pos_of_zeta_eq_zero_at_sample` — the classical zero-based obstruction as the degenerate case: if
   `ζ(ρⱼ₀) = 0` the interpolation equation reads `0 = 1`, so the floor alternative holds.
 
-All 17 declarations are `#print axioms`-clean.
+`RHTower/FiniteSectionBorderDeterminant.lean` turns the escape route into a determinant. With one more
+sample point than generators, border the `N` sampled generator rows with the sampled target row:
+
+* `sampledBorderMatrix` — rows `j ↦ −(θᵢ^{ρⱼ} − θᵢ)·ζ(ρⱼ)/ρⱼ` for `i < N`, last row `j ↦ 1/ρⱼ`, built with
+  `Fin.snoc` on the row index;
+* `det_sampledBorderMatrix_eq_zero_of_interpolation` — interpolation makes the last row the corresponding
+  combination of the others, exhibited as the nonzero left-kernel vector `Fin.snoc (−d) (−1)`
+  (`Matrix.exists_vecMul_eq_zero_iff`);
+* **`bdDist_pos_of_det_ne_zero`, `exists_bdDist_floor_of_det_ne_zero`** — a nonvanishing bordered
+  determinant of sampled `ζ` values certifies a positive distance, with the explicit detector floor. One
+  determinant in the numbers `ζ(ρⱼ)` and `θᵢ^{ρⱼ}`; unconditional; no zero of `ζ` involved.
+
+All 22 declarations are `#print axioms`-clean.
 
 ## Why it matters
 
