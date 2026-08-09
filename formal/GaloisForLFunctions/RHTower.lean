@@ -6382,3 +6382,4 @@ import GaloisForLFunctions.RHTower.FractDilateBalance
 import GaloisForLFunctions.RHTower.BaezDuarteGramReduction
 import GaloisForLFunctions.RHTower.FractSqConstSeries
 import GaloisForLFunctions.RHTower.BaezDuarteGramDiscrete
+import GaloisForLFunctions.RHTower.BaezDuartePairingSeries

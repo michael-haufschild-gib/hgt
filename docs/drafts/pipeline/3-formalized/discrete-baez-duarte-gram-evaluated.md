@@ -55,3 +55,26 @@ What remains is not a formalisation gap but the mathematics: showing that the so
 linear systems satisfy `∑ᵢ cᵢθᵢ log θᵢ → −1`. That statement is equivalent to RH, so it is exactly as hard as
 RH — but it is now a fully explicit statement about rational series, with nothing hidden behind an
 unevaluated integral.
+
+## Addendum (same day): the right-hand side, and an arithmetic identity
+
+`RHTower/BaezDuartePairingSeries.lean` does for the pairing what the main text did for the Gram matrix.
+Pairing the piecewise-constant generator with the target `1/v` and summing the cells:
+
+* `abs_bdGenReal_le` — the pointwise bound `|bdGenReal θ v| ≤ 2/v` (`|θ| ≤ 1`), extracted so every
+  integrability argument in this layer cites one lemma;
+* `integral_tailCell_bdGenReal_mul_inv` — one cell contributes `(a mod m)/(m·a(a+1))`;
+* **`hasSum_pairing_discrete`** — `∑_{n≥1} (n mod m)/(m·n(n+1)) = (log m)/m`, the right-hand side of the
+  normal system as a rational series.
+
+Comparing the two evaluations of the same pairing — cell counting here, the dilation identity of
+`BaezDuarteTargetPairing` there — gives an identity neither produces alone:
+
+**`hasSum_mod_div_mul_succ` — `∑_{n≥1} (n mod m)/(n(n+1)) = log m`.**
+
+Elementary and unconditional. `m = 1` gives `0 = log 1`; `m = 2` is the classical
+`∑_{n odd} 1/(n(n+1)) = log 2`. The logarithm enters from the dilation side; the left side is pure counting.
+
+So both data of the discrete Báez-Duarte normal system are now explicit rational series — the matrix by
+`hasSum_bdGram_discrete`, the right-hand side by `hasSum_pairing_discrete` — and the whole criterion reads:
+RH holds if the solutions of these rational systems satisfy `∑ᵢ cᵢ (log(i+1))/(i+1) → 1`.
