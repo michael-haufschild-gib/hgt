@@ -4,7 +4,10 @@
 - **Status:** `[PAPER-PROVED] [OBSTRUCTION] [NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/observer-spectral-shortcut-action-law.md`
 - **Killed branch:** `../1-in-progress/observer-rank-autonomous-no-shortcut-law.md`
-- **Lean:** not yet formalized
+- **Lean:** `(1)`--`(2)` closed — `HTGeometry/GappedEigenlineStability.lean`,
+  `HTGeometry.exists_hasEigenvector_of_gap`, unconditional and axiom-clean.
+  `(3)`, the Pauli instantiation `(6)`--`(10)`, the Gaussian box bound `(11)`, and the
+  asymptotic falsification `(12)` remain
 - **Date:** 2026-08-05
 
 ## Exact abstract theorem
@@ -220,6 +223,26 @@ annealed completed mass as a typical plateau is invalid.
 - The theorem does not prove the adaptive circuit-shortcut upper law. It
   changes its required primitive from an annealed average to a resolved
   rarity--orbit action if typical Brown--Susskind growth is the target.
+
+## Formalization ledger
+
+`(1)`--`(2)` are closed as `HTGeometry.exists_hasEigenvector_of_gap` in
+`HTGeometry/GappedEigenlineStability.lean`: for self-adjoint `H₀` and `V` on a finite-dimensional
+complex inner product space, a unit eigenvector `Φ` of `H₀` whose eigenvalue dominates the quadratic
+form with gap `Δ`, and `‖V‖ ≤ δ`, the operator `H₀ + V` has a unit eigenvector `ψ` with
+`1 - |⟪Φ,ψ⟫|² ≤ 2δ/Δ`.
+
+The Lean proof takes the top Rayleigh vector of `H₀ + V` rather than the card's eigenbasis
+argument.  On a finite-dimensional space the unit sphere is compact, so the quadratic form attains a
+maximum there, and mathlib's Rayleigh theory makes that maximizer an eigenvector.  Comparing its
+Rayleigh value against the value at `Φ` — the maximizer wins, and `Φ`'s value is at least
+`λ₀ - δ` — and then feeding the gap hypothesis into the maximizer's value gives the bound directly.
+No eigenbasis, no convex-combination argument, no resolvent.
+
+Remaining: `(3)` needs the projective distance and its invariance under the unitary group, together
+with the fact that an eigenline is fixed by `exp(-itH)`; `(6)`--`(10)` instantiate in the existing
+finite-qubit Pauli basis; `(11)` is a Gaussian product-box estimate; `(12)` is the asymptotic
+comparison.
 
 ## Formal target
 
