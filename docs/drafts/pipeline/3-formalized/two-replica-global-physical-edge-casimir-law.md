@@ -1,10 +1,11 @@
 # Two-replica global physical edge-Casimir law
 
 - **ID:** two-replica-global-physical-edge-casimir-law
-- **Stage:** 2 — fully proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, gate O4.12z24
-- **Status:** `[PAPER-PROVED] [FORMAL-SOURCE-CHECKED] [NOVELTY UNVERIFIED]`
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [NOVELTY UNVERIFIED]`
+- **Lean certificate:** `two-replica-global-physical-edge-casimir-law-formalized.md`
 
 ## Exact theorem
 
@@ -123,9 +124,22 @@ connected component. Preconnectedness leaves exactly the two constant words.
 - physical/coefficient intertwinement;
 - the connected-graph physical common-kernel classification.
 
-Targeted source checking passes. Axiom audit of all capstones reports only
-`propext`, `Classical.choice`, and `Quot.sound`. Final umbrella build remains
-deferred to final audit.
+`HTGeometry/SwapWordIndependence.lean` adds the card's opening claim as a statement about the
+family rather than about the embedding:
+
+- `linearIndependent_finiteTwoReplicaSwapRaw` — the `2^{|V|}` swap words are linearly independent.
+  The corpus had injectivity of `ι`; the card asserts independence of the family, which is the same
+  fact read through `Fintype.linearIndependent_iff`.  No dimension count enters, exactly as claimed.
+- `span_range_finiteTwoReplicaSwapRaw` — their span is the range of `ι`, which is the sector every
+  singlet statement in this layer is phrased over.
+
+The displayed matrix `K^coeff_{uv}` is `twoReplicaEdgeSwapCasimirCoeff`, entry for entry, in the
+identity/swap endpoint basis; its kernel statement is `twoReplicaEdgeSwapCasimirCoeff_eq_zero_iff`.
+This is a different basis from the correlation-basis model `twoReplicaEdgeCasimirCoeff` in the same
+file, and both are present.
+
+Umbrella build passes; the axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## What this does not prove
 
