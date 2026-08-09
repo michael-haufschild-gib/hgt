@@ -213,3 +213,31 @@ uses, `d_N = dist(1_{(0,1]}, span of the first N generators)`. All of it is metr
 So the chain from the classical analytic statement to RH is now complete and unconditional in Lean:
 `d_N → 0` ⟹ RH, with the quantitative converse. What remains — and it is the whole difficulty — is
 proving `d_N → 0`, which is equivalent to RH and needs the Gram matrix asymptotics, not more bookkeeping.
+
+## Addendum 5 (same day): the distance is a function of the Gram matrix
+
+`RHTower/LeastSquaresProjection.lean` — the universal law, for an arbitrary inner product space over an
+arbitrary `RCLike` field. Given `v : n → H`, a target `x`, and coefficients `c` solving the **normal
+equations** `∀ i, ∑ⱼ ⟪vᵢ,vⱼ⟫·cⱼ = ⟪vᵢ,x⟫`:
+
+* `inner_residual_eq_zero`, `inner_residual_span_eq_zero` — the residual is orthogonal to the span;
+* `norm_sq_residual` — `‖x − ∑cⱼvⱼ‖² = ‖x‖² − re ∑ᵢ conj(cᵢ)⟪vᵢ,x⟫`;
+* `norm_residual_le`, `infDist_span_eq` — the combination is the closest point, so that value *is* the
+  distance.
+
+No linear independence or invertibility hypothesis: the statements are about *a* solution of the normal
+equations, which is what a least-squares computation produces. (When the family is independent,
+`Matrix.posDef_gram_iff_linearIndependent` gives invertibility and hence existence and uniqueness — but the
+identities do not need it.)
+
+`RHTower/BaezDuarteLeastSquares.lean` instantiates it, closing the loop with the two data computed earlier:
+
+* `bdDist_eq_of_normalEquations` — the distance is the residual norm;
+* `bdDist_sq_eq_of_normalEquations` and, in the classical real form,
+  **`bdDist_sq_eq_of_realNormalEquations` — `d² = 1 + ∑ᵢ cᵢ·θᵢ log θᵢ` where `∑ⱼ bdGram θᵢ θⱼ · cⱼ = −θᵢ log θᵢ`.**
+  The `1` is `‖bdTarget‖²`.
+
+So the Báez-Duarte distance is now a function of the Gram matrix alone, with every other constant explicit.
+Combined with Addendum 4 (`d_N → 0 ⟹ RH`) the reduction is complete: **RH follows from the statement that
+the solutions of the `bdGram` linear systems satisfy `∑ᵢ cᵢθᵢ log θᵢ → −1`.** The analytic problem is now
+isolated in a single object, `bdGram`, and nothing else in the chain is missing.

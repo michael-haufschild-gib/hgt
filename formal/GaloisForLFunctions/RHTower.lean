@@ -5260,6 +5260,8 @@ import GaloisForLFunctions.RHTower.XiCompactPrimitive
 import GaloisForLFunctions.RHTower.ProlateProfileTransferIntegral
 import GaloisForLFunctions.RHTower.ProlateEnvelopeIntegral
 import GaloisForLFunctions.RHTower.ProlateExactPrimitive
+import GaloisForLFunctions.RHTower.ProlateEndpointEnergy
+import GaloisForLFunctions.RHTower.ProlateFullPrimitive
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted
@@ -6370,3 +6372,5 @@ import GaloisForLFunctions.RHTower.BaezDuarteDetectorGram
 import GaloisForLFunctions.RHTower.BaezDuarteDistance
 import GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryHilbertChargeFlow
 import GaloisForLFunctions.RHTower.BaezDuarteDetectorIndependence
+import GaloisForLFunctions.RHTower.LeastSquaresProjection
+import GaloisForLFunctions.RHTower.BaezDuarteLeastSquares
