@@ -59,8 +59,11 @@ One estimate, in two equivalent shapes:
 * balance `∑_{N<d≤n}μ(d)⌊n/d⌋` against `n·M₁(N)` — enlarging `N` shrinks `M₁(N)` (PNT, which the corpus proves
   twice) but the tail starts at `N`, and `n log(n/N)` is far too lossy. Vasyunin-type damping is the classical
   remedy; the machinery to *test* any damping choice is complete.
-* or evaluate more Gram entries. `m = 2` collapsed because `x² = x` on `{0,1}`; already `m = 3` needs `π/√3`
-  (a Gauss-digamma value), so closed forms need digamma at rationals, which mathlib lacks.
+* or evaluate more Gram entries. `m = 2` collapsed because `x² = x` on `{0,1}`. Beyond that, entries are
+  digamma differences over residue classes — **and those are now reachable for denominators 2 and 4**: see
+  `digamma-difference-series.md` (`ψ(b) − ψ(a) = ∑ₙ(1/(a+n) − 1/(b+n))`, mathlib's `digamma_one_half`, the
+  corpus's `digamma_quarter`). The predicted `bdGram (1/4)(1/4) = (3log 2)/8 − π/32` would beat the `m = 2`
+  bound. Denominator `3` still needs Gauss's general theorem (a mathlib TODO).
 
 Neither is a formalisation gap. Both are equivalent to RH in aggregate, so no amount of this machinery
 substitutes for the estimate.
