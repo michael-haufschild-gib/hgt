@@ -1,10 +1,11 @@
 # Nonzero Pauli internal-reproduction law
 
 - **ID:** nonzero-pauli-internal-reproduction-law
-- **Stage:** 2 — fully proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (bridge)
 - **Parent:** `first-order-clifford-interpolation-law.md`
-- **Status:** `[PROVED HERE] [FORMAL-SOURCE-CHECKED] [NOVELTY NOT CLAIMED]`
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [NOVELTY NOT CLAIMED]`
+- **Lean certificate:** `nonzero-pauli-internal-reproduction-law-formalized.md`
 
 ## Exact theorem
 
@@ -62,14 +63,34 @@ output, proving (1).
 
 ## Formal status
 
+Closed, unconditionally.
+
 `HTGeometry/TwoReplicaNonzeroPauliInternalReproduction.lean` proves a general
-internal graded-selector reproduction theorem and instantiates (1). Targeted
-source elaboration passes. Both capstone axiom audits report only `propext`,
-`Classical.choice`, and `Quot.sound`. Final umbrella build remains deferred to
-final audit.
+internal graded-selector reproduction theorem and instantiates (1) for any
+subspace satisfying the greatest-maximizer condition.
+
+`HTGeometry/LinearFamilyGreatestMaximizer.lean` removes that condition.
+Supermodularity of linear-family deficiency already gave existence *and*
+uniqueness of the greatest defect maximizer
+(`existsUnique_linearFamilyDefect_greatestMaximizer`), so the maximizer is a
+function of the family alone: `linearFamilyGreatestMaximizer`. Both defining
+properties are recorded, together with the characterisation that no other
+subspace has them, and the Hall criterion is restated as the vanishing of this
+one subspace's deficiency.
+
+`HTGeometry/NonzeroPauliInternalReproductionCanonical.lean` names the card's
+`U_*` — `canonicalTwoReplicaQLocalObstruction` — and states (1) there:
+
+    finiteTwoReplicaNonzeroPauliResolvedSubspace_canonical_le_shadow
+
+No hypothesis, on any finite linearly ordered register, for every `q`. Umbrella
+build passes; the axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Log
 
 - 2026-08-05 — general internal graded-selector equality mechanism proved.
 - 2026-08-05 — canonical nonzero paired-Pauli sector reproduced by the
   literal weight-one family.
+- 2026-08-09 — greatest-maximizer premise discharged; `(1)` is now a
+  hypothesis-free theorem about a named subspace.
