@@ -690,6 +690,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 2, (8) in summed-tail form | `norm_primaryLogTail_le`, `hasProd_cexp`, `infiniteMultipleEllipticGamma_eq_exp_neg_tsum` |
 | Lemma 2, (8) in moment form | `norm_logTail_term_le`, `summable_logTail_family`, `tsum_logTail_family_occupation`, `infiniteMultipleEllipticGamma_eq_exp_neg_moments` |
 | Lemma 7, (9) — uniform bound on the finite Euler products | `multipliable_realEulerFactor`, `norm_finiteEulerProduct_le` |
+| Lemma 7, the jet series and its geometric domination | `jetSeries`, `norm_jetSeries_term_le`, `summable_jetSeries` |
 | Lemma 7, the counterterm split | `sectionLogTail`, `summable_sectionLogTail`, `sectionLogTail_split` |
 | Lemma 7, (17) — the finite-section free energy | `finiteNomeSection_eq_restricted`, `finiteNomeSection_eq_exp_neg_moments` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
@@ -707,7 +708,8 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaMomentForm.lean`,
 `HTGeometry/FiniteNomeSectionRestriction.lean`,
 `HTGeometry/EulerFactorUniformBound.lean`,
-`HTGeometry/SectionLogTail.lean`.
+`HTGeometry/SectionLogTail.lean`,
+`HTGeometry/CountertermJetSeries.lean`.
 
 ### Open in Lean
 
@@ -716,15 +718,24 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
    moment series with the finite Euler products `M_{S,m} = ∏_{a∈S}(1-p_a^m)^{-1}` as coefficients.
    Its other input (9) is closed too: `norm_finiteEulerProduct_le` bounds every `M_{S,k}` by
    `∏'_a (1-‖p_a‖^{g+1})^{-1}`, uniformly in the nome set *and* in the order `k ≥ g+1`.
-   The counterterm split is closed too (`sectionLogTail_split`): at any order the free energy is a
-   finite head of counterterms plus a tail.  What remains is the limit itself.  Substitute
-   `t = Q_S/x`, so the tail is `Q_S^N · ∑_k Q_S^k x^{-(k+N)} M_{S,k+N}/(k+N)`; divide by `Q_S^N`
-   (legitimate: `Q_S ≠ 0` since every nome is nonzero) and let `S` grow.  The `k = 0` term gives
-   `x^{-N} M_{S,N}/N → x^{-N} M_{A,N}/N` — that convergence needs no new work, since
-   `hasProd_inv_one_sub_nome` at `p^N` *is* the statement that the finite Euler products converge to
-   `M_{A,N}` — and the `k ≥ 1` tail is bounded by `(B/N)|x|^{-N}·(|Q_S|/|x|)/(1-|Q_S|/|x|)` using
-   (9), hence vanishes with `Q_S`.  No constraint on `|x|` beyond `x ≠ 0` enters: the geometric
-   ratio is `|Q_S|/|x|`, which is eventually below one for any fixed nonzero `x`.
+   The counterterm split is closed (`sectionLogTail_split`), and so is the divided remainder: the
+   `jetSeries` at `y = x^{-1}` is exactly the tail divided by `Q_S^N`, and
+   `norm_jetSeries_term_le` dominates its `k`th term by `(B/N)|y|^N (|Q_S||y|)^k`, whence
+   `summable_jetSeries` whenever `|Q_S||y| < 1`.
+
+   Three steps remain, all limits:
+   (a) `jetSeries p S y N - y^N M_{S,N}/N = ∑_k (k+1 term)`, bounded by
+       `(B/N)|y|^N (|Q_S||y|)/(1-|Q_S||y|)` — subtract the head and reuse the same majorant;
+   (b) `Tendsto (fun S => jetSeries p S y N) atTop (𝓝 (y^N M_{A,N}/N))`, from (a),
+       `tendsto_nomeProduct_atTop_zero`, and `hasProd_inv_one_sub_nome` at `p^N` (which *is* the
+       convergence `M_{S,N} → M_{A,N}`);
+   (c) identify `jetSeries` with the divided tail of `sectionLogTail_split` at `t = Q_S/x`,
+       legitimate since `Q_S ≠ 0` when every nome is nonzero.
+
+   No constraint on `|x|` beyond `x ≠ 0` enters: the geometric ratio is `|Q_S|/|x|`, eventually
+   below one for any fixed nonzero `x`.  The card states Lemma 7 on a compact `K ⊂ ℂ^×` with
+   `δ = min_{x∈K}|x|`; pointwise in `x` that compactness is not needed, and only the
+   locally-uniform phrasing will require it.
 2. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
 
