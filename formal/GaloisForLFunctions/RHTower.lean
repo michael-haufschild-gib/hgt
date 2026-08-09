@@ -149,6 +149,7 @@ import GaloisForLFunctions.RHTower.BerryKeating
 import GaloisForLFunctions.RHTower.BesselBoundWitnesses
 import GaloisForLFunctions.RHTower.BesselJZeroConstant
 import GaloisForLFunctions.RHTower.BesselJZeroEnvelope
+import GaloisForLFunctions.RHTower.BesselNormalForm
 import GaloisForLFunctions.RHTower.BesselJOneRecurrence
 import GaloisForLFunctions.RHTower.BesselJOneEnvelope
 import GaloisForLFunctions.RHTower.BesselWeightedPrimitive
@@ -6384,3 +6385,4 @@ import GaloisForLFunctions.RHTower.FractSqConstSeries
 import GaloisForLFunctions.RHTower.BaezDuarteGramDiscrete
 import GaloisForLFunctions.RHTower.BaezDuartePairingSeries
 import GaloisForLFunctions.RHTower.StepFunctionCarrier
+import GaloisForLFunctions.RHTower.ArithmeticEvaluationObstruction

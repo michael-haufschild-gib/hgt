@@ -46,3 +46,28 @@ approximating a constant sequence by modular sequences in a weighted `ℓ²` spa
 Two honest caveats. The statement is *equivalent* to RH, so being elementary does not make it easy — the
 difficulty has moved, not shrunk. And the sufficient direction is the only one proved; nothing here says the
 approximation is possible.
+
+## Addendum (same day): a second, arithmetic obstruction
+
+`RHTower/ArithmeticEvaluationObstruction.lean`. In the discrete picture a second obstruction mechanism
+appears, of the same *shape* as the Mellin detector but arithmetic rather than analytic.
+
+The modular sequence `g_m` vanishes exactly on the multiples of `m`. So if `n₀` is divisible by every modulus
+of a family, the functional "evaluate the sequence at `n₀`" annihilates every generator while on the target
+it is `1/(n₀(n₀+1)) ≠ 0`. Evaluation is bounded because it *is* an inner product — with `δ` the indicator
+sequence at `n₀`, `hasSum_stepGram` collapses to a single term:
+
+* `stepGram_deltaSeq` — `⟪stepVec δ, stepVec s⟫ = s(n₀)/(n₀(n₀+1))`;
+* `norm_sq_stepVec_deltaSeq` — `‖stepVec δ‖² = 1/(n₀(n₀+1))`;
+* `notMem_closedSpan_of_forall_dvd` — the target is not in the closed span of any family of moduli with a
+  common multiple;
+* `dist_floor_of_forall_dvd` — quantitatively, `dist ≥ √(1/(n₀(n₀+1)))`.
+
+Taking `n₀ = lcm` of a finite section, **every finite-section Báez-Duarte distance is strictly positive**:
+the approximation in `d_N → 0` is asymptotic and never exact, for a purely divisibility reason.
+
+This does not threaten the criterion: for the *infinite* family no `n₀` is divisible by every modulus, so the
+argument does not reach the full span. And the bound is worthless quantitatively — with `n₀ = lcm(1..N) ≈ e^N`
+it gives `d_N ≳ e^{-N}` against the true `≍ 1/√(log N)`. Its value is structural: the same
+"bounded functional kills the family but not the target" mechanism that produced the zero-based floor also
+runs on pure divisibility, with no zeta input at all.
