@@ -128,6 +128,56 @@ theorem norm_sq_bdProjection_of_realNormalEquations (θ : I → ℝ) (hθ : ∀ 
   refine Finset.sum_congr rfl fun i _ => ?_
   ring
 
+/-- **The Báez-Duarte distance at an arbitrary real coefficient vector.**  The classical quadratic form:
+`d² ≤ 1 + 2∑ᵢ cᵢθᵢ log θᵢ + ∑ᵢⱼ cᵢcⱼ·bdGram θᵢ θⱼ`, with no hypothesis on `c`.  Minimising the right-hand
+side is the normal system, and `bdDist_sq_eq_of_realNormalEquations` is the value at its solution. -/
+theorem bdDist_sq_le_quadratic (θ : I → ℝ) (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) (c : I → ℝ) :
+    bdDist θ ^ 2
+      ≤ 1 + 2 * (∑ i, c i * (θ i * Real.log (θ i)))
+        + ∑ i, ∑ j, c i * c j * bdGram (θ i) (θ j) := by
+  classical
+  have hmem : (∑ j, ((c j : ℝ) : ℂ) • bdGen (θ j)) ∈ bdSpanSet θ := by
+    refine Submodule.sum_mem _ fun j _ => ?_
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+  have hle : bdDist θ ≤ ‖bdTarget - ∑ j, ((c j : ℝ) : ℂ) • bdGen (θ j)‖ := by
+    have h := Metric.infDist_le_dist_of_mem (x := bdTarget) hmem
+    rw [dist_eq_norm] at h
+    exact h
+  have hexp := norm_sq_sub_combination (fun i => bdGen (θ i)) bdTarget (fun i => ((c i : ℝ) : ℂ))
+  rw [norm_bdTarget] at hexp
+  have hpair : RCLike.re (∑ i, (starRingEnd ℂ) (((c i : ℝ) : ℂ)) * inner ℂ (bdGen (θ i)) bdTarget)
+      = -∑ i, c i * (θ i * Real.log (θ i)) := by
+    have hsum : ∑ i, (starRingEnd ℂ) (((c i : ℝ) : ℂ)) * inner ℂ (bdGen (θ i)) bdTarget
+        = ((∑ i, c i * (-(θ i * Real.log (θ i))) : ℝ) : ℂ) := by
+      rw [Complex.ofReal_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [inner_bdGen_bdTarget (hθ i).1 (hθ i).2, Complex.conj_ofReal, ← Complex.ofReal_mul]
+    rw [hsum]
+    have : ((∑ i, c i * (-(θ i * Real.log (θ i))) : ℝ) : ℂ).re
+        = ∑ i, c i * (-(θ i * Real.log (θ i))) := Complex.ofReal_re _
+    rw [show RCLike.re (((∑ i, c i * (-(θ i * Real.log (θ i))) : ℝ) : ℂ))
+        = ∑ i, c i * (-(θ i * Real.log (θ i))) from this]
+    rw [← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  have hgram : RCLike.re (∑ i, ∑ j, (starRingEnd ℂ) (((c i : ℝ) : ℂ)) * ((c j : ℝ) : ℂ)
+      * inner ℂ (bdGen (θ i)) (bdGen (θ j)))
+      = ∑ i, ∑ j, c i * c j * bdGram (θ i) (θ j) := by
+    have hsum : ∑ i, ∑ j, (starRingEnd ℂ) (((c i : ℝ) : ℂ)) * ((c j : ℝ) : ℂ)
+        * inner ℂ (bdGen (θ i)) (bdGen (θ j))
+        = ((∑ i, ∑ j, c i * c j * bdGram (θ i) (θ j) : ℝ) : ℂ) := by
+      rw [Complex.ofReal_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [Complex.ofReal_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [inner_bdGen_eq_bdGram, Complex.conj_ofReal, ← Complex.ofReal_mul, ← Complex.ofReal_mul]
+    rw [hsum]
+    show ((∑ i, ∑ j, c i * c j * bdGram (θ i) (θ j) : ℝ) : ℂ).re = _
+    exact Complex.ofReal_re _
+  rw [hpair, hgram] at hexp
+  have hnn : 0 ≤ bdDist θ := bdDist_nonneg θ
+  nlinarith [hle, hexp, norm_nonneg (bdTarget - ∑ j, ((c j : ℝ) : ℂ) • bdGen (θ j))]
+
 end RHTower
 
 end

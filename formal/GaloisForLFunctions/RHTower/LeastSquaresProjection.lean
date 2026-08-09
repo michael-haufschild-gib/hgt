@@ -112,6 +112,40 @@ theorem norm_sq_combination_of_normalEquations (v : n → H) (x : H) (c : n → 
   rw [hyy] at this
   exact this.symm
 
+/-- **The quadratic form of the least-squares problem.**  The squared distance to an arbitrary combination,
+with no hypothesis on the coefficients: `‖x‖²` minus twice the pairing plus the Gram form. -/
+theorem norm_sq_sub_combination (v : n → H) (x : H) (c : n → 𝕜) :
+    ‖x - ∑ j, c j • v j‖ ^ 2
+      = ‖x‖ ^ 2 - 2 * RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x)
+        + RCLike.re (∑ i, ∑ j, (starRingEnd 𝕜) (c i) * c j * inner 𝕜 (v i) (v j)) := by
+  set y : H := ∑ j, c j • v j with hy
+  have hxy : RCLike.re (inner 𝕜 x y)
+      = RCLike.re (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x) := by
+    have h1 : inner 𝕜 x y = ∑ j, c j * inner 𝕜 x (v j) := by
+      rw [hy, inner_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [inner_smul_right]
+    have h2 : (starRingEnd 𝕜) (∑ i, (starRingEnd 𝕜) (c i) * inner 𝕜 (v i) x)
+        = ∑ j, c j * inner 𝕜 x (v j) := by
+      rw [map_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [map_mul, RingHomInvPair.comp_apply_eq, inner_conj_symm]
+    rw [h1, ← h2, RCLike.conj_re]
+  have hyy : ‖y‖ ^ 2
+      = RCLike.re (∑ i, ∑ j, (starRingEnd 𝕜) (c i) * c j * inner 𝕜 (v i) (v j)) := by
+    have hinner : inner 𝕜 y y
+        = ∑ i, ∑ j, (starRingEnd 𝕜) (c i) * c j * inner 𝕜 (v i) (v j) := by
+      rw [hy, sum_inner]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [inner_smul_left, inner_sum, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [inner_smul_right]
+      ring
+    have h := inner_self_eq_norm_sq (𝕜 := 𝕜) y
+    rw [hinner] at h
+    exact h.symm
+  rw [norm_sub_sq (𝕜 := 𝕜), hxy, hyy]
+
 /-- **The projection is the closest point.** -/
 theorem norm_residual_le (v : n → H) (x : H) (c : n → 𝕜)
     (hc : ∀ i, ∑ j, inner 𝕜 (v i) (v j) * c j = inner 𝕜 (v i) x)

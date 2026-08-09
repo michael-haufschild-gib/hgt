@@ -150,3 +150,27 @@ That last is the pointwise form of the arithmetic obstruction of `ArithmeticEval
 explains the shape of the criterion: exact representation is impossible for divisibility reasons, so a limit
 statement (`d_N → 0`) is the only form the conclusion could take. It costs nothing and it rules out looking
 for a closed-form finite solution.
+
+## Addendum 6 (same day): the quadratic form at an arbitrary coefficient vector
+
+The lane had upper bounds only at the optimum (via the normal equations) and at `N = 1`. This closes that gap.
+
+`LeastSquaresProjection.norm_sq_sub_combination` — the general law, any inner product space over any `RCLike`
+field, **no hypothesis on the coefficients**:
+
+`‖x − ∑ cⱼvⱼ‖² = ‖x‖² − 2·re ∑ᵢ conj(cᵢ)⟪vᵢ,x⟫ + re ∑ᵢⱼ conj(cᵢ)cⱼ⟪vᵢ,vⱼ⟫`.
+
+Instantiated for Báez-Duarte with real coefficients, using `norm_bdTarget`, `inner_bdGen_bdTarget` and
+`inner_bdGen_eq_bdGram`:
+
+**`bdDist_sq_le_quadratic` — `d² ≤ 1 + 2∑ᵢ cᵢθᵢ log θᵢ + ∑ᵢⱼ cᵢcⱼ·bdGram θᵢ θⱼ` for every `c`.**
+
+This is the classical `d² ≤ 1 − 2v·c + cᵗGc`, now with both data explicit: for the discrete system `G` is the
+rational series of `hasSum_bdGram_discrete` and `v` is `(log mᵢ)/mᵢ` by `hasSum_pairing_discrete`. Minimising
+the right-hand side is the normal system, so `bdDist_sq_eq_of_realNormalEquations` is the value at its
+solution and this is the bound at any trial vector — which is what a Vasyunin-type coefficient choice needs in
+order to be *tested* rather than merely proposed.
+
+Together with `residual_eq_of_coeff` the constructive side is now complete as machinery: pick any `c`, and both
+its residual sequence and its distance bound are explicit elementary expressions. What no amount of this
+machinery supplies is a `c` that works; that is the estimate, and it remains open.
