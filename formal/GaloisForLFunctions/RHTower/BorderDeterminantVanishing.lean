@@ -18,9 +18,12 @@ and `sampledBorderMatrix` is their evaluation matrix.  Hence
 **`exists_relation_of_forall_det_eq_zero` — if every bordered determinant vanishes there are coefficients
 `c`, not all zero, with `(∑ᵢ cᵢ(θᵢ^s − θᵢ))·ζ(s) = c_N` at every point of the strip.**
 
-Read forwards instead, this is the reusable interface: `bdDist_pos_of_linearIndependent_borderRowFun` says a
-positive distance follows from linear independence of the pairing functions alone, so another family inherits
-the route by proving independence for its own pairings.
+Read forwards, the same independence is the reusable interface, and it is stated for an arbitrary family:
+`infDist_pos_of_linearIndependent_pairings` — if the Mellin detectors pair with a finite family `G` and a
+target `x` through linearly independent functions on the strip, then `x` is at positive distance from the span
+of `G`.  Sampling makes the pairing matrix invertible; solving against the last basis vector produces a
+detector combination that annihilates the family and pairs with the target at `1`, so the duality bound gives
+the floor `1/‖w‖`.  `bdDist_pos_of_linearIndependent_borderRowFun` is the Báez-Duarte instance.
 
 So a finite section escapes every determinant certificate only if the Müntz system `θ^s − θ` inverts `ζ` by
 a *single* relation valid on the whole strip — not merely sample by sample. That is a rigid identity between
@@ -116,16 +119,73 @@ theorem exists_relation_of_forall_det_eq_zero {N : ℕ} (θ : Fin N → ℝ)
         = c (Fin.last N) :=
   muentz_relation_of_not_linearIndependent θ (not_linearIndependent_borderRowFun θ h)
 
-/-- **The abstract obstruction.**  Linear independence of the sampled pairing functions is exactly what a
-positive distance needs: sampling turns it into a nonvanishing bordered determinant, which certifies the
-floor.  A family other than Báez-Duarte's inherits the whole route by supplying this one hypothesis for its
+/-- **The abstract obstruction, for any family in the carrier.**  Suppose the Mellin detectors pair with a
+finite family `G` and with a target `x` through functions `M` on the strip.  If those `N+1` functions are
+linearly independent, the target is at positive distance from the span of the family.
+
+Sampling makes the pairing matrix invertible, so the linear system whose right-hand side is the last basis
+vector has a solution; the corresponding detector combination annihilates every member of the family while
+pairing with the target at `1`, and the duality bound of `DetectorDuality` converts that into the floor
+`1/‖w‖`.  A family other than Báez-Duarte's inherits the whole route by supplying this one hypothesis for its
 own pairing functions. -/
+theorem infDist_pos_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier) (x : BDCarrier)
+    (M : Fin (N + 1) → (StripPoint → ℂ))
+    (hM : ∀ (i : Fin N) (s : StripPoint),
+      inner ℂ (bdDetector (one_sub_re_lt s.2.1)) (G i) = M i.castSucc s)
+    (hMx : ∀ s : StripPoint, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
+    (hli : LinearIndependent ℂ M) :
+    0 < Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
+  classical
+  obtain ⟨y, hy⟩ := exists_det_ne_zero_of_linearIndependent M hli
+  set A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ := Matrix.of fun i j => M i (y j) with hA
+  set e : Fin (N + 1) → ℂ := fun i => if i = Fin.last N then 1 else 0 with he
+  set b : Fin (N + 1) → ℂ := A⁻¹.mulVec e with hb
+  have hsolve : A.mulVec b = e := by
+    rw [hb, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv A (isUnit_iff_ne_zero.mpr hy),
+      Matrix.one_mulVec]
+  set w : BDCarrier := ∑ j, (starRingEnd ℂ) (b j) • bdDetector (one_sub_re_lt (y j).2.1) with hw
+  have hrow : ∀ i : Fin (N + 1), ∑ j, b j * M i (y j) = e i := by
+    intro i
+    have h := congrFun hsolve i
+    rw [Matrix.mulVec_apply_eq_sum] at h
+    rw [← h, hA]
+    exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+  have hwG : ∀ i : Fin N, inner ℂ w (G i) = 0 := by
+    intro i
+    have hterm : ∀ j : Fin (N + 1),
+        inner ℂ ((starRingEnd ℂ) (b j) • bdDetector (one_sub_re_lt (y j).2.1)) (G i)
+          = b j * M i.castSucc (y j) := by
+      intro j
+      rw [inner_smul_left, RCLike.conj_conj, hM i (y j)]
+    rw [hw, sum_inner, Finset.sum_congr rfl fun j _ => hterm j, hrow i.castSucc, he]
+    simp [Fin.castSucc_ne_last i]
+  have hwx : inner ℂ w x = 1 := by
+    have hterm : ∀ j : Fin (N + 1),
+        inner ℂ ((starRingEnd ℂ) (b j) • bdDetector (one_sub_re_lt (y j).2.1)) x
+          = b j * M (Fin.last N) (y j) := by
+      intro j
+      rw [inner_smul_left, RCLike.conj_conj, hMx (y j)]
+    rw [hw, sum_inner, Finset.sum_congr rfl fun j _ => hterm j, hrow (Fin.last N), he]
+    simp
+  have hbound := norm_inner_le_norm_mul_infDist_span (Set.range G) x w (by
+    rintro _ ⟨i, rfl⟩
+    exact hwG i)
+  rw [hwx, norm_one] at hbound
+  by_contra hcon
+  push Not at hcon
+  have hzero : Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) = 0 :=
+    le_antisymm hcon Metric.infDist_nonneg
+  rw [hzero, mul_zero] at hbound
+  linarith
+
+/-- **The Báez-Duarte instance.**  Linear independence of its pairing functions gives a positive distance. -/
 theorem bdDist_pos_of_linearIndependent_borderRowFun {N : ℕ} (θ : Fin N → ℝ)
     (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) (hli : LinearIndependent ℂ (borderRowFun θ)) :
-    0 < bdDist θ := by
-  obtain ⟨x, hx⟩ := exists_det_ne_zero_of_linearIndependent (borderRowFun θ) hli
-  rw [matrix_borderRowFun_eq_sampledBorderMatrix θ x] at hx
-  exact bdDist_pos_of_det_ne_zero θ hθ _ (fun j => (x j).2.1) (fun j => (x j).2.2) hx
+    0 < bdDist θ :=
+  infDist_pos_of_linearIndependent_pairings (fun i => bdGen (θ i)) bdTarget (borderRowFun θ)
+    (fun i s => by
+      rw [borderRowFun_castSucc, inner_bdDetector_bdGen s.2.1 s.2.2 (hθ i).1 (hθ i).2])
+    (fun s => by rw [borderRowFun_last, inner_bdDetector_bdTarget s.2.1]) hli
 
 end RHTower
 

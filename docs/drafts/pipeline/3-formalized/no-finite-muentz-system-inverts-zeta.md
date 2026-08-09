@@ -18,16 +18,21 @@ This is the structural reason behind both, and it holds for arbitrary finite fam
 
 The route is now factored so that a family other than Báez-Duarte's inherits it by proving one hypothesis:
 
-* `bdDist_pos_of_linearIndependent_borderRowFun` (in `BorderDeterminantVanishing`) — **linear independence of
-  the sampled pairing functions is exactly what a positive distance needs.** Sampling turns it into a
-  nonvanishing bordered determinant, which certifies the floor;
+* **`infDist_pos_of_linearIndependent_pairings`** (in `BorderDeterminantVanishing`) — the law for an
+  *arbitrary* family in the carrier: if the Mellin detectors pair with a finite family `G` and a target `x`
+  through linearly independent functions on the strip, then `x` is at positive distance from the span of `G`.
+  Sampling makes the pairing matrix invertible; solving against the last basis vector produces a detector
+  combination annihilating `G` and pairing with `x` at `1`, so the duality bound gives the floor `1/‖w‖`;
+* `bdDist_pos_of_linearIndependent_borderRowFun` — the Báez-Duarte instance, supplying the two pairing
+  identities `inner_bdDetector_bdGen` and `inner_bdDetector_bdTarget`;
 * `muentz_relation_of_not_linearIndependent` — the converse computation, isolated from the determinant
   hypothesis: a dependence among the pairing functions *is* a Müntz relation inverting `ζ` on the strip;
 * `linearIndependent_borderRowFun_of_injective` — the Báez-Duarte instance of that hypothesis, proved by the
   refutation below, so `bdDist_pos_of_injective_of_lt_one` is now a two-line consequence.
 
 So the analytic content lives entirely in the independence of the pairing functions; everything above it is
-linear algebra.
+linear algebra, and it no longer mentions the Báez-Duarte generators at all — only the carrier and its Mellin
+detectors. A new family supplies its own pairing functions plus one independence proof.
 
 ## The chain
 
