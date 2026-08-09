@@ -77,6 +77,49 @@ theorem twoReplicaEdgeCommutator_swap_one (a b : Fin 3) :
     Matrix.neg_apply]
   ring
 
+/-! ## Hilbert--Schmidt sizes of the mismatched outputs -/
+
+/-- The replica difference squares to twice the identity minus twice the correlation term. -/
+theorem twoReplicaLocalDiff_sq (a : Fin 3) :
+    twoReplicaLocalDiff a * twoReplicaLocalDiff a =
+      (2 : ℂ) • (1 : Matrix TwoReplicaLocalIndex TwoReplicaLocalIndex ℂ) -
+        (2 : ℂ) • twoReplicaPauliPair a := by
+  rw [twoReplicaLocalDiff, Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_sub,
+    twoReplicaPauliLeft_mul_self, twoReplicaPauliRight_mul_self,
+    twoReplicaPauliLeft_mul_right, twoReplicaPauliRight_mul_left]
+  module
+
+/-- **The replica difference has Hilbert--Schmidt square eight.** -/
+theorem trace_twoReplicaLocalDiff_sq (a : Fin 3) :
+    Matrix.trace (twoReplicaLocalDiff a * twoReplicaLocalDiff a) = 8 := by
+  have hpair : Matrix.trace (twoReplicaPauliPair a) = 0 := by
+    rw [twoReplicaPauliPair, Matrix.trace_kronecker]
+    fin_cases a <;>
+      simp [finiteQubitPauli, Matrix.trace]
+  rw [twoReplicaLocalDiff_sq, Matrix.trace_sub, Matrix.trace_smul,
+    Matrix.trace_smul, Matrix.trace_one, hpair]
+  norm_num
+
+/-- Swapping past the correlation term of one axis costs nothing in trace. -/
+theorem trace_twoReplicaPauliPair_mul_swap (a : Fin 3) :
+    Matrix.trace (twoReplicaPauliPair a * twoReplicaSwap) = 2 := by
+  rw [← twoReplicaPauliLeft_mul_right a, Matrix.mul_assoc,
+    ← twoReplicaSwap_mul_left a, ← Matrix.mul_assoc, Matrix.trace_mul_comm,
+    ← Matrix.mul_assoc, twoReplicaPauliLeft_mul_self, Matrix.one_mul,
+    trace_twoReplicaSwap]
+
+/-- **The replica difference is Hilbert--Schmidt orthogonal to its swap translate.** -/
+theorem trace_twoReplicaLocalDiff_mul_swap_mul_diff (a : Fin 3) :
+    Matrix.trace
+      (twoReplicaLocalDiff a * (twoReplicaSwap * twoReplicaLocalDiff a)) = 0 := by
+  rw [← Matrix.mul_assoc, twoReplicaLocalDiff_mul_swap, Matrix.neg_mul,
+    Matrix.trace_neg, Matrix.mul_assoc, twoReplicaLocalDiff_sq,
+    Matrix.mul_sub, Matrix.mul_smul, Matrix.mul_smul, Matrix.mul_one,
+    Matrix.trace_sub, Matrix.trace_smul, Matrix.trace_smul,
+    trace_twoReplicaSwap, Matrix.trace_mul_comm,
+    trace_twoReplicaPauliPair_mul_swap]
+  norm_num
+
 end
 
 end GaloisForLFunctions.HTGeometry

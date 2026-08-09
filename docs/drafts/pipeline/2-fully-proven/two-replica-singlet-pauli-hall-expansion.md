@@ -272,8 +272,14 @@ Progress against that list:
 - **`(13)` available.**  The connected-graph common-kernel classification is
   `finiteTwoReplicaPhysical_connectedGraph_kernel_iff`: vanishing on every edge forces the Boolean
   word to be constant, which is exactly `⋂_e ker P_e = G_2` in swap coordinates.
-- **Remaining:** the Hilbert--Schmidt facts `(8)`, the orthogonality of distinct edge output
-  sectors `(11)`, and the assembly `(14)`--`(17)` into `ResolvedFiberHallExpansion`.
+- **`(8)` closed.**  `twoReplicaLocalDiff_sq` is `D_a^2 = 2I - 2 sigma_a ⊗ sigma_a`, giving
+  `trace_twoReplicaLocalDiff_sq : Tr(D_a^2) = 8`; and
+  `trace_twoReplicaLocalDiff_mul_swap_mul_diff : Tr(D_a F D_a) = 0`.  The orthogonality proof is
+  not the card's trace expansion: `D_a F = -F D_a` (`twoReplicaLocalDiff_mul_swap`) turns it into
+  `-Tr(F D_a^2)`, and `Tr(F) = 2` cancels against `Tr((sigma_a ⊗ sigma_a) F) = 2`.  The latter is
+  itself structural — `sigma_a ⊗ sigma_a = L_a R_a` and `R_a F = F L_a` reduce it to `Tr(F)`.
+- **Remaining:** the orthogonality of distinct edge output sectors `(11)`, and the assembly
+  `(14)`--`(17)` into `ResolvedFiberHallExpansion`.
 
 `HTGeometry/TwoReplicaCliffordTwirlHallSymmetryReduction.lean` additionally
 proves, in both exact matrix conventions, that the canonical greatest local
