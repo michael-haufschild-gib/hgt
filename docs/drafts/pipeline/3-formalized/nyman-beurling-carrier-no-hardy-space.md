@@ -127,3 +127,24 @@ well-posed unconditional definition in the corpus.
 **Still open, and this is the whole remaining content:** the converse direction, RH ⟹ the distances tend
 to zero. Evaluating `bdGram` in closed form is the classical entry point (for rational ratios it is a
 cotangent sum), and it is real analytic work, not bookkeeping.
+
+## Addendum 2 (same day): the target pairing in closed form
+
+`RHTower/BaezDuarteTargetPairing.lean`. The least-squares problem has two data; the Gram matrix is the
+first (above) and this is the second, evaluated **exactly**:
+
+* `norm_bdTarget` — `‖bdTarget‖ = 1`. The target is a unit vector, so every Báez-Duarte distance lies in
+  `[0,1]` and the floor `√(2Re ρ − 1)/|ρ|` is a genuine fraction of the total.
+* `inner_bdGen_bdTarget` — `⟪bdGen θ, bdTarget⟫ = −θ log θ`.
+* `norm_bdGen_lower`, `sq_le_bdGram_self` — Cauchy–Schwarz against the unit target gives the
+  unconditional Gram-diagonal bounds `θ|log θ| ≤ ‖bdGen θ‖` and `(θ log θ)² ≤ bdGram θ θ`.
+
+The evaluation uses no zeta function and — worth recording — **no Euler–Mascheroni constant**. Writing
+`fractInvSq v = {v}v^{−2}`, the dilation identity `∫_{u>1} fractInvSq(θu) du = θ^{−1}∫_{v>θ} fractInvSq`
+(`integral_Ioi_one_fractInvSq_dilate`) reduces the pairing to
+
+`θ·(∫_{v>θ} − ∫_{v>1}) fractInvSq = θ∫_θ^1 {v}v^{−2}dv = θ∫_θ^1 v^{−1}dv = −θ log θ`,
+
+so the constant `∫_1^∞ {v}v^{−2}dv = 1 − γ` cancels between the two terms and never has to be evaluated.
+That cancellation is exactly what Báez-Duarte's normalisation `{θ/t} − θ{1/t}` is for, and it is why this
+step is elementary while the Gram entries are not.

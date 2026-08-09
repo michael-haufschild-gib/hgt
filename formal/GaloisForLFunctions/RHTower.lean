@@ -5254,6 +5254,8 @@ import GaloisForLFunctions.RHTower.XiEndpointExpansion
 import GaloisForLFunctions.RHTower.XiEndpointCancellation
 import GaloisForLFunctions.RHTower.XiBesselWeightDeriv
 import GaloisForLFunctions.RHTower.BesselWeightedPrimitiveInterior
+import GaloisForLFunctions.RHTower.XiCompactPrimitive
+import GaloisForLFunctions.RHTower.ProlateProfileTransferIntegral
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted
@@ -6359,3 +6361,4 @@ import GaloisForLFunctions.RHTower.VanishingCostRCLike
 import GaloisForLFunctions.RHTower.BaezDuarteL2Carrier
 import GaloisForLFunctions.RHTower.NymanBeurlingCriterion
 import GaloisForLFunctions.RHTower.BaezDuarteGram
+import GaloisForLFunctions.RHTower.BaezDuarteTargetPairing
