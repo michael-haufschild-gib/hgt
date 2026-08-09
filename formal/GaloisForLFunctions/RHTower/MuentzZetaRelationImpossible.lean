@@ -95,6 +95,32 @@ theorem eq_zero_of_forall_sum_cpow_eq {N : ℕ} (θ : Fin N → ℝ) (hθ0 : ∀
   have hnone : (-K : ℂ) = 0 := hcomp lam hrel none
   exact neg_eq_zero.mp hnone
 
+/-- **Distinct positive bases give independent characters.**  An exponential sum that vanishes identically has
+vanishing coefficients; unlike `eq_zero_of_forall_sum_cpow_eq` this carries no constant term, so no base needs
+to be excluded. -/
+theorem eq_zero_of_forall_sum_cpow_eq_zero {N : ℕ} (θ : Fin N → ℝ) (hθ0 : ∀ i, 0 < θ i)
+    (hinj : Function.Injective θ) (b : Fin N → ℂ)
+    (h : ∀ s : ℂ, ∑ i, b i * ((θ i : ℝ) : ℂ) ^ s = 0) :
+    ∀ i, b i = 0 := by
+  classical
+  have hLI : LinearIndependent ℂ
+      (fun f : Multiplicative ℂ →* ℂ => (f : Multiplicative ℂ → ℂ)) :=
+    linearIndependent_monoidHom (Multiplicative ℂ) ℂ
+  set ψ : Fin N → (Multiplicative ℂ →* ℂ) := fun i => logCpowChar (Real.log (θ i)) with hψ
+  have hψinj : Function.Injective ψ := fun i j hij =>
+    hinj (logCpowChar_injective (hθ0 i) (hθ0 j) hij)
+  have hcomp := hLI.comp ψ hψinj
+  rw [Fintype.linearIndependent_iff] at hcomp
+  refine fun i => hcomp b ?_ i
+  funext m
+  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Function.comp_apply, Pi.zero_apply]
+  have hsome : ∀ i : Fin N, (ψ i) m = ((θ i : ℝ) : ℂ) ^ (-(Multiplicative.toAdd m)) := by
+    intro i
+    show logCpowChar (Real.log (θ i)) m = _
+    rw [logCpowChar_apply, ← exp_neg_mul_log_eq_cpow (hθ0 i)]
+  simp only [hsome]
+  exact h (-(Multiplicative.toAdd m))
+
 /-! ## The relation on the strip is impossible -/
 
 /-- **No finite Müntz system inverts `ζ` on the strip.**  For distinct dilations in `(0,1)` the only

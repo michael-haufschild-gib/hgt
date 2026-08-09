@@ -14,13 +14,15 @@ whose pairings `FractDilateBalance.inner_bdDetector_fractDilate` gives as
 `θ^s·(−ζ(s)/s) − θ/(1−s)`.
 
 * `dilateRowFun` — those pairings, with the target pairing `1/s`, as functions on the strip;
-* **`linearIndependent_dilateRowFun`** — they are linearly independent for distinct dilations in `(0,1)`.
+* **`linearIndependent_dilateRowFun`** — they are linearly independent for *any* distinct positive dilations;
+  the bound `θ ≤ 1` is needed only by the pairing identity, not by the independence argument.
   Multiplying a relation by `s(1−s)` gives a function analytic on the convex half-plane `Re s < 1`; the two
   trivial zeros `ζ(−2) = ζ(−4) = 0` leave a `2×2` system in the constant and the dilate mass which forces
   both to vanish, after which `ζ(3/4) ≠ 0` kills the exponential sum and Dedekind's characters kill the
   coefficients;
 * **`infDist_pos_fractDilate`** — hence `1/u` is at positive distance from the span of any finite family of
-  distinct dilates in `(0,1)`.
+  distinct dilates in `(0,1]`, the value `θ = 1` included: `fractDilate 1 = {u}/u` is not the zero vector, and
+  the character argument needs no exclusion once the constant has been shown to vanish.
 
 Two trivial zeros are needed here where the Báez-Duarte generators needed one: the extra term `θ/(1−s)`
 contributes an unknown that a single evaluation cannot separate from the constant.  That is the precise
@@ -54,7 +56,7 @@ theorem dilateRowFun_last {N : ℕ} (θ : Fin N → ℝ) (s : StripPoint) :
 /-- **The dilate pairings are independent.**  For distinct dilations in `(0,1)` no nontrivial combination of
 the dilate pairings equals a multiple of the target pairing on the strip. -/
 theorem linearIndependent_dilateRowFun {N : ℕ} (θ : Fin N → ℝ)
-    (hθ0 : ∀ i, 0 < θ i) (hθ1 : ∀ i, θ i < 1) (hinj : Function.Injective θ) :
+    (hθ0 : ∀ i, 0 < θ i) (hinj : Function.Injective θ) :
     LinearIndependent ℂ (dilateRowFun θ) := by
   classical
   by_contra hdep
@@ -187,8 +189,7 @@ theorem linearIndependent_dilateRowFun {N : ℕ} (θ : Fin N → ℝ)
     have h0 : P s = 0 := hPall (Set.mem_univ s)
     rw [← muentzSum_eq_cpow θ hθ0 b s]
     exact h0
-  obtain ⟨hbz, -⟩ :=
-    eq_zero_of_forall_sum_cpow_eq θ hθ0 (fun i => ne_of_lt (hθ1 i)) hinj b 0 hsum
+  have hbz := eq_zero_of_forall_sum_cpow_eq_zero θ hθ0 hinj b hsum
   refine hi₀ ?_
   refine Fin.lastCases ?_ ?_ i₀
   · exact hlast
@@ -198,15 +199,15 @@ theorem linearIndependent_dilateRowFun {N : ℕ} (θ : Fin N → ℝ)
 /-- **The dilate family is obstructed.**  The Nyman--Beurling target is at positive distance from the span of
 any finite family of distinct dilates `{u ↦ {θu}/u}` with `θ ∈ (0,1)` — unconditionally. -/
 theorem infDist_pos_fractDilate {N : ℕ} (θ : Fin N → ℝ)
-    (hθ0 : ∀ i, 0 < θ i) (hθ1 : ∀ i, θ i < 1) (hinj : Function.Injective θ) :
+    (hθ0 : ∀ i, 0 < θ i) (hθ1 : ∀ i, θ i ≤ 1) (hinj : Function.Injective θ) :
     0 < Metric.infDist bdTarget
       (Submodule.span ℂ (Set.range fun i : Fin N => fractDilate (θ i)) : Set BDCarrier) :=
   infDist_pos_of_linearIndependent_pairings (fun i => fractDilate (θ i)) bdTarget (dilateRowFun θ)
     (fun i s => by
       rw [dilateRowFun_castSucc,
-        inner_bdDetector_fractDilate s.2.1 s.2.2 (hθ0 i) (hθ1 i).le])
+        inner_bdDetector_fractDilate s.2.1 s.2.2 (hθ0 i) (hθ1 i)])
     (fun s => by rw [dilateRowFun_last, inner_bdDetector_bdTarget s.2.1])
-    (linearIndependent_dilateRowFun θ hθ0 hθ1 hinj)
+    (linearIndependent_dilateRowFun θ hθ0 hinj)
 
 end RHTower
 
