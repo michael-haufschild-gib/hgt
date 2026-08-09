@@ -24,6 +24,9 @@ rather than about `T`.
 * `fullCCR_numberVariance_le_card_mul_mean_of_commutingFullTuple`
 * `fullCCR_numberVariance_eq_card_mul_mean_literal_iff_of_commutingFullTuple`
 * `fullCCR_numberVariance_lt_card_mul_mean_literal_iff_of_commutingFullTuple`
+* `fullCCR_dimensionPowerSecondDerivative_classification_of_commutingFullTuple`
+* `fullCCR_logarithmicConvex_dimensionPowerConcave_of_commutingFullTuple` — the smooth-family scale-sandwich
+  form, where the block hypothesis was `∀ t, 0 < t → IsCommutingCCRCompression (fullCCRCompressionBlock (T t))`
 
 No new mathematics — the content is that one hypothesis follows from the others. The value is interface: the
 realization witnesses of `CCRFiniteBlockObstruction` (`exists_invariant_commuting_blockCCRTuple`,
@@ -35,4 +38,5 @@ connect to them without an intermediate step.
 `fullCCR_dimensionPowerSecondDerivative_classification`'s docstring says "The block matrix hypotheses discharge
 both compression interfaces". That is accurate for the *CCR completion* interface (through
 `fullCCRLeakageBlock_isCCRCompletion`) but not for the commuting interface, which it still takes as a
-hypothesis. The corollaries here are what makes the sentence true, for the four theorems above.
+hypothesis. The corollaries here are what makes the sentence true, for all six theorems above — including the
+classification itself, whose docstring carried the claim.
