@@ -11,7 +11,8 @@
   `HTGeometry/GappedEigenlinePropagatorFloor.lean`.
   `(11)` closed — `HTGeometry/GaussianProductBoxFloor.lean`.
   `(12)` analytic core closed — `HTGeometry/PolyLogBeatenByOneMorePower.lean`.
-  The Pauli instantiation `(6)`--`(10)` and the binomial order bounds for `(12)` remain
+  `(12)` order bounds closed — `HTGeometry/PauliCountOrderBounds.lean`.
+  The Pauli instantiation `(6)`--`(10)` and the `(12)` assembly remain
 - **Date:** 2026-08-05
 
 ## Exact abstract theorem
@@ -292,12 +293,17 @@ constants `b, d`, eventually `b x^q log (d x^q) < a x^{q+1}`.  That is exactly t
 describes — a rarity exponent of order `n^q log n` against a ramp exponent of order `n^{q+1}` — with
 the constants left free, so no `c > 0` or `η < 1` can rescue the conjecture.
 
-What `(12)` still needs is the identification of the two exponents with those orders: an upper bound
-`m_{n,q} = O_q(n^q)` and a lower bound `v_{n,q} = Ω_q(n^q)`, both elementary binomial estimates on
-`nonidentityPauliWeightCount` and `productInputObserverRank`, which the corpus already defines.
+Both order identifications are now closed, in `HTGeometry/PauliCountOrderBounds.lean` and with
+explicit constants rather than asymptotic notation:
 
-Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; the two binomial
-order bounds finish `(12)`.
+- `nonidentityPauliWeightCount_le` — `m_{n,q} ≤ q 3^q n^q`, since every binomial coefficient is
+  below the corresponding power and every weight below `q` contributes at most the top power.
+- `pow_le_productInputObserverRank` — `v_{n,q} ≥ 2 (n/2)^q / q!` once `n ≥ 2q`.  The observer rank
+  already contains one full top binomial term, mathlib's `Nat.pow_le_choose` bounds that term below
+  by `(n+1-q)^q/q!`, and beyond twice the weight the base `n+1-q` exceeds `n/2`.
+
+Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis.  For `(12)` only the
+assembly is left — feeding the two order bounds into the poly-log comparison.
 
 ## Formal target
 
