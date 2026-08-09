@@ -1,9 +1,11 @@
 # Paired-Pauli zero-twirl invariance law
 
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY NOT CLAIMED]`
+- **Stage:** 3-formalized
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [BRIDGE] [NOVELTY NOT CLAIMED]`
 - **Parent:** `global-product-clifford-twirl-range-law.md`
-- **Lean target:** `HTGeometry/TwoReplicaGlobalCliffordTwirlRange.lean`
+- **Lean certificate:** `paired-pauli-zero-twirl-invariance-law-formalized.md`
+- **Lean:** `HTGeometry/TwoReplicaGlobalCliffordTwirlRange.lean` (both halves of `(1)`),
+  `HTGeometry/PairedPauliZeroTwirlInvariance.lean` (operator form and frontier consequence)
 
 ## Exact statement
 
@@ -62,6 +64,34 @@ The canonical nonsinglet layer
 is now paired-Pauli invariant because both factors are invariant. Hence the
 exact character projectors preserve `U_W`, and the aggregate visible
 detector can recover every hidden character component modulo `U_W`.
+
+## Formal status
+
+Closed, unconditionally.
+
+`(1)` is two theorems.  `finiteProductCliffordTwoReplicaTwirl_pairedPauli_input` is the pointwise
+absorption `T_V (C_Q X) = T_V X`, from right-translation of the averaging index applied to the
+strict product-Clifford code, with paired-Pauli conjugation realized as the doubled half-turn
+(`finiteProductCliffordDoubledConjugation_pauliHalfTurn`) — so the phase `η_Q` never has to be
+tracked, it cancels inside the conjugation.  `finiteProductCliffordTwoReplicaTwirl_comp_pairedPauli`
+is the operator identity `T_V ∘ C_Q = T_V` the card states.
+`finiteProductCliffordTwoReplicaTwirl_ker_pairedPauli_invariant` is the kernel half.
+
+The register carries only `[Fintype V] [DecidableEq V]`, with no nonemptiness and no ordering, so
+the empty register is an instance; it is recorded explicitly as
+`finiteProductCliffordTwoReplicaTwirl_comp_pairedPauli_empty`.
+
+The frontier consequence is closed at the canonical layer.
+`canonicalTwoReplicaHiddenLayer_pairedPauli_invariant` gives the invariance of `U_* ⊓ ker T_V` with
+no hypothesis, since the canonical obstruction is now a named subspace.  Hence
+`finiteTwoReplicaPauliCharacterProjector_mem_canonicalHiddenLayer` — every exact character projector
+preserves the layer — and
+`finiteTwoReplicaPauliCharacter_component_mem_canonicalHiddenLayer` — if a sum of exact character
+components lies in the layer then so does each component, which is the recovery of every hidden
+character component modulo `U_W`.
+
+Umbrella build passes; the axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Hostile audit
 
