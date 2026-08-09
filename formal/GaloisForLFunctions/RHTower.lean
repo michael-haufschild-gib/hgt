@@ -6403,3 +6403,4 @@ import GaloisForLFunctions.RHTower.BaezDuarteHalfBound
 import GaloisForLFunctions.RHTower.DigammaDifferenceSeries
 import GaloisForLFunctions.RHTower.ResidueClassRecipSeries
 import GaloisForLFunctions.RHTower.DigammaThreeQuarter
+import GaloisForLFunctions.RHTower.QuarterGramEntry
