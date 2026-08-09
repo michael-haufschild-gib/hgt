@@ -1,10 +1,10 @@
 # Initial-execution symmetry inheritance and anomaly necessity
 
 - **ID:** `initial-execution-symmetry-inheritance-and-anomaly-necessity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / META-NO-GO / POSITIVE SURVIVOR (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [META-NO-GO]`
-  `[NEW RH-ROUTE LEVERAGE] [NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[NEW RH-ROUTE LEVERAGE] [NO RH CLAIM] [FORMALIZED IN LEAN]`
 - **Role:** proves source-selected initiality cannot by itself break exact source symmetry; isolates
   source symmetry anomaly or nonunique phase selection as mandatory producer.
 - **Novelty:** categorical theorem is elementary. New leverage is exact use against autogenic
@@ -192,3 +192,7 @@ until exact execution category is defined.
 ## Log
 
 - 2026-08-08 — derived after radial-gauge and Nomogenesis initiality were combined.
+
+## Formalized companion
+
+`initial-execution-symmetry-inheritance-and-anomaly-necessity-formalized.md` (same directory).

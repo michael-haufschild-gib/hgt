@@ -159,24 +159,27 @@ promotion and its exchange identities.
 | residual canonically promotes to new law | passed for strict congruence; passed in separate higher-obstruction and completion charts |
 | promotion has universal/minimal property | passed for strict congruence, tomography, several completions |
 | two unlike promotion modes derived from one residual | passed: strict abelian quotient versus nonsplit Heisenberg central promotion |
-| nonidentity comparison between promotion modes | passed: quotient erases a fixed central commutator and admits no group section |
-| composition/exchange law involving a third singular or higher mode | open |
-| charge migration formula across exchange | finite-word conservation only |
-| withheld prediction validated in second laboratory | passed for some process models, not for the promotion calculus |
+| nonidentity comparison between promotion modes | passed: quotient erases a fixed central commutator; observation commutes with promotion differentiation and migrates residual into its kernel |
+| composition/exchange law involving a third singular or higher mode | partial: central-versus-higher promotion differential and admission-relative singular selector proved; opposite-order exchange still open |
+| charge migration formula across exchange | passed for future reporter envelope, exact strict-promotion corridor, and reporter meet |
+| withheld prediction validated in second laboratory | passed: delayed-detection and finite-horizon-mirage laboratories; whole-corpus validation open |
 | whole-corpus source generation | open |
 
 Verdict: Obstruction--Promotion Mechanics is broader and less object-dependent than existing field
 forks, but is not yet accepted. ULF-OPM-3 passes the first cross-mode gate: one exchange residual
 has strict and central promotions, their exact comparison loses a fixed commutator, and no section
-repairs that loss. The decisive missing theorem is now a **selection/exchange law** deciding when a
-source must strictify, centralize, promote to higher arity, or change admission.
+repairs that loss. ULF-OPM-4 proves declared reporter conservation can select against strictification.
+ULF-OPM-5 strengthens selection from present reporter values to the full future law orbit and proves
+the exact corridor between least required repair and greatest reporter-permitted identification.
+The decisive missing theorem is now an **exchange law among surviving non-strict promotions**:
+when strictification is forbidden, what distinguishes central history, higher coherence, and
+singular admission without fitting a new rule per example?
 
 ## 6. Next experiments
 
-1. Use one finite algebraic residual to compare strict quotient promotion with homotopy-coherent
-   promotion. Compute exactly which history the quotient deletes.
-2. Add an observer that admits the strict quotient but not the higher lift; compute the required
-   admission change.
+1. Construct one finite residual for which future reporters forbid strictification but admit both a
+   central-history and a higher-coherent promotion.
+2. Find a law selecting between those two without naming either carrier in advance.
 3. Search for a three-mode coherence identity. If the identity is merely a generic cube boundary,
    reject it as insufficient.
 4. Test the resulting prediction in a non-arithmetic solved system before any proof-route use.

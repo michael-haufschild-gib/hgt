@@ -9,8 +9,8 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`dfe6bce5e8145332ae0aa393b9cd5b8aaa65ece0`; concurrent uncommitted modules are excluded until they
-land. Paper-only claims are labeled separately.
+`743880c61278b0a75cba2c64f968530f27053e81`. Files outside committed umbrellas at this snapshot are
+excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
 sharp boundaries, and no-go classifications for which no exact external collision was located.
@@ -23,7 +23,9 @@ additional abstract RH equivalences.
 
 No external theorem reviewed supplies a missing Tier-1 source estimate, and no local theorem closes
 one. Two newly independent local architectures, Routes T and U, survive the route-equivalence
-audit. RH and its negation therefore remain unproved.
+audit. Later source-horizontal, Burnol, Hedenmalm eigen-pair, Gamma--Lorentz, and generic
+universal-law-field additions narrow existing routes or strengthen obstruction infrastructure;
+they do not instantiate a third new route. RH and its negation therefore remain unproved.
 
 ## 1. Standards and verdict language
 
@@ -133,6 +135,15 @@ self-adjoint generator. It also proves that every faithful full-source ordinary-
 realization is nonclosable. These sharpen the producer category; positivity of the source Weil
 form itself remains exactly RH and is not claimed as progress.
 
+Current Lean layer supplies a literal source involution realizing Xi--Weil sharp, exact
+theta-cusp zero mean, transform-convention bridge, eigen-pair line integrability, far-right
+von-Mangoldt line-series exchange, Xi-derivative substrip decay, and vertical-edge vanishing.
+A pinned single-pole Guinand--Weil argument now identifies, at paper level, the decisive
+eigen-pair prime plus Gamma expression with the antidiagonal Hermitian Gram. This is a genuine
+prime-side identification, not a positivity theorem; it falsifies the prior wall-grade obstruction
+conjecture on this decisive class. Full Lean certification still requires the
+Fourier inversion/convolution evaluation and rectangle assembly.
+
 **External contribution.** Weil, Guinand, Barner, Yoshida, Bombieri, Connes–Consani, Suzuki, and
 Groskin supply the established explicit-formula, localization, and finite-operator framework.
 Suzuki's [2022 screw-function theorem](https://arxiv.org/abs/2206.03682) makes every localized
@@ -140,14 +151,14 @@ kernel operator trace class
 unconditionally and characterizes RH by nonnegativity/nondegeneracy of those concrete localized
 forms.
 
-**Exchange verdict and Lean action.** The Hedenmalm frontier is no longer “find a positive form.”
-Construct one source-derived singular common domain/boundary transgression: either a Burnol
-critical-aperture boundary-null graph faithful on divided levels, an infinite folded dilation with
-unsquared Euler--Poisson--Gamma Weyl transfer, or the source-fixed reflected Borel common domain
-compatible with Sonin aperture maps. External Hedenmalm/de Branges theory supplies the parent
-pair but no such source-derived domain. Suzuki's localized trace-class theorem remains useful
-infrastructure but does not narrow this first premise. The independent C1-CCM branch still needs a
-bivariant/intersection trace pairing, Hodge sign, and Weil-form identification on the exact closed
+**Exchange verdict and Lean action.** The Hedenmalm frontier is no longer “find a positive form” or
+“identify its decisive prime--Gamma matrix.” First complete the two bounded Lean certification
+stages. Scientific core is then a source-derived singular common domain with positive,
+nondegenerate closure of this identified form, including multiplicity/Jordan directions, without
+assuming zero location or simplicity. External Hedenmalm/de Branges theory supplies the parent
+pair but no such source-derived closure. Suzuki's localized trace-class theorem remains useful
+infrastructure but does not narrow this first premise. Independent C1-CCM branch still needs a
+bivariant/intersection trace pairing, Hodge sign, and Weil-form identification on exact closed
 class-space recipient.
 
 ### Route C2 — theta center-mixed positivity [RETIRED]
@@ -599,7 +610,10 @@ obstruction.
 **Exchange verdict and Lean action.** Completed Green source and primitive, ordinary BV boundary,
 coefficient-faithful Green-to-Calderón--Witt incidence, resolved complexes, strict Route-R chain
 provenance, actual Burnol/Deninger physical reader, ordered pre-divisor comparison, source residue,
-and ordinary-prime detection now exist. The all-prime-first Euler--Gamma/Möbius transgression is
+and ordinary-prime detection now exist. The shared source-zero theorem now also constructs and
+orients the full prime-labelled horizontal carrier before scalarization; its global vanishing is
+formally equivalent to RH, so this does not supply L's annihilator. The all-prime-first
+Euler--Gamma/Möbius transgression is
 also paper-closed with strict PNT endpoint, contragredient physical/Fourier connection, and
 unsquared Green--Stokes law.
 
@@ -687,11 +701,10 @@ QW_lambda(a_lambda,a_lambda)
 ```
 
 Hence explicit constrained seed is eventually positive with Rayleigh value tending to zero.
-Since previous audit, Lean has closed exact compact Bessel primitive, transported exterior
-primitive, two-branch exact channel, polar source, endpoint energy, full primitive, and dilated
-endpoint laws. Full paper assembly and remaining occupancy/promotion interfaces still require
-hostile audit before promotion. No priority claim is made, and seed theorem does not control true
-ground space.
+Lean formalizes exact compact Bessel primitive, transported exterior primitive, two-branch exact
+channel, polar source, endpoint energy, full primitive, and dilated endpoint laws. Full paper
+assembly and remaining occupancy/promotion interfaces still require hostile audit before
+promotion. No priority claim is made, and seed theorem does not control true ground space.
 
 **External contribution.** Connes–Consani–Moscovici's
 [Zeta Spectral Triples](https://arxiv.org/abs/2511.22755) gives concrete finite-prime self-adjoint
@@ -774,6 +787,14 @@ connection, and its label-preserving Xi covariant square. The Xi rate
 `a_ρ=2 Re(ρ)-1` also means the flatness equivalence itself is a detector; no novelty or progress
 claim is based merely on rewriting the critical-line equation.
 
+The previously missing horizontal carrier is now literal. For every Xi-divisor multiplicity copy,
+Lean combines complete-resolution reflection displacement with full ordinary-prime Gamma
+Bockstein family. Ordered cofinal source ratios recover exact horizontal grade; carrier is
+reflection-odd, strictly oriented at every prime exactly off line, and lands in physical
+Rees--corona class without losing prime, depth, divisor, or multiplicity provenance. This is
+positive new source architecture, but Lean also proves global carrier vanishing equivalent to RH.
+It closes construction and orientation, not annihilation.
+
 The strict essential-edge carrier is now exact as well. Its literal prime-indexed correction is
 `ℓ²` but not `ℓ¹`; a source-fixed contraction recovers the inverse-prime nome, and occupation
 condensation gives the diagonal spectrum `1/N(ν)`. The resulting operator is Hilbert--Schmidt,
@@ -784,11 +805,13 @@ realization and regular/singular comparison, but the determinant is an everywher
 exponential and cannot be the missing annihilator.
 
 The Burnol branch now supplies a much more concrete singular face. Lean constructs all-prime and
-Poisson-subordinate Cartier entrance walls, the actual zero-divided first-wall source, its
-mass/decay/exterior mass and crossing correlation, singular residue polarization,
-Gamma--Bockstein extraction, divided-shift evaluation nonvanishing, and exact forward/cosine head
-gains. One fixed positive two-head energy is strictly amplified by every hypothetical right-half
-Xi divisor. Its source-derived non-amplification therefore implies RH. Ordinary completed collar
+Poisson-subordinate Cartier entrance walls, actual zero-divided first-wall source, its
+mass/decay/exterior mass and crossing correlation, singular residue polarization, and exact
+forward/cosine head gains. The Gamma--Bockstein limit layer is now complete: uniform integrable
+majorant, crossing continuity, forward/reflected reading limits, exact head-flux and collar-depth
+limits, no constant plateau, and equality with same-fibre dyadic Stokes boundary norm difference.
+One fixed positive two-head energy is strictly amplified by every hypothetical right-half Xi
+divisor. Its source-derived non-amplification therefore implies RH. Ordinary completed collar
 kills the residue, so required law must act before polar completion. No located Burnol,
 co-Poisson, or de Branges theorem supplies this pre-divisor Stokes contraction.
 
@@ -802,9 +825,10 @@ four-unit Ward incidence is a distinct CCM-FU premise, not Route R's remaining t
 
 **Exchange verdict and Lean action.** Source formation, Gamma completion, Xi landing, positive
 resolved polarization, strict chain provenance, essential-edge `det₂`, and Burnol first-wall
-reader need no replacement import. First unproved premise can now be stated equivalently as
-coefficient-faithful singular Cartier comparison, reflection-odd first-wall/Bockstein orientation,
-or non-amplification of fixed two-head Burnol energy. Corpus comparisons put these in one
+reader/limit need no replacement import. First unproved premise can now be stated equivalently as
+coefficient-faithful singular Cartier comparison, annihilation/pairing of two retained ordered
+cofinal orientations of constructed horizontal carrier, or non-amplification of fixed two-head
+Burnol energy. Corpus comparisons put these in one
 source-isogeny radical; they are not separate routes. One fixed Hilbert/Schatten carrier is
 excluded across full reflected strip, and associated-grade preservation is blind to vertical
 displacement. No located primary theorem constructs pre-divisor source law. Generic Krein, trace,
@@ -844,8 +868,10 @@ and equality of first unseen extension coordinate with Krein crossing, terminal 
 source jet, and prime--Gamma pairing. It further splits shifted form into longitudinal Hilbert
 energy minus transverse charge, identifies null polynomial as isometric lightlike flag, and shows
 saturated-gap derivative is exact crossing. Marked Lorentz shear retains conjugation-even phase
-lost by ordinary covariance. No exact external collision was located for this assembled adaptive
-null-face/source-extension mechanism.
+lost by ordinary covariance. Admitted Gamma right-upper exterior and adaptive-coefficient landings
+are now committed and umbrella-reachable: a positive gauge identifies each with same Lorentz shear
+and preserves quartet aggregate, while supplying no sign. No exact external collision was located
+for this assembled adaptive null-face/source-extension mechanism.
 
 **External contribution.** Berg--Szwarc's
 [Hankel determinant analysis](https://arxiv.org/abs/1405.7267) and Salazar's
@@ -894,6 +920,30 @@ conditional reductions.
 
 **Lean action.** No route-level import selected. New generic mathematics is useful infrastructure;
 without a literal Xi source handoff it does not advance RH.
+
+### Cross-cutting HTGeometry receiver and obstruction additions [NOT A ROUTE]
+
+**Local contribution.** New committed modules prove compact-carrier representation for continuous
+functionals on compact-open map spaces, dense finite-support prime-quadrant tangent graphs, local
+Poisson/Stieltjes absolute-continuity criteria, finite-matrix spectral-density decay and Dyson
+identities, exact separable Bures/Alberti approximation and compact-target minimax laws, explicit
+finite-amplifier pattern/width caps, Abelian zeta-gas normalization, and full finite one-replica
+Pauli generation. Derived-selection geometry
+computes a Riemann pullback nontrivial exactly on the critical line. Constraint-relativity laws
+show that faithful re-encoding, fixed defect closure, bounded/static observers, unframed rank-one
+naturality, symmetry inheritance, and finite word filtrations do not promote a missing law. A
+common multiplicative regularizer is likewise blind to subleading differences between systems
+sharing one nonzero leading term: convergence for one forces same regularized limit for the other.
+
+**Route classification.** These theorems clarify admissible producer categories but have no typed
+handoff to a live route's first unresolved arithmetic premise. Compact-carrier representation does
+not build P's positive source measure; dense prime tangents do not provide R/L singular
+annihilation or U adaptive sign; Bures minimax and zeta-gas normalization do not provide E/T
+all-prime cancellation. Riemann pullback is an RH-equivalent selector, not an unconditional
+producer. Strongest positive design survivor is an irreducible unbounded-arity interaction or
+cofinal future-sensitive reporter invisible to every fixed proper face. No arithmetic source
+instance or unconditional Xi handoff is present, so no independent route or literature-to-Lean
+action follows from this batch.
 
 ## 3. Secondary criteria
 

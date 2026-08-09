@@ -1,9 +1,12 @@
 # Cyclic bulk-boundary character, fusion recurrence, and open lift law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-BULK-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveBulkBoundaryFusion`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [BULK/BOUNDARY FORK] [SCALAR-INDISTINGUISHABLE BOUNDARIES]
-  [FUSION RECURRENCE/OPEN LIFT] [NOT TQFT CLAIM] [NOT RH] [NO LEAN]
+  [FUSION RECURRENCE/OPEN LIFT] [NOT TQFT CLAIM] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Setup
 

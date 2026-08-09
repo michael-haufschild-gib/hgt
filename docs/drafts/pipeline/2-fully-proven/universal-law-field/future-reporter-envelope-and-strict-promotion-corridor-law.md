@@ -7,7 +7,7 @@
   congruence. Strict exchange promotion exists exactly when the least relation required for
   commutation lies inside that future reporter envelope.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT]
-  [FUTURE-CONTEXT SELECTION] [LEAN REQUIRED] [NOT RH]
+  [FUTURE-CONTEXT SELECTION] [LEAN-CERTIFIED] [NOT RH]
 
 ## 1. Setup
 
@@ -179,9 +179,10 @@ law.
 4. The reporter is declared before promotion; its source genesis remains open.
 5. No route, topology, positivity, physical cost, HT, or RH claim is used.
 
-## Lean target
+## Lean certification
 
-Formalize without project axioms:
+Formalized without project axioms in
+`GaloisForLFunctions.HTGeometry.ConstitutiveFutureReporterPromotion`:
 
 1. free two-law words and their action;
 2. future reporter kernel equivalence, preservation, and maximality;
@@ -189,6 +190,8 @@ Formalize without project axioms:
 4. promotion corridor and existence equivalence;
 5. five-state delayed-detection countermodel;
 6. bundled mechanism theorem.
+
+The module is wired into `GaloisForLFunctions.HTGeometry.UniversalLawField`.
 
 ## Log
 

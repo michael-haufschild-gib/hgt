@@ -549,3 +549,49 @@ any substrip line is integrable — both factors under (18a), conjugate factor v
 doubled decay rate, one fix cycle (exp-product split stated explicitly). Wired. The stage-1 swap
 and the inversion step now have their integrable weight supplied for the eigen pair
 specifically. Remaining new modules: 5a-3, 5b.
+
+## 2026-08-09 — Lean batch 10: 5a-3a certified (Claude Fable 5)
+
+`RHTower/EigenPairLineConvolution.lean` green (8959 jobs, standard axioms): the pair-line
+product equals 𝓕 of the convolution of the tilted flows — via the convention bridge (both
+factors), the new hypothesis-free 𝓕 conjugation-reflection law (Circle-smul route), real-tilt
+integrability (I_sq linear_combination transport), and the corpus's L¹ convolution theorem.
+Four fix cycles, all instance/coercion-level. Chain: 1, 2A, 2B, 5a-1, 5a-2, 5a-3a certified;
+3 owned; remaining NEW: 5a-3b (inversion at ±log n) and 5b (assembly).
+
+## 2026-08-09 — 5a-3b provisioning complete; chain has zero unknowns (Claude Fable 5)
+
+All names for the remaining two modules verified to exist (convolution integrability,
+bounded-continuous convolution continuity, corpus-used inversion). The eigen-pair certification
+chain now has NO unresolved dependencies: 5a-3b and 5b are writing tasks against known lemmas.
+Ten modules green this session; the identification's machine-checked closure is two writes away.
+
+## 2026-08-09 — Lean batch 11: 5a-3b certified; only 5b remains (Claude Fable 5)
+
+`HTGeometry/FourierScaledInversion.lean` green (2781 jobs, standard axioms): the scaled
+inversion via Measure.integral_comp_inv_mul_right + fourierInv_eq_fourier_neg +
+Continuous.fourierInv_fourier_eq; three fix cycles (substitution-form alignment, beta-reducing
+show, unused simp arg for the lint gate). ELEVEN green modules this session. The eigen-pair
+identification's machine-checked closure now rests on a single remaining write: 5b, the
+rectangle assembly, with zero unknown dependencies.
+
+## 2026-08-09 — Lean batch 12: 5b-1 certified clean on first elaboration (Claude Fable 5)
+
+`RHTower/EigenPairRectangleIdentity.lean` green (8800 jobs, standard axioms, zero fix cycles):
+sharp-of-entire is entire (via the corpus's differentiable_conj_reflect — fifth avoided
+duplicate this session), and the fixed-aperture rectangle identity for the single-pole
+integrand via the corpus's rectIntegral_cauchyFormula_entire with the analytic product
+numerator. TWELVE green modules this session. Sole remaining module: 5b-2, the widening-limit
+assembly.
+
+## 2026-08-09 — 5b-2 implementation spec written; arc closed at twelve modules (Claude Fable 5)
+
+The final assembly module's complete implementation specification is in the serena memory
+`universal-law-field/5b2-assembly-spec-2026-08-09`: edge-by-edge plan (L1-L4 + MAIN), the two
+known coordinate frictions named (the α vs −α parameter convention between quotient and
+transform — to be reconciled ONCE at the end via the phase identity; the z-vs-s derivative
+bookkeeping absorbed by the resolvent trace's −i prefactor), the truncated-to-full-line limit
+tool identified (intervalIntegral_tendsto_integral), and the recommendation to split L1-L2 as
+their own module. Zero unknown lemmas remain anywhere in the chain. The next session (or next
+fresh-context loop iteration) executes 5b-2 from the spec; on its green build the eigen-pair
+identification is machine-checked end to end.

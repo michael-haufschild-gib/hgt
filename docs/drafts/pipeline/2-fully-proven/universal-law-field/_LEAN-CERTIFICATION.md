@@ -31,9 +31,17 @@ Dedicated Lean umbrella:
 | ULF-IRR-1 | Minimal irreducible `N`-ary law with all composites zero, abelian proper colour faces, non-homotopy-abelian total law, interaction order `N`, and non-locally-compact unbounded spectrum | `HTGeometry.ConstitutiveIrreducibleInteraction` |
 | ULF-TORS-1 | Acyclic based two-term complexes, determinant history as a complete based invariant, multiplicativity, positive shadow as the exact phase quotient, and closed observation with open logarithmic lift | `HTGeometry.ConstitutiveDeterminantTorsion` |
 | ULF-FILL-1 | Van Kampen area of `aⁿbⁿa⁻ⁿb⁻ⁿ` is exactly `n²` with trivial endpoint, length `4n`, and orientation-blind cost | `HTGeometry.ConstitutiveQuadraticFilling` |
+| ULF-DOCT-1 | Nondistributive doctrine lattice, exact lcm-periodic finite congruence observers with infinite fibres, cofinal separation, and the phase doctrine as a positive quotient | `HTGeometry.ConstitutiveDoctrineLattice` |
+| ULF-ENDP-1 | Derived, endpoint, and unweighted observers are constant while determinant history, van Kampen area, and cellular area are not | `HTGeometry.ConstitutiveEndpointInsufficiency` |
+| ULF-BULK-1 | Scalar-indistinguishable `C₃` boundary conditions separated by the bulk character, with exactly three-periodic fusion and open marked lift | `HTGeometry.ConstitutiveBulkBoundaryFusion` |
 | ULF-OPM-2 | Failed unary exchange generates the least preserved congruence; induced quotient laws commute; every commuting observer factors uniquely through it; no smaller strict repair exists | `HTGeometry.ConstitutiveExchangeStrictification` |
 | ULF-OPM-3 | One exchange residual admits strict quotient and nonsplit central promotion; cocycle coherence, exact commutator carry, fixed lift residual, and no-section theorem | `HTGeometry.ConstitutiveExchangeCentralPromotion` |
 | ULF-OPM-4 | Reporter descends exactly when constant on generated exchange congruence; critical-pair detection forbids commuting strictification with reporter preservation; Heisenberg history reporter selects central promotion | `HTGeometry.ConstitutiveExchangePromotionSelection` |
+| ULF-OPM-5 | Future reporter orbit induces greatest conserved law congruence; strict promotion exists exactly when minimal exchange repair lies inside it; delayed detection defeats present-only selection | `HTGeometry.ConstitutiveFutureReporterPromotion` |
+| ULF-OPM-6 | Promotion differential selects associative central closure versus coherent ternary birth; every associator obeys pentagon coherence; unary gauge changes leave it invariant | `HTGeometry.ConstitutivePromotionDifferential` |
+| ULF-OPM-7 | Exactness trichotomy relative to admission; constant residual is algebraically exact and finitely repairable at every horizon but has no upper-bounded global primitive | `HTGeometry.ConstitutiveAdmissionRelativePromotion` |
+| ULF-OPM-8 | Paired reporters intersect future envelopes; strict-promotion admissibility composes by conjunction; refinement is monotone and one conserved detector vetoes strictification | `HTGeometry.ConstitutiveReporterMeetPromotion` |
+| ULF-OPM-9 | Promotion differentiation commutes with additive observation; observed closure iff source associator lies in observer kernel; mod-two observation creates exact false closure | `HTGeometry.ConstitutivePromotionObservationExchange` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.
@@ -114,3 +122,21 @@ assembly), stage-4 bridge if the two-pole variant needs adaptation.
 
 Build green (8946 jobs); axioms standard. Chain: 1, 2A, 2B, 5a-1, 5a-2 certified; 3 owned;
 4 likely owned; remaining new work: 5a-3 (inversion application) and 5b (assembly).
+
+| ULF-INV-10-S5A3 | The eigen-pair line product IS one Fourier transform of a convolution: `T_α(t−iY)·conj(T_β(t+iY)) = 𝓕(tilted-α ⋆ conj-reflected-tilted-β)(t/2π)`; with the hypothesis-free conjugation–reflection law for 𝓕 and real-tilt integrability | `RHTower.EigenPairLineConvolution` |
+
+Build green (8959 jobs); axioms standard. The prime-half chain's remaining new work is now
+5a-3b (Fourier inversion of the convolution at ±log n) and 5b (rectangle assembly).
+
+| ULF-INV-10-S5A3B | Scaled Fourier inversion: `∫ e^{−itξ₀}·𝓕h(t/2π) dt = 2π·h(−ξ₀)` for continuous h with h, 𝓕h ∈ L¹ — converts every frequency integral of the termwise swap into a time-side sample | `HTGeometry.FourierScaledInversion` |
+
+Build green (2781 jobs); axioms standard. The ELEVEN-module chain (1, 2A, 2B, 5a-1, 5a-2,
+5a-3a, 5a-3b certified new + N8-J, D4A, INV-7-CORE, INV-1-CORE) leaves ONE new module: 5b,
+the rectangle assembly, every ingredient of which is now a certified or corpus-owned lemma.
+
+| ULF-INV-10-S5B1 | Fixed-aperture rectangle identity for the single-pole eigen integrand: boundary integral of `deriv XiC · sharp F/(z−p)` = `2πi`·(numerator at p) — the antidiagonal Gram datum; plus sharp-of-entire is entire | `RHTower.EigenPairRectangleIdentity` |
+
+Build green (8800 jobs, clean first elaboration); axioms standard. TWELVE session modules.
+Remaining: 5b-2, the widening-limit assembly gluing S5B1's fixed-aperture identity to the
+horizontal expansions (stage 1 + 5a chain) and the vertical vanishing (2A/2B) — the final module
+of the identification's machine-checked closure.

@@ -1,9 +1,12 @@
 # Equivalence-lattice nondistributivity, finite recurrence, and cofinal lift reconstruction law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-DOCT-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveDoctrineLattice`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [DYNAMIC-EQUIVALENCE FORK] [NON-DISTRIBUTIVE LOCALIZATION]
-  [FINITE RECURRENCE/OPEN LIFT] [COFINAL RECONSTRUCTION] [NOT RH] [NO LEAN]
+  [FINITE RECURRENCE/OPEN LIFT] [COFINAL RECONSTRUCTION] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Equivalence doctrines
 

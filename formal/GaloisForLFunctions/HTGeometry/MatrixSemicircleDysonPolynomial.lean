@@ -24,6 +24,11 @@ def matrixSemicircleCovariance (A : K → Matrix I I ℂ) (X : Matrix I I ℂ) :
     Matrix I I ℂ :=
   ∑ k, A k * X * (A k)ᴴ
 
+theorem matrixSemicircleCovariance_smul (A : K → Matrix I I ℂ) (c : ℂ)
+    (X : Matrix I I ℂ) :
+    matrixSemicircleCovariance A (c • X) = c • matrixSemicircleCovariance A X := by
+  simp [matrixSemicircleCovariance, Finset.smul_sum]
+
 /-- Coordinate set for one spectral variable and all entries of the matrix Cauchy transform. -/
 abbrev MatrixDysonVariable (I : Type*) := Option (I × I)
 
@@ -42,6 +47,12 @@ def matrixDysonPolynomial (A : K → Matrix I I ℂ) (i j : I) :
   matrixDysonZ I * matrixDysonEntry i j - MvPolynomial.C (if i = j then 1 else 0) -
     ∑ k, ∑ l, ∑ m, ∑ q, MvPolynomial.C (A k i l) * matrixDysonEntry l m *
       MvPolynomial.C (star (A k q m)) * matrixDysonEntry q j
+
+/-- Quadratic covariance-product coordinate extracted from the cleared Dyson polynomial. -/
+def matrixDysonQuadraticPolynomial (A : K → Matrix I I ℂ) (i j : I) :
+    MvPolynomial (MatrixDysonVariable I) ℂ :=
+  matrixDysonZ I * matrixDysonEntry i j - MvPolynomial.C (if i = j then 1 else 0) -
+    matrixDysonPolynomial A i j
 
 /-- Evaluation point consisting of a spectral parameter and a candidate matrix Cauchy transform. -/
 def matrixDysonPoint (z : ℂ) (G : Matrix I I ℂ) : MatrixDysonVariable I → ℂ
@@ -98,6 +109,16 @@ theorem eval_matrixDysonPolynomial (A : K → Matrix I I ℂ) (z : ℂ)
             intro l _
             rw [Finset.sum_comm]
   rw [hsum]
+
+/-- The extracted quadratic coordinate evaluates to `(η(G)G)ᵢⱼ`. -/
+theorem eval_matrixDysonQuadraticPolynomial (A : K → Matrix I I ℂ) (z : ℂ)
+    (G : Matrix I I ℂ) (i j : I) :
+    MvPolynomial.eval (matrixDysonPoint z G) (matrixDysonQuadraticPolynomial A i j) =
+      (matrixSemicircleCovariance A G * G) i j := by
+  simp only [matrixDysonQuadraticPolynomial, map_sub, map_mul, MvPolynomial.eval_C,
+    eval_matrixDysonZ, eval_matrixDysonEntry, eval_matrixDysonPolynomial,
+    Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply]
+  ring
 
 /-- Simultaneous vanishing of the square polynomial system is exactly Speicher's matrix Dyson
 equation, with no discarded coordinate or denominator. -/
@@ -168,6 +189,23 @@ theorem matrixDysonPolynomial_totalDegree_le_two
   · refine (MvPolynomial.totalDegree_sub _ _).trans ?_
     exact max_le hzg (by split <;> simp)
   · exact hsum
+
+/-- The extracted covariance-product coordinate is again quadratic. -/
+theorem matrixDysonQuadraticPolynomial_totalDegree_le_two
+    (A : K → Matrix I I ℂ) (i j : I) :
+    (matrixDysonQuadraticPolynomial A i j).totalDegree ≤ 2 := by
+  unfold matrixDysonQuadraticPolynomial
+  refine (MvPolynomial.totalDegree_sub _ _).trans ?_
+  apply max_le
+  · refine (MvPolynomial.totalDegree_sub _ _).trans ?_
+    apply max_le
+    · calc
+        (matrixDysonZ I * matrixDysonEntry i j).totalDegree ≤
+            (matrixDysonZ I).totalDegree + (matrixDysonEntry i j).totalDegree :=
+          MvPolynomial.totalDegree_mul _ _
+        _ = 2 := by simp [matrixDysonZ, matrixDysonEntry]
+    · split <;> simp
+  · exact matrixDysonPolynomial_totalDegree_le_two A i j
 
 end
 

@@ -1,0 +1,248 @@
+# Reflexive Law Mechanics: field constitution
+
+- **ID:** ULF-RLM-1
+- **Stage:** 1-in-progress
+- **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
+- **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
+  the laws by which consequences, failures, and conservation requirements revise the rulebook.
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [FOUR SELECTOR LAWS LEAN-CERTIFIED]
+  [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
+
+## 1. Founding shift
+
+Do not ask:
+
+> What hidden object has all proof routes as coordinate charts?
+
+Ask:
+
+> What laws govern the birth, rejection, composition, and termination of new laws when the current
+> rulebook fails?
+
+The primitive scientific episode is
+
+\[
+ \mathcal L_n
+ \xrightarrow{\mathrm{execute}}
+ \rho_n
+ \xrightarrow{\mathrm{select/promo te}}
+ \mathcal L_{n+1},
+ \tag{RLM.1}
+\]
+
+where `L_n` is the current legal calculus and `rho_n` is a typed failure of an executable schedule.
+The next failure is computed using `L_(n+1)`, not the old calculus. The theory is therefore
+reflexive and path-dependent.
+
+Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
+may run. None is the universal primitive.
+
+## 2. The eight field laws
+
+### RLM Law I -- typed exposure
+
+Executing two legal schedules produces a residual with a type determined before interpretation:
+critical pair, associator, failed descent, missing primitive, nonclosed range, intervention response,
+or limit defect. Calling every residual curvature destroys information.
+
+### RLM Law II -- least-required / greatest-permitted corridor
+
+Every proposed strict promotion has two boundaries:
+
+- least relation required to make the requested laws executable;
+- greatest relation permitted by conserved reporters under every future legal execution.
+
+Strict promotion exists exactly when the first lies inside the second. ULF-OPM-5 proves this and a
+delayed-detection countermodel in Lean.
+
+### RLM Law III -- future conservation
+
+A reporter is conserved through promotion only if it remains constant after every future law word,
+not merely at the current endpoint. Present blindness may become future detection. Therefore
+selection is intrinsically dynamical even when every carrier is finite.
+
+### RLM Law IV -- conservation meet
+
+Combining reporter doctrines intersects their future envelopes. Promotion admissibility composes by
+conjunction; one exact conserved charge vetoes strict quotienting. No scalar average or majority
+vote replaces this law. ULF-OPM-8 proves it in Lean.
+
+### RLM Law V -- promotion differential
+
+A compensator is tested by executing it in competing schedules. Its residual is the input to the
+next promotion:
+
+\[
+ \kappa\xmapsto{\delta}\mathfrak a_\kappa.
+ \tag{RLM.2}
+\]
+
+Vanishing closes the current promotion. Nonvanishing births a higher law. ULF-OPM-6 proves binary
+central closure iff `delta kappa=0` and proves a nonzero ternary birth in Lean.
+
+### RLM Law VI -- coherence is generated, not postulated
+
+The next residual obeys an identity forced by the same schedule calculus. In the certified binary
+case, every born associator satisfies the pentagon law because `delta^2=0`. Higher coherence is the
+conservation law of repeated promotion.
+
+### RLM Law VII -- exactness is admission-relative
+
+An algebraic primitive repairs a residual only if it is legal in the current doctrine. The exact
+mode trichotomy is:
+
+1. admitted-exact: internal repair is possible;
+2. algebraically exact but not admitted-exact: singular/admission promotion is forced;
+3. algebraically nonexact: extension or higher promotion is required.
+
+ULF-OPM-7 proves a residual that is algebraically exact and finitely admitted at every horizon but
+has no admitted global primitive.
+
+### RLM Law VIII -- feedback and directed work
+
+Promotion changes the future residual calculus, reporter envelope, and admission doctrine. Its cost
+belongs to directed formation histories. Reversible equivalence cannot carry nonzero nonnegative
+additive formation cost. Termination, recurrence of observed rulebooks, and openness of lifted law
+history are distinct questions.
+
+## 3. Certified promotion decision mechanism
+
+Given a typed residual and conserved reporter doctrine:
+
+```text
+future reporter corridor fits?
+├─ yes: strict promotion permitted, not forced
+└─ no: quotient forbidden
+   └─ proposed compensator κ
+      ├─ δκ ≠ 0: binary repair fails; ternary/higher law is born
+      └─ δκ = 0: algebraic central closure exists
+         ├─ admitted primitive/compensator: central or gauge promotion permitted
+         └─ no admitted primitive: singular/admission promotion forced
+```
+
+This is not yet a deterministic algorithm. Several permitted promotions can coexist. Further source
+reporters, directed cost, or a universal minimality law must choose among permitted modes. But four
+formerly independent promotion classes now have exact transition laws.
+
+## 4. Exact theorem stack
+
+| ID | mechanism law | Lean status |
+|---|---|---|
+| ULF-OPM-2 | least strict exchange repair | certified |
+| ULF-OPM-3 | same residual: strict quotient versus nonsplit central history | certified |
+| ULF-OPM-4 | conserved reporter forbids strictification | certified |
+| ULF-OPM-5 | future reporter envelope and exact promotion corridor | certified |
+| ULF-OPM-6 | promotion differential selects central closure versus higher birth | certified |
+| ULF-OPM-7 | algebraic/admitted exactness selects singular promotion | certified |
+| ULF-OPM-8 | reporter meet and refinement compose selectors | certified |
+| ULF-OPM-9 | promotion/observation naturality and exact kernel migration | certified |
+
+These theorems use finite sets, free law words, integer central extensions, additive cochains, and
+admitted sequence primitives as structurally different laboratories. No RH endpoint enters their
+statements or proofs.
+
+## 5. Frankenstein parentage
+
+RLM deliberately splices known mathematics, but changes the question connecting them:
+
+- rewriting and congruence completion supply least strict repair;
+- Galois connections supply required/permitted corridors;
+- group cohomology and deformation theory supply promotion differentials;
+- `A_infinity`/`L_infinity` theory supplies higher coherence birth;
+- sheaf/descent and obstruction theory supply local/global promotion tests;
+- functional analysis and derived completion supply admission-relative exactness;
+- intervention theory supplies active reporters;
+- thermodynamics and directed topology supply formation work;
+- recurrence and covering theory separate closed observation from open law history.
+
+The unifying interpretation is new-field-level only if these parents become transition laws in one
+self-revising calculus and make cross-laboratory predictions. A list of analogies does not count.
+
+## 6. Predictions already forced
+
+1. **Delayed visibility:** endpoint-blind residual can be detected after later legal execution.
+2. **Conservation veto:** one future-stable charge blocks quotienting despite arbitrarily many blind
+   reporters.
+3. **Coherence birth:** failed associative compensation produces a pentagon-coherent ternary law.
+4. **Gauge invariance:** unary recalibration cannot change the central-versus-higher verdict.
+5. **Finite-horizon mirage:** every finite stage can admit exact repair while no admitted global
+   repair exists.
+6. **Mode noncollapse:** strict, central, higher, and singular promotions are selected by different
+   exact tests and cannot be one scalar obstruction.
+7. **False closure:** lossy observation can make a nonassociative promoted source law exactly
+   associative by killing its associator; faithful observation cannot.
+
+## 7. Fields-medalist research programme
+
+### 7.1 Build a periodic table of residual types
+
+For every theorem wall, record only
+
+\[
+ (\text{legal schedules},\ \text{typed residual},\ \text{conserved reporters},\
+ \text{admission},\ \text{successful promotion}).
+\]
+
+Cluster walls by identical transition law, not by subject or proof route.
+
+### 7.2 Search for conservation laws of law change
+
+Ask:
+
+1. Which reporters survive every admitted promotion?
+2. Which residual differential is nilpotent, and at what level?
+3. When do two promotion orders agree, braid, or require another higher law?
+4. Which formation quantities are monotone under every promotion?
+5. Which local repairs have a compactness theorem giving global admission?
+
+### 7.3 Construct minimal bifurcation laboratories
+
+Find smallest systems with the same exposed residual but different legal promotion modes. Vary one
+mechanism condition at a time: reporter, differential, admission, or cost. Demand exact converses.
+
+### 7.4 Develop promotion renormalization
+
+Coarse observation can make multiple promotion histories appear identical. Study which effective
+rulebook flows have fixed points, cycles, universality classes, and relevant/irrelevant reporter
+directions. This is a plausible mechanism-level analogue of renormalization, not geometric GR.
+
+### 7.5 Prove termination or open-genesis theorems
+
+Classify when iterated promotion:
+
+- terminates in a saturated rulebook;
+- becomes periodic after observation but remains open in lifted history;
+- converges only after singular completion;
+- produces unbounded arity or coherence depth.
+
+### 7.6 Only then return to the corpus
+
+Each proof route becomes a late laboratory. A valid application must identify all entries of the
+mechanism tuple before its endpoint and predict one theorem not used to define the mapping.
+
+## 8. Live unsolved laws
+
+1. **Promotion exchange:** exact law for performing two unlike promotions in opposite orders.
+2. **Source genesis:** mechanism deriving conserved reporters and admission, rather than declaring
+   them.
+3. **Cost selector:** canonical directed work choosing among simultaneously permitted promotions.
+4. **Infinite coherence:** convergence criterion for an unbounded promotion differential tower.
+5. **Renormalization:** effective law flow under observer coarsening, with nontrivial fixed-point
+   predictions.
+6. **Whole-corpus realization:** one source-normal mechanism instance spanning at least three
+   nonisomorphic mathematical organs.
+
+## 9. Death criteria
+
+Retire RLM as theatre if:
+
+- transition laws must be independently fitted in every laboratory;
+- no second-order law governs exchange of promotion modes;
+- reporter and admission data can only be chosen after seeing the desired endpoint;
+- every prediction reduces to standard parent theory within one chart;
+- no withheld cross-organ theorem survives formalization.
+
+## Log
+
+- 2026-08-09 -- constituted Reflexive Law Mechanics from certified strict, reporter, coherence, and
+  admission selectors; universal dynamics and source genesis remain open.

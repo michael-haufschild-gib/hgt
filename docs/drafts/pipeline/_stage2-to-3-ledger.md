@@ -529,3 +529,53 @@ prime/zeta/divisor theorem.  See
 - Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
   `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
   computation proof.
+
+# Universal-law-field doctrine-lattice certification (2026-08-09)
+
+- `equivalence-lattice-nondistributivity-finite-recurrence-and-cofinal-lift-reconstruction-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveDoctrineLattice`.
+- Certified: on a three-element source the three point doctrines have pairwise meet the equality
+  relation and pairwise join the indiscrete relation, so the lattice of equivalence relations is
+  nondistributive; the induced history on `ZMod m` closes after exactly `m` steps and not before;
+  a finite family of congruence doctrines has joint period exactly the least common multiple and
+  infinite fibres; the cofinal family of all congruence doctrines has intersection the equality
+  relation, so it separates points and reconstructs the open lift; the phase doctrine on `ℂˣ` has
+  quotient exactly the positive reals and turns the `N`-fold winding loop into a constant history
+  while its logarithmic lift stays open.
+- Reuses `HTGeometry.ConstitutiveDeterminantTorsion` (`loopHistory`, `logLift`) rather than
+  rebuilding the winding loop.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.
+
+# Universal-law-field endpoint-insufficiency certification (2026-08-09)
+
+- `derived-homotopy-endpoint-insufficiency-for-torsion-and-filling-cost-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveEndpointInsufficiency`.
+- Certified: every observer of the based two-term family that sees only its homology is constant,
+  while the determinant history separates units, so torsion does not factor through the derived
+  category; every observer of words that sees only the represented group element is constant on the
+  null words, while the van Kampen area is `n²`; every observer of the grid fillings that sees only
+  their Euler characteristic is constant, since all of them have the Euler characteristic one of a
+  disk, while their cell counts are `n²`.
+- Reuses `HTGeometry.ConstitutiveDeterminantTorsion` (acyclicity, determinant history) and
+  `HTGeometry.ConstitutiveQuadraticFilling` (null words, area) rather than rebuilding them.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound` (the Euler statements need only `propext`); no
+  project postulate, hypothesis interface, or computation proof.
+
+# Universal-law-field bulk-boundary certification (2026-08-09)
+
+- `cyclic-bulk-boundary-character-fusion-recurrence-and-open-lift-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveBulkBoundaryFusion`.
+- Certified: the three one-dimensional `C₃` boundary conditions have equal dimension, equal
+  one-dimensional endomorphism algebra, and equal positive character norm, are pairwise
+  nonisomorphic, and are separated by the bulk character `ω^j`; fusion multiplies characters and
+  therefore adds the grade, so the boundary observer is periodic with exact period three, while the
+  marked fusion count and its logarithmic lift `2πin/3` are injective and stay open.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.

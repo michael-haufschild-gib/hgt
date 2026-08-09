@@ -340,3 +340,13 @@ note's pair-dependent rectangle height is unnecessary; D7's original Y ∈ (1/2,
 5a's integrability layer is therefore fully corpus-owned; the module's only new content is the
 convention bookkeeping between the corpus transform (e^{−izx}) and mathlib's 𝓕 (e^{−2πixξ})
 through the convolution/inversion step. All 5a inputs are now literally owned.
+
+Stage-5a-3b provisioning (2026-08-09, complete): convolution integrability =
+`Integrable.integrable_convolution`; convolution continuity =
+`BddAbove.continuous_convolution_right_of_integrable` (right factor bounded-continuous — the
+tilted flow is, by the corpus's uniform envelope); 𝓕(convolution) = the pair line, integrable by
+5a-2 (transform pair = phase × quotient pair at the negated zeros, XiC even); inversion =
+`Continuous.fourierInv_fourier_eq` (already used by BurnolCoPoissonIntertwining). The module's
+content: ∫ t e^{−itξ₀}·𝓕h(t/2π) dt = 2π·h(−ξ₀) by the scaling substitution + fourierInv
+unfolding + the inversion. Zero unknown names remain in the whole chain; 5a-3b and 5b are pure
+writing tasks.

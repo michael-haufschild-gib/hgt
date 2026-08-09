@@ -1,10 +1,10 @@
 # Prime--infinity port capacity and root-conormal law
 
 - **ID:** `prime-infinity-port-capacity-and-root-conormal-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / FINITE-RANK NO-GO / POSITIVE SURVIVOR (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [BRIDGE]`
-  `[NEW RH-ROUTE LEVERAGE] [NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[NEW RH-ROUTE LEVERAGE] [NO RH CLAIM] [FORMALIZED IN LEAN]`
 - **Role:** rules out every fixed finite-rank diagonal infinity port as global rank-one selector;
   identifies two-prime half-density line as `A_1` shadow of `A_infinity` conormal.
 
@@ -242,3 +242,7 @@ finite linear algebra targets. Literal source realization remains paper-open.
 ## Log
 
 - 2026-08-08 — seven-loop prime--infinity transgression audit; proof promoted.
+
+## Formalized companion
+
+`prime-infinity-port-capacity-and-root-conormal-law-formalized.md` (same directory).

@@ -1,9 +1,12 @@
 # Derived/homotopy endpoint insufficiency for torsion and filling cost law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-ENDP-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveEndpointInsufficiency`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [HOSTILE PLG BOUNDARY] [HOMOTOPY TYPE IS INSUFFICIENT]
-  [SIMPLE/WEIGHTED ENRICHMENT FORCED] [NOT RH] [NO LEAN]
+  [SIMPLE/WEIGHTED ENRICHMENT FORCED] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Derived-category no-go
 
