@@ -5,7 +5,7 @@
 - **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
 - **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
   the laws by which consequences, failures, and conservation requirements revise the rulebook.
-- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [NINE LAWS LEAN-CALIBRATED]
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [ELEVEN LAWS LEAN-CALIBRATED]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
 
 ## 1. Founding shift
@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The nine field laws
+## 2. The eleven field laws
 
 ### RLM Law I -- typed exposure
 
@@ -120,6 +120,29 @@ irreducible ternary law until every transported binary generator has been exclud
 exchange at the initial state is insufficient, and no universal finite context depth certifies
 global exchange.  ULF-RLM-10 proves all four assertions in Lean.
 
+### RLM Law X -- promotion/admission exchange
+
+A coherent promotion does not automatically survive a change of admissibility.  For an additive
+admission reporter (q) and history compensator (kappa), the following are equivalent:
+
+1. every compensator value lies in (ker q);
+2. the admitted promoted carrier is closed;
+3. the quotient residual (q kappa) vanishes.
+
+When these conditions hold, the admitted promoted operation exists uniquely and inherits ambient
+associativity.  When they fail, (q kappa) is an exact singular-admission residual even if the
+ambient associator is zero.  Thus coherence birth and admission birth are different mechanism
+responses.  ULF-RLM-11 proves the equivalence, uniqueness, descent, and sharp associative mod-two
+countermodel in Lean.
+
+### RLM Law XI -- fixed-polarity collapse and endogenous genesis
+
+Exact mutual generation of rules and tests under one fixed compatibility law cannot produce open
+law history. Serial revision stabilizes after one full round. Synchronous revision satisfies
+`P^3=P`, hence becomes fixed or period two after one round. Therefore prolonged genesis requires a
+typed change in future compatibility: generated test kinds, changed admission, resource-filtered
+polars, nonexact transport, or retained lineage. ULF-RLM-12 proves the complete dynamics in Lean.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -136,8 +159,8 @@ future reporter corridor fits?
 ```
 
 This is not yet a deterministic algorithm. Several permitted promotions can coexist. Further source
-reporters, directed cost, or a universal minimality law must choose among permitted modes. But four
-formerly independent promotion classes now have exact transition laws.
+reporters, directed cost, or a universal minimality law must choose among permitted modes. The
+formerly independent promotion classes now have several exact transition laws.
 
 ## 4. Exact theorem stack
 
@@ -152,6 +175,8 @@ formerly independent promotion classes now have exact transition laws.
 | ULF-OPM-8 | reporter meet and refinement compose selectors | certified |
 | ULF-OPM-9 | promotion/observation naturality and exact kernel migration | certified |
 | ULF-RLM-10 | contextual exchange decomposition, arity certificate, and unbounded horizon | certified |
+| ULF-RLM-11 | central-promotion/admission exchange and quotient obstruction | certified |
+| ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
 
 These theorems use finite sets, free law words, integer central extensions, additive cochains, and
 admitted sequence primitives as structurally different laboratories. No RH endpoint enters their
@@ -191,6 +216,11 @@ self-revising calculus and make cross-laboratory predictions. A list of analogie
    defect; every such defect has a contextual binary generator.
 9. **No finite exchange audit:** passing every exchange test through a fixed finite depth never
    certifies unrestricted exchange without a source-derived horizon bound.
+10. **Coherence/admission bifurcation:** a promoted law can be perfectly associative yet fail every
+    restriction to a declared admitted carrier; the quotient-valued compensator, not its
+    associator, detects this singular failure.
+11. **Exact-polarity collapse:** exact reciprocal rule--test generation has no open history; serial
+    update closes in one round and synchronous update is post-first two-periodic.
 
 ## 7. Fields-medalist research programme
 
@@ -243,9 +273,10 @@ mechanism tuple before its endpoint and predict one theorem not used to define t
 ## 8. Live unsolved laws
 
 1. **Beyond-unary promotion exchange:** classify weak, partial, extension-valued, and higher-arity
-   exchanges not reduced by ULF-RLM-10 to transported binary residuals.
-2. **Source genesis:** mechanism deriving conserved reporters and admission, rather than declaring
-   them.
+   exchanges not reduced by ULF-RLM-10 to transported binary residuals or by ULF-RLM-11 to
+   coefficient landing.
+2. **Endogenous compatibility genesis:** mechanism deriving future reporters, admission, and the
+   changing rule--test compatibility law, rather than declaring them.
 3. **Cost selector:** canonical directed work choosing among simultaneously permitted promotions.
 4. **Infinite coherence:** convergence criterion for an unbounded promotion differential tower.
 5. **Renormalization:** effective law flow under observer coarsening, with nontrivial fixed-point
@@ -271,3 +302,6 @@ Retire RLM as theatre if:
 - 2026-08-09 -- added contextual generation as Law IX: unary three-step reversal decomposes into
   transported binary residuals, Jacobi constrains nesting, and irreducible arity birth moved beyond
   unary additive mechanics.
+- 2026-08-09 -- added promotion/admission exchange as Law X: compensator landing, admitted-carrier
+  closure, and quotient-residual vanishing are equivalent; exact coherence can coexist with
+  singular nonadmission.

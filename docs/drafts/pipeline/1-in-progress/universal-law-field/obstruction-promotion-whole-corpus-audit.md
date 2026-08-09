@@ -162,7 +162,7 @@ promotion and its exchange identities.
 | promotion has universal/minimal property | passed for strict congruence, tomography, several completions |
 | two unlike promotion modes derived from one residual | passed: strict abelian quotient versus nonsplit Heisenberg central promotion |
 | nonidentity comparison between promotion modes | passed: quotient erases a fixed central commutator; observation commutes with promotion differentiation and migrates residual into its kernel |
-| composition/exchange law involving a third singular or higher mode | partial: unary additive opposite-order exchange, central-versus-higher differential, and admission-relative singular selector proved; weak/partial/non-unary exchange remains open |
+| composition/exchange law involving a third singular or higher mode | partial: unary additive opposite-order exchange and exact central-promotion/admission exchange proved; central-history versus genuinely higher promotion and weak/partial exchange remain open |
 | charge migration formula across exchange | passed for future reporter envelope, exact strict-promotion corridor, and reporter meet |
 | withheld prediction validated in second laboratory | passed: delayed-detection and finite-horizon-mirage laboratories; whole-corpus validation open |
 | whole-corpus source generation | open |
@@ -176,10 +176,12 @@ the exact corridor between least required repair and greatest reporter-permitted
 ULF-RLM-10 now proves the first second-order exchange law: triple reversal decomposes into
 transported binary residuals, nested residuals satisfy Jacobi, and finite-depth exchange tests have
 no universal cutoff.  It also proves that unary additive mechanics cannot supply irreducible
-ternary law birth.  The decisive missing theorem is now an **exchange law among surviving
-non-strict, non-unary promotions**:
-when strictification is forbidden, what distinguishes central history, higher coherence, and
-singular admission without fitting a new rule per example?
+ternary law birth.  ULF-RLM-11 then proves that central promotion commutes with admission exactly
+when its compensator lands in the admission kernel; closure and quotient-residual vanishing are
+equivalent, and exact ambient associativity can coexist with singular nonadmission.  The decisive
+missing theorem is now an **exchange law between surviving central history and genuinely higher
+promotion**: when strictification is forbidden and coefficient landing is already resolved, what
+mechanism selects a central extension versus new arity without fitting a rule per example?
 
 ## 6. Next experiments
 
@@ -198,3 +200,6 @@ singular admission without fitting a new rule per example?
 - 2026-08-09 -- unary additive exchange closed by contextual decomposition/Jacobi and an unbounded
   horizon theorem; the open exchange gate narrowed to weak, partial, extension-valued, or genuinely
   higher-arity promotion.
+- 2026-08-09 -- central-promotion/admission exchange closed by coefficient landing; exact ambient
+  coherence versus singular nonadmission separated.  Open gate narrowed to central-history versus
+  genuinely higher promotion and weak/partial exchange.

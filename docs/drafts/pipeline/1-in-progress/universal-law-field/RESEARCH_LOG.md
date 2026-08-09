@@ -634,3 +634,106 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
   explanatory-completeness audit against the full wall table passed. First-theorem target: the
   unconditional descent-defect law and a positivity domain beyond Yoshida's support
   restriction — with the INSIGNIFICANT-branch falsifier stated in advance.
+
+## 2026-08-09 — route-collapse corrected; the field is critical-locus geometry
+
+- FAILURE RECORDED: after chartering DESC-1 the program collapsed into the support-window
+  extension problem (CC/Suzuki lane) — route-solving, the exact ancestral failure. User
+  correction received; window targets struck.
+- ULF-FIELD-1 chartered: critical-locus geometry of the explicit-formula moduli. Θ1 PROVED
+  (every function of the zero configuration is even in each off-line displacement — the RH
+  locus is a critical locus of every criterion simultaneously; Rodgers–Tao is the heat-flow
+  instance). Θ2 core computed (spectral-type criteria have DIAGONAL Hessians with weight
+  4Re F''(1/2+iγ); per-zero necessity theorem; the corpus trichotomy = Morse classification;
+  producer collapse = canonicity of the per-zero mixture). Θ3 named: lattice-tangency /
+  crystalline rigidity — the arithmetic shadow of a quadruple move has continuous support,
+  so single moves are not tangent to the crystalline locus; RH = no off-line deformation
+  current with lattice-supported shadow.
+- Escape map now theorem-guided: E1 arithmetic side (positivity is free there), E2 Lee–Yang
+  one-sided transport, E3 rigidity — matching the corpus's live lanes exactly.
+- Next: hostile collision pass on Θ1/Θ2; Θ2 axiomatization to stage-2; Θ3 first computation.
+
+## 2026-08-09 — first theorem package of the field proved and promoted (ULF-FIELD-2)
+
+- Collision pass run (Bombieri–Lagarias; Rodgers–Tao; Kurasov–Sarnak/AKKV FQ field). Θ1
+  verdict: organizing lemma, folklore-adjacent, no standalone claim. Θ2 verdict: candidate-new
+  structure theorem over the space of criteria (local at the RH locus). Θ3 verdict:
+  candidate-new in direction, elementary in proof, significance structural.
+- Proved dependency-closed: exact separation of splitting variables; Hessian weight
+  4Re F''(1/2+iγ); per-zero necessity for the whole spectral-type class; second-order
+  equivalence class = weight function (producer collapse as canonicity); trichotomy = Morse
+  data; single and finite splittings have absolutely continuous arithmetic shadows
+  (exponential-frequency independence) — finite off-line strata are transverse to the
+  crystalline locus.
+- Leverage map now derived, not tabulated: dead = spectral-side (Θ1/Θ2); live = arithmetic
+  tangency (ZFR/MR corridor) + one-sided transport (E2). Next: infinite tangency calculus
+  and E2 mechanism — the two open attacks.
+
+## 2026-08-09 — Θ4 proved; live-lane audit executed; attacks typed
+
+- Θ4 (finite evaluation blindness) proved and appended to ULF-FIELD-2: no finite family of
+  decaying spectral-type functionals separates RH configurations from off-line configurations
+  of any prescribed displacement t* < 1/2 (placement-at-decay + line-slide IFT correction).
+  Corollary: the Weil criterion cannot be finitely truncated — exact dual of CC semilocal
+  positivity. Count-direction law (§§32–43) derived as Morse asymmetry.
+- Live-lane audit under Θ1–Θ4 recorded in ULF-FIELD-1: UV model typed as the E2 locus
+  (noncompactness is protection, not accident — the missing model must be one-sided,
+  non-trace-class); Weil-polarization gate classified group-3 maintenance; MR corridor and
+  root adjunction genuinely outside the classification (live); Lee–Yang tree cap imported as
+  a hard constraint on any E2 construction.
+- Next make-or-die: the E2 transport at the noncompact corner (non-trace-class, factored
+  form), with the gas/KMS one-mode cones as candidate carrier; the phase-locking invariant as
+  the only non-classical opening in the tangency calculus.
+
+## 2026-08-09 — E2 attack step 1 executed: the UV corner is (candidately) a noncommutative torus
+
+- Read the actual corner objects in-tree (SoninEulerQuadraticCorner.lean,
+  SoninEulerCornerConcrete.lean): corner = adjoint-ordered product of cross-boundary
+  compressions of dilationSum across the Sonin projection; corpus separately proved the
+  central time×band block compact (Landau–Pollak), so Calkin-Sonin = 1 − p_time − p_band.
+- PROVED (ULF-FIELD-3, paper): A log-coordinate structure theorem (dilation p ↦ translation
+  by log p exactly; windows ↦ half-lines; corner = Wiener–Hopf cross-compression with AP
+  frequency group Γ = ℤlog p + ℤlog q); B irrationality of log q/log p (unique
+  factorization); C density of Γ + identification of the corpus's shell-witness proof as the
+  dense-semigroup no-minimal-element mechanism; D the ℝ-order on Γ = the multiplicative
+  ordering of prime powers = ordered K₀(A_θ), θ = log q/log p — the corner's canonical
+  one-sided, non-trace-class, phase-locked invariant: the E2-typed structure EXISTS at the
+  UV wall unconditionally.
+- GATED: the full identification (corner algebra = ordered-group Toeplitz algebra realizing
+  A_θ in its essential structure) awaits four external deep reads (Murphy; Muhly–Renault;
+  Ji/Ji–Xia; Douglas–Howe) + corpus Calkin modules + the Laca–Raeburn/BC collision check.
+- Unification achieved regardless of the gate: the phase-locking opening and the E2
+  transport are one invariant (D); the completed-time-torus layer is its commutative shadow.
+
+## 2026-08-09 — ULF-FIELD-3 gates closed (partial) + make-or-die outcome (a)
+
+- Consistency gate PASSED in-tree: corner is a Calkin partial isometry, essential norm
+  exactly (√p√q)⁻¹ = the predicted AP symbol modulus (SoninEulerEssentialNorm.lean).
+- Endpoint theorem located in-tree: seam-weighted corner compact ⟺ seam charges equal ⟺
+  critical-line equation; over all fibres ⟺ RH (XiPrimeSeamCalkinGram.lean).
+- BC collision confirmed (Laca–Raeburn 𝒯(ℕ⋊ℕ^×), ζ partition function; Laca–Neshveyev type
+  III₁; Cuntz–Deninger–Laca; BS-semigroup and 2025 supercritical papers): algebra class is
+  known territory; candidate-new narrowed to the archimedean-corner bridge with the gas as
+  its KMS theory.
+- Make-or-die outcome (a) PROVED: KMS expectations of cross-prime corners vanish by charge
+  conservation — state-level transport dead; energy-level form re-encodes RH (group 3,
+  recorded); sole surviving opening: KMS cone/relative-modular geometry of the weighted
+  family.
+
+## 2026-08-09 — corner exhausted; qualitative phase-lock killed; Baker vein chartered
+
+- ULF-FIELD-3 CLOSED with a three-level exhaustion verdict: states blind (charge), energies
+  re-encode (group 3), cocycle flows absorbed (Takesaki duality ⟹ dual trace = Connes's
+  trace formula = explicit formula). The UV model cannot come from the corner algebra's own
+  equilibrium calculus — a negative classification with explanatory force (why Connes's gap
+  persists), plus the standing positive residue (A–D, consistency gate, charge no-go).
+- Qualitative phase-lock kill-test EXECUTED: repulsion-grade equidistribution of {δ log p}
+  needs rates = prime exponential sums = zeta data; the opening collapses into the pole
+  route. CLOSED as independent leverage for the Halász gap.
+- ULF-FIELD-4 chartered: the quantitative content of the order invariant is the continued
+  fraction / irrationality measure of log q/log p — Baker's effective linear forms in
+  logarithms: an unconditional input class absent from the corpus's engine list. MV-theorem
+  sketch for prime-power-lattice Dirichlet polynomials (polynomial-in-height error vs the
+  trivial exponential). Make-or-die: find one corpus consumer or verdict INSIGNIFICANT —
+  pre-declared. Collision pass (S-unit sums, Turán power-sum method, known Baker-in-zeta
+  uses) mandatory before proof work.

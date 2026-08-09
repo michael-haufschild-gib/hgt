@@ -1,10 +1,13 @@
 # Strict inversion/Cartier base change, zero defect, and odd-conormal survivor law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-INV-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified, ring-level chart)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveStrictInversionCartier`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [LIVE-SOURCE STRESS TEST] [STRICT BECK--CHEVALLEY]
   [ZERO K-THEORY DEFECT] [ODD CONORMAL SURVIVOR]
-  [BRIDGE/CORPUS COLLISION] [NOT RH] [NO LEAN]
+  [BRIDGE/CORPUS COLLISION] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Algebraic square
 
@@ -184,3 +187,17 @@ doctrine whose comparison is not already the strict square (IC.4).
 3. The theorem does not construct the required analytic comparison.
 4. It provides unconditional elimination of two candidate mechanisms, not an RH proof.
 
+
+## 8. Certified scope recorded at Lean certification (ULF-INV-1)
+
+Certified at the ring level, over `R = k[q,q⁻¹]` for an arbitrary commutative ring `k`:
+`ε ∘ σ = ε` for every element of `R` (`cartier_inversion`), the exact identity
+`σ(q−1) = −q⁻¹(q−1)` and hence `σ`-stability of `I = (q−1)`, the oddness of the conormal class
+`σ(e) + e ∈ I²`, the identity `q + q⁻¹ − 2 = (q−1)²q⁻¹` with `σ`-invariance of that displacement,
+and the multiplicative no-selection corollary `p^{2a} = (p^a)²` for every real `a`.
+
+Not certified: the derived statement (IC.4) and the identification (IC.8) of `Tor₁(S,S)` with the
+conormal line. Both are formal consequences of `ε ∘ σ = ε` and of the free resolution
+`0 → R →(q−1) R → S → 0`, but the derived-functor layer is not constructed in the corpus; the
+certified content is the ring-level input those statements consume, which is exactly what the
+elimination argument of §6 uses.

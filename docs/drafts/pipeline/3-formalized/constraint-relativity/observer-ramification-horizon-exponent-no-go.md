@@ -1,10 +1,10 @@
 # Observer ramification and horizon-exponent no-go
 
 - **ID:** `observer-ramification-horizon-exponent-no-go`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / COUNTERMODEL / POSITIVE SURVIVOR (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [PHYSICS TRANSFER]`
-  `[NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[NO RH CLAIM] [FORMALIZED IN LEAN]`
 - **Role:** proves decoder blow-up exponent depends on observer vanishing order and can occur with
   zero law change; separates observer singularity from non-Morita law horizon.
 
@@ -146,3 +146,7 @@ analysis targets independent of RH.
 ## Log
 
 - 2026-08-08 — hostile physics transfer falsified exponent-only law-horizon identification.
+
+## Formalized companion
+
+`observer-ramification-horizon-exponent-no-go-formalized.md` (same directory).

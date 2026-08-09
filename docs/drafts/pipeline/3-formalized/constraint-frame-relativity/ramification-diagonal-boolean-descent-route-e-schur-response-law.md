@@ -1,9 +1,10 @@
 # Ramification-diagonal Boolean descent and Route-E Schur-response law
 
 - **ID:** `cfr-ramification-boolean-route-e-response`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-FIRST NON-MELLIN TARGET RESPONSE
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LITERAL PRE-ZERO SHELL] [FINITE APERTURE] [SOURCE-FIRST NON-MELLIN RESPONSE] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LITERAL PRE-ZERO SHELL] [FINITE APERTURE] [SOURCE-FIRST NON-MELLIN RESPONSE] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `ramification-diagonal-boolean-descent-route-e-schur-response-law-formalized.md`
 - **Statement:** Pullback along `k->k^m` produces squarefree Boolean support and hard-core exclusion. Its rank and logarithmic clock admit a natural parity--energy Schur capacity; differentiating that chosen capacity gives an exact coefficient-intervention response.
 
 ## Goal

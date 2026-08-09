@@ -144,8 +144,13 @@ Operations and observable relations coevolve through preservation. Adding an ope
 legal observers; changing observers changes executable operations. The dynamical variable is the
 Galois-closed rulebook, not either side alone.
 
-**Falsifier:** all corpus doctrines embed only as independent fixed coordinates rather than
-nontrivial updates of the same legality relation.
+**Exact attack:** ULF-RLM-12 proves that this mechanism is dynamically trivial when preservation is
+fixed and exact. Serial reciprocal revision stabilizes after one full round. Synchronous reciprocal
+revision satisfies `P^3=P`, so every post-first state is fixed or two-periodic.
+
+**Positive survivor:** self-modification must change the compatibility law itself. Live versions
+must generate new test kinds, change admission, expose only resource-bounded polars, transport
+nonexactly, or retain lineage erased by endpoint closure. Repeating exact `Pol--Inv` is killed.
 
 ### R3. Noncommutative thermodynamics of doctrine formation
 

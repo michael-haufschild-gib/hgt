@@ -107,3 +107,12 @@ CLOSED; ULF-INV-10 certification remains PARKED.
 - 2026-08-09 — chartered from FORK-1's death. Explanatory-completeness audit passed against
   the full wall table. First-theorem target and its INSIGNIFICANT-branch falsifier named
   before any construction.
+
+## Supersession notice (2026-08-09)
+
+The T1/T2 first-theorem targets below the audit table were a ROUTE-COLLAPSE: they reduce the
+field to the Connes–Consani/Suzuki support-window extension lane — one route, the ancestral
+failure mode, flagged by the user. They are struck as field targets. The audit table remains
+valid data. The field carrier is now ULF-FIELD-1
+(critical-locus-geometry-field-charter.md); this card's descent framing survives there as the
+finite-resolution reading of the Hessian truncations.

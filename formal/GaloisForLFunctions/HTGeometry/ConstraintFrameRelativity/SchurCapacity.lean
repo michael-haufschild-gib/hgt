@@ -106,6 +106,50 @@ theorem capA_mul_capC_sub_capB_sq (w lam : ι → ℝ) :
   rw [h2]
   ring
 
+/-- **Two-row Cauchy--Binet, ordered form.**  The Gram determinant is the sum of weighted clock
+gaps over unordered pairs. -/
+theorem capA_mul_capC_sub_capB_sq_lt [LinearOrder ι] [DecidableEq ι] (w lam : ι → ℝ) :
+    capA w * capC w lam - capB w lam ^ 2
+      = ∑ p, ∑ r ∈ Finset.univ.filter (fun r => p < r), w p * w r * (lam p - lam r) ^ 2 := by
+  classical
+  rw [capA_mul_capC_sub_capB_sq]
+  have hsymm : ∀ p r : ι, w p * w r * (lam p - lam r) ^ 2
+      = w r * w p * (lam r - lam p) ^ 2 := by
+    intro p r
+    ring
+  have hsplit : ∀ p : ι, ∑ r, w p * w r * (lam p - lam r) ^ 2
+      = ∑ r ∈ Finset.univ.filter (fun r => p < r), w p * w r * (lam p - lam r) ^ 2
+        + ∑ r ∈ Finset.univ.filter (fun r => r < p), w p * w r * (lam p - lam r) ^ 2 := by
+    intro p
+    rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (fun r => p < r)]
+    congr 1
+    refine (Finset.sum_subset ?_ ?_).symm
+    · intro r hr
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hr ⊢
+      exact asymm hr
+    · intro r hr hnr
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hr hnr
+      have hrp : r = p := le_antisymm (not_lt.mp hr) (not_lt.mp hnr)
+      subst hrp
+      simp
+  rw [Finset.sum_congr rfl fun p _ => hsplit p, Finset.sum_add_distrib]
+  have hswap : ∑ p, ∑ r ∈ Finset.univ.filter (fun r => r < p),
+        w p * w r * (lam p - lam r) ^ 2
+      = ∑ p, ∑ r ∈ Finset.univ.filter (fun r => p < r), w p * w r * (lam p - lam r) ^ 2 := by
+    have hcomm := Finset.sum_comm' (s := (Finset.univ : Finset ι))
+      (t := fun p => Finset.univ.filter (fun r => r < p))
+      (t' := (Finset.univ : Finset ι))
+      (s' := fun r => Finset.univ.filter (fun p => r < p))
+      (f := fun p r => w p * w r * (lam p - lam r) ^ 2) ?_
+    · rw [hcomm]
+      refine Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun p _ => ?_
+      exact hsymm p r
+    · intro x y
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      tauto
+  rw [hswap]
+  ring
+
 /-! ## Positivity -/
 
 theorem capC_pos {w lam : ι → ℝ} (hw : ∀ p, 0 < w p) {p₀ : ι} (hlam : lam p₀ ≠ 0) :

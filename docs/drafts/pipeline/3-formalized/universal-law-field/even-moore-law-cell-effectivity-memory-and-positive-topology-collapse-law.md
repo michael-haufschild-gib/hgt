@@ -1,9 +1,12 @@
 # Even Moore law cell, effectivity, memory, and positive-topology collapse law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-MOORE-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveMooreLawCell`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [TWO-DIMENSIONAL LAW TOPOLOGY] [EFFECTIVITY + FILLING MEMORY]
-  [POSITIVITY CHANGES HOMOLOGY] [NON-PRODUCT SYNTHESIS] [NOT RH] [NO LEAN]
+  [POSITIVITY CHANGES HOMOLOGY] [NON-PRODUCT SYNTHESIS] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Moore law cell
 

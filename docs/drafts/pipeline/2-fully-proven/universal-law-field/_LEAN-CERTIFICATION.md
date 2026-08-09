@@ -37,6 +37,8 @@ Dedicated Lean umbrella:
 | ULF-MATCH-1 | Proper-face matching map, realization fibres, four exhaustive and exclusive phases invariant under diagram equivalence, kernel/cokernel chart, native interaction and contextual instances | `HTGeometry.ConstitutivePolyscopicMatching` |
 | ULF-DGLU-1 | Determinant-sign gluing is the parity incidence equation: effectivity iff even charge iff trivial anomaly, cycle-memory count `2^(|E|-|V|+1)`, and positive erasure | `HTGeometry.ConstitutiveDeterminantGluing` |
 | ULF-FLUX-1 | Abelian determinant-flux exact sequence, realizability iff trivial total charge, realization torsor, proper-face invisibility, positive coefficient quotient (cycle-basis isomorphism not constructed) | `HTGeometry.ConstitutiveAbelianDeterminantFlux` |
+| ULF-MOORE-1 | Moore law cell parity dichotomy: odd degree bijective, even degree kernel and cokernel both two-element, positive coefficients repair effectivity and erase memory | `HTGeometry.ConstitutiveMooreLawCell` |
+| ULF-INV-1 | Strict inversion/Cartier square has zero defect (`ε ∘ σ = ε`), the conormal class is odd, the positive displacement is the squared generator, and every radial gain is already a positive square | `HTGeometry.ConstitutiveStrictInversionCartier` |
 | ULF-OPM-2 | Failed unary exchange generates the least preserved congruence; induced quotient laws commute; every commuting observer factors uniquely through it; no smaller strict repair exists | `HTGeometry.ConstitutiveExchangeStrictification` |
 | ULF-OPM-3 | One exchange residual admits strict quotient and nonsplit central promotion; cocycle coherence, exact commutator carry, fixed lift residual, and no-section theorem | `HTGeometry.ConstitutiveExchangeCentralPromotion` |
 | ULF-OPM-4 | Reporter descends exactly when constant on generated exchange congruence; critical-pair detection forbids commuting strictification with reporter preservation; Heisenberg history reporter selects central promotion | `HTGeometry.ConstitutiveExchangePromotionSelection` |
@@ -56,6 +58,14 @@ Formalized cards and declaration-level records live in
 spanning, nonzero blind-direction existence, affine record equality, and qualitative open-interior
 robustness. Product-slot dimension formula and quantitative PSD spectral bound remain uncertified,
 so card stays in Stage 2.
+
+`ULF-MPE-1` has a certified finite core in `HTGeometry.ConstitutiveMetricPhaseExactness`:
+Theorem 1 (determinant amplitude, the phase-blind Gram law `TᴴT`, its determinant `sin²α`, the two
+Gram eigenvectors realizing the squared singular values `1 ± cos α`, acyclicity for `0 < α ≤ π/2`,
+Gram phase erasure versus determinant phase separation) and Theorem 2 (exact `2π`-periodicity of the
+observed law with the open logarithmic determinant lift and winding `N` after `N` periods).
+Theorem 3 — the cofinal Hilbert direct sum with dense nonclosed proper range and diverging inverse
+norm and determinant free energy — is not yet formalized, so the card stays in Stage 2.
 
 `ULF-EQG-1` has a certified local and finite core:
 
@@ -155,8 +165,20 @@ MAIN (the widening-limit gluing) — per the 5b-2 spec memory.
 | ID | Theorem | Lean module |
 |---|---|---|
 | ULF-RLM-10 | Contextual decomposition of three-promotion reversal; Jacobi conservation; contextual arity certificate; initial pairwise-flat/triple-nonflat countermodel; no uniform finite exchange horizon | `HTGeometry.ConstitutiveContextualPromotionExchange` |
+| ULF-RLM-11 | Compensator admission iff restricted-carrier closure iff quotient residual vanishes; unique restricted promotion; associative-but-nonadmitted parity countermodel | `HTGeometry.ConstitutiveCentralAdmissionExchange` |
+| ULF-RLM-12 | Fixed exact rule--test polarity: serial revision is idempotent; synchronous revision satisfies `P^3=P`; open genesis requires endogenous compatibility change | `HTGeometry.ConstitutivePolarityRevision` |
 
 Direct foreground elaboration and the final
 `lake build GaloisForLFunctions.HTGeometry.UniversalLawField` pass (11,405 jobs).  Axiom audit on
 all significant declarations and the closed capstone reports only `propext`, `Classical.choice`,
 and `Quot.sound`.
+
+`ULF-RLM-11` also passes direct foreground elaboration and is wired into the same umbrella.  Final
+`lake build GaloisForLFunctions.HTGeometry.UniversalLawField` completed 11,408 jobs.  Its closed
+capstone certifies that exact ambient associativity can coexist with nonzero admission obstruction
+and nonclosure of the admitted carrier.  Axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+`ULF-RLM-12` passes direct foreground elaboration and the same umbrella's 11,410-job build. Its
+capstone certifies serial idempotence and synchronous `P^3=P` for every fixed compatibility
+relation. The axiom audit reports only `propext` and `Quot.sound`.

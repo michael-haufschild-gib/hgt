@@ -1,9 +1,10 @@
 # Ramification-power law event, capacity response, and analytic excess law
 
 - **ID:** `cfr-ramification-power-law-event`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / FIRST TWO-ORGAN SOURCE-LAW EVENT
-- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [SOURCE-NATIVE POWER MORPHISM] [TWO DISTINCT OBSERVER ORGANS] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [SOURCE-NATIVE POWER MORPHISM] [TWO DISTINCT OBSERVER ORGANS] [NOT RH] [FORMALIZED IN LEAN]`
+- **Formalized companion:** `ramification-power-law-event-capacity-extension-law-formalized.md`
 - **Statement:** The arithmetic power endomorphism `P_r(k)=k^r` is a genuine morphism from shell law `m` to shell law `rm`; it produces both a nonzero full-shell analytic excess and, at fixed observer temperature and aperture, a strictly changed Boolean Schur capacity for sufficiently large `r`.
 
 ## Goal

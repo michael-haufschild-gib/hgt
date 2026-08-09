@@ -2,7 +2,7 @@
 
 - **ID:** SOURCE-ZERO-HEDENMALM-ORIENTATION-RIGIDITY
 - **Stage:** 3-formalized
-- **Type:** THEOREM (paper + Lean 4)
+- **Type:** THEOREM / EXACT CLASSIFIER, NOT AN RH PRODUCER (paper + Lean 4)
 - **Source:** `SOURCE-ZERO-TO-HORIZONTAL-CARRIER`, Hedenmalm two-ended Volterra source,
   multiplicity-exact Xi divisor
 - **Statement:** Equality of the two actual Hedenmalm causal flows indexed by a Xi-divisor copy
@@ -41,6 +41,26 @@ label and each analytic-multiplicity copy.
    The source ODE makes the causal-flow family injective in its spectral parameter. Critical-line
    reflection is conjugation of that parameter, so equality of the reflected flows forces a real
    centered parameter and annihilates the full horizontal carrier.
+5. **Conjecture: source involution itself identifies the two flows. Refined, then proved exactly.**
+   It sends the causal flow at `alpha` to the anti-causal flow at `conj(alpha)`. At an Xi zero,
+   two-ended matching turns this into causal orbit transport. It proves equivariance, not fixedness.
+6. **Pivot: combine orbit transport with Burnol two-head energy. Failed producer audit.** Reflected
+   channel exchange changes the fixed co-Poisson source normalization because its two heads are
+   `1` and `log 2`. Same-source energy equality would force the line, but source symmetry supplies
+   reflected-source equality instead. Assuming the former renames RH.
+7. **Pivot: find an even coefficient-faithful landing of the odd carrier. Failed.** Every current
+   even Green landing acquires a second reflection-odd Hodge/grade normalizer. Double oddness is
+   consistent off line; removing that factor is exactly the missing incidence theorem.
+8. **Pivot: homogenize the ODE into a parameter-independent symmetric block operator. Failed.**
+   Corpus closed this mechanism: the required nondegenerate positive source metric/self-adjoint
+   domain is the Hedenmalm--Weil positivity wall and has RH strength.
+9. **Pivot: use the Route-L/Suzuki/Mass odd-current weld. Failed Xi handoff.** The weld reconstructs
+   every prime coefficient, but pairing its odd distribution with an involution-even test kills it
+   tautologically and loses the horizontal class. No coefficient-faithful Xi-fibre comparison is
+   present.
+10. **Pivot: use prime-2/prime-3 translation generation. Failed bounded-source audit.** Their entire
+    windows generate the Xi ideal, but every Bezout synthesis is unbounded on the real axis.
+    Pointwise conormal generation preserves conjugate nonreal zero pairs and supplies no fixedness.
 
 ## Construction
 
@@ -139,8 +159,54 @@ labels or divisor copies.
 ## Exact strength and remaining producer
 
 Global reflected-flow equality for every `XiZeroCopy` is equivalent to RH. This card does not prove
-that global equality and does not claim RH. It replaces several abstract same-fibre receivers with
-one concrete source equation:
+that global equality and does not claim RH. Therefore the global law fails the corpus fatal
+falsifier for a producer: stated globally, it is RH by another name. Its value is as an exact
+receiver and as a test which any genuine source producer must pass.
+
+## Unconditional source involution law
+
+The source itself supplies a stronger unconditional relation than bare orbit transport. Let
+
+```text
+(Sf)(x) = conj(f(-x)).
+```
+
+Evenness and reality of `k = thetaCuspFullSource`, conjugation of Bochner integration, and the
+measure-preserving substitution `t = -u` give, for every complex `alpha`,
+
+```text
+S(u_causal(alpha)) = u_anti(conj(alpha)).                 (2)
+```
+
+Indeed, at `x` the left side is
+
+```text
+conj(-i ∫_{t <= -x} k(t) exp(-i alpha (-x-t)) dt)
+  = i ∫_{u >= x} k(u) exp(-i conj(alpha) (x-u)) du.
+```
+
+If `XiC(alpha)=0`, Schwarz reality gives `XiC(conj(alpha))=0`; exact two-ended boundary matching at
+that conjugate zero turns the right side of (2) into `u_causal(conj(alpha))`. Hence at every
+`XiZeroCopy q`,
+
+```text
+S(u_q) = u_Jq.                                            (3)
+```
+
+Combining (3) with causal-flow injectivity proves the sharp fixed-point classification
+
+```text
+S(u_q) = u_q
+  <-> u_Jq = u_q
+  <-> Re(q)=1/2
+  <-> sourceZeroHorizontalCarrierAt(K,q)=0.
+```
+
+Thus actual source law preserves divisor multiplicity and both orientations exactly, but does not
+choose fixed points: its unconditional content is equivariance (3). Any argument deriving global
+fixedness from source involutivity, symmetry, or transform sharpness alone is circular.
+
+The remaining producer obligation is now narrower:
 
 > Prove that the canonical two-ended theta-source solution is independent of which member of a
 > critical-line-reflection orbit supplies its centered spectral parameter.
@@ -155,13 +221,22 @@ force fixedness of this actual flow, not merely transport it or pair it quadrati
 
 Formal declarations:
 
+- `sourceInvolution_hedenmalmCausalVolterra`
+- `sourceInvolution_hedenmalmCausalVolterra_of_XiC_eq_zero`
 - `hedenmalmCausalVolterra_injective_on_strip`
 - `SourceZeroHedenmalmOrientationLaw`
+- `sourceInvolution_xiZeroCausalFlow`
+- `SourceZeroHedenmalmInvolutionFixed`
 - `sourceZeroHedenmalmOrientationLaw_iff_re_eq_half`
+- `sourceZeroHedenmalmInvolutionFixed_iff_orientationLaw`
+- `sourceZeroHedenmalmInvolutionFixed_iff_re_eq_half`
 - `sourceZeroHedenmalmOrientationLaw_iff_carrierAt_eq_zero`
+- `sourceZeroHedenmalmInvolutionFixed_iff_carrierAt_eq_zero`
 - `sourceZeroHedenmalmOrientationLaw_annihilates_both_orientations`
+- `sourceZeroHedenmalmInvolutionFixed_annihilates_both_orientations`
 - `SourceZeroHedenmalmOrientationsAnnihilate`
 - `sourceZeroHedenmalmOrientationsAnnihilate_iff_riemannHypothesis`
+- `sourceZeroHedenmalmInvolutionFixed_globally_iff_riemannHypothesis`
 
 Targeted verification on 2026-08-09:
 
@@ -170,11 +245,11 @@ lake env lean GaloisForLFunctions/RHTower/SourceZeroHedenmalmOrientationRigidity
 lake build GaloisForLFunctions.RHTower.SourceZeroHedenmalmOrientationRigidity
 ```
 
-Both passed. `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound` for the
-source injectivity theorem, local orientation equivalence, annihilation theorem, and global RH
-equivalence. Repository-wide lint is presently blocked by three unrelated, concurrently added
-`HTGeometry.ConstraintFrameRelativity` modules missing from the `HTGeometry` umbrella; the new
-RHTower file contains none of `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
+Both passed after the involution extension; the targeted build completed `11379/11379`.
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound` for source
+equivariance, Xi-orbit transport, source injectivity, both local classifiers, both annihilation
+theorems, and both global RH equivalences. The new RHTower file contains none of `sorry`, `admit`,
+`axiom`, `opaque`, or `unsafe`. No umbrella build was run.
 
 ## Log
 
@@ -182,3 +257,37 @@ RHTower file contains none of `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
   annihilation law proved on paper.
 - 2026-08-09 — theorem formalized unconditionally in Lean; targeted leaf build and axiom audit
   passed; RHTower umbrella import wired without running an umbrella build.
+- 2026-08-09 — proved unconditional source-involution equivariance and Xi-zero orbit transport;
+  proved involution fixedness is exactly carrier annihilation locally and RH globally; five further
+  producer pivots failed exact corpus audits rather than being promoted as assumptions.
+
+## Further producer pivots: exact failures
+
+### 11. Minimal source-dagger cyclic boundary
+
+Conjecture: ordinary-prime cyclic transport plus the source-dagger boundary residue forces the two
+reflection orientations to share the same minimal stable boundary, hence annihilate.
+
+Result: failed as a producer. Existing corpus theorems already give the exact classification. On
+the critical line the minimal boundary is bottom and its source residue vanishes; off the line the
+minimal stable boundary is the whole target. Global residue annihilation is equivalent to RH. The
+ordinary-prime cycles preserve labels, ordering, and multiplicity jets, but they do not select the
+bottom boundary. No source law independent of RH was found that performs that selection.
+
+### 12. Reflected Borel common-domain transfer
+
+Conjecture: source involution transports boundedness of one cofinal Borel orientation to the other
+on one canonical source-cyclic Hilbert module, forcing both orientations bounded and therefore
+forcing zero horizontal drift.
+
+Result: failed in its unconditional form. Source involution identifies the two
+orientation-dependent carriers; it does not identify their actions on one fixed carrier. Moreover,
+each reflected holonomy vector already lies in the source-weighted `L2` space throughout the strip,
+so individual domain membership contains no RH information. The existing sharp theorem says that
+both characters are bounded on one fixed carrier exactly when the horizontal parameter vanishes.
+Thus common fixed-carrier boundedness is the missing producer, not a consequence of equivariance.
+
+These failures close the pure-symmetry family. A surviving producer must add a genuinely
+coefficient-faithful, non-equivariant source anchor: a theorem that canonically identifies the two
+reflection transports on the same source carrier before scalarization. Pairing, orbit closure,
+ordinary `L2` membership, or passage to an orientation-dependent norm cannot supply it.

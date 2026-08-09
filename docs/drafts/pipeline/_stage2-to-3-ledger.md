@@ -649,3 +649,39 @@ prime/zeta/divisor theorem.  See
 - Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
   `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
   computation proof.
+
+# Universal-law-field Moore-cell certification (2026-08-09)
+
+- `even-moore-law-cell-effectivity-memory-and-positive-topology-collapse-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveMooreLawCell`.
+- Certified: over the oriented coefficients, for odd degree every nonzero boundary law has exactly
+  one filling, so both law-homology groups are trivial; for even degree a boundary is fillable iff
+  it is positive, a positive boundary has exactly the two fillings `±y^{1/n}`, the kernel of the
+  boundary on units is exactly `{±1}`, and the cokernel has exactly the two classes `±1`; over the
+  positive coefficients every boundary has exactly one filling for every degree, so passing to the
+  absolute value simultaneously repairs a nonfillable negative boundary and merges the two oriented
+  fillings; consequently the even Moore boundary is neither injective nor surjective on units — the
+  mixed phase — while its positive base change has singleton fibres.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.
+
+# Universal-law-field strict-inversion/Cartier certification (2026-08-09)
+
+- `strict-inversion-cartier-base-change-zero-defect-and-odd-conormal-survivor-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveStrictInversionCartier`.
+- Certified over `k[q,q⁻¹]` for an arbitrary commutative ring: Cartier specialization does not see
+  the strict inversion (`ε ∘ σ = ε` on every element, by Laurent induction); the exact identity
+  `σ(q−1) = −q⁻¹(q−1)`, hence `σ`-stability of `I = (q−1)`; the conormal class is odd, `σ(e) + e`
+  lying in `I²`; the inversion-invariant positive displacement `q + q⁻¹ − 2` equals `(q−1)²q⁻¹`, so
+  the odd sign disappears after squaring; and every multiplicative radial gain `p^{2a}` is already a
+  positive square, so square-root fillability declares every radius trivial and cannot select the
+  critical origin.
+- **Not certified:** the derived equivalence (IC.4) and the `Tor₁(S,S)` identification (IC.8); both
+  are formal consequences of the certified ring-level facts, but the derived-functor layer is not
+  constructed in the corpus.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.

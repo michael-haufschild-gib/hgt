@@ -16,7 +16,9 @@ failure.
 
 - [x] 0 → 1: explicit source-free finite family and cofinal system
 - [x] 1 → 2: dependency-closed proof below
-- [ ] 2 → 3: no Lean formalization
+- [~] 2 → 3: Theorems 1 and 2 Lean-certified in
+  `GaloisForLFunctions.HTGeometry.ConstitutiveMetricPhaseExactness`; Theorem 3 (cofinal Hilbert
+  direct sum) still open
 - [ ] 3 → 4: no publication/priority claim
 
 ## 1. Finite exact-law family
@@ -177,3 +179,24 @@ statement. A universal field must retain this four-layer separation rather than 
 ## Log
 
 - 2026-08-09 — dependency-closed paper theorem created; no Lean, no route specialization.
+
+## Lean certification status (2026-08-09)
+
+Module: `GaloisForLFunctions.HTGeometry.ConstitutiveMetricPhaseExactness`
+(wired into `HTGeometry.UniversalLawField`).
+
+Certified — Theorem 1: `det_metricPhaseLaw` (the determinant amplitude `e^{iφ} sin α`),
+`conjTranspose_mul_self` (`TᴴT = !![1, cos α; cos α, 1]`, phase-blind), `det_gramLaw` (`sin²α`),
+`gramLaw_mulVec_low` / `gramLaw_mulVec_high` (Gram eigenvectors `(1,∓1)` with eigenvalues
+`1 ∓ cos α`, the squared singular values), `det_metricPhaseLaw_ne_zero` (acyclicity for
+`0 < α ≤ π/2`), `gram_phase_erasure` together with `det_phase_separates` (the Gram reading erases
+the phase, the determinant does not).
+
+Certified — Theorem 2: `metricPhaseLaw_periodic` (exact `2π`-periodicity of the observed law),
+`exp_detLogLift` (the lift really lifts the determinant), `detLogLift_period` (advance `2πi` per
+observed period) and `detLogLift_winding` (winding `N` after `N` periods).
+
+Open — Theorem 3: the cofinal Hilbert direct sum `⨁ T_{α_n,0}` on `ℓ²(ℕ;ℂ²)`, its boundedness,
+injectivity, dense nonclosed proper range, and the divergence of `‖T_N⁻¹‖²` and of the determinant
+free energy. This needs a Hilbert-direct-sum and closed-range layer that the corpus does not yet
+carry; the operator-norm form of (4) is likewise deferred to that layer.

@@ -1,10 +1,10 @@
 # Constitutive soldering intertwiner-energy law
 
 - **ID:** `constitutive-soldering-intertwiner-energy-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NONTRIVIAL SOURCE-HISTORY CURVATURE / CLASSIFICATION
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [CLASSICAL REPRESENTATION PARENT]`
-  `[BLG INFRASTRUCTURE] [NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[BLG INFRASTRUCTURE] [NO RH CLAIM] [FORMALIZED IN LEAN]`
 - **Field card:** `../../1-in-progress/constraint-relativity/source-soldering-bivariant-law-geometry.md`.
 
 ## Statement
@@ -166,9 +166,13 @@ classical. Card is dependency-closed BLG infrastructure, not novelty claim. No L
 - [x] zero-curvature classification
 - [x] explicit nonflat example
 - [ ] literal arithmetic trace/cotangent representation
-- [ ] Lean formalization
+- [x] Lean formalization
 
 ## Log
 
 - 2026-08-08 -- zero-soldering hostile attack forced constitutive normalization; finite-group
   chart then yielded exact intertwiner-energy and positive curvature gap.
+
+## Formalized companion
+
+`constitutive-soldering-intertwiner-energy-law-formalized.md` (same directory).

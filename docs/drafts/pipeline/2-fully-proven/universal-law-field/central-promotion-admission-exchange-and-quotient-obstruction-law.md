@@ -4,7 +4,8 @@
 - **Stage:** 2-fully-proven
 - **Type:** CROSS-MODE MECHANISM THEOREM
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [INTERNAL FRONTIER AUDITED]
-  [EXTERNAL PARENTS AUDITED] [CROSS-MODE EXCHANGE LAW] [NOT RH]
+  [EXTERNAL PARENTS AUDITED] [CROSS-MODE EXCHANGE LAW] [LEAN-PROVED]
+  [NO PROJECT AXIOMS] [NOT RH]
 
 ## 1. Mechanism question
 
@@ -172,11 +173,29 @@ admission birth.
 5. **Positive survivor:** central and admission promotions have a complete exchange criterion,
    exact quotient residual, and sharp associative/nonadmitted countermodel.
 
-All proof obligations are dependency-closed on paper and survived hostile review.  Lean
-transcription is the remaining gate.
+All proof obligations are dependency-closed on paper and survived hostile review.
+
+## 9. Lean certification
+
+Module:
+`GaloisForLFunctions.HTGeometry.ConstitutiveCentralAdmissionExchange`.
+
+Lean certifies:
+
+1. admission iff restricted-carrier closure;
+2. admission iff quotient compensator vanishes;
+3. construction and uniqueness of the restricted promoted operation;
+4. descent of ambient associativity;
+5. the associative integer-multiplication/mod-two nonadmission countermodel;
+6. one closed capstone containing all singular-countermodel conclusions.
+
+The module is wired into `GaloisForLFunctions.HTGeometry.UniversalLawField`.  It uses no `sorry`,
+`admit`, project axiom, `opaque`, `unsafe`, `native_decide`, or computational certificate.
 
 ## Log
 
 - 2026-08-09 -- ambient-associativity conjecture falsified; coefficient-landing exchange theorem
   and mod-two singular countermodel closed on paper, survived hostile audit, and promoted to Stage
   2.
+- 2026-08-09 -- theorem family formalized in Lean, wired into universal-law-field umbrella, and
+  promoted to formal certification.
