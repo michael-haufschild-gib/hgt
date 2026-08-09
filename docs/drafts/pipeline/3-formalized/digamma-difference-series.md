@@ -59,3 +59,27 @@ The last is the first value in this development involving `π`, and it is exactl
 Báez-Duarte Gram entries were missing (`T₁` in the notation of the map card). What still stands between this
 and `bdGram (1/4) (1/4)` is the decomposition of `ℕ` into residue classes as a `HasSum` — bookkeeping, but not
 yet written.
+
+## Addendum 2 (same day): the companion value, and all three quarter constants
+
+`RHTower/DigammaThreeQuarter.lean`. `DigammaQuarter` proves `ψ(1/4)` and, on the way, the two relations
+`ψ(1/4) + ψ(3/4) = 2ψ(1/2) − 2log 2` and `ψ(1/4) − ψ(3/4) = −π`. Either gives the companion value:
+
+* **`digamma_three_quarter` — `ψ(3/4) = −γ − 3log 2 + π/2`.**
+
+With it the remaining progressions mod `4` evaluate:
+
+* **`hasSum_quarter_recip_two` — `∑_{k≥0} 1/((4k+2)(4k+3)) = (π/2 − log 2)/4`;**
+* **`hasSum_quarter_recip_three` — `∑_{k≥0} 1/((4k+3)(4k+4)) = (3log 2 − π/2)/4`;**
+* `quarter_recip_constants_pos` — both are positive, i.e. `log 2 < π/2 < 3log 2`, from mathlib's
+  `log_two_gt_d9`, `log_two_lt_d9`, `pi_gt_d2`, `pi_lt_d2`.
+
+So all three constants `T₁, T₂, T₃` of the `q = 4` decomposition are now proved:
+`T₁ = (log 2 + π/2)/4`, `T₂ = (π/2 − log 2)/4`, `T₃ = (3log 2 − π/2)/4`. Since
+`(n mod 4)² = (n mod 4) + 2·[n≡2] + 6·[n≡3]`, they predict
+`∑ (n mod 4)²/(n(n+1)) = log 4 + 2T₂ + 6T₃ = 6log 2 − π/2` and hence
+`bdGram (1/4) (1/4) = (3log 2)/8 − π/32`.
+
+That assembly is the one step still missing: it needs the residue-class decomposition of `ℕ` as a `HasSum`
+(three reindexings along `k ↦ 4k+j`, each via `Function.Injective.hasSum_iff`). The constants are done; the
+bookkeeping is not.
