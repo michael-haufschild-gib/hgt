@@ -2703,6 +2703,7 @@ import GaloisForLFunctions.RHTower.MLadderContraction
 import GaloisForLFunctions.RHTower.MPlusTorsionSeam
 import GaloisForLFunctions.RHTower.MSpaceGainWindow
 import GaloisForLFunctions.RHTower.MWindowContraction
+import GaloisForLFunctions.RHTower.MarkedHalfCharacterCofinalDiagonalInverseLaw
 import GaloisForLFunctions.RHTower.MarkusConjecture
 import GaloisForLFunctions.RHTower.MeanValueBridge
 import GaloisForLFunctions.RHTower.MeasureParseval
@@ -4789,6 +4790,7 @@ import GaloisForLFunctions.RHTower.SoninUnboundedSourcePacket
 import GaloisForLFunctions.RHTower.SourceCharacterFibreConservativeDescentLaw
 import GaloisForLFunctions.RHTower.SourceDaggerCyclicBoundaryDefectLaw
 import GaloisForLFunctions.RHTower.SourceHorizonEscapeConservationLaw
+import GaloisForLFunctions.RHTower.SourceNormalClockCurvatureLaw
 import GaloisForLFunctions.RHTower.SourceRecession
 import GaloisForLFunctions.RHTower.SpectralMeasureExactReturnClassification
 import GaloisForLFunctions.RHTower.SpectralTorelli
@@ -5257,6 +5259,7 @@ import GaloisForLFunctions.RHTower.BesselWeightedPrimitiveInterior
 import GaloisForLFunctions.RHTower.XiCompactPrimitive
 import GaloisForLFunctions.RHTower.ProlateProfileTransferIntegral
 import GaloisForLFunctions.RHTower.ProlateEnvelopeIntegral
+import GaloisForLFunctions.RHTower.ProlateExactPrimitive
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted
@@ -6364,3 +6367,4 @@ import GaloisForLFunctions.RHTower.NymanBeurlingCriterion
 import GaloisForLFunctions.RHTower.BaezDuarteGram
 import GaloisForLFunctions.RHTower.BaezDuarteTargetPairing
 import GaloisForLFunctions.RHTower.BaezDuarteDetectorGram
+import GaloisForLFunctions.RHTower.BaezDuarteDistance

@@ -191,3 +191,25 @@ This is the Hilbert-space skeleton of the Burnol-type lower bound `liminf d_N² 
 arithmetic input is only the location of the zeros, and everything else is the geometry of the Cauchy
 kernel. What is *not* here: the `log N` normalisation and the passage to the full zero sum, which need the
 finite-section distances rather than the distance to the whole closed span.
+
+## Addendum 4 (same day): `d_N → 0 ⟹ RH`
+
+`RHTower/BaezDuarteDistance.lean` restates the criterion through the distances the literature actually
+uses, `d_N = dist(1_{(0,1]}, span of the first N generators)`. All of it is metric bookkeeping around
+`Metric.infDist`; the analytic content stays in the detector floor.
+
+* `bdDist`, `bdDistFinset`, `bdDistDiscrete` — the distance for an arbitrary family, for a finite section,
+  and for the classical discrete system `θ = 1/(n+1)` sectioned by `Finset.range N`;
+* `bdDist_le_one`, `bdDistDiscrete_mem_Icc` — the distances lie in `[0,1]`, because the target is a unit
+  vector and `0` is in every span;
+* `bdDistFinset_antitone`, `bdDistDiscrete_antitone` — larger sections are at least as good;
+* `riemannHypothesis_of_bdDist_eq_zero` — a vanishing distance forces RH;
+* **`riemannHypothesis_of_tendsto_bdDistDiscrete` — if `d_N → 0` then the Riemann hypothesis holds**, and
+  `riemannHypothesis_of_tendsto_bdDistFinset` for an arbitrary family and an arbitrary sequence of finite
+  sections;
+* `bdDistDiscrete_floor_of_zero`, `bdDist_floor_of_zero`, `bdDist_dichotomy` — conversely, a zero with
+  `½ < Re ρ < 1` puts `√(2Re ρ − 1)/|ρ|` below *every* `d_N`, so `d_N → 0` is impossible if RH fails.
+
+So the chain from the classical analytic statement to RH is now complete and unconditional in Lean:
+`d_N → 0` ⟹ RH, with the quantitative converse. What remains — and it is the whole difficulty — is
+proving `d_N → 0`, which is equivalent to RH and needs the Gram matrix asymptotics, not more bookkeeping.
