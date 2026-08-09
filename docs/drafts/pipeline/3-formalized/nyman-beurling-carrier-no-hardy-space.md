@@ -241,3 +241,22 @@ So the Báez-Duarte distance is now a function of the Gram matrix alone, with ev
 Combined with Addendum 4 (`d_N → 0 ⟹ RH`) the reduction is complete: **RH follows from the statement that
 the solutions of the `bdGram` linear systems satisfy `∑ᵢ cᵢθᵢ log θᵢ → −1`.** The analytic problem is now
 isolated in a single object, `bdGram`, and nothing else in the chain is missing.
+
+## Addendum 6 (same day): the criterion as a template
+
+`RHTower/MellinVanishingCriterion.lean` extracts the mechanism from the Báez-Duarte specifics. The whole
+chain needs only a family in the carrier whose Mellin transforms vanish at the detector points of a
+hypothetical off-line zero, plus a target whose transform does not — packaged as one predicate,
+`MellinAnnihilated G x`:
+
+* `riemannHypothesis_of_mem_closedSpan_of_mellinAnnihilated` — closed-span membership forces RH;
+* `riemannHypothesis_of_infDist_eq_zero_of_mellinAnnihilated` — the metric form;
+* `dist_floor_of_mellinAnnihilated` — if RH fails, `‖transform of x at ρ‖·√(2Re ρ − 1)` sits below every
+  distance;
+* `mellinAnnihilated_bdGen` and `riemannHypothesis_of_bdTarget_mem_closedSpan_template` — the Báez-Duarte
+  family is one instance, so nothing in the earlier chain was special to it.
+
+So a *new* candidate family — Beurling's dilations of a single function, a Möbius-weighted system, a
+Balazard–Saias variant — now needs only two computations (the transforms of its members, and of its
+target) to inherit the criterion, the metric form, and the quantitative floor. That is the reusable part of
+this lane, and it costs one `MellinAnnihilated` proof per family.
