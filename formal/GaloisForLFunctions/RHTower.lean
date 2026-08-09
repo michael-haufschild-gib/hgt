@@ -3002,6 +3002,7 @@ import GaloisForLFunctions.RHTower.PolarPrimeAperturePoissonConservationUniversa
 import GaloisForLFunctions.RHTower.PolarPrimeChannelContinuation
 import GaloisForLFunctions.RHTower.PolarPrimeMellinDefect
 import GaloisForLFunctions.RHTower.PolarPrimeRegularity
+import GaloisForLFunctions.RHTower.PolarizedExactnessHorizonSourceSpecialization
 import GaloisForLFunctions.RHTower.PoleFormDiagonalization
 import GaloisForLFunctions.RHTower.PoleKreinNyquistTrace
 import GaloisForLFunctions.RHTower.PoleMinusPrimeMainIsLaplace
@@ -6379,3 +6380,4 @@ import GaloisForLFunctions.RHTower.BaezDuarteLeastSquares
 import GaloisForLFunctions.RHTower.MellinVanishingCriterion
 import GaloisForLFunctions.RHTower.FractDilateBalance
 import GaloisForLFunctions.RHTower.BaezDuarteGramReduction
+import GaloisForLFunctions.RHTower.FractSqConstSeries

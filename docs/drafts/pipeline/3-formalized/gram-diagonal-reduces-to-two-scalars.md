@@ -47,3 +47,26 @@ or the lattice/cotangent computation from scratch (mathlib has no Dedekind or co
 
 That is the whole remaining gap between this corpus and a Lean proof of the Riemann hypothesis via this
 route — one constant and one function, both classical, neither cheap.
+
+## Addendum (same day): the first scalar has an exact series
+
+`RHTower/FractSqConstSeries.lean` evaluates `fractSqConst` exactly, by the only route the tail integral
+allows — cut the ray at the integers, where the fractional part is linear, and integrate each cell in closed
+form:
+
+* `iUnion_tailCell`, `pairwise_disjoint_tailCell` — `(1,∞)` is the disjoint union of the cells
+  `(n+1, n+2]`;
+* `fract_eq_sub_of_mem_tailCell` — on a cell, `{v} = v − (n+1)`;
+* `integral_tailCell_fractSqInvSq` — one cell contributes
+  `1 + (n+1)/(n+2) − 2(n+1)·log((n+2)/(n+1))`, from `∫1`, `∫v⁻¹ = log((a+1)/a)` and `∫v⁻² = 1/a − 1/(a+1)`;
+* **`hasSum_fractSqConst`** — `HasSum (fun n => 1 + (n+1)/(n+2) − 2(n+1)·log((n+2)/(n+1))) fractSqConst`,
+  via `MeasureTheory.hasSum_integral_iUnion`.
+
+The terms are `∼ 1/(3n²)`, so this is a rapidly convergent explicit series: the constant is now an
+elementary object rather than an unevaluated integral. Its closed form is still the Stirling-type quantity
+carrying `log 2π`, and that step — summing the series — is not done here.
+
+So of the two scalars, the first now has an exact elementary series and the second (`fractCrossTail`, the
+cotangent object) remains untouched. The cell-cutting technique used here is exactly what the cross term
+would need too, but there the cells of `{θv}` and `{v}` interleave incommensurably, which is the same
+obstruction stated in the main text.
