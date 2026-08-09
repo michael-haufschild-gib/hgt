@@ -1,10 +1,11 @@
 # Product-Clifford visible-recovery reduction law
 
 - **ID:** product-clifford-visible-recovery-reduction-law
-- **Stage:** 2 — fully proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (bridge)
 - **Parent:** `static-local-complexity-law.md`
-- **Status:** `[PROVED HERE] [FORMAL-SOURCE-CHECKED] [NOVELTY NOT CLAIMED]`
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [NOVELTY NOT CLAIMED]`
+- **Lean certificate:** `product-clifford-visible-recovery-reduction-law-formalized.md`
 
 ## Exact theorem
 
@@ -88,14 +89,30 @@ visible recovery yields (4).
 
 ## Formal status
 
-`HTGeometry/TwoReplicaProductCliffordVisibleRecovery.lean` proves (1), (2),
-the physical detector wrapper (4), and the canonical greatest-maximizer
-reduction. Targeted source elaboration passes. Axiom audits of all four
-capstones report only `propext`, `Classical.choice`, and `Quot.sound`. Final
-umbrella build remains deferred to final audit.
+Closed, unconditionally, apart from `(3)` — which the card itself states as the hypothesis of
+`(4)`, not as a gap in the formalization.
+
+`HTGeometry/TwoReplicaProductCliffordVisibleRecovery.lean` proves `(1)`, `(2)`, the physical
+detector wrapper `(4)`, and the greatest-maximizer reduction.
+
+`HTGeometry/ProductCliffordVisibleRecoveryCanonical.lean` discharges the greatest-maximizer premise
+by stating the reduction at the canonical obstruction:
+`canonicalTwoReplicaObstruction_finrank_mod_synchronized_of_zeroTwirl_reproduced`.  Its two
+subspaces are the `canonicalTwoReplicaVisibleSource` and `canonicalTwoReplicaHiddenLayer` used
+across this family, so `(3)` reads as one inclusion about a named subspace.
+
+The same module strengthens the correction term.  `N` is exactly the span of the global identity and
+the global replica swap, which is two-dimensional, so
+`canonicalTwoReplicaObstruction_finrank_le_shadow_add_two_of_zeroTwirl_reproduced` states `(4)` with
+the constant `2` in place of `dim(U_S ∩ N)`.
+
+Umbrella build passes; the axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Log
 
 - 2026-08-05 — exact singlet-output zero-twirl separation proved.
 - 2026-08-05 — aggregate detector, quotient rank, positive graph recovery,
   and canonical split assembled; unique remaining premise isolated as (3).
+- 2026-08-09 — greatest-maximizer premise discharged; correction term bounded
+  by the constant 2.
