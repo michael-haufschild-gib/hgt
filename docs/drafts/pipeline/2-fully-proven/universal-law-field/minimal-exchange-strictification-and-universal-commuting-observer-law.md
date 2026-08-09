@@ -6,8 +6,8 @@
 - **Statement:** Failure of two unary laws to exchange promotes canonically to the least congruence
   making both laws executable and commuting; every commuting observer factors uniquely through the
   resulting quotient.
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT ROUTE]
-  [STRICT-PROMOTION BASELINE] [LEAN REQUIRED] [NOT RH]
+- **Status:** [PAPER-PROVED] [LEAN-CERTIFIED] [DEPENDENCY-CLOSED] [MECHANISM NOT ROUTE]
+  [STRICT-PROMOTION BASELINE] [NOT RH]
 
 ## 1. Setup
 
@@ -260,16 +260,25 @@ RH consequence. It is the strict Class-A baseline for Obstruction--Promotion Mec
 homotopy promotion and Class-C singular promotion remain independent until comparison theorems are
 proved.
 
-## Lean target
+## Lean certification
 
-Formalize without new axioms:
+Module:
+`GaloisForLFunctions.HTGeometry.ConstitutiveExchangeStrictification`.
+
+Lean closes without project axioms:
 
 1. exchange seed and least exchange congruence;
 2. equivalence, preservation, containment, and leastness;
 3. quotient operations and exact commutation;
-4. universal factorization through every commuting observer;
-5. sharp no-smaller-strictification corollary.
+4. universal factorization and intertwining for every commuting observer;
+5. sharp no-smaller-strictification corollary;
+6. bundled mechanism theorem.
+
+Direct elaboration and the targeted module build pass. Axiom audit reports only `propext` and
+`Quot.sound`.
 
 ## Log
 
 - 2026-08-09 -- paper theorem closed as first explicit obstruction-to-law promotion rule.
+- 2026-08-09 -- full significant theorem closed in Lean and wired into the dedicated universal-law
+  umbrella.

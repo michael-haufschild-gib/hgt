@@ -30,6 +30,7 @@ Dedicated Lean umbrella:
 | ULF-CTX-1 | Exact parity contextuality criterion, one-dimensional total-charge obstruction, proper-face blindness, and compatible uniform positive state without a global law | `HTGeometry.ConstitutiveParityContextuality` |
 | ULF-IRR-1 | Minimal irreducible `N`-ary law with all composites zero, abelian proper colour faces, non-homotopy-abelian total law, interaction order `N`, and non-locally-compact unbounded spectrum | `HTGeometry.ConstitutiveIrreducibleInteraction` |
 | ULF-TORS-1 | Acyclic based two-term complexes, determinant history as a complete based invariant, multiplicativity, positive shadow as the exact phase quotient, and closed observation with open logarithmic lift | `HTGeometry.ConstitutiveDeterminantTorsion` |
+| ULF-OPM-2 | Failed unary exchange generates the least preserved congruence; induced quotient laws commute; every commuting observer factors uniquely through it; no smaller strict repair exists | `HTGeometry.ConstitutiveExchangeStrictification` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.
@@ -93,3 +94,9 @@ double pole, assembly) remain per the staged plan in the promoted card.
 Build green (8941 jobs); axioms standard. Remaining prime-half stages: 2B (vertical-segment
 vanishing for the single-pole integrand), 3 (one-pole residue), 4 (matched/double case),
 5 (assembly).
+
+| ULF-INV-10-S2B | Stage 2B: vertical-edge vanishing under exponential horizontal domination, both sides (the widening-rectangle boundary engine) | `HTGeometry.VerticalEdgeVanishing` |
+
+Build green (2580 jobs); axioms standard. With the corpus-owned rectangle Cauchy formula
+(stage 3) and today's XiC' bound (2A), the prime-half chain's remaining new work is stage 5
+(assembly) plus at most a stage-4 bridge.

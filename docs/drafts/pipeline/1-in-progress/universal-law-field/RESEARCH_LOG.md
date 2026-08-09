@@ -491,3 +491,21 @@ abs_add_le rename; one unused hypothesis dropped for the lint gate). Wired into 
 umbrella at the XiC block. Vertical-edge domination for the single-pole contour form is now
 fully provisioned: ‖deriv XiC‖·‖F_β^*‖/‖z+α‖ ≤ (certified)·(18a)·(linear), all three factors
 machine-checked or corpus-owned.
+
+## 2026-08-09 — INV-10 stage 3 already corpus-owned (Claude Fable 5)
+
+Fourth corpus-ahead-of-frontier instance today: the rectangle Cauchy formula for entire
+numerators (single-pole form's residue step) exists as rectIntegral_cauchyFormula_entire, with
+relative/local/two-pole variants and PNTPlus residue calculus. Stage 3 needs no new module;
+stage 4 may be covered by the two-pole variant. Remaining new work: 2B and 5, both to be
+written against the corpus's rectIntegral conventions (read first).
+
+## 2026-08-09 — Lean batch 7: INV-10 stage 2B certified (Claude Fable 5)
+
+`HTGeometry/VerticalEdgeVanishing.lean` green (2580 jobs, standard axioms): right- and
+left-edge segment-integral vanishing under exponential horizontal domination — squeeze on the
+norm with the interval sup bound; reusable widening-rectangle boundary engine, placed in
+HTGeometry as non-Xi-specific. Two fix cycles (explicit squeeze function; exp-limit
+composition). Wired at the Vertical block of the HTGeometry umbrella. INV-10 chain status:
+stages 1, 2A, 2B certified; stage 3 corpus-owned; remaining new work = stage 5 assembly
+(+ possible stage-4 bridge via the corpus's two-pole variant).

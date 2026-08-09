@@ -299,3 +299,13 @@ Stage-2 provisioning note (2026-08-09): the Cauchy-derivative idiom is
 `GammaDampedVerticalBound` — Lemma A (XiC' substrip bound) is a strip-shrink application of it
 to `exists_norm_XiC_horizontal_le`. All stage-2 tooling located; implementation is the next
 module.
+
+Stage-3 inventory note (2026-08-09): the one-pole rectangle residue is ALREADY corpus-owned —
+`rectIntegral_cauchyFormula_entire` (RectangleCauchyFormula.lean) is exactly the single-pole
+form's statement (entire numerator over z−p, point strictly interior, positively oriented
+boundary = 2πi·value), with relative (`rectIntegral_cauchyFormula_analyticOnNhd`), local, and
+two-pole (`rectIntegral_eq_two_pole_residues`) variants, plus PNTPlus's
+`RectangleIntegral'_eq_sumResiduesIn`. Stage 3 requires NO new module. Remaining: 2B (vertical
+vanishing against the corpus's rectIntegral definitions — read RectangleCauchyFormula.lean's
+integral conventions before writing), 4 (matched case — the two-pole variant may already cover
+it), 5 (assembly: horizontal Λ-expansion via certified stage 1, evenness folding, the limit).
