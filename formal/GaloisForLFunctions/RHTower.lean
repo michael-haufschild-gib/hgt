@@ -5261,6 +5261,7 @@ import GaloisForLFunctions.RHTower.BesselWeightedPrimitiveInterior
 import GaloisForLFunctions.RHTower.XiCompactPrimitive
 import GaloisForLFunctions.RHTower.ProlateProfileTransferIntegral
 import GaloisForLFunctions.RHTower.ProlateEnvelopeIntegral
+import GaloisForLFunctions.RHTower.ProlateChannelBranch
 import GaloisForLFunctions.RHTower.ProlateChannelSum
 import GaloisForLFunctions.RHTower.ProlateTwoBranch
 import GaloisForLFunctions.RHTower.ProlateExactPrimitive
@@ -6405,3 +6406,4 @@ import GaloisForLFunctions.RHTower.ResidueClassRecipSeries
 import GaloisForLFunctions.RHTower.DigammaThreeQuarter
 import GaloisForLFunctions.RHTower.QuarterGramEntry
 import GaloisForLFunctions.RHTower.HalfQuarterGram
+import GaloisForLFunctions.RHTower.SingleGeneratorUseless
