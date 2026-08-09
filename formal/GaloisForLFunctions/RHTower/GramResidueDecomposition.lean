@@ -74,8 +74,7 @@ theorem bdGram_self_eq_sum_residueClasses {q : ℕ} (hq : 1 ≤ q) :
   exact Nat.sumByResidueClasses hsum.summable q
 
 /-- The class of `j` contributes `(j.val)²/q²` times a progression sum. -/
-theorem gramTerm_residue_class {q : ℕ} (hq : 1 ≤ q) (j : ZMod q) (m : ℕ)
-    (hj : j.val < q) :
+theorem gramTerm_residue_class {q : ℕ} (j : ZMod q) (m : ℕ) (hj : j.val < q) :
     gramTerm q (j.val + q * m)
       = (((j.val : ℝ) * (j.val : ℝ)) / ((q : ℝ) * (q : ℝ)))
         * (1 / ((((j.val + q * m : ℕ)) : ℝ) * ((((j.val + q * m : ℕ)) : ℝ) + 1))) := by
