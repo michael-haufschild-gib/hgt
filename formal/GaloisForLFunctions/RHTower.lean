@@ -5261,6 +5261,7 @@ import GaloisForLFunctions.RHTower.BesselWeightedPrimitiveInterior
 import GaloisForLFunctions.RHTower.XiCompactPrimitive
 import GaloisForLFunctions.RHTower.ProlateProfileTransferIntegral
 import GaloisForLFunctions.RHTower.ProlateEnvelopeIntegral
+import GaloisForLFunctions.RHTower.ProlateChannelSum
 import GaloisForLFunctions.RHTower.ProlateTwoBranch
 import GaloisForLFunctions.RHTower.ProlateExactPrimitive
 import GaloisForLFunctions.RHTower.ProlateEndpointEnergy
@@ -6398,3 +6399,4 @@ import GaloisForLFunctions.RHTower.SuzukiCoalescingHalfPlaneNormality
 import GaloisForLFunctions.RHTower.SuzukiCoalescingParityLocking
 import GaloisForLFunctions.RHTower.SuzukiCoalescingXiSourceRate
 import GaloisForLFunctions.RHTower.BaezDuarteHalfBound
+import GaloisForLFunctions.RHTower.DigammaDifferenceSeries
