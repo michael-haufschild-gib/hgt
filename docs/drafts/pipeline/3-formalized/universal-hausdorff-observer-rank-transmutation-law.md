@@ -1,9 +1,11 @@
 # Universal Hausdorff observer and rank-complementarity law
 
 - **ID:** `clg-universal-hausdorff-observer-rank-complementarity`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
 - **Status:** `[PAPER-PROVED] [ROUTE-INDEPENDENT OBSERVER THEOREM] [NON-RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+  `[LEAN-FORMALIZED] [AXIOM-AUDITED] [UMBRELLA-WIRED]`
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.UniversalHausdorffQuotient` and
+  `GaloisForLFunctions.HTGeometry.UniversalHausdorffObserverRankLaw`
 - **Purpose:** identify the canonical information seen by every Hausdorff group observer of a
   nonclosed quotient and compute its exact cofinal rank ledger with hypertranscendental depth and
   stack isotropy in the multiple-Gamma lawstack.
@@ -177,9 +179,34 @@ The period closure and DA-depth facts are imported from:
 - `multiple-gamma-period-action-lawstack-three-shadow-theorem.md`;
 - `pipeline/3-formalized/new_scientific_knowledge/gamma/multiple-gamma-period-excess-closure-phase-transition.md`.
 
-Formal files were read only. No Lean code was written or built.
+The universal quotient infrastructure and multiple-Gamma specialization are now formalized and
+built.
 
-## 7. Formalization boundary
+## 7. Formalization result
 
-Do not write Lean now. A later formalization needs a declared category of topological groups and
-quotient topology; the rank identities can then be separated from special-function imports.
+Formalized exactly and unconditionally. `UniversalHausdorffQuotient` constructs the continuous
+additive reflection map, proves surjectivity, exact kernel `closure(H)/H`, identity-closure formula,
+Hausdorff criterion, and unique factorization into every Hausdorff topological additive group.
+`UniversalHausdorffObserverRankLaw` constructs the maximal real vector part of a closed complex
+subgroup, defines observer Lie dimension as the literal ambient Lie-algebra quotient dimension,
+proves finite dimension one and boundary dimension two, identifies the circle/two-torus observer
+models, specializes universal factorization, proves zero boundary reflection kernel, and proves all
+three equations in Corollary 3.1 for every finite stage and the boundary.
+
+Verification:
+
+- [x] direct `lake env lean` passes both modules;
+- [x] targeted
+  `lake build +GaloisForLFunctions.HTGeometry.UniversalHausdorffObserverRankLaw` passes;
+- [x] module is imported by `GaloisForLFunctions/HTGeometry.lean`;
+- [x] targeted forbidden-declaration scan is clean;
+- [x] exhaustive `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- [x] no stale task-owned Lean process remains;
+- [x] umbrella rerun is blocked before this import by unrelated concurrent
+  `TopDegreeValuationRing.lean` lacking its build artifact; prior umbrella elaboration passed before
+  that external import was added.
+
+## Log
+
+- 2026-08-09 — universal reflection, literal observer Lie dimensions, finite/boundary models, and
+  three-way ledger formalized; target built and card promoted to Stage 3.

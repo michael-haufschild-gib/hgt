@@ -1,9 +1,9 @@
 # Multiple-Gamma three-face cofinal wall calibration
 
 - **ID:** `ltg-multiple-gamma-three-face-cofinal-wall-calibration`
-- **Stage:** 2 — fully proved on paper
-- **Status:** `[PAPER-PROVED] [NON-RH THREE-FACE CALIBRATION] [FORMAL PARENTS READ-ONLY]`
-  `[NO LEAN WRITTEN OR BUILT]`
+- **Stage:** 3 — formalized in Lean 4
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [UNCONDITIONAL] [AXIOM-AUDITED]`
+  `[TARGET-BUILT] [UMBRELLA-WIRED]`
 - **Purpose:** exhibit one hypertranscendental source deformation whose differential phase,
   integral clock-relation lattice, and closed-range topology jump at the same cofinal wall while
   reflection and all finite coordinate tests remain unchanged.
@@ -227,11 +227,76 @@ This paper proof imports established results from:
 - `pipeline/3-formalized/multiple-elliptic-gamma-parity-inversion.md`;
 - `pipeline/4-publication-ready/multiple-elliptic-gamma-rational-rank-dichotomy/main.tex`.
 
-These files and their Lean corpus were read only. No Lean code was written or built.
+The explicit specialization is formalized in:
 
-## 7. Lean boundary
+- `formal/GaloisForLFunctions/HTGeometry/MultipleGammaThreeFaceCofinalWallLaw.lean`.
 
-Do not write Lean. The general rank dichotomy, period-excess/closure transition, and reflection
-parents are already formalized. The explicit path `2i+pi/m -> 2i` can be formalized later only if
-requested; its paper proof above is dependency-closed.
+It is wired into:
 
+- `formal/GaloisForLFunctions/HTGeometry.lean`.
+
+## 7. Lean realization
+
+The module closes every assertion above through the following declarations.
+
+### Differential/jet face
+
+- `finiteMultipleGammaFunctionPeriods_hasRankThreeMinor`;
+- `finiteMultipleGammaMero_hypertranscendental`;
+- `finiteMultipleGammaLogDerivMero_hypertranscendental`;
+- `boundaryMultipleGammaMero_differentialAlgebraic`;
+- `boundaryMultipleGammaLogDerivMero_differentialAlgebraic`;
+- `finiteMultipleGammaDepth_excess_calibration`;
+- `boundaryMultipleGammaDepth_excess_calibration`.
+
+### Integral clock/nome face
+
+- `finiteMultipleGammaPeriodMap_ker`;
+- `boundaryMultipleGammaPeriodMap_ker`;
+- `boundaryMultipleGammaFunctionPeriods_one_eq_two_mul_zero`;
+- `boundaryMultipleGammaMultiplicativeNome_one_eq_sq_zero`;
+- `finiteMultipleGammaMultiplicativeNome_one_ne_sq_zero`.
+
+The finite nome nonrelation is derived from the exact finite marked kernel: an exponential square
+relation would produce a nonzero vector `(-n,-2,1)` in that kernel.
+
+### Topological/admission and finite-shadow faces
+
+- `finiteMultipleGammaIncidenceLattice_not_discrete`;
+- `boundaryMultipleGammaIncidenceLattice_discrete`;
+- `finiteMultipleGammaPeriodIncidence_injective`;
+- `finiteMultipleGammaPeriodIncidence_not_isClosed_range`;
+- `finiteMultipleGammaPeriodIncidence_not_surjective`;
+- `periodIncidenceContinuousLinearEquivOfGap`;
+- `boundaryMultipleGammaPeriodIncidenceEquiv`;
+- `boundaryMultipleGammaPeriodIncidence_surjective`;
+- `boundaryMultipleGammaPeriodIncidence_isClosed_range`;
+- `periodIncidenceFiniteRestriction_bijective`.
+
+### Reflection, countermodel, and combined ledger
+
+- `finiteMultipleGammaProduct_reflection`;
+- `boundaryMultipleGammaProduct_reflection`;
+- `identityPeriodIncidenceMultiplier`;
+- `identityPeriodIncidenceEquiv`;
+- `finiteMultipleGammaConstitutiveCountermodel`;
+- `multipleGammaThreeFaceCofinalWallCalibration`.
+
+The identity-weight countermodel is a continuous linear equivalence on the exact same nonzero-period
+coordinate space on which the canonical operator is nonsurjective. Its theorem bundles the unchanged
+finite period kernel, marked excess, and reflection law.
+
+## 8. Verification
+
+- Direct elaboration:
+  `lake env lean GaloisForLFunctions/HTGeometry/MultipleGammaThreeFaceCofinalWallLaw.lean` — passed
+  with zero warnings.
+- Target build:
+  `lake build +GaloisForLFunctions.HTGeometry.MultipleGammaThreeFaceCofinalWallLaw` — passed,
+  `8975/8975` jobs.
+- Forbidden-declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
+- `#print axioms` audit of all face theorems, the bounded equivalence, countermodel, and combined
+  ledger reports only Lean foundations `propext`, `Classical.choice`, and `Quot.sound`.
+- Repository formal lint recognizes this module through the theorem-area umbrella. Its only error at
+  audit time is unrelated pre-existing reachability failure
+  `GaloisForLFunctions.RHTower.FiniteSectionDetectorFloor` in the `RHTower` umbrella.

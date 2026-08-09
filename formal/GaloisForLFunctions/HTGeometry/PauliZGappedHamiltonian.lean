@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PauliZSetLabels
+import GaloisForLFunctions.HTGeometry.PauliCountOrderBounds
 import GaloisForLFunctions.HTGeometry.EuclideanDiagonalGappedForm
 
 /-!
@@ -38,17 +39,9 @@ theorem pauliNormalization_nonneg (n q : ℕ) : 0 ≤ pauliNormalization n q := 
   rw [pauliNormalization]
   positivity
 
-theorem one_le_nonidentityPauliWeightCount (hn : 1 ≤ n) (hq : 1 ≤ q) :
-    1 ≤ Quantum.nonidentityPauliWeightCount n q := by
-  rw [← card_nonidentityPauliWords]
-  show 0 < (nonidentityPauliWords n q).card
-  refine Finset.card_pos.mpr ⟨pauliZSetLabel {⟨0, hn⟩}, ?_⟩
-  rw [mem_nonidentityPauliWords, pauliWeight_pauliZSetLabel, Finset.card_singleton]
-  exact ⟨le_rfl, hq⟩
-
 theorem pauliNormalization_pos (hn : 1 ≤ n) (hq : 1 ≤ q) : 0 < pauliNormalization n q := by
   rw [pauliNormalization, inv_pos, Real.sqrt_pos]
-  exact_mod_cast one_le_nonidentityPauliWeightCount hn hq
+  exact_mod_cast Quantum.one_le_nonidentityPauliWeightCount hn hq
 
 /-- The diagonal symbol of the centre Hamiltonian. -/
 def zProfile (n q : ℕ) (x : Fin n → Bool) : ℝ :=

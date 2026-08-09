@@ -37,8 +37,12 @@ theorem pureStateTraceDistance_pauliEnsembleOp_le (hn : 1 ≤ n) (hq : 1 ≤ q)
         (EuclideanSpace.single (fun _ => false) (1 : ℂ))
       ≤ ε / 2 := by
   have h0 : IsSelfAdjoint (diagCLM (zProfile n q)) := isSelfAdjoint_diagCLM _
-  have hV : IsSelfAdjoint (pauliEnsembleOp n q J - diagCLM (zProfile n q)) :=
-    (isSelfAdjoint_pauliEnsembleOp n q J).sub h0
+  have hV : IsSelfAdjoint (pauliEnsembleOp n q J - diagCLM (zProfile n q)) := by
+    rw [← pauliEnsembleOp_center n q, pauliEnsembleOp, pauliEnsembleOp, ← map_sub]
+    exact (Matrix.isHermitian_iff_isSelfAdjoint.mp
+        ((isHermitian_pauliEnsembleMatrix n q J).sub
+          (isHermitian_pauliEnsembleMatrix n q (pauliEnsembleCenter n)))).map
+      (Matrix.toEuclideanCLM (𝕜 := ℂ))
   have hc : 0 < pauliNormalization n q := pauliNormalization_pos hn hq
   have hΦ : ‖(EuclideanSpace.single (fun _ => false) (1 : ℂ) :
       EuclideanSpace ℂ (Fin n → Bool))‖ = 1 := by simp

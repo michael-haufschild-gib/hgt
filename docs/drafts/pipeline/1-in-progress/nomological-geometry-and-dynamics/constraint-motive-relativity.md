@@ -4,12 +4,14 @@
 - **Stage:** 1 — in progress
 - **Working name:** **Constraint-Motive Relativity (CMR)**
 - **Type:** CANDIDATE GENERAL FIELD / HIGHER EQUIVALENCE PRINCIPLE
-- **Status:** `[CONJECTURAL FIELD] [EXACTNESS-DOCTRINE GEOMETRY]`
+- **Status:** `[DOCTRINE ATLAS — RETAINED] [EXACTNESS-DOCTRINE GEOMETRY]`
   `[PERFECT FIVE-SHADOW LAW PROVED] [OBSTRUCTION-BIANCHI TOWER PROVED]`
   `[POSITIVE-COVARIANCE/COMPACTNESS CRITERION PROVED] [SOURCE DYNAMICS OPEN]`
   `[PRO-VALUATED EVENT SECTOR PARTIALLY REALIZED]`
   `[WHOLE-CORPUS REALIZATION OPEN]`
   `[NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Successor field core:**
+  `../nomological-homotopy-geometry/nomological-homotopy-geometry.md`.
 - **Local atlas:** `constitutive-lawstack-geometry.md`.
 - **Current higher geometry:**
   `../constraint-motive-relativity/polarized-constraint-duality-geometry.md`.
@@ -37,6 +39,11 @@
   be treated as observer doctrines rather than a fixed background. A successful theory would
   construct one source-selected marked constraint section, its doctrine realizations, and the
   typed failures of doctrine changes to commute. No such common section is yet constructed.
+
+**Foundation correction.** CMR remains the catalogue of heterogeneous doctrine fibres and
+irreversible realizations. It is not the local field primitive. Nomological Homotopy Geometry
+supplies a presentation-invariant formal-law curvature and treats CMR doctrines as structured
+observers of one sourced formal moduli stack.
 
 ## 0. The higher answer
 

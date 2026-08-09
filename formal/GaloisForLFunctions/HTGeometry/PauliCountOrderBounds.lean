@@ -28,6 +28,16 @@ theorem nonidentityPauliWeightCount_le (n q : ℕ) (hn : 1 ≤ n) :
     _ = q * 3 ^ q * n ^ q := by
         rw [Finset.sum_const, Finset.card_range, smul_eq_mul, mul_assoc]
 
+/-- **At least one nonidentity Pauli direction exists at positive weight.** -/
+theorem one_le_nonidentityPauliWeightCount {n q : ℕ} (hn : 1 ≤ n) (hq : 1 ≤ q) :
+    1 ≤ nonidentityPauliWeightCount n q := by
+  rw [nonidentityPauliWeightCount]
+  have hmem : 0 ∈ Finset.range q := Finset.mem_range.mpr hq
+  refine le_trans ?_ (Finset.single_le_sum
+    (f := fun j => 3 ^ (j + 1) * n.choose (j + 1)) (fun _ _ => Nat.zero_le _) hmem)
+  norm_num [Nat.choose_one_right]
+  omega
+
 /-- **The observer rank contains a full top binomial term.** -/
 theorem two_mul_choose_le_productInputObserverRank (n q : ℕ) (hq : 1 ≤ q) :
     2 * n.choose q ≤ productInputObserverRank n q := by

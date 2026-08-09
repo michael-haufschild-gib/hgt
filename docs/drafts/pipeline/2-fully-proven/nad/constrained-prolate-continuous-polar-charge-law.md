@@ -426,18 +426,16 @@ The required new infrastructure is:
 5. `[FORMALIZED]` the exact normalized-budget transfer: sublinear variation preserves the
    `d_lambda*log(lambda)` leading scale, while the sharper logarithmically weighted budget makes
    the center error `o(d_lambda)`;
-6. `[FORMALIZED on the exterior range; endpoint range open for k >= 2]` a concrete radial-PSWF
+6. `[FORMALIZED]` a concrete radial-PSWF
    endpoint/exterior interface proving the all-radial primitive `(11)`.  Unconditional Lean
-   theorems now: `(43)`, `(47)`, `(50)`; the exact two-branch representation of the mode itself
+   theorems: `(43)`, `(47)`, `(50)`; the exact two-branch representation of the mode itself
    (`RHTower.sqrt_mul_radialProlate_dilate_eq_branches`, an identity, no error term); `(16)` for
-   every `k >= 1` on `[2, X]` for the **exact** mode
-   (`RHTower.norm_integral_radialProlate_dilate_le`, `<= 1800 M/(sqrt c (c k^2))` with `M` free of
-   `k` and of the endpoint); the channel summation
-   (`RHTower.tsum_norm_integral_radialProlate_channels_le`); and `(17)` on `[1,2]` for `k = 1`
-   (`RHTower.abs_integral_sqrt_mul_radialProlate_full_le`).  What is left is the range `t in [1,2]`
-   for `k >= 2` -- there `k t >= 2`, so the representation applies, but
-   `norm_integral_exterior_dilated_sharp_le` hard-codes `2` as its left endpoint and has to be
-   generalised to an arbitrary `A >= 1` with `k A >= 2`;
+   every `k >= 1` over the full range `[L, X]` for the **exact** mode
+   (`RHTower.norm_integral_radialProlate_dilate_left_le`,
+   `<= 4500 M/(sqrt c (c k^2) L)` with `M` free of `k` and of the endpoint); `(17)`
+   (`RHTower.abs_integral_sqrt_mul_radialProlate_full_le`); and the assembled
+   **`(11)`** itself (`RHTower.tsum_norm_integral_radialProlate_all_channels_le`), uniform in the
+   endpoint of integration;
 7. `[CANONICAL TWO-MODE SOURCE AND POISSON--MUNTZ LAW FORMALIZED; CLASSICAL IDENTIFICATION OPEN]`
    identify the classical real `h_0,h_4` modes in the actual operator spectrum and prove the
    concrete fixed-mode variation bound `(19e)`;
@@ -2933,3 +2931,181 @@ estimates, this proves the seed law `(32)` on paper.
 
   The existing `[2, X]` theorems are untouched; the general ones are added alongside, since other
   work depends on the fixed-endpoint forms.
+
+- 2026-08-09 (eighty-fourth instalment) -- **The dilated estimate with a free left endpoint, and
+  the amplitude bounds relaxed to match.**  New module
+  `RHTower/ProlateDilatedLeftEndpoint.lean`, wired, axiom-clean.
+
+  * **`abs_dilated_inv_speed_deriv_left`** -- `|k xiInvSpeedDeriv(k t)| <= 1/t^2` under
+    `0 < t` and `2 <= k t`, replacing the old `2 <= t`.  The condition belongs on the *dilated*
+    argument, not on the outer variable: that is the whole point of the dilation.
+  * **`norm_integral_exterior_dilated_left`** -- `<= 15 Ca/(2 L (c k))` over `[L, X]`.
+
+  Two lemmas in `ProlateExactChannel` were relaxed in place rather than duplicated:
+  `abs_exactAmp_le` and `abs_exactAmpDeriv_le` now take `1 <= x` together with `2 <= k x` instead
+  of `2 <= x`.  Nothing in their proofs used `2 <= x` for anything except deriving `2 <= k x` and
+  `0 < x`, so the change is free; the one place that did use it, the step `2 <= c k x`, follows
+  from `2 <= k x` and `c >= 1`.  All downstream call sites were updated and the module rebuilds
+  clean.
+
+  This is the shape needed for the full channel range.  For `k >= 2` the hypothesis `2 <= k L`
+  holds already at `L = 1`, so `[1, X]` is covered by a single estimate with gain
+  `1/(1 * c * k) * (1/k)` once the substitution's Jacobian is accounted for -- no split at `2`, and
+  no separate endpoint analysis.
+
+- 2026-08-09 (eighty-fifth instalment) -- **`(16)` over the full channel range.**  The exact-channel
+  layer generalised to a free left endpoint; six new declarations plus eight relaxed signatures in
+  `RHTower/ProlateExactChannel.lean`; all axiom-clean.
+
+  ```text
+  norm_integral_radialProlate_dilate_left_le :
+    ‖∫ t in L..X, R (k t)‖ <= 4500 * exactEnergyBudget s c R DR 2 / (sqrt c * (c k^2) * L)
+  ```
+
+  under `1 <= L`, `2 <= k L`, `L <= X`.  At `L = 1` and `k >= 2` this is the whole channel
+  `[1, X]` in one estimate -- the range that the eighty-second instalment had named as the last
+  gap.
+
+  * New: **`continuousOn_dilatedPhase_left`, `continuousOn_exactAmpDeriv_left`,
+    `continuousOn_exactBranchAmp_left`, `continuousOn_exactBranchAmpDeriv_left`,
+    `continuousOn_exactBranchIntegrand_left`,
+    `norm_integral_radialProlate_dilate_left_le`.**
+  * Relaxed in place: `hasDerivAt_exactAmplitude`, `hasDerivAt_exactAmp`,
+    `hasDerivAt_exactBranchAmp`, `sqrt_mul_radialProlate_dilate_eq`,
+    `sqrt_mul_radialProlate_dilate_eq_branches`, `radialProlate_dilate_eq_branch_integrand`,
+    `abs_exactBranchAmp_le`, `abs_exactBranchAmpDeriv_le`.
+
+  The relaxation is uniform and worth stating as a principle: **every hypothesis of the form
+  `2 <= x` in this layer was really a hypothesis about `k x`, not about `x`.**  Once written as
+  `1 <= x` together with `2 <= k x` (or just `1 < k x` where only positivity of the phase was
+  needed), all the proofs go through unchanged, and the dilation does what it is supposed to do --
+  push the outer variable's constraint down by a factor `k`.  The old form silently forced every
+  channel to start at the same place.
+
+  The `[2, X]` capstone `norm_integral_radialProlate_dilate_le` is retained and still builds; it is
+  now a corollary in substance, though not stated as one.
+
+- 2026-08-09 (eighty-sixth instalment) -- **The full-range channels `k >= 2` summed.**
+
+  * **`tsum_norm_integral_radialProlate_full_channels_le`** --
+
+    ```text
+    sum_{j>=0} ‖integral_1^X R((2+j) t) dt‖ <= 4500 M / (sqrt c * c),
+    ```
+
+    unconditionally, for every `X >= 1`.  This is the whole `k >= 2` part of `(11)` for the exact
+    mode, over the *entire* range `[1, X]` -- not the exterior part of it.
+
+  The `k >= 2` channels are now closed end to end.  What is left for `(11)` is only the first
+  channel, `k = 1`, which does not satisfy `2 <= k L` at `L = 1` and so splits at `2`:
+  `[1,2]` is `(17)` (`abs_integral_sqrt_mul_radialProlate_full_le`, proved) and `[2,X]` is
+  `norm_integral_radialProlate_dilate_left_le` at `k = 1`, `L = 2`, giving `2250 M/(sqrt c c)`.
+  Assembling those two is a case split on `X <= 2`, plus the bookkeeping that turns
+  `integral ((R t : R) : C)` into the real integral.
+
+  Note that `(17)` carries two hypotheses the exterior work does not: `5 <= c` and `R 1 = 1`.  They
+  are the card's standing normalisation for the radial mode, so the assembled `(11)` will carry
+  them too; nothing in the `k >= 2` half needs either.
+
+- 2026-08-09 (eighty-seventh instalment) -- **`(11)` PROVED FOR THE EXACT RADIAL MODE.**
+
+  ```text
+  tsum_norm_integral_radialProlate_all_channels_le :
+    ‖integral_1^X R t dt‖ + sum_{j>=0} ‖integral_1^X R((2+j) t) dt‖
+      <= prolateEndpointConstant/(c sqrt c) + 6750 M/(sqrt c * c)
+  ```
+
+  unconditionally, for every `X >= 1`, every `c >= 5`, every `0 <= s <= 1/2`, given only that `R`
+  solves the radial prolate equation with `R 1 = 1`.  `M = exactEnergyBudget s c R DR 2` is the
+  mode's own energy at the fixed base point `x = 2`.  The bound is uniform in the endpoint `X`, so
+  taking the supremum changes nothing -- which is exactly the shape `(11)` asks for.
+
+  * **`prolateEndpointConstant`, `prolateEndpointConstant_nonneg`.**
+  * **`norm_integral_radialProlate_first_channel_le`** -- the first channel, `k = 1`, the only one
+    whose range is not entirely exterior.  It splits at the Dunster crossing: `(17)` on `[1,2]`,
+    and `norm_integral_radialProlate_dilate_left_le` at `k = 1`, `L = 2` beyond.  The case `X <= 2`
+    needs no split at all.
+  * **`tsum_norm_integral_radialProlate_all_channels_le`** -- `(11)`.
+
+  Constants: `2250` from the first channel's exterior part, `4500` from the sum over `k >= 2`,
+  total `6750`; plus the endpoint constant, which carries `c^{-3/2}` rather than `c^{-1}` because
+  `(17)` is stated for `sqrt c R` and the channel sum is stated for `R`.
+
+  Two hypotheses enter here that the exterior work did not need: `5 <= c` and `R 1 = 1`.  Both come
+  from `(17)` alone, and both are the card's standing normalisation.  The `k >= 2` half holds with
+  `1 <= c` and no normalisation whatsoever.
+
+- 2026-08-09 (eighty-eighth instalment) -- **`(9)` and `(10)`: the decaying branch and the cosh
+  combination.**  New module `HTGeometry/HalfLineCoshPrimitive.lean`, wired, all three declarations
+  axiom-clean.  **Item 6 of the Lean plan is now `[FORMALIZED]`** (corrected above).
+
+  The card lists the module `(7)`--`(10)` as formalized, but `HalfLineAutocorrelationPrimitive`
+  contains only `(7)` (the Fubini/primitive identity) and `(8)` (the growing branch's `L^1` bound).
+  `(9)` and `(10)` were not there.
+
+  * **`integral_exp_neg_half_le_two`** -- `integral_{(0,H]} exp(-h/2) <= 2`, by the fundamental
+    theorem of calculus with antiderivative `-2 exp(-h/2)`.
+  * **`abs_integral_exp_neg_half_mul_autocorrelation_le`** -- `(9)`: a uniform bound `N` on the
+    autocorrelation gives `<= 2N` for the decaying branch.  No primitive, no Fubini, no
+    oscillation: `exp(-h/2)` simply has finite mass.
+  * **`abs_integral_cosh_mul_autocorrelation_le`** -- `(10)`: `2 cosh(h/2) = exp(h/2) + exp(-h/2)`
+    splits the integral, and the two branches are bounded by their own mechanisms.
+
+  The asymmetry between the branches is the whole content of the pair, and stating them separately
+  makes it visible: the growing branch is dangerous and needs the primitive identity of `(7)`; the
+  decaying branch is free.  `(10)` takes the growing bound as a parameter `B` precisely so that the
+  two mechanisms stay separated -- `B` is whatever `(8)` plus the radial primitive `(11)` supply.
+
+  With `(11)` proved for the exact mode in the eighty-seventh instalment and `(10)` now available,
+  what stands between here and `(18)` is the instantiation: identify `B` with the constant coming
+  from `(11)` for the constrained radial source, and supply the Fubini and integrability side
+  conditions for that particular source.
+
+- 2026-08-09 (eighty-ninth instalment) -- **The polar source estimate, both branches composed.**
+  Two further theorems in `HTGeometry/HalfLineCoshPrimitive.lean`; axiom-clean; the `HTGeometry`
+  umbrella builds green.
+
+  * **`abs_integral_exp_half_mul_autocorrelation_le`** -- `(7)` composed with `(8)`:
+
+    ```text
+    |integral_{(0,H]} exp(h/2) C_R(h) dh| <= 2 M integral_{(0,inf)} |exp(-s/2) R(s)| ds,
+    ```
+
+    where `M` bounds the growing primitive.  The composition is the oscillatory cancellation: the
+    growing kernel is never bounded in absolute value, it is turned into a pairing against a
+    primitive increment first.
+  * **`abs_integral_cosh_mul_autocorrelation_full_le`** -- both branches:
+
+    ```text
+    |integral_{(0,H]} 2 cosh(h/2) C_R(h) dh| <= 2 M integral |exp(-s/2) R| + 2 N.
+    ```
+
+    This is the card's `(10)` in the corpus's own terms, with `M` the primitive bound and `N` the
+    uniform autocorrelation bound.  Uniform in `H`.
+
+  `(7)`--`(10)` are now a usable chain rather than two isolated lemmas, and the chain is stated so
+  that the two constants it consumes are exactly the two objects the rest of the card produces:
+  `M` from the all-radial primitive `(11)`, and `N` from Cauchy--Schwarz on the source.
+
+- 2026-08-09 (ninetieth instalment) -- **The uniform autocorrelation bound.**  Two further
+  theorems in `HTGeometry/HalfLineCoshPrimitive.lean`; axiom-clean.
+
+  * **`integral_sq_comp_add_right`** -- `integral_{(0,inf)} R(s+h)^2 ds = integral_{(h,inf)} R^2`,
+    by rewriting both sides as indicator integrals over the line and applying translation
+    invariance.
+  * **`abs_halfLineAutocorrelation_le`** -- `|C_R(h)| <= integral_{(0,inf)} R^2` for `h >= 0`.
+
+  This is the constant `N` that `(10)` consumes, and it closes the last input of the polar source
+  estimate.
+
+  The proof deliberately avoids Cauchy--Schwarz.  mathlib's Hoelder inequalities for integrals live
+  in `ℝ≥0∞` (`lintegral_mul_le_Lp_mul_Lq`) and getting a real Bochner statement out of them costs
+  more than the result is worth here.  The arithmetic--geometric mean inequality
+  `|R(s+h) R(s)| <= (R(s+h)^2 + R(s)^2)/2` gives **the same constant** -- because the two square
+  masses are equal up to the shift, and the shifted one is smaller -- with nothing but
+  `setIntegral_mono_set` and a pointwise `nlinarith`.  Cauchy--Schwarz is only sharper when the two
+  factors have different masses, which is exactly what does not happen for an autocorrelation.
+
+  A note on imports: `integral_add_right_eq_self` is not reachable from the narrow mathlib imports
+  of `HalfLineAutocorrelationPrimitive`, and `lake env lean` reports it as an unknown identifier
+  rather than a missing import.  Adding `import Mathlib` is what the other modules in this layer do.

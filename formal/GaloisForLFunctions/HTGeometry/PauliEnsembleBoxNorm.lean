@@ -170,7 +170,7 @@ theorem norm_pauliEnsembleOp_sub_center_le (hn : 1 ≤ n) (hq : 1 ≤ q)
     ‖pauliEnsembleOp n q J - diagCLM (zProfile n q)‖
       ≤ pauliNormalization n q * ε ^ 2 / 16 := by
   have hm : (0 : ℝ) < (Quantum.nonidentityPauliWeightCount n q : ℝ) := by
-    exact_mod_cast one_le_nonidentityPauliWeightCount hn hq
+    exact_mod_cast Quantum.one_le_nonidentityPauliWeightCount hn hq
   have hbound := norm_pauliEnsembleOp_sub_le n q J (pauliEnsembleCenter n)
     (ε ^ 2 / (16 * (Quantum.nonidentityPauliWeightCount n q : ℝ))) h
   rw [pauliEnsembleOp_center] at hbound

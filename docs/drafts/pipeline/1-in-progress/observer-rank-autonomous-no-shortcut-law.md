@@ -280,7 +280,7 @@ formalization candidate.
 
 The upper law `(5)` is false on its stated exponential-time window. The
 dependency-closed counterexample is
-`../2-fully-proven/gapped-eigenstate-uniform-shortcut-floor.md`.
+`../3-formalized/gapped-eigenstate-uniform-shortcut-floor.md`.
 
 For the literal full fixed-`q` Pauli Gaussian ensemble, centre a
 full-dimensional coefficient box of width `epsilon^2/(16m_(n,q))` at the

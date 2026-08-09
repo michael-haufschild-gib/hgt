@@ -1,9 +1,10 @@
 # Source-normal Hochschild clock coordinate and logarithmic-flatness law
 
 - **ID:** `ngd-source-normal-hochschild-clock-coordinate-logarithmic-flatness`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** UNCONDITIONAL SOURCE THEOREM / COORDINATE-DEPENDENCE NO-GO
-- **Status:** `[PAPER PROOF DEPENDENCY-CLOSED] [NOT RH] [NO LEAN WRITTEN]`
+- **Status:** `[PAPER PROOF DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [UNCONDITIONAL]`
+  `[AXIOM-AUDITED] [TARGET-BUILT] [UMBRELLA-WIRED] [NOT RH]`
   `[BINARY-PRODUCER INTERPRETATION FALSIFIED]`
 - **Statement:** Inner corrections cannot change a trace--derivation cyclic period, while the
   nonadditivity of a finite multiplicative clock defect is a literal product-normalized
@@ -377,8 +378,60 @@ theories; see <https://arxiv.org/abs/1810.04835>, <https://arxiv.org/abs/2205.08
 neither inner unary correction nor raw multiplicative-coordinate nonadditivity supplies invariant
 selection geometry.
 
-## 9. Lean-return note
+## 9. Lean realization
 
-Do not write Lean yet.  If later authorized, first formalize Theorem 2.1 and the normalized simplex
-identity `(3.4)` using existing trace, derivation, and cyclic-bar definitions.  Then identify the
-literal `dilUnit` simplex.  Search declaration names against this toolchain before any proof.
+The complete explicit specialization is formalized in
+`formal/GaloisForLFunctions/RHTower/SourceNormalClockCurvatureLaw.lean` and wired into
+`formal/GaloisForLFunctions/RHTower.lean`.
+
+### Inner-correction and Kummer face
+
+- `traceDerivCocycle_innerCorrection` proves Theorem 2.1 pointwise;
+- `traceDerivCocycle_innerCorrection_finiteCycle` proves it on every finite Hochschild one-cycle;
+- `traceDerivCocycle_innerCorrection_inversePair` gives the inverse-pair specialization;
+- `kummerPrimePeriod_innerCorrection` and `kummerPrimePeriod_innerCorrection_ne_zero` prove the
+  literal prime-period non-erasure claim.
+
+### Product-trace and finite-clock face
+
+- `normalizedClockSimplex_productTrace` proves Theorem 3.1 for arbitrary normalized traces;
+- `rationalAdelicDilUnitClockSimplex_productTrace` and
+  `rationalAdelicDilUnitClockSimplex_productTrace_ne_zero` instantiate the exact `dilUnit`
+  multiplier simplex;
+- `finiteClockDefect_mul` and `finiteClockDefect_productTrace_boundary` prove Theorem 3.2 and
+  Corollary 3.3;
+- `finiteClockGroupCoboundary_eq_neg_mul` proves Theorem 3.4.
+
+### Logarithmic-flatness and hostile-boundary face
+
+- `logarithmicClock_mul` gives the global analytic logarithmic linearization;
+- `logarithm_linearizes_multiplicativeFormalGroup`,
+  `formalMultiplicativeExpCoordinate_groupLaw`,
+  `formalLog_subst_formalMultiplicativeExpCoordinate`, and
+  `formalMultiplicativeLogarithm_linearizes` give the exact formal-`Q` law;
+- `offNeutral_rawQuadratic_nonzero_logarithmicClock_flat` gives a literal off-neutral witness with
+  nonzero raw curvature and logarithmically flat clock law;
+- `radialClockDefect_sq` and `radialClockDefect_additive_sq_iff_neutral` give the exact square-clock
+  classification.
+
+### Riemann-source and raw-coordinate face
+
+- `deningerHalfDensityMateGain_eq_rpow`, `riemannSourceClockDefect_eq_radialClockDefect`,
+  `riemannSourceClockDefect_mul`, and `riemannSourceQuadraticClock_productTraceBoundary` prove the
+  exact source identities and product-trace realization;
+- `riemannSourcePrimeQuadraticClock_eq_zero_iff_re_eq_half` proves the critical-line
+  classification;
+- `xiPrimeResidue_eq_sourceNormalClockDefect` identifies the physical Xi prime residue;
+- `rawClockResponse_compatibility_forces_neutral` proves Theorem 5.1.
+
+## 10. Verification
+
+- Direct elaboration and targeted build of
+  `GaloisForLFunctions.RHTower.SourceNormalClockCurvatureLaw` pass.
+- Exhaustive declaration `#print axioms` audit reports only Lean foundations `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in the module.
+- `RHTower.lean` contains the module import. Current umbrella elaboration is blocked before that
+  import by unrelated, concurrently edited
+  `GaloisForLFunctions.RHTower.DeningerCriticalFloquetVonMangoldtWall`; its target presently has
+  independent source errors. No source-normal theorem depends on that module.

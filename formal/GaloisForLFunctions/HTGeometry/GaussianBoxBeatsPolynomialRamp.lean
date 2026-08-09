@@ -20,15 +20,50 @@ namespace HTGeometry
 
 noncomputable section
 
-/-- At least one nonidentity Pauli direction exists at positive weight. -/
-theorem one_le_nonidentityPauliWeightCount {n q : ℕ} (hn : 1 ≤ n) (hq : 1 ≤ q) :
-    1 ≤ Quantum.nonidentityPauliWeightCount n q := by
-  rw [Quantum.nonidentityPauliWeightCount]
-  have hmem : 0 ∈ Finset.range q := Finset.mem_range.mpr hq
-  refine le_trans ?_ (Finset.single_le_sum
-    (f := fun j => 3 ^ (j + 1) * n.choose (j + 1)) (fun _ _ => Nat.zero_le _) hmem)
-  norm_num [Nat.choose_one_right]
-  omega
+/-- **The rarity exponent is `O_q(n^q log n)`**, with the constants explicit rather than
+asymptotic.  The negative logarithm of the Gaussian product-box floor is eventually below a fixed
+multiple of `n^q` times the logarithm of a fixed multiple of `n^q`. -/
+theorem eventually_rarityExponent_le_polyLog (q : ℕ) (hq : 1 ≤ q) {ε : ℝ} (hε0 : 0 < ε) :
+    ∀ᶠ n : ℕ in atTop,
+      (Quantum.nonidentityPauliWeightCount n q : ℝ) *
+          Real.log (8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) /
+            (gaussianFloorConstant * ε ^ 2))
+        ≤ (q : ℝ) * 3 ^ q * (n : ℝ) ^ q *
+            Real.log (8 * ((q : ℝ) * 3 ^ q) / (gaussianFloorConstant * ε ^ 2) * (n : ℝ) ^ q) := by
+  set A : ℝ := (q : ℝ) * 3 ^ q with hAdef
+  set K : ℝ := gaussianFloorConstant * ε ^ 2 with hKdef
+  have hK : 0 < K := by
+    rw [hKdef]; exact mul_pos gaussianFloorConstant_pos (by positivity)
+  have hqr : (0 : ℝ) < (q : ℝ) := by exact_mod_cast hq
+  have hA : 0 < A := by rw [hAdef]; positivity
+  set d : ℝ := 8 * A / K with hddef
+  have hd : 0 < d := by rw [hddef]; positivity
+  have htend : Filter.Tendsto (fun n : ℕ => d * (n : ℝ) ^ q) atTop atTop := by
+    refine Filter.Tendsto.const_mul_atTop hd ?_
+    exact (tendsto_pow_atTop (n := q) (by omega)).comp tendsto_natCast_atTop_atTop
+  filter_upwards [eventually_ge_atTop 1, htend.eventually_ge_atTop 1] with n h1 hone
+  have hnr : (0 : ℝ) < (n : ℝ) := by exact_mod_cast h1
+  have hlognn : (0 : ℝ) ≤ Real.log (d * (n : ℝ) ^ q) := Real.log_nonneg hone
+  have hmr : (0 : ℝ) < (Quantum.nonidentityPauliWeightCount n q : ℝ) := by
+    exact_mod_cast Quantum.one_le_nonidentityPauliWeightCount h1 hq
+  have hmle : (Quantum.nonidentityPauliWeightCount n q : ℝ) ≤ A * (n : ℝ) ^ q := by
+    have h := Quantum.nonidentityPauliWeightCount_le n q h1
+    have hcast : ((q * 3 ^ q * n ^ q : ℕ) : ℝ) = A * (n : ℝ) ^ q := by
+      rw [hAdef]; push_cast; ring
+    calc (Quantum.nonidentityPauliWeightCount n q : ℝ) ≤ ((q * 3 ^ q * n ^ q : ℕ) : ℝ) := by
+          exact_mod_cast h
+      _ = A * (n : ℝ) ^ q := hcast
+  have harg : 8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) / K ≤ d * (n : ℝ) ^ q := by
+    rw [hddef, div_mul_eq_mul_div, div_le_div_iff_of_pos_right hK]
+    nlinarith [hmle, pow_nonneg hnr.le q]
+  have hlogle : Real.log (8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) / K)
+      ≤ Real.log (d * (n : ℝ) ^ q) := Real.log_le_log (by positivity) harg
+  calc (Quantum.nonidentityPauliWeightCount n q : ℝ) *
+        Real.log (8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) / K)
+      ≤ (Quantum.nonidentityPauliWeightCount n q : ℝ) * Real.log (d * (n : ℝ) ^ q) :=
+        mul_le_mul_of_nonneg_left hlogle hmr.le
+    _ ≤ A * (n : ℝ) ^ q * Real.log (d * (n : ℝ) ^ q) :=
+        mul_le_mul_of_nonneg_right hmle hlognn
 
 /-- **The rarity exponent is eventually below the ramp exponent.**  Consequently the Gaussian
 product-box floor eventually exceeds any bound whose exponent is proportional to the observer rank,
@@ -59,37 +94,14 @@ theorem eventually_rarityExponent_lt_rampExponent (q : ℕ) (hq : 1 ≤ q)
   have htend : Filter.Tendsto (fun n : ℕ => d * (n : ℝ) ^ q) atTop atTop := by
     refine Filter.Tendsto.const_mul_atTop hd ?_
     exact (tendsto_pow_atTop (n := q) (by omega)).comp tendsto_natCast_atTop_atTop
-  filter_upwards [eventually_polyLog_lt_pow_succ_nat q hD hd,
-    eventually_ge_atTop (2 * q), eventually_ge_atTop 1,
-    htend.eventually_ge_atTop 1] with n hpoly h2q h1 hone
-  have hnr : (0 : ℝ) < (n : ℝ) := by exact_mod_cast h1
-  have hlognn : (0 : ℝ) ≤ Real.log (d * (n : ℝ) ^ q) := Real.log_nonneg hone
-  have hm1 : 1 ≤ Quantum.nonidentityPauliWeightCount n q :=
-    one_le_nonidentityPauliWeightCount h1 hq
-  have hmr : (0 : ℝ) < (Quantum.nonidentityPauliWeightCount n q : ℝ) := by
-    exact_mod_cast hm1
-  have hmle : (Quantum.nonidentityPauliWeightCount n q : ℝ) ≤ A * (n : ℝ) ^ q := by
-    have h := Quantum.nonidentityPauliWeightCount_le n q h1
-    have hcast : ((q * 3 ^ q * n ^ q : ℕ) : ℝ) = A * (n : ℝ) ^ q := by
-      rw [hAdef]; push_cast; ring
-    calc (Quantum.nonidentityPauliWeightCount n q : ℝ) ≤ ((q * 3 ^ q * n ^ q : ℕ) : ℝ) := by
-          exact_mod_cast h
-      _ = A * (n : ℝ) ^ q := hcast
+  filter_upwards [eventually_polyLog_lt_pow_succ_nat q (a := D) (b := A) hD hd,
+    eventually_ge_atTop (2 * q),
+    eventually_rarityExponent_le_polyLog q hq hε0] with n hpoly h2q hleft0
   -- the left side is below the polynomial-logarithm profile
   have hleft : (Quantum.nonidentityPauliWeightCount n q : ℝ) *
       Real.log (8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) / K)
       ≤ A * (n : ℝ) ^ q * Real.log (d * (n : ℝ) ^ q) := by
-    have harg : 8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) / K ≤ d * (n : ℝ) ^ q := by
-      rw [hddef, div_mul_eq_mul_div, div_le_div_iff_of_pos_right hK]
-      nlinarith [hmle, pow_nonneg hnr.le q]
-    have hlogle : Real.log (8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) / K)
-        ≤ Real.log (d * (n : ℝ) ^ q) := Real.log_le_log (by positivity) harg
-    calc (Quantum.nonidentityPauliWeightCount n q : ℝ) *
-          Real.log (8 * (Quantum.nonidentityPauliWeightCount n q : ℝ) / K)
-        ≤ (Quantum.nonidentityPauliWeightCount n q : ℝ) * Real.log (d * (n : ℝ) ^ q) :=
-          mul_le_mul_of_nonneg_left hlogle hmr.le
-      _ ≤ A * (n : ℝ) ^ q * Real.log (d * (n : ℝ) ^ q) :=
-          mul_le_mul_of_nonneg_right hmle hlognn
+    simpa only [hddef, hAdef, hKdef] using hleft0
   -- the right side dominates the next power
   have hright : D * (n : ℝ) ^ (q + 1)
       ≤ (1 - η) * (Quantum.productInputObserverRank n q : ℝ) * (c * (n : ℝ) * Real.log 2) := by

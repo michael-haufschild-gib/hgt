@@ -220,3 +220,36 @@ theorem topOrd_fpderiv_of_ne {m l : ℕ} (h : l ≠ m) (f : CascadeField) :
   exact hd
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open GaloisForLFunctions
+
+theorem topOrd_neg_one (m : ℕ) : topOrd m (-1 : CascadeField) = ((0 : ℤ) : WithTop ℤ) := by
+  have hne : (-1 : MvPolynomial ℕ ℂ) ≠ 0 := by
+    simp
+  have hmap : (-1 : CascadeField) = algebraMap (MvPolynomial ℕ ℂ) CascadeField (-1) := by
+    rw [map_neg, map_one]
+  have hone : (1 : MvPolynomial ℕ ℂ).degreeOf m = 0 := by
+    rw [show (1 : MvPolynomial ℕ ℂ) = MvPolynomial.C 1 from MvPolynomial.C_1.symm,
+      MvPolynomial.degreeOf_C]
+  rw [hmap, topOrd_algebraMap m hne, MvPolynomial.degreeOf_neg, hone]
+  norm_num
+
+@[simp]
+theorem topOrd_neg (m : ℕ) (f : CascadeField) : topOrd m (-f) = topOrd m f := by
+  rw [show -f = (-1 : CascadeField) * f by ring, topOrd_mul, topOrd_neg_one]
+  norm_num
+
+theorem topOrd_inv (m : ℕ) {f : CascadeField} (hf : f ≠ 0) :
+    topOrd m f + topOrd m f⁻¹ = ((0 : ℤ) : WithTop ℤ) := by
+  rw [← topOrd_mul, mul_inv_cancel₀ hf, topOrd_one]
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+theorem fx_ne_zero (m : ℕ) : fx m ≠ 0 :=
+  algebraMap_ne_zero_of_ne_zero (MvPolynomial.X_ne_zero m)
+
+end GaloisForLFunctions.HTGeometry

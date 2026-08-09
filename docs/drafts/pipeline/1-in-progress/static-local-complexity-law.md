@@ -5073,7 +5073,7 @@ receive a new title and an independent significance audit.
   `epsilon`-easy at every time. At `t=2^(cn)` this floor is exponentially
   larger than the conjectured `t^(-(1-eta)v)=exp(-Omega_q(n^(q+1)))`.
   Exact proof is in
-  `../2-fully-proven/gapped-eigenstate-uniform-shortcut-floor.md`. This does
+  `../3-formalized/gapped-eigenstate-uniform-shortcut-floor.md`. This does
   not falsify the observer--spectral minimum: its annealed completed-orbit
   mass absorbs the box and therefore crosses branches by polynomial time.
   Typical Brown--Susskind target must now be quenched/quantile-resolved,

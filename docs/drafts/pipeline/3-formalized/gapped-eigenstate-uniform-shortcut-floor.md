@@ -1,18 +1,21 @@
 # Gapped-eigenstate uniform shortcut floor
 
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [OBSTRUCTION] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [OBSTRUCTION] [NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/observer-spectral-shortcut-action-law.md`
 - **Killed branch:** `../1-in-progress/observer-rank-autonomous-no-shortcut-law.md`
-- **Lean:** `(1)`--`(2)` closed — `HTGeometry/GappedEigenlineStability.lean`,
-  `HTGeometry.exists_hasEigenvector_of_gap`, unconditional and axiom-clean.
-  `(3)` closed at the physical propagator —
-  `HTGeometry/GappedEigenlineTimeUniformFloor.lean`, `HTGeometry/SelfAdjointPropagator.lean`,
-  `HTGeometry/GappedEigenlinePropagatorFloor.lean`.
-  `(11)` closed — `HTGeometry/GaussianProductBoxFloor.lean`.
-  `(12)` analytic core closed — `HTGeometry/PolyLogBeatenByOneMorePower.lean`.
-  `(12)` closed — `HTGeometry/GaussianBoxBeatsPolynomialRamp.lean`.
-  The Pauli instantiation `(6)`--`(10)` remains
+- **Lean certificate:** `gapped-eigenstate-uniform-shortcut-floor-formalized.md`
+- **Lean:** every numbered claim is closed, unconditionally and axiom-clean.
+  `(1)`--`(2)` — `HTGeometry/GappedEigenlineStability.lean`.
+  `(3)`, at the physical propagator — `HTGeometry/GappedEigenlineTimeUniformFloor.lean`,
+  `HTGeometry/SelfAdjointPropagator.lean`, `HTGeometry/GappedEigenlinePropagatorFloor.lean`.
+  `(5)`--`(7)` — `HTGeometry/NonidentityPauliWordCount.lean`, `HTGeometry/PauliZSetLabels.lean`,
+  `HTGeometry/EuclideanDiagonalGappedForm.lean`, `HTGeometry/PauliZGappedHamiltonian.lean`.
+  `(8)`--`(9)` — `HTGeometry/PauliEnsembleBoxNorm.lean`.
+  `(10)` — `HTGeometry/PauliGaussianBoxShortcutFloor.lean`.
+  `(11)` — `HTGeometry/GaussianProductBoxFloor.lean`.
+  `(12)` — `HTGeometry/PolyLogBeatenByOneMorePower.lean`,
+  `HTGeometry/PauliCountOrderBounds.lean`, `HTGeometry/GaussianBoxBeatsPolynomialRamp.lean`.
 - **Date:** 2026-08-05
 
 ## Exact abstract theorem
@@ -315,11 +318,60 @@ The quantifier order is the point: `c` and `η` are fixed before `n`, and they e
 constants, so no choice of them rescues the conjecture.  This is what the card means by "false for
 every proposed exponential-time window, regardless of its polynomial lower threshold".
 
-Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis.
+`(5)`--`(7)` are closed across four modules.
+
+`HTGeometry/NonidentityPauliWordCount.lean` supplies the ensemble's size.  A Pauli string is
+determined by its support together with one of three nontrivial labels per active site, so the
+strings with a prescribed support are `3^{|S|}` in number — a `Fintype.piFinset` count, with the
+per-site choice set `univ.erase none`.  Grouping by support and then by weight gives
+`card {P : 1 ≤ wt P ≤ q} = ∑_{k=1}^q 3^k C(n,k) = m_{n,q}`, so the card's `m` is simultaneously the
+normalisation and the literal number of terms.  Both readings are used: the first in `(7)`, the
+second in `(9)`.
+
+`HTGeometry/PauliZSetLabels.lean` gives the `Z` string of an arbitrary support and its closed form:
+diagonal, with entry the sign of the parity of the occupied sites inside the support.  Distinct
+supports give distinct strings, and a string all of whose entries are `Z` or trivial is the `Z`
+string of its own support — the two facts that identify the centre's terms in `(6)`.
+
+`HTGeometry/EuclideanDiagonalGappedForm.lean` is the reusable half of `(7)`: a diagonal operator
+with a real symbol is self-adjoint, acts on each coordinate vector by its symbol, and has quadratic
+form the symbol-weighted coordinate mass.  If one coordinate of the symbol exceeds every other by
+`Δ`, the gap inequality `(1)` holds at that coordinate.  Nothing here is about qubits.
+
+`HTGeometry/PauliZGappedHamiltonian.lean` instantiates it.  `diagCLM_zProfile_eq` is `(6)`
+literally: the diagonal Hamiltonian equals `Matrix.toEuclideanCLM` of `m^{-1/2} ∑_{∅≠S,|S|≤q} Z_S`.
+`zProfile_le_of_ne` is `(7)`: pick an occupied site of a configuration other than the all-zero one;
+its singleton `Z` string contributes `-1` while no term exceeds `+1`, so the diagonal value is at
+most `M - 2` against the top value `M`, and the gap is `Δ = 2 m^{-1/2}`.  The card's "every other
+term lowers the top energy by either zero or the same positive amount" is not needed — the crude
+bound `zSetSign ≤ 1` suffices, because only the *difference* from the top matters.
+
+`(8)`--`(9)` are closed as `norm_pauliEnsembleOp_sub_center_le` in
+`HTGeometry/PauliEnsembleBoxNorm.lean`.  Two ingredients.  `pauliEnsembleOp_center` identifies the
+ensemble at the diagonal centre coefficient vector with the gapped diagonal Hamiltonian, by
+summing over the all-`Z` strings of bounded weight and reindexing them by their supports.  And
+every Pauli string is a Hermitian involution, hence a *unitary* operator: `star` transports through
+`Matrix.toEuclideanCLM` because it is a star algebra equivalence, and `P·P = 1` gives the unitarity
+directly.  A unitary continuous linear map has operator norm at most one, so the triangle
+inequality over the `m` terms gives `‖H_n(J) - H₀‖ ≤ m^{-1/2} m w`, which at `w = ε²/(16m)` is
+`ε²/(16√m)`.  No Pauli matrix entry is ever inspected.
+
+`(10)` is closed as `pureStateTraceDistance_pauliEnsembleOp_le` in
+`HTGeometry/PauliGaussianBoxShortcutFloor.lean`: for `n, q ≥ 1`, every coefficient vector within
+`ε²/(16 m)` of the diagonal centre, and *every real time*,
+
+    d_tr([e^{-itH_n(J)}Φ], [Φ]) ≤ ε/2 ,   Φ = |0⟩^{⊗n} .
+
+The perturbation-to-gap ratio is `2δ/Δ = ε²/16` exactly, so the abstract `2√(2δ/Δ)` is `ε/2` with
+no slack.  The time appears only inside the propagator.
+
+`(13)`'s first clause is `(11)` verbatim.  Its second clause — `I^comp = O_q(n^q log n)` — is
+`HTGeometry.eventually_rarityExponent_le_polyLog`, stated with explicit constants: eventually in
+`n`, `m log(8m/(c₀ε²)) ≤ q 3^q n^q log(8 q 3^q n^q/(c₀ε²))`.  It is the left-hand half of `(12)`.
 
 ## Formal target
 
-Formalize `(1)--(3)` as a finite-Hermitian gapped-eigenline stability theorem,
-then instantiate `(6)--(10)` in the existing finite-qubit Pauli basis. The
-Gaussian product-box bound `(11)` and the asymptotic contradiction in `(12)`
-must also be formalized before this obstruction is used as a public claim.
+Met.  `(1)--(3)` are a finite-Hermitian gapped-eigenline stability theorem,
+`(6)--(10)` are instantiated in the finite-qubit Pauli basis, and the Gaussian
+product-box bound `(11)` and the asymptotic contradiction in `(12)` are both
+formalized.  The obstruction may be used as a public claim.

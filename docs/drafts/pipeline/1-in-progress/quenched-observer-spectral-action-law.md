@@ -133,7 +133,7 @@ the exponential pre-capacity window.
 - `[PAPER-PROVED]` `gaussian-radial-observer-spectral-action-law.md` proves
   qualitative Gaussian-ensemble convergence to the angular mixture of exact
   completed orbits, but no dimension-uniform rate.
-- `[PAPER-PROVED]` `gapped-eigenstate-uniform-shortcut-floor.md` falsifies the
+- `[LEAN-FORMALIZED]` `gapped-eigenstate-uniform-shortcut-floor.md` falsifies the
   annealed observer-rank growth interpretation and forces the resolved event
   in `(4)`.
 - `[CORPUS]` `StaticQLocalComplexityHaarSeparationLaw.lean` proves generic

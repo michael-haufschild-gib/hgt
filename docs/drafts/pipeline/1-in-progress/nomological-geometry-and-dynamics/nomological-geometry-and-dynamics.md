@@ -3,8 +3,10 @@
 - **ID:** `nomological-geometry-and-dynamics`
 - **Stage:** 1 — in progress
 - **Working name:** `NGD`
-- **Status:** `[FIELD PROGRAM — PRELIMINARY] [FOUNDATION TYPED] [EXACT LOCAL CHARTS EXIST]`
-  `[ROUTE-COMPLETE DESIGN TARGET] [NOT RH] [NO LEAN WRITTEN]`
+- **Status:** `[FIELD ATLAS — RETAINED] [LOCAL CHARTS EXIST]`
+  `[ARBITRARY COMPARISON-CURVATURE SUPERSEDED] [NOT RH] [NO LEAN WRITTEN]`
+- **Successor field core:**
+  `../nomological-homotopy-geometry/nomological-homotopy-geometry.md`.
 - **Purpose:** Reinterpret arithmetic, spectral, geometric, analytic, topological, ordered, and
   physical proof routes as curved reductions of one source law rather than independent objects
   which must be glued after construction.
@@ -14,6 +16,11 @@
 - **Scope boundary:** Existing components are deliberately reused. The claim is a new unified
   interpretation and research field, not priority over every ingredient. NGD earns mathematical
   force through typed field laws, exact cross-route transfers, and predictions.
+
+**2026-08-09 foundation correction.** This document remains the broad observer atlas. It is no
+longer the field primitive. Its comparison-cell curvature can depend on presentation. Nomological
+Homotopy Geometry replaces it locally by the first nonzero transferred bracket of a
+source-normalized formal law germ, whose arity and conjugacy class are gauge invariant.
 
 ## 0. One-sentence answer
 

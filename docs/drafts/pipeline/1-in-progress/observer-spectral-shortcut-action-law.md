@@ -210,7 +210,7 @@ than cosmetic.
    excess.  Maximal projective rank is exactly simultaneous floor attainment.
    This closes the spectral action law itself, but not the adaptive circuit
    selector needed for `(5)`.
-9. `../2-fully-proven/gapped-eigenstate-uniform-shortcut-floor.md`
+9. `../3-formalized/gapped-eigenstate-uniform-shortcut-floor.md`
    proves a full-dimensional, polynomial-width Gaussian coefficient box on
    which the product input remains close to a perturbed gapped eigenline for
    every time. Its mass is `exp(-O_q(n^q log n))`, independent of time. This
