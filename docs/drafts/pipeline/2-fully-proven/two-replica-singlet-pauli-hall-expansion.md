@@ -288,8 +288,14 @@ Progress against that list:
 - **Hermiticity banked.**  `conjTranspose_kronecker_local` (mathlib has no Kronecker
   conjugate-transpose lemma) gives `isHermitian_twoReplicaLocalDiff`, which is what licenses reading
   the traces above as Hilbert--Schmidt inner products.
-- **Remaining:** the global tensor form of `(11)` and the assembly `(14)`--`(17)` into
-  `ResolvedFiberHallExpansion`.
+- **Half of `(12)` closed globally.**
+  `finiteTwoReplicaCollectiveCommutator_swapRaw_eq_zero_of_matched`: on any finite register, a
+  fixed-orientation edge commutator annihilates every endpoint-matched swap word.  The lift is
+  free — `finiteTwoReplicaCollectiveCommutator_edgeExtension` already says the global commutator is
+  the edge extension of the local one, so `(7)` transfers verbatim.  This is
+  `ker(A_e|_{S_2}) ⊇ ker P_e`.
+- **Remaining:** the reverse inclusion of `(12)`, the global tensor form of `(11)`, and the
+  assembly `(14)`--`(17)` into `ResolvedFiberHallExpansion`.
 
   Target interface: `resolvedFiberAssembly_subspace_finrank` wants mismatch projections
   `P : J → X →ₗ Z`, edge maps `E : J → Z →ₗ Y`, an assembly with `assemble z = ∑ j, E j (z j)`,

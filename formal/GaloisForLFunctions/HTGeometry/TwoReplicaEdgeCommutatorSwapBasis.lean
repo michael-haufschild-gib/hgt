@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.TwoReplicaLocalSingletSynchronization
+import GaloisForLFunctions.HTGeometry.TwoReplicaGlobalSingletEdgeCasimirBridge
 
 /-!
 # The single edge commutator on the local identity/swap basis
@@ -245,6 +246,35 @@ theorem twoReplicaLocalDiff_pair_independent (a : Fin 3) {c d : ℂ}
   constructor
   · linear_combination h1 / 8
   · linear_combination h2 / 8
+
+/-! ## The global edge commutator sees only the endpoint mismatch -/
+
+theorem finiteTwoReplicaEdgeExtension_zero
+    {V : Type*} [Fintype V] [DecidableEq V] (u v : V)
+    (S : FiniteTwoReplicaEdgeOutside u v →
+      Matrix TwoReplicaLocalIndex TwoReplicaLocalIndex ℂ) :
+    finiteTwoReplicaEdgeExtension u v S 0 = 0 := by
+  have h := finiteTwoReplicaEdgeExtension_smul u v S (0 : ℂ) 0
+  simpa using h
+
+/-- **Endpoint-matched swap words are annihilated on any register.**  The global commutator is the
+edge extension of the local one, and the local one kills both matched words. -/
+theorem finiteTwoReplicaCollectiveCommutator_swapRaw_eq_zero_of_matched
+    {V : Type*} [Fintype V] [DecidableEq V] {u v : V} (huv : u ≠ v)
+    (a b : Fin 3) (x : V → Bool) (hx : x u = x v) :
+    finiteTwoReplicaCollectiveCommutatorLinear (finiteEdgePauliLabel u v a b)
+        (finiteTwoReplicaSwapRaw x) = 0 := by
+  rw [finiteTwoReplicaSwapRaw_eq_edgeExtension huv,
+    finiteTwoReplicaCollectiveCommutator_edgeExtension huv]
+  have hzero : twoReplicaMatrixCommutator (twoReplicaEdgeCollective a b)
+      (twoReplicaEdgeSwapRaw (x u, x v)) = 0 := by
+    rw [twoReplicaEdgeSwapRaw, ← hx]
+    cases hxu : x u with
+    | false =>
+        exact twoReplicaEdgeCommutator_one_one a b
+    | true =>
+        exact twoReplicaEdgeCommutator_swap_swap a b
+  rw [hzero, finiteTwoReplicaEdgeExtension_zero]
 
 end
 
