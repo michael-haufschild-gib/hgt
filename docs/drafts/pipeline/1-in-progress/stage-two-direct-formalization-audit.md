@@ -50,7 +50,7 @@
 - [x] `pure-pair-normal-actuality-fracture.md`
 - [x] `replica-collision-hamming-tomography-law.md`
 - [ ] `squarefree-euler-modular-corona-curvature-colligation.md`
-- [ ] `summable-nome-infinite-order-multiple-elliptic-gamma.md`
+- [x] `summable-nome-infinite-order-multiple-elliptic-gamma.md` — promoted to `3-formalized`
 - [ ] `universal-static-choi-complexity-plateau.md`
 - [ ] `weak-interaction-singular-quantum-time-expansion.md`
 - [ ] `wold-shell-euler-activation-square.md`

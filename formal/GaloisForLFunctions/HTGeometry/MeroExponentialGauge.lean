@@ -90,6 +90,39 @@ theorem hypertranscendentalOver_mul_analyticMeroElement_exp_iff
   hypertranscendentalOver_mul_iff_of_expGauge hDA (deriv_analyticMeroElement_exp P hP)
     (analyticMeroElement_exp_ne_zero P hP)
 
+/-- The constant embedding of the rational base agrees with the constant analytic element. -/
+theorem algebraMap_ratFunc_C_eq (c : ℂ) :
+    algebraMap (RatFunc ℂ) (meroField (Set.univ : Set ℂ)) (RatFunc.C c)
+      = analyticMeroElement (fun _ : ℂ => c) analyticOnNhd_const := by
+  rw [analyticMeroElement_const]
+  exact ratfuncToMero_C_eq_constToMero c
+
+theorem analyticOnNhd_expLinear (c : ℂ) :
+    AnalyticOnNhd ℂ (fun z : ℂ => Complex.exp (c * z)) (Set.univ : Set ℂ) :=
+  (analyticOnNhd_const.mul analyticOnNhd_id).cexp
+
+/-- **The exponential of a linear function is differentially algebraic over the rational base.** -/
+theorem differentialAlgebraicOver_analyticMeroElement_expLinear (c : ℂ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (analyticMeroElement (fun z : ℂ => Complex.exp (c * z)) (analyticOnNhd_expLinear c)) := by
+  refine differentialAlgebraicOver_of_deriv_eq_base_mul (RatFunc.C c) ?_
+  rw [deriv_analyticMeroElement, algebraMap_ratFunc_C_eq,
+    ← analyticMeroElement_mul analyticOnNhd_const (analyticOnNhd_expLinear c)]
+  refine analyticMeroElement_congr _ _ ?_
+  funext z
+  have hd : DifferentiableAt ℂ (fun z : ℂ => c * z) z := (differentiable_id.const_mul c) z
+  rw [deriv_cexp hd, deriv_const_mul_field, deriv_id'']
+  ring
+
+/-- Two entire exponential gauges compose into one, with the sum of the exponents. -/
+theorem analyticMeroElement_exp_add (P Q : ℂ → ℂ) (hP : AnalyticOnNhd ℂ P (Set.univ : Set ℂ))
+    (hQ : AnalyticOnNhd ℂ Q (Set.univ : Set ℂ)) :
+    analyticMeroElement (fun z => Complex.exp (P z)) hP.cexp *
+        analyticMeroElement (fun z => Complex.exp (Q z)) hQ.cexp
+      = analyticMeroElement (fun z => Complex.exp (P z + Q z)) (hP.add hQ).cexp := by
+  rw [← analyticMeroElement_mul hP.cexp hQ.cexp]
+  exact (analyticMeroElement_congr _ _ (funext fun z => Complex.exp_add (P z) (Q z))).symm
+
 end GaloisForLFunctions.HTGeometry
 
 end

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) / SOURCE-PURE HT-TO-DA COMPLETION / EMERGENT-SYMMETRY LAW
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[EXTERNAL EXACT-MATCH SEARCH NEGATIVE] [NOT AN RH RESULT]`
-- **Sources:** `../summable-nome-infinite-order-multiple-elliptic-gamma.md`;
+- **Sources:** `../../../3-formalized/summable-nome-infinite-order-multiple-elliptic-gamma.md`;
   `../../4-publication-ready/multiple-elliptic-gamma-rational-rank-dichotomy/main.tex`
 - **Statement:** Every finite prime packet with at least two primes produces a
   hypertranscendental multiple-\(q\)-Pochhammer function.  At every even integer temperature,
