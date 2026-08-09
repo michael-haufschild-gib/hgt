@@ -195,13 +195,25 @@ Built for it so far, all unconditional and axiom-clean:
   strings are a *complex* basis of the qubit matrix algebra.  The corpus had only the real Hermitian
   basis, which cannot see the non-Hermitian directions the two-replica space contains.
 
-Remaining: `⨆_P finiteTwoReplicaPauliCharacterSubspace P = ⊤`.  Without it the sign-pattern grading
-does not collapse onto the Pauli-word grading, because a pattern realized by no Pauli word could
-carry a nonzero eigenspace.  The route is: the Kronecker products of Pauli strings span the
-two-replica matrix algebra (`Submodule.map₂_span_span`, with every standard basis matrix of a
-product index a Kronecker product of standard basis matrices), and `P₁ ⊗ P₂` sits in the character
-subspace of the label product `P₁ ⊙ P₂`, since the conjugation sign is multiplicative in the label.
-The label product on `Option (Fin 3)` and that multiplicativity are the only new definitions needed.
+**Done since:** `HTGeometry/TwoReplicaPauliCharacterCompleteness.lean` —
+`finiteTwoReplicaPauliCharacterSubspace_iSup_eq_top`.  The phase-free Pauli labels carry a product
+(`pauliLabelMul`), the conjugation sign is multiplicative in it, a Kronecker product of Pauli
+strings lies in the character subspace of the product label, and Kronecker products of Pauli
+strings span the doubled matrix algebra.
+
+Remaining, and now the only step: for `U` stable under every paired-Pauli conjugation,
+`U = ⨆_P (U ⊓ X_P)`.  With that, `inf_biSup_eq_biSup_inf_of_graded` gives
+`U ⊓ (⨆_{P≠0} X_P) = finiteTwoReplicaNonzeroPauliResolvedSubspace U`, and the existing capstone is
+`(4)` verbatim.
+
+The obstacle is precise.  `invariantSubspace_eq_iSup_simultaneousParitySubspace` grades `U` by *sign
+patterns*, not by Pauli words, and a pattern realized by no Pauli word must be shown to carry no
+eigenspace.  Independence and completeness of the character family make the whole space an internal
+direct sum (`DirectSum.IsInternal`), and then the eigenvalue argument closes it: for `x` in the
+pattern-`s` eigenspace, every character component of `x` satisfies `χ_P(Q) π_P x = s_Q π_P x`, so a
+nonzero component forces `χ_P = s`.  That is the last piece — componentwise uniqueness in an
+internal direct sum.
+
 
 ## Formal completion of nonzero channel
 
