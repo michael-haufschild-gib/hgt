@@ -291,6 +291,115 @@ theorem strict_global_history (r : ℕ) :
     change 2 * r + 1 ≤ 2 * r at hsmall
     omega
 
+/-- Primitive repair letters for the directed law-word geometry. -/
+inductive RepairStep
+  | even
+  | odd
+  deriving DecidableEq
+
+def RepairStep.act : RepairStep → Set ℕ → Set ℕ
+  | .even => evenRepair
+  | .odd => oddRepair
+
+/-- Execute a repair word from left to right. -/
+def runRepairWord : List RepairStep → Set ℕ → Set ℕ
+  | [], S => S
+  | step :: rest, S => runRepairWord rest (step.act S)
+
+theorem runRepairWord_append (u v : List RepairStep) (S : Set ℕ) :
+    runRepairWord (u ++ v) S = runRepairWord v (runRepairWord u S) := by
+  induction u generalizing S with
+  | nil => rfl
+  | cons step rest ih =>
+      simp only [List.cons_append, runRepairWord]
+      exact ih (step.act S)
+
+theorem repairStep_subset_succ (step : RepairStep) {S : Set ℕ} {k : ℕ}
+    (hS : S ⊆ levelPrefix k) : step.act S ⊆ levelPrefix (k + 1) := by
+  cases step with
+  | even =>
+      intro n hn
+      rcases hn with hn | ⟨j, hj, _, rfl⟩
+      · have := hS hn
+        change n ≤ k at this
+        change n ≤ k + 1
+        omega
+      · have := hS hj
+        change j ≤ k at this
+        change j + 1 ≤ k + 1
+        omega
+  | odd =>
+      intro n hn
+      rcases hn with hn | ⟨j, hj, _, rfl⟩
+      · have := hS hn
+        change n ≤ k at this
+        change n ≤ k + 1
+        omega
+      · have := hS hj
+        change j ≤ k at this
+        change j + 1 ≤ k + 1
+        omega
+
+theorem runRepairWord_subset_prefix (w : List RepairStep) {S : Set ℕ} {k : ℕ}
+    (hS : S ⊆ levelPrefix k) : runRepairWord w S ⊆ levelPrefix (k + w.length) := by
+  induction w generalizing S k with
+  | nil => simpa [runRepairWord] using hS
+  | cons step rest ih =>
+      have hstep : step.act S ⊆ levelPrefix (k + 1) := repairStep_subset_succ step hS
+      have hrest := ih hstep
+      simpa only [runRepairWord, List.length_cons] using
+        (show runRepairWord rest (step.act S) ⊆ levelPrefix (k + (rest.length + 1)) by
+          rw [show k + (rest.length + 1) = k + 1 + rest.length by omega]
+          exact hrest)
+
+theorem runRepairWord_from_zero_depth_bound (w : List RepairStep) :
+    runRepairWord w (levelPrefix 0) ⊆ levelPrefix w.length := by
+  simpa using
+    runRepairWord_subset_prefix w (Set.Subset.rfl : levelPrefix 0 ⊆ levelPrefix 0)
+
+theorem nextPrefix_repairWord_exists (j : ℕ) :
+    ∃ step : RepairStep, step.act (levelPrefix j) = levelPrefix (j + 1) := by
+  have hmod : j % 2 < 2 := Nat.mod_lt j (by omega)
+  have hdecomp : j % 2 + 2 * (j / 2) = j := by omega
+  have hcases : j % 2 = 0 ∨ j % 2 = 1 := by omega
+  rcases hcases with hj | hj
+  · refine ⟨.even, ?_⟩
+    have hjeven : j = 2 * (j / 2) := by omega
+    change evenRepair (levelPrefix j) = levelPrefix (j + 1)
+    rw [hjeven]
+    exact evenRepair_levelPrefix (j / 2)
+  · refine ⟨.odd, ?_⟩
+    have hjodd : j = 2 * (j / 2) + 1 := by omega
+    change oddRepair (levelPrefix j) = levelPrefix (j + 1)
+    rw [hjodd]
+    exact oddRepair_levelPrefix (j / 2)
+
+theorem exactRepairWord_exists (j : ℕ) :
+    ∃ w : List RepairStep,
+      w.length = j ∧ runRepairWord w (levelPrefix 0) = levelPrefix j := by
+  induction j with
+  | zero => exact ⟨[], rfl, rfl⟩
+  | succ j ih =>
+      obtain ⟨w, hwlen, hw⟩ := ih
+      obtain ⟨step, hstep⟩ := nextPrefix_repairWord_exists j
+      refine ⟨w ++ [step], ?_, ?_⟩
+      · simp [hwlen]
+      · rw [runRepairWord_append, hw]
+        simpa [runRepairWord] using hstep
+
+theorem directedRepairDepth_exact (j : ℕ) :
+    (∃ w : List RepairStep,
+      w.length = j ∧ j ∈ runRepairWord w (levelPrefix 0)) ∧
+    (∀ w : List RepairStep,
+      j ∈ runRepairWord w (levelPrefix 0) → j ≤ w.length) := by
+  constructor
+  · obtain ⟨w, hwlen, hw⟩ := exactRepairWord_exists j
+    refine ⟨w, hwlen, ?_⟩
+    rw [hw]
+    simp [levelPrefix]
+  · intro w hj
+    exact runRepairWord_from_zero_depth_bound w hj
+
 theorem lawSaturationMechanism_closed :
     (∀ S, evenRepair (evenRepair S) = evenRepair S) ∧
     (∀ S, oddRepair (oddRepair S) = oddRepair S) ∧
@@ -304,14 +413,19 @@ theorem lawSaturationMechanism_closed :
     (∀ r, evenRepair (levelPrefix (2 * r)) ≠ levelPrefix (2 * r)) ∧
     (∀ S, 0 ∈ S → evenRepair S = S → oddRepair S = S → S = Set.univ) ∧
     (∀ j r, j ∈ (sweep^[r]) (levelPrefix 0) ↔ j ≤ 2 * r) ∧
-    (∀ r, levelPrefix (2 * r) ⊂ levelPrefix (2 * (r + 1))) := by
+    (∀ r, levelPrefix (2 * r) ⊂ levelPrefix (2 * (r + 1))) ∧
+    (∀ j,
+      (∃ w : List RepairStep,
+        w.length = j ∧ j ∈ runRepairWord w (levelPrefix 0)) ∧
+      (∀ w : List RepairStep,
+        j ∈ runRepairWord w (levelPrefix 0) → j ≤ w.length)) := by
   exact ⟨evenRepair_idempotent, oddRepair_idempotent,
     evenLaw_preserves_iff, oddLaw_preserves_iff,
     (fun _ _ => evenRepair_least), (fun _ _ => oddRepair_least),
     repairs_do_not_commute, sweep_iterate_levelPrefix,
     finite_stage_not_even_fixed, common_fixed_above_zero_eq_univ,
     reporter_stabilization,
-    strict_global_history⟩
+    strict_global_history,
+    directedRepairDepth_exact⟩
 
 end GaloisForLFunctions.HTGeometry
-

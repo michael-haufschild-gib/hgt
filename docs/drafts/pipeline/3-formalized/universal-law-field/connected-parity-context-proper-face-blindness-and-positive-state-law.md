@@ -1,10 +1,13 @@
 # Connected parity context, proper-face blindness, and positive-state law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [SPECULATIVE FIELD SURVIVOR]
+- **ID:** ULF-CTX-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveParityContextuality`
+- **Status:** [LEAN-CERTIFIED] [SPECULATIVE FIELD SURVIVOR]
   [NOMOLOGICAL CONTEXTUALITY] [INFINITE NATIVE FAMILY]
   [PROPER-FACE BLINDNESS] [POSITIVE GLOBAL EMPIRICAL STATE]
-  [NOT RH] [NO LEAN WRITTEN OR BUILT]
+  [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Setup
 

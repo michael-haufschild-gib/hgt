@@ -7,7 +7,8 @@
 - **Statement:** Two explicit unary source laws induce noncommuting idempotent least-repair
   closures whose joint saturation has exact finite depth and closure ordinal \(\omega\), although
   every finite observer stabilizes.
-- **Status:** [PROVED HERE] [DEPENDENCY CLOSED] [MECHANISM FIRST] [LEAN REQUIRED] [NOT RH]
+- **Status:** [PROVED HERE] [DEPENDENCY CLOSED] [MECHANISM FIRST] [LEAN-CERTIFIED]
+  [STAGE-3 COPY] [NOT RH]
 
 ## Goal
 
@@ -253,11 +254,11 @@ all of the following:
    supplying independent generators;
 4. produce a withheld cross-organ prediction.
 
-## 7. Lean target
+## 7. Lean certificate
 
-Formalize the closed concrete theorem in
+The closed concrete theorem is formalized in
 `GaloisForLFunctions.HTGeometry.ConstitutiveLawSaturation` and import it from
-`GaloisForLFunctions.HTGeometry.UniversalLawField`. Required exported statements:
+`GaloisForLFunctions.HTGeometry.UniversalLawField`. Exported statements include:
 
 - idempotence and noncommutation of the two closures;
 - exact \(r\)-sweep prefix law;
@@ -267,4 +268,6 @@ Formalize the closed concrete theorem in
 
 ## Log
 
-- 2026-08-09 — paper proof completed; generic closure collision recorded; Lean gate open.
+- 2026-08-09 — paper proof completed; generic closure collision recorded.
+- 2026-08-09 — Lean source check, module build, umbrella wiring, lint, and axiom audit passed;
+  Stage-3 copy created.

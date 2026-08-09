@@ -419,3 +419,56 @@ exactly this seam. Terminal map updated: the group-3 wall = a positivity DESCENT
 open) — the local-to-global shape the field's own charters started from, now at the top of the
 tower. Next hunch-formation target, if pursued: the descent obstruction for positive structures
 against the corpus's weld no-go and constraint list.
+
+## 2026-08-09 — first Lean certification of the session (Claude Fable 5)
+
+User lifted the no-Lean directive with strict rules. First target by significance x feasibility:
+the N8 involution-existence computation. New module `RHTower/XiWeilSourceInvolution.lean`:
+`sourceInvolution f = conj ∘ f ∘ neg` is involutive; `sourceFourier` (the corpus's e^{-izx}
+normalization; definitionally the Hedenmalm eigen transform on the Volterra flow);
+MAIN: `sourceFourier (sourceInvolution f) z = xiWeilSharp (sourceFourier f) z` — proved with NO
+integrability hypotheses (integral_conj + integral_neg_eq_self are junk-value exact), meeting
+the unconditional rule strictly. Clean elaboration first try; wired into the umbrella; module
+build green; axioms standard. Ledger updated (ULF-INV-N8-J).
+
+## 2026-08-09 — Lean batch 2 and 3 (Claude Fable 5)
+
+`RHTower/ThetaCuspSeedZeroMean.lean` (green, 9051 jobs, standard axioms): seed evenness;
+Gaussian half-moments at scale π evaluated through the corpus's cold-moment recursion (only
+special-function input: Γ(1/2) = √π at the base); MAIN: ∫_{Ioi 0} thetaCuspSeed = 0 — the D4a
+cancellation certified; the exact 3/2 − 3/2 = 0 arithmetic of the derivation card is now
+machine-checked, wired into the RHTower umbrella.
+
+`HTGeometry/FiniteAmplifierPatternCap.lean` (clean elaboration; umbrella build in flight):
+the ULF-INV-7 core as universally quantified algebra — twoPoint_pattern_cap |b| ≤ a with
+tightness (Page's rho(Z/2) = 1), circle_pattern_nonneg (the 3-4-1 pattern = 2(1+cos)²),
+width_cap (exclusion inequality forces w < c·m/(c₁/a+K) − a; at w = δ𝔏 the 1/𝔏 shape).
+Wired into the HTGeometry umbrella.
+
+## 2026-08-09 — Lean batch 4: cross-system blindness engine (Claude Fable 5)
+
+Extended the corpus's own `MultiplicativeRegularizationBlind` (append-only, namespaces
+reopened): `tendsto_normalizer_of_tendsto_mul_regularized` (the compensation DERIVED from
+product convergence via Tendsto.inv₀ + eventually_ne — no compensation hypothesis) and
+`tendsto_mul_regularized_cross_system` (same nonzero leading coefficient + one convergent
+regularization ⟹ identical limits). Green, standard axioms. ULF-INV-1's abstract engine is
+now certified; the Beurling instantiation stays paper-level.
+
+## 2026-08-09 — INV-10 certification inventory: Hermitian half already owned (Claude Fable 5)
+
+Duplicate avoided by corpus-first check: the fiber-delta evaluations and the antidiagonal Gram
+law are already formalized (XiWeilPolarization 212-228, XiThetaEigenGramLaw). With this
+session's ThetaCuspSeedZeroMean and XiWeilSourceInvolution, the Hermitian half of ULF-INV-10 is
+fully corpus-owned; the staged plan for the prime half (5 bounded modules: termwise
+Λ-integration, boundary vanishing, residue collapse, double pole, assembly) is recorded in the
+promoted card. Session Lean tally stands at four green modules; the INV-10 prime half is the
+standing certification project.
+
+## 2026-08-09 — Lean batch 5: INV-10 stage 1 certified (Claude Fable 5)
+
+`RHTower/VonMangoldtLineSeriesSwap.lean` green (8826 jobs, standard axioms): the termwise swap
+∫ LSeries·F = Σ' ∫ term·F on σ > 1 for every integrable F, with exact per-term norms
+Λ(n)n^{−σ}·‖F‖₁, kernel continuity via the exp form, and the real Λ-summability derived from
+mathlib's LSeriesSummable_vonMangoldt through the ofReal bridge. Two fix cycles (cast alignment;
+an over-eager rfl-closure). Wired at the VonMangoldt block of the RHTower umbrella. INV-10
+prime-half staged plan: stage 1 DONE; next stage 2 (boundary vanishing from the (18a) family).

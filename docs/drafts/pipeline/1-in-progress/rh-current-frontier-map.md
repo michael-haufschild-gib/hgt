@@ -116,6 +116,20 @@ bounded scalarization, while preserving prime labels, divisor multiplicity, and 
 orientations.
 ~~~
 
+### 2026-08-09: orientation branch constructed
+
+`SourceZeroHorizontalCarrier.lean` constructs this carrier without bounded scalarization. For each
+Xi-divisor multiplicity copy it pairs complete-resolution reflection displacement with full
+ordinary-prime Gamma Bockstein family. Ordered adjacent source ratios recover exact horizontal
+grade, both components reverse under `rho ↦ 1-conj rho`, and source-tail log times every prime
+component is strictly positive exactly off line. Physical Rees--corona landing retains prime,
+depth, divisor, and multiplicity provenance.
+
+This completes **orientation**, not **annihilation**. Global carrier vanishing is formally
+equivalent to RH. New open core is therefore narrower: derive source law pairing two retained
+cofinal orientations so this already-constructed carrier vanishes, without passing through
+codiagonal or another bounded label-blind observer.
+
 This does not merge C1, D2, E, G, L, N, O, P, Q, R, T, and U into one serial super-route.
 They have different admission and producer theorems. It says R/L/CCM comparisons cannot be counted
 as independent evidence merely because they use different target geometries.

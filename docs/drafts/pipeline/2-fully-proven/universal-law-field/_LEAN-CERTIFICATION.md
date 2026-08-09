@@ -27,6 +27,8 @@ Dedicated Lean umbrella:
 | ULF-DEFECT-2 | Same endpoint defects and size admit split/nonsplit events distinguished by carry and lifted-period holonomy | `HTGeometry.ConstitutiveExtensionCarry` |
 | ULF-NFD-2 | One periodic producer and quotient force recurrent observation, nonclosed lift, carry, decoder failure, and unbounded prefix history | `HTGeometry.NomogenicFixedPointCalibration` |
 | ULF-NPG-PIN-1 | Natural free-monoid interventions are uniform powers; ramification comparisons are inverse-depth; power naturality does not select radial origin | `HTGeometry.ConstitutiveNaturalPowerNormalization` |
+| ULF-CTX-1 | Exact parity contextuality criterion, one-dimensional total-charge obstruction, proper-face blindness, and compatible uniform positive state without a global law | `HTGeometry.ConstitutiveParityContextuality` |
+| ULF-IRR-1 | Minimal irreducible `N`-ary law with all composites zero, abelian proper colour faces, non-homotopy-abelian total law, interaction order `N`, and non-locally-compact unbounded spectrum | `HTGeometry.ConstitutiveIrreducibleInteraction` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.
@@ -54,3 +56,33 @@ claims remain uncertified.  The card therefore stays in Stage 2.
 postprocessing.  A Lean-certified three-point counterexample shows strict decrease from two to one.
 The rejected card is in `docs/drafts/pipeline/5-failed/universal-law-field/`; ULF-RADIUS-2 records
 the exact survivor.
+
+## Session 2026-08-09 additions (inverse-theory layer)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-INV-N8-J | Source involution `f ↦ conj(f(-x))` is involutive and realizes the sharp operation on `e^{-izx}` transforms, hypothesis-free (junk-value exact); eigen-transform compatibility | `RHTower.XiWeilSourceInvolution` |
+
+Axiom print: `[propext, Classical.choice, Quot.sound]` on all three declarations; module wired
+into the `RHTower` umbrella; `lake build +GaloisForLFunctions.RHTower.XiWeilSourceInvolution`
+green (8937 jobs). This certifies the involution-existence half of the N8 gate analysis
+(ULF-INV-11 §4): the involution is free in Lean too; the open content is the positivity of its
+pairing, exactly as re-typed.
+
+| ULF-INV-D4A | Theta-cusp seed evenness; Gaussian half-moments 1/(4π), 3/(8π²) via the cold-moment recursion; **zero half-line mean of the seed** (the D4a cancellation) | `RHTower.ThetaCuspSeedZeroMean` |
+| ULF-INV-7-CORE | Two-point pattern cap \|b\| ≤ a (Page's ρ(ℤ/2)=1, tight); circle witness 3+4cosθ+cos2θ ≥ 0 with ratio 4/3 > 1; width-cap inequality (the 1/𝔏 shape forced) | `HTGeometry.FiniteAmplifierPatternCap` |
+
+`ThetaCuspSeedZeroMean`: build green (9051 jobs), axioms `[propext, Classical.choice,
+Quot.sound]` on all printed declarations. `FiniteAmplifierPatternCap`: clean elaboration;
+umbrella build and axiom print recorded in the session log on completion.
+
+| ULF-INV-1-CORE | The compensation is forced (normalizer convergence derived from product convergence, A ≠ 0); **cross-system blindness in derived form** — same nonzero leading coefficient + one convergent regularization ⟹ identical limits | `HTGeometry.MultiplicativeRegularizationBlind` (extended) |
+
+Build green (8655 jobs); axioms standard. This is the abstract engine of ULF-INV-1
+(Beurling cross-system blindness); the arithmetic instantiation (Mertens-normal systems, the
+generator-swap comparison pair) remains paper-level in the stage-2 card.
+
+| ULF-INV-10-S1 | Stage 1 of the eigen-pair identification's prime half: real vonMangoldt summability at σ>1; line-kernel continuity and exact modulus n^{−σ}; per-term integrability and exact integral norms; **termwise LSeries line integration against any integrable weight** | `RHTower.VonMangoldtLineSeriesSwap` |
+
+Build green (8826 jobs); axioms standard. Stages 2–5 (boundary vanishing, residue collapse,
+double pole, assembly) remain per the staged plan in the promoted card.

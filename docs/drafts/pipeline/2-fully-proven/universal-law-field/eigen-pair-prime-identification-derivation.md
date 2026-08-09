@@ -231,3 +231,33 @@ Standing caveat, per this session's own error history: the Lean-entry audit is t
 arbiter (the GAS-1 chamber lesson); certification of this card is the first priority of the
 next Lean-enabled session, with the five pinned conventions and the three certified decay
 inputs as its module plan.
+
+## Lean certification inventory and staged plan — 2026-08-09
+
+Corpus inventory check (all read in source): the Hermitian side of this card is ALREADY
+formalized — fiber-delta evaluations (`xiThetaEigenFourier_spectralPoint_eq_zero`, diagonal
+`= I·deriv XiC alpha`, `XiWeilPolarization.lean:212-228`) and the antidiagonal Gram law
+(`XiThetaEigenGramLaw`). Newly certified this session: the D4a seed cancellation
+(`ThetaCuspSeedZeroMean`) and the sharp-realization identity (`XiWeilSourceInvolution`).
+Also owned: the substrip decay family ((18a), `exists_norm_xiThetaEigenFourier_horizontal_le`),
+the packet-limit theorem, the split `logDeriv_completed_split`, and the corpus's Laurent/residue
+layer (`meromorphic-laurent-layer-corpus-owned`).
+
+Missing for the full certification (the staged plan, in dependency order):
+1. termwise Λ-series integration along a horizontal line against the pair product
+   (absolute convergence certified by the decay inputs);
+2. the boundary-vanishing lemma for the rectangle's verticals from (18a);
+3. the residue-collapse assembly (corpus Laurent layer + the owned evaluations);
+4. the double-pole/diagonal case;
+5. the final identity assembly.
+
+Each stage is a bounded module; none requires new mathematics beyond this card's paper proof.
+The Hermitian half being already corpus-formalized means the certification burden is exactly
+the prime half — as the paper proof's structure predicted.
+
+Stage-1 provisioning note (2026-08-09): the termwise swap tool is
+`MeasureTheory.integral_tsum_of_summable_integral_norm`, already used by
+`ArchimedeanBalancedPerron`, `BandKaiserTrial`, `BandTrialMoments` — the module's design task is
+the line-parametrized triple-product definition plus the summable-integral-norm bound from the
+(18a) decay family and the far-right geometric domination of the Λ-series. All idioms identified
+in-corpus; no new tooling needed.

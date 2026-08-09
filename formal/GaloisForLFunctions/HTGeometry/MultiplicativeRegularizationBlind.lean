@@ -85,3 +85,64 @@ theorem mul_regularized_indep_subleading {k : ℕ} (A B B' δ : ℝ) (c r r' : �
 end MultiplicativeRegularization
 
 end GaloisForLFunctions
+
+namespace GaloisForLFunctions
+
+namespace MultiplicativeRegularization
+
+/-- **The compensation is forced.**  If the regularized product converges and the leading
+coefficient is nonzero, then the normalizer's leading compensation converges — to the limit
+divided by the leading coefficient.  No compensation hypothesis is assumed; it is derived. -/
+theorem tendsto_normalizer_of_tendsto_mul_regularized {k : ℕ} (A B ℓ : ℝ) (c r : ℝ → ℝ)
+    (hA : A ≠ 0)
+    (hr : Tendsto (fun L : ℝ => r L / L ^ k) atTop (𝓝 0))
+    (hcH : Tendsto (fun L : ℝ => c L * (A * L ^ (k + 1) + B * L ^ k + r L)) atTop (𝓝 ℓ)) :
+    Tendsto (fun L : ℝ => c L * L ^ (k + 1)) atTop (𝓝 (ℓ / A)) := by
+  have hinv : Tendsto (fun L : ℝ => L⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero
+  have hshape :
+      Tendsto (fun L : ℝ => (A * L ^ (k + 1) + B * L ^ k + r L) / L ^ (k + 1)) atTop (𝓝 A) := by
+    have hsum :
+        Tendsto (fun L : ℝ => A + B * L⁻¹ + (r L / L ^ k) * L⁻¹) atTop
+          (𝓝 (A + B * 0 + 0 * 0)) :=
+      ((tendsto_const_nhds.add (hinv.const_mul B)).add (hr.mul hinv))
+    rw [mul_zero, add_zero, zero_mul, add_zero] at hsum
+    refine hsum.congr' ?_
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with L hL
+    have hLk : (L : ℝ) ^ k ≠ 0 := by positivity
+    have hLk1 : (L : ℝ) ^ (k + 1) ≠ 0 := by positivity
+    field_simp
+    ring
+  have hshape_ne : ∀ᶠ L : ℝ in atTop,
+      (A * L ^ (k + 1) + B * L ^ k + r L) / L ^ (k + 1) ≠ 0 :=
+    hshape.eventually_ne hA
+  have hquot :
+      Tendsto (fun L : ℝ =>
+        (c L * (A * L ^ (k + 1) + B * L ^ k + r L)) *
+          ((A * L ^ (k + 1) + B * L ^ k + r L) / L ^ (k + 1))⁻¹) atTop (𝓝 (ℓ * A⁻¹)) :=
+    hcH.mul (hshape.inv₀ hA)
+  rw [div_eq_mul_inv]
+  refine hquot.congr' ?_
+  filter_upwards [eventually_gt_atTop (0 : ℝ), hshape_ne] with L hL hne
+  have hLk1 : (L : ℝ) ^ (k + 1) ≠ 0 := by positivity
+  have hH : A * L ^ (k + 1) + B * L ^ k + r L ≠ 0 := by
+    intro h0
+    exact hne (by rw [h0, zero_div])
+  field_simp
+
+/-- **Cross-system blindness, derived form.**  Two expansions with the same nonzero leading
+coefficient and one common normalizer have identical regularized limits as soon as one of them
+converges: the compensation extracted from the first forces the second's limit.  This is the
+abstract engine behind the Beurling cross-system blindness of multiplicative regularization. -/
+theorem tendsto_mul_regularized_cross_system {k : ℕ} (A B B' ℓ : ℝ) (c r r' : ℝ → ℝ)
+    (hA : A ≠ 0)
+    (hr : Tendsto (fun L : ℝ => r L / L ^ k) atTop (𝓝 0))
+    (hr' : Tendsto (fun L : ℝ => r' L / L ^ k) atTop (𝓝 0))
+    (hcH : Tendsto (fun L : ℝ => c L * (A * L ^ (k + 1) + B * L ^ k + r L)) atTop (𝓝 ℓ)) :
+    Tendsto (fun L : ℝ => c L * (A * L ^ (k + 1) + B' * L ^ k + r' L)) atTop (𝓝 ℓ) := by
+  have hδ := tendsto_normalizer_of_tendsto_mul_regularized A B ℓ c r hA hr hcH
+  have h := tendsto_mul_regularized A B' (ℓ / A) c r' hr' hδ
+  rwa [mul_div_cancel₀ ℓ hA] at h
+
+end MultiplicativeRegularization
+
+end GaloisForLFunctions

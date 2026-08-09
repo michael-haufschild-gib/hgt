@@ -417,3 +417,40 @@ prime/zeta/divisor theorem.  See
 - Pending: product-slot dimension formula and quantitative PSD spectral bound/specialization.
 - Targeted module build green; universal-law-field umbrella wired; no project postulate or
   computation proof.
+
+# Universal-law-field parity-contextuality certification (2026-08-09)
+
+- `connected-parity-context-proper-face-blindness-and-positive-state-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveParityContextuality`.
+- Certified: image of the unsigned `ZMod 2` incidence map of a connected graph is exactly the
+  even-charge hyperplane, so a global classical law exists iff the total parity charge vanishes;
+  the cokernel is canonically one dimensional and the boundary has rank `|V| − 1`; every proper set
+  of contexts is jointly satisfiable for an arbitrary charge, so an odd charge is invisible on
+  every proper observer face; each context of degree at least two has `2^(d−1)` local classical
+  laws of which `2^(d−2)` fix any prescribed value of any incident observable, so the uniform local
+  laws have marginal `1/2` and agree on every shared observable while no global law exists; the
+  triangle and the Peres–Mermin skeleton `K(3,3)` are certified instances.
+- Targeted module build and universal-law-field umbrella build green; `formal_tools.py lint
+  --check-generated` passes; `#print axioms` reports only `propext`, `Classical.choice`, and
+  `Quot.sound`; no project postulate, hypothesis interface, or computation proof.
+
+# Universal-law-field irreducible-interaction certification (2026-08-09)
+
+- `irreducible-n-ary-law-proper-face-invisibility-and-unbounded-interaction-spectrum.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveIrreducibleInteraction`.
+- Certified: the alternating `N`-ary bracket `det(colours) • z` on `(Fin N → ℝ) × ℝ` has all
+  composites identically zero, so every generalized Jacobi identity holds for any sign convention
+  and the law is uncurved and minimal; restriction to any colour face with fewer than `N` colours
+  is the zero law, while the total law is not abelian and cannot be equivalent to an abelian law;
+  its first nonvanishing arity is exactly `N` and is an equivalence invariant; every arity
+  truncation below `N` reports an abelian law; the product tower of all blocks squares to zero, an
+  arity-`M` observer annihilates every block of order above `M`, the invisible tail is an infinite
+  independent family meeting the visible head only at zero, and the full interaction-output space
+  `ℕ → ℝ` is not locally compact.
+- Reuses the corpus minimal-formal-law layer `NomologicalHomotopyGeometry.MinimalLawLeadingJet`
+  (`MinimalLaw`, `MinimalLawEquiv`, `FirstNonzero`, `IsAbelian`) rather than rebuilding it.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.

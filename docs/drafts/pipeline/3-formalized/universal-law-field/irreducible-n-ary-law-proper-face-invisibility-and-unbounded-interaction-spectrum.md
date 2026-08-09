@@ -1,9 +1,12 @@
 # Irreducible \(n\)-ary law, proper-face invisibility, and unbounded interaction spectrum
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [SPECULATIVE FIELD SURVIVOR]
+- **ID:** ULF-IRR-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveIrreducibleInteraction`
+- **Status:** [LEAN-CERTIFIED] [SPECULATIVE FIELD SURVIVOR]
   [OPERADIC LAW GENESIS] [ALL PROPER FACES ABELIAN]
-  [UNBOUNDED INTERACTION SPECTRUM] [NOT RH] [NO LEAN]
+  [UNBOUNDED INTERACTION SPECTRUM] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Finite interaction law
 

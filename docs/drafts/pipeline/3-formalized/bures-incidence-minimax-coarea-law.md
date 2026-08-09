@@ -1,12 +1,12 @@
 # Bures incidence minimax coarea law
 
 - **ID:** `bures-incidence-minimax-coarea-law`
-- **Stage:** 2 -- dependency-closed paper proof
+- **Stage:** 3-formalized
 - **Type:** theorem / source--target incidence minimax law
 - **Parents:** `../3-formalized/replica-hilbert-coarea-incidence-law.md`,
   `../3-formalized/return-excised-optimal-design-coarea-law.md`,
   `radial-krylov-projected-complete-incidence-law.md`
-- **Status:** `[PAPER-PROVED] [LEAN PARTIAL: FINITE MINIMAX + SEPARABLE CAPACITY CLOSED] [EXTERNAL PRIORITY UNVERIFIED]`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [KERNEL-AUDITED] [EXTERNAL PRIORITY NOT ESTABLISHED]`
 - **Date:** 2026-08-08
 
 ## Public sentence
@@ -676,20 +676,25 @@ constructed local/history observer.
 
 ## Lean status
 
-Formalization now closes all finite-dimensional Bures reporter/minimax, return-excised,
-Krylov-projected, conditional, data-processing, and observer-tilt statements, plus the separable
-compact-body capacity law.  In particular,
-`GaloisForLFunctions/HTGeometry/SeparableBuresCompactTargetBody.lean` proves trace-norm compactness,
-dense literal probability designs, uniform Hilbert--Schmidt root control, Bures continuity,
-attainment, exact equality of the probability-design capacity with the compact-body maximum, and
-the return-excised attained capture bound.
+Formalization closes the full dependency-closed theorem family. Existing finite-dimensional,
+return-excised, conditional, Krylov-projected, data-processing, observer-tilt, probability-design,
+and sheet--target incidence modules cover the corresponding card statements. The remaining
+separable positive-reporter gap is closed by:
 
-The infinite-dimensional positive-reporter identity in items 5--6 of “Separable trace-class
-extension” is not yet formalized.  It needs a bounded-operator trace pairing, inversion convexity,
-the singular infinite-dimensional Alberti formula, and Sion exchange on that interface.  Therefore
-this broad card remains in Stage 2.  The dependency-closed separable compact-capacity portion is
-tracked independently in `separable-compact-bures-capacity-attainment-law.md` and is formalized in
-Stage 3.
+- `GaloisForLFunctions/HTGeometry/FiniteDimensionalOperatorAlbertiLaw.lean`: exact operator--matrix
+  bridge and finite-dimensional strictly-positive reporter approximation;
+- `GaloisForLFunctions/HTGeometry/SeparableBuresPositiveReporterLaw.lean`: bounded-operator
+  trace pairing, positivity, continuity, reporter-cone convexity, and lower Alberti bound;
+- `GaloisForLFunctions/HTGeometry/SeparableBuresAlbertiApproximationLaw.lean`: finite-subspace block
+  reporters, Hilbert--Schmidt tail control, and the singular separable Alberti equality;
+- `GaloisForLFunctions/HTGeometry/SeparableBuresCompactTargetMinimaxLaw.lean`: compact-target Sion
+  equality, exact reporter scaling, AM--GM infimum, and product-capacity square law.
+
+Capstones `separableReporter_sInf_eq_operatorBuresRootFidelity`,
+`separableBuresPrimalCapacity_eq_dualCapacity`, and
+`separableBuresProductCapacity_eq_dualCapacity_sq` are unconditional theorems over their stated
+mathematical objects. `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+No card-specific axiom, `sorry`, `admit`, `opaque`, or `unsafe` declaration is used.
 
 ## Gates
 
@@ -698,7 +703,22 @@ Stage 3.
 - [x] Dependency-closed finite-dimensional proof
 - [x] Return-excised, conditional, fixed-carrier Krylov, and ordinary-ensemble corollaries
 - [x] Hostile internal audit
-- [ ] External theorem-level priority audit
+- [ ] External theorem-level priority established
 - [x] Finite-dimensional minimax and physical corollaries formalized
 - [x] Separable compact-body probability-design capacity and attained return law formalized
-- [ ] Infinite-dimensional positive-reporter/Alberti/Sion equality formalized
+- [x] Infinite-dimensional positive-reporter/Alberti/Sion equality formalized
+
+## Pipeline
+
+- [x] Stage 1 -> 2: dependency-closed proof
+- [x] Stage 2 -> 3: complete theorem family kernel-checked and umbrella-wired
+- [ ] Stage 3 -> 4: only after external theorem-level priority is established
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/SeparableBuresAlbertiApproximationLaw.lean
+lake env lean GaloisForLFunctions/HTGeometry/SeparableBuresCompactTargetMinimaxLaw.lean
+lake build GaloisForLFunctions.HTGeometry.SeparableBuresCompactTargetMinimaxLaw
+#print axioms capstones: [propext, Classical.choice, Quot.sound]
+```

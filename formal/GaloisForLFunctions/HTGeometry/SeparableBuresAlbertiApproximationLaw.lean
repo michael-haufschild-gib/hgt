@@ -65,6 +65,7 @@ theorem complement_sq (S : Submodule ℂ H) [FiniteDimensional ℂ S] :
   rw [map_sub, S.starProjection_eq_self_iff.mpr (S.starProjection_apply_mem x)]
   abel
 
+omit [CompleteSpace H] in
 theorem finiteSubspaceReporterExtension_mul (S : Submodule ℂ H) [FiniteDimensional ℂ S]
     (A B : S →L[ℂ] S) (c d : ℂ) :
     finiteSubspaceReporterExtension S A c ∘L finiteSubspaceReporterExtension S B d = finiteSubspaceReporterExtension S (A ∘L B) (c * d) := by
@@ -133,6 +134,7 @@ theorem finiteSubspaceReporterExtension_isPositive (S : Submodule ℂ H) [Finite
     exact IsPositive.of_isStarProjection isStarProjection_starProjection
   exact hblock.add (hQ.smul_of_nonneg (by exact_mod_cast hc))
 
+omit [CompleteSpace H] in
 theorem finiteSubspaceReporterExtension_isUnit (S : Submodule ℂ H) [FiniteDimensional ℂ S]
     (A : S →L[ℂ] S) (hA : IsUnit A) (c : ℂ) (hc : c ≠ 0) :
     IsUnit (finiteSubspaceReporterExtension S A c) := by
@@ -151,6 +153,7 @@ theorem finiteSubspaceReporterExtension_isUnit (S : Submodule ℂ H) [FiniteDime
   · simpa only [ContinuousLinearMap.mul_def] using hAB
   · simpa only [ContinuousLinearMap.mul_def] using hBA
 
+omit [CompleteSpace H] in
 theorem finiteSubspaceReporterExtension_ringInverse (S : Submodule ℂ H) [FiniteDimensional ℂ S]
     (A : S →L[ℂ] S) (hA : IsUnit A) (c : ℂ) (hc : c ≠ 0) :
     Ring.inverse (finiteSubspaceReporterExtension S A c) =
@@ -269,6 +272,7 @@ theorem basis_mem_orthogonal {ι : Type*} (b : HilbertBasis ι ℂ H)
   · intro c x _ hx
     rw [inner_smul_right, hx, mul_zero]
 
+omit [CompleteSpace H] in
 theorem basis_projection {ι : Type*} [DecidableEq ι]
     (b : HilbertBasis ι ℂ H) (s : Finset ι) (i : ι) :
     (finiteHilbertBasisSubspace b s).starProjection (b i) =
@@ -281,6 +285,7 @@ theorem basis_projection {ι : Type*} [DecidableEq ι]
       (finiteHilbertBasisSubspace b s).zero_mem
       (by simpa using basis_mem_orthogonal b s hi)
 
+omit [CompleteSpace H] in
 theorem basis_complement_projection {ι : Type*} [DecidableEq ι]
     (b : HilbertBasis ι ℂ H) (s : Finset ι) (i : ι) :
     (1 - (finiteHilbertBasisSubspace b s).starProjection) (b i) =
