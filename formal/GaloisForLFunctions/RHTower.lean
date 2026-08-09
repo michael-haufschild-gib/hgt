@@ -6407,3 +6407,4 @@ import GaloisForLFunctions.RHTower.DigammaThreeQuarter
 import GaloisForLFunctions.RHTower.QuarterGramEntry
 import GaloisForLFunctions.RHTower.HalfQuarterGram
 import GaloisForLFunctions.RHTower.SingleGeneratorUseless
+import GaloisForLFunctions.RHTower.GramDiagonalSandwich

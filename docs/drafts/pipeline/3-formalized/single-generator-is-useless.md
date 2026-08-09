@@ -32,3 +32,29 @@ The consequence for the route is the useful part: **any path to `d_N → 0` must
 from a clever choice of one modulus, or of a few large ones; it needs the joint effect of many, which is exactly
 the estimate recorded as open in `baez-duarte-layer-map.md`. This closes off a whole class of attempts at the
 cost of one lower bound on a series with nonnegative terms.
+
+## Addendum (same day): the diagonal is sandwiched, and every generator does contribute
+
+`RHTower/GramDiagonalSandwich.lean`. The matching upper bound is as cheap as the lower one:
+`(n mod m)² ≤ m·(n mod m)`, so the Gram series is dominated termwise by `1/m` times the pairing series
+(`hasSum_le` between the two series of `hasSum_bdGram_discrete` and `hasSum_pairing_discrete`):
+
+* **`bdGram_self_upper` — `bdGram (1/m) (1/m) ≤ (log m)/m`.**
+
+Together with the previous card:
+
+`(m − 1)/(2m²) ≤ bdGram (1/m) (1/m) ≤ (log m)/m`,
+
+so the diagonal is `1/m` up to a logarithm. Since the pairing is exactly `(log m)/m`, the optimal gain is
+sandwiched from both sides:
+
+* **`single_gain_ge` — `(log m)/m ≤ pairing²/gram`**, i.e. `d² ≤ 1 − (log m)/m` uniformly in `m`;
+* `bdDist_single_ge` — `d² ≥ 1 − 2(log m)²/(m − 1)`.
+
+So the single-generator picture is quantitatively closed, and the two statements say complementary things:
+**every** generator contributes at least `(log m)/m`, and **no** generator contributes more than
+`2(log m)²/(m−1)`. The bounds differ by one logarithm, which is as tight as these crude comparisons can be.
+
+The uniform upper bound `d² ≤ 1 − (log m)/m` is weaker for small `m` than the exact values of
+`BaezDuarteHalfBound` and `QuarterGramEntry` (at `m = 4` it gives `0.653` against the exact `0.257`), but it
+holds for every modulus with no digamma input at all.
