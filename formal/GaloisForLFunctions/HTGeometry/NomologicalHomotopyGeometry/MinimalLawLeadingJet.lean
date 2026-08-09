@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HilbertMetric.NomologicalCrossGram
 import Mathlib.LinearAlgebra.Pi
 
+set_option maxHeartbeats 200000
+
 /-!
 # Leading formal-law jets and observer irreversibility
 
@@ -39,17 +41,16 @@ def IsAbelian (Q : MinimalLaw Arity H) : Prop :=
 /-- Every nonabelian minimal law has a first nonzero operation. -/
 theorem exists_firstNonzero_of_not_abelian (Q : MinimalLaw Arity H)
     (hQ : ¬Q.IsAbelian) : ∃ r, Q.FirstNonzero r := by
+  classical
   simp only [IsAbelian, not_forall] at hQ
   obtain ⟨r, hr⟩ := hQ
   have hex : ∃ n, 2 ≤ n ∧ Q.operation n ≠ 0 := by
-    refine ⟨r, ?_⟩
-    simpa only [not_imp] using hr
-  let m := Nat.find hex
-  have hm := Nat.find_spec hex
-  refine ⟨m, hm.1, hm.2, ?_⟩
+    obtain ⟨hr2, hrne⟩ := hr
+    exact ⟨r, hr2, hrne⟩
+  refine ⟨Nat.find hex, (Nat.find_spec hex).1, (Nat.find_spec hex).2, ?_⟩
   intro n hn hnm
   by_contra hne
-  exact (Nat.find_min' hex ⟨hn, hne⟩).not_le (Nat.le_of_lt hnm)
+  exact absurd (Nat.find_min' hex ⟨hn, hne⟩) (Nat.not_le.mpr hnm)
 
 end MinimalLaw
 
@@ -117,6 +118,7 @@ theorem target_zero_of_source_zero (r : ℕ)
   have hx := LinearMap.congr_fun hEq x
   simpa [x, hzero, LinearMap.comp_apply] using hx.symm
 
+include F in
 /-- First nonzero formal-law order is invariant under invertible formal coordinate change. -/
 theorem firstNonzero_order_eq {r s : ℕ}
     (hr : Q.FirstNonzero r) (hs : Q'.FirstNonzero s) : r = s := by
@@ -139,6 +141,7 @@ theorem firstNonzero_conjugacy {r : ℕ}
       (Q'.operation r).comp (F.arity r).toLinearMap :=
   F.leading_weight_equation r hr.2.2 hr'.2.2
 
+include F in
 /-- A nonabelian source cannot be isomorphic to an abelian target. -/
 theorem not_target_abelian_of_source_firstNonzero {r : ℕ}
     (hr : Q.FirstNonzero r) : ¬Q'.IsAbelian := by
@@ -147,6 +150,7 @@ theorem not_target_abelian_of_source_firstNonzero {r : ℕ}
     (fun m hm _ => hAb m hm)
   exact hr.2.1 (F.source_zero_of_target_zero r hEq (hAb r hr.1))
 
+include F in
 /-- An abelian source cannot be isomorphic to a nonabelian target. -/
 theorem not_source_abelian_of_target_firstNonzero {r : ℕ}
     (hr : Q'.FirstNonzero r) : ¬Q.IsAbelian := by
@@ -154,6 +158,7 @@ theorem not_source_abelian_of_target_firstNonzero {r : ℕ}
   have hEq := F.leading_weight_equation r (fun m hm _ => hAb m hm) hr.2.2
   exact hr.2.1 (F.target_zero_of_source_zero r hEq (hAb r hr.1))
 
+include F in
 /-- Homotopy-abelianity is invariant under minimal formal-law isomorphism. -/
 theorem abelian_iff : Q.IsAbelian ↔ Q'.IsAbelian := by
   constructor
@@ -201,10 +206,10 @@ theorem productReporter_injective_iff {ι : Type*} {Mι : ι → Type*}
     [∀ i, AddCommGroup (Mι i)] [∀ i, Module ℝ (Mι i)]
     (f : ∀ i, H →ₗ[ℝ] Mι i) :
     Function.Injective (productReporter f) ↔ (⨅ i, LinearMap.ker (f i)) = ⊥ := by
-  rw [← LinearMap.ker_eq_bot]
-  apply congrArg (· = ⊥)
-  ext x
-  simp [productReporter, LinearMap.mem_ker]
+  have hker : LinearMap.ker (productReporter f) = ⨅ i, LinearMap.ker (f i) := by
+    ext x
+    simp [productReporter, LinearMap.mem_ker, funext_iff]
+  rw [← LinearMap.ker_eq_bot, hker]
 
 /-- Sharp countermodel: tangent injectivity need not be tangent equivalence. -/
 def lineInclusion : ℝ →ₗ[ℝ] ℝ × ℝ where

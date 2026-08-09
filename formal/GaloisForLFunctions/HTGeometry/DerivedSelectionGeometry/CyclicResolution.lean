@@ -105,10 +105,13 @@ theorem exact_sc0 :
   ShortComplex.exact_of_iso (scIso0 t).symm (exact_mulT_quot t)
 
 theorem epi_pi0 : Epi ((cyclicPi t).f 0) := by
-  rw [cyclicPi_f0, ModuleCat.epi_iff_surjective]
-  intro z
-  obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective z
-  exact ⟨(isoX0 t).inv x, by simp [cyclicQuot]⟩
+  have hquot : Epi (cyclicQuot t) := by
+    rw [cyclicQuot, ModuleCat.epi_iff_surjective]
+    intro z
+    obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective z
+    exact ⟨x, rfl⟩
+  rw [cyclicPi_f0]
+  exact @epi_comp _ _ _ _ _ _ inferInstance _ hquot
 
 theorem quasiIsoAt_zero : QuasiIsoAt (cyclicPi t) 0 := by
   rw [ChainComplex.quasiIsoAt₀_iff,

@@ -60,7 +60,7 @@ variable [TopologicalSpace X] [T2Space X] [TopologicalSpace Y] [TopologicalSpace
 
 /-- An invariant map is constant on each orbit. -/
 theorem orbit_subset_fiber_of_invariant (f : X → Y)
-    (hinv : ∀ g x, f (g • x) = f x) (x : X) :
+    (hinv : ∀ (g : G) (x : X), f (g • x) = f x) (x : X) :
     MulAction.orbit G x ⊆ f ⁻¹' {f x} := by
   intro y hy
   rw [MulAction.mem_orbit_iff] at hy
@@ -69,7 +69,7 @@ theorem orbit_subset_fiber_of_invariant (f : X → Y)
 
 /-- Invisible noncompact orbit closure kills compact-preimage properness. -/
 theorem invariant_not_compactPreimageProper_of_noncompact_orbitClosure
-    (f : X → Y) (hinv : ∀ g x, f (g • x) = f x) (x : X)
+    (f : X → Y) (hinv : ∀ (g : G) (x : X), f (g • x) = f x) (x : X)
     (hnoncompact : ¬ IsCompact (closure (MulAction.orbit G x))) :
     ¬ CompactPreimageProper f := by
   intro hf
@@ -81,15 +81,15 @@ theorem invariant_not_compactPreimageProper_of_noncompact_orbitClosure
 
 /-- Gauge invariance of both components makes the observer--action pair invariant. -/
 theorem pair_invariant (q : X → Y) (S : X → Z)
-    (hq : ∀ g x, q (g • x) = q x) (hS : ∀ g x, S (g • x) = S x) :
-    ∀ g x, (q (g • x), S (g • x)) = (q x, S x) := by
+    (hq : ∀ (g : G) (x : X), q (g • x) = q x) (hS : ∀ (g : G) (x : X), S (g • x) = S x) :
+    ∀ (g : G) (x : X), (q (g • x), S (g • x)) = (q x, S x) := by
   intro g x
   exact Prod.ext (hq g x) (hS g x)
 
 /-- Theorem 2.1: one noncompact orbit closure simultaneously obstructs the invariant action and
 the invariant observer--action pair. -/
 theorem gaugeOrbit_nonproperness (q : X → Y) (S : X → Z)
-    (hq : ∀ g x, q (g • x) = q x) (hS : ∀ g x, S (g • x) = S x) (x : X)
+    (hq : ∀ (g : G) (x : X), q (g • x) = q x) (hS : ∀ (g : G) (x : X), S (g • x) = S x) (x : X)
     (hnoncompact : ¬ IsCompact (closure (MulAction.orbit G x))) :
     ¬ CompactPreimageProper S ∧ ¬ CompactPreimageProper (fun y ↦ (q y, S y)) := by
   exact ⟨
@@ -127,7 +127,7 @@ noncomputable def orbitHomeomorph (x : X) : G ≃ₜ MulAction.orbit G x :=
 theorem orbit_isClosed (x : X) : IsClosed (MulAction.orbit G x) := by
   have hrange : IsClosed (Set.range (fun g : G ↦ g • x)) :=
     (orbitMap_isClosedEmbedding x).isClosed_range
-  simpa [MulAction.mem_orbit_iff] using hrange
+  exact hrange
 
 /-- If the acting group is noncompact, every free proper orbit is noncompact. -/
 theorem orbit_not_isCompact_of_group_not_compact (hG : ¬ CompactSpace G) (x : X) :
@@ -137,7 +137,7 @@ theorem orbit_not_isCompact_of_group_not_compact (hG : ¬ CompactSpace G) (x : X
   have hpre : IsCompact ((orbitHomeomorph x) ⁻¹' (Set.univ : Set (MulAction.orbit G x))) :=
     (orbitHomeomorph x).isCompact_preimage.mpr isCompact_univ
   have hGuniv : IsCompact (Set.univ : Set G) := by simpa using hpre
-  exact hG (isCompact_iff_compactSpace.mp hGuniv)
+  exact hG ⟨hGuniv⟩
 
 /-- Corollary 2.2: free proper noncompact gauge actions have noncompact closed orbit closures, so
 no invariant action or observer--action pair is compact-preimage proper. -/
@@ -145,7 +145,7 @@ theorem freeProperNoncompact_gaugeOrbit_nonproperness
     [IsTopologicalGroup G] [LocallyCompactSpace G]
     {Y Z : Type*} [TopologicalSpace Y] [TopologicalSpace Z]
     (hG : ¬ CompactSpace G) (q : X → Y) (S : X → Z)
-    (hq : ∀ g x, q (g • x) = q x) (hS : ∀ g x, S (g • x) = S x) (x : X) :
+    (hq : ∀ (g : G) (x : X), q (g • x) = q x) (hS : ∀ (g : G) (x : X), S (g • x) = S x) (x : X) :
     ¬ CompactPreimageProper S ∧ ¬ CompactPreimageProper (fun y ↦ (q y, S y)) := by
   apply gaugeOrbit_nonproperness q S hq hS x
   rw [closure_eq_iff_isClosed.mpr (orbit_isClosed x)]
@@ -185,30 +185,29 @@ variable [ContinuousInv G] [ContinuousSMul G X] [CompactSpace G]
 
 /-- An orbit of a compact continuously acting group is compact. -/
 theorem orbit_isCompact_of_compact_group (x : X) : IsCompact (MulAction.orbit G x) := by
-  rw [MulAction.orbit_eq_range]
+  have hrange : MulAction.orbit G x = Set.range (fun g : G ↦ g • x) := rfl
+  rw [hrange, ← Set.image_univ]
   exact isCompact_univ.image (continuous_smul.comp (continuous_id.prodMk continuous_const))
 
 /-- The orbit projection of a compact continuous group action is Bourbaki proper. -/
 theorem compactGroup_orbitProjection_isProperMap :
-    @IsProperMap X (Quotient (MulAction.orbitRel G X)) _ _ Quotient.mk' := by
+    IsProperMap (Quotient.mk (MulAction.orbitRel G X)) := by
   rw [isProperMap_iff_isClosedMap_and_compact_fibers]
   refine ⟨continuous_quot_mk, MulAction.isClosedMap_quotient, ?_⟩
   intro u
-  let x : X := Quotient.out u
-  have hu : (Quotient.mk' x : Quotient (MulAction.orbitRel G X)) = u := Quotient.out_eq' u
+  obtain ⟨x, rfl⟩ := Quotient.exists_rep u
   have hfiber :
-      (Quotient.mk' : X → Quotient (MulAction.orbitRel G X)) ⁻¹' {u} = MulAction.orbit G x := by
+      Quotient.mk (MulAction.orbitRel G X) ⁻¹' {Quotient.mk (MulAction.orbitRel G X) x}
+        = MulAction.orbit G x := by
     ext y
-    simp only [mem_preimage, mem_singleton_iff]
-    rw [← hu, Quotient.eq', MulAction.orbitRel_apply]
-    exact MulAction.mem_orbit_iff.symm
+    simp only [mem_preimage, mem_singleton_iff, Quotient.eq, MulAction.orbitRel_apply]
   rw [hfiber]
   exact orbit_isCompact_of_compact_group x
 
 /-- Theorem 3.1(2), infrastructure clause: compact gauge-group orbit projection is proper in the
 card's compact-preimage sense.  No local-compactness assumption on `X` is needed. -/
 theorem compactGroup_orbitProjection_compactPreimageProper :
-    @CompactPreimageProper X (Quotient (MulAction.orbitRel G X)) _ _ Quotient.mk' :=
+    CompactPreimageProper (Quotient.mk (MulAction.orbitRel G X)) :=
   CompactPreimageProper.of_isProperMap compactGroup_orbitProjection_isProperMap
 
 /-- Theorem 3.1(2): reduced properness implies unreduced properness for a compact gauge group. -/
@@ -218,19 +217,25 @@ theorem compactGroup_unreducedPair_proper_of_reducedPair_proper
     (Sbar : Quotient (MulAction.orbitRel G X) → Z)
     (hreduced : CompactPreimageProper (fun u ↦ (qbar u, Sbar u))) :
     CompactPreimageProper
-      (fun x ↦ (qbar (Quotient.mk' x), Sbar (Quotient.mk' x))) := by
-  exact unreducedPair_proper_of_projection_and_reducedPair_proper
-    Quotient.mk' qbar Sbar compactGroup_orbitProjection_compactPreimageProper hreduced
+      (fun x ↦ (qbar (Quotient.mk (MulAction.orbitRel G X) x),
+        Sbar (Quotient.mk (MulAction.orbitRel G X) x))) :=
+  unreducedPair_proper_of_projection_and_reducedPair_proper
+    (Quotient.mk (MulAction.orbitRel G X)) qbar Sbar
+    compactGroup_orbitProjection_compactPreimageProper hreduced
 
 end CompactGroupReduction
 
 section ProductReductionWitness
 
 /-- The left gauge action on the first factor of `G × Y`. -/
-def firstFactorMulAction (G Y : Type*) [Group G] : MulAction G (G × Y) where
+@[reducible] def firstFactorMulAction (G Y : Type*) [Group G] : MulAction G (G × Y) where
   smul g p := (g * p.1, p.2)
-  one_smul p := by simp
-  mul_smul g h p := by simp [mul_assoc]
+  one_smul p := by
+    show ((1 : G) * p.1, p.2) = p
+    simp
+  mul_smul g h p := by
+    show ((g * h) * p.1, p.2) = (g * (h * p.1), p.2)
+    rw [mul_assoc]
 
 variable {G Y Z : Type*} [Group G]
 
@@ -250,9 +255,9 @@ theorem mem_firstFactor_orbit_iff_snd_eq (p q : G × Y) :
     rfl
   · intro h
     refine ⟨q.1 * p.1⁻¹, ?_⟩
-    ext
-    · simp
-    · exact h
+    show ((q.1 * p.1⁻¹) * p.1, p.2) = q
+    rw [inv_mul_cancel_right]
+    exact Prod.ext rfl h.symm
 
 variable [TopologicalSpace G] [TopologicalSpace Y]
 
@@ -264,7 +269,7 @@ def firstFactorActionRange : Set ((G × Y) × (G × Y)) :=
 def firstFactorActionHomeomorph [IsTopologicalGroup G] :
     G × (G × Y) ≃ₜ firstFactorActionRange (G := G) (Y := Y) where
   toFun p := ⟨((p.1 * p.2.1, p.2.2), p.2), rfl⟩
-  invFun p := (p.1.1 * p.2.1⁻¹, (p.2.1, p.2.2))
+  invFun p := (p.1.1.1 * p.1.2.1⁻¹, p.1.2)
   left_inv p := by ext <;> simp
   right_inv p := by
     apply Subtype.ext
@@ -284,7 +289,7 @@ theorem firstFactorMulAction_proper [IsTopologicalGroup G] [T2Space Y] :
       (fun p : G × (G × Y) ↦ ((p.1 * p.2.1, p.2.2), p.2)) := by
     exact hrange.isClosedEmbedding_subtypeVal.comp
       (firstFactorActionHomeomorph (G := G) (Y := Y)).isClosedEmbedding
-  simpa [firstFactorMulAction] using hemb.isProperMap
+  exact hemb.isProperMap
 
 /-- The graph of a continuous map into a Hausdorff space is compact-preimage proper. -/
 theorem graph_compactPreimageProper [TopologicalSpace Z] [T2Space Z]
@@ -326,8 +331,8 @@ theorem firstFactor_invariantPair_not_compactPreimageProper
     hfiber.of_isClosed_subset hverticalClosed hverticalSubset
   have hGuniv : IsCompact (Set.univ : Set G) := by
     have himage := hvertical.image continuous_fst
-    simpa using himage
-  exact hG (isCompact_iff_compactSpace.mp hGuniv)
+    rwa [Set.fst_image_prod _ (Set.singleton_nonempty y)] at himage
+  exact hG ⟨hGuniv⟩
 
 /-- Theorem 3.1(3): for the free proper first-factor action of a noncompact group, the reduced
 observer--action graph is proper while its invariant lift is not. -/

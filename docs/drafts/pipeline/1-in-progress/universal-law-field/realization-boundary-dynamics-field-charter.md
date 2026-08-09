@@ -88,6 +88,13 @@ adds a one-producer coupling:
 the single chain \(H_n=\{0,\ldots,n-1\}\) produces observer stabilization, non-effectivity of its
 limit, recurrent parity, positive phase erasure, constant one-step production, and unbounded action.
 
+The Lean-proved analytic realization-boundary theorem in
+`../../3-formalized/universal-law-field/finite-jet-realization-boundary-and-continuous-classifier-no-go.md`
+shows that every finite analytic jet fibre contains both a differentially algebraic law and a
+hypertranscendental law. Both global strata are dense, have empty interior, are nonclosed, and admit
+no continuous Boolean classifier in finite-jet topology. This supplies a genuine differential
+realization boundary without identifying HT with ordinary orbit noncompactness.
+
 These calibrations do not prove whole-corpus universality. They establish the minimum algebra a
 candidate field must preserve.
 
@@ -162,3 +169,5 @@ boundary dynamics.
   compactness/effectivity, kernel-pair, and nonproperness faces consolidated into one realization
   morphism.
 - 2026-08-09 — first one-producer finite realization-boundary theorem formalized in Lean.
+- 2026-08-09 — analytic finite-jet DA/HT nonseparation theorem formalized in Lean; RBD now has a
+  non-Boolean differential calibration.

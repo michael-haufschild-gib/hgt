@@ -59,6 +59,7 @@ theorem abs_remainderIntegral_le (ha : -1 < a) (hV : 0 < V) {r : ℝ → ℝ} (h
   have hint := integrableOn_remainder ha hV.le hr hB0 hB
   have hbound : |remainderIntegral a V r| ≤
       ∫ s in Ioo (0 : ℝ) 1, B * (Real.exp (-(V * s)) * s ^ a) := by
+    rw [remainderIntegral, ← Real.norm_eq_abs]
     refine le_trans (norm_integral_le_integral_norm _) ?_
     refine setIntegral_mono_on hint.norm ?_ measurableSet_Ioo fun s hs => ?_
     · exact ((integrableOn_expScaled ha hV).mono_set Ioo_subset_Ioi_self).const_mul B
@@ -67,7 +68,10 @@ theorem abs_remainderIntegral_le (ha : -1 < a) (hV : 0 < V) {r : ℝ → ℝ} (h
       have hexp0 : (0 : ℝ) < Real.exp (-(V * s)) := Real.exp_pos _
       rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos hw, abs_of_pos hexp0]
       have hrb : |r s| ≤ B := hB s hs
-      nlinarith [abs_nonneg (r s), hw.le, hexp0.le]
+      calc Real.exp (-(V * s)) * |r s| * s ^ a
+          ≤ Real.exp (-(V * s)) * B * s ^ a :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hrb hexp0.le) hw.le
+        _ = B * (Real.exp (-(V * s)) * s ^ a) := by ring
   have hsub : (∫ s in Ioo (0 : ℝ) 1, B * (Real.exp (-(V * s)) * s ^ a)) ≤
       B * (V ^ (-(a + 1)) * Real.Gamma (a + 1)) := by
     rw [integral_const_mul, ← integral_expScaled ha hV]
@@ -78,6 +82,88 @@ theorem abs_remainderIntegral_le (ha : -1 < a) (hV : 0 < V) {r : ℝ → ℝ} (h
       positivity
     · exact (Ioo_subset_Ioi_self : (Ioo (0 : ℝ) 1) ≤ Ioi 0).eventuallyLE
   linarith
+
+/-! ## The Hadamard split -/
+
+theorem split_integrand {h r : ℝ → ℝ} (hr : ∀ s, h s = h 0 + s * r s) {s : ℝ} (hs : 0 < s)
+    (V a : ℝ) :
+    (Real.exp (-(V * s)) * h s - h 0) * s ^ (a - 1) =
+      h 0 * (laplaceCochain V s * s ^ (a - 1)) + Real.exp (-(V * s)) * r s * s ^ a := by
+  rw [hr s]
+  simp only [laplaceCochain]
+  rw [← rpow_succ_split hs a]
+  ring
+
+theorem transportedFinitePart_split (c : ℝ) (ha : -1 < a) (hV : 0 ≤ V) {h r : ℝ → ℝ}
+    (hr : ∀ s, h s = h 0 + s * r s) (hrc : Continuous r) {B : ℝ} (hB0 : 0 ≤ B)
+    (hB : ∀ s ∈ Ioo (0 : ℝ) 1, |r s| ≤ B) :
+    transportedFinitePart c a V h =
+      c * (h 0 * (cutIntegral a V + 1 / a) + remainderIntegral a V r) := by
+  have hint1 : IntegrableOn (fun s : ℝ => h 0 * (laplaceCochain V s * s ^ (a - 1))) (Ioo 0 1) :=
+    (integrableOn_cutIntegrand ha hV).const_mul (h 0)
+  have hint2 := integrableOn_remainder ha hV hrc hB0 hB
+  have hsplit : (∫ s in Ioo (0 : ℝ) 1, (Real.exp (-(V * s)) * h s - h 0) * s ^ (a - 1)) =
+      h 0 * cutIntegral a V + remainderIntegral a V r := by
+    have hcongr : (∫ s in Ioo (0 : ℝ) 1, (Real.exp (-(V * s)) * h s - h 0) * s ^ (a - 1)) =
+        ∫ s in Ioo (0 : ℝ) 1,
+          (h 0 * (laplaceCochain V s * s ^ (a - 1)) + Real.exp (-(V * s)) * r s * s ^ a) := by
+      refine setIntegral_congr_fun measurableSet_Ioo fun s hs => ?_
+      exact split_integrand hr hs.1 V a
+    rw [hcongr, integral_add hint1 hint2, integral_const_mul]
+    rfl
+  rw [transportedFinitePart, hsplit]
+  ring
+
+/-! ## The projective limit -/
+
+theorem tendsto_normalized_remainder (ha : -1 < a) {r : ℝ → ℝ} (hrc : Continuous r) {B : ℝ}
+    (hB0 : 0 ≤ B) (hB : ∀ s ∈ Ioo (0 : ℝ) 1, |r s| ≤ B) :
+    Tendsto (fun V : ℝ => V ^ a * remainderIntegral a V r) atTop (𝓝 0) := by
+  have hlim : Tendsto (fun V : ℝ => B * Real.Gamma (a + 1) / V) atTop (𝓝 0) :=
+    Filter.Tendsto.div_atTop tendsto_const_nhds tendsto_id
+  refine squeeze_zero_norm' ?_ hlim
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with V hV
+  have hVa : (0 : ℝ) < V ^ a := Real.rpow_pos_of_pos hV _
+  have hbound := abs_remainderIntegral_le ha hV hrc hB0 hB
+  have hcollapse : V ^ a * V ^ (-(a + 1)) = V⁻¹ := by
+    rw [← Real.rpow_add hV, ← Real.rpow_neg_one V]
+    congr 1
+    ring
+  rw [Real.norm_eq_abs, abs_mul, abs_of_pos hVa]
+  calc V ^ a * |remainderIntegral a V r| ≤ V ^ a * (B * (V ^ (-(a + 1)) * Real.Gamma (a + 1))) :=
+        mul_le_mul_of_nonneg_left hbound hVa.le
+    _ = B * Real.Gamma (a + 1) * (V ^ a * V ^ (-(a + 1))) := by ring
+    _ = B * Real.Gamma (a + 1) / V := by rw [hcollapse]; ring
+
+/-- **The deficient projective limit.**  After the normalization `V^a` the transported finite part
+of a smooth chart converges to `c Γ(a) h(0)`. -/
+theorem tendsto_transportedFinitePart (c : ℝ) (ha : -1 < a) (ha0 : a < 0) {h : ℝ → ℝ}
+    (hh : IsSmoothReal h) :
+    Tendsto (fun V : ℝ => V ^ a * transportedFinitePart c a V h) atTop
+      (𝓝 (c * (Real.Gamma a * h 0))) := by
+  set r : ℝ → ℝ := hadamardAvg 0 (deriv h) with hrdef
+  have hrS : IsSmoothReal r := isSmoothReal_hadamardAvg 0 hh.derivSmooth
+  have hrc : Continuous r := hrS.continuous
+  have hr : ∀ s, h s = h 0 + s * r s := hadamard_eq hh
+  obtain ⟨B₀, hB₀⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := 1)).exists_bound_of_continuousOn
+    hrc.continuousOn
+  set B : ℝ := max B₀ 0 with hBdef
+  have hB0 : 0 ≤ B := le_max_right _ _
+  have hB : ∀ s ∈ Ioo (0 : ℝ) 1, |r s| ≤ B := fun s hs =>
+    le_trans (hB₀ s ⟨hs.1.le, hs.2.le⟩) (le_max_left _ _)
+  have hmain : Tendsto (fun V : ℝ =>
+      c * (h 0 * (V ^ a * (cutIntegral a V + 1 / a)) + V ^ a * remainderIntegral a V r)) atTop
+      (𝓝 (c * (h 0 * Real.Gamma a + 0))) := by
+    refine Tendsto.const_mul c ?_
+    exact ((tendsto_regularizedCut ha ha0).const_mul (h 0)).add
+      (tendsto_normalized_remainder ha hrc hB0 hB)
+  rw [add_zero] at hmain
+  have hval : c * (h 0 * Real.Gamma a) = c * (Real.Gamma a * h 0) := by ring
+  rw [hval] at hmain
+  refine hmain.congr' ?_
+  filter_upwards [eventually_ge_atTop (0 : ℝ)] with V hV
+  rw [transportedFinitePart_split c ha hV hr hrc hB0 hB]
+  ring
 
 end
 

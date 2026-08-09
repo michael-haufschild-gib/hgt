@@ -33,9 +33,10 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards:  docs/drafts/pipeline/2-fully-proven/polarized-exchange-horizon-geometry
+formalize UNCONDITIONALLY in lean any proven theorem from these cards: 
 
-add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications.
+  
+add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
 1. Proofs must be unconditional and closed in lean, no premises, no hypotheses, no added axioms, ....
@@ -63,7 +64,11 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem for docs/drafts/pipeline/2-fully-proven/nad
+formalize UNCONDITIONALLY in lean any proven theorem for:
+- docs/drafts/pipeline/2-fully-proven/one-replica-local-pauli-planar-cavity-decay.md
+- docs/drafts/pipeline/2-fully-proven/radial-krylov-projected-complete-incidence-law.md
+- docs/drafts/pipeline/2-fully-proven/bures-incidence-minimax-coarea-law.md
+- docs/drafts/pipeline/2-fully-proven/positive-shell-koszul-cartier-obstruction-reciprocity.md
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done - no simplifications.
 
@@ -80,7 +85,7 @@ ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CON
 
 where mathematical knowledge is missing, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to find and create it.
 
-goal is met when lean codebase is unconditional.
+goal is met when cards are fully formalized and moved to step 3 in the pipeline.
 
 ## loop theorems claude
 /loop 1m (use the croncreate tool)

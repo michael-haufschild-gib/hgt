@@ -52,7 +52,7 @@ theorem exists_tendsto_quasiProbMeasure_nevLeaf (h : PositiveMomentForm s)
     refine congrArg Measure.sum (funext fun p => ?_)
     rw [hatoms p p.2, ENNReal.toReal_ofReal (christoffelLimit_nonneg h _)]
   have heq : μ = nevLeaf h h0b h0 (tau : OnePoint ℝ) := by
-    apply Subtype.ext
+    refine MeasureTheory.ProbabilityMeasure.toMeasure_injective ?_
     rw [hfiber, nevLeaf_eq_fiberMeasure h h0b h0 tau]
   exact ⟨φ, hφ, heq ▸ hlim⟩
 

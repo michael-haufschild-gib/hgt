@@ -17,6 +17,8 @@ facts combine into `dim span_e A_e Ũ ≥ dim Ũ`.
 
 open Matrix Finset
 
+open scoped Kronecker
+
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
@@ -73,6 +75,15 @@ theorem edgeOutputLocal_outside {u v : V} (a b : Fin 3) (x : V → Bool) {w : V}
 def edgeOutput (u v : V) (a b : Fin 3) (x : V → Bool) : FiniteTwoReplicaMatrix V :=
   if x u = x v then 0 else -finiteTwoReplicaLocalMatrix (edgeOutputLocal u v a b x)
 
+/-- The edge extension is odd in its edge block. -/
+theorem finiteTwoReplicaEdgeExtension_neg (u v : V)
+    (S : FiniteTwoReplicaEdgeOutside u v →
+      Matrix TwoReplicaLocalIndex TwoReplicaLocalIndex ℂ)
+    (A : Matrix TwoReplicaEdgeIndex TwoReplicaEdgeIndex ℂ) :
+    finiteTwoReplicaEdgeExtension u v S (-A) =
+      -finiteTwoReplicaEdgeExtension u v S A := by
+  simpa using finiteTwoReplicaEdgeExtension_smul u v S (-1 : ℂ) A
+
 /-- **Equation (7) on any register.**  The fixed-orientation edge commutator annihilates
 endpoint-matched swap words and sends a mismatched word to the negated sitewise tensor product of
 its local outputs. -/
@@ -99,18 +110,14 @@ theorem finiteTwoReplicaCollectiveCommutator_swapRaw_eq_edgeOutput
         · rfl
       rw [finiteTwoReplicaCollectiveCommutator_swapRaw_of_mismatch_left huv a b x hxu hxv,
         hconv, edgeOutputLocal_self_left, edgeOutputLocal_self_right huv, hxu, hxv]
-      simp only [if_false, if_true]
-      rw [← finiteTwoReplicaEdgeExtension_smul u v _ (-1)]
-      simp
+      simp [finiteTwoReplicaEdgeExtension_neg]
     · have hxv : x v = false := by
         rcases hb : x v with _ | _
         · rfl
         · exact absurd (hxu.trans hb.symm) hx
       rw [finiteTwoReplicaCollectiveCommutator_swapRaw_of_mismatch_right huv a b x hxu hxv,
         hconv, edgeOutputLocal_self_left, edgeOutputLocal_self_right huv, hxu, hxv]
-      simp only [if_false, if_true]
-      rw [← finiteTwoReplicaEdgeExtension_smul u v _ (-1)]
-      simp
+      simp [finiteTwoReplicaEdgeExtension_neg]
 
 end
 

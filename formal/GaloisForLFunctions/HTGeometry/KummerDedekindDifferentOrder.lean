@@ -35,9 +35,9 @@ attribute [local instance] Ideal.Quotient.field
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S] {x : S} {I : Ideal R}
 variable [IsDomain R] [IsIntegrallyClosed R] [IsDedekindDomain S] [Module.IsTorsionFree R S]
 
+set_option maxHeartbeats 1000000 in
 /-- **The derivative of the minimal polynomial has order at most `e − 1` at a prime of
 ramification index `e`.** -/
-set_option maxHeartbeats 1000000 in
 theorem not_mem_pow_aeval_derivative (hI : I.IsMaximal) (hI' : I ≠ ⊥)
     [CharZero (R ⧸ I)] (hgen : Algebra.adjoin R ({x} : Set S) = ⊤) (hx' : IsIntegral R x)
     {Q : Ideal S} (hQ : Q ∈ normalizedFactors (I.map (algebraMap R S)))
@@ -73,10 +73,10 @@ theorem not_mem_pow_aeval_derivative (hI : I.IsMaximal) (hI' : I ≠ ⊥)
     have hsub : (⟨Polynomial.map (Ideal.Quotient.mk I) P, hPmem⟩ :
         {d | d ∈ normalizedFactors (Polynomial.map (Ideal.Quotient.mk I) (minpoly R x))})
         = KummerDedekind.normalizedFactorsMapEquivNormalizedFactorsMinPolyMk hI hI' hx hx' ⟨Q, hQ⟩ :=
-      Subtype.ext (by rw [hP, hbardef])
+      Subtype.ext (hP.trans hbardef)
     rw [hsub, Equiv.symm_apply_apply] at hsymm
-    rw [← hsymm]
-    rw [Ideal.span_union, Ideal.span_eq, sup_comm]
+    have hQeq : Q = Ideal.span (↑(I.map (algebraMap R S)) ∪ {Polynomial.aeval x P}) := hsymm
+    rw [hQeq, Ideal.span_union, Ideal.span_eq, sup_comm]
   -- the two evaluation identities
   have hy : KummerDedekind.quotMapEquivQuotQuotMap hx hx'
       (Ideal.Quotient.mk (I.map (algebraMap R S)) (Polynomial.aeval x P))

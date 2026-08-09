@@ -692,3 +692,11 @@ vanishes at even order, because the sine of the functional equation does).
 
 Remaining for this card: normal convergence and meromorphic continuation of the Lambert sum `(5)`,
 and residue calculus under ramified coordinates.  Closure count unchanged at 21/65.
+
+Second layer of `power-canonical-product-exact-moment-borel-lattice-law`: the card's elementary
+identity `(4)` is formalized as `RHTower.tsum_alternating_sine_geometric` (with
+`im_neg_mul_exp_pow`), unconditional and axiom-clean — the imaginary part of a geometric series of
+ratio `-u e^{iα}`, with the denominator `|1 + u e^{iα}|² ≥ (1-|u|)²` bounded away from zero.
+Identities `(3)` and `(4)` are now both Lean theorems; the remaining analytic content of the card is
+the sum interchange producing the Lambert form `(5)`, its normal convergence and continuation, and
+ramified residue calculus. Closure count unchanged at 21/65.

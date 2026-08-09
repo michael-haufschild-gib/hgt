@@ -102,4 +102,45 @@ theorem lintegral_enorm_sq_le_of_convolution_bound {E : Type*} [NormedAddCommGro
   le_trans (lintegral_mono fun x => pow_le_pow_left' (hG x) 2)
     (lintegral_convolution_sq_le hK hF)
 
+/-! ### The real-valued line convolution -/
+
+/-- Convolution on the line: `(k ⋆ V) x = ∫ k t · V (x − t) dt`. -/
+noncomputable def lineConvolution (k V : ℝ → ℝ) (x : ℝ) : ℝ := ∫ t, k t * V (x - t)
+
+/-- **Young's inequality `L¹ ⋆ L² → L²`, real form.**  The Bochner integrals are recovered from
+the `ℝ≥0∞` inequality by `toReal`, which is monotone because the majorant `(∫|ρ|)²·∫u²` is finite. -/
+theorem integral_sq_lineConvolution_le {ρ u : ℝ → ℝ} (hρm : Measurable ρ) (hum : Measurable u)
+    (hρi : Integrable (fun t => |ρ t|)) (hu2 : Integrable (fun x => u x ^ 2))
+    (hconv : Integrable (fun x => lineConvolution ρ u x ^ 2)) :
+    (∫ x, lineConvolution ρ u x ^ 2) ≤ (∫ t, |ρ t|) ^ 2 * ∫ x, u x ^ 2 := by
+  have hbound : ∀ x, ‖lineConvolution ρ u x‖ₑ ≤ ∫⁻ y, ‖ρ y‖ₑ * ‖u (x - y)‖ₑ := by
+    intro x
+    refine le_trans (enorm_integral_le_lintegral_enorm _) (le_of_eq ?_)
+    exact lintegral_congr fun t => enorm_mul _ _
+  have hmain := lintegral_enorm_sq_le_of_convolution_bound hρm.enorm hum.enorm hbound
+  have hBfin : (∫⁻ t, ‖ρ t‖ₑ) ≠ ⊤ := by
+    have h := hρi.hasFiniteIntegral
+    rw [hasFiniteIntegral_iff_enorm] at h
+    simpa using h.ne
+  have hDfin : (∫⁻ x, ‖u x‖ₑ ^ 2) ≠ ⊤ := by
+    have h := hu2.hasFiniteIntegral
+    rw [hasFiniteIntegral_iff_enorm] at h
+    simpa [enorm_pow] using h.ne
+  have hBeq : (∫⁻ t, ‖ρ t‖ₑ).toReal = ∫ t, |ρ t| := by
+    rw [integral_eq_lintegral_of_nonneg_ae (.of_forall fun t => abs_nonneg _)
+      hρi.aestronglyMeasurable]
+    congr 1
+    exact lintegral_congr fun t => Real.enorm_eq_ofReal_abs (ρ t)
+  have hsq : ∀ f : ℝ → ℝ, Integrable (fun x => f x ^ 2) →
+      (∫⁻ x, ‖f x‖ₑ ^ 2).toReal = ∫ x, f x ^ 2 := by
+    intro f hf
+    rw [integral_eq_lintegral_of_nonneg_ae (.of_forall fun x => sq_nonneg _)
+      hf.aestronglyMeasurable]
+    congr 1
+    refine lintegral_congr fun x => ?_
+    rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _), sq_abs]
+  rw [← hsq _ hconv, ← hBeq, ← hsq _ hu2, ← ENNReal.toReal_pow, ← ENNReal.toReal_mul]
+  exact ENNReal.toReal_mono
+    (ENNReal.mul_ne_top (ENNReal.pow_ne_top hBfin) hDfin) hmain
+
 end GaloisForLFunctions.HTGeometry

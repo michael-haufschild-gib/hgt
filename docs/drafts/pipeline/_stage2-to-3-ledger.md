@@ -293,3 +293,13 @@ prime/zeta/divisor theorem.  See
   to a coherent non-effective boundary, singleton production, exact cardinal action, period-two
   phase, positive erasure, and arbitrarily large action at simultaneous observer/phase returns.
 - Dedicated universal-law-field umbrella wired; no project postulates or computation proofs.
+
+# Universal-law-field finite-jet realization-boundary certification (2026-08-09)
+
+- `finite-jet-realization-boundary-and-continuous-classifier-no-go.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveFiniteJetBoundary`.
+- Certified: exact DA/HT realization of every finite jet; mutual density; empty interiors;
+  nonclosed global strata; no continuous Boolean finite-jet classifier.
+- Targeted module build green; universal-law-field umbrella wired; no project postulates or
+  computation proofs.

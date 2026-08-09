@@ -251,3 +251,20 @@ Accordingly the first Lean layer of this card is built, unconditional and axiom-
 What genuinely remains for this card is the other two dependencies: normal convergence and
 meromorphic continuation of the Lambert sum `(5)`, and residue calculus under ramified coordinates.
 The elementary identity `(4)` is a geometric-series computation and is next.
+
+### The elementary identity `(4)` is formalized
+
+`formal/GaloisForLFunctions/RHTower/AlternatingSineGeometricSum.lean`, unconditional and
+axiom-clean:
+
+- **`tsum_alternating_sine_geometric`** — for `|u| < 1`,
+  `∑_{n≥1} (-1)^{n+1} sin(nα) uⁿ = u sin α / (1 + 2u cos α + u²)`;
+- `im_neg_mul_exp_pow` — the imaginary part of a power of `-u e^{iα}`.
+
+The sum is the imaginary part of a geometric series with ratio `-u e^{iα}`, whose norm is `|u|`;
+the denominator is `|1 + u e^{iα}|²`, bounded below by `(1-|u|)² > 0`, so it never vanishes and no
+side condition beyond `|u| < 1` is needed.
+
+With `(3)` (`riemannZeta_neg_div_Gamma_eq`) and `(4)` both formalized, what remains for the card is
+the interchange of the two sums that turns them into the Lambert form `(5)`, its normal convergence
+and meromorphic continuation, and the residue calculus in ramified coordinates.

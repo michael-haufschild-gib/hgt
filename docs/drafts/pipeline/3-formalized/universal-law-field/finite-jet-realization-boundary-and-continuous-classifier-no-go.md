@@ -1,11 +1,11 @@
 # Finite-jet realization boundary and continuous-classifier no-go
 
 - **ID:** ULF-RBD-JET-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / ANALYTIC REALIZATION-BOUNDARY LAW
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / ANALYTIC REALIZATION-BOUNDARY LAW
 - **Source:** Realization Boundary Dynamics field charter
 - **Statement:** Every finite analytic jet is shared by a differentially algebraic law and a hypertranscendental law; both law classes are dense, have empty interior, are nonclosed in the finite-jet topology, and admit no continuous binary classifier.
-- **Status:** [PAPER-PROVED] [CLOSED] [FIELD-LEVEL ANALYTIC CALIBRATION] [LEAN TARGET FIXED]
+- **Status:** [LEAN-PROVED] [CLOSED] [FIELD-LEVEL ANALYTIC CALIBRATION]
 
 ## Goal
 
@@ -135,7 +135,7 @@ observer topology, or expose a discontinuous/singular boundary operation.
 - It does not choose a physical cost, positivity structure, recurrence clock, or arithmetic source.
 - It proves an exact analytic realization boundary, not a complete universal-law field equation.
 
-## Lean target
+## Lean certificate
 
 Module:
 `GaloisForLFunctions.HTGeometry.ConstitutiveFiniteJetBoundary`.
@@ -145,11 +145,20 @@ Closed declarations:
 - `constitutiveFiniteJet_noContinuousBoolClassifier`;
 - `constitutiveFiniteJet_realizationBoundary_law`.
 
-The implementation must import the existing dependency-closed analytic construction in
-`HTGeometry.FiniteJetIndistinguishability`, add no axioms or premises, and join the
-`HTGeometry.UniversalLawField` umbrella.
+The module imports the dependency-closed analytic construction in
+`HTGeometry.FiniteJetIndistinguishability`, adds no project axioms or premises, and is wired into
+the `HTGeometry.UniversalLawField` umbrella. Targeted foreground build:
+
+```text
+lake build GaloisForLFunctions.HTGeometry.ConstitutiveFiniteJetBoundary
+Build completed successfully (8876 jobs).
+```
+
+`#print axioms` reports only Lean/mathlib foundations `propext`, `Classical.choice`, and
+`Quot.sound`; no project postulate occurs.
 
 ## Log
 
 - 2026-08-09 — exact finite-jet double realization and topological nonseparation selected as first
   analytic Realization Boundary Dynamics theorem.
+- 2026-08-09 — closed in Lean and promoted to Stage 3.
