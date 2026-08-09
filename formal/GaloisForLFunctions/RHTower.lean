@@ -6428,3 +6428,4 @@ import GaloisForLFunctions.RHTower.FiniteSectionBorderDeterminant
 import GaloisForLFunctions.RHTower.SamplingDeterminant
 import GaloisForLFunctions.RHTower.BorderDeterminantVanishing
 import GaloisForLFunctions.RHTower.MuentzZetaRelationImpossible
+import GaloisForLFunctions.RHTower.FiniteFamilyObstruction

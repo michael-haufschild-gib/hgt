@@ -63,6 +63,20 @@ points and coefficients making `‖∑ⱼ conj(aⱼ)/ρⱼ‖` large against `�
 is that the qualitative obstruction is now proved for *every* finite family, so any future rate is an
 estimate of a quantity already known to be positive.
 
-One boundary worth recording: the discrete family `bdDiscrete n = 1/(n+1)` starts at `θ = 1`, which is
-excluded here (its generator is the zero vector, `bdGen 1 = 0`, so it contributes nothing to the span).
-Applying the capstone to those sections means dropping that index first.
+## Both restrictions removed
+
+`RHTower/FiniteFamilyObstruction.lean` drops the distinctness and the `θ < 1` hypotheses, which were
+cosmetic — repetitions give the same generator and `θ = 1` gives the zero vector:
+
+* `bdGenFun_one`, `bdGen_one` — `{u} − 1·{u} = 0`, so `bdGen 1 = 0` in the carrier;
+* `bdDist_mono_span` — the span form of `bdDist_mono`, which is what a comparison of *spans* (rather than of
+  generator sets) needs;
+* **`bdDist_pos_of_finite` — every finite family of dilations in `(0,1]` has positive Báez-Duarte
+  distance**, with no injectivity hypothesis and no exclusion of `1`. Passing to the distinct values below
+  `1` (`Finset.image θ univ |>.erase 1`, enumerated by `Finset.equivFin`) leaves the span unchanged;
+* `bdDistFinset_pos` — hence every finite section of an arbitrary family is obstructed.
+
+This subsumes `bdDistDiscrete_pos`: the discrete family `bdDiscrete n = 1/(n+1)` starts at `θ = 1`, which the
+structural theorem excludes but `bdDist_pos_of_finite` handles, so the factorial floor of
+`DistancePositivity` is no longer the only route to positivity — and the general statement holds for families
+the factorial argument says nothing about.
