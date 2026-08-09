@@ -1,0 +1,735 @@
+import GaloisForLFunctions.HTGeometry.DirichletMaurerCartanMellinOrbitLaw
+import GaloisForLFunctions.HTGeometry.EulerPrimeOrbitFourOrganLaw
+import GaloisForLFunctions.RHTower.ArithmeticLogClockFiniteJetSaturation
+import GaloisForLFunctions.PNTPlus.Mathlib.Analysis.SpecialFunctions.Log.Basic
+
+/-!
+# Critical Euler--Mass--Weil--Stokes shadow law
+
+Unconditional Lean realization of Route-L dilation representations and connection shadows,
+primitive-prime Mass boundary data, reflected atomic Weil tangent, prime Stokes rapidity and
+primitive-prime weld, together with sharp prime-power scope and both paper countermodels.
+-/
+
+open Filter Finset Set Topology
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-! ## Route-L formal dilation series -/
+
+/-- Formal expansion-dilation series `sum c_n U_n`; multiplication is Dirichlet convolution,
+which records `U_m U_n = U_(mn)` exactly. -/
+abbrev ExpansionDilationSeries := ComplexArithmeticFunction
+
+/-- Formal contraction-dilation series `sum c_n U_(1/n)`; multiplication is again Dirichlet
+convolution because reciprocal dilations compose multiplicatively. -/
+abbrev ContractionDilationSeries := ComplexArithmeticFunction
+
+/-- Arithmetic point mass `[n]`, for a positive arithmetic index. -/
+def dirichletPointMass (n : ℕ+) : ComplexArithmeticFunction :=
+  ⟨fun k => if k = (n : ℕ) then 1 else 0, if_neg n.ne_zero.symm⟩
+
+@[simp] theorem dirichletPointMass_apply (n : ℕ+) (k : ℕ) :
+    dirichletPointMass n k = if k = (n : ℕ) then 1 else 0 := rfl
+
+/-- Point masses multiply by the arithmetic monoid law `[m] * [n] = [mn]`. -/
+theorem dirichletPointMass_mul (m n : ℕ+) :
+    dirichletPointMass m * dirichletPointMass n = dirichletPointMass (m * n) := by
+  ext k
+  rw [ArithmeticFunction.mul_apply]
+  simp only [dirichletPointMass_apply]
+  by_cases hk : k = (m : ℕ) * (n : ℕ)
+  · subst k
+    rw [Finset.sum_eq_single ((m : ℕ), (n : ℕ))]
+    · simp
+    · intro x hx hne
+      by_cases hx2 : x.2 = (n : ℕ)
+      · rw [if_pos hx2]
+        have hx1 : x.1 ≠ (m : ℕ) := by
+          intro hx1
+          exact hne (Prod.ext hx1 hx2)
+        simp [hx1]
+      · simp [hx2]
+    · simp [Nat.mem_divisorsAntidiagonal, m.ne_zero, n.ne_zero]
+  · rw [if_neg (by simpa using hk)]
+    apply Finset.sum_eq_zero
+    intro x hx
+    by_cases hx2 : x.2 = (n : ℕ)
+    · rw [if_pos hx2]
+      have hx1 : x.1 ≠ (m : ℕ) := by
+        intro hx1
+        have hxprod := (Nat.mem_divisorsAntidiagonal.mp hx).1
+        exact hk (hxprod ▸ congrArg₂ (· * ·) hx1 hx2)
+      simp [hx1]
+    · simp [hx2]
+
+/-- Expansion representation `rho_a^+([n]) = n^(-a) U_n`. -/
+def routeLExpansionRepresentation (a : ℝ) :
+    ComplexArithmeticFunction →ₐ[ℂ] ExpansionDilationSeries :=
+  arithmeticMellinTwistHom a
+
+/-- Contraction representation `rho_a^-([n]) = n^(-a-1) U_(1/n)`. -/
+def routeLContractionRepresentation (a : ℝ) :
+    ComplexArithmeticFunction →ₐ[ℂ] ContractionDilationSeries :=
+  arithmeticMellinTwistHom (a + 1)
+
+theorem routeLExpansionRepresentation_pointMass (a : ℝ) (n : ℕ+) :
+    routeLExpansionRepresentation a (dirichletPointMass n) (n : ℕ) =
+      ((((n : ℕ) : ℝ) ^ (-a) : ℝ) : ℂ) := by
+  simp [routeLExpansionRepresentation, arithmeticMellinTwistHom,
+    arithmeticMellinTwist, arithmeticMellinWeight, n.ne_zero]
+
+theorem routeLExpansionRepresentation_pointMass_eq (a : ℝ) (n : ℕ+) :
+    routeLExpansionRepresentation a (dirichletPointMass n) =
+      ((((n : ℕ) : ℝ) ^ (-a) : ℝ) : ℂ) • dirichletPointMass n := by
+  ext k
+  by_cases hk : k = (n : ℕ)
+  · subst k
+    simp [routeLExpansionRepresentation_pointMass]
+  · simp [routeLExpansionRepresentation, arithmeticMellinTwistHom,
+      arithmeticMellinTwist, dirichletPointMass_apply, hk]
+
+theorem routeLContractionRepresentation_pointMass (a : ℝ) (n : ℕ+) :
+    routeLContractionRepresentation a (dirichletPointMass n) (n : ℕ) =
+      ((((n : ℕ) : ℝ) ^ (-a - 1) : ℝ) : ℂ) := by
+  simp [routeLContractionRepresentation, arithmeticMellinTwistHom,
+    arithmeticMellinTwist, arithmeticMellinWeight, n.ne_zero,
+    show -(a + 1) = -a - 1 by ring]
+
+theorem routeLContractionRepresentation_pointMass_eq (a : ℝ) (n : ℕ+) :
+    routeLContractionRepresentation a (dirichletPointMass n) =
+      ((((n : ℕ) : ℝ) ^ (-a - 1) : ℝ) : ℂ) • dirichletPointMass n := by
+  ext k
+  by_cases hk : k = (n : ℕ)
+  · subst k
+    simp [routeLContractionRepresentation_pointMass]
+  · simp [routeLContractionRepresentation, arithmeticMellinTwistHom,
+      arithmeticMellinTwist, dirichletPointMass_apply, hk]
+
+/-- The two formal series maps are algebra representations, packaged without extra premises. -/
+theorem routeLDilationRepresentations_areAlgebraMaps (a : ℝ) :
+    (∀ f g, routeLExpansionRepresentation a (f * g) =
+      routeLExpansionRepresentation a f * routeLExpansionRepresentation a g) ∧
+    (∀ f g, routeLContractionRepresentation a (f * g) =
+      routeLContractionRepresentation a f * routeLContractionRepresentation a g) := by
+  exact ⟨fun f g => map_mul _ f g, fun f g => map_mul _ f g⟩
+
+def routeLExpansionConnection (a : ℝ) : ExpansionDilationSeries :=
+  mellinVonMangoldtCurrent a
+
+def routeLContractionConnection (a : ℝ) : ContractionDilationSeries :=
+  arithmeticMellinTwist (a + 1) complexVonMangoldt
+
+def routeLMobiusSection (a : ℝ) : ExpansionDilationSeries :=
+  arithmeticMellinTwist a
+    (ArithmeticFunction.moebius : ComplexArithmeticFunction)
+
+def routeLContractionMobiusSection (a : ℝ) : ContractionDilationSeries :=
+  arithmeticMellinTwist (a + 1)
+    (ArithmeticFunction.moebius : ComplexArithmeticFunction)
+
+theorem routeLExpansionConnection_coefficient (a : ℝ) (n : ℕ) :
+    routeLExpansionConnection a n =
+      (arithmeticMellinWeight a n : ℂ) *
+        (ArithmeticFunction.vonMangoldt n : ℂ) := rfl
+
+theorem routeLContractionConnection_coefficient (a : ℝ) (n : ℕ) :
+    routeLContractionConnection a n =
+      (arithmeticMellinWeight (a + 1) n : ℂ) *
+        (ArithmeticFunction.vonMangoldt n : ℂ) := rfl
+
+/-- Coefficientwise analytic form of `partial_a M_a = A_a^+ M_a`, retaining both real and
+imaginary components of every complex coefficient. -/
+theorem routeLMobiusSection_parameter_derivative (a : ℝ) (n : ℕ) :
+    HasDerivAt (fun u : ℝ => (routeLMobiusSection u n).re)
+        ((routeLExpansionConnection a * routeLMobiusSection a) n).re a ∧
+    HasDerivAt (fun u : ℝ => (routeLMobiusSection u n).im)
+        ((routeLExpansionConnection a * routeLMobiusSection a) n).im a := by
+  have h := hasDerivAt_arithmeticMellinTwist_coefficient_components a
+    (ArithmeticFunction.moebius : ComplexArithmeticFunction) n
+  have hg := mellin_moebius_gauge_right a
+  change -arithmeticMellinTwist a
+      (arithmeticLogDerivation
+        (ArithmeticFunction.moebius : ComplexArithmeticFunction)) =
+    routeLExpansionConnection a * routeLMobiusSection a at hg
+  have hgre := congrArg (fun f : ComplexArithmeticFunction => (f n).re) hg
+  have hgim := congrArg (fun f : ComplexArithmeticFunction => (f n).im) hg
+  constructor
+  · rw [← hgre]
+    simpa [routeLMobiusSection, routeLExpansionRepresentation] using h.1
+  · rw [← hgim]
+    simpa [routeLMobiusSection, routeLExpansionRepresentation] using h.2
+
+theorem routeLContractionMobiusSection_parameter_derivative (a : ℝ) (n : ℕ) :
+    HasDerivAt (fun u : ℝ => (routeLContractionMobiusSection u n).re)
+        ((routeLContractionConnection a * routeLContractionMobiusSection a) n).re a ∧
+    HasDerivAt (fun u : ℝ => (routeLContractionMobiusSection u n).im)
+        ((routeLContractionConnection a * routeLContractionMobiusSection a) n).im a := by
+  have hshift : HasDerivAt (fun u : ℝ => u + 1) 1 a := by
+    simpa using (hasDerivAt_id a).add_const 1
+  have hweight := (hasDerivAt_arithmeticMellinWeight (a + 1) n).comp a hshift
+  have hre := hweight.mul_const
+    ((ArithmeticFunction.moebius n : ℂ).re)
+  have hg := mellin_moebius_gauge_right (a + 1)
+  change -arithmeticMellinTwist (a + 1)
+      (arithmeticLogDerivation
+        (ArithmeticFunction.moebius : ComplexArithmeticFunction)) =
+    routeLContractionConnection a * routeLContractionMobiusSection a at hg
+  have hgre := congrArg (fun f : ComplexArithmeticFunction => (f n).re) hg
+  have hgim := congrArg (fun f : ComplexArithmeticFunction => (f n).im) hg
+  constructor
+  · have hfun :
+        (fun y => ((fun u => arithmeticMellinWeight u n) ∘ fun u => u + 1) y *
+          (ArithmeticFunction.moebius n : ℂ).re) =
+        fun u : ℝ => (routeLContractionMobiusSection u n).re := by
+      funext u
+      simp [routeLContractionMobiusSection, arithmeticMellinTwist_apply]
+    rw [hfun] at hre
+    rw [← hgre]
+    apply hre.congr_deriv
+    have hlogre : (Complex.log (n : ℂ)).re = Real.log (n : ℝ) := by
+      simpa using Complex.log_ofReal_re (n : ℝ)
+    simp [arithmeticMellinTwist_apply, arithmeticLogDerivation_apply, hlogre]
+    ring
+  · rw [← hgim]
+    have hfunim : (fun u : ℝ => (routeLContractionMobiusSection u n).im) =
+        fun _ : ℝ => 0 := by
+      funext u
+      simp [routeLContractionMobiusSection, arithmeticMellinTwist_apply]
+    rw [hfunim]
+    have hlogim : (Complex.log (n : ℂ)).im = 0 := by
+      simp [Complex.log_im]
+    have hslopeim :
+        (-arithmeticMellinTwist (a + 1)
+          (arithmeticLogDerivation
+            (ArithmeticFunction.moebius : ComplexArithmeticFunction)) n).im = 0 := by
+      simp [arithmeticMellinTwist_apply, arithmeticLogDerivation_apply, hlogim]
+    exact (hasDerivAt_const (x := a) (c := (0 : ℝ))).congr_deriv hslopeim.symm
+
+/-- First comparison defect `kappa_a=A_a^- - A_a^+`. -/
+def routeLComparisonDefect (a : ℝ) : ComplexArithmeticFunction :=
+  routeLContractionConnection a - routeLExpansionConnection a
+
+/-- Algebraic source-pointed two-collar lift: contraction collar minus expansion collar. -/
+def routeLSourceTransgression (a : ℝ) : ComplexArithmeticFunction :=
+  routeLContractionMobiusSection a - routeLMobiusSection a
+
+theorem routeLSourceTransgression_parameter_derivative (a : ℝ) (n : ℕ) :
+    HasDerivAt (fun u : ℝ => (routeLSourceTransgression u n).re)
+        (((routeLContractionConnection a * routeLContractionMobiusSection a) -
+          routeLExpansionConnection a * routeLMobiusSection a) n).re a ∧
+    HasDerivAt (fun u : ℝ => (routeLSourceTransgression u n).im)
+        (((routeLContractionConnection a * routeLContractionMobiusSection a) -
+          routeLExpansionConnection a * routeLMobiusSection a) n).im a := by
+  have hminus := routeLContractionMobiusSection_parameter_derivative a n
+  have hplus := routeLMobiusSection_parameter_derivative a n
+  constructor
+  · change HasDerivAt
+      (fun u : ℝ => (routeLContractionMobiusSection u n).re -
+        (routeLMobiusSection u n).re)
+      (((routeLContractionConnection a * routeLContractionMobiusSection a) n).re -
+        ((routeLExpansionConnection a * routeLMobiusSection a) n).re) a
+    exact hminus.1.sub hplus.1
+  · change HasDerivAt
+      (fun u : ℝ => (routeLContractionMobiusSection u n).im -
+        (routeLMobiusSection u n).im)
+      (((routeLContractionConnection a * routeLContractionMobiusSection a) n).im -
+        ((routeLExpansionConnection a * routeLMobiusSection a) n).im) a
+    exact hminus.2.sub hplus.2
+
+/-- Exact covariant Green--Stokes comparison identity.  The displayed derivative is the literal
+coefficient derivative supplied by the two Möbius gauge equations. -/
+theorem routeLSourceTransgression_covariant (a : ℝ) :
+    ((routeLContractionConnection a *
+          routeLContractionMobiusSection a) -
+        (routeLExpansionConnection a * routeLMobiusSection a)) -
+      routeLContractionConnection a * routeLSourceTransgression a =
+    routeLComparisonDefect a * routeLMobiusSection a := by
+  simp only [routeLSourceTransgression, routeLComparisonDefect]
+  ring
+
+/-- Each one-parameter representation has zero curvature. -/
+theorem routeLDilationRepresentations_flat
+    (curvaturePlus curvatureMinus :
+      ℝ [⋀^Fin 2]→ₗ[ℝ] ComplexArithmeticFunction) :
+    curvaturePlus = 0 ∧ curvatureMinus = 0 :=
+  ⟨oneParameterMellinCurvature_eq_zero curvaturePlus,
+    oneParameterMellinCurvature_eq_zero curvatureMinus⟩
+
+/-! ## Primitive-prime quotient and finite Mass path -/
+
+def primitivePrimeSetoid : Setoid ComplexArithmeticFunction where
+  r f g := ∀ p : Nat.Primes, f (p : ℕ) = g (p : ℕ)
+  iseqv := {
+    refl := fun _ _ => rfl
+    symm := fun h p => (h p).symm
+    trans := fun h₁ h₂ p => (h₁ p).trans (h₂ p) }
+
+def PrimitivePrimeQuotient := Quotient primitivePrimeSetoid
+
+def primitivePrimePushforward : PrimitivePrimeQuotient → (Nat.Primes → ℂ) :=
+  Quotient.lift (fun f p => f (p : ℕ)) (by
+    intro f g h
+    funext p
+    exact h p)
+
+def primitivePrimeClass (f : ComplexArithmeticFunction) : PrimitivePrimeQuotient :=
+  Quotient.mk primitivePrimeSetoid f
+
+@[simp] theorem primitivePrimePushforward_class (f : ComplexArithmeticFunction) :
+    primitivePrimePushforward (primitivePrimeClass f) =
+      fun p : Nat.Primes => f (p : ℕ) := rfl
+
+theorem primitivePrimePushforward_injective : Function.Injective primitivePrimePushforward := by
+  intro f g h
+  refine Quotient.inductionOn₂ f g (fun f g hfg => ?_) h
+  apply Quotient.sound
+  intro p
+  exact congrFun hfg p
+
+theorem primitivePrimePushforward_pointMass_primePower_zero
+    (p : Nat.Primes) {k : ℕ} (hk : 2 ≤ k) :
+    primitivePrimePushforward
+      (primitivePrimeClass (dirichletPointMass
+        ⟨(p : ℕ) ^ k, pow_pos p.prop.pos k⟩)) = 0 := by
+  funext q
+  simp only [primitivePrimePushforward_class, dirichletPointMass_apply, Pi.zero_apply]
+  rw [if_neg]
+  intro h
+  change (q : ℕ) = (p : ℕ) ^ k at h
+  have hpprime : Nat.Prime ((p : ℕ) ^ k) := h ▸ q.prop
+  exact Nat.Prime.not_prime_pow hk hpprime
+
+def finitePathPrefix (t : ℕ → ℝ) (m : ℕ) : ℝ :=
+  ∑ j ∈ Finset.range m, t j
+
+def finitePathVertexCurrent (N : ℕ) (t : ℕ → ℝ) (i : ℕ) : ℝ :=
+  if i < N then t i else 0
+
+def finitePathEdgePrimitive (N : ℕ) (t : ℕ → ℝ) (j : ℕ) : ℝ :=
+  if j + 1 < N then finitePathPrefix t (j + 1) else 0
+
+def orientedPathBoundary (q : ℕ → ℝ) (i : ℕ) : ℝ :=
+  q i - if i = 0 then 0 else q (i - 1)
+
+def finitePathTerminal (N : ℕ) (t : ℕ → ℝ) (i : ℕ) : ℝ :=
+  if N = 0 then 0 else
+    if i = N - 1 then finitePathPrefix t N else 0
+
+/-- Exact finite Abel boundary decomposition `z_N=partial q_N+b_N`. -/
+theorem finitePath_abelBoundary (N : ℕ) (t : ℕ → ℝ) :
+    finitePathVertexCurrent N t =
+      fun i => orientedPathBoundary (finitePathEdgePrimitive N t) i +
+        finitePathTerminal N t i := by
+  funext i
+  by_cases hN : N = 0
+  · rw [hN]
+    simp [finitePathVertexCurrent, orientedPathBoundary,
+      finitePathEdgePrimitive, finitePathTerminal]
+  by_cases hi : i < N
+  · by_cases hi0 : i = 0
+    · subst i
+      by_cases hN1 : N = 1
+      · subst N
+        simp [finitePathVertexCurrent, orientedPathBoundary,
+          finitePathEdgePrimitive, finitePathTerminal, finitePathPrefix]
+      · have h1N : 1 < N := by omega
+        have hterm : 0 ≠ N - 1 := by omega
+        rw [finitePathVertexCurrent, if_pos (by omega), orientedPathBoundary,
+          finitePathEdgePrimitive, if_pos h1N, if_pos rfl,
+          finitePathTerminal, if_neg hN, if_neg hterm]
+        simp [finitePathPrefix]
+    · by_cases hlast : i + 1 = N
+      · have him1 : i - 1 + 1 < N := by omega
+        have hiterm : i = N - 1 := by omega
+        have hprev : i - 1 + 1 = i := by omega
+        rw [finitePathVertexCurrent, if_pos hi, orientedPathBoundary,
+          finitePathEdgePrimitive, if_neg (by omega), if_neg hi0,
+          finitePathEdgePrimitive, hprev, if_pos hi,
+          finitePathTerminal, if_neg hN, if_pos hiterm,
+          ← hlast]
+        simp [finitePathPrefix, Finset.sum_range_succ]
+      · have hinext : i + 1 < N := by omega
+        have hprev : i - 1 + 1 = i := by omega
+        have hiterm : i ≠ N - 1 := by omega
+        rw [finitePathVertexCurrent, if_pos hi, orientedPathBoundary,
+          finitePathEdgePrimitive, if_pos hinext, if_neg hi0,
+          finitePathEdgePrimitive, hprev, if_pos hi,
+          finitePathTerminal, if_neg hN, if_neg hiterm]
+        simp [finitePathPrefix, Finset.sum_range_succ]
+  · have hi0 : i ≠ 0 := by omega
+    have hinext : ¬ i + 1 < N := by omega
+    have hprev : i - 1 + 1 = i := by omega
+    have hiterm : i ≠ N - 1 := by omega
+    rw [finitePathVertexCurrent, if_neg hi, orientedPathBoundary,
+      finitePathEdgePrimitive, if_neg hinext, if_neg hi0,
+      finitePathEdgePrimitive, hprev, if_neg hi,
+      finitePathTerminal, if_neg hN, if_neg hiterm]
+    ring
+
+def criticalPrimeWeight (n : ℕ) : ℝ :=
+  Real.log (((RHTower.nthPrimePoint n).1 : ℕ) : ℝ) /
+    Real.sqrt (((RHTower.nthPrimePoint n).1 : ℕ) : ℝ)
+
+theorem criticalPrimeWeight_pos (n : ℕ) : 0 < criticalPrimeWeight n := by
+  have hp := (RHTower.nthPrimePoint n).prop
+  exact div_pos (Real.log_pos (by exact_mod_cast hp.one_lt))
+    (Real.sqrt_pos.2 (by exact_mod_cast hp.pos))
+
+theorem tendsto_criticalPrimeWeight_zero :
+    Tendsto criticalPrimeWeight atTop (𝓝 0) := by
+  have h := (Real.tendsto_pow_log_div_pow_atTop (1 / 2) 1 (by norm_num)).comp
+    RHTower.tendsto_nthPrimePoint_cast_atTop
+  unfold criticalPrimeWeight
+  simpa only [Function.comp_def, Real.rpow_one, Real.sqrt_eq_rpow] using h
+
+theorem tendsto_criticalPrimePrefix_div_weight_atTop :
+    Tendsto (fun n => finitePathPrefix criticalPrimeWeight (n + 1) /
+      criticalPrimeWeight (n + 1)) atTop atTop := by
+  have hwithin : Tendsto (fun n => criticalPrimeWeight (n + 1)) atTop (𝓝[>] 0) := by
+    rw [tendsto_nhdsWithin_iff]
+    exact ⟨tendsto_criticalPrimeWeight_zero.comp (tendsto_add_atTop_nat 1),
+      Eventually.of_forall fun n => criticalPrimeWeight_pos (n + 1)⟩
+  have hinv : Tendsto (fun n => (criticalPrimeWeight (n + 1))⁻¹) atTop atTop :=
+    tendsto_inv_nhdsGT_zero.comp hwithin
+  have hbase : Tendsto (fun n => criticalPrimeWeight 0 /
+      criticalPrimeWeight (n + 1)) atTop atTop := by
+    simpa [div_eq_mul_inv, mul_comm] using
+      hinv.atTop_mul_pos (criticalPrimeWeight_pos 0) tendsto_const_nhds
+  refine tendsto_atTop_mono' atTop ?_ hbase
+  filter_upwards [] with n
+  apply div_le_div_of_nonneg_right _ (criticalPrimeWeight_pos (n + 1)).le
+  exact Finset.single_le_sum (fun j _ => (criticalPrimeWeight_pos j).le)
+    (by simp : 0 ∈ Finset.range (n + 1))
+
+theorem criticalPrimeMass_abelBoundary (N : ℕ) :
+    finitePathVertexCurrent N criticalPrimeWeight =
+      fun i => orientedPathBoundary
+          (finitePathEdgePrimitive N criticalPrimeWeight) i +
+        finitePathTerminal N criticalPrimeWeight i :=
+  finitePath_abelBoundary N criticalPrimeWeight
+
+/-! ## Reflection-odd atomic Weil tangent -/
+
+/-- The free reflected atomic current on locations `+log n` and `-log n`.  Every coefficient
+function gives a locally finite current because these locations escape compact intervals. -/
+structure ReflectedAtomicCurrent where
+  pos : ℕ → ℂ
+  neg : ℕ → ℂ
+
+/-- Positive reflected locations meet every compact interval in finitely many indices. -/
+theorem positiveAtomicLocations_interval_finite (a b : ℝ) :
+    Set.Finite {n : ℕ | Real.log (n : ℝ) ∈ Set.Icc a b} := by
+  obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (Real.exp b)
+  refine ((Set.finite_singleton 0).union (Set.finite_Iic N)).subset ?_
+  intro n hn
+  simp only [Set.mem_setOf_eq, Set.mem_Icc] at hn
+  simp only [Set.mem_union, Set.mem_singleton_iff, Set.mem_Iic]
+  by_cases hn0 : n = 0
+  · exact Or.inl hn0
+  · right
+    have hnpos : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hn0
+    have hnexp : (n : ℝ) ≤ Real.exp b :=
+      (Real.log_le_iff_le_exp hnpos).mp hn.2
+    have hnlt : n < N := by exact_mod_cast lt_of_le_of_lt hnexp hN
+    exact hnlt.le
+
+/-- Negative reflected locations meet every compact interval in finitely many indices. -/
+theorem negativeAtomicLocations_interval_finite (a b : ℝ) :
+    Set.Finite {n : ℕ | -Real.log (n : ℝ) ∈ Set.Icc a b} := by
+  obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (Real.exp (-a))
+  refine ((Set.finite_singleton 0).union (Set.finite_Iic N)).subset ?_
+  intro n hn
+  simp only [Set.mem_setOf_eq, Set.mem_Icc] at hn
+  simp only [Set.mem_union, Set.mem_singleton_iff, Set.mem_Iic]
+  by_cases hn0 : n = 0
+  · exact Or.inl hn0
+  · right
+    have hnpos : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hn0
+    have hlog : Real.log (n : ℝ) ≤ -a := by linarith [hn.1]
+    have hnexp : (n : ℝ) ≤ Real.exp (-a) :=
+      (Real.log_le_iff_le_exp hnpos).mp hlog
+    have hnlt : n < N := by exact_mod_cast lt_of_le_of_lt hnexp hN
+    exact hnlt.le
+
+/-- The two reflected atomic location families are locally finite, with no coefficient premise. -/
+theorem reflectedAtomicLocations_locallyFinite (a b : ℝ) :
+    Set.Finite {n : ℕ | Real.log (n : ℝ) ∈ Set.Icc a b} ∧
+      Set.Finite {n : ℕ | -Real.log (n : ℝ) ∈ Set.Icc a b} :=
+  ⟨positiveAtomicLocations_interval_finite a b,
+    negativeAtomicLocations_interval_finite a b⟩
+
+namespace ReflectedAtomicCurrent
+
+@[ext] theorem ext {K L : ReflectedAtomicCurrent}
+    (hpos : K.pos = L.pos) (hneg : K.neg = L.neg) : K = L := by
+  cases K
+  cases L
+  simp_all
+
+instance : Add ReflectedAtomicCurrent where
+  add K L := ⟨K.pos + L.pos, K.neg + L.neg⟩
+
+instance : Neg ReflectedAtomicCurrent where
+  neg K := ⟨-K.pos, -K.neg⟩
+
+@[simp] theorem neg_pos (K : ReflectedAtomicCurrent) : (-K).pos = -K.pos := rfl
+
+@[simp] theorem neg_neg (K : ReflectedAtomicCurrent) : (-K).neg = -K.neg := rfl
+
+end ReflectedAtomicCurrent
+
+def atomicIotaPlus (f : ℕ → ℂ) : ReflectedAtomicCurrent := ⟨f, f⟩
+
+def atomicIotaMinus (f : ℕ → ℂ) : ReflectedAtomicCurrent := ⟨f, -f⟩
+
+def atomicPositionMul (K : ReflectedAtomicCurrent) : ReflectedAtomicCurrent :=
+  ⟨fun n => Complex.ofReal (Real.log (n : ℝ)) * K.pos n,
+    fun n => -Complex.ofReal (Real.log (n : ℝ)) * K.neg n⟩
+
+def halfDensityVonMangoldtCoefficient (n : ℕ) : ℂ :=
+  mellinVonMangoldtCurrent (1 / 2) n
+
+def halfDensityVonMangoldtDerivative (n : ℕ) : ℂ :=
+  -Complex.ofReal (Real.log (n : ℝ)) * halfDensityVonMangoldtCoefficient n
+
+def primeWeilKernel : ReflectedAtomicCurrent :=
+  -atomicIotaPlus halfDensityVonMangoldtCoefficient
+
+theorem atomicPositionMul_primeWeilKernel :
+    atomicPositionMul primeWeilKernel =
+      atomicIotaMinus halfDensityVonMangoldtDerivative := by
+  ext n <;>
+    simp [atomicPositionMul, primeWeilKernel, atomicIotaPlus, atomicIotaMinus,
+      halfDensityVonMangoldtDerivative]
+
+theorem primeWeilTangent_positiveCoefficient (n : ℕ) :
+    (atomicPositionMul primeWeilKernel).pos n =
+      -(arithmeticMellinWeight (1 / 2) n : ℂ) *
+        (ArithmeticFunction.vonMangoldt n : ℂ) *
+          Complex.ofReal (Real.log (n : ℝ)) := by
+  simp [atomicPositionMul, primeWeilKernel, atomicIotaPlus,
+    halfDensityVonMangoldtCoefficient, mellinVonMangoldtCurrent,
+    arithmeticMellinTwist_apply, complexVonMangoldt]
+  ring
+
+/-- Literal paper normalization `-Λ(n) log(n) / sqrt(n)` away from excluded index zero. -/
+theorem primeWeilTangent_positiveCoefficient_eq_log_div_sqrt
+    {n : ℕ} (hn : n ≠ 0) :
+    (atomicPositionMul primeWeilKernel).pos n =
+      -Complex.ofReal
+        (ArithmeticFunction.vonMangoldt n * Real.log (n : ℝ) / Real.sqrt n) := by
+  rw [primeWeilTangent_positiveCoefficient]
+  simp only [arithmeticMellinWeight, if_neg hn]
+  have hnnonneg : (0 : ℝ) ≤ n := by positivity
+  rw [show (-(1 / 2 : ℝ)) = -(1 / 2) by ring,
+    Real.rpow_neg hnnonneg, ← Real.sqrt_eq_rpow]
+  push_cast
+  simp only [div_eq_mul_inv]
+  ring
+
+theorem primeWeilTangent_coefficient_faithful {n : ℕ} (hn : 2 ≤ n) :
+    (atomicPositionMul primeWeilKernel).pos n ≠ 0 ↔ IsPrimePow n := by
+  rw [primeWeilTangent_positiveCoefficient]
+  have hn0 : n ≠ 0 := by omega
+  have hnR : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hweight : arithmeticMellinWeight (1 / 2) n ≠ 0 := by
+    simp [arithmeticMellinWeight, hn0, ne_of_gt (Real.rpow_pos_of_pos hnR _)]
+  have hlog : Real.log (n : ℝ) ≠ 0 :=
+    ne_of_gt (Real.log_pos (by exact_mod_cast (by omega : 1 < n)))
+  have hweightC : (arithmeticMellinWeight (1 / 2) n : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr hweight
+  have hlogC : Complex.ofReal (Real.log (n : ℝ)) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr hlog
+  have hLambda : (ArithmeticFunction.vonMangoldt n : ℂ) ≠ 0 ↔ IsPrimePow n := by
+    rw [Complex.ofReal_ne_zero, ne_eq, ArithmeticFunction.vonMangoldt_eq_zero_iff]
+    tauto
+  rw [mul_ne_zero_iff, mul_ne_zero_iff]
+  constructor
+  · rintro ⟨⟨_, hL⟩, _⟩
+    exact hLambda.mp hL
+  · intro hp
+    exact ⟨⟨neg_ne_zero.mpr hweightC, hLambda.mpr hp⟩, hlogC⟩
+
+/-! ## Prime Stokes rapidity and weld -/
+
+def criticalRapidityCoordinate (s : ℂ) : ℝ := 2 * s.re - 1
+
+def criticalReflection (s : ℂ) : ℂ := 1 - star s
+
+def stokesPrimeRapidity (p : Nat.Primes) (M : ℕ) (s : ℂ) : ℝ :=
+  M * criticalRapidityCoordinate s * Real.log (p : ℕ)
+
+def stokesPrimeCharacter (p : Nat.Primes) (s : ℂ) : ℝ :=
+  Real.exp (criticalRapidityCoordinate s * Real.log (p : ℕ))
+
+theorem stokesPrimeRapidity_sourceCoefficient (p : Nat.Primes) (M : ℕ) (s : ℂ) :
+    stokesPrimeRapidity p M s =
+      M * criticalRapidityCoordinate s *
+        ArithmeticFunction.vonMangoldt (p : ℕ) := by
+  rw [stokesPrimeRapidity, ArithmeticFunction.vonMangoldt_apply_prime p.prop]
+
+theorem stokesPrimeCharacter_pow (p : Nat.Primes) (M : ℕ) (s : ℂ) :
+    stokesPrimeCharacter p s ^ M = Real.exp (stokesPrimeRapidity p M s) := by
+  rw [stokesPrimeCharacter, ← Real.exp_nat_mul]
+  congr 1
+  rw [stokesPrimeRapidity]
+  ring
+
+@[simp] theorem criticalRapidityCoordinate_reflection (s : ℂ) :
+    criticalRapidityCoordinate (criticalReflection s) = -criticalRapidityCoordinate s := by
+  simp [criticalRapidityCoordinate, criticalReflection]
+  ring
+
+theorem stokesPrimeRapidity_reflection (p : Nat.Primes) (M : ℕ) (s : ℂ) :
+    stokesPrimeRapidity p M (criticalReflection s) = -stokesPrimeRapidity p M s := by
+  simp [stokesPrimeRapidity]
+
+theorem reflectedExponential_product (omega : ℝ) :
+    -(Real.exp omega - 1) * (Real.exp (-omega) - 1) =
+      4 * Real.sinh (omega / 2) ^ 2 := by
+  rw [Real.sinh_eq]
+  have hpos : Real.exp omega ≠ 0 := ne_of_gt (Real.exp_pos omega)
+  have hhalf : Real.exp (omega / 2) ≠ 0 := ne_of_gt (Real.exp_pos (omega / 2))
+  rw [show Real.exp (-omega) = (Real.exp omega)⁻¹ by
+    rw [Real.exp_neg]]
+  rw [show Real.exp (-(omega / 2)) = (Real.exp (omega / 2))⁻¹ by
+    rw [Real.exp_neg]]
+  have hsquare : Real.exp omega = Real.exp (omega / 2) ^ 2 := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  rw [hsquare]
+  field_simp
+  ring
+
+def stokesRapidityNormal (p : Nat.Primes) (M : ℕ) (eta : ℝ) : ℝ :=
+  (M : ℝ) * eta * Real.log (p : ℕ)
+
+theorem deriv_stokesRapidityNormal (p : Nat.Primes) (M : ℕ) (eta : ℝ) :
+    deriv (stokesRapidityNormal p M) eta = (M : ℝ) * Real.log (p : ℕ) := by
+  change deriv (fun eta : ℝ => (M : ℝ) * eta * Real.log (p : ℕ)) eta = _
+  simpa only [id_eq, one_mul, mul_one] using
+    (((hasDerivAt_id eta).const_mul (M : ℝ)).mul_const
+      (Real.log (p : ℕ))).deriv
+
+theorem routeLMassWeilStokes_primitivePrime_weld
+    (p : Nat.Primes) {M : ℕ} (hM : 0 < M) :
+    (atomicPositionMul primeWeilKernel).pos (p : ℕ) =
+      -((M : ℝ)⁻¹ : ℂ) * eulerPrimeHalfDensityAmplitude p *
+        ((M : ℝ) * Real.log (p : ℕ) : ℝ) := by
+  rw [primeWeilTangent_positiveCoefficient,
+    ArithmeticFunction.vonMangoldt_apply_prime p.prop]
+  rw [eulerPrimeHalfDensityAmplitude, eulerPrimeSigmaAmplitude]
+  have hMR : (M : ℝ) ≠ 0 := by exact_mod_cast hM.ne'
+  simp only [arithmeticMellinWeight, if_neg p.prop.ne_zero]
+  norm_cast
+  field_simp
+
+theorem routeLMassWeilStokes_primitivePrime_normalDerivative_weld
+    (p : Nat.Primes) {M : ℕ} (hM : 0 < M) :
+    (atomicPositionMul primeWeilKernel).pos (p : ℕ) =
+      -((M : ℝ)⁻¹ : ℂ) * eulerPrimeHalfDensityAmplitude p *
+        ((deriv (stokesRapidityNormal p M) (0 : ℝ) : ℝ) : ℂ) := by
+  rw [deriv_stokesRapidityNormal]
+  exact routeLMassWeilStokes_primitivePrime_weld p hM
+
+theorem primePower_stokes_routeL_separation (p : Nat.Primes) (k : ℕ) :
+    Real.log (((p : ℕ) ^ (k + 1) : ℕ) : ℝ) =
+        (k + 1) * Real.log (p : ℕ) ∧
+      ArithmeticFunction.vonMangoldt ((p : ℕ) ^ (k + 1)) =
+        Real.log (p : ℕ) := by
+  constructor
+  · norm_cast
+    rw [Nat.cast_pow, Real.log_pow]
+  · rw [ArithmeticFunction.vonMangoldt_apply_pow (Nat.succ_ne_zero k),
+      ArithmeticFunction.vonMangoldt_apply_prime p.prop]
+
+/-! ## Nonselection countermodels -/
+
+def parallelEdgeAllocation (u : ℝ) : Fin 2 → ℝ := ![u, 1 - u]
+
+def parallelSignlessBoundary (q : Fin 2 → ℝ) : Fin 2 → ℝ :=
+  ![q 0 + q 1, q 0 + q 1]
+
+theorem parallelEdgeAllocation_boundary (u : ℝ) :
+    parallelSignlessBoundary (parallelEdgeAllocation u) = ![1, 1] := by
+  ext i
+  fin_cases i <;> simp [parallelSignlessBoundary, parallelEdgeAllocation]
+
+theorem parallelEdgeAllocation_nonnegative {u : ℝ} (hu : u ∈ Set.Icc (0 : ℝ) 1) :
+    ∀ i, 0 ≤ parallelEdgeAllocation u i := by
+  intro i
+  fin_cases i <;> simp [parallelEdgeAllocation, hu.1, hu.2]
+
+theorem parallelEdgeAllocation_injective : Function.Injective parallelEdgeAllocation := by
+  intro u v h
+  have := congrFun h 0
+  simpa [parallelEdgeAllocation] using this
+
+theorem parallelSignlessBoundary_not_injective :
+    ¬ Function.Injective parallelSignlessBoundary := by
+  intro h
+  have heq : parallelSignlessBoundary (parallelEdgeAllocation 0) =
+      parallelSignlessBoundary (parallelEdgeAllocation 1) := by
+    rw [parallelEdgeAllocation_boundary, parallelEdgeAllocation_boundary]
+  have := h heq
+  have hcoord := congrFun this 0
+  norm_num [parallelEdgeAllocation] at hcoord
+
+def gammaNormalizationFreedom (c : ℝ) (s : ℂ) : ℂ :=
+  Complex.exp ((c : ℂ) * (s - (1 / 2 : ℂ)) ^ 2)
+
+theorem gammaNormalizationFreedom_ne_zero (c : ℝ) (s : ℂ) :
+    gammaNormalizationFreedom c s ≠ 0 := Complex.exp_ne_zero _
+
+theorem gammaNormalizationFreedom_schwarz (c : ℝ) (s : ℂ) :
+    star (gammaNormalizationFreedom c s) = gammaNormalizationFreedom c (star s) := by
+  change (starRingEnd ℂ) (Complex.exp ((c : ℂ) * (s - (1 / 2 : ℂ)) ^ 2)) = _
+  rw [← Complex.exp_conj]
+  apply congrArg Complex.exp
+  have hc : star (c : ℂ) = (c : ℂ) := by
+    exact Complex.conj_ofReal c
+  simp only [map_mul, map_pow, map_sub, div_eq_mul_inv, map_one,
+    map_inv₀, map_ofNat, starRingEnd_apply, hc]
+
+theorem gammaNormalizationFreedom_reflection (c : ℝ) (s : ℂ) :
+    gammaNormalizationFreedom c (1 - s) = gammaNormalizationFreedom c s := by
+  unfold gammaNormalizationFreedom
+  congr 1
+  ring
+
+theorem hasDerivAt_gammaNormalizationFreedom (c : ℝ) (s : ℂ) :
+    HasDerivAt (gammaNormalizationFreedom c)
+      (2 * (c : ℂ) * (s - (1 / 2 : ℂ)) * gammaNormalizationFreedom c s) s := by
+  have hnatural : HasDerivAt (gammaNormalizationFreedom c)
+      (gammaNormalizationFreedom c s *
+        ((c : ℂ) * (2 * (s - (1 / 2 : ℂ))))) s := by
+    unfold gammaNormalizationFreedom
+    simpa only [Pi.pow_apply, id_eq, Nat.reduceSub, pow_one, mul_one, one_mul,
+      Nat.cast_ofNat] using
+      ((((hasDerivAt_id s).sub_const (1 / 2 : ℂ)).pow 2 |>.const_mul
+        (c : ℂ) |>.cexp))
+  exact hnatural.congr_deriv (by ring)
+
+theorem gammaNormalizationFreedom_logarithmicCurrent (c : ℝ) (s : ℂ) :
+    deriv (gammaNormalizationFreedom c) s / gammaNormalizationFreedom c s =
+      2 * (c : ℂ) * (s - (1 / 2 : ℂ)) := by
+  rw [(hasDerivAt_gammaNormalizationFreedom c s).deriv]
+  field_simp [gammaNormalizationFreedom_ne_zero]
+
+theorem gammaNormalizationFreedom_zero (s : ℂ) :
+    gammaNormalizationFreedom 0 s = 1 := by simp [gammaNormalizationFreedom]
+
+theorem gammaNormalizationFreedom_one_ne_zero :
+    gammaNormalizationFreedom 1 0 ≠ gammaNormalizationFreedom 0 0 := by
+  rw [gammaNormalizationFreedom_zero]
+  intro h
+  have hn := congrArg norm h
+  have hlt : 1 < Real.exp (1 / 4 : ℝ) := Real.one_lt_exp_iff.mpr (by norm_num)
+  norm_num [gammaNormalizationFreedom, Complex.norm_exp] at hn
+
+end
+end GaloisForLFunctions.HTGeometry

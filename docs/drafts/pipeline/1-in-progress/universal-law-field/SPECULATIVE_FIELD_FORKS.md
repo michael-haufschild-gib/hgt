@@ -278,7 +278,24 @@ the open integer lift.
 If proof observers form one finitely generated distributive source-faithful doctrine lattice, this
 fork contributes nothing.
 
-## 12. Immediate rabbit holes
+## 12. Fork I — finite bulk/boundary fusion
+
+### Primitive
+
+A monoidal bulk law category acting on a category of proof-boundary conditions, with defect fusion,
+duality, and positive/reflection structure.
+
+### Native survivor
+
+The three irreducible boundaries of \(\mathbb C[C_3]\) share dimension, endomorphism dimension, and
+positive character norm. A marked bulk generator separates them. Fusion is recurrent modulo three
+with an open integer lift.
+
+### Fatal test
+
+Without a source-native common bulk action, theorem holography is decorative.
+
+## 13. Immediate rabbit holes
 
 1. Build a finite contextual law model and test whether its obstruction survives structured
    equivalence.

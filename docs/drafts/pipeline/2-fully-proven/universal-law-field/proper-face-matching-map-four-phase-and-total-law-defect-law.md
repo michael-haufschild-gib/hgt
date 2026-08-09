@@ -16,6 +16,7 @@ Let \(\mathcal S\) be the infinity-category of spaces. Fix a finite observer set
 \]
 
 where \(X_I\) is the total law object and \(X_S\) is its shadow on observer face \(S\).
+Write \(\mathcal P_{<I}(I)\) for the poset of proper subsets of \(I\).
 
 Define the proper-face matching object
 

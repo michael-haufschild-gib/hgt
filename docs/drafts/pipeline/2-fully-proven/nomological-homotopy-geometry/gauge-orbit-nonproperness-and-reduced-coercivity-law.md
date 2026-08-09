@@ -131,3 +131,28 @@ identified.
 - Global gauge anomalies and singular quotient strata are not addressed.
 - The theorem supplies an obstruction and the correct reduced target; it does not construct a
   coercive field realization.
+
+## 7. Lean formalization status
+
+- **Status:** `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
+- **Module:**
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/GaugeProperness.lean`
+- **Umbrella wiring:**
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry.lean`, imported by
+  `formal/GaloisForLFunctions/HTGeometry.lean`.
+- **Exact formal targets:** `gaugeOrbit_nonproperness` (Theorem 2.1),
+  `freeProperNoncompact_gaugeOrbit_nonproperness` together with
+  `orbitHomeomorph` and `orbit_isClosed` (Corollary 2.2),
+  `reducedPair_proper_of_unreducedPair_proper`,
+  `compactGroup_orbitProjection_isProperMap`,
+  `compactGroup_unreducedPair_proper_of_reducedPair_proper`, and
+  `noncompactProduct_reducedProper_unreducedNotProper` (all three clauses of Theorem 3.1).
+- **Infrastructure proved, not assumed:** compact-preimage properness and composition/descent;
+  compact-group quotient projection properness; free proper orbit closed embedding/homeomorphism;
+  explicit free proper first-factor product action; reduced graph properness and unreduced
+  nonproperness witness.
+- **Leaf verification:**
+  `lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/GaugeProperness.lean`
+  passed on 2026-08-09.
+- **Remaining gates:** final umbrella `lake build`, formal lint, and scratch-file `#print axioms`
+  audit. Card remains in Stage 2 pending those repository-wide final gates; it is not moved.
