@@ -27,7 +27,7 @@ def polyRecessionAux (q : Polynomial ℂ) (d : ℕ) (u z : ℂ) : ℂ :=
 
 theorem continuous_polyRecessionAux (q : Polynomial ℂ) (d : ℕ) :
     Continuous fun p : ℂ × ℂ => polyRecessionAux q d p.1 p.2 := by
-  refine continuous_finset_sum _ fun m _ => ?_
+  refine continuous_finsetSum _ fun m _ => ?_
   fun_prop
 
 theorem polyRecessionAux_zero (q : Polynomial ℂ) (d : ℕ) (z : ℂ) :
@@ -61,6 +61,18 @@ theorem polyRecessionAux_eq (q : Polynomial ℂ) {d : ℕ} (hd : q.natDegree ≤
 
 /-! ## Locally uniform convergence in a continuous parameter -/
 
+theorem tendstoLocallyUniformly_congr_eventually {α β ι : Type*} [TopologicalSpace α]
+    [UniformSpace β] {F G : ι → α → β} {f : α → β} {p : Filter ι}
+    (h : TendstoLocallyUniformly F f p) (heq : ∀ᶠ n in p, ∀ x, F n x = G n x) :
+    TendstoLocallyUniformly G f p := by
+  intro v hv x
+  obtain ⟨t, ht, hev⟩ := h v hv x
+  refine ⟨t, ht, ?_⟩
+  filter_upwards [hev, heq] with n hn hn' y hy
+  rw [← hn' y]
+  exact hn y hy
+
+
 theorem tendstoLocallyUniformly_of_continuous_param {ι : Type*} {l : Filter ι}
     (G : ℂ × ℂ → ℂ) (hG : Continuous G) {u : ι → ℂ} (hu : Tendsto u l (𝓝 0)) :
     TendstoLocallyUniformly (fun i z => G (u i, z)) (fun z => G (0, z)) l := by
@@ -81,7 +93,7 @@ theorem tendstoLocallyUniformly_of_continuous_param {ι : Type*} {l : Filter ι}
 
 theorem tendsto_inv_I_mul_ofReal_atTop :
     Tendsto (fun T : ℝ => (Complex.I * (T : ℂ))⁻¹) atTop (𝓝 0) := by
-  rw [NormedAddCommGroup.tendsto_nhds_zero]
+  rw [NormedAddGroup.tendsto_nhds_zero]
   intro ε hε
   filter_upwards [eventually_gt_atTop (max 1 ε⁻¹)] with T hT
   have hT1 : (1 : ℝ) < T := lt_of_le_of_lt (le_max_left _ _) hT
@@ -108,7 +120,7 @@ theorem poly_scaled_translate_tendstoLocallyUniformly (q : Polynomial ℂ) {d : 
     funext z
     exact polyRecessionAux_zero q d z
   rw [hlim] at hparam
-  refine hparam.congr ?_
+  refine tendstoLocallyUniformly_congr_eventually hparam ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT z
   have hTne : (T : ℂ) ≠ 0 := by
     simpa using ne_of_gt hT

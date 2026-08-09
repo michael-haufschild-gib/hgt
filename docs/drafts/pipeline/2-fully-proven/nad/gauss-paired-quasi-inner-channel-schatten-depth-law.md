@@ -302,3 +302,20 @@ No operator-analytic theorem is postulated as an axiom.
 - [ ] prove semilocal trace-remainder positivity
 - [ ] transport the resulting index to the true restricted-Weil operator
 - [ ] prove RH
+
+## Audit — the card cites a Lean module that does not exist
+
+This card names `formal/GaloisForLFunctions/RHTower/GaussPairedChannelSchattenDepth.lean`.  That
+file is **not in the tree**; a repository-wide check finds no module of that name.  The two modules
+it also names, `HTGeometry/ArithmeticComplementRank.lean` and
+`HTGeometry/KolchinFrequencyBudgetPhase.lean`, do exist — but the second is the numerical
+`SingularKolchinFrequencyInput` layer whose content is arithmetic (see the Kolchin-frequency cards'
+audit), so it carries none of this card's operator theory.
+
+That is consistent with the card's own `## Lean decision`: the tree contains no Hardy quasi-inner
+multipliers, no weak Schatten ideals, no Dixmier traces, and no regularized determinants, and no
+Lean file was added for the operator-analytic core.  The stale reference should be removed.
+
+Formalization obligation, unchanged and large: build the weak-Schatten ideal / Dixmier-trace /
+regularized-determinant substrate, then prove the Gauss endpoint residue and the cofinal depth
+unconditionally, removing `GaussChannelSchattenEndpointInput`.

@@ -402,3 +402,29 @@ corpus's differential-algebraicity predicate, which is what
 
 So both ends of the Siegel argument are now Lean — the four analytic/combinatorial cores and the
 landing interface — and what is missing is only the middle assembly listed above.
+
+### Siegel reduction step — DONE (first half)
+
+`formal/GaloisForLFunctions/HTGeometry/CompactQuotientSpan.lean`:
+
+> **`span_eq_top_of_compactSpace_quotient`** — if `E ⧸ P` is compact for `E` finite-dimensional
+> real, then `P` spans `E` over `ℝ`. Otherwise the corpus's
+> `HTGeometry.exists_dual_vanishing_of_notMem_closed_submodule` supplies a continuous functional
+> vanishing on the span, which `not_compactSpace_quotient_of_realSurjection` turns into a
+> continuous surjection onto `ℝ` — impossible from a compact space.
+
+Unconditional, axiom-clean, umbrella-wired. This is the first half of "compact quotient forces a
+full lattice": the subgroup spans, so a basis can be extracted from it, and the remaining half is
+that the extracted basis's integer span already has compact quotient, which is where the
+parallelotope of `FundamentalParallelotope` comes from.
+
+Same module, second half:
+
+> **`exists_linearIndependent_span_top_subset_of_compactSpace_quotient`** — a subgroup with compact
+> quotient contains a linearly independent spanning set, i.e. a basis of the whole space all of
+> whose members are periods (`exists_linearIndependent` applied to the subgroup, then the span
+> result above).
+
+`Module.Basis.mk` on that set feeds `FundamentalParallelotope` directly, so the reduction
+"compact quotient ⟹ compact fundamental parallelotope whose vertices are periods" is now a
+two-line composition of corpus lemmas.

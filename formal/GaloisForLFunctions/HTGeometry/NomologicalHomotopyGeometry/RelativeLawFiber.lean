@@ -1,5 +1,6 @@
 import Mathlib.Algebra.Homology.HomotopyCategory.Triangulated
 import Mathlib.CategoryTheory.Category.Pointed
+import Mathlib.CategoryTheory.Limits.Shapes.Pullback.Pasting
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 /-!
@@ -23,6 +24,108 @@ namespace HTGeometry.NomologicalHomotopyGeometry.RelativeLawFiber
 open CategoryTheory CategoryTheory.Limits
 
 universe u v
+
+/-! ## The finite-limit theorem in every pointed category -/
+
+namespace CategoricalModel
+
+open scoped ZeroObject
+
+variable {C : Type u} [Category.{v} C] [HasZeroMorphisms C] [HasZeroObject C]
+  [HasPullbacks C]
+
+/-- Fibre of `f` in a pointed category, defined by its universal pullback over the zero object. -/
+noncomputable abbrev fiber {X Y : C} (f : X ⟶ Y) : C :=
+  pullback f (0 : (0 : C) ⟶ Y)
+
+/-- The canonical arrow `fib (g ∘ f) → fib g`. -/
+noncomputable def fiberMap {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    fiber (f ≫ g) ⟶ fiber g :=
+  pullback.lift (pullback.fst (f ≫ g) 0 ≫ f) (pullback.snd (f ≫ g) 0) (by
+    simpa only [Category.assoc] using pullback.condition)
+
+@[reassoc (attr := simp)]
+theorem fiberMap_fst {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    fiberMap f g ≫ pullback.fst g 0 = pullback.fst (f ≫ g) 0 ≫ f := by
+  unfold fiberMap
+  exact pullback.lift_fst _ _ _
+
+@[reassoc (attr := simp)]
+theorem fiberMap_snd {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    fiberMap f g ≫ pullback.snd g 0 = pullback.snd (f ≫ g) 0 := by
+  unfold fiberMap
+  exact pullback.lift_snd _ _ _
+
+/-- The canonical arrow `fib f → fib (g ∘ f)`. -/
+noncomputable def fiberInclusion {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    fiber f ⟶ fiber (f ≫ g) :=
+  pullback.lift (pullback.fst f 0) (pullback.snd f 0) (by
+    rw [← Category.assoc, pullback.condition]
+    simp)
+
+@[reassoc (attr := simp)]
+theorem fiberInclusion_fst {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    fiberInclusion f g ≫ pullback.fst (f ≫ g) 0 = pullback.fst f 0 := by
+  unfold fiberInclusion
+  exact pullback.lift_fst _ _ _
+
+@[reassoc (attr := simp)]
+theorem fiberInclusion_snd {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    fiberInclusion f g ≫ pullback.snd (f ≫ g) 0 = pullback.snd f 0 := by
+  unfold fiberInclusion
+  exact pullback.lift_snd _ _ _
+
+/-- Consecutive arrows in the relative-fibre sequence compose to zero. -/
+theorem fiberInclusion_comp_fiberMap {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    fiberInclusion f g ≫ fiberMap f g = 0 := by
+  apply pullback.hom_ext
+  · rw [Category.assoc, fiberMap_fst, ← Category.assoc, fiberInclusion_fst,
+      pullback.condition]
+    simp
+  · rw [Category.assoc, fiberMap_snd, fiberInclusion_snd]
+    apply Subsingleton.elim
+
+/-- Cone exhibiting `fib f` as the fibre of `fib (g ∘ f) → fib g`. -/
+noncomputable def serialFiberCone {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    PullbackCone (fiberMap f g) (0 : (0 : C) ⟶ fiber g) :=
+  PullbackCone.mk (fiberInclusion f g) (pullback.snd f 0)
+    (by simp [fiberInclusion_comp_fiberMap])
+
+/-- Relative law-fibre sequence theorem.
+
+For every pair of composable arrows in every pointed category with pullbacks, `fib f` is the
+pullback of `fib (g ∘ f) → fib g` over the zero object.  Thus
+`fib f → fib (g ∘ f) → fib g` is a fibre sequence by the universal property itself.
+-/
+noncomputable def serialFiberConeIsLimit {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    IsLimit (serialFiberCone f g) := by
+  apply PullbackCone.IsLimit.mk _
+    (fun s ↦ pullback.lift
+      (s.fst ≫ pullback.fst (f ≫ g) 0) s.snd (by
+        have h := congrArg (fun q ↦ q ≫ pullback.fst g 0) s.condition
+        simpa [Category.assoc] using h))
+  · intro s
+    apply pullback.hom_ext
+    · rw [Category.assoc, fiberInclusion_fst]
+      exact pullback.lift_fst _ _ _
+    · apply Subsingleton.elim
+  · intro s
+    exact pullback.lift_snd _ _ _
+  · intro s m hm₁ hm₂
+    apply pullback.hom_ext
+    · calc
+        m ≫ pullback.fst f 0 =
+            s.fst ≫ pullback.fst (f ≫ g) 0 := by
+              simpa [Category.assoc] using
+                congrArg (fun q ↦ q ≫ pullback.fst (f ≫ g) 0) hm₁
+        _ = pullback.lift (s.fst ≫ pullback.fst (f ≫ g) 0) s.snd _ ≫
+            pullback.fst f 0 := (pullback.lift_fst _ _ _).symm
+    · calc
+        m ≫ pullback.snd f 0 = s.snd := hm₂
+        _ = pullback.lift (s.fst ≫ pullback.fst (f ≫ g) 0) s.snd _ ≫
+            pullback.snd f 0 := (pullback.lift_snd _ _ _).symm
+
+end CategoricalModel
 
 /-! ## Pointed homotopy fibres -/
 

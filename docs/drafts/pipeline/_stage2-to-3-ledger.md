@@ -32,12 +32,24 @@ Promotion recipe:
 | `exact-penalty-robust-circuit-bellman-duality` | Theorems A–C in full | `HTGeometry/ExactPenaltyCircuitBellman` (new) |
 | `static-orbit-net-no-go-and-circuit-bellman-law` | Theorems A–D in full | `HTGeometry/EuclideanSphereCoveringBound`, `HTGeometry/StaticOrbitNetBellmanLaw` (both new) |
 | `all-replica-local-casimir-hall-expansion` | boxed `(6)` bi-tightness and `(7)` off-kernel Hall | `HTGeometry/CentralCasimirComplementHallExpansion` (new) |
+| `nearest-neighbor-chain-projective-spectral-maximality` | qubit specialization + Corollary 2 `(18)` | `HTGeometry/NearestNeighborQubitChainMaximalRank`, `CommutingHermitianSpectrumSum`, `CommutingTermTemporalRankBound` (all new) |
+| `complete-graph-local-projective-spectral-maximality` | complete-graph instance + `(13)` | `HTGeometry/CompleteGraphLocalProjectiveMaximality` (new) |
+| `disconnected-local-spectral-factorization-genericity` | none (already complete in the hypergraph form) | `HTGeometry/DisconnectedProjectiveGapModuleLaw`, `HypergraphComponentFactorization`, `HypergraphProjectiveSpectralFactorization`, `BlockSumSpectralGenericity` |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
 | `burnol-holonomy-cauchy-sector-separation` | none (verified only) | `RHTower/BurnolHolonomyCauchySectorSeparation` |
 | `burnol-all-prime-completion-singular-potential-entrance-wall` | all of `(AW0)`--`(AW17)` | `RHTower/BurnolAllPrimeCompletionWall`, `RHTower/BurnolPrimeLogSummability` (both new) |
+| `burnol-all-prime-window-hilbert-cartier-jet-wall` | all of `(HJ1)`--`(HJ29)` | `RHTower/BurnolAllPrimeWindowEnergy`, `RHTower/BurnolReciprocalStokesSewing` (both new) |
+| `burnol-poisson-subordinate-smooth-cartier-entrance-wall` | all of `(PS1)`--`(PS16)`, incl. the Glasser integral | `RHTower/BurnolPoissonSubordinateWall`, `RHTower/BurnolGlasserIntegral` (both new) |
 
 ## New reusable infrastructure built during the sweep
+
+- `RHTower/BurnolPrimeLogSummability` — `∑ 1/(p (log p)²) < ∞` by telescoping, Euler divergence on
+  the prime subtype, `log^k = o(x^δ)`, and `u^k e^{-2y√u} ≤ C/u²`.
+- `RHTower/BurnolGlasserIntegral` — `∫₀^∞ e^{-t²-b²/t²} dt = (√π/2) e^{-2b}` and the `1/2`-stable
+  subordination identity `e^{-y√λ} = (y/(2√π)) ∫₀^∞ s^{-3/2} e^{-y²/(4s)} e^{-sλ} ds`.
+- `RHTower/BurnolGammaSteinMoments` — the master collar moment `∫ 2z e^{-z} z^{s-1} P(z) du` as a
+  Gamma combination, via the substitution `z = C e^{-2u}`.
 
 - `HTGeometry/FixedObserverBlockChannelCodimension` — block tangent channel, real dimension
   `2(d−1)`, observer rank = QFI rank.
@@ -52,7 +64,15 @@ Promotion recipe:
   family by its kernel projector; exact bi-tightness and exact Hall expansion off the kernel.
   (Four RCLike scaling declarations in `CentralCasimirHallExpansion` were made public for this.)
 - `HTGeometry/CommutingTermTemporalRankBound` — additive spectra have at most the summed anchored
-  temporal rank; `m` commuting four-level terms give rank at most `3m`.
+  temporal rank; `m` commuting `v`-level terms give rank at most `m(v−1)`.
+- `HTGeometry/CommutingHermitianSpectrumSum` — **every eigenvalue of a sum of pairwise commuting
+  Hermitian matrices is a sum of eigenvalues of the summands**, proved without a simultaneous
+  eigenbasis (block-diagonality in one summand's eigenbasis).  mathlib has no such lemma and no
+  `spectrum (a+b) ⊆ spectrum a + spectrum b` for commuting elements.  Plus the commuting-term
+  temporal-rank law and the tensor-factor level count.
+- `HTGeometry/NearestNeighborQubitChainMaximalRank` — the `q = 2` path law with simple spectrum.
+- `HTGeometry/CompleteGraphLocalProjectiveMaximality` — the all-to-all two-local architecture as a
+  connected hypergraph, with simplicity, maximal projective independence and rank `q^n − 1`.
 - `HTGeometry/StaticOrbitNetBellmanLaw` — coefficient Hamiltonians, the `√m` and Duhamel Lipschitz
   bounds, the static orbit net, the min-plus layer recursion, the max-plus overlap recursion
   (general pullback form plus the unitary instance and the monotone-reader form), and the robust
@@ -95,6 +115,23 @@ generator `(4)`–`(5)`, which is the sibling card `local-interaction-replica-co
 `HTGeometry.le_lipschitzConstant_of_certificate`; its `(7)` needs equation `(6)` of the parent
 card `algebraic-two-local-instant-exact-complexity`, which is not yet formalized.  Do the parent
 first.
+
+## Scoped, not yet done
+
+- `local-interaction-replica-collision-extremality` — Theorems A and B are already
+  `ReplicaCollisionExtremality` (`fidelityReplicaResonantMass_eq_collisionMass`,
+  `fidelityReplicaCollisionMass_floor_le`, `all_fidelityReplicaCollisionMass_eq_floor_iff`).
+  Remaining: Theorem C (assemble from the path law), C2 (instantiate
+  `AffineLinePolynomialAvoidance` with the obstruction polynomials plus `ρ(A) ≤ n(q−1)`),
+  E `(9)` (uniform-weight specialisation) and F `(10)`–`(12)` (the combinatorial limit
+  `a_{D,m} → m!` plus moment-determinacy of `Exp(1)`).
+- `component-recurrence-torus-and-replica-factorization-law` — component-histogram law done in
+  `ComponentReplicaCollisionLaw`; the product-torus embedding `(1)`–`(3)` and the uniform-SFF
+  product/asymptotics remain.
+- `two-replica-singlet-pauli-hall-expansion` — three named maps into
+  `resolvedFiberAssembly_subspace_finrank`.
+- `weak-interaction-singular-quantum-time-expansion` — `(7)`'s finite-family Hausdorff assembly,
+  plus Theorem C/C2 of the card above.
 
 ## Known deep external dependencies (attack last, expect long builds)
 

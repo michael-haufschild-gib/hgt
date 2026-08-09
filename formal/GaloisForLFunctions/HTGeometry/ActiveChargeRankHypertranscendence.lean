@@ -176,6 +176,20 @@ theorem not_bilinearChargeFactorization_of_hypertranscendental
   not_finiteDimensional_translationSpan_of_hypertranscendental hΦ hS hSre hHT
     (finiteDimensional_translationSpan_of_bilinearChargeFactorization hfac)
 
+/-- **Finite translation rank gives an entire, differentially algebraic extension.**  A continuous
+phase of finite translation rank extends from the real rapidity axis to an entire function of the
+complex rapidity, and that extension satisfies an algebraic differential equation.  This is the
+form of Theorem B that Theorem C consumes. -/
+theorem exists_entire_differentiallyAlgebraic_extension_of_finiteDimensional_translationSpan
+    {Φ : ℝ → ℂ} (hΦ : Continuous Φ) (hfin : FiniteDimensional ℂ (translationSpan Φ)) :
+    ∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F (Set.univ : Set ℂ) ∧ DifferentiallyAlgebraic F ∧
+      ∀ x : ℝ, F (x : ℂ) = Φ x := by
+  obtain ⟨G, hGmem, hGeq⟩ := exists_entire_extension
+    ((mem_expPolySpace_iff_finiteDimensional_translationSpan hΦ).2 hfin)
+  exact ⟨G, analyticOnNhd_of_mem_expPolySpaceC hGmem,
+    differentiallyAlgebraic_of_mem_expPolySpaceC hGmem, hGeq⟩
+
+
 end
 
 end GaloisForLFunctions.HTGeometry

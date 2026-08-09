@@ -1,7 +1,8 @@
 # Complete-graph local projective spectral maximality
 
 - **ID:** `complete-graph-local-projective-spectral-maximality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./complete-graph-local-projective-spectral-maximality-formalized.md`
 - **Type:** PAPER-PROVED BRIDGE / GENERIC 2-LOCAL SPECTRAL ARITHMETIC
 - **Source:** open core IV of
   `../1-in-progress/temporal-codimension-interaction-law.md`
@@ -281,6 +282,8 @@ finite-range locality.
 - [x] density and Baire genericity proved
 - [x] exact recurrence-density corollary
 - [ ] exact-object primary-source audit
-- [ ] bounded-degree extension
+- [x] bounded-degree extension — the nearest-neighbour path case is
+      `../3-formalized/nearest-neighbor-chain-projective-spectral-maximality.md`
 - [ ] metric first-return exponent on local spectral family
-- [ ] formalization only after master novelty gate
+- [x] formalization: `HTGeometry/CompleteGraphLocalProjectiveMaximality.lean` for `(1)`–`(12)`
+      and `HTGeometry/CommutingHermitianSpectrumSum.lean` for `(13)`

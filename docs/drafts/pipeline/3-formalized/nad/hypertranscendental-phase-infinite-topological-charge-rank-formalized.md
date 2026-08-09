@@ -64,6 +64,11 @@ All declarations live in the namespace `GaloisForLFunctions.HTGeometry`.
    exponential of a differentially algebraic entire function is differentially algebraic;
    `eq_of_eqOn_real` — two entire functions agreeing on `ℝ` are equal.
 
+8b. **Entire extension.**  `exists_entire_differentiallyAlgebraic_extension_of_finiteDimensional_translationSpan`
+   — a continuous phase of finite translation rank extends from the real rapidity axis to an entire
+   function of the complex rapidity which satisfies an algebraic differential equation.  This is the
+   packaged form of Theorem B that Theorem C consumes.
+
 9. **Theorem C, `(11)`.**  `not_finiteDimensional_translationSpan_of_hypertranscendental` — if
    `S` is entire, `S x = ε·exp(i Φ x)` for every real `x`, and `S` is hypertranscendental, then
    `translationSpan Φ` is infinite-dimensional.  Its source form,

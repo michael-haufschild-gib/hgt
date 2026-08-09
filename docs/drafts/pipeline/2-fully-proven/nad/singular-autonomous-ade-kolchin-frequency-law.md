@@ -319,3 +319,23 @@ capacity floor.  The inverse-limit covering-dimension engine remains the checked
 - [x] singular and smooth boundary cases attacked
 - [ ] full cross-literature priority audit
 - [x] complete Lean theorem surface from explicit Ritt--Kolchin/Bohr/Pontryagin inputs
+
+## Audit — `SingularKolchinFrequencyInput` is a numerical structure, not an analytic one
+
+`KolchinFrequencyBudgetPhase.SingularKolchinFrequencyInput` has three `ℕ` fields
+(`frequencyRank`, `hullCoverDimension`, `kolchinCapacity`) and two arithmetic constraints
+(`frequencyRank = hullCoverDimension`, `hullCoverDimension ≤ 2 · kolchinCapacity`).  It contains no
+analysis, and `DataInputWitnesses.singularKolchinFrequencyInput_diagonal` already inhabits it.  The
+theorem built on it, `singularKolchin_frequencyRank_le`, is therefore
+`a = b ∧ b ≤ 2c ⟹ a ≤ 2c` — arithmetic, not the card's statement.
+
+This matches the card's own honest Lean-status prose ("Formalizing a regular jet wrapper would not
+formalize this theorem"), but contradicts the gate line "complete Lean theorem surface from explicit
+Ritt--Kolchin/Bohr/Pontryagin inputs", which should be re-marked.  The genuine Lean content in this
+direction is `CoveringDimension.HasCoverDimLE.of_refinedByStages` (component (iii)), which is real
+and axiom-clean.
+
+The five foundations named in §10 — Ritt--Raudenbush finite prime decomposition, the Kolchin
+dimension polynomial, covering dimension of inverse limits, the Bohr almost-periodic hull, and
+Pontryagin--Takahashi duality — are the actual formalization obligation, and four of the five have no
+corpus asset at all.

@@ -5,7 +5,7 @@
 - **Type:** THEOREM / SINGULAR SOURCE INTERFACE / COMPLETE-JET NO-GO CLOSURE
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-PURE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** R
-- **Parents:** `burnol-all-prime-window-hilbert-cartier-jet-wall`,
+- **Parents:** `../../3-formalized/new_scientific_knowledge/burnol/burnol-all-prime-window-hilbert-cartier-jet-wall.md`,
   `burnol-gamma-bockstein-first-wall-extraction-law`, and
   `burnol-first-wall-cartier-residue-cancellation-law`
 - **Lean:** intentionally deferred during the `RHTower -> HTGeometry` refactor.

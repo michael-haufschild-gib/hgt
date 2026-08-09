@@ -3,7 +3,7 @@
 - **ID:** `nearest-neighbor-qudit-projective-spectral-maximality`
 - **Stage:** 3-formalized
 - **Type:** PAPER-PROVED / LEAN-FORMALIZED CORE / ALL LOCAL DIMENSIONS
-- **Parent:** `../2-fully-proven/nearest-neighbor-chain-projective-spectral-maximality.md`
+- **Parent:** `./nearest-neighbor-chain-projective-spectral-maximality.md`
 - **Proof audit:** `nearest-neighbor-qudit-projective-spectral-maximality-proof-audit.md`
 - **Priority audit:** `../1-in-progress/nearest-neighbor-chain-projective-spectral-maximality-priority-audit.md`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED]`

@@ -66,7 +66,7 @@ For ordinary two-body interaction graphs, `(1)` is
 `[LOCAL-RESEARCH] [PAPER-PROVED]` in
 `arbitrary-graph-quantum-temporal-curvature-law.md`. The componentwise
 genericity gap is closed in
-`../2-fully-proven/disconnected-local-spectral-factorization-genericity.md`,
+`../3-formalized/disconnected-local-spectral-factorization-genericity.md`,
 and the all-interaction-order lift is dependency-closed in
 `../2-fully-proven/hypergraph-local-projective-spectral-factorization.md`.
 The generator law remains unauthorized for the manuscript until exact Lean

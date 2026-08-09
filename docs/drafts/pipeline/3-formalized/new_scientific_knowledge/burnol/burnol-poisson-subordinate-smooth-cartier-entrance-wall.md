@@ -1,14 +1,15 @@
 # Burnol Poisson-subordinate smooth Cartier entrance wall
 
 - **ID:** `burnol-poisson-subordinate-smooth-cartier-entrance-wall`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
+- **Formalized companion:** `burnol-poisson-subordinate-smooth-cartier-entrance-wall-formalized.md`
 - **Type:** THEOREM / PRE-DIVISOR SOURCE CONSTRUCTION / OPERATOR-DOMAIN CLASSIFICATION
 - **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** R
-- **Parents:** `burnol-all-prime-window-hilbert-cartier-jet-wall`,
+- **Parents:** `burnol-all-prime-window-hilbert-cartier-jet-wall.md` (same directory),
   `route-r-reciprocal-log-fisher-half-density-entrance-wall`, and the formalized modules
   `BurnolCoPoissonSubWindow.lean` and `DeningerMultiplier.lean`.
-- **Lean:** deliberately deferred while `HTGeometry` and `RHTower` are being refactored.
+- **Lean:** `RHTower/BurnolPoissonSubordinateWall.lean`, `RHTower/BurnolGlasserIntegral.lean`.
 
 ## Result
 
@@ -299,7 +300,7 @@ into the fixed physical conormal.
   stronger obstruction on the full prime-log smooth carrier.
 - No RH claim is made. Singular physical boundary descent remains open.
 
-## Lean formalization (partial, 2026-08-09)
+## Lean formalization (2026-08-09)
 
 Modules: `RHTower/BurnolPoissonSubordinateWall`, `RHTower/BurnolAllPrimeCompletionWall`,
 `RHTower/BurnolPrimeLogSummability`.
@@ -313,12 +314,20 @@ Modules: `RHTower/BurnolPoissonSubordinateWall`, `RHTower/BurnolAllPrimeCompleti
 | `(PS15)` | `burnolSummable_poissonInverseCompletion_of_re_le_half` |
 | `(PS16)` | `burnolNotSummable_poissonInverseCompletion_of_half_lt_re` |
 | `(PS4)` | `burnolPoissonSmoothWall` |
+| `(PS12)` | `hasDerivAt_burnolPoissonWeight`, `hasDerivAt_burnolPoissonWeight_second` |
+| `(PS13)` | `hasDerivAt_burnolPoissonWeight_sq`, `burnolPoissonInwardFlux_eq`, `burnolPoissonInwardFlux_nonneg`, `burnolPoissonTotalInwardFlux_nonneg` |
+| `(PS11)` | `burnolPoissonSubordination` |
+| `(PS2)` | `burnolPoissonWeight_subordination` |
+
+The analytic core of `(PS11)` is the Glasser evaluation
+`∫₀^∞ e^{-t² - b²/t²} dt = (√π/2) e^{-2b}` (`burnolGlasser_integral`), built here from two changes
+of variables: the reciprocal involution `t ↦ b/t` equates the two halves, and the Glasser map
+`t ↦ t - b/t` carries the positive ray onto the whole line with `(t - b/t)² + 2b = t² + b²/t²`.
 
 The `u^{2k} e^{-2y sqrt u} <= C/u^2` domination that carries `(PS6)`--`(PS7)` is
 `burnolPow_mul_exp_neg_sqrt_le`.
 
-Still open in Lean: the Poisson subordination identity `(PS2)`/`(PS11)` and the extension-variable
-source equations `(PS12)`--`(PS13)`.
+Every numbered statement of the card is now unconditional in Lean.
 
 ## Gates
 
@@ -330,7 +339,7 @@ source equations `(PS12)`--`(PS13)`.
 - [x] coefficient-faithful multiplicity-leading inverse-completion wall
 - [x] exact surviving operator category identified
 - [ ] prove singular Gevrey-2 Poisson-Stokes boundary descent
-- [ ] formalize after corpus refactor
+- [x] formalize: `(PS1)`--`(PS16)` unconditional in Lean
 - [ ] RH
 
 ## Log

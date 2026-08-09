@@ -2,7 +2,7 @@
 
 - **Stage:** 2 — fully proved on paper
 - **Status:** [PAPER-PROVED] [ROUTE-INDEPENDENT] [OBSERVER-COMPOSITION]
-  [POINTED INFINITY-CATEGORY] [NOT RH] [NO LEAN WRITTEN OR BUILT]
+  [POINTED INFINITY-CATEGORY] [NOT RH] [LEAN FORMALIZED — DOCUMENTED IN PLACE]
 
 ## 1. Setup
 
@@ -170,3 +170,42 @@ history data.
 3. The theorem controls source homotopy kernels, not arbitrary notions of information.
 4. Polarization and analytic completion need not preserve homotopy fibres automatically.
 5. No additive numerical curvature, action, arithmetic relation, or endpoint follows.
+
+## Lean formalization status
+
+- **Module:**
+  `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.RelativeLawFiber`
+- **Source:**
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/RelativeLawFiber.lean`
+- **Umbrella:** imported by
+  `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry`.
+- **Stage handling:** card remains in Stage 2 as requested; no file was moved.
+
+Exact coverage:
+
+1. `CategoricalModel.serialFiberConeIsLimit` proves the universal finite-limit content of
+   `(RLF.3)`: in every pointed category with pullbacks, `fib f` is the pullback of the canonical
+   map `fib (g ∘ f) → fib g` over the zero object.  The canonical arrows and their zero composite
+   are constructed explicitly.
+2. `PointedModel.fiberFiberMapIso` gives the corresponding dependent-pair/path realization for
+   pointed types, including preservation of the distinguished point.
+3. `StableTangent.relativeFiberTriangle_distinguished` proves `(RLF.4)` as the shifted
+   octahedral mapping-cone triangle in the homotopy category of cochain complexes.
+4. `StableTangent.cancellationIso` proves `(RLF.7)`: when `g ∘ f` is an isomorphism, the
+   connecting morphism is an isomorphism `fib g ≅ (fib f)[1]`.
+5. `sourceLoss_irreversible` proves `(RLF.6)` for the induced pointed additive maps in every
+   degree.
+6. `ker_jointMap` and `jointMap_injective_iff` prove `(RLF.9)` and the exact parallel-separation
+   criterion for arbitrary observer families (hence finite families).
+7. `SplitCountermodel.splitCancellation` formalizes the hostile example
+   `k → k² → k`: the composite is the identity although the inclusion is not surjective and the
+   projection is not injective.
+
+Verification completed with the required foreground leaf command:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/RelativeLawFiber.lean
+```
+
+Result: exit code `0`, no warnings.  Project-wide `lake build`, generated-index check, lint, and
+scratch `#print axioms` audit remain reserved for the final all-card audit.

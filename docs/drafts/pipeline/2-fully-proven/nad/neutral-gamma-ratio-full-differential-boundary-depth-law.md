@@ -407,3 +407,57 @@ So `neutralGammaRatio_twoStageBoundary` is no longer vacuous.  The two remaining
 the polynomial class (needs only the pointwise → locally uniform upgrade of
 `poly_scaled_translate_tendsto`), and then the Gamma-ratio class, which is the full first-stage
 Poincaré obligation.
+
+### Update — the polynomial class realizes the interface `[PROVED]`
+
+The pointwise → locally uniform upgrade is done.
+`formal/GaloisForLFunctions/HTGeometry/PolynomialRecessionLocallyUniform.lean` reparametrises the
+vertical translate by `u = w⁻¹`, turning `q(z+w)/w^d` into the two-variable polynomial
+
+```text
+polyRecessionAux q d u z = sum_{m <= d} q_m (z u + 1)^m u^(d-m),
+```
+
+with `polyRecessionAux q d 0 z = q_d`.  Joint continuity then gives
+`poly_scaled_translate_tendstoLocallyUniformly`: for `deg q <= d`,
+`q(z + iT)/(iT)^d -> q_d` **locally uniformly** in `z` as `T -> infinity`.  The supporting general
+lemma `tendstoLocallyUniformly_of_continuous_param` is stated for an arbitrary continuous
+two-variable function and an arbitrary parameter filter, so it is reusable.
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialProjectiveBoundaryWitness.lean` then proves
+`hasPolynomialFunctionalProjectiveBoundary_polynomialFunctionClass`: the class of polynomial
+functions satisfies `HasPolynomialFunctionalProjectiveBoundary`, with `d` the common degree bound,
+normalization `(iT)^{-d}`, limits `C(q_d)`, and a nonzero limit vector
+(`exists_coeff_sup_natDegree_ne_zero`).
+
+Axioms `propext`, `Classical.choice`, `Quot.sound`; both modules wired into the umbrella.
+
+The interface is therefore realized by a class carrying arbitrary polynomial degree data.  The one
+remaining obligation on this card is the Gamma-ratio class itself, i.e. the first-stage Poincaré
+theorem.
+
+### Update — the card is reduced to one set inclusion `[PROVED reduction]`
+
+`PolynomialProjectiveBoundaryWitness.lean` now also proves
+
+```text
+HasPolynomialFunctionalProjectiveBoundary.mono
+  -- the interface is antitone in the coefficient class
+HasPolynomialFunctionalProjectiveBoundary.mul_left
+  -- a common nowhere-zero factor is absorbed into the normalization
+hasPolynomialFunctionalProjectiveBoundary_mul_polynomialFunctionClass
+  -- hence g * C[z] realizes the interface for every nowhere-zero g
+hasPolynomialFunctionalProjectiveBoundary_of_subset_mul_polynomial
+  -- and so does every subclass of it
+```
+
+All axiom-clean.  The entire remaining formalization obligation of this card is therefore the single
+set inclusion
+
+```text
+K_theta  subset  { g * f : f in C[z] }      for one nowhere-zero g,
+```
+
+after which `hasPolynomialFunctionalProjectiveBoundary_of_subset_mul_polynomial` discharges
+`neutralGammaRatio_twoStageBoundary` in one line.  That inclusion is exactly the Poincare expansion
+`(13)` together with the Bezout gcd normalization of section 4 — no other analytic input remains.

@@ -218,7 +218,7 @@ paper proofs and the rediscovery attack passes.
 
 ## Post-freeze bridge proved
 
-`../2-fully-proven/complete-graph-local-projective-spectral-maximality.md`
+`../3-formalized/complete-graph-local-projective-spectral-maximality.md`
 proves clause `(5)` for the complete interaction graph for every local
 dimension \(q\geq2\). The explicit diagonal two-site plus one-site-transition
 subfamily
@@ -242,7 +242,7 @@ graph.
 
 ## Post-freeze bounded-degree core proved
 
-`../2-fully-proven/nearest-neighbor-chain-projective-spectral-maximality.md`
+`../3-formalized/nearest-neighbor-chain-projective-spectral-maximality.md`
 proves generic maximal projective rank \(2^n-1\) for the full space of
 one-site and nearest-neighbour two-site qubit Hamiltonians on every open
 one-dimensional chain.

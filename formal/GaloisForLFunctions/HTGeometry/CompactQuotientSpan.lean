@@ -41,4 +41,15 @@ theorem span_eq_top_of_compactSpace_quotient {P : AddSubgroup E}
     rw [map_smul, smul_eq_mul]
     field_simp
 
+/-- **A basis inside a subgroup with compact quotient.**  Extracting a maximal linearly independent
+subset of the subgroup gives a basis of the whole space all of whose members are periods. -/
+theorem exists_linearIndependent_span_top_subset_of_compactSpace_quotient {P : AddSubgroup E}
+    (h : CompactSpace (E ⧸ P)) :
+    ∃ t : Set E, t ⊆ (P : Set E) ∧ LinearIndependent ℝ ((↑) : t → E) ∧
+      Submodule.span ℝ t = ⊤ := by
+  obtain ⟨t, hts, hspan, hli⟩ := exists_linearIndependent ℝ (P : Set E)
+  refine ⟨t, hts, hli, ?_⟩
+  rw [hspan]
+  exact span_eq_top_of_compactSpace_quotient h
+
 end GaloisForLFunctions.HTGeometry

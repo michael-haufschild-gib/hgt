@@ -4,9 +4,11 @@
 - **Stage:** 2-fully-proven
 - **Type:** DEPENDENCY-CLOSED PAPER PROOF / DISCONNECTED LOCAL HAMILTONIANS /
   PROJECTIVE GAP MODULES
+- **Stage:** 3-formalized
+- **Formalized companion:** `./disconnected-local-spectral-factorization-genericity-formalized.md`
 - **Date:** 2026-07-30
-- **Status:** `[PAPER-PROVED] [SPECIALIST AUDIT OPEN]`
-  `[NOVELTY NOT CLAIMED SEPARATELY] [LEAN PROOF OPEN]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [SPECIALIST AUDIT OPEN]`
+  `[NOVELTY NOT CLAIMED SEPARATELY]`
 - **Parent:** `arbitrary-graph-quantum-temporal-curvature-law.md`
 
 ## Theorem
@@ -211,6 +213,8 @@ specialist review remain open.
 - [x] forced relations separated from excess relations
 - [x] nonzero componentwise relation polynomial
 - [x] countable null/meagre exceptional set
-- [ ] exact Lean formalization
+- [x] exact Lean formalization — `HTGeometry/DisconnectedProjectiveGapModuleLaw.lean`,
+      `HypergraphComponentFactorization.lean`, `HypergraphProjectiveSpectralFactorization.lean`,
+      `BlockSumSpectralGenericity.lean`
 - [ ] independent specialist audit
 

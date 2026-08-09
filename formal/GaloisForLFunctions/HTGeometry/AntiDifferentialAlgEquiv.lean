@@ -94,6 +94,18 @@ namespace AntiDifferentialAlgEquiv
 
 variable {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
 
+/-- The inverse of an orientation-reversing differential automorphism is again one. -/
+def symm (σ : AntiDifferentialAlgEquiv F E) : AntiDifferentialAlgEquiv F E where
+  toAlgEquiv := σ.toAlgEquiv.symm
+  map_deriv_neg' x := by
+    apply σ.toAlgEquiv.injective
+    rw [map_neg, σ.toAlgEquiv.apply_symm_apply, σ.map_deriv_neg',
+      σ.toAlgEquiv.apply_symm_apply, neg_neg]
+
+@[simp]
+theorem symm_toAlgEquiv (σ : AntiDifferentialAlgEquiv F E) :
+    σ.symm.toAlgEquiv = σ.toAlgEquiv.symm := rfl
+
 /-- The `n`-th jet is transported with the sign `(−1)^n`. -/
 theorem map_differentialJet (σ : AntiDifferentialAlgEquiv F E) (n : ℕ) (x : E) :
     σ.toAlgEquiv (differentialJet n x) = (-1 : E) ^ n * differentialJet n (σ.toAlgEquiv x) := by

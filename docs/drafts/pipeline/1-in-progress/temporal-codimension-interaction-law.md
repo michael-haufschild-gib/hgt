@@ -524,7 +524,7 @@ Hostile Nature editorial review:                           OPEN
   \(\varepsilon/(4\|H-K\|\mathcal B_{\mathcal O})\).
 - 2026-07-29 — bounded-degree local maximality is paper-proved for every open
   nearest-neighbour qubit chain in
-  `../2-fully-proven/nearest-neighbor-chain-projective-spectral-maximality.md`.
+  `../3-formalized/nearest-neighbor-chain-projective-spectral-maximality.md`.
   Almost every static chain has projective rank \(2^n-1\); commuting local
   chains have rank \(O(n)\). Arbitrary connected graphs and local
   \(q>2\) remain open.

@@ -2,7 +2,7 @@
 
 - **Stage:** 2 — fully proved on paper
 - **Status:** [PAPER-PROVED] [ROUTE-INDEPENDENT] [FIELD-STRUCTURAL]
-  [LINEARIZED POLARIZED CHART] [NOT RH] [NO LEAN WRITTEN OR BUILT]
+  [LINEARIZED POLARIZED CHART] [NOT RH] [LEAN FORMALIZED — DOCUMENTED IN PLACE]
 
 ## 1. Setup
 
@@ -176,3 +176,42 @@ nonlinear filtered \(L_\infty\)-algebroid extension remains open.
    system of such charts.
 6. No dynamical field equation, action, arithmetic realization, or endpoint statement is claimed.
 
+## Lean formalization status
+
+- **Module:**
+  `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.NomologicalGaussCodazzi`
+- **Source:**
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/NomologicalGaussCodazzi.lean`
+- **Umbrella:** imported by
+  `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry`.
+- **Stage handling:** card remains in Stage 2 as requested; no file was moved.
+
+Exact coverage:
+
+1. `BlockConnection.total` constructs the full connection on the split section module `K × H`
+   from `∇ᴷ`, `∇ᴴ`, `A`, and `B`.
+2. `curvature_total_eq_block` proves the complete Gauss--Codazzi--Ricci formula `(NGC.5)` for
+   covariant derivative operators, including the vector-field bracket correction.
+3. `covDerivativeA_eq_zero_of_flat`, `covDerivativeB_eq_zero_of_flat`,
+   `curvatureK_eq_neg_wedgeBA_of_flat`, and `curvatureH_eq_neg_wedgeAB_of_flat` prove every clause
+   of `(NGC.7)`.
+4. `secondFundamental_adjoint` proves `(NGC.6)`.  `A_eq_zero_iff_B_eq_zero` uses explicit left and
+   right nondegeneracy; `parallelObserver_tfae` proves the five-way parallel-splitting criterion.
+5. `transportWord_blockDiagonal` proves the resulting block-diagonal generated transport/holonomy
+   law.
+6. `qCompatibility` proves Corollary 2.4: cyclicity carries `Q`-invariance to the orthogonal
+   complement, square-zero descends to both summands, and all four connection and curvature blocks
+   intertwine the induced complexes.
+7. `total_gauge_intertwines`, `curvature_gauge_intertwines`, `curvatureK_gauge`, and
+   `curvatureH_gauge` prove adapted-gauge conjugacy.  `gauge_A_eq_zero_iff`,
+   `gauge_B_eq_zero_iff`, `gauge_A_finrank_range`, `gauge_B_finrank_range`, and
+   `blockDiagonal_conjugate` prove frame invariance of vanishing, rank, and holonomy reduction.
+
+Verification completed with the required foreground leaf command:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/NomologicalGaussCodazzi.lean
+```
+
+Result: exit code `0`, no warnings.  Project-wide `lake build`, generated-index check, lint, and
+scratch `#print axioms` audit remain reserved for the final all-card audit.

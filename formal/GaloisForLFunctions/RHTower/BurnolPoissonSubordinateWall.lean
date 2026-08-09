@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.BurnolAllPrimeCompletionWall
+import GaloisForLFunctions.RHTower.BurnolGlasserIntegral
 
 /-!
 # The Poisson-subordinate smooth Cartier entrance wall
@@ -16,7 +17,7 @@ rough one: it lies in every prime-log differential domain when `Re ρ ≤ 1/2`, 
 summable at all when `Re ρ > 1/2`.  Smoothness of the source is therefore not the obstruction.
 -/
 
-open Complex Real Filter Topology
+open Complex Real Filter Topology MeasureTheory Set
 
 noncomputable section
 
@@ -342,5 +343,78 @@ theorem burnolPoissonSmoothWall {y : ℝ} (hy : 0 < y) {c ρ : ℂ} (hc : c ≠ 
     norm_num
   · intro hle k
     exact burnolSummable_poissonInverseCompletion_of_re_le_half hy hρ0 hle k
+
+/-! ## The Poisson extension equation and its inward flux -/
+
+theorem hasDerivAt_burnolPoissonWeight (p : ℕ) (y : ℝ) :
+    HasDerivAt (fun z : ℝ => burnolPoissonWeight z p)
+      (-Real.sqrt (Real.log (p : ℝ)) * burnolPoissonWeight y p) y := by
+  have hbase : HasDerivAt (fun z : ℝ => z * Real.sqrt (Real.log (p : ℝ)))
+      (Real.sqrt (Real.log (p : ℝ))) y := by
+    simpa using (hasDerivAt_id y).mul_const (Real.sqrt (Real.log (p : ℝ)))
+  have hlin : HasDerivAt (fun z : ℝ => -(z * Real.sqrt (Real.log (p : ℝ))))
+      (-Real.sqrt (Real.log (p : ℝ))) y := hbase.neg
+  have hexp : HasDerivAt (fun z : ℝ => Real.exp (-(z * Real.sqrt (Real.log (p : ℝ)))))
+      (Real.exp (-(y * Real.sqrt (Real.log (p : ℝ)))) *
+        (-Real.sqrt (Real.log (p : ℝ)))) y := hlin.exp
+  have hfun : (fun z : ℝ => burnolPoissonWeight z p) =
+      fun z : ℝ => Real.exp (-(z * Real.sqrt (Real.log (p : ℝ)))) / (p : ℝ) := rfl
+  rw [hfun]
+  refine (hexp.div_const (p : ℝ)).congr_deriv ?_
+  rw [burnolPoissonWeight]
+  ring
+
+/-- **The Poisson extension equation `∂_y² X_y = D X_y`, coefficientwise.** -/
+theorem hasDerivAt_burnolPoissonWeight_second {p : ℕ} (hp : 2 ≤ p) (y : ℝ) :
+    HasDerivAt (fun z : ℝ => -Real.sqrt (Real.log (p : ℝ)) * burnolPoissonWeight z p)
+      (Real.log (p : ℝ) * burnolPoissonWeight y p) y := by
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast hp.trans_lt' one_lt_two
+  have hL : 0 ≤ Real.log (p : ℝ) := (Real.log_pos hp1).le
+  have hsq : Real.sqrt (Real.log (p : ℝ)) * Real.sqrt (Real.log (p : ℝ)) =
+      Real.log (p : ℝ) := Real.mul_self_sqrt hL
+  refine ((hasDerivAt_burnolPoissonWeight p y).const_mul
+    (-Real.sqrt (Real.log (p : ℝ)))).congr_deriv ?_
+  linear_combination (burnolPoissonWeight y p) * hsq
+
+theorem hasDerivAt_burnolPoissonWeight_sq (p : ℕ) (y : ℝ) :
+    HasDerivAt (fun z : ℝ => burnolPoissonWeight z p ^ 2)
+      (-2 * Real.sqrt (Real.log (p : ℝ)) * burnolPoissonWeight y p ^ 2) y := by
+  have h := (hasDerivAt_burnolPoissonWeight p y).pow 2
+  refine h.congr_deriv ?_
+  ring
+
+/-- **Positive inward flux, coefficientwise.**  Minus one half of the `y`-derivative of the
+squared weight is the nonnegative half-power reading `√(log p) A_{y,p}²`. -/
+theorem burnolPoissonInwardFlux_nonneg {p : ℕ} (hp : 2 ≤ p) (y : ℝ) :
+    0 ≤ Real.sqrt (Real.log (p : ℝ)) * burnolPoissonWeight y p ^ 2 := by
+  have hpos := burnolPoissonWeight_pos (y := y) hp
+  positivity
+
+/-- The inward flux is exactly `-½ ∂_y` of the squared weight. -/
+theorem burnolPoissonInwardFlux_eq {p : ℕ} (y : ℝ) :
+    Real.sqrt (Real.log (p : ℝ)) * burnolPoissonWeight y p ^ 2 =
+      -(1 / 2) * (-2 * Real.sqrt (Real.log (p : ℝ)) * burnolPoissonWeight y p ^ 2) := by
+  ring
+
+/-- The total inward flux of the subordinate family is nonnegative. -/
+theorem burnolPoissonTotalInwardFlux_nonneg (y : ℝ) :
+    0 ≤ ∑' p : Nat.Primes,
+      Real.sqrt (Real.log ((p : ℕ) : ℝ)) * burnolPoissonWeight y (p : ℕ) ^ 2 :=
+  tsum_nonneg (fun p => burnolPoissonInwardFlux_nonneg p.2.two_le y)
+
+/-! ## Poisson provenance of the subordinate weight -/
+
+/-- **The subordinate weight is the Poisson extension of the singular prime boundary.**  This is
+the square-root subordination identity evaluated at `λ = log p`. -/
+theorem burnolPoissonWeight_subordination {y : ℝ} (hy : 0 < y) {p : ℕ} (hp : 2 ≤ p) :
+    burnolPoissonWeight y p =
+      y / (2 * Real.sqrt π) *
+        ∫ s in Ioi (0 : ℝ), burnolSubordinationIntegrand y (Real.log (p : ℝ)) s / (p : ℝ) := by
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast hp.trans_lt' one_lt_two
+  have hL : 0 < Real.log (p : ℝ) := Real.log_pos hp1
+  have hpne : ((p : ℕ) : ℝ) ≠ 0 := by positivity
+  have hsub := burnolPoissonSubordination hy hL
+  rw [burnolPoissonWeight, hsub, MeasureTheory.integral_div]
+  ring
 
 end RHTower

@@ -1,14 +1,16 @@
 # Burnol all-prime window Hilbert vector and reciprocal-Stokes Cartier jet wall
 
 - **ID:** `burnol-all-prime-window-hilbert-cartier-jet-wall`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
+- **Formalized companion:** `burnol-all-prime-window-hilbert-cartier-jet-wall-formalized.md`
 - **Type:** SOURCE CONSTRUCTION / CLOSED DIAGONAL CLASSIFICATION / STOKES SEWING
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-PURE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** R
 - **Parents:** `../../3-formalized/new_scientific_knowledge/burnol/burnol-all-prime-completion-singular-potential-entrance-wall.md`,
   `BurnolCoPoissonSubWindow.lean`, `BurnolCoPoissonSubWindowSource.lean`, and
   `BurnolCoPoissonReciprocalSeedLanding.lean`
-- **Lean:** intentionally deferred during the `RHTower -> HTGeometry` refactor.
+- **Lean:** `RHTower/BurnolAllPrimeWindowEnergy.lean`, `RHTower/BurnolReciprocalStokesSewing.lean`,
+  `RHTower/BurnolAllPrimeCompletionWall.lean`.
 
 ## Result
 
@@ -338,9 +340,15 @@ Modules: `RHTower/BurnolAllPrimeCompletionWall`, `RHTower/BurnolReciprocalStokes
 | `(HJ8)`, `(HJ28)` | `burnolSewnConormal`, `burnolSewnConormal_eq`, `burnolSummable_sewnConormal_sq` |
 | `(HJ9)`, `(HJ29)` | `burnolSewnConormal_unsewing_wall` |
 | `(HJ23)` | `burnolNotSummable_primeLogGreenPotential_sq` |
+| `(HJ1)`, `(HJ10)` | `burnolPrimeWindow` (the co-Poisson value of `[p⁻¹,1]`) |
+| `(HJ2)` | `burnolPrimeWindowEnergy_lower`, `burnolPrimeWindowEnergy_upper` |
+| `(HJ3)`, `(HJ14)` | `burnolSummable_primeWindowSourceEnergy` |
+| `(HJ5)` | `burnolAllPrimeCartierJet_tfae` (with `burnolBddAbove_finsetSums_iff_summable`, `burnolCompletedConormal_mem_range_iff`) |
+| `(HJ20)`, `(HJ21)` | `burnolCompletedConormal`, `burnolAllPrimeCompletion_mul_inverseCoefficient` |
 
-Still open in Lean: the literal window norm bounds `(HJ2)`, the Hilbert direct-sum membership
-`(HJ3)`, and the packaged four-way equivalence `(HJ5)`.
+The even split used by `(HJ2)` is `lintegral_even_eq_two_mul_Ioi`; the two pointwise window
+estimates `(HJ12)` are the corpus lemmas `norm_burnolCoPoissonRightSum_coPoissonSubWindowSeed_le`
+and `..._le_global`.
 
 ## Gates
 
@@ -353,7 +361,7 @@ Still open in Lean: the literal window norm bounds `(HJ2)`, the Hilbert direct-s
 - [x] unconditional sewn conormal landing proved
 - [x] singular unsewing domain wall classified
 - [ ] uniform all-prime Cartier jet estimate from source structure
-- [ ] Lean formalization after corpus refactor
+- [x] Lean formalization: `(HJ1)`--`(HJ29)` unconditional in Lean
 - [ ] RH
 
 ## Log

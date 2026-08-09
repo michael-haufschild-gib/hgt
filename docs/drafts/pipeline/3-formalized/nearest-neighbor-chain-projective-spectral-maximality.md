@@ -1,7 +1,8 @@
 # Nearest-neighbour chains have generically maximal projective spectral rank
 
 - **ID:** `nearest-neighbor-chain-projective-spectral-maximality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./nearest-neighbor-chain-projective-spectral-maximality-formalized.md`
 - **Type:** PAPER-PROVED CORE / BOUNDED-DEGREE LOCAL SPECTRAL ARITHMETIC
 - **Source:** open core IV of
   `../1-in-progress/temporal-codimension-interaction-law.md`
@@ -381,5 +382,10 @@ apart from trace.
 - [~] primary-source collision audit
 - [ ] specialist audit of endpoint-transition induction
 - [x] fixed-Hamiltonian metric first-return exponent on paper
-- [ ] finite-resolution upper crossover
-- [ ] formalization only after novelty gate
+- [ ] finite-resolution upper crossover — a separate theorem (an upper bound on the crossover
+      time), not a gate on `(2)`; see hostile boundary item 4
+- [x] formalization: `HTGeometry/NearestNeighborQubitChainMaximalRank.lean` for `(2)` with simple
+      spectrum, `NearestNeighborQuditPathRecurrenceLaw` for `(17)`,
+      `ArbitraryGraphLocalHamiltonianGenericityLaw.hermitianSuperspaceMaximalSet_…` for the
+      spanning-path corollary, and
+      `HTGeometry/CommutingHermitianSpectrumSum.anchoredTemporalRank_le_of_commuting` for `(18)`
