@@ -282,6 +282,238 @@ theorem qGamma_two : ∀ q : RealEulerNome,
   rw [show (((1 - q.val : ℝ) : ℂ)) = 1 - (q.val : ℂ) by norm_cast]
   exact div_self (by simpa using q.one_sub_complex_ne_zero)
 
+/-! ## Positive local law and exact normalization -/
+
+/-- Real q-factorial `(q;q)_n`. -/
+def realQFactorial (q : RealEulerNome) (n : ℕ) : ℝ :=
+  ∏ j ∈ Finset.range n, (1 - q.val ^ (j + 1))
+
+/-- Real infinite q-factorial `(q;q)_∞`. -/
+def realQFactorialInf (q : RealEulerNome) : ℝ :=
+  ∏' j : ℕ, (1 - q.val ^ (j + 1))
+
+/-- Every positive q-factorial factor is strictly positive. -/
+theorem realQFactorial_factor_pos (q : RealEulerNome) (j : ℕ) :
+    0 < 1 - q.val ^ (j + 1) := by
+  exact sub_pos.mpr (pow_lt_one₀ q.pos.le q.lt_one (by omega))
+
+/-- Finite q-factorials are strictly positive. -/
+theorem realQFactorial_pos (q : RealEulerNome) (n : ℕ) :
+    0 < realQFactorial q n := by
+  apply Finset.prod_pos
+  intro j hj
+  exact realQFactorial_factor_pos q j
+
+/-- Finite real q-factorial successor equation. -/
+theorem realQFactorial_succ (q : RealEulerNome) (n : ℕ) :
+    realQFactorial q (n + 1) =
+      realQFactorial q n * (1 - q.val ^ (n + 1)) := by
+  simp [realQFactorial, Finset.prod_range_succ]
+
+/-- The real q-factorial defect series is summable. -/
+theorem realQFactorial_summable_defect (q : RealEulerNome) :
+    Summable (fun n : ℕ ↦ -(q.val ^ (n + 1))) := by
+  exact ((summable_nat_add_iff 1).2
+    (summable_geometric_of_lt_one q.pos.le q.lt_one)).neg
+
+/-- Real q-factorial product is multipliable. -/
+theorem realQFactorial_multipliable (q : RealEulerNome) :
+    Multipliable (fun n : ℕ ↦ 1 - q.val ^ (n + 1)) := by
+  simpa only [sub_eq_add_neg] using
+    Real.multipliable_one_add_of_summable (realQFactorial_summable_defect q)
+
+/-- The real infinite q-factorial is nonzero. -/
+theorem realQFactorialInf_ne_zero (q : RealEulerNome) :
+    realQFactorialInf q ≠ 0 := by
+  change (∏' n : ℕ, (1 + -(q.val ^ (n + 1)))) ≠ 0
+  apply tprod_one_add_ne_zero_of_summable
+  · intro n
+    simpa only [sub_eq_add_neg] using (realQFactorial_factor_pos q n).ne'
+  · simpa [Real.norm_eq_abs, abs_of_nonneg (pow_nonneg q.pos.le _)] using
+      (realQFactorial_summable_defect q).norm
+
+/-- Finite real q-factorials converge to their infinite product. -/
+theorem realQFactorial_tendsto (q : RealEulerNome) :
+    Filter.Tendsto (realQFactorial q) Filter.atTop (nhds (realQFactorialInf q)) := by
+  change Filter.Tendsto
+    (fun n : ℕ ↦ ∏ j ∈ Finset.range n, (1 - q.val ^ (j + 1))) Filter.atTop
+      (nhds (∏' j : ℕ, (1 - q.val ^ (j + 1))))
+  exact (realQFactorial_multipliable q).tendsto_prod_tprod_nat
+
+/-- Local q-geometric coefficient before multiplication by the normalizing infinite product. -/
+def qGeometricCoefficient (q : RealEulerNome) (n : ℕ) : ℝ :=
+  q.val ^ n / realQFactorial q n
+
+/-- Local q-geometric coefficients are nonnegative. -/
+theorem qGeometricCoefficient_nonneg (q : RealEulerNome) (n : ℕ) :
+    0 ≤ qGeometricCoefficient q n := by
+  exact div_nonneg (pow_nonneg q.pos.le n) (realQFactorial_pos q n).le
+
+/-- **Finite q-binomial normalization telescope at `z=q`.** -/
+theorem qGeometricCoefficient_sum_finite (q : RealEulerNome) :
+    ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), qGeometricCoefficient q n) =
+        1 / realQFactorial q N := by
+  intro N
+  induction N with
+  | zero => simp [qGeometricCoefficient, realQFactorial]
+  | succ N ih =>
+      rw [Finset.sum_range_succ, ih]
+      change 1 / realQFactorial q N + q.val ^ (N + 1) / realQFactorial q (N + 1) =
+        1 / realQFactorial q (N + 1)
+      have hfac : realQFactorial q N ≠ 0 := (realQFactorial_pos q N).ne'
+      have hstep : 1 - q.val ^ (N + 1) ≠ 0 := (realQFactorial_factor_pos q N).ne'
+      rw [realQFactorial_succ]
+      field_simp [hfac, hstep]
+      ring
+
+/-- **Infinite local normalization.** -/
+theorem qGeometricCoefficient_hasSum (q : RealEulerNome) :
+    HasSum (qGeometricCoefficient q) (realQFactorialInf q)⁻¹ := by
+  apply (hasSum_iff_tendsto_nat_of_nonneg (qGeometricCoefficient_nonneg q)
+    (realQFactorialInf q)⁻¹).2
+  apply (Filter.tendsto_add_atTop_iff_nat 1).mp
+  have hinv := (realQFactorial_tendsto q).inv₀ (realQFactorialInf_ne_zero q)
+  convert hinv using 1
+  funext N
+  simpa [one_div] using qGeometricCoefficient_sum_finite q N
+
+/-- Normalized local q-Gamma weights. -/
+def qGammaWeight (q : RealEulerNome) (n : ℕ) : ℝ :=
+  realQFactorialInf q * qGeometricCoefficient q n
+
+/-- Every normalized local q-Gamma weight is nonnegative. -/
+theorem qGammaWeight_nonneg (q : RealEulerNome) (n : ℕ) :
+    0 ≤ qGammaWeight q n := by
+  unfold qGammaWeight
+  have hinf : 0 ≤ realQFactorialInf q := by
+    exact ge_of_tendsto' (realQFactorial_tendsto q) (fun n ↦ (realQFactorial_pos q n).le)
+  exact mul_nonneg hinf (qGeometricCoefficient_nonneg q n)
+
+/-- The normalized local weights have total mass one. -/
+theorem qGammaWeight_hasSum_one (q : RealEulerNome) :
+    HasSum (qGammaWeight q) 1 := by
+  change HasSum
+    (fun n ↦ realQFactorialInf q * qGeometricCoefficient q n) 1
+  have h := (qGeometricCoefficient_hasSum q).mul_left (realQFactorialInf q)
+  have hprod : realQFactorialInf q * (realQFactorialInf q)⁻¹ = 1 :=
+    mul_inv_cancel₀ (realQFactorialInf_ne_zero q)
+  rw [hprod] at h
+  exact h
+
+/-! ## Integer intervention transform
+
+The full complex q-binomial transform will be built on top of this core.  The theorem below already
+closes every nonnegative integral intervention exactly.  It is enough to certify the normalized
+unit tilt and its whole discrete response ladder without importing an unproved special-function
+identity.
+-/
+
+/-- q-geometric coefficient evaluated at the integral nome power `q^k`. -/
+def qGeometricCoefficientAt (q : RealEulerNome) (k n : ℕ) : ℝ :=
+  q.val ^ (k * n) / realQFactorial q n
+
+/-- One coefficient-level q-binomial difference. -/
+theorem qGeometricCoefficientAt_succ_difference (q : RealEulerNome) (k n : ℕ) :
+    qGeometricCoefficientAt q (k + 1) (n + 1) =
+      qGeometricCoefficientAt q k (n + 1) -
+        q.val ^ k * qGeometricCoefficientAt q k n := by
+  unfold qGeometricCoefficientAt
+  rw [realQFactorial_succ]
+  have hfac : realQFactorial q n ≠ 0 := (realQFactorial_pos q n).ne'
+  have hstep : 1 - q.val ^ (n + 1) ≠ 0 := (realQFactorial_factor_pos q n).ne'
+  field_simp [hfac, hstep]
+  ring
+
+/-- A convergent integral q-binomial series advances by multiplication with `1-q^k`. -/
+theorem qGeometricCoefficientAt_hasSum_succ (q : RealEulerNome) (k : ℕ) (S : ℝ)
+    (hS : HasSum (qGeometricCoefficientAt q k) S) :
+    HasSum (qGeometricCoefficientAt q (k + 1)) ((1 - q.val ^ k) * S) := by
+  apply (hasSum_nat_add_iff' 1).mp
+  convert ((hasSum_nat_add_iff' 1).mpr hS).sub (hS.mul_left (q.val ^ k)) using 1
+  · funext n
+    exact qGeometricCoefficientAt_succ_difference q k n
+  · simp [qGeometricCoefficientAt]
+    ring
+
+/-- **Integral q-binomial theorem.** For every `r≥0`, the series at `q^(r+1)` sums to the
+finite q-factorial ratio `(q;q)_r/(q;q)_∞`. -/
+theorem qGeometricCoefficientAt_hasSum (q : RealEulerNome) :
+    ∀ r : ℕ,
+      HasSum (qGeometricCoefficientAt q (r + 1))
+        (realQFactorial q r / realQFactorialInf q) := by
+  intro r
+  induction r with
+  | zero =>
+      convert qGeometricCoefficient_hasSum q using 1
+      · funext n
+        simp [qGeometricCoefficientAt, qGeometricCoefficient]
+      · simp [realQFactorial, one_div]
+  | succ r ih =>
+      have h := qGeometricCoefficientAt_hasSum_succ q (r + 1)
+        (realQFactorial q r / realQFactorialInf q) ih
+      convert h using 1
+      rw [realQFactorial_succ]
+      ring
+
+/-- Algebraic normalized observable `q^n/(1-q)` raised to an integral intervention power. -/
+def qGammaIntegerMomentTerm (q : RealEulerNome) (r n : ℕ) : ℝ :=
+  qGammaWeight q n * (q.val ^ n / (1 - q.val)) ^ r
+
+/-- Closed integral response of the local positive q-Gamma law. -/
+def qGammaIntegerResponse (q : RealEulerNome) (r : ℕ) : ℝ :=
+  realQFactorial q r / (1 - q.val) ^ r
+
+/-- Coefficient identity connecting the positive moment term to the integral q-binomial series. -/
+theorem qGammaIntegerMomentTerm_eq (q : RealEulerNome) (r n : ℕ) :
+    qGammaIntegerMomentTerm q r n =
+      (realQFactorialInf q / (1 - q.val) ^ r) *
+        qGeometricCoefficientAt q (r + 1) n := by
+  unfold qGammaIntegerMomentTerm qGammaWeight qGeometricCoefficient
+    qGeometricCoefficientAt
+  have hfac : realQFactorial q n ≠ 0 := (realQFactorial_pos q n).ne'
+  have hbase : 1 - q.val ≠ 0 := (sub_pos.mpr q.lt_one).ne'
+  rw [div_pow, pow_mul]
+  field_simp [hfac, hbase]
+  rw [← pow_mul, ← pow_mul]
+  calc
+    realQFactorialInf q * q.val ^ n * q.val ^ (n * r) =
+        realQFactorialInf q * (q.val ^ n * q.val ^ (n * r)) := by ring
+    _ = realQFactorialInf q * q.val ^ (n + n * r) := by rw [pow_add]
+    _ = realQFactorialInf q * q.val ^ ((r + 1) * n) := by
+      congr 2
+      ring
+
+/-- Scalar identity closing the normalized integral response. -/
+theorem qGammaIntegerResponse_eq (q : RealEulerNome) (r : ℕ) :
+    qGammaIntegerResponse q r =
+      (realQFactorialInf q / (1 - q.val) ^ r) *
+        (realQFactorial q r / realQFactorialInf q) := by
+  unfold qGammaIntegerResponse
+  have hinf := realQFactorialInf_ne_zero q
+  field_simp [hinf]
+
+/-- **Exact local positive transform.** Every nonnegative integral intervention moment equals the
+q-Gamma factorial response. -/
+theorem qGammaIntegerMoment_hasSum (q : RealEulerNome) (r : ℕ) :
+    HasSum (qGammaIntegerMomentTerm q r) (qGammaIntegerResponse q r) := by
+  have h := (qGeometricCoefficientAt_hasSum q r).mul_left
+    (realQFactorialInf q / (1 - q.val) ^ r)
+  rw [qGammaIntegerResponse_eq]
+  rw [show qGammaIntegerMomentTerm q r =
+      fun n ↦ (realQFactorialInf q / (1 - q.val) ^ r) *
+        qGeometricCoefficientAt q (r + 1) n by
+    funext n
+    exact qGammaIntegerMomentTerm_eq q r n]
+  exact h
+
+/-- The unit intervention is normalized. -/
+theorem qGammaIntegerResponse_one (q : RealEulerNome) :
+    qGammaIntegerResponse q 1 = 1 := by
+  unfold qGammaIntegerResponse
+  rw [show realQFactorial q 1 = 1 - q.val by simp [realQFactorial]]
+  simpa only [pow_one] using div_self (sub_pos.mpr q.lt_one).ne'
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -1,0 +1,36 @@
+# Universal-law-field Lean certification boundary
+
+Project rule: **paper proof does not count as proved until its exact significant theorem is closed in
+Lean**.  Files remaining in this Stage-2 folder are therefore research claims awaiting certification,
+even when their paper argument is dependency-closed.
+
+## Certified and promoted to Stage 3
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PIR-1 | Positive doctrine, additive nondescendence, faithful response coframe, recurrence/open lift | `HTGeometry.ConstitutivePositiveResponse` |
+| ULF-CFL-1 | Complete passive equivalence versus injective marked intervention | `HTGeometry.ConstitutiveInterventionSeparation` |
+| ULF-SLOT-1 | Independent-slot transitivity; invariant phases trivial; invariants constant | `HTGeometry.ConstitutiveIndependentSlotNoGo` |
+| ULF-RADIUS-2 | Serial-radius counterexample and hidden-pair/diameter survivor | `HTGeometry.ConstitutiveReconstructionNoGo` |
+
+Formalized cards and declaration-level records live in
+`docs/drafts/pipeline/3-formalized/universal-law-field/`.
+
+## Partially certified, not promoted
+
+`ULF-EQG-1` has a certified local and finite core:
+
+- `HTGeometry.QPochhammer`: q-Pochhammer convergence, shift, nonvanishing; normalized q-Gamma
+  translation; positive local weights; mass one; every nonnegative-integral moment;
+- `HTGeometry.EulerQGammaFiniteProcess`: finite response/divisor telescopes and genus-one exchange.
+
+Its global prime probability, zeta ladder, meromorphic divisor, hypertranscendence, and recurrence
+claims remain uncertified.  The card therefore stays in Stage 2.
+
+## Rejected by formal attack
+
+`ULF-DISTORTION-1` claimed monotonicity of internal-centre reconstruction radius under serial
+postprocessing.  A Lean-certified three-point counterexample shows strict decrease from two to one.
+The rejected card is in `docs/drafts/pipeline/5-failed/universal-law-field/`; ULF-RADIUS-2 records
+the exact survivor.
+

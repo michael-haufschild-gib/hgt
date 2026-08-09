@@ -19,26 +19,27 @@ open Set
 
 namespace GaloisForLFunctions.HTGeometry
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {d : ℕ}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable {ι : Type*} [Fintype ι]
 
 /-- The unit parallelotope of a family of vectors. -/
-def parallelotope (b : Fin d → E) : Set E :=
-  (fun t : Fin d → ℝ => ∑ i, t i • b i) '' (Set.Icc 0 1)
+def parallelotope (b : ι → E) : Set E :=
+  (fun t : ι → ℝ => ∑ i, t i • b i) '' (Set.Icc 0 1)
 
-theorem continuous_parallelotopeMap (b : Fin d → E) :
-    Continuous fun t : Fin d → ℝ => ∑ i, t i • b i := by
+theorem continuous_parallelotopeMap (b : ι → E) :
+    Continuous fun t : ι → ℝ => ∑ i, t i • b i := by
   refine continuous_finsetSum _ fun i _ => ?_
   exact (continuous_apply i).smul continuous_const
 
 /-- **The unit parallelotope is compact.** -/
-theorem isCompact_parallelotope (b : Fin d → E) : IsCompact (parallelotope b) :=
+theorem isCompact_parallelotope (b : ι → E) : IsCompact (parallelotope b) :=
   isCompact_Icc.image (continuous_parallelotopeMap b)
 
 /-- **Reduction into the parallelotope.**  Subtracting the integer parts of the coordinates lands
 any point in the unit parallelotope of the basis. -/
 theorem exists_intCombination_sub_mem_parallelotope
-    (b : Module.Basis (Fin d) ℝ E) (z : E) :
-    ∃ m : Fin d → ℤ, z - ∑ i, (m i : ℝ) • b i ∈ parallelotope (fun i => b i) := by
+    (b : Module.Basis ι ℝ E) (z : E) :
+    ∃ m : ι → ℤ, z - ∑ i, (m i : ℝ) • b i ∈ parallelotope (fun i => b i) := by
   classical
   refine ⟨fun i => ⌊b.repr z i⌋, ?_⟩
   refine ⟨fun i => Int.fract (b.repr z i), ?_, ?_⟩

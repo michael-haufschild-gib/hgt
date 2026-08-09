@@ -4,7 +4,8 @@
 - **Stage:** 2 — fully proven on paper
 - **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM] [OBSERVER FUNCTORIALITY]`
   `[FALSE FLATNESS CLASSIFIED] [SERIAL IRREVERSIBILITY] [PARALLEL REPAIR]`
-  `[NO ROUTE INPUT] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[NO ROUTE INPUT] [NOT RH] [LEAN FORMALIZED — DOCUMENTED IN PLACE]`
+  `[LEAF CHECK CLEAN]`
 
 ## 1. Structured observer
 
@@ -258,6 +259,37 @@ flatness by exact class erasure, with no analytic, topological, or global-monodr
 4. Serial reduction is irreversible; parallel reduction can be jointly conservative.
 5. A valid NHG atlas must record both obstruction-class maps and flattening descent. Recording only
    one loses information.
+
+## Lean status
+
+Implemented in
+`formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverCurvature.lean`
+and wired into the Nomological Homotopy Geometry umbrella. The module contains no `sorry`, added
+axioms, opaque declarations, or unsafe code. It proves:
+
+- the recursive extension criterion in spectrum form and naturality of every represented
+  obstruction layer;
+- image inclusion for full obstruction spectra, together with an explicit model showing equality
+  can fail;
+- class-erasure false extension and the exact classification of represented false flatness into
+  class erasure or non-effective zero-branch lifting;
+- descent of extendibility under represented-zero reflection and effective lifting;
+- serial class erasure and the exact serial branch-range inclusion;
+- joint-observer kernel/intersection identity and the necessary-and-sufficient repair condition on
+  any specified curvature subspace;
+- finite and eventual curvature horizons for bounded-rank observer families;
+- an explicit false-flat obstruction layer and the two-step graded bracket model `[x,x]=v`, with
+  nonzero `v` killed by the strict quotient observer.
+
+Verification performed with
+`lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverCurvature.lean`;
+exit code `0`, no warnings. Final umbrella build, axiom print, and repository lint remain the shared
+end-of-batch audit. Card remains in Stage 2 per instruction; it was not moved.
+
+## Log
+
+- 2026-08-09 — formalized unconditionally in Lean, wired into umbrella, leaf-check clean, and
+  documented in place without moving the card.
 
 ## 8. Scope
 

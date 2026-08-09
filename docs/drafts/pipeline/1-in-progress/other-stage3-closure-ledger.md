@@ -428,3 +428,50 @@ Same module, second half:
 `Module.Basis.mk` on that set feeds `FundamentalParallelotope` directly, so the reduction
 "compact quotient ⟹ compact fundamental parallelotope whose vertices are periods" is now a
 two-line composition of corpus lemmas.
+
+### Siegel step 4 — the correct chartwise form
+
+Two further modules, both unconditional and axiom-clean:
+
+- `PeriodicCoverVanishing.lean` — **`eqOn_zero_of_periodic_cover`**: a periodic `C^∞` function whose
+  jets of order `< N` vanish at the centres of a cover of a fundamental domain is identically zero,
+  when `(r/R)^N/(1−r/R) < 1`. Periodicity is what makes the bound on the fundamental domain a
+  *global* bound, so the Schwarz estimate improves every bound by the fixed factor.
+- `SiegelVanishingCriterion.lean` — **`exists_finite_centres_forcing_vanishing`**: from
+  `CompactSpace (E ⧸ P)` alone, a finite set of centres such that jet vanishing there forces any
+  `P`-periodic `C^∞` function to vanish.
+
+**Honesty note on which of these Siegel actually consumes.** The single-function form above is a
+true theorem but on a compact quotient a periodic *entire* function is constant by Liouville, so it
+is not the form the argument needs: in Siegel's proof the objects are local holomorphic
+representatives `F_i = h_i^m·P(f)` of a *meromorphic* function, which are not globally defined.
+The usable form is therefore chartwise:
+
+- `FamilyCoverVanishing.lean` — **`eqOn_zero_of_family_cover`**: a finite family `F i` of
+  holomorphic representatives, with jets of order `< N` vanishing at the respective centres `c i`
+  and a comparison constant `C` carrying small-disc bounds to large-disc bounds, vanishes on every
+  small disc as soon as `C·(r/R)^N/(1−r/R) < 1`.
+
+That last inequality is the exact quantitative shape the count has to beat, and it is where the
+growing order `N ~ m^{1+1/n}` pays for the chart comparison constant `C^m`.
+
+### Siegel — the multi-index side, on the corpus's own polydisc machinery
+
+The count produces vanishing of the **multi-index** Cauchy coefficients, not of tuple-indexed
+iterated derivatives, and the difference is decisive: multi-indices of degree below `N` in `n`
+variables number `~N^n`, derivative tuples number `~n^N`, and only the first beats the `C^m` chart
+comparison at `N ~ m^{1+1/n}`. The corpus already owns the multi-index apparatus
+(`polydiscCoeff`, `polydiscSeries`, `norm_polydiscCoeff_le`, `norm_polydiscSeries_le`,
+`card_antidiagonalTuple_le`, `summable_succ_pow_mul_geometric`, `polydiscSeries_hasSum`), so
+`HTGeometry/PolydiscCoeffVanishing.lean` builds directly on it:
+
+- **`polydiscSeries_eq_zero_of_coeff_vanish`** — vanishing coefficients of a degree kill that term;
+- **`norm_le_of_polydiscCoeff_vanish`** — the multi-index Schwarz estimate:
+  `‖f(c+y)‖ ≤ M·(N+1)^n·(r/R)^N·∑_j (j+1)^n (r/R)^j` when every coefficient of total degree `< N`
+  vanishes and `‖f‖ ≤ M` on the torus of radius `R`;
+- **`polydiscCoeff_sum_smul`** — the coefficient is linear in the function, so each prescribed
+  coefficient is a linear functional of the polynomial's coefficient vector, which is exactly what
+  `exists_ne_zero_forall_apply_eq_zero_of_finrank_lt` consumes.
+
+All three unconditional and axiom-clean; `summable_succ_pow_mul_geometric` was already in
+`PolydiscAnalytic.lean` and was **not** rebuilt.

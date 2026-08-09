@@ -4943,7 +4943,7 @@ receive a new title and an independent significance audit.
   `Omega(t^{-(m-f)})`. A commuting involution sector supplies the same exponent through an exact
   recurrence lattice. For the fixed-`q` Pauli family this gives the unconditional ceiling
   `kappa <= m-sum_(k=1)^q binom(n,k)` on every proposed no-shortcut exponent. Full proof and hostile
-  audit are in `../2-fully-proven/fast-forwardable-stratum-codimension-obstruction.md`. No Lean claim
+  audit are in `../3-formalized/fast-forwardable-stratum-codimension-obstruction.md`. No Lean claim
   is made yet.
 - 2026-08-05 -- Froze the autonomous shortcut-organization conjecture after killing chaos and raw
   dynamical-Lie-algebra dimension as candidate invariants. The proposed law is
@@ -4969,7 +4969,7 @@ receive a new title and an independent significance audit.
   `(n,R)` paths need a uniform finite-size statement. More decisively, a `d`-dimensional continuous
   synthesis carrier translated by a transverse rank-`r` period lattice creates annular shortcut
   volume `Omega(R^(d+r))` and Gaussian mass `Omega(t^(-(m-d-r)))`. The dependency-closed proof is in
-  `../2-fully-proven/mixed-periodic-synthesis-carrier-obstruction.md`. Continuous dimension and
+  `../3-formalized/mixed-periodic-synthesis-carrier-obstruction.md`. Continuous dimension and
   discrete recurrence rank are independent additive contributions; architecture proliferation is a
   third contribution, not a nuisance constant.
 - 2026-08-05 -- Found a stronger state-specific obstruction missed by the commuting-sector analysis.

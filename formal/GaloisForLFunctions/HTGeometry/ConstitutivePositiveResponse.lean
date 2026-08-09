@@ -151,4 +151,17 @@ theorem constitutivePhaseHistoryLift_period_increment (t : ℝ) :
       constitutivePhaseHistoryLift t + 2 * Real.pi := by
   rfl
 
+/-- Every natural number of observed response periods closes exactly. -/
+theorem constitutiveResponseCoframe_unit_phase_nperiods (N : ℕ) :
+    Function.Periodic
+      (fun t : ℝ ↦ constitutiveResponseCoframe (Complex.exp (t * Complex.I)))
+      (N • (2 * Real.pi)) :=
+  constitutiveResponseCoframe_unit_phase_periodic.nsmul N
+
+/-- The same `N` closed response periods retain their full displacement in marked history. -/
+theorem constitutivePhaseHistoryLift_nperiod_increment (N : ℕ) (t : ℝ) :
+    constitutivePhaseHistoryLift (t + N • (2 * Real.pi)) =
+      constitutivePhaseHistoryLift t + N • (2 * Real.pi) := by
+  rfl
+
 end GaloisForLFunctions.HTGeometry

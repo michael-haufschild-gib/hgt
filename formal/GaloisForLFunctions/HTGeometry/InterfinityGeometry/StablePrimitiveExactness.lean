@@ -270,6 +270,44 @@ theorem toOrdinary_compare {S T : Submodule R A} (h : S ≤ T) (x : X.StableH S)
     X.toOrdinary T (X.compare h x) = X.toOrdinary S x :=
   congrArg (fun f => f x) (X.toOrdinary_comp_compare h)
 
+/-! ## The ordinarily exact slice -/
+
+section Exact
+
+variable (hX : X.cocycles ≤ LinearMap.range X.d)
+include hX
+
+/-- If every cocycle is a coboundary, the totally unconstrained observer sees everything. -/
+theorem stableBoundary_top_eq_top : X.stableBoundary ⊤ = ⊤ := by
+  rw [X.stableBoundary_top, LinearMap.range_eq_top]
+  intro z
+  obtain ⟨a, ha⟩ := hX z.2
+  exact ⟨a, Subtype.ext ha⟩
+
+/-- Ordinary cohomology vanishes on an exact slice. -/
+theorem toOrdinary_eq_zero (S : Submodule R A) (x : X.StableH S) : X.toOrdinary S x = 0 := by
+  obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+  rw [X.toOrdinary_mk S, Submodule.Quotient.mk_eq_zero, X.stableBoundary_top_eq_top hX]
+  trivial
+
+/-- On an exact slice the connecting map is surjective. -/
+theorem dbar_surjective (S : Submodule R A) : Function.Surjective (X.dbar S) := by
+  intro x
+  have hx : x ∈ LinearMap.range (X.dbar S) := by
+    rw [X.range_dbar S, LinearMap.mem_ker]
+    exact X.toOrdinary_eq_zero hX S x
+  exact hx
+
+/-- **On an exact slice the stable-primitive group is the primitive-obstruction group.** -/
+noncomputable def dbarEquiv (S : Submodule R A) :
+    X.PrimitiveObstruction S ≃ₗ[R] X.StableH S :=
+  LinearEquiv.ofBijective (X.dbar S) ⟨X.dbar_injective S, X.dbar_surjective hX S⟩
+
+@[simp] theorem dbarEquiv_mk (S : Submodule R A) (a : A) :
+    X.dbarEquiv hX S (Submodule.Quotient.mk a) = Submodule.Quotient.mk (X.dRes a) := rfl
+
+end Exact
+
 end CochainSlice
 
 end GaloisForLFunctions.HTGeometry.Interfinity

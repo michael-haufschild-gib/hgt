@@ -4,7 +4,7 @@
 - **Stage:** 2 — fully proved on paper
 - **Type:** THEOREM / TERMINUS CLASSIFICATION / REPLACEMENT PRODUCER
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-PURE] [NOVELTY UNVERIFIED] [NOT RH]`
-- **Parent:** `burnol-prime-two-causal-cartier-collar-law.md`
+- **Parent:** `../../3-formalized/new_scientific_knowledge/burnol/burnol-prime-two-causal-cartier-collar-law.md`
 - **Statement:** The stable deep component of the actual prime-two zero-divided crossing
   correlation is an explicit first-wall residue in the one-dimensional kernel of
   `A = partial_u + 1/2`.  The two Fourier orientations of this residue recover the Route R current

@@ -283,6 +283,57 @@ the Nevanlinna matrix truncations, and the discs nest to a point because the pro
 indeterminate.  `GaussQuadrature.lean`, `QuasiQuadrature.lean`, `SecondKindGlobal.lean` and
 `ChristoffelLimitFormula.lean` are the finite-`n` side.
 
+**First brick laid.**  `HTGeometry/AtomicCauchyTransformRational.lean` (axiom-clean, wired) proves
+the finite-stage algebra the Weyl-disc argument runs on:
+
+```text
+sum_div_eq_atomicCauchy_ratio
+  -- ∑ₖ wₖ/(xₖ − z) = (∑ₖ wₖ ∏_{j≠k}(x_j − z)) / ∏_j (x_j − z)
+weights_eq_zero_of_atomicCauchyNumerator_eq_zero
+  -- distinct nodes: the cleared numerator vanishes identically only if every weight does
+```
+
+**Correction to the route, checked.**  `cauchyTransform_nevLeaf` produces a `tsum` over
+`↥((nevMatrixDataInf h h0b).finiteDenominatorFiber tau)`, and that fibre is *countable discrete*,
+not finite — `FiberFinite.finite_finiteDenominatorFiber_inter` only gives finiteness on bounded
+intervals.  So the closed form cannot be obtained by clearing denominators directly on the fibre;
+`sum_div_eq_atomicCauchy_ratio` applies to **finite truncations**.
+
+The correct route is the classical one, and **the finite stage is now done**:
+
+- `AtomicCauchyTransformRational.sum_div_eq_atomicCauchy_ratioOn` — a weighted Cauchy sum over an
+  explicit finite node set is an explicit numerator/denominator ratio;
+- `GaussNodeDenominator.eval_monicOrtho_eq_prod_gaussNodes` — the denominator *is* the orthogonal
+  polynomial: `p_{n+1}(z) = ∏_{x ∈ gaussNodes s n} (z − x)`;
+- `GaussNodeDenominator.gaussSum_cauchy_eq_secondKind_ratio` — **the finite-stage closed form**
+
+  ```text
+  ∑_{x ∈ gaussNodes s n} χ(x)/(x − z)  =  −(s₀ · q_{n+1}(z)) / p_{n+1}(z)      (p_{n+1}(z) ≠ 0)
+  ```
+
+  proved from `momentFunctional_eq_gaussSum` applied to `firstKindDividedDiff s (n+1) z`, whose
+  moment functional is `s₀·q_{n+1}(z)` (`momentFunctional_firstKindDividedDiff`) and whose value at
+  a node `x` is `−p_{n+1}(z)/(x − z)` (`mul_firstKindDividedDiff` + `mem_gaussNodes_iff`).
+
+All axiom-clean and wired.  **What is left of Bottleneck 1 is the limit, and its precise missing
+link is now identified.**  The corpus already has the truncated Nevanlinna entries
+`EntryComplexLimit.nevAtruncC / nevBtruncC / nevCtruncC / nevDtruncC` and their locally uniform
+convergence (`EntryUniformLimit.tendstoUniformlyOn_nevB_series`, `…_nevD_series`,
+`tendstoUniformlyOn_bilinearLimit`), plus `NodeConvergence` and `ChristoffelLimitFormula` for the
+measure side.
+
+The gap is **algebraic, not analytic**: the truncated entries are series in the *orthonormal*
+polynomials, whereas the finite-stage closed form above is stated in `monicOrtho` and `secondKind`.
+The next lemma to write is the dictionary between them at stage `n` — classically
+
+```text
+A_n(z) = z · Σ_{k ≤ n} q_k(0) q_k(z),   B_n(z) = −1 + z · Σ_{k ≤ n} q_k(0) p_k(z),   etc.
+```
+
+so that `−s₀·q_{n+1}(z)/p_{n+1}(z)` becomes `A_n(z)/B_n(z)` (the `τ = ∞` corner of the Weyl disc).
+With that dictionary the limit is a direct application of the existing uniform-convergence theorems.
+Do not attempt the infinite-fibre shortcut.
+
 Once this holds, `ClassicalAnalyticNevanlinnaCarrierFamily` is a structure instance, and the ten
 moment-fibre cards reduce to producing a term of `MaximalTranslationInputs`
 (`NevanlinnaBoundaryFaceMaximalTranslation.lean`, six named analytic fields).

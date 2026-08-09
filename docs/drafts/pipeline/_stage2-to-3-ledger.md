@@ -34,6 +34,8 @@ Promotion recipe:
 | `all-replica-local-casimir-hall-expansion` | boxed `(6)` bi-tightness and `(7)` off-kernel Hall | `HTGeometry/CentralCasimirComplementHallExpansion` (new) |
 | `nearest-neighbor-chain-projective-spectral-maximality` | qubit specialization + Corollary 2 `(18)` | `HTGeometry/NearestNeighborQubitChainMaximalRank`, `CommutingHermitianSpectrumSum`, `CommutingTermTemporalRankBound` (all new) |
 | `complete-graph-local-projective-spectral-maximality` | complete-graph instance + `(13)` | `HTGeometry/CompleteGraphLocalProjectiveMaximality` (new) |
+| `fast-forwardable-stratum-codimension-obstruction` | tube inclusion, budget step, Gaussian shell positivity, `(4)`–`(6)`, `(14)`–`(15)` | `HTGeometry/FastForwardableStratumCodimension`, `GaussianIntervalPositivity` (both new) |
+| `mixed-periodic-synthesis-carrier-obstruction` | shifted small-ball, fine-lattice density, `(3)`, `(5)`, boxed `(6)` | `HTGeometry/MixedPeriodicCarrierObstruction`, `LatticeGaussianDensity` (both new) |
 | `disconnected-local-spectral-factorization-genericity` | none (already complete in the hypergraph form) | `HTGeometry/DisconnectedProjectiveGapModuleLaw`, `HypergraphComponentFactorization`, `HypergraphProjectiveSpectralFactorization`, `BlockSumSpectralGenericity` |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
@@ -41,6 +43,8 @@ Promotion recipe:
 | `burnol-all-prime-completion-singular-potential-entrance-wall` | all of `(AW0)`--`(AW17)` | `RHTower/BurnolAllPrimeCompletionWall`, `RHTower/BurnolPrimeLogSummability` (both new) |
 | `burnol-all-prime-window-hilbert-cartier-jet-wall` | all of `(HJ1)`--`(HJ29)` | `RHTower/BurnolAllPrimeWindowEnergy`, `RHTower/BurnolReciprocalStokesSewing` (both new) |
 | `burnol-poisson-subordinate-smooth-cartier-entrance-wall` | all of `(PS1)`--`(PS16)`, incl. the Glasser integral | `RHTower/BurnolPoissonSubordinateWall`, `RHTower/BurnolGlasserIntegral` (both new) |
+| `burnol-cofinite-cartier-wall-trace-horizon` | all of `(CH1)`--`(CH23)` | `RHTower/BurnolCofiniteHorizonGerm` (new), `RHTower/BurnolPrimeCartierWallTrace` |
+| `burnol-prime-two-causal-cartier-collar-law` | all of `(3)`--`(25)` | `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`, `RHTower/BurnolCollarKernelSeries`, `RHTower/BurnolPrimeTwoCollarSymbol` (all new) |
 
 ## New reusable infrastructure built during the sweep
 
@@ -73,6 +77,18 @@ Promotion recipe:
 - `HTGeometry/NearestNeighborQubitChainMaximalRank` — the `q = 2` path law with simple spectrum.
 - `HTGeometry/CompleteGraphLocalProjectiveMaximality` — the all-to-all two-local architecture as a
   connected hypergraph, with simplicity, maximal projective independence and rank `q^n − 1`.
+- `HTGeometry/GaussianIntervalPositivity` — the standard Gaussian charges every nondegenerate
+  interval, box, and sup-norm shell.  mathlib has the density and its positivity but not the
+  resulting set positivity.
+- `HTGeometry/FastForwardableStratumCodimension` — bounded synthesis certificates, the Duhamel
+  tube, the relative-budget step, the Gaussian codimension ceiling, and the deterministic radial
+  tube volume.
+- `HTGeometry/LatticeGaussianDensity` — the standard Gaussian density floor on `|x| ≤ 2`, the
+  *shifted* small-interval and small-ball bounds, the separated-centres bound, and the
+  fine-lattice density: the `δ/t`-neighbourhood of a `1/t`-rescaled full lattice keeps a
+  `t`-independent share of Gaussian mass.
+- `HTGeometry/MixedPeriodicCarrierObstruction` — the radial identity, the mixed tube inclusion,
+  and the codimension ceiling `κ ≤ m − dim W − rank Γ` in both Gaussian and Haar form.
 - `HTGeometry/StaticOrbitNetBellmanLaw` — coefficient Hamiltonians, the `√m` and Duhamel Lipschitz
   bounds, the static orbit net, the min-plus layer recursion, the max-plus overlap recursion
   (general pullback form plus the unitary instance and the monotone-reader form), and the robust
@@ -133,6 +149,36 @@ first.
 - `weak-interaction-singular-quantum-time-expansion` — `(7)`'s finite-family Hausdorff assembly,
   plus Theorem C/C2 of the card above.
 
+## Blocked only on another stage-2 card
+
+- `instant-exact-complexity-calibration-singularity-law` — its own theorem `(4)`/`(8)` is
+  `HTGeometry.le_lipschitzConstant_of_certificate` and
+  `le_mul_lipschitzConstant_of_certificate_of_linear_approach`; `(9)` is
+  `penaltyValue_le_wordCost` at the empty word; `(5)`/`(10)` is the corpus Duhamel bound at
+  `K = 0`.  Only the application `(7)` is open, and it needs `(6)` — the exponential
+  exact-complexity lower bound of `algebraic-two-local-instant-exact-complexity`.  Parent first.
+
+## Cards needing a deep published theorem built from scratch
+
+Each is a formalization project in its own right; the card's own mathematics is otherwise
+dependency-closed.
+
+- `route-e-cofactor-amplified-e3-token-supply`, `route-e-forbidden-support-e3-stability` —
+  Matomaki-Teravainen all-interval `E3` theorem.
+- `mass-bessel-cofinal-radiation-divergence`, `mass-bessel-infinite-radiation-jet-obstruction` —
+  uniform sectorial large-argument asymptotics for `K1`; the cards prescribe replacing `K1` by its
+  Fourier integral and proving deep-time Laplace asymptotics.
+- `one-replica-local-pauli-planar-cavity-decay` — operator-valued semicircle theorem.
+- `local-chain-metric-recurrence-exponents` — Kleinbock-Margulis extremality of analytic
+  nondegenerate manifolds.
+- `cusp-spectrum-radius-law` — the Selberg class, the standard twist, and Kaczorowski-Perelli
+  continuation.  Everything downstream is already `[LEAN-PROVED]`; the card's own reuse audit
+  confirms those three inputs are absent from the corpus.
+- `route-e-beurling-local-axiom-firewall` — an explicit Diamond-Montgomery-Vorhauer-style Beurling
+  system with `N(X) = kX + O(X^t)`, `t < 1`, and zeta zeros off the critical line.
+- `algebraic-two-local-instant-exact-complexity` — rational Hilbert specialization and
+  transcendence-degree layers above `RHTower/FiniteLindemannWeierstrass.lean`.
+
 ## Known deep external dependencies (attack last, expect long builds)
 
 - `route-e-cofactor-amplified-e3-token-supply`, `route-e-forbidden-support-e3-stability` —
@@ -142,9 +188,25 @@ first.
   by its Fourier integral `∫ e^{-ixξ} e^{-t√(ξ²+a²)} dξ` and proving deep-time Laplace asymptotics).
   Corpus owns a Schlaefli-integral Bessel layer (`HTGeometry/BesselOrder*.lean`).
 - `one-replica-local-pauli-planar-cavity-decay` — operator-valued semicircle theorem.
+- `local-chain-metric-recurrence-exponents` — Kleinbock–Margulis extremality of analytic
+  nondegenerate manifolds (metric Diophantine approximation).  Not in mathlib.
 - `algebraic-two-local-instant-exact-complexity` — rational Hilbert specialization and
   transcendence-degree layers above `RHTower/FiniteLindemannWeierstrass.lean`.
 
 ## Remaining
 
 Everything still listed by `ls docs/drafts/pipeline/2-fully-proven/*.md`.
+
+## Universal-law-field certification
+
+| Card | New Lean work | Modules |
+|---|---|---|
+| `positive-doctrine-additive-intervention-nondescendence-and-response-coframe-law` | full derivative, factorization classification, coframe tomography, recurrence/open lift | `HTGeometry/ConstitutivePositiveResponse` |
+| `observationally-identical-law-systems-and-intervention-separation-law` | complete passive-reader no-go and injective intervention record | `HTGeometry/ConstitutiveInterventionSeparation` |
+| `independent-slot-transitivity-and-cross-organ-nonprediction-law` | dependent finite slot transitivity, empty/full phase, constant invariant | `HTGeometry/ConstitutiveIndependentSlotNoGo` |
+| `serial-reconstruction-radius-failure-and-hidden-pair-survivor-law` | three-point rejection of false radius monotonicity; exact pair/diameter survivor | `HTGeometry/ConstitutiveReconstructionNoGo` |
+
+`euler-q-gamma-process-zeta-divisor-translation-law` is not promoted: Lean now certifies its local
+q-Pochhammer/q-Gamma probability and integral-response core plus finite exchange, but not its global
+prime/zeta/divisor theorem.  See
+`docs/drafts/pipeline/2-fully-proven/universal-law-field/_LEAN-CERTIFICATION.md`.

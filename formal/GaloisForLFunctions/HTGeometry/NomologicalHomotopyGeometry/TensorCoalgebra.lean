@@ -212,6 +212,12 @@ noncomputable def insertTaylor (n r i : ℕ) (hr : r ≤ n) (hi : i ≤ n - r)
   exact (TensorPower.cast k V hout).toLinearMap ∘ₗ joinHead ∘ₗ joinTail ∘ₗ
     liftCogenerator ∘ₗ applyTaylor ∘ₗ splitBody ∘ₗ splitHead
 
+@[simp]
+theorem insertTaylor_zero (n r i : ℕ) (hr : r ≤ n) (hi : i ≤ n - r) :
+    insertTaylor k V n r i hr hi (0 : TensorPower k r V →ₗ[k] V) = 0 := by
+  ext x
+  simp [insertTaylor]
+
 /-- Family of tensor-coalgebra Taylor corestrictions. -/
 abbrev TaylorFamily := ∀ n : PositiveNat, TensorPower k n.1 V →ₗ[k] V
 

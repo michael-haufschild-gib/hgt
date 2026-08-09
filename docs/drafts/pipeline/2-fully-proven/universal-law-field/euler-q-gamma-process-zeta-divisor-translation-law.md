@@ -9,7 +9,16 @@
   translation boundary exactly the pulled-back Riemann-zeta divisor.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [CPM LOCAL-TO-GLOBAL]
   [UNCONDITIONAL ARITHMETIC SOURCE RELATION] [POSITIVE NORMALIZATION]
-  [DIVISOR LANDING] [GENUS-ONE ERASURE CLASSIFIED] [LEAN FINITE CORE PLANNED] [NOT RH]
+  [DIVISOR LANDING] [GENUS-ONE ERASURE CLASSIFIED] [LEAN LOCAL CORE]
+  [GLOBAL THEOREM NOT LEAN-CERTIFIED] [NOT RH]
+- **Lean local core:** `formal/GaloisForLFunctions/HTGeometry/QPochhammer.lean`
+- **Lean finite exchange core:**
+  `formal/GaloisForLFunctions/HTGeometry/EulerQGammaFiniteProcess.lean`
+
+> **Proof gate:** Under the current project rule, only the local q-Pochhammer/q-Gamma process and
+> finite exchange declarations listed above count as proved.  Global prime product, random-integer
+> law, zeta product, meromorphic continuation, divisor landing, hypertranscendence, and recurrent
+> GNS realization remain paper claims until separately certified in Lean.
 
 ## 1. Why this is a field theorem
 
@@ -564,8 +573,10 @@ needed for the CPM field claim; the formulas and their coupling are what matter.
   response.
 - No physical clock, cost, Stokes contact, or wormhole interpretation is asserted.
 - The theorem gives an arithmetic source relation and an exact erasure classification, not RH.
-- The finite algebraic normalization/translation core is the first Lean target. Infinite-product
-  meromorphy and Cartier divisors remain paper-level until matching APIs exist.
+- Lean now owns q-Pochhammer convergence/nonvanishing/shift, normalized q-Gamma translation,
+  positive local weights, total mass one, the complete nonnegative-integral moment ladder, and the
+  finite algebraic exchange/telescope. Infinite prime products, meromorphy, and Cartier divisors
+  remain paper-only.
 
 ## Gates
 
@@ -579,10 +590,18 @@ needed for the CPM field claim; the formulas and their coupling are what matter.
 - [x] recurrent observer and open lifted history
 - [x] canonical genus-one renormalization and divisor-erasure theorem
 - [x] prior-corpus and literature collision audit
-- [ ] finite unconditional core formalized in Lean
+- [x] local q-Pochhammer/q-Gamma analytic infrastructure formalized in Lean
+- [x] local positive mass-one law and complete integral response ladder formalized in Lean
+- [x] finite unconditional exchange/telescope core formalized in Lean
+- [ ] global prime probability and random-integer law formalized in Lean
+- [ ] zeta product, meromorphic continuation, and divisor landing formalized in Lean
+- [ ] hypertranscendence and recurrent/open-history realization formalized in Lean
 - [ ] critical-boundary process topology beyond genus one
 
 ## Log
 
 - 2026-08-09 — dependency-closed paper theorem created after the CPM field pivot from route
   comparison to local-to-global constitutive-process composition.
+- 2026-08-09 — missing q-Pochhammer/q-Gamma infrastructure created in Lean; local mass-one law,
+  normalized translation, and all nonnegative-integral moments certified. Global claims explicitly
+  remain uncertified.

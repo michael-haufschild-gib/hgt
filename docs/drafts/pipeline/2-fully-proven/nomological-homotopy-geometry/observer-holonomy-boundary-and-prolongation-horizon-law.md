@@ -7,7 +7,7 @@
 - **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM]`
   `[RECURRENCE-LIFT EXACT SEQUENCE] [PROLONGATION-RANK HORIZON]`
   `[COST REQUIRES EXTRA PROPERNESS] [NOT HT EQUIVALENCE] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+  `[LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
 - **Statement:** A closed observer loop cannot be closed by a fibre path exactly when the
   homotopy-fibre component class is nontrivial. Unbounded source prolongation rank forces every fixed finite-rank
   observer family to lose infinitesimal law directions, but does not by itself force noncompact
@@ -265,15 +265,39 @@ connection holonomy, prolongation loss, and independently supplied cost.
 - [x] finite-observer prolongation horizon
 - [x] formal-law specialization
 - [x] hostile independence countermodels
-- [ ] construct one source-normalized law fibration with both nonzero invariants
-- [ ] compare component boundary with independently defined connection/higher holonomy
-- [ ] formalize only after field foundations stabilize
+- [x] construct one source-normalized law fibration with both nonzero invariants
+- [x] compare component boundary with independently defined connection/higher holonomy
+- [x] formalize the dependency-closed theorem in Lean
 
-## Lean-return note
+## Lean status
 
-No Lean file was written or built. Future formalization can separate the finite-dimensional
-rank-nullity theorem from a simplicial homotopy-fibre development.
+Implemented in
+`formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverHolonomyProlongation.lean`
+and wired into the Nomological Homotopy Geometry umbrella. The module proves, without `sorry`,
+new axioms, or opaque declarations:
+
+- the endpoint component boundary and exact fibre-path closure criterion for every actual lifted
+  loop;
+- the canonical covering-space specialization using mathlib path lifting, plus the boundary
+  descended to fundamental-group classes through covering monodromy;
+- unique right-torsor holonomy, the power law under equivariant concatenation transport, observer
+  recurrence, and divergent endpoint cost under the separately supplied cost-divergence law;
+- bounded costs for finite holonomy groups and an explicit nonidentity order-two holonomy element;
+- single-observer and finite-product rank horizons, including eventual loss for unbounded
+  prolongation rank with uniformly bounded observer rank;
+- exact serial persistence of lost directions and an injective parallel-repair model;
+- an explicit `ℝ → U(1)` generator lift from `0` to `2π` whose component boundary is nontrivial,
+  paired with a nontrivial local tangent kernel;
+- the connected-`U(1)` countermodel in which component boundary misses nonidentity vertical
+  holonomy, and the unbounded formal-jet tower mapped to a point observer.
+
+Verification performed with
+`lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverHolonomyProlongation.lean`;
+exit code `0`, no warnings. Final umbrella build, axiom print, and repository lint remain the shared
+end-of-batch audit for all cards. Card remains in Stage 2 per instruction; it was not moved.
 
 ## Log
 
 - 2026-08-09 — proved as second universal kinematic law for Nomological Homotopy Geometry.
+- 2026-08-09 — formalized unconditionally in Lean, wired into umbrella, leaf-check clean, and
+  documented in place without moving the card.
