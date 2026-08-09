@@ -11,7 +11,7 @@ These are the four values a resolved edge-incidence argument reads off: the kern
 matched sector, and the two mismatched outputs are visibly nonzero difference operators.
 -/
 
-open scoped Kronecker
+open scoped Kronecker Matrix
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -158,6 +158,31 @@ theorem trace_twoReplicaLocalSwapRaw_mul_swap_mul_diff (x : Bool) (a : Fin 3) :
   | true =>
       rw [twoReplicaLocalSwapRaw, ← Matrix.mul_assoc, twoReplicaSwap_sq,
         Matrix.one_mul, trace_twoReplicaLocalDiff]
+
+/-! ## Hermiticity of the replica difference -/
+
+/-- The conjugate transpose of a Kronecker product is the Kronecker product of the conjugate
+transposes. -/
+theorem conjTranspose_kronecker_local (A B : Matrix Bool Bool ℂ) :
+    (A ⊗ₖ B)ᴴ = Aᴴ ⊗ₖ Bᴴ := by
+  ext ⟨i₁, i₂⟩ ⟨j₁, j₂⟩
+  simp [Matrix.conjTranspose_apply, Matrix.kroneckerMap_apply]
+
+theorem isHermitian_twoReplicaPauliLeft (a : Fin 3) :
+    (twoReplicaPauliLeft a).IsHermitian := by
+  rw [Matrix.IsHermitian, twoReplicaPauliLeft, conjTranspose_kronecker_local,
+    finiteQubitPauli_isHermitian a, Matrix.conjTranspose_one]
+
+theorem isHermitian_twoReplicaPauliRight (a : Fin 3) :
+    (twoReplicaPauliRight a).IsHermitian := by
+  rw [Matrix.IsHermitian, twoReplicaPauliRight, conjTranspose_kronecker_local,
+    finiteQubitPauli_isHermitian a, Matrix.conjTranspose_one]
+
+/-- **The replica difference is Hermitian**, so its Hilbert--Schmidt square is the trace of its
+square. -/
+theorem isHermitian_twoReplicaLocalDiff (a : Fin 3) :
+    (twoReplicaLocalDiff a).IsHermitian :=
+  (isHermitian_twoReplicaPauliLeft a).sub (isHermitian_twoReplicaPauliRight a)
 
 end
 

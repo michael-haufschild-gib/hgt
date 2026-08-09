@@ -285,8 +285,22 @@ Progress against that list:
   traceless statement needs no computation: `D_a F = -F D_a` plus trace cyclicity makes the trace
   its own negative.  This is the local input the card's `(11)` tensors up — distinct edges differ at
   a vertex where one factor lies in `L` and the other in `L^perp`.
+- **Hermiticity banked.**  `conjTranspose_kronecker_local` (mathlib has no Kronecker
+  conjugate-transpose lemma) gives `isHermitian_twoReplicaLocalDiff`, which is what licenses reading
+  the traces above as Hilbert--Schmidt inner products.
 - **Remaining:** the global tensor form of `(11)` and the assembly `(14)`--`(17)` into
   `ResolvedFiberHallExpansion`.
+
+  Target interface: `resolvedFiberAssembly_subspace_finrank` wants mismatch projections
+  `P : J → X →ₗ Z`, edge maps `E : J → Z →ₗ Y`, an assembly with `assemble z = ∑ j, E j (z j)`,
+  injectivity of `LinearMap.pi P` (which is `(13)`, already available as
+  `finiteTwoReplicaPhysical_connectedGraph_kernel_iff`) and injectivity of `assemble` (which is the
+  edge-sector orthogonality `(11)`).
+
+  Note on tactics: Hermiticity of `twoReplicaSwap` is *not* worth an entrywise proof — `split_ifs`
+  followed by `simp_all` or any `eq_comm` in the simp set loops on the symmetric index conditions.
+  Route it through `twoReplicaLocalCorrelation_eq_swap` and Hermiticity of the correlation term
+  instead.
 
 `HTGeometry/TwoReplicaCliffordTwirlHallSymmetryReduction.lean` additionally
 proves, in both exact matrix conventions, that the canonical greatest local
