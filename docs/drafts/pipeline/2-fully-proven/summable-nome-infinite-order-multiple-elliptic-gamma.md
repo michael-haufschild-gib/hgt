@@ -682,25 +682,23 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 6, moving-point collapse | `tendsto_finiteNomeSection_one_of_tendsto_zero` |
 | Lemma 6, the boundary `xy = 0` | `scalingBoundary_mul_eq_zero` |
 | Lemma 6, no scaling keeps two gamma halves | `scalingBoundary_half_collapses` |
+| Lemma 6, moving-coordinate convergence | `exists_primaryFactor_sub_one_bound`, `tendsto_finiteNomeSection_moving` |
+| Lemma 6, the full table (15)/(16) | `tendsto_scalingTable` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaSharpness.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaValues.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaCollapse.lean`,
-`HTGeometry/InfiniteMultipleEllipticGammaScaling.lean`.
+`HTGeometry/InfiniteMultipleEllipticGammaScaling.lean`,
+`HTGeometry/InfiniteMultipleEllipticGammaMovingPoint.lean`.
 
 ### Open in Lean
 
 1. Lemma 2, free energy (8): `log 𝒢_{A,g}(x) = -∑_{m≥d} x^m M_{A,m}/m` on `|x|<1`, with
    `M_{A,m} = ∏_a (1-p_a^m)^{-1}` and the occupation rearrangement `∑_ν (p^ν)^m = M_{A,m}`.
-2. Lemma 6, the surviving entry of table (16): the *other* half's limit at a moving point,
-   `Φ_{S,g}(x_S) → 𝒢_{A,g}(x)` for `x_S → x ≠ 0`.  This is the one place that needs the finite-section
-   convergence of Lemma 3 upgraded from pointwise to locally uniform in the coordinate; the collapse
-   entries do not, since `tendsto_finiteNomeSection_one_of_tendsto_zero` already handles moving
-   points along any filter.
-3. Lemma 7: the all-order counterterm jet (C3)/(20).
-4. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
+2. Lemma 7: the all-order counterterm jet (C3)/(20).
+3. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
 
 The uniform-in-`S` route worked as predicted: `norm_finiteNomeSection_sub_one_le` bounds every
@@ -709,7 +707,13 @@ centred factors of every section are dominated by one fixed summable family.  Le
 upgrading.  Two hypotheses turned out to be unnecessary and were dropped: `tendsto_forwardNomeFactor_one`
 and `tendsto_parityNormalizedSection` hold at every `x`, including `x = 0`.
 
-Lemma 4 is now closed including the obstruction.  The witness point for genuine non-convergence of
+Lemmas 4 and 6 are now closed.  Local uniformity was never needed: the moving-coordinate limit
+follows from dominated convergence for infinite products, once the centred primary factor is bounded
+on an arbitrary disc rather than only the unit disc.  That radius-general bound
+(`exists_primaryFactor_sub_one_bound`) combines the vanishing order at the origin with plain
+compactness outside the unit disc, and holds at every radius with no hypothesis at all.
+
+Lemma 4 is closed including the obstruction.  The witness point for genuine non-convergence of
 the raw net is elementary rather than Picard-theoretic: `Re 𝒢` runs continuously from `1` at the
 origin to `0` at one, so by the intermediate value theorem it equals `1/2` somewhere, and there
 `𝒢` is neither zero nor a square root of one.
