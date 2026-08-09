@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SectionLogTail
+import GaloisForLFunctions.HTGeometry.InfiniteMultipleEllipticGammaCollapse
 
 /-!
 # The counterterm jet series
@@ -81,5 +82,93 @@ theorem summable_jetSeries {ι : Type*} (g : ℕ) (p : ι → ℂ)
         (‖∏ a ∈ S, p a‖ * ‖y‖) ^ k) :=
     (summable_geometric_of_lt_one (by positivity) hcontr).mul_left _
   exact Summable.of_norm_bounded hgeom (norm_jetSeries_term_le g p hp_lt hsum S y hN)
+
+
+/-- **The jet series differs from its leading term by `O(|Q_S|)`.** -/
+theorem norm_jetSeries_sub_head_le {ι : Type*} (g : ℕ) (p : ι → ℂ)
+    (hp_lt : ∀ a, ‖p a‖ < 1) (hsum : Summable (fun a => ‖p a‖ ^ (g + 1)))
+    (S : Finset ι) {y : ℂ} {N : ℕ} (hN : g + 1 ≤ N)
+    (hcontr : ‖∏ a ∈ S, p a‖ * ‖y‖ < 1) :
+    ‖jetSeries p S y N - y ^ N / (N : ℂ) * ∏ a ∈ S, (1 - p a ^ N)⁻¹‖
+      ≤ ((∏' a, (1 - ‖p a‖ ^ (g + 1))⁻¹) / (N : ℝ) * ‖y‖ ^ N) *
+          ((‖∏ a ∈ S, p a‖ * ‖y‖) / (1 - ‖∏ a ∈ S, p a‖ * ‖y‖)) := by
+  classical
+  set f : ℕ → ℂ := fun k => (∏ a ∈ S, p a) ^ k * y ^ (k + N) / ((k + N : ℕ) : ℂ) *
+    ∏ a ∈ S, (1 - p a ^ (k + N))⁻¹ with hfdef
+  set C : ℝ := (∏' a, (1 - ‖p a‖ ^ (g + 1))⁻¹) / (N : ℝ) * ‖y‖ ^ N with hCdef
+  set r : ℝ := ‖∏ a ∈ S, p a‖ * ‖y‖ with hrdef
+  have hr0 : (0 : ℝ) ≤ r := by rw [hrdef]; positivity
+  have hfsum : Summable f := summable_jetSeries g p hp_lt hsum S hN hcontr
+  have hsplit := hfsum.sum_add_tsum_nat_add 1
+  have hhead : ∑ m ∈ Finset.range 1, f m = y ^ N / (N : ℂ) * ∏ a ∈ S, (1 - p a ^ N)⁻¹ := by
+    rw [Finset.sum_range_one, hfdef]
+    simp
+  have hdiff : jetSeries p S y N - y ^ N / (N : ℂ) * ∏ a ∈ S, (1 - p a ^ N)⁻¹
+      = ∑' k : ℕ, f (k + 1) := by
+    rw [jetSeries, ← hfdef, ← hsplit, hhead]
+    ring
+  rw [hdiff]
+  have hnormsum : Summable (fun k : ℕ => ‖f (k + 1)‖) :=
+    (summable_nat_add_iff (f := fun k => ‖f k‖) 1).2 hfsum.norm
+  have hmajsum : Summable (fun k : ℕ => C * r ^ (k + 1)) :=
+    ((summable_geometric_of_lt_one hr0 hcontr).mul_left C).comp_injective
+      (add_left_injective 1)
+  have hbound : ∀ k : ℕ, ‖f (k + 1)‖ ≤ C * r ^ (k + 1) := by
+    intro k
+    exact norm_jetSeries_term_le g p hp_lt hsum S y hN (k + 1)
+  calc ‖∑' k : ℕ, f (k + 1)‖ ≤ ∑' k : ℕ, ‖f (k + 1)‖ := norm_tsum_le_tsum_norm hnormsum
+    _ ≤ ∑' k : ℕ, C * r ^ (k + 1) := Summable.tsum_le_tsum hbound hnormsum hmajsum
+    _ = C * (r / (1 - r)) := by
+        have hgeo : ∑' k : ℕ, r ^ (k + 1) = r / (1 - r) := by
+          have h : ∑' k : ℕ, r ^ (k + 1) = r * ∑' k : ℕ, r ^ k := by
+            rw [← tsum_mul_left]
+            exact tsum_congr fun k => by rw [pow_succ]; ring
+          rw [h, tsum_geometric_of_lt_one hr0 hcontr]
+          rw [div_eq_mul_inv]
+        rw [tsum_mul_left, hgeo]
+
+/-- **The jet limit.**  As the nome set grows, the jet series converges to the leading coefficient
+of the counterterm jet. -/
+theorem tendsto_jetSeries {ι : Type*} [Infinite ι] (g : ℕ) (p : ι → ℂ)
+    (hp_lt : ∀ a, ‖p a‖ < 1)
+    (hsum : Summable (fun a => ‖p a‖ ^ (g + 1))) (y : ℂ) {N : ℕ} (hN : g + 1 ≤ N) :
+    Tendsto (fun S : Finset ι => jetSeries p S y N) atTop
+      (𝓝 (y ^ N / (N : ℂ) * ∏' a, (1 - p a ^ N)⁻¹)) := by
+  classical
+  have hNpos : 0 < N := by omega
+  have huN_lt : ∀ a, ‖p a ^ N‖ < 1 := by
+    intro a
+    rw [norm_pow]
+    exact pow_lt_one₀ (norm_nonneg _) (hp_lt a) (by omega)
+  have huN_sum : Summable (fun a => ‖p a ^ N‖) := by
+    simpa only [norm_pow] using summable_norm_pow_of_le hp_lt hN hsum
+  have hprodN : HasProd (fun a => (1 - p a ^ N)⁻¹) (∏' a, (1 - p a ^ N)⁻¹) :=
+    (hasProd_inv_one_sub_nome (fun a => p a ^ N) huN_lt huN_sum).multipliable.hasProd
+  have hhead : Tendsto (fun S : Finset ι => y ^ N / (N : ℂ) * ∏ a ∈ S, (1 - p a ^ N)⁻¹) atTop
+      (𝓝 (y ^ N / (N : ℂ) * ∏' a, (1 - p a ^ N)⁻¹)) := hprodN.const_mul _
+  have hQ := tendsto_nomeProduct_atTop_zero g p hp_lt hsum
+  have hr : Tendsto (fun S : Finset ι => ‖∏ a ∈ S, p a‖ * ‖y‖) atTop (𝓝 0) := by
+    have h := (tendsto_zero_iff_norm_tendsto_zero.mp hQ).mul_const ‖y‖
+    simpa using h
+  have hev : ∀ᶠ S : Finset ι in atTop, ‖∏ a ∈ S, p a‖ * ‖y‖ < 1 :=
+    hr.eventually (eventually_lt_nhds (by norm_num))
+  have hmaj : Tendsto (fun S : Finset ι =>
+      ((∏' a, (1 - ‖p a‖ ^ (g + 1))⁻¹) / (N : ℝ) * ‖y‖ ^ N) *
+        ((‖∏ a ∈ S, p a‖ * ‖y‖) / (1 - ‖∏ a ∈ S, p a‖ * ‖y‖))) atTop (𝓝 0) := by
+    have hden : Tendsto (fun S : Finset ι =>
+        (‖∏ a ∈ S, p a‖ * ‖y‖) / (1 - ‖∏ a ∈ S, p a‖ * ‖y‖)) atTop (𝓝 0) := by
+      have h := hr.div (hr.const_sub 1) (by norm_num)
+      have hval : (0 : ℝ) / (1 - 0) = 0 := by norm_num
+      rw [hval] at h
+      exact h
+    simpa using hden.const_mul _
+  have hdiff : Tendsto (fun S : Finset ι =>
+      jetSeries p S y N - y ^ N / (N : ℂ) * ∏ a ∈ S, (1 - p a ^ N)⁻¹) atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    refine squeeze_zero' (Eventually.of_forall fun S => norm_nonneg _) ?_ hmaj
+    filter_upwards [hev] with S hS
+    exact norm_jetSeries_sub_head_le g p hp_lt hsum S hN hS
+  have := hdiff.add hhead
+  simpa using this
 
 end HTGeometry

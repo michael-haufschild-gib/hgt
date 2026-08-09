@@ -691,6 +691,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 2, (8) in moment form | `norm_logTail_term_le`, `summable_logTail_family`, `tsum_logTail_family_occupation`, `infiniteMultipleEllipticGamma_eq_exp_neg_moments` |
 | Lemma 7, (9) — uniform bound on the finite Euler products | `multipliable_realEulerFactor`, `norm_finiteEulerProduct_le` |
 | Lemma 7, the jet series and its geometric domination | `jetSeries`, `norm_jetSeries_term_le`, `summable_jetSeries` |
+| Lemma 7, the jet limit | `norm_jetSeries_sub_head_le`, `tendsto_jetSeries` |
 | Lemma 7, the counterterm split | `sectionLogTail`, `summable_sectionLogTail`, `sectionLogTail_split` |
 | Lemma 7, (17) — the finite-section free energy | `finiteNomeSection_eq_restricted`, `finiteNomeSection_eq_exp_neg_moments` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
@@ -723,14 +724,13 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
    `norm_jetSeries_term_le` dominates its `k`th term by `(B/N)|y|^N (|Q_S||y|)^k`, whence
    `summable_jetSeries` whenever `|Q_S||y| < 1`.
 
-   Three steps remain, all limits:
-   (a) `jetSeries p S y N - y^N M_{S,N}/N = ∑_k (k+1 term)`, bounded by
-       `(B/N)|y|^N (|Q_S||y|)/(1-|Q_S||y|)` — subtract the head and reuse the same majorant;
-   (b) `Tendsto (fun S => jetSeries p S y N) atTop (𝓝 (y^N M_{A,N}/N))`, from (a),
-       `tendsto_nomeProduct_atTop_zero`, and `hasProd_inv_one_sub_nome` at `p^N` (which *is* the
-       convergence `M_{S,N} → M_{A,N}`);
-   (c) identify `jetSeries` with the divided tail of `sectionLogTail_split` at `t = Q_S/x`,
-       legitimate since `Q_S ≠ 0` when every nome is nonzero.
+   Steps (a) and (b) are closed: `norm_jetSeries_sub_head_le` bounds the series minus its leading
+   term by `(B/N)|y|^N (|Q_S||y|)/(1-|Q_S||y|)`, and `tendsto_jetSeries` gives
+   `jetSeries p S y N → y^N M_{A,N}/N`.  Nonvanishing of the nomes is *not* needed for either.
+
+   One step remains: identify `jetSeries p S x⁻¹ N` with the tail of `sectionLogTail_split` at
+   `t = Q_S/x`, divided by `Q_S^N`.  That is the only place `Q_S ≠ 0` is used, and it holds because
+   every nome is nonzero.  Composing it with `tendsto_jetSeries` and (17) is then (C3)/(20).
 
    No constraint on `|x|` beyond `x ≠ 0` enters: the geometric ratio is `|Q_S|/|x|`, eventually
    below one for any fixed nonzero `x`.  The card states Lemma 7 on a compact `K ⊂ ℂ^×` with
