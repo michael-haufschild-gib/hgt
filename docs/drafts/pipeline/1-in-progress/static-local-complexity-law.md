@@ -5664,3 +5664,28 @@ receive a new title and an independent significance audit.
   and hostile audit:
   `../3-formalized/static-orbit-net-no-go-and-circuit-bellman-law.md`.  Lean
   remained read only during corpus refactoring.
+- 2026-08-09 -- Separated full static-local plateau capacity from first onset
+  by an exact weak-cut law.  If
+  `H=H_A tensor I+I tensor H_B+V` starts from a product seed, Duhamel stability
+  and factorwise state synthesis give
+  `C_epsilon(exp(-itH)chi)<=S_A(eta_A)+S_B(eta_B)` throughout
+  `|t| ||V||_op<=epsilon-eta_A-eta_B`.  On a balanced cut this cap is
+  `2^(n/2) poly(n)=o(2^n/log n)`.  Independently, products of two finite
+  cubic-phase seed families have collision expectation at most `4/2^n`
+  against every possibly entangled eigenbasis.  Density of simple, cyclic,
+  maximal-projective-rank points arbitrarily close to a decoupled
+  nearest-neighbour shell point therefore supplies, for every prescribed
+  delay `L`, one fixed ordinary path-local Hamiltonian and one product cubic
+  seed which remain below full-scale complexity until `L`, but later exhibit
+  an `Omega(2^n/log n)` plateau for `exp(Omega(2^n))` time, recurrence, and
+  permanent local two-query separation from Haar randomness.  Thus collision
+  and projective rank control capacity but cannot control onset.  For the
+  ordinary path-local coefficient shell, the nine cross-edge coefficients
+  obey an exact beta projection law; weak-edge mass is `Theta_n(x^9)`, forcing
+  a quenched onset-delay floor `c_n L^(-9)`.  At Brown time this is
+  `exp(-Theta(n))`, up to the beta law's polynomial-in-`n` prefactor.  The
+  surviving endpoint target is geometric-skeleton Bellman escape on a
+  conductance-good shell, paying the cut-bad sector once.  Paper proof and
+  hostile audit:
+  `../2-fully-proven/weak-cut-complexity-onset-capacity-separation-law.md`.
+  No Lean source or process was touched during the active corpus refactor.

@@ -499,7 +499,8 @@ Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallRe
 `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`,
 `RHTower/BurnolFirstWallZeroDividedSource`, `RHTower/BurnolFirstWallSourceDecay`,
 `RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass`,
-`RHTower/BurnolFirstWallCrossingCorrelation`, `RHTower/BurnolReflectedRawSource`.
+`RHTower/BurnolFirstWallCrossingCorrelation`, `RHTower/BurnolReflectedRawSource`,
+`RHTower/BurnolReflectedDividedShift`.
 
 | Paper item | Lean declaration |
 |---|---|
@@ -527,7 +528,9 @@ Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallRe
 | `(22)`, `(23)` forward | `tendsto_burnolCrossingWindow`, `tendsto_burnolCrossingResidue`, `xiDivisor_tendsto_burnolFirstWallResidue` |
 | `(29)` forward, pointwise | `xiDivisor_tendsto_burnolCrossingDepthProfile` |
 | `(15a)` source | `burnolReflectedRawSource`, `burnolReflectedRawSource_head`, `burnolReflectedRawSource_eq_harmonic`, `burnolHarmonicWindow`, `abs_burnolHarmonicWindow_sub_log_two_le`, `norm_burnolReflectedRawSource_le` |
-| `(15b)` | `integral_burnolReflectedRawSource_cpow`, `integrableOn_burnolReflectedRawSource_cpow` |
+| `(15b)` | `integral_burnolReflectedRawSource_cpow`, `integrableOn_burnolReflectedRawSource_cpow`, `xiDivisor_integral_burnolReflectedKernel_eq_zero` |
+| `(15c)` | `burnolReflectedKernel`, `burnolReflectedDividedSource`, `xiDivisor_integral_burnolReflectedKernel_Ioc`, `xiDivisor_burnolReflectedDividedSource_eq_tail` |
+| `(9)` reflected head `b_ρ` | `burnolReflectedDividedSource_head`, `burnolReflectedDividedSource_apertureHead` |
 
 `(28)` is proved directly from the exact Gamma moment of the depth-zero kernel, so it does not pass
 through the adjoint identity `(27)`.
@@ -545,9 +548,17 @@ The reflected raw source `f_0^vee` is now built with its head `-log 2`, its harm
 the elementary decay `|f_0^vee(t)| ≤ 8/t`, and its Mellin transform
 `ζ(w)(2^{1-w}-1)/(1-w)` on the strip.
 
-Still open in Lean: `(15c)` (the reflected divided shift), the reflected halves of `(10)` and
-`(11)`, the sharpened tail `(12)`, the reflected residue in `(23)`, the `L^1` domination behind
-`(29)`--`(31)`, and Corollary 5.
+The reflected orientation is now built through its head: `f_0^vee` with head `-log 2`, decay
+`8/t` and Mellin transform `ζ(w)(2^{1-w}-1)/(1-w)`; the reflected kernel whose total moment
+vanishes at a `ξ`-zero (by the functional equation `xi_one_sub`); the reflected divided shift
+`C g_ρ` with its tail representation and its constant head `b_ρ = -log 2/ρ`
+(`burnolReflectedDividedSource_apertureHead`).
+
+Still open in Lean: the reflected halves of `(10)` and `(11)` (the improper mass
+`∫_0^∞ f_0^vee = ζ(0) = -1/2`, whose elementary route is written out above), the reflected
+residue in `(23)` — a direct instantiation of `tendsto_burnolCrossingResidue` once that mass is
+available — the sharpened tail `(12)`, the `L^1` domination behind `(29)`--`(31)`, and
+Corollary 5.
 
 ## Gates
 

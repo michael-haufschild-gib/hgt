@@ -779,3 +779,73 @@ Eleventh layer: `eventually_norm_lambertVar_le_half` — for `s > 0` and any `M`
 are removed"; with `norm_lambertTerm_le` it dominates the tail on every compact set, and the finitely
 many exceptional `n` are precisely the terms that can carry poles.  Unconditional and axiom-clean.
 Closure count unchanged at 21/65.
+
+Twelfth layer: `RHTower/LambertSumHolomorphic.lean` — `norm_lambertVar_le_of_mem_ball` and
+**`differentiableOn_lambertSum`**: for `0 < s` and `M ≤ (2π)^s/2` the Lambert sum is holomorphic on
+`‖ξ‖ < M`.  Each term is rational with denominator `≥ 1/4`, the family is dominated by
+`4C/(n+1)^{1+s}`, and mathlib's `differentiableOn_tsum_of_summable_norm` finishes.  Unconditional
+and axiom-clean.  With `(5)` this makes the transform a holomorphic function near the origin rather
+than a formal series.  Closure count unchanged at 21/65.
+
+Thirteenth layer — the continuation mechanism: `RHTower/LambertTailHolomorphic.lean`,
+`differentiableOn_lambertTail` (tail from index `N` holomorphic on `‖ξ‖ < (2π(N+1))^s/2`) and
+`exists_index_lambertTail_differentiableOn` (every radius is reached by some tail).  Unconditional
+and axiom-clean.  Dropping terms enlarges the disc without bound and the discarded head is a finite
+sum of explicit rational functions with the already-classified poles, so the transform is
+holomorphic on every disc after subtracting finitely many known rational terms — the meromorphic
+continuation of `(5)` with the pole set `(7)`.
+
+Sections 1–3 of `power-canonical-product-exact-moment-borel-lattice-law` are now formalized end to
+end.  Closure count unchanged at 21/65 pending the stage-3 certificate write-up.
+
+**Correction to the previous entry.**  "Sections 1–3 formalized end to end" overstates it.  The
+thirteen layers cover `(2)`–`(11)`, i.e. everything about the transform *given* its coefficients.
+They do not cover `(1)`: that `b_k = (-1)^k ζ(-sk)` are the coefficients of the asymptotic tail of
+`H_s(x) = x W_s'(x)/W_s(x)`.  That is an asymptotic expansion of the logarithmic derivative of the
+canonical product and is the single remaining analytic input of this card.
+
+The carrier is already corpus-owned (`powerCanonicalProduct`, `RationalPowerCyclicNorm.lean`, with
+Bank's dichotomy proved on it), so `(1)` concerns an object already in Lean.  No stage-3 certificate
+is written for this card: the transform theory is formalized, its identification with the Barnes
+tail of `W_s` is not.  Closure count remains 21/65.
+
+Fourteenth layer, first step toward `(1)`: `HTGeometry/WeierstrassFactorGenus.lean` — `weierstrassE`
+(the elementary factor of arbitrary genus; the corpus had only genus one), `hasDerivAt_weierstrassE`,
+and **`logDeriv_weierstrassE`**: `E_g'/E_g = -z^g/(1-z)`.  Unconditional and axiom-clean.
+
+The collapse is the mechanism of the card's tail: the derivative of the exponential polynomial is the
+truncated geometric series `(z^g-1)/(z-1)`, cancelling the `g` lowest terms of `-1/(1-z)` and leaving
+`-z^g/(1-z)`.  At `z = -x/n^s` this gives `H_s(x) = ∑_n (-1)^g (x/n^s)^{g+1}/(1+x/n^s)`, whose terms
+decay like the `(g+1)`-st power — the reason `H_s` has an inverse-power tail.  Remaining for `(1)`:
+the Mellin/Barnes evaluation of that sum's asymptotic coefficients as `(-1)^k ζ(-sk)`.
+Closure count unchanged at 21/65.
+
+Fifteenth layer: `tsum_inverse_power_expansion` — for `‖t‖ > 1`, `t^{g+1}/(1+t) = ∑_j (-1)^j t^{g-j}`.
+Unconditional and axiom-clean.  With `logDeriv_weierstrassE` this completes the mechanism of the
+card's `(1)`: the `n`-th term of `H_s` is `(-1)^g t^{g+1}/(1+t)` at `t = x/n^s`, and its descending
+expansion in `t` is an ascending expansion in `n^s/x`; summing over `n` gives the inverse-power tail
+with `b_k` a regularized `∑_n n^{sk}`, which is the source of `ζ(-sk)`.  What is left for `(1)` is
+that regularization — the Mellin/zeta step.  Closure count unchanged at 21/65.
+
+### `weighted-euler-tangent-global-graph-decoupling` — the joint-closure criterion
+
+`HTGeometry/JointDenseOfVanishingDual.lean`: `apply_eq_inl_add_inr` and
+**`topologicalClosure_eq_top_of_forall_pair_dual_eq_zero`** — a subspace of `E × F` whose only
+annihilating *pair* of functionals is `(0,0)` is dense in the product.  Unconditional and
+axiom-clean, built on the corpus's own `topologicalClosure_eq_top_of_forall_dual_eq_zero`.
+
+This makes precise the card's insistence that `(3)` "is not a consequence of density of the two
+projections": the annihilator of a subspace of a product consists of *pairs*, and projection density
+only rules out the split pairs `(f₁,0)`, `(0,f₂)`.  The mixed pairs are what the carrier-elimination
+theorems kill.  Remaining for `(3)`/`(18)`/`(19)`: instantiate the two factors and feed the
+elimination in.  Closure count unchanged at 21/65.
+
+`weighted-euler-tangent-global-graph-decoupling`, second brick: `closure_add_left_image` and
+**`dense_affine_of_topologicalClosure_eq_top`** — a translate of a dense subspace fills the space.
+Unconditional and axiom-clean.  This is the `(18) → (19)` step outright: the affine closure
+`(1+M₀) × O(Q₊)_R` follows from the linear joint closure by a homeomorphism, with no new analysis.
+
+So `(19)` is reduced to `(18)`, and `(3)`/`(18)` both reduce to the pair criterion.  The genuine
+remainder is the instantiation: the coefficient factor is Banach but `O(Q₊)_R` is Fréchet, so the
+separation must be run in locally convex form, with the `compactFourierBorel` analytic functionals as
+the second component of the annihilating pair.  Closure count unchanged at 21/65.

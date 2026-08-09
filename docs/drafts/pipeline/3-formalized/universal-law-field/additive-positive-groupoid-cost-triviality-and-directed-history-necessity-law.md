@@ -1,11 +1,12 @@
 # Additive positive groupoid-cost triviality and directed-history necessity law
 
 - **ID:** ULF-HISTORY-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
 - **Source:** weighted-history-groupoid ontology attack
 - **Statement:** Every nonnegative additive cost on a groupoid is identically zero; nontrivial proof cost requires irreversible or subadditive history structure beyond the reversible core.
-- **Status:** [PAPER-PROVED] [ROUTE-INDEPENDENT] [POSITIVE SURVIVOR] [NO LEAN]
+- **Status:** [LEAN-CERTIFIED] [ROUTE-INDEPENDENT] [POSITIVE SURVIVOR]
+  [NO PROJECT AXIOMS]
 
 ## 1. Theorem
 
@@ -77,6 +78,22 @@ the open mathematical question is which universal exchange law couples its two c
 - No novelty claim is made for the elementary proof. Its role is to kill a tempting universal
   ontology and force a stronger representation.
 
+## 6. Lean certificate
+
+Module:
+`GaloisForLFunctions.HTGeometry.ConstitutiveHistoryPolarization`.
+
+Closed declarations:
+
+- `constitutiveGroupoid_nonnegativeAdditiveCost_eq_zero`;
+- `constitutiveGroupoid_complexWeight_nonnegativeRealPart_eq_zero`;
+- `constitutiveDirectedHistory_nontrivialAdditiveCost_exists`.
+
+Targeted source check and final module build passed. `#print axioms` reports only `propext`,
+`Classical.choice`, and `Quot.sound` for groupoid theorems, and only `propext` for directed survivor.
+
 ## Log
 
 - 2026-08-09 — groupoid single-weight conjecture killed; directed-history survivor extracted.
+- 2026-08-09 — no-go, complex-weight corollary, and directed positive survivor closed in Lean;
+  promoted to Stage 3.

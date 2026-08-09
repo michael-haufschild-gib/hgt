@@ -22,6 +22,8 @@ Dedicated Lean umbrella:
 | ULF-RBD-JET-1 | Exact DA/HT finite-jet double realization, mutual density, empty interiors, nonclosed strata, continuous-classifier no-go | `HTGeometry.ConstitutiveFiniteJetBoundary` |
 | ULF-REG-KONIG-1 | Locally finite realization tower has a global section; finite-local/global gap requires noncoherence, nonproperness, or extra admission | `HTGeometry.ConstitutiveRealizationKonig` |
 | ULF-REG-SEID-1 | Surjective erasure forces infinite dimension; fixed-corona Gamma-Bockstein death has no faithful finite-dimensional linear model | `HTGeometry.ConstitutiveSurjectiveErasure` |
+| ULF-HISTORY-1 | Nonnegative additive groupoid costs vanish; complex real-cost part vanishes; directed histories admit nonzero additive cost | `HTGeometry.ConstitutiveHistoryPolarization` |
+| ULF-PRD-PUMP-1 | Observer unitization forces recurrence, injective open history, linear action, and cost nondescendence | `HTGeometry.ConstitutiveObserverUnitization` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.

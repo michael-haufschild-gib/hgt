@@ -729,6 +729,29 @@ theorem momentHankelMatrix_momentCoordinatePerturbation_firstUnseen
     omega
   simp [momentHankelMatrix, momentCoordinatePerturbation, hij]
 
+/-- Distinct first-unseen perturbations give distinct complete moment sequences. -/
+theorem momentCoordinatePerturbation_injective
+    (s : ℕ → ℝ) (N : ℕ) :
+    Function.Injective (momentCoordinatePerturbation s N) := by
+  intro δ ε h
+  have hN := congrFun h N
+  simpa [momentCoordinatePerturbation] using hN
+
+/-- **Infinite-branching face law.**  Every finite Hankel face has infinitely many complete moment
+extensions already along its first unseen coordinate.  Thus a tower of finite Hankel observations
+fails local finiteness at every extension step. -/
+theorem sameMomentHankelFace_infinite
+    (s : ℕ → ℝ) (n : ℕ) :
+    Set.Infinite {t : ℕ → ℝ |
+      momentHankelMatrix t (n + 1) = momentHankelMatrix s (n + 1)} := by
+  let f : ℝ → (ℕ → ℝ) := fun δ =>
+    momentCoordinatePerturbation s (2 * n + 1) δ
+  have hf : Function.Injective f :=
+    momentCoordinatePerturbation_injective s (2 * n + 1)
+  apply (Set.infinite_range_of_injective hf).mono
+  rintro t ⟨δ, rfl⟩
+  exact momentHankelMatrix_momentCoordinatePerturbation_firstUnseen s n δ
+
 /-- The monic first extension class translates by exactly the unseen coordinate perturbation. -/
 theorem finiteHankelBoundaryMonicRemainder_momentCoordinatePerturbation
     (s : ℕ → ℝ) {n : ℕ} (c : Fin (n + 1) → ℝ)

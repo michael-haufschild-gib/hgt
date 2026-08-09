@@ -45,7 +45,7 @@ Promotion recipe:
 | `burnol-all-prime-completion-singular-potential-entrance-wall` | all of `(AW0)`--`(AW17)` | `RHTower/BurnolAllPrimeCompletionWall`, `RHTower/BurnolPrimeLogSummability` (both new) |
 | `burnol-all-prime-window-hilbert-cartier-jet-wall` | all of `(HJ1)`--`(HJ29)` | `RHTower/BurnolAllPrimeWindowEnergy`, `RHTower/BurnolReciprocalStokesSewing` (both new) |
 | `burnol-poisson-subordinate-smooth-cartier-entrance-wall` | all of `(PS1)`--`(PS16)`, incl. the Glasser integral | `RHTower/BurnolPoissonSubordinateWall`, `RHTower/BurnolGlasserIntegral` (both new) |
-| `burnol-first-wall-cartier-residue-cancellation-law` | *(in progress)* `(1)`, `(2)`, `(4)`, `(8)`--`(11 fwd)`, `(13)`--`(23 fwd)`, `(24)`--`(28)`, `(29 fwd, pointwise)` | `RHTower/BurnolFirstWallZeroDividedSource`, `RHTower/BurnolFirstWallSourceDecay`, `RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass`, `RHTower/BurnolFirstWallCrossingCorrelation`, `RHTower/BurnolReflectedRawSource` (all new) |
+| `burnol-first-wall-cartier-residue-cancellation-law` | *(in progress)* `(1)`, `(2)`, `(4)`, `(8)`--`(11 fwd)`, `(13)`--`(23 fwd)`, `(24)`--`(28)`, `(29 fwd, pointwise)` | `RHTower/BurnolFirstWallZeroDividedSource`, `RHTower/BurnolFirstWallSourceDecay`, `RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass`, `RHTower/BurnolFirstWallCrossingCorrelation`, `RHTower/BurnolReflectedRawSource`, `RHTower/BurnolReflectedDividedShift` (all new) |
 | `burnol-cofinite-cartier-wall-trace-horizon` | all of `(CH1)`--`(CH23)` | `RHTower/BurnolCofiniteHorizonGerm` (new), `RHTower/BurnolPrimeCartierWallTrace` |
 | `burnol-prime-two-causal-cartier-collar-law` | all of `(3)`--`(25)` | `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`, `RHTower/BurnolCollarKernelSeries`, `RHTower/BurnolPrimeTwoCollarSymbol` (all new) |
 
@@ -324,3 +324,23 @@ prime/zeta/divisor theorem.  See
   is not finite-dimensional.
 - Targeted module build green; universal-law-field umbrella wired; `#print axioms` reports only
   `propext`, `Classical.choice`, and `Quot.sound`; no project postulate or computation proof.
+
+# Universal-law-field history-polarization certification (2026-08-09)
+
+- `additive-positive-groupoid-cost-triviality-and-directed-history-necessity-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveHistoryPolarization`.
+- Certified: every nonnegative additive groupoid cost vanishes; same for nonnegative real part of
+  additive complex groupoid weight; directed natural-number histories carry nonzero additive cost.
+- Targeted module build green; universal-law-field umbrella wired; no project postulate or
+  computation proof.
+
+# Universal-law-field observer-unitization pump certification (2026-08-09)
+
+- `observer-unitization-recurrence-open-history-and-cost-nondescendence-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveObserverUnitization`.
+- Certified: exact identity observation of all powers; exact linear action; injective lifted power
+  history; action cannot descend through unitizing observer; bundled four-organ exchange theorem.
+- Targeted module build green; universal-law-field umbrella wired; no project postulate or
+  computation proof.

@@ -1220,3 +1220,43 @@ in another corona still only records their real part and remains circular.
   `β < σ` holds automatically. This is `(7) → (14) → (16)` at the critical boundary, unconditional
   and axiom-clean. What remains on the card is the joint product-space capstone `(3)` and the
   `(18)`/`(19)` corollaries — no further analytic input.
+
+## 2026-08-09 — the joint-closure criterion is formalized
+
+`formal/GaloisForLFunctions/HTGeometry/JointDenseOfVanishingDual.lean`, unconditional and
+axiom-clean:
+
+- `apply_eq_inl_add_inr` — a continuous functional on a product splits as the sum of its
+  restrictions to the two factors;
+- **`topologicalClosure_eq_top_of_forall_pair_dual_eq_zero`** — if the only *pair* `(f₁, f₂)` of
+  continuous functionals with `f₁ x + f₂ y = 0` throughout a subspace of `E × F` is the zero pair,
+  then that subspace is dense in the product.
+
+This is exactly the shape of `(3)`, `(18)` and `(19)`: the card stresses that joint closure "is not
+a consequence of density of the two projections", and the reason is visible in the criterion — the
+annihilator of a subspace of a product is a set of *pairs*, and projection density only kills pairs
+of the forms `(f₁, 0)` and `(0, f₂)`.  What excludes the intermediate closed subspaces is the
+absence of a genuinely mixed annihilating pair, which is what the carrier-elimination theorems
+supply.
+
+Remaining for `(3)`/`(18)`/`(19)`: instantiating the two factors — the weighted coefficient space
+and the holomorphic regular-flux space on the quadrant — and feeding the carrier-elimination
+vanishing into this criterion.
+
+### The `(18) → (19)` step is formalized
+
+Same module, unconditional and axiom-clean:
+
+- `closure_add_left_image` — translation commutes with closure, being a homeomorphism;
+- **`dense_affine_of_topologicalClosure_eq_top`** — if a subspace is dense then every affine
+  translate of it fills the space.
+
+That is exactly the passage from the group closure `(18)` to the affine closure `(19)`
+`= (1 + M₀) × O(Q₊)_R`: once the linear joint closure is known, the affine statement is a
+translation and needs no new analysis.  So of the three remaining items, `(19)` follows from `(18)`
+outright, and `(18)`/`(3)` both reduce to the pair criterion above.
+
+What is genuinely left is the instantiation: the coefficient factor is a Banach space, but the
+regular-flux factor `O(Q₊)_R` is a Fréchet space of holomorphic functions, so feeding it into the
+criterion needs the locally convex form of the separation argument, with the analytic functionals of
+the `compactFourierBorel` layer as the second component of the annihilating pair.

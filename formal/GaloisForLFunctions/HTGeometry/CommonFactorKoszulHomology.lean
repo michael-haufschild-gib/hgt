@@ -207,6 +207,288 @@ def commonFactorKoszulH1CotangentEquiv {z : R} (a b : Rˣ) (hz : IsKoszulRegular
       apply hz
       simpa [mul_sub] using sub_eq_zero.mpr h)
 
+/-! ## Arbitrary split families and the full normalized Koszul complex -/
+
+section SplitFamily
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/-- Unit-weighted augmentation `h((xᵢ)) = ∑ uᵢ xᵢ`. -/
+def unitWeightedAugmentation (u : ι → Rˣ) : (ι → R) →ₗ[R] R where
+  toFun x := ∑ i, (u i : R) * x i
+  map_add' x y := by simp [mul_add, Finset.sum_add_distrib]
+  map_smul' r x := by
+    simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    ring
+
+/-- A section of the augmentation obtained from one chosen unit coordinate. -/
+def unitWeightedSection (u : ι → Rˣ) (i₀ : ι) : R →ₗ[R] (ι → R) where
+  toFun r i := if i = i₀ then (↑((u i₀)⁻¹) : R) * r else 0
+  map_add' x y := by
+    ext i
+    by_cases hi : i = i₀ <;> simp [hi, mul_add]
+  map_smul' r x := by
+    ext i
+    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul] <;> ring
+
+@[simp] theorem unitWeightedAugmentation_section (u : ι → Rˣ) (i₀ : ι) (r : R) :
+    unitWeightedAugmentation u (unitWeightedSection u i₀ r) = r := by
+  classical
+  simp [unitWeightedAugmentation, unitWeightedSection, mul_assoc]
+
+/-- Kernel of the unit-weighted augmentation: the shell-presentation relation module. -/
+abbrev unitWeightedRelations (u : ι → Rˣ) : Submodule R (ι → R) :=
+  LinearMap.ker (unitWeightedAugmentation u)
+
+/-- Exact split decomposition `R^ι = R·v ⊕ ker h`. -/
+def unitWeightedSplitEquiv (u : ι → Rˣ) (i₀ : ι) :
+    (ι → R) ≃ₗ[R] R × unitWeightedRelations u := by
+  let s := unitWeightedSection u i₀
+  let h := unitWeightedAugmentation u
+  let f : (ι → R) →ₗ[R] R × unitWeightedRelations u :=
+    { toFun := fun x => (h x, ⟨x - s (h x), by
+          rw [LinearMap.mem_ker, map_sub, unitWeightedAugmentation_section, sub_self]⟩)
+      map_add' := fun x y => by
+        apply Prod.ext
+        · simp
+        · apply Subtype.ext
+          dsimp
+          rw [map_add, map_add]
+          abel
+      map_smul' := fun r x => by
+        apply Prod.ext
+        · simp
+        · apply Subtype.ext
+          dsimp
+          rw [map_smul, map_smul, smul_sub] }
+  let g : R × unitWeightedRelations u →ₗ[R] (ι → R) :=
+    { toFun := fun p => s p.1 + p.2.1
+      map_add' := fun x y => by
+        ext i
+        simp
+        abel
+      map_smul' := fun r x => by
+        simpa only [map_smul, Prod.smul_fst, Submodule.coe_smul, Prod.smul_snd,
+          smul_add, RingHom.id_apply] }
+  exact LinearEquiv.ofLinear f g
+    (by
+      apply LinearMap.ext
+      rintro ⟨r, e⟩
+      apply Prod.ext
+      · simpa [f, g, s, h] using e.2
+      · apply Subtype.ext
+        ext i
+        simp [f, g, s, h])
+    (by
+      apply LinearMap.ext
+      intro x
+      ext i
+      simp [f, g, s, h])
+
+/-- Coordinates away from the chosen splitting index. -/
+abbrev unitWeightedAway (i₀ : ι) := ↥((Finset.univ : Finset ι).erase i₀)
+
+private theorem sum_eq_pivot_add_away (i₀ : ι) (f : ι → R) :
+    ∑ i, f i = f i₀ + ∑ j : unitWeightedAway i₀, f j.1 := by
+  have hattach : (∑ j : unitWeightedAway i₀, f j.1) =
+      ∑ i ∈ (Finset.univ : Finset ι).erase i₀, f i := by
+    simpa using Finset.sum_attach ((Finset.univ : Finset ι).erase i₀) f
+  rw [hattach, add_comm]
+  exact (Finset.sum_erase_add Finset.univ f (Finset.mem_univ i₀)).symm
+
+/-- Explicit basis-coordinate isomorphism
+`ker(∑uᵢ·) ≃ R^{ι\{i₀}}`. -/
+def unitWeightedAwayEquivRelations (u : ι → Rˣ) (i₀ : ι) :
+    (unitWeightedAway i₀ → R) ≃ₗ[R] unitWeightedRelations u := by
+  let A : (unitWeightedAway i₀ → R) →ₗ[R] R :=
+    { toFun := fun y => ∑ j, (u j.1 : R) * y j
+      map_add' := fun x y => by simp [mul_add, Finset.sum_add_distrib]
+      map_smul' := fun r x => by
+        simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro j hj
+        ring }
+  let f : (unitWeightedAway i₀ → R) →ₗ[R] unitWeightedRelations u :=
+    { toFun := fun y => ⟨fun i => if hi : i = i₀
+          then -(↑((u i₀)⁻¹) : R) * A y
+          else y ⟨i, Finset.mem_erase.mpr ⟨hi, Finset.mem_univ i⟩⟩, by
+          rw [LinearMap.mem_ker]
+          change (∑ i, (u i : R) * (if hi : i = i₀
+            then -(↑((u i₀)⁻¹) : R) * A y
+            else y ⟨i, Finset.mem_erase.mpr ⟨hi, Finset.mem_univ i⟩⟩)) = 0
+          rw [sum_eq_pivot_add_away i₀]
+          simp only [dif_pos, A]
+          have haway : (∑ j : unitWeightedAway i₀,
+              (u j.1 : R) * (if h : j.1 = i₀ then
+                -(↑((u i₀)⁻¹) : R) * ∑ k, (u k.1 : R) * y k else y j)) =
+              ∑ j, (u j.1 : R) * y j := by
+            apply Finset.sum_congr rfl
+            intro j hj
+            rw [dif_neg (Finset.mem_erase.mp j.2).1]
+          rw [haway]
+          calc
+            (u i₀ : R) * (-(↑((u i₀)⁻¹) : R) * ∑ j, (u j.1 : R) * y j) +
+                ∑ j, (u j.1 : R) * y j =
+              -((u i₀ : R) * (↑((u i₀)⁻¹) : R)) *
+                  ∑ j, (u j.1 : R) * y j + ∑ j, (u j.1 : R) * y j := by ring
+            _ = 0 := by simp⟩
+      map_add' := fun x y => by
+        apply Subtype.ext
+        ext i
+        by_cases hi : i = i₀
+        · simp [hi, A, Finset.sum_add_distrib, mul_add]
+        · simp [hi, A]
+      map_smul' := fun r x => by
+        apply Subtype.ext
+        ext i
+        by_cases hi : i = i₀
+        · simp [hi, A, Finset.mul_sum, smul_eq_mul]
+          ring
+        · simp [hi, smul_eq_mul] }
+  let g : unitWeightedRelations u →ₗ[R] (unitWeightedAway i₀ → R) :=
+    { toFun := fun x j => x.1 j.1
+      map_add' := fun x y => rfl
+      map_smul' := fun r x => rfl }
+  exact LinearEquiv.ofLinear f g
+    (by
+      apply LinearMap.ext
+      intro x
+      apply Subtype.ext
+      ext i
+      by_cases hi : i = i₀
+      · subst i
+        have hx := x.2
+        rw [LinearMap.mem_ker, unitWeightedAugmentation,
+          sum_eq_pivot_add_away i₀] at hx
+        have hA : A (g x) = ∑ j : unitWeightedAway i₀, (u j.1 : R) * x.1 j.1 := rfl
+        simp only [f, g, dif_pos, hA]
+        have hsum : ∑ j : unitWeightedAway i₀, (u j.1 : R) * x.1 j.1 =
+            -(u i₀ : R) * x.1 i₀ := by
+          linear_combination hx
+        rw [hsum]
+        calc
+          -(↑((u i₀)⁻¹) : R) * (-(u i₀ : R) * x.1 i₀) =
+              ((↑((u i₀)⁻¹) : R) * (u i₀ : R)) * x.1 i₀ := by ring
+          _ = x.1 i₀ := by simp
+      · simp [f, g, hi])
+    (by
+      apply LinearMap.ext
+      intro y
+      ext j
+      simp [f, g, (Finset.mem_erase.mp j.2).1])
+
+/-- Explicit free basis of the relation module, indexed by all non-pivot coordinates. -/
+noncomputable def unitWeightedRelationsBasis [LinearOrder ι] (u : ι → Rˣ) (i₀ : ι) :
+    Module.Basis (unitWeightedAway i₀) R (unitWeightedRelations u) :=
+  (Pi.basisFun R (unitWeightedAway i₀)).map (unitWeightedAwayEquivRelations u i₀)
+
+theorem card_unitWeightedAway [LinearOrder ι] (i₀ : ι) :
+    Fintype.card (unitWeightedAway i₀) = Fintype.card ι - 1 := by
+  simp [unitWeightedAway]
+
+end SplitFamily
+
+/-- Scalar multiplication by the common factor, as a linear endomorphism. -/
+def commonFactorScalarMap (z : R) {M : Type*} [AddCommGroup M] [Module R M] : M →ₗ[R] M where
+  toFun x := z • x
+  map_add' x y := smul_add z x y
+  map_smul' r x := by simp [smul_smul, mul_comm]
+
+/-- Degree `p+1` chain group in split Koszul coordinates:
+`Λ^(p+1) E ⊕ v∧Λ^p E`. -/
+abbrev splitCommonFactorKoszulChain (E : Type*) [AddCommGroup E] [Module R E] (p : ℕ) :=
+  (⋀[R]^(p + 1) E) × (⋀[R]^p E)
+
+/-- Differential test on degree `p+1`: `(u,v) ↦ z v`.  Its zero set is the cycle module. -/
+def splitCommonFactorKoszulCycleMap (z : R) (E : Type*) [AddCommGroup E] [Module R E]
+    (p : ℕ) : splitCommonFactorKoszulChain (R := R) E p →ₗ[R] (⋀[R]^p E) where
+  toFun x := z • x.2
+  map_add' x y := by simp [smul_add]
+  map_smul' r x := by simp [smul_smul, mul_comm]
+
+/-- Boundary map from degree `p+2` after forgetting its irrelevant first summand:
+`w ↦ (z w,0)`.  This has exactly the full differential range. -/
+def splitCommonFactorKoszulBoundaryMap (z : R) (E : Type*) [AddCommGroup E] [Module R E]
+    (p : ℕ) : (⋀[R]^(p + 1) E) →ₗ[R] splitCommonFactorKoszulChain (R := R) E p where
+  toFun w := (z • w, 0)
+  map_add' x y := by simp [smul_add]
+  map_smul' r x := by ext <;> simp [smul_smul, mul_comm]
+
+abbrev splitCommonFactorKoszulCycles (z : R) (E : Type*) [AddCommGroup E] [Module R E]
+    (p : ℕ) : Submodule R (splitCommonFactorKoszulChain (R := R) E p) :=
+  LinearMap.ker (splitCommonFactorKoszulCycleMap z E p)
+
+def splitCommonFactorKoszulBoundaries (z : R) (E : Type*) [AddCommGroup E] [Module R E]
+    (p : ℕ) : Submodule R (splitCommonFactorKoszulCycles z E p) :=
+  (LinearMap.range (splitCommonFactorKoszulBoundaryMap z E p)).comap
+    (splitCommonFactorKoszulCycles z E p).subtype
+
+theorem splitCommonFactorKoszulBoundary_mem_cycles (z : R) (E : Type*) [AddCommGroup E]
+    [Module R E] (p : ℕ) (w : ⋀[R]^(p + 1) E) :
+    splitCommonFactorKoszulBoundaryMap z E p w ∈ splitCommonFactorKoszulCycles z E p := by
+  rw [LinearMap.mem_ker]
+  simp [splitCommonFactorKoszulBoundaryMap, splitCommonFactorKoszulCycleMap]
+
+/-- Inclusion of the relation exterior power as all cycles in split coordinates. -/
+def splitCommonFactorCyclesMap (z : R) (E : Type*) [AddCommGroup E] [Module R E]
+    (p : ℕ) : (⋀[R]^(p + 1) E) →ₗ[R] splitCommonFactorKoszulCycles z E p :=
+  { toFun := fun u => ⟨(u, 0), by
+        rw [LinearMap.mem_ker]
+        simp [splitCommonFactorKoszulCycleMap]⟩
+    map_add' := fun x y => by ext <;> simp
+    map_smul' := fun r x => by ext <;> simp }
+
+theorem splitCommonFactorCyclesMap_bijective {z : R} (hz : z ≠ 0)
+    (E : Type*) [AddCommGroup E] [Module R E] (p : ℕ)
+    [NoZeroSMulDivisors R (⋀[R]^p E)] :
+    Function.Bijective (splitCommonFactorCyclesMap z E p) := by
+  constructor
+  · intro x y h
+    have := congrArg (fun q : splitCommonFactorKoszulCycles z E p => q.1.1) h
+    simpa [splitCommonFactorCyclesMap] using this
+  · intro x
+    have hx := x.2
+    rw [LinearMap.mem_ker] at hx
+    have hzero : x.1.2 = 0 := by
+      exact (eq_zero_or_eq_zero_of_smul_eq_zero hx).resolve_left hz
+    refine ⟨x.1.1, ?_⟩
+    apply Subtype.ext
+    exact Prod.ext rfl hzero.symm
+
+/-- All cycles are canonically the exterior power `Λ^(p+1) E`. -/
+def splitCommonFactorCyclesEquiv {z : R} (hz : z ≠ 0)
+    (E : Type*) [AddCommGroup E] [Module R E] (p : ℕ)
+    [NoZeroSMulDivisors R (⋀[R]^p E)] :
+    (⋀[R]^(p + 1) E) ≃ₗ[R] splitCommonFactorKoszulCycles z E p :=
+  LinearEquiv.ofBijective (splitCommonFactorCyclesMap z E p)
+    (splitCommonFactorCyclesMap_bijective hz E p)
+
+/-- Under cycle coordinates, boundaries are precisely the `z`-multiple submodule. -/
+theorem map_scalarRange_splitCommonFactorCyclesEquiv_eq_boundaries {z : R} (hz : z ≠ 0)
+    (E : Type*) [AddCommGroup E] [Module R E] (p : ℕ)
+    [NoZeroSMulDivisors R (⋀[R]^p E)] :
+    Submodule.map (splitCommonFactorCyclesEquiv hz E p).toLinearMap
+        (LinearMap.range (commonFactorScalarMap z :
+          (⋀[R]^(p + 1) E) →ₗ[R] (⋀[R]^(p + 1) E))) =
+      splitCommonFactorKoszulBoundaries z E p := by
+  ext x
+  constructor
+  · rintro ⟨u, ⟨w, rfl⟩, rfl⟩
+    change ((splitCommonFactorCyclesEquiv hz E p (z • w)).1) ∈
+      LinearMap.range (splitCommonFactorKoszulBoundaryMap z E p)
+    refine ⟨w, ?_⟩
+    rfl
+  · intro hx
+    change x.1 ∈ LinearMap.range (splitCommonFactorKoszulBoundaryMap z E p) at hx
+    obtain ⟨w, hw⟩ := hx
+    refine ⟨z • w, ⟨w, rfl⟩, ?_⟩
+    change splitCommonFactorCyclesMap z E p (z • w) = x
+    apply Subtype.ext
+    exact hw
+
 end
 
 end GaloisForLFunctions.HTGeometry

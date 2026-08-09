@@ -414,3 +414,89 @@ in the card's Section 2 asserts.  Combined with `norm_lambertTerm_le` this gives
 on every compact set; the finitely many exceptional `n` are exactly the terms whose denominators can
 vanish, so the poles are confined to them — which is the statement `(5)` "converges normally away
 from its displayed poles".
+
+### The transform is a holomorphic function, not just a convergent series
+
+`formal/GaloisForLFunctions/RHTower/LambertSumHolomorphic.lean`, unconditional and axiom-clean:
+
+- `norm_lambertVar_le_of_mem_ball` — on `‖ξ‖ ≤ M`, `‖u_n‖ ≤ (M/(2π)^s)/(n+1)^s`;
+- **`differentiableOn_lambertSum`** — for `0 < s` and `M ≤ (2π)^s/2`, the Lambert sum is
+  holomorphic on the disc `‖ξ‖ < M`.
+
+Each term is a rational function of `ξ` whose denominator is bounded below by `1/4` there, and the
+family is dominated by the summable `p`-series `4C/(n+1)^{1+s}`; mathlib's
+`differentiableOn_tsum_of_summable_norm` then gives holomorphy of the sum.  Together with `(5)`
+this identifies the moment-Borel transform, near the origin, with a genuine holomorphic function —
+the object of which `(7)`, `(8)` and `(10)` describe the poles and residues.
+
+### The global continuation mechanism is formalized
+
+`formal/GaloisForLFunctions/RHTower/LambertTailHolomorphic.lean`, unconditional and axiom-clean:
+
+- `lambertTermFun` — the `n`-th term as a function of `ξ`;
+- **`differentiableOn_lambertTail`** — the tail from index `N` is holomorphic on
+  `‖ξ‖ < (2π(N+1))^s/2`;
+- **`exists_index_lambertTail_differentiableOn`** — for *every* radius `M` there is an `N` whose
+  tail is holomorphic on `‖ξ‖ < M`.
+
+Dropping terms enlarges the disc of holomorphy without bound, and the discarded head is a finite sum
+of explicit rational functions whose poles are the already-classified lattice points.  So the
+transform is holomorphic on every disc *after subtracting finitely many known rational terms* —
+which is the meromorphic continuation of `(5)` to the whole plane, with the pole set of `(7)`.
+
+Sections 1–3 of this card are now formalized end to end.
+
+### Correction: what the thirteen layers do and do not cover
+
+They cover `(2)`–`(11)`: everything about the transform *given* its coefficients
+`b_k/Γ(1+sk)`.  They do **not** cover `(1)` — the assertion that those `b_k = (-1)^k ζ(-sk)` are
+the coefficients of the inverse-power asymptotic tail `R_s(x)` of `H_s(x) = x W_s'(x)/W_s(x)`.
+`(1)` is an asymptotic expansion of the logarithmic derivative of the canonical product, and it is
+the one analytic input of this card still to be formalized.
+
+The carrier itself is corpus-owned — `powerCanonicalProduct` in
+`HTGeometry/RationalPowerCyclicNorm.lean`, with Bank's dichotomy closed on top of it — so `(1)` is
+a statement about an object already in Lean, not about a missing one.  The remaining work is the
+Mellin/Barnes derivation of its asymptotic tail.
+
+So the card's status is: **the transform theory is formalized end to end; its identification with
+the Barnes tail of `W_s` is not.**  Section 5's survivor statement follows from the formalized part
+once `(1)` is supplied, and Section 4 is a negative audit of a literature argument, not a theorem.
+
+### First layer of `(1)`: the elementary factor of arbitrary genus
+
+`formal/GaloisForLFunctions/HTGeometry/WeierstrassFactorGenus.lean`, unconditional and axiom-clean:
+
+- `weierstrassE g z = (1 - z) exp(∑_{r=1}^g z^r/r)` — the corpus previously had only the genus-one
+  factor `weierstrassE1`;
+- `hasDerivAt_weierstrassPoly`, `hasDerivAt_weierstrassE`;
+- **`logDeriv_weierstrassE`** — `E_g'(z)/E_g(z) = -z^g/(1 - z)` for `z ≠ 1`.
+
+This is the collapse that produces the card's tail.  The derivative of the exponential polynomial is
+the truncated geometric series `∑_{r<g} z^r = (z^g - 1)/(z - 1)`, which cancels the `g` lowest-order
+terms of `-1/(1-z)` and leaves exactly `-z^g/(1-z)`.  Applied to `E_g(-x/n^s)` it gives
+
+```text
+H_s(x) = x W_s'(x)/W_s(x) = ∑_{n≥1} (-1)^g (x/n^s)^{g+1}/(1 + x/n^s),
+```
+
+a sum of terms decaying like the `(g+1)`-st power — which is why `H_s` has an inverse-power
+asymptotic tail at all, and is the entry point to `(1)`.
+
+### The descending expansion that generates the tail
+
+**`tsum_inverse_power_expansion`** (same module), unconditional and axiom-clean: for `‖t‖ > 1`,
+
+```text
+t^{g+1}/(1 + t) = ∑_{j≥0} (-1)^j t^{g-j}.
+```
+
+This is the second half of the mechanism.  `logDeriv_weierstrassE` makes the `n`-th term of `H_s`
+equal to `(-1)^g t^{g+1}/(1+t)` with `t = x/n^s`; this lemma expands that term in **descending**
+powers of `t`, i.e. in ascending powers of `n^s/x`.  Summing the descending expansion over `n`
+produces the inverse-power tail `∑_k b_k x^{-k}`, with `b_k` a regularized value of `∑_n n^{sk}` —
+which is where `ζ(-sk)` comes from.
+
+The two regimes are genuinely different and the expansion above is the one that matters: `‖t‖ > 1`
+means `n^s < x`, the finitely many small `n`, and it is exactly those terms that carry the
+inverse-power asymptotics.

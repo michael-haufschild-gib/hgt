@@ -388,3 +388,12 @@ Lean rules:
 4. No computations.
 5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
 6. make sure you don't leave stale lean processes running - clean up after yourself.
+
+
+## universal law
+
+Using the hgtl7 skill and the HTGeometry / RhTower lean corpus, create a genuinely new geometry/topology through sustained conjecture→paper-proof-or-failure loops that does more than rename or classify known RH obstructions: it must yield new unconditional mathematical leverage on all live RH proof-route obstructions. 
+
+Audit Lean corpus without writing or building Lean; search broad current arXiv literature; pivot aggressively; subject every claim to hostile novelty, correctness, and significance review. Put this research program's cards in dedicated subfolders under pipeline 1 and pipeline 2, promote only dependency-closed unconditional paper proofs, record failed routes and positive survivors, and do not mark the goal complete while the work remains merely explanatory. Completion requires that exhaustive hostile review finds no further meaningful conjecture, proof attack, salvage, or pivot capable of adding new knowledge to the topic.
+
+prior research: docs/drafts/pipeline/2-fully-proven/universal-law-field
