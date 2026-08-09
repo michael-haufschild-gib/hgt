@@ -11,8 +11,8 @@
   `HTGeometry/GappedEigenlinePropagatorFloor.lean`.
   `(11)` closed — `HTGeometry/GaussianProductBoxFloor.lean`.
   `(12)` analytic core closed — `HTGeometry/PolyLogBeatenByOneMorePower.lean`.
-  `(12)` order bounds closed — `HTGeometry/PauliCountOrderBounds.lean`.
-  The Pauli instantiation `(6)`--`(10)` and the `(12)` assembly remain
+  `(12)` closed — `HTGeometry/GaussianBoxBeatsPolynomialRamp.lean`.
+  The Pauli instantiation `(6)`--`(10)` remains
 - **Date:** 2026-08-05
 
 ## Exact abstract theorem
@@ -302,8 +302,20 @@ explicit constants rather than asymptotic notation:
   already contains one full top binomial term, mathlib's `Nat.pow_le_choose` bounds that term below
   by `(n+1-q)^q/q!`, and beyond twice the weight the base `n+1-q` exceeds `n/2`.
 
-Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis.  For `(12)` only the
-assembly is left — feeding the two order bounds into the poly-log comparison.
+`(12)` is closed as `HTGeometry.eventually_rarityExponent_lt_rampExponent` in
+`HTGeometry/GaussianBoxBeatsPolynomialRamp.lean`: for every `q ≥ 1`, every positive time exponent
+`c`, every exponent deficit `η < 1` and every `ε > 0`, eventually in `n`
+
+    m_{n,q} · log(8 m_{n,q} / (c₀ε²))  <  (1-η) · v_{n,q} · c n log 2 ,
+
+that is, the negative logarithm of the Gaussian box floor is eventually *below* the negative
+logarithm of the conjectured ramp bound.  So the floor exceeds the bound and the bound fails.
+
+The quantifier order is the point: `c` and `η` are fixed before `n`, and they enter only through
+constants, so no choice of them rescues the conjecture.  This is what the card means by "false for
+every proposed exponential-time window, regardless of its polynomial lower threshold".
+
+Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis.
 
 ## Formal target
 
