@@ -5,7 +5,7 @@
 - **Working name:** **Nomological Homotopy Geometry (NHG)**
 - **Type:** CANDIDATE MATHEMATICAL FIELD / FORMAL GEOMETRY OF LAW
 - **Status:** `[FIELD CONSTITUTION] [ANCHORED Q-GEOMETRIC PRIMITIVE DEFINED]`
-  `[TWENTY-FOUR UNIVERSAL THEOREMS PROVED] [NATIVE SOURCE REALIZATION BUILT]`
+  `[TWENTY-SIX UNIVERSAL THEOREMS PROVED] [NATIVE SOURCE REALIZATION BUILT]`
   `[RELATIVE LAW-FIBRE CENTRE DEFINED] [EXTERNAL CALIBRATION FROZEN]`
   `[NOT AN RH ROUTE] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
 - **Supersedes locally:** arbitrary comparison-cell curvature in earlier NGD/CFR atlases.
@@ -36,7 +36,9 @@
   `../../2-fully-proven/nomological-homotopy-geometry/gauge-spectral-flow-rigidity-and-law-crossing-index-law.md`;
   `../../2-fully-proven/nomological-homotopy-geometry/kolchin-spencer-inverse-limit-noncompactness-and-observer-tail-law.md`;
   `../../2-fully-proven/nomological-homotopy-geometry/nomological-gauss-codazzi-relative-observer-fibre-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/flat-cartan-holonomy-recurrence-and-open-polar-history-law.md`.
+  `../../2-fully-proven/nomological-homotopy-geometry/flat-cartan-holonomy-recurrence-and-open-polar-history-law.md`;
+  `../../2-fully-proven/nomological-homotopy-geometry/relative-law-fibre-serial-composition-and-source-loss-irreversibility-law.md`;
+  `../../2-fully-proven/nomological-homotopy-geometry/split-l-infinity-observer-extension-field-and-nonlinear-gauss-codazzi-law.md`.
 
 ## 0. Field thesis
 
@@ -197,6 +199,12 @@ An observer is an anchored Q-morphism
 
 with a declared amount of retained filtration, polarization, topology, and history data.
 
+This display records source and target structures; it does not require a lossy observer to be a
+cyclic isometry. Gauges and observers are different arrow types. Structured gauges are invertible
+horizontal arrows preserving the entire field. Observers are vertical anchored filtered
+\(Q\)-morphisms with declared polar, connection, topology, and history comparison data. Coherent
+squares compare observers under gauge. Together they form the NHG law equipment.
+
 ### Definition 3.1 — nomological gauge
 
 Two local presentations are gauges of the same law only if they are equivalent as pointed anchored
@@ -239,6 +247,19 @@ Spencer tower, polarization bundle, and completion behaviour are derived faces o
 An observer is a local gauge precisely on strata where this fibre is contractible and the global
 descent comparison is effective.
 
+For composable pointed observers \(q\) and \(r\), the exact composition law is
+
+\[
+ \mathfrak K_q\longrightarrow
+ \mathfrak K_{rq}\longrightarrow
+ \mathfrak K_r.
+\tag{NHG.4aa}
+\]
+
+This is a fibre sequence; after stabilization it is an exact triangle. Serial losses therefore
+compose by extension, not scalar addition. A source class killed by \(q\) remains killed by
+\(rq\), while observer-created excess directions can cancel through the connecting morphism.
+
 On a regular polarized finite-rank chart, the orthogonal splitting into the law-fibre and observed
 sector gives the exact block-curvature identity
 
@@ -254,6 +275,26 @@ sector gives the exact block-curvature identity
 with \(\mathsf A=-\mathsf B^\dagger\). This nomological Gauss--Codazzi--Ricci law is paper-proved.
 It makes observed curvature, hidden curvature, and observer coupling coordinate blocks of one
 connection rather than independent doctrines.
+
+The nonlinear split chart is also closed. If \(K\) is an \(L_\infty\) ideal, \(H\) the observer
+quotient, and \(E=K\oplus H\) a local splitting, then
+
+\[
+ Q_E=Q_K\oplus Q_H+\tau
+\]
+
+with \(\tau\) a relative coderivation. The entire \(L_\infty\) identity is the single
+Maurer--Cartan equation
+
+\[
+ [Q_K\oplus Q_H,\tau]+\frac12[\tau,\tau]=0.
+\tag{NHG.4c}
+\]
+
+Pure-horizontal components of \(\tau\) are soldered curvature defects; mixed components are
+vertical transport and nonlinear second fundamental laws. Their gauge class under change of
+splitting is the complete local observer-extension field. Horizontal forms alone are provably
+insufficient.
 
 ## 4. Primary operations and local curvature
 
@@ -436,6 +477,13 @@ sections exist; the nontrivial requirement is source-natural, equivariant, paral
 controlled selection. A pairing-preserving connection admits a parallel positive polarization
 exactly when its holonomy fixes a polarization, equivalently when holonomy reduces to a compact
 stabilizer.
+
+The flat Cartan model over \(S^1\) now couples four faces in one native field. Noncompact boost
+holonomy translates the polarization line, so no parallel positive phase exists; quotienting by
+one holonomy step gives a compact recurrent observer circle; the marked polarization lift escapes;
+and its invariant quadratic action diverges. Local curvature remains zero. This proves that
+recurrence, positivity, global holonomy, and proper cost are genuinely relative faces of one law
+fibre rather than aliases.
 
 ## 8. Horizons and singularities
 

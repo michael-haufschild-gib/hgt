@@ -486,4 +486,87 @@ theorem prolateAction_bandEigen_eq_smul {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (
   hsimple _ (fun y => prolateAction_bandEigen_isEigen hχ hf heig y (hleft y) (hright y))
 
 
+/-- The `n`-th transform of a band eigenfunction: the eigenfunction paired against the kernel
+differentiated `n` times. -/
+def bandTransformPow (c : ℝ) (χ : ℂ) (f : ℝ → ℂ) (n : ℕ) (x : ℝ) : ℂ :=
+  χ⁻¹ * ∫ t in (-1 : ℝ)..1, bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ)) ^ n * f t
+
+theorem intervalIntegrable_kernelPow_mul {c : ℝ} {f : ℝ → ℂ}
+    (hf : IntervalIntegrable f MeasureTheory.volume (-1) 1) (n : ℕ) :
+    IntervalIntegrable
+      (fun t : ℝ => (Complex.I * ((c * t : ℝ) : ℂ)) ^ n * f t) MeasureTheory.volume (-1) 1 := by
+  refine intervalIntegrable_kernelMul hf _ ?_ (|c| ^ n) (fun t ht => ?_)
+  · exact (continuous_const.mul (Complex.continuous_ofReal.comp
+      (continuous_const.mul continuous_id))).pow n
+  · have hle : |t| ≤ 1 := by
+      rw [Set.uIoc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] at ht
+      rw [abs_le]
+      exact ⟨le_of_lt ht.1, ht.2⟩
+    rw [norm_pow, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs, abs_mul]
+    refine pow_le_pow_left₀ (by positivity) ?_ n
+    nlinarith [abs_nonneg c, abs_nonneg t, hle]
+
+/-- **The tower of derivatives.**  Each transform in the tower differentiates to the next; the
+argument is the same at every order because the kernel's derivative only raises the power of the
+bounded factor `i c t`. -/
+theorem hasDerivAt_bandTransformPow {c : ℝ} {χ : ℂ} {f : ℝ → ℂ}
+    (hf : IntervalIntegrable f MeasureTheory.volume (-1) 1) (n : ℕ) (x : ℝ) :
+    HasDerivAt (bandTransformPow c χ f n) (bandTransformPow c χ f (n + 1) x) x := by
+  have hsrc := intervalIntegrable_kernelPow_mul (c := c) hf n
+  have h := (hasDerivAt_bandTransform (c := c) hsrc x).const_mul χ⁻¹
+  have hfun : bandTransformPow c χ f n
+      = fun y : ℝ => χ⁻¹ * ∫ t in (-1 : ℝ)..1,
+          bandKernel c y t * ((Complex.I * ((c * t : ℝ) : ℂ)) ^ n * f t) := by
+    funext y
+    rw [bandTransformPow]
+    congr 1
+    refine intervalIntegral.integral_congr (fun t _ => ?_)
+    ring
+  have hval : bandTransformPow c χ f (n + 1) x
+      = χ⁻¹ * ∫ t in (-1 : ℝ)..1, bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ))
+          * ((Complex.I * ((c * t : ℝ) : ℂ)) ^ n * f t) := by
+    rw [bandTransformPow]
+    congr 1
+    refine intervalIntegral.integral_congr (fun t _ => ?_)
+    ring
+  rw [hfun, hval]
+  exact h
+
+/-- The tower starts at the eigenfunction itself. -/
+theorem bandTransformPow_zero {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (hχ : χ ≠ 0)
+    (heig : ∀ y : ℝ, χ * f y = ∫ t in (-1 : ℝ)..1, bandKernel c y t * f t) :
+    bandTransformPow c χ f 0 = f := by
+  funext y
+  rw [bandTransformPow]
+  have hcongr : (∫ t in (-1 : ℝ)..1,
+      bandKernel c y t * (Complex.I * ((c * t : ℝ) : ℂ)) ^ 0 * f t)
+      = ∫ t in (-1 : ℝ)..1, bandKernel c y t * f t := by
+    refine intervalIntegral.integral_congr (fun t _ => ?_)
+    ring
+  rw [hcongr, ← heig y, ← mul_assoc, inv_mul_cancel₀ hχ, one_mul]
+
+
+/-- **The iterated derivatives of a band eigenfunction are the tower.** -/
+theorem iteratedDeriv_bandEigen {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (hχ : χ ≠ 0)
+    (hf : IntervalIntegrable f MeasureTheory.volume (-1) 1)
+    (heig : ∀ y : ℝ, χ * f y = ∫ t in (-1 : ℝ)..1, bandKernel c y t * f t) (n : ℕ) :
+    iteratedDeriv n f = bandTransformPow c χ f n := by
+  induction n with
+  | zero =>
+      rw [iteratedDeriv_zero, bandTransformPow_zero hχ heig]
+  | succ n ih =>
+      rw [iteratedDeriv_succ, ih]
+      funext x
+      exact (hasDerivAt_bandTransformPow (χ := χ) hf n x).deriv
+
+/-- **Every iterated derivative of a band eigenfunction is differentiable.**  The eigenfunction is
+therefore smooth, with no regularity assumed anywhere. -/
+theorem differentiable_iteratedDeriv_bandEigen {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (hχ : χ ≠ 0)
+    (hf : IntervalIntegrable f MeasureTheory.volume (-1) 1)
+    (heig : ∀ y : ℝ, χ * f y = ∫ t in (-1 : ℝ)..1, bandKernel c y t * f t) (n : ℕ) :
+    Differentiable ℝ (iteratedDeriv n f) := by
+  rw [iteratedDeriv_bandEigen hχ hf heig n]
+  exact fun x => (hasDerivAt_bandTransformPow (χ := χ) hf n x).differentiableAt
+
+
 end RHTower

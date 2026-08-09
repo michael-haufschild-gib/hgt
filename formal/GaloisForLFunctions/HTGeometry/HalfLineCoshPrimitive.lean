@@ -375,4 +375,36 @@ theorem abs_halfLineExpPrimitive_limit_le {S : ℕ → ℝ → ℝ} {T : ℝ →
   fun t ht => abs_halfLineExpPrimitive_le_of_tendsto (hconv t ht) (fun N => hbound N t ht)
 
 
+/-- **The `L¹` mass of the decaying branch, by parametrised AM-GM.**  For every `ε > 0`,
+`‖G‖₁ ≤ (ε + ‖R‖₂²/ε)/2`; optimising in `ε` recovers the Cauchy–Schwarz bound `‖G‖₁ ≤ ‖R‖₂` with
+no `L^p` machinery. -/
+theorem integral_abs_exp_neg_half_mul_le {R : ℝ → ℝ} {ε : ℝ} (hε : 0 < ε)
+    (hR2 : IntegrableOn (fun s : ℝ => R s ^ 2) (Ioi 0))
+    (hG : IntegrableOn (fun s : ℝ => Real.exp (-s / 2) * R s) (Ioi 0))
+    (hexp : IntegrableOn (fun s : ℝ => Real.exp (-s)) (Ioi 0))
+    (hmass : (∫ s in Ioi (0 : ℝ), Real.exp (-s)) ≤ 1) :
+    (∫ s in Ioi (0 : ℝ), |Real.exp (-s / 2) * R s|)
+      ≤ (ε + (∫ s in Ioi (0 : ℝ), R s ^ 2) * ε⁻¹) / 2 := by
+  have hinv : ε * ε⁻¹ = 1 := mul_inv_cancel₀ (ne_of_gt hε)
+  have hmaj : IntegrableOn
+      (fun s : ℝ => (ε * Real.exp (-s) + R s ^ 2 * ε⁻¹) / 2) (Ioi 0) :=
+    ((hexp.const_mul ε).add (hR2.mul_const ε⁻¹)).div_const 2
+  have hstep : (∫ s in Ioi (0 : ℝ), |Real.exp (-s / 2) * R s|)
+      ≤ ∫ s in Ioi (0 : ℝ), (ε * Real.exp (-s) + R s ^ 2 * ε⁻¹) / 2 := by
+    refine integral_mono_ae hG.abs hmaj ?_
+    filter_upwards with s
+    rw [abs_mul, abs_of_pos (Real.exp_pos _)]
+    have hhalf : Real.exp (-s / 2) ^ 2 = Real.exp (-s) := by
+      rw [sq, ← Real.exp_add]
+      ring_nf
+    nlinarith [sq_nonneg (ε * Real.exp (-s / 2) - |R s|), hε, hinv, hhalf, sq_abs (R s),
+      abs_nonneg (R s), Real.exp_pos (-s / 2), inv_pos.mpr hε]
+  refine le_trans hstep ?_
+  rw [MeasureTheory.integral_div, integral_add (hexp.const_mul ε) (hR2.mul_const ε⁻¹),
+    integral_const_mul, MeasureTheory.integral_mul_const]
+  have hmul : ε * (∫ s in Ioi (0 : ℝ), Real.exp (-s)) ≤ ε * 1 :=
+    mul_le_mul_of_nonneg_left hmass hε.le
+  linarith [hmul]
+
+
 end HTGeometry

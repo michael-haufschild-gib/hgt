@@ -194,3 +194,23 @@ This is the exact finite-dimensional polar observer law required by NHG:
 - Cross-Grams do not reconstruct nonlinear `L_infinity` operations from unrelated domains unless
   they are first assembled into a typed synthesis map.
 - No source selection, dynamics, holonomy, properness, or RH statement follows.
+
+## Lean formalization status
+
+- **Status:** `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
+- **Module:** `GaloisForLFunctions.HilbertMetric.NomologicalCrossGram`
+- **Umbrella wiring:** imported by `GaloisForLFunctions.HilbertMetric`
+- **Exact capstones:**
+  - `gram_eq_iff_existsUnique_activeRangeIsometry`
+  - `crossGramPacket_eq_iff_existsUnique_commonRangeIsometry`
+  - `crossGramPacket_eq_iff_existsUnique_codomainIsometry_of_jointly_surjective`
+  - `ker_gram`
+  - `finrank_range_gram`
+  - `gram_hasEigenvalue_sq_singularValues`
+  - `support_singularValues_eq_range_rank`
+  - `scalar_relative_phase_counterexample`
+- **Verification:**
+  `lake env lean GaloisForLFunctions/HilbertMetric/NomologicalCrossGram.lean` passed with no
+  errors or warnings.
+- **Promotion gate still open:** final umbrella build, project lint, and `#print axioms` audit are
+  intentionally deferred to the program-wide final audit. Card remains in Stage 2.

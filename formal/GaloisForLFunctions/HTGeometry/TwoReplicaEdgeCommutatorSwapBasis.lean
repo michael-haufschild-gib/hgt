@@ -276,6 +276,35 @@ theorem finiteTwoReplicaCollectiveCommutator_swapRaw_eq_zero_of_matched
         exact twoReplicaEdgeCommutator_swap_swap a b
   rw [hzero, finiteTwoReplicaEdgeExtension_zero]
 
+/-- **Mismatched swap words go to an edge extension of a difference product.**  Lower endpoint
+unswapped. -/
+theorem finiteTwoReplicaCollectiveCommutator_swapRaw_of_mismatch_left
+    {V : Type*} [Fintype V] [DecidableEq V] {u v : V} (huv : u ≠ v)
+    (a b : Fin 3) (x : V → Bool) (hxu : x u = false) (hxv : x v = true) :
+    finiteTwoReplicaCollectiveCommutatorLinear (finiteEdgePauliLabel u v a b)
+        (finiteTwoReplicaSwapRaw x) =
+      finiteTwoReplicaEdgeExtension u v (fun w => twoReplicaLocalSwapRaw (x w.1))
+        (-(twoReplicaLocalDiff a ⊗ₖ (twoReplicaSwap * twoReplicaLocalDiff b))) := by
+  rw [finiteTwoReplicaSwapRaw_eq_edgeExtension huv,
+    finiteTwoReplicaCollectiveCommutator_edgeExtension huv]
+  congr 1
+  rw [hxu, hxv, twoReplicaEdgeSwapRaw]
+  exact twoReplicaEdgeCommutator_one_swap a b
+
+/-- Upper endpoint unswapped. -/
+theorem finiteTwoReplicaCollectiveCommutator_swapRaw_of_mismatch_right
+    {V : Type*} [Fintype V] [DecidableEq V] {u v : V} (huv : u ≠ v)
+    (a b : Fin 3) (x : V → Bool) (hxu : x u = true) (hxv : x v = false) :
+    finiteTwoReplicaCollectiveCommutatorLinear (finiteEdgePauliLabel u v a b)
+        (finiteTwoReplicaSwapRaw x) =
+      finiteTwoReplicaEdgeExtension u v (fun w => twoReplicaLocalSwapRaw (x w.1))
+        (-((twoReplicaSwap * twoReplicaLocalDiff a) ⊗ₖ twoReplicaLocalDiff b)) := by
+  rw [finiteTwoReplicaSwapRaw_eq_edgeExtension huv,
+    finiteTwoReplicaCollectiveCommutator_edgeExtension huv]
+  congr 1
+  rw [hxu, hxv, twoReplicaEdgeSwapRaw]
+  exact twoReplicaEdgeCommutator_swap_one a b
+
 end
 
 end GaloisForLFunctions.HTGeometry

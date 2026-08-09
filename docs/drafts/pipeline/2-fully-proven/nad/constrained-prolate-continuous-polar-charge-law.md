@@ -3980,3 +3980,114 @@ estimates, this proves the seed law `(32)` on paper.
 
   What remains open is the *band transform's* spectrum, a different operator: `(4)` and the Gram
   convergence.  The differential side of item 7 is closed.
+
+- 2026-08-09 (hundred-and-twenty-sixth instalment) -- **The derivative tower: band eigenfunctions
+  are smooth to all orders.**
+
+  * **`bandTransformPow`** -- the eigenfunction paired against the kernel differentiated `n` times.
+  * **`intervalIntegrable_kernelPow_mul`** -- the `n`-th power of the bounded factor `i c t`
+    preserves integrability, with bound `|c|^n`.
+  * **`hasDerivAt_bandTransformPow`** -- each rung of the tower differentiates to the next.
+  * **`bandTransformPow_zero`** -- the tower starts at the eigenfunction itself.
+
+  So a band eigenfunction has derivatives of every order, each given by an integral of the *same*
+  eigenfunction against a modified kernel.  The argument is identical at every rung because
+  differentiating the kernel only raises the power of a factor bounded by `|c|` on the band; no new
+  estimate is needed, which is why the classical statement "band-limited functions are entire" is
+  really a statement about that one bound.
+
+  Only the base case uses the eigen-equation.  The tower itself is a property of the transform, so
+  the same statement holds for the transform of any integrable source.
+
+- 2026-08-09 (hundred-and-twenty-seventh instalment) -- **Smoothness of the eigenfunction, in
+  consumable form.**
+
+  * **`iteratedDeriv_bandEigen`** -- `iteratedDeriv n f = bandTransformPow c chi f n`, by induction
+    on the tower.
+  * **`differentiable_iteratedDeriv_bandEigen`** -- every iterated derivative is differentiable.
+
+  A band eigenfunction is therefore smooth, and the statement is now in the form downstream work
+  actually uses: `Differentiable (iteratedDeriv n f)` for every `n`, rather than a bare existence of
+  derivatives.  In particular `Differentiable f` and `Differentiable (deriv f)` -- the two
+  hypotheses of every theorem in the variation chain -- are the cases `n = 0` and `n = 1`.
+
+  This closes the regularity side completely.  Combined with the commutation, the simplicity of
+  prolate eigenvalues, and the complex-to-real bridge, a band eigenfunction that is real-valued and
+  nonzero somewhere has bounded variation on every compact subinterval of the open band, with no
+  hypothesis beyond the eigen-equation itself.
+
+- 2026-08-09 (hundred-and-twenty-eighth instalment) -- **A real band eigenfunction has bounded
+  variation.**
+
+  * **`differentiable_of_ofReal`** -- differentiability descends through the real coercion.
+  * **`deriv_ofReal_eq`** -- the derivative of a coerced real function is the coercion of its
+    derivative.
+  * **`bandEigen_real_boundedVariationOn`** -- the composite: a real solution of the coerced complex
+    prolate eigen-equation, nonzero somewhere and bounded, has bounded variation on `[-r, r]` with
+    the explicit count bound.
+
+  Every hypothesis of the variation chain is now discharged from the eigen-equation itself:
+  regularity from the derivative tower, the prolate equation from the commutation, simplicity from
+  the vanishing Wronskian.  The only inputs left are the ones the card names as spectral -- the
+  Gram convergence and `(4)` -- neither of which concerns the differential equation.
+
+  The `deriv`-ordering trap appeared twice more in this instalment and is worth stating as a rule:
+  when rewriting both `deriv g` and `deriv (deriv g)`, always rewrite the *double* first.  Rewriting
+  the single first replaces the inner occurrence of the double as well, after which the double's
+  rewrite has nothing to match.
+
+## Lean map of the route (as of 2026-08-09)
+
+Every entry is an unconditional, axiom-clean theorem in this tree.  Namespaces: `HTGeometry` for
+the reusable layers, `RHTower` for the route-specific ones.
+
+**The exact mode as an oscillator**
+| statement | theorem |
+|---|---|
+| energy method, phase-free | `HTGeometry.oscEnergy_le_exp`, `abs_oscCoeff_le_base` |
+| energy method in a phase parameterization | `HTGeometry.phaseEnergy_le_exp`, `abs_phaseCoeff_le_base` |
+| the mode is a perturbed oscillator | `RHTower.prolateOsc_ode` |
+| the perturbation is admissible | `RHTower.abs_prolateOscPotential_le` (`\|q\| <= 35/phi^2`) |
+| exact two-branch representation | `RHTower.sqrt_mul_radialProlate_dilate_eq_branches` |
+
+**The primitive estimates**
+| statement | theorem |
+|---|---|
+| `(16)` full channel range | `RHTower.norm_integral_radialProlate_dilate_left_le` |
+| `(17)` first channel | `RHTower.norm_integral_radialProlate_first_channel_le` |
+| `(11)` | `RHTower.tsum_norm_integral_radialProlate_all_channels_le` |
+| `(12)` exponential substitution | `HTGeometry.integral_exp_half_comp_exp` |
+| passage from finite radial sums | `HTGeometry.abs_halfLineExpPrimitive_limit_le`, `RHTower.abs_halfLineExpPrimitive_channelTruncation_le` |
+
+**The polar source estimate**
+| statement | theorem |
+|---|---|
+| `(7)`,`(8)` growing branch | `HTGeometry.abs_integral_exp_half_mul_autocorrelation_le` |
+| `(9)` decaying branch | `HTGeometry.abs_halfLineAutocorrelation_le`, `abs_integral_exp_neg_half_mul_autocorrelation_le` |
+| `(10)` | `HTGeometry.abs_polarCharge_le` |
+| `(18)` for the limit object | `RHTower.abs_polarCharge_radialLimit_le` |
+
+**`(19e)` and the variation law**
+| statement | theorem |
+|---|---|
+| Darboux monotone cell | `HTGeometry.monotoneOn_or_antitoneOn_of_deriv_ne_zero` |
+| ordered partition assembly | `HTGeometry.exists_monotone_partition_of_finset` |
+| Gronwall uniqueness | `HTGeometry.eq_zero_of_double_zero_interior` |
+| simple zeros are finite | `HTGeometry.finite_zeros_of_nontrivial` |
+| `(19e)` | `RHTower.prolate_boundedVariationOn_of_nontrivial` |
+
+**The spectral identification `(35)`**
+| statement | theorem |
+|---|---|
+| kernel identity | `RHTower.prolate_bandKernel_symm` |
+| symmetry on the band | `RHTower.integral_prolate_pairing_eq_zero` |
+| differentiation under the integral | `RHTower.hasDerivAt_bandTransform`, `...Deriv` |
+| the commutation | `RHTower.prolateAction_bandTransform_commutes` |
+| eigenspace preserved | `RHTower.prolateAction_bandEigen_isEigen` |
+| smoothness of eigenfunctions | `RHTower.differentiable_iteratedDeriv_bandEigen` |
+| prolate eigenvalues are simple | `RHTower.prolate_eq_const_mul_of_same_eigenvalue` |
+| real band eigenfunction is BV | `RHTower.bandEigen_real_boundedVariationOn` |
+
+**Still open, all spectral, none analytic**: the weighted projective Gram convergence
+`R_(lambda,N) -> R_lambda`; `(4)` `‖R_lambda‖_2^2 = O(d_lambda)`; exhibiting the classical
+`h_0, h_4` modes.

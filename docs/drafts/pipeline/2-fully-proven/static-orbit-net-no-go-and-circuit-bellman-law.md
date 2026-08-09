@@ -298,7 +298,15 @@ preparability**, not more spectral regularity.
 
 ## Exact next move
 
-Construct a noncircular, metric-robust Bellman subsolution `Phi_(n,t)` satisfying
+The child theorem
+`exact-penalty-robust-circuit-bellman-duality.md` proves that approximate circuit complexity is
+itself the maximal Lipschitz Bellman subsolution of an exact-penalty obstacle problem, with equality
+at a finite penalty.  Therefore bare existence of a function satisfying the inequalities below is
+equivalent to the desired lower bound and is not a reduction.
+
+Construct an **external**, noncircular, metric-robust Bellman subsolution `Phi_(n,t)`, given by a
+formula that does not evaluate the circuit sets `Z_s`, their distance functions, or circuit
+complexity, satisfying
 
 \[
  \Phi(gv)\le\Phi(v)+1\quad(g\in G),
@@ -315,7 +323,8 @@ but
 with high quenched probability outside one return filtration.  Theorem D and `(22)--(23)`
 immediately give the required robust circuit lower bound.  Energy, fixed linear observables, target count, and
 unstructured Jacobian volume are already falsified subsolutions.  The live candidate must be a
-nonlinear oriented-history or local-control calibration.
+nonlinear reuse-sensitive local-control calibration.  A lifted oriented-history variable alone is
+also excluded: it does not descend to a function of the recurrent endpoint.
 
 ## Lean realization after corpus refactor
 

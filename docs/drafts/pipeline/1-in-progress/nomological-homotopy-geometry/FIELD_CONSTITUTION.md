@@ -66,15 +66,45 @@ A proof, representation, or measurement is an **observer**
 \tag{FC.3}
 \]
 
-in this structured category. It is a local gauge only on a stratum where \(q\) is an equivalence.
-No agreement of scalar invariants, spectra, zero sets, endpoints, or recurrence periods can replace
-this condition.
+in the underlying category of anchored filtered \(Q\)-objects, together with declared polar,
+topological, and history comparison data. A lossy observer is not required to be a cyclic isometry:
+that would force a nondegenerate kernel to vanish. Gauges and observers are therefore different
+arrow types. They form a two-tier law equipment:
+
+- invertible horizontal arrows are structured gauges;
+- vertical arrows are observers;
+- squares are coherent comparisons between observed gauges.
+
+An observer is a local gauge only on a stratum where its vertical arrow is represented by a
+horizontal equivalence. No agreement of scalar invariants, spectra, zero sets, endpoints, or
+recurrence periods can replace this condition.
 
 > **Nomological equivalence principle.** Local descriptions are gauges exactly when their
 > structured homotopy law-fibres are contractible. Every noncontractible law-fibre is retained
 > geometry, not a coordinate artefact.
 
 This principle prevents a favoured proof language from defining the field.
+
+For composable pointed observers
+
+\[
+ \mathfrak X\xrightarrow q\mathfrak Y\xrightarrow r\mathfrak Z,
+\tag{FC.3a}
+\]
+
+their relative law-fibres satisfy the canonical fibre sequence
+
+\[
+ \mathfrak K_q\longrightarrow
+ \mathfrak K_{rq}\longrightarrow
+ \mathfrak K_r.
+\tag{FC.3b}
+\]
+
+Thus serial losses compose by extension, not scalar addition. At the tangent level, (FC.3b)
+becomes an exact triangle; its connecting morphism measures interaction between the two observer
+losses. A source homotopy class killed by \(q\) remains killed by \(rq\), although
+observer-created excess directions can cancel in the derived extension.
 
 ## 4. One defect object
 
@@ -141,6 +171,33 @@ and local history cannot leak between observed and hidden sectors.
 
 This is the field's first GR-like structural law: change of observer changes the decomposition of
 one curvature tensor, not the underlying field.
+
+For a split nonlinear \(L_\infty\) observer with ideal fibre \(K\) and quotient \(H\), the full
+extension field is a relative coderivation
+
+\[
+ \tau\in\mathfrak L_{K\triangleleft E}^1
+\tag{FC.7a}
+\]
+
+satisfying
+
+\[
+ d_0\tau+\frac12[\tau,\tau]=0.
+\tag{FC.7b}
+\]
+
+Its pure-horizontal components are higher splitting curvatures; its mixed components are vertical
+transport and nonlinear second fundamental laws. Change of split presentation is the
+pronilpotent gauge action on \(\tau\). Hence the intrinsic nonlinear local field strength is
+
+\[
+ [\tau]\in\operatorname{MC}(\mathfrak L_{K\triangleleft E})/\mathrm{gauge},
+\tag{FC.7c}
+\]
+
+not any one horizontal component. Equation (FC.7b) is the nonlinear
+Gauss--Codazzi--Ricci/Bianchi hierarchy.
 
 ## 6. Internal law operations versus geometric curvature
 
@@ -210,6 +267,18 @@ NHG distinguishes identities from dynamics.
 3. A cyclic Hamiltonian supplies a formal variational functional when transgression data exist.
 4. Coercivity, properness, and a source constitutive relation are additional theorems.
 
+In the cyclic split-observer sector, the extension field itself supplies the formal action
+
+\[
+ \mathcal S_{\mathrm{ext}}(\tau)
+ =\frac12\langle\tau,d_0\tau\rangle
+ +\frac16\langle\tau,[\tau,\tau]\rangle,
+\tag{FC.9a}
+\]
+
+whose Euler--Lagrange equation is (FC.7b). Thus formal dynamics is source-derived in this sector;
+positivity and analytic properness are not.
+
 There is no universal scalar field equation. A genuine NHG dynamics is a natural sourced section of
 a relative obstruction bundle, or equivalently a gauge-covariant constitutive map
 
@@ -240,7 +309,9 @@ The field's first theorem programme is:
 
 ## 10. Falsifiable predictions
 
-1. No genuinely lossy observer can become a gauge after further serial observation.
+1. No observer that kills a nonzero source homotopy class can become source-conservative after
+   further serial observation; observer-created excess directions may cancel by an exact
+   extension.
 2. Every finite observer of a hypertranscendental formally smooth law chart has an infinite
    invisible Spencer tail.
 3. Flat total law geometry can induce curved observed geometry only through nonzero second
@@ -261,8 +332,11 @@ closed internally:
 
 1. structured category and Morita notion;
 2. derived observer-fibre construction;
-3. nonlinear version of (FC.7);
-4. one source-derived constitutive map or proper action;
+3. nonlinear version of (FC.7) — **closed for split complete filtered \(L_\infty\) observer
+   extensions** through the Maurer--Cartan field (FC.7a)--(FC.7c); global nonsplit descent remains
+   open;
+4. one source-derived constitutive map or proper action — the cyclic extension action (FC.9a)
+   closes the formal variational part; a proper analytic realization remains open;
 5. one nontrivial theorem connecting three derived faces of the same relative law-fibre —
    **closed in the flat Cartan model**, which couples holonomy, polarization, recurrence, and
    proper lifted cost;

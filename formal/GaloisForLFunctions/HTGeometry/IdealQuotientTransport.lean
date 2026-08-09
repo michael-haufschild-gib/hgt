@@ -1,5 +1,6 @@
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import Mathlib.RingTheory.PrincipalIdealDomain
+import GaloisForLFunctions.HTGeometry.SeparableFactorDerivativeOrder
 
 /-!
 # Transporting membership through a surjection
@@ -72,14 +73,20 @@ theorem mem_pow_iff_dvd_of_quotEquiv {A κ : Type*} [CommRing A] [Field κ]
   have hkerle : RingHom.ker Ψ ≤ J := by
     intro a ha
     rw [RingHom.mem_ker, hΨ, RingHom.comp_apply] at ha
-    have : Ideal.Quotient.mk J a = 0 := by
-      have := congrArg Φ.symm ha
-      rwa [Φ.symm_apply_apply, map_zero] at this
-    rwa [Ideal.Quotient.eq_zero_iff_mem] at this
+    have hmk : Ideal.Quotient.mk J a = 0 := by
+      apply Φ.injective
+      rw [map_zero]
+      exact ha
+    rwa [Ideal.Quotient.eq_zero_iff_mem] at hmk
   have hJker : J ≤ RingHom.ker Ψ := by
     intro a ha
     rw [RingHom.mem_ker, hΨ, RingHom.comp_apply, Ideal.Quotient.eq_zero_iff_mem.mpr ha, map_zero]
-  have hmapJ : J.map Ψ = ⊥ := Ideal.map_eq_bot_iff_le_ker.mpr hJker
+  have hmapJ : J.map Ψ = ⊥ := by
+    refine le_antisymm ?_ bot_le
+    rw [Ideal.map_le_iff_le_comap]
+    intro a ha
+    rw [Ideal.mem_comap, Ideal.mem_bot]
+    exact RingHom.mem_ker.mp (hJker ha)
   have hQmap : Q.map Ψ = Ideal.span {Ψ y} := by
     rw [hQ, Ideal.map_sup, Ideal.map_span, Set.image_singleton, hmapJ, sup_bot_eq]
   have hΨy : Ψ y = Ideal.Quotient.mk (Ideal.span {q}) hbar := hy
@@ -91,7 +98,25 @@ theorem mem_pow_iff_dvd_of_quotEquiv {A κ : Type*} [CommRing A] [Field κ]
     rw [Ideal.span_singleton_pow, Ideal.map_span, Set.image_singleton, map_pow]
   rw [hpow]
   refine mem_span_singleton_map_iff ?_
-  rw [Ideal.span_le, Set.singleton_subset_iff, Ideal.mem_span_singleton]
+  rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.mem_span_singleton]
   exact hdvd
+
+
+/-- **The derivative of the reduced minimal polynomial has order exactly `e − 1`.**  In the
+Kummer–Dedekind picture, where the quotient by `J` is `κ[X]/(q)` and the prime `Q` matches the
+irreducible factor `h` occurring in `q` with multiplicity `e`, the element matching `q'` does not lie
+in `Qᵉ`. -/
+theorem not_mem_pow_of_deriv {A κ : Type*} [CommRing A] [Field κ] [CharZero κ]
+    {J : Ideal A} {q : κ[X]} (Φ : (A ⧸ J) ≃+* (κ[X] ⧸ Ideal.span {q}))
+    {Q : Ideal A} {y : A} (hQ : Q = Ideal.span {y} ⊔ J)
+    {hbar g : κ[X]} (hy : Φ (Ideal.Quotient.mk J y) = Ideal.Quotient.mk (Ideal.span {q}) hbar)
+    (hirr : Irreducible hbar) {e : ℕ} (he : 1 ≤ e) (hg : ¬ hbar ∣ g) (hq : q = hbar ^ e * g)
+    (hJQ : J ≤ Q ^ e) {z : A}
+    (hz : Φ (Ideal.Quotient.mk J z) = Ideal.Quotient.mk (Ideal.span {q}) (derivative q)) :
+    z ∉ Q ^ e := by
+  have hdvd : hbar ^ e ∣ q := ⟨g, hq⟩
+  rw [mem_pow_iff_dvd_of_quotEquiv Φ hQ hy hdvd hJQ hz]
+  rw [hq]
+  exact not_pow_dvd_derivative hirr he hg
 
 end GaloisForLFunctions.HTGeometry

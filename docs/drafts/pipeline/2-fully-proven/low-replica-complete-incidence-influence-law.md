@@ -304,14 +304,17 @@ The former mandatory target asked for growing-replica pseudodeterminant, Bures n
 all-character transversality through `r=Theta(D)`.  The minimal remaining Brown-front statement is
 strictly weaker:
 
-> At `r=O(log n)` for one common time, and `r=O(n)` for the complete Brown-time mesh, prove that the
-> fixed-shell static-local phase graph mixes the single target-cardinality-free, light-filtered
-> incidence observable `(4)` to the required total error after one target-independent return
-> excision, for circuit depth `s=Theta(min(t,D)/log M_n)`.
+> At `r=O(log n)`, prove simultaneously on the `O(n)` geometric endpoint skeleton of
+> `geometric-skeleton-brown-ramp-transfer-law.md` that the fixed-shell static-local phase graph
+> mixes the single target-cardinality-free, light-filtered incidence observable `(4)` to the
+> required total error after one target-independent return excision, for circuit depth
+> `s=Theta(min(t,D)/log M_n)`.  Separately align the final skeleton time with the beginning of the
+> already available continuous near-maximal plateau.
 
 This is a quantitative mixing problem against one bounded observable with Dirichlet energy
-`O((log n)^2/D)` at one time and `O(n^2/D)` on the full ramp grid, not a minimum-action problem and
-not design convergence against every order-`D` replica polynomial.
+`O((log n)^2/D)` at every skeleton time, not a minimum-action problem and not design convergence
+against every order-`D` replica polynomial.  The earlier `r=O(n)` complete linear ramp mesh is
+retired: deterministic circuit composition fills every interval between the geometric endpoints.
 
 ## Hostile audit
 

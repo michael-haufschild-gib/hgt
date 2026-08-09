@@ -401,3 +401,11 @@ and prove quenched growth of `Phi(exp(-itH)chi)-Phi(chi)` beyond the Brown depth
 Then the formal Bellman calibration inequality gives the robust circuit lower bound immediately.
 Energy, fixed linear observables, target entropy, and unstructured Jacobian volume are proved dead
 calibrations.  The live object must be a nonlinear oriented-history/local-control calibration.
+
+The paper-proved child
+`../2-fully-proven/geometric-skeleton-brown-ramp-transfer-law.md` removes a further false burden.
+Pointwise calibration on a linear Brown-time mesh is unnecessary.  Hardness at `O(n)` geometric
+times, with adjacent ratio `q<1/(1-c)`, propagates by the autonomous cone to a continuous lower
+ramp.  Thus the ramp union needs only logarithmic replica order.  The live quenched target is now
+simultaneous Bellman escape on that geometric skeleton, followed by a near-maximal continuous
+plateau beginning at its final time, all for one Hamiltonian after one common return excision.

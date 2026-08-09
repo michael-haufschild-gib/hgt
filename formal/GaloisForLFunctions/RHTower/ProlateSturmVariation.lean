@@ -374,4 +374,46 @@ theorem prolate_eq_const_mul_of_same_eigenvalue {c α r : ℝ} {u v : ℝ → �
   linarith
 
 
+/-- Differentiability descends through the real coercion. -/
+theorem differentiable_of_ofReal {ψ : ℝ → ℝ}
+    (h : Differentiable ℝ (fun y : ℝ => ((ψ y : ℝ) : ℂ))) : Differentiable ℝ ψ := by
+  have hre : ψ = fun y : ℝ => (((ψ y : ℝ) : ℂ)).re := by
+    funext y
+    simp
+  rw [hre]
+  exact Complex.reCLM.differentiable.comp h
+
+/-- The derivative of a coerced real function is the coercion of its derivative. -/
+theorem deriv_ofReal_eq {ψ : ℝ → ℝ} (hψ : Differentiable ℝ ψ) :
+    deriv (fun y : ℝ => ((ψ y : ℝ) : ℂ)) = fun y : ℝ => ((deriv ψ y : ℝ) : ℂ) := by
+  funext y
+  exact ((hψ y).hasDerivAt.ofReal_comp).deriv
+
+/-- **A real band eigenfunction has bounded variation.**  Every hypothesis of the variation chain
+is discharged from the eigen-equation: regularity from the derivative tower, the prolate equation
+from the commutation, and simplicity from the vanishing Wronskian. -/
+theorem bandEigen_real_boundedVariationOn {c α r B : ℝ} {ψ : ℝ → ℝ}
+    (hr0 : 0 ≤ r) (hr : r < 1) (hc : c ≠ 0)
+    (hψ1 : Differentiable ℝ ψ) (hψ2 : Differentiable ℝ (deriv ψ))
+    (heig : ∀ x : ℝ, prolateActionC c (fun y : ℝ => ((ψ y : ℝ) : ℂ))
+        (deriv (fun y : ℝ => ((ψ y : ℝ) : ℂ)))
+        (deriv (deriv (fun y : ℝ => ((ψ y : ℝ) : ℂ)))) x
+      = ((α : ℝ) : ℂ) * ((ψ x : ℝ) : ℂ))
+    (hnt : ∃ y ∈ Icc (-r) r, ψ y ≠ 0)
+    (hbound : ∀ y ∈ Icc (-r) r, |ψ y| ≤ B) :
+    ∃ S : Finset ℝ,
+      eVariationOn ψ (Icc (-r) r) ≤ ENNReal.ofReal (2 * (S.card + 1) * B) := by
+  have hd1 : deriv (fun y : ℝ => ((ψ y : ℝ) : ℂ)) = fun y : ℝ => ((deriv ψ y : ℝ) : ℂ) :=
+    deriv_ofReal_eq hψ1
+  have hd2 : deriv (deriv (fun y : ℝ => ((ψ y : ℝ) : ℂ)))
+      = fun y : ℝ => ((deriv (deriv ψ) y : ℝ) : ℂ) := by
+    rw [hd1]
+    exact deriv_ofReal_eq hψ2
+  refine prolate_boundedVariationOn_of_complex_eigen (α := α) hr0 hr hc hψ1 hψ2 ?_ hnt hbound
+  intro x
+  have h := heig x
+  rw [hd2, hd1] at h
+  exact h
+
+
 end RHTower

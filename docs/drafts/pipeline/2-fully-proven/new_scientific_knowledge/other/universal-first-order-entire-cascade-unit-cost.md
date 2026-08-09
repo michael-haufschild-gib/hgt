@@ -9853,3 +9853,39 @@ the monogenic order `B = S[α]` produced in part 10 — `q̄ = ∏ h̄ᵢ^{eᵢ}
 reduced minimal polynomial, the `h̄ᵢ` index the primes above, and `eᵢ` is the ramification index.
 What remains is exactly that dictionary: transporting the polynomial order at `h̄ᵢ` to the ideal
 order at `Qᵢ`, for which mathlib has `KummerDedekind`.
+
+### Log — the algebraic model, part 12: the polynomial order becomes the ideal order
+
+`HTGeometry/IdealQuotientTransport.lean` builds the bridge that carries part 11's polynomial
+statement across to the ideal side, in the form the Kummer–Dedekind picture supplies it.
+
+The bookkeeping first: an ideal containing the kernel of a surjection is detected in the image
+(`mem_iff_map_mem_of_ker_le`), powers travel (`mem_pow_iff_map_mem_pow`), and a principal ideal of a
+quotient pulls back to divisibility (`mem_span_singleton_map_iff`).
+
+Then the bridge.  Suppose the quotient by `J` is presented as `κ[X]/(q)` by a ring isomorphism `Φ`,
+the prime `Q` is `J` together with an element `y` whose image is `h`, and `hᵉ ∣ q` with `J ≤ Qᵉ`.
+Then for any `z` whose image is `w`:
+
+`mem_pow_iff_dvd_of_quotEquiv` : `z ∈ Qᵉ ↔ hᵉ ∣ w`.
+
+The proof runs the composite `Ψ = Φ ∘ mk_J`, whose kernel is exactly `J`, so `Q.map Ψ` collapses to
+`span {Ψ y} = span {h mod q}`, its `e`-th power is `span {hᵉ}` mapped down, and membership descends to
+divisibility because `(q) ≤ (hᵉ)`.
+
+Combining with part 11:
+
+`not_mem_pow_of_deriv` : if moreover `q = hᵉ·g` with `h` irreducible and `h ∤ g`, then the element
+matching `q'` does **not** lie in `Qᵉ`.
+
+In the Kummer–Dedekind setting — `A = B`, `J = 𝔪B`, `q` the reduced minimal polynomial of the
+generator `α` produced in part 10, `Φ` mathlib's `KummerDedekind.quotMapEquivQuotQuotMap`, and `z =
+q'(α)` (whose image is `q'` by `quotMapEquivQuotQuotMap_symm_apply`) — this reads
+
+`ord_Q(minpoly'(α)) ≤ e − 1`,
+
+which together with `conductor_mul_differentIdeal` (conductor `⊤`, by part 10) and mathlib's lower
+bound `pow_sub_one_dvd_differentIdeal` pins `ord_Q(𝔡) = e − 1`.  What is left is only the
+instantiation: producing `h`, `g` and the multiplicity `e` for a given prime `Q` from mathlib's
+`normalizedFactorsMapEquivNormalizedFactorsMinPolyMk` and
+`emultiplicity_factors_map_eq_emultiplicity`.
