@@ -1,7 +1,7 @@
 # Stable-primitive exactness topology
 
 - **ID:** `stable-primitive-exactness-topology`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `../../1-in-progress/interfinity-geometry/interfinity-geometry-program.md` · Theorems
   XXII, XXV, XXVI
@@ -19,7 +19,7 @@ analytic or arithmetic model.
 
 - [x] 0 → 1 in-progress: source-stability condition and falsifiers fixed
 - [x] 1 → 2 fully-proven: complete proof below; no open dependency
-- [ ] 2 → 3 formalized: no Lean work authorized in source task
+- [x] 2 → 3 formalized: `stable-primitive-exactness-topology-formalized.md`
 - [ ] 3 → 4 publication-ready: priority and significance review remains at program level
 
 ## Definitions

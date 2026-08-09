@@ -26,7 +26,7 @@ theorem oneGeneratorRungeDense_holoAlgebra {a : ℝ} (ha : 0 < a) :
   classical
   set r' : holoAlgebra := ⟨cauchyCoord a ha, cauchyCoord_mem_holoAlgebra ha⟩ with hr'
   rw [OneGeneratorRungeDense]
-  refine Subalgebra.eq_top_iff.2 fun x => ?_
+  refine top_unique fun x _ => ?_
   have hximage : (x : C((rightHalfPlane : Set ℂ), ℂ)) ∈
       (Algebra.adjoin ℂ ({cauchyCoord a ha} :
         Set C((rightHalfPlane : Set ℂ), ℂ))).topologicalClosure := by
@@ -35,12 +35,14 @@ theorem oneGeneratorRungeDense_holoAlgebra {a : ℝ} (ha : 0 < a) :
   have himg : (Subtype.val '' (Algebra.adjoin ℂ ({r'} : Set holoAlgebra) : Set holoAlgebra))
       = (Algebra.adjoin ℂ ({cauchyCoord a ha} :
           Set C((rightHalfPlane : Set ℂ), ℂ)) : Set C((rightHalfPlane : Set ℂ), ℂ)) := by
-    have hmap := Algebra.map_adjoin (holoAlgebra.val) ({r'} : Set holoAlgebra)
-    have hset : (holoAlgebra.val) '' ({r'} : Set holoAlgebra)
-        = ({cauchyCoord a ha} : Set C((rightHalfPlane : Set ℂ), ℂ)) := by
+    have hmap : (Algebra.adjoin ℂ ({r'} : Set holoAlgebra)).map holoAlgebra.val
+        = Algebra.adjoin ℂ ({cauchyCoord a ha} : Set C((rightHalfPlane : Set ℂ), ℂ)) := by
+      rw [AlgHom.map_adjoin]
+      congr 1
       simp [hr']
-    rw [hset] at hmap
-    rw [← Subalgebra.coe_map, hmap]
+    have hcm := Subalgebra.coe_map (holoAlgebra.val) (Algebra.adjoin ℂ ({r'} : Set holoAlgebra))
+    rw [hmap] at hcm
+    exact hcm.symm
   rw [← SetLike.mem_coe, Subalgebra.topologicalClosure_coe, closure_subtype, himg]
   exact hximage
 

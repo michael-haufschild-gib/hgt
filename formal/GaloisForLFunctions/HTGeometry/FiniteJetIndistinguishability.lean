@@ -23,7 +23,7 @@ noncomputable section
 def jetAtZero (j : ℕ) (f : ℂ → ℂ) : ℂ := iteratedDeriv j f 0
 
 /-- The interpolating polynomial of a prescribed finite jet. -/
-noncomputable def jetPolynomial (r : ℕ) (c : ℕ → ℂ) : Polynomial ℂ :=
+noncomputable def finiteJetPolynomial (r : ℕ) (c : ℕ → ℂ) : Polynomial ℂ :=
   ∑ k ∈ Finset.range (r + 1), Polynomial.C (c k / (Nat.factorial k : ℂ)) * Polynomial.X ^ k
 
 theorem iteratedDeriv_polynomial_eval_zero (Q : Polynomial ℂ) (j : ℕ) :
@@ -33,11 +33,11 @@ theorem iteratedDeriv_polynomial_eval_zero (Q : Polynomial ℂ) (j : ℕ) :
     Polynomial.coeff_iterate_derivative]
   simp [Nat.descFactorial_self]
 
-theorem jetAtZero_jetPolynomial (r : ℕ) (c : ℕ → ℂ) {j : ℕ} (hj : j ≤ r) :
-    jetAtZero j (fun z => Polynomial.eval z (jetPolynomial r c)) = c j := by
+theorem jetAtZero_finiteJetPolynomial (r : ℕ) (c : ℕ → ℂ) {j : ℕ} (hj : j ≤ r) :
+    jetAtZero j (fun z => Polynomial.eval z (finiteJetPolynomial r c)) = c j := by
   rw [jetAtZero, iteratedDeriv_polynomial_eval_zero]
-  have hcoeff : (jetPolynomial r c).coeff j = c j / (Nat.factorial j : ℂ) := by
-    rw [jetPolynomial, Polynomial.finsetSum_coeff]
+  have hcoeff : (finiteJetPolynomial r c).coeff j = c j / (Nat.factorial j : ℂ) := by
+    rw [finiteJetPolynomial, Polynomial.finsetSum_coeff]
     rw [Finset.sum_eq_single j]
     · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
     · intro k _ hkj
@@ -79,19 +79,19 @@ theorem differentiallyAlgebraic_of_iteratedDeriv_eq_zero {f : ℂ → ℂ} {m : 
     rw [show (⟨m + 1, by omega⟩ : Fin (m + 2)) = Fin.succ ⟨m, by omega⟩ from rfl, Fin.cons_succ]
   rw [hval, h z]
 
-theorem natDegree_jetPolynomial_le (r : ℕ) (c : ℕ → ℂ) :
-    (jetPolynomial r c).natDegree ≤ r := by
+theorem natDegree_finiteJetPolynomial_le (r : ℕ) (c : ℕ → ℂ) :
+    (finiteJetPolynomial r c).natDegree ≤ r := by
   refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun k hk => ?_
   refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
   rw [Polynomial.natDegree_X_pow]
   exact Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
 
-theorem differentiallyAlgebraic_jetPolynomial (r : ℕ) (c : ℕ → ℂ) :
-    DifferentiallyAlgebraic (fun z => Polynomial.eval z (jetPolynomial r c)) := by
+theorem differentiallyAlgebraic_finiteJetPolynomial (r : ℕ) (c : ℕ → ℂ) :
+    DifferentiallyAlgebraic (fun z => Polynomial.eval z (finiteJetPolynomial r c)) := by
   refine differentiallyAlgebraic_of_iteratedDeriv_eq_zero (m := r + 1) fun z => ?_
   rw [iteratedDeriv_polynomial_eval]
   rw [Polynomial.iterate_derivative_eq_zero
-    (Nat.lt_succ_of_le (natDegree_jetPolynomial_le r c))]
+    (Nat.lt_succ_of_le (natDegree_finiteJetPolynomial_le r c))]
   simp
 
 /-- **Theorem 4.1, exact finite-jet indistinguishability.**  Every prescribed finite jet at the
@@ -102,11 +102,11 @@ theorem exists_finiteJet_da_and_ht (r : ℕ) (c : ℕ → ℂ) :
       DifferentiallyAlgebraic p ∧ Hypertranscendental h := by
   classical
   set W : ℂ → ℂ := entireHypertranscendentalWitness with hWdef
-  set P : Polynomial ℂ := jetPolynomial r c with hPdef
-  set T : Polynomial ℂ := jetPolynomial r (fun k => jetAtZero k W) with hTdef
+  set P : Polynomial ℂ := finiteJetPolynomial r c with hPdef
+  set T : Polynomial ℂ := finiteJetPolynomial r (fun k => jetAtZero k W) with hTdef
   refine ⟨fun z => Polynomial.eval z P, fun z => W z + Polynomial.eval z (P - T), ?_, ?_, ?_, ?_⟩
   · intro j hj
-    exact jetAtZero_jetPolynomial r c hj
+    exact jetAtZero_finiteJetPolynomial r c hj
   · intro j hj
     have hjet := iteratedDeriv_add_polynomial W differentiable_iteratedDeriv_witness (P - T) j 0
     have hpoly : Polynomial.eval 0 (Polynomial.derivative^[j] (P - T))
@@ -119,10 +119,10 @@ theorem exists_finiteJet_da_and_ht (r : ℕ) (c : ℕ → ℂ) :
         iteratedDeriv_polynomial_eval_zero, iteratedDeriv_polynomial_eval_zero,
         Polynomial.coeff_sub]
       ring
-    rw [jetAtZero, hjet, hpoly, hsplit, jetAtZero_jetPolynomial r c hj,
-      jetAtZero_jetPolynomial r (fun k => jetAtZero k W) hj]
+    rw [jetAtZero, hjet, hpoly, hsplit, jetAtZero_finiteJetPolynomial r c hj,
+      jetAtZero_finiteJetPolynomial r (fun k => jetAtZero k W) hj]
     simp [jetAtZero]
-  · exact differentiallyAlgebraic_jetPolynomial r c
+  · exact differentiallyAlgebraic_finiteJetPolynomial r c
   · intro hDA
     exact hypertranscendental_entireHypertranscendentalWitness
       (differentiallyAlgebraic_add_polynomial differentiable_iteratedDeriv_witness (P - T) hDA)
@@ -142,21 +142,21 @@ def ofJetSpace (f : JetSpace) : ℂ → ℂ := f
 theorem ofJetSpace_toJetSpace (f : ℂ → ℂ) : ofJetSpace (toJetSpace f) = f := rfl
 
 /-- The full jet of a germ at the origin. -/
-def jetVector (f : JetSpace) : ℕ → ℂ := fun j => jetAtZero j (ofJetSpace f)
+def finiteJetVector (f : JetSpace) : ℕ → ℂ := fun j => jetAtZero j (ofJetSpace f)
 
 /-- The finite-jet topology: the initial topology of the full jet map, equivalently of all the
 finite jet maps `f ↦ (f 0, …, f^{(r)} 0)`. -/
-instance : TopologicalSpace JetSpace := TopologicalSpace.induced jetVector inferInstance
+instance : TopologicalSpace JetSpace := TopologicalSpace.induced finiteJetVector inferInstance
 
-theorem continuous_jetVector : Continuous jetVector := continuous_induced_dom
+theorem continuous_jetVector : Continuous finiteJetVector := continuous_induced_dom
 
 theorem continuous_jetAtZero (j : ℕ) :
     Continuous fun f : JetSpace => jetAtZero j (ofJetSpace f) :=
   (continuous_apply j).comp continuous_jetVector
 
 theorem nhds_jetSpace (g : JetSpace) :
-    nhds g = Filter.comap jetVector (nhds (jetVector g)) :=
-  nhds_induced jetVector g
+    nhds g = Filter.comap finiteJetVector (nhds (finiteJetVector g)) :=
+  nhds_induced finiteJetVector g
 
 /-- A property realizable on every exact finite jet fiber is dense in the finite-jet topology. -/
 theorem exists_mem_of_mem_nhds {P : (ℂ → ℂ) → Prop}
@@ -168,11 +168,11 @@ theorem exists_mem_of_mem_nhds {P : (ℂ → ℂ) → Prop}
   rw [nhds_pi, Filter.mem_pi] at ht
   obtain ⟨I, hI, u, hu, hut⟩ := ht
   obtain ⟨r, hr⟩ := hI.bddAbove
-  obtain ⟨f, hjf, hPf⟩ := hP r (jetVector g)
+  obtain ⟨f, hjf, hPf⟩ := hP r (finiteJetVector g)
   refine ⟨toJetSpace f, hts ?_, hPf⟩
   refine hut ?_
   intro i hi
-  have hji : jetVector (toJetSpace f) i = jetVector g i := hjf i (hr hi)
+  have hji : finiteJetVector (toJetSpace f) i = finiteJetVector g i := hjf i (hr hi)
   rw [hji]
   exact mem_of_mem_nhds (hu i)
 
@@ -185,8 +185,8 @@ theorem dense_differentiallyAlgebraic :
   intro t ht
   obtain ⟨f, hf, hPf⟩ :=
     exists_mem_of_mem_nhds (P := DifferentiallyAlgebraic)
-      (fun r c => ⟨fun z => Polynomial.eval z (jetPolynomial r c),
-        fun j hj => jetAtZero_jetPolynomial r c hj, differentiallyAlgebraic_jetPolynomial r c⟩)
+      (fun r c => ⟨fun z => Polynomial.eval z (finiteJetPolynomial r c),
+        fun j hj => jetAtZero_finiteJetPolynomial r c hj, differentiallyAlgebraic_finiteJetPolynomial r c⟩)
       g ht
   exact ⟨f, hf, hPf⟩
 
@@ -228,8 +228,8 @@ theorem exists_hypertranscendental_jetSpace :
 
 theorem exists_differentiallyAlgebraic_jetSpace :
     ∃ f : JetSpace, DifferentiallyAlgebraic (ofJetSpace f) :=
-  ⟨toJetSpace (fun z => Polynomial.eval z (jetPolynomial 0 fun _ => 0)),
-    differentiallyAlgebraic_jetPolynomial 0 _⟩
+  ⟨toJetSpace (fun z => Polynomial.eval z (finiteJetPolynomial 0 fun _ => 0)),
+    differentiallyAlgebraic_finiteJetPolynomial 0 _⟩
 
 /-- Neither class is closed in the finite-jet topology. -/
 theorem not_isClosed_differentiallyAlgebraic :

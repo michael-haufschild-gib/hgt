@@ -432,3 +432,32 @@ functions (`differentiableOn_esymm_sliceRoots`), and the local constancy of the 
 
 Remaining: Weierstrass division, factoriality of the germ ring, local reduced fractions, and then
 the Siegel assembly itself.
+
+### The Weierstrass polynomial is monic
+
+`HTGeometry.multisetLinearProd_eq_monic`, unconditional and axiom-clean:
+
+```text
+∏_{r ∈ M} (z − r) = z^{card M} + ∑_{j < card M} (−1)^{card M − j} · e_{card M − j}(M) · z^j
+```
+
+Monicity is what makes the Weierstrass polynomial a *distinguished* polynomial and is the input to
+the uniqueness half of the division theorem: a remainder of degree below `card M` that is divisible
+by a monic polynomial of degree `card M` must vanish.  It falls out of the expansion by splitting
+the top term, whose coefficient is the zeroth elementary symmetric function, namely `1`.
+
+### The roots are exactly the zeros
+
+`HTGeometry.multisetLinearProd_eq_zero_iff` — `∏_{r ∈ M}(z − r) = 0 ↔ z ∈ M` — and its consequence
+
+**`HTGeometry.slice_eq_zero_iff_mem_sliceRoots`**: for an admissible slice and `‖z‖ < t`,
+
+```text
+f (cons z y) = 0  ↔  z ∈ sliceRoots f t y.
+```
+
+Both unconditional and axiom-clean.  This closes the identification the preparation theorem is
+about: `sliceRoots` is not merely a multiset with the right power sums, it is the zero set of the
+slice inside the circle.  Recall that `sliceRoots` is produced by `Classical.choose` from the
+argument principle and records only power sums, so this had to be proved, not assumed — via
+`multiset_eq_of_powerSum_eq` and the factorization.

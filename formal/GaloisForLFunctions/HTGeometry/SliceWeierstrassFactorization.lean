@@ -13,7 +13,7 @@ polynomial, with multiplicity — the conclusion of Weierstrass' preparation the
 distinguished variable, for one fixed value of the parameters.
 
 * `HTGeometry.exists_slice_factorization`;
-* `HTGeometry.slice_eq_zero_iff`.
+* `HTGeometry.slice_eq_zero_iff`, `HTGeometry.slice_eq_zero_iff_mem_sliceRoots`.
 -/
 
 open Complex Metric
@@ -62,5 +62,11 @@ theorem slice_eq_zero_iff {f : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} (ht : 0 
     · exact absurd h2 (hgne z hzball)
   · intro h
     rw [h, zero_mul]
+
+/-- **The zeros of a slice inside the circle are exactly the elements of its root multiset.** -/
+theorem slice_eq_zero_iff_mem_sliceRoots {f : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} (ht : 0 < t)
+    {y : Fin n → ℂ} (hy : SliceAdmissible f t y) {z : ℂ} (hz : ‖z‖ < t) :
+    f (Fin.cons z y) = 0 ↔ z ∈ sliceRoots f t y := by
+  rw [slice_eq_zero_iff ht hy hz, multisetLinearProd_eq_zero_iff]
 
 end HTGeometry

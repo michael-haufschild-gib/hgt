@@ -1,7 +1,7 @@
 # Terminal transgression and curvature flux
 
 - **ID:** `terminal-transgression-curvature-flux`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `../../1-in-progress/interfinity-geometry/interfinity-geometry-program.md` · Theorems
   XVII--XXIII
@@ -18,7 +18,7 @@ when future time becomes solvable but other source operations do not.
 
 - [x] 0 → 1 in-progress: source monoid, time ray, and curvature convention fixed
 - [x] 1 → 2 fully-proven: flat, rigid, curved, and nonvacuity results proved below
-- [ ] 2 → 3 formalized: no Lean work authorized in source task
+- [x] 2 → 3 formalized: `terminal-transgression-curvature-flux-formalized.md`
 - [ ] 3 → 4 publication-ready: package priority review remains open
 
 ## Setup

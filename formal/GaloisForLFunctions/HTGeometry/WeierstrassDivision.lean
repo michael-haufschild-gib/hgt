@@ -16,7 +16,7 @@ The identity is Cauchy's formula after the algebraic split
 * `HTGeometry.SliceHolomorphic`, `HTGeometry.wCoeff`, `HTGeometry.wDiff`;
 * `HTGeometry.wDiff_mul`;
 * `HTGeometry.weierstrass_division`;
-* `HTGeometry.divRemCoeff_top_eq_zero`.
+* `HTGeometry.divRemCoeff_top_eq_zero`, `HTGeometry.divRem_eq_sum_range`.
 -/
 
 open Complex Metric
@@ -215,5 +215,13 @@ theorem weierstrass_division {f g : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} (ht
       exact hgd.differentiableAt (hUgopen.mem_nhds (hUgsub (ball_subset_closedBall hw.1)))
   rw [hquoteq, hremeq, ← mul_add, hcomb, hcauchy, smul_eq_mul]
   field_simp
+
+/-- **The remainder has degree below that of the divisor.**  Its top coefficient vanishes, so the
+sum may be taken over `range k` — a polynomial in the distinguished variable of degree `< k`. -/
+theorem divRem_eq_sum_range (f : (Fin (n + 1) → ℂ) → ℂ) (t : ℝ) (g : (Fin (n + 1) → ℂ) → ℂ)
+    (k : ℕ) (w : Fin (n + 1) → ℂ) :
+    divRem f t g k w
+      = ∑ l ∈ Finset.range k, divRemCoeff f t g k l (Fin.tail w) * (w 0) ^ l := by
+  rw [divRem, Finset.sum_range_succ, divRemCoeff_top_eq_zero, zero_mul, add_zero]
 
 end HTGeometry

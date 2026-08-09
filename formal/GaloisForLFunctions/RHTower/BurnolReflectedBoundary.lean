@@ -316,23 +316,32 @@ theorem tendsto_burnolReflectedBoundary {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ
         integral_Ioi_rpow_of_lt (by linarith : ρ.re - 2 < -1) hT] at hcmp
       refine le_trans hcmp (le_of_eq ?_)
       rw [show ρ.re - 2 + 1 = ρ.re - 1 by ring]
+      have hne : (1 : ℝ) - ρ.re ≠ 0 := by linarith
+      have hne' : ρ.re - 1 ≠ 0 := by intro hc; apply hne; linarith
       field_simp
+      ring
     rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hT]
     have hre : (1 - ρ).re = 1 - ρ.re := by rw [Complex.sub_re, Complex.one_re]
     rw [hre]
     have hpow : (0 : ℝ) < T ^ (1 - ρ.re) := Real.rpow_pos_of_pos hT _
     have hprod : T ^ (1 - ρ.re) * ((1 / (T - 1)) * (T ^ (ρ.re - 1) / (1 - ρ.re))) =
-        (7 / (1 - ρ.re)) * (1 / (T - 1)) / 7 * 7 := by
+        (1 / (1 - ρ.re)) * (1 / (T - 1)) := by
       rw [show T ^ (1 - ρ.re) * ((1 / (T - 1)) * (T ^ (ρ.re - 1) / (1 - ρ.re))) =
           (T ^ (1 - ρ.re) * T ^ (ρ.re - 1)) * (1 / (T - 1)) / (1 - ρ.re) by ring,
         ← Real.rpow_add hT, show 1 - ρ.re + (ρ.re - 1) = 0 by ring, Real.rpow_zero]
-      field_simp
+      ring
     have hstep := mul_le_mul_of_nonneg_left hbnd hpow.le
+    have hTinv : (0 : ℝ) ≤ 1 / (T - 1) := by
+      have : (0 : ℝ) < T - 1 := by linarith
+      positivity
     have hfinal : T ^ (1 - ρ.re) * ‖∫ y in Ioi T, burnolReflectedShiftedKernel ρ y‖ ≤
         (7 / (1 - ρ.re)) * (1 / (T - 1)) := by
-      refine le_trans hstep (le_of_eq ?_)
+      refine le_trans hstep ?_
       rw [hprod]
-      field_simp
+      have h1 : (1 : ℝ) / (1 - ρ.re) ≤ 7 / (1 - ρ.re) := by
+        rw [div_le_div_iff₀ (by linarith) (by linarith)]
+        linarith
+      nlinarith [h1, hTinv]
     have hn := norm_nonneg (ρ - 1)
     nlinarith [hfinal, hn]
 
@@ -341,5 +350,57 @@ theorem tendsto_burnolReflectedBoundary {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ
   refine hsum.congr' ?_
   filter_upwards [eventually_ge_atTop (2 : ℝ)] with T hT
   exact (hform T hT).symm
+
+
+/-! ## Sharp tail bounds -/
+
+theorem norm_integral_burnolReflectedShiftedKernel_le {ρ : ℂ} (hρ1 : ρ.re < 1) {T : ℝ}
+    (hT2 : 2 ≤ T) :
+    ‖∫ y in Ioi T, burnolReflectedShiftedKernel ρ y‖ ≤
+      (1 / (T - 1)) * (T ^ (ρ.re - 1) / (1 - ρ.re)) := by
+  have hT : (0 : ℝ) < T := by linarith
+  have hcmp := MeasureTheory.norm_integral_le_of_norm_le
+    ((integrableOn_Ioi_rpow_of_lt (a := ρ.re - 2) (by linarith) hT).const_mul (1 / (T - 1)))
+    (by
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
+      exact norm_burnolReflectedShiftedKernel_le' hT2 (le_of_lt hy))
+  rw [MeasureTheory.integral_const_mul,
+    integral_Ioi_rpow_of_lt (by linarith : ρ.re - 2 < -1) hT] at hcmp
+  refine le_trans hcmp (le_of_eq ?_)
+  rw [show ρ.re - 2 + 1 = ρ.re - 1 by ring]
+  have hne : (1 : ℝ) - ρ.re ≠ 0 := by linarith
+  have hne' : ρ.re - 1 ≠ 0 := by intro hc; apply hne; linarith
+  field_simp
+  ring
+
+theorem norm_integral_burnolReflectedKernelRC_Ioi_le {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1)
+    {T : ℝ} (hT2 : 2 ≤ T) :
+    ‖∫ y in Ioi T, burnolReflectedKernelRC ρ y‖ ≤
+      (1 + ‖ρ - 1‖ / (1 - ρ.re)) * (T ^ (ρ.re - 1) / (T - 1)) := by
+  have hT : (0 : ℝ) < T := by linarith
+  have hT1 : (0 : ℝ) < T - 1 := by linarith
+  have hpow : (0 : ℝ) < T ^ (ρ.re - 1) := Real.rpow_pos_of_pos hT _
+  rw [integral_burnolReflectedKernelRC_Ioi hρ0 hρ1 hT]
+  refine le_trans (norm_sub_le _ _) ?_
+  have hb1 : ‖((burnolReflectedShiftedMass T : ℝ) : ℂ) * ((T : ℝ) : ℂ) ^ (ρ - 1)‖ ≤
+      (1 / (T - 1)) * T ^ (ρ.re - 1) := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_cpow_eq_rpow_re_of_pos hT]
+    have hre : (ρ - 1).re = ρ.re - 1 := by rw [Complex.sub_re]; norm_num
+    rw [hre]
+    have hb := abs_burnolReflectedShiftedMass_le hT2
+    nlinarith [hb, hpow, abs_nonneg (burnolReflectedShiftedMass T)]
+  have hb2 : ‖(ρ - 1) * ∫ y in Ioi T, burnolReflectedShiftedKernel ρ y‖ ≤
+      ‖ρ - 1‖ * ((1 / (T - 1)) * (T ^ (ρ.re - 1) / (1 - ρ.re))) := by
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_left
+      (norm_integral_burnolReflectedShiftedKernel_le hρ1 hT2) (norm_nonneg _)
+  rw [norm_neg]
+  have hid : (1 + ‖ρ - 1‖ / (1 - ρ.re)) * (T ^ (ρ.re - 1) / (T - 1)) =
+      (1 / (T - 1)) * T ^ (ρ.re - 1) +
+        ‖ρ - 1‖ * ((1 / (T - 1)) * (T ^ (ρ.re - 1) / (1 - ρ.re))) := by
+    have hne : (1 : ℝ) - ρ.re ≠ 0 := by linarith
+    field_simp
+  rw [hid]
+  linarith [hb1, hb2]
 
 end RHTower

@@ -1,7 +1,8 @@
 # Traceless local evolution has a permanent same-protocol Haar separator
 
 - **ID:** `traceless-local-two-query-haar-separation-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./traceless-local-two-query-haar-separation-law-formalized.md`
 - **Type:** THEOREM (paper) / PHYSICAL TWO-QUERY PROTOCOL / MASTER O6
 - **Source:** Cui--Schuster--Mao--Huang--Brandao, *Random unitaries from
   Hamiltonian dynamics*, arXiv:2510.08434, Appendix C; exact internal port
@@ -21,8 +22,8 @@ applies unchanged when the Hamiltonian and time are jointly random.
 
 - [x] 0 → 1 in-progress: exact protocol, quantifiers, and collision audit
 - [x] 1 → 2 fully-proven: complete proof below, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: literal traceless dictionary, physical score, exact
-  Haar value, and comparison capstone
+- [x] 2 → 3 formalized: literal traceless dictionary, physical score, exact
+  Haar value, and comparison capstone — all four closed; see the companion
 - [ ] 3 → 4 publication-ready: use only inside the completed master theorem
 
 ## Setup
@@ -189,19 +190,19 @@ polynomial in `n` for fixed `q`.
 - **What this does not prove:** this is the permanent non-Haar clause only. It
   proves neither complexity growth nor a plateau hitting time.
 
-## Lean plan
+## Lean plan — closed
 
-1. Define `FiniteQTracelessPauliLabel`, its principal transfer block, and its
-   energy-coordinate vector.
-2. Prove exact fixed-vector conservation and nonvanishing without identity.
-3. Reuse `productStabilizerPauliTwirl_eq_zero_of_ne` and
-   `twoQueryProductStabilizerSignal_ge` for `(2)`.
-4. Generalize the already formalized finite-unitary Haar column moment from a
-   balanced diagonal sign to arbitrary traceless Hermitian involutions and
-   arbitrary unit vectors, yielding `(8)`.
-5. Define the physical finite product-stabilizer score, prove both its Pauli
-   transfer expansion `(5)` and Haar value `(3)`, then state `(4)` as one
-   capstone.
+1. `FiniteQTracelessPauliLabel`, `finiteQTracelessPauliTransferMatrix`,
+   `finiteQTracelessEnergyCoordinates`.
+2. `finiteQTracelessPauliTransferMatrix_fixes_energyCoordinates`,
+   `finiteQTracelessEnergyCoordinates_ne_zero`; and the identity-coordinate gap is closed by
+   `hasZeroPauliIdentityCoordinate_of_trace_eq_zero`, so literal tracelessness is the hypothesis.
+3. `literalTwoQueryScore_ge_of_trace_eq_zero` (`(2)` on the literal score).
+4. `haar_sq_trace_pure_state_conjugation` (`(8)` on any finite register, for every pure state and
+   every traceless Hermitian involution).
+5. `literalTwoQueryScore`, `average_sq_trace_eq_sum_twirl` (`(5)`),
+   `haar_literalTwoQueryScore_eq` (`(3)`), and
+   `haarBenchmark_lt_literalTwoQueryScore_of_trace_eq_zero` (`(4)`).
 
 ## Novelty status
 
@@ -220,3 +221,9 @@ is an exact unconditional internal certificate consumed by the master paper.
   Remaining formal edge is finite-index reindexing plus the literal
   product-stabilizer score average; no different-probe comparison remains in
   the mathematical core.
+
+- 2026-08-09 — all five Lean layers closed unconditionally.  The two genuinely missing pieces were
+  a pure state as a *prepared coordinate state* (`exists_unitary_trace_mul_eq_conj_entry`, from the
+  spectral theorem for a Hermitian idempotent of unit trace) and Haar transport across a change of
+  matrix index type (`measurePreserving_unitaryGroupReindex`, from Haar uniqueness).  Promoted to
+  stage 3.

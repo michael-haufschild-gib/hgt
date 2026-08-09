@@ -1,7 +1,7 @@
 # Terminal nerve and coherent source functor
 
 - **ID:** `terminal-nerve-and-coherent-source-functor`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `../../1-in-progress/interfinity-geometry/interfinity-geometry-program.md` · Theorems
   XIII, XIV, XVI
@@ -18,7 +18,7 @@ Gram chart so pairwise limits cannot be silently assembled from incompatible sou
 
 - [x] 0 → 1 in-progress: common-clock rule and Gram labels fixed
 - [x] 1 → 2 fully-proven: complete paper proof and explicit horn below
-- [ ] 2 → 3 formalized: no Lean work authorized in source task
+- [x] 2 → 3 formalized: `terminal-nerve-and-coherent-source-functor-formalized.md`
 - [ ] 3 → 4 publication-ready: package priority review remains at program level
 
 ## Part I: coherent source functor

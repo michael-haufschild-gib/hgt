@@ -1,7 +1,7 @@
 # Arithmetic three-chart stable boundary
 
 - **ID:** `arithmetic-three-chart-stable-boundary`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `../../1-in-progress/interfinity-geometry/interfinity-geometry-program.md` · Theorem
   XXVII
@@ -19,7 +19,7 @@ one exact class.
 
 - [x] 0 → 1 in-progress: prime/depth clocks and critical bornology fixed source-first
 - [x] 1 → 2 fully-proven: quotient and three-chart identity proved below
-- [ ] 2 → 3 formalized: no Lean work authorized in source task
+- [x] 2 → 3 formalized: `arithmetic-three-chart-stable-boundary-formalized.md`
 - [ ] 3 → 4 publication-ready: independent priority/significance review remains open
 
 ## Source complex

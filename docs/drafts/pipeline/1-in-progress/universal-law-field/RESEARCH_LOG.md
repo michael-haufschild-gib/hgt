@@ -69,3 +69,26 @@ Territory heavily occupied (Fulman-Kaplan Hall-Littlewood measures, Sawin-Wood m
 universality, Van Peski) — read-first list recorded. Proved calibration: sharp MOMENT HORIZON —
 E[#Sur(A, (Z/p)^r)] finite iff r < sigma — the zeta gas sits outside the moment-determined
 universality class; horizon = abscissa. Frozen hunch: sub-horizon moment indeterminacy.
+
+## 2026-08-09 — recharter: inverse theory of obstructions (Claude Fable 5)
+
+User directive: stop replaying routes; find the higher theory. Method adopted = the
+Weil-specification move: certified no-gos become proved necessity axioms on the missing object;
+then consistency (three-world calibration), rigidity, and discriminating consequences.
+
+Executed this cycle, not proposed:
+- ULF-INV-1 (stage 2, dependency-closed): Beurling cross-system blindness — every convergent
+  multiplicative regularization of prime log-jet Grams is constant across Mertens-normal Beurling
+  systems (explicit comparison pair: replace generator 2 by 3; zeta ratio (1-2^{-s})/(1-3^{-s});
+  zero sets differ at 2*pi*i/log2) and hence zero-blind. Inverts the corpus's internal blindness
+  theorem into a method-level impossibility = necessity axiom N1.
+- ULF-INV-0 charter: axiom table N1-N5 (N1 proved; N2-N5 corpus-proved with exact-reading work
+  items), three-world calibration (F_q / Ihara / Selberg) with two conclusions: existence of a
+  space is NOT the target — polarization + family amplification are load-bearing in every solved
+  world; and the corpus's Deninger layer already supplies the rigidity half (polarization
+  axioms <=> Re = 1/2), so the inverse theory's real content is constraining where polarization
+  can originate. Dictionary: the UV model = the universal cover (tree) of the arithmetic
+  situation; N5 says the comparison cannot be trace-class.
+- ULF-INV-2 frozen: the amplification gap — prove the certified caps' hypotheses exclude
+  family/tensor-amplified engines (the hatch every solved world used), or extend the caps to
+  families (a new wall). Either outcome is new knowledge.

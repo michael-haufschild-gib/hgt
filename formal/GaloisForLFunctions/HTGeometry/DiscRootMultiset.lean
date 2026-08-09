@@ -11,7 +11,8 @@ to elementary symmetric functions of a multiset.
 
 * `HTGeometry.multisetOfFinsetMultiplicities` and its power sums;
 * `HTGeometry.multisetLinearProd` and its expansion in the elementary symmetric functions;
-* `HTGeometry.exists_rootMultiset`, `HTGeometry.exists_rootMultiset_factorization`.
+* `HTGeometry.exists_rootMultiset`, `HTGeometry.exists_rootMultiset_factorization`;
+* `HTGeometry.multisetLinearProd_eq_monic`, `HTGeometry.multisetLinearProd_eq_zero_iff`.
 -/
 
 open Complex Metric Polynomial
@@ -75,6 +76,22 @@ theorem multisetLinearProd_eq_sum (M : Multiset ℂ) (z : ℂ) :
     omega
   rw [hP, Multiset.prod_X_sub_C_coeff M hjle]
 
+/-- **The product of linear factors is monic of degree the cardinality.**  Splitting off the top
+term of the expansion leaves `z^k` with coefficient one, since the zeroth elementary symmetric
+function is `1`. -/
+theorem multisetLinearProd_eq_monic (M : Multiset ℂ) (z : ℂ) :
+    multisetLinearProd M z
+      = z ^ Multiset.card M
+        + ∑ j ∈ Finset.range (Multiset.card M),
+            (-1) ^ (Multiset.card M - j) * M.esymm (Multiset.card M - j) * z ^ j := by
+  rw [multisetLinearProd_eq_sum, Finset.sum_range_succ]
+  have htop : (-1 : ℂ) ^ (Multiset.card M - Multiset.card M)
+      * M.esymm (Multiset.card M - Multiset.card M) * z ^ Multiset.card M
+      = z ^ Multiset.card M := by
+    simp [Multiset.esymm]
+  rw [htop]
+  ring
+
 /-- The linear product of an assembled multiset is the product of the powers. -/
 theorem multisetLinearProd_multisetOfFinsetMultiplicities (s : Finset ℂ) (m : ℂ → ℕ) (z : ℂ) :
     multisetLinearProd (multisetOfFinsetMultiplicities s m) z = ∏ u ∈ s, (z - u) ^ m u := by
@@ -94,6 +111,20 @@ theorem continuous_multisetLinearProd (M : Multiset ℂ) : Continuous (multisetL
     exact multisetLinearProd_eq_sum M z
   rw [heq]
   exact continuous_finsetSum _ fun j _ => by fun_prop
+
+/-- **The product of linear factors vanishes exactly on the multiset.** -/
+theorem multisetLinearProd_eq_zero_iff (M : Multiset ℂ) (z : ℂ) :
+    multisetLinearProd M z = 0 ↔ z ∈ M := by
+  rw [multisetLinearProd, Multiset.prod_eq_zero_iff, Multiset.mem_map]
+  constructor
+  · rintro ⟨r, hr, hzr⟩
+    have hz : z = r := by
+      have h0 : z - r = 0 := hzr
+      linear_combination h0
+    rw [hz]
+    exact hr
+  · intro hz
+    exact ⟨z, hz, sub_self z⟩
 
 /-- A product of linear factors does not vanish outside the base points. -/
 theorem multisetLinearProd_ne_zero {M : Multiset ℂ} {t : ℝ} (hM : ∀ u ∈ M, ‖u‖ < t)

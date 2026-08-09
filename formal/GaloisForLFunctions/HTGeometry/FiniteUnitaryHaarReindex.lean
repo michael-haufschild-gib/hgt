@@ -29,9 +29,12 @@ def unitaryGroupReindex (e : κ ≃ κ') :
     have hstar : star (Matrix.reindexAlgEquiv ℂ ℂ e (U : Matrix κ κ ℂ))
         = Matrix.reindexAlgEquiv ℂ ℂ e (star (U : Matrix κ κ ℂ)) := rfl
     rw [hstar, ← map_mul, Matrix.mem_unitaryGroup_iff.mp U.2, map_one]⟩
-  map_one' := Subtype.ext (by simpa using map_one (Matrix.reindexAlgEquiv ℂ ℂ e))
-  map_mul' U V := Subtype.ext (by simpa using map_mul (Matrix.reindexAlgEquiv ℂ ℂ e)
-    (U : Matrix κ κ ℂ) (V : Matrix κ κ ℂ))
+  map_one' := by
+    apply Subtype.ext
+    simp
+  map_mul' U V := by
+    apply Subtype.ext
+    simp
 
 theorem unitaryGroupReindex_coe (e : κ ≃ κ') (U : Matrix.unitaryGroup κ ℂ) (i j : κ') :
     ((unitaryGroupReindex e U : Matrix.unitaryGroup κ' ℂ) : Matrix κ' κ' ℂ) i j
@@ -47,13 +50,15 @@ theorem unitaryGroupReindex_symm_apply (e : κ ≃ κ') (U : Matrix.unitaryGroup
     unitaryGroupReindex e.symm (unitaryGroupReindex e U) = U := by
   apply Subtype.ext
   ext i j
-  rfl
+  rw [unitaryGroupReindex_coe, unitaryGroupReindex_coe]
+  simp
 
 theorem unitaryGroupReindex_apply_symm (e : κ ≃ κ') (V : Matrix.unitaryGroup κ' ℂ) :
     unitaryGroupReindex e (unitaryGroupReindex e.symm V) = V := by
   apply Subtype.ext
   ext i j
-  rfl
+  rw [unitaryGroupReindex_coe, unitaryGroupReindex_coe]
+  simp
 
 theorem surjective_unitaryGroupReindex (e : κ ≃ κ') :
     Function.Surjective (unitaryGroupReindex e) :=
@@ -65,6 +70,13 @@ theorem measurePreserving_unitaryGroupReindex (e : κ ≃ κ') :
   have hcont : Continuous (unitaryGroupReindex e) := continuous_unitaryGroupReindex e
   have hmeas : Measurable (unitaryGroupReindex e) := hcont.measurable
   refine ⟨hmeas, ?_⟩
+  haveI : IsHaarMeasure (finiteUnitaryHaar κ) := by
+    unfold finiteUnitaryHaar
+    infer_instance
+  haveI hsc : SecondCountableTopology (Matrix κ' κ' ℂ) :=
+    (inferInstance : SecondCountableTopology (κ' → κ' → ℂ))
+  haveI hsc2 : SecondCountableTopology (Matrix.unitaryGroup κ' ℂ) :=
+    TopologicalSpace.Subtype.secondCountableTopology _
   haveI : IsHaarMeasure (Measure.map (unitaryGroupReindex e) (finiteUnitaryHaar κ)) := by
     refine Measure.isHaarMeasure_map (finiteUnitaryHaar κ) (unitaryGroupReindex e) hcont
       (surjective_unitaryGroupReindex e) ?_
@@ -74,7 +86,7 @@ theorem measurePreserving_unitaryGroupReindex (e : κ ≃ κ') :
   have huniq := Measure.haarMeasure_unique
     (Measure.map (unitaryGroupReindex e) (finiteUnitaryHaar κ))
     (⟨⟨Set.univ, isCompact_univ⟩, by simp⟩ : PositiveCompacts (Matrix.unitaryGroup κ' ℂ))
-  rw [measure_univ, one_smul] at huniq
+  simp only [PositiveCompacts.coe_mk, Compacts.coe_mk, measure_univ, one_smul] at huniq
   exact huniq
 
 /-- Every Haar integral is computed on any index type of the same cardinality. -/

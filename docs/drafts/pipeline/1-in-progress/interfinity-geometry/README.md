@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Program card:** `interfinity-geometry-program.md`
-- **Paper-proof folder:** `../../2-fully-proven/interfinity-geometry/`
+- **Paper-proof folder:** `../../3-formalized/interfinity-geometry/`
 - **Lean status:** no Lean written or built in this research task
 
 This folder contains only open program synthesis, hostile novelty/significance review, failed

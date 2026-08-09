@@ -1,8 +1,8 @@
 # Mass-shifted fixed-corona polarized landing boundary
 
 - **ID:** MSST-FCPL-1
-- **Stage:** 2-fully-proven
-- **Type:** FALSIFIED / THEOREM (paper; Lean source complete, certification pending)
+- **Stage:** 3-formalized
+- **Type:** FALSIFIED / THEOREM (paper and Lean 4)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` §9.3, following conjectures
   34--36 and imported finite/global observer-boundary results
 - **Statement:** Product-continuous Hausdorff linear reporters on the fixed Gamma corona vanish;
@@ -21,7 +21,7 @@ all but the still-missing adaptive landing.
 
 - [x] 0 → 1  in-progress: fixed corona, canonical lift, critical response, and reflection fixed
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: targeted module build and axiom audit pending
+- [x] 2 → 3  formalized: targeted module build and axiom audit pass
 - [ ] 3 → 4  publication-ready: standalone paper not claimed
 
 ## Approach
@@ -112,12 +112,19 @@ fixed linear reporting is now excluded.
   complete but topologically nonobservable source signature. RH-facing information survives only
   after odd-by-odd polarization and must cross a nonproduct/admission-sensitive bilinear landing
   before finite Hankel observation.
-- **Status:** Paper proof dependency-closed. Lean source is
-  `RHTower/XiShiftedHankelBoundaryCoronaLandingNoGo.lean`; direct `lake env lean` passes. Targeted
-  build and axiom audit remain before Stage 3 promotion.
+- **Status:** Paper proof dependency-closed and formalized unconditionally in
+  `RHTower/XiShiftedHankelBoundaryCoronaLandingNoGo.lean`. Direct `lake env lean` and targeted
+  `lake build GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryCoronaLandingNoGo` pass. Capstone
+  axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. Repository lint reaches
+  this module through the `RHTower` umbrella; its only errors are four unrelated concurrent
+  unwired modules (`BurnolReflectedBoundary`, `FiniteUnitaryHaarReindex`,
+  `RungeInterfaceDischarge`, and `SeparableBuresPositiveReporterLaw`).
 
 ## Log
 
 - 2026-08-09 — conjectures 37--40 attacked. Product-continuous landing falsified; oriented
   lifetime injectivity, reflection cancellation, canonical harmonic-ray polarization, finite
   no-shorting, and topology separation proved on paper and in Lean source.
+- 2026-08-09 — targeted build passed (11,355 jobs). Five capstone declarations audited with only
+  `propext`, `Classical.choice`, and `Quot.sound`; promoted to Stage 3. Global lint failure is
+  isolated to four unrelated umbrella omissions and does not involve this module.

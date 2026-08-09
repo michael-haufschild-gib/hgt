@@ -65,10 +65,7 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 /goal
 
 formalize UNCONDITIONALLY in lean any proven theorem for:
-- docs/drafts/pipeline/2-fully-proven/one-replica-local-pauli-planar-cavity-decay.md
-- docs/drafts/pipeline/2-fully-proven/radial-krylov-projected-complete-incidence-law.md
-- docs/drafts/pipeline/2-fully-proven/bures-incidence-minimax-coarea-law.md
-- docs/drafts/pipeline/2-fully-proven/positive-shell-koszul-cartier-obstruction-reciprocity.md
+- docs/drafts/pipeline/2-fully-proven/universal-law-field/abelian-zeta-gas-two-observable-divisor-dictionary-and-condensation-wall-law.md
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done - no simplifications.
 
@@ -397,3 +394,8 @@ Using the hgtl7 skill and the HTGeometry / RhTower lean corpus, create a genuine
 Audit Lean corpus without writing or building Lean; search broad current arXiv literature; pivot aggressively; subject every claim to hostile novelty, correctness, and significance review. Put this research program's cards in dedicated subfolders under pipeline 1 and pipeline 2, promote only dependency-closed unconditional paper proofs, record failed routes and positive survivors, and do not mark the goal complete while the work remains merely explanatory. Completion requires that exhaustive hostile review finds no further meaningful conjecture, proof attack, salvage, or pivot capable of adding new knowledge to the topic.
 
 prior research: docs/drafts/pipeline/2-fully-proven/universal-law-field
+
+
+
+### mathematician
+how would a fields medal mathematician approach this problem? what our corpus is, is technically decades of research with a lot of minor advancements beyond current sota research by other researchers. but the mathematician sees that all routes get stuck sooner or later, that something is missing, that they are looking at the problem from the wrong point of view and there must be some higher mathematical theory in play that is not yet known to humanity. how would they approach finding this higher mathematical theory? what questions would they ask? what research would they do? what would they do?

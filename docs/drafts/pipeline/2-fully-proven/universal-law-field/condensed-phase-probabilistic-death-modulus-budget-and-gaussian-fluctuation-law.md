@@ -167,18 +167,15 @@ as \(\sigma\downarrow\tfrac12\) are explicit-formula statements about zeros; by 
 test (`route-test-unconditional-and-divisor-sensitive`) and the envelope/modulus no-gos, no RH
 leverage is claimed from this bridge.
 
-## 3. Gaussian fluctuation law of the condensed phase
+## 3. Fluctuation laws of the condensed phase: Gaussian interior, Dickman wall
 
-### Theorem 3.1 — unconditional CLT with polynomial variance
+### Theorem 3.1 — unconditional CLT strictly inside the condensed chamber
 
-Fix \(\tfrac12<\sigma\le1\). Then \(s_P^2:=\operatorname{Var}(S_P)\to\infty\), with
+Fix \(\tfrac12<\sigma<1\). Then \(s_P^2:=\operatorname{Var}(S_P)\to\infty\), with
 
 \[
 s_P^2=(1+o(1))\,\sigma^2\!\!\sum_{p\le P}p^{-\sigma}\log^2p
-=\begin{cases}
-(1+o(1))\,\dfrac{\sigma^2}{1-\sigma}\,P^{1-\sigma}\log P, & \tfrac12<\sigma<1,\\[2mm]
-(\tfrac12+o(1))\log^2P, & \sigma=1,
-\end{cases}
+=(1+o(1))\,\frac{\sigma^2}{1-\sigma}\,P^{1-\sigma}\log P,
 \tag{GAS3.4}
 \]
 
@@ -194,9 +191,9 @@ and
 Per prime, \(\operatorname{Var}(\xi_p)=\sigma^2\log^2p\,\operatorname{Var}(N_p)\), and
 \(\operatorname{Var}(N_p)=q_p+O(q_p^2)\) from the geometric mode decomposition
 (\(\operatorname{Var}(N_p)=\sum_j\tilde q_{p,j}/(1-\tilde q_{p,j})^2\) with
-\(\tilde q_{p,j}=p^{-j\sigma}\)). The stated asymptotics follow by partial summation from the
-prime number theorem (\(\sigma<1\)) and from Mertens-type sums (\(\sigma=1\)); divergence itself
-already follows from Chebyshev bounds. For Lindeberg's condition: for any \(\varepsilon>0\),
+\(\tilde q_{p,j}=p^{-j\sigma}\)). The stated asymptotic follows by partial summation from the
+prime number theorem; divergence itself already follows from Chebyshev bounds. For Lindeberg's
+condition: for any \(\varepsilon>0\),
 
 \[
 \frac1{s_P^2}\sum_{p\le P}
@@ -208,17 +205,66 @@ already follows from Chebyshev bounds. For Lindeberg's condition: for any \(\var
 
 and the geometric tail \(\mathbb P(N_p\ge n)\le q_p^{\,n}(q_p;q_p)_\infty^{-1}\le Cq_p^{\,n}\)
 gives \(\mathbb E[N_p^2\mathbf 1_{N_p>K}]\le C'K^2q_p^{K}\) for \(K\ge1\). Since
-\(s_P/\log P\to\infty\) in both regimes of (GAS3.4), the truncation level
-\(K_p=\varepsilon s_P/(2\sigma\log p)\ge\varepsilon s_P/(2\sigma\log P)\to\infty\) uniformly, so
-each expectation is \(O(K_p^2 2^{-K_p})\) and the whole sum is \(o(1)\). Lindeberg–Feller applies.
-QED.
+\(\sigma<1\) makes \(s_P/\log P\asymp P^{(1-\sigma)/2}/(\log P)^{1/2}\to\infty\), the truncation
+level \(K_p=\varepsilon s_P/(2\sigma\log p)\ge\varepsilon s_P/(2\sigma\log P)\to\infty\)
+uniformly, so each expectation is \(O(K_p^2 2^{-K_p})\) and the whole sum is \(o(1)\).
+Lindeberg–Feller applies. QED.
 
-The condensed phase is thus not lawless: it has an exact Gaussian fluctuation regime with
-polynomial (not iterated-logarithmic) variance. In particular it is **not** the Selberg
-\(\log|\zeta(\tfrac12+it)|\) random model, whose variance is \(\sim\tfrac12\log\log\): the gas
-fluctuations live in a different scaling class, and no coupling to Selberg's CLT is claimed. (A
-draft claim of such a coupling was made and killed during this cycle's hostile pass; recorded here
-so it is not re-attempted naively.)
+### Theorem 3.2 — Dickman law exactly at the wall
+
+At \(\sigma=1\) the Gaussian law fails and is replaced by a jump law: with
+\(W_P:=\dfrac1{\log P}\sum_{p\le P}N_p\log p\),
+
+\[
+\boxed{\;W_P\;\Longrightarrow\;\mathcal D,\qquad
+\log\mathbb E\,e^{i\theta\mathcal D}=\int_0^1\bigl(e^{i\theta u}-1\bigr)\frac{du}{u},\;}
+\tag{GAS3.6}
+\]
+
+the Dickman infinitely divisible law (Lévy measure \(u^{-1}du\) on \((0,1]\)). In particular
+\((S_P-\mathbb E S_P)/s_P\) does **not** converge to a Gaussian at \(\sigma=1\): a first version
+of this card claimed a joint CLT for \(\tfrac12<\sigma\le1\); that claim is FALSE at the endpoint
+— Lindeberg fails because primes in \((P^{1-\delta},P]\) contribute a non-vanishing fraction of
+the variance through single jumps of macroscopic size \(\asymp\log P\asymp s_P\).
+
+#### Proof
+
+At \(\sigma=1\), \(\mathbb E[y^{N_p}]=\prod_j(1-p^{-j})/(1-yp^{-j})\), so with
+\(y=e^{i\theta\log p/\log P}\),
+
+\[
+\log\mathbb E\,e^{i\theta W_P}
+=\sum_{p\le P}\Bigl[\frac{e^{i\theta u_p}-1}{p}+O\!\Bigl(\frac1{p^2}\Bigr)\Bigr],
+\qquad u_p=\frac{\log p}{\log P}\in(0,1],
+\]
+
+uniformly in \(\theta\) on compacts (expand the depth-one factor to first order in \(1/p\); all
+depth-\(\ge2\) factors and higher-order terms contribute the absolutely convergent \(O(p^{-2})\)).
+By Mertens' theorem, \(d(\sum_{p\le x}1/p)=\frac{d\log x}{\log x}(1+o(1))\), so partial summation
+gives
+
+\[
+\sum_{p\le P}\frac{e^{i\theta u_p}-1}{p}
+\longrightarrow\int_0^1\bigl(e^{i\theta u}-1\bigr)\frac{du}{u}.
+\]
+
+Lévy continuity yields (GAS3.6). Failure of the CLT: the limit is non-Gaussian (its Lévy measure
+is nonzero). The Lindeberg diagnosis: at \(\sigma=1\),
+\(s_P^2\sim\tfrac12\log^2P\) (Mertens-type partial summation of \(\sum p^{-1}\log^2p\)), while for
+\(p\in(P^{1-\delta},P]\) a single occupation \(N_p\ge1\) (probability \(\asymp1/p\)) gives
+\(|\xi_p-\mathbb E\xi_p|\ge(1-\delta)\log P\ge\varepsilon s_P\); these primes alone contribute
+\(\asymp\delta\log^2P\) to the Lindeberg sum's numerator, which is \(\asymp\delta\), not
+\(o(1)\). QED.
+
+The corrected picture is sharper than the retracted claim: fluctuations are Gaussian strictly
+inside the condensed chamber and become the Dickman jump law **exactly at the depth-one
+condensation wall** — condensation manifests as macroscopic Poissonian jumps, which is the
+physically correct signature. Parents for the Dickman mechanism: Dickman (1930); the
+Poisson–Dirichlet/random-integer school (Billingsley; Arratia–Barbour–Tavaré; Cellarosi–Sinai);
+no novelty is claimed for the limit law itself, only for its exact placement at this gas's wall.
+The Selberg \(\log|\zeta(\tfrac12+it)|\) model (variance \(\sim\tfrac12\log\log\)) remains a
+different scaling class; no coupling to it is claimed (an earlier draft claim was killed in the
+hostile pass).
 
 ## 4. Verdict on ULF-GAS-2
 
@@ -266,3 +312,8 @@ NOT refrozen here without a new hunch-formation pass.
 
 - 2026-08-09 — created during the same session as ULF-GAS-1, by direct attack on ULF-GAS-2's open
   core; hunch falsified, survivors proved, over-claim (Selberg coupling) caught and recorded.
+- 2026-08-09 — ERRATUM (hostile re-audit after user challenge): the original Theorem 3.1 claimed
+  the CLT up to and including \(\sigma=1\); Lindeberg fails at the endpoint (macroscopic jumps
+  from the top decade of primes). Corrected: CLT strictly inside \(\tfrac12<\sigma<1\)
+  (Theorem 3.1), Dickman law at the wall (new Theorem 3.2, proved). The wall now carries the
+  correct jump-condensation fluctuation signature.

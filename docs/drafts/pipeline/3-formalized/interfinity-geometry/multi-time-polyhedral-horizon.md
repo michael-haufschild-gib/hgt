@@ -1,7 +1,7 @@
 # Multi-time polyhedral horizon
 
 - **ID:** `multi-time-polyhedral-horizon`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `../../1-in-progress/interfinity-geometry/interfinity-geometry-program.md` · Theorem
   XXIV
@@ -18,7 +18,7 @@ corner model with independent source times and all face conditions visible.
 
 - [x] 0 → 1 in-progress: tensor source and face-stability fixed
 - [x] 1 → 2 fully-proven: complete paper proof below
-- [ ] 2 → 3 formalized: no Lean work authorized in source task
+- [x] 2 → 3 formalized: `multi-time-polyhedral-horizon-formalized.md`
 - [ ] 3 → 4 publication-ready: program-level novelty audit remains open
 
 ## Setup

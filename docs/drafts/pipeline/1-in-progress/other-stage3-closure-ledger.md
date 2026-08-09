@@ -1254,3 +1254,137 @@ Two points the proof makes precise:
 With this the density side of `weighted-euler-tangent-global-graph-decoupling` is complete in the
 abstract: pair criterion, `ℓ¹` coefficient annihilator, closed-span converter, affine step, and now
 the flux-side annihilator.
+
+### The Runge interface is discharged
+
+`HTGeometry/RungeInterfaceDischarge.lean`, **`oneGeneratorRungeDense_holoAlgebra`**, unconditional
+and axiom-clean:
+
+```text
+OneGeneratorRungeDense ℂ holoAlgebra ⟨cauchyCoord a ha, cauchyCoord_mem_holoAlgebra ha⟩
+```
+
+The corpus's `Prop` interface — previously an assumed input in `RungeOneAtomAbsorption.lean`, and
+the representative there of "the classical one-coordinate Runge theorem" — is now a **theorem** for
+the Cauchy coordinate on the right half-plane.  Every consumer of that interface can be instantiated
+unconditionally.
+
+The subtype step is `closure_subtype` (`x ∈ closure s ↔ ↑x ∈ closure (val '' s)`) together with
+`AlgHom.map_adjoin` and `Subalgebra.coe_map`, which identify the image of the generated algebra with
+the generated algebra of the image.  The ambient had to be `holoAlgebra` as a type: in `C(↥H, ℂ)`
+the same statement is false.
+
+Thirteen modules, from the geometric series to the interface:
+
+```text
+CauchyKernelPolynomialApprox   DiscPolynomialDensity          CauchyCoordinateHalfPlane
+HalfPlaneSigmaCompact          RightHalfPlaneSpace            HolomorphicSubalgebra
+HalfPlaneRungeOneAtom          CompactOpenClosureCriterion    HalfPlaneRungeClosure
+CauchyCoordAnnihilator         RungeInterfaceDischarge
+```
+
+**Audit of the interface's witnesses.**  Before this pass the only realization of
+`OneGeneratorRungeDense` in the tree was `RungeDenseWitnesses.oneGeneratorRungeDense_of_adjoin_eq_top`
+— the *trivial* case where the adjoined subalgebra is already `⊤`, which is exactly the case the
+interface was introduced to avoid.  `oneGeneratorRungeDense_holoAlgebra` is therefore the first
+genuine analytic witness, and the interface is no longer an assumption anywhere it is used with the
+Cauchy coordinate on a half-plane.
+
+Recorded in memory as `runge-corpus-owned` with the three traps: the disc has no Runge content; the
+statement is containment and never equality in `C(↥H, ℂ)`; and `SigmaCompactSpace` on the half-plane
+subtype is not inferred even though local compactness is.
+
+**Stale-frontier update on `prime-euler-unit-tangent-completeness`.**  Its `2 → 3` gate says the
+arbitrary-convex-domain and global-quadrant statements "still require a formal Runge layer".  That
+layer now exists (`holo_mem_topologicalClosure_adjoin_cauchyCoord`,
+`eq_zero_of_forall_pow_cauchyCoord`, `oneGeneratorRungeDense_holoAlgebra`).
+
+But the card needs a *different* instance: the two-carrier separation — one analytic functional
+carried by two polynomially separable compacta is zero, by approximating `1` on one carrier and `0`
+on the other.  That is Runge for a compact set with connected complement, harder than the half-plane
+case.  Recorded on the card, together with which of the new bricks such a proof would reuse.
+
+### Lint-gate audit of this pass
+
+`scripts/formal_tools.py lint` reports exactly two errors, and **neither is from this work**:
+
+```text
+owned module unreachable from GaloisForLFunctions.RHTower:    RHTower.BurnolReflectedPotential
+owned module unreachable from GaloisForLFunctions.HTGeometry: HTGeometry.SeparableBuresPositiveReporterLaw
+```
+
+Both are other agents' modules, added concurrently and not yet wired into their umbrellas.  Left
+untouched: wiring another session's in-progress module is not this pass's business and risks
+colliding with an edit in flight.
+
+All forty-one modules added in this pass were checked individually against the two umbrellas and
+every one is wired:
+
+```text
+HTGeometry (30): CircleIntegralParamOpen, WeierstrassParamLogDeriv, WeightedArgumentPrincipleDisc,
+  DiscZeroFactorization, DiscRootMultiset, MultisetNewtonSolve, SliceRootHolomorphy, SliceRootCount,
+  WeierstrassPolynomial, SliceWeierstrassFactorization, SliceWeierstrassJoint, SliceWeierstrassUnit,
+  PolynomialDividedDifference, WeierstrassDivision, WeierstrassFactorGenus,
+  JointDenseOfVanishingDual, LocallyConvexDenseOfVanishingDual, LpSingleAnnihilator,
+  VanishingOnClosedSpan, CauchyKernelPolynomialApprox, DiscPolynomialDensity,
+  CauchyCoordinateHalfPlane, HalfPlaneSigmaCompact, RightHalfPlaneSpace, HolomorphicSubalgebra,
+  HalfPlaneRungeOneAtom, CompactOpenClosureCriterion, HalfPlaneRungeClosure, CauchyCoordAnnihilator,
+  RungeInterfaceDischarge
+RHTower (11): ZetaMomentBorelCoefficient, AlternatingSineGeometricSum, ZetaRealBound,
+  LambertQuadraticFactor, LambertSeriesConvergence, PowerLatticeLambertForm, PowerLatticeResidue,
+  PowerLatticeRamification, LambertSumHolomorphic, LambertTailHolomorphic,
+  WeightedEulerGrowingCarrierElimination
+```
+
+Every capstone in them reports `#print axioms` = `[propext, Classical.choice, Quot.sound]`; none
+contains `sorry`, `admit`, an added `axiom`, `opaque`, or `unsafe`.
+
+Siegel chain, next brick: `multisetLinearProd_eq_monic` — the Weierstrass polynomial is monic of
+degree `card M`, the top coefficient being `e_0 = 1`.  Unconditional and axiom-clean.  This is the
+distinguished-polynomial property, and the input to the uniqueness half of Weierstrass division: a
+remainder of degree below `card M` divisible by a monic polynomial of that degree must vanish.
+
+Siegel chain: `multisetLinearProd_eq_zero_iff` and `slice_eq_zero_iff_mem_sliceRoots` —
+`f (cons z y) = 0 ↔ z ∈ sliceRoots f t y` for `‖z‖ < t`.  Unconditional and axiom-clean.  This
+completes the identification of `sliceRoots` with the zero set of the slice: the multiset arrives
+from `Classical.choose` carrying only power-sum data, so its being the zero set is a theorem
+(uniqueness of a multiset from its power sums, plus the factorization), not a definition.
+
+Siegel chain: `divRem_eq_sum_range` — the remainder is `∑_{l < k} ρ_l(y)·z^l`, a polynomial of
+degree strictly below the divisor's, since its top coefficient vanishes.  Unconditional and
+axiom-clean.  With `multisetLinearProd_eq_monic` this puts the division theorem in its standard
+form: division by a *monic* polynomial of degree `k` with remainder of degree `< k`.
+
+Memory `weierstrass-preparation-corpus-owned` updated to cover division as well as preparation, with
+the four design points that are easy to get wrong (the unit is a contour integral not a quotient;
+`sliceRoots` carries only power-sum data by construction; the root count is the zeroth moment hence
+locally constant; the remainder comes from the divided difference).
+
+Siegel chain, uniqueness input: `HTGeometry/LowDegreeVanishing.lean`,
+**`coeff_eq_zero_of_eval_eq_zero_of_card`** — a coefficient family `a_0, …, a_{k−1}` whose
+polynomial function vanishes at `k` distinct points has every coefficient zero.  Unconditional and
+axiom-clean, from mathlib's `Polynomial.eq_zero_of_natDegree_lt_card_of_eval_eq_zero'`.
+
+Stated for the *coefficient family* rather than for a `Polynomial`, because that is the form a
+division remainder takes here — a finite sum whose coefficients are contour integrals.  Combined
+with `divRem_eq_sum_range` (degree `< k`) and `slice_eq_zero_iff_mem_sliceRoots` (the roots are the
+zeros) this gives uniqueness of the division whenever the `k` roots are distinct.
+
+The general case, roots with multiplicity, additionally needs "a holomorphic quotient forces
+vanishing to the full order at each root", i.e. an `analyticOrderAt` argument against the
+factorisation — the remaining gap in the uniqueness half.
+
+Siegel chain, uniqueness with multiplicity: **`eq_zero_of_multisetProd_dvd_of_natDegree_lt`** — a
+polynomial of degree below `card M`, divisible by `∏_{r ∈ M}(X − r)`, is zero.  Unconditional and
+axiom-clean.
+
+This supersedes the `analyticOrderAt` route I flagged as the remaining gap one entry earlier.  Once
+the statement is phrased as *divisibility* rather than as vanishing at points, multiplicity is
+already accounted for — `Polynomial.natDegree_multiset_prod_X_sub_C_eq_card` gives the divisor
+degree and `Polynomial.eq_zero_of_dvd_of_natDegree_lt` closes it.  No order-of-vanishing bookkeeping
+is needed at all.
+
+What the uniqueness half still needs is therefore only the passage from the *analytic* identity
+`r' − r = (q − q')·W` on the disc to *polynomial* divisibility of `r' − r` by `W` — i.e. that a
+rational function whose poles all lie inside the disc and which is holomorphic there is a
+polynomial.

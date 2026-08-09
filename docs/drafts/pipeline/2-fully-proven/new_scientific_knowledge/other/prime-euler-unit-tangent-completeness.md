@@ -762,3 +762,27 @@ invariant after the principal part is fixed, nor any continuous global regular-f
 the complete off-line divisor is fixed.  The surviving object is forced to be an
 arithmetic-at-infinity incidence class of `(source, global divisor)` rather than a local or
 whole-strip completed-flux equation.
+
+## 2026-08-09 — the Runge layer now exists in the corpus
+
+The `2 → 3` gate records that "the full arbitrary-convex-domain and global-quadrant statements still
+require a formal Runge layer".  That layer is no longer absent.  mathlib has no Runge in any form,
+but the corpus now proves, unconditionally and axiom-clean:
+
+- `HTGeometry.holo_mem_topologicalClosure_adjoin_cauchyCoord` — on the right half-plane every
+  holomorphic function lies in the compact-open closure of the polynomials in `z ↦ (z+a)⁻¹`;
+- `HTGeometry.eq_zero_of_forall_pow_cauchyCoord` — a continuous functional killing every power of
+  that coordinate kills every holomorphic function;
+- `HTGeometry.oneGeneratorRungeDense_holoAlgebra` — this discharges the corpus's interface
+  `OneGeneratorRungeDense`, which until now had only the trivial witness.
+
+What this card additionally needs is the **two-carrier separation** form used at `(the L + L# step)`:
+a single analytic functional carried by two polynomially separable compacta is zero, obtained by
+approximating `1` on one carrier and `0` on the other.  That is Runge for a compact set with
+connected complement, not the half-plane form above — a different, and harder, instance.
+
+The pieces already built that such a proof would reuse: `tendstoUniformlyOn_cauchyKernel_poly`
+(pole-pushing), `mem_topologicalClosure_of_forall_isCompact_approx` (approximation ⟹ closure), and
+the counterexample recorded with them — the contour functional annihilating every power of the
+coordinate — which shows why the target must always be stated inside a holomorphic algebra and never
+in `C(K, ℂ)`.

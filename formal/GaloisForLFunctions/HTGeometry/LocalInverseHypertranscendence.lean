@@ -170,7 +170,7 @@ section MeroLayer
 
 variable {V : Set ℂ}
 
-theorem analyticMeroElement_congr {f h : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f V)
+theorem analyticMeroElement_congr_localInverseHypertranscendence {f h : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f V)
     (hh : AnalyticOnNhd ℂ h V) (heq : Set.EqOn f h V) :
     analyticMeroElement f hf = analyticMeroElement h hh := by
   unfold analyticMeroElement
@@ -194,7 +194,7 @@ theorem analyticMeroElement_ne_zero (hVo : IsOpen V) (hVc : IsPreconnected V) (h
   rw [← Germ.coe_zero, Germ.coe_eq] at hgerm
   exact hfz (eventually_principal.mp hgerm z hz)
 
-theorem deriv_analyticMeroElement (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty)
+theorem deriv_analyticMeroElement_localInverseHypertranscendence (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty)
     {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f V) :
     letI := Bottcher.isDomain_analyticSubring V hVo hVc hVne
     letI := meroFieldDifferential hVo hVc hVne
@@ -343,7 +343,7 @@ theorem differentiallyAlgebraicOn_of_localInverse {U V : Set ℂ}
   have hgA : g ∈ A := subset_differentialAdjoin (RatFunc ℂ) _ rfl
   have hAclosed : DerivationClosed A := derivationClosed_differentialAdjoin (RatFunc ℂ) _
   set dG : meroField V := analyticMeroElement (deriv G) hG.deriv with hdGdef
-  have hgderiv : g′ = dG := deriv_analyticMeroElement hVo hVc hVne hG
+  have hgderiv : g′ = dG := deriv_analyticMeroElement_localInverseHypertranscendence hVo hVc hVne hG
   have hdGA : dG ∈ A := hgderiv ▸ hAclosed hgA
   have hdGne : dG ≠ 0 := by
     obtain ⟨w, hw⟩ := id hVne
@@ -358,7 +358,7 @@ theorem differentiallyAlgebraicOn_of_localInverse {U V : Set ℂ}
         have h0 : analyticMeroElement (inverseJet F G 0)
             (analyticOnNhd_inverseJet hF hG hGV 0)
             = ratfuncToMero V hVo hVc hVne hVinf RatFunc.X := by
-          rw [analyticMeroElement_congr (analyticOnNhd_inverseJet hF hG hGV 0)
+          rw [analyticMeroElement_congr_localInverseHypertranscendence (analyticOnNhd_inverseJet hF hG hGV 0)
             (analyticOnNhd_id (𝕜 := ℂ) (s := V)) (inverseJet_zero_eqOn hFG)]
           exact analyticMeroElement_id hVo hVc hVne hVinf
         rw [h0]
@@ -368,9 +368,9 @@ theorem differentiallyAlgebraicOn_of_localInverse {U V : Set ℂ}
               (analyticOnNhd_inverseJet hF hG hGV k))′
             = analyticMeroElement (inverseJet F G (k + 1))
                 (analyticOnNhd_inverseJet hF hG hGV (k + 1)) * dG := by
-          rw [deriv_analyticMeroElement hVo hVc hVne
+          rw [deriv_analyticMeroElement_localInverseHypertranscendence hVo hVc hVne
             (analyticOnNhd_inverseJet hF hG hGV k)]
-          rw [analyticMeroElement_congr (analyticOnNhd_inverseJet hF hG hGV k).deriv
+          rw [analyticMeroElement_congr_localInverseHypertranscendence (analyticOnNhd_inverseJet hF hG hGV k).deriv
             (((analyticOnNhd_inverseJet hF hG hGV (k + 1)).mul hG.deriv))
             (fun w hw => deriv_inverseJet hF hG hGV k hw)]
           exact analyticMeroElement_mul _ _

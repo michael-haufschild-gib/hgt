@@ -531,6 +531,8 @@ Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallRe
 | `(15b)` | `integral_burnolReflectedRawSource_cpow`, `integrableOn_burnolReflectedRawSource_cpow`, `xiDivisor_integral_burnolReflectedKernel_eq_zero` |
 | `(16)` reflected | `burnolAlternatingHarmonic_two_mul`, `burnolAlternatingHarmonic_eq`, `abs_burnolAltTail_sub_le`, `integral_burnolReflectedRawSource_eq`, `abs_burnolReflectedTruncMass_add_half_le`, `tendsto_integral_burnolReflectedRawSource` |
 | reflected primitive | `burnolReflectedSourceRC`, `burnolReflectedSourceRC_ae`, `continuousWithinAt_burnolReflectedSourceRC`, `burnolReflectedTruncMass_eq_integral`, `hasDerivWithinAt_burnolReflectedTruncMass` |
+| `(10)`, `(11)`, `(23)` reflected | `burnolReflectedHeadRC`, `burnolReflectedPotential`, `hasDerivWithinAt_burnolReflectedPotential`, `xiDivisor_integral_burnolReflectedDividedSource`, `integrableOn_burnolReflectedDividedSource`, `xiDivisor_integral_burnolReflectedDividedSource_Ioi`, `xiDivisor_integral_burnolReflectedDividedSource_aperture`, `xiDivisor_integral_burnolReflectedDividedSource_exterior`, `xiDivisor_tendsto_burnolFirstWallCosineResidue` |
+| reflected boundary | `burnolReflectedShiftedMass`, `abs_burnolReflectedShiftedMass_le`, `tendsto_burnolReflectedShiftedMass`, `burnolReflectedKernelRC`, `burnolReflectedShiftedKernel`, `integral_burnolReflectedKernelRC_byParts`, `integral_burnolReflectedKernelRC_Ioi`, `tendsto_burnolReflectedBoundary` |
 | `(15c)` | `burnolReflectedKernel`, `burnolReflectedDividedSource`, `xiDivisor_integral_burnolReflectedKernel_Ioc`, `xiDivisor_burnolReflectedDividedSource_eq_tail` |
 | `(9)` reflected head `b_ρ` | `burnolReflectedDividedSource_head`, `burnolReflectedDividedSource_apertureHead` |
 
@@ -653,14 +655,51 @@ Next, in order:
    `burnolReflectedTruncMass_eq_integral` identifies the staircase with
    `∫_0^T burnolReflectedSourceRC`, and `hasDerivWithinAt_burnolReflectedTruncMass` is the
    resulting FTC-1 right derivative.  Step 1 is complete.
-2. **The boundary term.**  Integration by parts against `A^vee` gives
+2. **The boundary term.**  *(BUILT: `RHTower/BurnolReflectedBoundary`,
+   `tendsto_burnolReflectedBoundary`.)*  Integration by parts against `A^vee` gives
    `T^{1-ρ} ∫_0^T f_0^vee(y) y^{ρ-1} dy = (L - A^vee(T)) + (1-ρ) T^{1-ρ} ∫_T^∞ (A^vee - L) y^{-(1-ρ)-1} dy`
    with `L = -1/2`; the second term is bounded by `|1-ρ| (1-σ)^{-1} sup_{y ≥ T} |A^vee(y) - L|`,
    which tends to zero by step 0's `|A^vee(R) + 1/2| ≤ 1/(R-1)`.  Hence the boundary term vanishes.
-3. **The reflected potential.**  `Ψ(T) = A^vee(T)/(1-ρ) - T^{1-ρ} Head^vee(T)/(1-ρ)` has
-   `Ψ' = -C g_ρ` and `Ψ(0) = 0`, so `∫_0^T C g_ρ = -Ψ(T) → 1/(2(1-ρ)) = a_ρ/2`.  This is `(10)`.
-4. `(11)`: `B_ρ^vee = a_ρ/2 - b_ρ/2 = -B_ρ`.
-5. `(23)` reflected: instantiate `tendsto_burnolCrossingResidue` with
-   `burnolReflectedDividedSource_apertureHead` and the exterior mass from step 4.
+3. **The reflected potential.**  *(BUILT: `RHTower/BurnolReflectedPotential`.)*
+   `xiDivisor_integral_burnolReflectedDividedSource` and
+   `xiDivisor_integral_burnolReflectedDividedSource_Ioi` give `(10)`.
+4. `(11)`: *(BUILT)* `xiDivisor_integral_burnolReflectedDividedSource_exterior`.
+5. `(23)` reflected: *(BUILT)* `xiDivisor_tendsto_burnolFirstWallCosineResidue`.
 6. Card `burnol-gamma-bockstein-first-wall-extraction-law` `(13)`, `(15)`, `(16)`, `(22)` then
    follow from steps 5 and `xiDivisor_tendsto_burnolCrossingDepthProfile`.
+
+## The dominated-convergence layer (`RHTower/BurnolBocksteinLimit`)
+
+Built:
+
+- `burnolCrossingWeight_eq_indicator_neg`, `burnolCrossingCorrelationW_eq_window_neg`,
+  `burnolCrossingCorrelationW_eq_of_head_neg` — for **negative** lag the collapse runs the other
+  way, the head sitting at the shifted argument:
+  `W_G(s) = conj(c) e^{s/2} ∫_{1/2}^{e^{-s}/2} g`.
+- `burnolCrossingCorrelationW_zero` — `W_G(0) = 0`.
+- **`norm_burnolCrossingCorrelationW_le`** — the uniform bound
+  `‖W_G(s)‖ ≤ ‖c‖ M e^{-s/2}` with `M = ∫_{1/2}^∞ ‖g‖`, valid for every real `s`.
+  Consequently `‖q^{-n} W_G(nL+r)‖ = e^{(s-r)/2}‖W_G(s)‖ ≤ ‖c‖ M e^{-r/2}` **uniformly in `n`**;
+  no `L^2` theory and no Cauchy--Schwarz is needed.
+
+Remaining in this layer:
+
+1. `Integrable (fun r => burnolBocksteinKernel r * exp (-r/2))`.  With `z = π e^{-2r}` the
+   integrand is `2z(3z-4) · 2 e^{-r} e^{-z}`.  For `r ≥ 0` one has `z ≤ π`, so it is at most
+   `2π(3π+4)·2 e^{-r}`.  For `r ≤ 0` one has `z ≥ π`, `e^{-r} = (z/π)^{1/2} ≤ z`, so it is at most
+   `28 z^3 e^{-z} ≤ 28 · (sup_{z ≥ π} z^4 e^{-z}) / z = C e^{2r}/π`.  Both halves are dominated by
+   `K e^{-|r|}`.
+2. `tendsto_burnolCrossingDepthProfile` for an arbitrary aperture-constant `g` (the `ρ`-specific
+   version `xiDivisor_tendsto_burnolCrossingDepthProfile` is already built; generalise it exactly
+   as `tendsto_burnolCrossingResidue` generalises the residue).
+3. `MeasureTheory.tendsto_integral_of_dominated_convergence` with majorant
+   `‖c‖ M e^{-r/2} |κ̇(r)|` gives the Bockstein limit
+   `𝔅_n(G) = 2 q^{-n} ∫ κ̇(r) W_G(nL+r) dr → 2 Res_{1/2}(G) ∫ κ̇ e^{-r/2} = Res_{1/2}(G)`
+   using `integral_burnolBocksteinKernel_mul_mode`.  This is card 4 `(13)`/`(15)`.
+4. The same dominated convergence against `κ_*` instead of `κ̇`, together with
+   `integral_burnolCollarKernel_mul_mode` (`∫ κ_* e^{-r/2} = 0`), gives
+   `q^{-2n} Q_n → 0`, i.e. `(30)`; and Corollary 5 follows because the limit profile
+   `r_ρ e^{-r/2}` is nonconstant and `r_ρ ≠ 0` (`burnolFirstWallExteriorMass_ne_zero`).
+5. Card 4 `(16)` is then `burnolFirstWallResidue_sub_cosineResidue_re_eq_headFlux` applied to the
+   two Bockstein limits, and `(22)` combines it with
+   `burnolApertureCommutator_normSq_difference`.

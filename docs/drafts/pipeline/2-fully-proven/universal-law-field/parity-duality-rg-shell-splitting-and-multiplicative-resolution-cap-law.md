@@ -8,9 +8,10 @@
 - **Statement:** The abelian zeta gas carries the parity organ natively: the parity mass is
   \(Z(2\sigma)/Z(\sigma)^2\); the fermionic (distinct-factor) companion gas is observationally
   identical to the odd-depth bosonic sector on the order organ (Euler's distinct=odd identity at
-  the level of laws) and is separated from it by the socle organ; the condensation fan splits into
-  RG-odd (fermionic) and RG-even (square) shells, so the critical abscissa is the
-  \(\delta_2\)-image of the pole wall and is invisible to the fermionic sector; and every Markov
+  the level of laws) and is separated from it by the socle organ; the bosonic condensation fan splits into
+  odd and even (\(\delta_2\)-image) shells, so the critical abscissa is the
+  \(\delta_2\)-image of the pole wall, absent from the odd shell and from the fermionic order
+  organ (not from the fermionic mode field); and every Markov
   certificate from the solvable tilt cone is multiplicatively coarse, so the short-interval
   (Route-E/MR-type) events, though exactly expressible as gas probabilities, are undecidable by
   the solvable organ cone.
@@ -82,10 +83,10 @@ function is \(Z_F(\sigma)=\prod_{p,j}(1+p^{-j\sigma})=\prod_{j\ge1}\zeta(j\sigma
 
    where \(\mathbb P^{B,\mathrm{odd}}\) is the bosonic gas restricted to odd depths; hence the
    full laws of \(|A|\) agree at every \(\sigma\).
-3. The **socle organ separates them**: the number-of-factors laws differ already at order
-   \(p^3\), where the fermionic sector realizes factor counts \(\{1,2\}\)
-   (partitions \(\{3\},\{2,1\}\)) and the odd-depth sector realizes \(\{1,3\}\)
-   (partitions \(\{3\},\{1,1,1\}\)).
+3. The **socle organ separates them**, deterministically, already at order \(p^2\): conditional
+   on \(v_p(|A|)=2\), the fermionic sector realizes only \(\mathbb Z/p^2\) (one cyclic factor;
+   the unique distinct-part partition of \(2\)), while the odd-depth sector realizes only
+   \((\mathbb Z/p)^2\) (two factors; the unique odd-part partition of \(2\)).
 
 #### Proof
 
@@ -95,10 +96,10 @@ rearrangement. For item 2, the unnormalized mass of \(\{v_p(|A|)=k\}\) is \(x^k\
 of admissible depth-multisets summing to \(k\): partitions of \(k\) into **distinct** parts
 (fermionic) versus partitions into **odd** parts (odd-depth bosonic); these counts are equal for
 every \(k\) — Euler's partition theorem — and the normalizations agree by item 1, so the laws
-agree; independence over \(p\) finishes. For item 3, the listed partitions of \(3\) have part
-counts \(\{1,2\}\) (distinct) versus \(\{1,3\}\) (odd), so already the parity of the factor count
-at \(p^3\) has different laws; both sides are explicit finite rational functions of
-\(p^{-\sigma}\), unequal for every \(\sigma>0\). QED.
+agree; independence over \(p\) finishes. For item 3: the only partition of \(2\) into distinct
+parts is \(\{2\}\) and the only partition into odd parts is \(\{1,1\}\); the conditional
+factor-count laws at \(v_p=2\) are the point masses at \(1\) and at \(2\) respectively, and the
+conditioning event has positive probability on both sides. QED.
 
 This is an exact arithmetic instance of the certified intervention-separation phenomenon
 (ULF-CFL-1, `ConstitutiveInterventionSeparation`): two nonisomorphic sources — one with exclusion,
@@ -107,21 +108,33 @@ hence on the entire dilation divisor calculus) and are separated by another orga
 Passive observation of the order observable can never distinguish exclusion statistics from
 odd-depth statistics; the socle observer is the separating intervention.
 
-### Corollary 2.2 — RG-shell splitting and the invisible critical wall
+### Corollary 2.2 — RG-shell splitting of the bosonic fan, and what transfers to fermions
 
-The condensation fan \(\{1/g\}\) of ULF-GAS-1 splits along the boson/fermion decomposition:
+The statements below are about strata of the **bosonic** gas; the fermionic transfer is exactly
+the order-organ part, no more.
 
-- the fermionic (= odd-depth) sector has wall fan \(\{1,\tfrac13,\tfrac15,\dots\}\) — it **skips**
-  \(\tfrac12\);
-- the square (= even-depth) sector is \(\delta_2\) of the full gas, with wall fan
-  \(\{\tfrac12,\tfrac14,\dots\}\);
-- hence the critical abscissa is \(\tfrac12=\delta_2(1)\): the RG-double of the pole wall, carried
-  entirely by the square shell and invisible to the fermionic shell.
+1. The bosonic **odd-depth** subgas has mode-condensation fan \(\{1,\tfrac13,\tfrac15,\dots\}\);
+   the bosonic **even-depth** subgas is \(\delta_2\) of the full gas and has fan
+   \(\{\tfrac12,\tfrac14,\dots\}\). Hence the critical abscissa is \(\tfrac12=\delta_2(1)\): the
+   RG-double of the pole wall, carried by the even (square) shell and absent from the odd shell.
+2. By Theorem 2.1.2, every **order-organ** statement about the odd-depth subgas transfers
+   verbatim to the fermionic gas: its order law, its dilation calculus
+   \(\prod_{j\ \mathrm{odd}}\zeta(j(\sigma+u))/\zeta(j\sigma)\), and the location of its
+   order-realizability wall at \(\sigma=1\).
+3. **Warning (recorded to block an over-reading):** the fermionic gas's own *mode-activity* fan
+   is the full \(\{1/g\}\) — its depth-\(2\) Bernoulli modes condense at \(\sigma=\tfrac12\)
+   exactly as bosonic ones do (Borel–Cantelli as in ULF-GAS-1 Theorem 5.1, since
+   \(\mathbb P(g_{p,j}=1)=p^{-j\sigma}/(1+p^{-j\sigma})\asymp p^{-j\sigma}\)). The
+   "invisibility of \(\tfrac12\)" is a property of the odd-depth boson sector and of the
+   fermionic **order observable**, not of the fermionic mode field. A first version of this
+   corollary conflated the two; the conflation is an error and is retracted here.
 
 #### Proof
 
-Immediate from ULF-GAS-1 Theorems 5.1 and 7.1 applied to the odd- and even-depth mode subsets,
-plus Theorem 2.1.1. QED.
+Item 1 is ULF-GAS-1 Theorems 5.1 and 7.1 applied to the odd- and even-depth mode subsets. Item 2
+is Theorem 2.1.2 (equality of order laws transfers every functional of \(|A|\)). Item 3 is the
+Borel–Cantelli computation quoted, which depends only on the activity probabilities, identical up
+to bounded factors in the two gases. QED.
 
 ## 3. Multiplicative resolution cap of the solvable organ cone
 
@@ -196,8 +209,9 @@ Remarks, with hostile boundaries:
   separating organ (Theorem 2.1) — the certified intervention-separation law now has a canonical
   arithmetic instance inside the same source that carries the divisor calculi.
 - The critical abscissa acquires a second structural characterization: not only the squarefull
-  condensation wall (ULF-GAS-1) but the \(\delta_2\)-image of the pole wall, invisible to the
-  fermionic shell (Corollary 2.2).
+  condensation wall (ULF-GAS-1) but the \(\delta_2\)-image of the pole wall, absent from the
+  odd-depth boson shell and from the fermionic order organ (Corollary 2.2, with the mode-field
+  warning recorded there).
 - The boundary between the solvable organ algebra and the live Route-E wall is now a theorem
   (Theorem 3.1), not a narrative.
 
@@ -231,3 +245,8 @@ Remarks, with hostile boundaries:
 - 2026-08-09 — created in the same session as ULF-GAS-1/3, as the fresh hunch-formation pass
   demanded by the ULF-GAS-2 retirement; observational identity found and separated; resolution
   cap proved; no MR leverage claimed in either direction, now by theorem.
+- 2026-08-09 — ERRATUM (hostile re-audit after user challenge): Corollary 2.2 originally
+  attributed the odd wall fan to the fermionic gas itself; false — the fermionic mode field
+  condenses at \(\tfrac12\) like the bosonic one, and only order-organ statements transfer.
+  Corrected with an explicit warning item. Separation in Theorem 2.1.3 sharpened from \(p^3\) to
+  the deterministic \(p^2\) statement.

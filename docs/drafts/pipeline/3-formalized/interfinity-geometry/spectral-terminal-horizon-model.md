@@ -1,7 +1,7 @@
 # Spectral terminal-horizon model
 
 - **ID:** `spectral-terminal-horizon-model`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `../../1-in-progress/interfinity-geometry/interfinity-geometry-program.md` · Theorems
   IX, XI, XII, XV
@@ -18,7 +18,7 @@ residue, observer topology, and phase are provably different pieces of data.
 
 - [x] 0 → 1 in-progress: weighted model and observer scale fixed before computation
 - [x] 1 → 2 fully-proven: complete paper proof below
-- [ ] 2 → 3 formalized: no Lean work authorized in source task
+- [x] 2 → 3 formalized: `spectral-terminal-horizon-model-formalized.md`
 - [ ] 3 → 4 publication-ready: external priority review remains at program level
 
 ## Setup
