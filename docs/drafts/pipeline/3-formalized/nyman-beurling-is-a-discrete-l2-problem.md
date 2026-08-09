@@ -94,3 +94,23 @@ vendored `PNTPlus`), so supplying `M₁(N) → 0` is a follow-up rather than a n
 `M₁(N) → 0` the residual grows linearly in `n` while the weights decay like `1/n²`, so the undamped Möbius
 approximant does **not** converge. The classical remedy is Vasyunin-type damping of the coefficients; this
 identity is what any such analysis starts from.
+
+## Addendum 3 (same day): the residual off the range
+
+The previous addendum's identity holds on `[1,N]`, where `moebius_floor_summatory` evaluates the floor sum to
+`1`. `RHTower/TruncatedMoebiusResidual.lean` removes that restriction and identifies what replaces the `1`.
+
+* `moebius_residual_eq_general` — for **every** `n`,
+  `1 − ∑_{d ≤ N}(−μ(d))·g_d(n) = 1 − F_N(n) + n·M₁(N)`,  `F_N(n) = ∑_{d ≤ N} μ(d)⌊n/d⌋`.
+  (No hypothesis on `n`: the `n ≤ N` restriction was only used to evaluate `F_N`, and the case `n = 0` is
+  degenerate on both sides.)
+* `truncMoebiusDivisorSum N k = ∑_{d ∣ k, d ≤ N} μ(d)` — the **truncated Möbius divisor sum**;
+* `sum_moebius_floor_eq_sum_trunc` — counting multiples of `d` in `[1,n]` and swapping the summation order,
+  `F_N(n) = ∑_{k ≤ n} truncMoebiusDivisorSum N k`;
+* `truncMoebiusDivisorSum_of_le`, `sum_trunc_eq_one_of_le` — below the truncation the sum is the ordinary
+  Möbius divisor sum, hence `[k = 1]`, which recovers `F_N(n) = 1` for `n ≤ N` and the previous residual.
+
+So the convergence question for any Möbius-type approximant is exactly: **how large is
+`∑_{k ≤ n} truncMoebiusDivisorSum N k` for `n > N`?** That is the Selberg-sieve truncation object. Naming it
+is all this file does — the crude bound `|truncMoebiusDivisorSum N k| ≤ d(k)` gives `F_N(n) ≪ n log n`, which
+is useless here, and no estimate is attempted.

@@ -6387,3 +6387,4 @@ import GaloisForLFunctions.RHTower.BaezDuartePairingSeries
 import GaloisForLFunctions.RHTower.StepFunctionCarrier
 import GaloisForLFunctions.RHTower.ArithmeticEvaluationObstruction
 import GaloisForLFunctions.RHTower.MoebiusApproximantResidual
+import GaloisForLFunctions.RHTower.TruncatedMoebiusResidual
