@@ -10,9 +10,16 @@ zeta zero while the target does not, then the target cannot lie in their closed 
 
 This module proves that mechanism for an arbitrary normed space and arbitrary continuous linear
 functional.  It is the exact non-numerical core shared by Hardy, Nyman--Beurling, and damped
-Colombeau--Beurling closure criteria.  Instantiating it with the paper's concrete half-plane Hardy
-space still requires the half-plane `H^2` carrier, its bounded point evaluations, and the concrete
-zeta generators; those are the current source-realization wall.
+Colombeau--Beurling closure criteria.
+
+The source realization is supplied by `RHTower.BaezDuarteL2Carrier`, and it needs no Hardy space at
+all: on the Nyman--Beurling carrier `L^2((1,infinity), du)` the Mellin point evaluation at `s` is the
+inner product against the explicit vector `u^(s-1)` (conjugated), which is square integrable exactly
+when `Re s < 1/2`.  So bounded point evaluation is Cauchy--Schwarz, the half-plane `H^2` carrier and
+Paley--Wiener are not needed, and the concrete zeta generators are evaluated by the corpus's
+fractional-part Mellin identities (`RHTower.FractionalPartZeta`).  See
+`RHTower.bdTarget_notMem_closedSpan_of_zero` for the instantiation of the theorem below and
+`RHTower.bdTarget_dist_floor_of_mem_closedSpan` for its quantitative form.
 -/
 
 open Set

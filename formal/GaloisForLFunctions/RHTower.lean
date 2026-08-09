@@ -5250,6 +5250,9 @@ import GaloisForLFunctions.RHTower.XiTransportedPrimitive
 import GaloisForLFunctions.RHTower.XiInverseCoordinate
 import GaloisForLFunctions.RHTower.XiBesselWeight
 import GaloisForLFunctions.RHTower.XiBesselWeightBounds
+import GaloisForLFunctions.RHTower.XiEndpointExpansion
+import GaloisForLFunctions.RHTower.XiEndpointCancellation
+import GaloisForLFunctions.RHTower.XiBesselWeightDeriv
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted
@@ -6350,3 +6353,5 @@ import GaloisForLFunctions.RHTower.Sieve.PerronExponentBudget
 import GaloisForLFunctions.RHTower.Sieve.PrimitiveRatioDecomposition
 import GaloisForLFunctions.RHTower.Sieve.DirichletOffDiagonalCorrelation
 import GaloisForLFunctions.RHTower.Sieve.DirichletCorrelationMultiplicative
+import GaloisForLFunctions.RHTower.VanishingCostRCLike
+import GaloisForLFunctions.RHTower.BaezDuarteL2Carrier

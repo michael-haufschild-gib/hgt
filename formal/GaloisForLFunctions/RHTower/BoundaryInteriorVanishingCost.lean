@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.FinitenessTransition
+import GaloisForLFunctions.RHTower.VanishingCostRCLike
 import Mathlib.Analysis.InnerProductSpace.Basic
 
 /-!
@@ -67,26 +68,14 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H]
 `f`. -/
 theorem dist_ker_ge (v f : H) (hv : v ≠ 0) {g : H} (hg : ⟪v, g⟫_ℝ = 0) :
     |⟪v, f⟫_ℝ| / ‖v‖ ≤ ‖f - g‖ := by
-  have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hv
-  rw [div_le_iff₀ hvpos]
-  have hinner : ⟪v, f - g⟫_ℝ = ⟪v, f⟫_ℝ := by
-    rw [inner_sub_right, hg, sub_zero]
-  calc |⟪v, f⟫_ℝ| = |⟪v, f - g⟫_ℝ| := by rw [hinner]
-    _ ≤ ‖v‖ * ‖f - g‖ := abs_real_inner_le_norm v (f - g)
-    _ = ‖f - g‖ * ‖v‖ := by ring
+  rw [← Real.norm_eq_abs]
+  exact dist_innerKer_ge (𝕜 := ℝ) v f hv hg
 
 /-- **The bound is attained.**  The explicit projection realises the distance. -/
 theorem dist_ker_attained (v f : H) (hv : v ≠ 0) :
     ∃ g : H, ⟪v, g⟫_ℝ = 0 ∧ ‖f - g‖ = |⟪v, f⟫_ℝ| / ‖v‖ := by
-  have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hv
-  have hv2 : ⟪v, v⟫_ℝ = ‖v‖ ^ 2 := real_inner_self_eq_norm_sq v
-  refine ⟨f - (⟪v, f⟫_ℝ / ‖v‖ ^ 2) • v, ?_, ?_⟩
-  · rw [inner_sub_right, real_inner_smul_right, hv2]
-    field_simp
-    ring
-  · rw [sub_sub_cancel, norm_smul]
-    rw [Real.norm_eq_abs, abs_div, abs_of_pos (by positivity : (0:ℝ) < ‖v‖ ^ 2)]
-    field_simp
+  obtain ⟨g, hg, hdist⟩ := dist_innerKer_attained (𝕜 := ℝ) v f hv
+  exact ⟨g, hg, by rw [hdist, Real.norm_eq_abs]⟩
 
 /-- **The exact vanishing cost.**  Combining the two bounds, the distance from `f` to the hyperplane
 of vectors annihilated by `v` is exactly `|⟪v,f⟫|/‖v‖`. -/
