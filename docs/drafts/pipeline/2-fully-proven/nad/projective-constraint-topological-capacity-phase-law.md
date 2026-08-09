@@ -452,3 +452,17 @@ strict degree/capacity ordering, unbounded topology, persistent irreducibility, 
 - [x] complete phase-separation theorem formalized from explicit classical-input witnesses
 - [ ] broad specialist parent audit
 - [ ] internal construction of triangle/modular curves and projective Kummer minimality
+
+## Audit — the survival witnesses carry no geometry `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/HurwitzSurvivalWitnessInhabited.lean` constructs explicit
+terms of both `HurwitzProjectiveSurvivalWitness ℕ` and `ModularProjectiveSurvivalWitness ℕ`
+(`nonempty_hurwitzProjectiveSurvivalWitness`, `nonempty_modularProjectiveSurvivalWitness`; axioms
+`propext`, `Classical.choice`, `Quot.sound`).
+
+So the phase theorems of `ProjectiveConstraintTopologicalCapacityPhase.lean` are non-vacuous — and
+the witnesses are content-free: their `commonPullback` and `irreducible` fields are arbitrary
+predicates and their numerical constraints are met by an explicit integer family.  The named
+classical inputs (triangle uniformization, common pullback, arithmetic commensurator, Kummer
+minimality) are therefore *not* represented in Lean by these structures; only the storage arithmetic
+is.  The card is not eligible for Stage 3 until those inputs are constructed.

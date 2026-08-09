@@ -168,3 +168,21 @@ Any proposed NHG invariant must either:
 
 Agreement only after forgetting anchor, connection, filtration, or pairing is not evidence that two
 presentations are gauges of one law field.
+
+## Lean formalization status
+
+- **Status:** `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
+- **Module:** `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.StructuredMorita`
+- **Umbrella wiring:** imported by
+  `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry`; card remains in Stage 2.
+- **Structured-curvature capstones:** `StructuredEquiv.curvature_intertwines`,
+  `StructuredEquiv.curvatureJet_intertwines`, `finrank_kernel_eq`, and `finrank_range_eq`.
+- **Descent capstones:** `pullback_injective_of_surjective` and
+  `pullback_eq_zero_iff_of_surjective`.
+- **Spencer capstones:** `ComplexEquiv.cohomologyEquiv`, `ComplexEquiv.finrank_object_eq`,
+  `ComplexEquiv.finrank_differential_kernel_eq`, `ComplexEquiv.finrank_differential_range_eq`,
+  `ComplexEquiv.finrank_cohomology_eq`, and `ComplexEquiv.eventualDimensionFunction_eq`.
+- **Verification:** foreground
+  `lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/StructuredMorita.lean`
+  completed with zero errors and zero warnings.
+- **Promotion gate still open:** final umbrella build, project lint, and `#print axioms` audit.

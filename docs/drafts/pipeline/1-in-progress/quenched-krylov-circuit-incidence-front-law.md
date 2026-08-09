@@ -364,7 +364,7 @@ a sharper replacement.
 ## 2026-08-09 orbit-net no-go and Bellman correction
 
 The paper-proved
-`../2-fully-proven/static-orbit-net-no-go-and-circuit-bellman-law.md` shows that even the preceding
+`../3-formalized/static-orbit-net-no-go-and-circuit-bellman-law.md` shows that even the preceding
 physical-graph formulation is too broad if it treats the target image as an arbitrary finite set.
 The coefficient-shell endpoint map is `|t| sqrt(m)`-Lipschitz.  Hence at fixed error its entire
 time-`t` image has an endpoint net of size

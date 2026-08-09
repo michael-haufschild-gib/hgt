@@ -562,4 +562,103 @@ theorem summable_burnolAllPrimePhysicalPresentation_sq_iff
   simpa only [norm_neg] using
     summable_burnolAllPrimeInverseCompletionCoefficient_sq_iff (c := c) (ρ := ρ) hc hρ0 hρ1
 
+/-! ## The multiplicity-faithful Cartier jet -/
+
+theorem differentiableAt_burnolAllPrimeCompletionMultiplier {p : ℕ} (hp : 2 ≤ p)
+    {w : ℂ} (hw0 : 0 < w.re) :
+    DifferentiableAt ℂ (burnolAllPrimeCompletionMultiplier p) w := by
+  have hpne : ((p : ℕ) : ℂ) ≠ 0 := by
+    simp only [ne_eq, Nat.cast_eq_zero]
+    omega
+  have hden : 2 * ((p : ℂ) ^ w - 1) ≠ 0 :=
+    mul_ne_zero two_ne_zero (nat_cpow_sub_one_ne_zero hp hw0)
+  have hpow : DifferentiableAt ℂ (fun z : ℂ => (p : ℂ) ^ z) w :=
+    differentiableAt_id.const_cpow (Or.inl hpne)
+  unfold burnolAllPrimeCompletionMultiplier
+  exact ((differentiableAt_id.pow 2).mul
+      (differentiableAt_id.sub (differentiableAt_const (c := (1 : ℂ))))).div
+    ((differentiableAt_const (c := (2 : ℂ))).mul
+      (hpow.sub (differentiableAt_const (c := (1 : ℂ))))) hden
+
+theorem differentiableAt_burnolAllPrimeCompletedMellin {p : ℕ} (hp : 2 ≤ p)
+    {w : ℂ} (hw0 : 0 < w.re) (hw1 : w.re < 1) :
+    DifferentiableAt ℂ (burnolAllPrimeCompletedMellin p) w := by
+  have hwne0 : w ≠ 0 := by
+    intro h; rw [h, Complex.zero_re] at hw0; linarith
+  have hwne1 : w ≠ 1 := by
+    intro h; rw [h, Complex.one_re] at hw1; linarith
+  have hpne : ((p : ℕ) : ℂ) ≠ 0 := by
+    simp only [ne_eq, Nat.cast_eq_zero]
+    omega
+  have hpow : DifferentiableAt ℂ (fun z : ℂ => (p : ℂ) ^ z) w :=
+    differentiableAt_id.const_cpow (Or.inl hpne)
+  unfold burnolAllPrimeCompletedMellin
+  exact (((Gammaℝ_analyticAt (Complex.Gammaℝ_ne_zero_of_re_pos hw0)).differentiableAt.mul
+    (hpow.sub (differentiableAt_const (c := (1 : ℂ))))).mul
+    ((differentiableAt_riemannZeta hwne1).div differentiableAt_id hwne0))
+
+theorem burnolAllPrimeCompletedMellin_eq_zero_of_xi_eq_zero {p : ℕ} (hp : 2 ≤ p)
+    {rho : ℂ} (hrho0 : 0 < rho.re) (hrho1 : rho.re < 1) (hxi : xi rho = 0) :
+    burnolAllPrimeCompletedMellin p rho = 0 := by
+  have hM := burnolAllPrimeCompletionMultiplier_ne_zero hp hrho0 hrho1
+  have hfactor := burnolAllPrimeCompletionMultiplier_mul_completedMellin hp hrho0 hrho1
+  rw [hxi] at hfactor
+  exact (mul_eq_zero.mp hfactor).resolve_left hM
+
+/-- **The all-prime completion is coefficient-faithful on first divided vectors.** -/
+theorem burnolAllPrimeCompletionMultiplier_mul_dslope_completedMellin {p : ℕ} (hp : 2 ≤ p)
+    {rho s : ℂ} (hrho0 : 0 < rho.re) (hrho1 : rho.re < 1)
+    (hs0 : 0 < s.re) (hs1 : s.re < 1) (hxi : xi rho = 0) :
+    burnolAllPrimeCompletionMultiplier p s *
+        dslope (burnolAllPrimeCompletedMellin p) rho s =
+      dslope xi rho s := by
+  have hF : burnolAllPrimeCompletedMellin p rho = 0 :=
+    burnolAllPrimeCompletedMellin_eq_zero_of_xi_eq_zero hp hrho0 hrho1 hxi
+  rcases eq_or_ne s rho with rfl | hsr
+  · rw [dslope_same, dslope_same]
+    have hlocal :
+        (fun z => burnolAllPrimeCompletionMultiplier p z * burnolAllPrimeCompletedMellin p z)
+          =ᶠ[𝓝 s] xi := by
+      have hopen : IsOpen {z : ℂ | 0 < z.re ∧ z.re < 1} :=
+        (isOpen_lt continuous_const Complex.continuous_re).inter
+          (isOpen_lt Complex.continuous_re continuous_const)
+      filter_upwards [hopen.mem_nhds ⟨hs0, hs1⟩] with z hz
+      exact burnolAllPrimeCompletionMultiplier_mul_completedMellin hp hz.1 hz.2
+    rw [← hlocal.deriv_eq,
+      deriv_fun_mul (differentiableAt_burnolAllPrimeCompletionMultiplier hp hrho0)
+        (differentiableAt_burnolAllPrimeCompletedMellin hp hrho0 hrho1), hF, mul_zero, zero_add]
+  · rw [dslope_of_ne _ hsr, dslope_of_ne _ hsr,
+      slope_def_field, slope_def_field, hF, hxi, sub_zero, sub_zero,
+      ← burnolAllPrimeCompletionMultiplier_mul_completedMellin hp hs0 hs1]
+    field_simp [sub_ne_zero.mpr hsr]
+
+/-- **Multiplicity-faithful leading-coefficient transport.**  Whatever the multiplicity `m` of the
+Xi divisor, the prime window source has the divided leading coefficient `c_ρ / C_p(ρ)`. -/
+theorem tendsto_burnolAllPrimeMultiplicityJet {p : ℕ} (hp : 2 ≤ p) {rho c : ℂ} {m : ℕ}
+    (hrho0 : 0 < rho.re) (hrho1 : rho.re < 1)
+    (hlead : Filter.Tendsto (fun w : ℂ => xi w / (w - rho) ^ m) (𝓝[≠] rho) (𝓝 c)) :
+    Filter.Tendsto (fun w : ℂ => burnolAllPrimeCompletedMellin p w / (w - rho) ^ m)
+      (𝓝[≠] rho) (𝓝 (c / burnolAllPrimeCompletionMultiplier p rho)) := by
+  have hCne : burnolAllPrimeCompletionMultiplier p rho ≠ 0 :=
+    burnolAllPrimeCompletionMultiplier_ne_zero hp hrho0 hrho1
+  have hCcont : Filter.Tendsto (burnolAllPrimeCompletionMultiplier p) (𝓝[≠] rho)
+      (𝓝 (burnolAllPrimeCompletionMultiplier p rho)) :=
+    ((differentiableAt_burnolAllPrimeCompletionMultiplier hp hrho0).continuousAt.tendsto).mono_left
+      nhdsWithin_le_nhds
+  have hquot := hlead.div hCcont hCne
+  refine hquot.congr' ?_
+  have hopen : IsOpen {z : ℂ | 0 < z.re ∧ z.re < 1} :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt Complex.continuous_re continuous_const)
+  filter_upwards [self_mem_nhdsWithin,
+    nhdsWithin_le_nhds (hopen.mem_nhds ⟨hrho0, hrho1⟩)] with w hwne hw
+  have hwr : (w - rho) ^ m ≠ 0 := pow_ne_zero m (sub_ne_zero.mpr hwne)
+  have hCw : burnolAllPrimeCompletionMultiplier p w ≠ 0 :=
+    burnolAllPrimeCompletionMultiplier_ne_zero hp hw.1 hw.2
+  have hprod := burnolAllPrimeCompletionMultiplier_mul_completedMellin hp hw.1 hw.2
+  show xi w / (w - rho) ^ m / burnolAllPrimeCompletionMultiplier p w =
+    burnolAllPrimeCompletedMellin p w / (w - rho) ^ m
+  rw [← hprod]
+  field_simp
+
 end RHTower

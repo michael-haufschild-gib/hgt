@@ -1,9 +1,9 @@
 # Provenance-exactness flag topology
 
 - **ID:** provenance-exactness-flag-topology
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / EXACTNESS GEOMETRY / RANGE-INCIDENCE NO-GO
-- **Scientific status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [NOT RH]
+- **Scientific status:** [LEAN-FORMALIZED] [PAPER-PROVED] [DEPENDENCY-CLOSED] [NOT RH]
   [NEW CORPUS SYNTHESIS] [NO AMBIENT-TOPOLOGY PRIORITY CLAIM]
 - **Source:** ../../1-in-progress/polarized-exchange-horizon-geometry/
   polarized-exchange-horizon-geometry-program.md
@@ -379,9 +379,12 @@ This is exactness-sensitive replacement for earlier kernel-only coherence spectr
    persistence, and \(Q\)-shaped homological algebra. None supports a priority claim for (24) or
    its RH use. Relevant parents include arXiv:2103.15139, arXiv:1106.2399, arXiv:2201.04170, and
    arXiv:2602.22986.
-8. **No Lean claim.** No Lean code was written or built. Likely later parents are existing
-   submodule lattice, linear-map kernel/range, quotient, and order-topology files already used in
-   formal corpus; exact names must be checked against this toolchain before formalization.
+8. **Lean status.** Items 1--5 and the rank-one corollary are now unconditional Lean theorems in
+   `formal/GaloisForLFunctions/HTGeometry/ExactnessFlagProvenanceTopology.lean`; see the companion
+   certificate card. The pushforward no-go is proved in the stronger form
+   `not_isOpen_boundaryLe`. The Poisson instantiation of item 4 is recorded there in its
+   carrier-free form; the carrier input `\(\mathcal B_{\rm P}\subsetneq\Gamma_{\rm sec}\)` remains
+   the separate stage-2 card `deninger-cofinal-floquet-secondary-poisson-graph.md`.
 
 ## Gates
 
@@ -391,11 +394,17 @@ This is exactness-sensitive replacement for earlier kernel-only coherence spectr
 - [x] Poisson literal-range versus reflected-radical separation instantiated
 - [x] rank-one exchange semantics repaired from cycles to homology classes
 - [x] broad current literature and hostile priority audit recorded
-- [ ] 2 -> 3: formalization deferred by user instruction
+- [x] 2 -> 3: unconditional Lean formalization
+  (`provenance-exactness-flag-topology-formalized.md`)
 - [ ] 3 -> 4: publication-ready exposition and external specialist audit
 
 ## Log
 
+- 2026-08-09 — Formalized in Lean 4 without hypotheses: lower/Scott generation on the submodule
+  lattice, the mixed provenance topology and its coarsest-topology property, `T_0` and the
+  specialization law, the survival locus and its spectral reading, homology-dimension monotonicity,
+  the cycle-only fibre no-go with its separation, pullback continuity, injective-pushforward
+  continuity, and the projection discontinuity.
 - 2026-08-08 — Kernel-only Scott coherence spectrum failed against proved strict inclusion
   \(\mathcal B_{\rm P}\subsetneq\Gamma_{\rm sec}\). Replaced primitive by mixed-variance exactness
   flag \(B\subseteq Z\), proved lower--Scott topology and specialization law, proved pullback

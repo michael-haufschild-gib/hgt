@@ -356,3 +356,22 @@ Q=log(1+t)/2.
 exactly for real `alpha`.  Hence positive boundary generator and regular transgression are both
 explicit; remaining theorem is common-domain nonannihilation of every source conormal for both
 reflected multipliers.  Declaring that domain membership would still be RH, so it remains open.
+
+## 2026-08-09 — the convolution norm inequality Theorem 1 needs
+
+Theorem 1 asserts `‖T_-‖, ‖T_+‖ ≤ ‖k‖₁` as operators `L²(ℝ₊) → L²(ℝ)`, which after zero extension
+is Young's convolution inequality `L¹ ⋆ L² → L²`.  An exact search shows **no convolution norm
+inequality exists in mathlib** (`Mathlib/Analysis/Convolution.lean` and
+`Mathlib/Analysis/LConvolution.lean` carry no `eLpNorm_convolution_le` and no Young statement) and
+none in this tree; Minkowski's integral inequality is likewise absent.
+
+`formal/GaloisForLFunctions/HTGeometry/YoungConvolutionL2.lean` supplies it by the route that
+avoids Minkowski entirely:
+
+- `lintegral_weighted_sq_le` — Cauchy--Schwarz against the weight `K dy` in `ℝ≥0∞`:
+  `(∫ K·G)² ≤ (∫K)·(∫ K·G²)`;
+- **`lintegral_convolution_sq_le`** — Tonelli on `∫∫ K(y)·F(x−y)²` plus translation invariance of
+  Lebesgue measure, giving `∫ (∫ K(y)F(x−y) dy)² dx ≤ (∫K)²·∫F²`.
+
+Everything is stated in `ℝ≥0∞`, so no integrability hypothesis appears anywhere; the `L²` operator
+bound of Theorem 1 is the specialization to `K = ‖k‖₊`, `F = ‖f‖₊`.

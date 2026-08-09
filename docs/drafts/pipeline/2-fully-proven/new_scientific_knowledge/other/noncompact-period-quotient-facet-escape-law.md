@@ -355,21 +355,41 @@ All six modules are wired into `formal/GaloisForLFunctions/HTGeometry.lean`.  Di
 `lake env lean` checks and targeted builds pass; `#print axioms` on every capstone reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
+`formal/GaloisForLFunctions/HTGeometry/SeveralVariableTranslation.lean` carries the whole
+period-group layer to `ℂ^d`, for an arbitrary complex normed space:
+
+```text
+addTranslationGen, addTranslationAnalyticEquivGen, addTranslationMeroEquivGen
+addTranslationMeroEquivGen_add, addTranslationMeroEquivGen_zero
+meroPeriodSubgroupGen
+mem_meroPeriodSubgroupGen_iff
+isClosed_meroPeriodSubgroupGen
+dense_ne_zero_of_analyticOnNhd
+complex_smul_mem_meroPeriodSubgroupGen
+lineSubmodule_meroPeriodSubgroupGen_smul_I
+isEscapeSubgroup_meroPeriodSubgroupGen
+```
+
+The several-variable analytic germ ring and its meromorphic fraction field were already
+corpus-owned (`Bottcher.analyticSubringGen`, `Bottcher.meroFieldGen`,
+`Bottcher.precompAnalyticEquivGen`, `Bottcher.precompMeroEquivGen`); this module instantiates them
+at `g = (· + h)`.  `complex_smul_mem_meroPeriodSubgroupGen` is the exact statement that a real line
+of periods is a complex line of periods: along the complex line through a period direction the
+numerator minus the regular value times the denominator is analytic in one variable and vanishes on
+the real axis, hence identically, and the resulting identity extends from the dense regular locus
+of the denominator by continuity.  Hence `isEscapeSubgroup_meroPeriodSubgroupGen`: in every
+dimension, the period group of a global meromorphic germ is closed and has complex-linear identity
+component, so **noncompactness of the quotient is the only remaining period-escape condition**.
+
 ### What remains
 
-1. **Several-variable translations on the meromorphic germ field.**  The `d`-variable analytic germ
-   ring and its meromorphic fraction field already exist in the corpus for an arbitrary complex
-   normed space, as `Bottcher.analyticSubringGen`, `Bottcher.meroFieldGen`,
-   `Bottcher.precompAnalyticEquivGen` and `Bottcher.precompMeroEquivGen`; what is missing is the
-   instantiation at `g = (· + h)` and the resulting period group, whose closedness and complex
-   identity component then follow from `isClosed_meroPeriodSubgroup` and
-   `isEscapeSubgroup_of_isClosed` by the same two arguments used at `d = 1` (the `i`-stability step
-   in several variables is the one-variable identity theorem along the complex line `ℂ v`).
-2. **Finite transcendence degree of the meromorphic field of a compact complex torus.**  The proof
-   of `(5)` for `d >= 2` uses `trdeg_C M(X) <= dim_C X`.  In complex dimension one this is the
-   elliptic differential-algebraicity theorem already owned here, which is why the scalar case is
-   closed; for `d >= 2` it is Siegel's theorem and has no Lean proof yet.  This is the only
-   genuinely missing mathematics on this card.
+**Finite transcendence degree of the meromorphic field of a compact complex torus.**  The proof of
+`(5)` for `d >= 2` uses `trdeg_C M(X) <= dim_C X`.  In complex dimension one this is the elliptic
+differential-algebraicity theorem already owned here, which is why the scalar case is closed; for
+`d >= 2` it is Siegel's theorem and has no Lean proof yet.  This is now the only missing
+mathematics on this card: with it, `isEscapeSubgroup_meroPeriodSubgroupGen` closes the noncompact
+period-quotient law in every dimension, and the facet theorem `(13)-(18)` is the Stanley--Reisner
+facet-prime computation on top of it.
 
 ## Gates
 
@@ -387,7 +407,9 @@ All six modules are wired into `formal/GaloisForLFunctions/HTGeometry.lean`.  Di
   dimension, formalized unconditionally
 - [x] all three period-escape conditions verified for the period group of a hypertranscendental
   germ in one complex variable
-- [ ] several-variable meromorphic period groups formalized, giving `peDim<=htDim`
-- [ ] Siegel bound for compact complex tori formalized, giving `(5)` for `d>=2`
+- [x] several-variable meromorphic period groups formalized: closed, with complex-linear identity
+  component, in every dimension
+- [ ] Siegel bound for compact complex tori formalized, giving `(5)` for `d>=2` and hence
+  `peDim<=htDim`
 - [ ] independent specialist proof and novelty audit
 - [ ] complete unconditional Lean formalization before stage 3

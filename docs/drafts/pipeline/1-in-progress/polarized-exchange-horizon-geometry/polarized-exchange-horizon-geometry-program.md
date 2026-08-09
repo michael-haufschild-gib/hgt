@@ -907,6 +907,7 @@ positive survivor.
 - [x] exactness-flag dagger duality and minimal bipolar topology paper-proved
 - [x] positive-definite chain-level self-duality no-go paper-proved
 - [x] continuous phase-separator existence isolated from source-canonical reporter construction
+- [x] all three dedicated child cards formalized unconditionally in Lean 4 and promoted to Stage 3
 - [ ] construct actual source boundary coordinate rather than only geometric cycle kernel
 - [ ] construct finite source-normal curved partial-\(K\)-labelled exchange square
 - [ ] prove cofinal source-normal strictness
@@ -920,6 +921,12 @@ positive survivor.
 
 ## Log
 
+- 2026-08-09 — All three dedicated child cards formalized unconditionally in Lean 4 and moved to
+  Stage 3: the exactness-flag provenance topology, the dagger/bipolar/Green layer, and the rank-one
+  polarized exchange layer.  Eleven modules under `HTGeometry/ExactnessFlag*` and
+  `RHTower/RankOnePolarizedExchange*`; axiom audit `[propext, Classical.choice, Quot.sound]`.
+  The still-open program gates below are unchanged: the Lean layer certifies the obstructions, not
+  the missing source construction.
 - 2026-08-08 — Created after hostile corpus audit killed generic ambidexterity and three-face
   formulations.  Fisher's July 2026 universal exchange theorem supplied the parent category.
   Bare partial-\(K\) invertibility failed the off-line scalar test; one-sided polarized exchange

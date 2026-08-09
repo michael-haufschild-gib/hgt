@@ -28,20 +28,39 @@ Tracking file for the 2 -> 3 gate of the six cards in this folder.  Lean modules
 | §2 Thm 2.1 graph shear + horizon invariance | `ObserverHorizonStability.lean` | built |
 | §3 Thm 3.1 bounded positive form correction | `ObserverHorizonStability.lean` | built |
 | §4 Thm 4.1 compact stability of a weakly-null singular sequence | `ObserverHorizonStability.lean` | built |
-## Card 2 — affine-observer-holonomy-and-global-section-law — TODO
-## Card 4 — finite-jet-indistinguishability-and-clock-covariance — TODO
+## Card 2 — affine-observer-holonomy-and-global-section-law
+
+| Card item | Lean module | Status |
+|---|---|---|
+| §2 tree gauge, §3 Thm 3.1 | `AffineObserverHolonomy.lean` | built |
+| §4 Thm 4.1, §5 Cor 5.1, §6 Prop 6.1, §8 Thm 8.1 + Cor 8.2 | `ObserverFieldEquation.lean` | built |
+| §7 Prop 7.1 (1) and (3) | `HolonomyGeneratingSet.lean` | built |
+
+§7(2) (conjugacy of based holonomy groups under change of root) is the gauge covariance
+`gaugeHolonomy`/`exact_gauge_iff` of `ObserverFieldEquation.lean` applied to the root transport.
+## Card 4 — finite-jet-indistinguishability-and-clock-covariance — IN PROGRESS
+
+| Card item | Lean module | Status |
+|---|---|---|
+| invertible triangular variable substitution | `TriangularSubstitution.lean` | built |
+| §3 Thm 3.1 (3.1), (3.2) and the clock invariance of hypertranscendence | `ClockChangeTriangular.lean` | built |
+| §3 Cor 3.2 differential-birational generator covariance | — | TODO |
+| §4 Thm 4.1, Cor 4.2, Cor 4.3 | — | TODO |
+| §5 Prop 5.1 source-dependent trivialization | — | TODO |
 
 Corpus assets found: `hypertranscendental_gamma` (Hölder), `hypertranscendental_gamma_add_const`,
 `differentiallyAlgebraic_add_polynomial(_iff)`, `differentiallyAlgebraic_add/sub/mul/pow`,
 `hypertranscendentalOver_inv_iff`, `differentiallyAlgebraicOfOrder_zero_of_polynomial`,
 `DifferentiallyAlgebraicNear`/`HypertranscendentalNear`.
-## Card 6 — two-prime-kummer-precision-horizon-and-compact-repair-no-go — IN PROGRESS
+## Card 6 — two-prime-kummer-precision-horizon-and-compact-repair-no-go
 
-Plan: `HTGeometry/FiniteDiagonalOperator.lean` (general finite diagonal multiplier: smallest
-singular value, normal operator, inverse norm, approximate-inverse bound) then
-`RHTower/TwoPrimeKummerPrecisionHorizon.lean` (arithmetic clock separation `d_N`, the elementary
-window `3^{-N} ≤ d_N ≤ log 2 / ⌊N/2⌋`, spectrum, and the compact-repair no-go via
-`ObserverHorizonStability.not_injective_and_isClosed_range_of_weaklyNull`).
+| Card item | Lean module | Status |
+|---|---|---|
+| general finite diagonal multiplier | `HTGeometry/FiniteDiagonalOperator.lean` | built |
+| arithmetic clock separation, elementary window, injective mode families | `RHTower/TwoPrimeKummerClockSeparation.lean` | built |
+| §2 Thm 2.1, §3 Thm 3.1, §4 Thm 4.1 | `RHTower/TwoPrimeKummerPrecisionHorizon.lean` | built |
+| general `ℓ²` multiplier spectrum and Weyl sequences | `RHTower/DiagonalMultiplierSpectrum.lean` | built |
+| §5 Thm 5.1, §6 Thm 6.1 | `RHTower/TwoPrimeKummerEssentialSpectrum.lean` | built |
 
 ## Rules in force
 - foreground `lake env lean <file>` only, one process at a time; `lake build <module>` to

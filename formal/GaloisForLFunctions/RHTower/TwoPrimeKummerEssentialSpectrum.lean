@@ -66,7 +66,8 @@ theorem kummerTransform_eigenvalue_mem {lam : ℂ} {x : lp (fun _ : NonzeroKumme
 /-! ## The bounded phase profile -/
 
 theorem continuous_kummerBeta : Continuous kummerBeta := by
-  rw [kummerBeta.eq_def]
+  have hfun : kummerBeta = fun t : ℝ => t / (1 + |t|) := rfl
+  rw [hfun]
   refine Continuous.div continuous_id (continuous_const.add continuous_abs) fun t => ?_
   positivity
 
@@ -77,6 +78,7 @@ theorem kummerBeta_inverse {t : ℝ} (ht : |t| < 1) : kummerBeta (t / (1 - |t|))
   rw [kummerBeta, habs]
   have h1 : 1 + |t| / (1 - |t|) = 1 / (1 - |t|) := by
     field_simp
+    ring
   rw [h1]
   field_simp
 
@@ -137,12 +139,14 @@ theorem tendsto_kummerBeta_atTop : Tendsto kummerBeta atTop (𝓝 1) := by
   have hinv : Tendsto (fun x : ℝ => (1 + x)⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero.comp (tendsto_atTop_add_const_left atTop 1 tendsto_id)
   have hmain : Tendsto (fun x : ℝ => 1 - (1 + x)⁻¹) atTop (𝓝 1) := by
-    have := tendsto_const_nhds.sub hinv (x := (1 : ℝ))
+    have hc : Tendsto (fun _ : ℝ => (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds
+    have := hc.sub hinv
     simpa using this
   refine hmain.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
   rw [kummerBeta, abs_of_nonneg hx]
   field_simp
+  ring
 
 theorem kummerBeta_neg (t : ℝ) : kummerBeta (-t) = -kummerBeta t := by
   rw [kummerBeta, kummerBeta, abs_neg]
@@ -185,7 +189,7 @@ theorem exists_injective_modes_symbol_tendsto {t : ℝ} (ht : t ∈ Set.Icc (-1 
         have hneg : Tendsto (fun n : ℕ => -kummerBeta (((n : ℝ) + 1) * Real.log 2))
             atTop (𝓝 (-1)) := by
           simpa [Function.comp_def] using hbeta.neg
-        rw [← heq]
+        rw [heq]
         refine hneg.congr fun n => ?_
         rw [kummerBeta_neg]
   rcases lt_trichotomy t 1 with hlt1 | heq1 | hgt1
@@ -219,7 +223,7 @@ theorem exists_injective_modes_symbol_tendsto {t : ℝ} (ht : t ∈ Set.Icc (-1 
           apply Filter.Tendsto.atTop_mul_const hlogpos
           exact tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
         have hbeta := tendsto_kummerBeta_atTop.comp hpos
-        rw [← heq1]
+        rw [heq1]
         simpa [Function.comp_def] using hbeta
   · exact absurd ht.2 (not_le.mpr hgt1)
 

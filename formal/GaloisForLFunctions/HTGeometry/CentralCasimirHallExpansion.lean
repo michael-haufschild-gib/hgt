@@ -336,13 +336,13 @@ theorem hermitianQuadraticCasimir_nonneg_and_isUnit_of_commonKernel
   exact ⟨by simpa [K] using hnonneg,
     by simpa [K] using (Matrix.mulVec_injective_iff_isUnit.mp hmulVec)⟩
 
-private def centralCasimirInvSqrtScaleRCLike
+def centralCasimirInvSqrtScaleRCLike
     {𝕜 X J : Type*} [RCLike 𝕜]
     [Fintype X] [DecidableEq X] [Fintype J]
     (A : J → Matrix X X 𝕜) : Matrix X X 𝕜 :=
   (CFC.sqrt (∑ j, A j * A j))⁻¹
 
-private theorem centralCasimirInvSqrtScaleRCLike_commutes
+theorem centralCasimirInvSqrtScaleRCLike_commutes
     {𝕜 X J : Type*} [RCLike 𝕜]
     [Fintype X] [DecidableEq X] [Fintype J]
     (A : J → Matrix X X 𝕜)
@@ -372,7 +372,7 @@ private theorem centralCasimirInvSqrtScaleRCLike_commutes
     _ = (R * S) * A j * R := by noncomm_ring
     _ = A j * R := by rw [hleft, Matrix.one_mul]
 
-private theorem centralCasimirInvSqrtScaleRCLike_conjTranspose
+theorem centralCasimirInvSqrtScaleRCLike_conjTranspose
     {𝕜 X J : Type*} [RCLike 𝕜]
     [Fintype X] [DecidableEq X] [Fintype J]
     (A : J → Matrix X X 𝕜) :
@@ -382,7 +382,7 @@ private theorem centralCasimirInvSqrtScaleRCLike_conjTranspose
   rw [centralCasimirInvSqrtScaleRCLike, Matrix.conjTranspose_nonsing_inv,
     matrixSqrt_conjTranspose_rclike]
 
-private theorem centralCasimirRCLike_scaled_conjTranspose_mul_sum
+theorem centralCasimirRCLike_scaled_conjTranspose_mul_sum
     {𝕜 X J : Type*} [RCLike 𝕜]
     [Fintype X] [DecidableEq X] [Fintype J]
     (A : J → Matrix X X 𝕜)

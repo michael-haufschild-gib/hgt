@@ -1,10 +1,12 @@
 # Exact-penalty robust circuit Bellman duality
 
 - **ID:** `exact-penalty-robust-circuit-bellman-duality`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3-formalized
+- **Formalized companion:** `./exact-penalty-robust-circuit-bellman-duality-formalized.md`
+- **Lean:** Theorems A–C formalized in `HTGeometry/ExactPenaltyCircuitBellman.lean`
 - **Type:** theorem / exact control duality / frontier correction
-- **Parent:** `static-orbit-net-no-go-and-circuit-bellman-law.md`
-- **Status:** `[PAPER-PROVED] [BRIDGE] [FRONTIER CORRECTION] [LEAN DEFERRED]`
+- **Parent:** `./static-orbit-net-no-go-and-circuit-bellman-law.md`
+- **Status:** `[PAPER-PROVED] [BRIDGE] [FRONTIER CORRECTION] [LEAN-PROVED]`
 - **Date:** 2026-08-09
 
 ## Public sentence

@@ -362,4 +362,130 @@ theorem burnolBocksteinKernel_pos_iff (u : ℝ) :
     rw [div_lt_iff₀ (by positivity)] at hexp
     nlinarith
 
+/-! ## The transverse deformation of the polar factor -/
+
+/-- The deformed Stein operator `A + ε`. -/
+def burnolSteinDeformed (ε : ℝ) (f : ℝ → ℝ) : ℝ → ℝ := fun u => burnolSteinA f u + ε * f u
+
+/-- The transversely deformed collar kernel `κ_ε = ½ (A+ε)²(A+ε-1) γ`. -/
+def burnolCollarKernelDeformed (ε : ℝ) : ℝ → ℝ :=
+  fun u => 1 / 2 * burnolSteinDeformed ε
+    (burnolSteinDeformed ε (burnolSteinDeformed (ε - 1) burnolCollarGamma)) u
+
+theorem burnolSteinDeformed_gamma (ε u : ℝ) :
+    burnolSteinDeformed (ε - 1) burnolCollarGamma u =
+      burnolCollarGamma u * (2 * burnolCollarZ 0 u + ε - 1) := by
+  rw [burnolSteinDeformed, burnolCollarGamma, burnolSteinA_burnolCollarH]
+  ring
+
+theorem burnolSteinDeformed_step_two (ε u : ℝ) :
+    burnolSteinDeformed ε
+        (fun v => burnolCollarGamma v * (2 * burnolCollarZ 0 v + ε - 1)) u =
+      burnolCollarGamma u *
+        (4 * burnolCollarZ 0 u ^ 2 + 2 * (2 * ε - 3) * burnolCollarZ 0 u + ε ^ 2 - ε) := by
+  have hP : ∀ x : ℝ, HasDerivAt (fun x : ℝ => 2 * x + ε - 1) (2 : ℝ) x := by
+    intro x
+    have h1 : HasDerivAt (fun x : ℝ => 2 * x) (2 : ℝ) x := by
+      simpa using (hasDerivAt_id x).const_mul (2 : ℝ)
+    exact (h1.add_const ε).sub_const 1
+  have h := burnolSteinA_collarProfile 0 (P := fun x : ℝ => 2 * x + ε - 1)
+    (Q := fun _ : ℝ => (2 : ℝ)) hP u
+  rw [burnolSteinDeformed, burnolCollarGamma]
+  rw [show (fun v => burnolCollarH 0 v * (2 * burnolCollarZ 0 v + ε - 1)) =
+    (fun v => burnolCollarH 0 v * ((fun x : ℝ => 2 * x + ε - 1) (burnolCollarZ 0 v))) from rfl, h]
+  ring
+
+theorem burnolSteinDeformed_step_three (ε u : ℝ) :
+    burnolSteinDeformed ε
+        (fun v => burnolCollarGamma v *
+          (4 * burnolCollarZ 0 v ^ 2 + 2 * (2 * ε - 3) * burnolCollarZ 0 v + ε ^ 2 - ε)) u =
+      burnolCollarGamma u *
+        ((ε ^ 3 - ε ^ 2) + (6 * ε ^ 2 - 16 * ε + 12) * burnolCollarZ 0 u +
+          (12 * ε - 28) * burnolCollarZ 0 u ^ 2 + 8 * burnolCollarZ 0 u ^ 3) := by
+  have hP : ∀ x : ℝ, HasDerivAt (fun x : ℝ => 4 * x ^ 2 + 2 * (2 * ε - 3) * x + ε ^ 2 - ε)
+      (8 * x + 2 * (2 * ε - 3)) x := by
+    intro x
+    have h1 : HasDerivAt (fun x : ℝ => 4 * x ^ 2) (4 * (2 * x)) x :=
+      ((hasDerivAt_pow 2 x).const_mul (4 : ℝ)).congr_deriv (by ring)
+    have h2 : HasDerivAt (fun x : ℝ => 2 * (2 * ε - 3) * x) (2 * (2 * ε - 3)) x := by
+      simpa using (hasDerivAt_id x).const_mul (2 * (2 * ε - 3))
+    exact (((h1.add h2).add_const (ε ^ 2)).sub_const ε).congr_deriv (by ring)
+  have h := burnolSteinA_collarProfile 0
+    (P := fun x : ℝ => 4 * x ^ 2 + 2 * (2 * ε - 3) * x + ε ^ 2 - ε)
+    (Q := fun x : ℝ => 8 * x + 2 * (2 * ε - 3)) hP u
+  rw [burnolSteinDeformed, burnolCollarGamma]
+  rw [show (fun v => burnolCollarH 0 v *
+      (4 * burnolCollarZ 0 v ^ 2 + 2 * (2 * ε - 3) * burnolCollarZ 0 v + ε ^ 2 - ε)) =
+    (fun v => burnolCollarH 0 v *
+      ((fun x : ℝ => 4 * x ^ 2 + 2 * (2 * ε - 3) * x + ε ^ 2 - ε) (burnolCollarZ 0 v))) from rfl,
+    h]
+  ring
+
+/-- **Explicit deformed collar kernel.** -/
+theorem burnolCollarKernelDeformed_apply (ε u : ℝ) :
+    burnolCollarKernelDeformed ε u =
+      1 / 2 * burnolCollarGamma u *
+        ((ε ^ 3 - ε ^ 2) + (6 * ε ^ 2 - 16 * ε + 12) * burnolCollarZ 0 u +
+          (12 * ε - 28) * burnolCollarZ 0 u ^ 2 + 8 * burnolCollarZ 0 u ^ 3) := by
+  rw [burnolCollarKernelDeformed]
+  rw [show (burnolSteinDeformed (ε - 1) burnolCollarGamma) =
+      fun v => burnolCollarGamma v * (2 * burnolCollarZ 0 v + ε - 1) from
+    funext (burnolSteinDeformed_gamma ε)]
+  rw [show (burnolSteinDeformed ε
+        (fun v => burnolCollarGamma v * (2 * burnolCollarZ 0 v + ε - 1))) =
+      fun v => burnolCollarGamma v *
+        (4 * burnolCollarZ 0 v ^ 2 + 2 * (2 * ε - 3) * burnolCollarZ 0 v + ε ^ 2 - ε) from
+    funext (burnolSteinDeformed_step_two ε)]
+  rw [burnolSteinDeformed_step_three]
+  ring
+
+/-- At `ε = 0` the deformed kernel is the completed collar kernel. -/
+theorem burnolCollarKernelDeformed_zero (u : ℝ) :
+    burnolCollarKernelDeformed 0 u = burnolCollarKernel 0 u := by
+  rw [burnolCollarKernelDeformed_apply, burnolCollarKernel, burnolCollarGamma, burnolCollarH]
+  ring
+
+/-- **The Bockstein kernel is the transverse derivative of the deformation.** -/
+theorem hasDerivAt_burnolCollarKernelDeformed (u : ℝ) :
+    HasDerivAt (fun ε : ℝ => burnolCollarKernelDeformed ε u) (burnolBocksteinKernel u) 0 := by
+  have hpoly : ∀ ε : ℝ, burnolCollarKernelDeformed ε u =
+      1 / 2 * burnolCollarGamma u * (ε ^ 3 - ε ^ 2) +
+      1 / 2 * burnolCollarGamma u * (6 * ε ^ 2 - 16 * ε + 12) * burnolCollarZ 0 u +
+      1 / 2 * burnolCollarGamma u * (12 * ε - 28) * burnolCollarZ 0 u ^ 2 +
+      1 / 2 * burnolCollarGamma u * 8 * burnolCollarZ 0 u ^ 3 := by
+    intro ε
+    rw [burnolCollarKernelDeformed_apply]
+    ring
+  have hcube : HasDerivAt (fun ε : ℝ => ε ^ 3 - ε ^ 2) (0 : ℝ) 0 := by
+    have h3 : HasDerivAt (fun ε : ℝ => ε ^ 3) (3 * (0 : ℝ) ^ 2) 0 := by
+      simpa using hasDerivAt_pow 3 (0 : ℝ)
+    have h2 : HasDerivAt (fun ε : ℝ => ε ^ 2) (2 * (0 : ℝ) ^ 1) 0 := by
+      simpa using hasDerivAt_pow 2 (0 : ℝ)
+    exact (h3.sub h2).congr_deriv (by norm_num)
+  have hquad : HasDerivAt (fun ε : ℝ => 6 * ε ^ 2 - 16 * ε + 12) (-16 : ℝ) 0 := by
+    have h2 : HasDerivAt (fun ε : ℝ => 6 * ε ^ 2) (6 * (2 * (0 : ℝ) ^ 1)) 0 :=
+      ((hasDerivAt_pow 2 (0 : ℝ)).const_mul (6 : ℝ)).congr_deriv (by norm_num)
+    have h1 : HasDerivAt (fun ε : ℝ => 16 * ε) (16 : ℝ) 0 := by
+      simpa using (hasDerivAt_id (0 : ℝ)).const_mul (16 : ℝ)
+    exact ((h2.sub h1).add_const 12).congr_deriv (by norm_num)
+  have hlin : HasDerivAt (fun ε : ℝ => 12 * ε - 28) (12 : ℝ) 0 := by
+    have h1 : HasDerivAt (fun ε : ℝ => 12 * ε) (12 : ℝ) 0 := by
+      simpa using (hasDerivAt_id (0 : ℝ)).const_mul (12 : ℝ)
+    exact (h1.sub_const 28).congr_deriv rfl
+  have hsum := ((((hcube.const_mul (1 / 2 * burnolCollarGamma u)).add
+    (((hquad.const_mul (1 / 2 * burnolCollarGamma u)).mul_const
+      (burnolCollarZ 0 u)).congr_deriv rfl)).add
+    ((hlin.const_mul (1 / 2 * burnolCollarGamma u)).mul_const
+      (burnolCollarZ 0 u ^ 2))).add
+    (hasDerivAt_const (0 : ℝ) (1 / 2 * burnolCollarGamma u * 8 * burnolCollarZ 0 u ^ 3)))
+  have hfun : (fun ε : ℝ => burnolCollarKernelDeformed ε u) =
+      fun ε : ℝ => 1 / 2 * burnolCollarGamma u * (ε ^ 3 - ε ^ 2) +
+        1 / 2 * burnolCollarGamma u * (6 * ε ^ 2 - 16 * ε + 12) * burnolCollarZ 0 u +
+        1 / 2 * burnolCollarGamma u * (12 * ε - 28) * burnolCollarZ 0 u ^ 2 +
+        1 / 2 * burnolCollarGamma u * 8 * burnolCollarZ 0 u ^ 3 := funext hpoly
+  rw [hfun]
+  refine hsum.congr_deriv ?_
+  rw [burnolBocksteinKernel]
+  ring
+
 end RHTower

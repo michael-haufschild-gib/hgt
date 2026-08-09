@@ -234,3 +234,23 @@ All statements above follow from the form-degree decomposition of a flat superco
 fibrewise cohomology, and the displayed finite-rank example. No route-specific theorem, source
 selector, zero hypothesis, or RH statement is used.
 
+## Lean formalization status
+
+- **Status:** `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
+- **Module:**
+  `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.FlatSuperconnection`
+- **Umbrella wiring:** imported by
+  `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry`; card remains in Stage 2.
+- **Exact hierarchy capstones:** `component_eq_zero`, `differential_sq_zero`,
+  `differential_connection_anticommute`, `curvature_add_nullhomotopy_eq_zero`, and
+  `covariantA2_add_nextNullhomotopy_eq_zero`.
+- **Cohomological observer capstones:** `flatSuperconnection_inducedConnection_sq_eq_zero`,
+  `Differential.induced_curvature_eq_zero`, and `Differential.inducedConnection_sq_eq_zero`.
+- **Exact-model capstones:** `exactModel_nullCurvature`, `exactModel_curvature_ne_zero`,
+  `exactModel_cycles_eq_boundaries`, and `exactModel_cohomology_subsingleton`.
+- **Holonomy-separation capstones:** `circleSignHolonomy_nontrivial` and
+  `zeroCurvature_not_imply_trivialHolonomy`.
+- **Verification:** foreground
+  `lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/FlatSuperconnection.lean`
+  completed with zero errors and zero warnings.
+- **Promotion gate still open:** final umbrella build, project lint, and `#print axioms` audit.

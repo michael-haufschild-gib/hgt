@@ -1,9 +1,9 @@
 # Bipolar provenance and dagger reduction
 
 - **ID:** bipolar-provenance-dagger-reduction
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / DAGGER TOPOLOGY / POSITIVITY-PLACEMENT NO-GO
-- **Scientific status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [NOT RH]
+- **Scientific status:** [LEAN-FORMALIZED] [PAPER-PROVED] [DEPENDENCY-CLOSED] [NOT RH]
   [NEW CORPUS SYNTHESIS] [CLASSICAL LINEAR PARENTS]
 - **Source:** ../../1-in-progress/polarized-exchange-horizon-geometry/
   polarized-exchange-horizon-geometry-program.md
@@ -344,9 +344,11 @@ polarized exchange, missing map must preserve provenance reduction and be nonzer
    assumed. Any such model must realize (14)--(19), including source provenance.
 4. **No positivity claim.** Theorem proves where positivity cannot live. It does not construct
    positive form on Meyer quotient or prove RH.
-5. **No Lean claim.** No Lean code was written or built. Later formalization can use annihilators,
-   quotient duality, finite-dimensional orthogonal complements, and positive-definite anisotropy;
-   exact library names must be checked in this toolchain.
+5. **Lean status.** Sections 1--5 are now unconditional Lean theorems in
+   `formal/GaloisForLFunctions/HTGeometry/ExactnessFlagDaggerDuality.lean`,
+   `ExactnessFlagBipolarTopology.lean`, `ExactnessFlagPhaseCertificate.lean`, and
+   `ExactnessFlagGreenReduction.lean`; see the companion certificate card. The quotient duality is
+   proved without finite-dimensionality, and the phase certificate over any `RCLike` field.
 
 ## Gates
 
@@ -355,11 +357,17 @@ polarized exchange, missing map must preserve provenance reduction and be nonzer
   no-go paper-proved
 - [x] exact application to rank-one exchange and Meyer--Poisson range recorded
 - [x] broad current literature boundary recorded
-- [ ] 2 -> 3: formalization deferred by user instruction
+- [x] 2 -> 3: unconditional Lean formalization
+  (`bipolar-provenance-dagger-reduction-formalized.md`)
 - [ ] 3 -> 4: external boundary-triples/Krein specialist audit
 
 ## Log
 
+- 2026-08-09 — Formalized in Lean 4 without hypotheses: the dagger flag, its perfect pairing and
+  the isomorphism \((Z/B)^\vee\cong B^\circ/Z^\circ\), involutivity, the provenance discontinuity,
+  the bipolar refinement with its coarsest-refinement property, generator classification,
+  unchanged specialization order, dagger homeomorphism, the continuous phase certificate, and the
+  Green reduction with its positivity no-go and hyperbolic witness.
 - 2026-08-08 — Proved that exactness-flag dagger dualizes spectral quotient but is discontinuous
   in one-sided provenance topology; constructed minimal dagger-stable bipolar refinement.
 - 2026-08-08 — Proved positive-definite chain-level Green self-duality forces zero boundaries.

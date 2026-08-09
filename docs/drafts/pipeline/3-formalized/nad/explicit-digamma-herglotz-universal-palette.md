@@ -1,9 +1,10 @@
 # Explicit digamma Herglotz universal palette
 
 - **ID:** `explicit-digamma-herglotz-universal-palette`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / EXPLICIT REALIZATION
-- **Scientific status:** `[EXPLICIT HERGLOTZ CONSTRUCTION FORMALIZED; JOINT GAMMA-SHIFT INDEPENDENCE NOT YET FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[EXPLICIT HERGLOTZ CONSTRUCTION AND JOINT GAMMA-SHIFT INDEPENDENCE BOTH FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Formalized companion:** `explicit-digamma-herglotz-universal-palette-formalized.md`
 - **Target paper:**
   `../4-publication-ready/universal-constraint-orientation-product-law/main.tex`
 
@@ -41,8 +42,7 @@ g_star(z+s(q)) = digamma(z+alpha_q) + EulerGamma.
 
 Hardouin, Compositio Math. 144 (2008), Corollary 4.4, proves hyperalgebraic independence of finite
 families of Gamma translates whose periodic divisors are integer-linearly independent.  Distinct
-classes `alpha_q mod Z` give independent point divisors.  Passing to logarithmic derivatives is a
-triangular rational jet substitution, so every finite family
+classes `alpha_q mod Z` give independent point divisors, so every finite family
 
 ```text
 digamma(z+alpha_q)
@@ -51,6 +51,15 @@ digamma(z+alpha_q)
 is differentially algebraically independent over `C(z)`.  Dependence is finitary, hence the entire
 countable palette is independent.  This is an application of an established parent theorem, not
 an original hypertranscendence claim.
+
+The corpus proves the statement it needs directly, so nothing here rests on the cited paper.
+`ShiftedDigammaFamilyIndependence.differentialIndependent_digammaShiftMero` is the finite
+pairwise-incongruent case in the global meromorphic differential field;
+`ExplicitDigammaPaletteIndependence.differentialIndependent_digammaShiftMero_general` removes the
+finiteness of the index using `DifferentialIndependent.of_finite`; and
+`differentialIndependent_explicitDigammaPalette` instantiates it at
+`alpha_n = 1/(n+2)` through the already-proved integer incongruence
+`explicitDigammaPalettePoint_sub_ne_int`.
 
 ## Herglotz law
 
@@ -122,8 +131,8 @@ realization exactly stratifies its infinite field coordinate.
 - [x] paper proof of Herglotz and finite rational-gauge laws
 - [x] paper proof of normally convergent arbitrary orientation representatives
 - [x] exact infinite signed Herglotz law, including normally convergent deleted-pole backgrounds
-- [x] formalize the new source-specific positivity and finite/cofinal sign cores from the classical
-  Gamma-shift input boundary
+- [x] formalize the new source-specific positivity and finite/cofinal sign cores
+- [x] formalize the joint Gamma-shift independence of the explicit palette
 - [x] integrate into the journal manuscript and rebuild the PDF
 - [ ] complete novelty/significance audit of the combined geometry
 
@@ -164,9 +173,12 @@ The source-specific theorem surface is axiom-clean.
   bounded signed completion, upper-half-plane holomorphy, deleted-pole regularity and atom splitting,
   and the exact infinite Boolean Herglotz equivalence.
 - The finite rational-gauge differential-field and Stanley--Reisner consequences are formalized in
-  `UniversalConstraintOrientation.lean` and `UniversalOrientedConstraintProduct.lean`. The
-  Hardouin joint Gamma-shift independence result remains the explicitly cited classical parent
-  boundary; no project axiom is introduced for it.
+  `UniversalConstraintOrientation.lean` and `UniversalOrientedConstraintProduct.lean`.
+- `ExplicitDigammaPaletteIndependence.lean` closes the last gap: differential independence is
+  finitary (`DifferentialIndependent.of_finite`), the shifted-digamma independence theorem extends
+  to an arbitrary index, and the whole countable explicit palette
+  `n ↦ psi(z + 1/(n+2))` is differentially independent over `C(z)`.  No classical parent is
+  assumed and no project axiom is introduced.
 
 Targeted builds of both explicit digamma modules, `#print axioms` on the finite, infinite,
 normal-convergence, source-identification, and Herglotz capstones, and the repository formal lint

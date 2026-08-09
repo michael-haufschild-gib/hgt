@@ -1,7 +1,8 @@
 # Physical prime-log aperture fusion and the off-diagonal RH kernel
 
 - **ID:** `xi-physical-prime-log-aperture-fusion-cross-kernel`
-- **Stage:** `2-fully-proven / needs-audit`
+- **Stage:** `3-formalized`
+- **Formalized companion:** `xi-physical-prime-log-aperture-fusion-cross-kernel-formalized.md`
 - **Type:** `THEOREM / NEW RH-PROOF-SHAPE OBJECT / POSITIVE SURVIVOR`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED FINITE CORE] [SOURCE-DEFINED]`
   `[UNCONDITIONAL] [NOVELTY UNVERIFIED]`

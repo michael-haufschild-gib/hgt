@@ -1,7 +1,8 @@
 # Burnol finite-holonomy/Cauchy sector separation
 
 - **ID:** `burnol-holonomy-cauchy-sector-separation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `burnol-holonomy-cauchy-sector-separation-formalized.md`
 - **Type:** THEOREM / NO-GO CLOSURE
 - **Conjecture label:** C13
 - **Inputs:** `BurnolCoPoissonQuotientOrder`, `BurnolDividedShiftPhysicalDissipativity`,
@@ -65,3 +66,8 @@ with the zeros of the Riemann zeta function*; Burnol (2007), *Entrelacement de c
 both uncompressed and quotient-compressed separation theorems. Exact `lake env lean` source
 verification passes. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 The module is wired into `RHTower.lean`; no umbrella build was run.
+
+## Log
+
+- 2026-08-09 — re-verified the three theorems (clean `lake env lean`, axioms `propext`,
+  `Classical.choice`, `Quot.sound`, `RHTower` umbrella import present) and promoted to stage 3.

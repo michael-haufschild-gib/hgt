@@ -1,7 +1,8 @@
 # Xi Euler-Ray Two-Node Response Barrier
 
 - **ID:** `xi-euler-ray-two-node-response-barrier`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
+- **Formalized companion:** `xi-euler-ray-two-node-response-barrier-formalized.md`
 - **Type:** THEOREM (paper) / positive survivor of the signed-Jordan-mass no-go
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[INTERNAL NOVELTY AUDITED] [EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`

@@ -126,45 +126,65 @@ theorem burnolEventually_log_pow_le_rpow {δ : ℝ} (hδ : 0 < δ) (k : ℕ) :
     _ ≤ x ^ δ := hx
 
 /-- The prime-log tail with subexponential damping is dominated by the critical series:
-`u^{2k} e^{-2y√u} ≤ C / u²` for `u ≥ 1`. -/
+`u^k e^{-2y√u} ≤ C / u²` for every `u > 0`. -/
 theorem burnolPow_mul_exp_neg_sqrt_le {y : ℝ} (hy : 0 < y) (k : ℕ) :
-    ∃ C : ℝ, 0 < C ∧ ∀ u : ℝ, 1 ≤ u →
+    ∃ C : ℝ, 0 < C ∧ ∀ u : ℝ, 0 < u →
       u ^ k * Real.exp (-(2 * y * Real.sqrt u)) ≤ C / u ^ 2 := by
   classical
   set m : ℕ := 2 * k + 4 with hm
-  refine ⟨(m.factorial : ℝ) / (2 * y) ^ m, by positivity, ?_⟩
+  set C₀ : ℝ := (m.factorial : ℝ) / (2 * y) ^ m with hC₀
+  have hC₀pos : 0 < C₀ := by positivity
+  have hbig : ∀ u : ℝ, 1 ≤ u → u ^ k * Real.exp (-(2 * y * Real.sqrt u)) ≤ C₀ / u ^ 2 := by
+    intro u hu
+    have hupos : (0 : ℝ) < u := lt_of_lt_of_le one_pos hu
+    set v : ℝ := Real.sqrt u with hv
+    have hvpos : (0 : ℝ) < v := Real.sqrt_pos.mpr hupos
+    have hv2 : v ^ 2 = u := Real.sq_sqrt hupos.le
+    have h2y : (0 : ℝ) < 2 * y := by positivity
+    have hfac : (0 : ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
+    have hE : (0 : ℝ) < Real.exp (2 * y * v) := Real.exp_pos _
+    have hexp : (2 * y * v) ^ m / (m.factorial : ℝ) ≤ Real.exp (2 * y * v) := by
+      have hnn : (0 : ℝ) ≤ 2 * y * v := by positivity
+      have hsum := Real.sum_le_exp_of_nonneg hnn (m + 1)
+      have hmem : (2 * y * v) ^ m / (m.factorial : ℝ) ≤
+          ∑ i ∈ Finset.range (m + 1), (2 * y * v) ^ i / (i.factorial : ℝ) :=
+        Finset.single_le_sum (f := fun i : ℕ => (2 * y * v) ^ i / (i.factorial : ℝ))
+          (fun i _ => by positivity) (Finset.self_mem_range_succ m)
+      linarith
+    have hkey : v ^ m ≤ C₀ * Real.exp (2 * y * v) := by
+      have hexpand : (2 * y * v) ^ m = (2 * y) ^ m * v ^ m := by rw [mul_pow]
+      rw [hexpand, div_le_iff₀ hfac] at hexp
+      have hform : C₀ * Real.exp (2 * y * v) =
+          (Real.exp (2 * y * v) * (m.factorial : ℝ)) / (2 * y) ^ m := by
+        rw [hC₀]
+        ring
+      rw [hform, le_div_iff₀ (by positivity : (0 : ℝ) < (2 * y) ^ m), mul_comm]
+      exact hexp
+    have hrewrite : u ^ k * Real.exp (-(2 * y * v)) = v ^ m / (v ^ 4 * Real.exp (2 * y * v)) := by
+      have hmsplit : v ^ m = v ^ (2 * k) * v ^ 4 := by rw [hm, ← pow_add]
+      rw [Real.exp_neg, hmsplit, pow_mul, hv2]
+      field_simp
+    rw [hrewrite]
+    have hu2 : u ^ 2 = v ^ 4 := by rw [← hv2]; ring
+    rw [hu2, div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [mul_le_mul_of_nonneg_right hkey (by positivity : (0 : ℝ) ≤ v ^ 4), hE,
+      pow_nonneg hvpos.le 4]
+  refine ⟨max 1 C₀, lt_of_lt_of_le one_pos (le_max_left _ _), ?_⟩
   intro u hu
-  have hupos : (0 : ℝ) < u := lt_of_lt_of_le one_pos hu
-  set v : ℝ := Real.sqrt u with hv
-  have hvpos : (0 : ℝ) < v := Real.sqrt_pos.mpr hupos
-  have hv2 : v ^ 2 = u := Real.sq_sqrt hupos.le
-  have hexp : (2 * y * v) ^ m / (m.factorial : ℝ) ≤ Real.exp (2 * y * v) := by
-    have hnn : (0 : ℝ) ≤ 2 * y * v := by positivity
-    have hsum := Real.sum_le_exp_of_nonneg hnn (m + 1)
-    have hmem : (2 * y * v) ^ m / (m.factorial : ℝ) ≤
-        ∑ i ∈ Finset.range (m + 1), (2 * y * v) ^ i / (i.factorial : ℝ) := by
-      refine Finset.single_le_sum (f := fun i : ℕ => (2 * y * v) ^ i / (i.factorial : ℝ))
-        (fun i _ => by positivity) (Finset.self_mem_range_succ m)
-    linarith
-  have h2y : (0 : ℝ) < 2 * y := by positivity
-  have hfac : (0 : ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
-  have hE : (0 : ℝ) < Real.exp (2 * y * v) := Real.exp_pos _
-  have hkey : v ^ m ≤ (m.factorial : ℝ) / (2 * y) ^ m * Real.exp (2 * y * v) := by
-    have hexpand : (2 * y * v) ^ m = (2 * y) ^ m * v ^ m := by rw [mul_pow]
-    rw [hexpand, div_le_iff₀ hfac] at hexp
-    have hform : (m.factorial : ℝ) / (2 * y) ^ m * Real.exp (2 * y * v) =
-        (Real.exp (2 * y * v) * (m.factorial : ℝ)) / (2 * y) ^ m := by ring
-    rw [hform, le_div_iff₀ (by positivity : (0 : ℝ) < (2 * y) ^ m), mul_comm]
-    exact hexp
-  have hrewrite : u ^ k * Real.exp (-(2 * y * v)) = v ^ m / (v ^ 4 * Real.exp (2 * y * v)) := by
-    have hmsplit : v ^ m = v ^ (2 * k) * v ^ 4 := by rw [hm, ← pow_add]
-    rw [Real.exp_neg, hmsplit, pow_mul, hv2]
-    field_simp
-  rw [hrewrite]
-  have hu2 : u ^ 2 = v ^ 4 := by rw [← hv2]; ring
-  rw [hu2, div_le_div_iff₀ (by positivity) (by positivity)]
-  have hstep : v ^ m * v ^ 4 ≤ ((m.factorial : ℝ) / (2 * y) ^ m * Real.exp (2 * y * v)) *
-      v ^ 4 := mul_le_mul_of_nonneg_right hkey (by positivity)
-  nlinarith [hstep, hE, pow_nonneg hvpos.le 4]
+  rcases le_or_gt 1 u with hge | hlt
+  · refine (hbig u hge).trans ?_
+    exact div_le_div_of_nonneg_right (le_max_right 1 C₀) (by positivity) |>.trans_eq rfl
+  · have hsmall : u ^ k * Real.exp (-(2 * y * Real.sqrt u)) ≤ 1 := by
+      have h1 : u ^ k ≤ 1 := pow_le_one₀ hu.le hlt.le
+      have h2 : Real.exp (-(2 * y * Real.sqrt u)) ≤ 1 := by
+        refine Real.exp_le_one_iff.mpr ?_
+        have : 0 ≤ 2 * y * Real.sqrt u := by positivity
+        linarith
+      nlinarith [Real.exp_pos (-(2 * y * Real.sqrt u)), pow_nonneg hu.le k]
+    refine hsmall.trans ?_
+    rw [le_div_iff₀ (by positivity)]
+    have hu2 : u ^ 2 ≤ 1 := by nlinarith
+    have hCge : (1 : ℝ) ≤ max 1 C₀ := le_max_left _ _
+    nlinarith
 
 end RHTower

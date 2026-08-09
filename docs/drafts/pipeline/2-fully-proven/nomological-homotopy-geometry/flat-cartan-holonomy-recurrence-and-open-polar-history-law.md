@@ -177,3 +177,23 @@ NHG proper-recurrence model.
    the opposite behaviour.
 6. No arithmetic, spectral-zero, black-hole, wormhole, or endpoint interpretation is used.
 
+## Lean formalization status
+
+- **Status:** `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
+- **Pipeline location:** unchanged in Stage 2, per explicit instruction; this card has not been moved.
+- **Module:**
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/FlatCartanHolonomy.lean`
+- **Formalized content:** split cyclic form; Lorentz boost linear equivalences and additive
+  one-parameter law; exact preservation of the split form; constant one-dimensional Cartan
+  connection curvature; boost parallel-transport equation and one-turn endpoint; circle monodromy
+  representation and exact cyclic holonomy range; Cartan involutions, transport law, injective
+  polarization parameter, and fixed-point obstruction; positive-definite polarized metric with
+  exact expanding/contracting eigenlines; spectral condition number `exp (4 * |u|)`; compact
+  additive-circle quotient; closed observed history with escaping marked lift; interval-integral
+  length and quadratic action formulas and their divergence; exponential conditioning divergence;
+  closed capstone `flatCartan_fourFaceLaw` collecting all seven faces for every `a ≠ 0`.
+- **Verification:**
+  `lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/FlatCartanHolonomy.lean`
+  completed in foreground with exit code `0` and no warnings.
+- **Remaining audit:** final umbrella `lake build` and `#print axioms` audit are intentionally
+  deferred to the repository-wide final audit required by the task.

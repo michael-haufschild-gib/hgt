@@ -1,155 +1,105 @@
-import GaloisForLFunctions.HTGeometry.IntegralCauchySchwarz
+import Mathlib
 
 /-!
-# Young's inequality for `L²` convolution on the line
+# Young's convolution inequality `L¹ ⋆ L² → L²`
 
-`‖k ⋆ f‖₂ ≤ ‖k‖₁ ‖f‖₂`.  mathlib carries the convolution and its smoothness theory but not this
-estimate.
+Neither mathlib nor this tree carries a convolution norm inequality.  This file proves the one
+needed to see a half-line integral operator with an `L¹` kernel as a bounded operator on `L²`:
 
-The pointwise step is Cauchy–Schwarz against the weight `|k|`; the outer step is Tonelli on a
-nonnegative integrand, which has to run in `ℝ≥0∞` because the joint-integrability hypothesis of
-`integral_integral_swap` is the very quantity being computed.
+`‖k ⋆ f‖₂ ≤ ‖k‖₁ · ‖f‖₂`.
+
+Everything is stated in `ℝ≥0∞` for the absolute values, so no integrability hypothesis is needed
+anywhere; the proof is Cauchy--Schwarz against the weight `|k| dy` followed by Tonelli and
+translation invariance.
+
+* `lintegral_weighted_sq_le` — `(∫ K·G)² ≤ (∫K)·(∫ K·G²)`;
+* **`lintegral_convolution_sq_le`** — the inequality in `ℝ≥0∞` form;
+* **`lintegral_enorm_sq_le_of_convolution_bound`** — the form an operator bound consumes: a
+  function dominated pointwise by a convolution majorant has square integral at most
+  `‖K‖₁² · ‖F‖₂²`.
 -/
 
-open MeasureTheory ENNReal
+open MeasureTheory ENNReal Filter
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- The convolution of a kernel with a profile on the line. -/
-noncomputable def lineConvolution (k f : ℝ → ℝ) (x : ℝ) : ℝ := ∫ y, k y * f (x - y)
-
-/-- **Tonelli for the weighted squared translate.** -/
-theorem lintegral_weighted_translate_sq {k f : ℝ → ℝ} (hk : Measurable k) (hf : Measurable f) :
-    (∫⁻ x, ∫⁻ y, ENNReal.ofReal (|k y| * f (x - y) ^ 2))
-      = (∫⁻ y, ENNReal.ofReal |k y|) * ∫⁻ x, ENNReal.ofReal (f x ^ 2) := by
-  have hmeas : Measurable fun p : ℝ × ℝ => ENNReal.ofReal (|k p.2| * f (p.1 - p.2) ^ 2) := by
-    refine ENNReal.measurable_ofReal.comp ?_
-    exact ((hk.comp measurable_snd).abs).mul
-      (((hf.comp (measurable_fst.sub measurable_snd))).pow_const 2)
-  rw [lintegral_lintegral_swap hmeas.aemeasurable]
-  have hinner : ∀ y : ℝ, (∫⁻ x, ENNReal.ofReal (|k y| * f (x - y) ^ 2))
-      = ENNReal.ofReal |k y| * ∫⁻ x, ENNReal.ofReal (f x ^ 2) := by
+/-- **Cauchy--Schwarz against a weight.**  For `ℝ≥0∞`-valued measurable functions,
+`(∫ K·G)² ≤ (∫K)·(∫ K·G²)`. -/
+theorem lintegral_weighted_sq_le {α : Type*} [MeasurableSpace α] (μ : Measure α)
+    {K G : α → ℝ≥0∞} (hK : Measurable K) (hG : Measurable G) :
+    (∫⁻ y, K y * G y ∂μ) ^ 2 ≤ (∫⁻ y, K y ∂μ) * ∫⁻ y, K y * G y ^ 2 ∂μ := by
+  have hconj : Real.HolderConjugate 2 2 := by
+    constructor <;> norm_num
+  have hsplit : ∀ y, K y * G y = (K y ^ ((1 : ℝ) / 2)) * ((K y ^ ((1 : ℝ) / 2)) * G y) := by
     intro y
-    have hstep : ∀ x : ℝ, ENNReal.ofReal (|k y| * f (x - y) ^ 2)
-        = ENNReal.ofReal |k y| * ENNReal.ofReal (f (x - y) ^ 2) := by
-      intro x
-      rw [ENNReal.ofReal_mul (abs_nonneg _)]
-    have hm2 : Measurable fun x : ℝ => ENNReal.ofReal (f (x - y) ^ 2) := by fun_prop
-    simp only [hstep]
-    rw [lintegral_const_mul _ hm2]
-    congr 1
-    exact lintegral_sub_right_eq_self (fun x => ENNReal.ofReal (f x ^ 2)) y
-  simp only [hinner]
-  exact lintegral_mul_const'' _ (by fun_prop)
-
-/-- **The pointwise Cauchy–Schwarz step of Young's inequality.**  At every point, the square of the
-convolution is at most the kernel's total mass times its weighted mean of the squared translate. -/
-theorem sq_lineConvolution_le {k f : ℝ → ℝ} {x : ℝ}
-    (hkm : AEStronglyMeasurable k volume) (hfm : AEStronglyMeasurable f volume)
-    (hki : Integrable (fun y => |k y|))
-    (h2 : Integrable (fun y => |k y| * f (x - y) ^ 2)) :
-    lineConvolution k f x ^ 2 ≤ (∫ y, |k y|) * ∫ y, |k y| * f (x - y) ^ 2 := by
-  have hg : AEStronglyMeasurable (fun y => f (x - y)) volume :=
-    hfm.comp_measurePreserving ((volume : Measure ℝ).measurePreserving_sub_left x)
-  have hkabs : AEStronglyMeasurable (fun y => |k y|) volume := by
-    simpa [Real.norm_eq_abs] using hkm.norm
-  have hgabs : AEStronglyMeasurable (fun y => |f (x - y)|) volume := by
-    simpa [Real.norm_eq_abs] using hg.norm
-  have habs2 : Integrable (fun y => |k y| * |f (x - y)| ^ 2) := by
-    refine h2.congr ?_
-    filter_upwards with y
-    rw [sq_abs]
-  have hcs := sq_integral_weighted_le (μ := (volume : Measure ℝ))
-    (w := fun y => |k y|) (g := fun y => |f (x - y)|)
-    (fun y => abs_nonneg _) hkabs hgabs hki habs2
-  have hsq : (∫ y, |k y| * |f (x - y)| ^ 2) = ∫ y, |k y| * f (x - y) ^ 2 := by
-    refine integral_congr_ae ?_
-    filter_upwards with y
-    rw [sq_abs]
-  rw [hsq] at hcs
-  have hbound : |lineConvolution k f x| ≤ ∫ y, |k y| * |f (x - y)| := by
-    rw [lineConvolution]
-    refine le_trans (abs_integral_le_integral_abs) ?_
-    refine le_of_eq (integral_congr_ae ?_)
-    filter_upwards with y
-    rw [abs_mul]
-  calc lineConvolution k f x ^ 2 = |lineConvolution k f x| ^ 2 := (sq_abs _).symm
-    _ ≤ (∫ y, |k y| * |f (x - y)|) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) hbound 2
-    _ ≤ (∫ y, |k y|) * ∫ y, |k y| * f (x - y) ^ 2 := hcs
-
-
-/-! ## Joint integrability of the weighted translate -/
-
-/-- The double integrand of Young's inequality is jointly integrable, by the Tonelli identity. -/
-theorem integrable_weighted_translate_sq {k f : ℝ → ℝ} (hk : Measurable k) (hf : Measurable f)
-    (hki : Integrable (fun y => |k y|)) (hf2 : Integrable (fun x => f x ^ 2)) :
-    Integrable (Function.uncurry fun x y => |k y| * f (x - y) ^ 2)
-      ((volume : Measure ℝ).prod volume) := by
-  have hmeas : Measurable (Function.uncurry fun x y : ℝ => |k y| * f (x - y) ^ 2) :=
-    ((hk.comp measurable_snd).abs).mul
-      ((hf.comp (measurable_fst.sub measurable_snd)).pow_const 2)
-  refine ⟨hmeas.aestronglyMeasurable, ?_⟩
-  have hnn : ∀ p : ℝ × ℝ, 0 ≤ (Function.uncurry fun x y : ℝ => |k y| * f (x - y) ^ 2) p := by
-    intro p; exact mul_nonneg (abs_nonneg _) (sq_nonneg _)
-  have henorm : (∫⁻ p, ‖(Function.uncurry fun x y : ℝ => |k y| * f (x - y) ^ 2) p‖ₑ
-      ∂((volume : Measure ℝ).prod volume))
-      = ∫⁻ p, ENNReal.ofReal ((Function.uncurry fun x y : ℝ => |k y| * f (x - y) ^ 2) p)
-        ∂((volume : Measure ℝ).prod volume) := by
-    refine lintegral_congr fun p => ?_
-    rw [← ofReal_norm, Real.norm_eq_abs, abs_of_nonneg (hnn p)]
-  have hprod : (∫⁻ p, ENNReal.ofReal ((Function.uncurry fun x y : ℝ => |k y| * f (x - y) ^ 2) p)
-      ∂((volume : Measure ℝ).prod volume))
-      = ∫⁻ x, ∫⁻ y, ENNReal.ofReal (|k y| * f (x - y) ^ 2) :=
-    lintegral_prod _ ((ENNReal.measurable_ofReal.comp hmeas).aemeasurable)
-  rw [HasFiniteIntegral, henorm, hprod, lintegral_weighted_translate_sq hk hf]
-  have h1 : (∫⁻ y, ENNReal.ofReal |k y|) ≠ ⊤ := by
-    have := hki.hasFiniteIntegral
-    rw [HasFiniteIntegral] at this
-    refine ne_of_lt (lt_of_le_of_lt (le_of_eq ?_) this)
+    rw [← mul_assoc, ← ENNReal.rpow_add_of_nonneg _ _ (by norm_num) (by norm_num)]
+    norm_num
+  have hf : Measurable fun y => K y ^ ((1 : ℝ) / 2) := by fun_prop
+  have hg : Measurable fun y => (K y ^ ((1 : ℝ) / 2)) * G y := hf.mul hG
+  have hholder := ENNReal.lintegral_mul_le_Lp_mul_Lq μ hconj hf.aemeasurable hg.aemeasurable
+  have hA : ∫⁻ y, (K y ^ ((1 : ℝ) / 2)) ^ (2 : ℝ) ∂μ = ∫⁻ y, K y ∂μ := by
     refine lintegral_congr fun y => ?_
-    rw [← ofReal_norm, Real.norm_eq_abs, abs_of_nonneg (abs_nonneg _)]
-  have h2 : (∫⁻ x, ENNReal.ofReal (f x ^ 2)) ≠ ⊤ := by
-    have := hf2.hasFiniteIntegral
-    rw [HasFiniteIntegral] at this
-    refine ne_of_lt (lt_of_le_of_lt (le_of_eq ?_) this)
-    refine lintegral_congr fun x => ?_
-    rw [← ofReal_norm, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-  exact ENNReal.mul_lt_top (lt_of_le_of_ne le_top h1) (lt_of_le_of_ne le_top h2)
+    rw [← ENNReal.rpow_mul]
+    norm_num
+  have hB : ∫⁻ y, ((K y ^ ((1 : ℝ) / 2)) * G y) ^ (2 : ℝ) ∂μ
+      = ∫⁻ y, K y * G y ^ 2 ∂μ := by
+    refine lintegral_congr fun y => ?_
+    rw [ENNReal.mul_rpow_of_nonneg _ _ (by norm_num), ← ENNReal.rpow_mul]
+    norm_num
+  have hmain : (∫⁻ y, K y * G y ∂μ)
+      ≤ (∫⁻ y, K y ∂μ) ^ ((1 : ℝ) / 2) * (∫⁻ y, K y * G y ^ 2 ∂μ) ^ ((1 : ℝ) / 2) := by
+    calc ∫⁻ y, K y * G y ∂μ
+        = ∫⁻ y, (K y ^ ((1 : ℝ) / 2)) * ((K y ^ ((1 : ℝ) / 2)) * G y) ∂μ := by
+          exact lintegral_congr fun y => hsplit y
+      _ ≤ (∫⁻ y, (K y ^ ((1 : ℝ) / 2)) ^ (2 : ℝ) ∂μ) ^ ((1 : ℝ) / 2)
+          * (∫⁻ y, ((K y ^ ((1 : ℝ) / 2)) * G y) ^ (2 : ℝ) ∂μ) ^ ((1 : ℝ) / 2) := by
+          simpa using hholder
+      _ = (∫⁻ y, K y ∂μ) ^ ((1 : ℝ) / 2) * (∫⁻ y, K y * G y ^ 2 ∂μ) ^ ((1 : ℝ) / 2) := by
+          rw [hA, hB]
+  calc (∫⁻ y, K y * G y ∂μ) ^ 2
+      ≤ ((∫⁻ y, K y ∂μ) ^ ((1 : ℝ) / 2)
+          * (∫⁻ y, K y * G y ^ 2 ∂μ) ^ ((1 : ℝ) / 2)) ^ 2 := by
+        exact pow_le_pow_left' hmain 2
+    _ = (∫⁻ y, K y ∂μ) * ∫⁻ y, K y * G y ^ 2 ∂μ := by
+        rw [mul_pow, ← ENNReal.rpow_natCast ((∫⁻ y, K y ∂μ) ^ ((1 : ℝ) / 2)) 2,
+          ← ENNReal.rpow_natCast ((∫⁻ y, K y * G y ^ 2 ∂μ) ^ ((1 : ℝ) / 2)) 2,
+          ← ENNReal.rpow_mul, ← ENNReal.rpow_mul]
+        norm_num
 
+/-- **Young's convolution inequality in `ℝ≥0∞` form.** -/
+theorem lintegral_convolution_sq_le {K F : ℝ → ℝ≥0∞} (hK : Measurable K) (hF : Measurable F) :
+    ∫⁻ x, (∫⁻ y, K y * F (x - y)) ^ 2 ≤ (∫⁻ y, K y) ^ 2 * ∫⁻ x, F x ^ 2 := by
+  have hprod : Measurable fun p : ℝ × ℝ => K p.2 * F (p.1 - p.2) ^ 2 :=
+    (hK.comp measurable_snd).mul ((hF.comp (measurable_fst.sub measurable_snd)).pow_const 2)
+  have hstep : ∀ x : ℝ, (∫⁻ y, K y * F (x - y)) ^ 2
+      ≤ (∫⁻ y, K y) * ∫⁻ y, K y * F (x - y) ^ 2 := by
+    intro x
+    exact lintegral_weighted_sq_le volume hK (hF.comp (measurable_const.sub measurable_id))
+  calc ∫⁻ x, (∫⁻ y, K y * F (x - y)) ^ 2
+      ≤ ∫⁻ x, (∫⁻ y, K y) * ∫⁻ y, K y * F (x - y) ^ 2 := lintegral_mono hstep
+    _ = (∫⁻ y, K y) * ∫⁻ x, ∫⁻ y, K y * F (x - y) ^ 2 := by
+        rw [lintegral_const_mul _ (by fun_prop)]
+    _ = (∫⁻ y, K y) * ∫⁻ y, ∫⁻ x, K y * F (x - y) ^ 2 := by
+        rw [lintegral_lintegral_swap hprod.aemeasurable]
+    _ = (∫⁻ y, K y) * ∫⁻ y, K y * ∫⁻ x, F x ^ 2 := by
+        congr 1
+        refine lintegral_congr fun y => ?_
+        have hmeas : Measurable fun x : ℝ => F (x - y) ^ 2 := by fun_prop
+        rw [lintegral_const_mul _ hmeas]
+        congr 1
+        exact lintegral_sub_right_eq_self (fun x => F x ^ 2) y
+    _ = (∫⁻ y, K y) ^ 2 * ∫⁻ x, F x ^ 2 := by
+        rw [lintegral_mul_const _ hK, sq]
+        ring
 
-/-! ## Young's inequality -/
-
-/-- The double integral of the weighted translate factors. -/
-theorem integral_double_translate_sq {k f : ℝ → ℝ} (hk : Measurable k) (hf : Measurable f)
-    (hki : Integrable (fun y => |k y|)) (hf2 : Integrable (fun x => f x ^ 2)) :
-    (∫ x, ∫ y, |k y| * f (x - y) ^ 2) = (∫ y, |k y|) * ∫ x, f x ^ 2 := by
-  have hjoint := integrable_weighted_translate_sq hk hf hki hf2
-  rw [integral_integral_swap hjoint]
-  have hinner : ∀ y : ℝ, (∫ x, |k y| * f (x - y) ^ 2) = |k y| * ∫ x, f x ^ 2 := by
-    intro y
-    rw [integral_const_mul]
-    congr 1
-    exact integral_sub_right_eq_self (fun x => f x ^ 2) y
-  simp only [hinner]
-  rw [integral_mul_const]
-
-/-- **Young's inequality for `L²` convolution.**  `‖k ⋆ f‖₂ ≤ ‖k‖₁ ‖f‖₂`, in squared form. -/
-theorem integral_sq_lineConvolution_le {k f : ℝ → ℝ} (hk : Measurable k) (hf : Measurable f)
-    (hki : Integrable (fun y => |k y|)) (hf2 : Integrable (fun x => f x ^ 2))
-    (hconv : Integrable (fun x => lineConvolution k f x ^ 2)) :
-    (∫ x, lineConvolution k f x ^ 2) ≤ (∫ y, |k y|) ^ 2 * ∫ x, f x ^ 2 := by
-  have hjoint := integrable_weighted_translate_sq hk hf hki hf2
-  have hG : Integrable (fun x => ∫ y, |k y| * f (x - y) ^ 2) := hjoint.integral_prod_left
-  have hae : ∀ᵐ x, Integrable (fun y => |k y| * f (x - y) ^ 2) := hjoint.prod_right_ae
-  have hbound : ∀ᵐ x, lineConvolution k f x ^ 2
-      ≤ (∫ y, |k y|) * ∫ y, |k y| * f (x - y) ^ 2 := by
-    filter_upwards [hae] with x hx
-    exact sq_lineConvolution_le hk.aestronglyMeasurable hf.aestronglyMeasurable hki hx
-  have hmono := integral_mono_ae hconv (hG.const_mul _) hbound
-  rw [integral_const_mul, integral_double_translate_sq hk hf hki hf2] at hmono
-  calc (∫ x, lineConvolution k f x ^ 2)
-      ≤ (∫ y, |k y|) * ((∫ y, |k y|) * ∫ x, f x ^ 2) := hmono
-    _ = (∫ y, |k y|) ^ 2 * ∫ x, f x ^ 2 := by ring
-
+/-- **Operator form.**  A function dominated pointwise by the convolution majorant `K ⋆ F` has
+square integral at most `(∫K)²·∫F²`.  For `K = ‖k‖₊` and `F = ‖f‖₊` this is `‖k ⋆ f‖₂ ≤ ‖k‖₁‖f‖₂`,
+the boundedness of convolution by an `L¹` kernel on `L²`. -/
+theorem lintegral_enorm_sq_le_of_convolution_bound {E : Type*} [NormedAddCommGroup E]
+    {G : ℝ → E} {K F : ℝ → ℝ≥0∞} (hK : Measurable K) (hF : Measurable F)
+    (hG : ∀ x, ‖G x‖ₑ ≤ ∫⁻ y, K y * F (x - y)) :
+    ∫⁻ x, ‖G x‖ₑ ^ 2 ≤ (∫⁻ y, K y) ^ 2 * ∫⁻ x, F x ^ 2 :=
+  le_trans (lintegral_mono fun x => pow_le_pow_left' (hG x) 2)
+    (lintegral_convolution_sq_le hK hF)
 
 end GaloisForLFunctions.HTGeometry

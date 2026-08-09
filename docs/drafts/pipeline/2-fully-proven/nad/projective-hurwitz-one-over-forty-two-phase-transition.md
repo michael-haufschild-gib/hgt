@@ -218,3 +218,28 @@ and surface existence), which the `HurwitzProjectiveSurvivalWitness` continues t
   bound `hurwitz_triple_sum_le_symm` and the minimizer uniqueness
   `hurwitz_ordered_eq_237` / `hurwitz_ordered_sum_eq_iff` (`1/p+1/q+1/r = 41/42 ↔ (2,3,7)`),
   formalizing "equality only at (2,3,7)". Axioms clean; module builds.
+
+## Audit — the survival witness carries no geometry `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/HurwitzSurvivalWitnessInhabited.lean` constructs
+`natHurwitzProjectiveSurvivalWitness : HurwitzProjectiveSurvivalWitness ℕ` and proves
+`nonempty_hurwitzProjectiveSurvivalWitness` (axioms `propext`, `Classical.choice`, `Quot.sound`).
+
+Two consequences follow, and they cut both ways.
+
+1. Every theorem quantified over a `HurwitzProjectiveSurvivalWitness` is non-vacuous.
+2. The structure's `commonPullback` and `irreducible` fields are arbitrary predicates, and its only
+   numerical constraints are `degree i = 42(2·genus i − 2)` and unboundedness of `degree`.  An
+   explicit integer family satisfies them.  Therefore the witness expresses **no** geometric fact
+   about correspondence surfaces, and the gate "complete Hurwitz survival implication formalized
+   from explicit classical-input witnesses" does not carry the card's statements `(3)`–`(5)`.
+
+What *is* unconditional is the arithmetic: `hurwitz_triple_sum_le`, `hurwitz_euler_defect_ge`,
+`hurwitz_ordered_sum_eq_iff` (the `1/42` gap and its uniqueness at `(2,3,7)`) and
+`hurwitzTriangle_projectiveCapacity_exact` (Riemann--Hurwitz equation `(8)`, from the three fibre
+counts to `D = 42(2g−2)`).
+
+The open formalization obligation is therefore sharper than the card previously recorded: construct
+`Δ(2,3,7)` as a group, produce torsion-free finite-index subgroups of unbounded index, and derive
+the fibre-count hypotheses of `hurwitzTriangle_projectiveCapacity_exact` from that construction.
+Until then the card is not eligible for Stage 3.

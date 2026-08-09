@@ -1,11 +1,14 @@
 # Static-orbit net no-go and circuit Bellman law
 
 - **ID:** `static-orbit-net-no-go-and-circuit-bellman-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3-formalized
+- **Formalized companion:** `./static-orbit-net-no-go-and-circuit-bellman-law-formalized.md`
+- **Lean:** Theorems A–D formalized in `HTGeometry/EuclideanSphereCoveringBound.lean`,
+  `HTGeometry/StaticOrbitNetBellmanLaw.lean` and `HTGeometry/ExactPenaltyCircuitBellman.lean`
 - **Type:** theorem / geometric no-go / exact circuit-structured survivor
 - **Parents:** `low-replica-complete-incidence-influence-law.md`,
   `../1-in-progress/quenched-krylov-circuit-incidence-front-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER CORRECTION] [EXTERNAL PRIORITY OPEN] [LEAN DEFERRED]`
+- **Status:** `[PAPER-PROVED] [FRONTIER CORRECTION] [EXTERNAL PRIORITY OPEN] [LEAN-PROVED]`
 - **Date:** 2026-08-09
 
 ## Public sentence
@@ -299,7 +302,7 @@ preparability**, not more spectral regularity.
 ## Exact next move
 
 The child theorem
-`exact-penalty-robust-circuit-bellman-duality.md` proves that approximate circuit complexity is
+`./exact-penalty-robust-circuit-bellman-duality.md` proves that approximate circuit complexity is
 itself the maximal Lipschitz Bellman subsolution of an exact-penalty obstacle problem, with equality
 at a finite penalty.  Therefore bare existence of a function satisfying the inequalities below is
 equivalent to the desired lower bound and is not a reduction.

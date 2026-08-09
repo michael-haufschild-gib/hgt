@@ -299,6 +299,27 @@ into the fixed physical conormal.
   stronger obstruction on the full prime-log smooth carrier.
 - No RH claim is made. Singular physical boundary descent remains open.
 
+## Lean formalization (partial, 2026-08-09)
+
+Modules: `RHTower/BurnolPoissonSubordinateWall`, `RHTower/BurnolAllPrimeCompletionWall`,
+`RHTower/BurnolPrimeLogSummability`.
+
+| Paper item | Lean declaration |
+|---|---|
+| `(PS1)` | `burnolPoissonWeight`, `burnolPoissonWeight_pos` |
+| `(PS6)`, `(PS7)` | `burnolSummable_poissonWeight_logPow` |
+| `(PS9)`, `(PS10)` | `burnolNotSummable_poissonWeight_expGain` |
+| `(PS3)`, `(PS14)` | `burnolPoissonInverseCompletionCoefficient`, `burnolPoissonInverseCompletionCoefficient_eq`, `norm_burnolPoissonInverseCompletionCoefficient` |
+| `(PS15)` | `burnolSummable_poissonInverseCompletion_of_re_le_half` |
+| `(PS16)` | `burnolNotSummable_poissonInverseCompletion_of_half_lt_re` |
+| `(PS4)` | `burnolPoissonSmoothWall` |
+
+The `u^{2k} e^{-2y sqrt u} <= C/u^2` domination that carries `(PS6)`--`(PS7)` is
+`burnolPow_mul_exp_neg_sqrt_le`.
+
+Still open in Lean: the Poisson subordination identity `(PS2)`/`(PS11)` and the extension-variable
+source equations `(PS12)`--`(PS13)`.
+
 ## Gates
 
 - [x] source-pure construction
@@ -316,3 +337,5 @@ into the fixed physical conormal.
 
 - 2026-08-08 — constructed Poisson-subordinate all-prime Burnol source, proved full prime-log
   smoothness with zero analytic radius, and proved its exact smooth inverse-Xi-completion wall.
+- 2026-08-09 — first unconditional Lean layer built and umbrella-wired; see the Lean
+  formalization table above for the exact declaration-to-equation map.

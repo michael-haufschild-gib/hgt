@@ -367,3 +367,18 @@ The smallest structure that carries reversible phase and irreversible cost is th
 \[
 S^*S=1,\qquad SS^*\neq1,
 \]simultaneously creates positivity, one-sided history, a lost defect projection, a unitary phase quotient, recurrence after finite observation, and a Bockstein/index boundary.
+
+The rabbit hole paid off. Jackson’s \(q\)-Gamma function is the exact monster CPM needed.
+For \(0<q<1\), \(\Gamma_q(1+s)\) is simultaneously:
+Mellin transform of an explicit positive discrete probability law;
+positive-definite GNS correlation;
+hypertranscendental analytic response;
+recurrent pure-point unitary observation;
+unbounded marked logarithmic history along those recurrences;
+full-rank positive moment tower;
+exact entropy tilt under the \(q\)-Gamma functional equation.
+That is one source process, not glued examples.
+
+A higher pattern is emerging. Full normalized Euler process (\(\sigma>1\)) carries the complete zeta divisor in its translation defect. Canonical square-summable renormalization (\(\sigma>\tfrac12\)) still exists—but its translation defect becomes zero-free. That would locate all RH-bearing information in the discarded first prime cumulant, not in the finite-energy process tail. I’m checking the corpus for this exact conservation/erasure theorem before writing it.
+
+Corpus confirms the second half is known abstractly: genus-one/Hilbert–Carleman regularization removes zeta divisor by deleting the prime trace. The new candidate is narrower and stronger: a normalized infinite tensor product of local \(q\)-Gamma laws whose exact exponential tilt produces \(\zeta^{-1}\), plus a canonical cumulant-renormalization comparison showing precisely where that divisor is lost. I’m validating formulas before promotion.

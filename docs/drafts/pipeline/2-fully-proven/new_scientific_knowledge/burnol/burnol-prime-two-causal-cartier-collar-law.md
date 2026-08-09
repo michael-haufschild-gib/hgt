@@ -514,6 +514,29 @@ coefficient.
 - No RH, critical-line placement, source-dagger identity, same-fibre norm identity, or desired
   signed correlation theorem is assumed.
 
+## Lean formalization (partial, 2026-08-09)
+
+Modules: `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`.
+
+| Paper item | Lean declaration |
+|---|---|
+| `(6)`, `(8)` | `burnolCollarGamma`, `burnolCollarZ`, `burnolCollarH` |
+| `(14)` | `burnolSteinA_burnolCollarH` |
+| `(15)` | `burnolSteinA_collarProfile` |
+| `(16)` | `burnolSteinA_polarOne`, `burnolSteinA_polarTwo` |
+| `(9)` | `burnolCollarKernel`, `burnolCollarKernel_eq_steinIterate` |
+| `(17)` | `burnolCollarKernel_sign_factor`, `burnolCollarQuadratic_neg_iff`, `burnolCollarKernel_neg_iff` |
+| `(18)` | `burnolCollarWidth` |
+| `(18a)` | `burnolCollarKernel_eq_translate` |
+| `(18b)` | `integral_burnolCollarKernel_depth`, `integral_burnolCollarKernel_depth_neg` |
+
+The depth mass is stated with the explicit real archimedean factor
+`burnolArchimedeanHalf = pi^(-1/4) Gamma(1/4) = Gamma_R(1/2)`.
+
+Still open in Lean: the operator realization `(3)`--`(4)`, the Fourier transform `(7)`, the normal
+convergence `(11)`, the depth pairing `(18e)`--`(18g)`, the crossing formula `(19)`, the raw-source
+landing `(22)`, and the reflected kernel `(24)`.
+
 ## Gates
 
 - [x] 0 -> 1: source-pure statement and hostile attack
@@ -530,3 +553,5 @@ coefficient.
 - 2026-08-08 — three shortcut conjectures failed; direct rational-collar conjecture caught as a
   representation-typing error; Gamma-sewn conjecture proved; explicit negative collar and exact
   fixed-aperture crossing operator promoted to Stage 2.
+- 2026-08-09 — first unconditional Lean layer built and umbrella-wired; see the Lean
+  formalization table above for the exact declaration-to-equation map.

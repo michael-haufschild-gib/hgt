@@ -397,11 +397,17 @@ theorem integral_abs_exp_neg_half_mul_le {R : ℝ → ℝ} {ε : ℝ} (hε : 0 <
     have hhalf : Real.exp (-s / 2) ^ 2 = Real.exp (-s) := by
       rw [sq, ← Real.exp_add]
       ring_nf
-    nlinarith [sq_nonneg (ε * Real.exp (-s / 2) - |R s|), hε, hinv, hhalf, sq_abs (R s),
-      abs_nonneg (R s), Real.exp_pos (-s / 2), inv_pos.mpr hε]
+    have hexpr : ε * Real.exp (-s) + R s ^ 2 * ε⁻¹ - 2 * (Real.exp (-s / 2) * |R s|)
+        = ε⁻¹ * (ε * Real.exp (-s / 2) - |R s|) ^ 2 := by
+      rw [← hhalf, ← sq_abs (R s)]
+      field_simp
+      ring
+    have hnn : 0 ≤ ε⁻¹ * (ε * Real.exp (-s / 2) - |R s|) ^ 2 :=
+      mul_nonneg (inv_pos.mpr hε).le (sq_nonneg _)
+    linarith [hexpr, hnn]
   refine le_trans hstep ?_
   rw [MeasureTheory.integral_div, integral_add (hexp.const_mul ε) (hR2.mul_const ε⁻¹),
-    integral_const_mul, MeasureTheory.integral_mul_const]
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_mul_const]
   have hmul : ε * (∫ s in Ioi (0 : ℝ), Real.exp (-s)) ≤ ε * 1 :=
     mul_le_mul_of_nonneg_left hmass hε.le
   linarith [hmul]

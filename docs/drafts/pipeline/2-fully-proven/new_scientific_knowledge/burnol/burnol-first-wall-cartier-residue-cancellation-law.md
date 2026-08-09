@@ -493,6 +493,28 @@ residue polarization `(24)`--`(25)`, or its exact annihilation by the prime-two 
 completion `(28)`--`(31)`.  All ingredients separately are classical; novelty of the synthesis
 remains unverified.
 
+## Lean formalization (partial, 2026-08-09)
+
+Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallResiduePolarization`,
+`RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`.
+
+| Paper item | Lean declaration |
+|---|---|
+| `(4)`, `(5)` pointwise | `hasSum_burnolDyadicContraction`, `burnolDyadicTerm_eq`, `burnolDyadicRemainder_of_lt` |
+| `(4)` in `L²(0,∞)` | `lintegral_burnolDyadicRemainder_sq_le`, `burnolDyadicPartialSum_sub`, `tendsto_lintegral_burnolDyadicPartialSum_error` |
+| `(18)` | `burnolFirstWallExteriorMass_eq_zero_iff`, `burnolFirstWallExteriorMass_ne_zero` |
+| `(23)` definitions | `burnolFirstWallHead`, `burnolFirstWallCosineHead`, `burnolFirstWallExteriorMass`, `burnolFirstWallResidue`, `burnolFirstWallCosineResidue` |
+| `(24)` | `burnolFirstWallResidue_add_cosineResidue`, `burnolFirstWallResidue_add_cosineResidue_re_nonneg` |
+| `(25)` | `burnolFirstWallResidue_sub_cosineResidue_re`, `burnolFirstWallResidue_sub_cosineResidue_re_eq_headFlux`, `xiDivisor_burnolFirstWallResidue_landing` |
+| `(26)`, `kappa_*` | `burnolCollarGamma`, `burnolSteinA`, `burnolCollarKernel` |
+| `(28)` | `integral_burnolCollarKernel_mul_mode` |
+
+`(28)` is proved directly from the exact Gamma moment of the depth-zero kernel, so it does not pass
+through the adjoint identity `(27)`.
+
+Still open in Lean: the tail and endpoint mass `(10)`--`(17)` of the actual zero-divided source,
+the deep-profile convergence `(29)`, the depth decay `(30)`--`(31)`, and Corollary 5.
+
 ## Gates
 
 - [x] exact physical dyadic contraction
@@ -513,3 +535,5 @@ remains unverified.
 - 2026-08-08 — derived actual deep correlation profile, proved its exact Gamma annihilation,
   contracted the dyadic coboundary to `-fract(t)/t`, constructed the singular first-wall residue,
   and identified its oriented two-Gamma difference with the Route R current.
+- 2026-08-09 — first unconditional Lean layer built and umbrella-wired; see the Lean
+  formalization table above for the exact declaration-to-equation map.

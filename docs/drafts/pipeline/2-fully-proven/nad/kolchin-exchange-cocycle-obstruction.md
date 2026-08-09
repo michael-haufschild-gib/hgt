@@ -529,3 +529,62 @@ the complete Kolchin algebraic obstruction but not the QFT realization.
 
   The card's three remaining gates -- the novelty audit, the physical admissibility theorem, and the
   localization/OPE invariant -- are research and review items, not formalization ones.
+
+## Audit — the physical reflection is not a `DifferentialAlgEquiv` `[PROVED, GAP CLOSED]`
+
+`KolchinExchangeGaugeObstruction.DifferentialAlgEquiv` requires `σ(x′) = (σ x)′`.  The rapidity
+reflection `f(θ) ↦ f(−θ)` does **not** satisfy it: `MeromorphicReflection.complexReflectionMeroEquiv`
+is a ring automorphism of the global meromorphic field with
+`complexReflectionMeroEquiv_deriv` stating the *anti*-commutation `σ(x′) = −(σ x)′`, because
+precomposition with an orientation-reversing affine map negates the derivative.  So the exchange
+obstruction as formalized did not apply to the reflection it is written about.
+
+`formal/GaloisForLFunctions/HTGeometry/AntiDifferentialAlgEquiv.lean` closes the gap
+unconditionally:
+
+- `algebraicIndependent_smul_units_iff` — algebraic independence is invariant under rescaling each
+  member by a unit of the base, proved by exhibiting `X_i ↦ c_i·X_i` as an automorphism of the
+  multivariate polynomial algebra;
+- `AntiDifferentialAlgEquiv` — a coefficient-fixing automorphism with `σ(x′) = −(σ x)′`;
+- `AntiDifferentialAlgEquiv.map_differentialJet` — `σ(jetₙ x) = (−1)ⁿ · jetₙ(σ x)`;
+- `AntiDifferentialAlgEquiv.differentialAlgebraicOver_map_iff` — such a `σ` preserves differential
+  algebraicity exactly, so the whole Kolchin obstruction chain transports to the reflection.
+
+Axioms `propext`, `Classical.choice`, `Quot.sound`; module builds and is wired into the umbrella.
+
+Remaining for Stage 3 on this card: exhibit `complexReflectionMeroEquiv 0` as a term of
+`AntiDifferentialAlgEquiv ℂ (meroField Set.univ)` — i.e. check that it fixes the constant field
+pointwise and package it with `complexReflectionMeroEquiv_deriv` — and then restate
+`not_daExchangeGaugeEquivalent_of_ratio_hypertranscendental` and
+`halfPhase_hypertranscendental_of_exchangeLaw` for that instance.
+
+## Log — the reflection instance and the orientation-reversing obstruction chain `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/ReflectionAntiDifferential.lean`:
+
+- `complexReflectionAnalyticEquiv_constToAnalytic`, `complexReflectionMeroEquiv_algebraMap_complex`
+  — the reflection fixes the constant field pointwise;
+- `reflectionAntiDifferentialAlgEquiv (c : ℂ) : AntiDifferentialAlgEquiv ℂ (meroField Set.univ)`
+  — the physical rapidity reflection as an orientation-reversing differential automorphism,
+  packaging `complexReflectionMeroEquiv_deriv`;
+- `differentialAlgebraicOver_complexReflectionMeroEquiv_iff` — reflection preserves differential
+  algebraicity over the constants exactly.
+
+`formal/GaloisForLFunctions/HTGeometry/AntiDifferentialAlgEquiv.lean` now also carries the complete
+obstruction chain for such a gauge:
+
+- `AntiDAExchangeGaugeEquivalent`;
+- `differentialAlgebraicOver_ratio_of_antiDAExchangeGaugeEquivalent`;
+- `not_antiDAExchangeGaugeEquivalent_of_ratio_hypertranscendental` — equations `(7)`--`(8)`;
+- `differentialAlgebraicOver_exchangeLaw_of_antiSection`,
+  `antiSection_hypertranscendental_of_exchangeLaw` — equation `(9)`;
+- `no_antiDAExchangeGauge_trivialization_of_hypertranscendental`,
+  `antiHalfPhase_hypertranscendental_of_exchangeLaw` — equation `(10)`.
+
+All axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired into the umbrella.  The
+algebraic layer of the card is therefore complete **for the automorphism the card is about**, not
+only for a derivation-commuting stand-in.
+
+Still open for Stage 3: the localization / admissible-gauge interface, and the two research gates
+(physical admissibility of DA exchange gauges; a localization/OPE/profile invariant of the Kolchin
+exchange class).

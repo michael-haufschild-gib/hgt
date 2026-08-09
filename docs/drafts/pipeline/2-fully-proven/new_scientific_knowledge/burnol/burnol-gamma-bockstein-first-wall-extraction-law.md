@@ -331,6 +331,29 @@ right-half divisor and closes RH by reflection.  It must be derived from a refle
 pre-divisor source law.  Ordinary completed energy, scalar multiplier slope, and any quotient
 killing the Bockstein line cannot prove it.
 
+## Lean formalization (partial, 2026-08-09)
+
+Modules: `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`,
+`RHTower/BurnolDyadicCommutatorStaircase`.
+
+| Paper item | Lean declaration |
+|---|---|
+| `(1)`--`(3)` | `burnolSteinA`, `burnolCollarGamma`, `burnolSteinA_burnolCollarH` |
+| `(4)` | `burnolSteinDeformed`, `burnolCollarKernelDeformed`, `burnolCollarKernelDeformed_apply`, `burnolCollarKernelDeformed_zero` |
+| `(5)` | `integral_burnolCollarKernelDeformed_mul_mode` |
+| `(6)` | `hasDerivAt_burnolCollarKernelDeformed`, `burnolBocksteinKernel_eq_steinCombination` |
+| `(7)` | `integral_burnolBocksteinKernel_mul_mode` |
+| `(9)` | `integral_burnolCollarGamma_mul_mode` |
+| `(11)` | `burnolBocksteinKernel_apply` |
+| `(12)` | `burnolBocksteinKernel_pos_iff` |
+| `(17)` | `burnolAperturePart`, `burnolDyadicLadder`, `burnolApertureCommutator` |
+| `(19)` | `burnolApertureCommutator_eq_zero_of_mem`, `burnolApertureCommutator_shell`, `exists_burnolDyadicShell` |
+| `(20)` | `lintegral_burnolApertureCommutator_normSq` |
+| `(21)` | `burnolApertureCommutator_normSq_difference` |
+
+Still open in Lean: the asymptotic residue extraction `(13)`, `(15)`, `(16)` and the combined
+transgression `(22)`, all of which need the actual zero-divided correlation `W_{G_rho}`.
+
 ## Gates
 
 - [x] construct transverse coefficient-faithful Gamma family
@@ -347,3 +370,5 @@ killing the Bockstein line cannot prove it.
 
 - 2026-08-08 — differentiated the erased polar mode, obtained the exact unit Bockstein moment,
   and proved source-to-physical landing of the two-orientation singular reader.
+- 2026-08-09 — first unconditional Lean layer built and umbrella-wired; see the Lean
+  formalization table above for the exact declaration-to-equation map.

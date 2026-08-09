@@ -1,7 +1,8 @@
 # Burnol all-prime completion and singular-potential entrance wall
 
 - **ID:** `burnol-all-prime-completion-singular-potential-entrance-wall`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
+- **Formalized companion:** `burnol-all-prime-completion-singular-potential-entrance-wall-formalized.md`
 - **Type:** THEOREM / PRE-DIVISOR SOURCE CONSTRUCTION / EXACT DOMAIN WALL
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-PURE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** R
@@ -9,10 +10,7 @@
   `burnol-gamma-bockstein-first-wall-extraction-law`,
   `route-r-reciprocal-log-fisher-half-density-entrance-wall`, and
   `xi-physical-prime-log-aperture-fusion-cross-kernel`
-- **Lean:** intentionally deferred during the `RHTower -> HTGeometry` refactor.  Future
-  formalization should reuse `BurnolCoPoissonSubWindow.lean`,
-  `XiAperturePhysicalEndpointResponseRenormalization.lean`, and
-  `RouteRBurnolXiPrimeTwoCompletionLanding.lean`.
+- **Lean:** `RHTower/BurnolAllPrimeCompletionWall.lean` (with `RHTower/BurnolPrimeLogSummability.lean`).
 
 ## Result
 
@@ -320,6 +318,31 @@ all-prime Burnol source vector and an unconditional reciprocal-Stokes sewn landi
 - Claimed progress is not RH: closed landing of the singular boundary remains open and is stated
   explicitly.
 
+## Lean formalization (2026-08-09)
+
+Module: `RHTower/BurnolAllPrimeCompletionWall` (with `RHTower/BurnolPrimeLogSummability`).
+
+| Paper item | Lean declaration |
+|---|---|
+| `(AW1)` | `burnolAllPrimeCompletionMultiplier`, `nat_cpow_sub_one_ne_zero`, `burnolAllPrimeCompletionMultiplier_ne_zero` |
+| `(AW2)` | `burnolAllPrimeCompletedMellin`, `soninMellinEvaluation_primeWindow_eq` |
+| `(AW3)` | `burnolAllPrimeCompletionMultiplier_mul_completedMellin` |
+| `(AW6)`, `(AW7)` | `burnolValuationShuttle`, `burnolPhysicalEndpointWeight`, `burnolEndpointResponse`, `burnolPhysicalEndpointWeight_add_valuationShuttle` |
+| `(AW8)`, `(AW9)` | `burnolPrimeLogGreenPotential`, `burnolSourceBoundary`, `burnolPrimeLogGreenPotential_mul_valuationShuttle` |
+| `(AW10)` | `burnolSummable_sourceBoundary_sq` |
+| `(AW11)` | `burnolPrimeLogGreenPotential_mul_endpointResponse`, `burnolPrimeLogGreenPotential_physical_presentation` |
+| `(AW12)`, `(AW13)` | `burnolAllPrimeInverseCompletionCoefficient`, `burnolAllPrimeInverseCompletionConstant`, `burnolAllPrimeInverseCompletionCoefficient_eq` |
+| `(AW0)` / Theorem 1 | `summable_burnolAllPrimeInverseCompletionCoefficient_sq_iff` (both sides: `..._of_re_le_half`, `not_..._of_half_lt_re`) |
+| `(AW14)`, `(AW15)` | `burnolAllPrimePhysicalCorrection`, `burnolAllPrimePhysicalCorrection_eq`, `burnolSummable_allPrimePhysicalCorrection_sq` |
+| `(AW16)` | `burnolAllPrimePhysical_inverse_completion` |
+| `(AW17)` | `summable_burnolAllPrimePhysicalPresentation_sq_iff` |
+| `(AW4)` | `tendsto_burnolAllPrimeMultiplicityJet` |
+| `(AW5)` | `burnolAllPrimeCompletionMultiplier_mul_dslope_completedMellin`, `burnolAllPrimeCompletedMellin_eq_zero_of_xi_eq_zero` |
+
+Supporting infrastructure built for the wall: `burnolSummable_prime_one_div_mul_log_sq` (telescoping
+comparison), `burnolNotSummable_prime_one_div`, `burnolEventually_log_pow_le_rpow`,
+`burnolPrimeWallThreshold`.
+
 ## Gates
 
 - [x] strict finite-stage source boundary
@@ -330,7 +353,7 @@ all-prime Burnol source vector and an unconditional reciprocal-Stokes sewn landi
 - [x] physical endpoint correction proved harmless across the strip
 - [ ] specialist novelty audit
 - [ ] singular boundary closed landing
-- [ ] Lean formalization after corpus refactor
+- [x] Lean formalization: all numbered statements `(AW0)`--`(AW17)` unconditional in Lean
 - [ ] RH
 
 ## Log
@@ -338,3 +361,5 @@ all-prime Burnol source vector and an unconditional reciprocal-Stokes sewn landi
 - 2026-08-08 — derived the prime-log Green potential of the unit--double response, generalized
   prime-two completion to every prime, proved the sharp all-prime inverse-completion wall, and
   identified the physical endpoint correction as strip-uniformly admissible.
+- 2026-08-09 — first unconditional Lean layer built and umbrella-wired; see the Lean
+  formalization table above for the exact declaration-to-equation map.

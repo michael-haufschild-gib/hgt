@@ -256,31 +256,48 @@ reversible/irreversible exchange yields a new invariant rather than repackaging 
 
 ## 11. Current ordering
 
-No winner. Current high-risk ranking by single-producer potential:
+**Provisional winner: constitutive process geometry.** Current ranking by single-producer
+performance:
 
-1. antipode-defect bialgebraic law genesis;
-2. interventional functorial parallax mathematics;
-3. non-objectal parallax mathematics;
-4. proof partition functions;
-5. endogenous logic;
-6. experimental Galois theory;
-7. theorem amplitudes;
-8. proof ecology;
-9. complex action principle as a local chart only.
+1. constitutive process geometry;
+2. modular/polar history geometry as classical and rank-one process charts;
+3. interventional functorial parallax mathematics;
+4. antipode-defect bialgebraic law genesis, retained only as a local producer;
+5. non-objectal parallax mathematics;
+6. proof partition functions;
+7. endogenous logic;
+8. experimental Galois theory;
+9. theorem amplitudes;
+10. proof ecology;
+11. complex action principle as a local chart only.
 
 CEM remains a useful experimental protocol surrounding these candidates, not presumed ontology.
-The current lead is developed in `antipode-defect-bialgebraic-law-genesis.md`, with
-`functorial-distortion-parallax-mathematics.md` as the strongest non-objectal competitor. Semigroup
-boundary mathematics is their common asymmetric calibration, but stable index completeness has been
-falsified.
+The current lead is developed in `constitutive-process-geometry.md`. Static probability, amplitude,
+and kernel ontologies failed intervention or hidden-factor closure and now survive as process
+charts. `modular-path-law-geometry.md` supplies the classical reversal/entropy chart;
+`polar-history-geometry.md` supplies the rank-one phase chart; `functorial-distortion-parallax-mathematics.md`
+remains the strongest nonpositive competitor. Bare bialgebraic genesis has failed its invariant
+positivity gate and now supplies only a local reversible/thermal incompatibility model.
+
+The finite atomic/differential/operator theorem passed reconstruction across unlike doctrines. The
+infinite \(q\)-Gamma theorem then produced positive kernel, recurrence, open history, maximal HT
+memory, and an entropy-tilt prediction from one process. These results clear the original finite and
+infinite killing moves. They do not yet prove presentation invariance or whole-corpus universality.
 
 ## 12. Next killing move
 
-The Gaussian test is now closed and downgraded to a classical local chart. The naive weighted
-groupoid is also killed. Next construct the smallest polarized directed-history model and ask whether
-its exchange between reversible phase and irreversible cost is forced or freely chosen. If freely
-chosen, Candidate S dies and non-objectal parallax becomes the lead ontology.
+The marked five-chart \(q\)-Gamma groupoid passes doctrine-change invariance inside one explicit
+family. The next killing move is **general marked Morita invariance plus higher-slot composition**:
+prove that a complete response nerve and its withheld responses survive equivalences of process
+presentations, while genuine doctrine enlargement contracts memory by a typed comparison law.
+Failure returns the lead to interventional parallax mathematics.
 
 ## Log
 
 - 2026-08-09 — created after explicit user instruction to treat GR/curvature as disposable metaphors.
+- 2026-08-09 — bare bialgebra invariant-state gate failed; modular path-law geometry became lead.
+- 2026-08-09 — amplitude and static-kernel closure failures promoted constitutive process geometry.
+- 2026-08-09 — finite reconstruction and infinite \(q\)-Gamma one-process theorems made
+  constitutive process geometry the provisional winner; doctrine-change invariance is next gate.
+- 2026-08-09 — marked \(q\)-Gamma five-chart reconstruction passed the first presentation-rigidity
+  gate; general marked Morita invariance and higher-slot composition remain.

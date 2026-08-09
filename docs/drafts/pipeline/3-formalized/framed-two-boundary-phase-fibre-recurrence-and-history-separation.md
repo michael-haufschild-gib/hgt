@@ -1,10 +1,10 @@
 # Framed two-boundary phase fibre, recurrence, and history separation
 
 - **ID:** `ngd-framed-phase-fibre-history-separation`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [EXACT NGD PHYSICS CHART] [NOT A WORMHOLE THEOREM]`
-  `[NOT RH] [NO LEAN WRITTEN]`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [EXACT NGD PHYSICS CHART]`
+  `[NOT A WORMHOLE THEOREM] [NOT RH]`
 - **Statement:** Fixed two-boundary reductions of framed GHZ states have a torus phase fibre whose
   radial QEC defect, Fubini--Study action, winding class, Berry holonomy, and finite Krylov
   displacement are pairwise non-equivalent shadows.
@@ -333,15 +333,35 @@ law that compresses recovery defect, holonomy, action, and complexity into one s
 - [x] metric, action, winding, and holonomy formulas proved
 - [x] finite Krylov collision proved
 - [x] sharp no-go and positive survivor recorded
-- [ ] formalized in Lean 4
+- [x] formalized in Lean 4
 - [ ] identified with a literal gravitational bulk operator
 
 ## Lean-return note
 
-No Lean code was written or built. A later formalization can split into finite-dimensional complex
-linear algebra, torus/lattice minimization, entropy identities, and the two-site unitary calculation.
-No existing repository file is nominated until corpus search identifies a compatible module.
+Formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/FramedTwoBoundaryPhaseFibreHistorySeparation.lean`.
+The module contains the literal normalized framed GHZ vector and density, all three partial traces,
+phase-independent boundary states, coherence-defect trace square, entropy/CMI and sharp recovery
+optimum, exact torus fibre equivalence, projected Fubini--Study/QFI formulas, quotient winding and
+Berry laws, sharp action and length minima on arbitrary lifted histories, an attained global
+integer-lift endpoint minimum, projective recurrence, finite Krylov bounds and return collisions,
+and the typed radial/metric/history/Berry separation witness.
+
+Audit:
+
+- direct elaboration passed with `lake env lean
+  GaloisForLFunctions/HTGeometry/FramedTwoBoundaryPhaseFibreHistorySeparation.lean`;
+- final target build passed `9161/9161` with `lake build
+  +GaloisForLFunctions.HTGeometry.FramedTwoBoundaryPhaseFibreHistorySeparation`;
+- all 75 exported theorems were checked with `#print axioms`; dependencies are only `propext`,
+  `Classical.choice`, and `Quot.sound`;
+- forbidden-declaration scan is clean;
+- `GaloisForLFunctions.HTGeometry` umbrella import is wired;
+- global formal lint reaches this module and reports no error in it; remaining failures are
+  unrelated shared-tree umbrella reachability debt.
 
 ## Log
 
 - 2026-08-08 — paper proof closed; exact finite physics chart added to NGD.
+- 2026-08-09 — unconditional Lean formalization completed, built, axiom-audited, umbrella-wired,
+  and promoted to Stage 3.

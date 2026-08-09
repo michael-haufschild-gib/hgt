@@ -401,6 +401,28 @@ zero-derivative/sideband-residue Cartier trace `(CH19)` for the Burnol all-prime
 Candidate novelty is this coefficient-faithful synthesis and its exact Route-R frontier
 consequence.  External priority is unverified.
 
+## Lean formalization (partial, 2026-08-09)
+
+Modules: `RHTower/BurnolAllPrimeCompletionWall`, `RHTower/BurnolPrimeCartierWallTrace`.
+
+| Paper item | Lean declaration |
+|---|---|
+| `(CH1)` | `burnolAllPrimeCompletionMultiplier`, `burnolAllPrimeCompletionMultiplierReflected` |
+| `(CH3)` | `burnolPrimeSideband`, `nat_cpow_sideband` |
+| `(CH5)` | `tendsto_burnolAllPrimeCompletion_sidebandResidue` |
+| `(CH4)` | `tendsto_burnolCartierSidebandTrace` |
+| `(CH7)`, `(CH8)` | `tendsto_burnolAllPrimeCompletion_div_zero`, `tendsto_burnolAllPrimeCompletionReflected_div_one` |
+| `(CH2)` | `tendsto_burnolCartierZeroWallTrace` |
+| `(CH12)` | `burnolHorizonGap`, `burnolHorizonGap_eq`, `burnolHorizonGap_pos_iff` |
+| `(CH21)` | `summable_burnolAllPrimeInverseCompletionCoefficient_sq_iff` |
+| `(CH23)` | `xiDivisor_burnolCartier_headEnergyDefect_eq_horizonGap_mul_headFlux` |
+
+Residues and transverse derivatives are formalized as limits of the explicit difference quotients,
+which is exactly what a simple pole and a removable-singularity derivative assert.
+
+Still open in Lean: the cofinite radius law `(CH10)`--`(CH11)` and the maximal-germ nonclosed-range
+theorem `(CH13)`--`(CH17)`.
+
 ## Gates
 
 - [x] exact two-orientation prime-dilation divisors
@@ -422,3 +444,5 @@ consequence.  External priority is unverified.
   complete-germ nonclosed range, constructed the all-prime zero-wall and sideband Cartier traces,
   and isolated singular trace dissipativity as the only correctly typed continuation of this
   producer lane.
+- 2026-08-09 — first unconditional Lean layer built and umbrella-wired; see the Lean
+  formalization table above for the exact declaration-to-equation map.

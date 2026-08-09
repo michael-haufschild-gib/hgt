@@ -1,7 +1,8 @@
 # Burnol divided shifts are quantitatively separated from zero evaluators
 
 - **ID:** `burnol-divided-shift-evaluation-separation-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `burnol-divided-shift-evaluation-separation-law-formalized.md`
 - **Type:** THEOREM (paper)
 - **Source:** Frankenstein splice of the corpus-owned co-Poisson zero-annihilator theorem and
   strict accretivity of the critical-line Cauchy multiplier
@@ -115,8 +116,8 @@ Primary sources checked:
 
 - [x] 0 -> 1 in-progress: source-pure statement and attack
 - [x] 1 -> 2 fully-proven: complete dependency-closed paper proof, `[PROVED HERE]`
-- [ ] 2 -> 3 formalized: exact Lean projection identity, both lower bounds, and non-landing theorem
-  compile and are umbrella-wired; global lint still fails only on unrelated prolate reachability
+- [x] 2 -> 3 formalized: exact Lean projection identity, both lower bounds, and non-landing theorem
+  compile, are umbrella-wired, and pass the axiom audit
 - [ ] 3 -> 4 publication-ready: external mathematical audit and standalone exposition
 
 ## Log
@@ -126,3 +127,5 @@ Primary sources checked:
   `BurnolDividedShiftEvaluationSeparation.lean`; exact `lake env lean` and module-only `lake build`
   pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Global lint is
   blocked by 17 unrelated prolate modules not yet wired into `RHTower.lean`.
+- 2026-08-09 — re-verified the five theorems (clean `lake env lean`, axioms `propext`,
+  `Classical.choice`, `Quot.sound`, `RHTower` umbrella import present) and promoted to stage 3.

@@ -82,7 +82,9 @@ theorem isOpen_induced_scott_iff {α : Type*} (κ : α → Submodule k (Fin 2 �
       by_cases ha : a ∈ S
       · rw [htop a ha]; exact hTop
       · rw [hline a ha]; exact hLine
-  · rintro (rfl | rfl | rfl)
+  · letI : TopologicalSpace (Submodule k (Fin 2 → k)) :=
+      Topology.scott (Submodule k (Fin 2 → k)) univ
+    rintro (hU | hU | hU) <;> rw [hU]
     · exact ⟨∅, isOpen_empty, by simp⟩
     · refine ⟨{⊤}, isOpen_scott_singleton_top, ?_⟩
       ext a
@@ -103,17 +105,92 @@ theorem coherentKernel_modularGain_of_ne_zero {θ : ℝ} (h : θ ≠ 0) :
     coherentKernel (modularGain θ) = permanentLine ℝ :=
   coherentKernel_of_ne_one fun hc => h ((modularGain_eq_one_iff θ).1 hc)
 
+/-- The modular weight line with the initial Scott topology of its coherent framed profile. -/
+@[reducible] def exchangeHorizonTopology : TopologicalSpace ℝ :=
+  induced (fun θ : ℝ => coherentKernel (modularGain θ))
+    (Topology.scott (Submodule ℝ (Fin 2 → ℝ)) univ)
+
 /-- **The exchange horizon topology.**  The initial Scott topology of the coherent framed profile
 `θ ↦ H θ` has exactly three opens, so all nonzero modular weights are indistinguishable. -/
 theorem isOpen_exchangeHorizon_iff (U : Set ℝ) :
-    IsOpen[induced (fun θ : ℝ => coherentKernel (modularGain θ))
-      (Topology.scott (Submodule ℝ (Fin 2 → ℝ)) univ)] U ↔
-      U = ∅ ∨ U = {0} ∨ U = univ := by
+    IsOpen[exchangeHorizonTopology] U ↔ U = ∅ ∨ U = {0} ∨ U = univ := by
   refine isOpen_induced_scott_iff _ {0} ?_ ?_ U
   · rintro a rfl
     exact coherentKernel_modularGain_zero
   · intro a ha
     exact coherentKernel_modularGain_of_ne_zero (by simpa using ha)
+
+theorem isOpen_exchangeHorizon_singleton_zero :
+    IsOpen[exchangeHorizonTopology] ({0} : Set ℝ) :=
+  (isOpen_exchangeHorizon_iff _).2 (Or.inr (Or.inl rfl))
+
+/-- **All nonzero modular weights are topologically indistinguishable.** -/
+theorem inseparable_exchangeHorizon_iff {θ θ' : ℝ} :
+    @Inseparable ℝ exchangeHorizonTopology θ θ' ↔ (θ = 0 ↔ θ' = 0) := by
+  letI : TopologicalSpace ℝ := exchangeHorizonTopology
+  rw [inseparable_iff_specializes_and]
+  constructor
+  · rintro ⟨h1, h2⟩
+    constructor
+    · intro h0
+      exact (specializes_iff_forall_open.1 h2 {0} isOpen_exchangeHorizon_singleton_zero h0 :
+        θ' ∈ ({0} : Set ℝ))
+    · intro h0
+      exact (specializes_iff_forall_open.1 h1 {0} isOpen_exchangeHorizon_singleton_zero h0 :
+        θ ∈ ({0} : Set ℝ))
+  · intro h
+    constructor
+    · refine specializes_iff_forall_open.2 fun s hs hmem => ?_
+      rcases (isOpen_exchangeHorizon_iff s).1 hs with rfl | rfl | rfl
+      · exact absurd hmem (Set.notMem_empty _)
+      · exact h.2 hmem
+      · trivial
+    · refine specializes_iff_forall_open.2 fun s hs hmem => ?_
+      rcases (isOpen_exchangeHorizon_iff s).1 hs with rfl | rfl | rfl
+      · exact absurd hmem (Set.notMem_empty _)
+      · exact h.1 hmem
+      · trivial
+
+/-- **The `T₀` quotient of the exchange horizon has exactly two points**: full framed coherence and
+permanent-line-only coherence. -/
+theorem card_separationQuotient_exchangeHorizon :
+    Nat.card (@SeparationQuotient ℝ exchangeHorizonTopology) = 2 := by
+  classical
+  letI : TopologicalSpace ℝ := exchangeHorizonTopology
+  have hresp : ∀ x y : ℝ, Inseparable x y → decide (x = 0) = decide (y = 0) := by
+    intro x y hxy
+    have hiff := inseparable_exchangeHorizon_iff.1 hxy
+    by_cases hx : x = 0
+    · simp [hx, hiff.1 hx]
+    · have hy : ¬ y = 0 := fun hy => hx (hiff.2 hy)
+      simp [hx, hy]
+  have hbij : Function.Bijective
+      (SeparationQuotient.lift (fun x : ℝ => decide (x = 0)) hresp) := by
+    constructor
+    · intro q₁ q₂ hq
+      obtain ⟨x, rfl⟩ := SeparationQuotient.surjective_mk q₁
+      obtain ⟨y, rfl⟩ := SeparationQuotient.surjective_mk q₂
+      rw [SeparationQuotient.lift_mk, SeparationQuotient.lift_mk] at hq
+      refine SeparationQuotient.mk_eq_mk.2 (inseparable_exchangeHorizon_iff.2 ?_)
+      constructor
+      · intro hx
+        by_contra hy
+        simp [hx, hy] at hq
+      · intro hy
+        by_contra hx
+        simp [hx, hy] at hq
+    · intro b
+      cases b with
+      | false =>
+        refine ⟨SeparationQuotient.mk (1 : ℝ), ?_⟩
+        rw [SeparationQuotient.lift_mk]
+        norm_num
+      | true =>
+        refine ⟨SeparationQuotient.mk (0 : ℝ), ?_⟩
+        rw [SeparationQuotient.lift_mk]
+        norm_num
+  rw [Nat.card_eq_of_bijective _ hbij]
+  simp
 
 /-- **The universal character horizon topology.**  On the full character set the initial Scott
 topology of `χ ↦ H χ` has exactly three opens. -/
@@ -160,7 +237,7 @@ theorem isOpen_induced_flag_iff {α : Type*} (φ : α → ExFlag k (Fin 2 → k)
       by_cases ha : a ∈ S
       · rw [hhor a ha]; exact hp0
       · rw [hoff a ha]; exact hp1
-  · rintro (rfl | rfl | rfl)
+  · rintro (hU | hU | hU) <;> rw [hU]
     · exact ⟨∅, isOpen_empty, by simp⟩
     · refine ⟨ExFlag.survival ![(0 : k), 1], ExFlag.isOpen_survival _, ?_⟩
       have hnot : ![(0 : k), 1] ∉ permanentLine k := by
@@ -170,23 +247,27 @@ theorem isOpen_induced_flag_iff {α : Type*} (φ : α → ExFlag k (Fin 2 → k)
       simp only [mem_preimage]
       by_cases ha : a ∈ S
       · simp only [hhor a ha, ha, iff_true]
-        exact ⟨trivial, by simp⟩
+        refine ⟨trivial, fun hc => ?_⟩
+        have h0 : ![(0 : k), 1] = 0 := (Submodule.mem_bot k).1 hc
+        have h1 := congrFun h0 1
+        simp at h1
       · simp only [hoff a ha, ha, iff_false]
         exact fun hc => hnot hc.1
     · exact ⟨univ, isOpen_univ, by simp⟩
 
 theorem exchangeFlag_modularGain_zero :
-    exchangeFlag (modularGain 0) = ⟨⊥, ⊤, le_top⟩ :=
-  exchangeFlag_of_eq_one (by rw [(modularGain_eq_one_iff 0).2 rfl]; rfl)
+    exchangeFlag (modularGain 0) 2 = ⟨⊥, ⊤, le_top⟩ :=
+  exchangeFlag_of_eq_one ((modularGain_two_eq_one_iff 0).2 rfl)
 
 theorem exchangeFlag_modularGain_of_ne_zero {θ : ℝ} (h : θ ≠ 0) :
-    exchangeFlag (modularGain θ) = ⟨permanentLine ℝ, permanentLine ℝ, le_rfl⟩ :=
+    exchangeFlag (modularGain θ) 2 = ⟨permanentLine ℝ, permanentLine ℝ, le_rfl⟩ :=
   exchangeFlag_of_ne_one fun hc => h ((modularGain_two_eq_one_iff θ).1 hc)
 
 /-- **The rank-one provenance-exactness horizon topology.**  The initial provenance topology of the
 exchange flag profile has exactly three opens. -/
 theorem isOpen_exchangeFlagHorizon_iff (U : Set ℝ) :
-    IsOpen[induced (fun θ : ℝ => exchangeFlag (modularGain θ)) ExFlag.instTopologicalSpace] U ↔
+    IsOpen[induced (fun θ : ℝ => exchangeFlag (modularGain θ) 2)
+      ExFlag.instTopologicalSpace] U ↔
       U = ∅ ∨ U = {0} ∨ U = univ := by
   refine isOpen_induced_flag_iff _ {0} ?_ ?_ U
   · rintro a rfl

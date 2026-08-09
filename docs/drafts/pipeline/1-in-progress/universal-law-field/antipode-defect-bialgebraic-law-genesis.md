@@ -5,7 +5,7 @@
 - **Type:** CONJECTURE
 - **Source:** need for one operation generating observation and intervention
 - **Statement:** Laws form bialgebraic semigroups whose Hopf completions are reversible proof observers; failure and cost of antipode realization carry erased theorem history.
-- **Status:** [WEIRD FORK] [FINITE CALIBRATION PASSED] [REPRESENTATION DEPENDENCE OPEN] [NOT RH] [NO LEAN]
+- **Status:** [WEIRD FORK] [BARE-BIALGEBRA FORM KILLED] [THERMAL COMPLETION SURVIVOR] [NOT RH] [NO LEAN]
 
 ## 1. Primitive
 
@@ -71,6 +71,18 @@ selects a positive fibre functor or representation class and where the antipode 
 two histories invisible to all Hopf-envelope characters. Failure kills this fork as universal field
 ontology.
 
+That gate fails for invariant-state selection. The theorem
+`invariant-positivity-reversibility-wall-and-kms-irreversibility-measure-law.md` proves that a
+full-support invariant probability on a compact monoid forces the monoid to be a group. A canonical
+invariant state on a genuinely one-sided monoid can instead collapse onto an absorbing ideal and
+erase the defect. Positive-temperature KMS balance escapes the no-go, but only after a time/energy
+grading is supplied; it then assigns a geometric probability distribution to the whole one-sided
+history and cannot descend to the reversible quotient.
+
+Therefore the bold conjecture in Section 4 is false for a bare bialgebra. The positive survivor is a
+marked law object with **incompatible reversible and thermal completions**. This is now the live
+higher ontology; bialgebra structure is only one possible producer.
+
 ## 7. Literature boundary
 
 - Farinati, universal quantum semigroups and Hopf envelopes, arXiv:2008.09937.
@@ -83,3 +95,4 @@ representation defect, intervention response, positive cost, and observer recurr
 ## Log
 
 - 2026-08-09 — opened after bialgebra/Hopf-envelope calibration.
+- 2026-08-09 — invariant-state selection killed; thermal/Hopf completion incompatibility promoted.

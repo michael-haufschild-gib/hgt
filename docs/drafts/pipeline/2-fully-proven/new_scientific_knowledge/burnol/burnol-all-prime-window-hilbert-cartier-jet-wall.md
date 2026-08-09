@@ -5,7 +5,7 @@
 - **Type:** SOURCE CONSTRUCTION / CLOSED DIAGONAL CLASSIFICATION / STOKES SEWING
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-PURE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** R
-- **Parents:** `burnol-all-prime-completion-singular-potential-entrance-wall`,
+- **Parents:** `../../3-formalized/new_scientific_knowledge/burnol/burnol-all-prime-completion-singular-potential-entrance-wall.md`,
   `BurnolCoPoissonSubWindow.lean`, `BurnolCoPoissonSubWindowSource.lean`, and
   `BurnolCoPoissonReciprocalSeedLanding.lean`
 - **Lean:** intentionally deferred during the `RHTower -> HTGeometry` refactor.
@@ -321,6 +321,27 @@ classified exactly.
 - Reciprocal sewing is not advertised as RH: its singular inverse is isolated and classified.
 - No ordinary closed-range theorem is invoked where range is provably nonclosed.
 
+## Lean formalization (partial, 2026-08-09)
+
+Modules: `RHTower/BurnolAllPrimeCompletionWall`, `RHTower/BurnolReciprocalStokesSewing`,
+`RHTower/BurnolPrimeLogSummability`.
+
+| Paper item | Lean declaration |
+|---|---|
+| `(HJ4)`, `(HJ17)` | `burnolAllPrimeInverseCompletionCoefficient` |
+| `(HJ15)` | `burnolAllPrimeCompletedMellin`, `burnolAllPrimeCompletionMultiplier_mul_completedMellin`, `soninMellinEvaluation_primeWindow_eq` |
+| `(HJ18)` | `burnolAllPrimeInverseCompletionCoefficient_eq` |
+| `(HJ19)` | `summable_burnolAllPrimeInverseCompletionCoefficient_sq_iff` |
+| `(HJ7)`, `(HJ25)` | `burnolReciprocalEndpointMultiplier` |
+| `(HJ26)` | `burnolSewnWindowFactor`, `burnolSewnWindowFactor_reflection`, `burnolSewnWindowFactor_eq_mul` |
+| `(HJ27)` | `norm_burnolSewnWindowFactor_le` |
+| `(HJ8)`, `(HJ28)` | `burnolSewnConormal`, `burnolSewnConormal_eq`, `burnolSummable_sewnConormal_sq` |
+| `(HJ9)`, `(HJ29)` | `burnolSewnConormal_unsewing_wall` |
+| `(HJ23)` | `burnolNotSummable_primeLogGreenPotential_sq` |
+
+Still open in Lean: the literal window norm bounds `(HJ2)`, the Hilbert direct-sum membership
+`(HJ3)`, and the packaged four-way equivalence `(HJ5)`.
+
 ## Gates
 
 - [x] literal all-prime Burnol Hilbert source constructed
@@ -340,3 +361,5 @@ classified exactly.
 - 2026-08-08 — constructed honest all-prime Burnol source vector, replaced false closed-range
   wording by a closed diagonal domain problem, constructed reciprocal-Stokes landing, and reduced
   right-zero exclusion to one uniform finite multiplicity-jet estimate.
+- 2026-08-09 — first unconditional Lean layer built and umbrella-wired; see the Lean
+  formalization table above for the exact declaration-to-equation map.

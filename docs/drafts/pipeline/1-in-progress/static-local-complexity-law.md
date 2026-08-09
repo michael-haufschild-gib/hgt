@@ -3783,7 +3783,7 @@ Thus growing-replica Hall expansion is already exact away from the sitewise
 singlets.  The remaining algebraic frontier is confined to the action of
 weight-two generators on `S_r` and its gluing with `(O4.12z19c)` for
 arbitrary mixed subspaces.  The dependency-closed proof is in
-`../2-fully-proven/all-replica-local-casimir-hall-expansion.md`.
+`../3-formalized/all-replica-local-casimir-hall-expansion.md`.
 The representation-independent implication “Hermitian family with central
 Casimir and trivial common kernel implies Hall expansion for every subspace”
 is now formalized over both `R` and `C` as
@@ -5662,5 +5662,5 @@ receive a new title and an independent significance audit.
   quenched recurrence-compatible nonlinear calibration with Brown-rate
   growth; arbitrary endpoint incidence is a proved dead route.  Paper proof
   and hostile audit:
-  `../2-fully-proven/static-orbit-net-no-go-and-circuit-bellman-law.md`.  Lean
+  `../3-formalized/static-orbit-net-no-go-and-circuit-bellman-law.md`.  Lean
   remained read only during corpus refactoring.

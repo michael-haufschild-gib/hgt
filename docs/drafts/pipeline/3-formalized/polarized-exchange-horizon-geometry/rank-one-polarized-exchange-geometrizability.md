@@ -1,9 +1,9 @@
 # Rank-one polarized exchange-geometrizability
 
 - **ID:** `rank-one-polarized-exchange-geometrizability`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / UNIVERSAL EXCHANGE OBSTRUCTION
-- **Scientific status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [STRICT SHADOW ONLY]`
+- **Scientific status:** `[LEAN-FORMALIZED] [PAPER-PROVED] [DEPENDENCY-CLOSED] [STRICT SHADOW ONLY]`
   `[CORPUS-SYNTHESIS] [NOT RH]`
 - **Source:** `../../1-in-progress/polarized-exchange-horizon-geometry/`
   `polarized-exchange-horizon-geometry-program.md`
@@ -654,16 +654,21 @@ polarization, and transverse Cartier horizon landing.
 
 ## Lean note
 
-No Lean code was written or built.  Existing formal parents to reuse later:
+Every numbered item and every corollary is now an unconditional Lean theorem:
 
 ```text
 formal/GaloisForLFunctions/RHTower/
-  DeningerRamifiedTopConormalAmbidexterity.lean
-  DeningerOneSidedFramedMateCurvatureTransgression.lean
+  RankOnePolarizedExchangeCurvature.lean
+  RankOnePolarizedExchangeModularGain.lean
+  RankOnePolarizedExchangeCoherentKernel.lean
+  RankOnePolarizedExchangeHorizon.lean
+  RankOnePolarizedExchangeHorizonTopology.lean
 ```
 
-A later formal card should state the monoid-representation/factorization equivalence using the
-existing curvature theorem rather than duplicate its matrix algebra.
+The existing curvature file is imported rather than duplicated, and the identification with it is
+itself proved (`spectralGain_one_apply`, `exchangeTransport_spectralGain_one_eq`).  The universal
+character corollary is proved over every field, not only in characteristic zero, because the
+calibration actually used is `2 - 1 = 1`.
 
 ## Gates
 
@@ -677,11 +682,18 @@ existing curvature theorem rather than duplicate its matrix algebra.
 - [x] off-horizon curvature complex and transverse quotient isomorphism classified
 - [x] abstract homology-conservative landing criterion paper-proved
 - [x] rank-one Hermitian torsion-to-exchange transgression paper-proved
-- [ ] Lean theorem deferred by user instruction
+- [x] unconditional Lean theorems for every item and corollary
+  (`rank-one-polarized-exchange-geometrizability-formalized.md`)
 - [ ] external specialist audit of exchange-geometrizability interpretation
 
 ## Log
 
+- 2026-08-09 — Formalized in Lean 4 without hypotheses: flatness, exact curvature, the
+  representation/factorization criterion through `SingleObj`, the coherent-kernel classification and
+  its restricted representation, the paracyclic calibration, higher-word stabilization, the two
+  horizon topologies, the off-horizon acyclic complex with its transverse contraction, the
+  homology-conservative landing criterion with its generating-set and prime forms, and the Hermitian
+  transgression.
 - 2026-08-08 — Extracted from the one-sided framed curvature after Fisher's universal exchange
   theorem supplied the correct parent category.  Proved the exact representation/factorization
   criterion and separated it from the still-open actual-source exchange realization.

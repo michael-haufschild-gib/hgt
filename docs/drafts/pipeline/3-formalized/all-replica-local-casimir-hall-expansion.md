@@ -1,14 +1,17 @@
 # All-replica local-Casimir Hall expansion
 
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
+- **Formalized companion:** `./all-replica-local-casimir-hall-expansion-formalized.md`
 - **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, O4 planar replica cavity
 - **Lean:** concrete arbitrary-site/arbitrary-replica Pauli representation and
   full Casimir centrality formalized in
   `HTGeometry/AllReplicaCollectivePauliCasimir.lean`; exact mixed-subspace Hall
   law modulo the simultaneous singlet sector formalized in
-  `HTGeometry/CentralCasimirCommonKernelCorrection.lean`; weight-two Hall on
-  the singlet quotient remains
+  `HTGeometry/CentralCasimirCommonKernelCorrection.lean`; the exact boxed law `(7)` on the
+  complement of the singlet sector, and the bi-tightness `(6)` of the completed scaled family,
+  are formalized in `HTGeometry/CentralCasimirComplementHallExpansion.lean`; weight-two Hall on
+  the singlet quotient `(15)` remains as the next card's target
 
 ## Exact statement
 
@@ -339,3 +342,16 @@ linearly span the full operator algebra; this is formalized in
 full span nor the stronger replicated Hall statement is a circuit-complexity
 lower bound. Any later use of this card must exhibit a separate nonlinear,
 selector-aware estimate; no rank-to-complexity implication is permitted.
+
+## Formal closure — 2026-08-09
+
+`HTGeometry/CentralCasimirComplementHallExpansion.lean` closes the boxed statements of this card.
+Completing a Hermitian central-Casimir family by the canonical projector onto its simultaneous
+kernel keeps the Casimir central and makes the simultaneous kernel trivial, so the completed
+scaled family is exactly bi-tight (`completedHermitianFamily_scaled_biTight`, equation `(6)`), and
+every subspace orthogonal to the simultaneous kernel expands exactly
+(`centralHermitianMatrixFamily_subspace_finrank_of_orthogonal_commonKernel`, equation `(7)`).  The
+concrete arbitrary-site, arbitrary-replica instance is
+`finiteAllReplicaCollectiveCommutator_subspace_finrank_of_orthogonal_singlet`.  Axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`.  The open weight-two singlet-quotient
+statement `(15)` is the next card's target and is not a gate of this one.

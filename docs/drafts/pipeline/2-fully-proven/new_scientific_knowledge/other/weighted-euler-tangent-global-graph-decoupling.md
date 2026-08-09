@@ -1137,3 +1137,86 @@ in another corona still only records their real part and remains circular.
   wrapper generalizes verbatim to order ⌊cR⌋+1).
   Meanwhile INDEPENDENT of (8a): 5c(ii-b) part 2 joint capstone and
   (18)/(19) corollaries — proceed in parallel.
+
+- **[FRONTIER CORRECTION 2026-08-09 — the power-log PNT is already in the tree, twice.]**
+  The route re-evaluation above names `ψ(x) = x + O(x/log^B x)` (`B ≥ 2`) as "THE remaining deep
+  input" and spins it off to `1-in-progress/pnt-power-log-error-quantitative-selberg.md`. That card
+  does not exist, and the input does — in two independent unconditional forms:
+
+  - `RHTower.exists_chebyshevPsi_power_log`
+    (`formal/GaloisForLFunctions/RHTower/ChebyshevPsiPowerLogPNT.lean`):
+    `|ψ(⌊x⌋) − x| ≤ C·x·exp(−c·(log x)^{1/10})` for `x ≥ x₀`, by Perron unsmoothing of the
+    tent-sum estimate with step `h = e^{−c₀u/4}`, `u = (log x)^{1/10}`;
+  - the vendored `GaloisForLFunctions.PNTPlus.MediumPNT`:
+    `(ψ − id) =O[atTop] fun x ↦ x·exp(−c·(log x)^{1/10})`, sorry-free and axiom-clean per
+    `PNTPlus/PROVENANCE.md`.
+
+  Either is strictly stronger than the demanded `O(x/log^B x)` for *every* `B`, because
+  `L^B·exp(−c·L^{1/10}) → 0` as `L → ∞`.
+
+  The growing-order consumers the re-evaluation asks for were built alongside it:
+  `RHTower.exists_separated_primeLog_nodes_growing`
+  (`RHTower/GrowingOrderPrimeLogNodes.lean`) supplies `⌊c₁R⌋+1` separated prime logs per unit
+  window, and `RHTower.norm_le_ray_of_primeLog_sampled_decay_growing`
+  (`RHTower/WeightedEulerGrowingPrimeOversampling.lean`) is the growing-order transfer;
+  `RHTower/WeightedEulerAnnihilatorOversamplingCarrierEliminationUniversalityLaw.lean` then carries
+  `compactFourierBorel_eq_zero_of_primeLog_graph_annihilation`.
+
+  The card's "NEXT" list is therefore stale and must be re-audited declaration by declaration
+  against the tree before any further mathematics is attempted here. The open work is the wiring
+  and the `(18)`/`(19)` corollaries, not a quantitative prime number theorem.
+
+- **[2026-08-09 — the growing-order carrier elimination is now Lean, and it is not vacuous.]**
+  The fixed-order law
+  `compactFourierBorel_eq_zero_of_primeLog_graph_annihilation` needs `β < min σ (α/2)`, and the
+  companion `not_beta_lt_min_sigma_half_alpha_of_nonempty_positiveStrip` proves that hypothesis has
+  no nonempty-strip instance: the walls force `α ≤ β`. Three new modules replace it by the
+  growing-order route, whose rate hypothesis is the satisfiable `β < σ`.
+
+  `HTGeometry/SampledRayRateTransferGrowingHalfplane.lean` —
+  **`norm_le_ray_of_sampled_decay_halfplane`**: the growing-order transfer of
+  `SampledRayRateTransfer` with global entirety weakened to analyticity on `{Re > T}`. The
+  smooth-bump window estimate `norm_le_window_of_sampled_halfplane` is already order-generic, so
+  the `⌊cR⌋ + 1` bookkeeping goes through unchanged — this is the "same bump route" the route
+  re-evaluation predicted, and it removes the global-entirety defect that blocked the growing-order
+  transfer for Lambert-type transforms.
+
+  `RHTower/WeightedEulerGrowingCarrierElimination.lean` —
+
+  - **`compactFourierBorel_eq_zero_of_lambert_ray_decay`**: the carrier-elimination core with the
+    ray rate `κ` abstract; from `β < κ` and a Lambert ray bound at rate `κ`, the Möbius recovery,
+    the two-sided decay extension and `compactFourierBorel_eq_zero_of_ray_decay` give
+    `F_B ≡ 0` and `L(sᵐ) = 0` for every `m`;
+  - **`norm_le_ray_of_primeLog_sampled_decay_growing_halfplane`**: growing-order prime-log
+    oversampling for a half-plane analytic function, feeding
+    `exists_separated_primeLog_nodes_growing` into the transfer above;
+  - **`compactCarrierLambertTransform_analyticAt_pos`**: on a carrier with positive real-part
+    floor the exponential test is contractive at every positive real point, so `T = 0` works;
+  - **`compactFourierBorel_eq_zero_of_primeLog_graph_annihilation_growing`** — the law:
+
+    ```text
+    0 < α, ∀ k, α ≤ Re(s k) ≤ β, β < σ,
+    ∀ p prime, lam p + L (compactPrimeEulerUnitTangent s p) = 0,
+    ∀ p prime, ‖lam p‖ ≤ C · log p · p^(-σ)
+      ⟹ (∀ z, compactFourierBorel L s z = 0) ∧ ∀ m, L (s ^ m) = 0
+    ```
+
+  The node density is chosen inside the proof as `c = min (α/(8M)) ((σ−β)/12)` with
+  `M = max α ‖s‖`, so the interpolation loss `6c` leaves ray rate `σ − 6c ≥ (σ+β)/2 > β`. The
+  `α/2` cap is gone: it was an artifact of the fixed derivative order, exactly as diagnosed.
+
+  All four declarations are unconditional; `#print axioms` reports only `propext`,
+  `Classical.choice`, `Quot.sound`; both modules are umbrella-wired.
+
+  The critical-boundary instance is the case the card is actually about, and it is now closed:
+
+  > **`compactFourierBorel_eq_zero_of_primeLog_graph_annihilation_critical`** — for a nonempty
+  > compact carrier with `0 < α ≤ Re(s k) ≤ β < 1` and the `T₁`/`M₀` dual bound
+  > `‖lam p‖ ≤ C·criticalNorm (primeCoordinateField p)`, prime-indexed graph annihilation forces
+  > `compactFourierBorel L s ≡ 0` and `L (sᵐ) = 0` for every `m`.
+
+  The critical dual reduction fixes `σ = 1` (`norm_lambert_primeLog_le_of_graph_annihilation_critical`
+  gives Lambert samples `≤ C/p`), and the card's carrier is compactly contained in `Re s < 1`, so
+  `β < σ` holds automatically. This is `(7) → (14) → (16)` at the critical boundary, unconditional
+  and axiom-clean. What remains on the card is the joint product-space capstone `(3)` and the
+  `(18)`/`(19)` corollaries — no further analytic input.

@@ -123,10 +123,13 @@ theorem permanentLine_le_ker (χ : ℕ+ →* kˣ) (n : ℕ+) :
         (permanentLine k) (exchangeDifferential_mulVec_mem χ n))) := by
   intro v hv
   rw [LinearMap.mem_ker]
-  ext
-  rw [LinearMap.codRestrict_apply, Matrix.mulVecLin_apply, exchangeDifferential_eq,
-    Matrix.smul_mulVec, exchangeE12_mulVec, mem_permanentLine_iff.1 hv]
-  simp
+  refine Subtype.ext ?_
+  have hzero : Matrix.mulVec (exchangeDifferential χ n) v = 0 := by
+    rw [exchangeDifferential_eq, Matrix.smul_mulVec, exchangeE12_mulVec,
+      mem_permanentLine_iff.1 hv]
+    funext i
+    fin_cases i <;> simp
+  simpa using hzero
 
 /-- The differential induced on the transverse framed quotient. -/
 def transverseDifferential (χ : ℕ+ →* kˣ) (n : ℕ+) :
@@ -201,10 +204,13 @@ def landingH0 (hcomm : (transverseDifferential χ n).comp f₁ = f₀.comp dB) :
 homology.** -/
 theorem landingH1_eq_zero (hcomm : (transverseDifferential χ n).comp f₁ = f₀.comp dB)
     (h : χ n ≠ 1) : landingH1 hcomm = 0 := by
+  have hker : ∀ y : LinearMap.ker (transverseDifferential χ n),
+      (y : (Fin 2 → k) ⧸ permanentLine k) = 0 := by
+    intro y
+    have hy := LinearMap.mem_ker.1 y.2
+    exact injective_transverseDifferential h (by rw [hy, map_zero])
   refine LinearMap.ext fun x => Subtype.ext ?_
-  have hmem := (landingH1 hcomm x).2
-  rw [LinearMap.ker_eq_bot.2 (injective_transverseDifferential h)] at hmem
-  simpa using hmem
+  simpa using hker (landingH1 hcomm x)
 
 /-- **Off the horizon every chain map into the exchange complex vanishes on degree-zero
 homology.** -/
@@ -231,6 +237,7 @@ end Landing
 theorem eq_one_of_forall_mem_closure {χ : ℕ+ →* kˣ} {S : Set ℕ+}
     (hS : Submonoid.closure S = ⊤) (h : ∀ n ∈ S, χ n = 1) : χ = 1 := by
   refine MonoidHom.ext fun n => ?_
+  show χ n = 1
   have hmem : n ∈ Submonoid.closure S := by rw [hS]; trivial
   induction hmem using Submonoid.closure_induction with
   | mem x hx => exact h x hx
@@ -253,17 +260,22 @@ theorem eq_one_of_forall_prime {χ : ℕ+ →* kˣ}
         have hqpos : 0 < q := by
           rcases Nat.eq_zero_or_pos q with rfl | hpos
           · rw [Nat.mul_zero] at hq
-            exact absurd hq n.ne_zero
+            exact absurd hq n.pos.ne'
           · exact hpos
-        have hPQ : n = (⟨(n : ℕ).minFac, hfac.pos⟩ : ℕ+) * ⟨q, hqpos⟩ :=
-          PNat.coe_injective (by simpa [PNat.mul_coe] using hq)
+        obtain ⟨P, hPcoe⟩ : ∃ P : ℕ+, (P : ℕ) = (n : ℕ).minFac := ⟨⟨_, hfac.pos⟩, rfl⟩
+        obtain ⟨Q, hQcoe⟩ : ∃ Q : ℕ+, (Q : ℕ) = q := ⟨⟨q, hqpos⟩, rfl⟩
+        have hPQ : n = P * Q := by
+          refine PNat.coe_injective ?_
+          rw [PNat.mul_coe, hPcoe, hQcoe]
+          exact hq
         have h2q : 2 * q ≤ (n : ℕ) := by
           calc 2 * q ≤ (n : ℕ).minFac * q := Nat.mul_le_mul_right q hfac.two_le
             _ = (n : ℕ) := hq.symm
-        have hqlt : q < N := by
-          rw [← hn]
+        have hQlt : (Q : ℕ) < N := by
+          rw [hQcoe, ← hn]
           omega
-        rw [hPQ, map_mul, hp _ hfac, ih q hqlt ⟨q, hqpos⟩ rfl, mul_one]
+        have hPprime : Nat.Prime (P : ℕ) := by rw [hPcoe]; exact hfac
+        rw [hPQ, map_mul, hp P hPprime, ih (Q : ℕ) hQlt Q rfl, mul_one]
   exact MonoidHom.ext fun n => key (n : ℕ) n rfl
 
 end
