@@ -693,6 +693,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 7, the jet series and its geometric domination | `jetSeries`, `norm_jetSeries_term_le`, `summable_jetSeries` |
 | Lemma 7, the jet limit | `norm_jetSeries_sub_head_le`, `tendsto_jetSeries` |
 | Lemma 7, (C3)/(20) — the all-order counterterm jet | `sectionLogTail_tail_eq`, `tendsto_countertermJet` |
+| Lemma 7, (C3)/(20) locally uniformly on the punctured plane | `tendstoUniformlyOn_jetSeries`, `countertermJetQuotient`, `countertermJetCoeff`, `tendstoUniformlyOn_countertermJet`, `tendstoUniformlyOn_countertermJet_of_isCompact`, `tendstoLocallyUniformlyOn_countertermJet` |
 | Lemma 7, the counterterm split | `sectionLogTail`, `summable_sectionLogTail`, `sectionLogTail_split` |
 | Lemma 7, (17) — the finite-section free energy | `finiteNomeSection_eq_restricted`, `finiteNomeSection_eq_exp_neg_moments` |
 | Lemma 9, (22) Schatten equivalence | `bosonicSchatten_iff_oneParticleSchatten` |
@@ -731,26 +732,28 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/DiagonalEllTwoIndexed.lean`,
 `HTGeometry/BosonicFockOperatorRealization.lean`,
 `HTGeometry/BosonicFockOperatorTrace.lean`,
-`HTGeometry/FiniteNomeSectionSchemeGauge.lean`.
+`HTGeometry/FiniteNomeSectionSchemeGauge.lean`,
+`HTGeometry/CountertermJetUniform.lean`.
 
 ### Open in Lean
 
-1. Lemma 7, (C3)/(20) is closed pointwise in `x`, for every counterterm order `N ≥ d`
-   (`tendsto_countertermJet`).  The card states it *locally uniformly* on `\(\mathbb C^\times\)`.
-   The uniform upgrade is not formalized: the estimate `(19)` that carries it is available
-   pointwise from `norm_jetSeries_sub_head_le` and `sectionLogTail_split`, but the passage to a
-   uniform bound on a compact subset of `\(\mathbb C^\times\)` has not been written.
-
-2. Lemma 8, the differential-phase half.  The algebraic content is closed: `(21)` is
+1. Lemma 8, the differential-phase half.  The algebraic content is closed: `(21)` is
    `finiteNomeSection_eq_zero_genus_mul_gauge`, the gauge is an explicit polynomial with no
    constant term, and it never vanishes, so the divisor is genus-independent
    (`finiteNomeSection_eq_zero_iff_genus_zero`).  What is *not* formalized is the transfer
    sentence: that multiplying by this gauge preserves differential algebraicity, so the finite
-   rational-rank classification of `\(G_{S,0}\)` and `\(G'_{S,0}/G_{S,0}\)` carries over to every
-   genus.  The corpus already owns the classification itself
-   (`MultipleEllipticGammaPeriodRankDichotomy`: `multipleEllipticGamma_everyFiniteSection_exactRankThreeGraphLaw`,
+   rational-rank classification of the genus-zero finite section and of its logarithmic derivative
+   carries over to every genus.  The corpus already owns the classification itself
+   (`MultipleEllipticGammaPeriodRankDichotomy`:
+   `multipleEllipticGamma_everyFiniteSection_exactRankThreeGraphLaw`,
    `MultipleEllipticGammaAllFiniteSectionsDifferentialAlgebraic`), so what is missing is the
    gauge-invariance step connecting the two, not the classification.
+
+Lemma 7 is closed, including the uniformity the card states.  The jet estimate is monotone in the
+modulus of the coordinate, so the jet limit is uniform on every ball; reading the coordinate as the
+reciprocal of the point turns this into uniform convergence on every region bounded away from the
+origin, hence uniform convergence on every compact subset of the punctured plane and local
+uniformity there, at every counterterm order.
 
 Lemma 9 is closed.  The second quantization is now a constructed bounded operator on
 `lp (fun _ : ι →₀ ℕ => ℂ) 2` rather than a family of eigenvalues: the occupation vectors are a
