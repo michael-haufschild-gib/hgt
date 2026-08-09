@@ -258,8 +258,22 @@ This card remains Stage 2.  Exact physical completion still requires three
 concrete maps: the mismatch coordinate projections on the synchronized
 quotient, the fixed-orientation Pauli commutator on each mismatch fibre, and
 the injection assembling distinct edge-defect sectors into the full
-Hilbert--Schmidt space.  Once those maps and equations (7), (11), and (13) are
-formalized, the abstract theorem yields (4) directly.
+Hilbert--Schmidt space.
+
+Progress against that list:
+
+- **`(7)` closed.**  `HTGeometry/TwoReplicaEdgeCommutatorSwapBasis.lean` gives all four values of
+  one fixed-orientation edge commutator on the local identity/swap basis:
+  `twoReplicaEdgeCommutator_one_one` and `..._swap_swap` are zero, while `..._one_swap` and
+  `..._swap_one` are the negated products of replica differences `D_a = σ_a ⊗ I - I ⊗ σ_a`.  The
+  proof is the swap relations applied once at each endpoint — the card's `(6)` — with no spectral
+  input.  `twoReplicaLocalDiff_mul_swap` records that the swap anticommutes with `D_a`, which is
+  what makes the two mismatched outputs independent.
+- **`(13)` available.**  The connected-graph common-kernel classification is
+  `finiteTwoReplicaPhysical_connectedGraph_kernel_iff`: vanishing on every edge forces the Boolean
+  word to be constant, which is exactly `⋂_e ker P_e = G_2` in swap coordinates.
+- **Remaining:** the Hilbert--Schmidt facts `(8)`, the orthogonality of distinct edge output
+  sectors `(11)`, and the assembly `(14)`--`(17)` into `ResolvedFiberHallExpansion`.
 
 `HTGeometry/TwoReplicaCliffordTwirlHallSymmetryReduction.lean` additionally
 proves, in both exact matrix conventions, that the canonical greatest local
