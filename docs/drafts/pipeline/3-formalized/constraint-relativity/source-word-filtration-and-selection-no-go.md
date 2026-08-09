@@ -1,8 +1,8 @@
 # Source-word filtration and fixed-action selection no-go
 
 - **ID:** `source-word-filtration-and-selection-no-go`
-- **Stage:** 2-fully-proven
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO LEAN WRITTEN]`
+- **Stage:** 3-formalized
+- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [FORMALIZED IN LEAN]`
 - **Novelty:** classical filtered-module ingredients; new use is a hostile no-go for proposed
   source-generated selection dynamics.
 
@@ -127,3 +127,7 @@ cyclic module has `K_0=K_1` but `K_2` is larger.
 
 No Lean work is authorized. Later formalization can use elementary linear-algebra exact-sequence
 lemmas plus filtered subspace inclusions; exact corpus declarations must be searched first.
+
+## Formalized companion
+
+`source-word-filtration-and-selection-no-go-formalized.md` (same directory).

@@ -1,9 +1,9 @@
 # Source–norm–support forgetful tower law
 
 - **ID:** `source-norm-support-forgetful-tower-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [BRIDGE] [NO LEAN WRITTEN]`
+- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [BRIDGE] [FORMALIZED IN LEAN]`
 - **Role:** exact explanation of why arithmetic orientation, positive geometry, and exact topology
   repeatedly detect same RH wall without jointly selecting it.
 - **Novelty:** elementary matrix theorem plus existing corpus residue formula; no independent
@@ -197,3 +197,7 @@ arithmetic residue instantiation.
 ## Log
 
 - 2026-08-08 — extracted from hostile exactness/admissibility audit.
+
+## Formalized companion
+
+`source-norm-support-forgetful-tower-law-formalized.md` (same directory).

@@ -29,6 +29,7 @@ Dedicated Lean umbrella:
 | ULF-NPG-PIN-1 | Natural free-monoid interventions are uniform powers; ramification comparisons are inverse-depth; power naturality does not select radial origin | `HTGeometry.ConstitutiveNaturalPowerNormalization` |
 | ULF-CTX-1 | Exact parity contextuality criterion, one-dimensional total-charge obstruction, proper-face blindness, and compatible uniform positive state without a global law | `HTGeometry.ConstitutiveParityContextuality` |
 | ULF-IRR-1 | Minimal irreducible `N`-ary law with all composites zero, abelian proper colour faces, non-homotopy-abelian total law, interaction order `N`, and non-locally-compact unbounded spectrum | `HTGeometry.ConstitutiveIrreducibleInteraction` |
+| ULF-TORS-1 | Acyclic based two-term complexes, determinant history as a complete based invariant, multiplicativity, positive shadow as the exact phase quotient, and closed observation with open logarithmic lift | `HTGeometry.ConstitutiveDeterminantTorsion` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.
@@ -86,3 +87,9 @@ generator-swap comparison pair) remains paper-level in the stage-2 card.
 
 Build green (8826 jobs); axioms standard. Stages 2–5 (boundary vanishing, residue collapse,
 double pole, assembly) remain per the staged plan in the promoted card.
+
+| ULF-INV-10-S2A | Stage 2, Lemma A: exponential substrip decay of `deriv XiC` by Cauchy transfer from the XiC strip bound (strip-shrink, slack absorbed into the constant) | `RHTower.XiCDerivStripDecay` |
+
+Build green (8941 jobs); axioms standard. Remaining prime-half stages: 2B (vertical-segment
+vanishing for the single-pole integrand), 3 (one-pole residue), 4 (matched/double case),
+5 (assembly).

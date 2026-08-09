@@ -1,9 +1,12 @@
 # Determinant torsion, exact history, phase quotient, and open logarithmic lift law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-TORS-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveDeterminantTorsion`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [COBORDISM/TORSION FORK] [EXACTNESS DOES NOT ERASE HISTORY]
-  [POSITIVE PHASE QUOTIENT] [CLOSED OBSERVATION/OPEN LIFT] [NOT RH] [NO LEAN]
+  [POSITIVE PHASE QUOTIENT] [CLOSED OBSERVATION/OPEN LIFT] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Setup
 

@@ -1,8 +1,8 @@
 # Faithful re-encoding does not promote a law
 
 - **ID:** `faithful-reencoding-no-law-promotion`
-- **Stage:** 2-fully-proven
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO LEAN WRITTEN]`
+- **Stage:** 3-formalized
+- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [FORMALIZED IN LEAN]`
 - **Role:** hostile correction to autogenic-operation claims.
 - **Novelty:** clone conjugacy is standard universal algebra; its application to the corpus's
   reset-and-carry claim is new internal knowledge.
@@ -110,3 +110,6 @@ qualify.
 No Lean work is authorized. If later needed, formalize generic conjugation of finitary operations
 and term evaluation before any corpus-specific reset-and-carry corollary.
 
+## Formalized companion
+
+`faithful-reencoding-no-law-promotion-formalized.md` (same directory).

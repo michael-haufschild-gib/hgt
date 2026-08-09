@@ -47,7 +47,8 @@ theorem transportDefect_eq (δ c : ℂ) :
     transportDefect δ c = !![0, 0; sourceScalar δ c, 0] := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [transportDefect, legTwist, legScale, legSwap, sourceScalar] <;> ring
+    simp [transportDefect, legTwist, legScale, legSwap, sourceScalar]
+  ring
 
 /-- **The transported defect is the same scalar in the upper-left cell.** -/
 theorem legTwist_mul_transportDefect (δ c : ℂ) :
@@ -89,7 +90,7 @@ theorem legCarrier_mul_conjTranspose (δ c : ℂ) :
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply, Fintype.sum_sum_type, Fin.sum_univ_two,
-      Matrix.conjTranspose_apply, Complex.normSq_eq_conj_mul_self, Matrix.one_apply] <;>
+      Matrix.conjTranspose_apply, Complex.normSq_eq_conj_mul_self] <;>
     ring
 
 /-- **`det(Γ Γ*) = |a|⁴`.** -/
@@ -116,7 +117,7 @@ theorem legCarrier_surjective (δ c : ℂ) (ha : sourceScalar δ c ≠ 0) (v : F
 /-! ## The Moore–Penrose inverse and its exact scaling -/
 
 /-- The Moore–Penrose inverse of the carrier when the framed scalar is nonzero. -/
-def legCarrierPseudoInverse (δ c : ℂ) : Matrix (Fin 2 ⊕ Fin 2) (Fin 2) ℂ :=
+noncomputable def legCarrierPseudoInverse (δ c : ℂ) : Matrix (Fin 2 ⊕ Fin 2) (Fin 2) ℂ :=
   ((normSq (sourceScalar δ c) : ℝ) : ℂ)⁻¹ • (legCarrier δ c)ᴴ
 
 /-- The pseudo-inverse is a right inverse. -/
@@ -146,26 +147,27 @@ theorem sum_normSq_pseudoInverse_mulVec (δ c : ℂ) (ha : sourceScalar δ c ≠
   have hsmul : ∀ i, (legCarrierPseudoInverse δ c *ᵥ x) i
       = ((normSq (sourceScalar δ c) : ℝ) : ℂ)⁻¹ * (((legCarrier δ c)ᴴ *ᵥ x) i) := by
     intro i
-    simp [legCarrierPseudoInverse, Matrix.smul_mulVec_assoc]
+    simp only [legCarrierPseudoInverse, Matrix.mulVec, dotProduct, Matrix.smul_apply,
+      smul_eq_mul, Finset.mul_sum, mul_assoc]
   calc ∑ i, normSq ((legCarrierPseudoInverse δ c *ᵥ x) i)
       = ∑ i, (normSq (sourceScalar δ c))⁻¹ ^ 2 * normSq (((legCarrier δ c)ᴴ *ᵥ x) i) := by
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [hsmul i, Complex.normSq_mul]
-        simp [Complex.normSq_inv, sq]
+        simp [sq]
     _ = (normSq (sourceScalar δ c))⁻¹ ^ 2 * ∑ i, normSq (((legCarrier δ c)ᴴ *ᵥ x) i) := by
         rw [Finset.mul_sum]
     _ = (∑ i, normSq (x i)) / normSq (sourceScalar δ c) := by
         rw [sum_normSq_conjTranspose_mulVec]
         field_simp
-        ring
 
 /-! ## The three shadows -/
 
 /-- The magnitude shadow forgets the phase: every nonzero framed scalar has a distinct companion
 of the same magnitude. -/
 theorem normSq_forgets_phase (a : ℂ) (ha : a ≠ 0) :
-    ∃ b : ℂ, b ≠ a ∧ normSq b = normSq a :=
-  ⟨-a, by simpa using ha, by simp⟩
+    ∃ b : ℂ, b ≠ a ∧ normSq b = normSq a := by
+  refine ⟨-a, fun h => ha ?_, by simp⟩
+  linear_combination (-1 / 2 : ℂ) * h
 
 /-- The support shadow forgets the magnitude: two framed scalars can have the same vanishing
 behaviour and different magnitudes. -/
@@ -176,7 +178,7 @@ theorem support_forgets_magnitude :
 /-- The support shadow factors through the magnitude shadow, which factors through the framed
 scalar: the three route outputs are successive functions of one datum. -/
 theorem shadow_tower (a : ℂ) : (a = 0) ↔ (normSq a = 0) := by
-  simp [Complex.normSq_eq_zero]
+  simp
 
 /-! ## Central-twist isotriviality -/
 
@@ -185,14 +187,14 @@ nonzero scalar leaves every relative channel `T_j f T_i⁻¹` unchanged. -/
 theorem relative_channel_central_twist {n : ℕ} (δ : ℂ) (hδ : δ ≠ 0)
     (Ti Tj f : Matrix (Fin n) (Fin n) ℂ) (hTi : IsUnit Ti.det) :
     (δ • Tj) * f * (δ • Ti)⁻¹ = Tj * f * Ti⁻¹ := by
-  rw [Matrix.inv_smul _ hδ, Matrix.smul_mul, Matrix.mul_smul, smul_smul,
-    inv_mul_cancel₀ hδ, one_smul]
-  · exact hTi
+  letI : Invertible δ := invertibleOfNonzero hδ
+  rw [Matrix.inv_smul Ti δ hTi, Matrix.smul_mul, Matrix.mul_smul, Matrix.smul_mul, smul_smul,
+    invOf_mul_self, one_smul]
 
 /-- A central twist does change the determinant holonomy, so the twist is visible to framed
 determinant data even though it is invisible to relative channels. -/
 theorem det_central_twist {n : ℕ} (δ : ℂ) (T : Matrix (Fin n) (Fin n) ℂ) :
     (δ • T).det = δ ^ n * T.det := by
-  simp [Matrix.det_smul]
+  simp
 
 end HTGeometry.ConstraintRelativity

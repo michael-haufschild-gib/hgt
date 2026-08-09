@@ -472,3 +472,22 @@ standing certification project.
 mathlib's LSeriesSummable_vonMangoldt through the ofReal bridge. Two fix cycles (cast alignment;
 an over-eager rfl-closure). Wired at the VonMangoldt block of the RHTower umbrella. INV-10
 prime-half staged plan: stage 1 DONE; next stage 2 (boundary vanishing from the (18a) family).
+
+## 2026-08-09 — stage-2 design: the single-pole form (Claude Fable 5)
+
+F_alpha/XiC = −1/(z+alpha) turns the contour integrand into XiC'·F_beta^*/(z+alpha): entire
+except ONE simple pole; residue = the Gram term value-wise; no zero-avoidance; verticals die by
+(18a) + a Cauchy-derivative bound; horizontals reduce to stage 1's certified swap on the pair
+product. The paper proof simplifies materially (recorded in the promoted card). Next module:
+the Cauchy-derivative substrip bound for XiC', with the corpus's Cauchy idiom searched first.
+
+## 2026-08-09 — Lean batch 6: INV-10 stage 2A certified (Claude Fable 5)
+
+`RHTower/XiCDerivStripDecay.lean` green (8941 jobs, standard axioms): Cauchy transfer of the
+horizontal-substrip exponential decay from XiC to deriv XiC via
+norm_deriv_le_of_forall_mem_sphere_norm_le — strip shrunk to (A+1)/2, radius (1−A)/2, the
+radius's exponential slack absorbed into the constant. Two trivial fix cycles (abs_add →
+abs_add_le rename; one unused hypothesis dropped for the lint gate). Wired into the RHTower
+umbrella at the XiC block. Vertical-edge domination for the single-pole contour form is now
+fully provisioned: ‖deriv XiC‖·‖F_β^*‖/‖z+α‖ ≤ (certified)·(18a)·(linear), all three factors
+machine-checked or corpus-owned.

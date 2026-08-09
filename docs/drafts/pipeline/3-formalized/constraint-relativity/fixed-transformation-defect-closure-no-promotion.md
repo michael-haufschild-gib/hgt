@@ -1,9 +1,9 @@
 # Fixed-transformation defect closure does not promote a law
 
 - **ID:** `fixed-transformation-defect-closure-no-promotion`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO LEAN WRITTEN]`
+- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [FORMALIZED IN LEAN]`
 - **Role:** hostile correction to transfinite failure-closure claims.
 - **Novelty:** the algebra is elementary; applying it to the corpus's proposed autogenic
   successor `(18)` is new internal knowledge.
@@ -189,3 +189,7 @@ application separate from the generic theorem.
 ## Log
 
 - 2026-08-08 — proved during hostile audit of autogenic failure closure.
+
+## Formalized companion
+
+`fixed-transformation-defect-closure-no-promotion-formalized.md` (same directory).

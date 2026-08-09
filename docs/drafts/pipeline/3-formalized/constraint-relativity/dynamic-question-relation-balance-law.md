@@ -1,9 +1,9 @@
 # Dynamic question--relation balance law
 
 - **ID:** `dynamic-question-relation-balance-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / FRAMED LAWSTACK DYNAMICS / LOCAL KINEMATICS
-- **Scientific status:** `[PAPER-PROVED] [NO LEAN WRITTEN OR BUILT] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [FORMALIZED IN LEAN] [NOT RH]`
 - **Novelty status:** exact sequence is elementary abelian-category algebra. Its role is corrective:
   source dynamics must change potential questions and relations, not only move a fixed constraint
   subspace.
@@ -180,3 +180,7 @@ bookkeeping, not new field mathematics.
 No Lean code was written or built. Later formalization can use submodule quotient exactness and
 finite-dimensional dimension formulas. Keep the source-isogeny, bornological, and HT/RH
 interpretations separate until their comparison functors exist.
+
+## Formalized companion
+
+`dynamic-question-relation-balance-law-formalized.md` (same directory).

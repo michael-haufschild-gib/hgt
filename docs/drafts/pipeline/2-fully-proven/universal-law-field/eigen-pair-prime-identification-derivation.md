@@ -261,3 +261,41 @@ Stage-1 provisioning note (2026-08-09): the termwise swap tool is
 the line-parametrized triple-product definition plus the summable-integral-norm bound from the
 (18a) decay family and the far-right geometric domination of the Λ-series. All idioms identified
 in-corpus; no new tooling needed.
+
+## Stage-2 design note — 2026-08-09: the single-pole form (assembly simplification)
+
+Designing the boundary-vanishing module exposed a reformulation that simplifies the entire
+contour argument. Since F_alpha / XiC = −1/(z+alpha) identically, the integrand
+
+    (XiC'/XiC)·F_alpha·F_beta^*  =  −XiC'(z)·F_beta^*(z)/(z+alpha)
+
+is ENTIRE except for one simple pole at z = −alpha (F_beta^* is entire; the removable quotients
+absorb every divisor pole: at a zero of order m the numerator's order-m vanishing cancels the
+log-derivative's simple pole with residue m — this is the §D7 residue collapse, now visible as
+literal holomorphy). Consequences:
+
+1. No zero-avoidance anywhere: the rectangle needs no X_j-selection near ordinates; verticals
+   are bounded by (18a) for F_beta^* times a Cauchy-derivative bound for XiC' times
+   1/(X − ‖alpha‖) — manifest vanishing.
+2. The residue theorem sees exactly one simple pole; its residue is −XiC'(−alpha)·F_beta^*(−alpha),
+   which is the antidiagonal Gram term (the beta-match condition appears value-wise through
+   F_beta^*(−alpha), zero unless matched — the collapse again).
+3. On the horizontal edges, XiC'·F_beta^*/(z+alpha) = (logDeriv XiC)·(−F_alpha·F_beta^*) via the
+   same identity, `logDeriv_completed_split` splits off the arch part, and stage 1's certified
+   swap applies with F := the pair product restricted to the line (integrable by (18a)).
+4. Rectangle height: take Y ∈ (1/2, 1) — the divisor lies in |Im z| < 1/2 and (18a)'s substrip
+   hypothesis A < 1 covers the whole rectangle; the bottom edge sits in the absolutely
+   convergent region 1/2 + Y > 1. Evenness of XiC folds the top edge onto the bottom (the
+   ±log n doubling).
+
+Stage-2 module obligations, updated: (a) Cauchy-derivative substrip bound for XiC' from
+`exists_norm_XiC_horizontal_le` (strip-shrink by the Cauchy radius); (b) the vertical-segment
+vanishing from (a) + (18a) + the linear denominator. Stage 3 (residue collapse) reduces to the
+one-pole residue computation; stage 4 (double pole) is the matched case where F_beta^*(−alpha)
+sits at the SAME point as the pole with the l'Hôpital/dslope value; stage 5 assembles.
+
+Stage-2 provisioning note (2026-08-09): the Cauchy-derivative idiom is
+`Complex.norm_deriv_le_of_forall_mem_sphere_norm_le`, already used by the corpus's
+`GammaDampedVerticalBound` — Lemma A (XiC' substrip bound) is a strip-shrink application of it
+to `exists_norm_XiC_horizontal_le`. All stage-2 tooling located; implementation is the next
+module.

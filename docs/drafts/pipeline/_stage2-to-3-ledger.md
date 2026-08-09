@@ -454,3 +454,21 @@ prime/zeta/divisor theorem.  See
 - Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
   `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
   computation proof.
+
+# Universal-law-field determinant-torsion certification (2026-08-09)
+
+- `determinant-torsion-exact-history-phase-quotient-and-open-log-lift-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveDeterminantTorsion`.
+- Certified: the based two-term complex `C(u)` is acyclic for every nonzero `u` and all such
+  complexes have identical (zero) homology; the comparison scalar is the determinant of the
+  differential and is multiplicative under orthogonal direct sums; a basis-preserving chain
+  isomorphism `C(u) → C(v)` exists iff `u = v`, while unrestricted gauge collapses the entire
+  nonzero family, so the source marking is load-bearing; the positive shadow `|τ|²` identifies two
+  nonzero histories exactly when they differ by a `U(1)` phase; and the loop `exp(2πiNt)` has
+  constantly zero homology, constant positive shadow one, closed determinant history, an open
+  logarithmic lift with endpoint increment `2πiN`, and that increment is the logarithmic-derivative
+  integral.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.
