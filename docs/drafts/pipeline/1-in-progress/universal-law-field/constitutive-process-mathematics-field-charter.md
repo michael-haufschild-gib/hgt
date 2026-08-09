@@ -79,6 +79,46 @@ In finite vector spaces, this reduces exactly to the annihilator theorem
 \ker(\operatorname{res}_U)=U^\perp.
 \]
 
+### 3.1 Consolidated primitive — marked polarized response nerve
+
+The functor \(W_s\) alone still permits arbitrary auxiliary slots. The tighter field object is its
+**marked polarized response nerve** \(\mathcal R(W_s)\): the simplicial/enriched object whose
+\(n\)-cells are source responses to \(n\) composable legal interventions, whose faces compose or
+forget interventions, whose degeneracies insert identity interventions, and whose source marking
+retains the distinction between native identities and observer-created identities. When a dagger or
+trace is sourced, the nerve acquires involutive or cyclic structure.
+
+The polarization is internal:
+
+- invertible simplices form the reversible core and carry phase, gauge, holonomy, and recurrence;
+- noninvertible simplices carry production, erasure, extension, and positive action;
+- observer functors can unitize noninvertible simplices, producing recurrent shadows with open
+  lifted history;
+- prolongation filters the same nerve by analytic/differential intervention depth;
+- completion changes which infinite response histories remain admitted.
+
+Thus CPM's proposed coordinate-free geometry is **polarized response-nerve geometry**. A route is a
+subnerve/instrument chart. It is a gauge only when its marked Kan reconstruction is equivalent to
+the same complete nerve. This removes the remaining temptation to store positivity, phase,
+topology, recurrence, and HT as independent fields.
+
+### 3.2 Derived shadows from one nerve
+
+| shadow | response-nerve construction |
+|---|---|
+| relation/exactness | kernel, radical, horn-filling, or deterministic response locus |
+| route no-go | fibre/cofibre or non-effectivity of subnerve reconstruction |
+| positivity | positive-definite dagger pairing and GNS envelope of history responses |
+| phase/orientation | unsquared complex/cyclic response before positive quotient |
+| recurrence | peripheral/cyclic return of repeated reversible response |
+| open history | nonunit lift above observer-created unit; nondegenerate simplex growth |
+| completion wall | failure of strictness/effectivity in pro/Ind/Tate completion of nerve |
+| hypertranscendence | unbounded minimal presentation rank of prolongation-filtered response nerve |
+| source selection | construction of nerve and legal interventions before target specialization |
+
+Each row is a research obligation, not a definition by analogy. A row counts only after a common
+source nerve and a comparison theorem are constructed.
+
 ## 4. Frankenstein periodic table
 
 | established mathematics | CPM role | forced output |
@@ -143,6 +183,17 @@ For \(0<q<1\), Jackson's \(q\)-Gamma response is simultaneously an explicit posi
 law, a positive-definite GNS kernel, a recurrent pure-point unitary observation with open marked
 history, a maximal-HT jet process, and an exact exponential-tilt/entropy intervention. Its
 functional equation predicts the tilted response from the untilted one.
+
+### Law VIII — reversible/irreversible history polarization
+
+Every nonnegative additive cost on a reversible groupoid vanishes, whereas directed histories
+support nonzero additive cost. If an observer sends one positive-cost nonunit history to identity,
+its iterates have exact recurrent observation, injective open lift, linear action growth, and cost
+cannot descend through observer. These Lean-certified laws supply CPM's compositional layer:
+reversible core carries phase/gauge memory; directed nonunits carry production and action.
+
+`polarized-realization-dynamics-field-charter.md` develops this layer. It is not a competing field;
+it specifies the process composition CPM previously left abstract.
 
 These laws give CPM nontrivial content before any RH application.
 
@@ -218,6 +269,48 @@ It dies as theatre if:
 - reconstruction never predicts an unobserved response;
 - HT, positivity, recurrence, or physics are identified by definition rather than theorem.
 
+## 8.1 Whole-corpus hostile coverage audit
+
+Current exact coverage is intentionally asymmetric.
+
+| corpus organ | response-nerve status |
+|---|---|
+| relation kernels / interaction fibres | exact finite tomography and matching-fibre charts |
+| differential/HT prolongation | exact finite-jet blindness; unbounded response-rank programme |
+| positive cones / Gram / GNS | exact finite and q-Gamma calibrations; indefinite inertia not unified |
+| phase / orientation / marked ports | exact marked complex-response examples; global source mark open |
+| recurrence / open lift | exact unitization pump and unitary/GNS examples |
+| finite-to-cofinal escape | exact locally-finite end theorem and several completion calibrations |
+| topology / nonclosed range | typed as strictness of completed response nerve; common source open |
+| source normalization / selection | principal unresolved organ |
+| physical clock / locality / complexity | PRD supplies typed carrier; independent physical realization open |
+| allocation / Hall / directed seam | no common response-nerve realization yet |
+| Puiseux/Stokes inertia | no common signed/indefinite response-nerve realization yet |
+
+Therefore CPM is a coherent field programme with real theorems, not yet explanation of every corpus
+endpoint. Strongest missing theorem is not another RH lemma: construct one pre-target source response
+nerve whose three nonisomorphic instrument subnerves include a relation/allocation organ, an
+indefinite or signed organ, and an analytic/prolongation organ, then predict a withheld response.
+
+## 8.2 Route-independent predictions now forced
+
+1. **Gauge criterion:** two routes are gauges only if their marked response subnerves reconstruct
+   the same complete process; endpoint agreement is insufficient.
+2. **Polarization:** positive additive action cannot live on reversible response history.
+3. **Unitization pump:** observer-created identities force exact recurrence/open-lift/action
+   separation and cost nondescendence.
+4. **Compactness wall:** a coherent locally finite response tower has an end; missing global laws
+   require effectivity, topology, nonproperness, or noncoherence.
+5. **Erasure wall:** same-carrier surjective class death forces infinite-dimensional response
+   capacity.
+6. **HT correction:** hypertranscendence cannot be ordinary orbit noncompactness. It must appear as
+   unbounded prolongation-memory/presentation rank, since compact recurrent HT processes exist and
+   every finite jet is shared with DA processes.
+
+Items 2--5 are Lean-certified. Item 1 has a Lean-certified finite linear core. Item 6 has
+Lean-certified finite-jet separation and exact source examples, while general Kolchin/nerve
+equivalence remains conjectural.
+
 ## 9. Current position
 
 Finite tomography, passive/interventional separation, modular observer contraction, forced positive
@@ -244,3 +337,6 @@ the field.
   open history, maximal HT jets, and an exact entropy-tilt prediction.
 - 2026-08-09 — five-chart \(q\)-Gamma reconstruction passed marked presentation invariance; general
   process-Morita invariance remains open.
+- 2026-08-09 — Lean history-polarization and observer-unitization laws supplied a forced
+  reversible/irreversible compositional architecture; Lean process tomography certified CPM's
+  reconstruction/blind-sector core.

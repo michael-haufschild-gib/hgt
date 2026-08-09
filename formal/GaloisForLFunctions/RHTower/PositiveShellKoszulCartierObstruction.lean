@@ -238,6 +238,133 @@ theorem positiveShell_source_syzygy (m n : PositiveShellExponent) :
   simp [commonFactorKoszulD1]
   ring
 
+/-! ## Every finite shell aperture -/
+
+/-- Unit family of a finite shell aperture. -/
+abbrev positiveShellFiniteUnits (F : Finset PositiveShellExponent) :
+    ↥F → PositiveShellAnalyticRingˣ :=
+  fun i => positiveShellMultiplierUnit i.1
+
+/-- Source-defined augmentation `h_F((x_m)) = ∑ H_m x_m`. -/
+abbrev positiveShellFiniteAugmentation (F : Finset PositiveShellExponent) :=
+  unitWeightedAugmentation (positiveShellFiniteUnits F)
+
+/-- Shell-presentation relation module `E_F = ker h_F`. -/
+abbrev PositiveShellFiniteRelations (F : Finset PositiveShellExponent) :=
+  unitWeightedRelations (positiveShellFiniteUnits F)
+
+/-- Canonical selected pivot of a nonempty aperture. -/
+def positiveShellFinitePivot (F : Finset PositiveShellExponent) (hF : F.Nonempty) : ↥F :=
+  ⟨hF.choose, hF.choose_spec⟩
+
+/-- Exact split surjection `O_U^F ≃ O_U ⊕ E_F`. -/
+def positiveShellFiniteSplitEquiv (F : Finset PositiveShellExponent) (hF : F.Nonempty) :
+    (↥F → PositiveShellAnalyticRing) ≃ₗ[PositiveShellAnalyticRing]
+      PositiveShellAnalyticRing × PositiveShellFiniteRelations F :=
+  unitWeightedSplitEquiv (positiveShellFiniteUnits F) (positiveShellFinitePivot F hF)
+
+/-- Explicit free basis of `E_F`, one vector for every non-pivot shell. -/
+noncomputable def positiveShellFiniteRelationsBasis
+    (F : Finset PositiveShellExponent) (hF : F.Nonempty) :
+    Module.Basis (unitWeightedAway (positiveShellFinitePivot F hF))
+      PositiveShellAnalyticRing (PositiveShellFiniteRelations F) :=
+  unitWeightedRelationsBasis (positiveShellFiniteUnits F) (positiveShellFinitePivot F hF)
+
+/-- The relation module has exactly `|F|-1` basis vectors. -/
+theorem card_positiveShellFiniteRelationsBasis
+    (F : Finset PositiveShellExponent) (hF : F.Nonempty) :
+    Fintype.card (unitWeightedAway (positiveShellFinitePivot F hF)) = F.card - 1 := by
+  simpa using card_unitWeightedAway (R := PositiveShellAnalyticRing)
+    (positiveShellFinitePivot F hF)
+
+/-- Exterior basis of the finite shell relation module. -/
+noncomputable def positiveShellFiniteExteriorBasis
+    (F : Finset PositiveShellExponent) (hF : F.Nonempty) (k : ℕ) :
+    Module.Basis
+      (Set.powersetCard (unitWeightedAway (positiveShellFinitePivot F hF)) k)
+      PositiveShellAnalyticRing (⋀[PositiveShellAnalyticRing]^k (PositiveShellFiniteRelations F)) :=
+  (positiveShellFiniteRelationsBasis F hF).exteriorPower k
+
+/-- Exact binomial number of degree-`k` exterior generators. -/
+theorem card_positiveShellFiniteExteriorBasis
+    (F : Finset PositiveShellExponent) (hF : F.Nonempty) (k : ℕ) :
+    Nat.card (Set.powersetCard (unitWeightedAway (positiveShellFinitePivot F hF)) k) =
+      (F.card - 1).choose k := by
+  rw [Set.powersetCard.card, Nat.card_eq_fintype_card,
+    card_positiveShellFiniteRelationsBasis F hF]
+
+/-- Degree-`p+1` cycles of the full normalized shell-family Koszul DGA. -/
+abbrev positiveShellFiniteKoszulCycles
+    (F : Finset PositiveShellExponent) (p : ℕ) :=
+  splitCommonFactorKoszulCycles positiveShellZeta (PositiveShellFiniteRelations F) p
+
+/-- Degree-`p+1` boundaries of the full normalized shell-family Koszul DGA. -/
+abbrev positiveShellFiniteKoszulBoundaries
+    (F : Finset PositiveShellExponent) (p : ℕ) :=
+  splitCommonFactorKoszulBoundaries positiveShellZeta (PositiveShellFiniteRelations F) p
+
+/-- Every degree-`p+1` shell Koszul cycle is uniquely an element of `Λ^(p+1) E_F`. -/
+noncomputable def positiveShellFiniteKoszulCyclesEquiv
+    (F : Finset PositiveShellExponent) (hF : F.Nonempty) (p : ℕ) :
+    (⋀[PositiveShellAnalyticRing]^(p + 1) (PositiveShellFiniteRelations F))
+      ≃ₗ[PositiveShellAnalyticRing] positiveShellFiniteKoszulCycles F p := by
+  let b := positiveShellFiniteExteriorBasis F hF p
+  letI : NoZeroSMulDivisors PositiveShellAnalyticRing
+      (⋀[PositiveShellAnalyticRing]^p (PositiveShellFiniteRelations F)) :=
+    ⟨fun {_ _} h => b.smul_eq_zero.mp h⟩
+  exact splitCommonFactorCyclesEquiv positiveShellZeta_ne_zero
+    (PositiveShellFiniteRelations F) p
+
+/-- Under the exterior-cycle coordinates, boundaries are exactly zeta multiples.  This is the
+degreewise homology identification `H_(p+1) = O_D ⊗ Λ^(p+1) E_F`. -/
+theorem positiveShellFiniteKoszulBoundaries_classification
+    (F : Finset PositiveShellExponent) (hF : F.Nonempty) (p : ℕ) :
+    Submodule.map (positiveShellFiniteKoszulCyclesEquiv F hF p).toLinearMap
+        (LinearMap.range (commonFactorScalarMap positiveShellZeta :
+          (⋀[PositiveShellAnalyticRing]^(p + 1) (PositiveShellFiniteRelations F))
+            →ₗ[PositiveShellAnalyticRing]
+          (⋀[PositiveShellAnalyticRing]^(p + 1) (PositiveShellFiniteRelations F)))) =
+      positiveShellFiniteKoszulBoundaries F p := by
+  let b := positiveShellFiniteExteriorBasis F hF p
+  letI : NoZeroSMulDivisors PositiveShellAnalyticRing
+      (⋀[PositiveShellAnalyticRing]^p (PositiveShellFiniteRelations F)) :=
+    ⟨fun {_ _} h => b.smul_eq_zero.mp h⟩
+  exact map_scalarRange_splitCommonFactorCyclesEquiv_eq_boundaries
+    positiveShellZeta_ne_zero (PositiveShellFiniteRelations F) p
+
+/-- Exterior degrees strictly above `|F|-1` vanish. -/
+theorem positiveShellFiniteExteriorPower_subsingleton_of_card_lt
+    (F : Finset PositiveShellExponent) (hF : F.Nonempty) (k : ℕ)
+    (hk : F.card - 1 < k) :
+    Subsingleton (⋀[PositiveShellAnalyticRing]^k (PositiveShellFiniteRelations F)) := by
+  rw [← not_nontrivial_iff_subsingleton]
+  intro hnon
+  letI : Nontrivial (⋀[PositiveShellAnalyticRing]^k (PositiveShellFiniteRelations F)) := hnon
+  obtain ⟨i⟩ := (positiveShellFiniteExteriorBasis F hF k).index_nonempty
+  have hle : i.1.card ≤ Fintype.card
+      (unitWeightedAway (positiveShellFinitePivot F hF)) := Finset.card_le_univ i.1
+  rw [Set.powersetCard.card_eq i,
+    card_positiveShellFiniteRelationsBasis F hF] at hle
+  exact (not_le_of_gt hk) hle
+
+/-- All normalized Koszul cycle modules above degree `|F|-1` are zero; hence all higher homology
+vanishes. -/
+theorem positiveShellFiniteKoszulCycles_subsingleton_of_card_lt
+    (F : Finset PositiveShellExponent) (hF : F.Nonempty) (p : ℕ)
+    (hp : F.card - 1 < p + 1) : Subsingleton (positiveShellFiniteKoszulCycles F p) := by
+  let b := positiveShellFiniteExteriorBasis F hF p
+  letI : NoZeroSMulDivisors PositiveShellAnalyticRing
+      (⋀[PositiveShellAnalyticRing]^p (PositiveShellFiniteRelations F)) :=
+    ⟨fun {_ _} h => b.smul_eq_zero.mp h⟩
+  let he := positiveShellFiniteKoszulCyclesEquiv F hF p
+  letI : Subsingleton
+      (⋀[PositiveShellAnalyticRing]^(p + 1) (PositiveShellFiniteRelations F)) :=
+    positiveShellFiniteExteriorPower_subsingleton_of_card_lt F hF (p + 1) hp
+  constructor
+  intro x y
+  have hxy : he.symm x = he.symm y := Subsingleton.elim _ _
+  exact he.symm.injective hxy
+
 end
 
 end RHTower

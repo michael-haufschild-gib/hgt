@@ -23,6 +23,8 @@ import GaloisForLFunctions.HTGeometry.InterfinityGeometry.MultiTimeRegions
 import GaloisForLFunctions.HTGeometry.InterfinityGeometry.MultiTimeHadamard
 import GaloisForLFunctions.HTGeometry.InterfinityGeometry.MultiTimeFixedFaces
 import GaloisForLFunctions.HTGeometry.InterfinityGeometry.MultiTimeIntegrability
+import GaloisForLFunctions.HTGeometry.InterfinityGeometry.SpectralComplexGamma
+import GaloisForLFunctions.HTGeometry.InterfinityGeometry.SpectralComplexDeficient
 
 /-!
 # Interfinity geometry

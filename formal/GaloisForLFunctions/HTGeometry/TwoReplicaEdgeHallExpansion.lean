@@ -56,16 +56,19 @@ def edgeOutputLocal (u v : V) (a b : Fin 3) (x : V → Bool) (w : V) :
     (if x v then twoReplicaSwap * twoReplicaLocalDiff b else twoReplicaLocalDiff b)
   else twoReplicaLocalSwapRaw (x w)
 
+omit [Fintype V] in
 theorem edgeOutputLocal_self_left (u v : V) (a b : Fin 3) (x : V → Bool) :
     edgeOutputLocal u v a b x u =
       if x u then twoReplicaSwap * twoReplicaLocalDiff a else twoReplicaLocalDiff a := by
   simp [edgeOutputLocal]
 
+omit [Fintype V] in
 theorem edgeOutputLocal_self_right {u v : V} (huv : u ≠ v) (a b : Fin 3) (x : V → Bool) :
     edgeOutputLocal u v a b x v =
       if x v then twoReplicaSwap * twoReplicaLocalDiff b else twoReplicaLocalDiff b := by
   simp [edgeOutputLocal, huv.symm]
 
+omit [Fintype V] in
 theorem edgeOutputLocal_outside {u v : V} (a b : Fin 3) (x : V → Bool) {w : V}
     (hwu : w ≠ u) (hwv : w ≠ v) :
     edgeOutputLocal u v a b x w = twoReplicaLocalSwapRaw (x w) := by

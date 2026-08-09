@@ -9,3 +9,5 @@ finite analytic observation is maximally nonseparating—DA and HT laws occupy e
 kernel pairs are not enough. Here observer loss is stronger—global DA/HT distinction vanishes topologically even before any point-identification quotient is taken.
 
 no finite-face continuity or compactness argument can orient the crossing.
+
+any nonzero landing must be discontinuous for product topology or use finer/admissible source topology

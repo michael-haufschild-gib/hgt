@@ -344,3 +344,14 @@ prime/zeta/divisor theorem.  See
   history; action cannot descend through unitizing observer; bundled four-organ exchange theorem.
 - Targeted module build green; universal-law-field umbrella wired; no project postulate or
   computation proof.
+
+# Universal-law-field process-tomography partial certification (2026-08-09)
+
+- `multilinear-process-tomography-blind-sector-and-positive-robustness-law.md` remains Stage 2.
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveProcessTomography`.
+- Certified: exact annihilator blind sector; reconstruction iff spanning; proper instruments iff
+  nonzero blind direction; affine record equality; open-interior constraints preserve distinct
+  opposite blind perturbations.
+- Pending: product-slot dimension formula and quantitative PSD spectral bound/specialization.
+- Targeted module build green; universal-law-field umbrella wired; no project postulate or
+  computation proof.

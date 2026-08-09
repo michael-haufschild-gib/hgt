@@ -30,6 +30,12 @@ Formalized cards and declaration-level records live in
 
 ## Partially certified, not promoted
 
+`ULF-MPTB-1` has a certified coordinate-free core in
+`HTGeometry.ConstitutiveProcessTomography`: exact annihilator blind sector, reconstruction iff
+spanning, nonzero blind-direction existence, affine record equality, and qualitative open-interior
+robustness. Product-slot dimension formula and quantitative PSD spectral bound remain uncertified,
+so card stays in Stage 2.
+
 `ULF-EQG-1` has a certified local and finite core:
 
 - `HTGeometry.QPochhammer`: q-Pochhammer convergence, shift, nonvanishing; normalized q-Gamma

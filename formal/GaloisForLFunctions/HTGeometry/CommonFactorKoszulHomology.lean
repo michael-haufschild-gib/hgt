@@ -320,20 +320,22 @@ def unitWeightedAwayEquivRelations (u : ι → Rˣ) (i₀ : ι) :
             then -(↑((u i₀)⁻¹) : R) * A y
             else y ⟨i, Finset.mem_erase.mpr ⟨hi, Finset.mem_univ i⟩⟩)) = 0
           rw [sum_eq_pivot_add_away i₀]
-          simp only [dif_pos, A]
+          simp only [dif_pos]
           have haway : (∑ j : unitWeightedAway i₀,
               (u j.1 : R) * (if h : j.1 = i₀ then
-                -(↑((u i₀)⁻¹) : R) * ∑ k, (u k.1 : R) * y k else y j)) =
-              ∑ j, (u j.1 : R) * y j := by
-            apply Finset.sum_congr rfl
-            intro j hj
+                -(↑((u i₀)⁻¹) : R) * A y else y j)) = A y := by
+            change (∑ j : unitWeightedAway i₀,
+              (u j.1 : R) * (if h : j.1 = i₀ then
+                -(↑((u i₀)⁻¹) : R) * A y else y j)) =
+              ∑ j, (u j.1 : R) * y j
+            apply Fintype.sum_congr
+            intro j
             rw [dif_neg (Finset.mem_erase.mp j.2).1]
           rw [haway]
           calc
-            (u i₀ : R) * (-(↑((u i₀)⁻¹) : R) * ∑ j, (u j.1 : R) * y j) +
-                ∑ j, (u j.1 : R) * y j =
+            (u i₀ : R) * (-(↑((u i₀)⁻¹) : R) * A y) + A y =
               -((u i₀ : R) * (↑((u i₀)⁻¹) : R)) *
-                  ∑ j, (u j.1 : R) * y j + ∑ j, (u j.1 : R) * y j := by ring
+                  A y + A y := by ring
             _ = 0 := by simp⟩
       map_add' := fun x y => by
         apply Subtype.ext
@@ -361,13 +363,17 @@ def unitWeightedAwayEquivRelations (u : ι → Rˣ) (i₀ : ι) :
       by_cases hi : i = i₀
       · subst i
         have hx := x.2
-        rw [LinearMap.mem_ker, unitWeightedAugmentation,
-          sum_eq_pivot_add_away i₀] at hx
-        have hA : A (g x) = ∑ j : unitWeightedAway i₀, (u j.1 : R) * x.1 j.1 := rfl
-        simp only [f, g, dif_pos, hA]
+        rw [LinearMap.mem_ker] at hx
+        change (∑ i, (u i : R) * x.1 i) = 0 at hx
+        rw [sum_eq_pivot_add_away i₀] at hx
         have hsum : ∑ j : unitWeightedAway i₀, (u j.1 : R) * x.1 j.1 =
             -(u i₀ : R) * x.1 i₀ := by
           linear_combination hx
+        dsimp [f, g]
+        rw [if_pos rfl]
+        change -(↑((u i₀)⁻¹) : R) * A (fun j => x.1 j.1) = x.1 i₀
+        rw [show A (fun j => x.1 j.1) =
+          ∑ j : unitWeightedAway i₀, (u j.1 : R) * x.1 j.1 by rfl]
         rw [hsum]
         calc
           -(↑((u i₀)⁻¹) : R) * (-(u i₀ : R) * x.1 i₀) =

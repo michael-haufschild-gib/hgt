@@ -1260,3 +1260,77 @@ What is genuinely left is the instantiation: the coefficient factor is a Banach 
 regular-flux factor `O(Q₊)_R` is a Fréchet space of holomorphic functions, so feeding it into the
 criterion needs the locally convex form of the separation argument, with the analytic functionals of
 the `compactFourierBorel` layer as the second component of the annihilating pair.
+
+### The Fréchet obstacle is removed
+
+`formal/GaloisForLFunctions/HTGeometry/LocallyConvexDenseOfVanishingDual.lean`, unconditional and
+axiom-clean:
+
+- `exists_dual_vanishing_of_notMem_closed_submodule_lcs`;
+- `topologicalClosure_eq_top_of_forall_dual_eq_zero_lcs`;
+- **`topologicalClosure_eq_top_of_forall_pair_dual_eq_zero_lcs`** — the joint criterion with **no
+  normed hypothesis on either factor**: any locally convex real topological vector spaces will do.
+
+The norm was never needed.  `geometric_hahn_banach_closed_point` separates a point from a closed
+convex set in any locally convex space, and the argument that a functional bounded above on a
+subspace vanishes on it is scaling, not estimation.  So the criterion applies with the second factor
+`O(Q₊)_R` a Fréchet space of holomorphic functions, which was the stated obstacle to instantiating
+`(3)` and `(18)`.
+
+What remains is now purely the concrete instantiation: exhibit the two factors with their locally
+convex structures, define `Γ_fin` as a submodule of the product, and feed
+`compactFourierBorel_eq_zero_of_primeLog_graph_annihilation_critical` in as the vanishing of the
+mixed annihilating pair.
+
+### `(3)` in generated form
+
+**`topologicalClosure_span_eq_top_of_pair_dual_lcs`** (same module), unconditional and axiom-clean:
+for a family of pairs `(e_i, v_i)` in a product of locally convex spaces, the span is dense as soon
+as the only pair of functionals annihilating **every generator** is the zero pair.
+
+This is `(3)` in the form the card actually uses.  `Γ_fin` is the set of finite prime-support
+combinations, i.e. the span of the generators `p ↦ ((log p/p)·δ_p, u_p)`, and the annihilation
+hypothesis is checked one prime at a time — which is precisely the prime-indexed graph annihilation
+`lam p + L(compactPrimeEulerUnitTangent s p) = 0` that the carrier-elimination theorems consume.
+
+The chain for `(3)`/`(18)`/`(19)` is therefore complete at the level of criteria:
+
+```text
+prime-indexed annihilation  ──(carrier elimination)──▶  the pair is zero
+        └──(topologicalClosure_span_eq_top_of_pair_dual_lcs)──▶  (3), (18)
+                └──(dense_affine_of_topologicalClosure_eq_top)──▶  (19)
+```
+
+Only the concrete construction of the two factor spaces remains.
+
+### The coefficient factor's annihilator computation
+
+`formal/GaloisForLFunctions/HTGeometry/LpSingleAnnihilator.lean`, unconditional and axiom-clean:
+
+**`eq_zero_of_forall_apply_lp_single`** — on `lp E p` with `p ≠ ∞`, a continuous functional
+vanishing on every single-support element vanishes identically.
+
+This is the first factor of the pair criterion, done: the weighted coefficient space is a weighted
+`ℓ¹` over the primes, its single-support elements are the scaled Dirac masses `(log p/p)·δ_p` that
+generate `Γ_fin`'s first component, and mathlib's `lp.hasSum_single` writes every element as the
+unbounded sum of those pieces, which a continuous functional preserves.
+
+So in the pair `(f₁, f₂)`, once the carrier elimination forces `f₂ = 0`, the surviving condition
+`f₁((log p/p)·δ_p) = 0` for every prime gives `f₁ = 0` by this lemma.  The remaining construction is
+the second factor alone.
+
+### From the elimination's conclusion to the vanishing of the functional
+
+`formal/GaloisForLFunctions/HTGeometry/VanishingOnClosedSpan.lean`, unconditional and axiom-clean:
+
+- **`eq_zero_on_topologicalClosure_span`** — a continuous linear map vanishing on a set vanishes on
+  the closed span of that set (its kernel is a closed submodule);
+- **`eq_zero_of_topologicalClosure_span_eq_top`** — hence it is zero when that closed span is
+  everything.
+
+This is the step the carrier-elimination conclusion needs.  Those theorems deliver
+`L (sᵐ) = 0` for every `m` and `compactFourierBorel L s ≡ 0`; what turns a family of scalar
+identities into `L = 0` is exactly the passage to the closed span, and then a density statement for
+the generating family.  Note also that the flux side of the elimination lives on `C(K, ℂ)` for a
+compact carrier `K` — a Banach space — so the Fréchet structure of `O(Q₊)_R` enters only in the
+card's statement, not in the route through compactly carried functionals.

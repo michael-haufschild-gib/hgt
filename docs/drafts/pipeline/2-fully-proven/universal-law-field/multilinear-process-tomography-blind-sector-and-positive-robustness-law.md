@@ -5,7 +5,8 @@
 - **Type:** THEOREM (paper)
 - **Source:** intervention-completeness attack on constitutive kernel geometry
 - **Statement:** A finite law process is reconstructed exactly by a spanning family of joint interventions; every nonspanning family has a canonical annihilator blind sector, and interior positivity cannot remove that nonidentifiability.
-- **Status:** [PAPER-PROVED] [ROUTE-INDEPENDENT PROCESS THEOREM] [CLASSICAL MULTILINEAR/PROCESS-TOMOGRAPHY PARENTS] [NOT RH] [NO LEAN]
+- **Status:** [LEAN CORE CERTIFIED] [QUANTITATIVE PRODUCT/PSD CLAUSES AWAIT LEAN]
+  [ROUTE-INDEPENDENT PROCESS THEOREM] [NOT RH]
 
 ## 1. Coordinate-free process
 
@@ -178,9 +179,36 @@ and nonprobabilistic field-valued experiments.
 - Infinite process rank is not differential hypertranscendence.
 - No physical cost, gravity law, or RH claim follows.
 
+## 7. Lean certification boundary
+
+Module:
+`GaloisForLFunctions.HTGeometry.ConstitutiveProcessTomography`.
+
+Closed in Lean:
+
+1. exact restriction-kernel/dual-annihilator identity;
+2. exact reconstruction iff the intervention subspace is top;
+3. existence of a nonzero blind direction iff the intervention subspace is proper;
+4. equality of every affine blind-family record;
+5. general open-interior robustness: sufficiently small opposite perturbations along every nonzero
+   blind direction remain admissible and distinct.
+
+Targeted source check and final module build passed. `#print axioms` reports only standard
+`propext`, `Classical.choice`, and `Quot.sound` dependencies.
+
+Not yet Lean-certified:
+
+- tensor-product dimension formula (7) in its stated product-slot form;
+- quantitative positive-semidefinite spectral bound (8) and its causal-affine specialization.
+
+Therefore this card remains in Stage 2 under project rule that paper-only clauses do not count as
+proved.
+
 Primary process-tomography parent: G. A. L. White et al.,
 *Non-Markovian Quantum Process Tomography*, https://arxiv.org/abs/2106.11722.
 
 ## Log
 
 - 2026-08-09 — abstract process-tomography and positive blind-sector theorem proved.
+- 2026-08-09 — route-independent tomography core and qualitative open-interior robustness closed
+  in Lean; quantitative product/PSD clauses remain at paper level.

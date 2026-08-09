@@ -4,7 +4,8 @@
 - **Stage:** 2 -- fully proved on paper
 - **Type:** theorem / Brown-onset obstruction / nearest-neighbour static-local dynamics
 - **Parents:** `cubic-phase-seeded-static-local-full-scale-plateau-law.md`,
-  `../3-formalized/weak-interaction-recurrence-singularity-law.md`
+  `../3-formalized/weak-interaction-recurrence-singularity-law.md`,
+  `../3-formalized/fast-forwardable-stratum-codimension-obstruction.md`
 - **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
 - **Date:** 2026-08-09
 
@@ -41,6 +42,10 @@ Only finiteness of `S_k(eta)` is needed for the exact finite-size theorem; `(2)`
 large-system scale.
 
 ## Theorem A -- cut-conductance delay law
+
+This theorem is the balanced-cut specialization of the already
+`[LOCAL-RESEARCH] [LEAN-PROVED]` fast-forwardable-stratum Duhamel law. It is retained here as the
+physical bridge to spatial conductance, not claimed as a new continuity mechanism.
 
 For `eta_A,eta_B>=0` and `epsilon>eta_A+eta_B`, every time satisfying
 
@@ -320,26 +325,27 @@ The conjecture
 is false.  Theorem C keeps both properties and every already proved late-time clause while making
 the onset delay arbitrarily large.  Spectral capacity and physical clock speed are independent.
 
-The missing invariant is not a minimum spectral gap.  It must include the interaction cut profile
+The missing invariant is not a minimum spectral gap.  Every valid onset theorem must include the
+interaction cut profile
 
 \[
  \mathfrak g(H)=\min_{A|B\ {\rm nontrivial}}\|V_{A|B}\|_{\rm op}             \tag{25}
 \]
 
-or a stronger nonlinear conductance quantity that also excludes approximately fast-forwardable
-sectors.  For seeds product across the minimizing cut, Theorem A proves the universal necessary
-clock `1/mathfrak g(H)`.  Theorems D--E fix the sharp small-cut exponent for one edge and for the
-complete contiguous-cut profile of the ordinary path-local shell.
+as one necessary clock, but this profile is not sufficient.  For seeds product across the
+minimizing cut, Theorem A proves the universal necessary clock `1/mathfrak g(H)`.  Theorems D--E
+fix the sharp small-cut exponent for one edge and for the complete contiguous-cut profile of the
+ordinary path-local shell.
 
 This does not prove that a lower bound on `mathfrak g(H)` is sufficient for Brown growth.  Typical
 fixed-shell Hamiltonians may still possess circuit shortcuts unrelated to a weak spatial cut.
-The surviving positive target is therefore:
+The later capacity-compatible fast-forwardable incubation law gives fully coupled diagonal
+carriers with arbitrarily long delay, so the sharpened target is:
 
-> prove geometric-skeleton Bellman escape on the conductance-good shell, and pay the explicit
-> `L^{-9}` cut-bad sector once.
+> name concrete shortcut-carrier tubes, pay both their codimension tails and the explicit
+> `L^{-9}` cut-bad sector, then attack geometric-skeleton Bellman escape on the complement.
 
-That target is strictly sharper than unconditioned endpoint mixing and cannot be falsified by the
-weak-link family above.
+This is a research programme, not a sufficiency theorem or an inverse classification.
 
 ## Conjecturing and falsification ledger
 
@@ -360,8 +366,10 @@ to zero.
 
 ### C3 -- condition on cut conductance and run Bellman escape
 
-`[SURVIVING OPEN CORE]`.  Necessary by Theorem A and compatible with Theorem D.  Sufficiency is not
-claimed.
+`[FALSIFIED]`.  The fully coupled diagonal carrier in
+`capacity-compatible-fast-forwardable-incubation-law.md` has
+`mathfrak g_path(H)=Omega(n^(-1/2))`, optimal collision, and generic maximal projective rank after
+transverse perturbation, yet remains easy through any prescribed `L`.
 
 ## Hostile audit
 
@@ -372,9 +380,10 @@ claimed.
    the resulting evolution, but the argument does not provide one explicit seed with a
    high-probability theorem over the whole shell.
 4. State-synthesis bound `(2)` is standard infrastructure and carries no novelty claim.
-5. Candidate novelty is the exact composition of cut-Duhamel delay, product cubic collision,
-   full static-local plateau/recurrence/locality, and the nine-dimensional shell failure floor.
-   External priority remains unaudited.
+5. Duhamel delay and its codimension mechanism are internally prior. Candidate novelty is limited
+   to the product-cubic capacity composition, its delayed-yet-late-full plateau/recurrence/locality
+   conclusion, and exact nine-dimensional path-edge refinement. External priority remains
+   unaudited.
 6. No final manuscript claim is authorized before Lean formalization and axiom audit.
 
 ## Lean realization after corpus refactor

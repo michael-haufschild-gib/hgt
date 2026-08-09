@@ -5689,3 +5689,33 @@ receive a new title and an independent significance audit.
   hostile audit:
   `../2-fully-proven/weak-cut-complexity-onset-capacity-separation-law.md`.
   No Lean source or process was touched during the active corpus refactor.
+- 2026-08-09 -- Conductance conditioning is not the surviving onset invariant.
+  The internally prior Lean-proved fast-forwardable-stratum law already owns the
+  Duhamel/codimension shortcut mechanism; the weak-cut theorem is its physical
+  balanced-cut specialization, not a new continuity theorem.  A stronger
+  conjecture loop now fails three successively less naive onset criteria.  A
+  fully coupled commuting diagonal path carrier has all edge interactions
+  `Omega(n^(-1/2))` and admits a uniform polynomial compiler.  Complete cubic
+  seeds have exact computational-basis collision `1/D`.  Arbitrarily small
+  generic transverse perturbations add simple spectrum, cyclicity, and maximal
+  projective rank while Duhamel continuity preserves any prescribed incubation
+  time.  The completed-phase parents then force the same fixed system to attain
+  an `Omega(D/log n)` plateau for `exp(Omega(D))` time, recur, and remain locally
+  distinguishable from Haar at every time.  Thus conductance plus optimal
+  collision plus maximal projective rank still does not control first onset.
+  The positive theorem is a capacity-compatible completion of the prior
+  codimension obstruction: every independently compiled `f`-dimensional patch
+  whose finite seed family is basis-uniformly collision-good contributes a
+  shell subset of mass `Omega_P(L^(-(m-f)))` that is easy through `L` but later
+  has the full plateau, recurrence, and permanent non-Haar separator.  In the
+  ordinary path-local Pauli shell, the diagonal carrier has
+  `m=12n-9`, `f=2n-1`, and forced exponent `10n-8`; a patch with every edge
+  strong contributes `A_n L^(-(10n-8))`, where
+  `A_n>=exp(-O(n log n))`.  At Brown delay this is `exp(-Theta(n^2))`.
+  This is a one-sided forced tail, not a full delay distribution or inverse
+  classification.  No union over “all carriers” is defined.  Any next Brown
+  theorem must name and pay concrete weak-cut and commuting-carrier exceptional
+  sets before attempting geometric-skeleton Bellman escape; sufficiency on the
+  complement remains open.  Paper proof and hostile audit:
+  `../2-fully-proven/capacity-compatible-fast-forwardable-incubation-law.md`.
+  Lean remained read only during corpus refactoring.
