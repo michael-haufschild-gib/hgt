@@ -58,3 +58,24 @@ mathlib's certified bounds on `log 2` and `π`), so the matrix is invertible and
 I did not evaluate the optimal two-generator bound symbolically. The expression is `1 − vᵗG⁻¹v` in `log 2` and
 `π`, and while it is smaller than the single-generator value, writing it out adds arithmetic without adding
 information — the Gram matrix and the quadratic form are the reusable objects, and both are now closed.
+
+## Addendum 2: why denominators 1, 2, 4 are exactly what this method reaches
+
+The Gram entries need `ψ(j/q)`, and the only identities available here are Legendre duplication
+`ψ(2z) = ½(ψ(z) + ψ(z+½)) + log 2` and reflection `ψ(1−z) − ψ(z) = π cot(πz)`. Counting unknowns against
+equations settles which `q` they close. This is a claim about the identities, argued below, not a Lean theorem.
+
+* `q = 4` **closes.** Unknowns `ψ(1/4), ψ(3/4)`; duplication at `z = 1/4` gives
+  `ψ(1/2) = ½(ψ(1/4) + ψ(3/4)) + log 2` with `ψ(1/2)` known, and reflection at `z = 1/4` gives
+  `ψ(3/4) − ψ(1/4) = π`. Two independent equations, two unknowns — this is exactly what `DigammaQuarter` does.
+* `q = 8` **does not.** Unknowns `a,b,c,d = ψ(1/8), ψ(3/8), ψ(5/8), ψ(7/8)`. Duplication at `z = 1/8, 3/8` gives
+  `a + c = A`, `b + d = B`; reflection at `z = 1/8, 3/8` gives `d − a = C`, `c − b = D`. Eliminating: `c = A − a`,
+  `d = C + a`, `b = B − C − a`, and the fourth equation reduces to `A − B + C = D` — a consistency condition,
+  not a new constraint. So `a` is free: the four identities leave a one-parameter family, and `ψ(1/8)` needs
+  Gauss's (or Kummer's) theorem.
+* odd `q ≥ 3` **does not.** Duplication at `z = 1/6` relates `ψ(1/3)` to `ψ(1/6)` and `ψ(2/3)`, introducing new
+  unknowns faster than equations; reflection alone gives only the antisymmetric combination.
+
+So the reachable moduli are `m ∈ {1, 2, 4}` (`m = 1` is trivial, `bdGen 1 = 0`), and the `{2,4}` Gram matrix of
+the previous addendum is the **complete** closed-form Gram data obtainable this way. Extending the table needs
+Gauss's general digamma theorem — a mathlib TODO — and nothing weaker.
