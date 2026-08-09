@@ -3338,6 +3338,7 @@ import GaloisForLFunctions.RHTower.ProlateL2Family
 import GaloisForLFunctions.RHTower.ProlateL2Operator
 import GaloisForLFunctions.RHTower.ProlateL2Regularity
 import GaloisForLFunctions.RHTower.ProlateOneTurningVariation
+import GaloisForLFunctions.RHTower.ProlateSturmVariation
 import GaloisForLFunctions.RHTower.ProlateParityWeightUniform
 import GaloisForLFunctions.RHTower.ProlateRiccati
 import GaloisForLFunctions.RHTower.ProlateSecularEquation
@@ -6424,3 +6425,5 @@ import GaloisForLFunctions.RHTower.DetectorDuality
 import GaloisForLFunctions.RHTower.FiniteSectionDetectorFloor
 import GaloisForLFunctions.RHTower.FiniteSectionZetaInterpolation
 import GaloisForLFunctions.RHTower.FiniteSectionBorderDeterminant
+import GaloisForLFunctions.RHTower.SamplingDeterminant
+import GaloisForLFunctions.RHTower.BorderDeterminantVanishing
