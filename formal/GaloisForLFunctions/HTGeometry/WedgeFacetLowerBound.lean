@@ -1,5 +1,6 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.TranscendentalPowerIndependence
+import GaloisForLFunctions.HTGeometry.ComplexTranscendental
 
 /-!
 # Dimension-three impossibility for the nonpure two-thick wedge
@@ -451,6 +452,15 @@ theorem faithfulSeparation_fin_four_and_minimal
     (E := Fin d → ℂ) (by simpa using hdim)
     data.vector data.leftForm data.rightForm
     data.left_zero_iff data.right_zero_iff
+
+/-- **Exact faithful facet-separation dimension of every nondegenerate boundary wedge,
+unconditionally.**  A transcendental complex number exists, so the witness of dimension four needs
+no parameter. -/
+theorem faithfulSeparation_fin_four_and_minimal_uncond {r s : ℕ} (hr : 2 ≤ r) (hs : 2 ≤ s) :
+    Nonempty (FaithfulSeparation r s 4) ∧
+      ∀ d, Nonempty (FaithfulSeparation r s d) → 4 ≤ d := by
+  obtain ⟨τ, hτ⟩ := exists_transcendental_complex
+  exact faithfulSeparation_fin_four_and_minimal hr hs hτ
 
 end
 

@@ -55,7 +55,7 @@
 - [ ] `jet-horizon-translation-gauge-classification`
 - [ ] `noncompact-period-quotient-facet-escape-law`
 - [ ] `nonlinear-rational-observation-curve-horizon-reconstruction`
-- [ ] `nonreal-factorial-slope-formal-hypertranscendence`
+- [x] `nonreal-factorial-slope-formal-hypertranscendence`
 - [ ] `orbifold-tail-holographic-reconstruction`
 - [ ] `periodic-pencil-intrinsic-ht-dimension-two`
 - [ ] `power-canonical-product-exact-moment-borel-lattice-law`
@@ -475,3 +475,220 @@ comparison at `N ~ m^{1+1/n}`. The corpus already owns the multi-index apparatus
 
 All three unconditional and axiom-clean; `summable_succ_pow_mul_geometric` was already in
 `PolydiscAnalytic.lean` and was **not** rebuilt.
+
+### Siegel — the argument principle is now corpus-owned (mathlib has none)
+
+The Siegel assembly needs local *reduced* fractions for a meromorphic function, i.e. Weierstrass
+preparation, because the comparison constant across charts is only bounded when the two local
+denominators of the same function differ by a unit.  A globally presented fraction `A/B` never
+supplies this: the automorphy factor `B(·+λ)/B` is meromorphic, not bounded, precisely where `A`
+and `B` share zeros.  (If `A` and `B` are globally coprime the factor *is* a nonvanishing entire
+function — that is Cousin II on `ℂⁿ`, strictly harder than the local route.)
+
+Weierstrass preparation rests on the parameter-holomorphy of the moments of a logarithmic
+derivative and on their identification with the power sums of the roots.  mathlib contains **no**
+argument principle at all (`rg "argument principle" Mathlib` is empty), so the residue side had to
+be built.  It now is, unconditionally and axiom-clean:
+
+- `HTGeometry/CircleIntegralParamOpen.lean` — `differentiableAt_circleIntegral_slice_open`
+  generalises the corpus's own `differentiableAt_circleIntegral_slice` from a product domain to an
+  arbitrary open set.  The generalisation is forced: the integrand of a logarithmic derivative
+  lives on `U ∩ {f ≠ 0}`, which is never a product.
+- `HTGeometry/WeierstrassParamLogDeriv.lean` — `partialFirst`, `deriv_cons_slice`,
+  `analyticOnNhd_partialFirst`, and `differentiableAt_logDerivMoment`: the moments
+  `y ↦ ∮ ζ^p (∂₀f/f)(ζ,y) dζ` are holomorphic in the remaining variables.
+- `HTGeometry/WeightedArgumentPrincipleDisc.lean` — `logDeriv_sub_pow`,
+  `circleIntegrable_finset_sum`, `circleIntegral_finset_sum`,
+  `circleIntegral_weighted_logDeriv_prod`: for a presentation as a finite product of powers of
+  linear factors times a nonvanishing factor, `∮ ζ^p f'/f = 2πi ∑_u m_u u^p`.
+- `HTGeometry/DiscZeroFactorization.lean` — `mem_thickening_sphere`,
+  `exists_factorization_of_analytic_disc`, and the capstone
+  `circleIntegral_weighted_logDeriv_eq_powerSum`: **the weighted argument principle on a disc,
+  with no factorization hypothesis.**
+
+The factorization is *not* rebuilt: mathlib's `MeromorphicOn.extract_zeros_poles` supplies it, and
+`Function.locallyFinsuppWithin.finiteSupport` supplies finiteness of the zero set on the compact
+closed disc.  Two adaptations were needed.  Its conclusion holds only modulo equality on a
+codiscrete set; on an open disc every point is an accumulation point, so
+`mem_codiscreteWithin_iff_forall_mem_nhdsNE` plus continuity upgrades it to a pointwise identity.
+And its divisor is taken over the *closed* disc, so the radius is first enlarged past the circle by
+an amount small enough that the annulus stays zero-free — otherwise zeros just outside the circle
+would enter the product.
+
+### Siegel — Newton, and the holomorphy of the moving root multiset
+
+With the argument principle in hand, the Weierstrass chain continues.  Three more modules, all
+unconditional and axiom-clean:
+
+- `HTGeometry/MultisetNewtonSolve.lean` — `multiset_eq_map_univ_val`,
+  `multiset_newton_general`, `multiset_esymm_eq_of_powerSum`.  The corpus already owned Newton's
+  identity for a `Fin n`-indexed family (`multiset_newton`), which is *not* rebuilt: every multiset
+  is such a family through the enumeration by its own list, and in characteristic zero the leading
+  `k` is invertible, so the identity **solves** for `e_k` in terms of `p_1,…,p_k` and `e_0,…,e_{k−1}`.
+- `HTGeometry/DiscRootMultiset.lean` — `multisetOfFinsetMultiplicities`, its power sums, and
+  `exists_rootMultiset`: the zeros inside the circle as a multiset whose power sums are the
+  weighted contour integrals.
+- `HTGeometry/SliceRootHolomorphy.lean` — `SliceAdmissible`, `sliceRoots`, `sliceMoment`,
+  `sliceMoment_eq_powerSum`, `differentiableOn_sliceMoment`, and the capstone
+  **`differentiableOn_esymm_sliceRoots`**: for a function of several complex variables whose slices
+  do not vanish on a fixed circle, *every* elementary symmetric function of the roots inside that
+  circle is holomorphic in the remaining variables.
+
+That capstone is the analytic content of Weierstrass' preparation theorem: the elementary symmetric
+functions are the coefficients of the monic polynomial vanishing exactly at the roots of the slice,
+so the Weierstrass polynomial has holomorphic coefficients.  The route is: moments are holomorphic
+(parameter differentiation under a contour integral over an *arbitrary* open set), moments are the
+power sums (argument principle), power sums determine the elementary symmetric functions (Newton),
+and holomorphy propagates upward along that recursion by strong induction.
+
+Remaining on the Weierstrass chain before the Siegel assembly can resume: the unit factor
+(`f = unit · W`), Weierstrass division, the UFD property of the local ring, and hence local reduced
+fractions — which is what supplies the chart comparison constant `C₀^m`.
+
+### Siegel — Weierstrass preparation in the distinguished variable
+
+Four further modules close the fixed-parameter half of Weierstrass' preparation theorem, all
+unconditional and axiom-clean:
+
+- `HTGeometry/SliceRootCount.lean` — `sliceMoment_zero_eq_card`,
+  `natCast_eq_of_norm_sub_lt_one`, `eventually_card_sliceRoots_eq`,
+  `card_sliceRoots_const_of_isPreconnected`.  The zeroth moment *is* the root count, so a
+  holomorphic function takes natural-number values; two naturals less than one apart are equal, so
+  the count is locally constant and constant on a connected parameter set.  That fixed number is
+  the degree of the Weierstrass polynomial.
+- `HTGeometry/DiscRootMultiset.lean` (extended) — `multisetLinearProd`,
+  `multisetLinearProd_eq_sum` (the expansion in the elementary symmetric functions, via mathlib's
+  `Multiset.prod_X_sub_C_coeff` and `natDegree_multiset_prod_X_sub_C_eq_card`), and
+  `exists_rootMultiset_factorization`, which carries the factorization alongside the power sums.
+- `HTGeometry/MultisetNewtonSolve.lean` (extended) — `multiset_powerSum_zero` and
+  **`multiset_eq_of_powerSum_eq`**: power sums of every order determine a multiset.  The corpus's
+  own `multiset_eq_of_esymm_eq` finishes it; Newton propagates equality of power sums to equality
+  of elementary symmetric functions.
+- `HTGeometry/WeierstrassPolynomial.lean` — `differentiableOn_multisetLinearProd_sliceRoots`: the
+  monic polynomial of the roots is holomorphic in the parameters.
+- `HTGeometry/SliceWeierstrassFactorization.lean` — **`exists_slice_factorization`** and
+  **`slice_eq_zero_iff`**: the slice is the monic product of the linear factors at its roots times
+  a nowhere vanishing holomorphic factor, and its zeros inside the circle are exactly the roots of
+  that polynomial, with multiplicity.
+
+The identification of `sliceRoots` with the factorization multiset is *not* by construction — the
+multiset is produced by `Classical.choose` from the argument principle, which records only power
+sums.  It is forced instead by uniqueness: both multisets have the same power sums, and power sums
+determine a multiset.
+
+What remains on the chain: joint holomorphy of the unit factor in all variables (a Cauchy-integral
+argument on top of the pieces already built), Weierstrass division, the UFD property of the local
+ring, and hence local reduced fractions — the supplier of the chart comparison constant `C₀^m`.
+
+### Weierstrass' preparation theorem is formalized
+
+`HTGeometry.weierstrass_preparation` (in `HTGeometry/SliceWeierstrassUnit.lean`) is unconditional
+and axiom-clean.  For `f` holomorphic on an open `U ⊆ ℂ^{d+1}` whose slices in the distinguished
+variable do not vanish on the circle of radius `t`, over a connected parameter set `V`:
+
+```text
+DifferentiableOn ℂ (sliceWeierstrass f t) {w | tail w ∈ V}
+DifferentiableOn ℂ (sliceUnit f t)        {w | tail w ∈ V ∧ ‖w 0‖ < t}
+∀ y ∈ V, ∀ z, ‖z‖ < t →
+  f (cons z y) = sliceWeierstrass f t (cons z y) * sliceUnit f t (cons z y)
+    ∧ sliceUnit f t (cons z y) ≠ 0
+```
+
+mathlib has none of this.  Two more modules complete it:
+
+- `HTGeometry/SliceWeierstrassJoint.lean` — `tailLin`, `sliceWeierstrass`,
+  `sliceWeierstrass_ne_zero_of_norm_eq`, `differentiableOn_sliceWeierstrass`.  The polynomial is
+  holomorphic in *all* variables because, expanded in the elementary symmetric functions, it is a
+  polynomial in the distinguished variable of locally constant degree with holomorphic
+  coefficients.
+- `HTGeometry/SliceWeierstrassUnit.lean` — `unitIntegrand`, `sliceUnit`,
+  `factorization_sliceUnit`, `differentiable_consDropSecond`, `differentiableOn_sliceUnit`, and the
+  capstone.
+
+The unit is *defined* by the Cauchy integral of `f/W` over the circle, not as the quotient `f/W`
+itself — the quotient is undefined at the roots.  Its value is identified with the nowhere
+vanishing factor of the slice factorization by Cauchy's integral formula, and its joint holomorphy
+is parameter-differentiation of a contour integral whose integrand is holomorphic on the open set
+where the contour variable avoids both the evaluation point and the zeros of `W`.  This is exactly
+the situation the earlier generalisation to an *arbitrary* open set was built for: that domain is
+not a product.
+
+Next on the chain to Siegel: Weierstrass division, the UFD property of the local ring of germs, and
+local reduced fractions.
+
+### Weierstrass' division theorem is formalized
+
+`HTGeometry.weierstrass_division` (in `HTGeometry/WeierstrassDivision.lean`), unconditional and
+axiom-clean:
+
+```text
+g (cons z y) = sliceWeierstrass f t (cons z y) * divQuot f t g (cons z y)
+                 + divRem f t g k (cons z y)
+```
+
+for `‖z‖ < t`, with `divRem` a polynomial in the distinguished variable and
+`divRemCoeff_top_eq_zero` showing its top coefficient vanishes — degree strictly below that of the
+divisor.
+
+The quotient and the remainder are both contour integrals: the quotient is the Cauchy kernel damped
+by the divisor, the remainder is built from the divisor's **divided difference**
+`(W(ζ) − W(z))/(ζ − z)`, which is where the degree drop comes from.  That algebraic step is
+isolated in `HTGeometry/PolynomialDividedDifference.lean` as `sum_pow_sub_sum_pow_eq`, proved from
+mathlib's `geom_sum₂_mul` with a reflection (`Finset.sum_range_reflect`) and a triangular
+double-sum exchange (`Finset.sum_comm'`); the reindexing is what puts the quotient in the form
+"polynomial in `z` whose coefficients are tails of the divisor's coefficients evaluated at `ζ`",
+which is what makes each remainder coefficient a single contour integral.
+
+The identity itself is Cauchy's formula after the split
+`W(ζ)/(ζ−z) = W(z)/(ζ−z) + (W(ζ)−W(z))/(ζ−z)`; the two contour integrals are recombined with the
+`circleIntegral_finset_sum` built earlier in this chain.
+
+Preparation and division are now both in hand.  Next: factoriality of the germ ring (Gauss plus the
+transfer of divisibility from `O_{d-1}[z]` to `O_d`, which is exactly what division supplies), then
+local reduced fractions, then the Siegel assembly.
+
+### Closure: `nonreal-factorial-slope-formal-hypertranscendence`
+
+Audited rather than assumed: the card's Lean table said "done" at every layer, but the table is not
+evidence.  Checked directly — the capstone
+`GaloisForLFunctions.HTGeometry.aeval_formalJets_ne_zero` exists with the exact statement the card
+names, all twenty-five supporting modules exist, carry no `sorry`, `admit`, added `axiom`,
+`opaque`, or `unsafe`, and are umbrella-wired; `#print axioms` on the capstone gives exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+`FactorialSlope` is the card's own hypothesis `(2)` — the defining property of the class of series
+(`0 < Re α`, `Cc ≠ 0`, `Λ ≠ 0`, `0 < c`, exponentially small relative approximation by
+`Cc·Λⁿ·Γ(1+αn)`), not a smuggled analytic input.  `Im α ≠ 0` enters in exactly one place, chirp
+independence, which is the transcendence mechanism of the theorem.
+
+Stage-3 certificate written to
+`3-formalized/new_scientific_knowledge/other/nonreal-factorial-slope-formal-hypertranscendence.md`.
+Closure count: **21/65 certified, 44 remaining.**
+
+### `boundary-wedge-uniform-ht-dimension-gap` — parameterization gap closed
+
+Re-auditing this already-certified card turned up one real gap between its claim and the tree:
+`faithfulSeparation_fin_four_and_minimal` was stated for a *given* transcendental `τ`, so the
+`ffsDim = 4` half was parameterized rather than unconditional.  Added
+`UniformBoundaryWedge.faithfulSeparation_fin_four_and_minimal_uncond` in
+`HTGeometry/WedgeFacetLowerBound.lean`, discharging `τ` by `exists_transcendental_complex` —
+axiom-clean.  (The card's full law was in fact already unconditional through
+`boundaryWedge_uniformHTDimensionGap`, which discharges `τ` internally; the certificate now holds
+in both forms.)
+
+### `power-canonical-product-exact-moment-borel-lattice-law` — stale "no Lean possible" claim corrected
+
+The card's Section 7 said "No Lean formalization is attempted" because its analytic dependencies
+"are absent from the current project stack".  Two of the four are present in mathlib and were simply
+not checked: the **Riemann zeta functional equation** (`riemannZeta_one_sub`,
+`completedRiemannZeta_one_sub`) and **Gamma at arbitrary complex order** (`Complex.Gamma`, with
+`Complex.Gamma_mul_Gamma_one_sub`); `riemannZeta_neg_two_mul_nat_add_one` supplies the trivial zeros
+that the card's even-`s` collapse rests on.
+
+First layer built in `RHTower/ZetaMomentBorelCoefficient.lean`, unconditional and axiom-clean:
+`riemannZeta_neg_eq` (the functional equation in the card's reflected form),
+`riemannZeta_neg_div_Gamma_eq` (the card's `(3)`), and `riemannZeta_neg_eq_zero_of_even` (the tail
+vanishes at even order, because the sine of the functional equation does).
+
+Remaining for this card: normal convergence and meromorphic continuation of the Lambert sum `(5)`,
+and residue calculus under ramified coordinates.  Closure count unchanged at 21/65.

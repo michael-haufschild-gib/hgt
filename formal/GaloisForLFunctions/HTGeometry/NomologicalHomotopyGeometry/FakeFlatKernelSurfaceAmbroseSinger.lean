@@ -1,0 +1,120 @@
+import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.CrossedModule
+import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.HigherPeriodSpencer
+import Mathlib.Tactic.Module
+
+/-!
+# Fake-flat kernel local systems and surface Ambrose--Singer generation
+
+This file extends the strict crossed-module curvature calculus through form degree four.  The
+Peiffer kernel identity kills curvature on kernel coefficients; graded skew-symmetry kills the
+even-degree self-bracket in the higher Bianchi identity.  Consequently fake-flat three-curvature
+is valued in a flat kernel system and is covariantly closed.  The common higher-period theorem then
+gives surface Ambrose--Singer and analytic Spencer generation.
+-/
+
+namespace HTGeometry.NomologicalHomotopyGeometry.FakeFlatKernelSurfaceAmbroseSinger
+
+open CrossedModule HigherPeriodSpencer
+
+/-- Degree-four strict crossed-module calculus needed for kernel flatness and higher closure. -/
+structure StrictKernelCalculus
+    (G₁ G₂ G₃ H₂ H₃ H₄ K₀ K₂ : Type*)
+    [AddCommGroup G₁] [AddCommGroup G₂] [AddCommGroup G₃]
+    [AddCommGroup H₂] [AddCommGroup H₃] [AddCommGroup H₄]
+    [AddCommGroup K₀] [AddCommGroup K₂]
+    [Module ℝ G₁] [Module ℝ G₂] [Module ℝ G₃]
+    [Module ℝ H₂] [Module ℝ H₃] [Module ℝ H₄]
+    [Module ℝ K₀] [Module ℝ K₂] where
+  base : DifferentialCrossedModuleCalculus G₁ G₂ G₃ H₂ H₃
+  connectionSquare : G₁ → K₀ → K₂
+  curvatureAction : G₂ →ₗ[ℝ] K₀ →ₗ[ℝ] K₂
+  connectionSquare_eq : ∀ A k, connectionSquare A k = curvatureAction (base.curvature A) k
+  boundaryAction_zero : ∀ B k, curvatureAction (base.boundary₂ B) k = 0
+  covariantH₃ : G₁ → H₃ → H₄
+  bracket₂₂ : H₂ →ₗ[ℝ] H₂ →ₗ[ℝ] H₄
+  bracket₂₂_skew : ∀ B C, bracket₂₂ B C = -bracket₂₂ C B
+  three_bianchi : ∀ A B,
+    covariantH₃ A (base.threeCurvature A B) = bracket₂₂ B B
+
+namespace StrictKernelCalculus
+
+variable {G₁ G₂ G₃ H₂ H₃ H₄ K₀ K₂ : Type*}
+variable [AddCommGroup G₁] [AddCommGroup G₂] [AddCommGroup G₃]
+variable [AddCommGroup H₂] [AddCommGroup H₃] [AddCommGroup H₄]
+variable [AddCommGroup K₀] [AddCommGroup K₂]
+variable [Module ℝ G₁] [Module ℝ G₂] [Module ℝ G₃]
+variable [Module ℝ H₂] [Module ℝ H₃] [Module ℝ H₄]
+variable [Module ℝ K₀] [Module ℝ K₂]
+
+variable (D : StrictKernelCalculus G₁ G₂ G₃ H₂ H₃ H₄ K₀ K₂)
+
+/-- A fake-flat strict two-connection, packaged so downstream theorems are unconditional on the
+typed field object. -/
+structure FakeFlatConnection where
+  A : G₁
+  B : H₂
+  fakeFlat : D.base.fakeCurvature A B = 0
+
+/-- The even-form self-bracket vanishes over the reals. -/
+theorem bracket₂₂_self_eq_zero (B : H₂) : D.bracket₂₂ B B = 0 := by
+  have h := D.bracket₂₂_skew B B
+  have htwo : (2 : ℝ) • D.bracket₂₂ B B = 0 := by
+    calc
+      (2 : ℝ) • D.bracket₂₂ B B = D.bracket₂₂ B B + D.bracket₂₂ B B := by
+        module
+      _ = D.bracket₂₂ B B + -D.bracket₂₂ B B :=
+        congrArg (fun x => D.bracket₂₂ B B + x) h
+      _ = 0 := add_neg_cancel _
+  calc
+    D.bracket₂₂ B B = (2 : ℝ)⁻¹ • ((2 : ℝ) • D.bracket₂₂ B B) := by
+      simp [smul_smul]
+    _ = 0 := by rw [htwo, smul_zero]
+
+/-- Fake flatness makes the induced connection square vanish on every kernel coefficient. -/
+theorem kernel_connectionSquare_eq_zero (C : D.FakeFlatConnection) (k : K₀) :
+    D.connectionSquare C.A k = 0 := by
+  rw [D.connectionSquare_eq]
+  have hcurvature : D.base.curvature C.A = D.base.boundary₂ C.B := by
+    exact sub_eq_zero.mp C.fakeFlat
+  rw [hcurvature, D.boundaryAction_zero]
+
+/-- Fake-flat three-curvature is valued in the differential boundary kernel. -/
+theorem threeCurvature_mem_kernel (C : D.FakeFlatConnection) :
+    D.base.threeCurvature C.A C.B ∈ LinearMap.ker D.base.boundary₃ :=
+  D.base.threeCurvature_mem_boundaryKernel_of_fakeFlat C.A C.B C.fakeFlat
+
+/-- The strict higher Bianchi identity makes fake-flat kernel curvature covariantly closed. -/
+theorem threeCurvature_covariantly_closed (C : D.FakeFlatConnection) :
+    D.covariantH₃ C.A (D.base.threeCurvature C.A C.B) = 0 := by
+  rw [D.three_bianchi, D.bracket₂₂_self_eq_zero]
+
+/-- Complete strict kernel-reduction theorem. -/
+theorem fakeFlat_kernel_reduction (C : D.FakeFlatConnection) :
+    (∀ k : K₀, D.connectionSquare C.A k = 0) ∧
+      D.base.threeCurvature C.A C.B ∈ LinearMap.ker D.base.boundary₃ ∧
+      D.covariantH₃ C.A (D.base.threeCurvature C.A C.B) = 0 :=
+  ⟨D.kernel_connectionSquare_eq_zero C, D.threeCurvature_mem_kernel C,
+    D.threeCurvature_covariantly_closed C⟩
+
+end StrictKernelCalculus
+
+section SurfaceGeneration
+
+variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+  [FiniteDimensional ℝ V]
+
+/-- Transported three-curvature values generate lifted restricted surface holonomy. -/
+theorem surface_ambroseSinger {ι σ : Type*} (P : PeriodGeometry (V := V) ι σ)
+    (_harity : P.arity = 3) :
+    P.restrictedAlgebra = Submodule.span ℝ (Set.range P.curvatureValue) := by
+  exact P.higher_ambroseSinger
+
+/-- In the analytic strict case, surface holonomy is generated by kernel-curvature jets. -/
+theorem analytic_surface_ambroseSinger_spencer {ι σ κ : Type*}
+    (A : AnalyticSpencerGeometry (V := V) ι σ κ) (_harity : A.arity = 3) :
+    A.toPeriodGeometry.restrictedAlgebra = A.jetSpan := by
+  exact A.higher_ambroseSinger_spencer
+
+end SurfaceGeneration
+
+end HTGeometry.NomologicalHomotopyGeometry.FakeFlatKernelSurfaceAmbroseSinger

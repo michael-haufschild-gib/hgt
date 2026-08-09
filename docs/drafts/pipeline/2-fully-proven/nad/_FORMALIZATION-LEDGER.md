@@ -322,16 +322,130 @@ convergence (`EntryUniformLimit.tendstoUniformlyOn_nevB_series`, `…_nevD_serie
 `tendstoUniformlyOn_bilinearLimit`), plus `NodeConvergence` and `ChristoffelLimitFormula` for the
 measure side.
 
-The gap is **algebraic, not analytic**: the truncated entries are series in the *orthonormal*
-polynomials, whereas the finite-stage closed form above is stated in `monicOrtho` and `secondKind`.
-The next lemma to write is the dictionary between them at stage `n` — classically
+**Correction, checked.**  The truncated entries are *not* series in orthonormal polynomials — they
+are already in the same `monicOrtho`/`secondKind` family as the finite-stage closed form.  Reading
+`NevanlinnaPluecker.bilinearPartialSum`:
 
 ```text
-A_n(z) = z · Σ_{k ≤ n} q_k(0) q_k(z),   B_n(z) = −1 + z · Σ_{k ≤ n} q_k(0) p_k(z),   etc.
+bilinearPartialSum s f G N z = ∑_{k < N} f k · G z k / ‖monicOrtho s k‖²
+nevAtruncC s n z = ‖p₀‖² · z · bilinearPartialSum s (q_k(0)) (q_k(·)) (n+1) z
+nevBtruncC s n z = −1 + ‖p₀‖² · z · bilinearPartialSum s (q_k(0)) (p_k(·)) (n+1) z
 ```
 
-so that `−s₀·q_{n+1}(z)/p_{n+1}(z)` becomes `A_n(z)/B_n(z)` (the `τ = ∞` corner of the Weyl disc).
-With that dictionary the limit is a direct application of the existing uniform-convergence theorems.
+(and `C`, `D` with `p_k(0)` in the first slot), where `p_k = monicOrthoC`, `q_k = secondKindC`.
+
+So no normalization dictionary is needed.  The real remaining identity is the **convergent
+identification**: `A_n/B_n` and `C_n/D_n` are consecutive convergents of the J-fraction, and the
+finite-stage closed form `−s₀·q_{n+1}(z)/p_{n+1}(z)` is one of them.  `NevBDWronskian.nevBD_wronskian`
+supplies the determinant relation between the pairs.  Once the convergent is identified, the limit is
+a direct application of `EntryUniformLimit.tendstoUniformlyOn_nevB_series` and its companions.
+Two further facts checked, both load-bearing for planning:
+
+* `nevAtruncC / nevBtruncC / nevCtruncC / nevDtruncC` have **no downstream consumer** — they occur
+  only in `EntryComplexLimit.lean`.  The objects actually feeding `nevMatrixDataInf` are the real
+  entries `NevanlinnaRealMatrix.nevArealInf … nevDrealInf`.  So two links are needed, not one:
+  (a) trunc → real entries, which is what `EntryUniformLimit` is for, and
+  (b) trunc → J-fraction convergent, which is new.
+* There is **no convergent / J-fraction / continued-fraction machinery anywhere in `HTGeometry`**
+  (searched: `convergent`, `Jfraction`, `continuedFraction`).  Link (b) must be built from the
+  three-term recurrence — `monicOrtho` and `secondKind` satisfy the same recursion with different
+  initial data, which is exactly `NevBDWronskian.nevBD_wronskian`'s content.
+
+**Link (b) is DONE.**  `HTGeometry/NevTruncConvergent.lean` (wired, axiom-clean) proves all four:
+
+```text
+A_n(z) = −h₀·(R_{n+1}(0)R_n(z) − R_n(0)R_{n+1}(z))/h_n
+B_n(z) =  h₀·(Q_{n+1}(z)R_n(0) − Q_n(z)R_{n+1}(0))/h_n
+C_n(z) = −h₀·(Q_{n+1}(0)R_n(z) − Q_n(0)R_{n+1}(z))/h_n
+D_n(z) = −h₀·(Q_{n+1}(0)Q_n(z) − Q_n(0)Q_{n+1}(z))/h_n
+```
+
+The `±1` in `B`, `C` is cancelled exactly by the `1/h₀` constant of the *mixed* CD identity, which
+the pure ones do not carry.
+
+**The finite-stage assembly, derived by hand and ready to type.**  Put
+`τ_n := Q_{n+1}(0)/R_{n+1}(0)`.  In `(A_n τ − C_n)/(B_n τ − D_n)` the factor `h₀/h_n` cancels, and:
+
+* coefficient of `Q_n(z)` in the denominator is `−R_{n+1}(0)τ + Q_{n+1}(0) = 0`;
+* coefficient of `R_n(z)` in the numerator is `−(R_{n+1}(0)τ − Q_{n+1}(0)) = 0`;
+* the surviving coefficient in both is `R_n(0)τ − Q_n(0) = (Q_{n+1}(0)R_n(0) − Q_n(0)R_{n+1}(0))/R_{n+1}(0)`,
+  which by `momentWronskian_eq` evaluated at `0` equals `(−h_n/h₀)/R_{n+1}(0)`.
+
+Both factors cancel, leaving
+
+```text
+(A_n τ_n − C_n)/(B_n τ_n − D_n) = R_{n+1}(z)/Q_{n+1}(z),
+```
+
+which is the finite-stage transform up to the `toCarrierMatrix` sign convention
+`(a,b,c,d) = (−A,C,B,−D)`, `carrierFraction = −stieltjesFraction`, and `h₀ = s₀`.
+`NevDenominatorFactor.lean` already evaluates `momentWronskian_eq` at `0`, so that input is present.
+
+Type this, then apply the existing uniform limits and Bottleneck 1 is closed.
+
+**Attempted and backed out.**  I wrote `nevTrunc_moebius_eq_convergent` with the two key steps as
+
+```text
+A_n·τ_n − C_n = −R_{n+1}(z)/R_{n+1}(0)
+B_n·τ_n − D_n = −Q_{n+1}(z)/R_{n+1}(0)
+```
+
+and both reduce correctly by hand (group the bracket over `R_{n+1}(0)`; the `R_n(z)` / `Q_n(z)`
+terms cancel and the Wronskian `monicOrthoC_wronskian h n 0 = −h_n/h₀` collapses the constants).
+The Lean attempt failed only on `linear_combination` coefficient bookkeeping after `field_simp`.
+**Next time do not use `field_simp` here** — clear `R_{n+1}(0)` by hand, group the bracket as
+`R_n(z)·(Q_{n+1}(0) − R_{n+1}(0)τ) + R_{n+1}(z)·(R_n(0)τ − Q_n(0))`, kill the first factor by the
+definition of `τ_n`, and rewrite the second with `monicOrthoC_wronskian`.  The block was removed so
+the module stays green; the four convergent forms it depends on are proved and wired.
+
+**Historical note.**  Link (b) was largely already written — in `NevanlinnaPluecker.lean`.**  I started building a mixed
+Christoffel--Darboux identity and Lean rejected the declaration as already existing.  The corpus has
+`christoffelDarboux`, `secondKindChristoffelDarboux`, `mixedChristoffelDarboux` **and their complex
+versions** `christoffelDarbouxC`, `secondKindChristoffelDarbouxC`, `mixedChristoffelDarbouxC`.
+
+More: `NevanlinnaPluecker.lean` lines ~95–135 already performs the exact conversion link (b) needs.
+Its `F1`–`F4` rewrite the four `bilinearPartialSum`s at arguments `(z, 0)` into the bilinear
+combinations of `Q_{n+1}, Q_n, R_{n+1}, R_n`:
+
+```text
+F3 : Q_{n+1}(z)·R_n(0) − Q_n(z)·R_{n+1}(0)
+       = h_n · ( z · Σ_{k≤n} Q_k(z)R_k(0)/h_k  −  1/h₀ )
+```
+
+and `F1`, `F2`, `F4` are the other three corners.  Since `nevAtruncC … nevDtruncC` are exactly
+`±1 + h₀·z·(those sums)`, `F1`–`F4` *are* the dictionary from the truncations to the convergent data
+`(Q_{n+1}, Q_n, R_{n+1}, R_n)`.
+
+So link (b) reduces to reading `nevBtruncC`/`nevAtruncC` off `F1`–`F4` and comparing with
+`gaussCauchy_polynomial_identity`.  Nothing further has to be invented.
+
+**Earlier inventory (still valid).**  `SecondKindMomentPolynomials.lean` has the
+whole J-fraction structure:
+
+```text
+monicOrtho_succ_succ  : Q_{n+2} = (X − a_n)·Q_{n+1} − b_n·Q_n
+secondKind_succ_succ  : R_{n+2} = (X − a_n)·R_{n+1} − b_n·R_n      (R₀ = 0, R₁ = 1)
+momentWronskian s n   := Q_{n+1}·R_n − Q_n·R_{n+1}
+```
+
+i.e. `monicOrtho` and `secondKind` are the two solutions of one three-term recurrence with the two
+standard initial conditions — so `R_{n+1}/Q_{n+1}` *is* the (n+1)-st J-fraction convergent by
+construction, and the finite-stage closed form already proved says the stage-`n` Cauchy transform is
+`−s₀` times it.  Link (b) is therefore: express `nevAtruncC … nevDtruncC` (which are
+`bilinearPartialSum`s over the same two families) in terms of `Q`, `R` via the recurrence, and read
+off that `A_n/B_n` and `C_n/D_n` are consecutive convergents.  `momentWronskian` and
+`NevBDWronskian.nevBD_wronskian` give the normalisation — and `momentWronskian_eq` is **already
+proved**, with `OrthonormalWronskian.lean` stating it in terms of
+`momentInner s (monicOrtho s 0) (monicOrtho s 0)`, which is precisely the `‖p₀‖²` prefactor
+appearing in `nevAtruncC … nevDtruncC`.  `OrthonormalWronskian.lean` is therefore the natural home
+for link (b); start there, not from scratch.
+
+Other starting points, located: the **three-term recurrence** is in
+`OrthogonalMomentPolynomials.lean` around line 381 (`X * monicOrtho s (n+1) − monicOrtho s (n+2)`
+expanded in the lower basis), and the **Christoffel--Darboux formula** is a whole module,
+`ChristoffelDarboux.lean`.  Together with `NevBDWronskian.nevBD_wronskian` these are the three
+inputs the convergent identification needs; nothing else has to be built from scratch for link (b).
+
 Do not attempt the infinite-fibre shortcut.
 
 Once this holds, `ClassicalAnalyticNevanlinnaCarrierFamily` is a structure instance, and the ten

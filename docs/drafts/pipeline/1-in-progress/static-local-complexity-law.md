@@ -5620,7 +5620,7 @@ receive a new title and an independent significance audit.
   present.  The corrected open core is the weaker and radius-slack-sharp
   bound `I_(r;a,b)=o_n(1)` at scale-matched `r,t,s`, with target-independent
   easy/return excision.  Paper proof and hostile audit:
-  `../2-fully-proven/beta-threshold-complete-incidence-law.md`.  No Brown
+  `../3-formalized/beta-threshold-complete-incidence-law.md`.  No Brown
   growth claim follows yet; Lean remained read only during refactoring.
 - 2026-08-09 -- Removed scale-matched order `r=Theta(D)` from the mandatory
   Brown-front formulation.  Fixed fidelity slack and the bounded binomial

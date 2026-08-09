@@ -413,3 +413,22 @@ facet-prime computation on top of it.
   `peDim<=htDim`
 - [ ] independent specialist proof and novelty audit
 - [ ] complete unconditional Lean formalization before stage 3
+
+### Progress on the Siegel gate
+
+The gap is *not* the counting step.  With a global presentation `G = A/B` the Schwarz-lemma count
+over charts cannot close, because translating `Q = B^m·P(G, δG, …)` by a period multiplies it by
+`(B(·+λ)/B)^m`, a meromorphic factor unbounded exactly on the zeros `A` and `B` share.  The chart
+comparison constant exists only for *reduced* local fractions, whose transition ratios are
+nonvanishing.  So the missing input is Weierstrass preparation and the resulting factoriality of
+the local ring of germs — not a sharper estimate.  (With the comparison constant `C₀^m` in hand the
+count needs only `N ~ c·m`, well inside the `N ≲ m^{1+1/d}` that the multi-index count allows.)
+
+Weierstrass' preparation theorem is now formalized here, unconditionally:
+`GaloisForLFunctions.HTGeometry.weierstrass_preparation`, together with the layer it required —
+the weighted argument principle on a disc (`circleIntegral_weighted_logDeriv_eq_powerSum`), which
+mathlib does not contain in any form, the holomorphy of the moving root multiset's symmetric
+functions (`differentiableOn_esymm_sliceRoots`), and the local constancy of the root count.
+
+Remaining: Weierstrass division, factoriality of the germ ring, local reduced fractions, and then
+the Siegel assembly itself.

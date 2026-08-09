@@ -275,7 +275,7 @@ theorem hasDerivAt_prolateWronskian_eq_zero {c α x : ℝ} {u v : ℝ → ℝ}
 /-- **The Wronskian vanishes identically.**  It is constant on the band and its value at the
 endpoint is zero, because the weight `1 - x²` vanishes there.  This is simplicity of the eigenvalue
 in the ODE sense: two modes with the same eigenvalue have vanishing Wronskian. -/
-theorem prolateWronskian_eq_zero {c α : ℝ} {u v : ℝ → ℝ}
+theorem prolateSturmWronskian_eq_zero {c α : ℝ} {u v : ℝ → ℝ}
     (hu1 : Differentiable ℝ u) (hu2 : Differentiable ℝ (deriv u))
     (hv1 : Differentiable ℝ v) (hv2 : Differentiable ℝ (deriv v))
     (heu : ∀ y : ℝ, prolateSLAction c u y = α * u y)
@@ -342,7 +342,7 @@ theorem prolate_eq_const_mul_of_same_eigenvalue {c α r : ℝ} {u v : ℝ → �
     field_simp
     ring
   have hdw0 : deriv w x₀ = 0 := by
-    have hwr := prolateWronskian_eq_zero hu1 hu2 hv1 hv2 heu hev x₀
+    have hwr := prolateSturmWronskian_eq_zero hu1 hu2 hv1 hv2 heu hev x₀
     have hx1 : |x₀| ≤ r := by
       rw [abs_le]
       exact ⟨hx₀.1, hx₀.2⟩

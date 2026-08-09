@@ -2,9 +2,9 @@
 
 - **ID:** `nhg-cyclic-law-gauge-holonomy-master-action`
 - **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [NATIVE NHG DYNAMICS] [STRUCTURED GAUGE INTEGRATION]`
-  `[STABILIZER HOLONOMY] [MASTER ACTION] [NO ROUTE INPUT] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
+  `[NATIVE NHG DYNAMICS] [STRUCTURED GAUGE INTEGRATION] [STABILIZER HOLONOMY]`
+  `[MASTER ACTION] [NO ROUTE INPUT] [NOT RH]`
 
 ## 1. Native cyclic law chart
 
@@ -262,3 +262,18 @@ formal noncommutative geometry. See Kontsevich--Soibelman,
 <https://arxiv.org/abs/1002.3653>. The role here is exact field closure: the native NHG chart now has
 structured gauge covariance, integrated gauge history, stabilizer holonomy, and a source-derived
 formal action without importing any proof route.
+
+## 9. Lean formalization status
+
+Formalized without moving this card:
+
+- `CyclicGaugeHolonomyMasterAction.lean` constructs an explicit coefficientwise Picard recursion
+  for a time-dependent formal gauge generator and proves existence and uniqueness of the completed
+  formal solution.
+- It proves conjugation preserves composition squares and intertwines both parity pieces of the
+  deformation differential, proves closed lifted law paths have stabilizer-valued endpoints, and
+  formalizes projected closure for stabilizer paths.
+- It proves cyclic action covariance at every finite arity quotient and formalizes an injective
+  Hamiltonian/coderivation correspondence under which the Poisson master equation is equivalent to
+  `Q^2 = 0`. Foreground `lake env lean <file>` passes with no warnings or errors. Umbrella import is
+  wired; aggregate build and axiom audit remain in final all-card audit.

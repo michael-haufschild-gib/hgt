@@ -291,7 +291,7 @@ finite-onset replica front `(4')`, with no remaining plateau-probability excuse.
 ## 2026-08-09 bounded-threshold frontier correction
 
 `(4')` remains sufficient but is no longer the minimal or preferred open claim.  The
-paper-proved `../2-fully-proven/beta-threshold-complete-incidence-law.md` replaces monomial Markov
+paper-proved `../3-formalized/beta-threshold-complete-incidence-law.md` replaces monomial Markov
 amplification by a bounded `r`-copy binomial projector.  With fidelity thresholds `b<a` and
 `k=ceil(r(a+b)/2)`, its complete occupied-target action `I_(r;a,b)` obeys
 
@@ -403,7 +403,7 @@ Energy, fixed linear observables, target entropy, and unstructured Jacobian volu
 calibrations.  The live object must be a nonlinear oriented-history/local-control calibration.
 
 The paper-proved child
-`../2-fully-proven/geometric-skeleton-brown-ramp-transfer-law.md` removes a further false burden.
+`../3-formalized/geometric-skeleton-brown-ramp-transfer-law.md` removes a further false burden.
 Pointwise calibration on a linear Brown-time mesh is unnecessary.  Hardness at `O(n)` geometric
 times, with adjacent ratio `q<1/(1-c)`, propagates by the autonomous cone to a continuous lower
 ramp.  Thus the ramp union needs only logarithmic replica order.  The live quenched target is now

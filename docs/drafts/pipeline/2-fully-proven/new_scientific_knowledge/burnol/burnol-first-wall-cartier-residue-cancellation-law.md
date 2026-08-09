@@ -496,7 +496,9 @@ remains unverified.
 ## Lean formalization (partial, 2026-08-09)
 
 Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallResiduePolarization`,
-`RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`.
+`RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`,
+`RHTower/BurnolFirstWallZeroDividedSource`, `RHTower/BurnolFirstWallSourceDecay`,
+`RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass`.
 
 | Paper item | Lean declaration |
 |---|---|
@@ -508,12 +510,28 @@ Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallRe
 | `(25)` | `burnolFirstWallResidue_sub_cosineResidue_re`, `burnolFirstWallResidue_sub_cosineResidue_re_eq_headFlux`, `xiDivisor_burnolFirstWallResidue_landing` |
 | `(26)`, `kappa_*` | `burnolCollarGamma`, `burnolSteinA`, `burnolCollarKernel` |
 | `(28)` | `integral_burnolCollarKernel_mul_mode` |
+| `(1)` | `burnolFractPair`, `burnolRawSource`, `burnolFractPair_periodic`, `burnolFractPair_of_lt_half`, `burnolFractPair_of_mem_Ico_half_one`, `abs_burnolRawSource_le_one` |
+| `(2)` | `integral_burnolFractPairKernel`, `xiDivisor_integral_burnolFractPairKernel_eq_zero` |
+| `(8)` | `burnolZeroDividedSource` |
+| `(9)` | `xiDivisor_burnolZeroDividedSource_head`, `xiDivisor_burnolZeroDividedSource_head_eq` |
+| `(13)` | `burnolZeroDividedSource_eq_tail`, `xiDivisor_integral_burnolFractPairKernel_Ioi` |
+| `(14)` | `burnolFractPairPrimitive`, `integral_burnolFractPair_unit`, `burnolFractPairPrimitive_periodic`, `abs_burnolFractPairPrimitive_le_one`, `hasDerivWithinAt_burnolFractPairPrimitive` |
+| `(15)` | `integral_burnolFractPairKernel_byParts`, `integral_burnolFractPairKernel_Ioi_eq`, `norm_integral_burnolFractPairKernel_Ioi_le`, `norm_burnolZeroDividedSource_le` |
+| `(16)` | `integral_burnolRawSource_eq_neg_window`, `integral_burnolFractDensity_window`, `abs_integral_burnolCenteredSawtooth_div_le`, `tendsto_integral_burnolRawSource` |
+| `(17)`, `(10)` forward | `burnolZeroDividedPotential`, `hasDerivWithinAt_burnolZeroDividedPotential`, `xiDivisor_integral_burnolZeroDividedSource`, `tendsto_burnolZeroDividedPotential`, `xiDivisor_integral_burnolZeroDividedSource_Ioi` |
+| integrability in `(10)` | `integrableOn_burnolZeroDividedSource`, `norm_burnolZeroDividedSource_le_const` |
+| `(11)` forward | `xiDivisor_integral_burnolZeroDividedSource_aperture`, `xiDivisor_integral_burnolZeroDividedSource_exterior` |
 
 `(28)` is proved directly from the exact Gamma moment of the depth-zero kernel, so it does not pass
 through the adjoint identity `(27)`.
 
-Still open in Lean: the tail and endpoint mass `(10)`--`(17)` of the actual zero-divided source,
-the deep-profile convergence `(29)`, the depth decay `(30)`--`(31)`, and Corollary 5.
+The forward mass chain is closed unconditionally: `∫_0^∞ g_ρ = b_ρ/2` and
+`∫_{1/2}^∞ g_ρ = B_ρ`, the latter identifying the abstract exterior mass
+`burnolFirstWallExteriorMass` with the actual source integral.
+
+Still open in Lean: the reflected orientation `(15a)`--`(15c)` and the reflected halves of `(10)`
+and `(11)`, the sharpened tail `(12)`, the crossing correlation `(20)`--`(23)`, the deep-profile
+convergence `(29)`, the depth decay `(30)`--`(31)`, and Corollary 5.
 
 ## Gates
 

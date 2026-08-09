@@ -4,6 +4,9 @@ Project rule: **paper proof does not count as proved until its exact significant
 Lean**.  Files remaining in this Stage-2 folder are therefore research claims awaiting certification,
 even when their paper argument is dependency-closed.
 
+Dedicated Lean umbrella:
+`GaloisForLFunctions.HTGeometry.UniversalLawField`.
+
 ## Certified and promoted to Stage 3
 
 | ID | Theorem | Lean module |
@@ -12,6 +15,10 @@ even when their paper argument is dependency-closed.
 | ULF-CFL-1 | Complete passive equivalence versus injective marked intervention | `HTGeometry.ConstitutiveInterventionSeparation` |
 | ULF-SLOT-1 | Independent-slot transitivity; invariant phases trivial; invariants constant | `HTGeometry.ConstitutiveIndependentSlotNoGo` |
 | ULF-RADIUS-2 | Serial-radius counterexample and hidden-pair/diameter survivor | `HTGeometry.ConstitutiveReconstructionNoGo` |
+| ULF-AEEC-1 | Adaptive mimicry, coherent non-effective boundary, finite effectivity-classifier no-go | `HTGeometry.ConstitutiveAdaptiveProcompletion` |
+| ULF-AMCC-1 | Minimal adaptive transcript support, universal additive-cost minimizer, exhaustive coercivity | `HTGeometry.ConstitutiveAdaptiveCost` |
+| ULF-GCP-1 | Exact response-kernel persistence, Gamma Bockstein death set, critical survival, and lifetime | `HTGeometry.ConstitutiveGammaResponseLifetime` |
+| ULF-RBD-PREFIX-1 | Prefix observer stabilization, non-effective horizon, recurrent phase, positive erasure, singleton production, open action | `HTGeometry.ConstitutiveEffectivityHorizon` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.
@@ -33,4 +40,3 @@ claims remain uncertified.  The card therefore stays in Stage 2.
 postprocessing.  A Lean-certified three-point counterexample shows strict decrease from two to one.
 The rejected card is in `docs/drafts/pipeline/5-failed/universal-law-field/`; ULF-RADIUS-2 records
 the exact survivor.
-

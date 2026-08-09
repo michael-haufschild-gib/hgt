@@ -2,9 +2,9 @@
 
 - **ID:** `nhg-secondary-curvature-obstruction-spectrum`
 - **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM] [SECONDARY CURVATURE]`
-  `[PARTIAL-FLATTENING SPACE] [MASSEY INDETERMINACY] [NO ROUTE INPUT] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
+  `[UNIVERSAL FIELD THEOREM] [SECONDARY CURVATURE] [PARTIAL-FLATTENING SPACE]`
+  `[MASSEY INDETERMINACY] [NO ROUTE INPUT] [NOT RH]`
 
 ## 1. Setup
 
@@ -329,6 +329,32 @@ finite-dimensional smooth chart. It requires at least one of:
 
 This gives hypertranscendental prolongation a precise possible role in NHG: it can make the
 obstruction base noncompact in jet depth. It does not imply noncompact ordinary holonomy.
+
+## Lean formalization status
+
+- Module:
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverCurvature.lean`
+- Umbrella: `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry`
+- Card remains in Stage 2 by explicit instruction; no pipeline move was performed.
+
+Formal coverage includes dependency-closed partial/next flattening layers, obstruction spectra and
+their spans, the exact `Next`-extension iff zero-in-spectrum law, strict naturality under observers,
+and finite-degree termination when target cohomology is subsingleton. The secondary layer uses an
+actual submodule quotient: raw representatives from two nullhomotopies differ by a boundary, so
+their quotient classes are proved equal and the first obstruction spectrum is proved singleton.
+The module also supplies an exact nonzero-secondary/nonextendible real model and an exact later
+layer whose spectrum contains distinct classes `0` and `1`, certifying genuine Massey-type
+multivaluedness. Existing parallel and serial results formalize natural transport, permanent class
+erasure, and obstruction-horizon rank bounds.
+
+Foreground verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverCurvature.lean
+```
+
+Command exited `0` with zero output. Final umbrella build, axiom print, and repository lint remain
+part of the all-card final audit.
 
 ## 7. Hostile countermodels and scope
 

@@ -2,8 +2,9 @@
 
 - **ID:** `nhg-leading-curvature-descent`
 - **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM] [ALL FINITE LENGTHS]`
-  `[CURVATURE POSTNIKOV TOWER] [NO ROUTE INPUT] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
+  `[UNIVERSAL FIELD THEOREM] [ALL FINITE LENGTHS] [CURVATURE POSTNIKOV TOWER]`
+  `[NO ROUTE INPUT] [NOT RH]`
 
 ## 1. Total law connection
 
@@ -220,3 +221,17 @@ The Bianchi equation `(LC.4)` is the standard homotopy Maurer--Cartan identity; 
 superconnections and representations up to homotopy provide its linear analogue. The exact advance
 here is the all-finite-length leading-curvature descent and its period/Spencer consequence inside
 the NHG field constitution. No priority claim is made.
+
+## 8. Lean formalization status
+
+Formalized without moving this card:
+
+- `LeadingCurvatureDescent.lean` packages an arbitrary first surviving order `r >= 3` in a completed
+  flat-superconnection hierarchy. It constructs the internal cycle and quotient cohomology class,
+  proves induced homology transport square-zero from the degree-two nullhomotopy, proves covariant
+  closure from the next Bianchi component, and proves invariance under changing the chain-level
+  representative by an internal boundary.
+- `HigherPeriodSpencer.lean` supplies arbitrary-arity lifted period generation and analytic Spencer
+  equalities for the descended finite-dimensional coefficient system.
+- Foreground `lake env lean <file>` checks pass with no warnings or errors. Umbrella imports are
+  wired; aggregate build and axiom audit remain part of final all-card audit.

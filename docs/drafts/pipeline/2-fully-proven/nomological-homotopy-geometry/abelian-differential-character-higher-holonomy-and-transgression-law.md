@@ -2,8 +2,8 @@
 
 - **ID:** `nhg-abelian-higher-holonomy-transgression`
 - **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM] [ABELIAN HIGHER-ARITY SECTOR]`
-  `[NO ROUTE INPUT] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
+  `[UNIVERSAL FIELD THEOREM] [ABELIAN HIGHER-ARITY SECTOR] [NO ROUTE INPUT] [NOT RH]`
 
 ## 1. Differential-character field
 
@@ -169,3 +169,18 @@ are one typed geometry. It also forbids two regressions:
 
 The nonabelian field problem is to replace addition in `V/Lambda` by nilpotent higher-groupoid
 composition and prove the corresponding restricted-holonomy generation theorem.
+
+## 6. Lean formalization status
+
+Formalized without moving this card:
+
+- `AbelianDifferentialCharacter.lean` defines a four-degree additive smooth-chain complex, cycle
+  and boundary groups, integral homology quotient, coefficient quotient map, curvature integral,
+  character, and exact boundary formula.
+- It proves curvature closedness from boundary-square plus the discrete small-chain principle,
+  proves lattice periods, constructs the same-curvature difference as an actual homomorphism on
+  homology, proves the converse flat-character action and nonuniqueness, and formalizes signed
+  transgression through swept chains.
+- The transgression theorem proves the degree-two boundary formula, swept-loop holonomy identity,
+  and transport of flat ambiguity. Foreground `lake env lean <file>` passes with no warnings or
+  errors. Umbrella import is wired; aggregate build and axiom audit remain in final all-card audit.

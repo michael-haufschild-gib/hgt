@@ -60,23 +60,26 @@ theorem Realizes.reindex {n m : ℕ} (α : Fin n → Fin m) {p : GramSimplex A m
     (h : D.Realizes p) : D.Realizes (gramReindex α p) :=
   ⟨fun r => h.1 (α r), D.realized_reindex α p h.2⟩
 
+/-- Reindexing of realized labelled simplices along a simplex-category morphism. -/
+def nerveMapFun {n m : SimplexCategoryᵒᵖ} (α : n ⟶ m)
+    (p : {p : GramSimplex A (n.unop.len + 1) // D.Realizes p}) :
+    {q : GramSimplex A (m.unop.len + 1) // D.Realizes q} :=
+  ⟨gramReindex (fun r => α.unop.toOrderHom r) p.1, p.2.reindex D _⟩
+
 /-- **The Gram-labelled terminal nerve is a simplicial set.** -/
 def nerve : SSet.{u} where
   obj n := {p : GramSimplex A (n.unop.len + 1) // D.Realizes p}
-  map {n m} α := fun p => ⟨gramReindex (fun r => α.unop.toOrderHom r) p.1, p.2.reindex D _⟩
+  map α := ↾(D.nerveMapFun α)
   map_id n := by
-    funext p
-    apply Subtype.ext
-    show gramReindex (fun r => (SimplexCategory.Hom.toOrderHom (𝟙 n.unop)) r) p.1 = p.1
-    rw [SimplexCategory.id_toOrderHom]
-    rfl
-  map_comp {n m k} α β := by
-    funext p
-    apply Subtype.ext
-    rfl
+    ext p <;> rfl
+  map_comp α β := by
+    ext p <;> rfl
 
-@[simp] theorem nerve_obj_coe {n : SimplexCategoryᵒᵖ} (p : D.nerve.obj n) :
-    D.Realizes p.1 := p.2
+end GramNerveDatum
+
+namespace GramNerveDatum
+
+variable {A : Type u}
 
 /-! ## Persistence -/
 
@@ -89,10 +92,10 @@ theorem Realizes.mono {D D' : GramNerveDatum A} (h : LE D D') {n : ℕ} {p : Gra
   ⟨fun r => h.1 _ (hp.1 r), h.2 n p hp.2⟩
 
 /-- **Persistence.**  Observer strengthening induces a simplicial map of nerves. -/
-def nerveMap {D D' : GramNerveDatum A} (h : LE D D') : D.nerve ⟶ D'.nerve where
-  app n := fun p => ⟨p.1, Realizes.mono h p.2⟩
+def nerveMap {D₁ D₂ : GramNerveDatum A} (h : LE D₁ D₂) : nerve D₁ ⟶ nerve D₂ where
+  app n := ↾fun p => ⟨p.1, Realizes.mono h p.2⟩
   naturality {n m} α := by
-    funext p
+    ext p
     rfl
 
 end GramNerveDatum
@@ -111,8 +114,8 @@ theorem isUpperSet_gramDeathRegion (hD : ∀ {o o' : O}, o ≤ o' → GramNerveD
     {n : ℕ} (p : GramSimplex A n) : IsUpperSet (gramDeathRegion D p) :=
   fun _ _ hoo hp => GramNerveDatum.Realizes.mono (hD hoo) hp
 
-/-- **Every face dies no later than the simplex.** -/
 omit [Preorder O] in
+/-- **Every face dies no later than the simplex.** -/
 theorem gramDeathRegion_subset_face {n m : ℕ} (α : Fin n → Fin m) (p : GramSimplex A m) :
     gramDeathRegion D p ⊆ gramDeathRegion D (gramReindex α p) :=
   fun _ hp => GramNerveDatum.Realizes.reindex _ α hp

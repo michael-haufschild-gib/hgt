@@ -2,9 +2,9 @@
 
 - **ID:** `nhg-cyclic-ainfinity-law-moduli-realization`
 - **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [NATIVE NHG REALIZATION] [SOURCE-ANCHORED LAW MODULI]`
-  `[CYCLIC A_INFINITY] [NONTRIVIAL LAW EVENT] [NO ROUTE INPUT] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
+  `[NATIVE NHG REALIZATION] [SOURCE-ANCHORED LAW MODULI] [CYCLIC A_INFINITY]`
+  `[NONTRIVIAL LAW EVENT] [NO ROUTE INPUT] [NOT RH]`
 
 ## 1. Law space before any observer
 
@@ -217,6 +217,40 @@ This one chart realizes, before observation:
 Consequently NHG is not empty and not dependent on an RH endpoint. The remaining analytic
 structures—connection choice on a family, relative Atiyah curvature, completion, proper action, and
 integrated global history—are additional field layers rather than fitted parts of this example.
+
+## Lean formalization status
+
+- Module: `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/CyclicAInfinityLaw.lean`
+- Shared tensor-coalgebra infrastructure:
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/TensorCoalgebra.lean`
+- Umbrella: `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry`
+- Card remains in Stage 2 by explicit instruction; no pipeline move was performed.
+
+Formalized closure includes:
+
+1. reduced tensor coalgebra, deconcatenation, Taylor corestrictions, insertion extensions, and exact
+   tensor-length Stasheff components;
+2. even/odd parity coderivation laws and all three supercommutator closure cases;
+3. cyclicity as an explicit graded bilinear-form identity, with cyclic closure proved rather than
+   stored as a subalgebra premise;
+4. descending arity filtration by exact tensor-length support and
+   `[F^p,F^q] ⊆ F^(p+q-1)` for both commutator signs;
+5. inverse-limit equivalence between full Taylor families and compatible finite Taylor jets,
+   separatedness, and finite-jet pronilpotence;
+6. `Q²=0 ⇔` all tensor-length identities, the half-supercommutator equation, square-zero
+   deformation differentials, gauge anchor, and tangent/automorphism/obstruction quotients;
+7. the real dual-number family, fixed nondegenerate Frobenius pairing, associativity, cyclicity,
+   exact event derivative, Hochschild cocycle identity, and non-coboundary proof.
+
+Verification performed in foreground:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/TensorCoalgebra.lean
+lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/CyclicAInfinityLaw.lean
+```
+
+Both commands exited `0` with no Lean errors. Final umbrella build, axiom print, and repository lint
+remain part of the all-card final audit.
 
 ## 5. Scope and parent boundary
 

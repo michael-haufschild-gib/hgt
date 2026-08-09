@@ -2,8 +2,9 @@
 
 - **ID:** `nhg-cyclic-action-noether`
 - **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM] [FORMAL VARIATIONAL SECTOR]`
-  `[NO COERCIVITY CLAIM] [NO ROUTE INPUT] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
+  `[UNIVERSAL FIELD THEOREM] [FORMAL VARIATIONAL SECTOR] [NO COERCIVITY CLAIM]`
+  `[NO ROUTE INPUT] [NOT RH]`
 
 ## 1. Setup
 
@@ -164,6 +165,31 @@ gauge.
 
 The numerical action itself is fixed only after normalization; an additive locally constant term is
 invisible to `(CA.5)`.
+
+## Lean formalization status
+
+- Module:
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/CyclicActionNoether.lean`
+- Umbrella: `GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry`
+- Card remains in Stage 2 by explicit instruction; no pipeline move was performed.
+
+The module formalizes uncurved positive-arity multilinear operations, fixed nondegenerate cyclic
+pairing, exact algebraic first variation of every homogeneous action term, every finite arity
+quotient of the completed action and Maurer--Cartan series, critical-locus equivalence, sourced
+Hessian, twisted square-zero differential, off-shell Bianchi identity, higher Noether/gauge
+invariance, and covariance of critical loci and Hessians under strict cyclic formal-coordinate
+isomorphisms. Infinite formal series are represented by the compatible family of their finite
+arity quotients, matching the separated filtered interpretation and making no analytic convergence
+or coercivity claim.
+
+Foreground verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/CyclicActionNoether.lean
+```
+
+Command exited `0` with zero output. Final umbrella build, axiom print, and repository lint remain
+part of the all-card final audit.
 
 ## 6. Hostile boundary
 

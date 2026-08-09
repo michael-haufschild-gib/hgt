@@ -2,8 +2,8 @@
 
 - **ID:** `nhg-fake-flat-kernel-surface-ass`
 - **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM] [STRICT 2-GROUP SECTOR]`
-  `[NO ROUTE INPUT] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
+  `[UNIVERSAL FIELD THEOREM] [STRICT 2-GROUP SECTOR] [NO ROUTE INPUT] [NOT RH]`
 
 ## 1. Geometric input
 
@@ -251,3 +251,17 @@ reduction plus the lifted Ambrose--Singer--Spencer generation statement. No prio
 - Topological closure after exponentiation can strictly enlarge the Lie algebra visible to a compact
   observer.
 - Semistrict 2-groups and genuinely multigraded nonlinear `L_infinity` transport remain open.
+
+## 9. Lean formalization status
+
+Formalized without moving this card:
+
+- `FakeFlatKernelSurfaceAmbroseSinger.lean` extends strict crossed-module calculus through degree
+  four. From Peiffer-kernel action and fake flatness it proves square-zero induced kernel transport;
+  from ordinary crossed-module transgression it proves kernel-valued three-curvature; from graded
+  skew-symmetry and higher Bianchi it proves covariant closure.
+- `HigherPeriodSpencer.lean` supplies actual additive subgroup generation, topological closure,
+  identity component, small-three-cell limiting argument, surface Ambrose--Singer equality, and
+  analytic Spencer equality.
+- Foreground `lake env lean <file>` checks pass with no warnings or errors. Umbrella imports are
+  wired; aggregate build and axiom audit remain part of final all-card audit.

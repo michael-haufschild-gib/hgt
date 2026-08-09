@@ -1,10 +1,9 @@
 # Hurwitz monodromy-closure lawstack and resonance-rank law
 
 - **ID:** `clg-hurwitz-monodromy-closure-resonance-rank`
-- **Stage:** 2 — fully proved on paper
-- **Status:** `[PAPER-PROVED LOCAL ORBIT ALGEBRA] [MC SUFFICIENT CHAMBER ONLY]`
-  `[SUPERSEDED AS AN EXACT HT MODEL] [FORMAL PARENT READ-ONLY]`
-  `[NO LEAN WRITTEN OR BUILT]`
+- **Stage:** 3 — formalized in Lean 4
+- **Status:** `[LEAN-FORMALIZED UNCONDITIONALLY] [LOCAL ORBIT ALGEBRA EXACT]`
+  `[MC SUFFICIENT CHAMBER ONLY] [HOSTILE BOUNDARIES FORMALIZED]`
 - **Purpose:** package the published monodromy-character sufficient chamber into a canonical local
   orbit quotient.  The later exact differential-matroid theorem proves that local orbit-closure
   rank is **not** Hurwitz differential rank.  The corrected branch-history geometry is in
@@ -226,11 +225,41 @@ The analytic realization is imported from:
 - `pipeline/4-publication-ready/joint-hurwitz-monodromy-character-law/main.tex`;
 - `pipeline/3-formalized/new_scientific_knowledge/joint-hurwitz-monodromy-character-hypertranscendence.md`.
 
-The group/character calculations are proved above. Formal corpus was read only. No Lean code was
-written or built.
+Formal module:
 
-## 7. Formalization boundary
+- `formal/GaloisForLFunctions/HTGeometry/HurwitzMonodromyClosureLawstackResonanceRankLaw.lean`.
 
-Do not write Lean. Existing declarations already formalize orbit density, product grids,
-monodromy deformation, and joint differential independence. A future lawstack formalization would
-first need an agreed algebraic-group/quotient-stack interface.
+Exact formal coverage includes:
+
+- `hurwitzCommonLoopAction`, `hurwitzCommonLoopMulAction`, and `HurwitzMonodromyLawstack` for the
+  common-loop action and its action-groupoid quotient presentation;
+- `hurwitzInvariantLaurentAlgEquiv` for
+  `C[R_q] ≃ₐ[C] C[T]^Z`;
+- `hurwitzMonodromyZariskiClosure_eq_resonanceAnnihilator` and
+  `hurwitzIndependentPowerGridZariskiClosure_eq_pi` for the literal Laurent-polynomial Zariski
+  closures `H_q` and `H_q^L`;
+- `hurwitzMonodromyCharacterSeparation_equivalences` for all equivalences in `(7)`;
+- `hurwitzMonodromyClosureDimension_add_resonanceRank` and
+  `hurwitzMonodromyClosureDimension_lt_card_of_resonance` for `(6)`, `(10)`, and `(11)`;
+- `hurwitz_fullMonodromyClosure_rectangle_algebraicIndependent` and
+  `hurwitz_fullMonodromyClosure_differentialIndependent` for Theorem 3.1;
+- `hurwitzTwoFour_resonanceRank`, `hurwitzTwoFour_monodromyClosureDimension`, and
+  `hurwitzTwoFourExponents_differentialIndependent` for the exact resonant `q=(2,4)`
+  non-converse witness;
+- `hurwitzThreeHalvesFourThirds_commonMonodromy_order` and
+  `hurwitzThreeHalvesFourThirds_differentialIndependent` for the exact order-six/rank-two witness.
+
+## 7. Formal audit
+
+- Direct elaboration: `lake env lean
+  GaloisForLFunctions/HTGeometry/HurwitzMonodromyClosureLawstackResonanceRankLaw.lean` passes with
+  zero warnings.
+- Final target audit: `lake build
+  +GaloisForLFunctions.HTGeometry.HurwitzMonodromyClosureLawstackResonanceRankLaw` passes
+  `9130/9130`.
+- Axiom audit of all capstone declarations reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- Forbidden-declaration scan is clean: no `sorry`, `admit`, added `axiom`, `opaque`, or `unsafe`.
+- `formal/GaloisForLFunctions/HTGeometry.lean` imports the module.
+- Global formal lint reaches the new umbrella import; its nonzero exit is solely pre-existing
+  reachability debt in unrelated modules listed by the lint output.

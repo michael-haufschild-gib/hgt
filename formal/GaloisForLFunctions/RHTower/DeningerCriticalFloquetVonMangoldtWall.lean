@@ -973,6 +973,7 @@ def deningerMeyerStrongLogTranslate
     (c : ℝ) (u : DeningerMeyerStrongLogTarget) :
     DeningerMeyerStrongLogTarget :=
   ⟨fun t => (u : ℝ → ℂ) (t + c), by
+    rw [mem_deningerMeyerStrongLogTarget_iff]
     simpa only [sub_neg_eq_add] using u.property.translate (-c)⟩
 
 @[simp]
@@ -1079,8 +1080,9 @@ theorem deningerPrimeCircleEnergy_twoBumpPlus
   apply intervalIntegral.integral_congr
   intro t ht
   have ht' := uIcc_of_le hL.le ▸ ht
+  dsimp only
   rw [deningerPrimeCirclePeriodization_twoBumpPlus hL v ht'.1 ht'.2]
-  norm_num
+  simp only [map_mul, map_ofNat]
   ring
 
 /-- Anti-coherent two-bump circle energy vanishes. -/
@@ -1088,11 +1090,18 @@ theorem deningerPrimeCircleEnergy_twoBumpMinus
     {L : ℝ} (hL : 0 < L) (v : DeningerMeyerStrongLogTarget) :
     deningerPrimeCircleEnergy L (deningerFloquetTwoBumpMinus L v) = 0 := by
   rw [deningerPrimeCircleEnergy]
-  apply intervalIntegral.integral_eq_zero
-  intro t ht
-  have ht' := uIcc_of_le hL.le ▸ ht
-  rw [deningerPrimeCirclePeriodization_twoBumpMinus hL v ht'.1 ht'.2,
-    map_zero, zero_mul]
+  have hzero : (∫ t in (0 : ℝ)..L,
+      deningerPrimeCirclePeriodization L (deningerFloquetTwoBumpMinus L v) t *
+        (starRingEnd ℂ)
+          (deningerPrimeCirclePeriodization L (deningerFloquetTwoBumpMinus L v) t)) =
+      ∫ _t in (0 : ℝ)..L, (0 : ℂ) := by
+    apply intervalIntegral.integral_congr
+    intro t ht
+    have ht' := uIcc_of_le hL.le ▸ ht
+    dsimp only
+    rw [deningerPrimeCirclePeriodization_twoBumpMinus hL v ht'.1 ht'.2,
+      map_zero, zero_mul]
+  rw [hzero, intervalIntegral.integral_zero]
 
 /-- Translation preserves the zero-lag autocorrelation mass. -/
 theorem deningerMeyerStrongLogAutocorrelation_translate_zero
@@ -1125,8 +1134,7 @@ theorem deningerMeyerStrongLogAutocorrelation_twoBump_zero
     by_contra hboth
     push_neg at hboth
     have hx := hsupport hboth.1
-    have hy := hsupport hboth.2
-    simp only [w, deningerMeyerStrongLogTranslate_apply] at hy
+    have hy : x + L ∈ Icc a b := hsupport hboth.2
     linarith [hx.1, hx.2, hy.1, hy.2]
   have hvint :=
     integrable_deningerMeyerStrongLogAutocorrelationIntegrand v 0
@@ -1147,13 +1155,18 @@ theorem deningerMeyerStrongLogAutocorrelation_twoBump_zero
         filter_upwards with x
         rcases hdisjoint x with hx | hx <;>
           simp only [hx, map_zero, zero_mul, mul_zero, add_zero, zero_add,
-            Bool.cond_eq_ite] <;> split <;> ring
+            Bool.cond_eq_ite]
+        all_goals split
+        all_goals try simp only [map_neg]
+        all_goals ring
       _ = deningerMeyerStrongLogAutocorrelation v 0 +
           deningerMeyerStrongLogAutocorrelation w 0 := by
+        simp only [add_zero] at hvint hwint
         rw [integral_add hvint hwint]
         simp only [deningerMeyerStrongLogAutocorrelation, add_zero]
   constructor
   · rw [deningerMeyerStrongLogAutocorrelation]
+    simp only [add_zero]
     change (∫ x : ℝ,
         ((v : ℝ → ℂ) x + (w : ℝ → ℂ) x) *
           (starRingEnd ℂ) ((v : ℝ → ℂ) x + (w : ℝ → ℂ) x)) = _
@@ -1166,6 +1179,7 @@ theorem deningerMeyerStrongLogAutocorrelation_twoBump_zero
       deningerMeyerStrongLogAutocorrelation_translate_zero]
     ring
   · rw [deningerMeyerStrongLogAutocorrelation]
+    simp only [add_zero]
     change (∫ x : ℝ,
         ((v : ℝ → ℂ) x - (w : ℝ → ℂ) x) *
           (starRingEnd ℂ) ((v : ℝ → ℂ) x - (w : ℝ → ℂ) x)) = _

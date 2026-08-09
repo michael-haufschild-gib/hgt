@@ -345,6 +345,72 @@ theorem even_even_commutator_isEven (P D E : End (k := k) (V := V))
   simp only [LinearMap.sub_apply, map_sub, LinearMap.comp_apply]
   rw [hDEx, hEDx, hDx, hEx]
 
+/-- Infinitesimal preservation of a fixed bilinear form by an even endomorphism. -/
+def IsCyclicEven (B : Carrier (k := k) (V := V) →ₗ[k]
+    Carrier (k := k) (V := V) →ₗ[k] k) (D : End (k := k) (V := V)) : Prop :=
+  ∀ x y, B (D x) y + B x (D y) = 0
+
+/-- Infinitesimal graded preservation of a fixed bilinear form by an odd endomorphism. -/
+def IsCyclicOdd (B : Carrier (k := k) (V := V) →ₗ[k]
+    Carrier (k := k) (V := V) →ₗ[k] k)
+    (P D : End (k := k) (V := V)) : Prop :=
+  ∀ x y, B (D x) y + B (P x) (D y) = 0
+
+/-- Cyclic odd coderivations are closed under the gauge commutator with cyclic even
+coderivations. -/
+theorem cyclic_odd_even_commutator (B : Carrier (k := k) (V := V) →ₗ[k]
+    Carrier (k := k) (V := V) →ₗ[k] k)
+    (P Q D : End (k := k) (V := V))
+    (hDP : IsEven P D) (hQ : IsCyclicOdd B P Q) (hD : IsCyclicEven B D) :
+    IsCyclicOdd B P (Q.comp D - D.comp Q) := by
+  intro x y
+  have hQDy := hQ x (D y)
+  have hQDx := hQ (D x) y
+  have hDPx := LinearMap.congr_fun hDP x
+  simp only [LinearMap.comp_apply] at hDPx
+  have hDPair := hD (P x) (Q y)
+  have hDQ := hD (Q x) y
+  simp only [LinearMap.sub_apply, map_sub, LinearMap.comp_apply]
+  rw [hDPx] at hQDx
+  linear_combination hQDx - hDPair - hDQ + hQDy
+
+/-- Cyclic odd coderivations are closed under odd supercommutator. -/
+theorem cyclic_odd_odd_supercommutator (B : Carrier (k := k) (V := V) →ₗ[k]
+    Carrier (k := k) (V := V) →ₗ[k] k)
+    (P Q E : End (k := k) (V := V))
+    (hP : P.comp P = LinearMap.id) (hQP : IsOdd P Q) (hEP : IsOdd P E)
+    (hQ : IsCyclicOdd B P Q) (hE : IsCyclicOdd B P E) :
+    IsCyclicEven B (Q.comp E + E.comp Q) := by
+  intro x y
+  have hQEx := hQ (E x) y
+  have hEQx := hE (Q x) y
+  have hEPx := LinearMap.congr_fun hEP x
+  have hQPx := LinearMap.congr_fun hQP x
+  have hPPx := LinearMap.congr_fun hP x
+  simp only [LinearMap.comp_apply, LinearMap.neg_apply, LinearMap.id_apply] at hEPx hQPx hPPx
+  have hEPQ := hE (P x) (Q y)
+  have hQPE := hQ (P x) (E y)
+  simp only [LinearMap.add_apply, map_add, LinearMap.comp_apply]
+  rw [hEPx] at hQEx
+  rw [hQPx] at hEQx
+  rw [hPPx] at hEPQ hQPE
+  simp only [map_neg, LinearMap.neg_apply] at hQEx hEQx hEPQ hQPE
+  linear_combination hQEx + hEQx + hEPQ + hQPE
+
+/-- Cyclic even coderivations are closed under ordinary commutator. -/
+theorem cyclic_even_even_commutator (B : Carrier (k := k) (V := V) →ₗ[k]
+    Carrier (k := k) (V := V) →ₗ[k] k)
+    (D E : End (k := k) (V := V))
+    (hD : IsCyclicEven B D) (hE : IsCyclicEven B E) :
+    IsCyclicEven B (D.comp E - E.comp D) := by
+  intro x y
+  have hDE := hD (E x) y
+  have hED := hE (D x) y
+  have hDxy := hD x (E y)
+  have hExy := hE x (D y)
+  simp only [LinearMap.sub_apply, map_sub, LinearMap.comp_apply]
+  linear_combination hDE - hED + hDxy - hExy
+
 /-- Taylor corestriction of an endomorphism at positive tensor length `n`. -/
 def taylorCorestriction (D : End (k := k) (V := V))
     (n : TensorCoalgebra.PositiveNat) :
@@ -484,6 +550,12 @@ theorem oddBracket_mem_arityFiltration (p q : ℕ) (hp : 0 < p) (hq : 0 < q)
 def TaylorSupportedFrom (p : ℕ) (m : TensorCoalgebra.TaylorFamily k V) : Prop :=
   ∀ n, n.1 < p → m n = 0
 
+theorem insertTaylor_zero_local (n r i : ℕ) (hr : r ≤ n) (hi : i ≤ n - r) :
+    TensorCoalgebra.insertTaylor k V n r i hr hi
+      (0 : TensorPower k r V →ₗ[k] V) = 0 := by
+  ext x
+  simp [TensorCoalgebra.insertTaylor]
+
 theorem homogeneousTaylorExtension_mem (p : ℕ) (m : TensorCoalgebra.TaylorFamily k V)
     (hm : TaylorSupportedFrom p m) (n : TensorCoalgebra.PositiveNat)
     (x : TensorPower k n.1 V) :
@@ -510,7 +582,7 @@ theorem homogeneousTaylorExtension_mem (p : ℕ) (m : TensorCoalgebra.TaylorFami
     change TensorCoalgebra.ofTensor k V (TensorCoalgebra.insertionWeight n r)
       (TensorCoalgebra.insertTaylor k V n.1 (r.1 + 1) i.1 (by omega) (by omega)
         (m (TensorCoalgebra.selectedArity n r)) x) ∈ _
-    rw [hz, TensorCoalgebra.insertTaylor_zero]
+    rw [hz, insertTaylor_zero_local]
     simp
 
 /-- The insertion extension of a Taylor family supported from arity `p` belongs to `F^p`. -/
@@ -531,6 +603,118 @@ theorem extendTaylor_mem_arityFiltration (p : ℕ) (m : TensorCoalgebra.TaylorFa
     simpa using Submodule.add_mem _ hma hmb
   · intro a x hx hmx
     simpa using Submodule.smul_mem _ a hmx
+
+/-! ### Exact tensor-length completion and pronilpotence -/
+
+/-- Taylor coefficients through tensor length `N`. -/
+abbrev TaylorJet (N : ℕ) :=
+  ∀ n : {n : TensorCoalgebra.PositiveNat // n.1 ≤ N},
+    TensorPower k n.1.1 V →ₗ[k] V
+
+/-- Restriction between finite Taylor jets. -/
+def restrictTaylorJet {M N : ℕ} (hMN : M ≤ N)
+    (j : TaylorJet (k := k) (V := V) N) : TaylorJet (k := k) (V := V) M :=
+  fun n ↦ j ⟨n.1, n.2.trans hMN⟩
+
+/-- Algebraic inverse limit of every finite tensor-length Taylor jet. -/
+structure TaylorJetTower where
+  jet : ∀ N, TaylorJet (k := k) (V := V) N
+  compatible : ∀ {M N} (hMN : M ≤ N)
+    (n : {n : TensorCoalgebra.PositiveNat // n.1 ≤ M}),
+    restrictTaylorJet hMN (jet N) n = jet M n
+
+def TaylorJetTower.ofTaylor (m : TensorCoalgebra.TaylorFamily k V) :
+    TaylorJetTower (k := k) (V := V) where
+  jet _ n := m n.1
+  compatible _ _ := rfl
+
+def TaylorJetTower.toTaylor (J : TaylorJetTower (k := k) (V := V)) :
+    TensorCoalgebra.TaylorFamily k V :=
+  fun n ↦ J.jet n.1 ⟨n, le_rfl⟩
+
+theorem TaylorJetTower.toTaylor_ofTaylor (m : TensorCoalgebra.TaylorFamily k V) :
+    (TaylorJetTower.ofTaylor m).toTaylor = m := by
+  rfl
+
+theorem TaylorJetTower.ofTaylor_toTaylor (J : TaylorJetTower (k := k) (V := V)) :
+    TaylorJetTower.ofTaylor J.toTaylor = J := by
+  cases J with
+  | mk jet compatible =>
+      simp only [TaylorJetTower.toTaylor, TaylorJetTower.ofTaylor]
+      congr
+      funext N n
+      exact (compatible n.2 ⟨n.1, le_rfl⟩).symm
+
+/-- The full Taylor family is exactly the inverse limit of its finite jets.  This is the algebraic
+completeness statement for the tensor-arity topology. -/
+def taylorCompletionEquiv :
+    TensorCoalgebra.TaylorFamily k V ≃ TaylorJetTower (k := k) (V := V) where
+  toFun := TaylorJetTower.ofTaylor
+  invFun := TaylorJetTower.toTaylor
+  left_inv := TaylorJetTower.toTaylor_ofTaylor
+  right_inv := TaylorJetTower.ofTaylor_toTaylor
+
+/-- The Taylor arity filtration is separated. -/
+theorem taylorFiltration_separated (m : TensorCoalgebra.TaylorFamily k V)
+    (hm : ∀ p, TaylorSupportedFrom p m) : m = 0 := by
+  funext n
+  exact hm (n.1 + 1) n (by omega)
+
+/-- Left-nested ordinary commutator. -/
+def iteratedCommutator (D : End (k := k) (V := V)) :
+    List (End (k := k) (V := V)) → End (k := k) (V := V)
+  | [] => D
+  | E :: L => iteratedCommutator (D.comp E - E.comp D) L
+
+theorem iteratedCommutator_mem (p : ℕ) (hp : 0 < p)
+    (D : End (k := k) (V := V)) (L : List (End (k := k) (V := V)))
+    (hD : D ∈ arityFiltration (k := k) (V := V) p)
+    (hL : ∀ E ∈ L, E ∈ arityFiltration (k := k) (V := V) 2) :
+    iteratedCommutator D L ∈
+      arityFiltration (k := k) (V := V) (p + L.length) := by
+  induction L generalizing D p with
+  | nil => simpa [iteratedCommutator] using hD
+  | cons E L ih =>
+      have hE : E ∈ arityFiltration (k := k) (V := V) 2 := hL E (by simp)
+      have hBracket := commutator_mem_arityFiltration p 2 hp (by omega) hD hE
+      have hTail : ∀ F ∈ L, F ∈ arityFiltration (k := k) (V := V) 2 := by
+        intro F hF
+        exact hL F (by simp [hF])
+      have h := ih (p := p + 1) (by omega) (D := D.comp E - E.comp D) hBracket hTail
+      rw [iteratedCommutator]
+      have heq : p + 1 + L.length = p + (L.length + 1) := by omega
+      change iteratedCommutator (D.comp E - E.comp D) L ∈
+        arityFiltration (k := k) (V := V) (p + (L.length + 1))
+      rw [← heq]
+      exact h
+
+/-- `F^(N+1)` acts trivially on the length-`N` Taylor jet. -/
+theorem arityFiltration_succ_annihilates_lengthLE (N : ℕ)
+    {D : End (k := k) (V := V)}
+    (hD : D ∈ arityFiltration (k := k) (V := V) (N + 1))
+    {x : Carrier (k := k) (V := V)} (hx : x ∈ lengthLE (k := k) (V := V) N) :
+    D x = 0 := by
+  have h := hD N x hx
+  rw [outputBound, if_neg (by omega), lengthLE_zero] at h
+  exact h
+
+/-- Every length-`N+1` quotient of the positive-arity ideal is nilpotent: an `(N+1)`-fold
+commutator of arity-at-least-two operators vanishes on that jet. -/
+theorem finiteTaylorJet_pronilpotent (N : ℕ)
+    (D : End (k := k) (V := V)) (L : List (End (k := k) (V := V)))
+    (hD : D ∈ arityFiltration (k := k) (V := V) 2)
+    (hL : ∀ E ∈ L, E ∈ arityFiltration (k := k) (V := V) 2)
+    (hlen : L.length = N) {x : Carrier (k := k) (V := V)}
+    (hx : x ∈ lengthLE (k := k) (V := V) (N + 1)) :
+    iteratedCommutator D L x = 0 := by
+  have h := iteratedCommutator_mem 2 (by omega) D L hD hL
+  rw [hlen] at h
+  have h' : iteratedCommutator D L ∈
+      arityFiltration (k := k) (V := V) ((N + 1) + 1) := by
+    have heq : 2 + N = (N + 1) + 1 := by omega
+    rw [← heq]
+    exact h
+  exact arityFiltration_succ_annihilates_lengthLE (N + 1) h' hx
 
 /-- All tensor-length components of `Q²` vanish.  This is the direct-sum form of the Stasheff
 identities before projecting further to cogenerators. -/
@@ -559,22 +743,51 @@ theorem square_zero_iff_tensorLengthIdentities (Q : End (k := k) (V := V)) :
     intro m
     simpa [QGeometry.square, TensorCoalgebra.ofTensor] using h n x m
 
-/-- A source-anchored cyclic `A∞` tensor chart.  `cyclic` is the linear sector cut out by the fixed
-nondegenerate pairing; its two closure laws state that deformation and obstruction brackets remain
-cyclic. -/
+/-- A source-anchored cyclic `A∞` tensor chart with its fixed form on the completed tensor
+coordinates.  Cyclic closure is proved below rather than stored as a field. -/
 structure CyclicTensorLaw where
   parity : End (k := k) (V := V)
   parity_involutive : parity.comp parity = LinearMap.id
   pairing : V →ₗ[k] V →ₗ[k] k
   pairing_nondegenerate : ∀ x, (∀ y, pairing x y = 0) → x = 0
-  cyclic : Submodule k (End (k := k) (V := V))
+  carrierPairing : Carrier (k := k) (V := V) →ₗ[k] Carrier (k := k) (V := V) →ₗ[k] k
+  carrierPairing_nondegenerate : ∀ x, (∀ y, carrierPairing x y = 0) → x = 0
+  carrierPairing_on_cogenerators : ∀ x y : TensorPower k 1 V,
+    carrierPairing
+        (TensorCoalgebra.ofTensor k V TensorCoalgebra.oneWeight x)
+        (TensorCoalgebra.ofTensor k V TensorCoalgebra.oneWeight y) =
+      pairing (TensorCoalgebra.tensorPowerOneEquiv k V x)
+        (TensorCoalgebra.tensorPowerOneEquiv k V y)
   Q : End (k := k) (V := V)
   q_odd : IsOdd parity Q
   q_coderivation : IsOddCoderivation parity Q
-  q_cyclic : Q ∈ cyclic
+  q_cyclic : IsCyclicOdd carrierPairing parity Q
   square_zero : QGeometry.square Q = 0
-  anchor_closed : ∀ ξ ∈ cyclic, QGeometry.dEven Q ξ ∈ cyclic
-  obstruction_closed : ∀ η ∈ cyclic, QGeometry.dOdd Q η ∈ cyclic
+
+/-- The gauge anchor of a cyclic even coderivation is again an odd cyclic coderivation. -/
+theorem CyclicTensorLaw.anchor_closed (A : CyclicTensorLaw (k := k) (V := V))
+    (ξ : End (k := k) (V := V)) (hξp : IsEven A.parity ξ)
+    (hξD : IsEvenCoderivation ξ) (hξc : IsCyclicEven A.carrierPairing ξ) :
+    IsOdd A.parity (QGeometry.dEven A.Q ξ) ∧
+      IsOddCoderivation A.parity (QGeometry.dEven A.Q ξ) ∧
+      IsCyclicOdd A.carrierPairing A.parity (QGeometry.dEven A.Q ξ) := by
+  exact ⟨odd_even_commutator_isOdd A.parity A.Q ξ A.q_odd hξp,
+    odd_even_commutator_coderivation A.parity A.Q ξ hξp A.q_coderivation hξD,
+    cyclic_odd_even_commutator A.carrierPairing A.parity A.Q ξ hξp A.q_cyclic hξc⟩
+
+/-- The odd deformation differential closes into even cyclic coderivations. -/
+theorem CyclicTensorLaw.obstruction_closed (A : CyclicTensorLaw (k := k) (V := V))
+    (η : End (k := k) (V := V)) (hηp : IsOdd A.parity η)
+    (hηD : IsOddCoderivation A.parity η)
+    (hηc : IsCyclicOdd A.carrierPairing A.parity η) :
+    IsEven A.parity (QGeometry.dOdd A.Q η) ∧
+      IsEvenCoderivation (QGeometry.dOdd A.Q η) ∧
+      IsCyclicEven A.carrierPairing (QGeometry.dOdd A.Q η) := by
+  exact ⟨odd_odd_supercommutator_isEven A.parity A.Q η A.q_odd hηp,
+    odd_odd_supercommutator_coderivation A.parity A.Q η A.parity_involutive
+      A.q_odd hηp A.q_coderivation hηD,
+    cyclic_odd_odd_supercommutator A.carrierPairing A.parity A.Q η
+      A.parity_involutive A.q_odd hηp A.q_cyclic hηc⟩
 
 /-- A tensor law satisfies the complete tensor-length identities and carries the intrinsic cyclic
 deformation package. -/

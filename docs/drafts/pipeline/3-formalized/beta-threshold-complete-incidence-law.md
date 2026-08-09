@@ -1,12 +1,13 @@
 # Beta-threshold complete-incidence law
 
 - **ID:** `beta-threshold-complete-incidence-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SHARP BOUNDED REPLICA REDUCTION
 - **Parents:** `bures-incidence-minimax-coarea-law.md`,
   `gapped-eigenstate-uniform-shortcut-floor.md`,
   `quenched-krylov-circuit-incidence-front-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER CORRECTION] [EXTERNAL PRIORITY OPEN] [LEAN DEFERRED]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [FRONTIER CORRECTION] [EXTERNAL PRIORITY OPEN]`
+- **Formalized companion:** `./beta-threshold-complete-incidence-law-formalized.md`
 - **Statement:** A bounded binomial replica projector is, exactly, a beta-normalized average of the
   complete approximate-tube incidence mass.  With fixed error slack it sandwiches the desired
   shortcut probability up to `exp(-Theta(r))`, while paying every rare return or fibre sheet only
@@ -363,8 +364,11 @@ their actual source probability.
    for rare-sheet finite onset because that reporter class answers a stronger moment question.
 5. **No external priority conclusion.**  Threshold amplification and quantum hypothesis testing
    are broad literatures.  The claimed frontier correction needs targeted expert review.
-6. **No Lean claim.**  The result is dependency-closed on paper but remains forbidden in the final
-   manuscript until formalized after the active corpus refactor.
+6. **Lean closure.**  Theorems A, B, B', C, the trace-distance corollary `(24)` and the
+   monomial separation `(25)`--`(26)` are formalized unconditionally in
+   `HTGeometry/BinomialTailBetaThreshold`, `HTGeometry/BetaThresholdIncidenceLaw` and
+   `HTGeometry/BoundedReplicaThresholdProjector`.  The unproved part is `(27)`--`(28)`, the
+   dynamical anti-concentration statement, which is a parent-card research target.
 
 ## Exact next move
 
@@ -374,16 +378,28 @@ depth-`s` endpoint tubes after one target-independent return/easy-carrier excisi
 be only `o_n(1)`; it need not be `exp(-Theta(r))`.  It must retain source fibre multiplicity and
 perform the occupied endpoint union before threshold averaging.
 
-## Lean realization after corpus refactor
+## Lean realization
 
-1. finite binomial-tail polynomial, monotonicity, and Hoeffding sandwich;
-2. derivative telescoping and beta-density normalization;
-3. restricted-source beta identity and return-paid-once inequality `(16)--(18)`;
-4. finite tensor outcome projections and expectation identity `(21)`;
-5. finite target maximum and trace-distance circuit-tube sandwich `(24)`;
-6. strict monomial-separation example `(25)--(26)`.
+All six layers are built; see the formalized companion for the declaration-by-declaration map.
+
+1. finite binomial-tail polynomial, monotonicity, and Hoeffding sandwich --
+   `binomialTail`, `binomialTail_monotoneOn`, `binomialTail_replicaThreshold_le`,
+   `one_sub_le_binomialTail_replicaThreshold`;
+2. derivative telescoping and beta-density normalization --
+   `hasDerivAt_binomialTail`, `intervalIntegral_betaKernel_eq_one`;
+3. restricted-source beta identity and return-paid-once inequality `(16)--(18)` --
+   `restrictedIncidenceAction_eq_betaCoarea`,
+   `measure_le_return_add_restrictedIncidenceAction`;
+4. finite tensor outcome projections and expectation identity `(21)` --
+   `boundedReplicaProjector_mul_self`, `quadForm_boundedReplicaProjector`;
+5. finite target maximum and trace-distance circuit-tube sandwich `(24)` --
+   `sup'_replicaTest`, `incidenceAction_traceDistance_sandwich`;
+6. strict monomial-separation example `(25)--(26)` --
+   `monomial_reporter_eq_pow_mul_incidenceAction`.
 
 ## Log
 
 - 2026-08-09 -- Casimir/nuclear route falsified; bounded binomial replica test and exact
   beta-threshold complete-incidence coarea law proved on paper.
+- 2026-08-09 -- formalized: all six Lean layers built and closed unconditionally; promoted to
+  stage 3.

@@ -1,9 +1,9 @@
 # Split \(L_\infty\) observer extension field and nonlinear Gauss--Codazzi law
 
 - **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [ROUTE-INDEPENDENT] [NONLINEAR OBSERVER FIELD]
-  [MAURER--CARTAN EXTENSION] [GAUGE-COVARIANT] [NOT RH]
-  [NO LEAN WRITTEN OR BUILT]
+- **Status:** [PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]
+  [ROUTE-INDEPENDENT] [NONLINEAR OBSERVER FIELD] [MAURER--CARTAN EXTENSION]
+  [GAUGE-COVARIANT] [NOT RH]
 
 ## 1. Setup
 
@@ -274,3 +274,18 @@ NHG's field claim is not priority over this machinery. Its load-bearing proposal
 extension Maurer--Cartan orbit as the nonlinear local field strength of an observer law-fibre, then
 couple that same object functorially to Atiyah--Spencer curvature, higher holonomy, polar reduction,
 prolongation, and proper history. Those global couplings remain the research frontier.
+
+## 8. Lean formalization status
+
+Formalized without moving this card:
+
+- `SplitLInfinityObserverExtension.lean` works in the completed-law operator algebra already built
+  for cyclic coderivations. It defines a bracket-closed relative sector, proves the exact square
+  expansion and Maurer--Cartan equivalence, proves the background deformation complex is
+  square-zero, and resolves the equation through a jointly detecting input-bidegree family.
+- It formalizes split-presentation gauge conjugation and square-zero covariance, the exact declared
+  product criterion, the cyclic cubic extension action with Euler--Lagrange equation, and the
+  twisted Bianchi identity.
+- A concrete affine semidirect bracket proves all pure-horizontal brackets can vanish while a mixed
+  vertical component remains nonzero. Foreground `lake env lean <file>` passes with no warnings or
+  errors. Umbrella import is wired; aggregate build and axiom audit remain in final all-card audit.

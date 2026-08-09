@@ -78,7 +78,7 @@ theorem lt_approxComplexity_of_skeleton
     (hCne : ∃ w : List Γ,
       dist (U t chi) (wordAct act w chi) ≤ epsMinus)
     (hhard : c * v * T - K < (approxComplexity act chi epsPlus (U T chi) : ℝ))
-    (hle : t ≤ T) (hq : T ≤ cq * t) (hc : c * cq ≤ 1) :
+    (hle : t ≤ T) (hq : T ≤ cq * t) (_hc0 : 0 < c) (hc1 : c ≤ 1) :
     (1 - cq * (1 - c)) * v * t - (K + A + 1) <
       (approxComplexity act chi epsMinus (U t chi) : ℝ) := by
   classical
@@ -103,12 +103,15 @@ theorem lt_approxComplexity_of_skeleton
   have hceil : (⌈v * u + A⌉₊ : ℝ) ≤ v * u + A + 1 := by
     have := Nat.ceil_lt_add_one (by positivity : (0:ℝ) ≤ v * u + A)
     linarith
+  have h1c : (0 : ℝ) ≤ 1 - c := by linarith
   have hTq : (1 - c) * v * T ≤ cq * (1 - c) * v * t := by
-    rcases le_total c 1 with hc1 | hc1
-    · have h1c : 0 ≤ 1 - c := by linarith
-      nlinarith [hq, hv, h1c]
-    · nlinarith [hq, hv, hc, hle]
-  nlinarith [hhard, hcast, hceil, hv, hA]
+    calc (1 - c) * v * T ≤ (1 - c) * v * (cq * t) :=
+          mul_le_mul_of_nonneg_left hq (mul_nonneg h1c hv.le)
+      _ = cq * (1 - c) * v * t := by ring
+  have hceil' : (⌈v * u + A⌉₊ : ℝ) ≤ v * (T - t) + A + 1 := by
+    rw [hu] at hceil
+    exact hceil
+  linarith [hhard, hcast, hceil', hTq]
 
 /-! ## Theorem B: the matching upper ramp -/
 
@@ -146,7 +149,8 @@ theorem skeleton_card_le {T0 Tmax q : ℝ} (hT0 : 0 < T0) (hq : 1 < q) {N : ℕ}
     rw [le_div_iff₀ hT0]
     linarith [hN]
   have hlog : (N : ℝ) * Real.log q ≤ Real.log (Tmax / T0) := by
-    have hpow : Real.log (q ^ N) = (N : ℝ) * Real.log q := Real.log_pow N q
+    have hpow : Real.log (q ^ N) = (N : ℝ) * Real.log q := by
+      rw [Real.log_pow]
     rw [← hpow]
     exact Real.log_le_log (by positivity) hratio
   have : (N : ℝ) ≤ Real.log (Tmax / T0) / Real.log q := by

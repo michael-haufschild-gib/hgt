@@ -1,0 +1,19 @@
+import GaloisForLFunctions.HTGeometry.ConstitutivePositiveResponse
+import GaloisForLFunctions.HTGeometry.ConstitutiveInterventionSeparation
+import GaloisForLFunctions.HTGeometry.ConstitutiveIndependentSlotNoGo
+import GaloisForLFunctions.HTGeometry.ConstitutiveReconstructionNoGo
+import GaloisForLFunctions.HTGeometry.ConstitutiveAdaptiveProcompletion
+import GaloisForLFunctions.HTGeometry.ConstitutiveAdaptiveCost
+import GaloisForLFunctions.HTGeometry.ConstitutiveEffectivityHorizon
+import GaloisForLFunctions.HTGeometry.ConstitutiveFiniteJetBoundary
+import GaloisForLFunctions.HTGeometry.ConstitutiveGammaResponseLifetime
+import GaloisForLFunctions.HTGeometry.QPochhammer
+import GaloisForLFunctions.HTGeometry.EulerQGammaFiniteProcess
+
+/-!
+# Universal-law-field Lean umbrella
+
+Certified theorem modules originating in
+`docs/drafts/pipeline/2-fully-proven/universal-law-field/` are imported here.  This supplies a
+dedicated build boundary for the new field, independent of unrelated theorem-area work.
+-/

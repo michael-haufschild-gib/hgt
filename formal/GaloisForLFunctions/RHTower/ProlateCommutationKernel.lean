@@ -160,7 +160,7 @@ theorem continuous_bandKernel_snd (c x : ℝ) : Continuous (fun t : ℝ => bandK
 /-- **Differentiation under the band integral.**  The kernel has modulus one and its `x`-derivative
 modulus `|c t| ≤ |c|` on the band, so the dominated-convergence differentiation applies with the
 integrable majorant `(|c| + 1) ‖f‖`. -/
-theorem hasDerivAt_bandTransform {c : ℝ} {f : ℝ → ℂ}
+theorem hasDerivAt_bandKernelTransform {c : ℝ} {f : ℝ → ℂ}
     (hf : IntervalIntegrable f MeasureTheory.volume (-1) 1) (x : ℝ) :
     HasDerivAt (fun y : ℝ => ∫ t in (-1 : ℝ)..1, bandKernel c y t * f t)
       (∫ t in (-1 : ℝ)..1, bandKernel c x t * (Complex.I * ((c * t : ℝ) : ℂ)) * f t) x := by
@@ -253,7 +253,7 @@ theorem hasDerivAt_bandTransformDeriv {c : ℝ} {f : ℝ → ℂ}
         exact ⟨le_of_lt ht.1, ht.2⟩
       rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs, abs_mul]
       nlinarith [abs_nonneg c, abs_nonneg t, hle]
-  have h := hasDerivAt_bandTransform (c := c) hmul x
+  have h := hasDerivAt_bandKernelTransform (c := c) hmul x
   have hcongr1 : ∀ y : ℝ,
       (∫ t in (-1 : ℝ)..1, bandKernel c y t * ((Complex.I * ((c * t : ℝ) : ℂ)) * f t))
         = ∫ t in (-1 : ℝ)..1, bandKernel c y t * (Complex.I * ((c * t : ℝ) : ℂ)) * f t := by
@@ -401,7 +401,7 @@ theorem hasDerivAt_bandEigen {c : ℝ} {χ : ℂ} {f : ℝ → ℂ} (hχ : χ �
   have hbase : HasDerivAt (fun y : ℝ => χ⁻¹ * ∫ t in (-1 : ℝ)..1, bandKernel c y t * f t)
       (bandEigenDeriv c χ f x) x := by
     rw [bandEigenDeriv]
-    exact (hasDerivAt_bandTransform hf x).const_mul χ⁻¹
+    exact (hasDerivAt_bandKernelTransform hf x).const_mul χ⁻¹
   refine hbase.congr_of_eventuallyEq ?_
   filter_upwards with y
   rw [← heig y, ← mul_assoc, inv_mul_cancel₀ hχ, one_mul]
@@ -513,7 +513,7 @@ theorem hasDerivAt_bandTransformPow {c : ℝ} {χ : ℂ} {f : ℝ → ℂ}
     (hf : IntervalIntegrable f MeasureTheory.volume (-1) 1) (n : ℕ) (x : ℝ) :
     HasDerivAt (bandTransformPow c χ f n) (bandTransformPow c χ f (n + 1) x) x := by
   have hsrc := intervalIntegrable_kernelPow_mul (c := c) hf n
-  have h := (hasDerivAt_bandTransform (c := c) hsrc x).const_mul χ⁻¹
+  have h := (hasDerivAt_bandKernelTransform (c := c) hsrc x).const_mul χ⁻¹
   have hfun : bandTransformPow c χ f n
       = fun y : ℝ => χ⁻¹ * ∫ t in (-1 : ℝ)..1,
           bandKernel c y t * ((Complex.I * ((c * t : ℝ) : ℂ)) ^ n * f t) := by

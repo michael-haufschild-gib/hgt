@@ -36,17 +36,36 @@ Promotion recipe:
 | `complete-graph-local-projective-spectral-maximality` | complete-graph instance + `(13)` | `HTGeometry/CompleteGraphLocalProjectiveMaximality` (new) |
 | `fast-forwardable-stratum-codimension-obstruction` | tube inclusion, budget step, Gaussian shell positivity, `(4)`–`(6)`, `(14)`–`(15)` | `HTGeometry/FastForwardableStratumCodimension`, `GaussianIntervalPositivity` (both new) |
 | `mixed-periodic-synthesis-carrier-obstruction` | shifted small-ball, fine-lattice density, `(3)`, `(5)`, boxed `(6)` | `HTGeometry/MixedPeriodicCarrierObstruction`, `LatticeGaussianDensity` (both new) |
+| `geometric-skeleton-brown-ramp-transfer-law` | Theorems A, B, C in full | `HTGeometry/GeometricSkeletonBrownRamp` (new) |
 | `disconnected-local-spectral-factorization-genericity` | none (already complete in the hypergraph form) | `HTGeometry/DisconnectedProjectiveGapModuleLaw`, `HypergraphComponentFactorization`, `HypergraphProjectiveSpectralFactorization`, `BlockSumSpectralGenericity` |
+| `beta-threshold-complete-incidence-law` | all six Lean layers: Hoeffding sandwich, beta-density derivative, coarea `(12)`/`(17)`, return-paid-once `(18)`, replica projector `(19)`–`(22)`, monomial separation `(25)`–`(26)` | `HTGeometry/BinomialTailBetaThreshold`, `BetaThresholdIncidenceLaw`, `BoundedReplicaThresholdProjector` (all new) |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
 | `burnol-holonomy-cauchy-sector-separation` | none (verified only) | `RHTower/BurnolHolonomyCauchySectorSeparation` |
 | `burnol-all-prime-completion-singular-potential-entrance-wall` | all of `(AW0)`--`(AW17)` | `RHTower/BurnolAllPrimeCompletionWall`, `RHTower/BurnolPrimeLogSummability` (both new) |
 | `burnol-all-prime-window-hilbert-cartier-jet-wall` | all of `(HJ1)`--`(HJ29)` | `RHTower/BurnolAllPrimeWindowEnergy`, `RHTower/BurnolReciprocalStokesSewing` (both new) |
 | `burnol-poisson-subordinate-smooth-cartier-entrance-wall` | all of `(PS1)`--`(PS16)`, incl. the Glasser integral | `RHTower/BurnolPoissonSubordinateWall`, `RHTower/BurnolGlasserIntegral` (both new) |
+| `burnol-first-wall-cartier-residue-cancellation-law` | *(in progress)* `(1)`, `(2)`, `(4)`, `(8)`, `(9)`, `(13)`--`(18)`, `(23)`--`(28)` | `RHTower/BurnolFirstWallZeroDividedSource`, `RHTower/BurnolFirstWallSourceDecay`, `RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass` (all new) |
 | `burnol-cofinite-cartier-wall-trace-horizon` | all of `(CH1)`--`(CH23)` | `RHTower/BurnolCofiniteHorizonGerm` (new), `RHTower/BurnolPrimeCartierWallTrace` |
 | `burnol-prime-two-causal-cartier-collar-law` | all of `(3)`--`(25)` | `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`, `RHTower/BurnolCollarKernelSeries`, `RHTower/BurnolPrimeTwoCollarSymbol` (all new) |
 
 ## New reusable infrastructure built during the sweep
+
+- `HTGeometry/BinomialTailBetaThreshold` — Hoeffding's lemma for a two-point variable
+  (`1 - x + x e^t ≤ exp(t x + t²/8)`, from mathlib's sub-Gaussian MGF and the Bernoulli measure),
+  the binomial head/tail Chernoff bounds `≤ exp(-2 r s²)`, and the exact identity
+  `B'_{r,k} = r C(r-1,k-1) u^{k-1}(1-u)^{r-k}` with unit mass.  mathlib has Hoeffding's lemma but
+  no binomial tail polynomial and no Chernoff–Hoeffding tail bound.
+- `HTGeometry/BoundedReplicaThresholdProjector` — `r`-fold tensor powers of vectors and operators
+  in the product basis `Fin r → n`, slotwise multiplication/adjoint, the product factorization
+  `⟨v^{⊗r}, (⊗ A_i) v^{⊗r}⟩ = ∏ ⟨v, A_i v⟩`, and the Gram identity
+  `⟨w, Mᴴ M w⟩ = ∑ |(M w)_c|²` (the source of every positivity statement).
+
+- `HTGeometry/CirclePoincareWirtinger` — **Wirtinger's inequality**: for a `C¹` function on
+  `[a,b]` with equal endpoint values, the mean-square deviation from the average is at most
+  `((b-a)/2π)²` times the mean square of the derivative.  Proved from mathlib's `AddCircle`
+  Parseval identity plus the Fourier-coefficient/derivative relation.  mathlib has no Poincaré or
+  Wirtinger inequality anywhere.
 
 - `RHTower/BurnolPrimeLogSummability` — `∑ 1/(p (log p)²) < ∞` by telescoping, Euler divergence on
   the prime subtype, `log^k = o(x^δ)`, and `u^k e^{-2y√u} ≤ C/u²`.
@@ -89,6 +108,9 @@ Promotion recipe:
   `t`-independent share of Gaussian mass.
 - `HTGeometry/MixedPeriodicCarrierObstruction` — the radial identity, the mixed tube inclusion,
   and the codimension ceiling `κ ≤ m − dim W − rank Γ` in both Gaussian and Haar form.
+- `HTGeometry/GeometricSkeletonBrownRamp` — uniform simulation complexity, backward circuit
+  composition, the geometric-skeleton lower ramp, the easy-seed upper ramp, and the skeleton
+  length / union-bound / replica-order arithmetic.
 - `HTGeometry/StaticOrbitNetBellmanLaw` — coefficient Hamiltonians, the `√m` and Duhamel Lipschitz
   bounds, the static orbit net, the min-plus layer recursion, the max-plus overlap recursion
   (general pullback form plus the unitary instance and the monotone-reader form), and the robust
@@ -148,6 +170,24 @@ first.
   `resolvedFiberAssembly_subspace_finrank`.
 - `weak-interaction-singular-quantum-time-expansion` — `(7)`'s finite-family Hausdorff assembly,
   plus Theorem C/C2 of the card above.
+
+## Scoped: needs the product-torus Poincaré programme
+
+`low-replica-complete-incidence-influence-law` and
+`cubic-phase-seeded-static-local-full-scale-plateau-law` both need
+`Var_{m_d}(F) ≤ ∑_j ∫ |∂_j F|²` on the `d`-torus with constant one, for **Lipschitz** `F`
+(the statistic is a max of smooth functions, so it is only a.e. differentiable).
+
+State of that programme:
+
+- one-dimensional Wirtinger for `C¹` periodic functions: **done**
+  (`HTGeometry/CirclePoincareWirtinger.wirtinger_intervalIntegral`).
+- still to build: (i) Wirtinger for absolutely continuous / Lipschitz periodic functions;
+  (ii) the binary law of total variance `Var_{μ⊗ν} F = E_x Var_ν F(x,·) + Var_μ (E_ν F)`;
+  (iii) the Jensen step `Var_μ (E_ν F) ≤ E_y Var_μ F(·,y)`; (iv) the induction over `Fin d`
+  through `measurePreserving_piFinSuccAbove`.  Items (ii)–(iii) are Fubini plus algebra; (i) and
+  (iv) are the real work.  Do **not** try to get the dimension-free constant from a coupling or
+  a one-step Cauchy–Schwarz: both lose a factor `d`.
 
 ## Blocked only on another stage-2 card
 
@@ -210,3 +250,46 @@ Everything still listed by `ls docs/drafts/pipeline/2-fully-proven/*.md`.
 q-Pochhammer/q-Gamma probability and integral-response core plus finite exchange, but not its global
 prime/zeta/divisor theorem.  See
 `docs/drafts/pipeline/2-fully-proven/universal-law-field/_LEAN-CERTIFICATION.md`.
+# Universal-law-field adaptive experimental effectivity certification (2026-08-09)
+
+- `adaptive-experimental-procompletion-effectivity-gap-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module:
+  `GaloisForLFunctions.HTGeometry.ConstitutiveAdaptiveProcompletion`
+- Certified: every Boolean profile has finite effective realizations; constant-one profile is
+  coherent but not effective; every finite adaptive decision tree is exactly mimicked by an
+  effective finite-support law; no finite adaptive effectivity classifier exists.
+- Verification: targeted foreground `lake build` green; owned-module checks green; no project
+  axioms or computation proofs. Repo-wide lint is currently blocked by unrelated concurrently
+  created unwired modules and stale generated indexes.
+- Dedicated field umbrella `GaloisForLFunctions.HTGeometry.UniversalLawField` built green.
+
+# Universal-law-field adaptive cost certification (2026-08-09)
+
+- `adaptive-mimic-cost-coercivity-and-infinite-action-boundary-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveAdaptiveCost`.
+- Certified: canonical transcript support is contained in every mimic and minimizes every
+  nonnegative additive cost; exhaustive all-true experiments have exact minimum support `N`;
+  coercive weights force all effective lifts beyond every bounded action sublevel.
+- Dedicated field umbrella build green; no project postulates or computation proofs.
+
+# Universal-law-field Gamma response-lifetime certification (2026-08-09)
+
+- `gamma-corona-response-kernel-persistence-and-bockstein-lifetime-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveGammaResponseLifetime`.
+- Certified: general exact response-kernel transport; surjective additive fixed-corona Gamma
+  semigroup; weighted-ideal/response-kernel identification; monotone kernel persistence and exact total-kernel transport; sharp open Bockstein
+  death set; critical survival; `sInf` lifetime `|t|/2`; centered-distance readout.
+- Chain-level source coframe conservation and RH remain open.
+
+# Universal-law-field prefix effectivity-horizon certification (2026-08-09)
+
+- `prefix-effectivity-horizon-recurrent-phase-and-open-action-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveEffectivityHorizon`.
+- Certified: one prefix-history producer forces stabilized finite observers, pointwise convergence
+  to a coherent non-effective boundary, singleton production, exact cardinal action, period-two
+  phase, positive erasure, and arbitrarily large action at simultaneous observer/phase returns.
+- Dedicated universal-law-field umbrella wired; no project postulates or computation proofs.

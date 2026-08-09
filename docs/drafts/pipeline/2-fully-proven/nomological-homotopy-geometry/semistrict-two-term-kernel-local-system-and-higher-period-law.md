@@ -2,8 +2,8 @@
 
 - **ID:** `nhg-semistrict-two-term-kernel-period`
 - **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [UNIVERSAL FIELD THEOREM] [SEMISTRICT LIE 2 SECTOR]`
-  `[NO ROUTE INPUT] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+- **Status:** `[PAPER-PROVED] [LEAN FORMALIZED — DOCUMENTED IN PLACE] [LEAF CHECK CLEAN]`
+  `[UNIVERSAL FIELD THEOREM] [SEMISTRICT LIE 2 SECTOR] [NO ROUTE INPUT] [NOT RH]`
 
 ## 1. Two-term law algebra
 
@@ -243,3 +243,18 @@ reduction and its higher-period/Spencer generation consequence. No priority clai
 - Flat higher characters and discrete monodromy are independent of `H_3`.
 - Exponentiation into a compact quotient can enlarge topological closure through a period lattice.
 - Length-three and higher `L_infinity` algebroids remain the genuine multigraded open core.
+
+## 8. Lean formalization status
+
+Formalized without moving this card:
+
+- `SemistrictTwoTermKernelPeriod.lean` defines two-term `L_infinity` data with unary, binary, and
+  ternary operations and their relevant identities. It constructs `ker mu1` and `coker mu1`, proves
+  the binary operation descends with Jacobi modulo `im mu1`, proves the kernel action descends
+  through degree-zero homology, and proves its representation law after the ternary correction
+  vanishes on cycles.
+- Its form-level Bianchi calculus derives flat homotopy-kernel transport, kernel-valued ternary
+  curvature, and covariant closure from fake flatness. `HigherPeriodSpencer.lean` then supplies the
+  ternary period and analytic Spencer equalities.
+- Foreground `lake env lean <file>` checks pass with no warnings or errors. Umbrella imports are
+  wired; aggregate build and axiom audit remain part of final all-card audit.

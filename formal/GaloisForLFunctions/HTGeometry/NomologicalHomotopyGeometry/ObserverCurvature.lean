@@ -1,5 +1,6 @@
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Pi
+import Mathlib.LinearAlgebra.Quotient.Basic
 import Mathlib.Data.Real.Basic
 
 /-!
@@ -49,6 +50,13 @@ abbrev Extendible (A : ObstructionLayer k) : Prop := Nonempty A.Next
 theorem extendible_iff_zero_mem_spectrum (A : ObstructionLayer k) :
     A.Extendible ↔ 0 ∈ A.spectrum := by
   simpa [spectrum] using A.extension_iff
+
+/-- If the next cohomology degree vanishes (as differential forms do above finite base dimension),
+every represented partial flattening extends through this layer. -/
+theorem extendible_of_subsingleton_cohomology (A : ObstructionLayer k)
+    [Subsingleton A.Cohomology] (b : A.Partial) : A.Extendible := by
+  apply A.extension_iff.mpr
+  exact ⟨b, Subsingleton.elim _ _⟩
 
 end ObstructionLayer
 
@@ -219,6 +227,111 @@ theorem eventually_curvature_horizon {ι : Type w} [Fintype ι]
 
 end Parallel
 
+/-! ## Secondary curvature and nullhomotopy independence -/
+
+namespace Secondary
+
+/-- Chain-level presentation of a secondary curvature representative.  Different nullhomotopies
+may change the raw representative, but only by a declared twisted coboundary. -/
+structure Presentation (k : Type u) [Field k] where
+  Nullhomotopy : Type v
+  Representative : Type v
+  representativeAdd : AddCommGroup Representative
+  representativeModule : Module k Representative
+  boundaries : Submodule k Representative
+  raw : Nullhomotopy → Representative
+  change_exact : ∀ b b', raw b' - raw b ∈ boundaries
+
+attribute [instance] Presentation.representativeAdd Presentation.representativeModule
+
+variable {k : Type u} [Field k]
+
+/-- Twisted cohomology target of the secondary representative. -/
+abbrev Presentation.Cohomology (A : Presentation k) :=
+  A.Representative ⧸ A.boundaries
+
+/-- Secondary cohomology class represented by one nullhomotopy. -/
+def Presentation.obstructionClass (A : Presentation k) (b : A.Nullhomotopy) : A.Cohomology :=
+  A.boundaries.mkQ (A.raw b)
+
+/-- The secondary cohomology class is independent of the chosen nullhomotopy. -/
+theorem Presentation.obstructionClass_independent (A : Presentation k)
+    (b b' : A.Nullhomotopy) : A.obstructionClass b' = A.obstructionClass b := by
+  apply (Submodule.Quotient.eq A.boundaries).2
+  exact A.change_exact b b'
+
+set_option linter.checkUnivs false in
+/-- One secondary obstruction layer, including possible next flattenings and the exact extension
+criterion before choice independence is used. -/
+structure Layer (k : Type u) [Field k] extends Presentation k where
+  Next : Type v
+  extension_iff : Nonempty Next ↔
+    ∃ b : toPresentation.Nullhomotopy, toPresentation.obstructionClass b = 0
+
+namespace Layer
+
+/-- Once one nullhomotopy is fixed, extendibility is equivalent to vanishing of its canonical
+secondary class. -/
+theorem extendible_iff_class_eq_zero (A : Layer k) (b : A.toPresentation.Nullhomotopy) :
+    Nonempty A.Next ↔ A.toPresentation.obstructionClass b = 0 := by
+  constructor
+  · intro h
+    obtain ⟨b', hb'⟩ := A.extension_iff.mp h
+    rw [A.toPresentation.obstructionClass_independent b b'] at hb'
+    exact hb'
+  · intro hb
+    exact A.extension_iff.mpr ⟨b, hb⟩
+
+/-- The first secondary obstruction spectrum is a singleton, despite raw representative
+dependence. -/
+theorem obstructionClass_range_eq_singleton (A : Layer k)
+    (b : A.toPresentation.Nullhomotopy) :
+    Set.range A.toPresentation.obstructionClass = {A.toPresentation.obstructionClass b} := by
+  ext o
+  constructor
+  · rintro ⟨b', rfl⟩
+    simpa using A.toPresentation.obstructionClass_independent b b'
+  · intro ho
+    have ho' : o = A.toPresentation.obstructionClass b := by simpa using ho
+    exact ⟨b, ho'.symm⟩
+
+end Layer
+
+/-! ### Exact nonzero-secondary model -/
+
+/-- A one-dimensional cohomology model with vanishing primary layer but secondary class `1`. -/
+def nonzeroSecondaryLayer : Layer ℝ where
+  Nullhomotopy := Unit
+  Representative := ℝ
+  representativeAdd := inferInstance
+  representativeModule := inferInstance
+  boundaries := ⊥
+  raw := fun _ ↦ 1
+  change_exact := by intro b b'; simp
+  Next := Empty
+  extension_iff := by
+    constructor
+    · rintro ⟨h⟩
+      exact Empty.elim h
+    · rintro ⟨b, hb⟩
+      change (⊥ : Submodule ℝ ℝ).mkQ (1 : ℝ) = 0 at hb
+      have hmem : (1 : ℝ) ∈ LinearMap.ker (⊥ : Submodule ℝ ℝ).mkQ := hb
+      rw [Submodule.ker_mkQ] at hmem
+      norm_num at hmem
+
+theorem nonzeroSecondaryLayer_class_ne_zero :
+    nonzeroSecondaryLayer.toPresentation.obstructionClass () ≠ 0 := by
+  intro h
+  change (⊥ : Submodule ℝ ℝ).mkQ (1 : ℝ) = 0 at h
+  have hmem : (1 : ℝ) ∈ LinearMap.ker (⊥ : Submodule ℝ ℝ).mkQ := h
+  rw [Submodule.ker_mkQ] at hmem
+  norm_num at hmem
+
+theorem nonzeroSecondaryLayer_not_extendible : ¬ Nonempty nonzeroSecondaryLayer.Next :=
+  not_nonempty_empty
+
+end Secondary
+
 /-! ## Exact two-step class-erasure model -/
 
 namespace Countermodel
@@ -306,6 +419,14 @@ def strictSpectrumObserver : Observer zeroSpectrumLayer extraBranchLayer where
   push := fun _ ↦ false
   cohomologyMap := LinearMap.id (R := ℝ) (M := ℝ)
   obstruction_natural := fun _ ↦ rfl
+
+/-- Exact Massey-indeterminacy model: one obstruction spectrum contains both zero and a nonzero
+class. -/
+theorem extraBranchLayer_spectrum_multivalued :
+    (0 : ℝ) ∈ extraBranchLayer.spectrum ∧
+      (1 : ℝ) ∈ extraBranchLayer.spectrum ∧ (0 : ℝ) ≠ 1 := by
+  exact ⟨⟨false, by simp [extraBranchLayer]⟩,
+    ⟨true, by simp [extraBranchLayer]⟩, by norm_num⟩
 
 theorem spectrum_inclusion_is_strict :
     strictSpectrumObserver.cohomologyMap '' zeroSpectrumLayer.spectrum ⊂

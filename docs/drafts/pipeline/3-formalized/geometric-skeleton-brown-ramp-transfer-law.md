@@ -1,7 +1,9 @@
 # A logarithmic endpoint skeleton forces a continuous Brown ramp
 
 - **ID:** `geometric-skeleton-brown-ramp-transfer-law`
-- **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Stage:** 3-formalized
+- **Formalized companion:** `./geometric-skeleton-brown-ramp-transfer-law-formalized.md`
+- **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN-PROVED]`
 - **Type:** deterministic transfer theorem / frontier reduction
 - **Parent:** `fixed-shell-transversality-onset-hardening-cone-law.md`
 - **Child target:** `quenched-krylov-circuit-incidence-front-law.md`
@@ -211,7 +213,7 @@ plateau onset, not interpolation between ramp times, remains the hard fixed-syst
 6. **Novelty is not claimed.**  Circuit composition, geometric meshes, and the union bound are
    standard.  New value inside this programme is the exact reduction of the static Brown ramp
    from a linear mesh to a logarithmic-replica geometric skeleton.
-7. **Lean remains deferred.**  The abstract autonomous cone already exists in the corpus, but this
-   geometric-skeleton capstone is not authorized for the manuscript until exact formalization
-   after the active corpus refactor.
+7. **Lean closed.**  Theorems A, B and C are formalized in
+   `HTGeometry/GeometricSkeletonBrownRamp.lean` on top of the approximate-complexity layer of
+   `HTGeometry/ExactPenaltyCircuitBellman.lean`.  See the formalized companion.
 

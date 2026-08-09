@@ -221,3 +221,33 @@ them as hypotheses would violate the unconditional-proof rule.
   `(9)`--`(10)`.
 - 2026-07-27 — Audited Kamimoto's primary theorem and retired the coordinate-dependent
   Borel-rank obstruction.
+
+## 2026-08-09 — the "analytic dependencies absent" claim is stale
+
+Section 7 says the theorem's dependencies "are absent from the current project stack".  Two of the
+four are not:
+
+- **the Riemann zeta functional equation** is in mathlib, in both forms —
+  `completedRiemannZeta_one_sub` and `riemannZeta_one_sub`
+  (`ζ(1−s) = 2(2π)^{−s} Γ(s) cos(πs/2) ζ(s)`, with side conditions `s ≠ −n` and `s ≠ 1`);
+- **Gamma normalization at arbitrary order** is `Complex.Gamma`, with the reflection formula
+  `Complex.Gamma_mul_Gamma_one_sub`.
+
+mathlib also has `riemannZeta_neg_two_mul_nat_add_one`, the trivial zeros, which is the mechanism
+behind the card's "complete disappearance of the tail for even integer `s`".
+
+Accordingly the first Lean layer of this card is built, unconditional and axiom-clean, in
+`formal/GaloisForLFunctions/RHTower/ZetaMomentBorelCoefficient.lean`:
+
+- **`riemannZeta_neg_eq`** — the functional equation in the reflected form the card uses,
+  `ζ(−w) = −2 (2π)^{−(1+w)} Γ(1+w) sin(πw/2) ζ(1+w)`.  The side conditions of
+  `riemannZeta_one_sub` are discharged for `w ≠ 0`; the cosine becomes a sine through
+  `cos(π/2 + x) = −sin x`, and that sine is the entire source of the sign oscillation in `(3)`.
+- **`riemannZeta_neg_div_Gamma_eq`** — the card's `(3)`: dividing by the moment-Borel Gamma factor
+  leaves a value of `ζ` on the line of absolute convergence.
+- **`riemannZeta_neg_eq_zero_of_even`** — the tail coefficient vanishes at every even order,
+  because the sine does.
+
+What genuinely remains for this card is the other two dependencies: normal convergence and
+meromorphic continuation of the Lambert sum `(5)`, and residue calculus under ramified coordinates.
+The elementary identity `(4)` is a geometric-series computation and is next.

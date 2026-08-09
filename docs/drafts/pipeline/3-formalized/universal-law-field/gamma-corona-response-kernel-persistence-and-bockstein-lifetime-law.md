@@ -1,8 +1,9 @@
 # Gamma-corona response-kernel persistence and Bockstein lifetime law
 
 - **ID:** ULF-GCP-1
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3 — formalized in Lean
+- **Type:** THEOREM (Lean)
+- **Status:** `[UNIVERSAL-LAW FIELD] [EXACT RESPONSE PERSISTENCE] [LEAN-CERTIFIED] [NOT RH]`
 - **Source:** constitutive experimental mathematics; fixed-corona Gamma intervention
 - **Statement:** The one-sided Gamma doctrine has an exact increasing response-kernel filtration, and the physical Bockstein class survives precisely through time (s\le |t|/2).
 
@@ -15,7 +16,7 @@ result must quantify the obstruction rather than rename its nonvanishing.
 
 - [x] 0 → 1: literal fixed-corona source and Gamma semigroup
 - [x] 1 → 2: complete weighted-kernel, exact-sequence, and lifetime proof
-- [ ] 2 → 3: no Lean formalization or build
+- [x] 2 → 3: significant kernel-persistence and lifetime theorems certified in Lean
 - [ ] 3 → 4: external novelty/significance audit pending
 
 ## 1. Fixed doctrine and intervention
@@ -164,36 +165,37 @@ Theorem 2 gives
 
 The infimum in (13) is not attained for (t\ne0).
 
-## Corollary 3 — exact divisor-distance readout
+## Corollary 3 — exact centered-coordinate distance readout
 
-The corpus convention at a divisor point (\rho) is
+For every real coordinate (x), put
 
 \[
-t_\rho=2\operatorname{Re}\rho-1,
+t_x=2x-1,
 \tag{14}
 \]
 
-and the physical class is (c_\rho[\beta_{t_\rho}]_Q) with (c_\rho\ne0). Hence
+Then
 
 \[
 \boxed{
-\lambda_G\bigl(c_\rho[\beta_{t_\rho}]_Q\bigr)
-=\left|\operatorname{Re}\rho-\frac12\right|.}
+\lambda_G([\beta_{t_x}]_Q)=\left|x-\frac12\right|.}
 \tag{15}
 \]
 
-Thus horizontal distance from the critical line is exactly the persistence lifetime of the
-source-normal fixed-corona Bockstein response.
+Thus distance from the central coordinate is exactly persistence lifetime of fixed-corona
+Bockstein response. Specializing (x=\operatorname{Re}\rho) is immediate once a divisor point is
+supplied. Lean does not certify an additional source-normal scalar landing
+(c_\rho[\beta_{t_\rho}]) here.
 
-In particular, RH is equivalent to vanishing of all divisor-response lifetimes. The new content is
-the full metric filtration and sharp death threshold, not that terminal equivalence.
+If a later source theorem identifies this response class at every Xi divisor, RH becomes equivalent
+to vanishing of those divisor-response lifetimes. That source identification is not asserted here.
 
-## Corollary 4 — erasure is necessarily nonconservative
+## Open source consequence — erasure would be nonconservative
 
-For (t\ne0), choose (s>|t|/2). Then (\overline G_s) kills the physical Bockstein class and has
-nonzero kernel (K_s). Any chain/source realization of this death that preserves a full closed
-valuation coframe would contradict the coframe nonerasure theorem. Therefore the death event must
-exhibit a coframe-extension/admission anomaly.
+For (t\ne0), choose (s>|t|/2). Then (\overline G_s) kills the Bockstein class and has nonzero
+response kernel. A future chain/source realization preserving a full closed valuation coframe
+would conflict with the separate coframe nonerasure theorem. Construction and comparison of that
+chain-level source map remain open and are not part of this Lean theorem.
 
 This turns the missing source theorem into an all-time conservation question:
 
@@ -222,9 +224,20 @@ coordinate on the endpoint theorem.
 3. Lifetime zero at (t=0) comes from the class already being zero; it is not a nonerasure statement.
 4. The filtration depends on the fixed ideal (\ell^1) and the exact Gamma exponent (p^{-2s}).
    Changing doctrine changes lifetime and must be tracked, not called gauge.
-5. External novelty and collision audit is still required before a significance label beyond
-   `[PAPER-PROVED]`.
+5. Chain-level source normalization and coframe conservation remain open.
+
+## Lean certification
+
+- Module: `GaloisForLFunctions.HTGeometry.ConstitutiveGammaResponseLifetime`.
+- General core: exact kernel transport for composites of linear responses.
+- Gamma calibration: induced fixed-corona maps are surjective and additive; response kernels are
+  exactly weighted ideals modulo the fixed ideal, are monotone, and have surjective total-kernel
+  transport with exactly the later kernel.
+- Physical calibration: exact open death set, critical survival, actual `sInf` lifetime, and
+  centered-distance formula.
+- Proof policy: no `sorry`, `admit`, project axiom, `unsafe`, or computation proof.
 
 ## Log
 
 - 2026-08-09 — weighted response-kernel filtration and sharp physical Bockstein lifetime proved; no Lean.
+- 2026-08-09 — exact field theorem and Gamma calibration closed in Lean; promoted to Stage 3.
