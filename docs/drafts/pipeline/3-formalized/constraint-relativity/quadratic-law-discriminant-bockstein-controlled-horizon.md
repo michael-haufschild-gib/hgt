@@ -1,10 +1,10 @@
 # Quadratic law-discriminant, Bockstein, and controlled horizon
 
 - **ID:** `quadratic-law-discriminant-bockstein-controlled-horizon`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / EXACT MODEL / RH-ROUTE BRIDGE (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [BRIDGE]`
-  `[NEW RH-ROUTE LEVERAGE] [NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[NEW RH-ROUTE LEVERAGE] [NO RH CLAIM] [FORMALIZED IN LEAN]`
 - **Role:** smallest non-Morita law horizon with exact punctured observer descent, Tor recovery of
   lost law direction, and sharp discriminant conditioning exponent.
 
@@ -312,3 +312,7 @@ torsion modules should be audited before naming new files.
 ## Log
 
 - 2026-08-08 — hostile foundation audit; proof promoted.
+
+## Formalized companion
+
+`quadratic-law-discriminant-bockstein-controlled-horizon-formalized.md` (same directory).

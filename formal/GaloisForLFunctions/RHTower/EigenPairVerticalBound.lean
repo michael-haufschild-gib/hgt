@@ -22,7 +22,7 @@ open MeasureTheory Complex Filter
 
 /-- Eventual-bound variant of the right vertical-edge vanishing engine. -/
 theorem tendsto_vertical_edge_zero_right_eventually {G : ℂ → ℂ} {Y C δ : ℝ}
-    (hδ : 0 < δ)
+    (hY : 0 ≤ Y) (hδ : 0 < δ)
     (hbound : ∀ᶠ X : ℝ in atTop, ∀ y : ℝ, |y| ≤ Y →
       ‖G ((X : ℂ) + (y : ℂ) * Complex.I)‖ ≤ C * Real.exp (-(δ * X))) :
     Tendsto (fun X : ℝ => ∫ y in (-Y)..Y, G ((X : ℂ) + (y : ℂ) * Complex.I))
@@ -36,7 +36,7 @@ theorem tendsto_vertical_edge_zero_right_eventually {G : ℂ → ℂ} {Y C δ : 
       have hy' : |y| ≤ Y := by
         rcases Set.mem_uIoc.mp hy with h | h
         · rw [abs_le]; constructor <;> linarith [h.1, h.2]
-        · rw [abs_le]; constructor <;> linarith [h.1, h.2]
+        · exact absurd (lt_of_lt_of_le h.1 h.2) (by linarith)
       exact hX y hy'
     calc ‖∫ y in (-Y)..Y, G ((X : ℂ) + (y : ℂ) * Complex.I)‖
         ≤ C * Real.exp (-(δ * X)) * |Y - (-Y)| :=
@@ -55,7 +55,7 @@ theorem tendsto_vertical_edge_zero_right_eventually {G : ℂ → ℂ} {Y C δ : 
 pole factor, the right-edge segment integrals tend to zero as the aperture widens. -/
 theorem tendsto_vertical_eigen_right {β p : ℂ} (hβ : XiC β = 0)
     {A δ Y : ℝ} (hA1 : A < 1) (hδ0 : 0 < δ)
-    (hδ4 : 2 * δ < Real.pi / 2) (hA0 : 0 ≤ A) (hYA : Y ≤ A) :
+    (hδ4 : 2 * δ < Real.pi / 2) (hA0 : 0 ≤ A) (hY0 : 0 ≤ Y) (hYA : Y ≤ A) :
     Tendsto (fun X : ℝ => ∫ y in (-Y)..Y,
         deriv XiC ((X : ℂ) + (y : ℂ) * Complex.I) *
           xiWeilSharp (xiThetaEigenFourier β) ((X : ℂ) + (y : ℂ) * Complex.I) *
@@ -65,7 +65,9 @@ theorem tendsto_vertical_eigen_right {β p : ℂ} (hβ : XiC β = 0)
   obtain ⟨C₂, hC₂, h₂⟩ :=
     exists_norm_xiThetaEigenFourier_horizontal_le hβ hA0 hA1 hδ0.le hδ4
   have hδ2 : (0 : ℝ) < 2 * δ := by linarith
-  refine tendsto_vertical_edge_zero_right_eventually (C := C₁ * C₂) hδ2 ?_
+  refine tendsto_vertical_edge_zero_right_eventually
+    (G := fun z : ℂ => deriv XiC z * xiWeilSharp (xiThetaEigenFourier β) z * (z - p)⁻¹)
+    (C := C₁ * C₂) (δ := 2 * δ) hY0 hδ2 ?_
   filter_upwards [eventually_ge_atTop (‖p‖ + 1), eventually_ge_atTop (0 : ℝ)] with X hXp hX0
   intro y hy
   have hyA : |y| ≤ A := le_trans hy hYA
@@ -104,12 +106,10 @@ theorem tendsto_vertical_eigen_right {β p : ℂ} (hβ : XiC β = 0)
         rw [norm_mul, norm_mul]
     _ ≤ (C₁ * Real.exp (-(δ * |X|))) * (C₂ * Real.exp (-(δ * |X|))) * 1 := by
         gcongr
-        exact norm_nonneg _
     _ = C₁ * C₂ * Real.exp (-(2 * δ * X)) := by
         rw [hXabs, mul_one,
           show (-(2 * δ * X) : ℝ) = -(δ * X) + -(δ * X) by ring, Real.exp_add]
         ring
-    _ = C₁ * C₂ * Real.exp (-(2 * δ * X)) := rfl
 
 end
 

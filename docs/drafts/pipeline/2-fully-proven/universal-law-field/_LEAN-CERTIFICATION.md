@@ -140,3 +140,9 @@ Build green (8800 jobs, clean first elaboration); axioms standard. TWELVE sessio
 Remaining: 5b-2, the widening-limit assembly gluing S5B1's fixed-aperture identity to the
 horizontal expansions (stage 1 + 5a chain) and the vertical vanishing (2A/2B) — the final module
 of the identification's machine-checked closure.
+
+| ULF-INV-10-S5B2-L3 | The concrete vertical-edge vanishing of the single-pole eigen integrand: `deriv XiC · sharp F_β/(z−p)` right-edge integrals tend to 0 (2A bound × 18a bound × inverse-linear factor, eventual-form engine variant included) | `RHTower.EigenPairVerticalBound` |
+
+Build green (8948 jobs); axioms standard. THIRTEEN session modules. The assembly's L3 is done;
+remaining: L1 (bottom-edge rewrite), L2 (truncated-to-full-line limits), L4 (evenness folding),
+MAIN (the widening-limit gluing) — per the 5b-2 spec memory.

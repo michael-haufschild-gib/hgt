@@ -595,3 +595,12 @@ tool identified (intervalIntegral_tendsto_integral), and the recommendation to s
 their own module. Zero unknown lemmas remain anywhere in the chain. The next session (or next
 fresh-context loop iteration) executes 5b-2 from the spec; on its green build the eigen-pair
 identification is machine-checked end to end.
+
+## 2026-08-09 — Lean batch 13: assembly L3 certified (Claude Fable 5)
+
+`RHTower/EigenPairVerticalBound.lean` green (8948 jobs, standard axioms): the eventual-form
+vertical-vanishing engine variant plus the CONCRETE right-edge vanishing of the single-pole
+eigen integrand — 2A's deriv-XiC bound × the (18a) sharp-quotient bound (reflection through
+norm_conj) × the inverse-linear pole factor ≤ 1 past ‖p‖+1. Three fix cycles (nonneg-Y threading,
+explicit G/rate for unification, one over-supplied side proof). L3 of the 5b-2 spec is done;
+L1, L2, L4, MAIN remain per the spec memory.
