@@ -2707,6 +2707,7 @@ import GaloisForLFunctions.RHTower.MSpaceGainWindow
 import GaloisForLFunctions.RHTower.MWindowContraction
 import GaloisForLFunctions.RHTower.MarkedHalfCharacterCofinalDiagonalInverseLaw
 import GaloisForLFunctions.RHTower.MarkusConjecture
+import GaloisForLFunctions.RHTower.MassShiftedThreePointOrbitPolarity
 import GaloisForLFunctions.RHTower.MeanValueBridge
 import GaloisForLFunctions.RHTower.MeasureParseval
 import GaloisForLFunctions.RHTower.MeasuredIndexBlindness

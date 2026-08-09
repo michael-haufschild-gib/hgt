@@ -211,7 +211,7 @@ theorem twoPhase_geometricCurrent_transfer
       (-A * r ^ m) * G := by
     simp_rw [pow_add]
     rw [Finset.mul_sum]
-    ring
+    exact Finset.sum_congr rfl fun j _ => by ring
   have hG : G * (1 - r) = 1 - r ^ m := by
     exact geom_sum_mul_neg r m
   rw [hpos, hneg]

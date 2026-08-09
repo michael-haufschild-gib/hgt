@@ -434,7 +434,7 @@ theorem cellPacketCoordinate_canonicalPacketGenerator
       if l = qe then 1 else 0 := by
   by_cases h : l = qe
   · subst l
-    simp only [if_pos rfl]
+    rw [if_pos rfl]
     rw [cellPacketCoordinate, LinearMap.comp_apply,
       cellPacketFirstMode, LinearMap.comp_apply,
       canonicalCellPacketGenerator, DirectSum.component.lof_self,

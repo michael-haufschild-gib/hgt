@@ -1,7 +1,8 @@
 # Mass-shifted stochastic-order null-flag collapse
 
 - **ID:** `mass-shifted-stochastic-order-null-flag-collapse`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./mass-shifted-stochastic-order-null-flag-collapse-formalized.md`
 - **Type:** FALSIFIED / THEOREM (paper)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` · §9.3 exact open core
 - **Statement:** Ordinary likelihood-ratio or first stochastic order cannot orient a shifted-Xi
@@ -21,7 +22,8 @@ that is merely the same quadrature error under another name.
 
 - [x] 0 → 1 in-progress: exact MLR consumer, adaptive carrier, and hostile common-face pair fixed
 - [x] 1 → 2 fully-proven: kernel saturation, tail crossing, and nonmonotone-test proofs complete
-- [ ] 2 → 3 formalized: Lean theorems and targeted audit pending
+- [x] 2 → 3 formalized: `HTGeometry/MonotoneLikelihoodRatio.lean` and
+  `RHTower/XiShiftedHankelBoundaryStochasticOrderNoGo.lean`; axiom audit clean
 - [ ] 3 → 4 publication-ready: standalone novelty and parent-theory audit incomplete
 
 ## Conjecture/proof loops
@@ -138,7 +140,8 @@ No unproved mathematical dependency remains.
   on visible null data; higher order, when specialized to the first unseen monomial, is exactly the
   open extension coordinate. Required input remains source-native occupation across roots of the
   adaptive `P^sharp`, not generic order of positive carriers.
-- **Status:** paper proof dependency-closed; Lean formalization pending.
+- **Status:** paper proof dependency-closed; Lean formalization closed (see the formalized
+  companion).
 
 ## Literature boundary
 
@@ -159,3 +162,7 @@ No unproved mathematical dependency remains.
   nonmonotonicity, and two-threshold tail crossing on the common face.
 - 2026-08-09 — conjecture 32 classified as circular at the first unseen monomial by the existing
   exact quadrature-extension theorem.
+- 2026-08-09 — Lean closure audited: `(1)`/`(2)` are
+  `HTGeometry.integral_monotoneLikelihoodKernel_eq_two_mul_gap` and
+  `HTGeometry.monotoneLikelihoodKernel_ae_eq_zero_of_equal_mass_moment`; FAIL 2 and FAIL 3 are
+  `RHTower.squaredFactorialCarrierStochasticOrderOrientationNoGo`; card promoted to Stage 3.

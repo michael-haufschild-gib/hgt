@@ -1,7 +1,8 @@
 # Mass-shifted three-point orbit polarity no-go
 
 - **ID:** `mass-shifted-three-point-orbit-polarity-no-go`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./mass-shifted-three-point-orbit-polarity-no-go-formalized.md`
 - **Type:** FALSIFIED / THEOREM (paper)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` · §9.3 exact open core
 - **Statement:** Every actual squared-Xi conjugate orbit has a strictly positive protected
@@ -19,7 +20,7 @@ shifted-Hankel moment tower.
 
 - [x] 0 → 1 in-progress: exact actual-Xi chamber specialization and confluent minor fixed
 - [x] 1 → 2 fully-proven: actual orbit chamber and polarity split proved on paper
-- [ ] 2 → 3 formalized: closed Lean classification and targeted audit pending
+- [x] 2 → 3 formalized: `RHTower/MassShiftedThreePointOrbitPolarity.lean`; axiom audit clean
 - [ ] 3 → 4 publication-ready: external novelty audit incomplete
 
 ## Conjecture/proof loop
@@ -107,14 +108,15 @@ in the wrong polarization.
   unique positive cancellation channel at first nonconstant order.
 - **New insight:** repeated positivity failures are shadows of a polarization mismatch, not weak
   constants. Nonlocal response kernels and local factorial-Hankel derivatives need not share sign.
-- **Status:** paper proof dependency-closed; Lean specialization pending.
+- **Status:** paper proof dependency-closed; Lean specialization closed in
+  `RHTower/MassShiftedThreePointOrbitPolarity.lean` (see the formalized companion).
 
 ## Corpus boundary
 
-- `SquaredXiThreePointOrbitPositivity` proves protected abstract orbit positivity but did not
-  formalize its actual-Xi chamber specialization.
-- `XiSquaredEulerApertureHilbertCorrelation` proves (1) and its strict off-line sign but does not
-  combine it with protected three-point positivity.
+- `SquaredXiThreePointOrbitPositivity` proves protected abstract orbit positivity; its actual-Xi
+  chamber specialization is now `RHTower.xiOrbitMatrix_posDef`.
+- `XiSquaredEulerApertureHilbertCorrelation` proves (1) and its strict off-line sign; the
+  simultaneous polarity split is now `RHTower.xiOrbit_separated_positive_and_confluent_negative`.
 - The simultaneous actual-Xi polarity theorem is new corpus synthesis; no external priority claim
   is made.
 
@@ -122,3 +124,6 @@ in the wrong polarization.
 
 - 2026-08-09 — conjecture 33 killed by exact separated/confluent polarity split; actual-Xi chamber
   proof and cross-orbit survivor completed on paper.
+- 2026-08-09 — actual-Xi chamber, reciprocal-square chamber coordinates, exact confluent minor
+  identity, and the simultaneous polarity split formalized in
+  `RHTower/MassShiftedThreePointOrbitPolarity.lean`; card promoted to Stage 3.

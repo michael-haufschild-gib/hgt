@@ -140,7 +140,7 @@ theorem deningerCalderonWittCrossPrimeAlgebraicPacketToHilbert_single
   by_cases hji : j = i
   · subst j
     simp
-  · simp [hji, Ne.symm hji]
+  · simp [hji]
 
 /-- Every output of the literal source-local action belongs to the concrete
 finite arithmetic source core. -/

@@ -33,7 +33,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards:  docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other
+formalize UNCONDITIONALLY in lean any proven theorem from these cards:  docs/drafts/pipeline/2-fully-proven/polarized-exchange-horizon-geometry
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications.
 
@@ -159,12 +159,12 @@ where mathematical knowledge is missing use the $hgt-fields-medalist skill to cr
 
 ## research paper
 
-the last paper we have written: docs/drafts/pipeline/4-publication-ready/universal-quantum-recurrence-anatomy more research is already in the lean corpus or as paper proof in the pipeline.
-
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to continue our existing research and create novel and significant new knowledge about:
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about:
 - Brown–Susskind’s full growth–plateau–recurrence law
 - the black hole interior volume paradox
 - Quantum Recurrence
+
+wtf are you wasting time on novelty research for single steps. your goal is clear: Prove, unconditionally, Brown–Susskind’s full growth–plateau–recurrence law for ordinary time-independent local Hamiltonians, and prove that maximal complexity occurs while locality remains permanently distinguishable from Haar randomness.
 
 collect enough novel and significant knowledge to write a paper that meets the publishing requirements of Nature: the paper must report a fundamental new insight or startling discovery that significantly shifts the scientific conversation across multiple fields.
 
@@ -173,7 +173,7 @@ research rules:
 - always check that you do not play theatre and actually are creating new knowledge
 - focus on hard problems
 
-add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications. 
+add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications.
 
 Lean rules:
 1. Proofs must be unconditional in lean.
@@ -185,7 +185,6 @@ Lean rules:
 7. make sure you don't leave stale lean processes running - clean up after yourself.
 
 goal is met when paper is written and passes a hostile review that confirms that the paper is on a quality level to be published in Nature.
-
 
 ## research Route
 

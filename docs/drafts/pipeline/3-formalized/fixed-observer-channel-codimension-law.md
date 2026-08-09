@@ -1,7 +1,8 @@
 # Fixed observer-channel codimension law
 
 - **ID:** fixed-observer-channel-codimension-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./fixed-observer-channel-codimension-law-formalized.md`
 - **Type:** THEOREM / exclusion of fixed-block fast-forwarding competitors
 - **Status:** `[PAPER-PROVED] [BRIDGE]`
 - **Parent:** `../1-in-progress/observer-rank-autonomous-no-shortcut-law.md`
@@ -124,6 +125,11 @@ formula (3) are `[LEAN-PROVED]` as
 `QuantumAlg.observerChannel_subspace_finrank_le`,
 `QuantumAlg.observerChannel_subspace_finrank_add_rank_le`, and
 `QuantumAlg.observerChannel_preimage_finrank_eq` in
-`HTGeometry/ObserverVisibleLocalTimeDimension.lean`.  Axiom audit reports only
-`propext`, `Classical.choice`, and `Quot.sound`.  The quantum block-dimension
-specialization (4) remains paper-only, so this full card remains at Stage 2.
+`HTGeometry/ObserverVisibleLocalTimeDimension.lean`.
+
+The quantum block-dimension specialization (4) is `[LEAN-PROVED]` as
+`QuantumAlg.finrank_blockPreserving_add_observerRank_le` and, in quantum Fisher form,
+`QuantumAlg.finrank_blockPreserving_add_qfim_rank_le` in
+`HTGeometry/FixedObserverBlockChannelCodimension.lean`, together with the exact channel
+dimension `QuantumAlg.finrank_real_blockTangentChannel_add_two`.  Axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`.  See the formalized companion.

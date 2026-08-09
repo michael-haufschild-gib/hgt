@@ -87,3 +87,37 @@
 - 2026-08-08 — `complete-scalar-persistent-gauge-reduction` closed: canonical erased/nonerased stable-core XOR; complete pairwise-exclusive `1`, `mu_N`, `G_m`, `G_a` classification; exact fixed fields, boundary hypertranscendence, reconstruction, rank-one equations, Galois groups, universal Schwarzian boundary, and charged-clock compatibility. Direct checks and targeted capstone build passed; standard Lean axioms only. Global lint reports only unrelated concurrent umbrella gaps. Closure count: 19/65 certified, 46 remaining.
 - 2026-08-08 — `barnes-differential-source-face-matrix-factorization` closed without replacing derived restriction by a surrogate: exact principal free resolution, faithful polynomial-to-Laurent operator embedding, exact extension of the analytic Barnes annihilator to `(f_N)` in `C[delta,T_1^(+-1),...,T_N^(+-1)]`, selected-face two-periodic factorization, and all-degree nonempty-face Tor law. Direct Lean checks and targeted capstone build passed; all capstones use only standard Lean axioms. Closure count: 20/65 certified, 45 remaining.
 - 2026-08-08 — `nonlinear-rational-observation-curve-horizon-reconstruction` progress: exact unconditional Lemma 2 is now closed in Lean, including algebraic-branch rigidity, finite normal-closure embedding rigidity, and `C<r(x),x_n> = C<x>` for every nonconstant rational `r` and every positive `n`. Direct checks and targeted builds pass; capstone axioms are only `propext`, `Classical.choice`, and `Quot.sound`. Card remains open solely for the principal-symbol/Luroth layer and resulting affine/non-affine classification; closure count unchanged at 20/65.
+- 2026-08-09 — `noncompact-period-quotient-facet-escape-law` advanced, not yet closed. Formalized
+  unconditionally: the three period-escape conditions (`IsEscapeSubgroup`), the periodic-pencil
+  escape group with its exact identity component `ker ℓ` and its noncompact quotient
+  (`EscapeSubgroup.lean`); the invariant `peDim` and the constructive inequality `peDim ≤ ppDim`
+  (`PeriodEscapeDimension.lean`); the exact one-dimensional escape bound — an escape subgroup of
+  `ℂ` contains no two `ℚ`-independent elements — hence `peDim(Δ_wedge) = 2` for every `r,s ≥ 2`
+  (`BoundaryWedgePeriodEscape.lean`); and the noncompact period-quotient law itself in one complex
+  variable (`MeroPeriodQuotient.lean`), from the corpus's elliptic differential-algebraicity
+  theorem. All four modules are umbrella-wired, direct checks and targeted builds pass, and every
+  capstone's `#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`.
+  Remaining for this card: several-variable meromorphic period groups (needed for `peDim ≤ htDim`)
+  and the Siegel bound `trdeg_ℂ M(X) ≤ dim_ℂ X` for compact complex tori (needed for the law in
+  dimension `≥ 2`). Closure count unchanged at 20/65 certified, 45 remaining.
+
+## Named infrastructure sub-projects blocking several cards
+
+These are the large analytic layers that several remaining cards share. Each is missing from
+mathlib and from this tree; none is an axiom or a hypothesis anywhere.
+
+1. **Siegel bound for compact complex tori** — `trdeg_ℂ M(ℂ^n/Λ) ≤ n`. Blocks the noncompact
+   period-quotient law in complex dimension `≥ 2`. In dimension one the corpus already owns the
+   equivalent statement (`differentialAlgebraicOver_of_translation_fixed`).
+2. **Several-variable global meromorphic germ field** — the `d`-variable analogue of `meroField`,
+   with translation equivalences, period groups, closedness of a period group, and the identity
+   theorem. Blocks the facet period-escape theorem and every `ℂ^d` HT realization statement.
+3. **Formal transseries model of the shifted Gamma field `K_E`** — the injection
+   `K_E → ℂ(log s)((s^{-1}))[Γ^{±1}]` giving every nonzero element a boundary datum without the
+   `NoIntegerRelation` hypothesis. Blocks `archimedean-relative-prime-cocycle-curvature`, whose
+   shift set is a rank-two lattice and therefore always carries integer relations.
+4. **Dreyfus's differential-algebraic classification for rational linear shift equations** — blocks
+   `bessel-order-intensity-hypertranscendence`, whose every other obligation is already closed.
+5. **Autonomous rational-substitution tail classification (Casale)** — blocks
+   `floquet-orbifold-tail-emergence`, `orbifold-tail-holographic-reconstruction`, and
+   `rational-coarse-graining-orbifold-tail-classification`.

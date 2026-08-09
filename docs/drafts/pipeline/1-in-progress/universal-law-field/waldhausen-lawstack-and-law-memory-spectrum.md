@@ -136,7 +136,94 @@ Most coherent synthesis so far, but not accepted. It is a Frankenstein of known 
 Waldhausen, \(K\)-theoretic, hermitian, and enriched-category ideas under a new interpretation,
 exactly as permitted by the research brief.
 
-Its first non-theatrical gate is explicit: construct one finite Waldhausen lawstack in which
-object-level contextuality, nontrivial \(K_1\) memory, and positive shadow all interact through the
-same restriction functors. Until that exists, this remains a field conjecture.
+Its first finite non-product gate now has a determinant-sign solution in
+determinant-glued-contextual-exact-law-positive-erasure-and-cycle-memory-law.md.
+There, contextual assignments are literally determinant histories of local acyclic complexes,
+and one incidence law controls effectivity, determinant anomaly, positive erasure, and cycle
+multiplicity.
 
+This does **not** complete the Waldhausen gate. The model uses only the sign subgroup
+\(\{\pm1\}\subset\mathbb C^\times\), not a full observer-indexed Waldhausen infinity-category or
+\(K\)-theory descent theorem. The next gate is a genuinely categorical example with nontrivial
+cofibration sequences and restriction functors.
+
+The coefficient generalization
+abelian-determinant-flux-effectivity-cycle-memory-and-positive-quotient-law.md proves the exact
+graph-level \(K_1\) template:
+
+\[
+ 1\to H_1(G;K_1(R))\to K_1(R)^E\to K_1(R)^V\to K_1(R)\to1.
+\]
+
+This upgrades finite sign contextuality to arbitrary abelian determinant history, but still does
+not construct higher \(K\)-descent.
+
+## 8. Literature collision and sharpened gate
+
+The abstract ingredients are established:
+
+- sheaf/cohomological contextuality and its incomplete obstruction hierarchy:
+  https://arxiv.org/abs/1111.3620 and https://arxiv.org/abs/1701.00656;
+- Real \(K\)-theory of Waldhausen infinity-categories with genuine duality:
+  https://arxiv.org/abs/1911.11682;
+- hermitian \(K\)-theory of stable infinity-categories:
+  https://arxiv.org/abs/2009.07223;
+- conditional and periodically localized algebraic \(K\)-theory descent:
+  https://arxiv.org/abs/1606.03328.
+
+The last parent is a warning: algebraic \(K\)-theory does not satisfy unrestricted descent.
+Therefore one may not apply \(K\)-theory to a lawstack and assume the memory spectrum still glues.
+The next theorem must prove either:
+
+1. descent for the literal source-generated Waldhausen diagram under explicit hypotheses; or
+2. a nonzero descent defect that itself becomes the law-memory anomaly.
+
+This descent defect, not the existence of Waldhausen or hermitian \(K\)-theory, is the live field
+gate.
+
+## 9. Two-dimensional gate passed: coefficient-relative topology
+
+The finite Moore-law calculation
+even-moore-law-cell-effectivity-memory-and-positive-topology-collapse-law.md proves a stronger
+non-product phenomenon.
+
+For even \(n\), the single boundary operator
+
+\[
+ [n]:\mathbb R^\times\to\mathbb R^\times,\qquad x\mapsto x^n
+\]
+
+has both:
+
+\[
+ H_2\cong\{\pm1\}
+ \quad\text{and}\quad
+ H_1\cong\{\pm1\}.
+\]
+
+The first is filling ambiguity; the second is fillability obstruction. Base change along
+\(|\cdot|:\mathbb R^\times\to\mathbb R_{>0}\) kills both, because \(n\)-th power is an
+automorphism on positive reals.
+
+This forces a correction to the candidate field:
+
+> Positivity is not generally a passive shadow of fixed law topology. It may be a coefficient
+> doctrine that changes realization topology and law memory.
+
+The emerging primitive is therefore closer to a coefficient-relative structured lawstack than a
+fixed Waldhausen stack with one positive functional.
+
+## 10. Live-source stress test: naïve base change fails
+
+The first arithmetic stress test is closed in
+coefficient-relative-source-dagger-stress-test.md.
+
+The inversion/Cartier square over \(k[q,q^{-1}]\) commutes strictly, so its derived and
+\(K\)-theoretic Beck--Chevalley defect is zero. Its odd Tor/conormal line survives, but the
+lawstack does not manufacture the missing analytic dagger comparison. Positive Moore fillability
+also fails because every radial gain \(p^{2a}\) is already a positive square.
+
+Therefore the Waldhausen candidate gains no live arithmetic leverage from ordinary algebraic
+base change. A viable successor must study a relative descent defect between inequivalent
+doctrines—most plausibly algebraic versus analytic/bornological completion—not add more structure
+to the strict square.

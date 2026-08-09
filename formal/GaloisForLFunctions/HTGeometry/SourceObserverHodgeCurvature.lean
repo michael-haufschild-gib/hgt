@@ -41,6 +41,7 @@ noncomputable def observerField (dS : Sm →ₗ.[𝕜] S0) (A0 : S0 →ₗ[𝕜]
     (a : dS.domain) (r : S0) : H0 :=
   A0 (dS a + r)
 
+omit [CompleteSpace Hm] in
 /-- The observer field splits into a `d_H`-exact part, the comparison curvature and the
 transported source residual. -/
 theorem observerField_eq_add (dS : Sm →ₗ.[𝕜] S0) (dH : Hm →ₗ.[𝕜] H0)
@@ -53,10 +54,11 @@ theorem observerField_eq_add (dS : Sm →ₗ.[𝕜] S0) (dH : Hm →ₗ.[𝕜] H
 
 /-- The adjoint pairing on a densely defined arrow. -/
 theorem inner_apply_eq_inner_adjoint {dH : Hm →ₗ.[𝕜] H0}
-    (hdense : Dense (dH.domain : Set Hm)) (u : dH.domain) (y : dH.adjoint.domain) :
-    ⟪dH u, (y : H0)⟫_𝕜 = ⟪(u : Hm), dH.adjoint y⟫_𝕜 := by
-  have h := LinearPMap.adjoint_isFormalAdjoint (T := dH) hdense y u
-  rw [← inner_conj_symm, ← inner_conj_symm ((u : Hm))]
+    (hdense : Dense (dH.domain : Set Hm)) (u : Hm) (hu : u ∈ dH.domain)
+    (y : H0) (hy : y ∈ dH.adjoint.domain) :
+    ⟪dH ⟨u, hu⟩, y⟫_𝕜 = ⟪u, dH.adjoint ⟨y, hy⟩⟫_𝕜 := by
+  have h := LinearPMap.adjoint_isFormalAdjoint (T := dH) hdense ⟨y, hy⟩ ⟨u, hu⟩
+  rw [← inner_conj_symm, ← inner_conj_symm u]
   exact congrArg (starRingEnd 𝕜) h.symm
 
 /-- **The source–observer Gauss–Hodge identity.**  The energy of the physical field is carried
@@ -71,10 +73,17 @@ theorem inner_observerField_self_eq {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →ₗ.[
       = ⟪Am (a : Sm), dH.adjoint ⟨observerField dS A0 a r, hy⟩⟫_𝕜
         + ⟪comparisonCurvature dS dH Am A0 a haH + A0 r,
             observerField dS A0 a r⟫_𝕜 := by
-  conv_lhs => rw [observerField_eq_add dS dH Am A0 a haH r]
-  rw [inner_add_left]
-  congr 1
-  exact inner_apply_eq_inner_adjoint hdense ⟨Am (a : Sm), haH⟩ ⟨_, hy⟩
+  have hsplit := observerField_eq_add dS dH Am A0 a haH r
+  calc ⟪observerField dS A0 a r, observerField dS A0 a r⟫_𝕜
+      = ⟪dH ⟨Am (a : Sm), haH⟩ + (comparisonCurvature dS dH Am A0 a haH + A0 r),
+          observerField dS A0 a r⟫_𝕜 := by rw [← hsplit]
+    _ = ⟪dH ⟨Am (a : Sm), haH⟩, observerField dS A0 a r⟫_𝕜
+          + ⟪comparisonCurvature dS dH Am A0 a haH + A0 r,
+              observerField dS A0 a r⟫_𝕜 := inner_add_left _ _ _
+    _ = ⟪Am (a : Sm), dH.adjoint ⟨observerField dS A0 a r, hy⟩⟫_𝕜
+          + ⟪comparisonCurvature dS dH Am A0 a haH + A0 r,
+              observerField dS A0 a r⟫_𝕜 := by
+        rw [inner_apply_eq_inner_adjoint hdense (Am (a : Sm)) haH _ hy]
 
 /-- The Cauchy–Schwarz form of the Gauss–Hodge identity. -/
 theorem norm_observerField_sq_le {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →ₗ.[𝕜] H0}
@@ -104,12 +113,11 @@ theorem observerField_eq_zero_of_exact {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →�
     (hcurv : comparisonCurvature dS dH Am A0 a haH = 0) :
     observerField dS A0 a 0 = 0 := by
   have hle := norm_observerField_sq_le hdense Am A0 a haH 0 hy
-  rw [hco, hcurv, norm_zero, map_zero, add_zero, zero_add] at hle
-  simp only [norm_zero, mul_zero, zero_mul, add_zero] at hle
-  have hzero : ‖observerField dS A0 a 0‖ = 0 := by
-    have hnn := norm_nonneg (observerField dS A0 a 0)
-    nlinarith
-  exact norm_eq_zero.mp hzero
+  rw [hco, hcurv] at hle
+  simp only [map_zero, add_zero, norm_zero, mul_zero, zero_mul] at hle
+  have hzero : ‖observerField dS A0 a 0‖ ≤ 0 := by
+    nlinarith [norm_nonneg (observerField dS A0 a 0)]
+  exact norm_eq_zero.mp (le_antisymm hzero (norm_nonneg _))
 
 /-- **Subunit curvature annihilation.**  A co-closed physical field whose curvature-plus-residual
 gain on the actual source antecedent is strictly below one vanishes. -/
@@ -133,10 +141,10 @@ theorem observerField_eq_zero_of_subunit {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →
       _ = κ * ‖observerField dS A0 a r‖ ^ 2 := by ring
   have hfinal : ‖observerField dS A0 a r‖ ^ 2 ≤ κ * ‖observerField dS A0 a r‖ ^ 2 :=
     le_trans hle hmul
-  have hzero : ‖observerField dS A0 a r‖ = 0 := by
-    have hnn := norm_nonneg (observerField dS A0 a r)
-    nlinarith [sq_nonneg ‖observerField dS A0 a r‖]
-  exact norm_eq_zero.mp hzero
+  have hsq : ‖observerField dS A0 a r‖ ^ 2 ≤ 0 := by nlinarith [sq_nonneg ‖observerField dS A0 a r‖]
+  have hzero : ‖observerField dS A0 a r‖ ≤ 0 := by
+    nlinarith [norm_nonneg (observerField dS A0 a r)]
+  exact norm_eq_zero.mp (le_antisymm hzero (norm_nonneg _))
 
 /-- **Source energy annihilation.**  Only the signed curvature work on the actual source/field
 pair needs to be controlled: a co-closed physical field whose curvature work is at most `κ‖y‖²`
@@ -155,11 +163,11 @@ theorem observerField_eq_zero_of_reWork {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →�
   have hre := congrArg RCLike.re hid
   rw [inner_self_eq_norm_sq, map_add, hco, inner_zero_right, map_zero, zero_add] at hre
   have hfinal : ‖observerField dS A0 a r‖ ^ 2 ≤ κ * ‖observerField dS A0 a r‖ ^ 2 := by
-    rw [hre]; exact hwork
-  have hzero : ‖observerField dS A0 a r‖ = 0 := by
-    have hnn := norm_nonneg (observerField dS A0 a r)
-    nlinarith [sq_nonneg ‖observerField dS A0 a r‖]
-  exact norm_eq_zero.mp hzero
+    linarith [hwork]
+  have hsq : ‖observerField dS A0 a r‖ ^ 2 ≤ 0 := by nlinarith [sq_nonneg ‖observerField dS A0 a r‖]
+  have hzero : ‖observerField dS A0 a r‖ ≤ 0 := by
+    nlinarith [norm_nonneg (observerField dS A0 a r)]
+  exact norm_eq_zero.mp (le_antisymm hzero (norm_nonneg _))
 
 /-- **Approximate co-closure.**  A subunit curvature gain converts quantitative co-closure into
 quantitative field control without requiring exact comparison. -/
@@ -182,6 +190,7 @@ theorem norm_observerField_sq_le_of_subunit {dS : Sm →ₗ.[𝕜] S0} {dH : Hm 
       _ = κ * ‖observerField dS A0 a r‖ ^ 2 := by ring
   nlinarith
 
+omit [CompleteSpace Hm] in
 /-- Subunit norm gain implies the directional source energy condition, so the latter is a genuine
 weakening. -/
 theorem reWork_le_of_subunit {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →ₗ.[𝕜] H0}
@@ -205,6 +214,7 @@ theorem reWork_le_of_subunit {dS : Sm →ₗ.[𝕜] S0} {dH : Hm →ₗ.[𝕜] H
 
 /-! ## Gauge covariance -/
 
+omit [CompleteSpace Hm] in
 /-- **Unitary frame covariance.**  A unitary change of observer frame transports the comparison
 curvature, the physical field and every formal co-differential value covariantly, so the
 Gauss–Hodge identity and all its annihilation consequences are frame invariant. -/
@@ -230,6 +240,7 @@ theorem comparisonCurvature_gauge {Hm' H0' : Type*}
         = dH' ⟨Um (Am (a : Sm)), haH'⟩ from rfl, hconj, ← map_sub]
   · rfl
 
+omit [CompleteSpace Hm] in
 /-- A unitary frame change transports formal co-differential values covariantly. -/
 theorem isFormalCoDifferential_gauge {Hm' H0' : Type*}
     [NormedAddCommGroup Hm'] [InnerProductSpace 𝕜 Hm'] [CompleteSpace Hm']
@@ -249,5 +260,77 @@ theorem isFormalCoDifferential_gauge {Hm' H0' : Type*}
     rw [show u' = (⟨Um (u : Hm), hmem⟩ : dH'.domain) from Subtype.ext hu'eq, heq]
   rw [hval, hu'eq, U0.inner_map_map, Um.inner_map_map]
   exact hw u
+
+omit [CompleteSpace Hm] in
+/-- The subunit gain criterion is observer-frame invariant. -/
+theorem subunit_criterion_gauge_iff {Hm' H0' : Type*}
+    [NormedAddCommGroup Hm'] [InnerProductSpace 𝕜 Hm'] [CompleteSpace Hm']
+    [NormedAddCommGroup H0'] [InnerProductSpace 𝕜 H0']
+    (dS : Sm →ₗ.[𝕜] S0) (dH : Hm →ₗ.[𝕜] H0) (dH' : Hm' →ₗ.[𝕜] H0')
+    (Um : Hm ≃ₗᵢ[𝕜] Hm') (U0 : H0 ≃ₗᵢ[𝕜] H0')
+    (Am : Sm →ₗ[𝕜] Hm) (A0 : S0 →ₗ[𝕜] H0)
+    (a : dS.domain) (haH : Am (a : Sm) ∈ dH.domain)
+    (haH' : Um (Am (a : Sm)) ∈ dH'.domain)
+    (hconj : dH' ⟨Um (Am (a : Sm)), haH'⟩ = U0 (dH ⟨Am (a : Sm), haH⟩)) (r : S0) (κ : ℝ) :
+    ‖comparisonCurvature dS dH' ((Um.toLinearIsometry.toLinearMap).comp Am)
+          ((U0.toLinearIsometry.toLinearMap).comp A0) a haH'
+        + ((U0.toLinearIsometry.toLinearMap).comp A0) r‖
+        ≤ κ * ‖observerField dS ((U0.toLinearIsometry.toLinearMap).comp A0) a r‖
+      ↔ ‖comparisonCurvature dS dH Am A0 a haH + A0 r‖
+          ≤ κ * ‖observerField dS A0 a r‖ := by
+  obtain ⟨hcurv, hfield⟩ :=
+    comparisonCurvature_gauge dS dH dH' Um U0 Am A0 a haH haH' hconj r
+  rw [hcurv, hfield,
+    show ((U0.toLinearIsometry.toLinearMap).comp A0) r = U0 (A0 r) from rfl,
+    ← map_add, U0.norm_map, U0.norm_map]
+
+/-! ## Sharpness of the unit gain -/
+
+/-- **The unit gain is sharp.**  At gain exactly one no annihilation follows: with the zero
+target differential, the identity comparison and a nonzero source antecedent, the physical field
+is co-closed and its curvature gain is one, yet it does not vanish. -/
+theorem exists_unitGain_observerField_ne_zero :
+    ∃ (dS dH : 𝕜 →ₗ.[𝕜] 𝕜) (Am A0 : 𝕜 →ₗ[𝕜] 𝕜) (a : dS.domain)
+      (haH : Am (a : 𝕜) ∈ dH.domain) (hy : observerField dS A0 a 0 ∈ dH.adjoint.domain),
+      Dense ((dH.domain : Submodule 𝕜 𝕜) : Set 𝕜) ∧
+      dH.adjoint ⟨observerField dS A0 a 0, hy⟩ = 0 ∧
+      ‖comparisonCurvature dS dH Am A0 a haH + A0 0‖
+        = 1 * ‖observerField dS A0 a 0‖ ∧
+      observerField dS A0 a 0 ≠ 0 := by
+  classical
+  set dS : 𝕜 →ₗ.[𝕜] 𝕜 := (LinearMap.id : 𝕜 →ₗ[𝕜] 𝕜).toPMap ⊤ with hdS
+  set dH : 𝕜 →ₗ.[𝕜] 𝕜 := (0 : 𝕜 →ₗ[𝕜] 𝕜).toPMap ⊤ with hdH
+  have hdomtop : dH.domain = ⊤ := rfl
+  have hdense : Dense ((dH.domain : Submodule 𝕜 𝕜) : Set 𝕜) := by
+    rw [hdomtop, Submodule.top_coe]
+    exact dense_univ
+  have hzeroval : ∀ x : dH.domain, dH x = 0 := fun x => rfl
+  have hmem : (0 : 𝕜) ∈ dH.domain := by rw [hdomtop]; trivial
+  have hadjdom : ∀ y : 𝕜, y ∈ dH.adjoint.domain := by
+    intro y
+    refine LinearPMap.mem_adjoint_domain_of_exists (T := dH) y ⟨0, ?_⟩
+    intro x
+    rw [hzeroval x]
+    simp
+  set a : dS.domain := ⟨1, by rw [show dS.domain = ⊤ from rfl]; trivial⟩ with ha
+  have hdSval : ∀ x : dS.domain, dS x = (x : 𝕜) := fun _ => rfl
+  have hfield : observerField dS (LinearMap.id : 𝕜 →ₗ[𝕜] 𝕜) a 0 = 1 := by
+    rw [observerField, add_zero, hdSval a]
+    simp [ha]
+  have haH : (0 : 𝕜 →ₗ[𝕜] 𝕜) (a : 𝕜) ∈ dH.domain := by
+    rw [hdomtop]; trivial
+  refine ⟨dS, dH, 0, LinearMap.id, a, haH, hadjdom _, hdense, ?_, ?_, ?_⟩
+  · refine LinearPMap.adjoint_apply_eq (T := dH) hdense ⟨_, hadjdom _⟩ (x₀ := 0) ?_
+    intro x
+    rw [hzeroval x]
+    simp
+  · have hcurv : comparisonCurvature dS dH (0 : 𝕜 →ₗ[𝕜] 𝕜) (LinearMap.id : 𝕜 →ₗ[𝕜] 𝕜) a haH
+        = 1 := by
+      rw [comparisonCurvature, hzeroval ⟨_, haH⟩, sub_zero, hdSval a]
+      simp [ha]
+    rw [hcurv, hfield]
+    simp
+  · rw [hfield]
+    exact one_ne_zero
 
 end GaloisForLFunctions.HTGeometry

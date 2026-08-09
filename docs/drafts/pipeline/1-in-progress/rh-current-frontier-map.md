@@ -3000,7 +3000,7 @@ universal impossibility theorem.
 
 **Positive survivor.** Exact source-transparency normal form, pole-order amplification, and the
 generic plus actual-relative-Volterra pointed-germ iff classification. Paper proof:
-`docs/drafts/pipeline/2-fully-proven/route-g2-relative-volterra-source-germ-weld.md`. Lean module:
+`docs/drafts/pipeline/3-formalized/route-g2-relative-volterra-source-germ-weld.md`. Lean module:
 `GaloisForLFunctions.RHTower.SuzukiVolterraSourceGermWeldRigidity`.
 
 ### Route H — Xi Taylor/theta core current  [RETIRED]

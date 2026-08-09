@@ -341,3 +341,29 @@ Physics audit produced a useful correction and theorem: root parity is only a fi
 The higher equivalence attack gives the real conceptual jump: not one lawstack with extra decorations, but geometry where the notion of exactness itself varies. Working name: Constraint‑Motive Relativity. Arithmetic, spectral, positive, topological, and costed worlds become doctrine fibres; CLG is a local atlas. Its equivalence principle is invertibility of doctrine-change Beck–Chevalley cells on the source-generated sector—not equality of route scalars.
 
 Defect-object attack forces another correction: no single ordinary complex can hold curvature, cohomology, completion boundary, order, and holonomy. The higher carrier is a self-dual Tate fracture totalization—a partially constructed twisted complex. Curvature becomes first obstruction \(D_1^2\); its nullhomotopy is \(D_2\); next Bianchi defect is \(D_1D_2+D_2D_1\); completion lives in \mathrm{cofib}(\mathrm{Tot}_\oplus\to\mathrm{Tot}_\prod). This is one obstruction tower, not a renamed route list.
+
+## Pivot: Constitutive experimental mathematics
+
+Study mathematical systems in which rules of admissibility, equivalence, proof, observation, and intervention are themselves variable and experimentally identifiable.
+
+Core idea: ordinary mathematics fixes equality, admissibility, proof, completion, and observation. CEM makes those choices mathematical state variables. It distinguishes:
+- passive observations;
+- source interventions;
+- doctrine changes—positivity, equivalence, completion;
+- retained histories—fillings, costs, phases, lifts.
+
+This already produced route-independent theorems:
+- Gauge is experiment-relative: passive symmetry \(H\) becomes \(K=\mathrm{Stab}(\text{intervention})\), with experiment space \(H/K\).
+- Positive quotient \(P(z)=|z|^2\) erases phase, but responses to two fixed interventions reconstruct \(z\) exactly.
+- Equivariant interventions cannot recover a coordinate hidden by the same symmetry.
+- One additive response exactly recovers the side of an \(A_2\) stability wall erased by all passive modulus data.
+- Finite exact laws can remain algebraically identical while cost, phase, winding, and cofinal closed-range behavior diverge.
+
+Most importantly, the literal source audit now yields a field-level exclusion: the existing valuation/Kummer coframe is rich but radially equivariant. Therefore more equivariant reporters cannot select the missing radial coordinate. A successful mechanism requires a source-legal transverse intervention, mark, or genuinely different doctrine—not more route-local machinery.
+
+A real breakthrough emerged from the field framing. The fixed-corona Gamma intervention already exists; what was missing was its constitutive persistence invariant. For the physical Bockstein \([\beta_t]\), the admitted semigroup kills it exactly when additional flow time \(s>|t|/2\). At \(s=|t|/2\) it still survives. Thus off-line displacement becomes an exact response lifetime, and erasure is provably nonconservative.
+
+The smallest structure that carries reversible phase and irreversible cost is the unilateral shift/Toeplitz extension. One relation,
+\[
+S^*S=1,\qquad SS^*\neq1,
+\]simultaneously creates positivity, one-sided history, a lost defect projection, a unitary phase quotient, recurrence after finite observation, and a Bockstein/index boundary.

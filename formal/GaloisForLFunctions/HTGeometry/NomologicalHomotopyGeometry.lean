@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.CrossedModule
 import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.GaugeProperness
+import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.KolchinSpencerLimit
+import GaloisForLFunctions.HTGeometry.NomologicalHomotopyGeometry.ObserverDescent
 
 /-!
 # Nomological homotopy geometry

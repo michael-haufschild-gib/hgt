@@ -127,3 +127,25 @@ of those structures changes the site.
 Proof presentations are local gauges only after they form an atlas in this topology. The statement
 “all routes are gauges” is therefore not an axiom of NHG; it is a descent theorem to prove for each
 claimed family of observers.
+
+## 9. Lean formalization status
+
+- **Status:** `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
+- **Module:**
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverDescent.lean`.
+- **Umbrella wiring:** imported by
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry.lean`, which is imported by
+  `formal/GaloisForLFunctions/HTGeometry.lean`.
+- **Exact formal targets:** `UniversalEffective.UniversallyEffective` formalizes Definition 2.1;
+  `ObserverDescent.universalEffectivePretopology` proves Theorem 3.1 and
+  `ObserverDescent.nomologicalObserverTopology` is its generated Grothendieck topology;
+  `ObserverDescent.not_universalEffective_of_parallel_not_separated` proves Corollary 4.1,
+  including applicability after arbitrary base change.
+- **Infrastructure proved, not assumed:** effectivity at identity, arbitrary base-change
+  stability, upward closure, bind/transitivity through Yoneda descent, isomorphism covers,
+  family-composition closure, and joint epimorphicity of universally effective families.
+- **Leaf verification:**
+  `lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/ObserverDescent.lean`
+  passed on 2026-08-09.
+- **Remaining gates:** final umbrella `lake build`, formal lint, and scratch-file `#print axioms`
+  audit. Card remains in Stage 2 pending those repository-wide final gates; it is not moved.

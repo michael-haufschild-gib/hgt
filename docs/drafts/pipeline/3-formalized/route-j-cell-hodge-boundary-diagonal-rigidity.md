@@ -1,7 +1,8 @@
 # Route J cell Hodge-boundary diagonal rigidity
 
 - **ID:** `route-j-cell-hodge-boundary-diagonal-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./route-j-cell-hodge-boundary-diagonal-rigidity-formalized.md`
 - **Type:** `[PAPER-PROVED]` / HOSTILE CORRECTION / POSITIVE RIGIDITY
 - **Scientific status:** `[PAPER-PROVED] [NO RH INPUT] [NO COMPUTATION] [NOVELTY UNVERIFIED]`
 - **Owner:** `route-j-principal-relative-julia-current.md`
@@ -159,16 +160,16 @@ such relation loses the first-clock readout.
 
 ## Proof obligations
 
-- [ ] construct the cell defect and packet coordinate maps;
-- [ ] linearize `(CHB-1)` on the exterior square;
-- [ ] prove the exact Kronecker law `(CHB-2)`;
-- [ ] prove distinct prime/depth cells have distinct half-heights;
-- [ ] prove `(CHB-3)` and the finite depth-spread corollary;
+- [x] construct the cell defect and packet coordinate maps;
+- [x] linearize `(CHB-1)` on the exterior square;
+- [x] prove the exact Kronecker law `(CHB-2)`;
+- [x] prove distinct prime/depth cells have distinct half-heights;
+- [x] prove `(CHB-3)` and the finite depth-spread corollary;
 - [x] correct the predecessor card's sector-preservation status;
 - [x] formalize the exact dependency-closed theorem in Lean;
 - [x] identify the completed survivor as a closed source-admission object with an exact finite
       oriented trace;
-- [ ] complete targeted Lean lint/axiom/module audit and move this card to Stage 3.
+- [x] complete targeted Lean lint/axiom/module audit and move this card to Stage 3.
 
 ## Dependency-closed paper proof
 
@@ -344,5 +345,8 @@ Verdict: `[PAPER-PROVED] [NOVELTY UNVERIFIED]`.
 - [x] prove the exact Kronecker law `(CHB-2)` on paper;
 - [x] prove distinct prime/depth cells have distinct half-heights on paper;
 - [x] prove `(CHB-3)` and the finite depth-spread corollary on paper;
-- [ ] correct the predecessor card's sector-preservation status;
-- [ ] formalize the exact dependency-closed theorem in Lean.
+- [x] correct the predecessor card's sector-preservation status — `route-j-primitive-promoted-euler
+      -exterior-source.md` now states that the compensated finite-index fixed sector must not be
+      identified with the actual boundary-defect kernel;
+- [x] formalize the exact dependency-closed theorem in Lean —
+      `RHTower/CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean`.

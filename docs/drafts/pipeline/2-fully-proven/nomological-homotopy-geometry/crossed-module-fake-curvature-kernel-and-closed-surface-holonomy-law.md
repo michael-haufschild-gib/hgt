@@ -164,3 +164,27 @@ label `h` must satisfy `t(h)=e`, proving `(CM.11)`. Lemma 1.1 gives commutativit
 - Semistrict and fully weak higher groups require coherent replacements of the crossed-module
   formulas.
 
+## 7. Lean formalization status
+
+- **Status:** `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
+- **Module:**
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/CrossedModule.lean`.
+- **Umbrella wiring:** imported by
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry.lean`, which is imported by
+  `formal/GaloisForLFunctions/HTGeometry.lean`.
+- **Exact formal targets:** `CrossedModule.piTwo_le_center`, `piTwo_commute`,
+  `boundaryRange_le_kernelAction`, and `piOneAction` prove Lemma 1.1 and both homotopy-action
+  consequences; `DifferentialCrossedModuleCalculus.fakeCurvature_transgression`,
+  `threeCurvature_mem_boundaryKernel_of_fakeFlat`, and
+  `threeCurvature_eq_zero_of_fakeFlat_of_boundary_injective` prove every clause of Theorem 3.1;
+  `closedSurface_label_mem_piTwo`, `closedSurface_labels_commute`, and
+  `closedSurface_label_eq_one_of_boundary_injective` prove Theorem 4.1 and its zero-kernel case.
+- **Infrastructure proved, not assumed:** normality of the boundary image; descent of the ambient
+  action through `G / im(t)`; strict crossed-module two-morphisms; degree-1/2/3 differential
+  crossed-module form calculus; ordinary Bianchi derived from square-zero, graded Leibniz, and
+  graded Jacobi; differential-boundary chain compatibility and equivariance.
+- **Leaf verification:**
+  `lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/CrossedModule.lean`
+  passed on 2026-08-09.
+- **Remaining gates:** final umbrella `lake build`, formal lint, and scratch-file `#print axioms`
+  audit. Card remains in Stage 2 pending those repository-wide final gates; it is not moved.

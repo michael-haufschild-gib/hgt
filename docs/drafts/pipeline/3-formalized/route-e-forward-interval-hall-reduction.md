@@ -1,14 +1,17 @@
 # Route E forward-interval Hall reduction
 
 - **ID:** `ROUTE-E-FORWARD-INTERVAL-HALL-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./route-e-forward-interval-hall-reduction-formalized.md`
 - **Type:** THEOREM (paper) / EXACT SOURCE REDUCTION
 - **Parent:** `../1-in-progress/route-e-squarefree-exponential-gibbs-parity.md`
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
 - **Lean status:** general Hall-cut necessity is formalized in
-  `MobiusBoundaryOppositeSignTransport.lean`; interval sufficiency not yet formalized
+  `MobiusBoundaryOppositeSignTransport.lean`; the full interval equivalence `(1)`–`(2)` and the
+  sharp quarter threshold `(7)` are formalized in
+  `HTGeometry/ForwardWindowHallMatching.lean`
 
 ## Theorem
 
@@ -139,6 +142,6 @@ interval range, so global cardinality alone cannot prove Hall.
 
 ## Status
 
-`[PROVED HERE; CLASSICAL COMBINATORIAL CONTENT]`.  Route E source is reduced to `(4)` and its
+`[PROVED HERE; LEAN-CERTIFIED; CLASSICAL COMBINATORIAL CONTENT]`.  Route E source is reduced to `(4)` and its
 weighted co-moving sector analogue for a genuinely identified exceptional vertex set.  The
 separate ordinary-window signed defect current remains on the parent card.

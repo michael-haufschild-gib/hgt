@@ -246,6 +246,90 @@ Closest primary source: F. Capocasa and F. Catanese, *Periodic meromorphic funct
 the quasi-Abelian meromorphic reduction for a fixed period group; it does not attach full period
 groups to Stanley--Reisner facet separators or derive (18)--(22).
 
+## Lean status
+
+The invariant, the constructive half of the hierarchy, and the exact wedge value are formalized
+unconditionally.
+
+`formal/GaloisForLFunctions/HTGeometry/EscapeSubgroup.lean` defines the three period-escape
+conditions and proves the periodic-pencil instance:
+
+```text
+idComponentSet
+IsEscapeSubgroup
+not_compactSpace_quotient_of_realSurjection
+subsingleton_of_isPreconnected_subset_intCast
+pencilForm, pencilSubgroup
+isClosed_pencilSubgroup
+idComponentSet_pencilSubgroup
+noncompact_quotient_pencilSubgroup
+isEscapeSubgroup_pencilSubgroup
+DimOne.compactSpace_quotient_of_lattice
+DimOne.exists_rat_relation_of_isEscapeSubgroup
+```
+
+`idComponentSet_pencilSubgroup` is the exact identity-component computation `(19)` asks for: the
+component is the kernel of the pencil form, because the form is continuous and integer valued on
+the period group, so it is constant on the component, while every kernel vector is joined to the
+origin by the real ray through it.  `DimOne.exists_rat_relation_of_isEscapeSubgroup` is the exact
+one-dimensional escape bound used in `(22)`: two `ℝ`-independent members would tile `ℂ` by a
+compact box and make the quotient compact, and an irrational real ratio would put a whole real line
+inside the closed subgroup, forcing the complex-linear identity component to be everything.
+
+`formal/GaloisForLFunctions/HTGeometry/PeriodEscapeDimension.lean` defines the invariant `(1)-(3)`
+and proves the constructive half of `(20)`:
+
+```text
+PeriodEscapeSeparation
+peDim
+periodEscapeSeparationOfPencil
+peDim_le_ppDim
+isEmpty_periodEscapeSeparation_zero
+isEmpty_periodEscapeSeparation_one
+two_le_peDim
+```
+
+`formal/GaloisForLFunctions/HTGeometry/BoundaryWedgePeriodEscape.lean` closes `(22)` for the whole
+nondegenerate two-parameter wedge family:
+
+```text
+boundaryWedgeFacet_nonempty
+boundaryWedge_peDim_eq_two
+```
+
+`formal/GaloisForLFunctions/HTGeometry/MeroPeriodQuotient.lean` proves the noncompact
+period-quotient law `(4)-(5)` in one complex variable, with no hypothesis:
+
+```text
+exists_real_mul_of_not_linearIndependent
+exists_rIndependent_of_compactSpace_quotient
+meroPeriodSubgroup
+not_compactSpace_quotient_meroPeriodSubgroup
+```
+
+A compact quotient of `ℂ` by any subgroup forces two `ℝ`-independent periods, and the corpus's
+unconditional theorem `differentialAlgebraicOver_of_translation_fixed` makes a doubly periodic
+global meromorphic germ differentially algebraic.  This is the exact scalar case of `(5)` and the
+formal content of the card's scalar-purity remark.
+
+All four modules are wired into `formal/GaloisForLFunctions/HTGeometry.lean`.  Direct
+`lake env lean` checks and targeted builds pass; `#print axioms` on every capstone reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+### What remains
+
+Two named analytic layers, both absent from mathlib and from this tree:
+
+1. **Several-variable meromorphic germs.**  `(4)`, `(9)-(17)` are stated for meromorphic functions
+   on `ℂ^d`; the corpus's `meroField` is the one-variable global meromorphic field.  The facet
+   theorem `(18)` needs the `d`-variable field together with the closedness and complex-linear
+   identity component of `Per(G_A)`, the Stanley--Reisner facet-prime computation `(13)-(16)`
+   being purely algebraic once that field exists.
+2. **Finite transcendence degree of the meromorphic field of a compact complex torus.**  The proof
+   of `(5)` for `d >= 2` uses `trdeg_C M(X) <= dim_C X`.  In complex dimension one this is the
+   elliptic differential-algebraicity theorem already owned here, which is why the scalar case is
+   closed; for `d >= 2` it is Siegel's theorem and has no Lean proof yet.
+
 ## Gates
 
 - [x] noncompact period-quotient law proved
@@ -254,5 +338,11 @@ groups to Stanley--Reisner facet separators or derive (18)--(22).
 - [x] hierarchy `peDim<=htDim<=ppDim<=ffsDim` proved
 - [x] exact wedge value `peDim=2` proved
 - [x] scalar purity reinterpreted as loss of noncompact escape
+- [x] `peDim` and the period-escape conditions formalized unconditionally
+- [x] `peDim<=ppDim` formalized unconditionally
+- [x] `peDim(Delta_wedge)=2` formalized unconditionally
+- [x] noncompact period-quotient law formalized unconditionally in one complex variable
+- [ ] several-variable meromorphic period groups formalized, giving `peDim<=htDim`
+- [ ] Siegel bound for compact complex tori formalized, giving `(5)` for `d>=2`
 - [ ] independent specialist proof and novelty audit
 - [ ] complete unconditional Lean formalization before stage 3

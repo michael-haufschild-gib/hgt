@@ -195,3 +195,30 @@ NHG now has an exact topology for the slogan "open lifted history":
 
 The implications are typed and one-way. They do not identify hypertranscendence with recurrence or
 holonomy.
+
+## 9. Lean formalization status
+
+- **Status:** `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
+- **Module:**
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/KolchinSpencerLimit.lean`.
+- **Umbrella wiring:** imported by
+  `formal/GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry.lean`, which is imported by
+  `formal/GaloisForLFunctions/HTGeometry.lean`.
+- **Exact formal targets:** `inverseLimitNormalForm` proves Theorem 2.1;
+  `locallyCompact_inverseLimit_iff_finiteDimensional`,
+  `finiteDimensional_inverseLimit_iff_eventually_kernel_eq_bot`, and
+  `locallyCompact_inverseLimit_iff_bounded_finrank` prove all equivalences of Theorem 3.1;
+  `not_locallyCompact_of_finrank_tendsto_atTop` proves `(KS.6)`;
+  `range_tailEmbedding_le_observerKernel` and `tailRange_not_locallyCompact` prove Corollary 4.1;
+  `kolchin_unbounded_specialization` proves Corollary 5.1.
+- **Infrastructure proved, not assumed:** continuous linear splittings from finite-dimensional
+  surjections; explicit recursive inverse-limit reconstruction; agreement of product and
+  inverse-limit topologies via a `ContinuousLinearEquiv`; rank-nullity growth; bounded monotone
+  dimension stabilization; infinite independent coordinate families; explicit full-tail
+  embedding/projection and tail-range normal form; completion-independent Hausdorff topological
+  vector-space Riesz obstruction.
+- **Leaf verification:**
+  `lake env lean GaloisForLFunctions/HTGeometry/NomologicalHomotopyGeometry/KolchinSpencerLimit.lean`
+  passed on 2026-08-09.
+- **Remaining gates:** final umbrella `lake build`, formal lint, and scratch-file `#print axioms`
+  audit. Card remains in Stage 2 pending those repository-wide final gates; it is not moved.

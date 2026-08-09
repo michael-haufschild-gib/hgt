@@ -2773,7 +2773,7 @@ cardinality is only the largest-interval case of `(G102)`; singleton row supply 
 smallest-interval case.
 
 Full proof of the interval reduction:
-`../2-fully-proven/route-e-forward-interval-hall-reduction.md`.
+`../3-formalized/route-e-forward-interval-hall-reduction.md`.
 
 - 2026-08-01 — collapsed arbitrary-subset Hall verification for one-sided cofactor tokens to the
   exact interval criterion `(G100)`.  Quantitative token supply turns it into
@@ -3003,7 +3003,7 @@ Full no-go and positive survivor:
 `../5-failed/route-e-local-mean-square-all-interval-spectral-split.md`.
 
 Lean module `MobiusBlockDefectEnergy.lean` proves `(G111)`--`(G113)` unconditionally.  Full proof:
-`../2-fully-proven/route-e-block-defect-energy-reduction.md`.
+`../3-formalized/route-e-block-defect-energy-reduction.md`.
 
 `[BRIDGE / RH-BEARING SOURCE RESTATEMENT: MOBIUS-CRITICAL-MESH-ENERGY]`  Prove `(G114)` uniformly on a nested
 square-root-width mesh, together with the sectorwise co-moving version whose terminal boundary

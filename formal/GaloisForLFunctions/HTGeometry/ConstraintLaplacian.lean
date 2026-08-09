@@ -23,7 +23,7 @@ The main results are
   becomes asymptotically sharp although no nonzero transverse vector is jointly exact.
 -/
 
-open scoped InnerProductSpace Topology
+open scoped InnerProductSpace Topology ENNReal
 open Filter
 
 namespace GaloisForLFunctions.HTGeometry
@@ -41,7 +41,7 @@ noncomputable def constraintDefect : H →L[𝕜] PiLp 2 (fun _ : ι => H) :=
   (PiLp.continuousLinearEquiv 2 𝕜 (fun _ : ι => H)).symm.toContinuousLinearMap ∘L
     ContinuousLinearMap.pi (fun i => ContinuousLinearMap.id 𝕜 H - (U i).starProjection)
 
-omit [CompleteSpace H] in
+omit [CompleteSpace H] [Fintype ι] in
 @[simp] theorem constraintDefect_apply (x : H) (i : ι) :
     constraintDefect U x i = x - (U i).starProjection x := rfl
 
@@ -51,6 +51,7 @@ noncomputable def constraintCodefect : PiLp 2 (fun _ : ι => H) →L[𝕜] H :=
       (ContinuousLinearMap.proj i : (∀ _ : ι, H) →L[𝕜] H)) ∘L
     (PiLp.continuousLinearEquiv 2 𝕜 (fun _ : ι => H)).toContinuousLinearMap
 
+omit [CompleteSpace H] in
 theorem constraintCodefect_apply (y : PiLp 2 (fun _ : ι => H)) :
     constraintCodefect U y = ∑ i : ι, (y i - (U i).starProjection (y i)) := by
   simp [constraintCodefect, sum_apply]
@@ -81,6 +82,7 @@ theorem infDist_eq_norm_sub_starProjection (x : H) (i : ι) :
   rw [Metric.infDist_eq_iInf, (U i).starProjection_minimal x]
   exact iInf_congr fun u => by rw [dist_eq_norm]
 
+omit [CompleteSpace H] in
 theorem constraintEnergy_eq_sum_infDist_sq (x : H) :
     constraintEnergy U x = ∑ i : ι, Metric.infDist x ((U i : Submodule 𝕜 H) : Set H) ^ 2 := by
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -90,6 +92,7 @@ omit [CompleteSpace H] in
 theorem constraintEnergy_nonneg (x : H) : 0 ≤ constraintEnergy U x :=
   Finset.sum_nonneg fun _ _ => sq_nonneg _
 
+omit [CompleteSpace H] in
 theorem constraintEnergy_smul (c : 𝕜) (x : H) :
     constraintEnergy U (c • x) = ‖c‖ ^ 2 * constraintEnergy U x := by
   rw [← norm_sq_constraintDefect, ← norm_sq_constraintDefect, map_smul, norm_smul]
@@ -117,6 +120,7 @@ theorem constraintEnergy_eq_zero_iff (x : H) :
     rw [hx, sub_self, norm_zero]
     norm_num
 
+omit [CompleteSpace H] in
 theorem ker_constraintDefect :
     LinearMap.ker ((constraintDefect U : H →L[𝕜] PiLp 2 (fun _ : ι => H)) :
         H →ₗ[𝕜] PiLp 2 (fun _ : ι => H))
@@ -155,12 +159,17 @@ theorem adjoint_constraintDefect :
     exact ContinuousLinearMap.adjoint_inner_left (U i).starProjection x (y i)
   rw [inner_sub_left, inner_sub_right, this]
 
+omit [CompleteSpace H] in
 theorem constraintLaplacian_eq_comp :
     constraintLaplacian U = constraintCodefect U ∘L constraintDefect U := by
   ext x
   rw [ContinuousLinearMap.comp_apply, constraintCodefect_apply, constraintLaplacian_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [constraintDefect_apply]
+  have hmem := (U i).sub_starProjection_mem_orthogonal x
+  rw [← Submodule.ker_starProjection (U i)] at hmem
+  have hzero : (U i).starProjection (x - (U i).starProjection x) = 0 := hmem
+  rw [hzero, sub_zero]
 
 /-- **Theorem 3.1(1).**  The kernel of the constraint Laplacian is the joint sector. -/
 theorem ker_constraintLaplacian :
@@ -175,11 +184,13 @@ theorem inner_constraintLaplacian_self (x : H) :
     ContinuousLinearMap.adjoint_inner_left (constraintDefect U) x (constraintDefect U x),
     inner_self_eq_norm_sq, norm_sq_constraintDefect]
 
+omit [CompleteSpace H] in
 /-- The range of the codefect operator is the sum of the observer complements. -/
 theorem range_constraintCodefect :
     LinearMap.range ((constraintCodefect U : PiLp 2 (fun _ : ι => H) →L[𝕜] H) :
         PiLp 2 (fun _ : ι => H) →ₗ[𝕜] H)
       = ⨆ i : ι, (U i)ᗮ := by
+  classical
   apply le_antisymm
   · rintro _ ⟨y, rfl⟩
     rw [show ((constraintCodefect U : PiLp 2 (fun _ : ι => H) →L[𝕜] H) :
@@ -200,10 +211,10 @@ theorem range_constraintCodefect :
         exact hw
       simp [hw0]
     · intro j _ hj
-      have hzero : (PiLp.single 2 i w : PiLp 2 (fun _ : ι => H)) j = 0 :=
-        PiLp.single_eq_of_ne hj w
-      rw [hzero]
-      simp
+      have hzero : (PiLp.single (2 : ℝ≥0∞) i w : PiLp 2 (fun _ : ι => H)) j = 0 := by
+        simp [hj]
+      rw [show (PiLp.single (2 : ℝ≥0∞) i w : PiLp 2 (fun _ : ι => H)) j = 0 from hzero,
+        map_zero, sub_zero]
     · intro h
       exact absurd (Finset.mem_univ i) h
 
@@ -211,6 +222,7 @@ theorem range_constraintCodefect :
 def HasUniformPrecisionGap : Prop :=
   ∃ c : ℝ, 0 < c ∧ ∀ x ∈ (jointSector U)ᗮ, c * ‖x‖ ^ 2 ≤ constraintEnergy U x
 
+omit [CompleteSpace H] in
 theorem hasUniformPrecisionGap_iff_hasTransverseLowerBound :
     HasUniformPrecisionGap U ↔
       ContinuousLinearMap.HasTransverseLowerBound (constraintDefect U) := by
@@ -254,6 +266,7 @@ theorem constraintLaplacian_tfae :
     rw [hset]
   tfae_finish
 
+omit [CompleteSpace H] in
 /-- **Theorem 3.1(3).**  Without a uniform gap there are transverse unit vectors whose total
 precision defect tends to zero: every observer becomes asymptotically sharp although no nonzero
 transverse vector is jointly exact. -/
@@ -266,7 +279,7 @@ theorem exists_transverse_unit_sequence_of_not_hasUniformPrecisionGap
       constraintEnergy U x < (1 / (n + 1 : ℝ)) * ‖x‖ ^ 2 := by
     intro n
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     exact h ⟨1 / (n + 1 : ℝ), by positivity, fun x hx => hcon x hx⟩
   choose x hxmem hxlt using hstep
   have hxne : ∀ n, x n ≠ 0 := by

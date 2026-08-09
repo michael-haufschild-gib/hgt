@@ -201,7 +201,7 @@ than cosmetic.
    `2n+1` directions and, for `n,q>=2`, transverse codimension at least
    `v_(n,q)`.  The canonical noncommuting Clifford/spherical exact-return
    carrier therefore cannot create a cheaper third branch.
-8. `../2-fully-proven/intrinsic-replica-observer-spectral-action-law.md`
+8. `../3-formalized/intrinsic-replica-observer-spectral-action-law.md`
    proves the exact all-finite-spectrum action decomposition for every
    survival-return replica reporter.  Its intrinsic positive truncated
    action resolution gives a dimension-free unit-constant finite-window

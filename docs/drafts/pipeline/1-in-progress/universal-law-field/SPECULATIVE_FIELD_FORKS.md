@@ -306,3 +306,69 @@ Without a source-native common bulk action, theorem holography is decorative.
 6. Test whether PLG matching fibres carry intrinsic filling categories and torsion determinant
    lines; failure would prove the two candidates are genuinely independent rather than two names
    for descent.
+7. Develop coefficient-relative law topology: the even Moore cell proves that positive base change
+   can simultaneously remove a fillability obstruction and erase nonunique filling memory.
+
+## 14. Fork J — law-phase thermodynamics
+
+### Primitive
+
+A source-indexed fibration of exact/stable law categories over constitutive doctrine space, together
+with a multiplicative complex metric-line amplitude on exact histories.
+
+### Reinterpretation
+
+- exactness, stable factorization, metric cost, determinant phase, and cofinal strictness are separate
+  state variables;
+- positive observation is a modulus quotient and can erase the side of a stability wall;
+- an observer loop may return all endpoints while pumping determinant winding or categorical
+  monodromy;
+- hypertranscendence should mean unbounded stable/prolongation spectrum, not automatically geometric
+  noncompactness.
+
+### Native survivors
+
+The metric-phase exactness theorem couples derived-zero laws to variable inverse cost, determinant
+winding, positive phase loss, and cofinal nonclosed range. The (A_2) stability theorem fixes one exact
+extension while opposite central-charge phases make it stable versus unstable with identical positive
+moduli.
+
+### Fatal test
+
+If source cannot canonically produce a law category, charge/amplitude, and coherent doctrine changes,
+then this is a sophisticated coordinate bag. Acceptance requires one nontrivial wall-crossing or
+monodromy computation yielding at least three nonisomorphic corpus organs.
+
+## 15. Fork K — counterfactual law science
+
+### Primitive
+
+A directed source law machine with legal interventions, composed before observing theorem endpoints.
+
+### Reinterpretation
+
+Proof routes need not all be gauges. Some may be passive observers, while others replace source
+relations and are therefore counterfactual experiments. Complete endpoint agreement can coexist with
+different intervention response.
+
+### Native survivor
+
+Two opposite deterministic bit-law systems have identical full passive joint distributions but are
+separated exactly by `do(X=0)`. No passive statistic, including every positive expectation, recovers
+the directed law.
+
+### Fatal test
+
+If three corpus routes cannot be typed as composable interventions on one pre-target source, causal
+language is decorative. If they can, route comparison becomes a system-identification problem rather
+than geometry.
+
+## 16. Current synthesis — constitutive experimental mathematics
+
+Forks G, H, J, and K now suggest one higher subject: mathematics in which admissibility, equivalence,
+proof filling, observation, and intervention are state variables. The primitive is a constitutive
+experiment, with interventions on one axis and doctrine changes on another. Exact finite evidence is
+recorded in `constitutive-experimental-mathematics.md`.
+
+This is the leading hypothesis, not a winner. It must still produce one source-normal three-organ
+response identity and a withheld consequence before being called the new field.

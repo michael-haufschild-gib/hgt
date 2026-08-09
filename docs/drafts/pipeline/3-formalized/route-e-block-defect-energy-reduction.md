@@ -1,7 +1,8 @@
 # Route E block-defect energy reduction
 
 - **ID:** `ROUTE-E-BLOCK-DEFECT-ENERGY-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `./route-e-block-defect-energy-reduction-formalized.md`
 - **Type:** THEOREM (paper and Lean) / SOURCE-INVARIANT REDUCTION
 - **Parent:** `../1-in-progress/route-e-squarefree-exponential-gibbs-parity.md`
 - **Source:** `OPEN-SOURCE-001`
@@ -124,7 +125,7 @@ bounded-increment interpolation across each block gives
 at \(h\le U^{1/2+o(1)}\). Thus `(7)` belongs to the classical all-\(\varepsilon\) Mertens
 mean-square RH-criterion family; it is a useful exact Gibbs reduction, not an independently weaker
 arithmetic producer. Full correction and proof:
-`../3-formalized/not_new_scientific_knowledge/route-e-mesh-energy-classical-mean-square-bridge.md`.
+`./not_new_scientific_knowledge/route-e-mesh-energy-classical-mean-square-bridge.md`.
 
 ## Hostile audit
 

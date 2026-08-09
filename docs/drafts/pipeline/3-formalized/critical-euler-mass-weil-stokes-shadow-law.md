@@ -1,10 +1,10 @@
 # Critical Euler connection, Mass boundary, Weil torque, and Stokes rapidity shadow law
 
 - **ID:** `ngd-critical-euler-mass-weil-stokes-shadows`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [CROSS-ROUTE SOURCE LAW] [ROUTE-E NONSELECTION]`
-  `[GAMMA NORMALIZATION NONSELECTION] [NOT RH] [NO LEAN WRITTEN]`
+- **Status:** `[LEAN-FORMALIZED] [AXIOM-AUDITED] [CROSS-ROUTE SOURCE LAW]`
+  `[ROUTE-E NONSELECTION] [GAMMA NORMALIZATION NONSELECTION] [NOT RH]`
 - **Parent:** `dirichlet-maurer-cartan-mellin-orbit-law.md`
 - **Statement:** One pre-divisor Dirichlet source current has exact Route-L, primitive-prime Mass,
   reflection-odd Weil, and prime Stokes-tangent shadows; it does not select Route-E conductance or
@@ -247,6 +247,38 @@ preserves nonvanishing, Schwarz reality, and `s <-> 1-s` reflection, and leaves
 `(A,E,M,delta,Theta_E)` unchanged. It changes the completed logarithmic current by
 `2c(s-1/2)`. Therefore the arithmetic gauge algebra cannot determine full archimedean torque or
 Xi completion. A literal Gamma/theta seed and its normalization are additional source data.
+
+## Lean formalization audit
+
+Module `formal/GaloisForLFunctions/HTGeometry/CriticalEulerMassWeilStokesShadowLaw.lean`
+formalizes every displayed law and both nonselection countermodels:
+
+- literal function-core dilations `U_r f(x)=f(rx)`, their scale-composition law, and expansion and
+  contraction point-operator monoid representations;
+- the full Dirichlet point-mass convolution law, both Mellin algebra representations, both
+  connection coefficient series, the expansion and contraction Möbius derivatives, the literal
+  source-transgression derivative, covariant identity, comparison defect, and flatness;
+- the faithful primitive-prime quotient, exact finite Abel/Mass boundary, critical prime weights,
+  and singular prefix-capacity limit;
+- local finiteness of both reflected atomic location families, exact odd Weil identity, literal
+  `-Λ(n) log(n)/sqrt(n)` coefficient, and prime-power faithfulness;
+- Stokes source coefficient, character exponential, reflection oddness, hyperbolic-product law,
+  normal derivative, primitive-prime weld, and sharp prime-power separation;
+- closed pairs of distinct nonnegative Route-E allocations with one boundary and distinct Gamma
+  normalizations with identical listed symmetries but different logarithmic currents.
+
+Verification on 2026-08-09:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/CriticalEulerMassWeilStokesShadowLaw.lean` passes
+  with zero warnings;
+- `lake build +GaloisForLFunctions.HTGeometry.CriticalEulerMassWeilStokesShadowLaw` passes
+  `9174/9174`;
+- exhaustive `#print axioms` over all exported theorems reports only `propext`,
+  `Classical.choice`, and `Quot.sound`;
+- forbidden-declaration scan finds no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration;
+- `GaloisForLFunctions.HTGeometry` umbrella import is wired; project lint reaches this module and
+  stops only on unrelated shared-tree reachability debt in `ConstraintLaplacian`,
+  `HilbertClosedRange`, and `SourceObserverHodgeCurvature`.
 
 ## Circularity audit
 
