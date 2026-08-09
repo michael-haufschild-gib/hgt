@@ -1,10 +1,10 @@
 # Rank-one source-naturality rigidity and framing law
 
 - **ID:** `rank-one-source-naturality-rigidity-and-framing-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NO-GO / POSITIVE SURVIVOR (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO-GO]`
-  `[POSITIVE SURVIVOR] [NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[POSITIVE SURVIVOR] [NO RH CLAIM] [FORMALIZED IN LEAN]`
 - **Role:** proves what a source can and cannot generate canonically from one unframed anomaly
   line; identifies framing/discriminant as irreducible missing datum.
 
@@ -135,3 +135,7 @@ quadratic classification separately.
 ## Log
 
 - 2026-08-08 — hostile Nomotopy foundation audit; proof promoted.
+
+## Formalized companion
+
+`rank-one-source-naturality-rigidity-and-framing-law-formalized.md` (same directory).

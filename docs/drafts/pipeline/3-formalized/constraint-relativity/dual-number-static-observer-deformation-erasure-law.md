@@ -1,9 +1,9 @@
 # Dual-number static observer deformation-erasure law
 
 - **ID:** `dual-number-static-observer-deformation-erasure-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [BRIDGE] [NO LEAN WRITTEN]`
+- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [BRIDGE] [FORMALIZED IN LEAN]`
 - **Role:** minimal countermodel to static observer reconstruction; positive mixed-cell
   reconstruction theorem.
 - **Novelty:** standard module theory. Its use as the decisive gate for heterogeneous
@@ -162,3 +162,7 @@ No Lean work is authorized. If later requested, formalize the nonsplitting seque
 ## Log
 
 - 2026-08-08 — extracted from foundational-program census.
+
+## Formalized companion
+
+`dual-number-static-observer-deformation-erasure-law-formalized.md` (same directory).

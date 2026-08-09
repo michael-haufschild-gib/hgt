@@ -1,8 +1,8 @@
 # Cofinal-observer conservativity law
 
 - **ID:** `cofinal-observer-conservativity-law`
-- **Stage:** 2-fully-proven
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO LEAN WRITTEN]`
+- **Stage:** 3-formalized
+- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [FORMALIZED IN LEAN]`
 - **Novelty:** inverse-limit parent mathematics; first exact hostile test of finite-resource
   observer claims in this program.
 
@@ -78,3 +78,7 @@ pro-laws, but does not by itself construct an RH selection law.
 
 No Lean work is authorized. Later formalization should begin only after choosing exact topological
 and strictness hypotheses for inverse-limit reconstruction.
+
+## Formalized companion
+
+`cofinal-observer-conservativity-law-formalized.md` (same directory).

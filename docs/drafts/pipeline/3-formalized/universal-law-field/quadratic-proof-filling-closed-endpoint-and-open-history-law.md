@@ -1,9 +1,12 @@
 # Quadratic proof filling, closed endpoint, and open history law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-FILL-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveQuadraticFilling`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [FILLING-GEOMETRY FORK] [ENDPOINT BLINDNESS]
-  [QUADRATIC HISTORY COST] [ORIENTATION QUOTIENT] [NOT RH] [NO LEAN]
+  [QUADRATIC HISTORY COST] [ORIENTATION QUOTIENT] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Setup
 

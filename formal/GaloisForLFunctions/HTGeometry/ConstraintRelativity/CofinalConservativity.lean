@@ -133,7 +133,7 @@ theorem surjective_of_cofinal_quotient_bijective (FM : LinearFiltration R M)
     | zero =>
         have hk : k = 0 := Nat.le_zero.1 hkj
         subst hk
-        simpa using Submodule.zero_mem (FM.fil (s 0))
+        simp
     | succ j ih =>
         rcases Nat.lt_or_ge k (j + 1) with hlt | hge
         · have hkj' : k ≤ j := Nat.lt_succ_iff.1 hlt
@@ -142,7 +142,7 @@ theorem surjective_of_cofinal_quotient_bijective (FM : LinearFiltration R M)
           exact Submodule.add_mem _ (FM.antitone (hsmono.monotone hkj') (hxstep j)) (ih hkj')
         · have hk : k = j + 1 := le_antisymm hkj hge
           subst hk
-          simpa using Submodule.zero_mem (FM.fil (s (j + 1)))
+          simp
   have hLk : ∀ k, L - x k ∈ FM.fil (s k) := by
     intro k
     have hks : k ≤ s k := le_cofinalSelector A hA k
@@ -254,7 +254,7 @@ theorem parityInv_comp_prolong :
   ext x n
   cases n with
   | zero => simp
-  | succ m => simp [pow_succ]; ring
+  | succ m => simp [pow_succ]
 
 /-- The prolongation raises the filtration. -/
 theorem prolong_mem (n : ℕ) (x : ℕ → k) (hx : x ∈ tailFil k n) :
@@ -276,7 +276,8 @@ theorem tailFil_ne_bot (M : ℕ) : tailFil k (M + 1) ≠ ⊥ := by
   intro h
   have hmem : (Pi.single (M + 1) (1 : k)) ∈ tailFil k (M + 1) := by
     intro i hi
-    simp [Pi.single_apply, (by omega : i ≠ M + 1)]
+    have hne : i ≠ M + 1 := by omega
+    simp [hne]
   rw [h, Submodule.mem_bot] at hmem
   have := congrFun hmem (M + 1)
   simp at this
@@ -296,14 +297,14 @@ def tailObjectFiltration (M : ℕ) : LinearFiltration k (tailFil k (M + 1)) wher
     simpa using Subtype.ext hz
   complete := by
     intro x hx
-    have hx' : ∀ n, ((fun j => (x j : ℕ → k)) (n + 1)) - ((fun j => (x j : ℕ → k)) n)
-        ∈ tailFil k n := hx
+    have hx' : ∀ n, (fun j => (x j : ℕ → k)) (n + 1) - (fun j => (x j : ℕ → k)) n
+        ∈ tailFil k n := fun n => hx n
     have hLmem : (fun i => (x (i + 1) : ℕ → k) i) ∈ tailFil k (M + 1) := by
       intro i hi
       exact (x (i + 1)).2 i hi
     refine ⟨⟨fun i => (x (i + 1) : ℕ → k) i, hLmem⟩, fun n i hi => ?_⟩
-    have := coord_eventually_const k hx' i n (by omega)
-    simp [this]
+    have hconst := coord_eventually_const (x := fun j => (x j : ℕ → k)) k hx' i n (by omega)
+    simp [hconst]
 
 /-- **Necessity.**  For every bound `M` the tail object `K = F^{M+1} X` is a nonzero, complete,
 `∇`-stable and `τ`-stable object that every observer of index at most `M` sees as zero.  Its zero

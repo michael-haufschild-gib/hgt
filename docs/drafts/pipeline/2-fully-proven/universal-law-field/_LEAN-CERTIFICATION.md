@@ -30,7 +30,10 @@ Dedicated Lean umbrella:
 | ULF-CTX-1 | Exact parity contextuality criterion, one-dimensional total-charge obstruction, proper-face blindness, and compatible uniform positive state without a global law | `HTGeometry.ConstitutiveParityContextuality` |
 | ULF-IRR-1 | Minimal irreducible `N`-ary law with all composites zero, abelian proper colour faces, non-homotopy-abelian total law, interaction order `N`, and non-locally-compact unbounded spectrum | `HTGeometry.ConstitutiveIrreducibleInteraction` |
 | ULF-TORS-1 | Acyclic based two-term complexes, determinant history as a complete based invariant, multiplicativity, positive shadow as the exact phase quotient, and closed observation with open logarithmic lift | `HTGeometry.ConstitutiveDeterminantTorsion` |
+| ULF-FILL-1 | Van Kampen area of `aⁿbⁿa⁻ⁿb⁻ⁿ` is exactly `n²` with trivial endpoint, length `4n`, and orientation-blind cost | `HTGeometry.ConstitutiveQuadraticFilling` |
 | ULF-OPM-2 | Failed unary exchange generates the least preserved congruence; induced quotient laws commute; every commuting observer factors uniquely through it; no smaller strict repair exists | `HTGeometry.ConstitutiveExchangeStrictification` |
+| ULF-OPM-3 | One exchange residual admits strict quotient and nonsplit central promotion; cocycle coherence, exact commutator carry, fixed lift residual, and no-section theorem | `HTGeometry.ConstitutiveExchangeCentralPromotion` |
+| ULF-OPM-4 | Reporter descends exactly when constant on generated exchange congruence; critical-pair detection forbids commuting strictification with reporter preservation; Heisenberg history reporter selects central promotion | `HTGeometry.ConstitutiveExchangePromotionSelection` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.
@@ -100,3 +103,14 @@ vanishing for the single-pole integrand), 3 (one-pole residue), 4 (matched/doubl
 Build green (2580 jobs); axioms standard. With the corpus-owned rectangle Cauchy formula
 (stage 3) and today's XiC' bound (2A), the prime-half chain's remaining new work is stage 5
 (assembly) plus at most a stage-4 bridge.
+
+| ULF-INV-10-S5A1 | The convention bridge: the Hedenmalm eigen transform equals the mathlib Fourier integral of the imaginary-part-tilted flow at frequency `z.re/(2π)` — the linchpin linking the corpus's `e^{-izx}` normalization to mathlib's convolution/inversion machinery | `RHTower.HedenmalmLineTransformBridge` |
+
+Build green (8937 jobs); axioms standard. Remaining in the chain: 5a-2 (line-product
+integrability from the 18a bounds — assembly-level), 5a-3 (inversion application), 5b (final
+assembly), stage-4 bridge if the two-pole variant needs adaptation.
+
+| ULF-INV-10-S5A2 | Eigen-pair line integrability: the product of a removable quotient with the conjugate-reflected partner quotient is integrable on every substrip line, dominated by the (18a) bounds at doubled rate | `RHTower.EigenPairLineIntegrable` |
+
+Build green (8946 jobs); axioms standard. Chain: 1, 2A, 2B, 5a-1, 5a-2 certified; 3 owned;
+4 likely owned; remaining new work: 5a-3 (inversion application) and 5b (assembly).

@@ -472,3 +472,60 @@ prime/zeta/divisor theorem.  See
 - Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
   `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
   computation proof.
+
+# Derived-selection-geometry Cartier-torsion certification (2026-08-09)
+
+- `universal-monodromy-cartier-torsion-fitting-energy-law.md`
+  → `3-formalized/derived-selection-geometry/`
+- Lean modules: twenty-one under
+  `GaloisForLFunctions.HTGeometry.DerivedSelectionGeometry.*` (`IdentityWall`,
+  `TwoPathIncompatibility`, `SourceOrientation`, `SourceNormalEquation`,
+  `RegularReaderExclusion`, `ReflectionEnergy`, `LocalPort`, `FibreDichotomy`,
+  `ExteriorResponse`, `FittingPresentation`, `FittingInvariance`, `FittingEnergy`,
+  `TwoTermResolution`, `DerivedFibre`, `QuotientDerived`, `IncompatDerived`, `NormalDefect`,
+  `DerivedPullback`, `RiemannPullback`, `SupportSelection`, `NormalCone`).
+- Certified: the minimal `T_q`-stable boundary of the two-path defect is the full wall ideal in
+  both legs, so the incompatibility module is `(R ⧸ I)²` with annihilator `I` and zeroth Fitting
+  ideal `I²`; the literal cyclic source first kills the anti-diagonal and leaves the single
+  orientation line `R ⧸ I` with Fitting ideal `I`, whence `Fitt₀(Q) = Fitt₀(Q_src)²`; every map
+  from either module into an `I`-torsion-free reader vanishes; the length-one free resolution
+  computes `Ext¹(Q,R) ≅ Q`, `Tor₁(Q, R⧸I) ≅ (R⧸I)²`, `Ext¹(Q_src,R) ≅ R⧸I`,
+  `Tor₁(Q_src, R⧸I) ≅ R⧸I`, with everything above degree one zero; ordinary specialisation of the
+  boundary at the identity is the zero map while its derived specialisation is the full squared
+  conormal module and equals `Tor₁`; reflection reverses the conormal class and fixes its square,
+  and the reflected energy generates exactly the zeroth Fitting ideal of the two-leg module; the
+  rank-`M` port has the same local Cartier support and scales the conormal by `M`; the normal-cone
+  algebra is `k[e]` with `σ(e) = -e`, `in_I(K) = 2e`, `in_I(E) = e²`, `in_I(q^M-1) = Me`,
+  `in_I(E_M) = M²e²` and `e ≠ 0`; the scalarised exterior response has radical `0 ⊕ ker(ΛS)`, is
+  degenerate below `dim W` ports and is never separable; a uniform response on an orthonormal
+  family has restricted norm exactly `|c|√N` and is nonclosable; the arithmetic pullback is
+  realised by an explicit algebra structure and its derived fibre is nonzero exactly on the
+  critical line; and the derived pullback along any `R`-algebra is `Ann_A(u-1)` in degree `-1` and
+  `A ⧸ (u-1)` in degree `0`, with `End_R(Q_src) ≅ R ⧸ I` and every construction after passage to
+  the quotient inheriting the annihilator, hence localising to zero off the wall.
+- New reusable infrastructure absent from mathlib: zeroth Fitting ideals with presentation
+  independence; two-term projective resolutions; `Ext`/`Tor` computed from a two-term resolution;
+  the associated graded ring of an ideal filtration with its graded multiplication.
+- Targeted module builds and the `GaloisForLFunctions.HTGeometry` umbrella build are green;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`; no project
+  postulate, hypothesis interface, or computation proof.
+
+# Universal-law-field quadratic-filling certification (2026-08-09)
+
+- `quadratic-proof-filling-closed-endpoint-and-open-history-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveQuadraticFilling`.
+- Certified: in the free group on two letters the null word `aⁿ bⁿ a⁻ⁿ b⁻ⁿ` lies in the normal
+  closure of `[a,b]`, so its class is trivial in the presented group and in `ℤ²`; its reduced word
+  has length exactly `4n`; the least number of conjugates of `[a,b]^{±1}` needed to express it —
+  the van Kampen area — is exactly `n²`, the upper bound by the explicit `n × n` grid built from
+  the two commutator expansion identities and the lower bound by the integer Heisenberg
+  representation, in which the relator becomes a central generator and any `k`-cell filling has
+  central exponent at most `k` in absolute value; and the area of the reversed word is the same, so
+  the unsigned cost forgets orientation.
+- New corpus infrastructure: the integer Heisenberg group with its group instance and central
+  subgroup, van Kampen fillings/`area` for the free group on two letters, and a
+  reduced-word criterion from `List.IsChain`.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.

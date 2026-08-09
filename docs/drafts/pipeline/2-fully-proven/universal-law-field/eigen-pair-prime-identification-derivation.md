@@ -309,3 +309,34 @@ two-pole (`rectIntegral_eq_two_pole_residues`) variants, plus PNTPlus's
 vanishing against the corpus's rectIntegral definitions — read RectangleCauchyFormula.lean's
 integral conventions before writing), 4 (matched case — the two-pole variant may already cover
 it), 5 (assembly: horizontal Λ-expansion via certified stage 1, evenness folding, the limit).
+
+Stage-5 decomposition note (2026-08-09): the assembly splits as 5a + 5b. **5a (per-frequency
+evaluation):** each stage-1 output integral ∫ t, n^{-(σ+it)}·(pair product on the line) dt must
+be identified with the time-side pair value at ±log n — a pointwise Fourier-inversion step for
+the product of removable quotients (= convolution of the eigenfunctions); the corpus's
+`XiGuinandWeilRectangularFourier` module is the first read (its inversion idioms served the
+rectangular family's identical step). **5b (limit assembly):** instantiate the certified
+vertical engine (2B) with the certified bounds (2A + 18a), apply the corpus rectangle formula
+(3), fold by evenness, pass X → ∞ against the stage-1 tsum. All of 5b's ingredients are
+certified/owned; 5a is the last potentially-new analytic module of the chain.
+
+Stage-5a provisioning note (2026-08-09): the corpus owns the L¹ convolution theorem
+(`fourier_mul_convolution_eq_L1`: 𝓕(f ⋆ g) = 𝓕f·𝓕g under integrability,
+XiGuinandWeilRectangularFourier), so 5a's chain is: pair-line = product of tilted transforms =
+𝓕(convolution of tilted eigenfunctions); the per-frequency integral is Fourier inversion at
+log n (mathlib inversion for continuous L¹ pairs), evaluating to the time-side pairing.
+CONSTRAINT CAUGHT AT DESIGN TIME: the tilted eigenfunctions are integrable only for rectangle
+heights Y < 1 − |Im α| — a nonempty window above 1/2 for every zero (|Im| < 1/2), so the
+rectangle height is pair-dependent; the divisor stays interior since Y > 1/2. The paper card's
+"take Y ∈ (1/2, 1)" refines to "take Y ∈ (1/2, 1 − max(|Im α|,|Im β|))" — recorded as a
+correction to the D7 write-up's rectangle choice. All 5a machinery is corpus/mathlib-owned;
+implementation is the next module, then 5b closes the chain.
+
+Stage-5a provisioning update (2026-08-09, correcting the previous note): the corpus's
+`integrable_hedenmalmThetaEigen_mul_exp` already gives tilted-eigenfunction integrability for
+EVERY |Im z| < 1 — the decay behind it (`norm_hedenmalmThetaEigen_mul_exp_le`) is rate-1
+uniform from the theta source, stronger than the 1 − |Im α| design estimate. The previous
+note's pair-dependent rectangle height is unnecessary; D7's original Y ∈ (1/2, 1) stands.
+5a's integrability layer is therefore fully corpus-owned; the module's only new content is the
+convention bookkeeping between the corpus transform (e^{−izx}) and mathlib's 𝓕 (e^{−2πixξ})
+through the convolution/inversion step. All 5a inputs are now literally owned.

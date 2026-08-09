@@ -509,3 +509,43 @@ HTGeometry as non-Xi-specific. Two fix cycles (explicit squeeze function; exp-li
 composition). Wired at the Vertical block of the HTGeometry umbrella. INV-10 chain status:
 stages 1, 2A, 2B certified; stage 3 corpus-owned; remaining new work = stage 5 assembly
 (+ possible stage-4 bridge via the corpus's two-pole variant).
+
+## 2026-08-09 — stage-5 decomposition recorded (Claude Fable 5)
+
+Stage 5 = 5a (pointwise Fourier inversion for the pair product at ±log n — read
+XiGuinandWeilRectangularFourier first; last potentially-new analytic module) + 5b (pure
+assembly from certified/owned pieces). Chain: 1 ✓, 2A ✓, 2B ✓, 3 owned, 4 likely owned
+(two-pole variant), 5a next, 5b final.
+
+## 2026-08-09 — 5a provisioned; rectangle-height refinement caught (Claude Fable 5)
+
+The corpus's own L¹ convolution theorem is 5a's engine; inversion at log n gives the time-side
+pairing. Design-time catch: tilted-eigenfunction integrability forces Y < 1 − |Im α| —
+pair-dependent rectangle height, window nonempty above 1/2 for every zero; D7's "Y ∈ (1/2,1)"
+refined accordingly (fifth in-flight correction of the session, again from reading before
+writing). Chain: 1, 2A, 2B certified; 3 owned; 4 likely owned; 5a fully provisioned; 5b pure
+assembly.
+
+## 2026-08-09 — 5a inputs fully owned; height refinement retracted (Claude Fable 5)
+
+Sixth in-flight correction, this one of my own previous correction: the corpus's tilted
+integrability covers the whole |Im z| < 1 strip (rate-1 uniform decay via the theta source), so
+the pair-dependent height was over-caution; Y ∈ (1/2,1) stands as in D7. 5a's remaining new
+content is purely the e^{−izx} ↔ 𝓕 convention bookkeeping through convolution + inversion.
+
+## 2026-08-09 — Lean batch 8: the 5a-1 convention bridge certified (Claude Fable 5)
+
+`RHTower/HedenmalmLineTransformBridge.lean` green (8937 jobs, standard axioms): T α z =
+𝓕(x ↦ u_α(x)·e^{z.im·x})(z.re/(2π)) — proved through fourier_real_eq + fourierChar_apply, the
+2π-cancellation in the character argument, a pinned reassociation, and a two-relation
+linear_combination (re_add_im + I_sq) closing the exponent identity. Three fix cycles, all
+convention-level, none mathematical. The corpus's transform is now interoperable with mathlib's
+convolution theorem and Fourier inversion — the 5a chain's linchpin is machine-checked.
+
+## 2026-08-09 — Lean batch 9: 5a-2 certified (Claude Fable 5)
+
+`RHTower/EigenPairLineIntegrable.lean` green (8946 jobs, standard axioms): the pair product on
+any substrip line is integrable — both factors under (18a), conjugate factor via norm_conj,
+doubled decay rate, one fix cycle (exp-product split stated explicitly). Wired. The stage-1 swap
+and the inversion step now have their integrable weight supplied for the eigen pair
+specifically. Remaining new modules: 5a-3, 5b.

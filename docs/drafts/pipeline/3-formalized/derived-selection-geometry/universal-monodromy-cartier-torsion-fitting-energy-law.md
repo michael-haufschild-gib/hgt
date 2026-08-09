@@ -1,9 +1,9 @@
 # Universal monodromy Cartier torsion and the Fitting-energy law
 
 - **ID:** `universal-monodromy-cartier-torsion-fitting-energy-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NEW CORPUS CONSEQUENCE / DERIVED SELECTION GEOMETRY
-- **Scientific status:** `[PAPER-PROVED] [NO LEAN WRITTEN OR BUILT] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED, UNCONDITIONAL] [NOT RH]`
 - **Novelty status:** the algebraic ingredients and the broad monodromy-torsion/Fitting/tangent-cone
   package are classical.  The exact Riemann-source/physical/Stokes factorization proved here is not
   stated in the audited corpus.  External priority for that conjunction remains provisional.
@@ -798,11 +798,112 @@ arithmetic morphism into the `Ext^1` class and prove an independent cyclic bound
 may not assume support on `H`, vanishing of `(q-1)`, positivity of the Fitting energy, or survival of
 the special fibre.
 
-## 10. Future Lean notes — no action in this turn
+## 10. Lean formalization
 
-The paper proof is elementary Laurent-polynomial module algebra.  A later formalization should
-reuse the existing rational-adelic/paracyclic rotation definitions where possible, then prove the
-universal `R`-module presentation before any Xi specialization.  Likely corpus anchors include
-`formal/GaloisForLFunctions/RHTower/CCMRationalAdelicCrossedProduct.lean` and the modules cited by
-the Stage-4 arithmetic dagger formal claim map.  Exact reusable declaration names must be checked
-with `scripts/formal_tools.py research` in that later turn; none are assumed here.
+Modules, all under `GaloisForLFunctions/HTGeometry/DerivedSelectionGeometry/` and namespace
+`GaloisForLFunctions.HTGeometry.DerivedSelection`:
+
+`IdentityWall`, `TwoPathIncompatibility`, `SourceOrientation`, `SourceNormalEquation`,
+`RegularReaderExclusion`, `ReflectionEnergy`, `LocalPort`, `FibreDichotomy`, `ExteriorResponse`,
+`FittingPresentation`, `FittingInvariance`, `FittingEnergy`, `TwoTermResolution`, `DerivedFibre`,
+`QuotientDerived`, `IncompatDerived`, `NormalDefect`, `DerivedPullback`, `RiemannPullback`,
+`SupportSelection`, `NormalCone`.
+
+| Paper item | Lean declaration |
+|---|---|
+| `(2.1)` | `MonodromyRing`, `monodromyParam`, `wallEquation`, `identityIdeal`, `evalOne`, `ker_evalOne`, `identityFibreEquiv` |
+| `(2.2)` | `srcRefl`, `paracyclicRot`, `landing` |
+| `(2.3)` | `twoPathDefect`, `rotDefect`, `minStableBoundary` |
+| `(2.4)` | `incompatModule` |
+| `(3.3)` | `twoPathDefect_apply`, `rotDefect_apply`, `range_twoPathDefect`, `range_rotDefect` |
+| `(3.1)` | `minStableBoundary_eq`, `monodromy_minStableBoundary_eq`, `incompatEquiv`, `monodromyIncompatEquiv` |
+| `(3.2)` | `annihilator_incompatModule`, `monodromy_annihilator_incompatModule`, `fittingIdealZero_incompatModule` |
+| `(3.4)` | `wallSmul`, `range_wallSmul`, `range_wallSmul_eq_minStableBoundary`, `presShortComplex`, `presShortComplex_shortExact` |
+| `(4.1)` | `linearMap_eq_zero_of_annihilator_torsionFree`, `hom_incompatModule_eq_zero`, `subsingleton_hom_incompatModule`, `domain_torsionFree` |
+| `(4.3)` | `twoTermResolution`, `presResolution` |
+| `(4.2)` `Ext` | `extOneIso`, `extOneSmulIso`, `extOneIncompatIso` |
+| `(4.2)` `Tor` | `torOneIso`, `torOneSmulIso`, `torOneIncompatIso`, `identityFibreSqKEquiv` |
+| `(4.2)` higher vanishing | `isZero_ext_add_two`, `isZero_tor_add_two`, `isZero_extIncompat_add_two`, `isZero_torIncompat_add_two` |
+| `(4.4)` | `minStableBoundary_eq_bot_of_eq_one`, `minStableBoundary_eq_top_of_ne_one`, `minStableBoundary_eq_bot_iff`, `minStableBoundary_eq_top_iff` |
+| `(4.5)` | `tensor_subtype_minStableBoundary_eq_zero`, `freeBoundaryEquiv`, `boundaryTensorEquiv`, `boundaryTensorIsoTorOne` |
+| `(4A.1)`--`(4A.3)` | `srcLanding`, `srcDefect`, `srcRotDefect`, `srcBoundary`, `srcIncompatModule`, `exists_srcData` |
+| `(4A.4)` | `srcDefect_apply`, `srcRotDefect_apply` |
+| `(4A.10)` | `range_srcDefect`, `range_srcRotDefect` |
+| `(4A.5)`, `(4A.6)` | `coordSum`, `mem_ker_coordSum`, `srcBoundary_eq_ker_coordSum`, `srcIncompatEquiv` |
+| `(4A.7)` | `annihilator_srcIncompatModule`, `fittingIdealZero_srcIncompatModule` |
+| `(4A.8)` | `hom_srcIncompatModule_eq_zero`, `subsingleton_hom_srcIncompatModule` |
+| `(4A.9)` | `extOneSrcIso`, `torOneSrcIso`, `identityFibreKEquiv`, `isZero_extSrc_add_two`, `isZero_torSrc_add_two` |
+| Thm 4A.1, identity fibre | `srcBoundary_eq_antidiagonal_of_eq_one` |
+| `(4A.11)` | `wallSquare_le_ker_coordSum`, `coordSumQuot`, `coordSumQuot_surjective`, `antidiagonal`, `antidiagonal_injective`, `ker_coordSumQuot` |
+| `(4A.12)` | `fittingIdealZero_incompatModule_eq_sq` |
+| `(5.1)` | `monodromyRefl_wallEquation`, `monodromyRefl_mem_identityIdeal`, `monodromyRefl_wall_add_mem_sq`, `wallConormalClass`, `toCotangent_monodromyRefl_wall` |
+| `(5.2)` | `reflEnergy`, `mul_reflEnergy`, `reflEnergy_eq`, `monodromyEnergy`, `monodromyRefl_energy` |
+| `(5.3)` | `reflEnergy_mem_sq`, `span_reflEnergy_eq`, `span_monodromyEnergy_eq`, `span_monodromyEnergy_eq_fittingIdealZero` |
+| `(5.4)` | `monodromyEnergyPow`, `mul_reflEnergy_pow`, `monodromy_mul_energyPow`, `span_monodromyEnergyPow_eq` |
+| `(5.5)` | `wallEquation_mul_portCofactor`, `evalOne_portCofactor`, `identityIdeal_isMaximal`, `portCofactor_notMem_identityIdeal`, `span_pow_sub_one_localized`, `span_energyPow_localized` |
+| `(5.6)`, `(5.8)` | `ambiCurvature`, `ambiCurvature_eq`, `mul_ambiCurvature_sq`, `monodromy_mul_curvature_sq` |
+| `(5.7)` | `span_curvature_localized`, `monodromyParam_add_one_notMem_identityIdeal` |
+| `(5.9)` | `ambiCurvature_sub_two_wall`, `monodromyCurvature_sub_two_wall_mem_sq` |
+| `(5.10)` | `filtSub`, `gradedPiece`, `inI`, `gradedMul`, `pieceGen`, `ker_pieceGen`, `pieceEquiv`, `pieceEquiv_mul`, `normalConePieceEquiv` |
+| `(5.11)` | `inI_monodromyRefl_wall` |
+| `(5.12)` | `inI_curvature`, `inI_energy` |
+| `(5.13)` | `inI_pow_sub_one`, `inI_energyPow` |
+| initial forms nonzero | `not_isUnit_wallEquation`, `inI_wall_ne_zero` |
+| `(6.1)`, `(6.2)` | `extResponse`, `scalarResponse`, `ker_scalarResponse`, `ker_scalarResponse_of_comp_eq_zero`, `ker_scalarResponse_ne_bot_of_finrank_lt`, `comp_eq_zero_of_separable` |
+| `(6.3)` | `abs_apply_le`, `abs_apply_sum_range`, `breadthVector`, `apply_breadthVector`, `breadthVector_tendsto_zero`, `graph_mem_closure`, `not_continuous` |
+| `(7.1)` | `riemannSpecial`, `specializeHom`, `specializeHom_monodromyParam`, `exists_riemann_specialization` |
+| `(7.2)` | `riemannSpecial_eq_one_iff`, `minStableBoundary_riemann_eq_bot_iff`, `minStableBoundary_riemann_eq_top_iff` |
+| `(7.3)` | `coordSum_srcDefect` |
+| `(8A.1)`, `(8A.2)` | `smul_ideal_eq_span`, `tensorPullbackEquiv`, `mem_ker_smul_algebra_iff`, `torOnePullbackIso`, `isZero_torPullback_add_two` |
+| `(8A.3)` field points | `ker_smul_field_eq_bot`, `ker_smul_field_eq_top`, `span_sub_one_eq_top`, `span_sub_one_eq_bot`, `derivedPullback_nontrivial_iff` |
+| `(8A.4)` | `end_apply_eq_mul`, `endQuotEquiv` |
+| Thm 8A.2 support | `smul_eq_zero_sub`, `smul_eq_zero_quotient`, `smul_eq_zero_prod`, `smul_eq_zero_pi`, `smul_eq_zero_tensor_left`, `smul_eq_zero_tensor_right`, `smul_eq_zero_hom_source`, `smul_eq_zero_hom_target`, `smul_eq_zero_quotRange`, `smul_eq_zero_kerSmul`, `subsingleton_localizedModule`, `subsingleton_localizedModule_atPrime` |
+| Cor 8A.3 | `riemann_pullback_nontrivial_iff` |
+
+New reusable infrastructure built for this card, absent from mathlib:
+
+- **Zeroth Fitting ideal of a module.**  `presDetIdeal` (determinant ideal of a finite generating
+  family), `presDetIdeal_extendGen`, `presDetIdeal_reindexGen`, `presDetIdeal_eq_of_surjective`
+  (presentation independence), `fittingIdealZero`, `fittingIdealZero_eq_presDetIdeal`,
+  `fittingIdealZero_congr`, `fittingIdealZero_quotient`, `fittingIdealZero_quotient_sq`.
+- **Two-term projective resolutions.**  `twoTermCplx`, `twoTermPi`, `twoTermResolution`: a short
+  exact sequence with projective left terms is a length-one projective resolution of its cokernel;
+  `presShortComplex`, `presResolution` specialise this to a presentation of modules.
+- **Derived functors from a two-term resolution.**  `homologyIsoQuotRange`, `homologyIsoKer`,
+  `kerEquivOfComp`, `extOneIso`, `isZero_ext_add_two`, `torOneIso`, `isZero_tor_add_two`, and the
+  regular-scalar specialisations `extOneSmulIso`, `torOneSmulIso`, `extCongrLeft`, `torCongrLeft`.
+- **Associated graded ring of an ideal filtration.**  `filtSub`, `gradedPiece`, `inI`,
+  `gradedMulPre`, `gradedMulLeft`, `gradedMul`, together with `pieceEquiv` and `pieceEquiv_mul`
+  identifying `gr_I R` with `(R ⧸ I)[e]` for a principal ideal generated by a regular element.
+
+Every numbered statement of the card is unconditional in Lean.  The only hypotheses carried by the
+declarations are the data of the family itself — `c` a unit, `q` a unit, the trace `ε` surjective
+and `τ_S`-invariant, `q-1` regular, characteristic zero where the card uses it — and each of these
+is discharged on the universal monodromy line by `isUnit_monodromyParam`, `exists_srcData`,
+`monodromy_isSMulRegular` and the `CharZero` instance.  `#print axioms` on every declaration in the
+table reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Gates
+
+- [x] universal two-path family and its minimal stable boundary
+- [x] Cartier incompatibility theorem `(3.1)`--`(3.2)`
+- [x] regular-reader exclusion `(4.1)`, `(4A.8)`
+- [x] derived dual and derived fibre `(4.2)`, `(4A.9)`, `(4.5)`
+- [x] literal cyclic source and its unique orientation quotient `(4A.6)`--`(4A.12)`
+- [x] reflection orientation and the Fitting-energy identity `(5.1)`--`(5.3)`
+- [x] rank-powered central port and ambidexterity curvature `(5.4)`--`(5.9)`
+- [x] selection coframe and induced normal metric `(5.10)`--`(5.13)`
+- [x] exterior-source and breadth laws `(6.1)`--`(6.3)`
+- [x] exact Riemann/Stokes specialization `(7.1)`--`(7.3)`
+- [x] support-selection no-go `(8A.1)`--`(8A.4)`
+- [x] Lean formalization
+- [ ] RH
+
+## Log
+
+- 2026-08-09 — paper proof completed; card entered stage 2.
+- 2026-08-09 — full unconditional Lean layer built and umbrella-wired; twenty-one modules under
+  `HTGeometry/DerivedSelectionGeometry/`.  Four reusable layers absent from mathlib were
+  constructed on the way: zeroth Fitting ideals with presentation independence, two-term
+  projective resolutions, `Ext`/`Tor` computed from them, and the associated graded ring of an
+  ideal filtration.  Card promoted to stage 3.

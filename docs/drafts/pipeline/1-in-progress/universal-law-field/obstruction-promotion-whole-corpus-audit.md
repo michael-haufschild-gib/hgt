@@ -158,15 +158,18 @@ promotion and its exchange identities.
 | failure exposes typed residual | passed in multiple independent finite/infinite theorems |
 | residual canonically promotes to new law | passed for strict congruence; passed in separate higher-obstruction and completion charts |
 | promotion has universal/minimal property | passed for strict congruence, tomography, several completions |
-| two unlike promotion modes derived from one residual | open |
-| nonidentity exchange between promotion modes | open |
+| two unlike promotion modes derived from one residual | passed: strict abelian quotient versus nonsplit Heisenberg central promotion |
+| nonidentity comparison between promotion modes | passed: quotient erases a fixed central commutator and admits no group section |
+| composition/exchange law involving a third singular or higher mode | open |
 | charge migration formula across exchange | finite-word conservation only |
 | withheld prediction validated in second laboratory | passed for some process models, not for the promotion calculus |
 | whole-corpus source generation | open |
 
 Verdict: Obstruction--Promotion Mechanics is broader and less object-dependent than existing field
-forks, but is not yet accepted. The decisive missing theorem is one residual with two source-forced
-promotion modes and a computed nontrivial exchange law.
+forks, but is not yet accepted. ULF-OPM-3 passes the first cross-mode gate: one exchange residual
+has strict and central promotions, their exact comparison loses a fixed commutator, and no section
+repairs that loss. The decisive missing theorem is now a **selection/exchange law** deciding when a
+source must strictify, centralize, promote to higher arity, or change admission.
 
 ## 6. Next experiments
 
