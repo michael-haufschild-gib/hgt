@@ -213,7 +213,7 @@ private theorem aeval_XsubC_pow_block (μ : ℂ) :
           simp [smoothDerivLM_coe]
         rw [hstep, hh, deriv_polyExp]
         funext x
-        simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, polyExp, polyExpC, shiftPoly,
+        simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, polyExp, polyExpC, expShiftPoly,
           Polynomial.eval_add, Polynomial.eval_smul, smul_eq_mul]
         ring
       have hcompose :

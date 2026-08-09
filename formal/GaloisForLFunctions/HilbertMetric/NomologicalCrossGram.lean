@@ -156,6 +156,7 @@ noncomputable def activeRangeIsometryInto (T S : D →ₗ[𝕜] W)
   (LinearMap.range S).subtypeₗᵢ.comp
     (activeRangeIsometryEquiv T S h).toLinearIsometry
 
+omit [FiniteDimensional 𝕜 W] in
 @[simp]
 theorem activeRangeIsometryInto_apply (T S : D →ₗ[𝕜] W)
     (h : ∀ x y, ⟪T x, T y⟫_𝕜 = ⟪S x, S y⟫_𝕜) (x : D) :
@@ -427,7 +428,7 @@ theorem crossGramPacket_eq_iff_existsUnique_codomainIsometry_of_jointly_surjecti
       change codomainIsometryEquivOfInnerEq
         (synthesis fun i ↦ (T i).toLinearMap)
         (synthesis fun i ↦ (S i).toLinearMap) hs hT hS (T i x) = S i x
-      simpa only [synthesis_of] using codomainIsometryEquivOfInnerEq_apply
+      simpa using codomainIsometryEquivOfInnerEq_apply
         (synthesis fun i ↦ (T i).toLinearMap)
         (synthesis fun i ↦ (S i).toLinearMap) hs hT hS (DirectSum.of V i x)
     · intro U' hU'
@@ -437,9 +438,7 @@ theorem crossGramPacket_eq_iff_existsUnique_codomainIsometry_of_jointly_surjecti
       intro z
       induction z using DirectSum.induction_on with
       | zero => simp
-      | of i x =>
-          change U' ((T i).toLinearMap x) = (S i).toLinearMap x
-          exact hU' i x
+      | of i x => simpa using hU' i x
       | add x y hx hy => simpa only [map_add] using congrArg₂ (· + ·) hx hy
   · rintro ⟨U, hU, _⟩ i j x y
     rw [← hU i x, ← hU j y]

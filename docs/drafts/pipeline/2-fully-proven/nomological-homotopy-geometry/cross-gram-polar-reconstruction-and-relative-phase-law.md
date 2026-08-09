@@ -197,7 +197,8 @@ This is the exact finite-dimensional polar observer law required by NHG:
 
 ## Lean formalization status
 
-- **Status correction (2026-08-09):** `[LEAN IMPLEMENTATION IN PROGRESS] [LEAF CHECK FAILED]`
+- **Status (freshly re-audited 2026-08-09):**
+  `[LEAN IMPLEMENTED] [LEAF CHECK PASSED] [FINAL AXIOM/UMBRELLA AUDIT PENDING]`
 - **Module:** `GaloisForLFunctions.HilbertMetric.NomologicalCrossGram`
 - **Umbrella wiring:** imported by `GaloisForLFunctions.HilbertMetric`
 - **Exact capstones:**
@@ -209,9 +210,9 @@ This is the exact finite-dimensional polar observer law required by NHG:
   - `gram_hasEigenvalue_sq_singularValues`
   - `support_singularValues_eq_range_rank`
   - `scalar_relative_phase_counterexample`
-- **Verification correction:** the claimed leaf pass was inaccurate. Required notation scopes
-  exposed unresolved elaboration and proof obligations in this module. It must not be treated as
-  formalized until a fresh foreground leaf check succeeds, followed by the final axiom/umbrella
-  audit.
+- **Verification:** after correcting required notation scopes and every exposed elaboration/proof
+  obligation, a fresh foreground
+  `lake env lean GaloisForLFunctions/HilbertMetric/NomologicalCrossGram.lean` completed with zero
+  errors and zero warnings.
 - **Promotion gate still open:** final umbrella build, project lint, and `#print axioms` audit are
   intentionally deferred to the program-wide final audit. Card remains in Stage 2.

@@ -19,9 +19,9 @@ certify is true: existence of a calibration is not an independent source of comp
 
 namespace HTGeometry
 
-section Words
+section WordsCore
 
-variable {X : Type*} [MetricSpace X] {Γ : Type*}
+variable {X : Type*} {Γ : Type*}
 
 /-- Action of a gate word.  The head of the list is the gate applied last. -/
 def wordAct (act : Γ → X → X) (w : List Γ) (x : X) : X := w.foldr act x
@@ -45,6 +45,12 @@ theorem reachSet_mono (act : Γ → X → X) (chi : X) {s t : ℕ} (h : s ≤ t)
     reachSet act chi s ⊆ reachSet act chi t := by
   rintro z ⟨w, hw, rfl⟩
   exact ⟨w, hw.trans h, rfl⟩
+
+end WordsCore
+
+section Words
+
+variable {X : Type*} [MetricSpace X] {Γ : Type*}
 
 /-- Distance from a state to the `s`-th reachable layer. -/
 noncomputable def layerDist (act : Γ → X → X) (chi : X) (s : ℕ) (x : X) : ℝ :=
@@ -105,6 +111,7 @@ theorem penaltyValue_nonneg (hlam : 0 ≤ lam) (x : X) :
 
 /-! ### The inverse gate -/
 
+omit [MetricSpace X] in
 /-- The inverse assignment is an involution on the induced maps. -/
 theorem act_inv_inv (hinvL : ∀ (g : Γ) (x : X), act (inv g) (act g x) = x)
     (g : Γ) (x : X) : act (inv (inv g)) x = act g x := by
@@ -138,8 +145,7 @@ theorem penaltyValue_le_add_dist (hlam : 0 ≤ lam) (x y : X) :
     have hstep : wordCost act chi lam eps x w ≤
         wordCost act chi lam eps y w + lam * dist x y := by
       have hd : dist x (wordAct act w chi) ≤ dist y (wordAct act w chi) + dist x y := by
-        rw [dist_comm x y]
-        exact dist_triangle_left _ _ _
+        linarith [dist_triangle x y (wordAct act w chi)]
       have hmax : max (dist x (wordAct act w chi) - eps) 0 ≤
           max (dist y (wordAct act w chi) - eps) 0 + dist x y := by
         rcases le_total (dist x (wordAct act w chi) - eps) 0 with h | h
@@ -154,7 +160,8 @@ theorem penaltyValue_le_add_dist (hlam : 0 ≤ lam) (x y : X) :
       have := mul_le_mul_of_nonneg_left hmax hlam
       simp only [wordCost]
       nlinarith [this]
-    have := penaltyValue_le_wordCost hlam x w
+    have hle := penaltyValue_le_wordCost (act := act) (chi := chi) (lam := lam) (eps := eps)
+      hlam x w
     linarith
   have := le_penaltyValue (act := act) (chi := chi) (lam := lam) (eps := eps) y key
   linarith
@@ -211,13 +218,15 @@ theorem abs_penaltyValue_act_sub_le_one (hlam : 0 ≤ lam)
 
 /-! ### The Bellman equation -/
 
-variable [Nonempty Γ]
-
 theorem bddBelow_range_penaltyValue_inv (hlam : 0 ≤ lam) (x : X) :
     BddBelow (Set.range fun g : Γ => penaltyValue act chi lam eps (act (inv g) x)) := by
   refine ⟨0, ?_⟩
   rintro r ⟨g, rfl⟩
   exact penaltyValue_nonneg hlam _
+
+section Bellman
+
+variable [Nonempty Γ]
 
 /-- **Exact robust Bellman equation.** -/
 theorem penaltyValue_eq_min (hlam : 0 ≤ lam)
@@ -254,6 +263,8 @@ theorem penaltyValue_eq_min (hlam : 0 ≤ lam)
           hlam (act (inv g) x) w
         linarith
 
+end Bellman
+
 /-! ### Comparison with approximate complexity -/
 
 theorem penaltyValue_le_of_reachable (hlam : 0 ≤ lam) (x : X) {c : ℕ}
@@ -289,7 +300,7 @@ theorem IsBellmanSubsolution.le_penaltyValue
     (hiso : ∀ g : Γ, Isometry (act g))
     (hinvL : ∀ (g : Γ) (x : X), act (inv g) (act g x) = x) (x : X) :
     phi x ≤ penaltyValue act chi lam eps x :=
-  le_penaltyValue x fun w => hphi.le_wordCost hiso hinvL w x
+  _root_.HTGeometry.le_penaltyValue x fun w => hphi.le_wordCost hiso hinvL w x
 
 theorem isBellmanSubsolution_penaltyValue (hlam : 0 ≤ lam)
     (hiso : ∀ g : Γ, Isometry (act g))
@@ -336,15 +347,19 @@ section Compact
 variable {X : Type*} [MetricSpace X] {Γ : Type*} [TopologicalSpace Γ] [CompactSpace Γ]
 variable {act : Γ → X → X} {chi : X} {eps : ℝ}
 
+omit [MetricSpace X] [TopologicalSpace Γ] [CompactSpace Γ] in
 theorem reachSet_zero (act : Γ → X → X) (chi : X) : reachSet act chi 0 = {chi} := by
   ext z
   constructor
   · rintro ⟨w, hw, rfl⟩
     have : w = [] := List.length_eq_zero_iff.mp (Nat.le_zero.mp hw)
     simp [this]
-  · rintro rfl
+  · intro hz
+    have hzc : z = chi := hz
+    rw [hzc]
     exact mem_reachSet_self act chi 0
 
+omit [MetricSpace X] [TopologicalSpace Γ] [CompactSpace Γ] in
 theorem reachSet_succ (act : Γ → X → X) (chi : X) (s : ℕ) :
     reachSet act chi (s + 1) =
       reachSet act chi s ∪
@@ -380,7 +395,6 @@ theorem exists_dist_eq_layerDist (hcont : Continuous fun p : Γ × X => act p.1 
 ball. -/
 theorem lt_layerDist_of_lt_approxComplexity
     (hcont : Continuous fun p : Γ × X => act p.1 p.2) (chi : X) (eps : ℝ) (x : X)
-    (hS : {s | ∃ w : List Γ, w.length ≤ s ∧ dist x (wordAct act w chi) ≤ eps}.Nonempty)
     {s : ℕ} (hs : s < approxComplexity act chi eps x) :
     eps < layerDist act chi s x := by
   obtain ⟨z, hz, hzeq⟩ := exists_dist_eq_layerDist hcont chi s x
@@ -391,6 +405,7 @@ theorem lt_layerDist_of_lt_approxComplexity
     ⟨w, hw, not_lt.mp hcon⟩
   exact absurd (Nat.sInf_le hmem) (not_le.mpr hs)
 
+omit [TopologicalSpace Γ] [CompactSpace Γ] in
 theorem layerDist_le_dist {chi : X} {s : ℕ} {x : X} {w : List Γ} (hw : w.length ≤ s) :
     layerDist act chi s x ≤ dist x (wordAct act w chi) :=
   Metric.infDist_le_dist_of_mem ⟨w, hw, rfl⟩
@@ -398,7 +413,7 @@ theorem layerDist_le_dist {chi : X} {s : ℕ} {x : X} {w : List Γ} (hw : w.leng
 /-- **Finite exact-penalty recovery.**  Above an explicit finite penalty threshold the
 exact-penalty value equals the approximate circuit complexity. -/
 theorem penaltyValue_eq_approxComplexity
-    {inv : Γ → Γ} {lam : ℝ} (hlam : 0 ≤ lam)
+    {lam : ℝ} (hlam : 0 ≤ lam)
     (hcont : Continuous fun p : Γ × X => act p.1 p.2)
     (chi : X) (eps : ℝ) (x : X)
     (hS : {s | ∃ w : List Γ, w.length ≤ s ∧ dist x (wordAct act w chi) ≤ eps}.Nonempty)
@@ -419,7 +434,7 @@ theorem penaltyValue_eq_approxComplexity
     linarith
   · have hslt : w.length < c := by exact_mod_cast hlen
     have hlayer : eps < layerDist act chi w.length x :=
-      lt_layerDist_of_lt_approxComplexity hcont chi eps x hS hslt
+      lt_layerDist_of_lt_approxComplexity hcont chi eps x hslt
     have hdist : layerDist act chi w.length x ≤ dist x (wordAct act w chi) :=
       layerDist_le_dist le_rfl
     have hthr' := hthr w.length hslt
@@ -431,6 +446,77 @@ theorem penaltyValue_eq_approxComplexity
       mul_le_mul_of_nonneg_left hmax hlam
     simp only [wordCost]
     linarith
+
+
+/-- The exact finite penalty threshold `max_{s < c} (c - s) / (d_s(x) - eps)`. -/
+noncomputable def penaltyThreshold (act : Γ → X → X) (chi : X) (eps : ℝ) (x : X) : ℝ :=
+  ⨆ s : Fin (approxComplexity act chi eps x),
+    ((approxComplexity act chi eps x : ℝ) - (s : ℕ)) / (layerDist act chi s x - eps)
+
+omit [TopologicalSpace Γ] [CompactSpace Γ] in
+theorem le_penaltyThreshold (chi : X) (eps : ℝ) (x : X)
+    {s : ℕ} (hs : s < approxComplexity act chi eps x) :
+    ((approxComplexity act chi eps x : ℝ) - s) / (layerDist act chi s x - eps) ≤
+      penaltyThreshold act chi eps x := by
+  have := le_ciSup (f := fun t : Fin (approxComplexity act chi eps x) =>
+      ((approxComplexity act chi eps x : ℝ) - (t : ℕ)) / (layerDist act chi t x - eps))
+    (Finite.bddAbove_range _) (⟨s, hs⟩ : Fin (approxComplexity act chi eps x))
+  simpa [penaltyThreshold] using this
+
+/-- **Finite exact-penalty recovery, threshold form.**  Every penalty above the explicit finite
+threshold makes the exact-penalty value equal to the approximate circuit complexity. -/
+theorem penaltyValue_eq_approxComplexity_of_penaltyThreshold_le
+    {lam : ℝ} (hlam : 0 ≤ lam)
+    (hcont : Continuous fun p : Γ × X => act p.1 p.2)
+    (chi : X) (eps : ℝ) (x : X)
+    (hS : {s | ∃ w : List Γ, w.length ≤ s ∧ dist x (wordAct act w chi) ≤ eps}.Nonempty)
+    (hthr : penaltyThreshold act chi eps x ≤ lam) :
+    penaltyValue act chi lam eps x = (approxComplexity act chi eps x : ℝ) := by
+  refine penaltyValue_eq_approxComplexity hlam hcont chi eps x hS ?_
+  intro s hs
+  have hpos : 0 < layerDist act chi s x - eps := by
+    have := lt_layerDist_of_lt_approxComplexity hcont chi eps x hs
+    linarith
+  have hle := (le_penaltyThreshold (act := act) chi eps x hs).trans hthr
+  rw [div_le_iff₀ hpos] at hle
+  linarith
+
+omit [TopologicalSpace Γ] [CompactSpace Γ] in
+/-- At zero approximate complexity the exact-penalty value vanishes for every penalty. -/
+theorem penaltyValue_eq_zero_of_approxComplexity_eq_zero
+    {lam : ℝ} (hlam : 0 ≤ lam) (chi : X) (eps : ℝ) (x : X)
+    (hS : {s | ∃ w : List Γ, w.length ≤ s ∧ dist x (wordAct act w chi) ≤ eps}.Nonempty)
+    (hc : approxComplexity act chi eps x = 0) :
+    penaltyValue act chi lam eps x = 0 := by
+  have hmem : (0 : ℕ) ∈ {s | ∃ w : List Γ, w.length ≤ s ∧ dist x (wordAct act w chi) ≤ eps} := by
+    rw [← hc]; exact Nat.sInf_mem hS
+  have hle := penaltyValue_le_of_reachable (act := act) (chi := chi) (eps := eps) hlam x hmem
+  have hge := penaltyValue_nonneg (act := act) (chi := chi) (eps := eps) hlam x
+  simp only [Nat.cast_zero] at hle
+  linarith
+
+/-- **Exact-penalty representation of approximate complexity.**  The approximate circuit
+complexity is the largest value at `x` of a Bellman subsolution at some nonnegative penalty, and
+the outer supremum is attained at the finite threshold. -/
+theorem approxComplexity_isGreatest {inv : Γ → Γ}
+    (hiso : ∀ g : Γ, Isometry (act g))
+    (hinvL : ∀ (g : Γ) (x : X), act (inv g) (act g x) = x)
+    (hcont : Continuous fun p : Γ × X => act p.1 p.2)
+    (chi : X) (eps : ℝ) (x : X)
+    (hS : {s | ∃ w : List Γ, w.length ≤ s ∧ dist x (wordAct act w chi) ≤ eps}.Nonempty) :
+    IsGreatest {r : ℝ | ∃ (lam : ℝ) (phi : X → ℝ), 0 ≤ lam ∧
+        IsBellmanSubsolution act inv chi lam eps phi ∧ phi x = r}
+      (approxComplexity act chi eps x : ℝ) := by
+  constructor
+  · refine ⟨max (penaltyThreshold act chi eps x) 0,
+      penaltyValue act chi (max (penaltyThreshold act chi eps x) 0) eps,
+      le_max_right _ _,
+      isBellmanSubsolution_penaltyValue (le_max_right _ _) hiso hinvL, ?_⟩
+    exact penaltyValue_eq_approxComplexity_of_penaltyThreshold_le (le_max_right _ _)
+      hcont chi eps x hS (le_max_left _ _)
+  · rintro r ⟨lam, phi, hlam, hphi, rfl⟩
+    refine le_trans (hphi.le_penaltyValue hiso hinvL x) ?_
+    exact penaltyValue_le_of_reachable hlam x (Nat.sInf_mem hS)
 
 end Compact
 

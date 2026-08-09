@@ -26,13 +26,13 @@ open scoped BigOperators
 /-! ## Exponential characters -/
 
 /-- The exponential character `x ↦ e^{μ x}` on the real line. -/
-def expChar (μ : ℂ) : ℝ → ℂ := fun x => Complex.exp (μ * (x : ℂ))
+def realExpChar (μ : ℂ) : ℝ → ℂ := fun x => Complex.exp (μ * (x : ℂ))
 
-theorem polyExp_one (μ : ℂ) : polyExp 1 μ = expChar μ := by
+theorem polyExp_one (μ : ℂ) : polyExp 1 μ = realExpChar μ := by
   funext x
-  simp [polyExp, polyExpC, expChar]
+  simp [polyExp, polyExpC, realExpChar]
 
-theorem expChar_mem_expPolySpace (μ : ℂ) : expChar μ ∈ expPolySpace := by
+theorem expChar_mem_expPolySpace (μ : ℂ) : realExpChar μ ∈ expPolySpace := by
   rw [← polyExp_one]
   exact polyExp_mem_expPolySpace _ _
 
@@ -63,8 +63,8 @@ def phiJT (κ : ℂ) : ℝ → ℂ := fun x => κ * Complex.sinh (x : ℂ)
 
 theorem realTranslate_phiJT (κ : ℂ) (a : ℝ) :
     realTranslate a (phiJT κ)
-      = (κ * Complex.exp (-(a : ℂ)) / 2) • expChar 1 -
-        (κ * Complex.exp ((a : ℂ)) / 2) • expChar (-1) := by
+      = (κ * Complex.exp (-(a : ℂ)) / 2) • realExpChar 1 -
+        (κ * Complex.exp ((a : ℂ)) / 2) • realExpChar (-1) := by
   funext x
   have hx : ((x - a : ℝ) : ℂ) = (x : ℂ) - (a : ℂ) := by push_cast; ring
   have e1 : Complex.exp ((x : ℂ) - (a : ℂ))
@@ -73,22 +73,22 @@ theorem realTranslate_phiJT (κ : ℂ) (a : ℝ) :
   have e2 : Complex.exp (-((x : ℂ) - (a : ℂ)))
       = Complex.exp ((-1 : ℂ) * (x : ℂ)) * Complex.exp ((a : ℂ)) := by
     rw [← Complex.exp_add]; congr 1; ring
-  simp only [realTranslate, phiJT, expChar, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hx,
+  simp only [realTranslate, phiJT, realExpChar, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hx,
     csinh_eq, e1, e2]
   ring
 
 theorem translationSpan_phiJT_le (κ : ℂ) :
-    translationSpan (phiJT κ) ≤ Submodule.span ℂ (Set.range ![expChar 1, expChar (-1)]) := by
+    translationSpan (phiJT κ) ≤ Submodule.span ℂ (Set.range ![realExpChar 1, realExpChar (-1)]) := by
   rw [translationSpan, Submodule.span_le]
   rintro u ⟨a, rfl⟩
-  show realTranslate a (phiJT κ) ∈ Submodule.span ℂ (Set.range ![expChar 1, expChar (-1)])
+  show realTranslate a (phiJT κ) ∈ Submodule.span ℂ (Set.range ![realExpChar 1, realExpChar (-1)])
   rw [realTranslate_phiJT]
   refine Submodule.sub_mem _ (Submodule.smul_mem _ _ ?_) (Submodule.smul_mem _ _ ?_)
   · exact Submodule.subset_span ⟨0, by simp⟩
   · exact Submodule.subset_span ⟨1, by simp⟩
 
 instance finiteDimensional_span_jtChars :
-    FiniteDimensional ℂ (Submodule.span ℂ (Set.range ![expChar 1, expChar (-1)])) :=
+    FiniteDimensional ℂ (Submodule.span ℂ (Set.range ![realExpChar 1, realExpChar (-1)])) :=
   Module.Finite.span_of_finite ℂ (Set.finite_range _)
 
 instance finiteDimensional_translationSpan_phiJT (κ : ℂ) :
@@ -102,7 +102,7 @@ theorem finrank_translationSpan_phiJT {κ : ℂ} (hκ : κ ≠ 0) :
   refine le_antisymm ?_ ?_
   · have hmono := Submodule.finrank_mono (translationSpan_phiJT_le κ)
     refine le_trans hmono ?_
-    have hcard := finrank_span_le_card (R := ℂ) (Set.range ![expChar 1, expChar (-1)])
+    have hcard := finrank_span_le_card (R := ℂ) (Set.range ![realExpChar 1, realExpChar (-1)])
     refine le_trans hcard ?_
     rw [Set.toFinset_range]
     exact le_trans Finset.card_image_le (by simp)
@@ -157,7 +157,7 @@ def phiSpin (F : Finset ℂ) (α : ℂ → ℂ) : ℝ → ℂ :=
   fun x => ∑ s ∈ F, α s * Complex.sinh (s * (x : ℂ))
 
 /-- The `2·|F|` exponential characters carrying a finite higher-spin dressing. -/
-def spinChar (p : ℂ × Bool) : ℝ → ℂ := expChar (cond p.2 p.1 (-p.1))
+def spinChar (p : ℂ × Bool) : ℝ → ℂ := realExpChar (cond p.2 p.1 (-p.1))
 
 theorem realTranslate_phiSpin (F : Finset ℂ) (α : ℂ → ℂ) (a : ℝ) :
     realTranslate a (phiSpin F α)
@@ -342,19 +342,19 @@ theorem not_finiteDimensional_translationSpan_phiCDD {B : ℝ} (hB : 1 < B) :
 
 /-! ## The explicit higher-spin annihilator -/
 
-theorem deriv_expChar (μ : ℂ) : deriv (expChar μ) = μ • expChar μ := by
+theorem deriv_expChar (μ : ℂ) : deriv (realExpChar μ) = μ • realExpChar μ := by
   rw [← polyExp_one, deriv_polyExp]
   funext x
-  simp [polyExp, polyExpC, shiftPoly]
+  simp [polyExp, polyExpC, expShiftPoly]
 
-theorem contDiff_expChar (μ : ℂ) : ContDiff ℝ (⊤ : ℕ∞) (expChar μ) :=
+theorem contDiff_expChar (μ : ℂ) : ContDiff ℝ (⊤ : ℕ∞) (realExpChar μ) :=
   contDiff_of_mem_expPolySpace (expChar_mem_expPolySpace μ)
 
 theorem sinhChar_eq (s : ℂ) :
     (fun x : ℝ => Complex.sinh (s * (x : ℂ)))
-      = (2 : ℂ)⁻¹ • expChar s - (2 : ℂ)⁻¹ • expChar (-s) := by
+      = (2 : ℂ)⁻¹ • realExpChar s - (2 : ℂ)⁻¹ • realExpChar (-s) := by
   funext x
-  simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, expChar, csinh_eq]
+  simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, realExpChar, csinh_eq]
   rw [show (-(s * (x : ℂ))) = (-s) * (x : ℂ) by ring]
   ring
 
@@ -372,27 +372,27 @@ theorem phiSpin_mem_expPolySpace (F : Finset ℂ) (α : ℂ → ℂ) : phiSpin F
   exact Submodule.sum_mem _ fun s _ =>
     Submodule.smul_mem _ _ (sinhChar_mem_expPolySpace s)
 
-private theorem aeval_X_sub_C_expChar (μ : ℂ) (hm : expChar μ ∈ smoothSubmodule) :
+private theorem aeval_X_sub_C_expChar (μ : ℂ) (hm : realExpChar μ ∈ smoothSubmodule) :
     (Polynomial.aeval smoothDerivLM (Polynomial.X - Polynomial.C μ))
-      (⟨expChar μ, hm⟩ : smoothSubmodule) = 0 := by
+      (⟨realExpChar μ, hm⟩ : smoothSubmodule) = 0 := by
   apply Subtype.ext
   rw [map_sub, Polynomial.aeval_X, Polynomial.aeval_C, Algebra.algebraMap_eq_smul_one]
-  show deriv (expChar μ) - μ • expChar μ = (0 : ℝ → ℂ)
+  show deriv (realExpChar μ) - μ • realExpChar μ = (0 : ℝ → ℂ)
   rw [deriv_expChar]
   abel
 
-private theorem aeval_XsqSubC_expChar_pos (s : ℂ) (hm : expChar s ∈ smoothSubmodule) :
+private theorem aeval_XsqSubC_expChar_pos (s : ℂ) (hm : realExpChar s ∈ smoothSubmodule) :
     (Polynomial.aeval smoothDerivLM (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)))
-      (⟨expChar s, hm⟩ : smoothSubmodule) = 0 := by
+      (⟨realExpChar s, hm⟩ : smoothSubmodule) = 0 := by
   have hfac : (Polynomial.X ^ 2 - Polynomial.C (s ^ 2) : Polynomial ℂ)
       = (Polynomial.X + Polynomial.C s) * (Polynomial.X - Polynomial.C s) := by
     rw [Polynomial.C_pow]
     ring
   rw [hfac, map_mul, Module.End.mul_apply, aeval_X_sub_C_expChar s hm, map_zero]
 
-private theorem aeval_XsqSubC_expChar_neg (s : ℂ) (hm : expChar (-s) ∈ smoothSubmodule) :
+private theorem aeval_XsqSubC_expChar_neg (s : ℂ) (hm : realExpChar (-s) ∈ smoothSubmodule) :
     (Polynomial.aeval smoothDerivLM (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)))
-      (⟨expChar (-s), hm⟩ : smoothSubmodule) = 0 := by
+      (⟨realExpChar (-s), hm⟩ : smoothSubmodule) = 0 := by
   have hfac : (Polynomial.X ^ 2 - Polynomial.C (s ^ 2) : Polynomial ℂ)
       = (Polynomial.X - Polynomial.C s) * (Polynomial.X - Polynomial.C (-s)) := by
     rw [Polynomial.C_pow, Polynomial.C_neg]
@@ -410,12 +410,12 @@ theorem realConstCoeffOp_phiSpin_eq_zero (F : Finset ℂ) (α : ℂ → ℂ) :
     realConstCoeffOp (∏ s ∈ F, (Polynomial.X ^ 2 - Polynomial.C (s ^ 2))) (phiSpin F α) = 0 := by
   classical
   set L : Polynomial ℂ := ∏ s ∈ F, (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)) with hL
-  have hsm : ∀ μ : ℂ, expChar μ ∈ smoothSubmodule := fun μ => contDiff_expChar μ
+  have hsm : ∀ μ : ℂ, realExpChar μ ∈ smoothSubmodule := fun μ => contDiff_expChar μ
   have hphism : phiSpin F α ∈ smoothSubmodule :=
     contDiff_of_mem_expPolySpace (phiSpin_mem_expPolySpace F α)
   have hblock : ∀ s ∈ F, (Polynomial.aeval smoothDerivLM L)
-      ((2 : ℂ)⁻¹ • (⟨expChar s, hsm s⟩ : smoothSubmodule)
-        - (2 : ℂ)⁻¹ • (⟨expChar (-s), hsm (-s)⟩ : smoothSubmodule)) = 0 := by
+      ((2 : ℂ)⁻¹ • (⟨realExpChar s, hsm s⟩ : smoothSubmodule)
+        - (2 : ℂ)⁻¹ • (⟨realExpChar (-s), hsm (-s)⟩ : smoothSubmodule)) = 0 := by
     intro s hs
     have hsplit : L = (∏ t ∈ F.erase s, (Polynomial.X ^ 2 - Polynomial.C (t ^ 2)))
         * (Polynomial.X ^ 2 - Polynomial.C (s ^ 2)) := (Finset.prod_erase_mul F _ hs).symm
@@ -424,12 +424,12 @@ theorem realConstCoeffOp_phiSpin_eq_zero (F : Finset ℂ) (α : ℂ → ℂ) :
       aeval_XsqSubC_expChar_pos s (hsm s), aeval_XsqSubC_expChar_neg s (hsm (-s))]
     simp
   have hdecomp : (⟨phiSpin F α, hphism⟩ : smoothSubmodule)
-      = ∑ s ∈ F, α s • ((2 : ℂ)⁻¹ • (⟨expChar s, hsm s⟩ : smoothSubmodule)
-          - (2 : ℂ)⁻¹ • (⟨expChar (-s), hsm (-s)⟩ : smoothSubmodule)) := by
+      = ∑ s ∈ F, α s • ((2 : ℂ)⁻¹ • (⟨realExpChar s, hsm s⟩ : smoothSubmodule)
+          - (2 : ℂ)⁻¹ • (⟨realExpChar (-s), hsm (-s)⟩ : smoothSubmodule)) := by
     apply Subtype.ext
     push_cast
     funext x
-    simp only [Finset.sum_apply, Pi.smul_apply, Pi.sub_apply, smul_eq_mul, phiSpin, expChar]
+    simp only [Finset.sum_apply, Pi.smul_apply, Pi.sub_apply, smul_eq_mul, phiSpin, realExpChar]
     refine Finset.sum_congr rfl fun s _ => ?_
     rw [csinh_eq, show (-(s * (x : ℂ))) = (-s) * (x : ℂ) by ring]
     ring

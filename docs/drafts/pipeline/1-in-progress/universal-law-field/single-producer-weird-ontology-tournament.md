@@ -258,16 +258,21 @@ reversible/irreversible exchange yields a new invariant rather than repackaging 
 
 No winner. Current high-risk ranking by single-producer potential:
 
-1. polarized directed-history mathematics;
-2. non-objectal parallax mathematics;
-3. proof partition functions;
-4. endogenous logic;
-5. experimental Galois theory;
-6. theorem amplitudes;
-7. proof ecology;
-8. complex action principle as a local chart only.
+1. antipode-defect bialgebraic law genesis;
+2. interventional functorial parallax mathematics;
+3. non-objectal parallax mathematics;
+4. proof partition functions;
+5. endogenous logic;
+6. experimental Galois theory;
+7. theorem amplitudes;
+8. proof ecology;
+9. complex action principle as a local chart only.
 
 CEM remains a useful experimental protocol surrounding these candidates, not presumed ontology.
+The current lead is developed in `antipode-defect-bialgebraic-law-genesis.md`, with
+`functorial-distortion-parallax-mathematics.md` as the strongest non-objectal competitor. Semigroup
+boundary mathematics is their common asymmetric calibration, but stable index completeness has been
+falsified.
 
 ## 12. Next killing move
 

@@ -143,7 +143,7 @@ theorem exchangeTransport_spectralGain_one_eq (s : ℂ) (n : ℕ+) :
 /-- The Hermitian torsion of a complex character. -/
 def hermitianTorsion (lam : ℕ+ →* ℂˣ) : ℕ+ →* ℝˣ where
   toFun n := Units.mk0 (Complex.normSq ((lam n : ℂˣ) : ℂ))
-    (by simpa [Complex.normSq_eq_zero] using (Units.ne_zero (lam n)))
+    (by simp)
   map_one' := by
     refine Units.ext ?_
     simp

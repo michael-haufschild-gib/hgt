@@ -68,10 +68,10 @@ theorem polyExp_smul_poly (c : ℂ) (P : Polynomial ℂ) (μ : ℂ) :
   simpa [polyExp] using this
 
 /-- The frequency-preserving polynomial shift produced by differentiating a block. -/
-def shiftPoly (μ : ℂ) (P : Polynomial ℂ) : Polynomial ℂ := Polynomial.derivative P + μ • P
+def expShiftPoly (μ : ℂ) (P : Polynomial ℂ) : Polynomial ℂ := Polynomial.derivative P + μ • P
 
 theorem hasDerivAt_polyExpC (P : Polynomial ℂ) (μ z : ℂ) :
-    HasDerivAt (polyExpC P μ) (polyExpC (shiftPoly μ P) μ z) z := by
+    HasDerivAt (polyExpC P μ) (polyExpC (expShiftPoly μ P) μ z) z := by
   have h1 : HasDerivAt (fun w : ℂ => P.eval w) ((Polynomial.derivative P).eval z) z :=
     P.hasDerivAt z
   have h2 : HasDerivAt (fun w : ℂ => Complex.exp (μ * w)) (Complex.exp (μ * z) * μ) z := by
@@ -80,20 +80,20 @@ theorem hasDerivAt_polyExpC (P : Polynomial ℂ) (μ z : ℂ) :
     simpa using hlin.cexp
   have h := h1.mul h2
   refine h.congr_deriv ?_
-  simp only [polyExpC, shiftPoly, Polynomial.eval_add, Polynomial.eval_smul, smul_eq_mul]
+  simp only [polyExpC, expShiftPoly, Polynomial.eval_add, Polynomial.eval_smul, smul_eq_mul]
   ring
 
 theorem deriv_polyExpC (P : Polynomial ℂ) (μ : ℂ) :
-    deriv (polyExpC P μ) = polyExpC (shiftPoly μ P) μ := by
+    deriv (polyExpC P μ) = polyExpC (expShiftPoly μ P) μ := by
   funext z
   exact (hasDerivAt_polyExpC P μ z).deriv
 
 theorem hasDerivAt_polyExp (P : Polynomial ℂ) (μ : ℂ) (x : ℝ) :
-    HasDerivAt (polyExp P μ) (polyExp (shiftPoly μ P) μ x) x :=
+    HasDerivAt (polyExp P μ) (polyExp (expShiftPoly μ P) μ x) x :=
   (hasDerivAt_polyExpC P μ (x : ℂ)).comp_ofReal
 
 theorem deriv_polyExp (P : Polynomial ℂ) (μ : ℂ) :
-    deriv (polyExp P μ) = polyExp (shiftPoly μ P) μ := by
+    deriv (polyExp P μ) = polyExp (expShiftPoly μ P) μ := by
   funext x
   exact (hasDerivAt_polyExp P μ x).deriv
 
@@ -284,9 +284,9 @@ theorem exists_expPolySpace_solve (lam : ℂ) {h : ℝ → ℂ} (hh : h ∈ expP
     refine ⟨polyExp Q p.2, polyExp_mem_expPolySpace _ _, ?_⟩
     rw [deriv_polyExp]
     funext x
-    have hstep : polyExp (shiftPoly p.2 Q) p.2 x - lam * polyExp Q p.2 x
+    have hstep : polyExp (expShiftPoly p.2 Q) p.2 x - lam * polyExp Q p.2 x
         = polyExp (Polynomial.derivative Q + (p.2 - lam) • Q) p.2 x := by
-      simp only [polyExp, polyExpC, shiftPoly, Polynomial.eval_add, Polynomial.eval_smul,
+      simp only [polyExp, polyExpC, expShiftPoly, Polynomial.eval_add, Polynomial.eval_smul,
         smul_eq_mul, sub_mul]
       ring
     simpa [hQ] using hstep

@@ -1,9 +1,10 @@
 # Hypertranscendental scattering requires infinite active topological charge rank
 
 - **ID:** `hypertranscendental-phase-infinite-topological-charge-rank`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** CANDIDATE THEOREM / QFT SOURCE NO-GO / INFINITE-DIMENSIONAL GAUGING GATE
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
+- **Scientific status:** `[PROVED HERE] [FORMALIZED IN LEAN] [NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
+- **Formalized companion:** `hypertranscendental-phase-infinite-topological-charge-rank-formalized.md`
 - **Scope:** general hypertranscendental relativistic scattering; no RH or distinguished
   special-function input
 - **Parents:** `one-species-hypertranscendental-elastic-saturation.md`,
@@ -283,21 +284,30 @@ least one observable beyond the restatement of the exact S-matrix.
 5. No claim is made for a non-bilinear finite-field action whose exact elimination yields an
    infinite-rank kernel; that is the second surviving source class above.
 
-## Lean boundary
+## Lean status
 
-The live HTGeometry corpus contains a distinct maximal-translation theory for Nevanlinna boundary
-faces.  It proves dense residual differential-translation freeness of boundary carriers, not the
-finite separation-rank theorem `(4)`--`(5)` for a QFT phase kernel.  There is therefore no existing
-formal theorem to relabel as this result.
+The entire theorem surface is formalized unconditionally.  Five new modules carry it:
 
-The finite-span implication `(4)`--`(5)` is elementary linear algebra, but formalizing it alone
-would not prove the analytic classification `(7)` or the differential-algebraic conclusion
-`(11)`.  The project does not currently contain an Anselone--Korevaar theorem or the required
-differential-algebraic transitivity interface.  A Lean module should be opened only as a batch
-that carries the entire unconditional theorem surface, rather than adding a finite-rank wrapper
-that overstates completion.
+- `formal/GaloisForLFunctions/HTGeometry/RealExponentialPolynomial.lean` — the exponential
+  polynomials `expPolySpace` on the real line and `expPolySpaceC` on the plane, the block calculus,
+  surjectivity of `Q ↦ Q′ + ν·Q` on `ℂ[X]`, the inhomogeneous solve `G′ − λ·G = h` inside
+  `expPolySpace`, and the homogeneous law `u′ = λ·u ⟹ u = u(0)·e^{λ x}`;
+- `formal/GaloisForLFunctions/HTGeometry/RealConstantCoefficientAnnihilator.lean` — the
+  differentiation endomorphism of the smooth functions, the operator calculus through
+  `Polynomial.aeval`, and both directions of `(8)`;
+- `formal/GaloisForLFunctions/HTGeometry/AnseloneKorevaarTranslationRank.lean` — the translation
+  span, separating evaluation points, the regularity step, closure under differentiation,
+  smoothness, the constant-coefficient annihilator, and the equivalence `(7)`;
+- `formal/GaloisForLFunctions/HTGeometry/EntireExponentialCompositionDA.lean` — the exponential of
+  a differentially algebraic entire function is differentially algebraic;
+- `formal/GaloisForLFunctions/HTGeometry/ActiveChargeRankHypertranscendence.lean` — Theorem A
+  `(4)`--`(5)`, the numerical bound, and Theorem C `(11)` in both its rank form and its
+  source form;
+- `formal/GaloisForLFunctions/HTGeometry/ChargeRankDressingExamples.lean` — the exact examples
+  `(12)`, `(13)`, `(14)` and the anti-converse `(15)`.
 
-No Lean edit, build, scratch compilation, lint, axiom check, or numerical computation was run.
+No hypothesis, axiom, or `sorry` is used; the axiom audit of every capstone reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Primary literature
 

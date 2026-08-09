@@ -237,14 +237,18 @@ def complexLineSubmodule (P : AddSubgroup E)
   zero_mem' := (lineSubmodule P).zero_mem
   smul_mem' := by
     intro c v hv
+    have hre : ∀ (r : ℝ) (w : E), (r : ℝ) • w = ((r : ℂ)) • w := by
+      intro r w
+      rw [← IsScalarTower.algebraMap_smul ℂ r w, Complex.coe_algebraMap]
     have hsplit : c • v = ((c.re : ℝ) • v) + ((c.im : ℝ) • ((Complex.I : ℂ) • v)) := by
-      rw [smul_smul, ← Complex.coe_smul, ← Complex.coe_smul, ← add_smul]
+      rw [hre c.re v, hre c.im _, smul_smul, ← add_smul]
       congr 1
-      simpa using (Complex.re_add_im c).symm
+      exact (Complex.re_add_im c).symm
     rw [hsplit]
     exact (lineSubmodule P).add_mem ((lineSubmodule P).smul_mem _ hv)
       ((lineSubmodule P).smul_mem _ (hI v hv))
 
+omit [FiniteDimensional ℂ E] in
 @[simp] theorem coe_complexLineSubmodule (P : AddSubgroup E)
     (hI : ∀ v ∈ lineSubmodule P, (Complex.I : ℂ) • v ∈ lineSubmodule P) :
     ((complexLineSubmodule P hI : Submodule ℂ E) : Set E)

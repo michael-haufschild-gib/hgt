@@ -382,4 +382,258 @@ theorem tendsto_kummerSeparation_zero :
     hM.const_div_atTop (Real.log 2)
   exact squeeze_zero' hlow hupp hdiv
 
+/-! ## Injectivity and accumulation of the frequency map -/
+
+theorem kummerFreq_ne_zero {p : ℤ × ℤ} (hp : p ≠ (0, 0)) : kummerFreq p ≠ 0 := by
+  set N : ℕ := max 1 (max p.1.natAbs p.2.natAbs) with hN
+  have hN1 : 1 ≤ N := le_max_left _ _
+  have hmem : p ∈ kummerBox N := by
+    refine mem_kummerBox.mpr ⟨⟨?_, ?_⟩, hp⟩
+    · have hle : p.1.natAbs ≤ N := le_trans (le_max_left _ _) (le_max_right _ _)
+      rw [Int.abs_eq_natAbs]
+      exact_mod_cast hle
+    · have hle : p.2.natAbs ≤ N := le_trans (le_max_right _ _) (le_max_right _ _)
+      rw [Int.abs_eq_natAbs]
+      exact_mod_cast hle
+  have hlow := kummerFreq_lower_bound hN1 hmem
+  intro h0
+  rw [h0, abs_zero] at hlow
+  have : (0 : ℝ) < (3 : ℝ) ^ (-(N : ℤ)) := by positivity
+  linarith
+
+theorem kummerFreq_add (p q : ℤ × ℤ) :
+    kummerFreq (p.1 + q.1, p.2 + q.2) = kummerFreq p + kummerFreq q := by
+  rw [kummerFreq, kummerFreq, kummerFreq]
+  push_cast
+  ring
+
+theorem kummerFreq_zsmul (k : ℤ) (p : ℤ × ℤ) :
+    kummerFreq (k * p.1, k * p.2) = (k : ℝ) * kummerFreq p := by
+  rw [kummerFreq, kummerFreq]
+  push_cast
+  ring
+
+theorem kummerFreq_injective : Function.Injective kummerFreq := by
+  intro p q hpq
+  by_contra hne
+  have hdiff : (p.1 - q.1, p.2 - q.2) ≠ (0, 0) := by
+    intro hcon
+    apply hne
+    have hx := congrArg Prod.fst hcon
+    have hy := congrArg Prod.snd hcon
+    simp only at hx hy
+    exact Prod.ext (by omega) (by omega)
+  have hval : kummerFreq (p.1 - q.1, p.2 - q.2) = 0 := by
+    rw [kummerFreq, kummerFreq] at hpq
+    rw [kummerFreq]
+    push_cast
+    linarith
+  exact kummerFreq_ne_zero hdiff hval
+
+/-- Arbitrarily small nonzero clock frequencies exist. -/
+theorem exists_small_kummerFreq {ε : ℝ} (hε : 0 < ε) :
+    ∃ p : ℤ × ℤ, p ≠ (0, 0) ∧ 0 < |kummerFreq p| ∧ |kummerFreq p| < ε := by
+  obtain ⟨N, hN⟩ := (tendsto_kummerSeparation_zero.eventually
+    (gt_mem_nhds hε)).and (eventually_ge_atTop 1) |>.exists
+  obtain ⟨p, hp, hval⟩ := exists_kummerSeparation_eq hN.2
+  refine ⟨p, (mem_kummerBox.mp hp).2, ?_, ?_⟩
+  · rw [← hval]
+    exact kummerSeparation_pos hN.2
+  · rw [← hval]
+    exact hN.1
+
+/-- The nonzero clock frequencies are dense in the line. -/
+theorem exists_kummerFreq_near (t : ℝ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ p : ℤ × ℤ, p ≠ (0, 0) ∧ |kummerFreq p - t| < ε := by
+  obtain ⟨p₀, hp₀, hpos, hsmall⟩ := exists_small_kummerFreq (show (0:ℝ) < ε / 2 by linarith)
+  set μ : ℝ := kummerFreq p₀ with hμ
+  have hμne : μ ≠ 0 := by
+    intro h; rw [h, abs_zero] at hpos; linarith
+  set k : ℤ := round (t / μ) with hk
+  have hround : |t / μ - (k : ℝ)| ≤ 1 / 2 := by
+    rw [hk]
+    have := abs_sub_round (t / μ)
+    simpa [abs_sub_comm] using this
+  have hdist : |(k : ℝ) * μ - t| ≤ |μ| / 2 := by
+    have hfac : (k : ℝ) * μ - t = -((t / μ - (k : ℝ)) * μ) := by
+      field_simp
+      ring
+    rw [hfac, abs_neg, abs_mul]
+    calc |t / μ - (k : ℝ)| * |μ| ≤ (1 / 2) * |μ| :=
+          mul_le_mul_of_nonneg_right hround (abs_nonneg _)
+      _ = |μ| / 2 := by ring
+  by_cases hk0 : k = 0
+  · refine ⟨p₀, hp₀, ?_⟩
+    have ht : |t| ≤ |μ| / 2 := by
+      rw [hk0] at hdist
+      simpa using hdist
+    calc |kummerFreq p₀ - t| ≤ |kummerFreq p₀| + |t| := abs_sub _ _
+      _ ≤ |μ| + |μ| / 2 := by rw [← hμ]; linarith
+      _ < ε := by rw [hμ] at hsmall ⊢; linarith
+  · refine ⟨(k * p₀.1, k * p₀.2), ?_, ?_⟩
+    · intro hcon
+      have hx := congrArg Prod.fst hcon
+      have hy := congrArg Prod.snd hcon
+      simp only at hx hy
+      apply hp₀
+      have h1 : p₀.1 = 0 := by
+        rcases mul_eq_zero.mp hx with h | h
+        · exact absurd h hk0
+        · exact h
+      have h2 : p₀.2 = 0 := by
+        rcases mul_eq_zero.mp hy with h | h
+        · exact absurd h hk0
+        · exact h
+      exact Prod.ext h1 h2
+    · rw [kummerFreq_zsmul, ← hμ]
+      calc |(k : ℝ) * μ - t| ≤ |μ| / 2 := hdist
+        _ < ε := by rw [hμ] at hsmall; linarith
+
+/-! ## Injective mode families with prescribed frequency limit -/
+
+/-- Near any real number there are nonzero modes whose frequency is close but not equal. -/
+theorem exists_kummerFreq_near_ne (s : ℝ) {δ : ℝ} (hδ : 0 < δ) :
+    ∃ p : ℤ × ℤ, p ≠ (0, 0) ∧ 0 < |kummerFreq p - s| ∧ |kummerFreq p - s| < δ := by
+  obtain ⟨p₀, hp₀, hpos₀, hsmall₀⟩ := exists_small_kummerFreq (show (0:ℝ) < δ / 8 by linarith)
+  obtain ⟨p₁, hp₁, hnear₁⟩ := exists_kummerFreq_near s (show (0:ℝ) < δ / 4 by linarith)
+  set μ₀ : ℝ := kummerFreq p₀ with hμ₀
+  set μ₁ : ℝ := kummerFreq p₁ with hμ₁
+  have hμ₀ne : μ₀ ≠ 0 := by
+    intro h; rw [h, abs_zero] at hpos₀; linarith
+  set c : ℕ → ℤ × ℤ := fun k => (p₁.1 + (k + 1 : ℤ) * p₀.1, p₁.2 + (k + 1 : ℤ) * p₀.2) with hc
+  have hcfreq : ∀ k : ℕ, kummerFreq (c k) = μ₁ + ((k : ℝ) + 1) * μ₀ := by
+    intro k
+    rw [hc, kummerFreq, hμ₁, kummerFreq, hμ₀, kummerFreq]
+    push_cast
+    ring
+  have hinj : ∀ k l : ℕ, k ≠ l → kummerFreq (c k) ≠ kummerFreq (c l) := by
+    intro k l hkl heq
+    rw [hcfreq, hcfreq] at heq
+    have hk : ((k : ℝ) + 1) * μ₀ = ((l : ℝ) + 1) * μ₀ := by linarith
+    have heq1 : ((k : ℝ) + 1) = ((l : ℝ) + 1) := mul_right_cancel₀ hμ₀ne hk
+    have : (k : ℝ) = (l : ℝ) := by linarith
+    exact hkl (by exact_mod_cast this)
+  -- among three candidates at most one has frequency `0` and at most one has frequency `s`
+  have hzero : ∀ k l : ℕ, k ≠ l → ¬ (kummerFreq (c k) = 0 ∧ kummerFreq (c l) = 0) := by
+    rintro k l hkl ⟨h1, h2⟩
+    exact hinj k l hkl (by rw [h1, h2])
+  have hs : ∀ k l : ℕ, k ≠ l → ¬ (kummerFreq (c k) = s ∧ kummerFreq (c l) = s) := by
+    rintro k l hkl ⟨h1, h2⟩
+    exact hinj k l hkl (by rw [h1, h2])
+  have hexists : ∃ k : ℕ, k < 3 ∧ kummerFreq (c k) ≠ 0 ∧ kummerFreq (c k) ≠ s := by
+    by_contra hcon
+    push Not at hcon
+    have h0 := hcon 0 (by norm_num)
+    have h1 := hcon 1 (by norm_num)
+    have h2 := hcon 2 (by norm_num)
+    rcases eq_or_ne (kummerFreq (c 0)) 0 with e0 | e0
+    · rcases eq_or_ne (kummerFreq (c 1)) 0 with e1 | e1
+      · exact hzero 0 1 (by norm_num) ⟨e0, e1⟩
+      · rcases eq_or_ne (kummerFreq (c 2)) 0 with e2 | e2
+        · exact hzero 0 2 (by norm_num) ⟨e0, e2⟩
+        · exact hs 1 2 (by norm_num) ⟨h1 e1, h2 e2⟩
+    · rcases eq_or_ne (kummerFreq (c 1)) 0 with e1 | e1
+      · rcases eq_or_ne (kummerFreq (c 2)) 0 with e2 | e2
+        · exact hzero 1 2 (by norm_num) ⟨e1, e2⟩
+        · exact hs 0 2 (by norm_num) ⟨h0 e0, h2 e2⟩
+      · exact hs 0 1 (by norm_num) ⟨h0 e0, h1 e1⟩
+  obtain ⟨k, hk3, hkzero, hks⟩ := hexists
+  refine ⟨c k, ?_, ?_, ?_⟩
+  · intro hcon
+    apply hkzero
+    rw [hcon, kummerFreq]
+    norm_num
+  · exact abs_pos.mpr (sub_ne_zero.mpr hks)
+  · rw [hcfreq]
+    have hkR : ((k : ℝ) + 1) ≤ 3 := by
+      have : (k : ℝ) ≤ 2 := by exact_mod_cast Nat.lt_succ_iff.mp hk3
+      linarith
+    have hk1 : (0 : ℝ) ≤ (k : ℝ) + 1 := by positivity
+    calc |μ₁ + ((k : ℝ) + 1) * μ₀ - s| ≤ |μ₁ - s| + |((k : ℝ) + 1) * μ₀| := by
+          have : μ₁ + ((k : ℝ) + 1) * μ₀ - s = (μ₁ - s) + ((k : ℝ) + 1) * μ₀ := by ring
+          rw [this]
+          exact abs_add_le _ _
+      _ = |μ₁ - s| + ((k : ℝ) + 1) * |μ₀| := by rw [abs_mul, abs_of_nonneg hk1]
+      _ < δ / 4 + 3 * (δ / 8) := by
+          have h1 : |μ₁ - s| < δ / 4 := hnear₁
+          have h2 : ((k : ℝ) + 1) * |μ₀| ≤ 3 * |μ₀| :=
+            mul_le_mul_of_nonneg_right hkR (abs_nonneg _)
+          have h3 : |μ₀| < δ / 8 := hsmall₀
+          nlinarith
+      _ ≤ δ := by linarith
+
+/-- Every real number is the limit of the frequencies of an injective family of nonzero modes. -/
+theorem exists_injective_modes_tendsto (s : ℝ) :
+    ∃ q : ℕ → ℤ × ℤ, Function.Injective q ∧ (∀ n, q n ≠ (0, 0)) ∧
+      Tendsto (fun n => kummerFreq (q n)) atTop (𝓝 s) := by
+  classical
+  have key : ∀ δ : ℝ, 0 < δ → ∃ p : ℤ × ℤ, p ≠ (0, 0) ∧ 0 < |kummerFreq p - s| ∧
+      |kummerFreq p - s| < δ := fun δ hδ => exists_kummerFreq_near_ne s hδ
+  choose F hF0 hFpos hFlt using key
+  set G : ℝ → ℤ × ℤ := fun δ => if h : 0 < δ then F δ h else F 1 one_pos with hG
+  have hG0 : ∀ δ, G δ ≠ (0, 0) := by
+    intro δ
+    rw [hG]
+    by_cases h : 0 < δ
+    · simpa [h] using hF0 δ h
+    · simpa [h] using hF0 1 one_pos
+  have hGpos : ∀ δ, 0 < |kummerFreq (G δ) - s| := by
+    intro δ
+    rw [hG]
+    by_cases h : 0 < δ
+    · simpa [h] using hFpos δ h
+    · simpa [h] using hFpos 1 one_pos
+  have hGlt : ∀ δ, 0 < δ → |kummerFreq (G δ) - s| < δ := by
+    intro δ h
+    rw [hG]
+    simpa [h] using hFlt δ h
+  set q : ℕ → ℤ × ℤ := fun n =>
+    Nat.rec (G 1) (fun k pk => G (min |kummerFreq pk - s| (1 / (k + 2)))) n with hq
+  have hqsucc : ∀ n, q (n + 1) = G (min |kummerFreq (q n) - s| (1 / (n + 2))) := fun n => rfl
+  have hq0 : ∀ n, q n ≠ (0, 0) := by
+    intro n
+    cases n with
+    | zero => exact hG0 1
+    | succ k => rw [hqsucc]; exact hG0 _
+  have hqpos : ∀ n, 0 < |kummerFreq (q n) - s| := by
+    intro n
+    cases n with
+    | zero => exact hGpos 1
+    | succ k => rw [hqsucc]; exact hGpos _
+  have hstep : ∀ n, |kummerFreq (q (n + 1)) - s|
+      < min |kummerFreq (q n) - s| (1 / ((n : ℝ) + 2)) := by
+    intro n
+    rw [hqsucc]
+    refine hGlt _ ?_
+    refine lt_min (hqpos n) ?_
+    positivity
+  have hanti : StrictAnti (fun n => |kummerFreq (q n) - s|) := by
+    refine strictAnti_nat_of_succ_lt fun n => ?_
+    exact lt_of_lt_of_le (hstep n) (min_le_left _ _)
+  refine ⟨q, ?_, hq0, ?_⟩
+  · intro n m hnm
+    have := hanti.injective (a₁ := n) (a₂ := m)
+    apply this
+    show |kummerFreq (q n) - s| = |kummerFreq (q m) - s|
+    rw [hnm]
+  · rw [tendsto_iff_dist_tendsto_zero]
+    have hbound : ∀ n, dist (kummerFreq (q n)) s ≤ 1 / ((n : ℝ) + 1) := by
+      intro n
+      cases n with
+      | zero =>
+        rw [Real.dist_eq]
+        have hq0eq : q 0 = G 1 := rfl
+        rw [hq0eq]
+        have h0 := hGlt 1 one_pos
+        norm_num
+        linarith
+      | succ k =>
+        rw [Real.dist_eq]
+        have h := lt_of_lt_of_le (hstep k) (min_le_right _ _)
+        have hcast : ((k : ℝ) + 2) = ((k + 1 : ℕ) : ℝ) + 1 := by push_cast; ring
+        rw [hcast] at h
+        exact h.le
+    refine squeeze_zero (fun n => dist_nonneg) hbound ?_
+    exact tendsto_one_div_add_atTop_nhds_zero_nat
+
 end GaloisForLFunctions.RHTower

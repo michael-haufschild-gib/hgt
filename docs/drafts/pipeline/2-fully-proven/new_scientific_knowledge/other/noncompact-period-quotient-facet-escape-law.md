@@ -312,23 +312,64 @@ unconditional theorem `differentialAlgebraicOver_of_translation_fixed` makes a d
 global meromorphic germ differentially algebraic.  This is the exact scalar case of `(5)` and the
 formal content of the card's scalar-purity remark.
 
-All four modules are wired into `formal/GaloisForLFunctions/HTGeometry.lean`.  Direct
+`formal/GaloisForLFunctions/HTGeometry/ClosedSubgroupIdentityComponent.lean` proves the general
+structural input behind condition 1 of a period-escape separation, in every dimension:
+
+```text
+lineSubmodule
+exists_line_of_not_discrete
+idComponentSet_eq_lineSubmodule
+complexLineSubmodule
+isEscapeSubgroup_of_isClosed
+```
+
+`idComponentSet_eq_lineSubmodule` is the exact statement that the identity component of a closed
+additive subgroup of a finite-dimensional real vector space is the largest real subspace it
+contains: a closed subgroup with arbitrarily small nonzero members contains a whole real line
+(normalize a null sequence to the unit sphere, take a convergent subsequence, and approximate an
+arbitrary real multiple by integer multiples), so splitting off a linear complement makes the
+subgroup discrete transverse to that subspace, which is therefore clopen inside it.
+`isEscapeSubgroup_of_isClosed` packages the criterion the card's law produces: closed, maximal real
+subspace stable under multiplication by `i`, noncompact quotient.
+
+`formal/GaloisForLFunctions/HTGeometry/MeroPeriodEscape.lean` verifies all three conditions for the
+period group of a hypertranscendental germ in one complex variable:
+
+```text
+mem_meroPeriodSubgroup_iff
+isClosed_meroPeriodSubgroup
+linearIndependent_one_I
+lineSubmodule_meroPeriodSubgroup_eq_bot
+isEscapeSubgroup_meroPeriodSubgroup
+```
+
+The translation identity `x(· + h) = x` cross-multiplies to the pointwise identity
+`A(z+h) B(z) = A(z) B(z+h)`, so `Per(x)` is an intersection of closed conditions.  A whole real
+line of periods would make the entire function `A - c B` vanish along that line for the value `c`
+at a regular point of `B`, hence vanish identically, hence make *every* complex number a period —
+in particular two `ℝ`-independent ones, contradicting hypertranscendence.  So
+`isEscapeSubgroup_meroPeriodSubgroup` is `(4)`, `(5)` and both structural conditions of a
+period-escape separation, unconditionally, for `d = 1`.
+
+All six modules are wired into `formal/GaloisForLFunctions/HTGeometry.lean`.  Direct
 `lake env lean` checks and targeted builds pass; `#print axioms` on every capstone reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
 ### What remains
 
-Two named analytic layers, both absent from mathlib and from this tree:
-
-1. **Several-variable meromorphic germs.**  `(4)`, `(9)-(17)` are stated for meromorphic functions
-   on `ℂ^d`; the corpus's `meroField` is the one-variable global meromorphic field.  The facet
-   theorem `(18)` needs the `d`-variable field together with the closedness and complex-linear
-   identity component of `Per(G_A)`, the Stanley--Reisner facet-prime computation `(13)-(16)`
-   being purely algebraic once that field exists.
+1. **Several-variable translations on the meromorphic germ field.**  The `d`-variable analytic germ
+   ring and its meromorphic fraction field already exist in the corpus for an arbitrary complex
+   normed space, as `Bottcher.analyticSubringGen`, `Bottcher.meroFieldGen`,
+   `Bottcher.precompAnalyticEquivGen` and `Bottcher.precompMeroEquivGen`; what is missing is the
+   instantiation at `g = (· + h)` and the resulting period group, whose closedness and complex
+   identity component then follow from `isClosed_meroPeriodSubgroup` and
+   `isEscapeSubgroup_of_isClosed` by the same two arguments used at `d = 1` (the `i`-stability step
+   in several variables is the one-variable identity theorem along the complex line `ℂ v`).
 2. **Finite transcendence degree of the meromorphic field of a compact complex torus.**  The proof
    of `(5)` for `d >= 2` uses `trdeg_C M(X) <= dim_C X`.  In complex dimension one this is the
    elliptic differential-algebraicity theorem already owned here, which is why the scalar case is
-   closed; for `d >= 2` it is Siegel's theorem and has no Lean proof yet.
+   closed; for `d >= 2` it is Siegel's theorem and has no Lean proof yet.  This is the only
+   genuinely missing mathematics on this card.
 
 ## Gates
 
@@ -342,6 +383,10 @@ Two named analytic layers, both absent from mathlib and from this tree:
 - [x] `peDim<=ppDim` formalized unconditionally
 - [x] `peDim(Delta_wedge)=2` formalized unconditionally
 - [x] noncompact period-quotient law formalized unconditionally in one complex variable
+- [x] identity component of a closed subgroup identified with its maximal real subspace, in every
+  dimension, formalized unconditionally
+- [x] all three period-escape conditions verified for the period group of a hypertranscendental
+  germ in one complex variable
 - [ ] several-variable meromorphic period groups formalized, giving `peDim<=htDim`
 - [ ] Siegel bound for compact complex tori formalized, giving `(5)` for `d>=2`
 - [ ] independent specialist proof and novelty audit
