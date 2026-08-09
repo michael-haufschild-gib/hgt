@@ -1,9 +1,11 @@
 # Finite Pauli-character projector extraction law
 
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY NOT CLAIMED]`
+- **Stage:** 3-formalized
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [BRIDGE] [NOVELTY NOT CLAIMED]`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, O4.12z25
-- **Lean target:** `HTGeometry/FinitePauliCharacterProjector.lean`
+- **Lean certificate:** `finite-pauli-character-projector-extraction-law-formalized.md`
+- **Lean:** `HTGeometry/FinitePauliCharacterProjector.lean` (orthogonality, projector, extraction),
+  `HTGeometry/PauliCharacterProjectorExtraction.lean` (empty register, submodule form)
 
 ## Exact statement
 
@@ -92,6 +94,37 @@ The remaining concrete obligations are:
 3. reproduce the nonsinglet layer by the one-site central-Casimir family;
 4. remove the global identity and global-swap kernel in the connected-edge
    recovery.
+
+## Formal status
+
+Closed, unconditionally.
+
+`(5)` is `boolPauliConjugationSign_orthogonality` and `(1)` is
+`finitePauliConjugationSign_orthogonality`; the factorisation of the global sum into a product of
+one-site sums is exactly the finite distributivity the card describes.  `(2)` is
+`finiteTwoReplicaPauliCharacterProjector`, `(3)` is
+`finiteTwoReplicaPauliCharacterProjector_apply_grade`, and `(4)` is
+`finiteTwoReplicaPauliCharacter_component_mem_of_sum_mem`.
+
+Two statements the card makes were added in `HTGeometry/PauliCharacterProjectorExtraction.lean`:
+
+- The empty register.  `finitePauliMatrix_const_none` — the all-identity string is the identity
+  matrix — gives `finiteTwoReplicaPairedPauliConjugationLinear_const_none`, so on an empty register
+  the single label acts trivially and `finiteTwoReplicaPauliCharacterProjector_of_isEmpty` says the
+  projector is `LinearMap.id`.  `card_pauliLabel_of_isEmpty` counts the one character.  No
+  orthogonality argument survives there: the sum has one term and its sign is an empty product.
+- `Π_P(U) ≤ U` as a submodule inequality
+  (`finiteTwoReplicaPauliCharacterProjector_map_le_of_invariant`); the corpus stated it
+  memberwise, and the card writes it as an inclusion.
+
+The four frontier obligations listed below are now closed elsewhere: `(1)` and `(2)` by
+`paired-pauli-zero-twirl-invariance-law` and `aggregate-pauli-visible-quotient-detector-law`, and
+`(4)`'s mode count by `positive-graph-edge-casimir-kernel-law`.  Obligation `(3)` — reproducing the
+nonsinglet layer by the one-site central-Casimir family — remains open, on
+`visible-kernel-recovery-hall-law`.
+
+Umbrella build passes; the axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Hostile audit
 
