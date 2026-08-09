@@ -5268,6 +5268,7 @@ import GaloisForLFunctions.RHTower.ProlateLiouvilleOscillator
 import GaloisForLFunctions.RHTower.ProlateChannelSum
 import GaloisForLFunctions.RHTower.ProlateTwoBranch
 import GaloisForLFunctions.RHTower.ProlateExactChannel
+import GaloisForLFunctions.RHTower.ProlatePolarSource
 import GaloisForLFunctions.RHTower.ProlateExactPrimitive
 import GaloisForLFunctions.RHTower.ProlateEndpointEnergy
 import GaloisForLFunctions.RHTower.ProlateFullPrimitive
@@ -6420,3 +6421,5 @@ import GaloisForLFunctions.RHTower.GramResidueDecomposition
 import GaloisForLFunctions.RHTower.ZetaZerosBridge
 import GaloisForLFunctions.RHTower.TwoGeneratorImprovement
 import GaloisForLFunctions.RHTower.DetectorDuality
+import GaloisForLFunctions.RHTower.FiniteSectionDetectorFloor
+import GaloisForLFunctions.RHTower.FiniteSectionZetaInterpolation
