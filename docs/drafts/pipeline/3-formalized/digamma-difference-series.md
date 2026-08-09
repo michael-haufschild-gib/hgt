@@ -42,3 +42,20 @@ every ingredient it needs now exists, which was not clear before.
 
 The honest scope of the correction: closed forms need digamma at rationals with denominator `2` or `4`, which
 **is** available. Denominator `3` needs `ψ(1/3)`, i.e. Gauss's general theorem, which is still a mathlib TODO.
+
+## Addendum (same day): the arithmetic-progression sums
+
+`RHTower/ResidueClassRecipSeries.lean` carries the connector to its intended use. Taking `a = j/q`,
+`b = (j+1)/q` and dividing by `q`:
+
+* **`hasSum_residueClass_recip` — `∑_{k≥0} 1/((qk+j)(qk+j+1)) = (ψ((j+1)/q) − ψ(j/q))/q`** for `q, j ≥ 1`;
+* `hasSum_odd_recip` — `∑_{k≥0} 1/((2k+1)(2k+2)) = log 2`, from `ψ(1) − ψ(1/2) = 2 log 2`. This **re-derives
+  `hasSum_mod_div_mul_succ` at `m = 2` by an independent route** (digamma rather than the Mellin pairing), so
+  two unrelated computations of the same constant agree — a genuine check on the earlier chain;
+* **`hasSum_quarter_recip_one` — `∑_{k≥0} 1/((4k+1)(4k+2)) = (log 2 + π/2)/4`**, from mathlib's
+  `digamma_one_half` and the corpus's `digamma_quarter`.
+
+The last is the first value in this development involving `π`, and it is exactly the ingredient the `q = 4`
+Báez-Duarte Gram entries were missing (`T₁` in the notation of the map card). What still stands between this
+and `bdGram (1/4) (1/4)` is the decomposition of `ℕ` into residue classes as a `HasSum` — bookkeeping, but not
+yet written.
