@@ -1,10 +1,11 @@
 # First-order Clifford interpolation law
 
 - **ID:** first-order-clifford-interpolation-law
-- **Stage:** 2 — fully proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (bridge)
 - **Parent:** `product-clifford-visible-recovery-reduction-law.md`
-- **Status:** `[PROVED HERE] [FORMAL-SOURCE-CHECKED] [NOVELTY NOT CLAIMED]`
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [NOVELTY NOT CLAIMED]`
+- **Lean certificate:** `first-order-clifford-interpolation-law-formalized.md`
 
 ## Exact theorem
 
@@ -69,17 +70,26 @@ split.
 
 ## Formal status
 
-`HTGeometry/TwoReplicaFirstOrderCliffordInterpolation.lean` proves (1) over
-an arbitrary ring and (2) for every finite qubit register. Targeted source
-elaboration passes. Axiom audits report `[propext, Quot.sound]` for the pure
-ring identity and only `propext`, `Classical.choice`, and `Quot.sound` for the
-physical capstone. The same module proves odd first images and all
-first-defect-selected images remain inside every canonical greatest
-obstruction, with the same standard-axiom audit. Final umbrella build remains
-deferred to final audit.
+Closed, unconditionally.
+
+`HTGeometry/TwoReplicaFirstOrderCliffordInterpolation.lean` proves (1) over an arbitrary ring —
+`twoInvolutionQuarterTurnOddDifferenceIdentity`, whose axiom audit is `[propext, Quot.sound]`, with
+no choice — and (2) for every finite qubit register.  The same module proves that odd first images
+and all first-defect-selected images remain inside a greatest obstruction.
+
+Those last two carried the greatest-maximizer condition as a hypothesis.
+`HTGeometry/FirstOrderCliffordInterpolationCanonical.lean` discharges it by stating them at the
+canonical obstruction:
+
+- `finiteTwoReplicaSingleSiteCollectiveCommutator_mem_canonicalObstruction_of_relativeOdd`;
+- `firstDefectCollectiveCommutator_mem_canonicalObstruction`.
+
+Umbrella build passes; the physical statements audit to `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Log
 
 - 2026-08-05 — abstract odd-sector quarter-turn difference identity proved.
 - 2026-08-05 — physical strict product-Clifford interpolation formalized and
   axiom-audited.
+- 2026-08-09 — greatest-maximizer premise discharged; umbrella build closed.
