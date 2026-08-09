@@ -14,6 +14,21 @@ Unconditional, and with no arithmetic input at all. The corpus previously knew t
 families: `bdDistDiscrete_pos` (factorial floor, for `θ = 1/(n+1)`) and `bdDist_single_ge` (one generator).
 This is the structural reason behind both, and it holds for arbitrary finite families.
 
+## The reusable interface
+
+The route is now factored so that a family other than Báez-Duarte's inherits it by proving one hypothesis:
+
+* `bdDist_pos_of_linearIndependent_borderRowFun` (in `BorderDeterminantVanishing`) — **linear independence of
+  the sampled pairing functions is exactly what a positive distance needs.** Sampling turns it into a
+  nonvanishing bordered determinant, which certifies the floor;
+* `muentz_relation_of_not_linearIndependent` — the converse computation, isolated from the determinant
+  hypothesis: a dependence among the pairing functions *is* a Müntz relation inverting `ζ` on the strip;
+* `linearIndependent_borderRowFun_of_injective` — the Báez-Duarte instance of that hypothesis, proved by the
+  refutation below, so `bdDist_pos_of_injective_of_lt_one` is now a two-line consequence.
+
+So the analytic content lives entirely in the independence of the pairing functions; everything above it is
+linear algebra.
+
 ## The chain
 
 Four cards assemble into it, each supplying one link:

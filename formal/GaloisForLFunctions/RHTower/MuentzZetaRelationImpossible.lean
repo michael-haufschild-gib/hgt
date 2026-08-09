@@ -199,20 +199,24 @@ theorem eq_zero_of_muentz_zeta_relation {N : ℕ} (θ : Fin N → ℝ)
 
 /-! ## The capstone -/
 
+/-- **The pairing functions are independent.**  For distinct dilations in `(0,1)` the sampled generator and
+target pairings are linearly independent as functions on the strip — the hypothesis the abstract obstruction
+consumes. -/
+theorem linearIndependent_borderRowFun_of_injective {N : ℕ} (θ : Fin N → ℝ)
+    (hθ0 : ∀ i, 0 < θ i) (hθ1 : ∀ i, θ i < 1) (hinj : Function.Injective θ) :
+    LinearIndependent ℂ (borderRowFun θ) := by
+  by_contra h
+  obtain ⟨c, ⟨i₀, hi₀⟩, hrel⟩ := muentz_relation_of_not_linearIndependent θ h
+  exact hi₀ (eq_zero_of_muentz_zeta_relation θ hθ0 hθ1 hinj c hrel i₀)
+
 /-- **No finite section of distinct dilations is dense.**  Every finite family of distinct dilations in
 `(0,1)` has strictly positive Báez-Duarte distance — unconditionally, and with no arithmetic input: a
 finite Müntz system cannot invert `ζ`. -/
 theorem bdDist_pos_of_injective_of_lt_one {N : ℕ} (θ : Fin N → ℝ)
     (hθ0 : ∀ i, 0 < θ i) (hθ1 : ∀ i, θ i < 1) (hinj : Function.Injective θ) :
-    0 < bdDist θ := by
-  by_contra hcon
-  have hdet : ∀ ρ : Fin (N + 1) → ℂ, (∀ j, 1 / 2 < (ρ j).re) → (∀ j, (ρ j).re < 1) →
-      (sampledBorderMatrix θ ρ).det = 0 := by
-    intro ρ hρ hρ1
-    by_contra hne
-    exact hcon (bdDist_pos_of_det_ne_zero θ (fun i => ⟨hθ0 i, (hθ1 i).le⟩) ρ hρ hρ1 hne)
-  obtain ⟨c, ⟨i₀, hi₀⟩, hrel⟩ := exists_relation_of_forall_det_eq_zero θ hdet
-  exact hi₀ (eq_zero_of_muentz_zeta_relation θ hθ0 hθ1 hinj c hrel i₀)
+    0 < bdDist θ :=
+  bdDist_pos_of_linearIndependent_borderRowFun θ (fun i => ⟨hθ0 i, (hθ1 i).le⟩)
+    (linearIndependent_borderRowFun_of_injective θ hθ0 hθ1 hinj)
 
 end RHTower
 
