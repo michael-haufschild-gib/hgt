@@ -18,11 +18,12 @@ This is the structural reason behind both, and it holds for arbitrary finite fam
 
 The route is now factored so that a family other than Báez-Duarte's inherits it by proving one hypothesis:
 
-* **`infDist_pos_of_linearIndependent_pairings`** (in `BorderDeterminantVanishing`) — the law for an
-  *arbitrary* family in the carrier: if the Mellin detectors pair with a finite family `G` and a target `x`
-  through linearly independent functions on the strip, then `x` is at positive distance from the span of `G`.
-  Sampling makes the pairing matrix invertible; solving against the last basis vector produces a detector
-  combination annihilating `G` and pairing with `x` at `1`, so the duality bound gives the floor `1/‖w‖`;
+* **`exists_detector_floor_of_linearIndependent_pairings`** (in `BorderDeterminantVanishing`) — the law for
+  an *arbitrary* family in the carrier: if the Mellin detectors pair with a finite family `G` and a target `x`
+  through linearly independent functions on the strip, then some carrier element `w` annihilates `G`, pairs
+  with `x` at exactly `1`, and certifies the **floor** `1/‖w‖ ≤ dist(x, span G)`. Sampling makes the pairing
+  matrix invertible; solving against the last basis vector produces `w`, and the duality bound turns its
+  pairing into the floor. `infDist_pos_of_linearIndependent_pairings` is the qualitative form;
 * `bdDist_pos_of_linearIndependent_borderRowFun` — the Báez-Duarte instance, supplying the two pairing
   identities `inner_bdDetector_bdGen` and `inner_bdDetector_bdTarget`;
 * `muentz_relation_of_not_linearIndependent` — the converse computation, isolated from the determinant

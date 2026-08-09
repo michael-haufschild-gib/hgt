@@ -19,11 +19,12 @@ and `sampledBorderMatrix` is their evaluation matrix.  Hence
 `c`, not all zero, with `(∑ᵢ cᵢ(θᵢ^s − θᵢ))·ζ(s) = c_N` at every point of the strip.**
 
 Read forwards, the same independence is the reusable interface, and it is stated for an arbitrary family:
-`infDist_pos_of_linearIndependent_pairings` — if the Mellin detectors pair with a finite family `G` and a
-target `x` through linearly independent functions on the strip, then `x` is at positive distance from the span
-of `G`.  Sampling makes the pairing matrix invertible; solving against the last basis vector produces a
-detector combination that annihilates the family and pairs with the target at `1`, so the duality bound gives
-the floor `1/‖w‖`.  `bdDist_pos_of_linearIndependent_borderRowFun` is the Báez-Duarte instance.
+`exists_detector_floor_of_linearIndependent_pairings` — if the Mellin detectors pair with a finite family `G`
+and a target `x` through linearly independent functions on the strip, then some carrier element `w`
+annihilates `G`, pairs with `x` at exactly `1`, and certifies the floor `1/‖w‖ ≤ dist(x, span G)`.  Sampling
+makes the pairing matrix invertible and solving against the last basis vector produces `w`; the duality bound
+of `DetectorDuality` turns the pairing into the floor.  `infDist_pos_of_linearIndependent_pairings` is the
+qualitative form and `bdDist_pos_of_linearIndependent_borderRowFun` the Báez-Duarte instance.
 
 So a finite section escapes every determinant certificate only if the Müntz system `θ^s − θ` inverts `ζ` by
 a *single* relation valid on the whole strip — not merely sample by sample. That is a rigid identity between
@@ -128,13 +129,14 @@ vector has a solution; the corresponding detector combination annihilates every 
 pairing with the target at `1`, and the duality bound of `DetectorDuality` converts that into the floor
 `1/‖w‖`.  A family other than Báez-Duarte's inherits the whole route by supplying this one hypothesis for its
 own pairing functions. -/
-theorem infDist_pos_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier) (x : BDCarrier)
-    (M : Fin (N + 1) → (StripPoint → ℂ))
+theorem exists_detector_floor_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier)
+    (x : BDCarrier) (M : Fin (N + 1) → (StripPoint → ℂ))
     (hM : ∀ (i : Fin N) (s : StripPoint),
       inner ℂ (bdDetector (one_sub_re_lt s.2.1)) (G i) = M i.castSucc s)
     (hMx : ∀ s : StripPoint, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
     (hli : LinearIndependent ℂ M) :
-    0 < Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
+    ∃ w : BDCarrier, (∀ i, inner ℂ w (G i) = 0) ∧ inner ℂ w x = 1 ∧
+      1 / ‖w‖ ≤ Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
   classical
   obtain ⟨y, hy⟩ := exists_det_ne_zero_of_linearIndependent M hli
   set A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ := Matrix.of fun i j => M i (y j) with hA
@@ -171,12 +173,31 @@ theorem infDist_pos_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCar
     rintro _ ⟨i, rfl⟩
     exact hwG i)
   rw [hwx, norm_one] at hbound
-  by_contra hcon
-  push Not at hcon
-  have hzero : Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) = 0 :=
-    le_antisymm hcon Metric.infDist_nonneg
-  rw [hzero, mul_zero] at hbound
-  linarith
+  have hwne : w ≠ 0 := by
+    intro h
+    rw [h, inner_zero_left] at hwx
+    exact zero_ne_one hwx
+  have hwpos : 0 < ‖w‖ := norm_pos_iff.mpr hwne
+  refine ⟨w, hwG, hwx, ?_⟩
+  rw [div_le_iff₀ hwpos, mul_comm]
+  exact hbound
+
+/-- **The abstract obstruction.**  Independence of the pairing functions puts the target at positive distance
+from the span. -/
+theorem infDist_pos_of_linearIndependent_pairings {N : ℕ} (G : Fin N → BDCarrier) (x : BDCarrier)
+    (M : Fin (N + 1) → (StripPoint → ℂ))
+    (hM : ∀ (i : Fin N) (s : StripPoint),
+      inner ℂ (bdDetector (one_sub_re_lt s.2.1)) (G i) = M i.castSucc s)
+    (hMx : ∀ s : StripPoint, inner ℂ (bdDetector (one_sub_re_lt s.2.1)) x = M (Fin.last N) s)
+    (hli : LinearIndependent ℂ M) :
+    0 < Metric.infDist x (Submodule.span ℂ (Set.range G) : Set BDCarrier) := by
+  obtain ⟨w, -, hwx, hfloor⟩ :=
+    exists_detector_floor_of_linearIndependent_pairings G x M hM hMx hli
+  have hwne : w ≠ 0 := by
+    intro h
+    rw [h, inner_zero_left] at hwx
+    exact zero_ne_one hwx
+  exact lt_of_lt_of_le (by positivity) hfloor
 
 /-- **The Báez-Duarte instance.**  Linear independence of its pairing functions gives a positive distance. -/
 theorem bdDist_pos_of_linearIndependent_borderRowFun {N : ℕ} (θ : Fin N → ℝ)

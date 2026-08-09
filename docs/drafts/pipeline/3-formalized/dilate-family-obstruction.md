@@ -5,9 +5,10 @@ Date: 2026-08-09
 
 ## What this tests
 
-`no-finite-muentz-system-inverts-zeta.md` ends with `infDist_pos_of_linearIndependent_pairings`: for *any*
-finite family in the Nyman–Beurling carrier whose Mellin-detector pairings are given by linearly independent
-functions on the strip, the target is at positive distance from the family's span. A claim like that is only
+`no-finite-muentz-system-inverts-zeta.md` ends with `exists_detector_floor_of_linearIndependent_pairings`:
+for *any* finite family in the Nyman–Beurling carrier whose Mellin-detector pairings are given by linearly
+independent functions on the strip, a detector `w` annihilating the family and pairing with the target at `1`
+certifies the floor `1/‖w‖`, so the target is at positive distance from the family's span. A claim like that is only
 worth what a second instance shows, so this card supplies one.
 
 ## What is proved
