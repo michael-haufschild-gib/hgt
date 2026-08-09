@@ -6368,3 +6368,5 @@ import GaloisForLFunctions.RHTower.BaezDuarteGram
 import GaloisForLFunctions.RHTower.BaezDuarteTargetPairing
 import GaloisForLFunctions.RHTower.BaezDuarteDetectorGram
 import GaloisForLFunctions.RHTower.BaezDuarteDistance
+import GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryHilbertChargeFlow
+import GaloisForLFunctions.RHTower.BaezDuarteDetectorIndependence
