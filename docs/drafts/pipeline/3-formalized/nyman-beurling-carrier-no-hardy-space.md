@@ -159,3 +159,35 @@ Two further consequences, in the same file:
   expected to fail; its content is to name what the criterion is sensitive to — the ratio
   `θ|log θ|/‖bdGen θ‖`, i.e. the Gram diagonal.  Every quantitative Báez-Duarte statement is a statement
   about how close that ratio, or its many-generator analogue, gets to `1`.
+
+## Addendum 3 (same day): the detector Gram is the corpus's Cauchy kernel
+
+`RHTower/BaezDuarteDetectorGram.lean`. Two Mellin detectors pair explicitly:
+
+`⟪bdDetector s₁, bdDetector s₂⟫ = ∫₁^∞ u^{s₁ + conj s₂ − 2} du = 1/(1 − s₁ − conj s₂)`
+
+(`inner_bdDetector_bdDetector`; the conjugation step needed `conj_ofReal_cpow`, proved here from
+`Complex.conj_cpow`). Writing `s = ½ − w` this is `1/(w₁ + conj w₂)`, so:
+
+* `inner_bdDetector_eq_cauchyGram` — **for any family `w` with `Re w > 0`, the corpus's
+  `rightHalfPlaneHardyCauchyGram w` is literally the Gram matrix of the detector vectors.** So
+  `rightHalfPlaneHardyCauchyGram_posSemidef`, which the corpus proves by an explicit boundary integral, is
+  the statement that a Gram matrix is positive semidefinite. I did not reprove PSD — the value here is the
+  identification, which explains the theorem rather than repeating it.
+* `inner_bdDetector_eq_rightHalfPlaneHardyCauchyGram` / `inner_bdDetector_bdDetector_zeros` — at zeta
+  zeros the relevant `w` are the *centered* zeros `ρ − ½`.
+
+That completes the data of the least-squares floor: the Gram matrix of the detectors is the Cauchy kernel
+`1/((ρᵢ − ½) + conj(ρⱼ − ½))`, and their components against the target are `1/ρᵢ`
+(`inner_bdDetector_bdTarget`).
+
+* `inner_combination_bdDetector_eq_zero` — every finite combination of detectors at zeros annihilates the
+  closed span of the generators;
+* `bdTarget_dist_floor_orthonormal` — hence, by Bessel's inequality inside the detector span, **the squared
+  Báez-Duarte distance is at least the total squared pairing of the target with any orthonormal family
+  built from those detectors.**
+
+This is the Hilbert-space skeleton of the Burnol-type lower bound `liminf d_N² log N ≥ ∑_ρ m_ρ²/|ρ|²`: the
+arithmetic input is only the location of the zeros, and everything else is the geometry of the Cauchy
+kernel. What is *not* here: the `log N` normalisation and the passage to the full zero sum, which need the
+finite-section distances rather than the distance to the whole closed span.
