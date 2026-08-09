@@ -114,3 +114,20 @@ So the convergence question for any Möbius-type approximant is exactly: **how l
 `∑_{k ≤ n} truncMoebiusDivisorSum N k` for `n > N`?** That is the Selberg-sieve truncation object. Naming it
 is all this file does — the crude bound `|truncMoebiusDivisorSum N k| ≤ d(k)` gives `F_N(n) ≪ n log n`, which
 is useless here, and no estimate is attempted.
+
+## Addendum 4 (same day): the residual is the omitted moduli
+
+There is a shorter exact form than Addendum 3's. Splitting `moebius_floor_summatory`'s range at `N`
+(`sum_moebius_floor_tail`: `∑_{d ≤ N} μ(d)⌊n/d⌋ = 1 − ∑_{N < d ≤ n} μ(d)⌊n/d⌋`, with the `N = 0`, `N ≥ n` and
+`0 < N < n` cases all handled) gives
+
+**`moebius_residual_tail_form` — `1 − ∑_{d ≤ N}(−μ(d))·g_d(n) = ∑_{N < d ≤ n} μ(d)⌊n/d⌋ + n·M₁(N)`.**
+
+So the residual is governed entirely by the moduli the approximant *omitted*, plus the linear Mertens term —
+no truncated divisor sums needed. `moebius_residual_tail_form_of_le` recovers `n·M₁(N)` for `n ≤ N`, where the
+tail is empty. This supersedes Addendum 3's expansion as the working form (the truncated divisor sum remains
+the right object if one wants to see the residual pointwise in `k` rather than summed).
+
+The classical tension is now visible in one line: enlarging `N` shrinks `M₁(N)` (the prime number theorem) but
+the tail sum starts at `N`, and the trivial bound `|∑_{N<d≤n} μ(d)⌊n/d⌋| ≤ n log(n/N)` is far too lossy.
+Balancing the two is exactly what Vasyunin-type damping of the coefficients is for. Nothing is estimated here.
