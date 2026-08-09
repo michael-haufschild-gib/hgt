@@ -120,6 +120,45 @@ theorem trace_twoReplicaLocalDiff_mul_swap_mul_diff (a : Fin 3) :
     trace_twoReplicaPauliPair_mul_swap]
   norm_num
 
+/-! ## The mismatched outputs leave the local singlet algebra -/
+
+theorem trace_twoReplicaLocalDiff (a : Fin 3) :
+    Matrix.trace (twoReplicaLocalDiff a) = 0 := by
+  have hleft : Matrix.trace (twoReplicaPauliLeft a) = 0 := by
+    rw [twoReplicaPauliLeft, Matrix.trace_kronecker]
+    fin_cases a <;> simp [finiteQubitPauli, Matrix.trace]
+  have hright : Matrix.trace (twoReplicaPauliRight a) = 0 := by
+    rw [twoReplicaPauliRight, Matrix.trace_kronecker]
+    fin_cases a <;> simp [finiteQubitPauli, Matrix.trace]
+  rw [twoReplicaLocalDiff, Matrix.trace_sub, hleft, hright, sub_zero]
+
+/-- The swap translate of a replica difference is also traceless, because conjugating by the swap
+exchanges the two replica Paulis and so negates the difference. -/
+theorem trace_swap_mul_twoReplicaLocalDiff (a : Fin 3) :
+    Matrix.trace (twoReplicaSwap * twoReplicaLocalDiff a) = 0 := by
+  have hself : Matrix.trace (twoReplicaSwap * twoReplicaLocalDiff a) =
+      -Matrix.trace (twoReplicaSwap * twoReplicaLocalDiff a) := by
+    conv_lhs => rw [← Matrix.trace_mul_comm, twoReplicaLocalDiff_mul_swap]
+    rw [Matrix.trace_neg]
+  linear_combination hself / 2
+
+/-- **The mismatched outputs are orthogonal to the local singlet algebra.** -/
+theorem trace_twoReplicaLocalSwapRaw_mul_diff (x : Bool) (a : Fin 3) :
+    Matrix.trace (twoReplicaLocalSwapRaw x * twoReplicaLocalDiff a) = 0 := by
+  cases x with
+  | false => rw [twoReplicaLocalSwapRaw, Matrix.one_mul, trace_twoReplicaLocalDiff]
+  | true => rw [twoReplicaLocalSwapRaw, trace_swap_mul_twoReplicaLocalDiff]
+
+theorem trace_twoReplicaLocalSwapRaw_mul_swap_mul_diff (x : Bool) (a : Fin 3) :
+    Matrix.trace
+      (twoReplicaLocalSwapRaw x * (twoReplicaSwap * twoReplicaLocalDiff a)) = 0 := by
+  cases x with
+  | false =>
+      rw [twoReplicaLocalSwapRaw, Matrix.one_mul, trace_swap_mul_twoReplicaLocalDiff]
+  | true =>
+      rw [twoReplicaLocalSwapRaw, ← Matrix.mul_assoc, twoReplicaSwap_sq,
+        Matrix.one_mul, trace_twoReplicaLocalDiff]
+
 end
 
 end GaloisForLFunctions.HTGeometry

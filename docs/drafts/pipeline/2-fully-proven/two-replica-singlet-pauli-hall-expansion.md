@@ -278,8 +278,15 @@ Progress against that list:
   not the card's trace expansion: `D_a F = -F D_a` (`twoReplicaLocalDiff_mul_swap`) turns it into
   `-Tr(F D_a^2)`, and `Tr(F) = 2` cancels against `Tr((sigma_a ⊗ sigma_a) F) = 2`.  The latter is
   itself structural — `sigma_a ⊗ sigma_a = L_a R_a` and `R_a F = F L_a` reduce it to `Tr(F)`.
-- **Remaining:** the orthogonality of distinct edge output sectors `(11)`, and the assembly
-  `(14)`--`(17)` into `ResolvedFiberHallExpansion`.
+- **`(11)` closed at the local factor.**  `trace_twoReplicaLocalDiff` and
+  `trace_swap_mul_twoReplicaLocalDiff` say `D_a` and `F D_a` are traceless, and
+  `trace_twoReplicaLocalSwapRaw_mul_diff` / `trace_twoReplicaLocalSwapRaw_mul_swap_mul_diff` say
+  both are Hilbert--Schmidt orthogonal to the whole local singlet algebra `span{I, F}`.  The second
+  traceless statement needs no computation: `D_a F = -F D_a` plus trace cyclicity makes the trace
+  its own negative.  This is the local input the card's `(11)` tensors up — distinct edges differ at
+  a vertex where one factor lies in `L` and the other in `L^perp`.
+- **Remaining:** the global tensor form of `(11)` and the assembly `(14)`--`(17)` into
+  `ResolvedFiberHallExpansion`.
 
 `HTGeometry/TwoReplicaCliffordTwirlHallSymmetryReduction.lean` additionally
 proves, in both exact matrix conventions, that the canonical greatest local
