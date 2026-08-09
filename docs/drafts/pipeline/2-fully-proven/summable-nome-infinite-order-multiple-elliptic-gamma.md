@@ -671,22 +671,24 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 2, the exact criterion | `summable_nome_pow_iff_exists_normal_majorant` |
 | Lemma 3, (10) | `finiteNomeSection`, `tendsto_finiteNomeSection` |
 | Lemma 5, (14) | `infiniteMultipleEllipticGamma_tower_hasProd`, `infiniteMultipleEllipticGamma_coface` |
+| Lemma 2, values and nonconstancy | `infiniteMultipleEllipticGamma_at_zero`, `infiniteMultipleEllipticGamma_at_one`, `infiniteMultipleEllipticGamma_nonconstant` |
+| Lemma 5, second half — every nome contributes | `infiniteMultipleEllipticGamma_shift_nonconstant` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
-`HTGeometry/InfiniteMultipleEllipticGammaSharpness.lean`.
+`HTGeometry/InfiniteMultipleEllipticGammaSharpness.lean`,
+`HTGeometry/InfiniteMultipleEllipticGammaValues.lean`.
 
 ### Open in Lean
 
-1. Lemma 2, values and free energy: `𝒢(0)=1`, `𝒢(1)=0`, nonconstancy, and (8)
-   `log 𝒢_{A,g}(x) = -∑_{m≥d} x^m M_{A,m}/m` on `|x|<1`.
+1. Lemma 2, free energy (8): `log 𝒢_{A,g}(x) = -∑_{m≥d} x^m M_{A,m}/m` on `|x|<1`, with
+   `M_{A,m} = ∏_a (1-p_a^m)^{-1}` and the occupation rearrangement `∑_ν (p^ν)^m = M_{A,m}`.
 2. Lemma 4: `Q_S → 0`, `F_{S,g} → 1`, `F_{S,g}^{-1} → 1`, `H_{S,g} → 𝒢_{A,g}`, and the parity
    obstruction — reciprocal cluster limits along the two parity subposets, hence necessity of the
    normalization.
-3. Lemma 5, second half: every nome contributes, i.e. `x ↦ 𝒢_{A,g}(p_a x)` is nonconstant.
-4. Lemma 6: the two-coordinate scaling boundary `xy = 0` and the limit table (16).
-5. Lemma 7: the all-order counterterm jet (C3)/(20).
-6. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
+3. Lemma 6: the two-coordinate scaling boundary `xy = 0` and the limit table (16).
+4. Lemma 7: the all-order counterterm jet (C3)/(20).
+5. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
 
 Item 2 needs the finite-section convergence of Lemma 3 upgraded from pointwise to locally uniform,
