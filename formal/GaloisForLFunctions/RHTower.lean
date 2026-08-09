@@ -5263,6 +5263,7 @@ import GaloisForLFunctions.RHTower.ProlateExactPrimitive
 import GaloisForLFunctions.RHTower.ProlateEndpointEnergy
 import GaloisForLFunctions.RHTower.ProlateFullPrimitive
 import GaloisForLFunctions.RHTower.ProlateDilatedChannel
+import GaloisForLFunctions.RHTower.AmpFourthDecay
 import GaloisForLFunctions.RHTower.VanDerCorputLocal
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeighted
@@ -6376,3 +6377,4 @@ import GaloisForLFunctions.RHTower.BaezDuarteDetectorIndependence
 import GaloisForLFunctions.RHTower.LeastSquaresProjection
 import GaloisForLFunctions.RHTower.BaezDuarteLeastSquares
 import GaloisForLFunctions.RHTower.MellinVanishingCriterion
+import GaloisForLFunctions.RHTower.FractDilateBalance
