@@ -78,3 +78,21 @@ Elementary and unconditional. `m = 1` gives `0 = log 1`; `m = 2` is the classica
 So both data of the discrete Báez-Duarte normal system are now explicit rational series — the matrix by
 `hasSum_bdGram_discrete`, the right-hand side by `hasSum_pairing_discrete` — and the whole criterion reads:
 RH holds if the solutions of these rational systems satisfy `∑ᵢ cᵢ (log(i+1))/(i+1) → 1`.
+
+## Addendum 2 (same day): a closed-form entry, and a concrete bound
+
+`RHTower/BaezDuarteHalfBound.lean`. The Gram series and the pairing series coincide at `m = 2`, because
+`(n mod 2)² = (n mod 2)`. That evaluates one entry in closed form:
+
+**`bdGram_half` — `bdGram (1/2) (1/2) = (log 2)/4`.**
+
+Feeding it into `bdDist_sq_le_quadratic` with the single modulus `2` and the optimal coefficient `c = 2`
+(`pairing/gram = ((log 2)/2)/((log 2)/4)`):
+
+**`bdDist_sq_le_one_sub_log_two` — `d² ≤ 1 − log 2` for the one-generator family `{1/2}`.**
+
+Both exact, symbolic and unconditional. This is the first time the development produces a *number* rather than
+an identity: the machinery of the previous addenda is now closed enough that a coefficient choice can be
+evaluated end to end. The bound itself is of course nowhere near `0` — one generator cannot do better than
+`1 − log 2 ≈ 0.31`, and `sq_le_bdGram_self` confirms the entry sits above its Cauchy–Schwarz floor — but it
+demonstrates that nothing in the chain is left implicit.
