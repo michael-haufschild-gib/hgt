@@ -54,6 +54,14 @@ def matrixDysonQuadraticPolynomial (A : K → Matrix I I ℂ) (i j : I) :
   matrixDysonZ I * matrixDysonEntry i j - MvPolynomial.C (if i = j then 1 else 0) -
     matrixDysonPolynomial A i j
 
+/-- The extracted quadratic coordinate is literally the covariance-product sum. -/
+theorem matrixDysonQuadraticPolynomial_eq_sum (A : K → Matrix I I ℂ) (i j : I) :
+    matrixDysonQuadraticPolynomial A i j =
+      ∑ k, ∑ l, ∑ m, ∑ q, MvPolynomial.C (A k i l) * matrixDysonEntry l m *
+        MvPolynomial.C (star (A k q m)) * matrixDysonEntry q j := by
+  unfold matrixDysonQuadraticPolynomial matrixDysonPolynomial
+  ring
+
 /-- Evaluation point consisting of a spectral parameter and a candidate matrix Cauchy transform. -/
 def matrixDysonPoint (z : ℂ) (G : Matrix I I ℂ) : MatrixDysonVariable I → ℂ
   | none => z

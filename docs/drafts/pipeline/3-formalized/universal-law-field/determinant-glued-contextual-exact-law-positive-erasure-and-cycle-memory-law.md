@@ -1,9 +1,12 @@
 # Determinant-glued contextual exact law, positive erasure, and cycle-memory law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-DGLU-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveDeterminantGluing`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [NON-PRODUCT SYNTHESIS] [CONTEXTUAL EFFECTIVITY + DETERMINANT MEMORY]
-  [POSITIVE ERASURE] [CYCLE MULTIPLICITY] [NOT RH] [NO LEAN]
+  [POSITIVE ERASURE] [CYCLE MULTIPLICITY] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Setup
 

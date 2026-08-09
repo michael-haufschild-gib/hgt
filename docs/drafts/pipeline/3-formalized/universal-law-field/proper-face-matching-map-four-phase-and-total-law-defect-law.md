@@ -1,9 +1,12 @@
 # Proper-face matching map, four phases, and total-law defect law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [HIGHER SYNTHESIS]
+- **ID:** ULF-MATCH-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified, 0-truncated chart)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutivePolyscopicMatching`
+- **Status:** [LEAN-CERTIFIED] [HIGHER SYNTHESIS]
   [CONTEXTUALITY + INTERACTION] [COORDINATE-FREE MATCHING MAP]
-  [CANDIDATE UNIVERSAL PRIMITIVE] [NOT RH] [NO LEAN]
+  [CANDIDATE UNIVERSAL PRIMITIVE] [SECTION 4.1 CORRECTED] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Setup
 
@@ -209,3 +212,21 @@ fibres. Operadic law genesis describes nontrivial fibres. Neither is universal a
 6. Space-valued matching fibres retain homotopy type but not automatically simple-homotopy
    torsion, determinant history, or quantitative filling cost. The exact no-go is proved in
    derived-homotopy-endpoint-insufficiency-for-torsion-and-filling-cost-law.md.
+
+## 8. Correction recorded at Lean certification (ULF-MATCH-1)
+
+Section 4.1 is corrected. With the definitions of §1, the index poset `P_{<I}(I)` contains the
+maximal proper faces `V \ {v}`, whose shadows already determine every context equation except one;
+compatibility across two such faces then determines all of them. For the parity context system the
+limit over proper faces therefore coincides with the global-law object, so the naive vertex-subset
+Čech diagram lands in the **reconstructible** phase — its matching object is empty exactly when the
+global-law object is — and not in the contextual phase.
+
+The contextual phase is realized natively by recording as the shadow of a proper face its
+*satisfiability*: every proper observer face of a connected parity system is satisfiable for an
+arbitrary charge, so the proper-face matching object is a point, while an odd total charge makes the
+total-law object empty. This is certified as `contextualDiagram_isContextual`.
+
+Corollary 2.4 remains outside the certified scope: it is a statement about the higher homotopy of
+the realization space, and neither mathlib nor the corpus carries infinity-categories. Its
+zero-truncated content is certified.

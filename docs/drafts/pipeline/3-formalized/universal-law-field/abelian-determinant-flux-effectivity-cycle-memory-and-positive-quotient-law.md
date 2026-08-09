@@ -1,9 +1,12 @@
 # Abelian determinant flux, effectivity, cycle memory, and positive quotient law
 
-- **Stage:** 2 — fully proved on paper
-- **Status:** [PAPER-PROVED] [UNIVERSAL-LAW FIELD]
+- **ID:** ULF-FLUX-1
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
+- **Lean module:** `GaloisForLFunctions.HTGeometry.ConstitutiveAbelianDeterminantFlux`
+- **Status:** [LEAN-CERTIFIED] [UNIVERSAL-LAW FIELD]
   [DETERMINANT-FLUX GEOMETRY] [ARBITRARY ABELIAN COEFFICIENT]
-  [EFFECTIVITY + MEMORY EXACT SEQUENCE] [POSITIVE QUOTIENT] [NOT RH] [NO LEAN]
+  [EFFECTIVITY + MEMORY EXACT SEQUENCE] [POSITIVE QUOTIENT] [NOT RH] [NO PROJECT AXIOMS]
 
 ## 1. Setup
 
@@ -247,3 +250,16 @@ hypercohomology/descent object whose:
 
 This conjecture must first survive a two-dimensional finite example where a higher obstruction
 and a nontrivial memory group arise from one cellular differential.
+
+## 9. Certified scope recorded at Lean certification (ULF-FLUX-1)
+
+Certified: the four-term exact sequence `1 → ker ∂_A → A^E → A^V → A → 1` (exactness at the vertex
+term as `range ∂_A = ker Π`, surjectivity of `Π`, and `Π ∘ ∂_A = 1`), global realizability iff
+`Π(b) = 1`, the realization fibre as a torsor under `ker ∂_A`, proper-face realizability for an
+arbitrary charge, and the positive-quotient criterion `Π(p ∘ b) = p(Π(b))` with anomaly erasure
+exactly on `ker p`.
+
+Not certified: the second isomorphism of (DF.6), `ker ∂_A ≅ A^{β₁(G)}`, which is stated in the card
+"after choosing a cycle basis". A spanning-tree cycle basis is not available in mathlib and is not
+constructed here. The numerical content is certified in the `A = F₂` specialization, where
+`ULF-DGLU-1` proves the realization set has exactly `2^(|E| + 1 − |V|)` elements.

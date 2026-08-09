@@ -173,13 +173,14 @@ theorem matrixDysonInfinity_exists_integral_multiplier
     (A : K → Matrix I I ℂ) :
     ∃ r : MatrixDysonInfinityCoordinateRing A,
       r ∉ matrixDysonInfinityPointPrime A ∧
+      IsIntegral (Polynomial ℂ) r ∧
       ∀ x : MatrixDysonInfinityCoordinateRing A, ∃ m : ℕ,
         IsIntegral (Polynomial ℂ) (r ^ m * x) := by
   letI : Algebra (Polynomial ℂ) (MatrixDysonInfinityCoordinateRing A) := inferInstance
   letI : Algebra.QuasiFiniteAt (S := MatrixDysonInfinityCoordinateRing A)
       (Polynomial ℂ) (matrixDysonInfinityPointPrime A) :=
     matrixDysonInfinity_quasiFiniteAt_point A
-  exact Algebra.zariskisMainProperty_iff'.mp
+  exact Algebra.zariskisMainProperty_iff.mp
     (Algebra.ZariskisMainProperty.of_finiteType
       (R := Polynomial ℂ) (S := MatrixDysonInfinityCoordinateRing A)
       (matrixDysonInfinityPointPrime A))

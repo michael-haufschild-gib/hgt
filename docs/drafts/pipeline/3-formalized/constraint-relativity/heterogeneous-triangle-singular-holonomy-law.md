@@ -1,9 +1,9 @@
 # Heterogeneous triangle identity and singular-holonomy law
 
 - **ID:** `heterogeneous-triangle-singular-holonomy-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / CONSTRAINT RELATIVITY
-- **Scientific status:** `[PAPER-PROVED] [NO LEAN WRITTEN OR BUILT] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [FORMALIZED IN LEAN] [NOT RH]`
 - **Novelty status:** telescoping and norm estimates are elementary. Candidate new content is their
   use as the mandatory local law of a heterogeneous relation atlas; no external priority claim.
 - **Parent:**
@@ -288,3 +288,7 @@ vanishing edge defects, and uniformly equicontinuous transports.
 
 Later formalization would require only normed-space linear maps, a three-term algebraic identity,
 and operator-norm estimates. No Lean file was written, edited, or built in this turn.
+
+## Formalized companion
+
+`heterogeneous-triangle-singular-holonomy-law-formalized.md` (same directory).

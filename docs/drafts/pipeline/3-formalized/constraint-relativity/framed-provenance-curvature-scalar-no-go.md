@@ -1,9 +1,9 @@
 # Framed provenance curvature and universal scalar no-go
 
 - **ID:** `framed-provenance-curvature-scalar-no-go`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NO-GO / POSITIVE SURVIVOR / CONSTRAINT RELATIVITY
-- **Scientific status:** `[PAPER-PROVED] [NO LEAN WRITTEN OR BUILT] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [FORMALIZED IN LEAN] [NOT RH]`
 - **Novelty status:** finite-lattice proof is elementary. Its field-level consequence is
   candidate-new: completion curvature must be source-framed, oriented, and provenance-valued;
   scalar energy or complexity is a chosen observer pairing and cannot be primitive.
@@ -366,3 +366,7 @@ Retire this conjecture if:
 No Lean code was written or built. A later formalization can begin with finite chains, closure
 operators, and the potential classification. The higher provenance object `(9.1)` is conjectural
 and must not be encoded as an axiom.
+
+## Formalized companion
+
+`framed-provenance-curvature-scalar-no-go-formalized.md` (same directory).

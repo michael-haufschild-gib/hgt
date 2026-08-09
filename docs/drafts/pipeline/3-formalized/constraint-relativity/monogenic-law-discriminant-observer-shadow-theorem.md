@@ -1,10 +1,10 @@
 # Monogenic law-discriminant observer-shadow theorem
 
 - **ID:** `monogenic-law-discriminant-observer-shadow-theorem`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / CROSS-FACE UNIFICATION (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [FINITE MONOGENIC BRIDGE]`
-  `[NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[NO RH CLAIM] [FORMALIZED IN LEAN]`
 - **Role:** ties relative cotangent, framed root orientation, observer determinant, positive
   magnitude, and ramification locus inside finite monogenic split-fibre package.
 - **Novelty:** underlying algebra is classical. Candidate-new contribution is exact corpus
@@ -254,3 +254,7 @@ before formal plan.
 ## Log
 
 - 2026-08-08 — generalized quadratic four-shadow law to finite monogenic execution.
+
+## Formalized companion
+
+`monogenic-law-discriminant-observer-shadow-theorem-formalized.md` (same directory).

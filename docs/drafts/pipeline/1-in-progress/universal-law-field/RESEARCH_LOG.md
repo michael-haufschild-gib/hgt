@@ -604,3 +604,33 @@ eigen integrand — 2A's deriv-XiC bound × the (18a) sharp-quotient bound (refl
 norm_conj) × the inverse-linear pole factor ≤ 1 past ‖p‖+1. Three fix cycles (nonneg-Y threading,
 explicit G/rate for unification, one over-supplied side proof). L3 of the 5b-2 spec is done;
 L1, L2, L4, MAIN remain per the spec memory.
+
+## 2026-08-09 — fork (a) chartered: modular-cone polarization (Claude Fable 5)
+
+After the busywork audit (user challenge upheld: the late certification chain was momentum;
+the theory's make-or-die points M1-M3 were unresolved while formalizing), the program pivots to
+the fork with ULF-FORK-1: the polarization = the Tomita self-dual cone of the zeta gas's KMS-GNS
+representation; Weil positivity = its explicit-formula shadow. The make-or-die test is placed
+FIRST and is cheap: compute the one-mode Toeplitz modular cone explicitly and compare its
+spectral pushforward with Weil's known local positivity at p — mismatch kills the hunch in one
+finite computation; match yields the first mechanism-level ζ-consequence (M2) of the program.
+Step 0 = dedicated collision pass (Connes-Consani 2006.13771 and successors; corpus Sonin
+folder re-read). ULF-INV-10's certification chain: PARKED as maintenance (thirteen modules
+green; remaining steps are completeness, not discovery). No Lean until step 2 passes.
+
+## 2026-08-09 — FORK-1 executed and closed; the field candidate re-chartered as descent theory
+
+- ULF-FORK-1 make-or-die test EXECUTED at paper level. Result: MATCH — the Weil local
+  positivity density at p is Z_p^{-1}|ζ_p(1/2+it)|², which is exactly the one-mode zeta-gas
+  natural-cone density at fugacity λ = 1/p (Δ^{1/4}-charge Gram = p^{-|k|/2} = Weil weights).
+  Hostile verdict: REDISCOVERED in mechanism (Herglotz/Bombieri local positivity; Connes/CC
+  scaling-flow realization of W_v), BRIDGE in dictionary. Global half absorbed into the
+  type-III adele-class program. Card closed; no Lean written.
+- The user directive is now standing: NO Lean formalization until the candidate field itself
+  is identified and shown capable of delivering all the explanations.
+- Relentless interrogation of the death produced ULF-DESC-1 (positivity-descent limit law):
+  local + semilocal positivity are free/known; the obstruction is a pure limit class; every
+  corpus no-go = a computation that the class survives one more localization. The
+  explanatory-completeness audit against the full wall table passed. First-theorem target: the
+  unconditional descent-defect law and a positivity domain beyond Yoshida's support
+  restriction — with the INSIGNIFICANT-branch falsifier stated in advance.

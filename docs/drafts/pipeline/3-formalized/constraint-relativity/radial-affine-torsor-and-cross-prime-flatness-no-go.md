@@ -1,10 +1,10 @@
 # Radial affine torsor and cross-prime flatness no-go
 
 - **ID:** `radial-affine-torsor-and-cross-prime-flatness-no-go`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NO-GO / POSITIVE SURVIVOR (paper)
 - **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NEW RH-ROUTE LEVERAGE]`
-  `[NO RH CLAIM] [NO LEAN WRITTEN]`
+  `[NO RH CLAIM] [FORMALIZED IN LEAN]`
 - **Role:** proves cross-grade trivial stabilizers and all cross-prime consistency/curvature data
   determine radial orbit but cannot select absolute critical origin.
 - **Novelty:** elementary affine gauge theory. New corpus leverage is exact classification of
@@ -249,3 +249,7 @@ linear algebra; formalize for finite prime packets before any cofinal version.
 ## Log
 
 - 2026-08-08 — hostile generalized-prime/cross-grade countermodel attack; proof promoted.
+
+## Formalized companion
+
+`radial-affine-torsor-and-cross-prime-flatness-no-go-formalized.md` (same directory).

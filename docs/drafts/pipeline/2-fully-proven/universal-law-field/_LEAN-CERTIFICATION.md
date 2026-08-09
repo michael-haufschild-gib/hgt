@@ -34,6 +34,9 @@ Dedicated Lean umbrella:
 | ULF-DOCT-1 | Nondistributive doctrine lattice, exact lcm-periodic finite congruence observers with infinite fibres, cofinal separation, and the phase doctrine as a positive quotient | `HTGeometry.ConstitutiveDoctrineLattice` |
 | ULF-ENDP-1 | Derived, endpoint, and unweighted observers are constant while determinant history, van Kampen area, and cellular area are not | `HTGeometry.ConstitutiveEndpointInsufficiency` |
 | ULF-BULK-1 | Scalar-indistinguishable `C₃` boundary conditions separated by the bulk character, with exactly three-periodic fusion and open marked lift | `HTGeometry.ConstitutiveBulkBoundaryFusion` |
+| ULF-MATCH-1 | Proper-face matching map, realization fibres, four exhaustive and exclusive phases invariant under diagram equivalence, kernel/cokernel chart, native interaction and contextual instances | `HTGeometry.ConstitutivePolyscopicMatching` |
+| ULF-DGLU-1 | Determinant-sign gluing is the parity incidence equation: effectivity iff even charge iff trivial anomaly, cycle-memory count `2^(|E|-|V|+1)`, and positive erasure | `HTGeometry.ConstitutiveDeterminantGluing` |
+| ULF-FLUX-1 | Abelian determinant-flux exact sequence, realizability iff trivial total charge, realization torsor, proper-face invisibility, positive coefficient quotient (cycle-basis isomorphism not constructed) | `HTGeometry.ConstitutiveAbelianDeterminantFlux` |
 | ULF-OPM-2 | Failed unary exchange generates the least preserved congruence; induced quotient laws commute; every commuting observer factors uniquely through it; no smaller strict repair exists | `HTGeometry.ConstitutiveExchangeStrictification` |
 | ULF-OPM-3 | One exchange residual admits strict quotient and nonsplit central promotion; cocycle coherence, exact commutator carry, fixed lift residual, and no-section theorem | `HTGeometry.ConstitutiveExchangeCentralPromotion` |
 | ULF-OPM-4 | Reporter descends exactly when constant on generated exchange congruence; critical-pair detection forbids commuting strictification with reporter preservation; Heisenberg history reporter selects central promotion | `HTGeometry.ConstitutiveExchangePromotionSelection` |
@@ -146,3 +149,14 @@ of the identification's machine-checked closure.
 Build green (8948 jobs); axioms standard. THIRTEEN session modules. The assembly's L3 is done;
 remaining: L1 (bottom-edge rewrite), L2 (truncated-to-full-line limits), L4 (evenness folding),
 MAIN (the widening-limit gluing) — per the 5b-2 spec memory.
+
+## Session 2026-08-09 additions (Reflexive Law Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-RLM-10 | Contextual decomposition of three-promotion reversal; Jacobi conservation; contextual arity certificate; initial pairwise-flat/triple-nonflat countermodel; no uniform finite exchange horizon | `HTGeometry.ConstitutiveContextualPromotionExchange` |
+
+Direct foreground elaboration and the final
+`lake build GaloisForLFunctions.HTGeometry.UniversalLawField` pass (11,405 jobs).  Axiom audit on
+all significant declarations and the closed capstone reports only `propext`, `Classical.choice`,
+and `Quot.sound`.

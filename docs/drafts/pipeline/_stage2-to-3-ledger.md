@@ -579,3 +579,73 @@ prime/zeta/divisor theorem.  See
 - Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
   `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
   computation proof.
+
+# Universal-law-field polyscopic-matching certification (2026-08-09)
+
+- `proper-face-matching-map-four-phase-and-total-law-defect-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutivePolyscopicMatching`.
+- Certified in the 0-truncated (set-valued) chart: realizability and uniqueness of a compatible
+  proper-face datum are exactly nonemptiness and subsingletonness of the fibre of the matching map;
+  the matching map is a bijection iff every compatible proper-face law has a unique total law; the
+  reconstructible, contextual, interaction, and mixed phases are exhaustive and pairwise exclusive
+  and are invariant under objectwise equivalence of diagrams; in a linear chart the kernel is the
+  hidden interaction invisible on every proper face and the cokernel the compatible-looking face
+  data not produced by a total law; the amplitude-scaled irreducible `N`-ary law realizes the
+  interaction phase natively (every proper colour face stays the zero law, distinct amplitudes give
+  distinct total laws) and an odd-charge parity context system realizes the contextual phase (every
+  proper observer face satisfiable, total law object empty).
+- **Card correction.** Section 4.1's claim that the parity Čech diagram over the subset poset has a
+  nonempty proper-face matching object is not certified and appears false: the poset of proper
+  subsets contains the maximal faces `V \ {v}`, whose shadows already determine every context
+  equation, so the limit over proper faces coincides with the global law object and the naive
+  subset diagram lands in the reconstructible phase. The contextual phase is instead certified by
+  recording each proper face's satisfiability as its shadow, which is exactly what
+  `exists_parityBoundary_eq_on_of_ne_univ` and `properFace_blindness` supply.
+- Corollary 2.4 (higher homotopy of the realization space) is out of scope: neither mathlib nor the
+  corpus carries infinity-categories. Its zero-truncated content — the realization set and its
+  emptiness/multiplicity — is certified.
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.
+
+# Universal-law-field determinant-gluing certification (2026-08-09)
+
+- `determinant-glued-contextual-exact-law-positive-erasure-and-cycle-memory-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveDeterminantGluing`.
+- Certified: the determinant sign `paritySign` is an injective character of the parity group, so the
+  vertex determinant constraint is exactly the parity incidence equation and the total determinant
+  anomaly is exactly the total charge; every glued family has trivial anomaly, so odd charge is a
+  literal gluing anomaly; a global exact law exists iff the charge is even iff the anomaly is one;
+  when it exists the set of global exact laws is a torsor over the cycle space and has exactly
+  `2 ^ (|E| + 1 - |V|)` elements; every local determinant complex is acyclic with positive shadow
+  one and every proper observer face is exact for every charge, so those three readings do not see
+  the anomaly.
+- Reuses `HTGeometry.ConstitutiveParityContextuality` (incidence boundary, criterion, proper-face
+  solvability, rank) and `HTGeometry.ConstitutiveDeterminantTorsion` (acyclicity, positive shadow).
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.
+
+# Universal-law-field abelian determinant-flux certification (2026-08-09)
+
+- `abelian-determinant-flux-effectivity-cycle-memory-and-positive-quotient-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveAbelianDeterminantFlux`.
+- Certified for an arbitrary abelian coefficient group and an arbitrary oriented finite graph
+  (tail and head maps, connectivity as an inductive link relation): `Π ∘ ∂_A = 1`; a vertex law is
+  globally realizable iff its total charge is one; hence `range ∂_A = ker Π`, and `Π` is surjective,
+  so the four-term sequence `1 → ker ∂_A → A^E → A^V → A → 1` is exact; every nonempty realization
+  fibre is a torsor under `ker ∂_A`; every proper observer face is realizable for an arbitrary
+  charge, so a nontrivial total anomaly is invisible there; and a coefficient quotient `p` commutes
+  with the total charge, so the `P`-observer declares the anomaly trivial exactly on `ker p`.
+- Surjectivity onto the kernel is proved by the link-flux construction plus a support induction, not
+  by a spanning tree; this is the multiplicative oriented analogue of the walk argument of
+  ULF-CTX-1.
+- **Not certified:** `ker ∂_A ≅ A^{β₁(G)}` (DF.6, stated in the card "after choosing a cycle
+  basis"); mathlib has no spanning-tree cycle basis. The numerical content is certified in the
+  `A = F₂` specialization by `ULF-DGLU-1` (`2^(|E| + 1 − |V|)` realizations).
+- Targeted module build and universal-law-field umbrella build green; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate, hypothesis interface, or
+  computation proof.
