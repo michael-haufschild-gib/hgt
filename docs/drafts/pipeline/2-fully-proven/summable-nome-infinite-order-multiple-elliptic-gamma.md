@@ -673,24 +673,34 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 5, (14) | `infiniteMultipleEllipticGamma_tower_hasProd`, `infiniteMultipleEllipticGamma_coface` |
 | Lemma 2, values and nonconstancy | `infiniteMultipleEllipticGamma_at_zero`, `infiniteMultipleEllipticGamma_at_one`, `infiniteMultipleEllipticGamma_nonconstant` |
 | Lemma 5, second half — every nome contributes | `infiniteMultipleEllipticGamma_shift_nonconstant` |
+| Lemma 4, `Q_S → 0` | `tendsto_nomeProduct_atTop_zero` |
+| Lemma 4, uniform smallness of the sections near 0 | `norm_finiteNomeSection_sub_one_le` |
+| Lemma 4, (12) forward collapse `F_{S,g} → 1` | `tendsto_forwardNomeFactor_one` |
+| Lemma 4, (13) `H_{S,g} → 𝒢_{A,g}` | `tendsto_parityNormalizedSection` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaSharpness.lean`,
-`HTGeometry/InfiniteMultipleEllipticGammaValues.lean`.
+`HTGeometry/InfiniteMultipleEllipticGammaValues.lean`,
+`HTGeometry/InfiniteMultipleEllipticGammaCollapse.lean`.
 
 ### Open in Lean
 
 1. Lemma 2, free energy (8): `log 𝒢_{A,g}(x) = -∑_{m≥d} x^m M_{A,m}/m` on `|x|<1`, with
    `M_{A,m} = ∏_a (1-p_a^m)^{-1}` and the occupation rearrangement `∑_ν (p^ν)^m = M_{A,m}`.
-2. Lemma 4: `Q_S → 0`, `F_{S,g} → 1`, `F_{S,g}^{-1} → 1`, `H_{S,g} → 𝒢_{A,g}`, and the parity
-   obstruction — reciprocal cluster limits along the two parity subposets, hence necessity of the
-   normalization.
+2. Lemma 4, remaining half: the parity obstruction.  The raw section satisfies
+   `G_{S,g} = H_{S,g}^{-1}` on even `|S|` and `G_{S,g} = H_{S,g}` on odd `|S|`, so the two parity
+   subposets give reciprocal cluster limits `𝒢^{-1}` and `𝒢`.  Needs the subnet filters
+   `atTop ⊓ 𝓟 {S | Even S.card}` and their `NeBot` (both parity subposets are cofinal because a
+   fresh index can always be adjoined), plus a point where `𝒢(x) ∉ {0} ∪ {z | z^2 = 1}` to turn the
+   reciprocal limits into actual non-convergence of the raw net.
 3. Lemma 6: the two-coordinate scaling boundary `xy = 0` and the limit table (16).
 4. Lemma 7: the all-order counterterm jet (C3)/(20).
 5. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
 
-Item 2 needs the finite-section convergence of Lemma 3 upgraded from pointwise to locally uniform,
-or a direct uniform-in-`S` estimate `|Φ_{S,g}(t) - 1| ≤ ε` for small `|t|`; the latter is the
-cheaper route and is what the `‖E_g(w)-1‖ ≤ e^g‖w‖^{g+1}` bound already supports.
+The uniform-in-`S` route worked as predicted: `norm_finiteNomeSection_sub_one_le` bounds every
+finite section by `exp(e^g ‖t‖^{g+1} · ∑_ν ‖p^ν‖^{g+1}) - 1`, with no dependence on `S`, because the
+centred factors of every section are dominated by one fixed summable family.  Lemma 3 did not need
+upgrading.  Two hypotheses turned out to be unnecessary and were dropped: `tendsto_forwardNomeFactor_one`
+and `tendsto_parityNormalizedSection` hold at every `x`, including `x = 0`.
