@@ -1,10 +1,11 @@
 # Positive graph edge-Casimir kernel law
 
 - **ID:** positive-graph-edge-casimir-kernel-law
-- **Stage:** 2 — fully proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Parent:** `visible-kernel-recovery-hall-law.md`
-- **Status:** `[PROVED HERE] [FORMAL-SOURCE-CHECKED] [NOVELTY NOT CLAIMED]`
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [NOVELTY NOT CLAIMED]`
+- **Lean certificate:** `positive-graph-edge-casimir-kernel-law-formalized.md`
 
 ## Exact theorem
 
@@ -101,12 +102,27 @@ gap, or unproved positivity premise is used.
 - the physical synchronized two-mode submodule and exact identity
   `ker K_G cap range(iota) = span{global identity, global swap}`.
 
-Targeted source elaboration passes. Axiom audit of all capstones reports only
-`propext`, `Classical.choice`, and `Quot.sound`. Final umbrella build remains
-deferred to final audit.
+`HTGeometry/GraphEdgeCasimirSingletKernelRank.lean` adds the two facts the "after removing its two
+universal zero modes" clause needs, and restates the classification on the singlet sector as the
+card names it:
+
+- `finiteTwoReplicaGlobalSynchronizedMap_injective` and
+  `finrank_finiteTwoReplicaGlobalSynchronizedSubmodule` — the global identity and the global replica
+  swap are independent on a nonempty register, so the synchronized sector is *exactly*
+  two-dimensional.  Independence is injectivity of the coefficient embedding together with
+  `twoReplicaAllIdentity ≠ twoReplicaAllSwap`; nothing about the Casimir enters.
+- `finiteTwoReplicaPhysicalGraphCasimir_ker_inf_twirlRange` and its rank — the same classification
+  with the singlet sector written as the product-Clifford twirl range, which is what the card means
+  by "the complete product-Clifford singlet sector".  The two descriptions agree by
+  `finiteProductCliffordTwoReplicaTwirl_range_eq`.
+
+Umbrella build passes; the axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Log
 
 - 2026-08-05 — dependency-closed paper proof after corpus audit found finite
   master-constraint and positive-operator machinery in HTGeometry/RHTower.
 - 2026-08-05 — formal source and axiom audit complete.
+- 2026-08-09 — umbrella build closed; the two universal zero modes counted, and the
+  classification restated on the twirl range.
