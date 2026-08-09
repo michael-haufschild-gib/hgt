@@ -1,0 +1,618 @@
+# Abelian zeta gas, two-observable divisor dictionary, and condensation-wall law
+
+- **ID:** ULF-GAS-1
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper) / PRD-E ARITHMETIC SOURCE TEST
+- **Source:** structural audit of ULF-EQG-1 against the PRD charter gates
+- **Statement:** The Euler q-Gamma source of ULF-EQG-1 is the zeta-Gibbs measure
+  \(\mathbb P_\sigma(A)=C_\sigma|A|^{-\sigma}\) on finite abelian groups, equivalently the unique
+  KMS\(_\sigma\) state of one free prime-power Toeplitz gas; its two canonical integers — the order
+  \(|A|\) and the socle order \(|\operatorname{soc}A|\) — carry two nonisomorphic complete
+  zeta-divisor calculi (dilation and translation), its walls \(\sigma=1/g\) are exact
+  depth-\(g\) condensation transitions with the critical abscissa \(\tfrac12\) as the squarefull
+  wall, the depth-dilation semigroup is an exact renormalization action, and the symmetrized
+  information cost of the canonical tilt equals the von Mangoldt mass
+  \(\sigma\sum_n\Lambda(n)n^{-\sigma}\).
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [PRE-ZERO SOURCE] [THREE OBSERVER ORGANS]
+  [WITHHELD SECOND-ORGAN RESPONSE] [KMS-UNIQUE FOR ALL POSITIVE TEMPERATURE]
+  [CLASSICAL COMPONENT PARENTS DISCLAIMED] [NOT RH] [NO LEAN]
+
+## 1. Source, modes, and the depth fan
+
+Let \(\mathbb M=\{(p,j):p\text{ prime},\ j\ge1\}\) be the set of nontrivial cyclic prime-power
+groups \(\mathbb Z/p^j\). A **configuration** is a finitely supported
+\(g:\mathbb M\to\mathbb N\); by the structure theorem for finite abelian groups, configurations
+biject with isomorphism classes via
+
+\[
+A(g)=\bigoplus_{(p,j)}(\mathbb Z/p^j)^{g(p,j)} .
+\tag{GAS.1}
+\]
+
+Fix two real parameters and give mode \((p,j)\) the geometric occupation ratio
+
+\[
+\tilde q_{p,j}=p^{-j\sigma-\tau}\in(0,1)
+\qquad(\sigma>0,\ \tau\ge0).
+\tag{GAS.2}
+\]
+
+The **depth fan** is the arrangement of lines \(\{j\sigma+\tau=c\}\) in the \((\sigma,\tau)\)
+parameter plane. The same fan will reappear below as the wall arrangement, as the divisor-line
+arrangement of the grand response, and as the orbit structure of the renormalization action. The
+two observables of the title are
+
+\[
+|A|=\prod_{(p,j)}p^{\,j\,g(p,j)},
+\qquad
+|\operatorname{soc}A|=\prod_p p^{\,N_p},
+\quad
+N_p=\sum_j g(p,j),
+\tag{GAS.3}
+\]
+
+the second because the socle \(\operatorname{soc}A=\bigoplus_pA[p]\) has
+\(|A[p]|=p^{\#\{\text{cyclic }p\text{-factors}\}}\).
+
+## 2. The zeta measure on finite abelian groups
+
+Let \((G_{p,j})\) be independent with \(\mathbb P(G_{p,j}=n)=(1-\tilde q_{p,j})\tilde q_{p,j}^{\,n}\).
+
+### Theorem 2.1 — zeta-Gibbs law and Erdős–Szekeres normalization
+
+If \(\sigma+\tau>1\), then almost surely only finitely many \(G_{p,j}\) are nonzero, so
+\(A=A(G)\) is a finite abelian group, and
+
+\[
+\boxed{
+\mathbb P_{\sigma,\tau}(A)
+=C_{\sigma,\tau}\,|A|^{-\sigma}\,|\operatorname{soc}A|^{-\tau},
+\qquad
+C_{\sigma,\tau}^{-1}
+=Z(\sigma,\tau)
+=\prod_{j\ge1}\zeta(j\sigma+\tau).}
+\tag{GAS.4}
+\]
+
+For \(\tau=0\) this is \(\mathbb P_\sigma(A)=C_\sigma|A|^{-\sigma}\) with
+\(Z(\sigma,0)=\prod_{j\ge1}\zeta(j\sigma)=\sum_{n\ge1}a(n)n^{-\sigma}\), where \(a(n)\) is the
+number of abelian groups of order \(n\) (Erdős–Szekeres).
+
+#### Proof
+
+\(\sum_{(p,j)}\tilde q_{p,j}=\sum_{j\ge1}\sum_p p^{-j\sigma-\tau}\le\sum_{j\ge1}P(j\sigma+\tau)\),
+where \(P\) is the prime zeta function; each term is finite because \(j\sigma+\tau\ge\sigma+\tau>1\),
+and the terms decay geometrically in \(j\), so the sum converges. Borel–Cantelli I gives finite
+activity. The product mass of a configuration is
+
+\[
+\prod_{(p,j)}(1-\tilde q_{p,j})\tilde q_{p,j}^{\,g(p,j)}
+=C_{\sigma,\tau}\prod_{(p,j)}\bigl(p^{-j\sigma-\tau}\bigr)^{g(p,j)}
+=C_{\sigma,\tau}\,|A|^{-\sigma}|\operatorname{soc}A|^{-\tau},
+\]
+
+using (GAS.3). The constant rearranges by absolute convergence of
+\(\sum_{(p,j)}|\log(1-p^{-j\sigma-\tau})|\le2\sum p^{-j\sigma-\tau}<\infty\):
+
+\[
+C_{\sigma,\tau}
+=\prod_{j\ge1}\prod_p(1-p^{-j\sigma-\tau})
+=\prod_{j\ge1}\zeta(j\sigma+\tau)^{-1}.
+\]
+
+Total mass one then re-proves \(\sum_A|A|^{-\sigma}|\operatorname{soc}A|^{-\tau}=Z(\sigma,\tau)\);
+at \(\tau=0\), grouping by \(|A|=n\) gives the Erdős–Szekeres identity. QED.
+
+## 3. Socle bridge: ULF-EQG-1 is the socle observer of this gas
+
+### Theorem 3.1 — Euler's identity is the mode bridge
+
+Under \(\mathbb P_{\sigma,0}\), the variables \(N_p=\sum_jG_{p,j}\) are independent with
+
+\[
+\mathbb P(N_p=n)=w_{q_p,n}
+=(q_p;q_p)_\infty\frac{q_p^{\,n}}{(q_p;q_p)_n},
+\qquad q_p=p^{-\sigma}.
+\tag{GAS.5}
+\]
+
+Hence \(M:=|\operatorname{soc}A|=\prod_pp^{N_p}\) has exactly the law (EQG.4)–(EQG.6) of
+ULF-EQG-1, and the entire global structure of that card — the random-integer law, the q-Gamma
+response, the translation equation, and the Cartier-divisor landing — is the socle-observer shadow
+of the abelian zeta gas.
+
+#### Proof
+
+Independence across \(p\) is clear. Fix \(p\), write \(q=q_p\). The probability generating
+function of \(N_p\) is
+
+\[
+\prod_{j\ge1}\frac{1-q^j}{1-uq^j}
+=\frac{(q;q)_\infty}{(uq;q)_\infty}.
+\]
+
+Euler's \(q\)-binomial identity
+\(\sum_{n\ge0}u^nq^n/(q;q)_n=1/(uq;q)_\infty\) for \(|u|<1/q\) gives
+
+\[
+\sum_{n\ge0}w_{q,n}u^n=\frac{(q;q)_\infty}{(uq;q)_\infty},
+\]
+
+the same analytic function on \(|u|<1\). Equality of generating functions of nonnegative laws
+forces (GAS.5). QED.
+
+The corpus's local Euler weights are therefore not primitive: they are the shadow of independent
+geometric prime-power modes, and the \(q\)-binomial theorem is precisely the change of observer.
+
+### Corollary 3.2 — depth-ladder responses and one-line translation law
+
+On the exact absolute-convergence chamber
+
+\[
+\operatorname{Re}(\sigma+u)>0,
+\qquad
+\operatorname{Re}(\sigma+u+v)>1,
+\]
+
+with normal convergence,
+
+\[
+\boxed{
+\mathfrak F_\sigma(u,v)
+:=\mathbb E_\sigma\!\left[|A|^{-u}\,|\operatorname{soc}A|^{-v}\right]
+=\frac{Z(\sigma+u,\;v)}{Z(\sigma,\;0)}
+=\prod_{j\ge1}\frac{\zeta\bigl(j(\sigma+u)+v\bigr)}{\zeta(j\sigma)} .}
+\tag{GAS.6}
+\]
+
+In particular the socle axis telescopes:
+
+\[
+\frac{\mathfrak F_\sigma(0,v+\sigma)}{\mathfrak F_\sigma(0,v)}
+=\prod_{j\ge1}\frac{\zeta((j+1)\sigma+v)}{\zeta(j\sigma+v)}
+=\frac1{\zeta(\sigma+v)},
+\tag{GAS.7}
+\]
+
+which is (EQG.13) after the substitution \(v=\sigma s\) and multiplication by the elementary factor
+\(\zeta(\sigma)^s\).
+
+#### Proof
+
+Per mode, \(\mathbb E[x^{G_{p,j}}]=(1-q)/(1-xq)\) with \(q=p^{-j\sigma}\) and
+\(x=p^{-ju-v}\). Put \(a=\operatorname{Re}(\sigma+u)\). The two chamber inequalities say
+\(a>0\) and \(a+\operatorname{Re}v>1\), hence
+
+\[
+\operatorname{Re}\bigl(j(\sigma+u)+v\bigr)
+=(a+\operatorname{Re}v)+(j-1)a>1
+\qquad(j\ge1).
+\]
+
+Thus every local geometric moment exists and
+\(\sum_{(p,j)}|{\textstyle\frac{1-q}{1-xq}}-1|\) converges normally on compact subsets.
+Conversely, failure of either chamber inequality makes the depth exponents fail to stay in the
+prime-Euler absolute-convergence half-plane: at depth one if
+\(\operatorname{Re}(\sigma+u+v)\le1\), and at large depth if
+\(\operatorname{Re}(\sigma+u)\le0\). This proves exactness of the chamber.
+Multiplying over modes and rearranging as in Theorem 2.1 gives (GAS.6). Equation (GAS.7) is
+literal telescoping of the depth ladder: shifting \(v\) by \(\sigma\) moves depth \(j\) to depth
+\(j+1\). QED.
+
+The corpus's translation-divisor law is thus the telescoping of the depth fan, and its
+normalized tilt \((\)EQG.15\()\) is the \(\tau\)-shift \(\tau\mapsto\tau+\sigma\) inside the
+exactly solvable family (GAS.4); the tilted state is
+\(\mathbb P_{\sigma,\sigma}\), which lies outside the one-parameter family
+\(\{\mathbb P_{\sigma'}\}\): the socle tilt is transverse to the temperature axis.
+
+## 4. KMS realization: unique equilibrium at every positive temperature
+
+Let \(\mathfrak A=\bigotimes_{(p,j)\in\mathbb M}\mathcal T\) be the C\(^*\)-inductive limit of
+finite minimal tensor products of Toeplitz algebras (\(\mathcal T\) is nuclear, so the tensor
+product is unambiguous), with generators \(V_{p,j}\), and gauge dynamics
+
+\[
+\alpha_t(V_{p,j})=e^{\,it\,j\log p}\,V_{p,j};
+\tag{GAS.8}
+\]
+
+the mode energy is \(\varepsilon_{p,j}=j\log p=\log|\mathbb Z/p^j|\), so the second-quantized
+Hamiltonian is \(H=\log|A|\): **energy is the logarithm of the order**.
+
+### Theorem 4.1 — existence and uniqueness
+
+For every \(\sigma>0\) there is exactly one KMS\(_\sigma\) state \(\varphi_\sigma\) on
+\((\mathfrak A,\alpha)\). It is the product over modes of the geometric states with weights
+\((1-q)q^n\), \(q=p^{-j\sigma}\), and its restriction to the diagonal masa is the mode-occupation
+law of Section 2 (at \(\tau=0\)).
+
+#### Proof
+
+**Existence.** Each factor carries the state \(\varphi^{(p,j)}\) of ULF-IPKMS-1 §3 with
+\(E=j\log p\), which is KMS\(_\sigma\) for its gauge flow. On the dense union of finite tensor
+products, the product state is well defined, and the KMS identity for elementary tensors of
+analytic elements factorizes into the per-mode identities. Continuity extends both the state and
+the KMS identity to \(\mathfrak A\).
+
+**Uniqueness.** Let \(\varphi\) be any KMS\(_\sigma\) state. The linear span of finite elementary
+tensors of monomials \(V^m(V^*)^n\) is dense in \(\mathfrak A\) (in \(\mathcal T\), the span of
+\(V^m(V^*)^n\) contains \(e_{jk}=V^j(1-VV^*)V^{*k}\), hence all compacts, and is classically dense).
+So it suffices to compute \(\varphi\) on a monomial
+\(a=\prod_{i\in F}V_i^{m_i}(V_i^*)^{n_i}\) with \(F\subset\mathbb M\) finite.
+
+*Step 1: nonzero total energy.* Each monomial is an eigenvector:
+\(\alpha_t(a)=e^{itE(a)}a\) with \(E(a)=\sum_i(m_i-n_i)\varepsilon_i\). The KMS identity with
+\(b=1\) gives \(\varphi(a)=\varphi(\alpha_{i\sigma}(a))=e^{-\sigma E(a)}\varphi(a)\), so
+\(\varphi(a)=0\) whenever \(E(a)\ne0\).
+
+*Step 2: resonant off-diagonal monomials.* Suppose \(E(a)=0\) but \(k_{i_0}:=m_{i_0}-n_{i_0}\ne0\)
+for some \(i_0\); after replacing \(a\) by \(a^*\) if necessary, \(k_{i_0}\ge1\). Apply the KMS
+identity with \(c=V_{i_0}\), \(d\) the remaining product: since
+\(\alpha_{i\sigma}(V_{i_0})=q_{i_0}V_{i_0}\) with \(q_{i_0}=p^{-j\sigma}\in(0,1)\),
+
+\[
+\varphi(V_{i_0}\,d)=q_{i_0}\,\varphi(d\,V_{i_0}),
+\]
+
+and inside factor \(i_0\) one contraction \((V^*)^nV=(V^*)^{n-1}\) shortens the word while
+preserving \(k_{i_0}\). Iterating \(n_{i_0}\) times reduces to a monomial whose \(i_0\)-part is the
+pure power \(V_{i_0}^{k_{i_0}}\), which commutes with every other factor. One further application
+with \(c=V_{i_0}^{k_{i_0}}\), \(d\) the rest, gives
+
+\[
+\varphi(cd)=q_{i_0}^{k_{i_0}}\varphi(dc)=q_{i_0}^{k_{i_0}}\varphi(cd),
+\]
+
+hence \(\varphi(a)=0\) because \(0<q_{i_0}^{k_{i_0}}<1\).
+
+*Step 3: diagonal monomials.* If \(k_i=0\) for all \(i\), then
+\(a=\prod_iV_i^{n_i}V_i^{*n_i}\). Splitting off \(c=V_{i_0}^{n_{i_0}}\) and using commutation of
+distinct factors,
+
+\[
+\varphi\Bigl(V_{i_0}^{n_{i_0}}V_{i_0}^{*n_{i_0}}R\Bigr)
+=q_{i_0}^{\,n_{i_0}}\varphi\bigl(V_{i_0}^{*n_{i_0}}V_{i_0}^{n_{i_0}}R\bigr)
+=q_{i_0}^{\,n_{i_0}}\varphi(R),
+\]
+
+since \(V^*V=1\). Induction over \(|F|\) forces
+\(\varphi(a)=\prod_iq_i^{\,n_i}\), the product-state value. QED.
+
+### Corollary 4.2 — two kinds of arithmetic phase transition
+
+The abelian zeta gas has **no KMS-simplex transition**: the equilibrium state is unique at every
+\(\sigma>0\). All its arithmetic walls (Section 5) are transitions in the *realization of
+observables* under the unique state — condensation of activity sectors — not in the multiplicity
+of equilibria. This is the exact structural opposite of the Bost–Connes system, whose wall at
+\(\beta=1\) is a transition in the extremal KMS simplex driven by the Hecke/Galois symmetry that
+this gas does not carry. The polarized-realization dictionary is: symmetry-rich sources store
+their walls in state multiplicity; the bare directed source stores them in observable
+condensation.
+
+Under the unique state, positivity is the KMS state on the directed Toeplitz history, phase is the
+gauge flow, and their pairing is the KMS boundary condition itself — a derived pairing, exactly as
+PRD-B requires, not an additive weight (which the certified polarization theorem forbids).
+
+## 5. Condensation stratification: the walls are the depth fan
+
+Call mode \((p,j)\) **active** when \(G_{p,j}>0\), and let depth-\(g\) refer to modes with
+\(j\ge g\). Work at \(\tau=0\); the statement for general \(\tau\) shifts the fan by \(\tau\).
+
+### Theorem 5.1 — sharp depth-\(g\) condensation walls
+
+Fix \(g\ge1\).
+
+1. If \(\sigma>1/g\), then almost surely only finitely many modes of depth \(\ge g\) are active.
+2. If \(0<\sigma\le1/g\), then almost surely infinitely many modes of depth exactly \(g\) are
+   active.
+
+Consequently: the finite-integer wall of ULF-EQG-1 (\(\sigma=1\)) is the depth-one condensation
+wall, and its divergence half — asserted without proof in that card's failure loop 2 — holds;
+the **squarefull sector** (groups with no cyclic factor of prime order) remains an honest
+almost-surely-finite random abelian group for all \(\sigma>\tfrac12\), with law
+\(\propto|B|^{-\sigma}\) on that sector and partition function \(\prod_{j\ge2}\zeta(j\sigma)\); and
+the genus-\(g\) renormalization chamber \(\sigma>1/(g+1)\) of ULF-EQG-1 §9 is exactly the
+non-condensation chamber of depth \(g+1\).
+
+#### Proof
+
+The events \(\{G_{p,j}>0\}\) are independent with probabilities \(\tilde q_{p,j}=p^{-j\sigma}\).
+For (1): \(\sum_{j\ge g}\sum_pp^{-j\sigma}=\sum_{j\ge g}P(j\sigma)\) converges because
+\(j\sigma>1\) for all \(j\ge g\) and the terms decay geometrically; Borel–Cantelli I applies.
+For (2): already the depth-exactly-\(g\) slice gives
+\(\sum_pp^{-g\sigma}\ge\sum_pp^{-1}=\infty\), and the events are independent, so Borel–Cantelli II
+gives infinitely many active modes almost surely. QED.
+
+Thus the critical abscissa \(\tfrac12\) enters the field **as the condensation threshold of the
+squarefull stratum of a pre-zero source**, not through the zeros of \(\zeta\): below
+\(\sigma=1\) the divisor-carrying depth-one stratum has already condensed, while the unit-carrying
+strata survive chamber by chamber down the fan \(\{1/g\}\), which accumulates at the natural
+boundary \(\sigma=0\).
+
+## 6. Two-observable divisor dictionary
+
+### Theorem 6.1 — grand response, two calculi, line-arrangement divisor
+
+The function \(\mathfrak F_\sigma(u,v)\) of (GAS.6) continues meromorphically to
+\(\{\operatorname{Re}(\sigma+u)>0\}\times\mathbb C\), and:
+
+1. **Dilation (temperature) organ.** \(u\mapsto\mathfrak F_\sigma(u,0)=Z(\sigma+u)/Z(\sigma)\)
+   is the response to the temperature deformation \(\sigma\mapsto\sigma+u\). Its divisor at
+   \(u_0\) is the finite sum
+
+   \[
+   \operatorname{ord}_{u_0}
+   =\sum_{j\ge1}\operatorname{ord}_{\,j(\sigma+u_0)}\zeta ,
+   \tag{GAS.9}
+   \]
+
+   with \(\operatorname{ord}_1\zeta=-1\); every nontrivial zero \(\rho\) lands at every depth as
+   \(u=\rho/j-\sigma\), every pole at \(u=1/j-\sigma\), and both families accumulate only at
+   \(\operatorname{Re}u=-\sigma\), which is a natural boundary.
+
+2. **Translation (fugacity) organ.** \(v\mapsto\mathfrak F_\sigma(0,v)\) is the response to the
+   socle-fugacity deformation \(\tau\mapsto\tau+v\); it telescopes by (GAS.7), reproducing the
+   translation-divisor law and clean landing (EQG.16)–(EQG.18) of ULF-EQG-1.
+
+3. **Joint divisor is a line arrangement.** In \((u,v)\in\mathbb C^2\) the singular set of
+   \(\mathfrak F_\sigma\) is carried by the affine lines
+
+   \[
+   \ell_{j,w}:\quad j\,u+v=w-j\sigma,
+   \qquad j\ge1,\ w\in\{1\}\cup\{\text{zeros of }\zeta\},
+   \tag{GAS.10}
+   \]
+
+   with depth \(j\) as slope. The Riemann hypothesis is the statement that the intercepts of the
+   zero-lines have real part \(j(\tfrac12/j - \sigma)\)… i.e., that all zero-lines meet the real
+   \((u,v)\)-plane in the single translated fan
+   \(\{ju+v=\tfrac12-j\sigma\}\); no such localization is proved or claimed here.
+
+#### Proof
+
+For \(u\) in a compact subset of \(\operatorname{Re}(\sigma+u)>0\) and \(v\) in a compact subset of
+\(\mathbb C\), all but finitely many \(j\) put \(j(\sigma+u)+v\) in a fixed half-plane
+\(\operatorname{Re}>2\), where \(\log\zeta\) is bounded by \(2^{1-\operatorname{Re}}\) up to a
+constant; the tail therefore converges normally to a nonvanishing holomorphic function, and the
+finitely many remaining factors are meromorphic. This proves the continuation and (GAS.9), since
+affine pullback preserves local order and the sum is finite on any compact. The accumulation claim:
+poles \(1/j-\sigma\to-\sigma\); zero-copies \(\rho/j-\sigma\) have real parts in
+\((-\sigma,-\sigma+1/j)\to-\sigma\), and by the Riemann–von Mangoldt count the ordinates
+\(\gamma/j\) are dense in \(\mathbb R\), so every point of \(\operatorname{Re}u=-\sigma\) is a
+limit of singularities; distinct sources contribute nonnegative zero-orders and the isolated poles
+\(1/j-\sigma\) (a zero \(\rho/j=1/j'\) would force \(\rho\) real, which is false), so no
+cancellation occurs and the line is a natural boundary. Item 2 is Corollary 3.2 plus ULF-EQG-1 §6.
+Item 3 is (GAS.6) read as a function of \((u,v)\). QED.
+
+The two single-variable organs are genuinely nonisomorphic as divisor calculi: the translation
+organ's singular set is a discrete union of translated copies of \(\operatorname{div}\zeta\) with
+no finite accumulation, while the dilation organ's singular set accumulates on a natural boundary
+at finite distance. One source, two inequivalent meromorphic observers.
+
+## 7. Renormalization self-similarity: the source acts on itself
+
+### Theorem 7.1 — depth dilation is an exact RG semigroup
+
+For \(d\ge1\) let \(\delta_d:\mathbb M\to\mathbb M\), \((p,j)\mapsto(p,dj)\). The induced unital
+\(*\)-embedding \(\iota_d:\mathfrak A\to\mathfrak A\) onto the depth-\(d\mathbb N\) tensor
+subfactor satisfies
+
+\[
+\iota_d\circ\iota_e=\iota_{de},
+\qquad
+\alpha_t\circ\iota_d=\iota_d\circ\alpha_{dt},
+\qquad
+\varphi_\sigma\circ\iota_d=\varphi_{d\sigma}.
+\tag{GAS.11}
+\]
+
+Hence \(Z\) restricted to depth-\(d\mathbb N\) modes at temperature \(1/\sigma\) equals
+\(Z\) at temperature \(1/(d\sigma)\); the wall ladder \(\{1/g\}\) of Theorem 5.1 is the
+\(\delta\)-orbit of the depth-one wall \(\sigma=1\); and the dilation organ of Theorem 6.1 is the
+observer of the RG orbit.
+
+#### Proof
+
+\(\delta_d\) is injective with image the depth-multiples-of-\(d\) modes, and multiplies each mode
+energy by \(d\): \(\varepsilon_{p,dj}=d\,\varepsilon_{p,j}\). The first relation is
+\(\delta_d\circ\delta_e=\delta_{de}\). The second is the energy rescaling read through (GAS.8).
+For the third, the per-mode state pulled back along \(\iota_d\) has ratio
+\(p^{-(dj)\sigma}=p^{-j(d\sigma)}\), which is the \((p,j)\)-ratio of \(\varphi_{d\sigma}\); product
+states match factorwise. QED.
+
+The renormalization semigroup is \((\mathbb N_{\ge1},\times)\) — the same directed monoid that
+generates the source. The arithmetic gas is renormalized by its own history monoid.
+
+## 8. Information cost of the canonical tilt
+
+### Theorem 8.1 — entropy equals von Mangoldt mass
+
+Fix \(\sigma>1\) and let \(\mathbb P^*=\mathbb P_{\sigma,\sigma}\) be the canonical unit tilt of
+ULF-EQG-1 (density \(\zeta(\sigma)|\operatorname{soc}A|^{-\sigma}\)). Then both relative entropies
+are finite and
+
+\[
+\boxed{
+D(\mathbb P^*\Vert\mathbb P_\sigma)+D(\mathbb P_\sigma\Vert\mathbb P^*)
+=\sigma\!\left(-\frac{\zeta'}{\zeta}\right)\!(\sigma)
+=\sigma\sum_{n\ge2}\Lambda(n)\,n^{-\sigma}.}
+\tag{GAS.12}
+\]
+
+Moreover the two observables have the exact depth-ladder means
+
+\[
+\mathbb E_\sigma\bigl[\log|\operatorname{soc}A|\bigr]
+=\sum_{j\ge1}\left(-\frac{\zeta'}{\zeta}\right)\!(j\sigma),
+\qquad
+\mathbb E_\sigma\bigl[\log|A|\bigr]
+=\sum_{j\ge1}j\left(-\frac{\zeta'}{\zeta}\right)\!(j\sigma),
+\tag{GAS.13}
+\]
+
+and for the temperature deformation \(u>0\),
+
+\[
+D(\mathbb P_{\sigma+u}\Vert\mathbb P_\sigma)+D(\mathbb P_\sigma\Vert\mathbb P_{\sigma+u})
+=u\sum_{j\ge1}j\left[\left(-\frac{\zeta'}{\zeta}\right)\!(j\sigma)
+-\left(-\frac{\zeta'}{\zeta}\right)\!(j(\sigma+u))\right]\;\ge0.
+\tag{GAS.14}
+\]
+
+#### Proof
+
+The tilt density is \(e^{X}\) with \(X=\log\zeta(\sigma)-\sigma\log|\operatorname{soc}A|\), so
+
+\[
+D(\mathbb P^*\Vert\mathbb P)+D(\mathbb P\Vert\mathbb P^*)
+=\mathbb E^*[X]-\mathbb E[X]
+=\sigma\bigl(\mathbb E[\log M]-\mathbb E^*[\log M]\bigr),
+\qquad M=|\operatorname{soc}A|.
+\]
+
+Under \(\mathbb P_{\sigma,\tau}\), independence and the geometric mean
+\(\mathbb E[G_{p,j}]=\tilde q/(1-\tilde q)=\sum_{r\ge1}p^{-r(j\sigma+\tau)}\) give
+
+\[
+\mathbb E_{\sigma,\tau}[\log M]
+=\sum_p\log p\sum_{j\ge1}\sum_{r\ge1}p^{-r(j\sigma+\tau)}
+=\sum_{j\ge1}\left(-\frac{\zeta'}{\zeta}\right)(j\sigma+\tau),
+\]
+
+since \((-\zeta'/\zeta)(w)=\sum_p\sum_r\log p\,p^{-rw}\); all sums converge absolutely because
+every argument exceeds \(1\). At \(\tau=0\) and \(\tau=\sigma\) the two ladders differ by exactly
+the \(j=1\) term, which proves (GAS.12); finiteness of each entropy separately follows from the
+finiteness of \(\mathbb E[|X|]\) and \(\mathbb E^*[|X|]\), both dominated by the convergent ladders.
+The first half of (GAS.13) is the case \(\tau=0\); the second half is the same computation with the
+extra weight \(j\) from \(\log|A|=\sum j\,G_{p,j}\log p\). For (GAS.14),
+\(\log(d\mathbb P_{\sigma+u}/d\mathbb P_\sigma)=\log(Z(\sigma)/Z(\sigma+u))-u\log|A|\), so the
+symmetrized entropy telescopes to
+\(u(\mathbb E_\sigma-\mathbb E_{\sigma+u})[\log|A|]\), and monotonicity of each ladder term in the
+argument gives nonnegativity. QED.
+
+The symmetrized information cost of the corpus's canonical tilt is exactly the depth-one
+(prime-layer) energy density — the same layer that carries the divisor (ULF-EQG-1 §9.2) and the
+same layer whose condensation forms the \(\sigma=1\) wall. Divisor carrier, entropy carrier, and
+first condensation stratum coincide.
+
+## 9. PRD-E gate assessment
+
+The PRD charter demanded: one pre-zero arithmetic process, at least three nonisomorphic observer
+localizations, one shared unitization class, and a withheld consequence.
+
+- **One source:** the mode gas (GAS.1)–(GAS.4); pre-zero (no zero of \(\zeta\) enters any
+  construction; zeros appear only in forced responses).
+- **Three organs:** (O1) the positive/probability organ (zeta-Gibbs measure, Theorem 2.1); (O2)
+  the modular/phase organ (unique KMS state and gauge flow, Theorem 4.1; recurrence with open lift
+  by ULF-EQG-1 §8); (O3) the meromorphic organ, which is itself doubled into two nonisomorphic
+  divisor calculi (Theorem 6.1). O1 is commutative-probabilistic, O2 is operator-dynamical, O3 is
+  function-theoretic; no pair is isomorphic as an observer structure.
+- **Shared class:** the canonical tilt — the \(\tau\)-shift by \(\sigma\) — is one source history
+  class whose three shadows are: a normalized probability intervention (O1, EQG.15), the KMS
+  boundary/cocycle datum with information cost (GAS.12) (O2), and the translation-divisor
+  transgression (O3, EQG.16).
+- **Withheld response:** given only what ULF-EQG-1 recorded (O1 + the translation half of O3),
+  the mode identification predicts the entire second meromorphic organ — the dilation ladder
+  \(Z(\sigma+u)/Z(\sigma)\), its Erdős–Szekeres coefficients, its pole set \(\{1/j-\sigma\}\), and
+  its natural boundary — before that observer is consulted; the classical literature then confirms
+  the prediction independently (Erdős–Szekeres; Kendall; Ivić; Estermann-type natural boundaries).
+  Component novelty is disclaimed; the point is that the source forces the organ.
+
+The gate is passed at paper level. It remains open at Lean level, and the gate's spirit — a
+withheld consequence in a *fourth, non-classical* organ — is a standing demand; see §10.
+
+## 10. Conjecture, attack, and failure loops
+
+1. **The gas should have a Bost–Connes-type KMS transition at \(\sigma=1\).** False — Theorem 4.1
+   proves uniqueness at every \(\sigma>0\). The wall at \(\sigma=1\) is observable condensation,
+   not equilibrium multiplicity. Positive survivor: Corollary 4.2's dichotomy of arithmetic wall
+   types.
+2. **Per-depth clean landing should hold for the dilation organ as it does for translation
+   (EQG.18).** Not provable unconditionally: the order formula (GAS.9) at \(u=\rho/j-\sigma\)
+   involves \(\zeta(j'\rho/j)\) at other depths, and no unconditional result forbids, e.g.,
+   \(\rho\) and \(2\rho\) both being zeros. The translation organ's clean landing survives because
+   its ladder moves *right* into the zero-free half-plane; the dilation ladder moves *both ways*.
+   Exact asymmetry between the two calculi; recorded as a structural difference, not a defect.
+3. **The socle tilt should be a temperature shift.** False: \(\mathbb P_{\sigma,\sigma}\) is not
+   \(\mathbb P_{\sigma'}\) for any \(\sigma'\). The two deformation axes are transverse; this is
+   what makes the grand response two-dimensional and its divisor a line arrangement rather than a
+   curve family.
+4. **Condensation at \(\sigma=1/2\) should yield horizontal information about zeros.** Not
+   established, and three corpus no-gos (reciprocity character-blindness; density envelopes;
+   modulus-first cap) warn that activity/size observables alone are divisor-blind. The wall is a
+   wall of the *source*; nothing here localizes \(\operatorname{Re}\rho\). Any claim that the
+   depth fan "sees" the critical line is, at this stage, theatre and is not made.
+5. **The positivity locus of the grand response should characterize the divisor lines.**
+   Open; extracted to the stage-1 card
+   `../1-in-progress/universal-law-field/grand-response-positivity-locus-conjecture.md`
+   with the known no-go filters attached.
+6. **The two independent bounds \(\operatorname{Re}u>1-\sigma\) and
+   \(\operatorname{Re}v>1-\sigma\) should suffice for (GAS.6).** False: at
+   \(\sigma=2\), \(\operatorname{Re}u=\operatorname{Re}v=-0.9\), both bounds hold while the
+   depth-one exponent has real part \(0.2\), so the prime Euler product diverges. The killing
+   mechanism is coupling of the two observables on each mode. The positive survivor is the exact
+   coupled chamber
+   \(\operatorname{Re}(\sigma+u)>0\),
+   \(\operatorname{Re}(\sigma+u+v)>1\), proved in Corollary 3.2; it is stronger as a boundary
+   classification and is not killed by the counterexample.
+
+## 11. Corpus and literature collision audit
+
+Internal parents: ULF-EQG-1 (all translation-organ content; cited, not re-claimed), ULF-IPKMS-1
+(single-mode Toeplitz KMS layer; its Theorem 2.1/§3 is the per-mode engine of Theorem 4.1),
+ULF-QGPRH-1 (single-\(q\) process chart), the certified polarization and unitization theorems
+(`ConstitutiveHistoryPolarization`, `ConstitutiveObserverUnitization`).
+
+External parents and disclaimed components:
+
+- B. Julia, *Statistical theory of numbers*, in Number Theory and Physics (1990) — the primon gas
+  with \(Z=\zeta(\beta)\); our gas differs by having a mode at every prime **power**, which is what
+  replaces \(\zeta(\sigma)\) by \(\prod_j\zeta(j\sigma)\) and creates the depth fan.
+- J.-B. Bost, A. Connes, *Hecke algebras, type III factors and phase transitions...*, Selecta Math.
+  1 (1995) — arithmetic KMS with symmetry-driven phase transition; our Corollary 4.2 is the
+  contrast, not a rediscovery.
+- P. Erdős, G. Szekeres (1934); D. G. Kendall, R. A. Rankin; A. Ivić — the identity
+  \(\sum a(n)n^{-s}=\prod_k\zeta(ks)\) and its analytic theory, including the pole ladder
+  \(x,x^{1/2},x^{1/3}\); classical, used as confirmation of the withheld organ.
+- T. Estermann (1928); N. Kurokawa; G. Bhowmik, D. Essouabri — natural boundaries of Euler
+  products, including products of the type \(\prod_k\zeta(ks)\) and multivariable variants; the
+  natural-boundary mechanism in Theorem 6.1 is theirs.
+- B. Fristedt, *The structure of random partitions of large integers*, TAMS 337 (1993) — the
+  independent-geometric mode measure at a single \(q\); our local measure is Fristedt's at
+  \(q=p^{-\sigma}\), globalized over primes.
+- N. Chair, *The Euler–Riemann gases, and partition identities*, arXiv:1306.5415 — mode-frequency
+  multiplication identities adjacent to Theorem 7.1's self-similarity; single-\(q\) setting.
+- M. Marcolli, Z. Ren, *q-Deformations of statistical mechanical systems...*, arXiv:1704.06367 —
+  q-deformed BC via Witt/Habiro constructions; different deformation mechanism, cited as the
+  nearest q-BC neighbor.
+- H. Cohen, H. W. Lenstra — the \(1/|\mathrm{Aut}|\) measure on abelian groups; our measure is the
+  \(|A|^{-\sigma}\) zeta measure, a different (and much simpler) ensemble; no collision found for
+  the assembled object.
+
+Broad searches (arXiv + web, 2026-08) found no source assembling: the \(|A|^{-\sigma}\) zeta
+measure as a KMS state of the prime-power Toeplitz gas, the socle/order two-observable divisor
+dictionary, the sharp depth-condensation fan with \(\tfrac12\) as squarefull wall, or the entropy =
+von Mangoldt mass identity. Priority is claimed only for the assembled coupling, per field policy.
+
+## 12. Scope
+
+- All statements are unconditional; \(\sigma>1\) where a probability law on finite groups is used,
+  \(\sigma>0\) for the KMS theorem, \(\sigma>1/g\) chamber by chamber for Theorem 5.1.
+- Nothing here proves RH, localizes any zero horizontally, or claims leverage beyond structure:
+  the contribution is that one pre-zero source now provably carries the corpus's translation
+  calculus, the classical dilation calculus, a unique-KMS phase organ, an exact RG action, sharp
+  condensation walls at \(\{1/g\}\), and exact information costs, as one typed object.
+- No Lean in this session by session directive; the card stays in Stage 2 under the certification
+  boundary. Natural certification targets: Theorem 2.1, Theorem 3.1, Theorem 5.1, and (GAS.12)
+  (finite/elementary layers first; the KMS theorem needs operator-algebra infrastructure the corpus
+  already partially owns via ULF-IPKMS-1).
+
+## Log
+
+- 2026-08-09 — created: mode identification found while auditing ULF-EQG-1 against the PRD-E gate;
+  socle bridge, KMS uniqueness, condensation fan, two-organ dictionary, RG action, and entropy
+  identities proved; withheld dilation organ confirmed against classical literature; PRD-E passed
+  at paper level.
+- 2026-08-09 — hostile Lean-entry audit falsified the printed independent half-planes for (GAS.6);
+  replaced them by the exact coupled absolute-convergence chamber and recorded the counterexample
+  and positive survivor in failure loop 6.

@@ -529,6 +529,8 @@ Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallRe
 | `(29)` forward, pointwise | `xiDivisor_tendsto_burnolCrossingDepthProfile` |
 | `(15a)` source | `burnolReflectedRawSource`, `burnolReflectedRawSource_head`, `burnolReflectedRawSource_eq_harmonic`, `burnolHarmonicWindow`, `abs_burnolHarmonicWindow_sub_log_two_le`, `norm_burnolReflectedRawSource_le` |
 | `(15b)` | `integral_burnolReflectedRawSource_cpow`, `integrableOn_burnolReflectedRawSource_cpow`, `xiDivisor_integral_burnolReflectedKernel_eq_zero` |
+| `(16)` reflected | `burnolAlternatingHarmonic_two_mul`, `burnolAlternatingHarmonic_eq`, `abs_burnolAltTail_sub_le`, `integral_burnolReflectedRawSource_eq`, `abs_burnolReflectedTruncMass_add_half_le`, `tendsto_integral_burnolReflectedRawSource` |
+| reflected primitive | `burnolReflectedSourceRC`, `burnolReflectedSourceRC_ae`, `continuousWithinAt_burnolReflectedSourceRC`, `burnolReflectedTruncMass_eq_integral`, `hasDerivWithinAt_burnolReflectedTruncMass` |
 | `(15c)` | `burnolReflectedKernel`, `burnolReflectedDividedSource`, `xiDivisor_integral_burnolReflectedKernel_Ioc`, `xiDivisor_burnolReflectedDividedSource_eq_tail` |
 | `(9)` reflected head `b_ρ` | `burnolReflectedDividedSource_head`, `burnolReflectedDividedSource_apertureHead` |
 
@@ -628,3 +630,37 @@ The two crossing theorems are already stated for an arbitrary aperture-constant 
 `burnol-gamma-bockstein-first-wall-extraction-law` items `(13)`, `(15)`, `(16)`, `(22)` follow from
 the same two instantiations plus the depth profile
 `xiDivisor_tendsto_burnolCrossingDepthProfile`.
+
+## Remaining Lean steps for the reflected mass (state as of the alternating-harmonic layer)
+
+Built and compiling:
+
+- `RHTower/BurnolAlternatingHarmonic`: `burnolAlternatingHarmonic_two_mul`
+  (`∑_{i<2c}(-1)^i/(i+1) = H_{2c} - H_c`), `burnolAlternatingHarmonic_eq`
+  (`= log 2 - (-1)^m I_m`), `abs_burnolAltTail_sub_le`
+  (`|I_m - 1/(2(m+1))| ≤ 1/(2(m+1)(m+2))`, from `1/(1+x) = 1/2 + (1-x)/(2(1+x))`).
+- `RHTower/BurnolReflectedMass`: the exact staircase
+  `integral_burnolReflectedRawSource_eq` and the limit
+  `tendsto_integral_burnolReflectedRawSource : ∫_0^R f_0^vee → -1/2`, valid for **all real `R`**.
+
+Next, in order:
+
+1. **A right-continuous representative.**  *(BUILT: `RHTower/BurnolReflectedPrimitive`.)*
+   `f_0^vee` is right-continuous at the integers where a term enters (`k ≤ t`) but *not* at the
+   even integers where a term leaves (`t/2 ≤ k`).  `burnolReflectedSourceRC t =
+   ∑_{t/2 < k ≤ t} 1/k - log 2` agrees with it off `2ℕ` (`burnolReflectedSourceRC_ae`) and is
+   locally constant to the right (`continuousWithinAt_burnolReflectedSourceRC`).
+   `burnolReflectedTruncMass_eq_integral` identifies the staircase with
+   `∫_0^T burnolReflectedSourceRC`, and `hasDerivWithinAt_burnolReflectedTruncMass` is the
+   resulting FTC-1 right derivative.  Step 1 is complete.
+2. **The boundary term.**  Integration by parts against `A^vee` gives
+   `T^{1-ρ} ∫_0^T f_0^vee(y) y^{ρ-1} dy = (L - A^vee(T)) + (1-ρ) T^{1-ρ} ∫_T^∞ (A^vee - L) y^{-(1-ρ)-1} dy`
+   with `L = -1/2`; the second term is bounded by `|1-ρ| (1-σ)^{-1} sup_{y ≥ T} |A^vee(y) - L|`,
+   which tends to zero by step 0's `|A^vee(R) + 1/2| ≤ 1/(R-1)`.  Hence the boundary term vanishes.
+3. **The reflected potential.**  `Ψ(T) = A^vee(T)/(1-ρ) - T^{1-ρ} Head^vee(T)/(1-ρ)` has
+   `Ψ' = -C g_ρ` and `Ψ(0) = 0`, so `∫_0^T C g_ρ = -Ψ(T) → 1/(2(1-ρ)) = a_ρ/2`.  This is `(10)`.
+4. `(11)`: `B_ρ^vee = a_ρ/2 - b_ρ/2 = -B_ρ`.
+5. `(23)` reflected: instantiate `tendsto_burnolCrossingResidue` with
+   `burnolReflectedDividedSource_apertureHead` and the exterior mass from step 4.
+6. Card `burnol-gamma-bockstein-first-wall-extraction-law` `(13)`, `(15)`, `(16)`, `(22)` then
+   follow from steps 5 and `xiDivisor_tendsto_burnolCrossingDepthProfile`.

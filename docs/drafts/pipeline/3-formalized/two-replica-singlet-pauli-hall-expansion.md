@@ -1,15 +1,15 @@
 # Two-replica singlet Pauli Hall expansion
 
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Formalized companion:** `./two-replica-singlet-pauli-hall-expansion-formalized.md`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, O4 planar replica cavity
-- **Lean:** resolved-fibre Hall mechanism formalized as
-  `resolvedFiberAssembly_subspace_finrank`; exact one-site Clifford
-  identity/swap reduction is also formalized. The arbitrary-register physical
-  identity/swap embedding is now injective, and the nine-term weight-two edge
-  Casimir is exactly intertwined with its coefficient action. The
-  fixed-orientation single-commutator mismatch projections and orthogonal
-  edge-defect assembly required for the stronger Hall statement remain.
+- **Lean:** the boxed `(4)` is proved unconditionally as
+  `twoReplicaEdgeHallExpansion` (and `twoReplicaEdgeHallExpansion_connected` on a
+  connected graph) in `HTGeometry/TwoReplicaEdgeHallAssembly.lean`, on top of
+  `HTGeometry/TwoReplicaEdgeHallExpansion.lean` and
+  `HTGeometry/TwoReplicaTensorHilbertSchmidt.lean`.  Equations `(7)`, `(11)`, `(12)` and
+  `(14)`--`(17)` all have named declarations; see the formalized companion.
 
 ## Exact statement
 
@@ -294,8 +294,20 @@ Progress against that list:
   free — `finiteTwoReplicaCollectiveCommutator_edgeExtension` already says the global commutator is
   the edge extension of the local one, so `(7)` transfers verbatim.  This is
   `ker(A_e|_{S_2}) ⊇ ker P_e`.
-- **Remaining:** the reverse inclusion of `(12)`, the global tensor form of `(11)`, and the
-  assembly `(14)`--`(17)` into `ResolvedFiberHallExpansion`.
+- **`(12)` closed in both directions.**  `edgeCommutatorCoeff_eq_zero_iff`.  The reverse
+  inclusion does not need a Gram computation on the non-orthogonal pair `{I, F}`: the two mismatch
+  types are Hilbert--Schmidt orthogonal, so each vanishes separately, and an endpoint-evaluation
+  reader (`edgeReader`, `edgeReader_edgeOutput`) sends one type's outputs back to the identity/swap
+  words, where the corpus injectivity applies.
+- **`(11)` closed globally.**  `trace_conjTranspose_edgeOutput_mul_edgeOutput_cross`, from the
+  sitewise Hilbert--Schmidt factorization `trace_conjTranspose_mul_finiteTwoReplicaLocalMatrix`.
+- **`(14)`--`(17)` closed.**  `twoReplicaEdgeHallExpansion`.
+
+  **Closed.**  All three maps are built; the Hall inequality is
+  `TwoReplicaEdgeHallAssembly.twoReplicaEdgeHallExpansion`.  The assembly does not go through
+  `resolvedFiberAssembly_subspace_finrank`: the single map `G = ∑_e A_e` is injective on the
+  transverse subspace directly, because cross-edge Hilbert--Schmidt orthogonality forces each
+  summand to vanish separately.  The original target interface is recorded below.
 
   Target interface: `resolvedFiberAssembly_subspace_finrank` wants mismatch projections
   `P : J → X →ₗ Z`, edge maps `E : J → Z →ₗ Y`, an assembly with `assemble z = ∑ j, E j (z j)`,
@@ -322,3 +334,5 @@ kernel. This supplies the local identity/swap layer used here without the
 invalid inference that second-design commutant completeness controls every
 invariant operator subspace. The arbitrary-register product lift remains a
 separate formal obligation.
+
+- 2026-08-09 — `(4)` formalized unconditionally; card promoted to stage 3.

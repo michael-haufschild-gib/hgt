@@ -78,13 +78,12 @@ theorem integrableOn_cremainder (ha : -1 < a) {z : ℂ} (hz : 0 ≤ z.re) {r : �
       nlinarith [abs_nonneg (r s)]
     exact mul_le_mul_of_nonneg_right hstep hpos.le
 
-theorem ctransportedFinitePart_split (c : ℝ) (ha : -1 < a) (ha0 : a < 0) {z : ℂ}
-    (hz : 0 < z.re) {h r : ℝ → ℝ} (hr : ∀ s, h s = h 0 + s * r s) (hrc : Continuous r) {B : ℝ}
+theorem ctransportedFinitePart_split (c : ℝ) (ha : -1 < a) {z : ℂ} (hz : 0 < z.re) {h r : ℝ → ℝ} (hr : ∀ s, h s = h 0 + s * r s) (hrc : Continuous r) {B : ℝ}
     (hB : ∀ s ∈ Ioo (0 : ℝ) 1, |r s| ≤ B) :
     ctransportedFinitePart c a z h =
       (c : ℂ) * ((h 0 : ℂ) * (ccutIntegral a z + 1 / (a : ℂ)) + cremainderIntegral a z r) := by
   have hint1 : IntegrableOn (fun s : ℝ => (h 0 : ℂ) * cgammaDefect a z s) (Ioo 0 1) :=
-    (((integrableOn_cgammaDefect ha ha0 hz).mono_set Ioo_subset_Ioi_self)).const_mul _
+    (integrableOn_cgammaDefect_Ioo_one ha z).const_mul _
   have hint2 := integrableOn_cremainder ha hz.le hrc hB
   have hcongr : (∫ s in Ioo (0 : ℝ) 1,
         (Complex.exp (-(z * s)) * (h s : ℂ) - (h 0 : ℂ)) * ((s ^ (a - 1) : ℝ) : ℂ)) =
@@ -265,7 +264,7 @@ theorem tendsto_ctransportedFinitePart (c : ℝ) (ha : -1 < a) (ha0 : a < 0) {w 
     have : ((R : ℂ) * w).re = R * w.re := by simp
     rw [this]
     positivity
-  rw [ctransportedFinitePart_split c ha ha0 hz hr hrc hB]
+  rw [ctransportedFinitePart_split c ha hz hr hrc hB]
   ring
 
 /-! ## The angular phase -/

@@ -281,6 +281,46 @@ theorem cgammaIntegral_eq (ha : -1 < a) (ha0 : a < 0) {w : ℂ} (hw : 0 < w.re) 
     exact cgammaIntegral_ofReal ha ha0 hx0
   exact hf.eqOn_of_preconnected_of_frequently_eq hg hconn hone hfreq hw
 
+theorem continuousOn_cgammaDefect {a : ℝ} (w : ℂ) {S : Set ℝ} (hS : ∀ t ∈ S, 0 < t) :
+    ContinuousOn (cgammaDefect a w) S := by
+  refine ContinuousOn.mul ?_ ?_
+  · exact ((Complex.continuous_exp.comp (by fun_prop)).sub continuous_const).continuousOn
+  · refine Complex.continuous_ofReal.continuousOn.comp ?_ (mapsTo_univ _ _)
+    exact continuousOn_id.rpow_const fun x hx => Or.inl (ne_of_gt (hS x hx))
+
+theorem integrableOn_cgammaDefect_Ioo_one {a : ℝ} (ha : -1 < a) (w : ℂ) :
+    IntegrableOn (cgammaDefect a w) (Ioo 0 1) := by
+  set δ : ℝ := min (1 / 2) (1 / (‖w‖ + 1)) with hδdef
+  have hnorm : (0 : ℝ) < ‖w‖ + 1 := by positivity
+  have hδ0 : 0 < δ := lt_min (by norm_num) (by positivity)
+  have hδ1 : δ < 1 := lt_of_le_of_lt (min_le_left _ _) (by norm_num)
+  have hwδ : ‖w‖ * δ ≤ 1 := by
+    have h1 : δ ≤ 1 / (‖w‖ + 1) := min_le_right _ _
+    have h2 : ‖w‖ * δ ≤ ‖w‖ * (1 / (‖w‖ + 1)) :=
+      mul_le_mul_of_nonneg_left h1 (norm_nonneg w)
+    have h3 : ‖w‖ * (1 / (‖w‖ + 1)) ≤ 1 := by
+      rw [mul_one_div, div_le_one hnorm]
+      linarith
+    linarith
+  have hunion : Ioo (0 : ℝ) 1 = Ioc 0 δ ∪ Ioo δ 1 := by
+    ext t
+    simp only [mem_Ioo, mem_union, mem_Ioc]
+    constructor
+    · rintro ⟨ht0, ht1⟩
+      rcases le_or_gt t δ with h | h
+      · exact Or.inl ⟨ht0, h⟩
+      · exact Or.inr ⟨h, ht1⟩
+    · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩)
+      · exact ⟨h1, lt_of_le_of_lt h2 hδ1⟩
+      · exact ⟨lt_trans hδ0 h1, h2⟩
+  have hfar : IntegrableOn (cgammaDefect a w) (Ioo δ 1) := by
+    have hcont : ContinuousOn (cgammaDefect a w) (Icc δ 1) :=
+      continuousOn_cgammaDefect w fun t ht => lt_of_lt_of_le hδ0 ht.1
+    exact (hcont.integrableOn_Icc).mono_set Ioo_subset_Icc_self
+  rw [hunion]
+  exact (integrableOn_cgammaDefect_near_zero ha w hδ0 hwδ).union hfar
+
+
 /-! ## The ordinary rotated Gamma integral -/
 
 /-- The ordinary rotated Gamma integrand. -/

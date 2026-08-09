@@ -397,6 +397,261 @@ theorem card_unitWeightedAway [LinearOrder ι] (i₀ : ι) :
 
 end SplitFamily
 
+/-! ## Finitely supported arbitrary families -/
+
+section FinsuppSplitFamily
+
+variable {ι : Type*} [DecidableEq ι]
+
+/-- Unit-weighted augmentation on the algebraic direct sum:
+`h((xᵢ)) = ∑ uᵢ xᵢ`.  Every sum is finite by the `Finsupp` carrier. -/
+def unitWeightedFinsuppAugmentation (u : ι → Rˣ) : (ι →₀ R) →ₗ[R] R :=
+  Finsupp.lsum R fun i => LinearMap.toSpanSingleton R R (u i : R)
+
+@[simp] theorem unitWeightedFinsuppAugmentation_single
+    (u : ι → Rˣ) (i : ι) (r : R) :
+    unitWeightedFinsuppAugmentation u (Finsupp.single i r) = (u i : R) * r := by
+  simp [unitWeightedFinsuppAugmentation, Finsupp.lsum_apply,
+    LinearMap.toSpanSingleton, mul_comm]
+
+/-- A one-coordinate section of the finitely supported augmentation. -/
+def unitWeightedFinsuppSection (u : ι → Rˣ) (i₀ : ι) : R →ₗ[R] (ι →₀ R) where
+  toFun r := Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) * r)
+  map_add' x y := by rw [mul_add, Finsupp.single_add]
+  map_smul' r x := by
+    ext i
+    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul] <;> ring
+
+@[simp] theorem unitWeightedFinsuppAugmentation_section
+    (u : ι → Rˣ) (i₀ : ι) (r : R) :
+    unitWeightedFinsuppAugmentation u (unitWeightedFinsuppSection u i₀ r) = r := by
+  change unitWeightedFinsuppAugmentation u
+    (Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) * r)) = r
+  rw [unitWeightedFinsuppAugmentation_single]
+  calc
+    (u i₀ : R) * ((↑((u i₀)⁻¹) : R) * r) =
+        ((u i₀ : R) * (↑((u i₀)⁻¹) : R)) * r := by ring
+    _ = r := by simp
+
+/-- Relation module in an arbitrary algebraic direct sum. -/
+abbrev unitWeightedFinsuppRelations (u : ι → Rˣ) : Submodule R (ι →₀ R) :=
+  LinearMap.ker (unitWeightedFinsuppAugmentation u)
+
+/-- Exact splitting of the algebraic direct sum into one pivot line and all relations. -/
+def unitWeightedFinsuppSplitEquiv (u : ι → Rˣ) (i₀ : ι) :
+    (ι →₀ R) ≃ₗ[R] R × unitWeightedFinsuppRelations u := by
+  let s := unitWeightedFinsuppSection u i₀
+  let h := unitWeightedFinsuppAugmentation u
+  let f : (ι →₀ R) →ₗ[R] R × unitWeightedFinsuppRelations u :=
+    { toFun := fun x => (h x, ⟨x - s (h x), by
+          rw [LinearMap.mem_ker, map_sub,
+            unitWeightedFinsuppAugmentation_section, sub_self]⟩)
+      map_add' := fun x y => by
+        apply Prod.ext
+        · simp
+        · apply Subtype.ext
+          dsimp
+          rw [map_add, map_add]
+          abel
+      map_smul' := fun r x => by
+        apply Prod.ext
+        · simp
+        · apply Subtype.ext
+          dsimp
+          rw [map_smul, map_smul, smul_sub] }
+  let g : R × unitWeightedFinsuppRelations u →ₗ[R] (ι →₀ R) :=
+    { toFun := fun p => s p.1 + p.2.1
+      map_add' := fun x y => by
+        simp
+        abel
+      map_smul' := fun r x => by
+        simpa only [map_smul, Prod.smul_fst, Submodule.coe_smul, Prod.smul_snd,
+          smul_add, RingHom.id_apply] }
+  exact LinearEquiv.ofLinear f g
+    (by
+      apply LinearMap.ext
+      rintro ⟨r, e⟩
+      apply Prod.ext
+      · simpa [f, g, s, h] using e.2
+      · apply Subtype.ext
+        simp [f, g, s, h])
+    (by
+      apply LinearMap.ext
+      intro x
+      simp [f, g, s, h])
+
+/-- Non-pivot indices in an arbitrary family. -/
+abbrev unitWeightedFinsuppAway (i₀ : ι) := {i : ι // i ≠ i₀}
+
+/-- The explicit relation vector `eⱼ-uⱼuᵢ₀⁻¹eᵢ₀`. -/
+def unitWeightedFinsuppRelationVector (u : ι → Rˣ) (i₀ : ι)
+    (j : unitWeightedFinsuppAway i₀) : ι →₀ R :=
+  Finsupp.single j.1 1 -
+    Finsupp.single i₀ ((u j.1 : R) * (↑((u i₀)⁻¹) : R))
+
+theorem unitWeightedFinsuppRelationVector_mem (u : ι → Rˣ) (i₀ : ι)
+    (j : unitWeightedFinsuppAway i₀) :
+    unitWeightedFinsuppRelationVector u i₀ j ∈ unitWeightedFinsuppRelations u := by
+  rw [LinearMap.mem_ker, unitWeightedFinsuppRelationVector, map_sub,
+    unitWeightedFinsuppAugmentation_single, unitWeightedFinsuppAugmentation_single]
+  calc
+    (u j.1 : R) * 1 - (u i₀ : R) *
+        ((u j.1 : R) * (↑((u i₀)⁻¹) : R)) =
+      (u j.1 : R) - (u j.1 : R) *
+        ((u i₀ : R) * (↑((u i₀)⁻¹) : R)) := by ring
+    _ = 0 := by simp
+
+/-- Weighted sum on all non-pivot coordinates. -/
+def unitWeightedFinsuppAwayAugmentation (u : ι → Rˣ) (i₀ : ι) :
+    (unitWeightedFinsuppAway i₀ →₀ R) →ₗ[R] R :=
+  Finsupp.lsum R fun j => LinearMap.toSpanSingleton R R (u j.1 : R)
+
+theorem unitWeightedFinsuppAugmentation_mapDomain
+    (u : ι → Rˣ) (i₀ : ι) (y : unitWeightedFinsuppAway i₀ →₀ R) :
+    unitWeightedFinsuppAugmentation u (Finsupp.mapDomain Subtype.val y) =
+      unitWeightedFinsuppAwayAugmentation u i₀ y := by
+  rw [unitWeightedFinsuppAugmentation, unitWeightedFinsuppAwayAugmentation,
+    Finsupp.lsum_apply, Finsupp.lsum_apply,
+    Finsupp.sum_mapDomain_index_inj Subtype.val_injective]
+
+private def unitWeightedFinsuppToRelationsRaw (u : ι → Rˣ) (i₀ : ι) :
+    (unitWeightedFinsuppAway i₀ →₀ R) →ₗ[R] (ι →₀ R) where
+  toFun y := Finsupp.mapDomain Subtype.val y -
+    Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) *
+      unitWeightedFinsuppAwayAugmentation u i₀ y)
+  map_add' x y := by
+    rw [Finsupp.mapDomain_add, map_add, mul_add, Finsupp.single_add]
+    abel
+  map_smul' r x := by
+    rw [Finsupp.mapDomain_smul, map_smul]
+    ext i
+    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul] <;> ring
+
+/-- Build a relation from arbitrary finitely supported non-pivot coordinates. -/
+def unitWeightedFinsuppToRelations (u : ι → Rˣ) (i₀ : ι) :
+    (unitWeightedFinsuppAway i₀ →₀ R) →ₗ[R] unitWeightedFinsuppRelations u :=
+  (unitWeightedFinsuppToRelationsRaw u i₀).codRestrict _ fun y => by
+    rw [LinearMap.mem_ker]
+    simp only [unitWeightedFinsuppToRelationsRaw]
+    change unitWeightedFinsuppAugmentation u
+      (Finsupp.mapDomain Subtype.val y -
+        Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) *
+          unitWeightedFinsuppAwayAugmentation u i₀ y)) = 0
+    rw [map_sub, unitWeightedFinsuppAugmentation_mapDomain,
+      unitWeightedFinsuppAugmentation_single]
+    calc
+      unitWeightedFinsuppAwayAugmentation u i₀ y - (u i₀ : R) *
+          ((↑((u i₀)⁻¹) : R) * unitWeightedFinsuppAwayAugmentation u i₀ y) =
+        unitWeightedFinsuppAwayAugmentation u i₀ y -
+          ((u i₀ : R) * (↑((u i₀)⁻¹) : R)) *
+            unitWeightedFinsuppAwayAugmentation u i₀ y := by ring
+      _ = 0 := by simp
+
+/-- Read all non-pivot coordinates of a relation. -/
+def unitWeightedFinsuppFromRelations (u : ι → Rˣ) (i₀ : ι) :
+    unitWeightedFinsuppRelations u →ₗ[R] (unitWeightedFinsuppAway i₀ →₀ R) where
+  toFun x := x.1.comapDomain Subtype.val Subtype.val_injective.injOn
+  map_add' x y := by ext j; simp [Finsupp.comapDomain_apply]
+  map_smul' r x := by ext j; simp [Finsupp.comapDomain_apply]
+
+theorem unitWeightedFinsuppFromRelations_toRelations
+    (u : ι → Rˣ) (i₀ : ι) (y : unitWeightedFinsuppAway i₀ →₀ R) :
+    unitWeightedFinsuppFromRelations u i₀
+      (unitWeightedFinsuppToRelations u i₀ y) = y := by
+  ext j
+  simp only [unitWeightedFinsuppFromRelations, unitWeightedFinsuppToRelations,
+    unitWeightedFinsuppToRelationsRaw, Finsupp.comapDomain_apply]
+  change (Finsupp.mapDomain Subtype.val y -
+    Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) *
+      unitWeightedFinsuppAwayAugmentation u i₀ y)) j.1 = y j
+  rw [Finsupp.sub_apply, Finsupp.mapDomain_apply Subtype.val_injective,
+    Finsupp.single_apply, if_neg j.2.symm, sub_zero]
+
+private theorem unitWeightedFinsuppRelations_ext
+    (u : ι → Rˣ) (i₀ : ι) (x y : unitWeightedFinsuppRelations u)
+    (h : ∀ j : unitWeightedFinsuppAway i₀, x.1 j.1 = y.1 j.1) : x = y := by
+  apply Subtype.ext
+  have hdiff : x.1 - y.1 = Finsupp.single i₀ (x.1 i₀ - y.1 i₀) := by
+    ext i
+    by_cases hi : i = i₀
+    · subst i
+      simp
+    · simp [hi, h ⟨i, hi⟩]
+  have hker : unitWeightedFinsuppAugmentation u (x.1 - y.1) = 0 := by
+    rw [map_sub]
+    simpa [LinearMap.mem_ker.mp x.2, LinearMap.mem_ker.mp y.2]
+  rw [hdiff, unitWeightedFinsuppAugmentation_single] at hker
+  have hzero : x.1 i₀ - y.1 i₀ = 0 := by
+    calc
+      x.1 i₀ - y.1 i₀ =
+          (↑((u i₀)⁻¹) : R) * ((u i₀ : R) * (x.1 i₀ - y.1 i₀)) := by simp
+      _ = 0 := by rw [hker, mul_zero]
+  ext i
+  by_cases hi : i = i₀
+  · subst i
+    exact sub_eq_zero.mp hzero
+  · exact h ⟨i, hi⟩
+
+theorem unitWeightedFinsuppToRelations_fromRelations
+    (u : ι → Rˣ) (i₀ : ι) (x : unitWeightedFinsuppRelations u) :
+    unitWeightedFinsuppToRelations u i₀
+      (unitWeightedFinsuppFromRelations u i₀ x) = x := by
+  apply unitWeightedFinsuppRelations_ext u i₀
+  intro j
+  simp only [unitWeightedFinsuppFromRelations, unitWeightedFinsuppToRelations,
+    unitWeightedFinsuppToRelationsRaw, Finsupp.comapDomain_apply]
+  change (Finsupp.mapDomain Subtype.val
+    (Finsupp.comapDomain Subtype.val x.1 Subtype.val_injective.injOn) -
+      Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) *
+        unitWeightedFinsuppAwayAugmentation u i₀
+          (Finsupp.comapDomain Subtype.val x.1
+            Subtype.val_injective.injOn))) j.1 = x.1 j.1
+  rw [Finsupp.sub_apply, Finsupp.mapDomain_apply Subtype.val_injective,
+    Finsupp.comapDomain_apply, Finsupp.single_apply, if_neg j.2.symm, sub_zero]
+
+/-- Explicit coordinates on all relations in an arbitrary algebraic direct sum. -/
+def unitWeightedFinsuppAwayEquivRelations (u : ι → Rˣ) (i₀ : ι) :
+    (unitWeightedFinsuppAway i₀ →₀ R) ≃ₗ[R] unitWeightedFinsuppRelations u :=
+  LinearEquiv.ofBijective (unitWeightedFinsuppToRelations u i₀) ⟨
+    fun x y h => by
+      apply_fun unitWeightedFinsuppFromRelations u i₀ at h
+      simpa only [unitWeightedFinsuppFromRelations_toRelations] using h,
+    fun x => ⟨unitWeightedFinsuppFromRelations u i₀ x,
+      unitWeightedFinsuppToRelations_fromRelations u i₀ x⟩⟩
+
+/-- The explicit free basis of all finitely supported relations. -/
+noncomputable def unitWeightedFinsuppRelationsBasis (u : ι → Rˣ) (i₀ : ι) :
+    Module.Basis (unitWeightedFinsuppAway i₀) R (unitWeightedFinsuppRelations u) :=
+  Finsupp.basisSingleOne.map (unitWeightedFinsuppAwayEquivRelations u i₀)
+
+/-- Each relation-basis vector is exactly `eⱼ-uⱼuᵢ₀⁻¹eᵢ₀`. -/
+theorem unitWeightedFinsuppRelationsBasis_apply (u : ι → Rˣ) (i₀ : ι)
+    (j : unitWeightedFinsuppAway i₀) :
+    (unitWeightedFinsuppRelationsBasis u i₀ j).1 =
+      unitWeightedFinsuppRelationVector u i₀ j := by
+  rw [unitWeightedFinsuppRelationsBasis, Module.Basis.map_apply]
+  change (unitWeightedFinsuppToRelations u i₀ (Finsupp.basisSingleOne j)).1 =
+    unitWeightedFinsuppRelationVector u i₀ j
+  have hsingle : Finsupp.basisSingleOne j = Finsupp.single j (1 : R) := by
+    apply (Finsupp.basisSingleOne.repr).injective
+    rw [Module.Basis.repr_self, Finsupp.basisSingleOne_repr]
+    rfl
+  rw [hsingle]
+  change unitWeightedFinsuppToRelationsRaw u i₀ (Finsupp.single j (1 : R)) =
+    unitWeightedFinsuppRelationVector u i₀ j
+  simp only [unitWeightedFinsuppToRelationsRaw]
+  ext i
+  change (Finsupp.mapDomain Subtype.val (Finsupp.single j (1 : R)) -
+      Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) *
+        unitWeightedFinsuppAwayAugmentation u i₀ (Finsupp.single j (1 : R)))) i =
+    ((Finsupp.single j.1 1 -
+      Finsupp.single i₀ ((u j.1 : R) * (↑((u i₀)⁻¹) : R))) : ι →₀ R) i
+  simp only [Finsupp.sub_apply]
+  rw [Finsupp.mapDomain_single]
+  simp [unitWeightedFinsuppAwayAugmentation, Finsupp.single_apply, j.2, mul_comm]
+
+end FinsuppSplitFamily
+
 /-- Scalar multiplication by the common factor, as a linear endomorphism. -/
 def commonFactorScalarMap (z : R) {M : Type*} [AddCommGroup M] [Module R M] : M →ₗ[R] M where
   toFun x := z • x

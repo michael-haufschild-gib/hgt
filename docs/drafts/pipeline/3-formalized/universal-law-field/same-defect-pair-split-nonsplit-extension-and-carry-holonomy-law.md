@@ -1,11 +1,12 @@
 # Same defect pair, split/nonsplit extension, and carry holonomy law
 
 - **ID:** ULF-DEFECT-2
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean-certified)
 - **Source:** hostile attack on ordered-defect reconstruction
 - **Statement:** Identical kernel and cokernel objects support split and nonsplit law events distinguished by carry and lifted recurrence holonomy.
-- **Status:** [PAPER-PROVED] [FALSIFIES PAIR COMPLETENESS] [EXTENSION SURVIVOR] [CLASSICAL EXT PARENT] [NO LEAN]
+- **Status:** [LEAN-CERTIFIED] [FALSIFIES PAIR COMPLETENESS] [EXTENSION SURVIVOR]
+  [CLASSICAL EXT PARENT] [NO PROJECT AXIOMS]
 
 ## 1. Two events with identical endpoints
 
@@ -123,6 +124,27 @@ No external novelty claim is made.
 - The canonical carry representative depends on section; its cohomology/extension class does not.
 - Finite holonomy is not physical curvature or RH leverage by itself.
 
+## 6. Lean certificate
+
+Module:
+`GaloisForLFunctions.HTGeometry.ConstitutiveExtensionCarry`.
+
+The formalization proves, without theorem premises:
+
+- injectivity, surjectivity, and pointwise exactness of both events;
+- existence of the split additive section and nonexistence of any nonsplit additive section;
+- equality of both middle cardinalities with four;
+- zero split carry and nonzero canonical binary carry at `(1,1)`;
+- period-two base and split histories;
+- nonzero kernel increment after one period in the nonsplit lift and closure after two periods;
+- one bundled same-defect/carry/holonomy theorem.
+
+Targeted source check, module build, and universal-law umbrella build passed. `#print axioms` for the
+exactness, nonsplitting, and bundled capstone reports only `propext`, `Classical.choice`, and
+`Quot.sound`; no project axiom or unresolved proof premise is used.
+
 ## Log
 
 - 2026-08-09 — ordered-pair completeness falsified; full extension survivor recorded.
+- 2026-08-09 — exact split/nonsplit, carry, cardinality, and lifted-holonomy theorem closed in Lean;
+  promoted to Stage 3.

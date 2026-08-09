@@ -195,3 +195,19 @@ PRD is viable only if these become derived theories of one process, not a federa
   cannot carry positive cost and reversible memory in one additive structure.
 - 2026-08-09 — Lean observer-unitization pump coupled recurrence, open lift, positive action, and
   observer nondescendence in one route-independent law.
+- 2026-08-09 — PRD-E passed at paper level: ULF-GAS-1 identifies the Euler q-Gamma source as the
+  abelian zeta gas (zeta-Gibbs measure on finite abelian groups = unique KMS state of the
+  prime-power Toeplitz gas at every positive temperature); three nonisomorphic organs, one shared
+  tilt class, withheld dilation organ confirmed; walls = depth-condensation fan with the critical
+  abscissa as squarefull wall; entropy of the canonical tilt = von Mangoldt mass. Follow-up hunch
+  frozen as ULF-GAS-2 (condensed-phase continuation and the MRBilinear wall).
+- 2026-08-09 — PRD-C instantiated by ULF-GAS-3: probabilistic death of the socle organ at the
+  depth-one condensation wall (no centering, no unimodular gauge), exact modulus budget paid by
+  the genus-one counterterm, condensed-phase Gaussian fluctuation law. ULF-GAS-2 falsified as
+  stated and retired to 5-failed; the MRBilinear object is not the gatekeeper of this
+  continuation.
+- 2026-08-09 — signed sector typed (ULF-GAS-4): parity mass Z(2s)/Z(s)^2, fermionic/odd-depth
+  observational identity with socle separation, fan splitting (1/2 = delta_2(1), invisible to the
+  fermionic shell), multiplicative resolution cap (solvable organ cone cannot reach MR scale, by
+  theorem). Fourth-organ charter opened (ULF-GAS-5) with proved moment horizon r < sigma and the
+  moment-indeterminacy hunch frozen behind a mandatory collision audit.

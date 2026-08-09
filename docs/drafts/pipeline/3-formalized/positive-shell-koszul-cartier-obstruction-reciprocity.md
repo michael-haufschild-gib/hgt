@@ -1,11 +1,11 @@
 # Positive shell Koszul--Cartier obstruction algebra
 
 - **ID:** `positive-shell-koszul-cartier-obstruction-reciprocity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-CONORMAL BRIDGE
 - **Source:** `positive-hypertranscendental-riemann-divisor-frame`
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-SPECIFIC APPLICATION]`
-  `[PARENT KOSZUL ALGEBRA] [NOT RH] [LEAN DEFERRED]`
+  `[PARENT KOSZUL ALGEBRA] [NOT RH] [LEAN-FORMALIZED] [KERNEL-AUDITED]`
 - **Statement:** Any finite family of high positive exponent shells defines a derived common zero
   locus whose Koszul homology is the exterior algebra of shell-presentation relations over the
   Riemann divisor sheaf; two shells recover the principal conormal line in degree one.
@@ -344,11 +344,22 @@ positive shell excess-conormal class
   -> critical-line purity.
 ```
 
-## Lean boundary
+## Lean formalization
 
-Do not formalize only the generic ring calculation. That would certify parent algebra without the
-Riemann source. Lean work becomes justified when the shell functions, their unit multipliers, and
-the source power/reflection action can instantiate the theorem in one source-specific module.
+Source-specific formalization is complete in
+`formal/GaloisForLFunctions/RHTower/PositiveShellKoszulCartierObstruction.lean`, supported by
+`formal/GaloisForLFunctions/HTGeometry/CommonFactorKoszulHomology.lean`.
+
+The checked declarations include the genuine punctured right-half-plane analytic carrier, actual
+zeta germ, actual zero-free shell-multiplier units, two-shell differentials and homology quotients,
+principal conormal identification, arbitrary finite split families with exact exterior ranks and
+higher vanishing, and the complete countable `Finsupp` family with explicit nonbase-shell basis,
+degreewise cycle/boundary classification, finite-aperture birth, and unbounded total basis.
+
+Verification completed with direct `lake env lean` checks, target-only module builds, and
+`#print axioms` audits. Capstones depend only on Lean kernel foundations `propext`,
+`Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, `admit`, `opaque`, or `unsafe`
+declaration is used.
 
 ## Gates
 
@@ -360,7 +371,7 @@ the source power/reflection action can instantiate the theorem in one source-spe
 - [ ] define source power correspondence on the shell Koszul complex
 - [ ] prove Gamma-reflected reciprocal action on degree-one homology
 - [ ] prove positive topological completion preserves the class
-- [ ] instantiate source-specific theorem in Lean
+- [x] instantiate source-specific theorem in Lean
 
 ## Log
 

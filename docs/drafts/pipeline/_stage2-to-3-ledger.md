@@ -39,6 +39,7 @@ Promotion recipe:
 | `geometric-skeleton-brown-ramp-transfer-law` | Theorems A, B, C in full | `HTGeometry/GeometricSkeletonBrownRamp` (new) |
 | `disconnected-local-spectral-factorization-genericity` | none (already complete in the hypergraph form) | `HTGeometry/DisconnectedProjectiveGapModuleLaw`, `HypergraphComponentFactorization`, `HypergraphProjectiveSpectralFactorization`, `BlockSumSpectralGenericity` |
 | `beta-threshold-complete-incidence-law` | all six Lean layers: Hoeffding sandwich, beta-density derivative, coarea `(12)`/`(17)`, return-paid-once `(18)`, replica projector `(19)`–`(22)`, monomial separation `(25)`–`(26)` | `HTGeometry/BinomialTailBetaThreshold`, `BetaThresholdIncidenceLaw`, `BoundedReplicaThresholdProjector` (all new) |
+| `two-replica-singlet-pauli-hall-expansion` | `(7)` on any register, global `(11)`, both directions of `(12)`, and the assembly `(14)`–`(17)` giving the boxed `(4)` | `HTGeometry/TwoReplicaTensorHilbertSchmidt`, `TwoReplicaEdgeHallExpansion`, `TwoReplicaEdgeHallAssembly` (all new) |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
 | `burnol-holonomy-cauchy-sector-separation` | none (verified only) | `RHTower/BurnolHolonomyCauchySectorSeparation` |
@@ -60,6 +61,14 @@ Promotion recipe:
   in the product basis `Fin r → n`, slotwise multiplication/adjoint, the product factorization
   `⟨v^{⊗r}, (⊗ A_i) v^{⊗r}⟩ = ∏ ⟨v, A_i v⟩`, and the Gram identity
   `⟨w, Mᴴ M w⟩ = ∑ |(M w)_c|²` (the source of every positivity statement).
+
+- `HTGeometry/TwoReplicaTensorHilbertSchmidt` — a sitewise two-replica tensor product has the
+  trace, the adjoint and the Hilbert–Schmidt pairing of a product, factor by factor; plus the
+  local orthogonality relations between `span{I, F}` and the replica differences `D_a`, `F D_a`.
+- `HTGeometry/TwoReplicaEdgeHallAssembly` — the endpoint-evaluation reader `edgeReader`: fixing one
+  matrix index pair at each endpoint and multiplying back the two identity/swap letters inverts a
+  tensor-product family on one mismatch type.  Use this instead of a Gram-matrix argument whenever
+  the spectator letters are linearly independent but **not** orthogonal (`Tr(I·F) = 2 ≠ 0`).
 
 - `HTGeometry/CirclePoincareWirtinger` — **Wirtinger's inequality**: for a `C¹` function on
   `[a,b]` with equal endpoint values, the mean-square deviation from the average is at most
@@ -140,11 +149,6 @@ Corollary 2 `(18)` is now `HTGeometry/CommutingTermTemporalRankBound.anchoredTem
 (new).  What remains is a small assembly module stating the card's claims at `q = 2` and the
 operator-level step "commuting terms ⇒ additive spectrum" (simultaneous diagonalisation).
 
-`two-replica-singlet-pauli-hall-expansion` — remaining: reverse inclusion of `(12)`, global tensor
-form of `(11)`, and the assembly `(14)`–`(17)` into
-`HTGeometry.resolvedFiberAssembly_subspace_finrank` (interface already exists and is exactly
-shaped for it).
-
 `weak-interaction-singular-quantum-time-expansion` — remaining: `(7)`'s finite-family Hausdorff
 assembly (easy, given the already-formalized C* Heisenberg stability bound), and the local
 generator `(4)`–`(5)`, which is the sibling card `local-interaction-replica-collision-extremality`.
@@ -166,8 +170,6 @@ first.
 - `component-recurrence-torus-and-replica-factorization-law` — component-histogram law done in
   `ComponentReplicaCollisionLaw`; the product-torus embedding `(1)`–`(3)` and the uniform-SFF
   product/asymptotics remain.
-- `two-replica-singlet-pauli-hall-expansion` — three named maps into
-  `resolvedFiberAssembly_subspace_finrank`.
 - `weak-interaction-singular-quantum-time-expansion` — `(7)`'s finite-family Hausdorff assembly,
   plus Theorem C/C2 of the card above.
 
@@ -188,6 +190,65 @@ State of that programme:
   through `measurePreserving_piFinSuccAbove`.  Items (ii)–(iii) are Fubini plus algebra; (i) and
   (iv) are the real work.  Do **not** try to get the dimension-free constant from a coupling or
   a one-step Cauchy–Schwarz: both lose a factor `d`.
+
+## Audited, next in line
+
+`traceless-local-two-query-haar-separation-law` — its five-step Lean plan is already three-fifths
+done in the corpus:
+
+- step 3 (the boxed `(2)`) is `HTGeometry/ConservedLocalTwoQuerySignalLaw.twoQueryProductStabilizerSignal_ge`
+  in abstract transfer-matrix form, with `_of_card_le`, `_oneDimensional` and `_allToAll` variants;
+- step 4 (the boxed `(3)`/`(8)`) is
+  `HTGeometry/FiniteUnitaryHaarMeasureLaw.finiteUnitaryPreparedTracelessHermitianInvolutionHaarSignal_eq`
+  — exactly `1/(D+1)` for every traceless Hermitian involution, every preparation unitary and every
+  coordinate, with `D = d + 2` on the index type `Fin 2 ⊕ Fin d`;
+- the six-state single-qubit twirl is `HTGeometry/ProductStabilizerPauliTwirlLaw`.
+
+A second audit pass found steps 1 and 2 **also already built**, in
+`HTGeometry/TracelessLocalPauliTransferConservationLaw`: `FiniteQTracelessPauliLabel`,
+`finiteQTracelessPauliTransferMatrix`, `finiteQTracelessEnergyCoordinates`,
+`finiteQTracelessPauliTransferMatrix_fixes_energyCoordinates`,
+`finiteQTracelessEnergyCoordinates_ne_zero`, and the capstone
+`finiteQTracelessAutonomousTransferSignal_gt_haarBenchmark` — all with the identity **excluded**
+from the dictionary, exactly as the card's hostile audit demands.
+
+New this pass (`HTGeometry/TracelessPauliIdentityCoordinate`, all axioms clean):
+`trace_eq_pauliIdentityCoordinate_mul` — the trace of a self-adjoint matrix is its identity Pauli
+coordinate times `2^n`; hence `hasZeroPauliIdentityCoordinate_of_trace_eq_zero`, which replaces the
+card's `HasZeroPauliIdentityCoordinate` hypothesis by literal tracelessness and closes the
+*identity-coordinate gap* named in the card's Goal.  Plus
+`instNonemptyFiniteQTracelessPauliLabel` (one qubit and `q ≥ 1` inhabit the dictionary) and both
+capstones restated with tracelessness.
+
+**Step 5 is now built** (`HTGeometry/ProductStabilizerPhysicalScore`, all axioms clean):
+
+- `qubitLocalTensor` with its sitewise product, trace and adjoint laws;
+- `stabilizerDensity u = (I + s σ_p)/2` — Hermitian, idempotent, unit trace, hence a rank-one
+  orthogonal projection — and the exact six-state evaluation
+  `trace (stabilizerDensity u * boolPauliOption q) = stabilizerAxisExpectation u q`.  Working with
+  the density matrix avoids `√2` entirely; the state-vector route needs it in all 24 evaluations;
+- `productStabilizerDensity` and
+  `trace_productStabilizerDensity_mul_finitePauliMatrix` — the product-state expectation of a Pauli
+  string factorizes over sites;
+- `conjugation_finitePauliMatrix_expansion` — `U† P U = ∑_Q T_{QP} • Q` with
+  `T = pauliConjugationTransfer U = LinearMap.toMatrix` of the self-adjoint conjugation;
+- `literalTwoQueryScore` — the actual experiment; `average_sq_trace_eq_sum_twirl` turns its
+  sample average into `∑_Q 3^{-wt Q} T_{QP}²` over the **whole** Pauli basis;
+- `productStabilizerTwoQueryProtocolSignal_le_literalTwoQueryScore` — the card's step `(6)`:
+  the transfer signal keeps only the dictionary, all dropped terms are nonnegative;
+- `literalTwoQueryScore_ge_of_trace_eq_zero` (boxed `(2)` on the literal score) and
+  `haarBenchmark_lt_literalTwoQueryScore_of_trace_eq_zero` (boxed `(4)` against `1/(2^n+1)`).
+
+**Last remaining item for promotion**: the boxed `(3)` stated for the *literal* score,
+`𝔼_{V∼Haar} 𝒮_q(V) = 1/(D+1)`.  The corpus proves the equal-value Haar mean square only for a
+*prepared coordinate state* on the index type `Fin 2 ⊕ Fin d`
+(`finiteUnitaryPreparedTracelessHermitianInvolutionHaarSignal_eq`).  Two bridges are needed:
+
+1. realize `productStabilizerDensity smpl` as `W • (single j j) • star W` for some unitary `W` —
+   available from the spectral theorem, since the density is a Hermitian idempotent of trace one;
+2. transport `finiteUnitaryHaar` along the index equivalence `(Fin n → Bool) ≃ Fin 2 ⊕ Fin d`
+   (`d = 2^n - 2`, needs `n ≥ 1`).  The corpus has Haar invariance under row *permutations*
+   (`integral_finiteUnitaryEntryWeight_sq_equiv`) but not under a change of index type.
 
 ## Blocked only on another stage-2 card
 
@@ -334,6 +395,17 @@ prime/zeta/divisor theorem.  See
   additive complex groupoid weight; directed natural-number histories carry nonzero additive cost.
 - Targeted module build green; universal-law-field umbrella wired; no project postulate or
   computation proof.
+
+# Universal-law-field extension-memory certification (2026-08-09)
+
+- `same-defect-pair-split-nonsplit-extension-and-carry-holonomy-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveExtensionCarry`.
+- Certified: exact split and nonsplit events with the same endpoint objects and four-element middle
+  size; additive splitting versus nonsplitting; zero versus nonzero binary carry; period-two common
+  observation; closed split lift versus nonzero nonsplit kernel holonomy and period-four closure.
+- Targeted module build green; universal-law-field umbrella wired; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate or unresolved theorem premise.
 
 # Universal-law-field observer-unitization pump certification (2026-08-09)
 

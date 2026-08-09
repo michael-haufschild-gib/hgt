@@ -249,6 +249,51 @@ theorem burnolFloorPair {R : ℝ} (hR : 0 ≤ R) :
     omega
   omega
 
+theorem burnolMassCoreZero {R D I : ℝ} (hR0 : 0 ≤ R) (hDpos : 0 < D)
+    (hI : |I - 1 / (2 * D)| ≤ 1 / (2 * D * (D + 1))) (hlo : D - 1 ≤ R) (hhi : R ≤ D) :
+    |1 / 2 - R * I| ≤ 1 / D := by
+  have hE : |R * (I - 1 / (2 * D))| ≤ 1 / (2 * D) := by
+    rw [abs_mul, abs_of_nonneg hR0]
+    refine le_trans (mul_le_mul_of_nonneg_left hI hR0) ?_
+    rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [hDpos, hhi]
+  obtain ⟨hE1, hE2⟩ := abs_le.mp hE
+  have hfrac0 : (0 : ℝ) ≤ (D - R) / (2 * D) := div_nonneg (by linarith) (by linarith)
+  have hfrac1 : (D - R) / (2 * D) ≤ 1 / (2 * D) := by
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [hDpos, hlo]
+  have hid : (1 : ℝ) / 2 - R * I = (D - R) / (2 * D) - R * (I - 1 / (2 * D)) := by
+    field_simp
+    ring
+  have hhalf : (1 : ℝ) / (2 * D) + 1 / (2 * D) = 1 / D := by
+    field_simp
+    ring
+  rw [hid, abs_le]
+  constructor <;> linarith
+
+theorem burnolMassCoreOne {R D I : ℝ} (hR0 : 0 ≤ R) (hDpos : 0 < D)
+    (hI : |I - 1 / (2 * D)| ≤ 1 / (2 * D * (D + 1))) (hlo : D ≤ R) (hhi : R ≤ D + 1) :
+    |-(1 / 2) + R * (-I + 1 / D)| ≤ 1 / D := by
+  have hE : |R * (I - 1 / (2 * D))| ≤ 1 / (2 * D) := by
+    rw [abs_mul, abs_of_nonneg hR0]
+    refine le_trans (mul_le_mul_of_nonneg_left hI hR0) ?_
+    rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [hDpos, hhi]
+  obtain ⟨hE1, hE2⟩ := abs_le.mp hE
+  have hfrac0 : (0 : ℝ) ≤ (R - D) / (2 * D) := div_nonneg (by linarith) (by linarith)
+  have hfrac1 : (R - D) / (2 * D) ≤ 1 / (2 * D) := by
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [hDpos, hhi]
+  have hid : -(1 : ℝ) / 2 + R * (-I + 1 / D) =
+      (R - D) / (2 * D) - R * (I - 1 / (2 * D)) := by
+    field_simp
+    ring
+  have hhalf : (1 : ℝ) / (2 * D) + 1 / (2 * D) = 1 / D := by
+    field_simp
+    ring
+  rw [show -(1 / 2 : ℝ) + R * (-I + 1 / D) = -(1 : ℝ) / 2 + R * (-I + 1 / D) by ring, hid, abs_le]
+  constructor <;> linarith
+
 /-- **The reflected truncated mass converges to `ζ(0) = -1/2`.** -/
 theorem abs_burnolReflectedTruncMass_add_half_le {R : ℝ} (hR : 2 ≤ R) :
     |burnolReflectedTruncMass R + 1 / 2| ≤ 1 / (R - 1) := by
@@ -276,10 +321,10 @@ theorem abs_burnolReflectedTruncMass_add_half_le {R : ℝ} (hR : 2 ≤ R) :
   have hcast : ((2 * c : ℕ) : ℝ) = 2 * (c : ℝ) := by push_cast; ring
   rw [hcast] at htail
   have htailB : |burnolAltTail (2 * c) - 1 / (2 * (2 * (c : ℝ) + 1))| ≤
-      1 / (2 * (2 * (c : ℝ) + 1) * (2 * (c : ℝ) + 2)) := by
+      1 / (2 * (2 * (c : ℝ) + 1) * ((2 * (c : ℝ) + 1) + 1)) := by
     have h1 : 2 * ((2 * (c : ℝ)) + 1) = 2 * (2 * (c : ℝ) + 1) := by ring
     have h2 : 2 * ((2 * (c : ℝ)) + 1) * ((2 * (c : ℝ)) + 2) =
-        2 * (2 * (c : ℝ) + 1) * (2 * (c : ℝ) + 2) := by ring
+        2 * (2 * (c : ℝ) + 1) * ((2 * (c : ℝ) + 1) + 1) := by ring
     rw [h1, h2] at htail
     exact htail
   obtain ⟨hlo, hhi⟩ := abs_le.mp htailB
@@ -290,16 +335,16 @@ theorem abs_burnolReflectedTruncMass_add_half_le {R : ℝ} (hR : 2 ≤ R) :
         rw [hb, hcase]
         push_cast
         ring
-      have hRlt : R < 2 * (c : ℝ) + 1 := by linarith [hbR']
-      rw [burnolReflectedTruncMass, ← hb, ← hc, hbc]
       have hharm : ((harmonic b : ℚ) : ℝ) = ((harmonic (2 * c) : ℚ) : ℝ) := by rw [hb, hcase]
-      rw [hharm, halt, abs_le]
-      constructor <;> nlinarith [hlo, hhi, hden, hRbound, hbR, hRlt, hR1]
+      rw [burnolReflectedTruncMass, ← hb, ← hc, hbc, hharm, halt]
+      have hval : 2 * (c : ℝ) - 2 * (c : ℝ) + R * -burnolAltTail (2 * c) + 1 / 2 =
+          1 / 2 - R * burnolAltTail (2 * c) := by ring
+      rw [hval]
+      exact burnolMassCoreZero hR0 hden htailB (by linarith [hbR]) (by linarith [hbR'])
     · have hbc : (b : ℝ) = 2 * (c : ℝ) + 1 := by
         rw [hb, hcase]
         push_cast
         ring
-      have hRge : 2 * (c : ℝ) + 1 ≤ R := by rw [← hbc]; exact hbR
       have hharm : ((harmonic b : ℚ) : ℝ) =
           ((harmonic (2 * c) : ℚ) : ℝ) + 1 / (2 * (c : ℝ) + 1) := by
         rw [hb, hcase, harmonic_succ]
@@ -309,8 +354,12 @@ theorem abs_burnolReflectedTruncMass_add_half_le {R : ℝ} (hR : 2 ≤ R) :
       have hexp : ((harmonic (2 * c) : ℚ) : ℝ) + 1 / (2 * (c : ℝ) + 1) -
           ((harmonic c : ℚ) : ℝ) - Real.log 2 =
           -burnolAltTail (2 * c) + 1 / (2 * (c : ℝ) + 1) := by linarith [halt]
-      rw [hexp, abs_le]
-      constructor <;> nlinarith [hlo, hhi, hden, hRbound, hRge, hbR', hR1]
+      rw [hexp]
+      have hval : 2 * (c : ℝ) - (2 * (c : ℝ) + 1) +
+          R * (-burnolAltTail (2 * c) + 1 / (2 * (c : ℝ) + 1)) + 1 / 2 =
+          -(1 / 2) + R * (-burnolAltTail (2 * c) + 1 / (2 * (c : ℝ) + 1)) := by ring
+      rw [hval]
+      exact burnolMassCoreOne hR0 hden htailB (by linarith [hbR]) (by linarith [hbR'])
   refine le_trans hkey ?_
   rw [div_le_div_iff₀ hden hR1]
   linarith

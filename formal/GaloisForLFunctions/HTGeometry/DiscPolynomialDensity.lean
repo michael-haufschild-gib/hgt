@@ -11,7 +11,8 @@ This is the base case of polynomial Runge.  What Runge adds is the passage to a 
 not a disc, where the Cauchy kernel has poles that must be pushed out along the complement.
 
 * `HTGeometry.tendstoUniformlyOn_cauchyPartialSum`;
-* `HTGeometry.exists_partialSum_approx_on_closedBall`.
+* `HTGeometry.exists_partialSum_approx_on_closedBall`;
+* `HTGeometry.exists_partialSum_comp_approx`.
 -/
 
 open Metric
@@ -37,7 +38,7 @@ theorem exists_partialSum_approx_on_closedBall {R : NNReal} (hR : 0 < R) {f : �
       ‖f z - (cauchyPowerSeries f 0 (R : ℝ)).partialSum n z‖ < ε := by
   obtain ⟨r', hrr', hr'R⟩ := exists_between hr
   have hunif := tendstoUniformlyOn_cauchyPartialSum hR hf hr'R
-  have hmem := hunif ε hε
+  have hmem := (Metric.tendstoUniformlyOn_iff.1 hunif) ε hε
   obtain ⟨n, hn⟩ := Filter.eventually_atTop.1 hmem
   refine ⟨n, fun z hz => ?_⟩
   have hzball : z ∈ ball (0 : ℂ) (r' : ℝ) := by
@@ -48,5 +49,18 @@ theorem exists_partialSum_approx_on_closedBall {R : NNReal} (hR : 0 < R) {f : �
   have hval := hn n le_rfl z hzball
   rw [Complex.dist_eq] at hval
   exact hval
+
+/-- **Transported approximation.**  Composing with any map that sends a set into the disc carries
+the polynomial approximation to that set: the approximants become polynomials in the composed
+coordinate.  With the composed map a biholomorphism onto a disc, this is how approximation by
+polynomials in one Cauchy coordinate is obtained on a half-plane. -/
+theorem exists_partialSum_comp_approx {R : NNReal} (hR : 0 < R) {f : ℂ → ℂ}
+    (hf : DifferentiableOn ℂ f (closedBall (0 : ℂ) R)) {r : NNReal} (hr : r < R)
+    {β : Type*} (g : β → ℂ) {K : Set β} (hK : Set.MapsTo g K (closedBall (0 : ℂ) (r : ℝ)))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ n : ℕ, ∀ x ∈ K,
+      ‖f (g x) - (cauchyPowerSeries f 0 (R : ℝ)).partialSum n (g x)‖ < ε := by
+  obtain ⟨n, hn⟩ := exists_partialSum_approx_on_closedBall hR hf hr hε
+  exact ⟨n, fun x hx => hn (g x) (hK hx)⟩
 
 end HTGeometry

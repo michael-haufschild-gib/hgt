@@ -3941,7 +3941,7 @@ Thus `(O4.12z25)` is now proved separately on both canonical layers:
 quantifier is only the gluing of arbitrary subspaces crossing those layers;
 separate Hall inequalities do not automatically control overlap of their
 outputs.  Full proof of `(O4.12z25c)` is in
-`../2-fully-proven/two-replica-singlet-pauli-hall-expansion.md`.
+`../3-formalized/two-replica-singlet-pauli-hall-expansion.md`.
 The all-subspaces dimension mechanism is formalized as
 `resolvedFiberAssembly_subspace_finrank` in
 `HTGeometry/ResolvedFiberHallExpansion.lean`. Physical completion of the

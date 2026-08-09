@@ -365,6 +365,128 @@ theorem positiveShellFiniteKoszulCycles_subsingleton_of_card_lt
   have hxy : he.symm x = he.symm y := Subsingleton.elim _ _
   exact he.symm.injective hxy
 
+/-! ## Countable algebraic direct sum and its finite-aperture exhaustion -/
+
+/-- Enumeration of every exponent `m ≥ 12`. -/
+def positiveShellCountableExponentEquiv : ℕ ≃ PositiveShellExponent where
+  toFun n := ⟨12 + n, by omega⟩
+  invFun m := m.1 - 12
+  left_inv n := Nat.add_sub_cancel_left 12 n
+  right_inv m := by
+    apply Subtype.ext
+    exact Nat.add_sub_of_le m.2
+
+/-- Complete countable family of positive-shell units. -/
+abbrev positiveShellCountableUnits : ℕ → PositiveShellAnalyticRingˣ :=
+  fun n => positiveShellMultiplierUnit (positiveShellCountableExponentEquiv n)
+
+/-- Countable algebraic shell direct sum `A∞`. -/
+abbrev PositiveShellCountableDirectSum := ℕ →₀ PositiveShellAnalyticRing
+
+/-- Finitely supported countable shell augmentation. -/
+abbrev positiveShellCountableAugmentation :
+    PositiveShellCountableDirectSum →ₗ[PositiveShellAnalyticRing]
+      PositiveShellAnalyticRing :=
+  unitWeightedFinsuppAugmentation positiveShellCountableUnits
+
+/-- Countably generated relation module `E∞ = ker h∞`. -/
+abbrev PositiveShellCountableRelations :=
+  unitWeightedFinsuppRelations positiveShellCountableUnits
+
+/-- Exact countable splitting `A∞ ≃ O_U ⊕ E∞`, based at exponent `12`. -/
+def positiveShellCountableSplitEquiv :
+    PositiveShellCountableDirectSum ≃ₗ[PositiveShellAnalyticRing]
+      PositiveShellAnalyticRing × PositiveShellCountableRelations :=
+  unitWeightedFinsuppSplitEquiv positiveShellCountableUnits 0
+
+/-- All nonbase countable shell indices. -/
+abbrev PositiveShellCountableAway := unitWeightedFinsuppAway (ι := ℕ) 0
+
+/-- Explicit countable relation vector
+`e_m-H_m H_12⁻¹e_12` for every nonbase shell. -/
+def positiveShellCountableRelationVector (j : PositiveShellCountableAway) :
+    PositiveShellCountableDirectSum :=
+  unitWeightedFinsuppRelationVector positiveShellCountableUnits 0 j
+
+/-- Free countable basis of `E∞`. -/
+noncomputable def positiveShellCountableRelationsBasis :
+    Module.Basis PositiveShellCountableAway PositiveShellAnalyticRing
+      PositiveShellCountableRelations :=
+  unitWeightedFinsuppRelationsBasis positiveShellCountableUnits 0
+
+/-- The countable relation basis consists exactly of the advertised shell vectors. -/
+theorem positiveShellCountableRelationsBasis_apply (j : PositiveShellCountableAway) :
+    (positiveShellCountableRelationsBasis j).1 =
+      positiveShellCountableRelationVector j :=
+  unitWeightedFinsuppRelationsBasis_apply positiveShellCountableUnits 0 j
+
+/-- Exterior basis in every finite homological degree. -/
+noncomputable def positiveShellCountableExteriorBasis (k : ℕ) :
+    Module.Basis (Set.powersetCard PositiveShellCountableAway k)
+      PositiveShellAnalyticRing
+      (⋀[PositiveShellAnalyticRing]^k PositiveShellCountableRelations) :=
+  positiveShellCountableRelationsBasis.exteriorPower k
+
+/-- Degree-`p+1` cycles of the countable normalized shell Koszul object. -/
+abbrev positiveShellCountableKoszulCycles (p : ℕ) :=
+  splitCommonFactorKoszulCycles positiveShellZeta PositiveShellCountableRelations p
+
+/-- Degree-`p+1` boundaries of the countable normalized shell Koszul object. -/
+abbrev positiveShellCountableKoszulBoundaries (p : ℕ) :=
+  splitCommonFactorKoszulBoundaries positiveShellZeta PositiveShellCountableRelations p
+
+/-- Every countable-shell degree-`p+1` cycle is uniquely an element of `Λ^(p+1) E∞`. -/
+noncomputable def positiveShellCountableKoszulCyclesEquiv (p : ℕ) :
+    (⋀[PositiveShellAnalyticRing]^(p + 1) PositiveShellCountableRelations)
+      ≃ₗ[PositiveShellAnalyticRing] positiveShellCountableKoszulCycles p := by
+  let b := positiveShellCountableExteriorBasis p
+  letI : NoZeroSMulDivisors PositiveShellAnalyticRing
+      (⋀[PositiveShellAnalyticRing]^p PositiveShellCountableRelations) :=
+    ⟨fun {_ _} h => b.smul_eq_zero.mp h⟩
+  exact splitCommonFactorCyclesEquiv positiveShellZeta_ne_zero
+    PositiveShellCountableRelations p
+
+/-- Countable-shell boundaries are exactly the zeta multiples in every finite degree.  Therefore
+the degreewise homology is `O_D ⊗ Λ^(p+1) E∞`. -/
+theorem positiveShellCountableKoszulBoundaries_classification (p : ℕ) :
+    Submodule.map (positiveShellCountableKoszulCyclesEquiv p).toLinearMap
+        (LinearMap.range (commonFactorScalarMap positiveShellZeta :
+          (⋀[PositiveShellAnalyticRing]^(p + 1) PositiveShellCountableRelations)
+            →ₗ[PositiveShellAnalyticRing]
+          (⋀[PositiveShellAnalyticRing]^(p + 1) PositiveShellCountableRelations))) =
+      positiveShellCountableKoszulBoundaries p := by
+  let b := positiveShellCountableExteriorBasis p
+  letI : NoZeroSMulDivisors PositiveShellAnalyticRing
+      (⋀[PositiveShellAnalyticRing]^p PositiveShellCountableRelations) :=
+    ⟨fun {_ _} h => b.smul_eq_zero.mp h⟩
+  exact map_scalarRange_splitCommonFactorCyclesEquiv_eq_boundaries
+    positiveShellZeta_ne_zero PositiveShellCountableRelations p
+
+/-- Shell indices occurring in the exterior-basis expansion of an element. -/
+noncomputable def positiveShellCountableExteriorSupport (k : ℕ)
+    (x : ⋀[PositiveShellAnalyticRing]^k PositiveShellCountableRelations) : Finset ℕ :=
+  ((positiveShellCountableExteriorBasis k).repr x).support.biUnion
+    fun s => s.1.image Subtype.val
+
+/-- Every element in every finite exterior/homological degree is already supported in a finite
+shell aperture. -/
+theorem positiveShellCountableExteriorElement_born_finite (k : ℕ)
+    (x : ⋀[PositiveShellAnalyticRing]^k PositiveShellCountableRelations) :
+    ∃ N : ℕ, ∀ s ∈ ((positiveShellCountableExteriorBasis k).repr x).support,
+      ∀ j ∈ s.1, j.1 < N := by
+  obtain ⟨N, hN⟩ :=
+    Finset.exists_nat_subset_range (positiveShellCountableExteriorSupport k x)
+  refine ⟨N, fun s hs j hj => Finset.mem_range.mp (hN ?_)⟩
+  rw [positiveShellCountableExteriorSupport, Finset.mem_biUnion]
+  exact ⟨s, hs, Finset.mem_image.mpr ⟨j, hj, rfl⟩⟩
+
+/-- No finite aperture contains the complete countable relation basis. -/
+theorem positiveShellCountableRelationsBasis_unbounded (N : ℕ) :
+    ∃ j : PositiveShellCountableAway, N < j.1 := by
+  refine ⟨⟨N + 1, by omega⟩, ?_⟩
+  change N < N + 1
+  omega
+
 end
 
 end RHTower

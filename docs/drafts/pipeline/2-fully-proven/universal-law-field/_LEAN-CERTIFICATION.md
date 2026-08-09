@@ -24,6 +24,7 @@ Dedicated Lean umbrella:
 | ULF-REG-SEID-1 | Surjective erasure forces infinite dimension; fixed-corona Gamma-Bockstein death has no faithful finite-dimensional linear model | `HTGeometry.ConstitutiveSurjectiveErasure` |
 | ULF-HISTORY-1 | Nonnegative additive groupoid costs vanish; complex real-cost part vanishes; directed histories admit nonzero additive cost | `HTGeometry.ConstitutiveHistoryPolarization` |
 | ULF-PRD-PUMP-1 | Observer unitization forces recurrence, injective open history, linear action, and cost nondescendence | `HTGeometry.ConstitutiveObserverUnitization` |
+| ULF-DEFECT-2 | Same endpoint defects and size admit split/nonsplit events distinguished by carry and lifted-period holonomy | `HTGeometry.ConstitutiveExtensionCarry` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.

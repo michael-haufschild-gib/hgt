@@ -33,6 +33,7 @@ theorem gammaTail_zero_eq : gammaTail 0 = ∫ t in Ioi (1 : ℝ), Real.exp (-t) 
 theorem integrableOn_expDivId_Ioi : IntegrableOn (fun t : ℝ => Real.exp (-t) / t) (Ioi 1) := by
   have h := integrableOn_gammaTailFun (a := 0) (by norm_num)
   refine h.congr_fun (fun t _ => ?_) measurableSet_Ioi
+  show Real.exp (-t) * t ^ (0 - 1 : ℝ) = Real.exp (-t) / t
   rw [zero_sub, Real.rpow_neg_one, div_eq_mul_inv]
 
 /-- **The sharp logarithmic law for the cut integral.** -/
@@ -91,45 +92,6 @@ def clogHead (w : ℂ) : ℂ := ∫ t in Ioo (0 : ℝ) 1, cgammaDefect 0 w t
 
 /-- The tail of the rotated ordinary Gamma integral at the cut. -/
 def clogTail (w : ℂ) : ℂ := ∫ t in Ioi (1 : ℝ), cgammaOrd 0 w t
-
-theorem continuousOn_cgammaDefect {a : ℝ} (w : ℂ) {S : Set ℝ} (hS : ∀ t ∈ S, 0 < t) :
-    ContinuousOn (cgammaDefect a w) S := by
-  refine ContinuousOn.mul ?_ ?_
-  · exact ((Complex.continuous_exp.comp (by fun_prop)).sub continuous_const).continuousOn
-  · refine Complex.continuous_ofReal.continuousOn.comp ?_ (mapsTo_univ _ _)
-    exact continuousOn_id.rpow_const fun x hx => Or.inl (ne_of_gt (hS x hx))
-
-theorem integrableOn_cgammaDefect_Ioo_one {a : ℝ} (ha : -1 < a) (w : ℂ) :
-    IntegrableOn (cgammaDefect a w) (Ioo 0 1) := by
-  set δ : ℝ := min (1 / 2) (1 / (‖w‖ + 1)) with hδdef
-  have hnorm : (0 : ℝ) < ‖w‖ + 1 := by positivity
-  have hδ0 : 0 < δ := lt_min (by norm_num) (by positivity)
-  have hδ1 : δ < 1 := lt_of_le_of_lt (min_le_left _ _) (by norm_num)
-  have hwδ : ‖w‖ * δ ≤ 1 := by
-    have h1 : δ ≤ 1 / (‖w‖ + 1) := min_le_right _ _
-    have h2 : ‖w‖ * δ ≤ ‖w‖ * (1 / (‖w‖ + 1)) :=
-      mul_le_mul_of_nonneg_left h1 (norm_nonneg w)
-    have h3 : ‖w‖ * (1 / (‖w‖ + 1)) ≤ 1 := by
-      rw [mul_one_div, div_le_one hnorm]
-      linarith
-    linarith
-  have hunion : Ioo (0 : ℝ) 1 = Ioc 0 δ ∪ Ioo δ 1 := by
-    ext t
-    simp only [mem_Ioo, mem_union, mem_Ioc]
-    constructor
-    · rintro ⟨ht0, ht1⟩
-      rcases le_or_gt t δ with h | h
-      · exact Or.inl ⟨ht0, h⟩
-      · exact Or.inr ⟨h, ht1⟩
-    · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩)
-      · exact ⟨h1, lt_of_le_of_lt h2 hδ1⟩
-      · exact ⟨lt_trans hδ0 h1, h2⟩
-  have hfar : IntegrableOn (cgammaDefect a w) (Ioo δ 1) := by
-    have hcont : ContinuousOn (cgammaDefect a w) (Icc δ 1) :=
-      continuousOn_cgammaDefect w fun t ht => lt_of_lt_of_le hδ0 ht.1
-    exact (hcont.integrableOn_Icc).mono_set Ioo_subset_Icc_self
-  rw [hunion]
-  exact (integrableOn_cgammaDefect_near_zero ha w hδ0 hwδ).union hfar
 
 theorem integrableOn_cgammaOrd_Ioi_one {a : ℝ} (ha : a ≤ 1) {w : ℂ} (hw : 0 < w.re) :
     IntegrableOn (cgammaOrd a w) (Ioi 1) := by
@@ -201,7 +163,7 @@ theorem hasDerivAt_clogHead {w : ℂ} (hw : 0 < w.re) :
       measurable_cgammaDefect 0 v measurableSet_Ioo fun t ht => ht.1)
     (integrableOn_cgammaDefect_Ioo_one (by norm_num) w)
     (measurable_cgammaDeriv 0 w measurableSet_Ioo fun t ht => ht.1)
-    hbound (integrableOn_const.2 (Or.inr (by simp)))
+    hbound (integrableOn_const (by simp) (by simp))
     (Filter.Eventually.of_forall fun t v _ => hasDerivAt_cgammaDefect 0 v t)
   exact hres.2
 
@@ -317,8 +279,10 @@ theorem clogHead_one : clogHead 1 = (gammaHead 0 : ℂ) := by
     rw [h, gammaDefect, laplaceCochain, one_mul]
   have hint : IntegrableOn (fun t : ℝ => gammaDefect 0 t) (Ioo 0 1) :=
     (integrableOn_gammaDefect_Ioc (a := 0) (by norm_num)).mono_set Ioo_subset_Ioc_self
-  rw [clogHead, hcongr, ContinuousLinearMap.integral_comp_comm Complex.ofRealCLM hint]
-  rfl
+  have hcast : (∫ t in Ioo (0 : ℝ) 1, ((gammaDefect 0 t : ℝ) : ℂ)) =
+      ((∫ t in Ioo (0 : ℝ) 1, gammaDefect 0 t : ℝ) : ℂ) :=
+    ContinuousLinearMap.integral_comp_comm Complex.ofRealCLM hint
+  rw [clogHead, hcongr, hcast, gammaHead]
 
 theorem clogTail_one : clogTail 1 = (gammaTail 0 : ℂ) := by
   have hcongr : (∫ t in Ioi (1 : ℝ), cgammaOrd 0 (1 : ℂ) t) =
@@ -329,8 +293,10 @@ theorem clogTail_one : clogTail 1 = (gammaTail 0 : ℂ) := by
     rw [h, one_mul]
   have hint : IntegrableOn (fun t : ℝ => Real.exp (-t) * t ^ (0 - 1 : ℝ)) (Ioi 1) :=
     integrableOn_gammaTailFun (a := 0) (by norm_num)
-  rw [clogTail, hcongr, ContinuousLinearMap.integral_comp_comm Complex.ofRealCLM hint]
-  rfl
+  have hcast : (∫ t in Ioi (1 : ℝ), ((Real.exp (-t) * t ^ (0 - 1 : ℝ) : ℝ) : ℂ)) =
+      ((∫ t in Ioi (1 : ℝ), Real.exp (-t) * t ^ (0 - 1 : ℝ) : ℝ) : ℂ) :=
+    ContinuousLinearMap.integral_comp_comm Complex.ofRealCLM hint
+  rw [clogTail, hcongr, hcast, gammaTail]
 
 /-- **The rotated exponential-integral constant.** -/
 theorem clogHead_add_clogTail {w : ℂ} (hw : 0 < w.re) :
@@ -344,7 +310,9 @@ theorem clogHead_add_clogTail {w : ℂ} (hw : 0 < w.re) :
     have hv' : 0 < v.re := hv
     have hlog : HasDerivAt Complex.log v⁻¹ v := Complex.hasDerivAt_log (Or.inl hv')
     have h := (hasDerivAt_clogSum hv').add hlog
-    simpa using h
+    have hz : -v⁻¹ + v⁻¹ = 0 := by ring
+    rw [hz] at h
+    exact h
   have hdiffOn : DifferentiableOn ℂ F S := fun v hv =>
     ((hderiv v hv).differentiableAt).differentiableWithinAt
   have hzero : ∀ v ∈ S, fderivWithin ℂ F S v = 0 := by
@@ -353,18 +321,17 @@ theorem clogHead_add_clogTail {w : ℂ} (hw : 0 < w.re) :
     have hfd : HasFDerivAt F (ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) 0) v :=
       hasDerivAt_iff_hasFDerivAt.1 (hderiv v hv)
     rw [hfd.fderiv]
-    ext x
     simp
   have hone : (1 : ℂ) ∈ S := by simp [hSdef]
   have hconst := hconv.is_const_of_fderivWithin_eq_zero (𝕜 := ℂ) hdiffOn hzero hw hone
   have hF1 : F 1 = -(Real.eulerMascheroniConstant : ℂ) := by
-    rw [hFdef]
-    simp only [Complex.log_one, add_zero, clogHead_one, clogTail_one]
-    rw [← Complex.ofReal_add, gammaHead_add_gammaTail, Complex.ofReal_neg]
-  rw [hFdef] at hconst
-  simp only at hconst
+    show clogHead 1 + clogTail 1 + Complex.log 1 = -(Real.eulerMascheroniConstant : ℂ)
+    rw [Complex.log_one, add_zero, clogHead_one, clogTail_one, ← Complex.ofReal_add,
+      gammaHead_add_gammaTail, Complex.ofReal_neg]
   rw [hF1] at hconst
-  linear_combination hconst
+  have hFw : clogHead w + clogTail w + Complex.log w = -(Real.eulerMascheroniConstant : ℂ) :=
+    hconst
+  linear_combination hFw
 
 end
 

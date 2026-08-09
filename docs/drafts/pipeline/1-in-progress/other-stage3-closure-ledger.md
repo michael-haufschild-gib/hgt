@@ -936,3 +936,321 @@ That is pole-pushing in its simplest form: a pole outside the disc is moved to i
 kernel becomes a uniform limit of polynomials.  With the Cauchy integral formula writing a
 holomorphic function as a superposition of such kernels, this is the engine of polynomial Runge on a
 disc.  Closure count unchanged at 21/65.
+
+Second brick toward Runge — `HTGeometry/DiscPolynomialDensity.lean`, unconditional and axiom-clean:
+
+- `tendstoUniformlyOn_cauchyPartialSum` — a function holomorphic on a closed disc is the uniform
+  limit on every strictly smaller disc of the partial sums of its Cauchy power series;
+- `exists_partialSum_approx_on_closedBall` — hence a polynomial within any prescribed error on a
+  closed sub-disc.
+
+Worth stating plainly: **on a disc there is no Runge content at all** — the power series already
+gives polynomial approximation, and mathlib's `DifferentiableOn.hasFPowerSeriesOnBall` plus
+`HasFPowerSeriesOnBall.tendstoUniformlyOn` supply it directly.  What Runge adds is the passage to a
+compact set that is *not* a disc, where the Cauchy kernel's poles lie in the complement and must be
+pushed along it — which is what the first brick
+(`tendstoUniformlyOn_cauchyKernel_poly`, pole-pushing to infinity) begins.
+
+For the card's interface `OneGeneratorRungeDense`, stated on the upper half-plane, the disc case is
+the target of the conjugation: the Cauchy coordinate `r(z) = (λ−z)⁻¹` is a biholomorphism onto a
+disc, so the remaining step is the transport of these two bricks along it.  Closure count unchanged
+at 21/65.
+
+Third brick toward Runge: `exists_partialSum_comp_approx` — the disc approximation transported along
+any map sending a set into the disc.  Unconditional and axiom-clean.  The approximants become
+polynomials in the composed coordinate, which is exactly the shape of `OneGeneratorRungeDense`:
+polynomials in the single Cauchy coordinate `r(z) = (λ−z)⁻¹`.
+
+So the remaining content of that interface is now purely the **Möbius geometry** — exhibiting
+`r` as a biholomorphism of the half-plane onto a disc and checking that a compact subset of the
+half-plane maps into a strictly smaller disc.  No further approximation theory is required; the
+three bricks
+(`tendstoUniformlyOn_cauchyKernel_poly`, `tendstoUniformlyOn_cauchyPartialSum`,
+`exists_partialSum_comp_approx`) cover the analysis.
+
+Fourth brick toward Runge — the Möbius step: `HTGeometry/CauchyCoordinateHalfPlane.lean`,
+unconditional and axiom-clean:
+
+- `norm_sub_lt_norm_add_of_re_pos` — on the right half-plane the pole at `−a` is strictly farther
+  than the pole at `a` (`‖z−a‖ < ‖z+a‖ ⟺ Re z > 0`, by `‖z+a‖² − ‖z−a‖² = 4a·Re z`);
+- **`cauchyCoordinate_mem_ball_of_re_pos`** — hence for `a > 0` the Cauchy coordinate
+  `z ↦ (z+a)⁻¹` maps `{Re z > 0}` into the open disc of centre and radius `1/(2a)`.
+
+That is the change of coordinate under which the disc bricks become approximation by polynomials in
+one Cauchy coordinate on a half-plane, i.e. the content of `OneGeneratorRungeDense`.  All four
+bricks are now in place; what is left to discharge the interface is the bookkeeping that a *compact*
+subset of the half-plane lands in a *strictly smaller* disc, so that
+`exists_partialSum_comp_approx` applies with room to spare.
+
+Fifth brick — the compactness bookkeeping: **`exists_radius_lt_of_isCompact_re_pos`**.  For `a > 0`
+and `K` a compact subset of the right half-plane there is `ρ < 1/(2a)` with
+`‖(z+a)⁻¹ − 1/(2a)‖ ≤ ρ` for every `z ∈ K`.  Unconditional and axiom-clean: continuity of the Cauchy
+coordinate on a compact set upgrades the pointwise strict bound of the previous brick to a uniform
+one with room to spare, which is exactly the hypothesis `exists_partialSum_comp_approx` consumes.
+
+The five bricks now assembled for `OneGeneratorRungeDense` are:
+
+```text
+cauchyCoordinate_mem_ball_of_re_pos    half-plane ↪ disc
+exists_radius_lt_of_isCompact_re_pos   compact ↪ strictly smaller disc
+tendstoUniformlyOn_cauchyPartialSum    polynomial approximation on the disc
+exists_partialSum_comp_approx          transport along the coordinate
+tendstoUniformlyOn_cauchyKernel_poly   pole-pushing (the non-disc case)
+```
+
+The remaining step to discharge the interface is to compose them: given `f` holomorphic on the
+half-plane, push it through the coordinate to a function holomorphic on the disc, approximate, and
+pull back.  That composition needs the inverse coordinate and the holomorphy of the transported
+function — the only piece not yet built.
+
+Sixth and seventh bricks — the inverse coordinate and holomorphy transport, unconditional and
+axiom-clean:
+
+- **`re_inv_sub_pos_of_mem_ball`** — the coordinate is a *bijection*, not merely an injection into
+  the disc: `‖w − c‖ < c` with `c = 1/(2a)` unwinds to `normSq w < (1/a)·Re w`, which is exactly
+  `Re(w⁻¹) > a`.  The half-plane condition and the disc condition are the same inequality read in
+  the two coordinates, in both directions;
+- **`differentiableOn_transport_of_re_pos`** — hence a function holomorphic on `{Re z > 0}` pulls
+  back through `w ↦ w⁻¹ − a` to a function holomorphic on the disc.
+
+Note `0` lies on the *boundary* of that disc (`‖0 − c‖ = c`), never inside, which is what makes the
+inverse coordinate defined throughout.
+
+The Runge interface `OneGeneratorRungeDense` now has every analytic ingredient:
+
+```text
+half-plane ↔ disc              cauchyCoordinate_mem_ball_of_re_pos, re_inv_sub_pos_of_mem_ball
+holomorphy transports          differentiableOn_transport_of_re_pos
+compact ↪ smaller disc         exists_radius_lt_of_isCompact_re_pos
+polynomials approximate        tendstoUniformlyOn_cauchyPartialSum
+approximation transports       exists_partialSum_comp_approx
+pole-pushing (non-disc case)   tendstoUniformlyOn_cauchyKernel_poly
+```
+
+What is left is the statement-level assembly into the exact `Prop` the interface declares.
+
+### Runge on a half-plane by one Cauchy coordinate — proved
+
+`HTGeometry/HalfPlaneRungeOneAtom.lean`, **`exists_partialSum_cauchyCoordinate_approx`**,
+unconditional and axiom-clean:
+
+> for `a > 0`, `f` holomorphic on `{Re z > 0}`, `K` compact inside it and `ε > 0`, there is a
+> partial sum of the Cauchy series of the transported function which, evaluated at the coordinate
+> `(z+a)⁻¹ − 1/(2a)`, approximates `f` to within `ε` uniformly on `K`.
+
+That is the analytic content of the interface `OneGeneratorRungeDense` — approximation by
+polynomials in the single Cauchy coordinate, uniformly on compacta of the half-plane — obtained by
+composing the seven bricks with no new analysis:
+
+```text
+exists_radius_lt_of_isCompact_re_pos   K lands in a disc of radius ρ < 1/(2a)
+re_inv_sub_pos_of_mem_ball             the coordinate is a bijection onto the disc
+differentiableOn_transport_of_re_pos   f transports to a holomorphic G on the disc
+exists_partialSum_comp_approx          G's Cauchy partial sums approximate, pulled back
+```
+
+mathlib has no Runge in any form, so this is new to the stack.  What is still needed to *discharge*
+the `Prop` `OneGeneratorRungeDense` itself is only its packaging: constructing the algebra of
+holomorphic functions on the half-plane as a topological `ℂ`-algebra and identifying compact-open
+convergence there with the uniform-on-compacta statement above.  The mathematics is done; the
+remaining step is a structure, not an argument.
+
+**The remaining packaging step, with its tools identified.**  To turn
+`exists_partialSum_cauchyCoordinate_approx` into the `Prop` `OneGeneratorRungeDense` one needs a
+membership criterion for the compact-open closure:
+
+```text
+(∀ K compact, ∀ ε > 0, ∃ g ∈ S, ∀ x ∈ K, ‖f x − g x‖ < ε)  →  f ∈ S.topologicalClosure
+```
+
+in `C(U, ℂ)`.  The mathlib tools for it, located this pass:
+
+- `ContinuousMap.tendsto_iff_forall_isCompact_tendstoUniformlyOn` — convergence in the compact-open
+  topology *is* uniform convergence on every compact set;
+- `ContinuousMap.hasBasis_compactConvergenceUniformity` and
+  `CompactExhaustion.hasAntitoneBasis_compactConvergenceUniformity` — the uniformity basis, the
+  second along a compact exhaustion, which an open subset of `ℂ` possesses.
+
+The route is therefore: take a compact exhaustion of the half-plane, use the approximation theorem
+with error `1/n` on the `n`-th piece to build a sequence in the polynomial subalgebra, and conclude
+convergence by the first lemma.  No further analysis is involved.
+
+Note the two names that do *not* exist and cost a probe:
+`ContinuousMap.hasBasis_nhds_compactConvergence` and
+`ContinuousMap.tendsto_iff_forall_compact_tendstoUniformlyOn` — the real spelling is
+`isCompact`, not `compact`.
+
+**The packaging bridge is built.**  `HTGeometry/CompactOpenClosureCriterion.lean`,
+**`mem_topologicalClosure_of_forall_isCompact_approx`**, unconditional and axiom-clean:
+
+> for `X` locally compact and σ-compact, `S` a subalgebra of `C(X, ℂ)` and `f` approximable on every
+> compact set to every accuracy by members of `S`, one has `f ∈ S.topologicalClosure`.
+
+Exactly the route recorded last pass: a compact exhaustion, the approximation with error `1/(n+1)`
+on the `n`-th piece, and `ContinuousMap.tendsto_iff_forall_isCompact_tendstoUniformlyOn` to conclude
+convergence.  Two typeclass notes for the next consumer: `Subalgebra.topologicalClosure` needs
+`IsSemitopologicalSemiring C(X, ℂ)`, which follows from `LocallyCompactSpace X` (not merely
+`WeaklyLocallyCompactSpace`, which is all `CompactExhaustion.choice` asks); and the ring structure
+needs `Mathlib.Topology.ContinuousMap.Algebra`, which is not pulled in by the uniform-convergence
+imports.
+
+With this and `exists_partialSum_cauchyCoordinate_approx`, both halves of
+`OneGeneratorRungeDense` are now theorems: the approximation and the bridge from approximation to
+closure.  What is left to discharge the interface literally is to instantiate it — the ambient
+algebra `A` must be the *holomorphic* subalgebra, since on all of `C(U,ℂ)` the statement is false
+(the contour functional kills every power of the coordinate).
+
+**The last instance obligation is discharged.**  `HTGeometry/HalfPlaneSigmaCompact.lean`,
+`isSigmaCompact_rightHalfPlane`, unconditional and axiom-clean: `{Re z > 0}` is σ-compact, exhausted
+by the closed bounded sets `{1/(n+1) ≤ Re z, ‖z‖ ≤ n+1}`.
+
+This was needed because Lean does **not** infer it: `IsOpen.locallyCompactSpace` gives
+`LocallyCompactSpace ↥{Re z > 0}` for free, but `SigmaCompactSpace` on that subtype fails
+`infer_instance` even with local compactness available, and the closure criterion needs both.
+
+The three ingredients for `OneGeneratorRungeDense` on the half-plane are now all theorems:
+
+```text
+exists_partialSum_cauchyCoordinate_approx        the approximation (Runge proper)
+mem_topologicalClosure_of_forall_isCompact_approx  approximation ⟹ compact-open closure
+isSigmaCompact_rightHalfPlane                    the missing instance
+```
+
+Remaining: assemble them in the *holomorphic* subalgebra of `C(↥{Re z > 0}, ℂ)` — the ambient
+algebra cannot be all of `C(U,ℂ)`, where the statement is false.
+
+**The ambient space is built.**  `HTGeometry/RightHalfPlaneSpace.lean`, unconditional and
+axiom-clean: `rightHalfPlane`, `isOpen_rightHalfPlane`, the two instances
+(`LocallyCompactSpace` from openness, `SigmaCompactSpace` from the explicit exhaustion),
+`add_ne_zero_of_mem_rightHalfPlane`, and the Cauchy coordinate `cauchyCoord a ha : C(↥H, ℂ)` with
+its evaluation lemma.
+
+That is the carrier on which the Runge statement lives.  With the three theorems already proved —
+the approximation, the closure criterion, the σ-compactness — the assembly of
+`OneGeneratorRungeDense` now needs only the *holomorphic subalgebra* of `C(↥H, ℂ)`.  The workable
+definition avoids differentiability on a subtype: take the carrier
+
+```text
+{f : C(↥H, ℂ) | ∃ F : ℂ → ℂ, DifferentiableOn ℂ F H ∧ ∀ z : ↥H, f z = F z}
+```
+
+which is closed under sums, products and scalars because the witnesses `F` are, and contains `1`.
+The remaining friction is instance-level, not mathematical: the ambient of `OneGeneratorRungeDense`
+must be that subalgebra *as a type*, so its `IsTopologicalSemiring` and the identification of its
+subspace closure with the ambient closure have to be supplied.
+
+**The holomorphic subalgebra is built.**  `HTGeometry/HolomorphicSubalgebra.lean`, unconditional and
+axiom-clean:
+
+- `holoAlgebra : Subalgebra ℂ C(↥H, ℂ)` — the continuous functions on the half-plane that extend
+  holomorphically, carried as `∃ F, DifferentiableOn ℂ F H ∧ ∀ z, f z = F z`.  Carrying the witness
+  is what makes the closure properties immediate (sums, products, scalars of differentiable
+  functions are differentiable) and avoids defining differentiability on a subtype at all;
+- `mem_holoAlgebra_iff`;
+- `cauchyCoord_mem_holoAlgebra` — the generator lies in it, the witness being `w ↦ (w+a)⁻¹`, whose
+  denominator is nonvanishing on the half-plane.
+
+Every object and every theorem for `OneGeneratorRungeDense` on the half-plane is now in the tree:
+
+```text
+rightHalfPlane, cauchyCoord, holoAlgebra          the objects
+exists_partialSum_cauchyCoordinate_approx         the approximation
+mem_topologicalClosure_of_forall_isCompact_approx approximation ⟹ closure
+isSigmaCompact_rightHalfPlane                     the instance the criterion needs
+cauchyCoord_mem_holoAlgebra                       the generator is in the algebra
+```
+
+The one step left is to run the criterion inside `holoAlgebra` rather than inside `C(↥H, ℂ)` — the
+subspace-closure identification — since the statement is false in the larger algebra.
+
+**The final step, and the API lemma it turns on.**  What is left is to show the approximant lies in
+`Algebra.adjoin ℂ {cauchyCoord a ha}`.  The approximant is
+`fun z => (cauchyPowerSeries G 0 R).partialSum n ((z+a)⁻¹ − c)`, and the fact that converts it into
+a manifest polynomial in the coordinate is
+
+```text
+FormalMultilinearSeries.apply_eq_pow_smul_coeff :  p n (fun _ => y) = y ^ n • p.coeff n
+```
+
+(used in `Mathlib/Analysis/Analytic/Basic.lean:1124`; it is *not* reachable from
+`Mathlib.Analysis.Analytic.Basic` alone, which is why a naive `#check` fails).  With it,
+`partialSum n y = ∑_{k<n} y^k • c_k`, so the approximant is a polynomial in `cauchyCoord a ha` minus
+a constant, hence in the adjoin, and
+
+```text
+mem_topologicalClosure_of_forall_isCompact_approx
+```
+
+then places every holomorphic `f` in the closure of that adjoin.
+
+Note the statement to prove is *containment*, not equality:
+
+```text
+f ∈ holoAlgebra → f ∈ (Algebra.adjoin ℂ {cauchyCoord a ha}).topologicalClosure
+```
+
+inside `C(↥H, ℂ)`.  That is true and is the usable form; the closure is **not** all of `C(↥H, ℂ)`,
+as the contour functional shows.  Stating it as containment avoids the subtype-ambient friction of
+`OneGeneratorRungeDense` entirely while giving its consumers exactly what they need.
+
+### Runge on the half-plane is complete
+
+`HTGeometry/HalfPlaneRungeClosure.lean`,
+**`holo_mem_topologicalClosure_adjoin_cauchyCoord`**, unconditional and axiom-clean:
+
+> every `f ∈ holoAlgebra` lies in `(Algebra.adjoin ℂ {cauchyCoord a ha}).topologicalClosure`
+> inside `C(↥H, ℂ)`.
+
+That is Runge approximation on the right half-plane by one Cauchy coordinate, as a theorem.  mathlib
+has no Runge in any form; the corpus previously carried it only as the `Prop` interface
+`OneGeneratorRungeDense`.
+
+The eleven modules of the chain, in dependency order:
+
+```text
+CauchyKernelPolynomialApprox     pole-pushing to infinity
+DiscPolynomialDensity            approximation on a disc, and its transport
+CauchyCoordinateHalfPlane        half-plane ↔ disc, both directions; compactness
+HalfPlaneSigmaCompact            the σ-compactness instance Lean will not infer
+RightHalfPlaneSpace              the carrier and the coordinate as a ContinuousMap
+HolomorphicSubalgebra            holomorphic functions as a Subalgebra, witness-carried
+HalfPlaneRungeOneAtom            the approximation theorem
+CompactOpenClosureCriterion      approximation ⟹ compact-open closure membership
+HalfPlaneRungeClosure            the containment
+```
+
+Three findings from the build, each of which changed the route:
+
+1. **A disc has no Runge content.**  The Cauchy power series already gives polynomial
+   approximation, so the whole theorem for a half-plane is the Möbius change of coordinate plus
+   transport.
+2. **The statement must be containment, not equality.**  On all of `C(↥H, ℂ)` it is false: the
+   contour functional kills every power of the coordinate.  This is the same counterexample that
+   ruled out a Stone–Weierstrass route earlier in the chain.
+3. **Carrying the holomorphy witness** (`∃ F, DifferentiableOn ℂ F H ∧ f = F ∘ val`) avoids defining
+   differentiability on a subtype entirely, and makes the subalgebra axioms immediate.
+
+### The consumer form: a functional killing the powers kills every holomorphic function
+
+`HTGeometry/CauchyCoordAnnihilator.lean`, **`eq_zero_of_forall_pow_cauchyCoord`**, unconditional and
+axiom-clean:
+
+> a continuous `L : C(↥H, ℂ) →L[ℂ] ℂ` with `L (rⁿ) = 0` for every `n` satisfies `L f = 0` for every
+> `f ∈ holoAlgebra`, where `r` is the Cauchy coordinate.
+
+This is the density step in the form the dual-annihilator arguments consume, and it settles the
+question raised earlier in this ledger — that `L (sᵐ) = 0` for all `m` does *not* give `L = 0` on
+`C(K, ℂ)`.  It does give it on the holomorphic part, and that is exactly what the carrier-elimination
+conclusion needs.
+
+Two points the proof makes precise:
+
+- **linearity suffices**, multiplicativity is not needed: every element of `Algebra.adjoin ℂ {r}` is
+  `Polynomial.aeval r p`, i.e. a finite linear combination of powers, so `L` kills the whole
+  generated algebra from the hypothesis on powers alone;
+- the passage from the algebra to its closure is just that `ker L` is closed, via
+  `closure_minimal`; the Runge containment then places every holomorphic function inside.
+
+With this the density side of `weighted-euler-tangent-global-graph-decoupling` is complete in the
+abstract: pair criterion, `ℓ¹` coefficient annihilator, closed-span converter, affine step, and now
+the flux-side annihilator.
