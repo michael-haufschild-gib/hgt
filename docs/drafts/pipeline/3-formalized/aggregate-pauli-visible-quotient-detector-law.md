@@ -1,9 +1,12 @@
 # Aggregate Pauli visible-quotient detector law
 
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [BRIDGE] [NEW MECHANISM; PRIORITY UNCHECKED]`
+- **Stage:** 3-formalized
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [BRIDGE] [NEW MECHANISM; PRIORITY UNCHECKED]`
 - **Parent:** `visible-kernel-recovery-hall-law.md`
-- **Lean target:** `HTGeometry/TwoReplicaPauliVisibleQuotientDetector.lean`
+- **Lean certificate:** `aggregate-pauli-visible-quotient-detector-law-formalized.md`
+- **Lean:** `HTGeometry/TwoReplicaPauliVisibleQuotientDetector.lean` (abstract layer),
+  `HTGeometry/CanonicalTwoReplicaObstruction.lean` and
+  `HTGeometry/PauliVisibleQuotientDetectorCanonical.lean` (concrete canonical layer)
 
 ## Exact statement
 
@@ -75,6 +78,41 @@ For the canonical greatest two-replica Hall obstruction `U_*`, put
 Product-Clifford covariance makes `U_*` paired-Pauli invariant, while the
 strict half-turn theorem proves `ker T_V` paired-Pauli invariant. Hence
 `U_W` satisfies the invariant-subspace premise of `(2)` unconditionally.
+
+## Formal status
+
+Closed, unconditionally.
+
+**Abstract layer.**  `(1)` is `finiteTwoReplicaPauliVisibleQuotientDetector` — the quotient map
+composed with the aggregate of every cutoff collective commutator, restricted to the source.  `(2)`
+is `finiteTwoReplicaPauliVisibleQuotientDetector_mem_ker_iff`, for an arbitrary zero-character
+source and an arbitrary paired-Pauli invariant target.  The range claims are
+`finiteTwoReplicaPauliVisibleRangeInclusion_injective` (the subtype map, so injectivity is
+`Subtype.val_injective` and nothing else is needed) and
+`finiteTwoReplicaPauliVisibleRangeInclusion_range_le`.  All three hold for every `Uₛ` and `W`, so
+they are strictly stronger than the canonical instance and need no restatement.
+
+**Concrete canonical layer.**  This is what was missing.  The layer's two premises were previously
+carried as hypotheses because nothing named the card's `U_*`.  Supermodularity already proved the
+greatest defect maximizer exists *and* is unique, so it is a function of the family:
+`HTGeometry/CanonicalTwoReplicaObstruction.lean` names it
+`canonicalTwoReplicaQLocalObstruction` and records that it is greatest, which discharges the
+premise.
+
+`HTGeometry/PauliVisibleQuotientDetectorCanonical.lean` then names both sides of the card's
+concrete layer —
+
+- `canonicalTwoReplicaHiddenLayer` = `U_* ⊓ ker T_V`, proved paired-Pauli invariant with no
+  hypothesis (`canonicalTwoReplicaHiddenLayer_pairedPauli_invariant`);
+- `canonicalTwoReplicaVisibleSource` = `U_* ⊓ range (swap-invariant embedding)`, proved to have
+  exact zero paired-Pauli character (`canonicalTwoReplicaVisibleSource_le_zeroCharacter`) —
+
+and states `(2)` there:
+
+    finiteTwoReplicaPauliVisibleQuotientDetector_canonical_mem_ker_iff
+
+No hypothesis, on any finite register, for every `q`.  Umbrella build passes; the axiom audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Hostile audit
 
