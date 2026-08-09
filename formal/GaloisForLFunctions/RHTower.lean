@@ -5265,6 +5265,7 @@ import GaloisForLFunctions.RHTower.XiCompactPrimitive
 import GaloisForLFunctions.RHTower.ProlateProfileTransferIntegral
 import GaloisForLFunctions.RHTower.ProlateEnvelopeIntegral
 import GaloisForLFunctions.RHTower.ProlateChannelBranch
+import GaloisForLFunctions.RHTower.ProlateCommutationKernel
 import GaloisForLFunctions.RHTower.ProlateLiouvilleOscillator
 import GaloisForLFunctions.RHTower.ProlateChannelSum
 import GaloisForLFunctions.RHTower.ProlateTwoBranch
@@ -6429,3 +6430,4 @@ import GaloisForLFunctions.RHTower.SamplingDeterminant
 import GaloisForLFunctions.RHTower.BorderDeterminantVanishing
 import GaloisForLFunctions.RHTower.MuentzZetaRelationImpossible
 import GaloisForLFunctions.RHTower.FiniteFamilyObstruction
+import GaloisForLFunctions.RHTower.DilateFamilyObstruction
