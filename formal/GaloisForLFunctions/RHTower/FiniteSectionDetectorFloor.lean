@@ -125,6 +125,72 @@ theorem bdDist_pos_of_detectorCombination {N M : ℕ} (θ : Fin N → ℝ)
     · exact hd
   · rwa [mul_comm] at hle
 
+/-! ## Making the floor elementary -/
+
+/-- The norm of a detector at a point of the strip. -/
+theorem norm_bdDetector_of_re {ρ : ℂ} (hρ : 1 / 2 < ρ.re) :
+    ‖bdDetector (one_sub_re_lt hρ)‖ = 1 / Real.sqrt (2 * ρ.re - 1) := by
+  have h := norm_sq_bdDetector (one_sub_re_lt hρ)
+  rw [Complex.sub_re, Complex.one_re] at h
+  have h2 : ‖bdDetector (one_sub_re_lt hρ)‖ ^ 2 = 1 / (2 * ρ.re - 1) := by
+    rw [h]
+    ring_nf
+  have hnn : 0 ≤ ‖bdDetector (one_sub_re_lt hρ)‖ := norm_nonneg _
+  calc ‖bdDetector (one_sub_re_lt hρ)‖
+      = Real.sqrt (‖bdDetector (one_sub_re_lt hρ)‖ ^ 2) := (Real.sqrt_sq hnn).symm
+    _ = Real.sqrt (1 / (2 * ρ.re - 1)) := by rw [h2]
+    _ = 1 / Real.sqrt (2 * ρ.re - 1) := by
+        rw [one_div, Real.sqrt_inv, one_div]
+
+/-- **The triangle bound.**  The combination is measured without any Gram computation. -/
+theorem norm_detectorCombination_le {M : ℕ} (ρ : Fin M → ℂ) (hρ : ∀ j, 1 / 2 < (ρ j).re)
+    (a : Fin M → ℂ) :
+    ‖detectorCombination ρ hρ a‖ ≤ ∑ j, ‖a j‖ / Real.sqrt (2 * (ρ j).re - 1) := by
+  refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun j _ => ?_)
+  rw [norm_smul, norm_bdDetector_of_re (hρ j), mul_one_div]
+
+/-- The squared norm of a detector combination is the Cauchy-kernel quadratic form at the centered
+points. -/
+theorem norm_sq_detectorCombination {M : ℕ} (ρ : Fin M → ℂ) (hρ : ∀ j, 1 / 2 < (ρ j).re)
+    (a : Fin M → ℂ) :
+    ‖detectorCombination ρ hρ a‖ ^ 2
+      = (∑ j, ∑ k, (starRingEnd ℂ) (a j) * a k *
+          (1 / ((ρ j - 1 / 2) + (starRingEnd ℂ) (ρ k - 1 / 2)))).re := by
+  rw [← inner_detectorCombination_self ρ hρ a, inner_self_eq_norm_sq_to_K]
+  simp [← Complex.ofReal_pow]
+
+/-- **The floor in elementary form.**  With the triangle bound in the denominator the floor needs only the
+coefficients and the real parts of the sample points. -/
+theorem bdDist_ge_triangle_of_detectorCombination {N M : ℕ} (θ : Fin N → ℝ)
+    (hθ : ∀ i, 0 < θ i ∧ θ i ≤ 1) (ρ : Fin M → ℂ) (hρ : ∀ j, 1 / 2 < (ρ j).re)
+    (hρ1 : ∀ j, (ρ j).re < 1) (a : Fin M → ℂ)
+    (hann : ∀ i, ∑ j, (starRingEnd ℂ) (a j) *
+      (-(((θ i : ℝ) : ℂ) ^ ρ j - ((θ i : ℝ) : ℂ)) * (riemannZeta (ρ j) / ρ j)) = 0)
+    (hsep : ∑ j, (starRingEnd ℂ) (a j) * (1 / ρ j) ≠ 0) :
+    ‖∑ j, (starRingEnd ℂ) (a j) * (1 / ρ j)‖ / (∑ j, ‖a j‖ / Real.sqrt (2 * (ρ j).re - 1))
+      ≤ bdDist θ := by
+  have hle := bdDist_ge_of_detectorCombination θ hθ ρ hρ hρ1 a hann
+  have htri := norm_detectorCombination_le ρ hρ a
+  have hnonneg : ∀ j ∈ Finset.univ, 0 ≤ ‖a j‖ / Real.sqrt (2 * (ρ j).re - 1) := by
+    intro j _
+    positivity
+  -- some coefficient is nonzero, so the triangle sum is positive
+  have hex : ∃ j, a j ≠ 0 := by
+    by_contra hcon
+    push Not at hcon
+    refine hsep ?_
+    refine Finset.sum_eq_zero fun j _ => ?_
+    rw [hcon j, map_zero, zero_mul]
+  obtain ⟨j₀, hj₀⟩ := hex
+  have hspos : 0 < ∑ j, ‖a j‖ / Real.sqrt (2 * (ρ j).re - 1) := by
+    refine lt_of_lt_of_le ?_ (Finset.single_le_sum hnonneg (Finset.mem_univ j₀))
+    have hsq : 0 < Real.sqrt (2 * (ρ j₀).re - 1) := Real.sqrt_pos.mpr (by linarith [hρ j₀])
+    exact div_pos (norm_pos_iff.mpr hj₀) hsq
+  rw [div_le_iff₀ hspos]
+  refine le_trans hle ?_
+  rw [mul_comm (bdDist θ)]
+  exact mul_le_mul_of_nonneg_right htri (bdDist_nonneg θ)
+
 /-! ## Annihilating combinations always exist -/
 
 /-- More unknowns than equations: a rectangular homogeneous system has a nonzero solution. -/

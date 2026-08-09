@@ -22,6 +22,11 @@ card carries that out and identifies what the resulting floor depends on.
 * `norm_inner_le_norm_mul_bdDist` — the duality bound in Báez-Duarte form;
 * **`bdDist_ge_of_detectorCombination`, `bdDist_pos_of_detectorCombination`** — an annihilating combination
   with nonvanishing target pairing gives `‖∑ⱼ conj(aⱼ)/ρⱼ‖/‖w‖ ≤ d(θ)` and `0 < d(θ)`;
+* `norm_bdDetector_of_re` — `‖bdDetector (1 − ρ)‖ = 1/√(2 Re ρ − 1)`; `norm_detectorCombination_le` — the
+  triangle bound `∑ⱼ ‖aⱼ‖/√(2 Re ρⱼ − 1)`; `norm_sq_detectorCombination` — the exact squared norm as the
+  real part of the Cauchy-kernel form; and **`bdDist_ge_triangle_of_detectorCombination`**, the floor with
+  the triangle bound in the denominator, so that applying it needs only the coefficients and the real parts
+  of the sample points — no Gram computation;
 * `exists_ne_zero_mulVec_eq_zero`, `detectorCombination_ne_zero`,
   **`exists_ne_zero_annihilating_detectorCombination`** — with `M > N` sample points a nonzero annihilating
   coefficient vector always exists (rank), and at distinct points it gives a nonzero combination
@@ -46,7 +51,7 @@ card carries that out and identifies what the resulting floor depends on.
 * `bdDist_pos_of_zeta_eq_zero_at_sample` — the classical zero-based obstruction as the degenerate case: if
   `ζ(ρⱼ₀) = 0` the interpolation equation reads `0 = 1`, so the floor alternative holds.
 
-All 13 declarations are `#print axioms`-clean.
+All 17 declarations are `#print axioms`-clean.
 
 ## Why it matters
 
@@ -71,5 +76,8 @@ is infinite. Away from zeros the obstruction is quantitative rather than absolut
 The dichotomy does not decide which alternative holds for any particular data. Producing an unconditional
 decaying lower bound (the classical `1/√(log N)` target) requires choosing sample points and bounding the
 Cauchy-kernel norm `‖detectorCombination ρ hρ a‖` against the target pairing — i.e. a quantitative
-Müntz-inversion estimate. `inner_detectorCombination_self` supplies the norm in closed form, so that is now
-a computation with explicit constants rather than a structural gap.
+Müntz-inversion estimate. `inner_detectorCombination_self` supplies the norm in closed form and
+`norm_detectorCombination_le` a coefficient-only upper bound for it, so that is now a computation with
+explicit constants rather than a structural gap. The remaining choice is arithmetic: which sample points and
+which kernel coefficients make `‖∑ⱼ conj(aⱼ)/ρⱼ‖` large against `∑ⱼ ‖aⱼ‖/√(2 Re ρⱼ − 1)` while the
+annihilation equations hold.
