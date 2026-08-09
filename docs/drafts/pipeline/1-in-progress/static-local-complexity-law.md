@@ -4761,7 +4761,7 @@ receive a new title and an independent significance audit.
   exactly `4I` there. First-site rotation is a permutation of all nonzero grades, so selected images
   from distinct grades cannot overlap. Thus every invariant subspace supported on nonzero Pauli
   characters satisfies Hall expansion using weight-one generators alone. Exact statement and proof
-  are in `../2-fully-proven/pauli-character-first-defect-selector-law.md`. Hostile audit prevents an
+  are in `../3-formalized/pauli-character-first-defect-selector-law.md`. Hostile audit prevents an
   overclaim: the zero Pauli-character grade strictly contains the sitewise `SU(2)` singlet algebra,
   and its anisotropic sector plus edge-image overlap remain the exact two-replica gate.
 - 2026-08-04 -- Formalized arbitrary-register Pauli covariance and the first-defect selector core.

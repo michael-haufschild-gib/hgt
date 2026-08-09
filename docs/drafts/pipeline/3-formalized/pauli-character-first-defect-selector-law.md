@@ -1,11 +1,12 @@
 # Pauli-character first-defect selector law
 
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Lean certificate:** `pauli-character-first-defect-selector-law-formalized.md`
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, O4.12z25
-- **Formal status:** first-defect permutation, weight-one selector, arbitrary-string Pauli
-  conjugation, global paired covariance, canonical global-defect invariance, and exact finite
-  simultaneous parity resolution are formalized; graded output assembly remains
+- **Formal status:** every numbered claim is closed in Lean, unconditionally, with a clean
+  `#print axioms`.  The graded output assembly, the last outstanding item, is
+  `invariantSubspace_inf_nonzeroCharacter_finrank_le_shadow`.
 
 ## Exact statement
 
@@ -173,47 +174,39 @@ conjugation, paired commutation, covariance, span preservation, canonical invari
 parity decomposition, and its finrank identity contain only `propext`, `Classical.choice`, and
 `Quot.sound`.
 
-## Graded output assembly — what is left, exactly
+## Graded output assembly — closed
 
-The header item "graded output assembly remains" means one specific thing.  The Lean capstone
-`finiteTwoReplicaNonzeroPauliResolvedSubspace_finrank_le_shadow` proves `(4)` for
+The Lean capstone `finiteTwoReplicaNonzeroPauliResolvedSubspace_finrank_le_shadow` proves `(4)` for
 `⨆_{δ≠0}(U ⊓ X_δ)`.  The card states `(4)` for `U ∩ ⊕_{δ≠0} X_δ`.  These agree exactly when `U` is
-graded by the character decomposition — the card's step `(5)`, which the paper proof gets from
-character averaging.
+graded by the character decomposition — the card's step `(5)`.  That step, and with it the card's
+own form of `(4)`, is now proved:
+`GaloisForLFunctions.HTGeometry.invariantSubspace_inf_nonzeroCharacter_finrank_le_shadow`.
 
-Built for it so far, all unconditional and axiom-clean:
+Five modules, all unconditional and axiom-clean:
 
-- `HTGeometry/SimultaneousParityGrading.lean` —
-  `invariantSubspace_eq_iSup_simultaneousParitySubspace`: a subspace stable under a finite family of
-  commuting involutions is the sum of its simultaneous parity components, indexed by sign patterns.
-  The induction peels one involution at a time and records its sign, so no averaging projector and
-  no character orthogonality is used.  `inf_biSup_eq_biSup_inf_of_graded`: a subspace graded by an
-  independent family meets every partial sum of that family gradewise — the modular law plus
-  disjointness of complementary partial sums.  This second lemma is what converts the capstone's
-  statement into the card's.
-- `HTGeometry/FiniteQubitPauliComplexBasis.lean` — `span_range_finitePauliMatrix`: the literal Pauli
-  strings are a *complex* basis of the qubit matrix algebra.  The corpus had only the real Hermitian
-  basis, which cannot see the non-Hermitian directions the two-replica space contains.
-
-**Done since:** `HTGeometry/TwoReplicaPauliCharacterCompleteness.lean` —
-`finiteTwoReplicaPauliCharacterSubspace_iSup_eq_top`.  The phase-free Pauli labels carry a product
-(`pauliLabelMul`), the conjugation sign is multiplicative in it, a Kronecker product of Pauli
-strings lies in the character subspace of the product label, and Kronecker products of Pauli
-strings span the doubled matrix algebra.
-
-Remaining, and now the only step: for `U` stable under every paired-Pauli conjugation,
-`U = ⨆_P (U ⊓ X_P)`.  With that, `inf_biSup_eq_biSup_inf_of_graded` gives
-`U ⊓ (⨆_{P≠0} X_P) = finiteTwoReplicaNonzeroPauliResolvedSubspace U`, and the existing capstone is
-`(4)` verbatim.
-
-The obstacle is precise.  `invariantSubspace_eq_iSup_simultaneousParitySubspace` grades `U` by *sign
-patterns*, not by Pauli words, and a pattern realized by no Pauli word must be shown to carry no
-eigenspace.  Independence and completeness of the character family make the whole space an internal
-direct sum (`DirectSum.IsInternal`), and then the eigenvalue argument closes it: for `x` in the
-pattern-`s` eigenspace, every character component of `x` satisfies `χ_P(Q) π_P x = s_Q π_P x`, so a
-nonzero component forces `χ_P = s`.  That is the last piece — componentwise uniqueness in an
-internal direct sum.
-
+- `HTGeometry/SimultaneousParityGrading.lean` — a subspace stable under a finite family of commuting
+  involutions is the sum of its simultaneous parity components, indexed by sign patterns.  The
+  induction peels one involution at a time and records its sign, so no averaging projector and no
+  character orthogonality is used, unlike the paper proof.  Also
+  `inf_biSup_eq_biSup_inf_of_graded`: a subspace graded by an independent family meets every partial
+  sum gradewise, by the modular law and disjointness of complementary partial sums.
+- `HTGeometry/FiniteQubitPauliComplexBasis.lean` — the Pauli strings are a *complex* basis of the
+  qubit matrix algebra.  The corpus had only the real Hermitian basis, which cannot see the
+  non-Hermitian directions the two-replica space contains.
+- `HTGeometry/TwoReplicaPauliCharacterCompleteness.lean` — the character subspaces exhaust the
+  two-replica space.  The phase-free labels carry a product, the conjugation sign is multiplicative
+  in it, so a Kronecker product of Pauli strings lies in the character subspace of the product
+  label; and Kronecker products of Pauli strings span, since a standard basis matrix on a product
+  index is a Kronecker product of standard basis matrices.
+- `HTGeometry/JointEigenspaceExhaustion.lean` — if an independent family of subspaces exhausts the
+  module and each member is a simultaneous eigenspace, an unrealized scalar pattern has no joint
+  eigenvector.  A finite induction along partial sums; the operator separating the pattern from the
+  leading component's character forces that component down, and independence deletes it.  No
+  projector and no direct-sum machinery.
+- `HTGeometry/PauliCharacterGradedAssembly.lean` — the assembly.  Character subspaces are joint
+  eigenspaces, parity subspaces are joint eigenspaces at `±1` patterns, unrealized patterns vanish,
+  hence `U = ⨆_P (U ⊓ X_P)` for invariant `U`, hence
+  `U ⊓ (⨆_{P≠0} X_P) = finiteTwoReplicaNonzeroPauliResolvedSubspace U`, hence `(4)` verbatim.
 
 ## Formal completion of nonzero channel
 
