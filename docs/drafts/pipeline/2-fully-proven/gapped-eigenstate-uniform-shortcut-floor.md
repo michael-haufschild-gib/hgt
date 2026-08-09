@@ -254,17 +254,17 @@ exponential of the eigenvalue, proved by evaluating the series term by term — 
 `neg_I_smul_mem_skewAdjoint` — a real multiple of `-i` times a self-adjoint operator is
 skew-adjoint.
 
-**Blocker, recorded.**  The last step of that specialization, `exp(-itH)` is unitary, is *not*
-formalized, and the obstruction is a missing instance rather than mathematics.  Mathlib's
-`NormedSpace.exp_mem_unitary_of_mem_skewAdjoint` and `NormedSpace.exp_add_of_commute` both require
-`NormedAlgebra ℚ 𝔸`, and that instance is not derivable for `E →L[ℂ] E` — not even for
-`EuclideanSpace ℂ ι` with `ι` finite, where `NormedAlgebra ℚ ℂ` and `NormedAlgebra ℝ (E →L[ℂ] E)`
-both exist but do not compose.  Supplying it means constructing `Algebra ℚ (E →L[ℂ] E)` through
-`ℚ → ℂ → E →L[ℂ] E` and checking it does not conflict with any existing `SMul ℚ` structure.  That
-is a mathlib-side chore, not a gap in the card.
+The unitarity of `exp(-itH)` needed a mathlib instance that does not exist:
+`NormedSpace.exp_mem_unitary_of_mem_skewAdjoint` requires `NormedAlgebra ℚ 𝔸`, and that is not
+derivable for `E →L[ℂ] E`.  It is supplied here rather than worked around.  The operator algebra of
+a complex normed space carries no rational structure at all by default — not even a `SMul ℚ` — so
+there is no diamond to avoid, and the rational algebra can be defined outright through the complex
+scalars, with the norm inequality inherited from the complex one.  The instances are scoped, so
+they are opted into rather than imposed on the rest of the corpus.
 
-None of this weakens `(3)`: it is proved for an arbitrary linear isometry with an invariant line,
-which already covers the propagator once the isometry instance is available.
+With that, `selfAdjointPropagator` is the propagator as a genuine linear isometry, and
+`selfAdjointPropagator_apply_eigen` says it fixes every eigenline of its generator.  Feeding those
+two into `(3)` gives the card's boxed statement at `exp(-itH)` itself.
 
 Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; `(11)` is a Gaussian
 product-box estimate; `(12)` is the asymptotic comparison.
