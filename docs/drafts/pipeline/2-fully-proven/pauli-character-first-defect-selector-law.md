@@ -173,6 +173,36 @@ conjugation, paired commutation, covariance, span preservation, canonical invari
 parity decomposition, and its finrank identity contain only `propext`, `Classical.choice`, and
 `Quot.sound`.
 
+## Graded output assembly — what is left, exactly
+
+The header item "graded output assembly remains" means one specific thing.  The Lean capstone
+`finiteTwoReplicaNonzeroPauliResolvedSubspace_finrank_le_shadow` proves `(4)` for
+`⨆_{δ≠0}(U ⊓ X_δ)`.  The card states `(4)` for `U ∩ ⊕_{δ≠0} X_δ`.  These agree exactly when `U` is
+graded by the character decomposition — the card's step `(5)`, which the paper proof gets from
+character averaging.
+
+Built for it so far, all unconditional and axiom-clean:
+
+- `HTGeometry/SimultaneousParityGrading.lean` —
+  `invariantSubspace_eq_iSup_simultaneousParitySubspace`: a subspace stable under a finite family of
+  commuting involutions is the sum of its simultaneous parity components, indexed by sign patterns.
+  The induction peels one involution at a time and records its sign, so no averaging projector and
+  no character orthogonality is used.  `inf_biSup_eq_biSup_inf_of_graded`: a subspace graded by an
+  independent family meets every partial sum of that family gradewise — the modular law plus
+  disjointness of complementary partial sums.  This second lemma is what converts the capstone's
+  statement into the card's.
+- `HTGeometry/FiniteQubitPauliComplexBasis.lean` — `span_range_finitePauliMatrix`: the literal Pauli
+  strings are a *complex* basis of the qubit matrix algebra.  The corpus had only the real Hermitian
+  basis, which cannot see the non-Hermitian directions the two-replica space contains.
+
+Remaining: `⨆_P finiteTwoReplicaPauliCharacterSubspace P = ⊤`.  Without it the sign-pattern grading
+does not collapse onto the Pauli-word grading, because a pattern realized by no Pauli word could
+carry a nonzero eigenspace.  The route is: the Kronecker products of Pauli strings span the
+two-replica matrix algebra (`Submodule.map₂_span_span`, with every standard basis matrix of a
+product index a Kronecker product of standard basis matrices), and `P₁ ⊗ P₂` sits in the character
+subspace of the label product `P₁ ⊙ P₂`, since the conjugation sign is multiplicative in the label.
+The label product on `Option (Fin 3)` and that multiplicativity are the only new definitions needed.
+
 ## Formal completion of nonzero channel
 
 `PauliCharacterFirstDefectCovariance.lean` proves distinct global Pauli words have distinct
