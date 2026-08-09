@@ -6390,3 +6390,4 @@ import GaloisForLFunctions.RHTower.ArithmeticEvaluationObstruction
 import GaloisForLFunctions.RHTower.MoebiusApproximantResidual
 import GaloisForLFunctions.RHTower.TruncatedMoebiusResidual
 import GaloisForLFunctions.RHTower.MoebiusResidualTailForm
+import GaloisForLFunctions.RHTower.ModularCoefficientDesign

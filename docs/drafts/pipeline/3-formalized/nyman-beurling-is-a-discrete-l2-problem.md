@@ -131,3 +131,22 @@ the right object if one wants to see the residual pointwise in `k` rather than s
 The classical tension is now visible in one line: enlarging `N` shrinks `M₁(N)` (the prime number theorem) but
 the tail sum starts at `N`, and the trivial bound `|∑_{N<d≤n} μ(d)⌊n/d⌋| ≤ n log(n/N)` is far too lossy.
 Balancing the two is exactly what Vasyunin-type damping of the coefficients is for. Nothing is estimated here.
+
+## Addendum 5 (same day): the design problem, and no exact solutions
+
+`RHTower/ModularCoefficientDesign.lean` puts the previous residual identities under one law and draws a
+consequence.
+
+* **`residual_eq_of_coeff`** — for *any* coefficients `c` on `[1,N]`,
+  `1 − ∑_{d ≤ N} c_d·g_d(n) = 1 + D_c(n) − n·C₁(c)` with `D_c(n) = ∑ c_d⌊n/d⌋`, `C₁(c) = ∑ c_d/d`.
+  So the design problem is explicit: make `D_c(n)` close to `−1` uniformly while keeping `C₁(c)` small. The
+  Möbius choice `c = −μ` achieves `D_c(n) = −1` *exactly* on `[1,N]` (`sum_neg_moebius_floor_of_le`) at the
+  cost `C₁ = −M₁(N)`; Vasyunin-type damping is a different trade between the same two terms.
+* `sum_modSeq_eq_zero_of_forall_dvd` — a combination vanishes at any common multiple of its moduli;
+* **`no_exact_modular_representation`** — hence at `n₀ = N !` every combination vanishes while the target is
+  `1`: **no finitely supported `c` represents the target exactly.**
+
+That last is the pointwise form of the arithmetic obstruction of `ArithmeticEvaluationObstruction`, and it
+explains the shape of the criterion: exact representation is impossible for divisibility reasons, so a limit
+statement (`d_N → 0`) is the only form the conclusion could take. It costs nothing and it rules out looking
+for a closed-form finite solution.
