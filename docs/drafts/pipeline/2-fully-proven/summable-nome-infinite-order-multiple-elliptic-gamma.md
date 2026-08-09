@@ -688,6 +688,7 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | occupation moments are nome Euler products | `nomeMonomial_pow`, `summable_norm_pow_of_le`, `tsum_nomeMonomial_pow` |
 | occupation Euler product over ℂ | `hasSum_supported_nomeMonomial`, `hasProd_inv_one_sub_nome`, `tsum_nomeMonomial_eq_tprod` |
 | Lemma 2, (8) in summed-tail form | `norm_primaryLogTail_le`, `hasProd_cexp`, `infiniteMultipleEllipticGamma_eq_exp_neg_tsum` |
+| Lemma 2, (8) in moment form | `norm_logTail_term_le`, `summable_logTail_family`, `tsum_logTail_family_occupation`, `infiniteMultipleEllipticGamma_eq_exp_neg_moments` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
@@ -699,26 +700,13 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaFreeEnergy.lean`,
 `HTGeometry/PiGeometricSeries.lean`,
 `HTGeometry/OccupationEulerProduct.lean`,
-`HTGeometry/InfiniteMultipleEllipticGammaMoments.lean`.
+`HTGeometry/InfiniteMultipleEllipticGammaMoments.lean`,
+`HTGeometry/InfiniteMultipleEllipticGammaMomentForm.lean`.
 
 ### Open in Lean
 
-1. Lemma 2, (8) in moment form.  The summed-tail form is closed:
-   `𝒢_{A,g}(x) = exp(-∑_ν primaryLogTail g (x p^ν))` on `‖x‖ < 1`.  What remains is to expand each
-   tail and interchange, `∑_ν ∑_{m≥d} (x p^ν)^m/m = ∑_{m≥d} x^m M_{A,m}/m`, which needs the
-   occupation Euler product `∑_ν (p^ν)^m = ∏_a (1-p_a^m)^{-1}` in ℂ.  Its finite-index half is now
-   closed, and so is the moment evaluation: `tsum_nomeMonomial_pow` gives
-   `∑_ν (p^ν)^k = ∏_a (1-p_a^k)^{-1}` for every `k ≥ 1`.  What remains is only the interchange of
-   the `ν` and `m` sums in `∑_ν ∑_{m≥d} (x p^ν)^m/m`, by `Summable.tsum_comm` on `(ι →₀ ℕ) × ℕ`;
-   the majorant is `(‖x‖^d/(g+1)) · ‖p^ν‖^d · ‖x‖^m`, summable as a product family.
-
-   A first assembly of this last step was written and abandoned because it would not elaborate:
-   the whole argument as one theorem ran past forty minutes without finishing, while the three
-   moment lemmas split out of it compile in seconds.  Reassemble it as several small theorems —
-   in particular hoist the majorant estimate out as its own lemma and avoid `field_simp` on the
-   `Nat.cast (m + (g+1))` denominators.
-2. Lemma 7: the all-order counterterm jet (C3)/(20).
-3. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
+1. Lemma 7: the all-order counterterm jet (C3)/(20).
+2. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
 
 The uniform-in-`S` route worked as predicted: `norm_finiteNomeSection_sub_one_le` bounds every
@@ -727,11 +715,17 @@ centred factors of every section are dominated by one fixed summable family.  Le
 upgrading.  Two hypotheses turned out to be unnecessary and were dropped: `tendsto_forwardNomeFactor_one`
 and `tendsto_parityNormalizedSection` hold at every `x`, including `x = 0`.
 
-Lemmas 4 and 6 are now closed.  Local uniformity was never needed: the moving-coordinate limit
+Lemmas 2, 4 and 6 are now closed.  Local uniformity was never needed: the moving-coordinate limit
 follows from dominated convergence for infinite products, once the centred primary factor is bounded
 on an arbitrary disc rather than only the unit disc.  That radius-general bound
 (`exists_primaryFactor_sub_one_bound`) combines the vanishing order at the origin with plain
 compactness outside the unit disc, and holds at every radius with no hypothesis at all.
+
+The moment form of (8) needed one reassembly: written as a single theorem it would not elaborate,
+while the same argument split into a per-term majorant, a summability lemma, an occupation-sum
+lemma and a four-line assembly compiles in seconds.  Avoiding `field_simp` on the
+`Nat.cast (m + (g+1))` denominators — `div_le_div₀` and `ring` suffice — was the other half of the
+fix.
 
 Lemma 4 is closed including the obstruction.  The witness point for genuine non-convergence of
 the raw net is elementary rather than Picard-theoretic: `Re 𝒢` runs continuously from `1` at the
