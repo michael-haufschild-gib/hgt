@@ -695,6 +695,10 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 7, (C3)/(20) — the all-order counterterm jet | `sectionLogTail_tail_eq`, `tendsto_countertermJet` |
 | Lemma 7, the counterterm split | `sectionLogTail`, `summable_sectionLogTail`, `sectionLogTail_split` |
 | Lemma 7, (17) — the finite-section free energy | `finiteNomeSection_eq_restricted`, `finiteNomeSection_eq_exp_neg_moments` |
+| Lemma 9, (22) Schatten equivalence | `bosonicSchatten_iff_oneParticleSchatten` |
+| Lemma 9, (F1) Schatten trace | `bosonicSchattenTrace_eq` |
+| Lemma 9, (23) determinant identity | `regularizedFredholmDet_eq` |
+| Lemma 9, (24) trace expansion | `regularizedFredholmDet_eq_exp_neg_traceSeries` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
@@ -711,12 +715,21 @@ New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/FiniteNomeSectionRestriction.lean`,
 `HTGeometry/EulerFactorUniformBound.lean`,
 `HTGeometry/SectionLogTail.lean`,
-`HTGeometry/CountertermJetSeries.lean`.
+`HTGeometry/CountertermJetSeries.lean`,
+`HTGeometry/BosonicFockDiagonalModel.lean`.
 
 ### Open in Lean
 
-1. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
-   order-`d` regularized determinant identity (23)/(24).
+1. Lemma 9, the Hilbert-space realization.  All four statements (F1), (22), (23), (24) are closed
+   *in the diagonal model as the card scopes it*: `Γ_s(P)` is specified by its eigenvalues `p^ν` on
+   the occupation index, its Schatten `σ`-membership is the summability of `‖p^ν‖^σ`, its Schatten
+   trace is that sum, and `det_d(I - xΓ)` is the primary-factor product at the eigenvalues.
+
+   What is *not* done is realizing `Γ_s(P)` as an actual bounded operator on the occupation Hilbert
+   space `lp (fun _ : ι →₀ ℕ => ℂ) 2` and deriving those four formulas from the operator rather than
+   taking them as the model's definitions.  Until that is built, the module is honest but its
+   Schatten and determinant notions are definitions, not theorems about an operator.  Mathlib has
+   `lp` spaces but no Schatten class and no regularized Fredholm determinant, so both would be new.
 
 The uniform-in-`S` route worked as predicted: `norm_finiteNomeSection_sub_one_le` bounds every
 finite section by `exp(e^g ‖t‖^{g+1} · ∑_ν ‖p^ν‖^{g+1}) - 1`, with no dependence on `S`, because the
