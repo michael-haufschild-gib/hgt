@@ -9,8 +9,8 @@
   `(3)` closed at the physical propagator —
   `HTGeometry/GappedEigenlineTimeUniformFloor.lean`, `HTGeometry/SelfAdjointPropagator.lean`,
   `HTGeometry/GappedEigenlinePropagatorFloor.lean`.
-  The Pauli instantiation `(6)`--`(10)`, the Gaussian box bound `(11)`, and the
-  asymptotic falsification `(12)` remain
+  `(11)` closed — `HTGeometry/GaussianProductBoxFloor.lean`.
+  The Pauli instantiation `(6)`--`(10)` and the asymptotic falsification `(12)` remain
 - **Date:** 2026-08-05
 
 ## Exact abstract theorem
@@ -273,8 +273,20 @@ by the Rayleigh construction is real, so the phase it contributes has modulus on
 is genuinely fixed rather than merely invariant.  The time appears only inside the propagator; the
 right-hand side is `2√(2δ/Δ)` with no `t` in it.
 
-Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; `(11)` is a Gaussian
-product-box estimate; `(12)` is the asymptotic comparison.
+`(11)` is closed as `HTGeometry.gaussianBox_prob_ge` in
+`HTGeometry/GaussianProductBoxFloor.lean`: for any centre vector inside `[-1,1]` and any
+`0 < ε ≤ 1`, the product box of half-width `ε²/(16m)` has probability at least
+`(c₀ε²/(8m))^m` under `m` independent standard Gaussians, with `c₀ = (2π)^{-1/2}e^{-2}` the
+density floor on `[-2,2]`.
+
+Stated in `ℝ≥0∞` throughout, so no integrability side condition enters: the coordinate estimate is a
+lower Lebesgue integral of the density against the constant floor, which is the floor times the
+interval length by `setLIntegral_const`, and `Measure.pi_pi` turns the box into the product of
+coordinate probabilities.  The card's `w ≤ 1/16` is not needed — half-width at most one suffices,
+since the centres are within `[-1,1]` and the floor holds on `[-2,2]`.
+
+Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; `(12)` is the
+asymptotic comparison.
 
 ## Formal target
 
