@@ -10,7 +10,8 @@
   `HTGeometry/GappedEigenlineTimeUniformFloor.lean`, `HTGeometry/SelfAdjointPropagator.lean`,
   `HTGeometry/GappedEigenlinePropagatorFloor.lean`.
   `(11)` closed — `HTGeometry/GaussianProductBoxFloor.lean`.
-  The Pauli instantiation `(6)`--`(10)` and the asymptotic falsification `(12)` remain
+  `(12)` analytic core closed — `HTGeometry/PolyLogBeatenByOneMorePower.lean`.
+  The Pauli instantiation `(6)`--`(10)` and the binomial order bounds for `(12)` remain
 - **Date:** 2026-08-05
 
 ## Exact abstract theorem
@@ -285,8 +286,18 @@ interval length by `setLIntegral_const`, and `Measure.pi_pi` turns the box into 
 coordinate probabilities.  The card's `w ≤ 1/16` is not needed — half-width at most one suffices,
 since the centres are within `[-1,1]` and the floor holds on `[-2,2]`.
 
-Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; `(12)` is the
-asymptotic comparison.
+The analytic core of `(12)` is `HTGeometry.eventually_polyLog_lt_pow_succ` in
+`HTGeometry/PolyLogBeatenByOneMorePower.lean`: for every positive leading coefficient `a` and every
+constants `b, d`, eventually `b x^q log (d x^q) < a x^{q+1}`.  That is exactly the contest the card
+describes — a rarity exponent of order `n^q log n` against a ramp exponent of order `n^{q+1}` — with
+the constants left free, so no `c > 0` or `η < 1` can rescue the conjecture.
+
+What `(12)` still needs is the identification of the two exponents with those orders: an upper bound
+`m_{n,q} = O_q(n^q)` and a lower bound `v_{n,q} = Ω_q(n^q)`, both elementary binomial estimates on
+`nonidentityPauliWeightCount` and `productInputObserverRank`, which the corpus already defines.
+
+Remaining: `(6)`--`(10)` instantiate in the existing finite-qubit Pauli basis; the two binomial
+order bounds finish `(12)`.
 
 ## Formal target
 
