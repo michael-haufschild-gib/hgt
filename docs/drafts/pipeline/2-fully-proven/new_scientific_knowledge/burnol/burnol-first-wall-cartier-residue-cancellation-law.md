@@ -498,7 +498,8 @@ remains unverified.
 Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallResiduePolarization`,
 `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`,
 `RHTower/BurnolFirstWallZeroDividedSource`, `RHTower/BurnolFirstWallSourceDecay`,
-`RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass`.
+`RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass`,
+`RHTower/BurnolFirstWallCrossingCorrelation`, `RHTower/BurnolReflectedRawSource`.
 
 | Paper item | Lean declaration |
 |---|---|
@@ -521,6 +522,12 @@ Modules: `RHTower/BurnolDyadicCoboundaryContraction`, `RHTower/BurnolFirstWallRe
 | `(17)`, `(10)` forward | `burnolZeroDividedPotential`, `hasDerivWithinAt_burnolZeroDividedPotential`, `xiDivisor_integral_burnolZeroDividedSource`, `tendsto_burnolZeroDividedPotential`, `xiDivisor_integral_burnolZeroDividedSource_Ioi` |
 | integrability in `(10)` | `integrableOn_burnolZeroDividedSource`, `norm_burnolZeroDividedSource_le_const` |
 | `(11)` forward | `xiDivisor_integral_burnolZeroDividedSource_aperture`, `xiDivisor_integral_burnolZeroDividedSource_exterior` |
+| `(19)`, `(20)` | `burnolLogLift`, `burnolApertureLog`, `burnolCrossingWeight`, `burnolCrossingCorrelationW`, `burnolCrossingWeight_eq_neg_indicator`, `burnolCrossingCorrelationW_eq_window` |
+| `(21)` | `BurnolApertureHead`, `burnolCrossingCorrelationW_eq_of_head`, `xiDivisor_burnolCrossingCorrelationW_eq`, `integral_burnolExpShiftSubstitution` |
+| `(22)`, `(23)` forward | `tendsto_burnolCrossingWindow`, `tendsto_burnolCrossingResidue`, `xiDivisor_tendsto_burnolFirstWallResidue` |
+| `(29)` forward, pointwise | `xiDivisor_tendsto_burnolCrossingDepthProfile` |
+| `(15a)` source | `burnolReflectedRawSource`, `burnolReflectedRawSource_head`, `burnolReflectedRawSource_eq_harmonic`, `burnolHarmonicWindow`, `abs_burnolHarmonicWindow_sub_log_two_le`, `norm_burnolReflectedRawSource_le` |
+| `(15b)` | `integral_burnolReflectedRawSource_cpow`, `integrableOn_burnolReflectedRawSource_cpow` |
 
 `(28)` is proved directly from the exact Gamma moment of the depth-zero kernel, so it does not pass
 through the adjoint identity `(27)`.
@@ -529,9 +536,18 @@ The forward mass chain is closed unconditionally: `∫_0^∞ g_ρ = b_ρ/2` and
 `∫_{1/2}^∞ g_ρ = B_ρ`, the latter identifying the abstract exterior mass
 `burnolFirstWallExteriorMass` with the actual source integral.
 
-Still open in Lean: the reflected orientation `(15a)`--`(15c)` and the reflected halves of `(10)`
-and `(11)`, the sharpened tail `(12)`, the crossing correlation `(20)`--`(23)`, the deep-profile
-convergence `(29)`, the depth decay `(30)`--`(31)`, and Corollary 5.
+The forward chain is closed through the singular residue: `Res_{1/2}(G_ρ) = r_ρ` unconditionally,
+and the depth profile `q^{-n} W_{G_ρ}(nL+r) → r_ρ e^{-r/2}` holds pointwise in `r`.  The crossing
+theorems are stated for an arbitrary aperture-constant integrable source
+(`BurnolApertureHead`), so the reflected orientation only has to supply its head and exterior mass.
+
+The reflected raw source `f_0^vee` is now built with its head `-log 2`, its harmonic-window form,
+the elementary decay `|f_0^vee(t)| ≤ 8/t`, and its Mellin transform
+`ζ(w)(2^{1-w}-1)/(1-w)` on the strip.
+
+Still open in Lean: `(15c)` (the reflected divided shift), the reflected halves of `(10)` and
+`(11)`, the sharpened tail `(12)`, the reflected residue in `(23)`, the `L^1` domination behind
+`(29)`--`(31)`, and Corollary 5.
 
 ## Gates
 
@@ -555,3 +571,49 @@ convergence `(29)`, the depth decay `(30)`--`(31)`, and Corollary 5.
   and identified its oriented two-Gamma difference with the Route R current.
 - 2026-08-09 — first unconditional Lean layer built and umbrella-wired; see the Lean
   formalization table above for the exact declaration-to-equation map.
+
+## Lean route for the reflected orientation (worked out 2026-08-09, not yet built)
+
+The reflected source is corpus-owned as a co-Poisson right sum:
+
+`f_0^vee = burnolCoPoissonRightSum (coPoissonWindowIndicatorSeed 1 2)`,
+
+because `coPoissonReciprocalSeed (coPoissonSubWindowSeed (1/2) 1) = coPoissonWindowIndicatorSeed 1 2`.
+Its support hypothesis is `support ⊆ Icc b b⁻¹` with `b = 1/2`.
+
+1. **Head.**  For `|t| < 1` every term `k⁻¹ · 1_{[1,2]}(|t|/k)` vanishes, so
+   `f_0^vee(t) = -coPoissonCorrectionConstant = -log 2`
+   (`coPoissonCorrectionConstant_coPoissonWindowIndicatorSeed`).  This is elementary and does *not*
+   need the aperture lemma `burnolCoPoissonRightSum_eq_const`, whose hypothesis `|t| < b = 1/2` is
+   too weak at the endpoint.
+2. **Finite form.**  `coPoissonSum_eq_fixed_finset_sum` gives, for `t > 0`,
+   `f_0^vee(t) = ∑_{k ∈ Icc ⌈t/2⌉ ⌊t⌋} 1/k − log 2`.
+3. **Decay `O(1/t)`** — elementary, no Euler--Maclaurin.  By `log(1+1/k) ≤ 1/k ≤ log(k/(k−1))` and
+   telescoping, `log((⌊t⌋+1)/⌈t/2⌉) ≤ ∑ ≤ log(⌊t⌋/(⌈t/2⌉−1))`, hence `|f_0^vee(t)| ≤ 4/t` for
+   `t ≥ 4`.  This is exactly what makes `t ↦ f_0^vee(t) t^{-w}` integrable on `(0,∞)` for
+   `0 < Re w < 1`.
+4. **Mellin.**  `integral_Ioi_burnolCoPoisson_cpow` (corpus) then gives
+   `∫_0^∞ f_0^vee(t) t^{-w} dt = ζ(w) (2^{1-w} − 1)/(1−w)`.
+   At `w = 1 − ρ` this is `(2^ρ − 1) ζ(1−ρ)/ρ`, which vanishes at a `ξ`-zero.  This is `(15b)`.
+5. **Tail representation `(15c)`.**  With `ρ' = 1 − ρ` the reflected shift is the *negative* of the
+   forward construction applied to `f_0^vee` at `ρ'`:
+   `(C g_ρ)(t) = t^{ρ'−1} ∫_t^∞ f_0^vee(y) y^{−ρ'} dy`.
+   Every forward lemma (`burnolZeroDividedSource_eq_tail`, the head, the potential) transfers.
+6. **Head `b_ρ`.**  On `(0,1/2]`, `(C g_ρ)(t) = t^{-ρ} ∫_0^t y^{ρ-1}(−log 2) dy = −log 2/ρ = b_ρ`.
+7. **Total mass `(10)`.**  `∫_0^∞ C g_ρ = −(1/(1−ρ)) ∫_0^∞ f_0^vee`, and the improper mass of the
+   reflected source is `ζ(0) = −1/2`.  Elementary proof along `R = 2N`:
+   `∫_0^{2N} f_0^vee = 2N (H_{2N} − H_N − log 2)`, and
+   `H_{2N} − H_N − log 2 = −∫_0^1 x^{2N}/(1+x) dx` (from `∑_{k≤m}(−1)^{k+1}x^{k−1} =
+   (1−(−x)^m)/(1+x)` and `H_{2N} − H_N = ∑_{k≤2N}(−1)^{k+1}/k`), while one integration by parts
+   gives `m ∫_0^1 x^m/(1+x) dx = m/(2(m+1)) + O(1/m) → 1/2`.  Hence `∫_0^∞ C g_ρ = 1/(2(1−ρ)) =
+   a_ρ/2`.
+8. **Exterior mass `(11)`.**  `B_ρ^vee = ∫_0^∞ C g_ρ − b_ρ/2 = a_ρ/2 − b_ρ/2 = −B_ρ`.
+9. **Reflected residue `(23)`.**  Instantiate the already-built abstract theorems
+   `burnolCrossingCorrelationW_eq_of_head` and `tendsto_burnolCrossingResidue` with head `b_ρ` and
+   exterior mass `−B_ρ`; they give `Res_{1/2}(G_ρ^vee) = −b_ρ conj(−B_ρ) = b_ρ conj(B_ρ) = r_ρ^vee`.
+
+The two crossing theorems are already stated for an arbitrary aperture-constant integrable `g`
+(`BurnolApertureHead`), so step 9 is a plug-in once steps 1--8 exist.  Card
+`burnol-gamma-bockstein-first-wall-extraction-law` items `(13)`, `(15)`, `(16)`, `(22)` follow from
+the same two instantiations plus the depth profile
+`xiDivisor_tendsto_burnolCrossingDepthProfile`.

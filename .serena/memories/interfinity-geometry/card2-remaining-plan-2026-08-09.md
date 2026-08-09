@@ -1,45 +1,73 @@
-# Card 2 (spectral terminal-horizon model) — what is built and what is left
+# Cards 2 and 3 — what is built and what is left (updated)
 
-## Built and compiling (namespace `GaloisForLFunctions.HTGeometry.Interfinity`)
+All modules live in `formal/GaloisForLFunctions/HTGeometry/InterfinityGeometry/`, namespace
+`GaloisForLFunctions.HTGeometry.Interfinity`, wired into `HTGeometry/InterfinityGeometry.lean`.
+`lake build GaloisForLFunctions.HTGeometry.InterfinityGeometry` is green.
 
-* `SpectralHorizonCocycle.lean` — `laplaceCochain V s = exp(-(V s)) - 1`, `laplaceMul`,
-  `laplaceCochain_add` (cocycle), `abs_laplaceCochain_le`,
-  `integrableOn_laplaceCochain_sq` (item 1, needs `β > -2`),
-  `eq_one_of_isPrimitive`, `isCoboundary_iff` (Hilbert coboundary iff `β > 0`),
-  `observerLine`, `deathCut`, `stableRegion`, `mem_stableRegion_iff`,
-  `deathCut_add` (horizon width `= max 0 (-β/2)`), `deathCut_eq_iff`.
-* `SpectralFinitePart.lean` — `ChartFun` (continuous on `[0,1]`, bounded, linear modulus at 0),
-  `ChartFun.ofContDiff`, `ChartFun.transport`, `integrableOn_chart_mul_rpow`,
-  `integrableOn_chart_sub_mul_rpow`, `integrableOn_source_pairing`, `rpow_succ_split`.
-* `SpectralPrimitiveIdentity.lean` — `finitePart` (three branches), `sourcePairing`,
-  `finitePart_transport_sub` (**the primitive identity (6)**),
-  `finitePart_transport_of_pos`, `tendsto_transported_finitePart` (stability for `a > 0`).
-* `SpectralCutObstruction.lean` — `ChartFun.const`, `cutIntegral`, `cutIntegral_le`,
-  `tendsto_cutIntegral_atBot`, `finitePart_const_transport`,
-  `not_tendsto_finitePart_of_nonpos` (**no stable primitive for `a ≤ 0`**).
+## Card 2 — items 1, 2, 3, 4 COMPLETE.  Only item 5 (complex time) is left.
 
-Card 2 items 1, 2 and 3 are therefore complete.
+Built:
+* `SpectralHorizonCocycle.lean` — cocycle, `integrableOn_laplaceCochain_sq` (β > −2),
+  `isCoboundary_iff` (β > 0), `observerLine`, `deathCut`, `stableRegion`, `deathCut_add`.
+* `SpectralFinitePart.lean` — `ChartFun`, `ofContDiff`, `transport`, the three convergence lemmas.
+* `SpectralPrimitiveIdentity.lean` — `finitePart`, `finitePart_transport_sub` (identity (6)),
+  `tendsto_transported_finitePart` (stability for a > 0).
+* `SpectralCutObstruction.lean` — `cutIntegral`, `tendsto_cutIntegral_atBot`,
+  `not_tendsto_finitePart_of_nonpos` (no stable primitive for a ≤ 0).
+* `HadamardDivision.lean` — **built from scratch (missing in mathlib)**: `hadamardAvg`,
+  `hasDerivAt_hadamardAvg`, `contDiff_hadamardAvg`, `hadamard_eq` (Hadamard's lemma for C^∞ on ℝ),
+  `expDefectFactor`, `laplace_defect_factor` (`e^{-Vs} − 1 = s · E_V(s)`).
+* `SpectralFixedSubspace.lean` — `smoothTestSpace`, `smoothMul`, `eq_zero_of_fixed`,
+  `fixed_eq_smul_deltaZero` (**item 4a: fixed subspace = ℝ·δ₀**), `deltaZero_fixed`.
+* `SpectralGammaIntegral.lean` — `gammaDefect`, `integral_gammaDefect = Real.Gamma a`
+  for −1 < a < 0 (integration by parts, both boundary terms vanish).
+* `SpectralGammaScaling.lean` — `cutIntegral_scaling`, `tendsto_regularizedCut`,
+  `integral_expScaled` (`∫₀^∞ e^{-Vs}s^a = V^{-(a+1)}Γ(a+1)`).
+* `SpectralDeficientAsymptotics.lean` — `transportedFinitePart`, Hadamard split,
+  `tendsto_transportedFinitePart` (**item 4b: V^a·η_a(e^{-V·}h) → cΓ(a)h(0)**).
+* `SpectralLogarithmicHorizon.lean` — `cutIntegral_zero_split`,
+  `tendsto_cutIntegral_zero_div_log`, `tendsto_transportedFinitePart_log`
+  (**the a = 0 logarithmic contact law**).
 
-## Left
+### Card 2, item 5 (complex time) — the only gap
+Needs `∫₀^∞ e^{-wt} t^{s-1} dt = Γ(s) w^{-s}` for `Re w > 0`.  Cheapest route: both sides are
+analytic in `w` on the connected open right half-plane and agree on `w > 0` real, so the identity
+theorem gives it; analyticity of the integral in `w` needs differentiation under the integral
+(mathlib `hasFDerivAt_integral_of_dominated_loc_of_lip`, already used in
+`ParametricSmoothness.lean`).  Then (10) `R^a T_z η_a → cΓ(a)e^{-iaθ}δ₀` follows exactly as in the
+real case, and (11) `∂_θ arg = −a` is a one-line computation on `Γ(a)e^{-iaθ}`.
+(12) additionally needs `∫₀¹ (e^{-t}−1)/t dt + ∫₁^∞ e^{-t}/t dt = −γ` (Euler–Mascheroni).
 
-### item 4a — fixed subspace of the multiplication semigroup is `ℂ δ₀`
-The paper argument needs two facts that are hard in Lean:
-1. **smooth division**: `φ_V(s) = s/(e^{-Vs} − 1)` (value `−1/V` at `0`) is smooth and nowhere
-   zero on `[0,1]`;
-2. **Hadamard**: a smooth `h` with `h 0 = 0` is `s · r` with `r` smooth.
-Both are *false-free but nontrivial*.  Note the statement is **false for merely continuous test
-functions** (the ideal `(e^{-s}−1)·C⁰` is strictly smaller than `{g : g 0 = 0}`), so the test class
-must have the Hadamard property.  Cheapest honest route found so far: take the test class to be
-**real-analytic** germs on a neighbourhood of `[0,1]`, where both facts follow from power-series
-shifts and `AnalyticAt.div` (nonvanishing denominator).  Alternative: build Hadamard for `C^∞` via
-`r s = ∫₀¹ h' (t s) dt` plus differentiation under the integral (heavy).
+## Card 3 — items 2 (regions) and 3 (fixed faces) COMPLETE.
 
-### item 4b — deficient asymptotics (9)
-Needs `Γ(a) = ∫₀^∞ (e^{-t} − 1) t^{a-1} dt` for `−1 < a < 0` (integrate by parts from
-`Γ(a) = Γ(a+1)/a`), then `V^a T_V η_a → c Γ(a) δ₀`; the `a = 0` line needs
-`∫₀^V (e^{-t} − 1)/t dt = −(log V + γ) + o(1)`.
+Built:
+* `MultiTimeRegions.lean` — `multiObserverRegion`, `multiStableRegion`, product descriptions,
+  openness, convexity, coordinatewise horizon widths.
+* `ParametricSmoothness.lean` — **built from scratch (missing in mathlib)**: `paramAvg`,
+  `partialFderiv`, `hasFDerivAt_paramAvg` (differentiation under the integral sign),
+  `contDiff_paramAvg` (universe-fixed induction: `G : Type (max u v)` so `E →L G` stays in range).
+* `MultiTimeHadamard.lean` — `scaleCoord`, `coordRemainder`, `coord_hadamard`
+  (**Hadamard in one coordinate of several**).
+* `MultiTimeFixedFaces.lean` — `zeroAt`, `faceChart`, `multiTestSpace`, `multiMul`,
+  `multi_eq_zero_of_fixed`, `multi_eq_face` (**item 3: fixed subspace of the times in J is the
+  face restriction**), `multi_eq_smul_delta` (deepest stratum = ℝ·δ₀).
 
-### item 5 — complex time
-Sectorial `γ(a,z) → Γ(a)` uniformly on closed subsectors of `Re z > 0`, `R^a T_z η_a →
-c Γ(a) e^{-i a θ} δ₀`, phase slope `∂_θ arg = −a = 𝔡_β − ρ`, and the logarithmic contact law at
-`a = 0`.
+### Card 3, remaining
+* item 1: `b_V ∈ H_β` — the weighted `L²` norm factorizes over coordinates; needs the
+  product-measure integrability of a product function (`MeasureTheory.Measure.pi`,
+  `integral_fintype_prod_eq_prod` / `integrable_fintype_prod`).
+* item 2 (second half): the iterated finite-part coboundary and the characterization of
+  face-stable primitives as exactly `D_β` (tensor version of card 2 items 2 and the cut
+  obstruction).
+* item 4: the tensor finite part (6), sectorial asymptotics (7) — shares the complex-analysis
+  dependency with card 2 item 5 — and the conormal phase (8).
+
+## Lean traps hit (in addition to the earlier list)
+- `ContDiff.differentiable` now wants `n ≠ 0`, `continuous_deriv`/`continuous_fderiv` want `n ≠ 0`
+  or `1 ≤ n` depending on the lemma.
+- `contDiff_succ_iff_deriv/fderiv` carry an extra `(n = ⊤ → AnalyticOn …)` obligation, vacuous for
+  `n : ℕ` (`intro hcon; exact absurd hcon (by simp)`).
+- Recursive `ContDiff` inductions whose codomain changes (`G ↝ E →L[ℝ] G`) must fix the universe:
+  state `∀ {G : Type (max u v)} …` and use `induction n`.
+- `Continuous.prodMk_right x : Continuous fun t => (x, t)`; `prodMk_left` is the other order.
+- `Function.update_of_ne` (not `update_noteq`).

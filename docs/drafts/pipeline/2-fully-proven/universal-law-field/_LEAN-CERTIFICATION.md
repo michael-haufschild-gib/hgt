@@ -20,6 +20,8 @@ Dedicated Lean umbrella:
 | ULF-GCP-1 | Exact response-kernel persistence, Gamma Bockstein death set, critical survival, and lifetime | `HTGeometry.ConstitutiveGammaResponseLifetime` |
 | ULF-RBD-PREFIX-1 | Prefix observer stabilization, non-effective horizon, recurrent phase, positive erasure, singleton production, open action | `HTGeometry.ConstitutiveEffectivityHorizon` |
 | ULF-RBD-JET-1 | Exact DA/HT finite-jet double realization, mutual density, empty interiors, nonclosed strata, continuous-classifier no-go | `HTGeometry.ConstitutiveFiniteJetBoundary` |
+| ULF-REG-KONIG-1 | Locally finite realization tower has a global section; finite-local/global gap requires noncoherence, nonproperness, or extra admission | `HTGeometry.ConstitutiveRealizationKonig` |
+| ULF-REG-SEID-1 | Surjective erasure forces infinite dimension; fixed-corona Gamma-Bockstein death has no faithful finite-dimensional linear model | `HTGeometry.ConstitutiveSurjectiveErasure` |
 
 Formalized cards and declaration-level records live in
 `docs/drafts/pipeline/3-formalized/universal-law-field/`.

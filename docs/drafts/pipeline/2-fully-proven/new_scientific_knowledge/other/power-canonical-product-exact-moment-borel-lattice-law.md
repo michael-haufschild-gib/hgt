@@ -268,3 +268,149 @@ side condition beyond `|u| < 1` is needed.
 With `(3)` (`riemannZeta_neg_div_Gamma_eq`) and `(4)` both formalized, what remains for the card is
 the interchange of the two sums that turns them into the Lambert form `(5)`, its normal convergence
 and meromorphic continuation, and the residue calculus in ramified coordinates.
+
+### The sum interchange of `(5)` is formalized
+
+`formal/GaloisForLFunctions/RHTower/ZetaRealBound.lean`, unconditional and axiom-clean:
+
+- `summable_one_div_nat_add_one_rpow` — the shifted `p`-series converges above abscissa one;
+- **`norm_riemannZeta_le_tsum`** — for `1 < a ≤ Re s`, `‖ζ(s)‖` is bounded by the value of the
+  `a`-series, a constant independent of `s`.  This is what makes the zeta factors `ζ(1+sk)`
+  uniformly bounded in `k`;
+- **`summable_uncurry_geometric_zeta`** — the double family `(k,n) ↦ c_k/(n+1)^{e_k}` is summable
+  whenever `‖c_k‖ ≤ r^k` with `r < 1` and every `Re e_k ≥ a > 1`;
+- **`tsum_mul_riemannZeta_eq_tsum_comm`** — hence
+  `∑_k c_k ζ(e_k) = ∑_n ∑_k c_k/(n+1)^{e_k}`.
+
+That is exactly the card's step "expand `ζ(1+sk)` by its absolutely convergent Dirichlet series and
+interchange the two sums", in the generality the card uses it: the geometric smallness comes from
+`|ξ| < (2π)^s`, and the uniform bound on the zeta factors from `Re(1+sk) ≥ 1+s > 1`.
+
+With `(3)`, `(4)` and the interchange all formalized, the remaining analytic content of the card is
+the normal convergence and meromorphic continuation of the Lambert sum, and the residue calculus in
+ramified coordinates.
+
+### The pole law and the convergence estimate of `(5)` are formalized
+
+`formal/GaloisForLFunctions/RHTower/LambertQuadraticFactor.lean`, unconditional and axiom-clean:
+
+- **`lambertQuadratic_factor`** — `1 + 2u cos α + u² = (1 + u e^{iα})(1 + u e^{-iα})`;
+- **`lambertQuadratic_eq_zero_iff`** — hence the denominator vanishes exactly at `u = -e^{-iα}` and
+  `u = -e^{iα}`.  Substituting `u = u_n = ξ/(2πn)^s` turns those two points into the card's **two
+  power lattices** `(7)`: the poles are precisely the `ξ` with `ξ/(2πn)^s ∈ {-e^{iα}, -e^{-iα}}`;
+- **`norm_lambertQuadratic_ge`** — for `‖u‖ ≤ 1`, `‖1 + 2u cos α + u²‖ ≥ (1 - ‖u‖)²`.
+
+The factorization is the whole content of the pole law: both statements follow from it, and the
+lower bound is what makes the `n`-th term of `(5)` `O(n^{-1-s})` once `‖u_n‖` is bounded away from
+one, which happens for all but finitely many `n` on any compact `ξ`-set.
+
+### Normal convergence of `(5)` is formalized
+
+`formal/GaloisForLFunctions/RHTower/LambertSeriesConvergence.lean`, unconditional and axiom-clean:
+
+- **`norm_lambertTerm_le`** — if `‖w_n‖ ≤ C/(n+1)^b` and `‖w_n‖ ≤ 1/2`, then the `n`-th Lambert term
+  `(1/(n+1))·w_n/(1 + 2w_n cos α + w_n²)` has norm at most `4C/(n+1)^{1+b}`;
+- **`summable_lambertTerm`** — hence the series converges absolutely for `b > 0`.
+
+The `1/2` threshold is what the factorization supplies: `‖w‖ ≤ 1/2` gives
+`‖1 + 2w cos α + w²‖ ≥ (1-‖w‖)² ≥ 1/4`, so the denominator can be discarded at the cost of a factor
+four.  With `w_n = ξ/(2πn)^s` and `b = s` this is the card's statement that the `n`-th term of `(5)`
+is `O(n^{-1-s})` uniformly on compacta after finitely many terms are removed — and only the tail is
+needed, so the finitely many terms whose denominators carry the poles do not affect convergence.
+
+### `(4)` for a complex ratio
+
+The card applies `(4)` at `u = u_n = ξ/(2πn)^s` with `ξ` complex, so the real-variable form is not
+enough.  **`tsum_alternating_sine_geometric_complex`** (in `LambertQuadraticFactor.lean`) gives the
+same closed form for complex `u` with `‖u‖ < 1`:
+
+`∑_{k≥1} (-1)^{k+1} sin(kα) u^k = u sin α / (1 + 2u cos α + u²)`.
+
+The proof is the factorization again: the sum splits into two geometric series with ratios
+`-u e^{±iα}`, whose difference has numerator `u(e^{iα} - e^{-iα}) = 2i u sin α` over the quadratic
+`(1 + u e^{iα})(1 + u e^{-iα})`.  The same identity that located the poles evaluates the sum.
+
+### The scale identity that produces the Lambert variables
+
+**`rpow_scale_identity`** (in `LambertSeriesConvergence.lean`), unconditional and axiom-clean:
+
+`P^{s(k+1)} · (n+1)^{1+s(k+1)} = (n+1) · ((P(n+1))^s)^{k+1}`  for `P > 0`.
+
+With `P = 2π` this is the regrouping that converts the double sum of `(5)` into a Lambert series:
+the Dirichlet denominator `(n+1)^{1+sk}` split against the power `(2π)^{sk}` yields one factor
+`n+1` — the `1/n` weight of `(5)` — and the `k`-th power of the *single* scale `(2π(n+1))^s`, which
+is exactly the variable `u_n = ξ/(2πn)^s` the inner sum is then evaluated in by `(4)`.
+
+The remaining assembly of `(5)` is now pure bookkeeping over the four formalized ingredients: the
+functional-equation coefficient `(3)`, this scale identity, the complex form of `(4)`, and the
+interchange.
+
+### `(5)` is formalized
+
+`formal/GaloisForLFunctions/RHTower/PowerLatticeLambertForm.lean`, unconditional and axiom-clean:
+
+- `lambertVar s ξ n = ξ/(2π(n+1))^s` — the Lambert variable `u_n`;
+- `norm_lambertVar_lt_one` — inside `‖ξ‖ < (2π)^s` every `u_n` lies in the open unit disc;
+- **`tsum_zeta_coeff_eq_lambert`** — the card's `(5)`:
+
+```text
+∑_{k≥1} (-1)^{k+1} sin(kα) ξ^k ζ(1+sk)/(2π)^{sk}
+  = ∑_{n≥1} (1/n) · u_n sin α/(1 + 2u_n cos α + u_n²).
+```
+
+The proof is the four formalized ingredients composed: the coefficients are geometrically small
+because `‖ξ‖ < (2π)^s`, so the Dirichlet series of the `ζ(1+sk)` may be interchanged; the scale
+identity regroups each term as `(1/n)` times the `k`-th power of the single variable `u_n`; and the
+resulting inner series is summed by the complex form of `(4)`, whose denominator is the quadratic
+factor.  Nothing beyond the pieces already proved is used.
+
+The card's `(1)`–`(5)` and `(7)` are now Lean theorems.  What remains is the meromorphic
+continuation of the Lambert sum past its poles, and the residue computation `(9)`–`(10)` in ramified
+coordinates.
+
+### `(6)` and the simple-pole/residue data of `(8)` are formalized
+
+`formal/GaloisForLFunctions/RHTower/PowerLatticeResidue.lean`, unconditional and axiom-clean:
+
+- **`deriv_lambertQuadratic_at_root_pos` / `_neg`** — the derivative of `1 + 2u cos α + u²` at its
+  roots `-e^{∓iα}` is `∓2i sin α`;
+- **`deriv_lambertQuadratic_ne_zero_pos`** — hence the roots are simple *exactly* when
+  `sin α ≠ 0`, which is the card's hypothesis "`s` is not an even integer";
+- **`residue_lambertNumerator_pos` / `_neg`** — the residue of `u sin α/(1 + 2u cos α + u²)` at the
+  two roots is `±e^{±iα}/(2i)`.  It does not depend on `n`: the `n`-dependence of `(8)` is entirely
+  the factor `A_n/n` coming from the change of variable, which is what `(10)` removes;
+- **`tsum_zeta_coeff_eq_zero_of_natMulPi`** — the card's `(6)`: when `α` is an integer multiple of
+  `π`, every coefficient carries a vanishing sine and the transform is identically zero.
+
+The same `sin α` governs both: it is the derivative at the roots, so it decides simplicity, and it
+is the numerator factor, so it decides whether the transform is zero at all.  That is why the even
+orders are exactly the degenerate case.
+
+### `(10)` — the ramified residues are constant
+
+`formal/GaloisForLFunctions/RHTower/PowerLatticeRamification.lean`, unconditional and axiom-clean:
+
+- **`residue_transport_pos`** — `(A_n e^{iα}/(2πi n)) / (-e^{iα} s (2πn)^{s-1}) = i/s`;
+- **`residue_transport_neg`** — the mirror computation gives `-i/s`.
+
+These are the residue at `ξ_{n,±}` of `(8)` divided by the derivative of the substitution
+`ξ = -e^{±iα}η^s` at `η = 2πn`, which is how a simple-pole residue transports under a
+change of variable.  The point is the cancellation: the residue carries `(2πn)^s/n` and the
+derivative carries `s(2πn)^{s-1}`, whose quotient is `(2πn)/(sn) = 2π/s` — free of `n`.  Together
+with the previous layer, where the residue of the Lambert numerator was already seen to be
+`n`-independent, this makes `(10)` a two-line consequence rather than a coincidence: **all** the
+`n`-dependence in `(8)` is coordinate artefact, and the ramification removes exactly it.
+
+### "After finitely many terms are removed" is now a theorem
+
+**`eventually_norm_lambertVar_le_half`**: for `s > 0` and any bound `M`,
+
+```text
+∀ᶠ n in atTop, ∀ ξ, ‖ξ‖ ≤ M → ‖u_n‖ ≤ 1/2.
+```
+
+Uniform in `ξ` over the whole ball, which is what "uniformly after finitely many terms are removed"
+in the card's Section 2 asserts.  Combined with `norm_lambertTerm_le` this gives the dominated tail
+on every compact set; the finitely many exceptional `n` are exactly the terms whose denominators can
+vanish, so the poles are confined to them — which is the statement `(5)` "converges normally away
+from its displayed poles".

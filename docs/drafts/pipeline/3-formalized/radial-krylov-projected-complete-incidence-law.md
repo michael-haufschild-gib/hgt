@@ -1,13 +1,13 @@
 # Radial--Krylov projected complete-incidence law
 
 - **ID:** `radial-krylov-projected-complete-incidence-law`
-- **Stage:** 2 -- dependency-closed paper proof
+- **Stage:** 3-formalized
 - **Type:** theorem / exact frontier reduction
 - **Parents:** `../3-formalized/krylov-carrier-load-shortcut-dichotomy-law.md`,
   `../3-formalized/replica-hilbert-coarea-incidence-law.md`,
   `return-excised-optimal-design-coarea-law.md`,
   `../1-in-progress/scale-matched-signed-action-packet-law.md`
-- **Status:** `[PAPER-PROVED] [LEAN FROZEN BY USER] [EXTERNAL PRIORITY NOT ESTABLISHED]`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [EXTERNAL PRIORITY NOT ESTABLISHED]`
 - **Date:** 2026-08-08
 
 ## Public sentence
@@ -376,5 +376,36 @@ Taylor remainder.
 ## Pipeline
 
 - [x] Stage 1 -> 2: dependency-closed proof
-- [ ] Stage 2 -> 3: frozen while Lean corpus is being refactored; do not create Lean files
+- [x] Stage 2 -> 3: exact theorem family is kernel-checked in
+  `GaloisForLFunctions.HTGeometry.KrylovProjectedCompleteIncidenceLaw`
 - [ ] Stage 2 -> 4: only after `(15)` is closed and external priority is established
+
+## Lean formalization audit (2026-08-09)
+
+The module proves the card's complete dependency-closed theorem set, without card-specific axioms
+or hypotheses beyond the mathematical objects quantified in the paper statement:
+
+- exact factorial Taylor and Krylov projection bounds:
+  `norm_boundedHamiltonianOrbit_sub_krylovProjection_le_boundary`;
+- projection-before-replica incidence inequality:
+  `replicaTargetProjectionMass_boundedHamiltonianOrbit_le_krylov`;
+- exact projected target span identity (imported from `ReplicaProjectionIncidenceLaw`) and the sharp
+  minimum rank cap: `finrank_projectedReplicaTargetSpan_le_krylov_min`;
+- return-excised additive and explicit-error laws:
+  `measureReal_boundedHamiltonian_capture_le_return_add_krylovMoment` and
+  `measureReal_boundedHamiltonian_capture_le_return_add_krylovMoment_error`;
+- radial invariance of Krylov carrier, projected targets, and incidence action:
+  `boundedHamiltonianKrylovSubspace_smul`,
+  `projectedReplicaTarget_krylov_real_smul`, and
+  `realLinearHamiltonianKrylovIncidenceAction_smul`;
+- Gaussian polar-product and radial-mixture identities:
+  `integral_stdGaussian_realLinearHamiltonianKrylovIncidenceAction_product` and
+  `integral_stdGaussian_realLinearHamiltonianKrylovIncidenceAction`.
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/KrylovProjectedCompleteIncidenceLaw.lean  # pass
+lake build GaloisForLFunctions.HTGeometry.KrylovProjectedCompleteIncidenceLaw          # pass
+#print axioms capstones: [propext, Classical.choice, Quot.sound]
+```

@@ -83,10 +83,15 @@ theorem summable_uncurry_geometric_zeta {a : ℝ} (ha : 1 < a) {r : ℝ} (hr0 : 
   have hmono : ((n : ℝ) + 1) ^ a ≤ ((n : ℝ) + 1) ^ (e k).re :=
     Real.rpow_le_rpow_of_exponent_le hone (he k)
   have hpa : (0 : ℝ) < ((n : ℝ) + 1) ^ a := Real.rpow_pos_of_pos hpos a
+  have hinv : (1 : ℝ) / ((n : ℝ) + 1) ^ (e k).re ≤ 1 / ((n : ℝ) + 1) ^ a :=
+    one_div_le_one_div_of_le hpa hmono
   have hdiv : ‖c k‖ / ((n : ℝ) + 1) ^ (e k).re ≤ r ^ k * ((1 : ℝ) / ((n : ℝ) + 1) ^ a) := by
-    rw [mul_one_div]
-    exact div_le_div_of_nonneg_of_le (hc k) (norm_nonneg _) hpa hmono
-  simpa [Function.uncurry, hnorm] using hdiv
+    rw [div_eq_mul_one_div]
+    exact mul_le_mul (hc k) hinv (by positivity) (pow_nonneg hr0 k)
+  have huncurry : ‖(Function.uncurry fun k n : ℕ => c k / ((n : ℂ) + 1) ^ (e k)) (k, n)‖
+      = ‖c k / ((n : ℂ) + 1) ^ (e k)‖ := rfl
+  rw [huncurry, hnorm]
+  exact hdiv
 
 /-- **The interchange behind the Lambert form.**  A power series in geometrically small
 coefficients against values of `ζ` above a fixed abscissa may be summed in the other order, term by
@@ -97,7 +102,7 @@ theorem tsum_mul_riemannZeta_eq_tsum_comm {a : ℝ} (ha : 1 < a) {r : ℝ} (hr0 
       = ∑' n : ℕ, ∑' k : ℕ, c k / ((n : ℂ) + 1) ^ (e k) := by
   have hsum := summable_uncurry_geometric_zeta ha hr0 hr1 hc he
   have hcomm := hsum.tsum_comm
-  rw [← hcomm]
+  rw [hcomm]
   refine tsum_congr fun k => ?_
   have hre : 1 < (e k).re := lt_of_lt_of_le ha (he k)
   have hz := zeta_eq_tsum_one_div_nat_add_one_cpow hre

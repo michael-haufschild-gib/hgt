@@ -98,6 +98,12 @@ realization boundary without identifying HT with ordinary orbit noncompactness.
 These calibrations do not prove whole-corpus universality. They establish the minimum algebra a
 candidate field must preserve.
 
+The Lean-proved Kőnig acceptance gate in
+`../../3-formalized/universal-law-field/locally-finite-realization-tower-global-section-and-nonproperness-necessity-law.md`
+now forbids a broad class of fake finite/global models: a coherent locally finite tower with every
+level inhabited always has a global end. Genuine law gaps must identify noncoherence,
+nonproperness/noncompactness, or an admission condition not preserved by inverse limits.
+
 ## 5. Frankenstein periodic table
 
 | established parent | RBD role |
@@ -171,3 +177,5 @@ boundary dynamics.
 - 2026-08-09 — first one-producer finite realization-boundary theorem formalized in Lean.
 - 2026-08-09 — analytic finite-jet DA/HT nonseparation theorem formalized in Lean; RBD now has a
   non-Boolean differential calibration.
+- 2026-08-09 — locally finite compactness wall formalized; Realization End Geometry opened as the
+  geometric refinement of RBD.

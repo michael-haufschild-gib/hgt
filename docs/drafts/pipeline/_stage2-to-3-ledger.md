@@ -45,7 +45,7 @@ Promotion recipe:
 | `burnol-all-prime-completion-singular-potential-entrance-wall` | all of `(AW0)`--`(AW17)` | `RHTower/BurnolAllPrimeCompletionWall`, `RHTower/BurnolPrimeLogSummability` (both new) |
 | `burnol-all-prime-window-hilbert-cartier-jet-wall` | all of `(HJ1)`--`(HJ29)` | `RHTower/BurnolAllPrimeWindowEnergy`, `RHTower/BurnolReciprocalStokesSewing` (both new) |
 | `burnol-poisson-subordinate-smooth-cartier-entrance-wall` | all of `(PS1)`--`(PS16)`, incl. the Glasser integral | `RHTower/BurnolPoissonSubordinateWall`, `RHTower/BurnolGlasserIntegral` (both new) |
-| `burnol-first-wall-cartier-residue-cancellation-law` | *(in progress)* `(1)`, `(2)`, `(4)`, `(8)`, `(9)`, `(13)`--`(18)`, `(23)`--`(28)` | `RHTower/BurnolFirstWallZeroDividedSource`, `RHTower/BurnolFirstWallSourceDecay`, `RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass` (all new) |
+| `burnol-first-wall-cartier-residue-cancellation-law` | *(in progress)* `(1)`, `(2)`, `(4)`, `(8)`--`(11 fwd)`, `(13)`--`(23 fwd)`, `(24)`--`(28)`, `(29 fwd, pointwise)` | `RHTower/BurnolFirstWallZeroDividedSource`, `RHTower/BurnolFirstWallSourceDecay`, `RHTower/BurnolFirstWallSourceMass`, `RHTower/BurnolFirstWallExteriorMass`, `RHTower/BurnolFirstWallCrossingCorrelation`, `RHTower/BurnolReflectedRawSource` (all new) |
 | `burnol-cofinite-cartier-wall-trace-horizon` | all of `(CH1)`--`(CH23)` | `RHTower/BurnolCofiniteHorizonGerm` (new), `RHTower/BurnolPrimeCartierWallTrace` |
 | `burnol-prime-two-causal-cartier-collar-law` | all of `(3)`--`(25)` | `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`, `RHTower/BurnolCollarKernelSeries`, `RHTower/BurnolPrimeTwoCollarSymbol` (all new) |
 
@@ -303,3 +303,24 @@ prime/zeta/divisor theorem.  See
   nonclosed global strata; no continuous Boolean finite-jet classifier.
 - Targeted module build green; universal-law-field umbrella wired; no project postulates or
   computation proofs.
+
+# Universal-law-field locally finite realization-tower certification (2026-08-09)
+
+- `locally-finite-realization-tower-global-section-and-nonproperness-necessity-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveRealizationKonig`.
+- Certified: finite roots plus finite one-step extension fibres force a compatible global section;
+  nonempty finite realization towers are the exact corollary.
+- Targeted module build green; universal-law-field umbrella wired; no project postulates or
+  computation proofs.
+
+# Universal-law-field surjective-erasure certification (2026-08-09)
+
+- `surjective-erasure-infinite-dimensionality-and-gamma-bockstein-no-finite-model-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveSurjectiveErasure`.
+- Certified: same-carrier surjective erasure forces infinite dimensionality; every genuine
+  fixed-corona Gamma-Bockstein death event forces an infinite-dimensional carrier; literal corona
+  is not finite-dimensional.
+- Targeted module build green; universal-law-field umbrella wired; `#print axioms` reports only
+  `propext`, `Classical.choice`, and `Quot.sound`; no project postulate or computation proof.

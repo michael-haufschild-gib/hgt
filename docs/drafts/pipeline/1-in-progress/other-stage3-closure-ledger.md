@@ -700,3 +700,82 @@ ratio `-u e^{iα}`, with the denominator `|1 + u e^{iα}|² ≥ (1-|u|)²` bound
 Identities `(3)` and `(4)` are now both Lean theorems; the remaining analytic content of the card is
 the sum interchange producing the Lambert form `(5)`, its normal convergence and continuation, and
 ramified residue calculus. Closure count unchanged at 21/65.
+
+Third layer of `power-canonical-product-exact-moment-borel-lattice-law`: the sum interchange of
+`(5)` is formalized in `RHTower/ZetaRealBound.lean` — `norm_riemannZeta_le_tsum` (a uniform bound
+for `ζ` above a real abscissa, which is what makes the factors `ζ(1+sk)` bounded uniformly in `k`),
+`summable_uncurry_geometric_zeta`, and `tsum_mul_riemannZeta_eq_tsum_comm`
+(`∑_k c_k ζ(e_k) = ∑_n ∑_k c_k/(n+1)^{e_k}` for geometrically small `c_k` and exponents above a
+fixed abscissa).  All unconditional and axiom-clean.
+
+Three of the card's four "absent dependencies" are now discharged: the functional equation, Gamma at
+arbitrary order, and the interchange.  What is left is the normal convergence and meromorphic
+continuation of the Lambert sum and ramified residue calculus.  Closure count unchanged at 21/65.
+
+Fourth layer of `power-canonical-product-exact-moment-borel-lattice-law`:
+`RHTower/LambertQuadraticFactor.lean` — `lambertQuadratic_factor`
+(`1 + 2u cos α + u² = (1 + u e^{iα})(1 + u e^{-iα})`), `lambertQuadratic_eq_zero_iff` (the two zeros
+`-e^{∓iα}`, which under `u = ξ/(2πn)^s` are exactly the card's two power lattices), and
+`norm_lambertQuadratic_ge` (`≥ (1-‖u‖)²`, the estimate making the `n`-th term of `(5)` `O(n^{-1-s})`).
+All unconditional and axiom-clean.  One factorization carries both the pole classification and the
+convergence bound.  Closure count unchanged at 21/65.
+
+Fifth layer of `power-canonical-product-exact-moment-borel-lattice-law`:
+`RHTower/LambertSeriesConvergence.lean` — `norm_lambertTerm_le` (the `n`-th Lambert term is
+`≤ 4C/(n+1)^{1+b}` when `‖w_n‖ ≤ C/(n+1)^b` and `‖w_n‖ ≤ 1/2`) and `summable_lambertTerm`
+(absolute convergence for `b > 0`).  Unconditional and axiom-clean.  The `1/2` threshold comes from
+the previous layer: it forces `‖1 + 2w cos α + w²‖ ≥ 1/4`, so the denominator costs only a factor
+four.  This is the card's "`O(n^{-1-s})` uniformly after finitely many terms are removed".
+Closure count unchanged at 21/65.
+
+Sixth layer: `tsum_alternating_sine_geometric_complex` — the card applies `(4)` at complex
+`u = ξ/(2πn)^s`, so the real-variable version formalized earlier does not suffice.  The complex form
+is proved from the same factorization that located the poles: two geometric series with ratios
+`-u e^{±iα}`, difference `2i u sin α` over `(1 + u e^{iα})(1 + u e^{-iα})`.  Unconditional and
+axiom-clean.  Closure count unchanged at 21/65.
+
+Seventh layer: `rpow_scale_identity` — `P^{s(k+1)}·(n+1)^{1+s(k+1)} = (n+1)·((P(n+1))^s)^{k+1}`,
+the regrouping that turns the double sum into a Lambert series: the Dirichlet denominator split
+against `(2π)^{sk}` gives the `1/n` weight and the `k`-th power of the single scale `(2π(n+1))^s`.
+Unconditional and axiom-clean.  With `(3)`, the complex `(4)`, the interchange and this identity all
+in Lean, the remaining assembly of `(5)` is bookkeeping; the genuinely open part of the card is the
+ramified residue calculus.  Closure count unchanged at 21/65.
+
+Eighth layer — **the card's `(5)` is formalized**: `RHTower/PowerLatticeLambertForm.lean`,
+`tsum_zeta_coeff_eq_lambert`,
+
+```text
+∑_{k≥1} (-1)^{k+1} sin(kα) ξ^k ζ(1+sk)/(2π)^{sk} = ∑_{n≥1} (1/n) u_n sin α/(1+2u_n cos α+u_n²),
+```
+
+with `lambertVar`/`norm_lambertVar_lt_one`.  Unconditional and axiom-clean.  It is exactly the
+composition of the four previously formalized ingredients — geometric smallness of the coefficients,
+the Dirichlet interchange, the scale identity, and the complex `(4)` — with no new analytic input.
+
+For a card whose Section 7 said "No Lean formalization is attempted" because its dependencies were
+"absent from the current project stack", the exact transform `(5)`, its pole law `(7)`, and its
+convergence are now theorems.  Remaining: meromorphic continuation past the poles and the ramified
+residue computation `(9)`–`(10)`.  Closure count unchanged at 21/65.
+
+Ninth layer: `RHTower/PowerLatticeResidue.lean` — `deriv_lambertQuadratic_at_root_pos`/`_neg`
+(derivative `∓2i sin α` at the roots `-e^{∓iα}`), `deriv_lambertQuadratic_ne_zero_pos` (roots simple
+exactly when `sin α ≠ 0`, i.e. the card's "not an even integer"), `residue_lambertNumerator_pos`/
+`_neg` (residues `±e^{±iα}/(2i)`, independent of `n`), and `tsum_zeta_coeff_eq_zero_of_natMulPi`
+(the card's `(6)`: identically zero at even order).  Unconditional and axiom-clean.
+
+`sin α` plays both roles — derivative at the roots and numerator factor — which is why the even
+orders are simultaneously the degenerate poles and the vanishing transform.  Closure count unchanged
+at 21/65.
+
+Tenth layer — the card's `(10)`: `RHTower/PowerLatticeRamification.lean`, `residue_transport_pos`
+(`= i/s`) and `residue_transport_neg` (`= -i/s`), unconditional and axiom-clean.  The residue of
+`(8)` divided by the derivative of `ξ = -e^{±iα}η^s` at `η = 2πn`; the residue carries `(2πn)^s/n`
+and the derivative `s(2πn)^{s-1}`, and their quotient `2π/s` is free of `n`.  So the `n`-dependence
+of `(8)` is entirely coordinate artefact and the ramification removes exactly it.  Closure count
+unchanged at 21/65.
+
+Eleventh layer: `eventually_norm_lambertVar_le_half` — for `s > 0` and any `M`, eventually in `n`,
+`‖ξ‖ ≤ M → ‖u_n‖ ≤ 1/2`, uniformly in `ξ`.  This is the card's "uniformly after finitely many terms
+are removed"; with `norm_lambertTerm_le` it dominates the tail on every compact set, and the finitely
+many exceptional `n` are precisely the terms that can carry poles.  Unconditional and axiom-clean.
+Closure count unchanged at 21/65.
