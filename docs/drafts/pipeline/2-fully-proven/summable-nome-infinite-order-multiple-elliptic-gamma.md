@@ -679,18 +679,26 @@ clean `#print axioms` (`propext`, `Classical.choice`, `Quot.sound` only).
 | Lemma 4, (13) `H_{S,g} → 𝒢_{A,g}` | `tendsto_parityNormalizedSection` |
 | Lemma 4, reciprocal cluster limits | `tendsto_rawSection_odd`, `tendsto_rawSection_even`, `evenCard_neBot`, `oddCard_neBot` |
 | Lemma 4, necessity of parity normalization | `sq_eq_one_of_tendsto_rawSection`, `exists_point_of_half`, `exists_rawSection_not_convergent` |
+| Lemma 6, moving-point collapse | `tendsto_finiteNomeSection_one_of_tendsto_zero` |
+| Lemma 6, the boundary `xy = 0` | `scalingBoundary_mul_eq_zero` |
+| Lemma 6, no scaling keeps two gamma halves | `scalingBoundary_half_collapses` |
 | Lemma 8, (C4) and scheme-independent divisor | `infiniteMultipleEllipticGamma_scheme_change`, `infiniteMultipleEllipticGamma_scheme_change_eq_zero_iff` |
 
 New modules: `HTGeometry/PrimaryFactorLogExpansion.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaSharpness.lean`,
 `HTGeometry/InfiniteMultipleEllipticGammaValues.lean`,
-`HTGeometry/InfiniteMultipleEllipticGammaCollapse.lean`.
+`HTGeometry/InfiniteMultipleEllipticGammaCollapse.lean`,
+`HTGeometry/InfiniteMultipleEllipticGammaScaling.lean`.
 
 ### Open in Lean
 
 1. Lemma 2, free energy (8): `log 𝒢_{A,g}(x) = -∑_{m≥d} x^m M_{A,m}/m` on `|x|<1`, with
    `M_{A,m} = ∏_a (1-p_a^m)^{-1}` and the occupation rearrangement `∑_ν (p^ν)^m = M_{A,m}`.
-2. Lemma 6: the two-coordinate scaling boundary `xy = 0` and the limit table (16).
+2. Lemma 6, the surviving entry of table (16): the *other* half's limit at a moving point,
+   `Φ_{S,g}(x_S) → 𝒢_{A,g}(x)` for `x_S → x ≠ 0`.  This is the one place that needs the finite-section
+   convergence of Lemma 3 upgraded from pointwise to locally uniform in the coordinate; the collapse
+   entries do not, since `tendsto_finiteNomeSection_one_of_tendsto_zero` already handles moving
+   points along any filter.
 3. Lemma 7: the all-order counterterm jet (C3)/(20).
 4. Lemma 9: the diagonal bosonic Fock model — (F1), the Schatten equivalence (22), and the
    order-`d` regularized determinant identity (23)/(24).
