@@ -35,3 +35,26 @@ unevaluated any more for denominators `2` and `4`.
 This is still a single generator, and one generator cannot approach `0`. Getting `d_N → 0` needs the *joint*
 behaviour of many moduli — i.e. the estimate that remains open (`baez-duarte-layer-map.md`). Denominator `3`
 still needs Gauss's general digamma theorem, a mathlib TODO, so `m = 3, 6, 12, …` are not reachable this way.
+
+## Addendum (same day): the full `{2,4}` Gram matrix
+
+`RHTower/HalfQuarterGram.lean`. The same decomposition gives the off-diagonal entry, from
+`(n mod 2)(n mod 4) = [n≡1 mod 4] + 3·[n≡3 mod 4]` (check the four residues: `0·0, 1·1, 0·2, 1·3`):
+
+**`bdGram_half_quarter` — `bdGram (1/2) (1/4) = (5 log 2)/16 − π/32`.**
+
+So the Gram matrix of the two-generator system is entirely explicit:
+
+| | `1/2` | `1/4` |
+|---|---|---|
+| `1/2` | `(log 2)/4` | `(5log 2)/16 − π/32` |
+| `1/4` | `(5log 2)/16 − π/32` | `(3log 2)/8 − π/32` |
+
+with pairing vector `((log 2)/2, (log 2)/2)` — the two entries coincide because `−θ log θ = (log m)/m` takes the
+same value at `m = 2` and `m = 4`. `bdGram_half_quarter_det_pos` shows the determinant is positive (from
+mathlib's certified bounds on `log 2` and `π`), so the matrix is invertible and the optimal coefficient pair
+`G⁻¹v` exists; feeding any pair into `bdDist_sq_le_quadratic` gives a closed-form bound.
+
+I did not evaluate the optimal two-generator bound symbolically. The expression is `1 − vᵗG⁻¹v` in `log 2` and
+`π`, and while it is smaller than the single-generator value, writing it out adds arithmetic without adding
+information — the Gram matrix and the quadratic form are the reusable objects, and both are now closed.

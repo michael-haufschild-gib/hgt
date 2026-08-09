@@ -6404,3 +6404,4 @@ import GaloisForLFunctions.RHTower.DigammaDifferenceSeries
 import GaloisForLFunctions.RHTower.ResidueClassRecipSeries
 import GaloisForLFunctions.RHTower.DigammaThreeQuarter
 import GaloisForLFunctions.RHTower.QuarterGramEntry
+import GaloisForLFunctions.RHTower.HalfQuarterGram
