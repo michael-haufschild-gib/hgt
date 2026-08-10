@@ -33,12 +33,12 @@ noncomputable section
 
 /-- A word with a distinguished head pair: a pair of old letters followed by old letters. -/
 abbrev DeningerSuspPair : Type :=
-  Σ s : ℕ, (DeningerLattice × DeningerLattice) × (Fin s → DeningerLattice)
+  Σ s : ℕ, (DeningerPrimeLattice × DeningerPrimeLattice) × (Fin s → DeningerPrimeLattice)
 
 /-- The tuple of old letters underlying a head pair. -/
-def deningerSuspPairVec (p : DeningerSuspPair) : Fin (p.1 + 2) → DeningerLattice :=
-  Fin.cons (α := fun _ => DeningerLattice) p.2.1.1
-    (Fin.cons (α := fun _ => DeningerLattice) p.2.1.2 p.2.2)
+def deningerSuspPairVec (p : DeningerSuspPair) : Fin (p.1 + 2) → DeningerPrimeLattice :=
+  Fin.cons (α := fun _ => DeningerPrimeLattice) p.2.1.1
+    (Fin.cons (α := fun _ => DeningerPrimeLattice) p.2.1.2 p.2.2)
 
 /-- The suspended word whose head letter is the suspended pair. -/
 def deningerSuspHeadPair (p : DeningerSuspPair) : DeningerSuspWord :=
@@ -70,18 +70,18 @@ theorem deningerSuspHeadExpand_height (p : DeningerSuspPair) :
       = deningerHeight p.2.1.1 * (deningerHeight p.2.1.2 * ∏ t, deningerHeight (p.2.2 t)) := by
   obtain ⟨s, ⟨m, n⟩, g⟩ := p
   show (∏ i : Fin (s + 2),
-      deningerSuspHeight (Sum.inl (Fin.cons (α := fun _ => DeningerLattice) m
-        (Fin.cons (α := fun _ => DeningerLattice) n g) i))) = _
+      deningerSuspHeight (Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) m
+        (Fin.cons (α := fun _ => DeningerPrimeLattice) n g) i))) = _
   rw [Fin.prod_univ_succ, Fin.cons_zero]
   have h1 : ∀ i : Fin (s + 1),
-      deningerSuspHeight (Sum.inl (Fin.cons (α := fun _ => DeningerLattice) m
-          (Fin.cons (α := fun _ => DeningerLattice) n g) i.succ))
-        = deningerSuspHeight (Sum.inl (Fin.cons (α := fun _ => DeningerLattice) n g i)) := by
+      deningerSuspHeight (Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) m
+          (Fin.cons (α := fun _ => DeningerPrimeLattice) n g) i.succ))
+        = deningerSuspHeight (Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) n g i)) := by
     intro i
     rw [Fin.cons_succ]
   rw [Finset.prod_congr rfl fun i _ => h1 i, Fin.prod_univ_succ, Fin.cons_zero]
   have h2 : ∀ t : Fin s,
-      deningerSuspHeight (Sum.inl (Fin.cons (α := fun _ => DeningerLattice) n g t.succ))
+      deningerSuspHeight (Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) n g t.succ))
         = deningerHeight (g t) := by
     intro t
     rw [Fin.cons_succ]
@@ -114,18 +114,18 @@ theorem deningerSuspHeadExpand_char (p : DeningerSuspPair) :
     deningerSuspWordChar (deningerSuspHeadExpand p)
       = p.2.1.1 + (p.2.1.2 + ∑ t, p.2.2 t) := by
   obtain ⟨s, ⟨m, n⟩, g⟩ := p
-  show (∑ i : Fin (s + 2), deningerSuspChar (Sum.inl (Fin.cons (α := fun _ => DeningerLattice) m
-      (Fin.cons (α := fun _ => DeningerLattice) n g) i))) = _
+  show (∑ i : Fin (s + 2), deningerSuspChar (Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) m
+      (Fin.cons (α := fun _ => DeningerPrimeLattice) n g) i))) = _
   rw [Fin.sum_univ_succ, Fin.cons_zero]
   have h1 : ∀ i : Fin (s + 1),
-      deningerSuspChar (Sum.inl (Fin.cons (α := fun _ => DeningerLattice) m
-          (Fin.cons (α := fun _ => DeningerLattice) n g) i.succ))
-        = deningerSuspChar (Sum.inl (Fin.cons (α := fun _ => DeningerLattice) n g i)) := by
+      deningerSuspChar (Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) m
+          (Fin.cons (α := fun _ => DeningerPrimeLattice) n g) i.succ))
+        = deningerSuspChar (Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) n g i)) := by
     intro i
     rw [Fin.cons_succ]
   rw [Finset.sum_congr rfl fun i _ => h1 i, Fin.sum_univ_succ, Fin.cons_zero]
   have h2 : ∀ t : Fin s,
-      deningerSuspChar (Sum.inl (Fin.cons (α := fun _ => DeningerLattice) n g t.succ))
+      deningerSuspChar (Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) n g t.succ))
         = g t := by
     intro t
     rw [Fin.cons_succ]
@@ -171,16 +171,16 @@ theorem deningerSuspHeadExpand_injective : Function.Injective deningerSuspHeadEx
   have hs : s + 2 = s' + 2 := congrArg Sigma.fst h
   have hs' : s = s' := by omega
   subst hs'
-  have hfun : (fun i => Sum.inl (Fin.cons (α := fun _ => DeningerLattice) m
-        (Fin.cons (α := fun _ => DeningerLattice) n g) i))
-      = (fun i => Sum.inl (Fin.cons (α := fun _ => DeningerLattice) m'
-        (Fin.cons (α := fun _ => DeningerLattice) n' g') i)) :=
+  have hfun : (fun i => Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) m
+        (Fin.cons (α := fun _ => DeningerPrimeLattice) n g) i))
+      = (fun i => Sum.inl (Fin.cons (α := fun _ => DeningerPrimeLattice) m'
+        (Fin.cons (α := fun _ => DeningerPrimeLattice) n' g') i)) :=
     eq_of_heq (Sigma.mk.inj h).2
   have hvec : ∀ i : Fin (s + 2),
-      Fin.cons (α := fun _ => DeningerLattice) m
-          (Fin.cons (α := fun _ => DeningerLattice) n g) i
-        = Fin.cons (α := fun _ => DeningerLattice) m'
-          (Fin.cons (α := fun _ => DeningerLattice) n' g') i := by
+      Fin.cons (α := fun _ => DeningerPrimeLattice) m
+          (Fin.cons (α := fun _ => DeningerPrimeLattice) n g) i
+        = Fin.cons (α := fun _ => DeningerPrimeLattice) m'
+          (Fin.cons (α := fun _ => DeningerPrimeLattice) n' g') i := by
     intro i
     exact Sum.inl_injective (congrFun hfun i)
   have hm : m = m' := by

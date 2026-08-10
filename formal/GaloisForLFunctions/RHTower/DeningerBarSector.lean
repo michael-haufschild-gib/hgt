@@ -32,23 +32,23 @@ noncomputable section
 /-! ## Character multipliers -/
 
 /-- Coefficientwise multiplication by a function of the total arithmetic character. -/
-def deningerBarCharMulCoe (ψ : DeningerLattice → ℂ) (c : DeningerBarWord → ℂ) :
+def deningerBarCharMulCoe (ψ : DeningerPrimeLattice → ℂ) (c : DeningerBarWord → ℂ) :
     DeningerBarWord → ℂ :=
   fun w => ψ (deningerBarChar w) * c w
 
-theorem deningerBarCharMulCoe_apply (ψ : DeningerLattice → ℂ) (c : DeningerBarWord → ℂ)
+theorem deningerBarCharMulCoe_apply (ψ : DeningerPrimeLattice → ℂ) (c : DeningerBarWord → ℂ)
     (w : DeningerBarWord) :
     deningerBarCharMulCoe ψ c w = ψ (deningerBarChar w) * c w := rfl
 
 /-- The total character of a word with a unit inserted is the total character of the word. -/
 theorem deningerBarChar_insert {r : ℕ} (t : Fin (r + 2))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarChar (deningerInsertUnitWord t f)
       = deningerBarChar (⟨r, f⟩ : DeningerBarWord) :=
   deningerInsertUnitWord_char t f
 
 /-- Removing a leading unit letter preserves the total character. -/
-theorem deningerBarChar_tail {r : ℕ} {f : Fin (r + 2) → DeningerLattice} (hf : f 0 = 0) :
+theorem deningerBarChar_tail {r : ℕ} {f : Fin (r + 2) → DeningerPrimeLattice} (hf : f 0 = 0) :
     deningerBarChar (⟨r + 1, f⟩ : DeningerBarWord)
       = deningerBarChar (⟨r, Fin.tail f⟩ : DeningerBarWord) := by
   show (∑ i, f i) = ∑ j, Fin.tail f j
@@ -56,7 +56,7 @@ theorem deningerBarChar_tail {r : ℕ} {f : Fin (r + 2) → DeningerLattice} (hf
   rfl
 
 /-- **A character multiplier commutes with the bar differential.** -/
-theorem deningerBarCharMul_diff (ψ : DeningerLattice → ℂ) (c : DeningerBarWord → ℂ) :
+theorem deningerBarCharMul_diff (ψ : DeningerPrimeLattice → ℂ) (c : DeningerBarWord → ℂ) :
     deningerBarDiffCoe (deningerBarCharMulCoe ψ c)
       = deningerBarCharMulCoe ψ (deningerBarDiffCoe c) := by
   funext w
@@ -85,7 +85,7 @@ theorem deningerBarCharMul_diff (ψ : DeningerLattice → ℂ) (c : DeningerBarW
   ring
 
 /-- **A character multiplier commutes with the extra degeneracy.** -/
-theorem deningerBarCharMul_unit (ψ : DeningerLattice → ℂ) (c : DeningerBarWord → ℂ) :
+theorem deningerBarCharMul_unit (ψ : DeningerPrimeLattice → ℂ) (c : DeningerBarWord → ℂ) :
     deningerBarUnitCoe (deningerBarCharMulCoe ψ c)
       = deningerBarCharMulCoe ψ (deningerBarUnitCoe c) := by
   funext w
@@ -102,7 +102,7 @@ theorem deningerBarCharMul_unit (ψ : DeningerLattice → ℂ) (c : DeningerBarW
 
 /-! ## Continuity -/
 
-private theorem deningerBarCharMul_weight_le {ψ : DeningerLattice → ℂ} {j : ℕ}
+private theorem deningerBarCharMul_weight_le {ψ : DeningerPrimeLattice → ℂ} {j : ℕ}
     (hψ : ∀ w : DeningerBarWord, ‖ψ (deningerBarChar w)‖ ≤ deningerBarHeight w ^ j)
     (k : ℕ) (w : DeningerBarWord) :
     deningerBarKotheData.w k w * ‖ψ (deningerBarChar w)‖
@@ -127,7 +127,7 @@ private theorem deningerBarCharMul_weight_le {ψ : DeningerLattice → ℂ} {j :
     _ ≤ deningerBarHeight w ^ (k + j) * (((k + j : ℕ) : ℝ) + 1) ^ deningerBarLength w :=
         mul_le_mul_of_nonneg_left hkj (pow_nonneg (deningerBarHeight_pos w).le _)
 
-private theorem deningerBarCharMul_mem {ψ : DeningerLattice → ℂ} {j : ℕ}
+private theorem deningerBarCharMul_mem {ψ : DeningerPrimeLattice → ℂ} {j : ℕ}
     (hψ : ∀ w : DeningerBarWord, ‖ψ (deningerBarChar w)‖ ≤ deningerBarHeight w ^ j)
     (c : DeningerBarKothe) :
     deningerBarCharMulCoe ψ (c : DeningerBarWord → ℂ) ∈ DeningerBarKothe := by
@@ -139,7 +139,7 @@ private theorem deningerBarCharMul_mem {ψ : DeningerLattice → ℂ} {j : ℕ}
   exact mul_le_mul_of_nonneg_right (deningerBarCharMul_weight_le hψ k w) (norm_nonneg _)
 
 /-- **The character multiplier calculus** on the bar source. -/
-def deningerBarCharMul (ψ : DeningerLattice → ℂ) (j : ℕ)
+def deningerBarCharMul (ψ : DeningerPrimeLattice → ℂ) (j : ℕ)
     (hψ : ∀ w : DeningerBarWord, ‖ψ (deningerBarChar w)‖ ≤ deningerBarHeight w ^ j) :
     DeningerBarKothe →ₗ[ℂ] DeningerBarKothe where
   toFun c := ⟨deningerBarCharMulCoe ψ (c : DeningerBarWord → ℂ),
@@ -162,14 +162,14 @@ def deningerBarCharMul (ψ : DeningerLattice → ℂ) (j : ℕ)
     ring
 
 @[simp]
-theorem deningerBarCharMul_coe {ψ : DeningerLattice → ℂ} {j : ℕ}
+theorem deningerBarCharMul_coe {ψ : DeningerPrimeLattice → ℂ} {j : ℕ}
     (hψ : ∀ w : DeningerBarWord, ‖ψ (deningerBarChar w)‖ ≤ deningerBarHeight w ^ j)
     (c : DeningerBarKothe) (w : DeningerBarWord) :
     ((deningerBarCharMul ψ j hψ c : DeningerBarKothe) : DeningerBarWord → ℂ) w
       = ψ (deningerBarChar w) * (c : DeningerBarWord → ℂ) w := rfl
 
 /-- **A character multiplier of growth `j` costs `j` height steps.** -/
-theorem deningerBarSeminorm_charMul_le {ψ : DeningerLattice → ℂ} {j : ℕ}
+theorem deningerBarSeminorm_charMul_le {ψ : DeningerPrimeLattice → ℂ} {j : ℕ}
     (hψ : ∀ w : DeningerBarWord, ‖ψ (deningerBarChar w)‖ ≤ deningerBarHeight w ^ j)
     (k : ℕ) (c : DeningerBarKothe) :
     deningerBarSeminorm k (deningerBarCharMul ψ j hψ c)
@@ -215,7 +215,7 @@ theorem deningerBarHardyMinus_bound (w : DeningerBarWord) :
   rw [pow_zero]
   by_cases h : deningerFreq (deningerBarChar w) < 0 <;> simp [h]
 
-theorem deningerBarSector_bound (γ : DeningerLattice) (w : DeningerBarWord) :
+theorem deningerBarSector_bound (γ : DeningerPrimeLattice) (w : DeningerBarWord) :
     ‖(if deningerBarChar w = γ then (1 : ℂ) else 0)‖ ≤ deningerBarHeight w ^ 0 := by
   rw [pow_zero]
   by_cases h : deningerBarChar w = γ <;> simp [h]
@@ -244,12 +244,12 @@ def deningerBarHardyMinus : DeningerBarKothe →ₗ[ℂ] DeningerBarKothe :=
     deningerBarHardyMinus_bound
 
 /-- **The arithmetic-character sector projection** `Q_γ`. -/
-def deningerBarSectorProj (γ : DeningerLattice) : DeningerBarKothe →ₗ[ℂ] DeningerBarKothe :=
+def deningerBarSectorProj (γ : DeningerPrimeLattice) : DeningerBarKothe →ₗ[ℂ] DeningerBarKothe :=
   deningerBarCharMul (fun m => if m = γ then (1 : ℂ) else 0) 0 (deningerBarSector_bound γ)
 
 /-! ## The sector decomposition -/
 
-theorem deningerBarSectorProj_idem (γ : DeningerLattice) (c : DeningerBarKothe) :
+theorem deningerBarSectorProj_idem (γ : DeningerPrimeLattice) (c : DeningerBarKothe) :
     deningerBarSectorProj γ (deningerBarSectorProj γ c) = deningerBarSectorProj γ c := by
   ext w
   simp only [deningerBarSectorProj, deningerBarCharMul_coe]
@@ -257,7 +257,7 @@ theorem deningerBarSectorProj_idem (γ : DeningerLattice) (c : DeningerBarKothe)
 
 /-- **Every character sector is a subcomplex**: the sector projection commutes with the bar
 differential. -/
-theorem deningerBarSectorProj_diff (γ : DeningerLattice) (c : DeningerBarKothe) :
+theorem deningerBarSectorProj_diff (γ : DeningerPrimeLattice) (c : DeningerBarKothe) :
     deningerBarDiff (deningerBarSectorProj γ c)
       = deningerBarSectorProj γ (deningerBarDiff c) := by
   ext w
@@ -268,7 +268,7 @@ theorem deningerBarSectorProj_diff (γ : DeningerLattice) (c : DeningerBarKothe)
   exact congrFun h w
 
 /-- **The extra degeneracy restricts to every character sector.** -/
-theorem deningerBarSectorProj_unit (γ : DeningerLattice) (c : DeningerBarKothe) :
+theorem deningerBarSectorProj_unit (γ : DeningerPrimeLattice) (c : DeningerBarKothe) :
     deningerBarUnit (deningerBarSectorProj γ c)
       = deningerBarSectorProj γ (deningerBarUnit c) := by
   ext w
@@ -280,7 +280,7 @@ theorem deningerBarSectorProj_unit (γ : DeningerLattice) (c : DeningerBarKothe)
 
 /-- **Every character sector, including the balanced sector of total character zero, is split
 strictly exact.** -/
-theorem deningerBarSector_exact (γ : DeningerLattice) (c : DeningerBarKothe)
+theorem deningerBarSector_exact (γ : DeningerPrimeLattice) (c : DeningerBarKothe)
     (hc : deningerBarDiff (deningerBarSectorProj γ c) = 0) :
     deningerBarDiff (deningerBarUnit (deningerBarSectorProj γ c))
       = deningerBarSectorProj γ c :=
@@ -357,7 +357,7 @@ theorem deningerBarSeminorm_hardyMinus_le (k : ℕ) (c : DeningerBarKothe) :
     deningerBarHardyMinus_bound k c
   rwa [Nat.add_zero] at h
 
-theorem deningerBarSeminorm_sectorProj_le (γ : DeningerLattice) (k : ℕ)
+theorem deningerBarSeminorm_sectorProj_le (γ : DeningerPrimeLattice) (k : ℕ)
     (c : DeningerBarKothe) :
     deningerBarSeminorm k (deningerBarSectorProj γ c) ≤ deningerBarSeminorm k c := by
   have h := deningerBarSeminorm_charMul_le

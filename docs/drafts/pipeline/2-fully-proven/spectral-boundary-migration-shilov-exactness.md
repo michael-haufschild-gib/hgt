@@ -1981,3 +1981,29 @@ the noncommutative (complete) Shilov ideal, and the generation input.  The
 natural next capstone is `C*_e(A(K)) = C(ext K)`: with the Choquet boundary now
 available this reduces to identifying the Choquet boundary of the affine
 continuous functions on a compact convex set with its extreme points.
+
+## Capstone: `C*_e(A(K))` lives on the closure of `ext K` (2026-08-10)
+
+`HTGeometry/AffineFunctionSystemEnvelope.lean`, axiom-clean, in the umbrella.
+This is the computation the `ShilovCommutativeBoundary` header names as the
+model case, now proved rather than cited.
+
+- `affineFunctions hK : Submodule ℂ C(K, ℂ)` — the continuous complex affine
+  functions on a convex `K`; `one_mem_affineFunctions`,
+  `star_mem_affineFunctions`, and `separating_affineFunctions` (from
+  `geometric_hahn_banach_point_point`) make it a function system.
+- `evalPoint_affine` — evaluation is affine, so
+  **`stateBody_affineFunctions`: the state body of `A(K)` *is* the range of the
+  evaluation map**, with no convex hull and no closure to take.  This is what
+  makes the extreme-point structure transport exactly.
+- `mem_choquetBoundary_iff_extremePoint` and
+  **`image_choquetBoundary_affineFunctions`: the Choquet boundary of `A(K)` is
+  `ext K`.**
+- **`image_shilovBoundary_affineFunctions`: the Shilov boundary of `A(K)` is
+  `closure (ext K)`.**
+- `envelope_affineFunctions` — the envelope map onto `C(closure (ext K), ℂ)` is
+  a surjective `*`-homomorphism, isometric on `A(K)`, with kernel the Shilov
+  ideal.
+
+Note the classical statement is `C(closure (ext K))`; `C(ext K)` as written in
+the module header is the special case where `ext K` is already closed.

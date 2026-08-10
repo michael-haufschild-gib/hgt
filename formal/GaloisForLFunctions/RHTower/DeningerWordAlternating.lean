@@ -28,17 +28,17 @@ noncomputable section
 
 /-- Permute the letters of a word of a fixed length. -/
 def deningerPermuteAt {r : ℕ} (σ : Equiv.Perm (Fin (r + 1)))
-    (f : Fin (r + 1) → DeningerLattice) : DeningerBarWord :=
+    (f : Fin (r + 1) → DeningerPrimeLattice) : DeningerBarWord :=
   ⟨r, f ∘ σ⟩
 
 @[simp]
 theorem deningerPermuteAt_length {r : ℕ} (σ : Equiv.Perm (Fin (r + 1)))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarLength (deningerPermuteAt σ f)
       = deningerBarLength (⟨r, f⟩ : DeningerBarWord) := rfl
 
 theorem deningerPermuteAt_height {r : ℕ} (σ : Equiv.Perm (Fin (r + 1)))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarHeight (deningerPermuteAt σ f)
       = deningerBarHeight (⟨r, f⟩ : DeningerBarWord) := by
   show (∏ j, deningerHeight (f (σ j))) = ∏ j, deningerHeight (f j)
@@ -46,16 +46,16 @@ theorem deningerPermuteAt_height {r : ℕ} (σ : Equiv.Perm (Fin (r + 1)))
 
 /-- Precomposition with a permutation, as an equivalence of coefficient tuples. -/
 def deningerPermEquiv {r : ℕ} (σ : Equiv.Perm (Fin (r + 1))) :
-    (Fin (r + 1) → DeningerLattice) ≃ (Fin (r + 1) → DeningerLattice) :=
-  Equiv.arrowCongr σ.symm (Equiv.refl DeningerLattice)
+    (Fin (r + 1) → DeningerPrimeLattice) ≃ (Fin (r + 1) → DeningerPrimeLattice) :=
+  Equiv.arrowCongr σ.symm (Equiv.refl DeningerPrimeLattice)
 
 @[simp]
 theorem deningerPermEquiv_apply {r : ℕ} (σ : Equiv.Perm (Fin (r + 1)))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerPermEquiv σ f = f ∘ σ := rfl
 
 theorem deningerBarWeightR_permute (k : ℕ) (R : ℝ) {r : ℕ}
-    (σ : Equiv.Perm (Fin (r + 1))) (f : Fin (r + 1) → DeningerLattice) :
+    (σ : Equiv.Perm (Fin (r + 1))) (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarWeightR k R (deningerPermuteAt σ f)
       = deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) := by
   rw [deningerBarWeightR, deningerBarWeightR, deningerPermuteAt_height,
@@ -89,17 +89,17 @@ theorem deningerAltCoe_norm_le (a : DeningerBarWord → ℂ) (w : DeningerBarWor
 
 private theorem deningerAlt_permuted_slice {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
     (c : DeningerBarKothe) (r : ℕ) (σ : Equiv.Perm (Fin (r + 1))) :
-    (Summable fun f : Fin (r + 1) → DeningerLattice =>
+    (Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
         deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖(c : DeningerBarWord → ℂ) (deningerPermuteAt σ f)‖) ∧
-      (∑' f : Fin (r + 1) → DeningerLattice,
+      (∑' f : Fin (r + 1) → DeningerPrimeLattice,
           deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
             ‖(c : DeningerBarWord → ℂ) (deningerPermuteAt σ f)‖)
         = deningerBarSliceR k R (c : DeningerBarWord → ℂ) r := by
-  have hterm : ∀ f : Fin (r + 1) → DeningerLattice,
+  have hterm : ∀ f : Fin (r + 1) → DeningerPrimeLattice,
       deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖(c : DeningerBarWord → ℂ) (deningerPermuteAt σ f)‖
-        = (fun g : Fin (r + 1) → DeningerLattice =>
+        = (fun g : Fin (r + 1) → DeningerPrimeLattice =>
             deningerBarWeightR k R (⟨r, g⟩ : DeningerBarWord) *
               ‖(c : DeningerBarWord → ℂ) (⟨r, g⟩ : DeningerBarWord)‖)
           (deningerPermEquiv σ f) := by
@@ -110,24 +110,24 @@ private theorem deningerAlt_permuted_slice {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
       deningerBarWeightR_permute]
   constructor
   · refine ((deningerPermEquiv σ).summable_iff
-      (f := fun g : Fin (r + 1) → DeningerLattice =>
+      (f := fun g : Fin (r + 1) → DeningerPrimeLattice =>
         deningerBarWeightR k R (⟨r, g⟩ : DeningerBarWord) *
           ‖(c : DeningerBarWord → ℂ) (⟨r, g⟩ : DeningerBarWord)‖)).mpr
       (deningerBarSlice_summable hR c r) |>.congr ?_
     intro f
     exact (hterm f).symm
   · rw [tsum_congr hterm,
-      (deningerPermEquiv σ).tsum_eq (fun g : Fin (r + 1) → DeningerLattice =>
+      (deningerPermEquiv σ).tsum_eq (fun g : Fin (r + 1) → DeningerPrimeLattice =>
         deningerBarWeightR k R (⟨r, g⟩ : DeningerBarWord) *
           ‖(c : DeningerBarWord → ℂ) (⟨r, g⟩ : DeningerBarWord)‖),
       deningerBarSliceR]
 
 /-- **The antisymmetrizer decreases every seminorm.** -/
 theorem deningerAlt_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : DeningerBarKothe) (r : ℕ) :
-    (Summable fun f : Fin (r + 1) → DeningerLattice =>
+    (Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
         deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerAltCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖) ∧
-      (∑' f : Fin (r + 1) → DeningerLattice,
+      (∑' f : Fin (r + 1) → DeningerPrimeLattice,
           deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
             ‖deningerAltCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖)
         ≤ deningerBarSliceR k R (c : DeningerBarWord → ℂ) r := by
@@ -135,16 +135,16 @@ theorem deningerAlt_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : DeningerBar
   have hRpos : (0 : ℝ) < R := by linarith
   have hfacpos : (0 : ℝ) < (Nat.factorial (r + 1) : ℝ) := by
     exact_mod_cast Nat.factorial_pos (r + 1)
-  set G : Equiv.Perm (Fin (r + 1)) → (Fin (r + 1) → DeningerLattice) → ℝ := fun σ f =>
+  set G : Equiv.Perm (Fin (r + 1)) → (Fin (r + 1) → DeningerPrimeLattice) → ℝ := fun σ f =>
     ((Nat.factorial (r + 1) : ℝ))⁻¹ *
       (deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
         ‖(c : DeningerBarWord → ℂ) (deningerPermuteAt σ f)‖) with hG
   have hGsummable : ∀ σ, Summable (G σ) := fun σ =>
     ((deningerAlt_permuted_slice hR c r σ).1).mul_left _
-  have hmaj : Summable fun f : Fin (r + 1) → DeningerLattice =>
+  have hmaj : Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       ∑ σ : Equiv.Perm (Fin (r + 1)), G σ f :=
     summable_sum fun σ _ => hGsummable σ
-  have hpointwise : ∀ f : Fin (r + 1) → DeningerLattice,
+  have hpointwise : ∀ f : Fin (r + 1) → DeningerPrimeLattice,
       deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerAltCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖
         ≤ ∑ σ : Equiv.Perm (Fin (r + 1)), G σ f := by
@@ -164,24 +164,24 @@ theorem deningerAlt_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : DeningerBar
           refine Finset.sum_congr rfl fun σ _ => ?_
           rw [hG]
           ring
-  have hsummable : Summable fun f : Fin (r + 1) → DeningerLattice =>
+  have hsummable : Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
         ‖deningerAltCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖ :=
     Summable.of_nonneg_of_le
       (fun f => mul_nonneg (deningerBarWeightR_nonneg k hRpos.le _) (norm_nonneg _))
       hpointwise hmaj
   refine ⟨hsummable, ?_⟩
-  have hstep : (∑' f : Fin (r + 1) → DeningerLattice,
+  have hstep : (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerAltCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖)
-      ≤ ∑' f : Fin (r + 1) → DeningerLattice, ∑ σ : Equiv.Perm (Fin (r + 1)), G σ f :=
+      ≤ ∑' f : Fin (r + 1) → DeningerPrimeLattice, ∑ σ : Equiv.Perm (Fin (r + 1)), G σ f :=
     Summable.tsum_le_tsum hpointwise hsummable hmaj
-  have hswap : (∑' f : Fin (r + 1) → DeningerLattice,
+  have hswap : (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         ∑ σ : Equiv.Perm (Fin (r + 1)), G σ f)
-      = ∑ σ : Equiv.Perm (Fin (r + 1)), ∑' f : Fin (r + 1) → DeningerLattice, G σ f :=
+      = ∑ σ : Equiv.Perm (Fin (r + 1)), ∑' f : Fin (r + 1) → DeningerPrimeLattice, G σ f :=
     Summable.tsum_finsetSum fun σ _ => hGsummable σ
   have hone : ∀ σ : Equiv.Perm (Fin (r + 1)),
-      (∑' f : Fin (r + 1) → DeningerLattice, G σ f)
+      (∑' f : Fin (r + 1) → DeningerPrimeLattice, G σ f)
         = ((Nat.factorial (r + 1) : ℝ))⁻¹ *
           deningerBarSliceR k R (c : DeningerBarWord → ℂ) r := by
     intro σ
@@ -222,10 +222,10 @@ theorem deningerAltCoe_mem (c : DeningerBarKothe) :
     rw [deningerBarKotheData_weightR]
   · refine Summable.of_nonneg_of_le (fun r => tsum_nonneg fun f => hnn _) (fun r => ?_)
       (deningerBarSliceR_summable (k := k) hR c)
-    have hcongr : (∑' f : Fin (r + 1) → DeningerLattice,
+    have hcongr : (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarKotheData.w k (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerAltCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖)
-        = ∑' f : Fin (r + 1) → DeningerLattice,
+        = ∑' f : Fin (r + 1) → DeningerPrimeLattice,
             deningerBarWeightR k ((k : ℝ) + 1) (⟨r, f⟩ : DeningerBarWord) *
               ‖deningerAltCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖ := by
       refine tsum_congr fun f => ?_
@@ -276,7 +276,7 @@ theorem deningerBarSeminormR_alt_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : Deni
 /-- Permuting the letters preserves the total arithmetic character, so the antisymmetrizer is
 supported on the same characters. -/
 theorem deningerPermuteAt_char {r : ℕ} (σ : Equiv.Perm (Fin (r + 1)))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarChar (deningerPermuteAt σ f)
       = deningerBarChar (⟨r, f⟩ : DeningerBarWord) := by
   show (∑ j, f (σ j)) = ∑ j, f j

@@ -10,7 +10,7 @@
   with stationary semantic endpoint.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT]
   [CONSERVATIVE REPAIR] [POSITIVE CARRIER BIRTH] [COERCIVITY LOSS]
-  [ENDOGENOUS NEXT CHALLENGE] [LEAN REQUIRED] [NOT AUTOCATALYSIS] [NOT RH]
+  [ENDOGENOUS NEXT CHALLENGE] [LEAN-CERTIFIED] [NOT AUTOCATALYSIS] [NOT RH]
 
 ## 1. Founding question
 
@@ -375,11 +375,11 @@ This is a law set governing a transition, not a proposal for one universal geome
    route.  It proves a minimal mechanism where repairing one deficit creates the other.
 6. It has no RH implication.
 
-## 10. Formalization target
+## 10. Lean certification
 
-Formalize the canonical cell `(16)` in
-`GaloisForLFunctions.HTGeometry.ConstitutiveViabilityCoercivityTransmutation` with an unconditional
-capstone certifying:
+The canonical cell `(16)` is formalized in
+`GaloisForLFunctions.HTGeometry.ConstitutiveViabilityCoercivityTransmutation`. Its unconditional
+capstone certifies:
 
 1. old/new image equality;
 2. exact new kernel and unique normalized nonnegative carrier;
@@ -388,10 +388,24 @@ capstone certifying:
 5. zero semantic endpoint and unbounded execution size for the integer history family;
 6. impossibility of endpoint integration of positive unit rule cost.
 
-No project axiom, `sorry`, `admit`, `opaque`, `unsafe`, or computational decision procedure is
-permitted.
+The same module also formalizes the general range equality `(3)`, the general zero-history
+criterion underlying `(4)`, and the distinguished born history `(c,1)`.
+
+Verification:
+
+- direct foreground elaboration passed;
+- leaf build passed, 8,655 jobs;
+- `HTGeometry.UniversalLawField` umbrella build passed, 11,586 jobs;
+- axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`;
+- no project axiom, `sorry`, `admit`, `opaque`, `unsafe`, or computational decision procedure is
+  used.
+
+Stage-3 record:
+`docs/drafts/pipeline/3-formalized/universal-law-field/conservative-repair-viability-coercivity-transmutation-and-open-history-law.md`.
 
 ## Log
 
 - 2026-08-10 -- static positive-circuit conjecture strengthened to a repair-transmutation law;
   explicit-catalysis and selection overclaims removed; general paper proof closed.
+- 2026-08-10 -- canonical transmutation cell and general conservative-repair core Lean-certified;
+  module wired into the Universal Law Field umbrella.

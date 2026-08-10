@@ -27,14 +27,14 @@ variable {L : ℕ}
 /-! ## Comparing the two insertions -/
 
 theorem deningerInsertUnit_succ_apply_castSucc (j : Fin (L + 1))
-    (f : Fin (L + 1) → DeningerLattice) :
+    (f : Fin (L + 1) → DeningerPrimeLattice) :
     deningerInsertUnit j.succ f j.castSucc = f j := by
   have h : (j.succ).succAbove j = j.castSucc :=
     Fin.succAbove_of_castSucc_lt _ _ Fin.castSucc_lt_succ
   rw [← h, deningerInsertUnit_succAbove]
 
 theorem deningerInsertUnit_castSucc_apply_succ (j : Fin (L + 1))
-    (f : Fin (L + 1) → DeningerLattice) :
+    (f : Fin (L + 1) → DeningerPrimeLattice) :
     deningerInsertUnit j.castSucc f j.succ = f j := by
   have h : (j.castSucc).succAbove j = j.succ :=
     Fin.succAbove_of_le_castSucc _ _ (le_refl _)
@@ -42,7 +42,7 @@ theorem deningerInsertUnit_castSucc_apply_succ (j : Fin (L + 1))
 
 /-- Inserting the unit just before or just after a unit letter gives the same word. -/
 theorem deningerInsertUnit_succ_eq_castSucc {j : Fin (L + 1)}
-    {f : Fin (L + 1) → DeningerLattice} (h : f j = 0) :
+    {f : Fin (L + 1) → DeningerPrimeLattice} (h : f j = 0) :
     deningerInsertUnit j.succ f = deningerInsertUnit j.castSucc f := by
   funext i
   refine Fin.succAboveCases (α := fun i => deningerInsertUnit j.succ f i
@@ -84,21 +84,21 @@ theorem deningerInsertUnit_succ_eq_castSucc {j : Fin (L + 1)}
 
 /-- **The `j`-th bar face of a word**: merge the letters at positions `j` and `j+1`.  The value is
 `none` exactly when both letters are nonunit, where the product vanishes. -/
-def deningerBarFaceWord (j : Fin (L + 1)) (v : Fin (L + 2) → DeningerLattice) :
-    Option (Fin (L + 1) → DeningerLattice) :=
+def deningerBarFaceWord (j : Fin (L + 1)) (v : Fin (L + 2) → DeningerPrimeLattice) :
+    Option (Fin (L + 1) → DeningerPrimeLattice) :=
   if v j.castSucc = 0 then some (Fin.removeNth j.castSucc v)
   else if v j.succ = 0 then some (Fin.removeNth j.succ v)
   else none
 
 theorem deningerBarFaceWord_insert_castSucc (j : Fin (L + 1))
-    (f : Fin (L + 1) → DeningerLattice) :
+    (f : Fin (L + 1) → DeningerPrimeLattice) :
     deningerBarFaceWord j (deningerInsertUnit j.castSucc f) = some f := by
   rw [deningerBarFaceWord, if_pos (deningerInsertUnit_same j.castSucc f)]
   congr 1
-  exact Fin.removeNth_insertNth (α := fun _ => DeningerLattice) j.castSucc 0 f
+  exact Fin.removeNth_insertNth (α := fun _ => DeningerPrimeLattice) j.castSucc 0 f
 
 theorem deningerBarFaceWord_insert_succ (j : Fin (L + 1))
-    (f : Fin (L + 1) → DeningerLattice) :
+    (f : Fin (L + 1) → DeningerPrimeLattice) :
     deningerBarFaceWord j (deningerInsertUnit j.succ f) = some f := by
   by_cases h : f j = 0
   · rw [deningerInsertUnit_succ_eq_castSucc h]
@@ -107,11 +107,11 @@ theorem deningerBarFaceWord_insert_succ (j : Fin (L + 1))
       if_neg (by rw [deningerInsertUnit_succ_apply_castSucc]; exact h),
       if_pos (deningerInsertUnit_same j.succ f)]
     congr 1
-    exact Fin.removeNth_insertNth (α := fun _ => DeningerLattice) j.succ 0 f
+    exact Fin.removeNth_insertNth (α := fun _ => DeningerPrimeLattice) j.succ 0 f
 
 /-- **The fibre of the `j`-th face is the pair of unit insertions.** -/
 theorem deningerBarFaceWord_eq_some_iff (j : Fin (L + 1))
-    (v : Fin (L + 2) → DeningerLattice) (f : Fin (L + 1) → DeningerLattice) :
+    (v : Fin (L + 2) → DeningerPrimeLattice) (f : Fin (L + 1) → DeningerPrimeLattice) :
     deningerBarFaceWord j v = some f ↔
       v = deningerInsertUnit j.castSucc f ∨ v = deningerInsertUnit j.succ f := by
   constructor
@@ -122,14 +122,14 @@ theorem deningerBarFaceWord_eq_some_iff (j : Fin (L + 1))
       have hf : Fin.removeNth j.castSucc v = f := Option.some_injective _ hv
       left
       rw [deningerInsertUnit, ← hf, ← h]
-      exact (Fin.insertNth_self_removeNth (α := fun _ => DeningerLattice) j.castSucc v).symm
+      exact (Fin.insertNth_self_removeNth (α := fun _ => DeningerPrimeLattice) j.castSucc v).symm
     · rw [if_neg h] at hv
       by_cases h2 : v j.succ = 0
       · rw [if_pos h2] at hv
         have hf : Fin.removeNth j.succ v = f := Option.some_injective _ hv
         right
         rw [deningerInsertUnit, ← hf, ← h2]
-        exact (Fin.insertNth_self_removeNth (α := fun _ => DeningerLattice) j.succ v).symm
+        exact (Fin.insertNth_self_removeNth (α := fun _ => DeningerPrimeLattice) j.succ v).symm
       · rw [if_neg h2] at hv
         exact absurd hv (by simp)
   · rintro (rfl | rfl)

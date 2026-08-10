@@ -30,7 +30,7 @@ noncomputable section
 /-- The fibre of the `j`-th bar face: the two unit insertions, which coincide exactly when the
 merged letter is the unit. -/
 def deningerBarFibreSum (c : DeningerBarWord → ℂ) {s : ℕ}
-    (f : Fin (s + 1) → DeningerLattice) (j : Fin (s + 1)) : ℂ :=
+    (f : Fin (s + 1) → DeningerPrimeLattice) (j : Fin (s + 1)) : ℂ :=
   if f j = 0 then c (deningerInsertUnitWord j.castSucc f)
   else c (deningerInsertUnitWord j.castSucc f) + c (deningerInsertUnitWord j.succ f)
 
@@ -39,7 +39,7 @@ def deningerBarDiffCoe (c : DeningerBarWord → ℂ) : DeningerBarWord → ℂ :
   fun w => ∑ j : Fin (w.1 + 1), (-1 : ℂ) ^ (j : ℕ) * deningerBarFibreSum c w.2 j
 
 theorem deningerBarFibreSum_norm_le (c : DeningerBarWord → ℂ) {s : ℕ}
-    (f : Fin (s + 1) → DeningerLattice) (j : Fin (s + 1)) :
+    (f : Fin (s + 1) → DeningerPrimeLattice) (j : Fin (s + 1)) :
     ‖deningerBarFibreSum c f j‖
       ≤ ‖c (deningerInsertUnitWord j.castSucc f)‖ +
         ‖c (deningerInsertUnitWord j.succ f)‖ := by
@@ -83,10 +83,10 @@ private theorem deningerBar_face_growth {R : ℝ} (hR : 1 ≤ R) (r : ℕ) :
 
 private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
     (c : DeningerBarKothe) (r : ℕ) :
-    (Summable fun f : Fin (r + 1) → DeningerLattice =>
+    (Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
         deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerBarDiffCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖) ∧
-      (∑' f : Fin (r + 1) → DeningerLattice,
+      (∑' f : Fin (r + 1) → DeningerPrimeLattice,
           deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
             ‖deningerBarDiffCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖)
         ≤ deningerBarSliceR k (2 * R) (c : DeningerBarWord → ℂ) (r + 1) := by
@@ -94,11 +94,11 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
   have hRpos : (0 : ℝ) < R := by linarith
   have h2R : (1 : ℝ) ≤ 2 * R := by linarith
   -- the two families of insertions
-  have hins : ∀ t : Fin (r + 2), Summable fun f : Fin (r + 1) → DeningerLattice =>
+  have hins : ∀ t : Fin (r + 2), Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
         ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord t f)‖ := by
     intro t
-    have hcomp : Summable fun f : Fin (r + 1) → DeningerLattice =>
+    have hcomp : Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
         deningerBarWeightR k R (deningerInsertUnitWord t f) *
           ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord t f)‖ :=
       (deningerBarSlice_summable hR c (r + 1)).comp_injective
@@ -107,7 +107,7 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
     rw [deningerBarWeightR_insert]
     field_simp
   -- the majorant
-  set G : Fin (r + 1) → (Fin (r + 1) → DeningerLattice) → ℝ := fun j f =>
+  set G : Fin (r + 1) → (Fin (r + 1) → DeningerPrimeLattice) → ℝ := fun j f =>
     deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
       (‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord j.castSucc f)‖ +
         ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord j.succ f)‖) with hG
@@ -116,10 +116,10 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
     refine ((hins j.castSucc).add (hins j.succ)).congr fun f => ?_
     rw [hG]
     ring
-  have hmaj : Summable fun f : Fin (r + 1) → DeningerLattice =>
+  have hmaj : Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       ∑ j : Fin (r + 1), G j f :=
     summable_sum fun j _ => hGsummable j
-  have hpointwise : ∀ f : Fin (r + 1) → DeningerLattice,
+  have hpointwise : ∀ f : Fin (r + 1) → DeningerPrimeLattice,
       deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerBarDiffCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖
         ≤ ∑ j : Fin (r + 1), G j f := by
@@ -136,30 +136,30 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
           mul_le_mul_of_nonneg_left hb hwnn
       _ = ∑ j : Fin (r + 1), G j f := by
           rw [Finset.mul_sum]
-  have hsummable : Summable fun f : Fin (r + 1) → DeningerLattice =>
+  have hsummable : Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
         ‖deningerBarDiffCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖ :=
     Summable.of_nonneg_of_le
       (fun f => mul_nonneg (deningerBarWeightR_nonneg k hRpos.le _) (norm_nonneg _))
       hpointwise hmaj
   refine ⟨hsummable, ?_⟩
-  have hstep1 : (∑' f : Fin (r + 1) → DeningerLattice,
+  have hstep1 : (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerBarDiffCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖)
-      ≤ ∑' f : Fin (r + 1) → DeningerLattice, ∑ j : Fin (r + 1), G j f :=
+      ≤ ∑' f : Fin (r + 1) → DeningerPrimeLattice, ∑ j : Fin (r + 1), G j f :=
     Summable.tsum_le_tsum hpointwise hsummable hmaj
-  have hswap : (∑' f : Fin (r + 1) → DeningerLattice, ∑ j : Fin (r + 1), G j f)
-      = ∑ j : Fin (r + 1), ∑' f : Fin (r + 1) → DeningerLattice, G j f :=
+  have hswap : (∑' f : Fin (r + 1) → DeningerPrimeLattice, ∑ j : Fin (r + 1), G j f)
+      = ∑ j : Fin (r + 1), ∑' f : Fin (r + 1) → DeningerPrimeLattice, G j f :=
     Summable.tsum_finsetSum fun j _ => hGsummable j
   have hslicebound : ∀ j : Fin (r + 1),
-      (∑' f : Fin (r + 1) → DeningerLattice, G j f)
+      (∑' f : Fin (r + 1) → DeningerPrimeLattice, G j f)
         ≤ 2 * (R⁻¹ * deningerBarSliceR k R (c : DeningerBarWord → ℂ) (r + 1)) := by
     intro j
-    have hsplit : (∑' f : Fin (r + 1) → DeningerLattice, G j f)
-        = (∑' f : Fin (r + 1) → DeningerLattice,
+    have hsplit : (∑' f : Fin (r + 1) → DeningerPrimeLattice, G j f)
+        = (∑' f : Fin (r + 1) → DeningerPrimeLattice,
             deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
               ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord j.castSucc f)‖)
-          + ∑' f : Fin (r + 1) → DeningerLattice,
+          + ∑' f : Fin (r + 1) → DeningerPrimeLattice,
             deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
               ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord j.succ f)‖ := by
       rw [← Summable.tsum_add (hins j.castSucc) (hins j.succ)]
@@ -170,11 +170,11 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
     have h1 := deningerBarInsert_slice_le (k := k) hR c r j.castSucc
     have h2 := deningerBarInsert_slice_le (k := k) hR c r j.succ
     linarith
-  have hfinal : (∑ j : Fin (r + 1), ∑' f : Fin (r + 1) → DeningerLattice, G j f)
+  have hfinal : (∑ j : Fin (r + 1), ∑' f : Fin (r + 1) → DeningerPrimeLattice, G j f)
       ≤ ((r : ℝ) + 1) * (2 * (R⁻¹ * deningerBarSliceR k R (c : DeningerBarWord → ℂ) (r + 1))) := by
     have hcard : (Finset.univ : Finset (Fin (r + 1))).card = r + 1 := by simp
     have := Finset.sum_le_card_nsmul (Finset.univ : Finset (Fin (r + 1)))
-      (fun j => ∑' f : Fin (r + 1) → DeningerLattice, G j f)
+      (fun j => ∑' f : Fin (r + 1) → DeningerPrimeLattice, G j f)
       (2 * (R⁻¹ * deningerBarSliceR k R (c : DeningerBarWord → ℂ) (r + 1)))
       (fun j _ => hslicebound j)
     rw [hcard, nsmul_eq_mul] at this
@@ -182,10 +182,10 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
     linarith
   have hgrow : ((r : ℝ) + 1) * (2 * (R⁻¹ * deningerBarSliceR k R (c : DeningerBarWord → ℂ) (r + 1)))
       ≤ deningerBarSliceR k (2 * R) (c : DeningerBarWord → ℂ) (r + 1) := by
-    have hHnn : ∀ g : Fin (r + 2) → DeningerLattice,
+    have hHnn : ∀ g : Fin (r + 2) → DeningerPrimeLattice,
         (0 : ℝ) ≤ deningerBarHeight (⟨r + 1, g⟩ : DeningerBarWord) ^ k :=
       fun g => pow_nonneg (deningerBarHeight_pos _).le _
-    have hMle : ∀ g : Fin (r + 2) → DeningerLattice,
+    have hMle : ∀ g : Fin (r + 2) → DeningerPrimeLattice,
         (2 * ((r : ℝ) + 1) * R ^ (r + 1) *
             deningerBarHeight (⟨r + 1, g⟩ : DeningerBarWord) ^ k) *
               ‖(c : DeningerBarWord → ℂ) (⟨r + 1, g⟩ : DeningerBarWord)‖
@@ -196,7 +196,7 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
       have hlen : deningerBarLength (⟨r + 1, g⟩ : DeningerBarWord) = r + 2 := rfl
       rw [deningerBarWeightR, hlen]
       exact mul_le_mul_of_nonneg_right (deningerBar_face_growth hR r) (hHnn g)
-    have hMnn : ∀ g : Fin (r + 2) → DeningerLattice,
+    have hMnn : ∀ g : Fin (r + 2) → DeningerPrimeLattice,
         (0 : ℝ) ≤ (2 * ((r : ℝ) + 1) * R ^ (r + 1) *
             deningerBarHeight (⟨r + 1, g⟩ : DeningerBarWord) ^ k) *
               ‖(c : DeningerBarWord → ℂ) (⟨r + 1, g⟩ : DeningerBarWord)‖ := by
@@ -204,14 +204,14 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
       refine mul_nonneg (mul_nonneg ?_ (hHnn g)) (norm_nonneg _)
       have h1 : (0 : ℝ) ≤ 2 * ((r : ℝ) + 1) := by positivity
       exact mul_nonneg h1 (pow_nonneg hRpos.le _)
-    have hMsummable : Summable fun g : Fin (r + 2) → DeningerLattice =>
+    have hMsummable : Summable fun g : Fin (r + 2) → DeningerPrimeLattice =>
         (2 * ((r : ℝ) + 1) * R ^ (r + 1) *
             deningerBarHeight (⟨r + 1, g⟩ : DeningerBarWord) ^ k) *
               ‖(c : DeningerBarWord → ℂ) (⟨r + 1, g⟩ : DeningerBarWord)‖ :=
       Summable.of_nonneg_of_le hMnn hMle (deningerBarSlice_summable h2R c (r + 1))
     have hcong : ((r : ℝ) + 1) *
           (2 * (R⁻¹ * deningerBarSliceR k R (c : DeningerBarWord → ℂ) (r + 1)))
-        = ∑' g : Fin (r + 2) → DeningerLattice,
+        = ∑' g : Fin (r + 2) → DeningerPrimeLattice,
             (2 * ((r : ℝ) + 1) * R ^ (r + 1) *
               deningerBarHeight (⟨r + 1, g⟩ : DeningerBarWord) ^ k) *
                 ‖(c : DeningerBarWord → ℂ) (⟨r + 1, g⟩ : DeningerBarWord)‖ := by
@@ -229,11 +229,11 @@ private theorem deningerBarDiff_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
       ring
     rw [hcong, deningerBarSliceR]
     exact Summable.tsum_le_tsum hMle hMsummable (deningerBarSlice_summable h2R c (r + 1))
-  calc (∑' f : Fin (r + 1) → DeningerLattice,
+  calc (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerBarDiffCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖)
-      ≤ ∑' f : Fin (r + 1) → DeningerLattice, ∑ j : Fin (r + 1), G j f := hstep1
-    _ = ∑ j : Fin (r + 1), ∑' f : Fin (r + 1) → DeningerLattice, G j f := hswap
+      ≤ ∑' f : Fin (r + 1) → DeningerPrimeLattice, ∑ j : Fin (r + 1), G j f := hstep1
+    _ = ∑ j : Fin (r + 1), ∑' f : Fin (r + 1) → DeningerPrimeLattice, G j f := hswap
     _ ≤ ((r : ℝ) + 1) * (2 * (R⁻¹ *
           deningerBarSliceR k R (c : DeningerBarWord → ℂ) (r + 1))) := hfinal
     _ ≤ deningerBarSliceR k (2 * R) (c : DeningerBarWord → ℂ) (r + 1) := hgrow
@@ -276,10 +276,10 @@ theorem deningerBarDiffCoe_mem (c : DeningerBarKothe) :
     rw [deningerBarKotheData_eq_weightR]
   · refine Summable.of_nonneg_of_le (fun r => tsum_nonneg fun f => hnn _) (fun r => ?_)
       (deningerBarSliceR_succ_summable (k := k) h2R c)
-    have hcongr : (∑' f : Fin (r + 1) → DeningerLattice,
+    have hcongr : (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarKotheData.w k (⟨r, f⟩ : DeningerBarWord) *
           ‖deningerBarDiffCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖)
-        = ∑' f : Fin (r + 1) → DeningerLattice,
+        = ∑' f : Fin (r + 1) → DeningerPrimeLattice,
             deningerBarWeightR k ((k : ℝ) + 1) (⟨r, f⟩ : DeningerBarWord) *
               ‖deningerBarDiffCoe (c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖ := by
       refine tsum_congr fun f => ?_
@@ -289,7 +289,7 @@ theorem deningerBarDiffCoe_mem (c : DeningerBarKothe) :
 
 
 theorem deningerBarFibreSum_add (a b : DeningerBarWord → ℂ) {s : ℕ}
-    (f : Fin (s + 1) → DeningerLattice) (j : Fin (s + 1)) :
+    (f : Fin (s + 1) → DeningerPrimeLattice) (j : Fin (s + 1)) :
     deningerBarFibreSum (a + b) f j
       = deningerBarFibreSum a f j + deningerBarFibreSum b f j := by
   rw [deningerBarFibreSum, deningerBarFibreSum, deningerBarFibreSum]
@@ -301,7 +301,7 @@ theorem deningerBarFibreSum_add (a b : DeningerBarWord → ℂ) {s : ℕ}
     ring
 
 theorem deningerBarFibreSum_smul (t : ℂ) (a : DeningerBarWord → ℂ) {s : ℕ}
-    (f : Fin (s + 1) → DeningerLattice) (j : Fin (s + 1)) :
+    (f : Fin (s + 1) → DeningerPrimeLattice) (j : Fin (s + 1)) :
     deningerBarFibreSum (t • a) f j = t * deningerBarFibreSum a f j := by
   rw [deningerBarFibreSum, deningerBarFibreSum]
   by_cases h : f j = 0

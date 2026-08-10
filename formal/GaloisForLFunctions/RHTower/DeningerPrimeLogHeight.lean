@@ -23,7 +23,7 @@ open GaloisForLFunctions
 noncomputable section
 
 /-- The finitely supported integer prime-exponent lattice `Γ = ℤ^(ℙ)`. -/
-abbrev DeningerLattice := Nat.Primes →₀ ℤ
+abbrev DeningerPrimeLattice := Nat.Primes →₀ ℤ
 
 /-! ## Finite prime products -/
 

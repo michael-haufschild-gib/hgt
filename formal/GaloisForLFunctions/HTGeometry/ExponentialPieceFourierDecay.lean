@@ -123,37 +123,35 @@ theorem norm_intervalIntegral_exp_fourier_le {α a b : ℝ} (hab : a ≤ b) (ha 
 /-! ## Sums of pieces -/
 
 /-- **Decay of a finite sum of exponential pieces.** -/
-theorem norm_sum_expPieces_fourier_le {α : ℝ} {n : ℕ} (t : Fin (n + 1) → ℝ) (c : Fin n → ℂ)
-    (ht : ∀ i : Fin n, 0 ≤ t i.castSucc ∧ t i.castSucc ≤ t i.succ ∧ t i.succ ≤ 1)
+theorem norm_sum_expPieces_fourier_le {α : ℝ} {n : ℕ} (t : ℕ → ℝ) (c : ℕ → ℂ)
+    (ht : ∀ i < n, 0 ≤ t i ∧ t i ≤ t (i + 1) ∧ t (i + 1) ≤ 1)
     {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ i, ‖c i‖ ≤ M) (j : ℤ) :
-    ‖∑ i : Fin n, c i * ∫ x in (t i.castSucc)..(t i.succ),
+    ‖∑ i ∈ Finset.range n, c i * ∫ x in (t i)..(t (i + 1)),
         Complex.exp ((α : ℂ) * (x : ℂ)) *
           Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) * (x : ℂ)))‖
       ≤ (n : ℝ) * (M * (2 * Real.exp |α|)) / (1 + (j.natAbs : ℝ)) := by
-  have hden : (0 : ℝ) < 1 + (j.natAbs : ℝ) := by positivity
-  have hterm : ∀ i : Fin n,
-      ‖c i * ∫ x in (t i.castSucc)..(t i.succ),
+  have hterm : ∀ i ∈ Finset.range n,
+      ‖c i * ∫ x in (t i)..(t (i + 1)),
         Complex.exp ((α : ℂ) * (x : ℂ)) *
           Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) * (x : ℂ)))‖
         ≤ M * (2 * Real.exp |α|) / (1 + (j.natAbs : ℝ)) := by
-    intro i
-    obtain ⟨h0, hle, h1⟩ := ht i
+    intro i hi
+    obtain ⟨h0, hle, h1⟩ := ht i (Finset.mem_range.mp hi)
     rw [norm_mul]
     have hpiece := norm_intervalIntegral_exp_fourier_le (α := α) hle h0 h1 j
-    have hnn : (0 : ℝ) ≤ 2 * Real.exp |α| / (1 + (j.natAbs : ℝ)) := by positivity
-    calc ‖c i‖ * ‖∫ x in (t i.castSucc)..(t i.succ),
+    calc ‖c i‖ * ‖∫ x in (t i)..(t (i + 1)),
             Complex.exp ((α : ℂ) * (x : ℂ)) *
               Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) * (x : ℂ)))‖
         ≤ M * (2 * Real.exp |α| / (1 + (j.natAbs : ℝ))) :=
           mul_le_mul (hM i) hpiece (norm_nonneg _) hM0
       _ = M * (2 * Real.exp |α|) / (1 + (j.natAbs : ℝ)) := by ring
-  calc ‖∑ i : Fin n, c i * ∫ x in (t i.castSucc)..(t i.succ),
+  calc ‖∑ i ∈ Finset.range n, c i * ∫ x in (t i)..(t (i + 1)),
           Complex.exp ((α : ℂ) * (x : ℂ)) *
             Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) * (x : ℂ)))‖
-      ≤ ∑ _i : Fin n, M * (2 * Real.exp |α|) / (1 + (j.natAbs : ℝ)) :=
-        norm_sum_le_of_le _ (fun i _ => hterm i)
+      ≤ ∑ _i ∈ Finset.range n, M * (2 * Real.exp |α|) / (1 + (j.natAbs : ℝ)) :=
+        norm_sum_le_of_le _ hterm
     _ = (n : ℝ) * (M * (2 * Real.exp |α|)) / (1 + (j.natAbs : ℝ)) := by
-        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
         ring
 
 /-! ## The decay predicate -/

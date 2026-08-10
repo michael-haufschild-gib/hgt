@@ -235,3 +235,10 @@ boundary ideal" needs the function-system hypotheses.
 
 NEXT capstone: C*_e(A(K)) = C(ext K), i.e. identify the Choquet boundary of the
 affine continuous functions on a compact convex K with ext K.
+
+## Capstone done: C*_e(A(K)) = C(closure (ext K)) (2026-08-10)
+
+`AffineFunctionSystemEnvelope.lean`. Key simplification: evaluation on A(K) is
+affine, so the state body equals the *range* of evalPoint (range is convex and
+compact) — no hull, no closure. Extreme points then transport by injectivity +
+affineness, giving choquetBoundary (A K) = ext K.

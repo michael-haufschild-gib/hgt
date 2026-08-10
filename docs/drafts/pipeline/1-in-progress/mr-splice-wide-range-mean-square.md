@@ -3981,3 +3981,54 @@ theorem of this corpus.
 ### What remains
 
 The numerical assembly, and the averaged Chowla theorem.
+
+## Unit 8 — the off-diagonal reduced to averaged correlations (Lean, unconditional)
+
+The numerical assembly is closed.  `MRBilinear μ hh` now follows, unconditionally in Lean, from a
+single averaged-correlation input, for any window law with `hh → ∞` and `hh x ≤ √x` eventually.
+
+**New machinery (10 modules, all `[propext, Classical.choice, Quot.sound]`).**
+
+| Module | Statement |
+|---|---|
+| `Sieve/QuasiConcaveSeq.lean` | `QuasiConcaveOn w n := ∀ i ≤ j ≤ k ≤ n, min (w i) (w k) ≤ w j`; closed under `min`, `+c`, `max (·) c`; monotone/antitone/bimonotone ⟹ QC; QC ⟹ bimonotone (via an argmax); `variation_le_two_range_of_quasiConcave` |
+| `Sieve/KernelVariationBound.lean` | refactored: `kernelDiff_bimonotone` (∃ turning point) with `kernelDiff_variation_le` as its corollary |
+| `Sieve/FibreKernelExact.lean` | `fibre_kernel_eq_Icc`: the kernel **is** `Icc ⌈max (x/n) √x⌉ ⌊min ((x+h√x)/m) (2√x)⌋` for `1 ≤ n ≤ m ≤ ⌊x+h√x⌋` |
+| `Sieve/FibreSmoothWeight.lean` | `fibreSmooth x h k i := kernelSmooth (fibreLow x i) (fibreHigh x h (i+k))`; `abs_card_Icc_sub_smooth_le`; `0 ≤ fibreSmooth ≤ 3h+1`; `abs_kernel_sub_fibreSmooth_le : |K − s| ≤ 2` |
+| `Sieve/FibreSmoothQuasiConcave.lean` | `min_sub_max : min B D − max A C = min (B−A, B−C, D−A, D−C)`; `quasiConcaveOn_fibreSmooth`; `fibreSmooth_variation_le ≤ 6h+2` |
+| `Sieve/FibreShiftSupport.lean` | kernel `= ∅` for `k > h` and for `n ≥ 3√x`; `fibreSmooth = 0` for `n ≥ 3√x`; `abs_error_shift_sum_supported_le` |
+| `Sieve/OffDiagonalReindex.lean` | `sum_offdiag_eq_shift`: the strict lower triangle reindexed by shift (a `Finset.sum_nbij'` on the product) |
+| `Sieve/OffDiagonalShiftBound.lean` | `abs_offDiagonal_le : \|off-diag\| ≤ (9h+3)·∑_{k ≤ h} B k + 2h(3√x+1)` |
+| `Sieve/OffDiagonalFromCorrelations.lean` | `AveragedCorrelationSmall`; `offDiagonalVanishes_of_correlations` |
+| `Sieve/MRFromCorrelations.lean` | `averagedMeanSquare_of_correlations`; **`MRBilinear_moebius_of_correlations`** |
+
+**The mechanism that made it work.**  The discrete kernel genuinely has variation `≍ √x`, so Abel
+summation cannot be applied to it directly (unit 7's dead end).  The fix is the smooth/error split
+plus one structural observation: an *interval-intersection length* is a **minimum of four endpoint
+differences**, and quasi-concavity — not monotonicity, not bimonotonicity — is the property closed
+under `min`.  Three of the four differences are monotone; the fourth is `kernelDiff`, unimodal by
+the concavity of `kernelP`.  Hence the smooth model is quasi-concave, hence of variation at most
+twice its range `[0, 3h+1]`.  The bound `Var ≤ Σ Var(pieces)` is useless here (two pieces have range
+`≍ √x`); it is the `min` that keeps the cancellation.
+
+**Parameter accounting.**  Shift support `k ≤ h` (from `a·k ≤ h√x` and `a ≥ √x`); inner support
+`n ≤ 3√x`; weight cost `W = (3h+1) + 2(3h+1) = 9h+3`; error cost `2·h·3√x`.  Normalised by `h²√x`:
+smooth term `≤ (9 + 3/h)·(∑_k B k)/(h√x)`, error term `≤ 6/h + 2/(h√x)`.  Both vanish exactly when
+`∑_{k ≤ h} B k = o(h√x)`.
+
+**Statement of the remaining input.**
+
+```
+AveragedCorrelationSmall f hh :=
+  ∀ ε > 0, ∀ᶠ x, ∃ B, (∀ k, 0 ≤ B k)
+    ∧ (∀ 1 ≤ k ≤ ⌊hh x⌋, ∀ J, |∑_{i<J} f(i+1)·f(i+1+k)| ≤ B k)
+    ∧ ∑_{k ≤ ⌊hh x⌋} B k ≤ ε·hh x·√x
+```
+
+At `f = μ` this is the **averaged Chowla conjecture** (Matomäki–Radziwiłł–Tao 2015) in
+maximal-partial-sum form — a theorem for `h → ∞`, not the open individual Chowla.  The maximal form
+is what partial summation consumes; converting the known mean-value form into it is the next step.
+
+**Side condition.**  `hh x ≤ √x` eventually.  This is a constraint on the window law, not an
+analytic hypothesis: it says the short interval `[x, x + h√x]` is contained in `[x, 2x]`, which the
+balanced-pairs decomposition presupposes.  Every window law used downstream satisfies it.

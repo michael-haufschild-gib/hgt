@@ -50,6 +50,19 @@ theorem conservativeRepairBoundary_eq_zero_iff (B : W →ₗ[ℝ] V) (c : W)
     conservativeRepairBoundary B c (x, t) = 0 ↔ x - t • c ∈ LinearMap.ker B := by
   simp [conservativeRepairBoundary, LinearMap.mem_ker]
 
+/-- Split history form: every repaired closed history is uniquely presented by an old closed
+history and the new repair coordinate. -/
+theorem conservativeRepairBoundary_kernel_split_iff (B : W →ₗ[ℝ] V) (c : W)
+    (x : W) (t : ℝ) :
+    conservativeRepairBoundary B c (x, t) = 0 ↔
+      ∃ k : W, k ∈ LinearMap.ker B ∧ x = k + t • c := by
+  rw [conservativeRepairBoundary_eq_zero_iff]
+  constructor
+  · intro h
+    exact ⟨x - t • c, h, by abel⟩
+  · rintro ⟨k, hk, rfl⟩
+    simpa only [add_sub_cancel_right] using hk
+
 /-- Every dependent repair creates a distinguished zero-boundary history with nonzero repair
 coordinate. -/
 theorem conservativeRepairBoundary_birth (B : W →ₗ[ℝ] V) (c : W) :

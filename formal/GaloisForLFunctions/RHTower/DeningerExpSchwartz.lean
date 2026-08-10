@@ -13,7 +13,7 @@ Schwartz space and inherits its linear structure.  Translation acts on it: the e
 changes by the fixed factor `e^{|A||L|}`.  The prime periodization defect `Δ_L = 1 - τ_L` is
 therefore an endomorphism of the source.
 
-* `deningerShift` : translation of a Schwartz function.
+* `deningerExpShift` : translation of a Schwartz function.
 * `DeningerExpSchwartz` : **the exponentially decreasing Schwartz source**, as a subspace.
 * `deningerShift_mem` : translation preserves it.
 * `deningerPeriodizationDefect` : `Δ_L = 1 - τ_L` on the source.
@@ -57,7 +57,7 @@ private theorem deningerPow_shift_le (L x : ℝ) (k : ℕ) :
         mul_le_mul_of_nonneg_left hmax (by positivity)
 
 /-- **Translation of a Schwartz function.** -/
-def deningerShift (L : ℝ) (f : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) where
+def deningerExpShift (L : ℝ) (f : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) where
   toFun x := f (x + L)
   smooth' := (f.smooth' ).comp (contDiff_id.add contDiff_const)
   decay' k n := by
@@ -90,9 +90,9 @@ def deningerShift (L : ℝ) (f : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) where
 
 @[simp]
 theorem deningerShift_apply (L : ℝ) (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
-    deningerShift L f x = f (x + L) := rfl
+    deningerExpShift L f x = f (x + L) := rfl
 
-theorem deningerShift_zero (f : 𝓢(ℝ, ℂ)) : deningerShift 0 f = f := by
+theorem deningerShift_zero (f : 𝓢(ℝ, ℂ)) : deningerExpShift 0 f = f := by
   ext x
   rw [deningerShift_apply, add_zero]
 
@@ -162,11 +162,11 @@ private theorem deningerExpWeight_shift (A L x : ℝ) :
 
 /-- **Translation preserves the exponentially decreasing source.** -/
 theorem deningerShift_mem {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpSchwartz) (L : ℝ) :
-    deningerShift L f ∈ DeningerExpSchwartz := by
+    deningerExpShift L f ∈ DeningerExpSchwartz := by
   intro A n
   obtain ⟨C, hC⟩ := hf A n
   refine ⟨Real.exp (|A| * |L|) * max C 0, fun x => ?_⟩
-  have hderiv : iteratedFDeriv ℝ n ((deningerShift L f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) x
+  have hderiv : iteratedFDeriv ℝ n ((deningerExpShift L f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) x
       = iteratedFDeriv ℝ n (f : ℝ → ℂ) (x + L) :=
     iteratedFDeriv_comp_add_right n L x
   rw [hderiv]
@@ -195,7 +195,7 @@ theorem deningerShift_mem {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpSchwartz) 
 
 /-- The translation, as an operator of the exponentially decreasing source. -/
 def deningerShiftSource (L : ℝ) : DeningerExpSchwartz →ₗ[ℂ] DeningerExpSchwartz where
-  toFun f := ⟨deningerShift L (f : 𝓢(ℝ, ℂ)), deningerShift_mem f.2 L⟩
+  toFun f := ⟨deningerExpShift L (f : 𝓢(ℝ, ℂ)), deningerShift_mem f.2 L⟩
   map_add' f g := by
     ext x
     rfl

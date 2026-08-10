@@ -24,12 +24,12 @@ noncomputable section
 variable {L : ℕ}
 
 /-- **The fibre of the `j`-th bar face** over a word: the two unit insertions. -/
-def deningerBarFibre (j : Fin (L + 1)) (f : Fin (L + 1) → DeningerLattice) :
-    Finset (Fin (L + 2) → DeningerLattice) :=
+def deningerBarFibre (j : Fin (L + 1)) (f : Fin (L + 1) → DeningerPrimeLattice) :
+    Finset (Fin (L + 2) → DeningerPrimeLattice) :=
   {deningerInsertUnit j.castSucc f, deningerInsertUnit j.succ f}
 
-theorem mem_deningerBarFibre {j : Fin (L + 1)} {f : Fin (L + 1) → DeningerLattice}
-    {v : Fin (L + 2) → DeningerLattice} :
+theorem mem_deningerBarFibre {j : Fin (L + 1)} {f : Fin (L + 1) → DeningerPrimeLattice}
+    {v : Fin (L + 2) → DeningerPrimeLattice} :
     v ∈ deningerBarFibre j f ↔ deningerBarFaceWord j v = some f := by
   rw [deningerBarFibre, deningerBarFaceWord_eq_some_iff]
   simp [Finset.mem_insert, Finset.mem_singleton]
@@ -37,7 +37,7 @@ theorem mem_deningerBarFibre {j : Fin (L + 1)} {f : Fin (L + 1) → DeningerLatt
 /-- Two unit insertions at consecutive positions differ exactly when the merged letter is
 nonunit. -/
 theorem deningerInsertUnit_ne_of_ne_zero {j : Fin (L + 1)}
-    {f : Fin (L + 1) → DeningerLattice} (h : f j ≠ 0) :
+    {f : Fin (L + 1) → DeningerPrimeLattice} (h : f j ≠ 0) :
     deningerInsertUnit j.castSucc f ≠ deningerInsertUnit j.succ f := by
   intro heq
   apply h
@@ -47,7 +47,7 @@ theorem deningerInsertUnit_ne_of_ne_zero {j : Fin (L + 1)}
 
 /-- **The fibre sum of the bar differential is a sum over the face fibre.** -/
 theorem deningerBarFibreSum_eq_sum (c : DeningerBarWord → ℂ)
-    (f : Fin (L + 1) → DeningerLattice) (j : Fin (L + 1)) :
+    (f : Fin (L + 1) → DeningerPrimeLattice) (j : Fin (L + 1)) :
     deningerBarFibreSum c f j
       = ∑ v ∈ deningerBarFibre j f, c (⟨L + 1, v⟩ : DeningerBarWord) := by
   rw [deningerBarFibre, deningerBarFibreSum]
@@ -59,7 +59,7 @@ theorem deningerBarFibreSum_eq_sum (c : DeningerBarWord → ℂ)
 
 /-- Fibres of the same face over distinct words are disjoint. -/
 theorem deningerBarFibre_disjoint {j : Fin (L + 1)}
-    {f g : Fin (L + 1) → DeningerLattice} (h : f ≠ g) :
+    {f g : Fin (L + 1) → DeningerPrimeLattice} (h : f ≠ g) :
     Disjoint (deningerBarFibre j f) (deningerBarFibre j g) := by
   rw [Finset.disjoint_left]
   intro v hv hv'
@@ -68,7 +68,7 @@ theorem deningerBarFibre_disjoint {j : Fin (L + 1)}
 
 /-- **The bar differential is the signed pushforward along the faces.** -/
 theorem deningerBarDiffCoe_eq_sum (c : DeningerBarWord → ℂ)
-    (f : Fin (L + 1) → DeningerLattice) :
+    (f : Fin (L + 1) → DeningerPrimeLattice) :
     deningerBarDiffCoe c (⟨L, f⟩ : DeningerBarWord)
       = ∑ j : Fin (L + 1), (-1 : ℂ) ^ (j : ℕ) *
           ∑ v ∈ deningerBarFibre j f, c (⟨L + 1, v⟩ : DeningerBarWord) := by

@@ -146,6 +146,84 @@ theorem grading_commutator_ne_zero (Γ : RadialFlow K M) (d : M →ₗ[K] M) (c 
     d.comp Γ.grading ≠ Γ.grading.comp d :=
   fun hcomm => h (commute_flow_of_commute_grading Γ d hcomm c)
 
+/-! ### Radial flows exist, and the anomaly condition is satisfiable -/
+
+section AnomalyWitness
+
+variable {K : Type*} [Field K]
+
+/-- The diagonal grading operator with weights `μ`. -/
+def diagonalGrading {n : ℕ} (μ : Fin n → K) : (Fin n → K) →ₗ[K] (Fin n → K) where
+  toFun v := fun i => μ i * v i
+  map_add' _ _ := by funext i; exact mul_add _ _ _
+  map_smul' c v := by
+    funext i
+    show μ i * (c * v i) = c * (μ i * v i)
+    ring
+
+@[simp] theorem diagonalGrading_apply {n : ℕ} (μ : Fin n → K) (v : Fin n → K) (i : Fin n) :
+    diagonalGrading μ v i = μ i * v i := rfl
+
+/-- **Radial flows exist.**  Any weight family `μ` and any weight law `g` give a radial flow on the
+graded space `Kⁿ`: the grading is diagonal with eigenvalues `μ`, and the flow is diagonal with
+entries `g c (μ i)`.  The anomaly theorems above are therefore not vacuous. -/
+def diagonalRadialFlow {n : ℕ} (μ : Fin n → K) (g : K → K → K) :
+    RadialFlow K (Fin n → K) where
+  grading := diagonalGrading μ
+  flow c := diagonalGrading fun i => g c (μ i)
+  weight := g
+  flow_eigen c lam v hv := by
+    funext i
+    have hi : μ i * v i = lam * v i := congrFun hv i
+    show g c (μ i) * v i = g c lam * v i
+    rcases eq_or_ne (v i) 0 with h0 | h0
+    · rw [h0, mul_zero, mul_zero]
+    · rw [mul_right_cancel₀ h0 hi]
+  span_eigen v := by
+    classical
+    refine ⟨n, μ, fun i => Pi.single i (v i), fun i => ?_, ?_⟩
+    · funext j
+      simp only [diagonalGrading_apply, Pi.smul_apply, smul_eq_mul]
+      rcases eq_or_ne j i with rfl | hji
+      · rfl
+      · rw [Pi.single_eq_of_ne hji, mul_zero, mul_zero]
+    · exact (Finset.univ_sum_single v).symm
+
+/-- The two-dimensional graded model with weights `0` and `1`, whose flow is the grading itself. -/
+def anomalyFlow : RadialFlow K (Fin 2 → K) :=
+  diagonalRadialFlow ![0, 1] fun _ lam => lam
+
+/-- The lowering operator `d(v₀, v₁) = (v₁, 0)`. -/
+def anomalyDifferential : (Fin 2 → K) →ₗ[K] (Fin 2 → K) where
+  toFun v := ![v 1, 0]
+  map_add' _ _ := by
+    funext i
+    fin_cases i <;> simp
+  map_smul' c v := by
+    funext i
+    fin_cases i <;> simp
+
+/-- **The anomaly condition is satisfiable.**  On the two-dimensional graded model the lowering
+operator fails to commute with the radial flow, so the hypothesis of `grading_commutator_ne_zero`
+is met and its conclusion is a genuine obstruction, not a vacuous one. -/
+theorem anomalyDifferential_not_commute_flow (c : K) :
+    (anomalyDifferential (K := K)).comp ((anomalyFlow (K := K)).flow c)
+      ≠ ((anomalyFlow (K := K)).flow c).comp anomalyDifferential := by
+  intro h
+  have h1 := congrArg (fun f => f ![0, 1]) h
+  have h2 : (1 : K) = 0 := by
+    have h3 := congrFun h1 0
+    simp [anomalyDifferential, anomalyFlow, diagonalRadialFlow, diagonalGrading] at h3
+  exact one_ne_zero h2
+
+/-- Consequently the commutator with the grading operator is nonzero on that model. -/
+theorem anomalyDifferential_grading_commutator_ne_zero :
+    (anomalyDifferential (K := K)).comp (anomalyFlow (K := K)).grading
+      ≠ (anomalyFlow (K := K)).grading.comp anomalyDifferential :=
+  grading_commutator_ne_zero _ _ 0 (anomalyDifferential_not_commute_flow 0)
+
+end AnomalyWitness
+
 end Anomaly
 
 end HTGeometry.ConstraintRelativity

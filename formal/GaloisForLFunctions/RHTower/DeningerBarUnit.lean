@@ -30,23 +30,23 @@ def deningerBarUnitCoe (c : DeningerBarWord → ℂ) : DeningerBarWord → ℂ :
 
 @[simp]
 theorem deningerBarUnitCoe_one (c : DeningerBarWord → ℂ)
-    (f : Fin 1 → DeningerLattice) :
+    (f : Fin 1 → DeningerPrimeLattice) :
     deningerBarUnitCoe c (⟨0, f⟩ : DeningerBarWord) = 0 := rfl
 
 theorem deningerBarUnitCoe_succ (c : DeningerBarWord → ℂ) {r : ℕ}
-    (f : Fin (r + 2) → DeningerLattice) :
+    (f : Fin (r + 2) → DeningerPrimeLattice) :
     deningerBarUnitCoe c (⟨r + 1, f⟩ : DeningerBarWord)
       = if f 0 = 0 then c (⟨r, Fin.tail f⟩ : DeningerBarWord) else 0 := rfl
 
 theorem deningerBarUnitCoe_insert_zero (c : DeningerBarWord → ℂ) {r : ℕ}
-    (g : Fin (r + 1) → DeningerLattice) :
+    (g : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarUnitCoe c (deningerInsertUnitWord (0 : Fin (r + 2)) g)
       = c (⟨r, g⟩ : DeningerBarWord) := by
   rw [deningerInsertUnitWord, deningerBarUnitCoe_succ,
     if_pos (deningerInsertUnit_zero_apply_zero g), deningerInsertUnit_zero_tail]
 
 theorem deningerBarUnitCoe_insert_succ (c : DeningerBarWord → ℂ) {r : ℕ}
-    (u : Fin (r + 1)) (f : Fin (r + 1) → DeningerLattice) (hf : f 0 ≠ 0) :
+    (u : Fin (r + 1)) (f : Fin (r + 1) → DeningerPrimeLattice) (hf : f 0 ≠ 0) :
     deningerBarUnitCoe c (deningerInsertUnitWord u.succ f) = 0 := by
   rw [deningerInsertUnitWord, deningerBarUnitCoe_succ,
     if_neg (by rw [deningerInsertUnit_succ_apply_zero]; exact hf)]
@@ -88,16 +88,16 @@ theorem deningerBarUnitCoe_smul (t : ℂ) (a : DeningerBarWord → ℂ) :
 
 private theorem deningerBarUnit_slice {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : DeningerBarKothe)
     (r : ℕ) :
-    (Summable fun f : Fin (r + 2) → DeningerLattice =>
+    (Summable fun f : Fin (r + 2) → DeningerPrimeLattice =>
         deningerBarWeightR k R (⟨r + 1, f⟩ : DeningerBarWord) *
           ‖deningerBarUnitCoe (c : DeningerBarWord → ℂ) (⟨r + 1, f⟩ : DeningerBarWord)‖) ∧
-      (∑' f : Fin (r + 2) → DeningerLattice,
+      (∑' f : Fin (r + 2) → DeningerPrimeLattice,
           deningerBarWeightR k R (⟨r + 1, f⟩ : DeningerBarWord) *
             ‖deningerBarUnitCoe (c : DeningerBarWord → ℂ) (⟨r + 1, f⟩ : DeningerBarWord)‖)
         = R * deningerBarSliceR k R (c : DeningerBarWord → ℂ) r := by
   classical
   have hRpos : (0 : ℝ) < R := by linarith
-  set F : (Fin (r + 2) → DeningerLattice) → ℝ := fun f =>
+  set F : (Fin (r + 2) → DeningerPrimeLattice) → ℝ := fun f =>
     deningerBarWeightR k R (⟨r + 1, f⟩ : DeningerBarWord) *
       ‖deningerBarUnitCoe (c : DeningerBarWord → ℂ) (⟨r + 1, f⟩ : DeningerBarWord)‖ with hF
   have hsupp : Function.support F ⊆
@@ -110,7 +110,7 @@ private theorem deningerBarUnit_slice {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : De
       show deningerBarWeightR k R (⟨r + 1, f⟩ : DeningerBarWord) *
         ‖deningerBarUnitCoe (c : DeningerBarWord → ℂ) (⟨r + 1, f⟩ : DeningerBarWord)‖ = 0
       rw [deningerBarUnitCoe_succ, if_neg h, norm_zero, mul_zero]
-  have hcompose : ∀ g : Fin (r + 1) → DeningerLattice,
+  have hcompose : ∀ g : Fin (r + 1) → DeningerPrimeLattice,
       F (deningerInsertUnit (0 : Fin (r + 2)) g)
         = R * (deningerBarWeightR k R (⟨r, g⟩ : DeningerBarWord) *
             ‖(c : DeningerBarWord → ℂ) (⟨r, g⟩ : DeningerBarWord)‖) := by
@@ -134,8 +134,8 @@ private theorem deningerBarUnit_slice {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : De
     · refine ((deningerBarSlice_summable (k := k) hR c r).mul_left R).congr fun g => ?_
       exact (hcompose g).symm
   refine ⟨hsummable, ?_⟩
-  have hreindex : (∑' f : Fin (r + 2) → DeningerLattice, F f)
-      = ∑' g : Fin (r + 1) → DeningerLattice,
+  have hreindex : (∑' f : Fin (r + 2) → DeningerPrimeLattice, F f)
+      = ∑' g : Fin (r + 1) → DeningerPrimeLattice,
           F (deningerInsertUnit (0 : Fin (r + 2)) g) :=
     (Function.Injective.tsum_eq
       (deningerInsertUnit_injective (r := r) (0 : Fin (r + 2))) hsupp).symm
@@ -205,7 +205,7 @@ theorem deningerBarSeminormR_unit {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : Dening
   have hzero : deningerBarSliceR k R
       ((deningerBarUnit c : DeningerBarKothe) : DeningerBarWord → ℂ) 0 = 0 := by
     rw [deningerBarSliceR]
-    have hterm : ∀ f : Fin 1 → DeningerLattice,
+    have hterm : ∀ f : Fin 1 → DeningerPrimeLattice,
         deningerBarWeightR k R (⟨0, f⟩ : DeningerBarWord) *
           ‖((deningerBarUnit c : DeningerBarKothe) : DeningerBarWord → ℂ)
             (⟨0, f⟩ : DeningerBarWord)‖ = 0 := by

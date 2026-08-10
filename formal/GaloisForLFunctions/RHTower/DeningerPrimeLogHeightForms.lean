@@ -17,7 +17,7 @@ double of that sector the graph of the modulus is closed and equals its own symp
 annihilator: it is a closed Lagrangian relation whose Green form is that energy.
 
 * `deningerPairing`, `deningerPsi` : the two forms and their continuity bounds.
-* `deningerEnergy`, `deningerPsi_hodgeStar` : **the Green energy identity.**
+* `deningerHeightEnergy`, `deningerPsi_hodgeStar` : **the Green energy identity.**
 * `deningerLagrangian_isotropic`, `deningerLagrangian_maximal`,
   `deningerLagrangian_closed` : **the closed Lagrangian graph.**
 -/
@@ -31,8 +31,8 @@ noncomputable section
 /-! ## The reflected pairing -/
 
 private theorem deningerPairing_summable (a b : DeningerHeightKothe) :
-    Summable fun m : DeningerLattice =>
-      (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (-m) := by
+    Summable fun m : DeningerPrimeLattice =>
+      (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (-m) := by
   refine Summable.of_norm_bounded
     ((deningerHeightKothe_summable_norm a).mul_right (deningerHeightSeminorm 0 b))
     fun m => ?_
@@ -41,22 +41,22 @@ private theorem deningerPairing_summable (a b : DeningerHeightKothe) :
 
 /-- **The reflected pairing** `⟨a,b⟩₀ = ∑_m a_m b_{-m}`. -/
 def deningerPairing (a b : DeningerHeightKothe) : ℂ :=
-  ∑' m, (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (-m)
+  ∑' m, (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (-m)
 
 /-- The reflected pairing is bounded by the product of the zeroth seminorms. -/
 theorem deningerPairing_norm_le (a b : DeningerHeightKothe) :
     ‖deningerPairing a b‖ ≤ deningerHeightSeminorm 0 a * deningerHeightSeminorm 0 b := by
-  have hsummable : Summable fun m : DeningerLattice =>
-      ‖(a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (-m)‖ := by
+  have hsummable : Summable fun m : DeningerPrimeLattice =>
+      ‖(a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (-m)‖ := by
     refine Summable.of_nonneg_of_le (fun m => norm_nonneg _) (fun m => ?_)
       ((deningerHeightKothe_summable_norm a).mul_right (deningerHeightSeminorm 0 b))
     rw [norm_mul]
     exact mul_le_mul_of_nonneg_left (deningerHeightKothe_norm_le b (-m)) (norm_nonneg _)
   refine le_trans (norm_tsum_le_tsum_norm hsummable) ?_
-  have hle : ∑' m : DeningerLattice,
-      ‖(a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (-m)‖
-      ≤ ∑' m : DeningerLattice,
-          ‖(a : DeningerLattice → ℂ) m‖ * deningerHeightSeminorm 0 b := by
+  have hle : ∑' m : DeningerPrimeLattice,
+      ‖(a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (-m)‖
+      ≤ ∑' m : DeningerPrimeLattice,
+          ‖(a : DeningerPrimeLattice → ℂ) m‖ * deningerHeightSeminorm 0 b := by
     refine Summable.tsum_le_tsum (fun m => ?_) hsummable
       ((deningerHeightKothe_summable_norm a).mul_right (deningerHeightSeminorm 0 b))
     rw [norm_mul]
@@ -69,25 +69,25 @@ theorem deningerPairing_norm_le (a b : DeningerHeightKothe) :
 theorem deningerPairing_comm (a b : DeningerHeightKothe) :
     deningerPairing a b = deningerPairing b a := by
   rw [deningerPairing, deningerPairing]
-  rw [← (Equiv.neg DeningerLattice).tsum_eq
-    (fun m : DeningerLattice =>
-      (b : DeningerLattice → ℂ) m * (a : DeningerLattice → ℂ) (-m))]
+  rw [← (Equiv.neg DeningerPrimeLattice).tsum_eq
+    (fun m : DeningerPrimeLattice =>
+      (b : DeningerPrimeLattice → ℂ) m * (a : DeningerPrimeLattice → ℂ) (-m))]
   refine tsum_congr fun m => ?_
-  show (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (-m)
-      = (b : DeningerLattice → ℂ) (-m) * (a : DeningerLattice → ℂ) (- -m)
+  show (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (-m)
+      = (b : DeningerPrimeLattice → ℂ) (-m) * (a : DeningerPrimeLattice → ℂ) (- -m)
   rw [neg_neg, mul_comm]
 
 /-- The reflected pairing against a basis vector reads off a reflected coordinate. -/
-theorem deningerPairing_delta (n : DeningerLattice) (b : DeningerHeightKothe) :
+theorem deningerPairing_delta (n : DeningerPrimeLattice) (b : DeningerHeightKothe) :
     deningerPairing (deningerKotheDelta deningerHeightKotheData n) b
-      = (b : DeningerLattice → ℂ) (-n) := by
+      = (b : DeningerPrimeLattice → ℂ) (-n) := by
   classical
   rw [deningerPairing, tsum_eq_single n]
   · rw [deningerKotheDelta_coe]
     simp
   · intro m hm
     have hzero : ((deningerKotheDelta deningerHeightKotheData n : DeningerHeightKothe) :
-        DeningerLattice → ℂ) m = 0 := by
+        DeningerPrimeLattice → ℂ) m = 0 := by
       rw [deningerKotheDelta_coe]
       exact Pi.single_eq_of_ne hm 1
     rw [hzero, zero_mul]
@@ -115,15 +115,15 @@ theorem deningerPsi_antisymm (a b : DeningerHeightKothe) :
   have hsum : deningerPairing (deningerGenerator a) b
       = -deningerPairing (deningerGenerator b) a := by
     rw [deningerPairing, deningerPairing, ← tsum_neg]
-    rw [← (Equiv.neg DeningerLattice).tsum_eq
-      (fun m : DeningerLattice =>
-        -(((deningerGenerator b : DeningerHeightKothe) : DeningerLattice → ℂ) m *
-          (a : DeningerLattice → ℂ) (-m)))]
+    rw [← (Equiv.neg DeningerPrimeLattice).tsum_eq
+      (fun m : DeningerPrimeLattice =>
+        -(((deningerGenerator b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m *
+          (a : DeningerPrimeLattice → ℂ) (-m)))]
     refine tsum_congr fun m => ?_
-    show ((deningerGenerator a : DeningerHeightKothe) : DeningerLattice → ℂ) m *
-        (b : DeningerLattice → ℂ) (-m)
-        = -(((deningerGenerator b : DeningerHeightKothe) : DeningerLattice → ℂ) (-m) *
-            (a : DeningerLattice → ℂ) (- -m))
+    show ((deningerGenerator a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m *
+        (b : DeningerPrimeLattice → ℂ) (-m)
+        = -(((deningerGenerator b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) (-m) *
+            (a : DeningerPrimeLattice → ℂ) (- -m))
     rw [deningerGenerator_coe, deningerGenerator_coe, neg_neg, deningerFreq_neg]
     push_cast
     ring
@@ -133,44 +133,44 @@ theorem deningerPsi_antisymm (a b : DeningerHeightKothe) :
 /-! ## The Green energy -/
 
 private theorem deningerEnergy_summable (a : DeningerHeightKothe) :
-    Summable fun m : DeningerLattice =>
-      |deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2 := by
+    Summable fun m : DeningerPrimeLattice =>
+      |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 := by
   refine Summable.of_nonneg_of_le
     (fun _ => mul_nonneg (abs_nonneg _) (sq_nonneg _))
     (fun m => ?_)
     ((a.2 1).mul_right (deningerHeightSeminorm 0 a))
-  show |deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2
-      ≤ deningerHeightKotheData.w 1 m * ‖(a : DeningerLattice → ℂ) m‖ *
+  show |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2
+      ≤ deningerHeightKotheData.w 1 m * ‖(a : DeningerPrimeLattice → ℂ) m‖ *
         deningerHeightSeminorm 0 a
   rw [deningerHeightKotheData_w, pow_one]
   have h1 : |deningerFreq m| ≤ deningerHeight m := abs_deningerFreq_le_height m
-  have h2 : ‖(a : DeningerLattice → ℂ) m‖ ≤ deningerHeightSeminorm 0 a :=
+  have h2 : ‖(a : DeningerPrimeLattice → ℂ) m‖ ≤ deningerHeightSeminorm 0 a :=
     deningerHeightKothe_norm_le a m
-  have hnn : (0 : ℝ) ≤ ‖(a : DeningerLattice → ℂ) m‖ := norm_nonneg _
-  calc |deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2
-      = |deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ *
-          ‖(a : DeningerLattice → ℂ) m‖ := by ring
-    _ ≤ deningerHeight m * ‖(a : DeningerLattice → ℂ) m‖ *
+  have hnn : (0 : ℝ) ≤ ‖(a : DeningerPrimeLattice → ℂ) m‖ := norm_nonneg _
+  calc |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2
+      = |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ *
+          ‖(a : DeningerPrimeLattice → ℂ) m‖ := by ring
+    _ ≤ deningerHeight m * ‖(a : DeningerPrimeLattice → ℂ) m‖ *
           deningerHeightSeminorm 0 a := by
         refine mul_le_mul (mul_le_mul_of_nonneg_right h1 hnn) h2 hnn ?_
         exact mul_nonneg (deningerHeight_pos m).le hnn
 
 /-- **The Green energy** `E(a) = ∑_m |ℓ(m)| |a_m|²`. -/
-def deningerEnergy (a : DeningerHeightKothe) : ℝ :=
-  ∑' m, |deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2
+def deningerHeightEnergy (a : DeningerHeightKothe) : ℝ :=
+  ∑' m, |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2
 
-theorem deningerEnergy_nonneg (a : DeningerHeightKothe) : 0 ≤ deningerEnergy a :=
+theorem deningerEnergy_nonneg (a : DeningerHeightKothe) : 0 ≤ deningerHeightEnergy a :=
   tsum_nonneg fun _ => mul_nonneg (abs_nonneg _) (sq_nonneg _)
 
 /-- **The Green energy is the pairing of a vector with the Hodge sign of its star.** -/
 theorem deningerPsi_hodgeStar (a : DeningerHeightKothe) :
     deningerPsi a (deningerHodgeSign (deningerHeightStar a))
-      = ((deningerEnergy a : ℝ) : ℂ) := by
-  have hterm : ∀ m : DeningerLattice,
-      ((deningerGenerator a : DeningerHeightKothe) : DeningerLattice → ℂ) m *
+      = ((deningerHeightEnergy a : ℝ) : ℂ) := by
+  have hterm : ∀ m : DeningerPrimeLattice,
+      ((deningerGenerator a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m *
         ((deningerHodgeSign (deningerHeightStar a) : DeningerHeightKothe) :
-          DeningerLattice → ℂ) (-m)
-        = -Complex.I * ((|deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) := by
+          DeningerPrimeLattice → ℂ) (-m)
+        = -Complex.I * ((|deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) := by
     intro m
     rw [deningerGenerator_coe, deningerHodgeSign_coe, deningerHeightStar_coe]
     rw [neg_neg]
@@ -189,27 +189,27 @@ theorem deningerPsi_hodgeStar (a : DeningerHeightKothe) :
         · have hneglt : deningerFreq (-m) < 0 := by rw [hneg]; linarith
           rw [deningerSign_of_neg hneglt, abs_of_pos h]
           ring
-      have hmul : (a : DeningerLattice → ℂ) m *
-          (starRingEnd ℂ) ((a : DeningerLattice → ℂ) m)
-          = ((‖(a : DeningerLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) := by
+      have hmul : (a : DeningerPrimeLattice → ℂ) m *
+          (starRingEnd ℂ) ((a : DeningerPrimeLattice → ℂ) m)
+          = ((‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) := by
         rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
-      calc ((deningerFreq m : ℝ) : ℂ) * (a : DeningerLattice → ℂ) m *
+      calc ((deningerFreq m : ℝ) : ℂ) * (a : DeningerPrimeLattice → ℂ) m *
             (Complex.I * ((deningerSign (-m) : ℝ) : ℂ) *
-              (starRingEnd ℂ) ((a : DeningerLattice → ℂ) m))
+              (starRingEnd ℂ) ((a : DeningerPrimeLattice → ℂ) m))
           = Complex.I * ((deningerFreq m * deningerSign (-m) : ℝ) : ℂ) *
-              ((a : DeningerLattice → ℂ) m *
-                (starRingEnd ℂ) ((a : DeningerLattice → ℂ) m)) := by
+              ((a : DeningerPrimeLattice → ℂ) m *
+                (starRingEnd ℂ) ((a : DeningerPrimeLattice → ℂ) m)) := by
             push_cast; ring
         _ = -Complex.I *
-              ((|deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) := by
+              ((|deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) := by
             rw [hsign, hmul]
             push_cast
             ring
-  have hsumC : Summable fun m : DeningerLattice =>
-      ((|deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) :=
+  have hsumC : Summable fun m : DeningerPrimeLattice =>
+      ((|deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) :=
     Complex.ofRealCLM.summable (deningerEnergy_summable a)
   rw [deningerPsi, deningerPairing, tsum_congr hterm,
-    Summable.tsum_mul_left _ hsumC, deningerEnergy, Complex.ofReal_tsum,
+    Summable.tsum_mul_left _ hsumC, deningerHeightEnergy, Complex.ofReal_tsum,
     ← mul_assoc]
   have hI : Complex.I * -Complex.I = 1 := by
     rw [mul_neg, Complex.I_mul_I, neg_neg]
@@ -218,38 +218,38 @@ theorem deningerPsi_hodgeStar (a : DeningerHeightKothe) :
 /-- **The Green energy vanishes exactly at the origin of the zero-character sector.** -/
 theorem deningerEnergy_eq_zero_iff (a : DeningerHeightKothe)
     (ha : a ∈ deningerHeightKotheZero) :
-    deningerEnergy a = 0 ↔ a = 0 := by
+    deningerHeightEnergy a = 0 ↔ a = 0 := by
   constructor
   · intro h
-    have ha0 : (a : DeningerLattice → ℂ) 0 = 0 := ha
-    have hterm : ∀ m : DeningerLattice,
-        |deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2 = 0 := by
+    have ha0 : (a : DeningerPrimeLattice → ℂ) 0 = 0 := ha
+    have hterm : ∀ m : DeningerPrimeLattice,
+        |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 = 0 := by
       intro m
       have hsum := deningerEnergy_summable a
       have hle := hsum.le_tsum m (fun j _ => mul_nonneg (abs_nonneg _) (sq_nonneg _))
-      have hnn : 0 ≤ |deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2 :=
+      have hnn : 0 ≤ |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 :=
         mul_nonneg (abs_nonneg _) (sq_nonneg _)
-      have : |deningerFreq m| * ‖(a : DeningerLattice → ℂ) m‖ ^ 2 ≤ 0 := by
+      have : |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 ≤ 0 := by
         rw [← h]
         exact hle
       linarith
     ext m
-    show (a : DeningerLattice → ℂ) m = 0
+    show (a : DeningerPrimeLattice → ℂ) m = 0
     by_cases hm : m = 0
     · subst hm; exact ha0
     · have hfreq : |deningerFreq m| ≠ 0 := abs_ne_zero.mpr (deningerFreq_ne_zero hm)
       have := hterm m
-      have hsq : ‖(a : DeningerLattice → ℂ) m‖ ^ 2 = 0 :=
+      have hsq : ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 = 0 :=
         (mul_eq_zero.mp this).resolve_left hfreq
-      have hnorm : ‖(a : DeningerLattice → ℂ) m‖ = 0 := by
-        nlinarith [norm_nonneg ((a : DeningerLattice → ℂ) m)]
+      have hnorm : ‖(a : DeningerPrimeLattice → ℂ) m‖ = 0 := by
+        nlinarith [norm_nonneg ((a : DeningerPrimeLattice → ℂ) m)]
       exact norm_eq_zero.mp hnorm
   · intro h
-    rw [h, deningerEnergy]
-    have hzero : ∀ m : DeningerLattice, |deningerFreq m| *
-        ‖((0 : DeningerHeightKothe) : DeningerLattice → ℂ) m‖ ^ 2 = 0 := by
+    rw [h, deningerHeightEnergy]
+    have hzero : ∀ m : DeningerPrimeLattice, |deningerFreq m| *
+        ‖((0 : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m‖ ^ 2 = 0 := by
       intro m
-      show |deningerFreq m| * ‖(0 : DeningerLattice → ℂ) m‖ ^ 2 = 0
+      show |deningerFreq m| * ‖(0 : DeningerPrimeLattice → ℂ) m‖ ^ 2 = 0
       simp
     rw [tsum_congr hzero, tsum_zero]
 
@@ -277,7 +277,7 @@ theorem deningerLagrangian_maximal (y v : DeningerHeightKothe)
     (h : ∀ x : DeningerHeightKothe,
       deningerPairing (deningerModulus x) y - deningerPairing v x = 0) :
     v = deningerModulus y := by
-  have hv0 : (v : DeningerLattice → ℂ) 0 = 0 := hv
+  have hv0 : (v : DeningerPrimeLattice → ℂ) 0 = 0 := hv
   ext m
   by_cases hm : m = 0
   · subst hm
@@ -286,10 +286,10 @@ theorem deningerLagrangian_maximal (y v : DeningerHeightKothe)
   · have hdelta := h (deningerKotheDelta deningerHeightKotheData (-m))
     have e1 : deningerPairing (deningerModulus
         (deningerKotheDelta deningerHeightKotheData (-m))) y
-        = ((deningerModulus y : DeningerHeightKothe) : DeningerLattice → ℂ) m := by
+        = ((deningerModulus y : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m := by
       rw [deningerPairing_modulus_symm, deningerPairing_delta, neg_neg]
     have e2 : deningerPairing v (deningerKotheDelta deningerHeightKotheData (-m))
-        = (v : DeningerLattice → ℂ) m := by
+        = (v : DeningerPrimeLattice → ℂ) m := by
       rw [deningerPairing_comm, deningerPairing_delta, neg_neg]
     rw [e1, e2] at hdelta
     exact (sub_eq_zero.mp hdelta).symm
@@ -303,15 +303,15 @@ theorem deningerLagrangian_closed (x : ℕ → DeningerHeightKothe) (y v : Denin
     v = deningerModulus y := by
   ext m
   have h1 : Tendsto (fun i => ((deningerModulus (x i) : DeningerHeightKothe) :
-      DeningerLattice → ℂ) m) atTop
-      (nhds ((v : DeningerLattice → ℂ) m)) := hAx.coord m
+      DeningerPrimeLattice → ℂ) m) atTop
+      (nhds ((v : DeningerPrimeLattice → ℂ) m)) := hAx.coord m
   have h2 : Tendsto (fun i => ((|deningerFreq m| : ℝ) : ℂ) *
-      ((x i : DeningerHeightKothe) : DeningerLattice → ℂ) m) atTop
-      (nhds (((|deningerFreq m| : ℝ) : ℂ) * (y : DeningerLattice → ℂ) m)) :=
+      ((x i : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m) atTop
+      (nhds (((|deningerFreq m| : ℝ) : ℂ) * (y : DeningerPrimeLattice → ℂ) m)) :=
     (hx.coord m).const_mul _
   have h1' : Tendsto (fun i => ((|deningerFreq m| : ℝ) : ℂ) *
-      ((x i : DeningerHeightKothe) : DeningerLattice → ℂ) m) atTop
-      (nhds ((v : DeningerLattice → ℂ) m)) := by
+      ((x i : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m) atTop
+      (nhds ((v : DeningerPrimeLattice → ℂ) m)) := by
     refine h1.congr fun i => ?_
     rw [deningerModulus_coe]
   have := tendsto_nhds_unique h1' h2

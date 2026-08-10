@@ -29,7 +29,7 @@ noncomputable section
 /-! ## Words -/
 
 /-- A word in the exponent lattice: a length together with a letter at each position. -/
-abbrev DeningerWord : Type := Σ r : ℕ, Fin r → DeningerLattice
+abbrev DeningerWord : Type := Σ r : ℕ, Fin r → DeningerPrimeLattice
 
 instance : Inhabited DeningerWord := ⟨⟨0, fun i => i.elim0⟩⟩
 
@@ -40,7 +40,7 @@ def deningerWordLength (w : DeningerWord) : ℕ := w.1
 def deningerWordHeight (w : DeningerWord) : ℝ := ∏ j, deningerHeight (w.2 j)
 
 /-- The total arithmetic character of a word. -/
-def deningerWordCharacter (w : DeningerWord) : DeningerLattice := ∑ j, w.2 j
+def deningerWordCharacter (w : DeningerWord) : DeningerPrimeLattice := ∑ j, w.2 j
 
 theorem one_le_deningerWordHeight (w : DeningerWord) : 1 ≤ deningerWordHeight w :=
   Finset.one_le_prod fun j _ => one_le_deningerHeight (w.2 j)
@@ -51,7 +51,7 @@ theorem deningerWordHeight_pos (w : DeningerWord) : 0 < deningerWordHeight w :=
 /-! ## The letterwise series -/
 
 theorem deningerHeight_summable_inv_pow {α : ℕ} (hα : 2 ≤ α) :
-    Summable fun m : DeningerLattice => (deningerHeight m)⁻¹ ^ α := by
+    Summable fun m : DeningerPrimeLattice => (deningerHeight m)⁻¹ ^ α := by
   refine Summable.of_nonneg_of_le
     (fun m => pow_nonneg (inv_nonneg.mpr (deningerHeight_pos m).le) α) (fun m => ?_)
     deningerHeight_summable_inv_sq
@@ -62,13 +62,13 @@ theorem deningerHeight_summable_inv_pow {α : ℕ} (hα : 2 ≤ α) :
   exact pow_le_pow_of_le_one h0 h1 hα
 
 /-- The letterwise height series `∑_m H(m)^{-α}`. -/
-def deningerHeightInvSum (α : ℕ) : ℝ := ∑' m : DeningerLattice, (deningerHeight m)⁻¹ ^ α
+def deningerHeightInvSum (α : ℕ) : ℝ := ∑' m : DeningerPrimeLattice, (deningerHeight m)⁻¹ ^ α
 
 theorem one_le_deningerHeightInvSum {α : ℕ} (hα : 2 ≤ α) :
     1 ≤ deningerHeightInvSum α := by
-  have hterm : (deningerHeight (0 : DeningerLattice))⁻¹ ^ α = 1 := by
+  have hterm : (deningerHeight (0 : DeningerPrimeLattice))⁻¹ ^ α = 1 := by
     rw [deningerHeight_zero, inv_one, one_pow]
-  have hle := (deningerHeight_summable_inv_pow hα).le_tsum (0 : DeningerLattice)
+  have hle := (deningerHeight_summable_inv_pow hα).le_tsum (0 : DeningerPrimeLattice)
     (fun j _ => pow_nonneg (inv_nonneg.mpr (deningerHeight_pos j).le) α)
   rw [hterm] at hle
   exact hle
@@ -85,20 +85,20 @@ theorem deningerHeightInvSum_le {α : ℕ} (hα : 2 ≤ α) :
 
 /-! ## The word series -/
 
-theorem deningerPi_summable_and_tsum {g : DeningerLattice → ℝ}
+theorem deningerPi_summable_and_tsum {g : DeningerPrimeLattice → ℝ}
     (hg : Summable g) (hnn : ∀ m, 0 ≤ g m) (r : ℕ) :
-    (Summable fun f : Fin r → DeningerLattice => ∏ j, g (f j)) ∧
-      (∑' f : Fin r → DeningerLattice, ∏ j, g (f j)) = (∑' m, g m) ^ r := by
+    (Summable fun f : Fin r → DeningerPrimeLattice => ∏ j, g (f j)) ∧
+      (∑' f : Fin r → DeningerPrimeLattice, ∏ j, g (f j)) = (∑' m, g m) ^ r := by
   induction r with
   | zero =>
       constructor
-      · have hfun : (fun f : Fin 0 → DeningerLattice => ∏ j, g (f j))
+      · have hfun : (fun f : Fin 0 → DeningerPrimeLattice => ∏ j, g (f j))
             = fun _ => (1 : ℝ) := by
           funext f
           simp
         rw [hfun]
         exact summable_of_hasFiniteSupport (Set.toFinite _)
-      · have hfun : (fun f : Fin 0 → DeningerLattice => ∏ j, g (f j))
+      · have hfun : (fun f : Fin 0 → DeningerPrimeLattice => ∏ j, g (f j))
             = fun _ => (1 : ℝ) := by
           funext f
           simp
@@ -107,41 +107,41 @@ theorem deningerPi_summable_and_tsum {g : DeningerLattice → ℝ}
           exact absurd (Subsingleton.elim b default) hb
   | succ r ih =>
       obtain ⟨ihsum, ihtsum⟩ := ih
-      have hprodSummable : Summable fun q : DeningerLattice × (Fin r → DeningerLattice) =>
+      have hprodSummable : Summable fun q : DeningerPrimeLattice × (Fin r → DeningerPrimeLattice) =>
           g q.1 * ∏ j, g (q.2 j) :=
         Summable.mul_of_nonneg (f := g)
-          (g := fun f : Fin r → DeningerLattice => ∏ j, g (f j)) hg ihsum hnn
+          (g := fun f : Fin r → DeningerPrimeLattice => ∏ j, g (f j)) hg ihsum hnn
           (fun f => Finset.prod_nonneg fun j _ => hnn (f j))
-      have hcons : ∀ q : DeningerLattice × (Fin r → DeningerLattice),
-          (∏ j, g (Fin.consEquiv (fun _ => DeningerLattice) q j)) = g q.1 * ∏ j, g (q.2 j) := by
+      have hcons : ∀ q : DeningerPrimeLattice × (Fin r → DeningerPrimeLattice),
+          (∏ j, g (Fin.consEquiv (fun _ => DeningerPrimeLattice) q j)) = g q.1 * ∏ j, g (q.2 j) := by
         intro q
         rw [Fin.prod_univ_succ]
         simp [Fin.consEquiv_apply]
       constructor
-      · refine ((Fin.consEquiv (fun _ : Fin (r + 1) => DeningerLattice)).summable_iff
-          (f := fun f : Fin (r + 1) → DeningerLattice => ∏ j, g (f j))).mp ?_
+      · refine ((Fin.consEquiv (fun _ : Fin (r + 1) => DeningerPrimeLattice)).summable_iff
+          (f := fun f : Fin (r + 1) → DeningerPrimeLattice => ∏ j, g (f j))).mp ?_
         refine hprodSummable.congr fun q => ?_
         exact (hcons q).symm
-      · rw [← (Fin.consEquiv (fun _ : Fin (r + 1) => DeningerLattice)).tsum_eq
-          (fun f : Fin (r + 1) → DeningerLattice => ∏ j, g (f j))]
+      · rw [← (Fin.consEquiv (fun _ : Fin (r + 1) => DeningerPrimeLattice)).tsum_eq
+          (fun f : Fin (r + 1) → DeningerPrimeLattice => ∏ j, g (f j))]
         rw [tsum_congr hcons]
         have hnormg : Summable fun m => ‖g m‖ := by
           refine hg.congr fun m => ?_
           rw [Real.norm_of_nonneg (hnn m)]
-        have hnormp : Summable fun f : Fin r → DeningerLattice => ‖∏ j, g (f j)‖ := by
+        have hnormp : Summable fun f : Fin r → DeningerPrimeLattice => ‖∏ j, g (f j)‖ := by
           refine ihsum.congr fun f => ?_
           rw [Real.norm_of_nonneg (Finset.prod_nonneg fun j _ => hnn (f j))]
         rw [← tsum_mul_tsum_of_summable_norm hnormg hnormp, ihtsum, pow_succ]
         ring
 
 theorem deningerWordPow_summable {α : ℕ} (hα : 2 ≤ α) (r : ℕ) :
-    Summable fun f : Fin r → DeningerLattice =>
+    Summable fun f : Fin r → DeningerPrimeLattice =>
       ∏ j, (deningerHeight (f j))⁻¹ ^ α :=
   (deningerPi_summable_and_tsum (deningerHeight_summable_inv_pow hα)
     (fun m => pow_nonneg (inv_nonneg.mpr (deningerHeight_pos m).le) α) r).1
 
 theorem deningerWordPow_tsum {α : ℕ} (hα : 2 ≤ α) (r : ℕ) :
-    (∑' f : Fin r → DeningerLattice, ∏ j, (deningerHeight (f j))⁻¹ ^ α)
+    (∑' f : Fin r → DeningerPrimeLattice, ∏ j, (deningerHeight (f j))⁻¹ ^ α)
       = deningerHeightInvSum α ^ r :=
   (deningerPi_summable_and_tsum (deningerHeight_summable_inv_pow hα)
     (fun m => pow_nonneg (inv_nonneg.mpr (deningerHeight_pos m).le) α) r).2
@@ -223,19 +223,19 @@ theorem deningerWordKotheData_isNuclear : deningerWordKotheData.IsNuclear := by
       inv_pow]
     field_simp
   -- the letterwise series
-  have hfiber : ∀ r : ℕ, Summable fun f : Fin r → DeningerLattice =>
+  have hfiber : ∀ r : ℕ, Summable fun f : Fin r → DeningerPrimeLattice =>
       deningerWordKotheData.w k (⟨r, f⟩ : DeningerWord) /
         deningerWordKotheData.w l (⟨r, f⟩ : DeningerWord) := by
     intro r
     refine ((deningerWordPow_summable hα r).mul_right (c ^ r)).congr fun f => ?_
     exact (hratio ⟨r, f⟩).symm
   have hfiberSum : ∀ r : ℕ,
-      (∑' f : Fin r → DeningerLattice,
+      (∑' f : Fin r → DeningerPrimeLattice,
         deningerWordKotheData.w k (⟨r, f⟩ : DeningerWord) /
           deningerWordKotheData.w l (⟨r, f⟩ : DeningerWord))
         = (c * deningerHeightInvSum α) ^ r := by
     intro r
-    have hcong : ∀ f : Fin r → DeningerLattice,
+    have hcong : ∀ f : Fin r → DeningerPrimeLattice,
         deningerWordKotheData.w k (⟨r, f⟩ : DeningerWord) /
           deningerWordKotheData.w l (⟨r, f⟩ : DeningerWord)
           = (∏ j, (deningerHeight (f j))⁻¹ ^ α) * c ^ r := fun f => hratio ⟨r, f⟩

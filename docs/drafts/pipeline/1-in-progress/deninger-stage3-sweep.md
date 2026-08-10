@@ -103,7 +103,11 @@ What else exists and must not be rebuilt:
      `DeningerAbelMassBound`: one Abel difference has mass at most
      `(1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`.  Working in `ℝ≥0∞` throughout removed every integrability
      side condition — that is the trick that made the exchange short.
-   - `(11)`--`(12)` — what is left is bookkeeping.  Do **not** chase a decreasing majorant for
+   - `(11)` for `r = 0` — **DONE**, `RHTower/DeningerAbelMajorant`, `DeningerPreimageMass`:
+     `∫_0^∞ |f_h(x)| dx < ∞`, stated as finiteness of the `ℝ≥0∞` integral so that no measurability
+     of `f_h` is needed.  Higher moments repeat the chain with `x^r`.
+   - `(12)` — needs `(15)`, whose discrete form is `∑_n μ(n)/n = 0` (PNT-equivalent, and *not*
+     corpus-owned: `Sieve.mertensM` and the rate are, but this identity is not).  Do **not** chase a decreasing majorant for
      `H_h'`; the clean route is Tonelli on the region: `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]` has
      length `u/(i(i+1))`, so `∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx ≤ (1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`,
      and summing against `|M(i)|` lands exactly on the already-proved `(9)`.
@@ -141,6 +145,10 @@ What else exists and must not be rebuilt:
 
 ## Log
 
+- 2026-08-10 — Proved `(11)` for `r = 0`: `∫_0^∞ |f_h| < ∞` (`RHTower/DeningerAbelMajorant`,
+  `DeningerPreimageMass`).  Two choices kept it short: state the conclusion as finiteness of the
+  `ℝ≥0∞` integral (no measurability of `f_h` needed anywhere), and get the pointwise bound from the
+  Abel `Tendsto` by `le_of_tendsto` against a uniform majorant rather than by proving summability.
 - 2026-08-10 — Built the Tonelli assembly (three modules).  The exchange is short because it is
   done entirely in `ℝ≥0∞`: `lintegral_lintegral_swap` needs only joint measurability of the window
   indicator, and no integrability hypothesis appears anywhere.  The slice computation is

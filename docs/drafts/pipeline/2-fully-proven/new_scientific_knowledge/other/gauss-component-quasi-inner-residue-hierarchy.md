@@ -1029,3 +1029,66 @@ Only the error propagation: replacing `T_δ` by `S*` and `T_δ^(-1)` by `S` cost
 `‖B‖·‖B^(-2)‖·(error of S*) + ‖B‖·(error of S)`, both of which tend to zero by the two uniform
 estimates.  Then (11) is the `m`-fold iterate, whose amplitudes stay in the exponential-piece class
 with a fixed decay constant.
+
+## Lean status, twenty-second pass: `G` is bounded
+
+`RHTower/GaussQuasiInnerNorm.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+norm_conjugateOperator_le        : conjugating by a linear isometry does not increase the norm
+norm_gaussDiagonalBlock_le       : ‖D‖  ≤ gaussSampleValueBound
+norm_gaussDiagonalBlockStar_le   : ‖D*‖ ≤ gaussSampleValueBound
+norm_gaussQuasiInnerG_le         : ‖G‖  ≤ p² · M²
+```
+
+### Why this is the right lever for the iteration
+
+The *normalized* block `S w = (d_n)^(-1) e_(-n) D (e_n w)` has operator norm of order `|d_n|^(-1)`,
+which blows up as `n → ∞`; an `L²` error must therefore never be propagated through `S`.  But `G`
+itself is a fixed bounded operator, and the one-step statement carries the scalar `p|d_n|²`, which
+exactly cancels the `|d_n|^(-1)`:
+
+```text
+p |d_n|² · S(v) = p · conj(d_n) · e_(-n) D (e_n v),   ‖·‖ ≤ p |d_n| M ‖v‖ → 0.
+```
+
+So in the iteration the errors are pushed through `G` (uniformly bounded) rather than through `S`,
+and each application of the one-step estimate is made at an *exact* amplitude, which is precisely
+how the card phrases §4.
+
+### Remaining
+
+The amplitude class: `f`, `B f`, `B^(-2) T_δ (B f)`, `a_δ f`, … must all carry one decay constant.
+Each is `e^{αx}` times a piecewise constant with a bounded number of jumps, so
+`norm_sum_expPieces_fourier_le` supplies the constant; what is left is to record the class and its
+closure under the three operations (multiply by `b^{±2}`, translate, multiply by `a_δ`).
+
+## Lean status, twenty-third pass: the amplitude class
+
+`HTGeometry/PiecewiseExponentialFourier.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+intervalIntegrable_of_eq_continuous_Ioo : agreeing with a continuous function on the open piece
+                                          gives interval integrability
+intervalIntegral_congr_Ioo              : and equality of the integrals
+IsExpPiecewise α n t c f                : f is e^{αx} times a piecewise constant with n pieces
+norm_fourierCoeff_of_isExpPiecewise     : ‖fourierCoeff f j‖ ≤ n·M·2e^{|α|}/(1+|j|)
+```
+
+The proof splits the period integral at the breakpoints with
+`intervalIntegral.sum_integral_adjacent_intervals` and applies the single-piece estimate; the
+endpoints are handled once and for all by the two transfer lemmas, so the hypothesis only has to
+describe `f` on the *open* pieces.
+
+This is the class that the iterated principal action lives in, and the decay constant it produces
+depends only on `n`, `M` and `α` — never on where the breakpoints are.  Since translating an
+amplitude moves its breakpoints and rescales its coefficients but changes neither `n`, nor `α`, nor
+the bound on `|c|`, the constant is uniform in the translation parameter `δ_n`.  That is exactly the
+card's "uniformly bounded variation" hypothesis, in the concrete form the amplitudes actually take.
+
+### Remaining
+
+Recording the three closure steps for the class — multiply by `p^{±(1-x)}` (shifts `α`), translate
+(moves breakpoints), multiply by `a_δ` (refines the partition) — and then assembling (10) and (11).

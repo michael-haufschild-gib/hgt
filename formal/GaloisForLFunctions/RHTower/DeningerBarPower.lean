@@ -154,7 +154,7 @@ theorem deningerBarSeminormR_power {q : ℕ} (hq : 0 < q) {k : ℕ} {R : ℝ}
 /-! ## The power map is a chain map -/
 
 theorem deningerBarPowerWord_insert {r : ℕ} (q : ℕ) (t : Fin (r + 2))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarPowerWord q (deningerInsertUnitWord t f)
       = deningerInsertUnitWord t (fun j => q • f j) := by
   refine Sigma.ext rfl (heq_of_eq ?_)
@@ -179,7 +179,7 @@ theorem deningerBarPowerWord_div_eq_iff (q : ℕ) (w : DeningerBarWord) :
     exact h j
 
 theorem deningerBarPowerWord_insert_div_iff {r : ℕ} (q : ℕ) (t : Fin (r + 2))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarPowerWord q (deningerBarDivWord q (deningerInsertUnitWord t f))
         = deningerInsertUnitWord t f
       ↔ deningerBarPowerWord q (deningerBarDivWord q (⟨r, f⟩ : DeningerBarWord))
@@ -197,22 +197,22 @@ theorem deningerBarPowerWord_insert_div_iff {r : ℕ} (q : ℕ) (t : Fin (r + 2)
         q • deningerDivExponent q (deningerInsertUnit t f i)
           = deningerInsertUnit t f i) t ?_ ?_ i
     · rw [deningerInsertUnit_same]
-      show q • deningerDivExponent q (0 : DeningerLattice) = 0
-      have hz : deningerDivExponent q (0 : DeningerLattice) = 0 := by
+      show q • deningerDivExponent q (0 : DeningerPrimeLattice) = 0
+      have hz : deningerDivExponent q (0 : DeningerPrimeLattice) = 0 := by
         ext p
-        show (0 : DeningerLattice) p / (q : ℤ) = 0
+        show (0 : DeningerPrimeLattice) p / (q : ℤ) = 0
         simp
       rw [hz, smul_zero]
     · intro k
       rw [deningerInsertUnit_succAbove]
       exact h k
 
-theorem deningerLattice_nsmul_eq_zero_iff {q : ℕ} (hq : 0 < q) (m : DeningerLattice) :
+theorem deningerLattice_nsmul_eq_zero_iff {q : ℕ} (hq : 0 < q) (m : DeningerPrimeLattice) :
     q • m = 0 ↔ m = 0 := by
   constructor
   · intro h
     ext p
-    have hp := congrArg (fun x : DeningerLattice => x p) h
+    have hp := congrArg (fun x : DeningerPrimeLattice => x p) h
     have hval : (q : ℤ) * m p = 0 := by
       have : (q • m) p = 0 := hp
       rwa [Finsupp.smul_apply, nsmul_eq_mul] at this
@@ -230,7 +230,7 @@ theorem deningerBarPower_diff {q : ℕ} (hq : 0 < q) (c : DeningerBarWord → �
   obtain ⟨s, f⟩ := w
   by_cases hdiv : deningerBarPowerWord q (deningerBarDivWord q (⟨s, f⟩ : DeningerBarWord))
       = (⟨s, f⟩ : DeningerBarWord)
-  · set g : Fin (s + 1) → DeningerLattice :=
+  · set g : Fin (s + 1) → DeningerPrimeLattice :=
       fun j => deningerDivExponent q (f j) with hg
     have hfg : ∀ j, q • g j = f j := (deningerBarPowerWord_div_eq_iff q _).mp hdiv
     have hfibre : ∀ j : Fin (s + 1),
@@ -288,7 +288,7 @@ theorem deningerBarPower_diff {q : ℕ} (hq : 0 < q) (c : DeningerBarWord → �
 
 /-! ## Reflection relations -/
 
-theorem deningerBarReflect_sector (γ : DeningerLattice) (c : DeningerBarWord → ℂ) :
+theorem deningerBarReflect_sector (γ : DeningerPrimeLattice) (c : DeningerBarWord → ℂ) :
     deningerBarCharMulCoe (fun m => if m = -γ then (1 : ℂ) else 0)
         (fun w => c (deningerBarReflectWord w))
       = fun w => deningerBarCharMulCoe (fun m => if m = γ then (1 : ℂ) else 0) c

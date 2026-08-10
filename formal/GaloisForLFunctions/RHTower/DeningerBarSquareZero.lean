@@ -26,7 +26,7 @@ variable {L : ℕ}
 /-! ## Insertion in natural coordinates -/
 
 /-- The commutation of two unit insertions, in natural-number positions. -/
-theorem deningerInsertUnit_comm_nat {r : ℕ} (f : Fin (r + 1) → DeningerLattice) (p q : ℕ)
+theorem deningerInsertUnit_comm_nat {r : ℕ} (f : Fin (r + 1) → DeningerPrimeLattice) (p q : ℕ)
     (hp : p < r + 3) (hq : q < r + 2) (hpq : p ≤ q) :
     deningerInsertUnit ⟨p, hp⟩ (deningerInsertUnit ⟨q, hq⟩ f)
       = deningerInsertUnit ⟨q + 1, by omega⟩
@@ -43,17 +43,17 @@ theorem deningerInsertUnit_comm_nat {r : ℕ} (f : Fin (r + 1) → DeningerLatti
 
 /-- The double fibre of the faces `j` and `j'`. -/
 def deningerBarDouble (j : Fin (L + 1)) (j' : Fin (L + 2))
-    (f : Fin (L + 1) → DeningerLattice) : Finset (Fin (L + 3) → DeningerLattice) :=
+    (f : Fin (L + 1) → DeningerPrimeLattice) : Finset (Fin (L + 3) → DeningerPrimeLattice) :=
   (deningerBarFibre j f).biUnion (deningerBarFibre j')
 
 theorem deningerBarDouble_eq (j : Fin (L + 1)) (j' : Fin (L + 2))
-    (f : Fin (L + 1) → DeningerLattice) :
+    (f : Fin (L + 1) → DeningerPrimeLattice) :
     deningerBarDouble j j' f =
       ({deningerInsertUnit j'.castSucc (deningerInsertUnit j.castSucc f),
         deningerInsertUnit j'.succ (deningerInsertUnit j.castSucc f),
         deningerInsertUnit j'.castSucc (deningerInsertUnit j.succ f),
         deningerInsertUnit j'.succ (deningerInsertUnit j.succ f)} :
-          Finset (Fin (L + 3) → DeningerLattice)) := by
+          Finset (Fin (L + 3) → DeningerPrimeLattice)) := by
   rw [deningerBarDouble, deningerBarFibre, Finset.biUnion_insert, Finset.singleton_biUnion,
     deningerBarFibre, deningerBarFibre]
   ext u
@@ -62,7 +62,7 @@ theorem deningerBarDouble_eq (j : Fin (L + 1)) (j' : Fin (L + 2))
 
 /-- The double fibre in natural coordinates. -/
 theorem deningerBarDouble_eq_nat (j : Fin (L + 1)) (j' : Fin (L + 2))
-    (f : Fin (L + 1) → DeningerLattice) :
+    (f : Fin (L + 1) → DeningerPrimeLattice) :
     deningerBarDouble j j' f =
       ({deningerInsertUnit ⟨(j' : ℕ), by omega⟩ (deningerInsertUnit ⟨(j : ℕ), by omega⟩ f),
         deningerInsertUnit ⟨(j' : ℕ) + 1, by omega⟩
@@ -71,7 +71,7 @@ theorem deningerBarDouble_eq_nat (j : Fin (L + 1)) (j' : Fin (L + 2))
           (deningerInsertUnit ⟨(j : ℕ) + 1, by omega⟩ f),
         deningerInsertUnit ⟨(j' : ℕ) + 1, by omega⟩
           (deningerInsertUnit ⟨(j : ℕ) + 1, by omega⟩ f)} :
-          Finset (Fin (L + 3) → DeningerLattice)) := by
+          Finset (Fin (L + 3) → DeningerPrimeLattice)) := by
   rw [deningerBarDouble_eq]
   have e1 : (j'.castSucc : Fin (L + 3)) = ⟨(j' : ℕ), by omega⟩ := Fin.ext (by simp)
   have e2 : (j'.succ : Fin (L + 3)) = ⟨(j' : ℕ) + 1, by omega⟩ := Fin.ext (by simp)
@@ -80,7 +80,7 @@ theorem deningerBarDouble_eq_nat (j : Fin (L + 1)) (j' : Fin (L + 2))
   rw [e1, e2, e3, e4]
 
 /-- **The simplicial identity for double fibres.** -/
-theorem deningerBarDouble_swap (f : Fin (L + 1) → DeningerLattice)
+theorem deningerBarDouble_swap (f : Fin (L + 1) → DeningerPrimeLattice)
     (j : Fin (L + 1)) (j' : Fin (L + 2)) (h : (j : ℕ) < (j' : ℕ)) :
     deningerBarDouble j j' f
       = deningerBarDouble ⟨(j' : ℕ) - 1, by omega⟩ ⟨(j : ℕ), by omega⟩ f := by
@@ -203,7 +203,7 @@ theorem deningerBarSwapIdx_ne (q : Fin (L + 1) × Fin (L + 2)) :
       simpa using hc
     omega
 
-theorem deningerBarDouble_swapIdx (f : Fin (L + 1) → DeningerLattice)
+theorem deningerBarDouble_swapIdx (f : Fin (L + 1) → DeningerPrimeLattice)
     (q : Fin (L + 1) × Fin (L + 2)) :
     deningerBarDouble (deningerBarSwapIdx q).1 (deningerBarSwapIdx q).2 f
       = deningerBarDouble q.1 q.2 f := by

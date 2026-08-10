@@ -26,17 +26,17 @@ noncomputable section
 variable {C : Type*} [AddCommGroup C] [Module ℂ C]
 
 /-- The Cartan contraction of a nonzero arithmetic-character piece. -/
-def deningerCartanHomotopy (m : DeningerLattice) (iota : C →ₗ[ℂ] C) : C →ₗ[ℂ] C :=
+def deningerCartanHomotopy (m : DeningerPrimeLattice) (iota : C →ₗ[ℂ] C) : C →ₗ[ℂ] C :=
   (((deningerFreq m)⁻¹ : ℝ) : ℂ) • iota
 
 @[simp]
-theorem deningerCartanHomotopy_apply (m : DeningerLattice) (iota : C →ₗ[ℂ] C) (x : C) :
+theorem deningerCartanHomotopy_apply (m : DeningerPrimeLattice) (iota : C →ₗ[ℂ] C) (x : C) :
     deningerCartanHomotopy m iota x = (((deningerFreq m)⁻¹ : ℝ) : ℂ) • iota x := rfl
 
 /-- **Strict contractibility of every nonzero arithmetic-character sector.**  If the
 anticommutator of the differential and the contraction is the character scalar, then dividing
 the contraction by that scalar produces a chain homotopy to the identity. -/
-theorem deningerCartanContraction (d iota : C →ₗ[ℂ] C) {m : DeningerLattice} (hm : m ≠ 0)
+theorem deningerCartanContraction (d iota : C →ₗ[ℂ] C) {m : DeningerPrimeLattice} (hm : m ≠ 0)
     (hL : ∀ x : C, d (iota x) + iota (d x) = ((deningerFreq m : ℝ) : ℂ) • x) (x : C) :
     d (deningerCartanHomotopy m iota x) + deningerCartanHomotopy m iota (d x) = x := by
   have hne : ((deningerFreq m : ℝ) : ℂ) ≠ 0 := by
@@ -51,7 +51,7 @@ theorem deningerCartanContraction (d iota : C →ₗ[ℂ] C) {m : DeningerLattic
 a homotopy bounded by `Cι` after raising the height weight by one. -/
 theorem deningerCartanContraction_seminorm_le (q : Seminorm ℂ C) (iota : C →ₗ[ℂ] C)
     {Ciota : ℝ} (hiota : ∀ x : C, q (iota x) ≤ Ciota * q x)
-    (m : DeningerLattice) (k : ℕ) (x : C) :
+    (m : DeningerPrimeLattice) (k : ℕ) (x : C) :
     deningerHeight m ^ k * q (deningerCartanHomotopy m iota x)
       ≤ Ciota * (deningerHeight m ^ (k + 1) * q x) := by
   have hnorm : q (deningerCartanHomotopy m iota x)

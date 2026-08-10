@@ -60,19 +60,19 @@ theorem deningerHeightSeminorm_mono {k l : ℕ} (h : k ≤ l) (a : DeningerHeigh
   deningerKotheSeminorm_le deningerHeightKotheData h a
 
 theorem deningerHeightKothe_summable_norm (a : DeningerHeightKothe) :
-    Summable fun m => ‖(a : DeningerLattice → ℂ) m‖ := by
+    Summable fun m => ‖(a : DeningerPrimeLattice → ℂ) m‖ := by
   refine (a.2 0).congr fun m => ?_
-  show deningerHeightKotheData.w 0 m * ‖(a : DeningerLattice → ℂ) m‖
-      = ‖(a : DeningerLattice → ℂ) m‖
+  show deningerHeightKotheData.w 0 m * ‖(a : DeningerPrimeLattice → ℂ) m‖
+      = ‖(a : DeningerPrimeLattice → ℂ) m‖
   rw [deningerHeightKotheData_w, pow_zero, one_mul]
 
-theorem deningerHeightKothe_norm_le (a : DeningerHeightKothe) (m : DeningerLattice) :
-    ‖(a : DeningerLattice → ℂ) m‖ ≤ deningerHeightSeminorm 0 a := by
+theorem deningerHeightKothe_norm_le (a : DeningerHeightKothe) (m : DeningerPrimeLattice) :
+    ‖(a : DeningerPrimeLattice → ℂ) m‖ ≤ deningerHeightSeminorm 0 a := by
   have h := deningerHeightSeminorm_coord_le 0 a m
   rwa [pow_zero, one_mul] at h
 
 theorem deningerHeightSeminorm_zero_eq (a : DeningerHeightKothe) :
-    deningerHeightSeminorm 0 a = ∑' m, ‖(a : DeningerLattice → ℂ) m‖ := by
+    deningerHeightSeminorm 0 a = ∑' m, ‖(a : DeningerPrimeLattice → ℂ) m‖ := by
   rw [deningerHeightSeminorm_apply]
   exact tsum_congr fun m => by rw [pow_zero, one_mul]
 

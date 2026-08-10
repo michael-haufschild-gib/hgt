@@ -22,7 +22,7 @@ open GaloisForLFunctions
 noncomputable section
 
 private theorem deningerBar_head_term (c : DeningerBarWord → ℂ) {s : ℕ}
-    (f : Fin (s + 1) → DeningerLattice) :
+    (f : Fin (s + 1) → DeningerPrimeLattice) :
     deningerBarFibreSum (deningerBarUnitCoe c) f 0 = c (⟨s, f⟩ : DeningerBarWord) := by
   have hzero : (0 : Fin (s + 1)).castSucc = (0 : Fin (s + 2)) := rfl
   rw [deningerBarFibreSum, hzero]
@@ -33,7 +33,7 @@ private theorem deningerBar_head_term (c : DeningerBarWord → ℂ) {s : ℕ}
       deningerBarUnitCoe_insert_succ c (0 : Fin (s + 1)) f h, add_zero]
 
 private theorem deningerBar_tail_term_of_ne (c : DeningerBarWord → ℂ) {r : ℕ}
-    (f : Fin (r + 2) → DeningerLattice) (hf : f 0 ≠ 0) (u : Fin (r + 1)) :
+    (f : Fin (r + 2) → DeningerPrimeLattice) (hf : f 0 ≠ 0) (u : Fin (r + 1)) :
     deningerBarFibreSum (deningerBarUnitCoe c) f u.succ = 0 := by
   have hcast : (u.succ).castSucc = (u.castSucc).succ := (Fin.succ_castSucc u).symm
   have h1 : deningerBarUnitCoe c
@@ -48,7 +48,7 @@ private theorem deningerBar_tail_term_of_ne (c : DeningerBarWord → ℂ) {r : �
   · rw [if_neg h, h1, h2, add_zero]
 
 private theorem deningerBar_tail_term_of_eq (c : DeningerBarWord → ℂ) {r : ℕ}
-    (f : Fin (r + 2) → DeningerLattice) (hf : f 0 = 0) (u : Fin (r + 1)) :
+    (f : Fin (r + 2) → DeningerPrimeLattice) (hf : f 0 = 0) (u : Fin (r + 1)) :
     deningerBarFibreSum (deningerBarUnitCoe c) f u.succ
       = deningerBarFibreSum c (Fin.tail f) u := by
   have hcast : (u.succ).castSucc = (u.castSucc).succ := (Fin.succ_castSucc u).symm

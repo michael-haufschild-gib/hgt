@@ -20,7 +20,7 @@ noncomputable section
 variable {r : ℕ}
 
 theorem deningerInsertUnit_apply_of_lt {t i : Fin (r + 2)}
-    (f : Fin (r + 1) → DeningerLattice) (h : (i : ℕ) < (t : ℕ))
+    (f : Fin (r + 1) → DeningerPrimeLattice) (h : (i : ℕ) < (t : ℕ))
     (k : Fin (r + 1)) (hk : (k : ℕ) = (i : ℕ)) :
     deningerInsertUnit t f i = f k := by
   have h1 : t.succAbove k = i := by
@@ -29,7 +29,7 @@ theorem deningerInsertUnit_apply_of_lt {t i : Fin (r + 2)}
   rw [← h1, deningerInsertUnit_succAbove]
 
 theorem deningerInsertUnit_apply_of_gt {t i : Fin (r + 2)}
-    (f : Fin (r + 1) → DeningerLattice) (h : (t : ℕ) < (i : ℕ))
+    (f : Fin (r + 1) → DeningerPrimeLattice) (h : (t : ℕ) < (i : ℕ))
     (k : Fin (r + 1)) (hk : (k : ℕ) + 1 = (i : ℕ)) :
     deningerInsertUnit t f i = f k := by
   have h1 : t.succAbove k = i := by
@@ -38,14 +38,14 @@ theorem deningerInsertUnit_apply_of_gt {t i : Fin (r + 2)}
   rw [← h1, deningerInsertUnit_succAbove]
 
 theorem deningerInsertUnit_apply_of_eq {t i : Fin (r + 2)}
-    (f : Fin (r + 1) → DeningerLattice) (h : (i : ℕ) = (t : ℕ)) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) (h : (i : ℕ) = (t : ℕ)) :
     deningerInsertUnit t f i = 0 := by
   have h1 : i = t := Fin.ext h
   rw [h1, deningerInsertUnit_same]
 
 /-- **Two unit insertions commute.**  Inserting at `b` and then at `a ≤ b` is the same as
 inserting at `a` and then at `b+1`. -/
-theorem deningerInsertUnit_comm (f : Fin (r + 1) → DeningerLattice) (a b : Fin (r + 2))
+theorem deningerInsertUnit_comm (f : Fin (r + 1) → DeningerPrimeLattice) (a b : Fin (r + 2))
     (hab : (a : ℕ) ≤ (b : ℕ)) :
     deningerInsertUnit a.castSucc (deningerInsertUnit b f)
       = deningerInsertUnit b.succ (deningerInsertUnit a f) := by

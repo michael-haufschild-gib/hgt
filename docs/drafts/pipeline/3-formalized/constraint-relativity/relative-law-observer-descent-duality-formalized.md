@@ -96,6 +96,12 @@ The mapping cone, built from scratch so that no exactness is assumed anywhere:
     **card `§6`, boxed**: forward value nonzero exactly for `t ≤ 0`, reflected value nonzero exactly
     for `0 ≤ t`, both nonzero exactly at `t = 0`.
 
+26. `shearRouteRSource`, `shearRouteRSource_eps_ne_zero`, `shearRouteRSource_alpha_ne_id` — **the
+    Route-R source datum is inhabited nondegenerately**: on `ℂ²` the shear `(x,y) ↦ (x, y+x)` with
+    augmentation `(x,y) ↦ x` and regulator `(x,y) ↦ y` satisfies both axioms with a nonzero
+    augmentation and a transport different from the identity.  Everything in items 18–25 is
+    therefore a statement about an inhabited class.
+
 ## Scope
 
 The exactness that item 7 takes as input is *proved* in items 13–14, so items 15 give `(ROD.10)`

@@ -103,6 +103,7 @@ theorem convex_range_evalPoint (hK : Convex ℝ K) :
   refine ⟨⟨a • (x : E) + b • (y : E), hK x.2 y.2 ha hb hab⟩, ?_⟩
   exact evalPoint_affine hK x.2 y.2 ha hb hab _ rfl
 
+omit [T2Space E] [IsTopologicalAddGroup E] [ContinuousSMul ℝ E] [LocallyConvexSpace ℝ E] in
 theorem stateBody_affineFunctions (hK : Convex ℝ K) :
     stateBody (affineFunctions hK) = Set.range (evalPoint (affineFunctions hK)) := by
   rw [stateBody, (convex_range_evalPoint hK).convexHull_eq,
@@ -156,6 +157,19 @@ theorem image_shilovBoundary_affineFunctions (hK : Convex ℝ K) (hKclosed : IsC
       (fun _ hf => star_mem_affineFunctions hK hf) (separating_affineFunctions hK),
     ← image_choquetBoundary_affineFunctions hK]
   exact (hemb.isClosedMap.closure_image_eq_of_continuous continuous_subtype_val _).symm
+
+/-- **The C*-envelope of the affine functions on a compact convex set.**  The restriction map onto
+the closure of the extreme points of `K` is a surjective `*`-homomorphism, isometric on `A(K)`, and
+its kernel is the Shilov ideal. -/
+theorem envelope_affineFunctions (hK : Convex ℝ K) (hKclosed : IsClosed K) :
+    Function.Surjective (envelopeMap (affineFunctions hK)) ∧
+      (∀ f ∈ affineFunctions hK, ‖envelopeMap (affineFunctions hK) f‖ = ‖f‖) ∧
+      (∀ f : C(K, ℂ), envelopeMap (affineFunctions hK) f = 0 ↔ f ∈ shilovIdeal (affineFunctions hK))
+      ∧ Subtype.val '' shilovBoundary (affineFunctions hK) = closure (K.extremePoints ℝ) := by
+  obtain ⟨hsurj, hiso, hker, -⟩ :=
+    envelope_isometric_surjective_kernel (affineFunctions hK) (one_mem_affineFunctions hK)
+      (fun _ hf => star_mem_affineFunctions hK hf) (separating_affineFunctions hK)
+  exact ⟨hsurj, hiso, hker, image_shilovBoundary_affineFunctions hK hKclosed⟩
 
 end ShilovLocal
 

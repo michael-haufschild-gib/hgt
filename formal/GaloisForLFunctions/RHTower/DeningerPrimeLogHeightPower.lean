@@ -29,14 +29,14 @@ noncomputable section
 /-! ## Division of exponent vectors -/
 
 /-- Coordinatewise division of an exponent vector by `q`. -/
-def deningerDivExponent (q : ℕ) (n : DeningerLattice) : DeningerLattice :=
+def deningerDivExponent (q : ℕ) (n : DeningerPrimeLattice) : DeningerPrimeLattice :=
   n.mapRange (fun z => z / (q : ℤ)) (by simp)
 
 @[simp]
-theorem deningerDivExponent_apply (q : ℕ) (n : DeningerLattice) (p : Nat.Primes) :
+theorem deningerDivExponent_apply (q : ℕ) (n : DeningerPrimeLattice) (p : Nat.Primes) :
     deningerDivExponent q n p = n p / (q : ℤ) := rfl
 
-theorem deningerDivExponent_nsmul {q : ℕ} (hq : 0 < q) (m : DeningerLattice) :
+theorem deningerDivExponent_nsmul {q : ℕ} (hq : 0 < q) (m : DeningerPrimeLattice) :
     deningerDivExponent q (q • m) = m := by
   ext p
   show (q • m) p / (q : ℤ) = m p
@@ -44,7 +44,7 @@ theorem deningerDivExponent_nsmul {q : ℕ} (hq : 0 < q) (m : DeningerLattice) :
   exact Int.mul_ediv_cancel_left _ (by exact_mod_cast hq.ne')
 
 theorem deningerNsmul_injective {q : ℕ} (hq : 0 < q) :
-    Function.Injective (fun m : DeningerLattice => q • m) := by
+    Function.Injective (fun m : DeningerPrimeLattice => q • m) := by
   intro m n h
   have hd := congrArg (deningerDivExponent q) h
   rwa [deningerDivExponent_nsmul hq, deningerDivExponent_nsmul hq] at hd
@@ -52,56 +52,56 @@ theorem deningerNsmul_injective {q : ℕ} (hq : 0 < q) :
 /-! ## The power map -/
 
 /-- The coefficient sequence of the power map `V_q δ_m = δ_{qm}`. -/
-def deningerPowerCoe (q : ℕ) (a : DeningerLattice → ℂ) : DeningerLattice → ℂ :=
+def deningerPowerCoe (q : ℕ) (a : DeningerPrimeLattice → ℂ) : DeningerPrimeLattice → ℂ :=
   fun n => if q • deningerDivExponent q n = n then a (deningerDivExponent q n) else 0
 
-theorem deningerPowerCoe_nsmul {q : ℕ} (hq : 0 < q) (a : DeningerLattice → ℂ)
-    (m : DeningerLattice) : deningerPowerCoe q a (q • m) = a m := by
+theorem deningerPowerCoe_nsmul {q : ℕ} (hq : 0 < q) (a : DeningerPrimeLattice → ℂ)
+    (m : DeningerPrimeLattice) : deningerPowerCoe q a (q • m) = a m := by
   rw [deningerPowerCoe]
   rw [deningerDivExponent_nsmul hq]
   rw [if_pos rfl]
 
-theorem deningerPowerCoe_eq_zero_of_notMem {q : ℕ} (a : DeningerLattice → ℂ)
-    {n : DeningerLattice} (hn : n ∉ Set.range fun m : DeningerLattice => q • m) :
+theorem deningerPowerCoe_eq_zero_of_notMem {q : ℕ} (a : DeningerPrimeLattice → ℂ)
+    {n : DeningerPrimeLattice} (hn : n ∉ Set.range fun m : DeningerPrimeLattice => q • m) :
     deningerPowerCoe q a n = 0 := by
   rw [deningerPowerCoe, if_neg]
   intro hcond
   exact hn ⟨deningerDivExponent q n, hcond⟩
 
 private theorem deningerPower_mem {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe) :
-    deningerPowerCoe q (a : DeningerLattice → ℂ) ∈ DeningerHeightKothe := by
+    deningerPowerCoe q (a : DeningerPrimeLattice → ℂ) ∈ DeningerHeightKothe := by
   intro k
-  refine (Function.Injective.summable_iff (f := fun n : DeningerLattice =>
-      deningerHeightKotheData.w k n * ‖deningerPowerCoe q (a : DeningerLattice → ℂ) n‖)
+  refine (Function.Injective.summable_iff (f := fun n : DeningerPrimeLattice =>
+      deningerHeightKotheData.w k n * ‖deningerPowerCoe q (a : DeningerPrimeLattice → ℂ) n‖)
     (deningerNsmul_injective hq) ?_).mp ?_
   · intro n hn
     rw [deningerPowerCoe_eq_zero_of_notMem _ hn, norm_zero, mul_zero]
   · refine (a.2 (q * k)).congr fun m => ?_
-    show deningerHeightKotheData.w (q * k) m * ‖(a : DeningerLattice → ℂ) m‖
+    show deningerHeightKotheData.w (q * k) m * ‖(a : DeningerPrimeLattice → ℂ) m‖
         = deningerHeightKotheData.w k (q • m) *
-          ‖deningerPowerCoe q (a : DeningerLattice → ℂ) (q • m)‖
+          ‖deningerPowerCoe q (a : DeningerPrimeLattice → ℂ) (q • m)‖
     rw [deningerPowerCoe_nsmul hq, deningerHeightKotheData_w, deningerHeightKotheData_w,
       deningerHeight_nsmul, ← pow_mul]
 
 /-- **The power map** `V_q` on the prime-log height source. -/
 def deningerPower (q : ℕ) (hq : 0 < q) :
     DeningerHeightKothe →ₗ[ℂ] DeningerHeightKothe where
-  toFun a := ⟨deningerPowerCoe q (a : DeningerLattice → ℂ), deningerPower_mem hq a⟩
+  toFun a := ⟨deningerPowerCoe q (a : DeningerPrimeLattice → ℂ), deningerPower_mem hq a⟩
   map_add' a b := by
     ext n
-    show deningerPowerCoe q ((a + b : DeningerHeightKothe) : DeningerLattice → ℂ) n
-        = ((⟨deningerPowerCoe q (a : DeningerLattice → ℂ), deningerPower_mem hq a⟩ +
-            ⟨deningerPowerCoe q (b : DeningerLattice → ℂ), deningerPower_mem hq b⟩ :
-              DeningerHeightKothe) : DeningerLattice → ℂ) n
+    show deningerPowerCoe q ((a + b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) n
+        = ((⟨deningerPowerCoe q (a : DeningerPrimeLattice → ℂ), deningerPower_mem hq a⟩ +
+            ⟨deningerPowerCoe q (b : DeningerPrimeLattice → ℂ), deningerPower_mem hq b⟩ :
+              DeningerHeightKothe) : DeningerPrimeLattice → ℂ) n
     simp only [Submodule.coe_add, Pi.add_apply, deningerPowerCoe]
     by_cases hn : q • deningerDivExponent q n = n
     · simp [hn]
     · simp [hn]
   map_smul' c a := by
     ext n
-    show deningerPowerCoe q ((c • a : DeningerHeightKothe) : DeningerLattice → ℂ) n
-        = ((c • (⟨deningerPowerCoe q (a : DeningerLattice → ℂ),
-            deningerPower_mem hq a⟩ : DeningerHeightKothe)) : DeningerLattice → ℂ) n
+    show deningerPowerCoe q ((c • a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) n
+        = ((c • (⟨deningerPowerCoe q (a : DeningerPrimeLattice → ℂ),
+            deningerPower_mem hq a⟩ : DeningerHeightKothe)) : DeningerPrimeLattice → ℂ) n
     simp only [Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, deningerPowerCoe]
     by_cases hn : q • deningerDivExponent q n = n
     · simp [hn]
@@ -109,9 +109,9 @@ def deningerPower (q : ℕ) (hq : 0 < q) :
 
 @[simp]
 theorem deningerPower_coe {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe)
-    (n : DeningerLattice) :
-    ((deningerPower q hq a : DeningerHeightKothe) : DeningerLattice → ℂ) n
-      = deningerPowerCoe q (a : DeningerLattice → ℂ) n := rfl
+    (n : DeningerPrimeLattice) :
+    ((deningerPower q hq a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) n
+      = deningerPowerCoe q (a : DeningerPrimeLattice → ℂ) n := rfl
 
 /-- **The power map rescales the seminorm index**: `p_k(V_q a) = p_{qk}(a)`. -/
 theorem deningerHeightSeminorm_power {q : ℕ} (hq : 0 < q) (k : ℕ)
@@ -120,19 +120,19 @@ theorem deningerHeightSeminorm_power {q : ℕ} (hq : 0 < q) (k : ℕ)
       = deningerHeightSeminorm (q * k) a := by
   rw [deningerHeightSeminorm_apply, deningerHeightSeminorm_apply]
   rw [← Function.Injective.tsum_eq (deningerNsmul_injective hq)
-    (f := fun n : DeningerLattice =>
+    (f := fun n : DeningerPrimeLattice =>
       deningerHeight n ^ k *
-        ‖((deningerPower q hq a : DeningerHeightKothe) : DeningerLattice → ℂ) n‖) ?_]
+        ‖((deningerPower q hq a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) n‖) ?_]
   · refine tsum_congr fun m => ?_
     show deningerHeight (q • m) ^ k *
-        ‖deningerPowerCoe q (a : DeningerLattice → ℂ) (q • m)‖
-        = deningerHeight m ^ (q * k) * ‖(a : DeningerLattice → ℂ) m‖
+        ‖deningerPowerCoe q (a : DeningerPrimeLattice → ℂ) (q • m)‖
+        = deningerHeight m ^ (q * k) * ‖(a : DeningerPrimeLattice → ℂ) m‖
     rw [deningerPowerCoe_nsmul hq, deningerHeight_nsmul, ← pow_mul]
   · intro n hn
     rw [Function.mem_support] at hn
     by_contra hrange
     apply hn
-    have hzero : ((deningerPower q hq a : DeningerHeightKothe) : DeningerLattice → ℂ) n = 0 := by
+    have hzero : ((deningerPower q hq a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) n = 0 := by
       rw [deningerPower_coe]
       exact deningerPowerCoe_eq_zero_of_notMem _ hrange
     rw [hzero, norm_zero, mul_zero]
@@ -144,9 +144,9 @@ theorem deningerPower_generator {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe)
       = (q : ℂ) • deningerPower q hq (deningerGenerator a) := by
   ext n
   rw [deningerGenerator_coe, deningerPower_coe]
-  show ((deningerFreq n : ℝ) : ℂ) * deningerPowerCoe q (a : DeningerLattice → ℂ) n
+  show ((deningerFreq n : ℝ) : ℂ) * deningerPowerCoe q (a : DeningerPrimeLattice → ℂ) n
       = (((q : ℂ) • (deningerPower q hq (deningerGenerator a)) :
-          DeningerHeightKothe) : DeningerLattice → ℂ) n
+          DeningerHeightKothe) : DeningerPrimeLattice → ℂ) n
   rw [Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, deningerPower_coe]
   simp only [deningerPowerCoe]
   by_cases hn : q • deningerDivExponent q n = n
@@ -164,9 +164,9 @@ theorem deningerPower_modulus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe) :
       = (q : ℂ) • deningerPower q hq (deningerModulus a) := by
   ext n
   rw [deningerModulus_coe, deningerPower_coe]
-  show ((|deningerFreq n| : ℝ) : ℂ) * deningerPowerCoe q (a : DeningerLattice → ℂ) n
+  show ((|deningerFreq n| : ℝ) : ℂ) * deningerPowerCoe q (a : DeningerPrimeLattice → ℂ) n
       = (((q : ℂ) • (deningerPower q hq (deningerModulus a)) :
-          DeningerHeightKothe) : DeningerLattice → ℂ) n
+          DeningerHeightKothe) : DeningerPrimeLattice → ℂ) n
   rw [Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, deningerPower_coe]
   simp only [deningerPowerCoe]
   by_cases hn : q • deningerDivExponent q n = n
@@ -181,7 +181,7 @@ theorem deningerPower_modulus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe) :
   · rw [if_neg hn, if_neg hn]
     ring
 
-theorem deningerSign_nsmul {q : ℕ} (hq : 0 < q) (m : DeningerLattice) :
+theorem deningerSign_nsmul {q : ℕ} (hq : 0 < q) (m : DeningerPrimeLattice) :
     deningerSign (q • m) = deningerSign m := by
   have hfreq : deningerFreq (q • m) = q * deningerFreq m := deningerFreq_nsmul q m
   have hqpos : (0 : ℝ) < (q : ℝ) := by exact_mod_cast hq
@@ -208,8 +208,8 @@ theorem deningerPower_hodgeSign {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe)
     ring
 
 theorem deningerPower_hardyPlus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe) :
-    deningerHardyPlus (deningerPower q hq a)
-      = deningerPower q hq (deningerHardyPlus a) := by
+    deningerHeightHardyPlus (deningerPower q hq a)
+      = deningerPower q hq (deningerHeightHardyPlus a) := by
   ext n
   rw [deningerHardyPlus_coe, deningerPower_coe, deningerPower_coe]
   simp only [deningerPowerCoe]
@@ -234,8 +234,8 @@ theorem deningerPower_hardyPlus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe)
     ring
 
 theorem deningerPower_hardyMinus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe) :
-    deningerHardyMinus (deningerPower q hq a)
-      = deningerPower q hq (deningerHardyMinus a) := by
+    deningerHeightHardyMinus (deningerPower q hq a)
+      = deningerPower q hq (deningerHeightHardyMinus a) := by
   ext n
   rw [deningerHardyMinus_coe, deningerPower_coe, deningerPower_coe]
   simp only [deningerPowerCoe]
@@ -261,7 +261,7 @@ theorem deningerPower_hardyMinus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe
 
 /-! ## Reflection relations -/
 
-theorem deningerSign_neg (m : DeningerLattice) :
+theorem deningerSign_neg (m : DeningerPrimeLattice) :
     deningerSign (-m) = -deningerSign m := by
   have hfreq : deningerFreq (-m) = -deningerFreq m := deningerFreq_neg m
   rcases lt_trichotomy (deningerFreq m) 0 with h | h | h
@@ -279,9 +279,9 @@ theorem deningerReflect_generator (a : DeningerHeightKothe) :
       = -deningerHeightReflect (deningerGenerator a) := by
   ext m
   rw [deningerGenerator_coe, deningerHeightReflect_coe]
-  show ((deningerFreq m : ℝ) : ℂ) * (a : DeningerLattice → ℂ) (-m)
+  show ((deningerFreq m : ℝ) : ℂ) * (a : DeningerPrimeLattice → ℂ) (-m)
       = ((-deningerHeightReflect (deningerGenerator a) : DeningerHeightKothe) :
-          DeningerLattice → ℂ) m
+          DeningerPrimeLattice → ℂ) m
   rw [Submodule.coe_neg, Pi.neg_apply, deningerHeightReflect_coe, deningerGenerator_coe,
     deningerFreq_neg]
   push_cast
@@ -299,17 +299,17 @@ theorem deningerReflect_hodgeSign (a : DeningerHeightKothe) :
       = -deningerHeightReflect (deningerHodgeSign a) := by
   ext m
   rw [deningerHodgeSign_coe, deningerHeightReflect_coe]
-  show Complex.I * ((deningerSign m : ℝ) : ℂ) * (a : DeningerLattice → ℂ) (-m)
+  show Complex.I * ((deningerSign m : ℝ) : ℂ) * (a : DeningerPrimeLattice → ℂ) (-m)
       = ((-deningerHeightReflect (deningerHodgeSign a) : DeningerHeightKothe) :
-          DeningerLattice → ℂ) m
+          DeningerPrimeLattice → ℂ) m
   rw [Submodule.coe_neg, Pi.neg_apply, deningerHeightReflect_coe, deningerHodgeSign_coe,
     deningerSign_neg]
   push_cast
   ring
 
 theorem deningerReflect_hardy (a : DeningerHeightKothe) :
-    deningerHeightReflect (deningerHardyPlus a)
-      = deningerHardyMinus (deningerHeightReflect a) := by
+    deningerHeightReflect (deningerHeightHardyPlus a)
+      = deningerHeightHardyMinus (deningerHeightReflect a) := by
   ext m
   rw [deningerHeightReflect_coe, deningerHardyPlus_coe, deningerHardyMinus_coe,
     deningerHeightReflect_coe]

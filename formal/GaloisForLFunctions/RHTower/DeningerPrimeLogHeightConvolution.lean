@@ -26,7 +26,7 @@ open GaloisForLFunctions
 noncomputable section
 
 /-- The shear equivalence `(m, n) ↦ (m + n, m)` of the exponent lattice square. -/
-def deningerShear : DeningerLattice × DeningerLattice ≃ DeningerLattice × DeningerLattice where
+def deningerHeightShear : DeningerPrimeLattice × DeningerPrimeLattice ≃ DeningerPrimeLattice × DeningerPrimeLattice where
   toFun q := (q.1 + q.2, q.1)
   invFun q := (q.2, q.1 - q.2)
   left_inv q := by
@@ -39,18 +39,18 @@ def deningerShear : DeningerLattice × DeningerLattice ≃ DeningerLattice × De
     abel
 
 @[simp]
-theorem deningerShear_symm_apply (q : DeningerLattice × DeningerLattice) :
-    deningerShear.symm q = (q.2, q.1 - q.2) := rfl
+theorem deningerShear_symm_apply (q : DeningerPrimeLattice × DeningerPrimeLattice) :
+    deningerHeightShear.symm q = (q.2, q.1 - q.2) := rfl
 
 /-! ## Summability of the double series -/
 
 private theorem deningerHeightProd_summable (a b : DeningerHeightKothe) (k : ℕ) :
-    Summable fun q : DeningerLattice × DeningerLattice =>
-      (deningerHeight q.1 ^ k * ‖(a : DeningerLattice → ℂ) q.1‖) *
-        (deningerHeight q.2 ^ k * ‖(b : DeningerLattice → ℂ) q.2‖) := by
+    Summable fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+      (deningerHeight q.1 ^ k * ‖(a : DeningerPrimeLattice → ℂ) q.1‖) *
+        (deningerHeight q.2 ^ k * ‖(b : DeningerPrimeLattice → ℂ) q.2‖) := by
   refine Summable.mul_of_nonneg
-    (f := fun m : DeningerLattice => deningerHeight m ^ k * ‖(a : DeningerLattice → ℂ) m‖)
-    (g := fun m : DeningerLattice => deningerHeight m ^ k * ‖(b : DeningerLattice → ℂ) m‖)
+    (f := fun m : DeningerPrimeLattice => deningerHeight m ^ k * ‖(a : DeningerPrimeLattice → ℂ) m‖)
+    (g := fun m : DeningerPrimeLattice => deningerHeight m ^ k * ‖(b : DeningerPrimeLattice → ℂ) m‖)
     (a.2 k) (b.2 k) ?_ ?_
   · intro m
     exact mul_nonneg (pow_nonneg (deningerHeight_pos m).le _) (norm_nonneg _)
@@ -58,65 +58,65 @@ private theorem deningerHeightProd_summable (a b : DeningerHeightKothe) (k : ℕ
     exact mul_nonneg (pow_nonneg (deningerHeight_pos m).le _) (norm_nonneg _)
 
 private theorem deningerHeightShear_summable (a b : DeningerHeightKothe) (k : ℕ) :
-    Summable fun q : DeningerLattice × DeningerLattice =>
-      (deningerHeight q.2 ^ k * ‖(a : DeningerLattice → ℂ) q.2‖) *
+    Summable fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+      (deningerHeight q.2 ^ k * ‖(a : DeningerPrimeLattice → ℂ) q.2‖) *
         (deningerHeight (q.1 - q.2) ^ k *
-          ‖(b : DeningerLattice → ℂ) (q.1 - q.2)‖) :=
-  (deningerShear.symm.summable_iff
-    (f := fun q : DeningerLattice × DeningerLattice =>
-      (deningerHeight q.1 ^ k * ‖(a : DeningerLattice → ℂ) q.1‖) *
-        (deningerHeight q.2 ^ k * ‖(b : DeningerLattice → ℂ) q.2‖))).mpr
+          ‖(b : DeningerPrimeLattice → ℂ) (q.1 - q.2)‖) :=
+  (deningerHeightShear.symm.summable_iff
+    (f := fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+      (deningerHeight q.1 ^ k * ‖(a : DeningerPrimeLattice → ℂ) q.1‖) *
+        (deningerHeight q.2 ^ k * ‖(b : DeningerPrimeLattice → ℂ) q.2‖))).mpr
     (deningerHeightProd_summable a b k)
 
 private theorem deningerHeightConv_norm_summable (a b : DeningerHeightKothe)
-    (r : DeningerLattice) :
-    Summable fun m : DeningerLattice =>
-      ‖(a : DeningerLattice → ℂ) m‖ * ‖(b : DeningerLattice → ℂ) (r - m)‖ := by
+    (r : DeningerPrimeLattice) :
+    Summable fun m : DeningerPrimeLattice =>
+      ‖(a : DeningerPrimeLattice → ℂ) m‖ * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖ := by
   have h := (deningerHeightShear_summable a b 0).prod_factor r
   refine h.congr fun m => ?_
   simp
 
 private theorem deningerHeightConv_fiber_summable (a b : DeningerHeightKothe)
-    (r : DeningerLattice) :
-    Summable fun m : DeningerLattice =>
-      (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m) := by
+    (r : DeningerPrimeLattice) :
+    Summable fun m : DeningerPrimeLattice =>
+      (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m) := by
   refine Summable.of_norm_bounded (deningerHeightConv_norm_summable a b r) fun m => ?_
   rw [norm_mul]
 
 /-! ## The convolution -/
 
 /-- The coefficient sequence of the convolution `(a * b)_r = ∑_m a_m b_{r-m}`. -/
-def deningerHeightConvCoe (a b : DeningerHeightKothe) : DeningerLattice → ℂ :=
-  fun r => ∑' m, (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)
+def deningerHeightConvCoe (a b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ :=
+  fun r => ∑' m, (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)
 
 private theorem deningerHeightConv_coord_le (a b : DeningerHeightKothe) (k : ℕ)
-    (r : DeningerLattice) :
+    (r : DeningerPrimeLattice) :
     deningerHeight r ^ k * ‖deningerHeightConvCoe a b r‖
-      ≤ ∑' m : DeningerLattice,
-          (deningerHeight m ^ k * ‖(a : DeningerLattice → ℂ) m‖) *
-            (deningerHeight (r - m) ^ k * ‖(b : DeningerLattice → ℂ) (r - m)‖) := by
-  have hnormSummable : Summable fun m : DeningerLattice =>
-      ‖(a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)‖ := by
+      ≤ ∑' m : DeningerPrimeLattice,
+          (deningerHeight m ^ k * ‖(a : DeningerPrimeLattice → ℂ) m‖) *
+            (deningerHeight (r - m) ^ k * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖) := by
+  have hnormSummable : Summable fun m : DeningerPrimeLattice =>
+      ‖(a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)‖ := by
     refine (deningerHeightConv_norm_summable a b r).congr fun m => ?_
     rw [norm_mul]
   have hnorm : ‖deningerHeightConvCoe a b r‖
-      ≤ ∑' m : DeningerLattice,
-          ‖(a : DeningerLattice → ℂ) m‖ * ‖(b : DeningerLattice → ℂ) (r - m)‖ := by
+      ≤ ∑' m : DeningerPrimeLattice,
+          ‖(a : DeningerPrimeLattice → ℂ) m‖ * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖ := by
     refine le_trans (norm_tsum_le_tsum_norm hnormSummable) (le_of_eq (tsum_congr fun m => ?_))
     rw [norm_mul]
   have hheight : (0 : ℝ) ≤ deningerHeight r ^ k := pow_nonneg (deningerHeight_pos r).le _
   calc deningerHeight r ^ k * ‖deningerHeightConvCoe a b r‖
       ≤ deningerHeight r ^ k *
-          ∑' m : DeningerLattice,
-            ‖(a : DeningerLattice → ℂ) m‖ * ‖(b : DeningerLattice → ℂ) (r - m)‖ :=
+          ∑' m : DeningerPrimeLattice,
+            ‖(a : DeningerPrimeLattice → ℂ) m‖ * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖ :=
         mul_le_mul_of_nonneg_left hnorm hheight
-    _ = ∑' m : DeningerLattice,
+    _ = ∑' m : DeningerPrimeLattice,
           deningerHeight r ^ k *
-            (‖(a : DeningerLattice → ℂ) m‖ * ‖(b : DeningerLattice → ℂ) (r - m)‖) :=
+            (‖(a : DeningerPrimeLattice → ℂ) m‖ * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖) :=
         (Summable.tsum_mul_left _ (deningerHeightConv_norm_summable a b r)).symm
-    _ ≤ ∑' m : DeningerLattice,
-          (deningerHeight m ^ k * ‖(a : DeningerLattice → ℂ) m‖) *
-            (deningerHeight (r - m) ^ k * ‖(b : DeningerLattice → ℂ) (r - m)‖) := by
+    _ ≤ ∑' m : DeningerPrimeLattice,
+          (deningerHeight m ^ k * ‖(a : DeningerPrimeLattice → ℂ) m‖) *
+            (deningerHeight (r - m) ^ k * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖) := by
         refine Summable.tsum_le_tsum (fun m => ?_)
           ((deningerHeightConv_norm_summable a b r).mul_left _)
           ((deningerHeightShear_summable a b k).prod_factor r)
@@ -129,16 +129,16 @@ private theorem deningerHeightConv_coord_le (a b : DeningerHeightKothe) (k : ℕ
               ≤ (deningerHeight m * deningerHeight (r - m)) ^ k :=
                 pow_le_pow_left₀ (deningerHeight_pos r).le hadd k
             _ = deningerHeight m ^ k * deningerHeight (r - m) ^ k := mul_pow _ _ _
-        have hnn : (0 : ℝ) ≤ ‖(a : DeningerLattice → ℂ) m‖ *
-            ‖(b : DeningerLattice → ℂ) (r - m)‖ :=
+        have hnn : (0 : ℝ) ≤ ‖(a : DeningerPrimeLattice → ℂ) m‖ *
+            ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖ :=
           mul_nonneg (norm_nonneg _) (norm_nonneg _)
         calc deningerHeight r ^ k *
-              (‖(a : DeningerLattice → ℂ) m‖ * ‖(b : DeningerLattice → ℂ) (r - m)‖)
+              (‖(a : DeningerPrimeLattice → ℂ) m‖ * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖)
             ≤ (deningerHeight m ^ k * deningerHeight (r - m) ^ k) *
-                (‖(a : DeningerLattice → ℂ) m‖ * ‖(b : DeningerLattice → ℂ) (r - m)‖) :=
+                (‖(a : DeningerPrimeLattice → ℂ) m‖ * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖) :=
               mul_le_mul_of_nonneg_right hsub hnn
-          _ = (deningerHeight m ^ k * ‖(a : DeningerLattice → ℂ) m‖) *
-                (deningerHeight (r - m) ^ k * ‖(b : DeningerLattice → ℂ) (r - m)‖) := by
+          _ = (deningerHeight m ^ k * ‖(a : DeningerPrimeLattice → ℂ) m‖) *
+                (deningerHeight (r - m) ^ k * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖) := by
               ring
 
 private theorem deningerHeightConv_mem (a b : DeningerHeightKothe) :
@@ -154,9 +154,9 @@ def deningerHeightConv (a b : DeningerHeightKothe) : DeningerHeightKothe :=
   ⟨deningerHeightConvCoe a b, deningerHeightConv_mem a b⟩
 
 @[simp]
-theorem deningerHeightConv_coe (a b : DeningerHeightKothe) (r : DeningerLattice) :
-    ((deningerHeightConv a b : DeningerHeightKothe) : DeningerLattice → ℂ) r
-      = ∑' m, (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m) := rfl
+theorem deningerHeightConv_coe (a b : DeningerHeightKothe) (r : DeningerPrimeLattice) :
+    ((deningerHeightConv a b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) r
+      = ∑' m, (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m) := rfl
 
 /-! ## Submultiplicativity -/
 
@@ -165,55 +165,55 @@ theorem deningerHeightSeminorm_conv_le (k : ℕ) (a b : DeningerHeightKothe) :
     deningerHeightSeminorm k (deningerHeightConv a b)
       ≤ deningerHeightSeminorm k a * deningerHeightSeminorm k b := by
   have hshear := deningerHeightShear_summable a b k
-  have hprodNormA : Summable fun m : DeningerLattice =>
-      ‖deningerHeight m ^ k * ‖(a : DeningerLattice → ℂ) m‖‖ := by
+  have hprodNormA : Summable fun m : DeningerPrimeLattice =>
+      ‖deningerHeight m ^ k * ‖(a : DeningerPrimeLattice → ℂ) m‖‖ := by
     refine (a.2 k).congr fun m => ?_
-    show deningerHeightKotheData.w k m * ‖(a : DeningerLattice → ℂ) m‖
-        = ‖deningerHeight m ^ k * ‖(a : DeningerLattice → ℂ) m‖‖
+    show deningerHeightKotheData.w k m * ‖(a : DeningerPrimeLattice → ℂ) m‖
+        = ‖deningerHeight m ^ k * ‖(a : DeningerPrimeLattice → ℂ) m‖‖
     rw [deningerHeightKotheData_w,
       Real.norm_of_nonneg (mul_nonneg (pow_nonneg (deningerHeight_pos m).le _)
         (norm_nonneg _))]
-  have hprodNormB : Summable fun m : DeningerLattice =>
-      ‖deningerHeight m ^ k * ‖(b : DeningerLattice → ℂ) m‖‖ := by
+  have hprodNormB : Summable fun m : DeningerPrimeLattice =>
+      ‖deningerHeight m ^ k * ‖(b : DeningerPrimeLattice → ℂ) m‖‖ := by
     refine (b.2 k).congr fun m => ?_
-    show deningerHeightKotheData.w k m * ‖(b : DeningerLattice → ℂ) m‖
-        = ‖deningerHeight m ^ k * ‖(b : DeningerLattice → ℂ) m‖‖
+    show deningerHeightKotheData.w k m * ‖(b : DeningerPrimeLattice → ℂ) m‖
+        = ‖deningerHeight m ^ k * ‖(b : DeningerPrimeLattice → ℂ) m‖‖
     rw [deningerHeightKotheData_w,
       Real.norm_of_nonneg (mul_nonneg (pow_nonneg (deningerHeight_pos m).le _)
         (norm_nonneg _))]
   have hstep :
       deningerHeightSeminorm k (deningerHeightConv a b)
-        ≤ ∑' r : DeningerLattice, ∑' m : DeningerLattice,
-            (deningerHeight m ^ k * ‖(a : DeningerLattice → ℂ) m‖) *
-              (deningerHeight (r - m) ^ k * ‖(b : DeningerLattice → ℂ) (r - m)‖) := by
+        ≤ ∑' r : DeningerPrimeLattice, ∑' m : DeningerPrimeLattice,
+            (deningerHeight m ^ k * ‖(a : DeningerPrimeLattice → ℂ) m‖) *
+              (deningerHeight (r - m) ^ k * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖) := by
     rw [deningerHeightSeminorm_apply]
     exact Summable.tsum_le_tsum (fun r => deningerHeightConv_coord_le a b k r)
       ((deningerHeightConv a b).2 k) hshear.prod
   have hfubini :
-      ∑' r : DeningerLattice, ∑' m : DeningerLattice,
-          (deningerHeight m ^ k * ‖(a : DeningerLattice → ℂ) m‖) *
-            (deningerHeight (r - m) ^ k * ‖(b : DeningerLattice → ℂ) (r - m)‖)
-        = ∑' q : DeningerLattice × DeningerLattice,
-            (deningerHeight q.2 ^ k * ‖(a : DeningerLattice → ℂ) q.2‖) *
+      ∑' r : DeningerPrimeLattice, ∑' m : DeningerPrimeLattice,
+          (deningerHeight m ^ k * ‖(a : DeningerPrimeLattice → ℂ) m‖) *
+            (deningerHeight (r - m) ^ k * ‖(b : DeningerPrimeLattice → ℂ) (r - m)‖)
+        = ∑' q : DeningerPrimeLattice × DeningerPrimeLattice,
+            (deningerHeight q.2 ^ k * ‖(a : DeningerPrimeLattice → ℂ) q.2‖) *
               (deningerHeight (q.1 - q.2) ^ k *
-                ‖(b : DeningerLattice → ℂ) (q.1 - q.2)‖) :=
+                ‖(b : DeningerPrimeLattice → ℂ) (q.1 - q.2)‖) :=
     (hshear.tsum_prod' (fun r => hshear.prod_factor r)).symm
   have hreindex :
-      ∑' q : DeningerLattice × DeningerLattice,
-          (deningerHeight q.2 ^ k * ‖(a : DeningerLattice → ℂ) q.2‖) *
+      ∑' q : DeningerPrimeLattice × DeningerPrimeLattice,
+          (deningerHeight q.2 ^ k * ‖(a : DeningerPrimeLattice → ℂ) q.2‖) *
             (deningerHeight (q.1 - q.2) ^ k *
-              ‖(b : DeningerLattice → ℂ) (q.1 - q.2)‖)
-        = ∑' q : DeningerLattice × DeningerLattice,
-            (deningerHeight q.1 ^ k * ‖(a : DeningerLattice → ℂ) q.1‖) *
-              (deningerHeight q.2 ^ k * ‖(b : DeningerLattice → ℂ) q.2‖) :=
-    deningerShear.symm.tsum_eq
-      (fun q : DeningerLattice × DeningerLattice =>
-        (deningerHeight q.1 ^ k * ‖(a : DeningerLattice → ℂ) q.1‖) *
-          (deningerHeight q.2 ^ k * ‖(b : DeningerLattice → ℂ) q.2‖))
+              ‖(b : DeningerPrimeLattice → ℂ) (q.1 - q.2)‖)
+        = ∑' q : DeningerPrimeLattice × DeningerPrimeLattice,
+            (deningerHeight q.1 ^ k * ‖(a : DeningerPrimeLattice → ℂ) q.1‖) *
+              (deningerHeight q.2 ^ k * ‖(b : DeningerPrimeLattice → ℂ) q.2‖) :=
+    deningerHeightShear.symm.tsum_eq
+      (fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+        (deningerHeight q.1 ^ k * ‖(a : DeningerPrimeLattice → ℂ) q.1‖) *
+          (deningerHeight q.2 ^ k * ‖(b : DeningerPrimeLattice → ℂ) q.2‖))
   have hproduct :
-      ∑' q : DeningerLattice × DeningerLattice,
-          (deningerHeight q.1 ^ k * ‖(a : DeningerLattice → ℂ) q.1‖) *
-            (deningerHeight q.2 ^ k * ‖(b : DeningerLattice → ℂ) q.2‖)
+      ∑' q : DeningerPrimeLattice × DeningerPrimeLattice,
+          (deningerHeight q.1 ^ k * ‖(a : DeningerPrimeLattice → ℂ) q.1‖) *
+            (deningerHeight q.2 ^ k * ‖(b : DeningerPrimeLattice → ℂ) q.2‖)
         = deningerHeightSeminorm k a * deningerHeightSeminorm k b := by
     rw [deningerHeightSeminorm_apply, deningerHeightSeminorm_apply]
     exact (tsum_mul_tsum_of_summable_norm hprodNormA hprodNormB).symm
@@ -227,9 +227,9 @@ theorem deningerHeightConv_add_left (a₁ a₂ b : DeningerHeightKothe) :
       = deningerHeightConv a₁ b + deningerHeightConv a₂ b := by
   ext r
   have hL : ((deningerHeightConv (a₁ + a₂) b : DeningerHeightKothe) :
-        DeningerLattice → ℂ) r
-      = ∑' m, ((a₁ : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)
-          + (a₂ : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)) := by
+        DeningerPrimeLattice → ℂ) r
+      = ∑' m, ((a₁ : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)
+          + (a₂ : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)) := by
     rw [deningerHeightConv_coe]
     refine tsum_congr fun m => ?_
     simp only [Submodule.coe_add, Pi.add_apply]
@@ -243,9 +243,9 @@ theorem deningerHeightConv_add_right (a b₁ b₂ : DeningerHeightKothe) :
       = deningerHeightConv a b₁ + deningerHeightConv a b₂ := by
   ext r
   have hL : ((deningerHeightConv a (b₁ + b₂) : DeningerHeightKothe) :
-        DeningerLattice → ℂ) r
-      = ∑' m, ((a : DeningerLattice → ℂ) m * (b₁ : DeningerLattice → ℂ) (r - m)
-          + (a : DeningerLattice → ℂ) m * (b₂ : DeningerLattice → ℂ) (r - m)) := by
+        DeningerPrimeLattice → ℂ) r
+      = ∑' m, ((a : DeningerPrimeLattice → ℂ) m * (b₁ : DeningerPrimeLattice → ℂ) (r - m)
+          + (a : DeningerPrimeLattice → ℂ) m * (b₂ : DeningerPrimeLattice → ℂ) (r - m)) := by
     rw [deningerHeightConv_coe]
     refine tsum_congr fun m => ?_
     simp only [Submodule.coe_add, Pi.add_apply]
@@ -257,16 +257,16 @@ theorem deningerHeightConv_add_right (a b₁ b₂ : DeningerHeightKothe) :
 theorem deningerHeightConv_smul_left (c : ℂ) (a b : DeningerHeightKothe) :
     deningerHeightConv (c • a) b = c • deningerHeightConv a b := by
   ext r
-  show (∑' m, ((c • a : DeningerHeightKothe) : DeningerLattice → ℂ) m *
-      (b : DeningerLattice → ℂ) (r - m))
-    = ((c • deningerHeightConv a b : DeningerHeightKothe) : DeningerLattice → ℂ) r
-  have hfun : ∀ m : DeningerLattice,
-      ((c • a : DeningerHeightKothe) : DeningerLattice → ℂ) m *
-        (b : DeningerLattice → ℂ) (r - m)
-        = c * ((a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)) := by
+  show (∑' m, ((c • a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m *
+      (b : DeningerPrimeLattice → ℂ) (r - m))
+    = ((c • deningerHeightConv a b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) r
+  have hfun : ∀ m : DeningerPrimeLattice,
+      ((c • a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m *
+        (b : DeningerPrimeLattice → ℂ) (r - m)
+        = c * ((a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)) := by
     intro m
-    show c * (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)
-        = c * ((a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m))
+    show c * (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)
+        = c * ((a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m))
     ring
   rw [tsum_congr hfun,
     Summable.tsum_mul_left c (deningerHeightConv_fiber_summable a b r)]
@@ -275,16 +275,16 @@ theorem deningerHeightConv_smul_left (c : ℂ) (a b : DeningerHeightKothe) :
 theorem deningerHeightConv_smul_right (c : ℂ) (a b : DeningerHeightKothe) :
     deningerHeightConv a (c • b) = c • deningerHeightConv a b := by
   ext r
-  show (∑' m, (a : DeningerLattice → ℂ) m *
-      ((c • b : DeningerHeightKothe) : DeningerLattice → ℂ) (r - m))
-    = ((c • deningerHeightConv a b : DeningerHeightKothe) : DeningerLattice → ℂ) r
-  have hfun : ∀ m : DeningerLattice,
-      (a : DeningerLattice → ℂ) m *
-        ((c • b : DeningerHeightKothe) : DeningerLattice → ℂ) (r - m)
-        = c * ((a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)) := by
+  show (∑' m, (a : DeningerPrimeLattice → ℂ) m *
+      ((c • b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) (r - m))
+    = ((c • deningerHeightConv a b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) r
+  have hfun : ∀ m : DeningerPrimeLattice,
+      (a : DeningerPrimeLattice → ℂ) m *
+        ((c • b : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) (r - m)
+        = c * ((a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)) := by
     intro m
-    show (a : DeningerLattice → ℂ) m * (c * (b : DeningerLattice → ℂ) (r - m))
-        = c * ((a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m))
+    show (a : DeningerPrimeLattice → ℂ) m * (c * (b : DeningerPrimeLattice → ℂ) (r - m))
+        = c * ((a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m))
     ring
   rw [tsum_congr hfun,
     Summable.tsum_mul_left c (deningerHeightConv_fiber_summable a b r)]
@@ -295,14 +295,14 @@ theorem deningerHeightConv_smul_right (c : ℂ) (a b : DeningerHeightKothe) :
 theorem deningerHeightConv_comm (a b : DeningerHeightKothe) :
     deningerHeightConv a b = deningerHeightConv b a := by
   ext r
-  show (∑' m, (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m))
-      = ∑' m, (b : DeningerLattice → ℂ) m * (a : DeningerLattice → ℂ) (r - m)
+  show (∑' m, (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m))
+      = ∑' m, (b : DeningerPrimeLattice → ℂ) m * (a : DeningerPrimeLattice → ℂ) (r - m)
   rw [← (Equiv.subLeft r).tsum_eq
-    (fun m : DeningerLattice =>
-      (b : DeningerLattice → ℂ) m * (a : DeningerLattice → ℂ) (r - m))]
+    (fun m : DeningerPrimeLattice =>
+      (b : DeningerPrimeLattice → ℂ) m * (a : DeningerPrimeLattice → ℂ) (r - m))]
   refine tsum_congr fun m => ?_
-  show (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)
-      = (b : DeningerLattice → ℂ) (r - m) * (a : DeningerLattice → ℂ) (r - (r - m))
+  show (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)
+      = (b : DeningerPrimeLattice → ℂ) (r - m) * (a : DeningerPrimeLattice → ℂ) (r - (r - m))
   rw [sub_sub_cancel, mul_comm]
 
 /-- The unit of the convolution is the basis vector at the zero character. -/
@@ -311,14 +311,14 @@ theorem deningerHeightConv_delta_zero_left (b : DeningerHeightKothe) :
   classical
   ext r
   show (∑' m, ((deningerKotheDelta deningerHeightKotheData 0 : DeningerHeightKothe) :
-      DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m))
-      = (b : DeningerLattice → ℂ) r
+      DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m))
+      = (b : DeningerPrimeLattice → ℂ) r
   rw [tsum_eq_single 0]
   · rw [deningerKotheDelta_coe]
     simp
   · intro m hm
     have hzero : ((deningerKotheDelta deningerHeightKotheData 0 : DeningerHeightKothe) :
-        DeningerLattice → ℂ) m = 0 := by
+        DeningerPrimeLattice → ℂ) m = 0 := by
       rw [deningerKotheDelta_coe]
       exact Pi.single_eq_of_ne hm 1
     rw [hzero, zero_mul]
@@ -326,30 +326,30 @@ theorem deningerHeightConv_delta_zero_left (b : DeningerHeightKothe) :
 /-! ## Associativity -/
 
 private theorem deningerHeightTriple_summable (a b c : DeningerHeightKothe)
-    (s : DeningerLattice) :
-    Summable fun q : DeningerLattice × DeningerLattice =>
-      (a : DeningerLattice → ℂ) q.1 * (b : DeningerLattice → ℂ) q.2 *
-        (c : DeningerLattice → ℂ) (s - q.1 - q.2) := by
-  have hbound : ∀ x : DeningerLattice,
-      ‖(c : DeningerLattice → ℂ) x‖ ≤ deningerHeightSeminorm 0 c := by
+    (s : DeningerPrimeLattice) :
+    Summable fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+      (a : DeningerPrimeLattice → ℂ) q.1 * (b : DeningerPrimeLattice → ℂ) q.2 *
+        (c : DeningerPrimeLattice → ℂ) (s - q.1 - q.2) := by
+  have hbound : ∀ x : DeningerPrimeLattice,
+      ‖(c : DeningerPrimeLattice → ℂ) x‖ ≤ deningerHeightSeminorm 0 c := by
     intro x
     have h := deningerHeightSeminorm_coord_le 0 c x
     rwa [pow_zero, one_mul] at h
-  have ha0 : Summable fun m : DeningerLattice => ‖(a : DeningerLattice → ℂ) m‖ := by
+  have ha0 : Summable fun m : DeningerPrimeLattice => ‖(a : DeningerPrimeLattice → ℂ) m‖ := by
     refine (a.2 0).congr fun m => ?_
-    show deningerHeightKotheData.w 0 m * ‖(a : DeningerLattice → ℂ) m‖
-        = ‖(a : DeningerLattice → ℂ) m‖
+    show deningerHeightKotheData.w 0 m * ‖(a : DeningerPrimeLattice → ℂ) m‖
+        = ‖(a : DeningerPrimeLattice → ℂ) m‖
     rw [deningerHeightKotheData_w, pow_zero, one_mul]
-  have hb0 : Summable fun m : DeningerLattice => ‖(b : DeningerLattice → ℂ) m‖ := by
+  have hb0 : Summable fun m : DeningerPrimeLattice => ‖(b : DeningerPrimeLattice → ℂ) m‖ := by
     refine (b.2 0).congr fun m => ?_
-    show deningerHeightKotheData.w 0 m * ‖(b : DeningerLattice → ℂ) m‖
-        = ‖(b : DeningerLattice → ℂ) m‖
+    show deningerHeightKotheData.w 0 m * ‖(b : DeningerPrimeLattice → ℂ) m‖
+        = ‖(b : DeningerPrimeLattice → ℂ) m‖
     rw [deningerHeightKotheData_w, pow_zero, one_mul]
-  have hprod : Summable fun q : DeningerLattice × DeningerLattice =>
-      ‖(a : DeningerLattice → ℂ) q.1‖ * ‖(b : DeningerLattice → ℂ) q.2‖ :=
+  have hprod : Summable fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+      ‖(a : DeningerPrimeLattice → ℂ) q.1‖ * ‖(b : DeningerPrimeLattice → ℂ) q.2‖ :=
     Summable.mul_of_nonneg
-      (f := fun m : DeningerLattice => ‖(a : DeningerLattice → ℂ) m‖)
-      (g := fun m : DeningerLattice => ‖(b : DeningerLattice → ℂ) m‖)
+      (f := fun m : DeningerPrimeLattice => ‖(a : DeningerPrimeLattice → ℂ) m‖)
+      (g := fun m : DeningerPrimeLattice => ‖(b : DeningerPrimeLattice → ℂ) m‖)
       ha0 hb0 (fun m => norm_nonneg _) (fun m => norm_nonneg _)
   refine Summable.of_norm_bounded (hprod.mul_right (deningerHeightSeminorm 0 c)) fun q => ?_
   rw [norm_mul, norm_mul]
@@ -357,21 +357,21 @@ private theorem deningerHeightTriple_summable (a b c : DeningerHeightKothe)
     (mul_nonneg (norm_nonneg _) (norm_nonneg _))
 
 private theorem deningerHeightTripleShear_summable (a b c : DeningerHeightKothe)
-    (s : DeningerLattice) :
-    Summable fun q : DeningerLattice × DeningerLattice =>
-      (a : DeningerLattice → ℂ) q.2 * (b : DeningerLattice → ℂ) (q.1 - q.2) *
-        (c : DeningerLattice → ℂ) (s - q.1) := by
-  have h := (deningerShear.symm.summable_iff
-    (f := fun q : DeningerLattice × DeningerLattice =>
-      (a : DeningerLattice → ℂ) q.1 * (b : DeningerLattice → ℂ) q.2 *
-        (c : DeningerLattice → ℂ) (s - q.1 - q.2))).mpr
+    (s : DeningerPrimeLattice) :
+    Summable fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+      (a : DeningerPrimeLattice → ℂ) q.2 * (b : DeningerPrimeLattice → ℂ) (q.1 - q.2) *
+        (c : DeningerPrimeLattice → ℂ) (s - q.1) := by
+  have h := (deningerHeightShear.symm.summable_iff
+    (f := fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+      (a : DeningerPrimeLattice → ℂ) q.1 * (b : DeningerPrimeLattice → ℂ) q.2 *
+        (c : DeningerPrimeLattice → ℂ) (s - q.1 - q.2))).mpr
     (deningerHeightTriple_summable a b c s)
   refine h.congr fun q => ?_
   have hindex : s - q.2 - (q.1 - q.2) = s - q.1 := by abel
-  show (a : DeningerLattice → ℂ) q.2 * (b : DeningerLattice → ℂ) (q.1 - q.2) *
-      (c : DeningerLattice → ℂ) (s - q.2 - (q.1 - q.2))
-      = (a : DeningerLattice → ℂ) q.2 * (b : DeningerLattice → ℂ) (q.1 - q.2) *
-        (c : DeningerLattice → ℂ) (s - q.1)
+  show (a : DeningerPrimeLattice → ℂ) q.2 * (b : DeningerPrimeLattice → ℂ) (q.1 - q.2) *
+      (c : DeningerPrimeLattice → ℂ) (s - q.2 - (q.1 - q.2))
+      = (a : DeningerPrimeLattice → ℂ) q.2 * (b : DeningerPrimeLattice → ℂ) (q.1 - q.2) *
+        (c : DeningerPrimeLattice → ℂ) (s - q.1)
   rw [hindex]
 
 theorem deningerHeightConv_assoc (a b c : DeningerHeightKothe) :
@@ -382,51 +382,51 @@ theorem deningerHeightConv_assoc (a b c : DeningerHeightKothe) :
   have hU := deningerHeightTripleShear_summable a b c s
   have hleft :
       ((deningerHeightConv (deningerHeightConv a b) c : DeningerHeightKothe) :
-          DeningerLattice → ℂ) s
-        = ∑' q : DeningerLattice × DeningerLattice,
-            (a : DeningerLattice → ℂ) q.2 * (b : DeningerLattice → ℂ) (q.1 - q.2) *
-              (c : DeningerLattice → ℂ) (s - q.1) := by
+          DeningerPrimeLattice → ℂ) s
+        = ∑' q : DeningerPrimeLattice × DeningerPrimeLattice,
+            (a : DeningerPrimeLattice → ℂ) q.2 * (b : DeningerPrimeLattice → ℂ) (q.1 - q.2) *
+              (c : DeningerPrimeLattice → ℂ) (s - q.1) := by
     rw [deningerHeightConv_coe]
     rw [hU.tsum_prod' (fun r => hU.prod_factor r)]
     refine tsum_congr fun r => ?_
-    show (∑' m, (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m)) *
-        (c : DeningerLattice → ℂ) (s - r)
-      = ∑' m, (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) (r - m) *
-          (c : DeningerLattice → ℂ) (s - r)
+    show (∑' m, (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m)) *
+        (c : DeningerPrimeLattice → ℂ) (s - r)
+      = ∑' m, (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) (r - m) *
+          (c : DeningerPrimeLattice → ℂ) (s - r)
     exact (Summable.tsum_mul_right _ (deningerHeightConv_fiber_summable a b r)).symm
   have hright :
       ((deningerHeightConv a (deningerHeightConv b c) : DeningerHeightKothe) :
-          DeningerLattice → ℂ) s
-        = ∑' q : DeningerLattice × DeningerLattice,
-            (a : DeningerLattice → ℂ) q.1 * (b : DeningerLattice → ℂ) q.2 *
-              (c : DeningerLattice → ℂ) (s - q.1 - q.2) := by
+          DeningerPrimeLattice → ℂ) s
+        = ∑' q : DeningerPrimeLattice × DeningerPrimeLattice,
+            (a : DeningerPrimeLattice → ℂ) q.1 * (b : DeningerPrimeLattice → ℂ) q.2 *
+              (c : DeningerPrimeLattice → ℂ) (s - q.1 - q.2) := by
     rw [deningerHeightConv_coe]
     rw [hT.tsum_prod' (fun m => hT.prod_factor m)]
     refine tsum_congr fun m => ?_
-    show (a : DeningerLattice → ℂ) m *
-        (∑' n, (b : DeningerLattice → ℂ) n * (c : DeningerLattice → ℂ) (s - m - n))
-      = ∑' n, (a : DeningerLattice → ℂ) m * (b : DeningerLattice → ℂ) n *
-          (c : DeningerLattice → ℂ) (s - m - n)
+    show (a : DeningerPrimeLattice → ℂ) m *
+        (∑' n, (b : DeningerPrimeLattice → ℂ) n * (c : DeningerPrimeLattice → ℂ) (s - m - n))
+      = ∑' n, (a : DeningerPrimeLattice → ℂ) m * (b : DeningerPrimeLattice → ℂ) n *
+          (c : DeningerPrimeLattice → ℂ) (s - m - n)
     rw [← Summable.tsum_mul_left _ (deningerHeightConv_fiber_summable b c (s - m))]
     refine tsum_congr fun n => ?_
     ring
   have hcong :
-      ∑' q : DeningerLattice × DeningerLattice,
-          (a : DeningerLattice → ℂ) q.2 * (b : DeningerLattice → ℂ) (q.1 - q.2) *
-            (c : DeningerLattice → ℂ) (s - q.1)
-        = ∑' q : DeningerLattice × DeningerLattice,
-            (a : DeningerLattice → ℂ) (deningerShear.symm q).1 *
-              (b : DeningerLattice → ℂ) (deningerShear.symm q).2 *
-              (c : DeningerLattice → ℂ)
-                (s - (deningerShear.symm q).1 - (deningerShear.symm q).2) := by
+      ∑' q : DeningerPrimeLattice × DeningerPrimeLattice,
+          (a : DeningerPrimeLattice → ℂ) q.2 * (b : DeningerPrimeLattice → ℂ) (q.1 - q.2) *
+            (c : DeningerPrimeLattice → ℂ) (s - q.1)
+        = ∑' q : DeningerPrimeLattice × DeningerPrimeLattice,
+            (a : DeningerPrimeLattice → ℂ) (deningerHeightShear.symm q).1 *
+              (b : DeningerPrimeLattice → ℂ) (deningerHeightShear.symm q).2 *
+              (c : DeningerPrimeLattice → ℂ)
+                (s - (deningerHeightShear.symm q).1 - (deningerHeightShear.symm q).2) := by
     refine tsum_congr fun q => ?_
     have hindex : s - q.1 = s - q.2 - (q.1 - q.2) := by abel
     simp only [deningerShear_symm_apply, hindex]
   rw [hleft, hright, hcong]
-  exact deningerShear.symm.tsum_eq
-    (fun q : DeningerLattice × DeningerLattice =>
-      (a : DeningerLattice → ℂ) q.1 * (b : DeningerLattice → ℂ) q.2 *
-        (c : DeningerLattice → ℂ) (s - q.1 - q.2))
+  exact deningerHeightShear.symm.tsum_eq
+    (fun q : DeningerPrimeLattice × DeningerPrimeLattice =>
+      (a : DeningerPrimeLattice → ℂ) q.1 * (b : DeningerPrimeLattice → ℂ) q.2 *
+        (c : DeningerPrimeLattice → ℂ) (s - q.1 - q.2))
 
 end
 

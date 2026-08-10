@@ -840,3 +840,17 @@ Direct foreground elaboration is warning-free. The leaf build passes with 8,665 
 umbrella. Axiom prints report at most `propext`, `Classical.choice`, and `Quot.sound`; the exact
 attained-fixed equivalence reports no axioms. No computation certificate, route premise, project
 axiom, or RH statement occurs.
+
+## Session 2026-08-10 addition (Autopoietic Law Mechanics viability laboratory)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ALM-1 | Conservative repair preserves semantic range while birthing a kernel-history direction; canonical positive chamber has unique normalized full-support carrier, loses every strict progress functional, and supports stationary-endpoint histories with unbounded positive cost | `HTGeometry.ConstitutiveViabilityCoercivityTransmutation` |
+
+Direct foreground elaboration and the leaf build pass; the final
+`HTGeometry.UniversalLawField` umbrella build passes with 11,586 jobs. The module is wired into the
+umbrella. Axiom prints on the general conservative-repair laws, canonical chamber theorems, and
+unconditional capstone report only `propext`, `Classical.choice`, and `Quot.sound`. Full formal lint
+reports only the unrelated umbrella-reachability failure
+`GaloisForLFunctions.HTGeometry.AffineFunctionSystemEnvelope`. No computation certificate, route
+premise, project axiom, or RH statement occurs.

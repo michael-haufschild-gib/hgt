@@ -37,7 +37,7 @@ theorem deningerBarWeightR_summable {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : Deni
 
 /-- Unit insertion multiplies the two-parameter weight by `R`. -/
 theorem deningerBarWeightR_insert (k : ℕ) (R : ℝ) {r : ℕ} (t : Fin (r + 2))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarWeightR k R (deningerInsertUnitWord t f)
       = R * deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) := by
   rw [deningerBarWeightR, deningerBarWeightR, deningerInsertUnitWord_height,
@@ -46,12 +46,12 @@ theorem deningerBarWeightR_insert (k : ℕ) (R : ℝ) {r : ℕ} (t : Fin (r + 2)
 
 /-- The length-`r` slice of a weighted word series. -/
 def deningerBarSliceR (k : ℕ) (R : ℝ) (c : DeningerBarWord → ℂ) (r : ℕ) : ℝ :=
-  ∑' f : Fin (r + 1) → DeningerLattice,
+  ∑' f : Fin (r + 1) → DeningerPrimeLattice,
     deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) * ‖c (⟨r, f⟩ : DeningerBarWord)‖
 
 theorem deningerBarSlice_summable {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : DeningerBarKothe)
     (r : ℕ) :
-    Summable fun f : Fin (r + 1) → DeningerLattice =>
+    Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
         ‖(c : DeningerBarWord → ℂ) (⟨r, f⟩ : DeningerBarWord)‖ :=
   ((summable_sigma_of_nonneg
@@ -78,23 +78,23 @@ theorem deningerBarSeminormR_eq_tsum_slice {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
 the insertion at a fixed position is bounded by the next length slice divided by `R`. -/
 theorem deningerBarInsert_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : DeningerBarKothe)
     (r : ℕ) (t : Fin (r + 2)) :
-    (∑' f : Fin (r + 1) → DeningerLattice,
+    (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord t f)‖)
       ≤ R⁻¹ * deningerBarSliceR k R (c : DeningerBarWord → ℂ) (r + 1) := by
   have hRpos : (0 : ℝ) < R := by linarith
-  have hcomp : Summable fun f : Fin (r + 1) → DeningerLattice =>
+  have hcomp : Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       deningerBarWeightR k R (deningerInsertUnitWord t f) *
         ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord t f)‖ :=
     (deningerBarSlice_summable hR c (r + 1)).comp_injective
       (deningerInsertUnit_injective t)
-  have hsum : Summable fun f : Fin (r + 1) → DeningerLattice =>
+  have hsum : Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
         ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord t f)‖ := by
     refine (hcomp.mul_left R⁻¹).congr fun f => ?_
     rw [deningerBarWeightR_insert]
     field_simp
-  have hle : (∑' f : Fin (r + 1) → DeningerLattice,
+  have hle : (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarWeightR k R (deningerInsertUnitWord t f) *
           ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord t f)‖)
       ≤ deningerBarSliceR k R (c : DeningerBarWord → ℂ) (r + 1) := by
@@ -105,10 +105,10 @@ theorem deningerBarInsert_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : Denin
       exact mul_nonneg (deningerBarWeightR_nonneg k hRpos.le _) (norm_nonneg _)
     · intro f
       exact le_of_eq rfl
-  have hrewrite : (∑' f : Fin (r + 1) → DeningerLattice,
+  have hrewrite : (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarWeightR k R (⟨r, f⟩ : DeningerBarWord) *
           ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord t f)‖)
-      = R⁻¹ * ∑' f : Fin (r + 1) → DeningerLattice,
+      = R⁻¹ * ∑' f : Fin (r + 1) → DeningerPrimeLattice,
           deningerBarWeightR k R (deningerInsertUnitWord t f) *
             ‖(c : DeningerBarWord → ℂ) (deningerInsertUnitWord t f)‖ := by
     rw [← Summable.tsum_mul_left _ hcomp]

@@ -754,10 +754,10 @@ Classical.choice, Quot.sound`.
 - `deningerAbelWindow_length` — its length is `u/(i(i+1))`.
 - `deningerAbelCoefficient_summable` — **`∑_i |M(i)|/(i(i+1)) < ∞`**, by comparison with `(9)`.
 
-Every analytic ingredient of `(11)` is proved: the saving `(8)`, the series `(9)`, Abel summation
-`(10)`, the weighted-derivative bound, the window and its measure, the coefficient summability,
-the finiteness of the weighted moment, and the per-difference mass bound.  What remains is the
-bookkeeping that turns the `Tendsto` of `(10)` into a bound on `∫_0^∞ |f_h|` term by term.
+`(11)` for `r = 0` is proved.  The higher moments `r ≥ 1` follow the same chain with `x^r` in the
+integrand: the only change is that the window integral produces `∫_0^∞ u^{r+1}|H_h'(u)|du`, which
+is finite by the same two-sided decay, and the coefficient becomes `1/(i^{r+1}(i+1))`, still
+summable against `(9)`.  Then `(12)` needs `(15)`, whose discrete form is `∑_n μ(n)/n = 0`.
 
 ### Section 2 — the first weighted moment `[DONE]`
 
@@ -786,6 +786,23 @@ Classical.choice, Quot.sound`.
 
 This is the analytic core of `(11)`: combined with `deningerAbelCoefficient_summable` and
 `deningerWeightedMoment_integrable`, the mass of `f_h` is finite.
+
+### Section 2 — `(11)` for `r = 0`: the preimage has finite mass `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbelMajorant.lean`,
+`DeningerPreimageMass.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerWeightedMomentMass_lt_top` — the first weighted moment is finite as an `ℝ≥0∞` integral.
+- `deningerAbelMajorant`, `deningerAbelMajorant_mass_lt_top` — the majorant
+  `∑_i |M(i)| ‖H_h((i+1)x) - H_h(ix)‖` has finite total mass over the ray: monotone convergence
+  exchanges the sum with the integral, each term costs `1/(i(i+1))` times the weighted moment, and
+  the coefficient series is summable by `(9)`.
+- `deningerMobiusPreimage_enorm_le` — the Abel partial sums are uniformly bounded by the majorant,
+  so the preimage is too.
+- `deningerMobiusPreimage_mass_lt_top` — **`∫_0^∞ |f_h(x)| dx < ∞`.**
+
+Stating the conclusion as finiteness of the `ℝ≥0∞` integral rather than `IntegrableOn` is
+deliberate: it needs no measurability of `f_h` at all, and the comparison is pure `lintegral_mono`.
 
 ### What is left
 

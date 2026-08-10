@@ -101,7 +101,7 @@ theorem deningerBarKothe_isNuclearSpace :
 
 /-- **No nonunit letter has character zero**, so the length-one part of the balanced sector is
 exactly the scalar line. -/
-theorem deningerBarChar_one_eq_zero_iff (f : Fin 1 → DeningerLattice) :
+theorem deningerBarChar_one_eq_zero_iff (f : Fin 1 → DeningerPrimeLattice) :
     deningerBarChar (⟨0, f⟩ : DeningerBarWord) = 0 ↔ f 0 = 0 := by
   show (∑ i, f i) = 0 ↔ f 0 = 0
   rw [Fin.sum_univ_one]
@@ -189,7 +189,7 @@ theorem deningerBarSeminorm_reflect (k : ℕ) (c : DeningerBarKothe) :
 
 /-- Reflection commutes with unit insertion. -/
 theorem deningerBarReflectWord_insert {r : ℕ} (t : Fin (r + 2))
-    (f : Fin (r + 1) → DeningerLattice) :
+    (f : Fin (r + 1) → DeningerPrimeLattice) :
     deningerBarReflectWord (deningerInsertUnitWord t f)
       = deningerInsertUnitWord t (fun j => -(f j)) := by
   refine Sigma.ext rfl (heq_of_eq ?_)

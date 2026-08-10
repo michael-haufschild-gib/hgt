@@ -30,6 +30,11 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
    the absolute coordinate `T`; `IsAbsoluteSplitting.factor_unique` — that factorization is unique,
    because `T j = 1` makes `T` surjective.
 
+5b. `isAbsoluteSplitting_prod`, `isAbsoluteSplitting_prod_observer_ne_bot` — **the splitting
+    datum exists**: for arbitrary `A₁` and `O` the product `A₁ × O` carries a canonical absolute
+    splitting (inclusion, projection, retraction, section), with nonzero absolute part whenever `O`
+    is nonzero.  Items 1–5 are therefore statements about an inhabited class, not vacuous ones.
+
 §3, coframe before metric:
 
 6. `portVector`, `inner_portVector`, `portVector_ne_zero` — Riesz representation of the port `M`.

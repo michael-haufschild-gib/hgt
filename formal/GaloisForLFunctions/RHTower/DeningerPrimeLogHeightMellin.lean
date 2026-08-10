@@ -25,13 +25,13 @@ open GaloisForLFunctions
 noncomputable section
 
 /-- The integrand of the centered Mellin jet. -/
-def deningerMellinSymbol (s : ℂ) (j : ℕ) (m : DeningerLattice) : ℂ :=
+def deningerMellinSymbol (s : ℂ) (j : ℕ) (m : DeningerPrimeLattice) : ℂ :=
   ((-(deningerFreq m) : ℝ) : ℂ) ^ j *
     Complex.exp (-(s - 1 / 2) * ((deningerFreq m : ℝ) : ℂ))
 
 /-- The Mellin symbol is a multiplier of growth `|Re(s-½)| + j`. -/
 theorem deningerMellinSymbol_norm_le (s : ℂ) (j k : ℕ)
-    (hk : |(s - 1 / 2).re| + (j : ℝ) ≤ (k : ℝ)) (m : DeningerLattice) :
+    (hk : |(s - 1 / 2).re| + (j : ℝ) ≤ (k : ℝ)) (m : DeningerPrimeLattice) :
     ‖deningerMellinSymbol s j m‖ ≤ deningerHeight m ^ k := by
   have hHpos : (0 : ℝ) < deningerHeight m := deningerHeight_pos m
   have hH1 : (1 : ℝ) ≤ deningerHeight m := one_le_deningerHeight m
@@ -90,27 +90,27 @@ theorem deningerMellinSymbol_norm_le (s : ℂ) (j k : ℕ)
 
 private theorem deningerMellinJet_summable (s : ℂ) (j k : ℕ)
     (hk : |(s - 1 / 2).re| + (j : ℝ) ≤ (k : ℝ)) (a : DeningerHeightKothe) :
-    Summable fun m : DeningerLattice =>
-      deningerMellinSymbol s j m * (a : DeningerLattice → ℂ) m := by
+    Summable fun m : DeningerPrimeLattice =>
+      deningerMellinSymbol s j m * (a : DeningerPrimeLattice → ℂ) m := by
   refine Summable.of_norm_bounded (a.2 k) fun m => ?_
-  show ‖deningerMellinSymbol s j m * (a : DeningerLattice → ℂ) m‖
-      ≤ deningerHeightKotheData.w k m * ‖(a : DeningerLattice → ℂ) m‖
+  show ‖deningerMellinSymbol s j m * (a : DeningerPrimeLattice → ℂ) m‖
+      ≤ deningerHeightKotheData.w k m * ‖(a : DeningerPrimeLattice → ℂ) m‖
   rw [deningerHeightKotheData_w, norm_mul]
   exact mul_le_mul_of_nonneg_right (deningerMellinSymbol_norm_le s j k hk m) (norm_nonneg _)
 
 /-- **The centered Mellin conormal jet** `M_s^{(j)}(a) = ∑_m (-ℓ(m))^j e^{-(s-½)ℓ(m)} a_m`. -/
 def deningerMellinJet (s : ℂ) (j : ℕ) (a : DeningerHeightKothe) : ℂ :=
-  ∑' m, deningerMellinSymbol s j m * (a : DeningerLattice → ℂ) m
+  ∑' m, deningerMellinSymbol s j m * (a : DeningerPrimeLattice → ℂ) m
 
 /-- **Continuity of the jet**: every seminorm beyond `|Re(s-½)| + j` dominates it. -/
 theorem deningerMellinJet_norm_le (s : ℂ) (j k : ℕ)
     (hk : |(s - 1 / 2).re| + (j : ℝ) ≤ (k : ℝ)) (a : DeningerHeightKothe) :
     ‖deningerMellinJet s j a‖ ≤ deningerHeightSeminorm k a := by
-  have hnormSummable : Summable fun m : DeningerLattice =>
-      ‖deningerMellinSymbol s j m * (a : DeningerLattice → ℂ) m‖ := by
+  have hnormSummable : Summable fun m : DeningerPrimeLattice =>
+      ‖deningerMellinSymbol s j m * (a : DeningerPrimeLattice → ℂ) m‖ := by
     refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun m => ?_) (a.2 k)
-    show ‖deningerMellinSymbol s j m * (a : DeningerLattice → ℂ) m‖
-        ≤ deningerHeightKotheData.w k m * ‖(a : DeningerLattice → ℂ) m‖
+    show ‖deningerMellinSymbol s j m * (a : DeningerPrimeLattice → ℂ) m‖
+        ≤ deningerHeightKotheData.w k m * ‖(a : DeningerPrimeLattice → ℂ) m‖
     rw [deningerHeightKotheData_w, norm_mul]
     exact mul_le_mul_of_nonneg_right (deningerMellinSymbol_norm_le s j k hk m) (norm_nonneg _)
   refine le_trans (norm_tsum_le_tsum_norm hnormSummable) ?_
@@ -120,7 +120,7 @@ theorem deningerMellinJet_norm_le (s : ℂ) (j k : ℕ)
   exact mul_le_mul_of_nonneg_right (deningerMellinSymbol_norm_le s j k hk m) (norm_nonneg _)
 
 /-- The Mellin symbol at a reflected index is the symbol of the reflected parameter. -/
-theorem deningerMellinSymbol_neg (s : ℂ) (j : ℕ) (m : DeningerLattice) :
+theorem deningerMellinSymbol_neg (s : ℂ) (j : ℕ) (m : DeningerPrimeLattice) :
     deningerMellinSymbol s j (-m) = (-1) ^ j * deningerMellinSymbol (1 - s) j m := by
   rw [deningerMellinSymbol, deningerMellinSymbol, deningerFreq_neg]
   have hpow : ((-(-(deningerFreq m)) : ℝ) : ℂ) ^ j
@@ -142,15 +142,15 @@ theorem deningerMellinJet_reflect (s : ℂ) (j : ℕ) (a : DeningerHeightKothe) 
     deningerMellinJet s j (deningerHeightReflect a)
       = (-1) ^ j * deningerMellinJet (1 - s) j a := by
   rw [deningerMellinJet, deningerMellinJet]
-  rw [← (Equiv.neg DeningerLattice).tsum_eq
-    (fun m : DeningerLattice =>
+  rw [← (Equiv.neg DeningerPrimeLattice).tsum_eq
+    (fun m : DeningerPrimeLattice =>
       deningerMellinSymbol s j m *
-        ((deningerHeightReflect a : DeningerHeightKothe) : DeningerLattice → ℂ) m)]
+        ((deningerHeightReflect a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m)]
   rw [← tsum_mul_left]
   refine tsum_congr fun m => ?_
   show deningerMellinSymbol s j (-m) *
-      ((deningerHeightReflect a : DeningerHeightKothe) : DeningerLattice → ℂ) (-m)
-      = (-1) ^ j * (deningerMellinSymbol (1 - s) j m * (a : DeningerLattice → ℂ) m)
+      ((deningerHeightReflect a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) (-m)
+      = (-1) ^ j * (deningerMellinSymbol (1 - s) j m * (a : DeningerPrimeLattice → ℂ) m)
   rw [deningerHeightReflect_coe, neg_neg, deningerMellinSymbol_neg]
   ring
 

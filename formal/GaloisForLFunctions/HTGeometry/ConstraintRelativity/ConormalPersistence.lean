@@ -200,6 +200,43 @@ noncomputable def persistenceQuotientIsometry {A B : Submodule 𝕜 E} (h : B �
     (E ⧸ B) ⧸ Submodule.map B.mkQ A ≃ₗᵢ[𝕜] E ⧸ A :=
   Submodule.quotientQuotientLIEQuotient (S := B) A h
 
+/-- **Modular filtrations exist.**  For every submodule `S` the sign filtration — everything at
+nonpositive parameter, `S` at positive parameter — is antitone and exactly covariant for the
+trivial flow, because the rescaling `a ↦ e^{2πt}a` preserves the sign of `a`.  The theorems above
+are therefore not vacuous. -/
+noncomputable def signModularFiltration (S : Submodule 𝕜 E) : ModularFiltration 𝕜 E where
+  layer a := if a ≤ 0 then ⊤ else S
+  antitone a b hab := by
+    by_cases hb : b ≤ 0
+    · rw [if_pos hb, if_pos (le_trans hab hb)]
+    · rw [if_neg hb]
+      by_cases ha : a ≤ 0
+      · rw [if_pos ha]; exact le_top
+      · rw [if_neg ha]
+  flow _ := LinearIsometryEquiv.refl 𝕜 E
+  covariant t a := by
+    have hpos : (0 : ℝ) < Real.exp (2 * Real.pi * t) := Real.exp_pos _
+    have hiff : Real.exp (2 * Real.pi * t) * a ≤ 0 ↔ a ≤ 0 := by
+      constructor
+      · intro h; nlinarith
+      · intro h; nlinarith
+    show Submodule.map (LinearMap.id) _ = _
+    rw [Submodule.map_id]
+    by_cases ha : a ≤ 0
+    · rw [if_pos ha, if_pos (hiff.2 ha)]
+    · rw [if_neg ha, if_neg (fun h => ha (hiff.1 h))]
+
+@[simp] theorem signModularFiltration_layer (S : Submodule 𝕜 E) (a : ℝ) :
+    (signModularFiltration S).layer a = if a ≤ 0 then ⊤ else S := rfl
+
+/-- The sign filtration is nonconstant whenever `S` is proper, so the modular covariance law has
+models with a genuine layer jump. -/
+theorem signModularFiltration_ne (S : Submodule 𝕜 E) (hS : S ≠ ⊤) :
+    (signModularFiltration S).layer (-1) ≠ (signModularFiltration S).layer 1 := by
+  rw [signModularFiltration_layer, signModularFiltration_layer, if_pos (by norm_num : (-1 : ℝ) ≤ 0),
+    if_neg (by norm_num : ¬ (1 : ℝ) ≤ 0)]
+  exact fun h => hS h.symm
+
 end Filtration
 
 /-! ## The bounded-dilation no-go -/

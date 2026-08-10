@@ -74,7 +74,7 @@ theorem deningerPiTuple_summable_and_tsum {A : Type*} {g : A → ℝ}
 /-! ## The suspended alphabet -/
 
 /-- A suspended letter: an old letter, or a suspended pair of old letters. -/
-abbrev DeningerSusp : Type := DeningerLattice ⊕ (DeningerLattice × DeningerLattice)
+abbrev DeningerSusp : Type := DeningerPrimeLattice ⊕ (DeningerPrimeLattice × DeningerPrimeLattice)
 
 instance : Inhabited DeningerSusp := ⟨Sum.inl 0⟩
 
@@ -86,22 +86,22 @@ def deningerSuspHeight : DeningerSusp → ℝ :=
 def deningerSuspAncestral : DeningerSusp → ℕ := Sum.elim (fun _ => 1) fun _ => 2
 
 /-- The arithmetic character of a suspended letter: a suspended pair carries the sum. -/
-def deningerSuspChar : DeningerSusp → DeningerLattice := Sum.elim id fun p => p.1 + p.2
+def deningerSuspChar : DeningerSusp → DeningerPrimeLattice := Sum.elim id fun p => p.1 + p.2
 
 @[simp]
-theorem deningerSuspHeight_inl (m : DeningerLattice) :
+theorem deningerSuspHeight_inl (m : DeningerPrimeLattice) :
     deningerSuspHeight (Sum.inl m) = deningerHeight m := rfl
 
 @[simp]
-theorem deningerSuspHeight_inr (p : DeningerLattice × DeningerLattice) :
+theorem deningerSuspHeight_inr (p : DeningerPrimeLattice × DeningerPrimeLattice) :
     deningerSuspHeight (Sum.inr p) = deningerHeight p.1 * deningerHeight p.2 := rfl
 
 @[simp]
-theorem deningerSuspChar_inl (m : DeningerLattice) :
+theorem deningerSuspChar_inl (m : DeningerPrimeLattice) :
     deningerSuspChar (Sum.inl m) = m := rfl
 
 @[simp]
-theorem deningerSuspChar_inr (p : DeningerLattice × DeningerLattice) :
+theorem deningerSuspChar_inr (p : DeningerPrimeLattice × DeningerPrimeLattice) :
     deningerSuspChar (Sum.inr p) = p.1 + p.2 := rfl
 
 theorem one_le_deningerSuspHeight (s : DeningerSusp) : 1 ≤ deningerSuspHeight s := by
@@ -119,20 +119,20 @@ theorem deningerSuspHeight_pos (s : DeningerSusp) : 0 < deningerSuspHeight s :=
 
 theorem deningerSuspHeight_summable_inv_pow {α : ℕ} (hα : 2 ≤ α) :
     Summable fun s : DeningerSusp => (deningerSuspHeight s)⁻¹ ^ α := by
-  have hnn : ∀ m : DeningerLattice, (0 : ℝ) ≤ (deningerHeight m)⁻¹ ^ α := fun m =>
+  have hnn : ∀ m : DeningerPrimeLattice, (0 : ℝ) ≤ (deningerHeight m)⁻¹ ^ α := fun m =>
     pow_nonneg (inv_nonneg.mpr (deningerHeight_pos m).le) α
   have h1 := deningerHeight_summable_inv_pow hα
-  have h2 : Summable fun p : DeningerLattice × DeningerLattice =>
+  have h2 : Summable fun p : DeningerPrimeLattice × DeningerPrimeLattice =>
       (deningerHeight p.1)⁻¹ ^ α * (deningerHeight p.2)⁻¹ ^ α :=
-    Summable.mul_of_nonneg (f := fun m : DeningerLattice => (deningerHeight m)⁻¹ ^ α)
-      (g := fun m : DeningerLattice => (deningerHeight m)⁻¹ ^ α) h1 h1 hnn hnn
-  have h2' : Summable fun p : DeningerLattice × DeningerLattice =>
+    Summable.mul_of_nonneg (f := fun m : DeningerPrimeLattice => (deningerHeight m)⁻¹ ^ α)
+      (g := fun m : DeningerPrimeLattice => (deningerHeight m)⁻¹ ^ α) h1 h1 hnn hnn
+  have h2' : Summable fun p : DeningerPrimeLattice × DeningerPrimeLattice =>
       (deningerHeight p.1 * deningerHeight p.2)⁻¹ ^ α := by
     refine h2.congr fun p => ?_
     rw [mul_inv, mul_pow]
   have hfun : (fun s : DeningerSusp => (deningerSuspHeight s)⁻¹ ^ α)
-      = Sum.elim (fun m : DeningerLattice => (deningerHeight m)⁻¹ ^ α)
-        (fun p : DeningerLattice × DeningerLattice =>
+      = Sum.elim (fun m : DeningerPrimeLattice => (deningerHeight m)⁻¹ ^ α)
+        (fun p : DeningerPrimeLattice × DeningerPrimeLattice =>
           (deningerHeight p.1 * deningerHeight p.2)⁻¹ ^ α) := by
     funext s
     cases s <;> rfl
@@ -143,9 +143,9 @@ theorem deningerSuspHeight_summable_inv_pow {α : ℕ} (hα : 2 ≤ α) :
 def deningerSuspInvSum (α : ℕ) : ℝ := ∑' s : DeningerSusp, (deningerSuspHeight s)⁻¹ ^ α
 
 theorem one_le_deningerSuspInvSum {α : ℕ} (hα : 2 ≤ α) : 1 ≤ deningerSuspInvSum α := by
-  have hterm : (deningerSuspHeight (Sum.inl (0 : DeningerLattice)))⁻¹ ^ α = 1 := by
+  have hterm : (deningerSuspHeight (Sum.inl (0 : DeningerPrimeLattice)))⁻¹ ^ α = 1 := by
     rw [deningerSuspHeight_inl, deningerHeight_zero, inv_one, one_pow]
-  have hle := (deningerSuspHeight_summable_inv_pow hα).le_tsum (Sum.inl (0 : DeningerLattice))
+  have hle := (deningerSuspHeight_summable_inv_pow hα).le_tsum (Sum.inl (0 : DeningerPrimeLattice))
     (fun j _ => pow_nonneg (inv_nonneg.mpr (deningerSuspHeight_pos j).le) α)
   rw [hterm] at hle
   exact hle
@@ -178,7 +178,7 @@ def deningerSuspWordAncestral (w : DeningerSuspWord) : ℕ := ∑ j, deningerSus
 def deningerSuspWordHeight (w : DeningerSuspWord) : ℝ := ∏ j, deningerSuspHeight (w.2 j)
 
 /-- The total arithmetic character of a suspended word. -/
-def deningerSuspWordChar (w : DeningerSuspWord) : DeningerLattice :=
+def deningerSuspWordChar (w : DeningerSuspWord) : DeningerPrimeLattice :=
   ∑ j, deningerSuspChar (w.2 j)
 
 theorem one_le_deningerSuspWordHeight (w : DeningerSuspWord) : 1 ≤ deningerSuspWordHeight w :=

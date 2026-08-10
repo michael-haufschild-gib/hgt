@@ -30,7 +30,7 @@ noncomputable section
 /-! ## Nonempty words -/
 
 /-- A nonempty word in the exponent lattice.  The zero letter is the algebra unit. -/
-abbrev DeningerBarWord : Type := Σ r : ℕ, Fin (r + 1) → DeningerLattice
+abbrev DeningerBarWord : Type := Σ r : ℕ, Fin (r + 1) → DeningerPrimeLattice
 
 /-- The length of a bar word. -/
 def deningerBarLength (w : DeningerBarWord) : ℕ := w.1 + 1
@@ -39,7 +39,7 @@ def deningerBarLength (w : DeningerBarWord) : ℕ := w.1 + 1
 def deningerBarHeight (w : DeningerBarWord) : ℝ := ∏ j, deningerHeight (w.2 j)
 
 /-- The total arithmetic character of a bar word. -/
-def deningerBarChar (w : DeningerBarWord) : DeningerLattice := ∑ j, w.2 j
+def deningerBarChar (w : DeningerBarWord) : DeningerPrimeLattice := ∑ j, w.2 j
 
 theorem one_le_deningerBarHeight (w : DeningerBarWord) : 1 ≤ deningerBarHeight w :=
   Finset.one_le_prod fun j _ => one_le_deningerHeight (w.2 j)
@@ -126,19 +126,19 @@ theorem deningerBarKotheData_isNuclear : deningerBarKotheData.IsNuclear := by
       rw [← pow_add, ← hlk]
     rw [deningerBarKotheData_w, deningerBarKotheData_w, hsplit, hcdef, div_pow, hHpow, inv_pow]
     field_simp
-  have hfiber : ∀ r : ℕ, Summable fun f : Fin (r + 1) → DeningerLattice =>
+  have hfiber : ∀ r : ℕ, Summable fun f : Fin (r + 1) → DeningerPrimeLattice =>
       deningerBarKotheData.w k (⟨r, f⟩ : DeningerBarWord) /
         deningerBarKotheData.w l (⟨r, f⟩ : DeningerBarWord) := by
     intro r
     refine ((deningerWordPow_summable hα (r + 1)).mul_right (c ^ (r + 1))).congr fun f => ?_
     exact (hratio ⟨r, f⟩).symm
   have hfiberSum : ∀ r : ℕ,
-      (∑' f : Fin (r + 1) → DeningerLattice,
+      (∑' f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarKotheData.w k (⟨r, f⟩ : DeningerBarWord) /
           deningerBarKotheData.w l (⟨r, f⟩ : DeningerBarWord))
         = (c * deningerHeightInvSum α) ^ (r + 1) := by
     intro r
-    have hcong : ∀ f : Fin (r + 1) → DeningerLattice,
+    have hcong : ∀ f : Fin (r + 1) → DeningerPrimeLattice,
         deningerBarKotheData.w k (⟨r, f⟩ : DeningerBarWord) /
           deningerBarKotheData.w l (⟨r, f⟩ : DeningerBarWord)
           = (∏ j, (deningerHeight (f j))⁻¹ ^ α) * c ^ (r + 1) := fun f => hratio ⟨r, f⟩
