@@ -423,3 +423,73 @@ the index bookkeeping of its left-hand side is a corollary of the modulation law
 
 The `L²` convergence (9) itself, its iteration (10)-(11), and the operators `B_p`, `D`, `C`, `G`.
 The scalar inputs (5), (7), (8), (12), (13) and the transport laws they are fed through are done.
+
+## Lean status, fourth pass: the frequency lattice and the uniform estimates of (7)
+
+Four further modules, unconditional, `[propext, Classical.choice, Quot.sound]`, wired, lint clean.
+
+### `HTGeometry/PositiveSequenceBounds.lean`
+
+```text
+exists_pos_bounds_of_tendsto_pos : 0 < L → (∀ n, 0 < a n) → a → L →
+  ∃ c C > 0, ∀ n, c ≤ a n ∧ a n ≤ C
+```
+
+The device that upgrades an asymptotic into a uniform two-sided estimate: the upper bound is
+boundedness of a convergent sequence, the lower bound is the eventual bound `L/2` intersected with
+the minimum over the finitely many exceptional indices.
+
+### `HTGeometry/UnimodularInverseLimit.lean`
+
+```text
+tendsto_inv_sub_inv_of_tendsto_sub_zero  : a - b → 0, ‖b‖ ≡ 1, a ≠ 0  ⟹  a⁻¹ - b⁻¹ → 0
+tendsto_exp_sub_exp_zero_of_tendsto_sub_zero : u - v → 0, Re v ≡ 0    ⟹  exp u - exp v → 0
+```
+
+Both are the standard "unimodular reference" arguments; mathlib has neither.
+
+### `RHTower/GaussComponentSampledEnergyBounds.lean` — equation (7)
+
+```text
+gaussComponentVerticalMagnitude_eq_norm_value :
+   M_(m,k)(t) = (π/m)^(1/(2m)) · ‖ρ(t)‖        (t > 0)
+
+exists_gaussComponentPrimeMagnitudeEnergy_bounds :
+   ∃ c C > 0, ∀ n,  c/(n+1) ≤ |d_n|^(2m) ≤ C/(n+1)
+
+exists_gaussComponentPrimeMagnitudeEnergy_ratio_bound :
+   ∃ K > 0, ∀ n j,  |d_(n+j)|^(2m) ≤ K |d_n|^(2m) (n+1)/(n+j+1)
+```
+
+The first identity is the bridge between the magnitude layer (which drives the residue) and the
+value layer (which drives the phase); they differ exactly by the archimedean constant.  The other
+two are the uniform bounds the card calls (7), in the sharper `2m`-power form.
+
+### `RHTower/GaussSampleIntegerLattice.lean` — equation (5) at every integer shift
+
+```text
+gaussSampleValue k p i          : d_i, with d_(-i) = conj d_i and d_0 = 0
+gaussSamplePhase m p i          : δ_i = (log i - log log p)/(m log p)
+gaussSampleRatioDefect k p j i  : d_(i+j)/d_i - exp(2π i j δ_i)
+
+tendsto_gaussSampleRatioDefect : ∀ j : ℤ,  gaussSampleRatioDefect k p j i → 0   (i → ∞)
+```
+
+Nonnegative shifts are the forward ratio law.  Negative shifts use the backward law after
+`Filter.tendsto_add_atTop_iff_nat`, corrected by `tendsto_gaussSamplePhase_shift_sub_zero`
+(the lattice phase moves by `o(1)` over a fixed shift) through the unimodular exponential lemma.
+
+### What (9) now reduces to
+
+With `fourierCoeff_gaussPrimeScaleCircle_translate` supplying the target coefficients, equation (9)
+is exactly the `ℓ²(ℤ)` statement
+
+```text
+Σ_(j ∈ Z) ‖b̂(j)‖² · ‖gaussSampleRatioDefect k p j i‖²  →  0    (i → ∞),
+```
+
+since `conj(d_(i+j))/conj(d_i) - e^{-2π i j δ_i}` is the conjugate of the defect.  Both inputs are
+now formalized: the pointwise convergence (above) and the two ingredients of the domination,
+`norm_gaussPrimeScaleFourierCoefficient_le` (`‖b̂(j)‖ ≤ A/(1+|j|)`) and the energy ratio bound.
+What remains is the summation bookkeeping: the `J`-split of the card, with the inner split at
+`|j| ≤ i/2`.

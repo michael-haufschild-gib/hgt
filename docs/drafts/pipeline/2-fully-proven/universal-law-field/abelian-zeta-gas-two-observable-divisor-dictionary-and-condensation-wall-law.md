@@ -662,10 +662,21 @@ normalization identity:
    `Re(σ+u) > 0`, `Re(σ+u+v) > 1`.  This is the same normal-convergence pattern as the certified
    `eqgResponse_hasProd` of ULF-EQG-1; the telescoping (GAS.7) is a ladder identity of the shape
    already proved there as `eqgDirichlet_ladder`.
-3. **Theorem 5.1, the depth-`g` condensation walls.**  The depth-tail layer in `Core.lean`
-   (`summable_abelianZetaTailRatio`, `not_summable_prime_rpow_of_exponent_le_one`,
-   `depthTailEvent`) was built for exactly this: the wall at `σ = 1/g` is the Borel–Cantelli
-   dichotomy for the depth-`g` tail.
+3. **Theorem 5.1, the depth-`g` condensation walls — ALREADY CERTIFIED.**  Audited in
+   `Core.lean`: both halves are closed unconditionally, at `τ = 0` and in the general two-parameter
+   chamber.
+
+   | Clause | Lean |
+   |---|---|
+   | mode events | `depthTailEvent`, `exactDepthEvent`, `modeLaw_depthTailEvent`, `modeLaw_exactDepthEvent` |
+   | convergent side of the wall | `tsum_depthTailEvent_ne_top`, `AbelianZetaParameters.measure_finite_depthTail_eq_one` |
+   | divergent side of the wall | `tsum_exactDepthEvent_eq_top`, `AbelianZetaParameters.measure_infinite_exactDepth_eq_one` |
+   | **5.1(1): `σ > 1/g` ⇒ finitely many active modes of depth `≥ g`** | **`AbelianZetaParameters.temperature_finite_depthTail_eq_one`** |
+   | **5.1(2): `0 < σ ≤ 1/g` ⇒ infinitely many active modes of depth exactly `g`** | **`AbelianZetaParameters.temperature_infinite_exactDepth_eq_one`** |
+
+   Axiom prints on all four capstones: `propext`, `Classical.choice`, `Quot.sound` only.  In
+   particular the divergence half of ULF-EQG-1's failure loop 2, asserted there without proof, is
+   machine-checked here as the depth-one case `g = 1`.
 4. **(GAS.12) and Theorem 8.1**, the entropy/von Mangoldt identity — elementary once the response
    layer of target 2 is in place.
 5. **Theorem 4.1 (KMS)** last: it needs C\*-inductive-limit and KMS-state infrastructure that

@@ -85,10 +85,10 @@ private theorem hasProd_prime_zeroFactor
   rw [hfun]
   exact h
 
-/-- **Erdős--Szekeres normalization.**  The exact countable zero-occupation constant is the
-inverse of the complete zeta ladder `prod_{j>=1} zeta(j sigma + tau)`. -/
-theorem complexNormalizer_eq_zetaPartition_inv (θ : AbelianZetaConvergentParameters) :
-    θ.complexNormalizer = θ.zetaPartition⁻¹ := by
+/-- **The complete zeta ladder converges** to the inverse of the zero-occupation constant. -/
+theorem hasProd_zetaLadder (θ : AbelianZetaConvergentParameters) :
+    HasProd (fun n : ℕ => riemannZeta ((((n + 1 : ℕ) : ℝ) * θ.sigma + θ.tau : ℝ) : ℂ))
+      θ.complexNormalizer⁻¹ := by
   have hsComplex : Summable
       (fun m : AbelianZetaMode => -((θ.toAbelianZetaParameters.ratio m : ℂ))) := by
     exact ((Complex.summable_ofReal).2 θ.summable_ratio).neg
@@ -135,8 +135,21 @@ theorem complexNormalizer_eq_zetaPartition_inv (θ : AbelianZetaConvergentParame
       simp only [inv_inv]
     rw [← hfun]
     exact hinv
-  rw [zetaPartition, hzeta.tprod_eq]
+  exact hzeta
+
+/-- **Erdős--Szekeres normalization.**  The exact countable zero-occupation constant is the
+inverse of the complete zeta ladder `prod_{j>=1} zeta(j sigma + tau)`. -/
+theorem complexNormalizer_eq_zetaPartition_inv (θ : AbelianZetaConvergentParameters) :
+    θ.complexNormalizer = θ.zetaPartition⁻¹ := by
+  rw [zetaPartition, (hasProd_zetaLadder θ).tprod_eq]
   simp only [inv_inv]
+
+/-- The complete zeta ladder converges to the partition function. -/
+theorem hasProd_zetaLadder_zetaPartition (θ : AbelianZetaConvergentParameters) :
+    HasProd (fun n : ℕ => riemannZeta ((((n + 1 : ℕ) : ℝ) * θ.sigma + θ.tau : ℝ) : ℂ))
+      θ.zetaPartition := by
+  rw [zetaPartition, (hasProd_zetaLadder θ).tprod_eq]
+  exact hasProd_zetaLadder θ
 
 /-- Finite positive zero factor in the probability codomain. -/
 def nnZeroFactor (θ : AbelianZetaConvergentParameters) (m : AbelianZetaMode) : ℝ≥0 :=

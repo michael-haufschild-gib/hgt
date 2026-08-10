@@ -2388,6 +2388,7 @@ import GaloisForLFunctions.RHTower.GaussComponentSampledRatioPrime
 import GaloisForLFunctions.RHTower.GaussComponentVerticalMagnitude
 import GaloisForLFunctions.RHTower.GaussComponentVerticalPhase
 import GaloisForLFunctions.RHTower.GaussPrimeScaleFourier
+import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
 import GaloisForLFunctions.RHTower.GaussScaleAmplitudeIntegral
 import GaloisForLFunctions.RHTower.GaussLattice
 import GaloisForLFunctions.RHTower.GaussPairedChannelCriticalAsymptotic
@@ -4155,6 +4156,7 @@ import GaloisForLFunctions.RHTower.Sieve.FibreLogCharacterisation
 import GaloisForLFunctions.RHTower.Sieve.WindowEndpoint
 import GaloisForLFunctions.RHTower.Sieve.FibreToLogWindow
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparated
+import GaloisForLFunctions.RHTower.Sieve.SeparatedCount
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6726,6 +6728,7 @@ import GaloisForLFunctions.RHTower.Sieve.FibreLogCharacterisation
 import GaloisForLFunctions.RHTower.Sieve.WindowEndpoint
 import GaloisForLFunctions.RHTower.Sieve.FibreToLogWindow
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparated
+import GaloisForLFunctions.RHTower.Sieve.SeparatedCount
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen

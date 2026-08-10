@@ -1422,6 +1422,15 @@ isomorphism as soon as its range is closed.  In the `C^*` setting the range of a
 automatically closed, so the analytic content of `(12f)` is exactly that — closedness of the range
 together with generation — and not the algebraic comparison, nor minimality, nor Mittag--Leffler.
 
+`surjective_of_isometry_of_generates` and `bijective_of_isometry_of_generates` close the chain: an
+**isometric** homomorphism from a complete algebra has closed range, so with generation it is
+bijective.  Mathlib already proves that an injective `*`-homomorphism of `C^*`-algebras is isometric
+(`NonUnitalStarAlgHom.isometry`), and `Θ` is injective by
+`mem_localIdeal_iff_mkQ_eq_zero`.  So for `(12f)` **only generation remains to be supplied**; every
+other step is formalized here or available in mathlib.  Note the injective case is all that is
+needed, which matters because mathlib has no `C^*`-quotient and hence no closed-range theorem for
+general `*`-homomorphisms.
+
 ### The algebraic deficit formula
 
 `formal/GaloisForLFunctions/HTGeometry/ShilovDeficitEnvelopeFormula.lean` formalizes the card's

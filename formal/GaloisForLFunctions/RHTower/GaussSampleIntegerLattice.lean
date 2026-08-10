@@ -160,55 +160,50 @@ theorem tendsto_gaussSampleRatioDefect
   · -- backward shift
     have hjneg : j < 0 := by omega
     obtain ⟨J, rfl⟩ : ∃ J : ℕ, j = -(J : ℤ) := ⟨(-j).toNat, by omega⟩
-    have hJpos : 0 < J := by omega
     rw [← Filter.tendsto_add_atTop_iff_nat J]
     have hback := gaussComponentPrimeSample_inv_ratio_sub_phase_tendsto_zero hm k p J
+    have hshift := tendsto_gaussSamplePhase_shift_sub_zero m p (J : ℤ)
+    have hcast : Tendsto (fun n : ℕ =>
+        ((gaussSamplePhase m p (((n + J : ℕ) : ℤ) + 1) -
+          gaussSamplePhase m p ((n : ℤ) + 1) : ℝ) : ℂ)) atTop (nhds 0) := by
+      have hc := Complex.continuous_ofReal.continuousAt.tendsto.comp hshift
+      simp only [Function.comp_def, Complex.ofReal_zero] at hc
+      refine hc.congr ?_
+      intro n
+      congr 3
+      push_cast
+      ring
+    have hmul := hcast.const_mul (2 * (Real.pi : ℂ) * Complex.I * (J : ℂ))
+    rw [mul_zero] at hmul
     have hphase : Tendsto (fun n : ℕ =>
         Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (J : ℂ) *
             ((gaussComponentPhaseRate m p * Real.log ((n : ℝ) + 1) +
               gaussComponentPhaseOffset m p : ℝ) : ℂ))) -
           Complex.exp (2 * (Real.pi : ℂ) * Complex.I * ((-(J : ℤ) : ℤ) : ℂ) *
-            ((gaussSamplePhase m p ((n : ℤ) + J + 1) : ℝ) : ℂ))) atTop (nhds 0) := by
+            ((gaussSamplePhase m p (((n + J : ℕ) : ℤ) + 1) : ℝ) : ℂ)))
+        atTop (nhds 0) := by
       refine GaloisForLFunctions.tendsto_exp_sub_exp_zero_of_tendsto_sub_zero ?_ ?_
       · intro n
         have hform : (2 * (Real.pi : ℂ) * Complex.I * ((-(J : ℤ) : ℤ) : ℂ) *
-            ((gaussSamplePhase m p ((n : ℤ) + J + 1) : ℝ) : ℂ))
+            ((gaussSamplePhase m p (((n + J : ℕ) : ℤ) + 1) : ℝ) : ℂ))
             = ((-(2 * Real.pi * (J : ℝ) *
-                gaussSamplePhase m p ((n : ℤ) + J + 1)) : ℝ) : ℂ) * Complex.I := by
+                gaussSamplePhase m p (((n + J : ℕ) : ℤ) + 1)) : ℝ) : ℂ) * Complex.I := by
           push_cast
           ring
         rw [hform]
         simp
-      · have hshift := tendsto_gaussSamplePhase_shift_sub_zero m p (-(J : ℤ))
-        have hcomp := hshift.comp (tendsto_add_atTop_nat J)
-        have hcast : Tendsto (fun n : ℕ =>
-            (((gaussSamplePhase m p ((n : ℤ) + J + 1 + -(J : ℤ)) -
-              gaussSamplePhase m p ((n : ℤ) + J + 1) : ℝ)) : ℂ)) atTop (nhds 0) := by
-          have := Complex.continuous_ofReal.continuousAt.tendsto.comp hcomp
-          simp only [Function.comp_def, Complex.ofReal_zero] at this
-          refine this.congr ?_
-          intro n
-          congr 2 <;> push_cast <;> ring
-        have hmul := hcast.const_mul
-          (-(2 * (Real.pi : ℂ) * Complex.I * (J : ℂ)))
-        rw [mul_zero] at hmul
-        refine hmul.congr ?_
+      · refine hmul.congr ?_
         intro n
+        rw [← gaussSamplePhase_natSucc]
         push_cast
         ring
     have hsum := hback.add hphase
     rw [add_zero] at hsum
     refine hsum.congr ?_
     intro n
-    rw [gaussSampleRatioDefect]
-    have hlow : gaussSampleValue k p ((n : ℤ) + J + 1 + -(J : ℤ))
-        = gaussComponentVerticalValue k (gaussPrimeSampleHeight p n) := by
-      rw [show (n : ℤ) + J + 1 + -(J : ℤ) = (n : ℤ) + 1 by ring, gaussSampleValue_natSucc]
-    have hhigh : gaussSampleValue k p ((n : ℤ) + J + 1)
-        = gaussComponentVerticalValue k (gaussPrimeSampleHeight p (n + J)) := by
-      rw [show (n : ℤ) + J + 1 = ((n + J : ℕ) : ℤ) + 1 by push_cast; ring,
-        gaussSampleValue_natSucc]
-    rw [hlow, hhigh]
+    rw [gaussSampleRatioDefect,
+      show ((n + J : ℕ) : ℤ) + 1 + -(J : ℤ) = (n : ℤ) + 1 by push_cast; ring,
+      gaussSampleValue_natSucc, gaussSampleValue_natSucc]
     ring
 
 end

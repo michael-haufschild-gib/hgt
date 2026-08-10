@@ -13,6 +13,8 @@ This is the topology in which a word is controlled by the *product* of its lette
 every exponential length weight — the only choice for which the balanced sector, where the letters
 cancel to total character zero, is still controlled.
 
+* `deningerPi_summable_and_tsum` : the letterwise series of a fixed length is the power of the
+  one-letter series.
 * `DeningerWord`, `deningerWordHeight`, `deningerWordCharacter` : the index set and its data.
 * `deningerWordKotheData`, `deningerWordKotheData_isNuclear` : **the entire word-height source is
   nuclear.**
@@ -83,7 +85,7 @@ theorem deningerHeightInvSum_le {α : ℕ} (hα : 2 ≤ α) :
 
 /-! ## The word series -/
 
-private theorem deningerPi_summable_and_tsum {g : DeningerLattice → ℝ}
+theorem deningerPi_summable_and_tsum {g : DeningerLattice → ℝ}
     (hg : Summable g) (hnn : ∀ m, 0 ≤ g m) (r : ℕ) :
     (Summable fun f : Fin r → DeningerLattice => ∏ j, g (f j)) ∧
       (∑' f : Fin r → DeningerLattice, ∏ j, g (f j)) = (∑' m, g m) ^ r := by

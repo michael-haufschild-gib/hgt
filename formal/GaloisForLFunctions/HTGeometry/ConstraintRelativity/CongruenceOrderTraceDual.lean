@@ -493,10 +493,10 @@ end TraceDefectField
 
 section Different
 
-variable {R : Type*} [CommRing R] {a : R} {K : Type*} [Field K] [Algebra R K]
+variable {R : Type*} [CommRing R] [IsDomain R] {a : R} {K : Type*} [Field K] [Algebra R K]
   [IsFractionRing R K]
 
-omit [IsFractionRing R K] in
+omit [IsDomain R] [IsFractionRing R K] in
 theorem aSmul_mem_congruenceOrder (a : R) {N : ℕ} (v : Fin N → R) :
     (a • v : Fin N → R) ∈ congruenceOrder a N := fun l l' =>
   ⟨v l - v l', by show a * v l - a * v l' = a * (v l - v l'); ring⟩
@@ -524,7 +524,7 @@ def dedekindDifferent (a : R) (N : ℕ) : Submodule R (Fin N → K) where
     rw [h]
     exact Submodule.smul_mem _ c (hd y hy)
 
-omit [IsFractionRing R K] in
+omit [IsDomain R] [IsFractionRing R K] in
 theorem one_mem_traceDual (a : R) (N : ℕ) :
     (1 : Fin N → K) ∈ traceDual (K := K) a N := by
   intro x _
@@ -609,7 +609,7 @@ theorem mem_dedekindDifferent_iff (ha : a ≠ 0) {m : ℕ} (hm : 2 ≤ m)
         · refine ⟨-t, ?_⟩
           have h := hcoord (Fin.last m)
           rw [hzl] at h
-          have h' : v (Fin.last m) = -(u (Fin.last m) * a) := by linear_combination -h
+          have h' : v (Fin.last m) = -(u (Fin.last m) * a) := by linear_combination h
           rw [h', ht]
           ring
       intro j
@@ -632,7 +632,6 @@ theorem mem_dedekindDifferent_iff (ha : a ≠ 0) {m : ℕ} (hm : 2 ≤ m)
     show _ = algebraMap R K (a ^ 2 * w j) * (algebraMap R K (q j) / algebraMap R K a)
     rw [map_mul, map_mul, map_mul, map_pow]
     field_simp
-    ring
 
 end Different
 

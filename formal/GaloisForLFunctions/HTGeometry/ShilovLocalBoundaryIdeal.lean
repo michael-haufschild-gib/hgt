@@ -631,6 +631,31 @@ theorem surjective_of_isClosed_range_of_generates (φ : A →ₐ[𝕜] B) {T : S
 
 end Existence
 
+section Comparison
+
+variable {A B : Type*} [NormedRing A] [NormedAlgebra 𝕜 A] [CompleteSpace A]
+  [NormedRing B] [NormedAlgebra 𝕜 B]
+
+/-- **The envelope comparison is onto once it is isometric.**  An isometric homomorphism from a
+complete algebra has closed range, so if its range contains a topologically generating set it is
+surjective, hence bijective.
+
+For the card's `Θ` this closes the chain: injectivity is `mem_localIdeal_iff_mkQ_eq_zero`, and an
+injective `*`-homomorphism of `C^*`-algebras is isometric, so the only remaining input is
+generation. -/
+theorem surjective_of_isometry_of_generates (φ : A →ₐ[𝕜] B) (hiso : Isometry φ) {T : Set B}
+    (hT : T ⊆ Set.range φ) (hgen : (Algebra.adjoin 𝕜 T).topologicalClosure = ⊤) :
+    Function.Surjective φ :=
+  surjective_of_isClosed_range_of_generates φ hT hiso.isClosedEmbedding.isClosed_range hgen
+
+/-- The comparison is then bijective. -/
+theorem bijective_of_isometry_of_generates (φ : A →ₐ[𝕜] B) (hiso : Isometry φ) {T : Set B}
+    (hT : T ⊆ Set.range φ) (hgen : (Algebra.adjoin 𝕜 T).topologicalClosure = ⊤) :
+    Function.Bijective φ :=
+  ⟨hiso.injective, surjective_of_isometry_of_generates φ hiso hT hgen⟩
+
+end Comparison
+
 end ShilovLocal
 
 end GaloisForLFunctions.HTGeometry

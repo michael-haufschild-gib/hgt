@@ -171,6 +171,14 @@ deficits coexist with lim¹ = 0.
 never stabilise, yet lim¹ = 0.  So do NOT try to prove (12f) by establishing ML for Shilov towers —
 that is strictly stronger than needed and is the wrong invariant.
 
+## The (12f) import, in final form
+`surjective_of_isClosed_range_of_generates`: a hom whose RANGE IS CLOSED and contains a
+topologically generating set is onto (`Algebra.adjoin_le` + `Subalgebra.topologicalClosure_minimal`).
+Θ's injectivity is `mem_localIdeal_iff_mkQ_eq_zero`.  So (12f) needs exactly:
+**closed range + generation** — NOT minimality (disproved), NOT Mittag-Leffler (disproved as
+necessary), NOT the algebraic comparison (uniqueness is free from generation).  In C* the range of
+a *-homomorphism is automatically closed, which is the whole analytic content.
+
 ## Already in the corpus — do not rebuild
 `ShilovBoundaryMigrationDefect.escapeDetectionEquiv` is the card's `(16)`, and
 `derivedLimitOne_subsingleton_of_surjective` there is the Mittag--Leffler vanishing (with

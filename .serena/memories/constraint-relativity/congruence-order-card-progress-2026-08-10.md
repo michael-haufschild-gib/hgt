@@ -29,13 +29,25 @@ Three modules, all green, wired into `GaloisForLFunctions/HTGeometry.lean`;
 - **(27)** `length_cotangentModel` = `2m + choose m 2`, `length_traceDefectModel` = `2m`.
 - **(28)** `length_cotangentModel_eq_length_traceDefect_add`.
 
+- **(26k)** `mem_dedekindDifferent_iff (ha) (hm : 2 ≤ m) : d ∈ 𝔇_D ↔ ∃ w, d = coordIncl (a²•w)`
+  — the Dedekind different is `a²·O` for `N ≥ 3`.  Uses `1 ∈ A♯` and the duals
+  `bᵢ = a⁻¹(eᵢ − e_last)`; a third coordinate of `d·bᵢ` vanishes, which is where `N ≥ 3` enters.
+
 ## REMAINING
 
 - **(26b)–(26g)** tangent-head soldering obstruction: `xⱼ` acting on `L`, `𝔪_A L = aL`,
   `im φ ⊆ aL` for every A-linear `φ : Ω → L`, `Hom_A(Ω,L) ≅ Mat_{m×m}(k)`, head map ≡ 0.
   Also needs `N − 2` a unit (`Invertible ((m : R) − 1)`).
-- **(26k)** `𝔇_D = a²O` (needs `N ≥ 3`: a third coordinate of `d·bᵢ` is 0, which forces
-  `a ∣ dᵢ/a`).  **(26l)** `𝔇_K = Fitt₀^A Ω = a^m O` (the card's (26m)–(26o) minor computation).
+- **(26l)** `𝔇_K = Fitt₀^A Ω = a^m O` (the card's (26m)–(26o) minor computation).
+
+### Next infrastructure step (both remaining items need it)
+`L` and `Ω` must be compared as modules over `A`, not over `R`.  Concretely: give
+`traceDual`/`orderLattice` an `A = congruenceOrder a N`-submodule form (same carrier; the
+submodule proof is unchanged because `x·c ∈ A` for `x, c ∈ A`), then transport along
+`congruencePresentation` so that `L` becomes a module over
+`P = MvPolynomial (Fin m) R ⧸ congruenceIdeal a m`, the same ring `Ω[P⁄R]` lives over.
+Under `traceCoord`, `bᵢ ↦ Pi.single i (mk 1)` and the `A`-action is
+`xⱼ·bᵢ = 0 (j ≠ i)`, `xᵢ·bᵢ = a(bᵢ − N⁻¹∑ₖ bₖ)` — exactly card (26b) (verified on paper).
 
 ## Reusable assets created
 `aMul a M` (= `span{a} • ⊤`, `aMul_eq_smul_top`), `aMul_prod`, `aMul_pi`, `map_aMul`,

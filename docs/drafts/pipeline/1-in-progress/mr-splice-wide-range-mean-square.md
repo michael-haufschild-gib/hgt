@@ -3170,3 +3170,28 @@ reciprocal arguments.
 
 The discrete-to-continuous passage using this separation, then `gallagher_identity` and the Halász
 bound for `∫ |logPoly|²`.
+
+## 2026-08-10 separated points are few
+
+`Sieve/SeparatedCount.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9028 jobs), lint gate clean.
+
+```text
+card_le_of_separated :  0 < g,  0 ≤ L,  points pairwise g-separated,  all in [c, c+L]  →
+  card ≤ L/g + 1
+```
+
+The counting core of every spacing argument, proved as a cell count rather than by ordering:
+`i ↦ ⌊(u i − c)/g⌋` is injective, because two points in a common cell of length `g` are less than
+`g` apart, and its image lies in `{0, …, ⌊L/g⌋}`.
+
+**A sharpness check.**  Applied to the starting points `log(x/a)` — separation `1/(2√x)` from
+`log_start_separated`, span `log 2` — this gives at most `2√x·log 2 + 1` points, while the block has
+`≍ √x` of them.  The two agree up to the constant `2 log 2`, so the separation bound is sharp and
+the passage to an integral loses nothing.  Had the count come out with a spare factor of `log x`,
+the whole spacing route would have been the wrong one; this is the check that says it is not.
+
+### What is left
+
+The discrete-to-continuous passage itself, then `gallagher_identity` and the Halász bound for
+`∫ |logPoly|²`.
