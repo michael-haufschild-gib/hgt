@@ -49,6 +49,17 @@ Theorem 2 — the exact sinc square-root horizon:
 9. `one_sub_sinc_even` — the sinc defect is even, so the inversion loses the sign of `δ`: exponent
    `1/2` and sign loss occur entirely inside one fixed operator algebra, with no non-Morita event.
 
+Theorem 2, the general power reporter:
+
+10. `tendsto_abs_rpow_nhdsGT`, `powerReporter_exponent_tendsto`,
+    `powerReporter_inverse_exponent_tendsto` — the generalization the card states at the end of
+    Theorem 2: the fixed-theory reporter `q_r(t) = exp(−|t|^{2r})` has horizon exponent `2r` and
+    inverse exponent `1/(2r)`, for every `r > 0`.  The slope input
+    `(1 − e^{−u})/u → 1` is **reused** from `RHTower.CCMBoundaryStripTransfer`
+    (`tendsto_one_sub_exp_neg_div`), not rebuilt.  Since every positive exponent occurs inside one
+    fixed operator algebra, a rational exponent alone classifies no law-horizon singularity — which
+    is the card's closing claim.
+
 The card's "positive survivor" three-slot diagnostic and its physics consequences are definitional
 and interpretive; the card itself records that only slot 3 is a theorem, and that is items 3–9
 above.

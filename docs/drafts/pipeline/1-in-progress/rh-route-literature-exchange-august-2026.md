@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`0c287c7063a98df31166d11f3e513193c61874a0`. Files outside committed umbrellas at this snapshot are
+`bb2757ad4ccab1fc1524f721e3a81723f939bbff`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,

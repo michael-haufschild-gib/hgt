@@ -220,6 +220,87 @@ theorem closedHyperplaneInverse_adjoint_kernel
     rw [← hArange]
     exact ⟨x, rfl⟩
 
+/-- Exact graph action of the Hilbert-space adjoint on the bounded-adjoint range. -/
+theorem closedHyperplaneInverse_adjoint_apply_adjoint
+    (K : Submodule ℂ H) [CompleteSpace K] (B : K →L[ℂ] H)
+    (hB : Function.Injective B) (hDense : Dense (B.range : Set H)) (y : H) :
+    ∃ hmem : (B.adjoint y : H) ∈ (closedHyperplaneInverse K B).adjoint.domain,
+      (closedHyperplaneInverse K B).adjoint ⟨(B.adjoint y : H), hmem⟩ = y := by
+  let A := closedHyperplaneInverse K B
+  have hAdense : Dense (A.domain : Set H) :=
+    closedHyperplaneInverse_dense_domain K B hDense
+  have hpair : ∀ x : A.domain,
+      inner ℂ y (x : H) = inner ℂ (B.adjoint y : H) (A x) := by
+    intro x
+    have hxRange : (x : H) ∈ B.range := by
+      rw [← closedHyperplaneInverse_domain K B]
+      exact x.property
+    rcases hxRange with ⟨k, hk⟩
+    have hAx : A x = (k : H) := by
+      have h := (closedHyperplaneInverse_apply_B K B hB k).2
+      have heq : x = ⟨B k, (closedHyperplaneInverse_apply_B K B hB k).1⟩ :=
+        Subtype.ext hk.symm
+      exact (congrArg A heq).trans h
+    calc
+      inner ℂ y (x : H) = inner ℂ y (B k) := congrArg (inner ℂ y) hk.symm
+      _ = inner ℂ (B.adjoint y) k := (B.adjoint_inner_left k y).symm
+      _ = inner ℂ (B.adjoint y : H) (k : H) := K.coe_inner _ _
+      _ = inner ℂ (B.adjoint y : H) (A x) :=
+        congrArg (inner ℂ (B.adjoint y : H)) hAx.symm
+  have hmem : (B.adjoint y : H) ∈ A.adjoint.domain := by
+    apply LinearPMap.mem_adjoint_domain_of_exists
+    exact ⟨y, hpair⟩
+  refine ⟨hmem, ?_⟩
+  apply LinearPMap.adjoint_apply_eq hAdense
+  exact hpair
+
+/-- On the range hyperplane, the adjoint domain is exactly the range of `B†`. -/
+theorem closedHyperplaneInverse_mem_adjoint_domain_iff
+    (K : Submodule ℂ H) [CompleteSpace K] (B : K →L[ℂ] H)
+    (hB : Function.Injective B) (hDense : Dense (B.range : Set H)) (k : K) :
+    (k : H) ∈ (closedHyperplaneInverse K B).adjoint.domain ↔ k ∈ B.adjoint.range := by
+  let A := closedHyperplaneInverse K B
+  have hAdense : Dense (A.domain : Set H) :=
+    closedHyperplaneInverse_dense_domain K B hDense
+  constructor
+  · intro hkdom
+    let kAdj : A.adjoint.domain := ⟨(k : H), hkdom⟩
+    let y : H := A.adjoint kAdj
+    refine ⟨y, ?_⟩
+    apply ext_inner_right ℂ
+    intro j
+    have hBjDom : B j ∈ A.domain :=
+      (closedHyperplaneInverse_apply_B K B hB j).1
+    let x : A.domain := ⟨B j, hBjDom⟩
+    have hAx : A x = (j : H) := by
+      simpa only [A, x] using (closedHyperplaneInverse_apply_B K B hB j).2
+    have hformal := LinearPMap.adjoint_isFormalAdjoint hAdense kAdj x
+    calc
+      inner ℂ (B.adjoint y) j = inner ℂ y (B j) := B.adjoint_inner_left j y
+      _ = inner ℂ (k : H) (A x) := hformal
+      _ = inner ℂ (k : H) (j : H) := by rw [hAx]
+      _ = inner ℂ k j := (K.coe_inner k j).symm
+  · rintro ⟨y, hy⟩
+    obtain ⟨hmem, _⟩ :=
+      closedHyperplaneInverse_adjoint_apply_adjoint K B hB hDense y
+    have hyH : (B.adjoint y : H) = (k : H) := congrArg Subtype.val hy
+    exact hyH ▸ hmem
+
+theorem closedHyperplaneInverse_adjoint_apply_of_eq_adjoint
+    (K : Submodule ℂ H) [CompleteSpace K] (B : K →L[ℂ] H)
+    (hB : Function.Injective B) (hDense : Dense (B.range : Set H))
+    (k : K) (y : H) (hky : B.adjoint y = k)
+    (hkdom : (k : H) ∈ (closedHyperplaneInverse K B).adjoint.domain) :
+    (closedHyperplaneInverse K B).adjoint ⟨(k : H), hkdom⟩ = y := by
+  obtain ⟨hmem, happly⟩ :=
+    closedHyperplaneInverse_adjoint_apply_adjoint K B hB hDense y
+  have hkyH : (k : H) = (B.adjoint y : H) :=
+    congrArg (fun z : K => (z : H)) hky.symm
+  have heq :
+      (⟨(k : H), hkdom⟩ : (closedHyperplaneInverse K B).adjoint.domain) =
+        ⟨(B.adjoint y : H), hmem⟩ := Subtype.ext hkyH
+  exact (congrArg (closedHyperplaneInverse K B).adjoint heq).trans happly
+
 theorem closedHyperplaneInverse_isFredholm
     (K : Submodule ℂ H) (hK : IsClosed (K : Set H))
     (B : K →L[ℂ] H) (hB : Function.Injective B)
@@ -284,6 +365,13 @@ theorem closedDenseInverse_dense_domain (C : H →L[ℂ] H) (hDense : Dense (C.r
     Dense ((closedDenseInverse C).domain : Set H) := by
   rw [closedDenseInverse_domain]
   exact hDense
+
+theorem closedDenseInverse_kernel_eq_bot (C : H →L[ℂ] H) (hC : Function.Injective C) :
+    (closedDenseInverse C).kernel = ⊥ := by
+  rw [closedDenseInverse]
+  apply closedHyperplaneInverse_kernel_eq_bot
+  intro u v huv
+  exact Subtype.ext (hC huv)
 
 /-- The inverse of an injective, dense-range bounded self-adjoint operator is self-adjoint. -/
 theorem closedDenseInverse_isSelfAdjoint (C : H →L[ℂ] H)
@@ -363,6 +451,30 @@ theorem closedDenseInverse_isSelfAdjoint (C : H →L[ℂ] H)
         simpa only [A, heq] using h
       exact hAz.symm
   · exact hAform.le_adjoint hAdense
+
+/-- Zero is a compact resolvent point of the inverse of an injective compact operator. -/
+theorem closedDenseInverse_hasCompactResolventAt_zero (C : H →L[ℂ] H)
+    (hCinj : Function.Injective C) (hCcompact : IsCompactOperator C) :
+    LinearPMap.HasCompactResolventAt (closedDenseInverse C) 0 := by
+  refine ⟨C, hCcompact, ?_, ?_⟩
+  · refine ⟨fun x => (closedDenseInverse_apply_C C hCinj x).1, ?_⟩
+    intro x
+    rw [zero_smul, sub_zero]
+    exact (closedDenseInverse_apply_C C hCinj x).2
+  · intro x
+    rw [zero_smul, sub_zero]
+    have hxRange : (x : H) ∈ C.range := by
+      rw [← closedDenseInverse_domain C]
+      exact x.property
+    rcases hxRange with ⟨y, hy⟩
+    have hApply := (closedDenseInverse_apply_C C hCinj y).2
+    have heq : x = ⟨C y, (closedDenseInverse_apply_C C hCinj y).1⟩ :=
+      Subtype.ext hy.symm
+    have hxApply : closedDenseInverse C x = y :=
+      (congrArg (closedDenseInverse C) heq).trans hApply
+    calc
+      C (closedDenseInverse C x) = C y := congrArg C hxApply
+      _ = (x : H) := hy
 
 end
 

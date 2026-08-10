@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 10 August 2026, committed snapshot
-**0c287c7063a98df31166d11f3e513193c61874a0**.
+**bb2757ad4ccab1fc1524f721e3a81723f939bbff**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -248,7 +248,7 @@ reason that the nonzero spectrum of this concrete nonnormal compact operator is 
 that all `XiC` zeros are real.
 
 Newer committed modules, not imported by the committed umbrella at this cutoff, strengthen the
-same branch without changing its open core. They prove the global function identity
+same branch without changing its open core. Six capstones prove the global function identity
 
 ~~~
 thetaSourceEntireDet2(z)=XiC(z)/XiC(0),
@@ -260,6 +260,15 @@ to the fixed-width Xi--Weil polarization. Its logarithmic samples are the litera
 coefficients, and boundedness of one positive-width orbit is equivalent to RH. These results are
 scientifically a stronger C1 connector and receiver, not an independent producer; they are formal
 certification backlog until umbrella promotion.
+
+A seventh committed but unwired capstone now realizes the closed weighted derivative at the actual
+theta source. It constructs the closure of `-i d/dx` as the graph inverse of the compact centered
+source inverse, proves closedness, dense domain, trivial kernel, range equal to the mean-zero
+hyperplane, Fredholm index `-1`, adjoint kernel equal to the constant line, and proves that literal
+`C_c^infinity(R)` is a graph core. This closes the basic unbounded Fredholm realization previously
+available only at paper/core level. It does not prove the full shifted-pencil family, compact
+resolvent, real spectrum, or positive chiral transmutation, and receives no umbrella credit at
+this cutoff.
 
 **Parallel explicit-form connector, one Lean assembly remaining.** On the decisive eigen-pair class, the
 prime plus Gamma pairing is identified with the antidiagonal Hermitian Gram by a pinned
@@ -299,10 +308,13 @@ G^r e_n = (p |d_n|^2)^r e_n a_(delta_n)^r + o_L2(1),
 
 and its diagonal scalar law with the exact closed period average `A_r(delta_n)`. Thus the local
 single-component principal asymptotic is closed, uniformly along every integer-frequency sequence
-whose absolute value tends to infinity. A new committed but unwired capstone restores the full
-archimedean scale and proves that the two frequencies `±(n+1)` converge together to the exact
-principal diagonal term. This is certification backlog. What remains scientifically is
-multi-place/channel assembly,
+whose absolute value tends to infinity. The umbrella now also restores the full archimedean scale
+and proves that the two frequencies `±(n+1)` converge together to the exact principal diagonal
+term. The new sandwich identity folds the quasi-inner form to
+`p <D*Bu,B^-2D*Bu>`, and the relative-diagonal theorem bounds the one-step error by the exact step
+scalar times a factor proved to tend to zero. This removes the false need for a quantitative rate
+in the rank-one fold. For higher powers, the interior replacement needed to pass from this fold to
+the full logarithmic mean is not yet assembled. What remains scientifically is multi-place/channel assembly,
 identification with the actual Connes--Consani intersection/Weil object, and a source-derived
 positivity or orientation law. Without that handoff this remains C1/CCM infrastructure, not a new
 route or a proved positivity mechanism.
@@ -417,16 +429,20 @@ number-theoretic premise is designed to be supplied by published averaged Chowla
 Möbius specialization and rates are not formalized. The Fejer identity also isolates why the
 modulus input is stronger than the signed short-interval mean square.
 
-A second, fully formal Gallagher lane maps every dyadic maximal-window block to one frequency mean
-square for a logarithmic Dirichlet polynomial. The latest dyadic-tail split pays every far
-frequency by affine mean squares rather than a global `ell1`/supremum bound, and the
-large-values capstone inserts the resulting budget directly into the full maximal-window sum.
-The range theorem now keeps Gallagher budgets blockwise, exposing the formerly hidden factor and
-allowing it to be removed if their disjoint sum is controlled. An explicit unconditional
-mean-value baseline is formal but too large at the Route-E scale. This
-lane therefore needs one genuinely arithmetic uniform frequency mean-square saving for Möbius,
-with the displayed Rademacher--Menshov and block-cover losses. Neither analytic lane proves the
-fixed physical relation's unit incoming capacity or co-moving seam law.
+A newer fully formal Gallagher lane bypasses the dyadic maximal-window and
+Rademacher--Menshov machinery altogether. Every product fibre is one logarithmic window of the
+same width, its `sqrt(x)` starting points are separated, and one Gallagher application proves an
+explicit bound for the entire fibre mean square. The umbrella fixes the polynomial length at
+`M=ceil(sqrt(x)+h)`, proves `fibreWidth <= h/sqrt(x)`, and proves
+`FrequencyMeanSquareSmall f hh -> AveragedMeanSquare f hh`. Thus no block count or logarithmic
+maximal loss remains in this route. The exact remaining analytic input is one uniform Möbius
+frequency mean-square saving at length `M` whose Gallagher budget is `o(h^2 sqrt(x))`.
+
+A committed but currently unwired capstone narrows that input further: the diagonal coefficient
+may remain at its baseline `alpha=O(sqrt(x))`; it suffices that the height-independent
+off-diagonal remainder satisfy `beta=o(x)` uniformly in the frequency height. Once wired, this is
+the literal `OffDiagonalSmall mu hh -> FrequencyMeanSquareSmall mu hh` bridge. Neither analytic
+lane proves the fixed physical relation's unit incoming capacity or co-moving seam law.
 
 A generalized-prime firewall now fixes what arithmetic specificity any successor must use. For an
 arbitrary discrete Beurling system the Gibbs split, one-large-prime transition, PNT/Mertens window,
@@ -525,40 +541,43 @@ moment Route P.
 
 ### Route L — Deninger/Green/Hodge source descent [OPEN]
 
-**Endpoint.** A strict source-first chain comparison makes actual Burnol/Deninger coefficient a
-boundary reader value; reader kills boundary, forcing K_n(rho)=0 and Re(rho)=1/2.
+**Endpoint.** Let `w_23` be the canonical two-prime resolved Green boundary. A source-derived
+chain identity puts its degree-two Gamma realization in the literal Meyer--Poisson range
+`Z(H_cap)`, hence in the kernel of the fixed Möbius--Fourier detector `S_mu`. The existing
+coefficient-faithful evaluation reads this same value as
+`c_rho (g_2(rho)-g_3(rho))`, with `c_rho != 0`; its vanishing is exactly
+`Re(rho)=1/2`.
 
-**Lean-closed components.** Source, target, and strict chain provenance are no longer missing:
+**Lean-closed components.** Source, target, strict provenance, and the analytic detector are no
+longer missing:
 
-- completed Xi Green operator and explicit nonzero primitive;
-- isometric, coefficient-faithful Green-to-Calderón--Witt incidence;
-- relative Tate boundary and faithful top-coordinate recovery;
-- actual Burnol conormal identity `E_n^B(rho)=K_n(rho)` and
-  `E_n^B(rho)=0 iff Re(rho)=1/2`;
-- ordinary-integer Hochschild/BV boundary and exact physical failure
-  `n(g_n(s)-g_n(s#))=K_n(s)`;
-- all-cross-prime Koszul compatibility, whose residual kernel is exactly the complete Xi
-  coefficient rather than its annihilation;
-- genuine rational-adelic relative complex and strict resolved-Xi chain map retaining prime,
-  depth, divisor, multiplicity, and nonzero leading Xi jet;
-- nuclear prime-log-height Köthe/Calderón source, entire word/bar contraction
-  `b^2=0`, `bs+sb=1` in every character sector, and the first linearized Sullivan primitive;
-- canonical Möbius ray, pointwise right inverse, `Lambda*mu=-mu log`, and exact von-Mangoldt
-  dilation connection;
-- full Abel/Dirichlet limit chain: convergence of the Möbius harmonic partial sums, probability
-  Abel weights, Abelian limit theorem, equality with `1/zeta(1+sigma)`, and the unconditional
-  identity `sum mu(n)/n=0`;
-- finite mass and all weighted moments of the canonical preimage, plus integrability of the
-  logarithmic pullback on the positive ray;
-- exact dilation scaling of the ray integral and Abel-difference integral, an integrable uniform
-  majorant for Abel partial sums, unconditional zero ray mass of the canonical Möbius preimage,
-  and an integrable even extension carrying the positive-ray estimates to the negative ray;
-- algebraic real-Fourier covariance of the collar commutator.
+- completed Xi Green operator, explicit nonzero primitive, coefficient-faithful
+  Green-to-Calderón--Witt incidence, actual Burnol conormal, and faithful top-coordinate recovery;
+- ordinary-integer Hochschild/BV boundary, exact physical failure
+  `n(g_n(s)-g_n(s#))=K_n(s)`, and all-cross-prime Koszul compatibility;
+- rational-adelic relative complex and strict resolved-Xi chain map retaining prime, depth,
+  divisor, multiplicity, and nonzero leading Xi jet;
+- nuclear prime-log-height source, entire bar contraction, and first Sullivan primitive;
+- canonical Möbius ray, pointwise right inverse, `Lambda*mu=-mu log`, von-Mangoldt dilation
+  connection, full Mertens/Abel/Dirichlet chain, and `sum mu(n)/n=0`;
+- finite mass, every polynomial moment, zero positive-ray mass, integrable even extension, and
+  rapid far-ray decay of the canonical Möbius preimage;
+- involutive collar exchange `J h(t)=exp(-t)h(-t)` on the exponentially decreasing source;
+- concrete tempered-distribution detector
+  `S_mu h = Fourier(E f_h) - E f_(J h)` and exact covariance
+  `S_mu(Jh)=-Fourier(S_mu h)`;
+- literal Poisson source `Z:H_cap -> H_-`, canonical inversion `f_(Zh)=h` on the positive ray,
+  collar/Fourier intertwining, and the proved inclusion `Z(H_cap) subset ker S_mu`;
+- classical/distributional Fourier comparison, density uniqueness, logarithmic termwise
+  differentiation, Landau interpolation, and Schwartz-decay tools needed for the converse kernel
+  inclusion;
+- one-sided Green telescope, two-sided periodization, and source-periodicity rigidity.
 
-These additions strengthen admission and source regularity. They do not identify the independently
-resolved Xi boundary with the actual physical Burnol/Deninger landing. Paper-level
-Möbius--Fourier/Poisson calculations and generic bar, Koszul, KMS, or mapping-cone exactness cannot
-supply that identification merely by declaring the obstruction a boundary.
+Lean does not yet prove `ker S_mu subset Z(H_cap)`: the remaining formal assembly is the
+classical-Fourier smoothness bootstrap and endpoint recovery. The Stage-2 paper proves the exact
+kernel `ker S_mu=Z(H_cap)`. A separate Stage-2 source-transgression theorem identifies `S_mu` as
+the endpoint of the all-prime Euler--Gamma/Möbius physical/Fourier connection. These paper facts
+must not be promoted to Lean status.
 
 **Closed completion escape.** Any closed complex-linear relation on the Calderón--Witt packet
 Hilbert space that contains the old zero boundary on the dense actual arithmetic core equals the
@@ -567,29 +586,37 @@ close to the zero graph, and every nonzero multivalued output is source-independ
 ambiguity. An unbounded graph norm, a closable operator, or merely replacing an operator by a
 closed relation cannot create Route L's missing horizontal differential.
 
-**Open core.** Construct a source-derived singular comparison, before divisor specialization,
-filling the square
+**Open core — `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`.** Construct, before divisor
+specialization, source-derived maps
 
 ~~~
-completed Green tensor BV_1  --id tensor b-->  completed Green tensor BV_0
-          | F_1                                  | F_0 = actual physical landing
-          v                                      v
-   resolved target_1  --------d_T-------->  resolved target_0
-                                                     |
-                                                     v physical reader
-                                              Calderon--Witt coefficient.
+R_1 : C_rel^1 -> H_cap,       R_2 : C_rel^2 -> H_-
 ~~~
 
-Required theorem must prove `d_T F_1=F_0(id tensor b)`, make `F_0` literally the existing physical
-landing, make physical reader kill relevant target boundaries, preserve ordinary-prime and
-multiplicity-jet provenance, and be defined before choosing a divisor. It may not assume
-`K_n(rho)=0`. At `n=6`, existing comparison then reads the image as a nonzero scalar times
-`K_6(rho)`, so strict boundary compatibility forces the critical line.
+on a strict domain containing `w_23`, and prove
 
-Thus Route L's frontier is not construction of another complex, degree-two package, or chain map.
-It is singular source-to-physical specialization connecting two already constructed geometries.
-Closed relations, generic exactness, cyclic traces, KMS untwisting, or quotient definitions merely
-relocate or erase `K_n`; they do not prove this comparison.
+~~~
+R_2 D = Z R_1,
+Ev_rho(S_mu R_2(D w_23)) = c_rho (g_2(rho)-g_3(rho)),   c_rho != 0.
+~~~
+
+Equivalently, for the already fixed degree-two Gamma realization `G_Gamma`, prove the independent
+source identity
+
+~~~
+Omega_(mu,Gamma)(w_23) := S_mu G_Gamma D(w_23) = 0.
+~~~
+
+Canonical Möbius inversion then supplies the unique compatible degree-one prelift; no further
+freedom to invent `R_1` remains. Prime labels, the leading nonzero Xi jet, and the literal physical
+evaluation must survive. The theorem may not assume vanishing of `g_2-g_3`, `K_n`, local
+scattering unitarity, or any equivalent critical-line condition.
+
+Thus Route L's frontier is no longer an unspecified complex, chain map, singular detector, kernel,
+or source-to-boundary landing. It is one cross-prime rational-Witt/Milnor arithmetic annihilation
+identity. Flat Euler curvature, codiagonal cancellation, closed relations, generic exactness,
+adiabatic tomography, positivity, or quotient definitions either erase the resolved antidiagonal
+or assume its vanishing and therefore do not prove it.
 
 ### Route M — Gamma--Jacobi singular reader [TERMINALIZED]
 

@@ -1489,3 +1489,63 @@ Absolute Fourier diagonal: **done** (`tendsto_gaussFourierDiagonal`).
 The fold that makes it relative: **done**.
 Remaining: assemble the `m = 1` relative diagonal from the fold, then the interior replacement for
 `m ≥ 2`.
+
+## Lean status, thirty-third pass: the relative diagonal at `m = 1`
+
+`RHTower/GaussRelativeDiagonal.lean` (new); unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+The fold of the previous pass is now cashed in.
+
+### The exact target
+
+```text
+fourierCoeff_zero_eq_integral         : fourierCoeff f 0 = ∫ f
+integral_gaussMovingAmplitudeCircle   : ∫ a_δ = A_1(δ)                       (δ = ↑s, 0 ≤ s < 1)
+inner_translate_gaussPrimeScale       : ⟪T_δ b, B^(-2) T_δ b⟫ = ∫ a_δ
+```
+
+The middle step is the period average already computed from the two-piece description; the last is
+the pointwise identity `b^(-2)(z) b(z-δ)² = a_δ(z-δ)` followed by translation invariance of Haar
+measure (`integral_sub_right_eq_self`).  So the target of the quadratic form is exactly `A_1(δ)`,
+computed, not posited.
+
+### The folded diagonal
+
+```text
+inner_fourierLp_gaussQuasiInnerG_fold :
+    n ≠ 0 →  ⟪e_n, G e_n⟫ = (p · d_n conj(d_n)) · ⟪S*(b), B^(-2) S*(b)⟫
+```
+
+obtained from the fold by moving `e_n` through `B` and `B^(-2)` (they are multiplication
+operators, so they commute with it) and using that multiplication by `e_n` preserves the inner
+product.  The scalar comes out whole; nothing is divided by `d_n`.
+
+### The relative bound
+
+```text
+norm_inner_gaussPrimeScaleInvSq_sub_le :
+    ‖⟪w, B^(-2)w⟫ - ⟪b, B^(-2)b⟫‖ ≤ ‖w - b‖ (‖w‖ + ‖b‖)
+
+gaussFoldDefect hm k p hp n := ‖S*(b) - T_(δ_n) b‖
+
+norm_inner_gaussQuasiInnerG_sub_amplitude_le :
+    n ≠ 0 →
+    ‖⟪e_n, G e_n⟫ - (p d_n conj(d_n)) · A_1(fract δ_n)‖
+        ≤ ‖p d_n conj(d_n)‖ · (defect n · (defect n + 2‖b‖))
+
+tendsto_gaussFoldDefect              : |ι n| → ∞  →  defect (ι n) → 0
+tendsto_gaussRelativeDiagonalFactor  : the whole cofactor → 0
+```
+
+**This is the relative form of (11) for `m = 1`**: the error is the main term `p|d_n|²` times a
+factor that vanishes.  The vanishing of the defect is the already formalized equation (9), applied
+through the uniform family estimate with the decay constant `4p` of `b_p` — no new analysis, and no
+rate.
+
+### Consequence and what is left
+
+For `m = 1`, `Σ_(n<N) p|d_n|² ε_n / log N → 0` because `p|d_n|² ≍ 1/n` and `ε_n → 0`, so the
+logarithmic mean (14) and formula (A) hold for the actual operator, not only for the model.
+Assembling that summation step, and then the interior replacement `Λ → Λ_0` that carries the same
+argument to `m ≥ 2`, are what remain.

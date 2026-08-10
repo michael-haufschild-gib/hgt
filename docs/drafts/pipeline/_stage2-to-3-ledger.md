@@ -1145,3 +1145,29 @@ prime/zeta/divisor theorem.  See
 - Verification: targeted foreground `lake env lean` on both new modules green; universal-law-field
   umbrella build green (11,577 jobs); `#print axioms` on every capstone reports only `propext`,
   `Classical.choice`, `Quot.sound`.
+
+## ULF-GAS-1 — abelian zeta gas, two-observable divisor dictionary, condensation wall law
+
+- Promoted `2-fully-proven/universal-law-field/` →
+  `3-formalized/universal-law-field/abelian-zeta-gas-two-observable-divisor-dictionary-and-condensation-wall-law.md`
+  with companion `…-formalized.md`.
+- All eight theorems certified unconditionally: 2.1 (zeta-Gibbs measure), 3.1/(GAS.5) (socle
+  bridge), Cor. 3.2/(GAS.6)(GAS.7), 4.1 (unique KMS state at every `σ > 0`, in C\*-form), 5.1
+  (condensation walls plus the squarefull sector), 6.1/(GAS.9)(GAS.10) (the two divisor calculi and
+  the natural boundary at `Re u = −σ`), 7.1/(GAS.11) (renormalisation semigroup, all three clauses),
+  8.1/(GAS.12)–(GAS.14) (entropy equals the von Mangoldt mass).
+- New reusable infrastructure: partition generating functions in `ℝ≥0∞` (mathlib's Euler proof is in
+  `Archive`, not importable); `tprod_split_nat` (finite splitting of a multipliable family in a
+  commutative *monoid* — mathlib's version needs a group and `ℂ` is not one under multiplication);
+  the monomial monoid of a Toeplitz gas as a restricted sum of bicyclic monoids; a GNS construction
+  for a `*`-algebra that is not yet a C\*-algebra (mathlib's `GelfandNaimarkSegal` assumes one), via
+  `PreInnerProductSpace.Core` and `UniformSpace.Completion`; and an elementary positivity
+  certificate reducing to mathlib's Schur product theorem through the telescoping identity
+  `q^{max(b,d)} = q^b q^d q^{-min(b,d)}`.
+- Two mathematical simplifications found while formalizing: the natural boundary needs only that
+  `ζ` has zeros of unbounded ordinate (the *depths* supply the density, not a Riemann–von Mangoldt
+  count), and existence of the KMS state needs no convergence at all because the monomial algebra is
+  the algebraic, not the C\*, tensor product.
+- Verification: targeted foreground `lake env lean` green on every module; `#print axioms` on every
+  capstone reports only `propext`, `Classical.choice`, `Quot.sound`; final foreground
+  `lake build GaloisForLFunctions.HTGeometry.UniversalLawField` green at 11,590 jobs.

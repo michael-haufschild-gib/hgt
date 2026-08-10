@@ -358,6 +358,93 @@ theorem vectorState_nonneg (T : GasGNS θ →L[ℂ] GasGNS θ) :
   · simpa using inner_self_nonneg (𝕜 := ℂ) (x := T (cyclic θ))
   · simp [← Complex.ofReal_pow]
 
+/-! ## The representation as a `*`-algebra homomorphism -/
+
+/-- The gas algebra is a `*`-ring under the monomial adjoint. -/
+noncomputable instance : StarRing (GasAlgebra AbelianZetaMode) where
+  star := gasAdjoint
+  star_involutive := gasAdjoint_gasAdjoint
+  star_mul := gasAdjoint_mul
+  star_add := gasAdjoint_add
+
+theorem star_gas_def (a : GasAlgebra AbelianZetaMode) : star a = gasAdjoint a := rfl
+
+/-- **The GNS representation as a unital `*`-algebra homomorphism.** -/
+noncomputable def repStarAlgHom :
+    GasAlgebra AbelianZetaMode →⋆ₐ[ℂ] (GasGNS θ →L[ℂ] GasGNS θ) where
+  toFun := rep θ
+  map_one' := rep_one θ
+  map_mul' a b := by rw [rep_mul]; rfl
+  map_zero' := rep_zero θ
+  map_add' := rep_add θ
+  commutes' c := by
+    show rep θ (MonoidAlgebra.single (1 : GasWord AbelianZetaMode) c) = _
+    rw [rep_single, leftMul_one]
+    show c • ContinuousLinearMap.id ℂ (GasGNS θ) = _
+    rw [Algebra.algebraMap_eq_smul_one]
+    rfl
+  map_star' a := by
+    rw [star_gas_def, adjoint_rep]
+    rfl
+
+@[simp] theorem repStarAlgHom_apply (a : GasAlgebra AbelianZetaMode) :
+    repStarAlgHom θ a = rep θ a := rfl
+
+/-- **The monomial algebra is dense in the C⋆-algebra of the gas.**  Indeed `gasCStar` *is* the
+closure of the image of the representation. -/
+theorem gasCStar_carrier :
+    (gasCStar θ : Set (GasGNS θ →L[ℂ] GasGNS θ)) = closure (Set.range (rep θ)) := by
+  have hrange : StarAlgebra.adjoin ℂ (Set.range (rep θ)) = (repStarAlgHom θ).range := by
+    have hset : Set.range (rep θ) = ((repStarAlgHom θ).range : Set (GasGNS θ →L[ℂ] GasGNS θ)) := by
+      ext T
+      constructor
+      · rintro ⟨a, rfl⟩
+        exact ⟨a, rfl⟩
+      · rintro ⟨a, rfl⟩
+        exact ⟨a, rfl⟩
+    rw [hset, StarAlgebra.adjoin_eq]
+  show ((StarAlgebra.adjoin ℂ (Set.range (rep θ))).topologicalClosure
+    : Set (GasGNS θ →L[ℂ] GasGNS θ)) = _
+  rw [hrange]
+  show closure ((repStarAlgHom θ).range : Set (GasGNS θ →L[ℂ] GasGNS θ)) = _
+  congr 1
+
+/-! ## Uniqueness on the C⋆-algebra -/
+
+/-- **Theorem 4.1, C⋆-form.**  A continuous normalised functional on the operators that satisfies
+the KMS exchange identity on the monomial image agrees with the vector state on the whole
+C⋆-algebra of the gas.  The exchange identity is imposed on the dense image because the modular
+flow at imaginary time is unbounded, so it does not act on the completion. -/
+theorem vectorState_unique (ψ : (GasGNS θ →L[ℂ] GasGNS θ) →L[ℂ] ℂ)
+    (hone : ψ (ContinuousLinearMap.id ℂ (GasGNS θ)) = 1)
+    (hexch : ∀ a b : GasAlgebra AbelianZetaMode,
+      ψ (rep θ a * rep θ b) = ψ (rep θ b * rep θ (gasTwist θ a))) :
+    ∀ T ∈ gasCStar θ, ψ T = vectorState θ T := by
+  set ψ' : GasAlgebra AbelianZetaMode →ₗ[ℂ] ℂ :=
+    ψ.toLinearMap.comp (repStarAlgHom θ).toLinearMap with hψ'
+  have hψ'one : ψ' 1 = 1 := by
+    show ψ (rep θ 1) = 1
+    rw [rep_one]
+    exact hone
+  have hψ'exch : ∀ a b : GasAlgebra AbelianZetaMode,
+      ψ' (a * b) = ψ' (b * gasTwist θ a) := by
+    intro a b
+    show ψ (rep θ (a * b)) = ψ (rep θ (b * gasTwist θ a))
+    rw [rep_mul, rep_mul]
+    exact hexch a b
+  have hψ'eq : ψ' = gasGibbs θ := gasGibbs_unique θ ψ' hψ'exch hψ'one
+  have hagree : Set.EqOn (⇑ψ) (⇑(vectorState θ)) (Set.range (rep θ)) := by
+    rintro T ⟨a, rfl⟩
+    show ψ (rep θ a) = vectorState θ (rep θ a)
+    rw [vectorState_rep]
+    show ψ' a = gasGibbs θ a
+    rw [hψ'eq]
+  have hclosure := hagree.closure ψ.continuous (vectorState θ).continuous
+  intro T hT
+  refine hclosure ?_
+  have : T ∈ (gasCStar θ : Set (GasGNS θ →L[ℂ] GasGNS θ)) := hT
+  rwa [gasCStar_carrier] at this
+
 end GasPreGNS
 
 end GaloisForLFunctions.HTGeometry

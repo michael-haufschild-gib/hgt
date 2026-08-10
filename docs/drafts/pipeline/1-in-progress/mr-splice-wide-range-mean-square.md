@@ -4783,3 +4783,41 @@ off-diagonal
 square for `μ` at length `M ≍ √x` — any saving over `M²`, however small, closes the whole route.
 That is the object the Ramaré factorization (`RamareFactorization`), the large-values layer
 (`DirichletLargeValues`, `DirichletSixthMoment`) and the Halász bound of units 5–6 act on.
+
+## Unit 24 — the card's residue, unbundled (Lean, unconditional)
+
+`Sieve/FrequencyFromOffDiagonal.lean`, `[propext, Classical.choice, Quot.sound]`.
+
+```lean
+def OffDiagonalSmall (f : ℕ → ℝ) (hh : ℝ → ℝ) : Prop :=
+  ∀ ε > 0, ∀ᶠ x in atTop, ∃ α β,
+    0 ≤ α ∧ 0 ≤ β ∧ α ≤ 50·√x ∧ β ≤ ε·x
+      ∧ ∀ T > 0, ∫_{|w| ≤ T} ‖ ∑_{n ≤ ⌈√x + hh x⌉} f(n)·n^{2πiw} ‖² dw ≤ α·T + β
+
+frequencyMeanSquareSmall_of_offDiagonal :
+  Tendsto hh atTop atTop → (∀ᶠ x, hh x ≤ √x) →
+    OffDiagonalSmall f hh → FrequencyMeanSquareSmall f hh
+```
+
+The height is chosen once and for all as `W₀ = ε√x/4000`, and the four terms of the Gallagher budget
+become `ε h²/40`, `ε h²/32`, `800000/(3ε)` and `10⁶/(9ε)`; the last two are below `ε h²/32` as soon
+as `h ≥ 3000/ε`, which holds eventually because `h → ∞`.  Nothing but `h → ∞`, `h ≤ √x` and the two
+scale facts of unit 23 is used.
+
+**The card, in one line.**
+
+```text
+Route E sign densities  ⟸  MRBilinear μ hh  ⟸  AveragedShortInterval  ⟸  AveragedMeanSquare
+    ⟸  FrequencyMeanSquareSmall μ hh  ⟸  OffDiagonalSmall μ hh
+```
+
+and `OffDiagonalSmall μ hh` says exactly:
+
+> for every `ε > 0`, for all large `x`, the Dirichlet polynomial `∑_{n ≤ M} μ(n) n^{2πiw}` of length
+> `M = ⌈√x + h⌉` has frequency mean square `≤ α·T + β` for every height `T`, with the diagonal
+> coefficient at its baseline `α ≤ 50√x` and the **height-free part `β ≤ ε·x = ε·M²`**.
+
+The diagonal is free; the entire remaining content of the card is that the off-diagonal beats `M²`.
+Any saving whatever over the mean-value theorem's `β ≍ M²` closes the route — this is the object of
+`RamareFactorization`, `DirichletLargeValues`, `DirichletSixthMoment` and the Halász bound of
+units 5–6.

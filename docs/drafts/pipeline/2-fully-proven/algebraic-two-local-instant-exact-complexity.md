@@ -891,3 +891,126 @@ above, this is reachable; the only friction is the
 `PowerSeries` / `MvPowerSeries Unit` identification for the variable ideal.
 The ramified case then needs the Newton polygon, which is where the
 from-scratch work genuinely begins.
+
+## Hensel's lemma in factorisation form built (2026-08-10)
+
+The Hilbert-irreducibility chain recorded in the previous entry (`HIT ← Eisenstein ←
+Newton–Puiseux ← Newton polygon`) needs one tool that neither mathlib nor the corpus
+had: **Hensel's lemma for factorisations**.  mathlib's `Henselian.lean` lifts *simple
+roots* only (`HenselianRing.is_henselian`); lifting a coprime *factorisation* of the
+special fibre — which is what a Newton-polygon edge with two distinct roots produces —
+was absent everywhere.  It is now built, unconditionally and axiom-clean.
+
+`HTGeometry/HenselFactorization.lean` (new, in the umbrella), over an arbitrary
+commutative ring `S` complete for an arbitrary ideal `I`:
+
+- `coeffMem_iff_map_eq_zero` — coefficientwise membership in `J` is vanishing of the
+  reduction `Polynomial.map (Ideal.Quotient.mk J)`.  This is what makes the whole
+  file compute: `%ₘ` and `/ₘ` by a monic divisor commute with `map`, so
+  `CoeffMem.modByMonic`, `CoeffMem.divByMonic`, `coeffMem_divByMonic_sub` and
+  `coeffMem_modByMonic_sub` are all one rewrite each;
+- **`hensel_step`** — the Newton step.  A monic `g ≡ g₀ (mod I)` whose remainder
+  `E = f %ₘ g` lies in `I^(k+1)` is corrected by `p = (E·v) %ₘ g`, of degree below `g`
+  and with coefficients in `I^(k+1)`, to one whose remainder lies in `I^(k+2)`;
+- `coeff_sub_mem_of_cauchy`, **`exists_adic_limit_polynomial`** — the coefficientwise
+  adic limit of a Cauchy sequence of polynomials whose high coefficients are frozen;
+- **`exists_monic_dvd_of_coeffMem_modByMonic`** — Hensel, divisor form: a monic `g₀`
+  dividing `f` modulo `I` whose complementary quotient `f /ₘ g₀` is invertible modulo
+  `(g₀, I)` lifts to a genuine monic divisor of `f` of the same degree;
+- **`exists_monic_factorization`** — Hensel, factorisation form: `f ≡ g₀·h₀ (mod I)`
+  with `g₀` monic and `h₀` invertible modulo `(g₀, I)` lifts to `f = g·h` with
+  `g ≡ g₀`, `h ≡ h₀`.
+
+Two design choices carry the proof.  *Only the divisor is iterated*: the complementary
+factor is recovered as `f /ₘ g`, which makes the degree bookkeeping exact and removes
+the usual simultaneous degree/congruence juggling.  And the step is stated as the single
+polynomial identity
+
+`f − (g + p)·(h + T) = E·w₂ − p·T`,   `T = E·z + s·h`,   `s = (E·v) /ₘ g`,
+
+whose right-hand side visibly lies in `I^(k+2)`: `w₂` collects the three `I`-small
+discrepancies (`z·(g₀−g)`, the Bézout defect, `v·(f/ₘg₀ − f/ₘg)`) and `p·T` is
+`I^(k+1)` squared.  `f` need not be monic and `I` need not be maximal — only
+completeness at `I` is used.
+
+`HTGeometry/PowerSeriesFactorization.lean` (new, in the umbrella) instantiates it at
+`S = K⟦t⟧`, `I = (t)`:
+
+- `coeffMem_span_X_iff`, `map_constantCoeff_map_C` — the reduction/lift pair;
+- **`exists_factorization_of_coprime_reduction`** — a coprime factorisation of the
+  special fibre `f mod t = a·b` (with `a` monic) lifts to `f = g·h` over `K⟦t⟧`, with
+  prescribed reductions and `deg g = deg a`;
+- **`exists_monic_factor_of_rootMultiplicity`** — the form the Newton–Puiseux induction
+  consumes: for any `c ∈ K`, `f` splits as `g·h` with both factors monic and
+  `deg g = ` the multiplicity of `c` as a root of `f mod t`.  So a special fibre with two
+  distinct roots always breaks `f` into strictly smaller monic pieces.
+
+### Where the Newton–Puiseux induction now stands
+
+The induction on `deg f` for `K` algebraically closed of characteristic zero is:
+
+1. fibre has two distinct roots → `exists_monic_factor_of_rootMultiplicity` splits `f`
+   into strictly smaller monic factors — **built**;
+2. fibre is `(X − c)^d` → translate `X ↦ X + c` and remove the `X^{d−1}` coefficient
+   (Tschirnhaus, needs `d` invertible, hence characteristic zero) — **not built**;
+3. then the Newton polygon's smallest slope `μ = p/q > 0` and the substitution
+   `t ↦ s^q`, `X ↦ s^p·Y` make the new special fibre a face polynomial with at least two
+   terms and zero `Y^{d−1}` coefficient, hence at least two distinct roots — return to
+   step 1 — **not built**;
+4. a simple root of the fibre lifts directly by `exists_isRoot_powerSeries`
+   (`HTGeometry/PowerSeriesRootLift.lean`) — **built**.
+
+Step 3 needs the ring map `K⟦t⟧ → K⟦s⟧`, `t ↦ s^q`, which is the next component.
+
+### Remaining Lean layers for the card
+
+- Hilbert irreducibility (§1) — the chain above;
+- for §4, **not** o-minimality of `R_an`.  See the next entry.
+
+## §4 does not need o-minimality (2026-08-10)
+
+The card lists "o-minimality of `R_an`" (Denef–van den Dries, Gabrielov) as a remaining
+input.  It is not needed.  The inequality part of §4 follows from a strictly weaker and
+purely algebraic input plus a corpus lemma that is already built.
+
+**The replacement argument.**  Fix `s` and `T`.
+
+1. `S_s`, the set of states preparable from `Ω` by at most `s` two-qubit gates, is
+   **semialgebraic** in `ℝ^{2D}`: there are finitely many gate-support patterns, each
+   parameter space `U(4)^s` is compact semialgebraic, the output coordinates are
+   polynomial in the gate entries, and Tarski–Seidenberg preserves semialgebraicity
+   under the projection that forgets the parameters.  So
+   `S_s = ⋃_{finite} ⋂_{finite} {x : p_{ij}(x) ⋛ 0}` for real polynomials `p_{ij}`.
+2. Each coordinate of `γ(t) = e^{−itH}Ω` is a finite algebraic combination of `sin` and
+   `cos`, so every `p_{ij} ∘ γ` is real analytic on all of `ℝ`.
+3. `HTGeometry/RealAnalyticZeroFiniteness.lean` — already built, unconditional and
+   axiom-clean — gives `finite_zeros_of_analyticOnNhd`: a real-analytic function on a
+   neighbourhood of `[−T,T]` that is not identically zero has finitely many zeros there.
+   Hence each `{t ∈ [−T,T] : p_{ij}(γ(t)) = 0}` is finite or everything, and each
+   `{t : p_{ij}(γ(t)) > 0}` is open with finite boundary in `[−T,T]`.
+4. A finite boolean combination of finite sets and open sets with finite boundary is a
+   finite union of points and intervals.  If a nondegenerate interval occurred, it would
+   contain a nonzero real algebraic time, contradicting equation (1).  So the set is
+   finite, which is equation (2).
+
+**What this changes.**  The card's §4 as written invokes the restricted-analytic
+o-minimal structure `R_an` — a deep theorem about *analytic* definability.  The argument
+above uses o-minimality of the *semialgebraic* structure only, and even that only through
+the one-variable statement "a nonzero real-analytic function has finitely many zeros on a
+compact interval", which the corpus already owns.  The single missing classical input is
+therefore
+
+> **Tarski–Seidenberg / quantifier elimination for real closed fields**, i.e. that the
+> projection of a semialgebraic set is semialgebraic.
+
+Neither mathlib nor the corpus has semialgebraic sets: `rg semialgebraic` over
+`Mathlib/` returns nothing, and `Mathlib/FieldTheory/IsRealClosed/Basic.lean` carries only
+the square/odd-power basics (`nonneg_iff_isSquare`, `exists_eq_pow_of_odd`) — no Sturm
+sequences, no sign tables, no quantifier elimination.  So this is a from-scratch build
+too, but a bounded and purely algebraic one, whereas o-minimality of `R_an` is not.
+
+### Remaining Lean layers for the card, restated
+
+- **Hilbert irreducibility** (§1), through the Newton–Puiseux chain; the Hensel
+  factorisation step of that chain is now built;
+- **Tarski–Seidenberg** (§4), replacing the previously recorded o-minimality of `R_an`.

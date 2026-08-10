@@ -154,6 +154,35 @@ theorem gaussStepScalar_pow_eq {m : ℕ} (k : Fin m) (p : Nat.Primes) (i : ℤ) 
   congr 1
   rw [mul_pow, ← pow_mul]
 
+/-- **The principal diagonal model is the doubled scaled step scalar times the amplitude
+average.**  Both frequencies `±(n+1)` contribute the same value. -/
+theorem gaussPrincipalDiagonalTerm_eq {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
+    (n : ℕ) :
+    ((gaussArchScale m ^ (2 * m) : ℝ) : ℂ) *
+        ((((p : ℝ) : ℂ) * (starRingEnd ℂ (gaussSampleValue k p ((n : ℤ) + 1)) *
+              gaussSampleValue k p ((n : ℤ) + 1))) ^ m *
+            ((gaussAmplitudeSegment (p : ℝ) m
+              (Int.fract (gaussSamplePhase m p ((n : ℤ) + 1))) : ℝ) : ℂ) +
+          (((p : ℝ) : ℂ) * (starRingEnd ℂ (gaussSampleValue k p ((n : ℤ) + 1)) *
+              gaussSampleValue k p ((n : ℤ) + 1))) ^ m *
+            ((gaussAmplitudeSegment (p : ℝ) m
+              (Int.fract (gaussSamplePhase m p ((n : ℤ) + 1))) : ℝ) : ℂ))
+      = gaussPrincipalDiagonalTerm k p n := by
+  have hine : ((n : ℤ) + 1) ≠ 0 := by omega
+  have henergy : gaussArchScale m ^ (2 * m) *
+      ‖gaussSampleValue k p ((n : ℤ) + 1)‖ ^ (2 * m)
+      = gaussComponentPrimeMagnitudeEnergy k p n := by
+    have h := norm_gaussSampleValueFull_pow hm k p hine
+    rwa [show ((n : ℤ) + 1).natAbs - 1 = n by omega] at h
+  have hamp : gaussAmplitudeCircleComplex (p : ℝ) m (gaussComponentPhasePoint m p n)
+      = ((gaussAmplitudeSegment (p : ℝ) m
+          (Int.fract (gaussSamplePhase m p ((n : ℤ) + 1))) : ℝ) : ℂ) := by
+    rw [gaussAmplitudeCircleComplex_apply, gaussComponentPhasePoint_eq,
+      gaussAmplitudeCircle_coe]
+  rw [gaussPrincipalDiagonalTerm, hamp, gaussStepScalar_pow_eq, ← henergy]
+  push_cast
+  ring
+
 /-- **The Fourier diagonal of the iterated quasi-inner block is the principal diagonal model.**
 Summing the two frequencies `±(n+1)` produces exactly the two-sided principal diagonal term. -/
 theorem tendsto_gaussFourierDiagonal {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) :
@@ -192,18 +221,8 @@ theorem tendsto_gaussFourierDiagonal {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : N
   -- the two limits sum to the principal diagonal term
   have hpdt : ((gaussArchScale m ^ (2 * m) : ℝ) : ℂ) * (σ ^ m * ((S : ℝ) : ℂ) +
       σ ^ m * ((S : ℝ) : ℂ)) = gaussPrincipalDiagonalTerm k p n := by
-    have henergy : gaussArchScale m ^ (2 * m) * ‖gaussSampleValue k p i‖ ^ (2 * m)
-        = gaussComponentPrimeMagnitudeEnergy k p n := by
-      have h := norm_gaussSampleValueFull_pow hm k p hine
-      rwa [show i.natAbs - 1 = n by omega] at h
-    have hamp : gaussAmplitudeCircleComplex (p : ℝ) m (gaussComponentPhasePoint m p n)
-        = ((S : ℝ) : ℂ) := by
-      rw [gaussAmplitudeCircleComplex_apply, gaussComponentPhasePoint_eq,
-        gaussAmplitudeCircle_coe, hS]
-    rw [gaussPrincipalDiagonalTerm, hamp, hσ, gaussStepScalar_pow_eq]
-    rw [← henergy]
-    push_cast
-    ring
+    rw [hσ, hS, hi]
+    exact gaussPrincipalDiagonalTerm_eq hm k p n
   rw [inner_gaussQuasiInnerGFull_pow, inner_gaussQuasiInnerGFull_pow, ← hpdt,
     hscalneg, hphaseneg]
   ring

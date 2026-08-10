@@ -869,3 +869,13 @@ computation certificate, route premise, project axiom, or RH statement occurs. F
 umbrella build passes with 11,587 jobs. Full formal lint reaches the module and reports no target
 error; unrelated unwired `RHTower.Sieve.*` and `HTGeometry.AbelianZetaGas.NaturalBoundary`
 modules keep the repository-wide lint exit nonzero.
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-GAS-1 | The Euler q-Gamma source is the zeta-Gibbs measure on finite abelian groups, equivalently the unique KMS state of a free prime-power Toeplitz gas; its order and socle order carry two nonisomorphic zeta-divisor calculi (the dilation one having the line `Re u = −σ` as a natural boundary), its walls `σ = 1/g` are exact depth-`g` condensation transitions with the squarefull sector honest above `σ = 1/2`, depth dilation is an exact renormalization action, and the symmetrized information cost of the canonical tilt is `σ·(−ζ′/ζ)(σ)` | `HTGeometry.AbelianZetaGas.*` (26 modules), `HTGeometry.PartitionGeneratingFunction`, `HTGeometry.PartitionQPochhammerBridge` |
+
+Direct foreground elaboration and the leaf builds pass; every module is wired into
+`HTGeometry` and hence into `HTGeometry.UniversalLawField`. Axiom prints on all eight theorem
+capstones report only `propext`, `Classical.choice`, and `Quot.sound`. No computation certificate,
+route premise, project axiom, or RH statement occurs. Final foreground umbrella build passes with
+11,590 jobs.

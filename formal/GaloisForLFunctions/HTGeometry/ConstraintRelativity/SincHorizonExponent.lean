@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.RHTower.CCMBoundaryStripTransfer
 
 /-!
 # Observer ramification and the sinc horizon exponent
@@ -233,5 +234,79 @@ theorem observed_exponent_reporter_tendsto (a b c m beta r : ℝ)
     hmr _ _ _ tendsto_log_abs_atBot hscaled hv
   refine hmain.congr fun t => ?_
   congr 2
+
+/-! ## The power reporter: every exponent occurs inside one fixed theory -/
+
+section PowerReporter
+
+open Filter Topology
+
+/-- The reporter argument `|t|^{2r}` tends to zero from above. -/
+theorem tendsto_abs_rpow_nhdsGT {r : ℝ} (hr : 0 < r) :
+    Tendsto (fun t : ℝ => |t| ^ (2 * r)) (𝓝[≠] (0 : ℝ)) (𝓝[>] 0) := by
+  have h2r : (0 : ℝ) < 2 * r := by positivity
+  have habs : Tendsto (fun t : ℝ => |t|) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    simpa using (continuous_abs.tendsto (0 : ℝ)).mono_left nhdsWithin_le_nhds
+  have hcont : ContinuousAt (fun x : ℝ => x ^ (2 * r)) 0 :=
+    Real.continuousAt_rpow_const 0 (2 * r) (Or.inr h2r.le)
+  have hzero : (0 : ℝ) ^ (2 * r) = 0 := Real.zero_rpow (ne_of_gt h2r)
+  have hmain : Tendsto (fun t : ℝ => |t| ^ (2 * r)) (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    have h := hcont.tendsto.comp habs
+    rwa [hzero] at h
+  refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hmain ?_
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  exact Real.rpow_pos_of_pos (abs_pos.2 ht) _
+
+/-- **Theorem 2, generalization.**  The fixed-theory reporter `q_r(t) = exp(−|t|^{2r})` has horizon
+exponent `2r`: the observed defect logarithm is asymptotically `2r log|t|`.  Every positive
+exponent therefore already occurs inside one fixed operator algebra, so a rational exponent alone
+classifies no law-horizon singularity. -/
+theorem powerReporter_exponent_tendsto {r : ℝ} (hr : 0 < r) :
+    Tendsto (fun t : ℝ => Real.log (1 - Real.exp (-(|t| ^ (2 * r)))) / Real.log |t|)
+      (𝓝[≠] (0 : ℝ)) (𝓝 (2 * r)) := by
+  have h2r : (0 : ℝ) < 2 * r := by positivity
+  have hg : Tendsto (fun u : ℝ => Real.log ((1 - Real.exp (-u)) / u)) (𝓝[>] 0) (𝓝 0) := by
+    have hbase : Tendsto (fun u : ℝ => (1 - Real.exp (-u)) / u) (𝓝[>] 0) (𝓝 1) :=
+      GaloisForLFunctions.RHTower.tendsto_one_sub_exp_neg_div.mono_left
+        (nhdsWithin_mono _ (fun x hx => ne_of_gt hx))
+    have h := (Real.continuousAt_log one_ne_zero).tendsto.comp hbase
+    simpa [Function.comp_def] using h
+  have hw : Tendsto
+      (fun t : ℝ => Real.log ((1 - Real.exp (-(|t| ^ (2 * r)))) / (|t| ^ (2 * r))))
+      (𝓝[≠] (0 : ℝ)) (𝓝 0) := hg.comp (tendsto_abs_rpow_nhdsGT hr)
+  have hL : Tendsto (fun t : ℝ => Real.log |t|) (𝓝[≠] (0 : ℝ)) atBot := tendsto_log_abs_atBot
+  have hinv : Tendsto (fun t : ℝ => (Real.log |t|)⁻¹) (𝓝[≠] (0 : ℝ)) (𝓝 0) := hL.inv_tendsto_atBot
+  have hfinal : Tendsto
+      (fun t : ℝ => 2 * r
+        + Real.log ((1 - Real.exp (-(|t| ^ (2 * r)))) / (|t| ^ (2 * r))) * (Real.log |t|)⁻¹)
+      (𝓝[≠] (0 : ℝ)) (𝓝 (2 * r)) := by
+    simpa using tendsto_const_nhds.add (hw.mul hinv)
+  refine hfinal.congr' ?_
+  filter_upwards [hL.eventually_lt_atBot 0, self_mem_nhdsWithin] with t hlt ht
+  have habs : (0 : ℝ) < |t| := abs_pos.2 ht
+  have hupos : (0 : ℝ) < |t| ^ (2 * r) := Real.rpow_pos_of_pos habs _
+  have hnum : (0 : ℝ) < 1 - Real.exp (-(|t| ^ (2 * r))) := by
+    have : Real.exp (-(|t| ^ (2 * r))) < 1 := Real.exp_lt_one_iff.2 (by linarith)
+    linarith
+  have hlog : Real.log ((1 - Real.exp (-(|t| ^ (2 * r)))) / (|t| ^ (2 * r)))
+      = Real.log (1 - Real.exp (-(|t| ^ (2 * r)))) - 2 * r * Real.log |t| := by
+    rw [Real.log_div (ne_of_gt hnum) (ne_of_gt hupos), Real.log_rpow habs]
+  have hLne : Real.log |t| ≠ 0 := ne_of_lt hlt
+  rw [hlog]
+  field_simp
+  ring
+
+/-- **Theorem 2, generalization, inverse form.**  The inverse exponent of the power reporter is
+`1/(2r)`, the card's stated value. -/
+theorem powerReporter_inverse_exponent_tendsto {r : ℝ} (hr : 0 < r) :
+    Tendsto (fun t : ℝ => Real.log |t| / Real.log (1 - Real.exp (-(|t| ^ (2 * r)))))
+      (𝓝[≠] (0 : ℝ)) (𝓝 (1 / (2 * r))) := by
+  have h2r : (0 : ℝ) < 2 * r := by positivity
+  have hmain := (powerReporter_exponent_tendsto hr).inv₀ (ne_of_gt h2r)
+  rw [one_div]
+  refine hmain.congr fun t => ?_
+  rw [inv_div]
+
+end PowerReporter
 
 end HTGeometry.ConstraintRelativity

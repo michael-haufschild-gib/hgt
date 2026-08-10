@@ -1,7 +1,7 @@
 # Abelian zeta gas, two-observable divisor dictionary, and condensation-wall law
 
 - **ID:** ULF-GAS-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / PRD-E ARITHMETIC SOURCE TEST
 - **Source:** structural audit of ULF-EQG-1 against the PRD charter gates
 - **Statement:** The Euler q-Gamma source of ULF-EQG-1 is the zeta-Gibbs measure
@@ -15,7 +15,7 @@
   \(\sigma\sum_n\Lambda(n)n^{-\sigma}\).
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [PRE-ZERO SOURCE] [THREE OBSERVER ORGANS]
   [WITHHELD SECOND-ORGAN RESPONSE] [KMS-UNIQUE FOR ALL POSITIVE TEMPERATURE]
-  [CLASSICAL COMPONENT PARENTS DISCLAIMED] [NOT RH] [THEOREM 2.1 LEAN CERTIFIED]
+  [CLASSICAL COMPONENT PARENTS DISCLAIMED] [NOT RH] [LEAN CERTIFIED]
 
 ## 1. Source, modes, and the depth fan
 
@@ -518,8 +518,10 @@ localizations, one shared unitization class, and a withheld consequence.
   the prediction independently (Erdős–Szekeres; Kendall; Ivić; Estermann-type natural boundaries).
   Component novelty is disclaimed; the point is that the source forces the organ.
 
-The gate is passed at paper level. It remains open at Lean level, and the gate's spirit — a
-withheld consequence in a *fourth, non-classical* organ — is a standing demand; see §10.
+The gate is passed at paper level, and its three organs are now Lean-certified: O1 by Theorem 2.1
+and the (GAS.5) capstone, O2 by Theorem 4.1 in its C\*-form, O3 by Theorem 6.1 including the natural
+boundary.  The gate's spirit — a withheld consequence in a *fourth, non-classical* organ — remains a
+standing demand; see §10.
 
 ## 10. Conjecture, attack, and failure loops
 
@@ -658,7 +660,7 @@ normalization identity:
    coefficient identity `[uⁿ] ∏_{j≥1}(1−u qʲ)⁻¹ = qⁿ/(q;q)_n`, i.e. Euler's identity read as a
    power series in `u`, together with the partition-counting rewrite
    `P(N_p = n) = (q;q)_∞ · ∑_{g : ∑_j g_j = n} q^{∑_j j g_j}`.
-2. **Corollary 3.2, (GAS.7) — CERTIFIED; (GAS.6) remains.**
+2. **Corollary 3.2, (GAS.6) and (GAS.7) — CERTIFIED.**
 
    `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/DepthLadder.lean` (wired into
    `GaloisForLFunctions.HTGeometry`).  The socle tilt `τ ↦ τ + σ` moves depth `j` to depth `j + 1`,
@@ -864,11 +866,10 @@ factor.
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 665 jobs.
 
-**What remains for (GAS.12).**  Two independent pieces, neither of them the identity above:
+**The two further pieces of (GAS.12)**, both now certified:
 
-1. *The gas-expectation layer*: that `E[log|soc A|] = ∑_{(p,j)} E[G_{p,j}]·log p` for the product of
-   the geometric mode laws, and that the two relative entropies are finite.  This is the same
-   product-measure bookkeeping that the global form of (GAS.5) needs.
+1. *The gas-expectation layer* — **DONE**, in `ModeExpectation.lean` and `RelativeEntropy.lean`
+   (`socleExpectation`, `lintegral_classLaw_logSocle`, `klDiv_symmetrised_eq_vonMangoldt`).
 2. *The prime-power reindexing* — **DONE**, in
    `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/VonMangoldtEuler.lean`.
 
@@ -886,10 +887,9 @@ Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 
    `ofReal_tsum_vonMangoldt_eq`.  Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only;
    module green at 8 675 jobs.
 
-   **What is left of (GAS.12)** is therefore only item 1, the gas-expectation layer: that
-   `E[log|soc A|] = ∑_{(p,j)} E[G_{p,j}]·log p` under the product of the geometric mode laws, and
-   that both relative entropies are finite.  The entire arithmetic side of the boxed identity —
-   from the depth-one residue of the mode-mean ladder to `σ·(−ζ′/ζ)(σ)` — is now machine-checked.
+   The entire arithmetic side of the boxed identity — from the depth-one residue of the mode-mean
+   ladder to `σ·(−ζ′/ζ)(σ)` — is machine-checked here; the measure-theoretic side is closed in the
+   `RelativeEntropy.lean` section below.
 
 ### Theorem 6.1 — the dilation organ's divisor, finite-depth form (DONE)
 
@@ -1297,15 +1297,31 @@ normalised, and `vectorState_nonneg` that it is positive.
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 667 jobs.
 
-**What remains of this card.**  Two steps, both bookkeeping on top of what is now proved:
+#### The C\*-form of Theorem 4.1 (DONE)
 
-1. *Bundle `rep` as a `StarAlgHom`.*  This needs a `StarRing` instance on `GasAlgebra` — its four
-   fields are `gasAdjoint_gasAdjoint`, `gasAdjoint_mul`, `gasAdjoint_add` — after which
-   `adjoint_rep` makes `rep` a `*`-homomorphism and its range a `StarSubalgebra`.  Then
-   `gasCStar θ` is literally the closure of that range, so the monomials are dense in it.
-2. *Transfer uniqueness.*  A continuous KMS state on `gasCStar θ` restricts along `rep` to a
-   normalised KMS functional on the monomial algebra, which `gas_kms_unique` identifies with the
-   Gibbs functional; density and continuity then force it to equal `vectorState`.
+| Clause | Lean |
+|---|---|
+| the gas algebra is a `*`-ring | `instStarRing`, `star_gas_def` |
+| **the representation as a unital `*`-algebra homomorphism** | **`repStarAlgHom`** |
+| **the monomials are dense in the C\*-algebra** | **`gasCStar_carrier`** |
+| **uniqueness of the KMS state on the C\*-algebra** | **`vectorState_unique`** |
+
+`gasCStar_carrier` says `gasCStar θ` *is* the closure of the image of the representation — the
+image is already a `*`-subalgebra, so adjoining nothing is needed.  `vectorState_unique` then closes
+the theorem: any continuous normalised functional on `B(GasGNS θ)` satisfying the KMS exchange
+identity on the monomial image agrees with the vector state on all of `gasCStar θ`.  The exchange
+identity is imposed on the dense image rather than intrinsically because the modular flow at
+imaginary time scales monomials by `q^{charge}` and is therefore *unbounded* — it does not act on
+the completion.  That is the standard state of affairs for KMS at imaginary time and is exactly how
+the card's proof uses it.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 667 jobs.
+
+**Theorem 4.1 is therefore closed in C\*-form**: for every `σ > 0` the gas has a concrete
+C\*-algebra `gasCStar θ` — a closed `*`-subalgebra of the bounded operators on the GNS Hilbert space
+— in which the monomials are dense, carrying exactly one continuous normalised KMS state, the
+vector state at the cyclic vector, whose restriction to the monomials is the Gibbs functional.  No
+C\*-tensor product and no inductive limit of C\*-algebras was needed.
 
 ### Theorem 7.1 (GAS.11) — the operator-algebraic clause (DONE)
 
@@ -1697,3 +1713,38 @@ Combining `klDiv_symmetrised_temperature_shift` with
 Axiom audit for every declaration above: `propext`, `Classical.choice`, `Quot.sound` only; the
 module builds green (8 682 jobs).  **Theorem 8.1, and with it (GAS.12), (GAS.13) and (GAS.14), is
 closed.**
+
+## Lean certification status — COMPLETE
+
+Every theorem of this card is formalized unconditionally in Lean 4, with no premises, no added
+axioms and no `sorry`.  `#print axioms` on every capstone reports only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+| Theorem | Capstone(s) |
+|---|---|
+| 2.1 — the gas is the zeta-Gibbs measure | `tsum_classMass_eq_one`, `classMass_eq_ennNormalizer_mul_twoObservableWeight`, `zetaPartition_eq_complexNormalizer_inv` |
+| 3.1 (GAS.5) — the socle bridge | `gas_socleMarginal_eq_eulerWeight`, `measure_exactPartsEvent_eq_localSocleMass`, `gas_socle_law` |
+| Corollary 3.2 (GAS.6), (GAS.7) | `gasResponse_toReal_mul_zetaPartition`, `zetaPartition_depthShift` |
+| 4.1 — unique KMS state at every `σ > 0` | `gas_kms_existsUnique`, `gasGibbs_adjoint_mul_self_nonneg`, `vectorState_unique` |
+| 5.1 — sharp depth-`g` condensation walls, and the squarefull sector | `temperature_finite_depthTail_eq_one`, `temperature_infinite_exactDepth_eq_one`, `gasMeasure_map_depthTail`, `zetaPartition_squarefull` |
+| 6.1 (GAS.9), (GAS.10) — the two divisor calculi, and the natural boundary | `meromorphicOrderAt_grandResponse`, `depthFactor_arg_eq_iff`, `no_analytic_extension`, `finite_grandResponse_zeros` |
+| 7.1 (GAS.11) — the renormalisation semigroup | `depthDilation_comp`, `zetaPartition_depthDilate`, `gasDilate_comp`, `gasDilate_twist`, `gasGibbs_comp_gasDilate` |
+| 8.1 (GAS.12)–(GAS.14) — entropy equals von Mangoldt mass | `klDiv_symmetrised_eq_vonMangoldt`, `klDiv_symmetrised_eq_zeta`, `socleExpectation_temperature_depthLadder`, `orderExpectation_temperature_depthLadder`, `klDiv_symmetrised_temperature_shift` |
+
+Modules (all under `formal/GaloisForLFunctions/HTGeometry/`, all wired into
+`GaloisForLFunctions.HTGeometry` and hence into `HTGeometry.UniversalLawField`):
+`AbelianZetaGas/{Core, GibbsLaw, Normalization, SocleBridge, DepthLadder, Response, DepthDilation,
+ModeMean, VonMangoldtEuler, DilationDivisor, DepthTail, GrandResponse, ModeExpectation, ClassLaw,
+RelativeEntropy, NaturalBoundary, SquarefullSector, GasWord, KMSExchange, GasAlgebra,
+GasKMSUniqueness, KMSState, GasDilation, GasPositivity, GasStar, GasGNS}`, plus
+`PartitionGeneratingFunction` and `PartitionQPochhammerBridge`.
+
+Verification: targeted foreground `lake env lean` green on every module; final foreground
+`lake build GaloisForLFunctions.HTGeometry.UniversalLawField` green at 11,590 jobs.
+
+**Scope note.**  Theorem 4.1 is certified in C\*-form on a concrete C\*-algebra — the closed
+`*`-subalgebra `gasCStar θ` of the bounded operators on the GNS Hilbert space of the Gibbs state, in
+which the monomials are dense.  The KMS exchange identity is imposed on that dense image, because
+the modular flow at imaginary time scales monomials by `q^{charge}` and is unbounded, so it does not
+act on the completion; this is how the card's own proof uses it.  No C\*-tensor product and no
+inductive limit of C\*-algebras was needed.
