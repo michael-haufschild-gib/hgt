@@ -388,6 +388,47 @@ theorem log_socleOrder_classOf {k : AbelianZetaMode → ℕ}
   have hval := classOf_of_finite hk
   rw [congrFun hval m]
 
+/-- The mode-additive socle observable as an `ℝ≥0∞` sum over all modes. -/
+theorem ofReal_logSocle_eq_tsum {k : AbelianZetaMode → ℕ}
+    (hk : (Function.support k).Finite) :
+    ENNReal.ofReal (Real.log (((classOf k).socleOrder : ℕ) : ℝ))
+      = ∑' m : AbelianZetaMode,
+        ENNReal.ofReal (Real.log (((m.1 : ℕ) : ℝ))) * ((k m : ℕ) : ℝ≥0∞) := by
+  classical
+  have hlognn : ∀ m : AbelianZetaMode, (0 : ℝ) ≤ Real.log (((m.1 : ℕ) : ℝ)) := fun m =>
+    Real.log_nonneg (by exact_mod_cast m.1.2.one_lt.le)
+  rw [log_socleOrder_classOf hk,
+    ENNReal.ofReal_sum_of_nonneg (fun m _ => mul_nonneg (Nat.cast_nonneg _) (hlognn m))]
+  have hzero : ∀ m ∉ (classOf k).support,
+      ENNReal.ofReal (Real.log (((m.1 : ℕ) : ℝ))) * ((k m : ℕ) : ℝ≥0∞) = 0 := by
+    intro m hm
+    have hkm : k m = 0 := by
+      have hval := congrFun (classOf_of_finite hk) m
+      rw [← hval]
+      exact Finsupp.notMem_support_iff.mp hm
+    rw [hkm]
+    simp
+  rw [tsum_eq_sum hzero]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  rw [ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast, mul_comm]
+
+/-- **The socle expectation on the class space is the gas socle expectation.**  This is the transport
+the Kullback–Leibler evaluation needs. -/
+theorem lintegral_classLaw_logSocle (θ : AbelianZetaConvergentParameters) :
+    ∫⁻ A, ENNReal.ofReal (Real.log ((A.socleOrder : ℕ) : ℝ))
+        ∂(classLaw θ.toAbelianZetaParameters)
+      = AbelianZetaParameters.socleExpectation θ.toAbelianZetaParameters := by
+  classical
+  have hmeasf : Measurable fun A : AbelianZetaGroupClass =>
+      ENNReal.ofReal (Real.log ((A.socleOrder : ℕ) : ℝ)) := fun s _ => trivial
+  rw [classLaw_eq_map, lintegral_map hmeasf measurable_classOf,
+    AbelianZetaParameters.socleExpectation]
+  refine lintegral_congr_ae ?_
+  have hae : ∀ᵐ k ∂θ.toAbelianZetaParameters.gasMeasure, (Function.support k).Finite :=
+    ae_iff.mpr (gasMeasure_infiniteSupport_null θ)
+  filter_upwards [hae] with k hk
+  exact ofReal_logSocle_eq_tsum hk
+
 end
 
 end GaloisForLFunctions.HTGeometry

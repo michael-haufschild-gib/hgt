@@ -116,6 +116,10 @@ What else exists and must not be rebuilt:
 
 ## Log
 
+- 2026-08-10 — Built `(44)`--`(45)`, the Möbius connection (`RHTower/DeningerMobiusConnection`).
+  Trap worth remembering: `ArithmeticFunction R` has its own `Neg` instance, *not* the ring's
+  `HasDistribNeg` one, so `neg_mul` will not rewrite `(-f) * g` into `-(f * g)` and `ring` fails on
+  the convolution ring.  Carry the sign inside `pmul` and every identity stays sign-free.
 - 2026-08-10 — Built the product-fibre interchange and the pointwise Möbius right inverse
   (`RHTower/DeningerMobiusRightInverse`).  The interchange is cleanest as a *sigma decomposition*:
   the map `⟨N, q ∈ N.divisorsAntidiagonal⟩ ↦ q` is injective with range the nonzero-product locus,

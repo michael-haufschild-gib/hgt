@@ -921,3 +921,25 @@ moving target in pointwise form.
 The composition itself: chaining
 `(conj d_n)^(-1) e_(-n) D* (e_n ·) → T_(δ_n)` and `(d_n)^(-1) e_(-n) D (e_n ·) → T_(δ_n)^(-1)`
 through `B`, `B^(-2)`, `B` to obtain (10), and then its `m`-fold iterate (11).
+
+## Lean status, eighteenth pass: decay of an exponential piece
+
+`HTGeometry/ExponentialPieceFourierDecay.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+norm_intervalIntegral_exp_fourier_le :
+  0 ≤ a ≤ b ≤ 1  →  ‖∫_a^b e^{αx} e^{-2πijx} dx‖ ≤ 2 e^{|α|} / (1 + |j|)
+```
+
+For `j = 0` this is the length bound; otherwise the antiderivative is explicit and
+`‖α - 2πij‖ ≥ 2π|j|`, so `2e^{|α|}/(2π|j|) ≤ 2e^{|α|}/(1+|j|)` because `1+|j| ≤ 2π|j|`.
+
+This is the decay engine for the amplitude class that the iteration produces.  The amplitudes in
+§4 are finitely many products of translates of `p^{±(1-x)}`; every such product is
+`e^{αx}` times a piecewise constant with finitely many jumps, hence a finite sum of exponential
+pieces, and its Fourier coefficients inherit the `A/(1+|j|)` decay that
+`tendsto_norm_gaussShiftedBlockOf_sub_rotation` and
+`tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv` require — with `A` depending only on the
+number of pieces and on `p`, never on the translation parameter.  That is the uniformity the
+fixed number of iterations needs.

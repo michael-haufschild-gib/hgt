@@ -1,5 +1,6 @@
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import GaloisForLFunctions.HTGeometry.FourierCircleTranslation
 
 /-!
 # Fourier decay of an exponential piece
@@ -118,5 +119,77 @@ theorem norm_intervalIntegral_exp_fourier_le {α a b : ℝ} (hab : a ≤ b) (ha 
     have hstep : (1 + (j.natAbs : ℝ)) ≤ 2 * Real.pi * (j.natAbs : ℝ) := by
       nlinarith [Real.two_le_pi, hjabs]
     nlinarith [hnum, hcnorm, hexp0, hstep, hcpos]
+
+/-! ## Sums of pieces -/
+
+/-- **Decay of a finite sum of exponential pieces.** -/
+theorem norm_sum_expPieces_fourier_le {α : ℝ} {n : ℕ} (t : Fin (n + 1) → ℝ) (c : Fin n → ℂ)
+    (ht : ∀ i : Fin n, 0 ≤ t i.castSucc ∧ t i.castSucc ≤ t i.succ ∧ t i.succ ≤ 1)
+    {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ i, ‖c i‖ ≤ M) (j : ℤ) :
+    ‖∑ i : Fin n, c i * ∫ x in (t i.castSucc)..(t i.succ),
+        Complex.exp ((α : ℂ) * (x : ℂ)) *
+          Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) * (x : ℂ)))‖
+      ≤ (n : ℝ) * (M * (2 * Real.exp |α|)) / (1 + (j.natAbs : ℝ)) := by
+  have hden : (0 : ℝ) < 1 + (j.natAbs : ℝ) := by positivity
+  have hterm : ∀ i : Fin n,
+      ‖c i * ∫ x in (t i.castSucc)..(t i.succ),
+        Complex.exp ((α : ℂ) * (x : ℂ)) *
+          Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) * (x : ℂ)))‖
+        ≤ M * (2 * Real.exp |α|) / (1 + (j.natAbs : ℝ)) := by
+    intro i
+    obtain ⟨h0, hle, h1⟩ := ht i
+    rw [norm_mul]
+    have hpiece := norm_intervalIntegral_exp_fourier_le (α := α) hle h0 h1 j
+    have hnn : (0 : ℝ) ≤ 2 * Real.exp |α| / (1 + (j.natAbs : ℝ)) := by positivity
+    calc ‖c i‖ * ‖∫ x in (t i.castSucc)..(t i.succ),
+            Complex.exp ((α : ℂ) * (x : ℂ)) *
+              Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) * (x : ℂ)))‖
+        ≤ M * (2 * Real.exp |α| / (1 + (j.natAbs : ℝ))) :=
+          mul_le_mul (hM i) hpiece (norm_nonneg _) hM0
+      _ = M * (2 * Real.exp |α|) / (1 + (j.natAbs : ℝ)) := by ring
+  calc ‖∑ i : Fin n, c i * ∫ x in (t i.castSucc)..(t i.succ),
+          Complex.exp ((α : ℂ) * (x : ℂ)) *
+            Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) * (x : ℂ)))‖
+      ≤ ∑ _i : Fin n, M * (2 * Real.exp |α|) / (1 + (j.natAbs : ℝ)) :=
+        norm_sum_le_of_le _ (fun i _ => hterm i)
+    _ = (n : ℝ) * (M * (2 * Real.exp |α|)) / (1 + (j.natAbs : ℝ)) := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+        ring
+
+/-! ## The decay predicate -/
+
+/-- The Fourier coefficients of `f` decay like `A/(1+|j|)`. -/
+def HasFourierDecay (f : AddCircle (1 : ℝ) → ℂ) (A : ℝ) : Prop :=
+  ∀ j : ℤ, ‖fourierCoeff f j‖ ≤ A / (1 + (j.natAbs : ℝ))
+
+/-- **Translation preserves the decay constant.** -/
+theorem HasFourierDecay.comp_sub {f : AddCircle (1 : ℝ) → ℂ} {A : ℝ}
+    (h : HasFourierDecay f A) (δ : AddCircle (1 : ℝ)) :
+    HasFourierDecay (fun x => f (x - δ)) A := by
+  intro j
+  rw [fourierCoeff_comp_sub, norm_mul]
+  have hone : ‖fourier (-j) δ‖ = 1 := by
+    rw [fourier_apply]
+    exact Circle.norm_coe _
+  rw [hone, one_mul]
+  exact h j
+
+/-- Scaling multiplies the decay constant. -/
+theorem HasFourierDecay.const_mul {f : AddCircle (1 : ℝ) → ℂ} {A : ℝ}
+    (h : HasFourierDecay f A) {r : ℝ} (hr : 0 ≤ r) (z : ℂ) (hz : ‖z‖ ≤ r) :
+    HasFourierDecay (fun x => z * f x) (r * A) := by
+  intro j
+  have hA : 0 ≤ A := by
+    have := h 0
+    have hnn : (0 : ℝ) ≤ ‖fourierCoeff f 0‖ := norm_nonneg _
+    simp only [Int.natAbs_zero, Nat.cast_zero, add_zero, div_one] at this
+    linarith
+  have hcoeff : fourierCoeff (fun x => z * f x) j = z * fourierCoeff f j := by
+    rw [fourierCoeff, fourierCoeff, ← MeasureTheory.integral_const_mul]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    simp only [smul_eq_mul]
+    ring
+  rw [hcoeff, norm_mul, mul_div_assoc]
+  exact mul_le_mul hz (h j) (norm_nonneg _) hr
 
 end GaloisForLFunctions

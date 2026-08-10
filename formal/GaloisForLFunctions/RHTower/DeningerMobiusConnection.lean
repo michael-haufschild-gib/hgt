@@ -13,8 +13,8 @@ identity on the ray:
 So the Möbius derivative of the canonical preimage carries the whole Euler connection, with the
 leading pole already cancelled — the von Mangoldt current is present, not lost.
 
-* `deningerMobiusLog`, `deningerMobiusLog_mul_zeta` : the Möbius--log function and `(44)`.
-* `deningerVonMangoldt_mul_moebius` : **`Λ * μ = -(μ · log)`.**
+* `deningerNegMobiusLog`, `deningerNegMobiusLog_mul_zeta` : the Möbius--log function and `(44)`.
+* `deningerVonMangoldt_mul_moebius` : **`Λ * μ = -μ · log`.**
 * `deningerMobius_connection` : **the connection identity on the ray.**
 -/
 
@@ -26,43 +26,43 @@ noncomputable section
 
 /-! ## The arithmetic identity -/
 
-/-- The Möbius--log arithmetic function `n ↦ μ(n) log n`. -/
-def deningerMobiusLog : ArithmeticFunction ℝ :=
-  ArithmeticFunction.pmul (↑moebius) ArithmeticFunction.log
+/-- The negated Möbius--log arithmetic function `n ↦ -μ(n) log n`.  Carrying the sign inside the
+pointwise product keeps every convolution identity below sign-free. -/
+def deningerNegMobiusLog : ArithmeticFunction ℝ :=
+  ArithmeticFunction.pmul (↑moebius) (-ArithmeticFunction.log)
 
 @[simp]
-theorem deningerMobiusLog_apply (n : ℕ) :
-    deningerMobiusLog n = ((moebius n : ℤ) : ℝ) * Real.log (n : ℝ) := by
-  rw [deningerMobiusLog, ArithmeticFunction.pmul_apply, ArithmeticFunction.log_apply,
-    ArithmeticFunction.intCoe_apply]
+theorem deningerNegMobiusLog_apply (n : ℕ) :
+    deningerNegMobiusLog n = -(((moebius n : ℤ) : ℝ) * Real.log (n : ℝ)) := by
+  rw [deningerNegMobiusLog, ArithmeticFunction.pmul_apply, ArithmeticFunction.neg_apply,
+    ArithmeticFunction.log_apply, ArithmeticFunction.intCoe_apply, mul_neg]
 
-/-- **`(44)` in convolution form**: `(μ · log) * ζ = -Λ`. -/
-theorem deningerMobiusLog_mul_zeta :
-    deningerMobiusLog * (↑ArithmeticFunction.zeta : ArithmeticFunction ℝ)
-      = -ArithmeticFunction.vonMangoldt := by
+/-- **`(44)` in convolution form**: `(-μ · log) * ζ = Λ`. -/
+theorem deningerNegMobiusLog_mul_zeta :
+    deningerNegMobiusLog * (↑ArithmeticFunction.zeta : ArithmeticFunction ℝ)
+      = ArithmeticFunction.vonMangoldt := by
   ext n
-  rw [ArithmeticFunction.coe_mul_zeta_apply, ArithmeticFunction.neg_apply,
-    Finset.sum_congr rfl (fun d (_ : d ∈ n.divisors) => deningerMobiusLog_apply d)]
-  exact deningerMobiusLogDivisorSum n
+  rw [ArithmeticFunction.coe_mul_zeta_apply,
+    Finset.sum_congr rfl (fun d (_ : d ∈ n.divisors) => deningerNegMobiusLog_apply d),
+    Finset.sum_neg_distrib, deningerMobiusLogDivisorSum, neg_neg]
 
-/-- **The inverted connection identity** `Λ * μ = -(μ · log)`.  Convolving `(44)` with `μ` and
-using `ζ * μ = 1` swaps the convolution order. -/
+/-- **The inverted connection identity** `Λ * μ = -μ · log`.  Convolving `(44)` with `μ` and using
+`ζ * μ = 1` swaps the convolution order. -/
 theorem deningerVonMangoldt_mul_moebius :
     ArithmeticFunction.vonMangoldt * (↑moebius : ArithmeticFunction ℝ)
-      = -deningerMobiusLog := by
+      = deningerNegMobiusLog := by
   have h := congrArg (fun f : ArithmeticFunction ℝ => f * (↑moebius : ArithmeticFunction ℝ))
-    deningerMobiusLog_mul_zeta
+    deningerNegMobiusLog_mul_zeta
   rw [mul_assoc, ArithmeticFunction.coe_zeta_mul_coe_moebius, mul_one] at h
-  rw [h]
-  ring
+  exact h.symm
 
 /-- The divisor form of the inverted identity. -/
 theorem deningerVonMangoldtMoebiusDivisorSum (N : ℕ) :
     (∑ d ∈ N.divisors, vonMangoldt d * ((moebius (N / d) : ℤ) : ℝ))
       = -(((moebius N : ℤ) : ℝ) * Real.log (N : ℝ)) := by
   have h := congrArg (fun f : ArithmeticFunction ℝ => f N) deningerVonMangoldt_mul_moebius
-  simp only [ArithmeticFunction.mul_apply, ArithmeticFunction.neg_apply,
-    deningerMobiusLog_apply, ArithmeticFunction.intCoe_apply] at h
+  simp only [ArithmeticFunction.mul_apply, deningerNegMobiusLog_apply,
+    ArithmeticFunction.intCoe_apply] at h
   rw [← h]
   exact (Nat.sum_divisorsAntidiagonal
     (fun a b => vonMangoldt a * ((moebius b : ℤ) : ℝ))).symm

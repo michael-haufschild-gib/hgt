@@ -669,14 +669,33 @@ declarations: `propext, Classical.choice, Quot.sound`.
   `log d = log n - log(n/d)`; the unit detector is killed by `log n` and what is left is the
   corpus's Möbius--log convolution.
 
+### Section 6 — the Möbius connection `(44)`--`(45)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMobiusConnection.lean`.  Axiom audit for all
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerNegMobiusLog`, `deningerNegMobiusLog_mul_zeta` — `(44)` in convolution form,
+  `(-μ · log) * ζ = Λ`.  The sign is carried *inside* the pointwise product on purpose: the
+  `Neg` instance of `ArithmeticFunction` is not the ring's `HasDistribNeg` one, so `neg_mul` does
+  not fire on a convolution, and every identity here is kept sign-free.
+- `deningerVonMangoldt_mul_moebius` — **`Λ * μ = -μ · log`**, by convolving `(44)` with `μ` and
+  using `ζ * μ = 1`.
+- `deningerVonMangoldtMoebiusDivisorSum` — its divisor form
+  `∑_{d|N} Λ(d) μ(N/d) = -μ(N) log N`.
+- `deningerMobiusDerivative`, `deningerMobius_connection` — **`(45)`**, the connection identity on
+  the ray: `∑_m Λ(m) f_h(mx) = -∑_n μ(n) log n · H_h(nx)` for every `x > 0`.  The pair family
+  vanishes on `mk = 0` for free here, since `Λ(0) = 0` and `μ(0) = 0`.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
 unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a Fubini on a fixed
 ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
-bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(45)` now needs only the *other* convolution order, `∑_{d|N} Λ(d) μ(N/d) = -μ(N) log N`, which
-follows from `(44)` by one Möbius inversion — the interchange itself is built.  `H_∩` and `Z`
-already exist as `RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonLM`.
+bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)`--`(12)` (Abel summation `(10)`, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
+unconditional Mertens rate; `(15)` needs `1/ζ(σ) → 0` as `σ ↓ 1`), then `(6)` — formal once `𝔖_μ`
+is defined — and finally `(5)`, the Fourier-inversion bootstrap `(23)`--`(24)` followed by Poisson
+summation `(26)`.  `H_∩` and `Z` already exist as `RHTower.DeningerMeyerCap` and
+`RHTower.deningerPoissonLM`.
 
 ## Gates
 
