@@ -42,7 +42,7 @@ def xiShiftedBoundaryAdaptiveMidpointCoefficients
 def xiShiftedBoundaryFactorialCarrier
     (r : ℕ) {N : ℕ} (c : Fin N → ℝ) : Polynomial ℝ :=
   ∑ j : Fin N,
-    C (c j / (((r + (j : ℕ)).factorial : ℝ) ^ 2)) * X ^ (j : ℕ)
+    monomial (j : ℕ) (c j / (((r + (j : ℕ)).factorial : ℝ) ^ 2))
 
 /-- Shifted Euler connection on polynomial amplitudes. -/
 def xiShiftedBoundaryShiftedEuler
@@ -79,8 +79,26 @@ theorem eval_xiShiftedBoundaryFactorialCarrier
     (xiShiftedBoundaryFactorialCarrier r c).eval t =
       xiShiftedBoundaryFactorialCarrierPolynomial r c t := by
   simp only [xiShiftedBoundaryFactorialCarrier,
-    xiShiftedBoundaryFactorialCarrierPolynomial, eval_finsetSum, eval_mul, eval_C,
-    eval_pow, eval_X]
+    xiShiftedBoundaryFactorialCarrierPolynomial, eval_finsetSum, eval_monomial]
+
+private theorem xiShiftedBoundaryShiftedEuler_monomial
+    (a b : ℝ) (j : ℕ) :
+    X * (monomial j a).derivative + C b * monomial j a =
+      monomial j (((j : ℝ) + b) * a) := by
+  rw [Polynomial.derivative_monomial]
+  by_cases hj : j = 0
+  · subst j
+    simp
+  · simp only [X_mul_monomial, C_mul_monomial]
+    rw [show j - 1 + 1 = j by omega]
+    ext k
+    by_cases hk : k = j
+    · subst k
+      simp
+      push_cast
+      ring
+    · have hjk : j ≠ k := Ne.symm hk
+      simp [hjk]
 
 /-- One Euler step is exactly the source-selected midpoint coefficient adaptation. -/
 theorem xiShiftedBoundaryShiftedEuler_factorialCarrier_succ
@@ -90,20 +108,18 @@ theorem xiShiftedBoundaryShiftedEuler_factorialCarrier_succ
       xiShiftedBoundaryFactorialCarrier (r + 1)
         (xiShiftedBoundaryAdaptiveMidpointCoefficients r c) := by
   simp only [xiShiftedBoundaryShiftedEuler, xiShiftedBoundaryFactorialCarrier,
-    map_sum, derivative_mul, derivative_C, zero_mul, derivative_X_pow,
-    Finset.mul_sum]
+    map_sum, Finset.mul_sum]
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro j _
+  rw [xiShiftedBoundaryShiftedEuler_monomial]
   rw [show r + 1 + (j : ℕ) = r + (j : ℕ) + 1 by omega,
     Nat.factorial_succ]
   simp only [xiShiftedBoundaryAdaptiveMidpointCoefficients]
+  congr 1
   push_cast
-  by_cases hj : (j : ℕ) = 0
-  · simp [hj, Nat.factorial_ne_zero]
-  · rw [show (j : ℕ) = (j : ℕ) - 1 + 1 by omega, pow_succ]
-    field_simp [Nat.factorial_ne_zero]
-    ring
+  field_simp [Nat.factorial_ne_zero]
+  ring
 
 /-- The second Euler step reaches the preceding squared-factorial carrier. -/
 theorem xiShiftedBoundaryShiftedEuler_midpoint_succ
@@ -113,20 +129,18 @@ theorem xiShiftedBoundaryShiftedEuler_midpoint_succ
           (xiShiftedBoundaryAdaptiveMidpointCoefficients r c)) =
       xiShiftedBoundaryFactorialCarrier r c := by
   simp only [xiShiftedBoundaryShiftedEuler, xiShiftedBoundaryFactorialCarrier,
-    map_sum, derivative_mul, derivative_C, zero_mul, derivative_X_pow,
-    Finset.mul_sum]
+    map_sum, Finset.mul_sum]
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro j _
+  rw [xiShiftedBoundaryShiftedEuler_monomial]
   rw [show r + 1 + (j : ℕ) = r + (j : ℕ) + 1 by omega,
     Nat.factorial_succ]
   simp only [xiShiftedBoundaryAdaptiveMidpointCoefficients]
+  congr 1
   push_cast
-  by_cases hj : (j : ℕ) = 0
-  · simp [hj, Nat.factorial_ne_zero]
-  · rw [show (j : ℕ) = (j : ℕ) - 1 + 1 by omega, pow_succ]
-    field_simp [Nat.factorial_ne_zero]
-    ring
+  field_simp [Nat.factorial_ne_zero]
+  ring
 
 /-- The midpoint-adapted `P^sharp` is the mixed factorial amplitude `Q`. -/
 theorem xiShiftedBoundaryFactorialCarrierPolynomial_succ_midpoint_eq_mixed
@@ -173,15 +187,23 @@ theorem hasDerivAt_xiShiftedCompletedMomentAggregate
         ∑ j : Fin N,
           -(c j * (((r + (j : ℕ) : ℕ) : ℝ) + 1) *
             (xiShiftedReciprocalMoment y (r + (j : ℕ) + 1)).re) := by
-    rw [xiShiftedCompletedMomentAggregate, Finset.sum_neg_distrib]
+    rw [xiShiftedCompletedMomentAggregate]
+    rw [← Finset.sum_neg_distrib]
     apply Finset.sum_congr rfl
     intro j _
     simp only [xiShiftedBoundaryAdaptiveMidpointCoefficients]
     rw [show r + 1 + (j : ℕ) = r + (j : ℕ) + 1 by omega]
     push_cast
     ring
+  have hfun :
+      (fun v => xiShiftedCompletedMomentAggregate v r c) =
+        ∑ j : Fin N,
+          fun v => c j * (xiShiftedReciprocalMoment v (r + (j : ℕ))).re := by
+    funext v
+    simp only [xiShiftedCompletedMomentAggregate, Finset.sum_apply]
   rw [htarget]
-  simpa only [xiShiftedCompletedMomentAggregate, Finset.sum_apply] using hsum
+  rw [hfun]
+  exact hsum
 
 /-- The divisor-moment aggregate and completed-source aggregate are identical at `y=w^2`. -/
 theorem xiShiftedCompletedMomentAggregate_sq_eq_boundaryCompletedAggregate

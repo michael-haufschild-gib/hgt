@@ -6860,3 +6860,4 @@ import GaloisForLFunctions.HTGeometry.EisensteinUniform
 import GaloisForLFunctions.HTGeometry.EisensteinScaling
 import GaloisForLFunctions.HTGeometry.ImageSeparatingPolynomial
 import GaloisForLFunctions.HTGeometry.AnalyticImageFiniteness
+import GaloisForLFunctions.HTGeometry.OrbitExceptionalTimes

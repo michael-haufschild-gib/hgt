@@ -1437,3 +1437,62 @@ values at infinitely many integers to be a rational function.
 
 - Hilbert irreducibility, on top of the finished chain;
 - Tarski–Seidenberg (§4).
+
+## §4 needs neither o-minimality nor Tarski–Seidenberg (2026-08-10)
+
+The card's §4 invokes o-minimality of `R_an`; an earlier entry above reduced that to
+Tarski–Seidenberg.  **Both are unnecessary.**  The local finiteness of the exceptional times
+follows from the parameter count that already carries §3, together with the corpus's
+real-analytic zero finiteness.  Two new modules, both axiom-clean and in the umbrella, prove it.
+
+### The mechanism
+
+The `s`-gate state set is the image of a polynomial parametrisation with `m` real parameters.
+One does not need to know that this image is semialgebraic — it is enough to have **one
+polynomial** vanishing identically on it and not vanishing along the orbit.
+
+`HTGeometry/ImageSeparatingPolynomial.lean`:
+
+- **`exists_ne_zero_aeval_eq_zero`** — more polynomials than variables are algebraically
+  dependent: for `Φ : Fin r → MvPolynomial (Fin m) K` with `m < r` there is `h ≠ 0` with
+  `aeval Φ h = 0`.  This is `card_le_of_algebraicIndependent_of_mem_adjoin` (built for §3 of
+  this card) applied inside the polynomial ring itself, where `adjoin (range X) = ⊤`;
+- `aeval_eq_zero_of_aeval_eq_zero` — such an `h` vanishes at every point of the image, over
+  any target algebra;
+- **`exists_separating_polynomial`** — if the point `P` has algebraically independent
+  coordinates and `m < r`, that same `h` satisfies `aeval P h ≠ 0`.  So one polynomial
+  separates `P` from the whole image.
+
+`HTGeometry/AnalyticImageFiniteness.lean`:
+
+- `analyticOnNhd_aeval` — a polynomial in real-analytic functions is real-analytic;
+- **`finite_meets_image`** — a real-analytic curve `γ : ℝ → ℝ^r` passing through a point with
+  algebraically independent coordinates meets `{aeval u Φ : u ∈ ℝ^m}` only finitely often on
+  any compact set, whenever `m < r`.
+
+The proof is three lines of mathematics: compose the separating polynomial with the curve; the
+result is real-analytic and nonzero at `t₀`; its zeros on a compact set are finite
+(`RealAnalyticZeroFiniteness.finite_zeros_of_analyticOnNhd`); and every intersection is such a
+zero.
+
+### What this does for the card
+
+Equation (2) — the local finiteness of low-complexity times — is now within reach with **no
+external classical input at all**.  Instantiating `finite_meets_image` with
+
+- `r = 2D` (the real coordinates of the state), `m = 16s` (the gate parameters),
+- `γ` the orbit `t ↦ e^{−itH}Ω`, whose coordinates are finite algebraic combinations of `sin`
+  and `cos` and so real-analytic,
+- `t₀` any nonzero algebraic time, where §3 gives `D − 1` algebraically independent
+  coordinates,
+
+gives finiteness on `[−T, T]` as soon as `16s < D − 1`, which is exactly the hypothesis of
+equation (2).  The remaining work is instantiation — the orbit's analyticity and the
+identification of the `s`-gate set as a polynomial image — not new mathematics.
+
+### Remaining Lean layers for the card
+
+- §4: instantiate `finite_meets_image` at the orbit (analyticity of `t ↦ e^{−itH}Ω`, the gate
+  map as a polynomial parametrisation).  **No o-minimality, no Tarski–Seidenberg.**
+- §1: Hilbert irreducibility, the sole remaining classical input, now resting on a finished
+  chain (Hensel → Newton polygon → Newton–Puiseux → Eisenstein, all built).

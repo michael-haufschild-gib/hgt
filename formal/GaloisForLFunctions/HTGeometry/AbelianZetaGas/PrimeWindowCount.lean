@@ -441,4 +441,137 @@ theorem eventually_windowSum_ge {σ τ : ℝ} (hσ : 0 < σ) (hτ : 0 < τ) :
       linarith
   exact le_trans hstep hweight
 
+/-! ## The window sums are harmonically large -/
+
+theorem not_summable_one_div_succ : ¬ Summable (fun m : ℕ => (1 : ℝ) / (m + 1)) := by
+  intro h
+  refine Real.not_summable_one_div_natCast ?_
+  have hshift : Summable (fun m : ℕ => (1 : ℝ) / ((m + 1 : ℕ) : ℝ)) := by
+    refine h.congr fun m => ?_
+    push_cast
+    ring
+  exact (summable_nat_add_iff 1).mp hshift
+
+theorem windowSum_nonneg {σ τ : ℝ} (hτ : 0 < τ) (m : ℕ) : 0 ≤ windowSum σ τ m := by
+  refine Finset.sum_nonneg fun p hp => ?_
+  obtain ⟨hprime, _, _⟩ := mem_primesInIoc hp
+  have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
+  have hcos := cos_nonpos_of_mem_winNat hτ m hp
+  have hppow : (0 : ℝ) < (p : ℝ) ^ (-σ) := Real.rpow_pos_of_pos hpR _
+  nlinarith
+
+theorem log_windowLo (τ : ℝ) (m : ℕ) :
+    Real.log (windowLo τ m) = (2 * m * Real.pi + Real.pi / 2) / τ := by
+  rw [windowLo, Real.log_exp]
+
+/-- **The window sums dominate a harmonic series.** -/
+theorem eventually_windowSum_ge_harmonic {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ : 0 < τ) :
+    ∀ᶠ m : ℕ in Filter.atTop,
+      (windowRatio τ - 1) * τ / (8 * Real.pi * windowRatio τ ^ σ) * (1 / (m + 1))
+        ≤ windowSum σ τ m := by
+  have hK := one_lt_windowRatio hτ
+  have hKpos : (0 : ℝ) < windowRatio τ := Real.exp_pos _
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  have hgrow : Filter.Tendsto (fun m : ℕ => windowLo τ m / Real.log (windowLo τ m))
+      Filter.atTop Filter.atTop :=
+    x_log_x_atTop.comp (tendsto_windowLo_atTop hτ)
+  have hbig : ∀ᶠ m : ℕ in Filter.atTop,
+      4 / (windowRatio τ - 1) ≤ windowLo τ m / Real.log (windowLo τ m) :=
+    hgrow.eventually_ge_atTop _
+  have hone : ∀ᶠ m : ℕ in Filter.atTop, (1 : ℝ) ≤ windowLo τ m :=
+    (tendsto_windowLo_atTop hτ).eventually_ge_atTop _
+  filter_upwards [eventually_windowSum_ge hσ hτ, hbig, hone] with m hm hmbig hmone
+  set X := windowLo τ m with hX
+  set K := windowRatio τ with hKdef
+  have hXpos : (0 : ℝ) < X := windowLo_pos τ m
+  have hlogpos : 0 < Real.log X := by
+    rw [log_windowLo]
+    have : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg _
+    positivity
+  have hratio : 0 < X / Real.log X := by positivity
+  -- absorb the `−1`
+  have hKm1 : (0 : ℝ) < K - 1 := by linarith
+  have habsorb : (K - 1) / 4 * (X / Real.log X) ≤ (K - 1) / 2 * (X / Real.log X) - 1 := by
+    have hmul := mul_le_mul_of_nonneg_left hmbig (by positivity : (0:ℝ) ≤ (K - 1) / 4)
+    have hone' : (K - 1) / 4 * (4 / (K - 1)) = 1 := by field_simp
+    linarith [hmul, hone']
+  have hKXpow : (0 : ℝ) < (K * X) ^ (-σ) := Real.rpow_pos_of_pos (by positivity) _
+  have hstep1 : (K - 1) / 4 * (X / Real.log X) * (K * X) ^ (-σ) ≤ windowSum σ τ m := by
+    refine le_trans (mul_le_mul_of_nonneg_right habsorb hKXpow.le) hm
+  -- evaluate the weight
+  have hsplit : (K * X) ^ (-σ) = K ^ (-σ) * X ^ (-σ) :=
+    Real.mul_rpow hKpos.le hXpos.le
+  have hXpow : (1 : ℝ) ≤ X * X ^ (-σ) := by
+    have hxx : X * X ^ (-σ) = X ^ (1 - σ) := by
+      rw [show (1 : ℝ) - σ = 1 + (-σ) by ring, Real.rpow_add hXpos, Real.rpow_one]
+    rw [hxx]
+    exact Real.one_le_rpow hmone (by linarith)
+  have hKneg : K ^ (-σ) = (K ^ σ)⁻¹ := by
+    rw [Real.rpow_neg hKpos.le]
+  have hKpow : (0 : ℝ) < K ^ σ := Real.rpow_pos_of_pos hKpos _
+  have hstep2 : (K - 1) / (4 * K ^ σ) * (1 / Real.log X)
+      ≤ (K - 1) / 4 * (X / Real.log X) * (K * X) ^ (-σ) := by
+    rw [hsplit, hKneg]
+    have hexpand : (K - 1) / 4 * (X / Real.log X) * ((K ^ σ)⁻¹ * X ^ (-σ))
+        = (K - 1) / (4 * K ^ σ) * (1 / Real.log X) * (X * X ^ (-σ)) := by
+      field_simp
+    rw [hexpand]
+    have hc : (0 : ℝ) ≤ (K - 1) / (4 * K ^ σ) * (1 / Real.log X) := by
+      have : (0 : ℝ) < K - 1 := by linarith
+      positivity
+    nlinarith
+  -- compare the logarithm with `m + 1`
+  have hlogle : Real.log X ≤ 2 * Real.pi * (m + 1) / τ := by
+    rw [log_windowLo]
+    rw [div_le_div_iff₀ hτ hτ]
+    have : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg _
+    nlinarith
+  have hstep3 : (K - 1) * τ / (8 * Real.pi * K ^ σ) * (1 / (m + 1))
+      ≤ (K - 1) / (4 * K ^ σ) * (1 / Real.log X) := by
+    have hmR : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+    have hinv : 1 / (2 * Real.pi * (m + 1) / τ) ≤ 1 / Real.log X :=
+      one_div_le_one_div_of_le hlogpos hlogle
+    have hval : (K - 1) * τ / (8 * Real.pi * K ^ σ) * (1 / (m + 1))
+        = (K - 1) / (4 * K ^ σ) * (1 / (2 * Real.pi * (m + 1) / τ)) := by
+      field_simp
+      ring
+    rw [hval]
+    have hc : (0 : ℝ) ≤ (K - 1) / (4 * K ^ σ) := by
+      have : (0 : ℝ) < K - 1 := by linarith
+      positivity
+    exact mul_le_mul_of_nonneg_left hinv hc
+  linarith [hstep1, hstep2, hstep3]
+
+/-- **The window sums are not summable.** -/
+theorem not_summable_windowSum {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ : 0 < τ) :
+    ¬ Summable (fun m : ℕ => windowSum σ τ m) := by
+  intro hsum
+  have hK := one_lt_windowRatio hτ
+  have hKpos : (0 : ℝ) < windowRatio τ := Real.exp_pos _
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  set c : ℝ := (windowRatio τ - 1) * τ / (8 * Real.pi * windowRatio τ ^ σ) with hc
+  have hcpos : 0 < c := by
+    have h1 : (0 : ℝ) < windowRatio τ - 1 := by linarith
+    have h2 : (0 : ℝ) < windowRatio τ ^ σ := Real.rpow_pos_of_pos hKpos _
+    rw [hc]
+    positivity
+  obtain ⟨N, hN⟩ := (eventually_windowSum_ge_harmonic hσ hσ1 hτ).exists_forall_of_atTop
+  have hshift : Summable (fun m : ℕ => windowSum σ τ (m + N)) := (summable_nat_add_iff N).2 hsum
+  have hcomp : Summable (fun m : ℕ => c * (1 / ((m + N : ℕ) + 1))) := by
+    refine Summable.of_nonneg_of_le (fun m => ?_) (fun m => ?_) hshift
+    · have : (0 : ℝ) < ((m + N : ℕ) : ℝ) + 1 := by positivity
+      positivity
+    · exact hN (m + N) (by omega)
+  have hharm : Summable (fun m : ℕ => (1 : ℝ) / ((m : ℝ) + 1)) := by
+    have hscaled : Summable (fun m : ℕ => (1 : ℝ) / (((m + N : ℕ) : ℝ) + 1)) := by
+      have hml := hcomp.mul_left c⁻¹
+      refine hml.congr fun m => ?_
+      field_simp
+    have hcong : Summable (fun m : ℕ => (fun k : ℕ => (1 : ℝ) / ((k : ℝ) + 1)) (m + N)) := by
+      refine hscaled.congr fun m => ?_
+      push_cast
+      ring
+    exact (summable_nat_add_iff N).mp hcong
+  exact not_summable_one_div_succ hharm
+
 end GaloisForLFunctions.HTGeometry

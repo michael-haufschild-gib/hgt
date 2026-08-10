@@ -23,6 +23,17 @@ noncomputable section
 
 variable {σ ι : Type*} [Fintype σ] [DecidableEq σ]
 
+/-- Entrywise domination aggregates to domination of the normalized squared matrix mean. -/
+theorem twoQueryLocalRetentionMean_le_of_entrywise
+    {κ : Type*} [Fintype κ] [Nonempty κ]
+    (C E : Matrix κ κ ℝ) (h : ∀ i j, (C i j) ^ 2 ≤ E i j) :
+    twoQueryLocalRetentionMean C ≤
+      (∑ i, ∑ j, E i j) / (Fintype.card κ : ℝ) ^ 2 := by
+  rw [twoQueryLocalRetentionMean]
+  have hden : 0 < (Fintype.card κ : ℝ) ^ 2 := by positivity
+  exact (div_le_div_iff_of_pos_right hden).2
+    (Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => h i j)
+
 /-- Stabilizer sample whose local axis is adapted to a Pauli label.  Identity sites use an arbitrary
 fixed axis; their signed spectral resolution is the ordinary resolution of the identity. -/
 def pauliEigenframeSample (P : σ → Option (Fin 3)) (b : σ → Bool) :
@@ -194,14 +205,21 @@ theorem pauliConjugationTransfer_sq_le_eigenframeMean
   apply (div_le_div_iff₀ (sq_pos_of_pos hN) hN).2
   nlinarith [mul_nonneg hN.le (sub_nonneg.mpr hCS)]
 
+/-- Mean squared output expectation for one ordered pair of dictionary words. -/
+def dictionaryEigenframeMean [Fintype ι]
+    (label : ι → σ → Option (Fin 3))
+    (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) :
+    Matrix ι ι ℝ :=
+  fun output input =>
+    (∑ b : σ → Bool,
+        (pauliEigenframeExpectation U (label input) (label output) b) ^ 2) /
+      (Fintype.card (σ → Bool) : ℝ)
+
 /-- Literal adaptive product-eigenframe, two-query score. -/
 def adaptiveEigenframeTwoQueryScore [Fintype ι]
     (label : ι → σ → Option (Fin 3))
     (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) : ℝ :=
-  (∑ input : ι, ∑ output : ι,
-      (∑ b : σ → Bool,
-        (pauliEigenframeExpectation U (label input) (label output) b) ^ 2) /
-          (Fintype.card (σ → Bool) : ℝ)) /
+  (∑ output : ι, ∑ input : ι, dictionaryEigenframeMean label U output input) /
     (Fintype.card ι : ℝ) ^ 2
 
 /-- Dictionary compression of the exact Pauli-transfer matrix. -/
@@ -211,7 +229,16 @@ def dictionaryPauliTransfer [Fintype ι]
     Matrix ι ι ℝ :=
   fun output input => pauliConjugationTransfer U (label output) (label input)
 
-set_option maxHeartbeats 800000 in
+/-- Coordinate form of the adaptive-eigenframe domination, packaged at dictionary level to avoid
+expanding the full Pauli basis during finite-sum aggregation. -/
+theorem dictionaryPauliTransfer_sq_le_eigenframeMean [Fintype ι]
+    (label : ι → σ → Option (Fin 3))
+    (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ)
+    (input output : ι) :
+    (dictionaryPauliTransfer label U output input) ^ 2 ≤
+      dictionaryEigenframeMean label U output input :=
+  pauliConjugationTransfer_sq_le_eigenframeMean U (label input) (label output)
+
 /-- The physical adaptive-eigenframe score dominates the complete squared transfer mass retained
 by the dictionary. -/
 theorem twoQueryLocalRetentionMean_le_adaptiveEigenframeScore
@@ -221,13 +248,12 @@ theorem twoQueryLocalRetentionMean_le_adaptiveEigenframeScore
     twoQueryLocalRetentionMean (dictionaryPauliTransfer label U) ≤
       adaptiveEigenframeTwoQueryScore label U := by
   classical
-  rw [twoQueryLocalRetentionMean, adaptiveEigenframeTwoQueryScore]
-  have hM : 0 < (Fintype.card ι : ℝ) ^ 2 := by positivity
-  apply (div_le_div_iff_of_pos_right hM).2
-  exact Finset.sum_le_sum fun input _ =>
-    Finset.sum_le_sum fun output _ =>
-      (by simpa [dictionaryPauliTransfer] using
-        pauliConjugationTransfer_sq_le_eigenframeMean U (label input) (label output))
+  change twoQueryLocalRetentionMean (dictionaryPauliTransfer label U) ≤
+    (∑ output, ∑ input, dictionaryEigenframeMean label U output input) /
+      (Fintype.card ι : ℝ) ^ 2
+  exact twoQueryLocalRetentionMean_le_of_entrywise
+    (dictionaryPauliTransfer label U) (dictionaryEigenframeMean label U)
+    (fun output input => dictionaryPauliTransfer_sq_le_eigenframeMean label U input output)
 
 /-- Any nonzero conserved dictionary coordinate forces inverse-dictionary-squared physical score,
 uniformly in time and independently of Pauli weight. -/
@@ -240,6 +266,126 @@ theorem adaptiveEigenframeTwoQueryScore_ge_card_sq_inv
     1 / (Fintype.card ι : ℝ) ^ 2 ≤ adaptiveEigenframeTwoQueryScore label U := by
   exact (twoQueryLocalRetentionMean_ge_card_sq_inv _ h hh hfix).trans
     (twoQueryLocalRetentionMean_le_adaptiveEigenframeScore label U)
+
+/-! ## Exact Haar benchmark -/
+
+/-- Every fixed adaptive-eigenframe trial has exact Haar mean square `1 / (2^n + 1)`. -/
+theorem haar_sq_pauliEigenframeExpectation_eq
+    {n : ℕ} (hn : 1 ≤ n)
+    (input output : Fin n → Option (Fin 3))
+    (hinput : input ≠ pauliIdentityLabel n)
+    (b : Fin n → Bool) :
+    (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+        (pauliEigenframeExpectation
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ) input output b) ^ 2
+        ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) =
+      1 / ((2 ^ n + 1 : ℕ) : ℝ) := by
+  classical
+  have hcard : Fintype.card (FiniteQubitConfiguration (Fin n)) =
+      Fintype.card (Fin 2 ⊕ Fin (2 ^ n - 2)) := by
+    have hpow : 2 ≤ 2 ^ n := by
+      calc
+        2 = 2 ^ 1 := by norm_num
+        _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
+    simp only [FiniteQubitConfiguration, Fintype.card_fun, Fintype.card_bool,
+      Fintype.card_fin, Fintype.card_sum]
+    omega
+  let e : FiniteQubitConfiguration (Fin n) ≃ Fin 2 ⊕ Fin (2 ^ n - 2) :=
+    Fintype.equivOfCardEq hcard
+  rw [pauliEigenframeExpectation]
+  rw [haar_sq_trace_pure_state_conjugation (2 ^ n - 2) e
+    (productStabilizerDensity_isHermitian (pauliEigenframeSample output b))
+    (productStabilizerDensity_mul_self (pauliEigenframeSample output b))
+    (trace_productStabilizerDensity (pauliEigenframeSample output b))
+    (finitePauliMatrix_isHermitian input)
+    (finitePauliMatrix_trace_eq_zero_of_ne_identity input hinput)
+    (finitePauliMatrix_mul_self input)]
+  have hpow : 2 ≤ 2 ^ n := by
+    calc
+      2 = 2 ^ 1 := by norm_num
+      _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
+  have hd3 : ((2 ^ n - 2 : ℕ) : ℝ) + 3 = ((2 ^ n + 1 : ℕ) : ℝ) := by
+    rw [Nat.cast_sub hpow]
+    push_cast
+    ring
+  rw [hd3, one_div]
+
+/-- One ordered dictionary pair has exact adaptive-eigenframe Haar mean `(2^n+1)^{-1}`. -/
+theorem haar_dictionaryEigenframeMean_eq
+    {n : ℕ} (hn : 1 ≤ n) [Fintype ι]
+    (label : ι → Fin n → Option (Fin 3))
+    (hlabel : ∀ i, label i ≠ pauliIdentityLabel n)
+    (output input : ι) :
+    (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+        dictionaryEigenframeMean label
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ) output input
+        ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) =
+      1 / ((2 ^ n + 1 : ℕ) : ℝ) := by
+  classical
+  have hcont : ∀ b : Fin n → Bool,
+      Continuous fun V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ =>
+        (pauliEigenframeExpectation
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)
+          (label input) (label output) b) ^ 2 := by
+    intro b
+    simpa [pauliEigenframeExpectation] using
+      (continuous_sq_trace_conj
+        (productStabilizerDensity (pauliEigenframeSample (label output) b))
+        (finitePauliMatrix (label input)))
+  rw [dictionaryEigenframeMean, integral_div,
+    integral_finsetSum _ (fun b _ =>
+      integrable_finiteUnitaryHaar_of_continuous _ (hcont b))]
+  rw [Finset.sum_congr rfl fun b _ =>
+    haar_sq_pauliEigenframeExpectation_eq hn (label input) (label output) (hlabel input) b]
+  rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+  have hcfg : (Fintype.card (Fin n → Bool) : ℝ) ≠ 0 := by positivity
+  field_simp
+
+/-- **Exact Haar law for the complete adaptive two-query experiment.** Every finite dictionary of
+nonidentity Pauli words has Haar expectation exactly `1 / (2^n + 1)`, independently of word weight
+and dictionary size. -/
+theorem haar_adaptiveEigenframeTwoQueryScore_eq
+    {n : ℕ} (hn : 1 ≤ n) [Fintype ι] [Nonempty ι]
+    (label : ι → Fin n → Option (Fin 3))
+    (hlabel : ∀ i, label i ≠ pauliIdentityLabel n) :
+    (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+        adaptiveEigenframeTwoQueryScore label
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)
+        ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) =
+      1 / ((2 ^ n + 1 : ℕ) : ℝ) := by
+  classical
+  have hint : ∀ output input : ι,
+      Integrable
+        (fun V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ =>
+          dictionaryEigenframeMean label
+            (V : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ) output input)
+        (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) := by
+    intro output input
+    apply Integrable.div_const
+    apply integrable_finsetSum
+    intro b _hb
+    apply integrable_finiteUnitaryHaar_of_continuous
+    simpa [pauliEigenframeExpectation] using
+      (continuous_sq_trace_conj
+        (productStabilizerDensity (pauliEigenframeSample (label output) b))
+        (finitePauliMatrix (label input)))
+  rw [adaptiveEigenframeTwoQueryScore, integral_div,
+    integral_finsetSum _ (fun output _ =>
+      integrable_finsetSum _ (fun input _ => hint output input))]
+  rw [Finset.sum_congr rfl fun output _ =>
+    integral_finsetSum _ (fun input _ => hint output input)]
+  rw [Finset.sum_congr rfl fun output _ =>
+    Finset.sum_congr rfl fun input _ =>
+      haar_dictionaryEigenframeMean_eq hn label hlabel output input]
+  rw [Finset.sum_const, Finset.sum_const, Finset.card_univ, Finset.card_univ,
+    nsmul_eq_mul, nsmul_eq_mul]
+  have hM : (Fintype.card ι : ℝ) ≠ 0 := by positivity
+  field_simp
 
 end
 

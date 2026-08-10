@@ -307,6 +307,45 @@ theorem thetaShiftedRangeMap_range_eq_orthogonal (α : ℂ) :
 def thetaCokernelFunctional (α : ℂ) : H →L[ℂ] ℂ :=
   innerSL ℂ (thetaCokernelVector α)
 
+/-- Literal quantile-space representative of the Hedenmalm forcing `-i k`. -/
+def thetaSourceForcingVector : H :=
+  (-Complex.I) • thetaCokernelVector 0
+
+theorem thetaCokernelFunctional_sourceForcing (α : ℂ) :
+    thetaCokernelFunctional α thetaSourceForcingVector =
+      -Complex.I * XiC α := by
+  rw [thetaCokernelFunctional, thetaSourceForcingVector, innerSL_apply_apply,
+    inner_smul_right, thetaCokernelVector]
+  change -Complex.I * inner ℂ
+      (quantileUnitary thetaSource (thetaCokernelSourceVector α))
+      (quantileUnitary thetaSource (thetaCokernelSourceVector 0)) =
+    -Complex.I * XiC α
+  rw [(quantileUnitary thetaSource).inner_map_map]
+  rw [inner_sourceSpace_eq_integral_div
+    (thetaCokernelSourceVector_ae α) (thetaCokernelSourceVector_ae 0)]
+  have hpoint : ∀ x : ℝ,
+      (starRingEnd ℂ) (cokernelVector thetaSource α x) *
+          cokernelVector thetaSource 0 x / (thetaSource.k x : ℂ) =
+        (thetaSource.k x : ℂ) * sourceChar α x := by
+    intro x
+    have hzero : sourceChar (-(starRingEnd ℂ) (0 : ℂ)) x = 1 := by
+      simp [sourceChar]
+    calc
+      (starRingEnd ℂ) (cokernelVector thetaSource α x) *
+            cokernelVector thetaSource 0 x / (thetaSource.k x : ℂ) =
+          ((starRingEnd ℂ) (cokernelVector thetaSource α x) /
+            (thetaSource.k x : ℂ)) * cokernelVector thetaSource 0 x := by ring
+      _ = sourceChar α x * cokernelVector thetaSource 0 x := by
+        rw [conj_cokernelVector_div]
+      _ = sourceChar α x *
+          ((thetaSource.k x : ℂ) * sourceChar (-(starRingEnd ℂ) 0) x) := by
+        rw [cokernelVector_eq_k_mul_sourceChar]
+      _ = sourceChar α x * (thetaSource.k x : ℂ) := by rw [hzero, mul_one]
+      _ = (thetaSource.k x : ℂ) * sourceChar α x := mul_comm _ _
+  rw [integral_congr_ae (ae_of_all _ hpoint)]
+  change -Complex.I * xiC thetaSource α = -Complex.I * XiC α
+  rw [xiC_thetaSource_all]
+
 theorem thetaCokernelFunctional_surjective (α : ℂ) :
     Function.Surjective (thetaCokernelFunctional α) := by
   intro c
@@ -329,6 +368,38 @@ theorem thetaShiftedWeightedDerivative_range_eq_ker_cokernelFunctional (α : ℂ
       LinearMap.ker (thetaCokernelFunctional α).toLinearMap := by
   rw [thetaShiftedWeightedDerivative_range,
     thetaShiftedRangeMap_range_eq_ker_cokernelFunctional]
+
+theorem thetaSourceForcingVector_mem_shifted_range_iff (α : ℂ) :
+    thetaSourceForcingVector ∈
+        (thetaShiftedWeightedDerivative α).rangeSubmodule ↔
+      XiC α = 0 := by
+  rw [thetaShiftedWeightedDerivative_range_eq_ker_cokernelFunctional,
+    LinearMap.mem_ker]
+  change thetaCokernelFunctional α thetaSourceForcingVector = 0 ↔ XiC α = 0
+  rw [thetaCokernelFunctional_sourceForcing]
+  exact mul_eq_zero_iff_left (neg_ne_zero.mpr Complex.I_ne_zero)
+
+/-- Exact closed-operator Fredholm alternative for the literal source equation. -/
+theorem thetaShifted_sourceEquation_existsUnique_iff (α : ℂ) :
+    (∃! u : (thetaShiftedWeightedDerivative α).domain,
+      thetaShiftedWeightedDerivative α u = thetaSourceForcingVector) ↔
+      XiC α = 0 := by
+  constructor
+  · rintro ⟨u, hu, _⟩
+    exact (thetaSourceForcingVector_mem_shifted_range_iff α).mp ⟨u, hu⟩
+  · intro hXi
+    rcases (thetaSourceForcingVector_mem_shifted_range_iff α).mpr hXi with ⟨u, hu⟩
+    refine ⟨u, hu, ?_⟩
+    intro v hv
+    apply Subtype.ext
+    have hmem : ((v : H) - (u : H)) ∈
+        (thetaShiftedWeightedDerivative α).kernel := by
+      rw [LinearPMap.mem_kernel_iff]
+      refine ⟨Submodule.sub_mem _ v.property u.property, ?_⟩
+      change thetaShiftedWeightedDerivative α (v - u) = 0
+      rw [LinearPMap.map_sub, hv, hu, sub_self]
+    rw [thetaShiftedWeightedDerivative_kernel_eq_bot α] at hmem
+    exact sub_eq_zero.mp (by simpa using hmem)
 
 theorem thetaShiftedWeightedDerivative_isFredholm (α : ℂ) :
     (thetaShiftedWeightedDerivative α).IsFredholm := by

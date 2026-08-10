@@ -60,7 +60,14 @@ Theorem 5.1, the fixed-code no-go:
 14. `recovery_defect_bounded` — **card `(5.1)`**: every fixed finite-code recovery defect lies in
     `[0,1]`.
 15. `wormholeLength`, `wormholeLength_unbounded` — **cards `(5.2)`, Theorem 5.1**: `2 log cosh(Jt)`
-    exceeds every bound, so no bounded fixed-code quantity can equal it for all time.
+    exceeds every bound.
+16. `not_eq_wormholeLength_of_bounded` — **Theorem 5.1 in general form**: *no* bounded quantity
+    equals the wormhole length at every time.  The card's `(5.1)` lists three bounded fixed-code
+    quantities — recovery defect, conditional mutual information, normalized Choi norm — and the
+    argument uses nothing about them beyond boundedness, so this one statement covers all three.
+    Item 14 supplies the bound for the first; the other two need only their own bound to be
+    instantiated, and no quantum-information machinery is required for the no-go itself.
+17. `recovery_defect_ne_wormholeLength` — the instantiation at the recovery defect `1 − 1/d`.
 
 ## Scope
 

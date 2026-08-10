@@ -5115,3 +5115,55 @@ So the pointwise error bound of unit 30 is *not* the quantity to make small; its
 That is why a single dyadic prime range never suffices (`#rough ≍ M(1 − log 2/log Q)`), and why the
 Matomäki–Radziwiłł argument iterates over many prime scales — the rough density is a product
 `∏_j (1 − log(1+η_j)/log Q_j)`, which tends to `0` exactly when `∑_j 1/log Q_j → ∞`.
+
+## Units 33–34 — the rough term is closed, unconditionally
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RoughCountTuran.lean`
+
+Unit 32 showed the rough error is paid by its *support size*, so the whole question is how many
+integers of `[1, M]` carry no designated prime factor.  **Turán's second moment answers it with no
+sieve at all.**  With `ω_P(n) = #{p ∈ P : p ∣ n}` and `A = ∑_{p ∈ P} 1/p`:
+
+```text
+card_primeFactorsIn_eq_sum        : ω_P(n) = ∑_{p ∈ P} 1_{p ∣ n}
+sum_card_primeFactorsIn_Icc       : ∑_{n ≤ M} ω_P(n) = ∑_{p ∈ P} ⌊M/p⌋
+sum_indicator_pair_le             : p ≠ q primes ⇒ ∑_{n ≤ M} 1_{p∣n}1_{q∣n} ≤ M/(pq)
+sum_sq_card_primeFactorsIn_Icc_le : ∑_{n ≤ M} ω_P(n)² ≤ ∑_p ⌊M/p⌋ + M·A²
+sum_card_primeFactorsIn_Icc_ge    : ∑_{n ≤ M} ω_P(n) ≥ M·A − |P|
+```
+
+Chebyshev at the integers where `ω_P` vanishes — each contributes exactly `A²` to the variance —
+gives
+
+```text
+card_roughSet_mul_sq_le :  #rough·A²  ≤  M·A + 2|P|·A
+card_roughSet_le        :  #rough     ≤  M/A + 2|P|/A .
+```
+
+The only inputs are the exchange of two finite sums, `p ≠ q ⇒ pq ∣ n`, and `⌊M/p⌋ ≥ M/p − 1`.  No
+sieve dimension, no Bombieri–Vinogradov, no Buchstab identity.
+
+Composed with unit 32's support mean square:
+
+```text
+integral_Icc_normSq_roughPoly_le_budget  (W ≥ 1, 0 < ε ≤ 1, |P| ≤ M, A ≥ 15e/(2ε)) :
+    ∫_{|w| ≤ W} ‖ ∑_{n rough} μ(n) n^{2πiw} ‖² dw  ≤  2·W·M + ε·M² .
+```
+
+**This closes the rough term of the card's architecture unconditionally**: the diagonal coefficient
+stays at `2` (against a budget of `50`) and the height-free part is `ε·M²`.  The requirement is only
+that the designated primes carry harmonic mass `A = ∑_{p ∈ P} 1/p ≥ 15e/(2ε)` while numbering at
+most `M` — satisfiable by Mertens over any sufficiently wide prime range well below `M`.
+
+**Residue after units 30–34.**  Of the three pieces of the factorisation
+
+| piece | status |
+|---|---|
+| rough polynomial | **closed** (units 32–34) |
+| square-multiple polynomial | reduced to `M·∑_{p∈P} p^{-2}` (unit 31), free once `min P ≥ 1/ε` |
+| bilinear form `∑_p μ(p)p^{2πiw}·G_p(w)` | **the residue** |
+
+so the card's entire remaining content is the mean square of the Ramaré bilinear form, whose first
+factor is prime-supported.  This is precisely the object the corpus's `DirichletConvSplit`,
+`PrimeWindowSharpLevel` and `PrimePowerSupport` layers are built for — and, at the level of the
+prime *off-diagonal*, it is the Halász deficit of unit 4.

@@ -233,6 +233,77 @@ theorem card_roughSet_le {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) (M : 
     nlinarith [hbase]
   exact le_of_mul_le_mul_right hstep hA
 
+/-- **The rough Möbius polynomial is inside the Matomäki–Radziwiłł budget.**  Once the designated
+primes carry harmonic mass `A ≥ 15e/(2ε)` and number at most `M`, the mean square of the rough part
+is below `2·W·M + ε·M²` at every height `W ≥ 1` — the diagonal is untouched and the height-free part
+is `o(M²)`.  Nothing beyond Turán's second moment and the mean value theorem enters. -/
+theorem integral_Icc_normSq_roughPoly_le_budget {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime)
+    (M : ℕ) {W ε : ℝ} (hW : 1 ≤ W) (hε : 0 < ε) (hε1 : ε ≤ 1)
+    (hPM : (P.card : ℝ) ≤ (M : ℝ))
+    (hA : 15 * Real.exp 1 / (2 * ε) ≤ ∑ p ∈ P, (1 : ℝ) / (p : ℝ)) :
+    (∫ w in Set.Icc (-W) W,
+      ‖logPoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) (roughSet P M) w‖ ^ 2)
+      ≤ 2 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 := by
+  have hexp1 : (2 : ℝ) ≤ Real.exp 1 := by
+    have := Real.add_one_le_exp (1 : ℝ)
+    linarith
+  have hpi : Real.pi ≤ 4 := Real.pi_le_four
+  have hA0 : 0 < ∑ p ∈ P, (1 : ℝ) / (p : ℝ) := by
+    have : (0 : ℝ) < 15 * Real.exp 1 / (2 * ε) := by positivity
+    linarith
+  set A : ℝ := ∑ p ∈ P, (1 : ℝ) / (p : ℝ) with hAdef
+  have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
+  have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
+  -- the rough count
+  have hcount : ((roughSet P M).card : ℝ) ≤ 3 * (M : ℝ) / A := by
+    refine le_trans (card_roughSet_le hPprime M hA0) ?_
+    have h1 : 2 * (P.card : ℝ) / A ≤ 2 * (M : ℝ) / A := by
+      refine div_le_div_of_nonneg_right (by linarith) hA0.le
+    have h2 : (M : ℝ) / A + 2 * (M : ℝ) / A = 3 * (M : ℝ) / A := by ring
+    linarith
+  -- the mean square
+  have hcoef0 : (0 : ℝ) ≤ 5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ) := by
+    have := Real.pi_pos
+    have := (Real.exp_pos 1).le
+    positivity
+  have hms := integral_Icc_normSq_roughPoly_le P M hW
+  have hstep : (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ))
+      * ((roughSet P M).card : ℝ)
+      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (3 * (M : ℝ) / A) :=
+    mul_le_mul_of_nonneg_left hcount hcoef0
+  -- the harmonic mass converts the count into the budget
+  have hinvA : 1 / A ≤ 2 * ε / (15 * Real.exp 1) := by
+    rw [div_le_div_iff₀ hA0 (by positivity)]
+    have hle : 15 * Real.exp 1 / (2 * ε) ≤ A := hA
+    rw [div_le_iff₀ (by positivity)] at hle
+    linarith
+  have hval : (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (3 * (M : ℝ) / A)
+      = (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2) * (1 / A) := by
+    field_simp
+    ring
+  have hpos : (0 : ℝ) ≤ 15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2 := by
+    have := Real.pi_pos
+    have := (Real.exp_pos 1).le
+    positivity
+  have hlast : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2) * (1 / A)
+      ≤ (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2)
+          * (2 * ε / (15 * Real.exp 1)) := mul_le_mul_of_nonneg_left hinvA hpos
+  have hfinal : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2)
+      * (2 * ε / (15 * Real.exp 1))
+      ≤ 2 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 := by
+    have hE : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
+    have hsplit : (15 * Real.pi / 2 * W * (M : ℝ) + 15 * Real.exp 1 / 2 * (M : ℝ) ^ 2)
+        * (2 * ε / (15 * Real.exp 1))
+        = (Real.pi * ε / Real.exp 1) * (W * (M : ℝ)) + ε * (M : ℝ) ^ 2 := by
+      field_simp
+    rw [hsplit]
+    have hcoef : Real.pi * ε / Real.exp 1 ≤ 2 := by
+      rw [div_le_iff₀ hE]
+      nlinarith [hpi, hexp1, hε, hε1]
+    have hWM : (0 : ℝ) ≤ W * (M : ℝ) := by positivity
+    nlinarith [hcoef, hWM]
+  linarith [hms, hstep, hval, hlast, hfinal]
+
 end RHTower.Sieve
 
 end

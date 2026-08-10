@@ -435,3 +435,196 @@ an unrelated majorant.
   horizons.
 - 2026-08-10 — complete positive cubic-clock divisor receiver (RJG19) and exact RH dichotomy
   (RJG21) proved on paper; source-diagonal coproduct isolated as sole new bridge.
+
+---
+
+## 15. Conjecture loop 5 — a diagonal source operator is necessary
+
+### Verdict: `[FAILED — THE ENERGY IS LINEAR IN THE DIVISOR CURRENT]`
+
+The norm square in (RJG19) makes the receiver look quadratic in the divisor trace, but the complete
+energy is not the square of a divisor sum.  It is the linear pairing of the multiplicity-exact
+counting current with one nonholomorphic test:
+
+```text
+W_(a,tau)(z) = |exp(-tau sqrt(a^2+z^2))|^2,
+V_(a,sigma)(u) = sum_q W_(a,sigma+iu)(alpha_q).           (RJG27)
+```
+
+Here `alpha_q=xiSpectralPoint(q)`.  Replacing `alpha_q` by the folded Poisson point does not change
+`W`, because `W(-z)=W(z)`.  Thus no label coproduct is logically required.  What fails is only the
+**holomorphic test category** of the ordinary scalar explicit formula: `W` depends on both `z` and
+`conj(z)`.
+
+### Theorem E — compact-test Xi Poincare--Lelong landing `[PAPER-PROVED]`
+
+Let `phi : C -> R` be `C^2` with compact support.  Then
+
+```text
+sum_q phi(alpha_q)
+  = (1/(2*pi)) integral_C log|XiC(z)| Delta phi(z) dz.    (RJG28)
+```
+
+The sum is multiplicity-exact.  This is already a literal completed-theta source identity, since
+`XiC` is source-defined; it does not enumerate zeros on the right-hand side.
+
+#### Proof from corpus data
+
+The proved Hadamard identity is
+
+```text
+XiC(z) = XiC(0) product_q E_1(z/alpha_q),
+E_1(w)=(1-w)exp(w),                                      (RJG29)
+```
+
+and the corpus proves `sum_q |alpha_q|^-2 < infinity`.  On any fixed compact set,
+`log|E_1(z/alpha_q)|=O(|z|^2/|alpha_q|^2)` uniformly for all sufficiently large `q`.  Hence the
+logarithmic product may be integrated termwise against the compactly supported bounded function
+`Delta phi`.  The constant `log|XiC(0)|` contributes zero because `integral Delta phi=0`.  In each
+genus-one factor, `Re(z/alpha_q)` is harmonic and also contributes zero.  The remaining term is
+`log|z-alpha_q|` up to a constant, and the already formalized planar fundamental-solution law gives
+
+```text
+integral_C log|z-alpha_q| Delta phi(z) dz = 2*pi*phi(alpha_q).
+```
+
+Only finitely many singular factors meet the support, so their local integrability is harmless;
+the inverse-square majorant handles the tail.  Summing proves (RJG28). `QED`
+
+### Corollary — exact cutoff landing of the cubic energy `[PAPER-PROVED]`
+
+Fix `a>1/2` and `tau=sigma+iu`, `sigma>0`.  Choose `C^2` compact cutoffs `chi_N`, with
+`0<=chi_N<=1` and `chi_N(z)->1`.  The fixed-parameter energy is summable, so dominated convergence
+on the counting measure and (RJG28) give
+
+```text
+V_(a,sigma)(u)
+ = lim_(N->infinity) (1/(2*pi))
+     integral_C log|XiC(z)| Delta(chi_N(z) W_(a,tau)(z)) dz.  (RJG30)
+```
+
+This is coefficient-exact source landing.  It replaces the unneeded operator identity (RJG26).
+The remaining RH-bearing problem is now an unconditional cubic-clock estimate for the explicit
+source potentials in (RJG30), not construction of a divisor diagonal.
+
+### Exact bulk curvature
+
+On the open strip `|Im z|<a`, let `beta_a(z)=sqrt(a^2+z^2)` be the branch with positive real part
+and `f(z)=exp(-tau beta_a(z))`.  Since `W=|f|^2` and
+`f'(z)=-tau*z*f(z)/beta_a(z)`, one has
+
+```text
+Delta W_(a,tau)(z)
+ = 4 |tau|^2 |z|^2 / |a^2+z^2| * W_(a,tau)(z) >= 0.      (RJG31)
+```
+
+At the cubic clock, the bulk curvature carries factor `1+a^6`.  Thus Poincare--Lelong does not
+make the estimate soft: it transfers vertical amplification into a large positive curvature.
+
+### Theorem F — positive compact cutoff is impossible `[PAPER-PROVED]`
+
+If `psi : C -> R` is `C^2`, compactly supported, and `Delta psi>=0`, then `psi=0`.  Indeed,
+`integral Delta psi=0`; nonnegativity forces `Delta psi=0`, and a compactly supported harmonic
+function is zero.  Consequently every nontrivial compact approximation `chi_N W` in (RJG30) has a
+signed cutoff-curvature layer.  No Poincare--Lelong proof may discard that layer by positivity or
+absolute values.
+
+This is the exact replacement for the earlier diagonal diagnosis:
+
+```text
+ordinary explicit formula obstruction = nonholomorphic test,
+Poincare--Lelong repair             = nonlinear Xi logarithmic potential,
+new unavoidable boundary           = signed cutoff curvature.          (RJG32)
+```
+
+The higher noncommutation principle survives in corrected form.  The operations that fail to
+commute are not `diagonal` and `trace`, but **holomorphic scalarization** and **positive
+realification**.  Poincare--Lelong realifies first and therefore lands the receiver, at the price
+of replacing the linear centered current by its nonlinear logarithmic potential.
+
+## 16. Revised successor theorem
+
+For `a_N=N+1`, `u_N=a_N^3`, construct a concrete cutoff schedule in (RJG30) and prove directly from
+the completed theta/von-Mangoldt source that the full signed potential pairing tends to zero:
+
+```text
+lim_N lim_H (1/(2*pi)) integral_C log|XiC(z)|
+  Delta(chi_H(z) W_(a_N,1+iu_N)(z)) dz = 0.              (RJG33)
+```
+
+Order of limits and all cutoff faces are part of the theorem.  The bulk/cutoff split must be kept
+signed; Theorem F rules out an absolute or positive-cutoff closure.  By (RJG30) and Theorem D,
+(RJG33) is sufficient for RH.
+
+## 17. Updated formalization ledger
+
+- `[PAPER-PROVED]`: compact-test Xi Poincare--Lelong identity (RJG28), using existing Hadamard and
+  planar fundamental-solution corpus.
+- `[PAPER-PROVED]`: exact cutoff source landing (RJG30) and bulk curvature (RJG31).
+- `[PAPER-PROVED]`: positive compact-cutoff no-go (Theorem F).
+- Lean targets: first close cubic-clock criterion; then formalize (RJG28) as an Xi-specific theorem,
+  reusing existing Riesz infrastructure rather than building a new distribution framework.
+- RH-bearing source estimate (RJG33): open.
+
+## Log, continued again
+
+- 2026-08-10 — diagonal-coproduct necessity falsified: cubic energy recognized as a linear divisor
+  current pairing.
+- 2026-08-10 — exact Poincare--Lelong source landing and unavoidable signed cutoff-curvature layer
+  proved on paper; obstruction moved from label recovery to nonlinear source-potential control.
+
+---
+
+## 18. Conjecture loop 6 — close Poincare--Lelong by absolute strip-boundary control
+
+### Verdict: `[FAILED — THE SAFE BOUNDARY OUTGROWS EVERY INTERIOR SIGNAL]`
+
+One might replace compact cutoffs by Green's identity on a horizontal strip and bound its boundary
+faces absolutely from the Euler-product line.  The cubic receiver excludes this mechanism sharply.
+
+### Theorem G — cubic boundary dominance `[PAPER-PROVED]`
+
+Fix `R>0` and `0<=J<d<1/2`.  For `y in [0,d]`, write
+
+```text
+sqrt(a^2+(R+i y)^2)=M_y(a)+i K_y(a),
+W_a(R+i y)=exp(-2 M_y(a)+2 a^3 K_y(a)).                 (RJG34)
+```
+
+Then
+
+```text
+lim_(a->infinity) a^-2 log(W_a(R+i d)/W_a(R+i J))
+  = 2 R (d-J) > 0.                                      (RJG35)
+```
+
+Indeed `M_y(a)/a -> 1`, while mass charge gives `M_y(a)K_y(a)=R y`; hence
+
+```text
+a K_y(a)=R y /(M_y(a)/a) -> R y,
+M_y(a)/a^2 -> 0.
+```
+
+Dividing the difference of the two logarithms in (RJG34) by `a^2` proves (RJG35). `QED`
+
+Thus any fixed safe horizontal boundary `d` outside an off-line copy at displacement `J` carries
+an exponentially larger absolute cubic weight.  Absolute Green-boundary estimates lose before
+zero counting, exactly as the scalar absolute tail did in §10.  A viable use of (RJG30) must retain
+signed cancellation between bulk and cutoff/boundary curvature; neither Carleman determinant growth
+nor an Euler-line modulus bound can be inserted termwise.
+
+This identifies one principle behind both failures:
+
+```text
+faithful cubic amplification is ordered by transverse displacement;
+every enclosing absolute boundary has strictly larger exponential type.  (RJG36)
+```
+
+The remaining source theorem (RJG33) must therefore be an exact signed Ward/Green identity, not a
+growth estimate for `log|XiC|` on the enclosing strip.
+
+## 19. Formalization ledger after boundary audit
+
+- `[PAPER-PROVED]`: cubic safe-boundary dominance (RJG35).
+- `[FAILED]`: absolute strip-boundary closure of the Poincare--Lelong landing.
+- Surviving core: signed bulk--boundary cancellation for the literal completed source.

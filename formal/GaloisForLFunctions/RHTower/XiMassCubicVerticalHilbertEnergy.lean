@@ -55,7 +55,7 @@ theorem xiMassCubicVerticalHilbertTerm_eq_norm_sq (n : ℕ) (q : XiZeroCopy) :
       ‖(xiPoissonAbstract.mass (xiMassCubicAperture_half_le n)).term
           ((1 : ℂ) + xiMassCubicTime n * I) q‖ ^ 2 := by
   let F := xiPoissonAbstract.mass (xiMassCubicAperture_half_le n)
-  rw [xiMassCubicVerticalHilbertTerm, F.norm_term, Real.sq_exp]
+  rw [xiMassCubicVerticalHilbertTerm, F.norm_term, ← Real.exp_nat_mul]
   simp only [add_re, one_re, mul_re, ofReal_re, I_re, ofReal_im, I_im, add_zero,
     one_mul, add_im, one_im, zero_add]
   congr 1
