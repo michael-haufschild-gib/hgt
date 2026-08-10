@@ -133,6 +133,26 @@ theorem constitutiveDisjunctivePathWork_eq_endpoint_sub_variation
           ring_nf at hlocal ⊢
           nlinarith [ih', hlocal]
 
+/-- Mandatory minus permissive path work is exactly the relative total variation. -/
+theorem constitutiveCompetitivePathWork_sub_eq_variation
+    (A B : ι → ℝ) (xs : List ι) :
+    constitutivePathWork (constitutiveConjunctiveWork A B) xs -
+        constitutivePathWork (constitutiveDisjunctiveWork A B) xs =
+      constitutivePathVariation (fun x => A x - B x) xs := by
+  have hmax := constitutiveConjunctivePathWork_eq_endpoint_add_variation A B xs
+  have hmin := constitutiveDisjunctivePathWork_eq_endpoint_sub_variation A B xs
+  linarith
+
+/-- Mandatory plus permissive path work is the sum of the two endpoint changes. -/
+theorem constitutiveCompetitivePathWork_add_eq_endpoints
+    (A B : ι → ℝ) (xs : List ι) :
+    constitutivePathWork (constitutiveConjunctiveWork A B) xs +
+        constitutivePathWork (constitutiveDisjunctiveWork A B) xs =
+      constitutiveEndpointChange A xs + constitutiveEndpointChange B xs := by
+  have hmax := constitutiveConjunctivePathWork_eq_endpoint_add_variation A B xs
+  have hmin := constitutiveDisjunctivePathWork_eq_endpoint_sub_variation A B xs
+  linarith
+
 /-- Closed mandatory histories carry exactly half the relative total variation. -/
 theorem constitutiveConjunctivePathWork_closed_eq_half_variation
     (A B : ι → ℝ) {xs : List ι} (hxs : ConstitutiveClosedPath xs) :
@@ -164,6 +184,18 @@ theorem constitutivePathVariation_nonneg (D : ι → ℝ) (xs : List ι) :
       | cons j xs =>
           simp only [constitutivePathVariation]
           exact add_nonneg (abs_nonneg _) ih
+
+/-- Inserting a relative value between two endpoint values does not change local variation. -/
+theorem abs_subdivision_eq_abs_of_between {x y z : ℝ}
+    (h : (x ≤ y ∧ y ≤ z) ∨ (z ≤ y ∧ y ≤ x)) :
+    |y - x| + |z - y| = |z - x| := by
+  rcases h with h | h
+  · rw [abs_of_nonneg (sub_nonneg.mpr h.1), abs_of_nonneg (sub_nonneg.mpr h.2),
+      abs_of_nonneg (sub_nonneg.mpr (h.1.trans h.2))]
+    ring
+  · rw [abs_of_nonpos (sub_nonpos.mpr h.2), abs_of_nonpos (sub_nonpos.mpr h.1),
+      abs_of_nonpos (sub_nonpos.mpr (h.1.trans h.2))]
+    ring
 
 /-- Zero path variation is exactly edgewise constancy of the relative law. -/
 theorem constitutivePathVariation_eq_zero_iff_pathConstant (D : ι → ℝ) (xs : List ι) :
@@ -292,6 +324,16 @@ theorem constitutiveConjunctivePathWork_closed_add_common_potential
   rw [hfun, constitutivePathWork_add, constitutivePathWork_exact,
     constitutiveEndpointChange_eq_zero_of_closed C hxs, zero_add]
 
+/-- Swapping the two competing presentations changes no mandatory path work. -/
+theorem constitutiveConjunctivePathWork_swap
+    (A B : ι → ℝ) (xs : List ι) :
+    constitutivePathWork (constitutiveConjunctiveWork A B) xs =
+      constitutivePathWork (constitutiveConjunctiveWork B A) xs := by
+  apply congrArg (fun ω => constitutivePathWork ω xs)
+  funext i j
+  simp only [constitutiveConjunctiveWork]
+  exact max_comm _ _
+
 /-- Closed capstone: competitive selection produces precisely relative total variation, and the
 observer retains it precisely when the relative law descends through the observer range. -/
 theorem constitutiveCompetitiveHistoryProductionAndDescent
@@ -306,4 +348,3 @@ theorem constitutiveCompetitiveHistoryProductionAndDescent
     relativePotential_factorsThroughRange_iff_collapsedTwoCycle_zero q A B⟩
 
 end GaloisForLFunctions.HTGeometry
-

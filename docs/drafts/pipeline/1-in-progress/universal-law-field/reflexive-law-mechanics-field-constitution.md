@@ -5,7 +5,7 @@
 - **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
 - **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
   the laws by which consequences, failures, and conservation requirements revise the rulebook.
-- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [FOURTEEN LAWS LEAN-CALIBRATED]
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [TWENTY-ONE LAWS LEAN-CALIBRATED]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
 
 ## 1. Founding shift
@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The thirteen field laws
+## 2. The twenty-one field laws
 
 ### RLM Law I -- typed exposure
 
@@ -169,6 +169,100 @@ is not a constitutive law until source interventions derive the work increments 
 intrinsic datum is a repair torsor; selection requires a source-produced symmetry reduction or a
 source-revealed integrability law. ULF-DDE-1 proves the full boundary in Lean.
 
+### RLM Law XV -- certificate-bearing mutation is predictive endogeneity
+
+There is a strict middle regime between fixed-polarity collapse and unrestricted endogeneity. A
+single local rank-two exchange changes visible compatibility with period two while generating an
+unbounded positive semantic lineage. One transported certificate forces exact linearization and
+reconstructs the nonlinear exchange, so future responses are predictions rather than entries in a
+state-indexed transition table. ULF-SEGM-1 proves this mechanism in Lean.
+
+The general live variable is therefore not arbitrary changing compatibility. It is a local
+mutation together with a transported semantic certificate. Classifying which such pairs terminate,
+recur observably with open lineage, cross an admission wall, or change formation class is now the
+structured-endogeneity problem.
+
+### RLM Law XVI -- source isotropy constrains successor doctrine
+
+An unoriented failed pair plus fixed background cannot generate a deterministic binary successor
+without breaking its symmetry. Every equivariant deterministic separator needs three distinct
+output values. Exactly three minimal repairs are certified: raise deterministic arity to ternary,
+add orientation and break the pair-swap, or convexify the binary doctrine so the background becomes
+the unique symmetric mixture. ULF-EAG-1 proves this law in Lean.
+
+Thus observer arity and doctrine are possible outputs of law genesis rather than fixed containers.
+The next classification problem is composition of orbit-type constraints under successive failures.
+
+### RLM Law XVII -- composed isotropy births mixed interaction channels
+
+Composition is not multiplicative copying of the one-failure ternary reporter.  For `n` independent
+inactive/unoriented failures, contextwise resolution forces distinct support strata and at least one
+two-point response orbit on every nonempty support.  The minimum attained deterministic vocabulary is
+`2^(n+1)-1`, achieved by the canonical support/parity chart.  Across blocks `A,B`, the
+new mixed orbit count is `(2^|A|-1)(2^|B|-1)`.
+
+ULF-EAG-2 certifies in Lean the support-separation theorem, sharp lower bound, exact canonical
+attainment, canonical parity fibres, and mixed-channel product.  This is a law of finite interaction
+vocabulary birth.  It does not cross the finitary-formation barrier and does not yet show that a
+born mixed channel changes later promotion or admission.
+
+### RLM Law XVIII -- serial birth has primary and secondary obstruction sectors
+
+For successive carriers `E --S--> K --T--> A`, outer cokernel decides whether a residual has any
+lift. Once it does, end-to-end birth is obstructed by the lift class modulo
+`im S + ker T`, not modulo `im S` alone. Thus outer-kernel freedom can cancel an apparent inner
+failure without altering the observed law. The primary, composite, and secondary sectors form one
+canonical short exact sequence. ULF-PSB-1 proves lift independence, exactness, the exclusive
+three-phase classification, a kernel-cancellation laboratory, and a genuine secondary-failure
+laboratory in Lean.
+
+This is the first certified composition law for two carrier engines. The next unresolved exchange
+is topological: characterize when closure preserves this exact sequence and when
+completion produces a new nonstrict composition defect.
+
+### RLM Law XIX -- completion produces two independent serial homology defects
+
+For a serial carrier under any enlargement doctrine, completion failure is not one scalar. The
+source defect is the excess preimage `T⁻¹P/R`: a secondary law survives inner separation but dies
+after composite observation. The target defect is `Q/(im T + P)`: a limit law exists in the closed
+outer layer but is unattained by an actual carrier modulo the completed composite layer. The
+separated serial sequence is short exact exactly when both defects vanish.
+
+ULF-CHM-1 certifies the two converse identities, their logical independence, and a genuine
+dense-proper-range target defect. The next mechanism question is how these two homology sectors
+propagate through three or more stages; that requires a filtration or spectral-sequence law, not a
+larger list of route obstructions.
+
+### RLM Law XX -- obstruction has prospective survival depth
+
+For `D -> E -> K -> A`, total birth is filtered by the images of future tails. The first grade is
+`E/(im R + ker(TS))`, the second is `K/(im S + ker T)`, and the final grade is `coker T`. A local
+failure is therefore measured relative to past attainment and future erasure simultaneously.
+These grades form canonical short exact sequences; they need not split.
+
+ULF-DKO-1 certifies the nested filtration and exact middle-layer transition. This replaces the
+false expectation of one universal obstruction scalar by an obstruction spectrum with extension
+data. Open gate: general finite histories, refactorization comparison, and completion-born
+differentials between adjacent grades.
+
+### RLM Law XXI -- adaptive stress is independent of fixed-face complexity
+
+A law doctrine is not characterized by tests selected before its responses are known.  Quantifier
+order is constitutive: a source-admitted challenge can depend on the current response while still
+retaining one globally consistent source law for the complete transcript.  Consequently uniformly
+small fixed-face complexity does not bound repair depth.
+
+ULF-ALG-2 certifies the sharp base cell.  Prefix cylinders are laminar and have static shattering
+dimension one, but for every depth `d` a legal response-dependent challenge forces every
+deterministic policy to fail on all `d` rounds.  Every answer remains realized by one final branch.
+Fractional response changes the exact minimax damage from `d` to `d/2` but leaves the same
+arbitrarily deep legal challenge mechanism intact.
+
+This is not yet the field dynamics.  It proves that adaptivity is a new independent axis which the
+existing residual/obstruction filtration does not contain.  Open gate: challenges must be allowed
+to promote new reporters and alter the later legal doctrine; otherwise the theory collapses to
+fixed-class Littlestone mechanics.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -202,6 +296,12 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-OPM-9 | promotion/observation naturality and exact kernel migration | certified |
 | ULF-RLM-10 | contextual exchange decomposition, arity certificate, and unbounded horizon | certified |
 | ULF-RLM-11 | central-promotion/admission exchange and quotient obstruction | certified |
+| ULF-CRT-2 | coefficient-lift transgression converts failed central history into higher coherence; strict fine lift iff transgression vanishes | certified |
+| ULF-KCL-1 | cokernel controls higher-carrier birth, kernel controls next coherence, and range closure controls exact-versus-mirage birth | certified |
+| ULF-PSB-1 | serial primary/secondary birth exactness and outer-kernel cancellation | certified |
+| ULF-CHM-1 | completion-doctrine serial homology, two independent defects, and exactness converse | certified |
+| ULF-DKO-1 | three-stage downstream-kernel obstruction filtration and exact tower | certified |
+| ULF-ALG-2 | laminar static-dimension-one doctrine with arbitrary adaptive stress and exact convex value | certified |
 | ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
@@ -308,10 +408,11 @@ mechanism tuple before its endpoint and predict one theorem not used to define t
 1. **Beyond-unary promotion exchange:** classify weak, partial, extension-valued, and higher-arity
    exchanges not reduced by ULF-RLM-10 to transported binary residuals or by ULF-RLM-11 to
    coefficient landing.
-2. **Endogenous compatibility genesis:** derive future reporters, admission, and compatibility from
-   typed witnesses under locality, minimality, certification conservation, repair exchange, and
-   genesis accounting. Fixed compatibility collapses; arbitrary compatibility is universal, so
-   the live mechanism lies strictly between these certified boundaries.
+2. **Structured compatibility genesis:** ULF-SEGM-1 proves that certificate-bearing local mutation
+   can lie strictly between fixed collapse and arbitrary universality. Classify this middle regime:
+   derive future reporters, admission, and compatibility from typed witnesses; prove which
+   transported certificates force termination, recurrent observation with open lineage, singular
+   admission, or formation-class transition.
 3. **Revealed-work integrability:** derive directed work from source interventions; positive work
    cycles must falsify every scalar action rather than trigger a fitted metric change.
 4. **Infinite coherence:** convergence criterion for an unbounded promotion differential tower.

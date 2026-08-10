@@ -7,9 +7,47 @@
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** exact parity reversal, \(s\leftrightarrow2s\) cofactor pairing, and
-  displacement scaling formalized in `MobiusCofactorAmplifiedToken.lean`; analytic supply rests on the published
-  Matomäki--Teräväinen all-interval theorem and is not formalized
+- **Lean status:** the whole elementary layer is formalized — exact parity reversal, the
+  \(s\leftrightarrow2s\) cofactor pairing and displacement scaling in
+  `MobiusCofactorAmplifiedToken.lean`, the parity-balance inequality behind `(7)` and `(9)` and the
+  dyadic slice count `(6a)` in `RouteECofactorParityBalance.lean`, and the amplified displacement
+  `(5)` in `RouteEForbiddenSupportStability.lean`.  The analytic supply rests on the published
+  Matomäki--Teräväinen all-interval theorem and is not formalized.  See "Lean progress".
+
+## Lean progress
+
+`formal/GaloisForLFunctions/RHTower/RouteECofactorParityBalance.lean` formalizes the card's key
+elementary claim, that **parity balance needs no signed Möbius estimate**:
+
+- `parityClass Band σ T` and `oddBase Band T` are the two cofactor sets of the construction: the
+  band-avoiding integers below `T` of a prescribed Möbius parity, and the odd band-avoiding
+  squarefree integers below `T/2`;
+- `moebius_two_mul` is the sign reversal `μ(2s) = -μ(s)` for odd `s`, and `pairMap σ` is the
+  pairing itself — keep `s` when it already carries the target parity, otherwise double it;
+- `pairMap_mem` shows the pairing lands in the requested class: doubling preserves band-avoidance
+  (because `2` lies below the band), preserves the bound `2s ≤ T`, and flips the sign, and a
+  squarefree `s` has `μ(s) = ±1` so the flipped sign is the target one;
+- `pairMap_injOn` is injectivity — an odd cofactor is never the double of another;
+- `half_sum_oddBase_le_sum_parityClass` is the conclusion: **each** parity class carries at least
+  half the harmonic mass of the odd squarefree band-avoiding source set.  This is the structural
+  half of `(7)` and `(9)`; the classical unsigned squarefree estimate that turns it into `≍ √T`
+  and `≍ log T` is a separate input.
+
+The same file proves the slice bookkeeping `(6a)`: `dyadic_mem_iff` characterises the dyadic
+powers inside `[A,B]` by their binary logarithms, and `le_card_dyadicSlices` bounds their number
+below by `log(B/A)/log 2 - 1`, which at `A = L^{a₀}`, `B = 2L^{a₁}` is the `≍ (a₁-a₀) log log U`
+slice count.
+
+The displacement `(5)` is `ForbiddenSupport.abs_amplified_gap_le` together with
+`ForbiddenSupport.mul_sqrt_div_eq_sqrt_mul`: a near-square-root token at the reduced centre `u/t`
+amplified by `t` stays within `√(ut)` times the same polylogarithmic factor of `u`.  The parity
+`(4)` is `mobiusCofactorToken_reverses`.
+
+`#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound` only.
+
+Not formalized: the quantitative all-interval supply `(6)`, which is the published
+Matomäki--Teräväinen minorant, and the classical unsigned squarefree harmonic estimates quoted in
+`(7)` and `(9)`.
 
 ## Statement
 

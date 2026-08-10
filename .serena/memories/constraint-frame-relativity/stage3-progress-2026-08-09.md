@@ -52,17 +52,26 @@ folder, which serves a different card folder.)
    Arbitrarily large return times proved by compactness of the phase torus
    (`IsCompact.tendsto_subseq` on `closedBall (0 : F → ℂ) 1`) + the homomorphism property.
 
-## REMAINING cards (7 not started + 1 WIP)
+## PROMOTED (cont.)
+
+7. `ramification-anchor-defect-incidence-interchange-and-bianchi-law` — `AnchorDefectIncidence.lean`.
+8. `source-law-base-and-observer-fibre-nonreconstruction-law` — `SourceLawNonreconstruction.lean`.
+9. `constitutive-jet-factorization-and-withheld-observer-prediction-law` —
+   `ConstitutiveJetFactorization.lean` + `ShellVerticalMode.lean`.
+10. `monomial-corank-one-four-axis-mixed-chart-law` — `MonomialMixedChart.lean`.
+
+## CRITICAL LESSON
+
+`lake env lean <file> | grep -A8 -E "^GaloisFor.*(error|warning)"` SILENTLY MISSED real errors
+once.  Always check with `lake env lean <file> 2>&1 | head -30` (no grep) or `lake build <module>`.
+
+## REMAINING cards (4)
 
 `ramification-kummer-phase-excess-parseval-law` (hardest analytic: needs Haar on a compact
 product group — mathlib v4.32 has NO infinite product measure; plan is `Measure.haarMeasure` on
 `∀ p, ZMod r` (compact via Tychonoff) + the translation-invariance proof that a nontrivial
 continuous character integrates to zero, then `integral_tsum`),
-`ramification-anchor-defect-incidence-interchange-and-bianchi-law`,
-`constitutive-jet-factorization-and-withheld-observer-prediction-law`,
 `literal-euler-shell-four-axis-flat-frame-and-normalization-exchange-law`,
-`monomial-corank-one-four-axis-mixed-chart-law`,
-`source-law-base-and-observer-fibre-nonreconstruction-law`,
 `static-frame-incompleteness-extension-period-topology-law`,
 `valuated-plucker-gram-capacity-exchange-law` (biggest; the Plücker exchange has a short proof:
 write b_i in the basis C and use multilinearity of det in one column).

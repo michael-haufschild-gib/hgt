@@ -300,5 +300,25 @@ theorem exists_freeFockTraceSpectralLaw_carried [Nonempty I]
   refine ⟨μ, hμ, measure_mono_null hcover ?_⟩
   exact measure_iUnion_null hnull
 
+/-- Canonical compact scalar spectral law selected from the exact normalized Fock trace moments. -/
+noncomputable def freeFockTraceSpectralLaw [Nonempty I]
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) : ProbabilityMeasure ℝ :=
+  Classical.choose (exists_freeFockTraceSpectralLaw_carried A hA hker)
+
+theorem freeFockTraceSpectralLaw_hasMoments [Nonempty I]
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) :
+    HasHamburgerMoments (freeFockTraceMoment A)
+      (freeFockTraceSpectralLaw A hA hker : Measure ℝ) :=
+  (Classical.choose_spec (exists_freeFockTraceSpectralLaw_carried A hA hker)).1
+
+theorem freeFockTraceSpectralLaw_carried [Nonempty I]
+    (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
+    (hker : HasTrivialCommonKernel A) :
+    (freeFockTraceSpectralLaw A hA hker : Measure ℝ)
+      (Set.Icc (-freeFockSpectralRadius A) (freeFockSpectralRadius A))ᶜ = 0 :=
+  (Classical.choose_spec (exists_freeFockTraceSpectralLaw_carried A hA hker)).2
+
 end
 end GaloisForLFunctions.HTGeometry

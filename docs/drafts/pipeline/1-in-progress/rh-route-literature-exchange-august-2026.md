@@ -661,7 +661,7 @@ exact RH coordinate, not retired and not proved.  The literature audit located n
 containing this exact Gamma--Jacobi/von-Mangoldt/FE--Schwarz composition; project-level novelty
 remains provisional rather than asserted globally.
 
-### Route N — Hedenmalm prime-normal estimate [OPEN]
+### Route N — Hedenmalm prime-normal estimate [TERMINALIZED]
 
 **Local contribution beyond located literature.** The exact Wick/Fock boundary-energy reduction
 and sub-log-square source-domain threshold are corpus-specific.
@@ -672,12 +672,34 @@ self-adjoint-pair mechanism: nonreal zeros have zero seminorm, distinct real zer
 and a positive Hilbert form forces real zeros. They do not prove this uniform prime-normal estimate
 or construct the required positive form.
 
-**Lean action.** The normalized boundary-value equivalence and source-polarization consequences
-already cover this conditional mechanism. Do not add another abstract endpoint. The next theorem
-must be the unconditional source-domain all-prime `o((log X)²)` estimate, including Jordan-tower
-terms; no such external theorem exists. New Nyman--Beurling/Baez--Duarte formalizations add
-classical receiver and finite-section infrastructure but no source-domain estimate, so they do not
-instantiate another route.
+**Lean action and terminal verdict.** Ordinary Jordan jets were separated from the flat marked
+connection; the exact clock-free endpoint doublet, Gamma-sewn Route-R/Krein bridge, squarefree
+parity localization, projective realization, Kadison-fracture dictionary, reciprocal Sonin escape,
+and strict-right conormal-ladder divergence are formalized. Full co-Poisson quotient flatness does
+not remove the fracture: its Hermitian trace excess is exactly `D^2/(1-D)`. At prime dilation the
+normalized Burnol holonomy is the complementary oriented coordinate, and the two obey the exact
+mass shell `H^2=M(M+4)`.
+The source-incidence follow-up is also Lean-closed: at a strict-right Xi zero of multiplicity `m`,
+the affine squarefree overlap has order `m`, its pointed Fisher numerator has order `m-1`, no
+analytic overlap divisibility is possible, and the quotient residue is `2m`. Centered affine
+scaling gives exactly the exceptional Xi current residue `-(rho-1/2)m`, with strictly negative
+horizontal component. This replaces the former divisibility target by residue splitting and a
+pre-divisor sign/annihilation target.
+For every fixed prime, vanishing local fracture on every actual Xi conormal is now formally
+equivalent to RH, while every hypothetical strict-right squarefree Xi germ has positive fracture.
+Functional-equation reflection can exchange an off-line pair but cannot kill either local record.
+Thus same-sector normality, zero complementary record, and duality--adjunction equality are RH
+receivers, not an unconditional source-domain estimate. Route N contributes a Lean-closed positive
+structural survivor and is terminalized. Its wall is now formally merged with Route R's Burnol
+holonomy wall rather than counted as independent evidence; live production moves to independent
+pre-divisor incidence/annihilation.
+
+**Collision audit update.** Burnol's co-Poisson work treats harmonic, Hilbertian, and
+distributional zeta functional-equation structure; Lester studies distribution of `zeta'/zeta`;
+Fisher/logarithmic-derivative geometry is standard. Targeted primary search located none of the
+exact affine squarefree Fisher order-drop plus Xi exceptional-current residue identification.
+Generic derivative-order drop and logarithmic residue are not claimed new; only source-specific
+synthesis remains a provisional local contribution.
 
 ### Route O — Connes/CCM restricted-Weil and prolate limit [OPEN]
 
@@ -849,16 +871,38 @@ located for this complete source-to-light-cone reduction.
 [spectral interpretation](https://arxiv.org/abs/2606.17494) constructs a differential-pair
 spectral mechanism, while Suzuki's
 [Weil form via screw function](https://arxiv.org/abs/2606.09096) constructs finite-interval
-self-adjoint operators. Classical explicit-formula, Perron, van der Corput, and zero-density
-methods provide neighboring oscillatory estimates. None proves a height-uniform bound for Route
-T's exact centered critical pairing. Safe-line Perron estimates meet critical zero barrier and
-absolute summation loses square root.
+self-adjoint operators. Hedenmalm's
+[Klein--Gordon Liouville theorem](https://arxiv.org/abs/2603.03868) and
+Bakan--Hedenmalm--Montes-Rodriguez's
+[hyperbolic Fourier/Klein--Gordon framework](https://arxiv.org/abs/2401.06871) make the causal
+timelike/spacelike split literature-owned. Burnol's
+[spacetime causality for the Hankel transform](https://arxiv.org/abs/math/0509619) already ties
+Klein--Gordon wedges, Hankel scattering, and Sonine support. Classical Schlaefli/Bessel transform,
+explicit-formula, Perron, van der Corput, and zero-density methods provide neighboring transform
+and oscillatory estimates. None of these sources proves a height-uniform bound for Route T's exact
+centered critical pairing. Safe-line Perron estimates meet critical zero barrier and absolute
+summation loses square root.
 
-**Exchange verdict and Lean action.** Route T is independent of E and N because its primitive is
-first-order centered von Mangoldt current with a mass-dependent light cone, not squarefree Möbius
-parity transport or theta-domain prime-normal energy. Open theorem is cofinal oscillatory
-cancellation in exact joint mass/Dirichlet pairing. No external theorem currently narrows it.
-Formalizing another explicit-formula RH criterion would not help.
+**Exchange verdict and Lean action.** Generic Lorentz mass shell, rapidity, causal chamber, Hankel
+scattering, and modified-Bessel transform are not novelty claims. Corpus-specific candidate delta
+is the exact conjunction: Route N Fisher/Sonin/Burnol boost charge lands in Route T's centered
+von-Mangoldt mass current, whose principal complex propagation rate is Lean-proved to be the
+attained curved-contour optimum and yields strict critical-slope improvement
+`a/sqrt(a^2-1/4)<a/(a-1/2)`. C30--C34 now prove exact branch-free hyperbolic representation,
+one-sided interior contour deformation, Lorentz reduction to `K_1`, full-coefficient comparison
+`K_1(s)<=exp(-(s-s0))K_1(s0)`, exact insertion of principal-root optimizer, uniform control of its
+moving boost on every strict slope cone, and absolute summability of the resulting complete
+centered von Mangoldt sub-sum with an exact complementary finite-cone partition. They also prove
+that for every `alpha>1` one can choose a legal mass parameter making RH exactly equivalent to
+uniform boundedness of that residual sum on `log n<alpha*u`; no fixed angular gap from true causal
+slope remains. Classical
+Schlaefli and hyperbolic-transform ancestry remains literature-owned; local gain is closed formal
+conjunction with corpus mass current, optimal rate, and coefficient-critical summation, not generic
+transform identity. No exact
+collision for source-defined conjunction was located. External novelty remains provisional.
+Open theorem is now arithmetic: control residual timelike-plus-glancing centered von Mangoldt
+pairing before termwise norms. Formalizing another generic explicit-formula or Klein--Gordon
+criterion would not help.
 
 ### Route U — shifted-Xi null-face Krein--Lorentz flow [OPEN — NEW]
 

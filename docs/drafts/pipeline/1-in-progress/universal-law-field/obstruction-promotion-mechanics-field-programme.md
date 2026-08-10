@@ -191,10 +191,23 @@ rulebook.
    importing their route interpretations.
 2. Prove a mechanism theorem for **residual promotion under observation**: exact conditions under
    which promotion descends, is hidden, or forces observer refinement.
-3. Construct one finite system in which strict completion, higher-law promotion, and singular
-   admission are three responses to the same exposed residual.
-4. Derive a withheld prediction distinguishing those responses before examining a corpus target.
-5. Only then test the mechanism against arithmetic, spectral, recurrence, or physical organs.
+3. **Closed in the coefficient-refinement sector:** one coarse binary history law has strict fine
+   lift exactly when its kernel-valued higher transgression vanishes; a nonsplit finite cell forces
+   higher birth, while a split refinement permits strict lift.
+4. **Closed at one carrier stage:** cokernel controls existence, kernel controls next coherence,
+   and closure gap distinguishes exact, approximable, and separated birth. Dense mirage and kernel
+   ambiguity are independent.
+5. **Closed algebraically:** two successive carriers generate a primary/secondary exact sequence;
+   the secondary class is lift-independent and vanishes exactly through `im S + ker T`.
+   Outer-kernel cancellation and genuine secondary failure are both realized.
+6. **Closed:** completion of the serial sequence has two independent homology defects, and the
+   separated sequence is exact exactly when both vanish.
+7. **Closed algebraically at three stages:** downstream-tail kernels give a canonical exact
+   obstruction filtration.
+8. Generalize to finite histories and classify refactorization changes.
+9. Insert closure-doctrine source/target homology between adjacent grades and derive differentials.
+10. Derive converse and countermodels before examining any corpus target.
+11. Only then test the mechanism against structurally different late laboratories.
 
 ## 9. Death criteria
 
@@ -210,3 +223,17 @@ Retire Obstruction--Promotion Mechanics if:
 
 - 2026-08-09 -- pivoted from object search and route repair to failure-driven generation of laws;
   routes excluded from foundations and retained only as late validation.
+- 2026-08-10 -- coefficient-refinement transgression supplied an exact
+  central-history-to-higher-arity conversion with a converse and split boundary; next gate is its
+  exchange with completion/admission.
+- 2026-08-10 -- one-stage completion/admission exchange closed by the kernel--cokernel--closure
+  engine. Next gate is composition, not route instantiation.
+- 2026-08-10 -- ULF-PSB-1 closed algebraic serial composition: primary and secondary birth sectors
+  form a short exact sequence, and the outer kernel is the exact cancellation freedom. Next gate is
+  completion of that sequence, not a route-specific annihilator.
+- 2026-08-10 -- ULF-CHM-1 closed completion--composition interchange: source ghost laws and target
+  unattained-limit laws are independent homology sectors, and short exactness survives iff both
+  vanish. Open gate moved to multistage propagation and differentials.
+- 2026-08-10 -- ULF-DKO-1 closed the first multistage gate: total obstruction has a nested exact
+  filtration whose grades quotient local failure by the kernel of its whole future tail. Open gate
+  moved to arbitrary finite histories, refactorization, and completion-born differentials.

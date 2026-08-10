@@ -311,10 +311,12 @@ strictly weaker:
 > `s=Theta(min(t,D)/log M_n)`.  Separately align the final skeleton time with the beginning of the
 > already available continuous near-maximal plateau.
 
-This is a quantitative mixing problem against one bounded observable with Dirichlet energy
-`O((log n)^2/D)` at every skeleton time, not a minimum-action problem and not design convergence
-against every order-`D` replica polynomial.  The earlier `r=O(n)` complete linear ramp mesh is
-retired: deterministic circuit composition fills every interval between the geometric endpoints.
+The child `fixed-time-phase-graph-sobolev-blindness-law.md` sharpens the load-bearing phrase
+“incidence observable”: its Dirichlet energy cannot by itself imply graph mixing, and no generic
+`poly(n)`-order Sobolev repair can do so.  The theorem must exploit the Hamiltonian-independent,
+local-gate-generated structure of the endpoint image.  Subject to that correction, the earlier
+`r=O(n)` complete linear ramp mesh remains retired: deterministic circuit composition fills every
+interval between the geometric endpoints.
 
 ## Hostile audit
 
@@ -335,19 +337,26 @@ retired: deterministic circuit composition fills every interval between the geom
    higher-order moments.  Such moments are proof tools, not part of the minimal physical invariant.
 7. **No final-paper claim yet.**  Lean formalization is deferred during the active corpus refactor.
 
-## Exact next move
+## Exact next move -- retired and replaced by child theorem
 
-Construct a quantitative fixed-shell mixing seminorm dual to `(12)`, rather than controlling every
-spectral character separately.  It must compare
+`fixed-time-phase-graph-sobolev-blindness-law.md` proves that no generic mixing seminorm dual to
+`(12)` can perform the proposed comparison.  A fixed-time graph supports smooth detectors whose
+conditional phase-Haar mean, variance and Dirichlet energy vanish while their graph expectation is
+one.  Every generic phase Sobolev hierarchy below order `(D-1)/2` has the same obstruction.
+
+The replacement frontier is incidence-specific.  It must compare
 
 \[
  \mathbb E_\theta F^{\rm light}_{Z_s;r,a,b}
    (t\omega(\theta))
 \]
 
-with its conditional phase-Haar mean using the `O(r^2/D)` Dirichlet budget, uniformly for the
-actual depth-`s` endpoint image.  Any bound whose right side contains `|Z_s|`, `a^{-r}`, minimum
-spectral action, or worst character gradient has reverted to a retired architecture.
+with its conditional phase-Haar mean by exploiting that `Z_s` is one Hamiltonian-independent,
+gate-generated endpoint image.  Neither the `O(r^2/D)` Dirichlet budget nor the selector's classical
+information is sufficient: the same child theorem shows that an `O(n)`-parameter fixed-time orbit
+through `t<=2^n` has an arbitrary `epsilon`-net describable with only `O(n^2)` bits.  The live
+invariant is the tracking capacity of **local-circuit** codebooks against the spectral graph, not
+target count, source entropy, minimum action, or generic phase smoothness.
 
 ## Lean realization after corpus refactor
 

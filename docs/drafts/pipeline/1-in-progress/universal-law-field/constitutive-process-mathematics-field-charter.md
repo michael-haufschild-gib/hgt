@@ -209,8 +209,93 @@ directed-history sector.
 `competitive-work-envelope-cycle-birth-and-scalar-integrability-rigidity-law.md` proves this
 route-independently. It supplies the first exact higher-slot selection law for CPM.
 
+### Law X — competitive selection is relative variation transduction
+
+The two-cycle obstruction extends to every finite history. Mandatory maximum and permissive
+minimum of two scalar-exact work laws are the endpoint work plus and minus the total variation of
+their relative potential. On a closed history, mandatory work is exactly half that variation and
+permissive work its negative half. Parallel selection therefore converts law disagreement into a
+canonical positive/negative history split.
+
+This history has an exact observer criterion. The relative potential descends through an
+observer's attained range iff every observer-collapsed two-cycle has zero competitive work. Failure
+produces a stationary observed loop with strictly positive source memory. Common-potential changes
+and swapping the two presentations preserve the closed-history quantity.
+
+`competitive-path-variation-observer-descent-and-history-production-law.md` and
+`ConstitutiveCompetitivePathVariation.lean` prove this mechanism. It does not explain singular
+completion, cofinal coercivity, positive-carrier birth, or arithmetic cancellation; those require
+different mechanism laws.
+
+### Law XI — cofinal birth requires a formation-class transition
+
+Let any family of law-formers be monotone, extensive, and finitary: every individual consequence
+has finite source ancestry. Admit arbitrary rule types, arbitrary noncommutation, and every finite
+composition. Their least joint saturation is still finitary. Noncommutation may create history and
+repair defects, and unbounded finite arity may create an unbounded interaction spectrum, but neither
+can create one consequence with irreducibly cofinal ancestry.
+
+Therefore a genuine finite-to-cofinal law birth requires at least one of three mechanisms:
+
+1. an infinitary formation with genuinely infinite premises;
+2. an admission/completion transition changing the carrier or meaning of consequence;
+3. a compactness/effectivity theorem proving the apparent global birth had finite ancestry.
+
+The closure adjoining `0` exactly to infinite subsets of `ℕ` is the sharp countermodel: it is
+monotone, extensive, and idempotent, but its birth of `0` from all positive naturals has no finite
+witness and cannot equal any finitary joint saturation.
+
+`finitary-formation-joint-saturation-and-cofinal-law-birth-barrier.md` and
+`ConstitutiveFinitaryFormation.lean` prove the arbitrary-family theorem. This is CPM's first hard
+barrier between local formation mechanics and genuinely cofinal law genesis. It does not construct
+the source-specific infinitary operation.
+
+### Law XII — structured mutation lies between collapse and vacuity
+
+Fixed compatibility has only closure/period-two dynamics; arbitrary state-indexed compatibility
+can encode every transition system. A third regime now exists. One fixed local rank-two mutation
+has a period-two visible rulebook and an unbounded positive semantic lineage. Its transported
+certificate is conserved, forces a constant-coefficient linear recurrence, reconstructs the
+nonlinear exchange, and predicts every future response from the initial seed.
+
+Thus a recurrent rulebook need not imply semantic termination, and changing compatibility need not
+be an arbitrary oracle. The predictive resource is a **transported semantic certificate**: current
+rulebook plus certificate determines the next response, while the recurrent rulebook alone does
+not. `mutational-visible-recurrence-open-lineage-and-conserved-linearization-law.md` and
+`ConstitutiveMutationalGenesis.lean` certify the smallest affine calibration. Rank-two cluster
+dynamics are classical; general certificate-bearing mutation is the open field law.
+
 `polarized-realization-dynamics-field-charter.md` develops this layer. It is not a competing field;
 it specifies the process composition CPM previously left abstract.
+
+### Law XIII — failure isotropy generates successor arity or mixing
+
+One unoriented failed pair with an untouched fixed background has no equivariant deterministic
+binary reporter. Every equivariant deterministic separator uses three distinct values. A ternary
+reporter is sharp; alternatively, orientation permits a pure binary separator by breaking the swap,
+while convexification preserves the swap by sending the background to the unique symmetric mixture.
+
+Therefore successor test arity and deterministic-versus-convex doctrine can be forced by the
+symmetry type of the failure record. `fixed-point-defect-ternary-genesis-and-convex-repair-law.md`
+and `ConstitutiveEquivariantArityGenesis.lean` certify the minimal calibration.
+
+### Law XIV — composed failure generates interaction vocabulary
+
+For `n` independent inactive/unoriented failure coordinates, every finite deterministic reporter
+that is equivariant and resolves every active coordinate in every context has at least
+
+\[
+ 2^{n+1}-1
+\]
+
+attained values.  The bound is sharp: one background value plus one parity pair for every nonempty
+support.  Independent blocks generate a mixed-channel product
+`(2^|A|-1)(2^|B|-1)`.  Thus interaction channels can be forced by composing failure isotropy rather
+than postulated as a feature basis.  The canonical support/parity core and sharp count are
+Lean-certified by `ConstitutiveComposedFailureGenesis.lean`.
+
+This is finite vocabulary genesis, not cofinal birth.  Its field-level successor must prove that a
+new mixed channel changes future formation or transports a semantic certificate.
 
 These laws give CPM nontrivial content before any RH application.
 

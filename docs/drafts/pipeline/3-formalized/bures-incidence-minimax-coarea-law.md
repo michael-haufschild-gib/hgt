@@ -2,6 +2,7 @@
 
 - **ID:** `bures-incidence-minimax-coarea-law`
 - **Stage:** 3-formalized
+- **Formalized companion:** `bures-incidence-minimax-coarea-law-formalized.md`
 - **Type:** theorem / source--target incidence minimax law
 - **Parents:** `../3-formalized/replica-hilbert-coarea-incidence-law.md`,
   `../3-formalized/return-excised-optimal-design-coarea-law.md`,

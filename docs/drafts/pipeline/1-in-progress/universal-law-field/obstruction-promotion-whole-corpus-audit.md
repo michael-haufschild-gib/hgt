@@ -162,7 +162,7 @@ promotion and its exchange identities.
 | promotion has universal/minimal property | passed for strict congruence, tomography, several completions |
 | two unlike promotion modes derived from one residual | passed: strict abelian quotient versus nonsplit Heisenberg central promotion |
 | nonidentity comparison between promotion modes | passed: quotient erases a fixed central commutator; observation commutes with promotion differentiation and migrates residual into its kernel |
-| composition/exchange law involving a third singular or higher mode | partial: unary additive opposite-order exchange and exact central-promotion/admission exchange proved; central-history versus genuinely higher promotion and weak/partial exchange remain open |
+| composition/exchange law involving a third singular or higher mode | passed in coefficient refinement and completion: failed central-history lift produces a canonical higher class, while serial completion produces independent source and target homology; multistage propagation remains open |
 | charge migration formula across exchange | passed for future reporter envelope, exact strict-promotion corridor, and reporter meet |
 | withheld prediction validated in second laboratory | passed: delayed-detection and finite-horizon-mirage laboratories; whole-corpus validation open |
 | whole-corpus source generation | open |
@@ -173,25 +173,41 @@ has strict and central promotions, their exact comparison loses a fixed commutat
 repairs that loss. ULF-OPM-4 proves declared reporter conservation can select against strictification.
 ULF-OPM-5 strengthens selection from present reporter values to the full future law orbit and proves
 the exact corridor between least required repair and greatest reporter-permitted identification.
-ULF-RLM-10 now proves the first second-order exchange law: triple reversal decomposes into
+ULF-RLM-10 proves the first second-order exchange law: triple reversal decomposes into
 transported binary residuals, nested residuals satisfy Jacobi, and finite-depth exchange tests have
 no universal cutoff.  It also proves that unary additive mechanics cannot supply irreducible
 ternary law birth.  ULF-RLM-11 then proves that central promotion commutes with admission exactly
 when its compensator lands in the admission kernel; closure and quotient-residual vanishing are
-equivalent, and exact ambient associativity can coexist with singular nonadmission.  The decisive
-missing theorem is now an **exchange law between surviving central history and genuinely higher
-promotion**: when strictification is forbidden and coefficient landing is already resolved, what
-mechanism selects a central extension versus new arity without fitting a rule per example?
+equivalent, and exact ambient associativity can coexist with singular nonadmission.  ULF-CRT-2 now
+closes the central-history/higher-arity gate for coefficient refinement: a coarse binary cocycle's
+failed fine lift is a kernel-valued ternary cocycle, independent of lift up to coboundary, and it
+vanishes exactly when strict fine central history exists.  A finite nonliftable multiplicative cell
+and a linear two-term cell validate the same conversion law. ULF-KCL-1 now closes its first
+completion/admission exchange: cokernel controls whether the associator has a carrier, kernel
+controls whether a chosen carrier satisfies its next coherence, and the closure gap separates exact
+birth, approximable mirage birth, and a Hausdorff-separated residual. Both quotient classes retain
+pentagon coherence. Dense-injective and surjective-noninjective laboratories prove these roles are
+independent. ULF-PSB-1 closes algebraic composition of two carrier engines. The composite
+cokernel is an extension of the outer primary cokernel by the canonical secondary quotient
+`K/(im S + ker T)`. Lift choice disappears, outer-kernel freedom exactly cancels false inner
+obstructions, and a separate laboratory realizes genuine secondary failure. ULF-CHM-1 now closes
+completion of that sequence: source preimage excess and target attainment excess are independent
+homology groups, and separated exactness survives precisely when both vanish. The decisive missing
+theorem is now **multistage propagation**: do these defects form a filtration with canonical
+differentials, and what exact law controls their cancellation across three or more stages?
+
+ULF-DKO-1 answers the algebraic three-stage part: total obstruction carries a canonical nested
+filtration, and its grades are local failures quotiented by kernels of their entire future tails.
+The next missing theorem is no longer existence of a filtration; it is the general finite-history
+law and the completion-relative differential that connects adjacent grades.
 
 ## 6. Next experiments
 
-1. Construct one finite residual for which future reporters forbid strictification but admit both a
-   central-history and a higher-coherent promotion.
-2. Find a law selecting between those two without naming either carrier in advance.
-3. Search for a three-mode coherence identity. If the identity is merely a generic cube boundary,
-   reject it as insufficient.
-4. Test the resulting prediction in a non-arithmetic solved system before any proof-route use.
-5. Formalize only after the paper theorem has a converse and sharp countermodel.
+1. For three composable carriers, construct the exact filtration of primary, secondary, and
+   completion-born homology sectors.
+2. Determine whether connecting maps square to zero or require a higher operation.
+3. Prove a collapse criterion and independent noncollapse countermodels.
+4. Only after this abstract law closes, test realizations in structurally different organs.
 
 ## Log
 
@@ -203,3 +219,17 @@ mechanism selects a central extension versus new arity without fitting a rule pe
 - 2026-08-09 -- central-promotion/admission exchange closed by coefficient landing; exact ambient
   coherence versus singular nonadmission separated.  Open gate narrowed to central-history versus
   genuinely higher promotion and weak/partial exchange.
+- 2026-08-10 -- coefficient-refinement transgression closed the central-history/higher-arity gate
+  with lift-independence, a strictification converse, a split boundary, and two nonisomorphic
+  laboratories.  Open gate moved to transgression versus completion/admission.
+- 2026-08-10 -- kernel--cokernel--closure engine closed the first transgression/completion gate;
+  dense mirage birth and kernel-born next coherence are independent. Open gate moved to
+  composition under successive carrier refinements.
+- 2026-08-10 -- ULF-PSB-1 closed algebraic carrier composition by a primary/secondary short exact
+  sequence and proved kernel cancellation is the invariant replacement for naive intermediate
+  liftability. Open gate moved to completion--composition interchange.
+- 2026-08-10 -- ULF-CHM-1 closed completion--composition interchange by two independent homology
+  groups and exact converses. Open gate moved to multistage filtration and differentials.
+- 2026-08-10 -- ULF-DKO-1 constructed the first exact obstruction spectrum: a three-stage
+  downstream-kernel filtration with a canonical short exact middle layer. Open gate moved to
+  finite histories, refactorization, and completion-relative differentials.

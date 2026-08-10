@@ -391,6 +391,116 @@ theorem tendsto_logSqRpowIntegral {a : ℝ} (ha : 0 < a) :
     rw [hconv] at hstep
     exact hstep
 
+/-- **A vanishing weight against a logarithmically damped power kernel contributes nothing.**  If
+`g → 0` and the kernel is dominated by `C·t^(a-1)/log t`, then the weighted integral is
+`o(x^a/log x)`.  Splitting at a height where `|g| ≤ δ` bounds the tail by `Cδ` times the
+logarithmic power integral, whose normalization tends to one, while the head is a constant. -/
+theorem tendsto_logKernelRemainder {a : ℝ} (ha0 : 0 < a) {C : ℝ} (hC0 : 0 ≤ C) {g K : ℝ → ℝ}
+    (hgt : Tendsto g atTop (nhds 0))
+    (hKbd : ∀ t : ℝ, 2 ≤ t → |K t| ≤ C * (t ^ (a - 1) / Real.log t))
+    (hgint : ∀ x : ℝ, 2 ≤ x → IntervalIntegrable (fun t : ℝ => g t * K t) volume 2 x) :
+    Tendsto (fun x : ℝ => (∫ t in (2 : ℝ)..x, g t * K t) * (a * Real.log x) / x ^ a) atTop
+      (nhds 0) := by
+  have hJ := tendsto_logRpowIntegral ha0
+  rw [NormedAddGroup.tendsto_nhds_zero]
+  intro ε hε
+  have hCC : (0 : ℝ) < 4 * (C + 1) := by linarith
+  set δ : ℝ := ε / (4 * (C + 1)) with hδ
+  have hδ0 : 0 < δ := div_pos hε hCC
+  obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp (NormedAddGroup.tendsto_nhds_zero.mp hgt δ hδ0)
+  set T : ℝ := max T₀ 2 with hT
+  have hT2 : (2 : ℝ) ≤ T := le_max_right _ _
+  have hTg : ∀ t : ℝ, T ≤ t → |g t| ≤ δ := by
+    intro t ht
+    have h := hT₀ t (le_trans (le_max_left _ _) ht)
+    rw [Real.norm_eq_abs] at h
+    exact h.le
+  have hCδ0 : (0 : ℝ) ≤ C * δ := mul_nonneg hC0 hδ0.le
+  set A : ℝ := ∫ t in (2 : ℝ)..T, g t * K t with hA
+  have hhead : Tendsto (fun x : ℝ => |A| * (a * Real.log x) / x ^ a) atTop (nhds 0) := by
+    have hlogdiv : Tendsto (fun x : ℝ => Real.log x / x ^ a) atTop (nhds 0) :=
+      (isLittleO_log_rpow_atTop ha0).tendsto_div_nhds_zero
+    have h := hlogdiv.const_mul (|A| * a)
+    rw [mul_zero] at h
+    refine h.congr fun x => ?_
+    ring
+  have hsmallhead : ∀ᶠ x : ℝ in atTop, |A| * (a * Real.log x) / x ^ a < ε / 2 :=
+    (NormedAddGroup.tendsto_nhds_zero.mp hhead (ε / 2) (by linarith)).mono fun x hx => by
+      rw [Real.norm_eq_abs] at hx
+      exact lt_of_le_of_lt (le_abs_self _) hx
+  have hJbound : ∀ᶠ x : ℝ in atTop, logRpowIntegral a x * (a * Real.log x) / x ^ a < 2 :=
+    hJ.eventually (eventually_lt_nhds (by norm_num))
+  filter_upwards [eventually_ge_atTop T, hsmallhead, hJbound] with x hx hxhead hxJ
+  have hx2 : (2 : ℝ) ≤ x := le_trans hT2 hx
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hlogx : 0 < Real.log x := Real.log_pos (by linarith)
+  have hXpos : (0 : ℝ) < x ^ a := Real.rpow_pos_of_pos hx0 a
+  have hsplit : (∫ t in (2 : ℝ)..x, g t * K t) = A + ∫ t in T..x, g t * K t := by
+    rw [hA]
+    exact (intervalIntegral.integral_add_adjacent_intervals (hgint T hT2)
+      ((hgint x hx2).mono_set (by
+        rw [uIcc_of_le hx, uIcc_of_le hx2]
+        exact Icc_subset_Icc hT2 le_rfl))).symm
+  have hmajor : IntervalIntegrable
+      (fun t : ℝ => C * δ * (t ^ (a - 1) / Real.log t)) volume T x :=
+    (intervalIntegrable_rpowDivLog a hT2 hx2).const_mul _
+  have htailint : IntervalIntegrable (fun t : ℝ => g t * K t) volume T x :=
+    (hgint x hx2).mono_set (by
+      rw [uIcc_of_le hx, uIcc_of_le hx2]
+      exact Icc_subset_Icc hT2 le_rfl)
+  have hpt : ∀ t ∈ Icc T x, |g t * K t| ≤ C * δ * (t ^ (a - 1) / Real.log t) := by
+    intro t ht
+    have ht2 : (2 : ℝ) ≤ t := le_trans hT2 ht.1
+    rw [abs_mul]
+    calc |g t| * |K t|
+        ≤ δ * (C * (t ^ (a - 1) / Real.log t)) :=
+          mul_le_mul (hTg t ht.1) (hKbd t ht2) (abs_nonneg _) hδ0.le
+      _ = C * δ * (t ^ (a - 1) / Real.log t) := by ring
+  have hupper : (∫ t in T..x, g t * K t) ≤
+      ∫ t in T..x, C * δ * (t ^ (a - 1) / Real.log t) :=
+    intervalIntegral.integral_mono_on hx htailint hmajor fun t ht =>
+      le_trans (le_abs_self _) (hpt t ht)
+  have hlower : (∫ t in T..x, -(C * δ * (t ^ (a - 1) / Real.log t))) ≤
+      ∫ t in T..x, g t * K t :=
+    intervalIntegral.integral_mono_on hx hmajor.neg htailint fun t ht =>
+      neg_le_of_abs_le (hpt t ht)
+  rw [intervalIntegral.integral_neg] at hlower
+  have habs : |∫ t in T..x, g t * K t| ≤
+      ∫ t in T..x, C * δ * (t ^ (a - 1) / Real.log t) := abs_le.mpr ⟨hlower, hupper⟩
+  have hval : (∫ t in T..x, C * δ * (t ^ (a - 1) / Real.log t)) ≤
+      C * δ * logRpowIntegral a x := by
+    rw [intervalIntegral.integral_const_mul]
+    have hhd : 0 ≤ ∫ t in (2 : ℝ)..T, t ^ (a - 1) / Real.log t :=
+      logRpowIntegral_nonneg (le_refl (2 : ℝ)) hT2
+    have hsp : logRpowIntegral a x =
+        (∫ t in (2 : ℝ)..T, t ^ (a - 1) / Real.log t) + ∫ t in T..x, t ^ (a - 1) / Real.log t :=
+      logRpowIntegral_split hT2 hx
+    nlinarith [hhd, hsp]
+  have hEbound : |∫ t in (2 : ℝ)..x, g t * K t| ≤ |A| + C * δ * logRpowIntegral a x := by
+    rw [hsplit]
+    linarith [habs, hval, abs_add_le A (∫ t in T..x, g t * K t)]
+  rw [Real.norm_eq_abs, abs_div, abs_mul, abs_of_pos hXpos,
+    abs_of_pos (show (0 : ℝ) < a * Real.log x by positivity)]
+  have hstep : |∫ t in (2 : ℝ)..x, g t * K t| * (a * Real.log x) / x ^ a ≤
+      (|A| + C * δ * logRpowIntegral a x) * (a * Real.log x) / x ^ a := by
+    have h := mul_le_mul_of_nonneg_right hEbound (show (0 : ℝ) ≤ a * Real.log x by positivity)
+    exact div_le_div_of_nonneg_right h hXpos.le
+  have hexpand : (|A| + C * δ * logRpowIntegral a x) * (a * Real.log x) / x ^ a
+      = |A| * (a * Real.log x) / x ^ a
+        + C * δ * (logRpowIntegral a x * (a * Real.log x) / x ^ a) := by
+    ring
+  rw [hexpand] at hstep
+  have hfinal : C * δ * (logRpowIntegral a x * (a * Real.log x) / x ^ a) ≤ ε / 2 := by
+    have h1 : C * δ * (logRpowIntegral a x * (a * Real.log x) / x ^ a) ≤ C * δ * 2 :=
+      mul_le_mul_of_nonneg_left hxJ.le hCδ0
+    have hδmul : δ * (4 * (C + 1)) = ε := by
+      rw [hδ, div_mul_cancel₀ _ (ne_of_gt hCC)]
+    have h2 : C * δ * 2 ≤ ε / 2 := by
+      rw [le_div_iff₀ (by norm_num : (0 : ℝ) < 2)]
+      nlinarith [hδ0, hC0, hδmul]
+    linarith
+  linarith
+
 end
 
 end HTGeometry

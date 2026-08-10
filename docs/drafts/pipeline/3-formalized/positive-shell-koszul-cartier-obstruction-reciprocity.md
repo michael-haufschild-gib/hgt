@@ -2,6 +2,7 @@
 
 - **ID:** `positive-shell-koszul-cartier-obstruction-reciprocity`
 - **Stage:** 3-formalized
+- **Formalized companion:** `positive-shell-koszul-cartier-obstruction-reciprocity-formalized.md`
 - **Type:** THEOREM (paper) / SOURCE-CONORMAL BRIDGE
 - **Source:** `positive-hypertranscendental-riemann-divisor-frame`
 - **Scientific status:** `[PAPER-PROVED] [SOURCE-SPECIFIC APPLICATION]`

@@ -156,7 +156,9 @@ theorem exists_local_cauchyBound_bivariatePolynomialSpecialize
     calc
       ‖(x : ℂ) + (y : ℂ) * Complex.I - (a : ℂ)‖ =
           ‖((x - a : ℝ) : ℂ) + (y : ℂ) * Complex.I‖ := by
-            congr 1 <;> push_cast <;> ring
+            congr 1
+            push_cast
+            ring
       _ ≤ ‖((x - a : ℝ) : ℂ)‖ + ‖(y : ℂ) * Complex.I‖ := norm_add_le _ _
       _ = |x - a| + |y| := by
         simp only [Complex.norm_real, Complex.norm_mul, Complex.norm_I, mul_one,

@@ -7,7 +7,7 @@
 - Exact claim label: [THEOREM] [SHILOV_LIM_ONE_ACYCLICITY]
 - Novelty status: [PLAUSIBLY NOVEL — PRIMARY-SOURCE AUDIT PASSED 2026-08-03]
 - Paper-proof status: Theorems A--E and universal acyclicity dependency-closed; renewed hostile audit passed 2026-08-03
-- Lean status: literal derived exact sequence, comparison criterion, composition, lifting, and faithful-kernel core compile; analytic local-envelope layer pending
+- Lean status: literal derived exact sequence, comparison criterion, composition, lifting, and faithful-kernel core compile; the metric boundary-ideal layer is now formalized in `ShilovLocalBoundaryIdeal.lean` (see "Lean progress: metric boundary-ideal layer")
 - Open core: renew primary-source/hostile audit for countable continuity and prescribed-deficit cancellation, formalize analytic envelope layer, then write and hostile-review paper.
 
 ## Frozen exact claim
@@ -1276,6 +1276,60 @@ arbitrary prescribed-deficit cancellation; if the recursive sentinel tower
 does not generate every stage cover; or if analytic formalization exposes an
 unrecorded hypothesis in local-envelope uniqueness or coordinate boundary
 ideals.
+
+## Lean progress: metric boundary-ideal layer
+
+`formal/GaloisForLFunctions/HTGeometry/ShilovLocalBoundaryIdeal.lean` supplies the metric layer
+that the algebraic calculus of `ShilovBoundaryMigrationDefect.lean` was missing: which submodule
+the calculus is applied to.  Everything is unconditional; no operator-system or positivity axiom is
+introduced, and no unformalized analytic conclusion is restated as a hypothesis.
+
+`IsBoundaryIdeal S J` is the metric boundary condition
+
+```text
+∀ s ∈ S, ∀ j ∈ J,  ‖s‖ ≤ ‖s - j‖,
+```
+
+which `isBoundaryIdeal_iff_le_infDist` rewrites as `‖s‖ ≤ infDist s J` — the statement that the
+quotient map `A → A/J` is isometric on `S`.  Since the index type of the tower section is
+arbitrary, instantiating it at a product of tower index and matrix size gives the completely
+isometric form with no extra work.
+
+- `IsBoundaryIdeal.mono`, `isBoundaryIdeal_bot`, `IsBoundaryIdeal.topologicalClosure` and
+  `isBoundaryIdeal_sSup`: boundary ideals are downward closed, contain zero, and are stable under
+  closure and directed unions.  `exists_maximal_isBoundaryIdeal` is the resulting Zorn existence of
+  maximal boundary ideals, and `isClosed_of_isGreatest_isBoundaryIdeal` shows the greatest one —
+  the Shilov ideal — is automatically closed, so closedness never has to be assumed.
+- `localIdeal p J = ⨅ i, (J i).comap (p i)` is `J^∞`, and `mem_localIdeal_iff_mkQ_eq_zero`
+  identifies it with the kernel of the comparison map into the stage quotients, which is the
+  injectivity of `Θ` in `(7)`.
+- **`localIdeal_isGreatest` is the card's representation-free identification `(9)`**: if every
+  stage ideal is the greatest boundary ideal of its stage system, then `J^∞` is the greatest local
+  boundary ideal.  The two halves are `isLocalBoundaryIdeal_localIdeal` (coordinate images of
+  `J^∞` land in `J i`, and boundary-ness is downward closed) and
+  `le_localIdeal_of_isLocalBoundaryIdeal` (each coordinate image of a local boundary ideal is a
+  stage boundary ideal, hence inside `J i` by maximality).  This closes the local-boundary gap the
+  card flags, without boundary representations.
+- `escapeFree_iff_exists_descent` is the envelope-descent half of Theorem A in linear form: a link
+  descends to the boundary quotients exactly when it carries the source boundary ideal into the
+  target one.
+- `isBoundaryIdeal_comap` pulls a boundary ideal back along a contraction isometric on the source
+  system, and `isBoundaryIdeal_map_of_quotient` pushes one forward along a link that realises its
+  target as a metric quotient, is isometric on the source system, and has kernel inside the source
+  boundary ideal.  `map_le_of_isGreatest` is the consequence: such a link is automatically escape
+  free.  The kernel condition is exactly where escape can fail, so this locates the obstruction
+  rather than assuming it away.
+- `exists_coherent_lift` is the recursive lifting behind `(10)`: in a tower whose restricted ideal
+  maps are surjective, every bottom ideal element is the bottom coordinate of a coherent sequence
+  lying in every stage ideal.  The same recursion at a shifted starting stage gives the statement
+  at any stage.
+
+`#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound` only.
+
+Still external: operator systems, `C^*`-covers, and boundary representations themselves.  The
+layer above identifies the Shilov ideal by its metric universal property, which is what the paper
+proof of `(9)` actually uses; the identification of that property with the Hamana/Arveson
+construction is the remaining analytic import.
 
 ## Next attack
 

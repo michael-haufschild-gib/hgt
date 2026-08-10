@@ -192,6 +192,14 @@ source constraints are imposed.
 Two formations may exchange on every finite stage but fail after completion because exchange is not
 continuous, strict, or admitted. The residue is a limit-exchange defect.
 
+**Exact finite-action sector:** ULF-GTM-3 proves that a finite family of continuous formations on a
+compact Hausdorff law space commutes with completion at every bounded word depth.  Its completion
+boundary is exactly closure of the filtered union minus union of the stage closures.  Every nearby
+effective history has diverging minimal word depth; finite changes of generators preserve this
+divergence up to multiplicative constants; equivariant observers may erase but cannot create the
+boundary.  Thus finite-depth exchange is closed and infinite-history birth is typed without a
+curvature metaphor.
+
 **Falsifier:** source-natural exchange extends continuously to every admitted completion, forcing
 the proposed defect to vanish.
 
@@ -226,3 +234,40 @@ a new mathematical field.
 
 - 2026-08-09 — mechanism-first discovery programme written; object, route, and curvature-first
   framings excluded.
+- 2026-08-09 — R7 finite compact-action sector proved on paper as ULF-GTM-3; compactness escape
+  alone retired as an already-formalized RBD/Kőnig mechanism.
+- 2026-08-10 — fixed exact revision and arbitrary endogenous compatibility were separated by a
+  strict middle calibration: one period-two local mutation transports a conserved semantic
+  certificate, forces an unbounded lineage, linearizes its nonlinear exchange, and predicts every
+  future value.  ULF-SEGM-1 is paper-proved and Lean-certified.  The surviving field problem is not
+  another predictive quotient of supplied histories; it is classification of source-generated
+  certificate transports that revise which future comparisons are legal.
+- 2026-08-10 — future-equivalence/Nerode compression was re-audited and rejected as a genesis law:
+  it minimizes supplied behavior but does not create the next comparison.  ULF-EAG-1 instead begins
+  a failure-to-test classification.  One unoriented pair plus fixed background forces a three-way
+  doctrine fork: deterministic ternary, oriented binary, or convex binary with unique mixed fixed
+  point.  Paper proof and Lean certification pass; composition of orbit-type constraints is open.
+- 2026-08-10 — ULF-LSM-5 closed the first exact abstract critical triple with a predeclared
+  reporter.  Two mandatory-identification doctrines are each compatible with TV fidelity, and the
+  pair of identifications is jointly executable, but all three laws are impossible because the
+  generated equality path closes across a conflict edge.  Lean certifies saturation,
+  compatibility, quotient width, strict TV response, and the minimal three-state witness.  This
+  closes the mechanism shape but not the source-generation gate: the next task is to derive both
+  identification families and the conflict task from one pre-target signature without fitting.
+- 2026-08-10 — static compatibility-complex topology was killed as a field core: arbitrary
+  simplicial complexes already occur as compatibility data, and the corpus already realizes their
+  Stanley--Reisner/Hochster shadows.  TV-loss filtrations were also shown neither submodular nor
+  supermodular.  ULF-LSM-6 supplied the dynamical survivor.  Two source operations generate their
+  own unitization pressures and canonical schedule distinction; joint strict execution collapses
+  every word endpoint and erases the exchange reporter exactly.  The sharp three-state critical
+  triple is paper-proved and Lean-certified.  The next hard gate is analytic admission transport,
+  not another static obstruction topology.
+- 2026-08-10 — ULF-LSM-7 paper-closes analytic admission transport.  Two continuous idempotent
+  formations on the two-ended integer compactification have individually closed unitizations,
+  uniformly lossless finite truncations, and a lossless cofinal set quotient, but their joint
+  algebraic relation is dense.  Continuous Hausdorff admission is its reporter bipolar/least
+  closed-equivalence hull and collapses globally.  Finite observers converge pointwise while
+  failing equicontinuity; the global admitted space is exact uniform distance `1/2` away.  Lean now
+  certifies the scalar bipolar mechanism and a one-ended cofinal critical shell with exact finite
+  margin and half-gap.  Doctrine-relative admission remains open; the two-ended and bounded-depth
+  paper clauses remain outside the certified surface.

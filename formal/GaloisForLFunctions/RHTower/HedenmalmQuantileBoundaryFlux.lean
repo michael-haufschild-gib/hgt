@@ -235,6 +235,68 @@ theorem inner_pinnedVolterra_rootMode {lam : ℂ} {g : H}
     ring
   rw [integral_congr_ae hcongr, MeasureTheory.integral_const_mul]
 
+/-- Cross-polarized `C`-pairing of a root mode against an arbitrary second vector.  Unlike the
+diagonal specialization, this retains the complete complex source metric pairing. -/
+theorem inner_pinnedVolterra_rootMode_pair {lam : ℂ} {g h : H}
+    (hg : IsQuantileRootMode S lam g) {C : ℝ} (hC0 : 0 ≤ C)
+    (hC : ∀ t, ‖metricSymbol S t‖ ≤ C) :
+    (inner ℂ (pinnedVolterra g) h : ℂ) =
+      (starRingEnd ℂ) (-Complex.I * lam) *
+        inner ℂ (metricOperator S hC0 hC g) h := by
+  rw [inner_lp_eq, inner_lp_eq]
+  have hcongr :
+      (fun t => (starRingEnd ℂ) ((pinnedVolterra g) t) * h t)
+        =ᵐ[unitIntervalMeasure]
+      fun t => (starRingEnd ℂ) (-Complex.I * lam) *
+        ((starRingEnd ℂ) ((metricOperator S hC0 hC g) t) * h t) := by
+    filter_upwards [pinnedVolterra_ae_of_rootMode S hg,
+      metricOperator_coeFn S hC0 hC g] with t h1 h2
+    rw [h1, h2, map_mul]
+    ring
+  rw [integral_congr_ae hcongr, MeasureTheory.integral_const_mul]
+
+/-- **Cross-polarized spectral Green law.**  For two generalized root modes, the universal
+rank-two boundary pairing is the canonical source-metric pairing multiplied by
+`conj(-iλ) - iμ`.  Thus line-conjugate spectral parameters are boundary-orthogonal, whereas
+ordinary-conjugate parameters are not; this is the exact obstruction to a rank-two inertia proof
+of critical-line rigidity. -/
+theorem inner_pinnedBoundaryCLM_rootMode_pair
+    {lam mu : ℂ} {g h : H}
+    (hg : IsQuantileRootMode S lam g)
+    (hh : IsQuantileRootMode S mu h)
+    {C : ℝ} (hC0 : 0 ≤ C)
+    (hC : ∀ t, ‖metricSymbol S t‖ ≤ C) :
+    (inner ℂ (pinnedBoundaryCLM g) h : ℂ) =
+      ((starRingEnd ℂ) (-Complex.I * lam) + (-Complex.I * mu)) *
+        inner ℂ (metricOperator S hC0 hC g) h := by
+  have hleft := inner_pinnedVolterra_rootMode_pair S hg hC0 hC (h := h)
+  have hright0 := inner_pinnedVolterra_rootMode_pair S hh hC0 hC (h := g)
+  have hright :
+      (inner ℂ g (pinnedVolterra h) : ℂ) =
+        (-Complex.I * mu) * inner ℂ (metricOperator S hC0 hC g) h := by
+    calc
+      (inner ℂ g (pinnedVolterra h) : ℂ) =
+          (starRingEnd ℂ) (inner ℂ (pinnedVolterra h) g : ℂ) := by
+            rw [inner_conj_symm]
+      _ = (starRingEnd ℂ)
+          ((starRingEnd ℂ) (-Complex.I * mu) *
+            inner ℂ (metricOperator S hC0 hC h) g) := by rw [hright0]
+      _ = (-Complex.I * mu) *
+          inner ℂ g (metricOperator S hC0 hC h) := by
+            rw [map_mul, Complex.conj_conj, inner_conj_symm]
+      _ = (-Complex.I * mu) *
+          inner ℂ (metricOperator S hC0 hC g) h := by
+            rw [metricOperator_inner]
+  have hadj :
+      (inner ℂ (pinnedVolterraAdjointCLM g) h : ℂ) =
+        inner ℂ g (pinnedVolterra h) := by
+    rw [pinnedVolterraAdjointCLM_eq_adjoint,
+      ContinuousLinearMap.adjoint_inner_left]
+    rfl
+  have hclm : pinnedVolterraCLM g = pinnedVolterra g := rfl
+  rw [pinnedBoundaryCLM, add_apply, inner_add_left, hadj, hclm, hleft, hright]
+  ring
+
 /-- **The spectral flux law.**  On a quantile root mode the universal boundary form is twice the
 imaginary part of the spectral value times the canonical metric form. -/
 theorem inner_pinnedBoundaryCLM_rootMode {lam : ℂ} {g : H}

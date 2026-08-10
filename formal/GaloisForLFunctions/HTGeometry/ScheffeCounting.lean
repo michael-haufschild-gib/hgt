@@ -32,6 +32,80 @@ theorem exists_finset_tsum_compl_lt {ι : Type*} {f : ι → ℝ} {S : ℝ}
   have hFle := abs_lt.mp (hF F le_rfl)
   linarith [hFle.1]
 
+/-- A summable positive sector can be absorbed into a finite packet without changing a prescribed
+subunit complementary budget.  More precisely, if both sides of a predicate are summable and the
+complementary total is below one, every finite packet inside the predicate extends to a finite
+packet, still inside the predicate, whose entire remaining tail is below one. -/
+theorem exists_finset_absorber_of_compl_tsum_lt_one
+    {ι : Type*} [DecidableEq ι] (f : ι → ℝ) (hf0 : ∀ q, 0 ≤ f q)
+    (P : Set ι)
+    (hPsum : Summable (fun q : P => f (q : ι)))
+    (hCsum : Summable (fun q : ↥(Pᶜ) => f (q : ι)))
+    (hClt : (∑' q : ↥(Pᶜ), f (q : ι)) < 1)
+    (B : Finset ι) (hBP : ∀ q ∈ B, q ∈ P) :
+    ∃ S : Finset ι, B ⊆ S ∧ (∀ q ∈ S, q ∈ P) ∧
+      Summable (fun q : ↥((↑S : Set ι)ᶜ) => f (q : ι)) ∧
+      (∑' q : ↥((↑S : Set ι)ᶜ), f (q : ι)) < 1 := by
+  classical
+  let C := ∑' q : ↥(Pᶜ), f (q : ι)
+  have hε : 0 < 1 - C := by dsimp only [C]; linarith
+  obtain ⟨F, hFtail⟩ := exists_finset_tsum_compl_lt hPsum.hasSum hε
+  let S : Finset ι := B ∪ F.image Subtype.val
+  have hBS : B ⊆ S := Finset.subset_union_left
+  have hSP : ∀ q ∈ S, q ∈ P := by
+    intro q hq
+    rcases Finset.mem_union.mp hq with hqB | hqF
+    · exact hBP q hqB
+    · obtain ⟨r, _, rfl⟩ := Finset.mem_image.mp hqF
+      exact r.property
+  have hf : Summable f := hPsum.add_compl hCsum
+  have hSsum : Summable (fun q : ↥((↑S : Set ι)ᶜ) => f (q : ι)) := hf.subtype _
+  let A : Set ↥((↑S : Set ι)ᶜ) := {q | (q : ι) ∈ P}
+  have hAsum : Summable (fun q : A => f ((q : ↥((↑S : Set ι)ᶜ)) : ι)) :=
+    hSsum.subtype A
+  have hAcsum : Summable (fun q : ↥(Aᶜ) => f ((q : ↥((↑S : Set ι)ᶜ)) : ι)) :=
+    hSsum.subtype Aᶜ
+  let eP : A → ↥((↑F : Set P)ᶜ) := fun q =>
+    ⟨⟨((q : ↥((↑S : Set ι)ᶜ)) : ι), q.property⟩, by
+      intro hqF
+      have himage : ((q : ↥((↑S : Set ι)ᶜ)) : ι) ∈ F.image Subtype.val :=
+        Finset.mem_image.mpr ⟨⟨((q : ↥((↑S : Set ι)ᶜ)) : ι), q.property⟩, hqF, rfl⟩
+      exact (q : ↥((↑S : Set ι)ᶜ)).property (Finset.mem_union_right B himage)⟩
+  have hePinj : Function.Injective eP := by
+    intro q r hqr
+    apply Subtype.ext
+    apply Subtype.ext
+    exact congrArg (fun z : ↥((↑F : Set P)ᶜ) => ((z : P) : ι)) hqr
+  have hPtailSum : Summable (fun q : ↥((↑F : Set P)ᶜ) => f ((q : P) : ι)) :=
+    hPsum.subtype _
+  have hAle : (∑' q : A, f ((q : ↥((↑S : Set ι)ᶜ)) : ι)) ≤
+      ∑' q : ↥((↑F : Set P)ᶜ), f ((q : P) : ι) := by
+    exact hAsum.tsum_le_tsum_of_inj eP hePinj
+      (fun q _ => hf0 ((q : P) : ι)) (fun q => le_rfl) hPtailSum
+  let eC : ↥(Aᶜ) → ↥(Pᶜ) := fun q =>
+    ⟨((q : ↥((↑S : Set ι)ᶜ)) : ι), by
+      have hnot : ¬ ((q : ↥((↑S : Set ι)ᶜ)) : ι) ∈ P := by
+        simpa only [A, Set.mem_compl_iff, Set.mem_setOf_eq] using q.property
+      exact hnot⟩
+  have heCinj : Function.Injective eC := by
+    intro q r hqr
+    apply Subtype.ext
+    apply Subtype.ext
+    exact congrArg (fun z : ↥(Pᶜ) => (z : ι)) hqr
+  have hCle : (∑' q : ↥(Aᶜ), f ((q : ↥((↑S : Set ι)ᶜ)) : ι)) ≤ C := by
+    dsimp only [C]
+    exact hAcsum.tsum_le_tsum_of_inj eC heCinj
+      (fun q _ => hf0 (q : ι)) (fun q => le_rfl) hCsum
+  have hsplit :
+      (∑' q : A, f ((q : ↥((↑S : Set ι)ᶜ)) : ι)) +
+        (∑' q : ↥(Aᶜ), f ((q : ↥((↑S : Set ι)ᶜ)) : ι)) =
+          (∑' q : ↥((↑S : Set ι)ᶜ), f (q : ι)) :=
+    Summable.tsum_add_tsum_compl (f := fun q : ↥((↑S : Set ι)ᶜ) => f (q : ι))
+      (s := A) hAsum hAcsum
+  refine ⟨S, hBS, hSP, hSsum, ?_⟩
+  rw [← hsplit]
+  linarith
+
 /-- **Scheffé, positive-deficit form.**  The positive deficits of a pointwise convergent family
 below a summable envelope have vanishing total. -/
 theorem tendsto_tsum_posPart_of_tendsto {ι : Type*} {p : ℕ → ι → ℝ} {plim : ι → ℝ} {S : ℝ}

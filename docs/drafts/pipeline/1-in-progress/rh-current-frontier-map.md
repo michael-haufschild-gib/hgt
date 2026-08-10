@@ -18,8 +18,9 @@ vocabulary or final RH criterion. Each dossier states endpoint, proved mechanism
 open core, and retired subclasses. Lean declarations are authoritative; paper claims are
 separated from formal ones.
 
-Neither RH nor its negation is proved. The independent live routes are C1, D2, E, G, L, N, O, P,
-Q, R, T, and U. The unlettered CCM-FU lane is also live. Routes T and U are new independent
+Neither RH nor its negation is proved. The independent live routes are C1, D2, E, G, L, O, P, Q,
+R, T, and U. The unlettered CCM-FU lane is also live. Route N is terminalized: its final
+zero-fracture premise is RH-equivalent. Routes T and U are new independent
 architectures exposed by the enlarged corpus:
 
 - **Route T** converts the mass-shifted Xi divisor geometry into one exact critical outgoing
@@ -28,8 +29,8 @@ architectures exposed by the enlarged corpus:
   its crossing form with a completed Euler--Gamma extension of an adaptive null flag.
 
 These are not renamed versions of existing routes. Route T has a first-order critical
-von-Mangoldt flux endpoint, whereas E has squarefree Möbius parity transport and N has a
-prime-normal domain estimate. Route U has an adaptive finite Hankel null-face crossing endpoint,
+von-Mangoldt flux endpoint, whereas E has squarefree Möbius parity transport and terminalized N
+has a prime-normal domain classifier. Route U has an adaptive finite Hankel null-face crossing endpoint,
 whereas G seeks a cofinal Suzuki two-angle meromorphic carrier and P seeks one compact positive
 moment measure.
 
@@ -83,7 +84,7 @@ existing route.
 | K | retired | all-order survivor belongs to P |
 | L | open, advanced | resolved Euler--Gamma/Möbius source annihilator and faithful physical specialization |
 | M | terminalized | remaining source-flatness statement is RH |
-| N | open | uniform prime-normal sub-log-square source-domain bound |
+| N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced | whole-ground profile exhaustion and reduced-resolvent control |
 | P | open | source-built compact completed-seam Thorin/Markov measure |
 | Q | open, secondary | selected source-ratio gate or direct Cassini saturation |
@@ -92,7 +93,7 @@ existing route.
 | T | open, new | cofinal cancellation of centered von Mangoldt atoms in mass light cone |
 | U | open, new | strict completed-source orientation of every adaptive shifted-Hankel null flag |
 
-The live independent count is twelve lettered routes plus CCM-FU. This count is conditional only
+The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
 post-J principal-relative current would add another.
 
@@ -410,21 +411,234 @@ relocate or erase K_n.
 Source-faithful reader is formalized. Remaining anchored cofinal flatness is equivalent to RH, so
 there is no lower source producer within Route M.
 
-### Route N — Hedenmalm prime-normal boundary [OPEN]
+### Route N — Hedenmalm prime-normal boundary [TERMINALIZED]
 
-**Endpoint.** Sub-log-square prime-normal energy at Xi zeros forces centered imaginary coordinate
-to vanish.
+**Endpoint.** Sub-log-square source-derived endpoint-doublet energy at Xi zeros forces centered
+imaginary coordinate to vanish.
 
-**Proved identity.**
+**Lean-closed source and energy identities.** For continuous aperture `L`, center and covariant
+aperture derivatives of one theta-source interval recover its odd and even endpoints. Their Fourier
+transforms factor through the exact same completed divisor:
 
 ~~~
-prime-normal energy = vertical clock energy + radial reflected energy.
+F(E_L) = S_even(m_L) XiC,
+F(O_L) = -i S_odd(m_L) XiC.
 ~~~
 
-**Open core.** Prove uniform source-domain sub-log-square bound for every vector in closed theta
-Grushin domain, retaining full Jordan tower before zero specialization. New Nyman--Beurling and
-Baez--Duarte formalizations provide classical receiver/finite-section infrastructure but no such
-producer and therefore do not create another route.
+At prime aperture `L=log p`, `m_L` is exactly the marked prime half-character. The full endpoint
+energy has no vertical clock and obeys
+
+~~~
+E_end,N(z) = 4 sum_(p<=N) 1/p + 2 E_rad,N(Im(z)/2).
+~~~
+
+Hence its sub-log-square domain is exactly `Im(z)=0`. Ordinary first spectral jets pay a sharp
+`sum (log p)^2/p` cost because odd scalar soldering is not connection-invariant; demanding one
+ordinary-jet estimate through the full Jordan tower silently adds a simplicity-strengthened wall.
+Multiplicity transport must remain in the marked endpoint bundle and is separate from grade-zero
+admission.
+
+**Retired shortcut.** Compact source inverse plus reflection does not give dissipativity. Its exact
+rank-two adjoint defect is indefinite, and on root modes its boundary charge is proportional to the
+spectral imaginary part. The sign premise is already RH-equivalent.
+
+**Further source closure.** Fixed theta Hilbert fibres cannot simultaneously bound translations and
+retain the detector; moving fibres absorb the detector. Canonical `L2(k^-1 dx)` landing fails for
+every prime aperture by an exact double-exponential endpoint divergence. Moving horizons instead
+split into one universal `k(0)/sqrt(p)` boundary atom plus a summable residual. The canonical
+Gamma-sewn Möbius soft source, after its source-generated Fisher half-transport, produces exactly
+this `p^-1/2` atom. With positive damping `u`, its marked energy is
+
+~~~
+p^(-1-u+Im z)+p^(-1-u-Im z),
+~~~
+
+and is summable exactly when `|Im z|<u`. At the sharp horizon `u=|t|`, Route N's positive doublet
+and Route R's oriented Gamma--Bockstein are the same prime-harmonic essential class modulo `ell1`.
+More sharply, the difference of the two Route N channel energies is its canonical Krein charge
+`Q_t(p)=p^(-|t|)(p^(-t)-p^t)/p`. The grade-independent source Fisher gauge
+`g(p)=p^2/(p+1)^2`, uniformly bounded with bounded reciprocal, satisfies the exact identity
+`R_t(p)=g(p)Q_t(p)`. Hence it induces an automorphism of the fixed all-prime quotient carrying
+Route N's marked Krein class exactly to Route R's wall class. Orientation is not missing; positive
+scalarization had erased it. The Krein charge is summable exactly at neutral grade `t=0`.
+
+Ambient conormal completion is now excluded. For the Fredholm cokernel vector
+`g_z(x)=k(x)exp(-i conjugate(z)x)`, weighted mass is exactly
+`normSq(g_z(x))/k(x)=|k(x)sourceChar(2z,x)|`; hence every Xi root conormal already belongs to the
+weighted theta source space. Yet for every fixed `0<u<1/2`, the ambient conormal `z=iu` fails the
+marked damping-`u` fibre. No total ambient base change exists, even without boundedness or
+linearity. Completion must follow localization to divisor-supported Fredholm torsion.
+
+The remaining singularity is now explicit. The Krein charge recovers the positive transverse
+modular clock character by
+
+~~~
+1 + sign(t) p Q_t(p) = p^(-2|t|).
+~~~
+
+Away from neutral grade, `p` is the unique diagonal recovery coefficient. It sends the summable
+witness `p^-2` to nonsummable `p^-1`, so it cannot preserve `ell1` or act on the fixed quotient.
+After the bounded Fisher gauge, Route R's unique recovery is `p/g(p)=(p+1)^2/p` and has the same
+obstruction. Hence “singular base change” is exactly one unbounded prime-clock deconvolution.
+On Xi support, scalar Cartier atom survival and Route N Krein summability have the same support;
+the scalar derived fibre contracts off line precisely when the fixed-trace obstruction survives.
+
+The positive cocycle is now identified with existing product-sector geometry, not merely compared
+by its zero set. At critical horizon the two marked channel masses are `p^-1` and
+`p^(-1-2|t|)`; their ratio is exactly `p^(-2|t|)`. Their square-root gap obeys
+
+~~~
+H_t(p)=(p^-1/2-p^(-1/2-|t|))^2
+      =p Q_t(p)^2/(1+p^-|t|)^2.
+~~~
+
+Moreover these amplitudes are literally square roots of the existing critical/twisted Wold
+valuation masses, and their product is its cross mass `p^(-1-|t|)`. Hence, for the existing squared
+local Wold thermofield Hellinger factor `F_t(p)`,
+
+~~~
+1-F_t(p)
+ =H_t(p)/(1-p^(-1-|t|))^2
+ =[p Q_t(p)^2/(1+p^-|t|)^2]/(1-p^(-1-|t|))^2.
+~~~
+
+The full normalized thermofield defect is summable exactly at neutral grade. Thus Route N's
+Krein wall, transverse modular cocycle, Kakutani numerator, and Wold thermofield sector are exact
+polarizations of one Gamma-sewn doublet. Finite Wold thermofield vectors and finite Boolean
+contractions already exist; rebuilding them is not an open theorem.
+
+The source dyadic split localizes this doublet further. Squarefree parity odds equal the geometric
+Wold parameter, so
+
+~~~
+odds_t(p)/odds_0(p)=p^(-2|t|),
+odds_t(p)-odds_0(p)=sign(t)Q_t(p).
+~~~
+
+The paired-depth residual carries the squared modular ratio, but its twisted-minus-critical
+sequence is summable for every `t`; the parity displacement is summable exactly at `t=0`.
+Therefore the fixed-quotient modular class is entirely squarefree and the higher dyadic tower is a
+regular correction. The generic Boolean--Wold coupling is no longer missing.
+
+Algebraic conormal attachment is also closed. The source-defined squarefree Mellin reporter is
+`Z_sq(s)=zeta(s)/zeta(2s)`. On `1/2<Re(s)<1`, `zeta(2s)^-1` is an analytic nonzero unit, while the
+archimedean Xi factor is another analytic nonzero unit. Consequently
+
+~~~
+ord_s Z_sq = ord_s zeta = ord_s Xi,
+~~~
+
+including every multiplicity. The squarefree reporter already carries the complete strict-right
+Xi zero germ. What is not supplied by analytic-unit equality is survival and normality of that germ
+in the critical exceptional topology.
+
+The remaining projective identification is now exact. Gamma-sewn grade selects
+`z_t(p)=-|t| log p`; on `P^1(F_p)` its marked-to-bulk odds are
+`exp(2z_t(p))/p=p^(-1-2|t|)`, exactly the twisted squarefree-parity odds. Neutral grade is the
+uniform Weyl-fixed projective source. Foreign producer/reporter leakage satisfies
+
+~~~
+L_t(p)=H_t(p)(p-1)/(p+p^(-2|t|)),
+(1/3)H_t(p) <= L_t(p) <= H_t(p),
+sum_p L_t(p)<infinity iff t=0.
+~~~
+
+Thus finite projective realization and the all-prime sector classifier are closed. This also
+rules out an unexplained same-sector normality premise: scalar projective/Fock completion deletes
+every off-neutral germ by orthogonality, so asserting scalar survival would restate the desired
+grade. Missing object is source-derived continuation--record correspondence and a source theorem
+that Xi conormals have zero complementary record.
+
+All surviving scalar reporters now collapse to one local fracture
+
+~~~
+D_t(p)=1-p^(-2|t|)=-sign(t)pQ_t(p),
+H_t(p)=D_t(p)^2/[p(1+p^(-|t|))^2],
+L_t(p)=D_t(p)^2(p-1)/[p(1+p^(-|t|))^2(p+p^(-2|t|))],
+log(1-D_t(p))/(2log p)=-|t|.
+~~~
+
+Hence Krein orientation, Kakutani distance, Wold defect, projective leakage, and Poisson/Kadison
+impurity are linear or quadratic shadows of one duality--adjunction mismatch. They cannot be
+counted as independent pressures toward RH or used cyclically to prove each other vanishes.
+
+Completion preserves this mismatch by reciprocal transfer. With
+`A_t(p)=p^(2|t|)`, the inward Sonin survival is `1-D_t(p)=A_t(p)^(-1)`. Every actual strict-right
+zero produces a nonzero co-Poisson conormal ladder whose norm tends to infinity. The two reciprocal
+edge images have exact Hermitian trace excess
+
+~~~
+M_t(p)=D_t(p)^2/(1-D_t(p))=A_t(p)+A_t(p)^(-1)-2,
+||T^+y_(j+1)||^2+||T^-y_(j+1)||^2=(2+M_t(p))||y_j||^2.
+~~~
+
+The co-Poisson connection is nevertheless flat on its whole quotient. Thus connection curvature
+cannot kill the off-line class; its invariant is nonmetricity. At prime dilation ratio, normalized
+Burnol holonomy is the oriented coordinate
+
+~~~
+H_t(p)=A_t(p)-A_t(p)^(-1)=D_t(p)(2-D_t(p))/(1-D_t(p)),
+H_t(p)^2=M_t(p)(M_t(p)+4).
+~~~
+
+Route N's positive fracture and Route R's signed holonomy therefore lie on one hyperbolic mass
+shell. Reflection reverses `H` and preserves `M`; their conjunction supplies no independent
+inequality.
+
+The upstream source-incidence pivot is now exact. Along every nonconstant affine source line from
+`Re sigma>1` meeting a strict-right Xi zero of multiplicity `m`, the squarefree overlap `B` and its
+division-free Fisher numerator `F` satisfy
+
+~~~
+ord(B)=m,  ord(F)=m-1,
+not exists analytic q with F=Bq,
+lim (v-u)F(v)/B(v)=2m.
+~~~
+
+Thus the former charged-graph divisibility gate is impossible. Its positive survivor is the
+conormal residue. Centered scaling identifies it exactly with the exceptional Xi affine-current
+residue
+
+~~~
+[-(rho-1/2)/2]·[2m]=-(rho-1/2)m,
+~~~
+
+whose real part is strictly negative for every strict-right zero. Fisher conormal, source normal
+cone, and position-times-multiplicity current are one conserved oriented incidence, not three
+pressures.
+
+C28 identifies this current with Route T mass propagation. For reciprocal escape `A>1`, put
+
+~~~
+u_A=(A+A^(-1))/2,  h_A=(A-A^(-1))/2.
+~~~
+
+Then `sqrt(u_A^2-h_A^2)=1`, Burnol holonomy is `2h_A`, nonmetricity is `2u_A-2`, and the Route T
+phase has unique saddle `x_*=-a h_A=-(a/2)H`. C27 affine residue is multiplicity times
+`-log(A)/(2log p)`. Thus residue, Sonin escape, holonomy, nonmetricity, and mass saddle are
+rapidity/orientation/energy/stationary coordinates of one boost charge.
+
+**Terminal no-go.** For an actual Xi divisor copy `q`, put `t(q)=Re(q)-1/2` and
+`D_Xi(q,p)=1-p^(-2|t(q)|)`. C21 proves, for every fixed ordinary prime,
+
+~~~
+D_Xi(q,p)=0 iff Re(q)=1/2,
+[for all q, D_Xi(q,p)=0] iff RH.
+~~~
+
+Every hypothetical strict-right squarefree Xi germ has positive defect. Functional-equation
+reflection may exchange a free off-line conormal pair; it does not fix either member. Thus zero
+complementary record, same-sector normality, projective multiplicative-domain purity, and
+duality--adjunction equality are the already retired internal-reflection rank-noncreation premise,
+not a Route N producer. Strongest positive survivor is the C19--C28 exact
+projective/fracture/escape/holonomy dictionary: every Route N wall is a trace or orientation
+polarization of one conserved reciprocal mismatch, while its Fisher source conormal is the
+oriented affine residue/rapidity conserved before that transport.
+Live work passes to arithmetic injection of this boost charge before divisor formation. Route T's
+von-Mangoldt mass current is the exact pre-divisor carrier: timelike prime frequencies have one
+saddle, spacelike frequencies have none, and the glancing null layer remains open. The old
+overlap-divisibility target remains retired. Route N contributes receiver and diagnostic invariant,
+plus exact coordinates for the source law Route T must control.
 
 ### Route O — Connes restricted-Weil/prolate ground space [OPEN]
 
@@ -596,11 +810,49 @@ polynomial.
 8. Finite sum--integral exchange preserves joint mass and arithmetic phases.
 9. Integer face, true-prime reduction, prime-square tail, and cosine form are formalized in
    committed umbrella.
+10. Exact phase classification: `log n<u` gives one timelike saddle
+    `x_*=-a log(n)/sqrt(u^2-log(n)^2)` with phase `a sqrt(u^2-log(n)^2)`; `log n>=u` gives no
+    stationary point. Route N reciprocal escape embeds into this same unit-proper-time boost shell.
+11. Exact spacelike contour optimization: for propagation argument
+    `zeta=(sigma+i*u)^2+h^2`, Lean proves `Re sqrt(zeta)^2` is the attained maximum curved-contour
+    damping quadratic. In `0<u<h`, this rate strictly exceeds both `h-u` and
+    `sqrt(h^2-u^2)`. The induced critical balance slope
+    `a/sqrt(a^2-1/4)` is strictly smaller than the limiting horizontal-strip slope
+    `a/(a-1/2)` for every `a>1/2`.
+12. Exact branch-free transform: `x=a*sinh(t)` converts the mass Fourier transform into a
+    full-line entire hyperbolic integral with kernel
+    `a*cosh(t)*exp(-(sigma+i*u)a*cosh(t))*exp(-i*h*a*sinh(t))`.
+13. Exact one-sided curved deformation and Lorentz reduction: for every `0<=theta<pi/2`, the
+    contour may be shifted to `t-i*theta`; its norm is bounded by
+    `2*a*exp(r)*K_1(a*q)`, where
+    `q^2=(sigma*cos(theta)+h*sin(theta))^2-(u*sin(theta))^2` and
+    `r=arsinh(u*sin(theta)/q)`.
+14. Optimal full-exponent lift: Lean proves C29's maximizing first-quadrant contour is an actual
+    interior angle, identifies `q=Re sqrt((sigma+i*u)^2+h^2)`, and proves
+    `K_1(s)<=exp(-(s-s0))*K_1(s0)` for `0<s0<=s`. Hence no fixed fraction of the optimal exponent
+    is lost, and the absolute spacelike cone reaches the sharp slope `a/sqrt(a^2-1/4)`.
+15. Sharp-spacelike atom closure: on every fixed cone
+    `log n>=alpha*u`, `alpha>a/sqrt(a^2-1/4)`, Lean proves uniform boost bound
+    `exp(r)<=(alpha+1)/(alpha-1)`, exponent
+    `p=1/2+a*sqrt(1-alpha^-2)>1`, absolute summability against `Lambda(n)+1`, and a
+    cutoff-independent bound for the exact finite centered-atom sub-sum. The full finite cone is
+    exactly this bounded sub-sum plus its complementary `log n<alpha*u` sum.
+16. Arbitrarily sharp residual localization: for every `alpha>1`, Lean constructs a legal
+    `a>1/2` with `a/sqrt(a^2-1/4)<alpha`, then proves RH equivalent to uniform boundedness of the
+    exact complementary finite sum supported on `log n<alpha*u`. Hence remaining obstruction
+    persists in every strict enlargement of true timelike-plus-glancing cone, however thin.
 
 **Open core.** Prove cofinal cancellation of centered von Mangoldt atoms inside finite mass light
 cone, preferably through exact joint pairing before norms. Safe-line Perron bounds hit critical
 zero barrier; termwise absolute estimates lose square root; local Lipschitz control sees mass
 radiation; Toeplitz and pinned-Volterra metrics cannot kill constant boundary-cohomology class.
+The full-exponent curved-contour/Bessel lift and cutoff-uniform absolute summation are proved on
+every strict cone `log n>=alpha*u`, `alpha>a/sqrt(a^2-1/4)`. Exact Lean partition and C34 criterion
+isolate residual finite sum `log n<alpha*u` for every `alpha>1`; control this arbitrarily sharp
+timelike-plus-glancing layer in exact joint pairing.
+Exact nonstationarity alone remains
+insufficient because reciprocal phase derivative degenerates at null face; required advance is
+source-derived centered von Mangoldt cancellation before divisor formation or termwise norms.
 
 **Why independent.** T begins with completed Chebyshev/von Mangoldt current and a mass-dependent
 light cone. It neither transports Möbius parity as E does nor classifies theta-domain energy as N
@@ -631,17 +883,61 @@ positive completed-source crossing proves required shifted-Hankel positivity and
 8. Gamma right-upper admission positively normalizes mixed feature to same Lorentz shear and
    preserves quartet aggregate; it adds no sign. The admitted Gamma--Lorentz landing and adaptive
    coefficient landing are committed and umbrella-reachable at cutoff.
+9. Exact mass-shift determinant germ has first nonzero coefficient
+   `det(H_head)(-1)^d choose(2n+d,d) delta_(2n+d)`; all lower coefficients vanish.
+10. Head positive definiteness persists analytically. Hence a genuine two-sided cone loss has odd
+    contact `d=2m+1`, never the even/Hamburger orientation.
+11. Every genuine crossing therefore yields an adaptively lifted null reporter `R=P X^m`, all lower
+    flat defects zero, and the exact completed-source obstruction `L_y(XR^2)<0`.
+12. Polarizing lower defects gives a totally isotropic lifted flag. Its final two reporters
+    `P X^m,P X^(m+1)` have exact completed-source Gram determinant `-delta^2<0`; hypothetical
+    crossing is birth of one nondegenerate hyperbolic plane, not merely one wrong-signed scalar.
+13. Canonical redundant positive frames construct exact polynomial-independent duals. Their total
+    nodal leverage is feature dimension, and arbitrary finite target capacity is exactly an
+    inverse-Gram relative moment trace.
+14. Critical-line canonical capacity is unconditionally summable for every fixed frame and can be
+    absorbed into a finite positive prefix. The capacity obstruction is therefore purely
+    off-critical.
+15. Odd contact `2m+1` annihilates every square in `P · Poly_{≤m}`. After restriction to the
+    critical/off-critical divisor split, critical-line energy is strict positive and the
+    off-critical form is strict negative on this entire `(m+1)`-dimensional space.
+16. Strict negativity localizes to a finite FE--Schwarz quartet completion even for an infinite
+    off-critical divisor; diffuse tails and asymmetric truncations cannot hide the index.
+17. The intrinsic negative coordinate is indexed by the conjugation-folded shifted node
+    `(Re lambda,|Im lambda|)`, not by Xi copies. Odd contact forces at least `m+1` distinct folded
+    nodes. Thus multiplicity, quartet duplication, and accidental collisions provide no extra
+    inertia. For a finite off-critical cover `T`, the sharp ceiling is
+    `m < #(folded nodes in T) <= |T|`; the former `m<2|T|` bound is weaker.
+18. Folded-node equivalence and finite count are invariant under every nonnegative mass shift.
+    Hence the adaptive crossing's orbit-rank burden transports exactly to shift one, where nodes
+    are `xiSquaredSeamOneCoordinate` and moments are jets of the fixed Cassini entire-source
+    logarithmic derivative.
+19. This orbit transport is the shadow of an exact all-jet law. For every `y>0`, the full adaptive
+    moment tower equals normalized jets of the one fixed Cassini source at the moving center
+    `1-y`: `-2 D^n(logDeriv Psi)(1-y)=n! M_y(n)`. Consequently every Hankel entry, lower flat
+    defect, polynomial functional, and crossing-induced negative shifted square transports
+    identically, not merely by node count. The fixed-source crossing law is valid beyond the
+    prime--Gamma window.
 
-**Open core.** Prove source-conditioned strict cross-channel monotonicity on every actual adaptive
-null flag:
+**Open core.** Exclude the now isolated off-critical negative-index obstruction on every actual
+adaptive genuine-crossing flag. Equivalently, rule out strict negativity of the off-critical
+divisor form on the self-selected space `P · Poly_{≤m}`. Its terminal marked scalar is
 
 ~~~
-completed Euler--Gamma incidence
-  > marked Lorentz shear + transverse transport,
+0 <= L_y(X (P X^m)^2),
 ~~~
 
-equivalently [P,XP]>0 or strictly negative derivative of saturated Hilbert-minus-charge gap at
-every right-half first crossing.
+where `m` is selected by first nonzero flat defect and all preceding defects vanish. This contradicts
+the Lean-closed consequence `L_y(X(P X^m)^2)<0`. At ordinary contact `m=0`, strict positivity is the
+previous `[P,XP]>0` / negative saturated-gap derivative target; determinant parity now covers every
+higher stationary contact and removes the even branch. Critical-line tail control and adaptive-to-
+fixed-source transport are closed and no longer belong to the open core. Write
+`Psi=xiSquaredSeamCassiniSource`; the exact remaining theorem is a source-specific zero-free-center
+rigidity law: the jet sequence of `-2 Psi'/Psi` at any real center `1-y`, `y>0`, cannot satisfy an
+odd flat-Padé contact with the genuine-crossing orientation. It must consume the vanished lower
+defects and self-selected null polynomial. Count alone is inadequate: a zero global Cassini orbit
+count is RH itself. Generic Weil budget bounds are inapplicable because the corpus's refunded-index
+construction supplies only lower bounds.
 
 **Dead subclasses.** Generic moment positivity, positive atoms, tied-power sectors, positive/root
 location, stochastic order, factorial-normalized carriers, fixed corona continuous reporters,
@@ -799,7 +1095,7 @@ open. Numerical evidence is not accepted as proof or disproof.
 7. **O:** prove low-energy profile exhaustion and bulk coercivity for whole restricted-Weil ground
    space.
 8. **G:** construct source-selected two-angle carrier and transfer it to Xi target.
-9. **D2/N:** obtain literal high-frequency ceiling or source-domain sub-log-square estimate.
+9. **D2/N:** obtain literal high-frequency ceiling or closed source-normal endpoint-doublet landing.
 10. **P/Q:** construct compact positive carrier or settle selected source-ratio gate.
 
 ### Work unlikely to move frontier
@@ -883,6 +1179,8 @@ open. Numerical evidence is not accepted as proof or disproof.
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelNullPolynomialRoots.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelBoundaryHilbertChargeFlow.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelAdmittedGammaLorentzLanding.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedHankelBoundaryPadeContactParity.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniSourceJet.lean
 
 ## Final frontier statement
 
@@ -891,11 +1189,11 @@ receivers. It also proves why bounded label-blind completion, generic positivity
 finite moments, isometry, and determinant packaging erase or fail to orient RH-bearing
 coordinate.
 
-Current frontier consists of twelve genuinely different source problems, concentrated in
+Current frontier consists of eleven genuinely different source problems, concentrated in
 singular descent, oscillatory all-prime transport, adaptive boundary orientation, whole-space
 coercivity, and positive carrier existence. Routes T and U are real additions. Source-horizontal,
 Burnol, eigen-pair, Gamma--Lorentz, and universal-law-field additions narrow existing routes or
-strengthen receiver/no-go infrastructure; they do not add a thirteenth route. New
+strengthen receiver/no-go infrastructure; they do not add a twelfth route. New
 Nyman--Beurling formalization likewise strengthens a classical receiver; it does not add Route V.
 
 RH remains open. Any claim of progress must now prove one named source theorem above, refute one

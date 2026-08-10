@@ -157,8 +157,23 @@ Retire this candidate if:
 - all cross-organ examples require unrelated response definitions;
 - the finite theorem is the only survivor and no genesis/cofinal extension follows.
 
+### Exact pathwise survivor
+
+`competitive-path-variation-observer-descent-and-history-production-law.md` closes the arbitrary
+finite-history extension. Mandatory and permissive work equal the common endpoint contribution
+plus and minus relative total variation. Closed mandatory histories carry exactly half the
+variation of `A-B`. The same theorem proves that this memory descends through an observer exactly
+when `A-B` is constant on every observer fibre; otherwise one collapsed pair carries positive
+invisible work.
+
+This kills the idea that selection history is only a local two-state artifact. It also limits the
+programme: the theorem is one mechanism law for competitive selection and quotient loss, not a
+common explanation of completion, coercivity, positive-carrier existence, or cancellation.
+
 ## Log
 
 - 2026-08-09 -- optimizer-first exactification killed; source-revealed cyclic-work mechanism opened.
 - 2026-08-09 -- competitive-envelope theorem proved: mandatory pointwise competition creates a
   positive two-cycle unless parent actions are gauge-equivalent; permissive minimum survives.
+- 2026-08-09 -- pathwise extension proved and Lean-certified: closed competitive work is relative
+  total variation, with exact observer-descent criterion.

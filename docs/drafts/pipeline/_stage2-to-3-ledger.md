@@ -20,6 +20,10 @@ Promotion recipe:
 
 | Card | New Lean work | Modules |
 |---|---|---|
+| `one-replica-local-pauli-planar-cavity-decay` | exact Pauli pencil, Dyson--Hall atomlessness, algebraic coordinate laws, scalar absolute continuity, Fourier and operator-norm decay | `HTGeometry/OneReplicaTracelessPauliSpectralDecay`, `FiniteDysonHallAtomlessness`, `FreeFockMatrixSemicircleCoordinateLaw`, `FreeFockMatrixSemicircleFourierDecay` (new) |
+| `radial-krylov-projected-complete-incidence-law` | exact radial/Krylov projection, incidence, return-error, and Gaussian-mixture family | `HTGeometry/KrylovProjectedCompleteIncidenceLaw` |
+| `bures-incidence-minimax-coarea-law` | separable positive-reporter Alberti approximation and compact-target minimax/product-capacity closure | `HTGeometry/FiniteDimensionalOperatorAlbertiLaw`, `SeparableBuresPositiveReporterLaw`, `SeparableBuresAlbertiApproximationLaw`, `SeparableBuresCompactTargetMinimaxLaw` |
+| `positive-shell-koszul-cartier-obstruction-reciprocity` | source-specific positive-shell analytic carrier, finite/countable Koszul homology, conormal and exterior-basis laws | `RHTower/PositiveShellKoszulCartierObstruction`, `HTGeometry/CommonFactorKoszulHomology` |
 | `route-g2-relative-volterra-source-germ-weld` | none (verified only) | `RHTower/SuzukiVolterraSourceGermWeldRigidity` |
 | `intrinsic-replica-observer-spectral-action-law` | none (verified only) | `HTGeometry/IntrinsicReplicaObserverSpectralActionLaw`, `HTGeometry/LocalHamiltonianObserverSpectralActionLaw` |
 | `route-r-degree-six-gamma-corona-local-global-fracture` | warning fix | `RHTower/RouteRDegreeSixGammaCoronaLocalGlobalFracture` |
@@ -259,7 +263,6 @@ dependency-closed.
 - `mass-bessel-cofinal-radiation-divergence`, `mass-bessel-infinite-radiation-jet-obstruction` —
   uniform sectorial large-argument asymptotics for `K1`; the cards prescribe replacing `K1` by its
   Fourier integral and proving deep-time Laplace asymptotics.
-- `one-replica-local-pauli-planar-cavity-decay` — operator-valued semicircle theorem.
 - `local-chain-metric-recurrence-exponents` — Kleinbock-Margulis extremality of analytic
   nondegenerate manifolds.
 - `cusp-spectrum-radius-law` — the Selberg class, the standard twist, and Kaczorowski-Perelli
@@ -278,7 +281,6 @@ dependency-closed.
   uniform sectorial large-argument asymptotics for `K₁` (the card itself prescribes replacing `K₁`
   by its Fourier integral `∫ e^{-ixξ} e^{-t√(ξ²+a²)} dξ` and proving deep-time Laplace asymptotics).
   Corpus owns a Schlaefli-integral Bessel layer (`HTGeometry/BesselOrder*.lean`).
-- `one-replica-local-pauli-planar-cavity-decay` — operator-valued semicircle theorem.
 - `local-chain-metric-recurrence-exponents` — Kleinbock–Margulis extremality of analytic
   nondegenerate manifolds (metric Diophantine approximation).  Not in mathlib.
 - `algebraic-two-local-instant-exact-complexity` — rational Hilbert specialization and
@@ -771,3 +773,344 @@ prime/zeta/divisor theorem.  See
 - Targeted module elaboration and universal-law-field umbrella build green with no warnings;
   `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`; no project
   postulate, hypothesis interface, or computation proof.
+
+# Universal-law-field equivariant-response blindness certification (2026-08-09)
+
+- `equivariant-intervention-response-blindness-and-transverse-mark-necessity-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveEquivariantResponseBlindness`.
+- Certified: on charted spaces over models with corners, an invariant doctrine map satisfies the
+  naturality identity `dP_{gx} ∘ g_* = dP_x`, so an equivariant intervention field has a
+  `G`-invariant first response and an arbitrary equivariant family has a combined response that is
+  literally a function on `MulAction.orbitRel.Quotient G X`; separation of two points of one orbit
+  by a first-order coframe forces the doctrine map to be non-invariant, some intervention to be
+  non-equivariant, the action to be non-smooth, or the doctrine map to be non-differentiable.
+  Non-sufficiency of the escape is certified on one concrete model — the rotation group acting on
+  `ℂ` with doctrine `z ↦ z · conj z`: the conjugation field is non-equivariant and separates
+  (`−2` against `2`), while the orbit-tangent modulated field `z ↦ (Re z)·i·z` is equally
+  non-equivariant and has identically zero response.
+- The §2 radial-source instantiation is a **reuse**: `gradeDiag`, `identityTrace`, `kummerCocycle`,
+  `radialMultiplier` and their invariance theorems already exist in
+  `HTGeometry.ConstraintRelativity.IdentitySectorRadialBlindness`.  The new content is
+  `kummerReporter`, its gauge invariance, and `kummerReporter_not_separating`: the whole
+  valuation/Kummer reporter coframe is constant on radial orbits, so it can never select the radial
+  origin.  `absoluteGrade_zero` derives the normalisation `ν 0 = 1` instead of assuming it.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`; no project
+  postulate, hypothesis interface, or computation proof.
+
+# Universal-law-field antisymmetric wall-response certification (2026-08-09)
+
+- `a2-positive-wall-antisymmetric-intervention-response-selection-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveAntisymmetricWallResponse`.
+- Certified: the A₂ wall family has passive positive packet `(1, 1, 4 cos²θ)`, even in `θ`; the two
+  component responses to the intervention `h = 1`, fixed before the wall is observed, are the
+  genuine derivatives `d/dε|₀ |z_j + ε|² = 2 Re z_j`, equal to `∓2 sin θ`; the antisymmetric
+  response is `Δ(θ) = 4 sin θ`; and on `|θ| < π/2` the extension is stable exactly when `Δ > 0`,
+  strictly semistable exactly when `Δ = 0`, and unstable exactly when `Δ < 0`.  The capstone
+  `antisymmetric_response_not_factoring` certifies that this response does not descend through the
+  positive quotient: the packets at `θ` and `−θ` agree while `Δ` changes sign.
+- Reuses `ConstitutiveStabilityWall` (ULF-LSW-1) and `ConstitutivePositiveResponse` verbatim.  New
+  content: the real parts of the charges, the derivative form of the responses, the swapped
+  cross-product lemma, and the two previously missing legs of the stability trichotomy — unstable
+  and strictly semistable.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`; no project
+  postulate, hypothesis interface, or computation proof.
+
+# Universal-law-field metaplectic action-history certification (2026-08-09)
+
+- `complex-gaussian-fixed-law-positive-erasure-and-metaplectic-history-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveMetaplecticActionHistory`.
+- Certified: for `S_θ(z) = ½ e^{iθ} z²` the critical locus is `{0}` for every `θ`, the second
+  derivative is the constant `e^{iθ}` whose Gram shadow `conj(H) H` is identically one, the oriented
+  line `ι_θ(y) = e^{-iθ/2} y` pulls the action back to `y²/2` with Jacobian `e^{-iθ/2}`, and the
+  resulting oriented Gaussian amplitude is exactly `√(2π) e^{-iθ/2}`.  The action, the critical
+  locus, the Hessian and the unoriented line are `2π`-periodic; the oriented parametrization and the
+  amplitude satisfy `ι_{θ+2π} = −ι_θ` and `Z(θ+2π) = −Z(θ)`, the amplitude is nonzero so the history
+  provably does not close at `2π`, and it closes at `4π`.
+- The amplitude is defined as the pullback line integral, with `descentLine_hasDerivAt` certifying
+  the Jacobian; the Gaussian value comes from mathlib's `integral_gaussian` via
+  `integral_complex_ofReal`.  Nothing is posited.
+- Scope kept as the card states it: this is a classical Picard–Lefschetz/metaplectic bridge, not
+  field core.  No hypertranscendence, arithmetic selection or completion is claimed.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field Toeplitz defect/index certification (2026-08-09)
+
+- `toeplitz-recurrent-boundary-open-defect-history-and-index-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveToeplitzDefectIndex`.
+- Certified on `lp (fun _ : ℕ => ℂ) 2`: the `n`-fold unilateral shift satisfies `S*ⁿSⁿ = 1`; the
+  defect `Dₙ = 1 − SⁿS*ⁿ` is exactly the truncation onto the first `n` coordinates, is an
+  orthogonal projection, and has an explicit linear isomorphism of its range with `ℂⁿ`, so its rank
+  is `n`; the cocycle law `D_{n+r} = Dₙ + Sⁿ D_r S*ⁿ` holds with the two summands annihilating each
+  other in both orders; the root-of-unity boundary observer is `m`-periodic and returns to one along
+  `n = km` while the defect rank diverges; `ker Sⁿ = ⊥` and `ToeplitzSpace ⧸ range Sⁿ ≅ ℂⁿ`, giving
+  index `−n`; the boundary expression `[1 − S*ⁿSⁿ] − [1 − SⁿS*ⁿ]` evaluates to `−rank Dₙ = −n`; and
+  for `n > 0` **no invertible operator differs from `Sⁿ` by a compact operator**, hence no unitary
+  lift exists.
+- The `n`-fold shift is primitive (a coordinate reindexing), so no induction on operator powers is
+  needed anywhere.  Clause 8 uses mathlib's Fredholm alternative for compact operators; clause 7 is
+  certified computationally because mathlib has no C*-algebra K-theory — `K₀(𝒦)`, the Toeplitz
+  extension and the six-term sequence are **not** constructed and are not claimed.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field balanced-defect zero-index certification (2026-08-09)
+
+- `balanced-defect-zero-index-recurrent-boundary-and-open-history-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveBalancedDefectZeroIndex`.
+- Certified on the doubled Hardy space `WithLp 2 (H × H)`: for `Tₙ = Sⁿ ⊕ S*ⁿ` the initial and final
+  defects are exactly `0 ⊕ Dₙ` and `Dₙ ⊕ 0`, both of rank `n` (explicit linear isomorphisms of their
+  ranges with `range Dₙ`); `ker Tₙ` and `ToeplitzPair ⧸ range Tₙ` are both isomorphic to the
+  `n`-dimensional `defectSubmodule n`, so the index vanishes identically; the symbol
+  `diag(zⁿ, z⁻ⁿ)` has determinant `1` at every point of the circle and the rank-evaluated signed
+  class `[Kₙ] − [Cₙ]` is zero; the unsigned energy is `2n` and diverges along `n = km`, exactly where
+  the doubled root-of-unity observer has returned to the identity matrix.
+- The §3 abstract cancellation theorem is formalized in full generality: for any additive hom
+  `φ : M →+ G`, every diagonal pair lies in `ker δ`, all diagonal pairs share one signed defect, and
+  any map applied after `δ` is therefore constant on balanced pairs — so no invariant factoring
+  through the signed defect can reconstruct the unsigned energy.
+- Reuses `ConstitutiveToeplitzDefectIndex` (ULF-TOEPLITZ-1) verbatim; the shift layer is not
+  rebuilt.  As there, the `K₀(𝒦)`/`K₁(C(S¹))` packaging is **not** constructed (mathlib has no
+  C*-algebra K-theory) and is not claimed; the certified content is the determinant identity and the
+  rank-evaluated class, which is proved equal to the Fredholm index.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field experimental-dimension certification (2026-08-09)
+
+- `passive-fibre-size-hidden-dimension-and-minimal-experiment-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveExperimentalDimension`.
+- Certified: if the joint response of a passive observer and a finite family of experiments is
+  injective, then every passive fibre injects into the product of the experimental codomains, so
+  `|F_y| ≤ ∏ |Yᵢ| ≤ k^r` and `log_k |F_y| ≤ r`; for linear observers the joint kernel is
+  `ker q₀ ⊓ ⨅ ker ℓᵢ`, injectivity forces `r ≥ dim ker q₀` by rank–nullity on the hidden space, and
+  exactly `dim ker q₀` extended coordinate functionals achieve it; hence
+  `edim q₀ = dim ker q₀` whenever `ker q₀` is finite-dimensional, and no finite budget exists at all
+  when it is not — `isExperimentBudget_nonempty_iff` states the dichotomy.
+- The finite-information half is proved **without** assuming the state space finite: the injection
+  into the finite experimental codomain already forces each fibre to be finite.
+- Name note: `jointObserver` was already taken by `ConstitutiveDoctrineLattice`; the linear observer
+  here is `linearJointObserver`.  Per-file `lake env lean` does not see umbrella-level collisions.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field monoid-bialgebra Hopf-envelope certification (2026-08-10)
+
+- `monoid-bialgebra-hopf-envelope-antipode-defect-and-one-sided-representation-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveMonoidBialgebraHopfEnvelope`.
+- Certified: `k[t] = AddMonoidAlgebra k ℕ` with the group-like coproduct is a bialgebra whose
+  generator is group-like and not a unit, so the antipode identity at the generator is
+  contradictory; the Laurent algebra is a Hopf algebra with `S(t) = t⁻¹`; every algebra map from
+  `k[t]` into a Hopf algebra sending the generator to a group-like element factors uniquely through
+  the Laurent algebra, the factorization composes back to the original map, and every basis image of
+  the extension is again group-like; `ℕ → ℤ` is the group completion in its universal form; the
+  unilateral-shift representation `ρ(t) = V` does not extend to the Laurent algebra because that
+  would make `V` invertible while it is not surjective; for **any** unital algebra map killing the
+  Toeplitz defect the images of `V` and `V*` are two-sided inverses and the representation extends
+  uniquely; and the erased defect `1 − VV*` is exactly the rank-one projection onto `e₀`.
+- Reuses mathlib's `AddMonoidAlgebra`/`LaurentPolynomial` bialgebra and Hopf instances and the
+  certified `ConstitutiveToeplitzDefectIndex` shift layer.  Mathlib has no Calkin algebra (compact
+  operators are a submodule, not a two-sided ideal with quotient ring), so clause 7 is stated for a
+  general defect-killing quotient — strictly stronger than the Calkin case.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field invariant-positivity/KMS certification (2026-08-10)
+
+- `invariant-positivity-reversibility-wall-and-kms-irreversibility-measure-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveInvariantPositivityKMSWall`.
+- Certified: on a compact Hausdorff monoid with an invariant Borel probability of full support every
+  left translation is surjective, hence every element is invertible, the monoid carries a group
+  structure, and inversion is continuous (via a new closed-graph criterion); an absorbing zero
+  collapses the invariant probability to a point mass, so full support is load-bearing.  For an
+  isometry with positive energy the KMS exchange identity gives `φ(vⁿw ⁿ) = qⁿ`,
+  `φ(1 − vⁿwⁿ) = 1 − qⁿ` and `φ(vⁿ(1 − vw)wⁿ) = (1 − q)qⁿ`, and forces `q = 1` if the image of `v`
+  is invertible.  On the universal Toeplitz realization the Gibbs state `∑ₙ (1−q)qⁿ⟨eₙ, · eₙ⟩` is
+  normalized, gives `qⁿ` on range projections and `(1−q)qⁿ` on history layers whose masses sum to
+  one, kills every off-diagonal monomial, and is faithful.
+- New reusable infrastructure: `continuous_of_isClosed_graph` (mathlib has no closed-graph
+  criterion), proved by an ultrafilter argument.
+- Scope: mathlib has no C*-dynamical systems, KMS states, or Calkin algebra, so §2 is certified from
+  the defining equations of the setting and §3 exhibits the state explicitly; the §3 uniqueness
+  claim is not formalized as such — its two ingredients are.
+- Reuses `ConstitutiveToeplitzDefectIndex` verbatim.  Targeted module elaboration and
+  universal-law-field umbrella build green with no warnings; `#print axioms` reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field time-reversal likelihood-cocycle certification (2026-08-10)
+
+- `time-reversal-likelihood-cocycle-observer-contraction-and-open-history-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveTimeReversalLikelihoodCocycle`.
+- Certified: for a measurable involution `Θ` and a path law `P` equivalent to `Θ_*P`, the
+  time-asymmetry variable `Σ = llr P (Θ_*P)` satisfies `Σ∘Θ = −Σ` a.e., `E_P e^{−Σ} = 1`, and
+  `E_P Σ = D(P‖Θ_*P) ≥ 0` with equality exactly when the law is reversible; for a reversal-compatible
+  observer `q`, `e^{−Σ_q}∘q` is the conditional expectation of `e^{−Σ}`, the divergence contracts
+  (`D(q_*P‖q_*Q) ≤ D(P‖Q)`), the gap equals `∫_Y D(P_y‖Q_y) d(q_*P)(y)` for the disintegrations, and
+  equality holds exactly when the two disintegrations agree over the observation; and a `±1` path
+  with positive drift makes the finite mod-`m` observer return to zero at arbitrarily late times
+  while the path escapes and the production rate tends to `(2p−1) log(p/r) > 0`, almost surely, via
+  the strong law of large numbers.
+- New infrastructure (absent from mathlib): `klDiv` invariance under a measurable embedding; the
+  observer graph map as a measurable embedding; the conditional divergence as an integral of
+  fibrewise divergences; and, from these plus mathlib's disintegration and chain rule, the
+  **data-processing inequality for `klDiv`**.
+- Recurrence is proved without Markov-chain theory: a `±1` path with positive drift hits every level
+  above its start, and each level is reached only after at least that many steps.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field polar-amplitude Fisher–phase certification (2026-08-10)
+
+- `projective-amplitude-fisher-phase-and-hidden-history-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutivePolarAmplitudeFisherPhase`.
+- Certified: `polarEquiv` is an explicit bijection between projective classes of full-support
+  amplitudes and pairs (open probability, relative-phase class), with both round trips proved;
+  the Fubini–Study speed of a polar tangent is `(1/4)∑ dpᵢ²/pᵢ + ∑ pᵢ dφᵢ² − (∑ pᵢ dφᵢ)²`, and
+  `hasDerivAt_polarAmp` shows the tangent used is the actual derivative of the polar curve; the
+  pure-phase loop `ψᵢ(t) = √pᵢ e^{i kᵢ t}` has constant probability observer, closes at `2π`, has
+  Fubini–Study speed equal to the weighted variance of the integer velocities, length
+  `2π√Var`, Berry connection value `∑ pᵢ kᵢ` and holonomy `exp(2πi ∑ pᵢ kᵢ)`; the length vanishes
+  exactly when all velocities agree; and the `N = 2` instance gives length `π` and holonomy `−1`.
+  The no-go is certified concretely: `(1,1)` and `(1,−1)` share a probability vector and are not
+  proportional.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field visible-kernel/purification-gauge certification (2026-08-10)
+
+- `hidden-history-elimination-forces-positive-kernel-and-purification-gauge-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveVisibleKernelPurificationGauge`.
+- Certified: the visible kernel `K_{bb'} = ∑ₐ Ψ_{ab} conj(Ψ_{ab'})` is positive semidefinite with
+  trace `∑|Ψ|²`, has rank equal to the rank of the amplitude matrix, is rank at most one exactly
+  when the amplitude is an outer product, and reproduces every visible expectation as a trace;
+  the maximally entangled amplitude leaves the maximally mixed kernel `(1/d)·I`, of rank `d`, so for
+  `d ≥ 2` it is not a rank-one amplitude; the balanced coherent amplitudes at phases `0` and `π`
+  share a diagonal and differ as kernels; every positive semidefinite kernel is a Gram matrix; and
+  two Gram factorizations of one kernel have coefficient maps of equal length, hence differ by a
+  length-preserving linear equivalence.
+- New infrastructure absent from mathlib: `rank_le_one_iff_vecMulVec` (rank ≤ 1 ⟺ outer product)
+  and `gaugeEquiv` (two surjective maps of equal length differ by a length-preserving equivalence,
+  built from the two first-isomorphism equivalences across an identification of kernels).
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field cyclic-process four-shadow certification (2026-08-10)
+
+- `cyclic-unitary-process-four-shadow-reconstruction-and-withheld-response-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveCyclicProcessFourShadow`.
+- Certified: the transfer function of `mₙ = ∑ wⱼλⱼⁿ` is `∑ wⱼ/(1−λⱼz)` on the unit disc; the orbit
+  Gram matrices are positive semidefinite with rank exactly `min(N+1, r)`; the moments satisfy the
+  order-`r` recurrence of the spectrum polynomial; the Hankel determinant is
+  `(det V)²∏wⱼ ≠ 0`; the recurrence coefficients solve the Hankel system; two admissible processes
+  agreeing on the first `2r` moments have equal coefficients, equal spectrum polynomials, equal
+  weights and equal moments forever; the withheld response `m_{2r}` is `−∑_{k<r} a_k m_{r+k}`; the
+  observer recurs at arbitrarily late times; and the marked phase lift escapes.
+- New infrastructure absent from mathlib: discrete recurrence of powers in a compact topological
+  group (pigeonhole against a finite subcover), and the rank of a rectangular weighted Vandermonde
+  matrix via invertible square submatrices.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field three-realization packet certification (2026-08-10)
+
+- `atomic-differential-operator-three-realization-process-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean module: `GaloisForLFunctions.HTGeometry.ConstitutiveThreeRealizationPacket`.
+- Certified: the response `mₙ = ∑ wⱼλⱼⁿ` of a finite spectral packet with complex nonzero weights
+  is simultaneously the `n`-th moment of the atomic measure `∑ wⱼ δ_{λⱼ}`, the `n`-th jet at the
+  origin of the exponential polynomial `f(t) = ∑ wⱼ e^{λⱼ t}` (which `p(D)` annihilates at every
+  point), the state-space response `cᵀAⁿb`, the unitary orbit correlation `⟨v, Uⁿ v⟩` in the
+  positive chamber, and the `n`-th Taylor coefficient of `∑ wⱼ/(1−λⱼz)`; the Hankel window factors
+  as `V_Nᵀ diag(w) V_N` with `rank ≤ min(N+1, r)` and `rank = r` once `r ≤ N+1`; the first `2r`
+  responses determine the recurrence coefficients, the spectrum polynomial, the weights and every
+  later response; and `m_{2r} = −∑_{k<r} a_k m_{r+k}` is predicted before observation.
+- Correction: the card's equation (11), `rank H_N = min(N+1, r)`, is false in the unsaturated
+  regime `N+1 < r` and is now refuted in Lean — three cube roots of unity with uniform positive
+  weight give `m₀ = 1`, `m₁ = m₂ = 0`, hence `rank H₁ = 1 < 2`; with signed weights `m₀` itself can
+  vanish.  The Toeplitz/Gram identity `rank G_N = min(N+1, r)` of §5 is unaffected.  §8 of the
+  paper card carries the correction.
+- New infrastructure absent from mathlib: integrability of an unbounded integrand against a Dirac
+  measure, and `det_ne_zero_of_rank_eq_card` (full rank forces nonzero determinant, the converse of
+  `Matrix.rank_of_isUnit`).
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field doctrine-memory-spectrum certification (2026-08-10)
+
+- `doctrine-relative-process-memory-spectrum-and-hypertranscendence-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean modules: `GaloisForLFunctions.HTGeometry.ConstitutiveDoctrineMemorySpectrum`,
+  `GaloisForLFunctions.HTGeometry.ConstitutiveDoctrineMemoryWitnesses`.
+- Certified: for an analytic germ at the origin, bounded Hankel rank of the response sequence,
+  a nonzero constant-coefficient recurrence, a nonzero constant-coefficient linear differential
+  equation, and the exponential-polynomial form are all equivalent; finite base-aware linear memory
+  (the `ℂ(z)`-span of the jets, cleared of denominators) is exactly a nonzero linear differential
+  equation with polynomial coefficients; differential algebraicity is a finite order bound and
+  hypertranscendence is algebraic independence of every finite jet over `ℂ(z)`; and the three
+  doctrines are strictly separated by `exp(z²)` (infinite Hankel memory, one linear state,
+  transcendental with `f' = 2zf`), `tan` (no finite linear memory, transcendental with `f' = 1+f²`)
+  and `Γ(z+1)` (no algebraic differential equation of any order).
+- New infrastructure absent from mathlib: Kronecker's Hankel-rank theorem with a compactness proof
+  of the converse; the entire Taylor extension of a recurrent response; the two transfer lemmas
+  between an entire function and its restriction to `ℝ`; `tendsto_eval_div_pow`; and the `ℂ(z)`
+  jet-span calculus with closure under differentiation.
+- Targeted module elaboration and universal-law-field umbrella build green with no warnings;
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+# Universal-law-field q-Gamma process certification (2026-08-10)
+
+- `q-gamma-positive-recurrent-hypertranscendental-process-and-open-history-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean modules: `GaloisForLFunctions.HTGeometry.QBinomialTheorem`, `…ConstitutiveQGammaProcess`,
+  `…QGammaAnalytic`, `…QDigamma`, `…QGammaBellSubstitution`, `…QShiftField`, `…QShiftInverse`,
+  `…QIncrement`, `…QIncrementAnalytic`, `…QTranscendence`, `…ShiftEliminationEngine`,
+  `…ShiftEigenrelationEngine`, `…QDigammaHypertranscendental`, `…QGammaHypertranscendental`.
+- Certified: the complex q-binomial theorem; the positive atomic q-Gamma law and its exponential
+  response; the GNS realization with a positive-definite moment matrix and a compact resolvent;
+  integer-time recurrence and the open marked lift; the exact tilt/entropy law and both
+  Kullback--Leibler derivative values; and **Pastro's q-analogue of Hölder's theorem** —
+  `Γ_q` satisfies no algebraic differential equation over `ℂ[z]` on `Re z > 0`.
+- New infrastructure absent from mathlib: the two-variable q-shift field `ℂ(z,u)` with its fixed
+  field, coboundary obstruction and `u`-degree obstruction; the transcendence of `qᶻ` over `ℂ(z)`;
+  the closed form of every jet of the q-digamma shift law; diagonal/rank-one `ℓ²` operators and
+  their compactness; and two abstract shift engines (elimination and eigenrelation) that subsume
+  the classical `ℂ(z)` Hölder machinery.
+- Verification: targeted foreground `lake env lean` on every new module green; universal-law-field
+  umbrella build green (11,531 jobs); `#print axioms` on every capstone reports only `propext`,
+  `Classical.choice`, `Quot.sound`.  Repo-wide lint is currently blocked only by unrelated
+  concurrently created unwired `RHTower` modules and the generated indexes they restale.
+
+# Universal-law-field q-Gamma five-chart certification (2026-08-10)
+
+- `q-gamma-five-chart-reconstruction-and-marked-presentation-rigidity-law.md`
+  → `3-formalized/universal-law-field/`
+- Lean modules: `GaloisForLFunctions.HTGeometry.QGammaFiveChart`,
+  `…MarkedCyclicRigidity`, `…AbsConvergentPowerSeries`, `…QGammaGNSChart`.
+- Certified: the atom order and equations (5) and (6); the atomic law as a measure with its
+  singleton masses; the identification of its characteristic function with the q-Gamma
+  characteristic process and the resulting Fourier reconstruction; the germ chart by analytic
+  continuation across the strip carrying the imaginary axis; **Theorem 3.1** — uniqueness of the
+  marked unitary equivalence of two cyclic unitary presentations with equal matrix coefficients,
+  over an arbitrary group; cyclicity of the q-Gamma GNS source vector; **Corollary 4.1**, the
+  five-chart equivalence; and **Corollary 5.1**, invariance of every reconstructed quantity.
+- New infrastructure absent from mathlib: diagonal unitaries of `ℓ²`; extension of an isometry from
+  a dense subspace of an infinite-dimensional Hilbert space (mathlib's `LinearIsometry.extend` is
+  finite-dimensional only); and vanishing of the coefficients of an absolutely convergent power
+  series vanishing on the unit circle.
+- Verification: targeted foreground `lake env lean` on every new module green; universal-law-field
+  umbrella build green (11,541 jobs); `#print axioms` on every capstone reports only `propext`,
+  `Classical.choice`, `Quot.sound`.

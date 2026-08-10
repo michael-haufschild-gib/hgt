@@ -7,28 +7,71 @@
   session: `XiShiftedHankelFirstCrossing.lean`, `XiShiftedHankelBoundaryHilbertChargeFlow.lean`
   (through line ~1075), `XiShiftedHankelBoundaryExtensionClass.lean`,
   `XiShiftedHankelAdmittedGammaLorentzLanding.lean` headers
-- **Status:** [RECON COMPLETE] [ONE TYPED NO-GO DERIVED] [NOT RH] [NO LEAN — directive]
+- **Status:** [RECON COMPLETE] [TYPED NO-GO DERIVED] [ODD GENUINE CROSSING LEAN-PROVED]
+  [HYPERBOLIC SOURCE PLANE LEAN-PROVED] [OFF-CRITICAL NEGATIVE-INDEX AMPLIFICATION LEAN-PROVED]
+  [FOLDED-NODE RANK LEAN-PROVED] [FIXED CASSINI ALL-JET BRIDGE LEAN-PROVED]
+  [SOURCE INDEX EXCLUSION OPEN] [NOT RH]
 
 ## The open core, read from the tree (exact)
 
-For y in the window 0 < y < 41/2, at a right-hand first crossing with null datum c
+For every `y>0`, at a genuine two-sided right-hand first crossing with null datum c
 (head block PosDef, face singular, c ≠ 0, last coordinate ≠ 0), with
 P = finiteHankelNullMonicPolynomial c (real simple roots, flat quadrature — in-tree):
 
-    OBLIGATION:  0 < momentInner (k ↦ (primeArchShiftedReciprocalMoment y k).re) P (X·P),
+the now Lean-closed determinant parity law adaptively selects `m>=0` and proves
 
-i.e. L_y(X·P²) > 0 for the prime–arch shifted reciprocal moment functional. The consumer is
-formalized: `not_xiShiftedHankelFirstCrossing_of_primeArchPair_pos` — this single positivity
-at every crossing excludes all right-half first crossings, which is the route's RH handoff.
-The equivalent source form is projective archimedean dominance over the oriented prime
-discrepancy (`xiShiftedHankelNull_sourceSlope_neg_iff_projectiveSourceDominance`).
+    CROSSING CONSEQUENCE:  L_y(X·(P X^m)²) < 0,
+
+with every lower flat-shadow defect through degree `2n+2m` equal to zero. Therefore the sole
+surviving obligation is the crossing-conditioned exclusion
+
+    OBLIGATION:  0 <= L_y(X·(P X^m)²).
+
+The two statements contradict directly. For `m=0`, this is the original ordinary-contact
+consumer `not_xiShiftedHankelFirstCrossing_of_primeArchPair_pos`; higher stationary contacts no
+longer require a separate even branch. Strict positivity is sufficient but no longer necessary.
+
+Lower constraints now have a closed polarized form. For `P_j=P X^j`, every pairing with
+`i+j<2m+1` vanishes, while every pairing on `i+j=2m+1` equals same first defect `delta<0`.
+Consequently `A=P X^m` and `B=P X^(m+1)` have exact completed-source Gram determinant
+`-delta^2<0`. Viable source proof must exclude birth of this hyperbolic plane after flat isotropic
+flag; controlling only marked scalar discards most adaptive crossing data.
+
+The critical/off-critical split strengthens this again. Odd contact annihilates every square
+`(P Q)^2`, `deg Q<=m`. Any finite critical-line prefix with more than `n+m` distinct shifted nodes
+makes its critical restriction strictly positive, so the complete off-critical restriction is
+strictly negative on `P · Poly_{≤m}`. Thus a genuine crossing forces an `(m+1)`-dimensional
+off-critical negative sector, not only one hyperbolic plane. The negative sector localizes to a
+finite FE--Schwarz quartet completion. Its support contains at least `m+1` distinct
+conjugation-folded shifted nodes, so multiplicity, quartet duplication, and collisions cannot pay
+the index. If a finite packet covers the divisor, its folded-node image has cardinality greater
+than `m` (hence `m<#copies`); the former `m<2·(#copies)` annihilator bound is strictly weaker.
+
+Folded-node equivalence is independent of nonnegative mass shift. More strongly, put
+`Psi=xiSquaredSeamCassiniSource`. For every `y>0` and every `n`, Lean now proves
+
+    -2 D^n(logDeriv Psi)(1-y) = n! xiShiftedReciprocalMoment(y,n).
+
+Thus mass flow is exact translation of the basepoint of one fixed source. The full Hankel block,
+all lower flat defects, polynomial functional, and crossing-conditioned negative form transport
+identically; no phase-changing quadratic-form congruence is involved. The `41/2` restriction belongs
+only to the optional prime--Gamma wrapper, not the Cassini-source crossing law. This still does not
+finish the sign problem: a bare zero Cassini-orbit cap is RH itself. Remaining theorem must derive
+odd-contact exclusion from special analytic/arithmetic structure of this source at its zero-free
+real centers.
+
+Canonical redundant-frame analysis also removes critical-line tail control from the open core:
+critical-line capacity is automatically summable and finitely absorbable for every fixed frame.
+Only signed off-critical capacity/index remains.
 
 Structural reading (from the flat-quadrature layer): at a first crossing the truncated moment
 sequence has a unique flat finitely-atomic representing quadrature with atoms at the roots of
 P; X·P² vanishes at every atom; so L_y(X·P²) is exactly the FIRST UNSEEN moment discrepancy —
 the true source sequence's next odd moment minus the value forced by its own degenerate
-quadrature. The obligation says: the actual prime–Gamma source always outruns its flat shadow,
-in the oriented direction, at every hypothetical degeneration.
+quadrature. If the first discrepancy is delayed by `2m` extra flat jets, the lifted reporter
+`P X^m` exposes it as `L_y(X(P X^m)^2)`. Determinant sign change forces odd delay and negative
+orientation. The remaining obligation says this self-selected Stieltjes reporter cannot be
+negative for the completed prime–Gamma source at its own hypothetical degeneration.
 
 ## Typed no-go (derived this session): the unrestricted strengthening is group-3
 
@@ -61,13 +104,18 @@ frontier map's design survivor demands; U's obligation has exactly the admissibl
 
 ## What a viable attack must therefore look like (open directions, honestly unproven)
 
-1. **Self-referential moment identity:** express L_y(X·P²) at a singular face through the
+1. **Self-referential moment identity:** express `L_y(X·(P X^m)²)` at a singular face through the
    face's own quadrature data (nodes = roots of P, weights from the head block) plus the
    source-side tail — seek an identity in which the prime discrepancy's pairing against X·P²
    is constrained BY the degeneration itself (the crossing forces exact relations among
    moments up to 2n+2; the discrepancy at 2n+3 may inherit a sign from the source's
-   completed structure, e.g. the complete-monotonicity layer `SquaredXiCompleteMonotonicity`
-   imported by the Landing module — read next).
+   completed structure. The lower-defect annihilation through `2n+2m` is now mandatory input, not
+   optional decoration; any estimate ignoring it discards the adaptive information that selected
+   `m`.
+   Exact strengthened target: prove zero-free-real-center jet rigidity for the fixed Cassini
+   source—its normalized log-derivative jets cannot have all adaptive lower Padé defects zero and
+   the first odd shifted-square defect negative. Full transport is now exact; remaining work is to
+   exploit source structure, not control mass-shift distortion.
 2. **Window structure:** the constant 41/2 bounds the shift window — locate its origin in
    `XiShiftedHankelBoundaryQuadratureSource` (likely tied to the first Xi zero's scale or the
    negative-binomial parameter) before any estimate; an attack valid only in a sub-window is
@@ -85,8 +133,35 @@ frontier map's design survivor demands; U's obligation has exactly the admissibl
   contribution); admissible-attack shape typed; next reads named
   (`SquaredXiCompleteMonotonicity`, `XiShiftedHankelBoundaryQuadratureSource`). No Lean.
 - 2026-08-09 — heavy conjecture loop exposed and paper-proved the higher-contact replacement:
-  `../../2-fully-proven/mass-shifted-pade-contact-parity-law.md`. A full right-positive crossing
+  `../../3-formalized/mass-shifted-pade-contact-parity-law.md`. A full right-positive crossing
   has an earliest nonzero flat-quadrature Padé defect `delta_(2n+d)` with forced sign
   `(-1)^d delta_(2n+d)>0`. The current flux is only `d=1`; stationary contacts require the new
   alternating hierarchy. Frozen source target `(U-Pade)` asks the completed prime--Gamma source
   for the opposite sign at the adaptively selected first defect.
+- 2026-08-10 — determinant attack closed the geometric gap in Lean. The actual determinant germ
+  has the same first order as the first flat defect; head PosDef persists automatically; a genuine
+  two-sided loss has odd order `2m+1`; and the completed source then satisfies
+  `L_y(X(P X^m)^2)<0`. Even/Hamburger contact is impossible. Route U now has one exact open core:
+  exclude this negative adaptive shifted square using its own lower-defect constraints.
+- 2026-08-10 — full delayed-contact polarization closed in Lean: lifted flag pairings vanish below
+  first odd anti-diagonal, first anti-diagonal equals defect, and every genuine crossing creates a
+  prime--Gamma hyperbolic two-plane with determinant `-delta^2<0`. Open core sharpened from scalar
+  sign to source exclusion of one-index Krein birth after an adaptive flat flag.
+- 2026-08-10 — canonical redundant frames, exact leverage/relative-trace laws, and finite positive
+  absorption removed all critical-line capacity from the hypothesis. A no-crossing criterion now
+  depends only on subunit off-critical canonical capacity.
+- 2026-08-10 — arbitrary-multiplier null identity upgraded the lifted flag to the complete space
+  `P · Poly_{≤m}`. Its critical restriction is positive definite and its off-critical restriction
+  negative definite. Finite off-critical support obeys contact ceiling `m<2|T|`. Open core is now
+  signed off-critical negative-index exclusion.
+- 2026-08-10 — finite negative-sector localization strengthened to arbitrary extensive
+  completions, then specialized to explicit FE--Schwarz quartet completion. One atom contributes
+  one negative coordinate only after quotienting by the conjugation fold
+  `(Re z,|Im z|)`; every odd contact needs at least `m+1` distinct folded nodes. Sharp finite-cover
+  ceiling is `m<#folded(T)<=|T|`.
+- 2026-08-10 — folded-node equivalence and finite count proved invariant under every nonnegative
+  mass shift. Adaptive Route-U orbit rank now lands exactly at fixed shift-one Cassini coordinates;
+  remaining source theorem must preserve crossing negativity, not merely count Cassini orbits.
+- 2026-08-10 — exact all-jet bridge proved: every positive-mass shifted moment is a normalized jet
+  of one fixed Cassini source at `1-y`. Hankel blocks, flat defects, polynomial functionals, and
+  genuine-crossing negativity now transport identically and without the prime--Gamma window.

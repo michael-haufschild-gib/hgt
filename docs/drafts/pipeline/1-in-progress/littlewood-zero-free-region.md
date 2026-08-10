@@ -1817,3 +1817,820 @@ All declarations `[propext, Classical.choice, Quot.sound]`.
 `riemannZeta` from `ZetaPartialSumTruncation`, exactly as Z4 did on the line) into
 `PNTPlus/ZetaBounds`' Landau / 3-4-1 pipeline. No new analysis; only interface matching against
 read-only vendored code.
+
+## W: the wide rectangle — the missing half of the region transfer (2026-08-09)
+
+### Why the narrow strip cannot give Littlewood, and what does
+
+Landau's lemma turns a growth bound `Φ` on a disc of radius `R` into a remainder `16 log Φ / R`, so
+the de la Vallée Poussin inequality reads
+
+```text
+4/(1 + δ − β)  ≤  3/δ + 3A + (64 log M + 16 log M₂)/R ,
+```
+
+and the zero-free width is `≍ 1/(remainder)`.  With the corpus's radius `R = 1/4` and the crude
+growth `ζ ≪ t` the remainder is `≍ log t`: that is `exists_zero_free_region`, `κ = 1`, and no
+sharpening of the *line* bound `ζ(1+it) ≪ log t/log log t` can touch it, because that bound is
+invisible to a disc of radius `1/4`.
+
+The remainder is small exactly when the strip on which `ζ` is polylogarithmic is *wide*.  Writing
+`L = log(t/2π)` and taking the radius `R ≍ η` equal to the strip half-width:
+
+| strip half-width `η` | growth `Φ` on it | remainder `≍ log Φ/η` | region width |
+|-|-|-|-|
+| `1/(6·2^(littlewoodOrder t)) ≍ 1/L` | `O(L)` | `L·log L` | worse than DLVP |
+| `≍ (log L)²/L` | `L^{O(1)}` | `L/log L` | **`log log t/log t`** |
+
+So the order must be chosen *smaller* than `littlewoodOrder t` — the opposite trade to the one that
+optimises the estimate on the line.  The largeness condition of
+`norm_dirichlet_sigma_littlewood_capstone` is only `largenessBound K ≈ K² log K < L`, so any
+`K ≍ log₂ L` is admissible and the choice is free.
+
+### W1 built — `RHTower/Sieve/DirichletWideOrder.lean`
+
+`wideOrder t` is the greatest `K` with `30·2^K·(log L)² ≤ L`, and `wideEta t = 1/(6·2^(wideOrder t))`.
+
+- `ten_le_wideOrder`, `wideOrder_spec` — admissibility, from `(log x)² ≤ 16√x` (two applications of
+  `log x ≤ 2√x`);
+- `two_pow_wideOrder_le_scale` — `2^K ≤ L/30`;
+- `lt_two_pow_wideOrder_succ` — the next order already fails, so `2^K > L/(60(log L)²)`;
+- `wideEta_ge`, `wideEta_le` — the half-width is pinned: `5(log L)²/L ≤ wideEta t ≤ 10(log L)²/L`;
+- `cube_lt_two_pow` (`K³ < 2^K` for `K ≥ 10`) and `largenessBound_wideOrder_lt` — the wide order
+  clears the largeness condition, so the rectangle capstone applies at it.
+
+All under the single hypothesis `10¹² ≤ wideScale t`.  Axiom-clean.
+
+### W2 built — `RHTower/Sieve/DirichletWideRectangle.lean`
+
+The point that makes the wide strip usable is that the order is *still* `≍ log₂ L`:
+
+- `sixty_log_sq_le_sqrt` — `60(log x)² ≤ √x` for `x ≥ 10¹⁵`, from the sharper `(log x)² ≤ 64x^{1/4}`;
+- `sqrt_wideScale_le_two_pow` — hence `√L ≤ 2^(wideOrder t)`;
+- `log_wideScale_le_two_mul_wideOrder` — hence `log L ≤ 2K log 2`, i.e. `K ≳ log₂√L`.
+
+That converts the `(log L)²` of the width into a single `log L` in the trade-off exponent:
+
+- `denom_ge` — `(K − 4/3) log 2 ≥ 0.45 log L`;
+- `splitExponent_wide_le`, `splitExponent_wide_mul_le` — `S ≤ L/(0.45 log L) + 1`;
+- **`stripTheta_wide_le`** — `θ = S/(6·2^K) ≤ 23 log L`;
+- **`norm_dirichlet_wide_le`** —
+
+  ```text
+  0 < σ < 1,  16π ≤ t,  10¹⁵ ≤ L,  1 − σ ≤ wideEta t
+    ⟹  ‖∑_{n < 2^(topExponent t + 1)} n^(−σ−it)‖  ≤  L^18 .
+  ```
+
+  Head: `2^θ ≤ exp(23 log 2 · log L) ≤ L^16` and `S log 2 ≤ L`.  Tail: `2^(−θ) ≤ 1` and
+  `topExponent t + 1 ≤ 5L`, so `2560(T+1−S)·2^(−θ) ≤ 12800 L`.
+
+Axiom-clean.  `log Φ = 18 log log(t/2π)` on a strip of width `≍ (log log t)²/log t` — the two
+inputs the region transfer needs.
+
+### Remaining W-units
+
+- **W3** — `ζ` itself on the wide rectangle: `norm_riemannZeta_le_partialSum` on the `σ < 1` branch,
+  and, for `Re w ≥ 1`, the elementary `∑_{k≤N} k^{−Re w} ≤ 1 + log N` (the disc of the Landau step
+  crosses the abscissa).
+- **W4** — the narrow-radius Landau input: `zeta_landau_at` with `R = wideEta γ`, `R₀ = wideEta γ + δ`
+  and `M = Φ/‖ζ(c)‖`, `c = (1+δ) + iγ`.  The lower bound `log(1/‖ζ(c)‖) ≤ ¾log(1/δ) + ¼log Φ`
+  is the corpus's `neg_log_norm_riemannZeta_le` with the crude bound at `σ+2iγ` replaced by `Φ`.
+- **W5** — the Littlewood inequality: the same three-four-one assembly as `dlvp_inequality`, with
+  `(64 log M + 16 log M₂)/wideEta γ` in place of `320(…log|γ|)`.
+- **W6** — the choice `δ = a·log L/L` and the contradiction, giving
+  `ζ(β + iγ) ≠ 0` for `1 − β ≤ c·log log|γ|/log|γ|`.
+
+Parameter check for W5/W6 (asymptotic, constants to be fixed in Lean): with
+`η = b(log L)²/L`, `log Φ = A log L`, `A = 0.693b + 1`, `log M ≤ (1.25A + 0.75) log L =: B log L`,
+`δ = a log L/L`, the inequality closes iff `b(1 − 69.3a) > 160a`, which holds for every `b ≥ 5`
+once `a ≤ 10⁻³`; the resulting width is `a·(b(1−69.3a) − 160a)/(3b + 69.3ab + 160a)·log L/L > 0`.
+The built `wideEta` has `b ∈ [5, 10]`.
+
+### W2 restated with the order as a parameter, W3 built (2026-08-09)
+
+`norm_dirichlet_wide_rect` now takes the order as an argument, constrained only by
+
+```text
+10 ≤ K,    L < 120·2^K·(log L)²,    100·2^K ≤ L,    1 − σ ≤ 1/(6·2^K),
+```
+
+and returns `‖∑_{n < 2^(topExponent t + 1)} n^(−σ−it)‖ ≤ L^34`.  This is what lets one *fixed*
+order serve a whole disc of heights: the Landau step needs a bound uniform over
+`|Im w − γ| < R₀`, and `wideOrder` itself is a step function of the height.
+`norm_dirichlet_wide_le` is the instance at `K = wideOrder t`.
+
+`RHTower/Sieve/ZetaWideRectangle.lean` passes to `ζ`:
+
+- `sum_Icc_cpow_eq_sum_Ico_sigma` — the index bridge at a general abscissa;
+- `log_lineTruncation_le` — `log(lineTruncation t) ≤ 3L + 1`;
+- `norm_riemannZeta_ge_one_le` — right of the abscissa no derivative test is needed:
+  `‖ζ(w)‖ ≤ 2 + log N + ‖w‖/N` for `Re w ≥ 1`, `|Im w| ≥ 1`, from
+  `∑_{k≤N} k^{−Re w} ≤ ∑_{k≤N} 1/k ≤ 1 + log N`;
+- **`norm_riemannZeta_wide_le`** — the two sides combined:
+
+  ```text
+  1 − 1/(6·2^K) ≤ Re w ≤ 2,  16π ≤ Im w,  10¹⁶ ≤ L,  10 ≤ K,  (the two K-bounds)
+    ⟹  ‖ζ(w)‖ ≤ L^34 + 5,     L = wideScale (Im w).
+  ```
+
+  The truncation tails are `O(1)` because the cutoff is `≍ (Im w)³`: the first is
+  `N^{1−Re w}/‖w−1‖ ≤ 1` (the exponent `(1−Re w)·log N ≤ 80(log L)² ≤ L ≤ log(Im w)`), the second
+  `‖w‖·N^{−Re w}/Re w ≤ 4` via `N^{−Re w} ≤ N^{−1/2}` and `(Im w + 2)² ≤ 4N`.
+
+Axiom-clean; the `RHTower` umbrella builds.
+
+### W4/W5 built — the region transfer at a general radius (2026-08-09)
+
+`RHTower/Sieve/ZetaLandauGeneral.lean`:
+
+- **`zeta_landau_of_bound`** — Landau's lemma for `ζ` stated against a *pair* `(R, Φ)`: a growth
+  bound `Φ` on `ball c R₀` with `R < R₀` and `1 ≤ Re c` gives, for every subfamily `S` of the zeros
+  within `R/2` of `c`,
+
+  ```text
+  −Re ζ'/ζ (c)  ≤  16 log(Φ/‖ζ(c)‖)/R  −  ∑_{ρ ∈ S} m_ρ Re (c − ρ)⁻¹ .
+  ```
+
+  `zeta_landau_at` is the instance `R = 1/4`, `Φ = 7 + 2|γ|`, whose `log Φ ≍ log|γ|` is exactly what
+  caps the classical region at `1/log|γ|`.
+
+`RHTower/Sieve/ZetaWideDLVP.lean`:
+
+- `neg_log_norm_riemannZeta_le_of` — the three-four-one lower bound with a general bound at the
+  doubled height: `−log‖ζ(σ+it)‖ ≤ ¾log(1+1/(σ−1)) + ¼log Φ + 22/4`;
+- **`dlvp_inequality_of_bound`** — the de la Vallée Poussin inequality at a general radius:
+
+  ```text
+  4/(1+δ−β)  ≤  3/δ + 3A + (80/R)·(5/4 log Φ + 3/4 log(1+1/δ) + 6)
+  ```
+
+  for a zero `β+iγ` with `1+δ−β ≤ R/2`, given `Φ` on the discs of radius `R₀ ∈ (R, 1]` at heights
+  `γ` and `2γ` and at the single point `(1+δ) + 4γi`.  The classical statement is the instance
+  `R = 1/4`, `Φ ≍ |γ|`; the wide instance has `R ≍ (log L)²/L` and `log Φ ≍ log L`, whose ratio is
+  `L/log L`.
+
+Axiom-clean; the modules are wired into `RHTower.lean` and build without warnings.
+
+**Lean trap worth keeping.** `linarith` silently drops hypotheses containing a division by a
+*variable*: `3/δ`, `1/(σ−β)`, `16X/R` are not polynomial atoms, and a system that is otherwise
+trivially linear fails. Generalise every such quotient with `set … with …; clear_value` (and
+rewrite `3/δ` to `3*(1/δ)` first so the `set` folds it) before calling `linarith only`.
+
+### Remaining: W6
+
+Instantiate `dlvp_inequality_of_bound` with `R = wideEta γ`, `Φ = (wideScale (γ+1))^34 + 6` from
+`norm_riemannZeta_wide_le`, and `δ = a·log L/L`, then contradict for `1 − β ≤ c·log L/L`.  The only
+new bookkeeping is the comparison of `wideScale` at the three heights `γ`, `2γ`, `4γ` and over the
+disc `|Im w − γ| < R₀`, for which the fixed-order form `norm_dirichlet_wide_rect` was built.
+
+### W6a built — one order for a band of heights
+
+`RHTower/Sieve/ZetaWideBand.lean`.  The three-four-one argument evaluates `ζ` at heights `γ`, `2γ`
+and `4γ`, and Landau's lemma needs a disc, so the growth bound must hold on the band
+`γ − 1 ≤ Im w ≤ 5γ` at the *single* order `wideOrder γ`.
+
+- `wideScale_mono`, `wideScale_sub_one_ge` (`wideScale γ − 1 ≤ wideScale (γ−1)`, from
+  `γ/(4π) ≤ (γ−1)/(2π)` for `γ ≥ 2`), `wideScale_five_le` (`wideScale (5γ) ≤ wideScale γ + 3`);
+- **`norm_riemannZeta_wide_band`** — for `γ ≥ 16π + 1` and `wideScale γ ≥ 10¹⁶ + 1`,
+
+  ```text
+  1 − 1/(6·2^(wideOrder γ)) ≤ Re w ≤ 2,   γ − 1 ≤ Im w ≤ 5γ
+    ⟹  ‖ζ(w)‖ ≤ (wideScale γ + 3)^34 + 5 .
+  ```
+
+  Both hypotheses on `2^(wideOrder γ)` survive the height change: `100·2^K ≤ L/288` uses the factor
+  `(log L)² ≥ 961` of `wideOrder_spec`, and `L < 60·2^K(log L)²` upgrades to
+  `L + 3 < 120·2^K(log(L−1))²` through `log(L−1) ≥ log L − 1` and `(x−1)² ≥ (900/961)x²` at
+  `x ≥ 31`.
+
+**Left for W6b:** instantiate `dlvp_inequality_of_bound` with `R = wideEta γ/2`, `R₀ = wideEta γ`,
+`Φ = (wideScale γ + 3)^34 + 6`, `δ = log L/(4000 L)`, discharge the pole constant `A` as in
+`exists_zero_free_region_explicit`, and contradict for `1 − β ≤ log L/(32000 L)`.
+
+## W6 closed — Littlewood's zero-free region is a theorem (2026-08-10)
+
+`RHTower/Sieve/ZetaLittlewoodRegion.lean` and `RHTower/Sieve/ZetaLittlewoodRegionAbs.lean`.
+
+```text
+exists_littlewood_zero_free_region_abs :
+  ∃ c T, 0 < c ∧ 3 ≤ T ∧ ∀ β γ,
+    T ≤ |γ| → β ≤ 1 → 1 − c·log log|γ| / log|γ| < β → ζ(β + iγ) ≠ 0
+```
+
+Unconditional; axioms `[propext, Classical.choice, Quot.sound]`; the `RHTower` umbrella builds.
+
+**Parameters.**  With `L = wideScale γ`, `x = log L`:
+
+| object | value | size |
+|-|-|-|
+| Landau radius `R` | `wideEta γ / 2` | `≍ x²/L` |
+| growth bound `Φ` | `(L+3)^34 + 6` | `log Φ ≤ 34x + 35` |
+| offset `δ` | `x/(4000 L)` | `3/δ = 12000 L/x` |
+| remainder `(80/R)·X` | `X ≤ 46x`, `80/R ≤ 32L/x²` | `≤ 1472 L/x` |
+| left side at `1−β < x/(32000L)` | `4/(1+δ−β)` | `> 128000 L/(9x) = 14222 L/x` |
+
+`14222 > 12000 + 1472`, and the surplus `750 L/x` absorbs the additive pole constant `3A` once
+`L ≥ (A+1)·x`, which the threshold `L ≥ max(10¹⁶+1, 4(A+1)²)` enforces through `x ≤ 2√L`.
+
+**Supporting steps.**  `wide_disc_growth` (band bound in the form the discs consume);
+`hball` (one lemma serving the discs at heights `γ` and `2γ` and the point `4γ`, since all three sit
+in `[γ, 4γ]` and the disc radius is `≤ 1/1000`); `riemannZeta_ne_zero_neg_im` (mathlib's
+`riemannZeta_conj` gives the negative heights); the passage `wideScale γ ⟶ log|γ|` costs a factor
+two, `wideScale γ ≥ (log γ)/2` and `log (wideScale γ) ≥ (log log γ)/2` for `log γ ≥ 100`.
+
+### Status of the programme
+
+| step | state |
+|---|---|
+| Z1–Z9 derivative test, line and rectangle bounds, order from `t` | done |
+| W1–W3 wide order, wide rectangle, `ζ` on the wide strip and band | done |
+| W4–W5 Landau and de la Vallée Poussin at a general radius | done |
+| W6 the region itself, `c·log log|γ|/log|γ|` | **done** |
+
+The card's terminal analytic requirement — *one formalized zero-free region with `κ < 1`*, tier 1
+(Littlewood) — is discharged.  `mr-splice-wide-range-mean-square.md` unit 3 recorded this as the
+single gate of both Matomäki–Radziwiłł routes; that gate is now open, and the next work there is
+unit 5 (numeric re-certification of the route-B bookkeeping at Littlewood tier) followed by the
+analytic assembly.
+
+## W7 — the wide Landau remainder as a standalone estimate (2026-08-10)
+
+`RHTower/Sieve/ZetaLandauGeneral.lean` (extended) and `RHTower/Sieve/ZetaLogDerivWide.lean`.
+
+The step of the region argument that carries all the strength is worth isolating, because it needs
+neither the three-four-one inequality nor a zero-free region — only the wide growth bound:
+
+- `neg_re_logDeriv_le_of_bound` — discarding every retained zero (each contributes a nonnegative
+  real part, being left of the centre) leaves
+  `−Re ζ'/ζ(c) ≤ 16 log(Φ/‖ζ(c)‖)/R`;
+- `wide_ball_growth` — the growth bound on the disc of radius `wideEta γ` about `(1+δ) + ih`,
+  for any height `h ∈ [γ, 4γ]`;
+- **`neg_re_logDeriv_le_wide`** —
+  `−Re ζ'/ζ((1+δ) + iγ) ≤ (32/wideEta γ)·(5/4 log Φ + 3/4 log(1+1/δ) + 6)`,
+  `Φ = (wideScale γ + 3)^34 + 6`;
+- **`neg_re_logDeriv_le_wide_rate`** — at `δ = 1/L`, `L = wideScale γ`:
+
+  ```text
+  −Re ζ'/ζ(1 + 1/L + iγ)  ≤  288 · L / log L .
+  ```
+
+The classical estimate on a disc of radius `≍ 1` is `≍ L`: the factor `1/log L` is the same gain
+that produces the Littlewood region, here in the form every explicit-formula and contour argument
+consumes directly.  Note this is an upper bound for `−Re ζ'/ζ` only; `Re ζ'/ζ` itself is still
+`≍ L·log L` in size near a cluster of zeros, so the zero-counting estimate is untouched.
+
+All axiom-clean and warning-free.
+
+## W8 — the region from height nine (2026-08-10)
+
+`RHTower/Sieve/ZetaLittlewoodRegionNine.lean`.  The parameter accounting forces the threshold of
+`exists_littlewood_zero_free_region_abs` to be astronomical, which makes the statement unusable to
+any consumer that needs all heights.  The fix is the one `ZeroFreeRegionFromNine` uses for the
+exponent-one region: on a bounded range of heights the corpus's explicit exponent-nine region
+already contains a small enough multiple of the Littlewood strip, since
+
+```text
+c·log log|t| / log|t|  ≤  c₉ / log⁹|t|      whenever  c ≤ c₉/(log⁸T_b · log log T_b) .
+```
+
+- `littlewood_of_kappa_nine` — that comparison, for `9 ≤ |t| ≤ T_b`;
+- **`exists_littlewood_zero_free_region_from_nine`** —
+
+  ```text
+  ∃ c > 0, ∀ β t, 9 ≤ |t| → β ≤ 1 → 1 − c·log log|t|/log|t| < β → ζ(β + it) ≠ 0 .
+  ```
+
+The constant is very small — it is `c₉/(log⁸T · log log T)` with `T` the asymptotic threshold — but
+the shape and the range of validity are what a consumer needs.  Axiom-clean; the `RHTower` umbrella
+builds.
+
+## W9 — `ζ'/ζ` inside the Littlewood region (2026-08-10)
+
+`RHTower/Sieve/ZetaLogDerivLittlewoodBound.lean`.  The corpus's
+`exists_logDeriv_zeta_bound_of_region` gives `‖ζ'/ζ(σ+iγ)‖ ≤ C log²|γ|` on a strip of width
+`≍ 1/log|γ|`.  The square is a product of two logarithms — the number of zeros near the centre
+(`≪ log|γ|`, from `exists_wide_zero_count`) and the reciprocal distance to each of them
+(`≪ log|γ|`, *because the region is `1/log|γ|` wide*).  Only the second factor sees the region, so
+widening it to `c·log log|γ|/log|γ|` improves the bound by exactly `log log|γ|`:
+
+- `littlewoodWidth`, `exp_two_le_sixteen`, `two_le_logLog_abs`;
+- `wide_zero_re_le_littlewood` — every zero of the wide disc has
+  `Re ρ ≤ 1 − littlewoodWidth c γ / 4`, the factor `4` coming from
+  `log|ρ.im| ≤ 2 log|γ|` and `log log|ρ.im| ≥ (log log|γ|)/2` on `|γ| ≥ exp 16`;
+- `exists_logDeriv_zeta_bound_of_littlewood` — for any region of that shape with `c ≤ 1/10`,
+
+  ```text
+  ‖ζ'/ζ(σ + iγ)‖ ≤ C · log²|γ| / log log|γ|    on   1 − littlewoodWidth c γ/8 ≤ σ ≤ 9/8 ;
+  ```
+
+- **`exists_logDeriv_zeta_bound_littlewood`** — the instantiation at
+  `exists_littlewood_zero_free_region_abs`, with the region constant shrunk to `min c₀ (1/10)`.
+
+The Landau remainder and the zero count are reused verbatim; the only changed step is the distance
+to a retained zero, `≍ 1/log|γ| ⟶ ≍ log log|γ|/log|γ|`.  This is the estimate the contour layer
+consumes, so it is where the region's gain becomes an error-term gain.  Axiom-clean, no warnings.
+
+## W10 — the exponent-one region with an arbitrary constant (2026-08-10)
+
+`RHTower/Sieve/ZetaLittlewoodArbitraryConstant.lean`.  The practical limitation of
+`exists_zero_free_region` is that it produces *one* constant: an argument needing `1 − A/log|t|`
+zero-free for a prescribed `A` cannot use it, and the corpus's explicit value is `1/10000`.
+
+A Littlewood-width region has no such limit, because `A/log|t| ≤ c·log log|t|/log|t|` as soon as
+`A ≤ c·log log|t|`:
+
+- **`exists_zero_free_region_arbitrary_constant`** — for **every real** `A` there is a threshold `T`
+  with `ζ(β + it) ≠ 0` whenever `T ≤ |t|`, `β ≤ 1`, `1 − A/log|t| < β`;
+- **`exists_logDeriv_zeta_bound_arbitrary_constant`** — likewise
+  `‖ζ'/ζ(σ+iγ)‖ ≤ C log²|γ|/log log|γ|` on the strip `1 − A/log|γ| ≤ σ ≤ 9/8`, for every `A`.
+
+No positivity hypothesis on `A` is needed (for `A ≤ 0` the strip is contained in `Re s ≥ 1`).  This
+is the shape in which Littlewood strength is usually consumed: not as a sharper width, but as
+"the exponent-one constant may be taken as large as the argument requires".
+
+Axiom-clean, wired, no warnings.
+
+## W11 — the contour input at Littlewood strength (2026-08-10)
+
+`RHTower/Sieve/ZetaLogDerivRegLittlewood.lean`.  The contour layer consumes
+`exists_bound_zetaLogDerivReg_uniform`: `‖zetaLogDerivReg s‖ ≤ C log²K` on
+`1 − 1/40000/log K ≤ Re s ≤ 9/8`, `|Im s| ≤ K`.  Both the width constant `1/40000` and the exponent
+`2` come from the exponent-one region.  Replacing it by the Littlewood region improves both:
+
+- `sq_div_log_mono` — `x ↦ x²/log x` is increasing past `e`, proved from `log(y/x) ≤ y/x − 1` and
+  `(y² − x²)(1 − log x) ≤ 0`.  This is what transfers the bound from the height `|Im s|` of the
+  point to the contour parameter `K`; the exponent-one argument needed only `x ↦ x²`;
+- `exists_zeta_uniform_arbitrary_zero_free` — the strip `1 − A/log K` is zero-free uniformly up to
+  height `K`, for **every** `A` (region at constant `2A`, compact box below its threshold);
+- **`exists_bound_zetaLogDerivReg_uniform_littlewood`** — for every `A`,
+
+  ```text
+  ‖zetaLogDerivReg s‖  ≤  C · log²K / log log K    on  1 − A/log K ≤ Re s ≤ 9/8,  |Im s| ≤ K .
+  ```
+
+Wider strip (any constant) and a smaller bound (by `log log K`).  Axiom-clean, no warnings.
+
+## W12 — the Chebyshev contour data at Littlewood strength (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodData.lean`.  The κ = 1 Chebyshev chain
+(`ChebyshevKappaOneData → … → ChebyshevKappaOneRate`) produces the classical
+`exp(−√(log N)/480000)` saving.  Its first module supplies the five hypotheses of the contour bound
+at the fixed rectangle `1 − (1/40000)/log T ≤ Re s ≤ 1 + 1/log T`, with the single bound
+`Cr log²T`.  Both the width constant and the exponent are inherited from the exponent-one region.
+
+`exists_cheb_littlewood_data A hA` is the same five hypotheses at
+
+```text
+chebLeftLw A T = 1 − A/log T ,   chebRightTwo T = 1 + 1/log T ,
+‖zetaLogDerivReg‖ ≤ Cr · log²T / log log T
+```
+
+for **every** `A > 0`, with helpers `chebLeftLw_lt_one`, `half_le_chebLeftLw`,
+`zero_lt_chebLeftLw`, `chebLeftLw_le_chebRightTwo` (the last three needing `2A ≤ log T`, which the
+threshold `L₀ = max (max 8 (2A)) (max L₁ L₂)` supplies).
+
+**What it buys, and what remains.**  In the κ = 1 balance the saving exponent is
+`√(A · log N)` with `A` pinned at `1/40000`; here `A` is free, and since the region tolerates
+`A ≍ log log t`, the balance gives `exp(−c√(log N · log log N))` — Littlewood's prime number
+theorem.  Realising it means re-running the remaining seven modules of the chain
+(`Coeff → Contour → Terms → Shape → Shaped → Threshold → Rate`) against this data; each is
+parameter bookkeeping over the same integrand, with `A` and the extra `log log T` carried through.
+That is the next block of work.
+
+Axiom-clean, wired, no warnings.
+
+## W13 — the contour bound at width `A/log T` (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodContour.lean`.  The second module of the chain:
+`exists_norm_tsum_vonMangoldt_littlewood_general A hA` is
+`exists_norm_tsum_vonMangoldt_kappa_one_general` with the rectangle `1 − A/log T ≤ Re s ≤ 1 + 1/log T`
+and every edge bound `Cr·log²T/log log T`.  It is a direct instantiation of
+`norm_tsum_vonMangoldt_sub_full_main_le_explicit` at the Littlewood data, so the five-term shape is
+unchanged; what changes is that the left edge is of size `(N+H)^{1−A/log T}` for arbitrary `A`,
+retaining the saving `exp(−A·log(N+H)/log T)` where the exponent-one contour retains only
+`exp(−log(N+H)/(40000 log T))`.
+
+Remaining in the chain: `Coeff → Terms → Shape → Shaped → Threshold → Rate`, carrying `A` and the
+extra `log log T` through the parameter balance.  The balance itself changes only in that the
+height may be taken `T = exp(√(A log N))`, giving `exp(−√(A log N))` and, at `A ≍ log log N`,
+Littlewood's `exp(−c√(log N · log log N))`.
+
+## W14 — the shape of the width-`A/log T` rectangle (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodShape.lean`.  The three quantities the collapse steps consume, at
+the left abscissa `1 − A/log T`:
+
+- `chebRightTwo_sub_chebLeftLw` / `_le` — the width is exactly `(1 + A)/log T`;
+- `chebRightTwo_sub_chebLeftLw_pos`;
+- **`one_sub_chebLeftLw_inv`** — the reciprocal distance of the left edge from the abscissa is
+  `log T / A`, needing no hypothesis at all.
+
+Where the exponent-one rectangle has width `(1 + 1/40000)/log T` and reciprocal distance
+`40000 log T`, this one has width `(1 + A)/log T` and reciprocal distance `log T/A`.  The two move
+in opposite directions in `A`: a deeper shift widens the rectangle but *shrinks* the pole
+coefficient.  That opposition is the whole content of the final balance, and it exists only because
+`A` is free — at a fixed `A` there is nothing to optimise.
+
+`tsum_vonMangoldt_chebRightTwo_le` is unchanged: it depends only on the right abscissa.
+
+### What is left of the chain
+
+`ChebyshevKappaOneTerms`, `…Coeff`, `…Shaped` are generic in abstract reals and apply verbatim.
+What remains is the `Rate` assembly, which is specialised to the exponent-one balance through
+`chebHeightOne`, `chebWidthOne`, `chebFactorOne`, `rpow_chebLeftTwo_at_le`,
+`rpow_chebLeftTwo_at_shift`, `sq_log_chebHeightOne`, `width_price_le`,
+`one_add_width_mul_factor_le`, `cheb_final_collapse` and
+`eventually_cheb_kappa_one_conditions` — each tuned to `A = 1/40000` and to the height
+`exp(√(log Z)/2)`.  Re-deriving that family with `A` free (and the extra `log log T`) is the next
+block; the balance it must reproduce is `T = exp(√(A log N))`, saving `exp(−√(A log N))`, and at
+`A ≍ log log N` Littlewood's `exp(−c√(log N · log log N))`.
+
+## W15 — the balanced height for a shift of depth `A` (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodHeight.lean`.  The exponent-one chain fixes the truncation height
+at `chebHeightOne x = exp(2√(log x))`, the balance point for a shift of `1/40000/log T`.  With the
+shift `A/log T` free the balance moves, and the height must be
+
+```text
+chebHeightLw A x = exp(2√(A log x)) .
+```
+
+- `chebHeightLw_pos`, `one_le_chebHeightLw`, `log_chebHeightLw`, `four_le_sqrt_mul_log`,
+  `eight_le_log_chebHeightLw`, `sq_log_chebHeightLw` (`= 4A log x`);
+- `two_mul_le_log_chebHeightLw` — the height clears the depth condition `2A ≤ log T` of the
+  width-`A/log T` data, as soon as `A ≤ log x`;
+- **`saving_exponent_lw`** — `A/log(chebHeightLw A x) · log x = √(A log x)/2`: depth `A` saves
+  `√(A log x)/2`;
+- `right_exponent_lw` — `1/log(chebHeightLw A x) · log x = √(A log x)/(2A)`.
+
+The exponent-one chain's `√(log x)/80000` is this at `A = 1/40000` *without* re-optimising the
+height; re-optimised it is `√(log x)/400`.  The reason for carrying `A` is that the saving grows
+like `√A`, so `A ≍ log log x` — which the Littlewood region permits — gives
+`exp(−c√(log x · log log x))`.
+
+Remaining: the powers-at-height family (`chebFactorLw` and the three edge powers), the collapse,
+and the `Rate` assembly.
+
+## W16 — the three edge powers at depth `A` (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodPowers.lean`.  The three trivial sizes the contour bound carries,
+at the rectangle `1 − A/log T ≤ Re s ≤ 1 + 1/log T` and the height `chebHeightLw A x`, all measured
+against the common factor
+
+```text
+chebFactorLw A Z = 3·exp(−√(A log Z)/2) ,
+```
+
+whose exponent is the saving of `saving_exponent_lw`:
+
+- `rpow_chebLeftLw`, `rpow_chebLeftLw_at` — the left-edge power splits as
+  `x·exp(−√(A log x)/2)`;
+- `rpow_chebLeftLw_at_le`;
+- `rpow_chebLeftLw_at_shift` — the shift from `Z = Y+1` to `Y` costs the constant `3`, not half the
+  exponent; the coefficient `A/(2√(A log(Y+1))) ≤ 1/2` is what makes the correction `≤ 1`, and it
+  needs `A ≤ log(Y+1)`;
+- `rpow_chebRightTwo_at_lw_le` — the right-edge power fits under the same factor times the height,
+  because `1/(2A) ≤ 3/2`.
+
+**Depth `A ≥ 1` is the standing hypothesis of the last one**, and it is not an artefact: at small
+`A` the balanced height `exp(2√(A log Z))` is too short for the right edge to fit under
+`Z·factor·T`.  It is also exactly the regime the Littlewood region exists to reach — the
+exponent-one region cannot supply `A ≥ 1` at all, since its constant is `1/40000`.
+
+Remaining: the collapse (`cheb_final_collapse` analogue), the width/threshold data
+(`chebWidthOne`, `eventually_cheb_kappa_one_conditions`), and the `Rate` assembly.
+
+## W17 — the final collapse at a general saving rate (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodCollapse.lean`.  `cheb_final_collapse` absorbs the factor
+`log Z = s²` into the saving `exp(−s/240000)`, leaving `exp(−s/480000)` and the constant
+`4·480000²`.  Both numbers are the exponent-one rate in disguise:
+
+- **`sq_mul_exp_neg_le_gen`** — `s²·exp(−rs) ≤ 4/r²` for every `r > 0`, `s ≥ 0`, from
+  `e^{rs} = (e^{rs/2})² ≥ (1 + rs/2)² ≥ (rs)²/4`;
+- **`cheb_final_collapse_lw`** — a saving `exp(−2rs)` absorbs `s²` at the cost of `4/r²`, leaving
+  `exp(−rs)`.  `cheb_final_collapse` is the case `r = 1/480000`, where `4/r² = 4·480000²` exactly.
+
+At depth `A` the rate is `r = √A/4`, so the constant is `64/A` and the surviving saving is
+`exp(−√(A log Z)/4)`.  The rate *improves* with depth while the constant *shrinks* — the opposite
+of the usual trade, and the reason the depth is worth carrying.
+
+Remaining for the `Rate` assembly: the width/threshold data (`chebWidthOne`,
+`eventually_cheb_kappa_one_conditions`, `width_price_le`, `one_add_width_mul_factor_le`) at depth
+`A`, and then the assembly itself.
+
+## W18 — the smoothing width at depth `A` (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodWidth.lean`.  The smoothing ratio has to be balanced against the
+saving: its *square* is the price of the smoothing, and the collapse leaves a third of the edge
+factor's exponent, so the square may be at most `exp(√A·√(log N)/6)`.  Hence
+
+```text
+chebRatioLw A N = exp(√A·√(log N)/12) ,    chebWidthLw A N = N / chebRatioLw A N .
+```
+
+- `chebRatioLw_pos`, `one_le_chebRatioLw`, `chebWidthLw_le`, `chebWidthLw_nonneg`,
+  `div_chebWidthLw`, `chebWidthLw_eq`, `one_le_chebWidthLw` (needs `A ≤ log N`),
+  `sq_chebRatioLw_le`;
+- `width_price_le_gen` — `width_price_le` with the ratio bound abstracted, so any exponent may be
+  substituted;
+- **`one_add_width_mul_factor_le_lw`** —
+  `(1 + 9Cm·exp(√A√(log N)/6))·chebFactorLw A Z ≤ (3 + 27Cm)·exp(−√A√(log Z)/6)`, the collapse
+  hypothesis at depth `A`.  It holds because `√(log N) ≤ 2√(log Z)`, which is where the factor
+  three between the edge exponent and the surviving exponent is spent.
+
+Note `√(A log Z) = √A·√(log Z)` (`Real.sqrt_mul`) is what lets the depth factor out of the square
+root throughout; the exponent-one modules never need it because `A` is a numeral.
+
+Remaining: `eventually_cheb_littlewood_conditions` and the `Rate` assembly.
+
+## W19 — the eventual thresholds at depth `A` (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodThreshold.lean`.  `eventually_cheb_littlewood_conditions A L₀ hA`
+packages the six conditions the depth-`A` assembly needs, all holding for every large `N`:
+
+```text
+0 < N ,  1 ≤ chebWidthLw A N ≤ N ,
+16 ≤ A·log Z ,  A ≤ log Z ,  L₀ ≤ log (chebHeightLw A Z) ,     Z = N + chebWidthLw A N + 1 .
+```
+
+The filter is `log N ≥ max(max 16 A) (max (16/A) ((L₀/2)²/A))`.  The structural difference from
+`eventually_cheb_kappa_one_conditions` is that the conditions are on `A·log N`, not on `log N`:
+the threshold grows with the depth.  That is exactly why a depth chosen as a function of `N` is a
+real constraint — `A ≍ log log N` is admissible because `(log log N)²/A ≍ log log N ≪ log N`, but
+`A ≍ log N` would not be.
+
+Axiom-clean, wired, no warnings.
+
+Chain status: `Data → Contour → Shape → Height → Powers → Collapse → Width → Threshold` all built
+at depth `A`.  Only the `Rate` assembly remains, which is the single `filter_upwards` that feeds
+these into `cheb_kappa_one_terms_shaped` and `cheb_kappa_one_coeff_le` (both generic in abstract
+reals, so they apply verbatim) and closes with `cheb_final_collapse_lw` at `r = √A/12`.
+
+## W20 — the shape's coefficient at depth `A` (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodCoeff.lean`.  `cheb_kappa_one_coeff_le` looked generic in
+abstract reals but is not: it hard-codes the two shape quantities of the exponent-one rectangle,
+`hci : ci = 40000·Lg` and `hwd : wd ≤ 2/Lg`.  At depth `A` they are
+
+```text
+ci = Lg / A ,        wd ≤ (1 + A) / Lg ,
+```
+
+so the pole coefficient *shrinks* with the depth while the width grows.  `cheb_littlewood_coeff_le`
+is the same conclusion under those two, with the extra hypotheses `1 ≤ A` and `8A ≤ Lg`:
+
+- `ci ≤ Lg` needs only `A ≥ 1`;
+- `wd ≤ 1/4` — the bound the corpus proof leans on in three of its five summands — needs
+  `8A ≤ Lg`, i.e. `8A ≤ 2√(A log Z)`, i.e. `A ≤ log Z/16`.
+
+The conclusion is the same `250000(1 + Cr)(1 + Wb)Lg²`, with a great deal of room: that constant is
+set by `ci = 40000 Lg`, and the depth-`A` rectangle has `ci ≤ Lg`.
+
+**A correction to W19's summary.**  `Coeff` was listed there as "generic in abstract reals, applies
+verbatim".  It does not — the two hard-coded shape equations had to be replaced.  `Terms` and
+`Shaped` are genuinely generic; only `Coeff` was mis-classified.  The condition `A ≤ log Z/16` this
+exposed is a new constraint on the depth, to be added to the threshold before the assembly.
+
+## W21 — the depth condition folded into the threshold (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodThreshold.lean` (revised).  The constraint W20 exposed is now
+carried by the threshold:
+
+- `eventually_cheb_littlewood_conditions` yields `16A ≤ log Z` in place of the weaker `A ≤ log Z`
+  (filter `log N ≥ max (max 16 (16A)) (max (16/A) ((L₀/2)²/A))`);
+- **`eight_mul_le_log_chebHeightLw`** — `16A ≤ log Z` is exactly `8A ≤ log(chebHeightLw A Z)`,
+  because `log T = 2√(A log Z)` and `8A ≤ 2√(A log Z) ⟺ 16A ≤ log Z`.
+
+So the coefficient lemma's hypothesis is a *threshold* condition, not an extra assumption on the
+assembly, and it costs nothing asymptotically: `A ≍ log log N` needs `log N ≳ 16 log log N`.
+
+Every prerequisite of the `Rate` assembly is now in place:
+
+| ingredient | source |
+|-|-|
+| five contour hypotheses | `exists_cheb_littlewood_data` |
+| five-term bound | `exists_norm_tsum_vonMangoldt_littlewood_general` |
+| rectangle shape | `chebRightTwo_sub_chebLeftLw`, `one_sub_chebLeftLw_inv` |
+| height, saving | `chebHeightLw`, `saving_exponent_lw`, `sq_log_chebHeightLw` |
+| three edge powers | `rpow_chebLeftLw_at_le/_shift`, `rpow_chebRightTwo_at_lw_le` |
+| smoothing price | `chebWidthLw`, `sq_chebRatioLw_le`, `width_price_le_gen`, `one_add_width_mul_factor_le_lw` |
+| coefficient | `cheb_littlewood_coeff_le` |
+| collapse | `cheb_final_collapse_lw` at `r = √A/12` |
+| thresholds | `eventually_cheb_littlewood_conditions`, `eight_mul_le_log_chebHeightLw` |
+| generic steps | `cheb_kappa_one_terms_shaped`, `ChebyshevKappaOneTerms` (unchanged) |
+
+## W22 — the collapse with an abstract absorbed factor, and the assembly's parameters (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodCollapse.lean` (revised).  `cheb_final_collapse_lw` now absorbs an
+abstract `Q = s²` rather than `log Z = s²`.  The generalisation is forced: at depth `A` the factor
+that must be absorbed is `log²T = 4·A·log Z`, so `Q = A log Z` and `s = √(A log Z)` — the depth sits
+*inside* the square root, not outside it.
+
+### The assembly's parameters, fixed
+
+Working the exponents through pins every constant of the remaining `Rate` step:
+
+| quantity | value |
+|-|-|
+| `s` | `√(A log Z)`,  `Z = N + chebWidthLw A N + 1` |
+| `Q` | `A log Z = s²`, and `log²T = 4Q` by `sq_log_chebHeightLw` |
+| collapse rate `r` | `1/12` — **a constant, not a function of `A`** |
+| collapse hypothesis | `(1+Wb)·E ≤ (3+27Cm)exp(−s/6)`, which is `one_add_width_mul_factor_le_lw` verbatim, using `√A·√(log Z) = √(A log Z)` |
+| surviving saving | `exp(−s/12) = exp(−√(A log Z)/12)` |
+| `4/r²` | `576`, so `B = 250000(1+Cr)(3+27Cm)·2304` |
+| `M` | `Cr·log²T/log log T`, fed to `cheb_littlewood_coeff_le` with its `Cr` instantiated at `Cr/log log T ≤ Cr` |
+
+The depth does **not** appear in the rate: it appears only in `s`.  That is the cleanest statement
+of what the Littlewood region buys here — the shape of the exponent-one chain is preserved exactly,
+and `log Z` is replaced by `A log Z` throughout.  At `A ≍ log log N` the saving is
+`exp(−√(log N · log log N)/12)`.
+
+Remaining: the `filter_upwards` that threads the table above together.  Every entry is built and
+axiom-clean.
+
+## W23 — the plain-bound variants, and why (2026-08-10)
+
+`exists_cheb_littlewood_data_plain` (in `ChebyshevLittlewoodData.lean`) and
+`RHTower/Sieve/ChebyshevLittlewoodContourPlain.lean`.
+
+The `log log T` gain in the edge bound turns out to obstruct the assembly rather than help it.  The
+coefficient lemma requires `M = Cr·Lg²` exactly; with `M = Cr·Lg²/log log T` one must instantiate
+its `Cr` at the `T`-dependent `Cr/log log T` and then re-weaken, and the same `/log log T` has to be
+carried through `hlogsq` and the collapse.  Since the `log log` is a second-order gain and the
+depth `A` is the decisive one, the clean move is to drop it at the contour and keep it where it
+stands alone:
+
+- `exists_cheb_littlewood_data_plain` — the five hypotheses with `Cr·log²T`, weakened from the
+  sharp bound by `log log T ≥ 1` (valid since `log T ≥ 8 > e`);
+- `exists_norm_tsum_vonMangoldt_littlewood_plain` — the five-term bound with that edge bound.
+
+The `log log` gain survives unchanged in `exists_bound_zetaLogDerivReg_uniform_littlewood` and
+`neg_re_logDeriv_le_wide_rate`, which is where it is a statement about `ζ` rather than a step in a
+balance.
+
+With this, the assembly is a *verbatim* mirror of `ChebyshevKappaOneRate`: same five-term shape,
+same generic collapse steps, `log Z ↦ A log Z` and `s ↦ √(A log Z)` throughout.
+
+## W24 — the assembly closes: the smoothed Chebyshev sum at depth `A` (2026-08-10)
+
+`RHTower/Sieve/ChebyshevLittlewoodRate.lean`.
+
+```text
+exists_norm_tsum_vonMangoldt_littlewood_rate (A : ℝ) (hA : 1 ≤ A) :
+  ∃ B ≥ 0, ∀ᶠ N in atTop,
+    ‖2π·∑' Λ(n)·w_{N,H}(n) − (mass)·(bracket)‖
+      ≤ B · (N + H + 1) · exp(−√(A·log(N + H + 1))/12) ,     H = chebWidthLw A N ,
+```
+
+with `B = 250000(1 + Cr)(3 + 27Cm)·(4·(4/(1/12)²)) = 250000(1 + Cr)(3 + 27Cm)·2304`.
+
+Unconditional; axioms `[propext, Classical.choice, Quot.sound]`; no `sorry`; the module builds
+warning-free and is wired into `RHTower`.
+
+**The depth is a free parameter of the conclusion.**  That is the whole point: the exponent-one
+chain proves this at the single value `A = 1/40000` and cannot state it otherwise, because the
+exponent-one region supplies only one constant.  Here `A` ranges over `[1, ∞)`, and the saving
+`exp(−√(A log Z)/12)` improves with it.  Taking `A ≍ log log N` — admissible because
+`exists_zero_free_region_arbitrary_constant` gives every constant, and because the threshold only
+asks `log N ≳ 16A` — gives `exp(−√(log N · log log N)/12)`, Littlewood's prime number theorem.
+
+### The depth-`A` chain, complete
+
+| module | content |
+|-|-|
+| `ChebyshevLittlewoodData` | five contour hypotheses at `1 − A/log T`, sharp and plain forms |
+| `ChebyshevLittlewoodContour(Plain)` | the five-term bound there |
+| `ChebyshevLittlewoodShape` | width `(1+A)/log T`, pole coefficient `log T/A` |
+| `ChebyshevLittlewoodHeight` | `chebHeightLw A x = exp(2√(A log x))`, saving `√(A log x)/2` |
+| `ChebyshevLittlewoodPowers` | `chebFactorLw`, the three edge powers, `1/T ≤ factor` |
+| `ChebyshevLittlewoodCollapse` | `s²e^{−rs} ≤ 4/r²`; collapse with abstract `Q = s²` |
+| `ChebyshevLittlewoodWidth` | `chebRatioLw A N = exp(√A√(log N)/12)`, smoothing price |
+| `ChebyshevLittlewoodThreshold` | the six eventual conditions, `8A ≤ log T` |
+| `ChebyshevLittlewoodCoeff` | the shape's coefficient at `ci = log T/A`, `wd ≤ (1+A)/log T` |
+| `ChebyshevLittlewoodRate` | **the assembly** |
+
+What remains to reach `ψ(x) − x ≪ x·exp(−c√(log x log log x))` is the de-smoothing step that the
+exponent-one chain performs after `ChebyshevKappaOneRate` (passing from the smoothed sum to
+`ψ`), plus the choice `A = A(N)`; neither touches the contour.
+
+## W25 — the depth is allowed to grow with the height: Littlewood's PNT saving (2026-08-10)
+
+The depth-`A` chain of W24 is capped by construction.  Its constants `Cm, Cr, L₀` come from
+`exists_cheb_littlewood_data_plain A`, so `A` must be a *constant*: the statement is
+`∀ A, ∃ B, ∀ᶠ N`, and `A ≍ log log N` is not an instance of it.  Reading W22 as "take
+`A ≍ log log N`" was wrong — the quantifiers do not permit it.
+
+What does permit it is dropping the family and using the Littlewood region *as* the contour, with
+the depth a function of the height.  Nine new modules, all unconditional, all axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), all wired into `RHTower`:
+
+| module | content |
+|-|-|
+| `ZetaLogDerivRegLittlewoodDepth` | the two uniform statements at depth `c·log log K` |
+| `ChebyshevLlData` | `chebLeftLl c T = 1 − c·log log T/log T`; the five contour hypotheses |
+| `ChebyshevLlContour` | the five-term bound there |
+| `ChebyshevLlHeight` | `chebHeightLl c x = exp(√(c·log x·log log x))`; the fixed-point step |
+| `ChebyshevLlPowers` | `chebFactorLl`, the three edge powers, `1/T ≤ factor` |
+| `ChebyshevLlShape` | width `(1 + c·log log T)/log T`, pole coefficient `log T/(c·log log T)` |
+| `ChebyshevLlWidth` | `chebRatioLl c N = exp(chebSavingLl c N/6)`, smoothing price |
+| `ChebyshevLlThreshold` | the eight eventual conditions; the live one is `2 ≤ c·log log Z` |
+| `ChebyshevLlRate` | **the assembly** |
+
+```text
+exists_norm_tsum_vonMangoldt_ll_rate :
+  ∃ c > 0, ∃ B ≥ 0, ∀ᶠ N in atTop,
+    ‖2π·∑' Λ(n)·w_{N,H}(n) − (mass)·(bracket)‖
+      ≤ B · Z · exp(−√(c·log Z·log log Z)/12) ,    H = chebWidthLl c N ,  Z = N + H + 1 ,
+```
+
+with `B = 250000(1 + Cr)(3 + 27Cm)·576`.  This is Littlewood's prime number theorem error term at
+the smoothed sum.
+
+### Why the height is a fixed point, not a choice
+
+At depth `A/log T` the balance is explicit: `log T = 2√(A log x)`.  When the depth is
+`c·log log T/log T` the left edge saves `c·log x·log log T/log T` and the truncation costs `1/T`, so
+`log T` must solve `log²T ≍ c·log x·log log T` — the unknown appears on both sides.  Taking
+`log T = √(c·log x·log log x)` closes it up to a factor two, because
+
+```text
+log log T = ½·log(c·log x·log log x) ≥ ½·log log x     as soon as   c·log log x ≥ 1 ,
+```
+
+which is `half_logLog_le_logLog_chebHeightLl`.  With that one inequality the saving
+`c·log x·log log T/log T` is at least `½√(c·log x·log log x) = chebSavingLl c x`, exactly half the
+height's logarithm — so the left edge and the truncation are balanced, and both sit under
+`chebFactorLl c Z = 3exp(−chebSavingLl c Z)`.
+
+### The three constraints the fixed point must clear
+
+All three are conditions on `c·log log Z`, none on `c` alone:
+
+| constraint | needed for | discharged by |
+|-|-|-|
+| `1 ≤ c·log log Z` | `log log T ≥ ½log log Z` | `2 ≤ c·log log Z` in the threshold |
+| `2 ≤ c·log log Z` | right edge `log Z/log T ≤ saving` | same |
+| `8·c·log log T ≤ log T` | the coefficient step's depth bound | `log u ≤ u/8 + 11/10` at `u = log T` |
+
+The last is the one that fixes the numerology: `8A ≤ log T` with `A = c·log log T` needs
+`4c·log(2s) ≤ s`, and `log u ≤ u/8 + 11/10` gives it for `s ≥ 8`, i.e. `c·log Z·log log Z ≥ 256`.
+The coefficient lemma `cheb_littlewood_coeff_le` is then reused *verbatim* at
+`A = chebDepthLl c Z`; nothing in it assumed `A` constant.  Likewise `cheb_kappa_one_terms_shaped`,
+`cheb_final_collapse_lw` (at `r = 1/6`, `Q = chebSavingLl c Z ^ 2`) and `width_price_le_gen`.
+
+### What is left for `ψ(x) − x`
+
+The de-smoothing the exponent-one chain performs after `ChebyshevKappaOneRate`
+(`ChebyshevSharpTransferOne` → `ChebyshevSharpRateOne` → `ChebyshevPsiBigO` → `ChebyshevPNT`),
+transposed to this saving.  The contour is finished; nothing below `ChebyshevLlRate` needs revisiting.
+
+## W26 — Littlewood's prime number theorem, unconditional in Lean (2026-08-10)
+
+The de-smoothing runs through unchanged.  Four more modules, all axiom-clean:
+
+| module | content |
+|-|-|
+| `ChebyshevLlTransfer` | the two corrections: bracket `2(d−c)/T`, smoothing `(H+1)log(N+H)` |
+| `ChebyshevLlSharpRate` | `‖ψ(⌊N⌋) − mass‖ ≤ B·Z·exp(−√(c log Z loglog Z)/48)` |
+| `ChebyshevLlPNT` | the mass → `N` step, the real form, the `IsBigO` form |
+
+```text
+exists_abs_sum_vonMangoldt_sub_self_ll_rate :
+  ∃ c > 0, ∃ B ≥ 0, ∀ᶠ N in atTop,
+    |ψ(⌊N⌋) − N| ≤ B · N · exp(−√(c·log N·log log N)/48)
+
+chebyshevPsi_sub_id_isBigO_littlewood :
+  ∃ c > 0, (Chebyshev.psi − id) =O[atTop] fun x => x·exp(−c·√(log x·log log x))
+```
+
+Axioms `[propext, Classical.choice, Quot.sound]`; no `sorry`; wired into `RHTower`; the umbrella
+builds warning-free.
+
+### Where the two halvings go
+
+The contour delivers `exp(−√Q_Z/12)` with `Q_Z = c·log Z·log log Z`.  Two exponent halvings are
+spent, both forced:
+
+1. **`/12 → /24`: the shift from `N` to `Z`.**  The smoothing width is `N·exp(−√Q_N/12)` and must
+   fit under the shape at `Z`.  `Z ≤ N²` gives `log Z ≤ 2 log N`, and `log log Z ≤ log 2 + log log N
+   ≤ 2 log log N` once `log N ≥ 2` — so `Q_Z ≤ 4Q_N` and `√Q_Z ≤ 2√Q_N`.  This is the same
+   accounting as `sqrt_log_shift_le` in the exponent-one chain, with the second factor added.
+2. **`/24 → /48`: absorbing `log Z`.**  The transfer costs `(H+1)·log(N+H)`.  The polynomial goes
+   under `s²e^{−rs} ≤ 4/r²` because `log Z ≤ Q_Z/2 = s²/2` — which is the *same* threshold
+   `2 ≤ c·log log Z` that the contour already needed.  No new condition.
+
+So `48 = 12·2·2`, and the two twos are the shift and the polynomial.  Nothing here is specific to
+Littlewood: the exponent-one chain spends the identical two halvings, `480000 = 240000·2` and
+`960000 = 480000·2`.
+
+### The three PNT error terms now in the corpus
+
+| source | error |
+|-|-|
+| vendored `PNTPlus.MediumPNT` | `x·exp(−c(log x)^{1/10})` |
+| `ChebyshevPsiBigO` (exponent one) | `x·exp(−c√(log x))` |
+| `ChebyshevLlPNT` (this) | `x·exp(−c√(log x·log log x))` |
+
+**Card status: the Littlewood programme is closed.**  The region, the `ζ'/ζ` bound, the contour,
+and the prime number theorem it implies are all formalized unconditionally.

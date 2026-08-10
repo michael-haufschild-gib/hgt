@@ -402,6 +402,198 @@ polynomial above.  No existing theorem couples either estimate to this moving ma
 Positive survivor: the exact Dirichlet pairing in C41-O is now available for a future hybrid
 stationary-phase/mean-square theorem, with no continuation or improper-series seam.
 
+### C41-Q — expose exact Lorentz saddle and Route N boost coordinates
+
+`[PROVED; LEAN-PROVED]`. Before estimating the arithmetic polynomial, write its `n`th joint phase
+with `h=log n` as
+
+```text
+Theta_(a,u,h)(x)=u sqrt(x^2+a^2)+h x.
+```
+
+`RHTower.HedenmalmGammaSewnXiMassTimelikeBoostBridge` proves the exact classification:
+
+```text
+0<=h<u:
+  q=sqrt(u^2-h^2),
+  unique x_*=-a h/q,
+  Theta'(x_*)=0,
+  Theta(x_*)=a q;
+
+0<u<=h:
+  Theta'(x)>0 for every x.
+```
+
+Hence frequencies `log n<u` are precisely timelike stationary atoms; `log n>=u` are spacelike
+nonstationary atoms. This is a strict geometric refinement of the earlier coarse superluminal
+tail `h>d*u/(d-1/2)`.
+
+The same module proves that Route N reciprocal Sonin amplification `A` supplies canonical unit
+proper-time coordinates
+
+```text
+u_A=(A+A^-1)/2,
+h_A=(A-A^-1)/2,
+x_*=-a(A-A^-1)/2.
+```
+
+Route N Burnol holonomy is `A-A^-1`, nonmetricity is `A+A^-1-2`, and C27 affine residue is
+multiplicity times `-log A/(2 log p)`. Thus Route N residue/escape and Route T mass propagation
+are one boost charge, not independent proof pressures.
+
+### C41-R — exact curved-contour rate and sharp spacelike cone
+
+`[GEOMETRY PROVED; LEAN-PROVED; FOURIER LIFT AND CONE SUMMATION PROVED]`. Real-axis integration by parts only sees
+`Theta'(x)>h-u` and loses the glancing layer. The mass substitution `x=a sinh t` reveals the missing
+geometry. After a curved shift `t -> t-i theta`, put `c=cos theta`, `s=sin theta`. The squared
+damping rate is
+
+```text
+lambda(c,s)^2=(sigma*c+h*s)^2-(u*s)^2,   c^2+s^2=1, c,s>=0.
+```
+
+Let
+
+```text
+zeta_(sigma,u,h)=(sigma+i*u)^2+h^2,
+kappa_(sigma,u,h)=Re sqrt(zeta_(sigma,u,h)).
+```
+
+`RHTower.XiMassSpacelikeContourOptimality` proves the exact variational identity
+
+```text
+max_(c^2+s^2=1, c,s>=0) lambda(c,s)^2 = kappa_(sigma,u,h)^2,
+```
+
+constructs an actual nonnegative maximizing contour, and proves in the strict spacelike chamber
+`0<u<h`
+
+```text
+h-u < sqrt(h^2-u^2) < kappa_(sigma,u,h).
+```
+
+Thus horizontal strip translation is quantitatively suboptimal, not merely technically coarse.
+At `sigma -> 0`, balancing the critical coefficient growth `exp(h/2)` against the expected curved
+mass decay `exp(-a*sqrt(h^2-u^2))` gives the exact algebraic threshold
+
+```text
+alpha_sharp(a)=a/sqrt(a^2-1/4),
+h/2<a*sqrt(h^2-u^2)  iff  alpha_sharp(a)*u<h,
+alpha_sharp(a)<a/(a-1/2).
+```
+
+The last comparison is strict for every legal `a>1/2`. C41-S now supplies the Bessel-strength
+contour estimate and proves that the optimizer is an actual interior angle. The glancing null layer
+remains separate because `kappa` loses linear growth as `h/u -> 1` and `sigma -> 0`.
+
+### C41-S — prove the Bessel-strength Fourier lift
+
+`[PROVED; LEAN-PROVED]`. For
+
+```text
+F_(sigma,u)(h)=int_R exp(-(sigma+i*u)*sqrt(x^2+a^2))*exp(-i*h*x) dx.
+```
+
+`RHTower.XiMassHyperbolicFourierRepresentation` first proves the exact branch-free identity
+
+```text
+F_(sigma,u)(h)
+ = int_R a cosh(t) exp(-(sigma+i*u)a cosh(t)) exp(-i*h*a*sinh(t)) dt.
+```
+
+`RHTower.XiMassHyperbolicCurvedContourDecay` then proves the one-sided deformation
+`t -> t-i*theta` for every `0<=theta<pi/2`. With
+
+```text
+A=sigma*cos(theta)+h*sin(theta),
+B=u*sin(theta),
+q=sqrt(A^2-B^2),
+r=arsinh(B/q),
+```
+
+the Lorentz translation `A cosh(t)+B sinh(t)=q cosh(t+r)` gives
+
+```text
+|F_(sigma,u)(h)| <= 2*a*exp(r)*K_1(a*q).              (T.41-S.1)
+```
+
+The same module proves the coefficient-faithful Schlaefli comparison
+
+```text
+K_1(s) <= exp(-(s-s0))*K_1(s0),   0<s0<=s,            (T.41-S.2)
+```
+
+so no fixed fraction of the exponent is lost. Finally
+`RHTower.XiMassOptimalCurvedBesselDecay` proves C41-R's maximizing nonnegative contour is an
+actual interior angle and that its `q` equals
+
+```text
+kappa=Re sqrt((sigma+i*u)^2+h^2).
+```
+
+Thus `(T.41-S.1)` holds at the exact optimal propagation rate `a*kappa`, and `(T.41-S.2)` gives a
+fixed-base bound with full exponential coefficient `1`. All capstones use only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+### C41-T — close the complete sharp-spacelike atom cone
+
+`[PROVED; LEAN-PROVED]`. The moving optimal contour contains boost prefactor `exp(r)`. C33 proves
+this factor cannot destroy summability. Whenever `alpha>1`, `B>=0`, `alpha*B<=A`, and
+`q^2=A^2-B^2`,
+
+```text
+exp(arsinh(B/q)) <= (alpha+1)/(alpha-1).              (T.41-T.1)
+```
+
+For every `alpha>alpha_sharp(a)`, put
+
+```text
+beta(alpha)=sqrt(1-alpha^-2),
+p(a,alpha)=1/2+a*beta(alpha).
+```
+
+Lean proves `p(a,alpha)>1`, `beta(alpha)h<=sqrt(h^2-u^2)` on `alpha*u<=h`, and the coefficient-
+faithful profile bound
+
+```text
+|exp(-h/2) F_u(h)| <= C(a,alpha) exp(-p(a,alpha)h).  (T.41-T.2)
+```
+
+At `h=log n`, the centered coefficient is dominated by `Lambda(n)+1`; both
+`sum Lambda(n)n^-p` and `sum n^-p` converge for `p>1`. Module
+`RHTower.XiMassSharpSpacelikeConeSummability` therefore proves absolute summability of all atoms
+with `alpha*u<=log n`, uniformly in `u` and every finite cutoff. It also proves exact identity
+
+```text
+full finite cone = sharp-spacelike finite cone + timelike/glancing finite cone, (T.41-T.3)
+```
+
+with complementary condition `log n<alpha*u`. No limiting boundary atom or remainder is created.
+Headline C33 capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+### C41-U — arbitrarily sharp residual-cone criterion
+
+`[PROVED; LEAN-PROVED]`. C33's partition is not tied to one mass-dependent slope. For every
+`alpha>1`, Lean constructs the legal parameter
+
+```text
+a=alpha/sqrt(alpha^2-1)>1/2,
+alpha_sharp(a)=a/sqrt(a^2-1/4)<alpha.                 (T.41-U.1)
+```
+
+For each `sigma>0`, suitable legal `c,d` then give the exact equivalence
+
+```text
+RH iff the finite centered residual sum supported on log n<alpha*u
+       is uniformly bounded for u>=0.                (T.41-U.2)
+```
+
+The proof is bidirectional: add or subtract C33's cutoff-independent sharp-spacelike bound from
+the full Route T criterion. Thus Route T's remaining arithmetic obstruction can be localized to
+every fixed strict enlargement of the causal cone, with `alpha` arbitrarily close to `1`; it is
+not a broad-cone artifact. Module `RHTower.XiMassTimelikeGlancingResidualCriterion` is
+umbrella-wired. Its headline capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
+
 ### Updated open core
 
 For any legal `1/2<d<a`, prove the height-uniform finite centered-atom bound
@@ -416,6 +608,14 @@ cell, and terminal remainder are discharged.  Remaining obstruction is cofinal c
 centered von Mangoldt atoms inside the finite mass light cone.  Closure requires an oscillatory
 transference that neither inverts the floor transform nor takes termwise absolute values at
 critical scale.
+
+C41-R--C41-T now prove the exact optimal contour rate, its interior angle realization, the
+full-exponent Bessel lift, uniform boost control, and actual absolute summability of every strict
+sharp-spacelike cone. This is no longer an inferred decay claim: `(T.41-T.3)` is an exact finite
+atom partition and its first summand has one cutoff-independent Lean bound. Remaining open core is
+source-level cofinal cancellation in the explicit complementary sum `log n<alpha*u`. By C41-U,
+`alpha>1` may be chosen arbitrarily close to the true causal slope `1`; preferably prove the law
+before norms in exact joint pairing.
 
 Equivalently, prove uniform boundedness of the exact integral pairing in C41-O.  This is the only
 current form that exposes both mass and arithmetic phases before a norm; it is preferred for any

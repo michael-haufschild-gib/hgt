@@ -594,8 +594,9 @@ is a precise research target, not an RH proof.
 - [x] prove the packet/Euler-connection weld preserves the critical four-unit energy
 - [ ] construct the charged anti-causal fixed-current codifferential
 - [ ] prove the completed affine-flux curvature equals the squarefree Hardy block curvature
-- [ ] prove the Fisher numerator is divisible by the completed squarefree overlap on the charged graph
-- [ ] prove its source-framed nonexpansive relative estimate via `(7p)`
+- [x] disprove Fisher-numerator divisibility at every strict-right Xi zero and retain exact conormal residue
+- [ ] split the charged graph into its forced conormal residue line and analytic regular remainder
+- [ ] prove the source-framed nonexpansive relative estimate for that regular remainder via `(7p)`
 - [ ] prove cofinal graph convergence to `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH
@@ -657,9 +658,20 @@ Thus affine flux is unbounded even on the closed span of packet edges.  An opera
 response cannot inherit passivity through a bounded positive vector state equal to `Phi_omega`.
 
 **Positive successor:** equations `(7m)` and `(20)` identify the correct object as a source-
-conditioned closed graph form.  The remaining RH theorem is therefore not an ambient contraction:
-it is the range/divisibility estimate for the Fisher numerator in `Graph(B_sigma)`, followed by
-the boundary-unitary identity `(7p)`.
+conditioned closed graph form.  C26 now proves that literal range/divisibility is impossible at
+every strict-right zero: if the overlap has order `m`, its Fisher numerator has order `m-1`.
+The correct graph object is the residue-split conormal extension
+
+```text
+0 -> analytic regular remainder -> Fisher/overlap conormal
+  -> C·[du/u] -> 0,
+residue=2m.                                               (20a)
+```
+
+The remaining RH theorem is therefore not divisibility by `B_sigma`.  It must retain the forced
+residue line and prove the boundary-unitary estimate `(7p)` only for the analytic regular
+remainder, with a separate source law forcing the oriented residue to have zero horizontal real
+component.
 
 **HT consequence:** critical source conditioning can turn an unbounded affine observable into a
 finite calibrated state coordinate without making that observable bounded on the carrier.
@@ -800,3 +812,21 @@ The native target is the cutoff commutator in `(31)`.
 Fisher connection, and the boundary Ward curvature of that connection is determined entirely by
 the truncated `2 x 2` state--tangent Gram matrix.  Infinite HT complexity enters through the
 completed graph incidence, not through the finite boundary-energy algebra.
+
+**C26 source-incidence correction.**  Let `B` be the moving squarefree overlap along any
+nonconstant affine source line from a base point `Re sigma>1`.  At every strict-right Xi zero of
+multiplicity `m`, Lean now proves
+
+```text
+ord(B)=m,
+ord(Fisher)=m-1,
+not exists analytic q with Fisher=Bq,
+lim_(v->u, v!=u) (v-u) Fisher(v)/B(v)=2m.               (33)
+```
+
+Thus the pointed Fisher connection supplies an independent oriented conormal coordinate, but it
+conserves rather than removes the divisor.  Old divisibility gate was mathematically impossible.
+Live gate is exact residue splitting plus a pre-divisor sign/annihilation law for the regular
+completed Ward transport.  Targeted primary-literature search found generic co-Poisson theory,
+zeta logarithmic-derivative statistics, and Fisher/log-derivative geometry, but not this exact
+squarefree-source conormal instantiation; novelty claim remains limited to the synthesis.

@@ -3956,10 +3956,9 @@ detector; no full two-replica Hall claim is made yet.
 Primary inputs are V. Kargin,
 [*An algebraic characterization of non-singular matrix semicircles*](https://arxiv.org/abs/2604.23089)
 and [*Singularities of matrix semicircles*](https://arxiv.org/abs/2607.26222).
-The support-Casimir and scaling argument is dependency-closed on paper in
-`../2-fully-proven/one-replica-local-pauli-planar-cavity-decay.md`.
-No final-paper use is authorized until the external operator-valued
-semicircle layer is formalized.
+The support-Casimir, fullness, scalar absolute-continuity, and operator-norm decay chain is
+dependency-closed on paper and unconditionally formalized in
+`../3-formalized/one-replica-local-pauli-planar-cavity-decay.md`.
 
 `[CONJECTURE — PLANAR-RENORMALIZED REPLICA GENUS LAW.]`  Exactly resum every
 genus-zero component of the full admissible replica ribbon expansion into a
@@ -5750,3 +5749,115 @@ receive a new title and an independent significance audit.
   geometric Brown skeleton after named shortcut tubes are paid.  Paper proof:
   `../2-fully-proven/onset-recurrence-dimension-independence-law.md`.  Lean
   remained read only during corpus refactoring.
+- 2026-08-09 -- Upgraded arbitrary-delay examples to a genuine fixed-seed
+  onset distribution.  The tempting equality “shortcut codimension equals
+  the complete tail exponent” is false without an inverse classification:
+  a carrier tube gives only a lower tail, and other shortcut sectors may
+  dominate.  The positive survivor is exact and stronger than the prior
+  delay-by-delay Fubini statement.  On a balanced path cut, the product-cubic
+  collision mean `<=4/D` permits one fixed seed to be selected on a
+  positive-measure simple-spectrum subset of the codimension-nine decoupled
+  carrier.  Inner regularity, compactness, and collision continuity make that
+  seed capacity-good on one fixed open tube.  Therefore the same seed, for
+  every sufficiently large `L`, has
+  `Pr{tau_full>L, later full plateau, maximal recurrence}>=A_n L^(-9)`.
+  Layer cake now applies to one random variable and proves that every
+  conditional onset moment of order `p>=9` diverges.  A second construction
+  survives conductance conditioning: on a compact, uniformly gapped,
+  strongly coupled diagonal `Z/ZZ` patch, the explicit seed `|+>^n` has
+  collision `1/D`; Davis--Kahan preserves collision `<=81/(16D)` and
+  cyclicity in a fixed transverse tube.  Its codimension is `10n-8`, so the
+  same explicit seed has divergent conditional onset moments for every
+  `p>=10n-8` while all edges remain `Omega(n^(-1/2))`, and every retained
+  Hamiltonian later has the full plateau, exact recurrence exponent,
+  recurrence, and permanent non-Haar locality.  These are forced divergence
+  thresholds, not matching upper tails or finiteness below threshold.
+  Brown-front consequence: unrestricted high onset moments are invalid
+  concentration proxies; use quantiles or truncated moments after named
+  shortcut excision.  Exact upper-escape/linear-ramp core remains open.
+  Paper proof and hostile audit:
+  `../2-fully-proven/codimension-forced-complexity-onset-moment-divergence-law.md`.
+  Lean remained read only; no Lean file, build, or process was touched.
+- 2026-08-09 -- Closed the external-calibration representation gap left by
+  the circuit Bellman law.  For the one-gate Markov operator `P`, the
+  normalized killed gate-walk Green function
+  `G_(a,epsilon)=(1-a)(I-aP)^(-1)1_(B_epsilon(chi))` obeys the exact sandwich
+  `(1-a)(a/M)^C <= G <= a^C`, where `C` is robust word complexity.  Hence
+  complexity is exactly the zero-fugacity exponent
+  `lim_(a->0)-log(G)/log(1/a)`.  Exponential-distance softening gives an
+  explicit noncircular robust Bellman calibration with one-gate increment at
+  most one and Lipschitz constant `beta/log(M/a)`.  For a random static
+  endpoint `V`, one scalar estimate controls the complete circuit union:
+  `Pr{R,C_epsilon(V)<=s} <= E[1_R G_tilde(V)]/((1-a)(a/M)^s)`.
+  Hostile attack then exposes the exact limitation.  Positive `L^p`
+  linearization of the complete maximum loses the factor `M^(-ell/p)`; to
+  preserve it within `exp(-kappa r)` forces total replica order
+  `rp >= ell log(M)/kappa`, which is `Omega(2^n)` at Brown depth.  Thus low
+  replicas and positive linear transfer cannot coexist at the Brown front.
+  The genuine surviving core is a zero-temperature quenched gate-transfer
+  estimate, equivalently exponential suppression of shadowing between the
+  static endpoint and a geometrically killed local random circuit after one
+  return/shortcut-carrier excision.  Paper proof and hostile audit:
+  `../2-fully-proven/gate-walk-green-bellman-tropicalization-law.md`.  Lean was
+  intentionally deferred during corpus refactoring.
+- 2026-08-10 -- Closed the one-step all-replica local-Pauli Hall gate on paper.
+  First, one fixed Pauli orientation on each connected graph edge expands
+  every subspace of the sitewise singlet quotient at every finite replica
+  order.  The new mechanism avoids higher-replica permutation incidence:
+  edge commutators create nonsinglet defects at both endpoints, distinct
+  edges land in orthogonal defect sectors, and connected Pauli
+  controllability identifies their joint singlet kernel with the exact
+  global collective commutant.  Second, the complete weight-one and
+  graph-edge weight-two Pauli family expands every subspace of the full
+  replicated operator space modulo that commutant in one step.  The proof
+  tests only the unique greatest maximum-defect subspace.  Continuous
+  product-local rotation covariance makes its singlet split reducing and
+  turns off-singlet Hall into internal reproduction; arbitrary-replica
+  Pauli characters resolve visible edge outputs; the full nine-orientation
+  positive edge Casimir injectively returns precisely the hidden detector
+  kernel.  This improves the prior linear physical word-depth Hall theorem
+  to depth one and replaces the mixed one-step defect `dim S_r` by the exact
+  global permutation defect.  It proves rank saturation only: no replica-
+  uniform capacity, pseudodeterminant, smallest-singular-value, cavity-decay,
+  quenched lower-tail, circuit-union, or Brown-ramp estimate follows.  Exact
+  surviving algebraic/analytic frontier is quantitative conditioning on the
+  collective-commutant quotient, strong enough for approximate tubes and
+  growing replica order.  Dependency-closed proofs and hostile audits:
+  `../2-fully-proven/all-replica-fixed-edge-singlet-hall-expansion-law.md` and
+  `../2-fully-proven/all-replica-one-step-local-pauli-hall-saturation-law.md`.
+  Lean remained read only during corpus refactoring.
+- 2026-08-10 -- Advanced and corrected the quantitative Hall frontier.  A new explicit symmetric
+  `3 x 3` family proves that exact Hall plus a uniformly bounded and coercive quadratic Casimir does
+  not bound operator capacity: its Casimir remains in `[(1/2)I,4I]` while capacity is
+  `Theta(epsilon^2)`.  This retires the attempted direct transfer from the Baer--Haah-style vector
+  frame gap to one-step commutator operator scaling.  The strongest positive survivor is an exact
+  all-replica local-word leakage theorem.  Every full Pauli commutator has a depth-at-most-`n`
+  synthesis from weight-one/two commutators with coefficient `ell^1` mass one; full-Pauli Casimir
+  normalization is bi-tight and has least nontrivial eigenvalue `2D^2`.  Therefore every
+  dimension-losing occupied incidence cut receives normalized, sheet-retaining local-word leakage
+  at least `2D^2/(D^2-1)>2` per lost dimension, uniformly in replica order.  This is quantitative
+  conditioning rather than rank.  Hostile boundary: a shallow circuit image may have full linear
+  span, so the theorem does not prove Brown escape.  The remaining core is to transfer its
+  sheetwise carré du champ through the bounded max-plus Bellman reporter before span
+  scalarization.  Paper proof and counterexample:
+  `../2-fully-proven/all-replica-incidence-normalized-local-word-leakage-law.md`.  Lean remained
+  read only during corpus refactoring.
+- 2026-08-10 -- Identified and proved the exact obstruction to transferring all-replica planar
+  cavity decay to one ordinary static Hamiltonian.  The all-replica Hall theorem does compose with
+  matrix-semicircle absolute continuity: on the global collective-commutant quotient, the free
+  planar vacuum compression decays to zero at every finite replica order.  But each realized
+  static Hamiltonian has a larger moving centralizer.  For a maximal-projective `D`-level
+  Hamiltonian at replica order `r`, its dimension is exactly
+  `kappa_(D,r)=sum_(|k|=r)(r!/prod_j k_j!)^2`; after the stable-range permutation quotient,
+  `kappa_(D,r)-r!` zero modes remain.  For the ordinary nearest-neighbour fixed Pauli shell,
+  nowhere-flat spectral actions imply operator-norm convergence of the annealed replicated
+  propagator to the average of these quenched centralizer projections.  Its quotient trace is
+  exactly `kappa_(D,r)-dim N_(D,r)` and its norm is at least that trace divided by
+  `D^(2r)-dim N_(D,r)`; at one replica the lower bound is `1/(D+1)`.  Hence static and planar
+  propagators remain separated at long times even after common-kernel removal.  Quenched centered
+  norm cannot help: it is identically one on the oscillatory complement.  Correct Brown target is
+  now a quantitative, centralizer-centered **Bellman** dephasing estimate relative to the quenched
+  completed-phase circuit baseline, not decay to zero and not free-cavity transfer.  Paper proof
+  and hostile audit:
+  `../2-fully-proven/all-replica-static-centralizer-planar-separation-law.md`.  Lean remained read
+  only during corpus refactoring.

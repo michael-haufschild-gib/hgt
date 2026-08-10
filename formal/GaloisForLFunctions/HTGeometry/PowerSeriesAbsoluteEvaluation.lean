@@ -47,6 +47,31 @@ theorem absoluteEval_add {f g : PowerSeries ℂ} {u : ℂ}
   rw [absoluteEval, absoluteEval, absoluteEval]
   simpa [map_add, add_mul] using hf.summable.tsum_add hg.summable
 
+theorem AbsoluteSummableAt.sum {L : Type*} (s : Finset L)
+    (f : L → PowerSeries ℂ) {u : ℂ}
+    (hf : ∀ l ∈ s, (f l).AbsoluteSummableAt u) :
+    (∑ l ∈ s, f l).AbsoluteSummableAt u := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [absoluteSummableAt_zero]
+  | @insert l s hl ih =>
+      rw [Finset.sum_insert hl]
+      exact (hf l (Finset.mem_insert_self l s)).add
+        (ih fun a ha ↦ hf a (Finset.mem_insert_of_mem ha))
+
+theorem absoluteEval_sum {L : Type*} (s : Finset L)
+    (f : L → PowerSeries ℂ) {u : ℂ}
+    (hf : ∀ l ∈ s, (f l).AbsoluteSummableAt u) :
+    (∑ l ∈ s, f l).absoluteEval u = ∑ l ∈ s, (f l).absoluteEval u := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [absoluteEval_zero]
+  | @insert l s hl ih =>
+      rw [Finset.sum_insert hl, Finset.sum_insert hl,
+        absoluteEval_add (hf l (Finset.mem_insert_self l s))
+          ((AbsoluteSummableAt.sum s f fun a ha ↦ hf a (Finset.mem_insert_of_mem ha))),
+        ih (fun a ha ↦ hf a (Finset.mem_insert_of_mem ha))]
+
 theorem coeff_mul_term (f g : PowerSeries ℂ) (u : ℂ) (n : ℕ) :
     PowerSeries.coeff n (f * g) * u ^ n =
       ∑ kl ∈ Finset.HasAntidiagonal.antidiagonal n,

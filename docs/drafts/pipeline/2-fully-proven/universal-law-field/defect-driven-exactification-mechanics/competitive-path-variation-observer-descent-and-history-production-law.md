@@ -10,7 +10,7 @@
   potential. An observer retains this memory exactly when the relative potential descends through
   its attained range.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT] [ROUTE-INDEPENDENT]
-  [PARENT: TROPICAL/MAX-PLUS ENVELOPES AND CYCLIC MONOTONICITY] [LEAN TARGET] [NOT RH]
+  [PARENT: TROPICAL/MAX-PLUS ENVELOPES AND CYCLIC MONOTONICITY] [LEAN-PROVED] [NOT RH]
 
 ## 1. Setup
 

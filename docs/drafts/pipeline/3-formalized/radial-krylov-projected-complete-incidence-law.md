@@ -2,6 +2,7 @@
 
 - **ID:** `radial-krylov-projected-complete-incidence-law`
 - **Stage:** 3-formalized
+- **Formalized companion:** `radial-krylov-projected-complete-incidence-law-formalized.md`
 - **Type:** theorem / exact frontier reduction
 - **Parents:** `../3-formalized/krylov-carrier-load-shortcut-dichotomy-law.md`,
   `../3-formalized/replica-hilbert-coarea-incidence-law.md`,

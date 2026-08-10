@@ -194,3 +194,243 @@ New reusable Lean assets in ConstraintRelativity/:
 - `Real.log_eq_zero_iff` does not exist -> `Real.eq_one_of_pos_of_log_eq_zero`.
 - `Complex.norm_eq_sqrt_normSq` does not exist -> `Complex.normSq_eq_norm_sq` + `Real.sqrt_sq`.
 - `RingHom.charZero f` transfers CharZero to a subfield.
+
+## Checkpoint (26/49 done, 23 remain)
+
+Also moved: half-sided-modular-conormal-persistence-and-bounded-dilation-no-go (ConormalPersistence),
+prime-coframe-completion-port-uncertainty-law (CoframePortUncertainty),
+prime-valuation-cyclic-coframe-and-diagonal-dagger-defect-law (PrimeValuationCoframe).
+
+New reusable assets:
+- `ConormalPersistence`: `ModularFiltration`, `quotientDistance` + Hahn-Banach duality
+  (`isGreatest_quotientDistance`), `eq_zero_of_isometric_scaling`, `scaling_defect_lower_bound`.
+- `CoframePortUncertainty`: `augmentation`/`meanZero`/`closedCoframe`, the LCS one-port dichotomy
+  (`one_port_dichotomy`), `jLp`/`norm_block`/`uniformWitness`, `ellOneAugmentation`.
+- `PrimeValuationCoframe`: `primeAlgebra_induction` (monomial induction via
+  `Finsupp.induction_linear` on `.coeff`), `valuationDeriv_mul`, `valuationPairing_*`,
+  `linearIndependent_of_dual_identity`, `defectMultiplier_ne_zero`.
+
+### Traps
+- `Submodule.topologicalClosure_minimal` needs its FIRST arg explicit (`_ hle hclosed`).
+- `lp E p` is a normed group only with `[Fact (1 ≤ p)]`; `lp.single` needs `(E := fun _ => ...)`.
+- `RCLike.geometric_hahn_banach_closed_point` + subspace: feed it `((c+1)/f a) • a` to force
+  `f a = 0`.
+- `AddMonoidAlgebra.induction_on` is phrased via `of` (Multiplicative); build your own monomial
+  induction from `Finsupp.induction_linear` instead.
+- ℝ≥0∞ notation needs `open scoped ENNReal`.
+
+## Checkpoint (29/49 done, 20 remain)
+
+Also moved: source-soldering-transport-defect-cocycle-and-law-symbol (SolderingTransportSymbol),
+cofinal-gamma-linear-relation-and-finite-stage-invisibility-law (CofinalGammaRelation),
+cross-observer-lifting-modulus-and-singular-horizon-law (CrossObserverModulus).
+
+New reusable assets:
+- `SolderingTransportSymbol`: `bivariantDefect`, `transportCurvature`, `bivariantDefect_curved`
+  (prove the CURVED identity first, get the strict cocycle as the flat corollary); `radLayer`/
+  `headLayer`/`symbol` first-order law symbol with both lift directions.
+- `CofinalGammaRelation`: `summableSubspace`, `gammaRel`, `gammaRel_singleValued_iff`,
+  `radialMul_mapsTo_iff`, `defectExchange`.
+- `CrossObserverModulus`: `liftingModulus` (ℝ≥0∞-valued!), `sigmaMin` attained on the sphere,
+  `liftingModulus_id_linear` (= ε/σ_min exactly), `norm_exp_mul_I_sub_one` (circle chord identity,
+  missing from mathlib).
+
+### Traps
+- `Submodule.restrictScalars` blocks unification; state a `mem_..._iff` bridge lemma once.
+- `Submodule.smul_induction_on` motive is `M → Prop` (one argument), not `(z) → _ → Prop`.
+- `lp`/`ℝ≥0∞` need `open scoped ENNReal NNReal`.
+- Valuing a sup in ℝ≥0∞ removes every boundedness hypothesis; use
+  `eq_top_of_forall_ofReal_le`-style helpers to prove `= ⊤`.
+
+## Checkpoint (31/49 done, 18 remain)
+
+Also moved: marked-port-normal-crossing-covariance (MarkedPortCovariance),
+framed-copy-code-recovery-defect-and-wormhole-no-go (FramedCopyCode).
+
+New reusable assets:
+- `MarkedPortCovariance`: `exists_le_of_subset_biUnion` (subspace inside a FINITE UNION of
+  subspaces over an INFINITE field lies in one — missing from mathlib, proved by strong induction
+  + pigeonhole on the affine family y + c·x), `exists_smul_of_ker_le_ker`.
+- `FramedCopyCode`: after dephasing a recovery is a classical transition matrix, so the
+  entanglement-fidelity bound 1/d needs no channel/separability framework.
+
+### NOT YET STARTED — heavy cards and what they need
+- `gorenstein-trace-kahler-monogenic-equivalence-and-corank-two-splitting-law`: Theorem 1 is a
+  3-way equivalence (L ≅ Ω / Ω cyclic / A monogenic). (3)=>(2) is nearly free from the existing
+  `ConstraintRelativity/MonogenicKaehler.lean` (`kaehlerEquivMonogenic`, `annihilator_kaehler`).
+  (3)=>(1) needs the monogenic different formula A^# = (P'(θ))^{-1}A — CHECK
+  `Mathlib/RingTheory/DedekindDomain/Different.lean` for
+  `differentIdeal`/`aeval_derivative` results before building. (2)=>(3) needs embedding dimension
+  + Nakayama + CRT monogeneration. Theorem 2 needs Smith normal form of the Kronecker square of
+  `!![-a,0;2,a]` over ℂ[[a]] giving diag(1,a²,a²,a⁴).
+- `phase-subdiscriminant-kahler-smith-stratification-law` (717 lines) is the arithmetic parent of
+  the Gibbs card; expect the same Smith machinery.
+
+## Checkpoint (32/49 done, 17 remain)
+
+Also moved: relative-law-observer-descent-duality (ObserverDescentDuality).
+- `ObserverDescentDuality` assets: `pullback`, `restrictKer`,
+  `range_pullback_eq_ker_restrictKer` (uses `LinearMap.exists_extend` — the field hypothesis),
+  `observerDescentEquiv`, `descends_iff_vanishes`, `relativeLawEquiv` (mapping-cone LES taken as
+  INPUT exactness, as the card itself cites it), `relativeObserverDuality`, `relativePairing`.
+
+## RESOLVED — simple-horizon-rank-to-depth-transmutation-law IS NOW MOVED (33/49)
+
+The dedup was done and all four gaps closed:
+- (10) from `unitWeightedRelationsBasis` (corpus), (8) from mathlib `exteriorPower.finrank_eq`;
+- (7) from corpus `rowReducedPhysicalKoszulHomologyEquiv` + `card_physicalKoszulSurvivingBasis`
+  (the normalized frame makes the sequence row-reduced, which is exactly that file's setting);
+- (11)(12) via `Matrix.toLinearEquiv'` on the invertible Vandermonde factor + `Submodule.quotientPi`.
+LEAN TRAP: `Submodule.Quotient.equiv` leaves its RingHom args as metavariables under `.symm`/
+`.trans`; give each equivalence an explicit type and compose only at the end.
+
+## (superseded) earlier note on that card
+
+Module `ConstraintRelativity/SimpleHorizonTransmutation.lean` is GREEN and wired, and contains:
+`span_constraints_eq` (6), `constraintCovector`/`normalizedLeg`/`mem_ker_constraintCovector_iff`
+(9)(10), `sheetObserver_eq` (14), `sum_val_eq_choose`, `det_sheetObserver` (15)(16),
+`constraint_sub`, `disc_constraints` (16), `successor_bars` (17), `grade_dimension` (13).
+
+STILL MISSING before the card can move:
+1. (11)(12) `coker J ≅ ⊕_{j=1}^{N-1} R/(a^j)`. Route: from `sheetObserver_eq`, V is invertible
+   over the local R (det V = Vandermonde of units with distinct residues is a unit), so
+   `coker J ≅ coker (diagonal (a^j))`; then `range (diagonal d).mulVecLin =
+   Submodule.pi univ (fun j => Ideal.span {d j})` and use `Submodule.quotientPi`.
+   Add hypothesis `IsUnit (det V)` (or `∀ i≠j, IsUnit (u i - u j)` + local ring).
+2. (7)(8) Koszul homology `H_• K(f_1..f_N) ≅ k ⊗ ∧^• E`, `dim H_j = binom (N-1) j`.
+   CHECK whether mathlib has a Koszul complex (`Mathlib/RingTheory/Koszul*`) before building.
+   The card's own proof is `K(f) ≅ K(a) ⊗ (∧^• E, 0)` since the differential is contraction by
+   `a·h` and `h` is split surjective.
+
+## IMPORTANT: corpus already owns the simple-horizon Theorem-1 layer
+
+`GaloisForLFunctions/HTGeometry/CommonFactorKoszulHomology.lean` ALREADY contains:
+- `unitWeightedAugmentation u` = the card's `h` (card (2));
+- `unitWeightedRelations u` = `E = ker h`;
+- `unitWeightedSplitEquiv u i₀` : `R^ι ≅ R·v ⊕ ker h` (the split used in the Koszul proof);
+- `unitWeightedRelationsBasis` / `unitWeightedFinsuppRelationsBasis` : E is FREE with basis indexed
+  by the non-pivot coordinates, i.e. rank N-1  ⇒ this IS card (10);
+- `card_unitWeightedAway` : that index set has card N-1;
+- `range_commonFactorKoszulD1` : the ideal saturation (card (6)) for two constraints;
+- `commonFactorKoszulH0Equiv`, `commonFactorKoszulH1Equiv`, `commonFactorKoszulH2_eq_bot`,
+  `commonFactorKoszulH1CotangentEquiv`, `IsKoszulRegular` : the full N=2 Koszul homology.
+Also `PhysicalCharacteristicIncidence.lean` has
+`complexPowerSeries_rowReducedPhysicalKoszulHomology_length` = `r * choose(r,k)` and
+`ConvergentGermPhysicalArc.lean` the ℂ{λ} analogue.
+
+=> My `ConstraintRelativity/SimpleHorizonTransmutation.lean` DUPLICATES `constraintCovector` and
+`normalizedLeg`; REPLACE them by the corpus `unitWeightedAugmentation` / `unitWeightedRelations`
+and derive card (10) from `unitWeightedRelationsBasis` instead of reproving it.
+
+Remaining for that card after the dedup:
+- (8): `dim_k (∧^j E) = choose (N-1) j` from E free of rank N-1 (look for
+  `finrank_exteriorPower` / `Module.finrank_exteriorPower` in mathlib).
+- (7): assemble `H_• K(f) ≅ k ⊗ ∧^• E` for general N (corpus has only N=2 explicitly; the general
+  statement needs `K(f) ≅ K(a) ⊗ (∧^• E, 0)`).
+- (11)(12): coker J ≅ ⊕_{j<N} R/(a^j) via `sheetObserver_eq` + invertible Vandermonde +
+  `Submodule.quotientPi`.
+
+
+## KEY FIND for gorenstein-trace-kahler-monogenic-equivalence (next card)
+
+mathlib HAS the monogenic different formula the earlier checkpoint said to search for:
+`Mathlib/RingTheory/DedekindDomain/Different.lean`:
+  `traceForm_dualSubmodule_adjoin (hx : Algebra.adjoin K {x} = ⊤) (hAx : IsIntegral A x) :
+     (traceForm K L).dualSubmodule (adjoin A {x}) = (aeval x (derivative (minpoly K x)))⁻¹ • adjoin A {x}`
+That IS card (11) `A^# = (P'(θ))^{-1} A`.  Also there: `differentIdeal`, `conductor_mul_differentIdeal`,
+`aeval_derivative_mem_differentIdeal`, `Submodule.traceDual`.
+
+So Theorem 1 of that card decomposes as:
+- (3)=>(1): combine `traceForm_dualSubmodule_adjoin` with
+  `ConstraintRelativity/MonogenicKaehler.lean` (`kaehlerEquivMonogenic`, `annihilator_kaehler`,
+  `rootDifferent`), then multiplication by P'(θ) gives A^#/A ≅ A/(P'(θ)) ≅ Ω.
+- (3)=>(2): immediate from `kaehlerEquivMonogenic` (Ω is a cyclic A-module).
+- (1)=>(2): A^# invertible over a semilocal ring is free of rank one, so L = uA/A is cyclic.
+- (2)=>(3): the HARD direction — embedding dimension of B=A/aA, Nakayama, CRT monogeneration with
+  distinct residues (needs k infinite), then Nakayama lift to A.
+Theorem 2 needs the Smith form of the Kronecker square of `!![-a,0;2,a]` = diag(1,a²,a²,a⁴);
+reuse the `Matrix.toLinearEquiv'` + `Submodule.quotientPi` pattern from SimpleHorizonTransmutation.
+
+## IN PROGRESS — gorenstein-trace-kahler-monogenic-equivalence (CARD NOT MOVED, 33/49)
+
+New module `ConstraintRelativity/GorensteinMonogenic.lean` is GREEN and wired. It contains:
+- `kaehler_isPrincipal_of_monogenic` — Theorem 1 (3)=>(2): Ω of a monogenic order is cyclic,
+  generated by `D(root f)`. KEY: under `kaehlerEquivMonogenic`, the class of `mk f p` corresponds
+  to `mk f p • D(root f)` (NOT `mk f (derivative p) • …` — that was a wrong first guess).
+- `traceQuotient_isPrincipal` — Theorem 1 (1)=>(2): a principal trace dual gives a cyclic trace
+  quotient (the semilocal invertible-module step reduces to this).
+- `mulDifferentEquiv` — card (12): multiplication by δ identifies `δ⁻¹A/A` with `A/(δ)`.
+
+DONE since: `traceKaehlerEquiv_of_monogenic` — Theorem 1 (3)=>(1).  The trace dual is δ⁻¹A with
+δ = rootDifferent (mathlib `traceForm_dualSubmodule_adjoin` = card (11)), so the trace quotient is
+the cokernel of multiplication by δ, which `mulDifferentEquiv` sends to A/(δ), which
+`kaehlerEquivMonogenic` sends to Ω.  So (1),(2),(3) are now linked in the directions
+(3)=>(1), (3)=>(2), (1)=>(2).
+
+STILL TO DO for the card:
+1. (2)=>(3): the hard direction — B = A/aA is a finite product of local Artin k-algebras with
+   residue field k, cyclic Ω forces dim_k m/m² ≤ 1, Nakayama makes m principal, B_i ≅ k[T]/(T^n),
+   CRT with distinct λ_i (k infinite) monogenerates B, then Nakayama lifts to A.
+3. Theorem 2 (13)-(17): B = R[x]/(x(x-a)), A = B⊗B; Smith form of the Kronecker square of
+   `!![-a,0;2,a]` is diag(1,a²,a²,a⁴) giving L ≅ R/(a²)⊕R/(a²)⊕R/(a⁴), while Ω ≅ (R/(a²))⁴.
+   Reuse the `Matrix.toLinearEquiv'` + `Submodule.quotientPi` pattern from
+   SimpleHorizonTransmutation.
+
+### gorenstein Theorem 2: Smith + Kronecker are now PROVED in Lean
+(`quadDifferentMatrix`, `quadDifferent_mul_left`, `smith_quadDifferent`,
+`smith_kronecker_quadDifferent`).  Historical note on the derivation:
+
+For `M = !![-a, 0; 2, a]` over R with `2` a unit and `w := (2:R)⁻¹` (so `2*w = 1`):
+    P := !![0, w; 2, a]        Q := !![1, -(a*w); 0, 1]
+    P * M     = !![2*w, w*a; 0, a^2]        (= !![1, w*a; 0, a^2])
+    P * M * Q = !![1, 0; 0, a^2]            (entry (0,1) is w*a*(1 - 2*w) = 0)
+    det P = -(w*2) = -1  (unit),  det Q = 1.
+Kronecker square: `(P⊗ₖP) * (M⊗ₖM) * (Q⊗ₖQ) = (P*M*Q) ⊗ₖ (P*M*Q)` by
+`Matrix.mul_kronecker_mul` used twice, then `Matrix.diagonal_kronecker_diagonal` gives
+`diagonal fun p => d p.1 * d p.2` = diag(1, a², a², a⁴) — card (19).
+`Matrix.det_kronecker` gives the unit determinants.
+
+LEAN OBSTACLE HIT: `ext i j; fin_cases i <;> fin_cases j <;> simp` leaves four goals needing
+DIFFERENT `linear_combination` coefficients in `hvw : 2*w = 1` (namely 1, w*a, 0, 0), so a single
+`<;>` chain cannot close them.  Next time: prove `P * M = !![1, w*a; 0, a^2]` as its own lemma
+(one `ext` + per-entry `linear_combination`), then multiply by Q where no unit is needed.
+
+
+## gorenstein card status after this window (CARD STILL NOT MOVED)
+
+PROVED in `ConstraintRelativity/GorensteinMonogenic.lean` (green, wired):
+- `kaehler_isPrincipal_of_monogenic`  — Thm 1 (3)=>(2)
+- `traceQuotient_isPrincipal`         — Thm 1 (1)=>(2)
+- `mulDifferentEquiv`                 — card (12)
+- `traceKaehlerEquiv_of_monogenic`    — Thm 1 (3)=>(1)  [uses mathlib traceForm_dualSubmodule_adjoin = card (11)]
+- `quadDifferentMatrix`, `quadDifferent_mul_left`, `smith_quadDifferent` — card (18), Smith form diag(1,a²)
+- `smith_kronecker_quadDifferent`     — card (19), Kronecker Smith form diag(1,a²,a²,a⁴)
+
+REMAINING for the card:
+(A) Turn (19) into card (16): `L = coker(mul by d_x d_y) ≅ R/(a²) ⊕ R/(a²) ⊕ R/(a⁴)`.
+    Use the SimpleHorizonTransmutation pattern: `Matrix.toLinearEquiv'` on the unimodular factors
+    + `range_diagonal_mulVecLin`-style lemma + `Submodule.quotientPi`.  (The index type is
+    `Fin 2 × Fin 2`; the `1` factor contributes `R/(1) = 0`.)
+(B) Card (17): `Ω ≅ (R/(a²))⁴` from `Ω ≅ A/(d_x)dx ⊕ A/(d_y)dy` and `B/(d_x) ≅ R/(a²)`
+    (the latter is `smith_quadDifferent` again, one factor).
+(C) Thm 1 (2)=>(3): the hard direction (embedding dim of B=A/aA, Nakayama, B_i ≅ k[T]/(T^n),
+    CRT with distinct residues since k infinite, Nakayama lift).
+LEAN NOTE: `fin_cases i <;> fin_cases j <;> simp [...]` often leaves exactly ONE goal; end with a
+plain `ring` on the next line, not `<;> ring` (the unnecessarySeqFocus linter is an error here).
+
+### gorenstein next step is now unblocked (all inputs proved)
+
+`smith_kronecker_quadDifferent` now also returns `IsUnit P.det ∧ IsUnit Q.det` (via
+`Matrix.det_kronecker` + `IsUnit.pow`), and `SimpleHorizonTransmutation.range_diagonal_mulVecLin'`
+was generalized to an arbitrary index type and arbitrary diagonal `d : n → R`.  So card (16) is
+now a mechanical assembly:
+
+  coker (M ⊗ₖ M) ≅ coker D ≅ ∀ p, R ⧸ span {d p}   with d p = ![1,a²] p.1 * ![1,a²] p.2
+
+using exactly the `cokerSheetObserverEquiv` proof shape.
+
+LEAN TRAP that blocked the first attempt: a `noncomputable def` CANNOT `obtain` the matrices out of
+the ∃ in `smith_kronecker_quadDifferent` (`Exists.casesOn` only eliminates into `Prop`).  Two fixes:
+either (a) state the result as `theorem … : Nonempty (… ≃ₗ[R] …)`, or (b) restate
+`smith_kronecker_quadDifferent` as a `def` returning the pair plus proofs (a structure/Σ-type), or
+(c) take P and Q as explicit arguments of the def.  Prefer (a).

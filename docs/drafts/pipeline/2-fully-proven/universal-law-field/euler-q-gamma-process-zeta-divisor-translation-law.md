@@ -605,3 +605,329 @@ needed for the CPM field claim; the formulas and their coupling are what matter.
 - 2026-08-09 — missing q-Pochhammer/q-Gamma infrastructure created in Lean; local mass-one law,
   normalized translation, and all nonnegative-integral moments certified. Global claims explicitly
   remain uncertified.
+
+## Lean certification plan (opened 2026-08-10)
+
+Sibling cards ULF-QGPRH-1 and ULF-QG5R-1 are now stage 3, so the corpus owns the whole *local*
+layer this card needs: `qGammaWeight`/`qGammaWeight_hasSum_one`, `realQFactorial`,
+`realQFactorialInf` with `realQFactorialInf_pos`/`_ne_zero`/`_le`, `qGeometricCoefficient` with
+**`qGeometricCoefficient_hasSum : HasSum (qGeometricCoefficient q) (realQFactorialInf q)⁻¹`**
+(this is the local Euler factor), the analytic `qGammaOn` layer, Jackson's translation law, the
+q-digamma/Bell layer, **Pastro's q-Hölder theorem** (`qGamma_jet_annihilator_eq_zero`), the GNS
+machinery (`QGammaSpace`, `qUnitary`, `dense_span_qOrbit`, `exists_unique_marked_intertwiner`,
+diagonal unitaries and compact diagonal resolvents on `ℓ²`), and the classical
+`hypertranscendental_gamma`.
+
+Audited mathlib inputs: `EulerProduct.eulerProduct_hasProd` (for a multiplicative `f : ℕ → R` with
+`f 0 = 0`, `f 1 = 1` and `Summable (‖f ·‖)`: `HasProd (fun p : Nat.Primes => ∑' e, f (p^e))
+(∑' n, f n)`) — this is exactly (EQG.6)/(EQG.7); `riemannZeta` and its Euler product;
+`Nat.factorization`, `Nat.primeFactors`, `Nat.factorization_mul`.
+
+Planned modules.
+
+1. `EulerQGammaGlobalLaw.lean` — **Theorem 3.1**.  `EulerSigma` (`1 < σ`), the local nome
+   `eqgNome σ p = p^{-σ}` as a `RealEulerNome`, the arithmetic weight
+   `eqgWeight σ m = m^{-σ} / ∏_{p ∣ m} (q_p;q_p)_{v_p(m)}` (zero at `m = 0`), its multiplicativity
+   on coprimes, and its summability through the uniform denominator bound
+   `(q;q)_n ≥ exp(−4q)` (from `1 − y ≥ exp(−2y)` on `[0,1/2]`, valid because `q_p ≤ 2^{-σ} < 1/2`)
+   together with `∑_{p ∣ m} p^{-σ} ≤ ∑_{n ≥ 2} n^{-σ}`.  Then `eulerProduct_hasProd` plus
+   `qGeometricCoefficient_hasSum` gives
+   `HasProd (fun p => (q_p;q_p)_∞⁻¹) (∑' m, eqgWeight σ m)`, hence **(EQG.7)** `C_σ` as the
+   convergent prime product `∏_p (q_p;q_p)_∞ > 0` and **(EQG.6)** the mass function with
+   `∑' m, C_σ · eqgWeight σ m = 1`.  The almost-sure finite support of `(N_p)` is the same
+   statement read on the product law, and is certified in the form actually used: the law lives on
+   ordinary positive integers.
+2. `EulerQGammaResponse.lean` — **Theorem 4.1**, (EQG.8)–(EQG.12): the global observable
+   `X_σ = log ζ(σ) − σ log M`, the response `F_σ(s) = ∑_m P_σ(m) e^{sX_σ(m)}`, its Dirichlet form
+   (EQG.12), and the prime-product form (EQG.11) with the zeta ladder, by the same Euler-product
+   route applied at `σ(1+s)` together with the `ζ(σk)^{-1}` telescope for `C_σ`.
+3. `EulerQGammaContinuation.lean` — **Theorem 5.1**: normal convergence of the ladder tail on
+   compact sets, the meromorphic continuation, the translation law **(EQG.13)** and (EQG.14),
+   (EQG.15).
+4. `EulerQGammaDivisor.lean` — **Theorem 6.1**, (EQG.16)–(EQG.18): the order/divisor transgression,
+   reusing the corpus's finite ladder core `EulerQGammaFiniteProcess` and the meromorphic
+   order layer.
+5. `EulerQGammaHypertranscendence.lean` — **Theorem 7.1**: hypertranscendence of `F_σ`, from
+   hypertranscendence of `ζ` (functional equation plus the corpus's `hypertranscendental_gamma`)
+   and (EQG.13).
+6. `EulerQGammaObserver.lean` — **Theorem 8.1**: the `L²(ℕ_{>0}, P_σ)` realization, the diagonal
+   generator `X_σ` with compact resolvent, and recurrence of the orbit — the same shape as the
+   already-certified `ConstitutiveQGammaProcess` GNS layer, over the arithmetic index set.
+7. `EulerQGammaGenusOne.lean` — **Theorem 9.1**, (EQG.20)–(EQG.24): the genus-one subtraction, its
+   half-plane holomorphy and zero-freeness, and the divisor-erasure identity.
+
+### Step 1 is done — Theorem 3.1 is certified
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaGlobalLaw.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,543-job build green).
+
+- `EulerSigma` (the chamber `σ > 1`), the local nome `eqgQ σ n = n^{-σ}` with
+  `eqgQ_pos`, `eqgQ_lt_one`, **`eqgQ_le_half`** (every prime nome is at most `1/2`, because
+  `p^{-σ} ≤ p^{-1} ≤ 1/2`), and `eqgNome σ p : RealEulerNome`.
+- **`exp_neg_two_mul_le_one_sub`** (`exp(−2x) ≤ 1 − x` on `[0,1/2]`, through `1 + 2x ≤ exp(2x)`)
+  and **`exp_le_eqgLocalFactorial`** — the uniform lower bound `(q;q)_n ≥ exp(−4q)` for a nome at
+  most `1/2`.  This is what makes the arithmetic weight summable without any prime-counting input.
+- The arithmetic weight `eqgWeight σ m = m^{-σ}/∏_{p ∣ m}(q_p;q_p)_{v_p(m)}` with `eqgWeight_zero`,
+  `eqgWeight_one`, `eqgWeight_nonneg`, **`eqgDenom_mul`** and **`eqgWeight_mul`** (multiplicativity
+  on coprimes, from `Nat.primeFactors_mul` and `Nat.factorization_mul`), and
+  **`eqgWeight_prime_pow`** — *the local Euler factor is exactly the corpus's
+  `qGeometricCoefficient`*, so the local q-binomial normalisation is the local Euler factor.
+- `eqgTail`, `summable_eqgQ`, `sum_eqgQ_le_tail`, **`eqgDenom_lower`**
+  (`∏_{p ∣ m}(q_p;q_p)_{v_p(m)} ≥ exp(−4∑_n n^{-σ})`, uniformly in `m`), `eqgWeight_le`, and
+  **`summable_eqgWeight`**.
+- **`eqgEulerProduct`** — mathlib's `EulerProduct.eulerProduct_hasProd` applied to the arithmetic
+  weight gives `HasProd (fun p => (q_p;q_p)_∞⁻¹) (∑' m, eqgWeight σ m)`, i.e. the local
+  normalisations multiply to the global one.
+- **Equation (EQG.7)**: `eqgTotal`, `eqgTotal_pos`, `eqgConst σ = (∑' m, eqgWeight σ m)⁻¹` with
+  `eqgConst_pos` and **`eqgConst_hasProd : HasProd (fun p => (q_p;q_p)_∞) (eqgConst σ)`** — the
+  normalising constant *is* the convergent prime product, and it is positive.
+- **Equation (EQG.6) and Theorem 3.1**: `eqgMass σ m = C_σ · eqgWeight σ m`, `eqgMass_pos` (every
+  positive integer has positive mass) and **`eqgMass_hasSum_one`** — the mass function is a
+  probability law on the positive integers.  This is the certified form of "almost surely only
+  finitely many `N_p` are nonzero": the composed law lives on ordinary integers and has total
+  mass one.
+
+`#print axioms` on `eqgMass_hasSum_one`, `eqgConst_hasProd`, `eqgEulerProduct`, `eqgConst_pos` and
+`eqgMass_pos` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+Still open on this card: steps 2–7 of the plan above (Theorems 4.1, 5.1, 6.1, 7.1, 8.1, 9.1).
+
+### Step 2a is done — the Dirichlet Euler product
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaDirichlet.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,545-job build green).
+
+Shifting the numerator exponent of the arithmetic weight from `σ` to an arbitrary complex `w`,
+with the nomes still taken from `σ`, keeps the weight multiplicative, and its **local Euler factor
+becomes the complex q-binomial series** at `a = p^{-w}` with nome `q_p`.  The corpus's
+`qBinomial_hasSum` evaluates that series as `(p^{-w}; q_p)_∞⁻¹`, so the whole global Dirichlet
+series collapses to a prime product of reciprocal q-Pochhammer symbols.
+
+- `eqgWeightRe σ x m` — the real-exponent weight, with `eqgWeightRe_nonneg`, `eqgWeightRe_le`
+  (the same uniform denominator bound `exp(−4∑ n^{-σ})`, which does not depend on the exponent)
+  and **`summable_eqgWeightRe`** for every `x > 1`.
+- `eqgTerm σ w m = m^{-w}/∏_{p ∣ m}(q_p;q_p)_{v_p(m)}` with `eqgTerm_zero`, `eqgTerm_one`,
+  **`norm_eqgTerm`** (`‖eqgTerm σ w m‖ = eqgWeightRe σ (Re w) m`), `summable_norm_eqgTerm` for
+  `Re w > 1`, and **`eqgTerm_mul`** (multiplicativity on coprimes, through
+  `Complex.mul_cpow_ofReal_nonneg`).
+- **`eqgTerm_prime_pow`** — the local term *is* the corpus's `qBinomialTerm (eqgNome σ p) (p^{-w})`,
+  via `Complex.natCast_cpow_natCast_mul` and `Complex.cpow_nat_mul`.
+- `norm_natCast_cpow_lt_one`, **`eqgTerm_local_hasSum`** — the local Euler factor is
+  `(p^{-w}; q_p)_∞⁻¹`, by the complex q-binomial theorem.
+- **`eqgDirichlet_eulerProduct`** — for `Re w > 1`,
+  `HasProd (fun p => (p^{-w}; q_p)_∞⁻¹) (∑' m, eqgTerm σ w m)`.
+
+This is the analytic core of (EQG.11)/(EQG.12): at `w = σ(1+s)` the left side is the prime product
+of the q-Gamma denominators and the right side is the Dirichlet series of (EQG.12).
+
+`#print axioms` on `eqgDirichlet_eulerProduct`, `eqgTerm_local_hasSum`, `summable_norm_eqgTerm` and
+`eqgTerm_prime_pow` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+Next (step 2b): identify `(q_p^{1+s}; q_p)_∞` with `qDenomProduct (eqgNome σ p) (1+s)` (the corpus's
+analytic q-Gamma denominator) and assemble
+`Γ_{q_p}(1+s) = (1−q_p)^{-s}(q_p;q_p)_∞/(q_p^{1+s};q_p)_∞`, then multiply the three prime products —
+`ζ(σ)^s` from the first factor (mathlib's `riemannZeta` Euler product at the real point `σ`), `C_σ`
+from the second (already certified as `eqgConst_hasProd`), and the Dirichlet series from the third.
+The only new analytic input needed is `((x^a : ℝ) : ℂ)^w = (x:ℂ)^(a·w)` for `x > 0` and real `a`,
+which is a two-line `Complex.log_ofReal`/`Real.log_rpow` computation.
+
+### Step 2 is done — Theorem 4.1 is certified
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaLocalFactor.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,547-job build green).
+
+- `ofReal_rpow_cpow` (`((x^a : ℝ) : ℂ)^w = (x:ℂ)^(a·w)` for `x > 0` and real `a`, by
+  `Complex.cpow_def_of_ne_zero` and `Real.log_rpow`) and **`eqgNome_cpow`**
+  (`(q_p)^w = p^{−σw}`), the bridge between the local nome and the arithmetic exponent.
+- **`qGammaOn_eqgNome_factor`** — the local response splits exactly:
+  `Γ_{q_p}(1+s) = (1−q_p)^{−s} · (q_p;q_p)_∞ · (p^{−σ(1+s)}; q_p)_∞⁻¹`, using the corpus's
+  `qDenomProduct_eq`.
+- The unit product: `summable_eqgQ_primes`, **`abs_log_one_sub_le`** (`|log(1−q)| ≤ 2q` for
+  `q ≤ 1/2`, the same `exp(−2x) ≤ 1−x` brick read through `Real.le_log_iff_exp_le`),
+  `summable_log_one_sub`, `eqgLogUnit`, `hasProd_one_sub`, `hasProd_one_sub_complex`.
+- **`exp_eqgLogUnit_eq_zeta_inv`** — the unit prime product is `ζ(σ)⁻¹`, by comparing the corpus
+  product with mathlib's `riemannZeta_eulerProduct_hasProd` through uniqueness of limits; then
+  `zeta_eq_exp`, `zeta_cpow`, and **`hasProd_one_sub_cpow`**:
+  `HasProd (fun p => (1−q_p)^{−s}) (ζ(σ)^s)` — the first prime product *is* `ζ(σ)^s`, with no
+  branch ambiguity because every factor is a positive real.
+- **`eqgResponse_hasProd`** — **Theorem 4.1, equation (EQG.11)**: for `Re(σ(1+s)) > 1`
+  (equation (EQG.10)),
+
+  `HasProd (fun p => Γ_{q_p}(1+s)) (ζ(σ)^s · C_σ · ∑'_m m^{−σ(1+s)}/∏_p (q_p;q_p)_{v_p(m)})`,
+
+  by multiplying the three prime products: `ζ(σ)^s`, the certified `eqgConst_hasProd`, and the
+  certified `eqgDirichlet_eulerProduct`.
+- **Equations (EQG.8), (EQG.9), (EQG.12)**: `eqgTerm_eqgExponent` and
+  `eqgDirichlet_eq_lawTransform` — the shifted arithmetic term is the unnormalised law times
+  `m^{−σs}`, i.e. exactly `P_σ(m)·e^{sX_σ(m)}/C_σ` with `X_σ = log ζ(σ) − σ log M`, so the Dirichlet
+  series of (EQG.12) is the exponential response of the random-integer law.
+
+`#print axioms` on `eqgResponse_hasProd`, `hasProd_one_sub_cpow`, `exp_eqgLogUnit_eq_zeta_inv`,
+`qGammaOn_eqgNome_factor`, `ofReal_rpow_cpow`, `eqgTerm_eqgExponent` and
+`eqgDirichlet_eq_lawTransform` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+Remaining on this card: steps 3–7 (Theorems 5.1, 6.1, 7.1, 8.1, 9.1).  The next step is the
+`ζ(σ(1+s+k))` ladder: interchange the two prime/occupation products in
+`(p^{−σ(1+s)}; q_p)_∞⁻¹ = ∏_{k≥0}(1 − p^{−σ(1+s+k)})⁻¹` and apply
+`riemannZeta_eulerProduct_hasProd` at each `σ(1+s+k)`, which turns `eqgResponse_hasProd` into the
+zeta-ladder form and then feeds the meromorphic continuation and the translation law (EQG.13).
+
+### Step 3 is done — the translation law and the source normalisation
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaTranslation.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,548-job build green).
+
+The zeta ladder is not needed for the translation law: **Jackson's q-Pochhammer shift does the
+whole job**.  Read at `a = p^{-w}`, `q = p^{-σ}`, the corpus's `qPochhammerInf_shift` factors the
+local Euler factor of the arithmetic Dirichlet series,
+
+`(p^{-w};q_p)_∞⁻¹ = (1 − p^{-w})⁻¹ · (p^{-(w+σ)};q_p)_∞⁻¹`  (`eqgLocalFactor_shift`),
+
+and multiplying over the primes turns the first factor into `ζ(w)` by mathlib's Euler product.
+
+- `eqgDirichlet σ w = ∑' m, eqgTerm σ w m` and **`eqgDirichlet_shift`** —
+  `D_σ(w) = ζ(w)·D_σ(w+σ)` for `Re w > 1`, by uniqueness of limits against the two Euler products.
+- **`eqgResponse`** (equation (EQG.9)) with `eqgResponse_hasProd'`: the prime product of local
+  q-Gamma responses converges to it on the chamber.
+- **`eqgResponse_translation`** — **Theorem 5.1, equation (EQG.13)**:
+
+  `F_σ(s+1) = ζ(σ)/ζ(σ(1+s)) · F_σ(s)`.
+
+- `eqgTerm_sigma`, `eqgDirichlet_sigma` (`D_σ(σ)` is the total mass of the arithmetic weight), and
+  **equation (EQG.14)**: `eqgResponse_zero : F_σ(0) = 1` and `eqgResponse_one : F_σ(1) = 1` — the
+  second by the translation law at `s = 0`, since `ζ(σ)/ζ(σ) = 1`.
+- **Equation (EQG.15)**: `summable_eqgTerm`, `eqgTiltTerm` and **`eqgTilt_hasSum_one`** —
+  `∑_m P_σ(m)·ζ(σ)·m^{-σ} = 1`, i.e. the exponential intervention `e^{X_σ} = ζ(σ)M^{-σ}` is
+  already a probability density and needs no fitted scalar correction.
+
+`#print axioms` on `eqgResponse_translation`, `eqgDirichlet_shift`, `eqgResponse_zero`,
+`eqgResponse_one`, `eqgTilt_hasSum_one` and `eqgLocalFactor_shift` reports only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+Remaining on this card: the meromorphic continuation clause of Theorem 5.1 (the `∏_{k≥0}
+ζ(σ(1+s+k))` ladder, which needs the interchange of the prime and occupation products and the
+normal convergence of the far-right tail), then Theorems 6.1, 7.1, 8.1 and 9.1.  Note that the
+translation law (EQG.13) — the input to Theorem 6.1's divisor transgression — is now certified in
+the chamber without any of that machinery; what the ladder adds is the *domain* on which the
+divisor statement can be read.
+
+### Step 4 is done — the zeta ladder
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaLadder.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,549-job build green).
+
+The ladder needs **no interchange of the prime and occupation products**: iterating the certified
+shift law `D_σ(w) = ζ(w)·D_σ(w+σ)` gives the exact finite ladder, and the far-right Dirichlet
+series tends to one.
+
+- `eqgTailBase`, `summable_eqgTailBase`, `eqgTailConst` (the comparison constant `∑_{m≥2} m^{-2}`)
+  and `rpow_le_two_rpow`.
+- **`eqgWeightRe_tail_le`** — for `x ≥ 2` and `m ≥ 2`,
+  `eqgWeightRe σ x m ≤ E·2^{-(x-2)}·m^{-2}` with `E = exp(4∑_n n^{-σ})`: the same uniform
+  denominator bound, now split as `m^{-x} = m^{-2}·m^{-(x-2)} ≤ m^{-2}·2^{-(x-2)}`.
+- **`norm_eqgDirichlet_sub_one_le`** — `‖D_σ(v) − 1‖ ≤ E·2^{-(Re v − 2)}·B` for `Re v ≥ 2`, by
+  subtracting the `m = 1` term as a `HasSum` and bounding the rest.
+- **`tendsto_eqgDirichlet_shift_one`** — `D_σ(w + Nσ) → 1` as `N → ∞`.
+- **`eqgDirichlet_ladder_step`** — the exact finite ladder
+  `D_σ(w) = (∏_{k<N} ζ(w+kσ))·D_σ(w+Nσ)`, by induction on `N`.
+- **`eqgDirichlet_ladder`** — **equation (EQG.11), ladder form**: the partial products
+  `∏_{k<N} ζ(w+kσ)` converge to `D_σ(w)` for `Re w > 1`; and **`eqgResponse_ladder`**, the same
+  statement for the response:
+
+  `F_σ(s) = ζ(σ)^s · C_σ · ∏_{k≥0} ζ(σ(1+s+k))`.
+
+`#print axioms` on `eqgDirichlet_ladder`, `eqgResponse_ladder`, `tendsto_eqgDirichlet_shift_one`,
+`norm_eqgDirichlet_sub_one_le` and `eqgDirichlet_ladder_step` reports only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+**State of the card.**  Certified: Theorem 3.1 (EQG.6, EQG.7), Theorem 4.1 (EQG.8–EQG.12 in both
+the prime-product and the ladder form), and Theorem 5.1's translation law and normalisation
+(EQG.13, EQG.14, EQG.15).  Five modules: `EulerQGammaGlobalLaw`, `EulerQGammaDirichlet`,
+`EulerQGammaLocalFactor`, `EulerQGammaTranslation`, `EulerQGammaLadder`.
+
+Remaining: the meromorphic-continuation clause of Theorem 5.1 — the tail
+`∏_{k≥K} ζ(σ(1+s+k))` is holomorphic and zero-free on compacts (the corpus already runs exactly
+this pattern in `QGammaAnalytic` through `HasProdLocallyUniformlyOn`), leaving finitely many
+meromorphic factors — and then Theorems 6.1 (the order transgression, which only has content
+outside the chamber and so waits on the continuation), 7.1, 8.1 and 9.1.
+
+### Step 5 is done — the Dirichlet series is analytic on the chamber
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaAnalytic.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,550-job build green).
+
+- `eqgHalf x₀ = {Re w > x₀}` with `isOpen_eqgHalf`, `convex_eqgHalf`, and `log_natCast_nonneg`.
+- **`hasDerivAt_eqgTerm`** — each arithmetic term differentiates to `−log m · m^{-w}/den`, through
+  `Complex.hasStrictDerivAt_const_cpow` composed with negation and divided by the constant
+  denominator.
+- `norm_eqgTermDeriv` (`‖·‖ = log m · eqgWeightRe σ (Re w) m`), `eqgDerivBound`,
+  `norm_eqgTermDeriv_le`, and **`summable_eqgDerivBound`** — the differentiated series is dominated
+  by `log m · E · m^{-x₀}`, summable for `x₀ > 1` because `log m ≤ m^δ/δ`
+  (`Real.log_le_rpow_div`) with `δ = (x₀−1)/2`, leaving the exponent `x₀ − δ = (x₀+1)/2 > 1`.
+- **`hasDerivAt_eqgDirichlet`** — term-by-term differentiation on each `eqgHalf x₀`, through
+  mathlib's `hasDerivAt_tsum_of_isPreconnected`; then `differentiableOn_eqgDirichlet` and
+  **`analyticAt_eqgDirichlet`**: `D_σ` is analytic at every `w` with `Re w > 1`.
+
+`#print axioms` on `analyticAt_eqgDirichlet`, `hasDerivAt_eqgDirichlet`, `summable_eqgDerivBound`
+and `hasDerivAt_eqgTerm` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+**Architecture of the remaining continuation.**  With the ladder step and this analyticity, the
+continued response is
+`F_σ^K(s) = ζ(σ)^s · C_σ · (∏_{k<K} ζ(σ(1+s+k))) · D_σ(σ(1+s+K))`,
+which agrees with `eqgResponse` on the chamber (by `eqgDirichlet_ladder_step`), is independent of
+`K` where two choices are both admissible (by `eqgDirichlet_shift`), is defined for *every* `s` once
+`K` is large enough, and is meromorphic there because the last factor is analytic
+(`analyticAt_eqgDirichlet`) and the first is entire (`ζ(σ)` is a nonzero constant).
+
+**One mathlib gap identified.**  The finitely many factors `ζ(σ(1+s+k))` need
+`MeromorphicAt riemannZeta z` for every `z`, and mathlib does **not** have it: it has
+`differentiableAt_riemannZeta (hs : s ≠ 1)` and `riemannZeta_residue_one` but no meromorphy
+statement.  Away from `1` this is `DifferentiableOn` on the open set `{1}ᶜ` upgraded to
+`AnalyticAt`; at `1` the honest route is `n = 2` — `(z−1)²·ζ(z)` is bounded near `1` by the residue
+limit, so `Mathlib/Analysis/Complex/RemovableSingularity.lean`'s
+`differentiableOn_update_limUnder_of_bddAbove` makes it analytic there, and its *actual* value at
+`1` is already `0`, matching the extension.  That is the next module to build.
+
+### Step 6 is done — Theorem 5.1 is fully certified
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaContinuation.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,552-job build green).
+
+**The corpus already owned the zeta meromorphy.**  `HTGeometry/ZetaJetFreeness.lean` carries
+`meromorphicAt_riemannZeta_one` (through `RHTower.zetaResidueUnit`), and mathlib carries
+`analyticOn_riemannZeta : AnalyticOnNhd ℂ riemannZeta {1}ᶜ`; together they give
+**`meromorphicAt_riemannZeta : ∀ z, MeromorphicAt riemannZeta z`** in three lines.  The
+removable-singularity module scoped in the previous entry was therefore unnecessary — the gap was
+in mathlib, not in this corpus.
+
+- **`meromorphicAt_comp_affine`** — meromorphy is preserved by an affine substitution `z ↦ az+b`
+  with `a ≠ 0`; proved from the definition, since `(z−s)ⁿ = a^{-n}(φz − φs)ⁿ`.  mathlib has no
+  composition lemma for `MeromorphicAt`, so this is new infrastructure.
+- `eqgArg σ K s = σ(1+s)+Kσ` with `eqgArg_affine`, and **`eqgCont σ K s`** — the response with the
+  zeta ladder cut after `K` factors.
+- **`eqgCont_eq_response`** — the cut ladder computes the response on the chamber (from
+  `eqgDirichlet_ladder_step`), and **`eqgCont_succ`** — raising the cut changes nothing where both
+  are admissible (from `eqgDirichlet_shift`).
+- `analyticAt_zeta_sigma_cpow` (the factor `ζ(σ)^s` is entire, since `ζ(σ)` is a nonzero constant),
+  `meromorphicAt_zeta_ladder_factor` (each `ζ(σ(1+s+k))` is meromorphic in `s`, by the affine
+  composition lemma), `analyticAt_eqgDirichlet_arg` (the tail is analytic, by
+  `analyticAt_eqgDirichlet`), hence **`meromorphicAt_eqgCont`**.
+- `exists_admissible_cut` — every `s` becomes admissible for large `K` — and the capstone
+  **`eqgResponse_meromorphic_continuation`**: for every `s : ℂ` there is a `K` with
+  `MeromorphicAt (eqgCont σ K) s`, and that cut agrees with `eqgResponse σ` on the whole chamber.
+  **This is Theorem 5.1's continuation clause.**
+- **`eqgCont_translation`** — an *unconditional* identity, valid at every `s` and every `K`:
+
+  `ζ(σ)·F^{K+1}_σ(s) = ζ(σ(1+s))·F^K_σ(s+1)`.
+
+  On the chamber this is (EQG.13); off it, it is the translation law of the meromorphic
+  continuation, and it is the exact input to Theorem 6.1's divisor transgression.
+
+`#print axioms` on `eqgResponse_meromorphic_continuation`, `meromorphicAt_eqgCont`,
+`eqgCont_eq_response`, `eqgCont_succ`, `meromorphicAt_comp_affine` and `eqgCont_translation`
+reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+**Theorem 5.1 is now complete** (continuation, translation law, normalisation).  Certified so far:
+Theorems 3.1, 4.1, 5.1.  Remaining: Theorem 6.1 (take `meromorphicOrderAt` of
+`eqgCont_translation`, which needs the behaviour of the order under `s ↦ s+1` and under the affine
+substitution — the same shape as `meromorphicAt_comp_affine`), then 7.1, 8.1 and 9.1.

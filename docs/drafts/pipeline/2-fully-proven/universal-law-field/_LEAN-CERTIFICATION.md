@@ -7,6 +7,16 @@ even when their paper argument is dependency-closed.
 Dedicated Lean umbrella:
 `GaloisForLFunctions.HTGeometry.UniversalLawField`.
 
+## Session 2026-08-10 addition (observer-overlap mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-FKT-OD-1 | Nonnegative lax-meet overlap defect, exact serial composition, total-variation loss budget, injectivity classification, and false-overlap witness | `HTGeometry.ConstitutivePositiveOverlapDefect` |
+
+Direct elaboration, formal lint, and axiom audit pass. Significant declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. Final foreground
+`lake build GaloisForLFunctions.HTGeometry.UniversalLawField` completed 11,482 jobs.
+
 ## Certified and promoted to Stage 3
 
 | ID | Theorem | Lean module |
@@ -183,10 +193,17 @@ relation. The axiom audit reports only `propext` and `Quot.sound`.
 | ID | Theorem | Lean module |
 |---|---|---|
 | ULF-DDE-2A | Mandatory pointwise maximum of two scalar-exact work laws is scalar-integrable iff parent potentials differ by a constant; every disagreement creates a positive two-cycle; pointwise minimum always remains integrable | `HTGeometry.ConstitutiveCompetitiveWorkHistory` |
+| ULF-DDE-2B | On every finite path, mandatory/permissive composition is the endpoint work plus/minus relative total variation; on closed paths mandatory work is half-variation; observer descent holds exactly when collapsed two-cycle memory vanishes | `HTGeometry.ConstitutiveCompetitivePathVariation` |
 
 Direct foreground elaboration and final Universal Law Field umbrella build pass. The final build
 completed 11,417 jobs. Significant declarations depend only on `propext`, `Classical.choice`, and
 `Quot.sound`; forbidden-token scan is clean.
+
+`ULF-DDE-2B` passes direct foreground elaboration and is wired into the same umbrella. Its
+capstone combines closed-path variation production with the exact attained-range observer-descent
+criterion. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`; forbidden-token
+scan is clean. Final foreground
+`lake build GaloisForLFunctions.HTGeometry.UniversalLawField` completed 11,420 jobs.
 
 ## Session 2026-08-09 additions (Endogenous Compatibility Mechanics)
 
@@ -204,11 +221,30 @@ alone imposes no dynamics.
 | ID | Theorem | Lean module |
 |---|---|---|
 | ULF-GTM-1 | No infinite strict compatibility-enrichment history on finite vocabulary; every monotone history has an adjacent stable step | `HTGeometry.ConstitutiveFiniteRevisionTermination` |
+| ULF-GTM-2 | Arbitrary joint saturation of monotone extensive finitary formations remains finitary and is the least containing closure; concrete cofinal-birth closure has no finite witness and cannot be such a saturation | `HTGeometry.ConstitutiveFinitaryFormation` |
+| ULF-GTM-3 | Finite continuous formation families commute with compact Hausdorff completion at every bounded word depth; completion-born laws force unbounded formation depth, persist under bounded generator changes, and can only be erased by equivariant observers | `HTGeometry.ConstitutiveFormationCompletionExchange` |
 | ULF-DDE-1 | Repair splittings form a simply transitive shear torsor; nonzero shears fix no selector; every selector is the unique minimizer of an explicit manufactured squared-norm cost | `HTGeometry.ConstitutiveRepairTorsorSelectorNoGo` |
 
 This certifies the finite-monotone leg of the law-genesis trilemma. Direct elaboration and the final
 11,413-job umbrella build pass. Significant declarations depend only on `propext`,
 `Classical.choice`, and `Quot.sound`; the forbidden-token scan is clean.
+
+`ULF-GTM-2` certifies the cofinal-exit barrier: arbitrarily many noncommuting finitary law-formers
+cannot produce an irreducibly cofinal consequence through finite-history saturation. The concrete
+closure adjoining `0` only to infinite sets supplies the sharp separated mechanism. Direct
+foreground elaboration and forbidden-token lint pass. The final Universal Law Field umbrella build
+completed 11,426 jobs. Significant declarations depend only on `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+`ULF-GTM-3` certifies the completion-exchange successor.  On compact Hausdorff law spaces, finite
+continuous formation families commute with completion at every bounded word depth.  The exact
+limit boundary forces deeper-than-`d` effective realizations in every neighbourhood for every
+finite `d`.  Mutually bounded generator dictionaries preserve the boundary, while equivariant
+observer maps can erase but cannot create it.  An explicit one-point-compactification model proves
+finite signature is load-bearing: infinitely many continuous constant generators violate exchange
+already at depth one. Direct foreground elaboration and forbidden-token lint pass. Final Universal
+Law Field umbrella build completed 11,430 jobs. Significant declarations depend only on `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 ## Session 2026-08-09 additions (Marked-Symmetry Experiment Quotient)
 
@@ -224,3 +260,380 @@ closure-of-semigroup argument.  The exact instantiation is certified concretely:
 the stabilizer of a marking, `Circle ⧸ K ≃* Circle`, and the angle lift of the response loop is the
 genuine mathlib path lift along `Circle.exp`, with endpoints escaping through distinct deck
 translations by `2π`.
+
+## Session 2026-08-09 additions (Equivariant Intervention-Response Blindness)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-EIR-1 | An invariant doctrine map and equivariant interventions have first responses that factor through the orbit space; separation forces one of four structural failures, and non-equivariance alone is provably insufficient | `HTGeometry.ConstitutiveEquivariantResponseBlindness` |
+
+Stated on genuine manifolds with `mfderiv` and the manifold chain rule.  The exact radial-source
+instantiation reuses `HTGeometry.ConstraintRelativity.IdentitySectorRadialBlindness` verbatim and
+adds only the reporter-coframe reading.  Direct foreground elaboration and the final 11,423-job
+Universal Law Field umbrella build pass with no warnings; `#print axioms` on every capstone reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-09 additions (Antisymmetric Wall Response)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-A2R-1 | The A₂ passive modulus packet is even in the wall parameter, while one intervention fixed beforehand has antisymmetric response `4 sin θ` whose sign is exactly the stable/semistable/unstable trichotomy | `HTGeometry.ConstitutiveAntisymmetricWallResponse` |
+
+Reuses `ConstitutiveStabilityWall` and `ConstitutivePositiveResponse` verbatim; the new content is
+the real-part computation of the charges, the derivative form of the component responses, and the
+two missing legs of the stability trichotomy (unstable and strictly semistable).  Direct foreground
+elaboration and the final 11,424-job Universal Law Field umbrella build pass with no warnings;
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Structured Mutational Genesis)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SEGM-1 | One fixed local mutation has a period-two visible rulebook and an unbounded positive semantic lineage; its transported certificate forces exact linearization, reconstructs the nonlinear exchange, and forbids every positive semantic period | `HTGeometry.ConstitutiveMutationalGenesis` |
+
+The formal theorem occupies the strict middle between fixed-polarity collapse and arbitrary
+state-indexed compatibility: future values are generated by one source-fixed exchange rather than
+stored in a transition oracle. Direct foreground elaboration, formal lint, and the final `11,433`-job
+Universal Law Field umbrella build pass. `#print axioms` on every capstone reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Equivariant Arity Genesis)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-EAG-1 | An unoriented failed pair with fixed background admits no equivariant deterministic binary reporter; every equivariant separator has three distinct values, ternary repair is sharp, convex binary repair has unique fixed mixture `1/2`, and orientation resolves the pair by breaking swap symmetry | `HTGeometry.ConstitutiveEquivariantArityGenesis` |
+
+The theorem classifies three exact successor-doctrine repairs from one source orbit type: raise
+deterministic arity, add orientation, or convexify into a mixed fixed point. Direct foreground
+elaboration, axiom audit, formal lint, and the final `11,435`-job Universal Law Field umbrella build
+pass. Reported build linter messages are pre-existing and outside the new module.
+
+## Session 2026-08-09 additions (Metaplectic Action History)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ACTION-1 | The rotating quadratic action has `2π`-periodic critical locus, positive Hessian shadow and unoriented descent line, while its oriented parametrization and Gaussian amplitude `√(2π) e^{-iθ/2}` reverse after one loop and close only after two | `HTGeometry.ConstitutiveMetaplecticActionHistory` |
+
+The amplitude is the genuine pullback line integral — `descentLine_hasDerivAt` certifies the
+Jacobian and mathlib's `integral_gaussian` supplies `∫ e^{-y²/2} = √(2π)` — so equation (3) is
+computed, not posited.  Direct foreground elaboration and the final 11,425-job Universal Law Field
+umbrella build pass with no warnings; `#print axioms` on every capstone reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-09 additions (Toeplitz Defect and Index)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TOEPLITZ-1 | The `n`-fold unilateral shift on `ℓ²(ℕ₀)` is an isometry whose defect is the rank-`n` truncation projection obeying an orthogonal cocycle law; every root-of-unity boundary observer is periodic while the defect rank and the index `−n` diverge along its returns, and no invertible compact perturbation of `Sⁿ` exists | `HTGeometry.ConstitutiveToeplitzDefectIndex` |
+
+New infrastructure: `ℓ²`-summability and norm identity for the coordinate reindexings, the adjoint
+relation, the defect projection with an explicit `ℂⁿ` coordinate isomorphism, the cokernel
+isomorphism `ToeplitzSpace ⧸ range Sⁿ ≅ ℂⁿ`, and a compact-perturbation rigidity argument built on
+mathlib's Fredholm alternative.  Clause 7 is certified computationally (mathlib has no C*-algebra
+K-theory); clause 8 is certified in the stronger invertible-perturbation form.  Direct foreground
+elaboration and the final 11,427-job Universal Law Field umbrella build pass with no warnings;
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-09 additions (Balanced Defect, Zero Index)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DEFECT-1 | `Tₙ = Sⁿ ⊕ S*ⁿ` has equal `n`-dimensional kernel and cokernel defects, hence index zero, unit symbol determinant and vanishing signed class, while its unsigned defect energy `2n` diverges along the exact returns of the root-of-unity boundary observer | `HTGeometry.ConstitutiveBalancedDefectZeroIndex` |
+
+Reuses the certified single-shift calibration `ConstitutiveToeplitzDefectIndex` verbatim.  New
+infrastructure: the doubled Hardy space `WithLp 2 (H × H)`, the block-diagonal operator `pairOp`
+with `adjoint_pairOp`, the two defect-range isomorphisms, and the kernel/cokernel isomorphisms of
+the doubled operator.  The §3 abstract cancellation theorem is stated for an arbitrary additive hom
+`M →+ G` and needs only `propext`.  Direct foreground elaboration and the final 11,428-job Universal
+Law Field umbrella build pass with no warnings; `#print axioms` on every capstone reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Consensus Faces and Collision History)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-FKT-HMCF-1-CORE | Two nested deterministic observers admit one finite nonnegative coupling simultaneously saturating both overlap capacities | `HTGeometry.ConstitutiveHierarchicalMaximalCoupling` |
+| ULF-FKT-CCD-1-CORE | A telescoping collision profile has bounded total capacity and vanishing tail while its depth-weighted history diverges | `HTGeometry.ConstitutiveCofinalCollisionHistory` |
+
+Certification is deliberately narrower than the paper cards.  The arbitrary finite-chain induction,
+collision-stratum decomposition, incompatible-partition countermodel, and countable coupling
+realization remain paper-only and do not count as Lean-certified results.  Both modules elaborate
+directly with no warnings; formal lint passes; the final 11,514-job Universal Law Field umbrella
+build passes; `#print axioms` on the four capstones reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+## Session 2026-08-10 addition (TV Conflict Width)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-FKT-TVCC-1 | Preserving a finite declared family of pairwise total variations is equivalent to properly coloring its source sign-conflict relation; width-`q` observer existence is equivalent to `q`-colorability; collapsed conflict edges force strict loss; every finite symmetric irreflexive relation is realized by nonnegative Dirac task pairs | `HTGeometry.ConstitutiveTVConflictColoring` |
+
+The module elaborates directly and is imported by `HTGeometry.UniversalLawField`.  Formal lint
+passes.  The final 11,516-job umbrella build passes.  Axiom prints on the fibre formula,
+lossless-coloring equivalence, strict-loss theorem, width equivalence, arbitrary-relation
+realization, and capstone report only `propext`, `Classical.choice`, and `Quot.sound`.  The
+de Bruijn--Erdos infinite compactness corollary remains a cited classical result rather than a new
+Lean certification claim.
+
+## Session 2026-08-10 addition (Identification--Conflict Critical Triple)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-LSM-5 | Mandatory identifications saturate by equivalence generation; a respecting lossless observer exists exactly when generated identifications avoid TV conflicts; residual width is quotient-conflict chromatic width; two separately compatible identification doctrines can jointly close a conflict path and force strict TV loss | `HTGeometry.ConstitutiveIdentificationConflictInterference` |
+| ULF-LSM-6 | Source operations generate unitization identifications and canonical exchange reporters; joint execution collapses every formation-word endpoint, exactly erases exchange TV from one to zero, and two idempotent retractions on three states give the state-minimal source-generated critical triple | `HTGeometry.ConstitutiveEndogenousUnitizationInterference` |
+
+The three-state critical triple is explicit: `0~1`, `1~2`, and the task `delta_0` versus
+`delta_2`.  Each identification separately admits a certified lossless observer, while no finite
+observer respecting both can remain lossless.  Direct elaboration and formal lint pass.  The final
+11,522-job Universal Law Field umbrella build passes; the new module builds cleanly.  Axiom prints
+report no axioms for equivalence saturation and only `propext`, `Classical.choice`, and `Quot.sound`
+for quotient, TV, and state-minimality theorems.
+
+## Session 2026-08-09 additions (Experimental Dimension)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-EXPDIM-1 | Passive fibre size bounds total experimental capacity; the minimal number of scalar experiments for exact linear reconstruction is exactly `dim ker q₀`, and no finite number suffices when the hidden space is infinite-dimensional | `HTGeometry.ConstitutiveExperimentalDimension` |
+
+The finite-information half is proved without assuming the state space finite.  Direct foreground
+elaboration and the final 11,429-job Universal Law Field umbrella build pass with no warnings;
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Monoid Bialgebra and Hopf Envelope)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-BIALG-1 | The group-like monoid bialgebra `k[t]` has no antipode, the Laurent algebra is its Hopf envelope with the expected universal property, and the unilateral-shift representation extends to it exactly after a quotient killing the rank-one Toeplitz defect | `HTGeometry.ConstitutiveMonoidBialgebraHopfEnvelope` |
+
+Uses mathlib's `AddMonoidAlgebra` bialgebra and Laurent Hopf instances and reuses the certified
+shift layer `ConstitutiveToeplitzDefectIndex`.  Clause 7 is stated for an arbitrary defect-killing
+unital algebra map (mathlib has no Calkin algebra), which is stronger than the Calkin case; clause 4
+is certified at the algebra-map level together with group-likeness of every basis image.  Direct
+foreground elaboration and the final 11,431-job Universal Law Field umbrella build pass with no
+warnings; `#print axioms` on every capstone reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+## Session 2026-08-10 additions (Invariant Positivity and KMS Wall)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-IPKMS-1 | A faithful invariant probability forces a compact monoid to be a group, while the Toeplitz Gibbs state at positive temperature is faithful, kills every off-diagonal monomial, and assigns each history layer the exact mass `(1−q)qⁿ`, so no such state descends to the reversible quotient | `HTGeometry.ConstitutiveInvariantPositivityKMSWall` |
+
+New reusable infrastructure: `continuous_of_isClosed_graph` — mathlib has no closed-graph
+continuity criterion; it is proved here by an ultrafilter argument.  §2 is certified from the
+defining equations of the KMS setting (mathlib has no C*-dynamical systems or KMS states) and §3
+exhibits the Gibbs state explicitly rather than quoting a uniqueness theorem.  Direct foreground
+elaboration and the final 11,432-job Universal Law Field umbrella build pass with no warnings;
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Time-Reversal Likelihood Cocycle)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TRLC-1 | A path law and a reversal give a signed likelihood cocycle with `E e^{−Σ} = 1` and mean equal to the relative entropy; every observer contracts that mean by exactly the integrated fibrewise divergence; and a finite recurrent observer can hide an escaping path with linearly growing production | `HTGeometry.ConstitutiveTimeReversalLikelihoodCocycle` |
+
+Three lemmas absent from mathlib were built: invariance of `klDiv` under a measurable embedding, the
+graph map of an observer as a measurable embedding, and the conditional divergence as an integral of
+fibrewise divergences.  Together with mathlib's disintegration and chain rule these yield the
+**data-processing inequality for `klDiv`**, also absent from mathlib.  Recurrence in §4 is proved
+without any Markov-chain theory.  Direct foreground elaboration and the final 11,435-job Universal
+Law Field umbrella build pass with no warnings; `#print axioms` on every capstone reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Polar Amplitude and Fisher–Phase Coupling)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PAFP-1 | A full-support projective amplitude is exactly probability together with relative phase (an explicit `Equiv`); the Fubini–Study line element is one quarter of the Fisher–Rao metric plus the weighted phase variance; and a pure-phase loop keeps the probability observer constant while having length `2π√Var` and nontrivial Berry holonomy | `HTGeometry.ConstitutivePolarAmplitudeFisherPhase` |
+
+The polar chart is built as a genuine `Equiv` between the projective quotient and
+`OpenSimplex × PhaseClass`, and `hasDerivAt_polarAmp` certifies that the tangent used in the
+Fubini–Study identity really is the derivative of the polar curve.  Direct foreground elaboration
+and the final 11,436-job Universal Law Field umbrella build pass with no warnings; `#print axioms`
+on every capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Visible Kernel and Purification Gauge)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-HKPG-1 | Eliminating a hidden factor yields a positive semidefinite unit-trace kernel of Schmidt rank, rank one exactly for separable amplitudes and reproducing every visible expectation; the maximally entangled amplitude leaves a full-rank kernel; the diagonal does not determine the kernel; and minimal Gram factorizations form one gauge orbit | `HTGeometry.ConstitutiveVisibleKernelPurificationGauge` |
+
+Two lemmas absent from mathlib were built: the rank-one characterization of matrices as outer
+products, and the length-preserving gauge equivalence between two surjective coefficient maps of
+equal length.  Direct foreground elaboration and the final 11,437-job Universal Law Field umbrella
+build pass with no warnings; `#print axioms` on every capstone reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Composed-Failure Genesis)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-EAG-2-CORE | Independent inactive/unoriented failures force support separation and at least `2^(n+1)-1` attained deterministic response values; the canonical support/parity reporter is legal, attains the bound exactly, has precisely support/parity fibres, and independent blocks force `(2^|A|-1)(2^|B|-1)` mixed channels | `HTGeometry.ConstitutiveComposedFailureGenesis` |
+
+The formal theorem is route-independent and finite.  It proves interaction-vocabulary genesis, not
+cofinal formation birth or semantic transport.  Arbitrary-minimizer equality rigidity and the
+general convex `2n`-atom construction remain paper-only and do not count as Lean-certified results.
+Direct foreground elaboration passed.  `scripts/formal_tools.py lint --check-generated` passed.
+The final 11,476-job Universal Law Field umbrella build passed; replay warnings were confined to
+pre-existing modules and the new module built cleanly.  `#print axioms` on every new headline
+declaration reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Cyclic Process Four Shadows)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CUPR-1 | One finite cyclic unitary process yields a rational transfer function, a positive Gram-rank profile `min(N+1,r)`, a recurrent observer orbit and an open phase lift; its first `2r` moments determine the coefficients, spectrum, weights and every later moment, and predict the withheld response | `HTGeometry.ConstitutiveCyclicProcessFourShadow` |
+
+Two lemmas absent from mathlib were built: discrete recurrence of powers in a compact topological
+group, and the rank of a rectangular weighted Vandermonde matrix.  The reconstruction clauses are
+certified as determinacy statements.  Direct foreground elaboration and the final 11,477-job
+Universal Law Field umbrella build pass with no warnings; `#print axioms` on every capstone reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Three-Realization Packet)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ADOR-1 | One finite spectral packet has equivalent atomic-measure, analytic-differential (`p(D)f = 0`), state-space and rational-transfer realizations; one polynomial gives the recurrence, the Hankel and Toeplitz rank laws, the exact Prony reconstruction and the withheld response | `HTGeometry.ConstitutiveThreeRealizationPacket` |
+
+The card's equation (11), `rank H_N = min(N+1, r)`, is **false** for `N + 1 < r`; formalization
+refuted it inside the positive unitary chamber (`rank_packetHankel_cube`: three cube roots of unity
+with uniform weight give `rank H₁ = 1 < 2`) and certified the true statements instead — the upper
+bound `rank H_N ≤ min(N+1, r)`, the saturated identity `rank H_N = r` for `r ≤ N+1`, and the
+Toeplitz identity `rank G_N = min(N+1, r)` of §5, which is correct as printed.  §8 of the paper card
+records the correction.  Two lemmas absent from mathlib were built: integrability against a Dirac
+measure for an unbounded integrand, and the converse rank/determinant law
+`det_ne_zero_of_rank_eq_card`.  Direct foreground elaboration and the final 11,478-job Universal Law
+Field umbrella build pass with no warnings; `#print axioms` on every capstone reports only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+## Session 2026-08-10 additions (Bipolar Analytic Admission)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-LSM-7-CORE | Algebraic equivalence saturation followed by Hausdorff admission is exactly the bipolar relation of continuous real unitizing reporters; two continuous cofinal retractions admit exact finite reporters of margin one but force every global continuous observer to be constant, with exact analytic replacement gap `1/2` | `HTGeometry.ConstitutiveAnalyticAdmissionHull`, `HTGeometry.ConstitutiveOneEndedAdmissionCriticalShell` |
+
+Formalization uses Mathlib's maximal Hausdorff quotient to construct the admission receiver and
+Urysohn separation to prove the converse reporter characterization.  The concrete capstone is the
+one-point compactified natural ray, not a finite wrapper.  Direct foreground elaboration and formal
+lint pass.  Final Universal Law Field umbrella build passes (11,525 jobs); `#print axioms` on every
+headline declaration reports only `propext`, `Classical.choice`, and `Quot.sound`.  General
+closed-equivalence minimality, Dirac-measure TV, the two-ended paper model, and bounded-alternation
+closure remain paper-only and do not count as Lean-certified.
+
+## Session 2026-08-10 additions (Coefficient-Lift Transgression)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CRT-2 | A coarse binary cocycle's failed coefficient lift produces a kernel-valued pentagon-coherent ternary defect; its class is lift-independent and vanishes exactly when a strict fine cocycle lift exists; split refinements kill the defect; the cross-parity `ZMod 4 -> ZMod 2` cell and a two-term linear cell have nonzero lift obstruction | `HTGeometry.ConstitutiveCoefficientLiftTransgression` |
+
+Direct foreground elaboration, formal lint, axiom audit, and final Universal Law Field umbrella build
+pass.  The unconditional capstone contains both nonliftable laboratories.  General degree, tower,
+completion, and admission-relative transgression remain paper-programme questions and do not count
+as certified.
+
+## Session 2026-08-10 additions (Kernel--Cokernel--Closure Law Birth)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-KCL-1 | Cokernel controls exact higher-carrier birth, kernel controls next coherence, and closure gap separates exact, approximable-mirage, and Hausdorff-separated birth; dense injective/non-surjective and surjective/noninjective cells prove independence | HTGeometry.ConstitutiveCarrierBifurcation |
+
+Direct foreground elaboration and formal lint pass. Source-level axiom audit reports only propext,
+Classical.choice, and Quot.sound. Final Universal Law Field umbrella build completed 11,537 jobs.
+Certified capstone bundles both unconditional countermodels. Successive-carrier composition,
+nonlinear carrier mechanics, and source-genesis remain open and do not count as certified.
+
+## Session 2026-08-10 additions (Doctrine-Relative Memory Spectrum)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DRMS-1 | Bounded Hankel rank ⟺ constant recurrence ⟺ constant-coefficient ODE ⟺ exponential polynomial; finite base-aware linear memory ⟺ `D`-finiteness; hypertranscendence ⟺ maximal jet growth; `exp(z²)`, `tan`, `Γ(z+1)` separate the three doctrines strictly | `HTGeometry.ConstitutiveDoctrineMemorySpectrum`, `HTGeometry.ConstitutiveDoctrineMemoryWitnesses` |
+
+Three paper arguments were replaced by unconditional ones: the "minimal dependent initial family of
+columns" by a nested-compactness argument on the sphere of candidate recurrence vectors; Stirling's
+formula for `e^{z²}` by the exact leading coefficient `2^k` of its Hermite-type jet polynomials; and
+the singular-set theorem for rational-coefficient linear ODEs by a pole-limit after dividing by
+`tan^{n+1}`.  Equation (7) is certified in jet-independence form for entire germs through the corpus
+meromorphic jet bridge; for the shifted Gamma germ, which is not entire, the certified form is the
+order form.  Direct foreground elaboration and the final 11,510-job Universal Law Field umbrella
+build pass with no warnings; `#print axioms` on every capstone reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-QGPRH-1 | Jackson's `Γ_q` is one process with a positive atomic law, a GNS/compact-resolvent operator realization, integer-time recurrence with an open marked lift, an exact entropy tilt, and — **Pastro's q-analogue of Hölder's theorem** — no algebraic differential equation over `ℂ[z]` on `Re z > 0` | `HTGeometry.QBinomialTheorem`, `HTGeometry.ConstitutiveQGammaProcess`, `HTGeometry.QGammaAnalytic`, `HTGeometry.QDigamma`, `HTGeometry.QGammaBellSubstitution`, `HTGeometry.QShiftField`, `HTGeometry.QShiftInverse`, `HTGeometry.QIncrement`, `HTGeometry.QIncrementAnalytic`, `HTGeometry.QTranscendence`, `HTGeometry.ShiftEliminationEngine`, `HTGeometry.ShiftEigenrelationEngine`, `HTGeometry.QDigammaHypertranscendental`, `HTGeometry.QGammaHypertranscendental` |
+
+Card promoted to `3-formalized/universal-law-field/` on 2026-08-10.  The §4 capstone
+`qGamma_jet_annihilator_eq_zero` rests on the intermediate theorem
+`annihilatesQDigamma_eq_zero` — `qᶻ` together with the jets `ψ_q, ψ_q', ψ_q'', …` is algebraically
+independent over `ℂ(z)` — which is the shift elimination run over the two-variable field
+`ℂ(z,u)`.  Two engines were built for it: `ShiftEliminationEngine` (the corpus's Hölder elimination
+over an arbitrary shifted field) and `ShiftEigenrelationEngine` (the eigenrelation refutation over
+an arbitrary shifted field), both of which subsume the classical `ℂ(z)` case.  Two scope clauses
+carry into stage 3: the unbounded-operator statement of §2 is certified as the explicit compact
+diagonal resolvent inverting `X − i`, and the recurrence (15) of §3 is certified at integer times.
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Session 2026-08-10 addition (Closure-Doctrine Serial Homology)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CHM-1 | Every closure/enlargement doctrine on a serial carrier produces independent source-preimage and target-attainment homology defects; the separated serial sequence is short exact iff both vanish; finite cells prove independence and a compact injective dense-range Gamma reporter realizes the target defect topologically | `HTGeometry.ConstitutiveClosureDoctrineHomology` |
+
+Direct foreground elaboration passes. Source-level axiom prints on both exactness equivalences, the
+independence capstone, and the Gamma topological cell report only `propext`, `Classical.choice`, and
+`Quot.sound`. Global lint is presently blocked by unrelated shared-worktree debt in
+`EulerQGammaDirichlet.lean` and unrelated unwired modules. Final umbrella build status is recorded
+after its single foreground audit: `lake build GaloisForLFunctions.HTGeometry.UniversalLawField`
+completed successfully with `11,545` jobs; the new module built cleanly.
+
+## Session 2026-08-10 addition (Downstream-Kernel Obstruction Filtration)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DKO-1 | A three-stage history carries a canonical nested filtration of total law birth; the first two grades are local failure quotiented by kernels of the remaining future tails, and restriction to the second filtration gives a canonical short exact sequence | `HTGeometry.ConstitutiveObstructionFiltration` |
+
+Direct foreground elaboration passes. Source-level axiom prints on nesting, layer surjectivity,
+middle exactness, short-exactness, and the capstone report only `propext`, `Classical.choice`, and
+`Quot.sound`. Global lint remains blocked by unrelated shared-worktree debt. Final umbrella build
+audit passed with `11,547` jobs; the new module and umbrella built cleanly.
+
+## Session 2026-08-10 addition (Primary--Secondary Serial Birth)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PSB-1 | For composable carriers, primary obstruction lies in the outer cokernel; after it vanishes, a lift-independent secondary class lives modulo `im S + ker T`; the secondary, composite, and primary sectors form a canonical short exact sequence; outer-kernel cancellation and genuine secondary failure both occur | `HTGeometry.ConstitutiveCarrierComposition` |
+
+The module certifies zero criteria, exclusive three-phase classification, lift independence,
+injectivity of the secondary-to-composite map, exactness in the middle, surjectivity of the
+composite-to-primary transition, and dual finite laboratories. Direct foreground elaboration and
+formal lint pass. Final Universal Law Field umbrella build completes `11,542` jobs. Source-level
+axiom prints on the equivalence, lift independence, exactness, trichotomy, and capstone report only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-QG5R-1 | Parameter, atomic probability law, characteristic process, marked minimal GNS triple, and analytic response germ of Jackson's `Γ_q` determine one another; equal observed responses force a **unique** marked unitary equivalence, and every reconstructed quantity — including the withheld tilt response — is invariant under it | `HTGeometry.QGammaFiveChart`, `HTGeometry.MarkedCyclicRigidity`, `HTGeometry.AbsConvergentPowerSeries`, `HTGeometry.QGammaGNSChart` |
+
+Card promoted to `3-formalized/universal-law-field/` on 2026-08-10.  Three pieces of new
+infrastructure were required: diagonal unitaries of `ℓ²`; the GNS uniqueness theorem for marked
+cyclic presentations over an arbitrary group, including the extension of an isometry from a dense
+subspace of an infinite-dimensional Hilbert space (mathlib's `LinearIsometry.extend` is
+finite-dimensional only); and the vanishing of the coefficients of an absolutely convergent power
+series that vanishes on the unit circle, which is what makes the GNS source vector cyclic.  Fourier
+uniqueness itself is mathlib's `Measure.ext_of_charFun`, instantiated at the atomic law `qLaw`.
+`#print axioms` on every capstone reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Session 2026-08-10 addition (Adversarial Law Stress)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ALG-2 | Prefix cylinders have static shattering dimension one while a source-consistent adaptive challenge forces arbitrary deterministic mistake depth; fractional prediction retains the legal horizon and has exact finite-horizon value `d / 2` | `HTGeometry.ConstitutiveAdversarialLawStress` |
+
+Direct foreground elaboration and the module build pass with no warnings.  The module is wired into
+`HTGeometry.UniversalLawField`; final umbrella build passed with `11,552` jobs.  Source-level axiom
+prints on static laminarity, deterministic all-round stress, convex cumulative lower and upper
+bounds, and the capstone report only `propext`, `Classical.choice`, and `Quot.sound`.  This certifies
+the fixed-doctrine base mechanism only; doctrine-changing challenge transport remains open. Global
+formal lint remains blocked by unrelated unreachable modules
+`RHTower.Sieve.GhsUniformError` and `HTGeometry.EulerQGammaContinuation`.

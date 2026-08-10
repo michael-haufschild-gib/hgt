@@ -18,8 +18,55 @@ a fixed finite set.
 - [x] 0 → 1 in-progress: source-pure quantitative avoidance target
 - [x] 1 → 2 fully-proven: complete perturbative proof below, using the published all-interval
   theorem and estimates already proved in its source
-- [ ] 2 → 3 formalized: the deep Type-II input is not present in Mathlib; no axiom is introduced
+- [ ] 2 → 3 formalized: the elementary perturbative layer is formalized (see "Lean progress");
+      the all-interval theorem it perturbs is a deep external input, not present in Mathlib
 - [ ] 3 → 4 publication-ready: external priority audit and standalone exposition
+
+## Lean progress
+
+`formal/GaloisForLFunctions/RHTower/RouteEForbiddenSupportStability.lean` formalizes the
+elementary layer of the perturbation, unconditionally and in the card's own parameter regime
+(`fsExponent = 11/10`, `fsSmallScale`, `fsLargeScale`, `fsWindow` are `a`, `P₁`, `R`, `h` of
+`(FS1)`):
+
+- `card_mul_log_le_log` and `card_le_log_div_log` are the support-size bound: the prime divisors of
+  `A` above a threshold `T` have a product dividing `A`, so their number is at most `log A / log T`.
+  This is the single arithmetic fact behind both `#S₁ log P₁ ≤ log A` and `(FS11)`.
+- `norm_cpow_le`, `norm_supportSum_le_card_div` and `norm_supportSum_le_log` are `(FS5)`: the
+  deleted Dirichlet polynomial satisfies `|D₁(s)| ≤ #S₁/T ≤ log A/(T log T)` uniformly on the
+  closed half-plane `Re s ≥ 1`, since each term has modulus `p^{-Re s} ≤ p^{-1} ≤ 1/T`.
+- `sum_inv_le_log` is `(FS10)`: the harmonic mass carried away by the deleted support obeys the
+  same bound, so the long-interval main term keeps `1 - o_B(1)` of its size.
+- `norm_sq_sub_mul_le` and `integral_norm_sq_sub_mul_le` are `(FS6)`: the perturbed mixed mean
+  square is at most twice the unperturbed one plus twice the sup-norm square times the second
+  factor's mean square.
+- `fsWindow_div_eq` is the exact form of `(FS12)`: at the lower endpoints of the two prime ranges
+  the window carries exactly `4 log x` scaled units, `card_scaledWindow_le` bounds the integers in
+  a scaled window by `h/c + 1`, and `card_window_le` combines them into the `4 log x + 1` bound on
+  the remaining variable.
+- `tendsto_fsNegligible` is `(FS13)`: the polylogarithmic triple count through one fixed large
+  prime, weighted against the main term's `(log x)^{-0.45}` normalisation, tends to zero.
+- `eventually_smallScale_lt_largeScale` is the range disjointness that makes the surviving triples
+  squarefree, and `card_diagonalWindow_le` is the diagonal case `p₂ = p₃`: the square constraint
+  `p₁p₂² ∈ (x, x+h]` leaves at most `log x / 2 + 1` integers, because the square root increases by
+  at most `h/(2√x)` over the window (`sqrt_add_sub_sqrt_le`).  So the diagonal carries the same
+  polylogarithmic bound as `(FS13)` and its removal leaves three distinct primes.
+- `mobiusComplexCoefficient_prime_mul_threePrime`, `mul_sqrt_div_eq_sqrt_mul` and
+  `abs_amplified_gap_le` are the block-admission corollary `(FS14)`: a prime cofactor times an
+  exact-three-prime token has Möbius `+1`, and amplifying a near-square-root token at the reduced
+  centre `u/ℓ` by `ℓ` keeps it within `√(uℓ)` times the same polylogarithmic factor of `u`.
+
+`#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound` only.
+
+Not formalized: the all-interval count `(FS4)` itself, and the mean-value estimate `(FS7)` and the
+two-dimensional upper-bound sieve it rests on.  These are Matomäki--Teräväinen's published inputs,
+quoted rather than proved on this card; they are stated nowhere in the Lean tree, so nothing above
+is conditional on them.  Every step this card *proves* is now in Lean.
+
+The corpus Dirichlet mean-value theorem (`RHTower.Sieve.dirichlet_meanValue_theorem`) carries the
+error `O(N log N)`, not the Montgomery--Vaughan `O(N)`; even the sharp form only gives `O(1/log R)`
+for the second term of `(FS7)`, so that estimate genuinely needs the source's Section 5 sieve and
+is not reachable from the card text alone.
 
 ## Theorem
 

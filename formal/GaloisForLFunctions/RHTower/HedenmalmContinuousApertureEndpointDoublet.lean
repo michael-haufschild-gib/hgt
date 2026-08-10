@@ -1,4 +1,5 @@
-import GaloisForLFunctions.RHTower.HedenmalmIntervalAnomaly
+import GaloisForLFunctions.RHTower.HedenmalmThetaIntervalTransform
+import GaloisForLFunctions.RHTower.HedenmalmPrimeNormalSolderingCurvature
 
 /-!
 # Continuous-aperture endpoint doublet of the Hedenmalm source window
@@ -24,9 +25,13 @@ open GaloisForLFunctions.HTGeometry
 
 namespace HedenmalmContinuousAperture
 
-open HedenmalmIntervalAnomaly
+open HedenmalmIntervalAnomaly HedenmalmQuantile HedenmalmThetaSource
 
 variable (S : PositiveDensitySource)
+
+/-- Scalar derivative predicate using the canonical normed-algebra module structure on `ℝ`. -/
+abbrev SourceHasDerivAt (f : ℝ → ℝ) (f' x : ℝ) : Prop :=
+  @HasDerivAt ℝ _ ℝ _ (NormedAlgebra.toNormedSpace ℝ).toModule _ _ f f' x
 
 /-- Continuous centered source window of logarithmic aperture `L`. -/
 def centeredApertureWindow (L x : ℝ) : ℝ :=
@@ -50,16 +55,16 @@ theorem centeredApertureWindow_eq_intervalMass {L : ℝ} (hL : 0 ≤ L) (x : ℝ
 
 /-- Raw center derivative in normalized-density coordinates. -/
 theorem hasDerivAt_centeredApertureWindow_center_normalized (L x : ℝ) :
-    HasDerivAt (fun y => centeredApertureWindow S L y)
+    SourceHasDerivAt (fun y => centeredApertureWindow S L y)
       (Real.exp (-L / 2) * S.mass *
         (S.normalized (x + L / 2) - S.normalized (x - L / 2))) x := by
-  have hu : HasDerivAt (fun y : ℝ => S.cdfFun (y + L / 2))
+  have hu : SourceHasDerivAt (fun y : ℝ => S.cdfFun (y + L / 2))
       (S.normalized (x + L / 2)) x :=
     by
       simpa only [Function.comp_def, id_eq, mul_one] using
         (S.hasDerivAt_cdfFun (x + L / 2)).comp x
           ((hasDerivAt_id x).add_const (L / 2))
-  have hl : HasDerivAt (fun y : ℝ => S.cdfFun (y - L / 2))
+  have hl : SourceHasDerivAt (fun y : ℝ => S.cdfFun (y - L / 2))
       (S.normalized (x - L / 2)) x :=
     by
       simpa only [Function.comp_def, id_eq, mul_one] using
@@ -70,7 +75,7 @@ theorem hasDerivAt_centeredApertureWindow_center_normalized (L x : ℝ) :
 
 /-- **Center derivative law.** The center derivative is exactly the odd endpoint difference. -/
 theorem hasDerivAt_centeredApertureWindow_center (L x : ℝ) :
-    HasDerivAt (fun y => centeredApertureWindow S L y)
+    SourceHasDerivAt (fun y => centeredApertureWindow S L y)
       (centeredApertureOddEndpoint S L x) x := by
   convert hasDerivAt_centeredApertureWindow_center_normalized S L x using 1
   simp only [centeredApertureOddEndpoint, PositiveDensitySource.normalized]
@@ -78,31 +83,33 @@ theorem hasDerivAt_centeredApertureWindow_center (L x : ℝ) :
 
 /-- Raw aperture derivative before cancelling the source mass. -/
 theorem hasDerivAt_centeredApertureWindow_aperture_normalized (L x : ℝ) :
-    HasDerivAt (fun M => centeredApertureWindow S M x)
+    SourceHasDerivAt (fun M => centeredApertureWindow S M x)
       (Real.exp (-L / 2) * (-1 / 2) *
           (S.mass * (S.cdfFun (x + L / 2) - S.cdfFun (x - L / 2))) +
         Real.exp (-L / 2) *
           (S.mass *
             (S.normalized (x + L / 2) * (1 / 2) -
               S.normalized (x - L / 2) * (-1 / 2)))) L := by
-  have hneg : HasDerivAt (fun M : ℝ => -M / 2) (-1 / 2) L := by
+  have hneg : SourceHasDerivAt (fun M : ℝ => -M / 2) (-1 / 2) L := by
     simpa using (hasDerivAt_id L).neg.div_const 2
-  have hexp : HasDerivAt (fun M : ℝ => Real.exp (-M / 2))
+  have hexp : SourceHasDerivAt (fun M : ℝ => Real.exp (-M / 2))
       (Real.exp (-L / 2) * (-1 / 2)) L :=
     by
       simpa only [Function.comp_def] using
         (Real.hasDerivAt_exp (-L / 2)).comp L hneg
-  have huArg : HasDerivAt (fun M : ℝ => x + M / 2) (1 / 2) L := by
+  have huArg : SourceHasDerivAt (fun M : ℝ => x + M / 2) (1 / 2) L := by
     simpa using ((hasDerivAt_id L).div_const 2).const_add x
-  have hlArg : HasDerivAt (fun M : ℝ => x - M / 2) (-1 / 2) L := by
-    simpa only [Pi.sub_apply, id_eq, zero_sub] using
-      (hasDerivAt_const (x := L) x).sub ((hasDerivAt_id L).div_const 2)
-  have hu : HasDerivAt (fun M : ℝ => S.cdfFun (x + M / 2))
+  have hlArg : SourceHasDerivAt (fun M : ℝ => x - M / 2) (-1 / 2) L := by
+    have h := (hasDerivAt_const (x := L) x).sub ((hasDerivAt_id L).div_const 2)
+    refine (h.congr_deriv (by ring)).congr_of_eventuallyEq ?_
+    filter_upwards with M
+    rfl
+  have hu : SourceHasDerivAt (fun M : ℝ => S.cdfFun (x + M / 2))
       (S.normalized (x + L / 2) * (1 / 2)) L :=
     by
       simpa only [Function.comp_def] using
         (S.hasDerivAt_cdfFun (x + L / 2)).comp L huArg
-  have hl : HasDerivAt (fun M : ℝ => S.cdfFun (x - M / 2))
+  have hl : SourceHasDerivAt (fun M : ℝ => S.cdfFun (x - M / 2))
       (S.normalized (x - L / 2) * (-1 / 2)) L :=
     by
       simpa only [Function.comp_def] using
@@ -116,7 +123,7 @@ theorem hasDerivAt_centeredApertureWindow_aperture_normalized (L x : ℝ) :
 /-- **Aperture derivative law.** The covariant derivative separates half-density decay from the
 even endpoint sum. -/
 theorem hasDerivAt_centeredApertureWindow_aperture (L x : ℝ) :
-    HasDerivAt (fun M => centeredApertureWindow S M x)
+    SourceHasDerivAt (fun M => centeredApertureWindow S M x)
       ((-1 / 2) * centeredApertureWindow S L x +
         (1 / 2) * centeredApertureEvenEndpoint S L x) L := by
   convert hasDerivAt_centeredApertureWindow_aperture_normalized S L x using 1
@@ -144,6 +151,145 @@ theorem centeredApertureWindow_log_nat_eq_centeredWindow {n : ℕ} (hn : 1 ≤ n
     congr 1
     ring
   rw [centeredApertureWindow_eq_intervalMass S hlog, centeredWindow, hrpow]
+
+/-! ### Theta-source endpoint transforms -/
+
+/-- Marked half-character at continuous aperture `L`.  Its two coordinates are the translated
+source factors of the two centered endpoints. -/
+def centeredApertureMarkedCharacter (L : ℝ) (z : ℂ) : ℂ × ℂ :=
+  let c : ℂ := (Real.exp (-L / 2) : ℝ)
+  let a : ℂ := ((L / 2 : ℝ) : ℂ)
+  (c * Complex.exp (Complex.I * z * a),
+    c * Complex.exp (-(Complex.I * z * a)))
+
+theorem integrable_shifted_thetaSource_sourceChar {a : ℝ} {z : ℂ} (hz : |z.im| < 1) :
+    Integrable
+      (fun x : ℝ => (thetaSource.k (x + a) : ℂ) * sourceChar z x)
+      (volume : Measure ℝ) := by
+  have hk : Integrable (fun x : ℝ => (thetaSource.k x : ℂ) * sourceChar z x)
+      (volume : Measure ℝ) :=
+    integrable_k_sourceChar thetaSource (hasShiftedTail_thetaSource hz)
+  have hcomp : Integrable
+      (fun x : ℝ => (thetaSource.k (x + a) : ℂ) * sourceChar z (x + a))
+      (volume : Measure ℝ) := hk.comp_add_right a
+  have hpt : ∀ x : ℝ, (thetaSource.k (x + a) : ℂ) * sourceChar z x =
+      Complex.exp (-(Complex.I * z * (a : ℂ))) *
+        ((thetaSource.k (x + a) : ℂ) * sourceChar z (x + a)) := by
+    intro x
+    exact shifted_char_factor (thetaSource.k (x + a) : ℂ) a z x
+  exact (hcomp.const_mul _).congr
+    (Filter.Eventually.of_forall fun x => (hpt x).symm)
+
+/-- **Even endpoint divisor factorization.** The aperture-covariant even endpoint carries exactly
+the same completed theta divisor as the original odd interval anomaly. -/
+theorem integral_centeredApertureEvenEndpoint_sourceChar {L : ℝ} {z : ℂ}
+    (hz : |z.im| < 1) :
+    (∫ x : ℝ,
+        ((centeredApertureEvenEndpoint thetaSource L x : ℝ) : ℂ) * sourceChar z x) =
+      hedenmalmPrimeEvenSolder (centeredApertureMarkedCharacter L z) * XiC z := by
+  have hu := integrable_shifted_thetaSource_sourceChar (a := L / 2) hz
+  have hl := integrable_shifted_thetaSource_sourceChar (a := -(L / 2)) hz
+  have hpt : ∀ x : ℝ,
+      ((centeredApertureEvenEndpoint thetaSource L x : ℝ) : ℂ) * sourceChar z x =
+        ((Real.exp (-L / 2) : ℝ) : ℂ) *
+          (((thetaSource.k (x + L / 2) : ℂ) * sourceChar z x) +
+            ((thetaSource.k (x + (-(L / 2))) : ℂ) * sourceChar z x)) := by
+    intro x
+    simp only [centeredApertureEvenEndpoint]
+    push_cast
+    ring
+  rw [integral_congr_ae (Filter.Eventually.of_forall hpt),
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_add hu hl,
+    integral_shifted_k_sourceChar hz, integral_shifted_k_sourceChar hz]
+  have hphase :
+      Complex.exp (-(Complex.I * z * ((-(L / 2) : ℝ) : ℂ))) =
+        Complex.exp (Complex.I * z * ((L / 2 : ℝ) : ℂ)) := by
+    congr 1
+    push_cast
+    ring
+  simp only [centeredApertureMarkedCharacter, hedenmalmPrimeEvenSolder]
+  rw [hphase]
+  ring
+
+/-- **Odd endpoint divisor factorization.** Center differentiation gives the marked odd soldering,
+up to the fixed unitary phase `-i`, with the same completed theta divisor. -/
+theorem integral_centeredApertureOddEndpoint_sourceChar {L : ℝ} {z : ℂ}
+    (hz : |z.im| < 1) :
+    (∫ x : ℝ,
+        ((centeredApertureOddEndpoint thetaSource L x : ℝ) : ℂ) * sourceChar z x) =
+      -Complex.I * hedenmalmPrimeOddSolder (centeredApertureMarkedCharacter L z) * XiC z := by
+  have hu := integrable_shifted_thetaSource_sourceChar (a := L / 2) hz
+  have hl := integrable_shifted_thetaSource_sourceChar (a := -(L / 2)) hz
+  have hpt : ∀ x : ℝ,
+      ((centeredApertureOddEndpoint thetaSource L x : ℝ) : ℂ) * sourceChar z x =
+        ((Real.exp (-L / 2) : ℝ) : ℂ) *
+          (((thetaSource.k (x + L / 2) : ℂ) * sourceChar z x) -
+            ((thetaSource.k (x + (-(L / 2))) : ℂ) * sourceChar z x)) := by
+    intro x
+    simp only [centeredApertureOddEndpoint]
+    push_cast
+    ring
+  rw [integral_congr_ae (Filter.Eventually.of_forall hpt),
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_sub hu hl,
+    integral_shifted_k_sourceChar hz, integral_shifted_k_sourceChar hz]
+  have hphase :
+      Complex.exp (-(Complex.I * z * ((-(L / 2) : ℝ) : ℂ))) =
+        Complex.exp (Complex.I * z * ((L / 2 : ℝ) : ℂ)) := by
+    congr 1
+    push_cast
+    ring
+  simp only [centeredApertureMarkedCharacter, hedenmalmPrimeOddSolder]
+  rw [hphase]
+  ring_nf
+  rw [Complex.I_sq]
+  ring
+
+/-- At prime logarithmic aperture, the continuous source marker is the prime-normal marked
+half-character. -/
+theorem centeredApertureMarkedCharacter_log_prime_eq (p : Nat.Primes) (z : ℂ) :
+    centeredApertureMarkedCharacter (Real.log (p.1 : ℕ)) z =
+      hedenmalmMarkedPrimeHalfCharacter p.1 z := by
+  have hp0 : (0 : ℝ) < (p.1 : ℕ) := by exact_mod_cast p.2.pos
+  have hc : Real.exp (-Real.log (p.1 : ℕ) / 2) = hedenmalmPrimeHalfDensity p.1 := by
+    rw [hedenmalmPrimeHalfDensity, Real.sqrt_eq_rpow, Real.rpow_def_of_pos hp0,
+      ← Real.exp_neg]
+    congr 1
+    ring
+  ext <;>
+    simp only [centeredApertureMarkedCharacter, hedenmalmMarkedPrimeHalfCharacter, hc] <;>
+    congr 1 <;> ring
+
+/-- Prime even endpoint transform in the exact marked carrier. -/
+theorem integral_primeEvenEndpoint_sourceChar {p : Nat.Primes} {z : ℂ}
+    (hz : |z.im| < 1) :
+    (∫ x : ℝ,
+        ((centeredApertureEvenEndpoint thetaSource (Real.log (p.1 : ℕ)) x : ℝ) : ℂ) *
+          sourceChar z x) =
+      hedenmalmPrimeEvenSolder (hedenmalmMarkedPrimeHalfCharacter p.1 z) * XiC z := by
+  rw [integral_centeredApertureEvenEndpoint_sourceChar hz,
+    centeredApertureMarkedCharacter_log_prime_eq]
+
+/-- Prime odd endpoint transform in the exact marked carrier. -/
+theorem integral_primeOddEndpoint_sourceChar {p : Nat.Primes} {z : ℂ}
+    (hz : |z.im| < 1) :
+    (∫ x : ℝ,
+        ((centeredApertureOddEndpoint thetaSource (Real.log (p.1 : ℕ)) x : ℝ) : ℂ) *
+          sourceChar z x) =
+      -Complex.I * hedenmalmPrimeOddSolder
+          (hedenmalmMarkedPrimeHalfCharacter p.1 z) * XiC z := by
+  rw [integral_centeredApertureOddEndpoint_sourceChar hz,
+    centeredApertureMarkedCharacter_log_prime_eq]
+
+/-- **Source-derived radial endpoint energy.** After removing the common `XiC` divisor, the
+prime endpoint doublet has exact energy `4/p cosh(Im z log p)`, with no dependence on `Re z`. -/
+theorem prime_endpointSymbol_energy_eq_cosh (p : Nat.Primes) (z : ℂ) :
+    ‖hedenmalmPrimeEvenSolder (centeredApertureMarkedCharacter (Real.log (p.1 : ℕ)) z)‖ ^ 2 +
+        ‖-Complex.I * hedenmalmPrimeOddSolder
+          (centeredApertureMarkedCharacter (Real.log (p.1 : ℕ)) z)‖ ^ 2 =
+      4 / (p.1 : ℕ) * Real.cosh (z.im * Real.log (p.1 : ℕ)) := by
+  rw [centeredApertureMarkedCharacter_log_prime_eq]
+  simpa only [norm_mul, norm_neg, Complex.norm_I, one_mul] using
+    hedenmalmPrime_evenOdd_character_energy_eq_cosh p z
 
 end HedenmalmContinuousAperture
 
