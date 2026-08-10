@@ -200,3 +200,80 @@ Lindemann--circuit separation law whose radius does not collapse with `n`,
 - A. J. Wilkie and L. van den Dries, standard one-dimensional finiteness for
   sets definable in the restricted-analytic o-minimal structure `R_an`.
 
+
+## Lean status audit (2026-08-10)
+
+The card's `Formalization status` section is stale in two places.
+
+1. **Wrong path.**  Finite Lindemann–Weierstrass is *not* in
+   `RHTower/FiniteLindemannWeierstrass.lean`; it is
+   `HTGeometry/FiniteLindemannWeierstrass.lean`, and the cited declaration
+   `exp_algebraicIndependent_of_linearIndependent` is there (line 402), with a
+   coefficient version in
+   `HTGeometry/FiniteAlgebraicCoefficientLindemannWeierstrass.lean`.
+2. **Already built.**  "Cyclic spectral-coordinate transfer" is listed as a
+   missing layer, but the corpus already owns its core:
+   `HTGeometry/MatrixPrincipalSymbolAncestralConservation.lean` proves
+   `algebraicIndependent_matrixLinearForms_iff_of_det_ne_zero` — an invertible
+   square linear transformation preserves algebraic independence in both
+   directions — on top of
+   `HTGeometry/AlgebraicIndependentLinearForms.lean`'s `matrixLinearForms`.
+
+What that lemma did not give is the transcendence-*degree* statement the card
+actually needs at step 3, since the family `z` has one relation and is not
+algebraically independent.  That gap is now closed:
+
+`HTGeometry/MatrixLinearFormsAdjoin.lean` (new, unconditional, axiom-clean,
+in the umbrella):
+
+- `adjoin_matrixLinearForms_le`;
+- **`adjoin_matrixLinearForms_eq_of_det_ne_zero`** — an invertible linear change
+  of coordinates generates the *same* subalgebra;
+- **`adjoin_field_matrixLinearForms_eq_of_det_ne_zero`** — and the same
+  intermediate field.
+
+So `V diag(c)` being algebraic and invertible makes every transcendence-theoretic
+invariant of the computational coordinates equal to that of the spectral ones,
+which is exactly equation (8) of the proof.
+
+### Remaining Lean layers
+
+- rational Hilbert specialization (step 1);
+- the Jia–Wolf transcendence-degree/circuit bound (step 3's external input);
+- o-minimal local finiteness (step 4).
+
+## Step 2 formalized: the relation space collapses to the trace relation (2026-08-10)
+
+`HTGeometry/PermutationInvariantSubspace.lean` (new, unconditional, axiom-clean,
+in the umbrella) proves the representation-theoretic content of §2 without any
+Galois machinery, and without a characteristic hypothesis.
+
+- `sumForm`, `constLine`, `IsPermInvariant`;
+- `single_sub_single_mem` — a vector of the subspace separating two coordinates
+  yields `e_i - e_j`, by transposing them and subtracting;
+- `single_sub_single_mem_of_mem`, `all_single_sub_single_mem` — one such
+  difference propagates to all of them;
+- `eq_sum_single_sub_single` — a sum-zero vector is a combination of those
+  differences;
+- **`classification`** — a permutation-invariant subspace of `K^ι` is `⊥`, the
+  constants, the sum-zero hyperplane, or `⊤`.  *No characteristic hypothesis:*
+  either every vector is constant, or the subspace swallows the sum-zero
+  hyperplane;
+- **`eq_constLine_of_le_of_ne_top`** — a permutation-invariant subspace that
+  contains the constants and is not everything *is* the constants, provided
+  `(card ι : K) ≠ 0`.
+
+Applied to `R_E` of equation (5): it is `S_D`-invariant, contains the trace
+relation, and is not everything because the spectrum is simple.  Over `ℚ` with
+`D ≥ 1` the cardinality condition is automatic, so `R_E = ℚ(1,…,1)` and
+`dim span {E_j} = D - 1`, which is equation (6).
+
+The `(card ι : K) ≠ 0` side condition is necessary, not residual: in
+characteristic dividing `card ι` the constants lie *inside* the sum-zero
+hyperplane and the conclusion fails.
+
+### Remaining Lean layers
+
+- rational Hilbert specialization (step 1);
+- the Jia–Wolf transcendence-degree/circuit bound (step 3's external input);
+- o-minimal local finiteness (step 4).

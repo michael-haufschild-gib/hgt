@@ -2403,7 +2403,10 @@ import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
 import GaloisForLFunctions.RHTower.GaussSampleTranslationL2
 import GaloisForLFunctions.RHTower.GaussTranslationL2Convergence
 import GaloisForLFunctions.RHTower.GaussUniformTranslationL2
+import GaloisForLFunctions.RHTower.GaussIterate
+import GaloisForLFunctions.RHTower.GaussIteratedAmplitude
 import GaloisForLFunctions.RHTower.GaussScaleAmplitudeIntegral
+import GaloisForLFunctions.RHTower.GaussScaleQuotient
 import GaloisForLFunctions.RHTower.GaussLattice
 import GaloisForLFunctions.RHTower.GaussPairedChannelCriticalAsymptotic
 import GaloisForLFunctions.RHTower.GaussPairedChannelSchattenCapstone
@@ -4215,6 +4218,9 @@ import GaloisForLFunctions.RHTower.Sieve.OffDiagonalUniformBound
 import GaloisForLFunctions.RHTower.Sieve.MRFromUniformCorrelations
 import GaloisForLFunctions.RHTower.Sieve.AveragedChowlaInterface
 import GaloisForLFunctions.RHTower.Sieve.FejerCorrelation
+import GaloisForLFunctions.RHTower.Sieve.DiscreteWindowGallagher
+import GaloisForLFunctions.RHTower.Sieve.DyadicMeanSquareGallagher
+import GaloisForLFunctions.RHTower.Sieve.MaximalWindowUniform
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6831,6 +6837,9 @@ import GaloisForLFunctions.RHTower.Sieve.OffDiagonalUniformBound
 import GaloisForLFunctions.RHTower.Sieve.MRFromUniformCorrelations
 import GaloisForLFunctions.RHTower.Sieve.AveragedChowlaInterface
 import GaloisForLFunctions.RHTower.Sieve.FejerCorrelation
+import GaloisForLFunctions.RHTower.Sieve.DiscreteWindowGallagher
+import GaloisForLFunctions.RHTower.Sieve.DyadicMeanSquareGallagher
+import GaloisForLFunctions.RHTower.Sieve.MaximalWindowUniform
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen

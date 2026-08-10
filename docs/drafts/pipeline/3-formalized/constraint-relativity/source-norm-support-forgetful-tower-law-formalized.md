@@ -51,10 +51,27 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
 14. `det_central_twist` — the same twist does change the determinant holonomy, so exact-category
     data alone cannot select `δ = 1` while framed determinant data can.
 
-The arithmetic instantiation `(9)`–`(12)` of the card substitutes the corpus residue for `a` in
-items 4, 5 and 9; the substitution is a specialization of the formalized identities and carries no
-further mathematical content, which is why the card itself directs formalization of the matrix
-identity independently of the arithmetic instantiation.
+The arithmetic instantiation `(9)`–`(12)` is formalized as well:
+
+15. `wallParameter`, `cycleTransport` — **cards `(9)`, `(11)`**: `κ = (2 Re ρ − 1) log n` and the
+    prime-cycle transport `δ_n(ρ) = e^κ`.
+16. `wallParameter_eq_zero_iff` — for cycle level `n ≥ 2` the wall parameter vanishes exactly on
+    the critical line, so "exact wall" means `Re ρ = 1/2`.
+17. `normSq_sourceScalar_cycleTransport`, `legCarrier_mul_conjTranspose_wall` — **card `(10)`**:
+    `|a_ρ|² = |c_ρ|² (e^κ − 1)²`, so `Γ_ρ Γ_ρ* = |a_ρ|² I`.
+17b. `sourceScalar_cycleTransport_eq_zero_iff`, `legCarrier_cycleTransport_eq_zero_iff`,
+    `legCarrier_cycleTransport_surjective` — the degeneration locus: for cycle level `n ≥ 2` and
+    `c_ρ ≠ 0`, the framed residue vanishes, equivalently the two-column carrier is the zero matrix,
+    **exactly when `Re ρ = 1/2`**; off the critical line the carrier is surjective.  This is the
+    same equation as `(19)` of
+    `identity-sector-radial-gauge-blindness-and-cross-grade-selection-law`.
+18. `sum_normSq_pseudoInverse_wall` — the exact squared pseudo-inverse gain
+    `1/(|c_ρ|² (e^κ − 1)²)`.
+19. `tendsto_exp_sub_one_div_atZero`, `tendsto_pseudoInverse_gain_ratio` — **card `(12)`**: the
+    ratio of the exact gain to the model `1/(|c_ρ|² κ²)` tends to one as `κ → 0`.  The card's `∼`
+    is thus a proved limit, not a heuristic; the slope input is the derivative of `exp` at `0`.
+20. `tendsto_pseudoInverse_gain_atTop` — **card `(12)`, the reading**: the gain blows up as
+    `κ → 0`, so the exact wall is a singular-conditioning wall.
 
 ## Verification
 

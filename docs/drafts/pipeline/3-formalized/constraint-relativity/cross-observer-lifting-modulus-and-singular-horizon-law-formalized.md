@@ -48,7 +48,12 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.  The modul
     `(14)`**: the exact wrap-around chord of the recurrence family.
 17. `liftingHorizon_recurrence_eq_top` — **card `(15)`**: the recurrence family has infinite cofinal
     horizon, even though every member is injective and every interior observer factors exactly.
-    Card `(16)`, the diverging decoder Lipschitz constant, is item 6 applied to this family.
+18. `norm_recurrenceBoundary_sub'` — the wrap-around chord in the card's reflected form
+    `2 sin(π/(n²+1))`, from `sin(π − x) = sin x`.
+19. `lipschitz_decoder_recurrence_ge`, `cube_div_le_lipschitz_decoder_recurrence` — **card `(16)`**:
+    every exact decoder `r_n` of the recurrence family satisfies
+    `n ≤ K · 2 sin(π/(n²+1))`, and hence `K ≥ n³/(2π)` after `sin x ≤ x`.  The card's `∼ n³/(2π)`
+    is thus a proved lower bound, not only an asymptotic remark.
 
 ## Scope
 

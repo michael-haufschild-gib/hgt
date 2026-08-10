@@ -7,7 +7,7 @@
   tight finite coalitions, equivalently by finite coalitions bounded in some proper source price.
   Without an actual carrier, every approximate history has diverging cost in every proper price.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT]
-  [ATTAINMENT--ESCAPE LAW] [SHARP COUNTERMODEL] [LEAN PENDING] [NOT RH]
+  [ATTAINMENT--ESCAPE LAW] [SHARP COUNTERMODEL] [LEAN-CERTIFIED] [NOT RH]
 
 ## 1. Setup
 
@@ -417,22 +417,28 @@ No priority claim is made for diagonal compactness, Markov, or Cauchy--Schwarz. 
 is the exact equivalence and universal quantifier in `(CAM.20)`, interpreted as formation versus
 escape of positive laws.
 
-## 10. Formalization gate
+## 10. Lean certification
 
-This theorem is dependency-closed on paper.  Required Lean certification must include at least:
+Module
+`GaloisForLFunctions.HTGeometry.ConstitutiveCoalitionalAttainment` certifies the countable
+Banach-valued theorem, not only a finite or scalar shadow.  Its closed declarations include:
 
-1. proper-price tail coercion;
-2. residual--resource uncertainty and its equality model;
-3. the scalar escape countermodel;
-4. a closed finite-support or countable-attainment capstone sufficient to certify the headline
-   mechanism;
-5. no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations;
-6. direct foreground elaboration, source axiom audit, umbrella wiring, and one final module build.
+1. `coalitional_attainment_iff_tight_finite_approximation`;
+2. `coalitional_attainment_iff_proper_priced_finite_approximation`;
+3. `coalitional_tight_attainment` and `coalitional_no_carrier_universal_escape`;
+4. `coalitional_tightness_constructs_proper_price`;
+5. `coalitional_banach_reciprocal_pricing_div`;
+6. `coalitional_sharp_escape_countermodel`.
 
-Until that gate passes, project policy does not count this theorem as truly proven.
+The module contains no project axioms, computations, `sorry`, `admit`, `axiom`, `opaque`, or
+`unsafe` declarations.  It is wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`.  Stage-3 record contains exact verification
+commands and axiom audit.
 
 ## Log
 
 - 2026-08-10 -- conjecture frozen after internal closure-trichotomy collision.
 - 2026-08-10 -- Conjectures A--C proved; sharp scalar escape/equality model closed; promoted to
   Stage 2 pending Lean certification.
+- 2026-08-10 -- Banach-valued attainment equivalences, universal escape, proper-price
+  construction, reciprocal separator law, and sharp mirage countermodel certified in Lean.

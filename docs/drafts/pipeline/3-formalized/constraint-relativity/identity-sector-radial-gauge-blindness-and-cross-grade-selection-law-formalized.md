@@ -78,7 +78,13 @@ The countermodel:
 
 ## Scope
 
-The card's "literal RH specialization" `(19)`, the seven conjecture/failure loops and the
+Equation `(19)`, the physical residue `Res(D_{n,ρ}u_p) = (δ_n(ρ) − 1) c_ρ`, is formalized in
+`ConstraintRelativity/ForgetfulTower.lean`, which owns the same equation as its card `(9)`:
+`sourceScalar_cycleTransport_eq_zero_iff` shows the residue vanishes exactly on the critical line,
+and `legCarrier_cycleTransport_eq_zero_iff` says the carrier degenerates there and nowhere else.
+It is not rebuilt here.
+
+The card's remaining reading of `(19)`, the seven conjecture/failure loops and the
 Nomotopy consequence are commentary on this theorem chain, not separate theorems; the card itself
 states that it "does not construct missing relation and does not prove RH".  Nothing there is
 formalized.

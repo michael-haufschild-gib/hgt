@@ -58,8 +58,14 @@ Section 6 — sharpness:
 
 Corollary 4.2 of the card is an enumeration of the ways the hypotheses of a single normed triangle
 can fail; the card itself states that only items 1–2 follow numerically, and those are items 5 and
-6 above.  Corollary 5.2 is the Banach–Steinhaus specialization, which the card explicitly notes
-"adds no new theorem"; it is mathlib's uniform boundedness principle applied to item 7.
+6 above.  Corollary 5.2 is now stated too:
+
+10. `cyclicDefect_tendsto_zero_of_pointwise_bounded` — **Corollary 5.2**: in complete source spaces
+    pointwise boundedness of the two transport families already forces the cyclic defect to vanish
+    along vanishing edge accuracy.  Banach–Steinhaus turns the pointwise bounds into one operator
+    bound; the rest is the triangle inequality and a squeeze.
+11. `not_pointwise_bounded_of_cyclicDefect` — its contrapositive, which is the card's diagnostic: a
+    persistent cyclic defect forces one of the two families to fail pointwise boundedness.
 
 ## Verification
 

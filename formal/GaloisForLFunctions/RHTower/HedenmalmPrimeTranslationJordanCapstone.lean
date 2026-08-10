@@ -38,7 +38,7 @@ theorem integerShift_mul (f : ℝ → ℂ) {m n : ℕ} (hm : 0 < m) (hn : 0 < n)
     rw [Nat.cast_mul, Real.mul_rpow hmR.le hnR.le]
   rw [integerShift, integerShift, integerShift, hlog, hrpow]
   push_cast
-  ring
+  ring_nf
 
 /-! ## Exact analytic and algebraic multiplicity -/
 
@@ -62,7 +62,9 @@ theorem analyticOrderAt_thetaSourceEntireDet2_eq_XiC (z : ℂ) :
   rw [hfun]
   change analyticOrderAt ((fun _ : ℂ ↦ (XiC 0)⁻¹) * XiC) z = _
   rw [analyticOrderAt_mul (analyticAt_const) (XiC_analytic z (Set.mem_univ z))]
-  simp [XiC_zero_ne]
+  have hconst : analyticOrderAt (fun _ : ℂ ↦ (XiC 0)⁻¹) z = 0 :=
+    analyticOrderAt_eq_zero.mpr (Or.inr (inv_ne_zero XiC_zero_ne))
+  rw [hconst, zero_add]
 
 /-- **Exact Xi/source-operator multiplicity law.**  At every centered Xi zero, analytic order is
 the finrank of the full generalized eigenspace of the source inverse at `-z⁻¹`. -/
@@ -106,7 +108,7 @@ theorem thetaSource_geometricUniqueness_and_fullAlgebraicMultiplicity
       (∀ x, -Complex.I * v' x + xiSpectralPointSupport rho * v x =
         c * (thetaSource.k x : ℂ)) →
       Tendsto (fun x => (u x - v x) *
-        sourceChar (xiSpectralPointSupport rho) x) atBot (nhds 0) →
+        HedenmalmQuantile.sourceChar (xiSpectralPointSupport rho) x) atBot (nhds 0) →
       ∀ x, u x = v x) ∧
     Module.finrank ℂ (maxGenEigenspace
       (thetaKernelOperator : Module.End ℂ ThetaH)

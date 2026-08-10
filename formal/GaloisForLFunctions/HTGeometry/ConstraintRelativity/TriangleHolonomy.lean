@@ -113,6 +113,52 @@ theorem cyclicDefect_tendsto_zero_of_bounded {ι : Type*} {l : Filter ι}
     simpa using this
   refine squeeze_zero (fun n => norm_nonneg _) hbound hzero
 
+/-! ### The barrelled diagnostic -/
+
+/-- **Corollary 5.2.**  In complete source spaces, pointwise boundedness of the two transport
+families already forces the cyclic defect to vanish along vanishing edge accuracy: Banach–Steinhaus
+upgrades pointwise bounds to a uniform operator bound, and the triangle law does the rest. -/
+theorem cyclicDefect_tendsto_zero_of_pointwise_bounded [CompleteSpace E₁] [CompleteSpace E₂]
+    {ι : Type*} {l : Filter ι} (S : ι → E₁ →L[ℝ] E₀) (T : ι → E₂ →L[ℝ] E₀)
+    (e₀₁ : ι → E₁) (e₁₂ : ι → E₂) (e₂₀ : ι → E₀)
+    (hS : ∀ y : E₁, ∃ C : ℝ, ∀ n, ‖S n y‖ ≤ C)
+    (hT : ∀ z : E₂, ∃ C : ℝ, ∀ n, ‖T n z‖ ≤ C)
+    (h₀₁ : Filter.Tendsto e₀₁ l (nhds 0)) (h₁₂ : Filter.Tendsto e₁₂ l (nhds 0))
+    (h₂₀ : Filter.Tendsto e₂₀ l (nhds 0)) :
+    Filter.Tendsto (fun n => S n (e₀₁ n) + T n (e₁₂ n) + e₂₀ n) l (nhds 0) := by
+  obtain ⟨CS, hCS⟩ := banach_steinhaus hS
+  obtain ⟨CT, hCT⟩ := banach_steinhaus hT
+  refine squeeze_zero_norm' (a := fun n => CS * ‖e₀₁ n‖ + CT * ‖e₁₂ n‖ + ‖e₂₀ n‖)
+    (Filter.Eventually.of_forall fun n => ?_) ?_
+  · calc ‖S n (e₀₁ n) + T n (e₁₂ n) + e₂₀ n‖
+        ≤ ‖S n (e₀₁ n)‖ + ‖T n (e₁₂ n)‖ + ‖e₂₀ n‖ :=
+          le_trans (norm_add_le _ _) (by gcongr; exact norm_add_le _ _)
+      _ ≤ CS * ‖e₀₁ n‖ + CT * ‖e₁₂ n‖ + ‖e₂₀ n‖ := by
+          gcongr
+          · exact le_trans ((S n).le_opNorm _) (by gcongr; exact hCS n)
+          · exact le_trans ((T n).le_opNorm _) (by gcongr; exact hCT n)
+  · have g₀₁ : Filter.Tendsto (fun n => ‖e₀₁ n‖) l (nhds 0) := by
+      simpa using h₀₁.norm
+    have g₁₂ : Filter.Tendsto (fun n => ‖e₁₂ n‖) l (nhds 0) := by
+      simpa using h₁₂.norm
+    have g₂₀ : Filter.Tendsto (fun n => ‖e₂₀ n‖) l (nhds 0) := by
+      simpa using h₂₀.norm
+    simpa using ((g₀₁.const_mul CS).add (g₁₂.const_mul CT)).add g₂₀
+
+/-- **Corollary 5.2, contrapositive.**  A persistent cyclic defect in complete source spaces forces
+failure of pointwise boundedness of one of the two transport families. -/
+theorem not_pointwise_bounded_of_cyclicDefect [CompleteSpace E₁] [CompleteSpace E₂]
+    {ι : Type*} {l : Filter ι} (S : ι → E₁ →L[ℝ] E₀) (T : ι → E₂ →L[ℝ] E₀)
+    (e₀₁ : ι → E₁) (e₁₂ : ι → E₂) (e₂₀ : ι → E₀)
+    (h₀₁ : Filter.Tendsto e₀₁ l (nhds 0)) (h₁₂ : Filter.Tendsto e₁₂ l (nhds 0))
+    (h₂₀ : Filter.Tendsto e₂₀ l (nhds 0))
+    (hpersist : ¬ Filter.Tendsto (fun n => S n (e₀₁ n) + T n (e₁₂ n) + e₂₀ n) l (nhds 0)) :
+    (¬ ∀ y : E₁, ∃ C : ℝ, ∀ n, ‖S n y‖ ≤ C) ∨ (¬ ∀ z : E₂, ∃ C : ℝ, ∀ n, ‖T n z‖ ≤ C) := by
+  by_contra hcon
+  rw [not_or, not_not, not_not] at hcon
+  exact hpersist (cyclicDefect_tendsto_zero_of_pointwise_bounded S T e₀₁ e₁₂ e₂₀
+    hcon.1 hcon.2 h₀₁ h₁₂ h₂₀)
+
 end Normed
 
 /-! ## The equicontinuous completion law -/

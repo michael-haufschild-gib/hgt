@@ -211,9 +211,9 @@ theorem charge_gen (i : M) : charge (gen i) = Finsupp.single i 1 := by
     simp [gen]
   · have h1 : (gen i).raise j = 0 := by
       show (Finsupp.single i 1 : M →₀ ℕ) j = 0
-      exact Finsupp.single_eq_of_ne hij
+      exact Finsupp.single_eq_of_ne (Ne.symm hij)
     have h2 : (gen i).lower j = 0 := by simp [gen]
-    have h3 : (Finsupp.single i (1 : ℤ)) j = 0 := Finsupp.single_eq_of_ne hij
+    have h3 : (Finsupp.single i (1 : ℤ)) j = 0 := Finsupp.single_eq_of_ne (Ne.symm hij)
     rw [h1, h2, h3]
     simp
 

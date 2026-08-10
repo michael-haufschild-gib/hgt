@@ -2141,3 +2141,47 @@ points of the fibre are extreme states, hence evaluations agreeing with `x` on
 
 Separation is used only for the second direction; no other hypothesis on `S`
 appears — in particular neither unitality nor self-adjointness.
+
+## Locally C*-algebras (2026-08-10)
+
+`HTGeometry/LocallyCStarAlgebra.lean`, axiom-clean, in the umbrella.  This is
+the last of the five objects the card listed as absent from mathlib.
+
+For a tower `bond n : A (n+1) →+* A n` of continuous `*`-ring homomorphisms of
+C*-algebras:
+
+- `IsCoherentTower`, `projLimit`, and `projSubring` — the coherent sequences
+  form a subring of the product, closed under the involution
+  (`star_mem_projLimit`);
+- `isClosed_projLimit` and `completeSpace_projLimit` — the limit is closed in
+  the product, hence complete: a complete topological `*`-algebra;
+- `norm_star_mul_self_apply` — each defining seminorm `a ↦ ‖a n‖` satisfies the
+  C*-identity.  That is precisely what makes the limit *locally* C*;
+- `boundedPart`, `boundedNorm` and **`boundedNorm_star_mul_self`** — the bounded
+  elements carry the sup-norm, and it satisfies the C*-identity too, so the
+  bounded part is a C*-normed algebra.  The content is that a supremum of
+  squares is the square of the supremum, which holds only because norms are
+  nonnegative; the proof routes through `√` rather than a limiting argument.
+- `mul_mem_boundedPart`, `add_mem_boundedPart`, `star_mem_boundedPart`.
+
+### Status of the card's formal boundary
+
+The card recorded: "current mathlib has completely positive maps between
+C*-algebras but lacks operator systems, Shilov ideals, C*-envelopes, boundary
+representations, and locally C*-algebras."  All five are now built,
+unconditional and axiom-clean, together with the analytic input the envelope
+comparison needed:
+
+| Object | Module |
+|---|---|
+| operator systems | `MatrixModuleMultiplication`, `MatrixOrderedSpace`, `OperatorSystemMatrixOrderUnit`, `OperatorSystemLevelNorm`, `MatrixOrderedMap`, `CommutativeOperatorSystem` |
+| Shilov ideals | `ShilovIdealCommutative`, `CommutativeCompleteBoundary` |
+| C*-envelopes | `CStarEnvelopeCommutative`, `AffineFunctionSystemEnvelope` |
+| boundary representations | `PureStatesContinuousFunctions`, `BoundaryRepresentationCommutative` |
+| locally C*-algebras | `LocallyCStarAlgebra` |
+| the boundary theory they rest on | `BauerMaximumPrinciple`, `MilmanExtremePoints`, `ChoquetBoundaryFunctionSystem` |
+| generation | `CommutativeGeneration` |
+
+The noncommutative statements of boundary representations and of the complete
+Shilov ideal remain open in general; in the commutative model, which is the
+model the card's manuscript uses, both are proved.

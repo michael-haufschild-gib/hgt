@@ -113,6 +113,94 @@ theorem norm_gaussQuasiInnerG_sub_movingAmplitude_le {m : ℕ} (hm : 1 ≤ m) (k
 
 /-! ## The one-step limit -/
 
+/-- **Equation (10), for a family of amplitudes.**  Only common decay constants for the two
+intermediate stages are required; the amplitude itself may move with the index.  This is the form
+the iteration needs, because the amplitude produced by one step depends on `n` through `δ_n`. -/
+theorem tendsto_gaussOneStep_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
+    (hp : (1 : ℝ) < (p : ℝ)) (f : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))))
+    {A₁ A₂ : ℝ}
+    (h1 : ∀ (n : ℕ) (j : ℤ),
+      ‖fourierCoeff ((gaussPrimeScaleBlock hp (f n) : AddCircle (1 : ℝ) → ℂ)) j‖
+        ≤ A₁ / (1 + (j.natAbs : ℝ)))
+    (h2 : ∀ (n : ℕ) (j : ℤ),
+      ‖fourierCoeff ((gaussPrimeScaleInvSqBlock hp
+          (gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+            (gaussPrimeScaleBlock hp (f n))) : AddCircle (1 : ℝ) → ℂ)) j‖
+        ≤ A₂ / (1 + (j.natAbs : ℝ))) :
+    Tendsto (fun n : ℕ =>
+      ‖gaussQuasiInnerG hm k p (fourierMulBlock (n : ℤ) (f n)) -
+        (((p : ℝ) : ℂ) *
+            (starRingEnd ℂ (gaussSampleValue k p (n : ℤ)) * gaussSampleValue k p (n : ℤ))) •
+          fourierMulBlock (n : ℤ)
+            (gaussMovingAmplitudeBlock hp
+              ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (f n))‖)
+      atTop (nhds 0) := by
+  have hM := gaussSampleValueBound_nonneg hm k p
+  have hppos : (0 : ℝ) < (p : ℝ) := by linarith
+  have hE1 : Tendsto (fun n : ℕ =>
+      ‖gaussShiftedBlockOf hm k p (n : ℤ) (gaussPrimeScaleBlock hp (f n)) -
+        gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+          (gaussPrimeScaleBlock hp (f n))‖) atTop (nhds 0) := by
+    have h := tendsto_norm_gaussShiftedBlockOf_sub_rotation_family hm k p
+      (fun n : ℕ => gaussPrimeScaleBlock hp (f n)) h1
+    refine h.congr fun n => ?_
+    rw [gaussRotationBlock_eq_translation]
+  have hE2 : Tendsto (fun n : ℕ =>
+      ‖gaussShiftedBlockDiag hm k p (n : ℤ)
+          (gaussPrimeScaleInvSqBlock hp
+            (gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+              (gaussPrimeScaleBlock hp (f n)))) -
+        gaussTranslationBlock (-((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)))
+          (gaussPrimeScaleInvSqBlock hp
+            (gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+              (gaussPrimeScaleBlock hp (f n))))‖) atTop (nhds 0) := by
+    have h := tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family hm k p
+      (fun n : ℕ => gaussPrimeScaleInvSqBlock hp
+        (gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+          (gaussPrimeScaleBlock hp (f n)))) h2
+    refine h.congr fun n => ?_
+    rw [gaussRotationBlockInv_eq_translation]
+  have hdom : Tendsto (fun n : ℕ =>
+      Real.sqrt (p : ℝ) * ((p : ℝ) * gaussSampleValueBound hm k p *
+          gaussSampleValueBound hm k p *
+        (‖gaussShiftedBlockOf hm k p (n : ℤ) (gaussPrimeScaleBlock hp (f n)) -
+            gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+              (gaussPrimeScaleBlock hp (f n))‖ +
+          ‖gaussShiftedBlockDiag hm k p (n : ℤ)
+              (gaussPrimeScaleInvSqBlock hp
+                (gaussTranslationBlock
+                  ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+                  (gaussPrimeScaleBlock hp (f n)))) -
+            gaussTranslationBlock (-((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)))
+              (gaussPrimeScaleInvSqBlock hp
+                (gaussTranslationBlock
+                  ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+                  (gaussPrimeScaleBlock hp (f n))))‖))) atTop (nhds 0) := by
+    have hsum := hE1.add hE2
+    rw [add_zero] at hsum
+    have := (hsum.const_mul ((p : ℝ) * gaussSampleValueBound hm k p *
+      gaussSampleValueBound hm k p)).const_mul (Real.sqrt (p : ℝ))
+    simpa using this
+  refine squeeze_zero_norm' ?_ hdom
+  filter_upwards [eventually_gt_atTop 0] with n hn
+  have hn0 : (n : ℤ) ≠ 0 := by
+    have : 0 < n := hn
+    omega
+  have hbound := norm_gaussQuasiInnerG_sub_movingAmplitude_le hm k p hp hn0 (f n)
+  rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+  refine hbound.trans ?_
+  refine mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg _)
+  have hd := norm_gaussSampleValue_le hm k p (n : ℤ)
+  have hfac : (p : ℝ) * ‖gaussSampleValue k p (n : ℤ)‖ * gaussSampleValueBound hm k p
+      ≤ (p : ℝ) * gaussSampleValueBound hm k p * gaussSampleValueBound hm k p := by
+    have h1' : (p : ℝ) * ‖gaussSampleValue k p (n : ℤ)‖
+        ≤ (p : ℝ) * gaussSampleValueBound hm k p :=
+      mul_le_mul_of_nonneg_left hd hppos.le
+    exact mul_le_mul_of_nonneg_right h1' hM
+  rw [mul_add]
+  exact add_le_add (mul_le_mul_of_nonneg_right hfac (norm_nonneg _))
+    (mul_le_mul_of_nonneg_right hfac (norm_nonneg _))
+
 /-- **Equation (10).**  For an amplitude whose two intermediate stages carry decay constants, the
 quasi-inner block acts on the twisted amplitude as multiplication by the moving amplitude, up to an
 `L²` error that vanishes. -/
@@ -133,75 +221,8 @@ theorem tendsto_gaussOneStep {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Prime
           fourierMulBlock (n : ℤ)
             (gaussMovingAmplitudeBlock hp
               ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) f)‖)
-      atTop (nhds 0) := by
-  have hM := gaussSampleValueBound_nonneg hm k p
-  have hppos : (0 : ℝ) < (p : ℝ) := by linarith
-  -- the two vanishing errors
-  have hE1 : Tendsto (fun n : ℕ =>
-      ‖gaussShiftedBlockOf hm k p (n : ℤ) (gaussPrimeScaleBlock hp f) -
-        gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
-          (gaussPrimeScaleBlock hp f)‖) atTop (nhds 0) := by
-    have h := tendsto_norm_gaussShiftedBlockOf_sub_rotation hm k p (gaussPrimeScaleBlock hp f) h1
-    refine h.congr fun n => ?_
-    rw [gaussRotationBlock_eq_translation]
-  have hE2 : Tendsto (fun n : ℕ =>
-      ‖gaussShiftedBlockDiag hm k p (n : ℤ)
-          (gaussPrimeScaleInvSqBlock hp
-            (gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
-              (gaussPrimeScaleBlock hp f))) -
-        gaussTranslationBlock (-((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)))
-          (gaussPrimeScaleInvSqBlock hp
-            (gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
-              (gaussPrimeScaleBlock hp f)))‖) atTop (nhds 0) := by
-    have h := tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family hm k p
-      (fun n : ℕ => gaussPrimeScaleInvSqBlock hp
-        (gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
-          (gaussPrimeScaleBlock hp f))) h2
-    refine h.congr fun n => ?_
-    rw [gaussRotationBlockInv_eq_translation]
-  -- the dominating function
-  have hdom : Tendsto (fun n : ℕ =>
-      Real.sqrt (p : ℝ) * ((p : ℝ) * gaussSampleValueBound hm k p *
-          gaussSampleValueBound hm k p *
-        (‖gaussShiftedBlockOf hm k p (n : ℤ) (gaussPrimeScaleBlock hp f) -
-            gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
-              (gaussPrimeScaleBlock hp f)‖ +
-          ‖gaussShiftedBlockDiag hm k p (n : ℤ)
-              (gaussPrimeScaleInvSqBlock hp
-                (gaussTranslationBlock
-                  ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
-                  (gaussPrimeScaleBlock hp f))) -
-            gaussTranslationBlock (-((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)))
-              (gaussPrimeScaleInvSqBlock hp
-                (gaussTranslationBlock
-                  ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
-                  (gaussPrimeScaleBlock hp f)))‖))) atTop (nhds 0) := by
-    have hsum := hE1.add hE2
-    rw [add_zero] at hsum
-    have := (hsum.const_mul ((p : ℝ) * gaussSampleValueBound hm k p *
-      gaussSampleValueBound hm k p)).const_mul (Real.sqrt (p : ℝ))
-    simpa using this
-  refine squeeze_zero_norm' ?_ hdom
-  filter_upwards [eventually_gt_atTop 0] with n hn
-  have hn0 : (n : ℤ) ≠ 0 := by
-    have : 0 < n := hn
-    omega
-  have hbound := norm_gaussQuasiInnerG_sub_movingAmplitude_le hm k p hp hn0 f
-  rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
-  refine hbound.trans ?_
-  refine mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg _)
-  have hd := norm_gaussSampleValue_le hm k p (n : ℤ)
-  have hfac : (p : ℝ) * ‖gaussSampleValue k p (n : ℤ)‖ * gaussSampleValueBound hm k p
-      ≤ (p : ℝ) * gaussSampleValueBound hm k p * gaussSampleValueBound hm k p := by
-    have h1' : (p : ℝ) * ‖gaussSampleValue k p (n : ℤ)‖
-        ≤ (p : ℝ) * gaussSampleValueBound hm k p :=
-      mul_le_mul_of_nonneg_left hd hppos.le
-    exact mul_le_mul_of_nonneg_right h1' hM
-  have hfacnn : (0 : ℝ) ≤ (p : ℝ) * ‖gaussSampleValue k p (n : ℤ)‖ *
-      gaussSampleValueBound hm k p := by positivity
-  rw [mul_add]
-  exact add_le_add (mul_le_mul_of_nonneg_right hfac (norm_nonneg _))
-    (mul_le_mul_of_nonneg_right hfac (norm_nonneg _))
+      atTop (nhds 0) :=
+  tendsto_gaussOneStep_family hm k p hp (fun _ => f) (fun _ j => h1 j) h2
 
 end
 

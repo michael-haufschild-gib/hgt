@@ -838,9 +838,9 @@ exactly, and every later clause is stated in terms of the depth.
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 3 286 jobs.
 
-**What is not covered.**  The operator-algebraic clause of (GAS.11) — that `δ_d` induces a unital
-`*`-embedding `ι_d` of the mode algebra intertwining the modular flows, `α_t ∘ ι_d = ι_d ∘ α_{dt}` —
-waits on the KMS layer of Theorem 4.1.  The state and partition clauses above are the content that
+**The operator-algebraic clause is now certified too**, in
+`AbelianZetaGas/GasDilation.lean` (`gasDilate_comp`, `gasDilate_twist`, `gasGibbs_comp_gasDilate`);
+see the Theorem 4.1 section.  The state and partition clauses here are the content that
 the rest of the card actually uses: the wall ladder `{1/g}` of Theorem 5.1 is the `δ`-orbit of the
 depth-one wall `σ = 1`, which is now `depthDilation_comp` together with
 `AbelianZetaParameters.temperature_finite_depthTail_eq_one`.
@@ -1079,28 +1079,106 @@ Both are stated for an arbitrary `ℂ`-algebra with an algebra endomorphism `σ`
 so they apply verbatim to the monoid algebra of `GasWord` once the twist is built.  Axiom prints:
 `propext`, `Classical.choice`, `Quot.sound` only; both modules build green (8 658 jobs).
 
-**What remains of Theorem 4.1.**  In order:
+#### The algebra, the flow, and the Gibbs functional
 
-1. *The twist.*  The character `χ(x) = ∏_i q_i^{charge x i}` is a monoid homomorphism
-   `GasWord M → ℂˣ` (this is `charge_mul` plus `zpow`), so `MonoidAlgebra.lift` turns it into the
-   algebra automorphism `σ` with `σ(V_i) = q_i · V_i`.
-2. *The Gibbs functional.*  `φ = Finsupp.linearCombination ℂ ω` with
-   `ω x = if x.raise = x.lower then ∏_i q_i^{x.raise i} else 0`.  The exchange identity
-   `φ(xy) = φ(y σ(x))` is then a purely combinatorial check on pairs of words: both sides vanish
-   unless the total charge is zero, and when it is, the identity reduces to
-   `n' + (n − m')⁺ = m + (n' − m)⁺`, which follows from `m + m' = n + n'` — `omega` territory.
-   This is the **existence** half, and it holds for every `σ > 0`: no convergence enters, because
-   the monomial algebra is the algebraic (not the C\*) tensor product.
-3. *Uniqueness.*  Induct on `x.raise.support ∪ x.lower.support` with `eq_block_mul_erase`: at each
-   step either the peeled block is off-diagonal, and `kms_eq_zero_of_commuting` kills the word, or
-   it is diagonal, and `kms_diagonal_step` extracts `q_i^{n_i}`.  `mul_comm_of_disjoint` supplies
-   the commutation hypothesis both lemmas need.
-4. *Scope.*  What this certifies is Theorem 4.1 on the dense monomial `*`-algebra — which is where
-   the card's proof lives.  Extending it to the C\*-completion is a separate analytic wrapper
-   (continuity of the state and density of the monomials), and the operator-algebraic clause of
-   (GAS.11) — that `δ_d` induces `ι_d` with `α_t ∘ ι_d = ι_d ∘ α_{dt}` — is immediate on the
-   monomial algebra once step 1 is in place, since `δ_d` is already certified as an injective
-   depth map.
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasAlgebra.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+| Clause | Lean |
+|---|---|
+| the monomial algebra `ℂ[GasWord]` | `GasAlgebra` |
+| the charge weight `χ(x) = ∏_i q_i^{charge x i}` and its multiplicativity | `chi`, `chi_one`, **`chi_mul`** |
+| **the imaginary-time flow `α_{iσ}`, as an algebra endomorphism** | **`twist`**, `twist_single` |
+| the isometries and their adjoints inside the algebra | `gasV`, `gasW`, **`gasW_mul_gasV`** |
+| **the flow scales the isometry of mode `i` by `q_i`** | **`twist_gasV`** |
+| the Gibbs weight of a monomial | `gibbsWeight`, `gibbsWeight_one` |
+| the diagonality of a product is symmetric | **`diag_mul_comm`** |
+| **the exchange identity on weights** | **`gibbsWeight_exchange`** |
+| the Gibbs functional and its normalisation | `gibbs`, `gibbs_single`, `gibbs_one` |
+| **existence: `φ(ab) = φ(b·σ(a))` for the whole gas** | **`gibbs_exchange`** |
+
+Existence needs no convergence at all: the monomial algebra is the *algebraic* tensor product, so
+the product state is defined by a formula on a basis rather than by a limit.  The whole content is
+the combinatorial identity `ω(xy) = χ(x)·ω(yx)`, which after the charge bookkeeping is one `omega`
+call on truncated subtraction.
+
+#### Uniqueness
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasKMSUniqueness.lean`.
+
+| Clause | Lean |
+|---|---|
+| words and their powers inside the algebra | `single_mul_single_one`, `gasV_pow`, `gasW_pow` |
+| the flow scales the adjoint by `q_i^{-1}` | `charge_cogen`, `chi_cogen`, **`twist_gasW`** |
+| a commuting pure power is annihilated | `gas_vanish_gen`, `gas_vanish_cogen` |
+| block calculus in one mode | `gen_pow_eq_block`, `cogen_pow_eq_block`, **`block_mul_block`**, `block_comm_disjoint` |
+| weights of modulus `< 1` are never roots of unity | `pow_ne_one_of_norm_lt`, `inv_pow_ne_one_of_norm_lt` |
+| the exchange identity on single monomials | `gas_apply_single`, **`gas_exchange_word`** |
+| **positive net charge kills the monomial** | **`gas_offdiag_pos`** |
+| **negative net charge kills the monomial** | **`gas_offdiag_neg`** |
+| the exponent bookkeeping of a diagonal peel | `natToInt_eq_single_add_erase`, `zprod_single_nat`, `zprod_natToInt_erase` |
+| **a diagonal monomial has the value `∏_i q_i^{n_i}`** | **`gas_diag_value`** |
+| **uniqueness on monomials, and on the algebra** | **`gas_kms_unique_single`**, **`gas_kms_unique`** |
+
+The two off-diagonal theorems are the card's Step 2 made explicit.  Each application of the exchange
+identity contracts one isometry against the mode's adjoints: the lower exponent drops from `b` to
+`b − k` while the charge `k` is preserved, so a strong induction on the lower exponent terminates at
+a pure power `V_i^k`, which commutes with the rest of the word and is annihilated because
+`|q_i^k| < 1`.  The negative case is the mirror image with `V_i^*` and `|q_i^{-k}| > 1`.
+Step 3 is `gas_diag_value`: an induction over the mode support, peeling one block at a time with
+`kms_diagonal_step`.
+
+#### The gas itself
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/KMSState.lean`.
+
+| Clause | Lean |
+|---|---|
+| the mode weight `p^{-jσ}` in `ℂ`, and `0 < \|q\| < 1` | `gasNome`, `gasNome_ne_zero`, `norm_gasNome_lt_one` |
+| the flow and the Gibbs functional of the gas | `gasTwist`, `gasGibbs` |
+| existence and normalisation | `gasGibbs_exchange`, `gasGibbs_one` |
+| uniqueness | `gasGibbs_unique` |
+| **Theorem 4.1: exactly one normalised KMS functional, at every `σ > 0`** | **`gas_kms_existsUnique`** |
+| the range projections carry `qⁿ` | `gasGibbs_rangeProj` |
+| **each occupation layer carries `(1 − q)qⁿ`: the mode law of Section 2** | **`gasGibbs_layer`** |
+
+`norm_gasNome_lt_one` is where the card's `σ > 0` enters, and nothing more is needed: `ratio_pos`
+and `ratio_lt_one` hold for every `AbelianZetaParameters`, so the existence-and-uniqueness statement
+is proved at every positive temperature — the card's "no Bost–Connes transition" is exactly this.
+
+Axiom prints for every declaration above: `propext`, `Classical.choice`, `Quot.sound` only; the four
+modules build green (8 664 jobs).
+
+**Scope.**  What is certified is Theorem 4.1 on the dense monomial `*`-algebra — where the card's
+proof lives.  The C\*-completion is an analytic wrapper (continuity of the functional plus density of
+the monomials) and is not claimed here.
+
+### Theorem 7.1 (GAS.11) — the operator-algebraic clause (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasDilation.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+An injective map of modes transports monomials, and because the monomial product is computed mode by
+mode the transport is a monoid homomorphism — the only fact needed is that `Finsupp.mapDomain`
+commutes with truncated subtraction along an injective map.
+
+| Clause | Lean |
+|---|---|
+| `mapDomain` commutes with truncated subtraction | **`mapDomain_tsub`** |
+| **transport of monomials** | **`wordMap`**, `charge_wordMap`, `wordMap_comp` |
+| the reindexed weights | `zprod_mapDomain`, `chi_wordMap`, **`gibbsWeight_wordMap`** |
+| **the induced unital embedding of algebras** | **`gasEmbed`**, `gasEmbed_single`, `gasEmbed_comp` |
+| **it intertwines the two imaginary-time flows** | **`gasEmbed_twist`** |
+| **it pulls the Gibbs functional back to the reindexed one** | **`gibbs_comp_gasEmbed`** |
+| the renormalisation embedding `ι_d` | `gasDilate`, `gasNome_comp_depthDilation` |
+| **`ι_d ∘ ι_e = ι_{de}`: the semigroup `(ℕ_{≥1}, ×)`** | **`gasDilate_comp`** |
+| **`α_{iσ} ∘ ι_d = ι_d ∘ α_{i·dσ}`** | **`gasDilate_twist`** |
+| **`φ_σ ∘ ι_d = φ_{dσ}`** | **`gasGibbs_comp_gasDilate`** |
+
+The state clause is the card's third relation, and it needed nothing new: the temperature identity
+is the already-certified `ratio_depthDilation`, and everything else is functoriality of the
+transport.  Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at
+8 670 jobs.  **(GAS.11) is closed in all three clauses.**
 
 ### The gas-expectation layer — the single-mode atom (DONE)
 

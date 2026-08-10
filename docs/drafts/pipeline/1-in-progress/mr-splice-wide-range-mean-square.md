@@ -4135,3 +4135,105 @@ AveragedChowlaUniform μ  ⟹  UniformCorrelationSmall μ hh  ⟹  OffDiagonalVa
 
 is closed, unconditionally, in Lean.  The only remaining input is the averaged Chowla theorem
 itself.
+
+## Unit 11 — what averaged Chowla actually adds (Lean, unconditional)
+
+`Sieve/FejerCorrelation.lean`, all `[propext, Classical.choice, Quot.sound]`.
+
+Expanding a window sum and collecting by the difference of the two indices is an exact identity up
+to translating each correlation back to the origin:
+
+```lean
+abs_sum_window_sq_sub_fejerCorr_le :
+  (∀ n, |f n| ≤ 1) →
+    |∑_{y<Y} (∑_{i<H} f(y+i))²  −  fejerCorr f Y H|  ≤  2H³
+
+fejerCorr f Y H := 2·∑_{k<H} (H − k)·C_k  −  H·C_0 ,   C_k := ∑_{y<Y} f(y)·f(y+k)
+```
+
+Supporting lemmas: `sum_dist_double` (the symmetric double sum collected by `|i−j|`, by induction on
+`H` with `Finset.sum_range_reflect`), `sum_window_sq_eq`, `abs_shifted_corr_sub_le`,
+`abs_pair_corr_sub_le`.
+
+**Two consequences, and they delimit the remaining problem exactly.**
+
+```lean
+fejer_ge : (∀ n, |f n| ≤ 1) → −HY/2 − H³ ≤ ∑_{k=1}^{H−1} (H − k)·C_k
+
+fejer_le_of_window : (∀ n, |f n| ≤ 1) →
+  (∑_{y<Y} (∑_{i<H} f(y+i))² ≤ W) → ∑_{k=1}^{H−1} (H − k)·C_k ≤ (W + 2H³)/2
+```
+
+The lower bound is **free for every unit-bounded weight** — the Fejér-weighted correlation sum
+*is* a sum of squares, so it cannot be very negative; against the trivial size `H²Y/2` the bound
+`−HY/2 − H³` is smaller by a factor `H`.  The upper bound is exactly the short-interval mean square
+and carries all the arithmetic.
+
+So of the statement `∑_{k ≤ H} |C_k| = o(HY)`:
+
+* the **signed, Fejér-weighted** version is one-sided-free and one-sided-equivalent to the
+  Matomäki–Radziwiłł mean square;
+* the content of `AveragedChowlaUniform` beyond MR is precisely the replacement of the signed sum by
+  the sum of moduli — the step that in Matomäki–Radziwiłł–Tao needs the circle method, not just the
+  short-interval theorem.
+
+This is why the reduction of units 8–10 lands on averaged Chowla rather than on MR: the fibre
+weight `fibreSmooth x h k j` is not of product form in `(k, j)`, so the shift sum cannot be collapsed
+into a single Fejér kernel and the moduli cannot be avoided.
+
+**Card state.**  Two independent unconditional routes to `AveragedMeanSquare μ hh` now exist:
+
+| route | input | regime |
+|---|---|---|
+| corpus (`FibreStartSeparation` → `MoebiusMaximalWindow`) | `MaximalWindowFirstMoment μ hh`, i.e. MR in `L¹` maximal form | any; unconditional for `hh ≫ mertensSup(3√x)` |
+| units 8–10 (`OffDiagonalUniformBound` → `AveragedChowlaInterface`) | `AveragedChowlaUniform μ`, i.e. MRT | any with `hh/√x → 0` |
+
+and unit 11 says the gap between the two inputs is exactly signed-versus-modulus.
+
+## Unit 12 — the discrete mean square joined to Gallagher (Lean, unconditional)
+
+`Sieve/DiscreteWindowGallagher.lean`, `[propext, Classical.choice, Quot.sound]`.
+
+**Corpus check first.**  Two pieces I was about to build already existed and were found by grepping
+the *statement shape*, not the name:
+
+* `Sieve/WindowStepIntegral.integral_stepWindow_eq_sum` and
+  `Sieve/RealWindowVariance.integral_realWindow_eq_sum` — the discrete short-interval mean square
+  *equals* the integral of the real-start one, exactly, no error term;
+* `Sieve/LinearMeanSquareCapstone.integral_Ioc_normSq_linSum_range_le` — that integral over a
+  multiplicative range `(Y, Y(1+ε)^{K'}]` is `≤ Y(1+ε)^{K'}·K'·blockCost`, through Gallagher's
+  identity and a Dirichlet-polynomial bound.
+
+A first draft of the identity was written and deleted before compiling.
+
+**What was missing** was the joint: the two use different index sets (`Finset.range M` versus a
+general `s` with `0 ∉ s`) and different ranges (additive `[Y, Y+K]` versus multiplicative).  Built:
+
+```lean
+sum_normSq_window_le_gallagher :
+  (∀ n, ‖c n‖ ≤ 1) → 0 < L → 0 < Y → 0 ≤ ε → 0 < W → 0 ≤ M₁ → 0 ≤ M₂ →
+  Y + K + L < M + 1 → (Y : ℝ) + K ≤ (Y : ℝ) * (1 + ε) ^ K' →
+  (∀ w ∈ Set.Icc (-W) W, ‖logPoly c (Icc 1 M) w‖² ≤ M₁) → (∀ w, ‖logPoly c (Icc 1 M) w‖² ≤ M₂) →
+    ∑_{k < K} ‖∑_{Y+k < n ≤ Y+k+L} c n‖²
+      ≤ (Y·(1+ε)^{K'}) · (K' · blockCost L Y ε M₁ M₂ W)
+```
+
+with the supporting `measurable_linSum`, `norm_linSum_le`, `integrableOn_normSq_linSum`,
+`realWindow_eq_filter_Icc`, `sum_realWindow_eq_linSum`.  The covering step is free because the
+integrand is a square: enlarging `(Y, Y+K]` to `(Y, Y(1+ε)^{K'}]` only increases the integral.
+
+**Where this sits.**  The Matomäki–Radziwiłł chain in the corpus now reads
+
+```text
+AveragedMeanSquare μ hh
+  ⟸ MaximalWindowMeanSquare μ hh                    (FibreStartSeparation)
+  ⟸ ∑_y ( blockSq (partialSum μ) J j (y−1) )        (MaximalWindowDyadic, Rademacher–Menshov)
+  ⟸ ∑_{k<K} ‖∑_{Y+k<n≤Y+k+L} μ n‖²                  ← unit 12 joins this to
+  ⟸ Y(1+ε)^{K'}·K'·blockCost(L,Y,ε,M₁,M₂,W)         (Gallagher + Dirichlet polynomial)
+```
+
+so the whole path from the fibre mean square down to a bound on `‖logPoly μ (Icc 1 M) w‖²` is
+closed, unconditionally.  What remains is exactly the two Dirichlet-polynomial inputs `M₁`, `M₂` —
+the arithmetic of the Matomäki–Radziwiłł proof (Ramaré factorization ranges, the mean value
+theorem, large values, and the Halász bound of units 5–6) — plus the combinatorial step summing
+`blockSq` over starting points.

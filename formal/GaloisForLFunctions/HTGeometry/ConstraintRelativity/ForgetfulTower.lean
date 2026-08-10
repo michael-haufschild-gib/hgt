@@ -197,4 +197,140 @@ theorem det_central_twist {n : ℕ} (δ : ℂ) (T : Matrix (Fin n) (Fin n) ℂ) 
     (δ • T).det = δ ^ n * T.det := by
   simp
 
+/-! ## The arithmetic instantiation at the critical wall -/
+
+section Wall
+
+open Filter Topology
+
+/-- **Card `(11)`.**  The wall parameter of a divisor copy at prime-cycle level `n`. -/
+noncomputable def wallParameter (n : ℕ) (ρ : ℂ) : ℝ := (2 * ρ.re - 1) * Real.log n
+
+/-- **Card `(9)`.**  The prime-cycle transport factor `δ_n(ρ) = e^{(2 Re ρ − 1) log n}`. -/
+noncomputable def cycleTransport (n : ℕ) (ρ : ℂ) : ℂ :=
+  ((Real.exp (wallParameter n ρ) : ℝ) : ℂ)
+
+/-- **Card `(11)`.**  The wall parameter vanishes exactly on the critical line, once the cycle
+level is at least two. -/
+theorem wallParameter_eq_zero_iff {n : ℕ} (hn : 2 ≤ n) (ρ : ℂ) :
+    wallParameter n ρ = 0 ↔ ρ.re = 1 / 2 := by
+  have hlog : Real.log n ≠ 0 := by
+    have h1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hn.trans_lt' one_lt_two
+    exact ne_of_gt (Real.log_pos h1)
+  rw [wallParameter, mul_eq_zero]
+  constructor
+  · rintro (h | h)
+    · linarith
+    · exact absurd h hlog
+  · intro h
+    left
+    rw [h]
+    ring
+
+/-- **Card `(19)`.**  The framed residue of a divisor copy vanishes exactly on the critical line:
+`Res(D_{n,ρ}u_p) = (δ_n(ρ) − 1) c_ρ` is zero iff the wall parameter is zero. -/
+theorem sourceScalar_cycleTransport_eq_zero_iff {n : ℕ} (hn : 2 ≤ n) (ρ c : ℂ) (hc : c ≠ 0) :
+    sourceScalar (cycleTransport n ρ) c = 0 ↔ ρ.re = 1 / 2 := by
+  rw [sourceScalar, mul_eq_zero, sub_eq_zero]
+  constructor
+  · rintro (h | h)
+    · exact absurd h hc
+    · refine (wallParameter_eq_zero_iff hn ρ).1 ?_
+      have h2 : ((Real.exp (wallParameter n ρ) : ℝ) : ℂ) = (1 : ℂ) := h
+      have h' : Real.exp (wallParameter n ρ) = 1 := by exact_mod_cast h2
+      exact (Real.exp_eq_one_iff _).1 h'
+  · intro h
+    right
+    have hκ : wallParameter n ρ = 0 := (wallParameter_eq_zero_iff hn ρ).2 h
+    rw [cycleTransport, hκ, Real.exp_zero, Complex.ofReal_one]
+
+/-- **Card `(19)`, carrier form.**  The two-column carrier of a divisor copy degenerates to zero
+exactly on the critical line. -/
+theorem legCarrier_cycleTransport_eq_zero_iff {n : ℕ} (hn : 2 ≤ n) (ρ c : ℂ) (hc : c ≠ 0) :
+    legCarrier (cycleTransport n ρ) c = 0 ↔ ρ.re = 1 / 2 := by
+  rw [← sourceScalar_cycleTransport_eq_zero_iff hn ρ c hc]
+  constructor
+  · intro h
+    have hentry := congrFun (congrFun h 1) (Sum.inl 0)
+    rw [legCarrier_inl] at hentry
+    simpa using hentry
+  · exact legCarrier_eq_zero _ _
+
+/-- **Card `(19)`, conditioning form.**  Off the critical line the carrier of a divisor copy is
+surjective; on it the carrier is zero.  The critical line is exactly the degeneration locus. -/
+theorem legCarrier_cycleTransport_surjective {n : ℕ} (hn : 2 ≤ n) (ρ c : ℂ) (hc : c ≠ 0)
+    (hρ : ρ.re ≠ 1 / 2) (v : Fin 2 → ℂ) :
+    ∃ x : Fin 2 ⊕ Fin 2 → ℂ, legCarrier (cycleTransport n ρ) c *ᵥ x = v :=
+  legCarrier_surjective _ _ (fun h => hρ ((sourceScalar_cycleTransport_eq_zero_iff hn ρ c hc).1 h)) v
+
+/-- **Card `(9)`, `(10)`.**  The framed scalar of a divisor copy has squared magnitude
+`|c|² (e^κ − 1)²`, where `κ` is the wall parameter. -/
+theorem normSq_sourceScalar_cycleTransport (n : ℕ) (ρ c : ℂ) :
+    normSq (sourceScalar (cycleTransport n ρ) c)
+      = normSq c * (Real.exp (wallParameter n ρ) - 1) ^ 2 := by
+  have hsub : cycleTransport n ρ - 1 = ((Real.exp (wallParameter n ρ) - 1 : ℝ) : ℂ) := by
+    rw [cycleTransport, Complex.ofReal_sub, Complex.ofReal_one]
+  rw [sourceScalar, map_mul, hsub, Complex.normSq_ofReal]
+  ring
+
+/-- **Card `(10)`.**  The carrier of a divisor copy has Gram matrix `|a_ρ|² I`. -/
+theorem legCarrier_mul_conjTranspose_wall (n : ℕ) (ρ c : ℂ) :
+    legCarrier (cycleTransport n ρ) c * (legCarrier (cycleTransport n ρ) c)ᴴ
+      = ((normSq c * (Real.exp (wallParameter n ρ) - 1) ^ 2 : ℝ) : ℂ) • 1 := by
+  rw [legCarrier_mul_conjTranspose, normSq_sourceScalar_cycleTransport]
+
+/-- **Card `(12)`, exact form.**  The squared pseudo-inverse gain at a divisor copy is
+`1 / (|c|² (e^κ − 1)²)`. -/
+theorem sum_normSq_pseudoInverse_wall (n : ℕ) (ρ c : ℂ)
+    (ha : sourceScalar (cycleTransport n ρ) c ≠ 0) (x : Fin 2 → ℂ) :
+    ∑ i, normSq ((legCarrierPseudoInverse (cycleTransport n ρ) c *ᵥ x) i)
+      = (∑ i, normSq (x i)) / (normSq c * (Real.exp (wallParameter n ρ) - 1) ^ 2) := by
+  rw [sum_normSq_pseudoInverse_mulVec _ _ ha, normSq_sourceScalar_cycleTransport]
+
+/-- The exponential slope at the origin: `(e^κ − 1)/κ → 1`. -/
+theorem tendsto_exp_sub_one_div_atZero :
+    Tendsto (fun κ : ℝ => (Real.exp κ - 1) / κ) (𝓝[≠] 0) (𝓝 1) := by
+  have h := Real.hasDerivAt_exp 0
+  rw [hasDerivAt_iff_tendsto_slope, Real.exp_zero] at h
+  refine h.congr fun κ => ?_
+  rw [slope_def_field, Real.exp_zero, sub_zero]
+
+/-- **Card `(12)`.**  Near the critical wall the squared pseudo-inverse gain is asymptotically
+`1/(|c|² κ²)`: the ratio of the exact gain to that model tends to one as the wall parameter tends
+to zero.  This is the card's `‖Γ_ρ†‖ ∼ 1/(|c_ρ| |κ|)`, squared. -/
+theorem tendsto_pseudoInverse_gain_ratio (c : ℂ) (hc : c ≠ 0) :
+    Tendsto (fun κ : ℝ =>
+        (normSq c * (Real.exp κ - 1) ^ 2)⁻¹ / (normSq c * κ ^ 2)⁻¹) (𝓝[≠] 0) (𝓝 1) := by
+  have hns : normSq c ≠ 0 := by simpa [Complex.normSq_eq_zero] using hc
+  have hbase := tendsto_exp_sub_one_div_atZero
+  have hsq : Tendsto (fun κ : ℝ => ((Real.exp κ - 1) / κ) ^ 2) (𝓝[≠] 0) (𝓝 1) := by
+    simpa using hbase.pow 2
+  have hinv : Tendsto (fun κ : ℝ => (((Real.exp κ - 1) / κ) ^ 2)⁻¹) (𝓝[≠] 0) (𝓝 1) := by
+    simpa using hsq.inv₀ one_ne_zero
+  refine hinv.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with κ hκ
+  have hκ0 : κ ≠ 0 := hκ
+  field_simp
+
+/-- **Card `(12)`.**  The exact wall is a singular-conditioning wall: the squared pseudo-inverse
+gain blows up as the wall parameter tends to zero. -/
+theorem tendsto_pseudoInverse_gain_atTop (c : ℂ) (hc : c ≠ 0) :
+    Tendsto (fun κ : ℝ => (normSq c * (Real.exp κ - 1) ^ 2)⁻¹) (𝓝[≠] 0) atTop := by
+  have hns : 0 < normSq c := by
+    simpa [Complex.normSq_pos] using hc
+  refine Filter.Tendsto.inv_tendsto_nhdsGT_zero ?_
+  rw [tendsto_nhdsWithin_iff]
+  constructor
+  · have hcont : ContinuousAt (fun κ : ℝ => normSq c * (Real.exp κ - 1) ^ 2) 0 := by fun_prop
+    have h := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := {(0 : ℝ)}ᶜ))
+    simpa using h
+  · filter_upwards [self_mem_nhdsWithin] with κ hκ
+    have hκ0 : κ ≠ 0 := hκ
+    have hexp : Real.exp κ - 1 ≠ 0 := by
+      intro h
+      exact hκ0 ((Real.exp_eq_one_iff κ).1 (by linarith))
+    exact Set.mem_Ioi.2 (by positivity)
+
+end Wall
+
 end HTGeometry.ConstraintRelativity

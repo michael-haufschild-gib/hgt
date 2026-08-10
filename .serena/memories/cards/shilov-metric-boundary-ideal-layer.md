@@ -275,3 +275,14 @@ need to be assumed linear or positive. Gives choquetBoundary ⊤ = shilovBoundar
 restriction map over an extreme δ_x|S is an EXTREME SUBSET of the state body,
 so Krein-Milman + `extremePoints_stateBody_top` collapse it to {δ_x}. Needs only
 separation. Remaining on the card: locally C*-algebras.
+
+## All five named objects built (2026-08-10)
+
+`LocallyCStarAlgebra.lean` finishes the list: projective limit of a C*-tower is
+a complete topological *-algebra whose defining seminorms satisfy the
+C*-identity, and the bounded part's sup-norm does too
+(`boundedNorm_star_mul_self`; sup of squares = square of sup, via √).
+
+Card's formal boundary (operator systems, Shilov ideals, C*-envelopes, boundary
+representations, locally C*-algebras) + generation: all built and axiom-clean.
+Open: the NONcommutative boundary representations and complete Shilov ideal.

@@ -1224,3 +1224,35 @@ recovered as the constant family, so nothing was duplicated.
 Instantiating `A₁` for `B f` (fixed) and `A₂` for the moving family `w'_n` from the
 piecewise-exponential class, which turns the one-step *bound* into the one-step *limit* (10); then
 (11), the `m`-fold iterate.
+
+## Lean status, twenty-ninth pass: equation (10)
+
+`RHTower/GaussOneStepEstimate.lean`, extended; unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+tendsto_gaussOneStep :
+  (∀ j, ‖fourierCoeff (B f) j‖ ≤ A₁/(1+|j|))                      →
+  (∀ n j, ‖fourierCoeff (B^(-2) T_(δ_n) (B f)) j‖ ≤ A₂/(1+|j|))   →
+    ‖G(e_n f) - (p conj(d_n) d_n) · e_n (a_(δ_n) f)‖  →  0
+```
+
+This is **the card's equation (10)**.  The two hypotheses are the card's own "bounded-variation
+amplitude" requirement, in the concrete form the amplitudes take: a decay constant for `B f`, which
+is fixed, and one for the moving family `B^(-2) T_(δ_n)(B f)`.
+
+The proof feeds the two moving-translation limits into the one-step error bound and squeezes:
+
+```text
+‖error_n‖ ≤ √p · ( p |d_n| M · E1 n + p |d_n| M · E2 n )
+          ≤ √p · p M² · (E1 n + E2 n)  →  0,
+```
+
+using `‖d_n‖ ≤ M` and `E1, E2 → 0`.  The scalar taming is what keeps `|d_n|` in the numerator.
+
+### Remaining
+
+Only (11): iterating (10) `m` times.  The amplitude after `r` steps is `a_(δ_n)^r`, which is
+piecewise constant with the same two pieces, so the two decay constants stay bounded along the
+iteration; and the errors propagate through the *bounded* operator `G`, whose norm bound is
+`norm_gaussQuasiInnerG_le`.

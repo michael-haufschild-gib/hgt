@@ -353,6 +353,63 @@ theorem liftingHorizon_recurrence_eq_top :
     simp only [Fin.val_last, Fin.val_zero, Nat.cast_zero, sub_zero]
     rwa [abs_of_nonneg (by positivity : (0:ℝ) ≤ (n:ℝ))]
 
+/-- The wrap-around chord in the card's reflected form: `2 sin(π/(n²+1))`. -/
+theorem norm_recurrenceBoundary_sub' {n : ℕ} (hn : 0 < n) :
+    ‖recurrenceBoundary n (Fin.last n) - recurrenceBoundary n 0‖
+      = 2 * Real.sin (Real.pi / ((n : ℝ) ^ 2 + 1)) := by
+  have hpos : (0 : ℝ) < (n : ℝ) ^ 2 + 1 := by positivity
+  have harg : Real.pi * (n : ℝ) ^ 2 / ((n : ℝ) ^ 2 + 1)
+      = Real.pi - Real.pi / ((n : ℝ) ^ 2 + 1) := by
+    field_simp
+    ring
+  have hsmall : (0 : ℝ) ≤ Real.pi / ((n : ℝ) ^ 2 + 1) := by positivity
+  have hsmall' : Real.pi / ((n : ℝ) ^ 2 + 1) ≤ Real.pi := by
+    rw [div_le_iff₀ hpos]
+    nlinarith [Real.pi_pos, sq_nonneg ((n : ℝ))]
+  rw [norm_recurrenceBoundary_sub hn, harg, Real.sin_pi_sub,
+    abs_of_nonneg (Real.sin_nonneg_of_nonneg_of_le_pi hsmall hsmall')]
+
+/-- **Card `(16)`.**  Every exact decoder of the recurrence family is Lipschitz only with a
+constant at least `n / (2 sin(π/(n²+1)))`: the source separation is `n` while the observed
+separation is the wrap-around chord. -/
+theorem lipschitz_decoder_recurrence_ge {n : ℕ} (hn : 0 < n) {K : NNReal} {r : ℂ → ℝ}
+    (hr : LipschitzWith K r)
+    (hfact : ∀ k : Fin (n + 1), recurrenceInterior n k = r (recurrenceBoundary n k)) :
+    (n : ℝ) ≤ (K : ℝ) * (2 * Real.sin (Real.pi / ((n : ℝ) ^ 2 + 1))) := by
+  have hmain := dist_le_of_lipschitz_factor hr hfact (Fin.last n) 0
+  have hleft : dist (recurrenceInterior n (Fin.last n)) (recurrenceInterior n 0) = (n : ℝ) := by
+    rw [Real.dist_eq, recurrenceInterior, recurrenceInterior]
+    simp only [Fin.val_last, Fin.val_zero, Nat.cast_zero, sub_zero]
+    exact abs_of_nonneg (by positivity)
+  have hright : dist (recurrenceBoundary n (Fin.last n)) (recurrenceBoundary n 0)
+      = 2 * Real.sin (Real.pi / ((n : ℝ) ^ 2 + 1)) := by
+    rw [dist_eq_norm, norm_recurrenceBoundary_sub' hn]
+  rwa [hleft, hright] at hmain
+
+/-- **Card `(16)`.**  Consequently the exact-decoder Lipschitz constant of the recurrence family
+grows at least like `n³/(2π)`: the horizon is pure loss of uniform conditioning. -/
+theorem cube_div_le_lipschitz_decoder_recurrence {n : ℕ} (hn : 0 < n) {K : NNReal} {r : ℂ → ℝ}
+    (hr : LipschitzWith K r)
+    (hfact : ∀ k : Fin (n + 1), recurrenceInterior n k = r (recurrenceBoundary n k)) :
+    (n : ℝ) ^ 3 / (2 * Real.pi) ≤ (K : ℝ) := by
+  have hmain := lipschitz_decoder_recurrence_ge hn hr hfact
+  have hpos : (0 : ℝ) < (n : ℝ) ^ 2 + 1 := by positivity
+  have hK : (0 : ℝ) ≤ (K : ℝ) := K.coe_nonneg
+  have hsin : Real.sin (Real.pi / ((n : ℝ) ^ 2 + 1)) ≤ Real.pi / ((n : ℝ) ^ 2 + 1) :=
+    Real.sin_le (by positivity)
+  have hstep : (n : ℝ) ≤ (K : ℝ) * (2 * (Real.pi / ((n : ℝ) ^ 2 + 1))) := by
+    refine le_trans hmain ?_
+    have := mul_le_mul_of_nonneg_left (by linarith : (2 : ℝ) *
+      Real.sin (Real.pi / ((n : ℝ) ^ 2 + 1)) ≤ 2 * (Real.pi / ((n : ℝ) ^ 2 + 1))) hK
+    exact this
+  have hmul : (n : ℝ) * ((n : ℝ) ^ 2 + 1) ≤ (K : ℝ) * (2 * Real.pi) := by
+    have h := mul_le_mul_of_nonneg_right hstep hpos.le
+    calc (n : ℝ) * ((n : ℝ) ^ 2 + 1)
+        ≤ (K : ℝ) * (2 * (Real.pi / ((n : ℝ) ^ 2 + 1))) * ((n : ℝ) ^ 2 + 1) := h
+      _ = (K : ℝ) * (2 * Real.pi) := by field_simp
+  rw [div_le_iff₀ (by positivity : (0 : ℝ) < 2 * Real.pi)]
+  nlinarith [hmul, Nat.cast_nonneg (α := ℝ) n]
+
 end Counterexample
 
 end HTGeometry.ConstraintRelativity
