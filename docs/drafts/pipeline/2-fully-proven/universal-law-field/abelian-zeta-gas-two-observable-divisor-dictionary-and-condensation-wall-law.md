@@ -811,12 +811,10 @@ The two models line up exactly: the gas mode ratio at depth `j` and prime `p` is
 
 Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 660 jobs.
 
-**Scope of what is certified.**  The statement is the *local* form of (GAS.5): it is about the
-product of the geometric depth modes at one prime, which is exactly the object the card's proof
-computes with.  The step from this to the marginal of the full `gasMeasure` — factoring the
-countable product over `Nat.Primes × ℕ` into its prime blocks — is measure-theoretic bookkeeping
-that remains; it needs a product-index splitting for `∏'` in `ℝ≥0∞`, which mathlib does not
-currently carry.
+**Scope of what is certified here.**  This is the *local* form of (GAS.5), about the product of the
+geometric depth modes at one prime.  The step to the full `gasMeasure` — the prime-block marginal —
+is `gasMeasure_map_primeFiber_depths` below, and the global form is closed in the (GAS.5) capstone
+section.
 
 ### Theorem 7.1 (GAS.11) — depth dilation, measure-theoretic clauses (DONE)
 
@@ -1027,6 +1025,37 @@ module builds green (8 917 jobs).  **Theorem 6.1 is closed**: continuation, (GAS
 item 2 (Corollary 3.2 plus the certified translation-divisor layer of ULF-EQG-1) and now item 1's
 accumulation and natural-boundary claims.
 
+### Theorem 5.1 — the depth-tail sectors and the squarefull consequence (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/SquarefullSector.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+Theorem 5.1's two halves were already certified in `Core.lean`; what was not was its *consequence*
+list, and in particular the squarefull sector.  The mechanism is one identity: raising the depth of
+every mode by `n` is exactly the socle-fugacity shift `τ ↦ τ + n·σ`, so a depth tail of the gas is
+the gas again.
+
+| Clause | Lean |
+|---|---|
+| the fugacity shift `τ ↦ τ + n·σ` | `AbelianZetaParameters.depthShiftBy` |
+| **the depth shift is the fugacity shift, mode by mode** | **`ratio_depthShiftBy`**, `success_depthShiftBy`, `modeLaw_depthShiftBy` |
+| the modes of depth `≥ g`, and their enumeration | `depthTailSector`, `depthTailEquiv`, `tailEquiv_apply` |
+| the restriction of the gas to a depth tail | `gasMeasure_map_restrict_depthTail` |
+| **the depth-`≥g` marginal of the gas is the gas at `τ + (g−1)σ`** | **`gasMeasure_map_depthTail`** |
+| the squarefull parameters, in the convergence chamber for `σ > 1/2` | `squarefullConv` |
+| **the squarefull marginal is the squarefull gas** | **`gasMeasure_squarefull`** |
+| **its partition function is `∏_{j≥2} ζ(jσ)`** | **`zetaPartition_squarefull`** |
+| **it is an honest almost surely finite random abelian group** | **`squarefull_existsUnique_groupClass`** |
+| **its law is `∝ \|B\|^{−σ}` with `\|B\| = \|A\|·\|soc A\|`** | **`twoObservableWeight_squarefull`** |
+
+The threshold `σ > 1/2` appears in exactly one place — `squarefullConv`'s convergence field asks
+`1 < σ + σ` — which is the card's squarefull wall, and it is the same number as the depth-two
+condensation wall of Theorem 5.1(1).  The last row is the precise form of the card's `∝|B|^{-σ}`:
+under the depth shift the order of a squarefull group is the product `|A|·|soc A|` of the shifted
+group's two observables, so the two-observable weight at `(σ,σ)` *is* `|B|^{-σ}`.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 671 jobs.
+
 ### Theorem 4.1 (KMS) — the monomial monoid and the exchange identity
 
 The card's proof of Theorem 4.1 never leaves the dense monomial `*`-algebra: existence is a product
@@ -1149,9 +1178,32 @@ is proved at every positive temperature — the card's "no Bost–Connes transit
 Axiom prints for every declaration above: `propext`, `Classical.choice`, `Quot.sound` only; the four
 modules build green (8 664 jobs).
 
-**Scope.**  What is certified is Theorem 4.1 on the dense monomial `*`-algebra — where the card's
-proof lives.  The C\*-completion is an analytic wrapper (continuity of the functional plus density of
-the monomials) and is not claimed here.
+#### The adjoint
+
+The monomial monoid carries the anti-involution swapping isometries and adjoints, so the algebra is
+a `*`-algebra and the Gibbs functional is hermitian on it:
+
+| Clause | Lean |
+|---|---|
+| the adjoint of a monomial | `GasWord.wstar`, `wstar_wstar`, `wstar_gen`, `wstar_cogen` |
+| **it reverses products** | **`wstar_mul`** |
+| the charge changes sign | `charge_wstar` |
+| **the Gibbs weight is adjoint-invariant** | **`gibbsWeight_wstar`** |
+
+**Scope, and what remains.**  What is certified is Theorem 4.1 on the dense monomial `*`-algebra —
+where the card's proof lives — for the *algebraic* KMS condition (the exchange identity) and
+normalisation.  Two further layers would make the statement literally the C\*-one:
+
+1. *Positivity*, i.e. `φ(a^* a) ≥ 0`, which upgrades "normalised functional" to "state".  The Gram
+   matrix `ω(x^* y)` factorises over modes — `gibbsWeight` is a product and `wstar` acts mode by
+   mode — so positivity reduces by a Kronecker-product argument to the *single-mode* bicyclic Gram
+   matrix, which the corpus already realises concretely: `toeplitzGibbsState` on `ToeplitzSpace`
+   with `toeplitzGibbsState_eq_inner` exhibits it as a genuine diagonal expectation, and
+   `toeplitzGibbsState_faithful` is already proved.  Every element of the monomial algebra involves
+   finitely many modes, so no infinite tensor product is needed for this step.
+2. *The C\*-completion*: continuity of the state and density of the monomials.  This needs
+   C\*-tensor products and inductive limits, which mathlib does not carry; it is the one genuinely
+   large remaining piece of this card.
 
 ### Theorem 7.1 (GAS.11) — the operator-algebraic clause (DONE)
 
@@ -1280,10 +1332,9 @@ so the difference form would have needed finiteness of both expectations, wherea
 `tsum_primes_modeMean_residue` and `ofReal_tsum_primes_modeMean_residue` identify with
 `∑_n Λ(n)n^{−σ} = −ζ′(σ)/ζ(σ)`.
 
-Theorem 8.1's analytic content is therefore closed end to end and unconditionally.  What is left is
-purely definitional: exhibiting the card's `D(P*‖P_σ) + D(P_σ‖P*)` as `σ` times the difference of
-these two expectations, i.e. introducing `MeasureTheory.klDiv` for the two laws and computing its
-log-density.
+Theorem 8.1's analytic content is therefore closed end to end and unconditionally; the
+Kullback–Leibler evaluation that turns it into the card's `D(P*‖P_σ) + D(P_σ‖P*)` is the
+`RelativeEntropy.lean` section below.
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 666 jobs.
 

@@ -4298,3 +4298,106 @@ M₁ = o( x / (ℓ · K' · (log h)²) )     against the trivial  M₂ ≍ x .
 
 That is the Matomäki–Radziwiłł estimate for `‖logPoly μ (Icc 1 M) w‖²` on `|w| ≤ W`, and it is now
 the *only* thing the whole card still needs on this route.  Everything above it is closed.
+
+## Unit 14 — the chain over the large-values interface (Lean, unconditional)
+
+`Sieve/LinearMeanSquareGeneric.lean`, `[propext, Classical.choice, Quot.sound]`.
+
+**The defect unit 13 left.**  `LinearBlockEstimate` … `DyadicMeanSquareGallagher` are all built on
+the *pointwise* Gallagher split `gallagher_split`, whose input is a bound `M₁` on
+`‖logPoly a s w‖²` for **every** `|w| ≤ W`.  That is the zero-free-region interface, and
+[[contour-route-is-long-windows-only]] shows it caps at long windows.  The Matomäki–Radziwiłł proof
+uses the other split, `gallagher_split_integral`, whose input is the frequency **mean square**
+`∫_{|w| ≤ W} ‖logPoly a s w‖²` — the large-values interface.
+
+**The observation that avoids duplicating five modules.**  Both splits are consumed at exactly one
+place: a bound on `∫_E ‖logWindowSum a s δ u‖²` at `δ = log(1 + L/Y')`.  Carrying that bound as a
+parameter runs the whole chain once:
+
+```lean
+blockCostG L ε G := 2·G + 2(εL+1)²·log(1+ε)
+
+setIntegral_normSq_linWindowSum_block_le_gen   -- one block
+setIntegral_normSq_linWindowSum_range_le_gen   -- K blocks, by induction
+integral_Ioc_normSq_linSum_range_le_gen        -- change of variable
+sum_normSq_window_le_gen                       -- discrete = continuous
+dyadicMeanSquare_le_gen                        -- the dyadic object
+```
+
+each with the hypothesis `∀ Y' ≥ Y, ∀ E, ∫_E ‖logWindowSum a s (log(1+L/Y')) u‖² ≤ G`.  Note that
+`blockCostG` no longer mentions the base point, so the monotonicity-in-`Y` step of the pointwise
+chain disappears.
+
+**The instantiation.**
+
+```lean
+dyadicMeanSquare_le_largeValues :
+  (∀ n, |f n| ≤ 1) → 0 < ℓ → 0 < A → A ≤ B+1 → 0 ≤ ε → 0 < W → 0 ≤ M₂ → 0 ≤ I →
+  B+1+ℓ < M+1 → (A : ℝ) + (B+1−A) ≤ A(1+ε)^{K'} →
+  (∫_{|w| ≤ W} ‖logPoly (f : ℕ → ℂ) (Icc 1 M) w‖² ≤ I) → (∀ w, ‖logPoly …‖² ≤ M₂) →
+    dyadicMeanSquare f ℓ A B
+      ≤ A(1+ε)^{K'} · K' · blockCostG ℓ ε (2·log(1+ℓ/A)²·I + M₂·2/(π²W))
+```
+
+**Why this is the gain.**  In the pointwise chain the Gallagher budget is `M₁·log(1+ℓ/A) ≍ M₁ℓ/√x`;
+here it is `2·log(1+ℓ/A)²·I ≍ 2ℓ²I/x`.  The frequency mean square is multiplied by `ℓ²/x` instead of
+the pointwise size by `ℓ/√x` — one whole factor `ℓ/√x` of room, which is exactly what separates the
+long-window regime from `h = x^{o(1)}`.
+
+**Revised accounting.**  With `A ≍ √x`, `ℓ = 2^j ≤ h`, `K' ≍ log 2/log(1+ε)`, the requirement
+`C = o(h√x/(log h)²)` from unit 13 becomes
+
+```text
+√x·K'·( 4·(ℓ/√x)²·I + 4M₂/(π²W) + 2(εℓ+1)²log(1+ε) )  =  o( h√x/(log h)² ) ,
+```
+
+i.e. (taking `ε ≍ 1/ℓ`, so the third term is `O(1)` and `K' ≍ ℓ`)
+
+```text
+I = ∫_{|w| ≤ W} ‖logPoly μ (Icc 1 M) w‖² dw  =  o( h·x / (ℓ³ (log h)²) )   and   M₂/W = o(h/(ℓ(log h)²)) .
+```
+
+The second is the trivial size `M₂ ≍ x` against a height `W ≫ ℓx(log h)²/h`; the first is the
+Dirichlet-polynomial mean square that the Ramaré factorization, the mean value theorem, the
+large-values layer and the Halász bound of units 5–6 are there to supply.  That single estimate is
+now the whole of what the card still needs.
+
+## Unit 15 — the whole route in one inequality (Lean, unconditional)
+
+`Sieve/MaximalWindowLargeValues.lean`, `[propext, Classical.choice, Quot.sound]`.  Units 13 and 14
+composed; `sum_maxWindowSq_succ_le_uniform` was tightened from `∀ i` to `∀ i < 2^{J−j}`, which is all
+the Rademacher–Menshov decomposition ever uses and is what makes the translates bounded.
+
+```lean
+sum_maxWindowSq_succ_le_largeValues :
+  (∀ n, |f n| ≤ 1) → H + 1 ≤ 2^J → 0 < A → A ≤ B+1 → 0 ≤ ε → 0 < W → 0 ≤ M₂ → 0 ≤ I →
+  B + 2^J + 1 + 2^J < M + 1 →
+  (A : ℝ) + (B+1−A) ≤ A(1+ε)^{K'} →
+  (∫_{|w| ≤ W} ‖logPoly (f : ℕ → ℂ) (Icc 1 M) w‖² ≤ I) → (∀ w, ‖logPoly …‖² ≤ M₂) →
+    ∑_{y ∈ [A+1, B+1]} maxWindowSq f H y
+      ≤ (J+1)²·2^J · ( (B+1+2^J)(1+ε)^{K'} ·
+            K' · blockCostG 2^J ε ( 2·log(1+2^J/A)²·I + M₂·2/(π²W) ) )
+```
+
+Every level `2^j ≤ 2^J` and every translate `A + i·2^j` is absorbed by monotonicity:
+`log(1 + 2^j/(A+i2^j)) ≤ log(1 + 2^J/A)`, `(ε2^j+1)² ≤ (ε2^J+1)²`, `A + i·2^j ≤ B+1+2^J`.
+
+**What this says.**  The entire route from the Route E sign-density theorems down to a Dirichlet
+polynomial is now a single machine-checked inequality whose only arithmetic input is
+
+```text
+I  ≥  ∫_{|w| ≤ W} ‖ ∑_{n ≤ M} μ(n)·n^{2πiw} ‖² dw ,      M ≍ √x ,
+```
+
+together with the trivial size `M₂ ≍ M² ≍ x` and the free parameters `ε` (block ratio), `K'` (block
+count) and `W` (height).  With `A ≍ √x/2`, `B ≍ √x`, `2^J ≍ h`, `ε ≍ 1/h`, `K' ≍ h` the target
+`o(h²√x)` becomes
+
+```text
+I = o( h·x / (h³ (log h)²) ) = o( x / (h² (log h)²) )   and   W ≫ h·x·(log h)²/h = x(log h)² .
+```
+
+Against the trivial mean value `I ≪ (W + M log M)·M ≍ W√x`, the deficit is a factor
+`≍ h²(log h)²·W/√x` — i.e. the Dirichlet-polynomial mean square must beat the diagonal by that
+factor.  That single estimate — Ramaré factorization, the mean value theorem, the large-values
+layer, and the Halász bound of units 5–6 — is the whole of what the card still needs.

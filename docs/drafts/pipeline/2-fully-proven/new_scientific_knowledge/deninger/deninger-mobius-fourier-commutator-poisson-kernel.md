@@ -831,6 +831,8 @@ Classical.choice, Quot.sound`.
 - `deningerHigherBracket_le` — the bracket is nonnegative and at most `i^{-2}` once `r ≥ 1`.
 - `deningerHigherCoefficient_summable` — **the order-`r` coefficients are summable for every
   `r ≥ 1`**, by comparison with `(9)`.  So one inverse-square series controls every order at once.
+- `deningerWindowPow_setIntegral`, `deningerWindowPow_lintegral` — the window moment as a set
+  integral and in `ℝ≥0∞`, which is the form the order-`r` exchange consumes.
 
 Every ingredient of `(11)` now exists at every order `r`.
 
@@ -997,6 +999,76 @@ This is the second factor of the card's `(12)`: the Abel representation gives
 is `deningerHarmonicLimit`, **already proved to be zero**, so `(12)` follows once the dilation
 scaling and the sum/integral interchange are in place.
 
+### Section 2 — dilation scaling of the ray integral `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerDilationIntegral.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerPullMass`, `deningerLogPull_dilation_integral` — dilation scales the ray integral by the
+  reciprocal (mathlib's `integral_comp_mul_left_Ioi`).
+- `deningerLogPull_dilation_integrable` — dilating preserves integrability.
+- `deningerAbelDifference_integral` — **`∫_0^∞ (H_h((i+1)x) - H_h(ix)) dx = -(1/(i(i+1))) ∫_0^∞ H_h`**.
+
+Both factors of `(12)` are now proved: this coefficient, and `deningerHarmonicLimit = 0`.  What
+remains is the dominated-convergence interchange, whose majorant
+(`deningerAbelMajorant_mass_lt_top`) is already built.
+
+### Section 2 — the dominating function `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMajorantIntegrable.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerAbelMajorant_measurable` — the majorant is measurable (a countable sum of measurable
+  terms).
+- `deningerAbelMajorantReal`, `deningerAbelMajorantReal_integrable` — **its real form is integrable
+  on the ray**, so it is an honest dominating function.
+- `deningerAbelMajorant_lt_top_ae` — the majorant is finite almost everywhere, so the Abel series
+  is absolutely summable at almost every point.
+
+Every hypothesis of the dominated convergence theorem for `(12)` is now discharged: pointwise
+convergence is `deningerMobius_abel`, the uniform bound is
+`deningerMobiusPreimage_enorm_le`'s partial-sum estimate, and the dominating function is here.
+
+### Section 2 — the Abel partial sums as integrable functions `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPreimageZeroMass.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerLogPull_measurable`, `deningerAbelPartial`, `deningerAbelPartial_measurable` — the Abel
+  partial sums as measurable functions of the dilation.
+- `deningerAbelPartial_enorm_le` — they are dominated by the majorant, uniformly in `N`.
+- `deningerAbelPartial_integral` — **`∫_0^∞ (partial sum) = (partial harmonic sum) · ∫_0^∞ H_h`**.
+
+A detail worth recording: the `i = 0` term is *not* integrable on the ray on its own — the
+difference `H_h(x) - H_h(0)` has a constant part, and constants are not integrable on `(0,∞)`.  It
+is integrable only as a product, because `M(0) = μ(0) = 0` kills it.  Handling that term by
+integrability of the difference fails; handling it by vanishing of the product works.
+
+### Section 2 — `(12)`: the preimage has zero mass `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPreimageZeroMass.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerAbelPartial_norm_le` — the partial sums are dominated by the real majorant.
+- `deningerMobiusPreimage_mass_eq_zero` — **`∫_0^∞ f_h(x) dx = 0`**, unconditionally.
+
+The route is shorter than the card's own: instead of Fubini in the continuous Abel representation
+and `(15)` as an integral identity, dominated convergence on the *discrete* Abel representation
+gives `∫_0^∞ f_h = (∑_i M(i)/(i(i+1))) · ∫_0^∞ H_h` directly, and the first factor is
+`deningerHarmonicLimit`, already proved zero.
+
+### Section 1 — the even extension `E f_h` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerEvenPreimage.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerEvenPreimage`, `deningerEvenPreimage_even` — the even extension of `(4)`, with evenness
+  definitional (take the absolute value of the argument).
+- `deningerEvenPreimage_of_pos`, `_of_neg` — its two branches.
+- `deningerNeg_preimage_Ioi`, `deningerEvenPreimage_integrableOn_Iio` — reflection carries the
+  negative ray onto the positive one and transports integrability, so the extension inherits every
+  ray estimate.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
@@ -1004,8 +1076,9 @@ unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a
 ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
 bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)` at order `r ≥ 1` (mechanical repetition of the `r = 0` assembly), the instantiation of
 `(6)` at the concrete `𝔖_μ` (mathlib's `TemperedDistribution` is the natural home, since
-`F² = reflection` is free there), and `(5)`.  `(12)` and the algebraic content of `(6)` are
-**done**.  `(8)`, `(9)`, `(10)` and the weighted-derivative bound are all built.  What
+`F² = reflection` is free there), and `(5)` — the Fourier-inversion bootstrap with Poisson
+summation.  **`(8)`, `(9)`, `(10)`, `(11)` at `r = 0`, `(12)`, `(15)`, `(25)`, `(34)`--`(35)`,
+`(44)`--`(45)` and the algebraic content of `(6)` are all done.**  `(8)`, `(9)`, `(10)` and the weighted-derivative bound are all built.  What
 remains for `(11)` is one measure-theoretic step: integrating the Abel difference against `dx`.  The clean route is *not* a
 decreasing majorant for `H_h'` but Tonelli on the region — for `i ≥ 1`,
 

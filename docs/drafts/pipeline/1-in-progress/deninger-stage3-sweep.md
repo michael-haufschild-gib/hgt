@@ -29,7 +29,7 @@
 
 ## Batch state, verified 2026-08-10
 
-64 modules under `RHTower/Deninger*`, 656 declarations, **0** `sorry`/`admit`/`axiom`/`opaque`/
+69 modules under `RHTower/Deninger*`, 656 declarations, **0** `sorry`/`admit`/`axiom`/`opaque`/
 `unsafe`, **0** name collisions against the rest of the tree, **0** duplicate imports in
 `RHTower.lean`.  Every module builds individually with zero errors; every audited declaration is
 `[propext, Classical.choice, Quot.sound]`.
@@ -131,7 +131,10 @@ What else exists and must not be rebuilt:
    - all higher weighted moments — **DONE**, `RHTower/DeningerHigherMoment`
      (`∫_0^∞ u^{r+1}|H_h'(u)|du < ∞` for every `r`), so both factors of `(11)` at order `r` exist;
      only the window integral `∫ x^r dx` is left there.
-   - the order-`r` window and coefficients — **DONE**, `RHTower/DeningerHigherCoefficient`.  One
+   - the order-`r` window and coefficients — **DONE**, `RHTower/DeningerHigherCoefficient`:
+     `deningerWindowPow_integral` (oriented interval), `deningerWindowPow_setIntegral` (+`_nonneg`),
+     `deningerWindowPow_lintegral` (the `ℝ≥0∞` form the exchange consumes), and
+     `deningerHigherCoefficient_summable`.  One
      inverse-square series controls every order: the bracket
      `i^{-(r+1)} - (i+1)^{-(r+1)}` is at most `i^{-2}` once `r ≥ 1`, so `(9)` alone suffices.
    - `(12)` — needs `(15)`, i.e. `∑_n μ(n)/n = 0`.  **Convergence is now proved**

@@ -212,6 +212,62 @@ theorem additive_factors_through_provenance (D : L → L → ℝ)
   rw [provenanceClass, map_sub, hprov, hprov]
   exact additive_eq_potential_sub D hadd hxy
 
+/-- The provenance generator is injective: distinct points have distinct generators. -/
+theorem provenance_injective : Function.Injective (provenance : L → (L →₀ ℤ)) := by
+  intro x y h
+  by_cases hx : x = ⊥ <;> by_cases hy : y = ⊥
+  · rw [hx, hy]
+  · exfalso
+    rw [provenance, if_pos hx, provenance, if_neg hy] at h
+    have := congrArg (fun g => g y) h
+    simp at this
+  · exfalso
+    rw [provenance, if_neg hx, provenance, if_pos hy] at h
+    have := congrArg (fun g => g x) h
+    simp at this
+  · rw [provenance, if_neg hx, provenance, if_neg hy] at h
+    have := congrArg (fun g => g x) h
+    simp only [Finsupp.single_eq_same, Finsupp.single_apply] at this
+    by_contra hxy
+    rw [if_neg (fun hc => hxy hc.symm)] at this
+    exact one_ne_zero this
+
+/-- **Card `(6.3)`.**  The universal provenance class vanishes exactly on the diagonal: the class
+is a faithful oriented invariant, unlike any of its scalar magnitudes. -/
+theorem provenanceClass_eq_zero_iff (x y : L) : provenanceClass x y = 0 ↔ x = y := by
+  rw [provenanceClass, sub_eq_zero]
+  exact ⟨fun h => (provenance_injective h).symm, fun h => by rw [h]⟩
+
+/-- The universal class is oriented: reversing the pair negates it. -/
+theorem provenanceClass_swap (x y : L) : provenanceClass y x = -provenanceClass x y := by
+  rw [provenanceClass, provenanceClass, neg_sub]
+
+section Functorial
+
+variable {M : Type*} [PartialOrder M] [OrderBot M] [DecidableEq M]
+
+/-- **Card `(6.5)`.**  The provenance group is functorial: a map of the base induces the additive
+map sending each generator to the generator of its image. -/
+noncomputable def provenanceMap (f : L → M) : (L →₀ ℤ) →+ (M →₀ ℤ) :=
+  Finsupp.liftAddHom fun a : L => zmultiplesHom (M →₀ ℤ) (provenance (f a))
+
+theorem provenanceMap_provenance (f : L → M) (hf : f ⊥ = ⊥) (x : L) :
+    provenanceMap f (provenance x) = provenance (f x) := by
+  by_cases hx : x = ⊥
+  · subst hx
+    rw [provenance, if_pos rfl, map_zero, hf, provenance, if_pos rfl]
+  · rw [provenance, if_neg hx, provenanceMap, Finsupp.liftAddHom_apply_single]
+    simp
+
+/-- **Card `(6.5)`.**  The universal provenance class is natural in the base: a bottom-preserving
+map carries the class of a pair to the class of its image pair. -/
+theorem provenanceMap_provenanceClass (f : L → M) (hf : f ⊥ = ⊥) (x y : L) :
+    provenanceMap f (provenanceClass x y) = provenanceClass (f x) (f y) := by
+  rw [provenanceClass, map_sub, provenanceMap_provenance f hf, provenanceMap_provenance f hf,
+    provenanceClass]
+
+end Functorial
+
 end Provenance
 
 end HTGeometry.ConstraintRelativity

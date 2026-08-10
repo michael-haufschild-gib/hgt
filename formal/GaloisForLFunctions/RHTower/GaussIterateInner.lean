@@ -102,37 +102,38 @@ theorem fourierCoeff_gaussAmplitudeIterate_zero {p : ℝ} (hp : 1 < p) {s : ℝ}
 `r`-th power of the step scalar times the exact period average of the `r`-th power of the moving
 amplitude, up to an error that vanishes. -/
 theorem tendsto_gaussIterateInner {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
-    (hp : (1 : ℝ) < (p : ℝ)) (r : ℕ) :
+    (hp : (1 : ℝ) < (p : ℝ)) {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop) (r : ℕ) :
     Tendsto (fun n : ℕ =>
-      ‖(inner ℂ (fourierLp 2 (n : ℤ))
-            ((gaussQuasiInnerG hm k p ^ r) (fourierLp 2 (n : ℤ))) : ℂ) -
+      ‖(inner ℂ (fourierLp 2 (ι n))
+            ((gaussQuasiInnerG hm k p ^ r) (fourierLp 2 (ι n))) : ℂ) -
           ((((p : ℝ) : ℂ) *
-              (starRingEnd ℂ (gaussSampleValue k p (n : ℤ)) *
-                gaussSampleValue k p (n : ℤ))) ^ r) *
+              (starRingEnd ℂ (gaussSampleValue k p (ι n)) *
+                gaussSampleValue k p (ι n))) ^ r) *
             ((gaussAmplitudeSegment (p : ℝ) r
-              (Int.fract (gaussSamplePhase m p (n : ℤ))) : ℝ) : ℂ)‖)
+              (Int.fract (gaussSamplePhase m p (ι n))) : ℝ) : ℂ)‖)
       atTop (nhds 0) := by
-  refine squeeze_zero_norm' ?_ (tendsto_gaussIterate hm k p hp r)
+  refine squeeze_zero_norm' ?_ (tendsto_gaussIterate hm k p hp hι r)
   filter_upwards with n
-  set s : ℝ := Int.fract (gaussSamplePhase m p (n : ℤ)) with hs
+  set s : ℝ := Int.fract (gaussSamplePhase m p (ι n)) with hs
   have hs0 : 0 ≤ s := Int.fract_nonneg _
   have hs1 : s < 1 := Int.fract_lt_one _
-  have hδ : ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+  have hδ : ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
       = ((s : ℝ) : AddCircle (1 : ℝ)) := (coe_fract_eq _).symm
   set σ : ℂ := ((p : ℝ) : ℂ) *
-    (starRingEnd ℂ (gaussSampleValue k p (n : ℤ)) * gaussSampleValue k p (n : ℤ)) with hσ
+    (starRingEnd ℂ (gaussSampleValue k p (ι n)) * gaussSampleValue k p (ι n)) with hσ
   set g : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
     (gaussMovingAmplitudeBlock hp ((s : ℝ) : AddCircle (1 : ℝ)) ^ r) (fourierLp 2 0) with hg
-  have hinner : (inner ℂ (fourierLp 2 (n : ℤ)) (fourierMulBlock (n : ℤ) g) : ℂ)
+  have hinner : (inner ℂ (fourierLp 2 (ι n)) (fourierMulBlock (ι n) g) : ℂ)
       = ((gaussAmplitudeSegment (p : ℝ) r s : ℝ) : ℂ) := by
     rw [inner_fourierLp_eq_fourierCoeff, fourierCoeff_fourierMulBlock, sub_self,
       fourierCoeff_gaussAmplitudeIterate_zero hp hs0 hs1 r]
-  have hpair : (inner ℂ (fourierLp 2 (n : ℤ))
-        ((gaussQuasiInnerG hm k p ^ r) (fourierLp 2 (n : ℤ))) : ℂ) -
+  have hpair : (inner ℂ (fourierLp 2 (ι n))
+        ((gaussQuasiInnerG hm k p ^ r) (fourierLp 2 (ι n))) : ℂ) -
         (σ ^ r) * ((gaussAmplitudeSegment (p : ℝ) r s : ℝ) : ℂ)
-      = inner ℂ (fourierLp 2 (n : ℤ))
-          ((gaussQuasiInnerG hm k p ^ r) (fourierMulBlock (n : ℤ) (fourierLp 2 0)) -
-            (σ ^ r) • fourierMulBlock (n : ℤ) g) := by
+      = inner ℂ (fourierLp 2 (ι n))
+          ((gaussQuasiInnerG hm k p ^ r) (fourierMulBlock (ι n) (fourierLp 2 0)) -
+            (σ ^ r) • fourierMulBlock (ι n) g) := by
     rw [inner_sub_right, inner_smul_right, fourierMulBlock_fourierLp_zero, hinner]
   rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _), hδ, hpair]
   refine le_trans (norm_inner_le_norm _ _) ?_

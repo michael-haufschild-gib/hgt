@@ -206,6 +206,30 @@ theorem tendsto_gaussSampleRatioDefect
       gaussSampleValue_natSucc, gaussSampleValue_natSucc]
     ring
 
+/-! ## Reflection of the lattice -/
+
+/-- The lattice phase is even: it depends on the frequency only through its magnitude. -/
+theorem gaussSamplePhase_neg (m : ℕ) (p : Nat.Primes) (i : ℤ) :
+    gaussSamplePhase m p (-i) = gaussSamplePhase m p i := by
+  rw [gaussSamplePhase, gaussSamplePhase]
+  congr 2
+  rw [Int.cast_neg, Real.log_neg_eq_log]
+
+/-- **Reflection of the shifted ratio.**  Reflecting both the frequency and the shift conjugates
+the defect; in particular it preserves its modulus. -/
+theorem gaussSampleRatioDefect_neg {m : ℕ} (k : Fin m) (p : Nat.Primes) (j i : ℤ) :
+    gaussSampleRatioDefect k p (-j) (-i)
+      = starRingEnd ℂ (gaussSampleRatioDefect k p j i) := by
+  have hsum : -i + -j = -(i + j) := by ring
+  rw [gaussSampleRatioDefect, gaussSampleRatioDefect, hsum, gaussSampleValue_neg,
+    gaussSampleValue_neg, gaussSamplePhase_neg, map_sub, map_div₀]
+  congr 1
+  rw [← Complex.exp_conj]
+  congr 1
+  simp only [map_mul, Complex.conj_I, Complex.conj_ofReal, map_intCast, map_ofNat]
+  push_cast
+  ring
+
 end
 
 end RHTower

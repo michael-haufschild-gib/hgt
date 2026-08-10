@@ -1256,3 +1256,79 @@ Only (11): iterating (10) `m` times.  The amplitude after `r` steps is `a_(δ_n)
 piecewise constant with the same two pieces, so the two decay constants stay bounded along the
 iteration; and the errors propagate through the *bounded* operator `G`, whose norm bound is
 `norm_gaussQuasiInnerG_le`.
+
+## Lean status, thirtieth pass: equation (11)
+
+Five modules, all unconditional (`[propext, Classical.choice, Quot.sound]`), all wired, all built;
+`GaloisForLFunctions.RHTower` builds clean, zero lint errors attributable to them.
+
+### `HTGeometry/PiecewiseExponentialAlgebra.lean`
+
+```text
+IsExpPiecewise.mul  : same partition; exponents add, coefficients multiply
+IsExpPiecewise.one
+IsExpPiecewise.pow  : IsExpPiecewise α n t c f → IsExpPiecewise (r·α) n t (c^r) (f^r)
+```
+
+The partition is *never refined*.  This is why a fixed number of iterations keeps one decay
+constant: the piece count in `norm_fourierCoeff_of_isExpPiecewise` does not grow with `r`.
+
+### `RHTower/GaussScaleQuotient.lean`
+
+```text
+gaussScaleQuotientCircle p δ z = b(z)·b(z+δ)^(-2)
+gaussPrimeScaleInvSqBlock_translate_gaussPrimeScaleBlock :
+    B^(-2) (T_δ (B f)) = T_δ (M_(q_δ) f)
+isExpPiecewise_gaussScaleQuotientCircle : IsExpPiecewise (log p/2) 2, breakpoint 1-δ
+```
+
+**The intermediate stage of the principal step is a translate of one multiplication operator.**
+This is what removes the apparent need for translation-closure of the amplitude class — the
+obstruction that would have forced a sorted merge of two partitions with wrap-around.  Translation
+leaves every Fourier modulus unchanged, and `q_δ` sits on the *same* breakpoint `1-δ` as `a_δ`.
+
+### `RHTower/GaussIteratedAmplitude.lean`
+
+```text
+coeFn_gaussAmplitudePow : (A_δ^r) 1 = a_δ^r  a.e.
+norm_fourierCoeff_gaussPrimeScaleBlock_amplitudePow : ‖fourierCoeff (B a_δ^r) j‖ ≤ 4p^(r+1)/(1+|j|)
+norm_fourierCoeff_gaussIntermediate_amplitudePow    : same constant for B^(-2) T_δ B a_δ^r
+```
+
+Both stages are two-piece exponentials with coefficients bounded by `√p·p^r` and `|α| = log p/2`,
+so both decay constants are `2·(√p p^r · 2√p) = 4p^(r+1)` — uniform in the shift.  This
+**discharges both hypotheses of the one-step estimate**, at every stage of the iteration.
+
+### `RHTower/GaussIterate.lean`
+
+```text
+tendsto_gaussIterate :  ‖G^r(e_n) - (p conj(d_n) d_n)^r · e_n a_(δ_n)^r‖  →  0
+```
+
+Induction on `r`.  The step splits as
+
+```text
+G^(r+1)(e_n) - σ^(r+1) e_n a^(r+1)  =  G(X - Y) + σ^r (G(e_n a^r) - σ e_n a^(r+1)),
+```
+
+so the accumulated error is multiplied by `‖G‖` (bounded — `norm_gaussQuasiInnerG_le`) and the new
+error by `‖σ‖^r ≤ (p M²)^r` (bounded — `norm_gaussStepScalar_le`).  Both factors are constants, so
+both terms vanish.
+
+### `RHTower/GaussIterateInner.lean`
+
+```text
+tendsto_gaussIterateInner :
+    ⟪e_n, G^r e_n⟫ - (p conj(d_n) d_n)^r · A_r(δ_n)  →  0,
+    A_r(δ) = gaussAmplitudeSegment p r δ = ∫₀¹ a_δ(x)^r dx
+```
+
+This is **the card's equation (11)**.  Pairing is legitimate because `‖e_n‖ = 1`, so Cauchy–Schwarz
+converts the vanishing `L²` error into a vanishing scalar error; and the period average of the
+iterated amplitude is its zeroth Fourier coefficient, evaluated in closed form by the two-piece
+description together with the already-formalized exact period average.
+
+### Card status
+
+Equations (2)–(5), (7), (8), (9) in every needed form, (10), **(11)**, (12), (13), §6, §7,
+formula (A) and its `k`-independence, and the whole operator layer are now unconditional Lean.

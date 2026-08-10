@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CompactOperatorGeneralSpectrum
 import GaloisForLFunctions.HTGeometry.CompactRieszProjectionTrace
+import GaloisForLFunctions.HTGeometry.FinrankIndependentSup
 import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceDivisorTomography
 import GaloisForLFunctions.RHTower.CCMRectangularManuscriptCapstone
 import GaloisForLFunctions.RHTower.HedenmalmEssentialFlowSymbol
@@ -160,6 +161,42 @@ theorem exists_thetaRieszProjection_range_eq_maxGenEigenspace
   exists_rieszProjection_range_eq_maxGenEigenspace_of_isCompactOperator
     isCompactOperator_thetaKernelOperator mu.2.1 mu.2.2
 
+/-- Canonical chosen isolating radius for a nonzero source spectral point. -/
+def thetaRieszRadius (mu : ThetaNonzeroSpectrum) : ℝ :=
+  Classical.choose (exists_thetaRieszProjection_range_eq_maxGenEigenspace mu)
+
+theorem thetaRieszRadius_spec (mu : ThetaNonzeroSpectrum) :
+    0 < thetaRieszRadius mu ∧ thetaRieszRadius mu < ‖(mu : ℂ)‖ ∧
+      (∀ lam ∈ Metric.sphere (mu : ℂ) (thetaRieszRadius mu),
+        lam ∈ resolventSet ℂ thetaKernelOperator) ∧
+      rieszProjection thetaKernelOperator (mu : ℂ) (thetaRieszRadius mu) *
+          rieszProjection thetaKernelOperator (mu : ℂ) (thetaRieszRadius mu) =
+        rieszProjection thetaKernelOperator (mu : ℂ) (thetaRieszRadius mu) ∧
+      FiniteDimensional ℂ
+        (LinearMap.range
+          ((rieszProjection thetaKernelOperator (mu : ℂ) (thetaRieszRadius mu) :
+            ThetaH →L[ℂ] ThetaH) : ThetaH →ₗ[ℂ] ThetaH)) ∧
+      LinearMap.range
+          ((rieszProjection thetaKernelOperator (mu : ℂ) (thetaRieszRadius mu) :
+            ThetaH →L[ℂ] ThetaH) : ThetaH →ₗ[ℂ] ThetaH) =
+        maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ) :=
+  Classical.choose_spec (exists_thetaRieszProjection_range_eq_maxGenEigenspace mu)
+
+/-- Isolated finite-rank Riesz projection onto one complete source root block. -/
+def thetaLocalRieszProjection (mu : ThetaNonzeroSpectrum) : ThetaH →L[ℂ] ThetaH :=
+  rieszProjection thetaKernelOperator (mu : ℂ) (thetaRieszRadius mu)
+
+theorem thetaLocalRieszProjection_idempotent (mu : ThetaNonzeroSpectrum) :
+    thetaLocalRieszProjection mu * thetaLocalRieszProjection mu =
+      thetaLocalRieszProjection mu :=
+  (thetaRieszRadius_spec mu).2.2.2.1
+
+theorem range_thetaLocalRieszProjection (mu : ThetaNonzeroSpectrum) :
+    LinearMap.range ((thetaLocalRieszProjection mu : ThetaH →L[ℂ] ThetaH) :
+        ThetaH →ₗ[ℂ] ThetaH) =
+      maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ) :=
+  (thetaRieszRadius_spec mu).2.2.2.2.2
+
 /-- Algebraic source root spaces are finite dimensional, proved from their compact Riesz
 projections rather than assumed. -/
 noncomputable instance thetaMaxGenEigenspace_finiteDimensional
@@ -189,12 +226,40 @@ theorem thetaRootBlockOperator_sub_isNilpotent (mu : ThetaNonzeroSpectrum) :
           (Module.End ℂ
             (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)))
           (mu : ℂ)) := by
-  have hnil :=
-    Module.End.isNilpotent_restrict_maxGenEigenspace_sub_algebraMap
-      (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)
-  convert hnil using 1
-  ext x
-  simp [thetaRootBlockOperator, LinearMap.restrict_apply]
+  rw [Module.End.isNilpotent_iff_of_finite]
+  intro x
+  obtain ⟨n, hn⟩ :=
+    (Module.End.mem_maxGenEigenspace
+      (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ) (x : ThetaH)).mp x.2
+  refine ⟨n, ?_⟩
+  apply Subtype.ext
+  have hmaps : ∀ y ∈
+      maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ),
+      (thetaKernelOperator : Module.End ℂ ThetaH) y ∈
+        maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ) :=
+    Module.End.mapsTo_maxGenEigenspace_of_comm (Commute.refl _) (mu : ℂ)
+  have hsub := restrict_sub_smul
+    (thetaKernelOperator : Module.End ℂ ThetaH) hmaps (mu : ℂ)
+  have hroot : thetaRootBlockOperator mu =
+      (thetaKernelOperator : Module.End ℂ ThetaH).restrict hmaps := by
+    ext y
+    rfl
+  have hcalc :
+      thetaRootBlockOperator mu -
+          algebraMap ℂ
+            (Module.End ℂ
+              (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)))
+            (mu : ℂ) =
+        ((thetaKernelOperator : Module.End ℂ ThetaH) - (mu : ℂ) • 1).restrict
+          (fun y hy =>
+            (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)).sub_mem
+              (hmaps y hy)
+              ((maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)).smul_mem
+                (mu : ℂ) hy)) := by
+    rw [Algebra.algebraMap_eq_smul_one, hroot]
+    exact hsub
+  rw [hcalc, coe_restrict_pow]
+  exact hn
 
 /-- Normalized positive-order Taylor jet of the essential symbol at a nonzero root. -/
 def thetaEssentialTaylorCoefficient (a L : ℝ) (mu : ThetaNonzeroSpectrum)
@@ -316,6 +381,52 @@ theorem thetaEssentialCutoffTrace_eq_finrank_sum
       essentialFlowSymbol a L (mu : ℂ) ^ 2) = _
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
+/-- Finite direct sum of all Riesz root fibres above a positive modulus cutoff. -/
+def thetaEssentialRieszCutoffRange {eps : ℝ} (heps : 0 < eps) : Submodule ℂ ThetaH :=
+  (thetaNonzeroSpectrumCutoffSet_finite heps).toFinset.sup fun mu =>
+    maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)
+
+noncomputable instance thetaEssentialRieszCutoffRange_finiteDimensional
+    {eps : ℝ} (heps : 0 < eps) :
+    FiniteDimensional ℂ (thetaEssentialRieszCutoffRange heps) := by
+  dsimp [thetaEssentialRieszCutoffRange]
+  letI : ∀ mu : ThetaNonzeroSpectrum,
+      FiniteDimensional ℂ
+        (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)) :=
+    fun mu => thetaMaxGenEigenspace_finiteDimensional mu
+  exact Submodule.finite_finset_sup _ _
+
+/-- Dimension of the cutoff Riesz range is the sum of full algebraic multiplicities. -/
+theorem finrank_thetaEssentialRieszCutoffRange
+    {eps : ℝ} (heps : 0 < eps) :
+    Module.finrank ℂ (thetaEssentialRieszCutoffRange heps) =
+      ∑ mu ∈ (thetaNonzeroSpectrumCutoffSet_finite heps).toFinset,
+        thetaSpectrumMultiplicity mu := by
+  exact finrank_finset_sup_of_iSupIndep
+    (fun mu : ThetaNonzeroSpectrum =>
+      maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ))
+    ((Module.End.independent_maxGenEigenspace
+      (thetaKernelOperator : Module.End ℂ ThetaH)).comp Subtype.val_injective)
+    (thetaNonzeroSpectrumCutoffSet_finite heps).toFinset
+
+/-- Finite punctured Riesz trace, defined as the ordinary finite-dimensional functional-calculus
+trace on each isolated Riesz fibre and then on their finite direct sum. -/
+def thetaEssentialRieszCutoffTrace (a L : ℝ) {eps : ℝ} (heps : 0 < eps) : ℂ :=
+  ∑ mu ∈ (thetaNonzeroSpectrumCutoffSet_finite heps).toFinset,
+    LinearMap.trace ℂ
+      (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ))
+      (thetaRootBlockFunctionalCalculus a L mu ∘ₗ
+        thetaRootBlockFunctionalCalculus a L mu)
+
+/-- The literal finite Riesz-fibre trace equals the intrinsic algebraic-multiplicity cutoff sum. -/
+theorem thetaEssentialRieszCutoffTrace_eq
+    (a L : ℝ) {eps : ℝ} (heps : 0 < eps) :
+    thetaEssentialRieszCutoffTrace a L heps = thetaEssentialCutoffTrace a L eps := by
+  rw [thetaEssentialCutoffTrace_eq_finrank_sum a L heps]
+  apply Finset.sum_congr rfl
+  intro mu hmu
+  exact trace_thetaRootBlockFunctionalCalculus_sq a L mu
+
 /-- Every finite algebraic packet is eventually contained in the intrinsic modulus cutoff. -/
 theorem eventually_subset_thetaSpectrumCutoffCopies
     (s : Finset ThetaSpectrumCopy) :
@@ -348,6 +459,31 @@ theorem thetaEssentialCutoffTrace_tendsto (a L : ℝ) :
   have h := (thetaEssentialTraceTerm_summable a L).hasSum
   exact h.comp tendsto_thetaSpectrumCutoffCopies_at_zero
 
+/-- Totalized finite Riesz trace; nonpositive parameters are irrelevant to the punctured limit. -/
+def thetaEssentialRieszCutoffTraceTotal (a L eps : ℝ) : ℂ :=
+  if heps : 0 < eps then thetaEssentialRieszCutoffTrace a L heps else 0
+
+theorem thetaEssentialRieszCutoffTraceTotal_eq
+    (a L eps : ℝ) :
+    thetaEssentialRieszCutoffTraceTotal a L eps =
+      thetaEssentialCutoffTrace a L eps := by
+  by_cases heps : 0 < eps
+  · simp only [thetaEssentialRieszCutoffTraceTotal, dif_pos heps]
+    exact thetaEssentialRieszCutoffTrace_eq a L heps
+  · simp [thetaEssentialRieszCutoffTraceTotal, heps, thetaEssentialCutoffTrace,
+      thetaSpectrumCutoffCopies]
+
+/-- Absolute and cutoff-independent convergence of genuine finite Riesz-fibre traces. -/
+theorem thetaEssentialRieszCutoffTrace_tendsto (a L : ℝ) :
+    Tendsto (thetaEssentialRieszCutoffTraceTotal a L) (𝓝[>] (0 : ℝ))
+      (𝓝 (thetaEssentialTrace a L)) := by
+  have hfun : thetaEssentialRieszCutoffTraceTotal a L =
+      thetaEssentialCutoffTrace a L := by
+    funext eps
+    exact thetaEssentialRieszCutoffTraceTotal_eq a L eps
+  rw [hfun]
+  exact thetaEssentialCutoffTrace_tendsto a L
+
 /-- Every cofinal admissible cutoff family has the same trace limit. -/
 theorem thetaEssentialCutoffTrace_tendsto_along
     { ι : Type* } {l : Filter ι} {eps : ι → ℝ}
@@ -355,6 +491,14 @@ theorem thetaEssentialCutoffTrace_tendsto_along
     Tendsto (fun i => thetaEssentialCutoffTrace a L (eps i)) l
       (𝓝 (thetaEssentialTrace a L)) :=
   (thetaEssentialCutoffTrace_tendsto a L).comp heps
+
+/-- Every cofinal positive cutoff family gives the same genuine finite Riesz trace limit. -/
+theorem thetaEssentialRieszCutoffTrace_tendsto_along
+    {ι : Type*} {l : Filter ι} {eps : ι → ℝ}
+    (heps : Tendsto eps l (𝓝[>] (0 : ℝ))) (a L : ℝ) :
+    Tendsto (fun i => thetaEssentialRieszCutoffTraceTotal a L (eps i)) l
+      (𝓝 (thetaEssentialTrace a L)) :=
+  (thetaEssentialRieszCutoffTrace_tendsto a L).comp heps
 
 /-! ## Prime--Gamma sampling, tomography, and RH criterion -/
 
@@ -427,6 +571,89 @@ theorem thetaEssentialTrace_full_tomography
   intro delta hdelta hupper s hs
   rw [hcoeff]
   exact hseries delta hdelta hupper s hs
+
+/-! ## Closed card capstone -/
+
+/-- **Essential inverse-flow prime tomography, unconditionally.**  This closed theorem packages
+the finite-rank Riesz realization, ordinary finite-dimensional root-block calculus, absolute and
+cutoff-independent trace limit, exact Xi--Weil and prime--Gamma identities, global divisor
+tomography, reflection, essential boundary singularity, and terminal RH boundedness equivalence.
+No hypothesis or axiom is attached to the theorem itself. -/
+theorem hedenmalmEssentialInverseFlowPrimeTomography_capstone :
+    (∀ mu : ThetaNonzeroSpectrum,
+      ∃ r : ℝ, 0 < r ∧ r < ‖(mu : ℂ)‖ ∧
+        (∀ lam ∈ Metric.sphere (mu : ℂ) r,
+          lam ∈ resolventSet ℂ thetaKernelOperator) ∧
+        rieszProjection thetaKernelOperator (mu : ℂ) r *
+            rieszProjection thetaKernelOperator (mu : ℂ) r =
+          rieszProjection thetaKernelOperator (mu : ℂ) r ∧
+        FiniteDimensional ℂ
+          (LinearMap.range
+            ((rieszProjection thetaKernelOperator (mu : ℂ) r : ThetaH →L[ℂ] ThetaH) :
+              ThetaH →ₗ[ℂ] ThetaH)) ∧
+        LinearMap.range
+            ((rieszProjection thetaKernelOperator (mu : ℂ) r : ThetaH →L[ℂ] ThetaH) :
+              ThetaH →ₗ[ℂ] ThetaH) =
+          maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)) ∧
+    (∀ (a L : ℝ) (eps : ℝ) (heps : 0 < eps),
+      thetaEssentialRieszCutoffTrace a L heps =
+        thetaEssentialCutoffTrace a L eps) ∧
+    (∀ a L : ℝ,
+      Tendsto (thetaEssentialRieszCutoffTraceTotal a L) (𝓝[>] (0 : ℝ))
+        (𝓝 (thetaEssentialTrace a L))) ∧
+    (∀ a L : ℝ,
+      thetaEssentialTrace a L =
+        xiWeilPolarization (xiRectangularTwoEdgeTransform L a)
+          (xiRectangularTwoEdgeTransform L a)) ∧
+    (∀ (L : ℝ) (n : ℕ), 0 ≤ L → L ≤ Real.log n / 2 →
+      thetaEssentialLogCoefficient L n =
+        (xiRectangularPrimeGammaLogCoefficient L n : ℂ)) ∧
+    (∀ (L a : ℝ), 0 < L → L ≤ a →
+      (∀ mu : ℂ, essentialFlowSymbol a L (-mu) = essentialFlowSymbol a L mu) ∧
+      (∀ mu : ℂ, mu ≠ 0 → DifferentiableAt ℂ (essentialFlowSymbol a L) mu) ∧
+      ¬ MeromorphicAt (essentialFlowSymbol a L) 0) ∧
+    (∀ (f : ℝ → ℂ), Integrable f (volume : Measure ℝ) → ∀ x : ℝ,
+      HedenmalmQuantile.sourceInverse thetaSource
+          (HedenmalmHilbertSchmidt.sourceReflection f) (-x) =
+        -HedenmalmQuantile.sourceInverse thetaSource f x) ∧
+    (∀ L : ℝ, 0 < L →
+      (∀ (delta : ℝ), 0 ≤ delta →
+        (∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ delta) →
+        ∀ s : ℂ, 1 + delta < s.re →
+          LSeries (thetaEssentialLogCoefficient L) s =
+            xiRectangularWeilFullContinuation L s) ∧
+      MeromorphicOn (xiRectangularWeilFullContinuation L)
+        {s : ℂ | 1 < s.re} ∧
+      (∀ s : ℂ, 1 < s.re →
+        (meromorphicOrderAt (xiRectangularWeilFullContinuation L) s =
+            ((-1 : ℤ) : WithTop ℤ) ↔
+          ∃ q : XiRightZeroCopy, xiRightShiftedPole q = s)) ∧
+      (∀ q : XiRightZeroCopy,
+        meromorphicTrailingCoeffAt (xiRectangularWeilFullContinuation L)
+              (xiRightShiftedPole q) /
+            (2 * xiRectangularRightCoefficient L q) =
+          (xiRightMultiplicity q : ℂ))) ∧
+    (∀ L : ℝ, 0 < L →
+      (RiemannHypothesis ↔
+        ∃ C : ℝ, ∀ n : ℕ, L ≤ Real.log n / 2 →
+          ‖thetaEssentialLogCoefficient L n‖ ≤ C)) := by
+  refine ⟨exists_thetaRieszProjection_range_eq_maxGenEigenspace,
+    ?_, ?_, thetaEssentialTrace_eq_xiWeilPolarization, ?_, ?_, ?_, ?_, ?_⟩
+  · intro a L eps heps
+    exact thetaEssentialRieszCutoffTrace_eq a L heps
+  · exact thetaEssentialRieszCutoffTrace_tendsto
+  · intro L n hL hLn
+    exact thetaEssentialLogCoefficient_eq_primeGamma hL hLn
+  · intro L a hL _ha
+    exact ⟨essentialFlowSymbol_neg a L,
+      fun mu hmu => essentialFlowSymbol_differentiableAt a L hmu,
+      essentialFlowSymbol_not_meromorphicAt_zero hL a⟩
+  · intro f hf x
+    exact sourceInverse_sourceReflection_theta hf x
+  · intro L hL
+    exact thetaEssentialTrace_full_tomography hL
+  · intro L hL
+    exact riemannHypothesis_iff_thetaEssentialLogCoefficient_norm_bdd hL
 
 end
 

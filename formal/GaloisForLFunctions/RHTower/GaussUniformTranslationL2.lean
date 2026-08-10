@@ -112,14 +112,16 @@ theorem norm_fourierCoeff_shiftedBlockOf_sub_rotation {m : ℕ} (hm : 1 ≤ m) (
 /-- **Equation (9), uniform over a family of amplitudes.**  Only a common decay constant is
 required; the rate does not depend on which member of the family is used at each index. -/
 theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
-    (p : Nat.Primes) (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
+    (p : Nat.Primes) {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop)
+    (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
     (hu : ∀ (n : ℕ) (j : ℤ),
       ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
     Tendsto (fun n : ℕ =>
-      ‖gaussShiftedBlockOf hm k p (n : ℤ) (u n) -
-        gaussRotationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
+      ‖gaussShiftedBlockOf hm k p (ι n) (u n) -
+        gaussRotationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
       atTop (nhds 0) := by
-  have hdefect := tendsto_gaussTranslationL2DefectBound hm k p A
+  have hdefect := tendsto_gaussTranslationL2DefectBound_comp hm k p A hι
   rw [ENNReal.tendsto_nhds_zero] at hdefect
   rw [Metric.tendsto_atTop]
   intro ε hε
@@ -128,19 +130,19 @@ theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_family {m : ℕ} (hm : 1 �
   refine ⟨N, fun n hn => ?_⟩
   have hbound := hN n hn
   set w : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
-    gaussShiftedBlockOf hm k p (n : ℤ) (u n) -
-      gaussRotationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n)
+    gaussShiftedBlockOf hm k p (ι n) (u n) -
+      gaussRotationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n)
     with hw
   have hcoeff : ∀ j : ℤ,
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖
         = ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ *
-          ‖gaussSampleRatioDefect k p j (n : ℤ)‖ := by
+          ‖gaussSampleRatioDefect k p j (ι n)‖ := by
     intro j
     have hsub : fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j
         = fourierCoeff
-            ((gaussShiftedBlockOf hm k p (n : ℤ) (u n) : AddCircle (1 : ℝ) → ℂ)) j -
+            ((gaussShiftedBlockOf hm k p (ι n) (u n) : AddCircle (1 : ℝ) → ℂ)) j -
           fourierCoeff ((gaussRotationBlock
-            ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n) :
+            ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n) :
               AddCircle (1 : ℝ) → ℂ)) j := by
       rw [← fourierBasis_repr, ← fourierBasis_repr, ← fourierBasis_repr, hw, map_sub]
       rfl
@@ -148,11 +150,11 @@ theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_family {m : ℕ} (hm : 1 �
   have hcongr : ∀ j : ℤ,
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖ ^ (2 : ℝ)
         = ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
-          ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := by
+          ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2 := by
     intro j
     rw [hcoeff j, Real.mul_rpow (norm_nonneg _) (norm_nonneg _),
       ← Real.rpow_natCast (‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖) 2,
-      ← Real.rpow_natCast (‖gaussSampleRatioDefect k p j (n : ℤ)‖) 2]
+      ← Real.rpow_natCast (‖gaussSampleRatioDefect k p j (ι n)‖) 2]
     norm_num
   have hsummable : Summable fun j : ℤ =>
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖ ^ (2 : ℝ) := by
@@ -163,16 +165,16 @@ theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_family {m : ℕ} (hm : 1 �
     rw [fourierBasis_repr]
   have hsummable' : Summable fun j : ℤ =>
       ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
-        ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := hsummable.congr hcongr
+        ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2 := hsummable.congr hcongr
   have hnormsq : ‖w‖ ^ (2 : ℝ)
       = ∑' j : ℤ, ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
-        ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := by
+        ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2 := by
     rw [norm_sq_eq_tsum_fourierCoeff w]
     exact tsum_congr hcongr
   have hdom : (∑' j : ℤ, ENNReal.ofReal
         (‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
-          ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2))
-      ≤ gaussTranslationL2DefectBound k p A (n : ℤ) := by
+          ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2))
+      ≤ gaussTranslationL2DefectBound k p A (ι n) := by
     rw [gaussTranslationL2DefectBound]
     refine ENNReal.tsum_le_tsum fun j => ENNReal.ofReal_le_ofReal ?_
     refine mul_le_mul_of_nonneg_right ?_ (by positivity)
@@ -205,7 +207,8 @@ theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation {m : ℕ} (hm : 1 ≤ m) (
       ‖gaussShiftedBlockOf hm k p (n : ℤ) u -
         gaussRotationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) u‖)
       atTop (nhds 0) :=
-  tendsto_norm_gaussShiftedBlockOf_sub_rotation_family hm k p (fun _ => u) (fun _ j => hu j)
+  tendsto_norm_gaussShiftedBlockOf_sub_rotation_family hm k p (ι := fun n : ℕ => (n : ℤ))
+    (by simp only [Int.natAbs_natCast]; exact Filter.tendsto_id) (fun _ => u) (fun _ j => hu j)
 
 /-! ## The unconjugated block -/
 
@@ -295,14 +298,16 @@ common decay constant is required; the rate does not depend on which member of t
 at each index. -/
 theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm : 1 ≤ m)
     (k : Fin m) (p : Nat.Primes)
+    {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop)
     (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
     (hu : ∀ (n : ℕ) (j : ℤ),
       ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
     Tendsto (fun n : ℕ =>
-      ‖gaussShiftedBlockDiag hm k p (n : ℤ) (u n) -
-        gaussRotationBlockInv ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
+      ‖gaussShiftedBlockDiag hm k p (ι n) (u n) -
+        gaussRotationBlockInv ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
       atTop (nhds 0) := by
-  have hdefect := tendsto_gaussTranslationL2DefectBound hm k p A
+  have hdefect := tendsto_gaussTranslationL2DefectBound_comp hm k p A hι
   rw [ENNReal.tendsto_nhds_zero] at hdefect
   rw [Metric.tendsto_atTop]
   intro ε hε
@@ -311,19 +316,19 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm 
   refine ⟨N, fun n hn => ?_⟩
   have hbound := hN n hn
   set w : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
-    gaussShiftedBlockDiag hm k p (n : ℤ) (u n) -
-      gaussRotationBlockInv ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n)
+    gaussShiftedBlockDiag hm k p (ι n) (u n) -
+      gaussRotationBlockInv ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n)
     with hw
   have hcoeff : ∀ j : ℤ,
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖
         = ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ *
-          ‖gaussSampleRatioDefect k p j (n : ℤ)‖ := by
+          ‖gaussSampleRatioDefect k p j (ι n)‖ := by
     intro j
     have hsub : fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j
         = fourierCoeff
-            ((gaussShiftedBlockDiag hm k p (n : ℤ) (u n) : AddCircle (1 : ℝ) → ℂ)) j -
+            ((gaussShiftedBlockDiag hm k p (ι n) (u n) : AddCircle (1 : ℝ) → ℂ)) j -
           fourierCoeff ((gaussRotationBlockInv
-            ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n) :
+            ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n) :
               AddCircle (1 : ℝ) → ℂ)) j := by
       rw [← fourierBasis_repr, ← fourierBasis_repr, ← fourierBasis_repr, hw, map_sub]
       rfl
@@ -331,11 +336,11 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm 
   have hcongr : ∀ j : ℤ,
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖ ^ (2 : ℝ)
         = ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
-          ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := by
+          ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2 := by
     intro j
     rw [hcoeff j, Real.mul_rpow (norm_nonneg _) (norm_nonneg _),
       ← Real.rpow_natCast (‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖) 2,
-      ← Real.rpow_natCast (‖gaussSampleRatioDefect k p j (n : ℤ)‖) 2]
+      ← Real.rpow_natCast (‖gaussSampleRatioDefect k p j (ι n)‖) 2]
     norm_num
   have hsummable : Summable fun j : ℤ =>
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖ ^ (2 : ℝ) := by
@@ -346,16 +351,16 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm 
     rw [fourierBasis_repr]
   have hsummable' : Summable fun j : ℤ =>
       ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
-        ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := hsummable.congr hcongr
+        ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2 := hsummable.congr hcongr
   have hnormsq : ‖w‖ ^ (2 : ℝ)
       = ∑' j : ℤ, ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
-        ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := by
+        ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2 := by
     rw [norm_sq_eq_tsum_fourierCoeff w]
     exact tsum_congr hcongr
   have hdom : (∑' j : ℤ, ENNReal.ofReal
         (‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
-          ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2))
-      ≤ gaussTranslationL2DefectBound k p A (n : ℤ) := by
+          ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2))
+      ≤ gaussTranslationL2DefectBound k p A (ι n) := by
     rw [gaussTranslationL2DefectBound]
     refine ENNReal.tsum_le_tsum fun j => ENNReal.ofReal_le_ofReal ?_
     refine mul_le_mul_of_nonneg_right ?_ (by positivity)
@@ -386,7 +391,8 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤
       ‖gaussShiftedBlockDiag hm k p (n : ℤ) u -
         gaussRotationBlockInv ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) u‖)
       atTop (nhds 0) :=
-  tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family hm k p (fun _ => u)
+  tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family hm k p
+    (ι := fun n : ℕ => (n : ℤ)) (by simp only [Int.natAbs_natCast]; exact Filter.tendsto_id) (fun _ => u)
     (fun _ j => hu j)
 
 end

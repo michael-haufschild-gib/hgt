@@ -104,6 +104,54 @@ theorem gibbsWeight_exchange (q : M → ℂ) (hq : ∀ i, q i ≠ 0) (x y : GasW
   · have hdiag' : ¬ (y * x).raise = (y * x).lower := fun h => hdiag ((diag_mul_comm x y).mpr h)
     rw [gibbsWeight_of_not_diag hdiag, gibbsWeight_of_not_diag hdiag', mul_zero]
 
+/-! ## The adjoint of a monomial -/
+
+/-- The adjoint of a monomial: swap the isometries and their adjoints. -/
+def wstar (x : GasWord M) : GasWord M := ⟨x.lower, x.raise⟩
+
+@[simp] theorem wstar_raise (x : GasWord M) : (wstar x).raise = x.lower := rfl
+
+@[simp] theorem wstar_lower (x : GasWord M) : (wstar x).lower = x.raise := rfl
+
+@[simp] theorem wstar_wstar (x : GasWord M) : wstar (wstar x) = x := rfl
+
+@[simp] theorem wstar_one : wstar (1 : GasWord M) = 1 := rfl
+
+theorem wstar_involutive : Function.Involutive (wstar (M := M)) := fun _ => rfl
+
+theorem wstar_injective : Function.Injective (wstar (M := M)) :=
+  wstar_involutive.injective
+
+/-- **The adjoint reverses products.** -/
+theorem wstar_mul (x y : GasWord M) : wstar (x * y) = wstar y * wstar x := by
+  refine GasWord.ext ?_ ?_ <;> refine Finsupp.ext fun i => ?_
+  · rw [wstar_raise, lower_apply_mul, raise_apply_mul, wstar_raise, wstar_raise, wstar_lower]
+  · rw [wstar_lower, raise_apply_mul, lower_apply_mul, wstar_lower, wstar_lower, wstar_raise]
+
+@[simp] theorem wstar_gen (i : M) : wstar (gen i) = cogen i := rfl
+
+@[simp] theorem wstar_cogen (i : M) : wstar (cogen i) = gen i := rfl
+
+/-- **The Gibbs weight is adjoint-invariant.**  A monomial and its adjoint carry the same weight,
+so the Gibbs functional is hermitian on real weights. -/
+theorem gibbsWeight_wstar (q : M → ℂ) (x : GasWord M) :
+    gibbsWeight q (wstar x) = gibbsWeight q x := by
+  classical
+  by_cases hdiag : x.raise = x.lower
+  · have hd : (wstar x).raise = (wstar x).lower := by
+      rw [wstar_raise, wstar_lower, hdiag]
+    rw [gibbsWeight_of_diag hd, gibbsWeight_of_diag hdiag, wstar_raise, hdiag]
+  · have hd : ¬ (wstar x).raise = (wstar x).lower := by
+      rw [wstar_raise, wstar_lower]
+      exact fun h => hdiag h.symm
+    rw [gibbsWeight_of_not_diag hd, gibbsWeight_of_not_diag hdiag]
+
+/-- The charge changes sign under the adjoint. -/
+theorem charge_wstar (x : GasWord M) : charge (wstar x) = -charge x := by
+  refine Finsupp.ext fun i => ?_
+  rw [charge_apply, Finsupp.neg_apply, charge_apply, wstar_raise, wstar_lower]
+  ring
+
 end GasWord
 
 /-! ## The gas algebra -/

@@ -52,6 +52,31 @@ Corollary 3 — flatness never selects the critical slope:
     `b_p(ρ) = (2 Re ρ − 1) log p` has identically vanishing cross-prime curvature for **every** `ρ`,
     on or off the critical line.
 
+Theorem 4 — finite algebraic radial invariants are constant:
+
+11. `expChar`, `expChar_injective`, `linearIndependent_expChar` — **card `(10)`**: the radial
+    character of a frequency is a monoid homomorphism of the additive flow, distinct frequencies
+    give distinct characters, and Artin's independence of characters
+    (`linearIndependent_monoidHom`) makes them linearly independent.
+12. `coeff_eq_zero_of_expSum_eq_zero`, `expSum_const_iff` — **Theorem 4**: a finite combination of
+    distinct radial frequencies that is constant along the flow, with every frequency nonzero, has
+    all coefficients zero and constant zero.  No nonconstant finite algebraic invariant survives
+    the radial flow.
+13. `primeFrequency_injective` — **card `(9)`**: distinct integer exponent vectors give distinct
+    radial frequencies, from the `ℤ`-independence of prime logarithms
+    (`GaloisForLFunctions.logPrime_linearIndependent_int`, reused, not rebuilt).  This is what makes
+    the Laurent exponents visible along `γ(t) = (p^t)`.
+
+Theorem 5 — a trace-one tensor does not frame individual legs:
+
+14. `exists_unique_factorization_scale` — **card `(11)`**: pure factorizations of a fixed nonzero
+    product form a `ℂˣ`-torsor, `(x, y) ↦ (r x, r⁻¹ y)`, with the scale unique.
+15. `span_transverse_scale` — **card `(12)`**: the torsor action moves the transverse line
+    `ℂ(x + y)` to `ℂ(x + r⁻² y)`.
+16. `span_transverse_ne` — the no-go: for `r² ≠ 1` those are different lines, so no transverse line
+    is natural from `(L₊, L₋, ω)` alone.  Product normalization does not determine a same-fibre
+    individual-leg frame.
+
 ## Verification
 
 ```text

@@ -34,34 +34,35 @@ theorem norm_gaussStepScalar_le {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Pr
 power of the step scalar times the `r`-th power of the moving amplitude, up to a vanishing `L²`
 error. -/
 theorem tendsto_gaussIterate {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
-    (hp : (1 : ℝ) < (p : ℝ)) (r : ℕ) :
+    (hp : (1 : ℝ) < (p : ℝ)) {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop) (r : ℕ) :
     Tendsto (fun n : ℕ =>
-      ‖(gaussQuasiInnerG hm k p ^ r) (fourierMulBlock (n : ℤ) (fourierLp 2 0)) -
+      ‖(gaussQuasiInnerG hm k p ^ r) (fourierMulBlock (ι n) (fourierLp 2 0)) -
         ((((p : ℝ) : ℂ) *
-            (starRingEnd ℂ (gaussSampleValue k p (n : ℤ)) * gaussSampleValue k p (n : ℤ))) ^ r) •
-          fourierMulBlock (n : ℤ)
+            (starRingEnd ℂ (gaussSampleValue k p (ι n)) * gaussSampleValue k p (ι n))) ^ r) •
+          fourierMulBlock (ι n)
             ((gaussMovingAmplitudeBlock hp
-              ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ r)
+              ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ r)
                 (fourierLp 2 0))‖)
       atTop (nhds 0) := by
   induction r with
   | zero =>
       have hz : ∀ n : ℕ,
-          ‖(gaussQuasiInnerG hm k p ^ 0) (fourierMulBlock (n : ℤ) (fourierLp 2 0)) -
+          ‖(gaussQuasiInnerG hm k p ^ 0) (fourierMulBlock (ι n) (fourierLp 2 0)) -
             ((((p : ℝ) : ℂ) *
-                (starRingEnd ℂ (gaussSampleValue k p (n : ℤ)) *
-                  gaussSampleValue k p (n : ℤ))) ^ 0) •
-              fourierMulBlock (n : ℤ)
+                (starRingEnd ℂ (gaussSampleValue k p (ι n)) *
+                  gaussSampleValue k p (ι n))) ^ 0) •
+              fourierMulBlock (ι n)
                 ((gaussMovingAmplitudeBlock hp
-                  ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ 0)
+                  ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ 0)
                     (fourierLp 2 0))‖ = 0 := by
         intro n
-        have h1 : (gaussQuasiInnerG hm k p ^ 0) (fourierMulBlock (n : ℤ) (fourierLp 2 0))
-            = fourierMulBlock (n : ℤ) (fourierLp 2 0) := by
+        have h1 : (gaussQuasiInnerG hm k p ^ 0) (fourierMulBlock (ι n) (fourierLp 2 0))
+            = fourierMulBlock (ι n) (fourierLp 2 0) := by
           rw [pow_zero]
           rfl
         have h2 : (gaussMovingAmplitudeBlock hp
-              ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ 0) (fourierLp 2 0)
+              ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ 0) (fourierLp 2 0)
             = (fourierLp 2 0 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) := by
           rw [pow_zero]
           rfl
@@ -74,54 +75,54 @@ theorem tendsto_gaussIterate {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Prime
       have h1 : ∀ (n : ℕ) (j : ℤ),
           ‖fourierCoeff ((gaussPrimeScaleBlock hp
               ((gaussMovingAmplitudeBlock hp
-                ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ r)
+                ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ r)
                   (fourierLp 2 0)) : AddCircle (1 : ℝ) → ℂ)) j‖
             ≤ 4 * (p : ℝ) ^ (r + 1) / (1 + (j.natAbs : ℝ)) := by
         intro n j
         have hb := norm_fourierCoeff_gaussPrimeScaleBlock_amplitudePow hp
-          (Int.fract_nonneg (gaussSamplePhase m p (n : ℤ)))
-          (Int.fract_lt_one (gaussSamplePhase m p (n : ℤ))) r j
+          (Int.fract_nonneg (gaussSamplePhase m p (ι n)))
+          (Int.fract_lt_one (gaussSamplePhase m p (ι n))) r j
         rwa [coe_fract_eq] at hb
       have h2 : ∀ (n : ℕ) (j : ℤ),
           ‖fourierCoeff ((gaussPrimeScaleInvSqBlock hp
-              (gaussTranslationBlock ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+              (gaussTranslationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
                 (gaussPrimeScaleBlock hp
                   ((gaussMovingAmplitudeBlock hp
-                    ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ r)
+                    ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ r)
                       (fourierLp 2 0)))) : AddCircle (1 : ℝ) → ℂ)) j‖
             ≤ 4 * (p : ℝ) ^ (r + 1) / (1 + (j.natAbs : ℝ)) := by
         intro n j
         have hb := norm_fourierCoeff_gaussIntermediate_amplitudePow hp
-          (Int.fract_nonneg (gaussSamplePhase m p (n : ℤ)))
-          (Int.fract_lt_one (gaussSamplePhase m p (n : ℤ))) r j
+          (Int.fract_nonneg (gaussSamplePhase m p (ι n)))
+          (Int.fract_lt_one (gaussSamplePhase m p (ι n))) r j
         rwa [coe_fract_eq] at hb
-      have hstep := tendsto_gaussOneStep_family hm k p hp
+      have hstep := tendsto_gaussOneStep_family hm k p hp hι
         (fun n : ℕ => (gaussMovingAmplitudeBlock hp
-          ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ r) (fourierLp 2 0))
+          ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ r) (fourierLp 2 0))
         h1 h2
       have hdom : Tendsto (fun n : ℕ =>
           ‖gaussQuasiInnerG hm k p‖ *
-              ‖(gaussQuasiInnerG hm k p ^ r) (fourierMulBlock (n : ℤ) (fourierLp 2 0)) -
+              ‖(gaussQuasiInnerG hm k p ^ r) (fourierMulBlock (ι n) (fourierLp 2 0)) -
                 ((((p : ℝ) : ℂ) *
-                    (starRingEnd ℂ (gaussSampleValue k p (n : ℤ)) *
-                      gaussSampleValue k p (n : ℤ))) ^ r) •
-                  fourierMulBlock (n : ℤ)
+                    (starRingEnd ℂ (gaussSampleValue k p (ι n)) *
+                      gaussSampleValue k p (ι n))) ^ r) •
+                  fourierMulBlock (ι n)
                     ((gaussMovingAmplitudeBlock hp
-                      ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ r)
+                      ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ r)
                         (fourierLp 2 0))‖ +
             ((p : ℝ) * (gaussSampleValueBound hm k p * gaussSampleValueBound hm k p)) ^ r *
-              ‖gaussQuasiInnerG hm k p (fourierMulBlock (n : ℤ)
+              ‖gaussQuasiInnerG hm k p (fourierMulBlock (ι n)
                   ((gaussMovingAmplitudeBlock hp
-                    ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ r)
+                    ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ r)
                       (fourierLp 2 0))) -
                 (((p : ℝ) : ℂ) *
-                    (starRingEnd ℂ (gaussSampleValue k p (n : ℤ)) *
-                      gaussSampleValue k p (n : ℤ))) •
-                  fourierMulBlock (n : ℤ)
+                    (starRingEnd ℂ (gaussSampleValue k p (ι n)) *
+                      gaussSampleValue k p (ι n))) •
+                  fourierMulBlock (ι n)
                     (gaussMovingAmplitudeBlock hp
-                      ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+                      ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
                         ((gaussMovingAmplitudeBlock hp
-                          ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) ^ r)
+                          ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) ^ r)
                             (fourierLp 2 0)))‖) atTop (nhds 0) := by
         have hsum := (ih.const_mul ‖gaussQuasiInnerG hm k p‖).add
           (hstep.const_mul
@@ -129,17 +130,17 @@ theorem tendsto_gaussIterate {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Prime
         simpa using hsum
       refine squeeze_zero_norm' ?_ hdom
       filter_upwards with n
-      set δ : AddCircle (1 : ℝ) := ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ))
+      set δ : AddCircle (1 : ℝ) := ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
         with hδ
       set σ : ℂ := ((p : ℝ) : ℂ) *
-        (starRingEnd ℂ (gaussSampleValue k p (n : ℤ)) * gaussSampleValue k p (n : ℤ)) with hσ
+        (starRingEnd ℂ (gaussSampleValue k p (ι n)) * gaussSampleValue k p (ι n)) with hσ
       set g : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
         (gaussMovingAmplitudeBlock hp δ ^ r) (fourierLp 2 0) with hg
       set X : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
-        (gaussQuasiInnerG hm k p ^ r) (fourierMulBlock (n : ℤ) (fourierLp 2 0)) with hX
+        (gaussQuasiInnerG hm k p ^ r) (fourierMulBlock (ι n) (fourierLp 2 0)) with hX
       set Y : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
-        (σ ^ r) • fourierMulBlock (n : ℤ) g with hY
-      have hGX : (gaussQuasiInnerG hm k p ^ (r + 1)) (fourierMulBlock (n : ℤ) (fourierLp 2 0))
+        (σ ^ r) • fourierMulBlock (ι n) g with hY
+      have hGX : (gaussQuasiInnerG hm k p ^ (r + 1)) (fourierMulBlock (ι n) (fourierLp 2 0))
           = gaussQuasiInnerG hm k p X := by
         rw [hX, pow_succ']
         rfl
@@ -148,13 +149,13 @@ theorem tendsto_gaussIterate {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Prime
         rw [hg, pow_succ']
         rfl
       have hsplit :
-          (gaussQuasiInnerG hm k p ^ (r + 1)) (fourierMulBlock (n : ℤ) (fourierLp 2 0)) -
+          (gaussQuasiInnerG hm k p ^ (r + 1)) (fourierMulBlock (ι n) (fourierLp 2 0)) -
               (σ ^ (r + 1)) •
-                fourierMulBlock (n : ℤ)
+                fourierMulBlock (ι n)
                   ((gaussMovingAmplitudeBlock hp δ ^ (r + 1)) (fourierLp 2 0))
             = gaussQuasiInnerG hm k p (X - Y) +
-              (σ ^ r) • (gaussQuasiInnerG hm k p (fourierMulBlock (n : ℤ) g) -
-                σ • fourierMulBlock (n : ℤ) (gaussMovingAmplitudeBlock hp δ g)) := by
+              (σ ^ r) • (gaussQuasiInnerG hm k p (fourierMulBlock (ι n) g) -
+                σ • fourierMulBlock (ι n) (gaussMovingAmplitudeBlock hp δ g)) := by
         rw [hGX, hAg, hY, map_sub, map_smul, smul_sub, smul_smul, ← pow_succ]
         abel
       rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _), hsplit]
@@ -162,7 +163,7 @@ theorem tendsto_gaussIterate {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Prime
       refine add_le_add ((gaussQuasiInnerG hm k p).le_opNorm _) ?_
       rw [norm_smul, norm_pow]
       refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
-      exact pow_le_pow_left₀ (norm_nonneg _) (norm_gaussStepScalar_le hm k p (n : ℤ)) r
+      exact pow_le_pow_left₀ (norm_nonneg _) (norm_gaussStepScalar_le hm k p (ι n)) r
 
 end
 

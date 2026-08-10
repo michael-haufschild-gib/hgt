@@ -83,3 +83,68 @@ theorem deningerHigherCoefficient_summable {r : ℕ} (hr : 1 ≤ r) :
 end
 
 end RHTower
+
+/-! ## The window moment as a set integral -/
+
+namespace RHTower
+
+noncomputable section
+
+open MeasureTheory
+
+/-- The window moment, as an integral over the window itself rather than an oriented interval.
+This is the form the `ℝ≥0∞` exchange consumes at order `r`. -/
+theorem deningerWindowPow_setIntegral {i : ℕ} (hi : 0 < i) (r : ℕ) {u : ℝ} (hu : 0 < u) :
+    (∫ x in Set.Ioc (u / ((i : ℝ) + 1)) (u / (i : ℝ)), x ^ r)
+      = u ^ (r + 1) / ((r : ℝ) + 1) *
+        (1 / (i : ℝ) ^ (r + 1) - 1 / ((i : ℝ) + 1) ^ (r + 1)) := by
+  have hir : (0 : ℝ) < (i : ℝ) := by exact_mod_cast hi
+  have hi1 : (0 : ℝ) < (i : ℝ) + 1 := by linarith
+  have hle : u / ((i : ℝ) + 1) ≤ u / (i : ℝ) := by
+    refine div_le_div_of_nonneg_left hu.le hir ?_
+    linarith
+  rw [← intervalIntegral.integral_of_le hle, deningerWindowPow_integral hi r hu]
+
+/-- The window moment is nonnegative. -/
+theorem deningerWindowPow_setIntegral_nonneg {i : ℕ} (hi : 0 < i) (r : ℕ) {u : ℝ} (hu : 0 < u) :
+    0 ≤ ∫ x in Set.Ioc (u / ((i : ℝ) + 1)) (u / (i : ℝ)), x ^ r := by
+  refine setIntegral_nonneg measurableSet_Ioc fun x hx => ?_
+  have hir : (0 : ℝ) < (i : ℝ) := by exact_mod_cast hi
+  have hi1 : (0 : ℝ) < (i : ℝ) + 1 := by linarith
+  have hx0 : (0 : ℝ) < x := lt_trans (div_pos hu hi1) hx.1
+  positivity
+
+end
+
+end RHTower
+
+/-! ## The window moment in `ℝ≥0∞` -/
+
+namespace RHTower
+
+noncomputable section
+
+open MeasureTheory ENNReal
+
+/-- **The window moment as an `ℝ≥0∞` integral.**  This is the form the order-`r` exchange
+consumes: the slice of the weighted window kernel is the derivative times this. -/
+theorem deningerWindowPow_lintegral {i : ℕ} (hi : 0 < i) (r : ℕ) {u : ℝ} (hu : 0 < u) :
+    (∫⁻ x in Set.Ioc (u / ((i : ℝ) + 1)) (u / (i : ℝ)), ENNReal.ofReal (x ^ r))
+      = ENNReal.ofReal (u ^ (r + 1) / ((r : ℝ) + 1) *
+        (1 / (i : ℝ) ^ (r + 1) - 1 / ((i : ℝ) + 1) ^ (r + 1))) := by
+  have hir : (0 : ℝ) < (i : ℝ) := by exact_mod_cast hi
+  have hi1 : (0 : ℝ) < (i : ℝ) + 1 := by linarith
+  have hint : IntegrableOn (fun x : ℝ => x ^ r)
+      (Set.Ioc (u / ((i : ℝ) + 1)) (u / (i : ℝ))) :=
+    ((continuous_pow r).integrableOn_Icc).mono_set Set.Ioc_subset_Icc_self
+  have hnn : 0 ≤ᵐ[volume.restrict (Set.Ioc (u / ((i : ℝ) + 1)) (u / (i : ℝ)))]
+      fun x : ℝ => x ^ r := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
+    have hx0 : (0 : ℝ) < x := lt_trans (div_pos hu hi1) hx.1
+    positivity
+  rw [← ofReal_integral_eq_lintegral_ofReal hint hnn,
+    deningerWindowPow_setIntegral hi r hu]
+
+end
+
+end RHTower

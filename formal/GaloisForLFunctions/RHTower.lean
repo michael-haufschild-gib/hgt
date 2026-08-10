@@ -4222,6 +4222,9 @@ import GaloisForLFunctions.RHTower.Sieve.FejerCorrelation
 import GaloisForLFunctions.RHTower.Sieve.DiscreteWindowGallagher
 import GaloisForLFunctions.RHTower.Sieve.DyadicMeanSquareGallagher
 import GaloisForLFunctions.RHTower.Sieve.MaximalWindowUniform
+import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareGeneric
+import GaloisForLFunctions.RHTower.Sieve.MaximalWindowLargeValues
+import GaloisForLFunctions.RHTower.Sieve.DyadicMeanSquareTail
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6841,6 +6844,9 @@ import GaloisForLFunctions.RHTower.Sieve.FejerCorrelation
 import GaloisForLFunctions.RHTower.Sieve.DiscreteWindowGallagher
 import GaloisForLFunctions.RHTower.Sieve.DyadicMeanSquareGallagher
 import GaloisForLFunctions.RHTower.Sieve.MaximalWindowUniform
+import GaloisForLFunctions.RHTower.Sieve.LinearMeanSquareGeneric
+import GaloisForLFunctions.RHTower.Sieve.MaximalWindowLargeValues
+import GaloisForLFunctions.RHTower.Sieve.DyadicMeanSquareTail
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6905,3 +6911,7 @@ import GaloisForLFunctions.RHTower.DeningerDirichletLimit
 import GaloisForLFunctions.RHTower.DeningerMobiusHarmonicZero
 import GaloisForLFunctions.RHTower.DeningerCommutatorCovariance
 import GaloisForLFunctions.RHTower.DeningerPullIntegrable
+import GaloisForLFunctions.RHTower.DeningerDilationIntegral
+import GaloisForLFunctions.RHTower.DeningerMajorantIntegrable
+import GaloisForLFunctions.RHTower.DeningerPreimageZeroMass
+import GaloisForLFunctions.RHTower.DeningerEvenPreimage

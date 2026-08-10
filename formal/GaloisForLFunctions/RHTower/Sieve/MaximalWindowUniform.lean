@@ -27,7 +27,7 @@ open Finset
 /-- **The maximal-window mean square, from one uniform bound on the dyadic mean squares.** -/
 theorem sum_maxWindowSq_succ_le_uniform (f : ℕ → ℝ) {H J A B : ℕ} (hJ : H + 1 ≤ 2 ^ J)
     {C : ℝ} (hC0 : 0 ≤ C)
-    (hC : ∀ j, j ≤ J → ∀ i : ℕ,
+    (hC : ∀ j, j ≤ J → ∀ i, i < 2 ^ (J - j) →
       dyadicMeanSquare f (2 ^ j) (A + i * 2 ^ j) (B + i * 2 ^ j) ≤ C) :
     ∑ y ∈ Finset.Icc (A + 1) (B + 1), maxWindowSq f H y
       ≤ ((J : ℝ) + 1) * ((J : ℝ) + 1) * (2 ^ J : ℝ) * C := by
@@ -37,8 +37,9 @@ theorem sum_maxWindowSq_succ_le_uniform (f : ℕ → ℝ) {H J A B : ℕ} (hJ : 
   have hzero : ∑ i ∈ Finset.range (2 ^ J), dyadicMeanSquare f 1 (A + i) (B + i)
       ≤ (2 ^ J : ℝ) * C := by
     have hterm : ∀ i ∈ Finset.range (2 ^ J), dyadicMeanSquare f 1 (A + i) (B + i) ≤ C := by
-      intro i _
-      have h := hC 0 (Nat.zero_le J) i
+      intro i hi
+      rw [Finset.mem_range] at hi
+      have h := hC 0 (Nat.zero_le J) i (by simpa using hi)
       simpa using h
     refine le_trans (Finset.sum_le_sum hterm) ?_
     rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -53,7 +54,7 @@ theorem sum_maxWindowSq_succ_le_uniform (f : ℕ → ℝ) {H J A B : ℕ} (hJ : 
     rw [Finset.mem_range] at hj
     have hterm : ∀ i ∈ Finset.range (2 ^ (J - j)),
         dyadicMeanSquare f (2 ^ j) (A + i * 2 ^ j) (B + i * 2 ^ j) ≤ C :=
-      fun i _ => hC j (by omega) i
+      fun i hi => hC j (by omega) i (Finset.mem_range.1 hi)
     refine le_trans (Finset.sum_le_sum hterm) ?_
     rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     have hcast : ((2 ^ (J - j) : ℕ) : ℝ) = (2 : ℝ) ^ (J - j) := by push_cast; ring

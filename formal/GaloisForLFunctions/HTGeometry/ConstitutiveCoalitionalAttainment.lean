@@ -1,11 +1,15 @@
 import GaloisForLFunctions.HTGeometry.ScheffeCounting
 import Mathlib.Topology.Algebra.InfiniteSum.Real
+import Mathlib.Analysis.Normed.Module.Basic
+import Mathlib.Analysis.Real.Sqrt
 
 set_option maxHeartbeats 800000
 
 namespace GaloisForLFunctions.HTGeometry
 
 open Filter Topology
+
+noncomputable section
 
 def CoalitionalProbabilityVector (p : ℕ → ℝ) : Prop :=
   (∀ i, 0 ≤ p i) ∧ HasSum p 1
@@ -83,64 +87,6 @@ private theorem coalitional_weighted_summable
     have : p i * |a i| ≤ p i * B := mul_le_mul_of_nonneg_left (hB i) (hp.1 i)
     simpa [mul_comm] using this
   exact habs.of_abs
-
-private theorem coalitional_barycenter_tendsto
-    (mu : ℕ → ℕ → ℝ) (p a : ℕ → ℝ) (phi : ℕ → ℕ)
-    (hprob : ∀ n, CoalitionalProbabilityVector (mu n))
-    (hpprob : CoalitionalProbabilityVector p)
-    (hcoord : ∀ i, Tendsto (fun n => mu (phi n) i) atTop (nhds (p i)))
-    {B : ℝ} (hB : ∀ i, |a i| ≤ B) :
-    Tendsto (fun n => ∑' i, mu (phi n) i * a i) atTop
-      (nhds (∑' i, p i * a i)) := by
-  have hl1 := tendsto_tsum_abs_sub_of_tendsto
-    (fun n i => (hprob (phi n)).1 i) (fun n => (hprob (phi n)).2) hpprob.2 hcoord
-  have hdiff : Tendsto
-      (fun n => (∑' i, mu (phi n) i * a i) - ∑' i, p i * a i)
-      atTop (nhds 0) := by
-    have hbound : ∀ n,
-        |(∑' i, mu (phi n) i * a i) - ∑' i, p i * a i| ≤
-          B * ∑' i, |mu (phi n) i - p i| := by
-      intro n
-      have hmu := coalitional_weighted_summable (hprob (phi n)) hB
-      have hp := coalitional_weighted_summable hpprob hB
-      rw [← hmu.tsum_sub hp]
-      have hsabs : Summable (fun i => |(mu (phi n) i - p i) * a i|) := by
-        refine Summable.of_nonneg_of_le (fun i => abs_nonneg _) (fun i => ?_)
-          ((summable_abs_sub (hprob (phi n)).1 hpprob.1
-            (hprob (phi n)).2.summable hpprob.2.summable).mul_right B)
-        rw [abs_mul]
-        exact mul_le_mul_of_nonneg_left (hB i) (abs_nonneg _)
-      calc
-        |∑' i, (mu (phi n) i * a i - p i * a i)|
-            = |∑' i, (mu (phi n) i - p i) * a i| := by
-                congr 2
-                funext i
-                ring
-        _ ≤ ∑' i, |(mu (phi n) i - p i) * a i| := by
-              simpa using norm_tsum_le_tsum_norm hsabs
-        _ ≤ ∑' i, B * |mu (phi n) i - p i| := by
-              exact Summable.tsum_le_tsum (fun i => by
-                rw [abs_mul]
-                exact mul_le_mul_of_nonneg_left (hB i) (abs_nonneg _)) hsabs
-                ((summable_abs_sub (hprob (phi n)).1 hpprob.1
-                  (hprob (phi n)).2.summable hpprob.2.summable).mul_left B)
-        _ = B * ∑' i, |mu (phi n) i - p i| := by
-              rw [tsum_mul_left]
-    have hnonneg : 0 ≤ B := le_trans (abs_nonneg (a 0)) (hB 0)
-    rw [Metric.tendsto_atTop]
-    intro ε hε
-    have hBlim : Tendsto (fun n => B * ∑' i, |mu (phi n) i - p i|) atTop (nhds 0) := by
-      simpa using hl1.const_mul B
-    obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hBlim ε hε
-    refine ⟨N, fun n hn => ?_⟩
-    have hb := hbound n
-    have hr := hN n hn
-    rw [Real.dist_eq, sub_zero] at hr ⊢
-    have hzero : 0 ≤ B * ∑' i, |mu (phi n) i - p i| :=
-      mul_nonneg hnonneg (tsum_nonneg fun i => abs_nonneg _)
-    rw [abs_of_nonneg hzero] at hr
-    exact lt_of_le_of_lt hb hr
-  simpa [tendsto_iff_norm_tendsto_zero] using hdiff
 
 private theorem coalitional_vector_weighted_summable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
@@ -237,7 +183,8 @@ theorem coalitional_tight_attainment_scalar
   have h1 : ∀ n i, mu n i ≤ 1 := fun n i => coalitional_probability_le_one (hprob n) i
   obtain ⟨p, phi, hphi, hcoord⟩ := coalitional_exists_coordinate_subseq mu h0 h1
   have hpprob := coalitional_limit_probability mu p phi hprob htight hcoord
-  have hbary := coalitional_barycenter_tendsto mu p a phi hprob hpprob hcoord hB
+  have hbary := coalitional_vector_barycenter_tendsto mu p a phi hprob hpprob hcoord
+    (by simpa [Real.norm_eq_abs] using hB)
   have hresSub : Tendsto (fun n => ∑' i, mu (phi n) i * a i) atTop (nhds 0) :=
     hres.comp hphi.tendsto_atTop
   have heq : (∑' i, p i * a i) = 0 := tendsto_nhds_unique hbary hresSub
@@ -701,7 +648,8 @@ theorem coalitional_exact_carrier_has_tight_finite_approximation_scalar
     coalitional_normalizedPrefix_probability hp hj n
   have hcoord : ∀ i, Tendsto (fun n => mu n i) atTop (nhds (p i)) := fun i =>
     coalitional_normalizedPrefix_coordinate_tendsto hp hj i
-  have hbary := coalitional_barycenter_tendsto mu p a id hprob hp (by simpa using hcoord) hB
+  have hbary := coalitional_vector_barycenter_tendsto mu p a id hprob hp
+    (by simpa using hcoord) (by simpa [Real.norm_eq_abs] using hB)
   have hbary0 : Tendsto (fun n => ∑' i, mu n i * a i) atTop (nhds 0) := by
     simpa [Function.comp_def, hzero] using hbary
   exact ⟨mu, hprob, fun n => coalitional_normalizedPrefix_finite_support p j n,
@@ -925,5 +873,7 @@ theorem coalitional_sharp_escape_countermodel :
       intro n
       simp [coalitionalCost, coalitionalDiracHistory, tsum_ite_eq]
     simpa only [hcost] using hW.2
+
+end
 
 end GaloisForLFunctions.HTGeometry

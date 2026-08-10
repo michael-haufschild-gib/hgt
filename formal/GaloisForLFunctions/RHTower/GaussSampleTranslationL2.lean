@@ -366,6 +366,43 @@ theorem tendsto_gaussTranslationL2Defect {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p
   have hbase := norm_gaussPrimeScaleFourierCoefficient_le hp j
   rwa [habs] at hbase
 
+/-! ## Reflection of the defect bound -/
+
+/-- The weighted defect bound is even in the frequency. -/
+theorem gaussTranslationL2DefectBound_neg {m : ℕ} (k : Fin m) (p : Nat.Primes) (A : ℝ) (i : ℤ) :
+    gaussTranslationL2DefectBound k p A (-i) = gaussTranslationL2DefectBound k p A i := by
+  rw [gaussTranslationL2DefectBound, gaussTranslationL2DefectBound,
+    ← (Equiv.neg ℤ).tsum_eq (fun j : ℤ => ENNReal.ofReal
+      (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ 2 * ‖gaussSampleRatioDefect k p j i‖ ^ 2))]
+  refine tsum_congr fun j => ?_
+  have hdef : gaussSampleRatioDefect k p j (-i)
+      = starRingEnd ℂ (gaussSampleRatioDefect k p (-j) i) := by
+    have h := gaussSampleRatioDefect_neg k p (-j) i
+    rwa [neg_neg] at h
+  rw [hdef, RCLike.norm_conj]
+  simp [Equiv.neg]
+
+theorem gaussTranslationL2DefectBound_natAbs {m : ℕ} (k : Fin m) (p : Nat.Primes) (A : ℝ)
+    (i : ℤ) :
+    gaussTranslationL2DefectBound k p A ((i.natAbs : ℤ))
+      = gaussTranslationL2DefectBound k p A i := by
+  rcases Int.natAbs_eq i with h | h
+  · rw [← h]
+  · have hb := gaussTranslationL2DefectBound_neg k p A ((i.natAbs : ℤ))
+    rw [← h] at hb
+    exact hb.symm
+
+/-- **The moving-translation estimate along any escaping frequency sequence.**  Only the magnitude
+of the frequency matters, so the estimate holds along negative frequencies as well. -/
+theorem tendsto_gaussTranslationL2DefectBound_comp {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) (A : ℝ) {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop) :
+    Tendsto (fun n : ℕ => gaussTranslationL2DefectBound k p A (ι n)) atTop (nhds 0) := by
+  have hcomp := (tendsto_gaussTranslationL2DefectBound hm k p A).comp hι
+  refine hcomp.congr fun n => ?_
+  simp only [Function.comp_apply]
+  exact gaussTranslationL2DefectBound_natAbs k p A (ι n)
+
 end
 
 end RHTower

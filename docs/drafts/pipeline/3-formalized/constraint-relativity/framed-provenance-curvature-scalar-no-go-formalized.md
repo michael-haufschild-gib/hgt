@@ -56,6 +56,12 @@ Section 6 — the universal positive survivor:
 11. `provenance`, `provenanceClass` — **card `(6.1)`–`(6.2)`**: the free provenance group
     `ℤ^{L∖{⊥}}` and the oriented class `J(x,y) = e_y − e_x`.
 12. `provenanceClass_add` — the universal class is chain-additive.
+12b. `provenance_injective`, `provenanceClass_eq_zero_iff`, `provenanceClass_swap` — **card
+    `(6.3)`**: the universal class vanishes exactly on the diagonal and reverses sign under
+    swapping.  It is a faithful *oriented* invariant, which no scalar magnitude of it is.
+12c. `provenanceMap`, `provenanceMap_provenance`, `provenanceMap_provenanceClass` — **card
+    `(6.5)`**: functoriality of the provenance group, and naturality of the universal class along
+    any bottom-preserving map of the base.
 13. `additive_factors_through_provenance` — **the universal survivor**: every chain-additive
     divergence is `φ ∘ J` for an additive `φ`, i.e. for an observer-chosen potential.
 

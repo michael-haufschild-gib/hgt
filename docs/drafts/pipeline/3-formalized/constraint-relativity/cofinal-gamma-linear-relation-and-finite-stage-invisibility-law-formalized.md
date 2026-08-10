@@ -51,6 +51,11 @@ Source coinvariants:
 
 Kernel/multivalued defect exchange:
 
+10b. `surjective_eval_iff_ne_zero` — **Corollary E, second half**: evaluation of coinvariant
+    observers at a class, `P ↦ P([η])`, is surjective onto a nonzero target exactly when `[η] ≠ 0`.
+    So prescribing `P([η]) = v` for every `v` needs the retained class to survive, which the card
+    flags as a separate source-survival statement rather than a consequence of diagonality.
+
 11. `mulPart`, `kerPart`, `mem_mulPart_iff`, `mem_kerPart_iff` — **card `(CGR.10)`**.
 12. `mulPart_eq_bot_iff`, `kerPart_eq_bot_iff` — **card `(CGR.11)`**: the multivalued defect
     vanishes exactly on `t ≥ 0`, the kernel defect exactly on `t ≤ 0`.

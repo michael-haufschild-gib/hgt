@@ -277,3 +277,196 @@ hyperplane and the conclusion fails.
 - rational Hilbert specialization (step 1);
 - the Jia–Wolf transcendence-degree/circuit bound (step 3's external input);
 - o-minimal local finiteness (step 4).
+
+## Step 3 formalized: rigid spectrum ⇒ independent exponentials (2026-08-10)
+
+`HTGeometry/SpectralExponentialIndependence.lean` (new, unconditional,
+axiom-clean, in the umbrella) is the bridge from §2 to §3.
+
+- `relationForm E` — the rational linear form `a ↦ ∑ aⱼ Eⱼ`, whose kernel is
+  the relation space `R_E` of equation (5);
+- **`ker_relationForm_smul`** — scaling the family by any nonzero complex
+  constant leaves the relation space unchanged, so the rigidity of §2 is
+  available at *every* nonzero time `t`, not only at `t = 1`;
+- **`linearIndependent_subtype_of_ker_eq_constLine`** — if `R_E` is exactly the
+  trace line, then deleting any single index leaves a `ℚ`-linearly independent
+  family.  (A relation among the remaining `D-1` extends by zero, so it is a
+  multiple of `(1,…,1)` whose deleted coordinate is `0`, hence trivial.);
+- **`algebraicIndependent_exp_of_ker_eq_constLine`** — feeding that into the
+  corpus's finite Lindemann–Weierstrass
+  (`RHTower.exp_algebraicIndependent_of_linearIndependent`, in
+  `HTGeometry/FiniteLindemannWeierstrass.lean`) makes the `D-1` exponentials
+  algebraically independent over `ℚ`.  This is the `≥` half of equation (7);
+- **`prod_exp_eq_one_of_sum_eq_zero`** and
+  **`exp_eq_inv_prod_of_sum_eq_zero`** — tracelessness makes the `D`
+  exponentials multiply to `1`, so the deleted one is recovered from the
+  others.  This is the `≤` half of equation (7).
+
+Together with `PermutationInvariantSubspace.eq_constLine_of_le_of_ne_top`
+(§2) and `MatrixLinearFormsAdjoin.adjoin_matrixLinearForms_eq_of_det_ne_zero`
+(the coordinate transfer of equation (8)), the whole chain from spectral
+rigidity to transcendence degree `D-1` of the evolved state is now Lean, given
+the spectrum's rigidity as input.
+
+### Remaining Lean layers
+
+- rational Hilbert specialization (step 1) — supplies that rigidity for a
+  concrete two-local `H_n`;
+- the Jia–Wolf transcendence-degree/circuit bound (the external input of §3);
+- o-minimal local finiteness (step 4).
+
+## Step 1, spectral-simplicity core formalized (2026-08-10)
+
+`HTGeometry/BalancedTernaryUniqueness.lean` (new, unconditional, axiom-clean,
+in the umbrella) proves the arithmetic fact the nonvanishing argument of §1
+rests on — that the `X`-basis eigenvalues of `H_0 = ∑_j 3^j X_j` are distinct.
+
+- `two_mul_geom_sum_add_one` — `2 ∑_{j<n} 3^j + 1 = 3^n`, so the tail is
+  strictly below the leading power;
+- `abs_sum_lt_pow` — hence `|∑_{j<n} 3^j c_j| < 3^n` whenever `|c_j| ≤ 1`;
+- **`eq_zero_of_sum_eq_zero`** — uniqueness of balanced ternary expansions: a
+  signed sum of powers of three with coefficients in `{-1,0,1}` vanishes only
+  when every coefficient does;
+- **`sum_pow_three_sign_injOn`** — the `2^n` values `∑_j 3^j εⱼ` with `εⱼ = ±1`
+  are pairwise distinct.
+
+The `±1` case is reduced to the `{-1,0,1}` case without dividing in `ℤ`: the
+difference `εⱼ − δⱼ` takes only the values `0, ±2`, so it is `2 cⱼ` for an
+explicitly defined `cⱼ ∈ {-1,0,1}`.
+
+This gives simplicity of the `X`-basis spectrum of `H_0`, which is what makes
+the Vandermonde factorisation of the cyclicity determinant `K_Ω(H_0)` nonzero —
+equation (4) of the card.  What is still missing from §1 is the Hilbert
+irreducibility specialization itself.
+
+## The Vandermonde step of §1 was already corpus-owned (2026-08-10)
+
+Another stale entry in the missing-layers list.  The "usual Vandermonde
+factorization of (3)" does not have to be built:
+`HTGeometry/EulerPrimeOrbitFourOrganLaw.lean` already proves
+`finiteDiagonalKrylovVector_linearIndependent` — for injective nodes and
+nowhere-vanishing weights the square weighted Vandermonde family
+`k ↦ (i ↦ weightᵢ · nodeᵢ^k)` is linearly independent over `ℂ`, which is exactly
+non-vanishing of the cyclicity determinant `K_Ω`.
+
+`HTGeometry/BalancedTernaryKrylovCyclicity.lean` (new, unconditional,
+axiom-clean, in the umbrella) joins it to the arithmetic:
+
+- `ternaryValue ε = ∑_j 3^j εⱼ` for a sign pattern `ε : Fin n → Bool`;
+- **`injective_ternaryValue`** — the `2^n` values are pairwise distinct
+  (transported from `sum_pow_three_sign_injOn` by extending the pattern to all
+  of `ℕ` by `1`, which avoids any `Fin`/`range` index juggling in the
+  arithmetic lemma);
+- **`linearIndependent_krylov_ternaryValue`** — against any weight with no
+  vanishing coordinate, the Krylov family of the diagonal operator with these
+  eigenvalues is linearly independent.
+
+So equation (4) of the card — `K_Ω(H₀) ≠ 0` — is Lean, modulo naming the
+eigenvalues directly rather than deriving them from the Pauli algebra of
+`H₀ = ∑_j 3^j X_j`.
+
+### Remaining Lean layers
+
+- the Hilbert irreducibility specialization itself (the only genuinely missing
+  part of §1);
+- the Jia–Wolf transcendence-degree/circuit bound (§3's external input);
+- o-minimal local finiteness (§4).
+
+## §4, the elementary half formalized (2026-08-10)
+
+`HTGeometry/NonzeroAlgebraicDense.lean` (new, unconditional, axiom-clean, in
+the umbrella) proves the part of §4 that does not need o-minimality.
+
+- **`exists_nonzero_algebraic_mem_Ioo`** — every nonempty open interval contains
+  a nonzero algebraic real (a nonzero rational suffices; when the first rational
+  produced is `0`, the interval also meets `(0, b)`);
+- **`dense_nonzero_algebraic`** — the nonzero algebraic reals are dense;
+- **`interior_eq_empty_of_forall_not_algebraic`** — a set of reals containing no
+  nonzero algebraic number has empty interior;
+- **`dense_compl_of_forall_not_algebraic`** — equivalently its complement is
+  dense.
+
+Applied with equation (1): the set of times of exact complexity `≤ s` contains
+no nonzero algebraic time, hence **cannot contain an interval**, and the times
+of complexity `> s` are dense.  That is the implication the card draws from
+"if that preimage contained a nontrivial interval, the interval would contain a
+nonzero algebraic time".
+
+What this does *not* give is the card's equation (2).  Finiteness on `[-T,T]`
+genuinely needs the definability step — `S_s` semialgebraic, the orbit definable
+in `R_an`, and one-dimensional o-minimal finiteness — and mathlib has no
+o-minimality.  The gap is now exactly that step, not the whole of §4.
+
+### Remaining Lean layers
+
+- the Hilbert irreducibility specialization (§1);
+- the Jia–Wolf transcendence-degree/circuit bound (§3's external input);
+- o-minimality of `R_an` and one-dimensional definable finiteness, for the
+  upgrade of §4 from empty interior to finiteness.
+
+## The counting mechanism of the Jia–Wolf bound (2026-08-10)
+
+`HTGeometry/ParameterCountTranscendenceBound.lean` (new, unconditional,
+axiom-clean, in the umbrella) formalizes why a parameter count bounds
+transcendence — the engine of §3's external input.
+
+- **`trdeg_adjoin_range_le`** — the subalgebra generated by `m` elements has
+  transcendence degree at most `m`.  It is a surjective image of the polynomial
+  ring in `m` variables (`Algebra.adjoin_range_eq_range_aeval` plus
+  `AlgHom.rangeRestrict_surjective`), and mathlib's
+  `MvPolynomial.trdeg_of_isDomain` evaluates that ring's degree;
+- **`card_le_of_algebraicIndependent_of_mem_adjoin`** — an algebraically
+  independent family lying inside that subalgebra has at most `m` members.
+
+Applied to a circuit: the coordinates of a state prepared by `s` two-qubit gates
+are polynomial in the gate parameters, so they contain at most that many
+algebraically independent numbers.  Transcendence degree `D-1` therefore forces
+a proportional number of parameters, which is the shape of `(1)`.
+
+Scope, stated precisely: this is the *counting* half.  Jia–Wolf's constant `16`
+comes from `U(4)` having `16` real parameters and from the passage between real
+parameters and complex coordinates; neither the parametrisation of `U(4)` nor
+that passage is formalized here, so equation (1) is **not** yet Lean.  What is
+Lean is that any such parametrisation yields a bound of exactly this form.
+
+The base field and ambient domain are taken in `Type` so that every cardinal
+comparison happens in one universe; that is the case of interest, `ℚ ⊆ ℂ`.
+
+### Remaining Lean layers
+
+- the Hilbert irreducibility specialization (§1);
+- the `U(4)` parametrisation and real/complex passage fixing the constant `16`;
+- o-minimality of `R_an` and one-dimensional definable finiteness (§4's upgrade
+  from empty interior to finiteness).
+
+## The circuit half of the Jia–Wolf bound (2026-08-10)
+
+`HTGeometry/CircuitCoordinateAdjoin.lean` (new, unconditional, axiom-clean, in
+the umbrella) supplies what the counting lemma needs: that circuit coordinates
+really are polynomial in the gate data.
+
+- `mul_entries_mem`, **`prod_entries_mem`** — a product of matrices keeps its
+  entries inside any subalgebra containing the factors' entries;
+- **`mulVec_mem`** — hence every coordinate of `(∏ gates) · v` lies in the
+  subalgebra generated by the gate entries and the input coordinates;
+- **`card_le_of_algebraicIndependent_mulVec`** — so if all gate entries and all
+  input coordinates lie in the algebra generated by `m` elements, at most `m`
+  output coordinates can be algebraically independent.
+
+The constant `16` needs no `U(4)` parametrisation: a two-qubit gate is a `4 × 4`
+matrix, so `s` gates contribute `16 s` entries, and the bound reads
+`trdeg ≤ 16 s` directly.  Counting *complex entries* rather than *real
+parameters* is what makes this elementary.
+
+Two gaps remain before equation (1) itself is Lean: the embedding of a
+two-qubit gate into the `D × D` matrix (its entries are gate entries, `0`, or
+`1`, so they stay in the same algebra — routine but not written), and the
+statement that adjoining the algebraic input coordinates of `Ω` does not raise
+the transcendence degree.
+
+### Remaining Lean layers
+
+- the Hilbert irreducibility specialization (§1);
+- the two-qubit embedding and the algebraic-input refinement, to reach (1);
+- o-minimality of `R_an` and one-dimensional definable finiteness (§4's upgrade
+  from empty interior to finiteness).
