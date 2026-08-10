@@ -177,13 +177,6 @@ theorem eventually_integral_Icc_normSq_logPoly_moebius_le {T ε : ℝ} (hT : 0 �
   have hKle : K ≤ c * (M : ℝ) := by
     rw [div_le_iff₀ hM0] at hM
     exact hM
-  have hstep := integral_Icc_normSq_logPoly_moebius_le M hT
-  have hinner : mertensSup M * (1 + 2 * Real.pi * T * Real.log (M : ℝ)) ≥ 0 := by
-    have := Real.pi_pos
-    have hlog : (0 : ℝ) ≤ Real.log (M : ℝ) := Real.log_nonneg (by exact_mod_cast hM1)
-    have : (0 : ℝ) ≤ 2 * Real.pi * T * Real.log (M : ℝ) := by positivity
-    exact mul_nonneg (mertensSup_nonneg M) (by linarith)
-  -- The Abel bound is the sharper one; use it directly.
   have hpt : ∀ w ∈ Set.Icc (-T) T,
       ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 ≤ K ^ 2 := by
     intro w hw
@@ -226,6 +219,99 @@ theorem eventually_integral_Icc_normSq_logPoly_moebius_le {T ε : ℝ} (hT : 0 �
     rw [hcsq]
     field_simp
   linarith [hfin, hval2]
+
+/-- The Abel scale of the Möbius coefficients: the head plus the phase-weighted partial sums. -/
+def moebiusAbelScale (M : ℕ) : ℝ := |mertensM M| + mertensAbelSum M
+
+theorem moebiusAbelScale_nonneg (M : ℕ) : 0 ≤ moebiusAbelScale M := by
+  have := abs_nonneg (mertensM M)
+  have := mertensAbelSum_nonneg M
+  rw [moebiusAbelScale]
+  linarith
+
+/-- **The Abel scale is `o(M)`** — this is the prime number theorem. -/
+theorem tendsto_moebiusAbelScale_div :
+    Filter.Tendsto (fun M : ℕ => moebiusAbelScale M / (M : ℝ)) Filter.atTop (nhds 0) := by
+  have hsum := tendsto_abs_mertensM_div.add tendsto_mertensAbelSum_div
+  rw [add_zero] at hsum
+  refine hsum.congr fun M => ?_
+  rw [moebiusAbelScale, add_div]
+
+/-- **The Möbius mean square grows at most cubically in the height.**  Only the Abel scale enters,
+so the whole estimate is `o(M²)` for every height `T ≪ (M/moebiusAbelScale M)^{2/3}`. -/
+theorem integral_Icc_normSq_logPoly_moebius_le_cube (M : ℕ) {T : ℝ} (hT : 1 ≤ T) :
+    (∫ w in Set.Icc (-T) T,
+      ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
+      ≤ 128 * T ^ 3 * moebiusAbelScale M ^ 2 := by
+  classical
+  have hT0 : (0 : ℝ) ≤ T := by linarith
+  set s : ℝ := moebiusAbelScale M with hsdef
+  have hs0 : 0 ≤ s := moebiusAbelScale_nonneg M
+  have hA : |mertensM M| ≤ s := by
+    rw [hsdef, moebiusAbelScale]
+    linarith [mertensAbelSum_nonneg M]
+  have hB : mertensAbelSum M ≤ s := by
+    rw [hsdef, moebiusAbelScale]
+    linarith [abs_nonneg (mertensM M)]
+  have hpi : Real.pi < 4 := by linarith [Real.pi_lt_315]
+  have hK : ∀ w ∈ Set.Icc (-T) T,
+      ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 ≤ (8 * T * s) ^ 2 := by
+    intro w hw
+    rw [Set.mem_Icc] at hw
+    have hwT : |w| ≤ T := abs_le.2 ⟨hw.1, hw.2⟩
+    have hb := norm_logPoly_moebius_le_abel M w
+    have hstep : |mertensM M| + 2 * Real.pi * |w| * mertensAbelSum M ≤ 8 * T * s := by
+      have h1 : 2 * Real.pi * |w| * mertensAbelSum M ≤ 2 * Real.pi * T * s := by
+        have hpos : (0 : ℝ) ≤ 2 * Real.pi := by linarith [Real.pi_pos]
+        have h1a : 2 * Real.pi * |w| ≤ 2 * Real.pi * T := mul_le_mul_of_nonneg_left hwT hpos
+        have h1b : (0 : ℝ) ≤ 2 * Real.pi * |w| := by positivity
+        calc 2 * Real.pi * |w| * mertensAbelSum M ≤ 2 * Real.pi * |w| * s :=
+              mul_le_mul_of_nonneg_left hB h1b
+          _ ≤ 2 * Real.pi * T * s := mul_le_mul_of_nonneg_right h1a hs0
+      have h2 : 2 * Real.pi * T * s ≤ 8 * T * s - T * s := by
+        have hTs : (0 : ℝ) ≤ T * s := by positivity
+        nlinarith [hpi, hTs]
+      have h3 : |mertensM M| ≤ T * s := by
+        have : s ≤ T * s := by nlinarith [hs0, hT]
+        linarith
+      linarith
+    have hfin : ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ≤ 8 * T * s :=
+      le_trans hb hstep
+    exact pow_le_pow_left₀ (norm_nonneg _) hfin 2
+  have hcont : Continuous fun w : ℝ =>
+      ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 :=
+    ((continuous_logPoly _ _).norm).pow 2
+  have hconstInt : IntegrableOn (fun _ : ℝ => (8 * T * s) ^ 2) (Set.Icc (-T) T) volume :=
+    (continuous_const).integrableOn_Icc
+  have hmono := setIntegral_mono_on hcont.integrableOn_Icc hconstInt measurableSet_Icc hK
+  have hval : (∫ _ in Set.Icc (-T) T, (8 * T * s) ^ 2) = 2 * T * (8 * T * s) ^ 2 := by
+    rw [setIntegral_const, smul_eq_mul]
+    have hv : volume.real (Set.Icc (-T) T) = 2 * T := by
+      rw [MeasureTheory.measureReal_def, Real.volume_Icc, ENNReal.toReal_ofReal (by linarith)]
+      ring
+    rw [hv]
+  rw [hval] at hmono
+  refine le_trans hmono (le_of_eq ?_)
+  ring
+
+/-- **The unconditional good range is unbounded.**  For every height `T` the Möbius mean square is
+below `ε·M²` at every height `S ≤ T`, once `M` is large.  No zero-free region and no multiplicative
+distance enter: the input is `M(x) = o(x)` alone. -/
+theorem eventually_forall_height_integral_moebius_le {T ε : ℝ} (hT : 0 ≤ T) (hε : 0 < ε) :
+    ∀ᶠ M : ℕ in Filter.atTop, ∀ S : ℝ, 0 ≤ S → S ≤ T →
+      (∫ w in Set.Icc (-S) S,
+        ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2) ≤ ε * (M : ℝ) ^ 2 := by
+  filter_upwards [eventually_integral_Icc_normSq_logPoly_moebius_le hT hε] with M hM S hS0 hST
+  have hcont : Continuous fun w : ℝ =>
+      ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 :=
+    ((continuous_logPoly _ _).norm).pow 2
+  have hsub : Set.Icc (-S) S ⊆ Set.Icc (-T) T := by
+    refine Set.Icc_subset_Icc (by linarith) hST
+  have hstep := setIntegral_mono_set (f := fun w : ℝ =>
+      ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
+    hcont.integrableOn_Icc (Filter.Eventually.of_forall fun w => by positivity)
+    hsub.eventuallyLE
+  linarith [hstep, hM]
 
 end RHTower.Sieve
 

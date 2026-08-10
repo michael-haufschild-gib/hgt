@@ -1095,3 +1095,69 @@ Hilbert irreducibility itself.
 
 - Hilbert irreducibility (§1): Eisenstein's theorem, then HIT;
 - Tarski–Seidenberg (§4), as re-scoped two entries above.
+
+## Newton's lemma without a simple root (2026-08-10)
+
+The next link of the Hilbert-irreducibility chain is Eisenstein's theorem on algebraic
+power series — the statement that the Puiseux coefficients of an algebraic power series
+have geometrically bounded denominators.  Its proof is a Newton iteration in which the
+derivative is *not* a unit, so the tool it needs is Hensel's lemma in the
+`|F(y₀)| < |F′(y₀)|²` form.  mathlib has only the simple-root form
+(`HenselianRing.is_henselian`, monic polynomial, unit derivative); the general form was
+absent from mathlib and the corpus.  It is now built.
+
+`HTGeometry/HenselDefectRoot.lean` (new, in the umbrella, axiom-clean):
+
+> **`exists_isRoot_of_sq_dvd`.**  Let `S` be complete for an ideal `I`, `F ∈ S[X]`, and
+> `y₀ ∈ S` with `d = F′(y₀)` and `F(y₀) = d² · ε` for some `ε ∈ I`.  Then `F` has a root
+> `y₀ + d·z` with `z ∈ I`.
+>
+> **`isRoot_unique_of_sq_dvd`.**  Over a domain that root is unique: two roots of the shape
+> `y₀ + d z` with `z ∈ I` and `d ≠ 0` coincide.
+
+No monicity, no unit, no simple root, and the ideal is arbitrary.  The proof does not
+iterate: substituting `y = y₀ + d·Z` makes every Taylor term beyond the linear one carry
+`d²`, so the substituted polynomial is `d²` times
+
+`H(Z) = ε + Z + (higher terms)`,
+
+whose reduction modulo `I` is exactly `Z` — the degeneracy has been absorbed into the
+substitution.  `H` is never monic, which is why the divisor form
+`exists_monic_dvd_of_coeffMem_modByMonic` (built two entries above, and deliberately stated
+without assuming `f` monic) is what applies to it, with the linear divisor `Z - z₀`.
+
+Supporting declarations, all reusable:
+
+- `shiftScale F y₀ h` — the polynomial `Z ↦ F(y₀ + h·Z)`, with `coeff_shiftScale`
+  (`= (taylor y₀ F).coeff k · hᵏ`) and `eval_shiftScale`;
+- `rychlikQuotient` and `C_sq_mul_rychlikQuotient` — the division of `shiftScale F y₀ d` by
+  `d²`, valid exactly under `F(y₀) = d²ε` and `d = F′(y₀)`;
+- `eval_divByMonic_X_sub_C` — the quotient by `X − a` at `a` is the derivative at `a`;
+- `exists_eval_add_eq` — the Taylor expansion to second order,
+  `F(a+h) = F(a) + F′(a)h + h²B`;
+- `polyShiftPow`, `shiftPow_X_pow_mul` — coefficientwise division of a polynomial over a
+  power-series ring by `Xᵏ`;
+- **`exists_isRoot_of_defect`** — the `K⟦t⟧` specialisation, now a corollary: if
+  `F′(y₀) = t^r · unit` and `t^{2r+1} ∣ F(y₀)`, then `F` has a root congruent to `y₀`
+  modulo `t^{r+1}`.
+
+`shiftPow` and `constantCoeff_eval`/`mem_span_X_iff` were generalised in place from a field
+to an arbitrary commutative ring, so nothing is duplicated.
+
+### Why this is the right next tool for Eisenstein
+
+Over a discrete valuation ring `A` with fraction field `K`, let `y ∈ K⟦t⟧` be a root of a
+monic `F ∈ A[t][X]` and let `r` be the `t`-order of `F′(y)`.  Rescaling `t ↦ c t`
+(`PowerSeries.rescale`) turns `y` into `w = y(ct)`, a root of `G = F(ct, X)`, and for `c`
+divisible by a high enough power of the uniformiser the truncation `w₀` of `w` below degree
+`2r+1` lies in `A⟦t⟧` and satisfies `G(w₀) = G′(w₀)² · ε` with `ε` in the variable ideal.
+`exists_isRoot_of_sq_dvd` then produces a root of `G` in `A⟦t⟧`, and
+`isRoot_unique_of_sq_dvd` identifies it with `w`, i.e. `c^n a_n ∈ A` for all `n` — which is
+Eisenstein's theorem.  The remaining work is the valuation bookkeeping that makes the
+`d² ε` hypothesis hold for large `v(c)`.
+
+### Remaining Lean layers for the card
+
+- Hilbert irreducibility (§1): Eisenstein (valuation bookkeeping + assembly over the
+  finitely many bad primes), then HIT itself;
+- Tarski–Seidenberg (§4).

@@ -243,6 +243,66 @@ theorem exists_isRoot_of_sq_dvd [Nontrivial S] (I : Ideal S) [IsAdicComplete I S
   rw [Polynomial.IsRoot, ← eval_shiftScale F y₀ d, ← hGH, Polynomial.eval_mul, Polynomial.eval_C,
     hHz, mul_zero]
 
+/-! ## Uniqueness -/
+
+/-- **The Taylor expansion to second order.** -/
+theorem exists_eval_add_eq (F : S[X]) (a h : S) :
+    ∃ B : S, F.eval (a + h) = F.eval a + (Polynomial.derivative F).eval a * h + h ^ 2 * B := by
+  classical
+  have hdvd : (X : S[X]) ^ 2 ∣ (Polynomial.taylor a F
+      - Polynomial.C ((Polynomial.taylor a F).coeff 0)
+      - Polynomial.C ((Polynomial.taylor a F).coeff 1) * Polynomial.X) := by
+    rw [Polynomial.X_pow_dvd_iff]
+    intro n hn
+    interval_cases n <;> simp
+  obtain ⟨Q, hQ⟩ := hdvd
+  refine ⟨Q.eval h, ?_⟩
+  have hTval : (Polynomial.taylor a F).eval h = F.eval (a + h) := by
+    rw [Polynomial.taylor_apply, Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X,
+      Polynomial.eval_C, add_comm]
+  have heval := congrArg (Polynomial.eval h) hQ
+  rw [Polynomial.eval_sub, Polynomial.eval_sub, Polynomial.eval_C, Polynomial.eval_mul,
+    Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_mul, Polynomial.eval_pow,
+    Polynomial.eval_X, hTval, Polynomial.taylor_coeff_zero, Polynomial.taylor_coeff_one] at heval
+  linear_combination heval
+
+/-- **Uniqueness in Newton's lemma.**  Over a domain, two roots of the same shape `y₀ + d z` with
+`z` in the ideal coincide. -/
+theorem isRoot_unique_of_sq_dvd [IsDomain S] (I : Ideal S) [IsAdicComplete I S]
+    {F : S[X]} {y₀ d : S} (hd : (Polynomial.derivative F).eval y₀ = d) (hd0 : d ≠ 0)
+    {z₁ z₂ : S} (h₁ : z₁ ∈ I) (h₂ : z₂ ∈ I)
+    (hr₁ : F.IsRoot (y₀ + d * z₁)) (hr₂ : F.IsRoot (y₀ + d * z₂)) : z₁ = z₂ := by
+  classical
+  obtain ⟨B, hB⟩ := exists_eval_add_eq F (y₀ + d * z₂) (d * (z₁ - z₂))
+  have hy : y₀ + d * z₂ + d * (z₁ - z₂) = y₀ + d * z₁ := by ring
+  rw [hy] at hB
+  have hr₁' : Polynomial.eval (y₀ + d * z₁) F = 0 := hr₁
+  have hr₂' : Polynomial.eval (y₀ + d * z₂) F = 0 := hr₂
+  rw [hr₁', hr₂'] at hB
+  obtain ⟨A, hA⟩ : (d * z₂) ∣ ((Polynomial.derivative F).eval (y₀ + d * z₂)
+      - (Polynomial.derivative F).eval y₀) := by
+    have hsub := Polynomial.sub_dvd_eval_sub (y₀ + d * z₂) y₀ (Polynomial.derivative F)
+    have heq : y₀ + d * z₂ - y₀ = d * z₂ := by ring
+    rwa [heq] at hsub
+  rw [hd] at hA
+  have hFy₂ : (Polynomial.derivative F).eval (y₀ + d * z₂) = d * z₂ * A + d :=
+    sub_eq_iff_eq_add.mp hA
+  rw [hFy₂] at hB
+  have hzero : d * d * (z₁ - z₂) * (1 + (z₂ * A + (z₁ - z₂) * B)) = 0 := by
+    linear_combination -hB
+  have hunit : IsUnit (1 + (z₂ * A + (z₁ - z₂) * B)) := by
+    have hjac : I ≤ Ideal.jacobson ⊥ := HenselianRing.jac (R := S) (I := I)
+    have hmem : z₂ * A + (z₁ - z₂) * B ∈ I :=
+      I.add_mem (I.mul_mem_right _ h₂) (I.mul_mem_right _ (I.sub_mem h₁ h₂))
+    have hu := (Ideal.mem_jacobson_bot).1 (hjac hmem) 1
+    rwa [mul_one, add_comm] at hu
+  have hd2 : d * d ≠ 0 := mul_ne_zero hd0 hd0
+  have hsub0 : z₁ - z₂ = 0 := by
+    rcases mul_eq_zero.mp hzero with hcase | hcase
+    · exact (mul_eq_zero.mp hcase).resolve_left hd2
+    · exact absurd hcase hunit.ne_zero
+  exact sub_eq_zero.mp hsub0
+
 /-- **Newton's lemma with defect `r`.**  If `F′(y₀) = X ^ r · unit` and `F(y₀)` vanishes to order at
 least `2r + 1`, then `F` has a root congruent to `y₀` modulo `X ^ (r+1)`. -/
 theorem exists_isRoot_of_defect [Nontrivial R] {F : (PowerSeries R)[X]} {y₀ u : PowerSeries R}

@@ -4239,6 +4239,7 @@ import GaloisForLFunctions.RHTower.Sieve.FrequencyFromOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.MRFromOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.RamareComplex
 import GaloisForLFunctions.RHTower.Sieve.LowHeightPoly
+import GaloisForLFunctions.RHTower.Sieve.LowHeightMoebius
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6870,6 +6871,7 @@ import GaloisForLFunctions.RHTower.Sieve.FrequencyFromOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.MRFromOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.RamareComplex
 import GaloisForLFunctions.RHTower.Sieve.LowHeightPoly
+import GaloisForLFunctions.RHTower.Sieve.LowHeightMoebius
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen

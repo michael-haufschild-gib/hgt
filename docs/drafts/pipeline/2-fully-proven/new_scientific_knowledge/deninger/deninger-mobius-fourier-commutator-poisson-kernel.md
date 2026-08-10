@@ -19,8 +19,8 @@
     \(M(X)=O(Xe^{-c(\log X)^{1/3}})\), already formalized in the corpus;
   - ordinary Fourier inversion and Poisson summation on Schwartz functions;
   - Burnol's co-Poisson/Fourier intertwining as literature context.
-- **Lean status:** every analytic statement formalized unconditionally, including the exact
-  kernel `(5)`; see *Lean status* below.
+- **Lean status:** fully formalized — every displayed statement, including the exact kernel `(5)`,
+  the continuity `(13)` and the Euler-depleted kernel `(30)`; see *Lean status* below.
 
 ## 1. Result
 
@@ -1294,21 +1294,75 @@ This closes `(5)` by a shorter route than the card's own.  The card derives the 
 from Poisson summation `(26)`, letting `x ↓ 0`; but the endpoints are exactly the two total masses,
 and the zero-mass theorem `(12)` was already available.  **No Poisson summation is used.**
 
+### Section 1 — the nuclear Meyer topology `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMeyerSeminorm.lean`,
+`DeningerMeyerTopology.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerMeyerWeight`, `deningerMeyerWeight_bddAbove`, `deningerMeyerWeight_le` — the weight
+  `e^{A|t|}‖h^{(n)}(t)‖` is bounded *exactly* because membership in the source says so, so its
+  supremum is finite on the whole source, not merely on a dense subspace.
+- `deningerMeyerSeminorm` — **the Meyer seminorm `q_{A,n}` of `(2a)`**, as a genuine
+  `Seminorm ℂ H_-`: subadditive by `ciSup_le`, absolutely homogeneous by pulling the scalar out of
+  the supremum.
+- `DeningerMeyerSource`, `DeningerMeyerSource.withSeminorms` — **the source with its own
+  projective-limit topology.**  A type synonym is needed: as a submodule of `𝓢(ℝ,ℂ)` the source
+  carries the subspace topology, which is strictly coarser than Meyer's.
+
+### Section 2 — `(13)`: the moment map is continuous `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMomentMajorant.lean`,
+`DeningerMomentSeminormBound.lean`, `DeningerPreimageMomentCLM.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerMomentMajorant`, `deningerMomentMajorant_integrableOn`, `deningerMomentMajorantMass` —
+  the source-free majorant `min(u^{2r+2}, u^{-2})` and its mass, which depends only on the order.
+- `deningerLogPullDeriv_weightedPow_le_seminorm` — **the weighted-moment estimate in seminorm
+  form**: `u^{r+1}|H_h'(u)| ≤ q_{r+2,1}(h) · min(u^{2r+2}, u^{-2})`.  The source-dependence is a
+  single seminorm; everything else depends only on `r`.
+- `deningerBracket_le_invSq`, `deningerCoefficientTerm_summable`, `deningerCoefficientSum` — the
+  order-`r` coefficient series, now at **every** order including `r = 0`, where the bracket is
+  exactly `1/(i(i+1))`.
+- `deningerHigherMomentMass_le_seminorm`, `deningerPreimageMomentMass_le`,
+  `deningerPreimageMoment_le_seminorm` — **the `(11)` chain with the constants made explicit**:
+  `∫_0^∞ x^r|f_h(x)| dx ≤ K_r · q_{r+2,1}(h)`, with `K_r` the coefficient series times the majorant
+  mass.
+- `deningerMobiusPreimage_add`, `_smul` — the preimage is linear on the ray, because the Möbius
+  series converges absolutely there.
+- `deningerMomentLM`, `deningerMomentLM_continuous`, `deningerMomentCLM` — **`(13)`: the map
+  `h ↦ x^r f_h` is a continuous linear map `H_- → L¹(0,∞)`**, by
+  `WithSeminorms.continuous_normedSpace_rng` applied to the single seminorm `q_{r+2,1}`.
+
+### Section 4 — `(30)`: the Euler-depleted kernel `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerEulerDepletedKernel.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPeriodizationDefect_injective` — **`Δ_p = 1 - τ_{log p}` is injective on the source**: a
+  translation-periodic member is constant along the orbit and the source decays at infinity, so it
+  vanishes.  (`DeningerMeyerPeriodization`.)
+- `deningerDefectEquiv`, `deningerGreenInverse` — the defect as a linear isomorphism onto its range,
+  and the Green inverse `G_p` there.  No analytic estimate is needed for `(30)`: the Green *sum*
+  formula `(7)` of the companion card is a stronger statement than the inverse itself.
+- `deningerEulerDepletedCommutator`, `deningerEulerDepleted_exact_kernel` — **`(30)`:
+  `ker 𝔖_{μ,p} = Δ_p Z(H_∩)`**, by transporting `(5)` along the isomorphism.
+
 ### What is left
 
-`(4)`, `(5)`, `(6)`, `(8)`--`(12)`, `(15)`, `(16)`, `(19)`--`(20)`, `(23)`--`(25)`, `(34)`--`(35)`
-and `(44)`--`(45)` are formalized unconditionally.  Two statements remain, and neither is analytic:
+Nothing.  Every displayed statement of the card — `(4)`, `(5)`, `(6)`, `(8)`--`(13)`, `(15)`,
+`(16)`, `(19)`--`(20)`, `(23)`--`(25)`, `(30)`, `(34)`--`(35)` and `(44)`--`(45)` — is formalized
+unconditionally in Lean, with every audited declaration depending only on
+`propext, Classical.choice, Quot.sound`.
 
-- `(13)`, the continuity of `h ↦ x^r f_h ∈ L¹(0,∞)`, is a statement about the **nuclear Meyer
-  topology**.  The corpus realizes `H_-` as `DeningerExpSchwartz`, a *submodule* of `𝓢(ℝ,ℂ)`, which
-  carries the subspace topology, not Meyer's projective-limit topology of the weighted seminorms
-  `q_{a,m,n}`.  The bound of `(11)` is already proved with an explicit constant; what is missing is
-  the Fréchet structure in which to phrase continuity.
-- `(30)`, `ker 𝔖_{μ,p} = Δ_p Z(H_∩)`, needs the Green inverse `G_p` of the companion card
-  `deninger-euler-depleted-meyer-periodization-extension`.  Its two structural halves are already
-  built here (`DeningerMeyerPeriodization`: `Δ_L` injective and `Per_L ∘ Δ_L = 0`, with the Green
-  telescope `Δ_L G_L = 1`); what is left is the seminorm bound `(8)` of that card, placing `G_p h`
-  back in the source when `Per_p h = 0`.
+Three of the card's own proofs were replaced by shorter ones, each recorded above:
+
+- `(5)`'s endpoint conditions come from `(12)`, not from Poisson summation `(26)`: the two Meyer
+  endpoints *are* the two total masses.
+- `(24)` needs no differentiation of the Möbius series: Landau interpolation converts decay of the
+  function plus boundedness of the derivatives — which a Fourier transform has for free once its
+  argument has all moments — into Schwartz decay.
+- `(30)` needs no Green *sum*: `Δ_p` is injective, so the Green inverse exists on the range by
+  linear algebra.
 
 ## Gates
 
@@ -1319,9 +1373,9 @@ and `(44)`--`(45)` are formalized unconditionally.  Two statements remain, and n
   identity, and boundary image `(4)` proved on paper
 - [ ] source annihilator gate: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
 - [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
-- [ ] 2 → 3 formalized: `(4)`, **`(5)`**, `(6)`, `(8)`--`(12)`, `(15)`, `(16)`, `(19)`--`(20)`,
-  `(23)`--`(25)`, `(34)`--`(35)`, `(44)`--`(45)` done — every analytic statement of the card.
-  `(13)` needs the Meyer Fréchet topology; `(30)` needs the companion card's Green inverse
+- [x] 2 → 3 formalized: every displayed statement of the card is proved unconditionally in Lean —
+  `(4)`, `(5)`, `(6)`, `(8)`--`(13)`, `(15)`, `(16)`, `(19)`--`(20)`, `(23)`--`(25)`, `(30)`,
+  `(34)`--`(35)`, `(44)`--`(45)`
 - [ ] 3 → 4 publication-ready
 
 ## Log

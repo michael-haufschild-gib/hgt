@@ -28,6 +28,8 @@ open HedenmalmQuantile HedenmalmHilbertSchmidt HedenmalmThetaSource
 
 private abbrev H := Lp ℂ 2 unitIntervalMeasure
 
+private abbrev HS := SourceSpace thetaSource
+
 local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 local instance : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
@@ -175,6 +177,104 @@ theorem thetaShiftedWeightedDerivative_dense_domain (α : ℂ) :
     Dense ((thetaShiftedWeightedDerivative α).domain : Set H) := by
   rw [thetaShiftedWeightedDerivative_domain]
   exact thetaWeightedDerivative_dense_domain
+
+/-! ### The unchanged literal smooth core -/
+
+theorem thetaDerivativeCoreSubmodule_le_shifted_domain (α : ℂ) :
+    thetaDerivativeCoreSubmodule ≤ (thetaShiftedWeightedDerivative α).domain := by
+  rw [thetaShiftedWeightedDerivative_domain]
+  exact thetaDerivativeCoreSubmodule_le_domain
+
+/-- Restriction of `A + α` to the same literal `C_c^∞(ℝ)` core. -/
+def thetaShiftedDerivativeCore (α : ℂ) : H →ₗ.[ℂ] H :=
+  (thetaShiftedWeightedDerivative α).domRestrict thetaDerivativeCoreSubmodule
+
+theorem thetaShiftedDerivativeCore_graph_closure (α : ℂ) :
+    closure ((thetaShiftedDerivativeCore α).graph : Set (H × H)) =
+      ((thetaShiftedWeightedDerivative α).graph : Set (H × H)) := by
+  let F : thetaCentered →L[ℂ] H × H :=
+    thetaCenteredSourceInverse.prod (thetaShiftedRangeMap α)
+  have hMaps : MapsTo F thetaDerivativeCoreOutput
+      (thetaShiftedDerivativeCore α).graph := by
+    intro k hk
+    rcases hk with ⟨g, hg, hgs, hk⟩
+    let f : HS := (memLp_sourceD hg hgs).toLp (sourceD g)
+    let u : HS := (memLp_smooth hg hgs).toLp g
+    have hfCentered : quantileUnitary thetaSource f ∈ thetaCentered :=
+      quantile_sourceD_mem_centered hg hgs
+    have hkSub : k = ⟨quantileUnitary thetaSource f, hfCentered⟩ := Subtype.ext hk
+    have hB : thetaCenteredSourceInverse k = quantileUnitary thetaSource u := by
+      rw [hkSub]
+      exact thetaCompactSourceInverse_quantile_sourceD hg hgs
+    have huSmooth : u ∈ thetaSmoothSourceSubmodule :=
+      ⟨g, (memLp_smooth hg hgs).coeFn_toLp, hgs, hg⟩
+    have hcoreSub : thetaCenteredSourceInverse k ∈ thetaDerivativeCoreSubmodule := by
+      refine ⟨u, huSmooth, ?_⟩
+      exact hB.symm
+    have hTdom :
+        thetaCenteredSourceInverse k ∈ (thetaShiftedWeightedDerivative α).domain :=
+      (closedGraphTransform_apply_B thetaCentered thetaCenteredSourceInverse
+        (thetaShiftedRangeMap α) thetaCenteredSourceInverse_injective k).1
+    change F k ∈ (thetaShiftedDerivativeCore α).graph
+    rw [LinearPMap.mem_graph_iff]
+    let xcore : (thetaShiftedDerivativeCore α).domain :=
+      ⟨thetaCenteredSourceInverse k, ⟨hcoreSub, hTdom⟩⟩
+    refine ⟨xcore, rfl, ?_⟩
+    exact (LinearPMap.domRestrict_apply
+      (y := (⟨thetaCenteredSourceInverse k, hTdom⟩ :
+        (thetaShiftedWeightedDerivative α).domain)) rfl).trans
+      (closedGraphTransform_apply_B thetaCentered thetaCenteredSourceInverse
+        (thetaShiftedRangeMap α) thetaCenteredSourceInverse_injective k).2
+  apply le_antisymm
+  · apply closure_minimal
+      (LinearPMap.le_graph_of_le
+        (LinearPMap.domRestrict_le : thetaShiftedDerivativeCore α ≤
+          thetaShiftedWeightedDerivative α))
+    exact thetaShiftedWeightedDerivative_isClosed α
+  · intro p hp
+    rw [LinearPMap.mem_graph_iff] at hp
+    rcases hp with ⟨x, hx, hout⟩
+    have hxRange : (x : H) ∈ thetaCenteredSourceInverse.range := by
+      rw [← closedGraphTransform_domain thetaCentered thetaCenteredSourceInverse
+        (thetaShiftedRangeMap α)]
+      exact x.property
+    rcases hxRange with ⟨k, hk⟩
+    have hTapply : thetaShiftedWeightedDerivative α x = thetaShiftedRangeMap α k := by
+      have h := (closedGraphTransform_apply_B thetaCentered thetaCenteredSourceInverse
+        (thetaShiftedRangeMap α) thetaCenteredSourceInverse_injective k).2
+      have heq : x = ⟨thetaCenteredSourceInverse k,
+          (closedGraphTransform_apply_B thetaCentered thetaCenteredSourceInverse
+            (thetaShiftedRangeMap α) thetaCenteredSourceInverse_injective k).1⟩ :=
+        Subtype.ext hk.symm
+      simpa only [thetaShiftedWeightedDerivative, heq] using h
+    have hpEq : F k = p := by
+      apply Prod.ext
+      · exact hk.trans hx
+      · exact hTapply.symm.trans hout
+    rw [← hpEq]
+    have hkClosure : k ∈ closure thetaDerivativeCoreOutput := by
+      rw [dense_thetaDerivativeCoreOutput.closure_eq]
+      exact Set.mem_univ k
+    exact map_mem_closure F.continuous hkClosure hMaps
+
+theorem thetaShiftedDerivativeCore_isClosable (α : ℂ) :
+    (thetaShiftedDerivativeCore α).IsClosable :=
+  (thetaShiftedWeightedDerivative_isClosed α).isClosable.leIsClosable
+    (LinearPMap.domRestrict_le : thetaShiftedDerivativeCore α ≤
+      thetaShiftedWeightedDerivative α)
+
+theorem thetaShiftedDerivativeCore_closure_eq (α : ℂ) :
+    (thetaShiftedDerivativeCore α).closure = thetaShiftedWeightedDerivative α := by
+  apply LinearPMap.eq_of_eq_graph
+  rw [← (thetaShiftedDerivativeCore_isClosable α).graph_closure_eq_closure_graph]
+  apply SetLike.coe_injective
+  simpa only [Submodule.topologicalClosure_coe] using
+    thetaShiftedDerivativeCore_graph_closure α
+
+theorem thetaShiftedWeightedDerivative_hasCore (α : ℂ) :
+    (thetaShiftedWeightedDerivative α).HasCore thetaDerivativeCoreSubmodule := by
+  refine ⟨thetaDerivativeCoreSubmodule_le_shifted_domain α, ?_⟩
+  exact thetaShiftedDerivativeCore_closure_eq α
 
 theorem thetaShiftedWeightedDerivative_kernel_eq_bot (α : ℂ) :
     (thetaShiftedWeightedDerivative α).kernel = ⊥ :=

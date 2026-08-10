@@ -144,4 +144,47 @@ theorem fibreShadow_tower (r : Fin n → ℂ) :
 
 end Conditioning
 
+/-! ## The RH specialization boundary: the quadratic mate law -/
+
+section MateLaw
+
+open Polynomial
+
+/-- **Card `(14)`.**  The quadratic mate law `f(T) = (T − 1)(T − δ)`. -/
+noncomputable def mateQuad (δ : ℂ) : ℂ[X] := (X - C 1) * (X - C δ)
+
+theorem mateQuad_eq_expand (δ : ℂ) : mateQuad δ = X ^ 2 - C (1 + δ) * X + C δ := by
+  rw [mateQuad]
+  ring_nf
+  simp [map_add, map_one]
+  ring
+
+/-- **Card `(14)`.**  The root different of the mate law at the moving root is `δ − 1`. -/
+theorem eval_derivative_mateQuad (δ : ℂ) : (derivative (mateQuad δ)).eval δ = δ - 1 := by
+  rw [mateQuad]
+  simp [derivative_mul]
+
+/-- **Card `(14)`.**  At the fixed root it is `1 − δ`: the two characters collide only at the
+wall. -/
+theorem eval_derivative_mateQuad_one (δ : ℂ) : (derivative (mateQuad δ)).eval 1 = 1 - δ := by
+  rw [mateQuad]
+  simp [derivative_mul]
+
+/-- **Card `(14)`.**  The discriminant of the mate law is the square of the different. -/
+theorem discriminant_mateQuad (δ : ℂ) :
+    ((derivative (mateQuad δ)).eval δ) ^ 2 = (δ - 1) ^ 2 := by
+  rw [eval_derivative_mateQuad]
+
+/-- **Card `(14)`, the exact wall.**  The different — equivalently the discriminant — vanishes
+exactly at `δ = 1`.  The theorem locates the wall; it does *not* force `δ = 1`. -/
+theorem eval_derivative_mateQuad_eq_zero_iff (δ : ℂ) :
+    (derivative (mateQuad δ)).eval δ = 0 ↔ δ = 1 := by
+  rw [eval_derivative_mateQuad, sub_eq_zero]
+
+theorem discriminant_mateQuad_eq_zero_iff (δ : ℂ) :
+    ((derivative (mateQuad δ)).eval δ) ^ 2 = 0 ↔ δ = 1 := by
+  rw [discriminant_mateQuad, pow_eq_zero_iff (two_ne_zero), sub_eq_zero]
+
+end MateLaw
+
 end HTGeometry.ConstraintRelativity

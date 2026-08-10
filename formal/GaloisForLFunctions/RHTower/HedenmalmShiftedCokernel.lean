@@ -55,7 +55,8 @@ theorem memLp_thetaCokernelSource (α : ℂ) :
     refine (HedenmalmThetaSource.integrable_exp_mul_thetaCuspFullSource
       (-2 * α.im)).congr ?_
     filter_upwards with x
-    rw [q, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    simp only [q]
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (Real.sqrt_nonneg _), norm_sourceChar, mul_pow,
       Real.sq_sqrt (thetaSource.pos_k x).le, thetaSource_k]
     have hzIm : z.im = α.im := by
@@ -82,9 +83,10 @@ theorem memLp_thetaCokernelSource (α : ℂ) :
       rw [show sourceWeight thetaSource x = (thetaSource.k x)⁻¹ from rfl,
         Real.sqrt_inv]
     rw [cokernelVector_eq_k_mul_sourceChar, hsw]
+    rw [← mul_assoc]
     change ((((Real.sqrt (thetaSource.k x))⁻¹ : ℝ) : ℂ) *
         ((thetaSource.k x : ℝ) : ℂ)) * sourceChar z x = q x
-    rw [q]
+    simp only [q]
     congr 1
     push_cast
     field_simp [hsqrtC]
