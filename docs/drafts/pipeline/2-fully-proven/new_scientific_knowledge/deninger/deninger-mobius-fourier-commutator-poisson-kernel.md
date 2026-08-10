@@ -636,14 +636,30 @@ the current against `φ` turns `(34)` into a numerical series, which is the stat
 The hypothesis on `φ` is the mean-value bound `‖φ(x) - φ(0)‖ ≤ C|x|` together with continuity,
 which is what `(38)` uses; every `C_c^∞` test function satisfies it.
 
+### The source and the canonical preimage `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerExpSchwartz.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerMobiusPreimage.lean`.  Axiom audit for all
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `DeningerExpSchwartz` — `H_- = S_exp(ℝ)` of `(1)`, realized as a subspace of `𝓢(ℝ, ℂ)` cut out by
+  `∀ A n, ∃ C, ∀ x, e^{A|x|} ‖D^n f(x)‖ ≤ C`.  `deningerShift`, `deningerShift_mem` and
+  `deningerPeriodizationDefect L = 1 - τ_L` of `(28)` come with it.
+- `deningerLogPull` — `H_h(x) = h(log x)` of `(2)`; `deningerLogPull_norm_le` turns the
+  exponential weight into `min(x^A, x^{-A})`, and `deningerLogPull_norm_le_inv_sq` is the `A = 2`
+  case.
+- `deningerMobiusRay_summable`, `deningerMobiusPreimage` — **`(2)` converges absolutely on every
+  positive ray**, by the single comparison `‖H_h(nx)‖ ≤ (C/x²)/n²`.  No cancellation in `μ` is
+  used; the two-sided decay of the pullback does it alone.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
 unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a Fubini on a fixed
 ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
-bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  All of these need the
-`H_- = S_exp(ℝ)` layer, which the corpus does not yet have; `H_∩` and `Z` do exist, as
-`RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonLM`.
+bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(25)` and `(45)` share one missing tool — the absolutely convergent product-fibre interchange
+`∑'_{(m,k)} F(m,k) = ∑'_N ∑_{d|N} F(d, N/d)` — which is the next thing to build.  `H_∩` and `Z`
+already exist as `RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonLM`.
 
 ## Gates
 

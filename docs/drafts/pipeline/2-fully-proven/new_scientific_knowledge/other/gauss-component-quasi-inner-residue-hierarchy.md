@@ -860,3 +860,36 @@ translation-invariance argument is needed.
 
 The iterated principal action itself: `G(e_n f) = p|d_n|² e_n (a_(δ_n) f + o(1))` and its `m`-fold
 iterate `⟨G^m e_n, e_n⟩ = p^m |d_n|^(2m) (A_m(δ_n) + o(1))`.
+
+## Lean status, sixteenth pass: both halves of the one-step action
+
+`RHTower/GaussUniformTranslationL2.lean`, extended; unconditional, wired, built.
+
+```text
+gaussRotationBlockInv δ                              : the multiplier e_j(δ)
+gaussShiftedBlockDiag hm k p n u                     : (d_n)^(-1) e_(-n) D (e_n u)
+fourierCoeff_gaussShiftedBlockDiag                   : d_(n+j)·û(j)/d_n
+norm_fourierCoeff_shiftedBlockDiag_sub_rotationInv   : ‖coeff difference‖ = ‖û(j)‖·‖defect_j(n)‖
+tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv   : ‖shifted block - inverse rotation‖ → 0
+```
+
+Both halves of the one-step action of §4 are now available in uniform form:
+
+```text
+D* : (conj d_n)^(-1) e_(-n) D* (e_n u)  →  R_(δ_n) u
+D  : (d_n)^(-1)      e_(-n) D  (e_n u)  →  R_(δ_n)^(-1) u
+```
+
+for every amplitude with `A/(1+|j|)` coefficient decay, with a rate depending only on `A`.  The
+unconjugated case is the simpler one: its coefficient difference is `û(j)·defect_j(n)` with no
+conjugation at all.
+
+Chaining them through the multiplication operators gives the card's (10),
+
+```text
+G(e_n f) = p |d_n|² e_n ( b · R_(δ)^(-1)( b^(-2) · R_(δ)(b f) ) + o(1) )
+         = p |d_n|² e_n ( a_(δ_n) f + o(1) ),
+```
+
+the last equality because `R_δ` is translation by `δ` and `b² = s_p`, so
+`b · (b^(-2) ∘ shift)(b f) = s_p/s_p(·+δ) · f = a_δ f`.

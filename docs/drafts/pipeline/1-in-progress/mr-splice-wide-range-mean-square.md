@@ -3860,3 +3860,62 @@ cancellation, bounded error does not — is the reason the split works at all.
 ### What is left
 
 The turning point of `B − A`, the numerical assembly, and the averaged Chowla theorem.
+
+## 2026-08-10 the bounded error costs nothing
+
+`Sieve/ErrorShiftSum.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9050 jobs).
+
+```text
+abs_error_shift_sum_le :  |e| ≤ E,  |g| ≤ 1  →
+  | ∑_{k=1}^{K} ∑_{i<N} e(k,i)·g(k,i) | ≤ E·K·N
+```
+
+The counterpart to `abs_shift_sum_le`.  For the fibre kernel `E = 2`, `K ≍ 2h`, `N ≍ √x`, so the
+error contributes `O(h√x)` — a factor `h` below the target `o(h²√x)`.
+
+Both halves of the smooth/error split now have their bound:
+
+| part | size | needs |
+|---|---|---|
+| smooth, `kernelSmooth` | variation `O(h)` | correlation cancellation (`abs_shift_sum_le`) |
+| error, `|e| ≤ 2` | `O(h√x)` trivially | nothing (`abs_error_shift_sum_le`) |
+
+The asymmetry is the point: a weight of size `O(h)` must be paid for with cancellation, a weight of
+size `O(1)` need not.  Splitting the kernel converts an object with variation `≍ √x` — hopeless for
+Abel summation — into one that is `O(h)` in variation plus one that is `O(1)` in size.
+
+### What is left
+
+The turning point of `B − A`, the numerical assembly of the two halves, and the averaged Chowla
+theorem.
+
+## 2026-08-10 the turning point exists — concavity is all it takes
+
+`Sieve/ConcaveSignSegment.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9051 jobs).
+
+```text
+increment_antitone :  concave  →  the increments are nonincreasing
+neg_of_concave_of_neg :  concave,  P(0) ≥ 0,  P(n) < 0  →  ∀ m ≥ n, P(m) < 0
+```
+
+The sign of the smooth kernel's increment is governed by
+
+```text
+P(n) = x(n+k)(n+1+k) − (x + h√x)·n(n+1) = −h√x·n² + (2kx − h√x)·n + xk(k+1) ,
+```
+
+a downward parabola with `P(0) = xk(k+1) > 0`.  So `{n : P(n) ≥ 0}` is an initial segment, which is
+exactly the bimonotonicity `variation_le_two_range_of_bimonotone` asks for: the smooth kernel
+increases while `P ≥ 0` and decreases after.
+
+The lemma needs nothing about parabolas — only concavity.  The increments of a concave sequence are
+nonincreasing, so once the sequence has dropped below its starting value it keeps dropping; the
+quadratic enters only to supply `P(n+2) − 2P(n+1) + P(n) = −2h√x < 0`.
+
+### What remains for `MRBilinear`
+
+The numerical assembly — instantiating `P` at the fibre kernel, checking `P(0) > 0` and the
+concavity constant, and combining the smooth and error halves — and the averaged Chowla theorem.
+Every structural ingredient is now a named unconditional theorem of this corpus.

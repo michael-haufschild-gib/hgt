@@ -259,6 +259,108 @@ theorem measurableSet_finiteSupport :
   rw [hEq]
   exact MeasurableSet.iUnion fun s => measurableSet_supportSubset s
 
+/-! ## The class map -/
+
+open Classical in
+/-- The class of a configuration, sent to the trivial class off the finitely occupied ones. -/
+noncomputable def classOf (k : AbelianZetaMode → ℕ) : AbelianZetaGroupClass :=
+  if h : (Function.support k).Finite then Finsupp.ofSupportFinite k h else 0
+
+theorem classOf_of_finite {k : AbelianZetaMode → ℕ} (hk : (Function.support k).Finite) :
+    (classOf k : AbelianZetaMode → ℕ) = k := by
+  classical
+  rw [classOf, dif_pos hk]
+  exact Finsupp.ofSupportFinite_coe
+
+theorem classOf_configuration (A : AbelianZetaGroupClass) : classOf A.configuration = A := by
+  classical
+  have hfin : (Function.support A.configuration).Finite := A.finite_occupiedSet
+  refine Finsupp.ext fun m => ?_
+  have h := classOf_of_finite hfin
+  exact congrFun h m
+
+theorem preimage_classOf (A : AbelianZetaGroupClass) :
+    classOf ⁻¹' {A}
+      = {A.configuration}
+        ∪ (if A = 0 then {k : AbelianZetaMode → ℕ | ¬ (Function.support k).Finite} else ∅) := by
+  classical
+  ext k
+  constructor
+  · intro hk
+    by_cases hfin : (Function.support k).Finite
+    · refine Or.inl ?_
+      have hval := classOf_of_finite hfin
+      have hkA : classOf k = A := hk
+      rw [hkA] at hval
+      show k = A.configuration
+      exact hval.symm
+    · refine Or.inr ?_
+      have hkA : classOf k = A := hk
+      rw [classOf, dif_neg hfin] at hkA
+      rw [if_pos hkA.symm]
+      exact hfin
+  · intro hk
+    rcases hk with hk | hk
+    · have : k = A.configuration := hk
+      show classOf k = A
+      rw [this, classOf_configuration]
+    · by_cases hA : A = 0
+      · rw [if_pos hA] at hk
+        show classOf k = A
+        rw [classOf, dif_neg hk, hA]
+      · rw [if_neg hA] at hk
+        exact absurd hk (Set.notMem_empty k)
+
+theorem measurable_classOf : Measurable classOf := by
+  classical
+  refine measurable_to_countable' fun A => ?_
+  rw [preimage_classOf A]
+  refine MeasurableSet.union (MeasurableSet.singleton _) ?_
+  by_cases hA : A = 0
+  · rw [if_pos hA]
+    exact measurableSet_finiteSupport.compl
+  · rw [if_neg hA]
+    exact MeasurableSet.empty
+
+/-! ## The class law is the pushforward of the gas -/
+
+theorem gasMeasure_infiniteSupport_null (θ : AbelianZetaConvergentParameters) :
+    θ.toAbelianZetaParameters.gasMeasure
+      {k : AbelianZetaMode → ℕ | ¬ (Function.support k).Finite} = 0 := by
+  have hone := θ.measure_finite_occupancy_eq_one
+  have hmeas : MeasurableSet {k : AbelianZetaMode → ℕ | (occupiedSet k).Finite} :=
+    measurableSet_finiteSupport
+  have hset : {k : AbelianZetaMode → ℕ | ¬ (Function.support k).Finite}
+      = {k : AbelianZetaMode → ℕ | (occupiedSet k).Finite}ᶜ := rfl
+  rw [hset, measure_compl hmeas (by
+    rw [hone]
+    exact ENNReal.one_ne_top), hone, measure_univ, tsub_self]
+
+/-- **The zeta-Gibbs law is the pushforward of the gas along the class map.** -/
+theorem classLaw_eq_map (θ : AbelianZetaConvergentParameters) :
+    classLaw θ.toAbelianZetaParameters
+      = (θ.toAbelianZetaParameters.gasMeasure).map classOf := by
+  classical
+  refine Measure.ext_of_singleton fun A => ?_
+  rw [classLaw_singleton, Measure.map_apply measurable_classOf (MeasurableSet.singleton A),
+    preimage_classOf A, abelianZetaClassMass]
+  have hnull : θ.toAbelianZetaParameters.gasMeasure
+      (if A = 0 then {k : AbelianZetaMode → ℕ | ¬ (Function.support k).Finite} else ∅) = 0 := by
+    by_cases hA : A = 0
+    · rw [if_pos hA]
+      exact gasMeasure_infiniteSupport_null θ
+    · rw [if_neg hA]
+      exact measure_empty
+  refine le_antisymm (measure_mono Set.subset_union_left) ?_
+  calc θ.toAbelianZetaParameters.gasMeasure
+        ({A.configuration} ∪ if A = 0 then
+          {k : AbelianZetaMode → ℕ | ¬ (Function.support k).Finite} else ∅)
+      ≤ θ.toAbelianZetaParameters.gasMeasure {A.configuration}
+        + θ.toAbelianZetaParameters.gasMeasure
+          (if A = 0 then {k : AbelianZetaMode → ℕ | ¬ (Function.support k).Finite} else ∅) :=
+        measure_union_le _ _
+    _ = θ.toAbelianZetaParameters.gasMeasure {A.configuration} := by rw [hnull, add_zero]
+
 end
 
 end GaloisForLFunctions.HTGeometry

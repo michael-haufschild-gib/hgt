@@ -53,9 +53,9 @@ theorem ampMap_compress {m n : Type u} [Fintype m] (φ : V →ₗ[ℂ] W) (α : 
   simp only [ampMap_apply, compress_apply, map_sum, map_smul, ampMap_apply]
 
 theorem ampMap_amplify {n : Type u} [DecidableEq n] (φ : V →ₗ[ℂ] W) (e : V) :
-    ampMap φ (amplify n e) = amplify n (φ e) := by
+    ampMap φ (amplifyUnit n e) = amplifyUnit n (φ e) := by
   ext i j
-  by_cases h : i = j <;> simp [amplify_apply, h]
+  by_cases h : i = j <;> simp [amplifyUnit_apply, h]
 
 /-! ## Compression and the involution -/
 
@@ -144,8 +144,8 @@ theorem isCompletelyPositive_iff_le_comap {φ : V →ₗ[ℂ] W}
 omit [StarAddMonoid V] [StarModule ℂ V] [StarAddMonoid W] [StarModule ℂ W] in
 /-- A completely positive map sends amplified units to amplified units of the image. -/
 theorem IsCompletelyPositive.amplify_image_mem {φ : V →ₗ[ℂ] W} (hφ : IsCompletelyPositive C D φ)
-    {n : Type u} [Fintype n] [DecidableEq n] {e : V} (he : amplify n e ∈ C n) :
-    amplify n (φ e) ∈ D n := by
+    {n : Type u} [Fintype n] [DecidableEq n] {e : V} (he : amplifyUnit n e ∈ C n) :
+    amplifyUnit n (φ e) ∈ D n := by
   have h := hφ n _ he
   rwa [ampMap_amplify] at h
 

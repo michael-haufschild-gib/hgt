@@ -40,25 +40,25 @@ variable {V : Type v} [AddCommGroup V] [Module ℂ V]
 
 /-- The `n`-th amplification `1ₙ ⊗ e` of a vector `e`, i.e. the diagonal matrix with `e` on the
 diagonal.  For an order unit `e` this is the candidate order unit of the `n`-th matrix level. -/
-def amplify (n : Type u) [DecidableEq n] (e : V) : Matrix n n V :=
+def amplifyUnit (n : Type u) [DecidableEq n] (e : V) : Matrix n n V :=
   Matrix.diagonal fun _ => e
 
 omit [Module ℂ V] in
-theorem amplify_apply {n : Type u} [DecidableEq n] (e : V) (i j : n) :
-    amplify n e i j = if i = j then e else 0 := by
-  simp [amplify, Matrix.diagonal_apply]
+theorem amplifyUnit_apply {n : Type u} [DecidableEq n] (e : V) (i j : n) :
+    amplifyUnit n e i j = if i = j then e else 0 := by
+  simp [amplifyUnit, Matrix.diagonal_apply]
 
 /-- A compression acts on an amplified vector through the scalar matrix `α* α`. -/
 theorem compress_amplify {m n : Type u} [Fintype m] [DecidableEq m] (α : Matrix m n ℂ) (e : V) :
-    compress α (amplify m e) = Matrix.of fun i j => (αᴴ * α) i j • e := by
+    compress α (amplifyUnit m e) = Matrix.of fun i j => (αᴴ * α) i j • e := by
   ext i j
   rw [compress_apply]
-  have h : ∀ b : m, (∑ a, star (α a i) • amplify m e a b) = star (α b i) • e := by
+  have h : ∀ b : m, (∑ a, star (α a i) • amplifyUnit m e a b) = star (α b i) • e := by
     intro b
     rw [Finset.sum_eq_single b]
-    · simp [amplify_apply]
+    · simp [amplifyUnit_apply]
     · intro a _ hab
-      simp [amplify_apply, hab]
+      simp [amplifyUnit_apply, hab]
     · intro hb
       exact absurd (Finset.mem_univ b) hb
   simp only [h, Matrix.of_apply, Matrix.mul_apply, Matrix.conjTranspose_apply, Finset.sum_smul,
@@ -68,10 +68,10 @@ theorem compress_amplify {m n : Type u} [Fintype m] [DecidableEq m] (α : Matrix
 /-- An isometric compression fixes the amplified vector. -/
 theorem compress_amplify_of_isometry {m n : Type u} [Fintype m] [DecidableEq m] [DecidableEq n]
     (α : Matrix m n ℂ) (hα : αᴴ * α = 1) (e : V) :
-    compress α (amplify m e) = amplify n e := by
+    compress α (amplifyUnit m e) = amplifyUnit n e := by
   rw [compress_amplify, hα]
   ext i j
-  by_cases h : i = j <;> simp [amplify_apply, Matrix.one_apply, h]
+  by_cases h : i = j <;> simp [amplifyUnit_apply, Matrix.one_apply, h]
 
 /-- Compression by a scalar multiple of the identity is multiplication by `c * conj c`. -/
 theorem compress_smul_one {n : Type u} [Fintype n] [DecidableEq n] (c : ℂ) (x : Matrix n n V) :

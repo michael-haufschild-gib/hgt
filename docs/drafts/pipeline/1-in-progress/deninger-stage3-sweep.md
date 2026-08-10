@@ -116,6 +116,10 @@ What else exists and must not be rebuilt:
 
 ## Log
 
+- 2026-08-10 — Built the canonical Möbius preimage (`RHTower/DeningerMobiusPreimage`).  The point
+  is that absolute convergence on a ray needs no cancellation in `μ` at all: pulling back along
+  `log` turns the exponential weight into two-sided power decay, and the inverse-square half alone
+  gives `‖H_h(nx)‖ ≤ (C/x²)/n²`.
 - 2026-08-10 — Built the shared `S_exp(ℝ)` layer (`RHTower/DeningerExpSchwartz`).  Realizing it as a
   *submodule of `𝓢(ℝ, ℂ)`* rather than a new structure removed the whole module/topology
   boilerplate and makes the Schwartz embedding definitional.

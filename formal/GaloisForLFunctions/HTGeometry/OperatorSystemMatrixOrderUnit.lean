@@ -179,18 +179,18 @@ omit [StarAddMonoid V] [StarModule ℂ V] in
 /-- The difference between twice the amplified unit and the two diagonal order-unit entries is a
 nonnegatively weighted diagonal tensor. -/
 theorem amplify_sub_two_unitEntry [Fintype n] (i j : n) (e : V) (τ : ℝ) :
-    ((2 * τ : ℝ) : ℂ) • amplify n e - unitEntry i i ((τ : ℂ) • e) - unitEntry j j ((τ : ℂ) • e)
+    ((2 * τ : ℝ) : ℂ) • amplifyUnit n e - unitEntry i i ((τ : ℂ) • e) - unitEntry j j ((τ : ℂ) • e)
       = Matrix.of fun a b => if a = b then
           (((2 * τ - (if a = i then τ else 0) - (if a = j then τ else 0) : ℝ)) : ℂ) • e else 0 := by
   ext a b
   by_cases hab : a = b
   · subst hab
     by_cases hai : a = i <;> by_cases haj : a = j <;>
-      simp [amplify_apply, unitEntry, hai, haj, Complex.ofReal_sub, Complex.ofReal_mul,
+      simp [amplifyUnit_apply, unitEntry, hai, haj, Complex.ofReal_sub, Complex.ofReal_mul,
         sub_smul, Complex.ofReal_ofNat]
   · have h1 : ¬(a = i ∧ b = i) := fun h => hab (h.1.trans h.2.symm)
     have h2 : ¬(a = j ∧ b = j) := fun h => hab (h.1.trans h.2.symm)
-    simp [amplify_apply, unitEntry, hab, h1, h2]
+    simp [amplifyUnit_apply, unitEntry, hab, h1, h2]
 
 /-! ## The order-unit hypothesis at the scalar level -/
 
@@ -265,25 +265,25 @@ theorem sum_mem {m : Type u} [Fintype m] {ι : Type*} {s : Finset ι} (f : ι �
 omit [StarModule ℂ V] in
 /-- The amplified unit is positive. -/
 theorem amplify_mem {m : Type u} [Fintype m] [DecidableEq m] {e : V} (he : LevelOne C e) :
-    amplify m e ∈ C m := by
+    amplifyUnit m e ∈ C m := by
   have h := hC.diagWeight_mem (fun _ : m => (1 : ℝ)) (fun _ => zero_le_one) he
-  have hEq : (Matrix.of fun a b => if a = b then (((1 : ℝ) : ℂ)) • e else 0) = amplify m e := by
-    ext a b; by_cases hab : a = b <;> simp [amplify_apply, hab]
+  have hEq : (Matrix.of fun a b => if a = b then (((1 : ℝ) : ℂ)) • e else 0) = amplifyUnit m e := by
+    ext a b; by_cases hab : a = b <;> simp [amplifyUnit_apply, hab]
   rwa [hEq] at h
 
 omit [StarModule ℂ V] in
 /-- A nonnegative multiple of the amplified unit is positive. -/
 theorem smul_amplify_mem {m : Type u} [Fintype m] [DecidableEq m] {e : V} (he : LevelOne C e)
-    {c : ℝ} (hc : 0 ≤ c) : (c : ℂ) • amplify m e ∈ C m := by
+    {c : ℝ} (hc : 0 ≤ c) : (c : ℂ) • amplifyUnit m e ∈ C m := by
   have h := hC.diagWeight_mem (fun _ : m => c) (fun _ => hc) he
-  have hEq : (Matrix.of fun a b => if a = b then ((c : ℂ)) • e else 0) = (c : ℂ) • amplify m e := by
-    ext a b; by_cases hab : a = b <;> simp [amplify_apply, hab]
+  have hEq : (Matrix.of fun a b => if a = b then ((c : ℂ)) • e else 0) = (c : ℂ) • amplifyUnit m e := by
+    ext a b; by_cases hab : a = b <;> simp [amplifyUnit_apply, hab]
   rwa [hEq] at h
 
 /-- **Every symmetrised entry pair of a self-adjoint matrix is dominated by the amplified unit.** -/
 theorem pairTerm_bound {m : Type u} [Fintype m] [DecidableEq m] {e : V}
     (he : IsOrderUnitLevelOne C e) (x : Matrix m m V) (hx : xᴴ = x) (i j : m) :
-    ∃ τ : ℝ, 0 ≤ τ ∧ (τ : ℂ) • amplify m e - pairTerm x i j ∈ C m := by
+    ∃ τ : ℝ, 0 ≤ τ ∧ (τ : ℂ) • amplifyUnit m e - pairTerm x i j ∈ C m := by
   have hji : x j i = star (x i j) := by
     have h := congrFun (congrFun hx j) i
     simpa [Matrix.conjTranspose_apply] using h.symm
@@ -306,10 +306,10 @@ theorem pairTerm_bound {m : Type u} [Fintype m] [DecidableEq m] {e : V}
         · rw [if_neg hai]; linarith) he.pos
     rw [← amplify_sub_two_unitEntry i i e t] at hd
     have h3 := hC.add_mem m _ hd _ h2
-    have hEq : (((2 * t : ℝ) : ℂ) • amplify m e - unitEntry i i ((t : ℂ) • e)
+    have hEq : (((2 * t : ℝ) : ℂ) • amplifyUnit m e - unitEntry i i ((t : ℂ) • e)
           - unitEntry i i ((t : ℂ) • e))
         + (unitEntry i i ((t : ℂ) • e - x i i) + unitEntry i i ((t : ℂ) • e - x i i))
-        = ((2 * t : ℝ) : ℂ) • amplify m e - pairTerm x i i := by
+        = ((2 * t : ℝ) : ℂ) • amplifyUnit m e - pairTerm x i i := by
       simp only [pairTerm, unitEntry_sub]
       abel
     rwa [hEq] at h3
@@ -336,11 +336,11 @@ theorem pairTerm_bound {m : Type u} [Fintype m] [DecidableEq m] {e : V}
           · rw [if_neg haj]; linarith) he.pos
     rw [← amplify_sub_two_unitEntry i j e (t + s)] at hd
     have h5 := hC.add_mem m _ hd _ hhalf
-    have hEq : (((2 * (t + s) : ℝ) : ℂ) • amplify m e - unitEntry i i (((t + s : ℝ) : ℂ) • e)
+    have hEq : (((2 * (t + s) : ℝ) : ℂ) • amplifyUnit m e - unitEntry i i (((t + s : ℝ) : ℂ) • e)
           - unitEntry j j (((t + s : ℝ) : ℂ) • e))
         + (unitEntry i i (((t + s : ℝ) : ℂ) • e) + unitEntry j j (((t + s : ℝ) : ℂ) • e)
           - unitEntry i j (x i j) - unitEntry j i (x j i))
-        = ((2 * (t + s) : ℝ) : ℂ) • amplify m e - pairTerm x i j := by
+        = ((2 * (t + s) : ℝ) : ℂ) • amplifyUnit m e - pairTerm x i j := by
       simp only [pairTerm]
       abel
     rwa [hEq] at h5
@@ -348,28 +348,28 @@ theorem pairTerm_bound {m : Type u} [Fintype m] [DecidableEq m] {e : V}
 /-- One-sided form of the matrix order unit property. -/
 theorem exists_amplify_sub_mem {m : Type u} [Fintype m] [DecidableEq m] {e : V}
     (he : IsOrderUnitLevelOne C e) (x : Matrix m m V) (hx : xᴴ = x) :
-    ∃ T : ℝ, 0 < T ∧ (T : ℂ) • amplify m e - x ∈ C m := by
+    ∃ T : ℝ, 0 < T ∧ (T : ℂ) • amplifyUnit m e - x ∈ C m := by
   classical
   choose τ hτ0 hτ using fun p : m × m => hC.pairTerm_bound he x hx p.1 p.2
-  have hsum : (∑ p : m × m, ((τ p : ℂ) • amplify m e - pairTerm x p.1 p.2)) ∈ C m :=
+  have hsum : (∑ p : m × m, ((τ p : ℂ) • amplifyUnit m e - pairTerm x p.1 p.2)) ∈ C m :=
     hC.sum_mem _ fun p _ => hτ p
-  have hEq : (∑ p : m × m, ((τ p : ℂ) • amplify m e - pairTerm x p.1 p.2))
-      = ((∑ p : m × m, τ p : ℝ) : ℂ) • amplify m e - (x + x) := by
+  have hEq : (∑ p : m × m, ((τ p : ℂ) • amplifyUnit m e - pairTerm x p.1 p.2))
+      = ((∑ p : m × m, τ p : ℝ) : ℂ) • amplifyUnit m e - (x + x) := by
     rw [Finset.sum_sub_distrib, sum_pairTerm, ← Finset.sum_smul, Complex.ofReal_sum]
   rw [hEq] at hsum
   have hhalf := hC.smul_mem m 2⁻¹ (by norm_num) hsum
   have hEq2 : (((2⁻¹ : ℝ)) : ℂ) •
-        (((∑ p : m × m, τ p : ℝ) : ℂ) • amplify m e - (x + x))
-      = (((∑ p : m × m, τ p) / 2 : ℝ) : ℂ) • amplify m e - x := by
+        (((∑ p : m × m, τ p : ℝ) : ℂ) • amplifyUnit m e - (x + x))
+      = (((∑ p : m × m, τ p) / 2 : ℝ) : ℂ) • amplifyUnit m e - x := by
     push_cast
     module
   rw [hEq2] at hhalf
   have hnn : 0 ≤ ∑ p : m × m, τ p := Finset.sum_nonneg fun p _ => hτ0 p
   refine ⟨(∑ p : m × m, τ p) / 2 + 1, by linarith, ?_⟩
   have hadd := hC.add_mem m _ hhalf _ (hC.smul_amplify_mem he.pos (zero_le_one (α := ℝ)))
-  have hEq3 : ((((∑ p : m × m, τ p) / 2 : ℝ) : ℂ) • amplify m e - x)
-        + (((1 : ℝ)) : ℂ) • amplify m e
-      = ((((∑ p : m × m, τ p) / 2 + 1 : ℝ)) : ℂ) • amplify m e - x := by
+  have hEq3 : ((((∑ p : m × m, τ p) / 2 : ℝ) : ℂ) • amplifyUnit m e - x)
+        + (((1 : ℝ)) : ℂ) • amplifyUnit m e
+      = ((((∑ p : m × m, τ p) / 2 + 1 : ℝ)) : ℂ) • amplifyUnit m e - x := by
     push_cast
     module
   rwa [hEq3] at hadd
@@ -379,19 +379,19 @@ level and every self-adjoint element there is a positive multiple of the amplifi
 it on both sides. -/
 theorem isMatrixOrderUnit_of_levelOne {m : Type u} [Fintype m] [DecidableEq m] {e : V}
     (he : IsOrderUnitLevelOne C e) (x : Matrix m m V) (hx : xᴴ = x) :
-    ∃ T : ℝ, 0 < T ∧ (T : ℂ) • amplify m e - x ∈ C m ∧ (T : ℂ) • amplify m e + x ∈ C m := by
+    ∃ T : ℝ, 0 < T ∧ (T : ℂ) • amplifyUnit m e - x ∈ C m ∧ (T : ℂ) • amplifyUnit m e + x ∈ C m := by
   obtain ⟨T₁, hT₁, h₁⟩ := hC.exists_amplify_sub_mem he x hx
   obtain ⟨T₂, hT₂, h₂⟩ := hC.exists_amplify_sub_mem he (-x) (by rw [Matrix.conjTranspose_neg, hx])
   refine ⟨T₁ + T₂, by linarith, ?_, ?_⟩
   · have hadd := hC.add_mem m _ h₁ _ (hC.smul_amplify_mem he.pos hT₂.le)
-    have hEq : ((T₁ : ℂ) • amplify m e - x) + (T₂ : ℂ) • amplify m e
-        = ((T₁ + T₂ : ℝ) : ℂ) • amplify m e - x := by
+    have hEq : ((T₁ : ℂ) • amplifyUnit m e - x) + (T₂ : ℂ) • amplifyUnit m e
+        = ((T₁ + T₂ : ℝ) : ℂ) • amplifyUnit m e - x := by
       push_cast
       module
     rwa [hEq] at hadd
   · have hadd := hC.add_mem m _ h₂ _ (hC.smul_amplify_mem he.pos hT₁.le)
-    have hEq : ((T₂ : ℂ) • amplify m e - -x) + (T₁ : ℂ) • amplify m e
-        = ((T₁ + T₂ : ℝ) : ℂ) • amplify m e + x := by
+    have hEq : ((T₂ : ℂ) • amplifyUnit m e - -x) + (T₁ : ℂ) • amplifyUnit m e
+        = ((T₁ + T₂ : ℝ) : ℂ) • amplifyUnit m e + x := by
       push_cast
       module
     rwa [hEq] at hadd

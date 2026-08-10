@@ -2390,6 +2390,7 @@ import GaloisForLFunctions.RHTower.GaussComponentVerticalMagnitude
 import GaloisForLFunctions.RHTower.GaussComponentVerticalPhase
 import GaloisForLFunctions.RHTower.GaussPrimeScaleFourier
 import GaloisForLFunctions.RHTower.GaussPrimeScaleOperator
+import GaloisForLFunctions.RHTower.GaussRotationIsTranslation
 import GaloisForLFunctions.RHTower.GaussQuasiInnerBlocks
 import GaloisForLFunctions.RHTower.GaussShiftedBlockCoefficients
 import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
@@ -4186,6 +4187,7 @@ import GaloisForLFunctions.RHTower.Sieve.KernelPieceMonotone
 import GaloisForLFunctions.RHTower.Sieve.VariationBimonotone
 import GaloisForLFunctions.RHTower.Sieve.KernelSmoothSplit
 import GaloisForLFunctions.RHTower.Sieve.ErrorShiftSum
+import GaloisForLFunctions.RHTower.Sieve.ConcaveSignSegment
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6780,6 +6782,7 @@ import GaloisForLFunctions.RHTower.Sieve.KernelPieceMonotone
 import GaloisForLFunctions.RHTower.Sieve.VariationBimonotone
 import GaloisForLFunctions.RHTower.Sieve.KernelSmoothSplit
 import GaloisForLFunctions.RHTower.Sieve.ErrorShiftSum
+import GaloisForLFunctions.RHTower.Sieve.ConcaveSignSegment
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
