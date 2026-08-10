@@ -261,3 +261,9 @@ RH or a completed universal field.
   Lean certification passes.  This closes one finite positivity/recurrence/history calibration but
   does not close presentation transport, cofinal primitive-degree escape, or the required three
   literal corpus realizations.
+- 2026-08-10 — full 2,187-line frontier reread rejected bare finite-to-cofinal quantifier exchange
+  as already covered and isolated grammar escape as the sharper law.  ULF-SELM-4 proves an explicit
+  cofinal family whose primitive degree is `k-1` at aperture `k`; every bounded grammar fails at a
+  later aperture.  Lean certification passes.  This supplies the first exact positive model of
+  unbounded primitive genesis, but no live route is credited until it constructs a literal
+  source-normal primitive spectrum and transition maps.

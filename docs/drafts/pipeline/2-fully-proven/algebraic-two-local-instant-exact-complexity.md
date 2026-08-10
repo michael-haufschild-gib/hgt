@@ -1389,3 +1389,51 @@ The conclusion then carries the expected fixed extra factor: `∃ q d ≠ 0 in A
 - the `scaleRoots` step above; then the global statement over the finitely many bad primes;
 - Hilbert irreducibility;
 - Tarski–Seidenberg (§4).
+
+## Eisenstein's theorem on algebraic power series — complete (2026-08-10)
+
+`HTGeometry/EisensteinScaling.lean` (new, in the umbrella, axiom-clean) removes the last
+hypothesis.  The theorem now reads, with **no condition on the root beyond being a root**:
+
+> **`exists_coeff_mem_of_isRoot_of_frac`.**  Let `A` be a subring of a field `K` whose
+> fraction field is `K`, let `F` be a polynomial whose coefficients are power series with
+> coefficients in `A`, and let `y ∈ K⟦t⟧` satisfy `F.eval y = 0` with `F′(y)` vanishing to
+> order exactly `r` (any `r ≥ 0`).  Then there are nonzero `q, D ∈ A` with
+>
+> `D · q^{2N} · y_N ∈ A`  for every `N`.
+
+That is Eisenstein's theorem in its classical form: the denominators of an algebraic power
+series grow at most geometrically.  Neither mathlib nor the corpus had it.
+
+**The trick that avoids a characteristic hypothesis.**  The finitely many coefficients
+`y_0, …, y_{2r}` are cleared by one `D ∈ A` (`exists_common_denominator`, a product over
+`Finset.range`).  One then has a choice: scale the *root* or scale the *polynomial*.  Scaling
+the root — `Polynomial.scaleRoots` — needs `deg (derivative F) = deg F − 1` to transport the
+derivative data, hence characteristic zero and a degree side condition.  Scaling the
+polynomial by the constant `(C D)^{deg F}` needs neither: multiplying by a nonzero constant
+changes neither the roots nor the order of vanishing of the derivative, and
+`coeffMem_C_pow_mul_eval` shows `(C D)^m · P.eval w ∈ A` whenever `P` has `A`-coefficients,
+`D·w` is `A`-integral, and `m ≥ deg P` — because `(C D)^m = (C D)^{m−j}·(C D)^j` splits the
+scalar across the `j`-th monomial.
+
+Supporting: `coeffMem_mul`, `coeffMem_pow`, `coeffMem_C_pow`, `coeffMem_C_pow_mul_taylor`,
+`coeffMem_C_pow_mul_defectPoly`, `exists_common_denominator`, and the two case theorems
+`exists_coeff_mem_of_isRoot_of_zero_defect_of_frac` / `..._of_pos_defect_of_frac`.
+
+### Where the Hilbert-irreducibility chain stands
+
+```text
+HIT  ←  Eisenstein's theorem on algebraic power series   ← BUILT (this entry)
+     ←  Newton–Puiseux                                   ← BUILT
+     ←  Newton polygon                                   ← BUILT
+     ←  Hensel factorisation / Newton–Rychlik            ← BUILT
+```
+
+Every input below HIT is now formalized.  What remains is HIT itself: the specialisation
+argument that uses the geometric denominator bound to force a branch that takes rational
+values at infinitely many integers to be a rational function.
+
+### Remaining Lean layers for the card
+
+- Hilbert irreducibility, on top of the finished chain;
+- Tarski–Seidenberg (§4).

@@ -201,6 +201,68 @@ theorem fisherDeconvolvedComparisonWeight_pos (t : ℝ) (p : Nat.Primes) :
   rw [fisherDeconvolvedComparisonWeight]
   positivity
 
+/-- Relative transport between the two normalized orientations.  Unlike either orientation
+separately, this ratio removes the additive Euler occupancy term and exposes the literal signed
+prime modular character. -/
+def fisherDeconvolvedRelativeOrientationCharacter
+    (t : ℝ) (p : Nat.Primes) : ℝ :=
+  fisherDeconvolvedComparisonWeight t p /
+    fisherDeconvolvedComparisonWeight (-t) p
+
+/-- **Relative-orientation character law.**  Dividing the forward normalized transport by its
+reflected transport leaves exactly `p⁻ᵗ`, prime by prime.  Thus the remaining same-carrier
+producer can equivalently be sought as triviality of a source-derived positive character. -/
+theorem fisherDeconvolvedRelativeOrientationCharacter_eq_rpow
+    (t : ℝ) (p : Nat.Primes) :
+    fisherDeconvolvedRelativeOrientationCharacter t p = (p : ℝ) ^ (-t) := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast p.2.pos
+  have hcancel : (p : ℝ) ^ (-t) * (p : ℝ) ^ t = 1 := by
+    rw [← Real.rpow_add hp0]
+    norm_num
+  rw [fisherDeconvolvedRelativeOrientationCharacter,
+    fisherDeconvolvedComparisonWeight, fisherDeconvolvedComparisonWeight]
+  apply (div_eq_iff (by positivity)).2
+  simp only [neg_neg, mul_add, mul_one]
+  rw [hcancel]
+  ring
+
+/-- The relative character is multiplicative in horizontal grade. -/
+theorem fisherDeconvolvedRelativeOrientationCharacter_add
+    (t u : ℝ) (p : Nat.Primes) :
+    fisherDeconvolvedRelativeOrientationCharacter (t + u) p =
+      fisherDeconvolvedRelativeOrientationCharacter t p *
+        fisherDeconvolvedRelativeOrientationCharacter u p := by
+  rw [fisherDeconvolvedRelativeOrientationCharacter_eq_rpow,
+    fisherDeconvolvedRelativeOrientationCharacter_eq_rpow,
+    fisherDeconvolvedRelativeOrientationCharacter_eq_rpow,
+    ← Real.rpow_add (by exact_mod_cast p.2.pos : (0 : ℝ) < p)]
+  congr 1
+  ring
+
+/-- Reflection inverts the relative modular character. -/
+theorem fisherDeconvolvedRelativeOrientationCharacter_reflection_mul
+    (t : ℝ) (p : Nat.Primes) :
+    fisherDeconvolvedRelativeOrientationCharacter (-t) p *
+        fisherDeconvolvedRelativeOrientationCharacter t p = 1 := by
+  rw [← fisherDeconvolvedRelativeOrientationCharacter_add, neg_add_cancel,
+    fisherDeconvolvedRelativeOrientationCharacter_eq_rpow]
+  norm_num
+
+/-- One retained ordinary-prime label already detects triviality of the relative character. -/
+theorem fisherDeconvolvedRelativeOrientationCharacter_eq_one_iff
+    (t : ℝ) (p : Nat.Primes) :
+    fisherDeconvolvedRelativeOrientationCharacter t p = 1 ↔ t = 0 := by
+  rw [fisherDeconvolvedRelativeOrientationCharacter_eq_rpow,
+    ← Real.rpow_zero (p : ℝ)]
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast p.2.one_lt
+  constructor
+  · intro h
+    have hexponent : -t = 0 :=
+      (Real.strictMono_rpow_of_base_gt_one hp1).injective h
+    linarith
+  · rintro rfl
+    norm_num
+
 /-- In the nonnegative horizontal chamber, normalized coefficients are uniformly bounded by
 two. -/
 theorem fisherDeconvolvedComparisonWeight_isBounded_of_nonneg

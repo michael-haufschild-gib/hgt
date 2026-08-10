@@ -49,6 +49,10 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
 11. `killedFreedom_eq_bot_of_rel_eq` — **pure question creation**: `R' = R ⟹ K = 0`.
 12. `createdFreedom_eq_bot_of_pot_eq` — **pure relation creation**: `P' = P ⟹ C = 0`.
 13. `killedFreedom_of_le` — in the pure-relation phase, `K = R'/R`.
+13b. `prodSubsingletonEquiv`, `pureQuestionPhaseEquiv`, `pureRelationPhaseEquiv` — **card §4**, the
+    two pure phases as isomorphisms rather than dimension counts: with no relation added,
+    `F' ≅ F ⊕ C`; with no potential added, `F ≅ F' ⊕ K`, which is the card's `F' = F/K`.  Items 11
+    and 12 give only the vanishing of the third term.
 14. `trivial_event`, `coupled_event` — two configurations with the same net increment
     `dim F' − dim F = 0`, one with `(dim K, dim C) = (0,0)` and one with `(1,1)`.  This is the
     card's §5 statement that the intermediate killed/created objects are not recoverable from the

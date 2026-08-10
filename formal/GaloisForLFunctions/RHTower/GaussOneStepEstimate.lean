@@ -116,19 +116,19 @@ theorem norm_gaussQuasiInnerG_sub_movingAmplitude_le {m : ℕ} (hm : 1 ≤ m) (k
 /-- **Equation (10), for a family of amplitudes.**  Only common decay constants for the two
 intermediate stages are required; the amplitude itself may move with the index.  This is the form
 the iteration needs, because the amplitude produced by one step depends on `n` through `δ_n`. -/
-theorem tendsto_gaussOneStep_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
+theorem tendsto_gaussOneStep_powFamily {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
     (hp : (1 : ℝ) < (p : ℝ)) {ι : ℕ → ℤ}
     (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop)
     (f : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))))
-    {A₁ A₂ : ℝ}
+    {A₁ A₂ θ : ℝ} (hθ : 1 / 2 < θ)
     (h1 : ∀ (n : ℕ) (j : ℤ),
       ‖fourierCoeff ((gaussPrimeScaleBlock hp (f n) : AddCircle (1 : ℝ) → ℂ)) j‖
-        ≤ A₁ / (1 + (j.natAbs : ℝ)))
+        ≤ A₁ / (1 + (j.natAbs : ℝ)) ^ θ)
     (h2 : ∀ (n : ℕ) (j : ℤ),
       ‖fourierCoeff ((gaussPrimeScaleInvSqBlock hp
           (gaussTranslationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
             (gaussPrimeScaleBlock hp (f n))) : AddCircle (1 : ℝ) → ℂ)) j‖
-        ≤ A₂ / (1 + (j.natAbs : ℝ))) :
+        ≤ A₂ / (1 + (j.natAbs : ℝ)) ^ θ) :
     Tendsto (fun n : ℕ =>
       ‖gaussQuasiInnerG hm k p (fourierMulBlock (ι n) (f n)) -
         (((p : ℝ) : ℂ) *
@@ -143,8 +143,8 @@ theorem tendsto_gaussOneStep_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Na
       ‖gaussShiftedBlockOf hm k p (ι n) (gaussPrimeScaleBlock hp (f n)) -
         gaussTranslationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
           (gaussPrimeScaleBlock hp (f n))‖) atTop (nhds 0) := by
-    have h := tendsto_norm_gaussShiftedBlockOf_sub_rotation_family hm k p hι
-      (fun n : ℕ => gaussPrimeScaleBlock hp (f n)) h1
+    have h := tendsto_norm_gaussShiftedBlockOf_sub_rotation_powFamily hm k p hι
+      (fun n : ℕ => gaussPrimeScaleBlock hp (f n)) hθ h1
     refine h.congr fun n => ?_
     rw [gaussRotationBlock_eq_translation]
   have hE2 : Tendsto (fun n : ℕ =>
@@ -156,10 +156,10 @@ theorem tendsto_gaussOneStep_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Na
           (gaussPrimeScaleInvSqBlock hp
             (gaussTranslationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
               (gaussPrimeScaleBlock hp (f n))))‖) atTop (nhds 0) := by
-    have h := tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family hm k p hι
+    have h := tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_powFamily hm k p hι
       (fun n : ℕ => gaussPrimeScaleInvSqBlock hp
         (gaussTranslationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
-          (gaussPrimeScaleBlock hp (f n)))) h2
+          (gaussPrimeScaleBlock hp (f n)))) hθ h2
     refine h.congr fun n => ?_
     rw [gaussRotationBlockInv_eq_translation]
   have hdom : Tendsto (fun n : ℕ =>
@@ -202,6 +202,32 @@ theorem tendsto_gaussOneStep_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Na
   rw [mul_add]
   exact add_le_add (mul_le_mul_of_nonneg_right hfac (norm_nonneg _))
     (mul_le_mul_of_nonneg_right hfac (norm_nonneg _))
+
+/-- **Equation (10), for a family of amplitudes**, at decay exponent one. -/
+theorem tendsto_gaussOneStep_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
+    (hp : (1 : ℝ) < (p : ℝ)) {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop)
+    (f : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))))
+    {A₁ A₂ : ℝ}
+    (h1 : ∀ (n : ℕ) (j : ℤ),
+      ‖fourierCoeff ((gaussPrimeScaleBlock hp (f n) : AddCircle (1 : ℝ) → ℂ)) j‖
+        ≤ A₁ / (1 + (j.natAbs : ℝ)))
+    (h2 : ∀ (n : ℕ) (j : ℤ),
+      ‖fourierCoeff ((gaussPrimeScaleInvSqBlock hp
+          (gaussTranslationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ))
+            (gaussPrimeScaleBlock hp (f n))) : AddCircle (1 : ℝ) → ℂ)) j‖
+        ≤ A₂ / (1 + (j.natAbs : ℝ))) :
+    Tendsto (fun n : ℕ =>
+      ‖gaussQuasiInnerG hm k p (fourierMulBlock (ι n) (f n)) -
+        (((p : ℝ) : ℂ) *
+            (starRingEnd ℂ (gaussSampleValue k p (ι n)) * gaussSampleValue k p (ι n))) •
+          fourierMulBlock (ι n)
+            (gaussMovingAmplitudeBlock hp
+              ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (f n))‖)
+      atTop (nhds 0) :=
+  tendsto_gaussOneStep_powFamily hm k p hp hι f (A₁ := A₁) (A₂ := A₂) (θ := 1) (by norm_num)
+    (fun n j => by rw [Real.rpow_one]; exact h1 n j)
+    (fun n j => by rw [Real.rpow_one]; exact h2 n j)
 
 /-- **Equation (10).**  For an amplitude whose two intermediate stages carry decay constants, the
 quasi-inner block acts on the twisted amplitude as multiplication by the moving amplitude, up to an

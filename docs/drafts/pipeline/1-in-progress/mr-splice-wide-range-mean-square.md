@@ -5029,3 +5029,89 @@ Huxley–Montgomery large-values bound gives `≪ λ^{−2} + Tλ^{−6}M^{−3}
 borderline with no `ε`, which is precisely the Halász deficit recorded on unit 4.  So units 28–29
 narrow the residue from `1/log M ≲ T ≲ M` to `δ^{−2/3} ≲ T ≲ M` and identify it, unambiguously, as
 the Halász mean value theorem and nothing else.
+
+---
+
+## Unit 30 — the Möbius polynomial as a bilinear form in a designated prime
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamarePhaseBilinear.lean`
+
+The corpus's multiplicative Ramaré split (`RamareBilinearSplit`, `RamareDecomposition`) is stated
+for a **real** weight and for a plain sum.  Matomäki–Radziwiłł needs it for the *Dirichlet
+polynomial*.  The Gallagher phase is completely multiplicative on positive integers, so it rides
+through the whole decomposition:
+
+```text
+unitLogPhase_mul       :  (a·b)^{2πiw} = a^{2πiw}·b^{2πiw}          (a, b ≠ 0)
+moebiusPhase w n       :=  μ(n)·n^{2πiw}
+moebiusPhase_mul_of_coprime :  moebiusPhase is multiplicative on coprimes   (μ(0) = 0 covers 0)
+sum_ramare_bilinear_split_complex,  norm_ramare_remainder_le_complex,
+norm_ramare_inner_sub_bilinear_le_complex
+```
+
+and the capstone
+
+```text
+norm_logPoly_moebius_sub_ramare_bilinear_le :
+  ‖ ∑_{n ∈ s} μ(n)n^{2πiw}
+      − ∑_{p ∈ P} ( μ(p)p^{2πiw} )·( ∑_{m ∈ cof(s,p), p ∤ m} (μ(m)/(ω_P(m)+1))·m^{2πiw} ) ‖
+    ≤ ∑_{p ∈ P} #{ m ∈ cof(s,p) : p ∣ m }  +  #{ n ∈ s : ω_P(n) = 0 } .
+```
+
+The first factor is a **prime-supported** Dirichlet polynomial — the object for which the corpus
+already owns the sharp near-diagonal weight `q/log q` (`PrimeWindowSharpLevel`) — and the second is
+a cofactor polynomial of length `|s|/p`.  This is exactly the shape `DirichletConvSplit` consumes.
+
+## Unit 31 — the square-multiple error is negligible
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamarePhaseError.lean`
+
+A cofactor still divisible by its designated prime comes from a multiple of `p²`:
+
+```text
+card_ramareCofactorSet_filter_dvd_le : #{m ∈ cof(s,p) : p ∣ m} ≤ #{n ∈ s : p² ∣ n}
+card_Icc_filter_dvd                  : #{n ∈ [1,M] : d ∣ n} = ⌊M/d⌋
+norm_logPoly_moebius_Icc_sub_ramare_bilinear_le :
+    ‖ F − B ‖ ≤ M·∑_{p ∈ P} p^{-2}  +  #rough .
+```
+
+Over a dyadic range `P ⊂ [Q, 2Q]` the first error is `O(M/(Q log Q))` — a full power of the prime
+scale below `M`.  **Only the rough count is at stake.**
+
+## Unit 32 — how the errors are actually paid: mean square, not pointwise
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamareBilinearMeanSquare.lean`,
+`formal/GaloisForLFunctions/RHTower/Sieve/SupportMeanSquare.lean`
+
+The crude bridge `‖F‖² ≤ 2‖B‖² + 2‖F−B‖²` gives
+
+```text
+integral_Icc_normSq_logPoly_moebius_le_bilinear :
+    ∫_{|w| ≤ T}‖F‖² ≤ 2∫_{|w| ≤ T}‖B‖² + 4T·E² ,
+```
+
+and this **cannot** be the route for the rough term: `E ≍ #rough ≍ M` makes `4TE² ≍ TM²`, far above
+the budget `50MT + εM²`.  The error must be paid as a *mean square*, where its cardinality enters
+linearly rather than quadratically:
+
+```text
+integral_Icc_normSq_logPoly_le_support  (0 ∉ s ⊆ [1,M], ‖a‖ ≤ 1, W ≥ 1) :
+    ∫_{|w| ≤ W} ‖ ∑_{n ∈ s} a(n)n^{2πiw} ‖² dw  ≤  ( (5π/2)·W + (5e/2)·M )·#s
+integral_Icc_normSq_roughPoly_le :  the same at the rough set of `P` in `[1,M]`.
+```
+
+Proof: the corpus's `integral_Icc_normSq_logPoly_le_general` at the matching window `δ = 1/(2πW)`,
+with `e^δ − e^{-δ} ≤ 2δe` (from `1 − e^{-2δ} ≤ 2δ`) and the count relaxed to `#s`.
+
+**The architecture this fixes.**  Against the budget `50MT + εM²`:
+
+| piece | mean square | budget verdict |
+|---|---|---|
+| rough polynomial | `(5π/2)T·#rough + (5e/2)M·#rough` | needs **`#rough = o(M)`** |
+| square-multiple polynomial | `((5π/2)T + (5e/2)M)·M∑_p p^{-2}` | free once `Q ≥ 1/ε` |
+| bilinear form `B` | — | the residue |
+
+So the pointwise error bound of unit 30 is *not* the quantity to make small; its **support size** is.
+That is why a single dyadic prime range never suffices (`#rough ≍ M(1 − log 2/log Q)`), and why the
+Matomäki–Radziwiłł argument iterates over many prime scales — the rough density is a product
+`∏_j (1 − log(1+η_j)/log Q_j)`, which tends to `0` exactly when `∑_j 1/log Q_j → ∞`.

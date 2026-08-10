@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.CriticalSchurNormalFibreReduction
 import GaloisForLFunctions.HTGeometry.CriticalSchurValuationDVR
 import Mathlib.NumberTheory.RamificationInertia.Galois
 import Mathlib.RingTheory.DedekindDomain.IntegralClosure
+import Mathlib.RingTheory.Localization.LocalizationLocalization
+import Mathlib.RingTheory.Valuation.LocalSubring
 
 /-!
 # Integral-closure model of the actual Schur place
@@ -251,6 +253,98 @@ theorem criticalSchurNormalIntegralClosurePrime_isMaximal
     (criticalSchurNormalIntegralClosurePrime K hm hn).IsMaximal :=
   Ideal.IsPrime.isMaximal inferInstance
     (criticalSchurNormalIntegralClosurePrime_ne_bot K hm hn)
+
+/-- Algebra structure on the chosen upper valuation ring induced by the normal integral closure. -/
+noncomputable instance criticalSchurNormalIntegralClosureUpperAlgebra
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    Algebra (CriticalSchurNormalIntegralClosure K hm hn)
+      (criticalNormalClosureSchurValuationSubring K hm hn) :=
+  (criticalSchurNormalIntegralClosureToUpper K hm hn).toAlgebra
+
+noncomputable instance criticalSchurNormalIntegralClosureUpperScalarTower
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    IsScalarTower (CriticalSchurNormalIntegralClosure K hm hn)
+      (criticalNormalClosureSchurValuationSubring K hm hn)
+      (criticalNormalClosure K m n) :=
+  IsScalarTower.of_algebraMap_eq fun _ => rfl
+
+/-- The localization of the normal integral closure at the contracted Schur prime is canonically
+the already-chosen upper valuation ring. -/
+noncomputable def criticalSchurNormalLocalizationEquivUpper
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    Localization.AtPrime (criticalSchurNormalIntegralClosurePrime K hm hn) ≃ₐ[
+      CriticalSchurNormalIntegralClosure K hm hn]
+      criticalNormalClosureSchurValuationSubring K hm hn := by
+  let S := CriticalSchurNormalIntegralClosure K hm hn
+  let P := criticalSchurNormalIntegralClosurePrime K hm hn
+  let R := Localization.AtPrime P
+  let A := criticalNormalClosureSchurValuationSubring K hm hn
+  let ι : S →+* A := criticalSchurNormalIntegralClosureToUpper K hm hn
+  have hden (y : P.primeCompl) : IsUnit (ι (y : S)) := by
+    by_contra hy
+    apply y.property
+    change ι (y : S) ∈ IsLocalRing.maximalIdeal A
+    rw [IsLocalRing.mem_maximalIdeal]
+    exact hy
+  let φ : R →+* A := IsLocalization.lift hden
+  have hφbase (x : S) : φ (algebraMap S R x) = ι x := by
+    simp [φ]
+  letI : IsLocalHom φ := by
+    apply ((local_hom_TFAE φ).out 3 0).mp
+    rw [← IsLocalization.AtPrime.map_eq_maximalIdeal P]
+    rw [Ideal.map_le_iff_le_comap]
+    intro x hx
+    change φ (algebraMap S R x) ∈ IsLocalRing.maximalIdeal A
+    rw [hφbase]
+    exact hx
+  let g : A →+* criticalNormalClosure K m n := A.subtype
+  letI : Algebra R (criticalNormalClosure K m n) := (g.comp φ).toAlgebra
+  have hSE : ∀ x : S,
+      algebraMap S (criticalNormalClosure K m n) x =
+        algebraMap R (criticalNormalClosure K m n) (algebraMap S R x) := by
+    intro x
+    change (x : criticalNormalClosure K m n) = g (φ (algebraMap S R x))
+    rw [hφbase]
+    rfl
+  letI : IsScalarTower S R (criticalNormalClosure K m n) :=
+    IsScalarTower.of_algebraMap_eq' (by
+      ext x
+      exact hSE x)
+  letI : IsFractionRing R (criticalNormalClosure K m n) :=
+    IsFractionRing.isFractionRing_of_isDomain_of_isLocalization
+      P.primeCompl R (criticalNormalClosure K m n)
+  have hcomp : g.comp φ = algebraMap R (criticalNormalClosure K m n) := rfl
+  have hcompbij : Function.Bijective (g.rangeRestrict.comp φ) :=
+    bijective_rangeRestrict_comp_of_valuationRing
+      (R := R) (S := A) (K := criticalNormalClosure K m n) φ g hcomp
+  have hφinj : Function.Injective φ := by
+    intro x y hxy
+    apply hcompbij.1
+    exact congrArg g.rangeRestrict hxy
+  have hφsurj : Function.Surjective φ := by
+    intro a
+    obtain ⟨x, hx⟩ := hcompbij.2 (g.rangeRestrict a)
+    refine ⟨x, ?_⟩
+    apply Subtype.ext
+    change g (φ x) = g a
+    exact congrArg (fun z : g.range => (z : criticalNormalClosure K m n)) hx
+  exact
+    { RingEquiv.ofBijective φ ⟨hφinj, hφsurj⟩ with
+      commutes' := hφbase }
+
+/-- The chosen upper Schur valuation ring is the localization at its contracted integral-closure
+prime. -/
+noncomputable instance criticalSchurNormalUpper_isLocalization
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    IsLocalization
+      (criticalSchurNormalIntegralClosurePrime K hm hn).primeCompl
+      (criticalNormalClosureSchurValuationSubring K hm hn) :=
+  IsLocalization.isLocalization_of_algEquiv _
+    (criticalSchurNormalLocalizationEquivUpper K hm hn)
 
 /-- The actual normal-closure Galois group acts on the Schur integral closure. -/
 noncomputable instance criticalSchurNormalIntegralClosure_galoisAction

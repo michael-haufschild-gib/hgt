@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.HedenmalmShiftedClosedWeightedDerivative
+import GaloisForLFunctions.HTGeometry.CompactHyperplanePerturbation
 
 /-!
 # Actual cokernel line of every translated Hedenmalm derivative
@@ -276,6 +277,83 @@ theorem thetaCokernelVector_mem_orthogonal_range (α : ℂ) :
       (inner_conj_symm _ _).symm
     _ = 0 := by rw [hcore, map_zero]
     _ = inner ℂ k (0 : thetaCentered) := by simp
+
+/-! ### Exact translated range, cokernel, and Fredholm index -/
+
+/-- Every translated bounded range map has exactly the hyperplane annihilated by its concrete
+cokernel vector as range. -/
+theorem thetaShiftedRangeMap_range_eq_orthogonal (α : ℂ) :
+    LinearMap.range (thetaShiftedRangeMap α).toLinearMap =
+      (ℂ ∙ thetaCokernelVector α)ᗮ := by
+  have hcompact : IsCompactOperator (α • thetaCenteredSourceInverse) :=
+    isCompactOperator_thetaCompactSourceInverse.comp_clm
+      thetaCentered.subtypeL |>.smul α
+  have hcenterOrth : thetaCenteredᗮ = ℂ ∙ pinnedOne := by
+    rw [thetaCentered, Submodule.orthogonal_orthogonal]
+  have hrange := compact_hyperplane_perturbation_range_eq_orthogonal
+    thetaCentered thetaCentered_isClosed pinnedOne pinnedOne_ne_zero hcenterOrth
+    (α • thetaCenteredSourceInverse) hcompact
+    (by simpa only [thetaShiftedRangeMap] using thetaShiftedRangeMap_injective α)
+    (by
+      change IsClosed (Set.range (thetaCentered.subtypeL +
+        α • thetaCenteredSourceInverse))
+      simpa only [thetaShiftedRangeMap] using thetaShiftedRangeMap_isClosed_range α)
+    (thetaCokernelVector α) (thetaCokernelVector_ne_zero α)
+    (by simpa only [thetaShiftedRangeMap] using
+      thetaCokernelVector_mem_orthogonal_range α)
+  simpa only [thetaShiftedRangeMap] using hrange
+
+/-- Scalar functional whose kernel is the exact translated range. -/
+def thetaCokernelFunctional (α : ℂ) : H →L[ℂ] ℂ :=
+  innerSL ℂ (thetaCokernelVector α)
+
+theorem thetaCokernelFunctional_surjective (α : ℂ) :
+    Function.Surjective (thetaCokernelFunctional α) := by
+  intro c
+  let q : ℂ := inner ℂ (thetaCokernelVector α) (thetaCokernelVector α)
+  have hq : q ≠ 0 := inner_self_ne_zero.mpr (thetaCokernelVector_ne_zero α)
+  refine ⟨(c / q) • thetaCokernelVector α, ?_⟩
+  rw [thetaCokernelFunctional, innerSL_apply_apply, inner_smul_right]
+  exact div_mul_cancel₀ c hq
+
+theorem thetaShiftedRangeMap_range_eq_ker_cokernelFunctional (α : ℂ) :
+    LinearMap.range (thetaShiftedRangeMap α).toLinearMap =
+      LinearMap.ker (thetaCokernelFunctional α).toLinearMap := by
+  rw [thetaShiftedRangeMap_range_eq_orthogonal]
+  ext y
+  rw [Submodule.mem_orthogonal_singleton_iff_inner_right, LinearMap.mem_ker]
+  rfl
+
+theorem thetaShiftedWeightedDerivative_range_eq_ker_cokernelFunctional (α : ℂ) :
+    (thetaShiftedWeightedDerivative α).rangeSubmodule =
+      LinearMap.ker (thetaCokernelFunctional α).toLinearMap := by
+  rw [thetaShiftedWeightedDerivative_range,
+    thetaShiftedRangeMap_range_eq_ker_cokernelFunctional]
+
+theorem thetaShiftedWeightedDerivative_isFredholm (α : ℂ) :
+    (thetaShiftedWeightedDerivative α).IsFredholm := by
+  apply LinearPMap.isFredholm_of_injective_of_range_eq_ker
+    (thetaCokernelFunctional α).continuous
+    (thetaShiftedWeightedDerivative_kernel_eq_bot α)
+    (thetaCokernelFunctional_surjective α)
+    (thetaShiftedWeightedDerivative_range_eq_ker_cokernelFunctional α)
+
+theorem thetaShiftedWeightedDerivative_index_eq_neg_one (α : ℂ) :
+    (thetaShiftedWeightedDerivative α).index = -1 :=
+  LinearPMap.index_eq_neg_one_of_injective_of_range_eq_ker
+    (thetaShiftedWeightedDerivative_kernel_eq_bot α)
+    (thetaCokernelFunctional_surjective α)
+    (thetaShiftedWeightedDerivative_range_eq_ker_cokernelFunctional α)
+
+theorem thetaShiftedWeightedDerivative_adjoint_kernel (α : ℂ) :
+    (thetaShiftedWeightedDerivative α).adjoint.kernel =
+      ℂ ∙ thetaCokernelVector α := by
+  rw [LinearPMap.adjoint_kernel_eq_orthogonal_range
+    (thetaShiftedWeightedDerivative α)
+      (thetaShiftedWeightedDerivative_dense_domain α)]
+  rw [thetaShiftedWeightedDerivative_range,
+    thetaShiftedRangeMap_range_eq_orthogonal,
+    Submodule.orthogonal_orthogonal]
 
 end HedenmalmClosedWeightedDerivative
 

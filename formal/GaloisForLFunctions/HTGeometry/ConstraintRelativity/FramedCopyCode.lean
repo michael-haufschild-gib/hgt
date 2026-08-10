@@ -240,6 +240,24 @@ theorem recovery_defect_bounded {d : ℕ} (hd : 0 < d) :
   have h2 : (0 : ℝ) < (d : ℝ)⁻¹ := by positivity
   exact ⟨by linarith, by linarith⟩
 
+/-- **Theorem 5.1, general form.**  No bounded quantity can equal the wormhole length for all
+time.  The card's three fixed-code quantities — recovery defect, conditional mutual information,
+normalized Choi norm — enter only through their boundedness, so this covers each of them. -/
+theorem not_eq_wormholeLength_of_bounded {J : ℝ} (hJ : 0 < J) (f : ℝ → ℝ) (M : ℝ)
+    (hf : ∀ t, f t ≤ M) : ∃ t : ℝ, f t ≠ wormholeLength J t := by
+  obtain ⟨t, ht⟩ := wormholeLength_unbounded hJ M
+  refine ⟨t, fun h => ?_⟩
+  have := hf t
+  rw [h] at this
+  exact absurd this (not_le.2 ht)
+
+/-- **Theorem 5.1** for the recovery defect: the fixed-code defect `1 − 1/d` never equals the
+wormhole length at every time. -/
+theorem recovery_defect_ne_wormholeLength {J : ℝ} (hJ : 0 < J) {d : ℕ} (hd : 0 < d) :
+    ∃ t : ℝ, (1 - (d : ℝ)⁻¹) ≠ wormholeLength J t :=
+  not_eq_wormholeLength_of_bounded hJ (fun _ => 1 - (d : ℝ)⁻¹) 1
+    (fun _ => (recovery_defect_bounded hd).2)
+
 end WormholeNoGo
 
 end HTGeometry.ConstraintRelativity

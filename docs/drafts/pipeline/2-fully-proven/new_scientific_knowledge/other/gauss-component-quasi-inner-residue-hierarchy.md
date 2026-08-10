@@ -1796,3 +1796,39 @@ that, the interior replacement `Λ → Λ_0` for `m ≥ 2` has every input it ne
 * the reflected-band spike absorbed at `θ = 3/4` exactly when `m ≥ 2`;
 * the ratio-weighted defect estimate (`tendsto_gaussTranslationL2RatioDefectBound`);
 * the near-band ratio bound (`norm_gaussSampleRatio_le_of_near`).
+
+## Lean status, thirty-ninth pass: the defect estimate at a general decay exponent
+
+The third and last piece of the band-split generalization is in.  `GaussSampleTranslationL2.lean`,
+extended and refactored; unconditional, `[propext, Classical.choice, Quot.sound]`; the whole
+Gauss chain rebuilds through it (8883 jobs).
+
+```text
+gaussTranslationL2PowDefectBound k p A s i
+    := ∑_j A²/(1+|j|)^s · ‖defect_j(i)‖²
+tendsto_gaussTranslationL2PowDefectBound : 1 < s → bound(I) → 0
+tendsto_gaussTranslationL2Defect_of_powDecay :
+    1/2 < θ → (∀ j, ‖c j‖ ≤ A/(1+|j|)^θ) → ∑_j ‖c j‖² ‖defect_j(I)‖² → 0
+```
+
+Both quadratic statements are now **corollaries**, their former proofs deleted:
+`tendsto_gaussTranslationL2DefectBound` is the case `s = 2` and
+`tendsto_gaussTranslationL2Defect_of_decay` is the case `θ = 1`.  Nothing in the chain changed
+otherwise, which the rebuild confirms.
+
+### The `m ≥ 2` route is now unblocked
+
+All three pieces identified two passes ago exist:
+
+| piece | where |
+|---|---|
+| summable sub-quadratic lattice weight, and `log(2+x)/(1+x) ≤ C/(1+x)^θ` | `HTGeometry/IntegerPowerSeriesBounds.lean` |
+| near-diagonal band at height `w I`, far band at power `s` | `HTGeometry/NearDiagonalHarmonicTail.lean`, `HTGeometry/FarBandPowerTail.lean` |
+| the defect estimate at exponent `θ > 1/2` | `RHTower/GaussSampleTranslationL2.lean` |
+
+together with the two ingredients specific to `m ≥ 2` from the earlier passes:
+`tendsto_gaussTranslationL2RatioDefectBound` and `norm_gaussSampleRatio_le_of_near`.
+
+What remains is bookkeeping of the same mechanical kind: carry the exponent `θ` through the family
+form of equation (9) (`GaussUniformTranslationL2.lean`), then run the interior replacement
+`Λ → Λ_0` in `⟪e_n, G^m e_n⟫ = p^m|d_n|^(2m) ⟪g_n, Λ^(m-1) B^(-2) g_n⟫` at `θ = 3/4`.

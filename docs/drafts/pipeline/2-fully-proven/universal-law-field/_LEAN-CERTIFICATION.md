@@ -921,3 +921,17 @@ only `propext`, `Classical.choice`, and `Quot.sound`. No computation certificate
 project axiom, or RH statement occurs. Final foreground umbrella build passes with 11,601 jobs.
 Repository lint reports no target error; its global nonzero exit comes from pre-existing unreachable
 modules in unrelated theorem areas.
+
+## Session 2026-08-10 addition (Cofinal Primitive-Degree Escape)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SELM-4 | In the `k`-coordinate complete-complement failure system, the all-ones law is primitive at degree `k-1`; therefore aperture `D+2` contains a degree-`D+1` primitive missed by every `D`-bounded grammar, and cofinal primitive degrees escape every bound | `HTGeometry.ConstitutiveCofinalPrimitiveDegreeEscape` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints on local admission, the positive-local total-resource
+bound, complete-complement primitivity, bounded-grammar failure, unbounded primitive degrees, and
+the unconditional capstone report only `propext`, `Classical.choice`, and `Quot.sound`. No
+computation certificate, route premise, project axiom, or RH statement occurs. Final foreground
+umbrella build passes with 11,602 jobs. Repository lint reports no target error; its global nonzero
+exit comes from pre-existing unreachable modules in unrelated theorem areas.

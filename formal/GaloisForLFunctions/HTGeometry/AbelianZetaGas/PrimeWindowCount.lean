@@ -321,4 +321,124 @@ theorem primesInIoc_window_disjoint {τ : ℝ} (hτ : 0 < τ) {m n : ℕ} (hmn :
     exact absurd (lt_of_le_of_lt hple (lt_of_lt_of_le (winHiNat_lt_winLoNat hτ h) hlt.le))
       (lt_irrefl p)
 
+/-! ## Counting-function bookkeeping -/
+
+theorem primeCounting_mono : Monotone Nat.primeCounting := by
+  intro m n hmn
+  classical
+  rw [primeCounting_eq_card, primeCounting_eq_card]
+  exact Finset.card_le_card (Finset.filter_subset_filter _ (Finset.Iic_subset_Iic.mpr hmn))
+
+theorem primeCounting_succ_le (n : ℕ) :
+    Nat.primeCounting (n + 1) ≤ Nat.primeCounting n + 1 := by
+  classical
+  rw [primeCounting_eq_card, primeCounting_eq_card]
+  have hins : Finset.Iic (n + 1) = insert (n + 1) (Finset.Iic n) := by
+    ext k
+    simp only [Finset.mem_Iic, Finset.mem_insert]
+    omega
+  rw [hins, Finset.filter_insert]
+  split
+  · exact (Finset.card_insert_le _ _).trans (by omega)
+  · omega
+
+theorem tendsto_windowLo_atTop {τ : ℝ} (hτ : 0 < τ) :
+    Filter.Tendsto (windowLo τ) Filter.atTop Filter.atTop := by
+  have hlin : Filter.Tendsto (fun m : ℕ => (2 * m * Real.pi + Real.pi / 2) / τ)
+      Filter.atTop Filter.atTop := by
+    refine Filter.Tendsto.atTop_div_const hτ ?_
+    have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+    have h1 : Filter.Tendsto (fun m : ℕ => 2 * (m : ℝ) * Real.pi) Filter.atTop Filter.atTop := by
+      simpa [mul_comm, mul_assoc, mul_left_comm] using
+        (tendsto_natCast_atTop_atTop (R := ℝ)).atTop_mul_const (by positivity : (0:ℝ) < 2 * Real.pi)
+    exact h1.atTop_add tendsto_const_nhds
+  exact Real.tendsto_exp_atTop.comp hlin
+
+/-- The window sum of the leading defect. -/
+noncomputable def windowSum (σ τ : ℝ) (m : ℕ) : ℝ :=
+  ∑ p ∈ primesInIoc (winLoNat τ m) (winHiNat τ m),
+    (p : ℝ) ^ (-σ) * (1 - Real.cos (τ * Real.log p))
+
+/-- **The window sum dominates the PNT count times the smallest weight.** -/
+theorem eventually_windowSum_ge {σ τ : ℝ} (hσ : 0 < σ) (hτ : 0 < τ) :
+    ∀ᶠ m : ℕ in Filter.atTop,
+      ((windowRatio τ - 1) / 2 * (windowLo τ m / Real.log (windowLo τ m)) - 1)
+          * (windowRatio τ * windowLo τ m) ^ (-σ)
+        ≤ windowSum σ τ m := by
+  classical
+  have hK := one_lt_windowRatio hτ
+  have hKpos : (0 : ℝ) < windowRatio τ := Real.exp_pos _
+  have hwin := (tendsto_windowLo_atTop hτ).eventually (eventually_primeCount_window_ge hK)
+  have hbig : ∀ᶠ m : ℕ in Filter.atTop, (1 : ℝ) / (windowRatio τ - 1) < windowLo τ m :=
+    (tendsto_windowLo_atTop hτ).eventually_gt_atTop _
+  have hone : ∀ᶠ m : ℕ in Filter.atTop, (1 : ℝ) ≤ windowLo τ m :=
+    (tendsto_windowLo_atTop hτ).eventually_ge_atTop _
+  filter_upwards [hwin, hbig, hone] with m hm hmbig hmone
+  set X := windowLo τ m with hX
+  have hXpos : (0 : ℝ) < X := windowLo_pos τ m
+  have hKX : (0 : ℝ) < windowRatio τ * X := by positivity
+  have hgap : X + 1 ≤ windowRatio τ * X := by
+    rw [div_lt_iff₀ (by linarith)] at hmbig
+    nlinarith
+  have hceilR : ((winLoNat τ m : ℕ) : ℝ) ≤ X + 1 := by
+    have h1 : (winLoNat τ m : ℕ) ≤ ⌊X⌋₊ + 1 := Nat.ceil_le_floor_add_one X
+    have h2 : ((⌊X⌋₊ : ℕ) : ℝ) ≤ X := Nat.floor_le hXpos.le
+    have h3 := (Nat.cast_le (α := ℝ)).mpr h1
+    push_cast at h3
+    linarith
+  have hlole : winLoNat τ m ≤ winHiNat τ m := by
+    refine Nat.le_floor ?_
+    linarith
+  have hHipos : 0 < winHiNat τ m := by
+    have h1 : (1 : ℕ) ≤ winHiNat τ m := by
+      refine Nat.le_floor ?_
+      push_cast
+      linarith
+    omega
+  have hHiRpos : (0 : ℝ) < ((winHiNat τ m : ℕ) : ℝ) := by exact_mod_cast hHipos
+  have hfloorle : ((winHiNat τ m : ℕ) : ℝ) ≤ windowRatio τ * X := Nat.floor_le hKX.le
+  -- the count in the window
+  have hcount : (windowRatio τ - 1) / 2 * (X / Real.log X) - 1
+      ≤ ((primesInIoc (winLoNat τ m) (winHiNat τ m)).card : ℝ) := by
+    rw [card_primesInIoc hlole]
+    have hlo : Nat.primeCounting (winLoNat τ m) ≤ Nat.primeCounting ⌊X⌋₊ + 1 := by
+      refine le_trans (primeCounting_mono (Nat.ceil_le_floor_add_one X)) ?_
+      exact primeCounting_succ_le _
+    have hloR : (Nat.primeCounting (winLoNat τ m) : ℝ) ≤ (Nat.primeCounting ⌊X⌋₊ : ℝ) + 1 := by
+      exact_mod_cast hlo
+    have hhiR : (Nat.primeCounting (winHiNat τ m) : ℝ)
+        = (Nat.primeCounting ⌊windowRatio τ * X⌋₊ : ℝ) := by
+      rw [winHiNat]
+    rw [hhiR]
+    linarith [hm]
+  -- the weight of the window
+  have hweight := window_sum_ge (σ := σ) (τ := τ) hσ hHipos
+    (fun p hp => cos_nonpos_of_mem_winNat hτ m hp)
+  have hpowle : (windowRatio τ * X) ^ (-σ) ≤ ((winHiNat τ m : ℕ) : ℝ) ^ (-σ) := by
+    rw [Real.rpow_neg hKX.le, Real.rpow_neg hHiRpos.le]
+    refine inv_anti₀ (Real.rpow_pos_of_pos hHiRpos _) ?_
+    exact Real.rpow_le_rpow hHiRpos.le hfloorle hσ.le
+  have hcardnn : (0 : ℝ) ≤ ((primesInIoc (winLoNat τ m) (winHiNat τ m)).card : ℝ) :=
+    Nat.cast_nonneg _
+  have hkxpow : (0 : ℝ) < (windowRatio τ * X) ^ (-σ) := Real.rpow_pos_of_pos hKX _
+  have hstep : ((windowRatio τ - 1) / 2 * (X / Real.log X) - 1) * (windowRatio τ * X) ^ (-σ)
+      ≤ ((primesInIoc (winLoNat τ m) (winHiNat τ m)).card : ℝ)
+        * ((winHiNat τ m : ℕ) : ℝ) ^ (-σ) := by
+    rcases le_or_gt 0 ((windowRatio τ - 1) / 2 * (X / Real.log X) - 1) with hA | hA
+    · calc ((windowRatio τ - 1) / 2 * (X / Real.log X) - 1) * (windowRatio τ * X) ^ (-σ)
+          ≤ ((primesInIoc (winLoNat τ m) (winHiNat τ m)).card : ℝ)
+            * (windowRatio τ * X) ^ (-σ) := by
+            exact mul_le_mul_of_nonneg_right hcount hkxpow.le
+        _ ≤ ((primesInIoc (winLoNat τ m) (winHiNat τ m)).card : ℝ)
+            * ((winHiNat τ m : ℕ) : ℝ) ^ (-σ) := by
+            exact mul_le_mul_of_nonneg_left hpowle hcardnn
+    · have hneg : ((windowRatio τ - 1) / 2 * (X / Real.log X) - 1)
+          * (windowRatio τ * X) ^ (-σ) ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hA.le hkxpow.le
+      have hnn : (0 : ℝ) ≤ ((primesInIoc (winLoNat τ m) (winHiNat τ m)).card : ℝ)
+          * ((winHiNat τ m : ℕ) : ℝ) ^ (-σ) := by
+        have hp := Real.rpow_pos_of_pos hHiRpos (-σ)
+        positivity
+      linarith
+  exact le_trans hstep hweight
+
 end GaloisForLFunctions.HTGeometry

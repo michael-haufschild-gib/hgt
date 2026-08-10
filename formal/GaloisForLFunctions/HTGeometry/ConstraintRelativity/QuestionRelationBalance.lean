@@ -257,6 +257,13 @@ theorem killedFreedom_of_le (hRP' : Rnew ≤ Pold) :
     killedFreedom Rold Pold Rnew = Submodule.map Rold.mkQ Rnew := by
   rw [killedFreedom, inf_eq_right.2 hRP']
 
+/-! ## The three phases -/
+
+section Phases
+
+variable {K V : Type*} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+variable {Rold Pold Pnew Rnew : Submodule K V}
+
 /-- A product with a trivial factor is the other factor. -/
 def prodSubsingletonEquiv {R X Y : Type*} [Semiring R] [AddCommMonoid X] [Module R X]
     [AddCommMonoid Y] [Module R Y] [Subsingleton Y] : (X × Y) ≃ₗ[R] X where
@@ -273,9 +280,9 @@ noncomputable def pureQuestionPhaseEquiv (hRP : Rold ≤ Pold) (hPP : Pold ≤ P
     (hRR : Rold ≤ Rnew) (hRP' : Rnew ≤ Pnew) (h : Rnew = Rold) :
     (freedomNew Pnew Rnew) ≃ₗ[K]
       (freedomOld Rold Pold) × (createdFreedom Pold Pnew Rnew) :=
-  (prodSubsingletonEquiv (R := K) (X := (freedomNew Pnew Rnew))
-      (Y := ((⊥ : Submodule K (M ⧸ Rold)) : Submodule K (M ⧸ Rold)))).symm.trans
-    (((LinearEquiv.refl K _).prodCongr
+  (prodSubsingletonEquiv (R := K) (X := ↥(freedomNew Pnew Rnew))
+      (Y := ↥(⊥ : Submodule K (V ⧸ Rold)))).symm.trans
+    (((LinearEquiv.refl K ↥(freedomNew Pnew Rnew)).prodCongr
         (LinearEquiv.ofEq _ _ (killedFreedom_eq_bot_of_rel_eq h)).symm).trans
       (balanceProdEquiv hRP hPP hRR hRP'))
 
@@ -285,10 +292,12 @@ noncomputable def pureRelationPhaseEquiv (hRP : Rold ≤ Pold) (hPP : Pold ≤ P
     (hRR : Rold ≤ Rnew) (hRP' : Rnew ≤ Pnew) (h : Pnew = Pold) :
     ((freedomNew Pnew Rnew) × (killedFreedom Rold Pold Rnew)) ≃ₗ[K] (freedomOld Rold Pold) :=
   (balanceProdEquiv hRP hPP hRR hRP').trans
-    (((LinearEquiv.refl K _).prodCongr
+    (((LinearEquiv.refl K ↥(freedomOld Rold Pold)).prodCongr
         (LinearEquiv.ofEq _ _ (createdFreedom_eq_bot_of_pot_eq h))).trans
-      (prodSubsingletonEquiv (R := K) (X := (freedomOld Rold Pold))
-        (Y := ((⊥ : Submodule K (M ⧸ (Pold ⊔ Rnew))) : Submodule K (M ⧸ (Pold ⊔ Rnew))))))
+      (prodSubsingletonEquiv (R := K) (X := ↥(freedomOld Rold Pold))
+        (Y := ↥(⊥ : Submodule K (V ⧸ (Pold ⊔ Rnew))))))
+
+end Phases
 
 /-! ## Non-recoverability of the oriented event pair -/
 

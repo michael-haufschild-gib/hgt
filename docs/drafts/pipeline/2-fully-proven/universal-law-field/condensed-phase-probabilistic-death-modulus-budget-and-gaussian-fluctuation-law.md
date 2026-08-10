@@ -488,6 +488,18 @@ Disjointness is what lets the `σ = 1` case work: there each window contributes 
 so the divergence has to be collected over infinitely many windows at once, and that requires them
 not to overlap.  (For `σ < 1` a single window already gives unbounded contributions.)
 
+Putting the count and the weight together gives the per-window bound:
+
+| Clause | Lean |
+|---|---|
+| `π` is monotone and grows by at most one per step | `primeCounting_mono`, `primeCounting_succ_le` |
+| the windows escape to infinity | `tendsto_windowLo_atTop` |
+| the window sum | `windowSum` |
+| **`windowSum ≥ ((K−1)/2 · X_m/log X_m − 1)·(K X_m)^{−σ}` eventually** | **`eventually_windowSum_ge`** |
+
+The `−1` absorbs the mismatch between the PNT statement (which counts `(⌊X⌋, ⌊KX⌋]`) and the window
+(which starts at `⌈X⌉`): `π(⌈X⌉) ≤ π(⌊X⌋) + 1`, so at most one prime is lost.
+
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 3 699 jobs.
 
 **Next targets, in order.**

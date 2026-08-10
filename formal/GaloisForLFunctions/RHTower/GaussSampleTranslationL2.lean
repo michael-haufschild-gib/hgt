@@ -426,12 +426,13 @@ theorem tendsto_gaussTranslationL2Defect {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p
 
 /-! ## Reflection of the defect bound -/
 
-/-- The weighted defect bound is even in the frequency. -/
-theorem gaussTranslationL2DefectBound_neg {m : ℕ} (k : Fin m) (p : Nat.Primes) (A : ℝ) (i : ℤ) :
-    gaussTranslationL2DefectBound k p A (-i) = gaussTranslationL2DefectBound k p A i := by
-  rw [gaussTranslationL2DefectBound, gaussTranslationL2DefectBound,
+/-- The weighted defect bound is even in the frequency, at every power. -/
+theorem gaussTranslationL2PowDefectBound_neg {m : ℕ} (k : Fin m) (p : Nat.Primes) (A s : ℝ)
+    (i : ℤ) :
+    gaussTranslationL2PowDefectBound k p A s (-i) = gaussTranslationL2PowDefectBound k p A s i := by
+  rw [gaussTranslationL2PowDefectBound, gaussTranslationL2PowDefectBound,
     ← (Equiv.neg ℤ).tsum_eq (fun j : ℤ => ENNReal.ofReal
-      (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ 2 * ‖gaussSampleRatioDefect k p j i‖ ^ 2))]
+      (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ s * ‖gaussSampleRatioDefect k p j i‖ ^ 2))]
   refine tsum_congr fun j => ?_
   have hdef : gaussSampleRatioDefect k p j (-i)
       = starRingEnd ℂ (gaussSampleRatioDefect k p (-j) i) := by
@@ -440,26 +441,57 @@ theorem gaussTranslationL2DefectBound_neg {m : ℕ} (k : Fin m) (p : Nat.Primes)
   rw [hdef, RCLike.norm_conj]
   simp [Equiv.neg]
 
+theorem gaussTranslationL2PowDefectBound_natAbs {m : ℕ} (k : Fin m) (p : Nat.Primes) (A s : ℝ)
+    (i : ℤ) :
+    gaussTranslationL2PowDefectBound k p A s ((i.natAbs : ℤ))
+      = gaussTranslationL2PowDefectBound k p A s i := by
+  rcases Int.natAbs_eq i with h | h
+  · rw [← h]
+  · have hb := gaussTranslationL2PowDefectBound_neg k p A s ((i.natAbs : ℤ))
+    rw [← h] at hb
+    exact hb.symm
+
+/-- **The moving-translation estimate along any escaping frequency sequence**, at every power above
+one.  Only the magnitude of the frequency matters, so the estimate holds along negative frequencies
+as well. -/
+theorem tendsto_gaussTranslationL2PowDefectBound_comp {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) (A : ℝ) {s : ℝ} (hs : 1 < s) {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop) :
+    Tendsto (fun n : ℕ => gaussTranslationL2PowDefectBound k p A s (ι n)) atTop (nhds 0) := by
+  have hcomp := (tendsto_gaussTranslationL2PowDefectBound hm k p A hs).comp hι
+  refine hcomp.congr fun n => ?_
+  simp only [Function.comp_apply]
+  exact gaussTranslationL2PowDefectBound_natAbs k p A s (ι n)
+
+/-- The quadratic bound is the power bound at `s = 2`. -/
+theorem gaussTranslationL2DefectBound_eq {m : ℕ} (k : Fin m) (p : Nat.Primes) (A : ℝ) (i : ℤ) :
+    gaussTranslationL2DefectBound k p A i = gaussTranslationL2PowDefectBound k p A 2 i := by
+  rw [gaussTranslationL2DefectBound, gaussTranslationL2PowDefectBound]
+  refine tsum_congr fun j => ?_
+  congr 2
+  rw [← Real.rpow_natCast (1 + (j.natAbs : ℝ)) 2]
+  norm_num
+
+theorem gaussTranslationL2DefectBound_neg {m : ℕ} (k : Fin m) (p : Nat.Primes) (A : ℝ) (i : ℤ) :
+    gaussTranslationL2DefectBound k p A (-i) = gaussTranslationL2DefectBound k p A i := by
+  rw [gaussTranslationL2DefectBound_eq, gaussTranslationL2DefectBound_eq,
+    gaussTranslationL2PowDefectBound_neg]
+
 theorem gaussTranslationL2DefectBound_natAbs {m : ℕ} (k : Fin m) (p : Nat.Primes) (A : ℝ)
     (i : ℤ) :
     gaussTranslationL2DefectBound k p A ((i.natAbs : ℤ))
       = gaussTranslationL2DefectBound k p A i := by
-  rcases Int.natAbs_eq i with h | h
-  · rw [← h]
-  · have hb := gaussTranslationL2DefectBound_neg k p A ((i.natAbs : ℤ))
-    rw [← h] at hb
-    exact hb.symm
+  rw [gaussTranslationL2DefectBound_eq, gaussTranslationL2DefectBound_eq,
+    gaussTranslationL2PowDefectBound_natAbs]
 
-/-- **The moving-translation estimate along any escaping frequency sequence.**  Only the magnitude
-of the frequency matters, so the estimate holds along negative frequencies as well. -/
+/-- **The moving-translation estimate along any escaping frequency sequence.** -/
 theorem tendsto_gaussTranslationL2DefectBound_comp {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
     (p : Nat.Primes) (A : ℝ) {ι : ℕ → ℤ}
     (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop) :
     Tendsto (fun n : ℕ => gaussTranslationL2DefectBound k p A (ι n)) atTop (nhds 0) := by
-  have hcomp := (tendsto_gaussTranslationL2DefectBound hm k p A).comp hι
-  refine hcomp.congr fun n => ?_
-  simp only [Function.comp_apply]
-  exact gaussTranslationL2DefectBound_natAbs k p A (ι n)
+  have h := tendsto_gaussTranslationL2PowDefectBound_comp hm k p A (s := 2) (by norm_num) hι
+  refine h.congr fun n => ?_
+  exact (gaussTranslationL2DefectBound_eq k p A (ι n)).symm
 
 end
 

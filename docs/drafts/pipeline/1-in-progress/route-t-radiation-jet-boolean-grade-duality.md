@@ -258,3 +258,180 @@ frozen.  Current label remains `[NOVELTY UNVERIFIED]`.
   and near-aperture grade-one support.
 - 2026-08-10 — higher noncommuting completion/trace principle and exact next identity (RJG16)
   frozen.
+
+---
+
+## 10. Conjecture loop 3 — uniform scalar chirp separation
+
+The finite-packet receiver in the mass-Xi corpus suggests taking a faithful moving aperture
+`a(u)=u^theta`, `1/3<theta<1/2`, and passing its chirp mean-square argument through the full Xi
+sum.  This would remove scalar cross-orbit cancellation without changing the Route T observable.
+
+### Verdict: `[FAILED AS AN ABSOLUTE/FINITE-JET PASSAGE]`
+
+Let `H=H(u)` be a growing height cutoff.  Uniform use of
+
+```text
+sqrt(a^2+alpha^2)=a+alpha^2/(2a)+O(|alpha|^4/a^3)
+```
+
+on `|alpha|<=H` requires
+
+```text
+u H^4/a^3 -> 0.                                            (RJG17)
+```
+
+For `a=u^theta` this confines the uniform chirp packet to
+`H=o(u^((3theta-1)/4))`, far below even the aperture.  By contrast, the unconditional strip bound
+`|Im beta|<1/2` gives the squared tail envelope
+
+```text
+sum_(Re alpha>=H) ||exp(-(sigma+iu)beta)||^2
+  <= exp(u) sum_(Re alpha>=H) exp(-2sigma Re alpha).        (RJG18)
+```
+
+Absolute suppression therefore needs `H` of linear order `u`.  No overlap exists with (RJG17).
+Adding any fixed number of square-root expansion terms does not repair this: the uniform remainder
+condition remains `H=o(a)`, whereas the absolute spectral horizon remains linear in `u`.
+
+There is a sharper scale contradiction.  Suppressing every possible strip-edge tail already at
+height `H=a` requires `sigma*a>u/2`, while retaining one fixed off-line mass charge requires
+`sigma*a^2<u*R|J|`.  As `a->infinity` the former implies `sigma*a^2>u*a/2`, contradicting the
+latter.  Hence every absolute tail argument strong enough to close the full scalar sum erases the
+fixed off-line signal it was meant to detect.
+
+This disproves the proposed proof mechanism, not the scalar criterion.  A genuinely conditional
+mean-square theorem could still exploit Xi-specific phases, but it cannot follow from zero count,
+the strip, a finite Taylor jet, or termwise domination.
+
+## 11. Conjecture loop 4 — reflection-diagonal vertical Hilbert energy
+
+The failure above says the packet cutoff is artificial.  Keep every divisor copy and move the norm
+inside the trace.  For `a>=1/2`, `sigma>0`, and `u>=0`, define
+
+```text
+V_(a,sigma)(u) = sum_q ||exp(-(sigma+iu) beta_(a,q))||^2,
+beta_(a,q)=sqrt(a^2+alpha_q^2).                            (RJG19)
+```
+
+This is the Hilbert--Schmidt mass of the mass half-wave, equivalently the line-reflection-diagonal
+twisted trace
+
+```text
+Tr(exp(-tau B_a) C exp(-conj(tau) B_a) C),                (RJG20)
+```
+
+where `C` exchanges a divisor copy with its critical-line conjugate.  Formula (RJG20) is an
+operator interpretation only; (RJG19) is the definition and needs no unconstructed operator.
+
+### Theorem D — complete cubic-clock dichotomy `[PAPER-PROVED]`
+
+Fix `sigma>0` and put `u=a^3`.  Then
+
+```text
+RH      => V_(a,sigma)(a^3) -> 0,
+not RH  => V_(a,sigma)(a^3) -> +infinity.                 (RJG21)
+```
+
+In particular
+
+```text
+RH iff V_(a,sigma)(a^3) -> 0.                             (RJG22)
+```
+
+#### Proof
+
+Write `beta=M+iK`, `alpha=R+iJ`.  Under RH, `K=0`.  Mass geometry gives both `M>=a` and `M>=R`,
+so `2M>=a+R`.  Therefore
+
+```text
+||exp(-(sigma+ia^3)beta)||^2
+ = exp(-2sigma M)
+ <= exp(-sigma a) exp(-sigma R).
+```
+
+Summing over the complete multiplicity-exact Xi divisor is legitimate because
+`sum_q exp(-sigma R_q)<infinity`; hence
+
+```text
+0 <= V_(a,sigma)(a^3)
+   <= exp(-sigma a) sum_q exp(-sigma R_q) -> 0.            (RJG23)
+```
+
+If RH fails, choose one copy with `J ne 0` and replace it by its line conjugate if necessary so
+the mass displacement `K` is positive.  Charge conservation and the height cap give
+
+```text
+K M=R|J|=:c>0,                 M<=a+R.
+```
+
+That single nonnegative summand satisfies
+
+```text
+log ||exp(-(sigma+ia^3)beta)||^2
+ = -2sigma M+2a^3 K
+ >= -2sigma(a+R)+2c a^3/(a+R) -> +infinity.               (RJG24)
+```
+
+Thus the entire positive sum tends to `+infinity`.  No interchange of a limit with the sum is used
+in the off-line direction.  This proves (RJG21)--(RJG22). `QED`
+
+### Hostile audit
+
+- **No scalar cancellation:** every term of (RJG19) is nonnegative.
+- **No growing packet:** RH uses one summable majorant; failure uses one fixed divisor copy.
+- **No zero gap or zero count asymptotic:** only admissible-family summability and line conjugation.
+- **No hidden RH premise:** reality is used only in the forward implication; the reverse starts
+  from one explicit nonreal copy forced by `not RH`.
+- **Not yet a Route T proof:** (RJG19) is quadratic and reflection-diagonal.  The scalar explicit
+  formula computes `Tr(exp(-tau B_a))`, not (RJG20).  Declaring the latter prime-accessible would be
+  theatre.
+
+## 12. Higher principle sharpened
+
+Route T's obstruction is not lack of a faithful receiver.  The complete positive receiver (RJG19)
+exists and is stronger than every finite chirp projector.  Missing datum is the **diagonal
+coproduct** that remembers one divisor label across a source/co-source pair.  Scalar explicit
+formula applies the counit first and produces all cross-label interference; Hilbert energy applies
+the diagonal first and forbids that interference.
+
+```text
+linear explicit trace:       source --counit--> scalar,
+faithful quadratic receiver: source --diagonal--> source tensor source --reflection--> energy.
+                                                                  (RJG25)
+```
+
+This is the same noncommutation as (RJG15), now with an exact complete-divisor witness.  Boolean
+grade is not valuable because high grade is large; it is valuable only if it constructs this
+source-defined diagonal before scalarization.
+
+## 13. Exact successor theorem
+
+Construct a literal prime--Gamma/source operator `A_(a,tau)` and reflection `C_src` for which the
+known scalar mass formula is its trace and prove the coefficient-exact diagonal identity
+
+```text
+Tr(A_(a,tau)^* A_(a,tau))
+ = V_(a,sigma)(u) + B_(a,sigma)(u),                       (RJG26)
+```
+
+with `B>=0` or `B` uniformly bounded on the cubic clock.  An equivalent source-side Parseval or
+coarea identity is acceptable, but it must retain equal divisor labels and derive from the literal
+centered von Mangoldt/Gamma source.  Combining (RJG26) with any unconditional decay of the left
+side would prove RH by Theorem D.  Without the equal-label identity, a positive source norm is only
+an unrelated majorant.
+
+## 14. Updated formalization ledger
+
+- `[PAPER-PROVED]`: scalar head/tail incompatibility (RJG17)--(RJG18).
+- `[PAPER-PROVED]`: complete cubic-clock Hilbert dichotomy (RJG21)--(RJG24).
+- Lean target: specialize `sigma=1`, `a_n=n+1`, `u_n=(n+1)^3`; prove the closed theorem
+  `RiemannHypothesis iff Tendsto V_n atTop (nhds 0)` plus off-line divergence.
+- Source landing (RJG26): open; no Lean statement before coefficient-exact paper construction.
+
+## Log, continued
+
+- 2026-08-10 — full-sum finite-chirp passage falsified by incompatible Taylor and absolute-tail
+  horizons.
+- 2026-08-10 — complete positive cubic-clock divisor receiver (RJG19) and exact RH dichotomy
+  (RJG21) proved on paper; source-diagonal coproduct isolated as sole new bridge.

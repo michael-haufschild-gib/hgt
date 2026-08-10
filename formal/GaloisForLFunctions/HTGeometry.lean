@@ -6857,3 +6857,6 @@ import GaloisForLFunctions.HTGeometry.CoeffDenominatorBound
 import GaloisForLFunctions.HTGeometry.EisensteinSimpleRoot
 import GaloisForLFunctions.HTGeometry.EisensteinDefectReduction
 import GaloisForLFunctions.HTGeometry.EisensteinUniform
+import GaloisForLFunctions.HTGeometry.EisensteinScaling
+import GaloisForLFunctions.HTGeometry.ImageSeparatingPolynomial
+import GaloisForLFunctions.HTGeometry.AnalyticImageFiniteness

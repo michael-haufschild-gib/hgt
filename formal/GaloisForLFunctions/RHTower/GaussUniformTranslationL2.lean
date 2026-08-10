@@ -111,17 +111,19 @@ theorem norm_fourierCoeff_shiftedBlockOf_sub_rotation {m : ℕ} (hm : 1 ≤ m) (
 
 /-- **Equation (9), uniform over a family of amplitudes.**  Only a common decay constant is
 required; the rate does not depend on which member of the family is used at each index. -/
-theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_powFamily {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
     (p : Nat.Primes) {ι : ℕ → ℤ}
     (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop)
-    (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
+    (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A θ : ℝ}
+    (hθ : 1 / 2 < θ)
     (hu : ∀ (n : ℕ) (j : ℤ),
-      ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+      ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ)) ^ θ) :
     Tendsto (fun n : ℕ =>
       ‖gaussShiftedBlockOf hm k p (ι n) (u n) -
         gaussRotationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
       atTop (nhds 0) := by
-  have hdefect := tendsto_gaussTranslationL2DefectBound_comp hm k p A hι
+  have hdefect := tendsto_gaussTranslationL2PowDefectBound_comp hm k p A
+    (s := 2 * θ) (by linarith) hι
   rw [ENNReal.tendsto_nhds_zero] at hdefect
   rw [Metric.tendsto_atTop]
   intro ε hε
@@ -174,12 +176,17 @@ theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_family {m : ℕ} (hm : 1 �
   have hdom : (∑' j : ℤ, ENNReal.ofReal
         (‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
           ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2))
-      ≤ gaussTranslationL2DefectBound k p A (ι n) := by
-    rw [gaussTranslationL2DefectBound]
+      ≤ gaussTranslationL2PowDefectBound k p A (2 * θ) (ι n) := by
+    rw [gaussTranslationL2PowDefectBound]
     refine ENNReal.tsum_le_tsum fun j => ENNReal.ofReal_le_ofReal ?_
     refine mul_le_mul_of_nonneg_right ?_ (by positivity)
     have h2 := pow_le_pow_left₀ (norm_nonneg _) (hu n j) 2
-    rwa [div_pow] at h2
+    rw [div_pow] at h2
+    have hpow : ((1 + (j.natAbs : ℝ)) ^ θ) ^ (2 : ℕ) = (1 + (j.natAbs : ℝ)) ^ (2 * θ) := by
+      rw [← Real.rpow_natCast ((1 + (j.natAbs : ℝ)) ^ θ) 2, ← Real.rpow_mul (by positivity)]
+      congr 1
+      ring
+    rwa [hpow] at h2
   have hofReal : ENNReal.ofReal (‖w‖ ^ (2 : ℝ)) ≤ ENNReal.ofReal ((ε / 2) ^ 2) := by
     rw [hnormsq, ENNReal.ofReal_tsum_of_nonneg (fun j => by positivity) hsummable']
     exact le_trans hdom hbound
@@ -196,6 +203,20 @@ theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_family {m : ℕ} (hm : 1 �
     rwa [Real.sqrt_sq (norm_nonneg w), Real.sqrt_sq (half_pos hε).le] at h
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (norm_nonneg w)]
   linarith
+
+/-- The family estimate at decay exponent one. -/
+theorem tendsto_norm_gaussShiftedBlockOf_sub_rotation_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop)
+    (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
+    (hu : ∀ (n : ℕ) (j : ℤ),
+      ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+    Tendsto (fun n : ℕ =>
+      ‖gaussShiftedBlockOf hm k p (ι n) (u n) -
+        gaussRotationBlock ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
+      atTop (nhds 0) :=
+  tendsto_norm_gaussShiftedBlockOf_sub_rotation_powFamily hm k p hι u (A := A) (θ := 1) (by norm_num)
+    (fun n j => by rw [Real.rpow_one]; exact hu n j)
 
 /-- **Equation (9), uniform form.**  For every amplitude whose Fourier coefficients decay like
 `A/(1+|j|)`, the normalized shifted block converges in `L²(ℝ/ℤ)` to its rotation, with a rate
@@ -296,18 +317,20 @@ theorem norm_fourierCoeff_shiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤
 /-- **Equation (9) for the unconjugated diagonal, uniform over a family of amplitudes.**  Only a
 common decay constant is required; the rate does not depend on which member of the family is used
 at each index. -/
-theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm : 1 ≤ m)
+theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_powFamily {m : ℕ} (hm : 1 ≤ m)
     (k : Fin m) (p : Nat.Primes)
     {ι : ℕ → ℤ}
     (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop)
-    (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
+    (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A θ : ℝ}
+    (hθ : 1 / 2 < θ)
     (hu : ∀ (n : ℕ) (j : ℤ),
-      ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+      ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ)) ^ θ) :
     Tendsto (fun n : ℕ =>
       ‖gaussShiftedBlockDiag hm k p (ι n) (u n) -
         gaussRotationBlockInv ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
       atTop (nhds 0) := by
-  have hdefect := tendsto_gaussTranslationL2DefectBound_comp hm k p A hι
+  have hdefect := tendsto_gaussTranslationL2PowDefectBound_comp hm k p A
+    (s := 2 * θ) (by linarith) hι
   rw [ENNReal.tendsto_nhds_zero] at hdefect
   rw [Metric.tendsto_atTop]
   intro ε hε
@@ -360,12 +383,17 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm 
   have hdom : (∑' j : ℤ, ENNReal.ofReal
         (‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
           ‖gaussSampleRatioDefect k p j (ι n)‖ ^ 2))
-      ≤ gaussTranslationL2DefectBound k p A (ι n) := by
-    rw [gaussTranslationL2DefectBound]
+      ≤ gaussTranslationL2PowDefectBound k p A (2 * θ) (ι n) := by
+    rw [gaussTranslationL2PowDefectBound]
     refine ENNReal.tsum_le_tsum fun j => ENNReal.ofReal_le_ofReal ?_
     refine mul_le_mul_of_nonneg_right ?_ (by positivity)
     have h2 := pow_le_pow_left₀ (norm_nonneg _) (hu n j) 2
-    rwa [div_pow] at h2
+    rw [div_pow] at h2
+    have hpow : ((1 + (j.natAbs : ℝ)) ^ θ) ^ (2 : ℕ) = (1 + (j.natAbs : ℝ)) ^ (2 * θ) := by
+      rw [← Real.rpow_natCast ((1 + (j.natAbs : ℝ)) ^ θ) 2, ← Real.rpow_mul (by positivity)]
+      congr 1
+      ring
+    rwa [hpow] at h2
   have hofReal : ENNReal.ofReal (‖w‖ ^ (2 : ℝ)) ≤ ENNReal.ofReal ((ε / 2) ^ 2) := by
     rw [hnormsq, ENNReal.ofReal_tsum_of_nonneg (fun j => by positivity) hsummable']
     exact le_trans hdom hbound
@@ -382,6 +410,20 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm 
     rwa [Real.sqrt_sq (norm_nonneg w), Real.sqrt_sq (half_pos hε).le] at h
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (norm_nonneg w)]
   linarith
+
+/-- The family estimate at decay exponent one. -/
+theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) {ι : ℕ → ℤ}
+    (hι : Tendsto (fun n : ℕ => (ι n).natAbs) atTop atTop)
+    (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
+    (hu : ∀ (n : ℕ) (j : ℤ),
+      ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+    Tendsto (fun n : ℕ =>
+      ‖gaussShiftedBlockDiag hm k p (ι n) (u n) -
+        gaussRotationBlockInv ((gaussSamplePhase m p (ι n) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
+      atTop (nhds 0) :=
+  tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_powFamily hm k p hι u (A := A) (θ := 1) (by norm_num)
+    (fun n j => by rw [Real.rpow_one]; exact hu n j)
 
 /-- **Equation (9) for the unconjugated diagonal.** -/
 theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
