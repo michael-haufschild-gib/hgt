@@ -23,6 +23,7 @@
 | `deninger-cross-prime-closed-relation-saturation` | `RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo` (extended with consequences 2 and 4) |
 | `deninger-prime-log-height-kothe-calderon-source` | `RHTower/DeningerPrimeLogHeight`, `DeningerKotheComplete`, `DeningerPrimeLogHeightKothe`, `…Convolution`, `…Green`, `…Forms`, `…Mellin`, `…Power`, `…Cartan` (all new) |
 | `deninger-balanced-word-height-bar-strict-contraction` | `RHTower/DeningerWordHeight`, `DeningerBarWord`, `DeningerBarInsert`, `DeningerBarSlice`, `DeningerBarDifferential`, `DeningerBarUnit`, `DeningerBarContraction`, `DeningerBarSector`, `DeningerBarFace`, `DeningerBarInsertComm`, `DeningerBarFibre`, `DeningerBarSquareZero`, `DeningerBarAlgebra`, `DeningerBarPower` (all new) |
+| `deninger-linearized-milnor-first-sullivan-strict-primitive` | `RHTower/DeningerSetIndexedLinearization`, `DeningerExteriorPairSum`, `DeningerWordAlternating`, `DeningerSullivanPrimitive`, `DeningerSuspendedSource`, `DeningerSuspendedAlternating`, `DeningerSuspendedProduct`, `DeningerSuspendedPrimitive` (all new) |
 
 ## Reusable infrastructure now available
 
@@ -38,73 +39,99 @@
 
 ## Remaining cards and what each needs
 
-2. `deninger-linearized-milnor-first-sullivan-strict-primitive` — **in progress**.
-   Done: clause 5, the set-indexed linearization — `RHTower/DeningerSetIndexedLinearization`
-   (`deningerFreeEval`, `deningerLinearityRelations`, `deningerLinearizationEquiv`: the free
-   module on the underlying set modulo the three linearity defects **is** the module).
-   Done: clause 1's topological core — `RHTower/DeningerWordAlternating`
-   (`deningerPermuteAt`, `deningerPermEquiv`, `deningerAlt`, `deningerBarSeminormR_alt_le`,
-   `deningerPermuteAt_char`): permuting letters preserves length, product-of-letter-heights and
-   total character, so the blockwise antisymmetrizer has seminorm at most one and `A₀` is its
-   range — a closed complemented subspace of a complete nuclear space.
-   Done: `(15)`--`(16)`, the normalized two-coproduct identity — `RHTower/DeningerExteriorPairSum`
-   (`deningerPairPerm`, `deningerIotaMulti_pairPerm`, `deningerExteriorPairSum`,
-   `deningerPairIndex_card`): summing the signed two-letter splittings of a wedge monomial over
-   all ordered pairs gives `binom(r,2)` times the monomial.  No explicit shuffle sign is used —
-   the permutation carries its own sign and it appears twice.
+Numbering is the folder order; 13 cards remain in stage 2.
 
-   Remaining, with the route already worked out — do not rediscover it:
-   - The corpus already owns the algebraic first layer: `RHTower/DeningerRelativeSullivanMilnorResolution`
-     has `deningerMilnorIdeal`, `deningerMilnorEpsilon(_ker)`, `deningerSullivanInclusion`,
-     `deningerSullivanFirstDifferential`, `deningerSullivanFirstLayer`, and it already uses
-     `V × ⋀[k]^2 V` as the linearized attachment.  Build on it; do not rebuild `A₁`.
-   - `(11)`, `d h = id`: the terms of `h` are the `deningerExteriorPairSum` terms with the
-     leading `ι(v i) * ι(v j)` replaced by the new generator `σ(v i ∧ v j)`; applying the
-     first-layer differential returns exactly the `deningerExteriorPairSum` summands, so `(16)`
-     gives `binom(r,2)` times the monomial and the normalisation `binom(r,2)⁻¹` closes it.
-     What is still needed for this step is the **odd derivation** extending
-     `deningerSullivanFirstDifferential` from the new generators to all of `A₁` — mathlib has no
-     odd derivation on an exterior algebra, so build it (or state `d h = id` through the
-     Leibniz rule on the specific two-block products, which is all the proof uses).
-   - clause 4 reuses `deningerBarCharMul` verbatim (character multipliers already commute with
-     everything built on the word source).
-3. `deninger-euler-depleted-meyer-periodization-extension` — `S_exp(ℝ)`, translation `τ_L`,
-   `Δ_p = 1 - τ_L`, strict nuclear extension, zero-periodization sector.
-4. `deninger-cofinal-prime-periodization-tomography-instability` — cofinal tomography, nonclosed
+### The `S_exp(ℝ)` / Meyer analytic block (cards 1--7 below)
+
+The shared layer now exists: `RHTower/DeningerExpSchwartz` gives `H_- = S_exp(ℝ)` as
+`DeningerExpSchwartz`, a **subspace of `𝓢(ℝ, ℂ)`** cut out by `∀ A n, ∃ C, ∀ x,
+e^{A|x|} ‖D^n f(x)‖ ≤ C` (so it inherits the whole Schwartz linear structure and the Schwartz
+embedding is definitional), the translation `deningerShift` with `deningerShift_mem`, and
+`deningerPeriodizationDefect L = 1 - τ_L` as `DeningerExpSchwartz →ₗ[ℂ] DeningerExpSchwartz`.
+The one estimate everything rests on is `A|x| ≤ A|x+L| + |A||L|`, valid for both signs of `A`.
+What else exists and must not be rebuilt:
+
+- `RHTower/DeningerMeyerCap` and the whole `DeningerMeyer*` / `DeningerPoisson*` family
+  (`DeningerMeyerCap`, `deningerMeyerCap_mem_iff`, `deningerPoissonLM` — the operator `Z` —
+  `deningerPoissonSchwartz`, `deningerCapSchwartz`, `DeningerRadialNuclear`,
+  `DeningerPoissonFourierReflection`, `DeningerPoissonInjective`, `DeningerPoissonCokernel`,
+  `DeningerMeyerDilationFlow`, `DeningerMeyerRadialEndpoints`).  `H_∩` of the cards **is**
+  `DeningerMeyerCap` and `Z` **is** `deningerPoissonLM`.
+- `HTGeometry` strong-continuity of the dilation group, and mathlib's `SchwartzMap`,
+  `fourierIntegral`, Poisson summation.
+
+1. `deninger-euler-depleted-meyer-periodization-extension` — `S_exp(ℝ)`, `τ_L`, `Δ_p = 1 - τ_L`
+   are **built**; what is left is the strict nuclear extension and the zero-periodization sector.
+2. `deninger-cofinal-prime-periodization-tomography-instability` — cofinal tomography, nonclosed
    range, compact-orbit weight-zero no-go.
-5. `deninger-half-density-floquet-euler-boundary-dichotomy` — half-density Floquet trace, all-prime
+3. `deninger-half-density-floquet-euler-boundary-dichotomy` — half-density Floquet trace, all-prime
    Hilbert energy, Neumann inverse, leakage scalar `1 - p^{-1/2}`.
-6. `deninger-cofinal-floquet-secondary-poisson-graph` — full-circle half-density lift, radical =
+4. `deninger-cofinal-floquet-secondary-poisson-graph` — full-circle half-density lift, radical =
    reflected Calderón graph.
-7. `deninger-critical-floquet-von-mangoldt-renormalization-wall` — diagonal subtraction, von
+5. `deninger-critical-floquet-von-mangoldt-renormalization-wall` — diagonal subtraction, von
    Mangoldt autocorrelation, sign wall.
-8. `deninger-mobius-fourier-commutator-poisson-kernel` — `𝔖_μ`, `ker 𝔖_μ = Z(H_∩)`, Fourier
-   covariance, causal von Mangoldt anomaly. Needs the corpus's unconditional Mertens rate
-   `exists_norm_sum_moebius_kappa_two_rate` (`RHTower/Sieve/MoebiusSharpKappaTwo.lean`) only
-   through `∫_1^∞ |M(T)|/T² dT < ∞`.
-9. `deninger-euler-gamma-mobius-connection-transgression` — all-prime Euler connection, strict
+6. `deninger-mobius-fourier-commutator-poisson-kernel` — the analytic hub of the block.  Its four
+   labelled theorems, in increasing cost:
+   - `(6)` real-Fourier covariance `𝔖_μ(Jh) = -F(𝔖_μ h)` — pure formal consequence of `F² =`
+     reflection and evenness once `𝔖_μ` is defined.  Cheapest.
+   - `(34)`--`(35)` the causal von Mangoldt endpoint anomaly — **DONE**,
+     `RHTower/DeningerCausalVonMangoldtWall`.  No distribution theory was needed: testing against
+     `φ` makes it a numerical series.  `(41)` is then immediate from `(12)`.
+   - `(45)` the Möbius connection identity.  mathlib has `ArithmeticFunction.log_mul_moebius_eq_vonMangoldt`
+     (`log * μ = Λ`); convolving `(μ log) * ζ = -Λ` with `μ` gives `Λ * μ = -μ log`, which is `(44)`.
+     Only a Fubini on a fixed positive ray is left.
+   - `(11)`--`(12)` the all-moment `L¹` domain and zero mass — Abel summation `(10)`, Tonelli, and
+     `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's unconditional Mertens rate
+     (`RHTower/Sieve/MoebiusSharpKappaTwo.lean`).  `(15)` needs `1/ζ(σ) → 0` as `σ ↓ 1`.
+   - `(5)` the exact kernel.  The hard one: Fourier-inversion bootstrap `(23)`--`(24)` then Poisson
+     summation `(26)`.  Do it last.
+7. `deninger-euler-gamma-mobius-connection-transgression` — all-prime Euler connection, strict
    PNT endpoint, Green–Stokes law.
-10. `deninger-source-poisson-chain-lift-obstruction` — needs (8) above; then the TFAE is
-    formal.
-11. `deninger-algebraic-cyclotomic-milnor-amplitude` — headline `(1)` `K_q^M(F)⊗ℝ = 0` for
-    `F/ℚ` algebraic, `q ≥ 2`. This is Bass–Tate + Garland/Borel; **the only genuinely
-    research-scale gate in the folder.**
-12. `deninger-derived-rank-quotient-universal-property` — `E_∞`/∞-category statements.
-13. `deninger-pro-log-stein-kummer-residue-square` — log de Rham/coherent sheaves.
-14. `deninger-selective-positive-cell-h0-preservation` — Milnor–Witt sheaves.
-15. `deninger-strict-pro-log-collar-trace-kernel` — coherent sheaves and log de Rham complexes.
+8. `deninger-source-poisson-chain-lift-obstruction` — the TFAE is *formal* once `(5)` of card 6 is
+   available; everything else it needs is already in the Meyer/Poisson family.
+
+### The higher-structure block
+
+9. `deninger-algebraic-cyclotomic-milnor-amplitude` — headline `(1)` `K_q^M(F) ⊗ ℝ = 0` for
+   algebraic `F/ℚ`, `q ≥ 2`.  Bass–Tate + Garland/Borel; **the only genuinely research-scale gate
+   in the folder.**  The corpus already owns Milnor `K`-theory and `HTGeometry/MilnorWittKTheory`.
+10. `deninger-derived-rank-quotient-universal-property` — `E_∞`/∞-category statements.
+11. `deninger-selective-positive-cell-h0-preservation` — its one-categorical shadow is **already
+    formalized** (`DeningerPositiveCellDegreeZero`, `DeningerPositiveCellEquivariance`,
+    `DeningerPrincipalConormal`, `DeningerMonicKaehlerLine`, `HTGeometry/MilnorWittKTheory`); what
+    is left is the Milnor–Witt *sheaf* layer (oriented fundamental class, determinant twist, Gysin).
+12. `deninger-pro-log-stein-kummer-residue-square` — log de Rham / coherent sheaves; the corpus's
+    log-geometry layer (19 modules) is the starting point.
+13. `deninger-strict-pro-log-collar-trace-kernel` — coherent sheaves and log de Rham complexes.
 
 ## Gates
 
-- [x] 3 of 17 cards promoted
+- [x] 4 of 17 cards promoted
 - [x] entire word-height algebra built
 - [x] `b² = 0` for the bar differential
-- [ ] `S_exp(ℝ)` layer built (unlocks cards 3--7)
-- [ ] Möbius–Fourier commutator built (unlocks cards 8--10)
-- [ ] remaining five cards
+- [x] `S_exp(ℝ)` layer built — `RHTower/DeningerExpSchwartz`
+- [ ] Möbius–Fourier commutator built (unlocks cards 6--8 of the analytic block); its section 5
+  (`(34)`--`(35)`, the causal endpoint anomaly) is done
+- [ ] the higher-structure block
 
 ## Log
 
+- 2026-08-10 — Built the shared `S_exp(ℝ)` layer (`RHTower/DeningerExpSchwartz`).  Realizing it as a
+  *submodule of `𝓢(ℝ, ℂ)`* rather than a new structure removed the whole module/topology
+  boilerplate and makes the Schwartz embedding definitional.
+- 2026-08-10 — Built section 5 of the Möbius–Fourier card (`RHTower/DeningerCausalVonMangoldtWall`).
+  Two corpus assets carried it: `Sieve.summable_log_div_sq` and `Sieve.mertensFirst_lower`.  The
+  distributional statement `(34)` needs no distribution theory — testing against `φ` makes it a
+  numerical series, and the only input is the mean-value bound at the origin.
+- 2026-08-10 — Promoted `deninger-linearized-milnor-first-sullivan-strict-primitive`.  The card's
+  `(7)` asks for an odd derivation extending `d(sigma omega) = omega`; **the corpus already owned
+  one** (`HTGeometry.deningerOddDerivation`, with `_leibniz`, `_ι`, `_algebraMap`, `_comp_self`),
+  so `d h = id` reduced to the two-coproduct identity.  The topological half needed a new alphabet:
+  `DeningerSusp = Γ ⊕ (Γ × Γ)` with `H(inr(m,n)) = H(m)H(n)`, whose letterwise counting series is
+  `S + S²` — finite, so the same geometric argument gives nuclearity.  Two facts made the
+  estimates trivial rather than combinatorial: expanding a head pair preserves the product height
+  exactly (so it costs exactly one factor `R`), and on the alternating part all `binom(r,2)` terms
+  of the averaged primitive coincide, so the average is one term.
 - 2026-08-10 — Promoted `deninger-balanced-word-height-bar-strict-contraction`.  The alphabet
   `{1} ⊔ (Γ∖{0})` is `Γ` with the zero character as the unit; the fibre of the `j`-th face is then
   the pair of unit insertions at `j` and `j+1`.  `b² = 0` follows from the simplicial pairing

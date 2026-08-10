@@ -2395,6 +2395,7 @@ import GaloisForLFunctions.RHTower.GaussShiftedBlockCoefficients
 import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
 import GaloisForLFunctions.RHTower.GaussSampleTranslationL2
 import GaloisForLFunctions.RHTower.GaussTranslationL2Convergence
+import GaloisForLFunctions.RHTower.GaussUniformTranslationL2
 import GaloisForLFunctions.RHTower.GaussScaleAmplitudeIntegral
 import GaloisForLFunctions.RHTower.GaussLattice
 import GaloisForLFunctions.RHTower.GaussPairedChannelCriticalAsymptotic
@@ -4181,6 +4182,10 @@ import GaloisForLFunctions.RHTower.Sieve.VariationOfDifference
 import GaloisForLFunctions.RHTower.Sieve.WeightedCorrelation
 import GaloisForLFunctions.RHTower.Sieve.ShiftSumBound
 import GaloisForLFunctions.RHTower.Sieve.VariationTruncation
+import GaloisForLFunctions.RHTower.Sieve.KernelPieceMonotone
+import GaloisForLFunctions.RHTower.Sieve.VariationBimonotone
+import GaloisForLFunctions.RHTower.Sieve.KernelSmoothSplit
+import GaloisForLFunctions.RHTower.Sieve.ErrorShiftSum
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6771,6 +6776,10 @@ import GaloisForLFunctions.RHTower.Sieve.VariationOfDifference
 import GaloisForLFunctions.RHTower.Sieve.WeightedCorrelation
 import GaloisForLFunctions.RHTower.Sieve.ShiftSumBound
 import GaloisForLFunctions.RHTower.Sieve.VariationTruncation
+import GaloisForLFunctions.RHTower.Sieve.KernelPieceMonotone
+import GaloisForLFunctions.RHTower.Sieve.VariationBimonotone
+import GaloisForLFunctions.RHTower.Sieve.KernelSmoothSplit
+import GaloisForLFunctions.RHTower.Sieve.ErrorShiftSum
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6802,3 +6811,6 @@ import GaloisForLFunctions.RHTower.DeningerSuspendedSource
 import GaloisForLFunctions.RHTower.DeningerSuspendedAlternating
 import GaloisForLFunctions.RHTower.DeningerSuspendedPrimitive
 import GaloisForLFunctions.RHTower.DeningerSuspendedProduct
+import GaloisForLFunctions.RHTower.DeningerCausalVonMangoldtWall
+import GaloisForLFunctions.RHTower.DeningerExpSchwartz
+import GaloisForLFunctions.RHTower.DeningerMobiusPreimage

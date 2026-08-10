@@ -1250,7 +1250,57 @@ The density presentation is certified as well:
 `P_σ.withDensity (fun A ↦ densityConst σ · |soc A|^{−σ})`, proved atomwise through
 `Measure.ext_of_singleton` on the countable class space.
 
-What is left of Theorem 8.1: quote `Measure.rnDeriv_withDensity` to turn that into
-`rnDeriv`, read `llr = log(densityConst σ) − σ·log|soc A|` (with `densityConst σ = ζ(σ)` from
-`zetaPartition_temperatureConv`), check its integrability against
-`summable_primes_log_mul_ladderBound`, and apply `klDiv_of_ac_of_integrable` in both directions.
+The Radon–Nikodym derivative is certified too:
+
+| Clause | Lean |
+|---|---|
+| the class law is a probability measure | `isProbabilityMeasure_classLaw` |
+| **the Radon–Nikodym derivative of the canonical tilt** | **`rnDeriv_classLaw_tiltConv`** |
+
+The log-density is certified as well:
+
+| Clause | Lean |
+|---|---|
+| the density constant is finite and positive | `ennNormalizer_ne_top`, `densityConst_ne_zero`, `densityConst_ne_top`, `densityConst_toReal_pos` |
+| **the log-density of the canonical tilt** | **`llr_classLaw_tiltConv`** |
+
+`llr_classLaw_tiltConv` is exactly the card's `log ζ(σ) − σ·log|soc A|`, once `densityConst σ` is
+identified with `ζ(σ)` through `zetaPartition_temperatureConv`.
+
+**What is left of Theorem 8.1, precisely.**  Two steps, in this order.
+
+1. *Integrability of the log-density.*  `llr_classLaw_tiltConv` is stated almost everywhere with
+   respect to `classLaw (temperatureConv σ)`; `classLaw_absolutelyContinuous` transfers it to the
+   tilt.  The carrier question is settled by working on the class space throughout:
+
+   | Clause | Lean |
+   |---|---|
+   | the lower integral against the class law | `lintegral_classLaw` |
+   | **integrability criterion: summability against the class masses** | **`integrable_classLaw`** |
+
+   `integrable_classLaw` reduces `Integrable f (classLaw θ)` to
+   `∑' A, ‖f A‖·classMass θ A < ∞`.  Tracing that condition for `f A = log |soc A|` shows the two
+   routes coincide rather than one avoiding the other: expanding
+   `log|soc A| = ∑_{(p,j)} A(p,j)·log p` and exchanging the sums (unconditional in `ℝ≥0∞`) leaves
+   `∑'_A A(m)·classMass θ A`, the mean occupation of mode `m` **on the class space** — which is the
+   same content as the pushforward identity `classLaw = gasMeasure.map (class map)`.  So exactly one
+   of the following has to be built, and either closes the step:
+
+   * the pushforward identity, after which `lintegral_gasMeasure_eval` transfers the mode means; or
+   * the class-space mode mean `∑'_A A(m)·classMass θ A` directly, from
+     `classMass_eq_ennNormalizer_mul_twoObservableWeight` and the product structure of the weight.
+
+   A first attempt at the pushforward route located its real obligation: the class map
+   `classOf k = if (support k).Finite then Finsupp.ofSupportFinite k _ else 0` is **not**
+   automatically measurable.  The class space carries the discrete `⊤` σ-algebra, but the
+   configuration space carries the *product* σ-algebra, so measurability has to be proved, not
+   assumed — concretely: `{k | (Function.support k).Finite}` is measurable (a countable union of
+   cylinder conditions), and on it `classOf ⁻¹' {A} = {A.configuration}`, a measurable singleton of
+   the product space.  Both facts are available; they simply have to be written.  The second route
+   avoids measurability entirely and may be the cheaper one.
+
+   With either in hand, `tsum_modeMean_le` and `summable_primes_log_mul_ladderBound` give the bound.
+2. *The two divergences.*  `klDiv_of_ac_of_integrable` applied in both directions, then the sum
+   `D(P*‖P) + D(P‖P*) = σ·(E_P[log|soc|] − E_{P*}[log|soc|])`, which
+   `socleExpectation_eq_tilt_add_residue` and `ofReal_tsum_primes_modeMean_zero` already evaluate as
+   `σ·(−ζ′/ζ)(σ)`.

@@ -23,3 +23,16 @@ theorem.
 Trap: `mul_le_mul_left` on ℝ is a `≤` fact, not an iff — use `mul_le_mul_of_nonneg_left` then
 `mul_inv_cancel₀`.
 NEXT: the matrix levels (matrix-ordered structure, matrix order unit), then complete positivity.
+
+## Matrix levels done (2026-08-10)
+
+`HTGeometry/MatrixModuleMultiplication.lean`, `MatrixOrderedSpace.lean`,
+`OperatorSystemMatrixOrderUnit.lean`. `IsMatrixOrdering` needs only
+self-adjointness, `0`, `+`, compression: nonnegative scaling and the matrix
+order unit property are both theorems
+(`smul_mem`, `isMatrixOrderUnit_of_levelOne`).
+
+NEXT: completely positive / completely order isomorphic maps between
+matrix-ordered spaces, then matricial (complete) boundary ideals bridging to
+`ShilovLocalBoundaryIdeal`. Do NOT try "level-1 Archimedean ⇒ level-n
+Archimedean"; there is no compression proof.

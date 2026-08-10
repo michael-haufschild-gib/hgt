@@ -162,6 +162,16 @@ theorem compress_add [Fintype m] (α : Matrix m n 𝕜) (x y : Matrix m m V) :
     compress α (x + y) = compress α x + compress α y := by
   rw [compress, compress, compress, mulLeft_add, mulRight_add]
 
+theorem compress_neg [Fintype m] (α : Matrix m n 𝕜) (x : Matrix m m V) :
+    compress α (-x) = -compress α x := by
+  rw [compress, compress]
+  ext i j
+  simp [mulLeft, mulRight, Finset.sum_neg_distrib]
+
+theorem compress_sub [Fintype m] (α : Matrix m n 𝕜) (x y : Matrix m m V) :
+    compress α (x - y) = compress α x - compress α y := by
+  rw [sub_eq_add_neg, compress_add, compress_neg, ← sub_eq_add_neg]
+
 theorem compress_smul [Fintype m] (c : 𝕜) (α : Matrix m n 𝕜) (x : Matrix m m V) :
     compress α (c • x) = c • compress α x := by
   rw [compress, compress, mulLeft_smul, mulRight_smul]

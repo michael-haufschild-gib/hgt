@@ -1789,3 +1789,67 @@ The exact algebraic derived law and defect calculus are unconditional Lean;
 the analytic boundary theory is dependency-closed on paper using the cited
 primary theorems. No structure or hypothesis restates an unformalized analytic
 conclusion.
+
+## Operator-system layer: matrix levels formalized (2026-08-10)
+
+The card's stated formal boundary begins "current mathlib ... lacks operator
+systems".  The matrix levels of that object are now built and unconditional.
+
+New modules, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`) and
+wired into the `HTGeometry` umbrella:
+
+- `HTGeometry/MatrixModuleMultiplication.lean` — multiplication of a
+  module-valued matrix by scalar matrices (`mulLeft`, `mulRight`), their unit,
+  associativity, bilinearity and commutation laws, the compression
+  `compress α x = α* x α`, its behaviour on column-block splittings
+  (`compress_fromCols`), and the composition law
+  `compress (α * β) x = compress β (compress α x)`.
+- `HTGeometry/MatrixOrderedSpace.lean` — `IsMatrixOrdering`: a family of cones
+  `C n ⊆ Mₙ(V)`, one for every finite index type, of self-adjoint elements,
+  containing `0`, closed under addition, and stable under compression.
+  Closure under nonnegative real scaling is deliberately *not* an axiom:
+  `IsMatrixOrdering.smul_mem` derives it, because `compress (√c · 1) x = c • x`.
+  Also proved: closure under direct sums (`blockDiagonal_mem`), positivity of
+  every numerical sandwich (`vecCompress_mem`), the sandwich evaluations
+  `vecCompress_single` and `vecCompress_pair` (the `2 × 2` off-diagonal
+  inequality), and `compress_amplify`: a compression acts on `1ₙ ⊗ e` through
+  the scalar matrix `α* α`, so isometric compressions fix the matrix order unit.
+- `HTGeometry/OperatorSystemMatrixOrderUnit.lean` — the headline:
+
+  > **`IsMatrixOrdering.isMatrixOrderUnit_of_levelOne`.**  If `e` is a positive
+  > order unit for the *scalar* level of a matrix ordering, then for every
+  > finite level `m` and every self-adjoint `x ∈ Mₘ(V)` there is `T > 0` with
+  > `T · (1ₘ ⊗ e) ± x` positive at level `m`.
+
+  So the "matrix order unit" axiom in the definition of an operator system is
+  redundant: only the scalar-level condition has to be checked.  The mechanism
+  is that compression already produces every rank-one tensor
+  `(conj wᵢ · wⱼ) • u` of a scalar-level positive `u`
+  (`rankOneTensor_mem`), hence every nonnegatively weighted diagonal tensor
+  (`diagWeight_mem`); averaging the four rank-one tensors along `δᵢ ± δⱼ` and
+  `δᵢ ± i δⱼ` (`polarization_identity`) bounds the symmetrised entry pair
+  `pairTerm`, and `sum_pairTerm` (`∑ over all ordered pairs = x + x`) assembles
+  the pairs into the matrix.
+
+Supporting API also proved there: `rePart`/`imPart` self-adjoint decomposition
+of a vector in a `*`-module, `sum_mem`, `amplify_mem`, `smul_amplify_mem`.
+
+Still open on the analytic side, unchanged: the generation input (each stage
+system dense in its stage envelope) and the C*-envelope/Hamana layer.
+
+### Completely positive maps (same day)
+
+`HTGeometry/MatrixOrderedMap.lean`, axiom-clean and in the umbrella:
+
+- `ampMap` (entrywise amplification of a linear map) with
+  `ampMap_compress`: **amplification commutes with compression**, and
+  `ampMap_amplify`;
+- `compress_conjTranspose`: compression commutes with the involution, hence
+  `isSelfAdjoint_compress`;
+- `IsCompletelyPositive`, closed under composition, containing the identity;
+- `comapOrdering` and `isMatrixOrdering_comap`: **the pullback of a matrix
+  ordering along a linear map is a matrix ordering** — the mechanism by which a
+  self-adjoint subspace of a C*-algebra becomes an operator system;
+- `isCompletelyPositive_iff_le_comap`: complete positivity of `φ` is exactly
+  the statement that the source ordering refines the pullback of the target
+  ordering.

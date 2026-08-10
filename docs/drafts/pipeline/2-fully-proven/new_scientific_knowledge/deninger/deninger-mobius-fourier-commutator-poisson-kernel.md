@@ -19,7 +19,7 @@
     \(M(X)=O(Xe^{-c(\log X)^{1/3}})\), already formalized in the corpus;
   - ordinary Fourier inversion and Poisson summation on Schwartz functions;
   - Burnol's co-Poisson/Fourier intertwining as literature context.
-- **Lean status:** intentionally paper-only during the corpus refactor.
+- **Lean status:** section 5 formalized unconditionally; see *Lean status* below.
 
 ## 1. Result
 
@@ -611,6 +611,40 @@ that obstruction and its non-diagonal polarization.
 - ../../../3-formalized/moebius-exponent-upgrade.md.
 - deninger-critical-floquet-von-mangoldt-renormalization-wall.md.
 
+## Lean status
+
+### Section 5 — the causal von Mangoldt endpoint anomaly `(34)`--`(35)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerCausalVonMangoldtWall.lean`.  Axiom audit for all
+declarations: `propext, Classical.choice, Quot.sound`.  No distribution theory is needed: testing
+the current against `φ` turns `(34)` into a numerical series, which is the statement proved.
+
+- `deningerCausalTerm`, `deningerCausalRenorm` — the tested current `(Λ(n)/n) ∫ f(y) φ(y/n) dy`
+  and its renormalization, subtracting `φ(0)`.
+- `deningerCausalRenorm_norm_le` — **`(38)`**: the renormalized term is at most
+  `C · (∫_0^∞ y|f|) · Λ(n)/n²`, from the mean-value bound alone.
+- `deningerVonMangoldt_summable_div_sq` — `∑ Λ(n)/n² < ∞`, from `Λ ≤ log` and the corpus's
+  `Sieve.summable_log_div_sq`.
+- `deningerCausalRenorm_summable` — **`(34)`**: the renormalized current always converges.
+- `deningerCausalTerm_eq` — **`(36)`--`(37)`**: the two currents differ by exactly
+  `(Λ(n)/n) · (∫_0^∞ f) · φ(0)`.
+- `deningerCausalL_tendsto_atTop`, `deningerVonMangoldt_not_summable` — `L_N → ∞`, from the
+  corpus's `Sieve.mertensFirst_lower` and `Λ(p) = log p`.
+- `deningerCausal_summable_iff` — **`(35)`**: the unrenormalized current converges if and only if
+  `(∫_0^∞ f) · φ(0) = 0`.  Combined with `(12)` this is the blindness law `(41)`.
+
+The hypothesis on `φ` is the mean-value bound `‖φ(x) - φ(0)‖ ≤ C|x|` together with continuity,
+which is what `(38)` uses; every `C_c^∞` test function satisfies it.
+
+### What is left
+
+`(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
+unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a Fubini on a fixed
+ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
+bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  All of these need the
+`H_- = S_exp(ℝ)` layer, which the corpus does not yet have; `H_∩` and `Z` do exist, as
+`RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonLM`.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: source operator, domain, falsifiers, and literature boundary fixed
@@ -620,7 +654,7 @@ that obstruction and its non-diagonal polarization.
   identity, and boundary image `(4)` proved on paper
 - [ ] source annihilator gate: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
 - [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
-- [ ] 2 → 3 formalized: paused during Lean corpus refactor
+- [ ] 2 → 3 formalized: section 5 done; `(5)`, `(6)`, `(11)`, `(12)`, `(45)` remain
 - [ ] 3 → 4 publication-ready
 
 ## Log

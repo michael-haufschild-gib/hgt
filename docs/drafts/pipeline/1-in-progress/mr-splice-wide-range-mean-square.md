@@ -3760,3 +3760,103 @@ functions, and pretending otherwise would have left a hole.
 
 The numerical assembly (monotonicity of the two pieces, the `O(h)` swing, the sum over `k`), and the
 averaged Chowla theorem.
+
+## 2026-08-10 the kernel's two pieces are monotone
+
+`Sieve/KernelPieceMonotone.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9047 jobs).
+
+```text
+antitone_div_natAdd :  c ≥ 0, k ≥ 1  →  c/((n+1)+k) ≤ c/(n+k)
+antitone_div_succ :  c ≥ 0  →  c/(n+2) ≤ c/(n+1)
+antitone_floor_of_antitone :  u nonincreasing  →  ⌊u(i+1)⌋ ≤ ⌊u(i)⌋
+antitone_ceil_of_antitone :  u nonincreasing  →  ⌈u(i+1)⌉ ≤ ⌈u(i)⌉
+```
+
+Both pieces of the exact kernel are therefore nonincreasing in `n`, and their swings across
+`[√x/2, √x + h]` are `O(h)` each.  Chained with `variation_max_zero_of_sub_antitone` this gives the
+kernel total variation `O(h)`, and `abs_weighted_correlation_le` strips it at that cost.
+
+The partial-summation apparatus is now complete and applies to the kernel exactly as defined:
+
+```text
+sum_lower_eq_shifts          reindex the off-diagonal by shift
+abs_sum_mul_le_of_bounded_partial_bv   Abel without monotonicity
+variation_le_of_sub_antitone           variation of a difference of monotones
+variation_max_zero_of_sub_antitone     … surviving truncation to a count
+antitone_*                             both pieces are monotone
+abs_shift_sum_le                       the sum over shifts
+```
+
+### What is left
+
+The numerical assembly, and the averaged Chowla theorem.
+
+## 2026-08-10 correction: the two-piece variation bound is a factor `√x/h` too lossy
+
+`Sieve/VariationBimonotone.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9048 jobs).
+
+Yesterday's claim that the kernel's variation is `O(h)` "same order as the uniform bound" was wrong
+*for the route as built*.  `variation_le_of_sub_antitone` bounds the variation by the sum of the two
+pieces' swings, and each of `(x + h√x)/(n+k)` and `x/n` swings by `≍ √x` across `[√x/2, √x + h]`.
+So that route gives variation `O(√x)`, and `abs_shift_sum_le` would then demand
+
+```text
+∑_{k ≤ 2h} B k = o(h²) ,
+```
+
+with `B k` a partial correlation sum of trivial size `√x` — a demand stronger than the truth by a
+factor `√x/h`, and not provable.
+
+The kernel's *difference* is `O(h)` throughout and has at most one turning point in `n` — its
+increments change sign once, near `n ≍ k√x/h`.  For such a function the variation telescopes on each
+side of the turn:
+
+```text
+variation_le_two_range_of_bimonotone :  w increasing up to c, decreasing after,  L ≤ w ≤ U  →
+  ∑_{i<n} |w(i+1) − w(i)| ≤ 2·(U − L)
+```
+
+giving variation `O(h)` as required.  The failed accounting is worth recording alongside the fix:
+"variation ≤ sum of the pieces' swings" is true and useless here, and the gap between the two routes
+is exactly the factor the theorem is about.
+
+### What is left
+
+Locating the turning point for the kernel (an explicit `c ≍ k√x/h`), the numerical assembly, and the
+averaged Chowla theorem.
+
+## 2026-08-10 the integer kernel cannot be Abel-summed — split it instead
+
+`Sieve/KernelSmoothSplit.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9049 jobs).
+
+A second look at the previous correction shows the bimonotone bound does not rescue the *integer*
+kernel either.  `K(n) = ⌊B(n)⌋ + 1 − ⌈A(n)⌉` with `A`, `B` each dropping by `≍ √x` across the range;
+their unit drops occur at different `n`, so the increments do not cancel step by step and the true
+variation is `≍ √x`.  No refinement of the variation estimate avoids that — the integer kernel is
+simply not of bounded variation at scale `h`.
+
+The resolution is to split rather than to estimate:
+
+```text
+kernelSmooth A B := max(B − A + 1, 0)
+
+abs_count_sub_length_le :  |⌊B⌋ + 1 − ⌈A⌉ − (B − A + 1)| ≤ 2
+abs_count_sub_smooth_le :  |⌊B⌋ + 1 − ⌈A⌉ − kernelSmooth A B| ≤ 2
+```
+
+* the **smooth part** `kernelSmooth` has variation `O(h)`: its untruncated form has one turning
+  point and range `O(h)` (`variation_le_two_range_of_bimonotone`), and truncation does not increase
+  variation (`variation_max_zero_le`).  Abel summation applies at cost `O(h)`;
+* the **error** is bounded by the absolute constant `2`, so its contribution is bounded *trivially*
+  by `2√x` per shift, hence `4h√x` over all `k ≤ 2h`, which is `o(h²√x)`.
+
+The error is affordable precisely because its bound is a constant rather than `O(h)`: the trivial
+estimate for it already sits a factor `h` below the target.  That asymmetry — smooth part needs
+cancellation, bounded error does not — is the reason the split works at all.
+
+### What is left
+
+The turning point of `B − A`, the numerical assembly, and the averaged Chowla theorem.

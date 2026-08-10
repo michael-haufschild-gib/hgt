@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.HedenmalmThetaAllShiftedTails
 import GaloisForLFunctions.RHTower.HedenmalmThetaSourceDeterminantMultiplicity
+import GaloisForLFunctions.RHTower.XiHedenmalmThetaBorelHilbert
 
 /-!
 # Exact point spectrum of the fixed Hedenmalm theta source inverse
@@ -506,6 +507,46 @@ theorem xiC_thetaSource_eq_zero_of_thetaCompactSourceInverse_eigen
     rw [← hvf, hv0, map_zero]
   exact HedenmalmHilbertSchmidt.xiC_eq_zero_of_solution_const thetaSource
     (neg_ne_zero.mpr hm) huderiv heq (hasShiftedTail_thetaSource_all z) hbot htop
+
+/-- Every nonzero reciprocal eigenmode of the fixed compact theta source inverse forces a zero of
+the centered completed Riemann Xi function. -/
+theorem XiC_eq_zero_of_thetaCompactSourceInverse_eigen
+    {z : ℂ} (hz : z ≠ 0) {f : Lp ℂ 2 unitIntervalMeasure}
+    (hf0 : f ≠ 0)
+    (hf : thetaCompactSourceInverse f = (-z⁻¹) • f) :
+    XiC z = 0 := by
+  rw [← xiC_thetaSource_all z]
+  exact xiC_thetaSource_eq_zero_of_thetaCompactSourceInverse_eigen hz hf0 hf
+
+/-- **Exact divisor theorem for the source determinant.**  The fixed Hilbert--Schmidt determinant
+`det₂(I + zB)` vanishes exactly at the centered Xi divisor, with no strip restriction and no
+spurious spectral points. -/
+theorem thetaSourceEntireDet2_eq_zero_iff_XiC_eq_zero (z : ℂ) :
+    thetaSourceEntireDet2 z = 0 ↔ XiC z = 0 := by
+  by_cases hz : z = 0
+  · subst z
+    constructor
+    · intro h
+      rw [thetaSourceEntireDet2_zero] at h
+      exact (one_ne_zero h).elim
+    · intro h
+      exact (XiC_zero_ne h).elim
+  · constructor
+    · intro hdet
+      obtain ⟨f, hf0, hf⟩ :=
+        (thetaSourceEntireDet2_eq_zero_iff_exists_eigenvector hz).mp hdet
+      exact XiC_eq_zero_of_thetaCompactSourceInverse_eigen hz hf0
+        (by simpa only [thetaKernelOperator_eq_thetaCompactSourceInverse] using hf)
+    · intro hXi
+      have hstrip : |z.im| < 1 := abs_im_lt_one_of_XiC_eq_zero hXi
+      have hsource : xiC thetaSource z = 0 := by
+        rw [xiC_thetaSource_all]
+        exact hXi
+      refine (thetaSourceEntireDet2_eq_zero_iff_exists_eigenvector hz).mpr ?_
+      refine ⟨thetaDivisorEigenvector z hstrip hsource,
+        thetaDivisorEigenvector_ne_zero z hstrip hsource, ?_⟩
+      simpa only [thetaKernelOperator_eq_thetaCompactSourceInverse] using
+        thetaCompactSourceInverse_eigen z hstrip hsource
 
 end HedenmalmThetaSource
 

@@ -798,3 +798,65 @@ coefficients.  Its distance from the translate `b(· - δ_n)` — whose coeffici
 
 so Parseval turns the already-proved `ℓ²` statement `tendsto_gaussTranslationL2Defect` into the
 literal `L²` convergence of (9).
+
+## Lean status, fourteenth pass: equation (9) in `L²(R/Z)`
+
+`RHTower/GaussTranslationL2Convergence.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+gaussPrimeScaleTranslate p δ                     : b(· - δ) on R/Z
+memLp_gaussPrimeScaleTranslate                   : it is in L² (bounded on a probability space)
+gaussPrimeScaleTranslateLp hp δ                  : the translate as an L² vector
+fourierCoeff_gaussPrimeScaleTranslateLp          : its coefficients are e^{-2πijδ} b̂(j)
+norm_sq_eq_tsum_fourierCoeff                     : Parseval, ‖u‖² = ∑'_j ‖fourierCoeff u j‖²
+norm_fourierCoeff_shiftedBlock_sub_translate     : ‖coeff difference‖ = ‖b̂(j)‖·‖defect_j(n)‖
+tendsto_norm_gaussShiftedBlock_sub_translate     : ‖v_n - b(· - δ_n)‖ → 0
+```
+
+The last theorem is **equation (9) exactly as the card states it**:
+
+```text
+(conj d_n)^(-1) e_(-n) D* B e_n  -  b(· - δ_n)  →  0   in L²(R/Z).
+```
+
+Parseval for `fourierBasis` turns the `L²` norm into the `ℓ²` sum, the coefficientwise identity
+turns each summand into `‖b̂(j)‖²‖defect_j(n)‖²`, and that sum is exactly
+`tendsto_gaussTranslationL2Defect`.  The degenerate case `d_n = 0` is handled inside the
+coefficient identity, so the statement carries no side condition.
+
+### Remaining
+
+Only §4: the iterated principal action (10)-(11), `⟨G^m e_n, e_n⟩ = p^m |d_n|^(2m)(A_m(δ_n) + o(1))`.
+Its inputs — (9) in both `ℓ²` and `L²` form, its uniform version over amplitude families, the five
+operators `B, B^(-2), D, D*, G`, the exact average `A_m` and the rotation law (13) — are all
+formalized.
+
+## Lean status, fifteenth pass: (9) for a general amplitude
+
+`RHTower/GaussUniformTranslationL2.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+gaussRotationBlock δ                              : the unitary Fourier multiplier e_(-j)(δ)
+fourierCoeff_gaussRotationBlock                   : its coefficients
+gaussShiftedBlockOf hm k p n u                    : (conj d_n)^(-1) e_(-n) D* (e_n u)
+fourierCoeff_gaussShiftedBlockOf                  : conj(d_(n+j))·û(j)/conj(d_n)
+norm_fourierCoeff_shiftedBlockOf_sub_rotation     : ‖coeff difference‖ = ‖û(j)‖·‖defect_j(n)‖
+tendsto_norm_gaussShiftedBlockOf_sub_rotation     : ‖shifted block - rotation‖ → 0
+```
+
+The last theorem is equation (9) **with the prime-scale amplitude replaced by any `L²` vector whose
+Fourier coefficients decay like `A/(1+|j|)`**, and the rate depends only on `A`.  That is exactly
+the card's remark that the estimate is uniform over the amplitudes produced by finitely many
+products of translates of `b` and `b^{-1}`, and it is what the fixed number of iterations in §4
+consumes.
+
+The moving target is stated through the rotation multiplier rather than a translation operator:
+on the Fourier side translation by `δ` *is* the unitary diagonal `e_(-j)(δ)`, so no measure-theoretic
+translation-invariance argument is needed.
+
+### Remaining
+
+The iterated principal action itself: `G(e_n f) = p|d_n|² e_n (a_(δ_n) f + o(1))` and its `m`-fold
+iterate `⟨G^m e_n, e_n⟩ = p^m |d_n|^(2m) (A_m(δ_n) + o(1))`.

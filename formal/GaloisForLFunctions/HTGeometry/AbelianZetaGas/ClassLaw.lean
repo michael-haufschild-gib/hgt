@@ -147,6 +147,118 @@ theorem classLaw_tiltConv_eq_withDensity (σ : EulerSigma) :
   ring
 
 
+/-! ## The Radon–Nikodym derivative of the canonical tilt -/
+
+instance isProbabilityMeasure_classLaw (θ : AbelianZetaConvergentParameters) :
+    IsProbabilityMeasure (classLaw θ.toAbelianZetaParameters) :=
+  ⟨classLaw_univ θ⟩
+
+/-- **The Radon–Nikodym derivative of the canonical tilt.** -/
+theorem rnDeriv_classLaw_tiltConv (σ : EulerSigma) :
+    (classLaw (tiltConv σ).toAbelianZetaParameters).rnDeriv
+        (classLaw (temperatureConv σ).toAbelianZetaParameters)
+      =ᵐ[classLaw (temperatureConv σ).toAbelianZetaParameters]
+        fun A => densityConst σ * ENNReal.ofReal ((A.socleOrder : ℝ) ^ (-σ.val)) := by
+  have hmeas : Measurable fun A : AbelianZetaGroupClass =>
+      densityConst σ * ENNReal.ofReal ((A.socleOrder : ℝ) ^ (-σ.val)) :=
+    fun s _ => trivial
+  rw [classLaw_tiltConv_eq_withDensity σ]
+  exact Measure.rnDeriv_withDensity _ hmeas
+
+/-! ## The log-density -/
+
+theorem ennNormalizer_ne_top (θ : AbelianZetaConvergentParameters) :
+    θ.ennNormalizer ≠ ⊤ := by
+  rw [AbelianZetaConvergentParameters.ennNormalizer]
+  exact ENNReal.coe_ne_top
+
+theorem densityConst_ne_zero (σ : EulerSigma) : densityConst σ ≠ 0 := by
+  rw [densityConst]
+  exact ENNReal.div_ne_zero.mpr
+    ⟨AbelianZetaConvergentParameters.ennNormalizer_ne_zero _, ennNormalizer_ne_top _⟩
+
+theorem densityConst_ne_top (σ : EulerSigma) : densityConst σ ≠ ⊤ := by
+  rw [densityConst]
+  exact ENNReal.div_ne_top (ennNormalizer_ne_top _)
+    (AbelianZetaConvergentParameters.ennNormalizer_ne_zero _)
+
+theorem densityConst_toReal_pos (σ : EulerSigma) : 0 < (densityConst σ).toReal :=
+  ENNReal.toReal_pos (densityConst_ne_zero σ) (densityConst_ne_top σ)
+
+/-- **The log-density of the canonical tilt.**  Almost everywhere,
+`llr = log C − σ·log|soc A|`. -/
+theorem llr_classLaw_tiltConv (σ : EulerSigma) :
+    llr (classLaw (tiltConv σ).toAbelianZetaParameters)
+        (classLaw (temperatureConv σ).toAbelianZetaParameters)
+      =ᵐ[classLaw (temperatureConv σ).toAbelianZetaParameters]
+        fun A => Real.log ((densityConst σ).toReal)
+          - σ.val * Real.log ((A.socleOrder : ℝ)) := by
+  filter_upwards [rnDeriv_classLaw_tiltConv σ] with A hA
+  show Real.log ((classLaw (tiltConv σ).toAbelianZetaParameters).rnDeriv
+      (classLaw (temperatureConv σ).toAbelianZetaParameters) A).toReal = _
+  rw [hA, ENNReal.toReal_mul,
+    ENNReal.toReal_ofReal (Real.rpow_nonneg (by positivity) _)]
+  have hsoc : (0 : ℝ) < (A.socleOrder : ℝ) := by exact_mod_cast A.socleOrder_pos
+  have hc : (0 : ℝ) < (densityConst σ).toReal := densityConst_toReal_pos σ
+  have hpow : (0 : ℝ) < ((A.socleOrder : ℝ) ^ (-σ.val)) := Real.rpow_pos_of_pos hsoc _
+  rw [Real.log_mul hc.ne' hpow.ne', Real.log_rpow hsoc]
+  ring
+
+/-! ## An integrability criterion on the class space -/
+
+theorem lintegral_classLaw (θ : AbelianZetaParameters) (g : AbelianZetaGroupClass → ℝ≥0∞) :
+    ∫⁻ A, g A ∂(classLaw θ) = ∑' A : AbelianZetaGroupClass,
+      g A * abelianZetaClassMass θ A := by
+  classical
+  rw [lintegral_countable' (μ := classLaw θ) (f := g)]
+  exact tsum_congr fun A => by rw [classLaw_singleton]
+
+/-- **An integrability criterion on the class space.**  A real observable is integrable against the
+zeta-Gibbs law exactly when its absolute values are summable against the class masses. -/
+theorem integrable_classLaw (θ : AbelianZetaParameters) (f : AbelianZetaGroupClass → ℝ)
+    (h : (∑' A : AbelianZetaGroupClass,
+      ENNReal.ofReal ‖f A‖ * abelianZetaClassMass θ A) ≠ ⊤) :
+    Integrable f (classLaw θ) := by
+  have hmeas : Measurable f := fun s _ => trivial
+  refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+  rw [HasFiniteIntegral, lintegral_classLaw]
+  refine lt_of_le_of_ne le_top ?_
+  intro htop
+  apply h
+  rw [← htop]
+  exact tsum_congr fun A => by rw [← ofReal_norm]
+
+/-! ## The finitely occupied configurations form a measurable set -/
+
+theorem measurableSet_supportSubset (s : Finset AbelianZetaMode) :
+    MeasurableSet {k : AbelianZetaMode → ℕ | ∀ m ∉ s, k m = 0} := by
+  have hEq : {k : AbelianZetaMode → ℕ | ∀ m ∉ s, k m = 0}
+      = ⋂ m : {m : AbelianZetaMode // m ∉ s}, {k : AbelianZetaMode → ℕ | k (m : AbelianZetaMode) = 0} := by
+    ext k
+    simp only [Set.mem_setOf_eq, Set.mem_iInter, Subtype.forall]
+  rw [hEq]
+  refine MeasurableSet.iInter fun m => ?_
+  exact (measurable_pi_apply (m : AbelianZetaMode)) (MeasurableSet.singleton 0)
+
+theorem measurableSet_finiteSupport :
+    MeasurableSet {k : AbelianZetaMode → ℕ | (Function.support k).Finite} := by
+  classical
+  have hEq : {k : AbelianZetaMode → ℕ | (Function.support k).Finite}
+      = ⋃ s : Finset AbelianZetaMode, {k : AbelianZetaMode → ℕ | ∀ m ∉ s, k m = 0} := by
+    ext k
+    constructor
+    · intro hk
+      refine Set.mem_iUnion.mpr ⟨hk.toFinset, fun m hm => ?_⟩
+      by_contra h0
+      exact hm (Set.Finite.mem_toFinset hk |>.mpr h0)
+    · rintro hk
+      obtain ⟨s, hs⟩ := Set.mem_iUnion.mp hk
+      refine Set.Finite.subset s.finite_toSet fun m hm => ?_
+      by_contra hms
+      exact hm (hs m hms)
+  rw [hEq]
+  exact MeasurableSet.iUnion fun s => measurableSet_supportSubset s
+
 end
 
 end GaloisForLFunctions.HTGeometry

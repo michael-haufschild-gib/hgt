@@ -276,19 +276,19 @@ noncomputable def coneRelativeObserverDuality (V : Type*) [AddCommGroup V] [Modu
 variable {V : Type*} [AddCommGroup V] [Module k V]
 
 /-- A functional on the source that kills coboundaries descends to source cohomology. -/
-noncomputable def sourceCharacter (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
-    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0) : C.cohomology (n + 1) →ₗ[k] V := by
-  refine Submodule.liftQ _ (P.comp (C.cocycles (n + 1)).subtype) ?_
+noncomputable def sourceCharacter (n : ℤ) (P : M (n + 1) →ₗ[k] V)
+    (hP : ∀ b : M n, P (C.d n b) = 0) : C.cohomology n →ₗ[k] V := by
+  refine Submodule.liftQ _ (P.comp (C.cocycles n).subtype) ?_
   rintro c hc
-  have hc' : (c : M (n + 1 + 1)) ∈ C.coboundaries (n + 1) := hc
+  have hc' : (c : M (n + 1)) ∈ C.coboundaries n := hc
   obtain ⟨b, hb⟩ := hc'
-  show P (c : M (n + 1 + 1)) = 0
+  show P (c : M (n + 1)) = 0
   rw [← hb]
   exact hP b
 
-@[simp] theorem sourceCharacter_cls (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
-    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0) (c : C.cocycles (n + 1)) :
-    sourceCharacter (C := C) n P hP (C.cls c) = P (c : M (n + 1 + 1)) := rfl
+@[simp] theorem sourceCharacter_cls (n : ℤ) (P : M (n + 1) →ₗ[k] V)
+    (hP : ∀ b : M n, P (C.d n b) = 0) (c : C.cocycles n) :
+    sourceCharacter (C := C) n P hP (C.cls c) = P (c : M (n + 1)) := rfl
 
 /-- The same functional read on the mapping cone: a cone class is sent to the value of `P` on its
 source coordinate. -/
@@ -336,7 +336,7 @@ theorem coneCharacterRel_eq (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
     (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0)
     (z : (coneComplex Φ).cohomology n ⧸ LinearMap.range ((coneInc Φ).cohomologyMap n)) :
     coneCharacterRel Φ n P hP z
-      = sourceCharacter (C := C) n P hP
+      = sourceCharacter (C := C) (n + 1) P hP
         ((coneRelativeLawEquiv Φ n z : C.cohomology (n + 1))) := by
   obtain ⟨w, rfl⟩ := Submodule.Quotient.mk_surjective _ z
   obtain ⟨y, rfl⟩ := (coneComplex Φ).cls_surjective n w
