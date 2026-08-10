@@ -135,6 +135,20 @@ theorem thetaShiftedRangeMap_injective (α : ℂ) :
     (neg_ne_zero.mpr (inv_ne_zero hα)) hkH0 hkEq
   exact hmean ((mem_thetaCentered_iff (k : H)).mp k.property)
 
+theorem thetaShiftedRangeMap_antilipschitz (α : ℂ) :
+    ∃ c : NNReal, AntilipschitzWith c (thetaShiftedRangeMap α) := by
+  have hcompact : IsCompactOperator thetaCenteredSourceInverse :=
+    isCompactOperator_thetaCompactSourceInverse.comp_clm thetaCentered.subtypeL
+  simpa only [thetaShiftedRangeMap] using
+    (antilipschitz_subtype_add_smul_of_compact_of_injective
+      thetaCentered thetaCentered_isClosed thetaCenteredSourceInverse hcompact α
+        (thetaShiftedRangeMap_injective α))
+
+theorem thetaShiftedRangeMap_isClosed_range (α : ℂ) :
+    IsClosed (Set.range (thetaShiftedRangeMap α)) := by
+  rcases thetaShiftedRangeMap_antilipschitz α with ⟨c, hc⟩
+  exact hc.isClosed_range (thetaShiftedRangeMap α).uniformContinuous
+
 theorem thetaShiftedGraphMap_antilipschitz (α : ℂ) :
     ∃ c : NNReal, AntilipschitzWith c
       (thetaCenteredSourceInverse.prod (thetaShiftedRangeMap α)) := by
@@ -288,6 +302,231 @@ theorem thetaShiftedWeightedDerivative_range (α : ℂ) :
       LinearMap.range (thetaShiftedRangeMap α).toLinearMap :=
   closedGraphTransform_range thetaCentered thetaCenteredSourceInverse
     (thetaShiftedRangeMap α) thetaCenteredSourceInverse_injective
+
+/-! ### Compact inverse on the translated closed range -/
+
+/-- Actual closed range of `A + α`. -/
+abbrev thetaShiftedRange (α : ℂ) : Submodule ℂ H :=
+  (thetaShiftedRangeMap α).range
+
+theorem thetaShiftedRange_isClosed (α : ℂ) :
+    IsClosed (thetaShiftedRange α : Set H) := by
+  change IsClosed (Set.range (thetaShiftedRangeMap α))
+  exact thetaShiftedRangeMap_isClosed_range α
+
+noncomputable instance thetaShiftedRange_completeSpace (α : ℂ) :
+    CompleteSpace (thetaShiftedRange α) :=
+  (thetaShiftedRange_isClosed α).completeSpace_coe
+
+/-- Compact inverse from the translated range to the unchanged operator domain. -/
+def thetaShiftedSourceInverse (α : ℂ) : thetaShiftedRange α →L[ℂ] H :=
+  thetaCenteredSourceInverse.comp
+    ((thetaShiftedRangeMap α).equivRange
+      (thetaShiftedRangeMap_injective α)
+      (thetaShiftedRangeMap_isClosed_range α)).symm.toContinuousLinearMap
+
+theorem thetaShiftedSourceInverse_apply_rangeMap (α : ℂ) (k : thetaCentered) :
+    thetaShiftedSourceInverse α
+      ⟨thetaShiftedRangeMap α k, by simp⟩ = thetaCenteredSourceInverse k := by
+  rw [thetaShiftedSourceInverse, ContinuousLinearMap.comp_apply]
+  apply congrArg thetaCenteredSourceInverse
+  exact ContinuousLinearMap.equivRange_symm_apply
+    (thetaShiftedRangeMap_injective α)
+      (thetaShiftedRangeMap_isClosed_range α) k
+
+theorem thetaShiftedSourceInverse_injective (α : ℂ) :
+    Function.Injective (thetaShiftedSourceInverse α) := by
+  intro x y hxy
+  apply ((thetaShiftedRangeMap α).equivRange
+    (thetaShiftedRangeMap_injective α)
+      (thetaShiftedRangeMap_isClosed_range α)).symm.injective
+  apply thetaCenteredSourceInverse_injective
+  exact hxy
+
+theorem thetaShiftedSourceInverse_range (α : ℂ) :
+    LinearMap.range (thetaShiftedSourceInverse α).toLinearMap =
+      LinearMap.range thetaCenteredSourceInverse.toLinearMap := by
+  apply le_antisymm
+  · rintro y ⟨r, rfl⟩
+    exact ⟨((thetaShiftedRangeMap α).equivRange
+      (thetaShiftedRangeMap_injective α)
+        (thetaShiftedRangeMap_isClosed_range α)).symm r, rfl⟩
+  · rintro y ⟨k, rfl⟩
+    exact ⟨⟨thetaShiftedRangeMap α k, by simp⟩,
+      thetaShiftedSourceInverse_apply_rangeMap α k⟩
+
+theorem thetaShiftedSourceInverse_dense_range (α : ℂ) :
+    Dense (LinearMap.range (thetaShiftedSourceInverse α).toLinearMap : Set H) := by
+  rw [thetaShiftedSourceInverse_range]
+  exact thetaCenteredSourceInverse_dense_range
+
+theorem thetaShiftedSourceInverse_compact (α : ℂ) :
+    IsCompactOperator (thetaShiftedSourceInverse α) := by
+  exact (isCompactOperator_thetaCompactSourceInverse.comp_clm
+    thetaCentered.subtypeL).comp_clm
+      ((thetaShiftedRangeMap α).equivRange
+        (thetaShiftedRangeMap_injective α)
+          (thetaShiftedRangeMap_isClosed_range α)).symm.toContinuousLinearMap
+
+/-- Hyperplane-inverse presentation of the already constructed literal translate. -/
+def thetaShiftedWeightedDerivativeModel (α : ℂ) : H →ₗ.[ℂ] H :=
+  closedHyperplaneInverse (thetaShiftedRange α) (thetaShiftedSourceInverse α)
+
+theorem thetaShiftedWeightedDerivativeModel_eq (α : ℂ) :
+    thetaShiftedWeightedDerivativeModel α = thetaShiftedWeightedDerivative α := by
+  apply LinearPMap.ext
+  · rw [thetaShiftedWeightedDerivativeModel, closedHyperplaneInverse_domain,
+      thetaShiftedWeightedDerivative, closedGraphTransform_domain,
+      thetaShiftedSourceInverse_range]
+  · intro x hxModel hxShift
+    have hxRange : x ∈ LinearMap.range thetaCenteredSourceInverse.toLinearMap := by
+      simpa only [thetaShiftedWeightedDerivative, closedGraphTransform_domain] using hxShift
+    rcases hxRange with ⟨k, hk⟩
+    let r : thetaShiftedRange α := ⟨thetaShiftedRangeMap α k, by simp⟩
+    have hBr : thetaShiftedSourceInverse α r = thetaCenteredSourceInverse k :=
+      thetaShiftedSourceInverse_apply_rangeMap α k
+    have hModelApply := (closedHyperplaneInverse_apply_B (thetaShiftedRange α)
+      (thetaShiftedSourceInverse α) (thetaShiftedSourceInverse_injective α) r).2
+    have hShiftApply := (closedGraphTransform_apply_B thetaCentered
+      thetaCenteredSourceInverse (thetaShiftedRangeMap α)
+        thetaCenteredSourceInverse_injective k).2
+    have hxModelEq :
+        (⟨x, hxModel⟩ : (thetaShiftedWeightedDerivativeModel α).domain) =
+          ⟨thetaShiftedSourceInverse α r,
+            (closedHyperplaneInverse_apply_B (thetaShiftedRange α)
+              (thetaShiftedSourceInverse α)
+                (thetaShiftedSourceInverse_injective α) r).1⟩ := by
+      apply Subtype.ext
+      exact hk.symm.trans hBr.symm
+    have hxShiftEq :
+        (⟨x, hxShift⟩ : (thetaShiftedWeightedDerivative α).domain) =
+          ⟨thetaCenteredSourceInverse k,
+            (closedGraphTransform_apply_B thetaCentered thetaCenteredSourceInverse
+              (thetaShiftedRangeMap α) thetaCenteredSourceInverse_injective k).1⟩ := by
+      exact Subtype.ext hk.symm
+    calc
+      thetaShiftedWeightedDerivativeModel α ⟨x, hxModel⟩ = (r : H) := by
+        rw [hxModelEq]
+        exact hModelApply
+      _ = thetaShiftedRangeMap α k := rfl
+      _ = thetaShiftedWeightedDerivative α ⟨x, hxShift⟩ := by
+        rw [hxShiftEq]
+        exact hShiftApply.symm
+
+/-! ### Strictly positive translated Witten square -/
+
+/-- Bounded inverse of the natural-domain square `(A + α)†(A + α)`. -/
+def thetaShiftedWittenResolvent (α : ℂ) : H →L[ℂ] H :=
+  (thetaShiftedSourceInverse α).comp (thetaShiftedSourceInverse α).adjoint
+
+theorem thetaShiftedSourceInverse_adjoint_injective (α : ℂ) :
+    Function.Injective (thetaShiftedSourceInverse α).adjoint := by
+  apply continuousLinearMap_adjoint_injective_of_dense_range
+  simpa only [ContinuousLinearMap.coe_coe] using thetaShiftedSourceInverse_dense_range α
+
+theorem thetaShiftedWittenResolvent_injective (α : ℂ) :
+    Function.Injective (thetaShiftedWittenResolvent α) := by
+  simpa only [thetaShiftedWittenResolvent, ContinuousLinearMap.coe_comp] using
+    ((thetaShiftedSourceInverse α).self_comp_adjoint_injective_iff.mpr
+      (thetaShiftedSourceInverse_adjoint_injective α))
+
+theorem thetaShiftedWittenResolvent_isSelfAdjoint (α : ℂ) :
+    IsSelfAdjoint (thetaShiftedWittenResolvent α) := by
+  change (thetaShiftedWittenResolvent α).adjoint = thetaShiftedWittenResolvent α
+  rw [thetaShiftedWittenResolvent, ContinuousLinearMap.adjoint_comp,
+    ContinuousLinearMap.adjoint_adjoint]
+
+theorem thetaShiftedWittenResolvent_dense_range (α : ℂ) :
+    Dense ((thetaShiftedWittenResolvent α).range : Set H) := by
+  have horth : (thetaShiftedWittenResolvent α).rangeᗮ = ⊥ := by
+    rw [(thetaShiftedWittenResolvent α).orthogonal_range,
+      show (thetaShiftedWittenResolvent α).adjoint = thetaShiftedWittenResolvent α from
+        thetaShiftedWittenResolvent_isSelfAdjoint α]
+    exact LinearMap.ker_eq_bot.mpr (thetaShiftedWittenResolvent_injective α)
+  rw [Submodule.dense_iff_topologicalClosure_eq_top]
+  apply Submodule.orthogonal_eq_bot_iff.mp
+  simpa using horth
+
+theorem thetaShiftedWittenResolvent_compact (α : ℂ) :
+    IsCompactOperator (thetaShiftedWittenResolvent α) :=
+  (thetaShiftedSourceInverse_compact α).comp_clm
+    (thetaShiftedSourceInverse α).adjoint
+
+/-- Positive self-adjoint translated Witten Hamiltonian. -/
+def thetaShiftedWittenHamiltonian (α : ℂ) : H →ₗ.[ℂ] H :=
+  closedDenseInverse (thetaShiftedWittenResolvent α)
+
+theorem thetaShiftedWittenHamiltonian_isClosed (α : ℂ) :
+    (thetaShiftedWittenHamiltonian α).IsClosed :=
+  closedDenseInverse_isClosed (thetaShiftedWittenResolvent α)
+    (thetaShiftedWittenResolvent_injective α)
+
+theorem thetaShiftedWittenHamiltonian_dense_domain (α : ℂ) :
+    Dense ((thetaShiftedWittenHamiltonian α).domain : Set H) :=
+  closedDenseInverse_dense_domain (thetaShiftedWittenResolvent α)
+    (thetaShiftedWittenResolvent_dense_range α)
+
+theorem thetaShiftedWittenHamiltonian_isSelfAdjoint (α : ℂ) :
+    IsSelfAdjoint (thetaShiftedWittenHamiltonian α) :=
+  closedDenseInverse_isSelfAdjoint (thetaShiftedWittenResolvent α)
+    (thetaShiftedWittenResolvent_injective α)
+      (thetaShiftedWittenResolvent_dense_range α)
+        (thetaShiftedWittenResolvent_isSelfAdjoint α)
+
+theorem thetaShiftedWittenHamiltonian_eq_adjointSquare (α : ℂ) :
+    thetaShiftedWittenHamiltonian α =
+      LinearPMap.adjointSquare (thetaShiftedWeightedDerivative α) := by
+  rw [← thetaShiftedWeightedDerivativeModel_eq α]
+  exact (closedHyperplaneInverse_adjointSquare_eq_closedDenseInverse
+    (thetaShiftedRange α) (thetaShiftedSourceInverse α)
+      (thetaShiftedSourceInverse_injective α)
+        (by simpa only [ContinuousLinearMap.coe_coe] using
+          thetaShiftedSourceInverse_dense_range α)).symm
+
+theorem thetaShiftedWittenHamiltonian_kernel_eq_bot (α : ℂ) :
+    (thetaShiftedWittenHamiltonian α).kernel = ⊥ :=
+  closedDenseInverse_kernel_eq_bot (thetaShiftedWittenResolvent α)
+    (thetaShiftedWittenResolvent_injective α)
+
+theorem thetaShiftedWittenHamiltonian_hasCompactResolventAt_zero (α : ℂ) :
+    LinearPMap.HasCompactResolventAt (thetaShiftedWittenHamiltonian α) 0 :=
+  closedDenseInverse_hasCompactResolventAt_zero (thetaShiftedWittenResolvent α)
+    (thetaShiftedWittenResolvent_injective α)
+      (thetaShiftedWittenResolvent_compact α)
+
+theorem thetaShiftedWittenHamiltonian_nonnegative (α : ℂ)
+    (x : (thetaShiftedWittenHamiltonian α).domain) :
+    0 ≤ (inner ℂ (thetaShiftedWittenHamiltonian α x) (x : H)).re := by
+  have hxRange : (x : H) ∈ (thetaShiftedWittenResolvent α).range := by
+    rw [← closedDenseInverse_domain (thetaShiftedWittenResolvent α)]
+    exact x.property
+  rcases hxRange with ⟨y, hy⟩
+  have hApply := (closedDenseInverse_apply_C (thetaShiftedWittenResolvent α)
+    (thetaShiftedWittenResolvent_injective α) y).2
+  have heq : x = ⟨thetaShiftedWittenResolvent α y,
+      (closedDenseInverse_apply_C (thetaShiftedWittenResolvent α)
+        (thetaShiftedWittenResolvent_injective α) y).1⟩ := Subtype.ext hy.symm
+  have hTx : thetaShiftedWittenHamiltonian α x = y := by
+    exact (congrArg (thetaShiftedWittenHamiltonian α) heq).trans hApply
+  calc
+    0 ≤ (inner ℂ ((thetaShiftedSourceInverse α).adjoint y)
+        ((thetaShiftedSourceInverse α).adjoint y)).re :=
+      (inner_self_nonneg (𝕜 := ℂ)
+        (x := (thetaShiftedSourceInverse α).adjoint y))
+    _ = (inner ℂ y (thetaShiftedSourceInverse α
+        ((thetaShiftedSourceInverse α).adjoint y))).re := by
+      rw [(thetaShiftedSourceInverse α).adjoint_inner_left]
+    _ = (inner ℂ (thetaShiftedWittenHamiltonian α x) (x : H)).re := by
+      congr 2
+      exact hTx.symm
+
+/-- Exact strict positivity used in the card: nonnegative quadratic form and trivial kernel. -/
+theorem thetaShiftedWittenHamiltonian_strictlyPositive (α : ℂ) :
+    (∀ x : (thetaShiftedWittenHamiltonian α).domain,
+      0 ≤ (inner ℂ (thetaShiftedWittenHamiltonian α x) (x : H)).re) ∧
+      (thetaShiftedWittenHamiltonian α).kernel = ⊥ :=
+  ⟨thetaShiftedWittenHamiltonian_nonnegative α,
+    thetaShiftedWittenHamiltonian_kernel_eq_bot α⟩
 
 end HedenmalmClosedWeightedDerivative
 

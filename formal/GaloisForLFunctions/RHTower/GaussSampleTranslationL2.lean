@@ -246,25 +246,25 @@ def gaussTranslationL2Defect {m : ℕ} (k : Fin m) (p : Nat.Primes) (i : ℤ) : 
     (‖gaussPrimeScaleFourierCoefficient (p : ℝ) j‖ ^ 2 * ‖gaussSampleRatioDefect k p j i‖ ^ 2)
 
 /-- The `ℓ²` moving-translation defect with the universal decay weight `A/(1+|j|)`. -/
-def gaussTranslationL2DefectBound {m : ℕ} (k : Fin m) (p : Nat.Primes) (A : ℝ) (i : ℤ) : ℝ≥0∞ :=
+def gaussTranslationL2PowDefectBound {m : ℕ} (k : Fin m) (p : Nat.Primes) (A s : ℝ) (i : ℤ) : ℝ≥0∞ :=
   ∑' j : ℤ, ENNReal.ofReal
-    (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ 2 * ‖gaussSampleRatioDefect k p j i‖ ^ 2)
+    (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ s * ‖gaussSampleRatioDefect k p j i‖ ^ 2)
 
 /-- **The moving-translation estimate, in its uniform form.**  For every decay constant the
 weighted `ℓ²` defect vanishes; the weight does not involve the amplitude, so the estimate is
 uniform over every family of amplitudes with a common decay constant. -/
-theorem tendsto_gaussTranslationL2DefectBound {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
-    (p : Nat.Primes) (A : ℝ) :
-    Tendsto (fun I : ℕ => gaussTranslationL2DefectBound k p A (I : ℤ)) atTop (nhds 0) := by
+theorem tendsto_gaussTranslationL2PowDefectBound {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) (A : ℝ) {s : ℝ} (hs : 1 < s) :
+    Tendsto (fun I : ℕ => gaussTranslationL2PowDefectBound k p A s (I : ℤ)) atTop (nhds 0) := by
   obtain ⟨K, hK, hKb⟩ := exists_norm_gaussSampleValue_pow_ratio_bound hm k p
   refine GaloisForLFunctions.tendsto_tsum_zero_of_dominated
     (F := fun j I => ENNReal.ofReal
-      (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ 2 *
+      (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ s *
         ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2))
-    (G := fun j _ => ENNReal.ofReal ((4 + 4 * K) * A ^ 2) * GaloisForLFunctions.intQuadWeight j)
+    (G := fun j _ => ENNReal.ofReal ((4 + 4 * K) * A ^ 2) * GaloisForLFunctions.intPowWeight s j)
     (H := fun j I => if I < 2 * j.natAbs ∧ ((I : ℤ) + j).natAbs ≠ 0 then
         ENNReal.ofReal (2 * K * A ^ 2 * (I : ℝ) /
-          ((1 + (j.natAbs : ℝ)) ^ 2 * (((I : ℤ) + j).natAbs : ℝ))) else 0)
+          ((1 + (j.natAbs : ℝ)) ^ s * (((I : ℤ) + j).natAbs : ℝ))) else 0)
     ?_ ?_ ?_ ?_
   · -- every mode vanishes
     intro j
@@ -274,7 +274,7 @@ theorem tendsto_gaussTranslationL2DefectBound {m : ℕ} (hm : 1 ≤ m) (k : Fin 
       have h1 : Tendsto (fun I : ℕ => ‖gaussSampleRatioDefect k p j (I : ℤ)‖)
           atTop (nhds 0) := by simpa using hdef.norm
       simpa using h1.pow 2
-    have hmul := hnorm.const_mul (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ 2)
+    have hmul := hnorm.const_mul (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ s)
     rw [mul_zero] at hmul
     have hcont := (ENNReal.continuous_ofReal.tendsto 0).comp hmul
     simpa [Function.comp_def] using hcont
@@ -283,23 +283,24 @@ theorem tendsto_gaussTranslationL2DefectBound {m : ℕ} (hm : 1 ≤ m) (k : Fin 
     set a : ℕ := j.natAbs with ha
     set n : ℕ := ((I : ℤ) + j).natAbs with hn
     have hbound := norm_gaussSampleRatioDefect_sq_le hm k p hKb I j
-    have hden : (0 : ℝ) < (1 + (a : ℝ)) ^ 2 := by positivity
-    have hquad : GaloisForLFunctions.intQuadWeight j
-        = ENNReal.ofReal (1 / (1 + (a : ℝ)) ^ 2) := by
-      rw [GaloisForLFunctions.intQuadWeight, ha]
+    have hden : (0 : ℝ) < (1 + (a : ℝ)) ^ s := Real.rpow_pos_of_pos (by positivity) s
+    have hdenne : (1 + (a : ℝ)) ^ s ≠ 0 := ne_of_gt hden
+    have hquad : GaloisForLFunctions.intPowWeight s j
+        = ENNReal.ofReal (1 / (1 + (a : ℝ)) ^ s) := by
+      rw [GaloisForLFunctions.intPowWeight, ha]
       congr 2
       rw [← Int.cast_abs, ← Int.natCast_natAbs, Int.cast_natCast]
     have hGval : ENNReal.ofReal ((4 + 4 * K) * A ^ 2) *
-        GaloisForLFunctions.intQuadWeight j
-        = ENNReal.ofReal ((4 + 4 * K) * A ^ 2 / (1 + (a : ℝ)) ^ 2) := by
+        GaloisForLFunctions.intPowWeight s j
+        = ENNReal.ofReal ((4 + 4 * K) * A ^ 2 / (1 + (a : ℝ)) ^ s) := by
       rw [hquad, ← ENNReal.ofReal_mul (by positivity)]
       congr 1
       field_simp
     have hnn : 0 ≤ ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2 := by positivity
     have hAsq : (0 : ℝ) ≤ A ^ 2 := sq_nonneg A
-    have hstep : A ^ 2 / (1 + (a : ℝ)) ^ 2 *
+    have hstep : A ^ 2 / (1 + (a : ℝ)) ^ s *
         ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2
-        ≤ A ^ 2 / (1 + (a : ℝ)) ^ 2 * (4 + 2 * K * (I : ℝ) / (n : ℝ)) :=
+        ≤ A ^ 2 / (1 + (a : ℝ)) ^ s * (4 + 2 * K * (I : ℝ) / (n : ℝ)) :=
       mul_le_mul_of_nonneg_left hbound (by positivity)
     by_cases hcase : I < 2 * a
     · by_cases hn0 : n = 0
@@ -315,12 +316,12 @@ theorem tendsto_gaussTranslationL2DefectBound {m : ℕ} (hm : 1 ≤ m) (k : Fin 
         have hnpos : (0 : ℝ) < (n : ℝ) := by
           have : 0 < n := Nat.pos_of_ne_zero hn0
           exact_mod_cast this
-        have hexp : A ^ 2 / (1 + (a : ℝ)) ^ 2 * (4 + 2 * K * (I : ℝ) / (n : ℝ))
-            = 4 * A ^ 2 / (1 + (a : ℝ)) ^ 2 +
-              2 * K * A ^ 2 * (I : ℝ) / ((1 + (a : ℝ)) ^ 2 * (n : ℝ)) := by
+        have hexp : A ^ 2 / (1 + (a : ℝ)) ^ s * (4 + 2 * K * (I : ℝ) / (n : ℝ))
+            = 4 * A ^ 2 / (1 + (a : ℝ)) ^ s +
+              2 * K * A ^ 2 * (I : ℝ) / ((1 + (a : ℝ)) ^ s * (n : ℝ)) := by
           field_simp
         rw [hexp]
-        have h1 : 4 * A ^ 2 / (1 + (a : ℝ)) ^ 2 ≤ (4 + 4 * K) * A ^ 2 / (1 + (a : ℝ)) ^ 2 := by
+        have h1 : 4 * A ^ 2 / (1 + (a : ℝ)) ^ s ≤ (4 + 4 * K) * A ^ 2 / (1 + (a : ℝ)) ^ s := by
           rw [div_le_div_iff₀ hden hden]
           nlinarith [mul_nonneg (mul_nonneg (by positivity : (0:ℝ) ≤ 4 * K) hAsq) hden.le]
         linarith
@@ -337,38 +338,78 @@ theorem tendsto_gaussTranslationL2DefectBound {m : ℕ} (hm : 1 ≤ m) (k : Fin 
         · have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast h
           rw [div_le_iff₀ hnpos]
           nlinarith [hK.le, hIn]
-      have hle : A ^ 2 / (1 + (a : ℝ)) ^ 2 * (4 + 2 * K * (I : ℝ) / (n : ℝ))
-          ≤ A ^ 2 / (1 + (a : ℝ)) ^ 2 * (4 + 4 * K) := by
+      have hle : A ^ 2 / (1 + (a : ℝ)) ^ s * (4 + 2 * K * (I : ℝ) / (n : ℝ))
+          ≤ A ^ 2 / (1 + (a : ℝ)) ^ s * (4 + 4 * K) := by
         refine mul_le_mul_of_nonneg_left (by linarith) (by positivity)
       refine hle.trans (le_of_eq ?_)
       field_simp
   · -- uniformly small `G`-tails
     intro ε hε
-    obtain ⟨S, hS⟩ := GaloisForLFunctions.exists_finset_tsum_compl_intQuadWeight_le
+    obtain ⟨S, hS⟩ := GaloisForLFunctions.exists_finset_tsum_compl_intPowWeight_le hs
       (C := ENNReal.ofReal ((4 + 4 * K) * A ^ 2)) ENNReal.ofReal_ne_top hε
     exact ⟨S, fun _ => hS⟩
   · -- the far-band totals vanish
     have hc : (0 : ℝ) ≤ 2 * K * A ^ 2 := by positivity
-    exact GaloisForLFunctions.tendsto_tsum_farBandRatio_zero hc
+    exact GaloisForLFunctions.tendsto_tsum_farBandPower_zero hc hs
 
-/-- **Uniform moving-translation estimate.**  Every coefficient family with decay `A/(1+|j|)` has
-vanishing weighted `ℓ²` defect, with a rate depending only on `A`. -/
-theorem tendsto_gaussTranslationL2Defect_of_decay {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
-    (p : Nat.Primes) {A : ℝ} {c : ℤ → ℂ} (hc : ∀ j : ℤ, ‖c j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+
+/-- The `ℓ²` moving-translation defect with the universal decay weight `A/(1+|j|)`. -/
+def gaussTranslationL2DefectBound {m : ℕ} (k : Fin m) (p : Nat.Primes) (A : ℝ) (i : ℤ) : ℝ≥0∞ :=
+  ∑' j : ℤ, ENNReal.ofReal
+    (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ 2 * ‖gaussSampleRatioDefect k p j i‖ ^ 2)
+
+/-- **The moving-translation estimate, in its uniform form.**  The quadratic case of the general
+power estimate. -/
+theorem tendsto_gaussTranslationL2DefectBound {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) (A : ℝ) :
+    Tendsto (fun I : ℕ => gaussTranslationL2DefectBound k p A (I : ℤ)) atTop (nhds 0) := by
+  have h := tendsto_gaussTranslationL2PowDefectBound hm k p A (s := 2) (by norm_num)
+  refine h.congr fun I => ?_
+  rw [gaussTranslationL2DefectBound, gaussTranslationL2PowDefectBound]
+  refine tsum_congr fun j => ?_
+  congr 2
+  rw [← Real.rpow_natCast (1 + (j.natAbs : ℝ)) 2]
+  norm_num
+
+
+/-- **Uniform moving-translation estimate at a general decay exponent.**  Every coefficient family
+with decay `A/(1+|j|)^θ`, `θ > 1/2`, has vanishing weighted `ℓ²` defect. -/
+theorem tendsto_gaussTranslationL2Defect_of_powDecay {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) {A θ : ℝ} (hθ : 1 / 2 < θ) {c : ℤ → ℂ}
+    (hc : ∀ j : ℤ, ‖c j‖ ≤ A / (1 + (j.natAbs : ℝ)) ^ θ) :
     Tendsto (fun I : ℕ => ∑' j : ℤ,
       ENNReal.ofReal (‖c j‖ ^ 2 * ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2))
       atTop (nhds 0) := by
-  have hbase := tendsto_gaussTranslationL2DefectBound hm k p A
+  have hs : (1 : ℝ) < 2 * θ := by linarith
+  have hbase := tendsto_gaussTranslationL2PowDefectBound hm k p A (s := 2 * θ) hs
   rw [ENNReal.tendsto_nhds_zero]
   intro ε hε
   filter_upwards [ENNReal.tendsto_nhds_zero.mp hbase ε hε] with I hI
   refine le_trans ?_ hI
-  rw [gaussTranslationL2DefectBound]
+  rw [gaussTranslationL2PowDefectBound]
   refine ENNReal.tsum_le_tsum fun j => ENNReal.ofReal_le_ofReal ?_
   have hnn : 0 ≤ ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2 := by positivity
   refine mul_le_mul_of_nonneg_right ?_ hnn
   have h2 := pow_le_pow_left₀ (norm_nonneg (c j)) (hc j) 2
-  rwa [div_pow] at h2
+  rw [div_pow] at h2
+  have hpow : ((1 + (j.natAbs : ℝ)) ^ θ) ^ (2 : ℕ) = (1 + (j.natAbs : ℝ)) ^ (2 * θ) := by
+    rw [← Real.rpow_natCast ((1 + (j.natAbs : ℝ)) ^ θ) 2, ← Real.rpow_mul (by positivity)]
+    congr 1
+    ring
+  rwa [hpow] at h2
+
+/-- **Uniform moving-translation estimate.**  Every coefficient family with decay `A/(1+|j|)` has
+vanishing weighted `ℓ²` defect.  The case `θ = 1` of the general exponent estimate. -/
+theorem tendsto_gaussTranslationL2Defect_of_decay {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) {A : ℝ} {c : ℤ → ℂ}
+    (hc : ∀ j : ℤ, ‖c j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+    Tendsto (fun I : ℕ => ∑' j : ℤ,
+      ENNReal.ofReal (‖c j‖ ^ 2 * ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2))
+      atTop (nhds 0) := by
+  refine tendsto_gaussTranslationL2Defect_of_powDecay hm k p (A := A) (θ := 1)
+    (by norm_num) fun j => ?_
+  rw [Real.rpow_one]
+  exact hc j
 
 /-- **The moving-translation estimate.**  The `ℓ²` defect between the normalized shifted block and
 the translate of the prime-scale amplitude vanishes. -/

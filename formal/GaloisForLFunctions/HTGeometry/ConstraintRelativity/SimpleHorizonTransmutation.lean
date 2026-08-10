@@ -343,4 +343,42 @@ theorem grade_dimension (N q : ℕ) :
 
 end Discriminant
 
+/-! ## The transmutation dictionary -/
+
+section Dictionary
+
+open GaloisForLFunctions.HTGeometry
+
+variable {R : Type*} [CommRing R] {N : ℕ}
+
+/-- Twice the orientation order is the discriminant order. -/
+theorem two_mul_choose_two_eq_mul_pred (n : ℕ) : 2 * n.choose 2 = n * (n - 1) := by
+  rw [Nat.choose_two_right]
+  refine Nat.mul_div_cancel' ?_
+  rcases n with _ | m
+  · simp
+  · rw [Nat.succ_sub_one]
+    have h := (Nat.even_mul_succ_self m).two_dvd
+    rwa [mul_comm] at h
+
+/-- **Card `(18)`, boxed.**  The transmutation dictionary at a simple common-normal horizon, as one
+proposition: the underived constraints already generate `(a)` — extra underived codimension zero —
+the derived excess has rank `N − 1`, the maximal observer jet depth is `N − 1`, the orientation
+ideal is `(a^{binom N 2})`, the discriminant ideal is its square, and that exponent is `N(N−1)`. -/
+theorem transmutation_dictionary [Nontrivial R] (a : R) (u : Fin N → Rˣ) (hN : 0 < N)
+    (i₀ : Fin N)
+    (hv : IsUnit (∏ i : Fin N, ∏ j ∈ Finset.Ioi i, ((u j : R) - (u i : R)))) :
+    Ideal.span (Set.range fun i : Fin N => a * (u i : R)) = Ideal.span {a}
+      ∧ Module.finrank R (unitWeightedRelations u) = N - 1
+      ∧ ((Finset.Icc 1 (N - 1)).filter fun j => 0 < j).card = N - 1
+      ∧ Ideal.span {(sheetObserver a u).det} = Ideal.span {a ^ N.choose 2}
+      ∧ Ideal.span {∏ i : Fin N, ∏ j ∈ Finset.Ioi i, (a * (u j : R) - a * (u i : R)) ^ 2}
+          = Ideal.span {(sheetObserver a u).det} ^ 2
+      ∧ 2 * N.choose 2 = N * (N - 1) :=
+  ⟨span_constraints_eq a u hN, finrank_unitWeightedRelations u i₀,
+    by simpa using grade_dimension N 0,
+    span_det_sheetObserver a u hv, span_disc_eq_span_det_sq a u hv, two_mul_choose_two_eq_mul_pred N⟩
+
+end Dictionary
+
 end HTGeometry.ConstraintRelativity

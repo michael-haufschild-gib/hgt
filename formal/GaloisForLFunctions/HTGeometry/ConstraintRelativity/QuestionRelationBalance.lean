@@ -257,6 +257,39 @@ theorem killedFreedom_of_le (hRP' : Rnew ≤ Pold) :
     killedFreedom Rold Pold Rnew = Submodule.map Rold.mkQ Rnew := by
   rw [killedFreedom, inf_eq_right.2 hRP']
 
+/-- A product with a trivial factor is the other factor. -/
+def prodSubsingletonEquiv {R X Y : Type*} [Semiring R] [AddCommMonoid X] [Module R X]
+    [AddCommMonoid Y] [Module R Y] [Subsingleton Y] : (X × Y) ≃ₗ[R] X where
+  toFun := Prod.fst
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+  invFun x := (x, 0)
+  left_inv _ := Prod.ext rfl (Subsingleton.elim _ _)
+  right_inv _ := rfl
+
+/-- **Card §4, pure question creation.**  If no relation is added, nothing is killed and the new
+freedom is exactly the old freedom together with the created freedom. -/
+noncomputable def pureQuestionPhaseEquiv (hRP : Rold ≤ Pold) (hPP : Pold ≤ Pnew)
+    (hRR : Rold ≤ Rnew) (hRP' : Rnew ≤ Pnew) (h : Rnew = Rold) :
+    (freedomNew Pnew Rnew) ≃ₗ[K]
+      (freedomOld Rold Pold) × (createdFreedom Pold Pnew Rnew) :=
+  (prodSubsingletonEquiv (R := K) (X := (freedomNew Pnew Rnew))
+      (Y := ((⊥ : Submodule K (M ⧸ Rold)) : Submodule K (M ⧸ Rold)))).symm.trans
+    (((LinearEquiv.refl K _).prodCongr
+        (LinearEquiv.ofEq _ _ (killedFreedom_eq_bot_of_rel_eq h)).symm).trans
+      (balanceProdEquiv hRP hPP hRR hRP'))
+
+/-- **Card §4, pure relation creation.**  If no potential is added, nothing is created and the old
+freedom splits as the new freedom plus the killed freedom — the card's `F' = F/K`. -/
+noncomputable def pureRelationPhaseEquiv (hRP : Rold ≤ Pold) (hPP : Pold ≤ Pnew)
+    (hRR : Rold ≤ Rnew) (hRP' : Rnew ≤ Pnew) (h : Pnew = Pold) :
+    ((freedomNew Pnew Rnew) × (killedFreedom Rold Pold Rnew)) ≃ₗ[K] (freedomOld Rold Pold) :=
+  (balanceProdEquiv hRP hPP hRR hRP').trans
+    (((LinearEquiv.refl K _).prodCongr
+        (LinearEquiv.ofEq _ _ (createdFreedom_eq_bot_of_pot_eq h))).trans
+      (prodSubsingletonEquiv (R := K) (X := (freedomOld Rold Pold))
+        (Y := ((⊥ : Submodule K (M ⧸ (Pold ⊔ Rnew))) : Submodule K (M ⧸ (Pold ⊔ Rnew))))))
+
 /-! ## Non-recoverability of the oriented event pair -/
 
 section Witness

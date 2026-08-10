@@ -460,4 +460,27 @@ theorem degreeTwo_plateau_not_stable :
 
 end DegreeTwo
 
+/-! ## The card's first consequence -/
+
+section NoSelection
+
+variable {k A M : Type*} [Field k] [Ring A] [Algebra k A] [AddCommGroup M] [Module k M]
+  [Module A M] [IsScalarTower k A M]
+
+/-- **Card consequence 1.**  Longer words under one fixed action never perform selection: every
+stage has vanishing killed-freedom, one plateau of the reachable space is permanent, and the
+reachable space is exhausted by depth `dim AV − dim V`.  A nonzero killed-freedom term therefore
+requires changing the action, module, quotient, admission domain or source law — not more words. -/
+theorem longer_words_never_select (F : AlgebraFiltration k A) (V : Submodule k M)
+    [FiniteDimensional k (fullWordSpace F V)]
+    (hdeg : ∀ n, F.fil (n + 1) = F.fil n ⊔ F.fil 1 * F.fil n) :
+    (∀ m n : ℕ, n ≤ m → relationSpace F V m ⊓ presentation F V n = relationSpace F V n)
+      ∧ (∀ n : ℕ, wordSpace F V (n + 1) = wordSpace F V n ↔ wordSpace F V n = fullWordSpace F V)
+      ∧ ∃ n ≤ Module.finrank k (fullWordSpace F V) - Module.finrank k V,
+          wordSpace F V n = fullWordSpace F V :=
+  ⟨fun _ _ h => relationSpace_inf_presentation F V h, wordSpace_succ_eq_iff F V hdeg,
+    exists_wordSpace_eq_full F V hdeg⟩
+
+end NoSelection
+
 end HTGeometry.ConstraintRelativity

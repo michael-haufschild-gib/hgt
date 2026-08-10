@@ -100,48 +100,52 @@ theorem sum_range_one_div_le_one_add_log (I : ℕ) :
   rw [hins] at hle
   exact hle.trans (RHTower.Sieve.sum_Icc_one_div_le_one_add_log I)
 
-/-- **The near-diagonal harmonic band vanishes.** -/
-theorem tendsto_tsum_nearDiagonal_zero {c : ℝ} (hc : 0 ≤ c) :
+/-- **The near-diagonal harmonic band vanishes** for every weight that beats the harmonic sum.
+The band `|n| < I` at height `c/(w I · |n|)` sums to `2c(1 + log I)/w I`. -/
+theorem tendsto_tsum_nearDiagonalWeighted_zero {c : ℝ} (hc : 0 ≤ c) {w : ℕ → ℝ}
+    (hw : ∀ I : ℕ, 0 ≤ w I)
+    (hlim : Tendsto (fun I : ℕ => (1 + Real.log (I : ℝ)) / w I) atTop (nhds 0)) :
     Tendsto (fun I : ℕ => ∑' n : ℤ,
-      (if n.natAbs < I then ENNReal.ofReal (c / ((I : ℝ) * (n.natAbs : ℝ))) else 0))
+      (if n.natAbs < I then ENNReal.ofReal (c / (w I * (n.natAbs : ℝ))) else 0))
       atTop (nhds 0) := by
   have hbound : ∀ I : ℕ, (∑' n : ℤ,
-      (if n.natAbs < I then ENNReal.ofReal (c / ((I : ℝ) * (n.natAbs : ℝ))) else 0))
-      ≤ ENNReal.ofReal (2 * (c * ((1 + Real.log (I : ℝ)) / (I : ℝ)))) := by
+      (if n.natAbs < I then ENNReal.ofReal (c / (w I * (n.natAbs : ℝ))) else 0))
+      ≤ ENNReal.ofReal (2 * (c * ((1 + Real.log (I : ℝ)) / w I))) := by
     intro I
     have hstep := tsum_int_natAbs_le
-      (fun k : ℕ => if k < I then ENNReal.ofReal (c / ((I : ℝ) * (k : ℝ))) else 0)
+      (fun k : ℕ => if k < I then ENNReal.ofReal (c / (w I * (k : ℝ))) else 0)
     refine hstep.trans ?_
-    have hfin : (∑' k : ℕ, if k < I then ENNReal.ofReal (c / ((I : ℝ) * (k : ℝ))) else 0)
-        = ∑ k ∈ Finset.range I, ENNReal.ofReal (c / ((I : ℝ) * (k : ℝ))) := by
+    have hfin : (∑' k : ℕ, if k < I then ENNReal.ofReal (c / (w I * (k : ℝ))) else 0)
+        = ∑ k ∈ Finset.range I, ENNReal.ofReal (c / (w I * (k : ℝ))) := by
       rw [tsum_eq_sum (s := Finset.range I) (fun k hk => by
         rw [if_neg (by simpa using hk)])]
       exact Finset.sum_congr rfl fun k hk => by rw [if_pos (Finset.mem_range.mp hk)]
     rw [hfin]
-    have hofReal : ∑ k ∈ Finset.range I, ENNReal.ofReal (c / ((I : ℝ) * (k : ℝ)))
-        = ENNReal.ofReal (∑ k ∈ Finset.range I, c / ((I : ℝ) * (k : ℝ))) := by
-      rw [ENNReal.ofReal_sum_of_nonneg (fun k _ => by positivity)]
+    have hofReal : ∑ k ∈ Finset.range I, ENNReal.ofReal (c / (w I * (k : ℝ)))
+        = ENNReal.ofReal (∑ k ∈ Finset.range I, c / (w I * (k : ℝ))) := by
+      refine (ENNReal.ofReal_sum_of_nonneg (fun k _ => ?_)).symm
+      exact div_nonneg hc (mul_nonneg (hw I) (Nat.cast_nonneg k))
     rw [hofReal, ← ENNReal.ofReal_ofNat 2, ← ENNReal.ofReal_mul (by norm_num)]
     apply ENNReal.ofReal_le_ofReal
-    have hterm : ∑ k ∈ Finset.range I, c / ((I : ℝ) * (k : ℝ))
-        = c / (I : ℝ) * ∑ k ∈ Finset.range I, 1 / (k : ℝ) := by
+    have hterm : ∑ k ∈ Finset.range I, c / (w I * (k : ℝ))
+        = c / w I * ∑ k ∈ Finset.range I, 1 / (k : ℝ) := by
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [← div_div, div_eq_mul_one_div]
     have hharm := sum_range_one_div_le_one_add_log I
-    have hIc : 0 ≤ c / (I : ℝ) := by positivity
-    have hkey : ∑ k ∈ Finset.range I, c / ((I : ℝ) * (k : ℝ))
-        ≤ c * ((1 + Real.log (I : ℝ)) / (I : ℝ)) := by
+    have hIc : 0 ≤ c / w I := div_nonneg hc (hw I)
+    have hkey : ∑ k ∈ Finset.range I, c / (w I * (k : ℝ))
+        ≤ c * ((1 + Real.log (I : ℝ)) / w I) := by
       rw [hterm]
       refine (mul_le_mul_of_nonneg_left hharm hIc).trans (le_of_eq ?_)
       ring
     linarith [hkey]
   have hlimit : Tendsto
-      (fun I : ℕ => ENNReal.ofReal (2 * (c * ((1 + Real.log (I : ℝ)) / (I : ℝ)))))
+      (fun I : ℕ => ENNReal.ofReal (2 * (c * ((1 + Real.log (I : ℝ)) / w I))))
       atTop (nhds 0) := by
-    have hreal : Tendsto (fun I : ℕ => 2 * (c * ((1 + Real.log (I : ℝ)) / (I : ℝ))))
+    have hreal : Tendsto (fun I : ℕ => 2 * (c * ((1 + Real.log (I : ℝ)) / w I)))
         atTop (nhds 0) := by
-      have := (tendsto_one_add_log_div_nat_atTop_zero.const_mul c).const_mul (2 : ℝ)
+      have := (hlim.const_mul c).const_mul (2 : ℝ)
       simpa using this
     have hcont := (ENNReal.continuous_ofReal.tendsto 0).comp hreal
     simpa [Function.comp_def] using hcont
@@ -149,5 +153,13 @@ theorem tendsto_tsum_nearDiagonal_zero {c : ℝ} (hc : 0 ≤ c) :
   intro ε hε
   filter_upwards [ENNReal.tendsto_nhds_zero.mp hlimit ε hε] with I hI
   exact (hbound I).trans hI
+
+/-- **The near-diagonal harmonic band vanishes.** -/
+theorem tendsto_tsum_nearDiagonal_zero {c : ℝ} (hc : 0 ≤ c) :
+    Tendsto (fun I : ℕ => ∑' n : ℤ,
+      (if n.natAbs < I then ENNReal.ofReal (c / ((I : ℝ) * (n.natAbs : ℝ))) else 0))
+      atTop (nhds 0) :=
+  tendsto_tsum_nearDiagonalWeighted_zero hc (fun I => Nat.cast_nonneg I)
+    tendsto_one_add_log_div_nat_atTop_zero
 
 end GaloisForLFunctions

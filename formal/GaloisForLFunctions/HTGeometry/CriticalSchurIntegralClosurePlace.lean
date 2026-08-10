@@ -86,11 +86,21 @@ noncomputable instance criticalSchurNormalIntegralClosure_faithfulSMul
     FaithfulSMul (CriticalSchurNormalBaseRing K hm hn)
       (CriticalSchurNormalIntegralClosure K hm hn) :=
   (faithfulSMul_iff_algebraMap_injective _ _).2 <| by
+    have hRN : Function.Injective
+        (algebraMap (CriticalSchurNormalBaseRing K hm hn)
+          (criticalNormalClosure K m n)) :=
+      (algebraMap (criticalObservationField K m n)
+        (criticalNormalClosure K m n)).injective.comp
+        (FaithfulSMul.algebraMap_injective
+          (CriticalSchurNormalBaseRing K hm hn)
+          (criticalObservationField K m n))
     intro x y hxy
-    apply (algebraMap (CriticalSchurNormalBaseRing K hm hn)
-      (criticalNormalClosure K m n)).injective
-    simpa using congrArg
-      (algebraMap (CriticalSchurNormalIntegralClosure K hm hn)
+    apply hRN
+    simpa only [IsScalarTower.algebraMap_apply
+      (CriticalSchurNormalBaseRing K hm hn)
+      (CriticalSchurNormalIntegralClosure K hm hn)
+      (criticalNormalClosure K m n)] using
+      congrArg (algebraMap (CriticalSchurNormalIntegralClosure K hm hn)
         (criticalNormalClosure K m n)) hxy
 
 noncomputable instance criticalSchurNormalIntegralClosure_scalarTower
@@ -139,8 +149,45 @@ noncomputable def criticalSchurNormalIntegralClosureToUpper
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     CriticalSchurNormalIntegralClosure K hm hn →+*
-      criticalNormalClosureSchurValuationSubring K hm hn :=
-  Subring.inclusion (fun x => criticalSchurNormalIntegralClosure_mem_upper K hm hn x)
+      criticalNormalClosureSchurValuationSubring K hm hn where
+  toFun x := ⟨x, criticalSchurNormalIntegralClosure_mem_upper K hm hn x⟩
+  map_one' := rfl
+  map_mul' _ _ := rfl
+  map_zero' := rfl
+  map_add' _ _ := rfl
+
+/-- The observation-DVR embedding into the chosen upper valuation ring is local. -/
+noncomputable instance criticalSchurObservationValuationToNormalClosure_isLocalHom
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    IsLocalHom (criticalSchurObservationValuationToNormalClosure K hm hn) where
+  map_nonunit a ha := by
+    let A := criticalNormalClosureSchurValuationSubring K hm hn
+    have ha0 : (a : criticalObservationField K m n) ≠ 0 := by
+      intro ha0
+      have : criticalSchurObservationValuationToNormalClosure K hm hn a = 0 := by
+        apply Subtype.ext
+        simp [ha0, criticalSchurObservationValuationToNormalClosure]
+      rw [this] at ha
+      exact not_isUnit_zero ha
+    have hval : A.valuation
+        (criticalObservationNormalClosureMap K m n (a : criticalObservationField K m n)) = 1 :=
+      (A.valuation_eq_one_iff
+        (criticalSchurObservationValuationToNormalClosure K hm hn a)).mp ha
+    have hinvA : criticalObservationNormalClosureMap K m n
+        ((a : criticalObservationField K m n)⁻¹) ∈ A := by
+      rw [← A.valuation_le_one_iff, map_inv₀, map_inv₀, hval, inv_one]
+    have hinvComap : (a : criticalObservationField K m n)⁻¹ ∈
+        A.comap (algebraMap (criticalObservationField K m n)
+          (criticalNormalClosure K m n)) := hinvA
+    have hinvO : (a : criticalObservationField K m n)⁻¹ ∈
+        criticalSchurObservationValuationSubring K hm hn := by
+      rw [criticalNormalClosureSchurValuationSubring_comap_observation K hm hn]
+        at hinvComap
+      exact hinvComap
+    rw [isUnit_iff_exists_inv]
+    refine ⟨⟨(a : criticalObservationField K m n)⁻¹, hinvO⟩, Subtype.ext ?_⟩
+    exact mul_inv_cancel₀ ha0
 
 /-- Prime of the normal integral closure cut out by the chosen upper Schur valuation. -/
 noncomputable def criticalSchurNormalIntegralClosurePrime
@@ -158,6 +205,183 @@ noncomputable instance criticalSchurNormalIntegralClosurePrime_isPrime
   Ideal.comap_isPrime (criticalSchurNormalIntegralClosureToUpper K hm hn)
     (IsLocalRing.maximalIdeal
       (criticalNormalClosureSchurValuationSubring K hm hn))
+
+/-- The contracted prime lies over the maximal ideal of the observation Schur DVR. -/
+theorem criticalSchurNormalIntegralClosurePrime_liesOver
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    (criticalSchurNormalIntegralClosurePrime K hm hn).LiesOver
+      (IsLocalRing.maximalIdeal (CriticalSchurNormalBaseRing K hm hn)) := by
+  constructor
+  change IsLocalRing.maximalIdeal (CriticalSchurNormalBaseRing K hm hn) =
+    (IsLocalRing.maximalIdeal
+      (criticalNormalClosureSchurValuationSubring K hm hn)).comap
+        ((criticalSchurNormalIntegralClosureToUpper K hm hn).comp
+          (algebraMap (CriticalSchurNormalBaseRing K hm hn)
+            (CriticalSchurNormalIntegralClosure K hm hn)))
+  rw [show (criticalSchurNormalIntegralClosureToUpper K hm hn).comp
+      (algebraMap (CriticalSchurNormalBaseRing K hm hn)
+        (CriticalSchurNormalIntegralClosure K hm hn)) =
+      criticalSchurObservationValuationToNormalClosure K hm hn by
+        ext x
+        rfl]
+  exact (IsLocalRing.maximalIdeal_comap
+    (criticalSchurObservationValuationToNormalClosure K hm hn)).symm
+
+/-- The contracted integral-closure prime is nonzero. -/
+theorem criticalSchurNormalIntegralClosurePrime_ne_bot
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    criticalSchurNormalIntegralClosurePrime K hm hn ≠ ⊥ := by
+  intro hbot
+  have hover := (criticalSchurNormalIntegralClosurePrime_liesOver K hm hn).over
+  rw [hbot, Ideal.under, ← RingHom.ker_eq_comap_bot] at hover
+  have hinj : Function.Injective
+      (algebraMap (CriticalSchurNormalBaseRing K hm hn)
+        (CriticalSchurNormalIntegralClosure K hm hn)) :=
+    FaithfulSMul.algebraMap_injective _ _
+  rw [(RingHom.injective_iff_ker_eq_bot _).mp hinj] at hover
+  exact IsDiscreteValuationRing.not_a_field
+    (CriticalSchurNormalBaseRing K hm hn) hover
+
+/-- The contracted prime is maximal because the normal integral closure is Dedekind. -/
+theorem criticalSchurNormalIntegralClosurePrime_isMaximal
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    (criticalSchurNormalIntegralClosurePrime K hm hn).IsMaximal :=
+  Ideal.IsPrime.isMaximal inferInstance
+    (criticalSchurNormalIntegralClosurePrime_ne_bot K hm hn)
+
+/-- The actual normal-closure Galois group acts on the Schur integral closure. -/
+noncomputable instance criticalSchurNormalIntegralClosure_galoisAction
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    MulSemiringAction
+      (criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
+        criticalNormalClosure K m n)
+      (CriticalSchurNormalIntegralClosure K hm hn) := by
+  letI : FiniteDimensional (criticalObservationField K m n)
+      (criticalNormalClosure K m n) :=
+    criticalNormalClosure_finiteDimensional K hm hn
+  exact IsIntegralClosure.MulSemiringAction
+    (CriticalSchurNormalBaseRing K hm hn)
+    (criticalObservationField K m n)
+    (criticalNormalClosure K m n)
+    (CriticalSchurNormalIntegralClosure K hm hn)
+
+/-- Ideal-theoretic inertia group of the integral-closure prime corresponding to the chosen Schur
+valuation. -/
+abbrev criticalSchurIdealInertiaGroup
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :=
+  (criticalSchurNormalIntegralClosurePrime K hm hn).inertia
+    (criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
+      criticalNormalClosure K m n)
+
+/-- Ground-field constants are integral at the observation Schur place. -/
+theorem criticalObservationSchur_algebraMap_mem
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (x : K) :
+    algebraMap K (criticalObservationField K m n) x ∈
+      CriticalSchurNormalBaseRing K hm hn := by
+  rw [mem_criticalSchurObservationValuationSubring_iff]
+  rw [mem_criticalSchurSourceValuationSubring_iff]
+  have hmem := criticalSchurCoordinateValuationSubring_algebraMap_mem K hm hn
+    (MvPolynomial.C x : criticalSchurSourceRing K m n)
+  convert hmem using 1
+  apply (criticalSourceSchurFieldEquiv K hm hn).injective
+  rw [(criticalSourceSchurFieldEquiv K hm hn).apply_symm_apply]
+  rw [criticalSourceSchurFieldEquiv_algebraMap_apply K hm hn]
+  simp only [MvPolynomial.aeval_C]
+  rw [IsScalarTower.algebraMap_apply K (criticalObservationField K m n)
+    (criticalSourceField K m n)]
+
+/-- Ground-field constants as elements of the observation Schur DVR. -/
+noncomputable def criticalObservationSchurConstantBaseMap
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    K →+* CriticalSchurNormalBaseRing K hm hn :=
+  RingHom.codRestrict (algebraMap K (criticalObservationField K m n))
+    (CriticalSchurNormalBaseRing K hm hn)
+    (criticalObservationSchur_algebraMap_mem K hm hn)
+
+/-- Composite embedding of ground-field constants into the observation Schur residue field. -/
+noncomputable def criticalObservationSchurConstantResidueMap
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    K →+* IsLocalRing.ResidueField (CriticalSchurNormalBaseRing K hm hn) :=
+  (IsLocalRing.residue (CriticalSchurNormalBaseRing K hm hn)).comp
+    (criticalObservationSchurConstantBaseMap K hm hn)
+
+/-- The observation Schur residue field has characteristic zero. -/
+noncomputable instance criticalObservationSchurResidue_charZero
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    CharZero (IsLocalRing.ResidueField (CriticalSchurNormalBaseRing K hm hn)) :=
+  (RingHom.charZero_iff
+    (criticalObservationSchurConstantResidueMap K hm hn).injective).mp inferInstance
+
+/-- Ground-field constants in the ideal-theoretic residue field of the maximal Schur ideal. -/
+noncomputable def criticalObservationSchurPrimeConstantResidueMap
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    K →+* (IsLocalRing.maximalIdeal
+      (CriticalSchurNormalBaseRing K hm hn)).ResidueField :=
+  (algebraMap
+      ((CriticalSchurNormalBaseRing K hm hn) ⧸
+        IsLocalRing.maximalIdeal (CriticalSchurNormalBaseRing K hm hn))
+      (IsLocalRing.maximalIdeal
+        (CriticalSchurNormalBaseRing K hm hn)).ResidueField).comp
+    ((Ideal.Quotient.mk (IsLocalRing.maximalIdeal
+      (CriticalSchurNormalBaseRing K hm hn))).comp
+        (criticalObservationSchurConstantBaseMap K hm hn))
+
+/-- The ideal-theoretic residue field at the observation Schur prime has characteristic zero. -/
+noncomputable instance criticalObservationSchurPrimeResidue_charZero
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    CharZero ((IsLocalRing.maximalIdeal
+      (CriticalSchurNormalBaseRing K hm hn)).ResidueField) :=
+  (RingHom.charZero_iff
+    (criticalObservationSchurPrimeConstantResidueMap K hm hn).injective).mp inferInstance
+
+/-- Cardinality of ideal-theoretic Schur inertia is exactly the ramification index in the normal
+integral closure. -/
+theorem natCard_criticalSchurIdealInertiaGroup_eq_ramificationIdxIn
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    Nat.card (criticalSchurIdealInertiaGroup K hm hn) =
+      Ideal.ramificationIdxIn
+        (IsLocalRing.maximalIdeal (CriticalSchurNormalBaseRing K hm hn))
+        (CriticalSchurNormalIntegralClosure K hm hn) := by
+  let F := criticalObservationField K m n
+  let E := criticalSourceField K m n
+  let L := criticalNormalClosure K m n
+  let O := CriticalSchurNormalBaseRing K hm hn
+  let S := CriticalSchurNormalIntegralClosure K hm hn
+  let p := IsLocalRing.maximalIdeal O
+  let P := criticalSchurNormalIntegralClosurePrime K hm hn
+  let G := L ≃ₐ[F] L
+  letI : FiniteDimensional F E :=
+    criticalSourceField_finiteDimensional_criticalObservationField K hm hn
+  letI : Algebra.IsSeparable F E := inferInstance
+  letI : IsScalarTower F E (criticalSourceAlgebraicClosure K m n) :=
+    AlgebraicClosure.instIsScalarTower E
+  letI : Algebra.IsAlgebraic F (criticalSourceAlgebraicClosure K m n) :=
+    Algebra.IsAlgebraic.trans F E (criticalSourceAlgebraicClosure K m n)
+  letI : Normal F (criticalSourceAlgebraicClosure K m n) :=
+    { splits' _ := IsAlgClosed.splits _ }
+  letI : FiniteDimensional F L := criticalNormalClosure_finiteDimensional K hm hn
+  letI : Normal F L :=
+    normalClosure.normal F E (criticalSourceAlgebraicClosure K m n)
+  letI : IsGalois F L := inferInstance
+  letI : IsGaloisGroup G O S :=
+    IsGaloisGroup.of_isFractionRing G O S F L
+  letI : Finite G := IsGaloisGroup.finite G O S
+  letI : Module.Flat O S := inferInstance
+  letI : P.LiesOver p := criticalSchurNormalIntegralClosurePrime_liesOver K hm hn
+  simpa [F, L, O, S, p, P, G] using
+    (Ideal.card_inertia_eq_ramificationIdxIn (G := G) p P)
 
 end
 

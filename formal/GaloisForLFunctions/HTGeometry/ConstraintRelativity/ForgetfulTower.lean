@@ -181,6 +181,17 @@ scalar: the three route outputs are successive functions of one datum. -/
 theorem shadow_tower (a : ℂ) : (a = 0) ↔ (normSq a = 0) := by
   simp
 
+/-- **Card `(13)`, the three-shadow theorem.**  The three route outputs are not independent
+constraints: the support shadow factors through the magnitude shadow, which factors through the
+framed scalar, and each step forgets exactly what the card says — the magnitude forgets the phase
+and coorientation, the support forgets the magnitude.  Because every component is already a
+function of `a`, taking their product cannot create selection. -/
+theorem three_shadow_theorem :
+    (∀ a : ℂ, (a = 0) ↔ (normSq a = 0))
+      ∧ (∀ a : ℂ, a ≠ 0 → ∃ b : ℂ, b ≠ a ∧ normSq b = normSq a)
+      ∧ (∃ a b : ℂ, ((a = 0) ↔ (b = 0)) ∧ normSq a ≠ normSq b) :=
+  ⟨shadow_tower, normSq_forgets_phase, support_forgets_magnitude⟩
+
 /-! ## Central-twist isotriviality -/
 
 /-- **Relative channels are blind to a central twist.**  Scaling every block transport by the same

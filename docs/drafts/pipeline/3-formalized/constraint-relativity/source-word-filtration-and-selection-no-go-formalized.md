@@ -67,9 +67,11 @@ Necessity of the degree-one hypothesis:
 15. `degreeTwo_plateau_not_stable` — `K 0 = K 1` while `K 1 < K 2`: one plateau does not force
     stabilization without `(4)`.
 
-Card consequence 1 ("longer words under one fixed action never perform selection") is items 2 and
-11–13 together: the killed-freedom term is identically zero and the reachable space saturates in
-bounded depth.
+16. `longer_words_never_select` — **card consequence 1** as one proposition: every stage has
+    vanishing killed-freedom, one plateau of the reachable space is permanent, and the reachable
+    space is exhausted by depth `dim AV − dim V`.  A nonzero killed-freedom term therefore requires
+    changing the action, module, quotient, admission domain or source law — not more words.  Items
+    2 and 11–13 give the three clauses separately.
 
 ## Verification
 

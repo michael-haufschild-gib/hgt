@@ -416,6 +416,80 @@ bound `q_p ≤ 2^{−σ} < 3/4` turns that into `64 p^{−2σ}`, and `2σ > 1` i
 condition.  So `Δ_P(t)` and `∑_{p≤P} q_p(1 − cos θ_p)` differ by a convergent series — the whole
 divergence question is now about `A_P − Re B_P` alone.
 
+### Theorem 2.2 — the exchange law: phase cannot pay, the counterterm does (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/ModulusBudget.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+| Clause | Lean |
+|---|---|
+| the realization defect of one prime, and `\|φ_p\| > 0` | `primeDefect`, **`norm_qGammaOn_pos`** |
+| **item 1: a unimodular gauge leaves the modulus at `exp(−Δ)`** | **`norm_prod_gauge`** |
+| **item 3: the genus-one counterterm has modulus `exp(q(1 − cos θ))`** | **`norm_exp_neg_eqgActivation`** |
+| **items 2–3: the renormalized modulus is `exp(∑ (leading − defect))`** | **`norm_prod_renorm`** |
+| **that exponent converges absolutely in the whole chamber** | **`summable_renorm_exponent`** |
+
+This is the card's exchange law, and both halves of it are now unconditional.  `norm_prod_gauge` is
+the reason phase can never pay: an arbitrary unimodular family `u_p` drops out of `‖∏ φ_p u_p‖`
+identically, which stays `exp(−Δ)` whatever the gauge.  `norm_exp_neg_eqgActivation` is the reason
+the counterterm can: `Re ℓ_{p,σ}(it) = −q_p + q_p cos θ_p`, so its modulus is exactly the leading
+term `exp(q_p(1 − cos θ_p))` of the defect.  Combining them, `norm_prod_renorm` and
+`summable_renorm_exponent` say the counterterm-renormalized product keeps a finite nonzero modulus
+throughout `σ > 1/2` — the counterterm pays the budget up to an absolutely summable correction,
+which is (GAS3.3) with the exchange rate made explicit.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 9 033 jobs.
+
+### Theorem 2.2 — prime counts in multiplicative windows (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/PrimeWindowCount.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+**A better route to the divergence than the card's.**  The card proves `A_P − Re B_P → ∞` by
+PNT-plus-oscillating-partial-summation for `σ < 1` and by Mertens-plus-one-line-nonvanishing at
+`σ = 1`.  Neither is needed.  Because `1 − cos(τ log p) ≥ 0`, only a *lower* bound is required, and
+it can be taken on the primes whose phase sits in the far half of its period: those are exactly the
+primes of the multiplicative windows `(X, KX]` with `K = e^{π/|τ|}`, on which `1 − cos ≥ 1`.  So the
+whole divergence reduces to counting primes in fixed multiplicative windows, which is PNT alone —
+no oscillating summation, and the same argument covers `σ = 1` and `σ < 1` at once.
+
+| Clause | Lean |
+|---|---|
+| `log x / log(Kx) → 1` | `tendsto_log_dilate_ratio` |
+| `Kx/log(Kx) = O(x/log x)` | `isBigO_dilate` |
+| `Kx/log(Kx) − Kx/log x = o(x/log x)` | `isLittleO_dilate_sub` |
+| **`π(Kx) − π(x) ≥ (K−1)/2 · x/log x` eventually** | **`eventually_primeCount_window_ge`** |
+
+The PNT input is the vendored `PNTPlus.Consequences.pi_alt'`
+(`π(⌊x⌋) ~ x/log x`); the subtraction of two asymptotics is done in little-o form so that the
+cancellation of the leading `x/log x` terms is legitimate.
+
+The windows themselves and the bridge from the counting function to a finite set of primes are
+certified too:
+
+| Clause | Lean |
+|---|---|
+| `cos ≤ 0` on the far half of each period | **`cos_nonpos_of_mem_window`** |
+| the `m`-th window, its ratio `K = e^{π/τ} > 1`, and its endpoints | `windowLo`, `windowRatio`, `one_lt_windowRatio`, `windowRatio_mul_windowLo` |
+| **every prime of the `m`-th window has `cos(τ log p) ≤ 0`** | **`cos_nonpos_of_mem_windowRange`** |
+| the window's prime set, and `π(b) − π(a) = #{p ∈ (a,b] prime}` | `primesInIoc`, `primeCounting_eq_card`, **`card_primesInIoc`**, `mem_primesInIoc` |
+
+So on each window every prime contributes its full weight: `1 − cos(τ log p) ≥ 1`.  The windows in
+natural numbers, their weight bound and their disjointness are certified too:
+
+| Clause | Lean |
+|---|---|
+| the natural endpoints `⌈X_m⌉`, `⌊K X_m⌋` and their goodness | `winLoNat`, `winHiNat`, **`cos_nonpos_of_mem_winNat`** |
+| **the window sum dominates `#primes · (right endpoint)^{−σ}`** | **`window_sum_ge`** |
+| the windows increase and never meet | `windowLo_strictMono`, `winHiNat_lt_winLoNat_succ`, **`winHiNat_lt_winLoNat`** |
+| **the window prime sets are pairwise disjoint** | **`primesInIoc_window_disjoint`** |
+
+Disjointness is what lets the `σ = 1` case work: there each window contributes only `≍ 1/log X_m`,
+so the divergence has to be collected over infinitely many windows at once, and that requires them
+not to overlap.  (For `σ < 1` a single window already gives unbounded contributions.)
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 3 699 jobs.
+
 **Next targets, in order.**
 
 1. *Theorem 1.1, remaining half.*  The divergence input is done (above).  What is left is the
@@ -423,10 +497,14 @@ divergence question is now about `A_P − Re B_P` alone.
    `ProbabilityTheory.measure_limsup_eq_one`, and convert "terms do not tend to zero" into failure
    of convergence in distribution — the latter needs Lévy's equivalence and continuity theorems,
    whose availability in mathlib has not yet been checked.
-2. *Theorem 2.2, divergence half (GAS3.2)–(GAS3.3).*  The whole remainder side is done; what is
-   left is `A_P − Re B_P → ∞`, needing the corpus PNT/Mertens layers
-   (`pnt-both-forms-corpus-owned`, `mertens-second-third-corpus-owned`) for `A_P`, and one-line
-   nonvanishing of `ζ` for `B_P`.
+2. *Theorem 2.2, the one remaining half: `∑_p p^{−σ}(1 − cos(σ t log p)) = ∞`.*  Every structural
+   ingredient is now certified — window goodness, the weight bound, the PNT window count, and
+   disjointness.  What is left is only the arithmetic: feed `eventually_primeCount_window_ge` into
+   `window_sum_ge` to get a per-window lower bound `≳ (K−1)/(2K^σ)·X_m^{1−σ}/log X_m`, sum over the
+   disjoint windows with `Finset.sum_le_tsum`, and observe that the resulting series diverges — for
+   `σ < 1` because its terms are unbounded, for `σ = 1` because it is harmonic in `m`.  Note the
+   `3-4-1` inequality is *not* usable here — under the assumed convergence the combination comes out
+   positive, so it yields no contradiction — which is why the window route replaced it.
 3. *Theorem 3.1 (CLT).*  Mathlib's `Probability/CentralLimitTheorem.lean` carries only the i.i.d.
    form (`tendstoInDistribution_inv_sqrt_mul_sum`); the Lindeberg–Feller triangular-array form the
    card needs is **not** in mathlib and has to be built.

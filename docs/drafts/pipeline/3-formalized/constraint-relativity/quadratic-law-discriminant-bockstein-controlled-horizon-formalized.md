@@ -93,9 +93,12 @@ Theorem 6 — relative cotangent equals the nonreduced discriminant shadow, card
 20. `lawCotangentMap_surjective`, `ker_lawCotangentMap`, `lawKaehlerBaseEquiv` — as a `B`-module,
     `Ω[A⁄B] ≅ B/(h²)`.
 
-The four-shadow table `(15)` of the card is the conjunction of items 16 (oriented defect `h`), 20
-(Fitting/positive energy `h²`), 3 and 10 (support wall `V(h)` and the erased line), and 14
-(conditioning `|h|^{-1}`).  The arithmetic substitution `(16)`–`(18)` is explicitly a
+21. `four_shadow_table` — **card `(15)`, the four-shadow table**, as one proposition: the oriented
+    family defect is the different `2η − h`; its square is `h²`, which presents the cotangent
+    module over the base; the topological support wall is the collision kernel; and the hidden
+    decoder conditioning obeys `√|Disc| · ‖D_h‖ = √2` with the genuine operator norm.  Asserting
+    the four together is the card's claim that they are shadows of *one* object, which items 16,
+    20, 3, 10 and 14 give only separately.  The arithmetic substitution `(16)`–`(18)` is explicitly a
 representation, not a theorem, on the paper card.
 
 ## Verification

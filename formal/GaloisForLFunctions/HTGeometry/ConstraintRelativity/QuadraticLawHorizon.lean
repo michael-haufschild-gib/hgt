@@ -534,5 +534,22 @@ noncomputable def lawKaehlerBaseEquiv :
     ((lawCotangentMap.quotKerEquivOfSurjective lawCotangentMap_surjective).trans
       (LinearEquiv.restrictScalars LawBase lawKaehlerEquiv).symm)
 
+/-- **Card `(15)`, the four-shadow table.**  One relative-law object casts four exact shadows in
+the quadratic coordinate: the oriented family defect is the different `2η − h`; the
+positive/Fitting energy is its square `h²`, which is the base presentation of the cotangent module;
+the topological support wall is the collision kernel, the line spanned by the nilpotent; and the
+hidden decoder conditioning is `√2/|h|`, so `√|Disc| · ‖D_h‖ = √2`.  Asserting the four together is
+the card's claim that they are shadows of *one* object, not four independent facts. -/
+theorem four_shadow_table :
+    rootDifferent lawPoly = 2 * lawEta - AdjoinRoot.of lawPoly lawParam
+      ∧ (2 * lawEta - AdjoinRoot.of lawPoly lawParam) ^ 2
+          = AdjoinRoot.of lawPoly (lawParam ^ 2)
+      ∧ Nonempty ((LawBase ⧸ (Ideal.span {lawParam ^ 2})) ≃ₗ[LawBase] Ω[LawAlgebra⁄LawBase])
+      ∧ RingHom.ker collisionObserver.toRingHom
+          = Ideal.span {AdjoinRoot.root (quadPoly (0 : ℂ) 0)}
+      ∧ ∀ c : ℂ, c ≠ 0 → Real.sqrt ‖c ^ 2‖ * ‖hiddenDecoderCLM c‖ = Real.sqrt 2 :=
+  ⟨rootDifferent_lawPoly, lawDifferent_sq, ⟨lawKaehlerBaseEquiv⟩, ker_collisionObserver,
+    fun c hc => conditioning_law_opNorm c hc⟩
+
 end HTGeometry.ConstraintRelativity
 

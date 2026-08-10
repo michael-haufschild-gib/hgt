@@ -1161,3 +1161,231 @@ Eisenstein's theorem.  The remaining work is the valuation bookkeeping that make
 - Hilbert irreducibility (§1): Eisenstein (valuation bookkeeping + assembly over the
   finitely many bad primes), then HIT itself;
 - Tarski–Seidenberg (§4).
+
+## Eisenstein: the recursion and the denominator calculus (2026-08-10)
+
+Two more links of the Hilbert-irreducibility chain, both new and both axiom-clean.
+
+### The recursion
+
+`HTGeometry/EisensteinRecursion.lean` — **`coeff_deriv_mul_coeff_eq`**:
+
+> If `F.eval y = 0` over a power-series ring and `(F′(y))_j = 0` for all `j < r`, then for every
+> `n > r`
+>
+> `(F′(y))_r · y_n = − (F(y_{<n}))_{n+r}`,
+>
+> where `y_{<n} = truncPS n y` is the truncation of `y` below degree `n`.
+
+The right-hand side involves only `y_0, …, y_{n−1}`, so this *is* the recursion that computes an
+algebraic power series, and the only denominator it introduces per step is the single fixed element
+`(F′(y))_r`.  The proof is the second-order Taylor expansion at the truncation
+(`exists_eval_add_eq`, built in the previous entry): with `y = y_{<n} + η` and `Xⁿ ∣ η`, the
+quadratic remainder is divisible by `X^{2n}` and invisible in degree `n + r` exactly when `n > r`;
+the linear term is `∑_{j ≥ n} (F′(y_{<n}))_{n+r−j} y_j`, and `F′(y_{<n})` agrees with `F′(y)` below
+degree `n`, whose coefficients below `r` vanish — leaving the single term `j = n`.  No monicity, no
+field, no domain.
+
+### The denominator calculus
+
+`HTGeometry/CoeffDenominatorBound.lean` — the bookkeeping the induction runs on.  For a subring
+`A` of a field `K` and `q ∈ A`:
+
+- `IsPowMul A q β x` — `x = q^β · a` for some `a ∈ A`, with `add`, `sum`, **`mul`** (gains add),
+  `mul_left`, `mono`, and `isPowMul_zero_iff_mem`;
+- **`CoeffBnd A q κ β f`** — `q^{κN} · f_N ∈ q^β · A` for every `N`: denominators grow at most
+  geometrically, *with a gain* `q^β`; with `add`, `neg`, **`mul`** (`β + γ`), **`pow`** (`i·β`),
+  `coeffBnd_of_coeff_mem`, and `truncPS`.
+
+The gain is the whole point.  Each step of the recursion loses one factor of `(F′(y))_r`; a term of
+`F(y_{<n})` that is a product of two or more bounded factors gains `2β ≥ 2`, so it pays for that
+loss, while a term linear in `y_{<n}` gains only `β` and is instead paid for by the strict drop of
+the index (`j ≤ n − 1` against `n`), and the constant term is paid for by `n` being large.  That
+three-way split — `F(w) = F(0) + F′(0)·w + w²·(…)`, which `exists_eval_add_eq` supplies at `w = 0`
+— is exactly how the induction will be organised.
+
+### Remaining Lean layers for the card
+
+- Eisenstein's theorem itself: the parameter choice (`κ`, the gain `β`, the cut `N₀`) and the strong
+  induction on `n` using the two modules above, then the assembly over the finitely many bad primes;
+- Hilbert irreducibility on top of it;
+- Tarski–Seidenberg (§4).
+
+## Eisenstein's theorem proved at a simple root (2026-08-10)
+
+`HTGeometry/EisensteinSimpleRoot.lean` (new, in the umbrella, axiom-clean) closes the
+unramified case of Eisenstein's theorem on algebraic power series.
+
+> **`exists_coeffBnd_of_isRoot`.**  Let `A` be a subring of a field `K` whose fraction
+> field is `K`, let `F` be a polynomial whose coefficients are power series with
+> coefficients in `A`, and let `y ∈ K⟦t⟧` be a root of `F` with `y₀ = 0` and `(F′(y))₀ ≠ 0`.
+> Then there is a nonzero `q ∈ A` with
+>
+> `q^{2N} · y_N ∈ q · A`   for every `N`,
+>
+> i.e. the denominators of the coefficients of `y` grow at most geometrically.
+
+The scaling element is constructed, not assumed: `q` is `(F′(y))₀` times whatever clears
+the denominators of `(F′(y))₀`, `y₁` and `y₂`.
+
+**The mechanism.**  The recursion `(F′(y))₀ · y_n = −(F(y_{<n}))_n` loses one factor of
+`(F′(y))₀` per step, and the split `F(w) = F₀ + F₁·w + w²·Q(w)` (with `Q = F.divX.divX`,
+`eval_split`) pays for it three different ways — which is exactly why a single crude
+"ring of bounded denominators" argument cannot work:
+
+- `F₀` sits in `A`, and the normalisation `q^{2n}` is a large power once `n ≥ 3`;
+- `F₁·w` is **linear** in `w`, and pays through the strict drop of the index: `w` is the
+  truncation below degree `n`, so every surviving coefficient sits at index `≤ n − 1`,
+  worth one factor `q²`;
+- `w²·Q(w)` is **quadratic**, and pays through the gain: two bounded factors gain `q²`
+  (`CoeffBnd.mul`).
+
+The exponent `2` is forced: the index drop must be worth at least the loss `q¹`, and the
+gain must beat it too.  With gain `1` and exponent `2` all three mechanisms clear, and the
+base cases reduce to `y₀ ∈ qA` (automatic after translating `y₀` to zero) plus two
+denominators.
+
+Added to `HTGeometry/CoeffDenominatorBound.lean`: `CoeffBnd.mono`, `CoeffBnd.sum`, and
+**`CoeffBnd.eval`** — evaluating a polynomial with `A`-coefficients at a bounded series is
+bounded.
+
+### What remains for full Eisenstein
+
+1. **The ramified reduction** `r ≥ 1 → r = 0`.  All the pieces exist: the substitution
+   `y = y₀ + t^{r+1}z` followed by division by `t^{2r+1}` (`shiftScale`, `polyShiftPow` in
+   `HenselDefectRoot.lean`) turns `F` into a polynomial `H` with `H = α + u′Z + O(t)`, so
+   `H′(z)` has **nonzero constant term** — the defect is removed exactly as in Newton's
+   lemma, and `EisensteinSimpleRoot` then applies to `z`.  `H`'s coefficients have a single
+   fixed denominator, cleared by replacing `H` with `D·H` (the recursion does not need
+   monicity).
+2. **The translation** making `y₀ = 0`, which needs `y₀ ∈ A` — automatic for `A`
+   integrally closed and `F` monic, since `y₀` is a root of the monic reduction.
+3. **The global assembly** over the finitely many bad primes.
+
+### Remaining Lean layers for the card
+
+- Eisenstein: items 1–3 above; then Hilbert irreducibility;
+- Tarski–Seidenberg (§4).
+
+## The ramified case of Eisenstein reduces to the simple one (2026-08-10)
+
+`HTGeometry/EisensteinDefectReduction.lean` (new, in the umbrella, axiom-clean) removes the
+defect from an algebraic power series, reducing Eisenstein's theorem to the unramified case
+proved in the previous entry.
+
+Definitions (over a field, no subring, no integrality):
+
+- `defectRoot r y := shiftPow (r+1) (y − truncPS (2r+1) y)` — the `z` in
+  `y = y₀ + t^{r+1}·z`, with `X_pow_mul_defectRoot` establishing that equation;
+- `defectPoly r F y := polyShiftPow (2r+1) (shiftScale F y₀ (X^{r+1}))` — the polynomial
+  `F(y₀ + t^{r+1}·Z)` divided by `t^{2r+1}`.
+
+> **`isRoot_defectPoly_and_constantCoeff_deriv_ne_zero`.**  If `F.eval y = 0`, `(F′(y))_j = 0`
+> for `j < r`, and `(F′(y))_r ≠ 0`, then
+>
+> `(defectPoly r F y).eval (defectRoot r y) = 0`  and
+> `((defectPoly r F y)′ (defectRoot r y))_0 ≠ 0`.
+>
+> **`constantCoeff_defectRoot`.**  For `r ≥ 1` the reduced root has vanishing constant term.
+
+So `z` is a root with a *simple* derivative and the normalisation `z₀ = 0` that
+`EisensteinSimpleRoot.exists_coeffBnd_of_isRoot` requires — the two halves fit together.
+
+The mechanism is the same defect removal as in Newton's lemma: `F′(y₀) = t^r·u` with `u` of
+nonzero constant term (because `y₀ ≡ y` to order `2r+1`, so `F′(y₀) ≡ F′(y)` there), and
+`t^{2r+1} ∣ F(y₀)` (because `F(y) = 0` and `y₀ ≡ y`).  Dividing the substituted polynomial by
+`t^{2r+1}` leaves `H` with `H₁ = u` and every `H_k`, `k ≥ 2`, of zero constant term, so its
+reduction at `t = 0` is the linear polynomial `α + ū·Z` and `H′(z)` has constant term `ū ≠ 0`.
+
+### Remaining Lean layers for the card
+
+- **Integrality transport** for the reduction: `defectPoly`'s coefficients lie in `A` once
+  `F`'s do and the first `2r+1` coefficients of `y` do — after rescaling the root by a
+  common denominator `D`, which replaces `F` by `D^{deg F}·F(X/D)`.  Note
+  `CoeffBnd A q 0 0 f` is exactly "all coefficients of `f` lie in `A`", so the existing
+  `CoeffBnd.mul`/`.eval` already give the closure properties needed; what is missing is
+  `shiftPow` and `hasseDeriv` preservation.
+- then the assembly of full Eisenstein, and the global statement over the finitely many bad
+  primes;
+- Hilbert irreducibility;
+- Tarski–Seidenberg (§4).
+
+## Eisenstein's theorem, ramified case, proved (2026-08-10)
+
+The reduction of the previous entry is now assembled into the theorem itself.
+
+> **`EisensteinDefectReduction.exists_coeff_mem_of_isRoot_of_pos_defect`.**  Let `A` be a
+> subring of a field `K` whose fraction field is `K`, let `F` be a polynomial whose
+> coefficients are power series with coefficients in `A`, and let `y ∈ K⟦t⟧` be a root of `F`
+> whose derivative `F′(y)` vanishes to order exactly `r ≥ 1`.  If the first `2r+1`
+> coefficients of `y` lie in `A`, then there is a nonzero `q ∈ A` with
+>
+> `q^{2N} · y_N ∈ A`  for every `N`.
+
+That is Eisenstein's theorem on algebraic power series in the ramified case.  Together with
+`EisensteinSimpleRoot.exists_coeffBnd_of_isRoot` (the case `r = 0`) the analytic content is
+complete; what is left is bookkeeping, not mathematics.
+
+Supporting results added:
+
+- `coeffMem_defectPoly` — the reduced polynomial keeps its coefficients in `A`, because only
+  the first `2r+1` coefficients of `y` enter it (through `Polynomial.taylor` at the
+  truncation);
+- in `CoeffDenominatorBound.lean`: `coeffBnd_zero_zero_iff` (with exponent and gain both
+  zero, `CoeffBnd` says exactly "all coefficients lie in `A`", so the existing
+  `CoeffBnd.mul`/`.eval` supply the closure properties for free), `coeffMem_shiftPow`,
+  `coeffMem_X_pow_mul`, `coeffMem_hasseDeriv`.
+
+The transfer of the bound from the reduced root back to `y` is the index shift
+`y = y₀ + t^{r+1}·z`: below degree `r+1` the shifted part contributes nothing, above it the
+gain `q¹` of the reduced bound plus the fixed factor `q^{2(r+1)}` more than absorbs the
+normalisation.
+
+### Remaining Lean layers for the card
+
+- **Uniform statement**: fold the `r = 0` case in (it needs only the translation
+  `y ↦ y − y₀`, which is `Polynomial.taylor`, with `y₀ ∈ A` supplied by the same hypothesis),
+  and drop the hypothesis "first `2r+1` coefficients in `A`" by rescaling the root by their
+  common denominator — which replaces `F` by `D^{deg F}·F(X/D)`;
+- the global statement over the finitely many bad primes;
+- Hilbert irreducibility;
+- Tarski–Seidenberg (§4).
+
+## Eisenstein: uniform statement (2026-08-10)
+
+`HTGeometry/EisensteinUniform.lean` (new, in the umbrella, axiom-clean) joins the two cases.
+
+> **`exists_coeff_mem_of_isRoot`.**  Let `A` be a subring of a field `K` whose fraction field
+> is `K`, let `F` have power-series coefficients in `A`, and let `y ∈ K⟦t⟧` be a root of `F`
+> whose derivative `F′(y)` vanishes to order exactly `r` (any `r ≥ 0`).  If the first `2r+1`
+> coefficients of `y` lie in `A`, then there is a nonzero `q ∈ A` with
+>
+> `q^{2N} · y_N ∈ A`  for every `N`.
+
+The case `r = 0` is `exists_coeff_mem_of_isRoot_of_zero_defect`: the root is translated by its
+own constant term (`Polynomial.taylor`), which is legitimate precisely because that constant
+term lies in `A`, and then the normalised simple-root theorem applies.  Supporting:
+`eval_taylor`, `derivative_taylor` (translation commutes with differentiation),
+`coeffMem_taylor`.
+
+### The one bookkeeping step left in Eisenstein
+
+Dropping the hypothesis "the first `2r+1` coefficients of `y` lie in `A`".  The route is
+`Polynomial.scaleRoots`, which mathlib supplies: with `D` the product of the finitely many
+denominators of `y_0, …, y_{2r}` (built from the fraction-field hypothesis), `C D · y` is a
+root of `F.scaleRoots (C D)`, whose coefficients `F_i · (C D)^{m−i}` are again in `A`, and
+
+- `Polynomial.scaleRoots_eval₂_mul` gives the root statement;
+- `derivative (F.scaleRoots s) = (derivative F).scaleRoots s` holds coefficientwise whenever
+  `natDegree (derivative F) = natDegree F − 1`, i.e. in characteristic zero, so the derivative
+  data transports with the nonzero scalar `s^{m−1}` — which changes neither the order of
+  vanishing nor the nonvanishing at `r`.
+
+The conclusion then carries the expected fixed extra factor: `∃ q d ≠ 0 in A`,
+`d · q^{2N} · y_N ∈ A` — the standard form of Eisenstein's theorem.
+
+### Remaining Lean layers for the card
+
+- the `scaleRoots` step above; then the global statement over the finitely many bad primes;
+- Hilbert irreducibility;
+- Tarski–Seidenberg (§4).

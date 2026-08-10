@@ -1694,3 +1694,105 @@ normalized diagonal acts boundedly there and only the reflected band requires th
 introduced by concurrent work in the sieve layer.  It is unrelated to this card; every module of
 this card builds, and `lake build GaloisForLFunctions.RHTower.GaussRatioWeightedDefect` completes
 with all 8800 dependencies.
+
+## Lean status, thirty-seventh pass: sub-quadratic weights on the lattice
+
+`HTGeometry/IntegerPowerSeriesBounds.lean` (new, reusable); unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+summable_one_div_one_add_abs_rpow      : 1 < s  →  Summable (j ↦ 1/(1+|j|)^s)
+intPowWeight s j                       := ofReal (1/(1+|j|)^s)
+intPowWeight_two                       : intPowWeight 2 = intQuadWeight
+tsum_intPowWeight_ne_top,
+tsum_const_mul_intPowWeight_ne_top,
+exists_finset_tsum_compl_intPowWeight_le
+log_div_le_rpow_div (0 < θ < 1)        : ∃ C > 0, log(2+x)/(1+x) ≤ C/(1+x)^θ
+```
+
+### Why the exponent has to drop below 2
+
+The `m ≥ 2` iteration always has a multiplication operator between the two normalized diagonals —
+`Λ = B^(-2) S* B² S`, and every regrouping keeps one there — so the vector reaching the second
+diagonal is a *convolution*.  A convolution of two sequences decaying like `1/(1+|j|)` decays like
+`log(2+|j|)/(1+|j|)` and no better, so the uniform-decay hypothesis at exponent `1` is
+unattainable; `log_div_le_rpow_div` says exponent `θ` for any `θ < 1` is, and the band-split weight
+becomes `1/(1+|j|)^(2θ)` with `2θ > 1`.
+
+`θ = 3/4` is the natural choice, and it is exactly matched to the case split already found:
+the reflected-band spike of `S v` has height `n^(1/(2m))/n` against a target `n^(-3/4)`, i.e. it is
+absorbed precisely when `1/(2m) ≤ 1/4`, that is `m ≥ 2`.  The same inequality that made
+`‖ρ‖⁴ ≤ 1 + ‖ρ‖^(2m)` usable makes the convolution exponent work.  For `m = 1` both fail, and that
+case is closed by the fold instead.
+
+### Remaining for `m ≥ 2`
+
+Two lemmas of the band-split skeleton still assume the quadratic weight:
+
+* the near-diagonal harmonic band `tendsto_tsum_nearDiagonal_zero` (weight `c/(I·|n|)`), which for
+  exponent `s` becomes `c/(I^(s-1)·|n|)` — the natural generalisation is a weight `c/(w I · |n|)`
+  with `(1 + log I)/w I → 0`, of which the present lemma is the case `w I = I`;
+* `tendsto_tsum_farBandRatio_zero`, which combines that band with the escaping band and needs the
+  same substitution.
+
+With those two, `tendsto_gaussTranslationL2DefectBound` generalises to exponent `2θ` and the
+`m ≥ 2` interior replacement `Λ → Λ_0` closes.
+
+### Note on the tree
+
+Two failures currently block the umbrella builds, both from concurrent work in other layers and
+neither touching this card:
+
+* `RHTower.Sieve.LowHeightPoly` and `RHTower.Sieve.LogPhaseBlock` both define
+  `RHTower.Sieve.logPhase`;
+* `HTGeometry.UniversalCenteredCoefficients` calls `taylor_coeff_pred`, which is no longer defined
+  anywhere in the tree.
+
+Every module of this card builds on its own, with all dependencies.
+
+## Lean status, thirty-eighth pass: the band-split skeleton at a general power
+
+Two of the three lemmas the `m ≥ 2` route needs are now generalized, and both special cases were
+turned into corollaries rather than left duplicated.
+
+### `HTGeometry/NearDiagonalHarmonicTail.lean`, generalized
+
+```text
+tendsto_tsum_nearDiagonalWeighted_zero :
+    0 ≤ c → (∀ I, 0 ≤ w I) → ((1 + log I)/w I → 0) →
+      ∑_(|n| < I) c/(w I · |n|)  →  0
+tendsto_tsum_nearDiagonal_zero  -- now the case w I = I
+```
+
+### `HTGeometry/FarBandPowerTail.lean` (new)
+
+```text
+tendsto_one_add_log_div_rpow_atTop_zero : 0 < t → (1 + log I)/I^t → 0
+tendsto_tsum_farBandPower_zero :
+    0 ≤ c → 1 < s →
+      ∑_(I < 2|j|, |I+j| ≠ 0) c·I/((1+|j|)^s·|I+j|)  →  0
+```
+
+and `tendsto_tsum_farBandRatio_zero` in `FarBandRatioTail.lean` is **now a corollary at `s = 2`**,
+its former proof deleted.  The two regimes generalize exactly:
+
+* `|j| ≤ 2|I+j|`: the weight is `O(1/(1+|j|)^s)` on an escaping band — summable by
+  `tsum_intPowWeight_ne_top`;
+* `|j| > 2|I+j|`: then `1 + |j| > I/2`, so `(1+|j|)^s ≥ (I/2)^s` and the weight is
+  `O(2^s/(I^(s-1)·|I+j|))` — a near-diagonal band at height `I^(1-s)`, which the weighted
+  near-diagonal lemma kills because `(1 + log I)/I^(s-1) → 0`.
+
+The refactor is verified downstream: `GaussRatioWeightedDefect`, which consumes
+`tendsto_tsum_farBandRatio_zero`, still builds unchanged (8802 jobs).
+
+### Remaining for `m ≥ 2`
+
+Only the third piece: `gaussTranslationL2DefectBound` and its vanishing at exponent `2θ` instead of
+`2`, which is now a matter of substituting `intPowWeight (2θ)` for `intQuadWeight` and
+`tendsto_tsum_farBandPower_zero` for `tendsto_tsum_farBandRatio_zero` in the existing proof.  After
+that, the interior replacement `Λ → Λ_0` for `m ≥ 2` has every input it needs:
+
+* the convolution decay `log(2+|j|)/(1+|j|) ≤ C/(1+|j|)^θ` (`log_div_le_rpow_div`);
+* the reflected-band spike absorbed at `θ = 3/4` exactly when `m ≥ 2`;
+* the ratio-weighted defect estimate (`tendsto_gaussTranslationL2RatioDefectBound`);
+* the near-band ratio bound (`norm_gaussSampleRatio_le_of_near`).

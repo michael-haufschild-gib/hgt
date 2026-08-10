@@ -59,6 +59,12 @@ All new declarations live in namespace `HTGeometry.ConstraintRelativity`.
 9. `grade_dimension` — **card `(13)`**: the `a`-adic grade dimensions are `N−1, …, 1`.
 10. `successor_bars` — **card `(17)`, boxed**: one more sheet appends a bar of length `N`.
 
+11. `two_mul_choose_two_eq_mul_pred`, `transmutation_dictionary` — **card `(18)`, boxed**: the
+    dictionary as one proposition rather than a reading of items 1–10.  The underived constraints
+    already generate `(a)` (extra underived codimension zero), the derived excess has rank `N − 1`,
+    the maximal observer jet depth is `N − 1`, the orientation ideal is `(a^{binom N 2})`, the
+    discriminant ideal is its square, and that exponent is `N(N−1)`.
+
 Together items 1–10 are the transmutation dictionary `(18)`: extra underived codimension `0`,
 derived excess rank `N − 1`, maximal observer jet depth `N − 1`, orientation order `binom N 2`,
 discriminant order `N(N−1)`.

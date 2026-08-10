@@ -45,8 +45,11 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
 10. `shadow_tower` — **(13)**: the support shadow factors through the magnitude shadow.
 11. `normSq_forgets_phase` — the magnitude shadow loses the phase and coorientation.
 12. `support_forgets_magnitude` — the support shadow loses the magnitude.
-    Items 10–12 are the three-shadow theorem: the three route outputs are successive functions of
-    the one framed scalar `a`, so their product cannot create selection.
+12b. `three_shadow_theorem` — **card `(13)`**, the three-shadow theorem as one proposition: the
+    support shadow factors through the magnitude shadow, the magnitude forgets the phase and
+    coorientation, and the support forgets the magnitude.  Because every component is already a
+    function of `a`, their product cannot create selection.  Items 10–12 give the three clauses
+    separately.
 13. `relative_channel_central_twist` — **(14)**: `(δT_j) f (δT_i)⁻¹ = T_j f T_i⁻¹`.
 14. `det_central_twist` — the same twist does change the determinant holonomy, so exact-category
     data alone cannot select `δ = 1` while framed determinant data can.

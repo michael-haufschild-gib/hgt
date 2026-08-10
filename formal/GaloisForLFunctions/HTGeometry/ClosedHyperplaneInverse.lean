@@ -15,7 +15,7 @@ When `K` is a hyperplane this makes `A` Fredholm of index `-1`.  The results bel
 operator as an actual `LinearPMap`; no graph relation or Fredholm datum is postulated.
 -/
 
-open Module Topology
+open Module Topology Filter
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -166,6 +166,72 @@ theorem closedGraphTransform_kernel_eq_bot
     (x : H) = B k := hk.symm
     _ = B 0 := by rw [hk0]
     _ = 0 := map_zero B
+
+/-- An injective compact perturbation of a closed-subspace inclusion is bounded below.  This is
+the rectangular form of the first half of Atkinson's theorem needed by translated graph
+inverses. -/
+theorem antilipschitz_subtype_add_smul_of_compact_of_injective
+    (K : Submodule ℂ H) (hK : IsClosed (K : Set H))
+    (B : K →L[ℂ] H) (hB : IsCompactOperator B) (α : ℂ)
+    (hJ : Function.Injective (K.subtypeL + α • B)) :
+    ∃ c : NNReal, AntilipschitzWith c (K.subtypeL + α • B) := by
+  letI : CompleteSpace K := hK.completeSpace_coe
+  let J : K →L[ℂ] H := K.subtypeL + α • B
+  rw [antilipschitzWith_iff_exists_mul_le_norm]
+  by_contra! hlower
+  have hshell : ∃ c > 0, ∀ ε > 0, ∃ x : K,
+      ‖x‖ ≤ 1 ∧ c ≤ ‖x‖ ∧ ‖J x‖ < ε := by
+    obtain ⟨C, hC⟩ := NormedField.exists_one_lt_norm ℂ
+    refine ⟨‖C‖⁻¹, by positivity, fun ε hε => ?_⟩
+    obtain ⟨x, hx⟩ := hlower ε hε
+    have hx0 : x ≠ 0 := by
+      rintro rfl
+      simpa using hx
+    obtain ⟨η, hη, h₁, h₂, h₃⟩ :=
+      rescale_to_shell hC (ε := 1) (by simp) hx0
+    refine ⟨η • x, h₁.le, by simpa using h₂, ?_⟩
+    grw [map_smul, norm_smul, hx, mul_left_comm, ← norm_smul]
+    linear_combination ε * h₁
+  obtain ⟨c, hc0, hc⟩ := hshell
+  obtain ⟨φ, hφanti, hφpos, hφ⟩ := exists_seq_strictAnti_tendsto (0 : ℝ)
+  have hexists (n : ℕ) : ∃ x : K,
+      ‖x‖ ≤ 1 ∧ c ≤ ‖x‖ ∧ ‖J x‖ < φ n := hc (φ n) (hφpos n)
+  choose x hxUpper hxLower hxBound using hexists
+  have hJlim : Tendsto (fun n => J (x n)) atTop (𝓝 0) :=
+    squeeze_zero_norm (by grind) hφ
+  obtain ⟨C, hCcompact, hCsub⟩ := hB.image_closedBall_subset_compact 1
+  obtain ⟨y, hyC, ψ, hψ, hψy⟩ := hCcompact.tendsto_subseq
+    (x := fun n => B (x n)) (fun n => hCsub ⟨x n, by
+      rw [Metric.mem_closedBall, dist_zero_right]
+      exact hxUpper n, rfl⟩)
+  have hJsub : Tendsto (fun n => J (x (ψ n))) atTop (𝓝 0) :=
+    hJlim.comp hψ.tendsto_atTop
+  have hcoeLim : Tendsto (fun n => ((x (ψ n) : K) : H)) atTop (𝓝 (-α • y)) := by
+    have hdiff := hJsub.sub (hψy.const_smul α)
+    convert hdiff using 1
+    · funext n
+      simp [J]
+    · simp
+  have hlimitMem : -α • y ∈ K :=
+    hK.mem_of_tendsto hcoeLim (Eventually.of_forall fun n => (x (ψ n)).property)
+  let z : K := ⟨-α • y, hlimitMem⟩
+  have hzlim : Tendsto (fun n => x (ψ n)) atTop (𝓝 z) := by
+    rw [tendsto_subtype_rng]
+    exact hcoeLim
+  have hnormLim : Tendsto (fun n => ‖x (ψ n)‖) atTop (𝓝 ‖z‖) :=
+    continuous_norm.continuousAt.tendsto.comp hzlim
+  have hcz : c ≤ ‖z‖ :=
+    ge_of_tendsto hnormLim (Eventually.of_forall fun n => hxLower (ψ n))
+  have hz0 : z ≠ 0 := by
+    intro hz
+    rw [hz, norm_zero] at hcz
+    exact (not_lt_of_ge hcz) hc0
+  have hJzLim : Tendsto (fun n => J (x (ψ n))) atTop (𝓝 (J z)) :=
+    J.continuous.continuousAt.tendsto.comp hzlim
+  have hJz : J z = 0 := tendsto_nhds_unique hJzLim hJsub
+  apply hz0
+  apply hJ
+  simpa [J] using hJz
 
 theorem closedHyperplaneInverse_domain
     (K : Submodule ℂ H) (B : K →L[ℂ] H) :

@@ -4240,6 +4240,9 @@ import GaloisForLFunctions.RHTower.Sieve.MRFromOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.RamareComplex
 import GaloisForLFunctions.RHTower.Sieve.LowHeightPoly
 import GaloisForLFunctions.RHTower.Sieve.LowHeightMoebius
+import GaloisForLFunctions.RHTower.Sieve.RamarePhaseBilinear
+import GaloisForLFunctions.RHTower.Sieve.RamarePhaseError
+import GaloisForLFunctions.RHTower.Sieve.RamareBilinearMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6872,6 +6875,9 @@ import GaloisForLFunctions.RHTower.Sieve.MRFromOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.RamareComplex
 import GaloisForLFunctions.RHTower.Sieve.LowHeightPoly
 import GaloisForLFunctions.RHTower.Sieve.LowHeightMoebius
+import GaloisForLFunctions.RHTower.Sieve.RamarePhaseBilinear
+import GaloisForLFunctions.RHTower.Sieve.RamarePhaseError
+import GaloisForLFunctions.RHTower.Sieve.RamareBilinearMeanSquare
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen

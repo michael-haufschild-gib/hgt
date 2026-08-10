@@ -119,11 +119,10 @@ theorem CoeffBnd.pow {A : Subring K} {q : K} {κ β : ℕ} {f : PowerSeries K}
   induction i with
   | zero =>
       intro N
-      rw [pow_zero, Nat.zero_mul, pow_zero]
-      rw [isPowMul_zero_iff_mem]
+      rw [pow_zero, Nat.zero_mul, isPowMul_zero_iff_mem]
       by_cases hN : N = 0
       · subst hN
-        rw [PowerSeries.coeff_zero_eq_constantCoeff, map_one, mul_one, Nat.mul_zero, pow_zero]
+        rw [Nat.mul_zero, pow_zero, one_mul, PowerSeries.coeff_one, if_pos rfl]
         exact A.one_mem
       · rw [PowerSeries.coeff_one, if_neg hN, mul_zero]
         exact A.zero_mem
@@ -150,5 +149,69 @@ theorem CoeffBnd.truncPS {A : Subring K} {q : K} {κ β : ℕ} {f : PowerSeries 
     exact hf N
   · rw [if_neg hN, mul_zero]
     exact isPowMul_zero
+
+/-- Weakening the gain. -/
+theorem CoeffBnd.mono {A : Subring K} {q : K} (hq : q ∈ A) {κ β γ : ℕ} (hβγ : γ ≤ β)
+    {f : PowerSeries K} (hf : CoeffBnd A q κ β f) : CoeffBnd A q κ γ f :=
+  fun N => (hf N).mono hq hβγ
+
+theorem CoeffBnd.sum {A : Subring K} {q : K} {κ β : ℕ} {ι : Type*} (s : Finset ι)
+    (g : ι → PowerSeries K) (hg : ∀ i ∈ s, CoeffBnd A q κ β (g i)) :
+    CoeffBnd A q κ β (∑ i ∈ s, g i) := by
+  intro N
+  rw [map_sum, Finset.mul_sum]
+  exact IsPowMul.sum _ _ fun i hi => hg i hi N
+
+/-- **Evaluating a polynomial with bounded coefficients at a bounded series.** -/
+theorem CoeffBnd.eval {A : Subring K} {q : K} (hq : q ∈ A) {κ β : ℕ} {P : Polynomial (PowerSeries K)}
+    (hP : ∀ i, CoeffBnd A q κ 0 (P.coeff i)) {w : PowerSeries K} (hw : CoeffBnd A q κ β w) :
+    CoeffBnd A q κ 0 (P.eval w) := by
+  rw [Polynomial.eval_eq_sum_range]
+  refine CoeffBnd.sum _ _ fun i _ => ?_
+  exact ((hP i).mul (hw.pow i)).mono hq (Nat.zero_le _)
+
+/-! ## The case of no denominators at all -/
+
+/-- With exponent and gain both zero the bound says exactly that all coefficients lie in `A`. -/
+theorem coeffBnd_zero_zero_iff {A : Subring K} {q : K} {f : PowerSeries K} :
+    CoeffBnd A q 0 0 f ↔ ∀ N, PowerSeries.coeff N f ∈ A := by
+  constructor
+  · intro h N
+    have := h N
+    rw [Nat.zero_mul, pow_zero, one_mul, isPowMul_zero_iff_mem] at this
+    exact this
+  · intro h N
+    rw [Nat.zero_mul, pow_zero, one_mul, isPowMul_zero_iff_mem]
+    exact h N
+
+theorem coeffMem_shiftPow {A : Subring K} {f : PowerSeries K}
+    (hf : ∀ N, PowerSeries.coeff N f ∈ A) (k : ℕ) :
+    ∀ N, PowerSeries.coeff N (shiftPow k f) ∈ A := by
+  intro N
+  rw [coeff_shiftPow]
+  exact hf _
+
+theorem coeffMem_X_pow_mul {A : Subring K} {f : PowerSeries K}
+    (hf : ∀ N, PowerSeries.coeff N f ∈ A) (k : ℕ) :
+    ∀ N, PowerSeries.coeff N ((PowerSeries.X : PowerSeries K) ^ k * f) ∈ A := by
+  intro N
+  rcases Nat.lt_or_ge N k with hN | hN
+  · have hdvd : (PowerSeries.X : PowerSeries K) ^ k ∣
+        (PowerSeries.X : PowerSeries K) ^ k * f := ⟨_, rfl⟩
+    rw [PowerSeries.X_pow_dvd_iff] at hdvd
+    rw [hdvd N hN]
+    exact A.zero_mem
+  · obtain ⟨d, hd⟩ : ∃ d, N = d + k := ⟨N - k, by omega⟩
+    subst hd
+    rw [PowerSeries.coeff_X_pow_mul]
+    exact hf d
+
+/-- The Hasse derivative of a polynomial with `A`-coefficients again has `A`-coefficients. -/
+theorem coeffMem_hasseDeriv {A : Subring K} {F : Polynomial (PowerSeries K)}
+    (hF : ∀ i N, PowerSeries.coeff N (F.coeff i) ∈ A) (k : ℕ) :
+    ∀ i N, PowerSeries.coeff N ((Polynomial.hasseDeriv k F).coeff i) ∈ A := by
+  intro i N
+  rw [Polynomial.hasseDeriv_coeff, ← nsmul_eq_mul, map_nsmul]
+  exact nsmul_mem (hF (i + k) N) _
 
 end GaloisForLFunctions.HTGeometry
