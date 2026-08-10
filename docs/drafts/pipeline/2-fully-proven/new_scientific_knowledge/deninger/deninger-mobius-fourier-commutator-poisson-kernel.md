@@ -754,10 +754,16 @@ Classical.choice, Quot.sound`.
 - `deningerAbelWindow_length` — its length is `u/(i(i+1))`.
 - `deningerAbelCoefficient_summable` — **`∑_i |M(i)|/(i(i+1)) < ∞`**, by comparison with `(9)`.
 
-`(11)` for `r = 0` is proved.  The higher moments `r ≥ 1` follow the same chain with `x^r` in the
-integrand: the only change is that the window integral produces `∫_0^∞ u^{r+1}|H_h'(u)|du`, which
-is finite by the same two-sided decay, and the coefficient becomes `1/(i^{r+1}(i+1))`, still
-summable against `(9)`.  Then `(12)` needs `(15)`, whose discrete form is `∑_n μ(n)/n = 0`.
+`(11)` is proved at `r = 0`, and at order `r ≥ 1` all three ingredients are proved — the window
+moment, the coefficient summability, and the weighted moment — so the order-`r` statement is the
+same assembly as the `r = 0` one with `x^r` inserted, following
+`DeningerAbelMajorant`/`DeningerPreimageMass` line for line.  Then `(12)` needs `(15)`, whose discrete form is `∑_n μ(n)/n = 0`.  Convergence of that series is
+now proved; what is left is only that its **value is zero**, and that does *not* follow from
+`M(N) = o(N)`: partial summation the other way turns `A(N) → S` into `M(N)/N → S - S = 0` for any
+`S`, so PNT alone cannot pin the constant.  The value needs the analytic input — Abel's theorem
+for the Dirichlet series `∑ μ(n) n^{-s} = 1/ζ(s)` on `s ↓ 1` together with the pole of `ζ` at `1`,
+which forces `1/ζ(s) → 0`.  The corpus has `LSeries_moebius_eq_inv_riemannZeta` for `Re s > 1`;
+the Abelian theorem is the missing piece.
 
 ### Section 2 — the first weighted moment `[DONE]`
 
@@ -803,6 +809,44 @@ This is the analytic core of `(11)`: combined with `deningerAbelCoefficient_summ
 
 Stating the conclusion as finiteness of the `ℝ≥0∞` integral rather than `IntegrableOn` is
 deliberate: it needs no measurability of `f_h` at all, and the comparison is pure `lintegral_mono`.
+
+### Section 2 — all higher weighted moments `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerHigherMoment.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerExpWeight_le_pow` — the exponential weight dominates `y^k` and `y^{-k}` together.
+- `deningerLogPullDeriv_weightedPow_norm_le` — at exponent `r + 2` the source bound gives
+  `u^{r+1}|H_h'(u)| ≤ C min(u^{2r+2}, u^{-2})`.
+- `deningerHigherMoment_integrable` — **`∫_0^∞ u^{r+1}|H_h'(u)| du < ∞` for every `r`**, the second
+  factor of `(11)` at every order.
+
+### Section 2 — the order-`r` window and coefficients `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerHigherCoefficient.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerWindowPow_integral` — the `r`-th moment of the dilation window is
+  `(u^{r+1}/(r+1))(i^{-(r+1)} - (i+1)^{-(r+1)})`.
+- `deningerHigherBracket_le` — the bracket is nonnegative and at most `i^{-2}` once `r ≥ 1`.
+- `deningerHigherCoefficient_summable` — **the order-`r` coefficients are summable for every
+  `r ≥ 1`**, by comparison with `(9)`.  So one inverse-square series controls every order at once.
+
+Every ingredient of `(11)` now exists at every order `r`.
+
+### Section 2 — the Möbius harmonic series converges `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMobiusHarmonic.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerMertensHarmonic_summable` — `∑_i M(i)/(i(i+1))` converges absolutely.
+- `deningerMobiusHarmonic_tendsto` — **the partial sums of `∑ μ(n)/n` converge**, to
+  `∑_i M(i)/(i(i+1))`.  Summation by parts plus the corpus's PNT in Mertens form
+  (`Sieve.tendsto_abs_mertensM_div`) for the boundary term.
+
+Note this is stated for partial sums, not as `Summable`: `∑ μ(n)/n` is only *conditionally*
+convergent, so it is not summable in Lean's unordered sense and no `Summable` statement can be
+true here.
 
 ### What is left
 

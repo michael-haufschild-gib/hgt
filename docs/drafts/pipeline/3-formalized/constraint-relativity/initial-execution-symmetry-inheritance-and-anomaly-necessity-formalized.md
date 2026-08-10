@@ -53,6 +53,16 @@ Generator-commutator necessity:
 13. `grading_commutator_ne_zero` — the contrapositive: a differential that breaks radial
     equivariance must have `[d, ∂_log] ≠ 0`.
 
+14. `diagonalGrading`, `diagonalRadialFlow` — **radial flows exist**: for any weight family `μ`
+    and any weight law `g` the graded space `Kⁿ` carries a radial flow whose grading is diagonal
+    with eigenvalues `μ` and whose flow is diagonal with entries `g c (μ i)`.  Items 11–13 are
+    therefore statements about an inhabited class.
+15. `anomalyFlow`, `anomalyDifferential`, `anomalyDifferential_not_commute_flow`,
+    `anomalyDifferential_grading_commutator_ne_zero` — **the anomaly condition is satisfiable**:
+    on the two-weight model `μ = (0, 1)` the lowering operator `d(v₀,v₁) = (v₁,0)` fails to commute
+    with the radial flow, so the hypothesis of item 13 is met and its conclusion
+    `[d, ∂_log] ≠ 0` is a genuine obstruction rather than a vacuous implication.
+
 Card equations `(8)` and `(9)` are explicitly labelled placeholders on the paper card, not
 theorems, and are not formalized.
 

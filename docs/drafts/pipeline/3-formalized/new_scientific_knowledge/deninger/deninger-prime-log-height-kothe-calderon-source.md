@@ -396,7 +396,7 @@ noncollision, not priority claim.
 
 ## Lean statements
 
-The source is `deningerHeightKotheData` on the lattice `DeningerLattice = Nat.Primes →₀ ℤ`, with
+The source is `deningerHeightKotheData` on the lattice `DeningerPrimeLattice = Nat.Primes →₀ ℤ`, with
 `deningerHeight` for `H`, `deningerFreq` for `ℓ`, and `deningerHeightSeminorm k` for `p_k`.
 
 | Card item | Lean declaration |
@@ -414,11 +414,11 @@ The source is `deningerHeightKotheData` on the lattice `DeningerLattice = Nat.Pr
 | multiplier calculus | `deningerHeightMul`, `deningerHeightSeminorm_mul_le` |
 | `(6)`, `(7)`, `(8)` | `deningerGenerator`, `deningerGreen`, `deningerHeightSeminorm_generator_le`, `deningerHeightSeminorm_green_le` |
 | `(9)` split strict exactness | `deningerGenerator_ker_eq_span_delta`, `deningerGenerator_mem_zero`, `deningerGenerator_green`, `deningerGenerator_surjective_onto_zero` |
-| `(10)` the four operators | `deningerModulus`, `deningerModulusGreen`, `deningerHodgeSign`, `deningerHardyPlus`, `deningerHardyMinus` |
-| `(11)` Hodge/Hardy relations | `deningerHodgeSign_sq`, `deningerHardyPlus_idem`, `deningerHardyMinus_idem`, `deningerHardy_mul_eq_zero`, `deningerHardy_add_eq_id`, `deningerHodgeSign_eq_hardy_sub` |
+| `(10)` the four operators | `deningerModulus`, `deningerModulusGreen`, `deningerHodgeSign`, `deningerHeightHardyPlus`, `deningerHeightHardyMinus` |
+| `(11)` Hodge/Hardy relations | `deningerHodgeSign_sq`, `deningerHeightHardyPlus_idem`, `deningerHeightHardyMinus_idem`, `deningerHeightHardy_mul_eq_zero`, `deningerHeightHardy_add_eq_id`, `deningerHodgeSign_eq_hardy_sub` |
 | `(11a)`, `(11b)` Poisson family | `deningerPoisson`, `deningerHeightSeminorm_poisson_le`, `deningerPoisson_zero`, `deningerPoisson_add`, `deningerPoisson_hasDerivAt` |
 | `(12)`, `(25)` the two forms | `deningerPairing`, `deningerPsi`, `deningerPairing_norm_le`, `deningerPsi_norm_le`, `deningerPsi_antisymm` |
-| `(13)` Green energy | `deningerEnergy`, `deningerPsi_hodgeStar`, `deningerEnergy_nonneg`, `deningerEnergy_eq_zero_iff` |
+| `(13)` Green energy | `deningerHeightEnergy`, `deningerPsi_hodgeStar`, `deningerHeightEnergy_nonneg`, `deningerHeightEnergy_eq_zero_iff` |
 | `(14)`, `(15)` Lagrangian graph | `deningerLagrangian_isotropic`, `deningerLagrangian_maximal`, `deningerLagrangian_closed` |
 | `(16)` power maps | `deningerPower`, `deningerHeightSeminorm_power`, `deningerPower_generator`, `deningerPower_modulus`, `deningerPower_hodgeSign`, `deningerPower_hardyPlus`, `deningerPower_hardyMinus` |
 | `(17)` reflection relations | `deningerReflect_generator`, `deningerReflect_modulus`, `deningerReflect_hodgeSign`, `deningerReflect_hardy` |

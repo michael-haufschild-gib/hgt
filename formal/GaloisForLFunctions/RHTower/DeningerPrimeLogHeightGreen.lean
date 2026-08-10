@@ -167,12 +167,12 @@ theorem deningerHodgeSign_multiplier_bound (m : DeningerPrimeLattice) :
   rw [pow_zero, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
   exact abs_deningerSign_le_one m
 
-theorem deningerHardyPlus_multiplier_bound (m : DeningerPrimeLattice) :
+theorem deningerHeightHardyPlus_multiplier_bound (m : DeningerPrimeLattice) :
     ‖(if 0 < deningerFreq m then (1 : ℂ) else 0)‖ ≤ deningerHeight m ^ 0 := by
   rw [pow_zero]
   by_cases h : 0 < deningerFreq m <;> simp [h]
 
-theorem deningerHardyMinus_multiplier_bound (m : DeningerPrimeLattice) :
+theorem deningerHeightHardyMinus_multiplier_bound (m : DeningerPrimeLattice) :
     ‖(if deningerFreq m < 0 then (1 : ℂ) else 0)‖ ≤ deningerHeight m ^ 0 := by
   rw [pow_zero]
   by_cases h : deningerFreq m < 0 <;> simp [h]
@@ -211,12 +211,12 @@ def deningerHodgeSign : DeningerHeightKothe →ₗ[ℂ] DeningerHeightKothe :=
 /-- **The positive Hardy projector** `(Π₊a)_m = 1_{ℓ(m)>0} a_m`. -/
 def deningerHeightHardyPlus : DeningerHeightKothe →ₗ[ℂ] DeningerHeightKothe :=
   deningerHeightMul (fun m => if 0 < deningerFreq m then (1 : ℂ) else 0) 0
-    deningerHardyPlus_multiplier_bound
+    deningerHeightHardyPlus_multiplier_bound
 
 /-- **The negative Hardy projector** `(Π₋a)_m = 1_{ℓ(m)<0} a_m`. -/
 def deningerHeightHardyMinus : DeningerHeightKothe →ₗ[ℂ] DeningerHeightKothe :=
   deningerHeightMul (fun m => if deningerFreq m < 0 then (1 : ℂ) else 0) 0
-    deningerHardyMinus_multiplier_bound
+    deningerHeightHardyMinus_multiplier_bound
 
 /-- **The coefficientwise Poisson extension** `(P_r a)_m = e^{-r|ℓ(m)|} a_m`. -/
 def deningerPoisson (r : ℝ) (hr : 0 ≤ r) :
@@ -250,13 +250,13 @@ theorem deningerHeightSeminorm_hodgeSign_le (k : ℕ) (a : DeningerHeightKothe) 
 
 theorem deningerHeightSeminorm_hardyPlus_le (k : ℕ) (a : DeningerHeightKothe) :
     deningerHeightSeminorm k (deningerHeightHardyPlus a) ≤ deningerHeightSeminorm k a := by
-  have h := deningerHeightSeminorm_mul_le deningerHardyPlus_multiplier_bound k a
+  have h := deningerHeightSeminorm_mul_le deningerHeightHardyPlus_multiplier_bound k a
   rw [Nat.add_zero] at h
   exact h
 
 theorem deningerHeightSeminorm_hardyMinus_le (k : ℕ) (a : DeningerHeightKothe) :
     deningerHeightSeminorm k (deningerHeightHardyMinus a) ≤ deningerHeightSeminorm k a := by
-  have h := deningerHeightSeminorm_mul_le deningerHardyMinus_multiplier_bound k a
+  have h := deningerHeightSeminorm_mul_le deningerHeightHardyMinus_multiplier_bound k a
   rw [Nat.add_zero] at h
   exact h
 
@@ -371,12 +371,12 @@ theorem deningerHodgeSign_coe (a : DeningerHeightKothe) (m : DeningerPrimeLattic
       = Complex.I * ((deningerSign m : ℝ) : ℂ) *
         (a : DeningerPrimeLattice → ℂ) m := rfl
 
-theorem deningerHardyPlus_coe (a : DeningerHeightKothe) (m : DeningerPrimeLattice) :
+theorem deningerHeightHardyPlus_coe (a : DeningerHeightKothe) (m : DeningerPrimeLattice) :
     ((deningerHeightHardyPlus a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m
       = (if 0 < deningerFreq m then (1 : ℂ) else 0) *
         (a : DeningerPrimeLattice → ℂ) m := rfl
 
-theorem deningerHardyMinus_coe (a : DeningerHeightKothe) (m : DeningerPrimeLattice) :
+theorem deningerHeightHardyMinus_coe (a : DeningerHeightKothe) (m : DeningerPrimeLattice) :
     ((deningerHeightHardyMinus a : DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m
       = (if deningerFreq m < 0 then (1 : ℂ) else 0) *
         (a : DeningerPrimeLattice → ℂ) m := rfl
@@ -412,23 +412,23 @@ theorem deningerHodgeSign_sq (a : DeningerHeightKothe)
           rw [Complex.I_mul_I, hsq]; ring
 
 /-- The Hardy projectors are idempotent. -/
-theorem deningerHardyPlus_idem (a : DeningerHeightKothe) :
+theorem deningerHeightHardyPlus_idem (a : DeningerHeightKothe) :
     deningerHeightHardyPlus (deningerHeightHardyPlus a) = deningerHeightHardyPlus a := by
   ext m
-  simp only [deningerHardyPlus_coe]
+  simp only [deningerHeightHardyPlus_coe]
   by_cases h : 0 < deningerFreq m <;> simp [h]
 
-theorem deningerHardyMinus_idem (a : DeningerHeightKothe) :
+theorem deningerHeightHardyMinus_idem (a : DeningerHeightKothe) :
     deningerHeightHardyMinus (deningerHeightHardyMinus a) = deningerHeightHardyMinus a := by
   ext m
-  simp only [deningerHardyMinus_coe]
+  simp only [deningerHeightHardyMinus_coe]
   by_cases h : deningerFreq m < 0 <;> simp [h]
 
 /-- The Hardy projectors are orthogonal. -/
 theorem deningerHardy_mul_eq_zero (a : DeningerHeightKothe) :
     deningerHeightHardyPlus (deningerHeightHardyMinus a) = 0 := by
   ext m
-  rw [deningerHardyPlus_coe, deningerHardyMinus_coe]
+  rw [deningerHeightHardyPlus_coe, deningerHeightHardyMinus_coe]
   by_cases h : 0 < deningerFreq m
   · have hnot : ¬ deningerFreq m < 0 := by linarith
     simp [h, hnot]
@@ -442,7 +442,7 @@ theorem deningerHardy_add_eq_id (a : DeningerHeightKothe)
   ext m
   show ((deningerHeightHardyPlus a + deningerHeightHardyMinus a : DeningerHeightKothe) :
       DeningerPrimeLattice → ℂ) m = (a : DeningerPrimeLattice → ℂ) m
-  rw [Submodule.coe_add, Pi.add_apply, deningerHardyPlus_coe, deningerHardyMinus_coe]
+  rw [Submodule.coe_add, Pi.add_apply, deningerHeightHardyPlus_coe, deningerHeightHardyMinus_coe]
   by_cases hm : m = 0
   · subst hm
     rw [ha0]
@@ -465,7 +465,7 @@ theorem deningerHodgeSign_eq_hardy_sub (a : DeningerHeightKothe) :
       = ((Complex.I • (deningerHeightHardyPlus a - deningerHeightHardyMinus a) :
           DeningerHeightKothe) : DeningerPrimeLattice → ℂ) m
   rw [Submodule.coe_smul, Pi.smul_apply, Submodule.coe_sub, Pi.sub_apply,
-    deningerHardyPlus_coe, deningerHardyMinus_coe]
+    deningerHeightHardyPlus_coe, deningerHeightHardyMinus_coe]
   rcases lt_trichotomy (deningerFreq m) 0 with h | h | h
   · have hnot : ¬ (0 : ℝ) < deningerFreq m := by linarith
     rw [deningerSign_of_neg h]

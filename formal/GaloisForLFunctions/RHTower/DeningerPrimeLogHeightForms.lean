@@ -132,7 +132,7 @@ theorem deningerPsi_antisymm (a b : DeningerHeightKothe) :
 
 /-! ## The Green energy -/
 
-private theorem deningerEnergy_summable (a : DeningerHeightKothe) :
+private theorem deningerHeightEnergy_summable (a : DeningerHeightKothe) :
     Summable fun m : DeningerPrimeLattice =>
       |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 := by
   refine Summable.of_nonneg_of_le
@@ -159,7 +159,7 @@ private theorem deningerEnergy_summable (a : DeningerHeightKothe) :
 def deningerHeightEnergy (a : DeningerHeightKothe) : ℝ :=
   ∑' m, |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2
 
-theorem deningerEnergy_nonneg (a : DeningerHeightKothe) : 0 ≤ deningerHeightEnergy a :=
+theorem deningerHeightEnergy_nonneg (a : DeningerHeightKothe) : 0 ≤ deningerHeightEnergy a :=
   tsum_nonneg fun _ => mul_nonneg (abs_nonneg _) (sq_nonneg _)
 
 /-- **The Green energy is the pairing of a vector with the Hodge sign of its star.** -/
@@ -207,7 +207,7 @@ theorem deningerPsi_hodgeStar (a : DeningerHeightKothe) :
             ring
   have hsumC : Summable fun m : DeningerPrimeLattice =>
       ((|deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 : ℝ) : ℂ) :=
-    Complex.ofRealCLM.summable (deningerEnergy_summable a)
+    Complex.ofRealCLM.summable (deningerHeightEnergy_summable a)
   rw [deningerPsi, deningerPairing, tsum_congr hterm,
     Summable.tsum_mul_left _ hsumC, deningerHeightEnergy, Complex.ofReal_tsum,
     ← mul_assoc]
@@ -216,7 +216,7 @@ theorem deningerPsi_hodgeStar (a : DeningerHeightKothe) :
   rw [hI, one_mul]
 
 /-- **The Green energy vanishes exactly at the origin of the zero-character sector.** -/
-theorem deningerEnergy_eq_zero_iff (a : DeningerHeightKothe)
+theorem deningerHeightEnergy_eq_zero_iff (a : DeningerHeightKothe)
     (ha : a ∈ deningerHeightKotheZero) :
     deningerHeightEnergy a = 0 ↔ a = 0 := by
   constructor
@@ -225,7 +225,7 @@ theorem deningerEnergy_eq_zero_iff (a : DeningerHeightKothe)
     have hterm : ∀ m : DeningerPrimeLattice,
         |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 = 0 := by
       intro m
-      have hsum := deningerEnergy_summable a
+      have hsum := deningerHeightEnergy_summable a
       have hle := hsum.le_tsum m (fun j _ => mul_nonneg (abs_nonneg _) (sq_nonneg _))
       have hnn : 0 ≤ |deningerFreq m| * ‖(a : DeningerPrimeLattice → ℂ) m‖ ^ 2 :=
         mul_nonneg (abs_nonneg _) (sq_nonneg _)

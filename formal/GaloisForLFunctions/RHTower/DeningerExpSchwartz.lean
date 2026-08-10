@@ -15,7 +15,7 @@ therefore an endomorphism of the source.
 
 * `deningerExpShift` : translation of a Schwartz function.
 * `DeningerExpSchwartz` : **the exponentially decreasing Schwartz source**, as a subspace.
-* `deningerShift_mem` : translation preserves it.
+* `deningerExpShift_mem` : translation preserves it.
 * `deningerPeriodizationDefect` : `Δ_L = 1 - τ_L` on the source.
 -/
 
@@ -89,12 +89,12 @@ def deningerExpShift (L : ℝ) (f : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) where
     linarith
 
 @[simp]
-theorem deningerShift_apply (L : ℝ) (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
+theorem deningerExpShift_apply (L : ℝ) (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
     deningerExpShift L f x = f (x + L) := rfl
 
-theorem deningerShift_zero (f : 𝓢(ℝ, ℂ)) : deningerExpShift 0 f = f := by
+theorem deningerExpShift_zero (f : 𝓢(ℝ, ℂ)) : deningerExpShift 0 f = f := by
   ext x
-  rw [deningerShift_apply, add_zero]
+  rw [deningerExpShift_apply, add_zero]
 
 /-! ## The exponentially decreasing source -/
 
@@ -161,7 +161,7 @@ private theorem deningerExpWeight_shift (A L x : ℝ) :
     nlinarith [abs_nonneg L, abs_nonneg x, abs_nonneg (x + L)]
 
 /-- **Translation preserves the exponentially decreasing source.** -/
-theorem deningerShift_mem {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpSchwartz) (L : ℝ) :
+theorem deningerExpShift_mem {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpSchwartz) (L : ℝ) :
     deningerExpShift L f ∈ DeningerExpSchwartz := by
   intro A n
   obtain ⟨C, hC⟩ := hf A n
@@ -194,8 +194,8 @@ theorem deningerShift_mem {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpSchwartz) 
 /-! ## The prime periodization defect -/
 
 /-- The translation, as an operator of the exponentially decreasing source. -/
-def deningerShiftSource (L : ℝ) : DeningerExpSchwartz →ₗ[ℂ] DeningerExpSchwartz where
-  toFun f := ⟨deningerExpShift L (f : 𝓢(ℝ, ℂ)), deningerShift_mem f.2 L⟩
+def deningerExpShiftSource (L : ℝ) : DeningerExpSchwartz →ₗ[ℂ] DeningerExpSchwartz where
+  toFun f := ⟨deningerExpShift L (f : 𝓢(ℝ, ℂ)), deningerExpShift_mem f.2 L⟩
   map_add' f g := by
     ext x
     rfl
@@ -204,13 +204,13 @@ def deningerShiftSource (L : ℝ) : DeningerExpSchwartz →ₗ[ℂ] DeningerExpS
     rfl
 
 @[simp]
-theorem deningerShiftSource_apply (L : ℝ) (f : DeningerExpSchwartz) (x : ℝ) :
-    ((deningerShiftSource L f : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) x
+theorem deningerExpShiftSource_apply (L : ℝ) (f : DeningerExpSchwartz) (x : ℝ) :
+    ((deningerExpShiftSource L f : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) x
       = ((f : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) (x + L) := rfl
 
 /-- **The periodization defect** `Δ_L = 1 - τ_L` of the exponentially decreasing source. -/
 def deningerPeriodizationDefect (L : ℝ) : DeningerExpSchwartz →ₗ[ℂ] DeningerExpSchwartz :=
-  LinearMap.id - deningerShiftSource L
+  LinearMap.id - deningerExpShiftSource L
 
 theorem deningerPeriodizationDefect_apply (L : ℝ) (f : DeningerExpSchwartz) (x : ℝ) :
     ((deningerPeriodizationDefect L f : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) x

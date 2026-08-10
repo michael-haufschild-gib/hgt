@@ -325,7 +325,7 @@ Smith computations. Search current corpus before choosing files.
 - [x] positive surviving four-component ontology
 - [ ] independent hostile proof audit
 - [ ] specialist novelty review
-- [ ] Lean formalization
+- [x] Lean formalization
 
 ## Log
 

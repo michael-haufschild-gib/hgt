@@ -39,7 +39,7 @@ def deningerHeightShear : DeningerPrimeLattice × DeningerPrimeLattice ≃ Denin
     abel
 
 @[simp]
-theorem deningerShear_symm_apply (q : DeningerPrimeLattice × DeningerPrimeLattice) :
+theorem deningerHeightShear_symm_apply (q : DeningerPrimeLattice × DeningerPrimeLattice) :
     deningerHeightShear.symm q = (q.2, q.1 - q.2) := rfl
 
 /-! ## Summability of the double series -/
@@ -421,7 +421,7 @@ theorem deningerHeightConv_assoc (a b c : DeningerHeightKothe) :
                 (s - (deningerHeightShear.symm q).1 - (deningerHeightShear.symm q).2) := by
     refine tsum_congr fun q => ?_
     have hindex : s - q.1 = s - q.2 - (q.1 - q.2) := by abel
-    simp only [deningerShear_symm_apply, hindex]
+    simp only [deningerHeightShear_symm_apply, hindex]
   rw [hleft, hright, hcong]
   exact deningerHeightShear.symm.tsum_eq
     (fun q : DeningerPrimeLattice × DeningerPrimeLattice =>

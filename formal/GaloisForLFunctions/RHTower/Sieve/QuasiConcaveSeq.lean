@@ -137,6 +137,12 @@ theorem quasiConcaveOn_add_const {w : ℕ → ℝ} {n : ℕ} (hw : QuasiConcaveO
   rw [min_add_add_right]
   linarith [hw i j k hij hjk hkn]
 
+/-- Quasi-concavity passes to a shifted window. -/
+theorem quasiConcaveOn_shift {w : ℕ → ℝ} {n₀ N : ℕ} (hw : QuasiConcaveOn w (n₀ + N)) :
+    QuasiConcaveOn (fun i => w (n₀ + i)) N := by
+  intro i j k hij hjk hkn
+  exact hw (n₀ + i) (n₀ + j) (n₀ + k) (by omega) (by omega) (by omega)
+
 /-- Quasi-concavity transfers along a pointwise equality. -/
 theorem quasiConcaveOn_congr {w v : ℕ → ℝ} {n : ℕ} (heq : ∀ j, w j = v j)
     (hv : QuasiConcaveOn v n) : QuasiConcaveOn w n := by

@@ -3,7 +3,7 @@
 - **ID:** ULF-ALM-PROGRAMME-1
 - **Stage:** 1-in-progress
 - **Type:** ROUTE-INDEPENDENT FIELD PROGRAMME
-- **Status:** [MECHANISMS AND LAWS, NOT ONE OBJECT] [THREE LEAN-CERTIFIED LABS]
+- **Status:** [MECHANISMS AND LAWS, NOT ONE OBJECT] [FOUR LEAN-CERTIFIED LABS]
   [FRANKENSTEIN SYNTHESIS] [HOSTILE GATES OPEN] [NOT RH]
 
 ## 1. Frontier-forced pivot
@@ -66,8 +66,8 @@ and
 
 ## 3. Proposed laws
 
-These are programme laws. Laws III--V have two exact calibrations; Law VI has a third exact
-Lean-certified calibration.
+These are programme laws. Laws III--V have two exact calibrations; Law VI has two further exact
+Lean-certified calibrations, one single-repair and one irreducibly collective.
 
 ### Law I -- source food is not target truth
 
@@ -180,6 +180,24 @@ Paper theorem:
 `conservative-repair-viability-coercivity-transmutation-and-open-history-law.md`.
 Lean: `HTGeometry.ConstitutiveViabilityCoercivityTransmutation`.
 
+### 4.5 Collective viability threshold -- ULF-ALM-2
+
+Two conservative repairs are each nonviable alone. Their interaction crosses one exact spectral
+threshold. Below it, a source-fixed strict progress separator exists and every feasible closed
+history vanishes. At threshold, a repair-only ray is born. Above threshold, a canonical
+full-support positive circulation exists and every strict progress separator is impossible. The
+same threshold carries exact inverse-response blow-up, while the visible interaction remains
+period two throughout and therefore cannot explain the transition. Zero-boundary histories then
+have unbounded positive execution size.
+
+This proves that viability can be a property of a repair coalition rather than any repair or
+observer separately. It does not identify the field with autocatalysis or make spectral radius a
+universal coordinate.
+
+Paper theorem:
+`autopoietic-law-mechanics/collective-repair-spectral-threshold-and-open-history-law.md`.
+Lean: `HTGeometry.ConstitutiveCollectiveRepairThreshold`.
+
 ## 5. Hostile countermodels
 
 1. **Idempotent repair.** Ordinary closure satisfies `C(C(A))=C(A)` and has no hereditary layer by
@@ -274,12 +292,12 @@ the field vocabulary.
 ALM becomes more than an organizing metaphor only after all of the following:
 
 1. abstract feedback laws exclude arbitrary transition-oracle encoding;
-2. a third nonisomorphic laboratory couples repair to viability or coercivity
-   (**Lean-certified by ULF-ALM-1**);
+2. nonisomorphic laboratories couple repair to viability or coercivity, including irreducibly
+   collective viability (**Lean-certified by ULF-ALM-1 and ULF-ALM-2**);
 3. one theorem predicts a withheld fact in at least three corpus mechanism families;
 4. selection is derived from predeclared source resource, not fitted target;
 5. significant dependency-closed theorems are formalized in Lean under the Universal Law Field
    umbrella.
 
-Until then, honest status is a mechanism-first research programme with three certified
+Until then, honest status is a mechanism-first research programme with four certified
 calibrations and open anti-theatre gates.

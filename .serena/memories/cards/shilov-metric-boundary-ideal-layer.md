@@ -242,3 +242,10 @@ affine continuous functions on a compact convex K with ext K.
 affine, so the state body equals the *range* of evalPoint (range is convex and
 compact) — no hull, no closure. Extreme points then transport by injectivity +
 affineness, giving choquetBoundary (A K) = ext K.
+
+## Boundary ⟹ complete boundary (2026-08-10)
+
+`CommutativeCompleteBoundary.lean`. In the commutative model the scalar-level
+Shilov ideal is already the complete one: matrix positivity is a family of
+sandwiches `v* x v`, each of which lies in S because S is a subspace. Needs only
+1 ∈ S. Do NOT build a separate matricial boundary theory for C(X).

@@ -211,7 +211,7 @@ theorem deningerPower_hardyPlus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe)
     deningerHeightHardyPlus (deningerPower q hq a)
       = deningerPower q hq (deningerHeightHardyPlus a) := by
   ext n
-  rw [deningerHardyPlus_coe, deningerPower_coe, deningerPower_coe]
+  rw [deningerHeightHardyPlus_coe, deningerPower_coe, deningerPower_coe]
   simp only [deningerPowerCoe]
   by_cases hn : q • deningerDivExponent q n = n
   · have hqpos : (0 : ℝ) < (q : ℝ) := by exact_mod_cast hq
@@ -226,7 +226,7 @@ theorem deningerPower_hardyPlus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe)
         have hc' : deningerFreq (deningerDivExponent q n) ≤ 0 := not_lt.mp hc
         nlinarith
       · intro h; exact mul_pos hqpos h
-    rw [if_pos hn, if_pos hn, deningerHardyPlus_coe]
+    rw [if_pos hn, if_pos hn, deningerHeightHardyPlus_coe]
     by_cases hpos : 0 < deningerFreq n
     · rw [if_pos hpos, if_pos (hiff.mp hpos)]
     · rw [if_neg hpos, if_neg (fun hc => hpos (hiff.mpr hc))]
@@ -237,7 +237,7 @@ theorem deningerPower_hardyMinus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe
     deningerHeightHardyMinus (deningerPower q hq a)
       = deningerPower q hq (deningerHeightHardyMinus a) := by
   ext n
-  rw [deningerHardyMinus_coe, deningerPower_coe, deningerPower_coe]
+  rw [deningerHeightHardyMinus_coe, deningerPower_coe, deningerPower_coe]
   simp only [deningerPowerCoe]
   by_cases hn : q • deningerDivExponent q n = n
   · have hqpos : (0 : ℝ) < (q : ℝ) := by exact_mod_cast hq
@@ -252,7 +252,7 @@ theorem deningerPower_hardyMinus {q : ℕ} (hq : 0 < q) (a : DeningerHeightKothe
         have hc' : 0 ≤ deningerFreq (deningerDivExponent q n) := not_lt.mp hc
         nlinarith
       · intro h; exact mul_neg_of_pos_of_neg hqpos h
-    rw [if_pos hn, if_pos hn, deningerHardyMinus_coe]
+    rw [if_pos hn, if_pos hn, deningerHeightHardyMinus_coe]
     by_cases hneg : deningerFreq n < 0
     · rw [if_pos hneg, if_pos (hiff.mp hneg)]
     · rw [if_neg hneg, if_neg (fun hc => hneg (hiff.mpr hc))]
@@ -311,7 +311,7 @@ theorem deningerReflect_hardy (a : DeningerHeightKothe) :
     deningerHeightReflect (deningerHeightHardyPlus a)
       = deningerHeightHardyMinus (deningerHeightReflect a) := by
   ext m
-  rw [deningerHeightReflect_coe, deningerHardyPlus_coe, deningerHardyMinus_coe,
+  rw [deningerHeightReflect_coe, deningerHeightHardyPlus_coe, deningerHeightHardyMinus_coe,
     deningerHeightReflect_coe]
   by_cases h : deningerFreq m < 0
   · have hpos : 0 < deningerFreq (-m) := by

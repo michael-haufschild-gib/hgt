@@ -47,3 +47,11 @@ direct-sum axiom, proved from `blockDiagonal_mem` plus contractivity along
 
 The amplification is `amplifyUnit` (renamed from `amplify` by a concurrent
 session to avoid an umbrella collision).
+
+## Instantiated (2026-08-10)
+
+`CommutativeOperatorSystem.lean`: `cstarCone X` (pointwise PSD matrices over
+C(X,ℂ)) is a matrix ordering with scalar order unit 1, and `levelNorm` at level
+1 is the sup-norm. The bridge lemma is `compress_eval`: the module-valued
+compression evaluates pointwise to `α* x(p) α`, so mathlib's
+`PosSemidef.conjTranspose_mul_mul_same` discharges the compression axiom.

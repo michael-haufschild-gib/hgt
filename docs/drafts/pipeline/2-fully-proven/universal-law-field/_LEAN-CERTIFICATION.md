@@ -854,3 +854,15 @@ unconditional capstone report only `propext`, `Classical.choice`, and `Quot.soun
 reports only the unrelated umbrella-reachability failure
 `GaloisForLFunctions.HTGeometry.AffineFunctionSystemEnvelope`. No computation certificate, route
 premise, project axiom, or RH statement occurs.
+
+## Session 2026-08-10 addition (collective-repair threshold mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ALM-2 | Individually nonviable conservative repairs cross an exact spectral threshold: subcritical strict progress, critical carrier ray, supercritical full-support circulation, strict-progress loss, singular symmetric amplification, period-two observation, and open zero-boundary history | `HTGeometry.ConstitutiveCollectiveRepairThreshold` |
+
+Direct foreground elaboration and the leaf build pass. The module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints on one-repair nonviability, all threshold chambers,
+strict-progress transition, symmetric amplification, period-two interaction, unbounded history,
+and the unconditional capstone report only `propext`, `Classical.choice`, and `Quot.sound`. No
+computation certificate, route premise, project axiom, or RH statement occurs.

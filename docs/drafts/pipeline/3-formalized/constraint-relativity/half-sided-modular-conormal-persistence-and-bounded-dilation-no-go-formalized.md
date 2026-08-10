@@ -74,6 +74,12 @@ Semisimple extension collapse:
     splits.
 20. `isCompl_orthogonal_hilbert` — the Hilbert-space form, by orthogonal complement.
 
+**Modular filtrations exist.**  `signModularFiltration`, `signModularFiltration_layer` and
+`signModularFiltration_ne` exhibit, for every submodule `S`, the sign filtration — everything at
+nonpositive parameter, `S` at positive parameter — which is antitone and exactly covariant for the
+trivial flow because `a ↦ e^{2πt}a` preserves the sign of `a`.  It is nonconstant whenever `S` is
+proper.  Every theorem stated for a `ModularFiltration` is therefore about an inhabited class.
+
 ## Scope
 
 "Exact time-type dichotomy", "Predictions and falsifiers" and "Literature boundary" are commentary

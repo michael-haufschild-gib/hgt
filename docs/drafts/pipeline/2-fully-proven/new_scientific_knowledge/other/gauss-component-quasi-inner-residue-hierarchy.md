@@ -1092,3 +1092,48 @@ card's "uniformly bounded variation" hypothesis, in the concrete form the amplit
 
 Recording the three closure steps for the class — multiply by `p^{±(1-x)}` (shifts `α`), translate
 (moves breakpoints), multiply by `a_δ` (refines the partition) — and then assembling (10) and (11).
+
+## Lean status, twenty-fourth pass: two of the three closure steps
+
+`RHTower/GaussAmplitudeClass.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+gaussPrimeScale_eq_expPiece            : b_p(x) = √p · e^{-(log p/2)x}
+gaussPrimeScaleInvSq_eq_expPiece       : b_p(x)^(-2) = p^(-1) · e^{(log p)x}
+IsExpPiecewise.mul_gaussPrimeScale     : multiplying by b_p keeps the partition,
+                                         sends α ↦ α - log p/2 and c ↦ √p · c
+IsExpPiecewise.mul_gaussPrimeScaleInvSq: multiplying by b_p^(-2) keeps the partition,
+                                         sends α ↦ α + log p and c ↦ p^(-1) · c
+```
+
+Both closure steps leave `n` and the breakpoints untouched — the prime scale is a *single* piece
+over the whole period — so the decay constant of `norm_fourierCoeff_of_isExpPiecewise` changes only
+by the explicit factors `√p e^{|log p|/2}` and `p^(-1) e^{|log p|}`.
+
+### Remaining
+
+The third closure step, translation, which is the only one that moves the breakpoints: it wraps one
+piece around the period, so `n ↦ n + 1`, the exponent is unchanged, and the coefficients are
+rescaled by `e^{±αδ}`.  With that in place the amplitude class is closed under everything the
+iteration does, and (10) and (11) follow from the pieces already proved.
+
+## Lean status, twenty-fifth pass: the moving amplitude is a two-piece constant
+
+`RHTower/GaussAmplitudeClass.lean`, extended; unconditional, wired, built.
+
+```text
+gaussMovingAmplitudeCircle_of_lt          : x + s ≤ 1  →  a_δ(x) = p^s
+gaussMovingAmplitudeCircle_of_ge          : 1 < x + s  →  a_δ(x) = p^(s-1)
+isExpPiecewise_gaussMovingAmplitudeCircle : IsExpPiecewise 0 2 {0, 1-s, 1} {p^s, p^(s-1)} a_δ
+```
+
+`a_δ` is **piecewise constant** — exponent `0`, two pieces, breakpoint at `1 - s`.  This is what makes
+the iteration finite-dimensional in the amplitude variable: after one full step the amplitude is
+multiplied by `a_(δ_n)`, so after `r` steps it is `a_(δ_n)^r`, which is again piecewise constant with
+the *same* two pieces and values of modulus at most `p^r`.  No refinement of partitions is ever
+needed along the iteration, and the decay constant of `norm_fourierCoeff_of_isExpPiecewise` does not
+depend on `δ_n`.
+
+The wrap is handled by `AddCircle.coe_add_period`: for `x + s > 1` the representative of `x + s` is
+`x + s - 1`, and the two cases give the two constants.

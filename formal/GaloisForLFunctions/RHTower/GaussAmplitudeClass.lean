@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.GaussQuasiInnerBlocks
+import GaloisForLFunctions.RHTower.GaussMovingAmplitudeOperator
 import GaloisForLFunctions.HTGeometry.PiecewiseExponentialFourier
 
 /-!
@@ -106,6 +106,80 @@ theorem IsExpPiecewise.mul_gaussPrimeScaleInvSq {p : ℝ} (hp : 0 < p) {α : ℝ
           = ((p⁻¹ : ℝ) : ℂ) * c i *
             (Complex.exp (((Real.log p : ℝ) : ℂ) * (x : ℂ)) *
               Complex.exp ((α : ℂ) * (x : ℂ))) from by ring, hmul]
+
+/-! ## The moving amplitude is piecewise constant -/
+
+theorem gaussPrimeScaleInvSqCircle_coe {p x : ℝ} (hx : x ∈ Set.Ioc (0 : ℝ) 1) :
+    gaussPrimeScaleInvSqCircle p ((x : ℝ) : AddCircle (1 : ℝ))
+      = (gaussPrimeScaleInvSq p x : ℂ) :=
+  AddCircle.liftIoc_coe_apply (by simpa using hx)
+
+/-- On the first piece the moving amplitude is the constant `p^s`. -/
+theorem gaussMovingAmplitudeCircle_of_lt {p : ℝ} {s x : ℝ}
+    (hs0 : 0 ≤ s) (hx0 : 0 < x) (hx : x + s ≤ 1) :
+    gaussMovingAmplitudeCircle p ((s : ℝ) : AddCircle (1 : ℝ)) ((x : ℝ) : AddCircle (1 : ℝ))
+      = ((Real.exp (s * Real.log p) : ℝ) : ℂ) := by
+  have hx1 : x ≤ 1 := by linarith
+  have hxs : (0 : ℝ) < x + s := by linarith
+  have hcoe : ((x : ℝ) : AddCircle (1 : ℝ)) + ((s : ℝ) : AddCircle (1 : ℝ))
+      = ((x + s : ℝ) : AddCircle (1 : ℝ)) := rfl
+  rw [gaussMovingAmplitudeCircle, hcoe, gaussPrimeScaleCircle_coe ⟨hx0, hx1⟩,
+    gaussPrimeScaleInvSqCircle_coe ⟨hxs, hx⟩, gaussPrimeScale, gaussPrimeScaleInvSq]
+  rw [← Complex.ofReal_mul, ← Complex.ofReal_mul, ← Real.exp_add, ← Real.exp_add]
+  congr 2
+  ring
+
+/-- After the wrap the moving amplitude is the constant `p^(s-1)`. -/
+theorem gaussMovingAmplitudeCircle_of_ge {p : ℝ} {s x : ℝ}
+    (hs1 : s < 1) (hx0 : 0 < x) (hx1 : x ≤ 1) (hx : 1 < x + s) :
+    gaussMovingAmplitudeCircle p ((s : ℝ) : AddCircle (1 : ℝ)) ((x : ℝ) : AddCircle (1 : ℝ))
+      = ((Real.exp ((s - 1) * Real.log p) : ℝ) : ℂ) := by
+  have hxs0 : (0 : ℝ) < x + s - 1 := by linarith
+  have hxs1 : x + s - 1 ≤ 1 := by linarith
+  have hcoe : ((x : ℝ) : AddCircle (1 : ℝ)) + ((s : ℝ) : AddCircle (1 : ℝ))
+      = ((x + s - 1 : ℝ) : AddCircle (1 : ℝ)) := by
+    have hper : ((x + s - 1 + 1 : ℝ) : AddCircle (1 : ℝ))
+        = ((x + s - 1 : ℝ) : AddCircle (1 : ℝ)) := AddCircle.coe_add_period 1 _
+    rw [← hper, show (x + s - 1 + 1 : ℝ) = x + s from by ring]
+    rfl
+  rw [gaussMovingAmplitudeCircle, hcoe, gaussPrimeScaleCircle_coe ⟨hx0, hx1⟩,
+    gaussPrimeScaleInvSqCircle_coe ⟨hxs0, hxs1⟩, gaussPrimeScale, gaussPrimeScaleInvSq]
+  rw [← Complex.ofReal_mul, ← Complex.ofReal_mul, ← Real.exp_add, ← Real.exp_add]
+  congr 2
+  ring
+
+/-- **The moving amplitude is a two-piece constant.** -/
+theorem isExpPiecewise_gaussMovingAmplitudeCircle {p : ℝ} {s : ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s < 1) :
+    IsExpPiecewise 0 2 (fun i => if i = 0 then 0 else if i = 1 then 1 - s else 1)
+      (fun i => if i = 0 then ((Real.exp (s * Real.log p) : ℝ) : ℂ)
+        else ((Real.exp ((s - 1) * Real.log p) : ℝ) : ℂ))
+      (gaussMovingAmplitudeCircle p ((s : ℝ) : AddCircle (1 : ℝ))) where
+  base := by norm_num
+  top := by norm_num
+  mono := by
+    intro i hi
+    interval_cases i <;> (norm_num; try linarith)
+  nonneg := by
+    intro i hi
+    interval_cases i <;> (norm_num; try linarith)
+  le_one := by
+    intro i hi
+    interval_cases i <;> (norm_num; try linarith)
+  eq := by
+    intro i hi x hx
+    interval_cases i
+    · have hx0 : 0 < x := by simpa using hx.1
+      have hxr : x < 1 - s := by simpa using hx.2
+      have hxs : x + s ≤ 1 := by linarith
+      rw [gaussMovingAmplitudeCircle_of_lt hs0 hx0 hxs]
+      norm_num
+    · have hxl : 1 - s < x := by simpa using hx.1
+      have hxr : x < 1 := by simpa using hx.2
+      have hx0 : 0 < x := by linarith
+      have hxs : 1 < x + s := by linarith
+      rw [gaussMovingAmplitudeCircle_of_ge hs1 hx0 hxr.le hxs]
+      norm_num
 
 end
 

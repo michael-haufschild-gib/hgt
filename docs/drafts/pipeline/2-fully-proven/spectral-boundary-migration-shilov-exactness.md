@@ -2007,3 +2007,51 @@ model case, now proved rather than cited.
 
 Note the classical statement is `C(closure (ext K))`; `C(ext K)` as written in
 the module header is the special case where `ext K` is already closed.
+
+## The abstract operator-system layer is instantiated (2026-08-10)
+
+`HTGeometry/CommutativeOperatorSystem.lean`, axiom-clean, in the umbrella.
+The matrix-ordering layer built earlier had no concrete instance; it does now,
+and the instance is the motivating one.
+
+- `cstarCone X n := {x : Mₙ(C(X,ℂ)) | ∀ p, the scalar matrix x(p) is PSD}`;
+- `compress_eval` — the module-valued compression evaluates to the scalar one:
+  `(compress α x) i j p = (α* · x(p) · α) i j`.  This is the bridge that lets
+  mathlib's `Matrix.PosSemidef.conjTranspose_mul_mul_same` discharge the
+  compression axiom;
+- **`isMatrixOrdering_cstarCone`** — pointwise positive semidefiniteness is a
+  matrix ordering;
+- **`isOrderUnitLevelOne_one`** — the constant function `1` is a positive order
+  unit for the scalar level;
+- **`exists_amplifyUnit_bound_cstarCone`** — hence, by
+  `isMatrixOrderUnit_of_levelOne`, every self-adjoint matrix over `C(X, ℂ)` is
+  dominated on both sides by a multiple of `1ₙ ⊗ 1`: `C(X, ℂ)` is an operator
+  system with Archimedean matrix order unit `1`, with no matrix-level axiom
+  checked by hand;
+- `levelBounds_cstarCone` and **`levelNorm_cstarCone`** — the abstract scalar
+  level norm of this operator system is exactly the sup-norm, so the
+  order-unit norms of the operator-system layer restrict to the norms the
+  boundary theory uses.
+
+## Every boundary is a complete boundary (2026-08-10)
+
+`HTGeometry/CommutativeCompleteBoundary.lean`, axiom-clean, in the umbrella.
+This closes the "complete/matricial" question of the card in the commutative
+model: the Shilov ideal computed at the scalar level is *already* the complete
+Shilov ideal, so no separate matricial boundary theory is needed here.
+
+- `sandwich v x := ∑ᵢⱼ conj(vᵢ) vⱼ • xᵢⱼ` with `sandwich_mem` (it lies in `S`,
+  because `S` is a subspace and the coefficients are scalars),
+  `sandwich_apply` (it evaluates to `v* x(p) v`), and `star_sandwich` (it is
+  self-adjoint when `x` is);
+- **`mem_cstarCone_of_forall_mem`** — positivity of a matrix with entries in `S`
+  is detected on any boundary `F`: if `x(p)` is positive semidefinite for every
+  `p ∈ F`, then for every `p ∈ X`.  Positivity of a scalar matrix is the family
+  of sandwich inequalities `0 ≤ v* A v`, each sandwich is an element of `S`, and
+  `IsBoundarySet.re_le_of_forall_le` transfers the inequality off `F`;
+- **`sub_mem_cstarCone_of_forall_mem`** — the order-unit form: a self-adjoint
+  matrix over `S` dominated by `t · 1ₙ ⊗ 1` at every point of a boundary is
+  dominated everywhere.
+
+Only `1 ∈ S` is used; self-adjointness and separation of `S` are not needed for
+this step.

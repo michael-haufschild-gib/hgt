@@ -368,6 +368,110 @@ theorem corank_two_length_eq_partition_ne :
   refine ⟨rfl, rfl, ?_⟩
   omega
 
+/-! ### The two modules are not isomorphic
+
+The differing exponent partitions are separated by an invariant, not merely by a bookkeeping
+count: the cotangent model is annihilated by `a²`, the trace-quotient model is not. -/
+
+/-- Each Smith entry of the single quadratic factor divides `a²`. -/
+theorem cons_one_sq_dvd_sq (a : R) (i : Fin 2) : ![1, a ^ 2] i ∣ a ^ 2 := by
+  fin_cases i
+  · simp
+  · simp
+
+/-- Every invariant factor of the cotangent model divides `a²`, so `a²` annihilates it. -/
+theorem sq_smul_omegaModel_eq_zero (a : R)
+    (x : ((∀ p : Fin 2 × Fin 2, R ⧸ Ideal.span {(![1, a ^ 2] p.1) * (1 : R)}) ×
+      (∀ p : Fin 2 × Fin 2, R ⧸ Ideal.span {(1 : R) * (![1, a ^ 2] p.2)}))) :
+    (a ^ 2) • x = 0 := by
+  refine Prod.ext ?_ ?_
+  · funext p
+    obtain ⟨y, hy⟩ := Submodule.Quotient.mk_surjective _ (x.1 p)
+    show (a ^ 2) • x.1 p = 0
+    rw [← hy, ← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero,
+      Ideal.mem_span_singleton, smul_eq_mul, mul_one]
+    exact (cons_one_sq_dvd_sq a p.1).mul_right y
+  · funext p
+    obtain ⟨y, hy⟩ := Submodule.Quotient.mk_surjective _ (x.2 p)
+    show (a ^ 2) • x.2 p = 0
+    rw [← hy, ← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero,
+      Ideal.mem_span_singleton, smul_eq_mul, one_mul]
+    exact (cons_one_sq_dvd_sq a p.2).mul_right y
+
+/-- The trace-quotient model has an invariant factor of exponent four, so `a²` does not annihilate
+it: the class of `1` in the `(a⁴)`-summand survives. -/
+theorem exists_sq_smul_traceModel_ne_zero [IsDomain R] {a : R} (ha : a ≠ 0) (hu : ¬ IsUnit a) :
+    ∃ x : (∀ p : Fin 2 × Fin 2, R ⧸ Ideal.span {(![1, a ^ 2] p.1) * (![1, a ^ 2] p.2)}),
+      (a ^ 2) • x ≠ 0 := by
+  refine ⟨fun _ => Submodule.Quotient.mk 1, fun h => ?_⟩
+  have hp : ((a ^ 2) • (Submodule.Quotient.mk 1 :
+      R ⧸ Ideal.span {(![1, a ^ 2] ((1, 1) : Fin 2 × Fin 2).1) *
+        (![1, a ^ 2] ((1, 1) : Fin 2 × Fin 2).2)})) = 0 := congrFun h (1, 1)
+  rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton,
+    smul_eq_mul, mul_one] at hp
+  have hentry : (![1, a ^ 2] ((1, 1) : Fin 2 × Fin 2).1) *
+      (![1, a ^ 2] ((1, 1) : Fin 2 × Fin 2).2) = a ^ 2 * a ^ 2 := by simp
+  rw [hentry] at hp
+  obtain ⟨r, hr⟩ := hp
+  have ha2 : a ^ 2 ≠ 0 := pow_ne_zero 2 ha
+  have h1 : a ^ 2 * 1 = a ^ 2 * (a ^ 2 * r) := by rw [mul_one]; linear_combination hr
+  have h2 : (1 : R) = a ^ 2 * r := mul_left_cancel₀ ha2 h1
+  have h3 : a * (a * r) = 1 := by rw [h2]; ring
+  exact hu (IsUnit.of_mul_eq_one (a * r) h3)
+
+/-- **Cards `(16)`–`(17)`, boxed, model form.**  The trace quotient and the cotangent module of the
+tensor-square order are *not* isomorphic: `a²` annihilates one and not the other. -/
+theorem not_nonempty_linearEquiv_traceModel_omegaModel [IsDomain R] {a : R} (ha : a ≠ 0)
+    (hu : ¬ IsUnit a) :
+    ¬ Nonempty ((∀ p : Fin 2 × Fin 2, R ⧸ Ideal.span {(![1, a ^ 2] p.1) * (![1, a ^ 2] p.2)})
+      ≃ₗ[R] ((∀ p : Fin 2 × Fin 2, R ⧸ Ideal.span {(![1, a ^ 2] p.1) * (1 : R)}) ×
+        (∀ p : Fin 2 × Fin 2, R ⧸ Ideal.span {(1 : R) * (![1, a ^ 2] p.2)}))) := by
+  rintro ⟨e⟩
+  obtain ⟨x, hx⟩ := exists_sq_smul_traceModel_ne_zero ha hu
+  refine hx ?_
+  have h1 : e ((a ^ 2) • x) = e 0 := by
+    rw [map_smul, map_zero]
+    exact sq_smul_omegaModel_eq_zero a (e x)
+  exact e.injective h1
+
+/-- **Cards `(16)`–`(17)`, boxed.**  Equal Kähler and Dedekind-different determinants do not force
+isomorphic modules.  Over a domain in which `a` is a nonzero nonunit the trace quotient
+`A^♯/A` of the tensor-square order and its cotangent module `Ω[A⁄R]` have the same total length
+but are not isomorphic. -/
+theorem not_nonempty_linearEquiv_coker_kronecker_omega [IsDomain R] {a : R} (ha : a ≠ 0)
+    (hu : ¬ IsUnit a) (h2 : IsUnit (2 : R)) :
+    ¬ Nonempty (((Fin 2 × Fin 2 → R) ⧸ LinearMap.range
+          (quadDifferentMatrix a ⊗ₖ quadDifferentMatrix a).mulVecLin)
+      ≃ₗ[R] (((Fin 2 × Fin 2 → R) ⧸ LinearMap.range
+          (quadDifferentMatrix a ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) R)).mulVecLin) ×
+        ((Fin 2 × Fin 2 → R) ⧸ LinearMap.range
+          ((1 : Matrix (Fin 2) (Fin 2) R) ⊗ₖ quadDifferentMatrix a).mulVecLin))) := by
+  rintro ⟨e⟩
+  obtain ⟨e₁⟩ := nonempty_cokerKronecker a h2
+  obtain ⟨e₂⟩ := nonempty_omega_corank_two a h2
+  exact not_nonempty_linearEquiv_traceModel_omegaModel ha hu ⟨e₁.symm.trans (e.trans e₂)⟩
+
+/-- The literal base of the card, `R = ℂ[[a]]` with `a = X`: the two modules of the tensor-square
+order are not isomorphic, with no hypotheses. -/
+theorem not_nonempty_linearEquiv_coker_kronecker_omega_powerSeries :
+    ¬ Nonempty (((Fin 2 × Fin 2 → PowerSeries ℂ) ⧸ LinearMap.range
+          (quadDifferentMatrix (PowerSeries.X : PowerSeries ℂ) ⊗ₖ
+            quadDifferentMatrix (PowerSeries.X : PowerSeries ℂ)).mulVecLin)
+      ≃ₗ[PowerSeries ℂ] (((Fin 2 × Fin 2 → PowerSeries ℂ) ⧸ LinearMap.range
+          (quadDifferentMatrix (PowerSeries.X : PowerSeries ℂ) ⊗ₖ
+            (1 : Matrix (Fin 2) (Fin 2) (PowerSeries ℂ))).mulVecLin) ×
+        ((Fin 2 × Fin 2 → PowerSeries ℂ) ⧸ LinearMap.range
+          ((1 : Matrix (Fin 2) (Fin 2) (PowerSeries ℂ)) ⊗ₖ
+            quadDifferentMatrix (PowerSeries.X : PowerSeries ℂ)).mulVecLin))) := by
+  refine not_nonempty_linearEquiv_coker_kronecker_omega PowerSeries.X_ne_zero ?_ ?_
+  · intro h
+    have hmap := h.map (PowerSeries.constantCoeff (R := ℂ))
+    rw [PowerSeries.constantCoeff_X] at hmap
+    exact not_isUnit_zero hmap
+  · have h2 : IsUnit ((2 : ℂ)) := isUnit_iff_ne_zero.2 two_ne_zero
+    have := h2.map (algebraMap ℂ (PowerSeries ℂ))
+    rwa [map_ofNat] at this
+
 end CorankTwo
 
 end HTGeometry.ConstraintRelativity

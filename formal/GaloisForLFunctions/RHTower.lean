@@ -4204,6 +4204,13 @@ import GaloisForLFunctions.RHTower.Sieve.OffDiagonalReindex
 import GaloisForLFunctions.RHTower.Sieve.OffDiagonalShiftBound
 import GaloisForLFunctions.RHTower.Sieve.OffDiagonalFromCorrelations
 import GaloisForLFunctions.RHTower.Sieve.MRFromCorrelations
+import GaloisForLFunctions.RHTower.Sieve.ShiftSumUniform
+import GaloisForLFunctions.RHTower.Sieve.FibreSmoothDecomp
+import GaloisForLFunctions.RHTower.Sieve.FibreIncrementUniform
+import GaloisForLFunctions.RHTower.Sieve.FibreWindowVanish
+import GaloisForLFunctions.RHTower.Sieve.FibreIncrementWindow
+import GaloisForLFunctions.RHTower.Sieve.OffDiagonalUniformBound
+import GaloisForLFunctions.RHTower.Sieve.MRFromUniformCorrelations
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6811,6 +6818,13 @@ import GaloisForLFunctions.RHTower.Sieve.OffDiagonalReindex
 import GaloisForLFunctions.RHTower.Sieve.OffDiagonalShiftBound
 import GaloisForLFunctions.RHTower.Sieve.OffDiagonalFromCorrelations
 import GaloisForLFunctions.RHTower.Sieve.MRFromCorrelations
+import GaloisForLFunctions.RHTower.Sieve.ShiftSumUniform
+import GaloisForLFunctions.RHTower.Sieve.FibreSmoothDecomp
+import GaloisForLFunctions.RHTower.Sieve.FibreIncrementUniform
+import GaloisForLFunctions.RHTower.Sieve.FibreWindowVanish
+import GaloisForLFunctions.RHTower.Sieve.FibreIncrementWindow
+import GaloisForLFunctions.RHTower.Sieve.OffDiagonalUniformBound
+import GaloisForLFunctions.RHTower.Sieve.MRFromUniformCorrelations
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6861,3 +6875,6 @@ import GaloisForLFunctions.RHTower.HedenmalmThetaSourceDeterminantMultiplicity
 import GaloisForLFunctions.RHTower.HedenmalmThetaSourceSpectrumExact
 import GaloisForLFunctions.RHTower.DeningerAbelMajorant
 import GaloisForLFunctions.RHTower.DeningerPreimageMass
+import GaloisForLFunctions.RHTower.DeningerHigherMoment
+import GaloisForLFunctions.RHTower.DeningerHigherCoefficient
+import GaloisForLFunctions.RHTower.DeningerMobiusHarmonic

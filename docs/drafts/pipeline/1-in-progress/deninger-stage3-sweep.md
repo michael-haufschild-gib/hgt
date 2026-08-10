@@ -8,6 +8,8 @@
 
 ## Rules in force
 
+**Name-collision gate — run before declaring any batch done.**  Per-file `lake env lean` cannot see collisions; only building the umbrella can.  Six were found this way in one batch (`DeningerLattice`, `deningerHardyPlus`, `deningerHardyMinus`, `deningerShear`, `deningerShift`, `deningerEnergy` — all already taken by older `RHTower` modules).  Either build `GaloisForLFunctions.RHTower`, or scan the tree for top-level declaration names owned by more than one file stem before wiring anything up.
+
 - Lean proofs unconditional: no `sorry`, no `axiom`, no unproved analytic premise, no added
   hypothesis that is not part of the *statement* of the object.
 - Verify every mathlib name in a `/tmp` scratch file before use.
@@ -46,7 +48,7 @@ Numbering is the folder order; 13 cards remain in stage 2.
 The shared layer now exists: `RHTower/DeningerExpSchwartz` gives `H_- = S_exp(ℝ)` as
 `DeningerExpSchwartz`, a **subspace of `𝓢(ℝ, ℂ)`** cut out by `∀ A n, ∃ C, ∀ x,
 e^{A|x|} ‖D^n f(x)‖ ≤ C` (so it inherits the whole Schwartz linear structure and the Schwartz
-embedding is definitional), the translation `deningerShift` with `deningerShift_mem`, and
+embedding is definitional), the translation `deningerExpShift` with `deningerExpShift_mem`, and
 `deningerPeriodizationDefect L = 1 - τ_L` as `DeningerExpSchwartz →ₗ[ℂ] DeningerExpSchwartz`.
 The one estimate everything rests on is `A|x| ≤ A|x+L| + |A||L|`, valid for both signs of `A`.
 What else exists and must not be rebuilt:
@@ -106,8 +108,18 @@ What else exists and must not be rebuilt:
    - `(11)` for `r = 0` — **DONE**, `RHTower/DeningerAbelMajorant`, `DeningerPreimageMass`:
      `∫_0^∞ |f_h(x)| dx < ∞`, stated as finiteness of the `ℝ≥0∞` integral so that no measurability
      of `f_h` is needed.  Higher moments repeat the chain with `x^r`.
-   - `(12)` — needs `(15)`, whose discrete form is `∑_n μ(n)/n = 0` (PNT-equivalent, and *not*
-     corpus-owned: `Sieve.mertensM` and the rate are, but this identity is not).  Do **not** chase a decreasing majorant for
+   - all higher weighted moments — **DONE**, `RHTower/DeningerHigherMoment`
+     (`∫_0^∞ u^{r+1}|H_h'(u)|du < ∞` for every `r`), so both factors of `(11)` at order `r` exist;
+     only the window integral `∫ x^r dx` is left there.
+   - the order-`r` window and coefficients — **DONE**, `RHTower/DeningerHigherCoefficient`.  One
+     inverse-square series controls every order: the bracket
+     `i^{-(r+1)} - (i+1)^{-(r+1)}` is at most `i^{-2}` once `r ≥ 1`, so `(9)` alone suffices.
+   - `(12)` — needs `(15)`, i.e. `∑_n μ(n)/n = 0`.  **Convergence is now proved**
+     (`RHTower/DeningerMobiusHarmonic`); only the *value* is open.  Do not try to get it from PNT:
+     partial summation turns `A(N) → S` into `M(N)/N → S - S = 0` for **any** `S`, so `M(N) = o(N)`
+     cannot pin the constant.  The value needs Abel's theorem for `∑ μ(n) n^{-s} = 1/ζ(s)` as
+     `s ↓ 1` plus the pole of `ζ` at `1`.  Corpus has `LSeries_moebius_eq_inv_riemannZeta`
+     (`Re s > 1`); the Abelian theorem is the missing piece and is the next thing to build.  Do **not** chase a decreasing majorant for
      `H_h'`; the clean route is Tonelli on the region: `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]` has
      length `u/(i(i+1))`, so `∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx ≤ (1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`,
      and summing against `|M(i)|` lands exactly on the already-proved `(9)`.
@@ -144,6 +156,13 @@ What else exists and must not be rebuilt:
 - [ ] the higher-structure block
 
 ## Log
+
+- 2026-08-10 — Built all higher weighted moments (`RHTower/DeningerHigherMoment`).  Note the
+  `GaloisForLFunctions.RHTower` umbrella is currently red on
+  `RHTower/GaussAmplitudeClass.lean:177`, which is a *concurrent session's* in-flight edit — it
+  references none of the renamed names and is not part of this work.  Every module of this batch
+  builds individually with zero errors.
+- 2026-08-10 — **Umbrella build caught six name collisions** the per-file checks could not see: `DeningerLattice` (vs `DeningerCharacterShapeFormality`), `deningerHardyPlus`/`Minus` (vs `DeningerArithmeticExactHardyProjectors`), `deningerShear` (vs `DeningerShear`), `deningerShift` (vs `DeningerShift`), `deningerEnergy` (vs `DeningerEnergyDefinite`).  Renamed the new ones to `DeningerPrimeLattice`, `deningerHeightHardyPlus`/`Minus`, `deningerHeightShear`, `deningerExpShift`, `deningerHeightEnergy`.  `GaloisForLFunctions.RHTower` now builds clean.  A prefix rename must NOT use a negative-lookahead word boundary — it blocks exactly the `_nonneg`, `_idem`, `_apply` suffixes that carry the collision.
 
 - 2026-08-10 — Proved `(11)` for `r = 0`: `∫_0^∞ |f_h| < ∞` (`RHTower/DeningerAbelMajorant`,
   `DeningerPreimageMass`).  Two choices kept it short: state the conclusion as finiteness of the

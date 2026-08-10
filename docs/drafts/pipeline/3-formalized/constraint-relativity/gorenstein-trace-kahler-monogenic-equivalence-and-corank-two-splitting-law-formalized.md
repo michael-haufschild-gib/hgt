@@ -104,9 +104,23 @@ Items 1, 2, 3, 14 close the cycle `(1) ⇒ (2) ⇒ (3) ⇒ (1)`, which is the ca
     `L = A^♯/A ≅ R/(a²) ⊕ R/(a²) ⊕ R/(a⁴)`.
 18. `nonempty_cokerQuadTensorOne`, `nonempty_cokerOneTensorQuad`, `nonempty_omega_corank_two` —
     **card `(17)`, `(20)`**: `Ω[A⁄R] ≅ (R/(a²))⁴`, one summand per hypersurface relation.
-19. `corank_two_length_eq_partition_ne` — the punchline: both modules have length `8` over
-    `R/(a⁴)`-support but the exponent partitions `(2,2,4)` and `(2,2,2,2)` differ, so equal
-    Kähler and Dedekind different determinants do not force isomorphic modules.
+19. `corank_two_length_eq_partition_ne` — the bookkeeping: both modules have length `8` over
+    `R/(a⁴)`-support, but the exponent partitions `(2,2,4)` and `(2,2,2,2)` differ.  This
+    declaration is the arithmetic of the two partitions only; it does not by itself separate the
+    modules.
+20. `cons_one_sq_dvd_sq`, `sq_smul_omegaModel_eq_zero`, `exists_sq_smul_traceModel_ne_zero` — the
+    separating invariant: `a²` annihilates the cotangent model, because every one of its Smith
+    entries divides `a²`, while the class of `1` in the `(a⁴)`-summand of the trace quotient
+    survives multiplication by `a²` (over a domain, `a⁴ ∣ a²` with `a ≠ 0` forces `a` to be a
+    unit).
+21. `not_nonempty_linearEquiv_traceModel_omegaModel`,
+    `not_nonempty_linearEquiv_coker_kronecker_omega` — **cards `(16)`–`(17)`, boxed, the actual
+    punchline**: over a domain in which `a` is a nonzero nonunit the trace quotient and the
+    cotangent module of the tensor-square order are *not isomorphic*.  Equal Kähler and Dedekind
+    different determinants therefore do not force isomorphic modules.
+22. `not_nonempty_linearEquiv_coker_kronecker_omega_powerSeries` — the same over the card's literal
+    base `R = ℂ[[a]]` with `a = X`, with no hypotheses: `X ≠ 0`, `X` is not a unit (its constant
+    coefficient is `0`), and `2` is a unit.
 
 ## Scope
 
