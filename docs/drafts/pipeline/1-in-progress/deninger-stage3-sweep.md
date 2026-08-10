@@ -22,6 +22,7 @@
 |---|---|
 | `deninger-cross-prime-closed-relation-saturation` | `RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo` (extended with consequences 2 and 4) |
 | `deninger-prime-log-height-kothe-calderon-source` | `RHTower/DeningerPrimeLogHeight`, `DeningerKotheComplete`, `DeningerPrimeLogHeightKothe`, `…Convolution`, `…Green`, `…Forms`, `…Mellin`, `…Power`, `…Cartan` (all new) |
+| `deninger-balanced-word-height-bar-strict-contraction` | `RHTower/DeningerWordHeight`, `DeningerBarWord`, `DeningerBarInsert`, `DeningerBarSlice`, `DeningerBarDifferential`, `DeningerBarUnit`, `DeningerBarContraction`, `DeningerBarSector`, `DeningerBarFace`, `DeningerBarInsertComm`, `DeningerBarFibre`, `DeningerBarSquareZero`, `DeningerBarAlgebra`, `DeningerBarPower` (all new) |
 
 ## Reusable infrastructure now available
 
@@ -37,11 +38,36 @@
 
 ## Remaining cards and what each needs
 
-1. `deninger-balanced-word-height-bar-strict-contraction` — entire word-height **tensor** algebra
-   on `Σ r, Fin r → DeningerLattice` with weights `H(w)^k (k+1)^{|w|}`; bar faces, extra
-   degeneracy, character sectors, split strict exactness.
-2. `deninger-linearized-milnor-first-sullivan-strict-primitive` — same word algebra plus the
-   alternating projector, `Λ̂²E`, the `(2, r-2)` Hopf coproduct component and `μ∘Δ = C(r,2)·id`.
+2. `deninger-linearized-milnor-first-sullivan-strict-primitive` — **in progress**.
+   Done: clause 5, the set-indexed linearization — `RHTower/DeningerSetIndexedLinearization`
+   (`deningerFreeEval`, `deningerLinearityRelations`, `deningerLinearizationEquiv`: the free
+   module on the underlying set modulo the three linearity defects **is** the module).
+   Done: clause 1's topological core — `RHTower/DeningerWordAlternating`
+   (`deningerPermuteAt`, `deningerPermEquiv`, `deningerAlt`, `deningerBarSeminormR_alt_le`,
+   `deningerPermuteAt_char`): permuting letters preserves length, product-of-letter-heights and
+   total character, so the blockwise antisymmetrizer has seminorm at most one and `A₀` is its
+   range — a closed complemented subspace of a complete nuclear space.
+   Done: `(15)`--`(16)`, the normalized two-coproduct identity — `RHTower/DeningerExteriorPairSum`
+   (`deningerPairPerm`, `deningerIotaMulti_pairPerm`, `deningerExteriorPairSum`,
+   `deningerPairIndex_card`): summing the signed two-letter splittings of a wedge monomial over
+   all ordered pairs gives `binom(r,2)` times the monomial.  No explicit shuffle sign is used —
+   the permutation carries its own sign and it appears twice.
+
+   Remaining, with the route already worked out — do not rediscover it:
+   - The corpus already owns the algebraic first layer: `RHTower/DeningerRelativeSullivanMilnorResolution`
+     has `deningerMilnorIdeal`, `deningerMilnorEpsilon(_ker)`, `deningerSullivanInclusion`,
+     `deningerSullivanFirstDifferential`, `deningerSullivanFirstLayer`, and it already uses
+     `V × ⋀[k]^2 V` as the linearized attachment.  Build on it; do not rebuild `A₁`.
+   - `(11)`, `d h = id`: the terms of `h` are the `deningerExteriorPairSum` terms with the
+     leading `ι(v i) * ι(v j)` replaced by the new generator `σ(v i ∧ v j)`; applying the
+     first-layer differential returns exactly the `deningerExteriorPairSum` summands, so `(16)`
+     gives `binom(r,2)` times the monomial and the normalisation `binom(r,2)⁻¹` closes it.
+     What is still needed for this step is the **odd derivation** extending
+     `deningerSullivanFirstDifferential` from the new generators to all of `A₁` — mathlib has no
+     odd derivation on an exterior algebra, so build it (or state `d h = id` through the
+     Leibniz rule on the specific two-block products, which is all the proof uses).
+   - clause 4 reuses `deningerBarCharMul` verbatim (character multipliers already commute with
+     everything built on the word source).
 3. `deninger-euler-depleted-meyer-periodization-extension` — `S_exp(ℝ)`, translation `τ_L`,
    `Δ_p = 1 - τ_L`, strict nuclear extension, zero-periodization sector.
 4. `deninger-cofinal-prime-periodization-tomography-instability` — cofinal tomography, nonclosed
@@ -70,14 +96,19 @@
 
 ## Gates
 
-- [x] 2 of 17 cards promoted
-- [ ] entire word-height algebra built (unlocks cards 1 and 2)
+- [x] 3 of 17 cards promoted
+- [x] entire word-height algebra built
+- [x] `b² = 0` for the bar differential
 - [ ] `S_exp(ℝ)` layer built (unlocks cards 3--7)
 - [ ] Möbius–Fourier commutator built (unlocks cards 8--10)
 - [ ] remaining five cards
 
 ## Log
 
+- 2026-08-10 — Promoted `deninger-balanced-word-height-bar-strict-contraction`.  The alphabet
+  `{1} ⊔ (Γ∖{0})` is `Γ` with the zero character as the unit; the fibre of the `j`-th face is then
+  the pair of unit insertions at `j` and `j+1`.  `b² = 0` follows from the simplicial pairing
+  `(j,j') ↦ (j'-1,j)` on double fibres, matched by `deningerInsertUnit_comm`.
 - 2026-08-10 — Swept the folder, promoted `deninger-cross-prime-closed-relation-saturation` and
   `deninger-prime-log-height-kothe-calderon-source`, and built the reusable Köthe completeness,
   density, multiplier and convolution layers listed above.

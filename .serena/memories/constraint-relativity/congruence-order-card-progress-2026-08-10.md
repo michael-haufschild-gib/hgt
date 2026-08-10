@@ -1,80 +1,43 @@
-# congruence-order-trace-kahler-exterior-square-nonmetricity-law — Lean progress
+# congruence-order-trace-kahler-exterior-square-nonmetricity-law — LEAN COMPLETE
 
-Card: `docs/drafts/pipeline/2-fully-proven/constraint-relativity/congruence-order-trace-kahler-exterior-square-nonmetricity-law.md`
+Card in stage 3 with companion; EVERY boxed equation is an unconditional Lean theorem, including
+`(26j1)`–`(26j3)`.  `lake build GaloisForLFunctions.HTGeometry` green.
+Seven modules under `HTGeometry/ConstraintRelativity/`, all wired:
 
-Three modules, all green, wired into `GaloisForLFunctions/HTGeometry.lean`;
-`lake build GaloisForLFunctions.HTGeometry` is GREEN.
-1. `ConstraintRelativity/CongruenceOrderExteriorSquare.lean` (1557 lines — do NOT grow it)
-2. `ConstraintRelativity/CongruenceOrderTraceDual.lean`
-3. `ConstraintRelativity/CongruenceOrderHorizon.lean`
+1. `CongruenceOrderExteriorSquare.lean` (1557 lines — do NOT grow) — (3), (15),
+   `kaehlerModelEquiv`, **(5)** `kaehlerCongruenceEquiv`.
+2. `CongruenceOrderTraceDual.lean` — (9), **(4)**, **(26k)**.
+3. `CongruenceOrderHorizon.lean` — **(7)**, **(27)/(28)**, **(6)**; `aMul`, `prodFibreEquiv`,
+   `piFibreEquiv`, `sqFibreEquiv`, `quotientScalarsEquiv`, `exteriorSquareModel`.
+4. `CongruenceOrderSoldering.lean` — A-module layer, **(26b)**, **(26e)**, **(26g)**.
+5. `CongruenceOrderResidueHom.lean` — **(26f)**.
+6. `CongruenceOrderKaehlerDifferent.lean` — **(26l)**; zeroth Fitting ideal built from scratch.
+7. `CongruenceOrderFirstOrder.lean` — `residueEquiv` (`A/𝔪 ≅ R/(a)`), **(26j1)**
+   (`maximalIdealSq_smul_kaehler`, `maximalIdealSq_smul_traceDefect`), **(26j2)**
+   (`headReduction`, `headReduction_eq_zero`), `kaehlerHeadEquiv` (`Ω/𝔪Ω ≅ (A/𝔪)^m`),
+   `traceDefectHeadEquiv'` (`L/𝔪L ≅ k^m`), `homHeadEquiv`, **(26j3)**
+   `solderingObstructionEquiv` (`𝒩₀ ≅ Mat_{m×m}(k)`), `headMap_eq_zero_of_lifts`.
 
-## DONE (card items) — all unconditional, no hypotheses beyond the card's own setting
+## Downstream: soldering card's concrete sharp model is now formalized
+`source-soldering-transport-defect-cocycle-and-law-symbol-formalized.md` had admitted that its
+"Concrete sharp model" was not formalized; its Scope now points at module 7.  What is still NOT
+done there: identifying that instance with the abstract `lawObstruction` of
+`SolderingTransportSymbol.lean`, which needs `[Field k] [Algebra k A]` — a COEFFICIENT FIELD,
+i.e. the card's own `R = ℂ[[a]]`.  State it with `Algebra k R` + `k → R/(a)` bijective if attempted.
 
-- (3) `observerDefectEquiv` — `O/A ≅ k^m`.
-- (15) `congruencePresentation`, `congruenceCoordEquiv` (free basis `1, x₁,…,x_m`).
-- (16-Lean) `kaehlerModelEquiv` — `Ω[A⁄R] ≃ₗ[A] (A^m ⧸ kaehlerRelations)`.
-- **(5)** `kaehlerCongruenceEquiv (ha : a ≠ 0) : Ω[…⁄R] ≃ₗ[R] cotangentModel a m`,
-  `cotangentModel a m = (Fin m → R ⧸ span{a²}) × (pairIndex m → R ⧸ span{a})`,
-  `pairIndex m = {p : Fin m × Fin m // p.1 < p.2}`.
-  Setting `[CommRing R] [IsDomain R] [Invertible (2 : R)] (ha : a ≠ 0)`.
-- **(9)** `mem_traceDual_iff`, `traceDual_eq_map` — `A♯ = a⁻¹·{z : a ∣ ∑ zᵢ}`.
-- **(4)** `traceDefectEquiv` (and integral form `scaledTraceDefectEquiv`):
-  `A♯/A ≅ (R/a²)^m`.  Key map `traceCoord a m z i = mk (z i.castSucc − N⁻¹·∑ⱼ zⱼ)`;
-  `N − m = 1` forces the last coordinate into the same class, so no Smith machinery is needed.
-  Setting adds `[Invertible ((m : R) + 1)]` and a fraction field `K`.
-- **(6)** `horizonExteriorSquareEquiv (ha : a ≠ 0) :
-  Ω ⧸ (span{a} • ⊤) ≃ₗ[R ⧸ span{a}] (Fin m → k) × ⋀[k]^2 (Fin m → k)`,
-  plus `kaehlerFibreEquiv` (R-linear, into `(Fin m → k) × (pairIndex m → k)`).
-- **(7)** `card_pairIndex : Fintype.card (pairIndex m) = m.choose 2`.
-- **(27)** `length_cotangentModel` = `2m + choose m 2`, `length_traceDefectModel` = `2m`.
-- **(28)** `length_cotangentModel_eq_length_traceDefect_add`.
-
-- **(26k)** `mem_dedekindDifferent_iff (ha) (hm : 2 ≤ m) : d ∈ 𝔇_D ↔ ∃ w, d = coordIncl (a²•w)`
-  — the Dedekind different is `a²·O` for `N ≥ 3`.  Uses `1 ∈ A♯` and the duals
-  `bᵢ = a⁻¹(eᵢ − e_last)`; a third coordinate of `d·bᵢ` vanishes, which is where `N ≥ 3` enters.
-
-## REMAINING
-
-- **(26b)–(26g)** tangent-head soldering obstruction: `xⱼ` acting on `L`, `𝔪_A L = aL`,
-  `im φ ⊆ aL` for every A-linear `φ : Ω → L`, `Hom_A(Ω,L) ≅ Mat_{m×m}(k)`, head map ≡ 0.
-  Also needs `N − 2` a unit (`Invertible ((m : R) − 1)`).
-- **(26l)** `𝔇_K = Fitt₀^A Ω = a^m O` (the card's (26m)–(26o) minor computation).
-
-### Next infrastructure step (both remaining items need it)
-`L` and `Ω` must be compared as modules over `A`, not over `R`.  Concretely: give
-`traceDual`/`orderLattice` an `A = congruenceOrder a N`-submodule form (same carrier; the
-submodule proof is unchanged because `x·c ∈ A` for `x, c ∈ A`), then transport along
-`congruencePresentation` so that `L` becomes a module over
-`P = MvPolynomial (Fin m) R ⧸ congruenceIdeal a m`, the same ring `Ω[P⁄R]` lives over.
-Under `traceCoord`, `bᵢ ↦ Pi.single i (mk 1)` and the `A`-action is
-`xⱼ·bᵢ = 0 (j ≠ i)`, `xᵢ·bᵢ = a(bᵢ − N⁻¹∑ₖ bₖ)` — exactly card (26b) (verified on paper).
-
-## Reusable assets created
-`aMul a M` (= `span{a} • ⊤`, `aMul_eq_smul_top`), `aMul_prod`, `aMul_pi`, `map_aMul`,
-`prodFibreEquiv`, `piFibreEquiv`, `sqFibreEquiv` (`(R/a²)/a ≅ R/a`), `linFibreEquiv`,
-`quotientScalarsEquiv` (an R-linear equiv of `R⧸I`-modules with `IsScalarTower` is `R⧸I`-linear),
-`pairIndexEquivPowersetCard`, `exteriorSquareModel` (`(pairIndex m → k) ≃ₗ[k] ⋀[k]^2 k^m`).
-
-## Lean traps (do not rediscover)
-- `Module R (MvPolynomial ι R ⧸ I)` picks the quotient-module instance, NOT `Algebra.toSMul`;
-  `rw [Algebra.smul_def]` fails on `r • x`. Phrase A-side products with `algebraMap`, cross over
-  with `IsScalarTower.algebraMap_smul A r`.
-- `rw [← Pi.single_smul]` on the quotient type causes whnf TIMEOUTS; prove
-  `smul_single : c • Pi.single i x = Pi.single i (c * x)` once by `funext`+`by_cases`.
-- `Pi.single p t` inside `show`/`have` needs `(ι := …) (M := fun _ => …)`.
-- `(x, y).1` does not reduce for `rw`; use `show`.  `abbrev`s (e.g. `cotangentModel`) cannot be
-  `rw`-unfolded; use `show`.
-- `LinearMap.proj i` / `LinearMap.id` inside a `have`/`def` often need an explicit type ascription
-  or instance search gets stuck on metavariables.
-- `x ∈ aMul a M` does not display as `∃ u, a • u = x`; `rw [mem_aMul]` first.
-- `Module R (⋀[k]^2 M)` does NOT synthesize for `k = R ⧸ I`; state the exterior-square half over
-  `k` and upgrade the R-linear half with `quotientScalarsEquiv`
-  (mathlib HAS `Module (R⧸I) (M ⧸ I • ⊤)` and `IsScalarTower R (R⧸I) (M ⧸ I • ⊤)`).
-- Unused section variables are lint ERRORS; an instance declared both as a section variable and
-  explicitly gives "overlapping instances".
-- UMBRELLA COLLISION hit here: `sumForm_apply` already existed in
-  `ConstraintRelativity/PortCapacity.lean`; renamed to `congruenceSumForm`. Per-file
-  `lake env lean` cannot see this — run `lake build GaloisForLFunctions.HTGeometry`.
-- The lint gate reports one PRE-EXISTING error from another session:
-  `owned module unreachable from umbrella GaloisForLFunctions.RHTower.DeningerWordHeight`.
-  Not ours — do not touch.
+## Lean traps added this round
+- `smul_single` in `CongruenceOrderExteriorSquare.lean` was marked `private` by tooling —
+  re-prove the one-liner inline instead of editing that file.
+- `zero_smul` on `Ω[A⁄R]` / `traceDefect` needs BOTH the ring AND the element explicit; `simp`
+  cannot close `0 • x = 0` there.
+- `IsScalarTower.algebraMap_smul A r` rewrites `algebraMap r • x → r • x` (use FORWARD).
+- `Ideal.quotientEquivAlgOfEq` / `quotientKerAlgEquivOfSurjective` need `a`, `m` pinned or the
+  `Ideal.IsTwoSided` search gets stuck on metavariables.
+- `LinearEquiv.piCongrRight` fails to synthesize `∀ i, Module R (ψ i)` for CONSTANT families here;
+  a hand-rolled `piMapEquiv` (postcompose a linear equiv on a function space) works.
+- Bridging `M ⧸ (I • ⊤ : Submodule A M)` to `M ⧸ (aMul a M : Submodule R M)` by an A-equiv then
+  `restrictScalars` causes an `isDefEq` TIMEOUT.  Instead prove
+  `(I • ⊤).restrictScalars R = aMul a M` and use `Submodule.quotEquivOfEq` over R directly.
+- `abbrev`, not `def`, for a quotient type you want instances on (`solderingObstructionSpace`).
+- A concurrent session edits this tree; `lake build` can fail transiently on their half-written
+  modules — re-run before believing a failure.

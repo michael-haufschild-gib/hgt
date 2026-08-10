@@ -198,16 +198,20 @@ differentials, and what exact law controls their cancellation across three or mo
 
 ULF-DKO-1 answers the algebraic three-stage part: total obstruction carries a canonical nested
 filtration, and its grades are local failures quotiented by kernels of their entire future tails.
-The next missing theorem is no longer existence of a filtration; it is the general finite-history
-law and the completion-relative differential that connects adjacent grades.
+ULF-LHSM-1 now closes the general finite-history and refactorization laws in Lean: every stage has
+an exact survivor quotient, one-stage refactorization inserts a short exact grade refinement, and
+a split inclusion--retraction canonically transgresses two nonzero local defects while the total
+history remains exact. The next missing theorem is no longer finite propagation. It is the stable
+page mechanism and completion-relative differential connecting adjacent grades.
 
 ## 6. Next experiments
 
-1. For three composable carriers, construct the exact filtration of primary, secondary, and
-   completion-born homology sectors.
-2. Determine whether connecting maps square to zero or require a higher operation.
-3. Prove a collapse criterion and independent noncollapse countermodels.
-4. Only after this abstract law closes, test realizations in structurally different organs.
+1. Construct the stable finite-history page object from coherent cofibres.
+2. Determine whether its connecting maps square to zero or require a higher operation.
+3. Insert completion-born source and target homology as a derived exchange page.
+4. Prove exact-observer preservation and sharp one-sided comparison for nonexact observers.
+5. Only after this abstract law closes, test realizations in structurally different non-route
+   laboratories.
 
 ## Log
 
@@ -233,3 +237,6 @@ law and the completion-relative differential that connects adjacent grades.
 - 2026-08-10 -- ULF-DKO-1 constructed the first exact obstruction spectrum: a three-stage
   downstream-kernel filtration with a canonical short exact middle layer. Open gate moved to
   finite histories, refactorization, and completion-relative differentials.
+- 2026-08-10 -- ULF-LHSM-1 Lean-certified the general finite linear survival spectrum, exact
+  refactorization, and split local-cancellation transgression. Open gate moved to stable pages,
+  observer exactness, and completion-relative differentials.

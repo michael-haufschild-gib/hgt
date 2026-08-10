@@ -1331,8 +1331,12 @@ isometric form with no extra work.
   rather than assuming it away.
 - `exists_coherent_lift` is the recursive lifting behind `(10)`: in a tower whose restricted ideal
   maps are surjective, every bottom ideal element is the bottom coordinate of a coherent sequence
-  lying in every stage ideal.  The same recursion at a shifted starting stage gives the statement
-  at any stage.
+  lying in every stage ideal.  `exists_coherent_lift_at` in `ShilovStableImage.lean` now upgrades
+  this to **an arbitrary stage**, which is the form `(10)` and the generation argument actually use:
+  above the stage the lift is chosen recursively by `Nat.leRec`, below it the composite transitions
+  `downTo` supply the unique compatible values, and `downTo_shift` glues the two ranges.  The
+  earlier caveat that only the bottom stage was available is resolved — the `Nat.leRec` indexing
+  removes the index arithmetic that blocked it.
 - `le_localIdeal_of_closure_le` is the sharpened form of the classical coordinate inclusion: from
   `closure(pₙ(H)) ⊆ Jₙ` alone one already gets `H ⊆ J^∞`.  This is what turns Joiţa's inclusion
   into the maximality statement.
@@ -1437,7 +1441,16 @@ the algebraic analogue is **false**: a submodule of the coherent sequences can s
 coordinate without being everything (take `A n = 𝕜^n` with the truncations, and the
 finitely-supported coherent sequences).  So generation cannot be reduced to a coordinatewise
 algebraic condition, which is why the card's phrase "lifts generator by generator and controls all
-earlier seminorms" is the right formulation.  Note the injective case is all that is
+earlier seminorms" is the right formulation.
+
+`simultaneous_approx_of_stagewise` supplies that hypothesis from a single-stage one.  For coherent
+families and **contractive** bonds, `norm_sub_le_of_coherent` shows closeness at one stage is
+closeness at every earlier stage, because the earlier coordinates are composite transitions of the
+later one (`downTo_coherent`) and those are contractive (`norm_downTo_le`).  So stagewise density
+already gives the simultaneous approximation the projective limit needs, with the same `ε`.
+Contractivity is automatic for `C^*`-quotient maps, so on the card's tower generation reduces to
+density at each single stage — which is exactly "each `Sₙ` generates its envelope" plus
+`exists_coherent_lift_at`.  Note the injective case is all that is
 needed, which matters because mathlib has no `C^*`-quotient and hence no closed-range theorem for
 general `*`-homomorphisms.
 
@@ -1560,6 +1573,19 @@ stage cover and the coordinates are jointly injective, then the only local bound
 the step by which `lim Cₑ*(Sₙ)` is a local cover with trivial local Shilov ideal.  What remains
 imported is local envelope uniqueness, which converts that into `Θ` being an isomorphism.
 
+### The generation half, assembled
+
+`formal/GaloisForLFunctions/HTGeometry/ShilovLocalComparison.lean` puts the generation argument
+together.  For a tower of normed modules with contractive bonds, `isClosed_coherent` shows the
+coherent families form a closed set, and `coherent_mem_of_stagewise_dense` /
+`coherent_subset_of_stagewise_dense` conclude: **a closed set of coherent families that is dense at
+each single stage contains every coherent family.**
+
+So the generation hypothesis for the card's `Θ` reduces to one checkable condition — that each
+stage system is dense in its stage envelope.  The two supporting halves the card states in words are
+both formalized: `exists_coherent_lift_at` lifts generators stage by stage, and
+`norm_sub_le_of_coherent` is the control of all earlier seminorms.
+
 ### Two structural findings about the join problem
 
 `isBoundaryIdeal_sup_iff` strengthens the transitivity lemma to an **equivalence**: given a boundary
@@ -1582,7 +1608,27 @@ join-closure of boundary ideals (`isBoundaryIdeal_sup_of_isBoundarySet_inter`) �
 Shilov ideal (`exists_isGreatest_isBoundaryIdeal`) ⇒ the local identification `(9)`.  Every arrow
 in that chain is formalized and unconditional; only the first statement is imported.
 
-Still external: operator systems, `C^*`-covers, and boundary representations themselves.  The
+### Starting the operator-system layer
+
+`formal/GaloisForLFunctions/HTGeometry/OrderUnitSeminorm.lean` begins the construction the card
+says is absent.  An operator system is a matrix-ordered `*`-vector space with an Archimedean matrix
+order unit, and its norm is built level by level from the order-unit seminorm; mathlib has no
+order-unit theory at all.  This module supplies the scalar level: for an ordered `ℝ`-module with an
+order unit `e`,
+
+```text
+‖v‖_e = inf {t > 0 : -(t • e) ≤ v ≤ t • e}
+```
+
+is well defined (`unitBounds_nonempty`, `bddBelow_unitBounds`), nonnegative, vanishes at zero, is
+symmetric (`orderUnitNorm_neg`), subadditive (`orderUnitNorm_add_le`) and positively homogeneous
+(`orderUnitNorm_smul`) — a seminorm.  `IsArchimedean` is the Archimedean property of the unit, and
+`eq_zero_of_orderUnitNorm_eq_zero` shows it is exactly what makes the seminorm a **norm**: this is
+why Archimedean appears in the definition of an operator system, and it is now a theorem rather
+than a stipulation.  This is the norm the boundary-ideal condition refers to in the
+operator-system case, so the two layers meet here.
+
+Still external: the matrix levels, `C^*`-covers, and boundary representations themselves.  The
 layer above identifies the Shilov ideal by its metric universal property, which is what the paper
 proof of `(9)` actually uses; the identification of that property with the Hamana/Arveson
 construction is the remaining analytic import.  The matricial positive-lifting equivalence `(6)`

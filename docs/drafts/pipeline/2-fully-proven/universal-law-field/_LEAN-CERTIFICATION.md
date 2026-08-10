@@ -7,6 +7,21 @@ even when their paper argument is dependency-closed.
 Dedicated Lean umbrella:
 `GaloisForLFunctions.HTGeometry.UniversalLawField`.
 
+## Session 2026-08-10 addition (Law-History Spectral Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-LHSM-1 | Finite future-tail survival filtration, exact refactorization, and canonical split-cancellation transgression | `HTGeometry.ConstitutiveLawHistorySpectralMechanics` |
+
+Direct foreground elaboration and the leaf build pass; the latter completed 8,700 jobs. The module
+is wired into `HTGeometry.UniversalLawField`, whose final foreground build completed 11,581 jobs.
+The theorem index contains its declarations. Axiom prints for all four capstones and
+`splitTransgressionEquiv` report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Repository-wide lint passed before concurrent theorem-area changes. A later concurrent audit was
+blocked only by unrelated newly owned modules not yet reachable from their own umbrellas; no LHSM
+reachability, forbidden-declaration, elaboration, or axiom error was reported.
+
 ## Session 2026-08-10 addition (observer-overlap mechanics)
 
 | ID | Theorem | Lean module |
@@ -766,3 +781,28 @@ no-isomorphism theorem, and the unconditional capstone report only `propext`, `C
 and `Quot.sound`. No route object, analytic premise, project axiom, or RH statement occurs. The
 result closes one source-normal grammar-update calibration; recursive typed challenges,
 admission-sensitive formation, and three-organ realization remain open.
+
+## Session 2026-08-10 addition (Endogenous Representability Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ERM-1 | Two-sided conservative unary-law extension transports every finite word; future-retaining repair pulls back exactly; future-forgetting repair pulls back laxly; compatible semantic retraction restores exactness; a three-state cell has strict fresh return and no compatible retraction | `HTGeometry.ConstitutiveCarrierGenesisRepair` |
+
+Direct foreground elaboration is warning-free. The leaf build passes with 3,000 jobs and the final
+`HTGeometry.UniversalLawField` umbrella build passes with 11,580 jobs. Formal lint is clean. Axiom
+prints on word restriction/lifting, exact interior pullback, lax closure pullback, retraction
+exactness, strict fresh return, no-retraction, and the unconditional capstone report only `propext`
+and `Quot.sound`. No route object, analytic hypothesis, project axiom, or RH statement occurs.
+
+## Session 2026-08-10 addition (Representation--Execution Exchange)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-REE-1 | Operational novelty iff row-profile fibre splitting iff strict contraction of invisible interventions; anti-diagonal effectiveness classification; four represented/effective chambers; every finite diagonal stage unrepresented but inert | `HTGeometry.ConstitutiveRepresentationExecutionExchange` |
+
+Direct foreground elaboration is warning-free. The leaf build passes with 8,666 jobs and the final
+`HTGeometry.UniversalLawField` umbrella build passes with 11,582 jobs. The module is wired into the
+umbrella. Axiom prints on both exchange criteria, anti-diagonal classification, the four-chamber
+theorem, finite diagonal-stage law, and unconditional capstone report only `propext`,
+`Classical.choice`, and `Quot.sound`. No computation certificate, route premise, project axiom, or
+RH statement occurs.

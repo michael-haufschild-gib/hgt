@@ -1,9 +1,17 @@
 # Balanced-word height bar strict contraction
 
 - **ID:** deninger-balanced-word-height-bar-strict-contraction
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOT RH]`
 - **Label:** DAC_BALANCED_WORD_HEIGHT_BAR_STRICT_CONTRACTION
+- **Lean:**
+  `formal/GaloisForLFunctions/RHTower/DeningerWordHeight.lean`,
+  `DeningerBarWord.lean`, `DeningerBarInsert.lean`, `DeningerBarSlice.lean`,
+  `DeningerBarDifferential.lean`, `DeningerBarUnit.lean`, `DeningerBarContraction.lean`,
+  `DeningerBarSector.lean`, `DeningerBarFace.lean`, `DeningerBarInsertComm.lean`,
+  `DeningerBarFibre.lean`, `DeningerBarSquareZero.lean`, `DeningerBarAlgebra.lean`,
+  `DeningerBarPower.lean`
 - **Parent:** deninger-arithmetic-calderon-green-intermediate-extension
 - **Statement:** The rational prime-log height source has a canonical entire word-height
   completion of its two-term Milnor algebra.  The augmented two-sided bar complex is a nuclear
@@ -289,12 +297,49 @@ balanced sector without division.
 - Ordinary \(\zeta(2)\) in (15) is only the convergent positive Dirichlet series used for counting;
   it contains no information about nontrivial zeta zeros.
 
+## Lean statements
+
+The alphabet `I = {1} ⊔ (Γ∖{0})` is realised as `Γ = DeningerLattice` itself, with the zero
+character as the unit: `h(0) = 1` and `χ(0) = 0`.  Words are `DeningerBarWord = Σ r, Fin (r+1) → Γ`
+(nonempty), with `deningerBarLength`, `deningerBarHeight`, `deningerBarChar`.
+
+| Card item | Lean declaration |
+|---|---|
+| `(2)`--`(4)` the word source | `deningerBarKotheData`, `DeningerBarKothe`, `deningerBarSeminorm`, `deningerBarSeminormR`, `deningerBarSeminormR_summable` |
+| `(15)`--`(16)` counting and nuclearity | `deningerHeightInvSum`, `deningerWordPow_tsum`, `deningerBarKotheData_isNuclear`, `deningerBarKothe_isNuclearSpace` |
+| clause 1, completeness and density | `deningerBarKothe_exists_limit`, `deningerBarKothe_exists_finite_approx` |
+| `(1)`, `(6)` the two-term algebra | `DeningerTwoTerm`, `deningerTwoTermMul`, `deningerTwoTermSeminorm`, `deningerTwoTermSeminorm_mul_le` |
+| `(7)` the faces and their fibres | `deningerBarFaceWord`, `deningerBarFaceWord_eq_some_iff`, `deningerBarFibre`, `deningerBarFibreSum_eq_sum`, `deningerBarDiffCoe_eq_sum` |
+| `(7)` the differential | `deningerBarDiffCoe`, `deningerBarDiff` |
+| `(8)` the doubling estimate | `deningerBarSeminormR_diff_le` |
+| `b² = 0` | `deningerInsertUnit_comm`, `deningerBarDouble`, `deningerBarDouble_swap`, `deningerBarDiffCoe_comp_self`, `deningerBarDiff_comp_self` |
+| `(9)`, `(10)` the extra degeneracy | `deningerBarUnitCoe`, `deningerBarUnit`, `deningerBarSeminormR_unit`, `deningerBarContraction`, `deningerBarContraction_op` |
+| split strict exactness | `deningerBar_exact` |
+| `(11)` character sectors | `deningerBarCharMul`, `deningerBarCharMul_diff`, `deningerBarCharMul_unit`, `deningerBarSectorProj`, `deningerBarSectorProj_idem`, `deningerBarSectorProj_diff`, `deningerBarSectorProj_unit`, `deningerBarSector_exact`, `deningerBarSeminorm_sectorProj_le` |
+| clause 4, the length-one zero sector | `deningerBarChar_one_eq_zero_iff` |
+| `(12)`, `(13)`, `(18)`--`(20)` | `deningerHeight_barChar_le`, `deningerBarTotalGenerator`, `deningerBarTotalGreen`, `deningerBarTotalHodge`, `deningerBarHardyPlus`, `deningerBarHardyMinus`, with `deningerBarTotalGenerator_diff`, `deningerBarTotalGreen_diff`, `deningerBarTotalHodge_diff`, `deningerBarHardyPlus_diff`, `deningerBarHardyMinus_diff`, `deningerBarSeminorm_totalGenerator_le`, `deningerBarSeminorm_totalGreen_le`, `deningerBarSeminorm_totalHodge_le`, `deningerBarSeminorm_hardyPlus_le`, `deningerBarSeminorm_hardyMinus_le` |
+| clause 6, reflection | `deningerBarReflect`, `deningerBarSeminorm_reflect`, `deningerBarReflect_diff_op`, `deningerBarReflectWord_char`, `deningerBarReflect_sector`, `deningerBarReflect_hardy`, `deningerBarReflect_totalGenerator` |
+| `(14)`, clause 6, powers | `deningerBarPower`, `deningerBarSeminormR_power`, `deningerBarPower_diff`, `deningerBarPowerWord_char`, `deningerBarPowerWord_height` |
+
+Reading conventions, all faithful to the paper statement:
+
+- the fibre of the `j`-th face over a word is the pair of unit insertions at positions `j` and
+  `j+1`, which coincide exactly when the merged letter is the unit — this is `(7)` read on
+  coefficients, and it is proved to be the honest fibre of the face `deningerBarFaceWord`;
+- `b² = 0` is proved by the simplicial pairing `(j,j') ↦ (j'-1, j)` acting on the double fibres,
+  which are matched by the commutation of two unit insertions;
+- completeness is sequential, which for a countable seminorm family is Fréchet completeness;
+- density is stated as approximation of every vector by a truncation of its own coordinate
+  expansion, in every seminorm.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: balanced-word divergence and face-growth obstruction isolated
 - [x] 1 → 2 fully-proven: nuclear word topology, strict contraction, sector decomposition, and
       chain Hodge operators proved without conditional premise
-- [ ] 2 → 3 formalized: intentionally paused while Lean corpus is being refactored
+- [x] 2 → 3 formalized: all six numbered clauses proved unconditionally in Lean
+- [x] targeted axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] modules wired into `RHTower.lean`
 - [ ] 3 → 4 publication-ready: requires strict Sullivan comparison and independent specialist
       novelty/significance audit
 
@@ -309,6 +354,15 @@ balanced sector without division.
 
 ## Log
 
+- 2026-08-10 — Formalized the whole theorem unconditionally.  Modelled the alphabet
+  `{1} ⊔ (Γ∖{0})` as `Γ` with the zero character as the unit, which makes the fibre of a face
+  the pair of unit insertions and the coefficient description of `b` finite and explicit.  Built
+  the entire word-height source and its nuclearity, the two-parameter seminorms, the differential
+  with the doubling estimate, `b² = 0` by the simplicial pairing on double fibres, the extra
+  degeneracy with the exact length-weight identity and `bs + sb = 1`, split strict exactness,
+  the character multiplier calculus with the sector projections and the total prime-log
+  Green/Hodge/Hardy operators, and reflection and positive powers as chain maps.  Card promoted
+  to `3-formalized`.
 - 2026-08-08 — Rejected total-character-only and fixed-length completions.  Constructed the entire
   product-letter-height bar source; proved nuclearity, continuous bar faces, continuous
   extra-degeneracy contraction, strict exactness in every arithmetic-character sector, and

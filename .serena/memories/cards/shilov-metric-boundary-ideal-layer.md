@@ -29,9 +29,11 @@ it at (stage × matrix size) gives the completely isometric statements for free.
 - links: `escapeFree_iff_exists_descent`, `isBoundaryIdeal_comap`,
   `isBoundaryIdeal_map_of_quotient`, `map_le_of_isGreatest`.  The kernel condition
   `ker α ≤ J_A` is exactly where escape can fail — the theorem locates the obstruction.
-- `exists_coherent_lift` = the recursive lifting of `(10)`, bottom stage.  Cast-free because the
-  recursion is `upLift : ∀ n, {x : A n // x ∈ J n}` with the *bottom* prescribed; prescribing a
-  general stage forces `A (n + k)` casts, so state general stages via the shifted tower instead.
+- `exists_coherent_lift` = the recursive lifting of `(10)`, bottom stage.
+- **`exists_coherent_lift_at` (ShilovStableImage) = ARBITRARY stage** — the earlier "bottom stage
+  only" caveat is dead.  Above the stage: `Nat.leRec` (`upLiftAt`); below: `downTo`; glue with
+  `downTo_shift`.  All indices literal.  Use `simp only [dif_pos/dif_neg ...]` not `rw` — the `dite`
+  in the assembled function is not beta-reduced for `rw`.
 - `le_localIdeal_of_closure_le`: coordinate inclusion alone already gives `H ⊆ J^∞`.
 - `isClosed_localIdeal`, `isClosed_localIdeal_of_isGreatest`: the local envelope is separated.
 - `diagonalRep`, `ker_diagonalRep`, `injective_liftQ_diagonalRep` = the card's `(12)`, the faithful
@@ -182,6 +184,23 @@ generation it is bijective.  mathlib HAS `NonUnitalStarAlgHom.isometry` (injecti
 C*-algebras is isometric) and `.norm_map`.  Θ is injective, so ONLY GENERATION remains for (12f).
 Important: mathlib has NO C*-quotient, so there is no closed-range theorem for general *-homs —
 use the injective case, which is all Θ needs.
+`mem_of_coordinatewise_approx`: simultaneous approximation of finitely many coordinates from a
+CLOSED set puts the point in it (build the sequence with ε = 1/(m+1), `tendsto_pi_nhds`,
+`IsClosed.mem_of_tendsto` — do NOT pass its filter by name `l`, it is not named that).
+The closure is essential: the algebraic analogue is FALSE — `A n = 𝕜^n` with truncations, the
+finitely-supported coherent sequences surject onto every coordinate but are not everything.
+`simultaneous_approx_of_stagewise` (ShilovStableImage) supplies that hypothesis from SINGLE-STAGE
+density, given CONTRACTIVE bonds: `downTo_coherent` (earlier coordinates are composites of a later
+one) + `norm_downTo_le` (composites of contractions are contractions) ⟹ `norm_sub_le_of_coherent`.
+Same ε, no operator-norm bookkeeping.  Contractivity is automatic for C*-quotient maps.
+
+## Generation assembled — `ShilovLocalComparison.lean`
+`isClosed_coherent` + `coherent_mem_of_stagewise_dense` / `coherent_subset_of_stagewise_dense`:
+a CLOSED set of coherent families that is dense at each SINGLE stage contains every coherent family.
+So generation for Θ reduces to "each stage system is dense in its stage envelope".
+Traps: `LinearMap.continuous_of_bound` does NOT exist — use
+`LipschitzWith.of_dist_le_mul ... |>.continuous`.  `isClosed_eq` needs T2, so this module uses
+`NormedAddCommGroup` (seminormed is not enough); the upstream propagation lemmas stay seminormed.
 
 ## Already in the corpus — do not rebuild
 `ShilovBoundaryMigrationDefect.escapeDetectionEquiv` is the card's `(16)`, and

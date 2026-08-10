@@ -62,8 +62,14 @@ Theorem 2 — the first-order law symbol, for a local `k`-algebra with a coeffic
 
 The card's "Concrete sharp model" (`A = R1 + aR^N`, `M = Ω`, `N = A^♯/A`) is an instantiation of
 Theorem 2 in the concrete-model card
-`congruence-order-trace-kahler-exterior-square-nonmetricity-law`, which is a separate pipeline card
-and is not formalized here.  The card states plainly that no RH conclusion follows and that
+`congruence-order-trace-kahler-exterior-square-nonmetricity-law`, and is now formalized there:
+`ConstraintRelativity/CongruenceOrderFirstOrder.lean` proves `𝔪²Ω = 0` and `𝔪²L = 0`
+(`maximalIdealSq_smul_kaehler`, `maximalIdealSq_smul_traceDefect`), that the reduction
+`Hom_A(Ω,L) → Hom(H_Ω,H_L)` is identically zero (`headReduction_eq_zero`), that only the zero head
+map lifts (`headMap_eq_zero_of_lifts`), and that the resulting obstruction space is
+`Mat_{m×m}(k)` (`solderingObstructionEquiv`).  The abstract Theorem 2 of this card is what the
+concrete instance realizes; the literal identification of that instance with `lawObstruction`
+additionally needs a coefficient field `k → R` (the card's `R = ℂ[[a]]`) and is not carried out.  The card states plainly that no RH conclusion follows and that
 carrying arithmetic weight requires instantiating `C, K, T, s, J` from a literal source; nothing of
 that kind is claimed.
 

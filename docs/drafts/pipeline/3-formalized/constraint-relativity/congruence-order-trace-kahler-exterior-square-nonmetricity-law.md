@@ -1,9 +1,9 @@
 # Congruence-order trace--Kähler exterior-square discrepancy law
 
 - **ID:** `congruence-order-trace-kahler-exterior-square-nonmetricity-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / TRACE--KÄHLER DISCREPANCY / EXTERIOR-SQUARE LAW
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO RH CLAIM] [NO LEAN WRITTEN]`
+- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO RH CLAIM] [LEAN COMPLETE]`
   `[CLASSICAL INGREDIENTS] [BRIDGE] [NOVELTY UNVERIFIED]`
 - **Parent field:** `../../1-in-progress/constraint-relativity/source-soldering-bivariant-law-geometry.md`.
 - **Phase card:** `../../1-in-progress/constraint-relativity/defect-duality-phase-geometry.md`.
@@ -594,10 +594,12 @@ diagonal congruence order. Search absence is not priority proof. Honest label is
 
 ## Lean-return note
 
-No Lean work authorized. Later formalization should use explicit finite free bases, trace pairing,
-Smith reduction of `(12)`, quotient-algebra presentation `(15)`, and universal derivation. Likely
-files: finite free modules, Kähler differentials, exterior powers, and matrix equivalence corpus;
-search exact local names before edits.
+Formalized: see `congruence-order-trace-kahler-exterior-square-nonmetricity-law-formalized.md` in
+this directory. Every boxed equation — `(3)`, `(4)`, `(5)`, `(6)`, `(7)`, `(26e)`, `(26f)`,
+`(26g)`, `(26k)`, `(26l)`, `(28)` — is an unconditional Lean theorem. The trace-dual Smith
+reduction of `(12)` was not needed: the centred coordinate map `z ↦ zᵢ − N⁻¹∑ⱼzⱼ` gives `(4)`
+directly because `N − m = 1`. The zeroth Fitting ideal used by `(26l)` had to be built from
+scratch — mathlib has no Fitting-ideal theory.
 
 ## Gates
 
@@ -607,7 +609,7 @@ search exact local names before edits.
 - [x] no RH/physics overclaim
 - [ ] hostile independent proof audit
 - [ ] specialist novelty review
-- [ ] Lean formalization
+- [x] Lean formalization
 
 ## Log
 

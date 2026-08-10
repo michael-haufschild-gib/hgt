@@ -90,6 +90,62 @@ theorem deningerInsertUnitWord_injective {r : ℕ} (t : Fin (r + 2)) :
   rw [deningerInsertUnitWord, deningerInsertUnitWord, Sigma.mk.inj_iff] at h
   exact deningerInsertUnit_injective t (eq_of_heq h.2)
 
+/-! ## Insertion at the front and behind it -/
+
+theorem deningerInsertUnit_zero_apply_zero {r : ℕ} (f : Fin (r + 1) → DeningerLattice) :
+    deningerInsertUnit (0 : Fin (r + 2)) f 0 = 0 :=
+  deningerInsertUnit_same (0 : Fin (r + 2)) f
+
+theorem deningerInsertUnit_zero_tail {r : ℕ} (f : Fin (r + 1) → DeningerLattice) :
+    Fin.tail (deningerInsertUnit (0 : Fin (r + 2)) f) = f := by
+  funext i
+  show deningerInsertUnit (0 : Fin (r + 2)) f i.succ = f i
+  rw [← Fin.zero_succAbove i]
+  exact deningerInsertUnit_succAbove (0 : Fin (r + 2)) f i
+
+theorem deningerInsertUnit_succ_apply_zero {r : ℕ} (u : Fin (r + 1))
+    (f : Fin (r + 1) → DeningerLattice) :
+    deningerInsertUnit u.succ f 0 = f 0 := by
+  have h : u.succ.succAbove 0 = 0 := Fin.succ_succAbove_zero u
+  calc deningerInsertUnit u.succ f 0
+      = deningerInsertUnit u.succ f (u.succ.succAbove 0) := by rw [h]
+    _ = f 0 := deningerInsertUnit_succAbove u.succ f 0
+
+/-- Removing the first letter of a word with a unit inserted behind it is the word with the unit
+inserted one position earlier. -/
+theorem deningerInsertUnit_succ_tail {r : ℕ} (u : Fin (r + 2))
+    (f : Fin (r + 2) → DeningerLattice) :
+    Fin.tail (deningerInsertUnit (r := r + 1) u.succ f)
+      = deningerInsertUnit (r := r) u (Fin.tail f) := by
+  funext j
+  refine Fin.succAboveCases (α := fun j =>
+      Fin.tail (deningerInsertUnit (r := r + 1) u.succ f) j
+        = deningerInsertUnit (r := r) u (Fin.tail f) j) u ?_ ?_ j
+  · show deningerInsertUnit (r := r + 1) u.succ f u.succ
+        = deningerInsertUnit (r := r) u (Fin.tail f) u
+    rw [deningerInsertUnit_same, deningerInsertUnit_same]
+  · intro i
+    show deningerInsertUnit (r := r + 1) u.succ f (u.succAbove i).succ
+        = deningerInsertUnit (r := r) u (Fin.tail f) (u.succAbove i)
+    rw [← Fin.succ_succAbove_succ u i, deningerInsertUnit_succAbove,
+      deningerInsertUnit_succAbove]
+    rfl
+
+theorem deningerInsertUnit_zero_eq_cons {r : ℕ} (g : Fin (r + 1) → DeningerLattice) :
+    deningerInsertUnit (0 : Fin (r + 2)) g = Fin.cons 0 g := by
+  funext i
+  refine Fin.cases ?_ ?_ i
+  · rw [deningerInsertUnit_same]
+    simp
+  · intro j
+    rw [← Fin.zero_succAbove j, deningerInsertUnit_succAbove]
+    simp
+
+theorem deningerInsertUnit_zero_of_apply_zero {r : ℕ} {f : Fin (r + 2) → DeningerLattice}
+    (h : f 0 = 0) : deningerInsertUnit (0 : Fin (r + 2)) (Fin.tail f) = f := by
+  rw [deningerInsertUnit_zero_eq_cons, ← h]
+  exact Fin.cons_self_tail f
+
 end
 
 end RHTower

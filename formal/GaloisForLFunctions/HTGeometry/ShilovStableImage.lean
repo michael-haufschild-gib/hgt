@@ -330,6 +330,138 @@ theorem derivedLimitOne_subsingleton_of_zero_bond_via_stable
     Subsingleton (DerivedLimitOne A bond) :=
   derivedLimitOne_subsingleton_of_hasStableImages bond (hasStableImages_of_zero_bond bond hzero)
 
+/-! ## Recursive lifting at an arbitrary stage -/
+
+section Lifting
+
+variable {J : ∀ n, Submodule 𝕜 (A n)}
+
+/-- Composite transitions preserve a bond-stable family of submodules. -/
+theorem downTo_mem (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (hstable : ∀ n, ∀ x ∈ J (n + 1), bond n x ∈ J n) {m n : ℕ} (h : m ≤ n) {x : A n}
+    (hx : x ∈ J n) : downTo bond h x ∈ J m := by
+  induction n, h using Nat.le_induction with
+  | base => rwa [downTo_self]
+  | succ n hn ih =>
+    rw [downTo_succ bond hn]
+    exact ih (hstable n x hx)
+
+/-- The chosen upward tower of ideal lifts over a prescribed stage element. -/
+noncomputable def upLiftAt (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (hdef : ∀ n, ∀ x ∈ J n, ∃ y ∈ J (n + 1), bond n y = x) {n : ℕ} {j : A n} (hj : j ∈ J n) :
+    ∀ {m : ℕ}, n ≤ m → {x : A m // x ∈ J m} :=
+  Nat.leRec ⟨j, hj⟩ fun {k} _ ih =>
+    ⟨(hdef k ih.1 ih.2).choose, (hdef k ih.1 ih.2).choose_spec.1⟩
+
+theorem upLiftAt_self (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (hdef : ∀ n, ∀ x ∈ J n, ∃ y ∈ J (n + 1), bond n y = x) {n : ℕ} {j : A n} (hj : j ∈ J n) :
+    (upLiftAt bond hdef hj (le_refl n)).1 = j := by
+  have hself : upLiftAt bond hdef hj (le_refl n) = ⟨j, hj⟩ := Nat.leRec_self _ _
+  rw [hself]
+
+theorem bond_upLiftAt_succ (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (hdef : ∀ n, ∀ x ∈ J n, ∃ y ∈ J (n + 1), bond n y = x) {n : ℕ} {j : A n} (hj : j ∈ J n)
+    {k : ℕ} (h : n ≤ k) (h' : n ≤ k + 1) :
+    bond k (upLiftAt bond hdef hj h').1 = (upLiftAt bond hdef hj h).1 := by
+  have hrec : upLiftAt bond hdef hj h' =
+      ⟨(hdef k (upLiftAt bond hdef hj h).1 (upLiftAt bond hdef hj h).2).choose,
+        (hdef k (upLiftAt bond hdef hj h).1 (upLiftAt bond hdef hj h).2).choose_spec.1⟩ :=
+    Nat.leRec_succ _ _ h
+  rw [hrec]
+  exact (hdef k (upLiftAt bond hdef hj h).1 (upLiftAt bond hdef hj h).2).choose_spec.2
+
+open scoped Classical in
+/-- **Recursive lifting at an arbitrary stage.**  In a tower whose restricted ideal maps are onto,
+every ideal element at any stage is that coordinate of a coherent sequence lying in every stage
+ideal.  Above the stage the lift is chosen recursively, below it the composite transitions supply
+the unique compatible values. -/
+theorem exists_coherent_lift_at (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (hstable : ∀ n, ∀ x ∈ J (n + 1), bond n x ∈ J n)
+    (hdef : ∀ n, ∀ x ∈ J n, ∃ y ∈ J (n + 1), bond n y = x) (n : ℕ) {j : A n} (hj : j ∈ J n) :
+    ∃ a : ∀ m, A m, (∀ m, bond m (a (m + 1)) = a m) ∧ (∀ m, a m ∈ J m) ∧ a n = j := by
+  refine ⟨fun m => if h : n ≤ m then (upLiftAt bond hdef hj h).1
+      else downTo bond (le_of_not_ge h) j, ?_, ?_, ?_⟩
+  · intro m
+    by_cases hm : n ≤ m
+    · simp only [dif_pos hm, dif_pos (le_trans hm (Nat.le_succ m))]
+      exact bond_upLiftAt_succ bond hdef hj hm _
+    · by_cases hm1 : n ≤ m + 1
+      · have hnm : n = m + 1 := by omega
+        subst hnm
+        simp only [dif_neg hm, dif_pos (le_refl (m + 1))]
+        rw [upLiftAt_self, downTo_succ bond (le_refl m), downTo_self]
+        rfl
+      · simp only [dif_neg hm, dif_neg hm1]
+        rw [downTo_shift bond (le_of_not_ge hm1)]
+        rfl
+  · intro m
+    by_cases hm : n ≤ m
+    · simp only [dif_pos hm]
+      exact (upLiftAt bond hdef hj hm).2
+    · simp only [dif_neg hm]
+      exact downTo_mem bond hstable _ hj
+  · simp only [dif_pos (le_refl n)]
+    exact upLiftAt_self bond hdef hj
+
+end Lifting
+
+/-! ## Approximation propagates downward -/
+
+section Contractive
+
+variable {M : ℕ → Type v} [∀ n, SeminormedAddCommGroup (M n)] [∀ n, Module 𝕜 (M n)]
+
+/-- Composite transitions of contractive bonds are contractive. -/
+theorem norm_downTo_le (bond : ∀ n, M (n + 1) →ₗ[𝕜] M n)
+    (hcontr : ∀ n (x : M (n + 1)), ‖bond n x‖ ≤ ‖x‖) {m n : ℕ} (h : m ≤ n) (x : M n) :
+    ‖downTo bond h x‖ ≤ ‖x‖ := by
+  induction n, h using Nat.le_induction with
+  | base =>
+    rw [downTo_self]
+    exact le_of_eq rfl
+  | succ n hn ih =>
+    rw [downTo_succ bond hn]
+    exact le_trans (ih (bond n x)) (hcontr n x)
+
+/-- A coherent family is recovered at every earlier stage by the composite transition. -/
+theorem downTo_coherent (bond : ∀ n, M (n + 1) →ₗ[𝕜] M n) {c : ∀ m, M m}
+    (hc : ∀ m, bond m (c (m + 1)) = c m) {k n : ℕ} (h : k ≤ n) :
+    downTo bond h (c n) = c k := by
+  induction n, h using Nat.le_induction with
+  | base => rw [downTo_self]; rfl
+  | succ n hn ih =>
+    rw [downTo_succ bond hn]
+    show downTo bond hn (bond n (c (n + 1))) = c k
+    rw [hc n]
+    exact ih
+
+/-- **Closeness at one stage is closeness at every earlier stage.**  For coherent families and
+contractive bonds a single stage seminorm controls all the earlier ones, which is what turns
+stagewise density into the simultaneous approximation a projective limit needs. -/
+theorem norm_sub_le_of_coherent (bond : ∀ n, M (n + 1) →ₗ[𝕜] M n)
+    (hcontr : ∀ n (x : M (n + 1)), ‖bond n x‖ ≤ ‖x‖) {c a : ∀ m, M m}
+    (hc : ∀ m, bond m (c (m + 1)) = c m) (ha : ∀ m, bond m (a (m + 1)) = a m) {k n : ℕ}
+    (h : k ≤ n) : ‖c k - a k‖ ≤ ‖c n - a n‖ := by
+  have hck : downTo bond h (c n) = c k := downTo_coherent bond hc h
+  have hak : downTo bond h (a n) = a k := downTo_coherent bond ha h
+  rw [← hck, ← hak, ← map_sub]
+  exact norm_downTo_le bond hcontr h _
+
+/-- **Stagewise density gives simultaneous approximation.**  This is the hypothesis of
+`ShilovLocal.mem_of_coordinatewise_approx`, so together they turn density at each stage into
+membership in a closed set of coherent families. -/
+theorem simultaneous_approx_of_stagewise (bond : ∀ n, M (n + 1) →ₗ[𝕜] M n)
+    (hcontr : ∀ n (x : M (n + 1)), ‖bond n x‖ ≤ ‖x‖) {C : Set (∀ m, M m)}
+    (hCcoh : ∀ c ∈ C, ∀ m, bond m (c (m + 1)) = c m) {a : ∀ m, M m}
+    (ha : ∀ m, bond m (a (m + 1)) = a m)
+    (hdense : ∀ (n : ℕ) (ε : ℝ), 0 < ε → ∃ c ∈ C, ‖c n - a n‖ < ε) (n : ℕ) (ε : ℝ) (hε : 0 < ε) :
+    ∃ c ∈ C, ∀ k ≤ n, ‖c k - a k‖ < ε := by
+  obtain ⟨c, hcC, hcn⟩ := hdense n ε hε
+  exact ⟨c, hcC, fun k hk =>
+    lt_of_le_of_lt (norm_sub_le_of_coherent bond hcontr (hCcoh c hcC) ha hk) hcn⟩
+
+end Contractive
+
 end BoundaryMigration
 
 end GaloisForLFunctions.HTGeometry

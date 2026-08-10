@@ -871,7 +871,361 @@ Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 
 1. *The gas-expectation layer*: that `E[log|soc A|] = ∑_{(p,j)} E[G_{p,j}]·log p` for the product of
    the geometric mode laws, and that the two relative entropies are finite.  This is the same
    product-measure bookkeeping that the global form of (GAS.5) needs.
-2. *The prime-power reindexing*: `∑_p log p · ∑_{a≥1} p^{−aσ} = ∑_n Λ(n)n^{−σ}`.  The right-hand
-   side is then `−ζ′(σ)/ζ(σ)` by mathlib's
-   `ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div`, so the `−ζ′/ζ` half of the
-   boxed identity is already available; only the Euler-form reindexing has to be built.
+2. *The prime-power reindexing* — **DONE**, in
+   `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/VonMangoldtEuler.lean`.
+
+   | Clause | Lean |
+   |---|---|
+   | `Λ(p^{a+1}) = log p` | `vonMangoldt_primePow` |
+   | `(p^{a+1})^{−σ} = p^{−(a+1)σ}` | `rpow_primePow` |
+   | `Λ` is supported on the prime powers | `support_vonMangoldt_rpow_subset` |
+   | **Euler form: `∑_n Λ(n)n^{−σ} = ∑_p log p · ∑_{a≥1} p^{−aσ}`** | **`tsum_vonMangoldt_eq_tsum_primes`** |
+   | **the mode-mean residues sum to the von Mangoldt mass** | **`tsum_primes_modeMean_residue`** |
+   | **and that mass is `−ζ′(σ)/ζ(σ)`** | **`ofReal_tsum_primes_modeMean_residue`** |
+
+   The reindexing runs through mathlib's `Nat.Primes.prodNatEquiv : Nat.Primes × ℕ ≃ {n // IsPrimePow n}`
+   and the corpus's `summable_vonMangoldt_rpow`; the `−ζ′/ζ` identification is the corpus's
+   `ofReal_tsum_vonMangoldt_eq`.  Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only;
+   module green at 8 675 jobs.
+
+   **What is left of (GAS.12)** is therefore only item 1, the gas-expectation layer: that
+   `E[log|soc A|] = ∑_{(p,j)} E[G_{p,j}]·log p` under the product of the geometric mode laws, and
+   that both relative entropies are finite.  The entire arithmetic side of the boxed identity —
+   from the depth-one residue of the mode-mean ladder to `σ·(−ζ′/ζ)(σ)` — is now machine-checked.
+
+### Theorem 6.1 — the dilation organ's divisor, finite-depth form (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/DilationDivisor.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The depth-`j` factor `ζ(j(σ+u)+v)` is an affine pullback of `ζ` in the dilation variable with slope
+exactly `j`, so its order is the order of `ζ` at the pulled-back point and orders add over any
+depth truncation.
+
+| Clause | Lean |
+|---|---|
+| the depth-`j` factor and its affine form | `depthFactor`, `depthFactor_eq_affine` |
+| **(GAS.10): the depth-`j` factor meets `w` on the line `j·u + v = w − j·σ`** | **`depthFactor_arg_eq_iff`** |
+| the factor is meromorphic in `u` | `meromorphicAt_depthFactor` |
+| **(GAS.9), one depth** | **`meromorphicOrderAt_depthFactor`** |
+| the depth-truncated response | `depthProduct` |
+| **(GAS.9): `ord_u ∏_{j<J} = ∑_{j<J} ord_{j(σ+u)+v} ζ`** | **`meromorphicOrderAt_depthProduct`** |
+
+The proof reuses ULF-EQG-1's certified affine-pullback machinery (`meromorphicAt_comp_affine`,
+`meromorphicOrderAt_comp_affine`) verbatim — depth enters only as the nonzero slope `j`.  Axiom
+prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 858 jobs.
+
+### Theorem 6.1 — the depth tail converges and is zero-free (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/DepthTail.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+| Clause | Lean |
+|---|---|
+| the depth-`j` argument and its real part | `depthArg`, `re_depthArg` |
+| the depth beyond which `Re ≥ 2` | `depthThreshold`, `two_le_re_depthArg` |
+| the majorant is geometric in the depth | `rpow_two_depthArg`, `geomRatio_lt_one` |
+| **normal convergence: `∑_j ‖ζ(j(σ+u)+v) − 1‖ < ∞`** | **`summable_norm_zeta_depth_sub_one`** |
+| **the depth factors are multipliable** | **`multipliable_zeta_depth`** |
+| **the tail beyond the threshold is zero-free** | **`tprod_zeta_depth_tail_ne_zero`** |
+
+The convergence input is the corpus's own `norm_riemannZeta_sub_one_le_rpow`
+(`‖ζ(s) − 1‖ ≤ 4·2^{−Re s}` for `Re s ≥ 2`): since `Re(j(σ+u)+v) = j·a + Re v` with
+`a = σ + Re u > 0`, that bound is geometric with ratio `2^{−a} < 1`, so no compactness in `v` is
+needed — the statement holds pointwise on the whole chamber `Re(σ+u) > 0`.  Axiom prints:
+`propext`, `Classical.choice`, `Quot.sound` only; module green at 8 883 jobs.
+
+The uniformity and holomorphy are certified as well:
+
+| Clause | Lean |
+|---|---|
+| the uniform depth threshold on `a₀ ≤ σ + Re u` | `depthTailThreshold`, `two_le_re_depthArg_of_ge` |
+| the uniform geometric bound | `norm_zeta_depthArg_sub_one_le` |
+| each tail factor is holomorphic | `differentiableAt_zeta_depthArg` |
+| **uniform convergence on every compact of the half-plane** | **`hasProdUniformlyOn_zeta_depthTail`** |
+| **the tail product is holomorphic on `a₀ < σ + Re u`** | **`differentiableOn_tprod_zeta_depthTail`** |
+
+### Theorem 6.1 — the grand response splits at any depth (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GrandResponse.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+| Clause | Lean |
+|---|---|
+| `ℕ` enumerates the naturals beyond `J` | `natComplRangeEquiv` |
+| **splitting a multipliable family at a finite depth, in a commutative monoid** | **`tprod_split_nat`** |
+| the depth factors are multipliable after any shift | `multipliable_depthFactor_shift`, `multipliable_depthFactor_succ` |
+| the grand response | `grandResponse`, `depthFactor_eq_zeta_depthArg` |
+| **`F = (truncation at J) · (tail beyond J)`** | **`grandResponse_split`** |
+
+`tprod_split_nat` is stated for an arbitrary multipliable family in a commutative *monoid*: mathlib's
+`Multipliable.prod_mul_tprod_nat_add` needs a commutative group, and `ℂ` is not one under
+multiplication.  The proof is again the `HasProd.mul_compl` head/tail split, this time on
+`Finset.range J` and its complement — the same device that made `zetaPartition_depthShift` work.
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 884 jobs.
+
+The contraction is closed as well:
+
+| Clause | Lean |
+|---|---|
+| the tail beyond any admissible depth is zero-free | `tprod_depthFactor_tail_ne_zero` |
+| and holomorphic at every point of the chamber | `analyticAt_tprod_depthFactor_tail` |
+| **(GAS.9), full form: `ord_u F = ∑_{j<J} ord_{j(σ+u)+v} ζ`** | **`meromorphicOrderAt_grandResponse`** |
+
+The tail lemmas of `DepthTail.lean` were generalised from the canonical threshold to an arbitrary
+admissible depth `J ≥ depthTailThreshold v a₀`, which is what lets the response be split at the same
+depth at which its divisor is read.  Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only;
+module green at 8 884 jobs.
+
+**What remains of Theorem 6.1.**  Only item 1's accumulation claim — that the singularities
+accumulate on `Re u = −σ` and that the line is a natural boundary — which needs the Riemann–von
+Mangoldt density of the ordinates.  The continuation, the divisor formula (GAS.9), the line
+arrangement (GAS.10) and item 2 are all certified.  Item 2 of the theorem is closed:
+it is Corollary 3.2, `zetaPartition_depthShift` plus the certified translation-divisor layer of
+ULF-EQG-1.
+
+### The gas-expectation layer — the single-mode atom (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/ModeExpectation.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+| Clause | Lean |
+|---|---|
+| `∑_n n·rⁿ(1−r) = r/(1−r)` and its summability | `AbelianZetaParameters.tsum_natCast_mul_geometric`, `…summable_natCast_mul_geometric` |
+| **the mean occupation of one mode** | **`AbelianZetaParameters.lintegral_modeLaw`** |
+
+Stated as a lower Lebesgue integral the mean is unconditional — no integrability hypothesis appears
+— and it is finite because the ratio is `< 1`.  This is the atom the socle expectation is assembled
+from: `log|soc A| = ∑_{(p,j)} A(p,j)·log p` is mode-additive, so `E[log|soc A|]` is
+`∑_{(p,j)} log p · (mean of mode (p,j))`, and each factor is now computed.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 666 jobs.
+
+### The gas-expectation layer — COMPLETE
+
+Both remaining steps turned out to be available: mathlib carries
+`MeasureTheory.Measure.infinitePi_map_eval`, the coordinate marginal of an infinite product measure,
+and `lintegral_tsum` for the exchange.
+
+| Clause | Lean |
+|---|---|
+| **the mean occupation of a mode under the gas** | **`AbelianZetaParameters.lintegral_gasMeasure_eval`** |
+| **the expectation of any nonnegative mode-additive observable** | **`AbelianZetaParameters.lintegral_gasMeasure_tsum`** |
+
+`lintegral_gasMeasure_tsum` says exactly that `E[∑_m c_m·A(m)] = ∑_m c_m·(mean of mode m)` for every
+nonnegative coefficient family — which with `c_{(p,j)} = log p` is `E[log|soc A|]`, the observable of
+(GAS.12), and with the class-mass decomposition is the missing exchange for the global form of
+(GAS.5).  Stated in `ℝ≥0∞` it carries no integrability hypothesis at all.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 666 jobs.
+
+### (GAS.12), expectation side — the socle expectation (DONE)
+
+Added to `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/ModeExpectation.lean`.
+
+| Clause | Lean |
+|---|---|
+| the socle observable's expectation | `AbelianZetaParameters.socleExpectation` |
+| **it groups by prime into the mode-mean ladders** | **`AbelianZetaParameters.socleExpectation_eq`** |
+| at `τ = 0` the mode mean is exactly `modeMean` | `ratio_div_one_sub_eq_modeMean` |
+| **(GAS.12), expectation side** | **`socleExpectation_temperature`** |
+
+`socleExpectation_temperature` says `E_σ[log|soc A|] = ∑_p log p · ∑_j modeMean(p^{−σ}, j)`.  With
+`tsum_modeMean_sub_shift_prime` (the depth shift removes exactly the depth-one term) and
+`tsum_primes_modeMean_residue` (those residues sum to the von Mangoldt mass), the symmetrised
+information cost of the canonical unit tilt is `σ·∑_n Λ(n)n^{−σ} = σ·(−ζ′/ζ)(σ)`, which is the
+boxed identity of Theorem 8.1.
+
+Every ingredient of (GAS.12) is now certified.  What is not formalised is the *definition* of the
+two relative entropies as such: the card writes the cost as `D(P*‖P_σ) + D(P_σ‖P*)`, and the Lean
+development computes the equivalent quantity `σ·(E_{P_σ}[log|soc|] − E_{P*}[log|soc|])` directly
+from the mode structure.  Introducing `MeasureTheory.klDiv` for the two laws and proving it equals
+that difference is the remaining bookkeeping; the analytic content is closed.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 666 jobs.
+
+### (GAS.12) — the tilted expectation (DONE)
+
+| Clause | Lean |
+|---|---|
+| the canonical unit tilt `P_{σ,σ}` | `tiltParameters` |
+| the tilt shifts the mode mean by one depth | `ratio_div_one_sub_eq_modeMean_tilt` |
+| **the tilted socle expectation** | **`socleExpectation_tilt`** |
+
+Both sides of the boxed identity are now expressions in the same object:
+
+```text
+socleExpectation_temperature :  E_σ [log|soc A|] = ∑_p log p · ∑_j modeMean(p^{-σ}, j)
+socleExpectation_tilt        :  E_{σ,σ}[log|soc A|] = ∑_p log p · ∑_j modeMean(p^{-σ}, j+1)
+tsum_modeMean_sub_shift_prime:  their per-prime difference is ∑_{a≥1} p^{-aσ}
+tsum_primes_modeMean_residue :  summed against log p that is ∑_n Λ(n)n^{-σ}
+ofReal_tsum_primes_modeMean_residue : which is −ζ′(σ)/ζ(σ)
+```
+
+so `σ·(E_σ − E_{σ,σ}) = σ·(−ζ′/ζ)(σ)` is a chain of certified identities.  Contracting it into one
+Lean statement needs only the finiteness of the two expectations — both are bounded by the von
+Mangoldt mass, which `tsum_vonMangoldt_rpow_pos` and `summable_vonMangoldt_rpow` already certify as
+finite — since `ℝ≥0∞` subtraction is truncated.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 666 jobs.
+
+### (GAS.12) — the contraction, in additive form (DONE)
+
+| Clause | Lean |
+|---|---|
+| the `ℝ≥0∞` transport of the ladder and its shift | `tsum_ofReal_modeMean_eq`, `tsum_ofReal_modeMean_shift_eq` |
+| **the ladder splits off its depth-one term** | **`tsum_ofReal_modeMean_split`** |
+| **(GAS.12): `E_σ[log\|soc\|] = E_{σ,σ}[log\|soc\|] + (von Mangoldt mass)`** | **`socleExpectation_eq_tilt_add_residue`** |
+
+Stating the contraction *additively* removes the last obstruction: `ℝ≥0∞` subtraction is truncated,
+so the difference form would have needed finiteness of both expectations, whereas
+`E_σ = E_{σ,σ} + residue` needs nothing at all.  The residue is
+`∑_p log p · modeMean(p^{−σ}, 0)`, which `modeMean_zero_eq_tsum`, `eqgQ_pow_succ`,
+`tsum_primes_modeMean_residue` and `ofReal_tsum_primes_modeMean_residue` identify with
+`∑_n Λ(n)n^{−σ} = −ζ′(σ)/ζ(σ)`.
+
+Theorem 8.1's analytic content is therefore closed end to end and unconditionally.  What is left is
+purely definitional: exhibiting the card's `D(P*‖P_σ) + D(P_σ‖P*)` as `σ` times the difference of
+these two expectations, i.e. introducing `MeasureTheory.klDiv` for the two laws and computing its
+log-density.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 666 jobs.
+
+### (GAS.12) — the residue is the von Mangoldt mass (DONE)
+
+| Clause | Lean |
+|---|---|
+| **`∑_p log p · modeMean(p^{−σ},0) = ∑_n Λ(n)n^{−σ}`** | **`tsum_primes_modeMean_zero`** |
+| **and that is `−ζ′(σ)/ζ(σ)`** | **`ofReal_tsum_primes_modeMean_zero`** |
+
+The residue appearing in `socleExpectation_eq_tilt_add_residue` is therefore *literally* the von
+Mangoldt mass, so (GAS.12) now reads, as a chain of certified Lean statements,
+
+```text
+E_σ[log|soc A|]  =  E_{σ,σ}[log|soc A|]  +  ∑_n Λ(n) n^{−σ}      (additive, unconditional)
+                                            ∑_n Λ(n) n^{−σ}  =  −ζ′(σ)/ζ(σ)
+```
+
+which is the boxed identity of Theorem 8.1 after multiplying by `σ`.
+
+### (GAS.5), global form — the prime fibre marginal (DONE)
+
+| Clause | Lean |
+|---|---|
+| the modes above a fixed prime | `primeFiber` |
+| depths enumerate that fibre | `primeFiberEquiv` |
+| **the prime fibre marginal of the gas is the product of its depth modes** | **`gasMeasure_map_restrict_primeFiber`** |
+
+This is the factorisation the global form of (GAS.5) needs: the law of the socle exponent at `p`
+depends only on the depth modes above `p`.  It comes straight from mathlib's
+`Measure.infinitePi_map_restrict'` once the gas is recognised as `Measure.infinitePi θ.modeLaw` —
+no product-measure construction had to be built.
+
+The transport to depth indexing is certified too:
+
+| Clause | Lean |
+|---|---|
+| **the depth-indexed prime fibre marginal** | **`gasMeasure_map_primeFiber_depths`** |
+
+`gasMeasure_map_primeFiber_depths` says `gasMeasure.map (fun k ↦ fun j ↦ k (p,j))` is exactly
+`infinitePi (fun j ↦ modeLaw (p,j))`: reading the fibre by depth, the marginal of the gas above `p`
+is the product of the depth mode laws at `p`.  It composes `infinitePi_map_restrict'` with
+`infinitePi_map_piCongrLeft` along `primeFiberEquiv`.
+
+The atom masses are certified as well:
+
+| Clause | Lean |
+|---|---|
+| **a depth configuration's atom mass is the product of its mode masses** | **`infinitePi_depthModes_singleton`** |
+| the same in mode-ratio form | `infinitePi_depthModes_singleton_ratio` |
+
+`infinitePi_depthModes_singleton_ratio` gives the atom mass as
+`∏'_j ofReal(ratio(p,j)^{g j}·(1 − ratio(p,j)))`, which is exactly the family that
+`tsum_localModeMass_eq_localSocleMass` sums over the configurations with `n` parts.
+
+**What is left of the global (GAS.5).**  Two bookkeeping steps.
+
+1. *`ℝ≥0∞` transport of the atom mass* — **DONE**: `hasProd_ofReal` and `tprod_ofReal` transport a
+   convergent product of nonnegative reals into `ℝ≥0∞`, so `tprod_localModeMass` now applies to
+   `infinitePi_depthModes_singleton_ratio`.  The route is the corpus's own device from
+   `Normalization.lean`: pass through `ℝ≥0` by `Topology.IsInducing.hasProd_iff` along the closed
+   embedding `ℝ≥0 → ℝ`, then push forward with `ENNReal.ofNNRealHom`.  Note for future work that
+   `Topology.IsInducing.multipliable_iff` does *not* exist — only the `hasProd_iff` form does, which
+   is why the lemma is stated for `HasProd` and the `tprod` version derived from it.
+2. *The atoms exhaust the event* — **DONE**.
+
+| Clause | Lean |
+|---|---|
+| the exact-parts event as a union of configuration atoms | `exactPartsEvent` |
+| **its mass is the sum of the atom masses** | **`measure_exactPartsEvent`** |
+| **(GAS.5), global form at a prime: that mass is the local socle mass, hence the Euler weight** | **`measure_exactPartsEvent_eq_localSocleMass`** |
+
+**Theorem 3.1 (GAS.5) is therefore closed in its global form.**  Chaining
+`gasMeasure_map_primeFiber_depths` (the fibre marginal is the depth product),
+`measure_exactPartsEvent_eq_localSocleMass` (its exact-parts mass is `localSocleMass`) and
+`localSocleMass_toReal` (that is the Euler weight `w_{q,n}`) gives exactly (GAS.5): under the gas
+the socle exponent at `p` has the Euler law of `ULF-EQG-1`.
+
+Then `localSocleMass_toReal` identifies the total with the Euler weight and the global (GAS.5)
+closes.
+
+### (GAS.5) — the capstone
+
+| Clause | Lean |
+|---|---|
+| **(GAS.5) as the card states it** | **`gas_socle_law`** |
+
+`gas_socle_law` reads: under the abelian zeta gas at temperature `σ`, the probability that the socle
+exponent at `p` is exactly `n` equals `(q;q)_∞ · eqgWeight σ (pⁿ)` — the Euler weight of the
+random-integer law of `ULF-EQG-1`.  Theorem 3.1 is closed.
+
+### Note for the remaining work
+
+`klDiv` **does** exist in mathlib, in `Mathlib/InformationTheory/KullbackLeibler/Basic.lean` (not in
+the `MeasureTheory` namespace), so no entropy theory has to be built.  But an audit of its API
+corrects an earlier note on this card: `klDiv_of_ac_of_integrable` evaluates the divergence only
+under `μ ≪ ν` **and** `Integrable (llr μ ν) μ`.  The integrability hypothesis is exactly the
+finiteness of the socle expectations that the additive formulation of (GAS.12) was able to avoid.
+So the last step of Theorem 8.1 is *not* purely definitional; it needs, in this order:
+
+1. finiteness of `E_σ[log|soc A|]` — **DONE**.
+
+   | Clause | Lean |
+   |---|---|
+   | `∑_j q^{j+1} = q/(1−q)` | `tsum_pow_succ` |
+   | **the ladder is bounded: `∑_j modeMean(q,j) ≤ q/(1−q)²`** | **`tsum_modeMean_le`** |
+   | `q/(1−q)² ≤ 4q` on the half interval | `div_one_sub_sq_le` |
+   | the von Mangoldt family restricted to the primes is summable | `summable_primes_vonMangoldt` |
+   | **the log-weighted ladder bound is summable over the primes** | **`summable_primes_log_mul_ladderBound`** |
+
+   The prime sum did not need the `(1 − 2^{−σ})^{−1}` constant after all: since `q_p ≤ 1/2` for
+   every prime, `q/(1−q)² ≤ 4q` outright, so the bound is `4·Λ(p)·p^{−σ}` termwise and summability
+   is a subfamily comparison against `summable_vonMangoldt_rpow`;
+2. mutual absolute continuity of `P_σ` and `P_{σ,σ}` with the density `ζ(σ)|soc A|^{−σ}`.  The
+   *constant* in that density is already certified: `temperatureConv` places the untilted gas in the
+   convergence chamber and **`zetaPartition_temperatureConv`** is (GAS.7) at `τ = 0`, namely
+   `Z(σ,0) = ζ(σ)·Z(σ,σ)` — which is exactly the ratio of normalisers appearing in the
+   Radon–Nikodym derivative, and the *atomwise* factor is certified too:
+   **`twoObservableWeight_tiltParameters`** says the unit tilt multiplies the Gibbs weight by exactly
+   `|soc A|^{−σ}`.  With `classMass_eq_ennNormalizer_mul_twoObservableWeight` the full density
+   `ζ(σ)·|soc A|^{−σ}` is therefore assembled from certified parts.
+
+   The carrier is built too, in
+   `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/ClassLaw.lean`:
+
+   | Clause | Lean |
+   |---|---|
+   | the discrete measurable structure on the class space | `instance : MeasurableSpace AbelianZetaGroupClass`, `instance : MeasurableSingletonClass …` |
+   | the zeta-Gibbs law as an atomic measure | `classLaw` |
+   | **its atom masses are the class masses** | **`classLaw_singleton`** |
+   | **it is a probability measure in the convergence chamber** | **`classLaw_univ`** |
+
+   `AbelianZetaGroupClass` had no `MeasurableSpace` instance in the tree — the gas measure lives on
+   the configuration space and the class space was only ever an index for atoms — so the discrete
+   structure is introduced here.  What remains of step 2 is the absolute continuity itself, which is
+   now immediate from `classLaw_singleton` and the positivity of every class mass;
+3. `klDiv_of_ac_of_integrable` twice, and the log-density computation
+   `llr = log ζ(σ) − σ·log|soc A|`.
+
+Steps 2 and 3 are bookkeeping; step 1 is the genuine analytic obligation, and it is the same
+finiteness that `socleExpectation_eq_tilt_add_residue` was deliberately stated to avoid.

@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 10 August 2026, committed snapshot
-**c7dcad9239c9a5aa39599675b378fef98ceb3afb**.
+**2e99b959455362926b230c566d8acae8501e42f6**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -36,20 +36,26 @@ moment measure.
 
 Present older-route frontiers are also narrower. Route E has explicit source-predeclared physical
 relations, exact source-faithful shell laws, a complete Granville--Harper--Soundararajan reduction
-to the Halasz distance term, and a formal reduction of maximal windows to partial-sum deviations;
-relation formation is no longer missing, but unit physical capacity and the maximal short-interval
-step remain open. Route O
+to the Halasz distance term, and a formal Rademacher--Menshov/dyadic reduction of maximal windows
+through fixed-width logarithmic fibres and their exact multiplicative overlap kernel. Relation
+formation and maximal iteration are no longer missing; unit physical capacity remains the route
+core, while the separate analytic lane is reduced to a signed multiplicative-band kernel estimate.
+Route O
 has Lean-closed exact compact and exterior Bessel/prolate primitives, while its RH-bearing gap
 remains control of the whole ground space. Route R now contains a fully formal Burnol first-wall
 Bockstein limit and Stokes landing. The shared R/L/CCM horizontal carrier is itself constructed,
 prime-labelled, multiplicity-exact, reflection-odd, and source-oriented before scalarization;
-only its independent annihilation remains. Route C1's eigen-pair connector is now formal through
+only its independent annihilation remains. Route L additionally has a nuclear prime-log-height
+Köthe/Calderón source with continuous Green inverse and a partially formalized entire bar source;
+closing the old zero boundary as an operator or linear relation is now excluded. Route C1's
+eigen-pair connector is formal through
 Fourier convolution/inversion, fixed-aperture residue, and concrete right-edge vanishing; only the
 widening-limit assembly remains. Route Q's selected ratio gate is paper-proved to hold, so its
 failure branch is closed and only all-degree closure remains. Route T now has an exact
 divisor-preserving centered prime-tail carrier together with passivity and positive-completion
-no-gos. Route U's degree-one obstruction is an explicit theta-cumulant contact and the corpus now
-classifies why cumulant signs, angular sectors, and endpoint height alone cannot orient it. None of
+no-gos. Route U's degree-one obstruction is an explicit theta-cumulant contact; exact pair-energy
+transport and an all-degree hyperedge conformal law now show that the true missing theorem is a
+source-specific contact-weighted hyperedge orientation, not merely a fourth-cumulant sign. None of
 these additions creates another independent route.
 
 ## 1. Reading rules and status vocabulary
@@ -81,7 +87,7 @@ existing route.
 | C2 | retired | detector saturated |
 | D | retired | finite prime--archimedean Hankel mechanism exhausted |
 | D2 | open | finite high-frequency ceiling for continued literal prime--Gamma source |
-| E | open, advanced | unit-capacity entropy-complement/physical-shell relation with normalized seam recurrence |
+| E | open, advanced | unit-capacity entropy-complement/physical-shell relation with normalized seam recurrence; analytic support reduces to signed multiplicative-band kernel control |
 | F | retired | finite-height Sonin transfer has wrong asymptotic order |
 | G | open, narrowed | source-selected two-angle Suzuki carrier and Xi/de Branges transfer |
 | G2 | retired | required germ is RH-equivalent |
@@ -89,7 +95,7 @@ existing route.
 | I | retired | exact collision with C2 width |
 | J | retired negatively | unrenormalized energy budget impossible |
 | K | retired | all-order survivor belongs to P |
-| L | open, advanced | resolved Euler--Gamma/Möbius source annihilator and faithful physical specialization |
+| L | open, advanced | extend height-Köthe/bar source through genuine multiplicative syzygies and prove resolved Euler--Gamma/Möbius annihilator with faithful physical specialization |
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced | whole-ground profile exhaustion and reduced-resolvent control |
@@ -98,7 +104,7 @@ existing route.
 | R | open, advanced | pre-divisor singular Stokes/Cartier annihilation of constructed horizontal carrier |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
 | T | open, new | cofinal signed cancellation of centered von Mangoldt atoms in mass light cone |
-| U | open, new | source-conditioned orientation of every adaptive shifted-Hankel null flag; degree one is a taxed height/cumulant-barycenter law |
+| U | open, new | source-conditioned orientation of every adaptive shifted-Hankel hyperedge/null flag; degree one is one pair-energy/taxed-height specialization |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -219,6 +225,20 @@ fibres, injective and surjective evaluation, and pointwise sign-reflection Real 
 Untwisted Lefschetz action is Real-even; multiplication by i supplies canonical anti-Real
 transgression.
 
+An adjacent Connes--Consani quasi-inner lane now has exact Lean-certified scalar analytic inputs
+and a diagonal-model critical residue. For every Gauss component `(m,k)` the model residue of the
+`2m`-th positive power is independent of `k` and equals
+
+~~~
+2 (p-1)^(2m) (p^m-1)^2 / (p^(2m) m^2 log p).
+~~~
+
+Lean proves the sampled ratio/energy laws, Fourier and moving-amplitude inputs, harmonic phase
+average, weak-Schatten depth, and this diagonal-model residue. The paper's full operator theorem
+still needs the actual `L2(S1)` realization and the identification of the quasi-inner operator's
+diagonal with the model, followed by multi-place assembly and a Weil/intersection handoff. It is
+therefore useful C1/CCM infrastructure, not a new route or a proved positivity mechanism.
+
 **Open core.** Either:
 
 1. construct a source-derived singular common domain and positive/nondegenerate closure for the
@@ -300,12 +320,15 @@ prove stronger relation-level convolution laws where noted.
 The independent analytic support lane is also narrower. The complete
 Granville--Harper--Soundararajan partition, height choice, explicit error table, and eventual
 mean-value-per-unit theorem are umbrella-reachable; all unconditional terms tend to zero and only
-the Halasz multiplicative-distance term survives. The corpus then reduces the remaining
-Matomaki--Radziwill interface to `MaximalWindowMeanSquare`, and formally rewrites every window as a
-partial-sum deviation with exact telescoping. Full Rademacher--Menshov iteration and the
-Gallagher--Halasz bridge are not present at this committed cutoff. These results strengthen the
-average short-interval input; they do not prove the fixed relation's unit incoming capacity or
-co-moving seam law.
+the Halasz multiplicative-distance term survives. The remaining Matomaki--Radziwill interface is
+now formal through maximal-window reduction, the Rademacher--Menshov iteration, dyadic pair and
+signed-form expansions, and exact rewriting as fixed-width logarithmic fibres. Lean also computes
+the fibre square as a multiplicative overlap-kernel sum, proves start separation and the precise
+off-band vanishing. The literal remaining analytic theorem is a sharp bound for that kernel on its
+multiplicative band, equivalently the signed Möbius bilinear/Gallagher--Halasz estimate required by
+the averaged short-interval conclusion. Sampling/Sobolev passage and maximal iteration are no
+longer open. This strengthens the analytic input; it still does not prove the fixed relation's
+unit incoming capacity or co-moving seam law.
 
 A generalized-prime firewall now fixes what arithmetic specificity any successor must use. For an
 arbitrary discrete Beurling system the Gibbs split, one-large-prime transition, PNT/Mertens window,
@@ -417,7 +440,14 @@ boundary reader value; reader kills boundary, forcing K_n(rho)=0 and Re(rho)=1/2
   n(g_n(s)-g_n(s#))=K_n(s);
 - all-cross-prime Koszul compatibility, retaining complete Xi coefficient as residual kernel;
 - genuine rational-adelic relative complex and strict prime/depth/divisor/jet-faithful Route-R
-  chain map.
+  chain map;
+- a nuclear prime-log-height Köthe Fréchet algebra on the full finite-support exponent lattice,
+  with continuous signed prime-log derivation, one-seminorm-loss Green inverse, Hardy/Hodge
+  projectors, Poisson semigroup, positive Green energy, closed Lagrangian graph, power/reflection
+  covariance, Cartan contraction away from total character zero, and every finite centered Mellin
+  jet;
+- the first entire word/bar layer: nuclear word and bar Köthe sources, unit insertion, length
+  slices, continuous bar differential, and its doubling estimate.
 
 Further source work constructs M_zeta, Euler-depleted strict admission, cofinal prime
 periodization tomography, half-density Floquet energy, exact Möbius--Fourier commutator with
@@ -427,13 +457,25 @@ nonnegative diagonal prime repair is indefinite by explicit two-bump witnesses.
 
 **Paper-closed but not promoted as formal route closure.** All-prime-first Euler--Gamma/Möbius
 transgression has strict PNT endpoint, contragredient physical/Fourier connection, and unsquared
-Green--Stokes law with boundary image equal to Möbius--Fourier commutator.
+Green--Stokes law with boundary image equal to Möbius--Fourier commutator. Balanced word-height
+strict contraction and the first linearized Milnor/Sullivan primitive are paper-proved cards; the
+committed Lean chain currently stops at the bar differential and does not yet certify those
+contractions.
+
+**Closed completion escape.** Any closed complex-linear relation on the Calderón--Witt packet
+Hilbert space that contains the old zero boundary on the dense actual arithmetic core equals the
+full source times a constant vertical fibre. Single-valued or closable realizations therefore
+close to the zero graph, and every nonzero multivalued output is source-independent vertical
+ambiguity. An unbounded graph norm, a closable operator, or merely replacing an operator by a
+closed relation cannot create Route L's missing horizontal differential.
 
 **Open core.**
 
 ~~~
 DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR:
-construct degree-two rational-Witt/Milnor source realization and prove
+extend the prime-log-height Köthe/bar/first-Sullivan source through a cofinal system of genuine
+multiplicative syzygies while retaining the total-character-zero sector; attach the generic
+Kummer, real/product-formula, and radial Poisson--Meyer data; then prove
 Omega_(mu,Gamma)=S_mu G_Gamma D=0,
 then identify resulting resolved boundary coefficient-faithfully with existing physical
 Burnol/Deninger landing before divisor specialization.
@@ -442,7 +484,8 @@ Burnol/Deninger landing before divisor specialization.
 It must retain prime labels, multiplicity jets, and actual F0 physical reader. Fixed prime-2/3
 transport is sharp RH-equivalent endpoint falsifier, not admissible premise. Generic mapping cones,
 Koszul exactness, cyclic traces, KMS untwisting, or declaring physical vector a boundary merely
-relocate or erase K_n.
+relocate or erase K_n. Uniform small-divisor control is no longer the blocker; zero-character
+syzygies and their singular physical specialization are.
 
 ### Route M — Gamma--Jacobi singular reader [TERMINALIZED]
 
@@ -836,11 +879,14 @@ Euler q-Gamma chain is the strongest arithmetic instance: independent positive l
 assemble into an explicit random-integer probability law; its response has meromorphic
 continuation and a unit-translation Cartier transgression whose landing carries exactly every zeta
 zero multiplicity. A compact diagonal resolvent, recurrent GNS orbit, and exact characteristic
-matrix coefficient are formal, while the finite-prime genus-one renormalization proves how a
-natural counterterm erases the divisor. Reciprocal differential-algebraic substitution is now
-injective and reciprocal closure holds on analytic unit domains. None of these theorems constrains
-the landed divisor to the critical line or supplies an RH endpoint. Route S remains research
-infrastructure, not yet an RH proof route.
+matrix coefficient are formal. The response and continuations are hypertranscendental, while the
+global genus-one renormalized prime product is holomorphic and zero-free on its explicit half-plane
+and erases the divisor. The abelian zeta gas realizes this law as the socle shadow of independent
+prime-power modes and supplies exact response, socle, depth-shift, dilation, and condensation-wall
+laws. Reciprocal differential-algebraic substitution is injective and reciprocal
+closure holds on analytic unit domains. None of these theorems constrains the landed divisor to the
+critical line or supplies an RH endpoint. Route S remains research infrastructure, not yet an RH
+proof route.
 
 ### Route T — mass-shifted critical outgoing current [OPEN — NEW]
 
@@ -1026,6 +1072,17 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     high ordinates can drive adverse orientation. Thus the surviving degree-one theorem is a
     contact-weighted height/energy barycenter bound against these taxed thresholds, not an
     endpoint-height or fixed-sector estimate.
+25. For any summable Xi packet, total pair energy and its first transport obey exact moment laws
+    `sum E_ij=2(m0 m2-m1^2)` and
+    `sum E_ij(z_i+z_j)=2(m0 m3-m1 m2)`. On a flat first face the total pair energy is zero, while
+    total transport is exactly twice the positive response times terminal flux. Thus the
+    degree-one obstruction is a signed zero-energy network transport, not an atomwise sign.
+26. In every finite degree `d`, the hyperedge energy
+    `E_d(z)=(prod_i z_i) Vandermonde(z)^2` transforms under the common reciprocal mass shift
+    `z_i -> z_i/(1+h z_i)` by the exact conformal factor
+    `(prod_i (1+h z_i))^(-(2d-1))`. Its first variation is
+    `-(2d-1)(sum_i z_i)E_d`. The universal conformal weight `2d-1` makes the pair law the first
+    member of an all-degree hyperedge transport hierarchy.
 
 **Open core.** Exclude the now isolated off-critical negative-index obstruction on every actual
 adaptive genuine-crossing flag. Equivalently, rule out strict negativity of the off-critical
@@ -1052,12 +1109,16 @@ Items 22--24 sharpen this further: the proof must furnish enough negative fourth
 or the equivalent positive-channel energy/height-barycenter lower bound, at the self-selected
 contact and with its orbit-dependent phase tax. Proving global concavity of `q(t)` in `t^2` would
 suffice but is not required and is not claimed. Higher-degree flags still require the full adaptive
-Padé-contact law.
+Padé-contact law. Items 25--26 identify its invariant form: prove that the source-specific
+prime--Gamma coupling or another predeclared source law orients the contact-weighted hyperedge
+barycenter in every degree. The degree-one fourth-cumulant/height reserve is only the first
+specialization, not the full open core.
 
 **Dead subclasses.** Generic moment positivity, positive atoms, tied-power sectors, positive/root
 location, stochastic order, factorial-normalized carriers, fixed corona continuous reporters,
 Gamma lifetime, per-orbit three-point positivity, fixed angular sectors, endpoint-height control,
-and reflection aggregation all admit exact counterexamples or merely transport existing sign.
+reflection aggregation, and unweighted total pair energy all admit exact counterexamples or merely
+transport existing sign.
 
 **Why independent.** U is a first-crossing extension problem on an adaptive finite null flag.
 Route G instead needs a cofinal two-angle meromorphic source and Xi transfer; P needs one global
@@ -1087,11 +1148,26 @@ as Route V.
 This is a real new source architecture but not yet a proof route. It begins with positive
 prime-local q-Gamma laws, produces an ordinary random-integer law, continues its global response
 meromorphically, and lands every zeta-zero multiplicity as the exact Cartier-divisor jump under
-unit translation. The cyclic GNS observer is recurrent and has compact diagonal resolvent. What is
-missing is not another landing theorem: no source law relates recurrence, compact resolvent, or
-translation divisor to `Re rho=1/2`. The genus-one exchange also proves that a natural local
-renormalization can erase the divisor. Until a source-derived critical-line orientation and an
-unconditional RH handoff are constructed, this remains Route-S infrastructure and is not Route V.
+unit translation. The cyclic GNS observer is recurrent and has compact diagonal resolvent. The
+response and its continuations are now Lean-proved hypertranscendental. The genus-one exchange is
+also fully certified: renormalized local factors are quadratically close to one, their prime
+product is multipliable, locally uniformly convergent, holomorphic and zero-free on
+`Re(s)>1/(2 sigma)-1`, and the natural renormalization erases the translation divisor.
+
+The abelian zeta-gas layer supplies its pre-zero source. Prime-power geometric modes give the
+zeta-Gibbs law on finite abelian groups; order/temperature dilation and socle/fugacity translation
+are distinct response axes, and the q-Gamma random-integer law is the exact socle shadow. Lean
+certifies the coupled response ratio, depth-shift telescoping, depth-dilation semigroup, depth
+condensation walls, and local socle bridge. The committed `ModeMean` and `VonMangoldtEuler` files
+are not umbrella-reachable at this snapshot and are therefore not credited as formal frontier.
+Global product-measure/entropy and KMS bookkeeping and the full two-variable meromorphic divisor
+calculus remain paper-level. The squarefull depth-two wall at `1/2` is a source phase boundary, not
+a zero-location theorem: both order and activity observers remain divisor-blind.
+
+What is missing is not another landing or special-function theorem. No source law relates these
+two observer axes, recurrence, compact resolvent, hypertranscendence, or translation divisor to
+`Re rho=1/2`. Until a source-derived critical-line orientation and unconditional RH handoff are
+constructed, this remains Route-S infrastructure and is not Route V.
 
 ### HTGeometry universal-law-field and analytic receiver infrastructure
 
@@ -1099,10 +1175,12 @@ New umbrella-reachable modules prove compact-carrier representation for continuo
 compact-open map spaces, dense finite-support prime-quadrant tangent graphs, local
 Poisson/Stieltjes absolute-continuity criteria, finite-matrix spectral-density decay and Dyson
 identities, exact separable Bures/Alberti approximation and compact-target minimax laws, explicit
-finite-amplifier pattern/width caps, Abelian zeta-gas normalization, and full finite one-replica
+finite-amplifier pattern/width caps, the formal parts of the abelian zeta gas, and full finite
+one-replica
 Pauli generation. They also prove source-context derivative and challenge-transduction laws,
 observer rank contraction with exact hidden-kernel witnesses, Gorenstein/monogenic residual-fibre
-and congruence-order cotangent structure, and the commutative Shilov boundary-ideal dictionary.
+and congruence-order cotangent/trace-dual structure, and the commutative Shilov boundary-ideal
+dictionary.
 The last reduces existence of a greatest boundary ideal to join/intersection closure and isolates
 the peak-point/Choquet input; it does not instantiate the Hedenmalm/Weil source domain.
 Critical-locus quadruple evenness supplies another universal no-go: every
@@ -1120,7 +1198,22 @@ promote the missing law. A common multiplicative regularizer is also formally bl
 differences between systems sharing one nonzero leading term: convergence for one forces same
 regularized limit for the other. Compact-carrier existence therefore does not construct P's
 positive source measure; dense prime tangents do not supply a singular sign; Bures minimax and
-zeta-gas normalization do not supply arithmetic incidence. This batch adds no independent route.
+the formal zeta-gas laws do not supply arithmetic incidence.
+
+The new Shilov tower layer separates link defect from global derived obstruction. Lean gives the
+upstairs deficit formula, proves Mittag--Leffler stable images imply vanishing `lim^1`, constructs
+towers with arbitrary prescribed link cokernels but vanishing `lim^1`, and constructs a
+non-surjective polynomial tower with nonvanishing `lim^1`. Thus non-surjectivity alone decides
+nothing and arbitrary local deficit may cancel globally; conversely, global Shilov acyclicity
+cannot be inferred from a generic tower axiom. These results refine the failed all-Shilov
+architecture and local envelope bookkeeping but provide no arithmetic boundary class or
+coefficient-faithful RH annihilator.
+
+The constitutive additions similarly classify how observer laws can change: future-law interiors,
+conservative carrier base change, a fresh grammar generator, diagonal reporter genesis, relational
+composition, and incomplete positive tomography are exact. Their positive survivor is a genuinely
+new reporter/carrier/context law, not re-encoding through the old observer. No such law is tied to
+the Xi source. This batch adds no independent route.
 Its positive route-design survivor is precise: genuinely new law may live in irreducible
 unbounded-arity interaction or in a cofinal future-sensitive reporter invisible to every fixed
 proper face. Such a construction becomes a route only after an arithmetic source instance and an
@@ -1173,6 +1266,8 @@ The following constructions are closed at advertised strength:
 - separable prime-depth incidence and vertex-gauge cycle holonomy;
 - fixed clock-jet spectra, unordered scalar frequency fusion, and positive Gamma shorting;
 - target-pulled metrics, ordinary Cartier exactness, and generic mapping cones as R/L producers;
+- closed/closable Calderón--Witt extensions or multivalued closed relations which agree with the
+  old zero boundary on the dense arithmetic core;
 - positive/passive completion of the centered `Lambda-1` Route-T current, and linear co-moving
   aperture extinction as a faithful mass detector;
 - first-order displacement tests of a complete functional-equation quadruple;
@@ -1228,10 +1323,11 @@ open. Numerical evidence is not accepted as proof or disproof.
    Burnol/Deninger landing.
 3. **T:** prove uniform signed mass-light-cone centered von Mangoldt pairing in fixed/sublinear
    aperture, before positive completion or termwise norms.
-4. **U:** at degree one prove the contact-conditioned fourth-cumulant reserve, equivalently the
-   taxed height/energy-barycenter bound; then extend the orientation to every adaptive null flag.
+4. **U:** prove source-specific contact-weighted hyperedge barycenter orientation in every degree;
+   its first case is the fourth-cumulant/taxed-height pair-energy reserve.
 5. **E:** prove entropy-complement unit-shell capacity, normalized seam flux, and recurrence
-   accumulation for fixed relation.
+   accumulation for fixed relation; separately close the signed multiplicative-band fibre-kernel
+   estimate in the analytic support lane.
 6. **C1/CCM-FU:** complete C1's final widening-limit assembly, then construct singular positive
    closure or intersection/Ward incidence on already-built recipients.
 7. **O:** prove low-energy profile exhaustion and bulk coercivity for whole restricted-Weil ground
@@ -1249,8 +1345,8 @@ open. Numerical evidence is not accepted as proof or disproof.
 - generic compactness without source admission;
 - more Route O seed asymptotics without ground-space classification;
 - more Route E moments or seam patch algebra without unit physical incidence;
-- more Route-E/GHS mean-value estimates without the maximal short-interval or physical-relation
-  bridge;
+- more Route-E/GHS mean-value or maximal-iteration packaging without the signed
+  multiplicative-band estimate or physical-relation bridge;
 - more Route R frames or orientation detectors without independent singular source annihilation;
 - more Route U positive carriers, cumulant signs, or sector bounds without adaptive contact sign;
 - builds or formalization of conjectures whose mathematical source theorem is not proved.
@@ -1293,6 +1389,11 @@ open. Numerical evidence is not accepted as proof or disproof.
 - formal/GaloisForLFunctions/RHTower/RouteECofactorParityBalance.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/GhsMeanValueDiv.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/WindowPartialSum.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/RademacherMenshov.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/MaximalWindowReduction.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/DyadicSignedForm.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/FibreMeanSquarePairs.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/FibreKernelBand.lean
 - formal/GaloisForLFunctions/RHTower/BeurlingSystemTransitionAsymptotic.lean
 
 ### L and R
@@ -1302,6 +1403,11 @@ open. Numerical evidence is not accepted as proof or disproof.
 - formal/GaloisForLFunctions/RHTower/DeningerBurnolConormalRadialTopBoundaryComparison.lean
 - formal/GaloisForLFunctions/RHTower/DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean
 - formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean
+- formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean
+- formal/GaloisForLFunctions/RHTower/DeningerPrimeLogHeightKothe.lean
+- formal/GaloisForLFunctions/RHTower/DeningerPrimeLogHeightGreen.lean
+- formal/GaloisForLFunctions/RHTower/DeningerPrimeLogHeightCartan.lean
+- formal/GaloisForLFunctions/RHTower/DeningerBarDifferential.lean
 - formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldCurvedSourceDifferential.lean
 - formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldPositiveStokesPolarization.lean
 - formal/GaloisForLFunctions/RHTower/BurnolFirstWallZeroDividedSource.lean
@@ -1348,6 +1454,8 @@ open. Numerical evidence is not accepted as proof or disproof.
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniContactFourthCumulant.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniOneOrbitContactOrientation.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniPhaseTaxHeightThreshold.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniPairEnergyTransport.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniHyperedgeConformalTransport.lean
 
 ### Route S and cross-cutting arithmetic source infrastructure
 
@@ -1356,8 +1464,24 @@ open. Numerical evidence is not accepted as proof or disproof.
 - formal/GaloisForLFunctions/HTGeometry/EulerQGammaLanding.lean
 - formal/GaloisForLFunctions/HTGeometry/EulerQGammaGNS.lean
 - formal/GaloisForLFunctions/HTGeometry/EulerQGammaGenusOne.lean
+- formal/GaloisForLFunctions/HTGeometry/EulerQGammaHypertranscendence.lean
+- formal/GaloisForLFunctions/HTGeometry/EulerQGammaRenormProduct.lean
+- formal/GaloisForLFunctions/HTGeometry/EulerQGammaRenormHolomorphy.lean
+- formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/Response.lean
+- formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/SocleBridge.lean
+- formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/DepthDilation.lean
 - formal/GaloisForLFunctions/HTGeometry/ReciprocalSubstitutionInjective.lean
 - formal/GaloisForLFunctions/HTGeometry/ShilovCommutativeBoundary.lean
+- formal/GaloisForLFunctions/HTGeometry/ShilovDeficitEnvelopeFormula.lean
+- formal/GaloisForLFunctions/HTGeometry/ShilovStableImage.lean
+- formal/GaloisForLFunctions/HTGeometry/ShilovPrescribedDeficit.lean
+- formal/GaloisForLFunctions/HTGeometry/ShilovDerivedNonvanishing.lean
+
+### Adjacent C1/CCM Gauss-component infrastructure
+
+- formal/GaloisForLFunctions/RHTower/GaussComponentLocalResidueLaw.lean
+- formal/GaloisForLFunctions/RHTower/GaussComponentSampledRatioPrime.lean
+- formal/GaloisForLFunctions/RHTower/GaussPrimeScaleFourier.lean
 
 ## Final frontier statement
 
@@ -1373,10 +1497,14 @@ Routes T and U are real additions. Source-horizontal,
 Burnol, eigen-pair, centered-prime-tail, Gamma--Lorentz, and universal-law-field additions narrow
 existing routes or strengthen receiver/no-go infrastructure; they do not add another lettered
 route. The
-Euler q-Gamma process is a genuine new source-to-divisor architecture, but lacks a critical-line
-orientation and RH handoff, so it remains a candidate rather than Route V. Nyman--Beurling finite
-sections likewise strengthen a classical receiver, while the generalized Beurling system layer is
-a Route-E firewall rather than a new producer.
+Euler q-Gamma/abelian-gas process is a genuine new pre-zero source-to-divisor architecture, now
+including formal hypertranscendence and zero-free genus-one erasure, but it lacks a critical-line
+orientation and RH handoff, so it remains a candidate rather than Route V. The Gauss-component
+residue hierarchy is an adjacent local Connes candidate whose scalar/model law is formal but whose
+actual operator identification, multi-place assembly, and Weil handoff remain open. Shilov tower
+and constitutive laws strengthen exact obstruction bookkeeping, not source production.
+Nyman--Beurling finite sections likewise strengthen a classical receiver, while the generalized
+Beurling system layer is a Route-E firewall rather than a new producer.
 
 RH remains open. Any claim of progress must now prove one named source theorem above, refute one
 route with an exact no-go and positive survivor, or construct a literal new source architecture

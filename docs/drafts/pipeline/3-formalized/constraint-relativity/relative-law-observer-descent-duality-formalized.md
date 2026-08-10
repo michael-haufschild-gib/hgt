@@ -10,8 +10,9 @@
 | Module | Path |
 |---|---|
 | `GaloisForLFunctions.HTGeometry.ConstraintRelativity.ObserverDescentDuality` | `formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/ObserverDescentDuality.lean` |
+| `GaloisForLFunctions.HTGeometry.ConstraintRelativity.RelativeConeExactness` | `formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/RelativeConeExactness.lean` |
 
-Wired into `GaloisForLFunctions.HTGeometry`.
+Both wired into `GaloisForLFunctions.HTGeometry`.
 
 ## Formal theorem chain
 
@@ -28,10 +29,8 @@ the card's own hypothesis, and the one its hostile-falsifier list insists on.
 5. `observerDescentEquiv` — **card `(ROD.7)`, boxed**: `𝓞_f(V) ≅ Hom(ker f, V)`.
 6. `descends_iff_vanishes` — **descent–detection complementarity**: an observer descends through
    the exactification exactly when it annihilates every class created by it.
-7. `relativeLawEquiv` — **card `(ROD.10)`, boxed**: for the exact segment supplied by the mapping
-   cone, `𝓡_f = H^{n-1}(Cone)/im H^{n-1}(X) ≅ ker f`.  The mapping-cone long exact sequence is
-   classical and is taken as the *input* exactness `range g = ker π`, `range π = ker f`, exactly as
-   the card cites it.
+7. `relativeLawEquiv` — **card `(ROD.10)`, boxed**, in the form that takes the exact segment as
+   input: `𝓡_f = H^{n-1}(Cone)/im H^{n-1}(X) ≅ ker f`.
 8. `relativeObserverDuality` — **card `(ROD.11)`, boxed**: `𝓞_f(V) ≅ Hom(𝓡_f, V)`.
 9. `relativePairing`, `relativePairing_well_defined` — **card `(ROD.12)`**: the canonical pairing
    and its well-definedness on both sides.
@@ -39,9 +38,27 @@ the card's own hypothesis, and the one its hostile-falsifier list insists on.
     open half-line and the reflected evaluation on the opposite one, both are nonzero exactly at
     the centre.
 
+The mapping cone, built from scratch so that no exactness is assumed anywhere:
+
+11. `ZCochain`, `cocycles`, `coboundaries`, `cohomology`, `cls` — `ℤ`-graded cochain complexes of
+    `k`-vector spaces and their cohomology.  Indexing cohomology by the *lower* degree
+    (`H n := ker (d (n+1)) / range (d n)`) avoids every dependent-index cast.
+12. `ZCochainMap`, `cocyclesMap`, `cohomologyMap` — comparisons and the induced maps.
+13. `coneComplex` — **card `(ROD.5)`**: `Cone(Φ)ⁿ = Xⁿ ⊕ Cⁿ⁺¹` with `d(x,c) = (d_X x − Φ c, −d_C c)`;
+    `d² = 0` is exactly the chain-map identity.  `coneInc` — **card `(ROD.8)`**, the inclusion
+    `X → Cone(Φ)`; `conePr` — the projection to `H^{n+1}(C)`.
+14. `cone_exact_left`, `cone_exact_right` — **card `(ROD.9)`**: the segment
+    `Hⁿ(X) → Hⁿ(Cone Φ) → Hⁿ⁺¹(C) → Hⁿ⁺¹(X)` is exact at both middle terms.  No long exact
+    sequence machinery is imported; both inclusions are proved by exhibiting the witnessing
+    cochains (`(0, b)` on one side, `(x, c)` on the other).
+15. `coneRelativeLawEquiv` — **card `(ROD.10)`, boxed, unconditional**; and
+    `coneRelativeObserverDuality` — **card `(ROD.11)`, boxed, unconditional**.
+
 ## Scope
 
-The literal Route-R instantiation `(ROD.13)`–`(ROD.18)` names objects built in
+The exactness that item 7 takes as input is *proved* in items 13–14, so items 15 give `(ROD.10)`
+and `(ROD.11)` with no hypotheses at all.  The literal Route-R instantiation `(ROD.13)`–`(ROD.18)`
+names objects built in
 `route-r-raw-resolved-relative-cone-character-law`, which is still in stage 2; it is therefore not
 instantiated here.  Item 10 formalizes the §6 consequence abstractly from the vanishing pattern, so
 it imports nothing unproved.  The card states plainly that it does not prove the simultaneous

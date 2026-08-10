@@ -3256,3 +3256,447 @@ band of width `1 + h/√x` around the diagonal, which is the structural fact the
 
 The kernel's size on the band — `card ≤ (x + h√x)/max(m,n) − x/min(m,n) + 1` from the containment —
 and then the bilinear estimate for `μ`.
+
+## 2026-08-10 the fibre kernel's size
+
+`Sieve/FibreKernelSize.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9031 jobs).
+
+```text
+fibre_kernel_card_le :  0 ≤ x,  0 ≤ h,  1 ≤ m,  1 ≤ n  →
+  #{ a ∈ outerBlock : m, n ∈ innerFibre a }
+    ≤ ( (x + h√x)/max(m,n) − x/min(m,n) + 1 )₊
+```
+
+The admissible `a` form an interval, so their number is its length plus one.  On the diagonal
+`m = n` this is `h√x/m + 1`, the expected count; off the diagonal it decreases, reaching zero exactly
+at the band edge `max/min = 1 + h/√x`, in agreement with `fibre_kernel_eq_empty`.
+
+So `sum_fibreSq_eq_count` now reads as a bilinear form with an explicit near-diagonal kernel:
+
+```text
+∑_{a ∈ outerBlock} (∑_{b ∈ innerFibre a} μ(b))²
+  = ∑_{m,n} μ(m)·μ(n)·K(m,n) ,     0 ≤ K(m,n) ≤ ( (x+h√x)/max − x/min + 1 )₊ ,
+```
+
+obtained with no window machinery, no integral, and no discrete-to-continuous passage.  The
+diagonal contributes `≍ h√x·∑_m μ(m)²/m ≍ h√x·log x`, which is the trivial size; the whole content
+of Matomäki–Radziwiłł is that the off-diagonal cancels it down to `o(h²√x)`.
+
+### What is left
+
+The off-diagonal estimate for `μ` — the analytic core.
+
+## 2026-08-10 the diagonal, and where the kernel lives
+
+`Sieve/FibreDiagonal.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9032 jobs).
+
+```text
+fibre_kernel_diag_le :  0 ≤ x, 0 ≤ h, 1 ≤ m  →  K(m,m) ≤ h√x/m + 1
+
+fibre_kernel_support :  0 < x, a ∈ outerBlock x h, m ∈ innerFibre x h a  →
+  √x/2 ≤ m ≤ √x + h
+```
+
+On the diagonal the interval bound collapses to `h√x/m + 1`; and since `a ∈ outerBlock` means
+`√x ≤ a ≤ 2√x`, the constraint `x ≤ am ≤ x + h√x` confines `m` to `[√x/2, √x + h]`.
+
+Together these fix the diagonal contribution at
+
+```text
+∑_{m ≍ √x} (h√x/m + 1) ≍ h√x + √x ,
+```
+
+which is the **trivial size of the whole mean square** — the target being `o(h²√x)`, and `h → ∞`.
+So the diagonal alone already exceeds nothing, but it is of the same order as the trivial bound
+divided by `h`: the entire content of Matomäki–Radziwiłł is the off-diagonal cancellation, and no
+bound on individual terms can produce it.  That is worth having as a proved statement rather than an
+expectation, because it rules out every route that estimates the kernel termwise — including the
+one that made `dyadicMeanSquare_le_band` vacuous.
+
+### What is left
+
+The off-diagonal estimate for `μ` — the analytic core.
+
+## 2026-08-10 the bilinear form, split
+
+`Sieve/FibreDiagonalSplit.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9033 jobs).
+
+```text
+fibre_diag_kernel_eq_zero :  m outside [√x/2, √x + h]  →  K(m,m) = 0
+
+sum_fibreSq_diag_split :
+  ∑_{a ∈ outerBlock} (∑_{b ∈ innerFibre a} f(b))²
+    = ∑_m f(m)²·K(m,m) + ∑_m ∑_{n ≠ m} f(m)·f(n)·K(m,n)
+```
+
+The first sum is bounded by `FibreDiagonal` and carried by the `≍ √x` integers in `[√x/2, √x + h]`,
+giving `≍ h√x + √x`.  Everything the Matomäki–Radziwiłł theorem asserts beyond that lives in the
+second.
+
+### State of the card
+
+Unit 5 and unit 6 are closed: the Halász mean value is
+`GhsMeanValueDiv.eventually_norm_sum_Icc_div_le`, with every unconditional term proved `o(N)` and
+one Halász term carrying the distance.  The `MRBilinear` path is reduced, unconditionally and
+entirely within this corpus, to the off-diagonal estimate
+
+```text
+∑_m ∑_{n ≠ m} μ(m)·μ(n)·#{ a ∈ outerBlock : m, n ∈ innerFibre a } = o(h²√x) ,
+```
+
+with the kernel explicitly an interval count, supported on the multiplicative band
+`max/min ≤ 1 + h/√x`, and with the diagonal separately bounded.  That single statement is the whole
+remaining content.
+
+## 2026-08-10 the diagonal sum, assembled
+
+`Sieve/FibreDiagonalSum.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9034 jobs).
+
+```text
+fibre_diag_sum_le :  |f| ≤ 1,  0 < x,  0 ≤ h  →
+  ∑_m f(m)²·K(m,m) ≤ ∑_{⌈√x/2⌉ ≤ m ≤ ⌊√x + h⌋} ( h√x/m + 1 )
+```
+
+The terms outside `[√x/2, √x + h]` vanish by `fibre_diag_kernel_eq_zero`; inside, `f(m)² ≤ 1` and
+`K(m,m) ≤ h√x/m + 1`.  The right-hand side is `≍ h√x·log 2 + √x ≍ h√x + √x`.
+
+So the diagonal side of the bilinear form is completely settled, unconditionally, with explicit
+constants.  Against the target `o(h²√x)` it is smaller by a factor `h`.
+
+### The remaining statement
+
+```text
+∑_m ∑_{n ≠ m} μ(m)·μ(n)·#{ a ∈ outerBlock : m, n ∈ innerFibre a } = o(h²√x)
+```
+
+with `K(m,n)` an explicit interval count (`fibre_kernel_card_le`), supported on the multiplicative
+band `max/min ≤ 1 + h/√x` (`fibre_kernel_eq_empty`) and on `m, n ∈ [√x/2, √x + h]`
+(`fibre_kernel_support`).  That is the whole of Matomäki–Radziwiłł that is not proved here.
+
+## 2026-08-10 the off-diagonal lives at shifts of size `h` — and the reduction is faithful
+
+`Sieve/FibreShiftBand.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9035 jobs).
+
+```text
+fibre_kernel_symm :  K(m,n) = K(n,m)
+
+fibre_shift_band :  0 < x, 0 ≤ h, m and n in a common fibre  →
+  |m − n| ≤ h + h²/√x
+```
+
+The multiplicative band `max/min ≤ 1 + h/√x` becomes an additive one once the localisation
+`m, n ∈ [√x/2, √x + h]` is used: `x·n ≤ (x + h√x)·m` and `m ≤ √x + h` give
+`n − m ≤ h·m/√x ≤ h + h²/√x`.
+
+So the off-diagonal part of the bilinear form is a weighted sum of **binary correlations of `μ` at
+shifts `|k| ≲ h`**:
+
+```text
+∑_{k ≠ 0, |k| ≲ h} K(n+k, n)·∑_n μ(n)·μ(n+k) ,
+```
+
+and the kernel's value near the diagonal is `≍ h − |k|` — Gallagher's triangular weight, recovered
+in the outer variable.
+
+**Why this matters for the reduction's honesty.**  The individual correlations `∑_n μ(n)μ(n+k)` are
+Chowla's conjecture and open.  What is required here is only their *average* over `|k| ≤ h` with the
+triangular weight, as `h → ∞` — which is precisely Matomäki–Radziwiłł's theorem, no more and no
+less.  A reduction landing on individual correlations would have been a reduction to an open
+problem strictly harder than the target; this one lands on a statement of exactly the right
+strength.
+
+### What is left
+
+That averaged-correlation statement, and nothing else.
+
+## 2026-08-10 the off-diagonal is twice its lower half
+
+`Sieve/SymmetricOffDiagonal.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9036 jobs).
+
+```text
+sum_offdiag_eq_two_mul :  g symmetric  →
+  ∑_m ∑_{n ≠ m} g(m,n) = 2·∑_m ∑_{n < m} g(m,n)
+```
+
+The summand `f(m)·f(n)·K(m,n)` is symmetric — coefficients commute, and `fibre_kernel_symm` gives
+the kernel — so the punctured double sum halves.  The proof splits the punctured row by trichotomy
+and exchanges the two summations by `Finset.sum_comm'`.
+
+Written this way the off-diagonal is literally a sum over **positive** shifts `k = m − n`, with
+`1 ≤ k ≲ h` by `fibre_shift_band` and weight `K(n+k, n) ≍ h − k`:
+
+```text
+∑_{a ∈ outerBlock} (∑_{b ∈ innerFibre a} μ(b))²
+  = [diagonal, ≍ h√x + √x]  +  2·∑_{k ≥ 1} ∑_n μ(n)·μ(n+k)·K(n+k, n) .
+```
+
+The whole remaining content is that the second term is `o(h²√x)` — the triangular-weighted average
+of binary correlations of `μ` over shifts up to `h`.
+
+### What is left
+
+That statement.  Every other step from `MRBilinear` is proved unconditionally in this corpus.
+
+## 2026-08-10 the diagonal, with explicit constants — the reduction closes on the off-diagonal
+
+`Sieve/FibreDiagonalExplicit.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9037 jobs).
+
+```text
+fibre_diag_sum_explicit_le :  |f| ≤ 1,  4 ≤ x,  0 ≤ h  →
+  ∑_m f(m)²·K(m,m) ≤ (√x/2 + h + 1)·(2h + 1)
+```
+
+On `[⌈√x/2⌉, ⌊√x + h⌋]` every term is at most `h√x·(2/√x) + 1 = 2h + 1`, and the range holds at most
+`√x/2 + h + 1` integers.  Expanded, the bound is `h√x + √x/2 + 2h² + 3h + 1`.
+
+Divided by the normalisation `h²√x` of `AveragedMeanSquare`:
+
+```text
+1/h + 1/(2h²) + 2/√x + 3/(h√x) + 1/(h²√x)  →  0   whenever h → ∞ .
+```
+
+**The diagonal is unconditionally harmless**, with explicit constants and no asymptotic input beyond
+`h → ∞`.  So `AveragedMeanSquare μ hh` — and with it `MRBilinear`, and with it the two Route E
+sign-density theorems — follows from the single statement
+
+```text
+∑_{k ≥ 1} ∑_n μ(n)·μ(n+k)·K(n+k, n) = o(h²√x) ,
+```
+
+the triangular-weighted average of binary correlations of `μ` over shifts `1 ≤ k ≲ h`.
+
+### Session summary for this card
+
+Units 5 and 6 (the Halász mean value) are closed.  The `MRBilinear` path is reduced, unconditionally
+and entirely within this corpus, from `MRBilinear μ hh` to that one averaged-correlation statement,
+through: the Rademacher–Menshov chain (7 modules), the exact pair expansion (3 modules), the
+fixed-width fibre identification (7 modules), and the outer-variable expansion with its kernel
+analysis (8 modules).  Every intermediate step is a named unconditional theorem with explicit
+constants.
+
+## 2026-08-10 CAPSTONE: the reduction closes on the off-diagonal
+
+`Sieve/AveragedFromOffDiagonal.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`,
+wired, builds clean (9038 jobs).
+
+```text
+OffDiagonalVanishes f hh :=
+  2·∑_m ∑_{n < m} f(m)·f(n)·#{a ∈ outerBlock : m, n ∈ innerFibre a} / (h²√x) → 0
+
+averagedMeanSquare_of_offDiagonal :  |f| ≤ 1,  hh → ∞,  OffDiagonalVanishes f hh  →
+  AveragedMeanSquare f hh
+```
+
+The diagonal contributes at most `(3/2)/h + 6/√x` to the normalised quantity, which vanishes
+unconditionally; the split and the symmetry do the rest.
+
+### The chain, complete
+
+```text
+MRBilinear μ hh
+  ← MRBilinear_moebius_of_averaged                              (corpus)
+  ← AveragedShortInterval μ hh
+  ← averagedShortInterval_of_meanSquare                         (corpus)
+  ← AveragedMeanSquare μ hh
+  ← averagedMeanSquare_of_offDiagonal                           (this unit)
+  ← OffDiagonalVanishes μ hh                                    [the sole open input]
+```
+
+`OffDiagonalVanishes μ hh` is the triangular-weighted average of binary correlations of `μ` over
+shifts `1 ≤ k ≲ h`, with the weight `K(n+k,n)` an explicit interval count.  Everything else on the
+path — and everything in units 1–6 — is a named unconditional theorem of this corpus.
+
+Both Route E sign-density theorems (`route_e_sign_density`, `route_e_signClass_nonempty`) become
+unconditional the moment `OffDiagonalVanishes μ hh` is proved, subject to the scope boundary already
+recorded: `MRBilinear` yields local sign-class density, not Route E's coherent Hall/seam-flux
+theorem.
+
+## 2026-08-10 the trivial size, written down
+
+`Sieve/FibreTrivialBound.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9039 jobs).
+
+```text
+card_innerFibre_le_block :  a ∈ outerBlock  →  #(innerFibre x h a) ≤ h + 1
+abs_fibre_sum_le :  |f| ≤ 1  →  |∑_{b ∈ innerFibre a} f(b)| ≤ h + 1
+sum_fibreSq_trivial_le :  ∑_a (∑_b f(b))² ≤ #(outerBlock)·(h + 1)²
+```
+
+The corpus already had `card_innerFibre_le : #(innerFibre x h a) ≤ h√x/a + 1`; on the block `a ≥ √x`
+this is `h + 1`.  (I wrote a duplicate of the corpus lemma before finding it — deleted; the module
+now derives the block form from the existing one.)
+
+Normalised by `h²√x`, the trivial size is `≍ 2`, so `AveragedMeanSquare` asks for *any* saving over
+it.  This is the benchmark against which two routes were discarded today: `DyadicBandBound`'s
+absolute-value form and the height exponent `4` in `ghsHeight` both produced, on measurement,
+exactly the trivial size.  Both were correct theorems whose conclusions said nothing.  Writing the
+benchmark down as a proved statement makes that test mechanical rather than a matter of noticing.
+
+### State
+
+`MRBilinear μ hh` is reduced to `OffDiagonalVanishes μ hh` and nothing else, with the trivial size,
+the diagonal, the kernel, its band and its support all proved unconditionally with explicit
+constants.
+
+## 2026-08-10 the kernel is uniformly `O(h)` — the endpoint is averaged Chowla
+
+`Sieve/FibreKernelUniform.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9040 jobs).
+
+```text
+fibre_kernel_le_two_h :  0 ≤ x, 0 ≤ h, 1 ≤ m, 1 ≤ n, √x/2 ≤ min(m,n)  →
+  K(m,n) ≤ 2h + 1
+```
+
+The interval length is `(x + h√x)/max − x/min ≤ h√x/min ≤ 2h` on the support, so the kernel carries
+no dependence on `m` or `n`.
+
+**This identifies the endpoint with a named theorem.**  Pulling the uniform factor out of the
+off-diagonal,
+
+```text
+|off-diagonal| ≤ 2(2h + 1)·∑_{1 ≤ k ≲ h} | ∑_n μ(n)·μ(n+k) | ,
+```
+
+so `OffDiagonalVanishes μ hh` follows from
+
+```text
+∑_{k ≤ 2h} | ∑_{n ≤ √x} μ(n)·μ(n+k) | = o(h√x) ,
+```
+
+the **averaged form of Chowla's conjecture** — proved by Matomäki, Radziwiłł and Tao for `h → ∞`.
+
+The strength is exactly right, and now checkable against the literature rather than against
+intuition: the individual correlations `∑_n μ(n)μ(n+k)` are Chowla and open; their average over
+`k ≤ h` is a theorem.  Note this also shows the absolute values may be taken in `k` at no cost —
+there are only `≍ h` terms and the target has a factor `h²` — but *not* inside each correlation,
+where the cancellation is essential.
+
+### State
+
+`MRBilinear μ hh` ⟸ `OffDiagonalVanishes μ hh` ⟸ averaged Chowla over shifts `k ≤ 2h`.
+Every step is unconditional here except the last, which is a published theorem not yet formalised in
+this corpus.
+
+## 2026-08-10 the lower triangle, reindexed by shift
+
+`Sieve/LowerSumAsShifts.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9041 jobs).
+
+```text
+sum_lower_eq_shifts :
+  ∑_m ∑_{n < m} g(m,n) = ∑_{k ≥ 1} ∑_{n : n + k ≤ M} g(n + k, n)
+```
+
+A bijection on the sigma type, `(m,n) ↦ (m − n, n)`.  With `g(m,n) = μ(m)·μ(n)·K(m,n)` the inner sum
+is a correlation of `μ` at shift `k`, weighted by the kernel:
+
+```text
+off-diagonal = 2·∑_{k ≥ 1} ∑_n μ(n+k)·μ(n)·K(n+k, n) .
+```
+
+The correlation shape is now literal rather than descriptive.  What stands between this and the
+averaged Chowla theorem is the kernel's dependence on `n` inside the inner sum: `K(n+k,n)` must be
+removed by partial summation before `∑_n μ(n)μ(n+k)` can be quoted.  `fibre_kernel_le_two_h` gives
+the uniform size `2h + 1`, and `fibre_kernel_subset_Icc` gives the exact value as an interval count,
+which is what a partial summation would act on.
+
+### What is left
+
+Partial summation in `n` to strip the kernel, then the averaged Chowla theorem.
+
+## 2026-08-10 Abel's inequality without monotonicity
+
+`Sieve/AbelVariation.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9042 jobs).
+
+```text
+abs_sum_mul_le_of_bounded_partial_bv :  (∀ k, |∑_{j<k} g(j)| ≤ B)  →
+  |∑_{i<n} w(i)·g(i)| ≤ B·( |w(n−1)| + ∑_{i<n−1} |w(i+1) − w(i)| )
+```
+
+The corpus's `abs_sum_mul_le_of_bounded_partial` requires the weight nonincreasing, which the kernel
+is not: `K(n+k, n)` is a *difference* of two decreasing functions, `(x + h√x)/(n+k)` and `x/n`, so it
+has bounded variation but no monotonicity.  Summation by parts never used the monotonicity — only
+the total variation, which in the monotone case telescopes to `w(0) − w(n−1)`.
+
+With this the kernel can be stripped from the correlation sums of `LowerSumAsShifts`, leaving
+`∑_n μ(n)·μ(n+k)` to be quoted from the averaged Chowla theorem.  The variation of `K(·+k, ·)` over
+the range is `O(h)` — each of the two decreasing pieces varies by `O(h)` across `[√x/2, √x + h]` —
+so the stripping costs the same factor `h` the uniform bound would, and no more.
+
+### What is left
+
+The variation estimate for the kernel, and the averaged Chowla theorem.
+
+## 2026-08-10 the variation of a difference of monotones
+
+`Sieve/VariationOfDifference.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9043 jobs).
+
+```text
+variation_le_of_sub_antitone :  u, v nonincreasing  →
+  ∑_{i < n} |(u − v)(i+1) − (u − v)(i)| ≤ (u(0) − u(n)) + (v(0) − v(n))
+```
+
+Each increment splits as `|Δu − Δv| ≤ |Δu| + |Δv| = (−Δu) + (−Δv)`, and both pieces telescope.
+
+For the kernel `K(n+k, n)`, the two pieces are `(x + h√x)/(n+k)` and `x/n`, each varying by `O(h)`
+across `[√x/2, √x + h]`.  So its variation is `O(h)` — the same order as the uniform bound of
+`fibre_kernel_le_two_h`, which means the bounded-variation Abel inequality costs nothing beyond what
+the uniform bound would have cost, while applying to a kernel that is not monotone.
+
+The three ingredients for stripping the kernel are now in place: the reindexing
+(`sum_lower_eq_shifts`), the inequality (`abs_sum_mul_le_of_bounded_partial_bv`), and the variation
+bound (this unit, plus the monotonicity of the two pieces).
+
+### What is left
+
+Assembling them — which reduces `OffDiagonalVanishes μ hh` to the averaged Chowla theorem — and
+that theorem itself.
+
+## 2026-08-10 stripping the kernel from a correlation
+
+`Sieve/WeightedCorrelation.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9044 jobs).
+
+```text
+abs_weighted_correlation_le :  0 ≤ B,  partial sums of g ≤ B,  |w(n−1)| ≤ W,  variation ≤ V  →
+  |∑_{i<n} w(i)·g(i)| ≤ B·(W + V)
+
+abs_weighted_correlation_le_of_sub_antitone :  u, v nonincreasing  →
+  |∑_{i<n} (u(i) − v(i))·g(i)|
+    ≤ B·( |u(n−1) − v(n−1)| + (u(0) − u(n−1)) + (v(0) − v(n−1)) )
+```
+
+With `g(i) = μ(i)·μ(i+k)` and `u − v` the kernel `K(i+k, i)`, both the last value and the total
+swing are `O(h)`, so the weighted correlation is `O(h)` times the largest partial correlation sum.
+Hence
+
+```text
+OffDiagonalVanishes μ hh  ⟸  ∑_{k ≤ 2h} max_j | ∑_{i<j} μ(i)·μ(i+k) | = o(h√x) ,
+```
+
+the averaged Chowla theorem in maximal-partial-sum form.
+
+### The reduction, stated once more in full
+
+```text
+MRBilinear μ hh
+  ⟸ AveragedShortInterval ⟸ AveragedMeanSquare                         (corpus)
+  ⟸ averagedMeanSquare_of_offDiagonal                                   (this session)
+  ⟸ OffDiagonalVanishes μ hh
+  ⟸ sum_offdiag_eq_two_mul, sum_lower_eq_shifts                         (this session)
+  ⟸ abs_weighted_correlation_le_of_sub_antitone + fibre_kernel_le_two_h (this session)
+  ⟸ ∑_{k ≤ 2h} max_j | ∑_{i<j} μ(i)·μ(i+k) | = o(h√x)                   [averaged Chowla]
+```
+
+Every arrow is an unconditional theorem of this corpus except the last, which is a published
+theorem (Matomäki–Radziwiłł–Tao) not yet formalised here.

@@ -493,3 +493,282 @@ now formalized: the pointwise convergence (above) and the two ingredients of the
 `norm_gaussPrimeScaleFourierCoefficient_le` (`‖b̂(j)‖ ≤ A/(1+|j|)`) and the energy ratio bound.
 What remains is the summation bookkeeping: the `J`-split of the card, with the inner split at
 `|j| ≤ i/2`.
+
+## Lean status, fifth pass: the summation machinery for (9)
+
+Two general modules, unconditional, `[propext, Classical.choice, Quot.sound]`, wired.
+
+### `HTGeometry/BandSplitVanishingSum.lean`
+
+```text
+tendsto_tsum_zero_of_tail :
+  (∀ j, F j i → 0)  →  (∀ ε>0, ∃ finite S, eventually ∑'_(j ∉ S) F j i ≤ ε)
+    →  ∑'_j F j i → 0
+
+tendsto_tsum_zero_of_dominated :
+  the same, with the tail hypothesis replaced by  F ≤ G + H,
+  G-tails uniformly small,  ∑'_j H j i → 0
+```
+
+Both in `ℝ≥0∞`, so no summability side condition appears anywhere.  This is the exact shape of the
+card's "fix the modes `|j| ≤ J`, then estimate the tail" argument.
+
+### `HTGeometry/IntegerSeriesBounds.lean`
+
+```text
+summable_one_div_one_add_abs_sq            : Summable (j : Z ↦ 1/(1+|j|)²)
+intQuadWeight j                            : the same weight, in R≥0∞
+tsum_intQuadWeight_ne_top                  : its total is finite
+exists_finset_tsum_compl_intQuadWeight_le  : its tails outside a finite band are ≤ ε
+tendsto_finsetIcc_atTop                    : a growing symmetric band exhausts every finite set
+tendsto_tsum_far_of_ne_top                 : a band escaping to infinity carries vanishing weight
+```
+
+Summability comes from comparison with the half-integer shifted series `1/|j + 1/2|²`, which never
+meets its own singularity — mathlib's `Real.summable_one_div_int_add_rpow` is stated exactly for
+that shift.
+
+### The remaining estimate, stated precisely
+
+With `A` the constant of `norm_gaussPrimeScaleFourierCoefficient_le` and `K` that of
+`exists_gaussComponentPrimeMagnitudeEnergy_bounds`, the pointwise bound is
+
+```text
+F j I := ‖b̂(j)‖² ‖gaussSampleRatioDefect k p j I‖²
+       ≤ A²/(1+|j|)² · (4 + 2K·I/|I+j|)
+```
+
+using `‖defect‖² ≤ 2 + 2R²`, `R² ≤ 1 + R^(2m)` and `R^(2m) ≤ K·I/|I+j|`.  Splitting at `|j| ≤ I/2`
+gives the domination `F ≤ G + H` with
+
+```text
+G j   := A²(4 + 4K)/(1+|j|)²                       (I-independent, tails handled above)
+H j I := if 2|j| > I then A²(4 + 2K I/|I+j|)/(1+|j|)² else 0
+```
+
+and what is left is `∑'_j H j I → 0`, which is the card's `O(1/I)` / `O(log I / I)` tail: on
+`|I+j| ≥ |j|/2` the summand is `O(1/|j|²)` over an escaping band, and on `|I+j| < |j|/2` one has
+`I/2 < |j| < 2I` and the summand is `O((1/I)·1/|I+j|)`, whose sum is `O(log I / I)`.
+
+## Lean status, sixth pass: the tail estimate of (9) is proved
+
+Two further general modules, unconditional, `[propext, Classical.choice, Quot.sound]`, wired.
+
+### `HTGeometry/NearDiagonalHarmonicTail.lean`
+
+```text
+tsum_int_natAbs_le                     : ∑'_(n : Z) g |n| ≤ 2 ∑'_(k : N) g k
+tendsto_one_add_log_div_nat_atTop_zero : (1 + log I)/I → 0
+sum_range_one_div_le_one_add_log       : ∑_(k < I) 1/k ≤ 1 + log I
+tendsto_tsum_nearDiagonal_zero         : ∑'_(|n| < I) c/(I·|n|)  →  0
+```
+
+The last one is the card's `O(log I / I)` region, proved without any computation: the `ℤ`-sum is
+at most twice the `ℕ`-sum, the `ℕ`-sum is a finite harmonic sum, and the harmonic bound is the
+corpus's `RHTower.Sieve.sum_Icc_one_div_le_one_add_log`.
+
+### `HTGeometry/FarBandRatioTail.lean`
+
+```text
+tendsto_tsum_farBandRatio_zero :
+  ∑'_(j : Z)  [ I < 2|j| and I+j ≠ 0 ] · c·I/((1+|j|)²·|I+j|)   →   0
+```
+
+This is exactly the `H`-part of the band split for equation (9).  The proof separates the two
+regimes by comparing `|j|` with `2|I+j|`:
+
+* `|j| ≤ 2|I+j|` gives `weight ≤ 8c/(1+|j|)²` on the escaping band `I < 2|j|`, handled by
+  `tendsto_tsum_far_of_ne_top`;
+* `|j| > 2|I+j|` forces `|j| < 2I` and `|I+j| < I`, and gives `weight ≤ 4c/(I·|I+j|)`, handled by
+  `tendsto_tsum_nearDiagonal_zero` after translating the index by `I`.
+
+### Status of (9)
+
+Every analytic ingredient of the moving-translation estimate is now formalized:
+
+| ingredient | Lean |
+|---|---|
+| `b̂(j)` exact value and decay | `intervalIntegral_gaussPrimeScale_fourier`, `norm_gaussPrimeScaleFourierCoefficient_le` |
+| target coefficients `b(· − δ)` | `fourierCoeff_gaussPrimeScaleCircle_translate` |
+| pointwise ratio law, all shifts | `tendsto_gaussSampleRatioDefect` |
+| uniform energy bounds (7) | `exists_gaussComponentPrimeMagnitudeEnergy_bounds` |
+| band-split principle | `tendsto_tsum_zero_of_dominated` |
+| `G`-tails | `exists_finset_tsum_compl_intQuadWeight_le` |
+| `H`-totals | `tendsto_tsum_farBandRatio_zero` |
+
+What remains is the assembly: instantiating `tendsto_tsum_zero_of_dominated` with
+`F j I = ‖b̂(j)‖²‖defect k p j I‖²` and the `G`, `H` above, which needs only the elementary
+pointwise bound `‖defect‖² ≤ 4 + 2K·I/|I+j|` already derived on paper in the fifth pass.
+
+## Lean status, seventh pass: equation (9) is formalized
+
+`RHTower/GaussSampleTranslationL2.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, `lake build` clean.
+
+```text
+gaussArchConst m                              : ((π/m)^(1/(2m)))^(2m)
+gaussComponentPrimeMagnitudeEnergy_eq         : energy_n = gaussArchConst · ‖d_(n+1)‖^(2m)
+norm_gaussSampleValue_pow_eq                  : the same at every nonzero frequency,
+                                                 through the reality relation
+exists_norm_gaussSampleValue_pow_ratio_bound  : ∃ K > 0, ‖d_a‖^(2m)·|a| ≤ K ‖d_b‖^(2m)·|b|
+norm_gaussSampleRatioDefect_sq_le             : ‖defect_j(I)‖² ≤ 4 + 2K·I/|I+j|
+gaussTranslationL2Defect k p i                : ∑'_(j ∈ Z) ‖b̂(j)‖² ‖defect_j(i)‖²
+tendsto_gaussTranslationL2Defect              : it tends to 0
+```
+
+The last theorem is **equation (9)**: the `ℓ²(ℤ)` — equivalently `L²(ℝ/ℤ)`, by Parseval and
+`fourierCoeff_gaussPrimeScaleCircle_translate` — distance between the normalized shifted block
+`(conj d_n)^(-1) e_(-n) D* B e_n` and the moving translate `b(· − δ_n)` vanishes.
+
+The proof is the band split `tendsto_tsum_zero_of_dominated` with
+
+```text
+F j I = ‖b̂(j)‖² ‖defect_j(I)‖²
+G j   = (4 + 4K)A² · intQuadWeight j
+H j I = [ I < 2|j| and I+j ≠ 0 ] · 2KA²·I/((1+|j|)²·|I+j|)
+```
+
+* every mode vanishes: `tendsto_gaussSampleRatioDefect` (the lattice ratio law, all shifts);
+* `F ≤ G + H`: from `‖defect‖ ≤ R + 1`, `(R+1)² ≤ 2R² + 2`, `R² ≤ 1 + R^(2m)`, the uniform
+  ratio bound `R^(2m) ≤ K·I/|I+j|`, and `‖b̂(j)‖² ≤ A²/(1+|j|)²`; on the near band `2|j| ≤ I`
+  one has `I/|I+j| ≤ 2`, so `G` alone suffices there;
+* `G`-tails: `exists_finset_tsum_compl_intQuadWeight_le`;
+* `H`-totals: `tendsto_tsum_farBandRatio_zero`.
+
+The degenerate frequencies are handled uniformly: `d_0 = 0` makes the ratio vanish and the defect
+unimodular, so the bound `‖defect‖² ≤ 4` holds there with no case assumption in the statement.
+
+### Remaining on this card
+
+Only the operator layer that consumes (9): the bounded multiplication operator `B_p` on
+`L²(ℝ/ℤ)`, the Fourier multiplier `D_(m,k,p)`, the block `C = B D I B`, `G = C²`, and the
+iteration (10)–(11) that turns the single-step estimate into `⟨G^m e_n, e_n⟩`.  Every scalar and
+`ℓ²` input those steps consume — (2)–(5), (7), (8), (9), (12), (13) — is now formalized.
+
+## Lean status, eighth pass: the prime block `B_p` as an operator
+
+`RHTower/GaussPrimeScaleOperator.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+continuous_gaussPrimeScale                     : b_p is continuous
+measurable_gaussPrimeScaleCircle               : its circle representative is measurable
+gaussPrimeScale_le_sqrt                        : b_p(x) ≤ √p on the period
+norm_gaussPrimeScaleCircle_le                  : ‖b_p‖_∞ ≤ √p on R/Z
+gaussPrimeScaleBlock hp                        : B_p, multiplication by b_p on L²(R/Z)
+gaussPrimeScaleBlock_coeFn                     : it acts by pointwise multiplication
+norm_gaussPrimeScaleBlock_le                   : ‖B_p‖ ≤ √p
+fourierCoeff_congr_ae                          : Fourier coefficients respect a.e. equality
+fourierCoeff_gaussPrimeScaleBlock_fourierLp    : fourierCoeff (B_p e_n) l = b̂(l - n)
+```
+
+Measurability is the composition of `AddCircle.measurableEquivIoc` with the continuous
+representative; the operator is `MeasureTheory.lpBoundedMulCLM` of the corpus's bounded-multiplier
+layer.  The last theorem is the index bookkeeping of equation (9)'s left-hand side: it is exactly
+the modulation law `fourierCoeff_fourier_mul` applied to the a.e. representative of `B_p e_n`.
+
+### Remaining
+
+The Fourier multiplier `D_(m,k,p)` with symbol `d_n` on `L²(R/Z)`, the block `C = B D I B`,
+`G = C²`, and the iteration (10)-(11).  `B_p` and the `ℓ²` estimate (9) that the iteration consumes
+are now both formalized.
+
+## Lean status, ninth pass: the diagonal side over an arbitrary index
+
+`HTGeometry/LpDiagonalMultiplier.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+memLp_lpDiagonal      : a bounded family multiplies ℓ²(ι) into itself
+lpDiagonalLM          : the linear map
+norm_lpDiagonalLM_le  : ‖λ·f‖ ≤ C‖f‖
+lpDiagonalCLM         : the bounded operator on ℓ²(ι)
+norm_lpDiagonalCLM_le : ‖diag λ‖ ≤ C
+lpDiagonalCLM_single  : diag λ (e_j) = λ_j e_j
+```
+
+The corpus's `RHTower.diagonalOperator` is the `ι = ℕ` case; the Fourier side of the circle is
+indexed by `ℤ`, so the construction is recorded here for an arbitrary index type.  This is the
+carrier of `D_(m,k,p)`: transported through `fourierBasis.repr` it becomes the Fourier multiplier
+with symbol `d_i = gaussSampleValue k p i`, whose boundedness follows from
+`exists_gaussComponentPrimeMagnitudeEnergy_bounds` (`gaussArchConst·‖d_i‖^(2m) ≤ C`, so
+`‖d_i‖ ≤ max 1 (C/gaussArchConst)` with no root extraction).
+
+## Lean status, tenth pass: the diagonal block `D_(m,k,p)`
+
+`RHTower/GaussDiagonalBlock.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+exists_norm_gaussSampleValue_le  : ∃ M ≥ 0, ∀ i, ‖d_i‖ ≤ M
+gaussSampleValueBound            : the chosen bound
+gaussDiagonalBlock hm k p        : D, the Fourier multiplier with symbol d_i on L²(R/Z)
+gaussDiagonalBlock_fourierLp     : D e_j = d_j · e_j
+```
+
+The uniform bound needs no root extraction: if `‖d_i‖` exceeded `max 1 (C/gaussArchConst)` it would
+already exceed `C/gaussArchConst` at the first power, while `gaussArchConst·‖d_i‖^(2m) ≤ C` by the
+uniform energy bound.  The operator is the corpus's `conjugateOperator` of the index-generic
+`lpDiagonalCLM` through `fourierBasis.repr`.
+
+### The two blocks in place
+
+```text
+B_p  =  gaussPrimeScaleBlock hp     ‖B_p‖ ≤ √p,  fourierCoeff (B_p e_n) l = b̂(l-n)
+D    =  gaussDiagonalBlock hm k p   D e_j = d_j · e_j
+```
+
+What remains of §3-§4 is the reflection `I e_n = e_(-n)` (the negation of the circle is measure
+preserving, so it induces an isometry of `L²`), the block `C = B D I B` with `G = C²`, and the
+iteration (10)-(11) that feeds on the already-formalized `ℓ²` estimate (9).
+
+## Lean status, eleventh pass: the quasi-inner block `G`
+
+`RHTower/GaussQuasiInnerBlocks.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+Equation (1) writes `G = C² = p·B D B^(-2) D* B`, with **no reflection**, so the operator side of
+the card needs only multiplication operators and Fourier multipliers:
+
+```text
+gaussPrimeScaleInvSq p x            : b_p(x)^(-2) = p^(x-1)
+gaussPrimeScaleInvSq_mul_sq         : b_p^(-2)·b_p² = 1
+norm_gaussPrimeScaleInvSqCircle_le  : ‖b_p^(-2)‖_∞ ≤ 1 on R/Z
+gaussPrimeScaleInvSqBlock hp        : B^(-2) on L²(R/Z), ‖B^(-2)‖ ≤ 1
+gaussDiagonalBlockStar hm k p       : D*, the multiplier with symbol conj d_i
+gaussDiagonalBlockStar_fourierLp    : D* e_j = conj(d_j)·e_j
+gaussQuasiInnerG hm k p             : G = p·B D B^(-2) D* B
+```
+
+### The operator layer is complete
+
+```text
+B      gaussPrimeScaleBlock        ‖B‖ ≤ √p        fourierCoeff (B e_n) l = b̂(l-n)
+B^(-2) gaussPrimeScaleInvSqBlock   ‖B^(-2)‖ ≤ 1
+D      gaussDiagonalBlock          D e_j = d_j·e_j
+D*     gaussDiagonalBlockStar      D* e_j = conj(d_j)·e_j
+G      gaussQuasiInnerG            equation (1)
+```
+
+Only the iterated principal action (10)-(11) is left: evaluating `⟨G^m e_n, e_n⟩` by feeding the
+already-formalized `ℓ²` estimate (9) into these five operators.
+
+## Lean status, twelfth pass: (9) in its uniform form
+
+The card's remark after equation (9) — *"the same proof is uniform for bounded-variation amplitudes
+with uniformly bounded variation; the amplitudes generated by finitely many products of translates
+of `b` and `b^{-1}` form such a family"* — is exactly what the iteration (10)-(11) consumes.  The
+`ℓ²` estimate has been refactored to that form:
+
+```text
+gaussTranslationL2DefectBound k p A i         : ∑'_j (A²/(1+|j|)²) ‖defect_j(i)‖²
+tendsto_gaussTranslationL2DefectBound         : it tends to 0, for every A
+tendsto_gaussTranslationL2Defect_of_decay     : ‖c j‖ ≤ A/(1+|j|)  ⟹
+                                                 ∑'_j ‖c j‖² ‖defect_j(i)‖² → 0
+tendsto_gaussTranslationL2Defect              : the case c = b̂
+```
+
+The weight in `gaussTranslationL2DefectBound` does not mention the amplitude at all, so the
+convergence rate depends only on the decay constant `A`: the estimate is uniform over every family
+of amplitudes sharing one constant, which is precisely the hypothesis the fixed number of
+iterations in §4 needs.

@@ -1020,3 +1020,65 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
 - Field boundary: this is one exact source-normal production mechanism, not the universal field.
   Next target is typed recursive diagonalization: challenge output must alter future evaluator
   arity/admission and interact with bipolar repair without a state-indexed oracle.
+
+## 2026-08-10 -- endogenous representability pivot and repair asymmetry Lean-certified
+
+- Re-read the frontier map as five failures of representability rather than five route programmes:
+  singular descent, all-prime transport, adaptive orientation, whole-space coercivity, and positive
+  carrier existence.
+- Froze Endogenous Representability Mechanics: exposed challenge, least conservative representer,
+  observer repair, admission/formation correction, and certificate transport form one recursive
+  revision mechanism. Existing free completions, fibred doctrines, and counterexample refinement
+  are static parents; their reflexive coupling remains the field-level conjecture ERM-A.
+- Proved ULF-ERM-1. Conservative carrier genesis transports all old/new finite law words. Fine
+  future-retaining repair obeys exact base change; coarse future-forgetting repair is only lax.
+  Compatible semantic retraction restores equality.
+- Sharp two-old-plus-one-fresh cell changes no old execution but adds a fresh-mediated return path,
+  making the enlarged coarse repair identify old states. No compatible retraction exists.
+- Lean module `ConstitutiveCarrierGenesisRepair` passes direct elaboration, 3,000-job leaf build,
+  11,580-job Universal Law Field umbrella build, clean lint, and axiom audit (`propext`,
+  `Quot.sound` only).
+- Higher open law: recursively feed the fresh-return/admission defect into source-normal challenge
+  production and prove termination, recurrent observation with open lineage, or grammar escape.
+
+## 2026-08-10 -- Law-History Spectral Mechanics replaces route-local obstruction chasing
+
+- Whole-corpus audit rejected another universal obstruction object, prospective metric, and
+  unconstrained mutual producer as rediscoveries or vacuous packaging. Pivoted to a mechanism:
+  how local failures are born, transported, cancelled, refined, and made to survive across legal
+  constitutive histories.
+- Froze ULF-LHSM-0. Local defects are provisional page data; global law birth is future-tail
+  survival plus extension data. Stable spectral-sequence machinery is a parent, not the claim.
+- Proved ULF-LHSM-1. Every finite linear history has an exhaustive future-tail survival
+  filtration. Stage `i` is the local carrier modulo incoming attainment plus the kernel of its
+  complete future. Refactoring one act inserts a canonical short exact grade refinement.
+- Sharp split cell: inclusion followed by retraction has nonzero local cokernel and kernel but
+  identity total composite; the canonical transgression is `[y] -> y-f(g y)`. This falsifies every
+  additive local-defect scalar as universal field dynamics.
+- Lean module `ConstitutiveLawHistorySpectralMechanics` passes direct elaboration, an 8,700-job leaf
+  build, and the 11,581-job Universal Law Field umbrella build. Axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`; theorem index updated.
+- Higher frontier: construct stable pages from coherent cofibres, derive observer-exchange and
+  completion differentials, then demand a source-normal withheld prediction in three non-route
+  laboratories. No RH route is part of the field definition.
+
+## 2026-08-10 -- representation--execution exchange kills representability-as-genesis
+
+- Rejected stable-page and observer/completion packaging as the next field mechanism: exact couples,
+  filtered stable categories, persistence, derived-limit exchange, and the corpus's own completion
+  defect sequences already own that kinematics.
+- Closed the higher feedback question at its first nontrivial gate. Representer birth and execution
+  birth are independent axes. Operational novelty is exactly row-profile fibre splitting,
+  equivalently exclusion of an old-invisible intervention.
+- Falsified the claim that source-normal anti-diagonal nonrepresentation implies semantic genesis.
+  Every finite strict-order diagonal stage has injective row semantics, so its missing
+  anti-diagonal is operationally inert and contracts nothing.
+- Proved ULF-REE-1. Projection and strict-order evaluators realize all four represented versus
+  effective chambers. Anti-diagonal effectiveness is exactly diagonal variation inside one equal-row
+  fibre.
+- Lean module `ConstitutiveRepresentationExecutionExchange` passes direct elaboration, an
+  8,666-job leaf build, and the 11,582-job Universal Law Field umbrella build. Axiom audit reports
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+- Field pivot: next law must close the causal cycle from semantic fibre contraction to changed legal
+  execution to the next source-generated failure. Carrier growth, diagonal escape, stable pages,
+  and scalar obstruction accumulation cannot substitute for that mechanism.

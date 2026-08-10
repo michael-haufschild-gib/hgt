@@ -288,6 +288,7 @@ theorem mem_aMul_of_relation (ha : a ≠ 0) (i : Fin m) {ℓ : traceDefect a m}
   set n : R := ⅟((m : R) + 1) with hn
   have hnN : n * ((m : R) + 1) = 1 := invOf_mul_self _
   obtain ⟨t, ht⟩ := mem_scaledDual.1 z.2
+  rw [← hzz] at ht
   have hval : ∀ j : Fin m,
       traceDefectModelEquiv a m (Submodule.Quotient.mk z) j
         = Submodule.Quotient.mk (zz j.castSucc - n * ∑ l, zz l) := fun j => by
@@ -300,16 +301,18 @@ theorem mem_aMul_of_relation (ha : a ≠ 0) (i : Fin m) {ℓ : traceDefect a m}
   have h0 : traceDefectModelEquiv a m (Submodule.Quotient.mk (congruenceX a m i • z))
       + traceDefectModelEquiv a m (Submodule.Quotient.mk (congruenceX a m i • z))
       - a • traceDefectModelEquiv a m (Submodule.Quotient.mk z) = 0 := by
-    rw [← traceDefectModelEquiv_algebraMap_smul, ← map_add, ← map_sub,
-      ← Submodule.Quotient.mk_add, ← Submodule.Quotient.mk_sub, ← smul_add, ← sub_smul,
-      ← add_smul, ← Submodule.Quotient.mk_smul, hℓ, map_zero]
+    have h := congrArg (traceDefectModelEquiv a m) hℓ
+    rw [map_zero] at h
+    rw [← h, ← Submodule.Quotient.mk_smul, sub_smul, add_smul, Submodule.Quotient.mk_sub,
+      Submodule.Quotient.mk_add, map_sub, map_add, traceDefectModelEquiv_algebraMap_smul]
   have hkey : ∀ j : Fin m, a ∣ 2 * (zz i.castSucc * ((if j = i then (1 : R) else 0) - n))
       - (zz j.castSucc - n * ∑ l, zz l) := by
     intro j
     have hj := congrFun h0 j
-    rw [Pi.sub_apply, Pi.add_apply, Pi.smul_apply, hsmul, hval, ← Submodule.Quotient.mk_smul,
-      smul_eq_mul, ← Submodule.Quotient.mk_add, ← Submodule.Quotient.mk_sub,
-      Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton] at hj
+    rw [Pi.sub_apply, Pi.add_apply, Pi.smul_apply, Pi.zero_apply, hsmul, hval,
+      ← Submodule.Quotient.mk_smul, smul_eq_mul, ← Submodule.Quotient.mk_add,
+      ← Submodule.Quotient.mk_sub, Submodule.Quotient.mk_eq_zero,
+      Ideal.mem_span_singleton] at hj
     obtain ⟨c, hc⟩ := hj
     refine ⟨c, ?_⟩
     have hcan : a * (2 * (zz i.castSucc * ((if j = i then (1 : R) else 0) - n))
@@ -322,15 +325,14 @@ theorem mem_aMul_of_relation (ha : a ≠ 0) (i : Fin m) {ℓ : traceDefect a m}
     have h1 : a ∣ zz i.castSucc * (((m : R) - 1) * n) := by
       obtain ⟨c, hc⟩ := h
       refine ⟨c - n * t, ?_⟩
-      linear_combination hc - n * ht + (zz i.castSucc * n - 2 * zz i.castSucc * n) * hnN
-        + zz i.castSucc * hnN
+      linear_combination hc + zz i.castSucc * hnN - n * ht
     obtain ⟨c, hc⟩ := h1
     refine ⟨c * (⅟((m : R) - 1) * ((m : R) + 1)), ?_⟩
     have hm1 : ((m : R) - 1) * ⅟((m : R) - 1) = 1 := mul_invOf_self _
     calc zz i.castSucc
         = zz i.castSucc * (((m : R) - 1) * n) * (⅟((m : R) - 1) * ((m : R) + 1)) := by
-          linear_combination (- zz i.castSucc * n * ((m : R) + 1)) * hm1
-            + (- zz i.castSucc) * hnN
+          linear_combination (-(zz i.castSucc) * (n * ((m : R) + 1))) * hm1
+            - zz i.castSucc * hnN
       _ = a * (c * (⅟((m : R) - 1) * ((m : R) + 1))) := by rw [hc]; ring
   have hall : ∀ j : Fin m, a ∣ zz j.castSucc := by
     intro j
@@ -340,7 +342,7 @@ theorem mem_aMul_of_relation (ha : a ≠ 0) (i : Fin m) {ℓ : traceDefect a m}
       rw [if_neg hji] at h
       obtain ⟨c, hc⟩ := h
       obtain ⟨e, he⟩ := hdiag
-      exact ⟨n * t - 2 * n * e - c, by linear_combination -hc - n * ht + 2 * n * he⟩
+      exact ⟨n * t - 2 * n * e - c, by linear_combination -hc + n * ht - 2 * n * he⟩
   choose u hu using hall
   refine mem_aMul_of_equiv (traceDefectModelEquiv a m) ?_
   rw [mem_aMul]
@@ -348,17 +350,15 @@ theorem mem_aMul_of_relation (ha : a ≠ 0) (i : Fin m) {ℓ : traceDefect a m}
   funext j
   rw [Pi.smul_apply, hval, ← Submodule.Quotient.mk_smul, smul_eq_mul]
   congr 1
-  rw [hu j, ht]
-  ring
+  linear_combination n * ht - hu j
 
+omit [IsDomain R] [Invertible ((m : R) + 1)] [Invertible ((m : R) - 1)] in
 theorem aMul_smul_mem (c : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
     {x : traceDefect a m} (hx : x ∈ aMul a (traceDefect a m)) :
     c • x ∈ aMul a (traceDefect a m) := by
   rw [mem_aMul] at hx ⊢
   obtain ⟨w, rfl⟩ := hx
-  refine ⟨c • w, ?_⟩
-  rw [← IsScalarTower.algebraMap_smul (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a,
-    smul_smul, smul_smul, mul_comm]
+  exact ⟨c • w, smul_comm a c w⟩
 
 /-- **Card `(26e)`.**  Every source-linear comparison from the cotangent module to the trace-law
 defect has image inside `a·L`. -/
@@ -379,6 +379,78 @@ theorem soldering_range_le (ha : a ≠ 0)
   | zero => rw [map_zero]; exact zero_mem _
   | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
   | smul c x _ hx => rw [map_smul]; exact aMul_smul_mem c hx
+
+/-- The `a`-multiples in the trace-law defect, as a submodule over the congruence order. -/
+noncomputable def aMulA (a : R) (m : ℕ) :
+    Submodule (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) (traceDefect a m) where
+  carrier := aMul a (traceDefect a m)
+  add_mem' := add_mem
+  zero_mem' := zero_mem _
+  smul_mem' c _ hx := aMul_smul_mem c hx
+
+/-- **Card `(26g)`.**  The tangent-head reduction of every source-linear comparison from the
+cotangent module to the trace-law defect is identically zero. -/
+theorem soldering_head_eq_zero (ha : a ≠ 0)
+    (φ : Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R]
+      →ₗ[MvPolynomial (Fin m) R ⧸ congruenceIdeal a m] traceDefect a m) :
+    (aMulA a m).mkQ.comp φ = 0 := by
+  refine LinearMap.ext fun ω => ?_
+  exact (Submodule.Quotient.mk_eq_zero _).2 (soldering_range_le ha φ ω)
+
+/-- The maximal ideal of the congruence order. -/
+noncomputable def maximalIdealA (a : R) (m : ℕ) :
+    Ideal (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) :=
+  Ideal.span ({algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a}
+    ∪ Set.range (congruenceX a m))
+
+omit [IsDomain R] [Invertible ((m : R) - 1)] in
+theorem congruenceX_smul_mem_aMul (i : Fin m) (ℓ : traceDefect a m) :
+    congruenceX a m i • ℓ ∈ aMul a (traceDefect a m) := by
+  classical
+  obtain ⟨z, rfl⟩ := traceDefect_mk_surjective ℓ
+  refine mem_aMul_of_equiv (traceDefectModelEquiv a m) ?_
+  rw [mem_aMul]
+  refine ⟨fun j => Submodule.Quotient.mk
+    ((z : Fin (m + 1) → R) i.castSucc
+      * ((if j = i then (1 : R) else 0) - ⅟((m : R) + 1))), ?_⟩
+  funext j
+  rw [Pi.smul_apply, show (congruenceX a m i • (Submodule.Quotient.mk z : traceDefect a m))
+      = Submodule.Quotient.mk (congruenceX a m i • z) from
+    (Submodule.Quotient.mk_smul _ _ _).symm,
+    traceDefectModelEquiv_congruenceX_smul, ← Submodule.Quotient.mk_smul, smul_eq_mul]
+  congr 1
+  ring
+
+omit [IsDomain R] [Invertible ((m : R) - 1)] in
+/-- **Card `(26b)`, ideal form.**  The maximal ideal acts on the trace-law defect exactly as `a`
+does. -/
+theorem maximalIdealA_smul_eq :
+    (maximalIdealA a m) • (⊤ : Submodule (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+      (traceDefect a m)) = aMulA a m := by
+  refine le_antisymm (Submodule.smul_le.2 fun c hc ℓ _ => ?_) ?_
+  · rw [maximalIdealA] at hc
+    induction hc using Submodule.span_induction with
+    | mem y hy =>
+      rcases hy with hy | ⟨i, rfl⟩
+      · rw [Set.mem_singleton_iff] at hy
+        subst hy
+        show _ ∈ aMul a (traceDefect a m)
+        rw [mem_aMul]
+        exact ⟨ℓ, (IsScalarTower.algebraMap_smul
+          (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a ℓ).symm⟩
+      · exact congruenceX_smul_mem_aMul i ℓ
+    | zero =>
+      have hz : (0 : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) • ℓ = 0 :=
+        zero_smul (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ℓ
+      rw [hz]
+      exact zero_mem _
+    | add x y _ _ hx hy => rw [add_smul]; exact add_mem hx hy
+    | smul r x _ hx => rw [smul_eq_mul, mul_smul]; exact aMul_smul_mem r hx
+  · rintro ℓ hℓ
+    obtain ⟨w, rfl⟩ := mem_aMul.1 hℓ
+    rw [← IsScalarTower.algebraMap_smul (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a]
+    exact Submodule.smul_mem_smul
+      (Ideal.subset_span (Or.inl rfl)) Submodule.mem_top
 
 end Soldering
 

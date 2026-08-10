@@ -86,6 +86,29 @@ theorem tsum_modeMean_sub_shift_prime (σ : EulerSigma) (p : Nat.Primes) :
   rw [tsum_modeMean_sub_shift hq0 hq1, modeMean_zero_eq_tsum hq0 hq1]
   exact tsum_congr fun a => eqgQ_pow_succ σ p a
 
+/-! ## The ladder is summably bounded -/
+
+theorem tsum_pow_succ {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
+    (∑' j : ℕ, q ^ (j + 1)) = q / (1 - q) := by
+  have hgeom : (∑' j : ℕ, q ^ (j + 1)) = q * ∑' j : ℕ, q ^ j := by
+    rw [← tsum_mul_left]
+    exact tsum_congr fun j => by rw [pow_succ, mul_comm]
+  rw [hgeom, tsum_geometric_of_lt_one hq0 hq1, div_eq_mul_inv]
+
+/-- **The mode-mean ladder is bounded by `q/(1−q)²`.** -/
+theorem tsum_modeMean_le {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
+    (∑' j : ℕ, modeMean q j) ≤ q / (1 - q) ^ 2 := by
+  have hden : (0 : ℝ) < 1 - q := by linarith
+  have hmaj : Summable fun j : ℕ => q ^ (j + 1) / (1 - q) := by
+    refine Summable.div_const ?_ _
+    exact (summable_geometric_of_lt_one hq0 hq1).comp_injective (add_left_injective 1)
+  have hle := (summable_modeMean hq0 hq1).tsum_le_tsum
+    (fun j => modeMean_le hq0 hq1 j) hmaj
+  have hval : (∑' j : ℕ, q ^ (j + 1) / (1 - q)) = q / (1 - q) ^ 2 := by
+    rw [tsum_div_const, tsum_pow_succ hq0 hq1]
+    field_simp
+  linarith [hle, hval.le, hval.ge]
+
 end
 
 end GaloisForLFunctions.HTGeometry

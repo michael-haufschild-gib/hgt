@@ -7,7 +7,7 @@
   repair obeys exact carrier base change, whereas future-forgetting repair is only lax; a compatible
   semantic retraction restores exactness, and a three-state cell proves strictness without changing
   any old law execution.
-- **Status:** [PROVED HERE] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT] [LEAN REQUIRED]
+- **Status:** [PROVED HERE] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT] [LEAN-CERTIFIED]
   [CLASSICAL BASE-CHANGE PARENTS] [NOT RH]
 
 ## 1. Setup
@@ -232,9 +232,9 @@ source-normal carrier genesis and bipolar repair mechanisms.  No external novelt
 No topology, probability, positivity, admission, higher arity, cofinal limit, RH endpoint, or route
 specialization is used.  Those are later tests of the mechanism.
 
-## 8. Lean target
+## 8. Lean certification
 
-Formalize in
+Formalized in
 `formal/GaloisForLFunctions/HTGeometry/ConstitutiveCarrierGenesisRepair.lean`:
 
 1. word restriction and lifting;
@@ -244,11 +244,14 @@ Formalize in
 5. the unconditional three-state strict cell;
 6. one capstone theorem bundling the mechanism.
 
-Wire the module into
-`formal/GaloisForLFunctions/HTGeometry/UniversalLawField.lean` and create the Stage-3 certification
-card after direct elaboration, final module build, axiom audit, and formal lint pass.
+The module is wired into
+`formal/GaloisForLFunctions/HTGeometry/UniversalLawField.lean`. Direct foreground elaboration,
+the 3,000-job leaf build, the 11,580-job final umbrella build, and formal lint all pass. Axiom prints
+report only `propext` and `Quot.sound`; no project axiom or unproved premise enters the capstone.
+The companion Stage-3 certification card records declaration-level coverage.
 
 ## Log
 
 - 2026-08-10 -- theorem frozen from the post-frontier interaction of ULF-DJG-1 and ULF-RLR-2;
   complete paper proof and strict cell recorded.
+- 2026-08-10 -- Lean certification completed; direct, leaf, umbrella, lint, and axiom audits pass.

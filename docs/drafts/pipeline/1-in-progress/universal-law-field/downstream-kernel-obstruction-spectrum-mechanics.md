@@ -2,7 +2,8 @@
 
 - **Programme:** Universal Law Field
 - **Question type:** MECHANISM / SET OF LAWS
-- **Status:** [ACTIVE] [ROUTE-INDEPENDENT] [NO OBJECT SEARCH]
+- **Status:** [FINITE LINEAR CORE SUBSUMED BY ULF-LHSM-1] [ROUTE-INDEPENDENT]
+  [STABLE/COMPLETION EXTENSION OPEN] [NO OBJECT SEARCH]
 
 ## Mechanism question
 
@@ -27,19 +28,23 @@ future tail.
 6. **Completion mutation.** Algebraic stages form an exact filtration; completion inserts source
    and target homology between successive grades.
 
-## First exact gate
+## First exact gate -- closed
 
 For three maps `D -> E -> K -> A`, prove that the cokernel of the total composite has a canonical
 two-step filtration. Identify first grade with failure in `E` modulo `im R + ker(TS)`, second grade
 with failure in `K` modulo `im S + ker T`, and final grade with `coker T`. Prove the middle layer by
 a short exact sequence, not a dimension count.
 
+ULF-DKO-1 closed this gate. ULF-LHSM-1 then proved the general finite history and exact
+refactorization law in Lean.
+
 ## Next gates
 
-1. General finite histories and a functorial filtration.
-2. Refactorization comparison and extension data.
-3. Closure-doctrine homology between adjacent grades.
-4. Nonlinear replacement using pointed fibres/torsors rather than additive quotients.
-5. Intervention law: how changing one stage migrates classes between survival depths.
+1. Stable-category page construction from coherent fibres/cofibres.
+2. Closure-doctrine homology between adjacent grades.
+3. Exact-observer preservation and nonexact-observer exchange terms.
+4. Coherence for multiple independent refactorizations.
+5. Nonlinear replacement using pointed fibres/torsors rather than additive quotients.
+6. Intervention law: how changing one stage migrates classes between survival depths.
 
 Routes are late countermodels only. No RH endpoint or source selector belongs in the definition.

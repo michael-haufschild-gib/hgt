@@ -22,6 +22,7 @@ open Filter Module.End Set Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
 
+omit [CompleteSpace E] in
 /-- **Discrete nonzero point spectrum, without normality.**  A compact complex operator has only
 finitely many eigenvalues whose norms exceed any fixed positive threshold. -/
 theorem finite_setOf_hasEigenvalue_norm_ge_general {T : E →L[ℂ] E}
@@ -94,8 +95,7 @@ theorem finite_setOf_hasEigenvalue_norm_ge_general {T : E →L[ℂ] E}
           simpa using mem_eigenspace_iff.mp (hweig (i : ℕ)).1
         rw [heq]
         by_cases hi : (i : ℕ) = n
-        · subst hi
-          simp
+        · simp [hi]
         · have hil : (i : ℕ) < n := lt_of_le_of_ne (Nat.le_of_lt_succ i.isLt) hi
           exact Submodule.sub_mem _
             (Submodule.smul_mem _ _ (Submodule.subset_span ⟨⟨i, hil⟩, rfl⟩))
@@ -166,6 +166,35 @@ theorem finite_setOf_hasEigenvalue_norm_ge_general {T : E →L[ℂ] E}
   simp only [Function.comp_apply] at h1 h2
   linarith
 
+/-- A generalized eigenspace for a nonzero eigenvalue lies in the range of the operator.  This
+algebraic fact is what removes the zero-padding directions from finite-section multiplicity
+computations. -/
+theorem maxGenEigenspace_le_range_of_ne_zero {K V : Type*} [Field K] [AddCommGroup V]
+    [Module K V] (f : Module.End K V) {mu : K} (hmu : mu ≠ 0) :
+    f.maxGenEigenspace mu ≤ LinearMap.range f := by
+  intro x hx
+  obtain ⟨k, hk⟩ := (Module.End.mem_maxGenEigenspace f mu x).mp hx
+  let g : Module.End K V := f - mu • 1
+  have aux : ∀ (n : ℕ) (y : V), (g ^ n) y = 0 → y ∈ LinearMap.range f := by
+    intro n
+    induction n with
+    | zero =>
+        intro y hy
+        simp only [pow_zero, Module.End.one_apply] at hy
+        rw [hy]
+        exact (LinearMap.range f).zero_mem
+    | succ n ih =>
+        intro y hy
+        have hgy : (g ^ n) (g y) = 0 := by
+          simpa [pow_succ] using hy
+        obtain ⟨v, hv⟩ := ih (g y) hgy
+        refine ⟨mu⁻¹ • (y - v), ?_⟩
+        have hdiff : f y - f v = mu • y := by
+          rw [hv]
+          simp [g]
+        rw [map_smul, map_sub, hdiff, smul_smul, inv_mul_cancel₀ hmu, one_smul]
+  exact aux k x (by simpa [g] using hk)
+
 section Spectrum
 
 /-- **Discrete nonzero spectrum, without normality.**  For a compact complex operator, every
@@ -179,6 +208,43 @@ theorem finite_setOf_mem_spectrum_norm_ge_general {T : E →L[ℂ] E}
     intro h
     simpa [h] using (lt_of_lt_of_le heps hnorm).ne'
   exact ⟨(hT.hasEigenvalue_iff_mem_spectrum hmu0).2 hmu, hnorm⟩
+
+/-- **Every nonzero spectral point of a compact operator is isolated.**  The radius is chosen
+strictly below the norm of the centre, so the whole contour also avoids zero. -/
+theorem exists_isolating_closedBall_nonzero_spectrum_general {T : E →L[ℂ] E}
+    (hT : IsCompactOperator T) {mu : ℂ} (hmu : mu ∈ spectrum ℂ T) (hmu0 : mu ≠ 0) :
+    ∃ r : ℝ, 0 < r ∧ r < ‖mu‖ ∧
+      ∀ nu ∈ Metric.closedBall mu r, nu ≠ mu → nu ∈ resolventSet ℂ T := by
+  let S : Set ℂ := {nu : ℂ | nu ∈ spectrum ℂ T ∧ ‖mu‖ / 2 ≤ ‖nu‖}
+  have hmuNorm : 0 < ‖mu‖ := norm_pos_iff.mpr hmu0
+  have hSfinite : S.Finite :=
+    finite_setOf_mem_spectrum_norm_ge_general hT (half_pos hmuNorm)
+  have hmuS : mu ∈ S := ⟨hmu, by linarith⟩
+  obtain ⟨rho, hrho, hiso⟩ :=
+    Metric.exists_closedBall_inter_eq_singleton_of_discrete hSfinite.isDiscrete hmuS
+  let r : ℝ := min rho (‖mu‖ / 4)
+  have hr : 0 < r := lt_min hrho (by positivity)
+  have hrmu : r < ‖mu‖ := lt_of_le_of_lt (min_le_right _ _) (by linarith)
+  refine ⟨r, hr, hrmu, fun nu hnu hnumeq => ?_⟩
+  by_contra hnures
+  have hnuspec : nu ∈ spectrum ℂ T := by simpa [spectrum] using hnures
+  have hdist : ‖mu - nu‖ ≤ r := by
+    have := Metric.mem_closedBall.mp hnu
+    simpa [Complex.dist_eq, norm_sub_rev] using this
+  have htri : ‖mu‖ ≤ ‖mu - nu‖ + ‖nu‖ := by
+    calc
+      ‖mu‖ = ‖(mu - nu) + nu‖ := by ring_nf
+      _ ≤ ‖mu - nu‖ + ‖nu‖ := norm_add_le _ _
+  have hnulower : ‖mu‖ / 2 ≤ ‖nu‖ := by
+    have hrle : r ≤ ‖mu‖ / 4 := min_le_right _ _
+    linarith
+  have hnuS : nu ∈ S := ⟨hnuspec, hnulower⟩
+  have hnuRho : nu ∈ Metric.closedBall mu rho :=
+    Metric.closedBall_subset_closedBall (min_le_left _ _) hnu
+  have hsingleton : nu ∈ ({mu} : Set ℂ) := by
+    rw [← hiso]
+    exact ⟨hnuRho, hnuS⟩
+  exact hnumeq (by simpa using hsingleton)
 
 end Spectrum
 

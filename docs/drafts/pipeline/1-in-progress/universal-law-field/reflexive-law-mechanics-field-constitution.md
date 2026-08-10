@@ -5,7 +5,7 @@
 - **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
 - **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
   the laws by which consequences, failures, and conservation requirements revise the rulebook.
-- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [TWENTY-SIX LAWS LEAN-CALIBRATED]
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [THIRTY-TWO LAWS LEAN-CALIBRATED]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
 
 ## 1. Founding shift
@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The twenty-nine field laws
+## 2. The thirty-two field laws
 
 ### RLM Law I -- typed exposure
 
@@ -242,8 +242,8 @@ These grades form canonical short exact sequences; they need not split.
 
 ULF-DKO-1 certifies the nested filtration and exact middle-layer transition. This replaces the
 false expectation of one universal obstruction scalar by an obstruction spectrum with extension
-data. Open gate: general finite histories, refactorization comparison, and completion-born
-differentials between adjacent grades.
+data. ULF-LHSM-1 now closes the finite-history and refactorization gates. The remaining gate is the
+stable/complete mechanism producing actual differentials between adjacent grades.
 
 ### RLM Law XXI -- adaptive stress is independent of fixed-face complexity
 
@@ -414,6 +414,68 @@ separating limit from successor. This supplies one source-normal production law 
 ULF-PCG-2. It remains a Boolean calibration: recursive typed challenges, admission, repair choice,
 and realization in three nonisomorphic corpus organs remain open.
 
+### RLM Law XXX -- conservative genesis preserves remembering but can change forgetting
+
+Let a carrier and its unary law language enlarge conservatively: every old law lifts and every new
+law restricts to an old law. Then every finite law word transports in both directions. Consequently
+the greatest future-stable refinement of an observer relation obeys exact base change. The least
+future-stable coarsening has only a lax comparison: newly generated states may mediate return paths
+that identify old states without changing any old law execution.
+
+A compatible semantic retraction restores exact coarse base change. Conversely, a sharp
+two-old-plus-one-fresh-state cell has unchanged old execution and exact fine pullback, but its fresh
+state joins two formerly distinct old states under coarse repair; no compatible retraction exists.
+The resulting **fresh-return defect** is relation-valued, not a fitted scalar curvature.
+
+ULF-ERM-1 Lean-certifies word transport, exact interior pullback, lax closure pullback, the
+retraction chamber, strict fresh-return defect, and retraction impossibility. This is the first
+proved coupling between source-normal grammar genesis and observer repair. It does not yet produce
+the next challenge recursively; that is ERM-A.
+
+### RLM Law XXXI -- law history is a survival spectrum, not a sum of failures
+
+For a finite composable history, a local failure is provisional. Its global grade is the stage
+carrier modulo both past attainment and the kernel of its complete future tail. These grades form
+an exhaustive filtration of the total defect. Refactoring one act through an intermediate carrier
+does not add an independent obstruction: it resolves one old grade into a canonical short exact
+extension of two new grades.
+
+A split inclusion followed by its retraction is the decisive cell. Both local defect spaces are
+nonzero, the total composite is the identity, and a canonical transgression identifies the earlier
+cokernel with the later kernel. Therefore no additive scalar of local failures can be the field
+mechanism. Law birth is what survives all later cancellations, together with the extension data
+recording how it survived.
+
+ULF-LHSM-1 Lean-certifies the finite filtration, every stage quotient, exact refactorization, and
+split transgression. Stable pages, nonexact-observer exchange, completion differentials, and
+infinite histories remain open.
+
+### RLM Law XXXII -- representation birth and execution birth are independent
+
+A generated challenge can be absent from every current representer while adding no semantic
+distinction, and it can split current semantics while already represented. The invariant criterion
+for execution birth is not carrier growth or image escape. It is fibre splitting:
+
+\[
+ R_E(x)=R_E(y),\qquad c(x)\ne c(y),
+ \tag{RLM.8}
+\]
+
+where `R_E(x)=E(x,-)` is the complete row profile. Equivalently, adjoining `c` excludes an
+intervention which preserved every old row profile. For the anti-diagonal this happens exactly
+when equal rows carry unequal diagonal values.
+
+The sharp correction is the finite strict-order diagonal tower. At every stage the anti-diagonal
+is unrepresented, yet the row profile is injective, so every challenge is already determined by
+current semantics and no invisible intervention is lost. Two-state projection and strict-order
+evaluators realize all four represented/unrepresented and effective/inert chambers.
+
+ULF-REE-1 Lean-certifies fibre splitting, invisible-intervention exchange, anti-diagonal
+classification, all four chambers, and inertness of the whole finite diagonal tower. Therefore
+source-normal representer production is not yet reflexive law genesis. Every future formation law
+must certify the old-invisible execution it destroys, or a specified future history in which the
+currently inert birth becomes effective.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -452,6 +514,8 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-PSB-1 | serial primary/secondary birth exactness and outer-kernel cancellation | certified |
 | ULF-CHM-1 | completion-doctrine serial homology, two independent defects, and exactness converse | certified |
 | ULF-DKO-1 | three-stage downstream-kernel obstruction filtration and exact tower | certified |
+| ULF-LHSM-1 | finite-history survival filtration, exact refactorization, and split-cancellation transgression | certified |
+| ULF-REE-1 | representation/execution fibre-splitting exchange, four independence chambers, and finite diagonal-tower inertness | certified |
 | ULF-ALG-2 | laminar static-dimension-one doctrine with arbitrary adaptive stress and exact convex value | certified |
 | ULF-ALG-3 | intertwined challenge-prolongation transport, observer rank contraction, and exact hidden residual for apparent closure | certified |
 | ULF-DLG-1 | marked-context production, nested-repair chain law, strict outer locality, and interaction-ancestry erasure no-go | certified |
@@ -461,6 +525,7 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-RLR-1 | observer-induced relational law, lax execution, serial two-defect interchange, exact injectivity chamber, and independent splice cells | certified |
 | ULF-RLR-2 | least invariant coarsening, greatest invariant refinement, opposite absorption, exchange iff executability, and maximal three-state repair split | certified |
 | ULF-DJG-1 | diagonal challenge birth, minimal conservative successor, finite strict-order tower, and filtered-limit nonexchange | certified |
+| ULF-ERM-1 | conservative carrier genesis, exact remembering/lax forgetting base change, compatible-retraction chamber, and strict fresh-return defect | certified |
 | ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
@@ -481,6 +546,8 @@ RLM deliberately splices known mathematics, but changes the question connecting 
 - sheaf/descent and obstruction theory supply local/global promotion tests;
 - functional analysis and derived completion supply admission-relative exactness;
 - intervention theory supplies active reporters;
+- predicate refinement and observational equivalence supply semantic fibre splitting, while
+  diagonalization supplies representer escape; RLM separates and recursively couples the axes;
 - thermodynamics and directed topology supply formation work;
 - recurrence and covering theory separate closed observation from open law history.
 - relation calculus and abstract interpretation supply multivalued effective laws and spurious
@@ -520,6 +587,13 @@ self-revising calculus and make cross-laboratory predictions. A list of analogie
 15. **Finite closure mirage:** a challenge may be realized on every finite coordinate horizon and
     still be absent globally; applying the source-normal successor before versus after cofinal
     formation then produces nonisomorphic doctrines.
+16. **Fresh-return asymmetry:** conservative grammar growth can leave every old execution unchanged
+    while changing old future-forgetting repair through paths visiting fresh states; future-retaining
+    repair remains exactly stable, and a compatible semantic retraction is a sufficient no-defect
+    certificate.
+17. **Local-failure cancellation:** histories with the same total map can have different local
+    failure spectra; a split inclusion--retraction has two nonzero local defects but zero global
+    defect, so every route-independent law count must factor through survival and transgression.
 
 ## 7. Fields-medalist research programme
 
@@ -582,11 +656,17 @@ mechanism tuple before its endpoint and predict one theorem not used to define t
 3. **Revealed-work integrability:** derive directed work from source interventions; positive work
    cycles must falsify every scalar action rather than trigger a fitted metric change.
 4. **Infinite coherence:** convergence criterion for an unbounded promotion differential tower.
-5. **Higher renormalization:** extend certified set-level relational flow to closure, completion,
+5. **Recursive representability:** make a fresh-return or admission defect generate the next legal
+   challenge and least conservative representer without a state-indexed oracle; prove whether the
+   resulting revision terminates, recurs after observation, or escapes every finite grammar.
+6. **Higher renormalization:** extend certified set-level relational flow to closure, completion,
    convexification, probability kernels, and cofinal observers; derive nontrivial fixed points and
    exchange laws rather than fitting deterministic selectors.
-6. **Whole-corpus realization:** one source-normal mechanism instance spanning at least three
+7. **Whole-corpus realization:** one source-normal mechanism instance spanning at least three
    nonisomorphic mathematical organs.
+8. **Stable law-history pages:** lift the certified finite linear survival spectrum to coherent
+   cofibres, derive its page differential, and prove exact-observer preservation plus the first
+   completion correction term.
 
 ## 9. Death criteria
 
@@ -628,3 +708,13 @@ Retire RLM as theatre if:
   turns source functions into relations; execution is lax; serial observation adds a second,
   independent splice layer; composition is preserved for all relations exactly by injective
   observers.
+- 2026-08-10 -- added endogenous representability exchange as Law XXX: conservative carrier genesis
+  commutes exactly with future-retaining repair, only laxly with future-forgetting repair, and a
+  fresh state can change old coarse semantics without changing old execution.
+- 2026-08-10 -- added Law-History Spectral Mechanics as Law XXXI: local failures are provisional,
+  global birth is future-tail survival, refactorization is exact grade refinement, and split local
+  defects can transgress and cancel. ULF-LHSM-1 Lean-certifies the finite mechanism.
+- 2026-08-10 -- added Representation--Execution Exchange as Law XXXII: representer birth and
+  semantic execution birth are independent; exact novelty is row-fibre splitting; the finite
+  diagonal-genesis tower is unrepresented but operationally inert at every stage. ULF-REE-1
+  Lean-certifies the four chambers and the feedback no-go.
