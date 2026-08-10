@@ -134,15 +134,24 @@ So the abstract construction is idempotent and `A/J_S` is genuinely minimal.
 the envelope comparison map outright.  So envelope uniqueness = elementary half (uniqueness, from
 generation) + the whole difficulty (existence, from Hamana).  Attack existence, never uniqueness.
 
-## Stable image filtration — `ShilovStableImage.lean` (foundation for Mittag-Leffler)
-`transitionDown bond n k : A (n+k) →ₗ A n` by recursion on k — CAST-FREE because `n+(k+1)` reduces
-to `(n+k)+1`.  `stageImage bond n k := range (transitionDown bond n k)`; `stageImage_antitone`.
-`HasStableImages` = Mittag-Leffler.  Both existing corpus extremes are ML
-(`hasStableImages_of_surjective`, `_of_zero_bond`) — same filtration, opposite ends.
-NEXT BUILD (known cost): ML ⇒ lim¹ = 0.  The obstruction is index casts: the telescoping needs
-`bond n ∘ transitionDown (n+1) k = transitionDown n (k+1)`, and `(n+1)+k = n+(k+1)` is
-propositional, not definitional.  Budget one transport lemma proved by induction on k; every route
-(eventually-surjective, eventually-zero, six-term reduction) needs it.
+## Stable image filtration — `ShilovStableImage.lean`
+**Use `Nat.leRec`, not gap recursion.**  `downTo bond (h : n ≤ m) : A m →ₗ A n` via
+`Nat.leRec LinearMap.id (fun _ ih => ih.comp (bond k))` keeps every index literal, so BOTH
+`downTo_succ` (peel at top) and `downTo_shift` (peel at bottom) are provable with zero transport.
+Defining it as `A (n+k) →ₗ A n` by recursion on k gives only the top identity and forces the
+propositional rewrite `(n+1)+k = n+(k+1)` — that was a dead end; do not redo it.
+`reach bond n m h := range (downTo bond h)`, `reach_antitone`, and `map_bond_reach`
+(`bond n (reach (n+1) m) = reach n m`) — the cross-stage identity Mittag-Leffler needs.
+`HasStableImages` = ML.  Both corpus extremes are ML (`hasStableImages_of_surjective`,
+`_of_zero_bond`); `polyTower_nonsurjective_and_nonvanishing` is a tower that never stabilises.
+DONE: `inverseDifference_surjective_of_eventually_zero` — eventually-zero transitions ⇒ lim¹ = 0.
+`trans bond n j` = composite extended by zero below the diagonal; correction sum
+`∑_{j ∈ Ico n (K n)} trans n j (b j)`; `partialSum_eq_of_le` (truncation point irrelevant) +
+`partialSum_sub` (telescopes in ONE step via `trans_shift`).  Strictly generalizes
+`derivedLimitOne_subsingleton_of_zero_bond` (case K n = n+1).
+NEXT for full ML: (a) stable images have onto bonds — from `map_bond_reach` + stability;
+(b) the quotient tower A/B has eventually-zero transitions — from stability; (c) six-term
+reduction.  (a) and (b) are now routine given `map_bond_reach`.
 
 ## Already in the corpus — do not rebuild
 `ShilovBoundaryMigrationDefect.escapeDetectionEquiv` is the card's `(16)`, and

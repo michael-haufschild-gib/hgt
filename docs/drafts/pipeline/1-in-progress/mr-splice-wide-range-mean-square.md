@@ -2850,3 +2850,206 @@ statements; they are simply not on the path to the estimate.
 
 The signed comparison: `dyadicMeanSquare_eq_count` with the exact kernel against
 `gallagher_identity`'s logarithmic kernel, then the Halász bound for `∫ |logPoly|²`.
+
+## 2026-08-10 the signed quadratic form — the correct Gallagher input
+
+`Sieve/DyadicSignedForm.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9017 jobs).
+
+```text
+dyadicMeanSquare_mono :  A' ≤ A, B ≤ B'  →
+  dyadicMeanSquare f ℓ A B ≤ dyadicMeanSquare f ℓ A' B'
+
+dyadicMeanSquare_full_eq :  1 ≤ ℓ,  f supported in [ℓ, M]  →
+  dyadicMeanSquare f ℓ 0 M
+    = ∑_{m, n ∈ [1, M+ℓ]} f(m)·f(n)·((min(m,n) + ℓ) − max(m,n))
+
+dyadicMeanSquare_le_signed_form :  1 ≤ ℓ,  B ≤ M,  f supported in [ℓ, M]  →
+  dyadicMeanSquare f ℓ A B ≤ ∑_{m, n ∈ [1, M+ℓ]} f(m)·f(n)·(ℓ − |m − n|)₊
+```
+
+The mechanism is that every term of `dyadicMeanSquare` is a square, so **enlarging** the range of
+starting points only increases it — and enlarging it to cover every start that sees the support of
+`f` turns the exact kernel of `overlap_card_eq` into Gallagher's `(ℓ − |m − n|)₊` at every pair that
+contributes.
+
+The signs survive.  That is the whole difference from the previous unit: the same inequality with
+`|f(m)|·|f(n)|` is the trivial bound and can prove nothing, whereas this one is exactly the form
+`gallagher_identity` evaluates as `∫ ‖logWindowSum‖²`, where the cancellation lives.  The price of
+enlarging the range is zero — the discarded starting points contribute squares, which only help.
+
+### What is left
+
+Substituting `gallagher_identity` for the signed form, and the Halász bound for `∫ |logPoly|²`.
+
+## 2026-08-10 the window as a sum of translates — entry to the Fourier side
+
+`Sieve/WindowAsShifts.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9018 jobs).
+
+```text
+window_eq_sum_shifts :  ∑_{b ∈ (z, z+ℓ]} f(b) = ∑_{j=1}^{ℓ} f(z + j)
+fixedWindowSq_eq_shifts, dyadicMeanSquare_eq_shifts :  the same, squared and summed
+```
+
+Read as an operator on sequences, the window is convolution with the indicator of `[1, ℓ]`.  So on
+the Fourier side the window sum is `F(θ)` times a Dirichlet kernel, and the signed quadratic form of
+`DyadicSignedForm` becomes
+
+```text
+∑_{z} (∑_{b ∈ (z, z+ℓ]} f(b))² = ∫₀¹ |F(θ)|²·|D_ℓ(θ)|² dθ ,
+```
+
+which is the shape the large-values machinery acts on: `|D_ℓ(θ)| ≤ min(ℓ, 1/2‖θ‖)` localises the
+integral near `θ = 0` and near rationals of small denominator, and `|F|` there is what Halász
+bounds.
+
+A note on which Gallagher to use.  The corpus's `gallagher_identity` is the *multiplicative* form,
+with kernel `(δ − |log m − log n|)₊`, feeding `logPoly` and hence units 1–6 directly.  The additive
+form reached here has kernel `(ℓ − |m − n|)₊` and feeds the circle-method machinery
+(`TrigParseval`, `FejerBounds`, `LargeSieveGallagher`).  `AdditiveLogMatching` relates the two
+kernels pointwise, but pointwise kernel comparison does not transfer between *signed* quadratic
+forms — so the choice between the two routes is a real decision, not a formality, and it is the
+next thing to settle.
+
+### What is left
+
+The Fourier identity `∑_z S_ℓ(z)² = ∫₀¹ |F|²|D_ℓ|²`, then the large-values/Halász bound.
+
+## 2026-08-10 route settled: the multiplicative Gallagher, and the window's log width
+
+`Sieve/WindowLogWidth.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9019 jobs).
+
+**The route is the multiplicative one.**  `gallagher_identity` is available here in that form, and
+its output is `logPoly` — the object the Halász chain of units 1–6 already acts on.  The additive
+route would need a separate large-values theory on the circle, none of which is built.  Taking the
+multiplicative route requires the additive window to be a window in `log`, which it is, exactly:
+
+```text
+logWidth ℓ z := log(z+ℓ) − log z
+
+mem_window_iff_log :  1 ≤ z, 1 ≤ b  →
+  b ∈ (z, z+ℓ]  ↔  log z < log b ≤ log z + logWidth ℓ z
+
+logWidth_le :  logWidth ℓ z ≤ ℓ/z
+le_logWidth :  ℓ/(z+ℓ) ≤ logWidth ℓ z
+```
+
+Both width bounds are `log x ≤ x − 1`, used on `(z+ℓ)/z` and on `z/(z+ℓ)`.  Over a dyadic range of
+starting points the width therefore varies by at most a factor two.
+
+That it varies *at all* is exactly why the two Gallagher forms are not interchangeable for free: a
+fixed-`δ` logarithmic family is not the additive family, and signed quadratic forms do not compare
+under pointwise kernel bounds — the trap that made `dyadicMeanSquare_le_band` true and useless.
+Pinning the width between `ℓ/(z+ℓ)` and `ℓ/z` is what turns that from an obstruction into a
+factor-two loss.
+
+### What is left
+
+The comparison of the varying-width family with a fixed-`δ` one (Gallagher's Sobolev lemma,
+`gallagher_sobolev`, already in the corpus), then `gallagher_identity` and the Halász bound for
+`∫ |logPoly|²`.
+
+## 2026-08-10 the bridge onto Gallagher's machinery
+
+`Sieve/WindowToLogWindowSum.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9021 jobs).
+
+```text
+mem_logWindow_iff :  u ∈ logWindow δ n  ↔  u < log n ≤ u + δ
+
+window_sum_eq_logWindowSum :  1 ≤ z,  s ⊇ (support of f inside the window),  0 ∉ s  →
+  ∑_{b ∈ (z, z+ℓ]} f(b) = logWindowSum f s (logWidth ℓ z) (log z)
+```
+
+The corpus's `logWindowSum a s δ u` selects exactly the `n ∈ s` with `u < log n ≤ u + δ`; at
+`u = log z` and `δ = logWidth ℓ z` that is the additive window `(z, z+ℓ]`, by `mem_window_iff_log`.
+So the additive short sums of the Matomäki–Radziwiłł reduction *are* the corpus's logarithmic ones,
+evaluated at the points `log z` with the width `logWidth ℓ z`.
+
+From here `gallagher_identity` applies verbatim:
+
+```text
+∫_ℝ ‖logWindowSum a s δ u‖² du = ∫_ℝ (𝓕 (triC δ) w).re · ‖logPoly a s w‖² dw ,
+```
+
+and `logPoly` is the object units 1–6 bound.  The one remaining structural step is the passage from
+the *discrete* family `{log z : z ∈ [A,B]}` with varying width to the *continuous* integral at fixed
+width — Gallagher's Sobolev lemma, already in the corpus as `gallagher_sobolev`, plus the factor-two
+control of `logWidth` proved in the previous unit.
+
+### What is left
+
+The discrete-to-continuous passage, then the Halász bound for `∫ |logPoly|²`.
+
+## 2026-08-10 the discrete-to-continuous passage is free — and a design finding
+
+`Sieve/WindowRealStep.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9022 jobs).
+
+```text
+windowReal f ℓ v := ∑_{b ∈ (⌊v⌋, ⌊v⌋+ℓ]} f(b)
+
+windowReal_eq :  z ≤ v < z+1  →  windowReal f ℓ v = ∑_{b ∈ (z, z+ℓ]} f(b)
+windowReal_sq_eq :  the same, squared, is `fixedWindowSq f ℓ z`
+```
+
+The window sum extended to a real start is **constant on each unit cell**, because the integers in
+`(v, v+ℓ]` do not move while `v` crosses no integer.  So the discrete sum over integer starts and
+the integral over `[A, B+1]` agree exactly: the discrete-to-continuous passage costs nothing in the
+additive variable and needs no Sobolev lemma at all.
+
+**The design finding.**  The corresponding statement in the logarithmic variable is *false* at fixed
+width, because the right endpoint `e^{u+δ}` sweeps continuously as `u` moves.  That asymmetry is why
+`logWidth` had to be pinned rather than fixed — and it points at something about the reduction
+itself: the fibres are naturally multiplicative.  `innerFibre` at `a` is
+`(x/a, (x/a)(1 + h/√x)]`, whose *relative* length `h/√x` is independent of `a`, while its absolute
+length `h√x/a` is not.  The dyadic decomposition of `RademacherMenshov` was carried out in absolute
+lengths, which is what introduced the varying `logWidth`; a decomposition dyadic in the
+*multiplicative* variable would keep the width fixed and make `gallagher_identity` apply with one
+`δ` throughout.
+
+That is a real choice, not a detail, and it is worth settling before the analytic step rather than
+after: the present chain is correct but pays a factor-two width variation at every level, whereas
+the multiplicative decomposition would pay none.
+
+### What is left
+
+Either (a) carry the factor-two variation through the Gallagher step, or (b) redo the dyadic
+decomposition multiplicatively.  Then `gallagher_identity` and the Halász bound for `∫ |logPoly|²`.
+
+## 2026-08-10 the design question, settled: the fibres already have a fixed width
+
+`Sieve/FibreFixedWidth.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9023 jobs).
+
+```text
+fibreWidth x h := log(1 + h/√x)
+
+innerFibre_log_bounds :  4 ≤ x, 0 ≤ h, a ∈ outerBlock x h, 1 ≤ b, b ∈ innerFibre x h a  →
+  log(x/a) ≤ log b ≤ log(x/a) + fibreWidth x h
+
+fibreWidth_pos :  0 < x, 0 < h  →  0 < fibreWidth x h
+```
+
+The fibre above `a` is `[⌈x/a⌉, ⌊(x + h√x)/a⌋]`, whose absolute length `h√x/a` depends on `a` — but
+its endpoints are `x/a` and `(x/a)·(1 + h/√x)`, so its **relative** length does not.  Every fibre is
+a logarithmic window of one common width `log(1 + h/√x)`, translated to a different start `log(x/a)`.
+
+This settles the question raised by the previous unit.  The varying `logWidth` was an artefact of
+decomposing in absolute lengths; the reduction's own objects are already at fixed multiplicative
+width, which is exactly the parametrisation `gallagher_identity` is stated in.  The `√x` starting
+points `log(x/a)`, `a` ranging over the dyadic block, are what the mean square runs over.
+
+### Consequence for the route
+
+The Rademacher–Menshov chain (`WindowPartialSum` … `MaximalWindowReduction`) removes the supremum
+over window *lengths* and is independent of this: it applies to any family of windows, and its
+output `dyadicMeanSquare` can be read at the multiplicative scales just as well as the additive
+ones.  What changes is that the Gallagher step now sees one `δ` rather than a factor-two range, so
+no width-variation loss is incurred at any level.
+
+### What is left
+
+`gallagher_identity` at `δ = fibreWidth x h`, and the Halász bound for `∫ |logPoly|²`.

@@ -986,3 +986,20 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
 - Honest boundary: this is set-level kinematics and anti-theatre gate, not yet full field dynamics.
   Next higher mechanism must govern closure/completion/convexification of relational laws and
   produce nontrivial promotion response or fixed-point prediction.
+
+## 2026-08-10 — bipolar repair exchange proved and Lean-certified
+
+- Rejected closure/composition and future-kernel refinements as separate field pivots: both were
+  already present in the corpus.  Coupling them exposed a new route-independent law.
+- Proved ULF-RLR-2.  Every observer equivalence has two universal deterministic repairs relative to
+  a unary law family: greatest invariant refinement and least invariant coarsening.  Each absorbs
+  the other in the order applied.  Repair schedules commute exactly on already executable
+  observers.
+- Exact three-state cell sends the two orders to equality and the universal relation while the raw
+  observed law is nondeterministic.  This makes ordered repair history observable without fitting a
+  scalar curvature or route-specific residue.
+- Lean module `ConstitutiveBipolarObserverRepair` passes direct elaboration, 2,999-job leaf build,
+  axiom audit (`propext`, `Quot.sound` only), and 11,578-job Universal Law Field umbrella build.
+- Higher open mechanism: endogenous feedback from failed repair to legal challenge language to the
+  next admissible repair.  Static closure/interior calculus is now a boundary condition, not the
+  proposed field itself.

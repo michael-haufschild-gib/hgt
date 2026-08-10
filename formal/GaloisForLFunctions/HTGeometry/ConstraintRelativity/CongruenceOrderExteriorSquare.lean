@@ -918,7 +918,30 @@ theorem kaehlerSplitRaw_single_gt [Invertible (2 : R)] (ha : a ≠ 0) {i k : Fin
     · rw [if_neg h1, if_neg (fun hc => h1 ⟨(hp.1 hc).2, (hp.1 hc).1⟩)]
       simp
 
-/-! ### The relation submodule in `R`-generators -/
+end Splitting
+
+/-! ## The relation submodule in `R`-generators -/
+
+section Relations
+
+variable {R : Type*} [CommRing R] {a : R} {m : ℕ}
+
+private theorem smul_single (c x : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) (i : Fin m) :
+    c • (Pi.single i x : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+      = Pi.single i (c * x) := by
+  classical
+  funext j
+  by_cases h : j = i
+  · subst h; simp
+  · simp [Pi.single_eq_of_ne h]
+
+theorem aSmul_single (i k : Fin m) :
+    a • (Pi.single i (congruenceX a m k)
+        : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+      = Pi.single i (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a
+          * congruenceX a m k) := by
+  rw [← IsScalarTower.algebraMap_smul (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a,
+    smul_single]
 
 /-- The differentiated square relation `(2xᵢ − a)·eᵢ`. -/
 noncomputable def sqRelation (a : R) (m : ℕ) (i : Fin m) :
@@ -931,7 +954,7 @@ noncomputable def crossRelation (a : R) (m : ℕ) (i j : Fin m) :
     Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m :=
   Pi.single i (congruenceX a m j) + Pi.single j (congruenceX a m i)
 
-theorem sqRelation_mem : sqRelation a m i ∈ kaehlerRelationSet a m := Or.inl ⟨i, rfl⟩
+theorem sqRelation_mem (i : Fin m) : sqRelation a m i ∈ kaehlerRelationSet a m := Or.inl ⟨i, rfl⟩
 
 theorem crossRelation_mem {i j : Fin m} (hij : i ≠ j) :
     crossRelation a m i j ∈ kaehlerRelationSet a m := Or.inr ⟨i, j, hij, rfl⟩
@@ -940,68 +963,56 @@ theorem congruenceX_smul_sqRelation_self (i : Fin m) :
     congruenceX a m i • sqRelation a m i
       = a • (Pi.single i (congruenceX a m i)
           : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) := by
-  classical
-  rw [sqRelation, ← Pi.single_smul, ← Pi.single_smul]
+  rw [sqRelation, smul_single, aSmul_single]
   congr 1
-  rw [smul_eq_mul, Algebra.smul_def, mul_sub, mul_add, congruenceX_sq]
+  rw [mul_sub, mul_add, congruenceX_sq]
   ring
 
 theorem congruenceX_smul_sqRelation_ne {i l : Fin m} (h : l ≠ i) :
     congruenceX a m l • sqRelation a m i
       = -(a • (Pi.single i (congruenceX a m l)
           : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)) := by
-  classical
-  rw [sqRelation, ← Pi.single_smul, ← Pi.single_smul, ← Pi.single_neg]
+  rw [sqRelation, smul_single, aSmul_single, ← Pi.single_neg]
   congr 1
-  rw [smul_eq_mul, Algebra.smul_def, mul_sub, mul_add, congruenceX_mul_of_ne h]
+  rw [mul_sub, mul_add, congruenceX_mul_of_ne h]
   ring
 
 theorem congruenceX_smul_crossRelation_left {i j : Fin m} (hij : i ≠ j) :
     congruenceX a m i • crossRelation a m i j
       = a • (Pi.single j (congruenceX a m i)
           : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) := by
-  classical
-  rw [crossRelation, smul_add, ← Pi.single_smul, ← Pi.single_smul, ← Pi.single_smul,
-    smul_eq_mul, smul_eq_mul, congruenceX_mul_of_ne hij, Pi.single_zero, zero_add,
-    congruenceX_sq, Algebra.smul_def]
+  rw [crossRelation, smul_add, smul_single, smul_single, aSmul_single,
+    congruenceX_mul_of_ne hij, Pi.single_zero, zero_add, congruenceX_sq]
 
 theorem congruenceX_smul_crossRelation_right {i j : Fin m} (hij : i ≠ j) :
     congruenceX a m j • crossRelation a m i j
       = a • (Pi.single i (congruenceX a m j)
           : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) := by
-  classical
-  rw [crossRelation, smul_add, ← Pi.single_smul, ← Pi.single_smul, ← Pi.single_smul,
-    smul_eq_mul, smul_eq_mul, congruenceX_mul_of_ne hij.symm, Pi.single_zero, add_zero,
-    congruenceX_sq, Algebra.smul_def]
+  rw [crossRelation, smul_add, smul_single, smul_single, aSmul_single,
+    congruenceX_mul_of_ne hij.symm, Pi.single_zero, add_zero, congruenceX_sq]
 
 theorem congruenceX_smul_crossRelation_other {i j l : Fin m} (hli : l ≠ i) (hlj : l ≠ j) :
     congruenceX a m l • crossRelation a m i j = 0 := by
-  classical
-  rw [crossRelation, smul_add, ← Pi.single_smul, ← Pi.single_smul, smul_eq_mul, smul_eq_mul,
-    congruenceX_mul_of_ne hlj, congruenceX_mul_of_ne hli, Pi.single_zero, Pi.single_zero,
-    add_zero]
+  rw [crossRelation, smul_add, smul_single, smul_single, congruenceX_mul_of_ne hlj,
+    congruenceX_mul_of_ne hli, Pi.single_zero, Pi.single_zero, add_zero]
 
 theorem congruenceX_smul_aSingle_self (i k : Fin m) :
     congruenceX a m k • (a • (Pi.single i (congruenceX a m k)
         : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m))
       = a • (a • (Pi.single i (congruenceX a m k)
           : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)) := by
-  classical
-  rw [← Pi.single_smul, ← Pi.single_smul, ← Pi.single_smul, ← Pi.single_smul, ← Pi.single_smul]
+  rw [aSmul_single, ← IsScalarTower.algebraMap_smul
+      (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a, smul_single, smul_single]
   congr 1
-  rw [smul_eq_mul, Algebra.smul_def, Algebra.smul_def, Algebra.smul_def, ← mul_assoc,
-    ← mul_assoc, mul_comm (congruenceX a m k)
-      (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a),
-    mul_assoc, congruenceX_sq, ← mul_assoc]
+  rw [← mul_assoc, mul_comm (congruenceX a m k)
+      (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a), mul_assoc, congruenceX_sq]
 
 theorem congruenceX_smul_aSingle_ne {k l : Fin m} (h : l ≠ k) (i : Fin m) :
     congruenceX a m l • (a • (Pi.single i (congruenceX a m k)
         : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)) = 0 := by
-  classical
-  rw [← Pi.single_smul, ← Pi.single_smul, smul_eq_mul, Algebra.smul_def, ← mul_assoc,
-    mul_comm (congruenceX a m l)
-      (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a),
-    mul_assoc, congruenceX_mul_of_ne h, mul_zero, Pi.single_zero]
+  rw [aSmul_single, smul_single, ← mul_assoc, mul_comm (congruenceX a m l)
+      (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a), mul_assoc,
+    congruenceX_mul_of_ne h, mul_zero, Pi.single_zero]
 
 /-- The `R`-generators of the relation submodule: the differentiated relations together with the
 products `a·xₖ·eᵢ` that they force. -/
@@ -1022,13 +1033,14 @@ theorem aSingle_mem_kaehlerRelations (i k : Fin m) :
   by_cases h : k = i
   · subst h
     rw [← congruenceX_smul_sqRelation_self]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span (sqRelation_mem))
+    exact Submodule.smul_mem _ _ (Submodule.subset_span (sqRelation_mem k))
   · have hv : congruenceX a m k • sqRelation a m i ∈ kaehlerRelations a m :=
-      Submodule.smul_mem _ _ (Submodule.subset_span (sqRelation_mem))
+      Submodule.smul_mem _ _ (Submodule.subset_span (sqRelation_mem i))
     rw [congruenceX_smul_sqRelation_ne h] at hv
     simpa using neg_mem hv
 
-theorem congruenceX_smul_mem_relR (l : Fin m) {v : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m}
+theorem congruenceX_smul_mem_relR (l : Fin m)
+    {v : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m}
     (hv : v ∈ kaehlerRelationsR a m) :
     congruenceX a m l • v ∈ kaehlerRelationsR a m := by
   classical
@@ -1038,19 +1050,24 @@ theorem congruenceX_smul_mem_relR (l : Fin m) {v : Fin m → MvPolynomial (Fin m
     rcases hw with (⟨i, rfl⟩ | ⟨i, j, hij, rfl⟩) | ⟨i, k, rfl⟩
     · by_cases h : l = i
       · subst h
+        show congruenceX a m l • sqRelation a m l ∈ _
         rw [congruenceX_smul_sqRelation_self]
         exact Submodule.subset_span (Or.inr ⟨l, l, rfl⟩)
-      · rw [congruenceX_smul_sqRelation_ne h]
+      · show congruenceX a m l • sqRelation a m i ∈ _
+        rw [congruenceX_smul_sqRelation_ne h]
         exact neg_mem (Submodule.subset_span (Or.inr ⟨i, l, rfl⟩))
     · by_cases h1 : l = i
       · subst h1
+        show congruenceX a m l • crossRelation a m l j ∈ _
         rw [congruenceX_smul_crossRelation_left hij]
         exact Submodule.subset_span (Or.inr ⟨j, l, rfl⟩)
       · by_cases h2 : l = j
         · subst h2
+          show congruenceX a m l • crossRelation a m i l ∈ _
           rw [congruenceX_smul_crossRelation_right hij]
           exact Submodule.subset_span (Or.inr ⟨i, l, rfl⟩)
-        · rw [congruenceX_smul_crossRelation_other h1 h2]
+        · show congruenceX a m l • crossRelation a m i j ∈ _
+          rw [congruenceX_smul_crossRelation_other h1 h2]
           exact zero_mem _
     · by_cases h : l = k
       · subst h
@@ -1065,14 +1082,18 @@ theorem congruenceX_smul_mem_relR (l : Fin m) {v : Fin m → MvPolynomial (Fin m
       smul_smul, mul_comm, ← smul_smul, IsScalarTower.algebraMap_smul]
     exact Submodule.smul_mem _ r hx
 
+variable [IsDomain R]
+
 theorem congruenceCoordEquiv_eq (ha : a ≠ 0) (p : R × (Fin m → R)) :
     congruenceCoordEquiv (a := a) (m := m) ha p
       = algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) p.1
-        + ∑ k, p.2 k • congruenceX a m k := by
-  rw [congruenceCoordEquiv_apply, linForm, map_add, map_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [map_mul, Algebra.smul_def]
+        + ∑ k, algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) (p.2 k)
+            * congruenceX a m k := by
+  have hsum : (∑ k, Ideal.Quotient.mk (congruenceIdeal a m) (C (p.2 k) * X k))
+      = ∑ k, algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) (p.2 k)
+          * congruenceX a m k :=
+    Finset.sum_congr rfl fun k _ => map_mul _ _ _
+  rw [congruenceCoordEquiv_apply, linForm, map_add, map_sum, hsum]
   rfl
 
 theorem smul_mem_relR (ha : a ≠ 0) (c : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
@@ -1083,7 +1104,7 @@ theorem smul_mem_relR (ha : a ≠ 0) (c : MvPolynomial (Fin m) R ⧸ congruenceI
   refine add_mem ?_ (sum_mem fun k _ => ?_)
   · rw [IsScalarTower.algebraMap_smul]
     exact Submodule.smul_mem _ _ hv
-  · rw [smul_assoc]
+  · rw [mul_smul, IsScalarTower.algebraMap_smul]
     exact Submodule.smul_mem _ _ (congruenceX_smul_mem_relR k hv)
 
 /-- The `R`-span of the enlarged generating set, promoted to a submodule over the order. -/
@@ -1100,7 +1121,8 @@ elements `a·xₖ·eᵢ`. -/
 theorem kaehlerRelations_restrictScalars (ha : a ≠ 0) :
     (kaehlerRelations a m).restrictScalars R = kaehlerRelationsR a m := by
   refine le_antisymm (fun v hv => ?_) ?_
-  · have hsub : kaehlerRelationSet a m ⊆ (kaehlerRelationsA ha : Set _) := by
+  · have hsub : kaehlerRelationSet a m
+        ⊆ (kaehlerRelationsA (a := a) (m := m) ha : Set _) := by
       rintro w (⟨i, rfl⟩ | ⟨i, j, hij, rfl⟩)
       · exact Submodule.subset_span (Or.inl (Or.inl ⟨i, rfl⟩))
       · exact Submodule.subset_span (Or.inl (Or.inr ⟨i, j, hij, rfl⟩))
@@ -1111,6 +1133,425 @@ theorem kaehlerRelations_restrictScalars (ha : a ≠ 0) :
     · exact Submodule.subset_span (Or.inr ⟨i, j, hij, rfl⟩)
     · exact aSingle_mem_kaehlerRelations i k
 
-end Splitting
+end Relations
+
+/-! ## The cotangent module is the diagonal-plus-antisymmetric model -/
+
+section Model
+
+variable {R : Type*} [CommRing R] {a : R} {m : ℕ} [IsDomain R]
+
+theorem congruenceCoordEquiv_symm_algebraMap (ha : a ≠ 0) (r : R) :
+    (congruenceCoordEquiv (a := a) (m := m) ha).symm
+        (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) r) = (r, 0) := by
+  rw [LinearEquiv.symm_apply_eq, congruenceCoordEquiv_apply]
+  have h : linForm r (0 : Fin m → R) = C r := by simp [linForm]
+  rw [h]
+  rfl
+
+theorem congruenceCoordEquiv_symm_sqGen (ha : a ≠ 0) (i : Fin m) :
+    (congruenceCoordEquiv (a := a) (m := m) ha).symm
+        (congruenceX a m i + congruenceX a m i
+          - algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) a)
+      = (-a, Pi.single i 1 + Pi.single i 1) := by
+  rw [map_sub, map_add, congruenceCoordEquiv_symm_gen, congruenceCoordEquiv_symm_algebraMap]
+  refine Prod.ext ?_ ?_ <;> simp
+
+variable [Invertible (2 : R)]
+
+theorem kaehlerSplitRaw_sqRelation (ha : a ≠ 0) (i : Fin m) :
+    kaehlerSplitRaw ha (sqRelation a m i) = 0 := by
+  classical
+  refine Prod.ext (funext fun j => ?_) (funext fun p => ?_)
+  · rw [sqRelation, kaehlerSplitRaw_single_fst, congruenceCoordEquiv_symm_sqGen]
+    by_cases h : j = i
+    · subst h
+      rw [if_pos rfl]
+      have hcalc : (-a) + ⅟(2 : R) * a * ((Pi.single j (1 : R) : Fin m → R) j
+          + (Pi.single j (1 : R) : Fin m → R) j) = 0 := by
+        rw [Pi.single_eq_same]
+        have h2 : (1 : R) + 1 = 2 := by norm_num
+        rw [h2]
+        calc (-a) + ⅟(2 : R) * a * 2 = (-a) + (⅟(2 : R) * 2) * a := by ring
+          _ = (-a) + a := by rw [invOf_mul_self, one_mul]
+          _ = 0 := by ring
+      show Submodule.Quotient.mk ((-a) + ⅟(2 : R) * a * ((Pi.single j (1 : R) : Fin m → R) j
+        + (Pi.single j (1 : R) : Fin m → R) j)) = 0
+      rw [hcalc]
+      simp
+    · rw [if_neg h]
+      rfl
+  · rw [sqRelation, kaehlerSplitRaw_single_snd, congruenceCoordEquiv_symm_sqGen]
+    have hlt : p.1.1 < p.1.2 := p.2
+    have key : ∀ l : Fin m, l ≠ i →
+        ((-a, (Pi.single i (1 : R) + Pi.single i (1 : R) : Fin m → R)) : R × (Fin m → R)).2 l
+          = 0 := by
+      intro l hl
+      show (Pi.single i (1 : R) : Fin m → R) l + (Pi.single i (1 : R) : Fin m → R) l = 0
+      rw [Pi.single_eq_of_ne hl]
+      simp
+    by_cases h1 : p.1.1 = i
+    · have h2 : p.1.2 ≠ i := by
+        intro hc
+        rw [h1, hc] at hlt
+        exact lt_irrefl _ hlt
+      rw [if_pos h1, if_neg h2, key _ h2, sub_zero]
+      simp
+    · rw [if_neg h1]
+      by_cases h2 : p.1.2 = i
+      · rw [if_pos h2, key _ h1, zero_sub, neg_zero]
+        simp
+      · rw [if_neg h2, sub_zero]
+        simp
+
+theorem kaehlerSplitRaw_crossRelation (ha : a ≠ 0) {i j : Fin m} (hij : i ≠ j) :
+    kaehlerSplitRaw ha (crossRelation a m i j) = 0 := by
+  rw [crossRelation, map_add]
+  rcases lt_or_gt_of_ne hij with h | h
+  · rw [kaehlerSplitRaw_single_lt ha h, kaehlerSplitRaw_single_gt ha h]
+    simp
+  · rw [kaehlerSplitRaw_single_gt ha h, kaehlerSplitRaw_single_lt ha h]
+    simp
+
+theorem kaehlerSplitRaw_aSingle (ha : a ≠ 0) (i k : Fin m) :
+    kaehlerSplitRaw ha (a • (Pi.single i (congruenceX a m k)
+      : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)) = 0 := by
+  classical
+  have hza : (Submodule.Quotient.mk a : R ⧸ Ideal.span ({a} : Set R)) = 0 :=
+    (Submodule.Quotient.mk_eq_zero _).2 (Ideal.mem_span_singleton.2 dvd_rfl)
+  rw [map_smul]
+  rcases lt_trichotomy i k with h | h | h
+  · rw [kaehlerSplitRaw_single_lt ha h]
+    refine Prod.ext (by simp) ?_
+    show a • (Pi.single (ι := pairIndex m) (M := fun _ => R ⧸ Ideal.span ({a} : Set R))
+      ⟨(i, k), h⟩ (Submodule.Quotient.mk 1)) = 0
+    rw [← Pi.single_smul, ← Submodule.Quotient.mk_smul, smul_eq_mul, mul_one, hza,
+      Pi.single_zero]
+  · subst h
+    rw [kaehlerSplitRaw_single_self ha i]
+    have hz : (Submodule.Quotient.mk (a * (⅟(2 : R) * a))
+        : R ⧸ Ideal.span ({a ^ 2} : Set R)) = 0 :=
+      (Submodule.Quotient.mk_eq_zero _).2 (Ideal.mem_span_singleton.2 ⟨⅟(2 : R), by ring⟩)
+    refine Prod.ext ?_ (by simp)
+    show a • (Pi.single (ι := Fin m) (M := fun _ => R ⧸ Ideal.span ({a ^ 2} : Set R))
+      i (Submodule.Quotient.mk (⅟(2 : R) * a))) = 0
+    rw [← Pi.single_smul, ← Submodule.Quotient.mk_smul, smul_eq_mul, hz, Pi.single_zero]
+  · rw [kaehlerSplitRaw_single_gt ha h]
+    refine Prod.ext (by simp) ?_
+    show a • (-(Pi.single (ι := pairIndex m) (M := fun _ => R ⧸ Ideal.span ({a} : Set R))
+      ⟨(k, i), h⟩ (Submodule.Quotient.mk 1))) = 0
+    rw [smul_neg, ← Pi.single_smul, ← Submodule.Quotient.mk_smul, smul_eq_mul, mul_one, hza,
+      Pi.single_zero, neg_zero]
+
+theorem kaehlerRelationsR_le_ker (ha : a ≠ 0) :
+    kaehlerRelationsR a m ≤ LinearMap.ker (kaehlerSplitRaw ha) := by
+  rw [kaehlerRelationsR, Submodule.span_le]
+  rintro w ((⟨i, rfl⟩ | ⟨i, j, hij, rfl⟩) | ⟨i, k, rfl⟩)
+  · exact kaehlerSplitRaw_sqRelation ha i
+  · exact kaehlerSplitRaw_crossRelation ha hij
+  · exact kaehlerSplitRaw_aSingle ha i k
+
+/-- The splitting map descends to the cotangent model. -/
+noncomputable def kaehlerSplit (ha : a ≠ 0) :
+    ((Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m)
+      →ₗ[R] cotangentModel a m :=
+  Submodule.liftQ ((kaehlerRelations a m).restrictScalars R) (kaehlerSplitRaw ha)
+    (by rw [kaehlerRelations_restrictScalars ha]; exact kaehlerRelationsR_le_ker ha)
+
+theorem kaehlerSplit_mk (ha : a ≠ 0)
+    (v : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) :
+    kaehlerSplit ha (Submodule.Quotient.mk v) = kaehlerSplitRaw ha v := rfl
+
+end Model
+
+/-! ## The inverse of the splitting map -/
+
+section Inverse
+
+variable {R : Type*} [CommRing R] {a : R} {m : ℕ}
+
+theorem rSmul_single_one (r : R) (i : Fin m) :
+    r • (Pi.single i (1 : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+        : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+      = Pi.single i (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) r) := by
+  rw [← IsScalarTower.algebraMap_smul (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) r,
+    smul_single, mul_one]
+
+theorem rSmul_single_gen (r : R) (i k : Fin m) :
+    r • (Pi.single i (congruenceX a m k)
+        : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+      = Pi.single i (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) r
+          * congruenceX a m k) := by
+  rw [← IsScalarTower.algebraMap_smul (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) r,
+    smul_single]
+
+theorem single_sum {ι : Type*} (s : Finset ι) (i : Fin m)
+    (f : ι → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) :
+    (Pi.single i (∑ k ∈ s, f k) : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+      = ∑ k ∈ s, Pi.single i (f k) := by
+  classical
+  have h := map_sum (LinearMap.single R
+    (fun _ : Fin m => MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) i) f s
+  simpa only [LinearMap.coe_single] using h
+
+/-- The class of `eᵢ` in the cotangent module. -/
+noncomputable def cotBasis (a : R) (m : ℕ) (i : Fin m) :
+    (Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m :=
+  Submodule.Quotient.mk (Pi.single i 1)
+
+/-- The class of `xₖ·eᵢ` in the cotangent module. -/
+noncomputable def cotPair (a : R) (m : ℕ) (i k : Fin m) :
+    (Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m :=
+  Submodule.Quotient.mk (Pi.single i (congruenceX a m k))
+
+theorem smul_a_cotPair (i k : Fin m) : a • cotPair a m i k = 0 := by
+  rw [cotPair, ← Submodule.Quotient.mk_smul]
+  exact (Submodule.Quotient.mk_eq_zero _).2 (aSingle_mem_kaehlerRelations i k)
+
+theorem cotPair_self_add (i : Fin m) :
+    cotPair a m i i + cotPair a m i i = a • cotBasis a m i := by
+  have hs : sqRelation a m i
+      = Pi.single i (congruenceX a m i) + Pi.single i (congruenceX a m i)
+        - a • (Pi.single i (1 : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+            : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) := by
+    rw [rSmul_single_one, sqRelation, ← Pi.single_add, ← Pi.single_sub]
+  have h0 : (Submodule.Quotient.mk (sqRelation a m i)
+      : (Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m) = 0 :=
+    (Submodule.Quotient.mk_eq_zero _).2 (Submodule.subset_span (sqRelation_mem i))
+  rw [hs, Submodule.Quotient.mk_sub, Submodule.Quotient.mk_add, Submodule.Quotient.mk_smul,
+    sub_eq_zero] at h0
+  exact h0
+
+theorem cotPair_swap {i j : Fin m} (hij : i ≠ j) :
+    cotPair a m i j = -cotPair a m j i := by
+  have h0 : (Submodule.Quotient.mk (crossRelation a m i j)
+      : (Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m) = 0 :=
+    (Submodule.Quotient.mk_eq_zero _).2 (Submodule.subset_span (crossRelation_mem hij))
+  rw [crossRelation, Submodule.Quotient.mk_add] at h0
+  exact add_eq_zero_iff_eq_neg.1 h0
+
+theorem sq_smul_cotBasis (i : Fin m) : (a ^ 2) • cotBasis a m i = 0 := by
+  calc (a ^ 2) • cotBasis a m i = a • (a • cotBasis a m i) := by rw [pow_two, mul_smul]
+    _ = a • (cotPair a m i i + cotPair a m i i) := by rw [cotPair_self_add]
+    _ = a • cotPair a m i i + a • cotPair a m i i := by rw [smul_add]
+    _ = 0 := by rw [smul_a_cotPair, add_zero]
+
+theorem cotPair_self [Invertible (2 : R)] (i : Fin m) :
+    cotPair a m i i = (⅟(2 : R) * a) • cotBasis a m i := by
+  have h : (2 : R) • cotPair a m i i = a • cotBasis a m i := by
+    rw [two_smul]
+    exact cotPair_self_add i
+  calc cotPair a m i i = (⅟(2 : R) * 2) • cotPair a m i i := by rw [invOf_mul_self, one_smul]
+    _ = ⅟(2 : R) • ((2 : R) • cotPair a m i i) := by rw [mul_smul]
+    _ = ⅟(2 : R) • (a • cotBasis a m i) := by rw [h]
+    _ = (⅟(2 : R) * a) • cotBasis a m i := by rw [mul_smul]
+
+/-- The diagonal sector maps into the cotangent module by `r ↦ r·eᵢ`. -/
+noncomputable def diagLift (i : Fin m) :
+    (R ⧸ Ideal.span ({a ^ 2} : Set R)) →ₗ[R]
+      ((Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m) :=
+  Submodule.liftQ (Ideal.span ({a ^ 2} : Set R))
+    (LinearMap.toSpanSingleton R _ (cotBasis a m i))
+    (by
+      refine Submodule.span_le.2 ?_
+      intro x hx
+      rw [Set.mem_singleton_iff] at hx
+      subst hx
+      simp only [SetLike.mem_coe, LinearMap.mem_ker, LinearMap.toSpanSingleton_apply]
+      exact sq_smul_cotBasis i)
+
+/-- The antisymmetric sector maps into the cotangent module by `r ↦ r·xⱼdxᵢ`. -/
+noncomputable def pairLift (p : pairIndex m) :
+    (R ⧸ Ideal.span ({a} : Set R)) →ₗ[R]
+      ((Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m) :=
+  Submodule.liftQ (Ideal.span ({a} : Set R))
+    (LinearMap.toSpanSingleton R _ (cotPair a m p.1.1 p.1.2))
+    (by
+      refine Submodule.span_le.2 ?_
+      intro x hx
+      rw [Set.mem_singleton_iff] at hx
+      subst hx
+      simp only [SetLike.mem_coe, LinearMap.mem_ker, LinearMap.toSpanSingleton_apply]
+      exact smul_a_cotPair p.1.1 p.1.2)
+
+theorem diagLift_mk (i : Fin m) (r : R) :
+    diagLift (a := a) i (Submodule.Quotient.mk r) = r • cotBasis a m i := rfl
+
+theorem pairLift_mk (p : pairIndex m) (r : R) :
+    pairLift (a := a) p (Submodule.Quotient.mk r) = r • cotPair a m p.1.1 p.1.2 := rfl
+
+/-- The inverse comparison map from the diagonal-plus-antisymmetric model. -/
+noncomputable def modelInv :
+    cotangentModel a m →ₗ[R]
+      ((Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m) :=
+  (∑ i : Fin m, (diagLift (a := a) i).comp
+      ((LinearMap.proj i).comp (LinearMap.fst R _ _)))
+    + ∑ p : pairIndex m, (pairLift (a := a) p).comp
+      ((LinearMap.proj p).comp (LinearMap.snd R _ _))
+
+theorem modelInv_mk (u : Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R))
+    (w : pairIndex m → R ⧸ Ideal.span ({a} : Set R)) :
+    modelInv (a := a) (m := m) (u, w)
+      = (∑ i, diagLift i (u i)) + ∑ p, pairLift p (w p) := by
+  simp [modelInv]
+
+theorem modelInv_diag (i : Fin m) (t : R ⧸ Ideal.span ({a ^ 2} : Set R)) :
+    modelInv (a := a) (m := m) (Pi.single i t, 0) = diagLift i t := by
+  classical
+  rw [modelInv_mk, Finset.sum_eq_single i (fun j _ hj => by rw [Pi.single_eq_of_ne hj, map_zero])
+    (fun h => absurd (Finset.mem_univ i) h), Pi.single_eq_same]
+  simp
+
+theorem modelInv_pair (p : pairIndex m) (t : R ⧸ Ideal.span ({a} : Set R)) :
+    modelInv (a := a) (m := m) (0, Pi.single p t) = pairLift p t := by
+  classical
+  rw [modelInv_mk, Finset.sum_eq_single p (fun q _ hq => by rw [Pi.single_eq_of_ne hq, map_zero])
+    (fun h => absurd (Finset.mem_univ p) h), Pi.single_eq_same]
+  simp
+
+theorem modelInv_pair_neg (p : pairIndex m) (t : R ⧸ Ideal.span ({a} : Set R)) :
+    modelInv (a := a) (m := m) (0, -Pi.single p t) = -pairLift p t := by
+  have h : (((0 : Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)),
+        -Pi.single p t) : cotangentModel a m)
+      = -(((0 : Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)),
+        Pi.single p t) : cotangentModel a m) := by
+    rw [Prod.neg_mk, neg_zero]
+  rw [h, map_neg, modelInv_pair]
+
+/-- The generating set of the cotangent module over `R`. -/
+noncomputable def cotGens (a : R) (m : ℕ) :
+    Set ((Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m) :=
+  {q | ∃ i, q = cotBasis a m i} ∪ {q | ∃ i k, q = cotPair a m i k}
+
+end Inverse
+
+/-! ## The cotangent module of the congruence order -/
+
+section Equiv
+
+variable {R : Type*} [CommRing R] {a : R} {m : ℕ} [IsDomain R]
+
+theorem span_cotGens (ha : a ≠ 0) : Submodule.span R (cotGens a m) = ⊤ := by
+  classical
+  refine eq_top_iff.2 fun x _ => ?_
+  obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective (kaehlerRelations a m) x
+  have key : ∀ (i : Fin m) (c : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m),
+      (Submodule.Quotient.mk (Pi.single i c)
+        : (Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m)
+        ∈ Submodule.span R (cotGens a m) := by
+    intro i c
+    obtain ⟨q, rfl⟩ := (congruenceCoordEquiv (a := a) (m := m) ha).surjective c
+    rw [congruenceCoordEquiv_eq]
+    have hsingle : (Pi.single i (algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) q.1
+          + ∑ k, algebraMap R (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) (q.2 k)
+              * congruenceX a m k)
+        : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+        = q.1 • (Pi.single i (1 : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+            : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)
+          + ∑ k, q.2 k • (Pi.single i (congruenceX a m k)
+            : Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) := by
+      rw [rSmul_single_one, Finset.sum_congr rfl (fun k _ => rSmul_single_gen (q.2 k) i k),
+        Pi.single_add, single_sum]
+    rw [hsingle, Submodule.Quotient.mk_add, Submodule.Quotient.mk_smul]
+    refine add_mem (Submodule.smul_mem _ _ (Submodule.subset_span (Or.inl ⟨i, rfl⟩))) ?_
+    have hsum : (Submodule.Quotient.mk (∑ k, q.2 k • Pi.single i (congruenceX a m k))
+        : (Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m)
+        = ∑ k, q.2 k • cotPair a m i k := by
+      show (kaehlerRelations a m).mkQ (∑ k, q.2 k • Pi.single i (congruenceX a m k)) = _
+      rw [map_sum]
+      exact Finset.sum_congr rfl fun k _ => by
+        rw [Submodule.mkQ_apply, Submodule.Quotient.mk_smul]
+        rfl
+    rw [hsum]
+    exact sum_mem fun k _ =>
+      Submodule.smul_mem _ _ (Submodule.subset_span (Or.inr ⟨i, k, rfl⟩))
+  have hv : (Submodule.Quotient.mk v
+      : (Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m)
+      = ∑ i, Submodule.Quotient.mk (Pi.single i (v i)) := by
+    have hmap := map_sum ((kaehlerRelations a m).mkQ) (fun i => Pi.single i (v i)) Finset.univ
+    rw [Finset.univ_sum_single] at hmap
+    exact hmap
+  rw [hv]
+  exact sum_mem fun i _ => key i (v i)
+
+variable [Invertible (2 : R)]
+
+theorem kaehlerSplit_diagLift (ha : a ≠ 0) (i : Fin m)
+    (t : R ⧸ Ideal.span ({a ^ 2} : Set R)) :
+    kaehlerSplit ha (diagLift i t) = (Pi.single i t, 0) := by
+  classical
+  obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a ^ 2} : Set R)) t
+  rw [diagLift_mk, cotBasis, ← Submodule.Quotient.mk_smul, kaehlerSplit_mk, map_smul,
+    kaehlerSplitRaw_single_one]
+  refine Prod.ext ?_ (by simp)
+  show r • (Pi.single (ι := Fin m) (M := fun _ => R ⧸ Ideal.span ({a ^ 2} : Set R)) i
+    (Submodule.Quotient.mk 1)) = Pi.single i (Submodule.Quotient.mk r)
+  rw [← Pi.single_smul, ← Submodule.Quotient.mk_smul, smul_eq_mul, mul_one]
+
+theorem kaehlerSplit_pairLift (ha : a ≠ 0) (p : pairIndex m)
+    (t : R ⧸ Ideal.span ({a} : Set R)) :
+    kaehlerSplit ha (pairLift p t) = (0, Pi.single p t) := by
+  classical
+  obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective (Ideal.span ({a} : Set R)) t
+  rw [pairLift_mk, cotPair, ← Submodule.Quotient.mk_smul, kaehlerSplit_mk, map_smul,
+    kaehlerSplitRaw_single_lt ha p.2]
+  refine Prod.ext (by simp) ?_
+  show r • (Pi.single (ι := pairIndex m) (M := fun _ => R ⧸ Ideal.span ({a} : Set R))
+    ⟨(p.1.1, p.1.2), p.2⟩ (Submodule.Quotient.mk 1)) = Pi.single p (Submodule.Quotient.mk r)
+  rw [← Pi.single_smul, ← Submodule.Quotient.mk_smul, smul_eq_mul, mul_one]
+
+theorem kaehlerSplit_modelInv (ha : a ≠ 0) (u : cotangentModel a m) :
+    kaehlerSplit ha (modelInv u) = u := by
+  classical
+  obtain ⟨u1, u2⟩ := u
+  rw [modelInv_mk, map_add, map_sum, map_sum,
+    Finset.sum_congr rfl (fun i _ => kaehlerSplit_diagLift ha i (u1 i)),
+    Finset.sum_congr rfl (fun p _ => kaehlerSplit_pairLift ha p (u2 p))]
+  refine Prod.ext ?_ ?_
+  · rw [Prod.fst_add, Prod.fst_sum, Prod.fst_sum]
+    simp [Finset.univ_sum_single]
+  · rw [Prod.snd_add, Prod.snd_sum, Prod.snd_sum]
+    simp [Finset.univ_sum_single]
+
+theorem modelInv_kaehlerSplit (ha : a ≠ 0)
+    (x : (Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m) :
+    modelInv (kaehlerSplit ha x) = x := by
+  classical
+  have hfun : (modelInv (a := a) (m := m)).comp (kaehlerSplit ha) = LinearMap.id := by
+    refine LinearMap.ext_on (span_cotGens ha) ?_
+    rintro q (⟨i, rfl⟩ | ⟨i, k, rfl⟩)
+    · show modelInv (kaehlerSplit ha (cotBasis a m i)) = cotBasis a m i
+      rw [cotBasis, kaehlerSplit_mk, kaehlerSplitRaw_single_one, modelInv_diag, diagLift_mk,
+        one_smul]
+      rfl
+    · show modelInv (kaehlerSplit ha (cotPair a m i k)) = cotPair a m i k
+      rw [cotPair, kaehlerSplit_mk]
+      rcases lt_trichotomy i k with h | h | h
+      · rw [kaehlerSplitRaw_single_lt ha h, modelInv_pair, pairLift_mk, one_smul]
+        rfl
+      · subst h
+        rw [kaehlerSplitRaw_single_self ha i, modelInv_diag, diagLift_mk, ← cotPair_self]
+        rfl
+      · rw [kaehlerSplitRaw_single_gt ha h, modelInv_pair_neg, pairLift_mk, one_smul,
+          ← cotPair_swap h.ne']
+        rfl
+  exact congrArg (fun f => f x) hfun
+
+/-- **Card `(5)`, model form.**  The cotangent model of the diagonal congruence order splits as a
+diagonal sector `(R/a²)^m` and an antisymmetric sector `(R/a)^{binom m 2}`. -/
+noncomputable def cotangentModelEquiv (ha : a ≠ 0) :
+    ((Fin m → MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ⧸ kaehlerRelations a m)
+      ≃ₗ[R] cotangentModel a m :=
+  LinearEquiv.ofLinear (kaehlerSplit ha) modelInv
+    (LinearMap.ext (kaehlerSplit_modelInv ha)) (LinearMap.ext (modelInv_kaehlerSplit ha))
+
+/-- **Card `(5)`.**  `Ω_{A/R} ≅ (R/a²)^m ⊕ (R/a)^{binom m 2}` for the diagonal congruence order
+`A = R·1 + a·R^{m+1}`. -/
+noncomputable def kaehlerCongruenceEquiv (ha : a ≠ 0) :
+    Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R] ≃ₗ[R] cotangentModel a m :=
+  (LinearEquiv.restrictScalars R (kaehlerModelEquiv (a := a) (m := m))).trans
+    (cotangentModelEquiv ha)
+
+end Equiv
 
 end HTGeometry.ConstraintRelativity

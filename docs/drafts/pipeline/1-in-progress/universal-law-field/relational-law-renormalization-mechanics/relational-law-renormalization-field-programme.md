@@ -263,3 +263,12 @@ promotion, admission, or source conservation.
 - 2026-08-10 — current RH frontier map ingested.  Serial observation--execution interchange gives
   a two-defect filtration with exact injectivity and kernel-preservation chambers; four-state cells
   prove the layers independent.  This is a mechanism-level consequence, not a route merger.
+- 2026-08-10 — ULF-RLR-2 closes bipolar deterministic repair.  For a law family and observer
+  equivalence, the finest invariant refinement and coarsest invariant coarsening are universal
+  opposite repairs.  Applying either repair after the other absorbs to the first endpoint; both
+  schedules agree exactly when no repair was needed.  A three-state cell realizes equality versus
+  the universal relation, so repair order stores exact history rather than a scalar defect.
+- 2026-08-10 — next frontier is not another route or another closure operator.  It is a mechanism
+  deciding which repair remains admissible after its consequences generate new legal challenges.
+  Required law: failure changes the future test language, the changed test language changes the
+  legal repair set, and this feedback must compose without erasing lineage.

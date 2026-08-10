@@ -364,6 +364,33 @@ pushforward, exact injectivity converse, selector no-go, and two unconditional f
 isolating the defects. This closes set-level renormalization kinematics. Topological closure,
 convex/probabilistic promotion, cofinal limits, and source-normal determinization remain open.
 
+### RLM Law XXVIII -- remembering and forgetting are oppositely absorbing repairs
+
+Fix a family of unary source laws and an observer equivalence `E`.  There are two extremal ways to
+restore deterministic execution.  The least invariant coarsening `C(E)` forgets only distinctions
+forced by the laws.  The greatest invariant refinement `I(E)` retains only identifications stable
+under every finite future law word.  They obey
+
+\[
+I(E)\subseteq E\subseteq C(E),
+\qquad
+C(I(E))=I(E),
+\qquad
+I(C(E))=C(E).
+\tag{RLM.6}
+\]
+
+Hence opposite repair schedules agree exactly when every law already preserves `E`.  Otherwise
+remember-first and forget-first land at opposite executable envelopes: repair order is exact
+history, not a gauge of one endpoint.  A three-state cell makes `I(E)` equality and `C(E)` the
+universal relation while the unrepaired observed law is genuinely multivalued.
+
+ULF-RLR-2 Lean-certifies the generic interior, both universal extremal laws, opposite absorption,
+exchange iff executability, the exact three-state cell, and its observer-induced nondeterminism.
+This joins future testing, law saturation, and relational renormalization into one mechanism.  It
+still supplies no source selector between the two directions; topology, positivity, and recursive
+failure-to-law genesis remain the next field layer.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -409,6 +436,7 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-PCG-1 | prospective filtration, permanent plateau, observer delay, finite/global realization gap, and completion closure | certified |
 | ULF-PCG-2 | descent-breaking grammar extension, exact strict refinement, old-term definability barrier, and observer erasure | certified |
 | ULF-RLR-1 | observer-induced relational law, lax execution, serial two-defect interchange, exact injectivity chamber, and independent splice cells | certified |
+| ULF-RLR-2 | least invariant coarsening, greatest invariant refinement, opposite absorption, exchange iff executability, and maximal three-state repair split | certified |
 | ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |

@@ -1457,6 +1457,42 @@ two ends of the same filtration, and `hasStableImages_of_surjective` /
 `lim¹` despite looking unrelated.  Against this, `polyTower_nonsurjective_and_nonvanishing` is
 precisely a tower whose filtration never stabilises.
 
+### Eventually vanishing transitions force derived vanishing
+
+The harder half of Mittag--Leffler is now proved.  `trans bond n j` is the composite transition
+extended by zero below the diagonal, and
+`inverseDifference_surjective_of_eventually_zero` shows: if from every stage the composite into a
+fixed earlier stage is eventually zero, then the Roos difference is **onto**, so `lim¹ = 0`.  The
+construction is the correction sum `∑_{j ∈ [n, K n)} trans(j → n)(b_j)`, finite by hypothesis;
+`partialSum_eq_of_le` shows the truncation point does not matter, and `partialSum_sub` telescopes
+it to `b_n` in one step, because the bottom-peeling identity `trans n j = bond n ∘ trans (n+1) j`
+is available with no transport.
+
+This strictly generalizes `derivedLimitOne_subsingleton_of_zero_bond`, which is recovered as the
+extreme case `K n = n + 1` (`derivedLimitOne_subsingleton_of_zero_bond_via_transitions`).  With
+`reach_eq_top_of_surjective` at the other end, the two existing vanishing theorems and this one are
+now a single mechanism.
+
+### Mittag--Leffler vanishing
+
+`inverseDifference_surjective_of_hasStableImages` and
+`derivedLimitOne_subsingleton_of_hasStableImages`: **a tower whose reaches stabilise has vanishing
+`lim¹`.**  The proof is direct rather than homological.  The correction sum solves the Roos
+equation exactly up to the stable part — `map_bond_stable` shows the stable images form a sub-tower
+whose bonds are onto, and the residue `y - bond y - b` lands in it because two truncations of the
+correction sum differ by stable elements.  The corpus's own onto-bond surjectivity then corrects
+the residue inside that sub-tower.  No six-term sequence and no quotient tower are needed.
+
+Both existing vanishing theorems are now corollaries at the two ends of the filtration:
+`derivedLimitOne_subsingleton_of_surjective_via_stable` and
+`derivedLimitOne_subsingleton_of_zero_bond_via_stable`.  So the card's remark that linkwise
+non-surjectivity and global vanishing are independent is not two special cases but one criterion,
+and `polyTower_nonsurjective_and_nonvanishing` is exactly a tower failing it.
+
+This is the general sufficient condition the card's `(12f)` needs on the algebraic side: what
+`(12f)` asserts beyond it is that a Shilov tower always satisfies Mittag--Leffler, which is a
+statement about the Shilov ideals and not about towers.
+
 ### Derived acyclicity is not formal
 
 `formal/GaloisForLFunctions/HTGeometry/ShilovDerivedNonvanishing.lean` supplies the direction the

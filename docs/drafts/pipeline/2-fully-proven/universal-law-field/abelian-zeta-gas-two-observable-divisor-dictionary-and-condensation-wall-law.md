@@ -15,7 +15,7 @@
   \(\sigma\sum_n\Lambda(n)n^{-\sigma}\).
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [PRE-ZERO SOURCE] [THREE OBSERVER ORGANS]
   [WITHHELD SECOND-ORGAN RESPONSE] [KMS-UNIQUE FOR ALL POSITIVE TEMPERATURE]
-  [CLASSICAL COMPONENT PARENTS DISCLAIMED] [NOT RH] [NO LEAN]
+  [CLASSICAL COMPONENT PARENTS DISCLAIMED] [NOT RH] [THEOREM 2.1 LEAN CERTIFIED]
 
 ## 1. Source, modes, and the depth fan
 
@@ -616,3 +616,94 @@ von Mangoldt mass identity. Priority is claimed only for the assembled coupling,
 - 2026-08-09 — hostile Lean-entry audit falsified the printed independent half-planes for (GAS.6);
   replaced them by the exact coupled absolute-convergence chamber and recorded the counterexample
   and positive survivor in failure loop 6.
+
+## 13. Lean certification status
+
+### Theorem 2.1 (GAS.4) — CERTIFIED
+
+The `[NO LEAN]` tag in the header was stale.  Modules
+
+```
+GaloisForLFunctions.HTGeometry.AbelianZetaGas.Core
+GaloisForLFunctions.HTGeometry.AbelianZetaGas.GibbsLaw
+GaloisForLFunctions.HTGeometry.AbelianZetaGas.Normalization
+```
+
+(all wired into `GaloisForLFunctions.HTGeometry`) carry the mode space, the geometric mode laws,
+the product gas measure, the finite-occupancy theorem, the group-class observables, and the
+normalization identity:
+
+| Clause | Lean |
+|---|---|
+| modes, depth fan, occupation ratios | `AbelianZetaMode`, `depth`, `AbelianZetaParameters`, `exponent`, `ratio`, `ratio_lt_one` |
+| geometric mode law and the product gas | `modeLaw`, `modeLaw_singleton`, `gasMeasure` |
+| Borel–Cantelli finite activity | `summable_ratio`, `AbelianZetaConvergentParameters.measure_finite_occupancy_eq_one`, `measure_existsUnique_groupClass_eq_one` |
+| the two observables (GAS.3) | `AbelianZetaGroupClass.order`, `AbelianZetaGroupClass.socleOrder`, `order_eq_mode_product`, `socleOrder_eq_mode_product` |
+| the Gibbs weight (GAS.4) | `abelianZetaModeWeight_eq_twoObservableWeight`, `abelianZetaClassMass`, `classMass_eq_ennNormalizer_mul_twoObservableWeight` |
+| total mass one | `tsum_classMass_eq_one`, `tsum_twoObservableWeight_eq_ennNormalizer_inv` |
+| the partition function `Z = ∏_j ζ(jσ+τ)` | `zetaPartition`, `complexNormalizer`, `complexNormalizer_eq_zetaPartition_inv`, `zetaPartition_eq_complexNormalizer_inv`, `complexNormalizer_ne_zero` |
+| depth-tail machinery for the walls | `abelianZetaTailRatio`, `summable_abelianZetaTailRatio`, `abelianZetaTailModeEquiv`, `not_summable_prime_rpow_of_exponent_le_one`, `depthTailEvent` |
+
+`#print axioms` on `tsum_classMass_eq_one`,
+`classMass_eq_ennNormalizer_mul_twoObservableWeight`,
+`complexNormalizer_eq_zetaPartition_inv`, `zetaPartition_eq_complexNormalizer_inv` and
+`measure_existsUnique_groupClass_eq_one` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+### Remaining certification targets, in attack order
+
+1. **Theorem 3.1 (GAS.5), the socle bridge.**  The marginal of `N_p = ∑_j G_{p,j}` is the Euler
+   weight `w_{q,n} = (q;q)_∞ q^n/(q;q)_n`.  The corpus already owns the two halves that meet here:
+   `GaloisForLFunctions.HTGeometry.QBinomialTheorem` (Euler's `q`-binomial identity) and
+   `EulerQGammaGlobalLaw` (`eqgWeight`, `eqgWeight_prime_pow`).  The formal content is the
+   coefficient identity `[uⁿ] ∏_{j≥1}(1−u qʲ)⁻¹ = qⁿ/(q;q)_n`, i.e. Euler's identity read as a
+   power series in `u`, together with the partition-counting rewrite
+   `P(N_p = n) = (q;q)_∞ · ∑_{g : ∑_j g_j = n} q^{∑_j j g_j}`.
+2. **Corollary 3.2 (GAS.6/GAS.7), the depth-ladder response.**  With the exact coupled chamber
+   `Re(σ+u) > 0`, `Re(σ+u+v) > 1`.  This is the same normal-convergence pattern as the certified
+   `eqgResponse_hasProd` of ULF-EQG-1; the telescoping (GAS.7) is a ladder identity of the shape
+   already proved there as `eqgDirichlet_ladder`.
+3. **Theorem 5.1, the depth-`g` condensation walls.**  The depth-tail layer in `Core.lean`
+   (`summable_abelianZetaTailRatio`, `not_summable_prime_rpow_of_exponent_le_one`,
+   `depthTailEvent`) was built for exactly this: the wall at `σ = 1/g` is the Borel–Cantelli
+   dichotomy for the depth-`g` tail.
+4. **(GAS.12) and Theorem 8.1**, the entropy/von Mangoldt identity — elementary once the response
+   layer of target 2 is in place.
+5. **Theorem 4.1 (KMS)** last: it needs C\*-inductive-limit and KMS-state infrastructure that
+   mathlib does not have and that the corpus owns only partially through ULF-IPKMS-1.
+
+### Target 1, step 1 — the partition generating-function layer
+
+`formal/GaloisForLFunctions/HTGeometry/PartitionGeneratingFunction.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+Neither mathlib nor the corpus owned partition generating functions (mathlib's Euler
+odd-versus-distinct proof lives in `Archive`, which is not importable), so the layer is built here.
+A partition is recorded by its occupation numbers `g : ℕ →₀ ℕ`, with `g j` the number of parts
+equal to `j + 1`; `partCount` is the number of parts and `partSize` the size.  Everything rests on
+one bijection — remove one from every part — used twice.
+
+| Declaration | Statement |
+|---|---|
+| `PartConfig`, `partCount`, `partSize` | occupation-number model of a partition |
+| `unshift`, `partCount_unshift`, `partSize_unshift` | raise every part by one and adjoin `a` ones |
+| `shift`, `shift_apply`, `unshift_shift`, `shift_unshift` | lower every part by one |
+| `partCount_eq`, `partSize_eq`, `partCount_shift_le` | the count and size split off the parts equal to one |
+| **`partSize_eq_add_partSize_shift`** | the size drops by exactly the number of parts |
+| **`shiftEquiv`** | partitions with exactly `n` parts ≃ partitions with at most `n` parts |
+| `exactGF`, `atMostGF` | the two generating functions, as `ℝ≥0∞`-valued unconditional sums |
+| **`exactGF_eq_mul`** | `S_n(q) = qⁿ · T_n(q)` — Euler's shift |
+| `partCount_eq_zero_iff`, `atMostGF_zero` | `T_0 = 1` |
+| `atMostGF_succ` | `T_{n+1} = T_n + S_{n+1}` |
+| **`atMostGF_succ_self`** | **the Euler recursion `T_{n+1} = T_n + q^{n+1} T_{n+1}`** |
+
+The sums are taken in `ℝ≥0∞`, so every identity above is unconditional — no summability side
+condition appears anywhere.  Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only; the
+module builds green (8 655 jobs).
+
+**What remains for target 1.**  Solving the Euler recursion needs `T_n(q) < ∞` for `q < 1`, which is
+the one genuinely quantitative input: `T_n` is bounded by the sum over weakly decreasing `n`-tuples,
+`(∑_m qᵐ)ⁿ = (1−q)^{−n}`, through the sorted-parts injection
+`{h : partCount h ≤ n} ↪ (Fin n → ℕ)`.  With finiteness in hand the recursion gives
+`T_n = ∏_{i=1}^n (1−qⁱ)^{−1}` and hence `S_n = qⁿ / ∏_{i=1}^n (1−qⁱ)`, which is literally the
+corpus's `qGeometricCoefficient q n`; combined with `eqgWeight_prime_pow` and the product mode law
+of `Core.lean` that is (GAS.5), Theorem 3.1.

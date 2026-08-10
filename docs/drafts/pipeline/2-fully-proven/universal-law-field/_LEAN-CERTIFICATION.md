@@ -726,3 +726,30 @@ propagation calculus for algebraic differential equations (`differentiallyAlgebr
 Umbrella `HTGeometry.UniversalLawField` green at 11 575 jobs; every capstone axiom print is
 `propext, Classical.choice, Quot.sound`.  Companion:
 `3-formalized/universal-law-field/euler-q-gamma-process-zeta-divisor-translation-law-formalized.md`.
+
+## ULF-MPTB-1 — Multilinear process tomography, blind sector, positive robustness
+
+Promoted to stage 3 on 2026-08-10.  The two paper-level clauses were closed: the product-slot
+dimension formula `dim U^⊥ = ∏ dim Eᵢ − ∏ dim Vᵢ`, built by presenting the product instrument space
+as the range of the slotwise tensor inclusion and proving that map injective from the splitting of
+each slot inclusion; and the quantitative positive-definite perturbation bound, built on a uniform
+positivity constant obtained as the minimum of the quadratic form on the unit sphere.
+
+New reusable declarations: `finrank_piTensorProduct`, `piTensorProduct_map_injective`,
+`exists_uniform_positive`, `abs_reApplyInnerSelf_le`.  Umbrella green at 11 577 jobs; all axiom
+prints are `propext, Classical.choice, Quot.sound`.
+
+## Session 2026-08-10 addition (Bipolar Observer Repair)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-RLR-2 | Greatest invariant refinement and least invariant coarsening are universal opposite determinizations; each absorbs the other in application order; schedules agree iff the observer was already executable; a three-state cell realizes equality versus the universal relation and raw nondeterminism | `HTGeometry.ConstitutiveBipolarObserverRepair` |
+
+Direct foreground elaboration is warning-free and the leaf build passes with 2,999 jobs.  The module
+is wired into `HTGeometry.UniversalLawField`; the final umbrella build passes with 11,578 jobs.
+Axiom prints on generic extremality, both absorption laws, exchange, both exact cell endpoints,
+nondeterminism, and the unconditional capstone report only `propext` and `Quot.sound`.  Full-tree
+lint reaches the owned module but is currently red on unrelated concurrently unwired
+`RHTower.DeningerPrimeLogHeightForms` and
+`HTGeometry.ConstraintRelativity.CongruenceOrderTraceDual`.  No route, analytic hypothesis,
+project axiom, or RH statement occurs in the certified module.

@@ -331,3 +331,95 @@ which on paper is §3 (moving-translation lemma, equations (8)-(9)) followed by 
 principal action, equations (10)-(11)).  The corpus currently *defines* the principal diagonal
 model and proves its exact logarithmic mean; deriving that model from `G = C^2` on `L^2(R/Z)`
 requires the operators `B_p`, `D_(m,k,p)`, `C_(m,k,p)` themselves.
+
+## Lean status, second pass: the analytic inputs of sections 3-5
+
+Three further modules, all unconditional, `[propext, Classical.choice, Quot.sound]`, wired into
+`GaloisForLFunctions.RHTower`.
+
+### `RHTower/GaussPrimeScaleFourier.lean` — equation (8)
+
+```text
+gaussPrimeScale p x                       = p^((1-x)/2)                        (b_p)
+intervalIntegral_gaussPrimeScale_fourier  : ∫₀¹ b_p(x) e^{-2πijx} dx
+                                              = (√p - 1)/(log p/2 + 2πij)
+norm_gaussPrimeScaleFourierCoefficient_le : ‖b̂(j)‖ ≤ C_p/(1 + |j|),
+                                            C_p = 2(√p-1)/min(log p/2, 2π)
+```
+
+Both halves of equation (8), with an explicit constant.  The exact value is an elementary
+exponential integral; the decay comes from `|Re| , |Im| ≤ ‖·‖` on the denominator.
+
+### `RHTower/GaussScaleAmplitudeIntegral.lean` — the amplitude `a_δ` and `A_m(δ)`
+
+```text
+gaussScalePeriodic p                       = one-periodic extension of s_p(x) = p^{1-x} = b_p(x)²
+gaussMovingAmplitude p δ x                 = s_p(x)/s_p(x+δ)
+intervalIntegral_gaussMovingAmplitude_pow  : 0 ≤ δ ≤ 1 →
+   ∫₀¹ a_δ(x)^m dx = (1-δ) e^{m δ log p} + δ e^{m(δ-1) log p}
+intervalIntegral_intervalIntegral_gaussMovingAmplitude_pow : 1 < p → 1 ≤ m →
+   ∫₀¹ ∫₀¹ a_δ(x)^m dx dδ = (p^m-1)²/(p^m m² (log p)²)
+```
+
+This closes the gap between the corpus's closed form `gaussAmplitudeSegment` and the actual
+moving-amplitude average: `A_m(δ)` is now *computed*, not posited, and equation (12) follows as an
+honest double integral.
+
+### `RHTower/GaussComponentSampledRatio.lean` + `...RatioPrime.lean` — equation (5)
+
+```text
+gaussComponentVerticalValue_ratio_sub_clock_tendsto_zero : 0 ≤ h →
+   ρ(t+h)/ρ(t) - exp(h · I/m · log(t/2π))  →  0     (t → ∞)
+
+gaussComponentPrimeSample_ratio_sub_phase_tendsto_zero :
+   ρ(t_{n+j})/ρ(t_n) - exp(2πi j δ_n)  →  0         (n → ∞)
+   t_n = 2π(n+1)/log p,  δ_n = rate·log(n+1) + offset
+```
+
+The intermediate estimate is that the clock is slowly varying: on `[t, t+h]` the increment
+`log(x/t)` lies in `[0, h/t]`, so the accumulated clock differs from `h · clock(t)` by at most
+`h²/(m t)` (`abs_intervalIntegral_log_sub_le`).  Combined with the exact finite-shift transport and
+the already-formalized clock approximation, this gives the ratio law; the unimodularity of
+`exp(h·clock)` (the clock is purely imaginary) turns the vanishing exponent difference into a
+vanishing difference of ratios.
+
+The rotation exponent is *identically* the corpus's `gaussComponentPhasePoint`, so equation (5)
+now connects the actual Gauss component to the phase point that drives the residue computation.
+
+### Remaining
+
+Only the operator layer of section 3-4: the multiplication operators `B_p`, the diagonal
+`D_(m,k,p)`, the block `C = B D I B` and `G = C²` on `L²(R/Z)`, and the `L²` convergence
+statement (9) with its iteration (10)-(11).  The scalar inputs those steps consume — (5), (8),
+(12), (13) — are now all formalized.
+
+## Lean status, third pass: the circle-transport layer for equation (9)
+
+`HTGeometry/FourierCircleTranslation.lean` (new, reusable; mathlib has neither law):
+
+```text
+fourier_add_arg            : fourier n (x + y) = fourier n x * fourier n y
+fourierCoeff_comp_sub      : fourierCoeff (f ∘ (· - y)) n = fourier (-n) y * fourierCoeff f n
+fourierCoeff_comp_add      : fourierCoeff (f ∘ (· + y)) n = fourier n y * fourierCoeff f n
+fourierCoeff_fourier_mul   : fourierCoeff (fourier k * f) n = fourierCoeff f (n - k)
+```
+
+The translation law transports the moving target `b(· - δ_n)`; the modulation law is the index
+shift performed by the factor `e_(-n)` in equation (9).
+
+`RHTower/GaussPrimeScaleFourier.lean`, extended:
+
+```text
+gaussPrimeScaleCircle p                        : the amplitude as a function on R/Z
+fourierCoeff_gaussPrimeScaleCircle             : its coefficients are exactly (8)
+fourierCoeff_gaussPrimeScaleCircle_translate   : fourierCoeff (b(· - δ)) j
+                                                   = e^{-2π i j δ} · b̂(j)
+```
+
+So the right-hand side of (9) is now available in the standard `fourierCoeff` normalization, and
+the index bookkeeping of its left-hand side is a corollary of the modulation law.
+
+### Remaining after this pass
+
+The `L²` convergence (9) itself, its iteration (10)-(11), and the operators `B_p`, `D`, `C`, `G`.
+The scalar inputs (5), (7), (8), (12), (13) and the transport laws they are fed through are done.

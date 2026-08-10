@@ -1130,3 +1130,18 @@ prime/zeta/divisor theorem.  See
 - Verification: targeted foreground `lake env lean` on every new module green; universal-law-field
   umbrella build green (11,575 jobs); `#print axioms` on every capstone reports only `propext`,
   `Classical.choice`, `Quot.sound`.
+
+### ULF-MPTB-1 — Multilinear process tomography, blind sector, positive robustness (2026-08-10)
+
+- Moved `multilinear-process-tomography-blind-sector-and-positive-robustness-law.md` from
+  `2-fully-proven` to `3-formalized` with the companion `-formalized.md`.
+- Closed the two clauses the card had left at paper level: equation (7), the product-slot dimension
+  formula, and equation (8), the quantitative positive-definite perturbation bound with its
+  distinctness and affine/record clauses.
+- New reusable infrastructure: `finrank_piTensorProduct` (mathlib has the basis but not the rank),
+  `piTensorProduct_map_injective` (slotwise injective maps induce an injective tensor map, via the
+  splitting of each slot inclusion over a field), and `exists_uniform_positive` (the least
+  eigenvalue as a uniform positivity constant, from compactness of the unit sphere).
+- Verification: targeted foreground `lake env lean` on both new modules green; universal-law-field
+  umbrella build green (11,577 jobs); `#print axioms` on every capstone reports only `propext`,
+  `Classical.choice`, `Quot.sound`.

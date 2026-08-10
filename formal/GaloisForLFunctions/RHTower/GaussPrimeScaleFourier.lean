@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.GaussComponentAmplitude
+import GaloisForLFunctions.RHTower.CCMHalfUnitExtrapolationCost
+import GaloisForLFunctions.HTGeometry.FourierCircleTranslation
 
 /-!
 # Fourier coefficients of the prime-scale amplitude
@@ -25,11 +27,6 @@ def gaussPrimeScale (p : ℝ) (x : ℝ) : ℝ :=
 theorem gaussPrimeScale_pos (p x : ℝ) : 0 < gaussPrimeScale p x :=
   Real.exp_pos _
 
-theorem exp_log_div_two {p : ℝ} (hp : 0 < p) :
-    Real.exp (Real.log p / 2) = Real.sqrt p := by
-  rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hp]
-  ring_nf
-
 theorem gaussPrimeScale_eq_rpow {p : ℝ} (hp : 0 < p) (x : ℝ) :
     gaussPrimeScale p x = p ^ ((1 - x) / 2) := by
   rw [gaussPrimeScale, Real.rpow_def_of_pos hp]
@@ -38,7 +35,7 @@ theorem gaussPrimeScale_eq_rpow {p : ℝ} (hp : 0 < p) (x : ℝ) :
 theorem gaussPrimeScale_zero {p : ℝ} (hp : 0 < p) :
     gaussPrimeScale p 0 = Real.sqrt p := by
   rw [gaussPrimeScale]
-  simpa using exp_log_div_two hp
+  simpa using GaloisForLFunctions.RHTower.exp_log_div_two p hp
 
 theorem gaussPrimeScale_one (p : ℝ) : gaussPrimeScale p 1 = 1 := by
   simp [gaussPrimeScale]
@@ -107,7 +104,7 @@ theorem intervalIntegral_gaussPrimeScale_fourier {p : ℝ} (hp : 1 < p) (j : ℤ
     simp
   rw [hzero]
   have hsqrt : Complex.exp (((Real.log p / 2 : ℝ) : ℂ)) = ((Real.sqrt p : ℝ) : ℂ) := by
-    rw [← Complex.ofReal_exp, exp_log_div_two hppos]
+    rw [← Complex.ofReal_exp, GaloisForLFunctions.RHTower.exp_log_div_two p hppos]
   have hsqrtinv : Complex.exp (-((Real.log p / 2 : ℝ) : ℂ)) = ((Real.sqrt p : ℝ) : ℂ)⁻¹ := by
     rw [Complex.exp_neg, hsqrt]
   rw [hsqrt, hsqrtinv, gaussPrimeScaleFourierCoefficient, ← hz]
@@ -166,6 +163,39 @@ theorem norm_gaussPrimeScaleFourierCoefficient_le {p : ℝ} (hp : 1 < p) (j : �
     rw [div_div]
   rw [hnorm, hsplit, le_div_iff₀ hA, div_mul_eq_mul_div, div_le_iff₀ hznorm]
   nlinarith [hlower, hnum, hznorm]
+
+/-! ## The circle representative -/
+
+/-- The prime-scale amplitude as a function on the circle. -/
+def gaussPrimeScaleCircle (p : ℝ) : AddCircle (1 : ℝ) → ℂ :=
+  AddCircle.liftIoc 1 0 (fun x => (gaussPrimeScale p x : ℂ))
+
+theorem gaussPrimeScaleCircle_coe {p x : ℝ} (hx : x ∈ Set.Ioc (0 : ℝ) 1) :
+    gaussPrimeScaleCircle p ((x : ℝ) : AddCircle (1 : ℝ)) = (gaussPrimeScale p x : ℂ) := by
+  rw [gaussPrimeScaleCircle]
+  exact AddCircle.liftIoc_coe_apply (by simpa using hx)
+
+/-- **The Fourier coefficients of the prime-scale amplitude**, in the circle normalization. -/
+theorem fourierCoeff_gaussPrimeScaleCircle {p : ℝ} (hp : 1 < p) (j : ℤ) :
+    fourierCoeff (gaussPrimeScaleCircle p) j = gaussPrimeScaleFourierCoefficient p j := by
+  rw [fourierCoeff_eq_intervalIntegral (gaussPrimeScaleCircle p) j 0,
+    ← intervalIntegral_gaussPrimeScale_fourier hp j]
+  simp only [one_div, inv_one, one_smul, zero_add]
+  refine intervalIntegral.integral_congr_ae ?_
+  filter_upwards with x hx
+  rw [Set.uIoc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hx
+  rw [gaussPrimeScaleCircle_coe hx, fourier_coe_apply, smul_eq_mul, mul_comm]
+  congr 2
+  push_cast
+  ring
+
+/-- **The moving target of the translation estimate.**  Translating the prime-scale amplitude by
+`δ` multiplies its `j`th coefficient by `e^{-2π i j δ}`. -/
+theorem fourierCoeff_gaussPrimeScaleCircle_translate {p : ℝ} (hp : 1 < p) (j : ℤ)
+    (δ : AddCircle (1 : ℝ)) :
+    fourierCoeff (fun x => gaussPrimeScaleCircle p (x - δ)) j =
+      fourier (-j) δ * gaussPrimeScaleFourierCoefficient p j := by
+  rw [GaloisForLFunctions.fourierCoeff_comp_sub, fourierCoeff_gaussPrimeScaleCircle hp]
 
 end
 

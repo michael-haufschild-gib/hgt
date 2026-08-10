@@ -1,9 +1,20 @@
 # Prime-log height Köthe Calderón source
 
 - **ID:** deninger-prime-log-height-kothe-calderon-source
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOT RH]`
 - **Label:** DAC_PRIME_LOG_HEIGHT_KOTHE_CALDERON_SOURCE
+- **Lean:**
+  `formal/GaloisForLFunctions/RHTower/DeningerPrimeLogHeight.lean`,
+  `DeningerKotheComplete.lean`,
+  `DeningerPrimeLogHeightKothe.lean`,
+  `DeningerPrimeLogHeightConvolution.lean`,
+  `DeningerPrimeLogHeightGreen.lean`,
+  `DeningerPrimeLogHeightForms.lean`,
+  `DeningerPrimeLogHeightMellin.lean`,
+  `DeningerPrimeLogHeightPower.lean`,
+  `DeningerPrimeLogHeightCartan.lean`
 - **Parent:** deninger-arithmetic-calderon-green-intermediate-extension
 - **Statement:** Rational Kummer character lattice has a canonical nuclear height-Köthe
   completion on which signed prime-log generator, Green inverse, odd Hodge sign, Hardy projectors,
@@ -383,11 +394,57 @@ Targeted corpus and arXiv searches found ingredients separately but no use of pr
 Köthe scale to make Deninger prime-log Green inverse continuous and construct this package. This is
 noncollision, not priority claim.
 
+## Lean statements
+
+The source is `deningerHeightKotheData` on the lattice `DeningerLattice = Nat.Primes →₀ ℤ`, with
+`deningerHeight` for `H`, `deningerFreq` for `ℓ`, and `deningerHeightSeminorm k` for `p_k`.
+
+| Card item | Lean declaration |
+|---|---|
+| `(2)` submultiplicativity, evenness, additivity | `deningerHeight_add_le`, `deningerHeight_neg`, `deningerFreq_add`, `deningerFreq_neg` |
+| `(20)`--`(21)` height bound | `deningerHeightNat_eq_primeLogHeight`, `deningerHeight_inv_le_abs_freq` |
+| `(22)` upper bound | `abs_deningerFreq_le_log_height`, `log_deningerHeight_le_height` |
+| `(23)` counting | `deningerHeight_summable_inv_sq` |
+| `(3)` the space and its seminorms | `DeningerHeightKothe`, `deningerHeightSeminorm`, `deningerHeightKotheZero` |
+| `(1)` completeness | `deningerKothe_exists_limit`, `deningerHeightKothe_exists_limit` |
+| `(24)` nuclearity | `deningerHeightKotheData_isNuclear`, `deningerHeightKothe_isNuclearSpace` |
+| `(4)` convolution algebra | `deningerHeightConv`, `deningerHeightSeminorm_conv_le`, `deningerHeightConv_comm`, `deningerHeightConv_assoc`, `deningerHeightConv_delta_zero_left` |
+| `(1)` density of the group algebra | `deningerKothe_exists_finite_approx`, `deningerHeightKothe_exists_finite_approx` |
+| `(5)` reflection and star | `deningerHeightReflect`, `deningerHeightStar`, `deningerHeightSeminorm_reflect`, `deningerHeightSeminorm_star` |
+| multiplier calculus | `deningerHeightMul`, `deningerHeightSeminorm_mul_le` |
+| `(6)`, `(7)`, `(8)` | `deningerGenerator`, `deningerGreen`, `deningerHeightSeminorm_generator_le`, `deningerHeightSeminorm_green_le` |
+| `(9)` split strict exactness | `deningerGenerator_ker_eq_span_delta`, `deningerGenerator_mem_zero`, `deningerGenerator_green`, `deningerGenerator_surjective_onto_zero` |
+| `(10)` the four operators | `deningerModulus`, `deningerModulusGreen`, `deningerHodgeSign`, `deningerHardyPlus`, `deningerHardyMinus` |
+| `(11)` Hodge/Hardy relations | `deningerHodgeSign_sq`, `deningerHardyPlus_idem`, `deningerHardyMinus_idem`, `deningerHardy_mul_eq_zero`, `deningerHardy_add_eq_id`, `deningerHodgeSign_eq_hardy_sub` |
+| `(11a)`, `(11b)` Poisson family | `deningerPoisson`, `deningerHeightSeminorm_poisson_le`, `deningerPoisson_zero`, `deningerPoisson_add`, `deningerPoisson_hasDerivAt` |
+| `(12)`, `(25)` the two forms | `deningerPairing`, `deningerPsi`, `deningerPairing_norm_le`, `deningerPsi_norm_le`, `deningerPsi_antisymm` |
+| `(13)` Green energy | `deningerEnergy`, `deningerPsi_hodgeStar`, `deningerEnergy_nonneg`, `deningerEnergy_eq_zero_iff` |
+| `(14)`, `(15)` Lagrangian graph | `deningerLagrangian_isotropic`, `deningerLagrangian_maximal`, `deningerLagrangian_closed` |
+| `(16)` power maps | `deningerPower`, `deningerHeightSeminorm_power`, `deningerPower_generator`, `deningerPower_modulus`, `deningerPower_hodgeSign`, `deningerPower_hardyPlus`, `deningerPower_hardyMinus` |
+| `(17)` reflection relations | `deningerReflect_generator`, `deningerReflect_modulus`, `deningerReflect_hodgeSign`, `deningerReflect_hardy` |
+| `(18)`, `(19)` Mellin jets | `deningerMellinJet`, `deningerMellinJet_norm_le`, `deningerMellinJet_reflect` |
+| `(27)`, `(28)` Cartan contraction | `deningerCartanHomotopy`, `deningerCartanContraction`, `deningerCartanContraction_seminorm_le` |
+
+Reading conventions used by the formalization, all faithful to the paper statement:
+
+- completeness is stated sequentially (`DeningerKotheCauchy` → `DeningerKotheTendsto`), which for a
+  countable seminorm family is exactly Fréchet completeness;
+- density of the finitely supported group algebra is stated as approximation of every vector by a
+  truncation of its own coordinate expansion, in every seminorm;
+- `(11b)`'s derivative identity is the coefficientwise one, which is how the paper proof produces
+  it;
+- closedness of the Lagrangian graph is stated as sequential closedness for the seminorm family;
+- `(27)`--`(28)` are stated on an arithmetic-character piece with an abstract differential and
+  contraction, which is the exact content of the Cartan argument.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: source object, hard obstruction, and falsifiers isolated
 - [x] 1 → 2 fully-proven: all displayed claims proved above without RH-equivalent premise
-- [ ] 2 → 3 formalized: intentionally paused while Lean corpus is being refactored
+- [x] 2 → 3 formalized: all seven numbered clauses and the Cartan--Koszul consequence proved
+      unconditionally in Lean
+- [x] targeted axiom audit: only `propext`, `Classical.choice`, `Quot.sound` (50 declarations)
+- [x] modules wired into `RHTower.lean`
 - [ ] 3 → 4 publication-ready: integrate after independent specialist audit and actual
       Sullivan--Milnor comparison
 
@@ -404,6 +461,13 @@ noncollision, not priority claim.
 
 ## Log
 
+- 2026-08-10 — Formalized the whole theorem unconditionally: prime-log height algebra and
+  counting, the Köthe source with completeness, nuclearity and dense group algebra, the
+  convolution algebra with submultiplicative seminorms, the multiplier calculus giving the Green
+  inverse and the whole Hodge/Hardy/Poisson package, the two forms with the Green energy identity
+  and its definiteness, the closed Lagrangian graph, the power and reflection relations, every
+  centered Mellin jet with its functional equation, and the Cartan contraction. Card promoted to
+  `3-formalized`.
 - 2026-08-08 — Rejected fixed-Hilbert, logarithmic-Sobolev, and single-height repairs. Constructed
   multiplicative-height Köthe source; proved nuclearity, strict Green inversion, cup--Hodge
   positivity, exact Hardy orientation, Lagrangian graph, source functoriality, and continuity of

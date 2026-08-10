@@ -1,12 +1,11 @@
 # Multilinear process tomography, blind sector, and positive-robustness law
 
 - **ID:** ULF-MPTB-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** intervention-completeness attack on constitutive kernel geometry
 - **Statement:** A finite law process is reconstructed exactly by a spanning family of joint interventions; every nonspanning family has a canonical annihilator blind sector, and interior positivity cannot remove that nonidentifiability.
-- **Status:** [LEAN CORE CERTIFIED] [QUANTITATIVE PRODUCT/PSD CLAUSES AWAIT LEAN]
-  [ROUTE-INDEPENDENT PROCESS THEOREM] [NOT RH]
+- **Status:** [LEAN CERTIFIED] [ROUTE-INDEPENDENT PROCESS THEOREM] [NOT RH]
 
 ## 1. Coordinate-free process
 
@@ -196,13 +195,15 @@ Closed in Lean:
 Targeted source check and final module build passed. `#print axioms` reports only standard
 `propext`, `Classical.choice`, and `Quot.sound` dependencies.
 
-Not yet Lean-certified:
+Also closed in Lean:
 
-- tensor-product dimension formula (7) in its stated product-slot form;
-- quantitative positive-semidefinite spectral bound (8) and its causal-affine specialization.
+6. the tensor-product dimension formula (7) in its stated product-slot form, together with the
+   identification of the product-instrument span with the tensor product of the slot subspaces and
+   the completeness criterion "every slot family spans";
+7. the quantitative positive-definite spectral bound (8) with its distinctness and affine/record
+   clauses, and the existence of the least-eigenvalue constant in finite dimension.
 
-Therefore this card remains in Stage 2 under project rule that paper-only clauses do not count as
-proved.
+Every clause of this card is therefore certified unconditionally in Lean.
 
 Primary process-tomography parent: G. A. L. White et al.,
 *Non-Markovian Quantum Process Tomography*, https://arxiv.org/abs/2106.11722.
@@ -212,3 +213,52 @@ Primary process-tomography parent: G. A. L. White et al.,
 - 2026-08-09 — abstract process-tomography and positive blind-sector theorem proved.
 - 2026-08-09 — route-independent tomography core and qualitative open-interior robustness closed
   in Lean; quantitative product/PSD clauses remain at paper level.
+
+## Lean certification status — COMPLETE
+
+Modules:
+
+```
+GaloisForLFunctions.HTGeometry.ConstitutiveProcessTomography            -- Theorem 2.1
+GaloisForLFunctions.HTGeometry.ConstitutiveProcessTomographyDimension   -- equation (7)
+GaloisForLFunctions.HTGeometry.ConstitutiveProcessTomographyPositivity  -- equation (8)
+```
+
+### Equation (7) — the hidden constitutive dimension
+
+| Declaration | Statement |
+|---|---|
+| `finrank_piTensorProduct` | `dim (E₁ ⊗ ⋯ ⊗ E_k) = ∏ᵢ dim Eᵢ`, read off the basis `Basis.piTensorProduct` |
+| `finiteDimensional_piTensorProduct` | the tensor product of finite-dimensional slots is finite-dimensional |
+| `piTensorProduct_map_injective` | a slotwise injective family induces an injective map of tensor products (each slot inclusion splits over a field) |
+| `productInterventionSpace` | `U = V₁ ⊗ ⋯ ⊗ V_k` as the range of the slotwise inclusion |
+| `productInterventionSpace_eq_span` | `U` is exactly the span of the product interventions `⨂ᵢ vᵢ`, `vᵢ ∈ Vᵢ` — equation (6) |
+| `finrank_productInterventionSpace` | `dim U = ∏ᵢ dim Vᵢ` |
+| **`finrank_dualAnnihilator_productInterventionSpace`** | **`dim U^⊥ = ∏ᵢ dim Eᵢ − ∏ᵢ dim Vᵢ`** — equation (7) |
+| `productInterventionSpace_eq_top_iff` | product tomography is complete iff every slot family spans |
+
+### Equation (8) — interior positivity does not repair the blind sector
+
+| Declaration | Statement |
+|---|---|
+| `reApplyInnerSelf_add`, `reApplyInnerSelf_sub` | additivity of the quadratic form |
+| `abs_reApplyInnerSelf_le` | `\|re ⟪Dx,x⟫\| ≤ ‖D‖·‖x‖²` |
+| `reApplyInnerSelf_pos_of_perturb` | uniform positivity survives any perturbation of smaller operator norm |
+| **`reApplyInnerSelf_pos_of_smul_perturb`** | **both `W₀ ± εΔ` are positive definite when `ε‖Δ‖` is below the positivity constant** |
+| `perturb_ne` | the two perturbations are distinct |
+| `record_eq_of_blind` | a blind direction leaves every linear record — hence every affine constraint — unchanged |
+| `exists_uniform_positive` | in finite dimension a positive definite operator has a positive uniform constant (the least eigenvalue, as the minimum of the quadratic form on the unit sphere) |
+| **`interiorPositivity_blindDirection_persists`** | **the capstone: a threshold below which both perturbations are positive definite, distinct, and experimentally identical** |
+
+The estimate is stated with the positivity constant `c` rather than with `λ_min` symbolically:
+`exists_uniform_positive` produces exactly the least eigenvalue as that constant, and carrying `c`
+through keeps every later step free of spectral-decomposition machinery.
+
+Umbrella `GaloisForLFunctions.HTGeometry.UniversalLawField` green at 11 577 jobs; `#print axioms`
+on `finrank_dualAnnihilator_productInterventionSpace`, `productInterventionSpace_eq_top_iff`,
+`productInterventionSpace_eq_span`, `interiorPositivity_blindDirection_persists` and
+`exists_uniform_positive` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Log (continued)
+
+- 2026-08-10 — equations (7) and (8) closed in Lean unconditionally; card promoted to stage 3.
