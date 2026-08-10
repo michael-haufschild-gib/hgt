@@ -275,13 +275,14 @@ The exact contribution here is the dependency-closed Universal Law Field calibra
 
 No external priority claim is made.
 
-## 9. Lean target
+## 9. Lean certification
 
-Create
+Formalized in
 
 `formal/GaloisForLFunctions/HTGeometry/ConstitutiveSymbolicExecutionGap.lean`
 
-with no axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation-based proof.  Formalize:
+with no project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation-based proof.  The
+module certifies:
 
 1. `WeightedLocalRepair` and `WeightedExecutableRepair`;
 2. executable implies local;
@@ -291,10 +292,16 @@ with no axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation-based proof
 6. constant normalized rational/parity observer and unbounded grade;
 7. one closed capstone imported by `HTGeometry.UniversalLawField`.
 
-Only after foreground elaboration, axiom audit, lint, and final umbrella build may this card move to
-Stage 3.
+Direct foreground elaboration passes.  Axiom prints for the principal implication, one-kernel
+classification, triangle nonexecution, observer constancy, and closed capstone report only
+`propext`, `Classical.choice`, and `Quot.sound`.  The module is imported by
+`HTGeometry.UniversalLawField`; its final foreground umbrella build passes with 11,599 jobs.
+Repository lint reaches the target without a target error; its nonzero global exit is caused only
+by pre-existing unreachable modules in unrelated `RHTower` and `HTGeometry` work.
 
 ## Log
 
 - 2026-08-10 — paper proof closed after the expanded frontier audit and external symbolic-Rees
-  collision check.  Lean formalization pending.
+  collision check.
+- 2026-08-10 — Lean certification closed; direct elaboration, axiom audit, target lint, and final
+  Universal Law Field umbrella build pass.

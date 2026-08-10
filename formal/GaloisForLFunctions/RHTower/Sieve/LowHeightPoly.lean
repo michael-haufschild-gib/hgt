@@ -99,16 +99,16 @@ theorem norm_sum_mul_le_of_bounded_partial_bv {g : ℕ → ℝ} {φ : ℕ → �
   nlinarith [hhead, htail, hB0]
 
 /-- The phase of the Dirichlet polynomial. -/
-def logPhase (w : ℝ) (n : ℕ) : ℂ :=
+def unitLogPhase (w : ℝ) (n : ℕ) : ℂ :=
   Complex.exp (((2 * Real.pi * (w * Real.log n) : ℝ) : ℂ) * Complex.I)
 
-theorem norm_logPhase (w : ℝ) (n : ℕ) : ‖logPhase w n‖ = 1 := by
-  rw [logPhase, Complex.norm_exp_ofReal_mul_I]
+theorem norm_unitLogPhase (w : ℝ) (n : ℕ) : ‖unitLogPhase w n‖ = 1 := by
+  rw [unitLogPhase, Complex.norm_exp_ofReal_mul_I]
 
-theorem norm_logPhase_sub_le (w : ℝ) (m n : ℕ) :
-    ‖logPhase w n - logPhase w m‖
+theorem norm_unitLogPhase_sub_le (w : ℝ) (m n : ℕ) :
+    ‖unitLogPhase w n - unitLogPhase w m‖
       ≤ 2 * Real.pi * |w| * |Real.log n - Real.log m| := by
-  rw [logPhase, logPhase]
+  rw [unitLogPhase, unitLogPhase]
   refine le_trans (norm_exp_mul_I_sub_le _ _) (le_of_eq ?_)
   have hval : 2 * Real.pi * (w * Real.log n) - 2 * Real.pi * (w * Real.log m)
       = (2 * Real.pi * w) * (Real.log n - Real.log m) := by ring
@@ -122,29 +122,29 @@ theorem norm_logPoly_le_partial (a : ℕ → ℝ) (M : ℕ) {B : ℝ}
       ≤ B * (1 + 2 * Real.pi * |w| * Real.log M) := by
   classical
   have hreindex : logPoly (fun n => ((a n : ℝ) : ℂ)) (Finset.Icc 1 M) w
-      = ∑ i ∈ Finset.range M, logPhase w (i + 1) * ((a (i + 1) : ℝ) : ℂ) := by
+      = ∑ i ∈ Finset.range M, unitLogPhase w (i + 1) * ((a (i + 1) : ℝ) : ℂ) := by
     rw [logPoly, ← Finset.Ico_add_one_right_eq_Icc, Finset.sum_Ico_eq_sum_range]
     refine Finset.sum_congr (by norm_num) fun i _ => ?_
-    rw [logPhase]
+    rw [unitLogPhase]
     have hidx : 1 + i = i + 1 := by omega
     rw [hidx]
     ring
   rw [hreindex]
   refine le_trans (norm_sum_mul_le_of_bounded_partial_bv (g := fun j => a (j + 1))
-    (φ := fun i => logPhase w (i + 1)) M hB) ?_
+    (φ := fun i => unitLogPhase w (i + 1)) M hB) ?_
   refine mul_le_mul_of_nonneg_left ?_ (le_trans (abs_nonneg _) (hB 0 (Nat.zero_le M)))
-  have hhead : ‖logPhase w (M - 1 + 1)‖ = 1 := norm_logPhase w _
+  have hhead : ‖unitLogPhase w (M - 1 + 1)‖ = 1 := norm_unitLogPhase w _
   rw [hhead]
   refine add_le_add le_rfl ?_
   have hterm : ∀ i ∈ Finset.range (M - 1),
-      ‖logPhase w (i + 1 + 1) - logPhase w (i + 1)‖
+      ‖unitLogPhase w (i + 1 + 1) - unitLogPhase w (i + 1)‖
         ≤ 2 * Real.pi * |w| * (Real.log ((i : ℝ) + 2) - Real.log ((i : ℝ) + 1)) := by
     intro i _
     have hmono : Real.log ((i : ℝ) + 1) ≤ Real.log ((i : ℝ) + 2) :=
       Real.log_le_log (by positivity) (by linarith)
     have hc1 : ((i + 1 + 1 : ℕ) : ℝ) = (i : ℝ) + 2 := by push_cast; ring
     have hc2 : ((i + 1 : ℕ) : ℝ) = (i : ℝ) + 1 := by push_cast; ring
-    have hb := norm_logPhase_sub_le w (i + 1) (i + 1 + 1)
+    have hb := norm_unitLogPhase_sub_le w (i + 1) (i + 1 + 1)
     rw [hc1, hc2, abs_of_nonneg (by linarith :
       (0:ℝ) ≤ Real.log ((i : ℝ) + 2) - Real.log ((i : ℝ) + 1))] at hb
     exact hb
@@ -195,8 +195,8 @@ theorem norm_sum_mul_le_partial_bv (g : ℕ → ℝ) (φ : ℕ → ℂ) (n : ℕ
     rw [norm_mul, hS]
 
 /-- The phase increment across one step is at most `2π|w|/(n+1)`. -/
-theorem norm_logPhase_sub_succ_le (w : ℝ) (i : ℕ) :
-    ‖logPhase w (i + 1 + 1) - logPhase w (i + 1)‖ ≤ 2 * Real.pi * |w| / ((i : ℝ) + 1) := by
+theorem norm_unitLogPhase_sub_succ_le (w : ℝ) (i : ℕ) :
+    ‖unitLogPhase w (i + 1 + 1) - unitLogPhase w (i + 1)‖ ≤ 2 * Real.pi * |w| / ((i : ℝ) + 1) := by
   have h1 : (0 : ℝ) < (i : ℝ) + 1 := by positivity
   have h2 : (0 : ℝ) < (i : ℝ) + 2 := by positivity
   have hlog : Real.log ((i : ℝ) + 2) - Real.log ((i : ℝ) + 1) ≤ 1 / ((i : ℝ) + 1) := by
@@ -215,7 +215,7 @@ theorem norm_logPhase_sub_succ_le (w : ℝ) (i : ℕ) :
     linarith
   have hc1 : ((i + 1 + 1 : ℕ) : ℝ) = (i : ℝ) + 2 := by push_cast; ring
   have hc2 : ((i + 1 : ℕ) : ℝ) = (i : ℝ) + 1 := by push_cast; ring
-  have hb := norm_logPhase_sub_le w (i + 1) (i + 1 + 1)
+  have hb := norm_unitLogPhase_sub_le w (i + 1) (i + 1 + 1)
   rw [hc1, hc2, abs_of_nonneg hnn] at hb
   refine le_trans hb ?_
   have hnn2 : (0 : ℝ) ≤ 2 * Real.pi * |w| := by
@@ -235,22 +235,22 @@ theorem norm_logPoly_le_abel (a : ℕ → ℝ) (M : ℕ) (w : ℝ) :
             * ∑ i ∈ Finset.range (M - 1), |∑ j ∈ Finset.range (i + 1), a (j + 1)| / ((i : ℝ) + 1) := by
   classical
   have hreindex : logPoly (fun n => ((a n : ℝ) : ℂ)) (Finset.Icc 1 M) w
-      = ∑ i ∈ Finset.range M, logPhase w (i + 1) * ((a (i + 1) : ℝ) : ℂ) := by
+      = ∑ i ∈ Finset.range M, unitLogPhase w (i + 1) * ((a (i + 1) : ℝ) : ℂ) := by
     rw [logPoly, ← Finset.Ico_add_one_right_eq_Icc, Finset.sum_Ico_eq_sum_range]
     refine Finset.sum_congr (by norm_num) fun i _ => ?_
-    rw [logPhase]
+    rw [unitLogPhase]
     have hidx : 1 + i = i + 1 := by omega
     rw [hidx]
     ring
   rw [hreindex]
   refine le_trans (norm_sum_mul_le_partial_bv (fun j => a (j + 1))
-    (fun i => logPhase w (i + 1)) M) ?_
-  rw [norm_logPhase, one_mul]
+    (fun i => unitLogPhase w (i + 1)) M) ?_
+  rw [norm_unitLogPhase, one_mul]
   refine add_le_add le_rfl ?_
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun i _ => ?_
   have hnn : (0 : ℝ) ≤ |∑ j ∈ Finset.range (i + 1), a (j + 1)| := abs_nonneg _
-  have hstep := mul_le_mul_of_nonneg_right (norm_logPhase_sub_succ_le w i) hnn
+  have hstep := mul_le_mul_of_nonneg_right (norm_unitLogPhase_sub_succ_le w i) hnn
   refine le_trans hstep (le_of_eq ?_)
   field_simp
 

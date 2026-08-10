@@ -879,3 +879,17 @@ Direct foreground elaboration and the leaf builds pass; every module is wired in
 capstones report only `propext`, `Classical.choice`, and `Quot.sound`. No computation certificate,
 route premise, project axiom, or RH statement occurs. Final foreground umbrella build passes with
 11,590 jobs.
+
+## Session 2026-08-10 addition (Symbolic--Execution Law Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SELM-1 | Finite execution implies symbolic local admission; exact equality in the one-kernel system; triangle symbolic grades `2n` are locally admitted but nonexecutable for every `n>0`; normalized profile/parity observation is constant while exact grade is unbounded | `HTGeometry.ConstitutiveSymbolicExecutionGap` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints on the general implication, one-kernel equivalence,
+triangle nonexecution, observer constancy, and unconditional capstone report only `propext`,
+`Classical.choice`, and `Quot.sound`. No computation certificate, route premise, project axiom, or
+RH statement occurs. Final foreground umbrella build passes with 11,599 jobs. Repository lint
+reports no target error; its global nonzero exit comes from pre-existing unreachable modules in
+unrelated theorem areas.

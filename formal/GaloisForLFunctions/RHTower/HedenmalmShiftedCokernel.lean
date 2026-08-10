@@ -273,7 +273,7 @@ theorem thetaCokernelVector_mem_orthogonal_range (α : ℂ) :
     _ = inner ℂ (thetaShiftedRangeMap α k') (thetaCokernelVector α) := by rw [hkk]
     _ = (starRingEnd ℂ)
         (inner ℂ (thetaCokernelVector α) (thetaShiftedRangeMap α k')) :=
-      inner_conj_symm _ _
+      (inner_conj_symm _ _).symm
     _ = 0 := by rw [hcore, map_zero]
     _ = inner ℂ k (0 : thetaCentered) := by simp
 

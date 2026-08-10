@@ -247,3 +247,6 @@ RH or a completed universal field.
 - 2026-08-10 — originated after re-auditing the expanded Lean frontier.  Plain blow-up and generic
   witness adjunction were rejected as too weak; the symbolic-versus-executable graded gap retained
   local/global effectivity, positive relaxation, and history in one typed mechanism.
+- 2026-08-10 — acceptance-gate item 1 closed: the triangle local-admission/execution gap, constant
+  relaxed observer, and unbounded exact grade are Lean-certified in
+  `ConstitutiveSymbolicExecutionGap`.  Items 2--7 remain open and prevent field-core promotion.
