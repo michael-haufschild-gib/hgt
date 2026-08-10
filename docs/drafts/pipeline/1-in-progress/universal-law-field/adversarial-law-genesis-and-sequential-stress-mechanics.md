@@ -8,7 +8,8 @@
   source-admitted response strategy that survives every legal future challenge generated from its
   own previous responses.
 - **Status:** [MECHANISM NOT OBJECT] [PRIMARY CONJECTURE FROZEN]
-  [STATIC/SEQUENTIAL SEPARATION BRIDGE LEAN-CERTIFIED] [ROUTES EXCLUDED FROM FOUNDATIONS] [NOT RH]
+  [STATIC/SEQUENTIAL SEPARATION LEAN-CERTIFIED]
+  [LINEAR OBSERVER DATA PROCESSING LEAN-CERTIFIED] [ROUTES EXCLUDED FROM FOUNDATIONS] [NOT RH]
 
 ## 1. Public conjecture
 
@@ -194,7 +195,8 @@ Retire ALG as universal field if any survives serious attack:
    by ULF-ALG-2 and `ConstitutiveAdversarialLawStress.lean`.
 2. Define doctrine-changing challenge transport; fixed-class Littlestone theory is only the base
    case.
-3. Prove an observer data-processing law for source-consistent challenge trees.
+3. Prove an observer data-processing law for source-consistent challenge trees.  Linear
+   prolongation chart closed by ULF-ALG-3; nonlinear/doctrine-changing version remains open.
 4. Prove an admission/effectivity separation with the same finite sequential rank.
 5. Construct certificate-bearing challenge-language growth with recurrent observed doctrine and
    open lifted lineage.
@@ -208,3 +210,7 @@ Retire ALG as universal field if any survives serious attack:
 - 2026-08-10 -- first subordinate law passed Lean: static shattering and adaptive stress are
   independent constitutive resources, and convexification changes exact damage without closing the
   adaptive horizon.  Field gate now moves to doctrine-changing challenge transport.
+- 2026-08-10 -- linear observer data-processing law passed Lean: every apparent observed recurrence
+  is exactly a source challenge combination in the observer kernel.  The live gate is no longer
+  observer contraction; it is source-generation of the promoter and promotion of surviving hidden
+  residuals into new challenge kinds.

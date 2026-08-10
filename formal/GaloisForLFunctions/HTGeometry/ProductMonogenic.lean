@@ -22,7 +22,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Polynomial IsLocalRing
 
-variable {κ : Type*} [Field κ] [CharZero κ]
+variable {κ : Type*} [Field κ]
 
 /-! ## Shifting the variable is an automorphism -/
 
@@ -63,7 +63,7 @@ theorem adjoin_add_algebraMap {A : Type*} [CommRing A] [Algebra κ A] (γ : A) (
 /-! ## The product -/
 
 /-- **A finite product of monogenic finite-dimensional local algebras is monogenic.** -/
-theorem exists_adjoin_pi_eq_top {ι : Type*} [Fintype ι] (A : ι → Type*)
+theorem exists_adjoin_pi_eq_top [CharZero κ] {ι : Type*} [Fintype ι] (A : ι → Type*)
     [∀ i, CommRing (A i)] [∀ i, IsLocalRing (A i)] [∀ i, Algebra κ (A i)]
     [∀ i, FiniteDimensional κ (A i)]
     (hnilp : ∀ i, ∃ N : ℕ, (maximalIdeal (A i)) ^ N = ⊥)

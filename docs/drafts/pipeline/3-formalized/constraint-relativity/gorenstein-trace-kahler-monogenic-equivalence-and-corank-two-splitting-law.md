@@ -1,9 +1,9 @@
 # Gorenstein trace--Kähler monogenic equivalence and corank-two splitting law
 
 - **ID:** `gorenstein-trace-kahler-monogenic-equivalence-and-corank-two-splitting-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CLASSIFICATION / SOURCE--OBSERVER NONMETRICITY
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO RH CLAIM] [NO LEAN WRITTEN]`
+- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NO RH CLAIM] [FORMALIZED IN LEAN]`
   `[CLASSICAL DIFFERENT/LCI PARENTS] [BRIDGE] [NOVELTY UNVERIFIED]`
 - **Parent field:** `../../1-in-progress/constraint-relativity/source-soldering-bivariant-law-geometry.md`.
 - **Phase card:** `../../1-in-progress/constraint-relativity/defect-duality-phase-geometry.md`.

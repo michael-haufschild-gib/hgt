@@ -1284,7 +1284,9 @@ that the algebraic calculus of `ShilovBoundaryMigrationDefect.lean` was missing:
 the calculus is applied to.  Everything is unconditional; no operator-system or positivity axiom is
 introduced, and no unformalized analytic conclusion is restated as a hypothesis.
 
-`IsBoundaryIdeal S J` is the metric boundary condition
+`IsBoundaryIdeal S J` is the metric boundary condition, and `isBoundaryIdeal_iff_norm_mkQ` proves
+it is literally isometry of the quotient map on `S`, `‖J.mkQ s‖ = ‖s‖`, so the definition is not a
+weakening of the `C^*`-theoretic one but its exact specialisation.  The condition reads
 
 ```text
 ∀ s ∈ S, ∀ j ∈ J,  ‖s‖ ≤ ‖s - j‖,
@@ -1310,6 +1312,14 @@ isometric form with no extra work.
   `le_localIdeal_of_isLocalBoundaryIdeal` (each coordinate image of a local boundary ideal is a
   stage boundary ideal, hence inside `J i` by maximality).  This closes the local-boundary gap the
   card flags, without boundary representations.
+- **Existence of the Shilov ideal is reduced to one property.**  `isBoundaryIdeal_sup` and its
+  quotient form `IsBoundaryIdeal.sup_of_quotient` are transitivity: if `J₁` is a boundary ideal and
+  the image of `J₂` is a boundary ideal in `A/J₁` (`infDist_le_infDist_sub_iff` proves the two
+  readings agree), then `J₁ ⊔ J₂` is a boundary ideal.  `isGreatest_of_maximal_of_sup_closed` then
+  upgrades a maximal boundary ideal to a greatest one, and `exists_isGreatest_isBoundaryIdeal`
+  concludes: **whenever boundary ideals are closed under joins, the Shilov ideal exists.**  This
+  isolates precisely what the Hamana/Arveson construction has to supply — join-closure — rather
+  than the whole envelope.
 - `escapeFree_iff_exists_descent` is the envelope-descent half of Theorem A in linear form: a link
   descends to the boundary quotients exactly when it carries the source boundary ideal into the
   target one.
@@ -1323,13 +1333,96 @@ isometric form with no extra work.
   maps are surjective, every bottom ideal element is the bottom coordinate of a coherent sequence
   lying in every stage ideal.  The same recursion at a shifted starting stage gives the statement
   at any stage.
+- `le_localIdeal_of_closure_le` is the sharpened form of the classical coordinate inclusion: from
+  `closure(pₙ(H)) ⊆ Jₙ` alone one already gets `H ⊆ J^∞`.  This is what turns Joiţa's inclusion
+  into the maximality statement.
+- `isClosed_localIdeal` and `isClosed_localIdeal_of_isGreatest`: the local Shilov ideal is closed,
+  so the local envelope is separated; closedness of the stage ideals is not assumed but derived.
+- `diagonalRep`, `ker_diagonalRep` and `injective_liftQ_diagonalRep` are `(12)`: the diagonal of
+  the stage boundary representations has kernel exactly `⋂ pₙ⁻¹(Jₙ) = J_loc`, hence descends to a
+  faithful representation of the local envelope.  This is the algebraic content of the faithful
+  local positive representation, and it needs no deficit hypothesis.
 
 `#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound` only.
+
+`formal/GaloisForLFunctions/HTGeometry/ShilovCommutativeBoundary.lean` checks the abstract
+definition against the classical one in the commutative model, which is the model this card's
+killed-strengthening section computes with (`C_e^*(A(K)) = C(ext K)`).  For a compact Hausdorff
+`X`, a subspace `S ⊆ C(X, ℂ)` and a closed `F ⊆ X`:
+
+```text
+isBoundaryIdeal_vanishingIdeal_iff :
+  IsBoundaryIdeal S (vanishingIdeal F)  ↔  IsBoundarySet S F
+```
+
+where `IsBoundarySet S F` says every bound valid on `F` is a global bound.  The forward direction
+is Urysohn's lemma: if some `s ∈ S` exceeds on `X` a bound it obeys on `F`, a continuous function
+equal to `1` on `F` and to `0` on the closed set where `‖s‖` is large cuts `s` strictly below its
+own norm while staying in the vanishing ideal.  So the metric definition is not a weakening of the
+classical notion of a boundary — it specialises to it exactly.
+
+The same file carries the classical boundary theory that this makes available:
+
+- `vanishingIdeal_sup_le` and `isBoundaryIdeal_sup_of_isBoundarySet_inter` reduce join-closure in
+  the commutative model to closure of boundary *sets* under intersection;
+- `isBoundarySet_sInter_of_directed`: a directed intersection of closed boundaries is a boundary.
+  If some `s` exceeded the bound the intersection obeys, each member would carry a nonempty compact
+  set where `‖s‖` stays large, and compactness places a point of the intersection there;
+- `exists_minimal_isBoundarySet`: consequently Zorn applies downwards and a **minimal closed
+  boundary exists**.  Shilov's theorem is the further claim that it is unique, which needs the
+  algebra structure;
+- `IsBoundarySet.peakPoint_mem` and `closure_setOf_isPeakPoint_subset`: every closed boundary
+  contains every peak point, hence the closure of the peak points.  This is the forced lower half
+  of the Shilov boundary.
+
+- `shilovBoundary S` is the intersection of every closed boundary; `isClosed_shilovBoundary`,
+  `shilovBoundary_subset` and `closure_setOf_isPeakPoint_subset_shilovBoundary` bracket it between
+  the peak-point closure and every closed boundary;
+- `isLeast_shilovBoundary`: **binary intersection-closure already makes it the least closed
+  boundary**, because the family is then downward directed and directed intersections are
+  boundaries.  `isGreatest_vanishingIdeal_shilovBoundary` transports this to ideals: its vanishing
+  ideal is a boundary ideal containing every other vanishing-type one;
+- `isBoundarySet_inter_of_isBoundarySet_closure_peakPoints` and
+  `shilovBoundary_eq_closure_peakPoints` close the loop: if the closure of the peak points is a
+  boundary, intersection-closure is automatic and the Shilov boundary *is* that closure.
+
+`isBoundarySet_iff_exists_norm_eq` checks the definition against the literature one: for a
+nonempty closed `F`, being a boundary is exactly attaining the norm of every element of `S`
+(`IsBoundarySet.exists_norm_eq`).  `IsBoundarySet.closure` records that boundaries pass to
+closures.
+
+### Two structural findings about the join problem
+
+`isBoundaryIdeal_sup_iff` strengthens the transitivity lemma to an **equivalence**: given a boundary
+ideal `J₁`, the join `J₁ ⊔ J₂` is a boundary ideal *precisely when* the image of `J₂` is one in
+`A/J₁`.  So passing to the quotient restates the join problem rather than weakening it, and it
+cannot be bootstrapped by iterating quotients.
+
+`not_isBoundaryIdeal_sup_axes` is a **no-go**: in the sup-normed plane both coordinate axes are
+boundary ideals for the diagonal, yet their join is everything, which shortens the diagonal to
+zero.  Hence `not_exists_isGreatest_isBoundaryIdeal_diagLine`: the metric family of boundary ideals
+need not be a principal order ideal.  **The hypothesis of `exists_isGreatest_isBoundaryIdeal` is
+therefore not removable** — no purely metric axiom yields a Shilov ideal, and the `C^*`-theoretic
+input is necessary rather than convenient.  Read as a function system, the counterexample is the
+constants inside `C({1,2})`: it is exactly *non-separation* that breaks the join, which identifies
+separation as the load-bearing hypothesis on the classical side.
+
+**The whole chain therefore rests on one classical input**: that the closure of the peak points is
+a boundary (Bishop / the Choquet boundary).  From it: intersection-closure of boundary sets ⇒
+join-closure of boundary ideals (`isBoundaryIdeal_sup_of_isBoundarySet_inter`) ⇒ existence of the
+Shilov ideal (`exists_isGreatest_isBoundaryIdeal`) ⇒ the local identification `(9)`.  Every arrow
+in that chain is formalized and unconditional; only the first statement is imported.
 
 Still external: operator systems, `C^*`-covers, and boundary representations themselves.  The
 layer above identifies the Shilov ideal by its metric universal property, which is what the paper
 proof of `(9)` actually uses; the identification of that property with the Hamana/Arveson
-construction is the remaining analytic import.
+construction is the remaining analytic import.  The matricial positive-lifting equivalence `(6)`
+of part 2 is likewise `C^*`-specific: it uses that a surjective `*`-homomorphism stays surjective
+on positive cones after amplification.
+
+Already present and not duplicated: `escapeDetectionEquiv` of `ShilovBoundaryMigrationDefect.lean`
+is `(16)`, and `derivedLimitOne_subsingleton_of_surjective` there is the Mittag--Leffler vanishing,
+so the metric layer only had to supply what those modules could not see.
 
 ## Next attack
 

@@ -1934,3 +1934,543 @@ and `ghsBlockRight_eq_left_succ`.
 The choice of `n`, `σ`, `z`, `δ`, `K` as functions of `N`, and the verification that the stated
 conditions hold for large `N`.  The counting is already fixed: `n = (log N)^c` with `c ≥ 5`,
 `K ≍ log log N`, `σ = 1 + 1/log z`, and `E ≍ N(log N)⁵/n + N log n`.
+
+## 2026-08-10 unit 5, part 7: the geometric partition cannot reach `N/2`
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+`lake build GaloisForLFunctions.RHTower.Sieve.GhsFullAssembly` succeeds (9272 jobs).
+
+A second incompatibility found by trying to instantiate, not by reading:
+
+* the capstone's coverage condition needs the endpoints to reach `N/2` — the value beyond which
+  `ghsOuter` vanishes, so `2^K ≥ (log N)/log 3` is forced;
+* the geometric threshold `2^{k+1}·4 log 2 ≤ log N` caps `2^K ≤ (log N)/(8 log 2)`.
+
+`(log N)/(8 log 2) ≈ 0.18 log N < 0.91 log N ≈ (log N)/log 3`, so **no admissible `K` does both**.
+The geometric partition reaches only `ghsBlockLeft N K ≤ N/256`.
+
+The leftover `(ghsBlockLeft N K, N]` needs no mean-square estimate.  There `log⌊N/p⌋ ≤ log 256` is
+bounded, so the sharp denominator is worthless — but Mertens' first theorem *on a block* bounds the
+outer weights' `1/p`-mass by `(log B − log A + C)/log 2`, an absolute constant for this block, and
+the inner range `N/A` is bounded too.
+
+```text
+sum_Icc_norm_ghsOuterBlock_div_le_gap :  1 ≤ A ≤ B ≤ N →
+  ∑_{p ≤ N} ‖ghsOuterBlock f N A B p‖/p ≤ (log B − log A + C)/log 2
+
+norm_sum_Icc_ghs_block_trivial_le :  1 ≤ A ≤ B ≤ N, 1 ≤ M ≤ N →
+  ‖∑_{i≤N} (blk ⍟ (ghsInner f M ⍟ f))(i)‖
+    ≤ N·((log B − log A + C)/log 2)·(log M + log 4)
+```
+
+This is the general form of `norm_sum_Icc_ghs_small_block_le`, and neither dominates the other:
+for `(1, n²]` the denominator `log⌊N/P⌋ ≍ log N` is large and worth keeping; for the top block it is
+bounded and `log 2` is the right denominator.  The argument uses both.
+
+```text
+ghsPartTop N n K j := if j ≤ K + 1 then ghsPart N n j else N
+
+norm_sum_Icc_le_ghs_full :
+  f completely multiplicative with f 1 = 1, ‖f‖ ≤ 1, 1 < σ, 1 ≤ z, 0 ≤ δ,
+  δ ≤ 𝔻(f, n^{iy}) for |y| ≤ n, e⁴ ≤ n, 2 ≤ N, n² ≤ N, 2 ≤ ⌊N/n²⌋, n² ≤ ghsBlockRight N 0,
+  threshold/coverage/height conditions for k < K, and three error levels ≤ E  →
+    ‖∑_{m ≤ N} f(m)‖
+      ≤ ( ghsRecursionError N
+            + (K+2)·(E + (1/2π)·dampedSize σ δ z N·(N+½)^σ·ghsBlockConstOf σ ghsShapeConst) )
+          / log N
+```
+
+Four block types — small `(1, n²]`, trimmed `(n², ghsBlockRight N 0]`, geometric `(A_k, B_k]` for
+`1 ≤ k < K`, top `(ghsPart N n (K+1), N]` — and **no hypothesis about any of them survives**.
+
+### What is left
+
+The choice of `n, σ, z, δ, K` as functions of `N`, and the verification of the remaining conditions
+for large `N`.
+
+## 2026-08-10 unit 5, part 8: the parameters reduced
+
+`Sieve/GhsParameterReduction.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`,
+wired, builds clean (9273 jobs).
+
+Four of the conditions of `norm_sum_Icc_le_ghs_full` are consequences of the others:
+
+```text
+ghsScale_le_ghsBlockRight_zero :  ghsScale N 1 ≤ ghsBlockRight N 0
+   -- the square-root scale is below its own complement, since ⌊√N⌋² ≤ N
+two_le_div_ghsBlockRight :  2^{k+1}·log 2 ≤ log N →  2 ≤ ⌊N/B_k⌋
+```
+
+together with the monotonicity of `ghsBlockLeft` (which turns `n² ≤ ghsBlockRight N 0` into
+`n² ≤ A_k` for every `k ≥ 1`) and the monotonicity of `2^{k+1}` and `4^{k+1}` in `k` (which turns
+the last block's threshold and height inequality into all of them).  So:
+
+```text
+norm_sum_Icc_le_ghs_reduced :
+  f completely multiplicative with f 1 = 1, ‖f‖ ≤ 1, 1 < σ, 1 ≤ z, 0 ≤ δ,
+  δ ≤ 𝔻(f, n^{iy}) for |y| ≤ n,
+  e⁴ ≤ n,  2 ≤ N,  n² ≤ N,  2 ≤ ⌊N/n²⌋,  n² ≤ ghsScale N 1,
+  2^K·4·log 2 ≤ log N,
+  (5/4n)·(16/9)·4^K·(log N + log 4) ≤ 1750·ghsShapeConst,
+  three error levels ≤ E  →
+    ‖∑_{m ≤ N} f(m)‖
+      ≤ ( ghsRecursionError N
+            + (K+2)·(E + (1/2π)·dampedSize σ δ z N·(N+½)^σ·ghsBlockConstOf σ ghsShapeConst) )
+          / log N
+```
+
+Every surviving hypothesis is a scalar inequality in `N`, `n`, `K`, `σ`, `E` — no block, no
+partition, no index.  Reading them as constraints on the height and the number of scales:
+
+| condition | asks |
+|---|---|
+| `n² ≤ ghsScale N 1` | `n ≤ N^{1/4}` |
+| `2^K·4 log 2 ≤ log N` | `2^K ≤ (log N)/(4 log 2)` |
+| height at `4^K` | `n ≳ 4^K·log N ≍ (log N)³` |
+| `ghsUniformError ≤ E` | `E ≳ N(log N)⁵/n` |
+| small block `≤ E` | `E ≳ N log n` |
+| top block `≤ E` | `E ≳ N` |
+
+The three error levels and the two constraints on `n` are simultaneously satisfiable: `n = (log N)^c`
+for any `c ∈ [3, ∞)` fits below `N^{1/4}`, and `E ≍ N(log N)^{5−c} + N log log N`.
+
+### What is left
+
+The choice of `n, σ, z, δ, K` as functions of `N` and the asymptotic verification of the six rows
+above.
+
+## 2026-08-10 unit 5, part 9: the scale count, the total error, and the height window
+
+Two modules, unconditional, `[propext, Classical.choice, Quot.sound]`, wired, both build clean
+(9274, 9275 jobs).
+
+### `Sieve/GhsScaleCount.lean`
+
+```text
+ghsScaleCount N := Nat.log 2 ⌊(log N)/(4 log 2)⌋
+two_pow_ghsScaleCount_le  :  16 ≤ N →  2^K·4·log 2 ≤ log N
+four_pow_ghsScaleCount_le :  16 ≤ N →  4^K ≤ ((log N)/(4 log 2))²
+
+ghsTotalError N n K σ := max (uniform Perron error) (max (small-block) (top-block))
+norm_sum_Icc_le_ghs_total :  the mean value with the three error hypotheses discharged
+```
+
+The scale count is the largest the threshold permits, `Nat.pow_log_le_self` doing the work; the
+three error levels are explicit, so their common bound is their maximum, and `hE1, hE2, hE3`
+disappear into `le_max_*`.
+
+### `Sieve/GhsHeightWindow.lean`
+
+```text
+ghs_height_of_scaleCount :  16 ≤ N, 1 ≤ n,
+  (5/4n)·(16/9)·((log N)/(4 log 2))²·(log N + log 4) ≤ 1750·ghsShapeConst  →
+    the height inequality at K = ghsScaleCount N
+
+norm_sum_Icc_le_ghs_window :
+  f completely multiplicative with f 1 = 1, ‖f‖ ≤ 1, 1 < σ, 1 ≤ z, 0 ≤ δ,
+  δ ≤ 𝔻(f, n^{iy}) for |y| ≤ n,
+  e⁴ ≤ n,  16 ≤ N,  n² ≤ N,  2 ≤ ⌊N/n²⌋,  n² ≤ ghsScale N 1,
+  (5/4n)·(16/9)·((log N)/(4 log 2))²·(log N + log 4) ≤ 1750·ghsShapeConst  →
+    ‖∑_{m ≤ N} f(m)‖
+      ≤ ( ghsRecursionError N
+            + (ghsScaleCount N + 2)
+              ·(ghsTotalError N n (ghsScaleCount N) σ
+                  + (1/2π)·dampedSize σ δ z N·(N+½)^σ·ghsBlockConstOf σ ghsShapeConst) )
+          / log N
+```
+
+**No partition, no block, no scale index appears in the hypotheses.**  What is left is `N ≥ 16`,
+the distance data `(z, δ)`, and a height `n` in the window
+
+```text
+(log N)³ ≪ n ≪ N^{1/4} ,
+```
+
+the lower end from the height inequality and the upper end from `n² ≤ ghsScale N 1 = ⌊N^{1/2}⌋`.
+
+### What is left
+
+Exhibiting a height in the window for large `N` — an asymptotic comparison of `(log N)³` with
+`N^{1/4}` — and the choice of `σ` and of the distance data.
+
+## 2026-08-10 unit 5, part 10: a height inside the window
+
+`Sieve/GhsHeightChoice.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9276 jobs).
+
+```text
+ghsHeight N := ⌊(log N)⁴⌋ + 1
+log_pow_le_ghsHeight :  (log N)⁴ ≤ ghsHeight N
+ghsHeight_le :  1 ≤ (log N)⁴ →  ghsHeight N ≤ 2(log N)⁴
+
+eventually_pow_log_le_ghsScale :  ∀ᶠ N,  4(log N)⁸ ≤ ghsScale N 1
+ghs_height_inequality :  3 ≤ log N,  (log N)⁴ ≤ n  →
+  (5/4n)·(16/9)·((log N)/(4 log 2))²·(log N + log 4) ≤ 1750·ghsShapeConst
+```
+
+Two observations worth keeping.
+
+**The height inequality needs no asymptotics.**  With `n ≥ (log N)⁴` the left-hand side is at most
+`10/9`, uniformly in `N` once `log N ≥ 3`, while `ghsShapeConst = (3 + C)(3 + log 4) ≥ 9` makes the
+right-hand side at least `15750`.  The margin is a factor `14000`; the condition was never
+quantitatively delicate, only structurally necessary.
+
+**One asymptotic comparison carries the whole construction.**  `eventually_pow_log_le_ghsScale` is
+`log =o(x^{1/16})` raised to the eighth power, giving `4(log N)⁸ ≤ ½·N^{1/2} ≤ ⌊N^{1/2}⌋`.  Combined
+with `ghsHeight N ≤ 2(log N)⁴` it yields `(ghsHeight N)² ≤ ghsScale N 1` — the upper end of the
+window.  Everything else in units 5–6 is an inequality between explicit closed forms.
+
+### What is left
+
+Assembling `ghsHeight` into `norm_sum_Icc_le_ghs_window` as an eventual statement, and the choice of
+`σ` and the distance data `(z, δ)`.
+
+## 2026-08-10 unit 5 closed: the mean value, eventually
+
+`Sieve/GhsEventual.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9277 jobs).
+
+```text
+exp_four_le :  e⁴ ≤ 81
+
+eventually_ghsHeight_admissible :  ∀ᶠ N,
+  16 ≤ N ∧ 3 ≤ log N ∧ e⁴ ≤ ghsHeight N ∧ (ghsHeight N)² ≤ N
+    ∧ 2 ≤ ⌊N/(ghsHeight N)²⌋ ∧ (ghsHeight N)² ≤ ghsScale N 1
+
+eventually_norm_sum_Icc_le_ghs :
+  f completely multiplicative with f 1 = 1, ‖f‖ ≤ 1  →
+  ∀ᶠ N,  ∀ z σ δ,  1 < σ → 1 ≤ z → 0 ≤ δ →
+    (δ ≤ 𝔻(f, n^{iy}) for |y| ≤ ghsHeight N)  →
+      ‖∑_{m ≤ N} f(m)‖
+        ≤ ( ghsRecursionError N
+              + (ghsScaleCount N + 2)
+                ·(ghsTotalError N (ghsHeight N) (ghsScaleCount N) σ
+                    + (1/2π)·dampedSize σ δ z N·(N+½)^σ·ghsBlockConstOf σ ghsShapeConst) )
+            / log N
+```
+
+**Unit 5 is closed.**  There is no free parameter and no block hypothesis: the height, the scale
+count, the partition and the error level are all defined functions of `N`, and the only input is
+the multiplicative distance.
+
+One point of shape deserves recording.  The distance data `(z, σ, δ)` is quantified *inside* the
+eventual statement, not before it.  That is forced: `δ` bounds `𝔻(f, n^{iy})` on `|y| ≤ ghsHeight N`,
+a range growing with `N`, so a `δ` fixed in advance would have to bound the distance on the whole
+line — the same unsatisfiable condition that was removed from `ghs_block_bound_uniform` in part 1.
+Halász's theorem has exactly this shape: the `m` in `(1+m)e^{−m}` depends on both `x` and the height.
+
+### What is left for `MRBilinear`
+
+Nothing in the mean-value chain.  What remains is to feed this bound to the Matomäki–Radziwiłł
+reduction: instantiate `f` at the relevant multiplicative function, choose `z` and `σ = 1 + 1/log z`,
+and read `dampedSize σ δ z N ≍ (log z)e^{−δ²}` against the corpus's distance lower bounds.
+
+## 2026-08-10 correction: the height exponent 4 gives a true but useless bound
+
+`ghsHeight` raised from `⌊(log N)⁴⌋+1` to `⌊(log N)⁶⌋+1`; `GhsHeightChoice` and `GhsEventual`
+rebuilt, unconditional, `[propext, Classical.choice, Quot.sound]`, clean (9277 jobs).
+
+Checking the endpoint against the trivial bound — the test that should be run on any chain before
+declaring it finished — shows exponent 4 is too small.  At `n ≍ (log N)⁴`:
+
+```text
+ghsUniformError ≍ N(log N)⁵/n ≍ N log N ,
+```
+
+so `K·ghsUniformError/log N ≍ N·log log N`, **worse than the trivial bound `N`**.  The chain was
+correct and the conclusion vacuous.  The requirement is `n ≫ (log N)⁴·log log N`, already recorded
+in part 5 but not honoured by the choice made in part 10.
+
+At `n ≍ (log N)⁶` every term is `o(N)`:
+
+| term | size after dividing by `log N` |
+|---|---|
+| `ghsRecursionError N` | `N·log log N/log N` |
+| `K·ghsUniformError` | `N·log log N/(log N)²` |
+| `K·(small block)` | `N·(log log N)²/log N` |
+| `K·(top block)` | `N·log log N/log N` |
+| `K·(1/2π)·dampedSize·(N+½)^σ·C` | `N·log z·e^{−δ²}·log log N/log N` |
+
+The first four are unconditionally `o(N)`; the last is the Halász term and is `o(N)` exactly when
+`e^{−δ²}·log z·log log N = o(log N)` — the multiplicative-distance hypothesis, as it should be.
+
+The upper end of the window moves accordingly: `(ghsHeight N)² ≤ 4(log N)¹² ≤ ⌊N^{1/2}⌋`, so
+`eventually_pow_log_le_ghsScale` is now `log =o(x^{1/24})` raised to the twelfth power.  The height
+inequality is unaffected — it only needs `n ≥ (log N)⁴`, and `(log N)⁶ ≥ (log N)⁴`.
+
+## 2026-08-10 unit 5, part 11: the first two rows of the table, proved
+
+`Sieve/GhsSizeBounds.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9278 jobs).
+
+```text
+mertensTail_nonneg :  0 ≤ mertensTail
+tendsto_log_log_div_log :  log(log N)/log N → 0            -- log =o(id), composed with log
+tendsto_log_natCast_atTop :  log N → ∞
+ghsScaleCount_le :  16 ≤ N →  ghsScaleCount N ≤ (log log N)/log 2
+tendsto_ghsRecursionError_div :  ghsRecursionError N /(N·log N) → 0
+```
+
+`ghsScaleCount_le` is `Nat.pow_log_le_self` read through the logarithm: `2^K ≤ ⌊(log N)/(4 log 2)⌋`
+gives `K·log 2 ≤ log((log N)/(4 log 2)) ≤ log log N`.  `tendsto_ghsRecursionError_div` needs
+`log(Nat.log 2 N) ≤ log log N + 1`, which is `Nat.log 2 N ≤ (log N)/log 2` together with
+`−log(log 2) ≤ 1`, i.e. `log 2 ≥ e^{−1}`.
+
+These are the first two rows of the size table.  Both are `N` times a power of `log log N` over a
+power of `log N`, which is the shape of every unconditional term in the bound, so the same two
+lemmas serve for the rest.
+
+### What is left
+
+The remaining three rows — `K·ghsUniformError`, `K·(small block)`, `K·(top block)` — and then the
+statement `‖∑_{m ≤ N} f(m)‖ = o(N)` under the distance hypothesis.
+
+## 2026-08-10 unit 5, part 12: the truncation row
+
+`Sieve/GhsUniformErrorBound.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9279 jobs).
+
+```text
+ghsErrorConst := 5346/((log 2)³·π)
+
+ghsUniformError_le :  3 ≤ log N,  (log N)⁶ ≤ n,  (N+½)^σ ≤ 3N  →
+  ghsUniformError N n σ ≤ ghsErrorConst · N/log N
+
+tendsto_ghsScaleCount_div_log :  ghsScaleCount N / log N → 0
+```
+
+The chain is `81(log N)⁴/(log 2)³ · 3N · 22 log N / (π (log N)⁶)`: the height's sixth power beats
+the numerator's fifth, leaving one power of `log N` in the denominator.  No numerics — the constant
+is carried symbolically, since `5·(1+3L) + 4·(1+L) ≤ 22L` already at `L ≥ 3`.
+
+The abscissa enters only through `(N+½)^σ`, hence the hypothesis `(N+½)^σ ≤ 3N`: satisfied by
+`σ = 1 + 1/log N`, and by any `σ = 1 + 1/log z` with `z ≥ N`.  That is the third row of the size
+table, and with `tendsto_ghsScaleCount_div_log` the product `K·ghsUniformError/(N log N)` is
+`ghsErrorConst·(K/log N)·(1/log N) → 0`.
+
+### What is left
+
+The small-block and top-block rows, and then `‖∑_{m ≤ N} f(m)‖ = o(N)` under the distance
+hypothesis.
+
+## 2026-08-10 unit 5, part 13: the small-block row
+
+`Sieve/GhsSmallBlockBound.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9280 jobs).
+
+```text
+ghs_small_block_le :  3 ≤ log N,  16 ≤ N,  (ghsHeight N)² ≤ ghsScale N 1  →
+  N·((log (ghsHeight N)² + log 4)/log⌊N/(ghsHeight N)²⌋)·(log N + log 4)
+    ≤ N·(32 log 2 + 96 log log N)
+```
+
+The mechanism is that the sharp denominator earns its keep here.  `n² ≤ ghsScale N 1` makes the
+complement `⌊N/n²⌋` at least `ghsScale N 1`, so
+
+```text
+log⌊N/n²⌋ ≥ (log N)/2 − log 2 ≥ (log N)/4 ,
+```
+
+which cancels the last factor `log N + log 4 ≤ 2 log N` outright, leaving only the numerator's
+`log n² ≤ 4 log 2 + 12 log log N`.  This is why the small block was given its own bound rather than
+being folded into `norm_sum_Icc_ghs_block_trivial_le`: the general form divides by `log 2` and would
+have left a full factor `log N`.
+
+Four of the five rows are now proved: `ghsRecursionError = o(N log N)`,
+`ghsScaleCount = o(log N)`, `ghsUniformError ≤ ghsErrorConst·N/log N`, and the small block
+`≤ N·(32 log 2 + 96 log log N)`.
+
+### What is left
+
+The top-block row — which needs `ghsScale N (ghsScaleCount N)` bounded by an absolute constant,
+from `Nat.lt_pow_succ_log_self` — and then `‖∑_{m ≤ N} f(m)‖ = o(N)` under the distance hypothesis.
+
+## 2026-08-10 unit 5, part 14: the last scale is an absolute constant
+
+`Sieve/GhsTopScale.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9281 jobs).
+
+```text
+ghsScale_scaleCount_le :  65536 ≤ N →  ghsScale N (ghsScaleCount N) ≤ 2048
+ghsBlockLeft_scaleCount_ge :  65536 ≤ N →  ⌊N/2048⌋ ≤ ghsBlockLeft N (ghsScaleCount N)
+```
+
+The threshold gives `2^K ≤ (log N)/(4 log 2)` and `Nat.lt_pow_succ_log_self` gives the matching
+lower bound `2^K > m/2` for `m = ⌊(log N)/(4 log 2)⌋`; with `m ≥ 4` these combine to
+`2^K > 3(log N)/(32 log 2)`, so the exponent obeys `(log N)/2^K < (32 log 2)/3 ≤ 11 log 2` and
+
+```text
+ghsScale N K = ⌊N^{1/2^K}⌋ ≤ 2^{11} = 2048 .
+```
+
+This quantifies part 7's incompatibility: the geometric partition stops at `ghsBlockLeft N K`, which
+is between `N/2048` and `N/256`, never reaching the `N/2` the coverage condition needs.  The gap is
+a bounded factor, which is why the top block's trivial bound costs only `O(N)` — the last row of the
+size table.
+
+### What is left
+
+The top-block row itself (assembling this constant into `norm_sum_Icc_ghs_block_trivial_le`'s
+bound), and then `‖∑_{m ≤ N} f(m)‖ = o(N)` under the distance hypothesis.
+
+## 2026-08-10 unit 5, part 15: the top-block row — the size table is complete
+
+`Sieve/GhsTopBlockBound.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9282 jobs).
+
+```text
+ghsTopConst := ((log 4096 + C)/log 2)·(log 4096 + log 4)
+
+ghs_top_block_le :  65536 ≤ N,  n² ≤ N  →
+  N·((1/log 2)·(log N − log(ghsPart N n (K+1)) + C))·(log⌊N/ghsPart N n (K+1)⌋ + log 4)
+    ≤ N·ghsTopConst
+```
+
+Both quantities are bounded because `⌊N/2048⌋ ≤ ghsPart N n (K+1) ≤ N`: the width is
+`log N − log(N/4096) = log 4096`, and the inner range is `⌊N/(N/2048)⌋ < 4096` by
+`div_div_lt_two_mul`.
+
+### The size table, all five rows proved
+
+| term | bound | reference |
+|---|---|---|
+| `ghsRecursionError N` | `o(N log N)` | `tendsto_ghsRecursionError_div` |
+| `ghsScaleCount N` | `o(log N)` | `tendsto_ghsScaleCount_div_log` |
+| `ghsUniformError` | `ghsErrorConst·N/log N` | `ghsUniformError_le` |
+| small block `(1, n²]` | `N(32 log 2 + 96 log log N)` | `ghs_small_block_le` |
+| top block | `N·ghsTopConst` | `ghs_top_block_le` |
+
+Every unconditional term of the mean value is therefore `o(N·log N)`, and after division by `log N`
+the bound reads
+
+```text
+‖∑_{m ≤ N} f(m)‖ ≤ o(N) + (K+2)·(1/2π)·dampedSize σ δ z N·(N+½)^σ·ghsBlockConstOf σ ghsShapeConst .
+```
+
+The surviving term is the Halász term and nothing else.
+
+### What is left
+
+Assembling the five rows into `‖∑_{m ≤ N} f(m)‖ = o(N)` under the distance hypothesis
+`e^{−δ²}·log z·log log N = o(log N)`.
+
+## 2026-08-10 unit 5, part 16: the five rows collapse into one
+
+`Sieve/GhsTotalErrorBound.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9283 jobs).
+
+```text
+tendsto_sq_log_div_atTop :  (log t)²/t → 0
+tendsto_sq_log_log_div_log :  (log log N)²/log N → 0
+
+ghsTotalError_le :  3 ≤ log N,  65536 ≤ N,  (ghsHeight N)² ≤ ghsScale N 1,
+  (ghsHeight N)² ≤ N,  (N+½)^σ ≤ 3N  →
+    ghsTotalError N (ghsHeight N) (ghsScaleCount N) σ
+      ≤ N·(ghsErrorConst + ghsTopConst + 32 log 2 + 96 log log N)
+
+tendsto_ghsTotalError_majorant (C) :
+  (ghsScaleCount N + 2)·(C + 96 log log N)/log N → 0
+```
+
+The maximum of the three error levels is bounded by their sum, and each is `N` times either a
+constant or `log log N`.  The majorant then splits into four pieces — `C·K/log N`, `2C/log N`,
+`96·K·log log N/log N`, `192·log log N/log N` — of which only the third is new, and it is
+`(log log N)²/log N` after `ghsScaleCount_le`.
+
+That is the second and last asymptotic input of the whole construction: `log =o(x^{1/24})` for the
+height window, and `(log t)² = o(t)` here.  Everything else is an inequality between closed forms.
+
+### What is left
+
+`‖∑_{m ≤ N} f(m)‖ = o(N)` under the distance hypothesis: combine
+`eventually_norm_sum_Icc_le_ghs` with `tendsto_ghsRecursionError_div`, `ghsTotalError_le` and
+`tendsto_ghsTotalError_majorant`, leaving only the Halász term
+`(K+2)·(1/2π)·dampedSize σ δ z N·(N+½)^σ·ghsBlockConstOf σ ghsShapeConst / (N log N)`.
+
+## 2026-08-10 unit 5 CLOSED IN FULL: the mean value per unit
+
+`Sieve/GhsMeanValueDiv.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9284 jobs).
+
+```text
+ghsErrConstTotal := ghsErrorConst + ghsTopConst + 32 log 2
+
+eventually_norm_sum_Icc_div_le :
+  f completely multiplicative with f 1 = 1, ‖f‖ ≤ 1  →
+  ∀ᶠ N,  ∀ z σ δ,  1 < σ → 1 ≤ z → 0 ≤ δ → (N+½)^σ ≤ 3N →
+    (δ ≤ 𝔻(f, n^{iy}) for |y| ≤ ghsHeight N)  →
+      ‖∑_{m ≤ N} f(m)‖/N
+        ≤ ghsRecursionError N/(N log N)
+          + (ghsScaleCount N + 2)·(ghsErrConstTotal + 96 log log N)/log N
+          + (ghsScaleCount N + 2)·(1/2π)·dampedSize σ δ z N·(N+½)^σ
+              ·ghsBlockConstOf σ ghsShapeConst/(N log N)
+
+tendsto_ghs_unconditional_part :  the first two terms → 0
+```
+
+**The Granville–Harper–Soundararajan chain is complete.**  The mean value per unit is bounded by an
+unconditional part that provably vanishes plus one Halász term, and the Halász term is the only
+place the multiplicative distance appears.  Explicitly, the bound is `o(1)` as soon as
+
+```text
+e^{−δ²}·log z·log log N = o(log N) ,
+```
+
+which is the hypothesis Halász's theorem is stated under.
+
+Every constant is explicit: `ghsErrorConst = 5346/((log 2)³π)`,
+`ghsTopConst = ((log 4096 + C)/log 2)(log 4096 + log 4)`,
+`ghsShapeConst = (3 + C)(3 + log 4)`, `ghsBlockConstOf σ Γ = √((2π)²(7/σ²+1)((5/4)701)(2·1750Γ))`,
+with `C = mertensBlockGapConst`.  The whole construction rests on exactly two asymptotic facts,
+`log =o(x^{1/24})` and `(log t)² = o(t)`; everything else is arithmetic between closed forms.
+
+### What is left for `MRBilinear`
+
+Nothing in the mean-value chain.  The remaining work is the Matomäki–Radziwiłł reduction itself:
+`AveragedShortInterval μ hh`, which is a short-interval statement and needs the Parseval/Dirichlet
+polynomial decomposition, not another mean-value estimate.
+
+## 2026-08-10 the frontier after the mean value: where `MRBilinear` actually stands
+
+With the Halász chain closed, an audit of what still separates the corpus from `MRBilinear`.  The
+reduction is far shorter than the card's earlier text suggests — the corpus already owns every step
+except one analytic theorem.
+
+```text
+MRBilinear μ hh
+  ← MRBilinear_moebius_of_averaged            (MRFibreReduction)
+  ← AveragedShortInterval μ hh
+  ← averagedShortInterval_of_meanSquare        (PairFibreMeanSquare; Cauchy–Schwarz over the block)
+  ← AveragedMeanSquare μ hh
+  ← averagedMeanSquare_of_maximal              (FibreStartSeparation)
+  ← MaximalWindowMeanSquare μ hh :
+      ∑_{y ∈ [√x/2, √x]} max_{m ≤ h} (∑_{b ∈ [y, y+m]} μ(b))² = o(h²·√x)
+```
+
+That last line **is** Matomäki–Radziwiłł.  Everything above it is proved here.  Also already owned:
+`innerFibre_eq` (the fibre is the integer interval `[⌈x/a⌉, ⌊(x+h√x)/a⌋]`), Gallagher's lemma
+(`gallagher_identity`, `gallagher_le_of_sup`) and Gallagher's Sobolev lemma (`gallagher_sobolev`).
+
+Two obstructions remain, in order:
+
+1. **The supremum over window lengths.**  The fibre length varies with `a`, so the sum really is
+   over a *choice* `m(y)` of length per starting point, and no crude removal of the supremum works:
+   `max_{m≤H} S_m² ≤ (H+1)∑_{m≤H} S_m²` loses `H²` against the target.  What is needed is
+   Rademacher–Menshov — a dyadic decomposition costing only `(log H)²`.
+2. **The Gallagher–Halász bridge**: convert `∑_y S(y)²` into `∫ |logPoly|²` and control the
+   integral by the large-values/Halász machinery, which is where the mean value just built enters.
+
+### `Sieve/WindowPartialSum.lean` — the first brick
+
+Unconditional, `[propext, Classical.choice, Quot.sound]`, wired, builds clean (9005 jobs).
+
+```text
+partialSum f n := ∑_{b ≤ n} f(b)
+window_eq_partialSum :  1 ≤ y →  ∑_{b ∈ [y, y+m]} f(b) = P(y+m) − P(y−1)
+window_split :  splitting a window is a telescoping identity on P
+maxWindowSq_eq_partial :  maxWindowSq f H y = max_{m ≤ H} (P(y+m) − P(y−1))²
+```
+
+Every maximal inequality is a statement about partial sums, not windows; with this rewriting the
+supremum becomes the maximal deviation of `P` from its value at the left endpoint, which is the
+classical setting for Rademacher–Menshov, and window splitting costs nothing.

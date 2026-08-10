@@ -72,6 +72,41 @@ theorem isBoundaryIdeal_iff_le_infDist (S J : Submodule 𝕜 A) :
     rw [dist_eq_norm] at h2
     linarith
 
+/-- The quotient norm of a class is the distance to the submodule. -/
+theorem norm_mkQ_eq_infDist (J : Submodule 𝕜 A) (x : A) :
+    ‖J.mkQ x‖ = Metric.infDist x (J : Set A) :=
+  QuotientAddGroup.norm_mk x
+
+/-- **The boundary condition is isometry of the quotient map on `S`.**  This is the definition the
+`C^*`-theoretic notion of a boundary ideal specialises to. -/
+theorem isBoundaryIdeal_iff_norm_mkQ (S J : Submodule 𝕜 A) :
+    IsBoundaryIdeal S J ↔ ∀ s ∈ S, ‖J.mkQ s‖ = ‖s‖ := by
+  rw [isBoundaryIdeal_iff_le_infDist]
+  refine forall_congr' fun s => forall_congr' fun _ => ?_
+  rw [norm_mkQ_eq_infDist]
+  constructor
+  · intro h
+    refine le_antisymm ?_ h
+    have hz := Metric.infDist_le_dist_of_mem (x := s) J.zero_mem
+    rwa [dist_zero_right] at hz
+  · intro h
+    exact h.ge
+
+/-- The relative boundary condition is the boundary condition in the quotient. -/
+theorem infDist_le_infDist_sub_iff (S J₁ J₂ : Submodule 𝕜 A) :
+    (∀ s ∈ S, ∀ j ∈ J₂,
+        Metric.infDist s (J₁ : Set A) ≤ Metric.infDist (s - j) (J₁ : Set A))
+      ↔ IsBoundaryIdeal (S.map J₁.mkQ) (J₂.map J₁.mkQ) := by
+  constructor
+  · rintro h s' hs' j' hj'
+    obtain ⟨s, hs, rfl⟩ := Submodule.mem_map.mp hs'
+    obtain ⟨j, hj, rfl⟩ := Submodule.mem_map.mp hj'
+    rw [← map_sub, norm_mkQ_eq_infDist, norm_mkQ_eq_infDist]
+    exact h s hs j hj
+  · intro h s hs j hj
+    have := h (J₁.mkQ s) (Submodule.mem_map_of_mem hs) (J₁.mkQ j) (Submodule.mem_map_of_mem hj)
+    rwa [← map_sub, norm_mkQ_eq_infDist, norm_mkQ_eq_infDist] at this
+
 theorem IsBoundaryIdeal.mono {S J J' : Submodule 𝕜 A} (h : IsBoundaryIdeal S J) (hJ : J' ≤ J) :
     IsBoundaryIdeal S J' := fun s hs j hj => h s hs j (hJ hj)
 
@@ -101,6 +136,60 @@ theorem isBoundaryIdeal_sSup {S : Submodule 𝕜 A} {C : Set (Submodule 𝕜 A)}
   obtain ⟨J, hJC, hjJ⟩ := hj
   exact h J hJC s hs j hjJ
 
+/-- **Boundary ideals compose.**  If `J₁` is a boundary ideal for `S` and `J₂` shortens no element
+of `S` measured modulo `J₁`, then the join `J₁ ⊔ J₂` is again a boundary ideal.  This is the metric
+form of the statement that a boundary ideal of the quotient by a boundary ideal is a boundary
+ideal. -/
+theorem isBoundaryIdeal_sup {S J₁ J₂ : Submodule 𝕜 A} (h₁ : IsBoundaryIdeal S J₁)
+    (h₂ : ∀ s ∈ S, ∀ j ∈ J₂,
+      Metric.infDist s (J₁ : Set A) ≤ Metric.infDist (s - j) (J₁ : Set A)) :
+    IsBoundaryIdeal S (J₁ ⊔ J₂) := by
+  intro s hs j hj
+  obtain ⟨j₁, hj₁, j₂, hj₂, rfl⟩ := Submodule.mem_sup.mp hj
+  have hbase : ‖s‖ ≤ Metric.infDist s (J₁ : Set A) :=
+    (isBoundaryIdeal_iff_le_infDist S J₁).mp h₁ s hs
+  have hstep : Metric.infDist (s - j₂) (J₁ : Set A) ≤ dist (s - j₂) j₁ :=
+    Metric.infDist_le_dist_of_mem hj₁
+  rw [dist_eq_norm] at hstep
+  have hrw : s - j₂ - j₁ = s - (j₁ + j₂) := by abel
+  rw [hrw] at hstep
+  have := h₂ s hs j₂ hj₂
+  linarith
+
+/-- **Transitivity of the boundary condition.**  A boundary ideal of the quotient by a boundary
+ideal joins with it to a boundary ideal. -/
+theorem IsBoundaryIdeal.sup_of_quotient {S J₁ J₂ : Submodule 𝕜 A} (h₁ : IsBoundaryIdeal S J₁)
+    (h₂ : IsBoundaryIdeal (S.map J₁.mkQ) (J₂.map J₁.mkQ)) : IsBoundaryIdeal S (J₁ ⊔ J₂) :=
+  isBoundaryIdeal_sup h₁ ((infDist_le_infDist_sub_iff S J₁ J₂).mpr h₂)
+
+/-- **Transitivity is an equivalence, not a reduction.**  Given a boundary ideal `J₁`, the join
+`J₁ ⊔ J₂` is a boundary ideal precisely when the image of `J₂` is one in the quotient.  So the join
+problem cannot be bootstrapped by iterating quotients: passing to `A/J₁` restates it rather than
+weakening it. -/
+theorem isBoundaryIdeal_sup_iff {S J₁ J₂ : Submodule 𝕜 A} (h₁ : IsBoundaryIdeal S J₁) :
+    IsBoundaryIdeal S (J₁ ⊔ J₂) ↔ IsBoundaryIdeal (S.map J₁.mkQ) (J₂.map J₁.mkQ) := by
+  refine ⟨fun h => (infDist_le_infDist_sub_iff S J₁ J₂).mp ?_, h₁.sup_of_quotient⟩
+  intro s hs j hj
+  have hle : Metric.infDist s (J₁ : Set A) ≤ ‖s‖ := by
+    have hz := Metric.infDist_le_dist_of_mem (x := s) J₁.zero_mem
+    rwa [dist_zero_right] at hz
+  have hge : ‖s‖ ≤ Metric.infDist s (J₁ : Set A) :=
+    (isBoundaryIdeal_iff_le_infDist S J₁).mp h₁ s hs
+  have hEq : Metric.infDist s (J₁ : Set A) = ‖s‖ := le_antisymm hle hge
+  rw [hEq, Metric.le_infDist ⟨0, J₁.zero_mem⟩]
+  intro y hy
+  rw [dist_eq_norm, show s - j - y = s - (y + j) by abel]
+  exact h s hs (y + j) (Submodule.mem_sup.mpr ⟨y, hy, j, hj, rfl⟩)
+
+/-- If boundary ideals are closed under joins, a maximal one is greatest. -/
+theorem isGreatest_of_maximal_of_sup_closed {S : Submodule 𝕜 A}
+    (hsup : ∀ J₁ J₂ : Submodule 𝕜 A, IsBoundaryIdeal S J₁ → IsBoundaryIdeal S J₂ →
+      IsBoundaryIdeal S (J₁ ⊔ J₂))
+    {J : Submodule 𝕜 A} (hJ : Maximal (fun K => IsBoundaryIdeal S K) J) :
+    IsGreatest {K : Submodule 𝕜 A | IsBoundaryIdeal S K} J := by
+  refine ⟨hJ.1, fun K hK => ?_⟩
+  exact le_trans le_sup_right (hJ.2 (hsup J K hJ.1 hK) le_sup_left)
+
 /-- **Maximal boundary ideals exist.**  Zorn's lemma applies because boundary ideals are closed
 under directed unions and contain the zero ideal. -/
 theorem exists_maximal_isBoundaryIdeal (S : Submodule 𝕜 A) :
@@ -110,6 +199,17 @@ theorem exists_maximal_isBoundaryIdeal (S : Submodule 𝕜 A) :
   · exact ⟨⊥, isBoundaryIdeal_bot S, fun z hz => absurd hz (Set.notMem_empty z)⟩
   · exact ⟨sSup C, isBoundaryIdeal_sSup hne hchain.directedOn fun J hJ => hC hJ,
       fun z hz => le_sSup hz⟩
+
+/-- **Existence of the Shilov ideal, reduced to join-closure.**  Whenever the boundary ideals of
+`S` are closed under joins, a greatest one exists.  `isBoundaryIdeal_sup` gives a metric sufficient
+condition for that closure, so this isolates exactly what the `C^*`-theoretic construction has to
+supply. -/
+theorem exists_isGreatest_isBoundaryIdeal {S : Submodule 𝕜 A}
+    (hsup : ∀ J₁ J₂ : Submodule 𝕜 A, IsBoundaryIdeal S J₁ → IsBoundaryIdeal S J₂ →
+      IsBoundaryIdeal S (J₁ ⊔ J₂)) :
+    ∃ J : Submodule 𝕜 A, IsGreatest {K : Submodule 𝕜 A | IsBoundaryIdeal S K} J := by
+  obtain ⟨J, hJ⟩ := exists_maximal_isBoundaryIdeal S
+  exact ⟨J, isGreatest_of_maximal_of_sup_closed hsup hJ⟩
 
 /-- The greatest boundary ideal — the Shilov ideal — is automatically closed. -/
 theorem isClosed_of_isGreatest_isBoundaryIdeal {S J : Submodule 𝕜 A}
@@ -123,11 +223,11 @@ end Stage
 
 /-! ## The local boundary ideal of a coordinate tower -/
 
-section Tower
+section TowerAlgebraic
 
-variable {ι : Type*} {A : ι → Type*} [∀ i, SeminormedAddCommGroup (A i)]
-  [∀ i, NormedSpace 𝕜 (A i)]
-variable {E : Type*} [SeminormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable {ι : Type*} {A : ι → Type*} [∀ i, AddCommGroup (A i)] [∀ i, Module 𝕜 (A i)]
+variable {B : ι → Type*} [∀ i, AddCommGroup (B i)] [∀ i, Module 𝕜 (B i)]
+variable {E : Type*} [AddCommGroup E] [Module 𝕜 E]
 
 /-- The local ideal cut out by a family of stage ideals along the coordinate maps. -/
 def localIdeal (p : ∀ i, E →ₗ[𝕜] A i) (J : ∀ i, Submodule 𝕜 (A i)) : Submodule 𝕜 E :=
@@ -143,6 +243,49 @@ theorem mem_localIdeal_iff_mkQ_eq_zero {p : ∀ i, E →ₗ[𝕜] A i} {J : ∀ 
   rw [mem_localIdeal]
   refine forall_congr' fun i => ?_
   rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
+
+/-- The diagonal representation assembled from stage representations along the coordinates. -/
+def diagonalRep (p : ∀ i, E →ₗ[𝕜] A i) (ρ : ∀ i, A i →ₗ[𝕜] B i) : E →ₗ[𝕜] ∀ i, B i where
+  toFun a := fun i => ρ i (p i a)
+  map_add' a b := by
+    funext i
+    simp
+  map_smul' c a := by
+    funext i
+    simp
+
+@[simp]
+theorem diagonalRep_apply (p : ∀ i, E →ₗ[𝕜] A i) (ρ : ∀ i, A i →ₗ[𝕜] B i) (a : E) (i : ι) :
+    diagonalRep p ρ a i = ρ i (p i a) := rfl
+
+/-- **The kernel of the diagonal stage representation is the local ideal.**  This is the card's
+`ker ρ = ⋂ pₙ⁻¹(Jₙ) = J_loc`, given that each stage representation has kernel its stage ideal. -/
+theorem ker_diagonalRep {p : ∀ i, E →ₗ[𝕜] A i} {ρ : ∀ i, A i →ₗ[𝕜] B i}
+    {J : ∀ i, Submodule 𝕜 (A i)} (hker : ∀ i, LinearMap.ker (ρ i) = J i) :
+    LinearMap.ker (diagonalRep p ρ) = localIdeal p J := by
+  ext a
+  rw [LinearMap.mem_ker, mem_localIdeal, funext_iff]
+  refine forall_congr' fun i => ?_
+  rw [diagonalRep_apply, Pi.zero_apply, ← LinearMap.mem_ker, hker i]
+
+/-- **Faithfulness of the local representation.**  The diagonal stage representation descends to an
+injective map on the local envelope. -/
+theorem injective_liftQ_diagonalRep {p : ∀ i, E →ₗ[𝕜] A i} {ρ : ∀ i, A i →ₗ[𝕜] B i}
+    {J : ∀ i, Submodule 𝕜 (A i)} (hker : ∀ i, LinearMap.ker (ρ i) = J i) :
+    Function.Injective ((localIdeal p J).liftQ (diagonalRep p ρ)
+      (le_of_eq (ker_diagonalRep hker).symm)) := by
+  rw [← LinearMap.ker_eq_bot, Submodule.ker_liftQ_eq_bot]
+  exact le_of_eq (ker_diagonalRep hker)
+
+end TowerAlgebraic
+
+/-! ## Local boundary ideals -/
+
+section TowerMetric
+
+variable {ι : Type*} {A : ι → Type*} [∀ i, SeminormedAddCommGroup (A i)]
+  [∀ i, NormedSpace 𝕜 (A i)]
+variable {E : Type*} [SeminormedAddCommGroup E] [NormedSpace 𝕜 E]
 
 /-- A submodule is a local boundary ideal when each of its closed coordinate images is a stage
 boundary ideal. -/
@@ -173,6 +316,26 @@ theorem le_localIdeal_of_isLocalBoundaryIdeal {p : ∀ i, E →ₗ[𝕜] A i}
   have hsub : (H.map (p i)).topologicalClosure ≤ J i := hmax i _ (hH i)
   exact hsub (Submodule.le_topologicalClosure _ (Submodule.mem_map_of_mem ha))
 
+/-- Coordinate inclusion already forces containment in the local ideal.  This is the step that
+upgrades the classical coordinate inclusion `closure(pₙ(H)) ⊆ Jₙ` to a statement about `H`. -/
+theorem le_localIdeal_of_closure_le {p : ∀ i, E →ₗ[𝕜] A i} {J : ∀ i, Submodule 𝕜 (A i)}
+    {H : Submodule 𝕜 E} (h : ∀ i, (H.map (p i)).topologicalClosure ≤ J i) :
+    H ≤ localIdeal p J := by
+  intro a ha
+  rw [mem_localIdeal]
+  intro i
+  exact h i (Submodule.le_topologicalClosure _ (Submodule.mem_map_of_mem ha))
+
+/-- The local ideal of closed stage ideals is closed, so the local envelope is separated. -/
+theorem isClosed_localIdeal {p : ∀ i, E →ₗ[𝕜] A i} {J : ∀ i, Submodule 𝕜 (A i)}
+    (hp : ∀ i, Continuous (p i)) (hJ : ∀ i, IsClosed ((J i : Set (A i)))) :
+    IsClosed ((localIdeal p J : Set E)) := by
+  have hset : (localIdeal p J : Set E) = ⋂ i, (p i) ⁻¹' (J i : Set (A i)) := by
+    ext a
+    simp [mem_localIdeal, Set.mem_iInter]
+  rw [hset]
+  exact isClosed_iInter fun i => (hJ i).preimage (hp i)
+
 /-- **Representation-free identification of the local Shilov ideal.**  If every stage ideal is the
 greatest boundary ideal of its stage system, then the ideal it cuts out along the coordinate maps
 is the greatest local boundary ideal. -/
@@ -183,7 +346,14 @@ theorem localIdeal_isGreatest {p : ∀ i, E →ₗ[𝕜] A i} {S J : ∀ i, Subm
     (fun i => isClosed_of_isGreatest_isBoundaryIdeal (hJ i)) (fun i => (hJ i).1),
     fun H hH => le_localIdeal_of_isLocalBoundaryIdeal (fun i K hK => (hJ i).2 hK) hH⟩
 
-end Tower
+/-- The local Shilov ideal of a tower of Shilov stages is closed. -/
+theorem isClosed_localIdeal_of_isGreatest {p : ∀ i, E →ₗ[𝕜] A i} {S J : ∀ i, Submodule 𝕜 (A i)}
+    (hp : ∀ i, Continuous (p i))
+    (hJ : ∀ i, IsGreatest {K : Submodule 𝕜 (A i) | IsBoundaryIdeal (S i) K} (J i)) :
+    IsClosed ((localIdeal p J : Set E)) :=
+  isClosed_localIdeal hp fun i => isClosed_of_isGreatest_isBoundaryIdeal (hJ i)
+
+end TowerMetric
 
 /-! ## Boundary migration along a link -/
 
@@ -296,6 +466,60 @@ theorem exists_coherent_lift (hdef : ∀ n, ∀ x ∈ J n, ∃ y ∈ J (n + 1), 
     fun n => (upLift hdef hj n).2, upLift_zero hdef hj⟩
 
 end Lifting
+
+/-! ## Joins genuinely fail without extra structure -/
+
+section NoGo
+
+/-- The diagonal of the sup-normed plane. -/
+noncomputable def diagLine : Submodule ℝ (ℝ × ℝ) := Submodule.span ℝ {((1 : ℝ), (1 : ℝ))}
+
+/-- The first coordinate axis. -/
+noncomputable def firstAxis : Submodule ℝ (ℝ × ℝ) := Submodule.span ℝ {((1 : ℝ), (0 : ℝ))}
+
+/-- The second coordinate axis. -/
+noncomputable def secondAxis : Submodule ℝ (ℝ × ℝ) := Submodule.span ℝ {((0 : ℝ), (1 : ℝ))}
+
+theorem isBoundaryIdeal_firstAxis : IsBoundaryIdeal diagLine firstAxis := by
+  intro s hs j hj
+  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hs
+  obtain ⟨t, rfl⟩ := Submodule.mem_span_singleton.mp hj
+  simp only [Prod.smul_mk, smul_eq_mul, mul_one, mul_zero, Prod.mk_sub_mk, sub_zero,
+    Prod.norm_def, Real.norm_eq_abs, sup_le_iff, le_sup_iff]
+  exact Or.inr ⟨le_rfl, le_rfl⟩
+
+theorem isBoundaryIdeal_secondAxis : IsBoundaryIdeal diagLine secondAxis := by
+  intro s hs j hj
+  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hs
+  obtain ⟨t, rfl⟩ := Submodule.mem_span_singleton.mp hj
+  simp only [Prod.smul_mk, smul_eq_mul, mul_one, mul_zero, Prod.mk_sub_mk, sub_zero,
+    Prod.norm_def, Real.norm_eq_abs, sup_le_iff, le_sup_iff]
+  exact Or.inl ⟨le_rfl, le_rfl⟩
+
+/-- **Boundary ideals are not closed under joins.**  In the sup-normed plane both coordinate axes
+are boundary ideals for the diagonal, but their join is everything, which shortens the diagonal to
+zero.  Hence no purely metric axiom produces a greatest boundary ideal: the hypothesis of
+`exists_isGreatest_isBoundaryIdeal` cannot be removed, and the `C^*`-theoretic input is necessary
+rather than merely convenient. -/
+theorem not_isBoundaryIdeal_sup_axes :
+    ¬ IsBoundaryIdeal diagLine (firstAxis ⊔ secondAxis) := by
+  intro h
+  have hs : ((1 : ℝ), (1 : ℝ)) ∈ diagLine := Submodule.mem_span_singleton_self _
+  have hj : ((1 : ℝ), (1 : ℝ)) ∈ firstAxis ⊔ secondAxis :=
+    Submodule.mem_sup.mpr ⟨((1 : ℝ), (0 : ℝ)), Submodule.mem_span_singleton_self _,
+      ((0 : ℝ), (1 : ℝ)), Submodule.mem_span_singleton_self _, by norm_num⟩
+  have hcon := h _ hs _ hj
+  simp only [sub_self, norm_zero, Prod.norm_def, Real.norm_eq_abs, abs_one, sup_le_iff] at hcon
+  linarith [hcon.1]
+
+/-- The metric family of boundary ideals therefore need not be a principal order ideal. -/
+theorem not_exists_isGreatest_isBoundaryIdeal_diagLine :
+    ¬ ∃ J : Submodule ℝ (ℝ × ℝ), IsGreatest {K | IsBoundaryIdeal diagLine K} J := by
+  rintro ⟨J, hJmem, hJmax⟩
+  exact not_isBoundaryIdeal_sup_axes
+    (hJmem.mono (sup_le (hJmax isBoundaryIdeal_firstAxis) (hJmax isBoundaryIdeal_secondAxis)))
+
+end NoGo
 
 end ShilovLocal
 

@@ -323,15 +323,15 @@ theorem hasDerivAt_thetaCuspCassiniInverseResponseProfile
   have hcomp := hinverse.comp_of_eq t hsq rfl
   change HasDerivAt (fun s : ℝ =>
     xiShiftedCassiniInverseResponse (s ^ 2)) _ t at hcomp
-  have hlocal :
-      thetaCuspCassiniInverseResponseProfile =ᶠ[𝒩 t]
-        fun s : ℝ => xiShiftedCassiniInverseResponse (s ^ 2) := by
+  have hlocal : Filter.EventuallyEq (nhds t)
+      thetaCuspCassiniInverseResponseProfile
+      (fun s : ℝ => xiShiftedCassiniInverseResponse (s ^ 2)) := by
     filter_upwards [Ioo_mem_nhds ht0 ht1] with s hs
     exact thetaCuspCassiniInverseResponseProfile_eq hs.1 hs.2
-  have hsource := hcomp.congr_of_eventuallyEq hlocal.symm
-  convert hsource using 1
-  rw [thetaCuspCassiniInverseResponseProfileSlope]
-  ring
+  have hsource := hcomp.congr_of_eventuallyEq hlocal
+  change HasDerivAt thetaCuspCassiniInverseResponseProfile
+    (2 * t * xiShiftedCassiniInverseResponseSlope (t ^ 2)) t
+  exact hsource.congr_deriv (by ring)
 
 /-- The source quotient's second radial jet is its actual derivative. -/
 theorem hasDerivAt_thetaCuspCassiniInverseResponseProfileSlope
@@ -348,12 +348,14 @@ theorem hasDerivAt_thetaCuspCassiniInverseResponseProfileSlope
   change HasDerivAt (fun s : ℝ =>
     xiShiftedCassiniInverseResponseSlope (s ^ 2)) _ t at hslope
   have hprod := ((hasDerivAt_id t).const_mul 2).mul hslope
+  simp only [id_eq] at hprod
   change HasDerivAt (fun s : ℝ =>
     2 * s * xiShiftedCassiniInverseResponseSlope (s ^ 2)) _ t at hprod
-  change HasDerivAt thetaCuspCassiniInverseResponseProfileSlope _ t
-  convert hprod using 1
-  rw [thetaCuspCassiniInverseResponseProfileCurvature]
-  ring
+  change HasDerivAt
+    (fun s : ℝ => 2 * s * xiShiftedCassiniInverseResponseSlope (s ^ 2))
+    (2 * xiShiftedCassiniInverseResponseSlope (t ^ 2) +
+      4 * t ^ 2 * xiShiftedCassiniInverseResponseCurvature (t ^ 2)) t
+  convert hprod using 1 <;> ring
 
 /-- The source quotient's third radial jet is its actual derivative. -/
 theorem hasDerivAt_thetaCuspCassiniInverseResponseProfileCurvature
@@ -376,13 +378,20 @@ theorem hasDerivAt_thetaCuspCassiniInverseResponseProfileCurvature
   change HasDerivAt (fun s : ℝ =>
     xiShiftedCassiniInverseResponseCurvature (s ^ 2)) _ t at hcurvature
   have hfirst := hslope.const_mul 2
-  have hsquare : HasDerivAt (fun s : ℝ => 4 * s ^ 2) (8 * t) t := by
-    convert (hasDerivAt_pow 2 t).const_mul 4 using 1 <;> ring
+  have hsquare := (hasDerivAt_pow 2 t).const_mul 4
   have hsecond := hsquare.mul hcurvature
   have hsum := hfirst.add hsecond
-  change HasDerivAt thetaCuspCassiniInverseResponseProfileCurvature _ t
+  change HasDerivAt
+    (fun s : ℝ =>
+      2 * xiShiftedCassiniInverseResponseSlope (s ^ 2) +
+        4 * s ^ 2 * xiShiftedCassiniInverseResponseCurvature (s ^ 2)) _ t at hsum
+  change HasDerivAt
+    (fun s : ℝ =>
+      2 * xiShiftedCassiniInverseResponseSlope (s ^ 2) +
+        4 * s ^ 2 * xiShiftedCassiniInverseResponseCurvature (s ^ 2))
+    (12 * t * xiShiftedCassiniInverseResponseCurvature (t ^ 2) +
+      8 * t ^ 3 * xiShiftedCassiniInverseResponseThirdJet (t ^ 2)) t
   convert hsum using 1
-  rw [thetaCuspCassiniInverseResponseProfileThirdJet]
   ring
 
 /-- Degree-one genuine crossing becomes one explicit theta-source law: the Euler radial
@@ -405,6 +414,52 @@ theorem xiShiftedDegreeOne_flat_negative_forces_thetaProfileEulerContact
   · rw [thetaCuspCassiniInverseResponseProfileThirdJet, hdown.1]
     have ht3 : 0 < 8 * t ^ 3 := by positivity
     simpa using mul_neg_of_pos_of_neg ht3 hdown.2.1
+
+/-- Exact degree-one source reduction: a flat negative Hankel event is equivalent to radial
+Euler contact followed by a negative third jet of `t Z(t) / Z'(t)`. -/
+theorem xiShiftedDegreeOne_flat_negative_iff_thetaProfileEulerContact
+    {t : ℝ} (ht0 : 0 < t) :
+    (xiShiftedDegreeOneHankelMinor (t ^ 2) = 0 ∧
+        xiShiftedDegreeOneTerminalFlux (t ^ 2) < 0) ↔
+      (t * thetaCuspCassiniInverseResponseProfileCurvature t =
+          thetaCuspCassiniInverseResponseProfileSlope t ∧
+        thetaCuspCassiniInverseResponseProfileThirdJet t < 0) := by
+  have hy : 0 < t ^ 2 := sq_pos_of_pos ht0
+  constructor
+  · rintro ⟨hflat, hterminal⟩
+    exact xiShiftedDegreeOne_flat_negative_forces_thetaProfileEulerContact
+      ht0 hflat hterminal
+  · rintro ⟨hcontact, hthirdProfile⟩
+    have hfactor4 : 0 < 4 * t ^ 3 := by positivity
+    have hcurvature :
+        xiShiftedCassiniInverseResponseCurvature (t ^ 2) = 0 := by
+      have hproduct :
+          (4 * t ^ 3) * xiShiftedCassiniInverseResponseCurvature (t ^ 2) = 0 := by
+        calc
+          (4 * t ^ 3) * xiShiftedCassiniInverseResponseCurvature (t ^ 2) =
+              t * thetaCuspCassiniInverseResponseProfileCurvature t -
+                thetaCuspCassiniInverseResponseProfileSlope t := by
+            rw [thetaCuspCassiniInverseResponseProfileCurvature,
+              thetaCuspCassiniInverseResponseProfileSlope]
+            ring
+          _ = 0 := sub_eq_zero.mpr hcontact
+      exact (mul_eq_zero.mp hproduct).resolve_left hfactor4.ne'
+    have hflat :=
+      (xiShiftedDegreeOneHankelMinor_eq_zero_iff_inverseResponseCurvature_eq_zero
+        hy).mpr hcurvature
+    have hfactor8 : 0 < 8 * t ^ 3 := by positivity
+    have hthirdProduct :
+        (8 * t ^ 3) * xiShiftedCassiniInverseResponseThirdJet (t ^ 2) < 0 := by
+      simpa [thetaCuspCassiniInverseResponseProfileThirdJet, hcurvature] using
+        hthirdProfile
+    have hthirdMass : xiShiftedCassiniInverseResponseThirdJet (t ^ 2) < 0 := by
+      rcases mul_neg_iff.mp hthirdProduct with hposneg | hnegpos
+      · exact hposneg.2
+      · exact (not_lt_of_ge hfactor8.le hnegpos.1).elim
+    have hterminal :=
+      (xiShiftedDegreeOneTerminalFlux_neg_iff_inverseResponseThirdJet_neg hy).mpr
+        hthirdMass
+    exact ⟨hflat, hterminal⟩
 
 end
 

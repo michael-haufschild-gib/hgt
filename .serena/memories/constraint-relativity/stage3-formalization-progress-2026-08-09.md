@@ -434,3 +434,230 @@ the ∃ in `smith_kronecker_quadDifferent` (`Exists.casesOn` only eliminates int
 either (a) state the result as `theorem … : Nonempty (… ≃ₗ[R] …)`, or (b) restate
 `smith_kronecker_quadDifferent` as a `def` returning the pair plus proofs (a structure/Σ-type), or
 (c) take P and Q as explicit arguments of the def.  Prefer (a).
+
+## gorenstein status (still 33/49 — card NOT moved)
+
+Now PROVED in `GorensteinMonogenic.lean` (green, wired):
+Thm 1: (3)=>(2) `kaehler_isPrincipal_of_monogenic`, (1)=>(2) `traceQuotient_isPrincipal`,
+       (3)=>(1) `traceKaehlerEquiv_of_monogenic`, plus `mulDifferentEquiv` (card 12).
+Thm 2: `quadDifferentMatrix`, `quadDifferent_mul_left`, `smith_quadDifferent` (18),
+       `mul_kronecker_mul_smith` (reusable), `smith_kronecker_quadDifferent` (19),
+       `nonempty_cokerQuad` (17 input), `nonempty_cokerQuadTensorOne` (20),
+       `nonempty_cokerKronecker` (16).
+Shared, in `SimpleHorizonTransmutation.lean`:
+       `range_diagonal_mulVecLin'` (general index/diagonal) and
+       `nonempty_coker_equiv_pi_of_smith` (Smith data => product cokernel).  USE THESE, do not
+       re-derive the coker-from-Smith argument again.
+
+ONLY REMAINING for the card:
+- assemble card (17) `Ω ≅ (R/(a²))⁴` = two copies of `nonempty_cokerQuadTensorOne` (one per
+  hypersurface relation d_x, d_y), i.e. Ω ≅ A/(d_x)dx ⊕ A/(d_y)dy with each summand (R/(a²))²;
+- Thm 1 (2)=>(3): B = A/aA is a finite product of local Artin k-algebras with residue field k;
+  cyclic Ω forces dim_k m/m² ≤ 1; Nakayama makes m principal so B_i ≅ k[T]/(T^n); CRT with
+  distinct λ_i (k infinite) monogenerates B; Nakayama lifts the generator to A.
+
+## gorenstein: THEOREM 2 IS NOW COMPLETE
+
+Added `nonempty_cokerOneTensorQuad` (20, second relation), `nonempty_omega_corank_two` (17 boxed:
+Ω ≅ product of the two hypersurface cokernels, each (R/(a²))²), and
+`corank_two_length_eq_partition_ne` (same total length 8, invariant-factor exponents 4 vs 2).
+So cards (18),(19),(16),(20),(17) and the length/partition comparison are all proved.
+
+## ONLY Theorem 1 (2)=>(3) remains for the gorenstein card
+
+mathlib finds for it (searched, do NOT rebuild):
+- `IsLocalRing.finrank_cotangentSpace_le_one_iff [IsNoetherianRing R] :
+     finrank (ResidueField R) (CotangentSpace R) ≤ 1 ↔ (maximalIdeal R).IsPrincipal`
+  — this packages the card's steps (6) "cotangent fibre = m/m²" AND the Nakayama step
+  "dim ≤ 1 ⇒ m principal" in one lemma.  File: Mathlib/RingTheory/Ideal/Cotangent.lean.
+- `IsArtinianRing.equivPi` is only for REDUCED Artinian rings (product of FIELDS); it is NOT the
+  decomposition needed here (B = A/aA is Artinian but not reduced).  Look instead for the
+  local-decomposition of an Artinian ring, or avoid it: the card only needs each local factor
+  B_i ≅ k[T]/(T^{n_i}) and then CRT, so `Ideal.quotientInfRingEquivPiQuotient` (CRT) plus the
+  principal-maximal-ideal fact may suffice without a global product decomposition.
+- Remaining genuinely-new bits: Ω_{B/k} ≅ Ω_{A/R} ⊗_A B (base change — check
+  `KaehlerDifferential.tensorProductTo`/`kerToTensor` neighbourhood in Kaehler/Basic.lean), and the
+  final Nakayama lift A = R[θ] + aA ⇒ A = R[θ].
+
+## MAJOR FIND — corpus already owns the gorenstein (2)=>(3) endgame
+
+`GaloisForLFunctions/HTGeometry/DedekindOrderMonogenic.lean` contains:
+- `maxExt S B` — the base maximal ideal extended to the algebra (the card's `aA`);
+- `adjoin_eq_top_of_adjoin_quotient_eq_top [Module.Finite S B] (α) :
+     Algebra.adjoin S {mk (maxExt S B) α} = ⊤ → Algebra.adjoin S {α} = ⊤`
+  === THIS IS THE CARD'S NAKAYAMA LIFT (9) "A = R[θ] + aA ⇒ A = R[θ]".  DO NOT REBUILD IT.
+- `adjoin_base_eq_top_of_adjoin_residue` — generation over the residue field is generation over the
+  base (removes the k-vs-R bookkeeping in the card's step (8));
+- `exists_adjoin_eq_top_quotient_dedekind` and
+  `exists_adjoin_eq_top_of_dedekind_finite` — residue-level monogeneration, assembled.
+
+CONSEQUENCE: the gorenstein card's (2)=>(3) now reduces to ONE genuinely missing step:
+  "Ω_{A/R} cyclic  ⇒  B = A/aA is monogenic over k".
+Route (card steps 5–8): Ω_{B/k} ≅ Ω_{A/R} ⊗_A B is cyclic ⇒ for each local factor
+`dim_k m_i/m_i² ≤ 1` ⇒ (mathlib `IsLocalRing.finrank_cotangentSpace_le_one_iff`) m_i principal ⇒
+B_i ≅ k[T]/(T^{n_i}) ⇒ CRT with distinct λ_i (k infinite) gives a single generator of B.
+Then `adjoin_base_eq_top_of_adjoin_residue` + `adjoin_eq_top_of_adjoin_quotient_eq_top` finish.
+
+## gorenstein: card (7) local step now PROVED
+
+`exists_sub_aeval_mem_pow` + `adjoin_eq_top_of_isPrincipal_nilpotent` in GorensteinMonogenic.lean:
+a local k-algebra whose maximal ideal is principal (`t`) and nilpotent, with residue field k
+(hypothesis stated as `∀ b, ∃ c : k, b - algebraMap c ∈ span {t}`, i.e. B = k + (t)), is
+`Algebra.adjoin k {t} = ⊤`.  Proof: approximate b by polynomials in t to every order n by
+induction, then t^n = 0 kills the error.  This is the card's B_i ≅ k[T]/(T^{n_i}) step in the form
+actually needed (no explicit iso required).
+
+REMAINING for (2)=>(3): only the passage
+  Ω_{A/R} cyclic ⇒ each local factor of B = A/aA has principal maximal ideal
+(via Ω_{B/k} ≅ Ω_{A/R} ⊗_A B and `IsLocalRing.finrank_cotangentSpace_le_one_iff`),
+plus CRT to glue the factors into one generator of B.  The lift to A is corpus-owned
+(`adjoin_eq_top_of_adjoin_quotient_eq_top`, `adjoin_base_eq_top_of_adjoin_residue`).
+
+## MAJOR FIND 2 — mathlib HAS the non-reduced Artinian local decomposition
+
+`Mathlib/RingTheory/Artinian/Module.lean`:
+  `IsArtinianRing.quotNilradicalPowEquivPi (n : ℕ) :
+     (R ⧸ nilradical R ^ n) ≃ₐ[R] ∀ I : MaximalSpectrum R, R ⧸ I.asIdeal ^ n`
+  "the quotient of a commutative Artinian ring by a POWER of its nilradical is isomorphic to a
+   finite product of LOCAL rings".
+Since the nilradical of an Artinian ring is nilpotent (`IsArtinianRing.isNilpotent_jacobson_bot`
+/ nilradical nilpotent), taking n with `nilradical^n = 0` gives `R ≃ₐ ∏_I R/m_I^n` directly.
+So the earlier note "IsArtinianRing.equivPi is only for REDUCED rings, need something else" is
+RESOLVED — use `quotNilradicalPowEquivPi`, NOT a hand-built decomposition.
+
+### Full remaining plan for gorenstein Thm 1 (2)=>(3) — every ingredient now located
+1. B = A/aA is Artinian (finite-dim over k).
+2. `quotNilradicalPowEquivPi` with n such that nilradical^n = 0  ⇒  B ≃ₐ ∏_I B/m_I^n, local factors.
+3. Ω_{A/R} cyclic ⇒ Ω_{B/k} cyclic (base change) ⇒ each factor has finrank cotangent ≤ 1
+   ⇒ `IsLocalRing.finrank_cotangentSpace_le_one_iff` ⇒ maximal ideal principal.
+4. `adjoin_eq_top_of_isPrincipal_nilpotent` (PROVED HERE) ⇒ each factor monogenic over k.
+5. CRT glue: distinct λ_i ∈ k (k infinite) ⇒ the element (λ_i + t_i)_i generates ∏; needs
+   idempotent extraction from `Ideal.quotientInfRingEquivPiQuotient`.
+6. Lift to A: corpus `adjoin_base_eq_top_of_adjoin_residue` then
+   `adjoin_eq_top_of_adjoin_quotient_eq_top` (DedekindOrderMonogenic.lean).
+Only steps 3 (base change) and 5 (CRT glue) still need Lean work.
+
+## gorenstein CRT step: two of three pieces landed
+
+PROVED and green in GorensteinMonogenic.lean:
+- `adjoin_image_singleton_eq_top` — a surjective algebra map carries a single generator to a
+  single generator (generally useful; use `(AlgHom.range_eq_top f).2 hf`, the dot form fails).
+- `isCoprime_shift_pow` — distinct centres give pairwise coprime `span {(X - C λᵢ)^{nᵢ}}`
+  (via `Polynomial.isCoprime_X_sub_C_of_isUnit_sub`, `IsCoprime.pow`,
+  `Ideal.isCoprime_span_singleton_iff`).
+
+NOT landed: `exists_adjoin_pi_quotient_eq_top` (card (8) proper).
+LEAN TRAP: building the AlgEquiv from `Ideal.quotientInfRingEquivPiQuotient` via
+`AlgEquiv.ofRingEquiv halg` with `halg := fun _ => rfl` causes a whnf TIMEOUT (even at 1e6
+heartbeats) — the CRT equiv does not reduce.
+FIX FOR NEXT TIME: do NOT transport through an AlgEquiv.  Instead use the surjective algebra map
+`k[X] → ∀ i, k[X] ⧸ I i` directly (Pi.algHom of the `Ideal.Quotient.mkₐ`), prove its surjectivity
+from CRT (look for `Ideal.quotientInfToPiQuotient_surj` / `Ideal.exists_forall_sub_mem_ideal` in
+Mathlib/RingTheory/Ideal/Quotient/Operations.lean), then apply
+`adjoin_image_singleton_eq_top _ hsurj Polynomial.adjoin_X`.  One line, no rfl on the CRT map.
+
+## gorenstein card (8) IS NOW PROVED
+
+`piQuotAlgHom` (= `AlgHom.pi fun i => Ideal.Quotient.mkₐ k (I i)`),
+`piQuotAlgHom_surjective` (from mathlib `Ideal.quotientInfToPiQuotient_surj` +
+`Ideal.Quotient.mk_surjective`), and
+`exists_adjoin_pi_quotient_eq_top` — a finite product of local quotients at DISTINCT centres is
+generated by one element.  Three lines once the AlgEquiv detour is abandoned; the recorded fix
+worked exactly as written.  NOTE: `Pi.algHom` is deprecated -> `AlgHom.pi`.
+
+### gorenstein: ONE step left
+Only the base change `Ω_{B/k} ≅ Ω_{A/R} ⊗_A B` (card step (5)) is unwritten, i.e. the passage
+"Ω_{A/R} cyclic ⇒ Ω_{B/k} cyclic ⇒ each local factor of B has principal maximal ideal".
+Everything else of (2)=>(3) is in place:
+  local decomposition   = mathlib `IsArtinianRing.quotNilradicalPowEquivPi`
+  cotangent ≤ 1 ⇒ principal = mathlib `IsLocalRing.finrank_cotangentSpace_le_one_iff`
+  local factor monogenic = `adjoin_eq_top_of_isPrincipal_nilpotent` (here)
+  CRT glue              = `exists_adjoin_pi_quotient_eq_top` (here)
+  lift to A             = corpus `adjoin_base_eq_top_of_adjoin_residue`,
+                          `adjoin_eq_top_of_adjoin_quotient_eq_top`
+Look for the base change at `KaehlerDifferential.tensorProductTo` / `kerToTensor` in
+Mathlib/RingTheory/Kaehler/Basic.lean, or `KaehlerDifferential.baseChange`.
+
+## gorenstein card DONE (34/49 in stage 3; 15 left in stage 2)
+
+New module `ConstraintRelativity/GorensteinResidualFibre.lean` (green, wired) closes (2)⇒(3):
+- `isPushout_quotientMap` — `Algebra.IsPushout R (R⧸I) A (A⧸I·A)`; mathlib has NO such instance.
+  Built from `Algebra.TensorProduct.quotIdealMapEquivQuotTensor` + `IsBaseChange.of_equiv`.
+  Unlocks `KaehlerDifferential.tensorKaehlerEquiv` = card (5).
+- `residueDerivation` / `surjective_liftKaehler` — mathlib has NO map `Ω[C⁄k] ↠ 𝔪/𝔪²`. Built as
+  the k-derivation `c ↦ c − σ(c̄)`; Leibniz error is `−(a−σā)(b−σb̄) ∈ 𝔪²`. Then
+  `isPrincipal_maximalIdeal_of_kaehler_cyclic` via `finrank_cotangentSpace_le_one_iff`.
+- `exists_sub_algebraMap_mem_of_isPrime` — separating family `φ : ι → (A →ₐ[R] R)` ⇒ every prime
+  of A has residue ring = image of R. Proof: `⨅ ker φᵢ = ⊥ ≤ p` + `Ideal.IsPrime.inf_le'`.
+  This is how "A ⊆ R^N split ⇒ residue fields are k" gets formalized.
+- `exists_adjoin_pi_eq_top_of_local` — product step needing only `Infinite k`, NOT CharZero.
+  Corpus `ProductMonogenic.exists_adjoin_pi_eq_top` needs CharZero because
+  `PolynomialShiftSeparation.eq_zero_of_comp_add_C_eq_self` is FALSE in char p (Artin–Schreier:
+  h = X^p − X has period 1). Avoided entirely: our factors all have irreducible X, so translating
+  to distinct centres λᵢ suffices — no shift-separation lemma needed.
+- `adjoin_eq_top_of_adjoin_residual` — Nakayama via
+  `Submodule.sup_eq_sup_smul_of_le_smul_of_le_jacobson` with J = ⊥ (cleanest form: N ⊔ ⊤ = N ⊔ ⊥•⊤).
+
+EDIT MADE TO CORPUS: `ProductMonogenic.lean` variable block lost `[CharZero κ]`; it is now a
+binder on `exists_adjoin_pi_eq_top` only. `adjoin_add_algebraMap` is therefore field-general.
+
+Traps hit:
+- `ResidueField R` is NOT reducible: `Algebra (ResidueField R) (A⧸IA)` does NOT synthesize.
+  Use `R ⧸ maximalIdeal R` and `letI : Field _ := Ideal.Quotient.field _` inside the proof.
+- `Field (R ⧸ maximalIdeal R)` is not found by instance search either.
+- A type family named `C : ι → Type*` collides with `Polynomial.C` under `open Polynomial`.
+- `Derivation.mk'` wants a bare `→ₗ[k]`; build it as
+  `toCotangent.restrictScalars k ∘ₗ resShiftLinear` or `map_smul` picks the wrong map.
+- `intro a -` is not valid; use `intro a _`.
+
+## IN PROGRESS: congruence-order-trace-kahler-exterior-square-nonmetricity-law
+Module `ConstraintRelativity/CongruenceOrderExteriorSquare.lean` (green so far, NOT yet wired).
+
+DONE:
+- `congruenceOrder a N : Subalgebra R (Fin N → R)` = `{v | ∀ i j, a ∣ v i - v j}` (= R·1 + a·O).
+- `observerProj` / `ker_observerProj` / `observerDefectEquiv` — **card (3)** `O/A ≅ k^m`.
+- `congruenceGen i = a • Pi.single i.castSucc 1`; `congruenceEval = aeval congruenceGen`.
+- `congruenceRelations`/`congruenceIdeal` = span{X_i²−C a X_i} ∪ {X_i X_j, i≠j}.
+- `linForm c₀ c = C c₀ + ∑ C (c i) * X i`; `exists_linForm` — every f is ≡ a linear normal form
+  mod the ideal (induction on MvPolynomial, `mul_X` step uses both relation families).
+- `congruenceEval_linForm_apply/_castSucc/_last`, `range_congruenceEval = congruenceOrder`,
+  `ker_congruenceEval` (needs `[IsDomain R] (ha : a ≠ 0)`), `congruencePresentation` — **card (15)**.
+
+NEXT (card (5), `Ω ≅ (R/a²)^m ⊕ (R/a)^C(m,2)`), the plan that avoids mathlib's conormal machinery:
+- `M := (Fin m → A) ⧸ N`, `N = A-span {Pi.single i (2xᵢ−a)} ∪ {Pi.single i xⱼ + Pi.single j xᵢ}`.
+- `Ψ : M →ₗ[A] Ω[A⁄R]` by `Submodule.liftQ` of `v ↦ ∑ v i • D(xᵢ)`.
+- `d_P := MvPolynomial.mkDerivation R (fun i => ē i) : Derivation R P M`  (mkDerivation EXISTS,
+  needs `[Module P M] [IsScalarTower R P M]`; M gets `Module P` from
+  `Submodule.Quotient.module'` + `IsScalarTower.right`).
+- `d_P` kills each relation generator (that is exactly N), hence kills I, hence descends to
+  `d_A : Derivation R A M`; `Φ := d_A.liftKaehlerDifferential`. Φ and Ψ are inverse on generators.
+- Then the R-module computation `M ≅ (R/a²)^m ⊕ (R/a)^{i<j}` using the R-basis {eᵢ, xⱼeᵢ}:
+  relations give `xᵢdxᵢ = (a/2)dxᵢ`, `a·xⱼdxᵢ = 0`, `a²dxᵢ = 0`, `xⱼdxᵢ = −xᵢdxⱼ`.
+Remaining card items after that: (4) trace dual Smith, (6) `Ω/aΩ ≅ C ⊕ Λ²C` (base change is
+already available: `kaehlerQuotientBaseChange` in GorensteinResidualFibre), (26k)/(26l) differents,
+(26e)–(26g) soldering obstruction, (27)/(28) lengths.
+
+### congruence card: Ω is IDENTIFIED (structural half of card (5) done)
+`kaehlerModelEquiv : Ω[(P ⧸ congruenceIdeal)⁄R] ≃ₗ[A] (Fin m → A) ⧸ kaehlerRelations a m`.
+Chain: `kaehlerEval` (∑ vᵢ • D xᵢ) → `kaehlerRelations_le_ker` → `modelToKaehler` (liftQ);
+`modelDerivation = MvPolynomial.mkDerivation` → `modelDerivation_eq_zero_of_mem` → `quotDerivation`
+(descends by `Submodule.liftQ ((congruenceIdeal).restrictScalars R)` — the quotient types
+`P ⧸ I` and `P ⧸ I.restrictScalars R` ARE defeq, `Derivation.mk'` + `Quotient.inductionOn'`)
+→ `kaehlerToModel`; inverse both ways via `Finset.univ_sum_single` and
+`Derivation.ext_of_adjoin_eq_top` + `adjoin_congruenceX_eq_top`.
+STILL TO DO for (5): the R-module computation
+`(Fin m → A) ⧸ kaehlerRelations ≅ (R/a²)^m ⊕ (R/a)^{i<j}` using the R-basis {eᵢ, xⱼeᵢ} of A^m.
+
+LEAN TRAP (cost me many rounds): on `Ω[A⁄R]` and on `(Fin m → A) ⧸ N`, `rw`/`simp` with
+`zero_smul`, `add_smul`, `mul_smul`, `two_smul` FAIL to unify (and the `module` tactic reports
+"ℕ is not an A-algebra"). Workarounds that work: give the fully explicit term
+(`exact zero_smul (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) w`), or rewrite the HYPOTHESIS
+forward instead of contracting the goal. Also: state relations as `x + x - a`, never `2 * x - a`.
+
+### congruence card: order is R-free (module wired + green)
+`linFormMap` (coprod of `toSpanSingleton` and `Fintype.linearCombination`), `linFormLinear`,
+`congruenceCoordEquiv (ha : a ≠ 0) : (R × (Fin m → R)) ≃ₗ[R] P ⧸ congruenceIdeal a m`.
+TRAP: do NOT hand-roll a `→ₗ[R] (P ⧸ I)` with `map_smul' := by rw [Algebra.smul_def]` — the
+`Module R (P ⧸ I)` instance elaboration picks `Submodule.Quotient.module'`, not `Algebra.toModule`,
+so every smul rewrite fails. Build the map by COMPOSING standard maps with
+`(Ideal.Quotient.mkₐ R I).toLinearMap` instead; then all instances agree.

@@ -931,3 +931,308 @@ reports only `propext`, `Classical.choice`, `Quot.sound`.
 Theorems 3.1, 4.1, 5.1.  Remaining: Theorem 6.1 (take `meromorphicOrderAt` of
 `eqgCont_translation`, which needs the behaviour of the order under `s ↦ s+1` and under the affine
 substitution — the same shape as `meromorphicAt_comp_affine`), then 7.1, 8.1 and 9.1.
+
+### Step 7 is done — Theorem 6.1, the divisor transgression
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaDivisor.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,553-job build green).
+
+The unconditional `eqgCont_translation` is an identity of *functions*, so taking meromorphic orders
+at a point converts it directly into the divisor transgression.
+
+- `tendsto_affine_nhdsWithin` and **`meromorphicOrderAt_comp_affine`** — the meromorphic order is
+  invariant under an affine substitution `z ↦ az+b`, `a ≠ 0`.  mathlib has no such lemma; it is
+  proved here from the `meromorphicOrderAt_eq_int_iff` normal form, by transporting the witness
+  `g` to `z ↦ aⁿ·g(az+b)` and using `(az+b) − (as+b) = a(z−s)`.  The `⊤` case is the pullback of
+  the eventual vanishing along the same substitution.
+- `meromorphicAt_zeta_exponent`, **`meromorphicOrderAt_zeta_exponent`**
+  (`ord_a (s ↦ ζ(σ(1+s))) = ord_{σ(1+a)} ζ`), `meromorphicAt_eqgCont_succ_arg` and
+  **`meromorphicOrderAt_eqgCont_succ_arg`** (`ord_a (s ↦ F(s+1)) = ord_{a+1} F`) — the two
+  substitutions the transgression needs, both instances of the affine lemma.
+- `eqgArg_succ_shift` (`eqgArg σ K (a+1) = eqgArg σ (K+1) a`: one admissibility hypothesis serves
+  both sides) and the capstone **`eqgCont_order_transgression`** — **Theorem 6.1, equation
+  (EQG.17)**:
+
+  `ord_a F^{K+1}_σ = ord_{σ(1+a)} ζ + ord_{a+1} F^K_σ`,
+
+  i.e. `ord_{a+1} F_σ − ord_a F_σ = −ord_{σ(1+a)} ζ`, the exact Cartier-divisor transgression
+  `T*div(F_σ) − div(F_σ) = −φ_σ*div(ζ)` read pointwise.
+
+`#print axioms` on `eqgCont_order_transgression`, `meromorphicOrderAt_comp_affine`,
+`meromorphicOrderAt_zeta_exponent` and `meromorphicOrderAt_eqgCont_succ_arg` reports only
+`propext`, `Classical.choice`, `Quot.sound`.
+
+**State of the card.**  Certified: **Theorems 3.1, 4.1, 5.1 and 6.1** — equations (EQG.6), (EQG.7),
+(EQG.8)–(EQG.12) in both the prime-product and ladder forms, (EQG.13), (EQG.14), (EQG.15),
+(EQG.16)/(EQG.17), plus the meromorphic continuation.  Eight modules: `EulerQGammaGlobalLaw`,
+`EulerQGammaDirichlet`, `EulerQGammaLocalFactor`, `EulerQGammaTranslation`, `EulerQGammaLadder`,
+`EulerQGammaAnalytic`, `EulerQGammaContinuation`, `EulerQGammaDivisor`.
+
+Remaining: (EQG.18) — the clean landing `ord_{a_ρ} F_σ = m_ρ` with `F_σ(a_ρ+1) ≠ 0,∞` at a
+nontrivial zero `ρ`, which needs the zero-freeness of every ladder factor at `a_ρ+1` (all arguments
+have real part `Re ρ + σ(1+k) > 1`, so `riemannZeta_ne_zero_of_one_lt_re` applies, and the tail is
+nonzero because `D_σ(v) → 1`); then Theorems 7.1 (hypertranscendence, which can now use
+`eqgCont_translation` together with the corpus's `hypertranscendental_gamma`), 8.1 (the
+`L²(ℕ_{>0}, P_σ)` observer, the same shape as the already-certified `ConstitutiveQGammaProcess`
+GNS layer) and 9.1 (the genus-one renormalisation).
+
+### Step 8 is done — Theorem 6.1 is complete, including the clean landing (EQG.18)
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaLanding.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,555-job build green).
+
+- `meromorphicOrderAt_eq_zero_of_analytic` — a nonvanishing analytic germ has order zero.
+- **`eqgDirichlet_ne_zero`** — the arithmetic Dirichlet series is nonvanishing on the whole
+  chamber.  The infinite product could a priori vanish; the finite ladder settles it: choose `N`
+  with `D_σ(v+Nσ)` inside the unit ball around `1` (so nonzero), and then
+  `D_σ(v) = (∏_{k<N} ζ(v+kσ))·D_σ(v+Nσ)` is a product of nonzero factors, every zeta argument
+  having real part `> 1`.
+- `analyticAt_zeta_affine`, `zeta_sigma_cpow_ne_zero`, **`analyticAt_eqgCont`** and
+  **`eqgCont_ne_zero`** — the cut ladder is analytic and nonvanishing at any point where all its
+  arguments sit in the zero-free half-plane.
+- `eqgLandingPoint σ ρ = ρ/σ − 1` with **`eqgExponent_landingPoint`** (`σ(1+a_ρ) = ρ` exactly),
+  `eqgExponent_landingPoint_succ`, `re_landing_gt_one` (`Re(ρ + (k+1)σ) > 1` whenever `Re ρ > 0`)
+  and `re_landing_arg_gt_one`.
+- **`eqgCont_order_at_zeta_zero`** — **equation (EQG.18)**: for any `ρ` with `Re ρ > 0`,
+
+  `ord_{a_ρ} F_σ = ord_ρ ζ`,
+
+  the full multiplicity of the zeta zero landing at `a_ρ = ρ/σ − 1`; and
+  **`eqgCont_landing_translate_ne_zero`** — the unit translate `a_ρ+1` is an analytic,
+  *nonvanishing* value of the response, which is the `≠ 0, ∞` clause of (EQG.18).
+
+`#print axioms` on `eqgCont_order_at_zeta_zero`, `eqgCont_landing_translate_ne_zero`,
+`eqgDirichlet_ne_zero` and `analyticAt_eqgCont` reports only `propext`, `Classical.choice`,
+`Quot.sound`.
+
+**State of the card.**  Certified: **Theorems 3.1, 4.1, 5.1 and 6.1 in full** — (EQG.6), (EQG.7),
+(EQG.8)–(EQG.12) in both forms, (EQG.13)–(EQG.15), the meromorphic continuation, (EQG.16)/(EQG.17)
+and (EQG.18).  Nine modules: `EulerQGammaGlobalLaw`, `EulerQGammaDirichlet`,
+`EulerQGammaLocalFactor`, `EulerQGammaTranslation`, `EulerQGammaLadder`, `EulerQGammaAnalytic`,
+`EulerQGammaContinuation`, `EulerQGammaDivisor`, `EulerQGammaLanding`.
+
+Remaining: Theorem 7.1 (hypertranscendence of `F_σ`), 8.1 (the `L²(ℕ_{>0}, P_σ)` recurrent
+observer) and 9.1 (the genus-one renormalisation and divisor erasure).
+
+### Step 9 is done — the arithmetic observable and Theorem 8.1's compact resolvent
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaObserver.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,556-job build green).
+
+The corpus's `ℓ²` diagonal-operator layer from ULF-QGPRH-1 is reusable verbatim — `lpDiagCLM` and
+`isCompactOperator_lpDiagCLM` are stated for `QGammaSpace = lp (fun _ : ℕ => ℂ) 2`, which is also
+the model for `L²(ℕ_{>0}, P_σ)`.
+
+- `eqgZetaReal σ = exp(−∑_p log(1−q_p))` with `eqgZetaReal_pos` and **`ofReal_eqgZetaReal`**
+  (`(ζ(σ) : ℂ)` is the cast of this positive real, from `zeta_eq_exp`), so the real logarithm
+  `log ζ(σ)` is available without any real-variable zeta theory.
+- **Equation (EQG.8)**: `eqgObservable σ m = log ζ(σ) − σ·log m`, and **`exp_eqgObservable`** —
+  its exponential response is exactly `ζ(σ)^s·m^{-σs}`, the factor that turns the arithmetic
+  Dirichlet series into the exponential response of the random-integer law.
+- **`tendsto_eqgObservable_atBot`** — the spectral values run off to `−∞`.
+- `eqgResolventEntry σ m = (X_σ(m) − i)⁻¹` with `one_le_norm_eqgObservable_sub_I`,
+  `eqgResolventEntry_bound`, **`eqgResolventEntry_mul`** (the resolvent inverts `X_σ − i`
+  coordinatewise) and `tendsto_norm_eqgResolventEntry`; then `eqgResolvent` and the capstone
+  **`isCompactOperator_eqgResolvent`** — **Theorem 8.1's compact-resolvent clause**, in the only
+  form mathlib can state it (there is no unbounded self-adjoint operator theory), exactly as the
+  sibling clause was certified for ULF-QGPRH-1.
+
+`#print axioms` on `isCompactOperator_eqgResolvent`, `exp_eqgObservable`, `eqgResolventEntry_mul`
+and `tendsto_eqgObservable_atBot` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+**State of the card.**  Ten modules; certified: Theorems 3.1, 4.1, 5.1, 6.1 in full, and Theorem
+8.1's operator clause.  Remaining: Theorem 8.1's GNS/recurrence clause (the cyclic vector
+`Ω = (√P_σ(m))`, its orbit, the characteristic function, and the compact-group return-time
+argument — structurally the same as the certified `qOmega`/`qOrbit`/`exists_qOrbit_near_qOmega`
+layer, with the arithmetic atoms in place of the geometric ones), Theorem 7.1 (hypertranscendence
+of `F_σ`, which needs a differential-algebra closure layer the corpus does not yet have — DA under
+affine substitution, products and quotients — plus the hypertranscendence of `ζ` from the
+functional equation and the certified `hypertranscendental_gamma`), and Theorem 9.1 (the genus-one
+renormalisation).
+
+### Step 10 is done — Theorem 8.1's GNS and recurrence clauses
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaGNS.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,557-job build green).
+
+`L²(ℕ_{>0}, P_σ)` is modelled by the corpus's `QGammaSpace = lp (fun _ : ℕ => ℂ) 2`.
+
+- `summable_eqgMass`, `eqgSqrt_memℓp`, `eqgSqrt_memℓp'`, and the cyclic vector
+  **`eqgOmega σ = (√P_σ(m))`**; `norm_eqgPhase` and the orbit **`eqgOrbit σ t`** (multiplication by
+  the phases `exp(i t X_σ(m))`).
+- **`eqgCharProc`** — the characteristic function of the random-integer law — with
+  `eqgCharProc_hasSum`, **`eqgCharProc_eq_inner`** (it *is* the cyclic matrix coefficient
+  `⟪Ω, U_tΩ⟫`) and **`eqgCharProc_eq_response`** — **equation (EQG.9) in characteristic form**:
+  `C_σ(t) = F_σ(it)`, obtained by pushing `exp_eqgObservable` through the certified Dirichlet
+  transform.
+- `eqgOrbit_sub_eqgOmega_apply`, `norm_eqgOrbit_sub_eqgOmega_sq`, `eqgOrbitDiff_le_four`,
+  `eqgOrbitDiff_summable`, and **`exists_eqgOrbit_near_eqgOmega`** — **Theorem 8.1's recurrence
+  clause**: for every `ε > 0` and every `M` there is an integer time `m ≥ M` with
+  `‖U_mΩ − Ω‖ < ε`.  Finitely many phases are returned simultaneously close to `1` by
+  `exists_pow_mem_of_compactSpace` in the torus `Fin (N+1) → Circle`, and the tail mass beyond `N`
+  is below `ε²/8`.
+
+Only nonnegativity of the masses is used, so the fact that `P_σ(0) = 0` (the integer `0` carries no
+mass) is harmless.
+
+`#print axioms` on `exists_eqgOrbit_near_eqgOmega`, `eqgCharProc_eq_inner`,
+`eqgCharProc_eq_response` and `norm_eqgOrbit_sub_eqgOmega_sq` reports only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+**State of the card.**  Eleven modules.  Certified: **Theorems 3.1, 4.1, 5.1, 6.1 and 8.1** —
+(EQG.6)–(EQG.18) together with the meromorphic continuation, the compact resolvent, the GNS matrix
+coefficient and the recurrence.
+
+Remaining: Theorem 7.1 (hypertranscendence of `F_σ`) and Theorem 9.1 (genus-one renormalisation and
+divisor erasure).  Theorem 7.1 is the one that still needs genuinely new theory: a
+differential-algebra closure layer (DA under affine substitution, product and quotient), which the
+corpus does not have, plus the hypertranscendence of `ζ` from the functional equation and the
+certified `hypertranscendental_gamma`.
+
+### Step 11 is done — the genus-one exchange (Theorem 9.1, algebraic core)
+
+`GaloisForLFunctions/HTGeometry/EulerQGammaGenusOne.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,559-job build green).
+
+The corpus's `EulerQGammaFiniteProcess` already carried the unconditional algebraic identity
+`eulerQGamma_genusOne_local_exchange`,
+`(1−x)e^{−q+(1−q)x}·E₁(q) = (1−q)·E₁(x)·e^{−qx}` with `E₁(z) = (1−z)e^z`.  What was missing was
+its q-Gamma reading; that is now supplied.
+
+- **Equation (EQG.20)**: `eqgActivation q s = q(s−1) + q^{1+s}`, with `qcpow_succ` and
+  **`eqgActivation_diff`** — the counterterm increment
+  `ℓ_q(s) − ℓ_q(s+1) = −q + (1−q)q^{1+s}`, exactly the exponent in the corpus identity.
+- **Equation (EQG.21), local factor**: `eqgRenormLocal q s = Γ_q(1+s)·e^{−ℓ_q(s)}`.
+- **`eqgRenormLocal_exchange`** — **equation (EQG.24) per prime**:
+
+  `R_q(s+1)·E₁(q) = R_q(s)·E₁(q^{1+s})·e^{−q·q^{1+s}}`,
+
+  proved by cross-multiplying Jackson's functional equation (so no division by `1−q^{1+s}` is
+  needed), substituting the counterterm increment, and applying the corpus's algebraic exchange;
+  the final cancellation is by `1 − q ≠ 0` alone.  Reading it as a ratio, the translation factor is
+  `E₁(p^{-z})/E₁(p^{-σ})·e^{−p^{-(σ+z)}}` — a genus-one unit times a prime-zeta exponential,
+  carrying **no divisor**.
+- **`eqgRenormLocal_exchange_finset`** — the same over any finite set of primes, which is the
+  finite-prime form of the erasure statement.
+
+`#print axioms` on `eqgRenormLocal_exchange`, `eqgRenormLocal_exchange_finset` and
+`eqgActivation_diff` reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+**State of the card.**  Twelve modules.  Certified: **Theorems 3.1, 4.1, 5.1, 6.1, 8.1** in full,
+and the algebraic core of **9.1**.  Remaining on 9.1: the analytic half — normal convergence of the
+infinite product (EQG.21) on the half-plane (EQG.22) and its zero-freeness, which needs the
+`O(q²) + O(q^{2(1+Re s)}) + O(q^{2+Re s})` expansion of `log Γ_q(1+s) − ℓ_q(s)` from (EQG.25) and
+the corresponding prime sums; and then the passage of the per-prime exchange to the infinite
+products `E_1(z)`, `E_1(σ)` and `e^{−P(σ+z)}`.  Remaining overall: Theorem 7.1
+(hypertranscendence), which still needs a differential-algebra closure layer plus the
+hypertranscendence of `ζ`.
+
+### Frontier note (2026-08-10) — what Theorems 7.1 and 9.1 actually still need
+
+A corpus audit for step 12 turned up much more than expected, and sharpens both remaining items.
+
+**Already owned by the corpus, contrary to the earlier entry:**
+
+- **`RHTower/ZetaHypertranscendental.lean` : `hypertranscendental_riemannZeta`** — the
+  hypertranscendence of `ζ` is *already certified*.  The card's own §7 argument (functional
+  equation plus Hölder for `Γ`) does not need to be redone.
+- `HTGeometry/DifferentiallyAlgebraicInvariance.lean` — translation invariance
+  (`differentiallyAlgebraic_comp_add_const_iff`, `hypertranscendental_comp_add_const_iff`),
+  scaling invariance, and value-scaling invariance (`DifferentiallyAlgebraic.const_mul`,
+  `hypertranscendental_const_mul_iff`).
+- `HTGeometry/ArgumentScalingInvariance.lean` — the *unconditional* scaling invariance
+  `differentiallyAlgebraic_comp_const_mul_iff_uncond` and `hypertranscendental_gamma_affine`.
+- `HTGeometry/AnalyticJetFieldBridge.lean` — `differentiallyAlgebraic_mul`,
+  `differentiallyAlgebraic_add`, `differentiallyAlgebraic_sub`, `differentiallyAlgebraic_pow`,
+  for **entire** functions, through the `meroField` differential-field bridge.
+
+**So Theorem 7.1 reduces to exactly two named gaps.**  From the certified unconditional identity
+`eqgCont_translation`, `ζ(σ)·F^{K+1}_σ(s) = ζ(σ(1+s))·F^K_σ(s+1)`, assuming `F_σ` differentially
+algebraic makes the left side DA (`DifferentiallyAlgebraic.const_mul`) and `F^K_σ(·+1)` DA
+(translation invariance); the contradiction with `hypertranscendental_riemannZeta` then follows by
+argument scaling — *provided* one can divide.  The two missing lemmas are:
+
+1. **DA is closed under reciprocal.**  If `P(z, f, …, f⁽ⁿ⁾) ≡ 0` and `g = 1/f`, then every
+   `f⁽ʲ⁾` is an explicit rational function of `g, g', …, g⁽ʲ⁾`; substituting and clearing
+   denominators gives a nonzero differential polynomial in `g`.  Elementary and finite, but a real
+   induction (the numerators are the Faà-di-Bruno-type polynomials).
+2. **The product/quotient closure for meromorphic, not merely entire, functions.**  The corpus's
+   bridge is stated for `AnalyticOnNhd ℂ f univ`; `ζ` and `F_σ` have poles.  Either the bridge is
+   re-run on a pole-free open connected `U`, or the corpus's `DifferentiallyAlgebraic` predicate is
+   given its off-pole variant (the same move `DigammaHypertranscendental` already makes for `ψ`).
+
+**Theorem 9.1** needs only its analytic half: normal convergence of `∏_p Γ_{q_p}(1+s)e^{−ℓ_{p,σ}(s)}`
+on `Re s > 1/(2σ) − 1`.  The cleanest Lean route avoids logarithms entirely — bound
+`‖R_p(s) − 1‖` directly by `C·q_p²`-type terms and apply the multipliability criterion the corpus
+already uses (`tprod_one_add_ne_zero_of_summable`) — but it does require an explicit expansion of
+`Γ_q(1+s)` to second order in `q`, which is the one genuinely new estimate.  The algebraic identity
+that this convergence is *for* — the divisor erasure — is already certified per prime and over
+finite prime sets (`eqgRenormLocal_exchange`, `eqgRenormLocal_exchange_finset`).
+
+Repo lint reports no errors in any `EulerQGamma*` module; the universal-law-field umbrella builds
+green at 11,559 jobs.
+
+### Step 13 — the reciprocal jet polynomials (first half of gap 1 for Theorem 7.1)
+
+`GaloisForLFunctions/HTGeometry/ReciprocalJetPolynomials.lean`, wired through
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (11,561-job build green).
+
+Gap 1 of the previous entry — *DA is closed under reciprocal* — rests on the jet identity
+`f⁽ʲ⁾·g^{j+1} = A_j(g, g', …, g⁽ʲ⁾)` for `f = 1/g`.  This module builds the polynomial side of it.
+
+- **`pderiv_comm`** — partial derivations of `MvPolynomial` commute.  mathlib's
+  `Algebra/MvPolynomial/PDeriv.lean` has no such lemma, so it is proved here by the
+  `induction_on` recursion, the multiplicative case reducing to `pderiv a (Pi.single b 1 c) = 0`.
+- **`jetShiftDeriv`** — the jet derivation `X_i ↦ X_{i+1}` at a fixed arity `Fin (N+2)`,
+  truncated at the top variable.  Fixing the arity avoids all `Fin`-cast juggling; the recursion is
+  only ever run up to `j ≤ N`, so the truncation is invisible.
+- **`recipNum`** — the reciprocal numerators `A_0 = 1`,
+  `A_{j+1} = D(A_j)·X₀ − (j+1)·A_j·X₁`, with `recipNum_zero` and `recipNum_succ`.  This is the same
+  shape as the `qIncrNum` recursion of ULF-QGPRH-1, which is a good sign: both come from
+  differentiating a quotient with a power denominator.
+- **`pderiv_jetShiftDeriv_top`** and **`pderiv_recipNum_top`** — the support bookkeeping: `A_j`
+  involves no variable above `X_j`.  This is exactly what lets the jet chain rule
+  (`hasDerivAt_mvEval_jet`, already corpus-owned) close inside the fixed arity, since the spurious
+  top-variable term of the chain rule is killed by `pderiv_{N+1} A_j = 0`.
+
+`#print axioms` on `pderiv_comm`, `pderiv_recipNum_top` and `pderiv_jetShiftDeriv_top` reports only
+`propext`, `Classical.choice`, `Quot.sound`.
+
+Next on this thread: the analytic identity `f⁽ʲ⁾·g^{j+1} = eval (g-jet) (A_j)` by induction on `j`
+(differentiate both sides, use `hasDerivAt_mvEval_jet` on the right and the product rule on the
+left, then cancel one factor of `g`), then the substitution `y_j ↦ A_j/Y₀^{j+1}` into an
+annihilating polynomial together with the involutivity argument for nonvanishing of the result.
+
+### Step 14 — the reciprocal jet identity is proved
+
+`GaloisForLFunctions/HTGeometry/ReciprocalJetPolynomials.lean` (extended), umbrella green at
+11,561 jobs.
+
+- **`eval_jetShiftDeriv`** — evaluating the truncated jet derivation on a jet of `g` reproduces the
+  full chain-rule sum, because the one spurious top-variable term is killed by
+  `pderiv_{last} Q = 0`.
+- **`recipNum_eval`** — **the reciprocal jet identity**:
+
+  if `f·g = 1` on an open `U` and both jets differentiate (`HasDerivAt (iteratedDeriv k ·)
+  (iteratedDeriv (k+1) · z) z` for every `k` and every `z ∈ U`), then for every `j ≤ N` and every
+  `z ∈ U`
+
+  `f⁽ʲ⁾(z)·g(z)^{j+1} = A_j(g(z), g'(z), …, g⁽ᴺ⁺¹⁾(z))`.
+
+  Proved by induction on `j`: the two sides agree on a neighbourhood of `z` (the set is open), so
+  their derivatives agree; the left side differentiates by the product and power rules and the
+  right by `hasDerivAt_mvEval_jet`; multiplying by `g(z)` and substituting the induction hypothesis
+  gives exactly the defining recursion of `A_{j+1}`.  No division is used anywhere — the
+  non-vanishing hypothesis turned out to be unnecessary and was dropped, so the identity holds
+  wherever `f·g = 1`.
+
+`#print axioms` on `recipNum_eval` and `eval_jetShiftDeriv` reports only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+**What remains for gap 1** (DA closed under reciprocal): substitute `y_j ↦ A_j/Y₀^{j+1}` into an
+annihilating differential polynomial `P` for `f`, clear the denominator by `Y₀^{(deg P)(N+2)}`, and
+show the resulting `Q` is nonzero — the clean argument being that applying the same construction to
+`Q` returns `P` times a power of `Y₀`, since `g ↦ 1/g` is an involution.  With that, the divide in
+Theorem 7.1's chain (`ζ(σ(1+s)) = ζ(σ)·F^{K+1}(s)/F^K(s+1)`) is licensed, and the remaining
+ingredients — `hypertranscendental_riemannZeta`, translation invariance and argument scaling — are
+all already corpus-owned.

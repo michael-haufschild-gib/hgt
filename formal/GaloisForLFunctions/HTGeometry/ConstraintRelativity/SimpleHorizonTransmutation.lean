@@ -172,6 +172,37 @@ theorem range_diagonal_mulVecLin (a : R) :
       = Submodule.pi Set.univ fun j : Fin N => Ideal.span {a ^ (j : ℕ)} :=
   range_diagonal_mulVecLin' _
 
+/-- **Reusable.**  A matrix carried to a diagonal one by unimodular factors has the corresponding
+product cokernel.  Both the observer staircase below and the tensor-square splitting of the
+Gorenstein card are instances. -/
+theorem nonempty_coker_equiv_pi_of_smith {n : Type*} [Fintype n] [DecidableEq n]
+    {M D P Q : Matrix n n R} (hP : IsUnit P.det) (hQ : IsUnit Q.det) (d : n → R)
+    (hD : D = Matrix.diagonal d) (h : P * M * Q = D) :
+    Nonempty (((n → R) ⧸ LinearMap.range M.mulVecLin) ≃ₗ[R] ∀ i, (R ⧸ Ideal.span {d i})) := by
+  classical
+  haveI hPi : Invertible P := Matrix.invertibleOfIsUnitDet P hP
+  haveI hQi : Invertible Q := Matrix.invertibleOfIsUnitDet Q hQ
+  set eP : (n → R) ≃ₗ[R] (n → R) := Matrix.toLinearEquiv' P hPi with heP
+  have hePl : (eP : (n → R) →ₗ[R] (n → R)) = P.mulVecLin := rfl
+  have hMPQ : P * M = D * Q⁻¹ := by
+    rw [← h, Matrix.mul_inv_cancel_right_of_invertible]
+  have hQsurj : Function.Surjective (Q⁻¹ : Matrix n n R).mulVecLin := by
+    intro x
+    refine ⟨Q.mulVecLin x, ?_⟩
+    simp
+  have hmap : Submodule.map (eP : (n → R) →ₗ[R] (n → R)) (LinearMap.range M.mulVecLin)
+      = LinearMap.range D.mulVecLin := by
+    rw [hePl, ← LinearMap.range_comp, ← Matrix.mulVecLin_mul, hMPQ, Matrix.mulVecLin_mul,
+      LinearMap.range_comp, LinearMap.range_eq_top.2 hQsurj, Submodule.map_top]
+  have e1 : ((n → R) ⧸ LinearMap.range M.mulVecLin)
+      ≃ₗ[R] ((n → R) ⧸ LinearMap.range D.mulVecLin) :=
+    Submodule.Quotient.equiv _ _ eP hmap
+  have e2 : ((n → R) ⧸ LinearMap.range D.mulVecLin)
+      ≃ₗ[R] ∀ i, (R ⧸ Ideal.span {d i}) := by
+    rw [hD, range_diagonal_mulVecLin']
+    exact Submodule.quotientPi _
+  exact ⟨e1.trans e2⟩
+
 /-- **Cards `(11)`, `(12)` boxed.**  When the Vandermonde factor of the leading units is
 invertible, the observer cokernel is the persistence staircase `⊕_j R/(a^j)`. -/
 noncomputable def cokerSheetObserverEquiv (a : R) (u : Fin N → Rˣ)

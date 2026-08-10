@@ -274,7 +274,69 @@ Lean anchors:
 - `momentFunctional_xiShifted_eq_cassiniSource`;
 - `exists_negative_cassiniSource_liftedShiftedSquare_of_genuine_crossing`.
 
-## 8. New open core
+## 8. Degree-one inverse-response and theta Euler-contact law `[PROVED HERE]`
+
+Put `F(y)=Re M_y(0)>0` and `H(y)=1/F(y)`. The mass recursion
+`M_n'=-(n+1)M_(n+1)` now gives actual derivatives through order three and the exact identities
+
+~~~
+det H_2(y) = -(F(y)^3/2) H''(y),
+H'''(y) = 6 L_y(X (X-M_1/M_0)^2)/F(y)^2.
+~~~
+
+Thus a flat degree-one face with negative terminal flux is exactly a downward-oriented
+inflection: `H''(y)=0` and `H'''(y)<0`. This is an iff, not only a necessary condition.
+
+For `y=t^2`, `0<t<1`, the theta Fourier--Laplace source gives
+
+~~~
+q(t)=H(t^2)=t * thetaCuspHyperbolicPartition(t) / thetaCuspHyperbolicFlux(t).
+~~~
+
+Lean proves the first three named radial jets are actual derivatives. The same crossing is
+therefore exactly
+
+~~~
+t q''(t)=q'(t),
+q'''(t)<0.
+~~~
+
+This is the first source-specific scalar normal form of a Route-U face. It rules out generic
+positivity arguments more sharply: degree one only needs exclusion of a downward Euler contact
+of one explicit arithmetic theta quotient. It does not settle higher-degree null flags or prove
+that the quotient is globally concave.
+
+There is now a source-coordinate form involving only the first four theta Esscher cumulants. Put
+`A=Z'/Z`, so the named jets `A'`, `A''`, and `A'''` are the variance, third cumulant, and fourth
+cumulant. Define
+
+~~~
+N(t) = -A^2 - t A A' - t^2 A A'' + 2 t^2 (A')^2,
+N'(t) = -3 A A' + 3t(A')^2 - 3t A A'' + 3t^2 A'A'' - t^2 A A'''.
+~~~
+
+Lean proves every displayed jet is an actual derivative and
+
+~~~
+N(t) = 4 t^3 A(t)^3 H''(t^2) = -8 t^6 det H_2(t^2).
+~~~
+
+At contact, all curvature terms cancel exactly:
+
+~~~
+N(t)=0  ->  N'(t)=t A(t)^3 q'''(t).
+~~~
+
+Since `t A(t)^3>0` on `0<t<1`, a flat-negative first face is exactly `N(t)=0,N'(t)<0`.
+The remaining degree-one theorem is therefore the contact barrier `N=0 -> N'>=0`; it is a
+specific mean--variance--third--fourth-cumulant inequality and is strictly weaker than global
+concavity.
+
+Lean modules:
+`formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniInverseResponseCurvature.lean` and
+`formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniThetaCumulantContact.lean`.
+
+## 9. New open core
 
 Route U no longer asks for a generic sign of one polynomial. A hypothetical genuine crossing
 forces all of the following simultaneously:
@@ -308,6 +370,10 @@ cannot close it.
   tail-capacity problem. Stationary contact order measures geometric quartet-orbit rank, not copy
   multiplicity. Adaptive mass flow is exactly basepoint translation on one Cassini resolvent;
   it changes neither orbit relation nor the full moment/defect data.
+- **New degree-one insight:** the first null face is a downward Euler-contact event for the
+  explicit theta quotient `t Z(t)/Z'(t)`. Equivalently it is a downward zero crossing `N=0,N'<0`
+  of the explicit first-four-cumulant polynomial above. A viable first-minor source theorem may
+  target only `N=0 -> N'>=0`; global reciprocal concavity is stronger than needed.
 - **Status:** dependency-closed Lean proofs in modules listed above; RH remains open.
 
 ## Log
@@ -326,3 +392,10 @@ cannot close it.
 - 2026-08-10 — full adaptive moment tower, every Hankel block, Padé defect, and polynomial
   functional proved equal to jets of one fixed Cassini source at `1-y`; genuine crossing transport
   made window-free and sign-faithful.
+- 2026-08-10 — degree-one minor and terminal flux identified with inverse-response second and
+  third derivatives; on the theta strip the bad crossing was proved equivalent to
+  `tq''=q'` and `q'''<0` for `q=t*partition/flux`.
+- 2026-08-10 — theta Esscher mean and first three cumulant jets differentiated in Lean. The
+  explicit polynomial `N=-A^2-tAA'-t^2AA''+2t^2(A')^2` was proved equal to
+  `-8t^6 det H_2`; its displayed cumulant flow is its actual derivative. At `N=0`, Lean proves
+  `N'=tA^3q'''`, hence bad degree-one crossing iff `N=0,N'<0`.

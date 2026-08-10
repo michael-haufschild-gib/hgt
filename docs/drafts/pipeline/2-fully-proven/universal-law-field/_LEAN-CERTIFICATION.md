@@ -637,3 +637,46 @@ bounds, and the capstone report only `propext`, `Classical.choice`, and `Quot.so
 the fixed-doctrine base mechanism only; doctrine-changing challenge transport remains open. Global
 formal lint remains blocked by unrelated unreachable modules
 `RHTower.Sieve.GhsUniformError` and `HTGeometry.EulerQGammaContinuation`.
+
+## Session 2026-08-10 addition (Challenge-Prolongation Data Processing)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ALG-3 | An intertwining observer maps every finite promoted challenge language onto its observed language, contracts finite rank, and creates an apparent recurrence exactly by killing a source challenge combination; source-independent/observer-dependent packets produce a nonzero hidden residual | `HTGeometry.ConstitutiveChallengeProlongation` |
+
+Direct foreground elaboration and the owned-module build pass without warnings.  Source-level axiom
+prints on prolongation transport, exact span image, rank contraction, recurrence/kernel equivalence,
+hidden-residual existence, and the capstone report only `propext`, `Classical.choice`, and
+`Quot.sound`.  The module is wired into `HTGeometry.UniversalLawField`.  Source-normal promoter
+birth and nonlinear doctrine-changing challenge transport remain open and do not count as
+certified.
+
+## Session 2026-08-10 addition (Differential Law Genesis)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DLG-1 | A marked polynomial-law execution canonically produces a restorative one-hole context; a marked composite leaf produces nested inner/outer repair with strict outer locality; failure pairs partition by common outer ancestry, while the smallest ancestry-blind observer identifies same-branch and split-branch interactions | `HTGeometry.ConstitutiveLawDerivativeGenesis` |
+
+Direct foreground elaboration and the `510`-job owned-module build pass without warnings. The
+module is wired into `HTGeometry.UniversalLawField`; final umbrella build passed with `11,558`
+jobs. Source-level axiom prints on restoration, nested repair, locality, interaction partition,
+ancestry erasure, and the capstone report only `propext`, `Classical.choice`, and `Quot.sound`.
+Container differentiation and one-hole contexts are classical parents. The certified field delta
+is a route-independent failure-to-challenge mechanism and exact ancestry-erasure no-go; repair
+selection, semantic effectivity, presentation invariance, and higher failure partitions remain
+open.
+
+## Session 2026-08-10 addition (Contextual Challenge Transduction)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DLG-2 | Partial evaluation of a fixed reporter in a failure-born one-hole context canonically produces a replacement challenge; semantic birth is exactly strict contraction of old invisible interventions; nested challenges satisfy a strict chain law; postobservation can erase but cannot create effectivity; a born challenge need not select a repair | `HTGeometry.ConstitutiveContextualChallengeTransduction` |
+
+Direct foreground elaboration is warning-free.  The owned-module build passes with `8,666` jobs,
+and the final `HTGeometry.UniversalLawField` umbrella build passes with `11,561` jobs.
+Source-level axiom prints on restoration, effectivity witnesses, invisible-doctrine contraction,
+nested chain, postcomposition, no downstream genesis, injective preservation, sharp erasure,
+no-selection, and the capstone report only `propext`, `Classical.choice`, and `Quot.sound`.  The
+module is wired into `HTGeometry.UniversalLawField`.  Recursive challenge-language revision,
+marked-presentation invariance, partial/admission-sensitive syntax, and strategy admission remain
+open.

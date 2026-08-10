@@ -918,6 +918,19 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     defect, polynomial functional, and crossing-induced negative shifted square transports
     identically, not merely by node count. The fixed-source crossing law is valid beyond the
     prime--Gamma window.
+20. At the first nonconstant face, write `F(y)=Re M_y(0)` and `H=1/F`. Actual differentiation
+    gives `det H_2=-(F^3/2)H''`, while the canonical linear null reporter's terminal flux is
+    `F^2 H'''/6`. Hence flat-negative degree-one contact is exactly `H''=0,H'''<0`. On the theta
+    strip, `H(t^2)=t*thetaCuspHyperbolicPartition(t)/thetaCuspHyperbolicFlux(t)` and all three
+    radial jets are actual derivatives, so the same event is exactly `tq''=q',q'''<0` for this
+    explicit quotient `q`.
+21. Put `A=thetaCuspHyperbolicFlux/thetaCuspHyperbolicPartition` and let its first three actual
+    derivatives be the theta Esscher variance, third cumulant, and fourth cumulant. The explicit
+    contact polynomial
+    `N=-A^2-tAA'-t^2AA''+2t^2(A')^2` satisfies
+    `N=4t^3A^3H''(t^2)=-8t^6 det H_2(t^2)`. Its actual derivative is
+    `N'=-3AA'+3t(A')^2-3tAA''+3t^2A'A''-t^2AA'''`. At `N=0`, curvature cancellation gives
+    `N'=tA^3q'''`. Thus bad degree-one contact is exactly the source event `N=0,N'<0`.
 
 **Open core.** Exclude the now isolated off-critical negative-index obstruction on every actual
 adaptive genuine-crossing flag. Equivalently, rule out strict negativity of the off-critical
@@ -937,7 +950,11 @@ rigidity law: the jet sequence of `-2 Psi'/Psi` at any real center `1-y`, `y>0`,
 odd flat-Padé contact with the genuine-crossing orientation. It must consume the vanished lower
 defects and self-selected null polynomial. Count alone is inadequate: a zero global Cassini orbit
 count is RH itself. Generic Weil budget bounds are inapplicable because the corpus's refunded-index
-construction supplies only lower bounds.
+construction supplies only lower bounds. In degree one the exact source target is now smaller:
+prove `N(t)=0 -> N'(t)>=0` for the explicit theta Esscher cumulant polynomial in item 21. This is
+equivalent to excluding a negative third radial jet at Euler contact of `q=t*partition/flux`.
+Proving global concavity of `q(t)` in `t^2` would suffice but is not required and is not claimed.
+Higher-degree flags still require the full adaptive Padé-contact law.
 
 **Dead subclasses.** Generic moment positivity, positive atoms, tied-power sectors, positive/root
 location, stochastic order, factorial-normalized carriers, fixed corona continuous reporters,

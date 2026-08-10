@@ -5,7 +5,7 @@
 - **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
 - **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
   the laws by which consequences, failures, and conservation requirements revise the rulebook.
-- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [TWENTY-ONE LAWS LEAN-CALIBRATED]
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [TWENTY-FOUR LAWS LEAN-CALIBRATED]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
 
 ## 1. Founding shift
@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The twenty-one field laws
+## 2. The twenty-two field laws
 
 ### RLM Law I -- typed exposure
 
@@ -263,6 +263,50 @@ existing residual/obstruction filtration does not contain.  Open gate: challenge
 to promote new reporters and alter the later legal doctrine; otherwise the theory collapses to
 fixed-class Littlestone mechanics.
 
+### RLM Law XXII -- observer-made closure is a hidden promoted challenge
+
+Let a source promoter `D` generate the challenge lineage `v,Dv,D²v,...`, and let an observer `q`
+intertwine it with an observed promoter `E`.  The observer maps every finite source challenge span
+onto the observed span and cannot increase its rank.  More sharply, an observed polynomial
+recurrence `P(E)qv=0` is equivalent to the source residual `P(D)v` lying in `ker q`.
+
+ULF-ALG-3 certifies this transport, rank contraction, recurrence/kernel equivalence, and the exact
+false-closure witness: if a source packet is independent while its observed packet is dependent,
+some nonzero promoted source challenge lies in the observer kernel.  An observer injective on the
+current challenge language therefore reflects closure and cannot manufacture a law.
+
+This turns observer contraction from metaphor into a typed mechanism.  It still leaves the central
+formation question open: which exposed failure generates `D`, and when must a surviving hidden
+residual be promoted into the next legal reporter?
+
+### RLM Law XXIII -- marked failure differentiates law syntax into repair context
+
+When an executing polynomial law has a source-marked failure site, the surrounding one-hole
+context is generated canonically.  A marked leaf in a composite produces nested inner and outer
+contexts; plugging the original leaf restores the entire execution, and any replacement leaves
+unrelated outer branches fixed.  Two failures are typed by common ancestry: same outer branch or
+split outer branches.
+
+ULF-DLG-1 Lean-certifies this context-production, nested-repair, locality, and interaction-partition
+mechanism.  Its smallest countermodel has a same-branch pair and a split-branch pair with identical
+ancestry-blind observation.  Thus coarse residual equality cannot determine successor challenge
+grammar.  The theorem derives repair context, not repair value; presentation invariance, semantic
+effectivity, and higher failure partitions remain open.
+
+### RLM Law XXIV -- failure-born context transduces reporter into challenge
+
+A context becomes a legal challenge by partially evaluating a fixed execution reporter in its
+hole.  This contextual reporter is effective exactly when it separates replacements that the old
+replacement reporter identified, equivalently when it strictly contracts the old invisible
+interventions.  Nested challenges factor inner-after-outer.  Postobservation commutes with this
+birth and can erase but cannot create effectivity.
+
+ULF-DLG-2 Lean-certifies the nonlinear set-level mechanism.  A unary Boolean cell shows sharp
+observer erasure, while a unary three-replacement cell shows that a born challenge can retain a
+non-singleton repair fibre.  Thus source-generated challenge grammar and repair selection are
+separate laws.  Recursive doctrine change, presentation invariance, and strategy admission remain
+open.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -302,6 +346,9 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-CHM-1 | completion-doctrine serial homology, two independent defects, and exactness converse | certified |
 | ULF-DKO-1 | three-stage downstream-kernel obstruction filtration and exact tower | certified |
 | ULF-ALG-2 | laminar static-dimension-one doctrine with arbitrary adaptive stress and exact convex value | certified |
+| ULF-ALG-3 | intertwined challenge-prolongation transport, observer rank contraction, and exact hidden residual for apparent closure | certified |
+| ULF-DLG-1 | marked-context production, nested-repair chain law, strict outer locality, and interaction-ancestry erasure no-go | certified |
+| ULF-DLG-2 | source-generated contextual reporter, operational effectivity, nested challenge chain, nonlinear observer data processing, erasure, and no-selection fibre | certified |
 | ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
@@ -448,3 +495,6 @@ Retire RLM as theatre if:
   law-genesis trilemma.
 - 2026-08-09 -- added repair-torsor no-selector as Law XIV: exactness supplies no origin, and every
   selector can be made least-work by manufactured cost; source-revealed work integrability opened.
+- 2026-08-10 -- added differential law genesis as Law XXIII: a source-marked failure site produces
+  a restorative one-hole context; composition forces nested repair and locality; ancestry-blind
+  observation cannot distinguish inner from cross-branch interaction birth.

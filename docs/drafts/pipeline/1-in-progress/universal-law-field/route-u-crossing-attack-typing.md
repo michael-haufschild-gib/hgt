@@ -165,3 +165,55 @@ frontier map's design survivor demands; U's obligation has exactly the admissibl
 - 2026-08-10 — exact all-jet bridge proved: every positive-mass shifted moment is a normalized jet
   of one fixed Cassini source at `1-y`. Hankel blocks, flat defects, polynomial functionals, and
   genuine-crossing negativity now transport identically and without the prime--Gamma window.
+- 2026-08-10 — degree-one conjecture loop survived proof audit. For `F(y)=Re M_y(0)`, Lean proves
+  `det H_2=-(F^3/2)(1/F)''` and identifies terminal flux with `F^2(1/F)'''/6`. On `y=t^2<1`,
+  `1/F=t*thetaCuspHyperbolicPartition/thetaCuspHyperbolicFlux`; the quotient's first three named
+  jets are actual derivatives. A flat-negative first face is exactly the source event
+  `tq''=q'` with `q'''<0`. Next admissible first-minor target is contact-only rigidity
+  `tq''=q' -> q'''>=0`, not unrestricted Hankel positivity.
+- 2026-08-10 — degree-one contact was pushed completely into theta cumulants. With
+  `A=thetaCuspHyperbolicFlux/thetaCuspHyperbolicPartition`, Lean differentiates `A` through the
+  fourth cumulant and proves `N=-A^2-tAA'-t^2AA''+2t^2(A')^2=-8t^6 det H_2`. The displayed
+  mean--variance--third--fourth-cumulant flow is `N'`; on `N=0`, it equals `tA^3q'''`. Hence the
+  exact first-minor source obstruction is `N=0,N'<0`, and the smallest closing theorem is
+  `N=0 -> N'>=0`.
+- 2026-08-10 — conjecture C54-A (inverse-response concavity for every even log-concave law) failed
+  exactly, not numerically.  For the symmetric three-point law with center/side mass ratio `r`,
+  `q(y)=r sqrt(y)/sinh(sqrt(y))+sqrt(y)coth(sqrt(y))` has
+  `q''(0)=(7r-8)/180`; every `r>8/7` gives the wrong curvature.  Generic log-concavity therefore
+  cannot close the theta contact, and no such theorem is imported.
+- 2026-08-10 — C54-B/C55 survived proof audit and is Lean-closed in
+  `XiShiftedHankelCassiniContactFourthCumulant.lean`.  With elasticity `e=tA'/A`, contact eliminates
+  the third cumulant and factors the exact flow as
+  `N'=3A^2/t(1-e)(1-2e^2)-t^2 A K4`.  A new variable-shift `85`-to-`4` resolvent contraction,
+  derived only from the critical strip and first-zero height gap, proves `77/85<e<1` for every
+  `0<t<1`; hence the geometric factor is always strictly negative.  The same contraction proves
+  the third and fourth theta Esscher cumulants are strictly negative throughout the strip.  This
+  rules out positivity-only and generic PF2/log-concavity closures: remaining degree-one theorem is
+  a quantitative *negative* fourth-cumulant reserve at the self-selected contact, not a cumulant
+  sign.  Module is wired through `RHTower.lean` and passes direct `lake env lean`.
+- 2026-08-10 — C56 killed the sector-only fourth-cumulant closure and extracted its sharp positive
+  survivor.  For one positive real reciprocal atom `c` and one conjugate pair `1±is`, exact
+  degree-one contact has total pair weight
+  `q=c C/((1+s^2)s^2)`, `C=c^2+2(s^2-1)c+1-3s^2`, and terminal flux
+  `c C ((c-1)^2+s^2)/(c-1+s^2)`.  Thus for positive contact weight its sign is exactly
+  `sign(c-1+s^2)`: angular sector control discards the decisive relative radial scale.  The exact
+  narrow-sector packet `c=1/2`, `s=1/6`, common pair weight `63/37` has positive first four
+  moments, null root `31/34`, flat first minor, and terminal flux `-35/612`.  All claims are
+  axiom-clean and directly compiled in
+  `XiShiftedHankelCassiniOneOrbitContactOrientation.lean`, umbrella-wired through `RHTower.lean`.
+  Remaining admissible degree-one theorem is therefore a source-conditioned cross-scale transport
+  inequality, equivalently a positive-channel energy-barycenter lower bound; contact, cumulant
+  signs, endpoint height, and sector width cannot supply it alone.
+- 2026-08-10 — C57 converted C56's radial comparison into an exact Xi height law and closed it in
+  Lean.  For denominator `A+iB`, pair intrinsic velocity is
+  `(A^2-B^2)/(A(A^2+B^2))`; a critical atom at height `eta` is adverse exactly when
+  `eta^2>A-y+2AB^2/(A^2-B^2)`.  For a Xi orbit with centered displacement `delta` and ordinate
+  `gamma`, this threshold is
+  `gamma^2-delta^2+8A delta^2 gamma^2/(A^2-4delta^2 gamma^2)`.  The second term is strictly
+  positive for every genuinely off-critical orbit: horizontal phase displacement imposes a
+  positive radial phase tax.  Thus low critical zeros stabilize while high critical zeros drive
+  adverse orientation; fixed-sector estimates erase exactly this ordering.  Module
+  `XiShiftedHankelCassiniPhaseTaxHeightThreshold.lean` is umbrella-wired and passes direct
+  `lake env lean`.  Remaining source theorem must control a contact-weighted height barycenter
+  relative to orbit-dependent taxed thresholds.
