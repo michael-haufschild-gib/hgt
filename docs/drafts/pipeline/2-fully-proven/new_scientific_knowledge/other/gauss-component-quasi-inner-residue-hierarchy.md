@@ -1882,3 +1882,52 @@ Only the interior replacement itself: in
 `⟪e_n, G^m e_n⟫ = p^m |d_n|^(2m) ⟪g_n, Λ^(m-1) B^(-2) g_n⟫`, replace `Λ = B^(-2) S* B² S` by
 `Λ_0 = M_(a_δ(·-δ))` stage by stage, feeding each stage's convolved amplitude into
 `tendsto_gaussOneStep_powFamily` at `θ = 3/4`.  Every input it consumes now exists.
+
+### Lean status — pass 41 (the iteration as an operator power; telescoping)
+
+The `m = 1` channel residue is closed unconditionally.  For `m ≥ 2` the object to control is
+`⟪e_n, G^m e_n⟫`, and the previous passes produced all the *analytic* inputs (band splits at every
+exponent `θ ∈ (1/2, 1]`, ratio-weighted defect bounds, power-weight tails).  This pass supplies the
+missing *algebraic* skeleton: the iteration is literally a power of one bounded operator, and the
+deviation of that power from its model is telescoped so that the growing operator never touches an
+error term.
+
+New module `HTGeometry/OperatorPowerTelescope.lean` (field-generic, `𝕜` an arbitrary
+`NontriviallyNormedField`):
+
+```
+norm_pow_apply_sub_pow_apply_le (X Y : E →L[𝕜] E) (v : E) (r : ℕ) :
+    ‖(X ^ r) v - (Y ^ r) v‖ ≤ ∑ i ∈ Finset.range r, ‖Y‖ ^ (r - 1 - i) * ‖(X - Y) ((X ^ i) v)‖
+```
+
+The proof is the induction on `X (X^r v) - Y (Y^r v) = Y (X^r v - Y^r v) + (X - Y) (X^r v)`.  The
+direction matters: only powers of `‖Y‖` appear, and `X` is applied only to `v`.  Here `X = R_n` has
+norm growing with `n` while `Y = R_0` does not, so the reversed telescope would be useless.
+
+New module `RHTower/GaussPrincipalStepBlock.lean`:
+
+* `gaussShiftedBlockOfCLM`, `gaussShiftedBlockDiagCLM` — the two normalized shifted blocks bundled
+  as continuous linear maps (`_apply` lemmas are `rfl` against the existing unbundled functions, so
+  no analytic fact is restated).
+* `gaussPrincipalStepBlock hm k p hp n = B ∘ S ∘ B⁻² ∘ S* ∘ B` — the principal step `R_n`.
+* `gaussQuasiInnerG_pow_fourierMulBlock` — **the iteration is a power**:
+  ```
+  (G^r) (e_n f) = (p · conj(d_n) · d_n)^r • e_n ((R_n^r) f)     (n ≠ 0)
+  ```
+  proved by induction from the one-step factorization `gaussQuasiInnerG_fourierMulBlock`.
+* `norm_gaussMovingAmplitudeBlock_le : ‖A_δ‖ ≤ p` — the model is uniformly bounded by the prime.
+* `norm_gaussPrincipalStep_pow_sub_movingAmplitude_pow_le` — the telescoped deviation
+  ```
+  ‖(R_n^r) f - (A_δ^r) f‖ ≤ ∑_{i<r} p^(r-1-i) · ‖(R_n - A_δ) ((R_n^i) f)‖ ,   δ = δ_n .
+  ```
+
+Both modules are wired (`HTGeometry.lean`, `RHTower.lean`), build clean under
+`lake build GaloisForLFunctions.RHTower.GaussPrincipalStepBlock`, and every declaration audits to
+`[propext, Classical.choice, Quot.sound]`.
+
+**Remaining for `m ≥ 2`.**  The bound above reduces the whole residue to `m` statements of the form
+`‖(R_n - A_{δ_n}) ((R_n^i) f₀)‖ → 0`, `i < m`, each of which is exactly the hypothesis consumed by
+`tendsto_gaussOneStep_powFamily` at an exponent `θ ∈ (1/2, 1)`: a uniform Fourier decay
+`A/(1+|j|)^θ` for the vector `(R_n^i) f₀`.  Since each application of `R_n` convolves the amplitude
+and so costs one logarithm, the exponents must decrease, `θ_r = 1 - r·η` with `θ_{m-1} > 1/2`;
+`log_div_le_rpow_div` (pass 37) is the lemma that converts each logarithmic loss into a power loss.

@@ -240,3 +240,16 @@ frontier map's design survivor demands; U's obligation has exactly the admissibl
   barycenter.  Module `XiShiftedHankelCassiniHyperedgeConformalTransport.lean` is umbrella-wired
   and passes direct `lake env lean`.  Remaining source theorem is now all-degree: exclude adverse
   conformal hyperedge transport at every first flat face using the prime--Gamma coupling itself.
+- 2026-08-10 — C60 identified the source-selected mixed factorial midpoint. For arbitrary finite
+  packet `c`, completed mass differentiation sends `S_(r,c)` to `-S_(r+1,M_rc)`, while one Euler
+  step sends squared-factorial `P_(r+1,c)` to both `P_(r+1,M_rc)` and the mixed amplitude
+  `Q_(r,c)`. The landing splits into intact archimedean and Chebyshev-discrepancy channels before
+  reflection. A proposed fourth-cumulant reserve then failed exactly: at contact it is equivalent
+  to terminal flux and adjacent-minor positivity. Both results are target-built and axiom-audited.
+- 2026-08-10 — C61 lifted C60 to the actual marked null-face current. Euler--Leibniz proves
+  `d/dy L_y(pXp)=-2L_y((Xp)(XE_1p))`. For coefficient packet `c(p)` of `p^2`, the landing is
+  `S_(2,M_1c(p))`, its radial carrier is `Q_(1,c(p))`, and its completed pre-reflection split is
+  twice the archimedean/Chebyshev pairing on adaptive even shear `(Xp,XE_1p)`. Module
+  `XiShiftedHankelBoundaryAdaptiveMixedSourceShear.lean` is umbrella-wired, target-built, and
+  axiom-audited. Missing theorem is strict arithmetic orientation of this exact identity—not
+  construction of another observer.

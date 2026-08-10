@@ -3,8 +3,8 @@
 - **ID:** ULF-SELM-6
 - **Stage:** 2-fully-proven
 - **Type:** ROUTE-INDEPENDENT PRESENTATION-REDUCTION THEOREM
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [SEMANTIC QUOTIENT]
-  [STABLE REDUNDANCY] [LEAN TARGET] [NOT MORITA INVARIANCE] [NOT RH]
+- **Status:** [PAPER-PROVED] [LEAN-CERTIFIED] [DEPENDENCY-CLOSED] [SEMANTIC QUOTIENT]
+  [STABLE REDUNDANCY] [NOT MORITA INVARIANCE] [NOT RH]
 - **Parents:** ULF-SELM-1--5
 
 ## 1. Purpose
@@ -150,13 +150,13 @@ This sharpens the field's ontology:
    specialization.
 7. No RH statement occurs.
 
-## 7. Lean target
+## 7. Lean certification
 
-Formalize in
+Formalized in
 
 `formal/GaloisForLFunctions/HTGeometry/ConstitutiveFailureAntichainQuotient.lean`
 
-without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation proofs.  Certify:
+without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation proofs.  It certifies:
 
 1. failure-family domination and mutual semantic equivalence;
 2. local-admission monotonicity and equivalence;
@@ -165,7 +165,16 @@ without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation pro
 5. dominated-superset insertion as a noninvertible stable presentation move;
 6. one unconditional capstone imported by `HTGeometry.UniversalLawField`.
 
+Direct foreground elaboration passes.  Axiom inspection of all semantic-equivalence, predicate
+transport, insertion, and capstone declarations reports only `propext`, `Classical.choice`, and
+`Quot.sound`.  Repository lint reports no target error; its nonzero global exit is caused by
+unrelated unwired modules.  Final foreground umbrella audit passes:
+
+```text
+Build completed successfully (11605 jobs).
+```
+
 ## Log
 
 - 2026-08-10 -- extracted as the stable-presentation successor to ULF-SELM-5.  Paper proof is
-  dependency-closed.  Lean certification pending.
+  dependency-closed and Lean-certified.

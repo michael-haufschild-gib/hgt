@@ -32,23 +32,29 @@ theorem aeval_mulVec (u : Fin m → ℝ)
     (v : Fin n → MvPolynomial (Fin m) ℚ) (i : Fin n) :
     MvPolynomial.aeval u (A.mulVec v i)
       = (A.map (MvPolynomial.aeval u)).mulVec (fun j => MvPolynomial.aeval u (v j)) i := by
-  simp [Matrix.mulVec, Matrix.dotProduct, map_sum, Matrix.map_apply]
+  simp [Matrix.mulVec, dotProduct, Matrix.map_apply]
 
-/-- Evaluating the entries commutes with products of matrices. -/
-theorem aeval_matrix_prod (u : Fin m → ℝ) {ι : Type*} (s : Finset ι)
-    (A : ι → Matrix (Fin n) (Fin n) (MvPolynomial (Fin m) ℚ)) :
-    (∏ k ∈ s, A k).map (MvPolynomial.aeval u)
-      = ∏ k ∈ s, (A k).map (MvPolynomial.aeval u) := by
-  classical
-  have hmap := map_prod ((MvPolynomial.aeval u : MvPolynomial (Fin m) ℚ →ₐ[ℚ] ℝ).mapMatrix) A s
-  simpa using hmap
+/-- Evaluating the entries commutes with products of matrices, taken in order. -/
+theorem aeval_matrix_prod (u : Fin m → ℝ)
+    (A : List (Matrix (Fin n) (Fin n) (MvPolynomial (Fin m) ℚ))) :
+    (A.prod).map (MvPolynomial.aeval u)
+      = (A.map (fun N => Matrix.map N (MvPolynomial.aeval u))).prod := by
+  have hhom := List.prod_hom A
+    ((MvPolynomial.aeval u : MvPolynomial (Fin m) ℚ →ₐ[ℚ] ℝ).mapMatrix
+      (m := Fin n))
+  have hfun : (⇑((MvPolynomial.aeval u : MvPolynomial (Fin m) ℚ →ₐ[ℚ] ℝ).mapMatrix (m := Fin n)))
+      = fun N => Matrix.map N (MvPolynomial.aeval u) := by
+    funext N
+    rfl
+  rw [← hfun]
+  exact hhom.symm
 
 /-- **A circuit output is the evaluation of fixed polynomials.** -/
-theorem aeval_circuit (u : Fin m → ℝ) {ι : Type*} (s : Finset ι)
-    (A : ι → Matrix (Fin n) (Fin n) (MvPolynomial (Fin m) ℚ))
+theorem aeval_circuit (u : Fin m → ℝ)
+    (A : List (Matrix (Fin n) (Fin n) (MvPolynomial (Fin m) ℚ)))
     (v : Fin n → MvPolynomial (Fin m) ℚ) (i : Fin n) :
-    MvPolynomial.aeval u (((∏ k ∈ s, A k).mulVec v) i)
-      = ((∏ k ∈ s, (A k).map (MvPolynomial.aeval u)).mulVec
+    MvPolynomial.aeval u ((A.prod.mulVec v) i)
+      = ((A.map (fun N => Matrix.map N (MvPolynomial.aeval u))).prod.mulVec
           (fun j => MvPolynomial.aeval u (v j))) i := by
   rw [aeval_mulVec, aeval_matrix_prod]
 
@@ -80,11 +86,16 @@ any real gate sequence and any input vector with rational entries, the prepared 
 evaluation of the fixed generic coordinates at the tuple of gate entries. -/
 theorem circuit_mem_image (s n : ℕ) (M : Fin s → Matrix (Fin n) (Fin n) ℝ)
     (v : Fin n → MvPolynomial (Fin (s * (n * n))) ℚ) (i : Fin n) :
-    ((∏ k, M k).mulVec (fun j => MvPolynomial.aeval (paramOf s n M) (v j))) i
+    ((List.ofFn M).prod.mulVec (fun j => MvPolynomial.aeval (paramOf s n M) (v j))) i
       = MvPolynomial.aeval (paramOf s n M)
-          (((∏ k, genericMatrix s n k).mulVec v) i) := by
+          (((List.ofFn (genericMatrix s n)).prod.mulVec v) i) := by
   rw [aeval_circuit]
-  congr 2
-  exact Finset.prod_congr rfl fun k _ => map_aeval_genericMatrix s n M k
+  have hlist : (List.ofFn (genericMatrix s n)).map
+      (fun N => Matrix.map N (MvPolynomial.aeval (paramOf s n M))) = List.ofFn M := by
+    rw [List.map_ofFn]
+    congr 1
+    funext k
+    exact map_aeval_genericMatrix s n M k
+  rw [hlist]
 
 end GaloisForLFunctions.HTGeometry

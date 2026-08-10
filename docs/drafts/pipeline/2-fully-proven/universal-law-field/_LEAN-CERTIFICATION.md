@@ -949,3 +949,31 @@ the unconditional capstone report only `propext`, `Classical.choice`, and `Quot.
 computation certificate, route premise, project axiom, or RH statement occurs. Final foreground
 umbrella build passes with 11,602 jobs. Repository lint reports no target error; its global nonzero
 exit comes from pre-existing unreachable modules in unrelated theorem areas.
+
+## Session 2026-08-10 addition (Failure-Antichain Semantic Quotient)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SELM-6 | Mutual inclusion-domination of failure families preserves local admission, execution, dominated splitting, primitivity, exact symbolic--execution gaps, and every primitive-degree occurrence; inserting a dominated superset kernel is therefore semantic chart redundancy | `HTGeometry.ConstitutiveFailureAntichainQuotient` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints on domination composition, semantic invariance,
+primitive-spectrum invariance, dominated-superset insertion, and the unconditional capstone report
+only `propext`, `Classical.choice`, and `Quot.sound`. No computation certificate, route premise,
+project axiom, or RH statement occurs. Final foreground umbrella build passes with 11,605 jobs.
+Repository lint reports no target error; its global nonzero exit comes from unrelated unwired
+modules.
+
+## Session 2026-08-10 addition (Observer Lax Effectivity and Gap Erasure)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SELM-7 | Positive fiber pushforward preserves symbolic local admission and executable repair, so coarse observation cannot create an execution gap but can erase one; the explicit triangle collapse erases its source gap while producing one unit of false overlap | `HTGeometry.ConstitutiveObserverExecutionGap` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints on the fiber-sum identity, local and executable
+pushforward, gap noncreation, triangle gap erasure, exact false overlap, and the unconditional
+capstone report only `propext`, `Classical.choice`, and `Quot.sound`. No computation certificate,
+route premise, project axiom, or RH statement occurs. Final foreground umbrella build passes with
+11,605 jobs. Repository lint reports no target error; its global nonzero exit comes from unrelated
+unwired modules.

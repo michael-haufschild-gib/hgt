@@ -6866,3 +6866,5 @@ import GaloisForLFunctions.HTGeometry.AnalyticImageFiniteness
 import GaloisForLFunctions.HTGeometry.OrbitExceptionalTimes
 import GaloisForLFunctions.HTGeometry.SpectralOrbitTrigForm
 import GaloisForLFunctions.HTGeometry.NewtonPuiseuxSplitting
+import GaloisForLFunctions.HTGeometry.PolynomialCircuitParametrisation
+import GaloisForLFunctions.HTGeometry.CircuitExceptionalTimes

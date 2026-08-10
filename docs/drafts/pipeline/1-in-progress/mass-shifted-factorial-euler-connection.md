@@ -174,6 +174,24 @@ whole connection orbit and cannot assign independent signs to successive `P^shar
 6. **C60-C, prime--Gamma mixed-current orientation — OPEN.** Prove a source-admission law on the
    mixed amplitude `Q_(r,c)` before its archimedean and Chebyshev discrepancy channels are
    compressed.  A restatement of `(6)` or a fixed linear reporter does not qualify.
+7. **C60-D, the midpoint packet has no intrinsic bilinear null-face landing — FAILS.**  For every
+   polynomial `p`, Euler--Leibniz gives
+
+   ```text
+   X E_1(p Xp) = 2 (Xp)(X E_1p).
+   ```
+
+   Therefore source transport forces the exact odd-to-even shear
+
+   ```text
+   d/dy L_y(p Xp) = -2 L_y((Xp)(X E_1p)).
+   ```
+
+   If `c(p)` is the coefficient packet of `p^2`, then `L_y(p Xp)=S_(1,c(p))(y)` and the landing is
+   `S_(2,M_1c(p))`.  Its completed radial carrier is exactly
+   `P_(2,M_1c(p))=Q_(1,c(p))`.  On the Euler ray it splits before reflection aggregation into
+   twice the archimedean and Chebyshev-discrepancy pairings of `(Xp,X E_1p)`.  This is the missing
+   source-first bilinear landing; only its strict arithmetic orientation remains open.
 
 ## External frontier
 
@@ -183,8 +201,11 @@ Euler connection inside a shifted-Xi null flag. Novelty remains unverified.
 
 ## Status
 
-`[PAPER-PROVED] [NOVELTY UNVERIFIED]`. Exact Lean theorem pending Stage-2 promotion.  Lean target
-includes `(3)--(5)`, the completed-source split, and the contact-locus equivalence `(6) <-> (7)`.
+`[PAPER-PROVED] [LEAN-TARGET-BUILT] [AXIOM-AUDITED] [NOVELTY UNVERIFIED]`.  The Euler connection,
+completed source split, fourth-cumulant circularity, and odd-to-even adaptive mixed-source shear
+are all formalized unconditionally.  Exact shear theorem is recorded at Stage 3 in
+`mass-shifted-adaptive-mixed-source-shear.md`; this card remains open only for C60-C's strict
+prime--Gamma channel orientation.
 
 ## Log
 
@@ -194,3 +215,7 @@ includes `(3)--(5)`, the completed-source split, and the contact-locus equivalen
   completed mixed-amplitude law `(3)--(5)`.  Hostile audit proved the advertised fourth-cumulant
   reserve is exactly the original shifted-minor sign on contact, so it cannot be used as an
   independent producer.
+- 2026-08-10 — Euler--Leibniz lifted the source connection from arbitrary linear packets to the
+  actual marked crossing current: odd `L_y(pXp)` lands on even adaptive shear
+  `-2L_y((Xp)(XE_1p))`.  The successor completed packet has mixed carrier `Q_(1,c(p))` and retains
+  archimedean/Chebyshev channels before reflection aggregation.

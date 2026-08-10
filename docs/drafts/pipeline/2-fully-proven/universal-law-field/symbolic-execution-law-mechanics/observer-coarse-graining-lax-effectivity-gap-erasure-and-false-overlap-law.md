@@ -3,8 +3,8 @@
 - **ID:** ULF-SELM-7
 - **Stage:** 2-fully-proven
 - **Type:** ROUTE-INDEPENDENT OBSERVER-TRANSPORT THEOREM
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LAX EFFECTIVITY]
-  [EXACT GAP ERASURE WITNESS] [LEAN TARGET] [NOT RH]
+- **Status:** [PAPER-PROVED] [LEAN-CERTIFIED] [DEPENDENCY-CLOSED] [LAX EFFECTIVITY]
+  [EXACT GAP ERASURE WITNESS] [NOT RH]
 - **Parents:** ULF-SELM-1--6; ULF-FKT-OD-1
 
 ## 1. Purpose
@@ -201,13 +201,13 @@ observer must separately prove source reflection.  Target execution alone is ins
 6. No route is credited without a literal pre-endpoint observer map and source failure family.
 7. No RH statement occurs.
 
-## 8. Lean target
+## 8. Lean certification
 
-Formalize in
+Formalized in
 
 `formal/GaloisForLFunctions/HTGeometry/ConstitutiveObserverExecutionGap.lean`
 
-without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation proofs.  Certify:
+without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation proofs.  It certifies:
 
 1. finite kernel/family and natural-weight pushforward;
 2. kernel-sum domination `(OC.3)`;
@@ -216,8 +216,18 @@ without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation pro
 5. explicit triangle-collapse gap erasure;
 6. one unconditional capstone imported by `HTGeometry.UniversalLawField`.
 
+The Lean theorem also certifies the exact false-overlap value `(OC.10)`.  Direct foreground
+elaboration passes.  Axiom inspection of the fibre-sum identity, local/executable transport,
+noncreation, triangle erasure, false-overlap witness, and capstone reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  Repository lint reports no target error; its nonzero global
+exit is caused by unrelated unwired modules.  Final foreground umbrella audit passes:
+
+```text
+Build completed successfully (11605 jobs).
+```
+
 ## Log
 
 - 2026-08-10 -- derived by composing SELM's symbolic/executable gap with the finite positive
-  observer mechanics of ULF-FKT-OD-1.  General transport and exact triangle-erasure proofs are
-  dependency-closed.  Lean certification pending.
+  observer mechanics of ULF-FKT-OD-1.  General transport, exact triangle erasure, and false-overlap
+  coupling are dependency-closed and Lean-certified.

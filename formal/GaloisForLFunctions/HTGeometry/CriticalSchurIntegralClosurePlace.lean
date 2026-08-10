@@ -346,8 +346,7 @@ noncomputable instance criticalSchurNormalLocalizationFieldScalarTower
     IsScalarTower (CriticalSchurNormalIntegralClosure K hm hn)
       (CriticalSchurNormalLocalization K hm hn)
       (criticalNormalClosure K m n) :=
-  IsScalarTower.of_algebraMap_eq' (by
-    ext x
+  IsScalarTower.of_algebraMap_eq (fun x => by
     change algebraMap (CriticalSchurNormalIntegralClosure K hm hn)
         (criticalNormalClosure K m n) x =
       (criticalNormalClosureSchurValuationSubring K hm hn).subtype

@@ -1599,3 +1599,77 @@ what Eisenstein's bound `D·q^{2n}·yₙ ∈ ℤ` provides: the series converges
   ramification/specialisation argument;
 - §4: instantiation only — `finite_exceptional_times_of_spectralOrbit` is the statement, and the
   gate map as a finite union of polynomial parametrisations is the last identification.
+
+## A circuit is a polynomial parametrisation (2026-08-10)
+
+`HTGeometry/PolynomialCircuitParametrisation.lean` (new, in the umbrella, axiom-clean) supplies
+the last structural ingredient of §4: the states a circuit can prepare lie inside the image of a
+*fixed* polynomial map, so `finite_meets_image` applies to them.
+
+- `aeval_mulVec` — evaluating the entries commutes with matrix-vector multiplication;
+- `aeval_matrix_prod` — and with products of matrices *taken in order*.  Matrix multiplication is
+  not commutative, so the product must be a `List.prod`, not a `Finset.prod`; the proof is
+  `List.prod_hom` for `AlgHom.mapMatrix`;
+- `aeval_circuit` — the two combined: the output coordinates of a gate sequence are the evaluation
+  of fixed polynomials at the gate entries;
+- `paramIndex`, `genericMatrix`, `paramOf` — one indeterminate per matrix entry, and the parameter
+  tuple carrying a given real gate sequence;
+- **`map_aeval_genericMatrix`**, **`circuit_mem_image`** — every real gate sequence is an
+  evaluation of the generic one, so the prepared state is `aeval (paramOf s n M)` of the fixed
+  generic coordinates.
+
+No unitarity is imposed anywhere: constraints only shrink the parameter set, and the argument needs
+the reachable states to lie *inside* a polynomial image, not to fill it.  With `s` gates on an
+`n`-dimensional space the parameter count is `s · n²` — for two-qubit gates acting on `n = D`, the
+gate matrices are supported on four rows and columns, so the honest count is `16s` complex, `32s`
+real, both `< D − 1` in the regime of equation (2).
+
+### Remaining Lean layers for the card
+
+- §4: only the arithmetic of assembling these pieces into equation (2) as the card states it
+  (real/imaginary split of the complex circuit, and the constant `16`);
+- §1: Hilbert irreducibility — p-adic evaluation of a Puiseux branch, then the specialisation
+  argument.  Everything below it (Hensel, Newton polygon, Newton–Puiseux with splitting,
+  Eisenstein) is built.
+
+## §4 equation (2) proved end to end (2026-08-10)
+
+`HTGeometry/CircuitExceptionalTimes.lean` (new, in the umbrella, axiom-clean) joins the two
+halves into the exceptional-time theorem itself.
+
+> **`finite_circuit_exceptional_times`.**  Let the orbit's coordinates be trigonometric sums
+> `γᵢ(t) = ∑ⱼ (aᵢⱼ cos(λⱼ t) + bᵢⱼ sin(λⱼ t))`, let `k` of them (selected by `σ`) be
+> algebraically independent over `ℚ` at one time `t₀`, and let the gate parameter count satisfy
+> `s · r² < k`.  Then for every compact `S ⊆ ℝ`,
+>
+> `{t ∈ S | ∃ real gates M : Fin s → Matrix (Fin r) (Fin r) ℝ,  γ(t) = (∏ Mₖ) · v}`
+>
+> is **finite**, for any fixed rational input vector `v`.
+
+That is equation (2) of the card: outside a finite set of times, the orbit is not reachable by a
+depth-`s` circuit.  `circuitCoords` and `aeval_circuitCoords` are the bridge — the prepared state
+is the evaluation of fixed polynomials at the gate entries — and
+`finite_meets_image_subfamily` supplies the finiteness.
+
+**No external classical input anywhere in §4.**  Not o-minimality of `R_an`, not
+Tarski–Seidenberg, not semialgebraic geometry.  The entire mechanism is: more polynomials than
+variables are algebraically dependent (`ImageSeparatingPolynomial`), so one polynomial separates
+an independent point from the image; composing it with the orbit gives a nonzero real-analytic
+function; and a nonzero real-analytic function has finitely many zeros on a compact set
+(`RealAnalyticZeroFiniteness`).
+
+### Where the card stands
+
+| Part | Status |
+|---|---|
+| §1 arithmetic (balanced ternary, cyclicity) | built |
+| §2 relation-space collapse, equation (6) | built |
+| §3 independence of exponentials, equation (8), Theorem A | built |
+| §4 empty interior, nowhere density | built |
+| §4 equation (2), local finiteness | **built (this entry)** |
+| §1 Hilbert irreducibility | the sole remaining classical input |
+
+Everything below Hilbert irreducibility — Hensel factorisation, Newton–Rychlik, Newton polygon,
+Newton–Puiseux (root and splitting forms), Eisenstein's theorem on algebraic power series — is
+formalized, unconditionally and axiom-clean.  What remains for §1 is the p-adic evaluation of a
+Puiseux branch and the specialisation argument built on it.

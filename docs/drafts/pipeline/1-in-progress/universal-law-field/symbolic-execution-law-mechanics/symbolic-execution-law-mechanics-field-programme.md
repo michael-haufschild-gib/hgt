@@ -280,13 +280,13 @@ RH or a completed universal field.
 - 2026-08-10 — ULF-SELM-6 proves the first noninvertible presentation reduction: mutual
   inclusion-domination of failure families preserves local laws, executions, primitive splittings,
   exact gaps, and full primitive spectrum.  Dominated superset constraints are chart redundancy.
-  Paper proof and direct Lean elaboration pass; batched final certification is in progress.
+  Paper proof and Lean certification pass.
 - 2026-08-10 — ULF-SELM-7 supplies the first cross-engine exchange law.  Positive observer
   pushforward preserves local admission and legal execution, so it cannot create an execution gap;
   it can erase one.  Collapsing two triangle vertices makes the primitive source gap executable and
   simultaneously creates one unit of the ULF-FKT false-overlap defect.  This forces a new universal
   gate: every observer-level closure must prove source reflection, not merely target effectivity.
-  Paper proof and direct Lean elaboration pass; umbrella certification is pending.
+  Paper proof and Lean certification pass.
 
 ## 9. Higher pivot after the static parent collision
 
@@ -322,6 +322,11 @@ This mechanism gives route-independent, falsifiable demands on the sharpened fro
 7. **recurrence:** treat recurrent observed execution and open source primitive lineage as distinct
    invariants.
 
-The next theorem target is exact no-revival and death-time composition for arbitrary finite
-observer chains, followed by a completion theorem separating finite persistence from death at
-infinity.  That is a mechanism problem, not an RH-route calculation.
+ULF-SELM-8 now proves exact no-revival and death-time composition.  Positive observer transport is
+strictly functorial on kernels, failure families, and weights.  Gaps pull backward along observer
+chains, so their alive stages form an initial segment; the triangle-collapse witness has exact
+death time one and remains dead after every later positive observer.  Paper proof and direct Lean
+elaboration pass; final umbrella certification is pending.
+
+The next theorem target is a completion law separating finite persistence from death at infinity.
+That is a mechanism problem, not an RH-route calculation.
