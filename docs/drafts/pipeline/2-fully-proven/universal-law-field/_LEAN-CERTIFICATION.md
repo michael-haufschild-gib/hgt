@@ -7,6 +7,18 @@ even when their paper argument is dependency-closed.
 Dedicated Lean umbrella:
 `GaloisForLFunctions.HTGeometry.UniversalLawField`.
 
+## Session 2026-08-10 addition (endogenous completion mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ECMPL-1 | Terminating execution, nonconfluent finite completion, stationary semantic equivalence, strict conservative repair, and inherited next-stage failure | `HTGeometry.ConstitutiveCriticalCompletionMechanics` |
+
+Direct elaboration and the foreground `HTGeometry.UniversalLawField` build pass; the latter completed
+11,584 jobs.  Axiom prints for the capstone and its semantic, confluence, and well-foundedness
+components report only `propext`, `Classical.choice`, and `Quot.sound`.  No forbidden declaration
+occurs in the module.  Repository lint found no target reachability or proof-debt error; its nonzero
+exit was caused by four unrelated currently unwired modules in the separate `RHTower` umbrella.
+
 ## Session 2026-08-10 addition (Law-History Spectral Mechanics)
 
 | ID | Theorem | Lean module |

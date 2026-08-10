@@ -3,8 +3,8 @@
 - **ID:** ULF-ECMPL-1
 - **Stage:** 2-fully-proven
 - **Type:** ENDOGENOUS LAW-GENERATION MECHANISM / EXACT WORD LABORATORY
-- **Status:** [PAPER-PROVED] [ROUTE-INDEPENDENT] [MECHANISM, NOT OBSTRUCTION OBJECT]
-  [LEAN TARGET FROZEN] [NOT RH]
+- **Status:** [PAPER-PROVED] [LEAN-CERTIFIED] [ROUTE-INDEPENDENT]
+  [MECHANISM, NOT OBSTRUCTION OBJECT] [NOT RH]
 
 ## 1. Field claim
 
@@ -203,3 +203,11 @@ The formal theorem must certify, without extra axioms or computations:
 6. strict absence/presence of the new rule and inherited nonconfluence.
 
 Only those certified clauses count as proven field content.
+
+Certification is complete in
+`GaloisForLFunctions.HTGeometry.ConstitutiveCriticalCompletionMechanics`.  The module is wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`; its foreground umbrella build completed 11,584
+jobs.  The capstone uses only the standard mathlib axioms `propext`, `Classical.choice`, and
+`Quot.sound`.  Repository lint reported no target-file proof debt or reachability failure; its
+nonzero exit was caused by four unrelated `RHTower` modules not yet wired into that separate
+umbrella.

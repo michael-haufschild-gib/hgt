@@ -64,22 +64,61 @@ The mapping cone, built from scratch so that no exactness is assumed anywhere:
     that the relative law names in `ker f`.  Instantiating `P` at `c_ρ I_p(·)[F_{∓t}]` is exactly
     the card's forward and reflected values; that instantiation names the Route-R objects below.
 
+18. `RouteRSource`, `D₀`, `D₁`, `D₁_comp_D₀`, `complex` — **cards `(RRC.5)`–`(RRC.6)`**: the
+    Route-R source datum (prime transport `α`, augmentation `ε`, bilateral Stokes regulator `R`)
+    and the three-term source complex `A → A ⊕ ℂ → ℂ`.  `pieceCat`/`truncComplex` place three
+    modules in degrees `0, 1, 2` and extend by zero over all of `ℤ`.
+19. `eta`, `eta_mem_cocycles`, `regulator`, `regulator_comp_D₀`, `regulator_eta`, `regulatorBar`,
+    `regulatorBar_eta` — **cards `(RRC.7)`–`(RRC.9)`**: the retained class `η = (0,1)`, the Stokes
+    functional `I(y,z) = z − R(y)`, its vanishing on coboundaries, and the descended
+    `Ī : H¹(C) → ℂ` with `Ī[η] = 1`.
+20. `eta_class_ne_zero` — **card `(ROD.13)`, first half, unconditional**: `[η] ≠ 0`.  The regulator
+    axiom `R(αx − x) = εx` forces it: a primitive would give `εx = R(0) = 0 ≠ 1`.
+21. `exactifyComplex`, `exactifyMap`, `exactifyPrimitive`, `exactify_comm_eta`,
+    `exactify_cohomologyMap_eta` — **cards `(RRC.10)`–`(RRC.11)`, `(ROD.13)` second half**: the
+    universal exactification `X⁰ = A ⊕ ℂ`, `δ₀(x,λ) = D₀x + λη`, with the strict comparison
+    `Φ : C → X`, `x ↦ (x,0)`.  The adjoined primitive is `L = (0,1)`, `Φ¹η = δ₀L`, and therefore
+    `H¹(Φ)[η] = 0`.  This makes the whole Route-R layer hypothesis-free: the resolved complex is
+    constructed, not assumed.
+22. `cone_cocycle_of_primitive`, `exactifyConeClass`, `exactify_conePr_coneClass` — **cards
+    `(ROD.14a)`, `(ROD.14)`**: `κ = (L, η)` is a cone cocycle and its projection to the source is
+    exactly `[η]`.
+23. `ellOnePrimes`, `physicalQuotient`, `eulerProfile`, `eulerClass`, `eulerClass_ne_zero_iff` —
+    **cards `(RRC.12)`, `(ROD.15)`, `(RRC.14)`**: the fixed physical quotient
+    `V = ℂ^𝒫/ℓ¹(𝒫)`, the Euler profile `F_t(p) = p^t·p/(p+1)²`, and
+    `[F_t] ≠ 0 ↔ 0 ≤ t`.  Divergence for `t ≥ 0` is the prime harmonic series through
+    `p/(p+1)² ≥ 1/(4p)`; convergence for `t < 0` is comparison with `∑ p^{t−1}`.
+24. `physChar`, `forwardPhysChar`, `reflectedPhysChar`, `exactify_forward_value`,
+    `exactify_reflected_value` — **cards `(RRC.13)`, `(ROD.16)`, `(ROD.17)`, `(ROD.18)`, boxed**:
+    the pairing of the observer covector with the relative cone class is `c_ρ[F_{-t}]` forward and
+    `c_ρ[F_t]` reflected.
+25. `exactify_forward_ne_zero_iff`, `exactify_reflected_ne_zero_iff`, `exactify_both_ne_zero_iff` —
+    **card `§6`, boxed**: forward value nonzero exactly for `t ≤ 0`, reflected value nonzero exactly
+    for `0 ≤ t`, both nonzero exactly at `t = 0`.
+
 ## Scope
 
 The exactness that item 7 takes as input is *proved* in items 13–14, so items 15 give `(ROD.10)`
 and `(ROD.11)` with no hypotheses at all, and items 16–17 give the character/pairing layer that
-`(ROD.16)`–`(ROD.18)` compute with.  The literal Route-R instantiation `(ROD.13)`–`(ROD.18)`
-names objects built in
-`route-r-raw-resolved-relative-cone-character-law`, which is still in stage 2; it is therefore not
-instantiated here.  Item 10 formalizes the §6 consequence abstractly from the vanishing pattern, so
-it imports nothing unproved.  The card states plainly that it does not prove the simultaneous
-nonvanishing and that inserting it as an axiom would be RH-equivalent circularity; nothing of that
-kind is claimed.  The two remaining open gates (continuous/filtered version, source-derived
-simultaneous nonvanishing) are unaffected.
+`(ROD.16)`–`(ROD.18)` compute with.  Items 18–25 carry out the literal Route-R instantiation
+`(ROD.13)`–`(ROD.18)` unconditionally: the source complex, the retained class, the resolved
+complex and its comparison, the physical quotient `V = ℂ^𝒫/ℓ¹(𝒫)` and the Euler profile are all
+*constructed*, so every displayed value is a theorem with no premises beyond `c_ρ ≠ 0` (card
+`(RRC.1)`, which is false at `c_ρ = 0` and so cannot be dropped).  Item 10 formalizes the §6
+consequence abstractly from the vanishing pattern, so it imports nothing unproved.
+
+What is *not* claimed: `(ROD.13)`–`(ROD.18)` are proved for the universal exactification of a
+Route-R source datum, and `§6`'s dichotomy is proved as a statement about `t`.  The card states
+plainly that it does not prove that the actual Xi-divisor `t_ρ` equals `0` — inserting that as an
+axiom would be RH-equivalent circularity — and nothing of that kind is claimed here.  The two
+remaining open gates (continuous/filtered version, source-derived simultaneous nonvanishing) are
+unaffected.
 
 ## Verification
 
 ```text
-lake env lean GaloisForLFunctions/HTGeometry/ConstraintRelativity/ObserverDescentDuality.lean  # clean
-lake build GaloisForLFunctions.HTGeometry.ConstraintRelativity.ObserverDescentDuality          # green
+lake env lean GaloisForLFunctions/HTGeometry/ConstraintRelativity/ObserverDescentDuality.lean   # clean
+lake env lean GaloisForLFunctions/HTGeometry/ConstraintRelativity/RelativeConeExactness.lean   # clean
+lake env lean GaloisForLFunctions/HTGeometry/ConstraintRelativity/RouteRConeCharacter.lean     # clean
+lake build GaloisForLFunctions.HTGeometry                                                      # green
 ```

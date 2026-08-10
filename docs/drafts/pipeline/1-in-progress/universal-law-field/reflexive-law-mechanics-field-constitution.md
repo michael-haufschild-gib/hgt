@@ -502,6 +502,32 @@ inert constant law. Therefore “equivariant” and “marked” are not synonym
 marks accumulate by stabilizer intersection and are order-independent; reflexive dynamics begins
 only when one allocation changes the next source-generated challenge.
 
+### RLM Law XXXIV -- conservative completion makes failure hereditary
+
+A failure can generate the next legal failure without changing the represented semantic theory.
+The load-bearing law is a four-step feedback:
+
+\[
+ \text{failed overlap}
+ \longmapsto \text{semantically certified but nonexecutable repair}
+ \longmapsto \text{strict executable admission}
+ \longmapsto \text{new overlap involving the repair}.
+ \tag{RLM.10}
+\]
+
+ULF-ECMPL-1 realizes this mechanism with rules `a b^n a -> b^n a`. Every execution is
+well-founded because one `a` is deleted. Every nonempty finite rulebook is nevertheless
+nonconfluent. Its missing joining rule is already in the old generated equivalence, so adjoining it
+changes no semantic congruence; once executable, that repair overlaps the persistent seed to create
+the next marked failure. Thus object termination, completion termination, and semantic stationarity
+are three independent laws.
+
+Lean certifies the explicit hereditary peak, endpoint normality, well-founded execution,
+nonconfluence, contextual semantic conservativity, strict repair admission, and next-stage
+nonconfluence. This closes the first exact recursive-representability laboratory without a
+state-indexed oracle. The universal law remains open: characterize which certified repairs are
+least in a source-defined admissible doctrine, and reproduce the same heredity outside rewriting.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -683,9 +709,10 @@ mechanism tuple before its endpoint and predict one theorem not used to define t
 3. **Revealed-work integrability:** derive directed work from source interventions; positive work
    cycles must falsify every scalar action rather than trigger a fitted metric change.
 4. **Infinite coherence:** convergence criterion for an unbounded promotion differential tower.
-5. **Recursive representability:** make a fresh-return or admission defect generate the next legal
-   challenge and least conservative representer without a state-indexed oracle; prove whether the
-   resulting revision terminates, recurs after observation, or escapes every finite grammar.
+5. **Recursive representability beyond rewriting:** ULF-ECMPL-1 proves that a failed overlap can
+   generate a semantically conservative executable repair which creates the next failed overlap,
+   without a state-indexed oracle. Classify source-defined least repairs, admission-sensitive
+   variants, recurrent observation, and grammar escape in non-word laboratories.
 6. **Higher renormalization:** extend certified set-level relational flow to closure, completion,
    convexification, probability kernels, and cofinal observers; derive nontrivial fixed points and
    exchange laws rather than fitting deterministic selectors.
@@ -749,3 +776,7 @@ Retire RLM as theatre if:
   must export symmetry to a moving response, reduce naturality through a mark, or retain a random
   lift; invariant output is inert on complete orbits. ULF-CNM-1 Lean-certifies the deterministic
   allocation law and both sharp insufficiency cells.
+- 2026-08-10 -- added Endogenous Completion Mechanics as Law XXXIV: a failed overlap generates a
+  semantically conservative but strictly new executable repair; that repair changes the overlap
+  language and produces the next failure. ULF-ECMPL-1 Lean-certifies terminating execution,
+  stationary semantic equivalence, open completion, and hereditary nonconfluence.

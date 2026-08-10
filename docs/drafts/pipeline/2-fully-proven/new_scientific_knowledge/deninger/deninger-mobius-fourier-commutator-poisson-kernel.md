@@ -652,13 +652,30 @@ declarations: `propext, Classical.choice, Quot.sound`.
   positive ray**, by the single comparison `‖H_h(nx)‖ ≤ (C/x²)/n²`.  No cancellation in `μ` is
   used; the two-sided decay of the pullback does it alone.
 
+### The product-fibre interchange, `(25)` and `(44)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMobiusRightInverse.lean`.  Axiom audit for all
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerProductFibre_tsum` — **the interchange**: an absolutely summable family on `ℕ × ℕ`
+  vanishing on the zero product is summed by grouping along the fibres of `(m,k) ↦ mk`, each of
+  which is the divisor antidiagonal.  This is the only interchange the ray calculus needs, and it
+  is what `(25)` and `(45)` both reduce to.
+- `deningerMobiusDivisorSumInt`, `deningerMobiusDivisorSumReal`, `deningerMobiusDivisorSum` —
+  `∑_{d|N} μ(N/d) = [N = 1]` over `ℤ`, `ℝ` and `ℂ`.
+- `deningerRaySum`, `deningerMobius_rightInverse` — **`(25)`, the pointwise right inverse**:
+  `∑_{n ≥ 1} f_h(nx) = H_h(x)` for every `x > 0`.
+- `deningerMobiusLogDivisorSum` — **`(44)`**: `∑_{d|n} μ(d) log d = -Λ(n)`, by writing
+  `log d = log n - log(n/d)`; the unit detector is killed by `log n` and what is left is the
+  corpus's Möbius--log convolution.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
 unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a Fubini on a fixed
 ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
-bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(25)` and `(45)` share one missing tool — the absolutely convergent product-fibre interchange
-`∑'_{(m,k)} F(m,k) = ∑'_N ∑_{d|N} F(d, N/d)` — which is the next thing to build.  `H_∩` and `Z`
+bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(45)` now needs only the *other* convolution order, `∑_{d|N} Λ(d) μ(N/d) = -μ(N) log N`, which
+follows from `(44)` by one Möbius inversion — the interchange itself is built.  `H_∩` and `Z`
 already exist as `RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonLM`.
 
 ## Gates

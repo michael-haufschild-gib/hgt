@@ -4188,6 +4188,8 @@ import GaloisForLFunctions.RHTower.Sieve.VariationBimonotone
 import GaloisForLFunctions.RHTower.Sieve.KernelSmoothSplit
 import GaloisForLFunctions.RHTower.Sieve.ErrorShiftSum
 import GaloisForLFunctions.RHTower.Sieve.ConcaveSignSegment
+import GaloisForLFunctions.RHTower.Sieve.KernelTurningPoint
+import GaloisForLFunctions.RHTower.Sieve.KernelDiffMonotone
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6783,6 +6785,8 @@ import GaloisForLFunctions.RHTower.Sieve.VariationBimonotone
 import GaloisForLFunctions.RHTower.Sieve.KernelSmoothSplit
 import GaloisForLFunctions.RHTower.Sieve.ErrorShiftSum
 import GaloisForLFunctions.RHTower.Sieve.ConcaveSignSegment
+import GaloisForLFunctions.RHTower.Sieve.KernelTurningPoint
+import GaloisForLFunctions.RHTower.Sieve.KernelDiffMonotone
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6817,3 +6821,4 @@ import GaloisForLFunctions.RHTower.DeningerSuspendedProduct
 import GaloisForLFunctions.RHTower.DeningerCausalVonMangoldtWall
 import GaloisForLFunctions.RHTower.DeningerExpSchwartz
 import GaloisForLFunctions.RHTower.DeningerMobiusPreimage
+import GaloisForLFunctions.RHTower.DeningerMobiusRightInverse

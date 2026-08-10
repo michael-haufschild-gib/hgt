@@ -361,6 +361,33 @@ theorem classLaw_eq_map (θ : AbelianZetaConvergentParameters) :
         measure_union_le _ _
     _ = θ.toAbelianZetaParameters.gasMeasure {A.configuration} := by rw [hnull, add_zero]
 
+/-! ## The socle observable is mode-additive -/
+
+/-- **`log |soc A|` is the mode-additive functional `∑ A(m)·log p`.** -/
+theorem log_socleOrder (A : AbelianZetaGroupClass) :
+    Real.log ((A.socleOrder : ℕ) : ℝ)
+      = ∑ m ∈ A.support, (A m : ℝ) * Real.log (((m.1 : ℕ) : ℝ)) := by
+  classical
+  have hcast : ((A.socleOrder : ℕ) : ℝ)
+      = ∏ m ∈ A.support, (((m.1 : ℕ) : ℝ)) ^ (A m) := by
+    rw [AbelianZetaGroupClass.socleOrder, Finsupp.prod, Nat.cast_prod]
+    exact Finset.prod_congr rfl fun m _ => by push_cast; ring
+  rw [hcast, Real.log_prod]
+  · exact Finset.sum_congr rfl fun m _ => by rw [Real.log_pow]
+  · intro m _
+    have hp : (0 : ℝ) < ((m.1 : ℕ) : ℝ) := by exact_mod_cast m.1.2.pos
+    exact (pow_pos hp _).ne'
+
+/-- The socle observable read through the class map. -/
+theorem log_socleOrder_classOf {k : AbelianZetaMode → ℕ}
+    (hk : (Function.support k).Finite) :
+    Real.log (((classOf k).socleOrder : ℕ) : ℝ)
+      = ∑ m ∈ (classOf k).support, (k m : ℝ) * Real.log (((m.1 : ℕ) : ℝ)) := by
+  rw [log_socleOrder (classOf k)]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  have hval := classOf_of_finite hk
+  rw [congrFun hval m]
+
 end
 
 end GaloisForLFunctions.HTGeometry

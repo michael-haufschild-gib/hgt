@@ -3919,3 +3919,65 @@ quadratic enters only to supply `P(n+2) − 2P(n+1) + P(n) = −2h√x < 0`.
 The numerical assembly — instantiating `P` at the fibre kernel, checking `P(0) > 0` and the
 concavity constant, and combining the smooth and error halves — and the averaged Chowla theorem.
 Every structural ingredient is now a named unconditional theorem of this corpus.
+
+## 2026-08-10 the turning point, instantiated
+
+`Sieve/KernelTurningPoint.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9052 jobs).
+
+```text
+kernelP x h k n := x(n+k)(n+1+k) − (x + h√x)·n(n+1)
+
+kernelP_second_diff :  P(n+2) − 2P(n+1) + P(n) = −2h√x
+kernelP_concave :  0 ≤ h  →  P concave
+kernelP_zero_nonneg :  0 ≤ x  →  0 ≤ P(0)
+kernel_increment_eq :  1 ≤ n, 1 ≤ k  →
+  the smooth kernel's increment equals P(n) / (n(n+1)(n+k)(n+1+k))
+```
+
+The increment is a single quotient with a positive denominator, so its sign is the sign of `P`; `P`
+is concave with `P(0) = xk(k+1) ≥ 0`, so by `neg_of_concave_of_neg` the set where it is nonnegative
+is an initial segment.  The smooth kernel therefore increases and then decreases, which is exactly
+what `variation_le_two_range_of_bimonotone` consumes, giving variation `O(h)`.
+
+Every structural ingredient of the off-diagonal estimate is now proved:
+
+| ingredient | module |
+|---|---|
+| off-diagonal = shift sum | `SymmetricOffDiagonal`, `LowerSumAsShifts` |
+| kernel = smooth + bounded error | `KernelSmoothSplit` |
+| smooth part has one turning point | `KernelTurningPoint`, `ConcaveSignSegment` |
+| hence variation `O(h)` | `VariationBimonotone`, `VariationTruncation` |
+| Abel without monotonicity | `AbelVariation`, `WeightedCorrelation` |
+| shift sum, smooth half | `ShiftSumBound` |
+| shift sum, error half | `ErrorShiftSum` |
+
+### What remains
+
+The numerical assembly of these, and the averaged Chowla theorem.
+
+## 2026-08-10 the smooth kernel rises then falls
+
+`Sieve/KernelDiffMonotone.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9053 jobs).
+
+```text
+kernelDiff x h k n := (x + h√x)/(n+k) − x/n
+
+kernelDiff_increment_eq :  the increment is kernelP over a positive denominator
+kernel_increment_den_pos :  that denominator is positive
+kernelDiff_mono_of_nonneg :  0 ≤ kernelP  →  kernelDiff rises
+kernelDiff_anti_of_nonpos :  kernelP ≤ 0  →  kernelDiff falls
+```
+
+With `neg_of_concave_of_neg` making `{n : kernelP ≥ 0}` an initial segment, these two say exactly
+that `kernelDiff` rises and then falls — the hypothesis pair of
+`variation_le_two_range_of_bimonotone`, whose conclusion gives the smooth kernel variation `O(h)`.
+
+The off-diagonal apparatus is complete: every step from the bilinear form to a weighted sum of
+correlations, and every property of the weight that the weighting requires, is a named unconditional
+theorem of this corpus.
+
+### What remains
+
+The numerical assembly, and the averaged Chowla theorem.

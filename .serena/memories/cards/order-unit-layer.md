@@ -36,3 +36,14 @@ NEXT: completely positive / completely order isomorphic maps between
 matrix-ordered spaces, then matricial (complete) boundary ideals bridging to
 `ShilovLocalBoundaryIdeal`. Do NOT try "level-1 Archimedean ⇒ level-n
 Archimedean"; there is no compression proof.
+
+## Level norms done (2026-08-10)
+
+`HTGeometry/OperatorSystemLevelNorm.lean`: `levelNorm` (order-unit bound at each
+matrix level), subadditive, positively homogeneous, contractive under isometric
+compressions, and `levelNorm_fromBlocks : ‖x ⊕ y‖ = max ‖x‖ ‖y‖` — Ruan's
+direct-sum axiom, proved from `blockDiagonal_mem` plus contractivity along
+`inclLeft`/`inclRight`.
+
+The amplification is `amplifyUnit` (renamed from `amplify` by a concurrent
+session to avoid an umbrella collision).

@@ -439,9 +439,29 @@ significance are unverified. No abstract novelty claim is made.
 
 ## Lean-return note
 
-No Lean work authorized. Corpus already formalizes all literal inputs. Later target is finite
-homological wrapper: cone closed/nonboundary class, relative characters, absolute-factor no-go,
-and stabilization countermodel. Search existing mapping-cone modules before selecting files.
+Formalized, unconditionally, in
+`formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/RouteRConeCharacter.lean` (on the
+ℤ-graded cochain/mapping-cone layer of `RelativeConeExactness.lean`):
+
+- `(RRC.5)`–`(RRC.6)` — `RouteRSource`, `D₀`, `D₁`, `D₁_comp_D₀`, `complex`;
+- `(RRC.7)` — `eta`, `eta_mem_cocycles`, and `eta_class_ne_zero` (`[η] ≠ 0` is forced by the
+  regulator axiom, not assumed);
+- `(RRC.8)`–`(RRC.9)` — `regulator`, `regulator_comp_D₀`, `regulator_eta`, `regulatorBar`,
+  `regulatorBar_eta`;
+- `(RRC.10)`–`(RRC.11)` — `exactifyComplex`, `exactifyMap`, `exactifyPrimitive`,
+  `exactify_comm_eta`: the resolved complex and strict comparison are **constructed** as the
+  universal exactification `δ₀(x,λ) = D₀x + λη`, so `Φ¹η = δ₀L` holds with `L = (0,1)` and nothing
+  is hypothesised;
+- `(RRC.12)` — `ellOnePrimes`, `physicalQuotient`;
+- `(RRC.13)` — `physChar`, `forwardPhysChar`, `reflectedPhysChar`;
+- `(RRC.14)` — `eulerProfile`, `eulerClass`, `eulerClass_ne_zero_iff` (`[F_t] ≠ 0 ↔ 0 ≤ t`),
+  `exactify_forward_ne_zero_iff`, `exactify_reflected_ne_zero_iff`, `exactify_both_ne_zero_iff`;
+- `(RRC.26)`–`(RRC.31)` — `sourceCharacter`, `coneCharacter`, `coneCharacter_coneInc`,
+  `coneCharacterRel`, `coneCharacterRel_eq`, `coneCharacter_retained`,
+  `exactify_forward_value`, `exactify_reflected_value`.
+
+Still on paper only: Theorems A–D (§2–§5), the countertheorem (§7), and the exact positive
+survivor (§8).  The card therefore stays in stage 2.
 
 ## Gates
 

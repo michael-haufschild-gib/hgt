@@ -116,6 +116,12 @@ What else exists and must not be rebuilt:
 
 ## Log
 
+- 2026-08-10 — Built the product-fibre interchange and the pointwise Möbius right inverse
+  (`RHTower/DeningerMobiusRightInverse`).  The interchange is cleanest as a *sigma decomposition*:
+  the map `⟨N, q ∈ N.divisorsAntidiagonal⟩ ↦ q` is injective with range the nonzero-product locus,
+  so `Function.Injective.tsum_eq` plus `Summable.tsum_sigma` does it — no fibrewise-summation
+  machinery.  Shifting the outer index by one (`(n,k) ↦ (n+1,k)`) avoids needing `tsum_eq_zero_add`
+  and its extra summability side condition.
 - 2026-08-10 — Built the canonical Möbius preimage (`RHTower/DeningerMobiusPreimage`).  The point
   is that absolute convergence on a ray needs no cancellation in `μ` at all: pulling back along
   `log` turns the exponential weight into two-sided power decay, and the inverse-square half alone

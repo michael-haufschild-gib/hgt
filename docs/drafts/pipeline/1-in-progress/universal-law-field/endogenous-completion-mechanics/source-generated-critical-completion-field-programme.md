@@ -7,7 +7,7 @@
   syntax so that its overlap with an old law source-generates the next failure.  The field target
   is a calculus of this feedback, not another obstruction object.
 - **Status:** [MECHANISM NOT OBJECT] [ROUTES EXCLUDED FROM FOUNDATIONS]
-  [THREE FAILED PRECURSORS] [FINITE WORD LABORATORY UNDER PROOF] [NOT RH]
+  [THREE FAILED PRECURSORS] [FINITE WORD LABORATORY LEAN-CERTIFIED] [NOT RH]
 
 ## 1. Frontier forcing
 
@@ -216,3 +216,7 @@ Retire this line as insufficient if any occurs:
 - 2026-08-10 -- opened from the current RH frontier's common producer deficit; diagonal, fixed
   promoter, and bare spectral-page candidates attacked before freezing the critical-completion
   survivor.
+- 2026-08-10 -- ULF-ECMPL-1 paper-proved and Lean-certified clauses 1--5: terminating execution,
+  endpoint normality, nonconfluence, semantic conservativity, strict repair admission, and
+  hereditary next-stage failure. Infinite-union confluence was deliberately excluded from the
+  capstone; second non-rewriting realization remains the field gate.

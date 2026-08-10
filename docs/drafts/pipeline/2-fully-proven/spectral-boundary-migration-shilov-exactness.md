@@ -1853,3 +1853,30 @@ system dense in its stage envelope) and the C*-envelope/Hamana layer.
 - `isCompletelyPositive_iff_le_comap`: complete positivity of `φ` is exactly
   the statement that the source ordering refines the pullback of the target
   ordering.
+
+### The order-unit norms of the matrix levels (same day)
+
+`HTGeometry/OperatorSystemLevelNorm.lean`, axiom-clean and in the umbrella,
+defines
+
+```text
+levelNorm C e n x = inf {t > 0 : t · (1ₙ ⊗ e) ± x positive at level n}
+```
+
+and proves it is a genuine matricial seminorm system:
+
+- `levelBounds_nonempty` (from `isMatrixOrderUnit_of_levelOne`),
+  `levelBounds_upward`, `levelNorm_nonneg`, `levelNorm_le_of_mem`;
+- `levelNorm_add_le` — subadditivity;
+- `levelNorm_smul` — positive homogeneity;
+- `levelNorm_compress_le` — **compression by an isometry `α*α = 1` is
+  contractive**;
+- `levelNorm_fromBlocks` — **`‖x ⊕ y‖ = max ‖x‖ ‖y‖`**, Ruan's direct-sum
+  axiom.  The `≤` half is closure of the cones under direct sums; the `≥` half
+  is contractivity along the two coordinate isometries `inclLeft`, `inclRight`.
+
+So a matrix ordering with a positive scalar-level order unit already carries the
+matricial norm structure of an operator system, with no extra axiom beyond the
+scalar level.
+
+Naming note: the amplification `1ₙ ⊗ e` is `amplifyUnit` in the tree.

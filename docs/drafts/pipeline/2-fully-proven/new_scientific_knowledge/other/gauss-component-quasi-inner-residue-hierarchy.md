@@ -893,3 +893,31 @@ G(e_n f) = p |d_n|² e_n ( b · R_(δ)^(-1)( b^(-2) · R_(δ)(b f) ) + o(1) )
 
 the last equality because `R_δ` is translation by `δ` and `b² = s_p`, so
 `b · (b^(-2) ∘ shift)(b f) = s_p/s_p(·+δ) · f = a_δ f`.
+
+## Lean status, seventeenth pass: the rotation is translation
+
+`RHTower/GaussRotationIsTranslation.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+gaussTranslationBlock δ                : translation by δ on L²(R/Z), a linear isometry
+coeFn_gaussTranslationBlock            : it acts by u ↦ u(· - δ)
+fourierCoeff_gaussTranslationBlock     : its coefficients are e_(-j)(δ)·û(j)
+gaussRotationBlock_eq_translation      : R_δ = translation by δ
+gaussRotationBlockInv_eq_translation   : R_δ^(-1) = translation by -δ
+```
+
+Translation is measure preserving on the circle (`measurePreserving_sub_right` for the Haar
+probability measure), so `Lp.compMeasurePreservingₗᵢ` supplies the isometry; its Fourier
+coefficients are computed by the corpus's `fourierCoeff_comp_sub`, and injectivity of
+`fourierBasis.repr` identifies it with the multiplier.
+
+This is the bridge the one-step action needs: equation (9) is *proved* coefficientwise, but §4
+composes its conclusion with the multiplication operators `B` and `B^(-2)`, which requires the
+moving target in pointwise form.
+
+### Remaining
+
+The composition itself: chaining
+`(conj d_n)^(-1) e_(-n) D* (e_n ·) → T_(δ_n)` and `(d_n)^(-1) e_(-n) D (e_n ·) → T_(δ_n)^(-1)`
+through `B`, `B^(-2)`, `B` to obtain (10), and then its `m`-fold iterate (11).
