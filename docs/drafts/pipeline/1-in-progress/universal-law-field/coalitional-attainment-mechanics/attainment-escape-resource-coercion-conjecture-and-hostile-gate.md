@@ -209,9 +209,10 @@ Intended field residue is their coupled interpretation as a law-production mecha
 - [x] conjecture frozen before proof search;
 - [x] internal closure-trichotomy collision identified;
 - [x] external infinite-oriented-matroid and Farkas boundaries identified;
-- [ ] dependency-closed proof of Conjectures A--C;
-- [ ] countermodel and sharpness audit;
-- [ ] paper promotion;
+- [x] dependency-closed proof of Conjectures A--C;
+- [x] countermodel and sharpness audit;
+- [x] paper promotion:
+  `../../../2-fully-proven/universal-law-field/coalitional-attainment-mechanics/coalitional-attainment-universal-escape-and-reciprocal-pricing-law.md`;
 - [ ] Lean certification after paper promotion only;
 - [ ] second nonisomorphic corpus calibration.
 

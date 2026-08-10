@@ -108,32 +108,26 @@ theorem gen_pow (i : M) (n : ℕ) : gen i ^ n = ⟨Finsupp.single i n, 0⟩ := b
   | zero => refine GasWord.ext ?_ ?_ <;> simp [gen]
   | succ m ih =>
     rw [pow_succ, ih]
-    refine GasWord.ext ?_ ?_ <;> refine Finsupp.ext fun j => ?_
-    · rw [raise_apply_mul]
-      by_cases hij : i = j
-      · subst hij
-        simp [gen]
-      · simp only [gen, Finsupp.single_apply, if_neg hij, Finsupp.coe_zero, Pi.zero_apply]
-        omega
-    · rw [lower_apply_mul]
-      simp [gen]
+    refine GasWord.ext ?_ ?_
+    · rw [mul_raise]
+      show Finsupp.single i m + (Finsupp.single i 1 - (0 : M →₀ ℕ)) = Finsupp.single i (m + 1)
+      rw [tsub_zero, ← Finsupp.single_add]
+    · rw [mul_lower]
+      show (0 : M →₀ ℕ) + ((0 : M →₀ ℕ) - Finsupp.single i 1) = 0
+      simp
 
 theorem cogen_pow (i : M) (n : ℕ) : cogen i ^ n = ⟨0, Finsupp.single i n⟩ := by
   induction n with
   | zero => refine GasWord.ext ?_ ?_ <;> simp [cogen]
   | succ m ih =>
     rw [pow_succ, ih]
-    refine GasWord.ext ?_ ?_ <;> refine Finsupp.ext fun j => ?_
-    · rw [raise_apply_mul]
-      simp [cogen]
-    · rw [lower_apply_mul]
-      by_cases hij : i = j
-      · subst hij
-        simp only [cogen, Finsupp.single_eq_same, Finsupp.coe_zero, Pi.zero_apply,
-          Nat.sub_zero]
-        omega
-      · simp only [cogen, Finsupp.single_apply, if_neg hij, Finsupp.coe_zero, Pi.zero_apply]
-        omega
+    refine GasWord.ext ?_ ?_
+    · rw [mul_raise]
+      show (0 : M →₀ ℕ) + ((0 : M →₀ ℕ) - Finsupp.single i m) = 0
+      simp
+    · rw [mul_lower]
+      show Finsupp.single i 1 + (Finsupp.single i m - (0 : M →₀ ℕ)) = Finsupp.single i (m + 1)
+      rw [tsub_zero, ← Finsupp.single_add, Nat.add_comm]
 
 theorem block_eq (i : M) (a b : ℕ) : block i a b = gen i ^ a * cogen i ^ b := by
   rw [gen_pow, cogen_pow, block]
@@ -157,12 +151,12 @@ theorem eq_block_mul_erase (i : M) (x : GasWord M) :
     by_cases hij : j = i
     · subst hij
       simp [block]
-    · simp [block, Finsupp.single_apply, hij, Finsupp.erase_ne hij]
+    · simp [block, hij, Finsupp.erase_ne hij]
   · rw [lower_apply_mul]
     by_cases hij : j = i
     · subst hij
       simp [block]
-    · simp [block, Finsupp.single_apply, hij, Finsupp.erase_ne hij]
+    · simp [block, hij, Finsupp.erase_ne hij]
 
 theorem disjoint_block_erase (i : M) (x y : GasWord M) :
     ∀ j, ((block i (x.raise i) (x.lower i)).raise j = 0
@@ -172,8 +166,8 @@ theorem disjoint_block_erase (i : M) (x y : GasWord M) :
   by_cases hij : j = i
   · subst hij
     exact Or.inr ⟨by simp, by simp⟩
-  · exact Or.inl ⟨by simp [block, Finsupp.single_apply, hij],
-      by simp [block, Finsupp.single_apply, hij]⟩
+  · exact Or.inl ⟨by simp [block, hij],
+      by simp [block, hij]⟩
 
 /-! ## The charge -/
 

@@ -1027,6 +1027,81 @@ module builds green (8 917 jobs).  **Theorem 6.1 is closed**: continuation, (GAS
 item 2 (Corollary 3.2 plus the certified translation-divisor layer of ULF-EQG-1) and now item 1's
 accumulation and natural-boundary claims.
 
+### Theorem 4.1 (KMS) — the monomial monoid and the exchange identity
+
+The card's proof of Theorem 4.1 never leaves the dense monomial `*`-algebra: existence is a product
+of per-mode geometric states on elementary tensors, and uniqueness is a three-step computation on
+monomials `∏_i V_i^{m_i}(V_i^*)^{n_i}`.  That algebra has an exact algebraic model — no C\*-norm, no
+completion, no analytic continuation of the flow: it is the monoid algebra of the restricted direct
+sum of bicyclic monoids, and the imaginary-time flow `α_{iσ}` is the algebra automorphism scaling
+each generator by its weight.  Formalising Theorem 4.1 in that model is what the two modules below
+begin.
+
+#### The monomial monoid
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasWord.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+A monomial is a pair of finitely supported exponent families, and multiplying two of them contracts
+the inner block through `(V^*)^b V^{b'} = (V^*)^{b - b'} V^{b' - b}` — the bicyclic law, applied
+mode by mode.  Every identity below is proved pointwise, where `omega` decides the truncated
+subtraction.
+
+| Clause | Lean |
+|---|---|
+| the monomial `∏_i V_i^{raise i}(V_i^*)^{lower i}` | `GasWord` |
+| **the contraction law is a monoid** | **`GasWord.instMonoid`** |
+| the generators and their powers | `gen`, `cogen`, `gen_pow`, `cogen_pow` |
+| **the isometry relation `V_i^* V_i = 1`** | **`cogen_mul_gen`** |
+| the one-mode block and its factorisation | `block`, `block_eq`, `mk_eq_mul` |
+| **words on disjoint mode sets commute** | **`mul_comm_of_disjoint`** |
+| **peeling one mode off a word** | **`eq_block_mul_erase`**, `disjoint_block_erase` |
+| the charge `raise − lower` in `ℤ` | `charge`, `charge_apply` |
+| **the charge is additive** | **`charge_mul`**, `charge_one` |
+| a word is diagonal exactly when its charge vanishes | `charge_eq_zero_iff` |
+
+#### The exchange identity
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/KMSExchange.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The KMS boundary condition enters only as the algebraic exchange identity
+`φ(ab) = φ(b·σ(a))` of `ULF-IPKMS-1` (Theorem 2.1 there), which the corpus already carries for a
+single mode.  Its two multi-mode consequences — exactly the two steps of the card's uniqueness
+argument — are:
+
+| Clause | Lean |
+|---|---|
+| **step 2: a mode with nonzero net charge kills the monomial** | **`kms_eq_zero_of_commuting`**, `kms_pow_eq_zero_of_commuting` |
+| **step 3: a diagonal block peels off with the factor `qⁿ`** | **`kms_diagonal_step`** |
+
+Both are stated for an arbitrary `ℂ`-algebra with an algebra endomorphism `σ` scaling the isometry,
+so they apply verbatim to the monoid algebra of `GasWord` once the twist is built.  Axiom prints:
+`propext`, `Classical.choice`, `Quot.sound` only; both modules build green (8 658 jobs).
+
+**What remains of Theorem 4.1.**  In order:
+
+1. *The twist.*  The character `χ(x) = ∏_i q_i^{charge x i}` is a monoid homomorphism
+   `GasWord M → ℂˣ` (this is `charge_mul` plus `zpow`), so `MonoidAlgebra.lift` turns it into the
+   algebra automorphism `σ` with `σ(V_i) = q_i · V_i`.
+2. *The Gibbs functional.*  `φ = Finsupp.linearCombination ℂ ω` with
+   `ω x = if x.raise = x.lower then ∏_i q_i^{x.raise i} else 0`.  The exchange identity
+   `φ(xy) = φ(y σ(x))` is then a purely combinatorial check on pairs of words: both sides vanish
+   unless the total charge is zero, and when it is, the identity reduces to
+   `n' + (n − m')⁺ = m + (n' − m)⁺`, which follows from `m + m' = n + n'` — `omega` territory.
+   This is the **existence** half, and it holds for every `σ > 0`: no convergence enters, because
+   the monomial algebra is the algebraic (not the C\*) tensor product.
+3. *Uniqueness.*  Induct on `x.raise.support ∪ x.lower.support` with `eq_block_mul_erase`: at each
+   step either the peeled block is off-diagonal, and `kms_eq_zero_of_commuting` kills the word, or
+   it is diagonal, and `kms_diagonal_step` extracts `q_i^{n_i}`.  `mul_comm_of_disjoint` supplies
+   the commutation hypothesis both lemmas need.
+4. *Scope.*  What this certifies is Theorem 4.1 on the dense monomial `*`-algebra — which is where
+   the card's proof lives.  Extending it to the C\*-completion is a separate analytic wrapper
+   (continuity of the state and density of the monomials), and the operator-algebraic clause of
+   (GAS.11) — that `δ_d` induces `ι_d` with `α_t ∘ ι_d = ι_d ∘ α_{dt}` — is immediate on the
+   monomial algebra once step 1 is in place, since `δ_d` is already certified as an injective
+   depth map.
+
 ### The gas-expectation layer — the single-mode atom (DONE)
 
 `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/ModeExpectation.lean` (wired into

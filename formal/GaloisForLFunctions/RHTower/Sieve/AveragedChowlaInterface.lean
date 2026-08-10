@@ -46,6 +46,18 @@ theorem abs_correlation_le_length {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) (k
   refine le_trans (Finset.sum_le_card_nsmul _ _ 1 hterm) ?_
   rw [nsmul_eq_mul, Finset.card_range, mul_one]
 
+/-- A window law with `h/√x → 0` is eventually below every fixed multiple of `√x`. -/
+theorem eventually_le_const_mul_sqrt {hh : ℝ → ℝ}
+    (hsmall : Tendsto (fun x => hh x / Real.sqrt x) atTop (𝓝 0)) {c : ℝ} (hc : 0 < c) :
+    ∀ᶠ x : ℝ in atTop, hh x ≤ c * Real.sqrt x := by
+  filter_upwards [Metric.tendsto_nhds.1 hsmall c hc, Filter.eventually_gt_atTop (0 : ℝ)]
+    with x hx hx0
+  have hs : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
+  rw [Real.dist_eq, sub_zero] at hx
+  have hlt := (abs_lt.1 hx).2
+  rw [div_lt_iff₀ hs] at hlt
+  linarith
+
 /-- **The reduction's input follows from the averaged Chowla theorem.** -/
 theorem uniformCorrelationSmall_of_averagedChowla {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1)
     {hh : ℝ → ℝ} (hgrow : Tendsto hh atTop atTop)
@@ -55,24 +67,11 @@ theorem uniformCorrelationSmall_of_averagedChowla {f : ℕ → ℝ} (hf : ∀ n,
   intro ε hε
   obtain ⟨H₀, Y₀, hbound⟩ := hAC (ε / 3) (by linarith)
   -- the window is eventually below `ε√x` and below `√x`
-  have hcapε : ∀ᶠ x : ℝ in atTop, hh x ≤ ε * Real.sqrt x := by
-    have hlt : ∀ᶠ x : ℝ in atTop, |hh x / Real.sqrt x| < ε := by
-      filter_upwards [Metric.tendsto_nhds.1 hsmall ε hε] with x hx
-      simpa [Real.dist_eq] using hx
-    filter_upwards [hlt, Filter.eventually_gt_atTop (0 : ℝ)] with x hx hx0
-    have hs : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
-    have := (abs_lt.1 hx).2
-    rw [div_lt_iff₀ hs] at this
-    linarith
+  have hcapε : ∀ᶠ x : ℝ in atTop, hh x ≤ ε * Real.sqrt x :=
+    eventually_le_const_mul_sqrt hsmall hε
   have hcap1 : ∀ᶠ x : ℝ in atTop, hh x ≤ Real.sqrt x := by
-    have hlt : ∀ᶠ x : ℝ in atTop, |hh x / Real.sqrt x| < 1 := by
-      filter_upwards [Metric.tendsto_nhds.1 hsmall 1 (by norm_num)] with x hx
-      simpa [Real.dist_eq] using hx
-    filter_upwards [hlt, Filter.eventually_gt_atTop (0 : ℝ)] with x hx hx0
-    have hs : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
-    have := (abs_lt.1 hx).2
-    rw [div_lt_iff₀ hs] at this
-    linarith
+    have := eventually_le_const_mul_sqrt hsmall (c := 1) (by norm_num)
+    simpa using this
   have hY0 : ∀ᶠ x : ℝ in atTop, (Y₀ : ℝ) ≤ ε * Real.sqrt x := by
     have := Real.tendsto_sqrt_atTop.const_mul_atTop hε
     exact this.eventually_ge_atTop _
@@ -131,14 +130,8 @@ theorem MRBilinear_moebius_of_averagedChowla {hh : ℝ → ℝ} (hgrow : Tendsto
     (hAC : AveragedChowlaUniform (fun i => ((μ (i + 1) : ℤ) : ℝ))) :
     MRBilinear (fun n : ℕ => ((μ n : ℤ) : ℝ)) hh := by
   have hcap : ∀ᶠ x in atTop, hh x ≤ Real.sqrt x := by
-    have hlt : ∀ᶠ x : ℝ in atTop, |hh x / Real.sqrt x| < 1 := by
-      filter_upwards [Metric.tendsto_nhds.1 hsmall 1 (by norm_num)] with x hx
-      simpa [Real.dist_eq] using hx
-    filter_upwards [hlt, Filter.eventually_gt_atTop (0 : ℝ)] with x hx hx0
-    have hs : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.2 hx0
-    have := (abs_lt.1 hx).2
-    rw [div_lt_iff₀ hs] at this
-    linarith
+    have := eventually_le_const_mul_sqrt hsmall (c := 1) (by norm_num)
+    simpa using this
   exact MRBilinear_moebius_of_uniformCorrelations hgrow hcap
     (uniformCorrelationSmall_of_averagedChowla abs_moebius_real_le_one hgrow hsmall hAC)
 

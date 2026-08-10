@@ -29,7 +29,7 @@
 
 ## Batch state, verified 2026-08-10
 
-55 modules under `RHTower/Deninger*`, 656 declarations, **0** `sorry`/`admit`/`axiom`/`opaque`/
+57 modules under `RHTower/Deninger*`, 656 declarations, **0** `sorry`/`admit`/`axiom`/`opaque`/
 `unsafe`, **0** name collisions against the rest of the tree, **0** duplicate imports in
 `RHTower.lean`.  Every module builds individually with zero errors; every audited declaration is
 `[propext, Classical.choice, Quot.sound]`.
@@ -40,6 +40,14 @@ this batch (it references none of the renamed names).  Re-check that file before
 here.
 
 ## Reusable infrastructure now available
+
+- `RHTower/DeningerAbelSummation` — **Abel summation as a finite identity**,
+  `∑_{n ≤ N} a_n f_n = A_N f_N + ∑_{n < N} A_n (f_n - f_{n+1})`.  Every Abel argument in the Möbius
+  calculus (the preimage estimate, the harmonic series, the Dirichlet series) is this identity
+  followed by a limit; it had been hand-rolled inline three times before being factored out.
+- `RHTower/DeningerAbelianLimit` — the **Abelian limit theorem**, `b_n → S ⟹ ∑ b_n w_σ(n) → S` as
+  `σ ↓ 0`, with the weight layer `RHTower/DeningerAbelianTelescope` and
+  `RHTower/DeningerAbelAverage`.  mathlib has no version of this.
 
 - `DeningerLattice = Nat.Primes →₀ ℤ`, `deningerHeight`, `deningerFreq`, with
   `deningerHeight_add_le`, `deningerHeight_nsmul`, `deningerHeight_inv_le_abs_freq`,

@@ -1164,3 +1164,35 @@ This is the mechanism by which an `L²` error survives the one-step estimate: it
 
 Assembling (10) — combining the exact factorization, the telescope, these two taming bounds, and
 the two uniform one-step limits — and then (11), the `m`-fold iterate with amplitude `a_(δ_n)^r`.
+
+## Lean status, twenty-seventh pass: the one-step error bound (10)
+
+`RHTower/GaussOneStepEstimate.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+gaussShiftedBlockDiag_sub                       : the normalized block is additive
+norm_gaussQuasiInnerG_sub_movingAmplitude_le    :
+  ‖G(e_n f) - (p conj(d_n) d_n) e_n (a_(δ_n) f)‖
+    ≤ √p ( p |d_n| M ‖S*(Bf) - T_(δ_n)(Bf)‖
+         + p |d_n| M ‖S(w') - T_(δ_n)^(-1)(w')‖ ),      w' = B^(-2) T_(δ_n) (B f)
+```
+
+This is **equation (10) with an explicit error**, assembled from four exact ingredients:
+
+* `gaussQuasiInnerG_fourierMulBlock` — the factorization of `G` through the two normalized blocks;
+* `gaussPrimeScaleBlock_translate_invSq_translate` — the telescope `B T^(-1) B^(-2) T B = M_(a_δ)`;
+* `norm_smul_gaussShiftedBlockDiag_le` — the scalar taming, applied to the difference `w - w'`;
+* `‖B‖ ≤ √p`, `‖B^(-2)‖ ≤ 1`, `‖e_n ·‖ ≤ 1`.
+
+The two right-hand errors are *exactly* the quantities that
+`tendsto_norm_gaussShiftedBlockOf_sub_rotation` and
+`tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv` send to zero (after
+`gaussRotationBlock_eq_translation`), and each is multiplied by `p |d_n| M`, which is bounded.  So
+(10) itself follows from this bound the moment the two amplitudes `B f` and `w'` are known to carry
+a decay constant — which is what the piecewise-exponential class supplies.
+
+### Remaining
+
+Instantiating the two decay constants from `IsExpPiecewise`, giving (10) as a limit, and then (11),
+the `m`-fold iterate with amplitude `a_(δ_n)^r`.

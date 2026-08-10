@@ -4213,6 +4213,7 @@ import GaloisForLFunctions.RHTower.Sieve.FibreWindowVanish
 import GaloisForLFunctions.RHTower.Sieve.FibreIncrementWindow
 import GaloisForLFunctions.RHTower.Sieve.OffDiagonalUniformBound
 import GaloisForLFunctions.RHTower.Sieve.MRFromUniformCorrelations
+import GaloisForLFunctions.RHTower.Sieve.AveragedChowlaInterface
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6827,6 +6828,7 @@ import GaloisForLFunctions.RHTower.Sieve.FibreWindowVanish
 import GaloisForLFunctions.RHTower.Sieve.FibreIncrementWindow
 import GaloisForLFunctions.RHTower.Sieve.OffDiagonalUniformBound
 import GaloisForLFunctions.RHTower.Sieve.MRFromUniformCorrelations
+import GaloisForLFunctions.RHTower.Sieve.AveragedChowlaInterface
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6883,3 +6885,5 @@ import GaloisForLFunctions.RHTower.DeningerMobiusHarmonic
 import GaloisForLFunctions.RHTower.DeningerAbelianTelescope
 import GaloisForLFunctions.RHTower.DeningerAbelAverage
 import GaloisForLFunctions.RHTower.DeningerAbelianLimit
+import GaloisForLFunctions.RHTower.DeningerAbelSummation
+import GaloisForLFunctions.RHTower.DeningerHarmonicPartial

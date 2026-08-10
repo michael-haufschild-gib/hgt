@@ -545,6 +545,22 @@ theorem exactify_both_ne_zero_iff {cρ : ℂ} (hc : cρ ≠ 0) (t : ℝ) :
       ↔ t = 0 :=
   retained_values_both_ne_zero_iff S S.exactifyMap hc t ⟨_, S.exactify_cone_cocycle⟩ rfl
 
+/-- **Card `§6`, boxed reading.**  At the divisor parameter `t_ρ = 2 Re ρ − 1` the forward and
+reflected physical values of the relative cone class are simultaneously nonzero exactly when `ρ`
+lies on the critical line.  This is the card's RH-equivalence statement made literal: it fixes what
+"simultaneous nonvanishing on the distinguished retained class" says about `ρ`, and proves nothing
+about which `ρ` occur. -/
+theorem exactify_both_ne_zero_iff_critical {cρ : ℂ} (hc : cρ ≠ 0) (ρ : ℂ) :
+    (coneCharacter S.exactifyMap (-1) (S.forwardPhysChar cρ (2 * ρ.re - 1))
+        (fun b => S.physChar_comp_D₀ cρ (eulerClass (-(2 * ρ.re - 1))) b) S.exactifyConeClass ≠ 0
+      ∧ coneCharacter S.exactifyMap (-1) (S.reflectedPhysChar cρ (2 * ρ.re - 1))
+        (fun b => S.physChar_comp_D₀ cρ (eulerClass (2 * ρ.re - 1)) b) S.exactifyConeClass ≠ 0)
+      ↔ ρ.re = 1 / 2 := by
+  rw [exactify_both_ne_zero_iff S hc (2 * ρ.re - 1)]
+  constructor
+  · intro h; linarith
+  · intro h; rw [h]; ring
+
 end RouteRSource
 
 end Exactification

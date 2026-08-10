@@ -888,6 +888,24 @@ This is the general Abelian machinery `(15)` needs, built from nothing: the weig
 probability weight so the tail costs at most `ε`, and the head is a finite sum of terms each
 vanishing with the exponent.
 
+### Section 2 — the harmonic partial sums as an Abel input `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerHarmonicPartial.lean`,
+`DeningerAbelSummation.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerAbelSummation` — Abel summation as a finite identity,
+  `∑_{n ≤ N} a_n f_n = A_N f_N + ∑_{n < N} A_n (f_n - f_{n+1})`.
+- `deningerHarmonicPartial`, `deningerHarmonicLimit`, `deningerHarmonicPartial_bounded` — the
+  partial sums `A_N = ∑_{n ≤ N} μ(n)/n`, their limit, and their boundedness.
+- `deningerHarmonicBoundary_tendsto_zero` — **the Abel boundary term `A_N N^{-σ}` vanishes** for
+  every `σ > 0`.
+- `deningerHarmonicShift_tendsto`, `deningerHarmonicAbel_tendsto` — **the Abel average of the
+  partial sums converges to their limit**, i.e. the Abelian theorem applied to this sequence.
+
+So the right-hand side of `(15)` is fully in place.  What is left is the identification of
+`∑ μ(n) n^{-1-σ}` with that Abel average — Abel summation plus the vanishing boundary term — and
+then `1/ζ(1+σ) → 0` from the pole, which forces the limit to be `0`.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
