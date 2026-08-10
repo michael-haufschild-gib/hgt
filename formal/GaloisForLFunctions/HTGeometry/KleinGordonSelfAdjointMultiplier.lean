@@ -29,18 +29,12 @@ section SelfAdjoint
 
 variable {φ : E → ℂ} {C : ℝ}
 
-set_option maxHeartbeats 1000000 in
 /-- **Multiplication by a real-valued bounded symbol is self-adjoint on `L²`.** -/
 theorem lpBoundedMulCLM_inner (hφ : Measurable φ) (hC0 : 0 ≤ C) (hC : ∀ ξ, ‖φ ξ‖ ≤ C)
     (hreal : ∀ ξ : E, (starRingEnd ℂ) (φ ξ) = φ ξ) (f g : Lp ℂ 2 (volume : Measure E)) :
     (inner ℂ (lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hφ hC0 hC f) g : ℂ)
-      = inner ℂ f (lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hφ hC0 hC g) := by
-  rw [MeasureTheory.L2.inner_def, MeasureTheory.L2.inner_def]
-  refine integral_congr_ae ?_
-  filter_upwards [lpBoundedMulCLM_coeFn (p := 2) (μ := (volume : Measure E)) hφ hC0 hC f,
-    lpBoundedMulCLM_coeFn (p := 2) (μ := (volume : Measure E)) hφ hC0 hC g] with x h1 h2
-  rw [h1, h2, RCLike.inner_apply', RCLike.inner_apply', map_mul, hreal]
-  ring
+      = inner ℂ f (lpBoundedMulCLM (p := 2) (μ := (volume : Measure E)) hφ hC0 hC g) :=
+  MeasureTheory.lpBoundedMulCLM_inner_real hφ hC0 hC hreal f g
 
 set_option maxHeartbeats 1000000 in
 /-- **A Fourier multiplier with a real symbol is self-adjoint on `L²`.** -/

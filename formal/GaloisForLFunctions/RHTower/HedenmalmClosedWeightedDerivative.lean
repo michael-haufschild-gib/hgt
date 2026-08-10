@@ -225,7 +225,7 @@ theorem hasDerivAt_smoothCenteredPrimitive {h : ℝ → ℂ}
   have hIic : HasDerivAt (fun y => ∫ z in Iic y, h z) (h x) x := by
     refine hsum.congr_of_eventuallyEq ?_
     filter_upwards with y
-    exact (integral_Iic_eq_const_add_interval hInt y).symm
+    exact integral_Iic_eq_const_add_interval hInt y
   exact hIic.const_mul Complex.I
 
 theorem smoothCenteredPrimitive_smooth {h : ℝ → ℂ}
@@ -245,24 +245,27 @@ theorem smoothCenteredPrimitive_compact {h : ℝ → ℂ}
   obtain ⟨R, hRpos, hR⟩ := hhs.isCompact.isBounded.subset_closedBall_lt (0 : ℝ) 0
   have hzero_of_lt_neg {x : ℝ} (hx : x < -R) : h x = 0 := by
     by_contra hne
-    have hxball := hR (subset_tsupport hne)
+    have hxsupp : x ∈ Function.support h := hne
+    have hxball := hR ((subset_tsupport (f := h)) hxsupp)
     rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, Real.norm_eq_abs] at hxball
     have : R < |x| := by rw [abs_of_neg (hRpos.neg.trans hx)]; linarith
     linarith
   have hzero_of_gt {x : ℝ} (hx : R < x) : h x = 0 := by
     by_contra hne
-    have hxball := hR (subset_tsupport hne)
+    have hxsupp : x ∈ Function.support h := hne
+    have hxball := hR ((subset_tsupport (f := h)) hxsupp)
     rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, Real.norm_eq_abs,
       abs_of_pos (hRpos.trans hx)] at hxball
     linarith
   have hInt : Integrable h := hh.continuous.integrable_of_hasCompactSupport hhs
-  apply (isCompact_closedBall (0 : ℝ) R).of_isClosed_subset isClosed_tsupport
-  apply closure_minimal _ isClosed_closedBall
+  apply (isCompact_closedBall (0 : ℝ) R).of_isClosed_subset (isClosed_tsupport _)
+  apply closure_minimal _ Metric.isClosed_closedBall
   intro x hx
   by_contra hxball
   have hxabs : R < |x| := by
-    rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, Real.norm_eq_abs] at hxball
-    exact lt_of_not_ge hxball
+    have hxball' : ¬ |x| ≤ R := by
+      simpa [Metric.mem_closedBall, Real.dist_eq, sub_zero, Real.norm_eq_abs] using hxball
+    exact lt_of_not_ge hxball'
   have hxzero : smoothCenteredPrimitive h x = 0 := by
     rcases le_total x 0 with hx0 | hx0
     · have hxneg : x < -R := by
@@ -306,14 +309,16 @@ def thetaSmoothSourceSubmodule : Submodule ℂ HS where
     rintro u v ⟨g, hug, hgs, hg⟩ ⟨h, hvh, hhs, hh⟩
     refine ⟨g + h, ?_, hgs.add hhs, hg.add hh⟩
     filter_upwards [Lp.coeFn_add u v, hug, hvh] with x huv hugx hvhx
-    rw [huv, hugx, hvhx]
-    rfl
+    rw [huv]
+    change u x + v x = g x + h x
+    rw [hugx, hvhx]
   smul_mem' := by
     rintro c u ⟨g, hug, hgs, hg⟩
     refine ⟨fun x => c * g x, ?_, hgs.mul_left, contDiff_const.mul hg⟩
     filter_upwards [Lp.coeFn_smul c u, hug] with x hc hugx
-    rw [hc, hugx]
-    rfl
+    rw [hc]
+    change c * u x = c * g x
+    rw [hugx]
 
 theorem dense_thetaSmoothSource : Dense thetaSmoothSource := by
   simpa only [thetaSmoothSource, HS, sourceMeasure] using
@@ -517,7 +522,7 @@ theorem thetaCoreMeanOne_mean : pinnedMean thetaCoreMeanOne = 1 := by
   rw [integral_congr_ae hAE, integral_thetaCoreProfile]
   have hsqrt : (Real.sqrt thetaSource.mass : ℂ) ≠ 0 := by
     exact_mod_cast (Real.sqrt_pos.mpr thetaSource.mass_pos).ne'
-  field_simp
+  rw [smul_eq_mul, one_div, mul_inv_cancel₀ hsqrt]
 
 /-- Continuous projection onto the centered hyperplane, preserving `C_c^∞`. -/
 def thetaCenterProjection : H →L[ℂ] H :=
@@ -529,10 +534,14 @@ theorem thetaCenterProjection_apply (f : H) :
 
 theorem thetaCenterProjection_mem (f : H) : thetaCenterProjection f ∈ thetaCentered := by
   rw [mem_thetaCentered_iff, thetaCenterProjection_apply]
-  change thetaPinnedMeanCLM (f - pinnedMean f • thetaCoreMeanOne) = 0
-  rw [map_sub, map_smul, thetaPinnedMeanCLM_apply, thetaPinnedMeanCLM_apply,
-    thetaCoreMeanOne_mean]
-  simp
+  calc
+    pinnedMean (f - pinnedMean f • thetaCoreMeanOne) =
+        thetaPinnedMeanCLM (f - pinnedMean f • thetaCoreMeanOne) :=
+      (thetaPinnedMeanCLM_apply _).symm
+    _ = 0 := by
+      rw [map_sub, map_smul, thetaPinnedMeanCLM_apply, thetaPinnedMeanCLM_apply,
+        thetaCoreMeanOne_mean]
+      simp
 
 def thetaCenterProjectionToCentered : H →L[ℂ] thetaCentered :=
   thetaCenterProjection.codRestrict thetaCentered thetaCenterProjection_mem
@@ -541,8 +550,8 @@ theorem thetaCenterProjectionToCentered_surjective :
     Function.Surjective thetaCenterProjectionToCentered := by
   intro f
   refine ⟨(f : H), Subtype.ext ?_⟩
-  rw [thetaCenterProjectionToCentered, ContinuousLinearMap.codRestrict_apply,
-    thetaCenterProjection_apply]
+  change thetaCenterProjection (f : H) = (f : H)
+  rw [thetaCenterProjection_apply]
   rw [(mem_thetaCentered_iff f).mp f.property, zero_smul, sub_zero]
 
 theorem thetaWeightedDerivative_isFredholm : thetaWeightedDerivative.IsFredholm :=

@@ -2408,6 +2408,7 @@ import GaloisForLFunctions.RHTower.GaussIterate
 import GaloisForLFunctions.RHTower.GaussIterateInner
 import GaloisForLFunctions.RHTower.GaussIteratedAmplitude
 import GaloisForLFunctions.RHTower.GaussScaleAmplitudeIntegral
+import GaloisForLFunctions.RHTower.GaussSandwich
 import GaloisForLFunctions.RHTower.GaussScaleQuotient
 import GaloisForLFunctions.RHTower.GaussLattice
 import GaloisForLFunctions.RHTower.GaussPairedChannelCriticalAsymptotic
