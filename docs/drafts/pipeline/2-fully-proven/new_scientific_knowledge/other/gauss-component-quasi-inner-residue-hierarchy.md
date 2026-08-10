@@ -1196,3 +1196,31 @@ a decay constant — which is what the piecewise-exponential class supplies.
 
 Instantiating the two decay constants from `IsExpPiecewise`, giving (10) as a limit, and then (11),
 the `m`-fold iterate with amplitude `a_(δ_n)^r`.
+
+## Lean status, twenty-eighth pass: the estimate is uniform over a moving family
+
+`RHTower/GaussUniformTranslationL2.lean`, extended; unconditional, wired, built.
+
+```text
+tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family :
+  (∀ n j, ‖fourierCoeff (u n) j‖ ≤ A/(1+|j|))  →
+    ‖S_n(u n) - T_(δ_n)^(-1)(u n)‖ → 0
+tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv :
+  the fixed-amplitude case, now a corollary with u n := u
+```
+
+This is the form the second half of (10) actually needs.  The amplitude fed to the unconjugated
+block is `w'_n = B^(-2) T_(δ_n) (B f)`, which **moves with `n`** — so the fixed-amplitude statement
+does not apply, and the estimate has to be uniform over the family.  It is: the proof never touches
+the amplitude except through the termwise bound `‖û_n(j)‖ ≤ A/(1+|j|)`, and the dominating quantity
+`gaussTranslationL2DefectBound k p A` is amplitude-free.
+
+That is exactly the content of the card's remark that "the same proof is uniform for
+bounded-variation amplitudes with uniformly bounded variation".  The fixed-amplitude version is
+recovered as the constant family, so nothing was duplicated.
+
+### Remaining
+
+Instantiating `A₁` for `B f` (fixed) and `A₂` for the moving family `w'_n` from the
+piecewise-exponential class, which turns the one-step *bound* into the one-step *limit* (10); then
+(11), the `m`-fold iterate.

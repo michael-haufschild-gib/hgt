@@ -906,12 +906,92 @@ So the right-hand side of `(15)` is fully in place.  What is left is the identif
 `∑ μ(n) n^{-1-σ}` with that Abel average — Abel summation plus the vanishing boundary term — and
 then `1/ζ(1+σ) → 0` from the pole, which forces the limit to be `0`.
 
+### Section 2 — the Dirichlet series as an Abel average `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerDirichletAbel.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerMobiusDirichlet_summable` — `∑ μ(n) n^{-1-σ}` converges absolutely for every `σ > 0`.
+- `deningerDirichlet_abelSum` — **the finite Abel identity for the Dirichlet series**:
+  `∑_{n < N+2} μ(n) n^{-1-σ} = A_{N+1} (N+1)^{-σ} + ∑_{m < N} A_{m+1} w_σ(m)`.  The `n = 0`
+  increment is killed by `μ(0) = 0`, which is what makes the shifted sum come out exactly as the
+  Abel average.
+
+With the boundary term already proved to vanish, passing to the limit identifies the Dirichlet
+series with the Abel average of the harmonic partial sums.  The only remaining input for `(15)` is
+`1/ζ(1+σ) → 0` as `σ ↓ 0`, from the pole.
+
+### Section 2 — the analytic input `1/ζ → 0` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerInvZetaPole.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerInvZeta_tendsto_zero` — **`ζ(s)⁻¹ → 0` as `s → 1`**, from mathlib's
+  `riemannZeta_residue_one`: writing `ζ(s)⁻¹ = (s-1)·((s-1)ζ(s))⁻¹` exhibits it as a vanishing
+  factor times a factor tending to one.
+- `deningerInvZetaRay_tendsto_zero` — the same along the real ray `s = 1 + σ`, `σ ↓ 0`, which is
+  the form `(15)` consumes.
+
+Every input of `(15)` is now proved: the Abel identity, the vanishing boundary term, the Abelian
+limit theorem, and the pole.  What is left is the composition.
+
+### Section 2 — the Dirichlet series equals the Abel average `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerDirichletLimit.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerDirichlet_eq_abelAverage` — **`∑_n μ(n) n^{-1-σ} = ∑_m A_{m+1} w_σ(m)`** for every
+  `σ > 0`, by passing to the limit in the finite Abel identity with the vanishing boundary term.
+
+Both limits of this identity are now proved separately: the right side tends to `∑ μ(n)/n` by
+`deningerHarmonicAbel_tendsto`, and `ζ(1+σ)⁻¹ → 0` by `deningerInvZetaRay_tendsto_zero`.  The last
+step of `(15)` is the real/complex bridge identifying `∑_n μ(n) n^{-1-σ}` (a real `tsum`) with
+`ζ(1+σ)⁻¹` — the corpus has `LSeries_moebius_eq_inv_riemannZeta` for `Re s > 1`, so this is a cast
+argument between `Real.rpow` and `Complex.cpow`, not new mathematics.
+
+### Section 2 — `(15)` and `(12)`: the Möbius harmonic series sums to zero `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMobiusHarmonicZero.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerDirichletTerm_eq`, `deningerDirichlet_cast` — the real Dirichlet series
+  `∑ μ(n) n^{-1-σ}` is `ζ(1+σ)⁻¹`, via the corpus's `LSeries_moebius_eq_inv_riemannZeta` and a
+  `Real.rpow`/`Complex.cpow` cast.
+- `deningerHarmonicLimit_eq_zero` — **`∑ μ(n)/n = 0`**, hence `(15)`, hence `(12)`.
+
+The full chain, all built here: convergence of `∑ μ(n)/n` (Abel + PNT in Mertens form), the Abel
+weight as a probability weight, the **Abelian limit theorem** (absent from mathlib), the Dirichlet
+series as an Abel average, and `ζ(1+σ)⁻¹ → 0` from the pole.
+
+The value does **not** follow from PNT alone: partial summation turns `A_N → S` into
+`M(N)/N → S - S = 0` for *any* `S`, so `M(N) = o(N)` is consistent with every constant.  Only the
+pole pins it.  This corrects the card's own suggestion that `(15)` is a PNT consequence.
+
+### Section 4 — real-Fourier covariance `(6)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerCommutatorCovariance.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound` (one lemma needs only `propext`).
+
+- `deningerCollarCommutator` — the commutator `S h = F(E h) - E(J h)`.
+- `deningerCollarCommutator_covariance` — **`(6)`: `S(J h) = -F(S h)`**.
+- `deningerCollarCommutator_eq_zero_iff` — the commutator vanishes exactly when the two collars
+  are Fourier partners.
+- `deningerCollarCommutator_kernel_invariant` — the kernel is invariant under collar exchange.
+
+Stated at the generality the card's own proof uses: the only inputs are that the collar exchange is
+an involution and that `F` squares to the identity on the preimages (Fourier inversion plus
+evenness).  Instantiating it at `𝔖_μ` needs the even `L¹` extension and `F` on that space; the
+algebraic content of `(6)` is complete and independent of that choice.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
 unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a Fubini on a fixed
 ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
-bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)`--`(12)`.  `(8)`, `(9)`, `(10)` and the weighted-derivative bound are all built.  What
+bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)` at order `r ≥ 1` (mechanical repetition of the `r = 0` assembly), the instantiation of
+`(6)` at the concrete `𝔖_μ` (mathlib's `TemperedDistribution` is the natural home, since
+`F² = reflection` is free there), and `(5)`.  `(12)` and the algebraic content of `(6)` are
+**done**.  `(8)`, `(9)`, `(10)` and the weighted-derivative bound are all built.  What
 remains for `(11)` is one measure-theoretic step: integrating the Abel difference against `dx`.  The clean route is *not* a
 decreasing majorant for `H_h'` but Tonelli on the region — for `i ≥ 1`,
 

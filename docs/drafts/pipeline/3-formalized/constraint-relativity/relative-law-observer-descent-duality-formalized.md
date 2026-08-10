@@ -102,6 +102,12 @@ The mapping cone, built from scratch so that no exactness is assumed anywhere:
     augmentation and a transport different from the identity.  Everything in items 18–25 is
     therefore a statement about an inhabited class.
 
+27. `exactify_both_ne_zero_iff_critical` — **card `§6`, boxed reading**: at the divisor parameter
+    `t_ρ = 2 Re ρ − 1` the two physical values are simultaneously nonzero exactly when
+    `Re ρ = 1/2`.  This states what "simultaneous nonvanishing on the distinguished retained class"
+    says about `ρ`; it proves nothing about which `ρ` occur, which is the card's stated
+    circularity boundary.
+
 ## Scope
 
 The exactness that item 7 takes as input is *proved* in items 13–14, so items 15 give `(ROD.10)`

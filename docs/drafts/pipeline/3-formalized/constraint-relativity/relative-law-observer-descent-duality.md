@@ -298,10 +298,12 @@ exact three-face dictionary `(ROD.13)`--`(ROD.18)`. No external priority claim i
 ## Lean-return note
 
 Formalized; see `relative-law-observer-descent-duality-formalized.md`.  The named target
-`(ROD.6)`--`(ROD.12)` is complete.  The literal Route-R instantiation `(ROD.13)`--`(ROD.18)` waits
-on `route-r-raw-resolved-relative-cone-character-law`, which is still in stage 2; the §6
-consequence is formalized abstractly from the vanishing pattern so that it imports nothing
-unproved.
+`(ROD.6)`--`(ROD.12)` is complete, and the literal Route-R instantiation `(ROD.13)`--`(ROD.18)` is
+complete as well: the source complex, the retained class, the resolved complex and its comparison,
+the physical quotient `V = C^P/l^1(P)` and the Euler profile are all constructed, so every
+displayed value is a theorem with no premises beyond `c_rho != 0`.  The §6 consequence is
+formalized both abstractly and at the divisor parameter `t_rho = 2 Re rho - 1`, where simultaneous
+nonvanishing is exactly `Re rho = 1/2`; which `rho` satisfy it is not addressed.
 
 ## Gates
 

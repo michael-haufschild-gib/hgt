@@ -4094,3 +4094,44 @@ asked for anywhere.
 
 **Remaining.**  Formalise the passage from the published fixed-length statement to
 `UniformCorrelationSmall` (the `δ`-split above), and then the averaged Chowla theorem itself.
+
+## Unit 10 — the passage from the published statement (Lean, unconditional)
+
+`Sieve/AveragedChowlaInterface.lean`, `[propext, Classical.choice, Quot.sound]`.
+
+```lean
+def AveragedChowlaUniform (f : ℕ → ℝ) : Prop :=
+  ∀ ε > 0, ∃ H₀ Y₀ : ℕ, ∀ H Y : ℕ, H₀ ≤ H → Y₀ ≤ Y → H ≤ Y →
+    ∑ k ∈ Finset.Icc 1 H, |∑ i ∈ Finset.range Y, f i * f (i + k)| ≤ ε * H * Y
+```
+
+— the two-parameter uniform form of `∑_{k ≤ H}|∑_{n ≤ Y} f(n)f(n+k)| = o(HY)` for `H = H(Y) → ∞`,
+i.e. Matomäki–Radziwiłł–Tao.  From it:
+
+```lean
+uniformCorrelationSmall_of_averagedChowla :
+  (∀ n, |f n| ≤ 1) → Tendsto hh atTop atTop → Tendsto (fun x => hh x / √x) atTop (𝓝 0)
+    → AveragedChowlaUniform (fun i => f (i+1)) → UniformCorrelationSmall f hh
+
+MRBilinear_moebius_of_averagedChowla :
+  Tendsto hh atTop atTop → Tendsto (fun x => hh x / √x) atTop (𝓝 0)
+    → AveragedChowlaUniform (fun i => μ (i+1)) → MRBilinear μ hh
+```
+
+**The split.**  At `J < ε√x` the trivial bound `|∑_{i<J}| ≤ J` gives `∑_{k ≤ ⌊h⌋} ≤ h·ε√x` with no
+cancellation at all; at `J ≥ ε√x` the theorem applies at length `J`, and `⌊h⌋ ≤ ε√x ≤ J` supplies
+its `H ≤ Y` hypothesis.  Since `J ≤ √x + h + 6 ≤ 3√x`, the estimate `(ε/3)·H·J` lands on `ε·h·√x`.
+
+**Window condition.**  `hh x / √x → 0`, replacing the earlier `hh x ≤ √x`.  It is what makes the
+shift range fit inside the correlation length; Route E's window laws are polylogarithmic, so it is
+automatic there.
+
+**State of the card.**  The chain
+
+```text
+AveragedChowlaUniform μ  ⟹  UniformCorrelationSmall μ hh  ⟹  OffDiagonalVanishes μ hh
+  ⟹  AveragedMeanSquare μ hh  ⟹  AveragedShortInterval μ hh  ⟹  MRBilinear μ hh
+```
+
+is closed, unconditionally, in Lean.  The only remaining input is the averaged Chowla theorem
+itself.

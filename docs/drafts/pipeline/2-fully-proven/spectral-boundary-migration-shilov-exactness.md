@@ -2082,3 +2082,62 @@ operator systems, Bauer/Milman, the Choquet and Shilov boundaries, the Shilov
 ideal, the C*-envelope, `C*_e(A(K))`, boundary ⟹ complete boundary, and now
 generation.  Left on the list: boundary representations and locally
 C*-algebras, both noncommutative.
+
+## Pure states of `C(X, ℂ)` and non-degeneracy (2026-08-10)
+
+`HTGeometry/PureStatesContinuousFunctions.lean`, axiom-clean, in the umbrella.
+Milman gives one inclusion of the extreme-state description for free; this
+module supplies the converse and the consequences.
+
+- `stateBody_subset_of_isClosed_convex` — a property of functionals that is
+  closed, convex, and true at every point evaluation holds throughout the state
+  body.  Linearity (`topEval_add_of_mem`, `topEval_smul_of_mem`), unitality,
+  positivity, contractivity and the domination
+  `‖φ (h · f)‖ ≤ ‖h‖ · (φ f).re` for `f ≥ 0` (`topEval_mul_le_of_mem`) are all
+  of this shape, so none of them is carried as a hypothesis;
+- **`evalPoint_mem_extremePoints_top`** — every point evaluation is an extreme
+  state.  Given `δₓ = a φ + b ψ`, positivity forces `φ f = 0` for a Urysohn
+  function `f` vanishing at `x` and equal to `1` off a neighbourhood where
+  `g − g x` is small; domination then kills the far part of `g` and
+  contractivity bounds the near part by `ε`;
+- **`extremePoints_stateBody_top`** — the extreme states of `C(X, ℂ)` are
+  exactly the point evaluations (mathlib has no pure-state theory);
+- **`choquetBoundary_top`** and **`shilovBoundary_top`** — both are all of `X`.
+  The theory is non-degenerate: for the full algebra no proper closed subset
+  computes the norms.
+
+This is also the scalar input for boundary representations: in the commutative
+model the irreducible representations are the point evaluations, and they are
+precisely the extreme states.
+
+## Boundary representations (2026-08-10)
+
+`HTGeometry/BoundaryRepresentationCommutative.lean`, axiom-clean, in the
+umbrella.  This is the last of the card's named missing objects apart from
+locally C*-algebras.
+
+Arveson's unique-extension property, in the commutative model where the
+irreducible representations are the point evaluations:
+
+> **`mem_choquetBoundary_iff_uniqueExtension`.**  For a separating `S`, the
+> evaluation `δₓ` extends uniquely from `S` to a state of `C(X, ℂ)` if and only
+> if `x` lies in the Choquet boundary of `S`.
+
+Supporting structure:
+
+- `resMap`, `continuous_resMap`, `isLinear_resMap`, and **`image_stateBody`** —
+  restriction carries the state body of `C(X, ℂ)` *onto* the state body of `S`
+  (compactness makes the image closed, so it contains the closed convex hull);
+- `extensionFibre S x` — the states agreeing with `δₓ` on `S`; compact and
+  convex;
+- **`isExtreme_extensionFibre`** — when `δₓ|S` is extreme the fibre is an
+  *extreme subset* of the state body.
+
+Both directions then fall out of `extremePoints_stateBody_top`.  Uniqueness ⇒
+extremality: lift a convex decomposition of `δₓ|S` through `resMap`; the lift
+decomposes `δₓ` itself, which is extreme.  Extremality ⇒ uniqueness: extreme
+points of the fibre are extreme states, hence evaluations agreeing with `x` on
+`S`, hence `x` by separation, and Krein–Milman collapses the fibre to a point.
+
+Separation is used only for the second direction; no other hypothesis on `S`
+appears — in particular neither unitality nor self-adjointness.

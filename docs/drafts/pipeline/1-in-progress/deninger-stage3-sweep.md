@@ -29,7 +29,7 @@
 
 ## Batch state, verified 2026-08-10
 
-57 modules under `RHTower/Deninger*`, 656 declarations, **0** `sorry`/`admit`/`axiom`/`opaque`/
+63 modules under `RHTower/Deninger*`, 656 declarations, **0** `sorry`/`admit`/`axiom`/`opaque`/
 `unsafe`, **0** name collisions against the rest of the tree, **0** duplicate imports in
 `RHTower.lean`.  Every module builds individually with zero errors; every audited declaration is
 `[propext, Classical.choice, Quot.sound]`.

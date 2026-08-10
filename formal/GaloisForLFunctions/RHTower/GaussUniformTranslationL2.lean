@@ -267,15 +267,19 @@ theorem norm_fourierCoeff_shiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤
       field_simp
     rw [hexpand, norm_mul]
 
-/-- **Equation (9) for the unconjugated diagonal.** -/
-theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
-    (p : Nat.Primes) (u : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
-    (hu : ∀ j : ℤ, ‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+/-- **Equation (9) for the unconjugated diagonal, uniform over a family of amplitudes.**  Only a
+common decay constant is required; the rate does not depend on which member of the family is used
+at each index. -/
+theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family {m : ℕ} (hm : 1 ≤ m)
+    (k : Fin m) (p : Nat.Primes)
+    (u : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
+    (hu : ∀ (n : ℕ) (j : ℤ),
+      ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
     Tendsto (fun n : ℕ =>
-      ‖gaussShiftedBlockDiag hm k p (n : ℤ) u -
-        gaussRotationBlockInv ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) u‖)
+      ‖gaussShiftedBlockDiag hm k p (n : ℤ) (u n) -
+        gaussRotationBlockInv ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n)‖)
       atTop (nhds 0) := by
-  have hdefect := tendsto_gaussTranslationL2Defect_of_decay hm k p hu
+  have hdefect := tendsto_gaussTranslationL2DefectBound hm k p A
   rw [ENNReal.tendsto_nhds_zero] at hdefect
   rw [Metric.tendsto_atTop]
   intro ε hε
@@ -284,28 +288,30 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤
   refine ⟨N, fun n hn => ?_⟩
   have hbound := hN n hn
   set w : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
-    gaussShiftedBlockDiag hm k p (n : ℤ) u -
-      gaussRotationBlockInv ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) u with hw
+    gaussShiftedBlockDiag hm k p (n : ℤ) (u n) -
+      gaussRotationBlockInv ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n)
+    with hw
   have hcoeff : ∀ j : ℤ,
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖
-        = ‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖ *
+        = ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ *
           ‖gaussSampleRatioDefect k p j (n : ℤ)‖ := by
     intro j
     have hsub : fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j
-        = fourierCoeff ((gaussShiftedBlockDiag hm k p (n : ℤ) u : AddCircle (1 : ℝ) → ℂ)) j -
+        = fourierCoeff
+            ((gaussShiftedBlockDiag hm k p (n : ℤ) (u n) : AddCircle (1 : ℝ) → ℂ)) j -
           fourierCoeff ((gaussRotationBlockInv
-            ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) u :
+            ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) (u n) :
               AddCircle (1 : ℝ) → ℂ)) j := by
       rw [← fourierBasis_repr, ← fourierBasis_repr, ← fourierBasis_repr, hw, map_sub]
       rfl
     rw [hsub, norm_fourierCoeff_shiftedBlockDiag_sub_rotationInv hm k p]
   have hcongr : ∀ j : ℤ,
       ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖ ^ (2 : ℝ)
-        = ‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
+        = ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
           ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := by
     intro j
     rw [hcoeff j, Real.mul_rpow (norm_nonneg _) (norm_nonneg _),
-      ← Real.rpow_natCast (‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖) 2,
+      ← Real.rpow_natCast (‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖) 2,
       ← Real.rpow_natCast (‖gaussSampleRatioDefect k p j (n : ℤ)‖) 2]
     norm_num
   have hsummable : Summable fun j : ℤ =>
@@ -316,16 +322,25 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤
     refine hs.congr fun j => ?_
     rw [fourierBasis_repr]
   have hsummable' : Summable fun j : ℤ =>
-      ‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
+      ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
         ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := hsummable.congr hcongr
   have hnormsq : ‖w‖ ^ (2 : ℝ)
-      = ∑' j : ℤ, ‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
+      = ∑' j : ℤ, ‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
         ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2 := by
     rw [norm_sq_eq_tsum_fourierCoeff w]
     exact tsum_congr hcongr
+  have hdom : (∑' j : ℤ, ENNReal.ofReal
+        (‖fourierCoeff ((u n : AddCircle (1 : ℝ) → ℂ)) j‖ ^ 2 *
+          ‖gaussSampleRatioDefect k p j (n : ℤ)‖ ^ 2))
+      ≤ gaussTranslationL2DefectBound k p A (n : ℤ) := by
+    rw [gaussTranslationL2DefectBound]
+    refine ENNReal.tsum_le_tsum fun j => ENNReal.ofReal_le_ofReal ?_
+    refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+    have h2 := pow_le_pow_left₀ (norm_nonneg _) (hu n j) 2
+    rwa [div_pow] at h2
   have hofReal : ENNReal.ofReal (‖w‖ ^ (2 : ℝ)) ≤ ENNReal.ofReal ((ε / 2) ^ 2) := by
     rw [hnormsq, ENNReal.ofReal_tsum_of_nonneg (fun j => by positivity) hsummable']
-    exact hbound
+    exact le_trans hdom hbound
   have hle : ‖w‖ ^ (2 : ℝ) ≤ (ε / 2) ^ 2 :=
     (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hofReal
   have hnorm2 : ‖w‖ ^ (2 : ℕ) ≤ (ε / 2) ^ 2 := by
@@ -339,6 +354,17 @@ theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤
     rwa [Real.sqrt_sq (norm_nonneg w), Real.sqrt_sq (half_pos hε).le] at h
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (norm_nonneg w)]
   linarith
+
+/-- **Equation (9) for the unconjugated diagonal.** -/
+theorem tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv {m : ℕ} (hm : 1 ≤ m) (k : Fin m)
+    (p : Nat.Primes) (u : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ}
+    (hu : ∀ j : ℤ, ‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+    Tendsto (fun n : ℕ =>
+      ‖gaussShiftedBlockDiag hm k p (n : ℤ) u -
+        gaussRotationBlockInv ((gaussSamplePhase m p (n : ℤ) : ℝ) : AddCircle (1 : ℝ)) u‖)
+      atTop (nhds 0) :=
+  tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family hm k p (fun _ => u)
+    (fun _ j => hu j)
 
 end
 

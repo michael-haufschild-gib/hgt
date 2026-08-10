@@ -51,6 +51,66 @@ theorem rank_transgression_ge (B M : Matrix (Fin N) (Fin r) K) :
       = finrank K (LinearMap.range (transgression B M).mulVecLin) := rfl
   omega
 
+/-- **Card Theorem 1, consequence 1.**  All valuation derivations descend strictly only if there
+are at least `N` infinity ports: a vanishing transgression forces `N ≤ r`. -/
+theorem le_of_transgression_eq_zero {B M : Matrix (Fin N) (Fin r) K}
+    (h : transgression B M = 0) : N ≤ r := by
+  have hrank := rank_transgression_ge B M
+  rw [h, Matrix.rank_zero] at hrank
+  omega
+
+/-- **Card Theorem 1, consequence 2.**  A rank-one common anomaly requires at least `N − 1`
+ports. -/
+theorem sub_one_le_of_rank_transgression_eq_one {B M : Matrix (Fin N) (Fin r) K}
+    (h : (transgression B M).rank = 1) : N - 1 ≤ r := by
+  have hrank := rank_transgression_ge B M
+  rw [h] at hrank
+  omega
+
+/-- **Card Theorem 1, consequence 4.**  A single common infinity port has anomaly rank at least
+`N − 1`. -/
+theorem rank_transgression_one_port_ge (B M : Matrix (Fin N) (Fin 1) K) :
+    N - 1 ≤ (transgression B M).rank :=
+  rank_transgression_ge B M
+
+/-- **Card Theorem 1, consequence 3.**  No fixed finite number of ports supports a rank-one
+transgression at every relation count: for each `r` the count `N = r + 2` already forces rank at
+least two. -/
+theorem exists_rank_transgression_gt_one (r : ℕ) :
+    ∃ N : ℕ, ∀ B M : Matrix (Fin N) (Fin r) K, 1 < (transgression B M).rank := by
+  refine ⟨r + 2, fun B M => ?_⟩
+  have hrank := rank_transgression_ge B M
+  omega
+
+/-- **Card Theorem 1, consequence 1, converse.**  With at least `N` ports the transgression can be
+made to vanish, so the bound of consequence 1 is sharp. -/
+theorem exists_transgression_eq_zero (h : N ≤ r) :
+    ∃ B M : Matrix (Fin N) (Fin r) K, transgression B M = 0 := by
+  classical
+  refine ⟨Matrix.of fun i α => if α = Fin.castLE h i then (-1 : K) else 0,
+    Matrix.of fun i α => if α = Fin.castLE h i then (1 : K) else 0, ?_⟩
+  ext i j
+  rw [transgression, Matrix.add_apply, Matrix.mul_apply, Matrix.zero_apply]
+  have hsum : (∑ α : Fin r, (Matrix.of fun i α => if α = Fin.castLE h i then (-1 : K) else 0) i α *
+      (Matrix.of fun i α => if α = Fin.castLE h i then (1 : K) else 0)ᵀ α j)
+      = if i = j then (-1 : K) else 0 := by
+    rw [Finset.sum_eq_single (Fin.castLE h i)]
+    · by_cases hij : i = j
+      · subst hij
+        simp
+      · have hne : Fin.castLE h i ≠ Fin.castLE h j := fun hc => hij (Fin.castLE_injective h hc)
+        simp [hne, hij]
+    · intro α _ hα
+      simp [hα]
+    · intro hmem
+      exact absurd (Finset.mem_univ _) hmem
+  rw [hsum, Matrix.one_apply]
+  by_cases hij : i = j
+  · rw [if_pos hij, if_pos hij]
+    ring
+  · rw [if_neg hij, if_neg hij]
+    ring
+
 /-- **Sharpness.**  For every `r ≤ N` the bound `N − r` is attained by the standard inclusion
 port matrices. -/
 theorem exists_transgression_rank_eq (hr : r ≤ N) :

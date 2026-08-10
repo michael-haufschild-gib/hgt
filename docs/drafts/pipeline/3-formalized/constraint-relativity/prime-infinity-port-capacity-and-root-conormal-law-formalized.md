@@ -27,9 +27,16 @@ Theorem 1 — sharp port capacity:
 
 1. `transgression` — `Ω = I_N + B Mᵀ`, card `(7)`.
 2. `ker_transgression_le` — `ker Ω ⊆ im B`, the card's step `v = −B Mᵀ v`.
-3. `rank_transgression_ge` — **`rank Ω ≥ N − r`**.  Consequences 1–4 of the card are immediate
-   arithmetic reformulations: `Ω = 0` (all valuations descend) needs `N − r ≤ 0`; `rank Ω = 1`
-   needs `r ≥ N − 1`; no fixed `r` works for all `N`; one port gives `rank ≥ N − 1`.
+3. `rank_transgression_ge` — **`rank Ω ≥ N − r`**.
+3a. `le_of_transgression_eq_zero`, `sub_one_le_of_rank_transgression_eq_one`,
+   `exists_rank_transgression_gt_one`, `rank_transgression_one_port_ge` — the card's four numbered
+   consequences of Theorem 1, each stated: a vanishing transgression (all valuation derivations
+   descend) forces `N ≤ r`; a rank-one common anomaly forces `N − 1 ≤ r`; **no fixed finite `r`
+   supports rank-one transgression at every relation count**, since `N = r + 2` already forces rank
+   at least two; and a single common infinity port has anomaly rank at least `N − 1`.
+3b. `exists_transgression_eq_zero` — the converse of the first consequence: with `N ≤ r` ports the
+   transgression can be made to vanish, by supporting `B` and `M` on the first `N` columns.  So
+   consequence 1 is an exact criterion, not just a necessary condition.
 4. `exists_transgression_rank_eq` — **sharpness**: for every `r ≤ N` the standard inclusion port
    matrices give `Ω = diag(0_r, I_{N−r})` and `rank Ω = N − r`.
 

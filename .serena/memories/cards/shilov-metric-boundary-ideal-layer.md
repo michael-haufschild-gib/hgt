@@ -258,3 +258,20 @@ Bridge: `StarAlgebra.adjoin_toSubalgebra` (adjoin of a star-closed set is the
 plain algebra adjoin) plus
 `StarSubalgebra.topologicalClosure_toSubalgebra_comm`.
 The commutative branch of the card is now hypothesis-free.
+
+## Pure states = point evaluations (2026-08-10)
+
+`PureStatesContinuousFunctions.lean`. Reusable trick:
+`stateBody_subset_of_isClosed_convex` — any closed convex property true at
+every δ_x holds on the whole state body. Linearity, unitality, positivity,
+contractivity and `‖φ(hf)‖ ≤ ‖h‖ (φ f).re` all come this way, so states never
+need to be assumed linear or positive. Gives choquetBoundary ⊤ = shilovBoundary
+⊤ = univ.
+
+## Boundary representations done (2026-08-10)
+
+`BoundaryRepresentationCommutative.lean`:
+`mem_choquetBoundary_iff_uniqueExtension`. The trick is that the fibre of the
+restriction map over an extreme δ_x|S is an EXTREME SUBSET of the state body,
+so Krein-Milman + `extremePoints_stateBody_top` collapse it to {δ_x}. Needs only
+separation. Remaining on the card: locally C*-algebras.
