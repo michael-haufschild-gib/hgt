@@ -2474,3 +2474,238 @@ maxWindowSq_eq_partial :  maxWindowSq f H y = max_{m ≤ H} (P(y+m) − P(y−1)
 Every maximal inequality is a statement about partial sums, not windows; with this rewriting the
 supremum becomes the maximal deviation of `P` from its value at the left endpoint, which is the
 classical setting for Rademacher–Menshov, and window splitting costs nothing.
+
+## 2026-08-10 obstruction 1, first step: the halving step of Rademacher–Menshov
+
+`Sieve/MaximalDeviation.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9006 jobs).
+
+```text
+maxDev P J y := max_{k ≤ 2^J} |P(y+k) − P(y)|
+
+maxDev_nonneg, le_maxDev, maxDev_zero :  maxDev P 0 y = |P(y+1) − P(y)|
+
+maxDev_succ_le :
+  maxDev P (J+1) y ≤ |P(y+2^J) − P(y)| + max (maxDev P J y) (maxDev P J (y+2^J))
+```
+
+The halving step is the whole structural content: a deviation over `2^{J+1}` steps either stays in
+the first half, or crosses the midpoint, and then it is the midpoint's own deviation plus a
+deviation over `2^J` steps starting at the midpoint.  Iterating `J` times leaves `J` block sums,
+and Cauchy–Schwarz turns those into `J·∑(block sum)²` — the `(log H)²` loss.
+
+This is the only route: the crude bounds all fail.  `max_{m≤H} S_m² ≤ (H+1)∑_{m≤H} S_m²` loses `H²`
+against the target `o(h²√x)`, and `max_m |S_m| ≤ ∑_m |S_m|` is worse.  The dyadic decomposition is
+what makes the loss logarithmic, and the halving step is the induction that produces it.
+
+### What is left
+
+Iterating the halving step into the full Rademacher–Menshov bound
+`maxDev P J y ≤ ∑_{j<J} (max over aligned blocks of level j)`, then squaring; and after that
+obstruction 2, the Gallagher–Halász bridge.
+
+## 2026-08-10 obstruction 1: Rademacher–Menshov proved
+
+`Sieve/RademacherMenshov.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9007 jobs).
+
+```text
+levelMax P J j y := max_{i < 2^{J−j}} |P(y + (i+1)·2^j) − P(y + i·2^j)|
+
+levelMax_mono  :  j ≤ J →  levelMax P J j y ≤ levelMax P (J+1) j y
+levelMax_shift :  j ≤ J →  levelMax P J j (y + 2^J) ≤ levelMax P (J+1) j y
+
+maxDev_le_sum_levelMax :
+  maxDev P J y ≤ levelMax P J 0 y + ∑_{j < J} levelMax P J j y
+```
+
+The supremum over all window lengths is gone, replaced by `J + 1` block maxima, one per dyadic
+level.  The induction is the halving step of the previous unit; the two monotonicity lemmas are
+what make it close — `levelMax_shift` says the second half's level-`j` blocks are among the whole
+window's, by the index identity `y + 2^J + i·2^j = y + (i + 2^{J−j})·2^j`, valid exactly when
+`j ≤ J`.
+
+Level `0` appears twice because the induction bottoms out at `maxDev P 0 y = |P(y+1) − P(y)|`,
+itself a level-`0` block.
+
+Squaring by Cauchy–Schwarz now costs `J + 1 ≍ log H`, giving the `(log H)²` loss — the only loss
+compatible with the target `o(h²√x)`.
+
+### What is left
+
+Squaring and summing over the starting points `y` (turning each `levelMax` into a sum of squares
+over its blocks), which reduces `MaximalWindowMeanSquare` to a *plain* dyadic mean square; then
+obstruction 2, the Gallagher–Halász bridge.
+
+## 2026-08-10 obstruction 1 CLOSED: the supremum is gone
+
+`Sieve/DyadicMeanSquare.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9008 jobs).
+
+```text
+blockSq P J j y := ∑_{i < 2^{J−j}} (P(y + (i+1)·2^j) − P(y + i·2^j))²
+
+levelMax_sq_le :  (levelMax P J j y)² ≤ blockSq P J j y
+maxDev_sq_le   :  (maxDev P J y)² ≤ (J + 1)·(blockSq P J 0 y + ∑_{j < J} blockSq P J j y)
+```
+
+**The first obstruction is closed.**  The right-hand side has no supremum in it: it is a plain sum
+of squares of dyadic block increments, which is what Gallagher's lemma and Parseval evaluate.  The
+loss is `(J + 1)² ≍ (log H)²` — one factor from the sum over levels, one from Cauchy–Schwarz — and
+the failed crude alternatives showed nothing smaller is available.
+
+The chain from `MRBilinear` now reads
+
+```text
+MRBilinear μ hh
+  ← AveragedShortInterval  ← AveragedMeanSquare  ← MaximalWindowMeanSquare      (corpus)
+  ← maxWindowSq_eq_partial ← maxDev_sq_le                                        (this and prior units)
+  ← a plain dyadic mean square of Möbius block sums                              (obstruction 2)
+```
+
+### What is left
+
+Obstruction 2 alone: bound `∑_y blockSq` — a mean square of Möbius sums over dyadic intervals — by
+Gallagher's lemma and the Halász machinery of units 1–6.  That is the last analytic input.
+
+## 2026-08-10 the two halves join: `MaximalWindowMeanSquare` is a dyadic mean square
+
+`Sieve/MaximalWindowDyadic.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9009 jobs).
+
+```text
+maxWindowSq_le_maxDev_sq :  1 ≤ y,  H + 1 ≤ 2^J  →
+  maxWindowSq f H y ≤ (maxDev (partialSum f) J (y−1))²
+
+maxWindowSq_le_blockSq :  the same, composed with maxDev_sq_le  →
+  maxWindowSq f H y ≤ (J+1)·(blockSq P J 0 (y−1) + ∑_{j<J} blockSq P J j (y−1))
+
+sum_maxWindowSq_le :  1 ≤ A,  H + 1 ≤ 2^J  →
+  ∑_{y ∈ [A,B]} maxWindowSq f H y
+    ≤ (J+1)·∑_{y ∈ [A,B]} (blockSq P J 0 (y−1) + ∑_{j<J} blockSq P J j (y−1))
+```
+
+A window of length at most `H` from `y` is a deviation of the partial sums over at most `H + 1`
+steps from `y − 1`; that single observation, together with the Rademacher–Menshov chain, converts
+the Matomäki–Radziwiłł hypothesis into
+
+```text
+∑_{y ∈ [√x/2, √x]} ∑_{j ≤ log₂ h} ∑_{i} (block sum of μ over a dyadic interval)² = o(h²√x/log²h) ,
+```
+
+with no supremum and no varying window length.  Every length is now a power of two, every block is
+aligned, and the only analytic input still needed is a mean-square bound for Möbius sums over
+dyadic intervals — Gallagher plus the Halász machinery of units 1–6.
+
+### The full reduction, as it now stands
+
+```text
+MRBilinear μ hh
+  ← MRBilinear_moebius_of_averaged
+  ← AveragedShortInterval μ hh          ← averagedShortInterval_of_meanSquare
+  ← AveragedMeanSquare μ hh             ← averagedMeanSquare_of_maximal
+  ← MaximalWindowMeanSquare μ hh        ← sum_maxWindowSq_le
+  ← a dyadic mean square of Möbius block sums                    [obstruction 2, open]
+```
+
+Everything above the last line is proved unconditionally in this corpus.
+
+## 2026-08-10 obstruction 2 reduced to a single quantity
+
+`Sieve/DyadicTranslates.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9010 jobs).
+
+```text
+fixedWindowSq f ℓ z    := (P(z + ℓ) − P(z))²
+dyadicMeanSquare f ℓ A B := ∑_{z ∈ [A,B]} fixedWindowSq f ℓ z
+
+blockSq_eq_sum_fixedWindowSq :
+  blockSq P J j y = ∑_{i < 2^{J−j}} fixedWindowSq f (2^j) (y + i·2^j)
+
+sum_Icc_shift :  ∑_{y ∈ [A,B]} g(y + c) = ∑_{z ∈ [A+c, B+c]} g(z)
+
+sum_blockSq_eq_translates :
+  ∑_{y ∈ [A,B]} blockSq P J j y
+    = ∑_{i < 2^{J−j}} dyadicMeanSquare f (2^j) (A + i·2^j) (B + i·2^j)
+```
+
+Exchanging the two summations shows the level-`j` block sums are `2^{J−j}` *translated copies* of
+one mean square of windows of the fixed length `2^j`.  So the entire reduction — from `MRBilinear`
+down — rests on the single quantity `dyadicMeanSquare f ℓ A B`, at the `log₂ h` dyadic lengths
+`ℓ = 2^j`, and nothing else.
+
+That is exactly the object Gallagher's lemma converts into an integral of `|logPoly|²`, and exactly
+the object the Matomäki–Radziwiłł theorem estimates.  The reduction is now a single named target
+rather than a family of statements about varying windows.
+
+### What is left
+
+A bound for `dyadicMeanSquare μ ℓ A B` — Gallagher plus the Halász machinery of units 1–6.  Every
+other step from `MRBilinear` to that target is proved unconditionally in this corpus.
+
+## 2026-08-10 the reduction, in one statement
+
+`Sieve/MaximalWindowReduction.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`,
+wired, builds clean (9011 jobs).
+
+```text
+sum_maxWindowSq_succ_le_dyadic :  H + 1 ≤ 2^J  →
+  ∑_{y ∈ [A+1, B+1]} maxWindowSq f H y
+    ≤ (J + 1)·( ∑_{i < 2^J} dyadicMeanSquare f 1 (A+i) (B+i)
+                + ∑_{j < J} ∑_{i < 2^{J−j}} dyadicMeanSquare f (2^j) (A + i·2^j) (B + i·2^j) )
+```
+
+The left-hand side is what `MaximalWindowMeanSquare` averages.  The right-hand side involves only
+`dyadicMeanSquare` at the `J + 1` dyadic lengths `1, 2, …, 2^{J−1}`, each over `O(2^J)` translates
+of one range of starting points.  No supremum, no varying length, no unaligned block survives.
+
+### Status of the `MRBilinear` path
+
+| step | status |
+|---|---|
+| `MRBilinear μ hh ← AveragedShortInterval` | corpus |
+| `AveragedShortInterval ← AveragedMeanSquare` | corpus |
+| `AveragedMeanSquare ← MaximalWindowMeanSquare` | corpus |
+| `maxWindowSq` as a partial-sum deviation | `WindowPartialSum` |
+| halving step | `MaximalDeviation` |
+| Rademacher–Menshov | `RademacherMenshov` |
+| squaring, Cauchy–Schwarz | `DyadicMeanSquare` |
+| windows → dyadic blocks | `MaximalWindowDyadic` |
+| blocks → translates of one mean square | `DyadicTranslates` |
+| the whole reduction, one statement | `MaximalWindowReduction` |
+| **`dyadicMeanSquare μ ℓ A B`** | **open — the only remaining input** |
+
+### What is left
+
+One estimate: `dyadicMeanSquare μ ℓ A B` for dyadic `ℓ`.  Gallagher's lemma converts it into an
+integral of `|logPoly|²`; the Halász machinery of units 1–6 bounds that integral.  Nothing else on
+the path from `MRBilinear` is open.
+
+## 2026-08-10 the dyadic mean square, expanded into pairs
+
+`Sieve/DyadicPairExpansion.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9012 jobs).
+
+```text
+fixedWindowSq_eq :  1 ≤ ℓ →  fixedWindowSq f ℓ z = (∑_{b ∈ (z, z+ℓ]} f(b))²
+
+dyadicMeanSquare_eq_pairs :  the square expanded into a double sum
+
+dyadicMeanSquare_eq_count :  1 ≤ ℓ →
+  dyadicMeanSquare f ℓ A B
+    = ∑_{m, n ∈ (A, B+ℓ]} f(m)·f(n)·#{ z ∈ [A,B] : m, n ∈ (z, z+ℓ] }
+```
+
+An exact identity, not an estimate.  The kernel `#{z ∈ [A,B] : m, n ∈ (z, z+ℓ]}` is the discrete
+overlap of two windows of common length `ℓ` — the integer analogue of the corpus's
+`volume_real_logWindow_inter`, whose value is `(δ − |log m − log n|)₊`.  It vanishes as soon as
+`|m − n| ≥ ℓ`, so the double sum is supported on the near-diagonal band, which is the structure the
+whole estimate rests on.
+
+The route from here follows the corpus's own Gallagher development: bound the kernel by
+`(ℓ − |m − n|)₊`, recognise the resulting bilinear form as the one `gallagher_identity` evaluates,
+and pass to `∫ |logPoly|²`.
+
+### What is left
+
+The kernel bound and the passage to `logPoly`, then the Halász estimate for that integral.

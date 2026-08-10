@@ -217,3 +217,14 @@ frontier map's design survivor demands; U's obligation has exactly the admissibl
   `XiShiftedHankelCassiniPhaseTaxHeightThreshold.lean` is umbrella-wired and passes direct
   `lake env lean`.  Remaining source theorem must control a contact-weighted height barycenter
   relative to orbit-dependent taxed thresholds.
+- 2026-08-10 — C58 lifted degree-one contact from moments to a literal countable interaction
+  network.  For every absolutely summable complex packet through fourth power, ordered pair
+  energy `E_ij=z_i z_j (z_i-z_j)^2` and transport `E_ij(z_i+z_j)` satisfy
+  `sum E_ij=2(m0*m2-m1^2)` and
+  `sum E_ij(z_i+z_j)=2(m0*m3-m1*m2)`.  Lean specializes both identities to the full
+  multiplicity-exact Xi zero-copy divisor.  At an actual flat face total pair energy is exactly
+  zero, while total transport is exactly twice positive response times terminal flux.  Thus a
+  negative crossing is a zero-energy signed network whose energy barycenter moves adversely;
+  source closure must constrain cross-pair transport, not individual atom angles or cumulant
+  signs.  Module `XiShiftedHankelCassiniPairEnergyTransport.lean` is umbrella-wired and passes
+  direct `lake env lean`.

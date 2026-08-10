@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ConstitutiveContextualChallengeTransduction
 import GaloisForLFunctions.HTGeometry.ConstitutiveFutureReporterPromotion
+import Mathlib
 
 /-!
 # Prospective challenge geometry
@@ -238,6 +239,30 @@ theorem finiteBooleanSignature_all_true_not_source_realized :
   rintro ⟨state, hall⟩
   exact finiteBooleanSignature_not_globally_all_true state hall
 
+/-- The coherent all-true history in the product history space. -/
+def allTrueBooleanHistory : ℕ → Bool := fun _ => true
+
+/-- Finite source states regarded as their infinite future signatures. -/
+def finiteTrueBooleanApproximation (n : ℕ) : ℕ → Bool :=
+  finiteBooleanSignature (List.replicate n true)
+
+/-- Finite source signatures converge coordinatewise to the non-realized all-true history. -/
+theorem finiteTrueBooleanApproximation_tendsto :
+    Filter.Tendsto finiteTrueBooleanApproximation Filter.atTop
+      (nhds allTrueBooleanHistory) := by
+  rw [tendsto_pi_nhds]
+  intro k
+  apply tendsto_nhds_of_eventually_eq
+  filter_upwards [Filter.eventually_ge_atTop (k + 1)] with n hn
+  exact finiteBooleanSignature_replicate_true n k (by omega)
+
+/-- The coherent all-true history lies in the product-topology closure of finite source
+signatures, although no finite source realizes it. -/
+theorem allTrueBooleanHistory_mem_closure_sourceSignatures :
+    allTrueBooleanHistory ∈ closure (Set.range finiteTrueBooleanApproximation) := by
+  exact mem_closure_of_tendsto finiteTrueBooleanApproximation_tendsto
+    (Filter.Eventually.of_forall fun n => Set.mem_range_self n)
+
 /-- Unconditional capstone: fixed-grammar prospective geometry has permanent plateaux, observer
 delay is real, and finite-horizon realization does not force one global source state. -/
 theorem constitutiveProspectiveChallengeGeometry_closed :
@@ -256,12 +281,14 @@ theorem constitutiveProspectiveChallengeGeometry_closed :
       prospectiveDelayObserver 2 ProspectiveDelayState.a ProspectiveDelayState.b) ∧
     (∀ n, ∃ state : List Bool, ∀ k, k < n →
       finiteBooleanSignature state k = true) ∧
-    (¬ ∃ state : List Bool, ∀ k, finiteBooleanSignature state k = true) := by
+    (¬ ∃ state : List Bool, ∀ k, finiteBooleanSignature state k = true) ∧
+    allTrueBooleanHistory ∈ closure (Set.range finiteTrueBooleanApproximation) := by
   exact ⟨prospectiveAgreement_plateau_permanent,
     prospectiveDelay_source_separated_at_horizon_one,
     prospectiveDelay_observer_agrees_at_horizon_one,
     prospectiveDelay_observer_separated_at_horizon_two,
     finiteBooleanSignature_every_horizon_realized,
-    finiteBooleanSignature_all_true_not_source_realized⟩
+    finiteBooleanSignature_all_true_not_source_realized,
+    allTrueBooleanHistory_mem_closure_sourceSignatures⟩
 
 end GaloisForLFunctions.HTGeometry

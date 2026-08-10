@@ -680,3 +680,17 @@ no-selection, and the capstone report only `propext`, `Classical.choice`, and `Q
 module is wired into `HTGeometry.UniversalLawField`.  Recursive challenge-language revision,
 marked-presentation invariance, partial/admission-sensitive syntax, and strategy admission remain
 open.
+
+## Session 2026-08-10 addition (Prospective Challenge Geometry)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PCG-1 | Finite legal contexts induce a nested prospective-agreement filtration; one exact plateau is permanent; postobservation delays or erases separation; every finite all-true history is source-realized but the coherent infinite history is not, while it lies in the product-topology closure of source signatures | `HTGeometry.ConstitutiveProspectiveChallengeGeometry` |
+| ULF-PCG-2 | A fresh legal operation changes eventual distinctions exactly when it fails to preserve the old future kernel; nonpreservation is equivalent to strict prospective refinement; every old-word-definable operation is inert; constant postobservation can erase a genuine source grammar birth | `HTGeometry.ConstitutiveDescentBreakingGrammarExtension` |
+
+Direct foreground elaboration is warning-free. Owned-module builds pass with `8,667` and `8,661`
+jobs respectively; the final `HTGeometry.UniversalLawField` umbrella build passes with `11,568`
+jobs. Source-level axiom prints report either no axioms or only `propext`, `Classical.choice`, and
+`Quot.sound`. Both modules are wired into the Universal Law Field umbrella. The formalized
+mechanism classifies effectiveness and exposes the old-term no-genesis barrier; construction of a
+source-normal minimal descent-breaking update remains open.

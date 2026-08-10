@@ -19,7 +19,7 @@ noncomputable section
 /-! ## Analyticity of a jet relation -/
 
 /-- The evaluation of a differential polynomial on the jets of an analytic function is analytic. -/
-theorem analyticAt_jetEval {f : ℂ → ℂ} {U : Set ℂ} (hf : AnalyticOnNhd ℂ f U) (n : ℕ)
+private theorem analyticAt_jetEval {f : ℂ → ℂ} {U : Set ℂ} (hf : AnalyticOnNhd ℂ f U) (n : ℕ)
     (P : MvPolynomial (Fin (n + 2)) ℂ) {z : ℂ} (hz : z ∈ U) :
     AnalyticAt ℂ (fun w => MvPolynomial.eval
       (Fin.cons w (fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) f w)) P) z := by

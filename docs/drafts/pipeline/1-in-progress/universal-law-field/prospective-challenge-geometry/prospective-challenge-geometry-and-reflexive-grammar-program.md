@@ -7,7 +7,7 @@
   states. Law genesis expands this geometry, observation contracts it, and completion adds coherent
   finite-horizon signatures that need not be realized by any source state.
 - **Status:** [ACTIVE] [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS]
-  [ULF-PCG-1 PAPER CORE CLOSED] [FULL REFLEXIVE GRAMMAR OPEN] [NOT RH]
+  [ULF-PCG-1/2 LEAN CORE CLOSED] [FULL REFLEXIVE GRAMMAR OPEN] [NOT RH]
 
 ## 1. Pivot
 
@@ -99,6 +99,22 @@ with expansion from source grammar and contraction from observation. Classifying
 changes are source-generated, conservative, admission-changing, or completion-born is the live
 field problem.
 
+### Law G -- genesis is failure of quotient descent
+
+For a proposed new legal operation `h`, let `K` be the old full future reporter kernel and `K^h`
+the kernel after adjoining `h`. ULF-PCG-2 Lean-certifies
+
+\[
+ h(K)\subseteq K
+ \quad\Longleftrightarrow\quad
+ K^h=K.
+ \tag{PCG.3}
+\]
+
+Thus genuine law birth is strict refinement `K^h subsetneq K`, exactly equivalent to failure of
+`h` to descend to the old prospective quotient. Every operation representable by an old context
+word is inert. Syntactic novelty and semantic nondefinability are both weaker than the exact test.
+
 ## 4. Hostile conjecture loops
 
 ### Loop 1 -- the prefix ultrametric is new
@@ -168,6 +184,13 @@ Consequences:
 - recurrence must distinguish compact observer returns from the source separation history;
 - HT must provide a prolongation grammar whose prospective filtration does not stabilize.
 
+The frontier map's five first-open-premise classes now have one common acceptance law without being
+identified as one object: singular descent needs an admission-changing descent failure;
+all-prime transport needs a cofinal operation transverse to all old bounded contexts; adaptive
+orientation needs a response-indexed context which breaks the old quotient; whole-space coercivity
+needs a global profile challenge detecting a completion escape; positive carrier existence needs a
+coupled gluing operation not determined by old moment reporters.
+
 This is diagnostic leverage, not a claim that those mechanisms are isomorphic.
 
 ## 6. Parent boundary
@@ -190,12 +213,15 @@ ingredients.
 
 ## 7. Open core and death gate
 
+ULF-PCG-2 closes the effectiveness test for a supplied operation. It does not produce that
+operation. The open core is:
+
 `[OPEN CORE]` Construct a source-normal reflexive grammar update
 
 \[
  \text{failure witness}\longmapsto
  \text{new legal context constructor}
- \tag{PCG.3}
+ \tag{PCG.4}
 \]
 
 whose prospective refinement is effective, whose lineage is presentation-stable, and whose
@@ -216,3 +242,7 @@ Retire PCG as universal field if every such update is either:
 - 2026-08-10 -- distinguishing-word ultrametric novelty claim killed by current automata and
   coalgebraic literature; grammar/observer/completion mechanism retained.
 - 2026-08-10 -- ULF-PCG-1 paper core closed; reflexive source grammar remains open.
+- 2026-08-10 -- audited the current RH frontier map: five unlike open-premise classes share failure
+  to generate a legal next operation, not one missing invariant.
+- 2026-08-10 -- ULF-PCG-2 closed exact quotient-descent criterion and old-term definability barrier
+  in Lean; source-normal update production remains load-bearing.

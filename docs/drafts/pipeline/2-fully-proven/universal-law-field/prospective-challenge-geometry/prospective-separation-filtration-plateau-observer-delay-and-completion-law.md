@@ -7,7 +7,9 @@
   future reporter kernel; one plateau is permanent; postobservation delays or erases separation;
   and coherent finite-horizon signatures need not be source-realized.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT]
-  [CLASSICAL AUTOMATA/COALGEBRA PARENTS] [NOVELTY UNVERIFIED] [LEAN PENDING] [NOT RH]
+  [LEAN-PROVED MECHANISM CORE] [LEAN-PROVED COMPLETION CLOSURE]
+  [NUMERIC PSEUDOULTRAMETRIC COROLLARY PAPER-ONLY]
+  [CLASSICAL AUTOMATA/COALGEBRA PARENTS] [NOT RH]
 
 ## 1. Setup
 
@@ -286,9 +288,9 @@ reporter, carrier, or completion change.
 5. No recursive rule generates a new context constructor here.
 6. No positivity, HT, physical time, arithmetic source, RH endpoint, or proof-route datum appears.
 
-## 10. Lean target
+## 10. Lean certification
 
-Formalize exactly:
+Module `GaloisForLFunctions.HTGeometry.ConstitutiveProspectiveChallengeGeometry` certifies:
 
 1. word depth and prospective agreement;
 2. equivalence, nesting, context shift, and future-kernel intersection;
@@ -296,12 +298,17 @@ Formalize exactly:
 4. observer delay and injective preservation;
 5. the three-state delayed-birth cell;
 6. finite-list all-true finite realization and global nonrealization;
-7. one unconditional capstone.
+7. coordinatewise convergence of finite source signatures to the all-true history;
+8. product-topology closure membership of that non-realized history; and
+9. one unconditional capstone.
 
-No Lean code is to be written until this paper proof survives hostile audit.
+The numerical pseudoultrametric gauge `(PCG1.7)` is a classical paper corollary and is not counted
+as Lean-certified. The filtration, plateau, observer-delay, finite/global realization gap, and
+topological closure mechanism are certified without project axioms or route premises.
 
 ## Log
 
 - 2026-08-10 -- paper proof closed after numeric-ultrametric novelty claim was killed by direct
   2026 literature collision.
 - 2026-08-10 -- observer “only erases birth” slogan corrected to monotone first-separation delay.
+- 2026-08-10 -- mechanism core and product-topology completion witness formalized in Lean.

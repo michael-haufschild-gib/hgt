@@ -1236,3 +1236,81 @@ show the resulting `Q` is nonzero — the clean argument being that applying the
 Theorem 7.1's chain (`ζ(σ(1+s)) = ζ(σ)·F^{K+1}(s)/F^K(s+1)`) is licensed, and the remaining
 ingredients — `hypertranscendental_riemannZeta`, translation invariance and argument scaling — are
 all already corpus-owned.
+
+### Step 15 — reciprocal jet numerators are nonzero
+
+`formal/GaloisForLFunctions/HTGeometry/ReciprocalJetPolynomials.lean` (extended)
+
+Testing the jet identity `f⁽ʲ⁾·g^{j+1} = A_j(g, g′, …)` on the explicit pair `g = exp`,
+`f = exp(−·)` at the origin evaluates `A_j` at the all-ones jet to `(−1)ʲ`, so every reciprocal
+numerator is a nonzero polynomial.
+
+| Declaration | Statement |
+|---|---|
+| `iteratedDeriv_cexp` | `iteratedDeriv k exp = exp` |
+| `iteratedDeriv_cexp_neg` | `iteratedDeriv k (exp ∘ neg) = (−1)^k · exp ∘ neg` |
+| `hasDerivAt_iteratedDeriv_cexp`, `hasDerivAt_iteratedDeriv_cexp_neg` | jet differentiability of the test pair |
+| `recipNum_ne_zero` | `j ≤ N → recipNum N j ≠ 0` |
+
+### Step 16 — reciprocal closure of differential algebraicity (gap 1 closed)
+
+`formal/GaloisForLFunctions/HTGeometry/ReciprocalSubstitution.lean`,
+`formal/GaloisForLFunctions/HTGeometry/ReciprocalSubstitutionInjective.lean`
+
+The substitution `y_j ↦ A_j/g^{j+1}` is realised as an explicit polynomial map, the single
+denominator is cleared by `g^{(n+1)·deg P}`, and the map is proved injective by testing on the
+digamma pair `ψ`, `1/ψ` and invoking Hölder's theorem.
+
+| Declaration | Statement |
+|---|---|
+| `recipWeight`, `recipBound` | monomial weight `∑ⱼ(j+1)αⱼ` and clearing exponent `(n+1)·deg P` |
+| `recipWeight_le_recipBound` | the clearing exponent dominates every monomial weight |
+| `recipSub` | the substituted differential polynomial, one jet order higher |
+| `eval_recipSub` | `recipSub n P (s, g, g′, …) = P(s, f, f′, …)·g^{(n+1)deg P}` wherever `f·g = 1` |
+| `digammaUnitSet`, `isOpen_digammaUnitSet`, `digammaUnitSet_nonempty` | the open nonempty locus where `ψ` is analytic and invertible |
+| `analyticAt_digammaJetEval` | analyticity of the digamma jet evaluation off the poles |
+| `digamma_relation_propagates` | a local digamma relation propagates off all poles |
+| `recipSub_eq_zero_iff` | `recipSub n P = 0 → P = 0` |
+| `differentiallyAlgebraicOn_of_mul_eq_one` | `f·g = 1` on an open set with `f` DA there ⇒ `g` DA there |
+| `differentiallyAlgebraicOn_inv` | DA is closed under inverses of nonvanishing analytic functions |
+| `not_differentiallyAlgebraicOn_of_inv` | hypertranscendence transfers to the reciprocal |
+| `differentiallyAlgebraic_inv` | global form for nonvanishing entire functions |
+
+### Step 17 — Theorem 7.1: the response is hypertranscendental (COMPLETE)
+
+`formal/GaloisForLFunctions/HTGeometry/DifferentialAlgebraicOnClosure.lean`,
+`formal/GaloisForLFunctions/HTGeometry/DifferentialAlgebraicPropagation.lean`,
+`formal/GaloisForLFunctions/HTGeometry/EulerQGammaHypertranscendence.lean`
+
+Gap 2 was closed by instantiating the meromorphic jet field bridge at a general domain, and the
+assembly then runs exactly as planned: the one-step ladder `D(v) = ζ(v)·D(v+σ)` exhibits
+`ζ(σ(1+s))` as `F(s)/F(s+1)`, quotient closure and translation give a differential relation for
+the pulled-back zeta function, the relation propagates across the single pole, and undoing the
+affine substitution contradicts Hilbert's theorem.
+
+| Declaration | Statement |
+|---|---|
+| `DifferentiallyAlgebraicOn.comp_add_const` | translation of the argument moves the domain |
+| `differentiallyAlgebraicOn_mul` | products, on any open preconnected infinite domain |
+| `differentiallyAlgebraicOn_div` | quotients by nonvanishing analytic differentially algebraic functions |
+| `analyticAt_jetEval` | a differential relation of an analytic function is analytic |
+| `differentiallyAlgebraicOn_mono_of_isPreconnected` | local relations propagate over a preconnected domain |
+| `isPreconnected_compl_singleton` | `ℂ ∖ {p}` is preconnected |
+| `differentiallyAlgebraic_of_on_compl_singleton` | a relation off one point becomes global after multiplying by `(s − p)` |
+| `eqgHalfPlane`, `mem_eqgHalfPlane` | the convergence half plane `Re s > 1/σ − 1` and its exponent form |
+| `eqgResponseDirichlet`, `eqgResponseDirichlet_ladder` | the response in the pulled-back variable and its one-step ladder |
+| `eqgZetaPullback`, `eqgPolePoint`, `analyticOnNhd_eqgZetaPullback` | the pulled-back zeta function and its single pole |
+| `hypertranscendental_eqgZetaPullback` | `s ↦ ζ(σ(1+s))` satisfies no algebraic differential equation |
+| `not_differentiallyAlgebraicOn_eqgResponseDirichlet` | the arithmetic Dirichlet response is hypertranscendental on the half plane |
+| `eqgUnitFactor`, `differentiallyAlgebraic_eqgUnitFactor` | the prefactor `C·ζ(σ)^s` is differentially algebraic |
+| **`not_differentiallyAlgebraicOn_eqgResponse`** | **Theorem 7.1** — the Euler q-Gamma response is hypertranscendental on its convergence half plane |
+| `not_differentiallyAlgebraicOn_eqgCont` | the same for every cut of the analytic continuation |
+
+Axiom audit for steps 15–17: `propext, Classical.choice, Quot.sound` only.  Umbrella
+`GaloisForLFunctions.HTGeometry.UniversalLawField` green at 11 568 jobs.
+
+**Frontier note (2026-08-10, updated).**  Theorem 7.1 is closed unconditionally; gaps 1 and 2 are
+both discharged.  The one remaining item on this card is the analytic half of Theorem 9.1: normal
+convergence and zero-freeness of `∏_p Γ_{q_p}(1+s)·e^{−ℓ_{p,σ}(s)}` on `Re s > 1/(2σ) − 1`, which
+needs the second-order expansion of `Γ_q(1+s)` in `q` (EQG.25) and the passage of the per-prime
+genus-one exchange (`eqgRenormLocal_exchange`, already proved) to the infinite product.

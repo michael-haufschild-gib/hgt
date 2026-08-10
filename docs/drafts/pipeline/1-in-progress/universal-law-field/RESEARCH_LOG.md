@@ -953,3 +953,19 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
 - Formalization boundaries recorded on the ULF-FIELD-2 card (necessity/mixture, Θ3 via
   existing HurwitzExp independence, Θ4, and the assembly/computation-bound cards).
 - Program stopped at user instruction.
+
+## 2026-08-10 — frontier-wide pivot to prospective quotient descent
+
+- Re-read the current RH frontier as five first-open-premise classes rather than as eleven routes:
+  singular descent, all-prime oscillatory transport, adaptive orientation, whole-space coercivity,
+  and positive-carrier existence.
+- Rejected Prospective Challenge Geometry as a complete field: it diagnoses fixed-grammar future
+  depth, observer delay, and completion birth but cannot mutate the grammar.
+- Proved ULF-PCG-1 in Lean: permanent prospective plateaux, observer delay, and a coherent
+  non-realized history in the product-topology closure of finite source histories.
+- Proved ULF-PCG-2 in Lean: a proposed operation is genuinely generative exactly when it fails to
+  descend to the old future-behaviour quotient; old-term-definable operations are inert;
+  postobservation can erase real source genesis.
+- Higher open mechanism is now exact: persistent typed failure must source-generate a minimal
+  descent-breaking legal operation with conservative old syntax, coherent composition, and
+  presentation-stable lineage. Criteria are closed; production law remains open.

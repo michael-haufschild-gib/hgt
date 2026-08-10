@@ -340,7 +340,7 @@ theorem intervalIntegral_thetaCuspRouteULowerTaylorShape_eq_mass
     simp only [mul_sub, sub_mul, Finset.sum_sub_distrib]
     congr 3 <;> ring
     funext y
-    rw [Finset.mul_sum, Finset.sum_mul]
+    simp only [Finset.mul_sum, Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro n hn
     ring

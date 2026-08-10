@@ -5,7 +5,7 @@
 - **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
 - **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
   the laws by which consequences, failures, and conservation requirements revise the rulebook.
-- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [TWENTY-FOUR LAWS LEAN-CALIBRATED]
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [TWENTY-SIX LAWS LEAN-CALIBRATED]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
 
 ## 1. Founding shift
@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The twenty-two field laws
+## 2. The twenty-six field laws
 
 ### RLM Law I -- typed exposure
 
@@ -307,6 +307,40 @@ non-singleton repair fibre.  Thus source-generated challenge grammar and repair 
 separate laws.  Recursive doctrine change, presentation invariance, and strategy admission remain
 open.
 
+### RLM Law XXV -- prospective agreement has permanent plateaux and completion births
+
+Finite legal future contexts define nested agreement relations. Their intersection is the full
+future reporter kernel. Under a fixed total grammar, one exact consecutive plateau is permanent;
+any later reopening certifies a grammar, admission, reporter, carrier, or completion change.
+Postobservation can delay or erase first separation but cannot make source information appear
+earlier. Coherent finite-horizon signatures may lie in the product-topology closure of source
+histories without being realized by any source state.
+
+ULF-PCG-1 Lean-certifies this prospective filtration, plateau rigidity, delayed-exposure cell, and
+finite-list/all-true completion witness. The numerical prefix ultrametric is only a gauge; the
+filtration and realization failure are the mechanism.
+
+### RLM Law XXVI -- genuine grammar birth is failure of old-quotient descent
+
+Adjoin one proposed legal operation `h` to a fixed context grammar. Let `K` be the old future
+kernel and `K^h` the extended kernel. Then
+
+\[
+ h\text{ preserves }K
+ \quad\Longleftrightarrow\quad
+ K^h=K.
+ \tag{RLM.4}
+\]
+
+Hence effective law birth is exactly strict prospective refinement, equivalently failure of `h` to
+descend to the old future quotient. Every operation definable by an old context word is inert; a
+nondefinable operation can still be inert. Postobservation may erase a real refinement.
+
+ULF-PCG-2 Lean-certifies the exact equivalence, strict-refinement form, definability barrier, and
+observer-erasure cell. It classifies a supplied update but does not source-generate one. The live
+field problem is the law taking persistent typed failure to a minimal descent-breaking operation
+without admitting an arbitrary state-indexed oracle.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -349,6 +383,8 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-ALG-3 | intertwined challenge-prolongation transport, observer rank contraction, and exact hidden residual for apparent closure | certified |
 | ULF-DLG-1 | marked-context production, nested-repair chain law, strict outer locality, and interaction-ancestry erasure no-go | certified |
 | ULF-DLG-2 | source-generated contextual reporter, operational effectivity, nested challenge chain, nonlinear observer data processing, erasure, and no-selection fibre | certified |
+| ULF-PCG-1 | prospective filtration, permanent plateau, observer delay, finite/global realization gap, and completion closure | certified |
+| ULF-PCG-2 | descent-breaking grammar extension, exact strict refinement, old-term definability barrier, and observer erasure | certified |
 | ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
@@ -498,3 +534,9 @@ Retire RLM as theatre if:
 - 2026-08-10 -- added differential law genesis as Law XXIII: a source-marked failure site produces
   a restorative one-hole context; composition forces nested repair and locality; ancestry-blind
   observation cannot distinguish inner from cross-branch interaction birth.
+- 2026-08-10 -- added prospective challenge geometry as Law XXV: fixed grammars have permanent
+  future-kernel plateaux, observers only delay/erase separation, and completion can add coherent
+  non-realized histories.
+- 2026-08-10 -- added descent-breaking grammar extension as Law XXVI: a proposed new operation is
+  genuinely generative exactly when it fails to descend to the old future quotient; old-term
+  definability is an exact no-genesis barrier.
