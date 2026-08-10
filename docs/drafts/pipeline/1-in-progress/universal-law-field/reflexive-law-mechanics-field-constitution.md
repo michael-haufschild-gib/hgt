@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The twenty-six field laws
+## 2. The twenty-seven field laws
 
 ### RLM Law I -- typed exposure
 
@@ -341,6 +341,29 @@ observer-erasure cell. It classifies a supplied update but does not source-gener
 field problem is the law taking persistent typed failure to a minimal descent-breaking operation
 without admitting an arbitrary state-indexed oracle.
 
+### RLM Law XXVII -- observation renormalizes functions into relations and execution becomes lax
+
+Every deterministic source law has a canonical relational image under every observer. It remains
+deterministic exactly when the source law preserves the observer kernel. For serial execution and
+serial observation,
+
+\[
+\mathcal R_{pq}(gf)
+\subseteq p_*(\mathcal R_q(f);\mathcal R_q(g))
+\subseteq (p_*\mathcal R_q(f));(p_*\mathcal R_q(g)).
+\tag{RLM.5}
+\]
+
+The first gap is source-execution splice; the second is observer-midpoint splice. They are
+independent. The first vanishes under executable descent of the later law. The second vanishes for
+all relations exactly when the further observer is injective. Hence observer renormalization has a
+typed defect filtration, not one scalar curvature.
+
+ULF-RLR-1 Lean-certifies relational survival, descent classification, lax execution, strict serial
+pushforward, exact injectivity converse, selector no-go, and two unconditional four-state cells
+isolating the defects. This closes set-level renormalization kinematics. Topological closure,
+convex/probabilistic promotion, cofinal limits, and source-normal determinization remain open.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -385,6 +408,7 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-DLG-2 | source-generated contextual reporter, operational effectivity, nested challenge chain, nonlinear observer data processing, erasure, and no-selection fibre | certified |
 | ULF-PCG-1 | prospective filtration, permanent plateau, observer delay, finite/global realization gap, and completion closure | certified |
 | ULF-PCG-2 | descent-breaking grammar extension, exact strict refinement, old-term definability barrier, and observer erasure | certified |
+| ULF-RLR-1 | observer-induced relational law, lax execution, serial two-defect interchange, exact injectivity chamber, and independent splice cells | certified |
 | ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
@@ -407,6 +431,8 @@ RLM deliberately splices known mathematics, but changes the question connecting 
 - intervention theory supplies active reporters;
 - thermodynamics and directed topology supply formation work;
 - recurrence and covering theory separate closed observation from open law history.
+- relation calculus and abstract interpretation supply multivalued effective laws and spurious
+  histories; RLM supplies their coupling to descent, serial observation, and promotion obligations.
 
 The unifying interpretation is new-field-level only if these parents become transition laws in one
 self-revising calculus and make cross-laboratory predictions. A list of analogies does not count.
@@ -437,6 +463,8 @@ self-revising calculus and make cross-laboratory predictions. A list of analogie
     every transition system, so predictive revision must constrain compatibility birth.
 13. **Finite monotone termination:** bounded compatibility vocabulary and strict monotone active
     repair cannot sustain open history; any infinite genesis must spend another named resource.
+14. **Two-defect renormalization:** source-execution splice and observer-midpoint splice are
+    independently nonzero; no scalar total defect determines where effective-law loss entered.
 
 ## 7. Fields-medalist research programme
 
@@ -499,8 +527,9 @@ mechanism tuple before its endpoint and predict one theorem not used to define t
 3. **Revealed-work integrability:** derive directed work from source interventions; positive work
    cycles must falsify every scalar action rather than trigger a fitted metric change.
 4. **Infinite coherence:** convergence criterion for an unbounded promotion differential tower.
-5. **Renormalization:** effective law flow under observer coarsening, with nontrivial fixed-point
-   predictions.
+5. **Higher renormalization:** extend certified set-level relational flow to closure, completion,
+   convexification, probability kernels, and cofinal observers; derive nontrivial fixed points and
+   exchange laws rather than fitting deterministic selectors.
 6. **Whole-corpus realization:** one source-normal mechanism instance spanning at least three
    nonisomorphic mathematical organs.
 
@@ -540,3 +569,7 @@ Retire RLM as theatre if:
 - 2026-08-10 -- added descent-breaking grammar extension as Law XXVI: a proposed new operation is
   genuinely generative exactly when it fails to descend to the old future quotient; old-term
   definability is an exact no-genesis barrier.
+- 2026-08-10 -- added relational law renormalization as Law XXVII: lossy observation canonically
+  turns source functions into relations; execution is lax; serial observation adds a second,
+  independent splice layer; composition is preserved for all relations exactly by injective
+  observers.

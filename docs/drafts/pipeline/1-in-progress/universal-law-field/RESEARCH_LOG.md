@@ -969,3 +969,20 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
 - Higher open mechanism is now exact: persistent typed failure must source-generate a minimal
   descent-breaking legal operation with conservative old syntax, coherent composition, and
   presentation-stable lineage. Criteria are closed; production law remains open.
+
+## 2026-08-10 — frontier ingested as relational renormalization, not route work
+
+- Re-read `rh-current-frontier-map.md` as a constraint on universal mechanics. Its five live
+  obstruction classes are not promoted to five foundational objects.
+- Proved ULF-RLR-1: every observed deterministic law has a canonical relational effective law;
+  deterministic descent is exactly kernel preservation; execution is lax; serial observation is
+  strict.
+- New frontier-level law: serial execution and observation have a canonical two-defect filtration.
+  Fine execution splice and coarse midpoint splice are independent; pushforward preserves every
+  relation composition exactly iff observer is injective.
+- Lean module `ConstitutiveRelationalLawRenormalization` passes direct elaboration, 2,998-job leaf
+  build, 11,574-job ULF umbrella build, and an axiom audit reporting no axioms on headline theorems
+  or capstones.
+- Honest boundary: this is set-level kinematics and anti-theatre gate, not yet full field dynamics.
+  Next higher mechanism must govern closure/completion/convexification of relational laws and
+  produce nontrivial promotion response or fixed-point prediction.

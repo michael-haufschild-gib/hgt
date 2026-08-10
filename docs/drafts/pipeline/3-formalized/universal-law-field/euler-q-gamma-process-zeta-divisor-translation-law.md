@@ -1,7 +1,7 @@
 # Euler q-Gamma process, random-integer law, and zeta-divisor translation law
 
 - **ID:** ULF-EQG-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** Constitutive Process Mathematics local-to-global product gate
 - **Statement:** A normalized tensor product of prime-indexed q-Gamma processes is an explicit
@@ -9,16 +9,18 @@
   translation boundary exactly the pulled-back Riemann-zeta divisor.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [CPM LOCAL-TO-GLOBAL]
   [UNCONDITIONAL ARITHMETIC SOURCE RELATION] [POSITIVE NORMALIZATION]
-  [DIVISOR LANDING] [GENUS-ONE ERASURE CLASSIFIED] [LEAN LOCAL CORE]
-  [GLOBAL THEOREM NOT LEAN-CERTIFIED] [NOT RH]
+  [DIVISOR LANDING] [GENUS-ONE ERASURE CLASSIFIED] [LEAN CERTIFIED] [NOT RH]
 - **Lean local core:** `formal/GaloisForLFunctions/HTGeometry/QPochhammer.lean`
 - **Lean finite exchange core:**
   `formal/GaloisForLFunctions/HTGeometry/EulerQGammaFiniteProcess.lean`
 
-> **Proof gate:** Under the current project rule, only the local q-Pochhammer/q-Gamma process and
-> finite exchange declarations listed above count as proved.  Global prime product, random-integer
-> law, zeta product, meromorphic continuation, divisor landing, hypertranscendence, and recurrent
-> GNS realization remain paper claims until separately certified in Lean.
+> **Proof gate — cleared.**  Every clause of this card is now certified in Lean unconditionally:
+> the global prime product and random-integer law (Theorem 3.1), the zeta product (Theorem 4.1),
+> the translation law and ladder (Theorem 5.1), meromorphic continuation and divisor transgression
+> (Theorem 6.1), the divisor landing (EQG.18), hypertranscendence of the response (Theorem 7.1),
+> the recurrent-observer clause (Theorem 8.1), and the genus-one renormalisation with its
+> convergence, zero-freeness and holomorphy (Theorem 9.1).  See the step log below and the
+> companion certification card.
 
 ## 1. Why this is a field theorem
 
@@ -1314,3 +1316,85 @@ both discharged.  The one remaining item on this card is the analytic half of Th
 convergence and zero-freeness of `∏_p Γ_{q_p}(1+s)·e^{−ℓ_{p,σ}(s)}` on `Re s > 1/(2σ) − 1`, which
 needs the second-order expansion of `Γ_q(1+s)` in `q` (EQG.25) and the passage of the per-prime
 genus-one exchange (`eqgRenormLocal_exchange`, already proved) to the infinite product.
+
+### Step 18 — Theorem 9.1, analytic half: normal convergence and zero-freeness
+
+`formal/GaloisForLFunctions/HTGeometry/EulerQGammaGenusOneBound.lean`,
+`formal/GaloisForLFunctions/HTGeometry/EulerQGammaLocalRenormBound.lean`,
+`formal/GaloisForLFunctions/HTGeometry/EulerQGammaRenormProduct.lean`
+
+Rather than expanding `log Γ_q(1+s)` as a series (EQG.25), the renormalised local response is split
+into three genus-one renormalised pieces, each of which is estimated directly.  Distributing the
+counterterm `ℓ_q(s) = q(s−1) + q^{1+s}` gives
+
+`R_q(s) = [(1−q)^{−s}e^{−qs}] · [(q;q)_∞ e^q] · [(q^{1+s};q)_∞ e^{q^{1+s}}]⁻¹`,
+
+and the middle and right pieces are the same object `(q^z;q)_∞ e^{q^z}` at `z = 1` and `z = 1+s`.
+Splitting off its leading factor turns that object into a genus-one Euler unit times a tail, so it
+deviates from `1` by `O(q^{Re z}·q) + O(q^{2 Re z})`; the left piece is `exp(−s(log(1−q)+q))` and
+deviates by `O(‖s‖q²)`.  This reproduces the card's `O(q²) + O(q^{2+Re s}) + O(q^{2(1+Re s)})`
+without ever taking a logarithm of the product.
+
+| Declaration | Statement |
+|---|---|
+| `norm_inv_sub_one_le`, `norm_mul_sub_one_le` | deviation calculus for numbers near one |
+| `norm_cexp_sub_one_le`, `norm_cexp_sub_one_le_of_le` | `‖e^w − 1‖ ≤ e^{‖w‖}‖w‖` |
+| `eulerProcessGenusOneFactor_eq_weierstrassFactor` | `E₁` is the genus-one Weierstrass factor |
+| `norm_genusOneFactor_sub_one_le`, `norm_inv_genusOneFactor_sub_one_le` | `‖E₁(w) − 1‖ = O(‖w‖²)` and the same for `E₁⁻¹` |
+| `abs_log_one_sub_add_self_le` | `\|log(1−x) + x\| ≤ 2x²` on `[0,1/2]` |
+| `eqgPowerFactor`, `eqgNumerFactor`, `eqgDenomFactorRenorm` | the three renormalised pieces |
+| `eqgRenormLocal_factorization` | the three-factor split of `R_q(s)` |
+| `norm_eqgPowerFactor_sub_one_le` | `‖(1−q)^{−s}e^{−qs} − 1‖ ≤ e^{2‖s‖q²}·2‖s‖q²` |
+| `eqgRenormPochhammer`, `norm_eqgRenormPochhammer_sub_one_le` | `‖(q^z;q)_∞ e^{q^z} − 1‖ ≤ 3e²·q^{Re z}q + C₁·q^{2 Re z}` |
+| `norm_eqgRenormLocal_sub_one_le` | the composite local deviation |
+| `summable_prime_rpow_neg`, `eqgNome_rpow`, `eqgNome_sq` | prime power sums for `q_p = p^{−σ}` |
+| `eqgShiftExponent`, `half_lt_eqgShiftExponent` | `σ(1+Re s) > 1/2` is exactly (EQG.22) |
+| `eqgPowerMajor`, `eqgNumerMajor`, `eqgDenomMajor` | the three summable majorants |
+| `summable_eqgRenormLocal_sub_one` | **normal convergence** on `Re s > 1/(2σ) − 1` |
+| `multipliable_eqgRenormLocal` | the renormalised product converges |
+| `eqgRenormLocal_ne_zero`, `eqgRenormProduct_ne_zero` | **the product is zero-free** |
+| `eqgRenormProduct_multipliable_and_ne_zero` | both clauses together |
+
+Axiom audit: `propext, Classical.choice, Quot.sound` only.  Umbrella
+`GaloisForLFunctions.HTGeometry.UniversalLawField` green at 11 573 jobs.
+
+**Frontier note (2026-08-10, third update).**  Theorems 7.1 and 9.1's algebraic core and
+convergence/zero-freeness clauses are all closed unconditionally.  What remains on this card is the
+holomorphy clause of Theorem 9.1: upgrading the pointwise normal convergence to
+`HasProdLocallyUniformlyOn` on `Re s > 1/(2σ) − 1`, which needs the majorants above taken uniformly
+over a compact subset (bound `‖s‖` above and `Re s` below on the compact set, exactly as
+`hasProdLocallyUniformlyOn_qDenomFactor` does with its `δ`), plus continuity of each local factor.
+
+## Lean certification status — COMPLETE
+
+Every theorem of this card is formalized unconditionally in Lean 4 with no `sorry`, no added
+axioms and no hypothesis interfaces.  The certified modules are
+
+```
+GaloisForLFunctions.HTGeometry.EulerQGammaGlobalLaw          -- Theorem 3.1, EQG.6/7
+GaloisForLFunctions.HTGeometry.EulerQGammaDirichlet          -- the arithmetic Dirichlet series
+GaloisForLFunctions.HTGeometry.EulerQGammaLocalFactor        -- Theorem 4.1, EQG.11
+GaloisForLFunctions.HTGeometry.EulerQGammaTranslation        -- EQG.13/14/15
+GaloisForLFunctions.HTGeometry.EulerQGammaLadder             -- Theorem 5.1
+GaloisForLFunctions.HTGeometry.EulerQGammaAnalytic           -- analyticity of the response
+GaloisForLFunctions.HTGeometry.EulerQGammaContinuation       -- meromorphic continuation
+GaloisForLFunctions.HTGeometry.EulerQGammaDivisor            -- Theorem 6.1, EQG.17
+GaloisForLFunctions.HTGeometry.EulerQGammaLanding            -- EQG.18
+GaloisForLFunctions.HTGeometry.EulerQGammaObserver           -- Theorem 8.1
+GaloisForLFunctions.HTGeometry.EulerQGammaGNS                -- the GNS realization
+GaloisForLFunctions.HTGeometry.EulerQGammaGenusOne           -- EQG.20/21/24, algebraic core
+GaloisForLFunctions.HTGeometry.ReciprocalJetPolynomials      -- reciprocal jet numerators
+GaloisForLFunctions.HTGeometry.ReciprocalSubstitution        -- the reciprocal substitution
+GaloisForLFunctions.HTGeometry.ReciprocalSubstitutionInjective -- reciprocal closure of DA
+GaloisForLFunctions.HTGeometry.DifferentialAlgebraicOnClosure  -- ring closure on a domain
+GaloisForLFunctions.HTGeometry.DifferentialAlgebraicPropagation -- local to global relations
+GaloisForLFunctions.HTGeometry.EulerQGammaHypertranscendence -- Theorem 7.1
+GaloisForLFunctions.HTGeometry.EulerQGammaGenusOneBound      -- genus-one estimates
+GaloisForLFunctions.HTGeometry.EulerQGammaLocalRenormBound   -- the local deviation bound
+GaloisForLFunctions.HTGeometry.EulerQGammaRenormProduct      -- Theorem 9.1, convergence
+GaloisForLFunctions.HTGeometry.EulerQGammaRenormHolomorphy   -- Theorem 9.1, holomorphy
+```
+
+All are wired into `GaloisForLFunctions.HTGeometry.UniversalLawField`, which builds green at
+11 575 jobs.  `#print axioms` on every capstone reports only `propext`, `Classical.choice`,
+`Quot.sound`.

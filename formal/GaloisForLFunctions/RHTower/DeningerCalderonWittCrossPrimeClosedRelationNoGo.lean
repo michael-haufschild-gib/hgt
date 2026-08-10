@@ -82,6 +82,49 @@ theorem closedLinearRelation_eq_top_prod_vertical_of_dense_zeroCore
     rw [heq] at hadd
     exact hadd
 
+/-- Every output of such a relation is already vertical over the zero source
+and is attained over every source point. -/
+theorem closedLinearRelation_mem_vertical_of_dense_zeroCore
+    {𝕜 X Y : Type*}
+    [Ring 𝕜] [TopologicalSpace 𝕜]
+    [AddCommGroup X] [Module 𝕜 X] [TopologicalSpace X] [ContinuousAdd X]
+    [AddCommGroup Y] [Module 𝕜 Y] [TopologicalSpace Y]
+    (R : Submodule 𝕜 (X × Y))
+    (hclosed : IsClosed (R : Set (X × Y)))
+    (D : Submodule 𝕜 X) (hDdense : Dense (D : Set X))
+    (hzero : ∀ x ∈ D, (x, (0 : Y)) ∈ R)
+    {x : X} {w : Y} (hxw : (x, w) ∈ R) :
+    w ∈ linearRelationVerticalFiber R ∧ ∀ x' : X, (x', w) ∈ R := by
+  have hR := closedLinearRelation_eq_top_prod_vertical_of_dense_zeroCore
+    R hclosed D hDdense hzero
+  have hw : w ∈ linearRelationVerticalFiber R := by
+    rw [hR] at hxw
+    exact (Submodule.mem_prod.mp hxw).2
+  refine ⟨hw, fun x' => ?_⟩
+  rw [hR]
+  exact Submodule.mem_prod.mpr ⟨Submodule.mem_top, hw⟩
+
+/-- **Nonselectivity.** Such a relation has the same output fibre over every
+source point, so its outputs carry no information about the input. -/
+theorem closedLinearRelation_outputFiber_const_of_dense_zeroCore
+    {𝕜 X Y : Type*}
+    [Ring 𝕜] [TopologicalSpace 𝕜]
+    [AddCommGroup X] [Module 𝕜 X] [TopologicalSpace X] [ContinuousAdd X]
+    [AddCommGroup Y] [Module 𝕜 Y] [TopologicalSpace Y]
+    (R : Submodule 𝕜 (X × Y))
+    (hclosed : IsClosed (R : Set (X × Y)))
+    (D : Submodule 𝕜 X) (hDdense : Dense (D : Set X))
+    (hzero : ∀ x ∈ D, (x, (0 : Y)) ∈ R) (x x' : X) :
+    {w : Y | (x, w) ∈ R} = {w : Y | (x', w) ∈ R} := by
+  ext w
+  constructor
+  · intro hw
+    exact (closedLinearRelation_mem_vertical_of_dense_zeroCore R hclosed D
+      hDdense hzero hw).2 x'
+  · intro hw
+    exact (closedLinearRelation_mem_vertical_of_dense_zeroCore R hclosed D
+      hDdense hzero hw).2 x
+
 /-- Every closed relation extending the zero old boundary on the actual
 cross-prime arithmetic witness span is a product with its vertical fibre. -/
 theorem deningerCalderonWittCrossPrimeClosedRelation_eq_top_prod_vertical
@@ -127,6 +170,53 @@ theorem
     rw [Submodule.mem_bot]
     exact hsingle y hy
   · exact bot_le
+
+/-- Any nonzero output of such a relation is pure vertical ambiguity: it
+occurs already over the zero source and over every source point. -/
+theorem deningerCalderonWittCrossPrimeClosedRelation_output_is_vertical
+    {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
+    (R : Submodule ℂ
+      (DeningerCalderonWittCrossPrimePacketHilbert × W))
+    (hclosed : IsClosed
+      (R : Set (DeningerCalderonWittCrossPrimePacketHilbert × W)))
+    (hsource : ∀ x : deningerCalderonWittCrossPrimeAlgebraicSourceSpan,
+      (deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert x,
+        (0 : W)) ∈ R)
+    {x : DeningerCalderonWittCrossPrimePacketHilbert} {w : W}
+    (hxw : (x, w) ∈ R) :
+    ((0 : DeningerCalderonWittCrossPrimePacketHilbert), w) ∈ R ∧
+      ∀ x' : DeningerCalderonWittCrossPrimePacketHilbert, (x', w) ∈ R := by
+  refine closedLinearRelation_mem_vertical_of_dense_zeroCore R hclosed
+    (LinearMap.range
+      deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert)
+    deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert_denseRange
+    ?_ hxw
+  intro z hz
+  obtain ⟨x, rfl⟩ := hz
+  exact hsource x
+
+/-- **No selective annihilator.** Passing from operators to closed linear
+relations cannot make the old oriented boundary source-selective: the output
+fibre is the same over every packet. -/
+theorem deningerCalderonWittCrossPrimeClosedRelation_outputFiber_const
+    {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
+    (R : Submodule ℂ
+      (DeningerCalderonWittCrossPrimePacketHilbert × W))
+    (hclosed : IsClosed
+      (R : Set (DeningerCalderonWittCrossPrimePacketHilbert × W)))
+    (hsource : ∀ x : deningerCalderonWittCrossPrimeAlgebraicSourceSpan,
+      (deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert x,
+        (0 : W)) ∈ R)
+    (x x' : DeningerCalderonWittCrossPrimePacketHilbert) :
+    {w : W | (x, w) ∈ R} = {w : W | (x', w) ∈ R} := by
+  refine closedLinearRelation_outputFiber_const_of_dense_zeroCore R hclosed
+    (LinearMap.range
+      deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert)
+    deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert_denseRange
+    ?_ x x'
+  intro z hz
+  obtain ⟨y, rfl⟩ := hz
+  exact hsource y
 
 /-- Every closable partial operator agreeing with the zero old boundary on
 the dense actual arithmetic witness core has the full zero operator as its

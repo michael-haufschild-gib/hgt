@@ -694,3 +694,35 @@ jobs. Source-level axiom prints report either no axioms or only `propext`, `Clas
 `Quot.sound`. Both modules are wired into the Universal Law Field umbrella. The formalized
 mechanism classifies effectiveness and exposes the old-term no-genesis barrier; construction of a
 source-normal minimal descent-breaking update remains open.
+
+## Session 2026-08-10 addition (Relational Law Renormalization)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-RLR-1 | Canonical observer-induced relation; deterministic descent iff kernel preservation; lax execution; exact serial observer pushforward; selector no-go; two-defect observation--execution interchange; pushforward composition exact iff observer injective; independent strict cells | `HTGeometry.ConstitutiveRelationalLawRenormalization` |
+
+Direct foreground elaboration and the 2,998-job leaf build pass. The module is wired into
+`HTGeometry.UniversalLawField`; final umbrella build passes with 11,574 jobs. Source-level axiom
+prints on descent classification, pushforward exactness, interchange filtration, both independence
+cells, and both capstones report **no axioms**. The certification is set-level and route-independent;
+topological closure, convex/probabilistic promotion, cofinal histories, and source-normal selection
+remain open.
+
+## ULF-EQG-1 — Euler q-Gamma process, random-integer law, zeta-divisor translation
+
+Promoted to stage 3 on 2026-08-10.  Twenty-two modules, from the global product law and the
+arithmetic Dirichlet series through the meromorphic cut ladder, the divisor transgression and its
+clean landing, the compact-resolvent observer, the hypertranscendence of the response, and the
+genus-one renormalisation with its convergence, zero-freeness and holomorphy.
+
+Three reusable layers were built on the way: reciprocal closure of differential algebraicity
+(`recipSub`, `recipSub_eq_zero_iff`, `differentiallyAlgebraicOn_inv`), the domain-local ring and
+propagation calculus for algebraic differential equations (`differentiallyAlgebraicOn_mul/_div`,
+`differentiallyAlgebraicOn_mono_of_isPreconnected`,
+`differentiallyAlgebraic_of_on_compl_singleton`), and the genus-one deviation calculus
+(`norm_genusOneFactor_sub_one_le`, `norm_inv_sub_one_le`, `norm_mul_sub_one_le`,
+`norm_cexp_sub_one_le`).
+
+Umbrella `HTGeometry.UniversalLawField` green at 11 575 jobs; every capstone axiom print is
+`propext, Classical.choice, Quot.sound`.  Companion:
+`3-formalized/universal-law-field/euler-q-gamma-process-zeta-divisor-translation-law-formalized.md`.

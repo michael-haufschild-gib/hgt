@@ -7,7 +7,8 @@
   deterministic descent is exactly right-uniqueness, observer coarsening is strict pushforward,
   execution is lax, and its exact splice defect detects source-unrealizable histories.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT]
-  [RELATIONAL RENORMALIZATION] [SHARP COUNTERMODELS] [LEAN NEXT] [NOT RH]
+  [RELATIONAL RENORMALIZATION] [SHARP COUNTERMODELS] [LEAN-PROVED] [AXIOM-FREE]
+  [NOT RH]
 
 ## 1. Setup
 
@@ -297,7 +298,76 @@ This yields one unconditional proof obligation:
 The statement applies only after the chart is literally typed as `(source function, observer)`.
 It does not claim that unrelated proof systems are instances by analogy.
 
-## 8. Hostile conjecture/failure loops
+## 8. Serial observation--execution interchange
+
+Let `p:B->C` be a further observer.  For source laws `f,g`, define three relations on `C`:
+
+\[
+ D_0=\mathcal R_{pq}(gf),\qquad
+ D_1=p_*\bigl(\mathcal R_q(f);\mathcal R_q(g)\bigr),\qquad
+ D_2=(p_*\mathcal R_q(f));(p_*\mathcal R_q(g)).
+ \tag{RR.17}
+\]
+
+### Theorem 8.1 — two-defect interchange filtration
+
+There are canonical inclusions
+
+\[
+ \boxed{D_0\subseteq D_1\subseteq D_2.}
+ \tag{RR.18}
+\]
+
+The first gap consists of fine-observer execution splices that survive `p`.  The second consists of
+new splices created by matching two distinct fine midpoints having the same `p`-observation.
+
+### Proof
+
+Theorem 4.1 gives `D_0=p_*R_q(gf)`.  Theorem 3.1 and monotonicity of direct image give
+`D_0 subset D_1`.  For the second inclusion, a witness of `p_*(R;S)` contains one fine midpoint
+`b`.  Its image `p(b)` is a valid common midpoint witnessing `(p_*R);(p_*S)`.  Apply this with
+`R=R_q(f)` and `S=R_q(g)`.  QED.
+
+### Theorem 8.2 — exactness chambers and converse
+
+1. If `g` preserves the kernel of `q`, then `D_0=D_1` for every `f,p`.
+2. If `p` is injective, then `D_1=D_2` for every pair of relations, hence for every `f,g,q`.
+3. Conversely, `p_*` preserves composition for every pair of relations exactly when `p` is
+   injective.
+4. If both hypotheses in items 1 and 2 hold, the whole interchange filtration collapses to one
+   relation.
+
+### Proof
+
+Item 1 is Theorem 3.1 followed by direct image.  For item 2, a coarse composite supplies fine
+midpoints `b_1,b_2` with `p(b_1)=p(b_2)`; injectivity identifies them and gives one fine composite
+witness.
+
+For the converse, suppose `p(x)=p(y)`.  Let `R` be the singleton loop at `x` and `S` the singleton
+loop at `y`.  Their pushforwards compose through the common observed midpoint.  If pushforward
+preserves composition, `R;S` must have a witness.  This forces `x=y`.  Thus `p` is injective.
+QED.
+
+### Proposition 8.3 — independence of the two defects
+
+Both strictness patterns occur.
+
+1. Take the four-state cell of Section 6 and `p=id_B`.  Then `D_0 subsetneq D_1=D_2`: source
+   execution creates a splice, while serial observation creates none.
+2. Take the same cell with fine observer `q_0=id_X` and further observer
+   `p=relationalLawObserver`.  Fine function graphs compose exactly, so `D_0=D_1`, but
+   `D_1 subsetneq D_2`: only the coarser midpoint match creates the false history.
+
+Therefore the two gaps are independent invariants.  A scalar total defect cannot determine where
+loss entered the execution--observation square.
+
+This is the first frontier-level mechanism extracted from the five open-problem classes in the
+current RH map.  It does **not** identify those classes.  It says that whenever a live chart is
+literally formed by serial law execution and serial observation, two distinct proof obligations
+exist and cannot be merged: executable descent at the current scale and faithful midpoint matching
+under the next observer.
+
+## 9. Hostile conjecture/failure loops
 
 | conjecture | verdict | strongest survivor |
 |---|---|---|
@@ -307,9 +377,11 @@ It does not claim that unrelated proof systems are instances by analogy.
 | coarse-graining monotonically increases branching | false by Proposition 6.2(2) | exact relation pushforward |
 | coarse-graining monotonically decreases branching | false by Proposition 6.2(1) | relation, not branch count, is invariant payload |
 | branch selection repairs source dynamics | false by Theorem 5.1 | selection is new constitutive data |
+| execution loss and observer loss are one scalar defect | false by Proposition 8.3 | canonical two-step inclusion filtration |
+| relation pushforward preserves composition | false for every noninjective observer | exact iff the observer is injective |
 | relation calculus alone is the universal field | unsupported | exact transition law inside Reflexive Law Mechanics |
 
-## 9. Parent and significance boundary
+## 10. Parent and significance boundary
 
 Direct images of graphs, relations, nondeterministic transition systems, quotient automata,
 hyperoperations, and spurious paths in abstract interpretation are classical.  For example,
@@ -330,7 +402,7 @@ The theorem's field role is the exact synthesis:
 It supplies unconditional new-to-corpus leverage and a reusable anti-theatre gate.  Topological,
 convex, admission-sensitive, and higher-history extensions remain open.
 
-## 10. Exact scope
+## 11. Exact scope
 
 - ordinary sets and total functions;
 - surjective observers;
@@ -339,7 +411,7 @@ convex, admission-sensitive, and higher-history extensions remain open.
 - no claim that every route supplies the required source function and observer;
 - no deterministic selector or promotion principle is chosen.
 
-## 11. Lean target
+## 12. Lean certification
 
 Formalize the exact set-level theorem in
 
@@ -355,9 +427,20 @@ and wire it into `GaloisForLFunctions.HTGeometry.UniversalLawField`.  Required d
 6. exact observer pushforward;
 7. deterministic selector no-go;
 8. strict four-state splice, creation, and erasure countermodels;
-9. one unconditional capstone.
+9. serial observation--execution two-defect filtration;
+10. pushforward composition exactness iff observer injectivity;
+11. independence of the two interchange gaps;
+12. one unconditional capstone.
+
+Completed in the named module and wired into `UniversalLawField`.  Direct elaboration, leaf build,
+and umbrella build pass.  Axiom audit reports no axioms for the exactness classifications,
+interchange filtration, independence cells, or capstones.  Formalized record:
+
+`docs/drafts/pipeline/3-formalized/universal-law-field/relational-law-renormalization-mechanics/observer-induced-relational-law-lax-composition-and-splice-defect-law-formalized.md`.
 
 ## Log
 
 - 2026-08-10 — dependency-closed paper proof completed after hostile comparison with strict quotient
   repair, abstract interpretation, and relation calculus.  Lean formalization opened.
+- 2026-08-10 — serial observation--execution interchange added; Lean module and ULF umbrella build
+  pass, with axiom-free capstones and independent strict cells for both defect layers.

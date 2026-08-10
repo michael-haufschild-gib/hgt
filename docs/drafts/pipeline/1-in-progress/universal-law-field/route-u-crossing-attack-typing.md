@@ -228,3 +228,15 @@ frontier map's design survivor demands; U's obligation has exactly the admissibl
   source closure must constrain cross-pair transport, not individual atom angles or cumulant
   signs.  Module `XiShiftedHankelCassiniPairEnergyTransport.lean` is umbrella-wired and passes
   direct `lake env lean`.
+- 2026-08-10 — C59 exposed and Lean-closed the higher universal principle behind C58.  For every
+  finite `d`-node complex packet, hyperedge energy
+  `E_d(z)=(prod_i z_i) prod_{i<j}(z_j-z_i)^2` transforms under the common reciprocal-mass shift
+  `z_i -> z_i/(1+h z_i)` by the exact cocycle
+  `E_d(M_h z)=E_d(z)/(prod_i(1+h z_i))^(2d-1)`.  Its actual shifted-energy derivative at zero is
+  therefore `-(2d-1)(sum_i z_i)E_d(z)`.  All Hankel degrees share conformal weight `2d-1`, and
+  degree-one pair transport is only the first case of a hyperedge velocity-barycenter law.  This
+  reinterprets repeated degree-specific obstructions: zero total contact energy does not control
+  signed transport unless the arithmetic source constrains the contact-weighted hyperedge
+  barycenter.  Module `XiShiftedHankelCassiniHyperedgeConformalTransport.lean` is umbrella-wired
+  and passes direct `lake env lean`.  Remaining source theorem is now all-degree: exclude adverse
+  conformal hyperedge transport at every first flat face using the prime--Gamma coupling itself.

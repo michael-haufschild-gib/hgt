@@ -7,7 +7,7 @@
   effective laws.  Observation composes strictly, law execution composes only laxly, and the
   resulting splice defect records false histories manufactured by coarse intermediate matching.
 - **Status:** [MECHANISM NOT OBJECT] [ROUTES EXCLUDED FROM FOUNDATIONS]
-  [SET-LEVEL CORE PAPER-PROVED] [LEAN NEXT] [TOPOLOGICAL/CONVEX EXTENSIONS OPEN] [NOT RH]
+  [SET-LEVEL CORE LEAN-PROVED] [AXIOM-FREE] [TOPOLOGICAL/CONVEX EXTENSIONS OPEN] [NOT RH]
 
 ## 1. Founding pivot
 
@@ -95,6 +95,22 @@ Further observation can either create branching by merging source inputs with di
 outputs, or erase branching by merging the outputs.  No scalar branch count is universally
 monotone under coarse-graining.  The invariant datum is the relation and its lax-composition cells.
 
+### Law VII — execution--observation interchange has two independent defects
+
+For serial observers `X -q-> B -p-> C` and source laws `f,g`, there is a canonical filtration
+
+\[
+ \mathcal R_{pq}(gf)
+ \subseteq p_*(\mathcal R_q(f);\mathcal R_q(g))
+ \subseteq (p_*\mathcal R_q(f));(p_*\mathcal R_q(g)).
+ \tag{RLR.6}
+\]
+
+The first gap is execution splice surviving further observation.  The second is a new midpoint
+splice created by `p`.  They are independent.  The first vanishes when `g` preserves the
+`q`-kernel; the second vanishes for all relations exactly when `p` is injective.  Consequently no
+single scalar “curvature” can replace the typed defect filtration.
+
 ## 3. Why this is a higher mechanism
 
 The state variable is not an RH carrier.  It is the effective law type produced by observation:
@@ -129,7 +145,10 @@ ULF-RLR-1 proves Laws I--VI at set level, including:
 6. exact observer pushforward;
 7. selector impossibility;
 8. one four-state strict-splice witness;
-9. coarse-graining creation and erasure of branching.
+9. coarse-graining creation and erasure of branching;
+10. serial observation--execution two-defect filtration;
+11. exact pushforward composition iff observer injectivity;
+12. independent cells isolating each defect layer.
 
 The unconditional audit rule is:
 
@@ -140,6 +159,22 @@ The unconditional audit rule is:
 
 This does not identify unrelated routes.  It changes the proof obligation in every chart having
 that literal type.
+
+## 4a. Constraint extracted from current RH frontier
+
+The frontier map groups live obstructions into singular descent, all-prime transport, adaptive
+orientation, whole-space coercivity, and positive-carrier existence.  RLR does not turn those five
+classes into one theorem.  It imposes a prior classification test:
+
+1. identify source execution and observer maps before naming a defect;
+2. separate failure of executable descent from failure of midpoint faithfulness;
+3. retain the resulting relation when deterministic descent fails;
+4. treat positivity, closure, selection, and probability as later promotions of that relation;
+5. reject any route-independent scalar that cannot distinguish the two interchange gaps.
+
+This is the higher-level pivot forced by the map.  Missing source selection remains arithmetic in
+each route; false effective histories created by reduction are universal and now governed by an
+exact law.
 
 ## 5. Parent boundary
 
@@ -225,3 +260,6 @@ promotion, admission, or source conservation.
   minimal-resolution framings failed as universal genesis mechanisms.  Set-level relational
   survival, lax composition, splice detection, strict observer pushforward, and selector no-go
   closed on paper as ULF-RLR-1.
+- 2026-08-10 — current RH frontier map ingested.  Serial observation--execution interchange gives
+  a two-defect filtration with exact injectivity and kernel-preservation chambers; four-state cells
+  prove the layers independent.  This is a mechanism-level consequence, not a route merger.

@@ -1114,3 +1114,19 @@ prime/zeta/divisor theorem.  See
 - Verification: targeted foreground `lake env lean` on every new module green; universal-law-field
   umbrella build green (11,541 jobs); `#print axioms` on every capstone reports only `propext`,
   `Classical.choice`, `Quot.sound`.
+
+### ULF-EQG-1 — Euler q-Gamma process, random-integer law, zeta-divisor translation (2026-08-10)
+
+- Moved `euler-q-gamma-process-zeta-divisor-translation-law.md` from `2-fully-proven` to
+  `3-formalized` with the companion `-formalized.md`.
+- Twenty-two Lean modules; the last two theorems closed in this pass were 7.1 (hypertranscendence
+  of the response) and the analytic half of 9.1 (normal convergence, zero-freeness and holomorphy
+  of the genus-one renormalised product).
+- New reusable infrastructure: reciprocal closure of differential algebraicity, proved by realising
+  the substitution `y_j ↦ A_j/g^{j+1}` as a polynomial map and showing it is injective by testing on
+  the digamma pair `ψ, 1/ψ` and invoking Hölder's theorem; the domain-local ring and propagation
+  calculus for algebraic differential equations; and the genus-one deviation calculus built on the
+  corpus's Weierstrass elementary factor estimate.
+- Verification: targeted foreground `lake env lean` on every new module green; universal-law-field
+  umbrella build green (11,575 jobs); `#print axioms` on every capstone reports only `propext`,
+  `Classical.choice`, `Quot.sound`.

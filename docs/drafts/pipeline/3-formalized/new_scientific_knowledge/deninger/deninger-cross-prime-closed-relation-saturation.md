@@ -1,9 +1,11 @@
 # Calderón--Witt dense-core closed-relation saturation
 
 - **ID:** `deninger-cross-prime-closed-relation-saturation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ROUTE-L NO-GO / POSITIVE CLASSIFICATION
-- **Scientific status:** `[PROVED HERE] [GENERAL TOPOLOGICAL LINEAR ALGEBRA PARENT] [ROUTE APPLICATION NEW] [NOT RH]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [GENERAL TOPOLOGICAL LINEAR ALGEBRA PARENT] [ROUTE APPLICATION NEW] [NOT RH]`
+- **Lean:**
+  `formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean`
 - **Parents:**
   - `deninger-cross-prime-arithmetic-source-completion.md`;
   - `deninger-all-cross-prime-incidence-koszul-exactness.md`;
@@ -137,6 +139,25 @@ Calderón--Witt completion: the previous continuous-extension wall persists
 for every closed/closable singular Hilbert realization, and its only
 relation-valued escape is maximally nonselective vertical ambiguity.
 
+## Lean statements
+
+| Card item | Lean declaration |
+|---|---|
+| dense core `range(iota)` | `deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert_denseRange` |
+| old boundary vanishes on `S_arith` | `deningerCalderonWittGlobalOrientedBoundary_crossPrimeSourceSpan` |
+| `(2)`, generic | `closedLinearRelation_eq_top_prod_vertical_of_dense_zeroCore` |
+| `(2)`, Calderón--Witt | `deningerCalderonWittCrossPrimeClosedRelation_eq_top_prod_vertical` |
+| consequence 1 | `deningerCalderonWittCrossPrimeClosedRelation_eq_zeroGraph_of_singleValued` |
+| consequence 2, generic | `closedLinearRelation_mem_vertical_of_dense_zeroCore` |
+| consequence 2, Calderón--Witt | `deningerCalderonWittCrossPrimeClosedRelation_output_is_vertical` |
+| consequence 3 | `deningerCalderonWittCrossPrimeClosableExtension_closure_eq_zero` |
+| consequence 4, generic | `closedLinearRelation_outputFiber_const_of_dense_zeroCore` |
+| consequence 4, Calderón--Witt | `deningerCalderonWittCrossPrimeClosedRelation_outputFiber_const` |
+
+Consequence 4 is formalized as exact nonselectivity: the output fibre
+`{w : (x,w) ∈ R}` is the same set for every source point `x`, so no closed
+relation extending the old boundary can distinguish two packets.
+
 ## Gates
 
 - [x] exact source completion and dense arithmetic core
@@ -144,6 +165,18 @@ relation-valued escape is maximally nonselective vertical ambiguity.
 - [x] distinguish operators, closable partial operators, and closed relations
 - [x] classify the multivalued survivor exactly
 - [x] formalize the generic relation theorem and Calderón--Witt specialization
+- [x] unconditional Lean certificate for `(2)` and all four consequences
+- [x] targeted axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] module wired into `RHTower.lean`
 - [ ] construct a horizontal differential nonzero on finite actual witnesses
 - [ ] prove source-derived annihilation of actual completed Green provenance
 - [ ] RH
+
+The three unchecked gates are downstream Route-L research targets, not
+statements of this card.
+
+## Log
+
+- 2026-08-10 — Formalized consequences 2 and 4 (generic and Calderón--Witt
+  forms); audited every other numbered item against the existing module.
+  Card promoted to `3-formalized`.

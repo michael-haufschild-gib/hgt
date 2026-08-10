@@ -284,3 +284,50 @@ are different functions.
   Anal. Appl. 488 (2020); arXiv:1710.08260.
 - M. Englis and G. Zhang, *Hankel operators and the Dixmier trace on the Hardy space*,
   J. London Math. Soc. 94 (2016); arXiv:1601.06428.
+
+## Lean status
+
+Unconditional, `[propext, Classical.choice, Quot.sound]`, wired into
+`GaloisForLFunctions.RHTower`, `formal lint passed`.
+
+### Formalized
+
+| Card step | Lean |
+|---|---|
+| (2) Stirling magnitude | `RHTower.gaussComponentVerticalMagnitude_mul_rpow_tendsto` |
+| (3) universal phase clock | `RHTower.gaussComponentVerticalLogDeriv_sub_clock_tendsto_zero`, `RHTower.gaussComponentVerticalAccumulatedError_tendsto_zero` |
+| (4) sampled critical energy | `RHTower.gaussComponentPrimeMagnitudeEnergy_mul_succ_tendsto`, `..._logResidue` |
+| (6) `delta_n` | `RHTower.gaussComponentPhasePoint` |
+| (12) exact two-variable average | `RHTower.integral_gaussAmplitudeCircle` |
+| (13) harmonic logarithmic rotation | `RHTower.gaussComponentPhase_harmonicAverage_tendsto` |
+| (14) Fourier-diagonal limit | `RHTower.gaussPrincipalDiagonalTerm_logResidue` |
+| §7 local-factor restoration | `RHTower.gaussLocalFactorWeight_mul_principalResidue` |
+| **(A)** | `RHTower.gaussComponentLocalDiagonalTerm_logResidue` |
+| `k`-independence | `RHTower.gaussComponentCriticalResidue_independent_of_component` |
+| components are distinct | `RHTower.gaussComponentOffset_injective`, `RHTower.gaussComponentVerticalUpperArg_ne_of_ne` |
+| §6 membership + measurability | `RHTower.memWeakSchattenClass_gaussComponentCriticalOperator`, `RHTower.hasSchattenLogResidue_gaussComponentCriticalOperator` |
+| exact critical order `2m` | `RHTower.gaussComponentCriticalOperator_exact_schattenDepth` |
+| `|H|^{2m} in L^{1,infinity}` | `RHTower.gaussComponentCriticalPowerOperator_partialSum_le`, `RHTower.memWeakSchattenClass_gaussComponentCriticalPowerOperator` |
+| `Tr_omega(|H|^{2m})` | `RHTower.hasSchattenLogResidue_gaussComponentCriticalPowerOperator` |
+| closed package | `RHTower.gaussComponent_criticalResidue_law` |
+
+New module: `formal/GaloisForLFunctions/RHTower/GaussComponentLocalResidueLaw.lean`.
+
+The arithmetic value is `GaloisForLFunctions.RHTower.gaussChannelResidue m p`, namely
+`2 (p-1)^(2m) (p^m-1)^2 / (p^(2m) m^2 log p)`, which is formula (A); positivity is
+`gaussChannelResidue_pos`.  The `k`-independence is not a definitional artefact: the residue is
+extracted as `limUnder atTop` of the genuinely `k`-dependent localized Fourier diagonal, and the
+labels are proved to index pairwise distinct Gamma arguments.
+
+### Not yet formalized
+
+The operator-theoretic identification of the Fourier diagonal, i.e. the passage
+
+```text
+<G^m e_n, e_n>  ->  gaussPrincipalDiagonalTerm
+```
+
+which on paper is §3 (moving-translation lemma, equations (8)-(9)) followed by §4 (iterated
+principal action, equations (10)-(11)).  The corpus currently *defines* the principal diagonal
+model and proves its exact logarithmic mean; deriving that model from `G = C^2` on `L^2(R/Z)`
+requires the operators `B_p`, `D_(m,k,p)`, `C_(m,k,p)` themselves.

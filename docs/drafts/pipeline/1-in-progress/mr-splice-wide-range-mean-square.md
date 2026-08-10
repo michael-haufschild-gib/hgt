@@ -2709,3 +2709,144 @@ and pass to `∫ |logPoly|²`.
 ### What is left
 
 The kernel bound and the passage to `logPoly`, then the Halász estimate for that integral.
+
+## 2026-08-10 the discrete overlap kernel
+
+`Sieve/DyadicOverlapKernel.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9013 jobs).
+
+```text
+cast_max_sub_min :  ((max m n − min m n : ℕ) : ℝ) = |m − n|
+
+overlap_card_le :
+  #{ z ∈ [A,B] : m, n ∈ (z, z+ℓ] } ≤ (ℓ − |m − n|)₊
+```
+
+A starting point `z` serves both `m` and `n` exactly when `z + 1 ≤ min(m,n)` and
+`max(m,n) ≤ z + ℓ`, so the admissible `z` form an interval, and its length is `ℓ − |m − n|` — with
+the degenerate case handled by the positive part.  This is the integer analogue of the corpus's
+`volume_real_logWindow_inter`, which gives `(δ − |log m − log n|)₊` for Gallagher's logarithmic
+windows.
+
+The kernel vanishes for `|m − n| ≥ ℓ`, so combined with `dyadicMeanSquare_eq_count` the mean square
+is a bilinear form supported on a band of width `ℓ` around the diagonal:
+
+```text
+dyadicMeanSquare f ℓ A B ≤ ∑_{m, n ∈ (A, B+ℓ]} |f(m)|·|f(n)|·(ℓ − |m − n|)₊ ,
+```
+
+which is exactly the bilinear form `gallagher_identity` evaluates as `∫ (𝓕 triC)·|logPoly|²`.
+
+### What is left
+
+Assembling the two into that inequality, then the passage to `logPoly` and the Halász estimate.
+
+## 2026-08-10 the combinatorial half is complete
+
+`Sieve/DyadicBandBound.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9014 jobs).
+
+```text
+dyadicMeanSquare_le_band :  1 ≤ ℓ →
+  dyadicMeanSquare f ℓ A B ≤ ∑_{m, n ∈ (A, B+ℓ]} |f(m)|·|f(n)|·(ℓ − |m − n|)₊
+
+band_kernel_eq_zero :  ℓ ≤ |m − n| →  (ℓ − |m − n|)₊ = 0
+```
+
+**Everything from `MRBilinear` down to a near-diagonal bilinear form is now proved here, and none of
+it is analytic.**  The chain in full:
+
+```text
+MRBilinear μ hh
+  ← AveragedShortInterval  ← AveragedMeanSquare  ← MaximalWindowMeanSquare   (corpus)
+  ← sum_maxWindowSq_succ_le_dyadic                                            (MaximalWindowReduction)
+      built from WindowPartialSum, MaximalDeviation, RademacherMenshov,
+                 DyadicMeanSquare, MaximalWindowDyadic, DyadicTranslates
+  ← dyadicMeanSquare f ℓ A B                                                  (one named quantity)
+  ← dyadicMeanSquare_eq_count                                                 (exact pair expansion)
+  ← overlap_card_le                                                           (the discrete kernel)
+  ← ∑_{m,n} |f(m)||f(n)|(ℓ − |m − n|)₊                                        (near-diagonal band)
+```
+
+The remaining work is analytic and has a single shape: bound that band for `f = μ`.  The corpus's
+`gallagher_identity` evaluates exactly this bilinear form — with the multiplicative kernel
+`(δ − |log m − log n|)₊` — as `∫ (𝓕 triC δ)·|logPoly|²`, and the Halász machinery of units 1–6
+bounds that integral.  The additive-to-multiplicative matching over a dyadic range of `m, n` is the
+one remaining structural step before the analysis.
+
+## 2026-08-10 the additive and logarithmic bands are matched
+
+`Sieve/AdditiveLogMatching.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9015 jobs).
+
+```text
+log_sub_le_div :  A ≤ n ≤ m  →  log m − log n ≤ (m − n)/A
+abs_log_sub_le :  A ≤ m, A ≤ n  →  |log m − log n| ≤ |m − n|/A
+
+band_kernel_le_log_kernel :  A ≤ m, A ≤ n  →
+  (ℓ − |m − n|)₊ ≤ A·(ℓ/A − |log m − log n|)₊
+```
+
+The pair expansion produces the additive kernel; Gallagher's lemma is stated with the multiplicative
+one.  On a range bounded below by `A` the logarithm contracts by exactly `1/A` — `log x ≤ x − 1`
+applied to `m/n` — so every additive band of width `ℓ` sits inside a logarithmic band of width
+`ℓ/A`, at the cost of the single factor `A`.  That factor is the Jacobian of the change of variable,
+and it is what makes the two formulations interchangeable on a dyadic range.
+
+Combined with the previous unit:
+
+```text
+dyadicMeanSquare f ℓ A B
+  ≤ A·∑_{m, n ∈ (A, B+ℓ]} |f(m)|·|f(n)|·(ℓ/A − |log m − log n|)₊ ,
+```
+
+and the right-hand side is, term for term, the bilinear form `gallagher_identity` evaluates as
+`∫ (𝓕 triC (ℓ/A))·|logPoly|²`.
+
+### What is left
+
+Substituting `gallagher_identity` — the corpus already proves it — and then bounding
+`∫ |logPoly|²` for `f = μ` by the Halász machinery of units 1–6.
+
+## 2026-08-10 correction: the band bound cannot carry the estimate — signs must be kept
+
+`Sieve/OverlapExact.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9016 jobs).
+
+Checking `dyadicMeanSquare_le_band` against the target shows it is true but **useless**:
+
+```text
+∑_{m,n} |μ(m)|·|μ(n)|·(ℓ − |m − n|)₊ ≍ (B − A)·ℓ² ,
+```
+
+which is exactly the trivial size of `dyadicMeanSquare`, while the target is `o((B − A)·ℓ²)`.
+Taking absolute values in the pair expansion destroys the cancellation, and no analytic input can
+recover it afterwards.  The same failure mode as the height exponent earlier today: a correct
+inequality whose conclusion is vacuous.
+
+The usable object is the *identity* `dyadicMeanSquare_eq_count`, with signed products `f(m)·f(n)`.
+Gallagher's identity is likewise signed — `(a n · conj (a m)).re` — so the route must evaluate the
+kernel, not bound it.
+
+```text
+overlap_filter_eq :  1 ≤ m, 1 ≤ n  →
+  { z ∈ [A,B] : m, n ∈ (z, z+ℓ] } = [ max(A, max(m,n) − ℓ), min(B, min(m,n) − 1) ]
+
+overlap_card_eq :  its cardinality, exactly
+
+overlap_card_interior :  ℓ ≤ max(m,n), A ≤ max(m,n) − ℓ, min(m,n) − 1 ≤ B  →
+  the kernel is (min(m,n) + ℓ) − max(m,n) = (ℓ − |m − n|)₊
+```
+
+Both constraints on `z` are one-sided — `z + 1 ≤ min(m,n)` from the windows' right ends and
+`max(m,n) ≤ z + ℓ` from their left ends — so the admissible set is an interval and the kernel has an
+exact value.  Away from the two edges of `[A,B]` that value is precisely Gallagher's
+`(ℓ − |m − n|)₊`, which is what makes the signed comparison with `gallagher_identity` possible.
+
+`dyadicMeanSquare_le_band` and `band_kernel_le_log_kernel` remain in the corpus as correct
+statements; they are simply not on the path to the estimate.
+
+### What is left
+
+The signed comparison: `dyadicMeanSquare_eq_count` with the exact kernel against
+`gallagher_identity`'s logarithmic kernel, then the Halász bound for `∫ |logPoly|²`.
