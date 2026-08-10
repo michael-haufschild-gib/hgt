@@ -1000,3 +1000,32 @@ B ( T_δ^(-1) ( B^(-2) ( T_δ (B f) ) ) )  =  a_δ · f,
 
 which is `b² / b(·+δ)² = s_p/s_p(·+δ)` — the definition of `a_δ` — together with the error
 propagation through the three bounded operators.
+
+## Lean status, twenty-first pass: the telescoping identity
+
+`RHTower/GaussMovingAmplitudeOperator.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+ae_eq_comp_sub                               : a.e. equality survives translation
+gaussMovingAmplitudeCircle p δ                : a_δ(z) = b(z)²·b(z+δ)^(-2) on R/Z
+norm_gaussMovingAmplitudeCircle_le            : ‖a_δ‖_∞ ≤ p
+gaussMovingAmplitudeBlock hp δ                : multiplication by a_δ
+gaussPrimeScaleBlock_translate_invSq_translate:
+    B ( T_(-δ) ( B^(-2) ( T_δ ( B f ) ) ) )  =  M_(a_δ) f
+```
+
+The last identity is the pointwise telescope: `b(z)·b(z+δ)^(-2)·b(z)`, with the two translations
+cancelling the shift on `f`.  It is exact — an `L²` equality, not an estimate — and it is the
+second half of the card's (10): the first half is the factorization
+`gaussQuasiInnerG_fourierMulBlock`, the second is this.
+
+Almost-everywhere equalities are transported through the translation by
+`MeasurePreserving.quasiMeasurePreserving.ae_eq_comp`, so no null-set bookkeeping is needed by hand.
+
+### What is left of (10)
+
+Only the error propagation: replacing `T_δ` by `S*` and `T_δ^(-1)` by `S` costs
+`‖B‖·‖B^(-2)‖·(error of S*) + ‖B‖·(error of S)`, both of which tend to zero by the two uniform
+estimates.  Then (11) is the `m`-fold iterate, whose amplitudes stay in the exponential-piece class
+with a fixed decay constant.

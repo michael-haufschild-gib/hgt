@@ -147,4 +147,56 @@ theorem cyclicDefect_tendsto_zero_of_equicontinuous {ι : Type*} {l : Filter ι}
 
 end LocallyConvex
 
+/-! ## Sharpness of the amplification bound -/
+
+section Sharpness
+
+/-- **Countermodel 6.1.**  For every positive `n` there is a triangle of real lines whose edge
+defects are `1/n`, `0`, `0`, whose cyclic defect has norm one, and whose composed transport has
+norm exactly `n`.  Arbitrarily accurate edges therefore coexist with a fixed holonomy, at the cost
+of reciprocal amplification. -/
+theorem exists_sharp_triangle (n : ℕ) (hn : 0 < n) :
+    ∃ (T₀₁ T₁₂ T₂₀ : ℝ →L[ℝ] ℝ) (x₀ x₁ x₂ : ℝ),
+      ‖T₀₁ x₀ - x₁‖ = 1 / n ∧ ‖T₁₂ x₁ - x₂‖ = 0 ∧ ‖T₂₀ x₂ - x₀‖ = 0 ∧
+        ‖T₂₀ (T₁₂ (T₀₁ x₀)) - x₀‖ = 1 ∧
+        ‖T₂₀.comp T₁₂‖ = n ∧ ‖T₂₀‖ = 1 := by
+  have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+  refine ⟨0, (-(n : ℝ)) • ContinuousLinearMap.id ℝ ℝ, ContinuousLinearMap.id ℝ ℝ,
+    1, -(1 / n), 1, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · show ‖(0 : ℝ) - -(1 / (n : ℝ))‖ = 1 / n
+    rw [zero_sub, neg_neg, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  · show ‖(-(n : ℝ)) • (-(1 / (n : ℝ))) - 1‖ = 0
+    rw [smul_eq_mul]
+    have : (-(n : ℝ)) * (-(1 / (n : ℝ))) = 1 := by field_simp
+    rw [this, sub_self, norm_zero]
+  · show ‖(1 : ℝ) - 1‖ = 0
+    rw [sub_self, norm_zero]
+  · show ‖(-(n : ℝ)) • (0 : ℝ) - 1‖ = 1
+    rw [smul_zero, zero_sub, norm_neg, norm_one]
+  · rw [ContinuousLinearMap.id_comp, norm_smul, ContinuousLinearMap.norm_id, mul_one,
+      norm_neg, Real.norm_eq_abs, abs_of_nonneg hn'.le]
+  · exact ContinuousLinearMap.norm_id
+
+/-- **Sharpness of Theorem 4.1.**  No amplification bound with a constant larger than one can
+hold: `amplification_ge` proves `κ/(3ε) ≤ M`, and the countermodel forbids `C·κ/ε ≤ M` for any
+`C > 1`.  The universal constant therefore lies in `[1/3, 1]`. -/
+theorem not_amplification_ge_of_one_lt (C : ℝ) (hC : 1 < C) :
+    ¬ ∀ (T₀₁ T₁₂ T₂₀ : ℝ →L[ℝ] ℝ) (x₀ x₁ x₂ : ℝ) (M eps kappa : ℝ),
+        ‖T₂₀.comp T₁₂‖ ≤ M → ‖T₂₀‖ ≤ M → (1 : ℝ) ≤ M →
+        ‖T₀₁ x₀ - x₁‖ ≤ eps → ‖T₁₂ x₁ - x₂‖ ≤ eps → ‖T₂₀ x₂ - x₀‖ ≤ eps →
+        0 < eps → kappa ≤ ‖T₂₀ (T₁₂ (T₀₁ x₀)) - x₀‖ →
+        C * (kappa / eps) ≤ M := by
+  intro h
+  obtain ⟨T₀₁, T₁₂, T₂₀, x₀, x₁, x₂, he₀₁, he₁₂, he₂₀, hΩ, hcomp, hT₂₀⟩ :=
+    exists_sharp_triangle 1 one_pos
+  have hone : ((1 : ℕ) : ℝ) = 1 := by norm_num
+  rw [hone] at hcomp
+  have hbound := h T₀₁ T₁₂ T₂₀ x₀ x₁ x₂ 1 1 1 (by rw [hcomp]) (by rw [hT₂₀])
+    le_rfl (by rw [he₀₁]; norm_num) (by rw [he₁₂]; norm_num) (by rw [he₂₀]; norm_num)
+    one_pos (by rw [hΩ])
+  rw [div_one, mul_one] at hbound
+  linarith
+
+end Sharpness
+
 end HTGeometry.ConstraintRelativity

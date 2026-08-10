@@ -371,6 +371,41 @@ theorem retained_values_both_ne_zero_iff {cρ : ℂ} (hc : cρ ≠ 0) (t : ℝ)
 
 end PhysicalCharacter
 
+/-! ## The Route-R source datum is inhabited -/
+
+section Witness
+
+/-- **A nondegenerate Route-R source.**  On `ℂ²` the transport `(x,y) ↦ (x, y + x)`, the
+augmentation `(x,y) ↦ x` and the regulator `(x,y) ↦ y` satisfy both Route-R axioms with a nonzero
+augmentation, so the source datum is inhabited by a datum whose retained class is not carried by a
+degenerate augmentation. -/
+noncomputable def shearRouteRSource : RouteRSource (ℂ × ℂ) where
+  α := LinearMap.prod (LinearMap.fst ℂ ℂ ℂ) (LinearMap.snd ℂ ℂ ℂ + LinearMap.fst ℂ ℂ ℂ)
+  ε := LinearMap.fst ℂ ℂ ℂ
+  reg := LinearMap.snd ℂ ℂ ℂ
+  eps_alpha _ := rfl
+  reg_comm x := by
+    show (x.2 + x.1) - x.2 = x.1
+    ring
+
+theorem shearRouteRSource_eps_ne_zero : shearRouteRSource.ε ≠ 0 := by
+  intro h
+  have h1 : (1 : ℂ) = 0 := congrArg (fun f => f ((1 : ℂ), (0 : ℂ))) h
+  exact one_ne_zero h1
+
+theorem shearRouteRSource_alpha_ne_id : shearRouteRSource.α ≠ LinearMap.id := by
+  intro h
+  have h1 : shearRouteRSource.α (1, 0) = ((1 : ℂ), (0 : ℂ)) := by
+    rw [h, LinearMap.id_apply]
+  have h2 : shearRouteRSource.α ((1 : ℂ), (0 : ℂ)) = ((1 : ℂ), (1 : ℂ)) := by
+    refine Prod.ext rfl ?_
+    show (0 : ℂ) + 1 = 1
+    rw [zero_add]
+  rw [h2] at h1
+  exact one_ne_zero (congrArg Prod.snd h1)
+
+end Witness
+
 /-! ## The universal exactification and the literal Route-R values -/
 
 section Exactification

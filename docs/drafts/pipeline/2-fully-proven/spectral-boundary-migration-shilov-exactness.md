@@ -1942,3 +1942,42 @@ umbrella:
 The three hypotheses `1 ∈ S`, `S` self-adjoint, `S` separating are necessary,
 not residual: with `S = span{f}` on a two-point space, `f(a) = 1`, `f(b) = i`,
 both `{a}` and `{b}` are closed boundaries and their intersection is empty.
+
+## The Shilov ideal and the commutative C*-envelope (2026-08-10)
+
+Two further named gaps of the card's formal boundary — "Shilov ideals" and
+"C*-envelopes" — are now built in the commutative model.  Both modules are
+axiom-clean and in the `HTGeometry` umbrella.
+
+`HTGeometry/ShilovIdealCommutative.lean`:
+
+- `shilovIdeal S := idealOfSet ℂ (shilovBoundary S)ᶜ`, closed, with
+  `mem_shilovIdeal` and `shilovIdeal_eq_vanishingIdeal`;
+- `exists_isClosed_mem_iff_of_isClosed` — **every closed ideal of `C(X, ℂ)` is
+  the vanishing ideal of a closed set** (mathlib's
+  `idealOfSet_ofIdeal_isClosed`);
+- `le_shilovIdeal_of_isBoundaryIdeal` — **maximality, with no hypothesis on
+  `S`**: any closed ideal whose elements leave the norms on `S` intact is
+  contained in the Shilov ideal;
+- `isBoundaryIdeal_shilovIdeal` and `isGreatest_shilovIdeal` — the Shilov ideal
+  is itself a boundary ideal, hence the greatest closed boundary ideal, for a
+  unital self-adjoint separating `S`.
+
+`HTGeometry/CStarEnvelopeCommutative.lean`:
+
+- `restrictStarAlgHom F : C(X, ℂ) →⋆ₐ[ℂ] C(F, ℂ)`;
+- `norm_restrictStarAlgHom_eq_of_isBoundarySet` — restriction is **isometric on
+  `S`** over a boundary;
+- `restrictStarAlgHom_surjective` — **surjective**, by Tietze extension;
+- `restrictStarAlgHom_eq_zero_iff` — kernel = vanishing ideal, hence
+  `envelopeMap_eq_zero_iff`: the kernel of the envelope map is the Shilov ideal;
+- `envelope_isometric_surjective_kernel` — the four facts together: the envelope
+  map onto `C(∂_Shilov, ℂ)` is a surjective `*`-homomorphism, isometric on `S`,
+  with kernel the Shilov ideal, and `∂_Shilov` is inside every closed boundary,
+  so no smaller closed set works.
+
+Remaining on the card's list: boundary representations, locally C*-algebras,
+the noncommutative (complete) Shilov ideal, and the generation input.  The
+natural next capstone is `C*_e(A(K)) = C(ext K)`: with the Choquet boundary now
+available this reduces to identifying the Choquet boundary of the affine
+continuous functions on a compact convex set with its extreme points.

@@ -92,7 +92,6 @@ theorem envelopeMap_eq_zero_iff (S : Submodule ℂ C(X, ℂ)) (f : C(X, ℂ)) :
     envelopeMap S f = 0 ↔ f ∈ shilovIdeal S := by
   rw [envelopeMap, restrictStarAlgHom_eq_zero_iff, shilovIdeal_eq_vanishingIdeal]
 
-omit [T2Space X] in
 /-- **The commutative C*-envelope.**  For a function system the envelope map is a surjective
 `*`-homomorphism, isometric on `S`, whose kernel is the Shilov ideal; and the Shilov boundary is
 contained in every closed boundary, so no smaller closed set works. -/

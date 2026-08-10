@@ -105,6 +105,34 @@ theorem IsAbsoluteSplitting.factor_unique (h : IsAbsoluteSplitting D T H jm)
   have := congrArg (fun f => f (jm o)) hEq
   simpa [h.comp_Tj] using this
 
+/-- **The splitting datum exists.**  For every relative module `A₁` and every observer module `O`
+the product carries a canonical absolute splitting, with `D` the inclusion, `T` the projection,
+`H` the retraction and `j` the section.  The theorems above are therefore not vacuous. -/
+theorem isAbsoluteSplitting_prod (A₁ O : Type*) [AddCommGroup A₁] [Module R A₁]
+    [AddCommGroup O] [Module R O] :
+    IsAbsoluteSplitting (R := R) (LinearMap.inl R A₁ O) (LinearMap.snd R A₁ O)
+      (LinearMap.fst R A₁ O) (LinearMap.inr R A₁ O) where
+  splitting x := by
+    refine Prod.ext ?_ ?_
+    · show x.1 + 0 = x.1
+      rw [add_zero]
+    · show (0 : O) + x.2 = x.2
+      rw [zero_add]
+  comp_TD _ := rfl
+  comp_Tj _ := rfl
+
+/-- The canonical splitting has nonzero absolute part whenever the observer module is nonzero, so
+the absolute quotient of a splitting datum is not forced to vanish. -/
+theorem isAbsoluteSplitting_prod_observer_ne_bot (A₁ O : Type*) [AddCommGroup A₁] [Module R A₁]
+    [AddCommGroup O] [Module R O] [Nontrivial O] :
+    LinearMap.range (LinearMap.inr R A₁ O) ≠ ⊥ := by
+  obtain ⟨o, ho⟩ := exists_ne (0 : O)
+  intro hbot
+  refine ho ?_
+  have hmem : LinearMap.inr R A₁ O o ∈ LinearMap.range (LinearMap.inr R A₁ O) := ⟨o, rfl⟩
+  rw [hbot, Submodule.mem_bot] at hmem
+  exact congrArg Prod.snd hmem
+
 end AbsoluteQuotient
 
 /-! ## Coframe before metric: rank-one Lorentzianization -/

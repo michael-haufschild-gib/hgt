@@ -754,9 +754,10 @@ Classical.choice, Quot.sound`.
 - `deningerAbelWindow_length` — its length is `u/(i(i+1))`.
 - `deningerAbelCoefficient_summable` — **`∑_i |M(i)|/(i(i+1)) < ∞`**, by comparison with `(9)`.
 
-Every ingredient of `(11)` is now proved except the Tonelli assembly that glues them:
-the saving `(8)`, the series `(9)`, Abel summation `(10)`, the weighted-derivative bound, the
-window and its length, the coefficient summability, and the finiteness of the weighted moment.
+Every analytic ingredient of `(11)` is proved: the saving `(8)`, the series `(9)`, Abel summation
+`(10)`, the weighted-derivative bound, the window and its measure, the coefficient summability,
+the finiteness of the weighted moment, and the per-difference mass bound.  What remains is the
+bookkeeping that turns the `Tendsto` of `(10)` into a bound on `∫_0^∞ |f_h|` term by term.
 
 ### Section 2 — the first weighted moment `[DONE]`
 
@@ -766,6 +767,25 @@ Classical.choice, Quot.sound`.
 - `deningerWeightedMoment_continuousOn` — the integrand `u ‖H_h'(u)‖` is continuous on the ray.
 - `deningerWeightedMoment_integrable` — **`∫_0^∞ u |H_h'(u)| du < ∞`**, the second factor of the
   `(11)` bound: bounded on `Ioc 0 1` (finite measure) and dominated by `u^{-2}` on `Ioi 1`.
+
+### Section 2 — the Tonelli assembly `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbelTonelli.lean`,
+`DeningerAbelWindowSwap.lean`, `DeningerAbelMassBound.lean`.  Axiom audit for all declarations:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerLogPullDeriv_continuousOn`, `deningerAbelDifference_eq` — the pullback is `C¹` on the
+  ray, so each Abel difference *is* `∫_{ix}^{(i+1)x} H_h'(u) du` by the fundamental theorem of
+  calculus.
+- `deningerWindowKernel`, `deningerWindowKernel_measurable`, `deningerWindowKernel_slice`,
+  `deningerWindowKernel_swap` — the window indicator is jointly measurable, its `u`-slice
+  integrates to `‖H_h'(u)‖ · u/(i(i+1))`, and the two orders of integration agree.  Working in
+  `ℝ≥0∞` throughout removes every integrability side condition.
+- `deningerAbelDifference_enorm_le`, `deningerAbelDifference_mass_le` — **one Abel difference has
+  total mass at most `(1/(i(i+1))) ∫_0^∞ u|H_h'(u)| du`.**
+
+This is the analytic core of `(11)`: combined with `deningerAbelCoefficient_summable` and
+`deningerWeightedMoment_integrable`, the mass of `f_h` is finite.
 
 ### What is left
 

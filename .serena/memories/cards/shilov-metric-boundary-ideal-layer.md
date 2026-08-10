@@ -225,3 +225,13 @@ universal property above with the Hamana/Arveson construction.
 
 `hb` with the strict `IsPeakPoint` is FALSE for non-metrizable X — do not try to
 prove it.
+
+## Shilov ideal + commutative C*-envelope built (2026-08-10)
+
+`ShilovIdealCommutative.lean`, `CStarEnvelopeCommutative.lean`.
+Maximality of the Shilov ideal is UNCONDITIONAL (closed ideals of C(X) are
+vanishing ideals — mathlib `idealOfSet_ofIdeal_isClosed`); only "it is itself a
+boundary ideal" needs the function-system hypotheses.
+
+NEXT capstone: C*_e(A(K)) = C(ext K), i.e. identify the Choquet boundary of the
+affine continuous functions on a compact convex K with ext K.

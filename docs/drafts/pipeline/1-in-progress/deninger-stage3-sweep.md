@@ -99,7 +99,11 @@ What else exists and must not be rebuilt:
      `deningerAbelCoefficient_summable` is `∑_i |M(i)|/(i(i+1)) < ∞` by comparison with `(9)`.
    - the first weighted moment — **DONE**, `RHTower/DeningerWeightedMoment`
      (`∫_0^∞ u|H_h'(u)|du < ∞`): bounded on `Ioc 0 1`, dominated by `u^{-2}` on `Ioi 1`.
-   - `(11)`--`(12)` — one measure-theoretic step left.  Do **not** chase a decreasing majorant for
+   - the Tonelli assembly — **DONE**, `RHTower/DeningerAbelTonelli`, `DeningerAbelWindowSwap`,
+     `DeningerAbelMassBound`: one Abel difference has mass at most
+     `(1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`.  Working in `ℝ≥0∞` throughout removed every integrability
+     side condition — that is the trick that made the exchange short.
+   - `(11)`--`(12)` — what is left is bookkeeping.  Do **not** chase a decreasing majorant for
      `H_h'`; the clean route is Tonelli on the region: `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]` has
      length `u/(i(i+1))`, so `∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx ≤ (1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`,
      and summing against `|M(i)|` lands exactly on the already-proved `(9)`.
@@ -137,6 +141,10 @@ What else exists and must not be rebuilt:
 
 ## Log
 
+- 2026-08-10 — Built the Tonelli assembly (three modules).  The exchange is short because it is
+  done entirely in `ℝ≥0∞`: `lintegral_lintegral_swap` needs only joint measurability of the window
+  indicator, and no integrability hypothesis appears anywhere.  The slice computation is
+  `lintegral_indicator_const` against the already-proved window measure.
 - 2026-08-10 — Built the first weighted moment (`RHTower/DeningerWeightedMoment`).  Every
   ingredient of `(11)` is now proved; the only remaining step is the Tonelli assembly that turns
   `∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx` into `(1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`.
