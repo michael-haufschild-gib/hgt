@@ -4032,3 +4032,65 @@ is what partial summation consumes; converting the known mean-value form into it
 **Side condition.**  `hh x ≤ √x` eventually.  This is a constraint on the window law, not an
 analytic hypothesis: it says the short interval `[x, x + h√x]` is contained in `[x, 2x]`, which the
 balanced-pairs decomposition presupposes.  Every window law used downstream satisfies it.
+
+## Unit 9 — the input weakened to the published statement (Lean, unconditional)
+
+**Correction to unit 8.**  `AveragedCorrelationSmall` quantifies over *all* initial segments
+`j ≤ M ≍ x`, because `abs_shift_sum_le` (via `abs_sum_mul_le_of_bounded_partial_bv`) needs a bound
+on every partial sum.  Requiring `∑_{k ≤ h} max_{j ≤ x} |∑_{i<j} μμ| = o(h√x)` is *square-root
+cancellation at length `x`*, far beyond averaged Chowla.  Unit 8's implication is true but its
+hypothesis is not the published theorem.  Unit 9 repairs this.
+
+**The repair.**  The weight is supported on `[√x/2, √x + h]`, so only partial sums of length `≍ √x`
+should ever enter.  Two changes make that visible to the proof:
+
+1. **Put the shift-sum inside the summation by parts.**  Then the interface needed is
+   `∑_{k ≤ h} |∑_{i<J} f(i)f(i+k)| ≤ P` for each `J` — one bound uniform in `J` — instead of
+   `∑_k max_J |·|`.  The price is a majorant of `|Δ_j w(k,j)|` *uniform in `k`*, not merely a
+   variation bound at each `k`.
+2. **Kill the head term and cut off the majorant.**  The weight vanishes at `j = M − 1` and has no
+   increments beyond the window, so `J` is confined to `J ≤ ⌈√x + h⌉ + 5`.
+
+**The shift-uniform majorant.**  `fibreSmooth_decomp` rewrites the model as
+
+```text
+max( kernelDiff − (B − 2√x)⁺ − (√x − x/i)⁺ + 1 , 0 ) ,
+```
+
+and each piece depends on the shift monotonically:
+
+| piece | shift dependence | consequence |
+|---|---|---|
+| `kernelDiff` | increment `x/(n(n+1)) − c/((n+k)(n+1+k))` is **nondecreasing in `k`** | `sup_k \|Δ\| ≤ \|Δ₁\| + \|Δ_K\|` |
+| `(B_k − 2√x)⁺` | equals `G(i+k)` with `G` **convex** | `sup_k \|Δ\| = \|Δ at k = 1\|` |
+| `(√x − x/i)⁺` | shift-free | — |
+
+Summed across the window: `2·(2·20h) + (4h+8) + (h+6) = 85h + 14`.
+
+**New machinery (7 modules, all `[propext, Classical.choice, Quot.sound]`).**
+
+| Module | Statement |
+|---|---|
+| `Sieve/ShiftSumUniform.lean` | `CorrelationUniformBound f K J₀ P`; `abs_shift_sum_uniform_le : ≤ V·P` with the shift-sum inside, head-vanishing and length cutoff |
+| `Sieve/FibreSmoothDecomp.lean` | `min_eq_sub_max_sub`, `max_eq_add_max_sub`, `fibreSmooth_decomp` |
+| `Sieve/FibreIncrementUniform.lean` | `div_succ_sub_div_antitone`; `trunc_div_diff_antitone` (convexity of `(c/m − D)⁺`); `kernelDiff_increment_mono_shift`; `fibreIncrRaw`; `abs_fibreSmooth_increment_le` |
+| `Sieve/FibreWindowVanish.lean` | `fibreWinLo`, `fibreWinHi`; `fibreSmooth` vanishes below `√x/2 − 1` and above `√x + h + 5`; increments vanish off the window |
+| `Sieve/FibreIncrementWindow.lean` | `kernelDiff ∈ [−16h, 4h]` on the window; the two telescoping sums; `fibreIncr`; `sum_fibreIncr_le ≤ 85h + 14` |
+| `Sieve/OffDiagonalUniformBound.lean` | `abs_offDiagonal_uniform_le : ≤ (85h+14)·P + 2h(3√x+1)` |
+| `Sieve/MRFromUniformCorrelations.lean` | `UniformCorrelationSmall`; **`MRBilinear_moebius_of_uniformCorrelations`** |
+
+**The input now reads**
+
+```
+UniformCorrelationSmall f hh :=
+  ∀ ε > 0, ∀ᶠ x, ∀ J ≤ ⌈√x + hh x⌉ + 5,
+    ∑_{k = 1}^{⌊hh x⌋} | ∑_{i < J} f(i+1)·f(i+1+k) |  ≤  ε · hh x · √x
+```
+
+At `f = μ` and `J ≍ √x` this is exactly the averaged Chowla theorem (Matomäki–Radziwiłł–Tao 2015)
+at length `J`: for `J ≥ δ√x` it is their `o(HY)` estimate with `Y = J ≍ √x`, and for `J < δ√x` the
+trivial bound `|∑_{i<J}| ≤ J < δ√x` already gives `∑_k ≤ δ·h·√x`.  No square-root cancellation is
+asked for anywhere.
+
+**Remaining.**  Formalise the passage from the published fixed-length statement to
+`UniformCorrelationSmall` (the `δ`-split above), and then the averaged Chowla theorem itself.

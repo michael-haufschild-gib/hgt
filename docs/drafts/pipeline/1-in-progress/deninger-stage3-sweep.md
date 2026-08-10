@@ -27,6 +27,18 @@
 | `deninger-balanced-word-height-bar-strict-contraction` | `RHTower/DeningerWordHeight`, `DeningerBarWord`, `DeningerBarInsert`, `DeningerBarSlice`, `DeningerBarDifferential`, `DeningerBarUnit`, `DeningerBarContraction`, `DeningerBarSector`, `DeningerBarFace`, `DeningerBarInsertComm`, `DeningerBarFibre`, `DeningerBarSquareZero`, `DeningerBarAlgebra`, `DeningerBarPower` (all new) |
 | `deninger-linearized-milnor-first-sullivan-strict-primitive` | `RHTower/DeningerSetIndexedLinearization`, `DeningerExteriorPairSum`, `DeningerWordAlternating`, `DeningerSullivanPrimitive`, `DeningerSuspendedSource`, `DeningerSuspendedAlternating`, `DeningerSuspendedProduct`, `DeningerSuspendedPrimitive` (all new) |
 
+## Batch state, verified 2026-08-10
+
+55 modules under `RHTower/Deninger*`, 656 declarations, **0** `sorry`/`admit`/`axiom`/`opaque`/
+`unsafe`, **0** name collisions against the rest of the tree, **0** duplicate imports in
+`RHTower.lean`.  Every module builds individually with zero errors; every audited declaration is
+`[propext, Classical.choice, Quot.sound]`.
+
+`lake build GaloisForLFunctions.RHTower` was green after the collision fixes and is currently red
+only on `RHTower/GaussAmplitudeClass.lean:177`, a concurrent session's in-flight edit unrelated to
+this batch (it references none of the renamed names).  Re-check that file before assuming breakage
+here.
+
 ## Reusable infrastructure now available
 
 - `DeningerLattice = Nat.Primes →₀ ℤ`, `deningerHeight`, `deningerFreq`, with
@@ -119,7 +131,13 @@ What else exists and must not be rebuilt:
      partial summation turns `A(N) → S` into `M(N)/N → S - S = 0` for **any** `S`, so `M(N) = o(N)`
      cannot pin the constant.  The value needs Abel's theorem for `∑ μ(n) n^{-s} = 1/ζ(s)` as
      `s ↓ 1` plus the pole of `ζ` at `1`.  Corpus has `LSeries_moebius_eq_inv_riemannZeta`
-     (`Re s > 1`); the Abelian theorem is the missing piece and is the next thing to build.  Do **not** chase a decreasing majorant for
+     (`Re s > 1`); the Abelian theorem is the missing piece.  **Its backbone is built**:
+     `RHTower/DeningerAbelianTelescope` proves the Abel increments
+     `n^{-σ} - (n+1)^{-σ}` are nonnegative and sum to exactly `1` for every `σ > 0`, so they are a
+     probability weight on the partial sums — which is precisely why the Abelian limit reproduces
+     the ordinary sum.  What remains is the ε-split: for `n` past the convergence threshold the
+     weight contributes at most `ε`, and the finite head vanishes as `σ ↓ 0` because each
+     individual increment does.  Do **not** chase a decreasing majorant for
      `H_h'`; the clean route is Tonelli on the region: `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]` has
      length `u/(i(i+1))`, so `∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx ≤ (1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`,
      and summing against `|M(i)|` lands exactly on the already-proved `(9)`.

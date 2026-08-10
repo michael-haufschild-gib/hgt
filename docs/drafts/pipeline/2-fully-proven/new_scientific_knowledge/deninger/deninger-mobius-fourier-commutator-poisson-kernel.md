@@ -848,6 +848,46 @@ Note this is stated for partial sums, not as `Summable`: `∑ μ(n)/n` is only *
 convergent, so it is not summable in Lean's unordered sense and no `Summable` statement can be
 true here.
 
+### Section 2 — the Abelian weight `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbelianTelescope.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerAbelWeight`, `deningerAbelWeight_nonneg`, `deningerAbelWeight_sum_range`,
+  `deningerAbelWeight_hasSum_one` — the Abel increments `n^{-σ} - (n+1)^{-σ}` are nonnegative and
+  **sum to exactly one** for every `σ > 0`.  They are therefore a probability weight on the partial
+  sums, which is the mechanism of the Abelian theorem needed for `(15)`.
+- `deningerAbelWeight_tendsto_zero`, `deningerAbelWeight_tendsto_zero_within` — each individual
+  increment vanishes as `σ ↓ 0`.  Both ingredients of the ε-split are therefore in place; only the
+  Toeplitz assembly remains.
+
+### Section 2 — the Abel average `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbelAverage.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerAbelAverage_summable` — averaging a bounded sequence against the Abel weight converges
+  absolutely.
+- `deningerAbelAverage_sub` — **the limit candidate can be subtracted inside the sum**:
+  `∑ b_n w_σ(n) - S = ∑ (b_n - S) w_σ(n)`, because the weight sums to one.
+- `deningerAbelAverage_tail_bound` — **the tail past the convergence threshold contributes at most
+  `ε`**, again because the weight is a probability weight.
+
+These three plus the head-vanishing assemble into `deningerAbelian_tendsto` below.
+
+### Section 2 — the Abelian limit theorem `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbelianLimit.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerBounded_of_tendsto` — a convergent real sequence is bounded.
+- `deningerAbelian_tendsto` — **the Abelian limit theorem**: `b_n → S` implies
+  `∑_n b_n w_σ(n) → S` as `σ ↓ 0`.
+
+This is the general Abelian machinery `(15)` needs, built from nothing: the weight is a
+probability weight so the tail costs at most `ε`, and the head is a finite sum of terms each
+vanishing with the exponent.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's

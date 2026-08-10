@@ -55,9 +55,13 @@ Theorem 2 — the first-order law symbol, for a local `k`-algebra with a coeffic
 15. `exists_lift_of_symbol_compat` — **card `(10)`**, sufficiency: conversely, such a map assembles
     an `A`-linear lift.  The proof is the card's: choose `k`-linear complements of the radical
     layers (`Submodule.exists_isCompl` over a field), define the lift by `f` on head lifts and `g`
-    on the radical layer, and check `A`-linearity using `A = k ⊕ m` and `m² M = m² N = 0`.
-16. `lawObstruction`, `lift_of_obstruction_eq` — **card `(11)`, boxed**: the obstruction is the
-    composite symbol modulo precompositions, and its vanishing produces a lift.
+    on the radical layer, and check `A`-linearity using `A = k ⊕ m` and `m² M = m² N = 0`.  The
+    conclusion records both properties of the assembled lift: its head map *is* `f`, and it
+    restricts to `g` on the radical layer.
+16. `lawObstruction`, `lift_iff_obstruction_eq`, `exists_lift_of_obstruction_eq` — **card `(11)`,
+    boxed**: a head map lifts to a source-linear comparison **exactly when** its first-order
+    obstruction is a precomposition of the symbol.  The forward direction is item 15; the backward
+    direction takes `g = radMap φ` for the lift `φ` itself and is `symbol_intertwine`.
 
 The concrete sharp model, with its coefficient field:
 
@@ -77,6 +81,10 @@ The concrete sharp model, with its coefficient field:
     **card `(10)` for the model**: every source-linear comparison has zero abstract head map, so
     its first-order obstruction vanishes identically and the entire obstruction is carried by head
     maps that come from no comparison.
+21b. `congruence_obstruction_precomposition_iff`, `literal_obstruction_precomposition_iff` —
+    **card `(11)` at the concrete model, boxed**: combining item 16 with item 21, the obstruction
+    of a head map of the diagonal congruence order is a precomposition *exactly for the zero head
+    map*.  No nonzero tangent soldering lifts.  The literal `k[[X]]` form carries no hypotheses.
 22. `lawSymbolSpaceEquiv`, `solderingObstructionLawSymbolEquiv`,
     `solderingObstructionMatrixEquiv` — **card `(11)` for the model, boxed**: the soldering
     obstruction space of the diagonal congruence order *is* the abstract first-order law-symbol

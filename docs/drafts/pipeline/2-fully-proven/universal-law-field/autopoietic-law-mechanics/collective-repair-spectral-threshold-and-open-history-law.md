@@ -271,8 +271,11 @@ history-size law, and endpoint-potential no-go.
 
 Direct foreground elaboration and the leaf build pass. Axiom prints for significant declarations
 and the unconditional capstone report only `propext`, `Classical.choice`, and `Quot.sound`. The
-module contains no `sorry`, `admit`, new `axiom`, `opaque`, `unsafe`, computational certificate,
-route hypothesis, or RH premise.
+module is wired into `HTGeometry.UniversalLawField`; its final foreground build passes with 11,587
+jobs. The module contains no `sorry`, `admit`, new `axiom`, `opaque`, `unsafe`, computational
+certificate, route hypothesis, or RH premise. Full formal lint reaches the module and reports no
+target error; its nonzero exit is caused by unrelated unwired `RHTower.Sieve.*` and
+`HTGeometry.AbelianZetaGas.NaturalBoundary` modules.
 
 ## Log
 

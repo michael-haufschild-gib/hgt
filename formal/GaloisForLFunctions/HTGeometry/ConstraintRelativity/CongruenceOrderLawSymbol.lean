@@ -162,6 +162,30 @@ theorem congruence_headMap_eq_zero (ha : a ≠ 0)
   rw [maximalIdealA_smul_eq]
   exact soldering_range_le ha φ ω
 
+/-- **Card `(11)` for the concrete model, boxed.**  The first-order obstruction of a head map of
+the diagonal congruence order is a precomposition of the symbol exactly for the zero head map:
+every source-linear comparison has zero head map, so no nonzero tangent soldering lifts. -/
+theorem congruence_obstruction_precomposition_iff (ha : a ≠ 0)
+    (hsplit : ∀ c : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m,
+      ∃ r : k, c - algebraMap k _ r ∈ maximalIdealA a m)
+    (f : headLayer (k := k) (maximalIdealA a m)
+        Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R]
+      →ₗ[k] headLayer (k := k) (maximalIdealA a m) (traceDefect a m)) :
+    (∃ g : radLayer (k := k) (maximalIdealA a m)
+        Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R]
+        →ₗ[k] radLayer (k := k) (maximalIdealA a m) (traceDefect a m),
+        lawObstruction (maximalIdealA a m) (kaehler_sq_smul ha)
+            traceDefect_sq_smul f
+          = fun u => g ∘ₗ symbol (maximalIdealA a m) (kaehler_sq_smul ha) u)
+      ↔ f = 0 := by
+  rw [lift_iff_obstruction_eq (maximalIdealA a m) (kaehler_sq_smul ha)
+    traceDefect_sq_smul hsplit f]
+  constructor
+  · rintro ⟨φ, rfl⟩
+    exact congruence_headMap_eq_zero (k := k) ha φ
+  · rintro rfl
+    exact ⟨0, congruence_headMap_eq_zero (k := k) ha 0⟩
+
 /-- **Card `(11)` for the concrete model.**  The abstract space of first-order law symbols of the
 congruence order is the space of observer matrices over the residue ring. -/
 noncomputable def lawSymbolSpaceEquiv
@@ -295,6 +319,9 @@ noncomputable def solderingObstructionLawSymbolEquiv :
           (headLayerEquiv (k := k)
             (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))).symm))
 
+attribute [local instance] invertibleTwoPowerSeries invertibleSuccPowerSeries
+  invertiblePredPowerSeries
+
 /-- **Card `(11)`, literal model, boxed.**  That space is the matrix algebra on the observer
 directions over the coefficient field. -/
 noncomputable def solderingObstructionMatrixEquiv :
@@ -344,6 +371,28 @@ theorem literal_lawObstruction_eq_zero
   rw [literal_headMap_eq_zero]
   funext u
   exact LinearMap.comp_zero _
+
+/-- **Card `(11)`, literal model, boxed.**  Over `k[[X]]` the obstruction of a head map is a
+precomposition exactly for the zero head map, with no hypotheses. -/
+theorem literal_obstruction_precomposition_iff
+    (f : headLayer (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+        Ω[(MvPolynomial (Fin (m + 2)) (PowerSeries k) ⧸
+          congruenceIdeal (PowerSeries.X : PowerSeries k) (m + 2))⁄(PowerSeries k)]
+      →ₗ[k] headLayer (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+        (traceDefect (PowerSeries.X : PowerSeries k) (m + 2))) :
+    (∃ g : radLayer (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+        Ω[(MvPolynomial (Fin (m + 2)) (PowerSeries k) ⧸
+          congruenceIdeal (PowerSeries.X : PowerSeries k) (m + 2))⁄(PowerSeries k)]
+        →ₗ[k] radLayer (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+          (traceDefect (PowerSeries.X : PowerSeries k) (m + 2)),
+        lawObstruction (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+            (kaehler_sq_smul PowerSeries.X_ne_zero)
+            traceDefect_sq_smul f
+          = fun u => g ∘ₗ symbol (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+              (kaehler_sq_smul PowerSeries.X_ne_zero) u)
+      ↔ f = 0 := by
+  exact congruence_obstruction_precomposition_iff (k := k) PowerSeries.X_ne_zero
+    (congruence_split (k := k) (m := m + 2)) f
 
 end LiteralObstruction
 

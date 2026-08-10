@@ -274,6 +274,7 @@ theorem exists_lift_of_symbol_compat
     (hcompat : ∀ (u : ↥m) (h : headLayer (k := k) m M),
       g (symbol m hsqM u h) = symbol m hsqN u (f h)) :
     ∃ φ : M →ₗ[A] N,
+      headMap (k := k) m φ = f ∧
       (∀ x : M, x ∈ radLayer (k := k) m M → ∀ hx : x ∈ radLayer (k := k) m M,
         φ x = (g ⟨x, hx⟩ : N)) := by
   classical
@@ -337,8 +338,16 @@ theorem exists_lift_of_symbol_compat
       _ = c • φ₀ x + (u : A) • φ₀ x := by rw [hk, map_smul, hleft, hsym, hright]
       _ = (algebraMap k A c) • φ₀ x + (u : A) • φ₀ x := by rw [algebraMap_smul]
       _ = a • φ₀ x := by rw [← add_smul, hasum]
-  exact ⟨{ toFun := φ₀, map_add' := φ₀.map_add, map_smul' := fun a x => hAlin a x },
+  refine ⟨{ toFun := φ₀, map_add' := φ₀.map_add, map_smul' := fun a x => hAlin a x }, ?_,
     fun x _ hx => hrad x hx⟩
+  refine LinearMap.ext fun h => ?_
+  obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ h
+  show (Submodule.Quotient.mk (φ₀ x) : headLayer (k := k) m N) = f (Submodule.Quotient.mk x)
+  rw [hφ₀]
+  simp only [LinearMap.add_apply, LinearMap.comp_apply, Submodule.mkQ_apply,
+    Submodule.subtype_apply]
+  rw [Submodule.Quotient.mk_add,
+    (Submodule.Quotient.mk_eq_zero _).2 (g (prM x)).2, zero_add, hsecN_mk]
 
 /-- **Card `(11)`.**  The first-order obstruction of a head map. -/
 noncomputable def lawObstruction
@@ -348,23 +357,43 @@ noncomputable def lawObstruction
     (↥m → (headLayer (k := k) m M →ₗ[k] radLayer (k := k) m N)) :=
   fun u => symbol m hsqN u ∘ₗ f
 
-/-- **Card `(11)`.**  A head map lifts exactly when its obstruction is a precomposition. -/
-theorem lift_of_obstruction_eq
+/-- **Card `(11)`, boxed.**  A head map lifts to a source-linear comparison exactly when its
+first-order obstruction is a precomposition of the symbol.  The forward direction assembles the
+lift from a chosen coefficient complement; the backward direction takes the radical-layer map
+induced by the lift itself. -/
+theorem lift_iff_obstruction_eq
     (hsqM : ∀ (u v : A), u ∈ m → v ∈ m → ∀ x : M, u • v • x = 0)
     (hsqN : ∀ (u v : A), u ∈ m → v ∈ m → ∀ x : N, u • v • x = 0)
     (hsplit : ∀ a : A, ∃ c : k, a - algebraMap k A c ∈ m)
     (f : headLayer (k := k) m M →ₗ[k] headLayer (k := k) m N) :
     (∃ g : radLayer (k := k) m M →ₗ[k] radLayer (k := k) m N,
-        lawObstruction m hsqM hsqN f = fun u => g ∘ₗ symbol m hsqM u) →
-      ∃ _ : M →ₗ[A] N, True := by
-  rintro ⟨g, hg⟩
-  have hcompat : ∀ (u : ↥m) (h : headLayer (k := k) m M),
-      g (symbol m hsqM u h) = symbol m hsqN u (f h) := by
-    intro u h
-    have := congrArg (fun F => F u h) hg
-    simpa [lawObstruction] using this.symm
-  obtain ⟨ψ, _⟩ := exists_lift_of_symbol_compat m hsqM hsqN hsplit f g hcompat
-  exact ⟨ψ, trivial⟩
+        lawObstruction m hsqM hsqN f = fun u => g ∘ₗ symbol m hsqM u)
+      ↔ ∃ φ : M →ₗ[A] N, headMap (k := k) m φ = f := by
+  constructor
+  · rintro ⟨g, hg⟩
+    have hcompat : ∀ (u : ↥m) (h : headLayer (k := k) m M),
+        g (symbol m hsqM u h) = symbol m hsqN u (f h) := by
+      intro u h
+      have := congrArg (fun F => F u h) hg
+      simpa [lawObstruction] using this.symm
+    obtain ⟨ψ, hψ, _⟩ := exists_lift_of_symbol_compat m hsqM hsqN hsplit f g hcompat
+    exact ⟨ψ, hψ⟩
+  · rintro ⟨φ, rfl⟩
+    refine ⟨radMap m φ, ?_⟩
+    funext u
+    refine LinearMap.ext fun h => ?_
+    exact (symbol_intertwine m hsqM hsqN φ u h).symm
+
+/-- **Card `(11)`.**  The vanishing of the obstruction produces a lift. -/
+theorem exists_lift_of_obstruction_eq
+    (hsqM : ∀ (u v : A), u ∈ m → v ∈ m → ∀ x : M, u • v • x = 0)
+    (hsqN : ∀ (u v : A), u ∈ m → v ∈ m → ∀ x : N, u • v • x = 0)
+    (hsplit : ∀ a : A, ∃ c : k, a - algebraMap k A c ∈ m)
+    (f : headLayer (k := k) m M →ₗ[k] headLayer (k := k) m N)
+    (h : ∃ g : radLayer (k := k) m M →ₗ[k] radLayer (k := k) m N,
+      lawObstruction m hsqM hsqN f = fun u => g ∘ₗ symbol m hsqM u) :
+    ∃ φ : M →ₗ[A] N, headMap (k := k) m φ = f :=
+  (lift_iff_obstruction_eq m hsqM hsqN hsplit f).1 h
 
 end LawSymbol
 

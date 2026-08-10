@@ -7,16 +7,17 @@ import GaloisForLFunctions.RHTower.Sieve.ShiftSumUniform
 # The off-diagonal, from correlations bounded uniformly in the initial segment
 
 The same assembly as `abs_offDiagonal_le`, but consuming the shift-uniform interface: a single
-bound `P` on `∑_{k ≤ h} |∑_{i < J} f(i)f(i+k)|` valid for **every** `J`, rather than a bound on the
-maximal partial sum at each shift separately.  Summation by parts is then applied with the shift-sum
-inside, at cost `∑_j sup_k |Δ w| + sup_k |w|`, which the window estimate bounds by `88h + 15`:
+bound `P` on `∑_{k ≤ h} |∑_{i < J} f(i)f(i+k)|` valid for every `J ≤ ⌈√x+h⌉ + 5`, rather than a
+bound on the maximal partial sum at each shift separately.  Summation by parts is applied with the
+shift-sum inside; the weight vanishes at the right end of the range and has no increments beyond the
+window, so only partial sums of length `≍ √x` occur, and the cost is `∑_j sup_k |Δ w| ≤ 85h + 14`:
 
 ```text
-| off-diagonal |  ≤  (88h + 15)·P  +  2h·(3√x + 1) .
+| off-diagonal |  ≤  (85h + 14)·P  +  2h·(3√x + 1) .
 ```
 
-This is the form that the averaged Chowla theorem supplies directly: for `J ≥ ε·N` it is the
-theorem, and for `J < ε·N` the trivial bound `|∑_{i<J}| ≤ J` already suffices.
+This is the form the averaged Chowla theorem supplies directly: at length `J ≥ δ√x` it is the
+theorem, and at shorter lengths the trivial bound `|∑_{i<J}| ≤ J` already suffices.
 -/
 
 noncomputable section
@@ -114,6 +115,12 @@ theorem abs_offDiagonal_uniform_le {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {
       rw [fibreWinLen]
       have := fibreWinLo_le_succ_fibreWinHi (x := x) (h := h) hx hh0
       omega
+    have hMpos : 1 ≤ M := by
+      rw [hMdef]
+      refine Nat.le_floor ?_
+      have hhs : (0 : ℝ) ≤ h * Real.sqrt x := by positivity
+      push_cast
+      linarith
     have hMR : Real.sqrt x + h + 5 ≤ ((M : ℕ) : ℝ) := by
       have hfl : x + h * Real.sqrt x - 1 < ((⌊x + h * Real.sqrt x⌋₊ : ℕ) : ℝ) :=
         Nat.sub_one_lt_floor _
@@ -130,7 +137,9 @@ theorem abs_offDiagonal_uniform_le {f : ℕ → ℝ} (hf : ∀ n, |f n| ≤ 1) {
         rintro ⟨-, hlt⟩
         omega)
       (fun k hk1 _ => by
-        rw [hw]
+        show fibreSmooth x h k (M - 1 + 1) = 0
+        have hM1 : M - 1 + 1 = M := by omega
+        rw [hM1]
         exact fibreSmooth_eq_zero_of_ge hx hh0 hhx hk1 hMR)
       (sum_fibreIncr_le hx hh0 hfl1 hflR (M - 1))
     exact hbase

@@ -2055,3 +2055,30 @@ Shilov ideal, so no separate matricial boundary theory is needed here.
 
 Only `1 ∈ S` is used; self-adjointness and separation of `S` are not needed for
 this step.
+
+## The generation input is discharged (2026-08-10)
+
+`HTGeometry/CommutativeGeneration.lean`, axiom-clean, in the umbrella.
+`ShilovLocalBoundaryIdeal`'s comparison theorems
+(`surjective_of_isometry_of_generates`, `bijective_of_isometry_of_generates`)
+were stated modulo one analytic input,
+`(Algebra.adjoin ℂ T).topologicalClosure = ⊤`.  In the commutative model that
+input is Stone–Weierstrass, and it is now proved.
+
+- **`generates_of_separatesPoints`** — a self-adjoint set of continuous
+  functions separating the points of a compact space topologically generates.
+  Route: `T ∪ star T = T`, so `StarAlgebra.adjoin_toSubalgebra` identifies
+  `(StarAlgebra.adjoin ℂ T).toSubalgebra` with `Algebra.adjoin ℂ T`; mathlib's
+  `RCLike` Stone–Weierstrass gives density of the star adjoin; and
+  `StarSubalgebra.topologicalClosure_toSubalgebra_comm` transports it back.
+- **`generates_envelope_image`** — the image of a unital self-adjoint separating
+  system under the envelope map is such a set on the Shilov boundary.
+- **`bijective_of_isometry_envelope`** — hence any isometric comparison map onto
+  `C(∂_Shilov, ℂ)` whose range contains that image is bijective, with **no
+  residual hypothesis**.
+
+With this the commutative branch of the card's formal boundary is complete:
+operator systems, Bauer/Milman, the Choquet and Shilov boundaries, the Shilov
+ideal, the C*-envelope, `C*_e(A(K))`, boundary ⟹ complete boundary, and now
+generation.  Left on the list: boundary representations and locally
+C*-algebras, both noncommutative.

@@ -249,3 +249,12 @@ affineness, giving choquetBoundary (A K) = ext K.
 Shilov ideal is already the complete one: matrix positivity is a family of
 sandwiches `v* x v`, each of which lies in S because S is a subspace. Needs only
 1 ∈ S. Do NOT build a separate matricial boundary theory for C(X).
+
+## Generation discharged (2026-08-10)
+
+`CommutativeGeneration.lean`: `(Algebra.adjoin ℂ T).topologicalClosure = ⊤` for
+self-adjoint separating T on a compact space — this is Stone–Weierstrass.
+Bridge: `StarAlgebra.adjoin_toSubalgebra` (adjoin of a star-closed set is the
+plain algebra adjoin) plus
+`StarSubalgebra.topologicalClosure_toSubalgebra_comm`.
+The commutative branch of the card is now hypothesis-free.

@@ -219,6 +219,214 @@ theorem exists_grandResponse_zero_near (σ : ℝ) {p : ℂ} (hp : p.re = -σ) {�
   rw [hdiff]
   exact hnear
 
+/-! ## The response is not identically zero on any disc of the chamber -/
+
+/-- On a compact real segment only finitely many parameters put a fixed depth-`i` argument on a
+zeta zero. -/
+theorem finite_zetaZero_segment (σ : ℝ) (u₀ : ℂ) (i : ℕ) (b : ℝ) :
+    {s : ℝ | s ∈ Set.Icc (0 : ℝ) b ∧
+      riemannZeta (((i + 1 : ℕ) : ℂ) * ((σ : ℝ) + (u₀ + (s : ℂ)))) = 0}.Finite := by
+  classical
+  set ψ : ℝ → ℂ := fun s => ((i + 1 : ℕ) : ℂ) * ((σ : ℝ) + (u₀ + (s : ℂ))) with hψ
+  have hcont : Continuous ψ := by
+    rw [hψ]
+    fun_prop
+  have hinj : Function.Injective ψ := by
+    intro s₁ s₂ h
+    rw [hψ] at h
+    have hne : ((i + 1 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+    have h2 := mul_left_cancel₀ hne h
+    have h3 : ((s₁ : ℝ) : ℂ) = ((s₂ : ℝ) : ℂ) := by
+      have := congrArg (fun z : ℂ => z - ((σ : ℝ) + u₀)) h2
+      simpa using this
+    exact Complex.ofReal_injective h3
+  have hcpt : IsCompact (ψ '' Set.Icc (0 : ℝ) b) :=
+    (isCompact_Icc).image hcont
+  have hfin : ((ψ '' Set.Icc (0 : ℝ) b) ∩ riemannZetaZeros).Finite :=
+    hcpt.inter_riemannZetaZeros_finite
+  refine Set.Finite.of_finite_image (f := ψ) (hfin.subset ?_) (hinj.injOn)
+  rintro z ⟨s, ⟨hs, hzero⟩, rfl⟩
+  exact ⟨⟨s, hs, rfl⟩, by rw [mem_riemannZetaZeros]; exact hzero⟩
+
+/-- **The dilation organ is not identically zero on any disc of the chamber.**  Its zeros are
+carried by finitely many pulled-back zeta zero sets on every compact piece, so every disc contains
+a point where the response does not vanish. -/
+theorem exists_grandResponse_ne_zero_near (σ : ℝ) {u₀ : ℂ} (hu₀ : 0 < σ + u₀.re)
+    {δ : ℝ} (hδ : 0 < δ) :
+    ∃ u : ℂ, ‖u - u₀‖ < δ ∧ 0 < σ + u.re ∧ grandResponse σ 0 u ≠ 0 := by
+  classical
+  set a₀ : ℝ := (σ + u₀.re) / 2 with ha₀def
+  have ha₀ : 0 < a₀ := by rw [ha₀def]; linarith
+  set J : ℕ := max 1 (depthTailThreshold 0 a₀) with hJdef
+  set b : ℝ := δ / 2 with hbdef
+  have hb : 0 < b := by rw [hbdef]; linarith
+  -- the bad parameters form a finite set
+  set bad : Set ℝ := ⋃ i ∈ Finset.range J,
+    {s : ℝ | s ∈ Set.Icc (0 : ℝ) b ∧
+      riemannZeta (((i + 1 : ℕ) : ℂ) * ((σ : ℝ) + (u₀ + (s : ℂ)))) = 0} with hbaddef
+  have hbadfin : bad.Finite := by
+    rw [hbaddef]
+    exact Set.Finite.biUnion (Finset.range J).finite_toSet
+      (fun i _ => finite_zetaZero_segment σ u₀ i b)
+  have hinf : (Set.Ioo (0 : ℝ) b).Infinite :=
+    Set.infinite_coe_iff.mp (Set.Ioo.infinite hb)
+  obtain ⟨s, hs, hsbad⟩ := hinf.exists_notMem_finite hbadfin
+  refine ⟨u₀ + (s : ℂ), ?_, ?_, ?_⟩
+  · have : ‖u₀ + (s : ℂ) - u₀‖ = |s| := by
+      simp [Complex.norm_real]
+    rw [this, abs_of_pos hs.1]
+    rw [hbdef] at hs
+    linarith [hs.2]
+  · have hre : (u₀ + (s : ℂ)).re = u₀.re + s := by simp
+    rw [hre]
+    linarith [hs.1]
+  · have hre : (u₀ + (s : ℂ)).re = u₀.re + s := by simp
+    have hchamber : 0 < σ + (u₀ + (s : ℂ)).re := by rw [hre]; linarith [hs.1]
+    have hge : a₀ ≤ σ + (u₀ + (s : ℂ)).re := by
+      rw [hre, ha₀def]
+      linarith [hs.1]
+    have hJthr : depthTailThreshold 0 a₀ ≤ J + 1 := by
+      rw [hJdef]
+      omega
+    have htail : (∏' j : ℕ, depthFactor σ 0 (j + (J + 1)) (u₀ + (s : ℂ))) ≠ 0 :=
+      tprod_depthFactor_tail_ne_zero σ 0 ha₀ hge hJthr
+    have hcongr : (∏' j : ℕ, depthFactor σ 0 (j + J + 1) (u₀ + (s : ℂ)))
+        = ∏' j : ℕ, depthFactor σ 0 (j + (J + 1)) (u₀ + (s : ℂ)) :=
+      tprod_congr fun j => by rw [show j + J + 1 = j + (J + 1) by omega]
+    have htail' : (∏' j : ℕ, depthFactor σ 0 (j + J + 1) (u₀ + (s : ℂ))) ≠ 0 := by
+      rw [hcongr]
+      exact htail
+    have hprod : depthProduct σ 0 J (u₀ + (s : ℂ)) ≠ 0 := by
+      rw [depthProduct, Finset.prod_ne_zero_iff]
+      intro i hi
+      rw [depthFactor, add_zero]
+      intro hzero
+      refine hsbad ?_
+      rw [hbaddef]
+      exact Set.mem_biUnion hi ⟨⟨le_of_lt hs.1, le_of_lt hs.2⟩, hzero⟩
+    rw [grandResponse_split σ 0 hchamber J]
+    exact mul_ne_zero hprod htail'
+
+/-! ## The line `Re u = −σ` is a natural boundary -/
+
+/-- **Theorem 6.1, item 1: the natural boundary.**  No function analytic at a point `p` of the line
+`Re u = −σ` can agree with the dilation organ on the chamber side of a neighbourhood of `p`.  The
+zeros of the organ accumulate at `p`, which would force the extension to vanish identically near
+`p`, while the organ is nonzero somewhere in every disc of the chamber. -/
+theorem no_analytic_extension (σ : ℝ) {p : ℂ} (hp : p.re = -σ) {r : ℝ} (hr : 0 < r)
+    {g : ℂ → ℂ} (hg : AnalyticAt ℂ g p)
+    (hagree : ∀ u : ℂ, ‖u - p‖ < r → -σ < u.re → g u = grandResponse σ 0 u) :
+    False := by
+  have hzero : ∀ᶠ z in 𝓝 p, g z = 0 := by
+    rcases hg.eventually_eq_zero_or_eventually_ne_zero with h | h
+    · exact h
+    · exfalso
+      rw [Filter.eventually_iff, Metric.mem_nhdsWithin_iff] at h
+      obtain ⟨ε, hε, hsub⟩ := h
+      obtain ⟨u, hnear, hre, hFzero⟩ :=
+        exists_grandResponse_zero_near σ hp (lt_min hε hr)
+      have hball : u ∈ Metric.ball p ε := by
+        rw [Metric.mem_ball, dist_eq_norm]
+        exact lt_of_lt_of_le hnear (min_le_left _ _)
+      have hnep : u ∈ ({p}ᶜ : Set ℂ) := by
+        intro hmem
+        rw [Set.mem_singleton_iff] at hmem
+        rw [hmem, hp] at hre
+        exact lt_irrefl _ hre
+      have hgne := hsub ⟨hball, hnep⟩
+      have hgu : g u = grandResponse σ 0 u :=
+        hagree u (lt_of_lt_of_le hnear (min_le_right _ _)) hre
+      exact hgne (by rw [hgu, hFzero])
+  rw [Metric.eventually_nhds_iff] at hzero
+  obtain ⟨δ, hδ, hδz⟩ := hzero
+  set η : ℝ := min δ r with hηdef
+  have hη : 0 < η := lt_min hδ hr
+  have hηδ : η ≤ δ := min_le_left _ _
+  have hηr : η ≤ r := min_le_right _ _
+  set u₀ : ℂ := p + ((η / 2 : ℝ) : ℂ) with hu₀def
+  have hu₀re : u₀.re = -σ + η / 2 := by
+    rw [hu₀def]
+    simp [hp]
+  have hu₀chamber : 0 < σ + u₀.re := by rw [hu₀re]; linarith
+  obtain ⟨u, hnear, hchamber, hne⟩ :=
+    exists_grandResponse_ne_zero_near σ hu₀chamber (δ := η / 4) (by linarith)
+  have hu₀p : ‖u₀ - p‖ = η / 2 := by
+    have hsub : u₀ - p = ((η / 2 : ℝ) : ℂ) := by rw [hu₀def]; ring
+    rw [hsub, Complex.norm_real, Real.norm_of_nonneg (by linarith : (0 : ℝ) ≤ η / 2)]
+  have hup : ‖u - p‖ < η := by
+    have hdecomp : u - p = (u - u₀) + (u₀ - p) := by ring
+    have hle : ‖u - p‖ ≤ ‖u - u₀‖ + ‖u₀ - p‖ := by
+      rw [hdecomp]
+      exact norm_add_le _ _
+    rw [hu₀p] at hle
+    linarith
+  have hgu0 : g u = 0 := by
+    refine hδz ?_
+    rw [dist_eq_norm]
+    linarith
+  have hgu : g u = grandResponse σ 0 u :=
+    hagree u (lt_of_lt_of_le hup hηr) (by linarith)
+  exact hne (by rw [← hgu, hgu0])
+
+/-! ## The singularities accumulate only on the line -/
+
+theorem finite_zetaZero_ball (σ : ℝ) (i : ℕ) (c : ℂ) (R : ℝ) :
+    {u : ℂ | u ∈ Metric.closedBall c R ∧
+      riemannZeta (((i + 1 : ℕ) : ℂ) * ((σ : ℝ) + u)) = 0}.Finite := by
+  classical
+  set φ : ℂ → ℂ := fun u => ((i + 1 : ℕ) : ℂ) * ((σ : ℝ) + u) with hφ
+  have hcont : Continuous φ := by
+    rw [hφ]
+    fun_prop
+  have hinj : Function.Injective φ := by
+    intro u₁ u₂ h
+    rw [hφ] at h
+    have hne : ((i + 1 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+    have h2 := mul_left_cancel₀ hne h
+    have := congrArg (fun z : ℂ => z - ((σ : ℝ) : ℂ)) h2
+    simpa using this
+  have hcpt : IsCompact (φ '' Metric.closedBall c R) :=
+    (isCompact_closedBall c R).image hcont
+  have hfin : ((φ '' Metric.closedBall c R) ∩ riemannZetaZeros).Finite :=
+    hcpt.inter_riemannZetaZeros_finite
+  refine Set.Finite.of_finite_image (f := φ) (hfin.subset ?_) (hinj.injOn)
+  rintro z ⟨u, ⟨hu, hzero⟩, rfl⟩
+  exact ⟨⟨u, hu, rfl⟩, by rw [mem_riemannZetaZeros]; exact hzero⟩
+
+/-- **The zeros of the dilation organ accumulate only on the boundary line.**  Inside any compact
+set and at any positive distance from the line `Re u = −σ` there are only finitely many of them. -/
+theorem finite_grandResponse_zeros (σ : ℝ) {a₀ : ℝ} (ha₀ : 0 < a₀) (c : ℂ) (R : ℝ) :
+    {u : ℂ | u ∈ Metric.closedBall c R ∧ a₀ ≤ σ + u.re
+      ∧ grandResponse σ 0 u = 0}.Finite := by
+  classical
+  set J : ℕ := max 1 (depthTailThreshold 0 a₀) with hJdef
+  refine Set.Finite.subset
+    (Set.Finite.biUnion (Finset.range J).finite_toSet
+      (fun i _ => finite_zetaZero_ball σ i c R)) ?_
+  rintro u ⟨hu, hge, hFzero⟩
+  have hchamber : 0 < σ + u.re := lt_of_lt_of_le ha₀ hge
+  have hJthr : depthTailThreshold 0 a₀ ≤ J + 1 := by
+    rw [hJdef]
+    omega
+  have htail : (∏' j : ℕ, depthFactor σ 0 (j + (J + 1)) u) ≠ 0 :=
+    tprod_depthFactor_tail_ne_zero σ 0 ha₀ hge hJthr
+  have hcongr : (∏' j : ℕ, depthFactor σ 0 (j + J + 1) u)
+      = ∏' j : ℕ, depthFactor σ 0 (j + (J + 1)) u :=
+    tprod_congr fun j => by rw [show j + J + 1 = j + (J + 1) by omega]
+  have htail' : (∏' j : ℕ, depthFactor σ 0 (j + J + 1) u) ≠ 0 := by
+    rw [hcongr]; exact htail
+  have hprod : depthProduct σ 0 J u = 0 := by
+    have hsplit := grandResponse_split σ 0 hchamber J
+    rw [hFzero] at hsplit
+    rcases mul_eq_zero.mp hsplit.symm with h | h
+    · exact h
+    · exact absurd h htail'
+  rw [depthProduct] at hprod
+  obtain ⟨i, hi, hzero⟩ := Finset.prod_eq_zero_iff.mp hprod
+  refine Set.mem_biUnion hi ⟨hu, ?_⟩
+  rw [depthFactor, add_zero] at hzero
+  exact hzero
+
 end
 
 end GaloisForLFunctions.HTGeometry

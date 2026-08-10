@@ -121,19 +121,17 @@ theorem gaussDiagonalBlock_fourierMulBlock {m : ℕ} (hm : 1 ≤ m) (k : Fin m) 
 /-- **The one-step factorization.**  The quasi-inner block acts on a twisted amplitude through the
 two normalized shifted blocks, with the scalar `p |d_n|²`. -/
 theorem gaussQuasiInnerG_fourierMulBlock {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
-    {n : ℤ} (hn : n ≠ 0) (f : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) :
+    (hp : (1 : ℝ) < (p : ℝ)) {n : ℤ} (hn : n ≠ 0)
+    (f : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) :
     gaussQuasiInnerG hm k p (fourierMulBlock n f)
       = (((p : ℝ) : ℂ) *
           (starRingEnd ℂ (gaussSampleValue k p n) * gaussSampleValue k p n)) •
         fourierMulBlock n
-          (gaussPrimeScaleBlock (show (1 : ℝ) < (p : ℝ) by exact_mod_cast p.prop.one_lt)
+          (gaussPrimeScaleBlock hp
             (gaussShiftedBlockDiag hm k p n
-              (gaussPrimeScaleInvSqBlock
-                  (show (1 : ℝ) < (p : ℝ) by exact_mod_cast p.prop.one_lt)
+              (gaussPrimeScaleInvSqBlock hp
                 (gaussShiftedBlockOf hm k p n
-                  (gaussPrimeScaleBlock
-                    (show (1 : ℝ) < (p : ℝ) by exact_mod_cast p.prop.one_lt) f))))) := by
-  have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
+                  (gaussPrimeScaleBlock hp f))))) := by
   rw [gaussQuasiInnerG]
   simp only [smul_apply, ContinuousLinearMap.coe_comp, Function.comp_apply]
   rw [gaussPrimeScaleBlock_comm hp n f,

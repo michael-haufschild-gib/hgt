@@ -2394,8 +2394,10 @@ import GaloisForLFunctions.RHTower.GaussPrimeScaleOperator
 import GaloisForLFunctions.RHTower.GaussRotationIsTranslation
 import GaloisForLFunctions.RHTower.GaussQuasiInnerBlocks
 import GaloisForLFunctions.RHTower.GaussQuasiInnerNorm
+import GaloisForLFunctions.RHTower.GaussStepScalarTaming
 import GaloisForLFunctions.RHTower.GaussMovingAmplitudeOperator
 import GaloisForLFunctions.RHTower.GaussPrincipalStep
+import GaloisForLFunctions.RHTower.GaussOneStepEstimate
 import GaloisForLFunctions.RHTower.GaussShiftedBlockCoefficients
 import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
 import GaloisForLFunctions.RHTower.GaussSampleTranslationL2
@@ -6878,3 +6880,6 @@ import GaloisForLFunctions.RHTower.DeningerPreimageMass
 import GaloisForLFunctions.RHTower.DeningerHigherMoment
 import GaloisForLFunctions.RHTower.DeningerHigherCoefficient
 import GaloisForLFunctions.RHTower.DeningerMobiusHarmonic
+import GaloisForLFunctions.RHTower.DeningerAbelianTelescope
+import GaloisForLFunctions.RHTower.DeningerAbelAverage
+import GaloisForLFunctions.RHTower.DeningerAbelianLimit

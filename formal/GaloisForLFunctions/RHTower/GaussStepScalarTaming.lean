@@ -43,7 +43,6 @@ theorem smul_gaussShiftedBlockDiag {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat
   rw [gaussShiftedBlockDiag, smul_smul]
   congr 1
   field_simp
-  ring
 
 /-- **The scalar tames the normalization.** -/
 theorem norm_smul_gaussShiftedBlockDiag_le {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
@@ -85,7 +84,6 @@ theorem smul_gaussShiftedBlockOf {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.P
   rw [gaussShiftedBlockOf, smul_smul]
   congr 1
   field_simp
-  ring
 
 theorem norm_smul_gaussShiftedBlockOf_le {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
     {n : ℤ} (hn : n ≠ 0) (v : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) :

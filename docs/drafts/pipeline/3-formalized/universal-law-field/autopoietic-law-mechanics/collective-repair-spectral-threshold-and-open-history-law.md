@@ -52,4 +52,6 @@ autocatalytic network, or that any source selects the threshold.
 Direct foreground elaboration and leaf build pass. The module is imported by
 `GaloisForLFunctions.HTGeometry.UniversalLawField`. Axiom prints on significant declarations and
 the unconditional capstone report only `propext`, `Classical.choice`, and `Quot.sound`. No
-computational certificate or project-specific hypothesis occurs.
+computational certificate or project-specific hypothesis occurs. Final foreground umbrella build
+passes with 11,587 jobs. Full formal lint reports no target error; unrelated unwired modules keep
+the repository-wide lint exit nonzero.

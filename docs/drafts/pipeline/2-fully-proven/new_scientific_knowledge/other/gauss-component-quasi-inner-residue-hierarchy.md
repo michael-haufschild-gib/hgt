@@ -1137,3 +1137,30 @@ depend on `δ_n`.
 
 The wrap is handled by `AddCircle.coe_add_period`: for `x + s > 1` the representative of `x + s` is
 `x + s - 1`, and the two cases give the two constants.
+
+## Lean status, twenty-sixth pass: the scalar tames the normalization
+
+`RHTower/GaussStepScalarTaming.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+norm_fourierMulBlock_le              : ‖e_n ·‖ ≤ 1
+norm_fourierMulBlock_apply_le        : ‖e_n v‖ ≤ ‖v‖
+smul_gaussShiftedBlockDiag           : (p conj(d_n) d_n) · S(v) = (p conj(d_n)) · e_(-n) D (e_n v)
+smul_gaussShiftedBlockOf             : (p conj(d_n) d_n) · S*(v) = (p d_n) · e_(-n) D* (e_n v)
+norm_smul_gaussShiftedBlockDiag_le   : ‖(p conj(d_n) d_n) · S(v)‖ ≤ p |d_n| M ‖v‖
+norm_smul_gaussShiftedBlockOf_le     : the same for S*
+```
+
+The two `smul_` identities are the exact cancellations: the scalar of the one-step factorization
+divides out the `d_n^(-1)` respectively `(conj d_n)^(-1)` built into the normalized blocks, leaving
+a *single* factor `d_n` in front of a composition of operators of norm at most `M`.  So the bound
+carries `|d_n|`, which tends to zero, instead of `|d_n|^(-1)`, which does not.
+
+This is the mechanism by which an `L²` error survives the one-step estimate: it is never divided by
+`d_n`, and the remaining factor `p |d_n| M` even improves the rate.
+
+### Remaining
+
+Assembling (10) — combining the exact factorization, the telescope, these two taming bounds, and
+the two uniform one-step limits — and then (11), the `m`-fold iterate with amplitude `a_(δ_n)^r`.

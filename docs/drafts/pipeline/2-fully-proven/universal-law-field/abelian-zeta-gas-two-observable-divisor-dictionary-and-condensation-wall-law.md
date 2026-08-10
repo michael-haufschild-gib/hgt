@@ -977,12 +977,55 @@ admissible depth `J ≥ depthTailThreshold v a₀`, which is what lets the respo
 depth at which its divisor is read.  Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only;
 module green at 8 884 jobs.
 
-**What remains of Theorem 6.1.**  Only item 1's accumulation claim — that the singularities
-accumulate on `Re u = −σ` and that the line is a natural boundary — which needs the Riemann–von
-Mangoldt density of the ordinates.  The continuation, the divisor formula (GAS.9), the line
-arrangement (GAS.10) and item 2 are all certified.  Item 2 of the theorem is closed:
-it is Corollary 3.2, `zetaPartition_depthShift` plus the certified translation-divisor layer of
-ULF-EQG-1.
+### Theorem 6.1 — the natural boundary (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/NaturalBoundary.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The accumulation claim needs far less than the Riemann–von Mangoldt count: it needs only that the
+completed zeta has zeros of arbitrarily large ordinate, because the *depths* supply the density.
+For a single zero `ρ` of large ordinate `γ` and the depth `j = ⌊γ/t⌋`, the quotient `ρ/j` already
+sits within `(1+|t|)/j` of `it` — one zero, one well-chosen depth, and the whole line is reached in
+the limit.  The zero supply is the corpus's own `xiDivisorSupport_infinite`, upgraded to
+unboundedness by the fact that a closed discrete subset of the plane inside a ball is finite.
+
+| Clause | Lean |
+|---|---|
+| the `Ξ` divisor support is unbounded | `exists_xi_divisor_norm_gt` |
+| **nontrivial zeta zeros of arbitrarily large ordinate** | **`exists_zetaZero_abs_im_gt`** |
+| the ordinate sign can be prescribed (conjugate pairing) | `exists_zetaZero_im_div_gt` |
+| the landing estimate `‖ρ/j − it‖ ≤ (|Re ρ| + |Im ρ − jt|)/j` | `norm_div_natCast_sub_mul_I_le` |
+| **`ρ/j` comes arbitrarily close to every purely imaginary number** | **`exists_zetaZero_depth_near`** |
+
+The landings themselves and their consequences:
+
+| Clause | Lean |
+|---|---|
+| the landing point `u = ρ/j − σ` | `landing`, `re_landing` |
+| **the landing has real part in `(−σ, −σ + 1/j)`** | **`re_landing_mem`** |
+| **the response vanishes at every landing** | **`grandResponse_landing_eq_zero`** |
+| **every point of `Re u = −σ` is a limit of zeros of the organ** | **`exists_grandResponse_zero_near`** |
+| only finitely many zeta zeros meet a compact affine segment or disc | `finite_zetaZero_segment`, `finite_zetaZero_ball` |
+| **the organ is nonzero somewhere in every disc of the chamber** | **`exists_grandResponse_ne_zero_near`** |
+| **the zeros accumulate only on the line** | **`finite_grandResponse_zeros`** |
+| **the line is a natural boundary** | **`no_analytic_extension`** |
+
+`no_analytic_extension` is the sharp form: *no* function analytic at a point `p` of the line can
+agree with `u ↦ 𝔉_σ(u,0)` on the chamber side of any neighbourhood of `p`.  The mechanism is the
+identity theorem applied to the putative extension, not to the response itself: zeros of the
+response accumulate at `p`, so the extension would vanish identically near `p`, while
+`exists_grandResponse_ne_zero_near` produces a nonvanishing point of the response in every disc of
+the chamber.  That non-degeneracy is itself unconditional: on a compact piece of the chamber the
+response is a finite product of pulled-back zeta factors times a zero-free tail, and mathlib's
+`IsCompact.inter_riemannZetaZeros_finite` makes each factor's zero set finite there.
+
+`finite_grandResponse_zeros` is the converse half — *only* the line carries the accumulation:
+within any closed ball and at any positive distance from the line there are finitely many zeros.
+
+Axiom prints for every declaration above: `propext`, `Classical.choice`, `Quot.sound` only; the
+module builds green (8 917 jobs).  **Theorem 6.1 is closed**: continuation, (GAS.9), (GAS.10),
+item 2 (Corollary 3.2 plus the certified translation-divisor layer of ULF-EQG-1) and now item 1's
+accumulation and natural-boundary claims.
 
 ### The gas-expectation layer — the single-mode atom (DONE)
 

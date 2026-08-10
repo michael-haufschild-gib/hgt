@@ -865,4 +865,7 @@ Direct foreground elaboration and the leaf build pass. The module is wired into
 `HTGeometry.UniversalLawField`. Axiom prints on one-repair nonviability, all threshold chambers,
 strict-progress transition, symmetric amplification, period-two interaction, unbounded history,
 and the unconditional capstone report only `propext`, `Classical.choice`, and `Quot.sound`. No
-computation certificate, route premise, project axiom, or RH statement occurs.
+computation certificate, route premise, project axiom, or RH statement occurs. Final foreground
+umbrella build passes with 11,587 jobs. Full formal lint reaches the module and reports no target
+error; unrelated unwired `RHTower.Sieve.*` and `HTGeometry.AbelianZetaGas.NaturalBoundary`
+modules keep the repository-wide lint exit nonzero.
