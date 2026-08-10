@@ -132,6 +132,30 @@ theorem carrier_level_bound {N m D : ℕ}
   simp only [Cardinal.mk_uLift, Cardinal.mk_fin, Cardinal.lift_natCast, Nat.cast_le] at h
   omega
 
+/-- **Card `(2)`, numerical form without a nondegeneracy assumption on the carrier.**  The bound
+also holds for the empty carrier: the differential field it generates is the coefficient field, so
+it contains no differentially independent element and the tower has no independent direction. -/
+theorem carrier_level_bound' {N m D : ℕ}
+    (x : ULift.{u} (Fin (N * m)) → E) (hx : DifferentialIndependent F x)
+    (y : ULift.{u} (Fin D) → E)
+    (hembed : ∀ i, x i ∈ differentialAdjoin F (Set.range y)) :
+    N * m + 1 ≤ D + 1 := by
+  rcases Nat.eq_zero_or_pos D with rfl | hD
+  · rcases Nat.eq_zero_or_pos (N * m) with h0 | h0
+    · omega
+    · exfalso
+      obtain ⟨i0⟩ := Fin.pos_iff_nonempty.mp h0
+      have hyempty : Set.range y = (∅ : Set E) := by
+        rw [Set.range_eq_empty_iff]
+        exact ⟨fun z => (Fin.elim0 z.down)⟩
+      have hmem := hembed (ULift.up i0)
+      rw [hyempty, differentialAdjoin_empty] at hmem
+      obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp hmem
+      exact hx.algebraicIndependent.transcendental (ULift.up i0)
+        (hc ▸ isAlgebraic_algebraMap c)
+  · haveI : Nonempty (ULift.{u} (Fin D)) := ⟨ULift.up ⟨0, hD⟩⟩
+    exact carrier_level_bound x hx y hembed
+
 end Transfer
 
 /-! ## The arithmetic size of the source state set -/
@@ -162,5 +186,28 @@ theorem card_units_prod_eq_prod_totient {ι : Type*} [DecidableEq ι] (s : Finse
   rw [ZMod.card_units_eq_totient, totient_prod_of_pairwise_coprime s q h]
 
 end SourceSize
+
+/-! ## The carrier bound at the arithmetic state count -/
+
+section ArithmeticCarrierBound
+
+variable {F E : Type u} [Field F] [Field E] [Algebra F E]
+variable [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
+
+/-- **Card `(4)`.**  A tower whose `N` layers each realize the simultaneous unit residues modulo a
+pairwise coprime family, embedded without loss into a carrier with `D` phase coordinates, forces
+`D + 1 ≥ N ∏ φ(q i) + 1`. -/
+theorem carrier_level_bound_prod_totient {ι : Type*} [DecidableEq ι] (s : Finset ι) (q : ι → ℕ)
+    [NeZero (∏ i ∈ s, q i)]
+    (hcop : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → Nat.Coprime (q i) (q j)) {N D : ℕ}
+    (x : ULift.{u} (Fin (N * Fintype.card (ZMod (∏ i ∈ s, q i))ˣ)) → E)
+    (hx : DifferentialIndependent F x)
+    (y : ULift.{u} (Fin D) → E)
+    (hembed : ∀ i, x i ∈ differentialAdjoin F (Set.range y)) :
+    N * ∏ i ∈ s, Nat.totient (q i) + 1 ≤ D + 1 := by
+  rw [← card_units_prod_eq_prod_totient s q hcop]
+  exact carrier_level_bound' x hx y hembed
+
+end ArithmeticCarrierBound
 
 end HTGeometry.ConstraintRelativity

@@ -151,7 +151,7 @@ def thetaDiracResolventY : D →L[ℂ] H :=
   thetaCentered.subtypeL.comp
       (thetaCenteredSourceInverse.adjoint.comp
         (thetaDiracFst + Complex.I • thetaDiracResolventX)) +
-    Complex.I • thetaCenteredᵮ.starProjection.comp thetaDiracSnd
+    Complex.I • (thetaCenteredᗮ.starProjection.comp thetaDiracSnd)
 
 /-- Bounded inverse candidate for `Q - i`, assembled from its two exact components. -/
 def thetaSupersymmetricDiracResolventAtI : D →L[ℂ] D :=
@@ -163,6 +163,141 @@ def thetaSupersymmetricDiracResolventAtI : D →L[ℂ] D :=
 
 @[simp] theorem thetaDiracResolventAtI_snd (p : D) :
     (thetaSupersymmetricDiracResolventAtI p).ofLp.2 = thetaDiracResolventY p := rfl
+
+theorem thetaDiracResolventK_gram (p : D) :
+    thetaDiracGram (thetaDiracResolventK p) =
+      thetaCentered.orthogonalProjectionOnto p.ofLp.2 +
+        Complex.I • thetaCenteredSourceInverse.adjoint p.ofLp.1 := by
+  exact thetaDiracGram_apply_inverse _
+
+theorem thetaDiracResolventX_eq (p : D) :
+    thetaDiracResolventX p =
+      thetaCenteredSourceInverse (thetaDiracResolventK p) := rfl
+
+theorem thetaDiracResolventY_eq (p : D) :
+    thetaDiracResolventY p =
+      (thetaCenteredSourceInverse.adjoint
+          (p.ofLp.1 + Complex.I • thetaDiracResolventX p) : H) +
+        Complex.I • thetaCenteredᗮ.starProjection p.ofLp.2 := rfl
+
+theorem thetaDiracResolventX_mem_domain (p : D) :
+    thetaDiracResolventX p ∈ thetaWeightedDerivative.domain := by
+  rw [thetaDiracResolventX_eq]
+  change thetaCenteredSourceInverse (thetaDiracResolventK p) ∈
+    (closedHyperplaneInverse thetaCentered thetaCenteredSourceInverse).domain
+  exact (closedHyperplaneInverse_apply_B thetaCentered thetaCenteredSourceInverse
+    thetaCenteredSourceInverse_injective (thetaDiracResolventK p)).1
+
+theorem thetaWeightedDerivative_apply_thetaDiracResolventX
+    (p : D) (hp : thetaDiracResolventX p ∈ thetaWeightedDerivative.domain) :
+    thetaWeightedDerivative ⟨thetaDiracResolventX p, hp⟩ =
+      (thetaDiracResolventK p : H) := by
+  have hpair := closedHyperplaneInverse_apply_B thetaCentered
+    thetaCenteredSourceInverse thetaCenteredSourceInverse_injective
+      (thetaDiracResolventK p)
+  have heq : (⟨thetaDiracResolventX p, hp⟩ : thetaWeightedDerivative.domain) =
+      ⟨thetaCenteredSourceInverse (thetaDiracResolventK p), hpair.1⟩ := by
+    apply Subtype.ext
+    exact thetaDiracResolventX_eq p
+  rw [heq]
+  exact hpair.2
+
+private theorem thetaOrthogonalProjection_mem_adjoint_domain (g : H) :
+    thetaCenteredᗮ.starProjection g ∈ thetaWeightedDerivative.adjoint.domain := by
+  have hker : thetaWeightedDerivative.adjoint.kernel = thetaCenteredᗮ :=
+    closedHyperplaneInverse_adjoint_kernel thetaCentered thetaCenteredSourceInverse
+      thetaCenteredSourceInverse_injective thetaCenteredSourceInverse_dense_range
+  have hmem : thetaCenteredᗮ.starProjection g ∈
+      thetaWeightedDerivative.adjoint.kernel := by
+    rw [hker]
+    exact thetaCenteredᗮ.starProjection_apply_mem g
+  exact (LinearPMap.mem_kernel_iff.mp hmem).1
+
+private theorem thetaWeightedDerivative_adjoint_apply_orthogonalProjection
+    (g : H) (hg : thetaCenteredᗮ.starProjection g ∈
+      thetaWeightedDerivative.adjoint.domain) :
+    thetaWeightedDerivative.adjoint
+        ⟨thetaCenteredᗮ.starProjection g, hg⟩ = 0 := by
+  have hker : thetaWeightedDerivative.adjoint.kernel = thetaCenteredᗮ :=
+    closedHyperplaneInverse_adjoint_kernel thetaCentered thetaCenteredSourceInverse
+      thetaCenteredSourceInverse_injective thetaCenteredSourceInverse_dense_range
+  have hmem : thetaCenteredᗮ.starProjection g ∈
+      thetaWeightedDerivative.adjoint.kernel := by
+    rw [hker]
+    exact thetaCenteredᗮ.starProjection_apply_mem g
+  exact (LinearPMap.mem_kernel_iff.mp hmem).2
+
+theorem thetaDiracResolventY_mem_adjoint_domain (p : D) :
+    thetaDiracResolventY p ∈ thetaWeightedDerivative.adjoint.domain := by
+  let h : H := p.ofLp.1 + Complex.I • thetaDiracResolventX p
+  obtain ⟨hBdom, _⟩ := closedHyperplaneInverse_adjoint_apply_adjoint
+    thetaCentered thetaCenteredSourceInverse thetaCenteredSourceInverse_injective
+      thetaCenteredSourceInverse_dense_range h
+  have hOdom := thetaOrthogonalProjection_mem_adjoint_domain p.ofLp.2
+  rw [thetaDiracResolventY_eq]
+  exact Submodule.add_mem _ hBdom (Submodule.smul_mem _ Complex.I hOdom)
+
+theorem thetaWeightedDerivative_adjoint_apply_thetaDiracResolventY
+    (p : D) (hp : thetaDiracResolventY p ∈ thetaWeightedDerivative.adjoint.domain) :
+    thetaWeightedDerivative.adjoint ⟨thetaDiracResolventY p, hp⟩ =
+      p.ofLp.1 + Complex.I • thetaDiracResolventX p := by
+  let h : H := p.ofLp.1 + Complex.I • thetaDiracResolventX p
+  obtain ⟨hBdom, hBapply⟩ := closedHyperplaneInverse_adjoint_apply_adjoint
+    thetaCentered thetaCenteredSourceInverse thetaCenteredSourceInverse_injective
+      thetaCenteredSourceInverse_dense_range h
+  have hOdom := thetaOrthogonalProjection_mem_adjoint_domain p.ofLp.2
+  have hOapply := thetaWeightedDerivative_adjoint_apply_orthogonalProjection
+    p.ofLp.2 hOdom
+  let yB : thetaWeightedDerivative.adjoint.domain :=
+    ⟨(thetaCenteredSourceInverse.adjoint h : thetaCentered), hBdom⟩
+  let yO : thetaWeightedDerivative.adjoint.domain :=
+    ⟨thetaCenteredᗮ.starProjection p.ofLp.2, hOdom⟩
+  have hBapply' : thetaWeightedDerivative.adjoint yB = h := by
+    change (closedHyperplaneInverse thetaCentered
+      thetaCenteredSourceInverse).adjoint
+        ⟨(thetaCenteredSourceInverse.adjoint h : thetaCentered), hBdom⟩ = h
+    exact hBapply
+  have hsum : ⟨thetaDiracResolventY p, hp⟩ = yB + Complex.I • yO := by
+    apply Subtype.ext
+    exact thetaDiracResolventY_eq p
+  rw [hsum, LinearPMap.map_add, LinearPMap.map_smul, hBapply', hOapply, smul_zero,
+    add_zero]
+
+theorem thetaCentered_projection_add_orthogonal (g : H) :
+    (thetaCentered.orthogonalProjectionOnto g : H) +
+      thetaCenteredᗮ.starProjection g = g := by
+  exact thetaCentered.starProjection_add_starProjection_orthogonal g
+
+theorem thetaDiracResolventK_balance (p : D) :
+    (thetaDiracResolventK p : H) +
+        (thetaCenteredSourceInverse.adjoint (thetaDiracResolventX p) : H) =
+      (thetaCentered.orthogonalProjectionOnto p.ofLp.2 : H) +
+        Complex.I • (thetaCenteredSourceInverse.adjoint p.ofLp.1 : H) := by
+  have h := congrArg (fun k : thetaCentered => (k : H))
+    (thetaDiracResolventK_gram p)
+  simpa only [thetaDiracGram, add_apply, one_apply_eq_self,
+    ContinuousLinearMap.comp_apply, thetaDiracResolventX_eq,
+    Submodule.coe_add, Submodule.coe_smul_of_tower] using h
+
+theorem thetaSupersymmetricDiracResolventAtI_firstEquation
+    (p : D) (hp : thetaDiracResolventY p ∈ thetaWeightedDerivative.adjoint.domain) :
+    thetaWeightedDerivative.adjoint ⟨thetaDiracResolventY p, hp⟩ -
+      Complex.I • thetaDiracResolventX p = p.ofLp.1 := by
+  rw [thetaWeightedDerivative_adjoint_apply_thetaDiracResolventY p hp]
+  abel
+
+theorem thetaSupersymmetricDiracResolventAtI_secondEquation
+    (p : D) (hp : thetaDiracResolventX p ∈ thetaWeightedDerivative.domain) :
+    thetaWeightedDerivative ⟨thetaDiracResolventX p, hp⟩ -
+      Complex.I • thetaDiracResolventY p = p.ofLp.2 := by
+  rw [thetaWeightedDerivative_apply_thetaDiracResolventX p hp,
+    thetaDiracResolventY_eq, map_add, map_smul]
+  have hbalance := thetaDiracResolventK_balance p
+  have hprojection := thetaCentered_projection_add_orthogonal p.ofLp.2
+  simp only [Submodule.coe_add, Submodule.coe_smul_of_tower, smul_add, smul_smul,
+    Complex.I_mul_I, neg_one_smul]
+  trace_state
+  exact hprojection
 
 end HedenmalmClosedWeightedDerivative
 

@@ -1931,3 +1931,84 @@ Both modules are wired (`HTGeometry.lean`, `RHTower.lean`), build clean under
 `A/(1+|j|)^θ` for the vector `(R_n^i) f₀`.  Since each application of `R_n` convolves the amplitude
 and so costs one logarithm, the exponents must decrease, `θ_r = 1 - r·η` with `θ_{m-1} > 1/2`;
 `log_div_le_rpow_div` (pass 37) is the lemma that converts each logarithmic loss into a power loss.
+
+### Lean status — pass 42 (correction of pass 41; the single named open core)
+
+Pass 41's telescope was built in the wrong direction and its closing paragraph was wrong.  A
+corpus audit of the existing Gauss layer shows the correct telescope was already formalized in
+pass 30, and it needs no convolution machinery at all:
+
+```
+tendsto_gaussIterate      (RHTower/GaussIterate.lean)
+  ‖G^r (e_n) - σ_n^r · e_n (a_(δ_n)^r)‖ → 0            for every r
+tendsto_gaussIterateInner (RHTower/GaussIterateInner.lean)   -- equation (11), absolute form
+  ⟪e_n, G^r e_n⟫ - σ_n^r · A_r(fract δ_n) → 0          for every r
+```
+
+The induction there runs `X = G` (a *fixed* bounded operator), `Y = model`, so the error at each
+stage is the one-step error evaluated on the **model iterate** `a_δ^r`, which is an explicit
+two-piece exponential; `norm_fourierCoeff_gaussPrimeScaleBlock_amplitudePow` and
+`norm_fourierCoeff_gaussIntermediate_amplitudePow` (pass 30) discharge the two decay hypotheses
+with the uniform constant `4p^(r+1)` at exponent `θ = 1`.  So all of the `θ < 1` band-split
+machinery (passes 36–40) and the pass-41 telescope are *not* needed for equation (11); they remain
+in the tree as unconditional general-purpose estimates.
+
+**What is actually missing is the relative form.**  Everything downstream of (11) is already
+general in `m`:
+
+```
+gaussPrincipalDiagonalTerm_logResidue  {m} (hm : 1 ≤ m)      -- (12)+(13)+(14) for the model
+gaussLocalFactorWeight_mul_principalResidue {m} (hm : 1 ≤ m) -- section 7
+```
+
+and the operator-level statement at `m = 1` is closed
+(`tendsto_gaussLocalDiagonal_logResidue`).  The `m = 1` proof works because it converts (11) into
+the *harmonically weighted* form: the model term is `≍ 1/n`, so what is needed is
+`(n+1)·‖err_n‖ → 0`, i.e. `‖err_n‖ = o(|σ_n|)` — a **relative** `o(1)`, not the absolute `o(1)`
+that `tendsto_gaussIterateInner` supplies.  At `m = 1` this is exactly what the fold
+(`inner_fourierLp_gaussQuasiInnerG`, pass 32; `norm_inner_gaussQuasiInnerG_sub_amplitude_le`,
+pass 33) delivers, because in `⟪u, Gu⟫ = p⟪D*Bu, B^(-2)(D*Bu)⟫` the *unnormalized* diagonal `D*`
+appears in both slots and is uniformly bounded.
+
+**The named open core (`m ≥ 2`).**  Writing `D_n` for the shifted unnormalized diagonal (symbol
+`j ↦ d_(n+j)`, uniformly bounded by `M`) and `S̃ = D_n/d_n`, `S̃* = D̄_n/conj d_n` for the
+normalized ones, the relative one-step error is
+
+```
+R̃ f - a_δ f = B[ S̃ (B^(-2) (S̃* - T_δ)(Bf)) ] + B[ (S̃ - T_(-δ))(B^(-2) T_δ (Bf)) ] .
+```
+
+The second bracket is `tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family` (already proved).
+The first bracket is the open core:
+
+> **(T)**  For `m ≥ 2`, `f` with `‖f̂(j)‖ ≤ A/(1+|j|)`:
+> `‖ gaussShiftedBlockDiag (B^(-2) ((gaussShiftedBlockOf - gaussTranslationBlock δ_n)(B f))) ‖ → 0`.
+
+`‖S̃‖ ≍ |d_n|^(-1) ≍ n^(1/(2m))` is unbounded, so the plain `L²` defect estimate is not enough;
+`B^(-2)` sits between the two diagonals and mixes frequencies, so the pass-36 ratio-weighted
+defect bound (`tendsto_gaussTranslationL2RatioDefectBound`, which weights `defect_j` by `ρ_j` at
+the *same* frequency) does not apply directly either.
+
+**Proof plan for (T)** (band split at `J = ⌊n/4⌋`, `w := (S̃* - T_δ)(Bf)`, `v := B^(-2) w`):
+
+1. `‖S̃ v‖² = Σ_l ρ_l² |v̂(l)|²`, and `ρ_l ≤ C` whenever `|n+l| ≥ n/2` (from
+   `norm_gaussSampleRatio_pow_le`: `ρ^(2m) ≤ K n/|n+l|`).  So the region `|n+l| ≥ n/2` contributes
+   `≤ C²‖v‖² ≤ C²‖B^(-2)‖²‖w‖² → 0` by the existing `L²` defect estimate.
+2. On the spike `|n+l| < n/2` (so `|l| ≥ n/2`) split `w = w' + w''` at `|j| ≤ J`.
+   * `w''` (high modes): `ρ_l² ≤ (Kn/|n+l|)^(1/m)` and
+     `‖w''‖² ≲ Σ_(|j|>J) (1 + (n/|n+j|)^(1/m)) A²/(1+|j|)² ≲ 1/n`, so the contribution is
+     `≲ n^(1/m) · n^(-1)·(spike sum) → 0` **exactly when `m ≥ 2`** — the same arithmetic threshold
+     as pass 36, and the reason `m = 1` needs the fold instead.
+   * `w'` (low modes, `|j| ≤ n/4`): here `|n+j| ≥ 3n/4` forces `ρ_j ≤ C`, hence
+     `‖ŵ'‖_(ℓ¹) ≤ C A Σ_(|j|≤J) 1/(1+|j|) ≲ log n` (`sum_range_one_div_le_one_add_log`).  For
+     `|l| ≥ n/2` every kernel entry obeys `|(b^(-2))^(l-j)| ≤ C/(1+|l-j|) ≤ 4C/n`, so
+     `|v̂(l)| ≤ (4C/n)‖ŵ'‖_(ℓ¹) ≲ log n / n`, and the spike sum
+     `Σ_(|n+l|<n/2) (Kn/|n+l|)^(1/m) ≲ n` gives `≲ (log n/n)² · n = log²n/n → 0`.
+
+Step 2 needs no convolution theorem: `w'` is the finite truncation
+`Σ_(|j|≤J) ŵ(j) • fourierLp 2 j`, so `v̂(l) = ⟪fourierMulBlock l (b^(-2)), w'⟫` expands as a
+**finite** Parseval sum `Σ_(|j|≤J) conj((b^(-2))^(j-l)) ŵ(j)`.
+
+Iterating (T) through the `m` stages additionally requires the same estimate with `B^(-2)`
+replaced by an arbitrary member of the piecewise-exponential algebra (the accumulated amplitude),
+which the proof plan above already covers since it only uses `|ĉ(k)| ≤ C/(1+|k|)`.

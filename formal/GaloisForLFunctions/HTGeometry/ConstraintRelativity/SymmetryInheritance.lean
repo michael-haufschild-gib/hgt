@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.Core
 
 /-!
 # Initial-execution symmetry inheritance and anomaly necessity
@@ -13,6 +14,14 @@ Therefore an exactly symmetric source with an equivariant execution doctrine can
 produce a symmetry-breaking event.  The infinitesimal form of the same obstruction: a new
 differential whose commutator with the grading operator vanishes still commutes with the whole
 radial flow, so a nonzero commutator is necessary for radial selection.
+
+That scalar condition is strictly weaker than its componentwise refinement.  The anomaly is linear
+in the derivation slot, so the anomaly of a contracted derivation `∑ c i • D i` is the same
+contraction of the component anomalies; consequently it can be nonzero while a component anomaly
+vanishes, and — for the prime logarithms `log 2`, `log 3` — it can vanish while every component
+anomaly is nonzero and the contracted derivation itself is nonzero.  Rational proportionality of
+the component anomalies excludes that cancellation, because prime logarithms are linearly
+independent over `ℚ`.
 -/
 
 namespace HTGeometry.ConstraintRelativity
@@ -146,6 +155,65 @@ theorem grading_commutator_ne_zero (Γ : RadialFlow K M) (d : M →ₗ[K] M) (c 
     d.comp Γ.grading ≠ Γ.grading.comp d :=
   fun hcomm => h (commute_flow_of_commute_grading Γ d hcomm c)
 
+/-! ### The prime-component refinement of the anomaly
+
+The anomaly of a differential against a single derivation is its commutator.  A logarithmic
+derivation is a linear combination `∑ c i • D i` of component derivations, and the anomaly is
+linear in that slot, so the anomaly of the contraction is the same combination of the component
+anomalies.  The contraction therefore sees strictly less than the component family: it can be
+nonzero while some component anomaly vanishes, and it can vanish while every component anomaly is
+nonzero. -/
+
+/-- The commutator `[d, D]` of a differential with a derivation. -/
+def anomalyBracket (d D : M →ₗ[K] M) : M →ₗ[K] M := d.comp D - D.comp d
+
+theorem anomalyBracket_eq_zero_iff (d D : M →ₗ[K] M) :
+    anomalyBracket d D = 0 ↔ d.comp D = D.comp d := sub_eq_zero
+
+/-- The identity is central: it contributes no anomaly. -/
+theorem anomalyBracket_id (d : M →ₗ[K] M) : anomalyBracket d (LinearMap.id) = 0 := by
+  simp [anomalyBracket]
+
+theorem anomalyBracket_add (d D E : M →ₗ[K] M) :
+    anomalyBracket d (D + E) = anomalyBracket d D + anomalyBracket d E := by
+  ext v
+  simp only [anomalyBracket, LinearMap.sub_apply, LinearMap.comp_apply, LinearMap.add_apply,
+    map_add]
+  abel
+
+theorem anomalyBracket_smul (c : K) (d D : M →ₗ[K] M) :
+    anomalyBracket d (c • D) = c • anomalyBracket d D := by
+  ext v
+  simp only [anomalyBracket, LinearMap.sub_apply, LinearMap.comp_apply, LinearMap.smul_apply,
+    map_smul, smul_sub]
+
+/-- **The contraction law.**  The anomaly of a contracted derivation is the same contraction of the
+component anomalies: `[d, ∑ c i • D i] = ∑ c i • [d, D i]`. -/
+theorem anomalyBracket_sum_smul {n : ℕ} (d : M →ₗ[K] M) (c : Fin n → K)
+    (D : Fin n → M →ₗ[K] M) :
+    anomalyBracket d (∑ i, c i • D i) = ∑ i, c i • anomalyBracket d (D i) := by
+  ext v
+  simp [anomalyBracket, LinearMap.comp_apply, LinearMap.sum_apply, map_sum, smul_sub,
+    Finset.sum_sub_distrib]
+
+/-- A nonzero contracted anomaly forces at least one nonzero component anomaly. -/
+theorem exists_anomalyBracket_ne_zero_of_contraction_ne_zero {n : ℕ} (d : M →ₗ[K] M)
+    (c : Fin n → K) (D : Fin n → M →ₗ[K] M)
+    (h : anomalyBracket d (∑ i, c i • D i) ≠ 0) :
+    ∃ i, anomalyBracket d (D i) ≠ 0 := by
+  by_contra hcon
+  push Not at hcon
+  refine h ?_
+  rw [anomalyBracket_sum_smul]
+  exact Finset.sum_eq_zero fun i _ => by rw [hcon i, smul_zero]
+
+/-- The bracket form of anomaly necessity: a differential that fails to commute with the radial
+flow has a nonzero commutator with the grading operator. -/
+theorem anomalyBracket_grading_ne_zero_of_not_commute_flow (Γ : RadialFlow K M) (d : M →ₗ[K] M)
+    (c : K) (h : d.comp (Γ.flow c) ≠ (Γ.flow c).comp d) :
+    anomalyBracket d Γ.grading ≠ 0 :=
+  fun hz => grading_commutator_ne_zero Γ d c h ((anomalyBracket_eq_zero_iff d Γ.grading).1 hz)
+
 /-! ### Radial flows exist, and the anomaly condition is satisfiable -/
 
 section AnomalyWitness
@@ -222,7 +290,140 @@ theorem anomalyDifferential_grading_commutator_ne_zero :
       ≠ (anomalyFlow (K := K)).grading.comp anomalyDifferential :=
   grading_commutator_ne_zero _ _ 0 (anomalyDifferential_not_commute_flow 0)
 
+/-! ### The contraction sees strictly less than the component family -/
+
+theorem anomalyBracket_anomalyDifferential_grading_ne_zero :
+    anomalyBracket (anomalyDifferential (K := K)) (anomalyFlow (K := K)).grading ≠ 0 :=
+  fun hz => anomalyDifferential_grading_commutator_ne_zero
+    ((anomalyBracket_eq_zero_iff _ _).1 hz)
+
+/-- A two-component family whose second component is the central operator `1`. -/
+def partialComponents : Fin 2 → ((Fin 2 → K) →ₗ[K] (Fin 2 → K)) :=
+  ![(anomalyFlow (K := K)).grading, LinearMap.id]
+
+/-- The second component carries no anomaly. -/
+theorem partialComponents_bracket_one_eq_zero :
+    anomalyBracket (anomalyDifferential (K := K)) (partialComponents (K := K) 1) = 0 := by
+  simp [partialComponents, anomalyBracket_id]
+
+/-- **A nonzero contracted anomaly does not make every component anomaly nonzero.**  For every
+coefficient family with a nonzero first entry the contracted anomaly of `partialComponents` is
+nonzero, while its second component anomaly vanishes. -/
+theorem partialComponents_contraction_ne_zero (c : Fin 2 → K) (hc : c 0 ≠ 0) :
+    anomalyBracket (anomalyDifferential (K := K)) (∑ i, c i • partialComponents (K := K) i)
+      ≠ 0 := by
+  rw [anomalyBracket_sum_smul, Fin.sum_univ_two]
+  simp only [partialComponents, Matrix.cons_val_zero, Matrix.cons_val_one, anomalyBracket_id,
+    smul_zero, add_zero]
+  exact smul_ne_zero hc anomalyBracket_anomalyDifferential_grading_ne_zero
+
 end AnomalyWitness
+
+/-! ### Logarithmic contraction against prime logarithms
+
+The logarithmic derivation is the contraction `∂_log = ∑_ℓ (log ℓ) ∂_ℓ` of the component
+derivations against prime logarithms.  Its anomaly can vanish although every component anomaly is
+nonzero, so the scalar condition `[d, ∂_log] ≠ 0` is strictly weaker than the componentwise
+refinement `[d, ∂_ℓ] ≠ 0`.  Rational proportionality of the component anomalies is exactly what
+rules the cancellation out: prime logarithms are linearly independent over `ℚ`. -/
+
+section PrimeContraction
+
+theorem anomaly_log_two_ne_zero : Real.log 2 ≠ 0 := (Real.log_pos (by norm_num)).ne'
+
+theorem anomaly_log_three_ne_zero : Real.log 3 ≠ 0 := (Real.log_pos (by norm_num)).ne'
+
+/-- The prime-logarithm coefficients of the logarithmic contraction at the primes `2` and `3`. -/
+noncomputable def logContractionCoeff : Fin 2 → ℝ := ![Real.log 2, Real.log 3]
+
+/-- Two component derivations whose anomalies cancel against the prime logarithms while their
+contraction is still a nonzero derivation. -/
+noncomputable def entangledComponents : Fin 2 → ((Fin 2 → ℝ) →ₗ[ℝ] (Fin 2 → ℝ)) :=
+  ![Real.log 3 • (anomalyFlow (K := ℝ)).grading + LinearMap.id,
+    (-Real.log 2) • (anomalyFlow (K := ℝ)).grading]
+
+/-- Every component anomaly is nonzero. -/
+theorem entangledComponents_bracket_ne_zero (i : Fin 2) :
+    anomalyBracket (anomalyDifferential (K := ℝ)) (entangledComponents i) ≠ 0 := by
+  fin_cases i
+  · show anomalyBracket _ (Real.log 3 • _ + LinearMap.id) ≠ 0
+    rw [anomalyBracket_add, anomalyBracket_smul, anomalyBracket_id, add_zero]
+    exact smul_ne_zero anomaly_log_three_ne_zero
+      anomalyBracket_anomalyDifferential_grading_ne_zero
+  · show anomalyBracket _ ((-Real.log 2) • _) ≠ 0
+    rw [anomalyBracket_smul]
+    exact smul_ne_zero (neg_ne_zero.2 anomaly_log_two_ne_zero)
+      anomalyBracket_anomalyDifferential_grading_ne_zero
+
+/-- The contraction collapses to a multiple of the central operator. -/
+theorem entangledComponents_contraction_eq :
+    ∑ i, logContractionCoeff i • entangledComponents i
+      = Real.log 2 • (LinearMap.id : (Fin 2 → ℝ) →ₗ[ℝ] (Fin 2 → ℝ)) := by
+  simp only [Fin.sum_univ_two, logContractionCoeff, entangledComponents, Matrix.cons_val_zero,
+    Matrix.cons_val_one]
+  module
+
+/-- The contracted derivation is itself nonzero, so the vanishing below is not degenerate. -/
+theorem entangledComponents_contraction_ne_zero :
+    ∑ i, logContractionCoeff i • entangledComponents i ≠ 0 := by
+  rw [entangledComponents_contraction_eq]
+  intro h
+  have h0 := congrFun (congrArg (fun f : (Fin 2 → ℝ) →ₗ[ℝ] (Fin 2 → ℝ) => f ![1, 0]) h) 0
+  simp only [LinearMap.smul_apply, LinearMap.id_coe, id_eq, Pi.smul_apply, smul_eq_mul,
+    LinearMap.zero_apply, Pi.zero_apply, Matrix.cons_val_zero, mul_one] at h0
+  exact anomaly_log_two_ne_zero h0
+
+/-- **The logarithmic contraction is not faithful.**  Every component anomaly is nonzero and the
+contracted derivation is nonzero, yet the anomaly of the contraction vanishes.  A nonzero
+commutator that appears only after logarithmic contraction therefore carries strictly less
+information than the componentwise refinement. -/
+theorem entangledComponents_anomaly_contraction_eq_zero :
+    anomalyBracket (anomalyDifferential (K := ℝ))
+      (∑ i, logContractionCoeff i • entangledComponents i) = 0 := by
+  rw [entangledComponents_contraction_eq, anomalyBracket_smul, anomalyBracket_id, smul_zero]
+
+/-- A nontrivial rational combination of prime logarithms is nonzero. -/
+theorem sum_log_primes_mul_rat_ne_zero {n : ℕ} (ps : Fin n → Nat.Primes)
+    (hps : Function.Injective ps) (q : Fin n → ℚ) (hq : q ≠ 0) :
+    ∑ i, Real.log ((ps i : ℕ) : ℝ) * (q i : ℝ) ≠ 0 := by
+  intro h
+  have hli : LinearIndependent ℚ (fun i : Fin n => Real.log (((ps i : ℕ) : ℝ))) :=
+    GaloisForLFunctions.linearIndependent_log_primes.comp ps hps
+  have h0 : ∑ i, q i • Real.log (((ps i : ℕ) : ℝ)) = 0 := by
+    rw [← h]
+    exact Finset.sum_congr rfl fun i _ => by rw [Rat.smul_def, mul_comm]
+  exact hq (funext fun i => Fintype.linearIndependent_iff.mp hli q h0 i)
+
+/-- **Rational proportionality rules out the cancellation.**  If the component anomalies are
+rational multiples of one nonzero operator, with not all multipliers zero, then the anomaly of the
+logarithmic contraction against distinct prime logarithms is nonzero. -/
+theorem contraction_ne_zero_of_rational_components {M : Type*} [AddCommGroup M] [Module ℝ M]
+    {n : ℕ} (ps : Fin n → Nat.Primes) (hps : Function.Injective ps)
+    (d : M →ₗ[ℝ] M) (D : Fin n → M →ₗ[ℝ] M) (A : M →ₗ[ℝ] M) (hA : A ≠ 0)
+    (q : Fin n → ℚ) (hq : q ≠ 0)
+    (hcomp : ∀ i, anomalyBracket d (D i) = (q i : ℝ) • A) :
+    anomalyBracket d (∑ i, Real.log ((ps i : ℕ) : ℝ) • D i) ≠ 0 := by
+  rw [anomalyBracket_sum_smul]
+  have hsum : ∑ i, Real.log ((ps i : ℕ) : ℝ) • anomalyBracket d (D i)
+      = (∑ i, Real.log ((ps i : ℕ) : ℝ) * (q i : ℝ)) • A := by
+    rw [Finset.sum_smul]
+    exact Finset.sum_congr rfl fun i _ => by rw [hcomp i, smul_smul]
+  rw [hsum]
+  exact smul_ne_zero (sum_log_primes_mul_rat_ne_zero ps hps q hq) hA
+
+/-- The rationally proportional situation occurs: on the two-dimensional graded model the rational
+multiples of the grading operator have that shape, and their logarithmic contraction has a nonzero
+anomaly for every nontrivial rational multiplier family. -/
+theorem rationalComponents_contraction_ne_zero {n : ℕ} (ps : Fin n → Nat.Primes)
+    (hps : Function.Injective ps) (q : Fin n → ℚ) (hq : q ≠ 0) :
+    anomalyBracket (anomalyDifferential (K := ℝ))
+      (∑ i, Real.log ((ps i : ℕ) : ℝ) • ((q i : ℝ) • (anomalyFlow (K := ℝ)).grading)) ≠ 0 :=
+  contraction_ne_zero_of_rational_components ps hps _ _
+    (anomalyBracket (anomalyDifferential (K := ℝ)) (anomalyFlow (K := ℝ)).grading)
+    anomalyBracket_anomalyDifferential_grading_ne_zero q hq
+    (fun _ => anomalyBracket_smul _ _ _)
+
+end PrimeContraction
 
 end Anomaly
 

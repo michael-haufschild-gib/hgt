@@ -3670,6 +3670,7 @@ import GaloisForLFunctions.RHTower.RiemannSingularGreenHodgeAdmissionLaw
 import GaloisForLFunctions.RHTower.RiemannSourceForcedHorizontalVanishingFrontier
 import GaloisForLFunctions.RHTower.SourceZeroHorizontalCarrier
 import GaloisForLFunctions.RHTower.SourceHorizontalMomentNeutralAmplification
+import GaloisForLFunctions.RHTower.SourceHorizontalSharedReservoirAmplification
 import GaloisForLFunctions.RHTower.SourceZeroHedenmalmOrientationRigidity
 import GaloisForLFunctions.RHTower.RiemannSourceNonlocalSingularCompletionLaw
 import GaloisForLFunctions.RHTower.RiemannTower
@@ -4249,6 +4250,7 @@ import GaloisForLFunctions.RHTower.Sieve.SupportMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.RoughCountTuran
 import GaloisForLFunctions.RHTower.Sieve.RamareEnergy
 import GaloisForLFunctions.RHTower.Sieve.RamareSquareMultiple
+import GaloisForLFunctions.RHTower.Sieve.RamarePrimeOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6891,6 +6893,7 @@ import GaloisForLFunctions.RHTower.Sieve.SupportMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.RoughCountTuran
 import GaloisForLFunctions.RHTower.Sieve.RamareEnergy
 import GaloisForLFunctions.RHTower.Sieve.RamareSquareMultiple
+import GaloisForLFunctions.RHTower.Sieve.RamarePrimeOffDiagonal
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6991,3 +6994,5 @@ import GaloisForLFunctions.RHTower.DeningerChainLiftObstruction
 import GaloisForLFunctions.RHTower.DeningerGreenSumSource
 import GaloisForLFunctions.RHTower.DeningerEulerDepletionTower
 import GaloisForLFunctions.RHTower.DeningerDepletedPoisson
+import GaloisForLFunctions.RHTower.DeningerEulerDepletionIdentity
+import GaloisForLFunctions.RHTower.DeningerSecondaryCollarDefect

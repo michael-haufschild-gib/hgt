@@ -342,11 +342,67 @@ Route-L Hodge form.
 - `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_AMALGAMATION`.
 - `DAC_GLOBAL_GREEN_ENERGY_RADICAL`.
 
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerMeyerPeriodization.lean`,
+`DeningerGreenSumSource.lean`, `DeningerEulerDepletedKernel.lean`,
+`DeningerEulerDepletionTower.lean`, `DeningerDepletedPoisson.lean`,
+`DeningerMeyerSeminorm.lean`, `DeningerMeyerTopology.lean`.
+Axiom audit for every declaration below: `propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- `(1)`/`(2)` — `DeningerExpSchwartz`, `deningerExpShiftSource`, `deningerPeriodizationDefect` are
+  corpus-owned.
+- `(2a)` — `deningerMeyerSeminorm` is the family `q_{A,n}(h) = sup_t e^{A|t|}‖h^{(n)}(t)‖` as a
+  genuine `Seminorm ℂ H_-`, and `DeningerMeyerSource.withSeminorms` puts the projective-limit
+  topology on the source.  (The card's family carries an extra `(1+|t|)^m`; it generates the same
+  topology, since `(1+|t|)^m ≤ C_m e^{|t|}`.)
+- convergence — `deningerShift_norm_le`, `deningerShiftInt_summable`, `deningerShiftNat_summable`:
+  the lattice sums converge geometrically, `‖f(t+jL)‖ ≤ C e^{|t|}(e^{-L})^{|j|}`.
+- `Δ_p` injective — `deningerExpSchwartz_eq_zero_of_periodic`,
+  `deningerPeriodizationDefect_injective`: a translation-periodic member of the source vanishes.
+- `Per_p ∘ Δ_p = 0` — `deningerPeriodization_defect`, by reindexing the lattice.
+- `(7)` — `deningerGreenSum`, `deningerGreenSum_telescope` (`Δ_L G_L = 1` pointwise);
+  `deningerGreenSeries`, `deningerGreenSeries_hasDerivAt` (term-by-term differentiation at every
+  point, via the half-line majorant); `deningerGreenSeries_eq_neg` — **the two representations of
+  `(7)` agree exactly when the periodization vanishes**, at every derivative order.
+- `(8)` — `deningerGreenSeries_expBound`: `q_{a,n}(G_p h) ≤ C q_{a+1,n}(h)`, geometric on both
+  halves, the negative half using the second representation.
+- `G_p` lands in the source — `deningerGreenSchwartz`, `deningerGreenSchwartz_mem`,
+  `deningerGreenSchwartz_defect`.
+- **`(6)`** — `deningerPeriodization_range_eq_kernel`: `im Δ_p = ker Per_p`.
+- `(9)`/`(14)`/`(17)` — `deningerPoissonSource_injective`, `deningerDepletedPoisson_injective`,
+  `deningerOnePrimeConservativity`, `deningerDepletion_conservativity`: the depleted Poisson
+  embedding is injective and a depleted value is a depleted boundary exactly when the undepleted
+  value is a boundary.
+- `(15)`/`(16)` order-independence — `deningerPeriodizationDefect_comm`, `deningerDepletion`,
+  `deningerDepletion_injective`: the defects commute and the finite depletion operator is injective.
+- `(30)` of the companion card — `deningerEulerDepleted_exact_kernel`, in
+  `DeningerEulerDepletedKernel.lean`.
+
+- **`(3)`** — `deningerEulerDepletedLog`, `deningerEulerDepletion`
+  (`DeningerEulerDepletionIdentity.lean`): `Z f(t) - Z f(t + log p) = ∑_{n ≥ 1, p ∤ n} f(n e^t)`.
+  The subtracted sum *is* the subseries indexed by multiples of `p`, reindexed by the injection
+  `k ↦ p(k+1) - 1`; no Euler product continuation is used.
+
+### Not yet formalized
+- The **topological** half of `(5)`: strictness, closedness of `ker Per_p`, the partition-of-unity
+  splitting `s_χ`, surjectivity onto `C^∞(ℝ/Lℤ)`, and nuclearity.  `C^∞` on a circle is not in the
+  corpus.
+- `(10)`--`(13)` and `(16)`--`(17)` as statements about the **quotients** `M_ζ^{(p)}`: the algebraic
+  content is `(14)`, proved above; the Hausdorff nuclear Fréchet quotient structure is not built.
+
+The gate below therefore stays open: the algebraic and analytic core of the card is proved
+unconditionally, the functional-analytic packaging is not.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: source formula and falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed strict exact-sequence proof
-- [ ] 2 → 3 formalized: intentionally paused during Lean corpus refactor
+- [ ] 2 → 3 formalized: `(3)`, `(6)`, `(7)`, `(8)`, `(9)`, `(14)`, `(15)`--`(17)` and `Δ_p`
+  injectivity proved unconditionally; only the topological packaging of `(5)`, `(10)`--`(13)`
+  remains (see *Lean status*)
 - [ ] 3 → 4 publication-ready
 
 ## Log

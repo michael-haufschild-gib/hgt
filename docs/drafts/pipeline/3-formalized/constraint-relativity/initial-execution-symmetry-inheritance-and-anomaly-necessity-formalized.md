@@ -63,6 +63,39 @@ Generator-commutator necessity:
     with the radial flow, so the hypothesis of item 13 is met and its conclusion
     `[d, ∂_log] ≠ 0` is a genuine obstruction rather than a vacuous implication.
 
+Prime-component refinement, card `(7)`:
+
+16. `anomalyBracket`, `anomalyBracket_eq_zero_iff` — **card `(5)`/`(7)`**: the commutator
+    `A = [d, ∂]` of the new differential with a derivation, and its vanishing criterion.
+17. `anomalyBracket_id`, `anomalyBracket_add`, `anomalyBracket_smul` — the anomaly is linear in the
+    derivation slot and kills the central operator.
+18. `anomalyBracket_sum_smul` — **the contraction law**: `[d, ∑ c_ℓ ∂_ℓ] = ∑ c_ℓ [d, ∂_ℓ]`, so the
+    anomaly of the contracted derivation is the same contraction of the components `A_ℓ` of card
+    `(7)`.
+19. `exists_anomalyBracket_ne_zero_of_contraction_ne_zero` — a nonzero contracted anomaly forces at
+    least one nonzero component anomaly.
+20. `anomalyBracket_grading_ne_zero_of_not_commute_flow`,
+    `anomalyBracket_anomalyDifferential_grading_ne_zero` — items 13 and 15 in bracket form.
+21. `partialComponents`, `partialComponents_bracket_one_eq_zero`,
+    `partialComponents_contraction_ne_zero` — **the contraction does not detect the components**:
+    a two-component family whose contracted anomaly is nonzero for every coefficient family with a
+    nonzero first entry, while its second component anomaly is `0`.
+22. `logContractionCoeff`, `entangledComponents`, `entangledComponents_bracket_ne_zero`,
+    `entangledComponents_contraction_eq`, `entangledComponents_contraction_ne_zero`,
+    `entangledComponents_anomaly_contraction_eq_zero` — **the card's caveat, proved**: "scalar
+    nonzero commutator is insufficient if it appears only after logarithmic contraction".  Against
+    the prime logarithms `log 2`, `log 3` there are two component derivations whose contraction
+    `∂_log` is a nonzero derivation and whose component anomalies `A_2`, `A_3` are both nonzero,
+    yet `[d, ∂_log] = 0`.  Condition `(6)` is therefore strictly weaker than the componentwise
+    refinement `(7)`, in both directions.
+23. `sum_log_primes_mul_rat_ne_zero` — a nontrivial rational combination of distinct prime
+    logarithms is nonzero, from `GaloisForLFunctions.linearIndependent_log_primes`.
+24. `contraction_ne_zero_of_rational_components`, `rationalComponents_contraction_ne_zero` —
+    **the exact obstruction to the cancellation of item 22**: if the component anomalies `A_ℓ` are
+    rational multiples of one nonzero operator, not all zero, then the logarithmic contraction
+    against distinct prime logarithms has nonzero anomaly.  The cancellation in item 22 requires
+    irrational entanglement of the components, and the class is inhabited.
+
 Card equations `(8)` and `(9)` are explicitly labelled placeholders on the paper card, not
 theorems, and are not formalized.
 
@@ -74,4 +107,8 @@ lake build GaloisForLFunctions.HTGeometry                                       
 ```
 
 `#print axioms` on `initialCompare_comp`, `isIso_initialCompare`, `smul_obs_initial`,
-`commute_flow_of_commute_grading` returns only `[propext, Classical.choice, Quot.sound]`.
+`commute_flow_of_commute_grading` returns only `[propext, Classical.choice, Quot.sound]`, and the
+same on `anomalyBracket_sum_smul`, `exists_anomalyBracket_ne_zero_of_contraction_ne_zero`,
+`partialComponents_contraction_ne_zero`, `entangledComponents_bracket_ne_zero`,
+`entangledComponents_anomaly_contraction_eq_zero`, `sum_log_primes_mul_rat_ne_zero`,
+`contraction_ne_zero_of_rational_components`, `rationalComponents_contraction_ne_zero`.

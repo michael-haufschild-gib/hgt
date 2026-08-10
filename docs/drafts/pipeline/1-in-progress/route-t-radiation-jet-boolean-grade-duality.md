@@ -1320,7 +1320,7 @@ mu_q=-(alpha_q)^(-1).
 Choose
 
 ```text
-h_1=1/(2(1+norm(B))),
+h_1=1/(4(1+norm(B))),
 X_1=i h_1 B,
 U_1=(I+X_1)(I-X_1)^(-1).                              (RJG73)
 ```
@@ -1406,8 +1406,21 @@ absolute values portwise or replacing `G` by a fixed coercive completion is excl
 ### Positive source-resolvent chart
 
 The denominator `I-X_1=I-i h_1B` is one source resolvent at the purely imaginary pencil parameter
-`z=-i h_1`.  The ODE formula behind `thetaRealResolventMoment` extends algebraically to complex
-`z` in the Neumann disk:
+`z=-i h_1`.  The ODE formula behind `thetaRealResolventMoment` extends to complex `z` only after an
+endpoint audit.  For `g in L^2(0,1)`, its pinned primitive satisfies
+
+```text
+|h_g(t)| <= min(sqrt(t),sqrt(1-t)) ||g-pinnedMean(g)||_2.
+```
+
+The theta tail bound gives `t <= K exp(Q(t))` at the left endpoint and
+`1-t <= K exp(-Q(t))` at the right endpoint.  Consequently
+
+```text
+sourceChar(z,Q(t)) h_g(t) -> 0 at both endpoints
+```
+
+whenever `|Im(z)|<1/2`.  Integration of the exact first-order resolvent equation then yields
 
 ```text
 pinnedMean((I+zB)^(-1)f)
@@ -1417,8 +1430,10 @@ pinnedMean((I+zB)^(-1)f)
 rootA(thetaSource,z,1)=XiC(z)/thetaSource.mass.
 ```
 
-At `z=+-i h_1`, integrating factor is real exponential `exp(-/+h_1 Q(t))`.  Hence direct Cayley
-ports have a coefficient-exact fixed safe-pencil representation before divisor decomposition.
+The factor `4` in (RJG73) was chosen after this audit: it gives `0<h_1<1/2` unconditionally as well
+as `h_1 norm(B)<1`.  At `z=+-i h_1`, integrating factor is real exponential
+`exp(-/+h_1 Q(t))`.  Hence direct Cayley ports have a coefficient-exact fixed safe-pencil
+representation before divisor decomposition.
 This is the concrete generating-law interface missing after (RJG71): powers of `U_1` become
 repeated derivatives/finite differences of the two source resolvents in (RJG81), with literal
 theta moments in numerator and completed Xi source in denominator.  Formalization must prove the
@@ -1432,3 +1447,141 @@ complex resolvent moment law rather than assume it from the real-parameter theor
   observable pair to a one-in/one-out conservative scattering system.
 - 2026-08-10 — identified complex source-resolvent moment formula (RJG81) at two fixed imaginary
   safe-pencil points as the coefficient-exact prime--Gamma generating interface.
+
+---
+
+## 36. Conjecture loop 13 — complex resolvent endpoint audit
+
+### Initial conjecture
+
+Formula (RJG81) should follow for every complex `z` in the Neumann disk by copying the real
+integrating-factor proof.
+
+### Verdict: `[FALSE AS STATED; TRUE IN THE SHARP L2 ENDPOINT STRIP]`
+
+The algebraic ODE is unchanged, but the endpoint argument is not.  If
+
+```text
+E_z(t)=sourceChar(z,Q(t)),
+h_g(t)=integral_0^t g-u*pinnedMean(g),
+```
+
+then the exact integrated equation contains the boundary term
+
+```text
+[E_z(t) h_g(t)]_(t=0)^(t=1).                            (RJG82)
+```
+
+For real `z`, `|E_z|=1` and this term vanishes from the pinned endpoints.  For nonreal `z`, the
+factor grows at one quantile endpoint, so Neumann invertibility alone does not remove (RJG82).
+This is a genuine logical gap in the initial version of (RJG81).
+
+There is, however, an exact source-independent repair.  Cauchy--Schwarz gives
+
+```text
+|h_g(t)| <= sqrt(t) ||g-m||_2,
+|h_g(t)| <= sqrt(1-t) ||g-m||_2.                         (RJG83)
+```
+
+The exponential theta tail and `cdf(Q(t))=t` give, near the two endpoints,
+
+```text
+t <= K exp(Q(t)),
+1-t <= K exp(-Q(t)).                                    (RJG84)
+```
+
+Since `|E_z(t)|=exp(-Im(z)Q(t))`, (RJG83)--(RJG84) imply
+
+```text
+E_z(t)h_g(t) -> 0 at 0 and 1 whenever |Im(z)|<1/2.      (RJG85)
+```
+
+Thus (RJG81) is paper-proved under the two independent hypotheses
+
+```text
+|z| norm(B)<1,     |Im(z)|<1/2.                         (RJG86)
+```
+
+The revised direct step `h_1=1/[4(1+norm(B))]` satisfies both strictly.  This is why merely reusing
+the real theorem would have been proof theatre: the missing endpoint estimate dictates the clock
+normalization.
+
+### Positive survivor — two exact Esscher rows
+
+At `z=-i h_1`, put
+
+```text
+E_-(t)=exp(h_1 Q(t)),  A=integral_0^1 E_-(t)dt,
+R_-=(I-i h_1 B)^(-1).
+```
+
+Then `A=rootA(thetaSource,-i h_1,1)>0` and (RJG81) becomes the positive normalized row
+
+```text
+pinnedMean(R_- f)=integral_0^1 [E_-(t)/A] f(t)dt.        (RJG87)
+```
+
+Evenness of the theta source gives `Q(1-t)=-Q(t)`.  The opposite resolvent has
+`E_+(t)=E_-(1-t)` and the same normalizer `A`.  Hence the two safe imaginary resolvents carry a
+pair of reflected probability rows.  This positivity occurs before divisor decomposition and is
+new source structure, not an RH restatement.
+
+## 37. Conjecture loop 14 — does the positive mean row make the ports passive?
+
+### Conjecture
+
+Use (RJG87) to make both direct-Cayley port rows positive and deduce (RJG80) by Markov contraction.
+
+### Exact two-port kernel
+
+For `g=R_-f`, let `p=Vg`, `F(t)=integral_0^t E_-(u)f(u)du`, and
+`A(t)=integral_0^t E_-(u)du`.  The Green formula is
+
+```text
+p(t)=E_-(t)^(-1) [F(t)-A(t)F(1)/A].                     (RJG88)
+```
+
+Since `pinnedCentered(g)=-integral_0^1 p(t)dt`, Fubini gives
+
+```text
+pinnedCentered(R_-f)=integral_0^1 E_-(u) psi(u) f(u)du,
+psi(u)=J/A-integral_u^1 E_-(t)^(-1)dt,
+J=integral_0^1 E_-(t)^(-1)A(t)dt.                       (RJG89)
+```
+
+Therefore the complete incoming/outgoing rows are
+
+```text
+In(R_-f)  = (1/sqrt(2)) integral E_-(u)[1/A-psi(u)]f(u)du,
+Out(R_-f) = (1/sqrt(2)) integral E_-(u)[1/A+psi(u)]f(u)du. (RJG90)
+```
+
+The residual profile has the rigid first-order law
+
+```text
+psi'(u)=E_-(u)^(-1)>0,
+integral_0^1 E_-(u)psi(u)du=0.                          (RJG91)
+```
+
+Thus all non-Markov behavior of the two-port resolvent is compressed into one strictly increasing,
+single-crossing scalar profile.  At `h_1=0`, `psi(u)=u-1/2`, recovering the affine pinned ports.
+
+### Verdict: `[MEAN-ROW ARGUMENT ALONE FALSE; SINGLE-CROSSING SURVIVES]`
+
+Positivity of (RJG87) controls only `pinnedMean o R_-`.  Equation (RJG90) shows that port positivity
+additionally requires the nontrivial sharp bound `|psi(u)|<=1/A`; it does not follow from Neumann
+invertibility, endpoint decay, or the Markov normalization.  Moreover `U_1=2R_--I`, so even
+one-step positivity would not by itself survive Cayley iteration.
+
+The viable successor is narrower: exploit single crossing (RJG91), reflection of the opposite
+tilt, and centered prime--Gamma variation to control signed products of the two port rows.  Any
+claim that replaces `psi` by its absolute value destroys the reflection cancellation and violates
+the boundary-before-norm principle.
+
+## Log, endpoint and port-kernel pivot
+
+- 2026-08-10 — found and repaired missing complex-resolvent endpoint term; proved the exact
+  `|Im z|<1/2` L2 strip and changed direct step to lie strictly inside it.
+- 2026-08-10 — discovered reflected Esscher probability rows (RJG87) at the two direct safe pencils.
+- 2026-08-10 — derived full two-port Green kernel (RJG88)--(RJG91); rejected mean-only Markov
+  passivity and isolated one monotone single-crossing profile as the remaining source obstruction.

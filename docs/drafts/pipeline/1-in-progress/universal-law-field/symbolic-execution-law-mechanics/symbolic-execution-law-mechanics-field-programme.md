@@ -325,8 +325,8 @@ This mechanism gives route-independent, falsifiable demands on the sharpened fro
 ULF-SELM-8 now proves exact no-revival and death-time composition.  Positive observer transport is
 strictly functorial on kernels, failure families, and weights.  Gaps pull backward along observer
 chains, so their alive stages form an initial segment; the triangle-collapse witness has exact
-death time one and remains dead after every later positive observer.  Paper proof and direct Lean
-elaboration pass; final umbrella certification is pending.
+death time one and remains dead after every later positive observer.  Paper proof and Lean
+certification pass.
 
 The next theorem target is a completion law separating finite persistence from death at infinity.
 That is a mechanism problem, not an RH-route calculation.

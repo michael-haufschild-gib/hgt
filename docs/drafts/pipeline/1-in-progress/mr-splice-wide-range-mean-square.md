@@ -5270,3 +5270,51 @@ bilinear form alone; and by unit 35 its `p`-diagonal is `10·W·M + ε·M²`.  W
 ```
 
 a bilinear oscillatory sum over **pairs of primes**.  Nothing else on the card is open.
+
+## Unit 37 — the residue named: one prime off-diagonal
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamarePrimeOffDiagonal.lean`
+
+Expanding the bilinear mean square over pairs of designated primes separates it **exactly**.  Every
+`p ∈ P` is prime, so `μ(p) = −1` and `|μ(p)p^{2πiw}| = 1`; the diagonal is therefore the plain mean
+square of the cofactor polynomials, with no residual weight:
+
+```text
+norm_moebiusPhase_prime   : ‖μ(p)·p^{2πiw}‖ = 1
+normSq_sum_eq_double      : ‖∑_p f(p)‖² = ∑_p ∑_q Re( f(p)·conj f(q) )
+normSq_ramareBilinear_eq  : ‖B(w)‖² = ∑_p ‖G_p(w)‖² + ∑_p ∑_{q ≠ p} Re( … )
+integral_normSq_ramareBilinear_eq :
+    ∫_{|w| ≤ W}‖B‖²  =  ∑_{p ∈ P} ∫_{|w| ≤ W}‖G_p‖²  +  ramarePrimeOffDiagonal P M W
+```
+
+with
+
+```text
+ramarePrimeOffDiagonal P M W
+  := ∑_{p ∈ P} ∑_{q ∈ P \ {p}} ∫_{|w| ≤ W} Re( p^{2πiw}·conj(q^{2πiw})·G_p(w)·conj(G_q(w)) ) dw .
+```
+
+Composing units 34, 35, 36 and this one gives the card's residue as a single Lean statement:
+
+```text
+integral_Icc_normSq_logPoly_moebius_le_primeOffDiagonal
+  (W ≥ 1, δ > 0, 0 < ε ≤ 1, |P| ≤ M, A ≥ 15e/(2ε),
+   M·∑_p p^{-2} ≤ ε·M, ∑_p p^{-2} ≤ 2ε/(5e)) :
+    ∫_{|w| ≤ W} ‖ ∑_{n ≤ M} μ(n)n^{2πiw} ‖² dw
+      ≤ (1+δ)·( 10·W·M + ε·M² + ramarePrimeOffDiagonal P M W )
+        + 2(1+1/δ)·( 12·W·M + (1 + 5e/2)·ε·M² ) .
+```
+
+**Every term of the Matomäki–Radziwiłł decomposition is now discharged unconditionally, with
+explicit constants, except `ramarePrimeOffDiagonal`.**  The route from `MRBilinear μ hh` (hence both
+Route E sign-density theorems) down to this one quantity is closed in Lean:
+
+```text
+MRBilinear μ hh  ⟸  OffDiagonalSmall μ hh  ⟸  ramarePrimeOffDiagonal P M W ≤ ε·M²
+                    (units 19–27)             (units 30–37)
+```
+
+The remaining object is a bilinear oscillatory sum over pairs of primes — sparse and
+well-separated in the logarithmic scale, which is where the corpus's prime near-diagonal weight
+`q/log q` (`PrimeWindowSharpLevel`, `PrimePowerSupport`) and the large-values layer act.  At a
+single frequency it is the Halász deficit of unit 4.

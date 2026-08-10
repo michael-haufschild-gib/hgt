@@ -33,7 +33,8 @@ universe u v w
     {α : Type u} [Fintype α] [DecidableEq α] (a : α → ℕ) :
     observerRepairWeight id a = a := by
   funext x
-  simp [observerRepairWeight]
+  change (∑ y : α, if y = x then a y else 0) = a x
+  exact Fintype.sum_ite_eq' x a
 
 /-- Kernel images compose strictly. -/
 theorem observerFailureKernel_comp
@@ -52,8 +53,11 @@ theorem observerFailureFamily_comp
     (f : α → β) (g : β → γ) (H : Finset (Finset α)) :
     observerFailureFamily (g ∘ f) H =
       observerFailureFamily g (observerFailureFamily f H) := by
-  ext L
-  simp [observerFailureFamily, observerFailureKernel]
+  unfold observerFailureFamily
+  rw [Finset.image_image]
+  apply Finset.image_congr
+  intro K hK
+  exact observerFailureKernel_comp f g K
 
 /-- Positive fibre-sum weights compose strictly. -/
 theorem observerRepairWeight_comp
@@ -64,13 +68,21 @@ theorem observerRepairWeight_comp
       observerRepairWeight g (observerRepairWeight f a) := by
   classical
   funext z
-  simp only [observerRepairWeight]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro x hx
-  by_cases h : g (f x) = z
-  · simp [h]
-  · simp [h]
+  change (∑ x : α, if g (f x) = z then a x else 0) =
+    ∑ y : β, if g y = z then ∑ x : α, if f x = y then a x else 0 else 0
+  calc
+    _ = ∑ x : α, ∑ y : β,
+        if f x = y then (if g y = z then a x else 0) else 0 := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      by_cases h : g (f x) = z <;> simp [h]
+    _ = ∑ y : β, ∑ x : α,
+        if f x = y then (if g y = z then a x else 0) else 0 := by
+      rw [Finset.sum_comm]
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro y hy
+      by_cases h : g y = z <;> simp [h]
 
 /-- A two-stage observed gap persists backward through both observer stages. -/
 theorem weightedSymbolicExecutionGap_twoStep_backward
@@ -115,13 +127,9 @@ theorem weightedSymbolicExecutionGap_twoStep_noRevival
 theorem hereditaryObstruction_of_le
     (alive : ℕ → Prop) (hstep : ∀ n, alive (n + 1) → alive n)
     {i j : ℕ} (hij : i ≤ j) (hj : alive j) : alive i := by
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hij
-  induction k with
-  | zero => simpa using hj
-  | succ k ih =>
-      apply ih
-      apply hstep (i + k)
-      simpa [Nat.add_assoc] using hj
+  induction j, hij using Nat.le_induction with
+  | base => exact hj
+  | succ j hij ih => exact ih (hstep j hj)
 
 /-- The triangle gap dies at its collapse observer and remains dead after every later positive
 observer. -/

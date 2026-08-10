@@ -3,7 +3,7 @@
 - **ID:** ULF-SELM-8
 - **Stage:** 2-fully-proven
 - **Type:** ROUTE-INDEPENDENT EFFECTIVITY-HISTORY THEOREM
-- **Status:** [PAPER-PROVED] [LEAN-PENDING] [DEPENDENCY-CLOSED] [STRICT OBSERVER
+- **Status:** [PAPER-PROVED] [LEAN-CERTIFIED] [DEPENDENCY-CLOSED] [STRICT OBSERVER
   COMPOSITION] [GAP-DEATH FILTRATION] [NO REVIVAL] [NOT RH]
 - **Parents:** ULF-SELM-1--7
 
@@ -214,13 +214,13 @@ observer functor.
 6. No HT theorem, positivity theorem, recurrence theorem, physical identification, or RH statement
    is inferred from the abstract filtration alone.
 
-## 8. Lean target
+## 8. Lean certification
 
 Formalization target:
 
 `formal/GaloisForLFunctions/HTGeometry/ConstitutiveObserverGapPersistence.lean`
 
-The module must certify without project axioms or computation proofs:
+The module certifies without project axioms or computation proofs:
 
 1. identity and strict composition for kernels, failure families, and fibre-sum weights;
 2. two-step backward gap persistence and forward no-revival;
@@ -228,8 +228,13 @@ The module must certify without project axioms or computation proofs:
 4. permanent triangle-gap death after every later positive observer;
 5. one unconditional capstone wired into `HTGeometry.UniversalLawField`.
 
+Direct foreground elaboration passes.  Final foreground umbrella build passes with 11,606 jobs.
+Axiom inspection reports only `propext`, `Classical.choice`, and `Quot.sound`; the abstract
+initial-segment theorem itself reports no axioms.  Repository lint reaches the new module with no
+target error; its global nonzero exit is caused by unrelated unwired modules elsewhere in the
+shared corpus.
+
 ## Log
 
 - 2026-08-10 -- extracted from ULF-SELM-7 by closing observer composition instead of pursuing a
-  route-specific source selector.  Full paper proof is dependency-closed; Lean formalization is
-  pending.
+  route-specific source selector.  Full paper proof and Lean certification pass.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.HedenmalmThetaCompactFluxEnergy
+import GaloisForLFunctions.RHTower.HedenmalmThetaCayleyTools
 import GaloisForLFunctions.RHTower.HedenmalmThetaSourceCompressedInverseDeterminant
 import GaloisForLFunctions.RHTower.PrimeArchBernsteinExponentialPhase
 import GaloisForLFunctions.HTGeometry.KleinGordonGrowthRate
@@ -113,18 +114,6 @@ theorem thetaBoundaryScaledSquareGenerator_thetaXi_eigen (q : XiZeroCopy) :
     thetaBoundarySquareGenerator_thetaXi_eigen, smul_smul]
   rfl
 
-/-- Every eigenvalue of a strict contraction has modulus below one. -/
-theorem norm_eigenvalue_lt_one_of_strict_contraction
-    {T : ThetaH →L[ℂ] ThetaH} {x : ℂ} {v : ThetaH}
-    (hT : ‖T‖ < 1) (hv0 : v ≠ 0) (hv : T v = x • v) :
-    ‖x‖ < 1 := by
-  have hvn : 0 < ‖v‖ := norm_pos_iff.mpr hv0
-  have hle : ‖x‖ * ‖v‖ ≤ ‖T‖ * ‖v‖ := by
-    rw [← norm_smul, ← hv]
-    exact T.le_opNorm v
-  have hxle : ‖x‖ ≤ ‖T‖ := (mul_le_mul_right hvn).mp hle
-  exact hxle.trans_lt hT
-
 theorem norm_thetaXiBoundaryScaledEigenvalue_lt_one (q : XiZeroCopy) :
     ‖thetaXiBoundaryScaledEigenvalue q‖ < 1 :=
   norm_eigenvalue_lt_one_of_strict_contraction
@@ -138,26 +127,6 @@ theorem one_sub_thetaXiBoundaryScaledEigenvalue_ne_zero (q : XiZeroCopy) :
   have hone : thetaXiBoundaryScaledEigenvalue q = 1 := (sub_eq_zero.mp hzero).symm
   rw [hone, norm_one] at norm_thetaXiBoundaryScaledEigenvalue_lt_one q
   exact (lt_irrefl 1) (norm_thetaXiBoundaryScaledEigenvalue_lt_one q)
-
-/-- Inversion of the Cayley denominator on an eigenline. -/
-theorem ringInverse_one_sub_apply_of_eigen
-    {T : ThetaH →L[ℂ] ThetaH} {x : ℂ} {v : ThetaH}
-    (hunit : IsUnit (1 - T)) (hv0 : v ≠ 0) (hv : T v = x • v) :
-    Ring.inverse (1 - T) v = (1 - x)⁻¹ • v := by
-  have hx1 : 1 - x ≠ 0 := by
-    intro hx
-    have hker : (1 - T) v = 0 := by
-      rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply, hv]
-      have : x = 1 := sub_eq_zero.mp hx
-      rw [this, one_smul, sub_self]
-    exact hv0 ((ContinuousLinearMap.isUnit_iff_bijective.mp hunit).1 (by simpa using hker))
-  apply (ContinuousLinearMap.isUnit_iff_bijective.mp hunit).1
-  rw [← ContinuousLinearMap.mul_apply,
-    Ring.mul_inverse_cancel _ hunit, ContinuousLinearMap.one_apply,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
-    map_smul, hv, smul_smul]
-  congr 1
-  field_simp
 
 /-- The source Cayley clock acts diagonally on every canonical theta divisor mode. -/
 theorem thetaBoundaryCayleyClock_thetaXi_eigen (q : XiZeroCopy) :
@@ -173,32 +142,6 @@ theorem thetaBoundaryCayleyClock_thetaXi_eigen (q : XiZeroCopy) :
   simp only [one_smul, thetaXiBoundaryCayleyMultiplier]
   congr 1
   field_simp [one_sub_thetaXiBoundaryScaledEigenvalue_ne_zero q]
-
-/-- Powers of a bounded operator preserve an eigenline with the corresponding scalar power. -/
-theorem pow_apply_of_complex_eigen
-    {T : ThetaH →L[ℂ] ThetaH} {x : ℂ} {v : ThetaH}
-    (hv : T v = x • v) (n : ℕ) :
-    (T ^ n) v = x ^ n • v := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, hv, map_smul, ih,
-        smul_smul, pow_succ]
-      congr 1
-      ring
-
-/-- Every canonical theta divisor mode has nonzero rank-two boundary output. -/
-theorem pinnedBoundaryCLM_thetaXiDivisorEigenvector_ne_zero (q : XiZeroCopy) :
-    pinnedBoundaryCLM (thetaXiDivisorEigenvector q) ≠ 0 := by
-  intro hzero
-  have hm := (pinnedBoundaryCLM_eq_zero_iff (thetaXiDivisorEigenvector q)).1 hzero
-  have hsqrt : (Real.sqrt thetaSource.mass : ℂ) ≠ 0 := by
-    exact_mod_cast (Real.sqrt_pos.mpr thetaSource.mass_pos).ne'
-  apply hsqrt
-  rw [← pinnedMean_thetaDivisorEigenvector
-    (xiSpectralPoint q) (thetaXiSpectralPoint_mem_sourceStrip q)
-    (xiC_thetaSource_xiSpectralPoint_eq_zero q)]
-  exact hm.1
 
 /-- Exact vector-valued rank-two observed Cayley mode law. -/
 theorem thetaBoundaryCayleyObservation_thetaXi_eigen (q : XiZeroCopy) (n : ℕ) :
@@ -359,37 +302,6 @@ theorem thetaBoundaryScaledSquareGenerator_eigenvalue_re_eq_zero_of_rh
   rw [hxy, hyReal]
   dsimp only [c]
   simp [Complex.mul_re]
-
-/-! ## Scalar Cayley geometry -/
-
-theorem norm_one_add_eq_norm_one_sub_of_re_eq_zero
-    {x : ℂ} (hx : x.re = 0) :
-    ‖1 + x‖ = ‖1 - x‖ := by
-  have hsq : ‖1 + x‖ ^ 2 = ‖1 - x‖ ^ 2 := by
-    rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
-      Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im]
-    simp only [Complex.one_re, Complex.one_im, hx]
-    ring
-  nlinarith [norm_nonneg (1 + x), norm_nonneg (1 - x)]
-
-theorem norm_cayley_eq_one_of_re_eq_zero
-    {x : ℂ} (hx : x.re = 0) (hden : 1 - x ≠ 0) :
-    ‖(1 + x) / (1 - x)‖ = 1 := by
-  rw [norm_div, norm_one_add_eq_norm_one_sub_of_re_eq_zero hx,
-    div_self (norm_ne_zero_iff.mpr hden)]
-
-theorem one_lt_norm_cayley_of_re_pos
-    {x : ℂ} (hx : 0 < x.re) (hden : 1 - x ≠ 0) :
-    1 < ‖(1 + x) / (1 - x)‖ := by
-  have hsq : ‖1 - x‖ ^ 2 < ‖1 + x‖ ^ 2 := by
-    rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
-      Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im]
-    simp only [Complex.one_re, Complex.one_im]
-    nlinarith
-  have hnorm : ‖1 - x‖ < ‖1 + x‖ := by
-    nlinarith [norm_nonneg (1 - x), norm_nonneg (1 + x)]
-  rw [norm_div, one_lt_div (norm_pos_iff.mpr hden)]
-  exact hnorm
 
 /-! ## RH upper spectral bound -/
 

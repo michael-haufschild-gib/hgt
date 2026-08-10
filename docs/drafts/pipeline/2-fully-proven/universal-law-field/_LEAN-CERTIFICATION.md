@@ -977,3 +977,17 @@ capstone report only `propext`, `Classical.choice`, and `Quot.sound`. No computa
 route premise, project axiom, or RH statement occurs. Final foreground umbrella build passes with
 11,605 jobs. Repository lint reports no target error; its global nonzero exit comes from unrelated
 unwired modules.
+
+## Session 2026-08-10 addition (Observer Gap-Death Filtration)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SELM-8 | Kernel, failure-family, and positive fibre-sum observation compose strictly; gaps persist backward, gap death persists forward, successor-hereditary obstruction histories are initial segments, and the triangle collapse has permanent death time one | `HTGeometry.ConstitutiveObserverGapPersistence` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints on strict composition, two-step persistence,
+no-revival, permanent triangle death, and the unconditional capstone report only `propext`,
+`Classical.choice`, and `Quot.sound`; the abstract initial-segment theorem reports no axioms. No
+computation certificate, route premise, project axiom, or RH statement occurs. Final foreground
+umbrella build passes with 11,606 jobs. Repository lint reaches the module with no target error; its
+global nonzero exit comes from unrelated unwired modules.

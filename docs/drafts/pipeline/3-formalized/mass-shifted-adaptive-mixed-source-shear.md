@@ -45,6 +45,16 @@ and its factorial carrier is the mixed amplitude
 P_(2,M_1c(p))(T) = Q_(1,c(p))(T).                       (5)
 ```
 
+In the endpoint window `0<y<41/2`, the landing also has the zero-free source presentation
+
+```text
+d/dy B_y(p)
+  = -2 momentInner(Re primeArchShiftedReciprocalMoment(y,·), Xp, X E_1p). (6)
+```
+
+Every moment on this right-hand side is the absolutely convergent negative-binomial transform of
+the normalized prime--Gamma moment tower.
+
 Thus actual mass differentiation consumes marked odd crossing current and lands on even adaptive
 null-flag shear before reflection aggregation. No fixed reporter or orientation map is chosen.
 
@@ -59,14 +69,14 @@ m_k'(y)=-(k+1)m_(k+1)(y).
 Hence, for every polynomial `f`, coefficientwise differentiation gives
 
 ```text
-d/dy L_y(f) = -L_y(X E_1 f).                            (6)
+d/dy L_y(f) = -L_y(X E_1 f).                            (7)
 ```
 
-Apply `(6)` to `f=p Xp`. Polynomial differentiation and commutativity give the exact
+Apply `(7)` to `f=p Xp`. Polynomial differentiation and commutativity give the exact
 Euler--Leibniz identity
 
 ```text
-X E_1(p Xp) = 2 (Xp)(X E_1p),                           (7)
+X E_1(p Xp) = 2 (Xp)(X E_1p),                           (8)
 ```
 
 which proves `(1)`. Since `p Xp=X p^2`, expanding `p^2` in its finite coefficient packet gives
@@ -85,9 +95,10 @@ squared-factorial coefficients gives
 (j+2)c_j / ((j+2)!)^2 = c_j / ((j+1)!(j+2)!),
 ```
 
-which proves `(5)`.
+which proves `(5)`. The corpus equality between shifted Xi moments and the source-only
+negative-binomial prime--Gamma moments proves `(6)` termwise in the finite polynomial pairing.
 
-Hostile audit: `(1)--(5)` are exact identities. They do not assume positivity, RH, terminal-flux
+Hostile audit: `(1)--(6)` are exact identities. They do not assume positivity, RH, terminal-flux
 orientation, or any downstream cumulant cap. They do not prove strict sign. Remaining theorem is
 strict arithmetic comparison of the two source channels in `(4)` on the adaptive packet.
 

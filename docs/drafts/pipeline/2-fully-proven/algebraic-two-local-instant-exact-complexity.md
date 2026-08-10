@@ -1710,3 +1710,66 @@ branch datum lives in `ℤ⟦t⟧`, exactly where `padicEval` applies — and a 
   argument — ramification at a branch point forces a rational root to come from an unramified
   branch, which is where Hilbert irreducibility is finally concluded;
 - §4: complete.
+
+## The branch datum put into integral form (2026-08-10)
+
+`HTGeometry/EisensteinIntegralForm.lean` (new, in the umbrella, axiom-clean) connects Eisenstein's
+bound to the domain of `padicEval`.
+
+- `scaledRoot D q y := C D * rescale (q²) y` — coefficients `D · q^{2N} · y_N`
+  (`coeff_scaledRoot`), which Eisenstein places in the base ring (`coeffMem_scaledRoot`);
+- `scaledPoly D q f := (f.map (rescale (q²))).scaleRoots (C D)` — the matching
+  `D^{deg f} · f(q² t, X/D)`, integral whenever `f` is (`coeffMem_scaledPoly`);
+- **`eval_scaledPoly`** — the rescaled branch is a root of the rescaled polynomial.  Both
+  operations are library ones (`PowerSeries.rescale` for the variable,
+  `Polynomial.scaleRoots` for the root); the content is that they match up, via
+  `Polynomial.scaleRoots_eval₂_mul` at the identity homomorphism;
+- **`exists_map_eq_of_coeff_mem_range`**, **`exists_polyMap_eq_of_coeff_mem_range`** — a power
+  series, or a polynomial with power-series coefficients, whose coefficients lie in the range of a
+  ring homomorphism is the image of one over the source.  This is what moves the branch datum from
+  `ℚ⟦t⟧` with integral coefficients to genuine `ℤ⟦t⟧`.
+
+The chain from a formal branch to a `p`-adic root is now complete as a sequence of proved steps:
+
+```text
+f.eval y = 0 over ℚ⟦t⟧
+  → Eisenstein: D q^{2N} y_N ∈ ℤ                        (EisensteinScaling)
+  → scaledPoly / scaledRoot: integral root equation      (this entry)
+  → lift along ℤ ↪ ℚ: the datum lives in ℤ⟦t⟧            (this entry)
+  → padicEval at ‖a‖ < 1: a root in ℤ_p                  (PadicPowerSeriesEvaluation)
+```
+
+### Remaining Lean layers for the card
+
+- §1: assembling the four steps above into one statement, then the specialisation argument
+  (ramification at a branch point forces a rational root to come from an unramified branch) —
+  the last mathematical content of Hilbert irreducibility;
+- §4: complete.
+
+## From a rational branch to a p-adic root — assembled (2026-08-10)
+
+`HTGeometry/IntegralBranchSpecialisation.lean` (new, in the umbrella, axiom-clean) joins the four
+steps into single statements.
+
+- `hfrac_int_range` — every rational is cleared into `ℤ` by its denominator, so `ℚ` is the fraction
+  field of `(Int.castRingHom ℚ).range` in the sense Eisenstein requires;
+- **`exists_integral_root_form`** — a power-series root of a polynomial with integral coefficients
+  over `ℚ⟦t⟧`, whose derivative does not vanish identically at the root, has an *integral model*:
+  there are `g : ℤ⟦t⟧[X]` and `z : ℤ⟦t⟧` with `g.eval z = 0`.  The transfer is by injectivity of
+  `PowerSeries.map` along `ℤ ↪ ℚ`;
+- **`exists_padic_root_of_branch`** — hence for every prime `p` and every `a ∈ ℤ_p` with `‖a‖ < 1`,
+  the specialised polynomial `g.map (padicEval p a)` has the root `padicEval p a z` in `ℤ_p`.
+
+So the formal branches of an algebraic function are not merely formal: they take values, and those
+values are roots of the specialised polynomial.  That is precisely the arithmetic input a
+specialisation argument consumes.
+
+### Remaining Lean layers for the card
+
+- §1: the specialisation argument itself.  With branch values in hand, the remaining content of
+  Hilbert irreducibility is the ramification step — at a branch point of ramification index `e > 1`,
+  choosing `v_p(t − b)` coprime to `e` forces any root of the specialised polynomial that comes
+  from that branch to generate a ramified extension of `ℚ_p`, hence to be irrational.  The inputs
+  still to build are: the ramified Puiseux branch as a series in `t^{1/e}` (available from
+  `NewtonPuiseuxSplitting` after `expand`), and the valuation bookkeeping in `ℚ_p`.
+- §4: complete.

@@ -545,16 +545,56 @@ are also closed, so **Theorem 2.2 is complete**.
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 9 044 jobs.
 
+### Theorem 1.1 — the analytic core (DONE)
+
+Same module (`ModulusDivergence.lean`).
+
+| Clause | Lean |
+|---|---|
+| **no gauged limit is continuous at the origin** | **`not_exists_continuousAt_limit`** |
+| **the same for an arbitrary real centering `c_p`** | **`not_exists_centering_limit`** |
+
+This is Theorem 1.1 with a shorter proof than the card's.  The card argues by symmetrization,
+Borel–Cantelli II and Lévy's equivalence theorem; but the modulus budget already decides it.  For
+every `t ≠ 0` the gauged product tends to `0`, so any pointwise limit `ψ` is `0` off the origin
+while `ψ(0) = 1` — and no such function is continuous at `0`.  Since characteristic functions are
+continuous and take the value `1` at the origin, no centering makes the socle series converge in
+distribution.  The symmetrization route survives as an independent second proof
+(`not_summable_symmetrization`).
+
+### The gas measure's own characteristic functions (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/SocleCharFun.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The card's §0 asserts that the socle coordinate `ξ_p = −σ N_p log p − log(1−q_p)` has
+characteristic function `Γ_{q_p}(1+it)`.  That is now proved from the corpus's own `gasMeasure`.
+
+| Clause | Lean |
+|---|---|
+| **one geometric mode has characteristic function `(1−q)/(1−q e^{ia})`** | **`integral_modeLaw_expo`** |
+| the gas coordinates are independent | `iIndepFun_eval` |
+| the law of one coordinate is its mode law | `integral_gasMeasure_eval` |
+| **a finite-mode linear observable has the product characteristic function** | **`integral_gasMeasure_expo_finset`** |
+| **the depth modes of a nome multiply to `(q;q)_∞/(q e^{−iθ};q)_∞`** | **`hasProd_modeCharFun`** |
+| **`Γ_q(1+it)` is that product times the centering `e^{−it log(1−q)}`** | **`qGammaOn_eq_centered_tprod`** |
+| the mode ratios of a prime are the powers of its nome | `ratio_temperatureParameters`, `socleCoeff`, `exp_socleCoeff` |
+| **`φ_p(t) = Γ_{q_p}(1+it)`, as a limit of depth truncations** | **`tendsto_charFun_socle`** |
+
+Independence comes from mathlib's `iIndepFun_infinitePi`, which applies because the corpus already
+defines `gasMeasure` as `Measure.infinitePi`; the geometric integral is `integral_geometricMeasure`,
+which needs no integrability hypothesis.  The infinite product over depths is handled without any
+`tprod`-division lemma: the partial products divide, and the quotient of the two limits is legitimate
+because `defectProduct_ne_zero` keeps the denominator away from `0`.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 663 jobs.
+
 **Next targets, in order.**
 
-1. *Theorem 1.1.*  The analytic half is now free: `tendsto_norm_prod_gauge_zero` says the
-   characteristic functions of the centered partial sums tend to `0` at every `t ≠ 0`, so any
-   pointwise limit is `0` off the origin and `1` at it — not continuous, hence not a characteristic
-   function.  Borel–Cantelli and Lévy's equivalence theorem are *not* needed for this route (the
-   symmetrization bound `not_summable_symmetrization` remains as the independent second proof).
-   What is left is the probabilistic wrapper: the law of `ξ_p` under the corpus `gasMeasure`, the
-   identification of its characteristic function with `Γ_{q_p}(1+it)`, and mathlib's Lévy continuity
-   theorem (`ProbabilityMeasure.tendsto_iff_tendsto_charFun`, which does exist).
+1. *Theorem 1.1, last mile.*  `tendsto_charFun_socle` identifies one prime's characteristic
+   function; what remains is to run the double limit (depths, then primes) so that the products in
+   `not_exists_centering_limit` are literally the characteristic functions of `S_P`, and to invoke
+   mathlib's Lévy continuity theorem `ProbabilityMeasure.tendsto_iff_tendsto_charFun`.
 2. *Theorem 3.1 (CLT).*  Mathlib's `Probability/CentralLimitTheorem.lean` carries only the i.i.d.
    form (`tendstoInDistribution_inv_sqrt_mul_sum`); the Lindeberg–Feller triangular-array form the
    card needs is **not** in mathlib and has to be built.
