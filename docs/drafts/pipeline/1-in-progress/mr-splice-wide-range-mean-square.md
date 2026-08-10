@@ -3195,3 +3195,37 @@ the whole spacing route would have been the wrong one; this is the check that sa
 
 The discrete-to-continuous passage itself, then `gallagher_identity` and the Halász bound for
 `∫ |logPoly|²`.
+
+## 2026-08-10 a better route: expand in the outer variable, skip the integral entirely
+
+`Sieve/FibreMeanSquarePairs.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9029 jobs).
+
+```text
+innerFibre_subset_range :  innerFibre x h a ⊆ [1, ⌊x + h√x⌋]
+
+sum_fibreSq_eq_count :
+  ∑_{a ∈ outerBlock} (∑_{b ∈ innerFibre a} f(b))²
+    = ∑_{m, n} f(m)·f(n)·#{ a ∈ outerBlock : m, n ∈ innerFibre a }
+```
+
+An identity, in the variable the mean square actually runs over.  The kernel counts the outer
+indices whose fibre contains both `m` and `n`; since `b ∈ innerFibre x h a ↔ x ≤ ab ≤ x + h√x`,
+that is the number of `a` in an intersection of two intervals — explicitly computable, the exact
+analogue of `overlap_card_eq`.
+
+**This supersedes the sampling route.**  The previous units were heading for "sample the step
+function `u ↦ logWindowSum` at the points `log(x/a)`, then compare with its integral" — the
+discrete-to-continuous step, which is the delicate part of Gallagher's proof and needs control of
+the step function's cell lengths.  Expanding in `a` instead needs none of it: the identity is exact,
+the signs are kept, and no integral appears.
+
+The work on the sampling route is not wasted — `FibreFixedWidth`, `FibreLogCharacterisation`,
+`WindowEndpoint`, `FibreStartSeparated` and `SeparatedCount` are the facts one needs to *choose*
+between the routes, and `SeparatedCount`'s sharpness check is what showed the sampling route would
+have been viable but not simpler.
+
+### What is left
+
+The kernel `#{a ∈ outerBlock : m, n ∈ innerFibre a}` — an interval count in `a` — and then the
+bilinear estimate for `μ`.

@@ -176,8 +176,12 @@ that is strictly stronger than needed and is the wrong invariant.
 topologically generating set is onto (`Algebra.adjoin_le` + `Subalgebra.topologicalClosure_minimal`).
 Θ's injectivity is `mem_localIdeal_iff_mkQ_eq_zero`.  So (12f) needs exactly:
 **closed range + generation** — NOT minimality (disproved), NOT Mittag-Leffler (disproved as
-necessary), NOT the algebraic comparison (uniqueness is free from generation).  In C* the range of
-a *-homomorphism is automatically closed, which is the whole analytic content.
+necessary), NOT the algebraic comparison (uniqueness is free from generation).  `surjective_of_isometry_of_generates` / `bijective_of_isometry_of_generates`: an ISOMETRIC hom from
+a complete algebra has closed range (`Isometry.isClosedEmbedding.isClosed_range`), so with
+generation it is bijective.  mathlib HAS `NonUnitalStarAlgHom.isometry` (injective *-hom of
+C*-algebras is isometric) and `.norm_map`.  Θ is injective, so ONLY GENERATION remains for (12f).
+Important: mathlib has NO C*-quotient, so there is no closed-range theorem for general *-homs —
+use the injective case, which is all Θ needs.
 
 ## Already in the corpus — do not rebuild
 `ShilovBoundaryMigrationDefect.escapeDetectionEquiv` is the card's `(16)`, and

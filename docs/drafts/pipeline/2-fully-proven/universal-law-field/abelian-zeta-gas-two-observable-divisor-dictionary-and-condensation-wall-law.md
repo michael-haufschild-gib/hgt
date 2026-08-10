@@ -658,10 +658,44 @@ normalization identity:
    coefficient identity `[uⁿ] ∏_{j≥1}(1−u qʲ)⁻¹ = qⁿ/(q;q)_n`, i.e. Euler's identity read as a
    power series in `u`, together with the partition-counting rewrite
    `P(N_p = n) = (q;q)_∞ · ∑_{g : ∑_j g_j = n} q^{∑_j j g_j}`.
-2. **Corollary 3.2 (GAS.6/GAS.7), the depth-ladder response.**  With the exact coupled chamber
-   `Re(σ+u) > 0`, `Re(σ+u+v) > 1`.  This is the same normal-convergence pattern as the certified
-   `eqgResponse_hasProd` of ULF-EQG-1; the telescoping (GAS.7) is a ladder identity of the shape
-   already proved there as `eqgDirichlet_ladder`.
+2. **Corollary 3.2, (GAS.7) — CERTIFIED; (GAS.6) remains.**
+
+   `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/DepthLadder.lean` (wired into
+   `GaloisForLFunctions.HTGeometry`).  The socle tilt `τ ↦ τ + σ` moves depth `j` to depth `j + 1`,
+   so the complete zeta ladder telescopes and the partition function loses exactly one factor.
+
+   | Clause | Lean |
+   |---|---|
+   | the zeta ladder converges (exposed from the normalization proof) | `AbelianZetaConvergentParameters.hasProd_zetaLadder`, `…hasProd_zetaLadder_zetaPartition` |
+   | the socle tilt inside the convergence chamber | `AbelianZetaConvergentParameters.depthShift` |
+   | `ℕ` enumerates the nonzero naturals | `natComplZeroEquiv` |
+   | **(GAS.7): `Z(σ,τ) = ζ(σ+τ)·Z(σ,τ+σ)`** | **`zetaPartition_depthShift`** |
+
+   The proof is a head/tail split of the ladder (`HasProd.mul_compl` on `{0}` and its complement),
+   which works in a commutative *monoid* and so applies to `ℂ` directly — the group-based
+   `Multipliable.tprod_eq_zero_mul` does not.  Axiom prints: `propext`, `Classical.choice`,
+   `Quot.sound` only; module green at 3 284 jobs.
+
+   **(GAS.6) is now certified too**, in
+   `formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/Response.lean`.  Tilting the zeta-Gibbs law
+   by `|A|^{−(σ′−σ)}·|soc A|^{−(τ′−τ)}` moves the parameters from `θ` to `θ′`, so the expectation of
+   the tilt is the ratio of the two zero-occupation constants, equivalently of the two zeta
+   partition functions.  The card's coupled chamber `Re(σ+u) > 0`, `Re(σ+u+v) > 1` is exactly the
+   requirement that *both* parameter points lie in the convergence chamber — it is carried by the
+   types, not by a side hypothesis.
+
+   | Clause | Lean |
+   |---|---|
+   | the tilt observable | `gasTilt`, `gasTilt_nonneg`, `twoObservableWeight_nonneg` |
+   | the tilt moves the parameters | `twoObservableWeight_mul_gasTilt` |
+   | the response | `gasResponse` |
+   | **(GAS.6): `𝔉 = C_θ · C_{θ′}⁻¹`** | **`gasResponse_eq`** |
+   | cleared form, no inverses | `gasResponse_mul_ennNormalizer`, `ennNormalizer_ne_zero`, `gasResponse_ne_top` |
+   | **(GAS.6), zeta form: `𝔉 · Z(θ) = Z(θ′)`** | **`gasResponse_toReal_mul_zetaPartition`** |
+
+   Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 3 285 jobs.
+   Corollary 3.2 is therefore closed: (GAS.6) by `gasResponse_toReal_mul_zetaPartition` and (GAS.7)
+   by `zetaPartition_depthShift`.
 3. **Theorem 5.1, the depth-`g` condensation walls — ALREADY CERTIFIED.**  Audited in
    `Core.lean`: both halves are closed unconditionally, at `τ = 0` and in the general two-parameter
    chamber.
@@ -783,3 +817,30 @@ computes with.  The step from this to the marginal of the full `gasMeasure` — 
 countable product over `Nat.Primes × ℕ` into its prime blocks — is measure-theoretic bookkeeping
 that remains; it needs a product-index splitting for `∏'` in `ℝ≥0∞`, which mathlib does not
 currently carry.
+
+### Theorem 7.1 (GAS.11) — depth dilation, measure-theoretic clauses (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/DepthDilation.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+| Clause | Lean |
+|---|---|
+| the dilation `δ_d : (p,j) ↦ (p,d·j)` | `depthDilation`, `depthDilation_fst`, `depth_depthDilation` |
+| `δ_d` is injective onto the depth-`dℕ` modes | `depthDilation_injective` |
+| **`δ_d ∘ δ_e = δ_{de}`: the renormalisation semigroup `(ℕ_{≥1}, ×)`** | **`depthDilation_comp`** |
+| the dilated parameter point `σ ↦ d·σ` | `AbelianZetaParameters.depthDilate`, `AbelianZetaConvergentParameters.depthDilate` |
+| **`φ_σ ∘ ι_d = φ_{dσ}`: pullback along `δ_d` is temperature dilation** | **`AbelianZetaParameters.ratio_depthDilation`** |
+| **`Z` on the depth-`dℕ` modes at `σ` is `Z` at `d·σ`** | **`AbelianZetaConvergentParameters.zetaPartition_depthDilate`** |
+
+The corpus indexes modes by `(p, k)` with `depth = k + 1`, so the card's `δ_d` is
+`(p, k) ↦ (p, d(k+1) − 1)`; `depth_depthDilation` records that this multiplies the depth by `d`
+exactly, and every later clause is stated in terms of the depth.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 3 286 jobs.
+
+**What is not covered.**  The operator-algebraic clause of (GAS.11) — that `δ_d` induces a unital
+`*`-embedding `ι_d` of the mode algebra intertwining the modular flows, `α_t ∘ ι_d = ι_d ∘ α_{dt}` —
+waits on the KMS layer of Theorem 4.1.  The state and partition clauses above are the content that
+the rest of the card actually uses: the wall ladder `{1/g}` of Theorem 5.1 is the `δ`-orbit of the
+depth-one wall `σ = 1`, which is now `depthDilation_comp` together with
+`AbelianZetaParameters.temperature_finite_depthTail_eq_one`.

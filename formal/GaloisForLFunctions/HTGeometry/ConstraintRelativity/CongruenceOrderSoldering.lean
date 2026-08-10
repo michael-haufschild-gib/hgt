@@ -119,12 +119,85 @@ theorem scaledOrderA_restrictScalars :
 theorem scaledOrderA_le_scaledDualA : scaledOrderA a m ≤ scaledDualA a m :=
   scaledOrder_le_scaledDual a (m + 1)
 
+/-- Quotients of submodules of the sheet algebra over the congruence order.  Instance search
+does not find `Submodule.hasQuotient` through the induced algebra structure. -/
+noncomputable instance sheetSubmoduleHasQuotient
+    (P : Submodule (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) (Fin (m + 1) → R)) :
+    HasQuotient ↥P (Submodule (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ↥P) :=
+  @Submodule.hasQuotient (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ↥P _ _ _
+
 /-- The trace-law defect of the congruence order, as a module over that order. -/
 abbrev traceDefect (a : R) (m : ℕ) : Type _ :=
-  (↥(scaledDualA a m)) ⧸
-    (Submodule.comap (scaledDualA a m).subtype (scaledOrderA a m) :
-      Submodule (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) ↥(scaledDualA a m))
+  ↥(scaledDualA a m) ⧸ Submodule.comap (scaledDualA a m).subtype (scaledOrderA a m)
 
 end Lattices
+
+/-! ## The trace-law defect in coordinates -/
+
+section Coordinates
+
+variable {R : Type*} [CommRing R] {a : R} {m : ℕ} [Invertible ((m : R) + 1)]
+
+/-- The trace-law defect in coordinates. -/
+noncomputable def traceDefectModelEquiv (a : R) (m : ℕ) [Invertible ((m : R) + 1)] :
+    traceDefect a m ≃ₗ[R] (Fin m → R ⧸ Ideal.span ({a ^ 2} : Set R)) :=
+  scaledTraceDefectEquiv
+
+theorem traceDefectModelEquiv_mk (z : ↥(scaledDualA a m)) :
+    traceDefectModelEquiv a m (Submodule.Quotient.mk z)
+      = traceCoord a m (z : Fin (m + 1) → R) := rfl
+
+omit [Invertible ((m : R) + 1)] in
+theorem traceDefect_mk_surjective (x : traceDefect a m) :
+    ∃ z : ↥(scaledDualA a m), Submodule.Quotient.mk z = x :=
+  Submodule.Quotient.mk_surjective _ x
+
+omit [Invertible ((m : R) + 1)] in
+theorem congruenceX_smul_coe (i : Fin m) (z : ↥(scaledDualA a m)) :
+    ((congruenceX a m i • z : ↥(scaledDualA a m)) : Fin (m + 1) → R)
+      = congruenceGen a m i * (z : Fin (m + 1) → R) := by
+  show algebraMap (MvPolynomial (Fin m) R ⧸ congruenceIdeal a m) (Fin (m + 1) → R)
+      (congruenceX a m i) * _ = _
+  rw [algebraMap_congruenceX]
+
+theorem traceCoord_congruenceGen_mul (i : Fin m) (z : Fin (m + 1) → R) (j : Fin m) :
+    traceCoord a m (congruenceGen a m i * z) j
+      = Submodule.Quotient.mk
+          (a * z i.castSucc * ((if j = i then (1 : R) else 0) - ⅟((m : R) + 1))) := by
+  classical
+  have hval : ∀ l : Fin (m + 1), (congruenceGen a m i * z) l
+      = (if l = i.castSucc then a * z i.castSucc else 0) := by
+    intro l
+    by_cases h : l = i.castSucc
+    · rw [if_pos h, h]
+      show a * (Pi.single i.castSucc (1 : R) : Fin (m + 1) → R) i.castSucc * z i.castSucc
+        = a * z i.castSucc
+      rw [Pi.single_eq_same, mul_one]
+    · rw [if_neg h]
+      show a * (Pi.single i.castSucc (1 : R) : Fin (m + 1) → R) l * z l = 0
+      rw [Pi.single_eq_of_ne h, mul_zero, zero_mul]
+  have hsum : ∑ l, (congruenceGen a m i * z) l = a * z i.castSucc := by
+    rw [Finset.sum_congr rfl fun l (_ : l ∈ Finset.univ) => hval l,
+      Finset.sum_ite_eq' Finset.univ i.castSucc (fun _ => a * z i.castSucc),
+      if_pos (Finset.mem_univ _)]
+  rw [traceCoord_apply, hsum, hval]
+  congr 1
+  by_cases h : j = i
+  · subst h
+    rw [if_pos rfl, if_pos rfl]
+    ring
+  · rw [if_neg h, if_neg (fun hc => h (Fin.castSucc_injective m hc))]
+    ring
+
+/-- **Card `(26b)`.**  The source generators act on the trace-law defect through the
+coordinate `zᵢ`, with the mean subtracted. -/
+theorem traceDefectModelEquiv_congruenceX_smul (i : Fin m) (z : ↥(scaledDualA a m)) (j : Fin m) :
+    traceDefectModelEquiv a m (Submodule.Quotient.mk (congruenceX a m i • z)) j
+      = Submodule.Quotient.mk
+          (a * (z : Fin (m + 1) → R) i.castSucc
+            * ((if j = i then (1 : R) else 0) - ⅟((m : R) + 1))) := by
+  rw [traceDefectModelEquiv_mk, congruenceX_smul_coe, traceCoord_congruenceGen_mul]
+
+end Coordinates
 
 end HTGeometry.ConstraintRelativity

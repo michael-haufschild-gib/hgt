@@ -4157,6 +4157,7 @@ import GaloisForLFunctions.RHTower.Sieve.WindowEndpoint
 import GaloisForLFunctions.RHTower.Sieve.FibreToLogWindow
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparated
 import GaloisForLFunctions.RHTower.Sieve.SeparatedCount
+import GaloisForLFunctions.RHTower.Sieve.FibreMeanSquarePairs
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6729,6 +6730,7 @@ import GaloisForLFunctions.RHTower.Sieve.WindowEndpoint
 import GaloisForLFunctions.RHTower.Sieve.FibreToLogWindow
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparated
 import GaloisForLFunctions.RHTower.Sieve.SeparatedCount
+import GaloisForLFunctions.RHTower.Sieve.FibreMeanSquarePairs
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
