@@ -62,8 +62,18 @@ def fibreSmooth (x h : ℝ) (k i : ℕ) : ℝ :=
 
 theorem fibreSmooth_nonneg (x h : ℝ) (k i : ℕ) : 0 ≤ fibreSmooth x h k i := le_max_right _ _
 
-theorem fibreLow_nonneg {x : ℝ} (hx : 0 ≤ x) (n : ℕ) : 0 ≤ fibreLow x n :=
+theorem fibreLow_nonneg (x : ℝ) (n : ℕ) : 0 ≤ fibreLow x n :=
   le_trans (Real.sqrt_nonneg x) (le_max_right _ _)
+
+theorem div_le_fibreLow (x : ℝ) (n : ℕ) : x / (n : ℝ) ≤ fibreLow x n := le_max_left _ _
+
+theorem sqrt_le_fibreLow (x : ℝ) (n : ℕ) : Real.sqrt x ≤ fibreLow x n := le_max_right _ _
+
+theorem fibreHigh_le_div (x h : ℝ) (m : ℕ) :
+    fibreHigh x h m ≤ (x + h * Real.sqrt x) / (m : ℝ) := min_le_left _ _
+
+theorem fibreHigh_le_two_sqrt (x h : ℝ) (m : ℕ) : fibreHigh x h m ≤ 2 * Real.sqrt x :=
+  min_le_right _ _
 
 /-- **The smooth model never exceeds `3h + 1`.** -/
 theorem fibreSmooth_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (k : ℕ) {i : ℕ} (hi : 1 ≤ i) :
@@ -75,13 +85,12 @@ theorem fibreSmooth_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (k : ℕ) {i : 
   rw [fibreSmooth, kernelSmooth]
   refine max_le ?_ (by linarith)
   -- on the support the lower endpoint is at most `2√x + 1`
-  have hlow : fibreLow x i ≤ fibreHigh x h ((i : ℕ) + k) + 1 := by
-    by_contra hcon
-    push_neg at hcon
-    linarith
-  have hhigh2 : fibreHigh x h ((i : ℕ) + k) ≤ 2 * Real.sqrt x := min_le_right _ _
+  rcases le_or_gt (fibreHigh x h (i + k) - fibreLow x i + 1) 0 with hneg | hpos
+  · linarith
+  have hlow : fibreLow x i ≤ fibreHigh x h (i + k) + 1 := by linarith
+  have hhigh2 : fibreHigh x h (i + k) ≤ 2 * Real.sqrt x := fibreHigh_le_two_sqrt x h (i + k)
   have hxi : x / (i : ℝ) ≤ 2 * Real.sqrt x + 1 :=
-    le_trans (le_max_left _ _) (by linarith [hlow, hhigh2])
+    le_trans (div_le_fibreLow x i) (by linarith)
   have hI0 : (0 : ℝ) < (i : ℝ) := by linarith
   have hxi' : x ≤ (i : ℝ) * (2 * Real.sqrt x + 1) := by
     rw [div_le_iff₀ hI0] at hxi
@@ -89,17 +98,17 @@ theorem fibreSmooth_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (k : ℕ) {i : 
   have h3I : Real.sqrt x ≤ 3 * (i : ℝ) := by nlinarith [hxi', hs2, hI1, hsq]
   -- and the interval is then short
   have hden : (0 : ℝ) < (i : ℝ) + (k : ℝ) := by linarith
-  have hstep : fibreHigh x h ((i : ℕ) + k) - fibreLow x i ≤ h * Real.sqrt x / (i : ℝ) := by
-    have h1 : fibreHigh x h ((i : ℕ) + k)
-        ≤ (x + h * Real.sqrt x) / (((i : ℕ) + k : ℕ) : ℝ) := min_le_left _ _
-    have hcast : (((i : ℕ) + k : ℕ) : ℝ) = (i : ℝ) + (k : ℝ) := by push_cast; ring
+  have hstep : fibreHigh x h (i + k) - fibreLow x i ≤ h * Real.sqrt x / (i : ℝ) := by
+    have h1 : fibreHigh x h (i + k)
+        ≤ (x + h * Real.sqrt x) / (((i + k : ℕ) : ℝ)) := fibreHigh_le_div x h (i + k)
+    have hcast : (((i + k : ℕ) : ℝ)) = (i : ℝ) + (k : ℝ) := by push_cast; ring
     rw [hcast] at h1
     have h2 : (x + h * Real.sqrt x) / ((i : ℝ) + (k : ℝ))
         ≤ (x + h * Real.sqrt x) / (i : ℝ) := by
       refine div_le_div_of_nonneg_left ?_ hI0 (by linarith)
       have hs0 : (0 : ℝ) ≤ Real.sqrt x := Real.sqrt_nonneg x
       nlinarith [hs0, hh]
-    have h3 : x / (i : ℝ) ≤ fibreLow x i := le_max_left _ _
+    have h3 : x / (i : ℝ) ≤ fibreLow x i := div_le_fibreLow x i
     have hsplit : (x + h * Real.sqrt x) / (i : ℝ)
         = x / (i : ℝ) + h * Real.sqrt x / (i : ℝ) := by
       field_simp
@@ -110,18 +119,19 @@ theorem fibreSmooth_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (k : ℕ) {i : 
   linarith
 
 /-- **The smooth model vanishes once the shifted index leaves the window.** -/
-theorem fibreSmooth_eq_zero_of_gt {x h : ℝ} (hx : 4 ≤ x) (k i : ℕ)
+theorem fibreSmooth_eq_zero_of_gt {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) (k i : ℕ)
     (hgt : x + h * Real.sqrt x < ((i + k : ℕ) : ℝ)) :
     fibreSmooth x h k i = 0 := by
   have hs2 : (2 : ℝ) ≤ Real.sqrt x := two_le_sqrt hx
   have hden : (0 : ℝ) < ((i + k : ℕ) : ℝ) := by
     have hs0 : (0 : ℝ) ≤ Real.sqrt x := Real.sqrt_nonneg x
-    nlinarith [hgt, hs2]
+    have : (0 : ℝ) ≤ h * Real.sqrt x := by positivity
+    linarith
   have hhigh : fibreHigh x h (i + k) < 1 := by
     refine lt_of_le_of_lt (min_le_left _ _) ?_
     rw [div_lt_one hden]
     exact hgt
-  have hlow : (2 : ℝ) ≤ fibreLow x i := le_trans hs2 (le_max_right _ _)
+  have hlow : (2 : ℝ) ≤ fibreLow x i := le_trans hs2 (sqrt_le_fibreLow x i)
   rw [fibreSmooth, kernelSmooth, max_eq_right (by linarith)]
 
 /-- **The smooth model is within two of the fibre kernel.** -/
@@ -134,7 +144,7 @@ theorem abs_kernel_sub_fibreSmooth_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) 
   have hs0 : (0 : ℝ) ≤ Real.sqrt x := Real.sqrt_nonneg x
   rcases le_or_gt (i + k) ⌊x + h * Real.sqrt x⌋₊ with hle | hgt
   · rw [fibre_kernel_eq_Icc hx hh hi (Nat.le_add_right i k) hle, fibreSmooth]
-    exact abs_card_Icc_sub_smooth_le (fibreLow_nonneg (by linarith) i)
+    exact abs_card_Icc_sub_smooth_le (fibreLow_nonneg x i)
       (fibreHigh_nonneg hx hh (i + k))
   · -- outside the window both the kernel and its model vanish
     have hzero : (outerBlock x h).filter
@@ -143,7 +153,7 @@ theorem abs_kernel_sub_fibreSmooth_le {x h : ℝ} (hx : 4 ≤ x) (hh : 0 ≤ h) 
       rw [Finset.mem_filter, mem_innerFibre] at ha
       exact absurd ha.2.1.1.2 (by omega)
     have hsm : fibreSmooth x h k i = 0 := by
-      refine fibreSmooth_eq_zero_of_gt hx k i ?_
+      refine fibreSmooth_eq_zero_of_gt hx hh k i ?_
       have hfl : x + h * Real.sqrt x < (⌊x + h * Real.sqrt x⌋₊ : ℝ) + 1 :=
         Nat.lt_floor_add_one _
       have : (⌊x + h * Real.sqrt x⌋₊ : ℝ) + 1 ≤ ((i + k : ℕ) : ℝ) := by

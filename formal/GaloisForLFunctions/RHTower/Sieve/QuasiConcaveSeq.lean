@@ -129,6 +129,21 @@ theorem quasiConcaveOn_max_const {w : ℕ → ℝ} {n : ℕ} (hw : QuasiConcaveO
       rw [hi', hk']
       exact le_trans (hw i j k hij hjk hkn) (le_max_left _ _)
 
+/-- Quasi-concavity is stable under adding a constant. -/
+theorem quasiConcaveOn_add_const {w : ℕ → ℝ} {n : ℕ} (hw : QuasiConcaveOn w n) (c : ℝ) :
+    QuasiConcaveOn (fun i => w i + c) n := by
+  intro i j k hij hjk hkn
+  simp only
+  rw [min_add_add_right]
+  linarith [hw i j k hij hjk hkn]
+
+/-- Quasi-concavity transfers along a pointwise equality. -/
+theorem quasiConcaveOn_congr {w v : ℕ → ℝ} {n : ℕ} (heq : ∀ j, w j = v j)
+    (hv : QuasiConcaveOn v n) : QuasiConcaveOn w n := by
+  intro i j k hij hjk hkn
+  rw [heq i, heq j, heq k]
+  exact hv i j k hij hjk hkn
+
 /-- **A quasi-concave sequence increases and then decreases.** -/
 theorem quasiConcaveOn_bimonotone {w : ℕ → ℝ} {n : ℕ} (hw : QuasiConcaveOn w n) :
     ∃ c ≤ n, (∀ i, i + 1 ≤ c → w i ≤ w (i + 1))

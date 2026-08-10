@@ -720,15 +720,67 @@ Condensation is not a convenience here.  No power comparison can prove `(9)`:
 `exp(-c(log N)^{1/3})` dominates every `N^{-ε}`, so the series looks borderline divergent under
 any polynomial test and only the dyadic grouping separates it.
 
+### Section 2 — Abel summation `(10)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMobiusAbel.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerMertensM_abs_le` — `|M(n)| ≤ n + 1`.
+- `deningerAbelBoundary_tendsto_zero` — the boundary term `H_h(nx) M(n)` vanishes: the pullback
+  decays like an inverse square while `M` grows at most linearly.
+- `deningerMobius_abel` — **`(10)` in discrete form**: the partial sums of
+  `∑_n M(n) (H_h((n+1)x) - H_h(nx))` converge to `-f_h(x)`, for every `x > 0`.  This is
+  `Finset.sum_range_by_parts` plus the vanishing boundary term.
+
+### Section 2 — the weighted derivative of the pullback `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerLogPullDeriv.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerLogPullDeriv`, `deningerLogPull_hasDerivAt` — `H_h'(x) = h'(log x)/x` on the ray.
+- `deningerExpSchwartz_deriv_norm_le` — the `n = 1` case of the source condition, read as a bound
+  on `deriv h` itself.
+- `deningerLogPullDeriv_weighted_norm_le` — **the weighted derivative `x H_h'(x)` obeys the same
+  two-sided bound `min(x², x^{-2})` as the pullback**, because the chain-rule factor `1/x` cancels
+  the weight *exactly*: `x H_h'(x) = h'(log x)`.  This is why `∫_0^∞ u |H_h'(u)| du` is finite with
+  no loss of exponent.
+
+### Section 2 — the Abel coefficient `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbelCoefficient.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerAbelWindow_volume` — the dilation window `{x : ix ≤ u ≤ (i+1)x}` is `Icc (u/(i+1)) (u/i)`.
+- `deningerAbelWindow_length` — its length is `u/(i(i+1))`.
+- `deningerAbelCoefficient_summable` — **`∑_i |M(i)|/(i(i+1)) < ∞`**, by comparison with `(9)`.
+
+Every ingredient of `(11)` is now proved except the Tonelli assembly that glues them:
+the saving `(8)`, the series `(9)`, Abel summation `(10)`, the weighted-derivative bound, the
+window and its length, the coefficient summability, and the finiteness of the weighted moment.
+
+### Section 2 — the first weighted moment `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerWeightedMoment.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerWeightedMoment_continuousOn` — the integrand `u ‖H_h'(u)‖` is continuous on the ray.
+- `deningerWeightedMoment_integrable` — **`∫_0^∞ u |H_h'(u)| du < ∞`**, the second factor of the
+  `(11)` bound: bounded on `Ioc 0 1` (finite measure) and dominated by `u^{-2}` on `Ioi 1`.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
 unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a Fubini on a fixed
 ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
-bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)`--`(12)`.  Both arithmetic inputs, `(8)` and `(9)`, are now built; what is left is the
-*analytic* step, the Abel summation `(10)` in its discrete form
-`f_h(x) = -∑_n M(n) (H_h((n+1)x) - H_h(nx))`, together with a decreasing majorant for `H_h'` so
-that `∫_0^∞ x G(nx) dx = n^{-2} ∫ y G(y) dy` feeds `(9)`.  Note `(9)` cannot be avoided by the
+bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)`--`(12)`.  `(8)`, `(9)`, `(10)` and the weighted-derivative bound are all built.  What
+remains for `(11)` is one measure-theoretic step: integrating the Abel difference against `dx`.  The clean route is *not* a
+decreasing majorant for `H_h'` but Tonelli on the region — for `i ≥ 1`,
+
+    ∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx ≤ ∫_0^∞ |H_h'(u)| · |{x : ix ≤ u ≤ (i+1)x}| du
+                                     = (1/(i(i+1))) ∫_0^∞ u |H_h'(u)| du,
+
+because `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]` has length `u/(i(i+1))`.  Summing against
+`|M(i)|` then lands exactly on `(9)`, which is already proved.  Note `(9)` cannot be avoided by the
 two-sided decay of the pullback alone: without Möbius cancellation the bound near the origin is
 `‖f_h(x)‖ ≲ C/x` for *every* exponent `A`, which is not integrable at `0`.  `(15)` needs
 `1/ζ(σ) → 0` as `σ ↓ 1`.  Then `(6)` — formal once `𝔖_μ`

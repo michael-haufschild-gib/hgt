@@ -964,3 +964,39 @@ The scaling law was already present in the tree as `RHTower.fourierCoeff_smul`; 
 to `HTGeometry/FourierCircleTranslation.lean` as `fourierCoeff_const_mul` — stated for a general
 period, next to the translation and modulation laws — and the two `RHTower` call sites now use
 that single copy.
+
+## Lean status, twentieth pass: the exact one-step factorization
+
+`RHTower/GaussPrincipalStep.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+fourierMulBlock_neg_apply             : e_n · e_(-n) · u = u
+gaussPrimeScaleBlock_comm             : B commutes with multiplication by e_n
+gaussPrimeScaleInvSqBlock_comm        : B^(-2) commutes with multiplication by e_n
+gaussDiagonalBlockStar_fourierMulBlock: D*(e_n u) = conj(d_n) · e_n · S*(u)
+gaussDiagonalBlock_fourierMulBlock    : D (e_n u) = d_n · e_n · S(u)
+gaussQuasiInnerG_fourierMulBlock      : G(e_n f)
+                                          = (p · conj(d_n) d_n) · e_n · B(S(B^(-2)(S*(B f))))
+```
+
+The last theorem is the **exact** backbone of equation (10): no analysis, only that multiplication
+operators commute, that `e_n e_(-n) = 1`, and that the normalizations `(conj d_n)^(-1)`, `d_n^(-1)`
+built into the shifted blocks cancel the diagonal scalars.  The scalar is `p |d_n|²` written as
+`p · conj(d_n) · d_n`.
+
+The commutation lemmas reuse the corpus's `MeasureTheory.lpBoundedMulCLM_comp` and
+`lpBoundedMulCLM_eq_id`: nothing about multiplication operators had to be rebuilt.
+
+### What (10) now is
+
+Substituting the two convergences
+`S*(u) → T_(δ_n) u` and `S(w) → T_(δ_n)^(-1) w` (both uniform in the amplitude decay constant)
+into the factorization leaves the algebraic identity
+
+```text
+B ( T_δ^(-1) ( B^(-2) ( T_δ (B f) ) ) )  =  a_δ · f,
+```
+
+which is `b² / b(·+δ)² = s_p/s_p(·+δ)` — the definition of `a_δ` — together with the error
+propagation through the three bounded operators.

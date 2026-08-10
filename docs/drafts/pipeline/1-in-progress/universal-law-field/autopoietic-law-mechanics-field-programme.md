@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** ROUTE-INDEPENDENT FIELD PROGRAMME
 - **Status:** [MECHANISMS AND LAWS, NOT ONE OBJECT] [TWO LEAN-CERTIFIED LABS]
-  [FRANKENSTEIN SYNTHESIS] [HOSTILE GATES OPEN] [NOT RH]
+  [THIRD PAPER-PROVED VIABILITY LAB] [FRANKENSTEIN SYNTHESIS] [HOSTILE GATES OPEN] [NOT RH]
 
 ## 1. Frontier-forced pivot
 
@@ -66,7 +66,8 @@ and
 
 ## 3. Proposed laws
 
-These are programme laws. Only Laws III--V have the two exact calibrations stated below.
+These are programme laws. Laws III--V have two exact calibrations; Law VI now has a third
+paper-proved calibration awaiting Lean.
 
 ### Law I -- source food is not target truth
 
@@ -166,6 +167,19 @@ They prove Laws III--V occur in two nonisomorphic mathematical settings, one wit
 with a fixed native topology. They do not prove that every frontier stall is autocatalytic, that a
 selected repair exists, that viable completion follows, or that one category encodes the corpus.
 
+### 4.4 Viability--coercivity metabolism -- ULF-ALM-1
+
+For a linear execution boundary `B`, adjoining the dependent repair `r=-B(c)` leaves `im B`
+unchanged but splits one new kernel/history direction. When the old rules are a basis and `c` has
+strictly positive coordinates, the repair creates a unique normalized full-support nonnegative
+circulation. Simultaneously, the old strict progress functional ceases to exist on the enlarged
+support. Repetition of the circulation gives arbitrarily long positive-cost histories with zero
+semantic endpoint, so the repair itself manufactures the next challenge.
+
+Paper theorem:
+`conservative-repair-viability-coercivity-transmutation-and-open-history-law.md`.
+Lean formalization is required before this laboratory counts as certified.
+
 ## 5. Hostile countermodels
 
 1. **Idempotent repair.** Ordinary closure satisfies `C(C(A))=C(A)` and has no hereditary layer by
@@ -259,10 +273,12 @@ the field vocabulary.
 ALM becomes more than an organizing metaphor only after all of the following:
 
 1. abstract feedback laws exclude arbitrary transition-oracle encoding;
-2. a third nonisomorphic laboratory couples repair to viability or coercivity;
+2. a third nonisomorphic laboratory couples repair to viability or coercivity
+   (**paper-proved by ULF-ALM-1; Lean open**);
 3. one theorem predicts a withheld fact in at least three corpus mechanism families;
 4. selection is derived from predeclared source resource, not fitted target;
 5. significant dependency-closed theorems are formalized in Lean under the Universal Law Field
    umbrella.
 
-Until then, honest status is a mechanism-first research programme with two exact calibrations.
+Until then, honest status is a mechanism-first research programme with two certified calibrations,
+one paper-proved viability calibration, and open anti-theatre gates.

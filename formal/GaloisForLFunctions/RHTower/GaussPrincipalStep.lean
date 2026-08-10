@@ -19,6 +19,7 @@ Feeding the moving-translation estimate into `S*` and `S` turns the right-hand s
 namespace RHTower
 
 open MeasureTheory
+open scoped ENNReal
 
 noncomputable section
 
@@ -134,14 +135,11 @@ theorem gaussQuasiInnerG_fourierMulBlock {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p
                     (show (1 : ℝ) < (p : ℝ) by exact_mod_cast p.prop.one_lt) f))))) := by
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
   rw [gaussQuasiInnerG]
-  simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.coe_comp, Function.comp_apply]
+  simp only [smul_apply, ContinuousLinearMap.coe_comp, Function.comp_apply]
   rw [gaussPrimeScaleBlock_comm hp n f,
-    gaussDiagonalBlockStar_fourierMulBlock hm k p hn,
-    map_smul, gaussPrimeScaleInvSqBlock_comm hp n,
-    map_smul, gaussDiagonalBlock_fourierMulBlock hm k p hn,
-    map_smul, gaussPrimeScaleBlock_comm hp n, smul_smul, smul_smul, smul_smul]
-  congr 1
-  ring
+    gaussDiagonalBlockStar_fourierMulBlock hm k p hn]
+  simp only [map_smul, gaussPrimeScaleInvSqBlock_comm hp n,
+    gaussDiagonalBlock_fourierMulBlock hm k p hn, gaussPrimeScaleBlock_comm hp n, smul_smul]
 
 end
 

@@ -2392,6 +2392,8 @@ import GaloisForLFunctions.RHTower.GaussPrimeScaleFourier
 import GaloisForLFunctions.RHTower.GaussPrimeScaleOperator
 import GaloisForLFunctions.RHTower.GaussRotationIsTranslation
 import GaloisForLFunctions.RHTower.GaussQuasiInnerBlocks
+import GaloisForLFunctions.RHTower.GaussMovingAmplitudeOperator
+import GaloisForLFunctions.RHTower.GaussPrincipalStep
 import GaloisForLFunctions.RHTower.GaussShiftedBlockCoefficients
 import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
 import GaloisForLFunctions.RHTower.GaussSampleTranslationL2
@@ -6828,3 +6830,6 @@ import GaloisForLFunctions.RHTower.DeningerMobiusConnection
 import GaloisForLFunctions.RHTower.DeningerMertensSummatory
 import GaloisForLFunctions.RHTower.DeningerMertensInvSquare
 import GaloisForLFunctions.RHTower.DeningerMobiusAbel
+import GaloisForLFunctions.RHTower.DeningerLogPullDeriv
+import GaloisForLFunctions.RHTower.DeningerAbelCoefficient
+import GaloisForLFunctions.RHTower.DeningerWeightedMoment

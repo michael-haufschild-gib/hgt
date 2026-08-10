@@ -87,10 +87,23 @@ What else exists and must not be rebuilt:
      (`deningerMertensM_invSq_summable : ∑_N |M(N)|/N² < ∞`).  Condensation is essential: no power
      comparison works, since `exp(-c(log N)^{1/3})` dominates every `N^{-ε}`.  The condensed series
      `∑_k exp(-c k^{1/3})` is elementary — one term of the exponential series plus `x^{7/3} ≥ x²`.
-   - `(11)`--`(12)` the all-moment `L¹` domain and zero mass — both arithmetic inputs are now
-     built; what is left is the analytic step, discrete Abel summation
-     `f_h(x) = -∑_n M(n)(H_h((n+1)x) - H_h(nx))` plus a decreasing majorant `G` for `H_h'`, so that
-     `∫_0^∞ x G(nx) dx = n^{-2} ∫ y G(y) dy` feeds `(9)`.  `(15)` needs `1/ζ(σ) → 0` as `σ ↓ 1`.
+   - `(10)` Abel summation — **DONE**, `RHTower/DeningerMobiusAbel`
+     (`deningerMobius_abel`: the partial sums of `∑_n M(n)(H_h((n+1)x) - H_h(nx))` converge to
+     `-f_h(x)`).  `Finset.sum_range_by_parts` plus a vanishing boundary term.
+   - the weighted derivative — **DONE**, `RHTower/DeningerLogPullDeriv`.  `x H_h'(x) = h'(log x)`
+     exactly, so the chain-rule factor cancels the weight and `x H_h'` inherits the pullback's own
+     two-sided decay with no loss.
+   - the Abel coefficient — **DONE**, `RHTower/DeningerAbelCoefficient`.
+     `deningerAbelWindow_volume` identifies the dilation window `{x : ix ≤ u ≤ (i+1)x}` as
+     `Icc (u/(i+1)) (u/i)`, `deningerAbelWindow_length` gives its length `u/(i(i+1))`, and
+     `deningerAbelCoefficient_summable` is `∑_i |M(i)|/(i(i+1)) < ∞` by comparison with `(9)`.
+   - the first weighted moment — **DONE**, `RHTower/DeningerWeightedMoment`
+     (`∫_0^∞ u|H_h'(u)|du < ∞`): bounded on `Ioc 0 1`, dominated by `u^{-2}` on `Ioi 1`.
+   - `(11)`--`(12)` — one measure-theoretic step left.  Do **not** chase a decreasing majorant for
+     `H_h'`; the clean route is Tonelli on the region: `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]` has
+     length `u/(i(i+1))`, so `∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx ≤ (1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`,
+     and summing against `|M(i)|` lands exactly on the already-proved `(9)`.
+     `(15)` needs `1/ζ(σ) → 0` as `σ ↓ 1`.
    - `(5)` the exact kernel.  The hard one: Fourier-inversion bootstrap `(23)`--`(24)` then Poisson
      summation `(26)`.  Do it last.
 7. `deninger-euler-gamma-mobius-connection-transgression` — all-prime Euler connection, strict
@@ -124,6 +137,19 @@ What else exists and must not be rebuilt:
 
 ## Log
 
+- 2026-08-10 — Built the first weighted moment (`RHTower/DeningerWeightedMoment`).  Every
+  ingredient of `(11)` is now proved; the only remaining step is the Tonelli assembly that turns
+  `∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx` into `(1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`.
+- 2026-08-10 — Built the Abel coefficient layer (`RHTower/DeningerAbelCoefficient`): the window
+  identification, its length, and the summability of `|M(i)|/(i(i+1))`.  Everything `(11)` needs
+  except the Tonelli assembly is now in place.
+- 2026-08-10 — Built the weighted-derivative layer (`RHTower/DeningerLogPullDeriv`).  The reason
+  the first weighted moment costs nothing: `x H_h'(x) = h'(log x)` on the nose, so the chain-rule
+  `1/x` cancels the weight and no exponent is spent.
+- 2026-08-10 — Built `(10)` (`RHTower/DeningerMobiusAbel`).  While setting up `(11)` the right
+  route became clear and it is *not* the one the card's continuous proof suggests: instead of a
+  decreasing majorant for `H_h'`, use Tonelli on `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]`, whose
+  length is `u/(i(i+1))`.  That produces `1/(i(i+1))` directly and lands on `(9)`.
 - 2026-08-10 — Built `(9)` in discrete form (`RHTower/DeningerMertensInvSquare`).  Worth
   remembering *why* condensation: `∑_N exp(-c(log N)^{1/3})/N` fails every power comparison because
   `exp(-c(log N)^{1/3})` dominates `N^{-ε}` for every `ε`; only the dyadic grouping separates it,

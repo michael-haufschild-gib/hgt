@@ -1267,40 +1267,84 @@ The log-density is certified as well:
 `llr_classLaw_tiltConv` is exactly the card's `log ζ(σ) − σ·log|soc A|`, once `densityConst σ` is
 identified with `ζ(σ)` through `zetaPartition_temperatureConv`.
 
-**What is left of Theorem 8.1, precisely.**  Two steps, in this order.
+### Theorem 8.1 is fully certified
 
-1. *Integrability of the log-density.*  `llr_classLaw_tiltConv` is stated almost everywhere with
-   respect to `classLaw (temperatureConv σ)`; `classLaw_absolutelyContinuous` transfers it to the
-   tilt.  The carrier question is settled by working on the class space throughout:
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/RelativeEntropy.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
 
-   | Clause | Lean |
-   |---|---|
-   | the lower integral against the class law | `lintegral_classLaw` |
-   | **integrability criterion: summability against the class masses** | **`integrable_classLaw`** |
+**Finiteness of the two means.**  The socle and order expectations are finite at every `σ > 1`;
+this is the only analytic input the Kullback–Leibler evaluation needs, and it is obtained from the
+prime ladder bounds alone.
 
-   `integrable_classLaw` reduces `Integrable f (classLaw θ)` to
-   `∑' A, ‖f A‖·classMass θ A < ∞`.  Tracing that condition for `f A = log |soc A|` shows the two
-   routes coincide rather than one avoiding the other: expanding
-   `log|soc A| = ∑_{(p,j)} A(p,j)·log p` and exchanging the sums (unconditional in `ℝ≥0∞`) leaves
-   `∑'_A A(m)·classMass θ A`, the mean occupation of mode `m` **on the class space** — which is the
-   same content as the pushforward identity `classLaw = gasMeasure.map (class map)`.  So exactly one
-   of the following has to be built, and either closes the step:
+| Clause | Lean |
+|---|---|
+| `∑_j m_j(q) ≤ q/(1−q)²` summed over primes | `summable_primes_log_mul_tsum_modeMean` |
+| **the socle mean in real form** | **`socleExpectation_temperature_eq_ofReal`** |
+| socle mean of the gas and of the tilt are finite | `socleExpectation_temperature_ne_top`, `socleExpectation_tilt_ne_top` |
+| `∑_j (j+1)·m_j(q) ≤ q/(1−q)³` | `summable_depthMean`, **`tsum_depthMean_le`** |
+| `q/(1−q)³ ≤ 8q` and its prime sum | `div_one_sub_cube_le`, `summable_primes_log_mul_depthLadderBound` |
+| **the order mean in real form, and its finiteness** | **`orderExpectation_temperature_eq_ofReal`**, `orderExpectation_temperature_ne_top` |
+| the von Mangoldt residue in `ℝ≥0∞` form | `residue_eq_ofReal_vonMangoldt` |
 
-   * the pushforward identity, after which `lintegral_gasMeasure_eval` transfers the mode means; or
-   * the class-space mode mean `∑'_A A(m)·classMass θ A` directly, from
-     `classMass_eq_ennNormalizer_mul_twoObservableWeight` and the product structure of the weight.
+**The two observables on the class space.**  Both are mode-additive, so both transport along the
+class map with no integrability side condition — the Bochner integral is evaluated through
+`integral_eq_lintegral_of_nonneg_ae`, which needs only nonnegativity.
 
-   A first attempt at the pushforward route located its real obligation: the class map
-   `classOf k = if (support k).Finite then Finsupp.ofSupportFinite k _ else 0` is **not**
-   automatically measurable.  The class space carries the discrete `⊤` σ-algebra, but the
-   configuration space carries the *product* σ-algebra, so measurability has to be proved, not
-   assumed — concretely: `{k | (Function.support k).Finite}` is measurable (a countable union of
-   cylinder conditions), and on it `classOf ⁻¹' {A} = {A.configuration}`, a measurable singleton of
-   the product space.  Both facts are available; they simply have to be written.  The second route
-   avoids measurability entirely and may be the cheaper one.
+| Clause | Lean |
+|---|---|
+| `log|A| = ∑ (depth m)·A(m)·log p` | `log_order`, `log_order_classOf`, `ofReal_logOrder_eq_tsum` |
+| the order expectation as a mode-additive integral | `orderExpectation`, **`orderExpectation_eq`** |
+| **`∫⁻ log|soc A| = socleExpectation`, `∫⁻ log|A| = orderExpectation`** | **`lintegral_classLaw_logSocle`**, **`lintegral_classLaw_logOrder`** |
+| the Bochner means | `integral_classLaw_logSocle`, `integral_classLaw_logOrder` |
+| integrability from finiteness | `integrable_classLaw_logSocle`, `integrable_classLaw_logOrder` |
 
-   With either in hand, `tsum_modeMean_le` and `summable_primes_log_mul_ladderBound` give the bound.
-2. *The two divergences.*  `klDiv_of_ac_of_integrable` applied in both directions, then the sum
-   `D(P*‖P) + D(P‖P*) = σ·(E_P[log|soc|] − E_{P*}[log|soc|])`, which
-   `socleExpectation_eq_tilt_add_residue` and `ofReal_tsum_primes_modeMean_zero` already evaluate as
-   `σ·(−ζ′/ζ)(σ)`.
+**(GAS.12).**  The reverse density is built exactly like the forward one, so both `llr`'s are
+available and both divergences are finite.
+
+| Clause | Lean |
+|---|---|
+| the untilted law as a density against the tilt | `classLaw_temperatureConv_eq_withDensity`, `rnDeriv_classLaw_temperatureConv` |
+| the reverse log-density `−log C + σ·log|soc A|` | `llr_classLaw_temperatureConv` |
+| mutual absolute continuity | `ac_tilt_temperature`, `ac_temperature_tilt` |
+| integrability of both log-densities | `integrable_llr_tilt`, `integrable_llr_temperature` |
+| the two mean log-densities | `integral_llr_tilt`, `integral_llr_temperature` |
+| the two divergences, and their finiteness | `klDiv_tilt`, `klDiv_temperature`, `klDiv_tilt_ne_top`, `klDiv_temperature_ne_top` |
+| the two socle means differ by the von Mangoldt mass | **`socleExpectation_toReal_sub`** |
+| **`D(P*‖P) + D(P‖P*) = σ·∑ Λ(n)n^{−σ}`** | **`klDiv_symmetrised_eq_vonMangoldt`** |
+| the same in real and in zeta form | `klDiv_symmetrised_toReal`, **`klDiv_symmetrised_eq_zeta`** |
+
+`klDiv_symmetrised_eq_zeta` is the boxed identity of the card:
+`D(P*‖P) + D(P‖P*) = σ·(−ζ′/ζ)(σ)`.  Nonnegativity of each summand is taken from mathlib's
+`integral_llr_add_sub_measure_univ_nonneg`, which is what makes the `ℝ≥0∞` addition split.
+
+**(GAS.13).**  Both ladders are obtained from one observation: raising the depth by `j` is the same
+as raising the temperature to `(j+1)σ`, so every depth level is a *shifted copy of the same
+residue*.
+
+| Clause | Lean |
+|---|---|
+| the temperature at depth `j` | `depthSigma` |
+| `m_j(p^{−σ}) = m_0(p^{−(j+1)σ})` | **`modeMean_eqgQ_depth`** |
+| **`E_σ[log|soc A|] = ∑_{j≥1} (−ζ′/ζ)(jσ)`** | **`socleExpectation_temperature_depthLadder`** |
+| **`E_σ[log|A|] = ∑_{j≥1} j·(−ζ′/ζ)(jσ)`** | **`orderExpectation_temperature_depthLadder`** |
+
+**(GAS.14).**  The temperature deformation multiplies the Gibbs weight by `|A|^{−u}`, so the whole
+(GAS.12) argument runs again with the order observable in place of the socle observable.
+
+| Clause | Lean |
+|---|---|
+| the deformed temperature and its weight | `sigmaShift`, **`twoObservableWeight_shift`** |
+| the deformation as a density, both ways | `classLaw_shift_eq_withDensity`, `classLaw_temperatureConv_eq_withDensity_shift` |
+| the two Radon–Nikodym derivatives and log-densities | `rnDeriv_classLaw_shift`, `rnDeriv_classLaw_temperatureConv_shift`, `llr_classLaw_shift`, `llr_classLaw_temperatureConv_shift` |
+| integrability and the two mean log-densities | `integrable_llr_shift`, `integrable_llr_temperature_shift`, `integral_llr_shift`, `integral_llr_temperature_shift` |
+| the two divergences | `klDiv_shift`, `klDiv_temperature_shift` |
+| **the deformation lowers the order mean** | **`orderExpectation_shift_le`** |
+| **`D(P_{σ+u}‖P_σ) + D(P_σ‖P_{σ+u}) = u·(E_σ[log|A|] − E_{σ+u}[log|A|]) ≥ 0`** | **`klDiv_symmetrised_temperature_shift`** |
+
+Combining `klDiv_symmetrised_temperature_shift` with
+`orderExpectation_temperature_depthLadder` at `σ` and at `σ+u` gives the card's
+`u·∑_{j≥1} j[(−ζ′/ζ)(jσ) − (−ζ′/ζ)(j(σ+u))] ≥ 0`.
+
+Axiom audit for every declaration above: `propext`, `Classical.choice`, `Quot.sound` only; the
+module builds green (8 682 jobs).  **Theorem 8.1, and with it (GAS.12), (GAS.13) and (GAS.14), is
+closed.**
