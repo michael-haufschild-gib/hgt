@@ -1,6 +1,6 @@
 import Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative
 import Mathlib.Analysis.Complex.Basic
-import Mathlib.LinearAlgebra.FiniteDimensional.Basic
+import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 /-!
 # Discreteness of the nonzero spectrum of a general compact operator
@@ -74,19 +74,25 @@ theorem finite_setOf_hasEigenvalue_norm_ge_general {T : E →L[ℂ] E}
     simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
     exact ne_of_lt i.isLt
   have hT_mem (n : ℕ) {x : E} (hx : x ∈ V n) : T x ∈ V n := by
-    apply Set.MapsTo.submoduleSpan (f := (T : E →ₗ[ℂ] E)) ?_ hx
-    rintro _ ⟨i, rfl⟩
-    rw [mem_eigenspace_iff.mp (hweig (i : ℕ)).1]
-    exact Submodule.smul_mem _ _
-      (Submodule.subset_span (R := ℂ) (show w (i : ℕ) ∈
-        Set.range (fun j : Fin n ↦ w (j : ℕ)) from ⟨i, rfl⟩))
+    induction hx using Submodule.span_induction with
+    | mem x hx =>
+        rcases hx with ⟨i, rfl⟩
+        have heq : T (w (i : ℕ)) = lam (i : ℕ) • w (i : ℕ) := by
+          simpa using mem_eigenspace_iff.mp (hweig (i : ℕ)).1
+        rw [heq]
+        exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    | zero => simp
+    | add x y hx hy ihx ihy => simpa using Submodule.add_mem (V n) ihx ihy
+    | smul c x hx ih => simpa [map_smul] using Submodule.smul_mem (V n) c ih
   have hdefect (n : ℕ) {x : E} (hx : x ∈ V (n + 1)) :
       T x - lam n • x ∈ V n := by
     induction hx using Submodule.span_induction with
     | mem x hx =>
         rcases hx with ⟨i, rfl⟩
         change T (w (i : ℕ)) - lam n • w (i : ℕ) ∈ V n
-        rw [mem_eigenspace_iff.mp (hweig (i : ℕ)).1]
+        have heq : T (w (i : ℕ)) = lam (i : ℕ) • w (i : ℕ) := by
+          simpa using mem_eigenspace_iff.mp (hweig (i : ℕ)).1
+        rw [heq]
         by_cases hi : (i : ℕ) = n
         · subst hi
           simp

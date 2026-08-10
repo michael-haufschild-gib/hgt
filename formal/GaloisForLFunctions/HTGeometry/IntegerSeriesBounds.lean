@@ -72,4 +72,45 @@ theorem exists_finset_tsum_compl_intQuadWeight_le {C : ℝ≥0∞} (hC : C ≠ �
   obtain ⟨S, hS⟩ := (ENNReal.tendsto_nhds_zero.mp htail ε hε).exists
   exact ⟨S, hS⟩
 
+/-! ## Escaping bands -/
+
+/-- A symmetric band whose radius grows exhausts every finite set. -/
+theorem tendsto_finsetIcc_atTop {b : ℕ → ℕ} (hb : Tendsto b atTop atTop) :
+    Tendsto (fun I : ℕ => Finset.Icc (-(b I : ℤ)) (b I : ℤ)) atTop atTop := by
+  rw [tendsto_atTop]
+  intro S
+  obtain ⟨M, hM⟩ := (S.image Int.natAbs).exists_le
+  have hMle : ∀ x ∈ S, x.natAbs ≤ M := by
+    intro x hx
+    exact hM _ (Finset.mem_image_of_mem _ hx)
+  filter_upwards [hb.eventually_ge_atTop M] with I hI
+  intro x hx
+  have hxabs : x.natAbs ≤ b I := le_trans (hMle x hx) hI
+  have hb' : (x.natAbs : ℤ) ≤ (b I : ℤ) := by exact_mod_cast hxabs
+  rw [Finset.mem_Icc]
+  omega
+
+/-- **A band escaping to infinity carries vanishing weight.** -/
+theorem tendsto_tsum_far_of_ne_top {f : ℤ → ℝ≥0∞} (hf : (∑' j, f j) ≠ ⊤)
+    {b : ℕ → ℕ} (hb : Tendsto b atTop atTop) :
+    Tendsto (fun I : ℕ => ∑' j : ℤ, if (b I : ℤ) < |j| then f j else 0) atTop (nhds 0) := by
+  have hcompl := ENNReal.tendsto_tsum_compl_atTop_zero hf
+  have hcomp := hcompl.comp (tendsto_finsetIcc_atTop hb)
+  refine hcomp.congr ?_
+  intro I
+  simp only [Function.comp_def]
+  have hset : ∑' (x : {x : ℤ // x ∉ Finset.Icc (-(b I : ℤ)) ((b I : ℤ))}), f (x : ℤ)
+      = ∑' j : ℤ,
+        Set.indicator (((Finset.Icc (-(b I : ℤ)) ((b I : ℤ)) : Finset ℤ) : Set ℤ)ᶜ) f j :=
+    tsum_subtype _ f
+  rw [hset]
+  refine tsum_congr fun j => ?_
+  by_cases hj : (b I : ℤ) < |j|
+  · rw [if_pos hj, Set.indicator_of_mem]
+    simp only [Set.mem_compl_iff, Finset.coe_Icc, Set.mem_Icc, not_and_or]
+    rcases abs_cases j with ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> rw [h1] at hj <;> omega
+  · rw [if_neg hj, Set.indicator_of_notMem]
+    simp only [Set.mem_compl_iff, Finset.coe_Icc, Set.mem_Icc, not_not]
+    rcases abs_cases j with ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> rw [h1] at hj <;> omega
+
 end GaloisForLFunctions

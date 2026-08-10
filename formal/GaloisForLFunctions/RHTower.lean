@@ -4158,6 +4158,7 @@ import GaloisForLFunctions.RHTower.Sieve.FibreToLogWindow
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparated
 import GaloisForLFunctions.RHTower.Sieve.SeparatedCount
 import GaloisForLFunctions.RHTower.Sieve.FibreMeanSquarePairs
+import GaloisForLFunctions.RHTower.Sieve.FibreKernelBand
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6731,6 +6732,7 @@ import GaloisForLFunctions.RHTower.Sieve.FibreToLogWindow
 import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparated
 import GaloisForLFunctions.RHTower.Sieve.SeparatedCount
 import GaloisForLFunctions.RHTower.Sieve.FibreMeanSquarePairs
+import GaloisForLFunctions.RHTower.Sieve.FibreKernelBand
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6741,3 +6743,7 @@ import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightMellin
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightPower
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightCartan
 import GaloisForLFunctions.RHTower.DeningerWordHeight
+import GaloisForLFunctions.RHTower.DeningerBarWord
+import GaloisForLFunctions.RHTower.DeningerBarInsert
+import GaloisForLFunctions.RHTower.DeningerBarSlice
+import GaloisForLFunctions.RHTower.DeningerBarDifferential

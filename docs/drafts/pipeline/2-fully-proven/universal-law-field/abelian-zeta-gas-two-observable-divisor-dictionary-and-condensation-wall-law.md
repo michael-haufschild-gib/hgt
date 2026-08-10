@@ -844,3 +844,34 @@ waits on the KMS layer of Theorem 4.1.  The state and partition clauses above ar
 the rest of the card actually uses: the wall ladder `{1/g}` of Theorem 5.1 is the `δ`-orbit of the
 depth-one wall `σ = 1`, which is now `depthDilation_comp` together with
 `AbelianZetaParameters.temperature_finite_depthTail_eq_one`.
+
+### Theorem 8.1 (GAS.12) — the mode-mean ladder telescopes to the von Mangoldt mass
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/ModeMean.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The card's identity does not need any differentiation of `Z`.  Writing the symmetrised cost as
+`σ·(E_{P_σ}[log|soc A|] − E_{P*}[log|soc A|])` and expanding `log|soc A| = ∑_{(p,j)} A(p,j)·log p`,
+each mode contributes its geometric mean `r/(1−r)`; the unit tilt shifts the depth by one, so per
+prime the two ladders differ by exactly their depth-one term, which is the local von Mangoldt
+factor.
+
+| Clause | Lean |
+|---|---|
+| the geometric mode mean | `modeMean`, `modeMean_nonneg`, `modeMean_le`, `summable_modeMean` |
+| **the ladder telescopes** | **`tsum_modeMean_sub_shift`** |
+| the depth-one residue is `∑_{a≥1} qᵃ` | `modeMean_zero_eq_tsum` |
+| `(p^{−σ})^{a+1} = p^{−(a+1)σ}` | `eqgQ_pow_succ` |
+| **(GAS.12), local form: the per-prime difference is `∑_{a≥1} p^{−aσ}`** | **`tsum_modeMean_sub_shift_prime`** |
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 665 jobs.
+
+**What remains for (GAS.12).**  Two independent pieces, neither of them the identity above:
+
+1. *The gas-expectation layer*: that `E[log|soc A|] = ∑_{(p,j)} E[G_{p,j}]·log p` for the product of
+   the geometric mode laws, and that the two relative entropies are finite.  This is the same
+   product-measure bookkeeping that the global form of (GAS.5) needs.
+2. *The prime-power reindexing*: `∑_p log p · ∑_{a≥1} p^{−aσ} = ∑_n Λ(n)n^{−σ}`.  The right-hand
+   side is then `−ζ′(σ)/ζ(σ)` by mathlib's
+   `ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div`, so the `−ζ′/ζ` half of the
+   boxed identity is already available; only the Euler-form reindexing has to be built.

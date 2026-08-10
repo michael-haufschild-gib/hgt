@@ -656,6 +656,44 @@ theorem bijective_of_isometry_of_generates (φ : A →ₐ[𝕜] B) (hiso : Isome
 
 end Comparison
 
+/-! ## Coordinatewise approximation in a coordinate tower -/
+
+section Approximation
+
+variable {A : ℕ → Type*} [∀ n, SeminormedAddCommGroup (A n)]
+
+/-- **Coordinatewise approximation reaches a closed set.**  If every finite set of coordinates of
+`a` can be approximated simultaneously from a closed set, then `a` belongs to it.
+
+This is the topological core of a generation hypothesis for a coordinate tower: generating means
+approximating in finitely many stage seminorms at once, and the projective topology then delivers
+the limit.  Note the algebraic analogue is false — coordinatewise surjectivity alone does not force
+equality — so the closure really is doing work. -/
+theorem mem_of_coordinatewise_approx {C : Set (∀ n, A n)} (hC : IsClosed C) {a : ∀ n, A n}
+    (h : ∀ n : ℕ, ∀ ε : ℝ, 0 < ε → ∃ c ∈ C, ∀ k ≤ n, ‖c k - a k‖ < ε) : a ∈ C := by
+  choose c hcC hcapp using fun m : ℕ => h m (1 / (m + 1)) (by positivity)
+  have htend : Filter.Tendsto c Filter.atTop (nhds a) := by
+    rw [tendsto_pi_nhds]
+    intro k
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨N, hN⟩ := exists_nat_gt (1 / ε)
+    refine ⟨max k N, fun m hm => ?_⟩
+    have hmk : k ≤ m := le_trans (le_max_left _ _) hm
+    have hmN : N ≤ m := le_trans (le_max_right _ _) hm
+    have happ := hcapp m k hmk
+    have hlt : (1 : ℝ) / (m + 1) < ε := by
+      rw [div_lt_iff₀ (by positivity)]
+      have hNm : (N : ℝ) ≤ (m : ℝ) := Nat.cast_le.mpr hmN
+      have hinv : 1 / ε < (m : ℝ) + 1 := by linarith
+      rw [div_lt_iff₀ hε] at hinv
+      linarith
+    rw [dist_eq_norm]
+    linarith
+  exact hC.mem_of_tendsto htend (Filter.Eventually.of_forall hcC)
+
+end Approximation
+
 end ShilovLocal
 
 end GaloisForLFunctions.HTGeometry

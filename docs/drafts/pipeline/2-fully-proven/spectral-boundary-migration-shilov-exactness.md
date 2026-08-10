@@ -1427,7 +1427,17 @@ together with generation — and not the algebraic comparison, nor minimality, n
 bijective.  Mathlib already proves that an injective `*`-homomorphism of `C^*`-algebras is isometric
 (`NonUnitalStarAlgHom.isometry`), and `Θ` is injective by
 `mem_localIdeal_iff_mkQ_eq_zero`.  So for `(12f)` **only generation remains to be supplied**; every
-other step is formalized here or available in mathlib.  Note the injective case is all that is
+other step is formalized here or available in mathlib.
+
+`mem_of_coordinatewise_approx` supplies the topological core of that last step: if every finite set
+of coordinates of `a` can be approximated simultaneously from a closed set, then `a` lies in it.
+Generation for a coordinate tower means exactly approximation in finitely many stage seminorms at
+once, and the projective topology then delivers the limit.  The closure is doing real work here —
+the algebraic analogue is **false**: a submodule of the coherent sequences can surject onto every
+coordinate without being everything (take `A n = 𝕜^n` with the truncations, and the
+finitely-supported coherent sequences).  So generation cannot be reduced to a coordinatewise
+algebraic condition, which is why the card's phrase "lifts generator by generator and controls all
+earlier seminorms" is the right formulation.  Note the injective case is all that is
 needed, which matters because mathlib has no `C^*`-quotient and hence no closed-range theorem for
 general `*`-homomorphisms.
 

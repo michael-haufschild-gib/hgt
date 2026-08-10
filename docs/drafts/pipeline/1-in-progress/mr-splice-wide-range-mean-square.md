@@ -3229,3 +3229,30 @@ have been viable but not simpler.
 
 The kernel `#{a ∈ outerBlock : m, n ∈ innerFibre a}` — an interval count in `a` — and then the
 bilinear estimate for `μ`.
+
+## 2026-08-10 the fibre kernel: an interval, vanishing off a band
+
+`Sieve/FibreKernelBand.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9030 jobs).
+
+```text
+fibre_kernel_subset_Icc :  1 ≤ m, 1 ≤ n  →
+  { a ∈ outerBlock : m, n ∈ innerFibre a } ⊆ [ ⌈x/min(m,n)⌉, ⌊(x + h√x)/max(m,n)⌋ ]
+
+fibre_kernel_eq_empty :  (x + h√x)·min(m,n) < x·max(m,n)  →
+  { a ∈ outerBlock : m, n ∈ innerFibre a } = ∅
+```
+
+An `a` serving both `m` and `n` satisfies `x ≤ a·min(m,n)` and `a·max(m,n) ≤ x + h√x` — two
+one-sided constraints, so the admissible `a` form an interval; and there are none unless
+`max/min ≤ 1 + h/√x`.
+
+That last condition is `|log m − log n| ≤ fibreWidth x h`: the same near-diagonal band as
+`overlap_card_le`'s `|m − n| < ℓ`, now derived directly in the outer variable with no window
+machinery.  The bilinear form of `sum_fibreSq_eq_count` is therefore supported on a multiplicative
+band of width `1 + h/√x` around the diagonal, which is the structural fact the estimate needs.
+
+### What is left
+
+The kernel's size on the band — `card ≤ (x + h√x)/max(m,n) − x/min(m,n) + 1` from the containment —
+and then the bilinear estimate for `μ`.

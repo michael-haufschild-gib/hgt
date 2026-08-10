@@ -66,7 +66,7 @@ theorem deningerBarSliceR_summable {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : Denin
 
 theorem deningerBarSliceR_nonneg (k : ℕ) {R : ℝ} (hR : 0 ≤ R) (c : DeningerBarWord → ℂ)
     (r : ℕ) : 0 ≤ deningerBarSliceR k R c r :=
-  tsum_nonneg fun f => mul_nonneg (deningerBarWeightR_nonneg k hR _) (norm_nonneg _)
+  tsum_nonneg fun _ => mul_nonneg (deningerBarWeightR_nonneg k hR _) (norm_nonneg _)
 
 theorem deningerBarSeminormR_eq_tsum_slice {k : ℕ} {R : ℝ} (hR : 1 ≤ R)
     (c : DeningerBarKothe) :
