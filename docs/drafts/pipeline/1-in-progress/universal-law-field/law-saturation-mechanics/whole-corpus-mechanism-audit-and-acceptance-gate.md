@@ -7,7 +7,7 @@
   which proposed unifications are still independent annotations?
 - **Status:** [MECHANISM FIRST] [ROUTE LABELS EXCLUDED] [LEAN EVIDENCE AUDITED]
   [ONE HIGHER THEOREM CLOSED] [THREE-FORMATION GATE PAPER-CLOSED]
-  [INDEPENDENT VALIDATION + LEAN GATES OPEN] [NOT RH]
+  [SECOND SOURCE VALIDATION CLOSED] [CAPSTONE LEAN + COFINAL GATES OPEN] [NOT RH]
 
 ## 1. Law zero: independent coexistence predicts nothing
 
@@ -168,16 +168,22 @@ a positive Esscher tilt with strict Jeffreys cost, a recurrent phase response wi
 lift, a zeta-divisor transgression, and a hypertranscendental germ.  The positive cost is withheld:
 it is derived after the exchange and was not used to define the transformations.
 
-This closes conditions 1--4 on paper, not the field gate.  Condition 5 still requires a second
-literal source or a genuinely independent corpus-organ prediction not inherited from the same gas;
-condition 6 requires Lean certification of the new coupled theorem and sharp marking no-go.
+This closes conditions 1--4 on paper.  ULF-RLM-36 now closes the second-source mechanism test:
+pointed irrational elliptic gamma has commuting endpoint translations and trivial pure Koszul
+defect but a nonzero mixed coefficient/Dixmier--Douady transgression.  This independently confirms
+the predicted need to inspect coefficient/admission coherence after endpoint flatness and
+falsifies first-commutator universality.
+
+The field gate remains open.  Condition 6 still requires Lean certification of the gas exchange,
+the coupled cross-source capstone, and its sharp marking boundary.  The stronger field programme
+also requires one cofinal source-generated history with derived topology and work, not only finite
+or analytic genesis cells.
 
 ## 5. Immediate research programme
 
 1. Use the certified general formation-exchange/joint-repair theorem as the two-doctrine baseline.
-2. Leave strict closure mechanics: its Lean-certified pairwise-commuting triple theorem forbids a
-   schedule defect. Search for a finite weak-exchange, partial-admission, or extension-valued
-   three-formation model with a genuine critical-triple residue.
+2. Build the graded genesis filtration forced by the gas/elliptic noncollapse: endpoint exchange,
+   contextual residual, coefficient/admission transgression, mixed descent, cofinal formation.
 3. Prove or kill a charge-transport theorem for noncommuting repair schedules.
 4. Construct one source-generated differential formation and test whether its finite-generation
    horizon agrees with certified hypertranscendence in any nontrivial chart.
@@ -192,3 +198,6 @@ condition 6 requires Lean certification of the new coupled theorem and sharp mar
   Temperature change and canonical socle tilt generate pure fugacity intervention; four response
   charts and a strict information cost follow.  Independent-source validation and Lean closure
   remain open, so field acceptance is not claimed.
+- 2026-08-10 — elliptic gamma closed independent-source validation at a different genesis grade:
+  pure endpoint exchange is flat, mixed coefficient descent is not.  First-commutator universality
+  retired; cross-source Lean capstone and cofinal dynamics remain open.

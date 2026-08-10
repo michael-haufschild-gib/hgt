@@ -5,7 +5,7 @@
 - **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
 - **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
   the laws by which consequences, failures, and conservation requirements revise the rulebook.
-- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [THIRTY-THREE LAWS LEAN-CALIBRATED]
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [THIRTY-SIX LAWS CALIBRATED]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
 
 ## 1. Founding shift
@@ -555,6 +555,20 @@ observer remains unchanged. It also proves a boundary. Formation rank is indepen
 forcing the repair to be idempotent erases causal depth. No selection, coercivity, positivity, or
 carrier-existence law follows from this calibration.
 
+### RLM Law XXXVI -- source genesis is graded beyond endpoint exchange
+
+Endpoint commutators do not classify law birth.  The abelian-zeta-gas source has noncommuting
+temperature and canonical socle formations whose exchange generates pure fugacity.  The pointed
+irrational elliptic-gamma source has commuting endpoint translations and trivial pure two-shift
+Koszul defect, yet its marked group--Cech lift has a nonzero coefficient/Dixmier--Douady
+transgression.
+
+Hence a complete mechanics must inspect, separately and in order, endpoint exchange, contextual
+exchange, coefficient/admission lift, mixed descent, and cofinal formation.  The first nonzero
+entry is the source's genesis grade.  Observation or completion may erase one grade without
+making the source history flat.  ULF-RLM-36 proves the two-source noncollapse and the exact
+observer prediction: every pure-translation observer misses the elliptic mixed class.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -610,6 +624,7 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
 | ULF-DDE-1 | repair torsor, shear no-selector, and manufactured least-work no-go | certified |
+| ULF-RLM-36 | two-source graded genesis: gas endpoint exchange versus elliptic mixed transgression | paper-closed; Lean parents certified; capstone open |
 
 These theorems use finite sets, free law words, integer central extensions, additive cochains, and
 admitted sequence primitives as structurally different laboratories. No RH endpoint enters their
@@ -811,3 +826,6 @@ Retire RLM as theatre if:
   sequential repair produce two strict formation layers while ordinary closure is stationary;
   first-layer outputs form the complete witness for the second repair. ULF-ECMPL-TOPO-1
   Lean-certifies the actual topology and universal nonconvergence barrier.
+- 2026-08-10 -- added graded source genesis as Law XXXVI: abelian gas and pointed elliptic gamma
+  prove that endpoint exchange and mixed coefficient transgression are noncollapsible formation
+  modes; first-commutator universality is retired.

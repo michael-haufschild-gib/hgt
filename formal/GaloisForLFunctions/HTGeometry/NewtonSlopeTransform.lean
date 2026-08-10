@@ -169,15 +169,17 @@ theorem isRoot_map_expand_of_isRoot_newtonTransform {f : (PowerSeries K)[X]}
 theorem expand_shiftPow (N : ℕ) (hN : N ≠ 0) (k : ℕ) (φ : PowerSeries K) :
     PowerSeries.expand N hN (shiftPow k φ) = shiftPow (N * k) (PowerSeries.expand N hN φ) := by
   ext n
-  rw [PowerSeries.coeff_expand, coeff_shiftPow, PowerSeries.coeff_expand]
+  rw [PowerSeries.coeff_expand, coeff_shiftPow, coeff_shiftPow, PowerSeries.coeff_expand]
   by_cases hdvd : N ∣ n
   · obtain ⟨m, rfl⟩ := hdvd
-    rw [if_pos ⟨m, rfl⟩, coeff_shiftPow, if_pos ⟨m + k, by ring⟩,
-      Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hN),
-      Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hN)]
+    have h1 : N ∣ N * m + N * k := ⟨m + k, by ring⟩
+    rw [if_pos ⟨m, rfl⟩, if_pos h1, Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hN)]
+    congr 1
+    rw [← Nat.mul_add, Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hN)]
   · have hdvd' : ¬ N ∣ (n + N * k) := by
       intro hcon
-      exact hdvd ((Nat.dvd_add_right ⟨k, rfl⟩).mp (by rwa [Nat.add_comm] at hcon))
+      have hk : N ∣ N * k := ⟨k, rfl⟩
+      exact hdvd ((Nat.dvd_add_iff_left hk).mpr hcon)
     rw [if_neg hdvd, if_neg hdvd']
 
 /-- **A further expansion of the transform is again a transform.**  Substituting `s = u ^ N` in the

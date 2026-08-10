@@ -301,6 +301,59 @@ theorem closedHyperplaneInverse_adjoint_apply_of_eq_adjoint
         ⟨(B.adjoint y : H), hmem⟩ := Subtype.ext hkyH
   exact (congrArg (closedHyperplaneInverse K B).adjoint heq).trans happly
 
+/-! ## Natural adjoint squares -/
+
+/-- Natural domain of `T†T`: vectors in `T.domain` whose image lies in `T†.domain`. -/
+def LinearPMap.adjointSquareDomain (T : H →ₗ.[ℂ] H) : Submodule ℂ H :=
+  (T.adjoint.domain.comap T.toFun).map T.domain.subtype
+
+theorem LinearPMap.mem_adjointSquareDomain_iff (T : H →ₗ.[ℂ] H) (x : H) :
+    x ∈ LinearPMap.adjointSquareDomain T ↔
+      ∃ hx : x ∈ T.domain, T ⟨x, hx⟩ ∈ T.adjoint.domain := by
+  constructor
+  · rintro ⟨z, hz, rfl⟩
+    exact ⟨z.property, hz⟩
+  · rintro ⟨hx, hTx⟩
+    exact ⟨⟨x, hx⟩, hTx, rfl⟩
+
+theorem LinearPMap.adjointSquareDomain_le (T : H →ₗ.[ℂ] H) :
+    LinearPMap.adjointSquareDomain T ≤ T.domain := by
+  intro x hx
+  exact (LinearPMap.mem_adjointSquareDomain_iff T x).mp hx |>.choose
+
+def LinearPMap.adjointSquareToAdjointDomain (T : H →ₗ.[ℂ] H) :
+    LinearPMap.adjointSquareDomain T →ₗ[ℂ] T.adjoint.domain :=
+  (T.toFun.comp (Submodule.inclusion (LinearPMap.adjointSquareDomain_le T))).codRestrict
+    T.adjoint.domain (fun x => by
+      have hx := (LinearPMap.mem_adjointSquareDomain_iff T (x : H)).mp x.property
+      have heq : (Submodule.inclusion (LinearPMap.adjointSquareDomain_le T) x : T.domain) =
+          ⟨(x : H), hx.choose⟩ := Subtype.ext rfl
+      change T (Submodule.inclusion (LinearPMap.adjointSquareDomain_le T) x) ∈
+        T.adjoint.domain
+      rw [heq]
+      exact hx.choose_spec)
+
+/-- Actual partially defined operator `T†T`, with its natural composition domain. -/
+def LinearPMap.adjointSquare (T : H →ₗ.[ℂ] H) : H →ₗ.[ℂ] H where
+  domain := LinearPMap.adjointSquareDomain T
+  toFun := T.adjoint.toFun.comp (LinearPMap.adjointSquareToAdjointDomain T)
+
+theorem LinearPMap.adjointSquare_domain (T : H →ₗ.[ℂ] H) :
+    (LinearPMap.adjointSquare T).domain = LinearPMap.adjointSquareDomain T := rfl
+
+theorem LinearPMap.adjointSquare_apply (T : H →ₗ.[ℂ] H)
+    (x : (LinearPMap.adjointSquare T).domain) (hx : (x : H) ∈ T.domain)
+    (hTx : T ⟨(x : H), hx⟩ ∈ T.adjoint.domain) :
+    LinearPMap.adjointSquare T x = T.adjoint ⟨T ⟨(x : H), hx⟩, hTx⟩ := by
+  change T.adjoint
+      (LinearPMap.adjointSquareToAdjointDomain T ⟨(x : H), x.property⟩) = _
+  apply congrArg T.adjoint
+  apply Subtype.ext
+  change T (Submodule.inclusion (LinearPMap.adjointSquareDomain_le T)
+      ⟨(x : H), x.property⟩) = T ⟨(x : H), hx⟩
+  apply congrArg T
+  rfl
+
 theorem closedHyperplaneInverse_isFredholm
     (K : Submodule ℂ H) (hK : IsClosed (K : Set H))
     (B : K →L[ℂ] H) (hB : Function.Injective B)

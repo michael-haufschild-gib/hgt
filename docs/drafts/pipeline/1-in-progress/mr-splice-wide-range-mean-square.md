@@ -4821,3 +4821,61 @@ The diagonal is free; the entire remaining content of the card is that the off-d
 Any saving whatever over the mean-value theorem's `β ≍ M²` closes the route — this is the object of
 `RamareFactorization`, `DirichletLargeValues`, `DirichletSixthMoment` and the Halász bound of
 units 5–6.
+
+## Unit 25 — the route in a single theorem, and where every route lands
+
+`Sieve/MRFromOffDiagonal.lean`, `[propext, Classical.choice, Quot.sound]`:
+
+```lean
+MRBilinear_moebius_of_offDiagonal :
+  Tendsto hh atTop atTop → (∀ᶠ x, hh x ≤ √x) →
+    OffDiagonalSmall μ hh → MRBilinear μ hh
+```
+
+composing units 21–24 with `MRFibreReduction` and `PairFibreMeanSquare`.
+
+### Why the residue is the same object on every route
+
+Expanding the off-diagonal exactly (`integral_Icc_normSq_logPoly_eq`, in the corpus),
+
+```text
+∫_{|w| ≤ T} ‖F‖² = 2T·∑_n |a_n|²  +  β_T ,
+β_T = ∑_{n ≠ m} a_n ā_m · sin(2πT log(n/m)) / (π log(n/m)) .
+```
+
+For `T ≲ M` the near-diagonal pairs `m = n + k` with `k ≲ n/T` have `2πT log(1+k/n) ≲ 2π`, so
+`sin(·)/log(·) ≈ 2πT` there and
+
+```text
+β_T  ≈  2πT · ∑_{k ≤ M/T} C_k ,        C_k = ∑_{n ≤ M} μ(n)μ(n+k) .
+```
+
+Requiring `β_T = o(M²)` at `K := M/T` is therefore `∑_{k ≤ K} C_k = o(K·M)` — **averaged Chowla**.
+So the four inputs built on this card,
+
+| route | input | units |
+|---|---|---|
+| correlations, maximal form | `AveragedCorrelationSmall μ hh` | 8 |
+| correlations, uniform form | `UniformCorrelationSmall μ hh` | 9–10 |
+| Matomäki–Radziwiłł, additive windows | `MaximalWindowMeanSquare μ hh` | 12–17 (corpus route) |
+| Dirichlet polynomial, multiplicative windows | `OffDiagonalSmall μ hh` | 21–25 |
+
+are all the *same* mathematics, and unit 11's Fejér identity
+(`abs_sum_window_sq_sub_fejerCorr_le`) is the bridge that makes it visible: a short-interval mean
+square **is** a Fejér-weighted correlation sum, and the frequency mean square's off-diagonal is the
+same sum with the Fejér kernel replaced by `sin(2πT log(n/m))/(π log(n/m))`.
+
+### Final state of the card
+
+Closed, unconditionally, in Lean:
+
+```text
+Route E sign densities  ⟸  MRBilinear μ hh  ⟸  OffDiagonalSmall μ hh
+```
+
+with `OffDiagonalSmall μ hh` in its sharpest form: *the diagonal of the Dirichlet-polynomial mean
+square may sit at its baseline `α ≤ 50√x`; the height-free part must satisfy `β ≤ ε·M²`, `M ≍ √x`.*
+The mean value theorem gives `β ≍ M²`; any saving whatever closes the card.  That saving is
+averaged Chowla, equivalently the Matomäki–Radziwiłł short-interval theorem — a single named
+theorem, now reached by four independent formal routes and stated here in the most elementary of
+them.

@@ -51,20 +51,20 @@ theorem deningerExpSchwartz_iteratedDeriv_norm_le {h : 𝓢(ℝ, ℂ)} (hh : h �
 def deningerLogSeries (h : 𝓢(ℝ, ℂ)) (r : ℕ) (t : ℝ) : ℂ :=
   ∑' n : ℕ, ((moebius n : ℤ) : ℂ) * iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t)
 
-/-- **The uniform summable majorant of the translate series on `(-1, ∞)`.** -/
-theorem deningerLogTerm_unif_bound {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) (r : ℕ) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (n : ℕ) (t : ℝ), -1 < t →
+/-- **The uniform summable majorant of the translate series on every half line.** -/
+theorem deningerLogTerm_unif_bound {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) (r : ℕ)
+    (T : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (n : ℕ) (t : ℝ), T < t →
       ‖((moebius n : ℤ) : ℂ) * iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t)‖
         ≤ C * (1 / (n : ℝ) ^ 2) := by
   obtain ⟨C, hCnn, hC⟩ := deningerExpSchwartz_iteratedDeriv_norm_le hh 2 r
-  refine ⟨C * Real.exp 2, by positivity, fun n t ht => ?_⟩
+  refine ⟨C * Real.exp (-(2 * T)), by positivity, fun n t ht => ?_⟩
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · have hmu : ((moebius 0 : ℤ) : ℂ) = 0 := by simp
     rw [hmu, zero_mul, norm_zero]
     positivity
   · have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
     have hnpos : (0 : ℝ) < (n : ℝ) := lt_of_lt_of_le zero_lt_one hn1
-    have hlog : 0 ≤ Real.log (n : ℝ) := Real.log_nonneg hn1
     have hmu : ‖((moebius n : ℤ) : ℂ)‖ ≤ 1 := by
       rcases moebius_eq_or n with h1 | h1 | h1 <;> rw [h1] <;> norm_num
     rw [norm_mul]
@@ -73,20 +73,23 @@ theorem deningerLogTerm_unif_bound {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpS
       mul_le_mul_of_nonneg_right hmu (norm_nonneg _)
     rw [one_mul] at hstep
     refine le_trans hstep (le_trans (hC (Real.log n + t)) ?_)
-    have hge : Real.log (n : ℝ) - 1 ≤ |Real.log (n : ℝ) + t| :=
+    have hge : Real.log (n : ℝ) + T ≤ |Real.log (n : ℝ) + t| :=
       le_trans (by linarith) (le_abs_self _)
     have hexp : Real.exp (-(2 * |Real.log (n : ℝ) + t|))
-        ≤ Real.exp 2 * (1 / (n : ℝ) ^ 2) := by
-      have hle : -(2 * |Real.log (n : ℝ) + t|) ≤ 2 - 2 * Real.log (n : ℝ) := by linarith
+        ≤ Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ 2) := by
+      have hle : -(2 * |Real.log (n : ℝ) + t|) ≤ -(2 * T) - 2 * Real.log (n : ℝ) := by linarith
       refine le_trans (Real.exp_le_exp.mpr hle) (le_of_eq ?_)
       have hsq : Real.exp (2 * Real.log (n : ℝ)) = (n : ℝ) ^ 2 := by
         rw [show (2 : ℝ) * Real.log (n : ℝ) = Real.log (n : ℝ) + Real.log (n : ℝ) by ring,
           Real.exp_add, Real.exp_log hnpos, ← pow_two]
-      rw [show (2 : ℝ) - 2 * Real.log (n : ℝ) = 2 + -(2 * Real.log (n : ℝ)) by ring,
-        Real.exp_add, Real.exp_neg, hsq, one_div]
+      rw [show -(2 * T) - 2 * Real.log (n : ℝ)
+            = -(2 * T) + -(2 * Real.log (n : ℝ)) by ring,
+        Real.exp_add]
+      congr 1
+      rw [Real.exp_neg, hsq, one_div]
     calc C * Real.exp (-(2 * |Real.log (n : ℝ) + t|))
-        ≤ C * (Real.exp 2 * (1 / (n : ℝ) ^ 2)) := mul_le_mul_of_nonneg_left hexp hCnn
-      _ = C * Real.exp 2 * (1 / (n : ℝ) ^ 2) := by ring
+        ≤ C * (Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ 2)) := mul_le_mul_of_nonneg_left hexp hCnn
+      _ = C * Real.exp (-(2 * T)) * (1 / (n : ℝ) ^ 2) := by ring
 
 /-- Every term of the translate series is differentiable, with the next series as derivative. -/
 theorem deningerLogTerm_hasDerivAt (h : 𝓢(ℝ, ℂ)) (r n : ℕ) (t : ℝ) :
@@ -109,28 +112,36 @@ theorem deningerLogTerm_hasDerivAt (h : 𝓢(ℝ, ℂ)) (r n : ℕ) (t : ℝ) :
 
 /-- The `r`-th translate series converges absolutely on `(-1, ∞)`. -/
 theorem deningerLogSeries_summable {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) (r : ℕ)
-    {t : ℝ} (ht : -1 < t) :
+    (t : ℝ) :
     Summable fun n : ℕ =>
       ((moebius n : ℤ) : ℂ) * iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t) := by
-  obtain ⟨C, hCnn, hC⟩ := deningerLogTerm_unif_bound hh r
+  obtain ⟨C, hCnn, hC⟩ := deningerLogTerm_unif_bound hh r (t - 1)
   have hmaj : Summable fun n : ℕ => C * (1 / (n : ℝ) ^ 2) :=
     (Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left C
-  exact Summable.of_norm_bounded hmaj fun n => hC n t ht
+  exact Summable.of_norm_bounded hmaj fun n => hC n t (by linarith)
 
-/-- **The translate series may be differentiated term by term on `(-1, ∞)`.** -/
+/-- **The translate series may be differentiated term by term**, at every point. -/
 theorem deningerLogSeries_hasDerivAt {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) (r : ℕ)
-    {t : ℝ} (ht : -1 < t) :
+    (t : ℝ) :
     HasDerivAt (deningerLogSeries h r) (deningerLogSeries h (r + 1) t) t := by
-  obtain ⟨C, hCnn, hC⟩ := deningerLogTerm_unif_bound hh (r + 1)
+  obtain ⟨C, hCnn, hC⟩ := deningerLogTerm_unif_bound hh (r + 1) (t - 1)
   have hmaj : Summable fun n : ℕ => C * (1 / (n : ℝ) ^ 2) :=
     (Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left C
-  have hopen : IsOpen (Set.Ioi (-1 : ℝ)) := isOpen_Ioi
-  have hconn : IsPreconnected (Set.Ioi (-1 : ℝ)) := (convex_Ioi (-1 : ℝ)).isPreconnected
-  have hzero : (0 : ℝ) ∈ Set.Ioi (-1 : ℝ) := by norm_num
+  have hopen : IsOpen (Set.Ioi (t - 1)) := isOpen_Ioi
+  have hconn : IsPreconnected (Set.Ioi (t - 1)) := (convex_Ioi (t - 1)).isPreconnected
+  have hmem : t ∈ Set.Ioi (t - 1) := by
+    simp only [Set.mem_Ioi]
+    linarith
   exact hasDerivAt_tsum_of_isPreconnected hmaj hopen hconn
     (fun n y _ => deningerLogTerm_hasDerivAt h r n y)
-    (fun n y hy => hC n y hy) hzero
-    (deningerLogSeries_summable hh r (by norm_num)) ht
+    (fun n y hy => hC n y hy) hmem
+    (deningerLogSeries_summable hh r t) hmem
+
+/-- **The translate series is continuous.** -/
+theorem deningerLogSeries_continuous {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) (r : ℕ) :
+    Continuous (deningerLogSeries h r) := by
+  refine continuous_iff_continuousAt.mpr fun t => ?_
+  exact (deningerLogSeries_hasDerivAt hh r t).continuousAt
 
 /-- The zeroth translate series is the canonical preimage in the logarithmic coordinate. -/
 theorem deningerLogSeries_zero_eq {h : 𝓢(ℝ, ℂ)} (t : ℝ) :

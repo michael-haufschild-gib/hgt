@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.RHTower.CCMBoundaryStripTransfer
 
 /-!
 # The source–norm–support forgetful tower
@@ -287,14 +288,6 @@ theorem sum_normSq_pseudoInverse_wall (n : ℕ) (ρ c : ℂ)
       = (∑ i, normSq (x i)) / (normSq c * (Real.exp (wallParameter n ρ) - 1) ^ 2) := by
   rw [sum_normSq_pseudoInverse_mulVec _ _ ha, normSq_sourceScalar_cycleTransport]
 
-/-- The exponential slope at the origin: `(e^κ − 1)/κ → 1`. -/
-theorem tendsto_exp_sub_one_div_atZero :
-    Tendsto (fun κ : ℝ => (Real.exp κ - 1) / κ) (𝓝[≠] 0) (𝓝 1) := by
-  have h := Real.hasDerivAt_exp 0
-  rw [hasDerivAt_iff_tendsto_slope, Real.exp_zero] at h
-  refine h.congr fun κ => ?_
-  rw [slope_def_field, Real.exp_zero, sub_zero]
-
 /-- **Card `(12)`.**  Near the critical wall the squared pseudo-inverse gain is asymptotically
 `1/(|c|² κ²)`: the ratio of the exact gain to that model tends to one as the wall parameter tends
 to zero.  This is the card's `‖Γ_ρ†‖ ∼ 1/(|c_ρ| |κ|)`, squared. -/
@@ -302,7 +295,15 @@ theorem tendsto_pseudoInverse_gain_ratio (c : ℂ) (hc : c ≠ 0) :
     Tendsto (fun κ : ℝ =>
         (normSq c * (Real.exp κ - 1) ^ 2)⁻¹ / (normSq c * κ ^ 2)⁻¹) (𝓝[≠] 0) (𝓝 1) := by
   have hns : normSq c ≠ 0 := by simpa [Complex.normSq_eq_zero] using hc
-  have hbase := tendsto_exp_sub_one_div_atZero
+  have hneg : Tendsto (fun κ : ℝ => -κ) (𝓝[≠] (0 : ℝ)) (𝓝[≠] (0 : ℝ)) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · simpa using (continuous_neg.tendsto (0 : ℝ)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with κ hκ
+      exact neg_ne_zero.2 hκ
+  have hbase : Tendsto (fun κ : ℝ => (Real.exp κ - 1) / κ) (𝓝[≠] (0 : ℝ)) (𝓝 1) := by
+    refine (GaloisForLFunctions.RHTower.tendsto_one_sub_exp_neg_div.comp hneg).congr fun κ => ?_
+    show (1 - Real.exp (-(-κ))) / (-κ) = (Real.exp κ - 1) / κ
+    rw [neg_neg, div_neg, neg_div', neg_sub]
   have hsq : Tendsto (fun κ : ℝ => ((Real.exp κ - 1) / κ) ^ 2) (𝓝[≠] 0) (𝓝 1) := by
     simpa using hbase.pow 2
   have hinv : Tendsto (fun κ : ℝ => (((Real.exp κ - 1) / κ) ^ 2)⁻¹) (𝓝[≠] 0) (𝓝 1) := by

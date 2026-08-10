@@ -6838,3 +6838,4 @@ import GaloisForLFunctions.HTGeometry.PowerSeriesRootLift
 import GaloisForLFunctions.HTGeometry.HenselFactorization
 import GaloisForLFunctions.HTGeometry.PowerSeriesFactorization
 import GaloisForLFunctions.HTGeometry.NewtonSlopeTransform
+import GaloisForLFunctions.HTGeometry.TschirnhausShift

@@ -1,60 +1,107 @@
+import GaloisForLFunctions.HTGeometry.NewtonSlopeTransform
 import Mathlib.Algebra.Polynomial.Taylor
-import Mathlib.Algebra.Polynomial.HasseDeriv
-import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Tactic.LinearCombination
 
 /-!
-# The next-to-leading coefficient after a shift
+# The Tschirnhaus shift
 
-Shifting the variable of a monic polynomial changes its next-to-leading coefficient by the degree
-times the shift, because the Hasse derivative of order one below the degree is a linear polynomial
-whose slope is the degree and whose constant term is that coefficient.
+Translating the variable of a monic polynomial changes its second coefficient by `deg f` times the
+translation, so in characteristic zero the second coefficient can always be removed.  This is what
+makes the Newton–Puiseux iteration terminate: with a vanishing second coefficient, an edge
+polynomial can never be a single linear factor raised to the full degree, so its distinct roots
+genuinely split the polynomial.
 
-So over a ring where the degree is invertible one shift removes the next-to-leading coefficient,
-which is the centering used to normalise a polynomial.
+The translation is `Polynomial.taylor`, and the second coefficient is computed from
+`Polynomial.taylor_coeff` together with the two surviving terms of the Hasse derivative of order
+`deg f − 1`.
+
+Everything about the translation itself — monicity, degree, roots, and reduction — holds over any
+commutative ring; only the removal of the second coefficient needs the degree to be invertible.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
 
-variable {R : Type*} [CommRing R]
+open Polynomial PowerSeries
 
-/-- **The next-to-leading coefficient of a shifted monic polynomial.** -/
-theorem taylor_coeff_pred {p : Polynomial R} {d : ℕ} (hd : 1 ≤ d) (hdeg : p.natDegree = d)
-    (hm : p.Monic) (r : R) :
-    (Polynomial.taylor r p).coeff (d - 1) = (d : R) * r + p.coeff (d - 1) := by
-  rw [Polynomial.taylor_coeff]
-  have hle : (Polynomial.hasseDeriv (d - 1) p).natDegree ≤ 1 := by
-    refine le_trans (Polynomial.natDegree_hasseDeriv_le _ _) ?_
-    rw [hdeg]
-    omega
-  have hc0 : (Polynomial.hasseDeriv (d - 1) p).coeff 0 = p.coeff (d - 1) := by
-    rw [Polynomial.hasseDeriv_coeff, zero_add, Nat.choose_self, Nat.cast_one, one_mul]
-  have hc1 : (Polynomial.hasseDeriv (d - 1) p).coeff 1 = (d : R) := by
-    rw [Polynomial.hasseDeriv_coeff]
-    have hsum : 1 + (d - 1) = d := by omega
-    rw [hsum, show p.coeff d = 1 from by rw [← hdeg]; exact hm.coeff_natDegree, mul_one]
-    have h2 : d.choose (d - 1) = d := by
-      rw [Nat.choose_symm (by omega : 1 ≤ d), Nat.choose_one_right]
-    rw [h2]
-  rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hle)]
-  rw [Finset.sum_range_succ, Finset.sum_range_one, hc0, hc1]
-  ring
+/-! ## The Hasse derivative just below the degree -/
 
-/-- **A shift changes each coefficient by a multiple of the shift.**  The constant term of the Hasse
-derivative is the coefficient itself, and the rest of the evaluation is divisible by the shift.
-This is the triangularity of the change of coefficients under a shift. -/
-theorem taylor_coeff_eq_add (r : R) (p : Polynomial R) (k : ℕ) :
-    ∃ s : R, (Polynomial.taylor r p).coeff k = p.coeff k + r * s := by
-  rw [Polynomial.taylor_coeff]
-  have hc : (Polynomial.hasseDeriv k p).coeff 0 = p.coeff k := by
-    rw [Polynomial.hasseDeriv_coeff, zero_add, Nat.choose_self, Nat.cast_one, one_mul]
-  have hdvd : (r - 0) ∣
-      ((Polynomial.hasseDeriv k p).eval r - (Polynomial.hasseDeriv k p).eval 0) :=
-    Polynomial.sub_dvd_eval_sub r 0 _
-  rw [sub_zero] at hdvd
-  obtain ⟨s, hs⟩ := hdvd
-  refine ⟨s, ?_⟩
-  rw [← hc, Polynomial.coeff_zero_eq_eval_zero]
-  linear_combination hs
+/-- **The Hasse derivative of order `deg f − 1` of a monic polynomial is linear**, with constant
+term the second coefficient and slope the degree. -/
+theorem hasseDeriv_natDegree_sub_one {R : Type*} [CommRing R] {f : R[X]} (hf : f.Monic) {e : ℕ}
+    (he : f.natDegree = e + 1) :
+    Polynomial.hasseDeriv e f
+      = Polynomial.C (f.coeff e) + Polynomial.C ((e + 1 : ℕ) : R) * Polynomial.X := by
+  ext n
+  rw [Polynomial.hasseDeriv_coeff]
+  match n with
+  | 0 => simp
+  | 1 =>
+      have hch : (1 + e).choose e = e + 1 := by
+        rw [Nat.add_comm]
+        exact Nat.choose_succ_self_right e
+      have hc : f.coeff (1 + e) = 1 := by
+        rw [Nat.add_comm, ← he]
+        exact hf.coeff_natDegree
+      rw [hch, hc, mul_one]
+      simp
+  | (n + 2) =>
+      have hz : f.coeff (n + 2 + e) = 0 := by
+        refine Polynomial.coeff_eq_zero_of_natDegree_lt ?_
+        omega
+      rw [hz, mul_zero]
+      simp [Polynomial.coeff_one]
+
+/-- **Translation shifts the second coefficient by the degree times the translation.** -/
+theorem taylor_coeff_natDegree_sub_one {R : Type*} [CommRing R] {f : R[X]} (hf : f.Monic) {e : ℕ}
+    (he : f.natDegree = e + 1) (a : R) :
+    (Polynomial.taylor a f).coeff e = f.coeff e + ((e + 1 : ℕ) : R) * a := by
+  rw [Polynomial.taylor_coeff, hasseDeriv_natDegree_sub_one hf he, Polynomial.eval_add,
+    Polynomial.eval_C, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
+
+/-! ## Translation preserves everything else -/
+
+theorem monic_taylor {R : Type*} [CommRing R] {f : R[X]} (hf : f.Monic) (a : R) :
+    (Polynomial.taylor a f).Monic := by
+  rw [Polynomial.taylor_apply]
+  exact hf.comp_X_add_C a
+
+theorem isRoot_taylor_iff {R : Type*} [CommRing R] (f : R[X]) (a y : R) :
+    (Polynomial.taylor a f).IsRoot y ↔ f.IsRoot (y + a) := by
+  rw [Polynomial.taylor_apply, Polynomial.IsRoot, Polynomial.eval_comp, Polynomial.eval_add,
+    Polynomial.eval_X, Polynomial.eval_C]
+  rfl
+
+theorem map_taylor {R S : Type*} [CommRing R] [CommRing S] (φ : R →+* S) (f : R[X]) (a : R) :
+    (Polynomial.taylor a f).map φ = Polynomial.taylor (φ a) (f.map φ) := by
+  rw [Polynomial.taylor_apply, Polynomial.taylor_apply, Polynomial.map_comp, Polynomial.map_add,
+    Polynomial.map_X, Polynomial.map_C]
+
+/-! ## Removing the second coefficient -/
+
+variable {K : Type} [Field K]
+
+/-- **The Tschirnhaus shift.**  When the degree is invertible, a translation removes the second
+coefficient, and the translation is as small as the second coefficient itself — so a special fibre
+equal to `X ^ d` survives the shift. -/
+theorem exists_taylor_coeff_eq_zero {f : (PowerSeries K)[X]} (hf : f.Monic) {e : ℕ}
+    (he : f.natDegree = e + 1) (hchar : ((e + 1 : ℕ) : K) ≠ 0) :
+    ∃ a : PowerSeries K,
+      PowerSeries.constantCoeff a
+          = - PowerSeries.constantCoeff (f.coeff e) * (((e + 1 : ℕ) : K))⁻¹ ∧
+        (Polynomial.taylor a f).coeff e = 0 := by
+  classical
+  refine ⟨- f.coeff e * PowerSeries.C (((e + 1 : ℕ) : K))⁻¹, ?_, ?_⟩
+  · rw [map_mul, map_neg, PowerSeries.constantCoeff_C]
+  · rw [taylor_coeff_natDegree_sub_one hf he]
+    have hcast : (((e + 1 : ℕ) : PowerSeries K)) = PowerSeries.C (((e + 1 : ℕ) : K)) := by
+      simp
+    rw [hcast]
+    have hinv : PowerSeries.C (((e + 1 : ℕ) : K)) * PowerSeries.C (((e + 1 : ℕ) : K))⁻¹
+        = 1 := by
+      rw [← map_mul, mul_inv_cancel₀ hchar, map_one]
+    calc f.coeff e + PowerSeries.C (((e + 1 : ℕ) : K)) *
+            (- f.coeff e * PowerSeries.C (((e + 1 : ℕ) : K))⁻¹)
+        = f.coeff e - (PowerSeries.C (((e + 1 : ℕ) : K)) *
+            PowerSeries.C (((e + 1 : ℕ) : K))⁻¹) * f.coeff e := by ring
+      _ = 0 := by rw [hinv, one_mul, sub_self]
 
 end GaloisForLFunctions.HTGeometry

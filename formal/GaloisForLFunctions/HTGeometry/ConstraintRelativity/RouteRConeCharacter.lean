@@ -291,16 +291,6 @@ end PhysicalQuotient
 
 section PhysicalCharacter
 
-/-- Scaling by a nonzero complex number does not create or destroy zeros. -/
-theorem smul_ne_zero_iff_of_ne_zero {V : Type} [AddCommGroup V] [Module ℂ V] {c : ℂ} (hc : c ≠ 0)
-    (v : V) : c • v ≠ 0 ↔ v ≠ 0 := by
-  constructor
-  · intro h hv
-    exact h (by rw [hv, smul_zero])
-  · intro hv h
-    refine hv ?_
-    rw [← one_smul ℂ v, ← inv_mul_cancel₀ hc, mul_smul, h, smul_zero]
-
 variable {A : Type} [AddCommGroup A] [Module ℂ A] (S : RouteRSource A)
   {Nfam : ℤ → Type} [∀ n, AddCommGroup (Nfam n)] [∀ n, Module ℂ (Nfam n)]
   {X : ZCochain ℂ Nfam} (Φ : ZCochainMap S.complex X)
@@ -344,7 +334,7 @@ theorem forward_retained_ne_zero_iff {cρ : ℂ} (hc : cρ ≠ 0) (t : ℝ)
     coneCharacter Φ (-1) (S.forwardPhysChar cρ t)
         (fun b => S.physChar_comp_D₀ cρ (eulerClass (-t)) b) ((coneComplex Φ).cls y) ≠ 0
       ↔ t ≤ 0 := by
-  rw [forward_retained_value S Φ cρ t y hy, smul_ne_zero_iff_of_ne_zero hc,
+  rw [forward_retained_value S Φ cρ t y hy, smul_ne_zero_iff_right hc,
     eulerClass_ne_zero_iff, neg_nonneg]
 
 /-- **Card `(RRC.14)`, boxed.**  The reflected physical value is nonzero exactly at and above the
@@ -354,7 +344,7 @@ theorem reflected_retained_ne_zero_iff {cρ : ℂ} (hc : cρ ≠ 0) (t : ℝ)
     coneCharacter Φ (-1) (S.reflectedPhysChar cρ t)
         (fun b => S.physChar_comp_D₀ cρ (eulerClass t) b) ((coneComplex Φ).cls y) ≠ 0
       ↔ 0 ≤ t := by
-  rw [reflected_retained_value S Φ cρ t y hy, smul_ne_zero_iff_of_ne_zero hc,
+  rw [reflected_retained_value S Φ cρ t y hy, smul_ne_zero_iff_right hc,
     eulerClass_ne_zero_iff]
 
 /-- **Card `(RRC.14)`, boxed.**  Both physical values are nonzero exactly at the centre `t = 0`,

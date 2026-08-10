@@ -2,13 +2,27 @@
 
 - **ID:** ULF-LCM-1
 - **Stage:** 1-in-progress
-- **Type:** FIELD PROGRAMME / MECHANISM CONJECTURE
+- **Type:** SOURCE-EXECUTION SECTOR OF REFLEXIVE LAW MECHANICS
 - **Statement:** Laws should be studied as states of a partially admitted control system: legal
   source transformations are primitive controls, noncommuting schedules generate derived law
   interventions, observers see quotients of the reachable history, and completion changes which
   generated directions remain admitted.
-- **Status:** [FIELD CANDIDATE] [MECHANISM NOT OBJECT] [ONE SOURCE LABORATORY FOUND]
-  [THREE-FORMATION PAPER THEOREM EXTRACTED] [WHOLE-CORPUS CLAIM OPEN] [NOT RH]
+- **Status:** [FIRST-COMMUTATOR UNIVERSALITY FALSIFIED] [MECHANISM NOT OBJECT]
+  [TWO NONISOMORPHIC SOURCES FOUND] [GRADED-GENESIS PIVOT]
+  [SOURCE-EXECUTION SECTOR RETAINED] [NOT A SEPARATE FIELD] [NOT RH]
+
+## 0. Sharpened-frontier correction
+
+The 10 August 2026 frontier and the formal elliptic-gamma corpus falsify this charter's narrowest
+reading.  Source-generated commutators are a real law-production mechanism, but they are not the
+universal field primitive.  The pointed elliptic-gamma source has commuting endpoint translations
+and trivial pure two-shift Koszul defect while carrying a nonzero mixed group--Cech/coefficient
+transgression.
+
+Law-Control Mechanics is therefore retained as the **source-execution sector** of Reflexive Law
+Mechanics.  The higher primitive is the first nonfillable coherence in a graded history containing
+execution, coefficient/admission, feedback, and cofinal-formation directions.  ULF-RLM-36 proves
+the two-source noncollapse theorem on paper.
 
 ## 1. The higher pivot
 
@@ -301,11 +315,12 @@ It dies as theatre if arbitrary transformations are admitted, if target obstruct
 control words, if every commutator is renamed a force, or if route outputs are packaged without a
 common source action.
 
-Current status:
+Current status after the sharpened-frontier audit:
 
 - first source and four-shadow theorem: paper-closed;
-- general observer/admission theory: partially supplied by existing ULF theorems;
-- second independent source: open;
+- general observer/admission theory: supplied in finite degree by existing ULF theorems;
+- second independent source: elliptic gamma, Lean-certified in its mixed-transgression sector;
+- first-commutator universality: falsified; ULF-RLM-36 is the positive survivor;
 - cofinal bracket/control theorem: open;
 - Lean certification of first source theorem: mandatory next Stage-3 task, not performed during
   this Stage-1 audit.
@@ -313,8 +328,8 @@ Current status:
 ## 11. Research programme
 
 1. Formalize the abelian-gas exchange/four-shadow theorem after hostile paper audit.
-2. Search corpus for a second literal source whose marked operations generate a missing law by a
-   schedule word; do not start from an RH endpoint.
+2. Replace commutator-only reachability by the graded execution/coefficient/admission genesis
+   filtration forced by the elliptic-gamma counterexample.
 3. Define reachable flags for partial semigroup actions and prove observer monotonicity.
 4. Develop topological reachability: finite words, closure, pro-word histories, and strictness.
 5. Define source response costs on generated words and classify when they descend.
@@ -330,3 +345,5 @@ Current status:
   fields; marked law control survived.
 - 2026-08-10 — abelian zeta gas identified as first exact source: temperature change and canonical
   socle tilt generate pure fugacity translation by a Heisenberg exchange law.
+- 2026-08-10 — first-commutator universality falsified by the pointed elliptic-gamma source;
+  charter demoted from field candidate to source-execution sector of Reflexive Law Mechanics.
