@@ -52,6 +52,12 @@ cotangent module and the trace-law defect are compared.
    `Ω/aΩ ≃ₗ[k] C × ⋀[k]^2 C` with `C = k^m`; `kaehlerFibreEquiv` is the `R`-linear half.
 9. `length_cotangentModel`, `length_traceDefectModel` — **card `(27)`**: lengths `2m + binom m 2`
    and `2m`; `length_cotangentModel_eq_length_traceDefect_add` — **card `(28)`, boxed**.
+9b. `card_pairIndex_two`, `length_cotangentModel_two`, `length_traceDefectModel_two`,
+   `not_nonempty_linearEquiv_cotangentModel_traceDefect_two` — **card `(29)`**: the three-sheet
+   hostile counterexample.  At `m = 2` the antisymmetric sector is a single copy, the cotangent-law
+   defect has length `5` and the trace-law defect length `4`, so the two modules are **not
+   isomorphic** even though the Kähler and Dedekind differents agree there.  Determinant-level
+   agreement does not force module agreement.
 10. `traceDefectModelEquiv_congruenceX_smul` — **card `(26b)`**: the action of the source
     generators on `L` in coordinates; `maximalIdealA_smul_eq` — **card `(26b)`**: `𝔪_A·L = a·L`.
 11. `soldering_range_le` — **card `(26e)`, boxed**: every `φ : Ω[A⁄R] →ₗ[A] L` has image inside

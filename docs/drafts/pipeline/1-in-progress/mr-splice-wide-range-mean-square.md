@@ -4651,3 +4651,91 @@ AveragedMeanSquare f hh   ⟸   α = o(hh x · √x) ,
 ```
 
 and then supply `α`.
+
+## Unit 21 — the direct route assembled: one Gallagher application (Lean, unconditional)
+
+`Sieve/FibreSqGallagher.lean`, `[propext, Classical.choice, Quot.sound]`.
+
+```lean
+sum_fibreSq_le_gallagher :
+  (∀ n, |f n| ≤ 1) → 16 ≤ x → 1 ≤ h → h ≤ √x →
+  (∀ a ∈ outerBlock x h, innerFibre x h a ⊆ Icc 1 M) → 0 < W₀ → 0 ≤ α → 0 ≤ β →
+  (∀ T ≥ W₀, ∫_{|w| ≤ T} ‖logPoly (f : ℕ → ℂ) (Icc 1 M) w‖² ≤ α·T + β) →
+    ∑_{a ∈ outerBlock x h} ( ∑_{b ∈ innerFibre x h a} f b )²
+      ≤ 8√x · ( 2·fibreWidth² ·(αW₀+β) + 4α/(π²W₀) + 4β/(3π²W₀²) )
+        + 102·#outerBlock
+```
+
+The four steps, each a corpus theorem:
+
+| step | source |
+|---|---|
+| fibre sum = log-window sum at the common width, ±1 | `abs_fibre_sum_sub_open_le` (corpus) |
+| starting points `1/(2√x)`-separated | `log_start_separated` (corpus) |
+| window sum changes by ≤ 5 across `1/(2√x)` | `norm_logWindowSum_sub_le` (unit 20) |
+| sampling ⟹ one line integral | `sum_le_integral_of_separated` (unit 19) |
+| one Gallagher application | `gallagher_split_integral_dyadic` (corpus) |
+
+Supporting: `exp_sub_one_le_two_mul_of_le_half`, `sq_le_two_sq_add_two`, and `σ ≤ fibreWidth`
+(which is why `1 ≤ h` is needed: `fibreWidth ≥ h/(2√x) ≥ 1/(2√x) = σ`).
+
+**No block count, no maximal window, no Rademacher–Menshov.**  Compare unit 17, whose additive route
+was capped at `ℓ²√x` by the block count `K'`; here the bound is, with `fibreWidth ≍ h/√x`,
+`#outerBlock ≍ √x` and the `W₀`-optimum `≍ fibreWidth·α`:
+
+```text
+∑_a (fibre sum)²  ≍  8√x·(h/√x)·α + 102√x  ≍  h·α + √x .
+```
+
+Against `AveragedMeanSquare`'s target `o(h²√x)` this is exactly
+
+```text
+α = o(h√x) ,
+```
+
+the single-factor-`h` deficit of unit 18, now proved rather than estimated.  The mean-value baseline
+gives `α ≍ ∑_{n ≤ M}|f(n)|² ≍ M ≍ √x`, so what is missing is a saving of `h` in the diagonal of the
+Dirichlet-polynomial mean square — and that is the whole of what the card still needs.
+
+## Unit 22 — the direct route closes on the frequency mean square (Lean, unconditional)
+
+`Sieve/AveragedFromFrequency.lean`, `[propext, Classical.choice, Quot.sound]`.
+
+```lean
+def FrequencyMeanSquareSmall (f : ℕ → ℝ) (hh : ℝ → ℝ) : Prop :=
+  ∀ ε > 0, ∀ᶠ x in atTop, ∃ M α β W₀,
+    (∀ a ∈ outerBlock x (hh x), innerFibre x (hh x) a ⊆ Icc 1 M)
+      ∧ 0 < W₀ ∧ 0 ≤ α ∧ 0 ≤ β
+      ∧ (∀ T ≥ W₀, ∫_{|w| ≤ T} ‖logPoly (f : ℕ → ℂ) (Icc 1 M) w‖² ≤ α·T + β)
+      ∧ 8√x·(2·fibreWidth²·(αW₀+β) + 4α/(π²W₀) + 4β/(3π²W₀²)) ≤ ε·(hh x²·√x)
+
+averagedMeanSquare_of_frequency :
+  (∀ n, |f n| ≤ 1) → Tendsto hh atTop atTop → (∀ᶠ x, hh x ≤ √x) →
+    FrequencyMeanSquareSmall f hh → AveragedMeanSquare f hh
+```
+
+The block term of unit 21 costs only `102(√x+1)/(h²√x) → 0`, so it is absorbed by taking quarters of
+`ε`; `card_outerBlock_le` supplies `#block ≤ √x + 1`.
+
+**The card's chain, end to end, on the direct route.**
+
+```text
+Route E sign densities
+  ⟸ MRBilinear μ hh                    (MRFibreReduction)
+  ⟸ AveragedShortInterval μ hh         (PairFibreMeanSquare)
+  ⟸ AveragedMeanSquare μ hh            (unit 22)
+  ⟸ FrequencyMeanSquareSmall μ hh      ← the single remaining input
+```
+
+and `FrequencyMeanSquareSmall` says, after the `W₀`-optimisation and with `fibreWidth ≍ h/√x`,
+
+```text
+∫_{|w| ≤ T} ‖ ∑_{n ≤ M} μ(n)·n^{2πiw} ‖² dw ≤ α·T + β    with    α = o(h·√x) ,   M ≍ √x .
+```
+
+The mean-value baseline (`integral_Icc_normSq_logPoly_le_affine_majorant`) gives `α ≍ (5π/2)·M ≍ √x`.
+So the entire remaining content of the card is **a saving of `h` in the diagonal coefficient of the
+Dirichlet-polynomial mean square for `μ` at length `M ≍ √x`** — which is what the Ramaré
+factorization, the large-values layer and the Halász bound of units 5–6 exist to supply.
+
+No block count, no maximal window, no Rademacher–Menshov factor appears anywhere on this route.

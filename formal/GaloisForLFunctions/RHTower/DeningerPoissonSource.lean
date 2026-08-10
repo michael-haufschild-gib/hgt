@@ -28,26 +28,23 @@ theorem deningerPoissonLog_expBound {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerMey
     ∃ C : ℝ, ∀ t : ℝ, Real.exp (A * |t|) * ‖deningerPoissonLog h t‖ ≤ C := by
   set s : ℤ := ⌈A⌉ with hs
   have hsA : A ≤ (s : ℝ) := Int.le_ceil A
-  refine ⟨max (ccmRationalArchimedeanDecayConstant h (deningerPoissonDecayIndex s) / 2
-      * (Nat.factorial 0 : ℝ))
-    (ccmRationalArchimedeanDecayConstant (𝓕 h) (deningerPoissonDecayIndex (-s)) / 2
-      * (Nat.factorial 0 : ℝ)), fun t => ?_⟩
+  obtain ⟨Cp, hCp⟩ := exists_bound_deningerPoissonWeight s 0 hh
+  obtain ⟨Cm, hCm⟩ := exists_bound_deningerPoissonWeight (-s) 0 hh
+  refine ⟨max Cp Cm, fun t => ?_⟩
   rcases le_total 0 t with ht | ht
-  · have habs : |t| = t := abs_of_nonneg ht
-    have hbase := norm_deningerPoissonWeight_le_of_nonneg s 0 hh ht
+  · have hbase := hCp t
     rw [pow_zero, one_mul, norm_deningerPoissonWeight] at hbase
     have hexp : Real.exp (A * |t|) ≤ Real.exp ((s : ℝ) * t) := by
       refine Real.exp_le_exp.mpr ?_
-      rw [habs]
+      rw [abs_of_nonneg ht]
       exact mul_le_mul_of_nonneg_right hsA ht
     refine le_trans ?_ (le_max_left _ _)
     exact le_trans (mul_le_mul_of_nonneg_right hexp (norm_nonneg _)) hbase
-  · have habs : |t| = -t := abs_of_nonpos ht
-    have hbase := norm_deningerPoissonWeight_le_of_nonpos (-s) 0 hh ht
+  · have hbase := hCm t
     rw [pow_zero, one_mul, norm_deningerPoissonWeight] at hbase
     have hexp : Real.exp (A * |t|) ≤ Real.exp (((-s : ℤ) : ℝ) * t) := by
       refine Real.exp_le_exp.mpr ?_
-      rw [habs]
+      rw [abs_of_nonpos ht]
       have hsneg : ((-s : ℤ) : ℝ) = -(s : ℝ) := by push_cast; ring
       rw [hsneg]
       nlinarith

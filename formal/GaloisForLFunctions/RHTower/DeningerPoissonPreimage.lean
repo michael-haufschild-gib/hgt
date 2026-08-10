@@ -21,7 +21,7 @@ inversion in the logarithmic coordinate.
 
 namespace RHTower
 
-open SchwartzMap ArithmeticFunction
+open SchwartzMap ArithmeticFunction GaloisForLFunctions
 
 noncomputable section
 

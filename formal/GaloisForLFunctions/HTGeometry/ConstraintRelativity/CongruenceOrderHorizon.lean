@@ -321,6 +321,42 @@ noncomputable def horizonExteriorSquareEquiv (ha : a ≠ 0) :
     (LinearEquiv.prodCongr (LinearEquiv.refl _ _)
       (exteriorSquareModel m (R ⧸ Ideal.span ({a} : Set R))))
 
+/-! ### The three-sheet hostile counterexample -/
+
+section ThreeSheet
+
+variable {R : Type*} [CommRing R] {a : R}
+
+/-- **Card `(29)`.**  At three sheets the antisymmetric cotangent sector is a single copy. -/
+theorem card_pairIndex_two : Fintype.card (pairIndex 2) = 1 := card_pairIndex 2
+
+/-- **Card `(29)`.**  Three sheets: the cotangent-law defect has length `5`. -/
+theorem length_cotangentModel_two [IsDomain R] (ha : a ≠ 0)
+    (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
+    Module.length R (cotangentModel a 2) = (5 : ℕ∞) := by
+  rw [length_cotangentModel ha hmax]
+  norm_num
+
+/-- **Card `(29)`.**  Three sheets: the trace-law defect has length `4`. -/
+theorem length_traceDefectModel_two [IsDomain R] (ha : a ≠ 0)
+    (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
+    Module.length R (Fin 2 → R ⧸ Ideal.span ({a ^ 2} : Set R)) = (4 : ℕ∞) := by
+  rw [length_traceDefectModel ha hmax]
+  norm_num
+
+/-- **Card `(29)`, boxed reading.**  At three sheets the cotangent-law defect and the trace-law
+defect are *not isomorphic*, although the Kähler and Dedekind differents agree there: the lengths
+are `5` and `4`.  Determinant-level agreement does not force module agreement. -/
+theorem not_nonempty_linearEquiv_cotangentModel_traceDefect_two [IsDomain R] (ha : a ≠ 0)
+    (hmax : (Ideal.span ({a} : Set R)).IsMaximal) :
+    ¬ Nonempty (cotangentModel a 2 ≃ₗ[R] (Fin 2 → R ⧸ Ideal.span ({a ^ 2} : Set R))) := by
+  rintro ⟨e⟩
+  have h := e.length_eq
+  rw [length_cotangentModel_two ha hmax, length_traceDefectModel_two ha hmax] at h
+  exact absurd h (by decide)
+
+end ThreeSheet
+
 end Horizon
 
 end HTGeometry.ConstraintRelativity

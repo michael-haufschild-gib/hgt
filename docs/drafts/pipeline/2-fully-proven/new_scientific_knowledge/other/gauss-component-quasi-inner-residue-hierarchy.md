@@ -1415,3 +1415,77 @@ So the next objects to build are the quantitative forms of (5) and (9): a per-mo
 `|d_(n+j)/d_n - e^(2πijδ_n)| = O(|j|/n)` and the resulting `E(n)² = O(1/n)`, with the `m = 1`
 near-diagonal handled separately.  Nothing here is conditional; the gap is a missing rate, stated
 exactly.
+
+## Lean status, thirty-second pass: the diagonal is a bounded quadratic form
+
+The previous pass ended with a stated obstruction: the Fourier diagonal was obtained with an
+*absolute* `o(1)`, whereas the logarithmic mean needs `o(1/n)`.  The obstruction is now identified
+and removed at its source.
+
+### Where the loss was
+
+Routing the moving-translation error through the *normalized* block `S = d_n^(-1) e_(-n) D e_n`
+costs one factor of `|d_n|`, because `‖S‖ ≍ M/|d_n|`.  The main term is `p|d_n|²`, so the estimate
+came out as `p|d_n|·o(1)` — absolute, not relative.  Bounding `|d_n| ≤ M` at that one place is what
+turns a relative statement into an absolute one, and it looks harmless because both are `o(1)`.
+
+### The fold
+
+`G = p B D B^(-2) D* B` needs no normalized block at all when it is paired with the vector it acts
+on.  `B` and `B^(-2)` multiply by **real** symbols, hence are self-adjoint; `D` and `D*` are
+**adjoint to one another**; so the factorisation folds from both ends:
+
+```text
+⟪u, G u⟫ = p ⟪D* B u, B^(-2) (D* B u)⟫.
+```
+
+New, all unconditional, `[propext, Classical.choice, Quot.sound]`, wired, built:
+
+```text
+MeasureTheory.lpBoundedMulCLM_inner_real        -- real symbol  ⇒  self-adjoint
+MeasureTheory.lpBoundedMulCLM_inner_unimodular  -- unimodular symbol ⇒ inner-product preserving
+GaloisForLFunctions.lpDiagonalCLM_inner         -- the conjugate diagonal is the adjoint
+RHTower.gaussPrimeScaleBlock_inner              -- B  is self-adjoint
+RHTower.gaussPrimeScaleInvSqBlock_inner         -- B^(-2) is self-adjoint
+RHTower.fourierMulBlock_inner                   -- ⟪e_n u, e_n v⟫ = ⟪u, v⟫
+RHTower.gaussDiagonalBlock_inner                -- ⟪D u, v⟫ = ⟪u, D* v⟫
+RHTower.gaussDiagonalBlockStar_inner            -- ⟪u, D v⟫ = ⟪D* u, v⟫
+RHTower.inner_fourierLp_gaussQuasiInnerG        -- the fold
+```
+
+The general self-adjointness lemma was **generalized out of** the Klein–Gordon layer rather than
+duplicated: `HTGeometry/KleinGordonSelfAdjointMultiplier.lean`'s `lpBoundedMulCLM_inner` is now a
+one-line application of the arbitrary-measure version in `HTGeometry/LpBoundedMultiplier.lean`.
+
+### Why this is the right object
+
+Writing `h_n = D* B e_n = conj(d_n) · e_n · g_n`,  `g_n = S*(b_p)`, the fold gives
+
+```text
+⟪e_n, G e_n⟫ = p |d_n|² ⟪g_n, B^(-2) g_n⟫,
+```
+
+a bounded quadratic form: `|⟪g_n, B^(-2)g_n⟫ - ⟪T_(δ_n) b_p, B^(-2) T_(δ_n) b_p⟫|
+   ≤ ‖g_n - T_(δ_n)b_p‖ (‖g_n‖ + ‖b_p‖)`, and `‖g_n - T_(δ_n)b_p‖ → 0` is exactly the already
+formalized equation (9).  No rate is needed — the `|d_n|²` sits *outside*.  Moreover
+
+```text
+⟪T_δ b_p, B^(-2) T_δ b_p⟫ = ∫ b^(-2)(x) b(x-δ)² dx = ∫ a_δ(x-δ) dx = ∫ a_δ = A_1(δ),
+```
+
+by translation invariance of Haar measure.  So for `m = 1` the **relative** form of (11) follows
+with no new analysis, and with it the logarithmic mean (14) and formula (A) at the operator level:
+`Σ_(n<N) p|d_n|² ε_n / log N → 0` because `p|d_n|² ≍ 1/n` and `ε_n → 0`.
+
+For `m ≥ 2` the same fold gives `⟪e_n, G^m e_n⟫ = p^m|d_n|^(2m) ⟪g_n, Λ^(m-1) B^(-2) g_n⟫` with
+`Λ = B^(-2) S* B² S`, whose clean counterpart `Λ_0 = B^(-2) T B² T^(-1)` is multiplication by
+`a_δ(·-δ)`, giving `∫ a_δ^m = A_m(δ)` — the same computation one rank up.  The remaining work there
+is the interior replacement `Λ → Λ_0`, which is again an application of the moving-translation
+estimate, now to the family `B²Sv`.
+
+### State
+
+Absolute Fourier diagonal: **done** (`tendsto_gaussFourierDiagonal`).
+The fold that makes it relative: **done**.
+Remaining: assemble the `m = 1` relative diagonal from the fold, then the interior replacement for
+`m ≥ 2`.

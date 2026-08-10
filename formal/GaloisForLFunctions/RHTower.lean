@@ -4230,6 +4230,8 @@ import GaloisForLFunctions.RHTower.Sieve.DyadicMeanSquareTail
 import GaloisForLFunctions.RHTower.Sieve.SeparatedSampling
 import GaloisForLFunctions.RHTower.Sieve.LogWindowCount
 import GaloisForLFunctions.RHTower.Sieve.FibreSqGallagher
+import GaloisForLFunctions.RHTower.Sieve.AveragedFromFrequency
+import GaloisForLFunctions.RHTower.Sieve.FibreIndexRange
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6855,6 +6857,8 @@ import GaloisForLFunctions.RHTower.Sieve.DyadicMeanSquareTail
 import GaloisForLFunctions.RHTower.Sieve.SeparatedSampling
 import GaloisForLFunctions.RHTower.Sieve.LogWindowCount
 import GaloisForLFunctions.RHTower.Sieve.FibreSqGallagher
+import GaloisForLFunctions.RHTower.Sieve.AveragedFromFrequency
+import GaloisForLFunctions.RHTower.Sieve.FibreIndexRange
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen

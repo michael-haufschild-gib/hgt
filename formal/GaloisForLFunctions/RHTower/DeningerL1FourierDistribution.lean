@@ -21,6 +21,8 @@ namespace RHTower
 
 open MeasureTheory SchwartzMap FourierTransform
 
+open scoped ContDiff
+
 noncomputable section
 
 /-- **The multiplication formula** for two integrable functions of the line. -/
@@ -49,7 +51,7 @@ theorem deningerSchwartzNeg_integrable (g : 𝓢(ℝ, ℂ)) :
     Measure.measurePreserving_neg volume
   have hme : MeasurableEmbedding (fun x : ℝ => -x) :=
     (Homeomorph.neg ℝ).measurableEmbedding
-  exact (hmp.integrable_comp hme).mpr g.integrable
+  exact (hmp.integrable_comp_emb hme).mpr g.integrable
 
 /-- **The distributional inverse transform of an integrable density is the classical one.** -/
 theorem deningerL1Distribution_fourierInv_apply {G : ℝ → ℂ} (hG : Integrable G) (g : 𝓢(ℝ, ℂ)) :
@@ -62,6 +64,7 @@ theorem deningerL1Distribution_fourierInv_apply {G : ℝ → ℂ} (hG : Integrab
   have hrefl : ∀ x : ℝ, (g : ℝ → ℂ) (-x) • (𝓕 G) x
       = (fun y : ℝ => (g : ℝ → ℂ) y • (𝓕⁻ G) y) (-x) := by
     intro x
+    show (g : ℝ → ℂ) (-x) • (𝓕 G) x = (g : ℝ → ℂ) (-x) • (𝓕⁻ G) (-x)
     rw [Real.fourierInv_eq_fourier_neg, neg_neg]
   calc (∫ x : ℝ, (g : ℝ → ℂ) (-x) • (𝓕 G) x)
       = ∫ x : ℝ, (fun y : ℝ => (g : ℝ → ℂ) y • (𝓕⁻ G) y) (-x) :=
@@ -78,8 +81,9 @@ theorem deningerDensity_ae_eq {F G : ℝ → ℂ} (hF : LocallyIntegrable F)
   have hg₁ : HasCompactSupport (Complex.ofRealCLM ∘ u) := hsupp.comp_left rfl
   have hg₂ : ContDiff ℝ ∞ (Complex.ofRealCLM ∘ u) := Complex.ofRealCLM.contDiff.comp hu
   have hpair := h (hg₁.toSchwartzMap hg₂)
-  have hcoe : ∀ x : ℝ, ((hg₁.toSchwartzMap hg₂ : 𝓢(ℝ, ℂ)) : ℝ → ℂ) x = ((u x : ℝ) : ℂ) := fun _ => rfl
-  simp only [hcoe, Complex.real_smul] at hpair
+  have hcoe : ∀ x : ℝ, ((hg₁.toSchwartzMap hg₂ : 𝓢(ℝ, ℂ)) : ℝ → ℂ) x = ((u x : ℝ) : ℂ) :=
+    fun _ => rfl
+  simp only [hcoe] at hpair
   simpa [Complex.real_smul] using hpair
 
 end

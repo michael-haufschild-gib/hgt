@@ -18,7 +18,7 @@ This is the boundary inclusion `Z(H_∩) ⊆ ker 𝔖_μ` of the exact-kernel th
 
 namespace RHTower
 
-open MeasureTheory SchwartzMap FourierTransform
+open MeasureTheory SchwartzMap FourierTransform GaloisForLFunctions
 
 noncomputable section
 
@@ -47,7 +47,7 @@ theorem deningerEvenPreimage_poissonSource_ae (h : DeningerMeyerCap) :
   have hx0 : x ≠ 0 := by
     intro hcon
     exact hx (by rw [hcon]; exact Set.mem_singleton _)
-  rcases hx0.lt_or_lt with hneg | hpos
+  rcases lt_or_gt_of_ne hx0 with hneg | hpos
   · rw [deningerEvenPreimage_of_neg _ hneg,
       deningerMobiusPreimage_poissonSource h (by linarith)]
     exact deningerMeyerCap_even h.2 x
@@ -69,8 +69,11 @@ theorem deningerMobiusCommutator_poissonSource (h : DeningerMeyerCap) :
     deningerMobiusCommutator (deningerPoissonSource h) = 0 := by
   rw [deningerMobiusCommutator, deningerCollarExchange_poissonSource,
     deningerPreimageDistribution_poissonSource, deningerPreimageDistribution_poissonSource,
-    deningerMeyerFourier_coe, sub_eq_zero, fourierSCLM_eq]
-  exact SchwartzMap.fourier_toTemperedDistributionCLM_eq _
+    deningerMeyerFourier_coe, sub_eq_zero]
+  have hfour : GaloisForLFunctions.fourierSCLM ((h : DeningerMeyerCap) : 𝓢(ℝ, ℂ))
+      = 𝓕 ((h : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) := rfl
+  rw [hfour]
+  exact TemperedDistribution.fourier_toTemperedDistributionCLM_eq _
 
 /-- **The boundary inclusion `Z(H_∩) ⊆ ker 𝔖_μ`.** -/
 theorem deningerPoissonRange_subset_commutatorKernel :

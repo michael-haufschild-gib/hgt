@@ -53,7 +53,7 @@ theorem deningerShift_norm_le {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpSchwar
   refine ⟨C * Real.exp |t|, by positivity, fun j => ?_⟩
   have hbase := hC (t + (j : ℝ) * L)
   have hcast : ((j.natAbs : ℕ) : ℝ) = |(j : ℝ)| := by
-    rw [Int.cast_natAbs, Int.cast_abs]
+    rw [← Int.cast_natCast, Int.natCast_natAbs, Int.cast_abs]
   have habs : |(j : ℝ)| * L ≤ |t| + |t + (j : ℝ) * L| := by
     have h1 : |(j : ℝ) * L| = |(j : ℝ)| * L := by
       rw [abs_mul, abs_of_pos hL]
@@ -88,7 +88,7 @@ theorem deningerGeometricInt_summable {C : ℝ} {L : ℝ} (hL : 0 < L) :
   have hqnn : (0 : ℝ) ≤ Real.exp (-L) := (Real.exp_pos _).le
   have hnat : Summable fun n : ℕ => C * (Real.exp (-L)) ^ n :=
     (summable_geometric_of_lt_one hqnn hq).mul_left C
-  refine summable_int_of_summable_nat ?_ ?_
+  refine Summable.of_nat_of_neg_add_one ?_ ?_
   · simpa using hnat
   · simpa using hnat
 
@@ -163,7 +163,7 @@ theorem deningerExpSchwartz_eq_zero_of_periodic {f : 𝓢(ℝ, ℂ)} (hf : f ∈
     have := tendsto_pow_atTop_nhds_zero_of_lt_one (Real.exp_pos (-L)).le hq
     simpa using this.const_mul C
   have hle : ‖(f : ℝ → ℂ) t‖ ≤ 0 :=
-    le_of_tendsto' hlim (fun n => hbound n) |>.trans (le_refl 0)
+    ge_of_tendsto hlim (Filter.Eventually.of_forall hbound)
   have : (f : ℝ → ℂ) t = 0 := by
     have := norm_nonneg ((f : ℝ → ℂ) t)
     have heq : ‖(f : ℝ → ℂ) t‖ = 0 := le_antisymm hle this
@@ -176,16 +176,6 @@ theorem deningerPeriodization_defect {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerEx
     (hL : 0 < L) (t : ℝ) :
     (deningerPeriodizationSum f L t - deningerPeriodizationSum (deningerExpShift L f) L t)
       = 0 := by
-  have hsum := deningerShiftInt_summable hf hL t
-  have hshift : Summable fun j : ℤ =>
-      (f : ℝ → ℂ) (t + ((j + 1 : ℤ) : ℝ) * L) := by
-    refine (hsum.comp_injective (f := fun j : ℤ => j + 1) fun a b h => by omega).congr ?_
-    intro j
-    rfl
-  have hreindex : (∑' j : ℤ, (f : ℝ → ℂ) (t + ((j + 1 : ℤ) : ℝ) * L))
-      = ∑' j : ℤ, (f : ℝ → ℂ) (t + (j : ℝ) * L) := by
-    refine Equiv.tsum_eq (Equiv.addRight (1 : ℤ)) fun j => ?_ |>.symm.trans rfl |>.symm
-  rw [deningerPeriodizationSum, deningerPeriodizationSum]
   have hcoe : ∀ j : ℤ, ((deningerExpShift L f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) (t + (j : ℝ) * L)
       = (f : ℝ → ℂ) (t + ((j + 1 : ℤ) : ℝ) * L) := by
     intro j
@@ -193,6 +183,10 @@ theorem deningerPeriodization_defect {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerEx
     congr 1
     push_cast
     ring
+  have hreindex := (Equiv.addRight (1 : ℤ)).tsum_eq
+    (fun j : ℤ => (f : ℝ → ℂ) (t + (j : ℝ) * L))
+  simp only [Equiv.coe_addRight] at hreindex
+  rw [deningerPeriodizationSum, deningerPeriodizationSum]
   rw [tsum_congr hcoe, hreindex, sub_self]
 
 end

@@ -1247,23 +1247,46 @@ word `⟨z.lower, z.lower⟩`, which is a self-adjoint idempotent, so `1 − z^*
 `φ(a^* a) − φ(a^* z^* z a) = φ(((1−z^*z)a)^*((1−z^*z)a)) ≥ 0`.  This is exactly the boundedness
 estimate a GNS representation needs: each monomial acts as a contraction on the pre-Hilbert space.
 
-**What remains of this card.**  One item: the C\*-completion.  With positivity, hermitianness and
-the contraction estimate in hand the route is now concrete and mathlib-supported, and it does *not*
-need C\*-tensor products or inductive limits:
+#### The GNS space and the monomial representation
 
-1. `⟪a, b⟫ := φ(a^* a)`-style sesquilinear form makes `GasAlgebra` a `PreInnerProductSpace.Core ℂ`
-   — its three axioms are `gibbs_gasAdjoint` (hermitian), `gasGibbs_adjoint_mul_self_nonneg`
-   (positive) and linearity of `gibbs`.  Mathlib then supplies Cauchy–Schwarz and the seminorm.
-2. `UniformSpace.Completion` of that seminormed space *is* the GNS Hilbert space: the completion of
-   a pseudometric space identifies the null vectors automatically, so no explicit quotient is
-   needed.  This is the pattern of mathlib's own `Analysis/CStarAlgebra/GelfandNaimarkSegal.lean`,
-   which cannot be reused directly only because it assumes its algebra is already a C\*-algebra.
-3. `gibbs_contraction` makes left multiplication by a monomial a contraction on the pre-Hilbert
-   space, hence extends to the completion; a general element acts with norm at most the `ℓ¹` norm of
-   its coefficients.  This gives the `*`-representation `π`.
-4. `𝔄 := (StarSubalgebra.topologicalClosure (range π))` in `B(H)` is then a genuine C\*-algebra
-   containing the monomials densely, and `φ` extends to the vector state at the cyclic vector,
-   which is continuous by construction.  Uniqueness transfers by density from `gas_kms_unique`.
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasGNS.lean`.
+
+Steps 1–3 of the C\*-route are now built.  Mathlib supplies `PreInnerProductSpace.Core`, a
+*semi*definite inner-product core, which is exactly what a positive functional on a `*`-algebra
+gives; its Cauchy–Schwarz inequality and seminorm then come for free, and
+`UniformSpace.Completion` quotients out the null vectors automatically — no explicit quotient is
+needed.  This is the pattern of mathlib's own `Analysis/CStarAlgebra/GelfandNaimarkSegal.lean`,
+which cannot be reused directly only because it assumes its algebra is already a C\*-algebra.
+
+| Clause | Lean |
+|---|---|
+| the mode weights are real; the adjoint is conjugate-linear | `gasNome_conj`, `gasAdjoint_smul` |
+| the pre-GNS space | `GasPreGNS`, `toGas`, `ofGas` |
+| **`⟪a,b⟫ = φ(a^* b)` is a semi-inner product** | **`GasPreGNS.core`** |
+| the induced seminormed and inner-product structures | `instSeminormedAddCommGroup`, `instInnerProductSpace`, `inner_def`, `norm_sq`, `norm_eq_sqrt` |
+| **a monomial acts as a contraction of the pre-GNS space** | **`norm_mulLeft_le`**, `leftMulPre` |
+| the monomial action is unital and multiplicative | `leftMulPre_one`, **`leftMulPre_mul`** |
+| **the GNS Hilbert space of the gas** | **`GasGNS`** |
+| **the monomial action on it, of norm at most one** | **`leftMul`**, **`norm_leftMul_le`** |
+| it is unital and multiplicative there too | `leftMul_one`, **`leftMul_mul`** |
+
+The three `PreInnerProductSpace.Core` axioms are exactly the three facts proved above:
+`gibbs_gasAdjoint` (hermitian), `gasGibbs_adjoint_mul_self_nonneg` (positive) and linearity of
+`gibbs`.  The contraction bound is `gibbs_contraction`, transported through
+`norm_sq` and `Real.sqrt_le_sqrt`.
+
+**What remains of this card.**  The last leg of the C\*-completion, in order:
+
+1. *Extend `leftMul` from monomials to the algebra.*  `π` is linear in its argument, so
+   `π(∑ c_x x) = ∑ c_x · leftMul x` with `‖π a‖ ≤ ∑|c_x|`; `leftMul_mul` and `leftMul_one` then give
+   the algebra-homomorphism property.
+2. *The adjoint property* `π(a^*) = (π a)†`, which is `gibbs_gasAdjoint` read on the inner product.
+3. *The cyclic vector* `Ω := ↑(1 : GasPreGNS θ)` and `φ(a) = ⟪Ω, π(a) Ω⟫`, immediate from
+   `inner_def` and `gasAdjoint_one`.
+4. *The C\*-algebra* `𝔄 := StarSubalgebra.topologicalClosure (range π)` inside
+   `GasGNS θ →L[ℂ] GasGNS θ`, in which the monomials are dense by construction, with `φ` the
+   (automatically continuous) vector state at `Ω`; uniqueness transfers by density from
+   `gas_kms_unique`.
 
 ### Theorem 7.1 (GAS.11) — the operator-algebraic clause (DONE)
 

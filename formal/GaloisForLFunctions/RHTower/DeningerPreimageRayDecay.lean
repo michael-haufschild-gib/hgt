@@ -67,7 +67,6 @@ theorem deningerMobiusPreimage_ray_decay {h : 𝓢(ℝ, ℂ)} (hh : h ∈ Dening
       refine le_trans hstep (le_trans (hC _ hnx) (le_of_eq ?_))
       rw [mul_pow]
       field_simp
-      ring
   have hsummable : Summable fun n : ℕ => (C / x ^ k) * (1 / (n : ℝ) ^ k) := hzeta.mul_left _
   refine le_trans (norm_tsum_le_tsum_norm ((deningerMobiusRay_summable hh hx0).norm)) ?_
   refine le_trans (Summable.tsum_le_tsum hterm
