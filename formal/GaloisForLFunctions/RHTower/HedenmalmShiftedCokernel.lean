@@ -389,6 +389,7 @@ theorem thetaShifted_sourceEquation_existsUnique_iff (α : ℂ) :
     exact (thetaSourceForcingVector_mem_shifted_range_iff α).mp ⟨u, hu⟩
   · intro hXi
     rcases (thetaSourceForcingVector_mem_shifted_range_iff α).mpr hXi with ⟨u, hu⟩
+    have hu' : thetaShiftedWeightedDerivative α u = thetaSourceForcingVector := hu
     refine ⟨u, hu, ?_⟩
     intro v hv
     apply Subtype.ext
@@ -397,7 +398,7 @@ theorem thetaShifted_sourceEquation_existsUnique_iff (α : ℂ) :
       rw [LinearPMap.mem_kernel_iff]
       refine ⟨Submodule.sub_mem _ v.property u.property, ?_⟩
       change thetaShiftedWeightedDerivative α (v - u) = 0
-      rw [LinearPMap.map_sub, hv, hu, sub_self]
+      rw [LinearPMap.map_sub, hv, hu', sub_self]
     rw [thetaShiftedWeightedDerivative_kernel_eq_bot α] at hmem
     exact sub_eq_zero.mp (by simpa using hmem)
 

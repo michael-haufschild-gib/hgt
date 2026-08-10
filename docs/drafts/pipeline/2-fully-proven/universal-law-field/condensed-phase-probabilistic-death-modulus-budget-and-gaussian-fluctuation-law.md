@@ -500,6 +500,18 @@ Putting the count and the weight together gives the per-window bound:
 The `−1` absorbs the mismatch between the PNT statement (which counts `(⌊X⌋, ⌊KX⌋]`) and the window
 (which starts at `⌈X⌉`): `π(⌈X⌉) ≤ π(⌊X⌋) + 1`, so at most one prime is lost.
 
+And the window sums are harmonically large, hence not summable:
+
+| Clause | Lean |
+|---|---|
+| `log X_m = (2mπ + π/2)/τ` | `log_windowLo` |
+| the window sums are nonnegative | `windowSum_nonneg` |
+| **`windowSum ≥ c/(m+1)` eventually, with `c = (K−1)τ/(8πK^σ)`** | **`eventually_windowSum_ge_harmonic`** |
+| **the window sums are not summable** | **`not_summable_windowSum`** |
+
+The step `X_m^{1−σ} ≥ 1` is what makes one argument serve both `σ < 1` and `σ = 1`: it discards
+exactly the growth that distinguishes them, leaving a harmonic tail in either case.
+
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 3 699 jobs.
 
 **Next targets, in order.**

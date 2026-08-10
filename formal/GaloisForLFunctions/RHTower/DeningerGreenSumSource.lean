@@ -201,28 +201,33 @@ theorem deningerGreenSeries_eq_neg {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpS
     have h1 : Summable fun j : ℕ =>
         (f : ℝ → ℂ) (t + ((j : ℤ) : ℝ) * L) := by
       refine (deningerShiftNat_summable hf hL t).congr fun j => ?_
-      norm_num
+      have harg : t + (j : ℝ) * L = t + ((j : ℤ) : ℝ) * L := by
+        push_cast
+        ring
+      exact congrArg (fun y : ℝ => (f : ℝ → ℂ) y) harg
     have h2 : Summable fun j : ℕ =>
         (f : ℝ → ℂ) (t + ((-((j : ℤ) + 1) : ℤ) : ℝ) * L) := by
       refine (deningerGreenSeriesNeg_summable hf 0 hL t).congr fun j => ?_
       have harg : t - ((j : ℝ) + 1) * L = t + ((-((j : ℤ) + 1) : ℤ) : ℝ) * L := by
         push_cast
         ring
-      rw [iteratedDeriv_zero, harg]
+      rw [iteratedDeriv_zero]
+      exact congrArg (fun y : ℝ => (f : ℝ → ℂ) y) harg
     have hsplit := tsum_of_nat_of_neg_add_one
       (f := fun j : ℤ => (f : ℝ → ℂ) (t + (j : ℝ) * L)) h1 h2
     have hbase : deningerPeriodizationSum f L t
         = deningerGreenSeries f L 0 t + deningerGreenSeriesNeg f L 0 t := by
-      rw [deningerPeriodizationSum, hsplit, deningerGreenSeries, deningerGreenSeriesNeg]
-      congr 1
-      · refine tsum_congr fun j => ?_
+      have e1 : (∑' j : ℕ, (f : ℝ → ℂ) (t + ((j : ℤ) : ℝ) * L))
+          = ∑' j : ℕ, iteratedDeriv 0 (f : ℝ → ℂ) (t + (j : ℝ) * L) := by
+        refine tsum_congr fun j => ?_
         rw [iteratedDeriv_zero]
-        norm_num
-      · refine tsum_congr fun j => ?_
-        have harg : t + ((-((j : ℤ) + 1) : ℤ) : ℝ) * L = t - ((j : ℝ) + 1) * L := by
-          push_cast
-          ring
-        rw [iteratedDeriv_zero, harg]
+        exact congrArg (fun y : ℝ => (f : ℝ → ℂ) y) (by push_cast; ring)
+      have e2 : (∑' j : ℕ, (f : ℝ → ℂ) (t + ((-((j : ℤ) + 1) : ℤ) : ℝ) * L))
+          = ∑' j : ℕ, iteratedDeriv 0 (f : ℝ → ℂ) (t - ((j : ℝ) + 1) * L) := by
+        refine tsum_congr fun j => ?_
+        rw [iteratedDeriv_zero]
+        exact congrArg (fun y : ℝ => (f : ℝ → ℂ) y) (by push_cast; ring)
+      rw [deningerPeriodizationSum, hsplit, deningerGreenSeries, deningerGreenSeriesNeg, e1, e2]
     have hz := hper t
     rw [hbase] at hz
     exact eq_neg_of_add_eq_zero_left hz

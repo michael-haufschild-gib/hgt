@@ -18,7 +18,9 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 500000
+open IsLocalRing
+
+set_option synthInstance.maxHeartbeats 3000000
 set_option maxHeartbeats 4000000
 
 /-- Observation Schur DVR, named as base ring of the normal-closure integral model. -/
@@ -291,7 +293,7 @@ noncomputable def criticalSchurNormalLocalizationEquivUpper
     exact hy
   let φ : R →+* A := IsLocalization.lift hden
   have hφbase (x : S) : φ (algebraMap S R x) = ι x := by
-    simp [φ]
+    exact IsLocalization.lift_eq hden x
   letI : IsLocalHom φ := by
     apply ((local_hom_TFAE φ).out 3 0).mp
     rw [← IsLocalization.AtPrime.map_eq_maximalIdeal P]

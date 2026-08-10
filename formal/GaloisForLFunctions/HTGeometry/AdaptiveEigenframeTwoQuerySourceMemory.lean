@@ -293,7 +293,15 @@ theorem haar_sq_pauliEigenframeExpectation_eq
     omega
   let e : FiniteQubitConfiguration (Fin n) ≃ Fin 2 ⊕ Fin (2 ^ n - 2) :=
     Fintype.equivOfCardEq hcard
-  rw [pauliEigenframeExpectation]
+  change
+    (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+      (Matrix.trace
+        (productStabilizerDensity (pauliEigenframeSample output b) *
+          (star (V : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ) * finitePauliMatrix input *
+            (V : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ)))).re ^ 2
+      ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) = _
   rw [haar_sq_trace_pure_state_conjugation (2 ^ n - 2) e
     (productStabilizerDensity_isHermitian (pauliEigenframeSample output b))
     (productStabilizerDensity_mul_self (pauliEigenframeSample output b))
@@ -335,7 +343,16 @@ theorem haar_dictionaryEigenframeMean_eq
       (continuous_sq_trace_conj
         (productStabilizerDensity (pauliEigenframeSample (label output) b))
         (finitePauliMatrix (label input)))
-  rw [dictionaryEigenframeMean, integral_div,
+  change
+    (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+      (∑ b : Fin n → Bool,
+        (pauliEigenframeExpectation
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)
+          (label input) (label output) b) ^ 2) /
+        (Fintype.card (Fin n → Bool) : ℝ)
+      ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) = _
+  rw [integral_div,
     integral_finsetSum _ (fun b _ =>
       integrable_finiteUnitaryHaar_of_continuous _ (hcont b))]
   rw [Finset.sum_congr rfl fun b _ =>
@@ -374,7 +391,15 @@ theorem haar_adaptiveEigenframeTwoQueryScore_eq
       (continuous_sq_trace_conj
         (productStabilizerDensity (pauliEigenframeSample (label output) b))
         (finitePauliMatrix (label input)))
-  rw [adaptiveEigenframeTwoQueryScore, integral_div,
+  change
+    (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+      (∑ output : ι, ∑ input : ι,
+        dictionaryEigenframeMean label
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ) output input) /
+        (Fintype.card ι : ℝ) ^ 2
+      ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) = _
+  rw [integral_div,
     integral_finsetSum _ (fun output _ =>
       integrable_finsetSum _ (fun input _ => hint output input))]
   rw [Finset.sum_congr rfl fun output _ =>
@@ -382,10 +407,10 @@ theorem haar_adaptiveEigenframeTwoQueryScore_eq
   rw [Finset.sum_congr rfl fun output _ =>
     Finset.sum_congr rfl fun input _ =>
       haar_dictionaryEigenframeMean_eq hn label hlabel output input]
-  rw [Finset.sum_const, Finset.sum_const, Finset.card_univ, Finset.card_univ,
-    nsmul_eq_mul, nsmul_eq_mul]
+  rw [Finset.sum_const, Finset.sum_const, nsmul_eq_mul, nsmul_eq_mul]
   have hM : (Fintype.card ι : ℝ) ≠ 0 := by positivity
   field_simp
+  simp
 
 end
 

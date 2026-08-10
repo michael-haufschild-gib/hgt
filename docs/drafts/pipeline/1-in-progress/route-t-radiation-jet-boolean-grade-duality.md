@@ -628,3 +628,111 @@ growth estimate for `log|XiC|` on the enclosing strip.
 - `[PAPER-PROVED]`: cubic safe-boundary dominance (RJG35).
 - `[FAILED]`: absolute strip-boundary closure of the Poincare--Lelong landing.
 - Surviving core: signed bulk--boundary cancellation for the literal completed source.
+
+---
+
+## 20. Conjecture loop 7 — transverse cutoff faces are intrinsically non-arithmetic
+
+### Verdict: `[FAILED — MOVE THEM INTO THE PROVED ZERO-FREE COLLAR]`
+
+The Xi divisor lies in `|Im z|<1/2` in the centered spectral coordinate.  Therefore choose once and
+for all
+
+```text
+1/2 < d < a.
+```
+
+The mass branch is holomorphic on `|Im z|<a`, while both horizontal faces `Im z=+-d` lie outside
+the divisor.  In the original zeta coordinate `s=1/2+i z`, the lower face is the safe Euler line
+`Re s=1/2+d>1`; Xi evenness and Schwarz symmetry carry the upper face to the same line.  Thus the
+transverse cutoff is not an unknown divisor face.  It can be replaced by an exact safe-line Green
+current.
+
+### Theorem H — safe-strip Green landing `[PAPER-PROVED]`
+
+Put
+
+```text
+U(z)=log|XiC(z)|,
+S_d={z=x+i y: |y|<d}.
+```
+
+For fixed `a>d`, `sigma>0`, and real `u`, the mass weight `W=W_(a,sigma+iu)` and its first two
+derivatives decay exponentially as `|x|->infinity` on the closed strip; `U` and its first
+derivatives have only order-one completed-Xi growth on the two zero-free faces.  Green's second
+identity, first on finite rectangles and then at infinite width, gives
+
+```text
+2*pi V_(a,sigma)(u)
+ = integral_(S_d) U Delta W dA
+   + integral_(boundary S_d) (W partial_n U-U partial_n W) dx.  (RJG37)
+```
+
+The divisor contribution is exactly `2*pi sum_q W(alpha_q)`, including multiplicities; every XiC
+zero lies inside `S_d`, and the vertical rectangle faces vanish.  This is (RJG28) without a
+transverse compact cutoff.
+
+Let `c=1/2+d` and write on the upper face
+
+```text
+sqrt(a^2+(x+i d)^2)=M+i K,
+A=(x+i d)/(M+i K)=A_r+i A_i,
+U_c(x)=log|xi(c+i x)|.
+```
+
+Xi evenness and Schwarz symmetry give the same `U_c` on both faces and identify their common
+outward normal derivative with `partial_c U_c`.  Moreover
+
+```text
+W_+ + W_- = 2 exp(-2 sigma M) cosh(2uK),
+
+partial_n W_+ + partial_n W_-
+ = 4 exp(-2 sigma M)
+     [sigma A_i cosh(2uK)+u A_r sinh(2uK)].              (RJG38)
+```
+
+Consequently the complete boundary term in (RJG37) is the single safe-line current
+
+```text
+integral_R {
+  2 exp(-2 sigma M) cosh(2uK) partial_c U_c(x)
+  -4 U_c(x) exp(-2 sigma M)
+     [sigma A_i cosh(2uK)+u A_r sinh(2uK)]
+} dx.                                                    (RJG39)
+```
+
+On `c>1`, both `U_c` and `partial_c U_c` have coefficient-exact Gamma/rational plus absolutely
+convergent Euler representations: `log zeta` contributes `Lambda(n)/log(n)`, while its derivative
+contributes `-Lambda(n)`.  Hence (RJG39) is a literal prime--Gamma source current, not divisor-fed
+notation.
+
+### Hostile audit
+
+- (RJG37) is still an identity, not an estimate.  Its interior term
+  `integral U Delta W` contains the nonlinear completed-Xi potential and carries the RH-bearing
+  cancellation.
+- Theorem G forbids taking absolute values in (RJG39): its two hyperbolic boundary channels have
+  larger cubic type than every interior off-line copy.
+- The advance is exact localization: all non-arithmetic transverse cutoff ambiguity is removed,
+  and the full boundary is now a known safe-line Euler--Gamma functional.
+- The remaining producer is one signed bulk-to-boundary Ward identity proving cancellation of the
+  positive curvature `Delta W` against (RJG39) at the cubic clock.
+
+## 21. Revised open core
+
+Prove, directly from the centered theta/von-Mangoldt source and without absolute values,
+
+```text
+integral_(S_d) U Delta W_(a,1+i a^3) dA
+  + BoundaryEulerGamma_(a,d) -> 0                       (RJG40)
+```
+
+as `a->infinity`, where `BoundaryEulerGamma` is exactly (RJG39).  By (RJG37) and Theorem D this
+proves RH.  Any valid proof must exhibit the cancellation before estimating the two terms; each
+term separately has the enclosing-boundary exponential type from Theorem G.
+
+## Log, continued once more
+
+- 2026-08-10 — transverse cutoff ambiguity removed: safe-strip Green identity reduces both
+  horizontal faces to one absolutely convergent Euler--Gamma line and isolates a single signed
+  nonlinear bulk cancellation (RJG40).
