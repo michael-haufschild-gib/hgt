@@ -5215,3 +5215,58 @@ unconditionally, with explicit constants, inside the budget.  The residue is a g
 oscillatory sum over pairs of *primes* — where the corpus's sharp near-diagonal weight `q/log q`
 (`PrimeWindowSharpLevel`) and the large-values layer act, and where, at the level of a single
 frequency, it is the Halász deficit of unit 4.
+
+## Unit 36 — the decomposition is an exact identity, and everything but the bilinear form is paid
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamareSquareMultiple.lean`
+
+Units 30–35 bounded the pieces; this unit proves the decomposition is an **equality**, so the mean
+square really does split.  The part the bilinear form misses, beyond the rough integers, is carried
+by the multiples of a designated prime square, assembled into one Dirichlet polynomial:
+
+```text
+sqMultCount P n  := #{p ∈ P : p² ∣ n}                    (≤ ω_P(n), since p² ∣ n ⇒ p ∣ n)
+sqMultCoeff P n  := μ(n)·sqMultCount P n / ω_P(n)        ‖·‖ ≤ min(1, sqMultCount P n)
+image_ramareCofactor_dvd :  { p·m : m ∈ cof(s,p), p ∣ m }  =  { n ∈ s : p² ∣ n }
+sum_ramare_remainder_eq_sqMult :
+    ∑_{p ∈ P} (Ramaré remainder at p)  =  ∑_{n ≤ M} sqMultCoeff P n · n^{2πiw}
+logPoly_moebius_eq_ramare_decomp :
+    ∑_{n ≤ M} μ(n)n^{2πiw}  =  B(w)  +  ∑_{n ≤ M} sqMultCoeff P n·n^{2πiw}
+                                     +  ∑_{n rough} μ(n)n^{2πiw}        (an identity)
+```
+
+Its energy is the count of square-multiples, by the same exchange as unit 33:
+
+```text
+sum_sqMultCount_Icc        :  ∑_{n ≤ M} sqMultCount P n = ∑_{p ∈ P} ⌊M/p²⌋
+sum_energy_sqMultCoeff_le  :  ∑_{n ≤ M} ‖sqMultCoeff P n‖² ≤ M·∑_{p ∈ P} p^{-2}
+integral_Icc_normSq_sqMultPoly_le :
+    ∫_{|w| ≤ W}‖·‖² ≤ ((5π/2)W + (5e/2)M)·M·∑_{p ∈ P} p^{-2} .
+```
+
+Splitting the mean square needs a **weighted** triangle inequality, not `‖a+b+c‖² ≤ 3(…)`: a factor
+`3` on the diagonal would push `3·10·W·M` past the budget.  With
+
+```text
+normSq_add_le_weighted :  ‖a + u‖² ≤ (1+δ)‖a‖² + (1 + 1/δ)‖u‖²
+```
+
+the main term keeps its constant and the two error polynomials absorb the loss:
+
+```text
+integral_Icc_normSq_logPoly_moebius_le_decomp :
+    ∫_{|w| ≤ W}‖F‖² ≤ (1+δ)∫‖B‖² + 2(1+1/δ)( ∫‖sqMult‖² + ∫‖rough‖² )
+integral_Icc_normSq_logPoly_moebius_le_bilinear_budget
+    (W ≥ 1, δ > 0, 0 < ε ≤ 1, |P| ≤ M, A ≥ 15e/(2ε), M·∑_p p^{-2} ≤ ε·M) :
+    ∫_{|w| ≤ W}‖F‖²  ≤  (1+δ)·∫_{|w| ≤ W}‖B‖²  +  2(1+1/δ)·( 12·W·M + (1 + 5e/2)·ε·M² ) .
+```
+
+**Card status.**  `OffDiagonalSmall μ hh` — the sole residue of the whole route since unit 24 — is
+now reduced, *unconditionally and with explicit constants*, to the mean square of the Ramaré
+bilinear form alone; and by unit 35 its `p`-diagonal is `10·W·M + ε·M²`.  What remains is exactly
+
+```text
+∑_{p ≠ p' ∈ P}  ∫_{|w| ≤ W}  (p/p')^{2πiw}·G_p(w)·conj(G_{p'}(w))  dw   ≤   ε·M² ,
+```
+
+a bilinear oscillatory sum over **pairs of primes**.  Nothing else on the card is open.

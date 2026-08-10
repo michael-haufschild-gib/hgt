@@ -201,6 +201,8 @@ theorem tendsto_charFun_socle {σ : ℝ} (hσ : 0 < σ) (p : Nat.Primes) (t : �
       Finset.prod_image fun i _ j _ h => hinj h]
     refine Finset.prod_congr rfl fun j _ => ?_
     rw [ratio_temperatureParameters hσ p j, exp_socleCoeff hσ p t, hq]
+    push_cast
+    ring
   simp only [hfactor]
   have hprod := (hasProd_modeCharFun q (phaseAngle q t)).tendsto_prod_nat
   have hlim := hprod.const_mul

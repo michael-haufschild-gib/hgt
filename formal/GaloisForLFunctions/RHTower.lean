@@ -4248,6 +4248,7 @@ import GaloisForLFunctions.RHTower.Sieve.RamareBilinearMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.SupportMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.RoughCountTuran
 import GaloisForLFunctions.RHTower.Sieve.RamareEnergy
+import GaloisForLFunctions.RHTower.Sieve.RamareSquareMultiple
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6889,6 +6890,7 @@ import GaloisForLFunctions.RHTower.Sieve.RamareBilinearMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.SupportMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.RoughCountTuran
 import GaloisForLFunctions.RHTower.Sieve.RamareEnergy
+import GaloisForLFunctions.RHTower.Sieve.RamareSquareMultiple
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen

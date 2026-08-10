@@ -1196,3 +1196,239 @@ mere geometric norm bound is too weak and will be rejected.
   Cayley metric-work identity, and its telescoping law (RJG63)--(RJG66).
 - 2026-08-10 — proved the fixed finite-rank coercivity strategy impossible; isolated structured
   resolvent-orbit cancellation and the two adjoint boundary vectors as the surviving producer.
+
+---
+
+## 33. Conjecture loop 11 — factorial simplex gain after boundary contraction
+
+### Conjecture
+
+Use the Volterra factor in `G B=iV` to prove a uniform factorial estimate for the observed source
+coefficients, for example
+
+```text
+norm(C X^k) <= K R^k/k!                                  (RJG69)
+```
+
+or the corresponding estimate on both adjoint seeds spanning `range(C)`.  Combined with the
+coefficient expansion of `U^n=(I+X)^n(I-X)^(-n)`, such a bound would make the observed orbit grow
+like `exp(O(sqrt(n)))` and close (RJG61).
+
+### Verdict: `[FALSE — EVERY DIVISOR EIGENLINE SURVIVES THE CONTRACTION]`
+
+Fix a divisor copy `q`, put `x_q=thetaXiBoundaryScaledEigenvalue(q)`, and
+`f_q=thetaXiDivisorEigenvector(q)`.  The existing exact laws give
+
+```text
+X f_q=x_q f_q,
+x_q != 0,
+C f_q != 0.
+```
+
+Therefore, for every `k`,
+
+```text
+C X^k f_q=x_q^k C f_q,
+norm(C X^k f_q)=norm(x_q)^k norm(C f_q).                 (RJG70)
+```
+
+If (RJG69) held, division by the nonzero fixed quantities would give
+
+```text
+k! <= constant * (R/norm(x_q))^k
+```
+
+for every `k`, contradicting the elementary fact that factorial eventually dominates every fixed
+geometric sequence.  The same argument applies jointly to the two adjoint boundary seeds: since
+`C f_q` is a nonzero vector in the affine two-dimensional range, at least one coordinate against
+`C pinnedOne` and `C pinnedCoordinate` is nonzero.  Hence no fixed source basis can hide the modal
+geometric coefficient behind factorial Volterra decay.
+
+This is not merely failure of an operator-norm estimate.  It proves that multiplying by the
+singular metric and exposing a bare Volterra primitive cannot be iterated coefficientwise: every
+subsequent uncancelled `B` restores the full reciprocal-Xi eigenvalue.  Any proof which takes norms
+between the Volterra factors has already lost the only possible cancellation.
+
+### Positive survivor — cancellation must occur across Cayley orders
+
+The binomial/negative-binomial coefficient of `X^k` in `U^n` cannot be bounded term by term.
+Required estimate must retain the signed sum over `k` until after the rank-two contraction:
+
+```text
+C U^n
+ = sum_(k>=0) [z^k]((1+z)/(1-z))^n * C X^k.             (RJG71)
+```
+
+On each divisor line this signed series sums exactly to `kappa(x_q)^n`; asking it to be
+subexponential is exactly asking `Re(x_q)=0`.  Thus a generic Volterra-simplex theorem would be an
+RH-equivalent spectral assertion in disguise.  The only noncircular successor is an arithmetic
+identity coupling the coefficients `C X^k` before spectral decomposition — equivalently, a
+centered prime--Gamma Ward identity for the whole generating function in (RJG71), not a bound for
+its individual Taylor coefficients.
+
+## 34. Big-picture synthesis after the failed simplex loop
+
+The mass-light-cone, parabolic heat, and Cayley charts now display one universal obstruction:
+
+```text
+half-density arithmetic boundary
+  -> signed prime--Gamma generating function
+  -> holomorphic interior/divisor response
+  -> finite faithful observation.                               (RJG72)
+```
+
+Maximum-principle bounds, fixed Hardy filters, finite-rank metric completion, and factorial
+Volterra estimates all act before the signed boundary sum is completed.  Each therefore sees the
+larger half-density boundary type and cannot control the interior response.  Poincare--Lelong,
+parabolic heat, and the singular-metric Cayley law are three exact ways to move the observation,
+but none changes this ordering.
+
+The reasons for the repeated stalls are shadows of one higher principle:
+
+> **Boundary-before-norm principle.**  For a faithful completed-Xi receiver, subcritical interior
+> type can only be created by the exact signed prime--Gamma boundary relation.  Any positive,
+> absolute, coefficientwise, or fixed-condition-number operation applied before that relation
+> retains the enclosing boundary type.
+
+This principle narrows the next Route T conjecture.  Do not estimate `C X^k`, `C U^n`, the bulk
+Poincare--Lelong term, or individual prime channels.  Construct one coefficient-exact generating
+identity equating (RJG71), after pairing with the two affine boundary vectors, to the centered
+von-Mangoldt/Gamma current before norms.  Only then seek a Ward cancellation.  A proposed identity
+must be checked against (RJG70): if it implies factorial or absolute decay on each divisor mode,
+it is false.
+
+## Log, coefficientwise no-go
+
+- 2026-08-10 — falsified the factorial-simplex successor by exact observed divisor eigenlines;
+  proved coefficientwise Volterra decay impossible and isolated across-order signed Cayley
+  summation as the only surviving source mechanism.
+- 2026-08-10 — unified mass-cone, heat, and Cayley failures under the boundary-before-norm
+  principle; next viable theorem must be a coefficient-exact prime--Gamma Ward generating law.
+
+---
+
+## 35. Conjecture loop 12 — remove the reciprocal square before Cayley transformation
+
+The square flow was inherited from the mass/heat coordinate `alpha^2`.  It is not intrinsic to the
+fixed compact source inverse.  RH is already equivalent to reality of every nonzero eigenvalue of
+
+```text
+B=thetaKernelOperator,
+mu_q=-(alpha_q)^(-1).
+```
+
+Choose
+
+```text
+h_1=1/(2(1+norm(B))),
+X_1=i h_1 B,
+U_1=(I+X_1)(I-X_1)^(-1).                              (RJG73)
+```
+
+Then `norm(X_1)<1`, so denominator is unconditionally a unit.  On a divisor line,
+
+```text
+x_q=i h_1 mu_q,
+kappa_q=(1+x_q)/(1-x_q).                                (RJG74)
+```
+
+Since `Re(i mu_q)=-Im(mu_q)`, scalar Cayley geometry gives
+
+```text
+norm(kappa_q)=1  iff Im(mu_q)=0 iff Im(alpha_q)=0.       (RJG75)
+```
+
+Line conjugation sends `mu_q` to its complex conjugate, so every off-line pair supplies one
+expanding multiplier.  The pinned monopole still gives `C f_q!=0`.  The compact-perturbation and
+Gelfand proof of (RJG60) therefore applies verbatim and yields the strictly simpler receiver
+
+```text
+RH iff for every r>1, norm(C U_1^n)/r^n -> 0.            (RJG76)
+```
+
+Status: `[PAPER-PROVED] [NOVELTY UNVERIFIED]`.  No spectral mapping beyond compact Fredholm and the
+elementary Cayley transport is used.
+
+### Exact improvement of the Green law
+
+The direct clock interacts with (RJG63) without the extra square.  Because `h_1` is real,
+
+```text
+G X_1+X_1^dagger G
+ = i h_1(GB-B^dagger G)
+ = -h_1 C.                                                (RJG77)
+```
+
+Let `R_1=(I-X_1)^(-1)`.  The Cayley expansion now gives
+
+```text
+U_1^dagger G U_1-G=-2h_1 R_1^dagger C R_1.              (RJG78)
+```
+
+This defect has rank two, not merely rank at most four.  Using the already formalized amplitudes
+
+```text
+<Cg,g>=|In(g)|^2-|Out(g)|^2,
+```
+
+and setting `g=R_1 f`, (RJG78) is exactly
+
+```text
+<G U_1 f,U_1 f> + 2h_1 |In(R_1 f)|^2
+ = <G f,f> + 2h_1 |Out(R_1 f)|^2.                       (RJG79)
+```
+
+Thus the correct source object is a singular-state, one-in/one-out conservative scattering
+system.  The earlier conclusion that no conservative colligation exists was specific to the
+unweighted ambient metric and to the squared clock.  In canonical singular metric, direct clock
+has an exact positive port balance.
+
+### Hostile audit
+
+Equation (RJG79) does not by itself prove (RJG76).  `G` remains noncoercive and autonomous source
+orbits need not satisfy `In(R_1U_1^j f)=0`.  Summing (RJG79) merely trades state energy for signed
+incoming/outgoing flux.  However, it removes two avoidable losses:
+
+1. boundary work is exactly two-channel rather than four-leg;
+2. no coefficientwise square or reciprocal-square functional calculus separates the two ports.
+
+The new producer is now precise: prove source passivity of the direct scattering orbit,
+
+```text
+sum_(j<n)|Out(R_1U_1^j f)|^2
+ <= sum_(j<n)|In(R_1U_1^j f)|^2 + exp(o(n)) norm(f)^2,   (RJG80)
+```
+
+on the two adjoint boundary seeds, by a coefficient-exact centered prime--Gamma identity.  Taking
+absolute values portwise or replacing `G` by a fixed coercive completion is excluded by Sections
+31 and 33.
+
+### Positive source-resolvent chart
+
+The denominator `I-X_1=I-i h_1B` is one source resolvent at the purely imaginary pencil parameter
+`z=-i h_1`.  The ODE formula behind `thetaRealResolventMoment` extends algebraically to complex
+`z` in the Neumann disk:
+
+```text
+pinnedMean((I+zB)^(-1)f)
+ = [integral_0^1 sourceChar(z,Q(t)) f(t) dt]
+   / rootA(thetaSource,z,1),                              (RJG81)
+
+rootA(thetaSource,z,1)=XiC(z)/thetaSource.mass.
+```
+
+At `z=+-i h_1`, integrating factor is real exponential `exp(-/+h_1 Q(t))`.  Hence direct Cayley
+ports have a coefficient-exact fixed safe-pencil representation before divisor decomposition.
+This is the concrete generating-law interface missing after (RJG71): powers of `U_1` become
+repeated derivatives/finite differences of the two source resolvents in (RJG81), with literal
+theta moments in numerator and completed Xi source in denominator.  Formalization must prove the
+complex resolvent moment law rather than assume it from the real-parameter theorem.
+
+## Log, direct-Cayley pivot
+
+- 2026-08-10 — removed unnecessary reciprocal square; direct source Cayley clock gives same exact
+  RH growth receiver with simpler spectral transport.
+- 2026-08-10 — discovered exact rank-two singular-metric port balance (RJG79), upgrading the
+  observable pair to a one-in/one-out conservative scattering system.
+- 2026-08-10 — identified complex source-resolvent moment formula (RJG81) at two fixed imaginary
+  safe-pencil points as the coefficient-exact prime--Gamma generating interface.

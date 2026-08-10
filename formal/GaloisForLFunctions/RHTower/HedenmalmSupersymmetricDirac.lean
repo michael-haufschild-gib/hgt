@@ -129,6 +129,41 @@ theorem thetaSupersymmetricDirac_apply
       (thetaWeightedDerivative.adjoint ⟨p.1.ofLp.2, p.2.2⟩,
         thetaWeightedDerivative ⟨p.1.ofLp.1, p.2.1⟩) := rfl
 
+/-! ### Explicit resolvent at `i` -/
+
+private def thetaDiracFst : D →L[ℂ] H := WithLp.fstL 2 ℂ H H
+
+private def thetaDiracSnd : D →L[ℂ] H := WithLp.sndL 2 ℂ H H
+
+/-- Centered graph coordinate of the solution to `(Q - i)(x,y) = (f,g)`. -/
+def thetaDiracResolventK : D →L[ℂ] thetaCentered :=
+  thetaDiracGramInverse.comp
+    (thetaCentered.orthogonalProjectionOnto.comp thetaDiracSnd +
+      Complex.I • thetaCenteredSourceInverse.adjoint.comp thetaDiracFst)
+
+/-- First component of the nonreal Dirac resolvent. -/
+def thetaDiracResolventX : D →L[ℂ] H :=
+  thetaCenteredSourceInverse.comp thetaDiracResolventK
+
+/-- Second component of the nonreal Dirac resolvent.  Its orthogonal summand is the
+one-dimensional kernel of `A†`. -/
+def thetaDiracResolventY : D →L[ℂ] H :=
+  thetaCentered.subtypeL.comp
+      (thetaCenteredSourceInverse.adjoint.comp
+        (thetaDiracFst + Complex.I • thetaDiracResolventX)) +
+    Complex.I • thetaCenteredᵮ.starProjection.comp thetaDiracSnd
+
+/-- Bounded inverse candidate for `Q - i`, assembled from its two exact components. -/
+def thetaSupersymmetricDiracResolventAtI : D →L[ℂ] D :=
+  (WithLp.prodContinuousLinearEquiv 2 ℂ H H).symm.toContinuousLinearMap.comp
+    (thetaDiracResolventX.prod thetaDiracResolventY)
+
+@[simp] theorem thetaDiracResolventAtI_fst (p : D) :
+    (thetaSupersymmetricDiracResolventAtI p).ofLp.1 = thetaDiracResolventX p := rfl
+
+@[simp] theorem thetaDiracResolventAtI_snd (p : D) :
+    (thetaSupersymmetricDiracResolventAtI p).ofLp.2 = thetaDiracResolventY p := rfl
+
 end HedenmalmClosedWeightedDerivative
 
 end

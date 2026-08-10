@@ -237,6 +237,36 @@ theorem hasDerivAt_xiShiftedAperturePairGap_oddCrossing_eq_sourceShear
     hw] at h
   exact h
 
+/-- **Zero-free arithmetic shear law.** In the endpoint convergence window, the adaptive even
+shear is expressed entirely by the absolutely convergent normalized prime--Gamma
+negative-binomial source tower. No Xi zero coordinate occurs on the derivative side. -/
+theorem hasDerivAt_xiShiftedAperturePairGap_oddCrossing_eq_primeArchAdaptiveShear
+    {y : ℝ} (hy : 0 < y) (hymax : y < 41 / 2) (p : Polynomial ℝ) :
+    HasDerivAt
+      (fun v => xiShiftedAperturePairGap v p (X * p))
+      (-2 * HTGeometry.momentInner
+        (fun k => (primeArchShiftedReciprocalMoment y k).re)
+        (X * p) (X * xiShiftedBoundaryShiftedEuler 1 p)) y := by
+  have h :=
+    hasDerivAt_xiShiftedAperturePairGap_oddCrossing_eq_adaptiveShear hy p
+  rw [xiShiftedAperturePairGap_eq_primeArchMomentInner hy hymax] at h
+  exact h
+
+/-- The completed mixed successor aggregate is twice the source-only prime--Gamma adaptive shear
+throughout the negative-binomial window. -/
+theorem xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_two_primeArchShear
+    {y : ℝ} (hy : 0 < y) (hymax : y < 41 / 2) (p : Polynomial ℝ) :
+    xiShiftedCompletedMomentAggregate y 2
+        (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
+          (xiShiftedOddCrossingCoefficientPacket p)) =
+      2 * HTGeometry.momentInner
+        (fun k => (primeArchShiftedReciprocalMoment y k).re)
+        (X * p) (X * xiShiftedBoundaryShiftedEuler 1 p) := by
+  rw [xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_two_shear hy]
+  congr 1
+  rw [← xiShiftedAperturePairGap_eq_momentInner hy,
+    xiShiftedAperturePairGap_eq_primeArchMomentInner hy hymax]
+
 /-- On the odd packet, the successor `P^sharp` carrier is exactly the mixed factorial amplitude
 `Q`; this specializes the one-Euler midpoint identity to the bilinear contact current. -/
 theorem xiShiftedBoundaryFactorialCarrierPolynomial_adaptiveOddPacket_eq_mixed

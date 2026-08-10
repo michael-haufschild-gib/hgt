@@ -1673,3 +1673,40 @@ Everything below Hilbert irreducibility — Hensel factorisation, Newton–Rychl
 Newton–Puiseux (root and splitting forms), Eisenstein's theorem on algebraic power series — is
 formalized, unconditionally and axiom-clean.  What remains for §1 is the p-adic evaluation of a
 Puiseux branch and the specialisation argument built on it.
+
+## The formal-to-arithmetic bridge: p-adic evaluation of a branch (2026-08-10)
+
+`HTGeometry/PadicPowerSeriesEvaluation.lean` (new, in the umbrella, axiom-clean) is the first
+component of §1's remaining input.
+
+mathlib already has evaluation of power series at a topologically nilpotent element as a *ring
+homomorphism* (`PowerSeries.eval₂Hom`, in `RingTheory/PowerSeries/Evaluation.lean`), for a
+complete separated **linearly topologized** target.  The one missing ingredient was that `ℤ_p` is
+linearly topologized — mathlib has that instance only for the discrete topology and for
+`WithIdeal`-adic topologies, not for `PadicInt`'s metric topology.  Note the target must be `ℤ_p`,
+not `ℚ_p`: a field has no basis of neighbourhoods of zero consisting of ideals, so `ℚ_p` is *not*
+linearly topologized.
+
+- **`hasBasis_nhds_zero_span_pow`** — the closed balls around zero in `ℤ_p` are exactly the ideals
+  `(p^n)`, so those ideals are a neighbourhood basis;
+- **`isLinearTopology_padicInt`** — hence `IsLinearTopology ℤ_[p] ℤ_[p]`;
+- `hasEval_of_norm_lt_one` — an element of norm below one is topologically nilpotent;
+- **`padicEval`** — evaluation `PowerSeries ℤ →+* ℤ_[p]` at any such element, a ring
+  homomorphism;
+- **`isRoot_padicEval`** — a formal root specialises: if `g.eval z = 0` for `g` a polynomial with
+  power-series coefficients over `ℤ` and `z ∈ ℤ⟦t⟧`, then
+  `(g.map (padicEval a)).eval (padicEval a z) = 0`.
+
+**Why this is the shape that works.**  Eisenstein's theorem gives `D·q^{2n}·yₙ ∈ ℤ`, so
+`z := D · rescale (q²) y` has *integer* coefficients, and `y` is recovered from `z` by scaling.
+Under the same scaling the defining polynomial `f ∈ ℤ[t][X]` becomes
+`g(t, X) = D^d · f(q² t, X/D)`, again with integer coefficients and monic in `X`.  So the whole
+branch datum lives in `ℤ⟦t⟧`, exactly where `padicEval` applies — and a rational `t₀` with
+`v_p(t₀) > 2 v_p(q)` is an admissible evaluation point.
+
+### Remaining Lean layers for the card
+
+- §1: the scaling step above (Eisenstein's output into `ℤ⟦t⟧` form), then the specialisation
+  argument — ramification at a branch point forces a rational root to come from an unramified
+  branch, which is where Hilbert irreducibility is finally concluded;
+- §4: complete.
