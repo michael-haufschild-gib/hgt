@@ -72,6 +72,244 @@ theorem gibbsWeight_wstar_mul (q : M → ℂ) (x y : GasWord M) :
   · rw [if_neg h, gibbsWeight_of_not_diag]
     exact fun hd => h ((diag_wstar_mul_iff x y).mp hd)
 
+/-! ## Rank-one kernels -/
+
+open scoped ComplexOrder
+
+/-- **A real rank-one kernel is positive semidefinite**, in the finitely supported quadratic form
+that `Matrix.PosSemidef` uses. -/
+theorem quadForm_rankOne_nonneg {ι : Type*} (u : ι → ℝ) (c : ι →₀ ℂ) :
+    0 ≤ (c.sum fun i ci => c.sum fun j cj =>
+      star ci * (((u i : ℝ) : ℂ) * ((u j : ℝ) : ℂ)) * cj) := by
+  classical
+  have key : (c.sum fun i ci => c.sum fun j cj =>
+        star ci * (((u i : ℝ) : ℂ) * ((u j : ℝ) : ℂ)) * cj)
+      = star (∑ j ∈ c.support, ((u j : ℝ) : ℂ) * c j)
+        * (∑ j ∈ c.support, ((u j : ℝ) : ℂ) * c j) := by
+    rw [star_sum, Finset.sum_mul_sum, Finsupp.sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Finsupp.sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    have hstar : star (((u i : ℝ) : ℂ) * c i) = ((u i : ℝ) : ℂ) * star (c i) := by
+      rw [star_mul', Complex.star_def, Complex.conj_ofReal]
+    rw [hstar]
+    ring
+  rw [key]
+  exact star_mul_self_nonneg _
+
+/-! ## The telescoping decomposition of one mode -/
+
+/-- The telescoping coefficients of `q^{-m}`. -/
+noncomputable def telCoeff (t : ℝ) (k : ℕ) : ℝ := if k = 0 then 1 else (t⁻¹) ^ k * (1 - t)
+
+theorem telCoeff_nonneg {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) (k : ℕ) : 0 ≤ telCoeff t k := by
+  rw [telCoeff]
+  split
+  · norm_num
+  · have h1 : (0 : ℝ) < t⁻¹ := by positivity
+    have h2 : (0 : ℝ) ≤ 1 - t := by linarith
+    positivity
+
+theorem sum_telCoeff {t : ℝ} (ht0 : 0 < t) (m : ℕ) :
+    ∑ k ∈ Finset.range (m + 1), telCoeff t k = (t⁻¹) ^ m := by
+  have ht : t ≠ 0 := ne_of_gt ht0
+  induction m with
+  | zero => simp [telCoeff]
+  | succ n ih =>
+    rw [Finset.sum_range_succ, ih, telCoeff, if_neg (Nat.succ_ne_zero n)]
+    have hkey : t⁻¹ ^ (n + 1) * t = t⁻¹ ^ n := by
+      rw [pow_succ, mul_assoc, inv_mul_cancel₀ ht, mul_one]
+    linear_combination -hkey
+
+theorem pow_mul_pow_mul_inv_pow_min {t : ℝ} (ht0 : 0 < t) (b d : ℕ) :
+    t ^ b * t ^ d * (t⁻¹) ^ (min b d) = t ^ (max b d) := by
+  have ht : t ≠ 0 := ne_of_gt ht0
+  have hbd : b + d = max b d + min b d := by omega
+  rw [← pow_add, hbd, pow_add, mul_assoc, ← mul_pow, mul_inv_cancel₀ ht, one_pow, mul_one]
+
+/-- The rank-one vectors of the mode decomposition. -/
+noncomputable def modeVec (t : ℝ) (k b : ℕ) : ℝ := if k ≤ b then t ^ b else 0
+
+/-- **The single-mode kernel `t^{max(b,d)}` is a nonnegative combination of rank-one kernels.** -/
+theorem modeKernel_decomp {t : ℝ} (ht0 : 0 < t) {b d N : ℕ} (hb : b ≤ N) :
+    ∑ k ∈ Finset.range (N + 1), telCoeff t k * modeVec t k b * modeVec t k d
+      = t ^ (max b d) := by
+  classical
+  have hminN : min b d ≤ N := le_trans (min_le_left b d) hb
+  have hsub : Finset.range (min b d + 1) ⊆ Finset.range (N + 1) := by
+    intro k hk
+    rw [Finset.mem_range] at hk ⊢
+    omega
+  have hvanish : ∀ k ∈ Finset.range (N + 1), k ∉ Finset.range (min b d + 1) →
+      telCoeff t k * modeVec t k b * modeVec t k d = 0 := by
+    intro k _ hk
+    rw [Finset.mem_range, not_lt] at hk
+    rcases min_choice b d with h | h
+    · have hk' : b + 1 ≤ k := by rw [← h]; exact hk
+      have hkb : ¬ k ≤ b := by omega
+      simp [modeVec, hkb]
+    · have hk' : d + 1 ≤ k := by rw [← h]; exact hk
+      have hkd : ¬ k ≤ d := by omega
+      simp [modeVec, hkd]
+  rw [← Finset.sum_subset hsub hvanish]
+  have hval : ∀ k ∈ Finset.range (min b d + 1),
+      telCoeff t k * modeVec t k b * modeVec t k d = telCoeff t k * (t ^ b * t ^ d) := by
+    intro k hk
+    rw [Finset.mem_range] at hk
+    have h1 : k ≤ b := by omega
+    have h2 : k ≤ d := by omega
+    rw [modeVec, modeVec, if_pos h1, if_pos h2]
+    ring
+  rw [Finset.sum_congr rfl hval, ← Finset.sum_mul, sum_telCoeff ht0,
+    ← pow_mul_pow_mul_inv_pow_min ht0 b d]
+  ring
+
+/-! ## Quadratic forms with a rank-one decomposition -/
+
+/-- **A kernel that is a sum of real rank-one kernels on a finite set has a nonnegative quadratic
+form there.** -/
+theorem quadForm_nonneg_of_decomp {ι κ : Type*} (K : Matrix ι ι ℂ) (c : ι →₀ ℂ)
+    (s : Finset κ) (u : κ → ι → ℝ)
+    (h : ∀ x ∈ c.support, ∀ y ∈ c.support,
+      K x y = ∑ k ∈ s, ((u k x : ℝ) : ℂ) * ((u k y : ℝ) : ℂ)) :
+    0 ≤ c.sum fun i ci => c.sum fun j cj => star ci * K i j * cj := by
+  classical
+  have hrw : (c.sum fun i ci => c.sum fun j cj => star ci * K i j * cj)
+      = ∑ k ∈ s, (c.sum fun i ci => c.sum fun j cj =>
+          star ci * (((u k i : ℝ) : ℂ) * ((u k j : ℝ) : ℂ)) * cj) := by
+    simp only [Finsupp.sum]
+    have step1 : ∀ i ∈ c.support, (∑ j ∈ c.support, star (c i) * K i j * c j)
+        = ∑ k ∈ s, ∑ j ∈ c.support,
+            star (c i) * (((u k i : ℝ) : ℂ) * ((u k j : ℝ) : ℂ)) * c j := by
+      intro i hi
+      have hterm : ∀ j ∈ c.support, star (c i) * K i j * c j
+          = ∑ k ∈ s, star (c i) * (((u k i : ℝ) : ℂ) * ((u k j : ℝ) : ℂ)) * c j := by
+        intro j hj
+        rw [h i hi j hj, Finset.mul_sum, Finset.sum_mul]
+      rw [Finset.sum_congr rfl hterm, Finset.sum_comm]
+    rw [Finset.sum_congr rfl step1, Finset.sum_comm]
+  rw [hrw]
+  exact Finset.sum_nonneg fun k _ => quadForm_rankOne_nonneg (u k) c
+
+theorem quadForm_congr {ι : Type*} {K K' : Matrix ι ι ℂ} (c : ι →₀ ℂ)
+    (h : ∀ x ∈ c.support, ∀ y ∈ c.support, K x y = K' x y) :
+    (c.sum fun i ci => c.sum fun j cj => star ci * K i j * cj)
+      = c.sum fun i ci => c.sum fun j cj => star ci * K' i j * cj := by
+  classical
+  simp only [Finsupp.sum]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  refine Finset.sum_congr rfl fun j hj => ?_
+  rw [h i hi j hj]
+
+/-! ## The charge kernel -/
+
+open Classical in
+/-- The charge-equality kernel. -/
+noncomputable def chargeKernel (M : Type*) : Matrix (GasWord M) (GasWord M) ℂ :=
+  Matrix.of fun x y => if charge x = charge y then 1 else 0
+
+open Classical in
+theorem chargeKernel_apply (x y : GasWord M) :
+    chargeKernel M x y = if charge x = charge y then 1 else 0 := rfl
+
+theorem chargeKernel_posSemidef : (chargeKernel M).PosSemidef := by
+  classical
+  constructor
+  · refine Matrix.IsHermitian.ext fun x y => ?_
+    rw [chargeKernel_apply, chargeKernel_apply]
+    by_cases h : charge y = charge x
+    · rw [if_pos h, if_pos h.symm, star_one]
+    · rw [if_neg h, if_neg (fun hc => h hc.symm), star_zero]
+  · intro c
+    refine quadForm_nonneg_of_decomp _ c (c.support.image charge)
+      (fun γ x => if charge x = γ then 1 else 0) ?_
+    intro x hx y hy
+    rw [chargeKernel_apply]
+    have hmem : charge x ∈ c.support.image charge := Finset.mem_image_of_mem _ hx
+    rw [Finset.sum_eq_single (charge x)]
+    · by_cases h : charge x = charge y
+      · rw [if_pos h, if_pos (rfl : charge x = charge x), if_pos h.symm]
+        norm_num
+      · rw [if_neg h, if_pos (rfl : charge x = charge x),
+          if_neg (show ¬ charge y = charge x from fun hc => h hc.symm)]
+        norm_num
+    · intro γ _ hγ
+      rw [if_neg (fun hc => hγ hc.symm)]
+      norm_num
+    · intro hcon
+      exact absurd hmem hcon
+
+/-! ## The single-mode kernel -/
+
+/-- The kernel of one mode. -/
+noncomputable def modeKernel (t : ℝ) (i : M) : Matrix (GasWord M) (GasWord M) ℂ :=
+  Matrix.of fun x y => ((t : ℂ)) ^ (max (x.lower i) (y.lower i))
+
+theorem modeKernel_posSemidef {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) (i : M) :
+    (modeKernel (M := M) t i).PosSemidef := by
+  classical
+  constructor
+  · refine Matrix.IsHermitian.ext fun x y => ?_
+    show star (((t : ℂ)) ^ (max (y.lower i) (x.lower i)))
+      = ((t : ℂ)) ^ (max (x.lower i) (y.lower i))
+    rw [max_comm, ← Complex.ofReal_pow, Complex.star_def, Complex.conj_ofReal]
+  · intro c
+    refine quadForm_nonneg_of_decomp _ c (Finset.range (c.support.sup (fun x => x.lower i) + 1))
+      (fun k x => Real.sqrt (telCoeff t k) * modeVec t k (x.lower i)) ?_
+    intro x hx y hy
+    have hxN : x.lower i ≤ c.support.sup (fun x => x.lower i) :=
+      Finset.le_sup (f := fun x : GasWord M => x.lower i) hx
+    have hreal : ∑ k ∈ Finset.range (c.support.sup (fun x => x.lower i) + 1),
+        (Real.sqrt (telCoeff t k) * modeVec t k (x.lower i))
+          * (Real.sqrt (telCoeff t k) * modeVec t k (y.lower i))
+        = t ^ (max (x.lower i) (y.lower i)) := by
+      rw [← modeKernel_decomp ht0 hxN]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      have hsq := Real.mul_self_sqrt (telCoeff_nonneg ht0 ht1 k)
+      linear_combination (modeVec t k (x.lower i) * modeVec t k (y.lower i)) * hsq
+    show ((t : ℂ)) ^ (max (x.lower i) (y.lower i)) = _
+    rw [← Complex.ofReal_pow, ← hreal]
+    push_cast
+    ring
+
+/-! ## The product over a finite set of modes -/
+
+/-- The product of the mode kernels over a finite set of modes. -/
+noncomputable def modeProd (t : M → ℝ) (T : Finset M) : Matrix (GasWord M) (GasWord M) ℂ :=
+  Matrix.of fun x y => ∏ i ∈ T, ((t i : ℂ)) ^ (max (x.lower i) (y.lower i))
+
+theorem posSemidef_ones : (Matrix.of (fun (_ : GasWord M) (_ : GasWord M) => (1 : ℂ))).PosSemidef := by
+  classical
+  constructor
+  · exact Matrix.IsHermitian.ext fun _ _ => star_one 1
+  · intro c
+    refine quadForm_nonneg_of_decomp _ c (Finset.univ : Finset Unit) (fun _ _ => (1 : ℝ)) ?_
+    intro x _ y _
+    simp
+
+theorem modeProd_empty (t : M → ℝ) :
+    modeProd t (∅ : Finset M) = Matrix.of (fun (_ : GasWord M) (_ : GasWord M) => (1 : ℂ)) := by
+  ext x y
+  simp [modeProd]
+
+theorem modeProd_insert [DecidableEq M] (t : M → ℝ) {i : M} {T : Finset M} (hi : i ∉ T) :
+    modeProd t (insert i T) = Matrix.hadamard (modeKernel (t i) i) (modeProd t T) := by
+  ext x y
+  show ∏ j ∈ insert i T, _ = _
+  rw [Finset.prod_insert hi]
+  rfl
+
+theorem modeProd_posSemidef [DecidableEq M] {t : M → ℝ} (ht0 : ∀ i, 0 < t i) (ht1 : ∀ i, t i < 1)
+    (T : Finset M) : (modeProd (M := M) t T).PosSemidef := by
+  classical
+  induction T using Finset.induction with
+  | empty =>
+    rw [modeProd_empty]
+    exact posSemidef_ones
+  | insert i T hi ih =>
+    rw [modeProd_insert t hi]
+    exact (modeKernel_posSemidef (ht0 i) (ht1 i) i).hadamard ih
+
 end GasWord
 
 end GaloisForLFunctions.HTGeometry

@@ -69,9 +69,15 @@ Theorem 3 — the erased direction is the derived class, card `(7)`–`(8)`:
 Theorem 4 — sharp discriminant conditioning, card `(9)`–`(11)`:
 
 12. `hiddenDecoder_recovers` — off the collision the decoder returns the hidden coefficient.
-13. `hiddenDecoder_normSq` — the coefficient vector `(−1/c, 1/c)` has squared norm `2/‖c‖²`, i.e.
-    `‖D_c‖ = √2/|c|`.
-14. `conditioning_law` — `√|Disc| · ‖D_c‖ = √2`.
+13. `hiddenDecoder_normSq` — the coefficient vector `(−1/c, 1/c)` has squared norm `2/‖c‖²`.
+13b. `decoderVector`, `hiddenDecoderCLM`, `hiddenDecoderCLM_apply`, `hiddenDecoderCLM_eq`,
+    `norm_hiddenDecoderCLM` — **card `(10)`**: the decoder as a continuous functional on *Euclidean*
+    `ℂ²` — which is where the card takes the norm; mathlib's default product norm is the supremum
+    one — and its **operator norm** `‖D_c‖ = √2/|c|`, obtained from the Riesz vector through
+    `innerSL_apply_norm`.  Item 13 alone gives the coefficient vector's norm, not the operator
+    norm.
+14. `conditioning_law` — `√|Disc| · (√2/|c|) = √2`; `conditioning_law_opNorm` states the same with
+    the genuine operator norm `‖D_c‖`, which is card `(11)` boxed.
 
 Theorem 5 — universal decoder blow-up, card `(12)`:
 

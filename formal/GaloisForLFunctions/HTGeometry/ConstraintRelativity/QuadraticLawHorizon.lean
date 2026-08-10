@@ -273,6 +273,53 @@ theorem conditioning_law (c : ℂ) (hc : c ≠ 0) :
   rw [norm_pow, Real.sqrt_sq (norm_nonneg c)]
   field_simp
 
+/-! ### The decoder operator norm on Euclidean `ℂ²` -/
+
+/-- The Riesz vector of the hidden-coefficient decoder. -/
+noncomputable def decoderVector (c : ℂ) : EuclideanSpace ℂ (Fin 2) :=
+  WithLp.toLp 2 ![-((starRingEnd ℂ) c)⁻¹, ((starRingEnd ℂ) c)⁻¹]
+
+/-- **Card `(9)`, Euclidean form.**  The hidden-coefficient decoder as a continuous linear
+functional on Euclidean `ℂ²`, where the card's operator norm is taken. -/
+noncomputable def hiddenDecoderCLM (c : ℂ) : EuclideanSpace ℂ (Fin 2) →L[ℂ] ℂ :=
+  innerSL ℂ (decoderVector c)
+
+theorem hiddenDecoderCLM_apply (c : ℂ) (p : EuclideanSpace ℂ (Fin 2)) :
+    hiddenDecoderCLM c p = (p.ofLp 1 - p.ofLp 0) / c := by
+  show (inner ℂ (decoderVector c) p : ℂ) = _
+  rw [PiLp.inner_apply]
+  simp only [Fin.sum_univ_two, decoderVector, WithLp.ofLp_toLp, Matrix.cons_val_zero,
+    Matrix.cons_val_one, RCLike.inner_apply, map_neg, map_inv₀, Complex.conj_conj]
+  ring
+
+/-- The Euclidean decoder is the earlier product-space decoder read in coordinates. -/
+theorem hiddenDecoderCLM_eq (c : ℂ) (p : EuclideanSpace ℂ (Fin 2)) :
+    hiddenDecoderCLM c p = hiddenDecoder c (p.ofLp 0, p.ofLp 1) := by
+  rw [hiddenDecoderCLM_apply, hiddenDecoder_apply]
+
+/-- **Card `(10)`.**  The operator norm of the decoder, with the Euclidean norm on `ℂ²`, is
+`√2/|c|`.  This is the sharp conditioning constant, not merely the norm of the coefficient
+vector. -/
+theorem norm_hiddenDecoderCLM (c : ℂ) (hc : c ≠ 0) :
+    ‖hiddenDecoderCLM c‖ = Real.sqrt 2 / ‖c‖ := by
+  have hcn : (0 : ℝ) < ‖c‖ := norm_pos_iff.2 hc
+  rw [hiddenDecoderCLM, innerSL_apply_norm, decoderVector, EuclideanSpace.norm_eq]
+  have hentry : ‖(-((starRingEnd ℂ) c)⁻¹)‖ = ‖c‖⁻¹ := by
+    rw [norm_neg, norm_inv, RCLike.norm_conj]
+  have hentry' : ‖(((starRingEnd ℂ) c)⁻¹)‖ = ‖c‖⁻¹ := by
+    rw [norm_inv, RCLike.norm_conj]
+  simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, hentry, hentry']
+  rw [show (‖c‖⁻¹ ^ 2 + ‖c‖⁻¹ ^ 2) = 2 * (‖c‖⁻¹) ^ 2 by ring,
+    Real.sqrt_mul (by norm_num) _, Real.sqrt_sq (by positivity)]
+  rw [div_eq_mul_inv]
+
+/-- **Card `(11)`, boxed, operator form.**  The square root of the framed fibre discriminant times
+the decoder operator norm is the constant `√2`. -/
+theorem conditioning_law_opNorm (c : ℂ) (hc : c ≠ 0) :
+    Real.sqrt ‖c ^ 2‖ * ‖hiddenDecoderCLM c‖ = Real.sqrt 2 := by
+  rw [norm_hiddenDecoderCLM c hc]
+  exact conditioning_law c hc
+
 /-! ## Theorem 5: universal decoder blow-up -/
 
 /-- **Universal decoder blow-up.**  If a continuous family of maps loses injectivity in the limit,

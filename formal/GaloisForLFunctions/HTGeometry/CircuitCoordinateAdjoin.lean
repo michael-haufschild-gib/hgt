@@ -91,7 +91,7 @@ theorem card_le_of_algebraicIndependent_mulVec_baseInput {m r : ℕ} {g : Fin m 
   card_le_of_algebraicIndependent_mulVec l v hl
     (fun i => mem_adjoin_of_eq_algebraMap_or_mem (Or.inl (hv i))) hc
 
-omit [DecidableEq n] in
+omit [CommRing L] [DecidableEq n] in
 /-- **Sixteen generators per two-qubit gate.**  The entries of `s` gates of size `4 × 4` are
 enumerated by `16 s` elements. -/
 theorem exists_enumeration_of_gates (s : ℕ) (G : Fin s → Matrix (Fin 4) (Fin 4) L) :

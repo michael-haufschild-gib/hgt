@@ -115,6 +115,61 @@ theorem exp_eq_inv_prod_of_sum_eq_zero {E : ι → ℂ} (hE : ∑ i, E i = 0) (i
     exact prod_exp_eq_one_of_sum_eq_zero hE
   exact eq_inv_of_mul_eq_one_right hall
 
+/-! ## From a symmetric Galois action to rigidity -/
+
+omit [DecidableEq ι] in
+/-- **A symmetric Galois action makes the relation space permutation invariant.**  If every
+permutation of the family is realised by a ring endomorphism of `ℂ`, then a rational relation
+transported along it is again a rational relation. -/
+theorem isPermInvariant_ker_relationForm {E : ι → ℂ}
+    (hgal : ∀ σ : Equiv.Perm ι, ∃ φ : ℂ →+* ℂ, ∀ i, φ (E i) = E (σ i)) :
+    PermSubspace.IsPermInvariant (LinearMap.ker (relationForm E)) := by
+  intro σ a ha
+  obtain ⟨φ, hφ⟩ := hgal σ⁻¹
+  rw [LinearMap.mem_ker, relationForm_apply] at ha ⊢
+  have himg : ∑ i, (a i : ℚ) • E (σ⁻¹ i) = 0 := by
+    have := congrArg φ ha
+    rw [map_sum, map_zero] at this
+    rw [← this]
+    exact Finset.sum_congr rfl fun i _ => by
+      rw [Rat.smul_def, Rat.smul_def, map_mul, map_ratCast, hφ i]
+  calc ∑ i, ((fun j => a (σ j)) i : ℚ) • E i
+      = ∑ i, (a (σ i) : ℚ) • E i := rfl
+    _ = ∑ i, (a i : ℚ) • E (σ⁻¹ i) := by
+        refine Fintype.sum_equiv σ _ _ fun i => ?_
+        simp
+    _ = 0 := himg
+
+/-- **The trace relation is the only one.**  A traceless family with a symmetric Galois action and
+a nonzero member has relation space exactly the trace line. -/
+theorem ker_relationForm_eq_constLine {E : ι → ℂ} [Nonempty ι]
+    (hgal : ∀ σ : Equiv.Perm ι, ∃ φ : ℂ →+* ℂ, ∀ i, φ (E i) = E (σ i))
+    (htrace : ∑ i, E i = 0) (hne : ∃ i, E i ≠ 0) :
+    LinearMap.ker (relationForm E) = PermSubspace.constLine (K := ℚ) (ι := ι) := by
+  classical
+  refine PermSubspace.eq_constLine_of_le_of_ne_top _ (isPermInvariant_ker_relationForm hgal) ?_ ?_ ?_
+  · exact Nat.cast_ne_zero.mpr Fintype.card_ne_zero
+  · intro a ha
+    obtain ⟨c, rfl⟩ := PermSubspace.eq_const_of_mem_constLine ha
+    rw [LinearMap.mem_ker, relationForm_apply]
+    have : ∑ i, (c : ℚ) • E i = (c : ℂ) * ∑ i, E i := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun i _ => by rw [Rat.smul_def]
+    rw [this, htrace, mul_zero]
+  · intro htop
+    obtain ⟨i₀, hi₀⟩ := hne
+    have hmem : (fun i => if i = i₀ then (1 : ℚ) else 0) ∈ LinearMap.ker (relationForm E) := by
+      rw [htop]; exact Submodule.mem_top
+    rw [LinearMap.mem_ker, relationForm_apply] at hmem
+    rw [Finset.sum_eq_single i₀] at hmem
+    · simp only [Rat.smul_def] at hmem
+      simp at hmem
+      exact hi₀ hmem
+    · intro b _ hb
+      simp [hb]
+    · intro hb
+      exact absurd (Finset.mem_univ i₀) hb
+
 end SpectralExp
 
 end GaloisForLFunctions.HTGeometry

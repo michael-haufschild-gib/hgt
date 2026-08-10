@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 10 August 2026, committed snapshot
-**97968418e6be56bfe39c7744cb7032d08d85ea14**.
+**f990a11f9a85da98713d27fdcfee901158b3d0ca**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -298,7 +298,8 @@ G^r e_n = (p |d_n|^2)^r e_n a_(delta_n)^r + o_L2(1),
 ~~~
 
 and its diagonal scalar law with the exact closed period average `A_r(delta_n)`. Thus the local
-single-component principal asymptotic is closed. What remains is multi-place/channel assembly,
+single-component principal asymptotic is closed, uniformly along every integer-frequency sequence
+whose absolute value tends to infinity. What remains is multi-place/channel assembly,
 identification with the actual Connes--Consani intersection/Weil object, and a source-derived
 positivity or orientation law. Without that handoff this remains C1/CCM infrastructure, not a new
 route or a proved positivity mechanism.
@@ -413,12 +414,14 @@ number-theoretic premise is designed to be supplied by published averaged Chowla
 Möbius specialization and rates are not formalized. The Fejer identity also isolates why the
 modulus input is stronger than the signed short-interval mean square.
 
-A second, fully formal Gallagher lane maps every dyadic maximal-window block to discrete window
-mean square and then to explicit local/global bounds `M1,M2` for one logarithmic Dirichlet
-polynomial. Uniform dyadic control costs `(J+1)^2 2^J`; it therefore requires
-`C=o(h sqrt(x)/(log h)^2)`. This alternative lane still needs the corresponding uniform
-Dirichlet-polynomial cancellation estimate. Neither analytic lane proves the fixed physical
-relation's unit incoming capacity or co-moving seam law.
+A second, fully formal Gallagher lane maps every dyadic maximal-window block to one frequency mean
+square for a logarithmic Dirichlet polynomial. The latest dyadic-tail split pays every far
+frequency by affine mean squares rather than a global `ell1`/supremum bound, and the
+large-values capstone inserts the resulting budget directly into the full maximal-window sum.
+An explicit unconditional mean-value baseline is formal but too large at the Route-E scale. This
+lane therefore needs one genuinely arithmetic uniform frequency mean-square saving for Möbius,
+with the displayed Rademacher--Menshov and block-cover losses. Neither analytic lane proves the
+fixed physical relation's unit incoming capacity or co-moving seam law.
 
 A generalized-prime firewall now fixes what arithmetic specificity any successor must use. For an
 arbitrary discrete Beurling system the Gibbs split, one-large-prime transition, PNT/Mertens window,
@@ -542,6 +545,9 @@ boundary reader value; reader kills boundary, forcing K_n(rho)=0 and Re(rho)=1/2
   identity `sum mu(n)/n=0`;
 - finite mass and all weighted moments of the canonical preimage, plus integrability of the
   logarithmic pullback on the positive ray;
+- exact dilation scaling of the ray integral and Abel-difference integral, an integrable uniform
+  majorant for Abel partial sums, unconditional zero ray mass of the canonical Möbius preimage,
+  and an integrable even extension carrying the positive-ray estimates to the negative ray;
 - algebraic real-Fourier covariance of the collar commutator.
 
 These additions strengthen admission and source regularity. They do not identify the independently
@@ -877,7 +883,12 @@ compact completed-seam Thorin representation
 
 **Proved content.** Markov germ recovers all normalized prime--archimedean moments. Any positive
 compact witness is unique and equals canonical reciprocal-square Xi-divisor measure. Theta boundary
-transport and Route K all-order survivor both land here.
+transport and Route K all-order survivor both land here. A new route-independent coalitional
+attainment theorem gives an exact generic existence test for countable positive carriers: an
+actual carrier exists exactly when finite zero-residual coalitions can be chosen uniformly tight,
+equivalently bounded in some proper source price. Without a carrier every approximate history
+escapes every proper price, and an explicit model shows residual convergence alone is insufficient.
+No Route-P source atoms or price satisfying this criterion have been constructed.
 
 **Open core.** Construct one finite positive compact measure from literal coupled
 prime--polar--Gamma/theta source and prove local Thorin/Markov identity without zero locations or
@@ -1289,9 +1300,11 @@ the class map, equality of class law with the gas pushforward, and socle expecta
 The entropy layer is now closed too: log-socle and both log-likelihood ratios are integrable, both
 directed Kullback--Leibler divergences are evaluated, and their symmetrized value is exactly
 `sigma` times the von-Mangoldt Dirichlet mass, equivalently the corresponding logarithmic zeta
-derivative expression. A committed but not umbrella-imported squarefull-sector module identifies
-the depth-two wall at `1/2`; even after certification it is a source phase boundary, not a
-zero-location theorem, because both order and activity observers remain divisor-blind.
+derivative expression. The umbrella-reachable squarefull-sector module identifies the depth-two
+wall at `1/2` and constructs the corresponding almost surely finite random abelian-group law;
+this is a source phase boundary, not a zero-location theorem, because both order and activity
+observers remain divisor-blind. A separate closed-form Gibbs Gram-kernel/positivity module is
+committed but not umbrella-reachable and does not change that verdict.
 
 What is missing is not another landing or special-function theorem. No source law relates these
 two observer axes, recurrence, compact resolvent, hypertranscendence, or translation divisor to
@@ -1303,11 +1316,23 @@ constructed, this remains Route-S infrastructure and is not Route V.
 This candidate has advanced from a formal finite-place sketch to a complete local asymptotic
 mechanism. For each Gauss component the umbrella constructs the actual circle operators, proves
 uniform moving-amplitude translation, exact principal factorization, controlled finite iteration,
-and convergence of the quasi-inner diagonal coefficient to its closed period average. A potential
+and convergence of the quasi-inner diagonal coefficient to its closed period average along every
+cofinal integer-frequency sequence. A potential
 new architecture would assemble these component laws over all places into the actual
 Connes--Consani intersection/Weil pairing and extract a positive or oriented global source law.
 No such multi-place assembly, arithmetic comparison, or unconditional RH handoff exists. Until it
 does, this is a strengthened C1/CCM candidate and cannot be counted as a new route.
+
+### Tight-source coalitional / collective-repair architecture
+
+The new universal-law theorems expose another possible producer grammar. Positive-carrier
+attainment can be attacked by proving tightness or bounded proper pricing for finite source
+coalitions, while semantically conservative repairs can create a positive circulation only through
+an irreducibly collective threshold invisible to each repair separately. A new RH route would have
+to define the arithmetic defects and repair interaction before observing zero locations, prove the
+tightness/threshold law from the prime--Gamma source, and map the born circulation
+coefficient-faithfully to an RH endpoint. None of these arithmetic objects exists in the corpus.
+This is a route-design opening, not Route V.
 
 ### HTGeometry universal-law-field and analytic receiver infrastructure
 
@@ -1327,6 +1352,8 @@ independent; tracelessness recovers the deleted exponential by the product-one l
 source specialization. The operator-system layer is no longer scalar-only: it now has matricial orderings,
 amplification/compression, completely positive maps, scalar-order-unit to matrix-order-unit
 promotion, matrix level norms, the Ruan direct-sum law, and isometric compression contractivity.
+The locally C*-algebra layer constructs projective limits of complete C*-algebras, proves closedness
+and completeness, the coordinate seminorm C*-identity, and stability of the bounded part.
 The commutative boundary-existence gap is now discharged for genuine function systems:
 under the unit, star-closure, and point-separation hypotheses, Lean proves the Choquet boundary is
 norming, lies in every closed boundary, closed boundaries are intersection-stable, and the Shilov
@@ -1376,7 +1403,14 @@ The constitutive additions similarly classify how observer laws can change: futu
 conservative carrier base change, a fresh grammar generator, diagonal reporter genesis, relational
 composition, and incomplete positive tomography are exact. Their positive survivor is a genuinely
 new reporter/carrier/context law, not re-encoding through the old observer. No such law is tied to
-the Xi source. A new Arens-space model proves that native sequential completion can genuinely
+the Xi source. Three new exact mechanism laws sharpen this survivor. Countable positive-carrier
+attainment is equivalent to tight or properly priced finite approximation. A semantically
+dependent repair can preserve represented state space while birthing a unique positive circulation,
+destroying every strict scalar progress certificate, and producing unbounded execution at a fixed
+endpoint. Two individually nonviable repairs can do this only collectively, at an exact spectral
+threshold. These are plausible route-design primitives—tight source pricing and irreducibly
+collective repair—but no arithmetic rule family, Xi reader, or unconditional RH handoff is
+instantiated. A new Arens-space model proves that native sequential completion can genuinely
 require two strict hereditary repair layers even though ordinary closure is already stationary;
 this is a concrete endogenous-completion mechanism, but still has no arithmetic source or Xi
 handoff. This batch adds no independent route.
@@ -1607,9 +1641,15 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 - formal/GaloisForLFunctions/RHTower/Sieve/DiscreteWindowGallagher.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/DyadicMeanSquareGallagher.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/MaximalWindowUniform.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/LinearMeanSquareGeneric.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/MaximalWindowLargeValues.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/DyadicMeanSquareTail.lean
 - formal/GaloisForLFunctions/RHTower/BeurlingSystemTransitionAsymptotic.lean
 
 ### L and R
+
+`DeningerWindowSwapPow.lean` is committed but not umbrella-reachable at this cutoff; every other
+anchor listed here is credited under the ordinary status rule.
 
 - formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCompletedSourceGreen.lean
 - formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCompletedXiGreenIncidenceComparison.lean
@@ -1634,6 +1674,11 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 - formal/GaloisForLFunctions/RHTower/DeningerMobiusHarmonicZero.lean
 - formal/GaloisForLFunctions/RHTower/DeningerCommutatorCovariance.lean
 - formal/GaloisForLFunctions/RHTower/DeningerPullIntegrable.lean
+- formal/GaloisForLFunctions/RHTower/DeningerDilationIntegral.lean
+- formal/GaloisForLFunctions/RHTower/DeningerMajorantIntegrable.lean
+- formal/GaloisForLFunctions/RHTower/DeningerPreimageZeroMass.lean
+- formal/GaloisForLFunctions/RHTower/DeningerEvenPreimage.lean
+- formal/GaloisForLFunctions/RHTower/DeningerWindowSwapPow.lean
 - formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldCurvedSourceDifferential.lean
 - formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldPositiveStokesPolarization.lean
 - formal/GaloisForLFunctions/RHTower/BurnolFirstWallZeroDividedSource.lean
@@ -1688,8 +1733,8 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 
 ### Route S and cross-cutting arithmetic source infrastructure
 
-`AbelianZetaGas/SquarefullSector.lean` is committed but not umbrella-reachable at this cutoff;
-every other anchor listed here is credited under the ordinary status rule.
+`AbelianZetaGas/GasPositivity.lean` is committed but not umbrella-reachable at this cutoff; every
+other anchor listed here is credited under the ordinary status rule.
 
 - formal/GaloisForLFunctions/HTGeometry/EulerQGammaGlobalLaw.lean
 - formal/GaloisForLFunctions/HTGeometry/EulerQGammaContinuation.lean
@@ -1718,6 +1763,7 @@ every other anchor listed here is credited under the ordinary status rule.
 - formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/KMSState.lean
 - formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasDilation.lean
 - formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/SquarefullSector.lean
+- formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasPositivity.lean
 - formal/GaloisForLFunctions/HTGeometry/ReciprocalSubstitutionInjective.lean
 - formal/GaloisForLFunctions/HTGeometry/ShilovCommutativeBoundary.lean
 - formal/GaloisForLFunctions/HTGeometry/ShilovDeficitEnvelopeFormula.lean
@@ -1738,6 +1784,11 @@ every other anchor listed here is credited under the ordinary status rule.
 - formal/GaloisForLFunctions/HTGeometry/PureStatesContinuousFunctions.lean
 - formal/GaloisForLFunctions/HTGeometry/BoundaryRepresentationCommutative.lean
 - formal/GaloisForLFunctions/HTGeometry/AffineFunctionSystemEnvelope.lean
+- formal/GaloisForLFunctions/HTGeometry/LocallyCStarAlgebra.lean
+- formal/GaloisForLFunctions/HTGeometry/SpectralExponentialIndependence.lean
+- formal/GaloisForLFunctions/HTGeometry/ConstitutiveCoalitionalAttainment.lean
+- formal/GaloisForLFunctions/HTGeometry/ConstitutiveViabilityCoercivityTransmutation.lean
+- formal/GaloisForLFunctions/HTGeometry/ConstitutiveCollectiveRepairThreshold.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstitutiveSequentialRepairHeredity.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/CongruenceOrderLawSymbol.lean
 
@@ -1786,7 +1837,9 @@ zero-free genus-one erasure, but it lacks a critical-line orientation and RH han
 a candidate rather than Route V. The Gauss-component residue hierarchy is an adjacent local
 Connes candidate whose actual circle operators, principal factorization, finite iteration, and
 diagonal scalar asymptotic are now umbrella-reachable; only multi-place assembly, identification
-with the actual Weil/intersection object, and a global orientation law could promote it. Exact
+with the actual Weil/intersection object, and a global orientation law could promote it. The
+coalitional/collective-repair laws expose a second route-design primitive, but no arithmetic repair
+family or Xi handoff exists. Exact
 Hedenmalm source spectrum is a major umbrella-reachable C1 opening; its stronger determinant and
 essential-trace capstones await umbrella certification and do not define an independent route.
 Shilov matrix/tower and the now-complete commutative C*-envelope/boundary-representation model,

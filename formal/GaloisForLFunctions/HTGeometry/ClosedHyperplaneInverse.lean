@@ -27,8 +27,8 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 This definition applies equally to self-adjoint squares and block Dirac operators. -/
 def LinearPMap.HasCompactResolventAt (T : H →ₗ.[ℂ] H) (z : ℂ) : Prop :=
   ∃ R : H →L[ℂ] H, IsCompactOperator R ∧
-    (∀ x : H, R x ∈ T.domain) ∧
-    (∀ x : H, T ⟨R x, by assumption⟩ - z • R x = x) ∧
+    (∃ hRdom : ∀ x : H, R x ∈ T.domain,
+      ∀ x : H, T ⟨R x, hRdom x⟩ - z • R x = x) ∧
     (∀ x : T.domain, R (T x - z • (x : H)) = (x : H))
 
 /-- The bounded injection whose graph is inverted. -/
@@ -45,13 +45,22 @@ theorem hyperplaneInjectionPMap_toFun_ker_eq_bot
   rw [LinearMap.ker_eq_bot']
   intro x hx
   apply Subtype.ext
-  exact hB hx
+  apply hB
+  change B (x : K) = B 0
+  rw [map_zero]
+  exact hx
 
 theorem closedHyperplaneInverse_domain
     (K : Submodule ℂ H) (B : K →L[ℂ] H) :
     (closedHyperplaneInverse K B).domain = B.range := by
-  rw [closedHyperplaneInverse, LinearMap.compPMap, LinearPMap.inverse_domain]
-  rfl
+  change ((hyperplaneInjectionPMap K B).inverse).domain = B.range
+  rw [LinearPMap.inverse_domain]
+  ext y
+  constructor
+  · rintro ⟨x, hx⟩
+    exact ⟨(x : K), hx⟩
+  · rintro ⟨x, hx⟩
+    exact ⟨⟨x, by simp [hyperplaneInjectionPMap]⟩, hx⟩
 
 theorem closedHyperplaneInverse_apply_B
     (K : Submodule ℂ H) (B : K →L[ℂ] H) (hB : Function.Injective B) (x : K) :
@@ -63,7 +72,9 @@ theorem closedHyperplaneInverse_apply_B
   refine ⟨hmem, ?_⟩
   change K.subtype
       ((hyperplaneInjectionPMap K B).inverse
-        ⟨B x, by simpa [closedHyperplaneInverse_domain] using hmem⟩) = (x : H)
+        ⟨B x, by
+          rw [LinearPMap.inverse_domain]
+          exact ⟨⟨x, by simp [hyperplaneInjectionPMap]⟩, rfl⟩⟩) = (x : H)
   have hker := hyperplaneInjectionPMap_toFun_ker_eq_bot K B hB
   have hinv := LinearPMap.inverse_apply_eq hker
     (x := ⟨x, by simp [hyperplaneInjectionPMap]⟩)
@@ -79,55 +90,54 @@ theorem closedHyperplaneInverse_isClosed
     (closedHyperplaneInverse K B).IsClosed := by
   have hBP : (hyperplaneInjectionPMap K B).IsClosed := by
     rw [LinearPMap.IsClosed]
-    exact B.isClosed_graph
+    have hgraph : (hyperplaneInjectionPMap K B).graph =
+        {p : K × H | B p.1 = p.2} := by
+      ext p
+      simp [LinearPMap.mem_graph_iff, hyperplaneInjectionPMap]
+    rw [hgraph]
+    exact isClosed_eq (B.continuous.comp continuous_fst) continuous_snd
   have hinv : ((hyperplaneInjectionPMap K B).inverse).IsClosed :=
     (LinearPMap.inverse_closed_iff
       (hyperplaneInjectionPMap_toFun_ker_eq_bot K B hB)).2 hBP
-  rw [LinearPMap.IsClosed] at hinv ⊢
   have hgraph : (closedHyperplaneInverse K B).graph =
-      ((hyperplaneInjectionPMap K B).inverse).graph.map
-        ((LinearMap.id : H →ₗ[ℂ] H).prodMap K.subtype) := by
+      LinearMap.range (B.toLinearMap.prod K.subtype) := by
     ext p
-    simp only [closedHyperplaneInverse, LinearPMap.mem_graph_iff,
-      LinearMap.compPMap_apply, Submodule.mem_map, LinearMap.prodMap_apply,
-      LinearMap.id_coe, id, Prod.exists, Prod.mk.injEq]
     constructor
-    · rintro ⟨x, hx, hout⟩
-      refine ⟨(p.1, x), ?_, rfl, ?_⟩
-      · rw [LinearPMap.mem_graph_iff]
-        exact ⟨⟨p.1, x.2⟩, rfl, rfl⟩
-      · exact ⟨rfl, hout⟩
-    · rintro ⟨⟨a, x⟩, hx, ha, hout⟩
-      subst ha
-      rw [LinearPMap.mem_graph_iff] at hx
-      rcases hx with ⟨y, hy, hxy⟩
-      refine ⟨⟨p.1, y.2⟩, rfl, ?_⟩
-      rw [← hout.2, ← hxy]
-      rfl
-  rw [hgraph]
-  let e : H × K ≃L[ℂ] (H × (K : Type _)) := ContinuousLinearEquiv.refl ℂ _
-  have hclosedRange : IsClosed (Set.range (fun p : H × K => ((p.1 : H), (p.2 : H)))) := by
-    have hrange : Set.range (fun p : H × K => ((p.1 : H), (p.2 : H))) =
-        {p : H × H | p.2 ∈ K} := by
-      ext p
-      constructor
-      · rintro ⟨q, rfl⟩
-        exact q.2.property
-      · intro hp
-        exact ⟨(p.1, ⟨p.2, hp⟩), rfl⟩
-    rw [hrange]
-    exact hK.preimage continuous_snd
-  exact hinv.image_of_continuousOn_injective
-    (Continuous.continuousOn
-      ((ContinuousLinearMap.fst ℂ H K).prod
-        (K.subtypeL.comp (ContinuousLinearMap.snd ℂ H K))).continuous)
-    (by
-      intro p _ q _ hpq
+    · intro hp
+      rw [LinearPMap.mem_graph_iff] at hp
+      rcases hp with ⟨x, hx, hout⟩
+      have hxrange : (x : H) ∈ B.range := by
+        rw [← closedHyperplaneInverse_domain K B]
+        exact x.property
+      rcases hxrange with ⟨y, hy⟩
+      have happ := (closedHyperplaneInverse_apply_B K B hB y).2
+      have hxeq : x = ⟨B y, (closedHyperplaneInverse_apply_B K B hB y).1⟩ := by
+        exact Subtype.ext hy.symm
+      refine ⟨y, ?_⟩
       apply Prod.ext
-      · exact congrArg Prod.fst hpq
-      · apply Subtype.ext
-        exact congrArg Prod.snd hpq)
-    hclosedRange
+      · exact hy.trans hx
+      · have hout' : closedHyperplaneInverse K B
+            ⟨B y, (closedHyperplaneInverse_apply_B K B hB y).1⟩ = p.2 := by
+          rw [← hxeq]
+          exact hout
+        exact happ.symm.trans hout'
+    · intro hp
+      rcases hp with ⟨y, hyp⟩
+      have hp1 : B y = p.1 := congrArg Prod.fst hyp
+      have hp2 : (y : H) = p.2 := congrArg Prod.snd hyp
+      rw [LinearPMap.mem_graph_iff]
+      let x : (closedHyperplaneInverse K B).domain :=
+        ⟨B y, (closedHyperplaneInverse_apply_B K B hB y).1⟩
+      refine ⟨x, hp1, ?_⟩
+      exact (closedHyperplaneInverse_apply_B K B hB y).2.trans hp2
+  rw [LinearPMap.IsClosed, hgraph]
+  let F : K →L[ℂ] H × H := B.prod K.subtypeL
+  haveI : CompleteSpace K := hK.completeSpace_coe
+  have hanti : AntilipschitzWith 1 F := by
+    apply F.antilipschitz_of_bound
+    intro x
+    simpa [F] using norm_snd_le (B x, (x : H))
+  exact hanti.isClosed_range F.uniformContinuous
 
 theorem closedHyperplaneInverse_dense_domain
     (K : Submodule ℂ H) (B : K →L[ℂ] H) (hDense : Dense (B.range : Set H)) :
@@ -144,10 +154,14 @@ theorem closedHyperplaneInverse_kernel_eq_bot
   rcases hxrange with ⟨y, hy⟩
   have hxy : closedHyperplaneInverse K B x = (y : H) := by
     have h := (closedHyperplaneInverse_apply_B K B hB y).2
-    convert h using 1
-    exact Subtype.ext hy.symm
+    have heq : x = ⟨B y, (closedHyperplaneInverse_apply_B K B hB y).1⟩ :=
+      Subtype.ext hy.symm
+    simpa [heq] using h
   rw [hxy] at hx
-  exact hx
+  calc
+    (x : H) = B y := hy.symm
+    _ = B 0 := by rw [show y = 0 from Subtype.ext hx]
+    _ = 0 := map_zero B
 
 theorem closedHyperplaneInverse_range
     (K : Submodule ℂ H) (B : K →L[ℂ] H) (hB : Function.Injective B) :
@@ -165,7 +179,8 @@ theorem closedHyperplaneInverse_range
 theorem closedHyperplaneInverse_isFredholm
     (K : Submodule ℂ H) (hK : IsClosed (K : Set H))
     (B : K →L[ℂ] H) (hB : Function.Injective B)
-    (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ) (hKφ : K = LinearMap.ker φ) :
+    (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ)
+    (hKφ : K = LinearMap.ker φ.toLinearMap) :
     (closedHyperplaneInverse K B).IsFredholm := by
   apply LinearPMap.isFredholm_of_injective_of_range_eq_ker φ.continuous
     (closedHyperplaneInverse_kernel_eq_bot K B hB) hφ
@@ -173,7 +188,8 @@ theorem closedHyperplaneInverse_isFredholm
 
 theorem closedHyperplaneInverse_index_eq_neg_one
     (K : Submodule ℂ H) (B : K →L[ℂ] H) (hB : Function.Injective B)
-    (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ) (hKφ : K = LinearMap.ker φ) :
+    (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ)
+    (hKφ : K = LinearMap.ker φ.toLinearMap) :
     (closedHyperplaneInverse K B).index = -1 := by
   apply LinearPMap.index_eq_neg_one_of_injective_of_range_eq_ker
     (closedHyperplaneInverse_kernel_eq_bot K B hB) hφ

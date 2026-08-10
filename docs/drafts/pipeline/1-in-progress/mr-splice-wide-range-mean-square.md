@@ -4401,3 +4401,57 @@ Against the trivial mean value `I ≪ (W + M log M)·M ≍ W√x`, the deficit i
 `≍ h²(log h)²·W/√x` — i.e. the Dirichlet-polynomial mean square must beat the diagonal by that
 factor.  That single estimate — Ramaré factorization, the mean value theorem, the large-values
 layer, and the Halász bound of units 5–6 — is the whole of what the card still needs.
+
+## Unit 16 — the ℓ¹ mass removed from the whole route (Lean, unconditional)
+
+`Sieve/DyadicMeanSquareTail.lean`, `[propext, Classical.choice, Quot.sound]`.
+
+**The defect unit 15 exposed.**  Running the accounting on unit 15 gives an *inconsistency*: the far
+tail is paid there by the global size `M₂ = sup_w ‖logPoly‖² ≍ M²`, so the term `M₂·2/(π²W)` forces
+`W ≫ ℓ·M²·(log h)²/h`, while the good range forces `W = o(h·A/(ℓ³(log h)²))`.  With `A ≍ M ≍ √x`,
+`ℓ ≍ h` these are incompatible — the route as instantiated in unit 15 cannot close for **any**
+Dirichlet-polynomial input.  The culprit is a factor `M`: the Gallagher weight decays quadratically,
+so the far tail should carry the coefficients' `ℓ²` mass, not their `ℓ¹` mass squared.
+
+**The corpus already had the fix** — `GallagherDyadicTail.gallagher_split_integral_dyadic`, which
+cuts the far range into dyadic annuli and pays each by the mean value theorem: under an affine
+majorant `∫_{|w| ≤ T} ‖logPoly‖² ≤ αT + β` (`T ≥ W`) the whole split costs
+`2δ²(αW + β) + 4α/(π²W) + 4β/(3π²W²)`.  It had never been carried down the linear chain.  Unit 14's
+abstract budget makes that a one-line instantiation:
+
+```lean
+dyadicMeanSquare_le_dyadicTail :
+  (∀ T ≥ W, ∫_{|w| ≤ T} ‖logPoly (f : ℕ → ℂ) (Icc 1 M) w‖² ≤ α·T + β) →
+    dyadicMeanSquare f ℓ A B ≤ A(1+ε)^{K'} · K' ·
+      blockCostG ℓ ε ( 2 log(1+ℓ/A)²(αW + β) + 4α/(π²W) + 4β/(3π²W²) )
+```
+
+**And the unconditional baseline**, from the mean value theorem alone
+(`integral_Icc_normSq_logPoly_le_affine_majorant`, with `α = (5π/2)M`, `β = (5e/2)M² + (5/4)M` after
+`∑‖a‖² ≤ M`, `∑(m+1)‖a‖² ≤ M²`):
+
+```lean
+dyadicMeanSquare_le_meanValue :
+  (∀ n, |f n| ≤ 1) → … → dyadicMeanSquare f ℓ A B ≤ (explicit, no arithmetic input)
+```
+
+**Revised accounting.**  With `A ≍ √x`, `M ≍ √x`, `ℓ ≤ h`, `ε ≍ 1/ℓ`, `K' ≍ ℓ`, the requirement
+`K'·blockCostG = o(h/(log h)²)` becomes, term by term:
+
+| term | size | requirement |
+|---|---|---|
+| `K'·4 log(1+ℓ/A)²·αW` | `ℓ·(ℓ/√x)²·α W` | `αW = o(h x/(ℓ³(log h)²))` |
+| `K'·4 log(1+ℓ/A)²·β` | `ℓ·(ℓ/√x)²·β` | `β = o(h x/(ℓ³(log h)²))` |
+| `K'·16α/(π²W)` | `ℓα/W` | `α/W = o(h/(ℓ(log h)²))` |
+| `K'·16β/(3π²W²)` | `ℓβ/W²` | `β/W² = o(h/(ℓ(log h)²))` |
+
+With the mean-value baseline `α ≍ √x`, `β ≍ x` the first and third give
+`W = o(hx/(ℓ³(log h)²√x))` and `W ≫ ℓ√x(log h)²/h` — compatible as soon as
+`h² ≫ ℓ⁴(log h)⁴`, i.e. always for `ℓ ≍ h` up to logs.  **The inconsistency is gone.**  What the
+baseline does *not* give is smallness: `β ≍ x` against the requirement `β = o(hx/(ℓ³(log h)²))`
+needs `h ≫ ℓ³(log h)²`, false at `ℓ ≍ h`.
+
+So the deficit is now located precisely: it is the *height-free* part `β` of the frequency mean
+square — `β ≍ M²` from the diagonal, against a target `o(h·M²/(ℓ³(log h)²))`.  Beating the diagonal
+by `ℓ³(log h)²/h` at the top dyadic level `ℓ ≍ h` — i.e. by `h²(log h)²` — is exactly what the
+Ramaré factorization plus the large-values layer plus Halász is for.

@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`97968418e6be56bfe39c7744cb7032d08d85ea14`. Files outside committed umbrellas at this snapshot are
+`f990a11f9a85da98713d27fdcfee901158b3d0ca`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
@@ -194,7 +194,8 @@ multipliers `D,D*`, and the actual quasi-inner block `G=p B D B⁻² D* B`; prov
 translation convergence, uniformly in the moving-amplitude class; and identifies Fourier rotation
 with translation. The umbrella now also contains exact principal factorization, scalar taming,
 one-step error control, uniform two-piece decay, the complete finite iterate, and convergence of
-the diagonal coefficient to its closed period average. Remaining work is multi-place/channel
+the diagonal coefficient to its closed period average along every cofinal integer-frequency
+sequence. Remaining work is multi-place/channel
 assembly, identification with the actual Connes--Consani intersection/Weil object, and a
 source-derived orientation or positivity law. This is useful local finite-place data and a serious
 candidate architecture, not C1 positivity and not yet a separate route.
@@ -351,9 +352,12 @@ mean square, and `MRBilinear`. The earlier sum of maxima over all truncation end
 needed nor an open deduction. The published averaged-Chowla theorem itself is not formalized.
 
 There is also a separate umbrella-reachable Gallagher lane. It converts every dyadic
-maximal-window level to local/global bounds for one logarithmic Dirichlet polynomial. The explicit
-Rademacher--Menshov cost is `(J+1)^2 2^J`, so this branch still needs one uniform cancellation bound
-of size `o(h sqrt(x)/(log h)^2)`. Neither analytic lane supplies Route E's physical
+maximal-window level to one frequency mean square for a logarithmic Dirichlet polynomial. The new
+dyadic-tail theorem pays all far frequencies by affine mean squares, eliminating the prior global
+`ell1`/supremum-size loss, and the large-values theorem composes this budget with the full
+Rademacher--Menshov maximal sum. Lean also records an explicit unconditional mean-value baseline;
+it is too large at the route scale. This branch therefore still needs one arithmetic uniform
+Möbius frequency-mean-square saving. Neither analytic lane supplies Route E's physical
 capacity/recurrence theorem.
 
 The generalized Beurling-system layer supplies a complementary firewall. It formalizes the same
@@ -714,6 +718,9 @@ Calderón--Witt incidence, and source-to-Xi graph landing. It also proves severa
 - the full Abel/Tonelli/Dirichlet-limit chain proves the Möbius harmonic limit
   `sum mu(n)/n=0`, while the exponential-Schwartz source supplies integrability of the literal
   logarithmic pull and the commutator comparison has exact covariance;
+- dilation scales the ray integral exactly, Abel partial sums have an integrable common majorant,
+  the canonical Möbius preimage has zero ray mass unconditionally, and its even extension inherits
+  the positive-ray integrability on the reflected half-line;
 - the rational-adelic prime-isotropy relative complex has a strict resolved-Xi chain map retaining
   prime, depth, divisor, and nonzero leading jet. Its image is a target boundary and the next
   differential kills it, closing strict chain provenance without annihilating the physical
@@ -746,7 +753,7 @@ formally equivalent to RH, so this does not supply L's annihilator. The all-prim
 Euler--Gamma/Möbius transgression is also paper-closed as a complete physical chain with strict PNT
 endpoint, contragredient physical/Fourier connection, and unsquared Green--Stokes law. Its
 arithmetic Möbius-ray identities, Mertens convergence, discrete Abel passage, harmonic-zero limit,
-and source pull integrability are now Lean-certified.
+source pull integrability, zero-mass law, and even reflected extension are now Lean-certified.
 
 First unresolved theorem is no longer a degree-two incidence package. It is the singular
 source-to-physical specialization: construct maps `F1,F0` from completed Green tensored with the
@@ -888,7 +895,12 @@ or prove the true restricted-Weil floor nonnegative.
 
 **Local contribution beyond located literature.** The corpus isolates a source-pure compact
 Thorin/Markov carrier and an infinite-support moment consumer, while proving finite-moment and
-unlocked-carrier insufficiency. No local theorem constructs the critical measure.
+unlocked-carrier insufficiency. A new route-independent coalitional attainment law proves that a
+countable positive carrier exists exactly when finite zero-residual coalitions admit uniform
+tightness, equivalently bounded cost in some proper source price; without a carrier every
+approximation escapes every proper price. A sharp countermodel shows residual convergence alone
+can be a mirage. This is a useful exact Route-P existence interface, but no prime--polar--Gamma
+atom family is shown to satisfy it and no local theorem constructs the critical measure.
 
 **External contribution.** Polson's
 [Thorin/GGC paper](https://arxiv.org/abs/1804.10043), in its 2026 revision, proves a safe
@@ -1186,7 +1198,9 @@ socle expectation transport are formal. The entropy module proves log-socle and 
 log-likelihood ratios integrable, evaluates both directed Kullback--Leibler divergences, and
 identifies their symmetrized value with `sigma` times the von-Mangoldt Dirichlet mass and the
 corresponding logarithmic zeta derivative. The depth-two wall at `1/2` is not a zero-orientation
-theorem. Its squarefull-sector realization is committed but not umbrella-imported at this cutoff.
+theorem. Its squarefull-sector random-group realization is now umbrella-reachable. A separate
+closed Gibbs Gram-kernel/positivity module remains committed but unwired and does not orient the
+zeta divisor.
 
 This is a new pre-zero source-to-divisor architecture, but no theorem orients the landed divisor to
 `Re rho=1/2`; it therefore remains Route-S infrastructure rather than a new RH route.
@@ -1245,7 +1259,9 @@ arbitrary prescribed link cokernels can coexist with vanishing `lim^1`, while a 
 polynomial tower has nonvanishing `lim^1`. Coherent-lift criteria and stagewise-density recovery of
 all coherent families are formal as well. The associated operator-system layer now contains
 matrix orderings, completely positive maps, scalar-to-matrix order-unit promotion, matrix level
-norms, the Ruan direct-sum law, and isometric compression contractivity. Local deficits therefore
+norms, the Ruan direct-sum law, and isometric compression contractivity. Its locally C* companion
+constructs complete closed projective limits with coordinate C*-seminorm identities and a stable
+bounded part. Local deficits therefore
 do not determine global derived obstruction, and generic tower hypotheses do not give universal
 acyclicity. This is a real receiver advance, but it supplies no arithmetic Xi operator system,
 arithmetic/noncommutative C*-envelope instance, trace-filtered fracture, or annihilator.
@@ -1253,14 +1269,20 @@ arithmetic/noncommutative C*-envelope instance, trace-filtered fracture, or anni
 Constitutive additions prove exact future-law interiors, conservative carrier base change,
 descent-breaking grammar extension, diagonal reporter genesis, relational-composition
 classification, and the dimension/positivity limits of incomplete process tomography. They say
-where a new observer law must enter. A formal Arens-space example now proves two strict hereditary
+where a new observer law must enter. New mechanism theorems add an exact attainment/escape law for
+countable positive carriers and two repair laws: one dependent repair can leave semantic range
+fixed while birthing a positive minimal circulation and destroying scalar coercivity, while two
+individually nonviable repairs can cross an exact collective spectral threshold. These suggest
+tight source pricing and irreducibly collective repair as possible producer primitives, but no
+arithmetic source or Xi handoff is instantiated. A formal Arens-space example now proves two strict hereditary
 native sequential-repair layers can be necessary even while ordinary closure is already
 stationary. It is a genuine endogenous-completion mechanism, but instantiates no arithmetic source
 or Xi handoff.
 
 **Route classification.** These theorems clarify admissible producer categories but have no typed
 handoff to a live route's first unresolved arithmetic premise. Compact-carrier representation does
-not build P's positive source measure; dense prime tangents do not provide R/L singular
+not build P's positive source measure, and coalitional attainment supplies only an exact
+tightness/pricing criterion; dense prime tangents do not provide R/L singular
 annihilation or U adaptive sign; Bures minimax and the formal zeta-gas laws do not provide E/T
 all-prime cancellation. Riemann pullback is an RH-equivalent selector, not an unconditional
 producer. Strongest positive design survivor is an irreducible unbounded-arity interaction or
@@ -1447,7 +1469,9 @@ source-derived critical-line orientation and RH handoff are proved. The Gauss-co
 hierarchy now has actual circle operators, one-step
 `L²` convergence, exact principal factorization, finite iteration, and its local diagonal scalar
 law; it still needs multi-place assembly, identification with the actual Weil/intersection object,
-and a global orientation before route status. Exact theta-source spectrum is now an
+and a global orientation before route status. Tight-source coalitions and irreducibly collective
+repair form a second route-design opening, but no arithmetic repair family or Xi handoff is
+instantiated. Exact theta-source spectrum is now an
 umbrella-reachable C1 branch, while stronger capstones await certification; neither is Route V.
 Completed commutative Choquet--Shilov/C*-envelope theory and native sequential repair enlarge
 generic receiver mechanics, not route count. Until one named source estimate is proved—or an

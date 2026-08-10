@@ -267,6 +267,68 @@ theorem dyadicMeanSquare_le_largeValues (f : ℕ → ℝ) (hf : ∀ n, |f n| ≤
   rw [hGdef]
   nlinarith [hsq, hI0]
 
+/-- **The range estimate with the Gallagher budget kept per block.**  `..._range_le_gen` pays one
+whole budget `G` in every one of the `K` blocks, because each block carries its own window width
+`log(1 + L/Y(1+ε)^k)` and Gallagher's identity is a whole-line identity.  Keeping the per-block
+budgets separate makes that factor `K` visible and removable by anyone who can bound their *sum* —
+for equal widths the blocks are disjoint and the sum telescopes into a single line integral. -/
+theorem setIntegral_normSq_linWindowSum_range_le_sum (a : ℕ → ℂ) (s : Finset ℕ)
+    (hs : ∀ n ∈ s, 0 < n) (ha : ∀ n : ℕ, ‖a n‖ ≤ 1)
+    {L Y ε : ℝ} (hL : 0 < L) (hY : 0 < Y) (hε : 0 ≤ ε) {g : ℕ → ℝ}
+    (hg : ∀ k : ℕ,
+      (∫ u in Set.Ioc (Real.log (Y * (1 + ε) ^ k)) (Real.log (Y * (1 + ε) ^ k * (1 + ε))),
+        ‖logWindowSum a s (Real.log (1 + L / (Y * (1 + ε) ^ k))) u‖ ^ 2) ≤ g k) (K : ℕ) :
+    (∫ u in Set.Ioc (Real.log Y) (Real.log (Y * (1 + ε) ^ K)),
+        ‖linWindowSum a s L u‖ ^ 2)
+      ≤ 2 * (∑ k ∈ Finset.range K, g k)
+          + (K : ℝ) * (2 * (ε * L + 1) ^ 2 * Real.log (1 + ε)) := by
+  classical
+  have hone : (0 : ℝ) < 1 + ε := by linarith
+  induction K with
+  | zero => simp
+  | succ K ih =>
+      set Z : ℝ := Y * (1 + ε) ^ K with hZ
+      have hZ0 : 0 < Z := by rw [hZ]; positivity
+      have hZY : Y ≤ Z := by
+        rw [hZ]
+        nlinarith [one_le_pow₀ (by linarith : (1 : ℝ) ≤ 1 + ε) (n := K), hY.le]
+      have hnext : Y * (1 + ε) ^ (K + 1) = Z * (1 + ε) := by rw [hZ]; ring
+      have hlogle : Real.log Y ≤ Real.log Z := Real.log_le_log hY hZY
+      have hlogle2 : Real.log Z ≤ Real.log (Z * (1 + ε)) := by
+        refine Real.log_le_log hZ0 ?_
+        nlinarith [hZ0.le, hε]
+      have hunion : Set.Ioc (Real.log Y) (Real.log Z) ∪
+          Set.Ioc (Real.log Z) (Real.log (Z * (1 + ε)))
+          = Set.Ioc (Real.log Y) (Real.log (Z * (1 + ε))) :=
+        Set.Ioc_union_Ioc_eq_Ioc hlogle hlogle2
+      have hdisj : Disjoint (Set.Ioc (Real.log Y) (Real.log Z))
+          (Set.Ioc (Real.log Z) (Real.log (Z * (1 + ε)))) := by
+        rw [Set.disjoint_left]
+        intro x hx hx'
+        exact absurd hx.2 (not_le.2 hx'.1)
+      have hfin₁ : volume (Set.Ioc (Real.log Y) (Real.log Z)) ≠ ⊤ := by simp
+      have hfin₂ : volume (Set.Ioc (Real.log Z) (Real.log (Z * (1 + ε)))) ≠ ⊤ := by simp
+      have hsplit : (∫ u in Set.Ioc (Real.log Y) (Real.log (Z * (1 + ε))),
+            ‖linWindowSum a s L u‖ ^ 2)
+          = (∫ u in Set.Ioc (Real.log Y) (Real.log Z), ‖linWindowSum a s L u‖ ^ 2)
+            + ∫ u in Set.Ioc (Real.log Z) (Real.log (Z * (1 + ε))),
+                ‖linWindowSum a s L u‖ ^ 2 := by
+        rw [← hunion]
+        exact setIntegral_union hdisj measurableSet_Ioc
+          (integrableOn_normSq_linWindowSum a s L hfin₁)
+          (integrableOn_normSq_linWindowSum a s L hfin₂)
+      have hblock := setIntegral_normSq_linWindowSum_block_le_gen a s hs ha (L := L) (Y := Z)
+        (ε := ε) (G := g K) hL hZ0 hε (hg K)
+      have hvol : volume.real (Set.Ioc (Real.log Z) (Real.log (Z * (1 + ε))))
+          = Real.log (1 + ε) := by
+        rw [measureReal_def, Real.volume_Ioc,
+          ENNReal.toReal_ofReal (by linarith), Real.log_mul (ne_of_gt hZ0) (ne_of_gt hone)]
+        ring
+      rw [hvol] at hblock
+      rw [hnext, hsplit, Finset.sum_range_succ]
+      push_cast
+      linarith [ih, hblock]
+
 end RHTower.Sieve
 
 end
