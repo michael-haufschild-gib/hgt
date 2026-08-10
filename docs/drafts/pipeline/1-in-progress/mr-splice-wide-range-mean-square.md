@@ -4237,3 +4237,64 @@ closed, unconditionally.  What remains is exactly the two Dirichlet-polynomial i
 the arithmetic of the Matomäki–Radziwiłł proof (Ramaré factorization ranges, the mean value
 theorem, large values, and the Halász bound of units 5–6) — plus the combinatorial step summing
 `blockSq` over starting points.
+
+## Unit 13 — the dyadic bridge and the uniform reduction (Lean, unconditional)
+
+Two modules, both `[propext, Classical.choice, Quot.sound]`.
+
+**`Sieve/DyadicMeanSquareGallagher.lean`.**  `sum_blockSq_eq_translates` (already in the corpus)
+reduces every Rademacher–Menshov level to `dyadicMeanSquare f ℓ A B = ∑_{z ∈ [A,B]}(∑_{z<n≤z+ℓ}f n)²`;
+unit 12 bounds exactly that shape but in complex window form over `range K`.  The bridge:
+
+```lean
+fixedWindowSq_eq_sq_sum   : fixedWindowSq f ℓ z = (∑_{z < n ≤ z+ℓ} f n)²         (ℓ ≥ 1)
+fixedWindowSq_eq_normSq   : … = ‖∑_{z < n ≤ z+ℓ} (f n : ℂ)‖²
+dyadicMeanSquare_le_gallagher :
+  dyadicMeanSquare f ℓ A B ≤ (A(1+ε)^{K'}) · (K' · blockCost ℓ A ε M₁ M₂ W)
+```
+
+given `A + (B+1−A) ≤ A(1+ε)^{K'}`, `B+1+ℓ < M+1`, and the two bounds `M₁` (on `|w| ≤ W`), `M₂`
+(global) for `‖logPoly (f : ℕ → ℂ) (Icc 1 M) w‖²`.
+
+**`Sieve/MaximalWindowUniform.lean`.**  One uniform bound over all levels and translates suffices:
+
+```lean
+sum_maxWindowSq_succ_le_uniform :
+  H + 1 ≤ 2^J → 0 ≤ C →
+  (∀ j ≤ J, ∀ i, dyadicMeanSquare f (2^j) (A + i·2^j) (B + i·2^j) ≤ C) →
+    ∑_{y ∈ [A+1, B+1]} maxWindowSq f H y ≤ (J+1)²·2^J·C
+```
+
+The two factors `J+1` are the Rademacher–Menshov losses (Cauchy–Schwarz, and the sum over levels);
+`2^J ≍ H` counts the translates.
+
+**The chain, complete and unconditional, from the fibre mean square to a Dirichlet polynomial.**
+
+```text
+MRBilinear μ hh
+  ⟸ AveragedShortInterval           (MRFibreReduction)
+  ⟸ AveragedMeanSquare              (PairFibreMeanSquare)
+  ⟸ MaximalWindowMeanSquare         (FibreStartSeparation: starting points are ¼-separated)
+  ⟸ ∑ maxWindowSq over [A+1,B+1]    (MaximalWindowUniform: one uniform C, cost (J+1)²2^J)
+  ⟸ dyadicMeanSquare f 2^j ·        (DyadicMeanSquareGallagher)
+  ⟸ ∑_{k<K}‖∑_{Y+k<n≤Y+k+L} f n‖²   (DiscreteWindowGallagher)
+  ⟸ A(1+ε)^{K'}·K'·blockCost        (LinearMeanSquare/Gallagher/Dirichlet polynomial)
+```
+
+**Target accounting.**  `AveragedMeanSquare` needs `o(h²√x)`; the chain delivers
+`(J+1)²·2^J·C` with `2^J ≍ h` and `J ≍ log h`, so it needs
+
+```text
+C = dyadicMeanSquare bound = o( h·√x / (log h)² )
+```
+
+uniformly over the `log h` levels `ℓ = 2^j ≤ h` and their translates in `[√x/2, √x]`.  Through
+`blockCost ℓ A ε M₁ M₂ W = 2(M₁ log(1+ℓ/A) + M₂·2/(π²W)) + 2(εℓ+1)² log(1+ε)` with `A ≍ √x`, the
+first term is `≍ M₁·ℓ/√x`, so the requirement on the cancellation input is
+
+```text
+M₁ = o( x / (ℓ · K' · (log h)²) )     against the trivial  M₂ ≍ x .
+```
+
+That is the Matomäki–Radziwiłł estimate for `‖logPoly μ (Icc 1 M) w‖²` on `|w| ≤ W`, and it is now
+the *only* thing the whole card still needs on this route.  Everything above it is closed.

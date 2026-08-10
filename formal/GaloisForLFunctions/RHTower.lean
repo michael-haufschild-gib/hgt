@@ -2404,6 +2404,7 @@ import GaloisForLFunctions.RHTower.GaussSampleTranslationL2
 import GaloisForLFunctions.RHTower.GaussTranslationL2Convergence
 import GaloisForLFunctions.RHTower.GaussUniformTranslationL2
 import GaloisForLFunctions.RHTower.GaussIterate
+import GaloisForLFunctions.RHTower.GaussIterateInner
 import GaloisForLFunctions.RHTower.GaussIteratedAmplitude
 import GaloisForLFunctions.RHTower.GaussScaleAmplitudeIntegral
 import GaloisForLFunctions.RHTower.GaussScaleQuotient
@@ -6903,3 +6904,4 @@ import GaloisForLFunctions.RHTower.DeningerInvZetaPole
 import GaloisForLFunctions.RHTower.DeningerDirichletLimit
 import GaloisForLFunctions.RHTower.DeningerMobiusHarmonicZero
 import GaloisForLFunctions.RHTower.DeningerCommutatorCovariance
+import GaloisForLFunctions.RHTower.DeningerPullIntegrable

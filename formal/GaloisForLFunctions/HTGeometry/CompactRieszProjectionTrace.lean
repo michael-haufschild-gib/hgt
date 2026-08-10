@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.CompactOperatorGeneralSpectrum
 import GaloisForLFunctions.HTGeometry.RieszProjectionFiniteSection
 import GaloisForLFunctions.HTGeometry.RieszProjectionSpectral
 import Mathlib.Analysis.Normed.Operator.Compact.FiniteDimension
+import Mathlib.LinearAlgebra.Trace
 
 /-!
 # Finite-rank Riesz blocks of compact operators
@@ -100,6 +101,66 @@ theorem exists_rieszProjection_range_eq_maxGenEigenspace_of_isCompactOperator
   have hrange := range_rieszProjection_eq_maxGenEigenspace hr.le hres
     (mem_ball_self hr) hIdem hsep hfin
   exact ⟨r, hr, hrmu, hres, hIdem, hfin, hrange⟩
+
+/-! ## Finite-dimensional root-block calculus -/
+
+variable {V : Type*} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
+
+/-- Trace of the square of any root-block calculus depends only on the value at the root.  The
+hypothesis says exactly that the calculus differs from scalar evaluation by a nilpotent operator,
+as ordinary holomorphic functional calculus does on one generalized eigenspace. -/
+theorem trace_sq_eq_finrank_mul_sq_of_sub_algebraMap_isNilpotent
+    (G : Module.End ℂ V) (c : ℂ)
+    (hG : IsNilpotent (G - algebraMap ℂ (Module.End ℂ V) c)) :
+    LinearMap.trace ℂ V (G ∘ₗ G) = (Module.finrank ℂ V : ℂ) * c ^ 2 := by
+  have htrace : LinearMap.trace ℂ V G = c * LinearMap.trace ℂ V (1 : Module.End ℂ V) := by
+    have hraw := LinearMap.trace_comp_eq_mul_of_commute_of_isNilpotent
+      (f := (1 : Module.End ℂ V)) (g := G) c (Commute.one_left G) hG
+    have hone : (1 : Module.End ℂ V) ∘ₗ G = G := by ext; simp
+    rw [hone] at hraw
+    exact hraw
+  rw [LinearMap.trace_comp_eq_mul_of_commute_of_isNilpotent c (Commute.refl G) hG,
+    htrace, LinearMap.trace_one]
+  push_cast
+  ring
+
+/-- Finite Taylor functional calculus on a single root block.  `coeff k` is the normalized
+`(k+1)`-st Taylor coefficient; the sum truncates at dimension because the root nilpotent has
+nilpotency index at most that dimension. -/
+def finiteRootBlockTaylorCalculus (T : Module.End ℂ V) (mu value : ℂ)
+    (coeff : ℕ → ℂ) : Module.End ℂ V :=
+  let N := T - algebraMap ℂ (Module.End ℂ V) mu
+  algebraMap ℂ (Module.End ℂ V) value +
+    N * ∑ k ∈ Finset.range (Module.finrank ℂ V), coeff k • N ^ k
+
+/-- Taylor calculus on a generalized root block is scalar evaluation plus a nilpotent. -/
+theorem finiteRootBlockTaylorCalculus_sub_isNilpotent
+    (T : Module.End ℂ V) (mu value : ℂ) (coeff : ℕ → ℂ)
+    (hN : IsNilpotent (T - algebraMap ℂ (Module.End ℂ V) mu)) :
+    IsNilpotent
+      (finiteRootBlockTaylorCalculus T mu value coeff -
+        algebraMap ℂ (Module.End ℂ V) value) := by
+  let N := T - algebraMap ℂ (Module.End ℂ V) mu
+  let S := ∑ k ∈ Finset.range (Module.finrank ℂ V), coeff k • N ^ k
+  have hcomm : Commute N S := by
+    dsimp [S]
+    apply Commute.sum_right
+    intro k hk
+    exact ((Commute.refl N).pow_right k).smul_right (coeff k)
+  have hnil : IsNilpotent (N * S) := hcomm.isNilpotent_mul_right hN
+  simpa [finiteRootBlockTaylorCalculus, N, S] using hnil
+
+/-- Exact square-trace formula for the finite Taylor functional calculus on one generalized root
+block. -/
+theorem trace_finiteRootBlockTaylorCalculus_sq
+    (T : Module.End ℂ V) (mu value : ℂ) (coeff : ℕ → ℂ)
+    (hN : IsNilpotent (T - algebraMap ℂ (Module.End ℂ V) mu)) :
+    LinearMap.trace ℂ V
+        (finiteRootBlockTaylorCalculus T mu value coeff ∘ₗ
+          finiteRootBlockTaylorCalculus T mu value coeff) =
+      (Module.finrank ℂ V : ℂ) * value ^ 2 :=
+  trace_sq_eq_finrank_mul_sq_of_sub_algebraMap_isNilpotent _ _
+    (finiteRootBlockTaylorCalculus_sub_isNilpotent T mu value coeff hN)
 
 end
 

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CompactOperatorGeneralSpectrum
+import GaloisForLFunctions.HTGeometry.CompactRieszProjectionTrace
 import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceDivisorTomography
 import GaloisForLFunctions.RHTower.CCMRectangularManuscriptCapstone
 import GaloisForLFunctions.RHTower.HedenmalmEssentialFlowSymbol
@@ -135,6 +136,95 @@ theorem essentialFlowSymbol_xiZeroCopy (a L : ℝ) (q : XiZeroCopy) :
     xiRectangularTwoEdgeTransform]
   exact weilFixedWidthSample_eq_rectangularTwoEdgeTransform
     (mul_ne_zero I_ne_zero (xiSpectralPoint_ne_zero q))
+
+/-! ## Finite-rank Riesz fibres and ordinary root-block calculus -/
+
+/-- Every nonzero source spectral point has an isolating finite-rank Riesz projection whose range
+is exactly its maximal generalized eigenspace. -/
+theorem exists_thetaRieszProjection_range_eq_maxGenEigenspace
+    (mu : ThetaNonzeroSpectrum) :
+    ∃ r : ℝ, 0 < r ∧ r < ‖(mu : ℂ)‖ ∧
+      (∀ lam ∈ Metric.sphere (mu : ℂ) r,
+        lam ∈ resolventSet ℂ thetaKernelOperator) ∧
+      rieszProjection thetaKernelOperator (mu : ℂ) r *
+          rieszProjection thetaKernelOperator (mu : ℂ) r =
+        rieszProjection thetaKernelOperator (mu : ℂ) r ∧
+      FiniteDimensional ℂ
+        (LinearMap.range
+          ((rieszProjection thetaKernelOperator (mu : ℂ) r : ThetaH →L[ℂ] ThetaH) :
+            ThetaH →ₗ[ℂ] ThetaH)) ∧
+      LinearMap.range
+          ((rieszProjection thetaKernelOperator (mu : ℂ) r : ThetaH →L[ℂ] ThetaH) :
+            ThetaH →ₗ[ℂ] ThetaH) =
+        maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ) :=
+  exists_rieszProjection_range_eq_maxGenEigenspace_of_isCompactOperator
+    isCompactOperator_thetaKernelOperator mu.2.1 mu.2.2
+
+/-- Algebraic source root spaces are finite dimensional, proved from their compact Riesz
+projections rather than assumed. -/
+noncomputable instance thetaMaxGenEigenspace_finiteDimensional
+    (mu : ThetaNonzeroSpectrum) :
+    FiniteDimensional ℂ
+      (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)) := by
+  obtain ⟨r, _hr, _hrmu, _hres, _hidem, hfin, hrange⟩ :=
+    exists_thetaRieszProjection_range_eq_maxGenEigenspace mu
+  rw [← hrange]
+  exact hfin
+
+/-- Restriction of the source operator to one full generalized spectral fibre. -/
+def thetaRootBlockOperator (mu : ThetaNonzeroSpectrum) :
+    Module.End ℂ
+      (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)) :=
+  (thetaKernelOperator : Module.End ℂ ThetaH).restrict
+    (Module.End.mapsTo_maxGenEigenspace_of_comm
+      (f := (thetaKernelOperator : Module.End ℂ ThetaH))
+      (g := (thetaKernelOperator : Module.End ℂ ThetaH))
+      (Commute.refl _) (mu : ℂ))
+
+/-- Nilpotent Jordan part on every source root block. -/
+theorem thetaRootBlockOperator_sub_isNilpotent (mu : ThetaNonzeroSpectrum) :
+    IsNilpotent
+      (thetaRootBlockOperator mu -
+        algebraMap ℂ
+          (Module.End ℂ
+            (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)))
+          (mu : ℂ)) := by
+  have hnil :=
+    Module.End.isNilpotent_restrict_maxGenEigenspace_sub_algebraMap
+      (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)
+  convert hnil using 1
+  ext x
+  simp [thetaRootBlockOperator, LinearMap.restrict_apply]
+
+/-- Normalized positive-order Taylor jet of the essential symbol at a nonzero root. -/
+def thetaEssentialTaylorCoefficient (a L : ℝ) (mu : ThetaNonzeroSpectrum)
+    (k : ℕ) : ℂ :=
+  iteratedDeriv (k + 1) (essentialFlowSymbol a L) (mu : ℂ) /
+    (Nat.factorial (k + 1) : ℂ)
+
+/-- Ordinary finite-dimensional Taylor/holomorphic functional calculus on one generalized source
+root block.  Nilpotence makes the Taylor expansion finite. -/
+def thetaRootBlockFunctionalCalculus (a L : ℝ) (mu : ThetaNonzeroSpectrum) :
+    Module.End ℂ
+      (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ)) :=
+  finiteRootBlockTaylorCalculus (thetaRootBlockOperator mu) (mu : ℂ)
+    (essentialFlowSymbol a L (mu : ℂ))
+    (thetaEssentialTaylorCoefficient a L mu)
+
+/-- Exact Jordan-block trace law: every derivative term is nilpotent and has zero trace. -/
+theorem trace_thetaRootBlockFunctionalCalculus_sq
+    (a L : ℝ) (mu : ThetaNonzeroSpectrum) :
+    LinearMap.trace ℂ
+        (maxGenEigenspace (thetaKernelOperator : Module.End ℂ ThetaH) (mu : ℂ))
+        (thetaRootBlockFunctionalCalculus a L mu ∘ₗ
+          thetaRootBlockFunctionalCalculus a L mu) =
+      (thetaSpectrumMultiplicity mu : ℂ) *
+        essentialFlowSymbol a L (mu : ℂ) ^ 2 := by
+  exact trace_finiteRootBlockTaylorCalculus_sq
+    (thetaRootBlockOperator mu) (mu : ℂ)
+    (essentialFlowSymbol a L (mu : ℂ))
+    (thetaEssentialTaylorCoefficient a L mu)
+    (thetaRootBlockOperator_sub_isNilpotent mu)
 
 /-! ## Absolutely convergent punctured trace -/
 

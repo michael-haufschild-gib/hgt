@@ -983,6 +983,20 @@ an involution and that `F` squares to the identity on the preimages (Fourier inv
 evenness).  Instantiating it at `𝔖_μ` needs the even `L¹` extension and `F` on that space; the
 algebraic content of `(6)` is complete and independent of that choice.
 
+### Section 2 — the pullback is integrable on the ray `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPullIntegrable.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerLogPull_continuousOn`, `deningerLogPull_integrable` — `H_h ∈ L¹(0,∞)`, by the same
+  two-branch comparison as the weighted derivative.
+
+This is the second factor of the card's `(12)`: the Abel representation gives
+`∫_0^∞ f_h = (∑_i M(i)/(i(i+1))) · ∫_0^∞ H_h`, because
+`∫_0^∞ (H_h((i+1)x) - H_h(ix)) dx = -(1/(i(i+1))) ∫_0^∞ H_h` by dilation scaling.  The first factor
+is `deningerHarmonicLimit`, **already proved to be zero**, so `(12)` follows once the dilation
+scaling and the sum/integral interchange are in place.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's

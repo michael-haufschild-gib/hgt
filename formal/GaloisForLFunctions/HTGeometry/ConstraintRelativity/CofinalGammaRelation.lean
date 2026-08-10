@@ -279,6 +279,26 @@ theorem exists_factor_iff (g : J → (R →ₗ[ℂ] R)) (P : R →ₗ[ℂ] Gamma
     simp only [LinearMap.mem_ker, LinearMap.comp_apply, Submodule.mkQ_apply,
       (Submodule.Quotient.mk_eq_zero _).2 hx, map_zero]
 
+/-- **Corollary E, second half.**  Evaluation of coinvariant observers at a class is surjective
+onto a nonzero target exactly when that class is nonzero.  So a prescribed value `P(η) = v` is
+available for every `v` precisely when the retained class survives — which is a separate
+source-survival statement, not a consequence of the relation being diagonal. -/
+theorem surjective_eval_iff_ne_zero {W V : Type*} [AddCommGroup W] [Module ℂ W]
+    [AddCommGroup V] [Module ℂ V] [Nontrivial V] (η : W) :
+    Function.Surjective (fun P : W →ₗ[ℂ] V => P η) ↔ η ≠ 0 := by
+  constructor
+  · intro hsurj hη
+    obtain ⟨v, hv⟩ := exists_ne (0 : V)
+    obtain ⟨P, hP⟩ := hsurj v
+    refine hv ?_
+    rw [← hP, hη]
+    exact P.map_zero
+  · intro hη v
+    obtain ⟨f, hf⟩ := Module.Projective.exists_dual_ne_zero ℂ hη
+    refine ⟨(LinearMap.toSpanSingleton ℂ V ((f η)⁻¹ • v)).comp f, ?_⟩
+    show f η • ((f η)⁻¹ • v) = v
+    rw [smul_smul, mul_inv_cancel₀ hf, one_smul]
+
 end Coinvariants
 
 /-! ## Kernel and multivalued defect exchange -/

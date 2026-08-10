@@ -1,0 +1,1 @@
+theorem tmpCompileTest : True := trivial
