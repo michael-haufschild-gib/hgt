@@ -1069,30 +1069,102 @@ Classical.choice, Quot.sound`.
   negative ray onto the positive one and transports integrability, so the extension inherits every
   ray estimate.
 
+### Section 2 — `(11)` at every order: all moments of the preimage `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerWindowSwapPow.lean`,
+`DeningerHigherMassBound.lean`, `DeningerHigherMajorant.lean`,
+`DeningerHigherPreimageMass.lean`.  Axiom audit for all declarations: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerWindowKernelPow`, `deningerWindowKernelPow_slice`, `deningerWindowKernelPow_swap` — the
+  `x^r`-weighted window kernel, its `u`-slice (the derivative times the order-`r` window moment)
+  and the exchange of the two orders of integration.
+- `deningerWindowKernelPow_eq` — the weighted kernel *factors*: it is `x^r` times the unweighted
+  one.  The weight does not depend on the slice variable, so the whole order-`r` estimate is the
+  order-`0` one with one constant pulled out.
+- `deningerAbelDifferencePow_mass_le` — **one Abel difference costs
+  `((i^{-(r+1)} - (i+1)^{-(r+1)})/(r+1)) ∫_0^∞ u^{r+1}|H_h'(u)| du`.**
+- `deningerHigherMomentMass_lt_top`, `deningerHigherMajorant`,
+  `deningerHigherMajorant_mass_lt_top` — the `x^r`-weighted majorant has finite mass over the ray
+  for every `r ≥ 1`, by monotone convergence and `deningerHigherCoefficient_summable`.
+- `deningerMobiusPartial_measurable`, `deningerMobiusPreimage_aestronglyMeasurable` — the preimage
+  is measurable on the ray, as the pointwise limit of its Abel partial sums.
+- `deningerMobiusPreimage_higherMass_lt_top`, `deningerMobiusPreimage_moment_integrable` —
+  **`(11)` at every order: `∫_0^∞ x^r |f_h(x)| dx < ∞` for every `r ≥ 0`**, stated both as
+  finiteness of the `ℝ≥0∞` integral and as `IntegrableOn`.
+
+### Section 1 — the collar exchange `J` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerCollarExchange.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerPow_le_factorial_mul_exp` — `|x|^k ≤ k! e^{|x|}`, from a single term of the exponential
+  series.
+- `deningerExpSchwartzOfBounds` — **a smooth function carrying exponential-weight bounds of every
+  order is Schwartz.**  This is the constructor the source needs: `DeningerExpSchwartz` is a
+  submodule of `𝓢(ℝ,ℂ)`, so a pointwise formula must be *built* as a Schwartz map before it can be
+  asserted to lie in the source.
+- `deningerCollarWeight_norm_iteratedFDeriv` — every derivative of `e^{-t}` has norm `e^{-t}`.
+- `deningerCollarFun_bounds` — **`J` lands in the source**: the Leibniz bound plus the reflection
+  isometry turn the source constant at exponent `A + 1` into the source constant at `A`.  One unit
+  of exponent is the exact cost of the weight.
+- `deningerCollarExchange`, `deningerCollarExchange_involutive` — **`(3)` as an operation of
+  `H_-`, and `J² = 1`.**
+
+`J` is *not* an operation of the Schwartz space: `e^{-t}` is not of temperate growth, so no
+multiplier lemma applies.  It is an operation of the exponentially decreasing source only.
+
+### Section 2 — the even extension is `L¹` on the line `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPreimageL1.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerMobiusPreimage_integrableOn`, `deningerMobiusPreimagePow_integrableOn` — the ray form
+  of `(11)` at every order.
+- `deningerIntegrable_of_rays` — integrability on the two open rays is integrability on the line,
+  since the origin is null.
+- `deningerEvenPreimage_moment_integrable`, `deningerEvenPreimage_integrable` — **`E f_h ∈ L¹(ℝ)`
+  with every polynomial moment**, by reflecting the ray estimates.  This is the `L¹` datum that
+  `(4)` consumes.
+
+### Section 3/4 — `(4)` and `(6)` at the concrete `𝔖_μ` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMobiusFourierCommutator.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerFourierSq_apply` — **`ℱ²g = g ∘ (-·)`** on Schwartz functions, from mathlib's Fourier
+  pair together with `𝓕⁻ f = 𝓕 f ∘ (-·)`.
+- `deningerL1Distribution`, `deningerL1Distribution_apply` — an integrable function of the line as
+  a tempered distribution, via mathlib's `Lp.toTemperedDistribution`; continuity in the Schwartz
+  topology comes free from the `L¹`–`L^∞` pairing.
+- `deningerEvenDistribution_fourierSq` — **`ℱ²` is trivial on an even `L¹` distribution**: the
+  square reflects the test function, and the reflection is transferred to the density by the
+  measure-preserving change of variables `x ↦ -x`.
+- `deningerPreimageDistribution`, `deningerMobiusCommutator` — **`(4)`: the commutator
+  `𝔖_μ h = ℱ(E f_h) - E f_{Jh}` as an honest element of `𝓢'(ℝ,ℂ)`.**
+- `deningerMobiusCommutator_fourier_covariance` — **`(6)`: `𝔖_μ(Jh) = -ℱ(𝔖_μ h)`**, at the
+  concrete operator.  The two inputs are exactly the two proved above: `J² = 1` and triviality of
+  `ℱ²` on the even preimage distributions.
+
 ### What is left
 
-`(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
-unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a Fubini on a fixed
-ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
-bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)` at order `r ≥ 1` (mechanical repetition of the `r = 0` assembly), the instantiation of
-`(6)` at the concrete `𝔖_μ` (mathlib's `TemperedDistribution` is the natural home, since
-`F² = reflection` is free there), and `(5)` — the Fourier-inversion bootstrap with Poisson
-summation.  **`(8)`, `(9)`, `(10)`, `(11)` at `r = 0`, `(12)`, `(15)`, `(25)`, `(34)`--`(35)`,
-`(44)`--`(45)` and the algebraic content of `(6)` are all done.**  `(8)`, `(9)`, `(10)` and the weighted-derivative bound are all built.  What
-remains for `(11)` is one measure-theoretic step: integrating the Abel difference against `dx`.  The clean route is *not* a
-decreasing majorant for `H_h'` but Tonelli on the region — for `i ≥ 1`,
+Only `(5)` and the statements that ride on it.  `(4)`, `(6)`, `(8)`--`(12)`, `(15)`, `(25)`,
+`(34)`--`(35)` and `(44)`--`(45)` are all formalized unconditionally.
 
-    ∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx ≤ ∫_0^∞ |H_h'(u)| · |{x : ix ≤ u ≤ (i+1)x}| du
-                                     = (1/(i(i+1))) ∫_0^∞ u |H_h'(u)| du,
+`(5)` — the exact kernel `ker 𝔖_μ = Z(H_∩)` — still needs, in order:
 
-because `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]` has length `u/(i(i+1))`.  Summing against
-`|M(i)|` then lands exactly on `(9)`, which is already proved.  Note `(9)` cannot be avoided by the
-two-sided decay of the pullback alone: without Möbius cancellation the bound near the origin is
-`‖f_h(x)‖ ≲ C/x` for *every* exponent `A`, which is not integrable at `0`.  `(15)` needs
-`1/ζ(σ) → 0` as `σ ↓ 1`.  Then `(6)` — formal once `𝔖_μ`
-is defined — and finally `(5)`, the Fourier-inversion bootstrap `(23)`--`(24)` followed by Poisson
-summation `(26)`.  `H_∩` and `Z` already exist as `RHTower.DeningerMeyerCap` and
-`RHTower.deningerPoissonLM`.
+- the Fourier-inversion bootstrap `(23)`--`(24)`: from `ℱ(E f_h) = E f_{Jh}` in `𝓢'`, every
+  polynomial moment of the right side (already proved, `deningerEvenPreimage_moment_integrable`)
+  gives a smooth representative of the left side by differentiation under the inverse Fourier
+  integral, and the ray estimates `(16)` then upgrade it to a Schwartz function;
+- Poisson summation `(26)` for the even Schwartz pair, which converts the right-inverse identity
+  `(25)` into the endpoint reading `g(0) = f(0) = 0`.
+
+Both directions of `(5)` reduce to that; the boundary inclusion `(19)`--`(20)` is the already-proved
+right inverse `deningerMobius_rightInverse` read at a Poisson boundary.  `(13)` (continuity of
+`h ↦ x^r f_h` into `L¹`), `(16)` (rapid decay of the derivatives of `f_h` on the ray) and `(30)`
+(the Euler-depleted kernel) are downstream of the same two inputs.  `H_∩` and `Z` already exist as
+`RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonLM`.
 
 ## Gates
 
@@ -1103,7 +1175,8 @@ summation `(26)`.  `H_∩` and `Z` already exist as `RHTower.DeningerMeyerCap` a
   identity, and boundary image `(4)` proved on paper
 - [ ] source annihilator gate: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
 - [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
-- [ ] 2 → 3 formalized: section 5 done; `(5)`, `(6)`, `(11)`, `(12)`, `(45)` remain
+- [ ] 2 → 3 formalized: `(4)`, `(6)`, `(8)`--`(12)`, `(15)`, `(25)`, `(34)`--`(35)`,
+  `(44)`--`(45)` done; only `(5)` and its downstream `(13)`, `(16)`, `(30)` remain
 - [ ] 3 → 4 publication-ready
 
 ## Log

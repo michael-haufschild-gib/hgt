@@ -2,13 +2,13 @@
 
 - **ID:** ULF-EVM-1
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** THEOREM (paper; core Lean-certified)
 - **Source:** ULF-EVM-0
 - **Statement:** Compact observer fibres and closed coherent horizons make observation commute with
   infinite viability. Every failure of that exchange forces noncompact escape or nonclosed/
   incoherent admission, and every proper source cost diverges along a false-immortality witness.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [CLASSICAL INGREDIENTS]
-  [LEAN PENDING] [NOT LEAN-PROVED] [NOT RH]
+  [LEAN-CERTIFIED CORE] [COUNTERMODELS LEAN PENDING] [NOT RH]
 
 ## 1. Horizon and observer notation
 
@@ -293,14 +293,20 @@ The theorem proves no RH statement, route open premise, or universal identificat
 positivity, or recurrence. It does not construct the endogenous challenge generator; it proves
 what follows once one is supplied source-first.
 
-Paper proof is dependency-closed. Exact Lean formalization has not been written or built. Under
-project rules this card is not `[LEAN-PROVED]` and does not count as AI-produced proof.
+Core theorem package is certified in
+`formal/GaloisForLFunctions/HTGeometry/ConstitutiveEndogenousViability.lean`: compact-fibre
+observer exchange, eventual compact escape, proper-cost divergence, promotion trilemma,
+predecessor/cofinal exchange, permanent plateau, and greatest viable fixed point. The Lean escape
+theorems are slightly stronger than the paper statement: once a global observed witness is absent,
+their eventual-disjointness and cost conclusions do not additionally require finite-horizon
+nonemptiness. Section 6 countermodels remain paper-only, so this card stays at Stage 2 rather than
+moving wholesale to Stage 3.
 
 ## Gates
 
 - [x] 0 -> 1: well-posed, source-pure, exact falsifiers
 - [x] 1 -> 2: complete paper proof, no open dependency
-- [ ] 2 -> 3: exact Lean theorem, direct elaboration, final umbrella build, lint, axiom audit
+- [ ] 2 -> 3: formalize Section 6 countermodels and move the fully certified card
 - [ ] 3 -> 4: publication-ready synthesis and independent specialist review
 
 ## Log
@@ -308,3 +314,5 @@ project rules this card is not `[LEAN-PROVED]` and does not count as AI-produced
 - 2026-08-10 -- paper proof closed after compactness, closedness, and coherence were separated by
   sharp countermodels.
 - 2026-08-10 -- novelty claim rejected; retained as route-independent bridge and field law.
+- 2026-08-10 -- core theorem package Lean-certified and wired into the universal-law-field
+  umbrella; sharp countermodels remain Lean-pending.

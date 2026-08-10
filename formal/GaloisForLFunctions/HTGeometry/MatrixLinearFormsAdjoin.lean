@@ -60,6 +60,21 @@ theorem adjoin_field_matrixLinearForms_eq_of_det_ne_zero {τ : Type*} [Fintype �
   rwa [matrixPrincipalLinearForms_mul, Matrix.nonsing_inv_mul M hunit,
     matrixPrincipalLinearForms_one] at hback
 
+/-- An eigenbasis rescaled by nonzero overlaps is invertible. -/
+theorem det_mul_diagonal_ne_zero {τ : Type*} [Fintype τ] [DecidableEq τ] {V : Matrix τ τ K}
+    {c : τ → K} (hV : V.det ≠ 0) (hc : ∀ i, c i ≠ 0) : (V * Matrix.diagonal c).det ≠ 0 := by
+  rw [Matrix.det_mul, Matrix.det_diagonal]
+  exact mul_ne_zero hV (Finset.prod_ne_zero_iff.mpr fun i _ => hc i)
+
+/-- **Reading a state in an eigenbasis preserves the generated algebra.**  The change of
+coordinates `V · diag c` is invertible as soon as the eigenbasis is and no overlap vanishes, so the
+computational coordinates and the spectral ones generate the same algebra. -/
+theorem adjoin_matrixLinearForms_mul_diagonal_eq {τ : Type*} [Fintype τ] [DecidableEq τ]
+    (V : Matrix τ τ K) (c : τ → K) (hV : V.det ≠ 0) (hc : ∀ i, c i ≠ 0) (x : τ → L) :
+    Algebra.adjoin K (Set.range (matrixLinearForms (V * Matrix.diagonal c) x))
+      = Algebra.adjoin K (Set.range x) :=
+  adjoin_matrixLinearForms_eq_of_det_ne_zero _ x (det_mul_diagonal_ne_zero hV hc)
+
 end
 
 end GaloisForLFunctions.HTGeometry

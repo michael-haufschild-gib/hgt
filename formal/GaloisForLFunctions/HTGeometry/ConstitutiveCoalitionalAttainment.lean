@@ -1,9 +1,8 @@
 import GaloisForLFunctions.HTGeometry.ScheffeCounting
 import Mathlib.Topology.Algebra.InfiniteSum.Real
 import Mathlib.Analysis.Normed.Module.Basic
+import Mathlib.Analysis.Normed.Operator.Basic
 import Mathlib.Analysis.Real.Sqrt
-
-set_option maxHeartbeats 800000
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -122,9 +121,9 @@ private theorem coalitional_vector_barycenter_tendsto
       apply Summable.of_nonneg_of_le (fun i => norm_nonneg _)
         (fun i => ?_) (habsdiff.mul_left B)
       rw [norm_smul, Real.norm_eq_abs]
-      exact mul_le_mul_of_nonneg_left (hB i) (abs_nonneg _)
+      simpa [mul_comm] using mul_le_mul_of_nonneg_left (hB i) (abs_nonneg _)
     calc
-      ‖∑' i, mu (phi n) i • a i - p i • a i‖ =
+      ‖∑' i, (mu (phi n) i • a i - p i • a i)‖ =
           ‖∑' i, (mu (phi n) i - p i) • a i‖ := by
             congr 2
             funext i
@@ -134,7 +133,7 @@ private theorem coalitional_vector_barycenter_tendsto
       _ ≤ ∑' i, B * |mu (phi n) i - p i| :=
         Summable.tsum_le_tsum (fun i => by
           rw [norm_smul, Real.norm_eq_abs]
-          exact mul_le_mul_of_nonneg_left (hB i) (abs_nonneg _))
+          simpa [mul_comm] using mul_le_mul_of_nonneg_left (hB i) (abs_nonneg _))
           hnorm (habsdiff.mul_left B)
       _ = B * ∑' i, |mu (phi n) i - p i| := by rw [tsum_mul_left]
   rw [Metric.tendsto_atTop]
@@ -145,12 +144,13 @@ private theorem coalitional_vector_barycenter_tendsto
   refine ⟨N, fun n hn => ?_⟩
   have hb := hbound n
   have hr := hN n hn
-  rw [dist_zero] at hr
   have hzero : 0 ≤ B * ∑' i, |mu (phi n) i - p i| :=
     mul_nonneg hnonneg (tsum_nonneg fun i => abs_nonneg _)
-  rw [abs_of_nonneg hzero] at hr
+  have hr' : B * ∑' i, |mu (phi n) i - p i| < ε := by
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg hzero] at hr
+    exact hr
   rw [dist_eq_norm]
-  exact lt_of_le_of_lt hb hr
+  exact lt_of_le_of_lt hb hr'
 
 /-- Route-independent Banach-valued attainment: bounded law atoms and tight zero-residual
 coalitions produce an actual countable positive carrier. -/
@@ -221,7 +221,8 @@ theorem coalitional_proper_price_forces_tightness
       have hiN : N ≤ (i : ℕ) := by
         simpa [T, Set.mem_compl_iff, Finset.mem_coe, Finset.mem_range,
           not_lt] using i.property
-      exact mul_le_mul_of_nonneg_left (hN (i : ℕ) hiN) ((hprob n).1 (i : ℕ)))
+      simpa [mul_comm] using
+        mul_le_mul_of_nonneg_left (hN (i : ℕ) hiN) ((hprob n).1 (i : ℕ)))
       (hmuTail.mul_left M) hcostTail
   have htailCostLe :
       (∑' i : T, mu n (i : ℕ) * W (i : ℕ)) ≤ coalitionalCost (mu n) W := by
@@ -343,24 +344,22 @@ private theorem coalitional_tailTerm_tsum_eq
   intro i
   simp only [coalitionalTailTerm, Set.indicator]
   by_cases hi : cut k ≤ i
-  · have hmem : i ∈ ((↑(Finset.range (cut k)) : Set ℕ))ᶜ := by
-      simpa [Set.mem_compl_iff, Finset.mem_coe, Finset.mem_range, not_lt] using hi
-    simp [hi, hmem]
-  · have hnotmem : i ∉ ((↑(Finset.range (cut k)) : Set ℕ))ᶜ := by
-      simpa [Set.mem_compl_iff, Finset.mem_coe, Finset.mem_range, not_lt] using hi
-    simp [hi, hnotmem]
+  · simp [hi]
+  · simp [hi]
 
 private theorem coalitional_threshold_indicator_summable
     (cut : ℕ → ℕ) (hcut : ∀ k, k + 1 ≤ cut k) (i : ℕ) :
     Summable (fun k => if cut k ≤ i then (1 : ℝ) else 0) := by
   apply summable_of_hasFiniteSupport
-  refine (Set.finite_range i).subset ?_
+  refine (Finset.range i).finite_toSet.subset ?_
   intro k hk
-  simp only [Function.support, ne_eq, Set.mem_setOf_eq]
-  by_contra hki
-  have hik : i ≤ k := Nat.le_of_not_gt hki
-  have : i < cut k := lt_of_le_of_lt hik (lt_of_lt_of_le (Nat.lt_succ_self k) (hcut k))
-  simp [not_le.mpr this] at hk
+  rw [Function.mem_support] at hk
+  have hklt : k < i := by
+    by_contra hki
+    have hik : i ≤ k := Nat.le_of_not_gt hki
+    have : i < cut k := lt_of_le_of_lt hik (lt_of_lt_of_le (Nat.lt_succ_self k) (hcut k))
+    simp [not_le.mpr this] at hk
+  exact Finset.mem_range.mpr hklt
 
 private theorem coalitional_threshold_price_proper
     (cut : ℕ → ℕ) (hcut : ∀ k, k + 1 ≤ cut k) :
@@ -381,7 +380,7 @@ private theorem coalitional_threshold_price_proper
           exact Finset.single_le_sum (fun j _ => Nat.zero_le (cut j)) hk
         rw [if_pos (le_trans hcutleM hi)]
       have hsum : ∑ k ∈ Finset.range K, (if cut k ≤ i then (1 : ℝ) else 0) = K := by
-        simp_rw [hind]
+        rw [Finset.sum_congr rfl hind]
         simp
       rw [coalitionalThresholdPrice, ← hsum]
       exact (coalitional_threshold_indicator_summable cut hcut i).sum_le_tsum
@@ -392,7 +391,8 @@ private theorem coalitional_tailTerm_summable
     (cut : ℕ → ℕ) (p : ℕ → ℝ) (hp : CoalitionalProbabilityVector p) (k : ℕ) :
     Summable (fun i => coalitionalTailTerm cut p k i) := by
   exact Summable.of_nonneg_of_le
-    (fun i => by simp [coalitionalTailTerm, hp.1 i])
+    (fun i => by
+      by_cases h : cut k ≤ i <;> simp [coalitionalTailTerm, h, hp.1 i])
     (fun i => by simp only [coalitionalTailTerm]; split_ifs <;> linarith [hp.1 i])
     hp.2.summable
 
@@ -430,7 +430,8 @@ theorem coalitional_geometric_tails_construct_proper_price
   have hrow (n k : ℕ) : Summable (fun i => coalitionalTailTerm cut (mu n) k i) :=
     coalitional_tailTerm_summable cut (mu n) (hprob n) k
   have hrow0 (n k : ℕ) : 0 ≤ ∑' i, coalitionalTailTerm cut (mu n) k i :=
-    tsum_nonneg fun i => by simp [coalitionalTailTerm, (hprob n).1 i]
+    tsum_nonneg fun i => by
+      by_cases h : cut k ≤ i <;> simp [coalitionalTailTerm, h, (hprob n).1 i]
   have hrowLe (n k : ℕ) :
       (∑' i, coalitionalTailTerm cut (mu n) k i) ≤ (1 / 2 : ℝ) ^ (k + 1) := by
     rw [coalitional_tailTerm_tsum_eq]
@@ -441,10 +442,12 @@ theorem coalitional_geometric_tails_construct_proper_price
   have hdouble (n : ℕ) :
       Summable (Function.uncurry (coalitionalTailTerm cut (mu n))) := by
     exact (summable_prod_of_nonneg (fun ki => by
-      simp [coalitionalTailTerm, (hprob n).1 ki.2])).2 ⟨hrow n, hrowTotals n⟩
+      change 0 ≤ coalitionalTailTerm cut (mu n) ki.1 ki.2
+      by_cases h : cut ki.1 ≤ ki.2 <;>
+        simp [coalitionalTailTerm, h, (hprob n).1 ki.2])).2 ⟨hrow n, hrowTotals n⟩
   have hcostsum (n : ℕ) :
       Summable (fun i => mu n i * coalitionalThresholdPrice cut i) := by
-    exact (hdouble n).prod.congr (fun i =>
+    exact (hdouble n).prod_symm.prod.congr (fun i =>
       coalitional_threshold_cost_identity cut hcut (mu n) i)
   refine ⟨coalitional_threshold_price_proper cut hcut, hcostsum, ?_⟩
   refine ⟨∑' k : ℕ, (1 / 2 : ℝ) ^ (k + 1), tsum_nonneg heps0, ?_⟩
@@ -462,7 +465,7 @@ theorem coalitional_geometric_tails_construct_proper_price
         ∑' k : ℕ, (1 / 2 : ℝ) ^ (k + 1) :=
     Summable.tsum_le_tsum (hrowLe n) (hrowTotals n) heps
   rw [hleft] at hcomm
-  exact le_trans hcomm.ge hright
+  exact le_trans hcomm.le hright
 
 /-- Every uniformly tight countable family constructs its own proper uniformly bounded price. -/
 theorem coalitional_tightness_constructs_proper_price
@@ -524,11 +527,13 @@ theorem coalitional_tight_or_priced_attainment_scalar
 private theorem coalitional_probability_exists_pos {p : ℕ → ℝ}
     (hp : CoalitionalProbabilityVector p) : ∃ j, 0 < p j := by
   by_contra hnot
-  push_neg at hnot
+  push Not at hnot
   have hpzero : p = 0 := by
     funext j
     exact le_antisymm (hnot j) (hp.1 j)
-  have hz : HasSum p 0 := by simpa [hpzero] using (hasSum_zero : HasSum (fun _ : ℕ => (0 : ℝ)) 0)
+  have hz : HasSum p 0 := by
+    rw [hpzero]
+    exact hasSum_zero
   have := hp.2.unique hz
   norm_num at this
 
@@ -539,7 +544,7 @@ private theorem coalitional_normalizedPrefix_probability
     {p : ℕ → ℝ} (hp : CoalitionalProbabilityVector p) {j : ℕ} (hj : 0 < p j) (n : ℕ) :
     CoalitionalProbabilityVector (coalitionalNormalizedPrefix p j n) := by
   let s : ℝ := ∑ k ∈ Finset.range (j + n + 1), p k
-  have hjmem : j ∈ Finset.range (j + n + 1) := by simp; omega
+  have hjmem : j ∈ Finset.range (j + n + 1) := by simp
   have hspos : 0 < s := by
     dsimp [s]
     exact lt_of_lt_of_le hj (Finset.single_le_sum (fun k _ => hp.1 k) hjmem)
@@ -560,24 +565,23 @@ private theorem coalitional_normalizedPrefix_probability
   have hsumdiv :
       (∑ i ∈ Finset.range (j + n + 1),
         if i < j + n + 1 then p i / s else 0) = s / s := by
-    simp only [Finset.mem_range, ↓reduceIte]
+    rw [Finset.sum_congr rfl (fun i hi => if_pos (Finset.mem_range.mp hi))]
     dsimp [s]
-    rw [Finset.sum_div]
+    simp only [div_eq_mul_inv, Finset.sum_mul]
   rw [hsumdiv, div_self hspos.ne']
 
 private theorem coalitional_normalizedPrefix_finite_support
     (p : ℕ → ℝ) (j n : ℕ) :
     (Function.support (coalitionalNormalizedPrefix p j n)).Finite := by
-  refine (Set.finite_range (j + n + 1)).subset ?_
+  refine (Finset.range (j + n + 1)).finite_toSet.subset ?_
   intro i hi
   simp only [Function.support, ne_eq, Set.mem_setOf_eq] at hi
-  simp only [Set.mem_range]
   by_contra hnot
-  have : ¬ i < j + n + 1 := by omega
+  have : ¬ i < j + n + 1 := by simpa using hnot
   simp [coalitionalNormalizedPrefix, this] at hi
 
 private theorem coalitional_normalizedPrefix_coordinate_tendsto
-    {p : ℕ → ℝ} (hp : CoalitionalProbabilityVector p) {j : ℕ} (hj : 0 < p j) (i : ℕ) :
+    {p : ℕ → ℝ} (hp : CoalitionalProbabilityVector p) {j : ℕ} (_hj : 0 < p j) (i : ℕ) :
     Tendsto (fun n => coalitionalNormalizedPrefix p j n i) atTop (nhds (p i)) := by
   have hcut : Tendsto (fun n : ℕ => j + n + 1) atTop atTop := by
     simpa [add_assoc, add_comm, add_left_comm] using tendsto_add_atTop_nat (j + 1)
@@ -587,7 +591,11 @@ private theorem coalitional_normalizedPrefix_coordinate_tendsto
   have hdiv : Tendsto
       (fun n => p i / (∑ k ∈ Finset.range (j + n + 1), p k))
       atTop (nhds (p i)) := by
-    simpa using (tendsto_const_nhds.div hpartial one_ne_zero)
+    have hconst : Tendsto (fun _ : ℕ => p i) atTop (nhds (p i)) :=
+      tendsto_const_nhds
+    have ht := hconst.div hpartial one_ne_zero
+    rw [div_one] at ht
+    exact ht.congr' (Filter.Eventually.of_forall fun n => rfl)
   apply hdiv.congr'
   filter_upwards [(Filter.tendsto_atTop.mp hcut) (i + 1)] with n hn
   have hi : i < j + n + 1 := by omega
@@ -789,9 +797,9 @@ theorem coalitional_banach_reciprocal_pricing_div
     (hreciprocal : ∀ i ∈ F, κ ≤ φ (a i) * price i) :
     κ / ‖φ‖ ≤ ‖∑ i ∈ F, mu i • a i‖ * ∑ i ∈ F, mu i * price i := by
   apply (div_le_iff₀ hφ).2
-  rw [mul_assoc]
-  exact coalitional_banach_reciprocal_pricing F mu a price φ hmu hresponse hprice hmass
-    hκ hreciprocal
+  simpa [mul_assoc, mul_comm, mul_left_comm] using
+    coalitional_banach_reciprocal_pricing F mu a price φ hmu hresponse hprice hmass
+      hκ hreciprocal
 
 /-- Canonical scalar escape law: atom `i` has positive defect `1/(i+1)`. -/
 def coalitionalEscapeRule (i : ℕ) : ℝ := 1 / (i + 1 : ℝ)
@@ -803,26 +811,37 @@ theorem coalitional_dirac_probability (n : ℕ) :
     CoalitionalProbabilityVector (coalitionalDiracHistory n) := by
   constructor
   · intro i
-    simp [coalitionalDiracHistory]
-  · simpa [coalitionalDiracHistory] using (hasSum_ite_eq n (1 : ℝ))
+    by_cases h : i = n <;> simp [coalitionalDiracHistory, h]
+  · change HasSum (fun i : ℕ => if i = n then (1 : ℝ) else 0) 1
+    exact hasSum_ite_eq n (1 : ℝ)
 
 theorem coalitional_dirac_finite_support (n : ℕ) :
     (Function.support (coalitionalDiracHistory n)).Finite := by
   refine Set.Finite.subset (Set.finite_singleton n) ?_
   intro i hi
-  simp [Function.support, coalitionalDiracHistory] at hi ⊢
+  rw [Function.mem_support] at hi
+  simp only [Set.mem_singleton_iff]
+  by_contra hne
+  simp [coalitionalDiracHistory, hne] at hi
 
 theorem coalitional_dirac_barycenter (n : ℕ) :
     ∑' i, coalitionalDiracHistory n i * coalitionalEscapeRule i =
       coalitionalEscapeRule n := by
-  rw [tsum_congr (fun i => by simp [coalitionalDiracHistory])]
-  exact tsum_ite_eq n (coalitionalEscapeRule n)
+  have hfun : (fun i => coalitionalDiracHistory n i * coalitionalEscapeRule i) =
+      fun i => if i = n then coalitionalEscapeRule i else 0 := by
+    funext i
+    by_cases h : i = n <;> simp [coalitionalDiracHistory, h]
+  rw [hfun]
+  exact tsum_ite_eq n coalitionalEscapeRule
 
 theorem coalitional_escapeRule_tendsto_zero :
     Tendsto coalitionalEscapeRule atTop (nhds 0) := by
   have hshift : Tendsto (fun n : ℕ => n + 1) atTop atTop := tendsto_add_atTop_nat 1
-  simpa [coalitionalEscapeRule, Nat.cast_add, Nat.cast_one] using
-    tendsto_one_div_atTop_nhds_zero_nat.comp hshift
+  have hbase : Tendsto (fun n : ℕ => (1 : ℝ) / n) atTop (nhds 0) :=
+    tendsto_one_div_atTop_nhds_zero_nat
+  apply (hbase.comp hshift).congr'
+  exact Filter.Eventually.of_forall fun n => by
+    simp [coalitionalEscapeRule, Function.comp_apply, Nat.cast_add, Nat.cast_one]
 
 /-- Positive coalitions cannot realize zero for the canonical escape law. -/
 theorem coalitional_escapeRule_has_no_carrier
@@ -836,8 +855,9 @@ theorem coalitional_escapeRule_has_no_carrier
     apply coalitional_weighted_summable hp (B := 1)
     intro i
     rw [abs_of_nonneg]
-    · exact one_div_le_one (by positivity) (by norm_num)
-    · positivity
+    · apply (div_le_one (by positivity : (0 : ℝ) < (i + 1 : ℝ))).2
+      exact_mod_cast Nat.succ_le_succ (Nat.zero_le i)
+    · exact one_div_nonneg.mpr (by positivity)
   have hle : p j * coalitionalEscapeRule j ≤
       ∑' i, p i * coalitionalEscapeRule i := by
     have := hsum.sum_le_tsum {j} (fun i _ => mul_nonneg (hp.1 i) (by

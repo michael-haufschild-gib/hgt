@@ -47,6 +47,13 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.  The modul
     sphere and *attained* (compactness of the sphere in finite dimension).
 12. `liftingModulus_id_linear` — **card `(10)`, boxed**: `Λ_{id|J}(ε) = ε/σ_min(J)` exactly, both
     inequalities.
+12b. `rangeInverse`, `apply_rangeInverse`, `liftingModulus_linear_functional` — **card `(11)`**: for
+    an injective deformation and *any* linear functional `ℓ`, `Λ_{ℓ|J}(ε) = ε‖ℓ ∘ J†‖`, with `J†`
+    the inverse on the range (built from `LinearEquiv.ofInjective` and continuity in finite
+    dimension).  The upper bound is the operator-norm estimate on the difference vector; the lower
+    bound needs no attainment argument — it tests the modulus at `J†(ε·w)` for unit `w` and
+    converts the resulting family of bounds into an operator-norm bound.  Item 12 is the case
+    `ℓ = id`.
 13. `liftingHorizon` — **card `(12)`**: the cofinal horizon invariant.
 14. `liftingHorizon_eq_top` — **card `(15)`**: the criterion for infinite horizon.
 15. `norm_exp_mul_I_sub_one` — the exact circle-chord identity

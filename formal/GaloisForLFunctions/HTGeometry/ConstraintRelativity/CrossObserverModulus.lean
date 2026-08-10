@@ -301,6 +301,97 @@ theorem liftingModulus_id_linear [FiniteDimensional ℝ E] (J : E →L[ℝ] B)
         abs_of_nonneg (by positivity : (0:ℝ) ≤ ε / sigmaMin J), mul_one]
     rwa [hnorm] at hle
 
+/-- The inverse of an injective map on its range, as a continuous linear map. -/
+noncomputable def rangeInverse [FiniteDimensional ℝ E] (J : E →L[ℝ] B)
+    (hJ : Function.Injective J) :
+    ↥(LinearMap.range (J : E →ₗ[ℝ] B)) →L[ℝ] E :=
+  LinearMap.toContinuousLinearMap
+    ((LinearEquiv.ofInjective (J : E →ₗ[ℝ] B) hJ).symm :
+      ↥(LinearMap.range (J : E →ₗ[ℝ] B)) →ₗ[ℝ] E)
+
+omit [Nontrivial E] in
+@[simp] theorem apply_rangeInverse [FiniteDimensional ℝ E] (J : E →L[ℝ] B)
+    (hJ : Function.Injective J) (w : ↥(LinearMap.range (J : E →ₗ[ℝ] B))) :
+    J (rangeInverse J hJ w) = (w : B) := by
+  have h := (LinearEquiv.ofInjective (J : E →ₗ[ℝ] B) hJ).apply_symm_apply w
+  exact congrArg Subtype.val h
+
+omit [Nontrivial E] in
+/-- **Card `(11)`.**  For an injective deformation the lifting modulus of any linear functional is
+the scale times the operator norm of the functional composed with the inverse on the range.  This
+generalizes the singular-value formula `(10)`, which is the case `ℓ = id`. -/
+theorem liftingModulus_linear_functional [FiniteDimensional ℝ E] (J : E →L[ℝ] B)
+    (hJ : Function.Injective J) (l : E →L[ℝ] ℝ) {ε : ℝ} (hε : 0 ≤ ε) :
+    liftingModulus (fun x => l x) (fun x => J x) ε
+      = ENNReal.ofReal (ε * ‖l.comp (rangeInverse J hJ)‖) := by
+  set T := l.comp (rangeInverse J hJ) with hT
+  refine le_antisymm (liftingModulus_le _ _ fun x y hxy => ?_) ?_
+  · refine ENNReal.ofReal_le_ofReal ?_
+    have hmem : J (x - y) ∈ LinearMap.range (J : E →ₗ[ℝ] B) := ⟨x - y, rfl⟩
+    have hinv : rangeInverse J hJ ⟨J (x - y), hmem⟩ = x - y := by
+      refine hJ ?_
+      rw [apply_rangeInverse]
+    have hval : l x - l y = T ⟨J (x - y), hmem⟩ := by
+      rw [hT, ContinuousLinearMap.comp_apply, hinv, map_sub]
+    have hnorm : ‖(⟨J (x - y), hmem⟩ : ↥(LinearMap.range (J : E →ₗ[ℝ] B)))‖ ≤ ε := by
+      show ‖J (x - y)‖ ≤ ε
+      rw [map_sub, ← dist_eq_norm]
+      exact hxy
+    have hop := ContinuousLinearMap.le_opNorm T (⟨J (x - y), hmem⟩ :
+      ↥(LinearMap.range (J : E →ₗ[ℝ] B)))
+    have hmul : ‖T‖ * ‖(⟨J (x - y), hmem⟩ : ↥(LinearMap.range (J : E →ₗ[ℝ] B)))‖ ≤ ‖T‖ * ε :=
+      mul_le_mul_of_nonneg_left hnorm (norm_nonneg T)
+    have hdist : dist (l x) (l y) = ‖T ⟨J (x - y), hmem⟩‖ := by
+      rw [Real.dist_eq, ← Real.norm_eq_abs, hval]
+    rw [hdist]
+    nlinarith [hop, hmul]
+  · rcases eq_or_ne (liftingModulus (fun x => l x) (fun x => J x) ε) ⊤ with htop | htop
+    · rw [htop]; exact le_top
+    refine (ENNReal.ofReal_le_iff_le_toReal htop).2 ?_
+    set c := (liftingModulus (fun x => l x) (fun x => J x) ε).toReal with hc
+    have hc0 : 0 ≤ c := ENNReal.toReal_nonneg
+    have hunit : ∀ w : ↥(LinearMap.range (J : E →ₗ[ℝ] B)), ‖w‖ ≤ 1 → ε * ‖T w‖ ≤ c := by
+      intro w hw
+      have hwb : ‖(w : B)‖ ≤ 1 := hw
+      have hpair : dist (J (rangeInverse J hJ (ε • w))) (J 0) ≤ ε := by
+        rw [map_zero, dist_zero_right, apply_rangeInverse]
+        show ‖ε • (w : B)‖ ≤ ε
+        rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hε]
+        nlinarith [norm_nonneg (w : B)]
+      have hle := le_liftingModulus (fun x => l x) (fun x => J x) hpair
+      have h1 : l (rangeInverse J hJ (ε • w)) = ε * T w := by
+        rw [hT, ContinuousLinearMap.comp_apply, map_smul, map_smul, smul_eq_mul]
+      have hval : dist (l (rangeInverse J hJ (ε • w))) (l 0) = ε * ‖T w‖ := by
+        rw [h1, map_zero, Real.dist_eq, sub_zero, abs_mul, abs_of_nonneg hε, Real.norm_eq_abs]
+      rw [hval] at hle
+      exact (ENNReal.ofReal_le_iff_le_toReal htop).1 hle
+    have hbound : ∀ w : ↥(LinearMap.range (J : E →ₗ[ℝ] B)), ε * ‖T w‖ ≤ c * ‖w‖ := by
+      intro w
+      rcases eq_or_ne w 0 with rfl | hw0
+      · simp
+      · have hwpos : 0 < ‖w‖ := norm_pos_iff.2 hw0
+        have hinvpos : (0 : ℝ) ≤ ‖w‖⁻¹ := le_of_lt (inv_pos.2 hwpos)
+        have hnorm1 : ‖(‖w‖⁻¹ : ℝ) • w‖ ≤ 1 := by
+          rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hinvpos, inv_mul_cancel₀ hwpos.ne']
+        have hb := hunit _ hnorm1
+        rw [map_smul, norm_smul, Real.norm_eq_abs, abs_of_nonneg hinvpos] at hb
+        have h2 := mul_le_mul_of_nonneg_right hb hwpos.le
+        have heq : (ε * (‖w‖⁻¹ * ‖T w‖)) * ‖w‖ = ε * ‖T w‖ := by
+          field_simp
+        rw [heq] at h2
+        exact h2
+    rcases eq_or_lt_of_le hε with hε0 | hεpos
+    · rw [← hε0, zero_mul]
+      exact hc0
+    · have hTle : ‖T‖ ≤ c / ε := by
+        refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun w => ?_
+        have hb := hbound w
+        rw [div_mul_eq_mul_div, le_div_iff₀ hεpos]
+        nlinarith [hb]
+      have hmulc : ε * (c / ε) = c := by field_simp
+      have hfin : ε * ‖T‖ ≤ ε * (c / ε) := mul_le_mul_of_nonneg_left hTle hε
+      rwa [hmulc] at hfin
+
 end Linear
 
 /-! ## The cofinal horizon invariant -/

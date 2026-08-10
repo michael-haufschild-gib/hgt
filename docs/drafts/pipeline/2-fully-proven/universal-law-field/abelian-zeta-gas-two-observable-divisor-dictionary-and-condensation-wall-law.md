@@ -1228,9 +1228,42 @@ proved among *all* normalised functionals, which is stronger than uniqueness amo
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 665 jobs.
 
-**What remains of this card.**  One item: the C\*-completion — continuity of the state and density
-of the monomials in the C\*-norm.  That needs C\*-tensor products and inductive limits of
-C\*-algebras, neither of which mathlib carries.
+#### The `*`-involution and the contraction estimate
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasStar.lean`.
+
+| Clause | Lean |
+|---|---|
+| the adjoint on singles, and its additivity | `gasAdjoint_single`, `gasAdjoint_add`, `gasAdjoint_zero`, `gasAdjoint_one`, `gasAdjoint_sub` |
+| **the adjoint is an involution** | **`gasAdjoint_gasAdjoint`** |
+| **the adjoint reverses products** | **`gasAdjoint_mul`** |
+| **`z^* z` is a diagonal word, and diagonal words are idempotent** | **`wstar_mul_self`**, `diagWord_idem`, `wstar_diagWord` |
+| **a self-adjoint idempotent cannot increase the Gibbs form** | **`gibbs_proj_le`** |
+| **every monomial acts as a contraction: `φ((za)^*(za)) ≤ φ(a^* a)`** | **`gibbs_contraction`** |
+| **the functional is hermitian: `φ(a^*) = conj φ(a)`** | **`gibbs_gasAdjoint`**, `gibbsWeight_conj` |
+
+`wstar_mul_self` is the combinatorial heart: for a monomial `z` the element `z^* z` is the diagonal
+word `⟨z.lower, z.lower⟩`, which is a self-adjoint idempotent, so `1 − z^* z` is too and
+`φ(a^* a) − φ(a^* z^* z a) = φ(((1−z^*z)a)^*((1−z^*z)a)) ≥ 0`.  This is exactly the boundedness
+estimate a GNS representation needs: each monomial acts as a contraction on the pre-Hilbert space.
+
+**What remains of this card.**  One item: the C\*-completion.  With positivity, hermitianness and
+the contraction estimate in hand the route is now concrete and mathlib-supported, and it does *not*
+need C\*-tensor products or inductive limits:
+
+1. `⟪a, b⟫ := φ(a^* a)`-style sesquilinear form makes `GasAlgebra` a `PreInnerProductSpace.Core ℂ`
+   — its three axioms are `gibbs_gasAdjoint` (hermitian), `gasGibbs_adjoint_mul_self_nonneg`
+   (positive) and linearity of `gibbs`.  Mathlib then supplies Cauchy–Schwarz and the seminorm.
+2. `UniformSpace.Completion` of that seminormed space *is* the GNS Hilbert space: the completion of
+   a pseudometric space identifies the null vectors automatically, so no explicit quotient is
+   needed.  This is the pattern of mathlib's own `Analysis/CStarAlgebra/GelfandNaimarkSegal.lean`,
+   which cannot be reused directly only because it assumes its algebra is already a C\*-algebra.
+3. `gibbs_contraction` makes left multiplication by a monomial a contraction on the pre-Hilbert
+   space, hence extends to the completion; a general element acts with norm at most the `ℓ¹` norm of
+   its coefficients.  This gives the `*`-representation `π`.
+4. `𝔄 := (StarSubalgebra.topologicalClosure (range π))` in `B(H)` is then a genuine C\*-algebra
+   containing the monomials densely, and `φ` extends to the vector state at the cyclic vector,
+   which is continuous by construction.  Uniqueness transfers by density from `gas_kms_unique`.
 
 ### Theorem 7.1 (GAS.11) — the operator-algebraic clause (DONE)
 

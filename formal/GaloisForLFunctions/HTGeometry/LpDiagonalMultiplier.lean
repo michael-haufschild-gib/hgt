@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Normed.Lp.lpSpace
 import Mathlib.Analysis.Normed.Operator.Basic
+import Mathlib.Analysis.InnerProductSpace.l2Space
 
 /-!
 # Diagonal multipliers on `ℓ²` over an arbitrary index
@@ -111,6 +112,16 @@ theorem norm_lpDiagonalCLM_le (lam : ι → ℂ) {C : ℝ} (hC0 : 0 ≤ C) (hC :
     rw [mul_one]
   · rw [mul_zero]
 
-end GaloisForLFunctions
+/-- **The diagonal multiplier has the conjugate diagonal as its adjoint.** -/
+theorem lpDiagonalCLM_inner (lam : ι → ℂ) {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ i, ‖lam i‖ ≤ C)
+    {D : ℝ} (hD0 : 0 ≤ D) (hD : ∀ i, ‖starRingEnd ℂ (lam i)‖ ≤ D)
+    (f g : lp (fun _ : ι => ℂ) 2) :
+    (inner ℂ (lpDiagonalCLM lam hC0 hC f) g : ℂ)
+      = inner ℂ f (lpDiagonalCLM (fun i => starRingEnd ℂ (lam i)) hD0 hD g) := by
+  rw [lp.inner_eq_tsum, lp.inner_eq_tsum]
+  refine tsum_congr fun i => ?_
+  rw [lpDiagonalCLM_apply, lpDiagonalCLM_apply, RCLike.inner_apply, RCLike.inner_apply,
+    map_mul]
+  ring
 
-end
+end GaloisForLFunctions

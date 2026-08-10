@@ -72,6 +72,17 @@ theorem gibbsWeight_wstar_mul (q : M → ℂ) (x y : GasWord M) :
   · rw [if_neg h, gibbsWeight_of_not_diag]
     exact fun hd => h ((diag_wstar_mul_iff x y).mp hd)
 
+
+/-- The Gibbs weight of real weights is conjugation invariant. -/
+theorem gibbsWeight_conj (q : M → ℂ) (hq : ∀ i, (starRingEnd ℂ) (q i) = q i) (x : GasWord M) :
+    (starRingEnd ℂ) (gibbsWeight q x) = gibbsWeight q x := by
+  classical
+  by_cases h : x.raise = x.lower
+  · rw [gibbsWeight_of_diag h, zprod, map_finsuppProd]
+    refine Finsupp.prod_congr fun i _ => ?_
+    rw [map_zpow₀, hq]
+  · rw [gibbsWeight_of_not_diag h, map_zero]
+
 /-! ## Rank-one kernels -/
 
 open scoped ComplexOrder

@@ -176,6 +176,50 @@ theorem closedHyperplaneInverse_range
       ⟨B yK, (closedHyperplaneInverse_apply_B K B hB yK).1⟩
     exact ⟨x, (closedHyperplaneInverse_apply_B K B hB yK).2⟩
 
+/-- Kernel of the Hilbert-space adjoint is exactly the orthogonal complement of the range. -/
+theorem closedHyperplaneInverse_adjoint_kernel
+    (K : Submodule ℂ H) (B : K →L[ℂ] H) (hB : Function.Injective B)
+    (hDense : Dense (B.range : Set H)) :
+    (closedHyperplaneInverse K B).adjoint.kernel = Kᗮ := by
+  let A := closedHyperplaneInverse K B
+  have hAdense : Dense (A.domain : Set H) :=
+    closedHyperplaneInverse_dense_domain K B hDense
+  have hArange : A.rangeSubmodule = K :=
+    closedHyperplaneInverse_range K B hB
+  ext y
+  rw [LinearPMap.mem_kernel_iff]
+  constructor
+  · rintro ⟨hyDom, hy0⟩
+    rw [Submodule.mem_orthogonal']
+    intro k hk
+    have hkRange : k ∈ A.rangeSubmodule := by rw [hArange]; exact hk
+    rcases hkRange with ⟨x, hx⟩
+    have hformal := LinearPMap.adjoint_isFormalAdjoint hAdense
+      (⟨y, hyDom⟩ : A.adjoint.domain) x
+    rw [hy0, inner_zero_left] at hformal
+    calc
+      inner ℂ y k = inner ℂ y (A x) := congrArg (inner ℂ y) hx.symm
+      _ = 0 := hformal.symm
+  · intro hyOrth
+    rw [Submodule.mem_orthogonal'] at hyOrth
+    have hyDom : y ∈ A.adjoint.domain := by
+      apply LinearPMap.mem_adjoint_domain_of_exists
+      refine ⟨0, ?_⟩
+      intro x
+      rw [inner_zero_left]
+      symm
+      apply hyOrth
+      rw [← hArange]
+      exact ⟨x, rfl⟩
+    refine ⟨hyDom, ?_⟩
+    apply LinearPMap.adjoint_apply_eq hAdense
+    intro x
+    rw [inner_zero_left]
+    symm
+    apply hyOrth
+    rw [← hArange]
+    exact ⟨x, rfl⟩
+
 theorem closedHyperplaneInverse_isFredholm
     (K : Submodule ℂ H) (hK : IsClosed (K : Set H))
     (B : K →L[ℂ] H) (hB : Function.Injective B)

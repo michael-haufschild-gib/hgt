@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PermutationInvariantSubspace
+import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+import Mathlib.LinearAlgebra.Dimension.Constructions
 
 /-!
 # Relation spaces transfer along embeddings
@@ -97,6 +99,42 @@ theorem ker_form_eq_constLine {E : ι → L} [Nonempty ι]
       simp [hb]
     · intro hb
       exact absurd (Finset.mem_univ i₀) hb
+
+/-! ## The rank of the family -/
+
+/-- The range of the relation form is the `ℚ`-span of the family. -/
+theorem range_form (E : ι → L) :
+    LinearMap.range (form E) = Submodule.span ℚ (Set.range E) := by
+  refine le_antisymm ?_ ?_
+  · rintro _ ⟨a, rfl⟩
+    rw [form_apply]
+    exact Submodule.sum_mem _ fun i _ =>
+      Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  · rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    refine ⟨fun j => if j = i then 1 else 0, ?_⟩
+    rw [form_apply, Finset.sum_eq_single i]
+    · simp
+    · intro b _ hb; simp [hb]
+    · intro hb; exact absurd (Finset.mem_univ i) hb
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- The constant line is one-dimensional. -/
+theorem finrank_constLine [Nonempty ι] :
+    Module.finrank ℚ (PermSubspace.constLine (K := ℚ) (ι := ι)) = 1 := by
+  refine finrank_span_singleton ?_
+  intro h
+  have := congrFun h (Classical.arbitrary ι)
+  simp at this
+
+/-- **The rank of a rigid family.**  If the only rational relation is the trace relation, the
+`ℚ`-span of the family has dimension one less than the number of members. -/
+theorem finrank_span_eq_card_sub_one [Nonempty ι] {E : ι → L}
+    (h : LinearMap.ker (form E) = PermSubspace.constLine (K := ℚ) (ι := ι)) :
+    Module.finrank ℚ (Submodule.span ℚ (Set.range E)) = Fintype.card ι - 1 := by
+  have hrank := LinearMap.finrank_range_add_finrank_ker (form E)
+  rw [range_form, h, finrank_constLine, Module.finrank_pi] at hrank
+  omega
 
 end RelationSpace
 

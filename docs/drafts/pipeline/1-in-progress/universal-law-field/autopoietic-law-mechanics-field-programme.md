@@ -309,7 +309,7 @@ generate its next challenge, and finite survival must be distinguished from one 
 strategy. The active extension is
 `autopoietic-law-mechanics/endogenous-viability-observer-exchange-field-programme.md`.
 
-Its paper-proved bridge `ULF-EVM-1` establishes the exchange
+Its Lean-certified core bridge `ULF-EVM-1` establishes the exchange
 
 \[
  q(\bigcap_n W_n)=\bigcap_nq(W_n)
@@ -319,4 +319,7 @@ under closed coherent horizons and compact observer fibres, proves proper-cost e
 exchange fails, and derives the greatest viable fixed point from a compact endogenous predecessor.
 This closes a route-independent compactness/coercivity law but not the field gate. Live task: one
 source-normal predecessor with literal realizations in three unlike frontier classes and one
-withheld cross-class prediction. Lean status is pending; no proof claim exceeds paper level.
+withheld cross-class prediction. Existing Lean laws already certify Kőnig realization,
+nested-capacity attainment, coalitional proper-cost escape, and prospective plateau rigidity;
+therefore EVM survives only if it generates the predecessor/challenge grammar source-first rather
+than collecting those laws under new vocabulary.

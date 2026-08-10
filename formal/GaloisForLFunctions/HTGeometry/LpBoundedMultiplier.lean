@@ -1,6 +1,7 @@
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Function.LpSeminorm.SMul
 import Mathlib.Analysis.RCLike.Basic
+import Mathlib.MeasureTheory.Function.L2Space
 
 /-!
 # Multiplication by a bounded measurable function on `Lᵖ`
@@ -127,5 +128,35 @@ theorem norm_le_of_ae_mul {T : Lp 𝕜 p μ →L[𝕜] Lp 𝕜 p μ} {ψ : α �
   have hnorm : (‖(K : ℝ)‖ₑ).toReal = K := by
     simp [enorm_eq_nnnorm, Real.norm_eq_abs, abs_of_nonneg hK0]
   rw [hnorm]
+
+/-! ## Multipliers and the `L²` inner product -/
+
+/-- **Multiplication by a real-valued bounded symbol is self-adjoint on `L²`.** -/
+theorem lpBoundedMulCLM_inner_real {φ : α → 𝕜} (hφ : Measurable φ) {C : ℝ} (hC0 : 0 ≤ C)
+    (hC : ∀ x, ‖φ x‖ ≤ C) (hreal : ∀ x, (starRingEnd 𝕜) (φ x) = φ x) (f g : Lp 𝕜 2 μ) :
+    (inner 𝕜 (lpBoundedMulCLM (p := 2) (μ := μ) hφ hC0 hC f) g : 𝕜)
+      = inner 𝕜 f (lpBoundedMulCLM (p := 2) (μ := μ) hφ hC0 hC g) := by
+  rw [MeasureTheory.L2.inner_def, MeasureTheory.L2.inner_def]
+  refine integral_congr_ae ?_
+  filter_upwards [lpBoundedMulCLM_coeFn (p := 2) (μ := μ) hφ hC0 hC f,
+    lpBoundedMulCLM_coeFn (p := 2) (μ := μ) hφ hC0 hC g] with x h1 h2
+  rw [h1, h2, RCLike.inner_apply', RCLike.inner_apply', map_mul, hreal]
+  ring
+
+/-- **Multiplication by a unimodular bounded symbol preserves the `L²` inner product.** -/
+theorem lpBoundedMulCLM_inner_unimodular {φ : α → 𝕜} (hφ : Measurable φ) {C : ℝ} (hC0 : 0 ≤ C)
+    (hC : ∀ x, ‖φ x‖ ≤ C) (huni : ∀ x, (starRingEnd 𝕜) (φ x) * φ x = 1) (f g : Lp 𝕜 2 μ) :
+    (inner 𝕜 (lpBoundedMulCLM (p := 2) (μ := μ) hφ hC0 hC f)
+        (lpBoundedMulCLM (p := 2) (μ := μ) hφ hC0 hC g) : 𝕜)
+      = inner 𝕜 f g := by
+  rw [MeasureTheory.L2.inner_def, MeasureTheory.L2.inner_def]
+  refine integral_congr_ae ?_
+  filter_upwards [lpBoundedMulCLM_coeFn (p := 2) (μ := μ) hφ hC0 hC f,
+    lpBoundedMulCLM_coeFn (p := 2) (μ := μ) hφ hC0 hC g] with x h1 h2
+  rw [h1, h2, RCLike.inner_apply', RCLike.inner_apply', map_mul]
+  calc (starRingEnd 𝕜) (φ x) * (starRingEnd 𝕜) ((f : α → 𝕜) x) * (φ x * (g : α → 𝕜) x)
+      = ((starRingEnd 𝕜) (φ x) * φ x) *
+          ((starRingEnd 𝕜) ((f : α → 𝕜) x) * (g : α → 𝕜) x) := by ring
+    _ = (starRingEnd 𝕜) ((f : α → 𝕜) x) * (g : α → 𝕜) x := by rw [huni x, one_mul]
 
 end MeasureTheory

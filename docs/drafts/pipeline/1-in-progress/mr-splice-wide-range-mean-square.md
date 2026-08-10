@@ -4570,3 +4570,84 @@ large-values layer are for.
 
 Units 12–17 remain valid theorems and keep their value for additive/maximal windows (they are what
 `MaximalWindowMeanSquare` needs), but they are **not** on the shortest path to `AveragedMeanSquare`.
+
+## Unit 19 — sampling at separated points (Lean, unconditional)
+
+`Sieve/SeparatedSampling.lean`, `[propext, Classical.choice, Quot.sound]`.  Step 1 of the direct
+route of unit 18.
+
+```lean
+pairwiseDisjoint_Ioc_of_separated :
+  (∀ i ∈ t, ∀ j ∈ t, i ≠ j → σ ≤ |u i − u j|) →
+    (↑t).PairwiseDisjoint (fun i => Set.Ioc (u i) (u i + σ))
+
+sum_le_integral_of_separated :
+  (∀ v, 0 ≤ F v) → Integrable F → 0 < σ →
+  (∀ i ∈ t, ∀ j ∈ t, i ≠ j → σ ≤ |u i − u j|) →
+  (∀ i ∈ t, ∀ v ∈ Set.Ioc (u i) (u i + σ), F (u i) ≤ 2·F v + c) →
+    ∑_{i ∈ t} F (u i) ≤ (2/σ)·∫_ℝ F + c·#t
+```
+
+The proof integrates the comparison over one interval of length `σ`, then uses that the intervals
+at `σ`-separated points are pairwise disjoint (`integral_biUnion_finset`) and that `F ≥ 0`
+(`setIntegral_le_integral`).
+
+**Why this shape and not Gallagher's.**  `GallagherPointwise`/`GallagherSum` bound a sum over
+separated points by `δ⁻¹∫|S|² + ∫2|S||S'|`, which needs `S ∈ C¹` — true for a trigonometric
+polynomial, false for a window sum, which is a step function.  Here the derivative term is replaced
+by the constant `c`, and for the fibre application `c` is bounded because a logarithmic window of
+width `σ ≍ 1/(2√x)` at height `≍ √x` contains `O(1)` integers.
+
+**Next**: discharge `hdom` for `F = ‖logWindowSum f s (fibreWidth x h) ·‖²` with an explicit `c`
+(the two boundary windows of log-width `σ` at heights `x/a` and `(x/a)(1+h/√x)` hold at most one
+integer each, so `c = 50` suffices), then assemble with `log_start_separated`
+(`σ = 1/(2√x)`), `abs_fibre_sum_sub_open_le` and `gallagher_split_integral_dyadic` into
+
+```text
+AveragedMeanSquare f hh  ⟸  α = o(hh x · √x) .
+```
+
+## Unit 20 — how much a window sum can change (Lean, unconditional)
+
+`Sieve/LogWindowCount.lean`, `[propext, Classical.choice, Quot.sound]`.  The comparison hypothesis
+of `sum_le_integral_of_separated`, supplied by counting rather than by a derivative.
+
+```lean
+logWindowSum_eq_filter    : logWindowSum a s δ u = ∑_{n ∈ s, u < log n ≤ u+δ} a n
+
+norm_logWindowSum_le_count :
+  (∀ n, ‖a n‖ ≤ 1) → (∀ n ∈ s, 1 ≤ n) → 0 ≤ δ →
+    ‖logWindowSum a s δ u‖ ≤ e^u·(e^δ − 1) + 1
+
+logWindowSum_sub_eq :
+  u ≤ v ≤ u + δ →
+    logWindowSum a s δ u − logWindowSum a s δ v
+      = logWindowSum a s (v−u) u − logWindowSum a s (v−u) (u+δ)
+
+norm_logWindowSum_sub_le :
+  … → ‖logWindowSum a s δ u − logWindowSum a s δ v‖
+        ≤ (e^u(e^{v−u} − 1) + 1) + (e^{u+δ}(e^{v−u} − 1) + 1)
+```
+
+The count is the number of integers in `(e^u, e^{u+δ}]`, at most `⌊e^{u+δ}⌋ − ⌊e^u⌋ ≤ e^u(e^δ−1)+1`.
+The shift identity is a five-case check on where `log n` falls among `u ≤ v ≤ u+δ ≤ v+δ`; the two
+middle windows cancel exactly, leaving only the boundary windows.
+
+**At the fibre scale this is `O(1)`.**  With `u = log(x/a)` (so `e^u ≤ √x`), `δ = fibreWidth x h`
+(so `e^{u+δ} ≤ √x + h ≤ 2√x` when `h ≤ √x`) and `v − u ≤ σ = 1/(2√x)` (so `e^{v−u} − 1 ≤ 1/√x`):
+
+```text
+‖W(u) − W(v)‖ ≤ (√x·(1/√x) + 1) + (2√x·(1/√x) + 1) = 5 ,
+```
+
+hence `‖W(u)‖² ≤ 2‖W(v)‖² + 50` — the hypothesis of `sum_le_integral_of_separated` with the
+**absolute** constant `c = 50`.
+
+**Remaining on the direct route**: assemble units 18–20 with `log_start_separated`,
+`abs_fibre_sum_sub_open_le` and `gallagher_split_integral_dyadic` into
+
+```text
+AveragedMeanSquare f hh   ⟸   α = o(hh x · √x) ,
+```
+
+and then supply `α`.

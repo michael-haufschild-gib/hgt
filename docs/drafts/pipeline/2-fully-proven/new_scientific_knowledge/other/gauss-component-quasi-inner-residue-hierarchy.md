@@ -1332,3 +1332,86 @@ description together with the already-formalized exact period average.
 
 Equations (2)–(5), (7), (8), (9) in every needed form, (10), **(11)**, (12), (13), §6, §7,
 formula (A) and its `k`-independence, and the whole operator layer are now unconditional Lean.
+
+## Lean status, thirty-first pass: the Fourier diagonal is the principal diagonal model
+
+Two symmetry layers plus one bridge module; all unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+### Reflection of the lattice
+
+`RHTower/GaussSampleIntegerLattice.lean`, extended:
+
+```text
+gaussSamplePhase_neg       : δ_(-i) = δ_i
+gaussSampleRatioDefect_neg : defect(-j, -i) = conj (defect(j, i))
+```
+
+`RHTower/GaussSampleTranslationL2.lean`, extended:
+
+```text
+gaussTranslationL2DefectBound_neg      : bound(-i) = bound(i)
+tendsto_gaussTranslationL2DefectBound_comp :
+    (|ι n| → ∞)  →  bound(ι n) → 0
+```
+
+So the moving-translation estimate holds along *any* escaping frequency sequence — the reality
+relation `d_(-i) = conj d_i` is exactly what makes the negative frequencies free.  The one-step
+estimate, the iterate and its diagonal are now all indexed by such a sequence `ι`, which is
+instantiated at `+(n+1)` and `-(n+1)`; nothing is assumed.
+
+### `RHTower/GaussFourierDiagonal.lean`
+
+The diagonal block of the source reduction carries the *full* vertical component
+`ρ_∞(it) = (π/m)^(1/(2m)) · carrier(t)`, whereas the corpus's sampled value is the carrier.
+Scaling the diagonal by the archimedean prefactor scales `G` by its square and `G^m` by
+`gaussArchConst m` — which is precisely the constant of `norm_gaussSampleValue_pow_eq`:
+
+```text
+gaussArchScale m                        = (π/m)^(1/(2m)),   gaussArchScale^(2m) = gaussArchConst
+gaussDiagonalBlockFull                  = (π/m)^(1/(2m)) · D
+gaussQuasiInnerGFull                    = p B D_full B^(-2) D_full* B
+gaussQuasiInnerGFull_eq                 : G_full = (π/m)^(1/m) · G
+gaussAmplitudeCircle_coe                : a_circle(↑s) = gaussAmplitudeSegment p m (fract s)
+gaussComponentPhasePoint_eq             : the phase point is the lattice phase at n+1
+tendsto_gaussFourierDiagonal :
+    ⟪e_(n+1), G_full^m e_(n+1)⟫ + ⟪e_(-(n+1)), G_full^m e_(-(n+1)⟫
+        - gaussPrincipalDiagonalTerm k p n  →  0
+```
+
+This is the passage the card recorded as *not yet formalized*: the Fourier diagonal of the actual
+operator agrees with the principal diagonal model.  The model is no longer posited — it is what the
+operator does.  The factor `2` of the model is the two frequencies `±(n+1)`, produced by the
+reflection symmetry, not by fiat.
+
+### The remaining gap is a rate, and it is sharp
+
+`tendsto_gaussFourierDiagonal` gives an **absolute** `o(1)`.  Passing from it to the logarithmic
+mean (14) needs an error that is `o(1/n)`: `∑_(n<N) PDT_n / log N` converges, but
+`∑_(n<N) o(1) / log N` need not vanish.  Tracking the constants through the one-step bound,
+
+```text
+‖⟪e_n, G^m e_n⟫ - p^m|d_n|^(2m) A_m(δ_n)‖  ≲  |d_n|^(2m-1) · E(n),
+E(n) = ‖(conj d_n)^(-1) e_(-n) D* B e_n - b(· - δ_n)‖_(L²),
+```
+
+so what is needed is `E(n) = o(|d_n|) = o(n^(-1/(2m)))`, i.e. a **rate** in equations (5) and (9),
+which the corpus states as bare limits.  Splitting at `|j| = J`:
+
+```text
+E(n)² ≲ (per-mode rate on |j| ≤ J) + 1/J + (near-diagonal),
+near-diagonal = O(1/n)  for m > 1,   O(log n / n)  for m = 1.
+```
+
+With the crude per-mode bound `|defect(j,n)| = O((1+|j|)²/n)` from the `O(1/t)` errors of (2)–(3),
+optimising `J = n^(1/2)` gives `E² = O(n^(-1/2))`; with the sharp per-mode bound
+`|defect(j,n)| = O(|j|/n)` and `J = n`, it gives `E² = O(1/n)` for `m > 1` and `O(log n/n)` for
+`m = 1`.  Against the requirement `E² = o(n^(-1/m))`:
+
+- `m ≥ 2`: the sharp per-mode rate suffices — `1/n = o(n^(-1/m))`.
+- `m = 1`: `log n / n` versus the required `o(1/n)` — short by one logarithm.
+
+So the next objects to build are the quantitative forms of (5) and (9): a per-mode bound
+`|d_(n+j)/d_n - e^(2πijδ_n)| = O(|j|/n)` and the resulting `E(n)² = O(1/n)`, with the `m = 1`
+near-diagonal handled separately.  Nothing here is conditional; the gap is a missing rate, stated
+exactly.

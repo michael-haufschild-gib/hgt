@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.HedenmalmThetaCompactDivisorEigenmode
 import GaloisForLFunctions.RHTower.HedenmalmFredholmRangeDivisor
 import GaloisForLFunctions.RHTower.HedenmalmWeightedAdjointCore
 import Mathlib.Analysis.Normed.Lp.SmoothApprox
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
 
 /-!
 # Closed weighted Hedenmalm derivative
@@ -28,7 +29,34 @@ open HedenmalmQuantile HedenmalmHilbertSchmidt HedenmalmThetaSource
 
 private abbrev H := Lp ℂ 2 unitIntervalMeasure
 
+private abbrev HS := SourceSpace thetaSource
+
+private abbrev sourceMeasure : Measure ℝ :=
+  volume.withDensity (realDensity (sourceWeight thetaSource))
+
 local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+
+private theorem continuous_sourceWeight : Continuous (sourceWeight thetaSource) := by
+  apply thetaSource.continuous_k.inv₀
+  intro x
+  exact (thetaSource.pos_k x).ne'
+
+local instance : IsFiniteMeasureOnCompacts sourceMeasure where
+  lt_top_of_isCompact := by
+    intro K hK
+    rw [sourceMeasure, withDensity_apply' (realDensity (sourceWeight thetaSource)) K]
+    obtain ⟨C, hC⟩ :=
+      hK.exists_bound_of_continuousOn continuous_sourceWeight.continuousOn
+    calc
+      (∫⁻ x in K, realDensity (sourceWeight thetaSource) x ∂volume)
+          ≤ ∫⁻ _x in K, ENNReal.ofReal C ∂volume := by
+            apply setLIntegral_mono measurable_const
+            intro x hx
+            exact ENNReal.ofReal_le_ofReal (by
+              simpa [Real.norm_eq_abs, abs_of_pos (sourceWeight_pos thetaSource x)]
+                using hC x hx)
+      _ = ENNReal.ofReal C * volume K := setLIntegral_const K _
+      _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hK.measure_lt_top
 
 /-- Mean-zero hyperplane in the quantile realization of `H_k`. -/
 def thetaCentered : Submodule ℂ H := (ℂ ∙ pinnedOne)ᗮ
@@ -145,7 +173,7 @@ theorem thetaCenteredSourceInverse_injective :
 /-! ### Compactly supported smooth source core -/
 
 theorem integral_sourceD_eq_zero {g : ℝ → ℂ}
-    (hg : ContDiff ℝ ⊤ g) (hgs : HasCompactSupport g) :
+    (hg : ContDiff ℝ (↑(⊤ : ℕ∞)) g) (hgs : HasCompactSupport g) :
     ∫ x, sourceD g x = 0 := by
   have hg1 : ContDiff ℝ 1 g := hg.of_le (by simp)
   have hderivIntegrable : Integrable (deriv g) :=
@@ -157,7 +185,7 @@ theorem integral_sourceD_eq_zero {g : ℝ → ℂ}
   rw [MeasureTheory.integral_const_mul, hderiv, mul_zero]
 
 theorem sourceInverse_sourceD {g : ℝ → ℂ}
-    (hg : ContDiff ℝ ⊤ g) (hgs : HasCompactSupport g) (x : ℝ) :
+    (hg : ContDiff ℝ (↑(⊤ : ℕ∞)) g) (hgs : HasCompactSupport g) (x : ℝ) :
     sourceInverse thetaSource (sourceD g) x = g x := by
   have hg1 : ContDiff ℝ 1 g := hg.of_le (by simp)
   rw [sourceInverse, integral_sourceD_eq_zero hg hgs]
@@ -165,7 +193,402 @@ theorem sourceInverse_sourceD {g : ℝ → ℂ}
   change Complex.I * ∫ y in Iic x, -Complex.I * deriv g y = g x
   rw [MeasureTheory.integral_const_mul,
     hgs.integral_Iic_deriv_eq hg1 x]
-  ring_nf
+  calc
+    Complex.I * (-Complex.I * g x) = -(Complex.I * Complex.I) * g x := by ring
+    _ = g x := by rw [Complex.I_mul_I]; ring
+
+theorem integral_Iic_eq_const_add_interval {h : ℝ → ℂ} (hh : Integrable h) (x : ℝ) :
+    (∫ y in Iic x, h y) = (∫ y in Iic (0 : ℝ), h y) + ∫ y in (0 : ℝ)..x, h y := by
+  rcases le_total (0 : ℝ) x with hx | hx
+  · rw [intervalIntegral.integral_of_le hx, ← MeasureTheory.setIntegral_union
+      (Iic_disjoint_Ioc le_rfl) measurableSet_Ioc hh.integrableOn hh.integrableOn,
+      Iic_union_Ioc_eq_Iic hx]
+  · rw [intervalIntegral.integral_of_ge hx]
+    have hsplit : (∫ y in Iic (0 : ℝ), h y) =
+        (∫ y in Iic x, h y) + ∫ y in Ioc x (0 : ℝ), h y := by
+      rw [← MeasureTheory.setIntegral_union (Iic_disjoint_Ioc le_rfl) measurableSet_Ioc
+        hh.integrableOn hh.integrableOn, Iic_union_Ioc_eq_Iic hx]
+    rw [hsplit]
+    ring
+
+/-- Pinned primitive of a centered smooth compactly supported source. -/
+def smoothCenteredPrimitive (h : ℝ → ℂ) (x : ℝ) : ℂ :=
+  Complex.I * ∫ y in Iic x, h y
+
+theorem hasDerivAt_smoothCenteredPrimitive {h : ℝ → ℂ}
+    (hh : ContDiff ℝ (↑(⊤ : ℕ∞)) h) (hhs : HasCompactSupport h) (x : ℝ) :
+    HasDerivAt (smoothCenteredPrimitive h) (Complex.I * h x) x := by
+  have hInt : Integrable h := hh.continuous.integrable_of_hasCompactSupport hhs
+  have hbase : HasDerivAt (fun y => ∫ z in (0 : ℝ)..y, h z) (h x) x :=
+    (hh.continuous.integral_hasStrictDerivAt 0 x).hasDerivAt
+  have hsum := hbase.const_add (∫ z in Iic (0 : ℝ), h z)
+  have hIic : HasDerivAt (fun y => ∫ z in Iic y, h z) (h x) x := by
+    refine hsum.congr_of_eventuallyEq ?_
+    filter_upwards with y
+    exact (integral_Iic_eq_const_add_interval hInt y).symm
+  exact hIic.const_mul Complex.I
+
+theorem smoothCenteredPrimitive_smooth {h : ℝ → ℂ}
+    (hh : ContDiff ℝ (↑(⊤ : ℕ∞)) h) (hhs : HasCompactSupport h) :
+    ContDiff ℝ (↑(⊤ : ℕ∞)) (smoothCenteredPrimitive h) := by
+  rw [contDiff_infty_iff_deriv]
+  refine ⟨fun x => (hasDerivAt_smoothCenteredPrimitive hh hhs x).differentiableAt, ?_⟩
+  have hderiv : deriv (smoothCenteredPrimitive h) = fun x => Complex.I * h x := by
+    funext x
+    exact (hasDerivAt_smoothCenteredPrimitive hh hhs x).deriv
+  rw [hderiv]
+  exact contDiff_const.mul hh
+
+theorem smoothCenteredPrimitive_compact {h : ℝ → ℂ}
+    (hh : ContDiff ℝ (↑(⊤ : ℕ∞)) h) (hhs : HasCompactSupport h)
+    (hmean : ∫ x, h x = 0) : HasCompactSupport (smoothCenteredPrimitive h) := by
+  obtain ⟨R, hRpos, hR⟩ := hhs.isCompact.isBounded.subset_closedBall_lt (0 : ℝ) 0
+  have hzero_of_lt_neg {x : ℝ} (hx : x < -R) : h x = 0 := by
+    by_contra hne
+    have hxball := hR (subset_tsupport hne)
+    rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, Real.norm_eq_abs] at hxball
+    have : R < |x| := by rw [abs_of_neg (hRpos.neg.trans hx)]; linarith
+    linarith
+  have hzero_of_gt {x : ℝ} (hx : R < x) : h x = 0 := by
+    by_contra hne
+    have hxball := hR (subset_tsupport hne)
+    rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, Real.norm_eq_abs,
+      abs_of_pos (hRpos.trans hx)] at hxball
+    linarith
+  have hInt : Integrable h := hh.continuous.integrable_of_hasCompactSupport hhs
+  apply (isCompact_closedBall (0 : ℝ) R).of_isClosed_subset isClosed_tsupport
+  apply closure_minimal _ isClosed_closedBall
+  intro x hx
+  by_contra hxball
+  have hxabs : R < |x| := by
+    rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, Real.norm_eq_abs] at hxball
+    exact lt_of_not_ge hxball
+  have hxzero : smoothCenteredPrimitive h x = 0 := by
+    rcases le_total x 0 with hx0 | hx0
+    · have hxneg : x < -R := by
+        rw [abs_of_nonpos hx0] at hxabs
+        linarith
+      rw [smoothCenteredPrimitive,
+        setIntegral_eq_zero_of_forall_eq_zero (fun y hy =>
+          hzero_of_lt_neg (hy.trans_lt hxneg)), mul_zero]
+    · have hxpos : R < x := by
+        rw [abs_of_nonneg hx0] at hxabs
+        exact hxabs
+      have htail : ∫ y in Ioi x, h y = 0 :=
+        setIntegral_eq_zero_of_forall_eq_zero (fun y hy =>
+          hzero_of_gt (hxpos.trans hy))
+      have hsplit := HedenmalmFredholmRange.setIntegral_Iic_add_Ioi hInt x
+      rw [htail, add_zero, hmean] at hsplit
+      rw [smoothCenteredPrimitive, hsplit, mul_zero]
+  exact hx hxzero
+
+theorem sourceD_smoothCenteredPrimitive {h : ℝ → ℂ}
+    (hh : ContDiff ℝ (↑(⊤ : ℕ∞)) h) (hhs : HasCompactSupport h) (x : ℝ) :
+    sourceD (smoothCenteredPrimitive h) x = h x := by
+  change -Complex.I * deriv (smoothCenteredPrimitive h) x = h x
+  rw [(hasDerivAt_smoothCenteredPrimitive hh hhs x).deriv]
+  calc
+    -Complex.I * (Complex.I * h x) = -(Complex.I * Complex.I) * h x := by ring
+    _ = h x := by rw [Complex.I_mul_I]; ring
+
+/-- Exact image in `H_k` of compactly supported smooth functions. -/
+def thetaSmoothSource : Set HS :=
+  {u | ∃ g : ℝ → ℂ, (fun x => u x) =ᵐ[sourceMeasure] g ∧
+    HasCompactSupport g ∧ ContDiff ℝ (↑(⊤ : ℕ∞)) g}
+
+/-- Compactly supported smooth source vectors form a genuine linear subspace of `H_k`. -/
+def thetaSmoothSourceSubmodule : Submodule ℂ HS where
+  carrier := thetaSmoothSource
+  zero_mem' := by
+    refine ⟨0, ?_, HasCompactSupport.zero, contDiff_const⟩
+    exact Lp.coeFn_zero ℂ 2 sourceMeasure
+  add_mem' := by
+    rintro u v ⟨g, hug, hgs, hg⟩ ⟨h, hvh, hhs, hh⟩
+    refine ⟨g + h, ?_, hgs.add hhs, hg.add hh⟩
+    filter_upwards [Lp.coeFn_add u v, hug, hvh] with x huv hugx hvhx
+    rw [huv, hugx, hvhx]
+    rfl
+  smul_mem' := by
+    rintro c u ⟨g, hug, hgs, hg⟩
+    refine ⟨fun x => c * g x, ?_, hgs.mul_left, contDiff_const.mul hg⟩
+    filter_upwards [Lp.coeFn_smul c u, hug] with x hc hugx
+    rw [hc, hugx]
+    rfl
+
+theorem dense_thetaSmoothSource : Dense thetaSmoothSource := by
+  simpa only [thetaSmoothSource, HS, sourceMeasure] using
+    (Lp.dense_hasCompactSupport_contDiff (μ := sourceMeasure) (F := ℂ)
+      (by norm_num : (2 : ENNReal) ≠ ⊤))
+
+theorem memLp_sourceD {g : ℝ → ℂ} (hg : ContDiff ℝ (↑(⊤ : ℕ∞)) g)
+    (hgs : HasCompactSupport g) : MemLp (sourceD g) 2 sourceMeasure := by
+  apply Continuous.memLp_of_hasCompactSupport
+  · change Continuous (fun x => -Complex.I * deriv g x)
+    exact (hg.of_le (by simp)).continuous_deriv le_rfl |>.const_mul _
+  · change HasCompactSupport (fun x => -Complex.I * deriv g x)
+    exact hgs.deriv.mul_left
+
+theorem memLp_smooth {g : ℝ → ℂ} (hg : ContDiff ℝ (↑(⊤ : ℕ∞)) g)
+    (hgs : HasCompactSupport g) : MemLp g 2 sourceMeasure :=
+  hg.continuous.memLp_of_hasCompactSupport hgs
+
+/-- Fixed normalized `C_c^∞` correction profile. -/
+def thetaCoreBump : ContDiffBump (0 : ℝ) where
+  rIn := 1 / 2
+  rOut := 1
+  rIn_pos := by norm_num
+  rIn_lt_rOut := by norm_num
+
+def thetaCoreProfile (x : ℝ) : ℂ := (thetaCoreBump.normed volume x : ℂ)
+
+theorem thetaCoreProfile_smooth :
+    ContDiff ℝ (↑(⊤ : ℕ∞)) thetaCoreProfile := by
+  exact Complex.ofRealCLM.contDiff.comp thetaCoreBump.contDiff_normed
+
+theorem thetaCoreProfile_compact : HasCompactSupport thetaCoreProfile :=
+  thetaCoreBump.hasCompactSupport_normed.comp_left rfl
+
+theorem integral_thetaCoreProfile : ∫ x, thetaCoreProfile x = 1 := by
+  have h := congrArg (fun x : ℝ => (x : ℂ))
+    (thetaCoreBump.integral_normed (μ := volume))
+  exact (integral_ofReal (𝕜 := ℂ)).trans h
+
+def thetaCoreProfileVector : HS :=
+  (memLp_smooth thetaCoreProfile_smooth thetaCoreProfile_compact).toLp thetaCoreProfile
+
+theorem thetaCoreProfileVector_ae :
+    (fun x => thetaCoreProfileVector x) =ᵐ[sourceMeasure] thetaCoreProfile :=
+  (memLp_smooth thetaCoreProfile_smooth thetaCoreProfile_compact).coeFn_toLp
+
+theorem quantile_sourceD_mem_centered {g : ℝ → ℂ}
+    (hg : ContDiff ℝ (↑(⊤ : ℕ∞)) g) (hgs : HasCompactSupport g) :
+    quantileUnitary thetaSource ((memLp_sourceD hg hgs).toLp (sourceD g)) ∈ thetaCentered := by
+  let f : HS := (memLp_sourceD hg hgs).toLp (sourceD g)
+  have hfAEμ : (fun x => f x) =ᵐ[sourceMeasure] sourceD g :=
+    (memLp_sourceD hg hgs).coeFn_toLp
+  have hfAE : (fun x => f x) =ᵐ[volume] sourceD g :=
+    (withDensity_realDensity_ae_eq (measurable_sourceWeight thetaSource)
+      (sourceWeight_pos thetaSource)).mp (by simpa [sourceMeasure] using hfAEμ)
+  rw [mem_thetaCentered_iff, pinnedMean_quantileUnitary]
+  rw [integral_quantileTransform thetaSource
+    (integrable_sourceSpace thetaSource f).aestronglyMeasurable]
+  rw [integral_congr_ae hfAE, integral_sourceD_eq_zero hg hgs, zero_div]
+
+theorem thetaCompactSourceInverse_quantile_sourceD {g : ℝ → ℂ}
+    (hg : ContDiff ℝ (↑(⊤ : ℕ∞)) g) (hgs : HasCompactSupport g) :
+    thetaCompactSourceInverse
+        (quantileUnitary thetaSource ((memLp_sourceD hg hgs).toLp (sourceD g))) =
+      quantileUnitary thetaSource ((memLp_smooth hg hgs).toLp g) := by
+  let f : HS := (memLp_sourceD hg hgs).toLp (sourceD g)
+  have hgMem : MemLp g 2 sourceMeasure := memLp_smooth hg hgs
+  let u : HS := hgMem.toLp g
+  have hfAEμ : (fun x => f x) =ᵐ[sourceMeasure] sourceD g :=
+    (memLp_sourceD hg hgs).coeFn_toLp
+  have huAEμ : (fun x => u x) =ᵐ[sourceMeasure] g := hgMem.coeFn_toLp
+  have hfAE : (fun x => f x) =ᵐ[volume] sourceD g :=
+    (withDensity_realDensity_ae_eq (measurable_sourceWeight thetaSource)
+      (sourceWeight_pos thetaSource)).mp (by simpa [sourceMeasure] using hfAEμ)
+  have huAE : (fun x => u x) =ᵐ[volume] g :=
+    (withDensity_realDensity_ae_eq (measurable_sourceWeight thetaSource)
+      (sourceWeight_pos thetaSource)).mp (by simpa [sourceMeasure] using huAEμ)
+  have huQ : (fun t => u (thetaSource.quantileFun t)) =ᵐ[unitIntervalMeasure]
+      fun t => g (thetaSource.quantileFun t) :=
+    ((thetaSource.law_ae_eq).mpr huAE).comp_tendsto
+      (measurePreserving_quantile_unitInterval thetaSource).quasiMeasurePreserving.tendsto_ae
+  apply Lp.ext
+  filter_upwards
+      [pinnedKernelOperator_ae thetaSource hasFiniteKernelEnergy_thetaSource
+        (quantileUnitary thetaSource f),
+       quantileUnitary_ae thetaSource f, quantileUnitary_ae thetaSource u,
+       huQ, ae_unitIntervalMeasure_mem_Ioo]
+    with t hB hUf hUu hgu ht
+  change ((thetaCompactSourceInverse (quantileUnitary thetaSource f) : H) : ℝ → ℂ) t = _ at hB
+  calc
+    ((thetaCompactSourceInverse (quantileUnitary thetaSource f) : H) : ℝ → ℂ) t =
+        pinnedKernelField thetaSource t (quantileUnitary thetaSource f) := hB
+    _ = quantileTransform thetaSource (sourceInverse thetaSource (fun x => f x)) t := by
+      rw [pinnedKernelField_apply_eq_pinnedVolterraFun]
+      exact (quantileTransform_sourceInverse_eq_pinned thetaSource f ht).symm
+    _ = quantileTransform thetaSource (sourceInverse thetaSource (sourceD g)) t := by
+      unfold quantileTransform
+      rw [sourceInverse_congr_ae thetaSource hfAE]
+    _ = quantileTransform thetaSource g t := by
+      unfold quantileTransform
+      rw [sourceInverse_sourceD hg hgs]
+    _ = quantileTransform thetaSource (fun x => u x) t := by
+      rw [quantileTransform, quantileTransform, hgu]
+    _ = (quantileUnitary thetaSource u : ℝ → ℂ) t := hUu.symm
+
+theorem quantile_thetaSmoothSource_mem_range
+    (u : HS) (hu : u ∈ thetaSmoothSource) :
+    quantileUnitary thetaSource u ∈ thetaCenteredSourceInverse.range := by
+  rcases hu with ⟨g, hug, hgs, hg⟩
+  let f : HS := (memLp_sourceD hg hgs).toLp (sourceD g)
+  have hfCentered : quantileUnitary thetaSource f ∈ thetaCentered :=
+    quantile_sourceD_mem_centered hg hgs
+  refine ⟨⟨quantileUnitary thetaSource f, hfCentered⟩, ?_⟩
+  change thetaCompactSourceInverse (quantileUnitary thetaSource f) =
+    quantileUnitary thetaSource u
+  rw [thetaCompactSourceInverse_quantile_sourceD hg hgs]
+  have hueq : (memLp_smooth hg hgs).toLp g = u := by
+    apply Lp.ext
+    filter_upwards [hug, (memLp_smooth hg hgs).coeFn_toLp] with x hux hgx
+    exact hgx.trans hux.symm
+  exact congrArg (quantileUnitary thetaSource) hueq
+
+theorem thetaCenteredSourceInverse_dense_range :
+    Dense (thetaCenteredSourceInverse.range : Set H) := by
+  have hsub : DenseRange (fun u : {u : HS // u ∈ thetaSmoothSource} => (u : HS)) :=
+    denseRange_subtype_val.mpr dense_thetaSmoothSource
+  have hU : DenseRange (quantileUnitary thetaSource : HS → H) :=
+    (quantileUnitary thetaSource).surjective.denseRange
+  have hcomp := hU.comp hsub (quantileUnitary thetaSource).continuous
+  apply hcomp.mono
+  intro y hy
+  rcases hy with ⟨u, rfl⟩
+  exact quantile_thetaSmoothSource_mem_range u u.property
+
+/-! ### Closed weighted derivative and Fredholm range -/
+
+theorem thetaCentered_isClosed : IsClosed (thetaCentered : Set H) := by
+  simpa only [thetaCentered] using
+    (Submodule.isClosed_orthogonal (ℂ ∙ pinnedOne : Submodule ℂ H))
+
+/-- Closure of `-i d/dx`, realized as graph inverse of the compact centered source inverse. -/
+def thetaWeightedDerivative : H →ₗ.[ℂ] H :=
+  closedHyperplaneInverse thetaCentered thetaCenteredSourceInverse
+
+theorem thetaWeightedDerivative_isClosed : thetaWeightedDerivative.IsClosed :=
+  closedHyperplaneInverse_isClosed thetaCentered thetaCentered_isClosed
+    thetaCenteredSourceInverse thetaCenteredSourceInverse_injective
+
+theorem thetaWeightedDerivative_dense_domain :
+    Dense (thetaWeightedDerivative.domain : Set H) :=
+  closedHyperplaneInverse_dense_domain thetaCentered thetaCenteredSourceInverse
+    thetaCenteredSourceInverse_dense_range
+
+theorem thetaWeightedDerivative_kernel_eq_bot : thetaWeightedDerivative.kernel = ⊥ :=
+  closedHyperplaneInverse_kernel_eq_bot thetaCentered thetaCenteredSourceInverse
+    thetaCenteredSourceInverse_injective
+
+theorem thetaWeightedDerivative_range :
+    thetaWeightedDerivative.rangeSubmodule = thetaCentered :=
+  closedHyperplaneInverse_range thetaCentered thetaCenteredSourceInverse
+    thetaCenteredSourceInverse_injective
+
+/-- Bounded mean functional cutting out the codimension-one range. -/
+def thetaPinnedMeanCLM : H →L[ℂ] ℂ := innerSL ℂ pinnedOne
+
+theorem thetaPinnedMeanCLM_apply (f : H) : thetaPinnedMeanCLM f = pinnedMean f := by
+  change inner ℂ pinnedOne f = pinnedMean f
+  rw [inner_lp_eq, pinnedMean]
+  apply integral_congr_ae
+  filter_upwards [pinnedOne_coeFn] with t ht
+  rw [ht]
+  simp
+
+theorem thetaPinnedMeanCLM_surjective : Function.Surjective thetaPinnedMeanCLM := by
+  intro c
+  refine ⟨c • pinnedOne, ?_⟩
+  rw [map_smul, thetaPinnedMeanCLM_apply, pinnedMean_pinnedOne]
+  simp
+
+theorem thetaCentered_eq_ker_pinnedMean :
+    thetaCentered = LinearMap.ker thetaPinnedMeanCLM.toLinearMap := by
+  ext f
+  rw [mem_thetaCentered_iff, LinearMap.mem_ker]
+  change pinnedMean f = 0 ↔ thetaPinnedMeanCLM f = 0
+  rw [thetaPinnedMeanCLM_apply]
+
+/-- Normalized smooth vector whose interval-coordinate mean is one. -/
+def thetaCoreMeanOne : H :=
+  (Real.sqrt thetaSource.mass : ℂ) •
+    quantileUnitary thetaSource thetaCoreProfileVector
+
+theorem thetaCoreMeanOne_mean : pinnedMean thetaCoreMeanOne = 1 := by
+  rw [← thetaPinnedMeanCLM_apply, thetaCoreMeanOne, map_smul,
+    thetaPinnedMeanCLM_apply, pinnedMean_quantileUnitary]
+  rw [integral_quantileTransform thetaSource
+    (integrable_sourceSpace thetaSource thetaCoreProfileVector).aestronglyMeasurable]
+  have hAEμ := thetaCoreProfileVector_ae
+  have hAE : (fun x => thetaCoreProfileVector x) =ᵐ[volume] thetaCoreProfile :=
+    (withDensity_realDensity_ae_eq (measurable_sourceWeight thetaSource)
+      (sourceWeight_pos thetaSource)).mp (by simpa [sourceMeasure] using hAEμ)
+  rw [integral_congr_ae hAE, integral_thetaCoreProfile]
+  have hsqrt : (Real.sqrt thetaSource.mass : ℂ) ≠ 0 := by
+    exact_mod_cast (Real.sqrt_pos.mpr thetaSource.mass_pos).ne'
+  field_simp
+
+/-- Continuous projection onto the centered hyperplane, preserving `C_c^∞`. -/
+def thetaCenterProjection : H →L[ℂ] H :=
+  1 - thetaPinnedMeanCLM.smulRight thetaCoreMeanOne
+
+theorem thetaCenterProjection_apply (f : H) :
+    thetaCenterProjection f = f - pinnedMean f • thetaCoreMeanOne := by
+  simp [thetaCenterProjection, thetaPinnedMeanCLM_apply]
+
+theorem thetaCenterProjection_mem (f : H) : thetaCenterProjection f ∈ thetaCentered := by
+  rw [mem_thetaCentered_iff, thetaCenterProjection_apply]
+  change thetaPinnedMeanCLM (f - pinnedMean f • thetaCoreMeanOne) = 0
+  rw [map_sub, map_smul, thetaPinnedMeanCLM_apply, thetaPinnedMeanCLM_apply,
+    thetaCoreMeanOne_mean]
+  simp
+
+def thetaCenterProjectionToCentered : H →L[ℂ] thetaCentered :=
+  thetaCenterProjection.codRestrict thetaCentered thetaCenterProjection_mem
+
+theorem thetaCenterProjectionToCentered_surjective :
+    Function.Surjective thetaCenterProjectionToCentered := by
+  intro f
+  refine ⟨(f : H), Subtype.ext ?_⟩
+  rw [thetaCenterProjectionToCentered, ContinuousLinearMap.codRestrict_apply,
+    thetaCenterProjection_apply]
+  rw [(mem_thetaCentered_iff f).mp f.property, zero_smul, sub_zero]
+
+theorem thetaWeightedDerivative_isFredholm : thetaWeightedDerivative.IsFredholm :=
+  closedHyperplaneInverse_isFredholm thetaCentered thetaCentered_isClosed
+    thetaCenteredSourceInverse thetaCenteredSourceInverse_injective thetaPinnedMeanCLM
+    thetaPinnedMeanCLM_surjective thetaCentered_eq_ker_pinnedMean
+
+theorem thetaWeightedDerivative_index : thetaWeightedDerivative.index = -1 :=
+  closedHyperplaneInverse_index_eq_neg_one thetaCentered thetaCenteredSourceInverse
+    thetaCenteredSourceInverse_injective thetaPinnedMeanCLM
+    thetaPinnedMeanCLM_surjective thetaCentered_eq_ker_pinnedMean
+
+theorem thetaWeightedDerivative_adjoint_kernel :
+    thetaWeightedDerivative.adjoint.kernel = ℂ ∙ pinnedOne := by
+  rw [show thetaWeightedDerivative.adjoint.kernel = thetaCenteredᗮ from
+    closedHyperplaneInverse_adjoint_kernel thetaCentered thetaCenteredSourceInverse
+      thetaCenteredSourceInverse_injective thetaCenteredSourceInverse_dense_range]
+  rw [thetaCentered, Submodule.orthogonal_orthogonal]
+
+/-! ### Literal compactly supported smooth core -/
+
+/-- Quantile images of actual compactly supported smooth functions. -/
+def thetaDerivativeCoreSubmodule : Submodule ℂ H :=
+  thetaSmoothSourceSubmodule.map (quantileUnitary thetaSource).toLinearMap
+
+theorem thetaDerivativeCoreSubmodule_le_domain :
+    thetaDerivativeCoreSubmodule ≤ thetaWeightedDerivative.domain := by
+  rintro y ⟨u, hu, rfl⟩
+  rcases hu with ⟨g, hug, hgs, hg⟩
+  let f : HS := (memLp_sourceD hg hgs).toLp (sourceD g)
+  have hfCentered : quantileUnitary thetaSource f ∈ thetaCentered :=
+    quantile_sourceD_mem_centered hg hgs
+  rw [thetaWeightedDerivative, closedHyperplaneInverse_domain]
+  refine ⟨⟨quantileUnitary thetaSource f, hfCentered⟩, ?_⟩
+  change thetaCompactSourceInverse (quantileUnitary thetaSource f) =
+    quantileUnitary thetaSource u
+  rw [thetaCompactSourceInverse_quantile_sourceD hg hgs]
+  have hueq : (memLp_smooth hg hgs).toLp g = u := by
+    apply Lp.ext
+    filter_upwards [hug, (memLp_smooth hg hgs).coeFn_toLp] with x hux hgx
+    exact hgx.trans hux.symm
+  exact congrArg (quantileUnitary thetaSource) hueq
+
+/-- Restriction of the closed derivative to its literal `C_c^∞` domain. -/
+def thetaDerivativeCore : H →ₗ.[ℂ] H :=
+  thetaWeightedDerivative.domRestrict thetaDerivativeCoreSubmodule
 
 end HedenmalmClosedWeightedDerivative
 
