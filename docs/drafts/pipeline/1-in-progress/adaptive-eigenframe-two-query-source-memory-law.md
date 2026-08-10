@@ -1,6 +1,6 @@
 # Adaptive eigenframe two-query source-memory law
 
-**Status:** `[ACTIVE] [PAPER PROOF IN PROGRESS] [LEAN OPEN] [NOVELTY OPEN]`
+**Status:** `[ACTIVE] [CORE LEAN-PROVEN] [ASYMPTOTIC COROLLARY OPEN] [NOVELTY OPEN]`
 
 ## Frontier target
 
@@ -18,7 +18,7 @@ qubit weight.
    uniform product eigenstate of `A_j`, evolve two copies by the same unknown `U`, measure `A_i`
    on both, and multiply outcomes. **Live.** Eigenframe completeness plus Cauchy--Schwarz gives the
    same static lower bound `M^-2`; the existing pure-state Haar theorem gives exact Haar score
-   `(D+1)^-1`. No factor exponential in Jordan--Wigner Pauli weight occurs.
+   `(D+1)^-1`. No factor exponential in Jordan--Wigner Pauli weight occurs. **Proved in Lean.**
 
 ## Proposed universal theorem
 
@@ -60,7 +60,9 @@ For two subsets `S,T` of equal cardinality, equality of XOR labels is impossible
 choose `a in S \ T` and pair both labels with `gamma_a` under the Pauli symplectic form. The left
 pairing contains `q-1` ones and the right contains `q` ones, differing by one in `ZMod 2`.
 Therefore the fixed-`q` dictionary has exactly `binom(2n,q)` distinct words. For positive even `q`,
-every word is nonidentity by the same pairing with one of its members.
+every word is nonidentity by the same pairing with one of its members. **All statements in this
+paragraph are proved in Lean for every Pauli-Majorana frame, then specialized to the concrete
+Jordan--Wigner frame.**
 
 The live separation condition is
 
@@ -74,9 +76,19 @@ minimum-gap, spectral-universality, eigenbasis-moment, or disorder assumption.
 
 ## Open obligations
 
-- Prove adaptive eigenframe coefficient extraction and Cauchy domination in Lean.
-- Prove exact Haar score in Lean from `haar_sq_trace_pure_state_conjugation`.
-- Formalize fixed-cardinality Majorana-word injectivity and nonidentity.
 - Formalize eventual separation for fixed even `q`, or provide an unconditional explicit regime.
 - Audit external novelty and exact oracle-model consequences for recent SYK pseudorandomness work.
 
+## Lean status
+
+Implemented and foreground-verified in
+`formal/GaloisForLFunctions/HTGeometry/AdaptiveEigenframeTwoQuerySourceMemory.lean`:
+
+- exact eigenframe extraction and Cauchy domination;
+- permanent autonomous dictionary lower bound;
+- exact Haar score;
+- fixed-cardinality Majorana injectivity for every Pauli-Majorana frame;
+- exact dictionary cardinality `binom(2n,q)`;
+- nonidentity for every positive even `q`;
+- permanent Jordan--Wigner/Majorana source-memory lower bound and finite-size strict Haar
+  separation.

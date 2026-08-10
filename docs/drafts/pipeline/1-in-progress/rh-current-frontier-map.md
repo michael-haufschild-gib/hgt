@@ -1654,6 +1654,27 @@ C1's source and RH-bearing spectral-orientation problem. Without a source-derive
 theorem, positive symmetrizer/closure, sub-log-square bound, or compact positive measure, these
 determinant and trace results do not define independent Route V.
 
+### External Zeta-23 finite-compression density theorem
+
+Claude's 10 August 2026 paper *More than two thirds of the zeros of the Riemann zeta function lie
+on the critical line*, with its public `zeta-23-lean` artifact, adds a genuine unconditional
+finite-Weil theorem: critical-density Gabor compressions, unconditional prime-side trace and
+Frobenius-square asymptotics, and a multiplicity-aware Hermitian rank--trace inequality yield
+critical-line/simple proportions `2/3` and distinct proportion `5/6` (optimized to approximately
+`0.6725`, `0.6725`, `0.83625`). The external Lean artifact states these results directly against
+Mathlib's `riemannZeta`; local source audit found no forbidden declarations under its theorem
+library, while independent replay of its different Lean/Mathlib toolchain has not been performed in
+this corpus. Detailed disposition is in `claude-zeta23-rank-trace-audit.md`.
+
+This does not add a lettered RH route or close the R/L/CCM producer. The scalar compression has
+already codiagonalized prime labels and reflection orientations, and its normalized trace moments
+cannot exclude one, finitely many, or density-zero off-line blocks. That limitation coincides with
+the corpus's formal `MeasuredIndexBlindness` wall. The non-duplicative Frankenstein opportunity is
+now exact: amplify each individual retained source-horizontal class into cofinally many independent
+hyperbolic blocks while keeping prime-side first and second moments sublinear in that amplification.
+Ordinary direct sums and tensor powers fail because they multiply index and moment budget together.
+No moment-neutral, coefficient-faithful index-amplification theorem is present in either artifact.
+
 ## 6. Fundamental nature of remaining problems
 
 Across live routes, first unresolved statements fall into five mathematical classes.

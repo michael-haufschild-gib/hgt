@@ -45,10 +45,10 @@ theorem re_xiShiftedReciprocalMoment_one_mul_terminalFlux_eq_adjacentMinor_of_fl
     dsimp only [xiShiftedCassiniResponse, m0, m1, m2] at hflat
     linarith
   rw [xiShiftedDegreeOneTerminalFlux_eq_moments]
-  dsimp only [xiShiftedDegreeOneNullRoot, xiShiftedCassiniResponse,
-    xiShiftedDegreeOneAdjacentHankelMinor, m0, m1, m2, m3]
+  change m1 * (m3 - 2 * (m1 / m0) * m2 + (m1 / m0) ^ 2 * m1) =
+    m1 * m3 - m2 ^ 2
   field_simp [hm0.ne']
-  nlinarith
+  nlinarith [hcontact]
 
 /-- On contact, the fourth-cumulant cap is equivalent, not merely sufficient, to nonnegative
 outgoing contact flow. -/
@@ -76,7 +76,6 @@ theorem thetaCuspCassiniFourthCumulantCap_iff_contactFlow_nonneg_of_contact
         (A / t) *
           (3 * A * (1 - e) * (1 - 2 * e ^ 2) - t ^ 3 * K4) := by
     field_simp [ht0.ne']
-    ring
   rw [heq]
   constructor
   · intro h
@@ -107,10 +106,12 @@ theorem thetaCuspCassiniContactFlow_nonneg_iff_terminalFlux_nonneg_of_contact
       exact (xiShiftedDegreeOne_flat_negative_iff_thetaCumulantContactFlow
         ht0 ht1).mpr ⟨hcontact, hflow⟩ |>.2
   constructor
-  · intro hflow hterminal
-    exact (not_lt_of_ge hflow) (hneg.mp hterminal)
-  · intro hterminal hflow
-    exact (not_lt_of_ge hterminal) (hneg.mpr hflow)
+  · intro hflow
+    exact le_of_not_gt fun hterminal =>
+      (not_lt_of_ge hflow) (hneg.mp hterminal)
+  · intro hterminal
+    exact le_of_not_gt fun hflow =>
+      (not_lt_of_ge hterminal) (hneg.mpr hflow)
 
 /-- At a flat first face, terminal flux is nonnegative exactly when the adjacent shifted minor is
 nonnegative. -/

@@ -57,4 +57,25 @@ theorem finite_meets_image {r m : ℕ} (hr : m < r) (Φ : Fin r → MvPolynomial
   rw [Set.mem_preimage, Set.mem_singleton_iff, harg]
   exact aeval_eq_zero_of_aeval_eq_zero hker u
 
+/-- **Subfamily version.**  Only `k > m` of the curve's coordinates need be algebraically
+independent at `t₀`. -/
+theorem finite_meets_image_subfamily {r m k : ℕ} (hr : m < k) (σ : Fin k → Fin r)
+    (Φ : Fin r → MvPolynomial (Fin m) ℚ) (γ : Fin r → ℝ → ℝ)
+    (hγ : ∀ i, AnalyticOnNhd ℝ (γ i) Set.univ)
+    {t₀ : ℝ} (hP : AlgebraicIndependent ℚ (fun i => γ (σ i) t₀))
+    {S : Set ℝ} (hS : IsCompact S) :
+    {t ∈ S | ∃ u : Fin m → ℝ, ∀ i, γ i t = MvPolynomial.aeval u (Φ i)}.Finite := by
+  obtain ⟨h, hker, hP0⟩ :=
+    exists_separating_polynomial_subfamily hr σ Φ (P := fun i => γ i t₀) hP
+  have hfan : AnalyticOnNhd ℝ (fun t => MvPolynomial.aeval (fun i => γ i t) h) Set.univ :=
+    analyticOnNhd_aeval γ hγ h
+  have hfin := finite_zeros_of_analyticOnNhd (U := Set.univ) isPreconnected_univ hfan
+    (Set.mem_univ t₀) hP0 hS (Set.subset_univ S)
+  refine Set.Finite.subset hfin ?_
+  rintro t ⟨htS, u, hu⟩
+  refine ⟨htS, ?_⟩
+  have harg : (fun i => γ i t) = (fun i => MvPolynomial.aeval u (Φ i)) := funext hu
+  rw [Set.mem_preimage, Set.mem_singleton_iff, harg]
+  exact aeval_eq_zero_of_aeval_eq_zero hker u
+
 end GaloisForLFunctions.HTGeometry

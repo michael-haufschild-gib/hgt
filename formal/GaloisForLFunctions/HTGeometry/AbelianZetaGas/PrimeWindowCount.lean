@@ -574,4 +574,69 @@ theorem not_summable_windowSum {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (h
     exact (summable_nat_add_iff N).mp hcong
   exact not_summable_one_div_succ hharm
 
+/-! ## The leading defect series diverges -/
+
+open scoped Classical in
+/-- The leading term of the realization defect, as a family over the naturals. -/
+noncomputable def leadingTerm (σ τ : ℝ) (n : ℕ) : ℝ :=
+  if n.Prime then (n : ℝ) ^ (-σ) * (1 - Real.cos (τ * Real.log n)) else 0
+
+theorem leadingTerm_nonneg {σ τ : ℝ} (n : ℕ) : 0 ≤ leadingTerm σ τ n := by
+  classical
+  rw [leadingTerm]
+  split
+  · rename_i hp
+    have hpR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hp.pos
+    have hcos : 0 ≤ 1 - Real.cos (τ * Real.log n) := by
+      have := Real.cos_le_one (τ * Real.log n)
+      linarith
+    have hppow : (0 : ℝ) < (n : ℝ) ^ (-σ) := Real.rpow_pos_of_pos hpR _
+    positivity
+  · exact le_rfl
+
+theorem windowSum_eq_sum_leadingTerm (σ τ : ℝ) (m : ℕ) :
+    windowSum σ τ m = ∑ p ∈ primesInIoc (winLoNat τ m) (winHiNat τ m), leadingTerm σ τ p := by
+  classical
+  refine Finset.sum_congr rfl fun p hp => ?_
+  obtain ⟨hprime, _, _⟩ := mem_primesInIoc hp
+  rw [leadingTerm, if_pos hprime]
+
+/-- **The leading defect series diverges** in the whole condensed chamber, for every nonzero
+phase.  This is (GAS3.2). -/
+theorem not_summable_leadingTerm {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ : 0 < τ) :
+    ¬ Summable (leadingTerm σ τ) := by
+  classical
+  intro hsum
+  refine not_summable_windowSum hσ hσ1 hτ ?_
+  refine summable_of_sum_range_le (fun m => windowSum_nonneg hτ m) (c := ∑' n, leadingTerm σ τ n)
+    fun M => ?_
+  have hdisj : ((Finset.range M : Finset ℕ) : Set ℕ).PairwiseDisjoint
+      (fun m => primesInIoc (winLoNat τ m) (winHiNat τ m)) := by
+    intro a _ b _ hab
+    exact primesInIoc_window_disjoint hτ hab
+  have hsplit : ∑ m ∈ Finset.range M, windowSum σ τ m
+      = ∑ n ∈ (Finset.range M).biUnion
+        (fun m => primesInIoc (winLoNat τ m) (winHiNat τ m)), leadingTerm σ τ n := by
+    rw [Finset.sum_biUnion hdisj]
+    exact Finset.sum_congr rfl fun m _ => windowSum_eq_sum_leadingTerm σ τ m
+  rw [hsplit]
+  exact hsum.sum_le_tsum _ (fun n _ => leadingTerm_nonneg n)
+
+/-- **The same, indexed by the primes.** -/
+theorem not_summable_leading_primes {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ : 0 < τ) :
+    ¬ Summable (fun p : Nat.Primes =>
+      ((p : ℕ) : ℝ) ^ (-σ) * (1 - Real.cos (τ * Real.log ((p : ℕ) : ℝ)))) := by
+  classical
+  intro hsum
+  refine not_summable_leadingTerm hσ hσ1 hτ ?_
+  have hzero : ∀ n : ℕ, n ∉ Set.range (fun p : Nat.Primes => (p : ℕ)) → leadingTerm σ τ n = 0 := by
+    intro n hn
+    rw [leadingTerm, if_neg]
+    intro hp
+    exact hn ⟨⟨n, hp⟩, rfl⟩
+  refine (Function.Injective.summable_iff Nat.Primes.coe_nat_injective hzero).mp ?_
+  refine hsum.congr fun p => ?_
+  show _ = leadingTerm σ τ ((p : ℕ))
+  rw [leadingTerm, if_pos p.2]
+
 end GaloisForLFunctions.HTGeometry

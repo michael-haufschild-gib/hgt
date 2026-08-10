@@ -922,6 +922,20 @@ project axiom, or RH statement occurs. Final foreground umbrella build passes wi
 Repository lint reports no target error; its global nonzero exit comes from pre-existing unreachable
 modules in unrelated theorem areas.
 
+## Session 2026-08-10 addition (Primitive-Spectrum Relabeling Invariance)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SELM-5 | Transport along any coordinate equivalence preserves local admission, dominated splitting, primitivity, and occurrence of every primitive degree; hence the complete primitive spectrum is independent of coordinate names | `HTGeometry.ConstitutivePrimitiveSpectrumTransport` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints on local transport, split transport, primitivity,
+primitive-degree occurrence, and the unconditional capstone report only `propext`,
+`Classical.choice`, and `Quot.sound`. No computation certificate, route premise, project axiom, or
+RH statement occurs. Final foreground umbrella build passes with 11,603 jobs. Repository lint
+reports no target error; its global nonzero exit comes from pre-existing unreachable modules in
+unrelated theorem areas.
+
 ## Session 2026-08-10 addition (Cofinal Primitive-Degree Escape)
 
 | ID | Theorem | Lean module |

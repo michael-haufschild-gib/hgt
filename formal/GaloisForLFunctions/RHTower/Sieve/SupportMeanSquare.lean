@@ -25,11 +25,11 @@ namespace RHTower.Sieve
 open MeasureTheory Finset
 open scoped ArithmeticFunction.Moebius
 
-/-- **The mean value theorem by support size.** -/
-theorem integral_Icc_normSq_logPoly_le_support (a : ℕ → ℂ) {s : Finset ℕ} (hs0 : (0 : ℕ) ∉ s)
-    {M : ℕ} (hsM : ∀ n ∈ s, n ≤ M) (ha : ∀ n, ‖a n‖ ≤ 1) {W : ℝ} (hW : 1 ≤ W) :
+/-- **The mean value theorem by coefficient energy.** -/
+theorem integral_Icc_normSq_logPoly_le_energy (a : ℕ → ℂ) {s : Finset ℕ} (hs0 : (0 : ℕ) ∉ s)
+    {M : ℕ} (hsM : ∀ n ∈ s, n ≤ M) {W : ℝ} (hW : 1 ≤ W) :
     (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
-      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (s.card : ℝ) := by
+      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (∑ n ∈ s, ‖a n‖ ^ 2) := by
   classical
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
@@ -44,7 +44,6 @@ theorem integral_Icc_normSq_logPoly_le_support (a : ℕ → ℂ) {s : Finset ℕ
     rw [show 2 * Real.pi * (1 / (2 * Real.pi * W)) * W = (2 * Real.pi * W) / (2 * Real.pi * W) by
       ring, div_self hne]
   have hbase := integral_Icc_normSq_logPoly_le_general a s hs0 hδ0 hWδ
-  -- the exponential increment
   have hexp : Real.exp δ - Real.exp (-δ) ≤ 2 * δ * Real.exp 1 := by
     have h1 : (1 : ℝ) - Real.exp (-(2 * δ)) ≤ 2 * δ := by
       have := Real.add_one_le_exp (-(2 * δ))
@@ -65,10 +64,9 @@ theorem integral_Icc_normSq_logPoly_le_support (a : ℕ → ℂ) {s : Finset ℕ
       _ ≤ Real.exp 1 * (2 * δ) := mul_le_mul_of_nonneg_left h1 (Real.exp_pos 1).le
       _ = 2 * δ * Real.exp 1 := by ring
   have hterm : ∀ n ∈ s, ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) * ‖a n‖ ^ 2
-      ≤ (M : ℝ) * (2 * δ * Real.exp 1) + 1 := by
+      ≤ ((M : ℝ) * (2 * δ * Real.exp 1) + 1) * ‖a n‖ ^ 2 := by
     intro n hn
     have hnM : (n : ℝ) ≤ (M : ℝ) := by exact_mod_cast hsM n hn
-    have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
     have hinc : (0 : ℝ) ≤ Real.exp δ - Real.exp (-δ) := by
       have : Real.exp (-δ) ≤ Real.exp δ := Real.exp_le_exp.2 (by linarith)
       linarith
@@ -77,36 +75,43 @@ theorem integral_Icc_normSq_logPoly_le_support (a : ℕ → ℂ) {s : Finset ℕ
             mul_le_mul_of_nonneg_right hnM hinc
         _ ≤ (M : ℝ) * (2 * δ * Real.exp 1) :=
             mul_le_mul_of_nonneg_left hexp (Nat.cast_nonneg M)
-    have hsq : ‖a n‖ ^ 2 ≤ 1 := by
-      have := ha n
-      nlinarith [norm_nonneg (a n)]
-    have hpos : (0 : ℝ) ≤ (n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1 := by positivity
-    calc ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) * ‖a n‖ ^ 2
-        ≤ ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) * 1 :=
-          mul_le_mul_of_nonneg_left hsq hpos
-      _ = (n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1 := by ring
-      _ ≤ (M : ℝ) * (2 * δ * Real.exp 1) + 1 := by linarith
+    exact mul_le_mul_of_nonneg_right (by linarith) (by positivity)
   have hsum : ∑ n ∈ s, ((n : ℝ) * (Real.exp δ - Real.exp (-δ)) + 1) * ‖a n‖ ^ 2
-      ≤ ((M : ℝ) * (2 * δ * Real.exp 1) + 1) * (s.card : ℝ) := by
-    refine le_trans (Finset.sum_le_sum hterm) ?_
-    rw [Finset.sum_const, nsmul_eq_mul]
-    ring_nf
-    rfl
+      ≤ ((M : ℝ) * (2 * δ * Real.exp 1) + 1) * (∑ n ∈ s, ‖a n‖ ^ 2) := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_le_sum hterm
   refine le_trans hbase ?_
   have hcoef : (0 : ℝ) ≤ 5 / (4 * δ) := by positivity
   refine le_trans (mul_le_mul_of_nonneg_left hsum hcoef) (le_of_eq ?_)
-  have hδne : δ ≠ 0 := ne_of_gt hδ0
   have hval : (5 : ℝ) / (4 * δ) = 5 * Real.pi / 2 * W := by
     rw [hδdef]
     field_simp
     ring
   rw [← mul_assoc, hval]
-  have hδe : (5 * Real.pi / 2 * W) * ((M : ℝ) * (2 * δ * Real.exp 1) + 1)
-      = 5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ) := by
-    rw [hδdef]
-    field_simp
-    ring
-  rw [hδe]
+  congr 1
+  rw [hδdef]
+  field_simp
+  ring
+
+/-- **The mean value theorem by support size.** -/
+theorem integral_Icc_normSq_logPoly_le_support (a : ℕ → ℂ) {s : Finset ℕ} (hs0 : (0 : ℕ) ∉ s)
+    {M : ℕ} (hsM : ∀ n ∈ s, n ≤ M) (ha : ∀ n, ‖a n‖ ≤ 1) {W : ℝ} (hW : 1 ≤ W) :
+    (∫ w in Set.Icc (-W) W, ‖logPoly a s w‖ ^ 2)
+      ≤ (5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ)) * (s.card : ℝ) := by
+  classical
+  refine le_trans (integral_Icc_normSq_logPoly_le_energy a hs0 hsM hW) ?_
+  have hcoef0 : (0 : ℝ) ≤ 5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * (M : ℝ) := by
+    have := Real.pi_pos
+    have := (Real.exp_pos 1).le
+    have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
+    positivity
+  refine mul_le_mul_of_nonneg_left ?_ hcoef0
+  have hbound : ∑ n ∈ s, ‖a n‖ ^ 2 ≤ ∑ _n ∈ s, (1 : ℝ) := by
+    refine Finset.sum_le_sum fun n _ => ?_
+    have := ha n
+    nlinarith [norm_nonneg (a n)]
+  rw [Finset.sum_const, nsmul_eq_mul, mul_one] at hbound
+  exact hbound
 
 /-- The integers of `[1, M]` carrying no designated prime factor. -/
 def roughSet (P : Finset ℕ) (M : ℕ) : Finset ℕ :=

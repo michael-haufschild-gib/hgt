@@ -736,3 +736,188 @@ term separately has the enclosing-boundary exponential type from Theorem G.
 - 2026-08-10 — transverse cutoff ambiguity removed: safe-strip Green identity reduces both
   horizontal faces to one absolutely convergent Euler--Gamma line and isolates a single signed
   nonlinear bulk cancellation (RJG40).
+
+## 22. Conjecture loop 8 — source-holomorphic reciprocal heat receiver
+
+The Poincare--Lelong landing changed the diagnosis but did not yet remove the nonlinear bulk.
+Instead of forcing the nonholomorphic mass energy through `log|XiC|`, pass to the fixed compact
+theta-source inverse
+
+```text
+B = thetaKernelOperator.
+```
+
+Its nonzero spectral values are, with full algebraic multiplicity,
+
+```text
+mu_q = -(alpha_q)^(-1),                                  (RJG41)
+```
+
+and `B` is defined from the theta density before any Xi divisor is enumerated.  The reciprocal
+square is therefore the correct entire coordinate at the compact accumulation point:
+
+```text
+mu |-> exp(-i t mu^2),                                   (RJG42)
+```
+
+whereas the mass square-root receiver has an essential singularity when rewritten at `mu=0`.
+
+### First conjecture
+
+Use the Hilbert--Schmidt norm of `B exp(-i t B^2)` as the positive source lift of the reciprocal
+spectral energy.
+
+### Verdict: `[TOO LARGE; POSITIVE SURVIVOR BELOW]`
+
+The norm sees any quasinilpotent radical and every nonorthogonality of the root spaces, neither of
+which belongs to the Xi divisor.  Subexponential growth of that full Hilbert--Schmidt orbit is a
+strictly stronger demand than control of the nonzero spectrum.  The compact source already has a
+canonical finite observation which removes this excess: its rank-two pinned boundary defect.
+
+## 23. The rank-two observed square-flow law
+
+Let
+
+```text
+C = pinnedBoundaryCLM,
+O(t) = C exp(-i t B^2),        t>=0.                       (RJG43)
+```
+
+The operator `C` is source-defined, has range spanned by the constant and centered-coordinate
+vectors, and has nonzero eigenvalues `+-1/sqrt(12)`.  Equivalently it reads only the two moments
+
+```text
+m(g)=integral_0^1 g,
+r(g)=integral_0^1 t g.                                   (RJG44)
+```
+
+Thus `O(t)` has rank at most two for every `t`; it is a two-channel boundary observation, not a
+divisor Hilbert sum.
+
+### Theorem I — every theta divisor mode is boundary-observable `[PAPER-PROVED]`
+
+For the canonical source eigenvector `f_q=thetaXiDivisorEigenvector(q)`, the corpus gives
+
+```text
+B f_q = mu_q f_q,
+m(f_q)=sqrt(thetaSource.mass) != 0.                        (RJG45)
+```
+
+Since
+
+```text
+C g=0 iff m(g)=0 and r(g)=0,
+```
+
+one has `C f_q != 0` for every multiplicity copy, on-line or off-line.  Functional calculus then
+gives the exact observed mode law
+
+```text
+O(t) f_q = exp(-i t mu_q^2) C f_q,
+norm(O(t) f_q)=exp(t Im(mu_q^2)) norm(C f_q).              (RJG46)
+```
+
+No diagonal extraction, root-vector orthogonality, simplicity, or completeness is used.
+
+### Theorem J — exact boundary growth exponent `[PAPER-PROVED]`
+
+Put `A=-i B^2` and
+
+```text
+omega_boundary = lim_(t->infinity) log(norm(O(t)))/t.
+```
+
+Then the limit exists and
+
+```text
+omega_boundary
+ = max(0, sup_(mu in spectrum(B), mu!=0) Im(mu^2))
+ = max(0, sup_q Im(alpha_q^(-2))).                         (RJG47)
+```
+
+Proof: for every bounded operator `A`, spectral mapping and Gelfand's formula give
+
+```text
+lim_(t->infinity) log(norm(exp(t A)))/t
+  = sup_{lambda in spectrum(A)} Re(lambda).                (RJG48)
+```
+
+Indeed this is Gelfand's formula for integer `t` applied to `exp(A)`, while the bounded remainder
+`exp((t-floor(t))A)` handles real `t`.  Hence
+
+```text
+limsup log(norm(O(t)))/t
+ <= max(0, sup Im(mu^2)).                                  (RJG49)
+```
+
+Conversely (RJG46) gives, for every `q`,
+
+```text
+norm(O(t))
+ >= exp(t Im(mu_q^2)) norm(C f_q)/norm(f_q).               (RJG50)
+```
+
+If the spectral bound is positive, compactness makes it an attained nonzero eigenvalue; (RJG50)
+matches the upper exponent.  If it is zero, nonemptiness of the Xi divisor and (RJG45)--(RJG50)
+give the matching lower exponent zero.  This proves (RJG47).
+
+### Corollary — source-defined RH equivalence `[PAPER-PROVED]`
+
+Conjugation of the Xi divisor sends `mu_q^2` to its complex conjugate.  Therefore the right side of
+(RJG47) vanishes exactly when every reciprocal square is real.  The open-strip reciprocal-square
+criterion already proves that this is equivalent to every `alpha_q` being real.  Hence
+
+```text
+RH
+ iff omega_boundary=0
+ iff for every epsilon>0 there is M_epsilon such that
+      norm(C exp(-i t B^2)) <= M_epsilon exp(epsilon t)
+      for every t>=0.                                     (RJG51)
+```
+
+Unlike (RJG19), every object in the last condition is defined directly from the fixed theta
+source.  Unlike (RJG37), no logarithmic Xi potential or signed two-dimensional bulk remains.
+
+## 24. Higher universal principle revised again
+
+The mass-cone obstruction is a coordinate shadow.  In the original divisor coordinate `alpha`,
+transverse displacement must be converted to growth by a moving mass and a cubic clock, which
+creates a larger enclosing Euler boundary.  The compact inverse has already performed the needed
+renormalization:
+
+```text
+alpha transverse displacement
+  -> Im(alpha^(-2))
+  -> exponential type of exp(-i t B^2)
+  -> two pinned boundary moments.                          (RJG52)
+```
+
+The universal principle is **unstable spectrum equals observable boundary type**.  A full Hilbert
+metric is unnecessary.  It is enough that one finite source boundary observation see every
+unstable root space; (RJG45) proves that exact observability here.
+
+This is genuine new route knowledge, not an RH proof.  General semigroup spectral mapping is
+classical.  The source-specific content is the splice of the fixed Hedenmalm compact inverse, its
+multiplicity-exact Xi spectrum, and the rank-two pinned monopole observation.  Hedenmalm's 2026
+paper constructs the theta differential-pair eigenproblem and discusses pair self-adjointness; the
+targeted primary-source search found no reciprocal-square observed-flow law or rank-two growth
+formula.  Search noncollision is not a priority claim.  Status: `[NOVELTY UNVERIFIED]`.
+
+## 25. New exact producer, after removing the Green bulk
+
+The Route T open core can now be stated without a divisor sum:
+
+```text
+for every epsilon>0, prove from the theta/von-Mangoldt source that
+norm(C exp(-i t B^2)) = O_epsilon(exp(epsilon t)).          (RJG53)
+```
+
+Because `C` has rank two, this is equivalent to subexponential growth of two adjoint source
+orbits issued from the constant and centered-coordinate boundary vectors.  A proposed proof must
+estimate those two vectors before spectral decomposition.  Assuming spectral reality,
+self-adjointness, reciprocal-square positivity, or (RJG53) itself is rejected as circular.
+
+## Log, source-flow pivot
+
+- 2026-08-10 — replaced nonlinear Poincare--Lelong bulk by exact rank-two theta-boundary square
+  flow; paper-proved full exponential-type law (RJG47) and source-defined RH equivalence (RJG51).

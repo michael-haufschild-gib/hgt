@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.LiteralTwoQueryHaarBenchmark
 import GaloisForLFunctions.HTGeometry.TracelessLocalPauliTransferConservationLaw
+import GaloisForLFunctions.QuantumAlg.Primitives.QNN.Algebras.TFIM
 
 /-!
 # Adaptive eigenframe two-query source memory
@@ -15,6 +16,7 @@ experiment.
 -/
 
 open MeasureTheory MeasureTheory.Measure TopologicalSpace
+open NormedSpace
 open scoped BigOperators Matrix
 
 namespace GaloisForLFunctions.HTGeometry
@@ -222,6 +224,23 @@ def adaptiveEigenframeTwoQueryScore [Fintype ι]
   (∑ output : ι, ∑ input : ι, dictionaryEigenframeMean label U output input) /
     (Fintype.card ι : ℝ) ^ 2
 
+/-- Every dictionary-eigenframe mean is nonnegative. -/
+theorem dictionaryEigenframeMean_nonneg [Fintype ι]
+    (label : ι → σ → Option (Fin 3))
+    (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ)
+    (output input : ι) :
+    0 ≤ dictionaryEigenframeMean label U output input := by
+  unfold dictionaryEigenframeMean
+  positivity
+
+/-- The complete adaptive two-query score is nonnegative. -/
+theorem adaptiveEigenframeTwoQueryScore_nonneg [Fintype ι]
+    (label : ι → σ → Option (Fin 3))
+    (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) :
+    0 ≤ adaptiveEigenframeTwoQueryScore label U := by
+  unfold adaptiveEigenframeTwoQueryScore
+  positivity
+
 /-- Dictionary compression of the exact Pauli-transfer matrix. -/
 def dictionaryPauliTransfer [Fintype ι]
     (label : ι → σ → Option (Fin 3))
@@ -268,6 +287,52 @@ theorem adaptiveEigenframeTwoQueryScore_ge_card_sq_inv
     (twoQueryLocalRetentionMean_le_adaptiveEigenframeScore label U)
 
 /-! ## Exact Haar benchmark -/
+
+/-- One dictionary-eigenframe mean varies continuously with the unitary oracle. -/
+theorem continuous_dictionaryEigenframeMean
+    {n : ℕ} [Fintype ι]
+    (label : ι → Fin n → Option (Fin 3)) (output input : ι) :
+    Continuous fun V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ =>
+      dictionaryEigenframeMean label
+        (V : Matrix (FiniteQubitConfiguration (Fin n))
+          (FiniteQubitConfiguration (Fin n)) ℂ) output input := by
+  unfold dictionaryEigenframeMean
+  apply Continuous.div_const
+  apply continuous_finset_sum
+  intro b _hb
+  simpa [pauliEigenframeExpectation] using
+    (continuous_sq_trace_conj
+      (productStabilizerDensity (pauliEigenframeSample (label output) b))
+      (finitePauliMatrix (label input)))
+
+/-- The complete adaptive score is continuous on the compact unitary group. -/
+theorem continuous_adaptiveEigenframeTwoQueryScore
+    {n : ℕ} [Fintype ι]
+    (label : ι → Fin n → Option (Fin 3)) :
+    Continuous fun V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ =>
+      adaptiveEigenframeTwoQueryScore label
+        (V : Matrix (FiniteQubitConfiguration (Fin n))
+          (FiniteQubitConfiguration (Fin n)) ℂ) := by
+  unfold adaptiveEigenframeTwoQueryScore
+  apply Continuous.div_const
+  apply continuous_finset_sum
+  intro output _houtput
+  apply continuous_finset_sum
+  intro input _hinput
+  exact continuous_dictionaryEigenframeMean label output input
+
+/-- The adaptive score is Haar-integrable. -/
+theorem integrable_adaptiveEigenframeTwoQueryScore
+    {n : ℕ} [Fintype ι]
+    (label : ι → Fin n → Option (Fin 3)) :
+    Integrable
+      (fun V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ =>
+        adaptiveEigenframeTwoQueryScore label
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ))
+      (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) :=
+  integrable_finiteUnitaryHaar_of_continuous _
+    (continuous_adaptiveEigenframeTwoQueryScore label)
 
 /-- Every fixed adaptive-eigenframe trial has exact Haar mean square `1 / (2^n + 1)`. -/
 theorem haar_sq_pauliEigenframeExpectation_eq
@@ -411,6 +476,550 @@ theorem haar_adaptiveEigenframeTwoQueryScore_eq
   have hM : (Fintype.card ι : ℝ) ≠ 0 := by positivity
   field_simp
   simp
+
+/-- **Haar high-score tail law.** Markov's inequality upgrades the exact mean into a probability
+bound for every positive score threshold. -/
+theorem haar_measureReal_adaptiveEigenframeScore_ge_le
+    {n : ℕ} (hn : 1 ≤ n) [Fintype ι] [Nonempty ι]
+    (label : ι → Fin n → Option (Fin 3))
+    (hlabel : ∀ i, label i ≠ pauliIdentityLabel n)
+    {ε : ℝ} (hε : 0 < ε) :
+    (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
+        {V | ε ≤ adaptiveEigenframeTwoQueryScore label
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)} ≤
+      (1 / ((2 ^ n + 1 : ℕ) : ℝ)) / ε := by
+  let f := fun V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ =>
+    adaptiveEigenframeTwoQueryScore label
+      (V : Matrix (FiniteQubitConfiguration (Fin n))
+        (FiniteQubitConfiguration (Fin n)) ℂ)
+  have hnonneg : 0 ≤ᵐ[finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))] f :=
+    Filter.Eventually.of_forall fun V => adaptiveEigenframeTwoQueryScore_nonneg label V
+  have hmarkov := mul_meas_ge_le_integral_of_nonneg hnonneg
+    (integrable_adaptiveEigenframeTwoQueryScore label) ε
+  rw [haar_adaptiveEigenframeTwoQueryScore_eq hn label hlabel] at hmarkov
+  exact (le_div_iff₀ hε).2 (by simpa [f] using hmarkov)
+
+/-- At the conserved dictionary floor `M⁻²`, Haar high-score probability is at most
+`M²/(2^n+1)`. -/
+theorem haar_measureReal_adaptiveEigenframeScore_ge_card_inv_le
+    {n : ℕ} (hn : 1 ≤ n) [Fintype ι] [Nonempty ι]
+    (label : ι → Fin n → Option (Fin 3))
+    (hlabel : ∀ i, label i ≠ pauliIdentityLabel n) :
+    (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
+        {V | 1 / (Fintype.card ι : ℝ) ^ 2 ≤
+          adaptiveEigenframeTwoQueryScore label
+            (V : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ)} ≤
+      (Fintype.card ι : ℝ) ^ 2 / ((2 ^ n + 1 : ℕ) : ℝ) := by
+  have hM : 0 < (Fintype.card ι : ℝ) ^ 2 := by positivity
+  have h := haar_measureReal_adaptiveEigenframeScore_ge_le hn label hlabel
+    (one_div_pos.mpr hM)
+  convert h using 1 <;> field_simp
+
+/-! ## Autonomous Hamiltonians supported on an arbitrary Pauli dictionary -/
+
+/-- A self-adjoint Hamiltonian has Pauli support inside predicate `p`. -/
+def HasPauliDictionarySupport
+    (p : (σ → Option (Fin 3)) → Prop)
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ)) : Prop :=
+  ∀ P, ¬p P →
+    ((finitePauliSelfAdjointBasis σ).repr H :
+      (σ → Option (Fin 3)) → ℝ) P = 0
+
+/-- Hamiltonian coordinates restricted to an arbitrary Pauli dictionary. -/
+def pauliDictionaryEnergyCoordinates
+    (p : (σ → Option (Fin 3)) → Prop)
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ)) :
+    {P // p P} → ℝ :=
+  vectorCoordinateRestriction p
+    ((finitePauliSelfAdjointBasis σ).repr H :
+      (σ → Option (Fin 3)) → ℝ)
+
+/-- Exact autonomous conservation survives compression to every dictionary containing the full
+Pauli support of the Hamiltonian. -/
+theorem autonomousDictionaryPauliTransfer_fixes_energy
+    (p : (σ → Option (Fin 3)) → Prop) [DecidablePred p]
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ))
+    (hsupport : HasPauliDictionarySupport p H) (t : ℝ) :
+    dictionaryPauliTransfer (fun P : {P // p P} => P.1)
+        (exp (t • ((-Complex.I) •
+          (H : Matrix (FiniteQubitConfiguration σ)
+            (FiniteQubitConfiguration σ) ℂ)))) *ᵥ
+      pauliDictionaryEnergyCoordinates p H = pauliDictionaryEnergyCoordinates p H := by
+  change
+    matrixCoordinateCompression p
+      (LinearMap.toMatrix
+        (finitePauliSelfAdjointBasis σ) (finitePauliSelfAdjointBasis σ)
+        (finiteMatrixSelfAdjointConjugationLinearMap
+          (exp (t • ((-Complex.I) •
+            (H : Matrix (FiniteQubitConfiguration σ)
+              (FiniteQubitConfiguration σ) ℂ)))))) *ᵥ
+        vectorCoordinateRestriction p
+          ((finitePauliSelfAdjointBasis σ).repr H :
+            (σ → Option (Fin 3)) → ℝ) =
+      vectorCoordinateRestriction p
+        ((finitePauliSelfAdjointBasis σ).repr H :
+          (σ → Option (Fin 3)) → ℝ)
+  apply matrixCoordinateCompression_mulVec_restriction_eq_of_fixed_of_support
+  · exact linearMap_toMatrix_mulVec_repr_eq_of_fixed
+      (finitePauliSelfAdjointBasis σ)
+      (finiteMatrixSelfAdjointConjugationLinearMap
+        (exp (t • ((-Complex.I) •
+          (H : Matrix (FiniteQubitConfiguration σ)
+            (FiniteQubitConfiguration σ) ℂ))))) H
+      (finiteMatrixSelfAdjointConjugation_fixes_energy H t)
+  · exact hsupport
+
+/-- Restricting a nonzero Hamiltonian to a dictionary containing its support remains nonzero. -/
+theorem pauliDictionaryEnergyCoordinates_ne_zero
+    (p : (σ → Option (Fin 3)) → Prop)
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ))
+    (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport p H) :
+    pauliDictionaryEnergyCoordinates p H ≠ 0 := by
+  apply vectorCoordinateRestriction_ne_zero_of_ne_zero_of_support
+  · intro hzero
+    apply hH
+    apply (finitePauliSelfAdjointBasis σ).repr.injective
+    exact Finsupp.ext fun P => by simpa using congrFun hzero P
+  · exact hsupport
+
+/-- **Permanent adaptive-eigenframe source-memory law.** Every nonzero autonomous Hamiltonian whose
+Pauli support lies in a nonempty finite dictionary has physical two-query score at least the inverse
+square of dictionary cardinality, at every real time, with no Pauli-weight factor. -/
+theorem autonomous_adaptiveEigenframeTwoQueryScore_ge
+    (p : (σ → Option (Fin 3)) → Prop) [DecidablePred p]
+    [Nonempty {P // p P}]
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ))
+    (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport p H) (t : ℝ) :
+    1 / (Fintype.card {P // p P} : ℝ) ^ 2 ≤
+      adaptiveEigenframeTwoQueryScore (fun P : {P // p P} => P.1)
+        (exp (t • ((-Complex.I) •
+          (H : Matrix (FiniteQubitConfiguration σ)
+            (FiniteQubitConfiguration σ) ℂ)))) := by
+  exact adaptiveEigenframeTwoQueryScore_ge_card_sq_inv
+    (fun P : {P // p P} => P.1) _
+    (pauliDictionaryEnergyCoordinates p H)
+    (pauliDictionaryEnergyCoordinates_ne_zero p H hH hsupport)
+    (autonomousDictionaryPauliTransfer_fixes_energy p H hsupport t)
+
+/-- If dictionary cardinality squared is below Hilbert dimension plus one, the permanent static
+score is strictly larger than the exact Haar score. -/
+theorem autonomous_adaptiveEigenframeTwoQueryScore_gt_haar
+    {n : ℕ} (hn : 1 ≤ n)
+    (p : (Fin n → Option (Fin 3)) → Prop) [DecidablePred p]
+    [Nonempty {P // p P}]
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration (Fin n))
+        (FiniteQubitConfiguration (Fin n)) ℂ))
+    (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport p H) (t : ℝ)
+    (hsep : Fintype.card {P // p P} ^ 2 < 2 ^ n + 1) :
+    1 / ((2 ^ n + 1 : ℕ) : ℝ) <
+      adaptiveEigenframeTwoQueryScore (fun P : {P // p P} => P.1)
+        (exp (t • ((-Complex.I) •
+          (H : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)))) := by
+  have hM : 0 < (Fintype.card {P // p P} : ℝ) ^ 2 := by positivity
+  have hsepR : (Fintype.card {P // p P} : ℝ) ^ 2 < ((2 ^ n + 1 : ℕ) : ℝ) := by
+    exact_mod_cast hsep
+  have hinv : 1 / ((2 ^ n + 1 : ℕ) : ℝ) <
+      1 / (Fintype.card {P // p P} : ℝ) ^ 2 :=
+    one_div_lt_one_div_of_lt hM hsepR
+  exact hinv.trans_le
+    (autonomous_adaptiveEigenframeTwoQueryScore_ge p H hH hsupport t)
+
+/-! ## Fixed-cardinality Majorana dictionaries
+
+The Jordan--Wigner image of a fixed-`q` Majorana monomial can have Pauli weight linear in system
+size.  The adaptive eigenframe law nevertheless pays only for the number `choose (2n,q)` of source
+monomials.  The algebraic core is a fixed-cardinality injectivity theorem for every Pauli-Majorana
+frame: pairing with an index in a symmetric difference distinguishes the two monomials.
+-/
+
+/-- Pauli labels bundled with XOR as their additive law. -/
+@[ext] structure MajoranaXorLabel (n : ℕ) where
+  val : Fin n → Fin 4
+
+instance {n : ℕ} : AddCommMonoid (MajoranaXorLabel n) where
+  zero := ⟨0⟩
+  add x y := ⟨QuantumAlg.pauliXor x.val y.val⟩
+  add_assoc x y z := by ext k; exact QuantumAlg.xor4_assoc _ _ _
+  zero_add x := by ext k; exact QuantumAlg.xor4_zero_left _
+  add_zero x := by ext k; exact QuantumAlg.xor4_zero_right _
+  add_comm x y := by ext k; exact QuantumAlg.xor4_comm _ _
+  nsmul := nsmulRec
+  nsmul_zero := rfl
+  nsmul_succ := fun _ _ => rfl
+
+/-- Symplectic pairing is additive for the XOR monoid. -/
+def majoranaOmegaHom {n : ℕ} (a : Fin n → Fin 4) :
+    MajoranaXorLabel n →+ ZMod 2 where
+  toFun x := QuantumAlg.pauliOmega a x.val
+  map_zero' := by simp [QuantumAlg.pauliOmega_zero_right]
+  map_add' x y := QuantumAlg.pauliOmega_xor_right _ _ _
+
+/-- Phase-free Pauli label of a product of distinct Majorana generators. -/
+def majoranaWordFinFour {n : ℕ} (F : QuantumAlg.PauliMajoranaFrame n)
+    (S : Finset (Fin (2 * n))) : Fin n → Fin 4 :=
+  (∑ a ∈ S, (⟨F.v a⟩ : MajoranaXorLabel n)).val
+
+/-- Pairing a generator with a Majorana word counts all other generators modulo two. -/
+theorem majoranaOmega_wordFinFour {n : ℕ} (F : QuantumAlg.PauliMajoranaFrame n)
+    (a : Fin (2 * n)) (S : Finset (Fin (2 * n))) :
+    QuantumAlg.pauliOmega (F.v a) (majoranaWordFinFour F S) =
+      ∑ b ∈ S, if a = b then 0 else 1 := by
+  change (majoranaOmegaHom (F.v a))
+      (∑ b ∈ S, (⟨F.v b⟩ : MajoranaXorLabel n)) = _
+  rw [map_sum]
+  apply Finset.sum_congr rfl
+  intro b _hb
+  rw [map_sum]
+  simp only [majoranaOmegaHom, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
+  exact F.omega a b
+
+/-- Equivalent cardinal form of the Majorana-word pairing law. -/
+theorem majoranaOmega_wordFinFour_eq_card_erase {n : ℕ}
+    (F : QuantumAlg.PauliMajoranaFrame n) (a : Fin (2 * n))
+    (S : Finset (Fin (2 * n))) :
+    QuantumAlg.pauliOmega (F.v a) (majoranaWordFinFour F S) = (S.erase a).card := by
+  rw [majoranaOmega_wordFinFour]
+  simp only [show (if a = b then (0 : ZMod 2) else 1) =
+      if b ≠ a then 1 else 0 by split <;> simp_all [ne_comm]]
+  rw [Finset.sum_boole, Finset.filter_ne']
+
+/-- **Fixed-cardinality Majorana independence.** Distinct `q`-subsets have distinct phase-free
+Pauli labels in every representation by pairwise anticommuting Pauli words. -/
+theorem majoranaWordFinFour_injective_fixedCard {n q : ℕ}
+    (F : QuantumAlg.PauliMajoranaFrame n) :
+    Function.Injective
+      (fun S : {S : Finset (Fin (2 * n)) // S.card = q} =>
+        majoranaWordFinFour F S.1) := by
+  intro S T hlabel
+  apply Subtype.ext
+  by_contra hST
+  have hnotSubset : ¬S.1 ⊆ T.1 := by
+    intro hsub
+    apply hST
+    exact Finset.eq_of_subset_of_card_le hsub (by simpa [S.2, T.2])
+  simp only [Finset.not_subset] at hnotSubset
+  obtain ⟨a, haS, haT⟩ := hnotSubset
+  have homega := congrArg (fun P => QuantumAlg.pauliOmega (F.v a) P) hlabel
+  rw [majoranaOmega_wordFinFour_eq_card_erase,
+    majoranaOmega_wordFinFour_eq_card_erase, Finset.card_erase_of_mem haS,
+    Finset.erase_eq_of_notMem haT, S.2, T.2] at homega
+  have hqpos : 0 < q := by
+    rw [← S.2, Finset.card_pos]
+    exact ⟨a, haS⟩
+  have hqsplit : q = q - 1 + 1 := by omega
+  have hone : (1 : ZMod 2) = 0 := by
+    apply add_left_cancel (a := ((q - 1 : ℕ) : ZMod 2))
+    simpa only [add_zero, ← Nat.cast_add, ← hqsplit] using homega
+  exact one_ne_zero hone
+
+/-- Inverse of the conventional `none, X, Y, Z` encoding by `0,1,2,3`. -/
+def finFourPauliOption : Fin 4 → Option (Fin 3) :=
+  Fin.cases none (fun a => some a)
+
+theorem finFourPauliOption_injective : Function.Injective finFourPauliOption := by
+  intro a b h
+  fin_cases a <;> fin_cases b <;> simp [finFourPauliOption] at h ⊢
+
+@[simp] theorem finFourPauliOption_zero : finFourPauliOption 0 = none := rfl
+
+/-- Index type of `q`-body Majorana monomials on `n` qubits. -/
+abbrev MajoranaQBodyIndex (n q : ℕ) :=
+  {S : Finset (Fin (2 * n)) // S.card = q}
+
+/-- Jordan--Wigner Pauli label of a fixed-`q` Majorana monomial. -/
+def majoranaQBodyPauliLabel (n q : ℕ) (S : MajoranaQBodyIndex n q) :
+    Fin n → Option (Fin 3) :=
+  fun k => finFourPauliOption (majoranaWordFinFour (QuantumAlg.TFIM.frame n) S.1 k)
+
+/-- Fixed-`q` Jordan--Wigner Majorana labels remain injective despite their long Pauli strings. -/
+theorem majoranaQBodyPauliLabel_injective (n q : ℕ) :
+    Function.Injective (majoranaQBodyPauliLabel n q) := by
+  intro S T h
+  apply majoranaWordFinFour_injective_fixedCard (QuantumAlg.TFIM.frame n)
+  funext k
+  apply finFourPauliOption_injective
+  exact congrFun h k
+
+/-- Predicate selecting the complete fixed-`q` Majorana dictionary. -/
+def MajoranaQBodyDictionary (n q : ℕ) (P : Fin n → Option (Fin 3)) : Prop :=
+  ∃ S : MajoranaQBodyIndex n q, majoranaQBodyPauliLabel n q S = P
+
+/-- Fixed-`q` source monomials and their Jordan--Wigner labels are equivalent finite types. -/
+noncomputable def majoranaQBodyDictionaryEquiv (n q : ℕ) :
+    MajoranaQBodyIndex n q ≃ {P // MajoranaQBodyDictionary n q P} where
+  toFun S := ⟨majoranaQBodyPauliLabel n q S, ⟨S, rfl⟩⟩
+  invFun P := Classical.choose P.2
+  left_inv S := by
+    apply majoranaQBodyPauliLabel_injective n q
+    exact Classical.choose_spec
+  right_inv P := by
+    apply Subtype.ext
+    exact Classical.choose_spec P.2
+
+/-- Dictionary size is exactly the number of fixed-cardinality Majorana monomials. -/
+theorem majoranaQBodyDictionary_card (n q : ℕ) :
+    Fintype.card {P // MajoranaQBodyDictionary n q P} = Nat.choose (2 * n) q := by
+  let e : {S : Finset (Fin (2 * n)) // S.card = q} ≃
+      {S : Finset (Fin (2 * n)) //
+        S ∈ (Finset.univ : Finset (Fin (2 * n))).powersetCard q} :=
+    Equiv.subtypeEquivRight fun S => by simp [Finset.mem_powersetCard]
+  rw [← Fintype.card_congr (majoranaQBodyDictionaryEquiv n q),
+    Fintype.card_congr e, Fintype.card_coe, Finset.card_powersetCard]
+  simp
+
+/-- Every admissible fixed-`q` Majorana dictionary is nonempty. -/
+theorem majoranaQBodyDictionary_nonempty {n q : ℕ} (hq : q ≤ 2 * n) :
+    Nonempty {P // MajoranaQBodyDictionary n q P} := by
+  classical
+  obtain ⟨S, _hSuniv, hScard⟩ :=
+    Finset.exists_subset_card_eq (s := (Finset.univ : Finset (Fin (2 * n)))) (by simpa using hq)
+  exact ⟨⟨majoranaQBodyPauliLabel n q ⟨S, hScard⟩, ⟨⟨S, hScard⟩, rfl⟩⟩⟩
+
+/-- A nonempty even Majorana monomial never maps to the identity Pauli word. -/
+theorem majoranaQBodyPauliLabel_ne_identity {n q : ℕ}
+    (hqpos : 0 < q) (hqeven : Even q) (S : MajoranaQBodyIndex n q) :
+    majoranaQBodyPauliLabel n q S ≠ pauliIdentityLabel n := by
+  classical
+  obtain ⟨a, ha⟩ : S.1.Nonempty := Finset.card_pos.mp (by simpa [S.2] using hqpos)
+  have hword : majoranaWordFinFour (QuantumAlg.TFIM.frame n) S.1 ≠ 0 := by
+    intro hzero
+    have homega : QuantumAlg.pauliOmega ((QuantumAlg.TFIM.frame n).v a)
+        (majoranaWordFinFour (QuantumAlg.TFIM.frame n) S.1) = 0 := by
+      rw [hzero, QuantumAlg.pauliOmega_zero_right]
+    rw [majoranaOmega_wordFinFour_eq_card_erase,
+      Finset.card_erase_of_mem ha, S.2] at homega
+    obtain ⟨k, hk⟩ := hqeven
+    have hkpos : 0 < k := by omega
+    have hodd : Odd (q - 1) := ⟨k - 1, by omega⟩
+    have hone : ((q - 1 : ℕ) : ZMod 2) = 1 :=
+      ZMod.natCast_eq_one_iff_odd.mpr hodd
+    rw [hone] at homega
+    exact one_ne_zero homega
+  intro hid
+  apply hword
+  funext k
+  apply finFourPauliOption_injective
+  simpa [majoranaQBodyPauliLabel, pauliIdentityLabel] using congrFun hid k
+
+/-- Exact Haar benchmark for the complete even fixed-`q` Majorana eigenframe experiment. -/
+theorem haar_majoranaQBody_adaptiveEigenframeScore_eq
+    {n q : ℕ} (hn : 1 ≤ n) (hqpos : 0 < q) (hqeven : Even q) (hqle : q ≤ 2 * n) :
+    (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+        adaptiveEigenframeTwoQueryScore (majoranaQBodyPauliLabel n q)
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)
+        ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) =
+      1 / ((2 ^ n + 1 : ℕ) : ℝ) := by
+  letI : Nonempty (MajoranaQBodyIndex n q) := by
+    obtain ⟨P⟩ := majoranaQBodyDictionary_nonempty hqle
+    exact ⟨(majoranaQBodyDictionaryEquiv n q).symm P⟩
+  exact haar_adaptiveEigenframeTwoQueryScore_eq hn (majoranaQBodyPauliLabel n q)
+    (majoranaQBodyPauliLabel_ne_identity hqpos hqeven)
+
+/-- Exact Haar benchmark on the image dictionary used by autonomous support compression. -/
+theorem haar_majoranaQBodyDictionary_adaptiveEigenframeScore_eq
+    {n q : ℕ} (hn : 1 ≤ n) (hqpos : 0 < q) (hqeven : Even q) (hqle : q ≤ 2 * n) :
+    (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+        adaptiveEigenframeTwoQueryScore
+          (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+          (V : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)
+        ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) =
+      1 / ((2 ^ n + 1 : ℕ) : ℝ) := by
+  classical
+  letI : Nonempty {P // MajoranaQBodyDictionary n q P} :=
+    majoranaQBodyDictionary_nonempty hqle
+  apply haar_adaptiveEigenframeTwoQueryScore_eq hn
+  intro P
+  obtain ⟨S, hS⟩ := P.2
+  rw [← hS]
+  exact majoranaQBodyPauliLabel_ne_identity hqpos hqeven S
+
+/-- **Permanent Majorana source-memory law.** Every nonzero autonomous Hamiltonian supported on
+fixed even `q` Majorana monomials retains adaptive two-query score at least
+`choose(2n,q)⁻²` at every real time, while Haar gives exactly `(2^n+1)⁻¹`. -/
+theorem autonomous_majoranaQBody_adaptiveEigenframeScore_ge
+    {n q : ℕ} (hqle : q ≤ 2 * n)
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration (Fin n))
+        (FiniteQubitConfiguration (Fin n)) ℂ))
+    (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport (MajoranaQBodyDictionary n q) H)
+    (t : ℝ) :
+    1 / (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+      adaptiveEigenframeTwoQueryScore
+        (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+        (exp (t • ((-Complex.I) •
+          (H : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)))) := by
+  classical
+  letI : Nonempty {P // MajoranaQBodyDictionary n q P} :=
+    majoranaQBodyDictionary_nonempty hqle
+  simpa [majoranaQBodyDictionary_card] using
+    (autonomous_adaptiveEigenframeTwoQueryScore_ge
+      (MajoranaQBodyDictionary n q) H hH hsupport t)
+
+/-- When the fixed-`q` Majorana source dictionary is smaller than the square root of Hilbert
+dimension, its conserved physical score is permanently strictly above the Haar value. -/
+theorem autonomous_majoranaQBody_adaptiveEigenframeScore_gt_haar
+    {n q : ℕ} (hqle : q ≤ 2 * n)
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration (Fin n))
+        (FiniteQubitConfiguration (Fin n)) ℂ))
+    (hH : H ≠ 0) (hsupport : HasPauliDictionarySupport (MajoranaQBodyDictionary n q) H)
+    (t : ℝ) (hsep : Nat.choose (2 * n) q ^ 2 < 2 ^ n + 1) :
+    1 / ((2 ^ n + 1 : ℕ) : ℝ) <
+      adaptiveEigenframeTwoQueryScore
+        (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+        (exp (t • ((-Complex.I) •
+          (H : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)))) := by
+  classical
+  letI : Nonempty {P // MajoranaQBodyDictionary n q P} :=
+    majoranaQBodyDictionary_nonempty hqle
+  apply autonomous_adaptiveEigenframeTwoQueryScore_gt_haar
+    (p := MajoranaQBodyDictionary n q) (H := H) hH hsupport t
+  simpa [majoranaQBodyDictionary_card] using hsep
+
+/-- For every fixed body order, the squared Majorana dictionary is eventually smaller than Hilbert
+dimension.  This is an unconditional polynomial-versus-exponential theorem. -/
+theorem eventually_majoranaQBodyDictionary_sq_lt_two_pow (q : ℕ) :
+    ∀ᶠ n : ℕ in atTop, Nat.choose (2 * n) q ^ 2 < 2 ^ n := by
+  have hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ (2 * q) / (2 : ℝ) ^ n)
+      atTop (nhds 0) :=
+    tendsto_pow_const_div_const_pow_of_one_lt (2 * q) (by norm_num)
+  have hsmall := hlim.eventually_lt_const
+    (show (0 : ℝ) < 1 / (2 : ℝ) ^ (2 * q) by positivity)
+  filter_upwards [hsmall] with n hn
+  have hpolyR : (((2 * n) ^ (2 * q) : ℕ) : ℝ) < ((2 ^ n : ℕ) : ℝ) := by
+    rw [Nat.cast_pow, Nat.cast_mul, Nat.cast_ofNat, mul_pow, Nat.cast_pow,
+      Nat.cast_ofNat]
+    rw [div_lt_div_iff₀ (pow_pos (by norm_num : (0 : ℝ) < 2) n)
+      (pow_pos (by norm_num : (0 : ℝ) < 2) (2 * q))] at hn
+    nlinarith
+  have hchoose : Nat.choose (2 * n) q ≤ (2 * n) ^ q := Nat.choose_le_pow _ _
+  calc
+    Nat.choose (2 * n) q ^ 2 ≤ ((2 * n) ^ q) ^ 2 := by gcongr
+    _ = (2 * n) ^ (2 * q) := by rw [← pow_mul]; congr 1; omega
+    _ < 2 ^ n := by exact_mod_cast hpolyR
+
+/-- Haar probability that a fixed-`q` Majorana dictionary reaches its conserved autonomous floor is
+at most `choose(2n,q)^2/(2^n+1)`. -/
+theorem haar_measureReal_majoranaQBody_score_ge_floor_le
+    {n q : ℕ} (hn : 1 ≤ n) (hqpos : 0 < q) (hqeven : Even q) (hqle : q ≤ 2 * n) :
+    (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
+        {V | 1 / (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+          adaptiveEigenframeTwoQueryScore
+            (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+            (V : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ)} ≤
+      (Nat.choose (2 * n) q : ℝ) ^ 2 / ((2 ^ n + 1 : ℕ) : ℝ) := by
+  classical
+  letI : Nonempty {P // MajoranaQBodyDictionary n q P} :=
+    majoranaQBodyDictionary_nonempty hqle
+  have hlabel : ∀ P : {P // MajoranaQBodyDictionary n q P},
+      P.1 ≠ pauliIdentityLabel n := by
+    intro P
+    obtain ⟨S, hS⟩ := P.2
+    rw [← hS]
+    exact majoranaQBodyPauliLabel_ne_identity hqpos hqeven S
+  simpa [majoranaQBodyDictionary_card] using
+    (haar_measureReal_adaptiveEigenframeScore_ge_card_inv_le hn
+      (fun P : {P // MajoranaQBodyDictionary n q P} => P.1) hlabel)
+
+/-- The Haar high-score upper bound vanishes for every fixed body order. -/
+theorem tendsto_majoranaQBody_haarHighScoreBound_zero (q : ℕ) :
+    Tendsto (fun n : ℕ =>
+      (Nat.choose (2 * n) q : ℝ) ^ 2 / ((2 ^ n + 1 : ℕ) : ℝ))
+      atTop (nhds 0) := by
+  have hbase : Tendsto (fun n : ℕ => (n : ℝ) ^ (2 * q) / (2 : ℝ) ^ n)
+      atTop (nhds 0) :=
+    tendsto_pow_const_div_const_pow_of_one_lt (2 * q) (by norm_num)
+  have hmajorant : Tendsto (fun n : ℕ =>
+      (((2 * n) ^ (2 * q) : ℕ) : ℝ) / ((2 ^ n : ℕ) : ℝ)) atTop (nhds 0) := by
+    have hmul := hbase.const_mul ((2 : ℝ) ^ (2 * q))
+    simpa only [Nat.cast_pow, Nat.cast_mul, Nat.cast_ofNat, mul_pow, mul_div_assoc,
+      mul_zero] using hmul
+  apply squeeze_zero'
+  · exact Filter.Eventually.of_forall fun n => by positivity
+  · filter_upwards with n
+    have hchoose : Nat.choose (2 * n) q ^ 2 ≤ (2 * n) ^ (2 * q) := by
+      calc
+        Nat.choose (2 * n) q ^ 2 ≤ ((2 * n) ^ q) ^ 2 := by
+          gcongr
+          exact Nat.choose_le_pow _ _
+        _ = (2 * n) ^ (2 * q) := by rw [← pow_mul]; congr 1; omega
+    have hchooseR : (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+        (((2 * n) ^ (2 * q) : ℕ) : ℝ) := by exact_mod_cast hchoose
+    have hpowpos : (0 : ℝ) < ((2 ^ n : ℕ) : ℝ) := by positivity
+    calc
+      (Nat.choose (2 * n) q : ℝ) ^ 2 / ((2 ^ n + 1 : ℕ) : ℝ) ≤
+          (((2 * n) ^ (2 * q) : ℕ) : ℝ) / ((2 ^ n + 1 : ℕ) : ℝ) := by
+            exact div_le_div_of_nonneg_right hchooseR (by positivity)
+      _ ≤ (((2 * n) ^ (2 * q) : ℕ) : ℝ) / ((2 ^ n : ℕ) : ℝ) := by
+        exact div_le_div_of_nonneg_left (by positivity) hpowpos.le (by norm_num)
+  · exact hmajorant
+
+/-- For fixed positive even `q`, Haar probability of imitating the permanent autonomous source
+floor is eventually below every prescribed positive error probability. -/
+theorem eventually_haar_majoranaQBody_score_ge_floor_measure_lt
+    (q : ℕ) (hqpos : 0 < q) (hqeven : Even q) {δ : ℝ} (hδ : 0 < δ) :
+    ∀ᶠ n : ℕ in atTop,
+      (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
+          {V | 1 / (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+            adaptiveEigenframeTwoQueryScore
+              (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+              (V : Matrix (FiniteQubitConfiguration (Fin n))
+                (FiniteQubitConfiguration (Fin n)) ℂ)} < δ := by
+  have hratio := (tendsto_majoranaQBody_haarHighScoreBound_zero q).eventually_lt_const hδ
+  filter_upwards [eventually_ge_atTop 1, eventually_ge_atTop ((q + 1) / 2), hratio]
+    with n hn hnq hbound
+  have hqle : q ≤ 2 * n := by omega
+  exact (haar_measureReal_majoranaQBody_score_ge_floor_le
+    hn hqpos hqeven hqle).trans_lt hbound
+
+/-- **Asymptotic fixed-body Majorana/Haar separation.** For every fixed positive even body order,
+all sufficiently large qubit counts simultaneously have the exact Haar score and permanent strict
+separation for every nonzero autonomous Hamiltonian with that Majorana support, at every time. -/
+theorem eventually_every_autonomous_majoranaQBody_score_gt_haar
+    (q : ℕ) (hqpos : 0 < q) (hqeven : Even q) :
+    ∀ᶠ n : ℕ in atTop,
+      (∫ V : Matrix.unitaryGroup (FiniteQubitConfiguration (Fin n)) ℂ,
+          adaptiveEigenframeTwoQueryScore
+            (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+            (V : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ)
+          ∂finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))) =
+          1 / ((2 ^ n + 1 : ℕ) : ℝ) ∧
+        ∀ (H : selfAdjoint
+            (Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ)),
+          H ≠ 0 → HasPauliDictionarySupport (MajoranaQBodyDictionary n q) H →
+          ∀ t : ℝ,
+            1 / ((2 ^ n + 1 : ℕ) : ℝ) <
+              adaptiveEigenframeTwoQueryScore
+                (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+                (exp (t • ((-Complex.I) •
+                  (H : Matrix (FiniteQubitConfiguration (Fin n))
+                    (FiniteQubitConfiguration (Fin n)) ℂ)))) := by
+  filter_upwards [eventually_ge_atTop 1,
+    eventually_ge_atTop ((q + 1) / 2),
+    eventually_majoranaQBodyDictionary_sq_lt_two_pow q] with n hn hnq hsep
+  have hqle : q ≤ 2 * n := by omega
+  constructor
+  · exact haar_majoranaQBodyDictionary_adaptiveEigenframeScore_eq
+      hn hqpos hqeven hqle
+  · intro H hH hsupport t
+    exact autonomous_majoranaQBody_adaptiveEigenframeScore_gt_haar
+      hqle H hH hsupport t (hsep.trans_le (Nat.le_add_right _ _))
 
 end
 

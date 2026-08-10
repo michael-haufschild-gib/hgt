@@ -1496,3 +1496,44 @@ identification of the `s`-gate set as a polynomial image — not new mathematics
   map as a polynomial parametrisation).  **No o-minimality, no Tarski–Seidenberg.**
 - §1: Hilbert irreducibility, the sole remaining classical input, now resting on a finished
   chain (Hensel → Newton polygon → Newton–Puiseux → Eisenstein, all built).
+
+## §4's equation (2) assembled at corpus level (2026-08-10)
+
+`HTGeometry/OrbitExceptionalTimes.lean` (new, in the umbrella, axiom-clean) turns the
+separating-polynomial mechanism into the exceptional-time statement itself.
+
+- `analyticOnNhd_cos_mul`, `analyticOnNhd_sin_mul`, **`analyticOnNhd_trigSum`** — a finite
+  trigonometric sum `∑ⱼ (aⱼ cos(λⱼ t) + bⱼ sin(λⱼ t))` is real-analytic on all of `ℝ`;
+- **`finite_meets_iUnion_images`** — a real-analytic curve through an algebraically independent
+  point meets a *finite union* of polynomial images, each with fewer parameters than
+  coordinates, only finitely often on a compact set (one image per gate-support pattern);
+- **`finite_exceptional_times`** — the two combined, for a trigonometric orbit.
+
+### The subfamily correction
+
+The first version of the separating-polynomial theorem required *all* `r` coordinates to be
+algebraically independent — which the card's orbit does **not** satisfy: only `D − 1` of the
+`2D` real coordinates are independent (the others are constrained).  The theorems are therefore
+also proved in subfamily form, and those are the applicable ones:
+
+- `ImageSeparatingPolynomial.exists_separating_polynomial_subfamily` — it suffices that `k > m`
+  of the coordinates, selected by any `σ : Fin k → Fin r`, be algebraically independent; the
+  separating polynomial is then `rename σ` of one in `k` variables;
+- `AnalyticImageFiniteness.finite_meets_image_subfamily`,
+  `OrbitExceptionalTimes.finite_meets_iUnion_images_subfamily`,
+  **`OrbitExceptionalTimes.finite_exceptional_times_subfamily`**.
+
+With `k = D − 1` (the independent exponentials of §3), `r = 2D` and `m = 16s`, the hypothesis
+`m < k` is exactly `16s < D − 1`, which is the hypothesis of equation (2).
+
+*(Elaboration note for future work: passing the point family implicitly makes Lean attempt a
+non-pattern higher-order unification `?P (σ i) ≡ γ (σ i) t₀` and time out; supply
+`(P := fun i => γ i t₀)` explicitly.)*
+
+### Remaining Lean layers for the card
+
+- §4: the last identification — that the coordinates of `e^{−itH}Ω` are trigonometric sums
+  (real and imaginary parts of `∑ⱼ wⱼ e^{−itEⱼ}`) and that the `s`-gate set is the union of
+  finitely many polynomial images.  Mechanical; no classical input.
+- §1: Hilbert irreducibility, resting on the finished chain
+  (Hensel → Newton polygon → Newton–Puiseux → Eisenstein, all built).

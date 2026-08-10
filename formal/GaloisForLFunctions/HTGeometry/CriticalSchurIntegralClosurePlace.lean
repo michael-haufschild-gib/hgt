@@ -280,6 +280,10 @@ noncomputable def criticalSchurNormalLocalizationEquivUpper
     Localization.AtPrime (criticalSchurNormalIntegralClosurePrime K hm hn) ≃ₐ[
       CriticalSchurNormalIntegralClosure K hm hn]
       criticalNormalClosureSchurValuationSubring K hm hn := by
+  classical
+  letI : FiniteDimensional (criticalObservationField K m n)
+      (criticalNormalClosure K m n) :=
+    criticalNormalClosure_finiteDimensional K hm hn
   let S := CriticalSchurNormalIntegralClosure K hm hn
   let P := criticalSchurNormalIntegralClosurePrime K hm hn
   let R := Localization.AtPrime P
@@ -315,6 +319,9 @@ noncomputable def criticalSchurNormalLocalizationEquivUpper
     IsScalarTower.of_algebraMap_eq' (by
       ext x
       exact hSE x)
+  letI : IsFractionRing S (criticalNormalClosure K m n) :=
+    integralClosure.isFractionRing_of_finite_extension
+      (criticalObservationField K m n) (criticalNormalClosure K m n)
   letI : IsFractionRing R (criticalNormalClosure K m n) :=
     IsFractionRing.isFractionRing_of_isDomain_of_isLocalization
       P.primeCompl R (criticalNormalClosure K m n)

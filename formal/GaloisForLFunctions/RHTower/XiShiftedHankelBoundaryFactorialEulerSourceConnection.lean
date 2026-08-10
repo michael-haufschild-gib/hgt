@@ -95,10 +95,9 @@ private theorem xiShiftedBoundaryShiftedEuler_monomial
     by_cases hk : k = j
     · subst k
       simp
-      push_cast
       ring
     · have hjk : j ≠ k := Ne.symm hk
-      simp [hjk]
+      simp [Polynomial.coeff_monomial, hjk]
 
 /-- One Euler step is exactly the source-selected midpoint coefficient adaptation. -/
 theorem xiShiftedBoundaryShiftedEuler_factorialCarrier_succ

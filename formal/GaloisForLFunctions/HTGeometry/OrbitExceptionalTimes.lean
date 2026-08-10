@@ -90,4 +90,40 @@ theorem finite_exceptional_times {ι : Type*} {r n : ℕ} (Ps : Finset ι) (m : 
     (fun i t => ∑ j, (a i j * Real.cos (lam j * t) + b i j * Real.sin (lam j * t)))
     (fun i => analyticOnNhd_trigSum (a i) (b i) lam) hP hS
 
+/-- **Subfamily version of the finite-union statement.** -/
+theorem finite_meets_iUnion_images_subfamily {ι : Type*} {r k : ℕ} (Ps : Finset ι) (m : ι → ℕ)
+    (hm : ∀ p ∈ Ps, m p < k) (σ : Fin k → Fin r)
+    (Φ : ∀ p : ι, Fin r → MvPolynomial (Fin (m p)) ℚ)
+    (γ : Fin r → ℝ → ℝ) (hγ : ∀ i, AnalyticOnNhd ℝ (γ i) Set.univ)
+    {t₀ : ℝ} (hP : AlgebraicIndependent ℚ (fun i => γ (σ i) t₀))
+    {S : Set ℝ} (hS : IsCompact S) :
+    {t ∈ S | ∃ p ∈ Ps, ∃ u : Fin (m p) → ℝ,
+      ∀ i, γ i t = MvPolynomial.aeval u (Φ p i)}.Finite := by
+  classical
+  have hsub : {t ∈ S | ∃ p ∈ Ps, ∃ u : Fin (m p) → ℝ,
+        ∀ i, γ i t = MvPolynomial.aeval u (Φ p i)}
+      ⊆ ⋃ p ∈ Ps, {t ∈ S | ∃ u : Fin (m p) → ℝ,
+        ∀ i, γ i t = MvPolynomial.aeval u (Φ p i)} := by
+    rintro t ⟨htS, p, hp, u, hu⟩
+    exact Set.mem_biUnion hp ⟨htS, u, hu⟩
+  refine Set.Finite.subset (Set.Finite.biUnion Ps.finite_toSet fun p hp => ?_) hsub
+  exact finite_meets_image_subfamily (hm p hp) σ (Φ p) γ hγ hP hS
+
+/-- **The exceptional times of a trigonometric orbit are finite, subfamily version.**  Only `k`
+of the coordinates need be algebraically independent at `t₀`, and each parametrisation needs fewer
+than `k` parameters. -/
+theorem finite_exceptional_times_subfamily {ι : Type*} {r k n : ℕ} (Ps : Finset ι) (m : ι → ℕ)
+    (hm : ∀ p ∈ Ps, m p < k) (σ : Fin k → Fin r)
+    (Φ : ∀ p : ι, Fin r → MvPolynomial (Fin (m p)) ℚ)
+    (a b : Fin r → Fin n → ℝ) (lam : Fin n → ℝ) {t₀ : ℝ}
+    (hP : AlgebraicIndependent ℚ (fun i : Fin k =>
+      ∑ j, (a (σ i) j * Real.cos (lam j * t₀) + b (σ i) j * Real.sin (lam j * t₀))))
+    {S : Set ℝ} (hS : IsCompact S) :
+    {t ∈ S | ∃ p ∈ Ps, ∃ u : Fin (m p) → ℝ, ∀ i : Fin r,
+      (∑ j, (a i j * Real.cos (lam j * t) + b i j * Real.sin (lam j * t)))
+        = MvPolynomial.aeval u (Φ p i)}.Finite :=
+  finite_meets_iUnion_images_subfamily Ps m hm σ Φ
+    (fun i t => ∑ j, (a i j * Real.cos (lam j * t) + b i j * Real.sin (lam j * t)))
+    (fun i => analyticOnNhd_trigSum (a i) (b i) lam) hP hS
+
 end GaloisForLFunctions.HTGeometry

@@ -1832,3 +1832,53 @@ together with the two ingredients specific to `m ≥ 2` from the earlier passes:
 What remains is bookkeeping of the same mechanical kind: carry the exponent `θ` through the family
 form of equation (9) (`GaussUniformTranslationL2.lean`), then run the interior replacement
 `Λ → Λ_0` in `⟪e_n, G^m e_n⟫ = p^m|d_n|^(2m) ⟪g_n, Λ^(m-1) B^(-2) g_n⟫` at `θ = 3/4`.
+
+## Lean status, fortieth pass: the decay exponent is carried through equation (10)
+
+The exponent `θ` now runs the whole length of the estimate chain, and every exponent-one statement
+is a corollary of its general form — no proof is stated twice.  Unconditional,
+`[propext, Classical.choice, Quot.sound]`; the whole chain rebuilds (8882 jobs).
+
+`RHTower/GaussSampleTranslationL2.lean`:
+
+```text
+gaussTranslationL2PowDefectBound_neg, _natAbs
+tendsto_gaussTranslationL2PowDefectBound_comp   : 1 < s → |ι n| → ∞ → bound(ι n) → 0
+gaussTranslationL2DefectBound_eq                : the quadratic bound is the case s = 2
+```
+and `gaussTranslationL2DefectBound_neg`, `_natAbs`, `tendsto_..._comp` are now corollaries.
+
+`RHTower/GaussUniformTranslationL2.lean`:
+
+```text
+tendsto_norm_gaussShiftedBlockOf_sub_rotation_powFamily          (1/2 < θ)
+tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_powFamily     (1/2 < θ)
+```
+with the two `_family` statements now the case `θ = 1`.
+
+`RHTower/GaussOneStepEstimate.lean`:
+
+```text
+tendsto_gaussOneStep_powFamily (1/2 < θ) :
+    (∀ n j, ‖fourierCoeff (B f_n) j‖ ≤ A₁/(1+|j|)^θ) →
+    (∀ n j, ‖fourierCoeff (B^(-2) T_(δ_n) (B f_n)) j‖ ≤ A₂/(1+|j|)^θ) →
+      ‖G(e_n f_n) - (p conj(d_n) d_n) e_n a_(δ_n) f_n‖ → 0
+```
+with `tendsto_gaussOneStep_family` the case `θ = 1`.
+
+### What this buys
+
+Equation (10) now accepts amplitudes whose Fourier coefficients have been *convolved*, which is the
+form every stage of the `m ≥ 2` iteration produces.  With `θ = 3/4` the two obstructions found
+earlier are simultaneously absorbed:
+
+* the logarithmic loss of a convolution (`log_div_le_rpow_div`);
+* the reflected-band spike of `S v`, of height `n^(1/(2m))/n` against a target `n^(-3/4)`, absorbed
+  exactly when `m ≥ 2`.
+
+### Remaining
+
+Only the interior replacement itself: in
+`⟪e_n, G^m e_n⟫ = p^m |d_n|^(2m) ⟪g_n, Λ^(m-1) B^(-2) g_n⟫`, replace `Λ = B^(-2) S* B² S` by
+`Λ_0 = M_(a_δ(·-δ))` stage by stage, feeding each stage's convolved amplitude into
+`tendsto_gaussOneStep_powFamily` at `θ = 3/4`.  Every input it consumes now exists.

@@ -267,3 +267,8 @@ RH or a completed universal field.
   later aperture.  Lean certification passes.  This supplies the first exact positive model of
   unbounded primitive genesis, but no live route is credited until it constructs a literal
   source-normal primitive spectrum and transition maps.
+- 2026-08-10 — ULF-SELM-5 closes the first presentation gate: arbitrary resource relabeling
+  preserves local admission, dominated splitting, primitivity, and the entire primitive-degree
+  spectrum.  Lean certification passes.  Coordinate spelling therefore cannot manufacture the
+  cofinal escape of ULF-SELM-4.  Stable redundancy, quotient/completion moves, and Morita-style
+  presentation invariance remain open and are the next field-level target.

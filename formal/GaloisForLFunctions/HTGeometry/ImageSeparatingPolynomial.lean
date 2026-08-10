@@ -71,4 +71,21 @@ theorem exists_separating_polynomial {m r : ℕ} (hr : m < r)
   have := hinj (a₁ := h) (a₂ := 0) (by rw [hcon, map_zero])
   exact this
 
+omit [IsDomain L] in
+/-- **Separation from a subfamily.**  Only some of the coordinates need be algebraically
+independent: if `k > m` of them are, the separating polynomial can be taken in those variables. -/
+theorem exists_separating_polynomial_subfamily {m r k : ℕ} (hr : m < k) (σ : Fin k → Fin r)
+    (Φ : Fin r → MvPolynomial (Fin m) K) {P : Fin r → L}
+    (hP : AlgebraicIndependent K (fun i => P (σ i))) :
+    ∃ h : MvPolynomial (Fin r) K,
+      MvPolynomial.aeval Φ h = 0 ∧ MvPolynomial.aeval P h ≠ 0 := by
+  obtain ⟨h₀, hne, hzero⟩ := exists_ne_zero_aeval_eq_zero hr (fun i => Φ (σ i))
+  refine ⟨MvPolynomial.rename σ h₀, ?_, ?_⟩
+  · rw [MvPolynomial.aeval_rename]
+    exact hzero
+  · rw [MvPolynomial.aeval_rename]
+    intro hcon
+    exact hne ((algebraicIndependent_iff_injective_aeval (R := K)).1 hP
+      (a₁ := h₀) (a₂ := 0) (by rw [map_zero]; exact hcon))
+
 end GaloisForLFunctions.HTGeometry

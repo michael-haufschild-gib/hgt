@@ -3,7 +3,7 @@
 - **ID:** ULF-SELM-5
 - **Stage:** 2-fully-proven
 - **Type:** ROUTE-INDEPENDENT NATURALITY THEOREM
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [RELABELING-INVARIANT]
+- **Status:** [PAPER-PROVED] [LEAN-CERTIFIED] [DEPENDENCY-CLOSED] [RELABELING-INVARIANT]
   [PRESENTATION GATE] [NOT MORITA INVARIANCE] [NOT RH]
 - **Parents:** ULF-SELM-1--4
 
@@ -147,13 +147,14 @@ The next presentation gate is stable redundancy: identify exact source moves tha
 semantically redundant generators while preserving executable-law content, then test whether the
 primitive spectrum or a corrected stable spectrum survives.
 
-## 6. Lean target
+## 6. Lean certification
 
-Formalize in
+Formalized in
 
 `formal/GaloisForLFunctions/HTGeometry/ConstitutivePrimitiveSpectrumTransport.lean`
 
-without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation proofs.  Certify:
+without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation proofs.  The module
+certifies:
 
 1. kernel, family, and weight transport;
 2. forward/backward local admission;
@@ -162,7 +163,17 @@ without project axioms, `sorry`, `admit`, `opaque`, `unsafe`, or computation pro
 5. primitive-degree occurrence equivalence;
 6. one unconditional relabeling capstone imported by `HTGeometry.UniversalLawField`.
 
+Direct foreground elaboration passes.  Axiom inspection of the capstone and its transport
+dependencies reports only `propext`, `Classical.choice`, and `Quot.sound`.  Repository lint reports
+no target error; its nonzero global exit is caused by unrelated unwired modules.  Final foreground
+umbrella audit passes:
+
+```text
+Build completed successfully (11603 jobs).
+```
+
 ## Log
 
 - 2026-08-10 -- derived as the first anti-theatre presentation gate after ULF-SELM-4.  Paper proof
-  dependency-closed; Lean certification pending.
+  dependency-closed and Lean-certified.  Stable redundancy and Morita-style invariance remain
+  open.
