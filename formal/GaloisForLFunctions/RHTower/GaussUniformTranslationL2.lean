@@ -65,7 +65,7 @@ theorem fourierCoeff_gaussShiftedBlockOf {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p
     filter_upwards [Lp.coeFn_smul (starRingEnd ℂ (gaussSampleValue k p n))⁻¹
       (fourierMulBlock (-n) (gaussDiagonalBlockStar hm k p (fourierMulBlock n u)))] with z hz
     rw [gaussShiftedBlockOf, hz, Pi.smul_apply, smul_eq_mul]
-  rw [fourierCoeff_congr_ae hsmul j, fourierCoeff_smul, fourierCoeff_fourierMulBlock,
+  rw [fourierCoeff_congr_ae hsmul j, GaloisForLFunctions.fourierCoeff_const_mul, fourierCoeff_fourierMulBlock,
     fourierCoeff_gaussDiagonalBlockStar, fourierCoeff_fourierMulBlock,
     show j - -n = n + j from by ring, show n + j - n = j from by ring]
 
@@ -229,7 +229,7 @@ theorem fourierCoeff_gaussShiftedBlockDiag {m : ℕ} (hm : 1 ≤ m) (k : Fin m) 
     filter_upwards [Lp.coeFn_smul (gaussSampleValue k p n)⁻¹
       (fourierMulBlock (-n) (gaussDiagonalBlock hm k p (fourierMulBlock n u)))] with z hz
     rw [gaussShiftedBlockDiag, hz, Pi.smul_apply, smul_eq_mul]
-  rw [fourierCoeff_congr_ae hsmul j, fourierCoeff_smul, fourierCoeff_fourierMulBlock,
+  rw [fourierCoeff_congr_ae hsmul j, GaloisForLFunctions.fourierCoeff_const_mul, fourierCoeff_fourierMulBlock,
     fourierCoeff_gaussDiagonalBlock, fourierCoeff_fourierMulBlock,
     show j - -n = n + j from by ring, show n + j - n = j from by ring]
 

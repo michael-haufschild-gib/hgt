@@ -174,22 +174,12 @@ theorem HasFourierDecay.comp_sub {f : AddCircle (1 : ℝ) → ℂ} {A : ℝ}
   rw [hone, one_mul]
   exact h j
 
-/-- Scaling multiplies the decay constant. -/
+/-- Scaling multiplies the decay constant by the modulus. -/
 theorem HasFourierDecay.const_mul {f : AddCircle (1 : ℝ) → ℂ} {A : ℝ}
-    (h : HasFourierDecay f A) {r : ℝ} (hr : 0 ≤ r) (z : ℂ) (hz : ‖z‖ ≤ r) :
-    HasFourierDecay (fun x => z * f x) (r * A) := by
+    (h : HasFourierDecay f A) (z : ℂ) :
+    HasFourierDecay (fun x => z * f x) (‖z‖ * A) := by
   intro j
-  have hA : 0 ≤ A := by
-    have := h 0
-    have hnn : (0 : ℝ) ≤ ‖fourierCoeff f 0‖ := norm_nonneg _
-    simp only [Int.natAbs_zero, Nat.cast_zero, add_zero, div_one] at this
-    linarith
-  have hcoeff : fourierCoeff (fun x => z * f x) j = z * fourierCoeff f j := by
-    rw [fourierCoeff, fourierCoeff, ← MeasureTheory.integral_const_mul]
-    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    simp only [smul_eq_mul]
-    ring
-  rw [hcoeff, norm_mul, mul_div_assoc]
-  exact mul_le_mul hz (h j) (norm_nonneg _) hr
+  rw [fourierCoeff_const_mul, norm_mul, mul_div_assoc]
+  exact mul_le_mul_of_nonneg_left (h j) (norm_nonneg z)
 
 end GaloisForLFunctions

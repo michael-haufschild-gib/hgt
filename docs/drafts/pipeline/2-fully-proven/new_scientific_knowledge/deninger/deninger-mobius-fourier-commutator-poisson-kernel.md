@@ -686,13 +686,52 @@ declarations: `propext, Classical.choice, Quot.sound`.
   the ray: `∑_m Λ(m) f_h(mx) = -∑_n μ(n) log n · H_h(nx)` for every `x > 0`.  The pair family
   vanishes on `mk = 0` for free here, since `Λ(0) = 0` and `μ(0) = 0`.
 
+### Section 2 — the unconditional saving `(8)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMertensSummatory.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+The summatory function `M` itself is **corpus-owned** — `RHTower.Sieve.mertensM` in
+`Sieve/MoebiusMaximalWindow.lean`, together with `mertensSup` and the PNT form
+`tendsto_abs_mertensM_div`.  Do not redefine it.
+
+- `deningerMertensSaving` — the saving factor `exp(-(log N)^{1/3}/108)`.
+- `deningerMertensM_rate` — **`(8)`**: the corpus's sharp `κ = 2` contour estimate
+  (`Sieve.exists_norm_sum_moebius_kappa_two_rate`, stated at real arguments with `⌊N⌋₊`)
+  transported to `Sieve.mertensM` at integer arguments.
+- `deningerMertensM_div_sq_le` — the same divided by `N²`, which is the shape the Abel summation
+  of `(10)` consumes.
+
+### Section 2 — the convergence `(9)`, in discrete form `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerMertensInvSquare.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerCubeRootExp_le`, `deningerCubeRootExp_summable` — `∑_k exp(-c k^{1/3}) < ∞`, from a
+  *single term* of the exponential series: `exp(c x^{1/3}) ≥ (c x^{1/3})^7/7!` and `x^{7/3} ≥ x²`
+  for `x ≥ 1`.  No asymptotic machinery.
+- `deningerSavingRay_antitone`, `deningerSavingRay_summable` —
+  `∑_N exp(-(log N)^{1/3}/108)/N < ∞`, by Cauchy condensation
+  (`summable_condensed_iff_of_nonneg`); the condensed term is exactly `exp(-c k^{1/3})` with
+  `c = (log 2)^{1/3}/108`.
+- `deningerMertensM_invSq_summable` — **`(9)` in discrete form: `∑_N |M(N)|/N² < ∞`.**
+
+Condensation is not a convenience here.  No power comparison can prove `(9)`:
+`exp(-c(log N)^{1/3})` dominates every `N^{-ε}`, so the series looks borderline divergent under
+any polynomial test and only the dyadic grouping separates it.
+
 ### What is left
 
 `(11)`--`(12)` (Abel summation, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
 unconditional Mertens rate), `(44)`--`(45)` (mathlib has `log * μ = Λ`; only a Fubini on a fixed
 ray is left), `(6)` (formal once `𝔖_μ` is defined), and `(5)` itself — the Fourier-inversion
-bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)`--`(12)` (Abel summation `(10)`, Tonelli, and `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's
-unconditional Mertens rate; `(15)` needs `1/ζ(σ) → 0` as `σ ↓ 1`), then `(6)` — formal once `𝔖_μ`
+bootstrap `(23)`--`(24)` followed by Poisson summation `(26)`.  `(11)`--`(12)`.  Both arithmetic inputs, `(8)` and `(9)`, are now built; what is left is the
+*analytic* step, the Abel summation `(10)` in its discrete form
+`f_h(x) = -∑_n M(n) (H_h((n+1)x) - H_h(nx))`, together with a decreasing majorant for `H_h'` so
+that `∫_0^∞ x G(nx) dx = n^{-2} ∫ y G(y) dy` feeds `(9)`.  Note `(9)` cannot be avoided by the
+two-sided decay of the pullback alone: without Möbius cancellation the bound near the origin is
+`‖f_h(x)‖ ≲ C/x` for *every* exponent `A`, which is not integrable at `0`.  `(15)` needs
+`1/ζ(σ) → 0` as `σ ↓ 1`.  Then `(6)` — formal once `𝔖_μ`
 is defined — and finally `(5)`, the Fourier-inversion bootstrap `(23)`--`(24)` followed by Poisson
 summation `(26)`.  `H_∩` and `Z` already exist as `RHTower.DeningerMeyerCap` and
 `RHTower.deningerPoissonLM`.

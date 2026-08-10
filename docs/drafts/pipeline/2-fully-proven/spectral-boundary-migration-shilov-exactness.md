@@ -1880,3 +1880,65 @@ matricial norm structure of an operator system, with no extra axiom beyond the
 scalar level.
 
 Naming note: the amplification `1ₙ ⊗ e` is `amplifyUnit` in the tree.
+
+## The Shilov boundary of a function system: hypothesis discharged (2026-08-10)
+
+`ShilovCommutativeBoundary.isLeast_shilovBoundary` carried an unproved
+hypothesis `hinter` (closed boundaries are closed under binary intersection),
+and `shilovBoundary_eq_closure_peakPoints` carried `hb` (the closure of the
+peak points is a boundary).  `hb` is **false in general**: for non-metrizable
+`X` a compact Hausdorff space can have too few peak points, which is why the
+classical theory uses the Choquet boundary instead.  Both are now replaced by
+proved statements.
+
+Three new modules, all unconditional, axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound`), and wired into the `HTGeometry`
+umbrella:
+
+- `HTGeometry/BauerMaximumPrinciple.lean` — `isExtreme_setOf_eq_max` (the
+  maximum set of a convex function is an extreme subset) and
+  **`exists_extremePoint_forall_le`**: a convex function continuous on a
+  nonempty compact set attains its maximum at an extreme point.  Not in
+  mathlib.
+- `HTGeometry/MilmanExtremePoints.lean` — `isCompact_convexJoin`,
+  `isCompact_convexHull_biUnion` (the convex hull of finitely many nonempty
+  compact convex sets is compact), `closure_subset_add_nhds`,
+  `exists_mem_of_extremePoint_mem_convexHull_biUnion`, and
+  **`extremePoints_closure_convexHull_subset`**: Milman's partial converse to
+  Krein–Milman — every extreme point of the closed convex hull of a compact set
+  already lies in that set.  Not in mathlib.
+- `HTGeometry/ChoquetBoundaryFunctionSystem.lean` — `evalPoint`, `stateBody`
+  (the closed convex hull of the point evaluations, compact because it sits in
+  a product of discs), `choquetBoundary`, and:
+
+  > **`isBoundarySet_choquetBoundary`** — with *no hypothesis on `S`*, the
+  > Choquet boundary is a boundary set.
+
+  Bauer puts the maximum of `φ ↦ ‖φ s‖` over the state body at an extreme
+  point; Milman identifies that extreme point as a point evaluation.
+
+  > **`evalPoint_mem_stateBodyOn`** — for a unital self-adjoint `S`, every point
+  > evaluation lies in the closed convex hull of the evaluations on any
+  > boundary.
+
+  Proof: if not, a basic product neighbourhood separates it, the finite
+  coordinate projection reduces to `ℂⁿ`, Hahn–Banach there produces
+  `w = ∑ cᵢ sᵢ ∈ S`, and `IsBoundarySet.re_le_of_forall_le` — the sup-norm
+  boundary condition upgraded to real parts by shifting a real element by its
+  own norm — contradicts it.
+
+  > **`choquetBoundary_subset_of_isBoundarySet`** — the Choquet boundary lies
+  > inside every closed boundary (unital, self-adjoint, separating).
+  > **`isBoundarySet_inter_of_functionSystem`** — hence closed boundaries are
+  > closed under intersection, discharging `hinter`.
+  > **`isLeast_shilovBoundary_of_functionSystem`** — hence the Shilov boundary
+  > is the least closed boundary.
+  > **`shilovBoundary_eq_closure_choquetBoundary`** — and equals the closure of
+  > the Choquet boundary.
+
+  Unconditionally (no hypothesis at all):
+  **`shilovBoundary_subset_closure_choquetBoundary`**.
+
+The three hypotheses `1 ∈ S`, `S` self-adjoint, `S` separating are necessary,
+not residual: with `S = span{f}` on a two-point space, `f(a) = 1`, `f(b) = i`,
+both `{a}` and `{b}` are closed boundaries and their intersection is empty.

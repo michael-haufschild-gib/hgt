@@ -80,9 +80,17 @@ What else exists and must not be rebuilt:
    - `(45)` the Möbius connection identity.  mathlib has `ArithmeticFunction.log_mul_moebius_eq_vonMangoldt`
      (`log * μ = Λ`); convolving `(μ log) * ζ = -Λ` with `μ` gives `Λ * μ = -μ log`, which is `(44)`.
      Only a Fubini on a fixed positive ray is left.
-   - `(11)`--`(12)` the all-moment `L¹` domain and zero mass — Abel summation `(10)`, Tonelli, and
-     `∫_1^∞ |M(T)|/T² dT < ∞` from the corpus's unconditional Mertens rate
-     (`RHTower/Sieve/MoebiusSharpKappaTwo.lean`).  `(15)` needs `1/ζ(σ) → 0` as `σ ↓ 1`.
+   - `(8)` the unconditional saving — **DONE**, `RHTower/DeningerMertensSummatory`.  `M` itself is
+     corpus-owned (`Sieve.mertensM`); only the transport to integer arguments and the `/N²` shape
+     were new.
+   - `(9)` the convergence — **DONE** in discrete form, `RHTower/DeningerMertensInvSquare`
+     (`deningerMertensM_invSq_summable : ∑_N |M(N)|/N² < ∞`).  Condensation is essential: no power
+     comparison works, since `exp(-c(log N)^{1/3})` dominates every `N^{-ε}`.  The condensed series
+     `∑_k exp(-c k^{1/3})` is elementary — one term of the exponential series plus `x^{7/3} ≥ x²`.
+   - `(11)`--`(12)` the all-moment `L¹` domain and zero mass — both arithmetic inputs are now
+     built; what is left is the analytic step, discrete Abel summation
+     `f_h(x) = -∑_n M(n)(H_h((n+1)x) - H_h(nx))` plus a decreasing majorant `G` for `H_h'`, so that
+     `∫_0^∞ x G(nx) dx = n^{-2} ∫ y G(y) dy` feeds `(9)`.  `(15)` needs `1/ζ(σ) → 0` as `σ ↓ 1`.
    - `(5)` the exact kernel.  The hard one: Fourier-inversion bootstrap `(23)`--`(24)` then Poisson
      summation `(26)`.  Do it last.
 7. `deninger-euler-gamma-mobius-connection-transgression` — all-prime Euler connection, strict
@@ -116,6 +124,15 @@ What else exists and must not be rebuilt:
 
 ## Log
 
+- 2026-08-10 — Built `(9)` in discrete form (`RHTower/DeningerMertensInvSquare`).  Worth
+  remembering *why* condensation: `∑_N exp(-c(log N)^{1/3})/N` fails every power comparison because
+  `exp(-c(log N)^{1/3})` dominates `N^{-ε}` for every `ε`; only the dyadic grouping separates it,
+  and the condensed series is elementary from one term of the exponential series.
+- 2026-08-10 — Built `(8)` in summatory form (`RHTower/DeningerMertensSummatory`).  **Caught a
+  duplication mid-write**: the Möbius summatory function is already corpus-owned as
+  `Sieve.mertensM` (in `Sieve/MoebiusMaximalWindow.lean`, with `mertensSup` and the PNT form
+  `tendsto_abs_mertensM_div`); the first draft redefined it.  Grep `def.*[Mm]ertens` before adding
+  anything summatory-shaped.
 - 2026-08-10 — Built `(44)`--`(45)`, the Möbius connection (`RHTower/DeningerMobiusConnection`).
   Trap worth remembering: `ArithmeticFunction R` has its own `Neg` instance, *not* the ring's
   `HasDistribNeg` one, so `neg_mul` will not rewrite `(-f) * g` into `-(f * g)` and `ring` fails on

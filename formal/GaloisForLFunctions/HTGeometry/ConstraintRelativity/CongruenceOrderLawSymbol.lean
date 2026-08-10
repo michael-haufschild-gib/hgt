@@ -1,6 +1,7 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.ConstraintRelativity.CongruenceOrderFirstOrder
 import GaloisForLFunctions.HTGeometry.ConstraintRelativity.SolderingTransportSymbol
+import GaloisForLFunctions.HTGeometry.PowerSeriesCriticalDeformation
 
 /-!
 # The law symbol of the diagonal congruence order over a coefficient field
@@ -137,5 +138,213 @@ theorem traceDefect_sq_smul
   rwa [maximalIdealSq_smul_traceDefect, Submodule.mem_bot] at hmem
 
 end CongruenceField
+
+/-! ## The abstract law symbol of the congruence order -/
+
+section CongruenceLawSymbol
+
+variable {k R : Type*} [Field k] [CommRing R] [Algebra k R] {a : R} {m : ℕ}
+variable [IsDomain R] [Invertible (2 : R)] [Invertible ((m : R) + 1)] [Invertible ((m : R) - 1)]
+
+omit [Invertible (2 : R)] in
+/-- **Card `(10)` for the concrete model.**  Every source-linear comparison has zero head map:
+the first-order law symbol of the congruence order sees nothing of the trace-law defect. -/
+theorem congruence_headMap_eq_zero (ha : a ≠ 0)
+    (φ : Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R]
+      →ₗ[MvPolynomial (Fin m) R ⧸ congruenceIdeal a m] traceDefect a m) :
+    headMap (k := k) (maximalIdealA a m) φ = 0 := by
+  refine LinearMap.ext fun x => ?_
+  obtain ⟨ω, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+  show (Submodule.Quotient.mk (φ ω) :
+    headLayer (k := k) (maximalIdealA a m) (traceDefect a m)) = 0
+  rw [Submodule.Quotient.mk_eq_zero]
+  refine (mem_radLayer_iff (k := k) (maximalIdealA a m)).2 ?_
+  rw [maximalIdealA_smul_eq]
+  exact soldering_range_le ha φ ω
+
+/-- **Card `(11)` for the concrete model.**  The abstract space of first-order law symbols of the
+congruence order is the space of observer matrices over the residue ring. -/
+noncomputable def lawSymbolSpaceEquiv
+    (hsplit : ∀ c : MvPolynomial (Fin m) R ⧸ congruenceIdeal a m,
+      ∃ r : k, c - algebraMap k _ r ∈ maximalIdealA a m) :
+    (headLayer (k := k) (maximalIdealA a m) Ω[(MvPolynomial (Fin m) R ⧸ congruenceIdeal a m)⁄R]
+        →ₗ[k] headLayer (k := k) (maximalIdealA a m) (traceDefect a m))
+      ≃ₗ[k] (Fin m → Fin m → (R ⧸ Ideal.span ({a} : Set R))) :=
+  ((LinearEquiv.arrowCongr (headLayerEquiv (k := k) (maximalIdealA a m))
+        (headLayerEquiv (k := k) (maximalIdealA a m))).trans
+      (homFibreEquiv (maximalIdealA a m) hsplit)).trans
+    (((homHeadEquiv (a := a) (m := m)).restrictScalars k).trans
+      (piMapEquiv k (ι := Fin m)
+        ((traceDefectHeadEquiv' (a := a) (m := m)).restrictScalars k)))
+
+end CongruenceLawSymbol
+
+/-! ## The literal model: formal power series over the coefficient field -/
+
+section PowerSeriesModel
+
+variable {k : Type*} [Field k] {m : ℕ}
+
+/-- The constant coefficient as a map of `k`-algebras. -/
+noncomputable def constantCoeffAlgHom : PowerSeries k →ₐ[k] k :=
+  { PowerSeries.constantCoeff with commutes' := fun r => by simp }
+
+@[simp] theorem constantCoeffAlgHom_apply (f : PowerSeries k) :
+    constantCoeffAlgHom f = PowerSeries.constantCoeff f := rfl
+
+theorem constantCoeffAlgHom_surjective :
+    Function.Surjective (constantCoeffAlgHom (k := k)) :=
+  fun r => ⟨PowerSeries.C r, by simp⟩
+
+theorem ker_constantCoeffAlgHom :
+    RingHom.ker (constantCoeffAlgHom (k := k)) =
+      Ideal.span ({PowerSeries.X} : Set (PowerSeries k)) :=
+  (GaloisForLFunctions.HTGeometry.powerSeriesDeformIdeal_eq_ker_constantCoeff k).symm
+
+/-- The residue ring of the formal power series ring is the coefficient field. -/
+noncomputable def powerSeriesResidueEquiv :
+    (PowerSeries k ⧸ Ideal.span ({PowerSeries.X} : Set (PowerSeries k))) ≃ₐ[k] k :=
+  (Ideal.quotientEquivAlgOfEq k (ker_constantCoeffAlgHom (k := k)).symm).trans
+    (Ideal.quotientKerAlgEquivOfSurjective constantCoeffAlgHom_surjective)
+
+@[simp] theorem powerSeriesResidueEquiv_mk (f : PowerSeries k) :
+    powerSeriesResidueEquiv (Ideal.Quotient.mk _ f) = PowerSeries.constantCoeff f := rfl
+
+/-- **Coefficient splitting for the literal model.**  Over `k[[X]]` with modulus `X` the
+congruence order is the coefficient field plus its maximal ideal. -/
+theorem congruence_split
+    (c : MvPolynomial (Fin m) (PowerSeries k) ⧸ congruenceIdeal (PowerSeries.X : PowerSeries k) m) :
+    ∃ r : k, c - algebraMap k _ r ∈ maximalIdealA (PowerSeries.X : PowerSeries k) m := by
+  refine ⟨powerSeriesResidueEquiv (residueMapA (PowerSeries.X : PowerSeries k) m c), ?_⟩
+  rw [← ker_residueMapA, RingHom.mem_ker, map_sub, sub_eq_zero]
+  set r := powerSeriesResidueEquiv (residueMapA (PowerSeries.X : PowerSeries k) m c) with hr
+  have hmap : residueMapA (PowerSeries.X : PowerSeries k) m
+      (algebraMap k _ r) = Ideal.Quotient.mk _ (PowerSeries.C r) := by
+    rw [IsScalarTower.algebraMap_apply k (PowerSeries k)
+      (MvPolynomial (Fin m) (PowerSeries k) ⧸ congruenceIdeal (PowerSeries.X : PowerSeries k) m) r,
+      AlgHom.commutes]
+    rfl
+  rw [hmap]
+  refine (powerSeriesResidueEquiv (k := k)).injective ?_
+  rw [powerSeriesResidueEquiv_mk, ← hr]
+  simp
+
+end PowerSeriesModel
+
+/-! ## The literal obstruction space of the diagonal congruence order -/
+
+section LiteralObstruction
+
+variable {k : Type*} [Field k] [CharZero k] {m : ℕ}
+
+theorem natCast_add_two_add_one_ne_zero : (((m + 2 : ℕ) : k) + 1) ≠ 0 := by
+  have h : (((m + 2 : ℕ) : k) + 1) = ((m + 3 : ℕ) : k) := by push_cast; ring
+  rw [h, Ne, Nat.cast_eq_zero]
+  omega
+
+theorem natCast_add_two_sub_one_ne_zero : (((m + 2 : ℕ) : k) - 1) ≠ 0 := by
+  have h : (((m + 2 : ℕ) : k) - 1) = ((m + 1 : ℕ) : k) := by push_cast; ring
+  rw [h, Ne, Nat.cast_eq_zero]
+  omega
+
+/-- Nonzero scalars stay invertible in the power series ring. -/
+@[reducible] noncomputable def invertibleAlgebraMapPowerSeries {x : k} (hx : x ≠ 0) :
+    Invertible (algebraMap k (PowerSeries k) x) :=
+  letI := invertibleOfNonzero hx
+  Invertible.map (algebraMap k (PowerSeries k)) x
+
+/-- Two is invertible in `k[[X]]`. -/
+@[reducible] noncomputable def invertibleTwoPowerSeries : Invertible (2 : PowerSeries k) := by
+  have h : algebraMap k (PowerSeries k) 2 = (2 : PowerSeries k) := map_ofNat _ 2
+  exact h ▸ invertibleAlgebraMapPowerSeries (two_ne_zero (α := k))
+
+/-- The successor of the observer count is invertible in `k[[X]]`. -/
+@[reducible] noncomputable def invertibleSuccPowerSeries :
+    Invertible ((((m + 2 : ℕ)) : PowerSeries k) + 1) := by
+  have h : algebraMap k (PowerSeries k) (((m + 2 : ℕ) : k) + 1)
+      = (((m + 2 : ℕ)) : PowerSeries k) + 1 := by rw [map_add, map_natCast, map_one]
+  exact h ▸ invertibleAlgebraMapPowerSeries (natCast_add_two_add_one_ne_zero (k := k) (m := m))
+
+/-- The predecessor of the observer count is invertible in `k[[X]]`. -/
+@[reducible] noncomputable def invertiblePredPowerSeries :
+    Invertible ((((m + 2 : ℕ)) : PowerSeries k) - 1) := by
+  have h : algebraMap k (PowerSeries k) (((m + 2 : ℕ) : k) - 1)
+      = (((m + 2 : ℕ)) : PowerSeries k) - 1 := by rw [map_sub, map_natCast, map_one]
+  exact h ▸ invertibleAlgebraMapPowerSeries (natCast_add_two_sub_one_ne_zero (k := k) (m := m))
+
+/-- **Card `(11)`, literal model.**  The soldering-obstruction space of the diagonal congruence
+order over `k[[X]]` *is* the abstract first-order law-symbol space of the card's Theorem 2. -/
+noncomputable def solderingObstructionLawSymbolEquiv :
+    solderingObstructionSpace (PowerSeries.X : PowerSeries k) (m + 2)
+      ≃ₗ[k] (headLayer (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+            Ω[(MvPolynomial (Fin (m + 2)) (PowerSeries k) ⧸
+              congruenceIdeal (PowerSeries.X : PowerSeries k) (m + 2))⁄(PowerSeries k)]
+          →ₗ[k] headLayer (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+            (traceDefect (PowerSeries.X : PowerSeries k) (m + 2))) := by
+  letI := invertibleTwoPowerSeries (k := k)
+  letI := invertibleSuccPowerSeries (k := k) (m := m)
+  letI := invertiblePredPowerSeries (k := k) (m := m)
+  exact ((Submodule.quotEquivOfEqBot _
+        (range_headReductionMap (a := (PowerSeries.X : PowerSeries k)) (m := m + 2)
+          PowerSeries.X_ne_zero)).restrictScalars k).trans
+      ((homFibreEquiv (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+          (congruence_split (k := k) (m := m + 2))).symm.trans
+        (LinearEquiv.arrowCongr
+          (headLayerEquiv (k := k)
+            (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))).symm
+          (headLayerEquiv (k := k)
+            (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))).symm))
+
+/-- **Card `(11)`, literal model, boxed.**  That space is the matrix algebra on the observer
+directions over the coefficient field. -/
+noncomputable def solderingObstructionMatrixEquiv :
+    solderingObstructionSpace (PowerSeries.X : PowerSeries k) (m + 2)
+      ≃ₗ[k] Matrix (Fin (m + 2)) (Fin (m + 2)) k := by
+  letI := invertibleTwoPowerSeries (k := k)
+  letI := invertibleSuccPowerSeries (k := k) (m := m)
+  letI := invertiblePredPowerSeries (k := k) (m := m)
+  exact (solderingObstructionLawSymbolEquiv (k := k) (m := m)).trans
+    ((lawSymbolSpaceEquiv (k := k) (a := (PowerSeries.X : PowerSeries k)) (m := m + 2)
+        (congruence_split (k := k) (m := m + 2))).trans
+      (piMapEquiv k (ι := Fin (m + 2))
+        (piMapEquiv k (ι := Fin (m + 2)) (powerSeriesResidueEquiv (k := k)).toLinearEquiv)))
+
+/-- **Card `(10)`, literal model.**  Over `k[[X]]` every source-linear comparison of the cotangent
+module with the trace-law defect has zero head map, with no hypotheses left. -/
+theorem literal_headMap_eq_zero
+    (φ : Ω[(MvPolynomial (Fin (m + 2)) (PowerSeries k) ⧸
+        congruenceIdeal (PowerSeries.X : PowerSeries k) (m + 2))⁄(PowerSeries k)]
+      →ₗ[MvPolynomial (Fin (m + 2)) (PowerSeries k) ⧸
+        congruenceIdeal (PowerSeries.X : PowerSeries k) (m + 2)]
+        traceDefect (PowerSeries.X : PowerSeries k) (m + 2)) :
+    headMap (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2)) φ = 0 := by
+  letI := invertibleSuccPowerSeries (k := k) (m := m)
+  letI := invertiblePredPowerSeries (k := k) (m := m)
+  exact congruence_headMap_eq_zero (k := k) PowerSeries.X_ne_zero φ
+
+/-- **Card `(11)`, literal model.**  Consequently the first-order obstruction of the head map of a
+source-linear comparison vanishes identically: the whole obstruction lives in the head maps that
+do not come from a comparison. -/
+theorem literal_lawObstruction_eq_zero
+    (φ : Ω[(MvPolynomial (Fin (m + 2)) (PowerSeries k) ⧸
+        congruenceIdeal (PowerSeries.X : PowerSeries k) (m + 2))⁄(PowerSeries k)]
+      →ₗ[MvPolynomial (Fin (m + 2)) (PowerSeries k) ⧸
+        congruenceIdeal (PowerSeries.X : PowerSeries k) (m + 2)]
+        traceDefect (PowerSeries.X : PowerSeries k) (m + 2)) :
+    lawObstruction (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2))
+        (fun u v hu hv x => by
+          letI := invertibleTwoPowerSeries (k := k)
+          letI := invertibleSuccPowerSeries (k := k) (m := m)
+          letI := invertiblePredPowerSeries (k := k) (m := m)
+          exact kaehler_sq_smul PowerSeries.X_ne_zero u v hu hv x)
+        (fun u v hu hv x => by
+          letI := invertibleSuccPowerSeries (k := k) (m := m)
+          exact traceDefect_sq_smul u v hu hv x)
+        (headMap (k := k) (maximalIdealA (PowerSeries.X : PowerSeries k) (m + 2)) φ) = 0 := by
+  rw [literal_headMap_eq_zero]
+  funext u
+  exact LinearMap.comp_zero _
+
+end LiteralObstruction
 
 end HTGeometry.ConstraintRelativity

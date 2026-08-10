@@ -54,4 +54,12 @@ theorem fourierCoeff_fourier_mul (f : AddCircle T → ℂ) (n k : ℤ) :
     rw [show -(n - k) = -n + k by ring, fourier_add]
   simp only [smul_eq_mul, ← mul_assoc, hchar]
 
+/-- **Scaling law.**  A constant factor passes through the Fourier coefficient. -/
+theorem fourierCoeff_const_mul (f : AddCircle T → ℂ) (c : ℂ) (n : ℤ) :
+    fourierCoeff (fun x => c * f x) n = c * fourierCoeff f n := by
+  rw [fourierCoeff, fourierCoeff, ← MeasureTheory.integral_const_mul]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  simp only [smul_eq_mul]
+  ring
+
 end GaloisForLFunctions

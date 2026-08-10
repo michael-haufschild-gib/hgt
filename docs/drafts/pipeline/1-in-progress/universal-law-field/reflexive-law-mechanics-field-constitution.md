@@ -526,7 +526,34 @@ Lean certifies the explicit hereditary peak, endpoint normality, well-founded ex
 nonconfluence, contextual semantic conservativity, strict repair admission, and next-stage
 nonconfluence. This closes the first exact recursive-representability laboratory without a
 state-indexed oracle. The universal law remains open: characterize which certified repairs are
-least in a source-defined admissible doctrine, and reproduce the same heredity outside rewriting.
+least in a source-defined admissible doctrine.
+
+### RLM Law XXXV -- native repair depth survives semantic completion
+
+One fixed native repair can have strict formation depth even when a coarser semantic completion is
+already stationary. The load-bearing pattern is
+
+\[
+ A\subsetneq S(A)\subsetneq S^2(A)=X,
+ \qquad
+ C(A)=C(S(A))=X,
+ \tag{RLM.11}
+\]
+
+where the second repair has a witness made entirely from the first repair layer.
+
+ULF-ECMPL-TOPO-1 realizes this with the classical Arens two-storey topology. Leaves converge
+rowwise to branch points, branch points converge to the root, and no leaf-valued sequence
+converges directly to the root. Thus native sequential closure adds exactly the branches, then
+exactly the root, while ordinary topological closure already contains every point at stage zero.
+
+Lean constructs the topology and certifies both convergences, universal leaf-sequence
+nonconvergence, exact sequential-closure layers, stationary ordinary closure, and the hereditary
+witness. Together with Law XXXIV this proves that the shared mechanism is not a peculiarity of
+rewriting: admitted repairs become legal ingredients of future witnesses while an older semantic
+observer remains unchanged. It also proves a boundary. Formation rank is independent information;
+forcing the repair to be idempotent erases causal depth. No selection, coercivity, positivity, or
+carrier-existence law follows from this calibration.
 
 ## 3. Certified promotion decision mechanism
 
@@ -780,3 +807,7 @@ Retire RLM as theatre if:
   semantically conservative but strictly new executable repair; that repair changes the overlap
   language and produces the next failure. ULF-ECMPL-1 Lean-certifies terminating execution,
   stationary semantic equivalence, open completion, and hereditary nonconfluence.
+- 2026-08-10 -- added native sequential repair heredity as Law XXXV: one topology and one native
+  sequential repair produce two strict formation layers while ordinary closure is stationary;
+  first-layer outputs form the complete witness for the second repair. ULF-ECMPL-TOPO-1
+  Lean-certifies the actual topology and universal nonconvergence barrier.

@@ -943,3 +943,24 @@ pieces, and its Fourier coefficients inherit the `A/(1+|j|)` decay that
 `tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv` require — with `A` depending only on the
 number of pieces and on `p`, never on the translation parameter.  That is the uniformity the
 fixed number of iterations needs.
+
+## Lean status, nineteenth pass: the amplitude class and its decay
+
+`HTGeometry/ExponentialPieceFourierDecay.lean`, extended; unconditional, wired, built.
+
+```text
+norm_sum_expPieces_fourier_le : a finite sum of exponential pieces over a partition of the period
+                                has ‖·‖ ≤ n·M·2e^{|α|}/(1+|j|)
+HasFourierDecay f A           : ∀ j, ‖fourierCoeff f j‖ ≤ A/(1+|j|)
+HasFourierDecay.comp_sub      : translation preserves the decay constant
+HasFourierDecay.const_mul     : scaling multiplies it by the modulus
+```
+
+`HasFourierDecay.comp_sub` is the reason the estimate is uniform in the translation parameter: the
+Fourier coefficients of `f(· - δ)` have the *same* moduli as those of `f`, so the constant does not
+move as `δ_n` runs.
+
+The scaling law was already present in the tree as `RHTower.fourierCoeff_smul`; it has been lifted
+to `HTGeometry/FourierCircleTranslation.lean` as `fourierCoeff_const_mul` — stated for a general
+period, next to the translation and modulation laws — and the two `RHTower` call sites now use
+that single copy.

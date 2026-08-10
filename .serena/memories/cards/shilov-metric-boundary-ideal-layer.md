@@ -210,3 +210,18 @@ Traps: `LinearMap.continuous_of_bound` does NOT exist — use
 ## Still external
 Operator systems, C*-covers, boundary representations.  What remains is identifying the metric
 universal property above with the Hamana/Arveson construction.
+
+## Choquet boundary built; peak-point hypothesis retired (2026-08-10)
+
+`isLeast_shilovBoundary`'s `hinter` and `shilovBoundary_eq_closure_peakPoints`'s
+`hb` are discharged/replaced by
+`ChoquetBoundaryFunctionSystem.lean` (+ `BauerMaximumPrinciple.lean`,
+`MilmanExtremePoints.lean`):
+
+- `isBoundarySet_choquetBoundary` — no hypotheses on S at all;
+- `choquetBoundary_subset_of_isBoundarySet` — unital + self-adjoint + separating;
+- `isLeast_shilovBoundary_of_functionSystem`,
+  `shilovBoundary_eq_closure_choquetBoundary`.
+
+`hb` with the strict `IsPeakPoint` is FALSE for non-metrizable X — do not try to
+prove it.

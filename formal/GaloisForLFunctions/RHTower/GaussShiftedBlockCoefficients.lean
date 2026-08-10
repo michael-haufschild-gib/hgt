@@ -78,13 +78,6 @@ theorem fourierCoeff_fourierMulBlock (n : ℤ)
 
 /-! ## The normalized shifted block -/
 
-theorem fourierCoeff_smul (c : ℂ) (f : AddCircle (1 : ℝ) → ℂ) (l : ℤ) :
-    fourierCoeff (fun z => c * f z) l = c * fourierCoeff f l := by
-  rw [fourierCoeff, fourierCoeff, ← integral_const_mul]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
-  simp only [smul_eq_mul]
-  ring
-
 /-- The normalized shifted block `v_n = (conj d_n)^{-1} e_(-n) D* B e_n`. -/
 def gaussShiftedBlock {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) (n : ℤ) :
     Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
@@ -112,7 +105,7 @@ theorem fourierCoeff_gaussShiftedBlock {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p :
       (fourierMulBlock (-n)
         (gaussDiagonalBlockStar hm k p (gaussPrimeScaleBlock hp (fourierLp 2 n))))] with z hz
     rw [gaussShiftedBlock, hz, Pi.smul_apply, smul_eq_mul]
-  rw [fourierCoeff_congr_ae hsmul j, fourierCoeff_smul, fourierCoeff_fourierMulBlock,
+  rw [fourierCoeff_congr_ae hsmul j, GaloisForLFunctions.fourierCoeff_const_mul, fourierCoeff_fourierMulBlock,
     fourierCoeff_gaussDiagonalBlockStar, fourierCoeff_gaussPrimeScaleBlock_fourierLp hp,
     show j - -n = n + j from by ring, show n + j - n = j from by ring]
 

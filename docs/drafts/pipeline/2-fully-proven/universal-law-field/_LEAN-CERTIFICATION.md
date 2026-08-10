@@ -7,6 +7,16 @@ even when their paper argument is dependency-closed.
 Dedicated Lean umbrella:
 `GaloisForLFunctions.HTGeometry.UniversalLawField`.
 
+## Session 2026-08-10 addition (native sequential repair heredity)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ECMPL-TOPO-1 | Actual Arens topology, exact two-generation native sequential repair, hereditary second witness, and stationary ordinary closure | `HTGeometry.ConstitutiveSequentialRepairHeredity` |
+
+Direct elaboration and the foreground `HTGeometry.UniversalLawField` build pass; the latter
+completed 11,585 jobs. The capstone axiom print reports only `propext`, `Classical.choice`, and
+`Quot.sound`. No forbidden declaration occurs in the module.
+
 ## Session 2026-08-10 addition (endogenous completion mechanics)
 
 | ID | Theorem | Lean module |

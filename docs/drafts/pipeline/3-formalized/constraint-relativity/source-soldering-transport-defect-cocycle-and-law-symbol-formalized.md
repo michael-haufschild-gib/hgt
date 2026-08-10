@@ -10,6 +10,7 @@
 | Module | Path |
 |---|---|
 | `GaloisForLFunctions.HTGeometry.ConstraintRelativity.SolderingTransportSymbol` | `formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/SolderingTransportSymbol.lean` |
+| `GaloisForLFunctions.HTGeometry.ConstraintRelativity.CongruenceOrderLawSymbol` | `formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/CongruenceOrderLawSymbol.lean` |
 
 Wired into `GaloisForLFunctions.HTGeometry`.
 
@@ -58,24 +59,52 @@ Theorem 2 — the first-order law symbol, for a local `k`-algebra with a coeffic
 16. `lawObstruction`, `lift_of_obstruction_eq` — **card `(11)`, boxed**: the obstruction is the
     composite symbol modulo precompositions, and its vanishing produces a lift.
 
+The concrete sharp model, with its coefficient field:
+
+17. `congruencePiFieldTower`, `quotientRestrictScalarsEquiv`, `headLayerEquiv` — the sheet algebra
+    of the congruence order is a tower over any coefficient field of the base, so the cotangent
+    module and the trace-law defect carry the `k`-structure Theorem 2 needs, and the abstract head
+    layer `M/𝔪M` is the closed fibre used in coordinates.
+18. `kaehler_sq_smul`, `traceDefect_sq_smul` — **card `(9)` for the model**: both modules are
+    `𝔪²`-torsion in the pointwise form the symbol consumes.
+19. `toSourceLinear`, `homFibreEquiv` — **coefficient splitting**: on modules killed by `𝔪` a
+    `k`-linear map of closed fibres is automatically source linear, because `A = k ⊕ 𝔪` and the
+    ideal part acts by zero on both sides.
+20. `constantCoeffAlgHom`, `powerSeriesResidueEquiv`, `congruence_split` — the literal base
+    `R = k[[X]]` with modulus `X`: its residue ring is `k`, and the congruence order splits as
+    coefficient field plus maximal ideal.
+21. `congruence_headMap_eq_zero`, `literal_headMap_eq_zero`, `literal_lawObstruction_eq_zero` —
+    **card `(10)` for the model**: every source-linear comparison has zero abstract head map, so
+    its first-order obstruction vanishes identically and the entire obstruction is carried by head
+    maps that come from no comparison.
+22. `lawSymbolSpaceEquiv`, `solderingObstructionLawSymbolEquiv`,
+    `solderingObstructionMatrixEquiv` — **card `(11)` for the model, boxed**: the soldering
+    obstruction space of the diagonal congruence order *is* the abstract first-order law-symbol
+    space of Theorem 2, and over `k[[X]]` both are `Mat_{(m+2)×(m+2)}(k)`.  The literal statement
+    carries no hypotheses at all: `a ≠ 0` is discharged by `PowerSeries.X_ne_zero`, the coefficient
+    splitting by `congruence_split`, and the invertibility of `2`, `m+3`, `m+1` by the
+    characteristic-zero coefficient field.
+
 ## Scope
 
 The card's "Concrete sharp model" (`A = R1 + aR^N`, `M = Ω`, `N = A^♯/A`) is an instantiation of
 Theorem 2 in the concrete-model card
-`congruence-order-trace-kahler-exterior-square-nonmetricity-law`, and is now formalized there:
+`congruence-order-trace-kahler-exterior-square-nonmetricity-law`, formalized there:
 `ConstraintRelativity/CongruenceOrderFirstOrder.lean` proves `𝔪²Ω = 0` and `𝔪²L = 0`
 (`maximalIdealSq_smul_kaehler`, `maximalIdealSq_smul_traceDefect`), that the reduction
 `Hom_A(Ω,L) → Hom(H_Ω,H_L)` is identically zero (`headReduction_eq_zero`), that only the zero head
 map lifts (`headMap_eq_zero_of_lifts`), and that the resulting obstruction space is
-`Mat_{m×m}(k)` (`solderingObstructionEquiv`).  The abstract Theorem 2 of this card is what the
-concrete instance realizes; the literal identification of that instance with `lawObstruction`
-additionally needs a coefficient field `k → R` (the card's `R = ℂ[[a]]`) and is not carried out.  The card states plainly that no RH conclusion follows and that
-carrying arithmetic weight requires instantiating `C, K, T, s, J` from a literal source; nothing of
-that kind is claimed.
+`Mat_{m×m}(k)` (`solderingObstructionEquiv`).  Items 17–22 close the literal identification of that
+instance with the abstract `lawObstruction`: the coefficient field `k → R` is supplied by the
+card's own base `R = k[[a]]`, and `solderingObstructionMatrixEquiv` states the boxed conclusion
+with no hypotheses.  The card states plainly that no RH conclusion follows and that carrying
+arithmetic weight requires instantiating `C, K, T, s, J` from a literal source; nothing of that
+kind is claimed.
 
 ## Verification
 
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/ConstraintRelativity/SolderingTransportSymbol.lean  # clean
-lake build GaloisForLFunctions.HTGeometry.ConstraintRelativity.SolderingTransportSymbol          # green
+lake env lean GaloisForLFunctions/HTGeometry/ConstraintRelativity/CongruenceOrderLawSymbol.lean  # clean
+lake build GaloisForLFunctions.HTGeometry                                                        # green
 ```

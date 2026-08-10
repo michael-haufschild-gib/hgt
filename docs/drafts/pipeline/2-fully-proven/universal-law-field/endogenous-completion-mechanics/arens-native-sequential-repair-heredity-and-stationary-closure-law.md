@@ -3,8 +3,8 @@
 - **ID:** ULF-ECMPL-TOPO-1
 - **Stage:** 2-fully-proven
 - **Type:** NON-REWRITING ENDOGENOUS COMPLETION THEOREM
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [CLASSICAL TOPOLOGICAL LAB]
-  [MECHANISM, NOT OBJECT] [LEAN TARGET FROZEN] [NOT RH]
+- **Status:** [PAPER-PROVED] [LEAN-CERTIFIED] [DEPENDENCY-CLOSED]
+  [CLASSICAL TOPOLOGICAL LAB] [MECHANISM, NOT OBJECT] [NOT RH]
 
 ## 1. Setup
 
@@ -231,9 +231,10 @@ The exact field use is the causal identification
 
 under a stationary ordinary closure observer.
 
-## 7. Lean contract
+## 7. Lean certification
 
-Formalization must construct the actual topology and certify, without new axioms or computation:
+`GaloisForLFunctions.HTGeometry.ConstitutiveSequentialRepairHeredity` constructs the actual
+topology and certifies, without new axioms or computation:
 
 1. convergence of each leaf row to its branch;
 2. nonconvergence of every leaf-valued sequence to `infinity`;
@@ -243,4 +244,9 @@ Formalization must construct the actual topology and certify, without new axioms
 6. `closure A=univ` and stationary closure after first repair;
 7. exact repair-layer differences and the hereditary witness.
 
-Only those certified clauses count as proven field content.
+Capstone:
+`ConstitutiveSequentialRepairHeredity.native_sequential_repair_mechanism`.
+
+Direct elaboration and the foreground `HTGeometry.UniversalLawField` build pass; the umbrella build
+completed 11,585 jobs. The capstone axiom print reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
