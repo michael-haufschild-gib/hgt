@@ -27,6 +27,12 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
 7. `Clone.transport_mem_iff`, `Clone.transportPartEquiv` — **clone conjugacy**: the `n`-ary parts
    of `C` and `i_*C` correspond bijectively; card `(2)`, consequence 1.
 8. `Clone.transport_transport_symm` — transporting back returns the original clone.
+8a. `Clone.full`, `Clone.projections`, `Clone.projections_ne_full` — the top and bottom of the clone
+    lattice are constructed, and they differ as soon as `X` has two distinct elements (a constant
+    unary operation is not a projection).  Every statement quantified over `C : Clone X` above is
+    therefore about a nonempty, in fact nontrivial, set of clones.
+8b. `Clone.transport_full`, `Clone.transport_projections` — transport carries each extreme clone to
+    the corresponding extreme clone on the target.
 9. `CloneTerm`, `CloneTerm.eval`, `CloneTerm.transport`, `CloneTerm.eval_transport`,
    `CloneTerm.eval_transport_eq` — term evaluation commutes with the encoding.
 10. `CloneTerm.eval_transport_inj_iff` — **term identities are preserved and reflected**;
@@ -35,6 +41,12 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
     consequence 3.
 12. `Congruence`, `Congruence.transport`, `Congruence.transportEquiv` — **congruence lattices
     correspond bijectively**; consequence 4.
+12a. `Congruence.top`, `Congruence.bot`, `Congruence.bot_ne_top` — the total and identity
+     congruences of an arbitrary clone, distinct whenever `X` has two distinct elements; the
+     bijection of item 12 is therefore between sets with at least two elements, not empty ones.
+12b. `Congruence.transport_top`, `Congruence.transport_bot` — the bijection matches the extremes:
+     transport sends the total congruence to the total congruence and the identity congruence to
+     the identity congruence.
 13. `transport_eq_of_intertwine`, `transport_ofInjective_eq_of_intertwine` — the separating-feature
     corollary: an operation defined by `Φ ∘ T = T̂ ∘ Φ` is on the image exactly the transport of `T`;
     card `(3)`.
@@ -69,4 +81,6 @@ lake build GaloisForLFunctions.HTGeometry                                       
 
 `#print axioms` on `Clone.transportPartEquiv`, `CloneTerm.eval_transport_inj_iff`,
 `Congruence.transportEquiv`, `crossingProfile_injective`, `crossingProfile_increment` returns only
-`[propext, Classical.choice, Quot.sound]`.
+`[propext, Classical.choice, Quot.sound]`, and the same on `Clone.projections_ne_full`,
+`Clone.transport_full`, `Clone.transport_projections`, `Congruence.bot_ne_top`,
+`Congruence.transport_top`, `Congruence.transport_bot`.

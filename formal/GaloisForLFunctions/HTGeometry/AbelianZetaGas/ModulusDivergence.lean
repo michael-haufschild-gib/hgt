@@ -23,12 +23,10 @@ theorem tendsto_finsetSum_atTop_of_not_summable {ι : Type*} {f : ι → ℝ}
     (hf : ∀ i, 0 ≤ f i) (h : ¬ Summable f) :
     Tendsto (fun s : Finset ι => ∑ i ∈ s, f i) atTop atTop := by
   refine tendsto_atTop.2 fun b => ?_
-  have hex : ∃ s : Finset ι, ¬ (∑ i ∈ s, f i ≤ b) := by
+  have hex : ∃ s : Finset ι, b < ∑ i ∈ s, f i := by
     by_contra hcon
-    push_neg at hcon
-    exact h (summable_of_sum_le hf fun s => hcon s)
+    exact h (summable_of_sum_le hf fun s => le_of_not_gt fun hgt => hcon ⟨s, hgt⟩)
   obtain ⟨s₀, hs₀⟩ := hex
-  push_neg at hs₀
   filter_upwards [Filter.eventually_ge_atTop s₀] with s hs
   exact le_trans hs₀.le (Finset.sum_le_sum_of_subset_of_nonneg hs fun i _ _ => hf i)
 
@@ -37,7 +35,7 @@ theorem tendsto_finsetSum_atTop_of_not_summable {ι : Type*} {f : ι → ℝ}
 theorem not_summable_leading_primes_of_ne_zero {σ τ : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hτ : τ ≠ 0) :
     ¬ Summable (fun p : Nat.Primes =>
       ((p : ℕ) : ℝ) ^ (-σ) * (1 - Real.cos (τ * Real.log ((p : ℕ) : ℝ)))) := by
-  rcases hτ.lt_or_lt with hneg | hpos
+  rcases lt_or_gt_of_ne hτ with hneg | hpos
   · intro hsum
     refine not_summable_leading_primes hσ hσ1 (by linarith : (0 : ℝ) < -τ) ?_
     refine hsum.congr fun p => ?_
@@ -110,7 +108,7 @@ theorem tendsto_defectSum_atTop {σ : ℝ} (hσ : 0 < σ) (hhalf : 1 / 2 < σ) (
     {t : ℝ} (ht : t ≠ 0) :
     Tendsto (fun s : Finset Nat.Primes => ∑ p ∈ s, primeDefect (primeNome hσ p) t)
       atTop atTop :=
-  tendsto_finsetSum_atTop_of_not_summable (fun p => primeDefect_nonneg _ _)
+  tendsto_finsetSum_atTop_of_not_summable (fun _ => primeDefect_nonneg _ _)
     (not_summable_primeDefect hσ hhalf hσ1 ht)
 
 /-! ## Item 1 of Theorem 2.2: no phase gauge produces a nonzero limit -/
@@ -130,5 +128,52 @@ theorem tendsto_norm_prod_gauge_zero {σ : ℝ} (hσ : 0 < σ) (hhalf : 1 / 2 < 
   have hexp := Real.tendsto_exp_atBot.comp hneg
   refine hexp.congr fun s => ?_
   exact (norm_prod_gauge (fun p => primeNome hσ p) t u hu s).symm
+
+/-! ## Theorem 1.1: no centering produces a characteristic function -/
+
+/-- **Theorem 1.1, analytic core.**  For `1/2 < σ ≤ 1` the gauged characteristic products admit no
+pointwise limit that is continuous at the origin.  Since every characteristic function is
+continuous and takes the value `1` at `0`, no centering makes the socle series converge in
+distribution.
+
+The mechanism is the modulus budget alone: the limit must vanish at every `t ≠ 0`, so it cannot
+approach `1` at the origin. -/
+theorem not_exists_continuousAt_limit {σ : ℝ} (hσ : 0 < σ) (hhalf : 1 / 2 < σ) (hσ1 : σ ≤ 1)
+    (u : ℝ → Nat.Primes → ℂ) (hu : ∀ t p, ‖u t p‖ = 1) :
+    ¬ ∃ ψ : ℝ → ℂ, ψ 0 = 1 ∧ ContinuousAt ψ 0 ∧
+      ∀ t : ℝ, Tendsto (fun s : Finset Nat.Primes =>
+          ∏ p ∈ s, (qGammaOn (primeNome hσ p) (1 + (t : ℂ) * Complex.I) * u t p))
+        atTop (𝓝 (ψ t)) := by
+  rintro ⟨ψ, hψ0, hcont, hconv⟩
+  have hzero : ∀ t : ℝ, t ≠ 0 → ψ t = 0 := by
+    intro t ht
+    have hnorm : Tendsto (fun s : Finset Nat.Primes =>
+        ‖∏ p ∈ s, (qGammaOn (primeNome hσ p) (1 + (t : ℂ) * Complex.I) * u t p)‖)
+      atTop (𝓝 ‖ψ t‖) := (continuous_norm.continuousAt).tendsto.comp (hconv t)
+    have := tendsto_nhds_unique hnorm (tendsto_norm_prod_gauge_zero hσ hhalf hσ1 ht (u t) (hu t))
+    exact norm_eq_zero.1 this
+  have hnb : (𝓝[≠] (0 : ℝ)).NeBot := inferInstance
+  have h1 : Tendsto ψ (𝓝[≠] (0 : ℝ)) (𝓝 (ψ 0)) :=
+    hcont.tendsto.mono_left nhdsWithin_le_nhds
+  have h2 : Tendsto ψ (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    refine Tendsto.congr' ?_ tendsto_const_nhds
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact (hzero t ht).symm
+  have := tendsto_nhds_unique h1 h2
+  rw [hψ0] at this
+  exact one_ne_zero this
+
+/-- The same for an arbitrary real centering `c_p`, which is the card's statement. -/
+theorem not_exists_centering_limit {σ : ℝ} (hσ : 0 < σ) (hhalf : 1 / 2 < σ) (hσ1 : σ ≤ 1)
+    (c : Nat.Primes → ℝ) :
+    ¬ ∃ ψ : ℝ → ℂ, ψ 0 = 1 ∧ ContinuousAt ψ 0 ∧
+      ∀ t : ℝ, Tendsto (fun s : Finset Nat.Primes =>
+          ∏ p ∈ s, (qGammaOn (primeNome hσ p) (1 + (t : ℂ) * Complex.I)
+            * Complex.exp (-((t * c p : ℝ) : ℂ) * Complex.I)))
+        atTop (𝓝 (ψ t)) := by
+  refine not_exists_continuousAt_limit hσ hhalf hσ1
+    (fun t p => Complex.exp (-((t * c p : ℝ) : ℂ) * Complex.I)) fun t p => ?_
+  rw [show -((t * c p : ℝ) : ℂ) * Complex.I = ((-(t * c p) : ℝ) : ℂ) * Complex.I by push_cast; ring,
+    Complex.norm_exp_ofReal_mul_I]
 
 end GaloisForLFunctions.HTGeometry

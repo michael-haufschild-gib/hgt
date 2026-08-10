@@ -13,7 +13,7 @@
   fluctuation law with polynomial variance.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [PRD-C INSTANTIATED]
   [PHASE-CANNOT-PAY-MODULUS-DEBT EXCHANGE LAW] [CLASSICAL PARENTS DISCLAIMED] [NOT RH]
-  [THEOREM 2.1 LEAN CERTIFIED]
+  [THEOREMS 2.1 AND 2.2 LEAN CERTIFIED]
 
 ## 0. Setting
 
@@ -514,22 +514,48 @@ exactly the growth that distinguishes them, leaving a harmonic tail in either ca
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 3 699 jobs.
 
+### Theorem 2.2 — (GAS3.2) and item 1: the budget diverges, phase cannot pay (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/ModulusDivergence.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The window sums are lower bounds for the leading series restricted to disjoint sets of primes, so the
+leading series inherits their non-summability; the defect differs from the leading term by an
+absolutely convergent series, so it too is non-summable; and a non-summable nonnegative family has
+partial sums escaping to `+∞`.
+
+| Clause | Lean |
+|---|---|
+| the leading term over the naturals, and its nonnegativity | `leadingTerm`, `leadingTerm_nonneg` |
+| the window sum is the leading sum over the window | `windowSum_eq_sum_leadingTerm` |
+| **the leading series diverges (`τ > 0`)** | **`not_summable_leadingTerm`, `not_summable_leading_primes`** |
+| the same for every nonzero phase | `not_summable_leading_primes_of_ne_zero` |
+| `θ_p = tσ log p` | `phaseAngle_primeNome` |
+| **the leading series diverges in the gas's own variables** | **`not_summable_leading`** |
+| the defect of one prime is nonnegative | `primeDefect_nonneg` |
+| **(GAS3.2): the defects are not summable** | **`not_summable_primeDefect`** |
+| a nonnegative non-summable family has escaping partial sums | `tendsto_finsetSum_atTop_of_not_summable` |
+| **(GAS3.2) in the card's form: `Δ_P(t) → ∞`** | **`tendsto_defectPartial_atTop`, `tendsto_defectSum_atTop`** |
+| **item 1: `‖∏ φ_p u_p‖ → 0` for every unimodular gauge** | **`tendsto_norm_prod_gauge_zero`** |
+
+`tendsto_norm_prod_gauge_zero` is the card's item 1 in full: for `1/2 < σ ≤ 1` and any `t ≠ 0`, no
+choice of unimodular `u_p` — in particular no centering `e^{-itc_p}` — keeps the product away from
+`0`.  With `norm_prod_renorm` and `summable_renorm_exponent` of the previous module, items 2 and 3
+are also closed, so **Theorem 2.2 is complete**.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 9 044 jobs.
+
 **Next targets, in order.**
 
-1. *Theorem 1.1, remaining half.*  The divergence input is done (above).  What is left is the
-   measure-theoretic wrapper: build the product of two gas measures, apply
-   `ProbabilityTheory.measure_limsup_eq_one`, and convert "terms do not tend to zero" into failure
-   of convergence in distribution — the latter needs Lévy's equivalence and continuity theorems,
-   whose availability in mathlib has not yet been checked.
-2. *Theorem 2.2, the one remaining half: `∑_p p^{−σ}(1 − cos(σ t log p)) = ∞`.*  Every structural
-   ingredient is now certified — window goodness, the weight bound, the PNT window count, and
-   disjointness.  What is left is only the arithmetic: feed `eventually_primeCount_window_ge` into
-   `window_sum_ge` to get a per-window lower bound `≳ (K−1)/(2K^σ)·X_m^{1−σ}/log X_m`, sum over the
-   disjoint windows with `Finset.sum_le_tsum`, and observe that the resulting series diverges — for
-   `σ < 1` because its terms are unbounded, for `σ = 1` because it is harmonic in `m`.  Note the
-   `3-4-1` inequality is *not* usable here — under the assumed convergence the combination comes out
-   positive, so it yields no contradiction — which is why the window route replaced it.
-3. *Theorem 3.1 (CLT).*  Mathlib's `Probability/CentralLimitTheorem.lean` carries only the i.i.d.
+1. *Theorem 1.1.*  The analytic half is now free: `tendsto_norm_prod_gauge_zero` says the
+   characteristic functions of the centered partial sums tend to `0` at every `t ≠ 0`, so any
+   pointwise limit is `0` off the origin and `1` at it — not continuous, hence not a characteristic
+   function.  Borel–Cantelli and Lévy's equivalence theorem are *not* needed for this route (the
+   symmetrization bound `not_summable_symmetrization` remains as the independent second proof).
+   What is left is the probabilistic wrapper: the law of `ξ_p` under the corpus `gasMeasure`, the
+   identification of its characteristic function with `Γ_{q_p}(1+it)`, and mathlib's Lévy continuity
+   theorem (`ProbabilityMeasure.tendsto_iff_tendsto_charFun`, which does exist).
+2. *Theorem 3.1 (CLT).*  Mathlib's `Probability/CentralLimitTheorem.lean` carries only the i.i.d.
    form (`tendstoInDistribution_inv_sqrt_mul_sum`); the Lindeberg–Feller triangular-array form the
    card needs is **not** in mathlib and has to be built.
-4. *Theorem 3.2 (Dickman law at the wall).*
+3. *Theorem 3.2 (Dickman law at the wall).*

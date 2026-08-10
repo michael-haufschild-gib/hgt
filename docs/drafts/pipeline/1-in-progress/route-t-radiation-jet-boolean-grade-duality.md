@@ -1082,3 +1082,117 @@ source coefficients.  Assuming spectral radius at most one, reciprocal-square re
   paper-level rational spectral mapping, exact rank-two modal growth, and RH equivalence (RJG60).
 - 2026-08-10 — rejected the false shortcut `B+B^dagger=C`; retained the faithful observable-pair
   architecture and isolated the two-channel Neumann-orbit producer (RJG61).
+
+## 30. Conjecture loop 10 — singular-metric Cayley Green identity
+
+The failed ambient colligation conjecture used the wrong metric.  In quantile coordinates write
+
+```text
+V = pinnedVolterraCLM,
+C = V^dagger+V,
+q(t) = quantileSpeed(thetaSource,t),
+G = M_(1/q),
+B = i M_q V.                                             (RJG62)
+```
+
+`G` is the already constructed bounded, positive, injective theta metric with dense range.  Although
+`M_q` is not a bounded operator, the products in the next identity are bounded.  Pointwise
+cancellation of `q` gives
+
+```text
+G B = i V,
+B^dagger G = -i V^dagger,
+G B-B^dagger G = i C.                                   (RJG63)
+```
+
+Thus the correct source Green law is a **metric commutator**, not the false unweighted adjoint
+defect from Section 27.  For `A=-iB^2`, (RJG63) telescopes once:
+
+```text
+G A+A^dagger G
+ = -i (G B^2-(B^dagger)^2 G)
+ = C B+B^dagger C.                                      (RJG64)
+```
+
+This is an exact rank-at-most-four source boundary defect.  It is stronger than the modal flux
+law: it holds on the whole Hilbert space before any zero or eigenvector is selected.
+
+Let `X=hA`, `R=(I-X)^(-1)`, and `U=(I+X)R` as in (RJG54).  Expanding the two Cayley squares and
+using `(I-X)R=I` gives the discrete Green identity
+
+```text
+U^dagger G U-G
+ = 2 h R^dagger (C B+B^dagger C) R.                     (RJG65)
+```
+
+Consequently, for every `n>=1`,
+
+```text
+(U^n)^dagger G U^n-G
+ = 2 h sum_(j=0)^(n-1)
+     (R U^j)^dagger (C B+B^dagger C) (R U^j).            (RJG66)
+```
+
+Equations (RJG63)--(RJG66) are `[PAPER-PROVED] [NOVELTY UNVERIFIED]`.  They identify the Cayley
+clock as a conservative singular-metric evolution with all nonconservation confined to four
+explicit boundary legs.  No RH information is used.
+
+## 31. Hostile coercivity test and exact failure
+
+### Conjecture
+
+Use positivity of `G` and the finite-rank work term in (RJG66) to bound the ambient Cayley orbit.
+
+### Verdict: `[FALSE IN EVERY FIXED FINITE-RANK AUGMENTATION]`
+
+The theta metric symbol tends to zero at both interval endpoints.  Hence there is no `c>0` with
+
+```text
+<G f,f> >= c norm(f)^2.                                  (RJG67)
+```
+
+Adding any fixed finite family of bounded observations does not repair this.  Given bounded
+functionals `ell_1,...,ell_m`, choose `m+1` disjoint normalized packets inside an endpoint interval
+where `norm(G)` is arbitrarily small and take a nonzero linear combination in the kernel of all
+`ell_j`.  After normalization it has every `ell_j(f)=0` and arbitrarily small `<Gf,f>`.  Therefore
+
+```text
+<G f,f> + sum_j |ell_j(f)|^2
+```
+
+is never equivalent to the ambient `L2` norm.  In particular the two channels of `C`, or even all
+four legs in (RJG65), cannot turn `G` into a coercive conserved energy.  This rules out the entire
+fixed-energy completion of the colligation idea, rather than merely one guessed identity.
+
+### Positive survivor
+
+The boundary defect is nevertheless exact and finite.  The producer must exploit that its vectors
+are not arbitrary endpoint packets: they are the structured resolvent orbits `R U^j f`, and
+`G B=iV` converts every occurrence of `B` into a bounded causal primitive.  The remaining estimate
+must therefore be a propagation/cancellation theorem on this structured orbit, not an ambient
+coercivity theorem.
+
+## 32. Revised source producer after the Green identity
+
+The source task (RJG61) admits a sharper pre-divisor form.  Prove that the accumulated boundary
+work in (RJG66), evaluated on the two adjoint observation vectors spanning `range(C)`, grows
+subexponentially.  After substituting `GB=iV`, every coefficient is an iterated pinned-Volterra
+integral with positive theta weight and a rank-two affine endpoint contraction.  The exact target is
+
+```text
+for every r>1 and each e in {pinnedOne,pinnedCoordinate},
+  norm((U^dagger)^n C e)/r^n -> 0.                       (RJG68)
+```
+
+This is equivalent to (RJG61) because `range(C)` is exactly the affine two-dimensional space.
+Unlike a spectral-radius bound, (RJG68) names two fixed source vectors and can be attacked through
+the Volterra kernel before divisor decomposition.  The next conjecture loop will test whether the
+Neumann coefficients of `R` admit a factorial simplex gain after every boundary contraction; a
+mere geometric norm bound is too weak and will be rejected.
+
+## Log, singular-metric Green pivot
+
+- 2026-08-10 — discovered the exact metric commutator `GB-B^dagger G=iC`, squared Green defect,
+  Cayley metric-work identity, and its telescoping law (RJG63)--(RJG66).
+- 2026-08-10 — proved the fixed finite-rank coercivity strategy impossible; isolated structured
+  resolvent-orbit cancellation and the two adjoint boundary vectors as the surviving producer.

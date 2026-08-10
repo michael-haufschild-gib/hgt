@@ -97,30 +97,34 @@ It therefore neither proves `U_t = U_{-t}` for an individual retained Xi divisor
 the first unresolved R/L/CCM source producer. It is a major density theorem and a new receiver,
 not an RH proof chain.
 
-## New Frankenstein opportunity: source-faithful index amplification
+## Hostile follow-up: moment-neutral amplification exists but cannot close rank--trace
 
-The synthesis exposed by the paper is sharper than “use more moments.” To convert its density
-certificate into RH, one must turn each **single** nonzero source-horizontal class into an extensive
-finite-compression defect before scalarization.
+The initially proposed Frankenstein handoff was false. The source carrier itself already supplies
+the requested raw amplification. For every off-line Xi multiplicity copy, every prime-labelled
+coefficient is nonzero and those coefficients tend to zero cofinally. Hence one can choose
+arbitrarily many distinct prime labels whose hyperbolic blocks have zero trace and arbitrarily small
+average Frobenius-square cost, while retaining the multiplicity copy and both reflected
+orientations.
 
-> **SOURCE-FAITHFUL INDEX AMPLIFICATION.** For every retained off-line Xi divisor copy `q`, construct
-> cofinally many coefficient-faithful, pairwise independent hyperbolic image blocks carrying the
-> same prime label, multiplicity copy, and both reflection orientations, while the prime-side trace
-> and Frobenius-square budget grows sublinearly in the number of blocks (or remains the original
-> scalar budget).
+The inference to contradiction has the wrong sign. In the paper's rank--trace inequality the
+off-line positive-index bound occurs as `-c^2 b` in the lower-bound form, equivalently `+c^2 b` in
+the certificate upper-bound form. Every independent nonzero hyperbolic block adds one positive-index
+unit, irrespective of its amplitude. Amplifying one source class to `k` blocks therefore forces
+`b >= k`; it does not retain the original one-pair price. The artifact's equality examples show
+that this per-index allowance is sharp.
 
-If such a source theorem exists, the paper's rank--trace inequality converts one off-line class into
-an arbitrarily large budget violation, forcing that class to vanish. This would upgrade a density
-bound to an absolute statement and feed the existing RH endpoint. Ordinary direct sums or tensoring
-do not work: they multiply signature index and prime-side moments by the same factor, leaving the
-proportion unchanged. Required novelty is **moment-neutral source amplification**, not larger matrix
-dimension.
+There is also an exact spectral-scale wall. If every amplified block has eigenvalue magnitude at
+least `delta>0`, its Frobenius square is at least `2 delta^2`, so `k` uniformly visible blocks cost
+at least `2 delta^2 k`. Sublinear second-moment growth is possible only when the amplified spectrum
+collapses to zero. Bounded coefficient-faithful functional calculus preserves that collapse;
+fixed-size projection/sign quantization requires unbounded normalization. The corpus already proves
+that simultaneous forward/reflected admissibility of that singular normalization occurs exactly at
+neutral grade, so assuming it is RH-equivalent.
 
-No such theorem is present in the paper or current corpus. The already-built prime-labelled
-horizontal carrier is the right admission object, but its missing annihilation law is precisely
-what would have to prevent proportional prime-side replication. This is a new, exact formulation of
-the bridge between the paper and the current source frontier; it is a conjectural producer, not a
-proved result.
+The full conjecture/failure chain and positive survivor are recorded in
+`source-horizontal-moment-neutral-amplification-no-go.md`. The new local Lean module
+`SourceHorizontalMomentNeutralAmplification.lean` constructs the arbitrary finite packets, proves
+their moment bound and reflection invariance, and proves the uniform-threshold linear-cost theorem.
 
 ## Lean disposition
 
@@ -130,11 +134,14 @@ proved result.
 3. Port the 1,827-line rank--trace core only when a literal source-labelled compression consumer is
    defined. Preserve Apache attribution and audit against Lean `v4.32.2` with targeted
    `lake env lean <file>` checks.
-4. First local theorem worth formalizing is not count algebra. It is a concrete
-   source-horizontal-to-Hermitian-compression map with a proved non-proportional moment budget. Until
-   that exists, importing rank--trace infrastructure does not advance RH.
+4. The source-horizontal hyperbolic packet and its non-proportional moment budget are now formalized
+   locally. They do not consume rank--trace: the paper's index term prices every replicated block.
+   Do not port the rank--trace core unless a new source theorem controls that index price or prevents
+   spectral collapse without assuming two-sided normalization.
 
 ## Log
 
 - 2026-08-10 -- paper and companion repository audited; corpus overlap, exact limitation, selective
   Lean reuse boundary, and source-faithful index-amplification conjecture recorded.
+- 2026-08-10 -- hostile follow-up proved the requested moment-neutral source amplification already
+  exists, falsified its claimed rank--trace contradiction, and formalized the packet/threshold wall.

@@ -56,17 +56,16 @@ theorem sourceHorizontalHyperbolicFrobSq_sum_ge
     {δ : ℝ} (hδ : 0 ≤ δ) (hvisible : ∀ i ∈ K, δ ≤ |a i|) :
     2 * δ ^ 2 * (K.card : ℝ) ≤
       ∑ i ∈ K, sourceHorizontalHyperbolicFrobSq (a i) := by
-  rw [Finset.sum_attach]
   calc
     2 * δ ^ 2 * (K.card : ℝ) =
-        ∑ i : K, 2 * δ ^ 2 := by
-          simp
+        ∑ i ∈ K, 2 * δ ^ 2 := by
+          rw [Finset.sum_const, nsmul_eq_mul]
           ring
-    _ ≤ ∑ i : K, sourceHorizontalHyperbolicFrobSq (a i) := by
+    _ ≤ ∑ i ∈ K, sourceHorizontalHyperbolicFrobSq (a i) := by
       apply Finset.sum_le_sum
       intro i hi
       have hsquare : δ ^ 2 ≤ |a i| ^ 2 :=
-        (sq_le_sq₀ hδ (abs_nonneg (a i))).2 (hvisible i i.2)
+        (sq_le_sq₀ hδ (abs_nonneg (a i))).2 (hvisible i hi)
       rw [sq_abs] at hsquare
       unfold sourceHorizontalHyperbolicFrobSq
       linarith
@@ -86,15 +85,19 @@ theorem exists_sourceZeroHorizontalMomentNeutralPacket
           sourceHorizontalHyperbolicFrobSq
             (sourceZeroHorizontalPrimeCarrier q p)) ≤
         2 * ε ^ 2 * (m : ℝ) := by
-  let t : ℝ := primeDepthBVWoldXiCenteredRate q.1
-  have ht : |t| < 1 := xiCenteredPrimeIdealRate_abs_lt_one q.1
+  have ht : |primeDepthBVWoldXiCenteredRate q.1| < 1 :=
+    xiCenteredPrimeIdealRate_abs_lt_one q.1
   have hlim : Tendsto (sourceZeroHorizontalPrimeCarrier q)
       cofinite (nhds 0) := by
-    simpa only [sourceZeroHorizontalPrimeCarrier, t] using
-      (primeGammaCofinalBocksteinCoefficient_tendsto_cofinite_zero ht)
+    change Tendsto
+      (primeGammaCofinalBocksteinCoefficient
+        (primeDepthBVWoldXiCenteredRate q.1)) cofinite (nhds 0)
+    exact primeGammaCofinalBocksteinCoefficient_tendsto_cofinite_zero ht
   have hevent : ∀ᶠ p : Nat.Primes in cofinite,
       |sourceZeroHorizontalPrimeCarrier q p| < ε := by
-    have hball := hlim (Metric.ball_mem_nhds (0 : ℝ) hε)
+    have hball : ∀ᶠ p : Nat.Primes in cofinite,
+        sourceZeroHorizontalPrimeCarrier q p ∈ Metric.ball (0 : ℝ) ε :=
+      hlim (Metric.ball_mem_nhds (0 : ℝ) hε)
     simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using hball
   let S : Set Nat.Primes :=
     {p | |sourceZeroHorizontalPrimeCarrier q p| < ε}
@@ -124,7 +127,6 @@ theorem exists_sourceZeroHorizontalMomentNeutralPacket
             linarith
       _ = 2 * ε ^ 2 * (m : ℝ) := by
         rw [Finset.sum_const, nsmul_eq_mul, hKcard]
-        push_cast
         ring
 
 /-- Reflection retains the same labelled packet and exactly the same Frobenius-square budget. -/

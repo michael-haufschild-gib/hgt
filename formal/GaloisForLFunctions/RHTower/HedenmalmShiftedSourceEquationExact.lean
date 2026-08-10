@@ -93,14 +93,35 @@ theorem thetaShifted_sourceEquation_source_representation
         fun x => -Complex.I * (thetaSource.k x : ℂ) := by
     have hLpCoeLeb := (withDensity_realDensity_ae_eq
       (measurable_sourceWeight thetaSource) (sourceWeight_pos thetaSource)).mp hLpCoe
-    filter_upwards [hLpCoeLeb, Lp.coeFn_add v (α • w), Lp.coeFn_smul α w,
-      Lp.coeFn_smul (-Complex.I) (thetaCokernelSourceVector 0),
-      thetaCokernelSourceVector_ae 0]
+    have hcokWeighted :
+        (fun x => thetaCokernelSourceVector 0 x) =ᵐ[
+          (volume : Measure ℝ).withDensity
+            (realDensity (sourceWeight thetaSource))]
+          cokernelVector thetaSource 0 := by
+      simpa only using (thetaCokernelSourceVector_ae 0)
+    have hcokLeb := (withDensity_realDensity_ae_eq
+      (measurable_sourceWeight thetaSource) (sourceWeight_pos thetaSource)).mp hcokWeighted
+    have hrsmulWeighted := Lp.coeFn_smul (-Complex.I) (thetaCokernelSourceVector 0)
+    have hrsmulLeb := (withDensity_realDensity_ae_eq
+      (measurable_sourceWeight thetaSource) (sourceWeight_pos thetaSource)).mp hrsmulWeighted
+    have haddWeighted := Lp.coeFn_add v (α • w)
+    have haddLeb := (withDensity_realDensity_ae_eq
+      (measurable_sourceWeight thetaSource) (sourceWeight_pos thetaSource)).mp haddWeighted
+    have hsmulWeighted := Lp.coeFn_smul α w
+    have hsmulLeb := (withDensity_realDensity_ae_eq
+      (measurable_sourceWeight thetaSource) (sourceWeight_pos thetaSource)).mp hsmulWeighted
+    filter_upwards [hLpCoeLeb, haddLeb, hsmulLeb, hrsmulLeb, hcokLeb]
       with x heq hadd hsmul hrsmul hcok
     calc
-      v x + α * w x = (v + α • w : HS) x := by rw [hadd, hsmul]
+      v x + α * w x = (v + α • w : HS) x := by
+        rw [hadd]
+        change v x + α * w x = v x + (α • w : HS) x
+        rw [hsmul]
+        rfl
       _ = ((-Complex.I) • thetaCokernelSourceVector 0 : HS) x := heq
-      _ = -Complex.I * thetaCokernelSourceVector 0 x := hrsmul
+      _ = -Complex.I * thetaCokernelSourceVector 0 x := by
+        rw [hrsmul]
+        rfl
       _ = -Complex.I * cokernelVector thetaSource 0 x := by rw [hcok]
       _ = -Complex.I * (thetaSource.k x : ℂ) := by
         rw [cokernelVector_eq_k_mul_sourceChar]
@@ -119,7 +140,7 @@ theorem thetaShifted_sourceEquation_source_representation
     filter_upwards [hUw, hsourceEq] with x hUw_x hsourceEq_x
     dsimp only [g]
     rw [hUw_x]
-    linear_combination hsourceEq_x
+    linear_combination -hsourceEq_x
   have hgint : Integrable g (volume : Measure ℝ) := hvint.congr hgv.symm
   have hUeq : U = sourceInverse thetaSource g := by
     funext x
@@ -194,12 +215,25 @@ theorem thetaShifted_sourceEquation_source_representation
       (fun x : ℝ => (Complex.I * sourceModeU thetaSource α x) * sourceChar α x) =
         sourceModeI thetaSource α := by
     funext x
-    rw [sourceModeU, sourceChar, ← Complex.exp_add]
+    rw [sourceModeU, sourceChar]
+    have hexp : Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+        Complex.exp (Complex.I * α * (x : ℂ)) = 1 := by
+      rw [← Complex.exp_add]
+      rw [show -(Complex.I * α) * (x : ℂ) + Complex.I * α * (x : ℂ) = 0 by ring,
+        Complex.exp_zero]
     have hI : Complex.I * (-Complex.I) = 1 := by
       rw [mul_neg, Complex.I_mul_I]
       ring
-    rw [← mul_assoc, hI, one_mul]
-    simp
+    calc
+      Complex.I *
+            (-Complex.I * Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+              sourceModeI thetaSource α x) *
+            Complex.exp (Complex.I * α * (x : ℂ)) =
+          (Complex.I * (-Complex.I)) *
+            (Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+              Complex.exp (Complex.I * α * (x : ℂ))) *
+            sourceModeI thetaSource α x := by ring
+      _ = sourceModeI thetaSource α x := by rw [hI, hexp, one_mul, one_mul]
   have hExplicitBot : Tendsto
       (fun x : ℝ => (Complex.I * sourceModeU thetaSource α x) * sourceChar α x)
       atBot (nhds 0) := by
@@ -209,10 +243,104 @@ theorem thetaShifted_sourceEquation_source_representation
       (fun x => (U x - Complex.I * sourceModeU thetaSource α x) * sourceChar α x)
       atBot (nhds 0) := by
     have hsub := hUbot.sub hExplicitBot
-    convert hsub using 1 <;> funext x <;> ring
+    have hfun :
+        (fun x => (U x - Complex.I * sourceModeU thetaSource α x) * sourceChar α x) =
+          fun x => U x * sourceChar α x -
+            (Complex.I * sourceModeU thetaSource α x) * sourceChar α x := by
+      funext x
+      ring
+    rw [hfun]
+    simpa using hsub
   have hall := HedenmalmPrimeTranslation.eq_of_sourceEquation thetaSource
     hUderiv hExplicitDeriv hUequation hExplicitEquation hdiffBot
   exact hUw.symm.trans (Filter.Eventually.of_forall hall)
+
+/-! ### Literal two-ended formulas and unconditional capstone -/
+
+/-- Hedenmalm's literal source-equation solution. -/
+def thetaTwoEndedSourceSolution (α : ℂ) (x : ℝ) : ℂ :=
+  Complex.I * sourceModeU thetaSource α x
+
+/-- Left-ended integral formula for the literal solution. -/
+theorem thetaTwoEndedSourceSolution_left (α : ℂ) (x : ℝ) :
+    thetaTwoEndedSourceSolution α x =
+      Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+        ∫ y in Iic x, (thetaSource.k y : ℂ) * sourceChar α y := by
+  rw [thetaTwoEndedSourceSolution, sourceModeU, sourceModeI]
+  have hI : Complex.I * (-Complex.I) = 1 := by
+    rw [mul_neg, Complex.I_mul_I]
+    ring
+  calc
+    Complex.I *
+          (-Complex.I * Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+            (∫ y in Iic x, (thetaSource.k y : ℂ) * sourceChar α y)) =
+        (Complex.I * (-Complex.I)) *
+          Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+          (∫ y in Iic x, (thetaSource.k y : ℂ) * sourceChar α y) := by ring
+    _ = Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+          ∫ y in Iic x, (thetaSource.k y : ℂ) * sourceChar α y := by
+      rw [hI, one_mul]
+
+/-- At a Xi zero, the same solution has the complementary right-ended formula. -/
+theorem thetaTwoEndedSourceSolution_right (α : ℂ) (hXi : XiC α = 0) (x : ℝ) :
+    thetaTwoEndedSourceSolution α x =
+      -Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+        ∫ y in Ioi x, (thetaSource.k y : ℂ) * sourceChar α y := by
+  have hzeroSource : xiC thetaSource α = 0 := by
+    rw [xiC_thetaSource_all]
+    exact hXi
+  have htail := (sourceModeI_eq_neg_tail_iff thetaSource
+    (hasShiftedTail_thetaSource_all α) x).2 hzeroSource
+  rw [thetaTwoEndedSourceSolution, sourceModeU, htail]
+  have hI : Complex.I * (-Complex.I) = 1 := by
+    rw [mul_neg, Complex.I_mul_I]
+    ring
+  calc
+    Complex.I *
+          (-Complex.I * Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+            -(∫ y in Ioi x, (thetaSource.k y : ℂ) * sourceChar α y)) =
+        (Complex.I * (-Complex.I)) *
+          Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+          -(∫ y in Ioi x, (thetaSource.k y : ℂ) * sourceChar α y) := by ring
+    _ = -Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+          ∫ y in Ioi x, (thetaSource.k y : ℂ) * sourceChar α y := by
+      rw [hI, one_mul]
+      ring
+
+/-- **Unconditional exact source-equation theorem.**  For every complex shift, Xi vanishes
+exactly when the closed shifted derivative has a unique solution; its source representative is
+the literal two-ended Hedenmalm primitive, with both integral formulas. -/
+theorem thetaShifted_sourceEquation_exact_iff (α : ℂ) :
+    XiC α = 0 ↔
+      ((∃! u : (thetaShiftedWeightedDerivative α).domain,
+          thetaShiftedWeightedDerivative α u = thetaSourceForcingVector ∧
+            (let w : HS := (quantileUnitary thetaSource).symm (u : H)
+             (fun x => w x) =ᵐ[(volume : Measure ℝ)]
+                thetaTwoEndedSourceSolution α)) ∧
+        ∀ x : ℝ,
+          thetaTwoEndedSourceSolution α x =
+              Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+                ∫ y in Iic x, (thetaSource.k y : ℂ) * sourceChar α y ∧
+          thetaTwoEndedSourceSolution α x =
+              -Complex.exp (-(Complex.I * α) * (x : ℂ)) *
+                ∫ y in Ioi x, (thetaSource.k y : ℂ) * sourceChar α y) := by
+  constructor
+  · intro hXi
+    rcases (thetaShifted_sourceEquation_existsUnique_iff α).mpr hXi with
+      ⟨u, hu, huniq⟩
+    refine ⟨⟨u, ⟨hu, ?_⟩, ?_⟩, ?_⟩
+    · change
+        (fun x => ((quantileUnitary thetaSource).symm (u : H) : HS) x) =ᵐ[
+          (volume : Measure ℝ)]
+          fun x => Complex.I * sourceModeU thetaSource α x
+      exact thetaShifted_sourceEquation_source_representation α u hu
+    · intro v hv
+      exact huniq v hv.1
+    · intro x
+      exact ⟨thetaTwoEndedSourceSolution_left α x,
+        thetaTwoEndedSourceSolution_right α hXi x⟩
+  · rintro ⟨⟨u, hu, _⟩, _⟩
+    exact (thetaSourceForcingVector_mem_shifted_range_iff α).mp ⟨u, hu.1⟩
 
 end HedenmalmThetaSource
 

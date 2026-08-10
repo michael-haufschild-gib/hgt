@@ -146,7 +146,7 @@ theorem sum_ramareCofactor_energy_le {P : Finset ℕ} (hPprime : ∀ q ∈ P, q.
   norm_num
 
 /-- Every cofactor of `p` in `[1, M]` is at most `⌊M/p⌋`. -/
-theorem ramareCofactorSet_le (M : ℕ) {p : ℕ} (hp : 0 < p) {m : ℕ}
+theorem ramareCofactorSet_le (M : ℕ) {p m : ℕ}
     (hm : m ∈ ramareCofactorSet (Finset.Icc 1 M) p) : m ≤ M / p := by
   classical
   rw [ramareCofactorSet, Finset.mem_image] at hm
@@ -190,7 +190,7 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
       have h0 : ¬ p ∣ (0 : ℕ) := (Finset.mem_filter.1 hcon).2
       exact h0 (dvd_zero p)
     have hsM : ∀ m ∈ {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m}, m ≤ M / p :=
-      fun m hm => ramareCofactorSet_le M hppos (Finset.mem_filter.1 hm).1
+      fun m hm => ramareCofactorSet_le M (Finset.mem_filter.1 hm).1
     have h := integral_Icc_normSq_logPoly_le_energy (ramareCofactorCoeff P) hs0 hsM hW
     rw [hEdef]
     calc (∫ w in Set.Icc (-W) W,
@@ -256,7 +256,6 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
       have hval : ((M : ℝ) / (p : ℝ)) * ((M : ℝ) / (p : ℝ))
           = (M : ℝ) ^ 2 * ((1 : ℝ) / ((p : ℝ) * (p : ℝ))) := by
         field_simp
-        ring
       have hc0 : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 := by positivity
       calc 5 * Real.exp 1 / 2 * ((M / p : ℕ) : ℝ) * E p
           = 5 * Real.exp 1 / 2 * (((M / p : ℕ) : ℝ) * E p) := by ring
@@ -266,6 +265,32 @@ theorem sum_integral_normSq_ramareCofactorPoly_le {P : Finset ℕ} (hPprime : �
             rw [hval]; ring
     refine le_trans (Finset.sum_le_sum hstep) (le_of_eq ?_)
     rw [← Finset.mul_sum]
+
+/-- **The Ramaré `p`-diagonal is inside the Matomäki–Radziwiłł budget.**  Once the designated primes
+satisfy `∑_{p ∈ P} p^{-2} ≤ 2ε/(5e)` — automatic for a prime range starting above `1/ε` — the
+diagonal costs `10·W·M + ε·M²`: the mean value theorem's own diagonal, and a height-free part that
+is `o(M²)`.  The whole residue of the factorisation is therefore the **prime off-diagonal**. -/
+theorem sum_integral_normSq_ramareCofactorPoly_le_budget {P : Finset ℕ}
+    (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ) {W ε : ℝ} (hW : 1 ≤ W) (hε : 0 < ε)
+    (hsq : ∑ p ∈ P, (1 : ℝ) / ((p : ℝ) * (p : ℝ)) ≤ 2 * ε / (5 * Real.exp 1)) :
+    ∑ p ∈ P, (∫ w in Set.Icc (-W) W,
+        ‖logPoly (ramareCofactorCoeff P)
+          {m ∈ ramareCofactorSet (Finset.Icc 1 M) p | ¬ p ∣ m} w‖ ^ 2)
+      ≤ 10 * W * (M : ℝ) + ε * (M : ℝ) ^ 2 := by
+  have hW0 : (0 : ℝ) < W := lt_of_lt_of_le zero_lt_one hW
+  have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
+  have hpi : Real.pi ≤ 4 := Real.pi_le_four
+  have hE : (0 : ℝ) < Real.exp 1 := Real.exp_pos 1
+  refine le_trans (sum_integral_normSq_ramareCofactorPoly_le hPprime M hW) ?_
+  have hfirst : 5 * Real.pi / 2 * W * (M : ℝ) ≤ 10 * W * (M : ℝ) := by
+    have hWM : (0 : ℝ) ≤ W * (M : ℝ) := by positivity
+    nlinarith [hpi, hWM]
+  have hsecond : 5 * Real.exp 1 / 2 * (M : ℝ) ^ 2
+      * (∑ p ∈ P, (1 : ℝ) / ((p : ℝ) * (p : ℝ))) ≤ ε * (M : ℝ) ^ 2 := by
+    have hc0 : (0 : ℝ) ≤ 5 * Real.exp 1 / 2 * (M : ℝ) ^ 2 := by positivity
+    refine le_trans (mul_le_mul_of_nonneg_left hsq hc0) (le_of_eq ?_)
+    field_simp
+  linarith
 
 end RHTower.Sieve
 

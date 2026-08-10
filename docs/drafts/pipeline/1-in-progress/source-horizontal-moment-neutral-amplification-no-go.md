@@ -2,7 +2,7 @@
 
 - **ID:** `source-horizontal-moment-neutral-amplification-no-go`
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) / LEAN-IN-PROGRESS / FALSIFIED RH HANDOFF
+- **Type:** THEOREM (paper) / THEOREM (Lean) / FALSIFIED RH HANDOFF
 - **Source:** `claude-zeta23-rank-trace-audit.md`; `rh-current-frontier-map.md`;
   `formal/GaloisForLFunctions/RHTower/SourceZeroHorizontalCarrier.lean`
 - **Statement:** Every off-line source-horizontal Xi copy admits arbitrarily large packets of
@@ -20,9 +20,10 @@ the finite Weil rank--trace inequality to force a contradiction.
 
 - [x] 0 -> 1 in-progress: exact source coefficients, finite packet, moment budget, and rank--trace
   sign audited.
-- [ ] 1 -> 2 fully-proven: independent paper audit of every matrix-normalization convention and
-  completed local Lean theorem.
-- [ ] 2 -> 3 formalized: targeted module elaboration, module build, lint, and axiom audit pass.
+- [x] 1 -> 2 fully-proven: paper proof closed; rank--trace sign and equality cases checked against
+  the pinned external formal artifact.
+- [ ] 2 -> 3 formalized: targeted module elaboration/build and axiom audit pass; repository-wide
+  lint is blocked by unrelated concurrent modules missing from the RHTower/HTGeometry umbrellas.
 - [ ] 3 -> 4 publication-ready: integrate no-go and positive survivor into RH frontier paper.
 
 ## Heavy conjecture loop
@@ -104,9 +105,12 @@ already equivalent to RH, so quantization relocates the missing producer instead
   prime tail. What is missing is a source law preventing spectral collapse, or equivalently a
   legitimate two-sided unbounded normalization. That is the same simultaneous-orientation/domain
   producer already isolated by Route R.
-- **Status:** packet theorem and thresholded inequality are dependency-closed on paper. Lean
-  formalization is in progress. Rank--trace sign and tightness are checked against the pinned
-  external `zeta-23-lean` artifact.
+- **Status:** packet theorem, reflection invariance, zero-trace/Frobenius identity, and thresholded
+  inequality are dependency-closed on paper and formalized in
+  `SourceHorizontalMomentNeutralAmplification.lean`. `lake env lean` and the targeted module build
+  pass. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. Rank--trace sign and
+  tightness are checked against the pinned external `zeta-23-lean` artifact. Repository-wide lint
+  reaches this module but fails on unrelated concurrent unimported modules.
 
 ## External novelty audit
 
@@ -119,3 +123,5 @@ that makes raw scale-free inertia contradict a second-moment estimate.
 
 - 2026-08-10 -- C0 proved on paper; C1--C3 falsified; exact positive survivor and corrected open
   producer isolated.
+- 2026-08-10 -- source packet, matrix moment identities, threshold wall, and reflection invariance
+  formalized; targeted elaboration/build and axiom audit pass.

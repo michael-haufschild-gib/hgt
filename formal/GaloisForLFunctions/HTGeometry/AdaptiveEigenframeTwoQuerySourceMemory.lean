@@ -15,7 +15,7 @@ is instead adapted to the sampled output word.  It is still a product-state, two
 experiment.
 -/
 
-open MeasureTheory MeasureTheory.Measure TopologicalSpace
+open Filter MeasureTheory MeasureTheory.Measure TopologicalSpace Topology
 open NormedSpace
 open scoped BigOperators Matrix
 
@@ -239,7 +239,10 @@ theorem adaptiveEigenframeTwoQueryScore_nonneg [Fintype ι]
     (U : Matrix (FiniteQubitConfiguration σ) (FiniteQubitConfiguration σ) ℂ) :
     0 ≤ adaptiveEigenframeTwoQueryScore label U := by
   unfold adaptiveEigenframeTwoQueryScore
-  positivity
+  apply div_nonneg
+  · exact Finset.sum_nonneg fun output _ =>
+      Finset.sum_nonneg fun input _ => dictionaryEigenframeMean_nonneg label U output input
+  · positivity
 
 /-- Dictionary compression of the exact Pauli-transfer matrix. -/
 def dictionaryPauliTransfer [Fintype ι]
@@ -498,7 +501,7 @@ theorem haar_measureReal_adaptiveEigenframeScore_ge_le
   have hmarkov := mul_meas_ge_le_integral_of_nonneg hnonneg
     (integrable_adaptiveEigenframeTwoQueryScore label) ε
   rw [haar_adaptiveEigenframeTwoQueryScore_eq hn label hlabel] at hmarkov
-  exact (le_div_iff₀ hε).2 (by simpa [f] using hmarkov)
+  exact (le_div_iff₀ hε).2 (by simpa [f, mul_comm] using hmarkov)
 
 /-- At the conserved dictionary floor `M⁻²`, Haar high-score probability is at most
 `M²/(2^n+1)`. -/
@@ -611,7 +614,7 @@ theorem autonomous_adaptiveEigenframeTwoQueryScore_ge
 /-- If dictionary cardinality squared is below Hilbert dimension plus one, the permanent static
 score is strictly larger than the exact Haar score. -/
 theorem autonomous_adaptiveEigenframeTwoQueryScore_gt_haar
-    {n : ℕ} (hn : 1 ≤ n)
+    {n : ℕ}
     (p : (Fin n → Option (Fin 3)) → Prop) [DecidablePred p]
     [Nonempty {P // p P}]
     (H : selfAdjoint
@@ -645,22 +648,39 @@ frame: pairing with an index in a symmetric difference distinguishes the two mon
 @[ext] structure MajoranaXorLabel (n : ℕ) where
   val : Fin n → Fin 4
 
+instance {n : ℕ} : Zero (MajoranaXorLabel n) := ⟨⟨0⟩⟩
+
+instance {n : ℕ} : Add (MajoranaXorLabel n) :=
+  ⟨fun x y => ⟨QuantumAlg.pauliXor x.val y.val⟩⟩
+
 instance {n : ℕ} : AddCommMonoid (MajoranaXorLabel n) where
-  zero := ⟨0⟩
-  add x y := ⟨QuantumAlg.pauliXor x.val y.val⟩
-  add_assoc x y z := by ext k; exact QuantumAlg.xor4_assoc _ _ _
-  zero_add x := by ext k; exact QuantumAlg.xor4_zero_left _
-  add_zero x := by ext k; exact QuantumAlg.xor4_zero_right _
-  add_comm x y := by ext k; exact QuantumAlg.xor4_comm _ _
+  add_assoc x y z := by
+    apply MajoranaXorLabel.ext
+    funext k
+    exact QuantumAlg.xor4_assoc _ _ _
+  zero_add x := by
+    apply MajoranaXorLabel.ext
+    funext k
+    exact QuantumAlg.xor4_zero_left _
+  add_zero x := by
+    apply MajoranaXorLabel.ext
+    funext k
+    exact QuantumAlg.xor4_zero_right _
+  add_comm x y := by
+    apply MajoranaXorLabel.ext
+    funext k
+    exact QuantumAlg.xor4_comm _ _
   nsmul := nsmulRec
-  nsmul_zero := rfl
+  nsmul_zero := fun _ => rfl
   nsmul_succ := fun _ _ => rfl
 
 /-- Symplectic pairing is additive for the XOR monoid. -/
 def majoranaOmegaHom {n : ℕ} (a : Fin n → Fin 4) :
     MajoranaXorLabel n →+ ZMod 2 where
   toFun x := QuantumAlg.pauliOmega a x.val
-  map_zero' := by simp [QuantumAlg.pauliOmega_zero_right]
+  map_zero' := by
+    change QuantumAlg.pauliOmega a (0 : Fin n → Fin 4) = 0
+    rw [QuantumAlg.pauliOmega_comm, QuantumAlg.pauliOmega_zero_left]
   map_add' x y := QuantumAlg.pauliOmega_xor_right _ _ _
 
 /-- Phase-free Pauli label of a product of distinct Majorana generators. -/
@@ -675,10 +695,9 @@ theorem majoranaOmega_wordFinFour {n : ℕ} (F : QuantumAlg.PauliMajoranaFrame n
       ∑ b ∈ S, if a = b then 0 else 1 := by
   change (majoranaOmegaHom (F.v a))
       (∑ b ∈ S, (⟨F.v b⟩ : MajoranaXorLabel n)) = _
-  rw [map_sum]
+  rw [_root_.map_sum]
   apply Finset.sum_congr rfl
   intro b _hb
-  rw [map_sum]
   simp only [majoranaOmegaHom, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
   exact F.omega a b
 
@@ -688,9 +707,13 @@ theorem majoranaOmega_wordFinFour_eq_card_erase {n : ℕ}
     (S : Finset (Fin (2 * n))) :
     QuantumAlg.pauliOmega (F.v a) (majoranaWordFinFour F S) = (S.erase a).card := by
   rw [majoranaOmega_wordFinFour]
-  simp only [show (if a = b then (0 : ZMod 2) else 1) =
-      if b ≠ a then 1 else 0 by split <;> simp_all [ne_comm]]
-  rw [Finset.sum_boole, Finset.filter_ne']
+  calc
+    (∑ b ∈ S, if a = b then (0 : ZMod 2) else 1) =
+        ∑ b ∈ S, if b ≠ a then 1 else 0 := by
+      apply Finset.sum_congr rfl
+      intro b _hb
+      by_cases hab : a = b <;> simp [hab, ne_comm]
+    _ = (S.erase a).card := by rw [Finset.sum_boole, Finset.filter_ne']
 
 /-- **Fixed-cardinality Majorana independence.** Distinct `q`-subsets have distinct phase-free
 Pauli labels in every representation by pairwise anticommuting Pauli words. -/
@@ -716,14 +739,23 @@ theorem majoranaWordFinFour_injective_fixedCard {n q : ℕ}
     rw [← S.2, Finset.card_pos]
     exact ⟨a, haS⟩
   have hqsplit : q = q - 1 + 1 := by omega
-  have hone : (1 : ZMod 2) = 0 := by
+  have homega' : ((q - 1 : ℕ) : ZMod 2) =
+      ((q - 1 : ℕ) : ZMod 2) + 1 := by
+    calc
+      ((q - 1 : ℕ) : ZMod 2) = (q : ZMod 2) := homega
+      _ = ((q - 1 + 1 : ℕ) : ZMod 2) := by rw [← hqsplit]
+      _ = ((q - 1 : ℕ) : ZMod 2) + 1 := by norm_num
+  have hzero_one : (0 : ZMod 2) = 1 := by
     apply add_left_cancel (a := ((q - 1 : ℕ) : ZMod 2))
-    simpa only [add_zero, ← Nat.cast_add, ← hqsplit] using homega
-  exact one_ne_zero hone
+    simpa only [add_zero] using homega'
+  exact zero_ne_one hzero_one
 
 /-- Inverse of the conventional `none, X, Y, Z` encoding by `0,1,2,3`. -/
-def finFourPauliOption : Fin 4 → Option (Fin 3) :=
-  Fin.cases none (fun a => some a)
+def finFourPauliOption (a : Fin 4) : Option (Fin 3) :=
+  if a = 0 then none
+  else if a = 1 then some 0
+  else if a = 2 then some 1
+  else some 2
 
 theorem finFourPauliOption_injective : Function.Injective finFourPauliOption := by
   intro a b h
@@ -753,14 +785,17 @@ theorem majoranaQBodyPauliLabel_injective (n q : ℕ) :
 def MajoranaQBodyDictionary (n q : ℕ) (P : Fin n → Option (Fin 3)) : Prop :=
   ∃ S : MajoranaQBodyIndex n q, majoranaQBodyPauliLabel n q S = P
 
+noncomputable instance majoranaQBodyDictionaryDecidablePred (n q : ℕ) :
+    DecidablePred (MajoranaQBodyDictionary n q) := Classical.decPred _
+
 /-- Fixed-`q` source monomials and their Jordan--Wigner labels are equivalent finite types. -/
 noncomputable def majoranaQBodyDictionaryEquiv (n q : ℕ) :
     MajoranaQBodyIndex n q ≃ {P // MajoranaQBodyDictionary n q P} where
   toFun S := ⟨majoranaQBodyPauliLabel n q S, ⟨S, rfl⟩⟩
   invFun P := Classical.choose P.2
-  left_inv S := by
-    apply majoranaQBodyPauliLabel_injective n q
-    exact Classical.choose_spec
+  left_inv S := majoranaQBodyPauliLabel_injective n q
+    (Classical.choose_spec
+      (show MajoranaQBodyDictionary n q (majoranaQBodyPauliLabel n q S) from ⟨S, rfl⟩))
   right_inv P := by
     apply Subtype.ext
     exact Classical.choose_spec P.2
@@ -794,7 +829,7 @@ theorem majoranaQBodyPauliLabel_ne_identity {n q : ℕ}
     intro hzero
     have homega : QuantumAlg.pauliOmega ((QuantumAlg.TFIM.frame n).v a)
         (majoranaWordFinFour (QuantumAlg.TFIM.frame n) S.1) = 0 := by
-      rw [hzero, QuantumAlg.pauliOmega_zero_right]
+      rw [hzero, QuantumAlg.pauliOmega_comm, QuantumAlg.pauliOmega_zero_left]
     rw [majoranaOmega_wordFinFour_eq_card_erase,
       Finset.card_erase_of_mem ha, S.2] at homega
     obtain ⟨k, hk⟩ := hqeven
@@ -825,12 +860,24 @@ theorem majoranaQBodyHamiltonian_hasDictionarySupport {n q : ℕ}
     HasPauliDictionarySupport (MajoranaQBodyDictionary n q)
       (majoranaQBodyHamiltonian c) := by
   intro P hP
-  rw [majoranaQBodyHamiltonian, map_sum]
+  rw [majoranaQBodyHamiltonian, _root_.map_sum]
+  simp only [map_smul]
+  simp_rw [← finitePauliSelfAdjointBasis_apply,
+    (finitePauliSelfAdjointBasis (Fin n)).repr_self]
+  have hfun := Finsupp.coe_finsetSum Finset.univ
+    (fun S : MajoranaQBodyIndex n q =>
+      c S • Finsupp.single (majoranaQBodyPauliLabel n q S) (1 : ℝ))
+  rw [show
+    (∑ S : MajoranaQBodyIndex n q,
+      c S • Finsupp.single (majoranaQBodyPauliLabel n q S) (1 : ℝ)) P =
+      ∑ S : MajoranaQBodyIndex n q,
+        (c S • Finsupp.single (majoranaQBodyPauliLabel n q S) (1 : ℝ)) P by
+    have happ := congrFun hfun P
+    simpa using happ]
   apply Finset.sum_eq_zero
   intro S _hS
-  rw [map_smul]
   have hne : majoranaQBodyPauliLabel n q S ≠ P := fun h => hP ⟨S, h⟩
-  simp [← finitePauliSelfAdjointBasis_apply, hne]
+  simp [hne]
 
 /-- Injectivity of Majorana labels makes the Hamiltonian nonzero exactly when its coefficient
 vector is nonzero. -/
@@ -1032,7 +1079,7 @@ theorem tendsto_majoranaQBody_haarHighScoreBound_zero (q : ℕ) :
           (((2 * n) ^ (2 * q) : ℕ) : ℝ) / ((2 ^ n + 1 : ℕ) : ℝ) := by
             exact div_le_div_of_nonneg_right hchooseR (by positivity)
       _ ≤ (((2 * n) ^ (2 * q) : ℕ) : ℝ) / ((2 ^ n : ℕ) : ℝ) := by
-        exact div_le_div_of_nonneg_left (by positivity) hpowpos.le (by norm_num)
+        exact div_le_div_of_nonneg_left (by positivity) hpowpos (by norm_num)
   · exact hmajorant
 
 /-- For fixed positive even `q`, Haar probability of imitating the permanent autonomous source
@@ -1047,7 +1094,7 @@ theorem eventually_haar_majoranaQBody_score_ge_floor_measure_lt
               (V : Matrix (FiniteQubitConfiguration (Fin n))
                 (FiniteQubitConfiguration (Fin n)) ℂ)} < δ := by
   have hratio := (tendsto_majoranaQBody_haarHighScoreBound_zero q).eventually_lt_const hδ
-  filter_upwards [eventually_ge_atTop 1, eventually_ge_atTop ((q + 1) / 2), hratio]
+  filter_upwards [eventually_ge_atTop 1, eventually_ge_atTop q, hratio]
     with n hn hnq hbound
   have hqle : q ≤ 2 * n := by omega
   exact (haar_measureReal_majoranaQBody_score_ge_floor_le
@@ -1078,7 +1125,7 @@ theorem eventually_every_autonomous_majoranaQBody_score_gt_haar
                   (H : Matrix (FiniteQubitConfiguration (Fin n))
                     (FiniteQubitConfiguration (Fin n)) ℂ)))) := by
   filter_upwards [eventually_ge_atTop 1,
-    eventually_ge_atTop ((q + 1) / 2),
+    eventually_ge_atTop q,
     eventually_majoranaQBodyDictionary_sq_lt_two_pow q] with n hn hnq hsep
   have hqle : q ≤ 2 * n := by omega
   constructor

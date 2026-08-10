@@ -143,6 +143,51 @@ theorem transportPartEquiv_apply_coe {X : Type u} {Y : Type v} (e : X ≃ Y) (C 
     (f : {f : Op X n // C.mem n f}) :
     ((transportPartEquiv e C n) f : Op Y n) = Op.transport e f.1 := rfl
 
+/-! ### The two extreme clones -/
+
+/-- The full clone: every finitary operation on `X`. -/
+def full (X : Type u) : Clone X where
+  mem _ _ := True
+  proj _ := trivial
+  comp _ _ _ _ := trivial
+
+/-- The projection clone: the smallest clone, whose `n`-ary part consists exactly of the
+coordinate projections. -/
+def projections (X : Type u) : Clone X where
+  mem n f := ∃ k : Fin n, f = fun x => x k
+  proj k := ⟨k, rfl⟩
+  comp := by
+    rintro n m f g ⟨k, rfl⟩ hg
+    obtain ⟨l, hl⟩ := hg k
+    refine ⟨l, ?_⟩
+    funext x
+    exact congrFun hl x
+
+/-- **Clones exist and the clone lattice is nontrivial.**  As soon as `X` has two distinct elements
+the projection clone is strictly smaller than the full clone, since a constant unary operation is
+not a coordinate projection. -/
+theorem projections_ne_full {X : Type u} (a b : X) (hab : a ≠ b) :
+    projections X ≠ full X := by
+  intro h
+  have h1 : (projections X).mem 1 (fun _ => a) := by rw [h]; trivial
+  obtain ⟨k, hk⟩ := h1
+  exact hab (congrFun hk fun _ => b)
+
+/-- Transport carries the full clone to the full clone. -/
+theorem transport_full {X : Type u} {Y : Type v} (e : X ≃ Y) (n : ℕ) (g : Op Y n) :
+    ((full X).transport e).mem n g ↔ (full Y).mem n g :=
+  ⟨fun _ => trivial,
+    fun _ => ⟨Op.transport e.symm g, trivial, Op.transport_transport_symm e g⟩⟩
+
+/-- Transport carries the projection clone to the projection clone. -/
+theorem transport_projections {X : Type u} {Y : Type v} (e : X ≃ Y) (n : ℕ) (g : Op Y n) :
+    ((projections X).transport e).mem n g ↔ (projections Y).mem n g := by
+  constructor
+  · rintro ⟨f, ⟨k, rfl⟩, rfl⟩
+    exact ⟨k, Op.transport_proj e k⟩
+  · rintro ⟨k, rfl⟩
+    exact ⟨fun x => x k, ⟨k, rfl⟩, Op.transport_proj e k⟩
+
 /-- Transporting back along the inverse encoding returns the original clone. -/
 theorem transport_transport_symm {X : Type u} {Y : Type v} (e : X ≃ Y) (C : Clone X) :
     ∀ n (f : Op X n), ((C.transport e).transport e.symm).mem n f ↔ C.mem n f := by
@@ -261,6 +306,37 @@ def transportEquiv {X : Type u} {Y : Type v} (e : X ≃ Y) (C : Clone X) :
         simpa using this }
   left_inv θ := by cases θ; simp [transport]
   right_inv θ := by cases θ; simp [transport]
+
+/-! ### The two extreme congruences -/
+
+/-- The total congruence, relating every pair of elements. -/
+def top {X : Type u} (C : Clone X) : Congruence C where
+  rel _ _ := True
+  iseqv := ⟨fun _ => trivial, fun _ => trivial, fun _ _ => trivial⟩
+  compat _ _ _ _ _ := trivial
+
+/-- The identity congruence. -/
+def bot {X : Type u} (C : Clone X) : Congruence C where
+  rel := Eq
+  iseqv := eq_equivalence
+  compat _ _ x y hxy := by rw [funext hxy]
+
+/-- **Congruence lattices are nontrivial.**  As soon as `X` has two distinct elements the identity
+congruence differs from the total congruence, so the transport bijection above is a bijection
+between sets with at least two elements rather than between empty ones. -/
+theorem bot_ne_top {X : Type u} (C : Clone X) (a b : X) (hab : a ≠ b) : bot C ≠ top C := by
+  intro h
+  have h1 : (bot C).rel a b := by rw [h]; trivial
+  exact hab h1
+
+/-- Transport preserves the total congruence. -/
+theorem transport_top {X : Type u} {Y : Type v} (e : X ≃ Y) (C : Clone X) (a b : Y) :
+    ((top C).transport e).rel a b ↔ (top (C.transport e)).rel a b := Iff.rfl
+
+/-- Transport preserves the identity congruence. -/
+theorem transport_bot {X : Type u} {Y : Type v} (e : X ≃ Y) (C : Clone X) (a b : Y) :
+    ((bot C).transport e).rel a b ↔ (bot (C.transport e)).rel a b :=
+  e.symm.injective.eq_iff
 
 end Congruence
 

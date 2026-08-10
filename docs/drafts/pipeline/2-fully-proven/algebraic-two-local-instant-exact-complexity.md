@@ -1537,3 +1537,65 @@ non-pattern higher-order unification `?P (σ i) ≡ γ (σ i) t₀` and time out
   finitely many polynomial images.  Mechanical; no classical input.
 - §1: Hilbert irreducibility, resting on the finished chain
   (Hensel → Newton polygon → Newton–Puiseux → Eisenstein, all built).
+
+## The spectral orbit is a trigonometric orbit (2026-08-10)
+
+`HTGeometry/SpectralOrbitTrigForm.lean` (new, in the umbrella, axiom-clean) closes the last
+identification for §4.
+
+- `re_mul_exp_neg_mul_I` — `Re(w · e^{−iθ}) = Re w · cos θ + Im w · sin θ`;
+- **`re_sum_exp`** — hence `Re(∑ⱼ wⱼ e^{−i Eⱼ t}) = ∑ⱼ (Re wⱼ · cos(Eⱼ t) + Im wⱼ · sin(Eⱼ t))`:
+  every coordinate of a spectral orbit is a finite trigonometric sum;
+- `im_eq_re_neg_I_mul` — `Im z = Re(−i z)`, so an *imaginary* coordinate is again of the form
+  `Re(∑ⱼ wⱼ' e^{−i Eⱼ t})` with `wⱼ' = −i wⱼ`.  One statement therefore covers all `2D` real
+  coordinates of a `D`-dimensional complex state, with no case split and no `Fin (2D)` index
+  bookkeeping;
+- **`finite_exceptional_times_of_spectralOrbit`** — for `w : Fin r → Fin n → ℂ` and real `E`, if
+  `k` of the coordinates `Re(∑ⱼ w_{ij} e^{−i Eⱼ t₀})` are algebraically independent over `ℚ` and
+  each of finitely many polynomial parametrisations has fewer than `k` parameters, the set of
+  `t` in any compact set at which the orbit lies in one of those images is **finite**.
+
+That is equation (2) of the card, in corpus form.  Instantiating it needs only `r = 2D`,
+`k = D − 1`, `m = 16s`, `E` the spectrum, and `w` the eigenbasis times the overlaps — the
+hypothesis `m < k` being exactly `16s < D − 1`.
+
+### Where the card stands
+
+- §1's arithmetic, §2 in full, §3 in full including equation (8) and Theorem A: **built**.
+- §4: empty interior, nowhere density, analytic zero finiteness, the separating-polynomial
+  mechanism, the finite-union statement, and now the trigonometric form of the orbit: **built**.
+  No o-minimality, no Tarski–Seidenberg, no semialgebraic geometry anywhere.
+- The single remaining classical input for the whole card is **Hilbert irreducibility** (§1),
+  and its entire dependency chain — Hensel factorisation, Newton–Rychlik, Newton polygon,
+  Newton–Puiseux, Eisenstein's theorem on algebraic power series — is now formalized,
+  unconditionally and axiom-clean.
+
+## Newton–Puiseux upgraded to the splitting form (2026-08-10)
+
+`HTGeometry/NewtonPuiseuxSplitting.lean` (new, in the umbrella, axiom-clean):
+
+> **`exists_prod_X_sub_C_map_expand`.**  Over an algebraically closed field of characteristic
+> zero, a monic `f ∈ K⟦t⟧[X]` of degree `d` satisfies, after a single ramification `t = s^N`,
+>
+> `f.map (expand N) = ∏_{i < d} (X − C yᵢ)`   for some `y : Fin d → K⟦s⟧`.
+
+Not just *a* root — all `d` of them.  The induction divides out one root supplied by
+`exists_isRoot_map_expand`, applies the hypothesis to the monic quotient of degree `d − 1`, and
+composes the two ramifications; composition is exactly `expand (N₂N₁) = expand N₂ ∘ expand N₁`.
+
+The conclusion is an explicit product rather than `Polynomial.Splits` because the latter needs
+the coefficient ring to be a field, and `K⟦t⟧` is not.
+
+**Why this is the next thing HIT needs.**  Every argument that specialises `T` to a rational
+value must know that *every* root of the specialised polynomial is the value of one of the
+finitely many branches.  The splitting form is that statement at the formal level; what remains
+to make it usable at a rational `t₀` is p-adic convergence of the branches, which is exactly
+what Eisenstein's bound `D·q^{2n}·yₙ ∈ ℤ` provides: the series converges for `v_p(t₀) > 2 v_p(q)`.
+
+### Remaining Lean layers for the card
+
+- §1, Hilbert irreducibility: p-adic evaluation of a branch (the series has bounded denominators,
+  so it converges on a disc and its value is a root of the specialised polynomial), then the
+  ramification/specialisation argument;
+- §4: instantiation only — `finite_exceptional_times_of_spectralOrbit` is the statement, and the
+  gate map as a finite union of polynomial parametrisations is the last identification.

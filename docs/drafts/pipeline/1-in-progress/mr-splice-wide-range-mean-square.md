@@ -5167,3 +5167,51 @@ so the card's entire remaining content is the mean square of the Ramaré bilinea
 factor is prime-supported.  This is precisely the object the corpus's `DirichletConvSplit`,
 `PrimeWindowSharpLevel` and `PrimePowerSupport` layers are built for — and, at the level of the
 prime *off-diagonal*, it is the Halász deficit of unit 4.
+
+## Unit 35 — the Ramaré weight is what makes the diagonal affordable
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamareEnergy.lean`
+(and `integral_Icc_normSq_logPoly_le_energy` added to `SupportMeanSquare.lean`)
+
+Bounding the `p`-blocks one at a time by their *lengths* charges `∑_{p ∈ P} M/p = M·A`, which
+collides head-on with unit 34: the rough term forces `A ≥ 15e/(2ε)`, so a diagonal of `W·M·A` is
+`W·M/ε` — far above the budget `50MW`.  The two constraints are compatible only because Ramaré's
+weight is `1/ω_P`, not `1`.  Squaring it, each integer appears in `ω_P(n)` blocks with weight
+`1/ω_P(n)`, so the **total energy is unchanged**:
+
+```text
+norm_ramareCofactorCoeff_sq_le  :  ‖μ(m)/(ω_P(m)+1)‖² ≤ 1/ω_P(p·m)²
+sum_ramareCofactor_energy_le    :  ∑_{p ∈ P} ∑_{m} ‖μ(m)/(ω_P(m)+1)‖²  ≤  M
+```
+
+— proved by pushing each block onto its multiples `n = p·m`, exchanging the two sums, and using
+`#{p ∈ P : n ∈ block p} ≤ ω_P(n)`, so the row at `n` is `≤ ω_P(n)/ω_P(n)² = 1/ω_P(n) ≤ 1`.
+
+The mean value theorem, restated by **energy** rather than support size, then gives the diagonal:
+
+```text
+integral_Icc_normSq_logPoly_le_energy (0 ∉ s ⊆ [1,N], W ≥ 1) :
+    ∫_{|w| ≤ W}‖∑_{n ∈ s} a(n)n^{2πiw}‖² ≤ ((5π/2)W + (5e/2)N)·∑_{n ∈ s}‖a(n)‖²
+sum_integral_normSq_ramareCofactorPoly_le :
+    ∑_{p ∈ P} ∫_{|w| ≤ W}‖G_p‖²  ≤  (5π/2)·W·M + (5e/2)·M²·∑_{p ∈ P} p^{-2}
+sum_integral_normSq_ramareCofactorPoly_le_budget  (∑_p p^{-2} ≤ 2ε/(5e)) :
+    ∑_{p ∈ P} ∫_{|w| ≤ W}‖G_p‖²  ≤  10·W·M + ε·M² .
+```
+
+Two different bounds on the same blocks are needed and both are used: `∑_p E_p ≤ M` for the
+`W`-term, and `E_p ≤ #block_p ≤ ⌊M/p⌋` for the `M`-term.
+
+**State of the card's budget `50·M·W + ε·M²`.**
+
+| piece | mean square | verdict |
+|---|---|---|
+| rough polynomial | `2·W·M + ε·M²` | **closed** (units 32–34) |
+| square-multiple polynomial | `M·∑_p p^{-2}` support | **closed** for `min P ≥ 1/ε` (unit 31) |
+| bilinear `p`-diagonal | `10·W·M + ε·M²` | **closed** (unit 35) |
+| bilinear `p`-off-diagonal | `∑_{p ≠ p'} ∫ (p/p')^{2πiw} G_p \overline{G_{p'}}` | **the residue** |
+
+Every term of the Matomäki–Radziwiłł decomposition except the prime off-diagonal is now bounded
+unconditionally, with explicit constants, inside the budget.  The residue is a genuinely bilinear
+oscillatory sum over pairs of *primes* — where the corpus's sharp near-diagonal weight `q/log q`
+(`PrimeWindowSharpLevel`) and the large-values layer act, and where, at the level of a single
+frequency, it is the Halász deficit of unit 4.

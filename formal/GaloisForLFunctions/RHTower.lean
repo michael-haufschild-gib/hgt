@@ -4247,6 +4247,7 @@ import GaloisForLFunctions.RHTower.Sieve.RamarePhaseError
 import GaloisForLFunctions.RHTower.Sieve.RamareBilinearMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.SupportMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.RoughCountTuran
+import GaloisForLFunctions.RHTower.Sieve.RamareEnergy
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6886,6 +6887,7 @@ import GaloisForLFunctions.RHTower.Sieve.RamarePhaseError
 import GaloisForLFunctions.RHTower.Sieve.RamareBilinearMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.SupportMeanSquare
 import GaloisForLFunctions.RHTower.Sieve.RoughCountTuran
+import GaloisForLFunctions.RHTower.Sieve.RamareEnergy
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6983,3 +6985,6 @@ import GaloisForLFunctions.RHTower.DeningerMomentSeminormBound
 import GaloisForLFunctions.RHTower.DeningerMeyerTopology
 import GaloisForLFunctions.RHTower.DeningerPreimageMomentCLM
 import GaloisForLFunctions.RHTower.DeningerChainLiftObstruction
+import GaloisForLFunctions.RHTower.DeningerGreenSumSource
+import GaloisForLFunctions.RHTower.DeningerEulerDepletionTower
+import GaloisForLFunctions.RHTower.DeningerDepletedPoisson

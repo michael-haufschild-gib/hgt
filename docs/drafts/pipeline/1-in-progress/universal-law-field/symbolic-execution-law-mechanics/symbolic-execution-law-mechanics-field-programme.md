@@ -272,3 +272,56 @@ RH or a completed universal field.
   spectrum.  Lean certification passes.  Coordinate spelling therefore cannot manufacture the
   cofinal escape of ULF-SELM-4.  Stable redundancy, quotient/completion moves, and Morita-style
   presentation invariance remain open and are the next field-level target.
+- 2026-08-10 — hostile parent audit located the static SELM core inside established clutter/Rees
+  algebra theory: symbolic-versus-ordinary powers, normal torsion-freeness, MFMC, and Hilbert-basis
+  effectivity already own the isolated finite comparison.  This does not kill SELM, but moves the
+  field claim to typed transport, observer reflection, cofinal primitive escape, and doctrine
+  exchange.  Static terminology alone is not accepted as new mathematics.
+- 2026-08-10 — ULF-SELM-6 proves the first noninvertible presentation reduction: mutual
+  inclusion-domination of failure families preserves local laws, executions, primitive splittings,
+  exact gaps, and full primitive spectrum.  Dominated superset constraints are chart redundancy.
+  Paper proof and direct Lean elaboration pass; batched final certification is in progress.
+- 2026-08-10 — ULF-SELM-7 supplies the first cross-engine exchange law.  Positive observer
+  pushforward preserves local admission and legal execution, so it cannot create an execution gap;
+  it can erase one.  Collapsing two triangle vertices makes the primitive source gap executable and
+  simultaneously creates one unit of the ULF-FKT false-overlap defect.  This forces a new universal
+  gate: every observer-level closure must prove source reflection, not merely target effectivity.
+  Paper proof and direct Lean elaboration pass; umbrella certification is pending.
+
+## 9. Higher pivot after the static parent collision
+
+The surviving field mechanism is not the clutter or its semigroup.  It is the **effectivity
+history** of a law under a chain of presentation reductions and observer exits:
+
+\[
+  (H,a,m)\longmapsto
+  \bigl(\operatorname{Local},\operatorname{Exec},
+        \operatorname{Primitive},\operatorname{Gap}\bigr)
+  \longmapsto f_!(H,a,m).
+\]
+
+ULF-SELM-7 proves that `Exec` is covariant while `Gap` is only contravariantly detectable.  Hence
+gap survival along an observer chain must be prefix-closed: once a transported law becomes
+executable, every later positive observer keeps it executable.  This predicts an obstruction-death
+filtration, with possible finite death, eternal survival, or death only at a non-strict completion.
+
+This mechanism gives route-independent, falsifiable demands on the sharpened frontier:
+
+1. **singular source descent:** construct a source execution or a reflection theorem; target
+   nullity after a lossy landing is insufficient;
+2. **all-prime oscillatory transport:** prove the observer chain retains the primitive spectrum
+   uniformly, or identify its exact death stage;
+3. **adaptive spectral orientation:** show positive scalarization is injective on the oriented
+   execution grammar, not only on its norm/Gram image;
+4. **whole-space coercivity:** show completion reflects nonexecution instead of closing a dense
+   algebraic gap observationally;
+5. **positive carrier existence:** lift a fractional/positive local law to source execution, or
+   exhibit the primitive that the carrier quotient erased;
+6. **hypertranscendence:** prove unbounded primitive degree after semantic quotient, rather than
+   infer it from persistent powers or noncompactness;
+7. **recurrence:** treat recurrent observed execution and open source primitive lineage as distinct
+   invariants.
+
+The next theorem target is exact no-revival and death-time composition for arbitrary finite
+observer chains, followed by a completion theorem separating finite persistence from death at
+infinity.  That is a mechanism problem, not an RH-route calculation.
