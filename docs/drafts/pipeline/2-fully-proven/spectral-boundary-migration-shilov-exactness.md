@@ -1415,6 +1415,13 @@ agreeing on a generating system coincide, so generation buys *uniqueness* of the
 outright.  Envelope uniqueness therefore splits cleanly into an elementary half (uniqueness, from
 generation) and the whole difficulty (existence, from Hamana).
 
+`surjective_of_isClosed_range_of_generates` then reduces the existence half further: a homomorphism
+whose range is **closed** and contains a topologically generating set is onto.  Applied to `Θ`,
+whose injectivity is already `mem_localIdeal_iff_mkQ_eq_zero`, this says the comparison is an
+isomorphism as soon as its range is closed.  In the `C^*` setting the range of a `*`-homomorphism is
+automatically closed, so the analytic content of `(12f)` is exactly that — closedness of the range
+together with generation — and not the algebraic comparison, nor minimality, nor Mittag--Leffler.
+
 ### The algebraic deficit formula
 
 `formal/GaloisForLFunctions/HTGeometry/ShilovDeficitEnvelopeFormula.lean` formalizes the card's
@@ -1472,6 +1479,26 @@ This strictly generalizes `derivedLimitOne_subsingleton_of_zero_bond`, which is 
 extreme case `K n = n + 1` (`derivedLimitOne_subsingleton_of_zero_bond_via_transitions`).  With
 `reach_eq_top_of_surjective` at the other end, the two existing vanishing theorems and this one are
 now a single mechanism.
+
+### Prescribed link deficits with global vanishing — Theorem E's linear core
+
+`formal/GaloisForLFunctions/HTGeometry/ShilovPrescribedDeficit.lean` realizes the card's
+cancellation phenomenon concretely.  For **any** prescribed family `D` of modules, the tower of
+tails `supportedAbove 𝕜 D n` (sections vanishing below `n`) with the inclusion bonds has
+
+* `prescribedCokernelEquiv`: the `n`-th link cokernel is exactly `D n`, by evaluation at `n`;
+* `inverseDifference_surjective_prescribed`: the Roos difference is **onto**, because the
+  correction section `∑_{j ∈ [n,k]} (b j) k` is a finite sum in every coordinate.
+
+`prescribed_deficit_and_derived_vanishing` states both at once: **arbitrary prescribed link
+deficits coexist with vanishing `lim¹`.**  This is Theorem E's assertion in its linear form, and it
+makes the card's "cancellation at infinity" a construction rather than an existence claim.
+
+It also settles the status of the criterion below.  The reaches of this tower are the tails
+themselves, so they never stabilise once infinitely many `D k` are nonzero — yet `lim¹` vanishes.
+**So Mittag--Leffler is strictly sufficient, not necessary**, and a proof of `(12f)` may not be
+sought by establishing Mittag--Leffler for Shilov towers alone; that would be a strictly stronger
+claim than needed and, on this evidence, the wrong invariant to chase.
 
 ### Mittag--Leffler vanishing
 

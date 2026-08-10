@@ -149,9 +149,27 @@ DONE: `inverseDifference_surjective_of_eventually_zero` — eventually-zero tran
 `∑_{j ∈ Ico n (K n)} trans n j (b j)`; `partialSum_eq_of_le` (truncation point irrelevant) +
 `partialSum_sub` (telescopes in ONE step via `trans_shift`).  Strictly generalizes
 `derivedLimitOne_subsingleton_of_zero_bond` (case K n = n+1).
-NEXT for full ML: (a) stable images have onto bonds — from `map_bond_reach` + stability;
-(b) the quotient tower A/B has eventually-zero transitions — from stability; (c) six-term
-reduction.  (a) and (b) are now routine given `map_bond_reach`.
+DONE: full Mittag-Leffler — `inverseDifference_surjective_of_hasStableImages` /
+`derivedLimitOne_subsingleton_of_hasStableImages`.  DIRECT proof, no six-term sequence and no
+quotient tower: `map_bond_stable` (stable images form a sub-tower with ONTO bonds, from
+`map_bond_reach` + stability), the correction sum solves the Roos equation up to the stable part
+(two truncations differ by stable elements), and the corpus's `inverseDifference_surjective`
+corrects the residue inside the sub-tower.  Both corpus extremes are now corollaries
+(`..._of_surjective_via_stable`, `..._of_zero_bond_via_stable`).
+Traps: the corpus module has `variable (A : ℕ → Type v)` EXPLICIT — call `restrictedBond A bond ...`
+and `inverseDifference_surjective A ...`.  `linear_combination` needs a CommSemiring; on module
+elements use `rw [← h]; abel` or a `show ... from by abel` rewrite.
+
+## Prescribed deficits + ML is NOT necessary — `ShilovPrescribedDeficit.lean`
+Tower of tails: `supportedAbove 𝕜 D n` = sections of `D` vanishing below n, bonds = inclusions.
+`prescribedCokernelEquiv`: n-th cokernel ≅ `D n` (evaluation at n).
+`inverseDifference_surjective_prescribed`: Roos difference ONTO — correction section
+`∑_{j ∈ Ico n (k+1)} (b j) k` is finite in every coordinate.
+`prescribed_deficit_and_derived_vanishing` = Theorem E's linear core: ARBITRARY prescribed link
+deficits coexist with lim¹ = 0.
+**Consequence: Mittag-Leffler is STRICTLY sufficient.**  This tower's reaches are the tails, which
+never stabilise, yet lim¹ = 0.  So do NOT try to prove (12f) by establishing ML for Shilov towers —
+that is strictly stronger than needed and is the wrong invariant.
 
 ## Already in the corpus — do not rebuild
 `ShilovBoundaryMigrationDefect.escapeDetectionEquiv` is the card's `(16)`, and

@@ -700,10 +700,75 @@ The sums are taken in `ℝ≥0∞`, so every identity above is unconditional —
 condition appears anywhere.  Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only; the
 module builds green (8 655 jobs).
 
-**What remains for target 1.**  Solving the Euler recursion needs `T_n(q) < ∞` for `q < 1`, which is
-the one genuinely quantitative input: `T_n` is bounded by the sum over weakly decreasing `n`-tuples,
-`(∑_m qᵐ)ⁿ = (1−q)^{−n}`, through the sorted-parts injection
-`{h : partCount h ≤ n} ↪ (Fin n → ℕ)`.  With finiteness in hand the recursion gives
-`T_n = ∏_{i=1}^n (1−qⁱ)^{−1}` and hence `S_n = qⁿ / ∏_{i=1}^n (1−qⁱ)`, which is literally the
-corpus's `qGeometricCoefficient q n`; combined with `eqgWeight_prime_pow` and the product mode law
-of `Core.lean` that is (GAS.5), Theorem 3.1.
+### Target 1, step 2 — Euler's generating function, closed form (DONE)
+
+The finiteness input was obtained without any sorted-parts injection.  Truncating by *size* rather
+than by support makes the shift bijection strictly decrease the size budget, so the Euler recursion
+becomes an induction that terminates:
+
+`T_n^{[N]} ≤ T_{n−1}^{[N]} + q^n · T_n^{[N−n]}`,  and  `N − n < N` for `n ≥ 1`.
+
+Bounding by the geometric majorant `G = (1−q)⁻¹`, which satisfies `1 + qG = G`, gives
+`T_n^{[N]} ≤ Gⁿ` uniformly in `N`, and then `T_n ≤ Gⁿ < ∞` by exhausting the index set with finite
+subsets.  With finiteness the recursion inverts.
+
+| Declaration | Statement |
+|---|---|
+| `atMostGFTrunc` | the size-truncated generating function |
+| `partSize_eq_zero_iff`, `atMostGFTrunc_size_zero`, `atMostGFTrunc_count_zero` | the two base cases |
+| `eq_unshift_of_partCount` | a configuration is recovered from its shift and its part count |
+| `atMostGFTrunc_succ_le` | the truncated Euler step, with the size budget dropping by `n+1` |
+| `geomBound`, `one_add_mul_geomBound`, `one_le_geomBound`, `geomBound_ne_top` | the majorant `G = (1−q)⁻¹` and `1 + qG = G` |
+| `atMostGFTrunc_le_geomBound` | `T_n^{[N]} ≤ Gⁿ`, by induction on `n` and strong induction on `N` |
+| `atMostGF_le_geomBound`, **`atMostGF_ne_top`** | **`T_n ≤ Gⁿ < ∞`** |
+| `atMostGF_mul_one_sub` | `T_{n+1}(1 − q^{n+1}) = T_n` |
+| **`atMostGF_mul_prod`** | **`T_n · ∏_{i<n}(1 − q^{i+1}) = 1`** |
+| **`exactGF_mul_prod`** | **`S_n · ∏_{i<n}(1 − q^{i+1}) = qⁿ`** — Euler's identity for partitions with exactly `n` parts |
+
+Stating the closed forms multiplicatively keeps the whole layer free of `ℝ≥0∞` division.  Axiom
+audit: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 655 jobs.
+
+### Target 1, step 3 — Euler's identity in q-Pochhammer form, and the local socle mass (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/PartitionQPochhammerBridge.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+`∏_{i<n}(1 − q^{i+1})` is literally the corpus's `realQFactorial q n`, so transporting
+`exactGF_mul_prod` from `ℝ≥0∞` to `ℝ` identifies the partition generating function with the
+q-geometric coefficient of the q-Pochhammer layer.
+
+| Declaration | Statement |
+|---|---|
+| `exactGFReal`, `ofReal_nome_lt_one`, `exactGF_ne_top` | the real-valued exact generating function and its finiteness |
+| `prod_ofReal_eq` | `∏_{i<n}(1 − q^{i+1})` in `ℝ≥0∞` is `ofReal (realQFactorial q n)` |
+| **`exactGFReal_eq_qGeometricCoefficient`** | **`S_n(q) = qⁿ/(q;q)ₙ`** — Euler's identity in corpus form |
+| `localSocleMass`, `localSocleMass_ne_top` | the `p`-local mass of the configurations with exactly `n` cyclic factors |
+| **`localSocleMass_toReal`**, `localSocleMass_eq_ofReal` | **(GAS.5), local form: that mass is the Euler weight `w_{q,n} = (q;q)_∞·qⁿ/(q;q)ₙ`** |
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 658 jobs.
+
+### Target 1, step 4 — Theorem 3.1 (GAS.5), local form (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/SocleBridge.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The two models line up exactly: the gas mode ratio at depth `j` and prime `p` is
+`p^{−(j+1)σ} = q^{j+1}` for the nome `q = p^{−σ}`, so the local configuration mass
+`∏_j (ratio)^{g_j}(1 − ratio)` is `(q;q)_∞ · q^{partSize g}` verbatim.
+
+| Declaration | Statement |
+|---|---|
+| `tprod_occupation_pow`, `multipliable_occupation_pow` | `∏_j (q^{j+1})^{g_j} = q^{size g}`, a finite product |
+| **`tprod_localModeMass`** | **the mass of one local configuration is `(q;q)_∞ · q^{size g}`** |
+| **`tsum_localModeMass_eq_localSocleMass`**, `tsum_localModeMass_toReal` | summing over the configurations with exactly `n` cyclic factors gives the local socle mass, whose value is the Euler weight |
+| `eqgNome_pow_succ` | the depth-`j` gas ratio at `p` is the `(j+1)`-st power of the nome `eqgNome σ p` |
+| **`gas_socleMarginal_eq_eulerWeight`** | **(GAS.5): the local socle marginal of the gas at `p` is `(q;q)_∞ · eqgWeight σ (pⁿ)`, the Euler weight of the random-integer law of ULF-EQG-1** |
+
+Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 660 jobs.
+
+**Scope of what is certified.**  The statement is the *local* form of (GAS.5): it is about the
+product of the geometric depth modes at one prime, which is exactly the object the card's proof
+computes with.  The step from this to the marginal of the full `gasMeasure` — factoring the
+countable product over `Nat.Primes × ℕ` into its prime blocks — is measure-theoretic bookkeeping
+that remains; it needs a product-index splitting for `∏'` in `ℝ≥0∞`, which mathlib does not
+currently carry.

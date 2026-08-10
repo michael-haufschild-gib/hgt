@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The twenty-seven field laws
+## 2. The twenty-nine field laws
 
 ### RLM Law I -- typed exposure
 
@@ -391,6 +391,29 @@ This joins future testing, law saturation, and relational renormalization into o
 still supplies no source selector between the two directions; topology, positivity, and recursive
 failure-to-law genesis remain the next field layer.
 
+### RLM Law XXIX -- self-evaluation births a minimal new challenge and escapes its cofinal limit
+
+A Boolean doctrine that evaluates its own reporter--challenge pairs cannot represent the
+complement of its diagonal. Adjoining that anti-diagonal as one fresh reporter is conservative on
+all old pairs, cardinal-minimal among conservative realizations, and natural under relabelling.
+Iterating from the empty doctrine yields the strict-order tower
+
+\[
+ E_n(i,j)=1 \Longleftrightarrow j<i.
+ \tag{RLM.7}
+\]
+
+Every finite observation of the limiting all-true challenge is represented by a sufficiently late
+row, but no row represents the whole challenge. The finite-stage successor tower again has the
+same `Nat` limit, whereas succession after the limit adds an infinite-support top row. Thus the
+source-generated grammar update fails to commute with its own cofinal formation.
+
+ULF-DJG-1 Lean-certifies diagonal novelty, conservative minimality, relabelling naturality, finite
+normal form, finite-cylinder approximation, global nonrealization, and the exact support invariant
+separating limit from successor. This supplies one source-normal production law missing from
+ULF-PCG-2. It remains a Boolean calibration: recursive typed challenges, admission, repair choice,
+and realization in three nonisomorphic corpus organs remain open.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -437,6 +460,7 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-PCG-2 | descent-breaking grammar extension, exact strict refinement, old-term definability barrier, and observer erasure | certified |
 | ULF-RLR-1 | observer-induced relational law, lax execution, serial two-defect interchange, exact injectivity chamber, and independent splice cells | certified |
 | ULF-RLR-2 | least invariant coarsening, greatest invariant refinement, opposite absorption, exchange iff executability, and maximal three-state repair split | certified |
+| ULF-DJG-1 | diagonal challenge birth, minimal conservative successor, finite strict-order tower, and filtered-limit nonexchange | certified |
 | ULF-RLM-12 | fixed-polarity revision collapse and endogenous-genesis boundary | certified |
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
@@ -493,6 +517,9 @@ self-revising calculus and make cross-laboratory predictions. A list of analogie
     repair cannot sustain open history; any infinite genesis must spend another named resource.
 14. **Two-defect renormalization:** source-execution splice and observer-midpoint splice are
     independently nonzero; no scalar total defect determines where effective-law loss entered.
+15. **Finite closure mirage:** a challenge may be realized on every finite coordinate horizon and
+    still be absent globally; applying the source-normal successor before versus after cofinal
+    formation then produces nonisomorphic doctrines.
 
 ## 7. Fields-medalist research programme
 

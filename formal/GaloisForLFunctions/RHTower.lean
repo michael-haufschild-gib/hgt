@@ -2382,6 +2382,7 @@ import GaloisForLFunctions.RHTower.GaussComponentLocalResidueLaw
 import GaloisForLFunctions.RHTower.GaussComponentMagnitudeResidue
 import GaloisForLFunctions.RHTower.GaussComponentPhaseResidue
 import GaloisForLFunctions.RHTower.GaussComponentPrimeSampling
+import GaloisForLFunctions.RHTower.GaussComponentSampledEnergyBounds
 import GaloisForLFunctions.RHTower.GaussComponentSampledRatio
 import GaloisForLFunctions.RHTower.GaussComponentSampledRatioPrime
 import GaloisForLFunctions.RHTower.GaussComponentVerticalMagnitude
@@ -4150,6 +4151,10 @@ import GaloisForLFunctions.RHTower.Sieve.WindowLogWidth
 import GaloisForLFunctions.RHTower.Sieve.WindowToLogWindowSum
 import GaloisForLFunctions.RHTower.Sieve.WindowRealStep
 import GaloisForLFunctions.RHTower.Sieve.FibreFixedWidth
+import GaloisForLFunctions.RHTower.Sieve.FibreLogCharacterisation
+import GaloisForLFunctions.RHTower.Sieve.WindowEndpoint
+import GaloisForLFunctions.RHTower.Sieve.FibreToLogWindow
+import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparated
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6717,6 +6722,10 @@ import GaloisForLFunctions.RHTower.Sieve.WindowLogWidth
 import GaloisForLFunctions.RHTower.Sieve.WindowToLogWindowSum
 import GaloisForLFunctions.RHTower.Sieve.WindowRealStep
 import GaloisForLFunctions.RHTower.Sieve.FibreFixedWidth
+import GaloisForLFunctions.RHTower.Sieve.FibreLogCharacterisation
+import GaloisForLFunctions.RHTower.Sieve.WindowEndpoint
+import GaloisForLFunctions.RHTower.Sieve.FibreToLogWindow
+import GaloisForLFunctions.RHTower.Sieve.FibreStartSeparated
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6726,3 +6735,4 @@ import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightForms
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightMellin
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightPower
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightCartan
+import GaloisForLFunctions.RHTower.DeningerWordHeight

@@ -295,15 +295,20 @@ theorem atMostGFTrunc_succ_le (q : ℝ≥0∞) (n N : ℕ) :
     refine tsum_congr fun g => ?_
     by_cases hN : partSize g ≤ N
     · by_cases h1 : partCount g ≤ n
-      · rw [Set.indicator_of_mem (show g ∈ _ from ⟨by omega, hN⟩),
-          Set.indicator_of_mem (show g ∈ _ from ⟨h1, hN⟩),
+      · rw [Set.indicator_of_mem
+            (show g ∈ {g : PartConfig | partCount g ≤ n + 1 ∧ partSize g ≤ N} from ⟨by omega, hN⟩),
+          Set.indicator_of_mem
+            (show g ∈ {g : PartConfig | partCount g ≤ n ∧ partSize g ≤ N} from ⟨h1, hN⟩),
           Set.indicator_of_notMem (show g ∉ {g : PartConfig | partCount g = n + 1 ∧ partSize g ≤ N}
             by rintro ⟨h2, -⟩; omega), add_zero]
       · by_cases h2 : partCount g = n + 1
-        · rw [Set.indicator_of_mem (show g ∈ _ from ⟨by omega, hN⟩),
+        · rw [Set.indicator_of_mem
+              (show g ∈ {g : PartConfig | partCount g ≤ n + 1 ∧ partSize g ≤ N} from ⟨by omega, hN⟩),
             Set.indicator_of_notMem (show g ∉ {g : PartConfig | partCount g ≤ n ∧ partSize g ≤ N}
               by rintro ⟨h3, -⟩; omega),
-            Set.indicator_of_mem (show g ∈ _ from ⟨h2, hN⟩), zero_add]
+            Set.indicator_of_mem
+              (show g ∈ {g : PartConfig | partCount g = n + 1 ∧ partSize g ≤ N} from ⟨h2, hN⟩),
+            zero_add]
         · rw [Set.indicator_of_notMem
               (show g ∉ {g : PartConfig | partCount g ≤ n + 1 ∧ partSize g ≤ N}
                 by rintro ⟨h3, -⟩; omega),
@@ -326,7 +331,7 @@ theorem atMostGFTrunc_succ_le (q : ℝ≥0∞) (n N : ℕ) :
     refine Summable.tsum_le_tsum_of_inj
       (e := fun g : {g : PartConfig // partCount g = n + 1 ∧ partSize g ≤ N} =>
         (⟨shift g.1, ?_, ?_⟩ : {h : PartConfig // partCount h ≤ n + 1 ∧ partSize h ≤ N - (n + 1)}))
-      ?_ (fun c _ => zero_le _) ?_ ENNReal.summable ENNReal.summable
+      ?_ (fun c _ => bot_le) ?_ ENNReal.summable ENNReal.summable
     · have := partCount_shift_le g.1
       have := g.2.1
       omega
@@ -338,8 +343,8 @@ theorem atMostGFTrunc_succ_le (q : ℝ≥0∞) (n N : ℕ) :
       refine Subtype.ext ?_
       rw [eq_unshift_of_partCount a.2.1, eq_unshift_of_partCount b.2.1, hs]
     · intro g
-      rw [← pow_add]
-      exact le_of_eq (by rw [partSize_eq_add_partSize_shift g.2.1])
+      show q ^ partSize g.1 ≤ q ^ (n + 1) * q ^ partSize (shift g.1)
+      rw [← pow_add, partSize_eq_add_partSize_shift g.2.1]
   calc atMostGFTrunc q (n + 1) N
       = ∑' g : PartConfig,
           {g : PartConfig | partCount g ≤ n + 1 ∧ partSize g ≤ N}.indicator
@@ -354,7 +359,144 @@ theorem atMostGFTrunc_succ_le (q : ℝ≥0∞) (n N : ℕ) :
         + ∑' g : {g : PartConfig // partCount g = n + 1 ∧ partSize g ≤ N}, q ^ partSize g.1 := by
           rw [← hB, ← hC]; rfl
     _ ≤ atMostGFTrunc q n N + q ^ (n + 1) * atMostGFTrunc q (n + 1) (N - (n + 1)) :=
-        add_le_add_left hinj _
+        add_le_add le_rfl hinj
+
+/-! ## Finiteness -/
+
+/-- The geometric majorant `(1 − q)⁻¹`. -/
+def geomBound (q : ℝ≥0∞) : ℝ≥0∞ := (1 - q)⁻¹
+
+theorem one_sub_ne_zero (q : ℝ≥0∞) (hq : q < 1) : (1 : ℝ≥0∞) - q ≠ 0 := by
+  intro h0
+  rw [tsub_eq_zero_iff_le] at h0
+  exact absurd hq (not_lt.mpr h0)
+
+theorem geomBound_ne_top (q : ℝ≥0∞) (hq : q < 1) : geomBound q ≠ ⊤ :=
+  ENNReal.inv_ne_top.mpr (one_sub_ne_zero q hq)
+
+theorem one_le_geomBound (q : ℝ≥0∞) : 1 ≤ geomBound q := by
+  rw [geomBound]
+  calc (1 : ℝ≥0∞) = (1 : ℝ≥0∞)⁻¹ := by simp
+    _ ≤ (1 - q)⁻¹ := ENNReal.inv_le_inv.mpr tsub_le_self
+
+theorem one_add_mul_geomBound (q : ℝ≥0∞) (hq : q < 1) :
+    1 + q * geomBound q = geomBound q := by
+  have hsub : (1 : ℝ≥0∞) - q ≠ 0 := one_sub_ne_zero q hq
+  have htop : (1 : ℝ≥0∞) - q ≠ ⊤ := by
+    exact ne_top_of_le_ne_top (by simp) tsub_le_self
+  have hcancel : (1 - q) * geomBound q = 1 := by
+    rw [geomBound, ENNReal.mul_inv_cancel hsub htop]
+  calc 1 + q * geomBound q = (1 - q) * geomBound q + q * geomBound q := by rw [hcancel]
+    _ = ((1 - q) + q) * geomBound q := by rw [add_mul]
+    _ = 1 * geomBound q := by rw [tsub_add_cancel_of_le hq.le]
+    _ = geomBound q := one_mul _
+
+theorem pow_le_self (q : ℝ≥0∞) (hq : q ≤ 1) (n : ℕ) : q ^ (n + 1) ≤ q := by
+  calc q ^ (n + 1) = q ^ n * q := pow_succ q n
+    _ ≤ 1 * q := mul_le_mul' (pow_le_one₀ (by simp) hq) le_rfl
+    _ = q := one_mul q
+
+theorem atMostGFTrunc_le_geomBound (q : ℝ≥0∞) (hq : q < 1) (n N : ℕ) :
+    atMostGFTrunc q n N ≤ geomBound q ^ n := by
+  induction n generalizing N with
+  | zero =>
+      rw [atMostGFTrunc_count_zero, pow_zero]
+  | succ n ih =>
+      induction N using Nat.strong_induction_on with
+      | _ N ihN =>
+        rcases Nat.eq_zero_or_pos N with rfl | hN
+        · rw [atMostGFTrunc_size_zero]
+          exact one_le_pow₀ (one_le_geomBound q)
+        · have hstep := atMostGFTrunc_succ_le q n N
+          have h1 := ih N
+          have h2 := ihN (N - (n + 1)) (by omega)
+          have hgeom : geomBound q ^ (n + 1)
+              = geomBound q ^ n + q * geomBound q ^ (n + 1) := by
+            calc geomBound q ^ (n + 1) = geomBound q ^ n * geomBound q := pow_succ _ n
+              _ = geomBound q ^ n * (1 + q * geomBound q) := by
+                  rw [one_add_mul_geomBound q hq]
+              _ = geomBound q ^ n + q * (geomBound q ^ n * geomBound q) := by ring
+              _ = geomBound q ^ n + q * geomBound q ^ (n + 1) := by rw [← pow_succ]
+          have hq1 := pow_le_self q hq.le n
+          calc atMostGFTrunc q (n + 1) N
+              ≤ atMostGFTrunc q n N + q ^ (n + 1) * atMostGFTrunc q (n + 1) (N - (n + 1)) := hstep
+            _ ≤ geomBound q ^ n + q ^ (n + 1) * geomBound q ^ (n + 1) :=
+                add_le_add h1 (mul_le_mul' le_rfl h2)
+            _ ≤ geomBound q ^ n + q * geomBound q ^ (n + 1) :=
+                add_le_add le_rfl (mul_le_mul' hq1 le_rfl)
+            _ = geomBound q ^ (n + 1) := hgeom.symm
+
+theorem atMostGF_le_geomBound (q : ℝ≥0∞) (hq : q < 1) (n : ℕ) :
+    atMostGF q n ≤ geomBound q ^ n := by
+  classical
+  have hAM := tsum_subtype {g : PartConfig | partCount g ≤ n} (fun g => q ^ partSize g)
+  have hkey : (∑' g : PartConfig, {g : PartConfig | partCount g ≤ n}.indicator
+      (fun g => q ^ partSize g) g) ≤ geomBound q ^ n := by
+    rw [ENNReal.tsum_eq_iSup_sum]
+    refine iSup_le fun s => ?_
+    set N := s.sup fun g => partSize g with hNdef
+    have hle : (∑ g ∈ s, {g : PartConfig | partCount g ≤ n}.indicator
+          (fun g => q ^ partSize g) g)
+        ≤ ∑ g ∈ s, {g : PartConfig | partCount g ≤ n ∧ partSize g ≤ N}.indicator
+          (fun g => q ^ partSize g) g := by
+      refine Finset.sum_le_sum fun g hg => ?_
+      by_cases h1 : partCount g ≤ n
+      · rw [Set.indicator_of_mem (show g ∈ {g : PartConfig | partCount g ≤ n} from h1),
+          Set.indicator_of_mem
+            (show g ∈ {g : PartConfig | partCount g ≤ n ∧ partSize g ≤ N} from
+              ⟨h1, Finset.le_sup hg⟩)]
+      · rw [Set.indicator_of_notMem (show g ∉ {g : PartConfig | partCount g ≤ n} from h1)]
+        exact bot_le
+    have hts : (∑ g ∈ s, {g : PartConfig | partCount g ≤ n ∧ partSize g ≤ N}.indicator
+          (fun g => q ^ partSize g) g) ≤ atMostGFTrunc q n N := by
+      have h := tsum_subtype {g : PartConfig | partCount g ≤ n ∧ partSize g ≤ N}
+        (fun g => q ^ partSize g)
+      calc (∑ g ∈ s, {g : PartConfig | partCount g ≤ n ∧ partSize g ≤ N}.indicator
+              (fun g => q ^ partSize g) g)
+          ≤ ∑' g : PartConfig, {g : PartConfig | partCount g ≤ n ∧ partSize g ≤ N}.indicator
+              (fun g => q ^ partSize g) g := ENNReal.sum_le_tsum s
+        _ = atMostGFTrunc q n N := h.symm
+    exact le_trans (le_trans hle hts) (atMostGFTrunc_le_geomBound q hq n N)
+  calc atMostGF q n
+      = ∑' g : PartConfig, {g : PartConfig | partCount g ≤ n}.indicator
+          (fun g => q ^ partSize g) g := hAM
+    _ ≤ geomBound q ^ n := hkey
+
+theorem atMostGF_ne_top (q : ℝ≥0∞) (hq : q < 1) (n : ℕ) : atMostGF q n ≠ ⊤ :=
+  ne_top_of_le_ne_top (ENNReal.pow_ne_top (geomBound_ne_top q hq))
+    (atMostGF_le_geomBound q hq n)
+
+/-! ## The closed form -/
+
+theorem atMostGF_mul_one_sub (q : ℝ≥0∞) (hq : q < 1) (n : ℕ) :
+    atMostGF q (n + 1) * (1 - q ^ (n + 1)) = atMostGF q n := by
+  have hfin := atMostGF_ne_top q hq (n + 1)
+  have hrec := atMostGF_succ_self q n
+  have hmulfin : atMostGF q (n + 1) * q ^ (n + 1) ≠ ⊤ :=
+    ENNReal.mul_ne_top hfin (ENNReal.pow_ne_top hq.ne_top)
+  rw [ENNReal.mul_sub (fun _ _ => hfin), mul_one]
+  refine ENNReal.sub_eq_of_eq_add hmulfin ?_
+  rw [mul_comm (atMostGF q (n + 1)) (q ^ (n + 1))]
+  exact hrec
+
+/-- **Euler's product form for the partitions with at most `n` parts.** -/
+theorem atMostGF_mul_prod (q : ℝ≥0∞) (hq : q < 1) (n : ℕ) :
+    atMostGF q n * ∏ i ∈ Finset.range n, (1 - q ^ (i + 1)) = 1 := by
+  induction n with
+  | zero => rw [atMostGF_zero, Finset.prod_range_zero, mul_one]
+  | succ n ih =>
+      rw [Finset.prod_range_succ]
+      calc atMostGF q (n + 1) * ((∏ i ∈ Finset.range n, (1 - q ^ (i + 1))) * (1 - q ^ (n + 1)))
+          = atMostGF q (n + 1) * (1 - q ^ (n + 1))
+            * ∏ i ∈ Finset.range n, (1 - q ^ (i + 1)) := by ring
+        _ = atMostGF q n * ∏ i ∈ Finset.range n, (1 - q ^ (i + 1)) := by
+            rw [atMostGF_mul_one_sub q hq n]
+        _ = 1 := ih
+
+/-- **Euler's generating function for the partitions with exactly `n` parts.** -/
+theorem exactGF_mul_prod (q : ℝ≥0∞) (hq : q < 1) (n : ℕ) :
+    exactGF q n * ∏ i ∈ Finset.range n, (1 - q ^ (i + 1)) = q ^ n := by
+  rw [exactGF_eq_mul, mul_assoc, atMostGF_mul_prod q hq n, mul_one]
 
 end
 

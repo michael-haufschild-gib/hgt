@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.GaussComponentSampledRatio
 import GaloisForLFunctions.RHTower.GaussComponentPhaseResidue
+import GaloisForLFunctions.HTGeometry.UnimodularInverseLimit
 
 /-!
 # The prime-lattice sampled ratio law
@@ -101,6 +102,48 @@ theorem gaussComponentPrimeSample_ratio_sub_phase_tendsto_zero
   intro n
   simp only [Function.comp_def]
   rw [gaussPrimeSampleHeight_add_shift p n j, gaussPrimeSampleShift_mul_clock hm p n j]
+
+/-- The sampled rotation is unimodular. -/
+theorem norm_gaussPrimeSamplePhase {m : ℕ} (p : Nat.Primes) (j n : ℕ) :
+    ‖Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) *
+      ((gaussComponentPhaseRate m p * Real.log ((n : ℝ) + 1) +
+        gaussComponentPhaseOffset m p : ℝ) : ℂ))‖ = 1 := by
+  rw [Complex.norm_exp]
+  have hform : (2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) *
+      ((gaussComponentPhaseRate m p * Real.log ((n : ℝ) + 1) +
+        gaussComponentPhaseOffset m p : ℝ) : ℂ))
+      = ((2 * Real.pi * (j : ℝ) *
+          (gaussComponentPhaseRate m p * Real.log ((n : ℝ) + 1) +
+            gaussComponentPhaseOffset m p) : ℝ) : ℂ) * Complex.I := by
+    push_cast
+    ring
+  rw [hform]
+  simp
+
+/-- **Backward prime-lattice ratio law.**  The reciprocal sampled ratio is asymptotically the
+inverse rotation, so the ratio law is available at negative shifts as well. -/
+theorem gaussComponentPrimeSample_inv_ratio_sub_phase_tendsto_zero
+    {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes) (j : ℕ) :
+    Tendsto (fun n : ℕ =>
+      gaussComponentVerticalValue k (gaussPrimeSampleHeight p n) /
+          gaussComponentVerticalValue k (gaussPrimeSampleHeight p (n + j)) -
+        Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) *
+          ((gaussComponentPhaseRate m p * Real.log ((n : ℝ) + 1) +
+            gaussComponentPhaseOffset m p : ℝ) : ℂ))))
+      atTop (nhds 0) := by
+  have hforward := gaussComponentPrimeSample_ratio_sub_phase_tendsto_zero hm k p j
+  have ha : ∀ n : ℕ,
+      gaussComponentVerticalValue k (gaussPrimeSampleHeight p (n + j)) /
+        gaussComponentVerticalValue k (gaussPrimeSampleHeight p n) ≠ 0 := by
+    intro n
+    exact div_ne_zero
+      (gaussComponentVerticalValue_ne_zero hm k (gaussPrimeSampleHeight_pos p (n + j)))
+      (gaussComponentVerticalValue_ne_zero hm k (gaussPrimeSampleHeight_pos p n))
+  have hinv := GaloisForLFunctions.tendsto_inv_sub_inv_of_tendsto_sub_zero ha
+    (fun n => norm_gaussPrimeSamplePhase (m := m) p j n) hforward
+  refine hinv.congr ?_
+  intro n
+  rw [inv_div, ← Complex.exp_neg]
 
 end
 

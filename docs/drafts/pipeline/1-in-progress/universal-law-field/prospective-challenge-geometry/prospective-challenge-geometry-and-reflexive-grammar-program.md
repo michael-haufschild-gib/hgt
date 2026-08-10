@@ -213,8 +213,9 @@ ingredients.
 
 ## 7. Open core and death gate
 
-ULF-PCG-2 closes the effectiveness test for a supplied operation. It does not produce that
-operation. The open core is:
+ULF-PCG-2 closes the effectiveness test for a supplied operation. ULF-DJG-1 now supplies one exact
+source-normal production law in the Boolean self-evaluator laboratory: diagonal complement forces
+one new reporter, and the update fails to commute with its cofinal limit. The general open core is:
 
 `[OPEN CORE]` Construct a source-normal reflexive grammar update
 
@@ -225,7 +226,8 @@ operation. The open core is:
 \]
 
 whose prospective refinement is effective, whose lineage is presentation-stable, and whose
-definition is fixed before any RH endpoint.
+definition is fixed before any RH endpoint, and which specializes to more than the diagonal
+Boolean laboratory without becoming an arbitrary oracle.
 
 Retire PCG as universal field if every such update is either:
 
@@ -244,5 +246,7 @@ Retire PCG as universal field if every such update is either:
 - 2026-08-10 -- ULF-PCG-1 paper core closed; reflexive source grammar remains open.
 - 2026-08-10 -- audited the current RH frontier map: five unlike open-premise classes share failure
   to generate a legal next operation, not one missing invariant.
+- 2026-08-10 -- ULF-DJG-1 closes the Boolean source-production calibration and its cofinal
+  nonexchange in Lean. Full recursive grammar, admission, and three-organ realization remain open.
 - 2026-08-10 -- ULF-PCG-2 closed exact quotient-descent criterion and old-term definability barrier
   in Lean; source-normal update production remains load-bearing.

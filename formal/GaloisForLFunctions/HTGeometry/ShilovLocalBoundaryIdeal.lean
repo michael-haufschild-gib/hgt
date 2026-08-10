@@ -606,6 +606,31 @@ theorem eq_of_eqOn_generates {A : Type*} [Ring A] [Algebra 𝕜 A] [Algebra 𝕜
 
 end Uniqueness
 
+section Existence
+
+variable {A B : Type*} [Ring A] [Algebra 𝕜 A] [Ring B] [Algebra 𝕜 B] [TopologicalSpace B]
+  [IsTopologicalRing B]
+
+/-- **Existence from a closed range.**  A homomorphism whose range is closed and contains a
+topologically generating set is onto.
+
+This is where an envelope comparison map becomes surjective.  In the `C^*` setting the range of a
+`*`-homomorphism is automatically closed, so the analytic content of an envelope theorem is
+closedness of the range together with generation — not the algebraic comparison itself. -/
+theorem surjective_of_isClosed_range_of_generates (φ : A →ₐ[𝕜] B) {T : Set B}
+    (hT : T ⊆ Set.range φ) (hclosed : IsClosed (Set.range φ))
+    (hgen : (Algebra.adjoin 𝕜 T).topologicalClosure = ⊤) :
+    Function.Surjective φ := by
+  have hle : Algebra.adjoin 𝕜 T ≤ φ.range := Algebra.adjoin_le hT
+  have hclosed' : IsClosed ((φ.range : Subalgebra 𝕜 B) : Set B) := hclosed
+  have h2 : (Algebra.adjoin 𝕜 T).topologicalClosure ≤ φ.range :=
+    Subalgebra.topologicalClosure_minimal hle hclosed'
+  rw [hgen] at h2
+  intro y
+  exact h2 (Algebra.mem_top)
+
+end Existence
+
 end ShilovLocal
 
 end GaloisForLFunctions.HTGeometry

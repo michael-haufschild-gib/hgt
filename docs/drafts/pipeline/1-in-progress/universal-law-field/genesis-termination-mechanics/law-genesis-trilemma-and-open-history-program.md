@@ -146,3 +146,8 @@ no source rule for growth.
   into the law-genesis trilemma; open-history mechanism narrowed to five accounted expenditures.
 - 2026-08-09 -- added the finitary-formation barrier; unbounded finite arity removed as a candidate
   cofinal-birth mechanism and replaced by an explicit formation-class transition.
+- 2026-08-10 -- ULF-DJG-1 constructs and Lean-certifies one such transition: anti-diagonal
+  self-evaluation forces a minimal conservative successor, but successor formation fails to
+  commute with the cofinal strict-order tower. This passes source growth and nontermination gates;
+  certificate transport, repair exchange, admission, and three-frontier-class realization remain
+  open.

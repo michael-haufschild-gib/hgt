@@ -753,3 +753,16 @@ lint reaches the owned module but is currently red on unrelated concurrently unw
 `RHTower.DeningerPrimeLogHeightForms` and
 `HTGeometry.ConstraintRelativity.CongruenceOrderTraceDual`.  No route, analytic hypothesis,
 project axiom, or RH statement occurs in the certified module.
+
+## Session 2026-08-10 addition (Diagonal Law Genesis)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DJG-1 | Boolean anti-diagonal challenge birth; cardinal-minimal conservative successor; relabelling naturality; finite strict-order tower; finite-cylinder/global realization gap; infinite-support successor; filtered-limit nonexchange | `HTGeometry.ConstitutiveDiagonalLawGenesis` |
+
+Direct foreground elaboration is warning-free and the leaf build passes with 2,997 jobs. The
+module is wired into `HTGeometry.UniversalLawField`. Axiom prints on diagonal novelty, the
+no-isomorphism theorem, and the unconditional capstone report only `propext`, `Classical.choice`,
+and `Quot.sound`. No route object, analytic premise, project axiom, or RH statement occurs. The
+result closes one source-normal grammar-update calibration; recursive typed challenges,
+admission-sensitive formation, and three-organ realization remain open.

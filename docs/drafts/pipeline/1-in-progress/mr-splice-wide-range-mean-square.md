@@ -3053,3 +3053,120 @@ no width-variation loss is incurred at any level.
 ### What is left
 
 `gallagher_identity` at `δ = fibreWidth x h`, and the Halász bound for `∫ |logPoly|²`.
+
+## 2026-08-10 the fibre, characterised in the logarithmic variable
+
+`Sieve/FibreLogCharacterisation.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`,
+wired, builds clean (9024 jobs).
+
+```text
+mem_innerFibre_of_log :  the converse inclusion
+mem_innerFibre_iff_log :  4 ≤ x, 0 ≤ h, a ∈ outerBlock x h, 1 ≤ b  →
+  b ∈ innerFibre x h a  ↔  log(x/a) ≤ log b ≤ log(x/a) + fibreWidth x h
+```
+
+An equivalence, not just a containment: the fibres of the Matomäki–Radziwiłł reduction **are** the
+logarithmic windows of the single width `log(1 + h/√x)`, at the `√x` starting points `log(x/a)`.
+
+One boundary discrepancy is worth recording rather than discovering later.  The corpus's
+`logWindow δ n = [log n − δ, log n)` is half-open, while the fibre is closed at both ends, so the
+fibre sum and `logWindowSum` differ by at most the two endpoint terms.  For a unit-bounded weight
+that is `O(1)` per fibre and `O(√x)` over the block — negligible against the target `o(h²√x)` once
+`h → ∞`, but not zero, so it has to be carried explicitly rather than waved through.
+
+### What is left
+
+The endpoint bookkeeping, `gallagher_identity` at `δ = fibreWidth x h`, and the Halász bound for
+`∫ |logPoly|²`.
+
+## 2026-08-10 the endpoint discrepancy, carried explicitly
+
+`Sieve/WindowEndpoint.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9025 jobs).
+
+```text
+card_filter_log_eq_le_one :  at most one positive integer has a given logarithm
+abs_sum_le_one_of_card_le_one :  a unit-bounded sum over ≤ 1 term is ≤ 1
+
+abs_sum_closed_sub_open_le :  |f| ≤ 1,  T ⊆ [1, ∞)  →
+  | ∑_{b ∈ T, c ≤ log b ≤ d} f(b) − ∑_{b ∈ T, c < log b ≤ d} f(b) | ≤ 1
+```
+
+The fibre is closed at its left end and the corpus's `logWindow` is half-open, so they differ by the
+integers with `log b = c` — of which there is at most one, `log` being injective on the positives.
+For a unit-bounded weight that is one term.
+
+Over the `√x` fibres of a block the total discrepancy is `O(√x)`, against a target `o(h²√x)`:
+negligible once `h → ∞`, but not zero.  It is now a named lemma rather than an unstated assumption,
+which is the difference between a proof and a sketch.
+
+### What is left
+
+`gallagher_identity` at `δ = fibreWidth x h`, and the Halász bound for `∫ |logPoly|²`.
+
+## 2026-08-10 the fibre sum is the corpus's window sum
+
+`Sieve/FibreToLogWindow.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9026 jobs).
+
+```text
+abs_fibre_sum_sub_open_le :  |f| ≤ 1,  4 ≤ x,  0 ≤ h,  a ∈ outerBlock x h,
+  s ⊇ innerFibre x h a,  s ⊆ [1, ∞)  →
+    | ∑_{b ∈ innerFibre x h a} f(b)
+        − ∑_{b ∈ s, log(x/a) < log b ≤ log(x/a) + fibreWidth x h} f(b) | ≤ 1
+```
+
+The fibre is the closed logarithmic window at `log(x/a)` of width `fibreWidth x h`; the corpus's
+`logWindow` is half-open; they differ by at most one integer.  The right-hand sum is `logWindowSum`
+in the corpus's sense, so `gallagher_identity` applies to it directly — **at one width for the whole
+block**, which is what `FibreFixedWidth` bought.
+
+### The path, end to end
+
+```text
+MRBilinear μ hh
+  ← AveragedShortInterval ← AveragedMeanSquare ← MaximalWindowMeanSquare        (corpus)
+  ← the Rademacher–Menshov chain: WindowPartialSum, MaximalDeviation,
+      RademacherMenshov, DyadicMeanSquare, MaximalWindowDyadic, DyadicTranslates,
+      MaximalWindowReduction                                                    (this session)
+  ← dyadicMeanSquare, expanded exactly:  DyadicPairExpansion, OverlapExact,
+      DyadicSignedForm                                                          (this session)
+  ← the fibres as fixed-width logarithmic windows:  WindowLogWidth,
+      WindowToLogWindowSum, WindowRealStep, FibreFixedWidth,
+      FibreLogCharacterisation, WindowEndpoint, FibreToLogWindow                (this session)
+  ← gallagher_identity  →  ∫ (𝓕 triC δ)·|logPoly|²                              (corpus)
+  ← the Halász bound for that integral                                          [open]
+```
+
+Every arrow except the last is proved unconditionally here.
+
+### What is left
+
+The Halász bound for `∫ |logPoly|²` — the analytic core, and the place where units 1–6 enter.
+
+## 2026-08-10 the starting points are separated
+
+`Sieve/FibreStartSeparated.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9027 jobs).
+
+```text
+div_le_log_sub :  0 < n ≤ m  →  (m − n)/m ≤ log m − log n
+
+log_start_separated :  4 ≤ x,  a, a' ∈ outerBlock x h,  a ≠ a'  →
+  1/(2√x) ≤ |log(x/a) − log(x/a')|
+```
+
+Distinct indices differ by at least one and `log` expands by at least the relative gap, so the `√x`
+starting points `log(x/a)` are separated by `1/(2√x)`.  Spread over an interval of length `log 2`,
+that makes them within a constant factor of equally spaced.
+
+Separation is the input every passage from a discrete family to an integral needs — the large-sieve
+step, the spacing step of Gallagher's proof, or a direct cell count — and here it is exact and free.
+Note it is the *reverse* inequality to `abs_log_sub_le`: that one says `log` contracts by at most
+`1/A`, this one that it expands by at least `1/a`.  Both come from `log t ≤ t − 1`, applied to
+reciprocal arguments.
+
+### What is left
+
+The discrete-to-continuous passage using this separation, then `gallagher_identity` and the Halász
+bound for `∫ |logPoly|²`.

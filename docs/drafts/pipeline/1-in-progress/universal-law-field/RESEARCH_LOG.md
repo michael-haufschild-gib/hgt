@@ -1003,3 +1003,20 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
 - Higher open mechanism: endogenous feedback from failed repair to legal challenge language to the
   next admissible repair.  Static closure/interior calculus is now a boundary condition, not the
   proposed field itself.
+
+## 2026-08-10 — diagonal challenge genesis closes first source-normal grammar update
+
+- Re-read `rh-current-frontier-map.md` as five mechanism laboratories. Rejected route-local
+  annihilation, positivity, transport, and coercivity work as foundations.
+- Proved ULF-DJG-1: every Boolean self-evaluator canonically produces an absent anti-diagonal
+  challenge; one new reporter realizes it conservatively, minimally, and relabelling-naturally.
+- Iteration is the strict-order tower on finite ordinals. Every finite coordinate horizon of the
+  limit all-true challenge is realized, but the challenge is absent globally. The finite successor
+  tower has the same `Nat` limit, while successor-after-limit has an infinite-support top row;
+  formation and cofinal limit do not exchange.
+- Lean module `ConstitutiveDiagonalLawGenesis` passes warning-free direct elaboration, 2,997-job
+  leaf build, axiom audit (`propext`, `Classical.choice`, `Quot.sound` only), and is wired into the
+  Universal Law Field umbrella.
+- Field boundary: this is one exact source-normal production mechanism, not the universal field.
+  Next target is typed recursive diagonalization: challenge output must alter future evaluator
+  arity/admission and interact with bipolar repair without a state-indexed oracle.

@@ -21,19 +21,19 @@ section Lattices
 variable {R : Type*} [CommRing R]
 
 /-- The coordinate sum functional. -/
-def sumForm (R : Type*) [CommRing R] (N : ℕ) : (Fin N → R) →ₗ[R] R :=
+def congruenceSumForm (R : Type*) [CommRing R] (N : ℕ) : (Fin N → R) →ₗ[R] R :=
   ∑ i, LinearMap.proj i
 
-theorem sumForm_apply {N : ℕ} (z : Fin N → R) : sumForm R N z = ∑ i, z i := by
-  simp [sumForm, LinearMap.sum_apply]
+theorem congruenceSumForm_apply {N : ℕ} (z : Fin N → R) : congruenceSumForm R N z = ∑ i, z i := by
+  simp [congruenceSumForm, LinearMap.sum_apply]
 
 /-- The rescaled dual lattice `a·A♯ = {z ∈ R^N : a ∣ ∑ᵢ zᵢ}`. -/
 def scaledDual (a : R) (N : ℕ) : Submodule R (Fin N → R) :=
-  Submodule.comap (sumForm R N) (Ideal.span ({a} : Set R))
+  Submodule.comap (congruenceSumForm R N) (Ideal.span ({a} : Set R))
 
 theorem mem_scaledDual {a : R} {N : ℕ} {z : Fin N → R} :
     z ∈ scaledDual a N ↔ a ∣ ∑ i, z i := by
-  rw [scaledDual, Submodule.mem_comap, sumForm_apply, Ideal.mem_span_singleton]
+  rw [scaledDual, Submodule.mem_comap, congruenceSumForm_apply, Ideal.mem_span_singleton]
 
 /-- The rescaled order `a·A`. -/
 def scaledOrder (a : R) (N : ℕ) : Submodule R (Fin N → R) :=
@@ -227,14 +227,21 @@ theorem traceDual_eq_map {a : R} (ha : a ≠ 0) (m : ℕ) :
   · rintro ⟨z, hz, hzy⟩
     exact ⟨z, mem_scaledDual.1 hz, (dualScaleMap_eq_iff ha z y).1 hzy⟩
 
+/-- The coordinatewise inclusion of the integral lattice into the total quotient algebra. -/
+def coordIncl (R K : Type*) [CommRing R] [CommRing K] [Algebra R K] (N : ℕ) :
+    (Fin N → R) →ₗ[R] (Fin N → K) :=
+  LinearMap.pi fun i => (Algebra.linearMap R K).comp (LinearMap.proj i)
+
+omit [IsFractionRing R K] in
+theorem coordIncl_apply {N : ℕ} (z : Fin N → R) (i : Fin N) :
+    coordIncl R K N z i = algebraMap R K (z i) := rfl
+
 /-- The order itself, embedded in the total quotient algebra. -/
 def orderLattice (a : R) (N : ℕ) : Submodule R (Fin N → K) :=
-  Submodule.map (LinearMap.pi fun i => (Algebra.linearMap R K).comp (LinearMap.proj i))
-    (Subalgebra.toSubmodule (congruenceOrder a N))
+  Submodule.map (coordIncl R K N) (Subalgebra.toSubmodule (congruenceOrder a N))
 
 theorem dualScaleMap_aSmul_eq {a : R} (ha : a ≠ 0) {N : ℕ} (v : Fin N → R) :
-    dualScaleMap (K := K) a N (a • v)
-      = (LinearMap.pi fun i => (Algebra.linearMap R K).comp (LinearMap.proj i)) v := by
+    dualScaleMap (K := K) a N (a • v) = coordIncl R K N v := by
   funext i
   rw [dualScaleMap_apply]
   show algebraMap R K (a * v i) / algebraMap R K a = algebraMap R K (v i)
@@ -265,12 +272,12 @@ noncomputable def traceCoordRaw (m : ℕ) [Invertible ((m : R) + 1)] :
     (Fin (m + 1) → R) →ₗ[R] (Fin m → R) :=
   LinearMap.pi fun i =>
     (LinearMap.proj i.castSucc : (Fin (m + 1) → R) →ₗ[R] R)
-      - (⅟((m : R) + 1)) • sumForm R (m + 1)
+      - (⅟((m : R) + 1)) • congruenceSumForm R (m + 1)
 
 theorem traceCoordRaw_apply (z : Fin (m + 1) → R) (i : Fin m) :
     traceCoordRaw (R := R) m z i = z i.castSucc - ⅟((m : R) + 1) * ∑ j, z j := by
-  show z i.castSucc - ⅟((m : R) + 1) • sumForm R (m + 1) z = _
-  rw [sumForm_apply, smul_eq_mul]
+  show z i.castSucc - ⅟((m : R) + 1) • congruenceSumForm R (m + 1) z = _
+  rw [congruenceSumForm_apply, smul_eq_mul]
 
 /-- The trace-law defect coordinates, taken modulo `a²`. -/
 noncomputable def traceCoord (a : R) (m : ℕ) [Invertible ((m : R) + 1)] :
@@ -481,5 +488,152 @@ noncomputable def traceDefectEquiv (ha : a ≠ 0) :
     (LinearMap.quotKerEquivOfSurjective _ (traceDefectMap_surjective (K := K) ha))
 
 end TraceDefectField
+
+/-! ## The Dedekind different -/
+
+section Different
+
+variable {R : Type*} [CommRing R] {a : R} {K : Type*} [Field K] [Algebra R K]
+  [IsFractionRing R K]
+
+omit [IsFractionRing R K] in
+theorem aSmul_mem_congruenceOrder (a : R) {N : ℕ} (v : Fin N → R) :
+    (a • v : Fin N → R) ∈ congruenceOrder a N := fun l l' =>
+  ⟨v l - v l', by show a * v l - a * v l' = a * (v l - v l'); ring⟩
+
+/-- The Dedekind different `{d : d·A♯ ⊆ A}` inside the total quotient algebra. -/
+def dedekindDifferent (a : R) (N : ℕ) : Submodule R (Fin N → K) where
+  carrier := {d | ∀ y ∈ traceDual (K := K) a N, d * y ∈ orderLattice (K := K) a N}
+  add_mem' := by
+    intro d d' hd hd' y hy
+    have h : (d + d') * y = d * y + d' * y := by ring
+    rw [h]
+    exact add_mem (hd y hy) (hd' y hy)
+  zero_mem' := by
+    intro y _
+    have h : (0 : Fin N → K) * y = 0 := by ring
+    rw [h]
+    exact zero_mem _
+  smul_mem' := by
+    intro c d hd y hy
+    have h : (c • d) * y = c • (d * y) := by
+      funext j
+      show c • d j * y j = c • (d j * y j)
+      rw [Algebra.smul_def, Algebra.smul_def]
+      ring
+    rw [h]
+    exact Submodule.smul_mem _ c (hd y hy)
+
+omit [IsFractionRing R K] in
+theorem one_mem_traceDual (a : R) (N : ℕ) :
+    (1 : Fin N → K) ∈ traceDual (K := K) a N := by
+  intro x _
+  refine ⟨∑ i, x i, ?_⟩
+  rw [map_sum]
+  exact Finset.sum_congr rfl fun i _ => by
+    show algebraMap R K (x i) * 1 = algebraMap R K (x i)
+    rw [mul_one]
+
+/-- **Card `(26k)`.**  For at least three sheets the Dedekind different is `a²·O`. -/
+theorem mem_dedekindDifferent_iff (ha : a ≠ 0) {m : ℕ} (hm : 2 ≤ m)
+    {d : Fin (m + 1) → K} :
+    d ∈ dedekindDifferent (K := K) a (m + 1)
+      ↔ ∃ w : Fin (m + 1) → R, d = coordIncl R K (m + 1) ((a ^ 2) • w) := by
+  classical
+  constructor
+  · intro hd
+    obtain ⟨v, hv, hvd⟩ := hd 1 (one_mem_traceDual a (m + 1))
+    have hdv : ∀ j, d j = algebraMap R K (v j) := by
+      intro j
+      have hj := congrFun hvd j
+      rw [coordIncl_apply] at hj
+      rw [hj]
+      show d j = d j * 1
+      rw [mul_one]
+    have hdvd : ∀ j, a ^ 2 ∣ v j := by
+      have key : ∀ i : Fin m, a ^ 2 ∣ v i.castSucc ∧ a ^ 2 ∣ v (Fin.last m) := by
+        intro i
+        set z : Fin (m + 1) → R :=
+          Pi.single i.castSucc 1 - Pi.single (Fin.last m) 1 with hz
+        have hzsum : ∑ j, z j = 0 := by
+          rw [hz]
+          simp
+        have hzmem : dualScaleMap (K := K) a (m + 1) z ∈ traceDual (K := K) a (m + 1) := by
+          rw [traceDual_eq_map ha]
+          exact ⟨z, mem_scaledDual.2 ⟨0, by rw [hzsum, mul_zero]⟩, rfl⟩
+        obtain ⟨u, hu, hud⟩ := hd _ hzmem
+        have hcoord : ∀ j, u j * a = v j * z j := by
+          intro j
+          have hj := congrFun hud j
+          rw [coordIncl_apply] at hj
+          have hj' : algebraMap R K (u j)
+              = algebraMap R K (v j) * (algebraMap R K (z j) / algebraMap R K a) := by
+            rw [hj]
+            show d j * dualScaleMap (K := K) a (m + 1) z j = _
+            rw [dualScaleMap_apply, hdv j]
+          refine IsFractionRing.injective R K ?_
+          rw [map_mul, map_mul, hj', mul_assoc,
+            div_mul_cancel₀ _ (algebraMap_ne_zero_of_ne_zero (K := K) ha)]
+        haveI : Nontrivial (Fin m) :=
+          ⟨⟨⟨0, by omega⟩, ⟨1, by omega⟩, by simp [Fin.ext_iff]⟩⟩
+        obtain ⟨j₀, hj₀⟩ := exists_ne i
+        have hu0 : u j₀.castSucc = 0 := by
+          have h := hcoord j₀.castSucc
+          have hzj : z j₀.castSucc = 0 := by
+            rw [hz]
+            show (Pi.single i.castSucc (1 : R) : Fin (m + 1) → R) j₀.castSucc
+              - (Pi.single (Fin.last m) (1 : R) : Fin (m + 1) → R) j₀.castSucc = 0
+            rw [Pi.single_eq_of_ne (fun hc => hj₀ (Fin.castSucc_injective m hc)),
+              Pi.single_eq_of_ne (Fin.castSucc_lt_last j₀).ne, sub_zero]
+          rw [hzj, mul_zero] at h
+          exact (mul_eq_zero.1 h).resolve_right ha
+        have hzi : z i.castSucc = 1 := by
+          rw [hz]
+          show (Pi.single i.castSucc (1 : R) : Fin (m + 1) → R) i.castSucc
+            - (Pi.single (Fin.last m) (1 : R) : Fin (m + 1) → R) i.castSucc = 1
+          rw [Pi.single_eq_same, Pi.single_eq_of_ne (Fin.castSucc_lt_last i).ne, sub_zero]
+        have hzl : z (Fin.last m) = -1 := by
+          rw [hz]
+          show (Pi.single i.castSucc (1 : R) : Fin (m + 1) → R) (Fin.last m)
+            - (Pi.single (Fin.last m) (1 : R) : Fin (m + 1) → R) (Fin.last m) = -1
+          rw [Pi.single_eq_of_ne (Fin.castSucc_lt_last i).ne', Pi.single_eq_same, zero_sub]
+        obtain ⟨s, hs⟩ := hu i.castSucc j₀.castSucc
+        obtain ⟨t, ht⟩ := hu (Fin.last m) j₀.castSucc
+        rw [hu0, sub_zero] at hs ht
+        constructor
+        · refine ⟨s, ?_⟩
+          have h := hcoord i.castSucc
+          rw [hzi, mul_one] at h
+          rw [← h, hs]
+          ring
+        · refine ⟨-t, ?_⟩
+          have h := hcoord (Fin.last m)
+          rw [hzl] at h
+          have h' : v (Fin.last m) = -(u (Fin.last m) * a) := by linear_combination -h
+          rw [h', ht]
+          ring
+      intro j
+      induction j using Fin.lastCases with
+      | last => exact (key ⟨0, by omega⟩).2
+      | cast i => exact (key i).1
+    choose w hw using hdvd
+    refine ⟨w, ?_⟩
+    funext j
+    rw [coordIncl_apply, hdv j, hw j]
+    rfl
+  · rintro ⟨w, rfl⟩ y hy
+    obtain ⟨q, hq, hqy⟩ := (traceDual_eq_map (K := K) ha m).le hy
+    refine ⟨a • (w * q), aSmul_mem_congruenceOrder a _, ?_⟩
+    funext j
+    rw [coordIncl_apply]
+    show algebraMap R K (a * (w j * q j))
+      = algebraMap R K (((a ^ 2) • w) j) * y j
+    rw [← hqy, dualScaleMap_apply]
+    show _ = algebraMap R K (a ^ 2 * w j) * (algebraMap R K (q j) / algebraMap R K a)
+    rw [map_mul, map_mul, map_mul, map_pow]
+    field_simp
+    ring
+
+end Different
 
 end HTGeometry.ConstraintRelativity
