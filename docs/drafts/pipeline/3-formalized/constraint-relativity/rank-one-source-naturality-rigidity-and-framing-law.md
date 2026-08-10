@@ -129,8 +129,10 @@ an equivalence of structured relative law objects, not only vector spaces of sam
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, formalize linear naturality rigidity and two-case
-quadratic classification separately.
+Formalized; see `rank-one-source-naturality-rigidity-and-framing-law-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work authorized. If later requested, formalize linear naturality rigidity and two-case
+> quadratic classification separately.
 
 ## Log
 

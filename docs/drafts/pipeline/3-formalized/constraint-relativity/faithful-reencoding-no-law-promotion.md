@@ -107,8 +107,10 @@ qualify.
 
 ## Lean-return note
 
-No Lean work is authorized. If later needed, formalize generic conjugation of finitary operations
-and term evaluation before any corpus-specific reset-and-carry corollary.
+Formalized; see `faithful-reencoding-no-law-promotion-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work is authorized. If later needed, formalize generic conjugation of finitary operations
+> and term evaluation before any corpus-specific reset-and-carry corollary.
 
 ## Formalized companion
 

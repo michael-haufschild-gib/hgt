@@ -156,8 +156,10 @@ insufficient.
 
 ## Lean-return note
 
-No Lean work is authorized. If later requested, formalize the nonsplitting sequence and the
-`N^2=0` reconstruction separately. Do not couple to RH in the generic file.
+Formalized; see `dual-number-static-observer-deformation-erasure-law-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work is authorized. If later requested, formalize the nonsplitting sequence and the
+> `N^2=0` reconstruction separately. Do not couple to RH in the generic file.
 
 ## Log
 

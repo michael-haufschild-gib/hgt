@@ -4945,3 +4945,87 @@ which is the **low-height half of `OffDiagonalSmall`**, unconditionally, from th
 theorem alone.  Together with the mean value theorem at heights `T ≳ M` (unit 23's accounting), the
 residue is confined to the moderate range `1/log M ≲ T ≲ M`, where the Ramaré factorization of
 unit 26 and the large-values layer must act.
+
+---
+
+## Unit 28 — the low-height half of `OffDiagonalSmall`, discharged from PNT
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LowHeightMoebius.lean`
+
+Instantiating unit 27's complex Abel inequality at the Möbius coefficients:
+
+```text
+sum_range_moebius_shift_eq_mertensM :  ∑_{j<k} μ(j+1) = mertensM k
+norm_logPoly_moebius_le  :  ‖∑_{n ≤ M} μ(n)·n^{2πiw}‖ ≤ mertensSup(M)·(1 + 2π|w|·log M)
+integral_Icc_normSq_logPoly_moebius_le :
+    ∫_{|w| ≤ T} ‖·‖² dw  ≤  2T·mertensSup(M)²·(1 + 2πT·log M)²
+```
+
+`mertensSup M = o(M)` is the prime number theorem (`tendsto_mertensSup_div`), so the mean square is
+`o(M²)` for every height `T ≪ 1/log M`.  Unconditional, no zero-free region, no distance estimate.
+
+## Unit 29 — the good range is unbounded: Abel with the integrated Mertens weight
+
+Unit 28's range `T ≲ 1/log M` **shrinks to zero**, so it cannot by itself confine the residue.  The
+log came from bounding every partial sum by the single number `mertensSup M`; the phase increments
+then contribute their full total variation `∑_{n<M}(log(n+1) − log n) = log M`.  Weighting each
+partial sum by *its own* increment removes the log:
+
+```text
+norm_sum_mul_le_partial_bv :
+    ‖∑_{i<n} φ(i)·g(i)‖ ≤ ‖φ(n−1)‖·|A(n)| + ∑_{i<n−1} ‖φ(i+1) − φ(i)‖·|A(i+1)| ,  A(k)=∑_{j<k}g(j)
+norm_logPhase_sub_succ_le :  ‖n^{2πiw} − (n−1)^{2πiw}‖ ≤ 2π|w|/n
+norm_logPoly_le_abel :
+    ‖∑_{n ≤ M} a(n)·n^{2πiw}‖ ≤ |A(M)| + 2π|w|·∑_{k<M} |A(k+1)|/(k+1)
+```
+
+At `a = μ` the weight is `mertensAbelSum M = ∑_{k<M} |mertensM(k+1)|/(k+1)`, and
+
+```text
+tendsto_mertensAbelSum_div :  mertensAbelSum M / M → 0
+```
+
+by **Cesàro means of the null sequence `|M(k)|/k`** (`Filter.Tendsto.cesaro`) — the only input is
+`M(x) = o(x)`.  Hence with `moebiusAbelScale M = |mertensM M| + mertensAbelSum M = o(M)`:
+
+```text
+norm_logPoly_moebius_le_abel :
+    ‖∑_{n ≤ M} μ(n)·n^{2πiw}‖ ≤ |mertensM M| + 2π|w|·mertensAbelSum M
+integral_Icc_normSq_logPoly_moebius_le_cube  (T ≥ 1) :
+    ∫_{|w| ≤ T} ‖·‖² dw  ≤  200·T³·moebiusAbelScale(M)²
+eventually_integral_Icc_normSq_logPoly_moebius_le  (T, ε fixed) :
+    ∀ᶠ M,  ∫_{|w| ≤ T} ‖·‖² dw ≤ ε·M²
+eventually_forall_height_integral_moebius_le :
+    ∀ᶠ M, ∀ S ∈ [0, T],  ∫_{|w| ≤ S} ‖·‖² dw ≤ ε·M²
+```
+
+**The accounting this fixes.**  With `δ = moebiusAbelScale(M)/M = o(1)`, the cubic bound is `≤ ε·M²`
+exactly for
+
+```text
+T  ≤  (ε/200)^{1/3}·δ^{−2/3}  →  ∞ .
+```
+
+So the unconditionally good range is `|w| ≲ δ^{−2/3}`, an **unbounded** window, where unit 28 gave
+only the shrinking window `|w| ≲ 1/log M`.  Every fixed height is eventually inside it.
+
+**Why the range cannot be pushed to `T ≍ M` by this mechanism.**  `OffDiagonalSmall` needs
+`∫_{|w| ≤ T} ≤ αT + β` with `α ≍ M` and `β ≤ εM²` *for all* `T ≥ W₀ ≍ ε√x`.  Absorbing the cubic
+bound into the `αT` term needs `2T·δ²M²(1+2πT)² ≤ 50MT`, i.e. `T ≲ 1/(δ√M)`, which tends to `0`;
+absorbing it into `β` gives exactly the `δ^{−2/3}` window above.  The obstruction is structural, not
+a lost constant: the α-cap cannot be relaxed, because the two Gallagher constraints are
+`α·W₀ ≤ εx/128` and `α/W₀ ≤ π²εH²√x/256`, and the first *is* the statement `β = α·W₀ ≤ εx/128`.
+
+**Residue after unit 29.**  The card's remaining content is the mean square at heights
+`δ^{−2/3} ≲ T ≲ M`, i.e. the off-diagonal
+
+```text
+Off(T) = 2∫_0^T ( |F(u)|² − ∑_{n≤M} μ²(n) ) du   must satisfy   Off(T) ≤ ε·M²  for all T ,
+```
+
+with the Abel layer supplying it for `T ≤ δ^{−2/3}`.  Since `Off` is bounded but does not decay in
+`T`, this is a large-values statement: `meas{u ≤ T : |F(u)| ≥ λM} ≤ ε/λ²` uniformly in `T`.  The
+Huxley–Montgomery large-values bound gives `≪ λ^{−2} + Tλ^{−6}M^{−3}log^c` — the first term is
+borderline with no `ε`, which is precisely the Halász deficit recorded on unit 4.  So units 28–29
+narrow the residue from `1/log M ≲ T ≲ M` to `δ^{−2/3} ≲ T ≲ M` and identify it, unambiguously, as
+the Halász mean value theorem and nothing else.

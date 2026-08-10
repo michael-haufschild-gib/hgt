@@ -242,7 +242,7 @@ so the whole estimate is `o(M²)` for every height `T ≪ (M/moebiusAbelScale M)
 theorem integral_Icc_normSq_logPoly_moebius_le_cube (M : ℕ) {T : ℝ} (hT : 1 ≤ T) :
     (∫ w in Set.Icc (-T) T,
       ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
-      ≤ 128 * T ^ 3 * moebiusAbelScale M ^ 2 := by
+      ≤ 200 * T ^ 3 * moebiusAbelScale M ^ 2 := by
   classical
   have hT0 : (0 : ℝ) ≤ T := by linarith
   set s : ℝ := moebiusAbelScale M with hsdef
@@ -253,14 +253,14 @@ theorem integral_Icc_normSq_logPoly_moebius_le_cube (M : ℕ) {T : ℝ} (hT : 1 
   have hB : mertensAbelSum M ≤ s := by
     rw [hsdef, moebiusAbelScale]
     linarith [abs_nonneg (mertensM M)]
-  have hpi : Real.pi < 4 := by linarith [Real.pi_lt_315]
+  have hpi : Real.pi ≤ 4 := Real.pi_le_four
   have hK : ∀ w ∈ Set.Icc (-T) T,
-      ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 ≤ (8 * T * s) ^ 2 := by
+      ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 ≤ (10 * T * s) ^ 2 := by
     intro w hw
     rw [Set.mem_Icc] at hw
     have hwT : |w| ≤ T := abs_le.2 ⟨hw.1, hw.2⟩
     have hb := norm_logPoly_moebius_le_abel M w
-    have hstep : |mertensM M| + 2 * Real.pi * |w| * mertensAbelSum M ≤ 8 * T * s := by
+    have hstep : |mertensM M| + 2 * Real.pi * |w| * mertensAbelSum M ≤ 10 * T * s := by
       have h1 : 2 * Real.pi * |w| * mertensAbelSum M ≤ 2 * Real.pi * T * s := by
         have hpos : (0 : ℝ) ≤ 2 * Real.pi := by linarith [Real.pi_pos]
         have h1a : 2 * Real.pi * |w| ≤ 2 * Real.pi * T := mul_le_mul_of_nonneg_left hwT hpos
@@ -268,23 +268,26 @@ theorem integral_Icc_normSq_logPoly_moebius_le_cube (M : ℕ) {T : ℝ} (hT : 1 
         calc 2 * Real.pi * |w| * mertensAbelSum M ≤ 2 * Real.pi * |w| * s :=
               mul_le_mul_of_nonneg_left hB h1b
           _ ≤ 2 * Real.pi * T * s := mul_le_mul_of_nonneg_right h1a hs0
-      have h2 : 2 * Real.pi * T * s ≤ 8 * T * s - T * s := by
+      have h2 : 2 * Real.pi * T * s ≤ 8 * (T * s) := by
         have hTs : (0 : ℝ) ≤ T * s := by positivity
         nlinarith [hpi, hTs]
       have h3 : |mertensM M| ≤ T * s := by
         have : s ≤ T * s := by nlinarith [hs0, hT]
         linarith
-      linarith
-    have hfin : ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ≤ 8 * T * s :=
+      calc |mertensM M| + 2 * Real.pi * |w| * mertensAbelSum M
+          ≤ T * s + 2 * Real.pi * T * s := add_le_add h3 h1
+        _ ≤ T * s + 8 * (T * s) := by linarith [h2]
+        _ ≤ 10 * T * s := by nlinarith [mul_nonneg hT0 hs0]
+    have hfin : ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ≤ 10 * T * s :=
       le_trans hb hstep
     exact pow_le_pow_left₀ (norm_nonneg _) hfin 2
   have hcont : Continuous fun w : ℝ =>
       ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2 :=
     ((continuous_logPoly _ _).norm).pow 2
-  have hconstInt : IntegrableOn (fun _ : ℝ => (8 * T * s) ^ 2) (Set.Icc (-T) T) volume :=
+  have hconstInt : IntegrableOn (fun _ : ℝ => (10 * T * s) ^ 2) (Set.Icc (-T) T) volume :=
     (continuous_const).integrableOn_Icc
   have hmono := setIntegral_mono_on hcont.integrableOn_Icc hconstInt measurableSet_Icc hK
-  have hval : (∫ _ in Set.Icc (-T) T, (8 * T * s) ^ 2) = 2 * T * (8 * T * s) ^ 2 := by
+  have hval : (∫ _ in Set.Icc (-T) T, (10 * T * s) ^ 2) = 2 * T * (10 * T * s) ^ 2 := by
     rw [setIntegral_const, smul_eq_mul]
     have hv : volume.real (Set.Icc (-T) T) = 2 * T := by
       rw [MeasureTheory.measureReal_def, Real.volume_Icc, ENNReal.toReal_ofReal (by linarith)]
@@ -307,10 +310,11 @@ theorem eventually_forall_height_integral_moebius_le {T ε : ℝ} (hT : 0 ≤ T)
     ((continuous_logPoly _ _).norm).pow 2
   have hsub : Set.Icc (-S) S ⊆ Set.Icc (-T) T := by
     refine Set.Icc_subset_Icc (by linarith) hST
-  have hstep := setIntegral_mono_set (f := fun w : ℝ =>
+  have hint : IntegrableOn (fun w : ℝ =>
       ‖logPoly (fun n => (((μ n : ℤ) : ℝ) : ℂ)) (Finset.Icc 1 M) w‖ ^ 2)
-    hcont.integrableOn_Icc (Filter.Eventually.of_forall fun w => by positivity)
-    hsub.eventuallyLE
+      (Set.Icc (-T) T) volume := hcont.integrableOn_Icc
+  have hstep := setIntegral_mono_set hint
+    (Filter.Eventually.of_forall fun w => by positivity) hsub.eventuallyLE
   linarith [hstep, hM]
 
 end RHTower.Sieve

@@ -84,6 +84,45 @@ theorem criticalSourceNormalClosureFieldRange_fixingSubgroup_isCoatom_of_full_mo
   exact Subgroup.isCoatom_comap_of_surjective hsurj
     (isCoatom_stabilizer_perm (criticalSourceNormalClosureEmbedding K m n))
 
+/-- **No intermediate fields below the actual critical source field.**  Full actual geometric
+monodromy makes every intermediate field contained in the chosen embedded source field either the
+observation field or the entire embedded source field. -/
+theorem eq_bot_or_eq_criticalSourceNormalClosureFieldRange_of_full_monodromy
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n)
+    (hfull : criticalGeometricMonodromy K m n = ⊤)
+    (M : IntermediateField (criticalObservationField K m n)
+      (criticalNormalClosure K m n))
+    (hM : M ≤ (criticalSourceNormalClosureEmbedding K m n).fieldRange) :
+    M = ⊥ ∨ M = (criticalSourceNormalClosureEmbedding K m n).fieldRange := by
+  letI : FiniteDimensional (criticalObservationField K m n)
+      (criticalNormalClosure K m n) :=
+    criticalNormalClosure_finiteDimensional K hm hn
+  letI : FiniteDimensional (criticalObservationField K m n)
+      (criticalSourceField K m n) :=
+    criticalSourceField_finiteDimensional_criticalObservationField K hm hn
+  letI : Algebra.IsSeparable (criticalObservationField K m n)
+      (criticalSourceField K m n) := inferInstance
+  letI : IsScalarTower (criticalObservationField K m n)
+      (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n) :=
+    AlgebraicClosure.instIsScalarTower (criticalSourceField K m n)
+  letI : Algebra.IsAlgebraic (criticalObservationField K m n)
+      (criticalSourceAlgebraicClosure K m n) :=
+    Algebra.IsAlgebraic.trans (criticalObservationField K m n)
+      (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n)
+  letI : Normal (criticalObservationField K m n)
+      (criticalSourceAlgebraicClosure K m n) :=
+    { splits' _ := IsAlgClosed.splits _ }
+  letI : Normal (criticalObservationField K m n)
+      (criticalNormalClosure K m n) :=
+    normalClosure.normal (criticalObservationField K m n)
+      (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n)
+  letI : IsGalois (criticalObservationField K m n)
+      (criticalNormalClosure K m n) := inferInstance
+  exact eq_bot_or_eq_of_isCoatom_fixingSubgroup
+    (criticalSourceNormalClosureFieldRange_fixingSubgroup_isCoatom_of_full_monodromy
+      K hm hn hfull) hM
+
 end
 
 end GaloisForLFunctions.HTGeometry

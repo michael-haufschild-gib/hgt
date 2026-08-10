@@ -429,4 +429,78 @@ theorem abs_defect_sub_leading_le (q : RealEulerNome) (t : ℝ) :
   rw [neg_log_norm_qGammaOn]
   exact abs_tsum_ladder_sub_leading_le q (phaseAngle q t)
 
+/-! ## Summability of the remainder over the primes -/
+
+theorem primeNome_lt_three_quarters {σ : ℝ} (hσ : 0 < σ) (hhalf : 1 / 2 < σ) (p : Nat.Primes) :
+    (primeNome hσ p).val < 3 / 4 := by
+  have hp2 : (2 : ℝ) ≤ ((p : ℕ) : ℝ) := by exact_mod_cast p.2.two_le
+  have hppos : (0 : ℝ) < ((p : ℕ) : ℝ) := by linarith
+  have hpow : (2 : ℝ) ^ σ ≤ ((p : ℕ) : ℝ) ^ σ := Real.rpow_le_rpow (by norm_num) hp2 hσ.le
+  have h2pos : (0 : ℝ) < (2 : ℝ) ^ σ := Real.rpow_pos_of_pos (by norm_num) _
+  have hle : ((p : ℕ) : ℝ) ^ (-σ) ≤ (2 : ℝ) ^ (-σ) := by
+    rw [Real.rpow_neg (by linarith), Real.rpow_neg (by norm_num)]
+    exact inv_anti₀ h2pos hpow
+  have hhalfroot : (4 : ℝ) / 3 < (2 : ℝ) ^ ((1 : ℝ) / 2) := by
+    have hbase : ((16 : ℝ) / 9) ^ ((1 : ℝ) / 2) < (2 : ℝ) ^ ((1 : ℝ) / 2) :=
+      Real.rpow_lt_rpow (by norm_num) (by norm_num) (by norm_num)
+    have hval : ((16 : ℝ) / 9) ^ ((1 : ℝ) / 2) = 4 / 3 := by
+      rw [show (16 : ℝ) / 9 = ((4 : ℝ) / 3) ^ (2 : ℕ) by norm_num,
+        ← Real.rpow_natCast ((4 : ℝ) / 3) 2, ← Real.rpow_mul (by norm_num)]
+      norm_num
+    rw [hval] at hbase
+    exact hbase
+  have hexp : (2 : ℝ) ^ (-σ) < (2 : ℝ) ^ (-(1 : ℝ) / 2) :=
+    Real.rpow_lt_rpow_of_exponent_lt (by norm_num) (by linarith)
+  have hquarter : (2 : ℝ) ^ (-(1 : ℝ) / 2) < 3 / 4 := by
+    have hneg : (2 : ℝ) ^ (-(1 : ℝ) / 2) = ((2 : ℝ) ^ ((1 : ℝ) / 2))⁻¹ := by
+      rw [show (-(1 : ℝ) / 2) = -((1 : ℝ) / 2) by ring, Real.rpow_neg (by norm_num)]
+    rw [hneg, inv_lt_comm₀ (Real.rpow_pos_of_pos (by norm_num) _) (by norm_num)]
+    have : (4 : ℝ) / 3 = (3 / 4 : ℝ)⁻¹ := by norm_num
+    rw [← this]
+    exact hhalfroot
+  rw [primeNome_val]
+  linarith
+
+/-- **The remainder of the defect ladder is summable over the primes** in the whole condensed
+chamber `σ > 1/2`.  This is the `O(1)` of Theorem 2.2. -/
+theorem summable_defect_remainder {σ : ℝ} (hσ : 0 < σ) (hhalf : 1 / 2 < σ) :
+    Summable (fun p : Nat.Primes =>
+      4 * (primeNome hσ p).val ^ 2 / (1 - (primeNome hσ p).val) ^ 2) := by
+  have hnat : Summable (fun n : ℕ => (n : ℝ) ^ (-(2 * σ))) := by
+    rw [Real.summable_nat_rpow]
+    linarith
+  have hprime : Summable (fun p : Nat.Primes => ((p : ℕ) : ℝ) ^ (-(2 * σ))) :=
+    hnat.comp_injective Nat.Primes.coe_nat_injective
+  refine Summable.of_nonneg_of_le (fun p => ?_) (fun p => ?_) (hprime.mul_left 64)
+  · have hq : 0 < (primeNome hσ p).val := (primeNome hσ p).pos
+    have h34 := primeNome_lt_three_quarters hσ hhalf p
+    have hden : (0 : ℝ) < (1 - (primeNome hσ p).val) ^ 2 := by
+      refine pow_pos ?_ 2
+      linarith
+    positivity
+  · have hq : 0 < (primeNome hσ p).val := (primeNome hσ p).pos
+    have h34 := primeNome_lt_three_quarters hσ hhalf p
+    have hquarter : (1 : ℝ) / 4 < 1 - (primeNome hσ p).val := by linarith
+    have hden : (1 : ℝ) / 16 < (1 - (primeNome hσ p).val) ^ 2 := by nlinarith
+    have hdenpos : (0 : ℝ) < (1 - (primeNome hσ p).val) ^ 2 := by linarith
+    have hsq : (primeNome hσ p).val ^ 2 = ((p : ℕ) : ℝ) ^ (-(2 * σ)) := by
+      rw [primeNome_val, ← Real.rpow_natCast (((p : ℕ) : ℝ) ^ (-σ)) 2,
+        ← Real.rpow_mul (by positivity)]
+      norm_num
+      ring_nf
+    rw [div_le_iff₀ hdenpos, hsq]
+    nlinarith [Real.rpow_nonneg (le_of_lt (by exact_mod_cast p.2.pos : (0:ℝ) < ((p:ℕ):ℝ)))
+      (-(2 * σ))]
+
+/-- **Theorem 2.2, the `O(1)` remainder over all primes.**  In the whole condensed chamber the
+prime defect ladder differs from its leading term `∑_p q_p(1 − cos θ_p)` by an absolutely
+convergent series. -/
+theorem summable_defect_sub_leading {σ : ℝ} (hσ : 0 < σ) (hhalf : 1 / 2 < σ) (t : ℝ) :
+    Summable (fun p : Nat.Primes =>
+      (-Real.log ‖qGammaOn (primeNome hσ p) (1 + (t : ℂ) * Complex.I)‖)
+        - (primeNome hσ p).val * (1 - Real.cos (phaseAngle (primeNome hσ p) t))) := by
+  refine Summable.of_norm_bounded (summable_defect_remainder hσ hhalf) fun p => ?_
+  rw [Real.norm_eq_abs]
+  exact abs_defect_sub_leading_le (primeNome hσ p) t
+
 end GaloisForLFunctions.HTGeometry

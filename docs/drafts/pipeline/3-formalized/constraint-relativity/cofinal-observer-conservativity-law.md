@@ -76,8 +76,10 @@ pro-laws, but does not by itself construct an RH selection law.
 
 ## Lean-return note
 
-No Lean work is authorized. Later formalization should begin only after choosing exact topological
-and strictness hypotheses for inverse-limit reconstruction.
+Formalized; see `cofinal-observer-conservativity-law-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work is authorized. Later formalization should begin only after choosing exact topological
+> and strictness hypotheses for inverse-limit reconstruction.
 
 ## Formalized companion
 

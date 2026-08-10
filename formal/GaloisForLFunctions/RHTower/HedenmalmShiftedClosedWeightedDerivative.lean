@@ -232,6 +232,7 @@ theorem thetaShiftedDerivativeCore_graph_closure (α : ℂ) :
           thetaShiftedWeightedDerivative α))
     exact thetaShiftedWeightedDerivative_isClosed α
   · intro p hp
+    change p ∈ (thetaShiftedWeightedDerivative α).graph at hp
     rw [LinearPMap.mem_graph_iff] at hp
     rcases hp with ⟨x, hx, hout⟩
     have hxRange : (x : H) ∈ thetaCenteredSourceInverse.range := by

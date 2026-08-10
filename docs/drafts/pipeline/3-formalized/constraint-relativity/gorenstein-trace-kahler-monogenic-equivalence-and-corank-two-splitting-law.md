@@ -313,9 +313,11 @@ Priority remains unverified.
 
 ## Lean-return note
 
-No Lean work authorized. Later formalization should split into finite semilocal algebra lemma,
-cyclic cotangent/embedding-dimension lemma, CRT monogeneration, Nakayama lift, and explicit `4x4`
-Smith computations. Search current corpus before choosing files.
+Formalized; see `gorenstein-trace-kahler-monogenic-equivalence-and-corank-two-splitting-law-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work authorized. Later formalization should split into finite semilocal algebra lemma,
+> cyclic cotangent/embedding-dimension lemma, CRT monogeneration, Nakayama lift, and explicit `4x4`
+> Smith computations. Search current corpus before choosing files.
 
 ## Gates
 

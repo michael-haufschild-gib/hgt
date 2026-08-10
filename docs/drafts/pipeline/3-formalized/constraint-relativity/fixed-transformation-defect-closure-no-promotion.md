@@ -182,9 +182,11 @@ non-definability test.
 
 ## Lean-return note
 
-Do not formalize now. If later authorized, formalize equality of `Algebra.adjoin` for the two
-generating sets, then invariance/minimality of monoid orbit closure. Keep the prime-shell
-application separate from the generic theorem.
+Formalized; see `fixed-transformation-defect-closure-no-promotion-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> Do not formalize now. If later authorized, formalize equality of `Algebra.adjoin` for the two
+> generating sets, then invariance/minimality of monoid orbit closure. Keep the prime-shell
+> application separate from the generic theorem.
 
 ## Log
 

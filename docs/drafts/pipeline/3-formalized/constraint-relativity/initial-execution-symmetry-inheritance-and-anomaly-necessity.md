@@ -185,9 +185,11 @@ Formula `(8)` is placeholder, not definition accepted as theorem. Concrete commu
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, generic initial-object theorem and discrete-action
-corollary are small category-theory targets. Arithmetic instantiation should remain paper-level
-until exact execution category is defined.
+Formalized; see `initial-execution-symmetry-inheritance-and-anomaly-necessity-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work authorized. If later requested, generic initial-object theorem and discrete-action
+> corollary are small category-theory targets. Arithmetic instantiation should remain paper-level
+> until exact execution category is defined.
 
 ## Log
 

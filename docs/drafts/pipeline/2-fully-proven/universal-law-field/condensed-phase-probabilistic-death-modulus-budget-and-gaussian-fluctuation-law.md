@@ -402,9 +402,19 @@ carries `q^{jr}` with `jr ≥ 2`, so the whole remainder is `O(q²)` with an exp
 | **the ladder differs from `q(1 − cos θ)` by at most `4q²/(1−q)²`** | **`abs_tsum_ladder_sub_leading_le`** |
 | **the same, read on `φ(t) = Γ_q(1+it)`** | **`abs_defect_sub_leading_le`** |
 
-This is the card's "leading term `∑_p q_p(1 − cos θ_p)` with bounded remainder", made quantitative:
-the remainder of a single prime is at most `4q_p²/(1−q_p)²`, so summing over primes converges for
-`σ > 1/2` — which is exactly where the card places the chamber.
+And the remainder is summable over the primes, which is the card's `O(1)`:
+
+| Clause | Lean |
+|---|---|
+| `q_p < 3/4` throughout the condensed chamber | `primeNome_lt_three_quarters` |
+| **`∑_p 4q_p²/(1−q_p)² < ∞` for `σ > 1/2`** | **`summable_defect_remainder`** |
+| **`∑_p [defect_p(t) − q_p(1 − cos θ_p)]` converges absolutely** | **`summable_defect_sub_leading`** |
+
+This is the card's "leading term `∑_p q_p(1 − cos θ_p)` with bounded remainder", made quantitative
+and then closed over all primes: a single prime's remainder is at most `4q_p²/(1−q_p)²`, the uniform
+bound `q_p ≤ 2^{−σ} < 3/4` turns that into `64 p^{−2σ}`, and `2σ > 1` is exactly the chamber
+condition.  So `Δ_P(t)` and `∑_{p≤P} q_p(1 − cos θ_p)` differ by a convergent series — the whole
+divergence question is now about `A_P − Re B_P` alone.
 
 **Next targets, in order.**
 
@@ -413,12 +423,10 @@ the remainder of a single prime is at most `4q_p²/(1−q_p)²`, so summing over
    `ProbabilityTheory.measure_limsup_eq_one`, and convert "terms do not tend to zero" into failure
    of convergence in distribution — the latter needs Lévy's equivalence and continuity theorems,
    whose availability in mathlib has not yet been checked.
-2. *Theorem 2.2, divergence half (GAS3.2)–(GAS3.3).*  The remainder bound is done; what is left is
-   `A_P − Re B_P → ∞`, needing the corpus PNT/Mertens layers
+2. *Theorem 2.2, divergence half (GAS3.2)–(GAS3.3).*  The whole remainder side is done; what is
+   left is `A_P − Re B_P → ∞`, needing the corpus PNT/Mertens layers
    (`pnt-both-forms-corpus-owned`, `mertens-second-third-corpus-owned`) for `A_P`, and one-line
-   nonvanishing of `ζ` for `B_P`.  A preparatory step is the summability over primes of the
-   remainder `4q_p²/(1−q_p)²`, which needs `∑_p p^{−2σ} < ∞` together with the uniform bound
-   `q_p ≤ 2^{−σ} < 2^{−1/2}`.
+   nonvanishing of `ζ` for `B_P`.
 3. *Theorem 3.1 (CLT).*  Mathlib's `Probability/CentralLimitTheorem.lean` carries only the i.i.d.
    form (`tendstoInDistribution_inv_sqrt_mul_sum`); the Lindeberg–Feller triangular-array form the
    card needs is **not** in mathlib and has to be built.

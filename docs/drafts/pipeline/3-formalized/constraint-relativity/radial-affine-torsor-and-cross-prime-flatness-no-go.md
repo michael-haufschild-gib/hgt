@@ -243,8 +243,10 @@ source symmetry anomaly or nonunique phase selection beyond orbit invariants.
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, affine orbit classification is elementary finite-set
-linear algebra; formalize for finite prime packets before any cofinal version.
+Formalized; see `radial-affine-torsor-and-cross-prime-flatness-no-go-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work authorized. If later requested, affine orbit classification is elementary finite-set
+> linear algebra; formalize for finite prime packets before any cofinal version.
 
 ## Log
 

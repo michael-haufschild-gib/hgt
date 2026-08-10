@@ -305,9 +305,11 @@ holes realize model.
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, formalize algebraic exact sequence, fibre
-classification, Tor computation, and finite-dimensional blow-up separately. Existing Cartier
-torsion modules should be audited before naming new files.
+Formalized; see `quadratic-law-discriminant-bockstein-controlled-horizon-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work authorized. If later requested, formalize algebraic exact sequence, fibre
+> classification, Tor computation, and finite-dimensional blow-up separately. Existing Cartier
+> torsion modules should be audited before naming new files.
 
 ## Log
 

@@ -140,8 +140,10 @@ arXiv:2606.20220. Region-adapted holographic algebras: arXiv:2607.08684.
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, Taylor inequalities and exponent limit are elementary
-analysis targets independent of RH.
+Formalized; see `observer-ramification-horizon-exponent-no-go-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work authorized. If later requested, Taylor inequalities and exponent limit are elementary
+> analysis targets independent of RH.
 
 ## Log
 

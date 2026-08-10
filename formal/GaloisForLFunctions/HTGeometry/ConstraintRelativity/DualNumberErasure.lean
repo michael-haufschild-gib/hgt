@@ -240,4 +240,23 @@ theorem vectorSpace_extension_splits {W : Type*} [AddCommGroup W] [Module k W]
     (F : Submodule k W) : ∃ C : Submodule k W, IsCompl F C :=
   F.exists_isCompl
 
+/-- **Card `(9)`, boxed.**  Static joint conservativity does not imply deformation
+conservativity.  The forgetful observer *is* conservative — it reflects every law isomorphism —
+yet it does not determine the law: two square-zero laws on the same space have different frames,
+the deformation classes it forgets are the nonzero scalar `Ext¹_A(k,k) ≅ k`, and every extension of
+the underlying vector spaces splits.  The four facts hold simultaneously, which is what makes the
+non-implication a theorem rather than a reading. -/
+theorem static_conservativity_not_deformation_conservativity (K : Type) [Field K] :
+    (∀ (V W : Type) [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
+        (L : SquareZeroLaw K V) (M : SquareZeroLaw K W) (f : V ≃ₗ[K] W),
+        (∀ v, f (L.act v) = M.act (f v)) → ∀ w, f.symm (M.act w) = L.act (f.symm w))
+      ∧ (zeroLaw K (K × K)).frame ≠ (jordanLaw K).frame
+      ∧ Nonempty (trivialExtension K ≃ K)
+      ∧ (∀ (W : Type) [AddCommGroup W] [Module K W] (F : Submodule K W),
+          ∃ C : Submodule K W, IsCompl F C) :=
+  ⟨fun _ _ _ _ _ _ L M f hf w => conservative L M f hf w,
+    law_not_determined_by_space K,
+    ⟨trivialExtensionEquiv K⟩,
+    fun _ _ _ F => vectorSpace_extension_splits F⟩
+
 end HTGeometry.ConstraintRelativity

@@ -123,7 +123,7 @@ def triangleNormalizedProfile (n : ℕ) (_ : Fin 3) : ℚ :=
   (n : ℚ) / (2 * n : ℕ)
 
 /-- Grade parity recorded by the relaxed observer. -/
-def triangleGradeParity (n : ℕ) : ZMod 2 := 2 * n
+def triangleGradeParity (n : ℕ) : ZMod 2 := ((2 * n : ℕ) : ZMod 2)
 
 /-- Relaxed observer retaining normalized profile and grade parity. -/
 def triangleRelaxedObserver (n : ℕ) : (Fin 3 → ℚ) × ZMod 2 :=
@@ -140,7 +140,7 @@ theorem triangleNormalizedProfile_eq_half (n : ℕ) (hn : 0 < n) :
 
 /-- Every even symbolic grade has zero parity. -/
 theorem triangleGradeParity_eq_zero (n : ℕ) : triangleGradeParity n = 0 := by
-  simp [triangleGradeParity]
+  rw [triangleGradeParity, Nat.cast_mul, ZMod.natCast_self, zero_mul]
 
 /-- The relaxed observer is constant along all positive uniform symbolic grades. -/
 theorem triangleRelaxedObserver_constant (n : ℕ) (hn : 0 < n) :

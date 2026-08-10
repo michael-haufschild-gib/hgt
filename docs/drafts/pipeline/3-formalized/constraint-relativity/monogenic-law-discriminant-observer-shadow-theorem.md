@@ -247,9 +247,11 @@ lies on discriminant locus.
 
 ## Lean-return note
 
-No Lean work authorized. Later possible files: generic monogenic Kähler differential,
-Fitting/resultant identity, Vandermonde determinant, singular-value determinant. Verify mathlib
-before formal plan.
+Formalized; see `monogenic-law-discriminant-observer-shadow-theorem-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work authorized. Later possible files: generic monogenic Kähler differential,
+> Fitting/resultant identity, Vandermonde determinant, singular-value determinant. Verify mathlib
+> before formal plan.
 
 ## Log
 

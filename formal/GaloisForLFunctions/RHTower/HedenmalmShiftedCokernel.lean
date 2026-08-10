@@ -31,6 +31,8 @@ private abbrev sourceMeasure : Measure ℝ :=
 
 local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
+local instance : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
+
 theorem cokernelVector_eq_k_mul_sourceChar (α : ℂ) (x : ℝ) :
     cokernelVector thetaSource α x =
       (thetaSource.k x : ℂ) * sourceChar (-(starRingEnd ℂ) α) x := by
@@ -141,6 +143,139 @@ theorem thetaCokernelVector_ne_zero (α : ℂ) : thetaCokernelVector α ≠ 0 :=
   apply thetaCokernelSourceVector_ne_zero α
   apply (quantileUnitary thetaSource).injective
   simpa [thetaCokernelVector] using hzero
+
+/-- Concrete integral formula for the weighted source-space inner product. -/
+theorem inner_sourceSpace_eq_integral_div
+    {u v : HS} {f g : ℝ → ℂ}
+    (huf : (u : ℝ → ℂ) =ᵐ[sourceMeasure] f)
+    (hvg : (v : ℝ → ℂ) =ᵐ[sourceMeasure] g) :
+    inner ℂ u v = ∫ x, (starRingEnd ℂ) (f x) * g x / (thetaSource.k x : ℂ) := by
+  rw [L2.inner_def]
+  calc
+    (∫ x, inner ℂ (u x) (v x) ∂sourceMeasure) =
+        ∫ x, (starRingEnd ℂ) (u x) * v x ∂sourceMeasure := by
+      apply integral_congr_ae
+      filter_upwards with x
+      exact RCLike.inner_apply' _ _
+    _ =
+        ∫ x, (starRingEnd ℂ) (f x) * g x ∂sourceMeasure := by
+      apply integral_congr_ae
+      filter_upwards [huf, hvg] with x hux hvx
+      rw [hux, hvx]
+    _ = ∫ x, (starRingEnd ℂ) (f x) * g x / (thetaSource.k x : ℂ) := by
+      rw [sourceMeasure, integral_withDensity_eq_integral_toReal_smul
+        (measurable_realDensity (measurable_sourceWeight thetaSource))
+        (Filter.Eventually.of_forall fun x => by simp [realDensity])]
+      apply integral_congr_ae
+      filter_upwards with x
+      rw [show realDensity (sourceWeight thetaSource) x =
+        ENNReal.ofReal (sourceWeight thetaSource x) from rfl,
+        ENNReal.toReal_ofReal (sourceWeight_pos thetaSource x).le]
+      change ((sourceWeight thetaSource x : ℝ) : ℂ) *
+        ((starRingEnd ℂ) (f x) * g x) =
+          (starRingEnd ℂ) (f x) * g x / (thetaSource.k x : ℂ)
+      rw [show sourceWeight thetaSource x = (thetaSource.k x)⁻¹ from rfl]
+      push_cast
+      field_simp [show (thetaSource.k x : ℂ) ≠ 0 by
+        exact_mod_cast (thetaSource.pos_k x).ne']
+
+/-- The actual cokernel conormal annihilates every literal compactly supported smooth range
+vector of the translated operator. -/
+theorem inner_thetaCokernelVector_thetaShiftedRangeMap_core
+    (α : ℂ) {g : ℝ → ℂ} (hg : ContDiff ℝ (↑(⊤ : ℕ∞)) g)
+    (hgs : HasCompactSupport g) :
+    let f : HS := (memLp_sourceD hg hgs).toLp (sourceD g)
+    let k : thetaCentered :=
+      ⟨quantileUnitary thetaSource f, quantile_sourceD_mem_centered hg hgs⟩
+    inner ℂ (thetaCokernelVector α) (thetaShiftedRangeMap α k) = 0 := by
+  let f : HS := (memLp_sourceD hg hgs).toLp (sourceD g)
+  let u : HS := (memLp_smooth hg hgs).toLp g
+  let k : thetaCentered :=
+    ⟨quantileUnitary thetaSource f, quantile_sourceD_mem_centered hg hgs⟩
+  have hB : thetaCenteredSourceInverse k = quantileUnitary thetaSource u := by
+    exact thetaCompactSourceInverse_quantile_sourceD hg hgs
+  have hJ : thetaShiftedRangeMap α k =
+      quantileUnitary thetaSource (f + α • u) := by
+    rw [thetaShiftedRangeMap_apply, hB, map_add, map_smul]
+  have hfAE : (f : ℝ → ℂ) =ᵐ[sourceMeasure] sourceD g :=
+    (memLp_sourceD hg hgs).coeFn_toLp
+  have huAE : (u : ℝ → ℂ) =ᵐ[sourceMeasure] g :=
+    (memLp_smooth hg hgs).coeFn_toLp
+  have hsumAE : ((f + α • u : HS) : ℝ → ℂ) =ᵐ[sourceMeasure]
+      fun x => sourceD g x + α * g x := by
+    filter_upwards [Lp.coeFn_add f (α • u), Lp.coeFn_smul α u,
+      hfAE, huAE] with x hadd hsmul hfx hux
+    rw [hadd]
+    rw [Pi.add_apply, hsmul]
+    change f x + α * u x = sourceD g x + α * g x
+    rw [hfx, hux]
+  change inner ℂ (thetaCokernelVector α) (thetaShiftedRangeMap α k) = 0
+  rw [hJ, thetaCokernelVector,
+    (quantileUnitary thetaSource).inner_map_map]
+  rw [inner_sourceSpace_eq_integral_div (thetaCokernelSourceVector_ae α) hsumAE]
+  have hpoint : ∀ x : ℝ,
+      (starRingEnd ℂ) (cokernelVector thetaSource α x) *
+          (sourceD g x + α * g x) / (thetaSource.k x : ℂ) =
+        (-Complex.I * deriv g x + α * g x) * sourceChar α x := by
+    intro x
+    have hk : (thetaSource.k x : ℂ) ≠ 0 := by
+      exact_mod_cast (thetaSource.pos_k x).ne'
+    rw [sourceD]
+    calc
+      (starRingEnd ℂ) (cokernelVector thetaSource α x) *
+            (-Complex.I * deriv g x + α * g x) / (thetaSource.k x : ℂ) =
+          (-Complex.I * deriv g x + α * g x) *
+            ((starRingEnd ℂ) (cokernelVector thetaSource α x) /
+              (thetaSource.k x : ℂ)) := by
+        field_simp [hk]
+      _ = (-Complex.I * deriv g x + α * g x) * sourceChar α x := by
+        rw [conj_cokernelVector_div]
+  rw [integral_congr_ae (ae_of_all _ hpoint)]
+  have hderiv : ∀ x : ℝ, HasDerivAt g (deriv g x) x :=
+    fun x => (hg.differentiable (by simp) x).hasDerivAt
+  have hprodSupport : HasCompactSupport (fun x => g x * sourceChar α x) :=
+    hgs.mul_right
+  have hzeroInf := hprodSupport.is_zero_at_infty
+  rw [cocompact_eq_atBot_atTop] at hzeroInf
+  have hbot : Tendsto (fun x => g x * sourceChar α x) atBot (𝓝 0) :=
+    hzeroInf.mono_left le_sup_left
+  have htop : Tendsto (fun x => g x * sourceChar α x) atTop (𝓝 0) :=
+    hzeroInf.mono_left le_sup_right
+  have hderivCont : Continuous (deriv g) :=
+    (hg.of_le (by simp)).continuous_deriv le_rfl
+  have hintCont : Continuous (fun x =>
+      (-Complex.I * deriv g x + α * g x) * sourceChar α x) :=
+    ((continuous_const.mul hderivCont).add
+      (continuous_const.mul hg.continuous)).mul (continuous_sourceChar α)
+  have hintSupport : HasCompactSupport (fun x =>
+      (-Complex.I * deriv g x + α * g x) * sourceChar α x) :=
+    (HasCompactSupport.add hgs.deriv.mul_left hgs.mul_left).mul_right
+  exact integral_range_pairing hderiv hbot htop
+    (hintCont.integrable_of_hasCompactSupport hintSupport)
+
+/-- The translated range map has the actual conormal in its orthogonal complement. -/
+theorem thetaCokernelVector_mem_orthogonal_range (α : ℂ) :
+    thetaCokernelVector α ∈
+      (LinearMap.range (thetaShiftedRangeMap α).toLinearMap)ᗮ := by
+  rw [(thetaShiftedRangeMap α).orthogonal_range]
+  apply dense_thetaDerivativeCoreOutput.eq_of_inner_right ℂ
+  intro k hk
+  rcases hk with ⟨g, hg, hgs, hk⟩
+  have hcore := inner_thetaCokernelVector_thetaShiftedRangeMap_core α hg hgs
+  let f : HS := (memLp_sourceD hg hgs).toLp (sourceD g)
+  let k' : thetaCentered :=
+    ⟨quantileUnitary thetaSource f, quantile_sourceD_mem_centered hg hgs⟩
+  have hkk : k = k' := Subtype.ext hk
+  calc
+    inner ℂ k ((thetaShiftedRangeMap α).adjoint (thetaCokernelVector α)) =
+        inner ℂ (thetaShiftedRangeMap α k) (thetaCokernelVector α) :=
+      (thetaShiftedRangeMap α).adjoint_inner_right k (thetaCokernelVector α)
+    _ = inner ℂ (thetaShiftedRangeMap α k') (thetaCokernelVector α) := by rw [hkk]
+    _ = (starRingEnd ℂ)
+        (inner ℂ (thetaCokernelVector α) (thetaShiftedRangeMap α k')) :=
+      inner_conj_symm _ _
+    _ = 0 := by rw [hcore, map_zero]
+    _ = inner ℂ k (0 : thetaCentered) := by simp
 
 end HedenmalmClosedWeightedDerivative
 

@@ -191,8 +191,10 @@ the framed central line returns to source scalar `a`.
 
 ## Lean-return note
 
-No Lean work is authorized. If later requested, formalize matrix identity independently of
-arithmetic residue instantiation.
+Formalized; see `source-norm-support-forgetful-tower-law-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work is authorized. If later requested, formalize matrix identity independently of
+> arithmetic residue instantiation.
 
 ## Log
 

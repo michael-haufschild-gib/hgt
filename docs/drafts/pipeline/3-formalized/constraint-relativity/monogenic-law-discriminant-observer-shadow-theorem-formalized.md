@@ -66,6 +66,16 @@ the corpus's existing Vandermonde/discriminant work (`DiscriminantPolynomial`,
 `GenericPolynomialSeparable`, `CenteredDiscriminantIdentification`) is about the generic polynomial
 and its symmetric functions, not about the observer matrix of a split fibre.
 
+The RH specialization boundary:
+
+- `mateQuad`, `mateQuad_eq_expand`, `eval_derivative_mateQuad`, `eval_derivative_mateQuad_one`,
+  `discriminant_mateQuad`, `eval_derivative_mateQuad_eq_zero_iff`,
+  `discriminant_mateQuad_eq_zero_iff` — **card `(14)`**: for the quadratic mate law
+  `f(T) = (T−1)(T−δ)` the root different is `δ−1` at the moving root and `1−δ` at the fixed one,
+  the discriminant is `(δ−1)²`, and both vanish **exactly** at `δ = 1`.  This locates the wall and
+  the two-character collision; as the card insists, it does *not* force `δ = 1` — the statement is
+  an iff about `δ`, with no arithmetic input.
+
 ## Verification
 
 ```text

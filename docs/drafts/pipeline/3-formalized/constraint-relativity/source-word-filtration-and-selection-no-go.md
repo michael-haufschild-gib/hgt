@@ -125,8 +125,10 @@ cyclic module has `K_0=K_1` but `K_2` is larger.
 
 ## Lean-return note
 
-No Lean work is authorized. Later formalization can use elementary linear-algebra exact-sequence
-lemmas plus filtered subspace inclusions; exact corpus declarations must be searched first.
+Formalized; see `source-word-filtration-and-selection-no-go-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work is authorized. Later formalization can use elementary linear-algebra exact-sequence
+> lemmas plus filtered subspace inclusions; exact corpus declarations must be searched first.
 
 ## Formalized companion
 

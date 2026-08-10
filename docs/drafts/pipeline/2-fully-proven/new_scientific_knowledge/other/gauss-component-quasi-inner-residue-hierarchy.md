@@ -1657,3 +1657,40 @@ redundant.
 **Next module**: `norm_gaussSampleRatioDefect_sq_mul_ratio_sq_le` (for `2 ≤ m`) and
 `gaussTranslationL2DefectBoundRatio`, followed by the interior replacement `Λ → Λ_0` in
 `⟪e_n, G^m e_n⟫ = p^m |d_n|^(2m) ⟪g_n, Λ^(m-1) B^(-2) g_n⟫`.
+
+## Lean status, thirty-sixth pass: the ratio-weighted estimate for `m ≥ 2`
+
+`RHTower/GaussRatioWeightedDefect.lean` (new); unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+norm_gaussSampleRatio_pow_le                  : ‖ρ_j(I)‖^(2m) ≤ K·I/|I+j|      (hoisted, all m)
+norm_gaussSampleRatio_le                      : ‖ρ_j(i)‖ ≤ ‖defect_j(i)‖ + 1
+norm_gaussSampleRatio_le_of_near              : 2|j| ≤ I  →  ‖ρ_j(I)‖ ≤ 1 + 2K  (all m)
+norm_gaussSampleRatioDefect_sq_mul_ratio_sq_le (2 ≤ m) :
+      ‖ρ_j(I)‖² ‖defect_j(I)‖² ≤ 4 + 4K·I/|I+j|
+tendsto_gaussTranslationL2RatioDefectBound (2 ≤ m) :
+      ∑_j A²/(1+|j|)² ‖ρ_j(I)‖² ‖defect_j(I)‖²  →  0
+```
+
+The pointwise bound is where `m ≥ 2` enters and nowhere else: `‖defect‖² ≤ 2‖ρ‖² + 2` gives
+`‖ρ‖²‖defect‖² ≤ 2‖ρ‖⁴ + 2‖ρ‖²`, and both `‖ρ‖⁴ ≤ 1 + ‖ρ‖^(2m)` and `‖ρ‖² ≤ 1 + ‖ρ‖^(2m)` need
+`4 ≤ 2m` resp. `2 ≤ 2m`.  After that the far-band shape is `K·I/|I+j|`, identical to the unweighted
+case, so the summation reuses the existing skeleton verbatim
+(`tendsto_tsum_zero_of_dominated`, `intQuadWeight`, `tendsto_tsum_farBandRatio_zero`) with the
+constants `4 + 8K` and `4K`.
+
+The uniform ratio bound was **hoisted out of** `norm_gaussSampleRatioDefect_sq_le` rather than
+restated: that lemma now calls `norm_gaussSampleRatio_pow_le`.
+
+`norm_gaussSampleRatio_le_of_near` holds for every `m` and is the other half of the near/far split
+the iteration needs: below half the frequency the sampled ratio is bounded by a constant, so the
+normalized diagonal acts boundedly there and only the reflected band requires the weighted estimate.
+
+### Note on the umbrella
+
+`lake build GaloisForLFunctions.RHTower` currently fails on a name collision between
+`RHTower.Sieve.LowHeightPoly` and `RHTower.Sieve.LogPhaseBlock` (both define `RHTower.Sieve.logPhase`),
+introduced by concurrent work in the sieve layer.  It is unrelated to this card; every module of
+this card builds, and `lake build GaloisForLFunctions.RHTower.GaussRatioWeightedDefect` completes
+with all 8800 dependencies.

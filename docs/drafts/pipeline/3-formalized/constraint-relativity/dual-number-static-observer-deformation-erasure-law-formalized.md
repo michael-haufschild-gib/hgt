@@ -54,8 +54,12 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
 13. `vectorSpace_extension_splits` — card `(4)`, second half: `Ext¹_k(k,k) = 0`, every short exact
     sequence of vector spaces splits.
 
-Card statement `(9)` — static joint conservativity does not imply deformation conservativity — is
-the conjunction of items 8, 9, 11, 12, 13.
+14. `static_conservativity_not_deformation_conservativity` — **card `(9)`, boxed**: the
+    conjunction of items 8, 9, 12 and 13 as one proposition.  The forgetful observer reflects every
+    law isomorphism, yet two square-zero laws on the same space have different frames, the forgotten
+    deformation classes are `Ext¹_A(k,k) ≅ k`, and every extension of the underlying vector spaces
+    splits.  Stating the four together is what makes the non-implication checkable rather than a
+    reading of separate items.
 
 ## Verification
 

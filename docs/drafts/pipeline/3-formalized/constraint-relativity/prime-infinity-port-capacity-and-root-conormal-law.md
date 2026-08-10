@@ -236,8 +236,10 @@ Occupied parents include crossed-product cyclic theory (arXiv:2205.08880), parac
 
 ## Lean-return note
 
-No Lean work authorized. If later requested, generic rank inequality and projection formula are
-finite linear algebra targets. Literal source realization remains paper-open.
+Formalized; see `prime-infinity-port-capacity-and-root-conormal-law-formalized.md`.  The note below was written before that work and is kept for the record: it is no longer a restriction.
+
+> No Lean work authorized. If later requested, generic rank inequality and projection formula are
+> finite linear algebra targets. Literal source realization remains paper-open.
 
 ## Log
 
