@@ -810,6 +810,43 @@ theorem majoranaQBodyPauliLabel_ne_identity {n q : ℕ}
   apply finFourPauliOption_injective
   simpa [majoranaQBodyPauliLabel, pauliIdentityLabel] using congrFun hid k
 
+/-- Coefficient-parametrized Hermitian fixed-`q` Majorana Hamiltonian.  Physical phase conventions
+are absorbed into the arbitrary real coefficients. -/
+def majoranaQBodyHamiltonian {n q : ℕ} (c : MajoranaQBodyIndex n q → ℝ) :
+    selfAdjoint
+      (Matrix (FiniteQubitConfiguration (Fin n))
+        (FiniteQubitConfiguration (Fin n)) ℂ) :=
+  ∑ S, c S • finitePauliSelfAdjoint (majoranaQBodyPauliLabel n q S)
+
+/-- The constructed Hamiltonian has support in exactly the declared fixed-`q` Majorana
+dictionary. -/
+theorem majoranaQBodyHamiltonian_hasDictionarySupport {n q : ℕ}
+    (c : MajoranaQBodyIndex n q → ℝ) :
+    HasPauliDictionarySupport (MajoranaQBodyDictionary n q)
+      (majoranaQBodyHamiltonian c) := by
+  intro P hP
+  rw [majoranaQBodyHamiltonian, map_sum]
+  apply Finset.sum_eq_zero
+  intro S _hS
+  rw [map_smul]
+  have hne : majoranaQBodyPauliLabel n q S ≠ P := fun h => hP ⟨S, h⟩
+  simp [← finitePauliSelfAdjointBasis_apply, hne]
+
+/-- Injectivity of Majorana labels makes the Hamiltonian nonzero exactly when its coefficient
+vector is nonzero. -/
+theorem majoranaQBodyHamiltonian_ne_zero {n q : ℕ}
+    (c : MajoranaQBodyIndex n q → ℝ) (hc : c ≠ 0) :
+    majoranaQBodyHamiltonian c ≠ 0 := by
+  have hLI : LinearIndependent ℝ
+      (fun S : MajoranaQBodyIndex n q =>
+        finitePauliSelfAdjoint (majoranaQBodyPauliLabel n q S)) :=
+    (finitePauliSelfAdjoint_linearIndependent (σ := Fin n)).comp
+      (majoranaQBodyPauliLabel n q) (majoranaQBodyPauliLabel_injective n q)
+  intro hzero
+  apply hc
+  funext S
+  exact Fintype.linearIndependent_iff.mp hLI c hzero S
+
 /-- Exact Haar benchmark for the complete even fixed-`q` Majorana eigenframe experiment. -/
 theorem haar_majoranaQBody_adaptiveEigenframeScore_eq
     {n q : ℕ} (hn : 1 ≤ n) (hqpos : 0 < q) (hqeven : Even q) (hqle : q ≤ 2 * n) :
@@ -867,6 +904,21 @@ theorem autonomous_majoranaQBody_adaptiveEigenframeScore_ge
     (autonomous_adaptiveEigenframeTwoQueryScore_ge
       (MajoranaQBodyDictionary n q) H hH hsupport t)
 
+/-- Coefficient-level form: no separate support or nonzero-Hamiltonian premise remains. -/
+theorem autonomous_majoranaQBodyHamiltonian_adaptiveEigenframeScore_ge
+    {n q : ℕ} (hqle : q ≤ 2 * n) (c : MajoranaQBodyIndex n q → ℝ) (hc : c ≠ 0)
+    (t : ℝ) :
+    1 / (Nat.choose (2 * n) q : ℝ) ^ 2 ≤
+      adaptiveEigenframeTwoQueryScore
+        (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+        (exp (t • ((-Complex.I) •
+          (majoranaQBodyHamiltonian c :
+            Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ)))) :=
+  autonomous_majoranaQBody_adaptiveEigenframeScore_ge hqle
+    (majoranaQBodyHamiltonian c) (majoranaQBodyHamiltonian_ne_zero c hc)
+    (majoranaQBodyHamiltonian_hasDictionarySupport c) t
+
 /-- When the fixed-`q` Majorana source dictionary is smaller than the square root of Hilbert
 dimension, its conserved physical score is permanently strictly above the Haar value. -/
 theorem autonomous_majoranaQBody_adaptiveEigenframeScore_gt_haar
@@ -888,6 +940,21 @@ theorem autonomous_majoranaQBody_adaptiveEigenframeScore_gt_haar
   apply autonomous_adaptiveEigenframeTwoQueryScore_gt_haar
     (p := MajoranaQBodyDictionary n q) (H := H) hH hsupport t
   simpa [majoranaQBodyDictionary_card] using hsep
+
+/-- Coefficient-level strict Haar separation for every nonzero fixed-`q` Majorana Hamiltonian. -/
+theorem autonomous_majoranaQBodyHamiltonian_adaptiveEigenframeScore_gt_haar
+    {n q : ℕ} (hqle : q ≤ 2 * n) (c : MajoranaQBodyIndex n q → ℝ) (hc : c ≠ 0)
+    (t : ℝ) (hsep : Nat.choose (2 * n) q ^ 2 < 2 ^ n + 1) :
+    1 / ((2 ^ n + 1 : ℕ) : ℝ) <
+      adaptiveEigenframeTwoQueryScore
+        (fun P : {P // MajoranaQBodyDictionary n q P} => P.1)
+        (exp (t • ((-Complex.I) •
+          (majoranaQBodyHamiltonian c :
+            Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ)))) :=
+  autonomous_majoranaQBody_adaptiveEigenframeScore_gt_haar hqle
+    (majoranaQBodyHamiltonian c) (majoranaQBodyHamiltonian_ne_zero c hc)
+    (majoranaQBodyHamiltonian_hasDictionarySupport c) t hsep
 
 /-- For every fixed body order, the squared Majorana dictionary is eventually smaller than Hilbert
 dimension.  This is an unconditional polynomial-versus-exponential theorem. -/

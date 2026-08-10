@@ -1,6 +1,6 @@
 # Adaptive eigenframe two-query source-memory law
 
-**Status:** `[ACTIVE] [CORE LEAN-PROVEN] [ASYMPTOTIC COROLLARY OPEN] [NOVELTY OPEN]`
+**Status:** `[ACTIVE] [CORE LEAN-PROVEN] [ASYMPTOTIC LEAN-PROVEN] [NOVELTY AUDITED]`
 
 ## Frontier target
 
@@ -76,8 +76,9 @@ minimum-gap, spectral-universality, eigenbasis-moment, or disorder assumption.
 
 ## Open obligations
 
-- Formalize eventual separation for fixed even `q`, or provide an unconditional explicit regime.
-- Audit external novelty and exact oracle-model consequences for recent SYK pseudorandomness work.
+- Formalize a bounded-outcome sampling/amplification theorem for the literal two-copy experiment.
+- Compare the resulting quantitative design obstruction line by line with the approximation norm in
+  recent SYK pseudorandomness claims.
 
 ## Lean status
 
@@ -91,4 +92,31 @@ Implemented and foreground-verified in
 - exact dictionary cardinality `binom(2n,q)`;
 - nonidentity for every positive even `q`;
 - permanent Jordan--Wigner/Majorana source-memory lower bound and finite-size strict Haar
-  separation.
+  separation;
+- cofinite separation for every fixed positive even `q`, every nonzero coefficient vector, and every
+  real time;
+- Haar high-score probability at most `binom(2n,q)^2/(2^n+1)`, with this bound proved to tend to
+  zero;
+- a literal coefficient-parametrized fixed-`q` Majorana Hamiltonian, with dictionary support and
+  nonzeroness proved rather than assumed.
+
+## External novelty audit
+
+- Cui--Schuster--Mao--Huang--Brandao, *Random unitaries from Hamiltonian dynamics*,
+  arXiv:2510.08434, already proves a two-copy product-state distinguisher for constant qubit-local
+  Hamiltonians. Its frame is sampled independently of the measured Pauli word and the stated signal
+  carries the `3^-q` product-frame penalty. Therefore the generic conservation idea and the broad
+  phrase “static Hamiltonians are not Haar” are not novel.
+- The present mathematical increment is the word-adapted signed eigenframe identity: it extracts a
+  chosen Pauli-transfer coordinate exactly and eliminates the weight penalty. This makes the test
+  apply to polynomial dictionaries whose individual Jordan--Wigner strings have extensive qubit
+  weight.
+- For fixed-`q` Majorana/SYK support this yields an unconditional efficient-scale obstruction:
+  dictionary size is `binom(2n,q)`, static score is at least its inverse square for every time, Haar
+  mean is exactly `(2^n+1)^-1`, and Haar probability of reaching the static floor vanishes.
+- Golmohammadi, *Pseudorandom Dynamics in the SYK Model and Cryptographic Censorship in JT
+  Gravity*, arXiv:2605.25178, claims approximate polynomial designs under random-matrix/eigenbasis
+  assumptions. The new invariant is directly relevant: any approximation claim strong enough to
+  suppress this two-query polynomial signal must explain why the conserved fixed-`q` source
+  coordinate is absent. No contradiction is claimed until approximation norms and quantifiers are
+  matched formally.

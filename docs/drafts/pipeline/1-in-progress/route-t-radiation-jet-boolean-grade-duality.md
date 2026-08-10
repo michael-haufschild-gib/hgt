@@ -921,3 +921,164 @@ self-adjointness, reciprocal-square positivity, or (RJG53) itself is rejected as
 
 - 2026-08-10 — replaced nonlinear Poincare--Lelong bulk by exact rank-two theta-boundary square
   flow; paper-proved full exponential-type law (RJG47) and source-defined RH equivalence (RJG51).
+
+## 26. Conjecture loop 9 — bounded Cayley clock instead of exponential functional calculus
+
+The continuous square flow is mathematically exact, but its Lean upper bound would require the
+reverse exponential spectral-mapping theorem, which is absent from the current mathlib toolchain.
+This is not a mathematical obstacle.  Apply a source-sized Cayley transform before iterating.
+
+Put
+
+```text
+A = -i B^2,
+h = 1 / (2(1+norm(A))),
+X = h A,
+U = (I+X)(I-X)^(-1).                                    (RJG54)
+```
+
+Here `h>0` and `norm(X)<1`, so `I-X` is unconditionally invertible by its Neumann series.  Every
+object in (RJG54) is defined from the fixed theta density.  No zero, spectral projection, or RH
+parameter enters the definition.
+
+For every scalar `x`, the Cayley map
+
+```text
+kappa(x)=(1+x)/(1-x)
+```
+
+satisfies
+
+```text
+norm(kappa(x)) > 1  iff Re(x)>0,
+norm(kappa(x)) = 1  iff Re(x)=0,
+norm(kappa(x)) < 1  iff Re(x)<0,                           (RJG55)
+```
+
+whenever `norm(x)<1`.  This follows after squaring from the exact identity
+
+```text
+normSq(1+x)-normSq(1-x)=4 Re(x).
+```
+
+### Theorem K — exact source Cayley spectral map `[PAPER-PROVED]`
+
+For every `k != -1`, multiplication on the right by the unit `I-X` gives
+
+```text
+(kI-U)(I-X)=(k-1)I-(k+1)X.
+```
+
+Consequently
+
+```text
+k in spectrum(U)
+ iff (k-1)/(k+1) in spectrum(X),                          (RJG56)
+```
+
+and `-1` is not in `spectrum(U)`.  Thus (RJG56) is a full rational spectral-mapping theorem proved
+by elementary unit algebra; no holomorphic-functional-calculus infrastructure is needed.
+
+Since `B` is compact, the nonzero spectrum of `B^2` consists exactly of the squares of nonzero
+eigenvalues of `B`.  The corpus identifies those eigenvalues with
+`mu_q=-(alpha_q)^(-1)`.  Hence the nonessential Cayley multipliers are
+
+```text
+kappa_q = (1-i h mu_q^2)/(1+i h mu_q^2),                 (RJG57)
+```
+
+while the compact accumulation point `mu=0` maps to `kappa=1`.
+
+### Theorem L — rank-two observed Cayley growth law `[PAPER-PROVED]`
+
+Define the source-only discrete observation
+
+```text
+O_n = C U^n.                                              (RJG58)
+```
+
+For every canonical theta divisor mode, (RJG45), the unit inverse in (RJG54), and elementary
+eigenvector calculus give
+
+```text
+U^n f_q = kappa_q^n f_q,
+O_n f_q = kappa_q^n C f_q,
+norm(O_n f_q)=norm(kappa_q)^n norm(C f_q),                (RJG59)
+```
+
+with `C f_q != 0`.  Under RH all `mu_q^2` are real, so (RJG55)--(RJG57) put the whole spectrum of
+`U` on the unit circle and its spectral radius is one.  Gelfand's formula then makes
+`norm(U^n)` subexponential.  Conversely, if RH fails, some reciprocal square is nonreal;
+conjugation chooses a copy with positive imaginary part, so (RJG55) gives
+`norm(kappa_q)>1`.  The lower bound obtained from (RJG59) then forbids subexponential growth of
+`norm(O_n)`.
+
+Therefore
+
+```text
+RH
+ iff for every r>1,
+       norm(C U^n)/r^n -> 0 as n->infinity.               (RJG60)
+```
+
+This is an unconditional equivalence of a classical statement with a fixed, bounded, source-built
+two-channel discrete dynamical system.  It removes both the moving mass/cubic aperture and the
+missing exponential spectral-mapping API.  Status: `[PAPER-PROVED] [NOVELTY UNVERIFIED]`.
+
+## 27. Failed colligation shortcut and its positive survivor
+
+### Conjecture
+
+The same rank-two observer might be the adjoint defect `B+B^dagger`, making `U` an immediate
+finite-rank conservative colligation.
+
+### Verdict: `[FALSE FOR THIS B]`
+
+The identity `V+V^dagger=C` holds for the bare pinned Volterra operator `V`.  The actual theta
+source inverse has the weighted form
+
+```text
+B g(t)=i quantileSpeed(t) Vg(t),
+```
+
+and its Hilbert adjoint is the operator of the transposed weighted kernel.  The weights occur on
+opposite variables, so they do not collapse to the unweighted rank-two `C`.  Treating `C` as
+`B+B^dagger` would be theatre and would assert a false conservation law.
+
+### Positive survivor
+
+`C` remains a faithful finite observer by its exact nonzero monopole (RJG45), while `U` supplies
+the full source evolution independently.  The correct architecture is therefore an observable
+pair `(U,C)`, not a unitary colligation.  This distinction fixes where the remaining estimate must
+live: in the two output channels, not in a nonexistent ambient energy conservation law.
+
+## 28. Revised universal principle
+
+The robust object is not a preferred time parameter.  It is a **source-defined functional model
+plus a finite faithful observer**.  Any holomorphic map sending the stability boundary to a
+geometric boundary yields the same obstruction provided it is regular on the whole source
+spectrum.  The exponential sends the imaginary axis to zero continuous-time type; the Cayley map
+sends it to the unit circle and turns type into spectral radius.  The scaled Cayley choice is
+superior for formalization because invertibility is certified by `norm(X)<1` before any spectral
+argument.
+
+## 29. New Route T open core
+
+Prove directly from the theta/von-Mangoldt source, before divisor decomposition,
+
+```text
+for every r>1, norm(C U^n)/r^n -> 0.                     (RJG61)
+```
+
+Because `C` has rank two, (RJG61) is exactly a pair of adjoint resolvent-orbit estimates for the
+constant and centered-coordinate boundary vectors.  Neumann expansion of `(I-X)^(-1)` is
+available unconditionally from `norm(X)<1`; cancellation must be proved across its iterated
+source coefficients.  Assuming spectral radius at most one, reciprocal-square reality, RH, or
+(RJG61) itself is circular.
+
+## Log, Cayley receiver pivot
+
+- 2026-08-10 — replaced the exponential API bottleneck by the scaled source Cayley clock; proved
+  paper-level rational spectral mapping, exact rank-two modal growth, and RH equivalence (RJG60).
+- 2026-08-10 — rejected the false shortcut `B+B^dagger=C`; retained the faithful observable-pair
+  architecture and isolated the two-channel Neumann-orbit producer (RJG61).

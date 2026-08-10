@@ -20,7 +20,7 @@ open GaloisForLFunctions.HTGeometry
 namespace HedenmalmThetaSource
 
 open HedenmalmQuantile HedenmalmHilbertSchmidt HedenmalmPrimeTranslation
-  HedenmalmFredholmRange
+  HedenmalmFredholmRange HedenmalmClosedWeightedDerivative
 
 private abbrev H := Lp ℂ 2 unitIntervalMeasure
 private abbrev HS := SourceSpace thetaSource

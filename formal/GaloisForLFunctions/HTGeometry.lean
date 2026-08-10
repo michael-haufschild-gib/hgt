@@ -1287,6 +1287,7 @@ import GaloisForLFunctions.HTGeometry.ExponentialPieceFourierDecay
 import GaloisForLFunctions.HTGeometry.FarBandPowerTail
 import GaloisForLFunctions.HTGeometry.FarBandRatioTail
 import GaloisForLFunctions.HTGeometry.NearDiagonalHarmonicTail
+import GaloisForLFunctions.HTGeometry.OperatorPowerTelescope
 import GaloisForLFunctions.HTGeometry.PiecewiseExponentialAlgebra
 import GaloisForLFunctions.HTGeometry.PiecewiseExponentialFourier
 import GaloisForLFunctions.HTGeometry.PositiveSequenceBounds
@@ -6861,3 +6862,4 @@ import GaloisForLFunctions.HTGeometry.EisensteinScaling
 import GaloisForLFunctions.HTGeometry.ImageSeparatingPolynomial
 import GaloisForLFunctions.HTGeometry.AnalyticImageFiniteness
 import GaloisForLFunctions.HTGeometry.OrbitExceptionalTimes
+import GaloisForLFunctions.HTGeometry.SpectralOrbitTrigForm
