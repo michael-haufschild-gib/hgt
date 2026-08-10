@@ -88,9 +88,11 @@ theorem deningerGeometricInt_summable {C : ℝ} {L : ℝ} (hL : 0 < L) :
   have hqnn : (0 : ℝ) ≤ Real.exp (-L) := (Real.exp_pos _).le
   have hnat : Summable fun n : ℕ => C * (Real.exp (-L)) ^ n :=
     (summable_geometric_of_lt_one hqnn hq).mul_left C
-  refine Summable.of_nat_of_neg_add_one ?_ ?_
-  · simpa using hnat
-  · simpa using hnat
+  refine Summable.of_nat_of_neg_add_one (by simpa using hnat) ?_
+  have hshift : Summable fun n : ℕ => C * (Real.exp (-L)) ^ (n + 1) :=
+    hnat.comp_injective (add_left_injective 1)
+  refine hshift.congr fun n => ?_
+  congr 2
 
 /-- **The two-sided lattice sum converges absolutely.** -/
 theorem deningerShiftInt_summable {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpSchwartz) {L : ℝ}
@@ -172,8 +174,7 @@ theorem deningerExpSchwartz_eq_zero_of_periodic {f : 𝓢(ℝ, ℂ)} (hf : f ∈
 
 /-- **The periodization kills every periodization defect.**  Reindexing the lattice by one step is
 a bijection, so the telescoping sum vanishes. -/
-theorem deningerPeriodization_defect {f : 𝓢(ℝ, ℂ)} (hf : f ∈ DeningerExpSchwartz) {L : ℝ}
-    (hL : 0 < L) (t : ℝ) :
+theorem deningerPeriodization_defect (f : 𝓢(ℝ, ℂ)) (L t : ℝ) :
     (deningerPeriodizationSum f L t - deningerPeriodizationSum (deningerExpShift L f) L t)
       = 0 := by
   have hcoe : ∀ j : ℤ, ((deningerExpShift L f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) (t + (j : ℝ) * L)

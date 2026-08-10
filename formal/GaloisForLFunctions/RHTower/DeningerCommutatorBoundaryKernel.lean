@@ -69,7 +69,7 @@ theorem deningerMobiusCommutator_poissonSource (h : DeningerMeyerCap) :
     deningerMobiusCommutator (deningerPoissonSource h) = 0 := by
   rw [deningerMobiusCommutator, deningerCollarExchange_poissonSource,
     deningerPreimageDistribution_poissonSource, deningerPreimageDistribution_poissonSource,
-    deningerMeyerFourier_coe, sub_eq_zero]
+    deningerMeyerCapFourier_coe, sub_eq_zero]
   have hfour : GaloisForLFunctions.fourierSCLM ((h : DeningerMeyerCap) : 𝓢(ℝ, ℂ))
       = 𝓕 ((h : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) := rfl
   rw [hfour]

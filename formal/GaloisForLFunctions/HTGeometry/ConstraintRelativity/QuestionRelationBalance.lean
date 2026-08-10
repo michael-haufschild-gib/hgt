@@ -209,6 +209,17 @@ theorem finrank_balance (hRP : Rold ≤ Pold) (hPP : Pold ≤ Pnew) (hRR : Rold 
   rw [← map_stressMap_eq_freedomNew_inf_ker hRR hPP hRP', map_cokerMap_freedomNew] at h2
   omega
 
+/-- **Card `(3.2)`, boxed, class form.**  The Grothendieck-class identity
+`[F'] − [F] = [C] − [K]` is realized by an actual isomorphism `F' ⊕ K ≅ F ⊕ C`, so the balance is
+a statement about the modules and not only about their dimensions. -/
+noncomputable def balanceProdEquiv (hRP : Rold ≤ Pold) (hPP : Pold ≤ Pnew) (hRR : Rold ≤ Rnew)
+    (hRP' : Rnew ≤ Pnew) :
+    ((freedomNew Pnew Rnew) × (killedFreedom Rold Pold Rnew))
+      ≃ₗ[K] ((freedomOld Rold Pold) × (createdFreedom Pold Pnew Rnew)) := by
+  refine LinearEquiv.ofFinrankEq _ _ ?_
+  rw [Module.finrank_prod, Module.finrank_prod]
+  exact finrank_balance hRP hPP hRR hRP'
+
 /-- The signed balance `dim F' - dim F = dim C - dim K`. -/
 theorem finrank_balance_sub (hRP : Rold ≤ Pold) (hPP : Pold ≤ Pnew) (hRR : Rold ≤ Rnew)
     (hRP' : Rnew ≤ Pnew) :

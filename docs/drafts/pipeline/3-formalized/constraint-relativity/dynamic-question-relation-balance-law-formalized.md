@@ -54,8 +54,13 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
     card's §5 statement that the intermediate killed/created objects are not recoverable from the
     endpoint difference.
 
-The Grothendieck-group identity `(3.2)` is the class-level form of `(3.1)`; over a field it is
-item 10, and the composition law `(5.1)` is the additivity of the integer increments in item 10.
+10b. `balanceProdEquiv` — **card `(3.2)`, boxed**: the Grothendieck-class identity
+    `[F'] − [F] = [C] − [K]` realized as an actual isomorphism `F' ⊕ K ≅ F ⊕ C`.  Over a field the
+    class-level statement is equivalent to item 9, but this states it about the modules rather than
+    their dimensions, so it implies the identity in any Grothendieck group without constructing
+    one.
+
+The composition law `(5.1)` is the additivity of the integer increments in item 10.
 
 ## Verification
 

@@ -49,12 +49,12 @@ theorem deningerMobiusPreimage_poissonSource (h : DeningerMeyerCap) {x : ℝ} (h
     rw [deningerLogPull_poissonSource h hnx]
 
 /-- Meyer's space is stable under the Fourier transform. -/
-def deningerMeyerFourier (h : DeningerMeyerCap) : DeningerMeyerCap :=
+def deningerMeyerCapFourier (h : DeningerMeyerCap) : DeningerMeyerCap :=
   ⟨fourierSCLM ((h : DeningerMeyerCap) : 𝓢(ℝ, ℂ)), deningerMeyerCap_fourierSCLM h.2⟩
 
 @[simp]
-theorem deningerMeyerFourier_coe (h : DeningerMeyerCap) :
-    ((deningerMeyerFourier h : DeningerMeyerCap) : 𝓢(ℝ, ℂ))
+theorem deningerMeyerCapFourier_coe (h : DeningerMeyerCap) :
+    ((deningerMeyerCapFourier h : DeningerMeyerCap) : 𝓢(ℝ, ℂ))
       = fourierSCLM ((h : DeningerMeyerCap) : 𝓢(ℝ, ℂ)) := rfl
 
 /-- **The collar exchange of a Poisson boundary is the Poisson boundary of the Fourier
@@ -62,10 +62,10 @@ transform.**  The Poisson operator carries the Fourier involution to multiplicat
 in the logarithmic coordinate multiplicative inversion is exactly `J`. -/
 theorem deningerCollarExchange_poissonSource (h : DeningerMeyerCap) :
     deningerCollarExchange (deningerPoissonSource h)
-      = deningerPoissonSource (deningerMeyerFourier h) := by
+      = deningerPoissonSource (deningerMeyerCapFourier h) := by
   refine Subtype.ext (SchwartzMap.ext fun t => ?_)
   rw [deningerCollarExchange_apply, deningerPoissonSource_apply, deningerPoissonSource_apply,
-    deningerMeyerFourier_coe, deningerPoissonLog_eq, deningerPoissonLog_eq]
+    deningerMeyerCapFourier_coe, deningerPoissonLog_eq, deningerPoissonLog_eq]
   have hrefl := deningerPoissonValue_fourier_reflection h.2 (Real.exp_pos (-t))
   have hinv : (Real.exp (-t))⁻¹ = Real.exp t := by
     rw [Real.exp_neg, inv_inv]

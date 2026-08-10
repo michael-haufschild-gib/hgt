@@ -1146,25 +1146,117 @@ Classical.choice, Quot.sound`.
   concrete operator.  The two inputs are exactly the two proved above: `J² = 1` and triviality of
   `ℱ²` on the even preimage distributions.
 
+### Section 1 — the Poisson operator `Z : H_∩ → H_-` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonSource.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerPoissonLog_expBound` — **the Poisson sum beats every *real* exponential weight**: the
+  corpus's two-sided estimates for the integer weights `e^{st}` cover a real exponent `A` by taking
+  `s = ⌈A⌉` on the right half line and `s = -⌈A⌉` on the left.
+- `deningerPoissonSchwartz_zero_mem` — **`Z f ∈ H_-`**.  Meyer's space is stable under the
+  generator `A_0 = θ`, and every derivative of a Poisson sum is the Poisson sum of an iterate of
+  that generator, so one bound at derivative order zero controls the whole tower.
+- `deningerPoissonSource`, `deningerPoissonSourceLM` — **`Z : H_∩ → H_-` and its linearity.**
+
+The corpus's `deningerPoissonLM` lands in the *radial* space `deningerRadialCompat` (the whole
+family of integer weights); this is the single-weight form the commutator consumes.
+
+### Section 3 — the preimage of a Poisson boundary `(19)`--`(20)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonPreimage.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerLogPull_poissonSource` — the pullback of `Z f` is the Poisson sum of `f`.
+- `deningerMobiusPreimage_poissonSource` — **`(19)`: `f_{Zf} = f` on the ray**, which is exactly
+  the corpus's Möbius inversion `deningerMoebius_poissonValue` of the Poisson sum.
+- `deningerMeyerCapFourier`, `deningerCollarExchange_poissonSource` — **`(20)`: `J(Zf) = Z(ℱf)`.**
+  The corpus's `deningerPoissonValue_fourier_reflection` says the Poisson operator carries the
+  Fourier involution to multiplicative inversion, and in the logarithmic coordinate multiplicative
+  inversion *is* `J`.
+
+### Section 3 — the boundary inclusion `Z(H_∩) ⊆ ker 𝔖_μ` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerCommutatorBoundaryKernel.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerL1Distribution_congr` — the `L¹` distribution only sees the almost-everywhere class.
+- `deningerEvenPreimage_poissonSource_ae` — `E f_{Zf} = f` away from the origin, hence a.e.
+- `deningerPreimageDistribution_poissonSource` — so the preimage distribution of a boundary *is*
+  the boundary.
+- `deningerMobiusCommutator_poissonSource`, `deningerPoissonRange_subset_commutatorKernel` —
+  **`𝔖_μ(Zf) = 0`, i.e. `Z(H_∩) ⊆ ker 𝔖_μ`**: on a boundary the commutator is the difference
+  between the distributional and the classical Fourier transform of one Schwartz function.
+
+### Section 3 — the Fourier transform of an integrable density `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerL1FourierDistribution.lean`.  Axiom audit: `propext,
+Classical.choice, Quot.sound`.
+
+- `deningerFourier_mul_formula` — the multiplication formula `∫ (ℱF)·G = ∫ F·(ℱG)` for two
+  integrable functions.
+- `deningerL1Distribution_fourier_apply`, `deningerL1Distribution_fourierInv_apply` — **the
+  distributional transform of an integrable density is computed by the classical Fourier
+  integral**, even though that integral need not itself be integrable.
+- `deningerDensity_ae_eq` — pairing against every Schwartz function determines a locally integrable
+  density.
+
+These three are the input side of the converse of `(5)`: they turn `𝔖_μ h = 0` into the *pointwise*
+identity `ℱ(E f_h) = E f_{Jh}` almost everywhere.
+
+### Section 2 — rapid decay of the preimage on the far ray `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPreimageRayDecay.lean`,
+`DeningerLogSeries.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerLogPull_norm_le_inv_pow` — on `[1,∞)` the exponential weight of the source *is* a power
+  of the dilation parameter.
+- `deningerMobiusPreimage_ray_decay` — **`‖f_h(x)‖ ≤ C_k x^{-k}` for `x ≥ 1` and every `k ≥ 2`**,
+  by `(nx)^{-k} = n^{-k}x^{-k}`: no cancellation in `μ` is used.
+- `deningerLogSeries`, `deningerLogSeries_hasDerivAt`, `deningerLogSeries_zero_eq` — in the
+  logarithmic coordinate the Möbius series is a series of **translates** of the source, and on
+  `(-1, ∞)` the translate `log n + t` exceeds `log n - 1`, giving the uniform majorant `C n^{-2}`
+  which licenses term-by-term differentiation.
+
+### Section 3 — decay plus bounded derivatives is Schwartz `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerLandauInterpolation.lean`,
+`DeningerSchwartzOfDecay.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerLandau_deriv_le` — **the Landau interpolation `‖u'(x)‖ ≤ 2ε/δ + Mδ`**, from the
+  fundamental theorem of calculus on the window `[x, x+δ]` and the mean-value bound for `u'`.
+- `deningerDecayRight_iteratedDeriv` — **decay propagates to every derivative**: the window
+  `δ = x^{-B}` turns decay of `u` at order `2B` into decay of `u'` at order `B`.
+- `deningerSchwartzOfDecay` — **a smooth function with bounded derivatives of every order which
+  decays faster than every power on both rays is Schwartz.**
+
+This is the load-bearing replacement for the card's own route to `(24)`.  A Fourier transform
+automatically has bounded derivatives of every order as soon as its argument has all moments, so
+only the decay of the function itself has to be supplied — and that is the `r = 0` ray estimate
+above.  No differentiation of the Möbius series is needed.
+
 ### What is left
 
-Only `(5)` and the statements that ride on it.  `(4)`, `(6)`, `(8)`--`(12)`, `(15)`, `(25)`,
-`(34)`--`(35)` and `(44)`--`(45)` are all formalized unconditionally.
+`(4)`, `(6)`, `(8)`--`(12)`, `(15)`, `(19)`--`(20)`, `(25)`, `(34)`--`(35)` and `(44)`--`(45)` are
+formalized unconditionally, and `(5)` is proved in the direction `Z(H_∩) ⊆ ker 𝔖_μ`.
 
-`(5)` — the exact kernel `ker 𝔖_μ = Z(H_∩)` — still needs, in order:
+What remains is the converse `ker 𝔖_μ ⊆ Z(H_∩)`, in three steps, all of whose inputs are now built:
 
-- the Fourier-inversion bootstrap `(23)`--`(24)`: from `ℱ(E f_h) = E f_{Jh}` in `𝓢'`, every
-  polynomial moment of the right side (already proved, `deningerEvenPreimage_moment_integrable`)
-  gives a smooth representative of the left side by differentiation under the inverse Fourier
-  integral, and the ray estimates `(16)` then upgrade it to a Schwartz function;
-- Poisson summation `(26)` for the even Schwartz pair, which converts the right-inverse identity
-  `(25)` into the endpoint reading `g(0) = f(0) = 0`.
+1. **`ℱF = G` pointwise.**  `𝔖_μ h = 0` says `ℱ(T_F) = T_G` for `F = E f_h`, `G = E f_{Jh}`; by
+   `deningerL1Distribution_fourier_apply` the left side is the distribution of the classical `ℱF`,
+   and `deningerDensity_ae_eq` upgrades the identity of distributions to `ℱF = G` a.e.
+2. **`F` is Schwartz.**  `G` has every moment (`deningerEvenPreimage_moment_integrable`), so
+   `ℱ⁻G` is smooth with bounded derivatives of every order; it agrees a.e. with `F`, which decays
+   faster than every power by `deningerMobiusPreimage_ray_decay` and evenness.  Then
+   `deningerSchwartzOfDecay` gives `F ∈ 𝓢(ℝ)`.  Only the mathlib bridge
+   `contDiff_fourier`/`iteratedFDeriv_fourier` has still to be instantiated here.
+3. **The endpoints.**  `(25)` (`deningerMobius_rightInverse`) says `h = Z F`; Poisson summation for
+   the even Schwartz pair `(F, ℱF)` then forces `ℱF(0) = F(0) = 0`, i.e. `F ∈ H_∩`.
 
-Both directions of `(5)` reduce to that; the boundary inclusion `(19)`--`(20)` is the already-proved
-right inverse `deningerMobius_rightInverse` read at a Poisson boundary.  `(13)` (continuity of
-`h ↦ x^r f_h` into `L¹`), `(16)` (rapid decay of the derivatives of `f_h` on the ray) and `(30)`
-(the Euler-depleted kernel) are downstream of the same two inputs.  `H_∩` and `Z` already exist as
-`RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonLM`.
+`(13)` (continuity of `h ↦ x^r f_h` into `L¹`), `(16)` (rapid decay of the derivatives of `f_h`,
+for which `DeningerLogSeries` supplies the term-by-term differentiation) and `(30)` (the
+Euler-depleted kernel) are downstream of the same inputs.  `H_∩` and `Z` exist as
+`RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonSource`.
 
 ## Gates
 
@@ -1175,8 +1267,9 @@ right inverse `deningerMobius_rightInverse` read at a Poisson boundary.  `(13)` 
   identity, and boundary image `(4)` proved on paper
 - [ ] source annihilator gate: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
 - [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
-- [ ] 2 → 3 formalized: `(4)`, `(6)`, `(8)`--`(12)`, `(15)`, `(25)`, `(34)`--`(35)`,
-  `(44)`--`(45)` done; only `(5)` and its downstream `(13)`, `(16)`, `(30)` remain
+- [ ] 2 → 3 formalized: `(4)`, `(6)`, `(8)`--`(12)`, `(15)`, `(19)`--`(20)`, `(25)`,
+  `(34)`--`(35)`, `(44)`--`(45)` done, and `Z(H_∩) ⊆ ker 𝔖_μ`; the converse of `(5)` and its
+  downstream `(13)`, `(16)`, `(30)` remain
 - [ ] 3 → 4 publication-ready
 
 ## Log

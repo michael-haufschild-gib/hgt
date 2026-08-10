@@ -239,6 +239,131 @@ theorem closedHyperplaneInverse_index_eq_neg_one
     (closedHyperplaneInverse_kernel_eq_bot K B hB) hφ
   rw [closedHyperplaneInverse_range K B hB, hKφ]
 
+/-! ## Inverses of bounded operators with dense range -/
+
+/-- The graph inverse of a bounded operator on the whole Hilbert space. -/
+def closedDenseInverse (C : H →L[ℂ] H) : H →ₗ.[ℂ] H :=
+  closedHyperplaneInverse ⊤ (C.comp (⊤ : Submodule ℂ H).subtypeL)
+
+theorem closedDenseInverse_domain (C : H →L[ℂ] H) :
+    (closedDenseInverse C).domain = C.range := by
+  rw [closedDenseInverse, closedHyperplaneInverse_domain]
+  ext y
+  constructor
+  · rintro ⟨x, rfl⟩
+    exact ⟨(x : H), rfl⟩
+  · rintro ⟨x, rfl⟩
+    exact ⟨⟨x, Submodule.mem_top⟩, rfl⟩
+
+theorem closedDenseInverse_apply_C (C : H →L[ℂ] H) (hC : Function.Injective C) (x : H) :
+    C x ∈ (closedDenseInverse C).domain ∧
+      closedDenseInverse C ⟨C x, by rw [closedDenseInverse_domain]; exact ⟨x, rfl⟩⟩ = x := by
+  let xTop : (⊤ : Submodule ℂ H) := ⟨x, Submodule.mem_top⟩
+  have hCtop : Function.Injective (C.comp (⊤ : Submodule ℂ H).subtypeL) := by
+    intro u v huv
+    exact Subtype.ext (hC huv)
+  have h := closedHyperplaneInverse_apply_B (⊤ : Submodule ℂ H)
+    (C.comp (⊤ : Submodule ℂ H).subtypeL) hCtop xTop
+  constructor
+  · rw [closedDenseInverse_domain]
+    exact ⟨x, rfl⟩
+  · have heq :
+        (⟨C x, by rw [closedDenseInverse_domain]; exact ⟨x, rfl⟩⟩ :
+          (closedDenseInverse C).domain) =
+        ⟨(C.comp (⊤ : Submodule ℂ H).subtypeL) xTop, h.1⟩ := Subtype.ext rfl
+    rw [heq]
+    exact h.2
+
+theorem closedDenseInverse_isClosed (C : H →L[ℂ] H) (hC : Function.Injective C) :
+    (closedDenseInverse C).IsClosed := by
+  apply closedHyperplaneInverse_isClosed (⊤ : Submodule ℂ H) isClosed_univ
+  intro u v huv
+  exact Subtype.ext (hC huv)
+
+theorem closedDenseInverse_dense_domain (C : H →L[ℂ] H) (hDense : Dense (C.range : Set H)) :
+    Dense ((closedDenseInverse C).domain : Set H) := by
+  rw [closedDenseInverse_domain]
+  exact hDense
+
+/-- The inverse of an injective, dense-range bounded self-adjoint operator is self-adjoint. -/
+theorem closedDenseInverse_isSelfAdjoint (C : H →L[ℂ] H)
+    (hCinj : Function.Injective C) (hCdense : Dense (C.range : Set H))
+    (hCself : IsSelfAdjoint C) : IsSelfAdjoint (closedDenseInverse C) := by
+  let A := closedDenseInverse C
+  have hAdense : Dense (A.domain : Set H) := closedDenseInverse_dense_domain C hCdense
+  have hCeq : C.adjoint = C := hCself
+  have hCsymm : ∀ x y, inner ℂ (C x) y = inner ℂ x (C y) := by
+    intro x y
+    rw [← C.adjoint_inner_right, hCeq]
+  have hAform : A.IsFormalAdjoint A := by
+    intro x y
+    have hxRange : (x : H) ∈ C.range := by
+      simpa only [A, closedDenseInverse_domain] using x.property
+    have hyRange : (y : H) ∈ C.range := by
+      simpa only [A, closedDenseInverse_domain] using y.property
+    rcases hxRange with ⟨a, ha⟩
+    rcases hyRange with ⟨b, hb⟩
+    have hAx : A x = a := by
+      have h := (closedDenseInverse_apply_C C hCinj a).2
+      have heq : x = ⟨C a, (closedDenseInverse_apply_C C hCinj a).1⟩ := Subtype.ext ha.symm
+      simpa only [A, heq] using h
+    have hAy : A y = b := by
+      have h := (closedDenseInverse_apply_C C hCinj b).2
+      have heq : y = ⟨C b, (closedDenseInverse_apply_C C hCinj b).1⟩ := Subtype.ext hb.symm
+      simpa only [A, heq] using h
+    calc
+      inner ℂ (A x) (y : H) = inner ℂ a (y : H) := by rw [hAx]
+      _ = inner ℂ a (C b) := congrArg (fun z : H => inner ℂ a z) hb.symm
+      _ = inner ℂ (C a) b := (hCsymm a b).symm
+      _ = inner ℂ (x : H) b := congrArg (fun z : H => inner ℂ z b) ha
+      _ = inner ℂ (x : H) (A y) := by rw [hAy]
+  rw [LinearPMap.isSelfAdjoint_def]
+  apply le_antisymm
+  · refine ⟨?_, ?_⟩
+    · intro y hy
+      let yAdj : A.adjoint.domain := ⟨y, hy⟩
+      let w : H := A.adjoint yAdj
+      have hCw : C w = y := by
+        apply ext_inner_right ℂ
+        intro a
+        have hCa : C a ∈ A.domain := by
+          simpa only [A] using (closedDenseInverse_apply_C C hCinj a).1
+        let x : A.domain := ⟨C a, hCa⟩
+        have hAx : A x = a := by
+          simpa only [A, x] using (closedDenseInverse_apply_C C hCinj a).2
+        calc
+          inner ℂ (C w) a = inner ℂ w (C a) := hCsymm w a
+          _ = inner ℂ y (A x) := LinearPMap.adjoint_isFormalAdjoint hAdense yAdj x
+          _ = inner ℂ y a := by rw [hAx]
+      have : y ∈ A.domain := by
+        rw [show A.domain = C.range by simpa only [A] using closedDenseInverse_domain C]
+        exact ⟨w, hCw⟩
+      simpa only [A] using this
+    · intro y z hyz
+      let yAdj : A.adjoint.domain := y
+      let w : H := A.adjoint yAdj
+      have hCw : C w = (y : H) := by
+        apply ext_inner_right ℂ
+        intro a
+        have hCa : C a ∈ A.domain := by
+          simpa only [A] using (closedDenseInverse_apply_C C hCinj a).1
+        let x : A.domain := ⟨C a, hCa⟩
+        have hAx : A x = a := by
+          simpa only [A, x] using (closedDenseInverse_apply_C C hCinj a).2
+        calc
+          inner ℂ (C w) a = inner ℂ w (C a) := hCsymm w a
+          _ = inner ℂ (y : H) (A x) :=
+            LinearPMap.adjoint_isFormalAdjoint hAdense yAdj x
+          _ = inner ℂ (y : H) a := by rw [hAx]
+      have hAz : A z = w := by
+        have h := (closedDenseInverse_apply_C C hCinj w).2
+        have heq : z = ⟨C w, by simpa only [A] using
+            (closedDenseInverse_apply_C C hCinj w).1⟩ :=
+          Subtype.ext (hyz.symm.trans hCw.symm)
+        simpa only [A, heq] using h
+      exact hAz.symm
+  · exact hAform.le_adjoint hAdense
+
 end
 
 end GaloisForLFunctions.HTGeometry

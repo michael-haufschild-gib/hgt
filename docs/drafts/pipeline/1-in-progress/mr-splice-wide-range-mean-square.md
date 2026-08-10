@@ -4739,3 +4739,47 @@ Dirichlet-polynomial mean square for `μ` at length `M ≍ √x`** — which is 
 factorization, the large-values layer and the Halász bound of units 5–6 exist to supply.
 
 No block count, no maximal window, no Rademacher–Menshov factor appears anywhere on this route.
+
+## Unit 23 — CORRECTION to units 21–22: the residue is `β`, not `α`
+
+`Sieve/FibreIndexRange.lean`, `[propext, Classical.choice, Quot.sound]`:
+
+```lean
+innerFibre_subset_Icc : a ∈ outerBlock x h → innerFibre x h a ⊆ Icc 1 ⌈√x + h⌉
+fibreWidth_le_div     : fibreWidth x h ≤ h/√x
+```
+
+**The correction.**  Units 21 and 22 read the requirement off the `α`-term and recorded it as
+`α = o(h√x)`.  That is wrong in the useful direction: the mean-value baseline gives `α ≍ M ≍ √x`,
+and `√x = o(h√x)` because `h → ∞`, so **the `α`-requirement is already satisfied**.  Running all
+four terms of the Gallagher budget against the target `8√x·G ≤ ε h²√x` with `fibreWidth ≤ h/√x`
+(unit 23) and `M ≍ √x` (unit 23):
+
+| term | size at the baseline | requirement | status |
+|---|---|---|---|
+| `8√x·2·fibreWidth²·αW₀` | `16 h²αW₀/√x` | `W₀ ≲ ε x/α ≍ ε√x` | height choice ✓ |
+| `8√x·4α/(π²W₀)` | `32α/(π²W₀)·√x` | `W₀ ≳ α/(εh²) ≍ √x/(εh²)` | compatible once `h ≳ 1/ε` ✓ |
+| `8√x·4β/(3π²W₀²)` | — | `W₀² ≳ β/(εh²√x)·√x` | compatible ✓ |
+| `8√x·2·fibreWidth²·β` | `16 h²β/√x` | **`β = o(x) = o(M²)`** | **not satisfied by the baseline** |
+
+The `α`-terms are a height trade-off whose two constraints are compatible precisely because `h → ∞`.
+The `β`-term has no `W₀` in it at all, so no height choice can help: it forces
+
+```text
+β  =  o(M²) ,        M ≍ √x ,
+```
+
+i.e. the **height-free** part of `∫_{|w| ≤ T} ‖∑_{n ≤ M} μ(n) n^{2πiw}‖² dw` must beat `M²`.  The
+mean-value theorem gives exactly `β ≍ M²` (`integral_Icc_normSq_logPoly_le_affine_majorant`, whose
+height-free part is `(5e/2)∑_{n ≤ M} n|a_n|² + (5/4)∑|a_n|² ≍ M²`), and `β` is precisely the
+off-diagonal
+
+```text
+β  =  sup_T ( ∫_{|w| ≤ T}|F|² − 2T∑|a_n|² )
+    =  sup_T  ∑_{n ≠ m} a_n \bar a_m · sin(2πT log(n/m))/(π log(n/m)) .
+```
+
+**So the card's residue, in its final form:** beat the near-diagonal of the Dirichlet-polynomial mean
+square for `μ` at length `M ≍ √x` — any saving over `M²`, however small, closes the whole route.
+That is the object the Ramaré factorization (`RamareFactorization`), the large-values layer
+(`DirichletLargeValues`, `DirichletSixthMoment`) and the Halász bound of units 5–6 act on.

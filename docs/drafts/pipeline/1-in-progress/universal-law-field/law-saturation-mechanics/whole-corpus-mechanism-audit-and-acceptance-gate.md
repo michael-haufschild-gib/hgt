@@ -6,7 +6,8 @@
 - **Question:** Which transformation laws are forced across the certified universal-law corpus, and
   which proposed unifications are still independent annotations?
 - **Status:** [MECHANISM FIRST] [ROUTE LABELS EXCLUDED] [LEAN EVIDENCE AUDITED]
-  [ONE HIGHER THEOREM CLOSED] [THREE-FORMATION GATE OPEN] [NOT RH]
+  [ONE HIGHER THEOREM CLOSED] [THREE-FORMATION GATE PAPER-CLOSED]
+  [INDEPENDENT VALIDATION + LEAN GATES OPEN] [NOT RH]
 
 ## 1. Law zero: independent coexistence predicts nothing
 
@@ -152,6 +153,25 @@ passes all six conditions:
 Until then the correct status is a mechanism-first Stage-1 field programme, not a discovered
 universal geometry.
 
+### 4.1 First paper-level passage of conditions 1--4
+
+`ULF-LCM-2` now supplies one literal pre-zero source meeting the first four conditions.  In the
+finite-abelian-group zeta gas, temperature translation `H_u` and the canonical normalized socle
+tilt `S` are fixed by the source.  Their exchange is
+
+\[
+ S H_u=V_u H_u S,
+\]
+
+so pure socle intervention `V_u` is generated as a third formation.  Its response is simultaneously
+a positive Esscher tilt with strict Jeffreys cost, a recurrent phase response with open marked
+lift, a zeta-divisor transgression, and a hypertranscendental germ.  The positive cost is withheld:
+it is derived after the exchange and was not used to define the transformations.
+
+This closes conditions 1--4 on paper, not the field gate.  Condition 5 still requires a second
+literal source or a genuinely independent corpus-organ prediction not inherited from the same gas;
+condition 6 requires Lean certification of the new coupled theorem and sharp marking no-go.
+
 ## 5. Immediate research programme
 
 1. Use the certified general formation-exchange/joint-repair theorem as the two-doctrine baseline.
@@ -168,3 +188,7 @@ universal geometry.
 
 - 2026-08-09 — audited certified universal-law corpus by transformation laws rather than route
   labels; independent-coordinate and universal-slogan interpretations rejected.
+- 2026-08-10 — ULF-LCM-2 closed the first source-generated three-formation exchange on paper.
+  Temperature change and canonical socle tilt generate pure fugacity intervention; four response
+  charts and a strict information cost follow.  Independent-source validation and Lean closure
+  remain open, so field acceptance is not claimed.
