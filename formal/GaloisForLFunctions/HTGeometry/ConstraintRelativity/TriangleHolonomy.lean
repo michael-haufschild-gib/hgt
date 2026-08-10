@@ -161,6 +161,34 @@ theorem not_pointwise_bounded_of_cyclicDefect [CompleteSpace E₁] [CompleteSpac
 
 end Normed
 
+/-! ## Cofinal divergence of the amplification -/
+
+section Amplification
+
+/-- **Theorem 4.1, item 2, cofinal form.**  If the edge accuracy vanishes while the amplification
+is bounded below by `κ/(3ε)` at every stage, the amplification diverges: transport norms grow at
+least reciprocally to edge accuracy.  This is the card's "in particular" after `(4.5)`, which the
+per-stage inequality `amplification_ge` supplies stage by stage. -/
+theorem amplification_tendsto_atTop {ι : Type*} {l : Filter ι} (M eps : ι → ℝ) {kappa : ℝ}
+    (hkappa : 0 < kappa) (hpos : ∀ n, 0 < eps n) (hb : ∀ n, kappa / (3 * eps n) ≤ M n)
+    (heps : Filter.Tendsto eps l (nhds 0)) :
+    Filter.Tendsto M l Filter.atTop := by
+  have h3 : Filter.Tendsto (fun n => 3 * eps n) l (nhdsWithin 0 (Set.Ioi 0)) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · simpa using heps.const_mul (3 : ℝ)
+    · exact Filter.Eventually.of_forall fun n => by
+        have h := hpos n
+        exact Set.mem_Ioi.2 (by positivity)
+  have hinv : Filter.Tendsto (fun n => (3 * eps n)⁻¹) l Filter.atTop :=
+    h3.inv_tendsto_nhdsGT_zero
+  have hmul : Filter.Tendsto (fun n => kappa * (3 * eps n)⁻¹) l Filter.atTop :=
+    hinv.const_mul_atTop hkappa
+  refine Filter.tendsto_atTop_mono (fun n => ?_) hmul
+  have h := hb n
+  rwa [div_eq_mul_inv] at h
+
+end Amplification
+
 /-! ## The equicontinuous completion law -/
 
 section LocallyConvex

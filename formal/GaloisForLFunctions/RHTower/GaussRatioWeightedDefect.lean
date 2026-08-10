@@ -48,12 +48,9 @@ theorem norm_gaussSampleRatio_le_of_near {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p
     positivity
   have hbase := norm_gaussSampleRatio_pow_le hm k p hKb I j
   have hnat : (((I : ℤ) + j).natAbs : ℝ) ≥ (I : ℝ) / 2 := by
-    have h1 : (2 : ℤ) * |j| ≤ (I : ℤ) := by
-      have := hj
-      omega
-    have h2 : ((I : ℤ) + j).natAbs * 2 ≥ I := by omega
-    have := (Nat.cast_le (α := ℝ)).mpr h2
-    push_cast at this
+    have h2 : I ≤ ((I : ℤ) + j).natAbs * 2 := by omega
+    have hcast := (Nat.cast_le (α := ℝ)).mpr h2
+    push_cast at hcast
     linarith
   have hIpos : (0 : ℝ) < (I : ℝ) := by exact_mod_cast hI
   have hnpos : (0 : ℝ) < (((I : ℤ) + j).natAbs : ℝ) := by linarith
@@ -67,6 +64,17 @@ theorem norm_gaussSampleRatio_le_of_near {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p
       calc R = R ^ 1 := (pow_one R).symm
         _ ≤ R ^ (2 * m) := pow_le_pow_right₀ h.le (by omega)
     linarith
+
+/-- The sampled ratio is at most the defect plus one. -/
+theorem norm_gaussSampleRatio_le {m : ℕ} (k : Fin m) (p : Nat.Primes) (i j : ℤ) :
+    ‖gaussSampleValue k p (i + j)‖ / ‖gaussSampleValue k p i‖
+      ≤ ‖gaussSampleRatioDefect k p j i‖ + 1 := by
+  have h := norm_add_le (gaussSampleRatioDefect k p j i)
+    (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) *
+      ((gaussSamplePhase m p i : ℝ) : ℂ)))
+  rw [gaussSampleRatioDefect, sub_add_cancel, norm_div,
+    norm_gaussSampleRotation (m := m) p j i] at h
+  exact h
 
 /-! ## The ratio-weighted pointwise defect bound -/
 
@@ -93,14 +101,14 @@ theorem norm_gaussSampleRatioDefect_sq_mul_ratio_sq_le {m : ℕ} (hm : 2 ≤ m) 
   have hratio := norm_gaussSampleRatio_pow_le hm1 k p hKb I j
   have hpow2 : R ^ 2 ≤ 1 + R ^ (2 * m) := by
     rcases le_or_gt R 1 with h | h
-    · have h1 : R ^ 2 ≤ 1 := by nlinarith
+    · have h1 : R ^ 2 ≤ 1 := pow_le_one₀ hR0 h
       have h2 : (0 : ℝ) ≤ R ^ (2 * m) := by positivity
       linarith
     · have h1 : R ^ 2 ≤ R ^ (2 * m) := pow_le_pow_right₀ h.le (by omega)
       linarith
   have hpow4 : R ^ 4 ≤ 1 + R ^ (2 * m) := by
     rcases le_or_gt R 1 with h | h
-    · have h1 : R ^ 4 ≤ 1 := by nlinarith
+    · have h1 : R ^ 4 ≤ 1 := pow_le_one₀ hR0 h
       have h2 : (0 : ℝ) ≤ R ^ (2 * m) := by positivity
       linarith
     · have h1 : R ^ 4 ≤ R ^ (2 * m) := pow_le_pow_right₀ h.le (by omega)
@@ -144,38 +152,24 @@ theorem tendsto_gaussTranslationL2RatioDefectBound {m : ℕ} (hm : 2 ≤ m) (k :
     have hdef := tendsto_gaussSampleRatioDefect_nat hm1 k p j
     have hnorm : Tendsto (fun I : ℕ => ‖gaussSampleRatioDefect k p j (I : ℤ)‖)
         atTop (nhds 0) := by simpa using hdef.norm
+    have hmaj : Tendsto (fun I : ℕ =>
+        (‖gaussSampleRatioDefect k p j (I : ℤ)‖ + 1) ^ 2 *
+          ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2) atTop (nhds 0) := by
+      have h1 : Tendsto (fun I : ℕ => (‖gaussSampleRatioDefect k p j (I : ℤ)‖ + 1) ^ 2)
+          atTop (nhds 1) := by
+        have h := (hnorm.add
+          (tendsto_const_nhds (x := (1 : ℝ)) (f := (atTop : Filter ℕ)))).pow 2
+        simpa using h
+      have h2 : Tendsto (fun I : ℕ => ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2)
+          atTop (nhds 0) := by simpa using hnorm.pow 2
+      simpa using h1.mul h2
     have hR : Tendsto (fun I : ℕ =>
         (‖gaussSampleValue k p ((I : ℤ) + j)‖ / ‖gaussSampleValue k p (I : ℤ)‖) ^ 2 *
           ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2) atTop (nhds 0) := by
-      refine squeeze_zero (fun I => by positivity) (fun I => ?_)
-        (show Tendsto (fun I : ℕ =>
-          (‖gaussSampleRatioDefect k p j (I : ℤ)‖ + 1) ^ 2 *
-            ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2) atTop (nhds 0) by
-          have h := ((hnorm.add tendsto_const_nhds).pow 2).mul (hnorm.pow 2)
-          simpa using h)
-      have htri : ‖gaussSampleValue k p ((I : ℤ) + j)‖ / ‖gaussSampleValue k p (I : ℤ)‖
-          ≤ ‖gaussSampleRatioDefect k p j (I : ℤ)‖ + 1 := by
-        have hd : ‖gaussSampleValue k p ((I : ℤ) + j)‖ / ‖gaussSampleValue k p (I : ℤ)‖
-            = ‖gaussSampleValue k p ((I : ℤ) + j) / gaussSampleValue k p (I : ℤ)‖ := by
-          rw [norm_div]
-        rw [hd, gaussSampleRatioDefect] at *
-        have := norm_sub_le (gaussSampleValue k p ((I : ℤ) + j) / gaussSampleValue k p (I : ℤ))
-          (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) *
-            ((gaussSamplePhase m p (I : ℤ) : ℝ) : ℂ)))
-        have hrot := norm_gaussSampleRotation (m := m) p j (I : ℤ)
-        have hsub : ‖gaussSampleValue k p ((I : ℤ) + j) / gaussSampleValue k p (I : ℤ)‖
-            ≤ ‖gaussSampleValue k p ((I : ℤ) + j) / gaussSampleValue k p (I : ℤ) -
-                Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) *
-                  ((gaussSamplePhase m p (I : ℤ) : ℝ) : ℂ))‖ +
-              ‖Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (j : ℂ) *
-                ((gaussSamplePhase m p (I : ℤ) : ℝ) : ℂ))‖ :=
-          norm_le_norm_sub_add_norm _ _
-        rw [hrot] at hsub
-        exact hsub
-      have h0 : (0 : ℝ) ≤ ‖gaussSampleValue k p ((I : ℤ) + j)‖ /
-          ‖gaussSampleValue k p (I : ℤ)‖ := by positivity
-      have hd0 : (0 : ℝ) ≤ ‖gaussSampleRatioDefect k p j (I : ℤ)‖ := norm_nonneg _
-      exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ h0 htri 2) (by positivity)
+      refine squeeze_zero (fun I => by positivity) (fun I => ?_) hmaj
+      exact mul_le_mul_of_nonneg_right
+        (pow_le_pow_left₀ (by positivity) (norm_gaussSampleRatio_le k p (I : ℤ) j) 2)
+        (by positivity)
     have hmul := hR.const_mul (A ^ 2 / (1 + (j.natAbs : ℝ)) ^ 2)
     rw [mul_zero] at hmul
     have hcont := (ENNReal.continuous_ofReal.tendsto 0).comp hmul
@@ -221,7 +215,6 @@ theorem tendsto_gaussTranslationL2RatioDefectBound {m : ℕ} (hm : 2 ≤ m) (k :
             = 4 * A ^ 2 / (1 + (a : ℝ)) ^ 2 +
               4 * K * A ^ 2 * (I : ℝ) / ((1 + (a : ℝ)) ^ 2 * (n : ℝ)) := by
           field_simp
-          ring
         rw [hexp]
         have h1 : 4 * A ^ 2 / (1 + (a : ℝ)) ^ 2
             ≤ (4 + 8 * K) * A ^ 2 / (1 + (a : ℝ)) ^ 2 := by

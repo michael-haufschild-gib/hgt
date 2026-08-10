@@ -33,6 +33,11 @@ Section 4 — singular amplification:
 6. `amplification_ge` — **item 2 / card `(4.5)`**: a cyclic defect bounded below by `κ` at edge
    accuracy `ε > 0` forces `M ≥ κ/(3ε)`; the card states the weaker `κ/(6ε)` after halving `κ`
    along a tail, and the Lean statement gives the sharp per-stage inequality it is derived from.
+6b. `amplification_tendsto_atTop` — **item 2's closing clause**: with the edge accuracy vanishing
+   and the per-stage bound of item 6 holding at every stage, the amplification *diverges*.  This is
+   the card's "in particular, transport norms diverge at least reciprocally to edge accuracy",
+   which item 6 supplies only stage by stage.
+
 
 Section 5 — the equicontinuous completion law:
 

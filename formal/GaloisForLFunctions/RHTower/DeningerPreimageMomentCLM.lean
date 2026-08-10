@@ -73,7 +73,10 @@ theorem deningerMomentLp_add (r : ℕ) (h₁ h₂ : DeningerMeyerSource) :
     show ((x ^ r : ℝ) : ℂ) * deningerMobiusPreimage _ x
       = ((x ^ r : ℝ) : ℂ) * deningerMobiusPreimage _ x
         + ((x ^ r : ℝ) : ℂ) * deningerMobiusPreimage _ x
-    rw [deningerMobiusPreimage_add (DeningerMeyerSource.toSource h₁).2
+    have hcoe : (((DeningerMeyerSource.toSource (h₁ + h₂) : ↥DeningerExpSchwartz)) : 𝓢(ℝ, ℂ))
+        = (((DeningerMeyerSource.toSource h₁ : ↥DeningerExpSchwartz)) : 𝓢(ℝ, ℂ))
+          + (((DeningerMeyerSource.toSource h₂ : ↥DeningerExpSchwartz)) : 𝓢(ℝ, ℂ)) := rfl
+    rw [hcoe, deningerMobiusPreimage_add (DeningerMeyerSource.toSource h₁).2
       (DeningerMeyerSource.toSource h₂).2 hx0]
     ring
   rw [deningerMomentLp, deningerMomentLp, deningerMomentLp,
@@ -88,7 +91,9 @@ theorem deningerMomentLp_smul (r : ℕ) (c : ℂ) (h : DeningerMeyerSource) :
     filter_upwards with x
     show ((x ^ r : ℝ) : ℂ) * deningerMobiusPreimage _ x
       = c * (((x ^ r : ℝ) : ℂ) * deningerMobiusPreimage _ x)
-    rw [deningerMobiusPreimage_smul]
+    have hcoe : (((DeningerMeyerSource.toSource (c • h) : ↥DeningerExpSchwartz)) : 𝓢(ℝ, ℂ))
+        = c • (((DeningerMeyerSource.toSource h : ↥DeningerExpSchwartz)) : 𝓢(ℝ, ℂ)) := rfl
+    rw [hcoe, deningerMobiusPreimage_smul]
     ring
   rw [deningerMomentLp, deningerMomentLp,
     MemLp.toLp_congr (deningerMomentFun_memLp r (c • h))

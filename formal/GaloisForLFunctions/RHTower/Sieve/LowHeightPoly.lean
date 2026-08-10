@@ -175,6 +175,85 @@ theorem norm_logPoly_le_partial (a : ℕ → ℝ) (M : ℕ) {B : ℝ}
       ring
     rw [hMcast]
 
+/-- **Abel's inequality with a per-index partial-sum bound.** -/
+theorem norm_sum_mul_le_partial_bv (g : ℕ → ℝ) (φ : ℕ → ℂ) (n : ℕ) :
+    ‖∑ i ∈ Finset.range n, φ i * ((g i : ℝ) : ℂ)‖
+      ≤ ‖φ (n - 1)‖ * |∑ j ∈ Finset.range n, g j|
+        + ∑ i ∈ Finset.range (n - 1),
+            ‖φ (i + 1) - φ i‖ * |∑ j ∈ Finset.range (i + 1), g j| := by
+  have hS : ∀ k : ℕ, ‖∑ j ∈ Finset.range k, ((g j : ℝ) : ℂ)‖ = |∑ j ∈ Finset.range k, g j| := by
+    intro k
+    have hcast : ∑ j ∈ Finset.range k, ((g j : ℝ) : ℂ)
+        = (((∑ j ∈ Finset.range k, g j : ℝ)) : ℂ) := by push_cast; ring
+    rw [hcast, Complex.norm_real, Real.norm_eq_abs]
+  have hparts := Finset.sum_range_by_parts φ (fun j => ((g j : ℝ) : ℂ)) n
+  simp only [smul_eq_mul] at hparts
+  rw [hparts]
+  refine le_trans (norm_sub_le _ _) (add_le_add ?_ ?_)
+  · rw [norm_mul, hS]
+  · refine le_trans (norm_sum_le _ _) (Finset.sum_le_sum fun i _ => ?_)
+    rw [norm_mul, hS]
+
+/-- The phase increment across one step is at most `2π|w|/(n+1)`. -/
+theorem norm_logPhase_sub_succ_le (w : ℝ) (i : ℕ) :
+    ‖logPhase w (i + 1 + 1) - logPhase w (i + 1)‖ ≤ 2 * Real.pi * |w| / ((i : ℝ) + 1) := by
+  have h1 : (0 : ℝ) < (i : ℝ) + 1 := by positivity
+  have h2 : (0 : ℝ) < (i : ℝ) + 2 := by positivity
+  have hlog : Real.log ((i : ℝ) + 2) - Real.log ((i : ℝ) + 1) ≤ 1 / ((i : ℝ) + 1) := by
+    have hdiv : Real.log (((i : ℝ) + 2) / ((i : ℝ) + 1))
+        = Real.log ((i : ℝ) + 2) - Real.log ((i : ℝ) + 1) :=
+      Real.log_div (ne_of_gt h2) (ne_of_gt h1)
+    have hle : Real.log (((i : ℝ) + 2) / ((i : ℝ) + 1)) ≤ ((i : ℝ) + 2) / ((i : ℝ) + 1) - 1 :=
+      Real.log_le_sub_one_of_pos (by positivity)
+    have hval : ((i : ℝ) + 2) / ((i : ℝ) + 1) - 1 = 1 / ((i : ℝ) + 1) := by
+      field_simp
+      ring
+    rw [hdiv, hval] at hle
+    exact hle
+  have hnn : (0 : ℝ) ≤ Real.log ((i : ℝ) + 2) - Real.log ((i : ℝ) + 1) := by
+    have := Real.log_le_log h1 (by linarith : (i : ℝ) + 1 ≤ (i : ℝ) + 2)
+    linarith
+  have hc1 : ((i + 1 + 1 : ℕ) : ℝ) = (i : ℝ) + 2 := by push_cast; ring
+  have hc2 : ((i + 1 : ℕ) : ℝ) = (i : ℝ) + 1 := by push_cast; ring
+  have hb := norm_logPhase_sub_le w (i + 1) (i + 1 + 1)
+  rw [hc1, hc2, abs_of_nonneg hnn] at hb
+  refine le_trans hb ?_
+  have hnn2 : (0 : ℝ) ≤ 2 * Real.pi * |w| := by
+    have := Real.pi_pos
+    positivity
+  have hmul : 2 * Real.pi * |w| * (Real.log ((i : ℝ) + 2) - Real.log ((i : ℝ) + 1))
+      ≤ 2 * Real.pi * |w| * (1 / ((i : ℝ) + 1)) := mul_le_mul_of_nonneg_left hlog hnn2
+  have hval : 2 * Real.pi * |w| * (1 / ((i : ℝ) + 1)) = 2 * Real.pi * |w| / ((i : ℝ) + 1) := by
+    ring
+  linarith [hmul, hval]
+
+/-- **The Dirichlet polynomial with the partial sums weighted by the phase increments.** -/
+theorem norm_logPoly_le_abel (a : ℕ → ℝ) (M : ℕ) (w : ℝ) :
+    ‖logPoly (fun n => ((a n : ℝ) : ℂ)) (Finset.Icc 1 M) w‖
+      ≤ |∑ j ∈ Finset.range M, a (j + 1)|
+        + 2 * Real.pi * |w|
+            * ∑ i ∈ Finset.range (M - 1), |∑ j ∈ Finset.range (i + 1), a (j + 1)| / ((i : ℝ) + 1) := by
+  classical
+  have hreindex : logPoly (fun n => ((a n : ℝ) : ℂ)) (Finset.Icc 1 M) w
+      = ∑ i ∈ Finset.range M, logPhase w (i + 1) * ((a (i + 1) : ℝ) : ℂ) := by
+    rw [logPoly, ← Finset.Ico_add_one_right_eq_Icc, Finset.sum_Ico_eq_sum_range]
+    refine Finset.sum_congr (by norm_num) fun i _ => ?_
+    rw [logPhase]
+    have hidx : 1 + i = i + 1 := by omega
+    rw [hidx]
+    ring
+  rw [hreindex]
+  refine le_trans (norm_sum_mul_le_partial_bv (fun j => a (j + 1))
+    (fun i => logPhase w (i + 1)) M) ?_
+  rw [norm_logPhase, one_mul]
+  refine add_le_add le_rfl ?_
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun i _ => ?_
+  have hnn : (0 : ℝ) ≤ |∑ j ∈ Finset.range (i + 1), a (j + 1)| := abs_nonneg _
+  have hstep := mul_le_mul_of_nonneg_right (norm_logPhase_sub_succ_le w i) hnn
+  refine le_trans hstep (le_of_eq ?_)
+  field_simp
+
 end RHTower.Sieve
 
 end

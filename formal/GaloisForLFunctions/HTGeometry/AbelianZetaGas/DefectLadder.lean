@@ -311,21 +311,20 @@ theorem hasSum_majorant (q : RealEulerNome) :
   have hgeom1 : Summable fun n : ℕ => q.val ^ (n + 1) :=
     (summable_nat_add_iff 1).2 hgeom
   have hprod : Summable fun jr : ℕ × ℕ => q.val ^ (jr.1 + 1) * q.val ^ jr.2 :=
-    hgeom1.mul_of_nonneg hgeom (fun n => by positivity) (fun n => by positivity)
+    hgeom1.mul_of_nonneg hgeom (fun n => pow_nonneg q.pos.le _) (fun n => pow_nonneg q.pos.le _)
   have hmul := hgeom1.tsum_mul_tsum hgeom hprod
   have hval1 : ∑' n : ℕ, q.val ^ (n + 1) = q.val / (1 - q.val) := by
-    rw [tsum_eq_zero_add hgeom]
-    · rw [tsum_geometric_of_lt_one q.pos.le q.lt_one]
-      field_simp
-    · exact hgeom
+    have hcongr : ∀ n : ℕ, q.val ^ (n + 1) = q.val * q.val ^ n := fun n => by
+      rw [pow_succ]; ring
+    rw [tsum_congr hcongr, tsum_mul_left, tsum_geometric_of_lt_one q.pos.le q.lt_one]
+    field_simp
   have hval2 : ∑' n : ℕ, q.val ^ n = (1 - q.val)⁻¹ :=
     tsum_geometric_of_lt_one q.pos.le q.lt_one
   rw [hval1, hval2] at hmul
   have hfinal : q.val / (1 - q.val) * (1 - q.val)⁻¹ = q.val / (1 - q.val) ^ 2 := by
     field_simp
-    ring
   rw [hfinal] at hmul
-  rw [← hmul]
+  rw [hmul]
   exact hprod.hasSum
 
 /-- **The remainder of the defect ladder is quadratically small.**  Only the depth-one,
@@ -337,10 +336,11 @@ theorem abs_tsum_ladder_sub_leading_le (q : RealEulerNome) (θ : ℝ) :
   have hq0 := q.pos
   have hq1 := q.lt_one
   have hden : (0 : ℝ) < 1 - q.val := by linarith
+  have hd2 : (0 : ℝ) < (1 - q.val) ^ 2 := pow_pos hden 2
   have hlad := summable_ladderTerm hq0 hq1 θ
   have hMaj := hasSum_majorant q
   have hMsum : Summable (fun jr : ℕ × ℕ => 2 * (q.val ^ (jr.1 + 1) * q.val ^ jr.2)) :=
-    (hMaj.summable).mul_left 2
+    hMaj.summable.mul_left 2
   have hbound : ∀ jr : ℕ × ℕ,
       ladderTerm q.val θ jr ≤ 2 * (q.val ^ (jr.1 + 1) * q.val ^ jr.2) := by
     intro jr
@@ -357,15 +357,12 @@ theorem abs_tsum_ladder_sub_leading_le (q : RealEulerNome) (θ : ℝ) :
     have hd : (1 : ℝ) ≤ (jr.2 : ℝ) + 1 := by
       have : (0 : ℝ) ≤ (jr.2 : ℝ) := Nat.cast_nonneg _
       linarith
-    have hqpow : (0 : ℝ) < q.val ^ ((jr.1 + 1) * (jr.2 + 1)) := by positivity
+    have hqpow : (0 : ℝ) < q.val ^ ((jr.1 + 1) * (jr.2 + 1)) := pow_pos hq0 _
     have hsplit : q.val ^ (jr.1 + jr.2 + 1) = q.val ^ (jr.1 + 1) * q.val ^ jr.2 := by
       rw [← pow_add]
       ring_nf
     rw [ladderTerm, div_le_iff₀ (by linarith)]
     nlinarith
-  -- split off the leading term on both sides
-  have hsplitL := hlad.tsum_eq_add_tsum_ite (0, 0)
-  have hsplitM := hMsum.tsum_eq_add_tsum_ite (0, 0)
   have hiteL : Summable (fun jr : ℕ × ℕ => ite (jr = (0, 0)) 0 (ladderTerm q.val θ jr)) := by
     refine Summable.of_nonneg_of_le (fun jr => ?_) (fun jr => ?_) hlad
     · split
@@ -379,9 +376,13 @@ theorem abs_tsum_ladder_sub_leading_le (q : RealEulerNome) (θ : ℝ) :
     refine Summable.of_nonneg_of_le (fun jr => ?_) (fun jr => ?_) hMsum
     · split
       · exact le_rfl
-      · positivity
+      · have : (0:ℝ) ≤ q.val ^ (jr.1 + 1) * q.val ^ jr.2 :=
+          mul_nonneg (pow_nonneg hq0.le _) (pow_nonneg hq0.le _)
+        linarith
     · split
-      · positivity
+      · have : (0:ℝ) ≤ q.val ^ (jr.1 + 1) * q.val ^ jr.2 :=
+          mul_nonneg (pow_nonneg hq0.le _) (pow_nonneg hq0.le _)
+        linarith
       · exact le_rfl
   have hle : ∑' jr : ℕ × ℕ, ite (jr = (0, 0)) 0 (ladderTerm q.val θ jr)
       ≤ ∑' jr : ℕ × ℕ, ite (jr = (0, 0)) 0 (2 * (q.val ^ (jr.1 + 1) * q.val ^ jr.2)) := by
@@ -390,25 +391,42 @@ theorem abs_tsum_ladder_sub_leading_le (q : RealEulerNome) (θ : ℝ) :
     · exact le_rfl
     · exact hbound jr
   have hnn : 0 ≤ ∑' jr : ℕ × ℕ, ite (jr = (0, 0)) 0 (ladderTerm q.val θ jr) := by
-    refine hiteL.tsum_nonneg fun jr => ?_
+    refine tsum_nonneg fun jr => ?_
     split
     · exact le_rfl
     · exact ladderTerm_nonneg hq0.le θ jr
   have hMval : ∑' jr : ℕ × ℕ, (2 : ℝ) * (q.val ^ (jr.1 + 1) * q.val ^ jr.2)
       = 2 * (q.val / (1 - q.val) ^ 2) := by
     rw [tsum_mul_left, hMaj.tsum_eq]
-  have hMlead : (2 : ℝ) * (q.val ^ ((0 : ℕ) + 1) * q.val ^ (0 : ℕ)) = 2 * q.val := by
-    norm_num
-  rw [hsplitM, hMlead, hMval] at *
-  rw [hsplitL, ladderTerm_zero]
-  simp only [add_sub_cancel_left]
-  rw [abs_of_nonneg hnn]
+  have hsplitM := hMsum.tsum_eq_add_tsum_ite (0, 0)
+  rw [hMval] at hsplitM
+  have hMlead : (2 : ℝ) * (q.val ^ ((0 : ℕ) + 1) * q.val ^ (0 : ℕ)) = 2 * q.val := by norm_num
+  rw [hMlead] at hsplitM
   have hrest : ∑' jr : ℕ × ℕ, ite (jr = (0, 0)) 0 (2 * (q.val ^ (jr.1 + 1) * q.val ^ jr.2))
       = 2 * (q.val / (1 - q.val) ^ 2) - 2 * q.val := by linarith
   rw [hrest] at hle
+  have hsplitL := hlad.tsum_eq_add_tsum_ite (0, 0)
+  rw [ladderTerm_zero] at hsplitL
+  rw [hsplitL]
+  simp only [add_sub_cancel_left]
+  rw [abs_of_nonneg hnn]
+  have hkey : 2 * q.val - 2 * q.val * (1 - q.val) ^ 2 ≤ 4 * q.val ^ 2 := by
+    nlinarith [hq0, hq1, pow_nonneg hq0.le 3]
+  have hrw : 2 * (q.val / (1 - q.val) ^ 2) - 2 * q.val
+      = (2 * q.val - 2 * q.val * (1 - q.val) ^ 2) / (1 - q.val) ^ 2 := by
+    field_simp
   have hfinal : 2 * (q.val / (1 - q.val) ^ 2) - 2 * q.val ≤ 4 * q.val ^ 2 / (1 - q.val) ^ 2 := by
-    rw [div_sub' _ _ _ (by positivity), div_le_div_iff₀ (by positivity) (by positivity)]
-    nlinarith [sq_nonneg q.val, sq_nonneg (1 - q.val), hq0, hq1]
+    rw [hrw]
+    gcongr
   linarith
+
+/-- **Theorem 2.2, leading term.**  The realization defect of `φ(t) = Γ_q(1+it)` is
+`q(1 − cos θ)` up to a remainder of size `O(q²)`. -/
+theorem abs_defect_sub_leading_le (q : RealEulerNome) (t : ℝ) :
+    |(-Real.log ‖qGammaOn q (1 + (t : ℂ) * Complex.I)‖)
+        - q.val * (1 - Real.cos (phaseAngle q t))|
+      ≤ 4 * q.val ^ 2 / (1 - q.val) ^ 2 := by
+  rw [neg_log_norm_qGammaOn]
+  exact abs_tsum_ladder_sub_leading_le q (phaseAngle q t)
 
 end GaloisForLFunctions.HTGeometry

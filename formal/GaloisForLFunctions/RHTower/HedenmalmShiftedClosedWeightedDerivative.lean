@@ -75,6 +75,11 @@ theorem thetaShiftedWeightedDerivative_apply (α : ℂ)
       thetaCenteredSourceInverse_injective k).2
   have hAapply := (closedHyperplaneInverse_apply_B thetaCentered
     thetaCenteredSourceInverse thetaCenteredSourceInverse_injective k).2
+  have hAapply' :
+      thetaWeightedDerivative ⟨thetaCenteredSourceInverse k, hxA⟩ = (k : H) := by
+    change closedHyperplaneInverse thetaCentered thetaCenteredSourceInverse
+      ⟨thetaCenteredSourceInverse k, hxA⟩ = (k : H)
+    exact hAapply
   calc
     thetaShiftedWeightedDerivative α x =
         thetaShiftedWeightedDerivative α
@@ -86,10 +91,13 @@ theorem thetaShiftedWeightedDerivative_apply (α : ℂ)
     _ = (k : H) + α • thetaCenteredSourceInverse k :=
       thetaShiftedRangeMap_apply α k
     _ = thetaWeightedDerivative ⟨thetaCenteredSourceInverse k, hxA⟩ +
-        α • thetaCenteredSourceInverse k := by rw [hAapply]
+        α • thetaCenteredSourceInverse k := by rw [hAapply']
     _ = thetaWeightedDerivative
           ⟨(x : H), by simpa [thetaShiftedWeightedDerivative_domain] using x.property⟩ +
-        α • (x : H) := by rw [hxeqA, hk]
+        α • (x : H) := by
+      rw [hxeqA]
+      exact congrArg (fun y : H =>
+        thetaWeightedDerivative ⟨thetaCenteredSourceInverse k, hxA⟩ + α • y) hk
 
 theorem thetaShiftedRangeMap_injective (α : ℂ) :
     Function.Injective (thetaShiftedRangeMap α) := by

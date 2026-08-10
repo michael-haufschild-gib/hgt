@@ -390,6 +390,22 @@ than by weakening the statement.
 
 Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 660 jobs.
 
+### Theorem 2.2 — the leading term and the bounded remainder (DONE)
+
+Same module.  The `(j,r) = (1,1)` term of the ladder is exactly `q(1 − cos θ)`; every other term
+carries `q^{jr}` with `jr ≥ 2`, so the whole remainder is `O(q²)` with an explicit constant.
+
+| Clause | Lean |
+|---|---|
+| the leading term is the `(1,1)` term | `ladderTerm_zero` |
+| the geometric majorant `∑_{j,r} q^{j+1}q^r = q/(1−q)²` | **`hasSum_majorant`** |
+| **the ladder differs from `q(1 − cos θ)` by at most `4q²/(1−q)²`** | **`abs_tsum_ladder_sub_leading_le`** |
+| **the same, read on `φ(t) = Γ_q(1+it)`** | **`abs_defect_sub_leading_le`** |
+
+This is the card's "leading term `∑_p q_p(1 − cos θ_p)` with bounded remainder", made quantitative:
+the remainder of a single prime is at most `4q_p²/(1−q_p)²`, so summing over primes converges for
+`σ > 1/2` — which is exactly where the card places the chamber.
+
 **Next targets, in order.**
 
 1. *Theorem 1.1, remaining half.*  The divergence input is done (above).  What is left is the
@@ -397,9 +413,12 @@ Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 
    `ProbabilityTheory.measure_limsup_eq_one`, and convert "terms do not tend to zero" into failure
    of convergence in distribution — the latter needs Lévy's equivalence and continuity theorems,
    whose availability in mathlib has not yet been checked.
-2. *Theorem 2.2 (GAS3.2)–(GAS3.3).*  Needs the corpus PNT/Mertens layers
+2. *Theorem 2.2, divergence half (GAS3.2)–(GAS3.3).*  The remainder bound is done; what is left is
+   `A_P − Re B_P → ∞`, needing the corpus PNT/Mertens layers
    (`pnt-both-forms-corpus-owned`, `mertens-second-third-corpus-owned`) for `A_P`, and one-line
-   nonvanishing of `ζ` for `B_P`.
+   nonvanishing of `ζ` for `B_P`.  A preparatory step is the summability over primes of the
+   remainder `4q_p²/(1−q_p)²`, which needs `∑_p p^{−2σ} < ∞` together with the uniform bound
+   `q_p ≤ 2^{−σ} < 2^{−1/2}`.
 3. *Theorem 3.1 (CLT).*  Mathlib's `Probability/CentralLimitTheorem.lean` carries only the i.i.d.
    form (`tendstoInDistribution_inv_sqrt_mul_sum`); the Lindeberg–Feller triangular-array form the
    card needs is **not** in mathlib and has to be built.
