@@ -137,6 +137,20 @@ theorem jet_shift_injective (i : ι) : Function.Injective (fun n : ℕ => (i, n 
   intro m n h
   simpa using h
 
+/-- **Consequence: creation and obstruction are independent.**  A neutral fusion extension is
+genuinely creative — its differential transcendence degree is the size of the fused family — while
+its relative cotangent complex has no positive-degree homology.  Both hold at once, so the
+universal equation "obstruction ≃ successor law" is false when *obstruction* means a
+relation/anomaly class: a nonzero relative law object coexists with a vanishing positive-degree
+cotangent obstruction. -/
+theorem creation_without_obstruction [Differential C] [DifferentialAlgebra C K] [CharZero K]
+    (x : ι → K) (hx : DifferentialIndependent C x) :
+    (letI := derivationClosedDifferential (differentialAdjoin C (Set.range x))
+      (derivationClosed_differentialAdjoin C (Set.range x))
+     differentialTranscendenceDegree C (differentialAdjoin C (Set.range x)) = Cardinal.mk ι)
+    ∧ Subsingleton (Algebra.H1Cotangent C (differentialAdjoin C (Set.range x))) :=
+  ⟨differentialTranscendenceDegree_fusionField x hx, subsingleton_h1Cotangent_fusionField x hx⟩
+
 end NeutralFusion
 
 end HTGeometry.ConstraintRelativity

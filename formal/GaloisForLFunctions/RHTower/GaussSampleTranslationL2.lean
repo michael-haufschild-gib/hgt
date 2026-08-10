@@ -140,6 +140,52 @@ theorem norm_gaussSampleRotation {m : ℕ} (p : Nat.Primes) (j i : ℤ) :
   rw [hform]
   simp
 
+/-- **Uniform lattice ratio bound in multiplicative form.**  The `2m`-th power of the sampled
+ratio is at most the harmonic factor. -/
+theorem norm_gaussSampleRatio_pow_le {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
+    {K : ℝ}
+    (hKb : ∀ a b : ℤ, a ≠ 0 → b ≠ 0 →
+      ‖gaussSampleValue k p a‖ ^ (2 * m) * (a.natAbs : ℝ)
+        ≤ K * (‖gaussSampleValue k p b‖ ^ (2 * m) * (b.natAbs : ℝ)))
+    (I : ℕ) (j : ℤ) :
+    (‖gaussSampleValue k p ((I : ℤ) + j)‖ / ‖gaussSampleValue k p (I : ℤ)‖) ^ (2 * m)
+      ≤ K * (I : ℝ) / (((I : ℤ) + j).natAbs : ℝ) := by
+  set R : ℝ := ‖gaussSampleValue k p ((I : ℤ) + j)‖ / ‖gaussSampleValue k p (I : ℤ)‖ with hR
+  by_cases hI : (I : ℤ) = 0
+  · have hzero : ‖gaussSampleValue k p (I : ℤ)‖ = 0 := by
+      rw [hI, gaussSampleValue_zero, norm_zero]
+    have hR' : R = 0 := by rw [hR, hzero, div_zero]
+    have hInat : (I : ℝ) = 0 := by
+      have : I = 0 := by omega
+      simp [this]
+    rw [hR', hInat]
+    simp [zero_pow (show 2 * m ≠ 0 by omega)]
+  by_cases hn : ((I : ℤ) + j) = 0
+  · have hzero : ‖gaussSampleValue k p ((I : ℤ) + j)‖ = 0 := by
+      rw [hn, gaussSampleValue_zero, norm_zero]
+    have hR' : R = 0 := by rw [hR, hzero, zero_div]
+    have hnat : ((((I : ℤ) + j).natAbs : ℕ) : ℝ) = 0 := by
+      rw [hn]
+      simp
+    rw [hR', hnat]
+    simp [zero_pow (show 2 * m ≠ 0 by omega)]
+  have hIpos : ‖gaussSampleValue k p (I : ℤ)‖ > 0 :=
+    norm_pos_iff.mpr (gaussSampleValue_ne_zero hm k p hI)
+  have hnpos : (0 : ℝ) < (((I : ℤ) + j).natAbs : ℝ) := by
+    have : 0 < ((I : ℤ) + j).natAbs := by omega
+    exact_mod_cast this
+  have hbase := hKb ((I : ℤ) + j) (I : ℤ) hn hI
+  have hIabs : (((I : ℤ)).natAbs : ℝ) = (I : ℝ) := by simp
+  rw [hIabs] at hbase
+  have hRpow : R ^ (2 * m)
+      = ‖gaussSampleValue k p ((I : ℤ) + j)‖ ^ (2 * m) /
+        ‖gaussSampleValue k p (I : ℤ)‖ ^ (2 * m) := by
+    rw [hR, div_pow]
+  rw [hRpow]
+  have hdenpos : (0 : ℝ) < ‖gaussSampleValue k p (I : ℤ)‖ ^ (2 * m) := by positivity
+  rw [div_le_div_iff₀ hdenpos hnpos]
+  nlinarith [hbase, hdenpos, hnpos]
+
 /-- **Pointwise defect bound.**  The squared lattice defect is at most `4 + 2K·I/|I+j|`. -/
 theorem norm_gaussSampleRatioDefect_sq_le {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)
     {K : ℝ}
@@ -167,41 +213,12 @@ theorem norm_gaussSampleRatioDefect_sq_le {m : ℕ} (hm : 1 ≤ m) (k : Fin m) (
         exact pow_le_pow_right₀ h.le (by omega)
       linarith
   have hratio : R ^ (2 * m) ≤ 2 * K * (I : ℝ) / (2 * (((I : ℤ) + j).natAbs : ℝ)) := by
-    by_cases hI : (I : ℤ) = 0
-    · have hzero : ‖gaussSampleValue k p (I : ℤ)‖ = 0 := by
-        rw [hI, gaussSampleValue_zero, norm_zero]
-      have hR' : R = 0 := by rw [hR, hzero, div_zero]
-      have hInat : (I : ℝ) = 0 := by
-        have : I = 0 := by omega
-        simp [this]
-      rw [hR', hInat]
-      simp [zero_pow (show 2 * m ≠ 0 by omega)]
-    by_cases hn : ((I : ℤ) + j) = 0
-    · have hzero : ‖gaussSampleValue k p ((I : ℤ) + j)‖ = 0 := by
-        rw [hn, gaussSampleValue_zero, norm_zero]
-      have hR' : R = 0 := by rw [hR, hzero, zero_div]
-      have hnat : ((((I : ℤ) + j).natAbs : ℕ) : ℝ) = 0 := by
-        rw [hn]
-        simp
-      rw [hR', hnat]
-      simp [zero_pow (show 2 * m ≠ 0 by omega)]
-    have hIpos : ‖gaussSampleValue k p (I : ℤ)‖ > 0 :=
-      norm_pos_iff.mpr (gaussSampleValue_ne_zero hm k p hI)
-    have hnpos : (0 : ℝ) < (((I : ℤ) + j).natAbs : ℝ) := by
-      have : 0 < ((I : ℤ) + j).natAbs := by omega
-      exact_mod_cast this
-    have hbase := hKb ((I : ℤ) + j) (I : ℤ) hn hI
-    have hIabs : (((I : ℤ)).natAbs : ℝ) = (I : ℝ) := by
+    have h := norm_gaussSampleRatio_pow_le hm k p hKb I j
+    refine h.trans (le_of_eq ?_)
+    rcases eq_or_ne ((((I : ℤ) + j).natAbs : ℕ) : ℝ) 0 with h0 | h0
+    · rw [h0]
       simp
-    rw [hIabs] at hbase
-    have hRpow : R ^ (2 * m)
-        = ‖gaussSampleValue k p ((I : ℤ) + j)‖ ^ (2 * m) /
-          ‖gaussSampleValue k p (I : ℤ)‖ ^ (2 * m) := by
-      rw [hR, div_pow]
-    rw [hRpow]
-    have hdenpos : (0 : ℝ) < ‖gaussSampleValue k p (I : ℤ)‖ ^ (2 * m) := by positivity
-    rw [div_le_div_iff₀ hdenpos (by positivity)]
-    nlinarith [hbase, hdenpos, hnpos]
+    · field_simp
   have hfinal : 2 * K * (I : ℝ) / (2 * (((I : ℤ) + j).natAbs : ℝ)) * 2
       ≤ 2 * K * (I : ℝ) / (((I : ℤ) + j).natAbs : ℝ) := by
     rcases eq_or_lt_of_le (show (0 : ℝ) ≤ (((I : ℤ) + j).natAbs : ℝ) from by positivity) with h | h

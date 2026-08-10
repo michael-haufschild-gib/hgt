@@ -12,7 +12,8 @@
   genus-one counterterm pays. The condensed phase nevertheless obeys an unconditional Gaussian
   fluctuation law with polynomial variance.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [PRD-C INSTANTIATED]
-  [PHASE-CANNOT-PAY-MODULUS-DEBT EXCHANGE LAW] [CLASSICAL PARENTS DISCLAIMED] [NOT RH] [NO LEAN]
+  [PHASE-CANNOT-PAY-MODULUS-DEBT EXCHANGE LAW] [CLASSICAL PARENTS DISCLAIMED] [NOT RH]
+  [THEOREM 2.1 LEAN CERTIFIED]
 
 ## 0. Setting
 
@@ -317,3 +318,89 @@ NOT refrozen here without a new hunch-formation pass.
   from the top decade of primes). Corrected: CLT strictly inside \(\tfrac12<\sigma<1\)
   (Theorem 3.1), Dickman law at the wall (new Theorem 3.2, proved). The wall now carries the
   correct jump-condensation fluctuation signature.
+
+## Lean certification — in progress
+
+### Theorem 2.1 (GAS3.1) — the defect ladder (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/DefectLadder.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The whole identity is the harmonic expansion of `log|1 − x e^{−iθ}|` applied once per depth, with
+the `θ = 0` case subtracted.  Mathlib supplies the expansion (`Complex.hasSum_taylorSeries_neg_log`)
+and `Complex.log_re` converts it to the log-modulus, so nothing about `q`-Pochhammer symbols is
+needed to state or prove the ladder.
+
+| Clause | Lean |
+|---|---|
+| the phase factor and its modulus | `modePhase`, `norm_modePhase`, `norm_ofReal_mul_modePhase` |
+| `Re((x e^{−iθ})^n) = x^n cos(nθ)` | `re_pow_ofReal_mul_modePhase` |
+| **`log‖1 − x e^{−iθ}‖ = −∑_n x^n cos(nθ)/n`** | **`hasSum_log_norm_one_sub`** |
+| **the defect of one depth mode is `∑_r x^r(1 − cos rθ)/r`** | **`hasSum_modeDefect`** |
+| every term is nonnegative, hence so is the defect | `modeDefect_term_nonneg`, **`modeDefect_nonneg`** |
+| the `(depth, harmonic)` term `q^{(j+1)(r+1)}(1 − cos((r+1)θ))/(r+1)` | `ladderTerm`, `ladderTerm_nonneg` |
+| **the ladder is summable** (each term is at most `2q^{j+r+1}`) | **`summable_ladderTerm`** |
+| **(GAS3.1): the depth-wise defects sum to the `(j,r)` ladder** | **`hasSum_defectLadder`** |
+
+The ladder is then attached to the actual `q`-Pochhammer objects and to the characteristic
+function itself:
+
+| Clause | Lean |
+|---|---|
+| the phase-twisted product `(q e^{−iθ}; q)_∞`, multipliable and nonvanishing | `defectProduct`, `multipliable_defectFactor`, **`defectProduct_ne_zero`** |
+| **`log‖(q e^{−iθ};q)_∞‖ − log (q;q)_∞ = ∑_{j,r} q^{jr}(1 − cos rθ)/r`** | **`log_norm_defectProduct`** |
+| the phase angle `θ = −t log q = t σ log p` | `phaseAngle`, `qcpow_mul_I` |
+| `(q^{1+it};q)_∞` is the phase-twisted product | `qDenomFactor_eq_defectFactor`, **`qDenomProduct_eq_defectProduct`** |
+| **(GAS3.1): `−log\|Γ_q(1+it)\| = ∑_{j,r} q^{jr}(1 − cos rθ)/r`** | **`neg_log_norm_qGammaOn`** |
+
+The transfer `log‖∏'‖ = ∑' log‖·‖` is not needed in general form: the finite partial products
+already satisfy it (`Real.log_prod`), and both sides converge — the complex one because
+`defectProduct_ne_zero` makes `z ↦ log‖z‖` continuous there, the real one by the corpus's
+`realQFactorial_tendsto`.  The prefactor `(1−q)^{−it}` drops out because its exponent is purely
+imaginary, so `‖(1−q)^{−it}‖ = (1−q)^0 = 1`.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 662 jobs.
+
+### Theorem 1.1 — the Borel–Cantelli input (DONE)
+
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/VacuumWeightBound.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The symmetrization argument rests on two bounds on the vacuum weight `w_{q,0} = (q;q)_∞` and on the
+divergence of `∑_p p^{−σ}` for `σ ≤ 1`.  The corpus already owned the upper bound in the form
+`realQFactorialInf_le` (the infinite `q`-factorial is below every finite one) and the divergence as
+`not_summable_prime_rpow_of_exponent_le_one`; the lower bound needed the Weierstrass product
+inequality, which mathlib does not carry.
+
+| Clause | Lean |
+|---|---|
+| **the Weierstrass product inequality `1 − ∑ a ≤ ∏(1 − a)`** | **`one_sub_sum_le_prod_one_sub`** |
+| **`w_{q,0} ≥ 1 − q/(1−q)`** | **`realQFactorialInf_ge`** |
+| `w_{q,0} ≤ 1 − q` | `realQFactorialInf_le_one_sub` |
+| **`q < 1/3 ⟹ w_{q,0} > 1/2`** | **`half_lt_realQFactorialInf`** |
+| **the symmetrization bound `q/2 ≤ w_{q,0}(1 − w_{q,0})`** | **`half_mul_le_vacuum_mul_occupied`** |
+| the nome of a prime, and `p ≥ 11 ⟹ q_p < 1/3` | `primeNome`, `primeNome_lt_third` |
+| **the symmetrization probabilities are not summable** | **`not_summable_symmetrization`** |
+
+`not_summable_symmetrization` is the Borel–Cantelli II hypothesis of Theorem 1.1, stated
+unconditionally for `1/2 < σ ≤ 1`: the events "one copy empty, the other occupied" have divergent
+total probability, so almost surely infinitely many of them occur and the symmetrized series has
+terms that do not tend to zero.  The small primes are handled by a finite-support correction rather
+than by weakening the statement.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 660 jobs.
+
+**Next targets, in order.**
+
+1. *Theorem 1.1, remaining half.*  The divergence input is done (above).  What is left is the
+   measure-theoretic wrapper: build the product of two gas measures, apply
+   `ProbabilityTheory.measure_limsup_eq_one`, and convert "terms do not tend to zero" into failure
+   of convergence in distribution — the latter needs Lévy's equivalence and continuity theorems,
+   whose availability in mathlib has not yet been checked.
+2. *Theorem 2.2 (GAS3.2)–(GAS3.3).*  Needs the corpus PNT/Mertens layers
+   (`pnt-both-forms-corpus-owned`, `mertens-second-third-corpus-owned`) for `A_P`, and one-line
+   nonvanishing of `ζ` for `B_P`.
+3. *Theorem 3.1 (CLT).*  Mathlib's `Probability/CentralLimitTheorem.lean` carries only the i.i.d.
+   form (`tendstoInDistribution_inv_sqrt_mul_sum`); the Lindeberg–Feller triangular-array form the
+   card needs is **not** in mathlib and has to be built.
+4. *Theorem 3.2 (Dickman law at the wall).*

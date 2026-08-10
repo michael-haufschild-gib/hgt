@@ -19,7 +19,8 @@
     \(M(X)=O(Xe^{-c(\log X)^{1/3}})\), already formalized in the corpus;
   - ordinary Fourier inversion and Poisson summation on Schwartz functions;
   - Burnol's co-Poisson/Fourier intertwining as literature context.
-- **Lean status:** section 5 formalized unconditionally; see *Lean status* below.
+- **Lean status:** every analytic statement formalized unconditionally, including the exact
+  kernel `(5)`; see *Lean status* below.
 
 ## 1. Result
 
@@ -1235,28 +1236,79 @@ automatically has bounded derivatives of every order as soon as its argument has
 only the decay of the function itself has to be supplied — and that is the `r = 0` ray estimate
 above.  No differentiation of the Möbius series is needed.
 
+### Section 3 — bounded derivatives from the moments `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerFourierBoundedDerivs.lean`,
+`DeningerEvenPreimageDecay.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerFourier_contDiff`, `deningerFourier_iteratedDeriv_bound` — **a density with every moment
+  has a smooth transform with every derivative bounded**, the sup norm of the `r`-th derivative
+  being at most `∫ (2π|v|)^r |G(v)| dv`.
+- `deningerEvenPreimage_norm_moment` — the moments of `(11)` in the norm form the differentiation
+  lemmas consume.
+- `deningerEvenPreimage_decay`, `_decayRight`, `_decayLeft` — the far-ray estimate, two-sided.
+
+### Section 3 — the converse `(21)`--`(24)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerCommutatorKernelConverse.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerOpen_null_empty`, `deningerAeBound_on_open`, `deningerAbsDecay_of_ae` — an
+  almost-everywhere bound between continuous data is a pointwise bound, because an open null set of
+  the line is empty.  This is what transfers the Möbius decay to the Fourier representative.
+- `deningerEvenPreimage_ae_fourier` — **`(22)` pointwise**: `𝔖_μ h = 0` gives
+  `E f_h = ℱ(E f_{Jh})` almost everywhere.  The distributional identity is inverted with
+  `fourierInv_fourier_eq`, read back through `deningerL1Distribution_fourierInv_apply`, and
+  `deningerDensity_ae_eq` turns it into an identity of functions.
+- `deningerCommutatorKernel_schwartz` — **`(23)`--`(24)`: every kernel element has a Schwartz
+  preimage.**  The opposite collar supplies the moments, hence smoothness with bounded derivatives;
+  the Möbius side supplies the decay; `deningerSchwartzOfDecay` combines them.
+
+### Section 2 — continuity of the preimage on the ray, and `(16)` `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPreimageContinuous.lean`,
+`DeningerLogSeries.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerLogSeries_continuous`, `deningerMobiusPreimage_continuousOn` — **`f_h` is continuous on
+  `(0,∞)`**, because the translate series may be differentiated term by term on every half line.
+- `deningerEqOn_of_ae` — continuous data agreeing almost everywhere agree on an open set, so the
+  almost-everywhere identification of the preimage is pointwise on the ray.
+- `deningerLogSeries_decay` — **`(16)`: every derivative of `f_h` decays faster than every power on
+  the far ray**, `‖f_h^{(r)}(e^t)‖ ≤ C e^{-kt}` for `t ≥ 0`, directly from the translate majorant.
+
+### Section 3 — `(5)`: the exact kernel `[DONE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerEvenPreimageMassZero.lean`,
+`DeningerCommutatorExactKernel.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerEvenPreimage_integral_zero` — **`∫_ℝ E f_h = 0`**, by reflecting `(12)` onto the negative
+  ray.
+- `deningerFourier_at_zero` — the value of a Fourier transform at the origin *is* the total mass.
+- `deningerKernelSchwartz_even`, `_zero`, `_fourier_zero`, `deningerKernelSchwartz_mem` — **the
+  Schwartz representative lies in `H_∩`.**  Both Meyer endpoints are mass conditions, and `(12)`
+  gives them: `f(0) = ∫ E f_{Jh} = 0` and `ℱf(0) = ∫ E f_h = 0`.
+- `deningerKernel_eq_poissonSource` — **`(25)` identifies the kernel element as `Z f`.**
+- `deningerCommutator_exact_kernel` — **`(5)`: `ker 𝔖_μ = Z(H_∩)`.**
+
+This closes `(5)` by a shorter route than the card's own.  The card derives the endpoint conditions
+from Poisson summation `(26)`, letting `x ↓ 0`; but the endpoints are exactly the two total masses,
+and the zero-mass theorem `(12)` was already available.  **No Poisson summation is used.**
+
 ### What is left
 
-`(4)`, `(6)`, `(8)`--`(12)`, `(15)`, `(19)`--`(20)`, `(25)`, `(34)`--`(35)` and `(44)`--`(45)` are
-formalized unconditionally, and `(5)` is proved in the direction `Z(H_∩) ⊆ ker 𝔖_μ`.
+`(4)`, `(5)`, `(6)`, `(8)`--`(12)`, `(15)`, `(16)`, `(19)`--`(20)`, `(23)`--`(25)`, `(34)`--`(35)`
+and `(44)`--`(45)` are formalized unconditionally.  Two statements remain, and neither is analytic:
 
-What remains is the converse `ker 𝔖_μ ⊆ Z(H_∩)`, in three steps, all of whose inputs are now built:
-
-1. **`ℱF = G` pointwise.**  `𝔖_μ h = 0` says `ℱ(T_F) = T_G` for `F = E f_h`, `G = E f_{Jh}`; by
-   `deningerL1Distribution_fourier_apply` the left side is the distribution of the classical `ℱF`,
-   and `deningerDensity_ae_eq` upgrades the identity of distributions to `ℱF = G` a.e.
-2. **`F` is Schwartz.**  `G` has every moment (`deningerEvenPreimage_moment_integrable`), so
-   `ℱ⁻G` is smooth with bounded derivatives of every order; it agrees a.e. with `F`, which decays
-   faster than every power by `deningerMobiusPreimage_ray_decay` and evenness.  Then
-   `deningerSchwartzOfDecay` gives `F ∈ 𝓢(ℝ)`.  Only the mathlib bridge
-   `contDiff_fourier`/`iteratedFDeriv_fourier` has still to be instantiated here.
-3. **The endpoints.**  `(25)` (`deningerMobius_rightInverse`) says `h = Z F`; Poisson summation for
-   the even Schwartz pair `(F, ℱF)` then forces `ℱF(0) = F(0) = 0`, i.e. `F ∈ H_∩`.
-
-`(13)` (continuity of `h ↦ x^r f_h` into `L¹`), `(16)` (rapid decay of the derivatives of `f_h`,
-for which `DeningerLogSeries` supplies the term-by-term differentiation) and `(30)` (the
-Euler-depleted kernel) are downstream of the same inputs.  `H_∩` and `Z` exist as
-`RHTower.DeningerMeyerCap` and `RHTower.deningerPoissonSource`.
+- `(13)`, the continuity of `h ↦ x^r f_h ∈ L¹(0,∞)`, is a statement about the **nuclear Meyer
+  topology**.  The corpus realizes `H_-` as `DeningerExpSchwartz`, a *submodule* of `𝓢(ℝ,ℂ)`, which
+  carries the subspace topology, not Meyer's projective-limit topology of the weighted seminorms
+  `q_{a,m,n}`.  The bound of `(11)` is already proved with an explicit constant; what is missing is
+  the Fréchet structure in which to phrase continuity.
+- `(30)`, `ker 𝔖_{μ,p} = Δ_p Z(H_∩)`, needs the Green inverse `G_p` of the companion card
+  `deninger-euler-depleted-meyer-periodization-extension`.  Its two structural halves are already
+  built here (`DeningerMeyerPeriodization`: `Δ_L` injective and `Per_L ∘ Δ_L = 0`, with the Green
+  telescope `Δ_L G_L = 1`); what is left is the seminorm bound `(8)` of that card, placing `G_p h`
+  back in the source when `Per_p h = 0`.
 
 ## Gates
 
@@ -1267,9 +1319,9 @@ Euler-depleted kernel) are downstream of the same inputs.  `H_∩` and `Z` exist
   identity, and boundary image `(4)` proved on paper
 - [ ] source annihilator gate: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
 - [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
-- [ ] 2 → 3 formalized: `(4)`, `(6)`, `(8)`--`(12)`, `(15)`, `(19)`--`(20)`, `(25)`,
-  `(34)`--`(35)`, `(44)`--`(45)` done, and `Z(H_∩) ⊆ ker 𝔖_μ`; the converse of `(5)` and its
-  downstream `(13)`, `(16)`, `(30)` remain
+- [ ] 2 → 3 formalized: `(4)`, **`(5)`**, `(6)`, `(8)`--`(12)`, `(15)`, `(16)`, `(19)`--`(20)`,
+  `(23)`--`(25)`, `(34)`--`(35)`, `(44)`--`(45)` done — every analytic statement of the card.
+  `(13)` needs the Meyer Fréchet topology; `(30)` needs the companion card's Green inverse
 - [ ] 3 → 4 publication-ready
 
 ## Log

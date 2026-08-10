@@ -1014,3 +1014,84 @@ too, but a bounded and purely algebraic one, whereas o-minimality of `R_an` is n
 - **Hilbert irreducibility** (§1), through the Newton–Puiseux chain; the Hensel
   factorisation step of that chain is now built;
 - **Tarski–Seidenberg** (§4), replacing the previously recorded o-minimality of `R_an`.
+
+## Newton–Puiseux proved in Lean (2026-08-10)
+
+The second link of the Hilbert-irreducibility chain is closed.  Neither mathlib nor the
+corpus had Puiseux series, the Newton polygon, or the Newton–Puiseux theorem; all three
+are now built, unconditionally and axiom-clean, and wired into the `HTGeometry` umbrella.
+
+> **`HTGeometry/NewtonPuiseuxRoot.lean` — `exists_isRoot_map_expand`.**  Let `K` be
+> algebraically closed of characteristic zero.  Every monic `f ∈ K⟦t⟧[X]` of positive
+> degree has a root in `K⟦t⟧` after a ramification `t = s^N`:
+> `∃ N ≠ 0, ∃ y : K⟦s⟧, (f.map (PowerSeries.expand N).toRingHom).IsRoot y`.
+
+Ramification is `PowerSeries.expand`, which mathlib already supplies
+(`RingTheory/PowerSeries/Expand.lean`, `expand_mul`, `coeff_expand`, `order_expand`), so
+"root in the Puiseux field" needs no new field construction: it is a power-series root of
+the expanded polynomial, and expansions compose.
+
+Supporting modules, all new:
+
+- **`HTGeometry/NewtonSlopeTransform.lean`** — the slope substitution `t = s^q`,
+  `X = s^p·Y`, divided by `s^{p·d}`.  `shiftPow` divides a power series by `X^k`;
+  `newtonTransform` assembles the substituted polynomial; `monic_newtonTransform` keeps
+  monicity and degree; `coeff_map_constantCoeff_newtonTransform` identifies the special
+  fibre of the transform as the *edge polynomial*, coefficientwise
+  `coeff (p(d−i)) (expand q aᵢ)`; **`isRoot_map_expand_of_isRoot_newtonTransform`** turns a
+  root of the transform into the root `s^p·y` of the expanded polynomial; and
+  **`map_expand_newtonTransform`** shows a further ramification of a transform is again a
+  transform, `newtonTransform f (Np) (Nq)` — this is what lets a recursive call's own
+  ramification be pulled back through the substitution.
+- **`HTGeometry/NewtonMinimalSlope.lean`** — **`exists_newton_slope`**: for `f` with
+  special fibre `X^d` and some vanishing coefficient below the top, there are `p, q ≥ 1`
+  with `X^{p(d−i)} ∣ expand q aᵢ` for every `i`, sharply at one index.  The minimum is
+  selected in `ℚ` by `Finset.exists_min_image` and immediately cross-multiplied back to
+  `ℕ`, so no rational arithmetic survives into the statement.
+- **`HTGeometry/TschirnhausShift.lean`** — `hasseDeriv_natDegree_sub_one` computes the
+  Hasse derivative of order `d−1` of a monic polynomial (it is linear: constant term the
+  second coefficient, slope the degree), whence
+  `taylor_coeff_natDegree_sub_one` and **`exists_taylor_coeff_eq_zero`**: in
+  characteristic zero a translation removes the second coefficient, and the translation is
+  no larger than that coefficient, so a special fibre `X^d` survives the shift.
+- `HTGeometry/PowerSeriesFactorization.lean`, `HTGeometry/HenselFactorization.lean`,
+  `HTGeometry/PowerSeriesRootLift.lean` — the previous entry.
+
+**The induction.**  On the degree `d`.  Let `F = f mod t`, monic of degree `d`, and let `c`
+be a root of `F` (`K` is algebraically closed) of multiplicity `m`.
+
+*If `m < d`*, `exists_monic_factor_of_rootMultiplicity` splits `f = g·h` with `g` monic of
+degree `m ∈ [1, d)`; recurse on `g`.
+
+*If `m = d`*, then `F = (X − c)^d`.  Translate by `c` and apply the Tschirnhaus shift: the
+fibre becomes `X^d` and the second coefficient vanishes.  If the polynomial is now `X^d`,
+the root is `0`.  Otherwise take the minimal Newton slope and transform.  The transformed
+fibre `G` is monic of degree `d`, still has vanishing second coefficient, and is *not*
+`X^d` (sharpness at the minimising index).  If `G` were `(Y − c′)^d` its second
+coefficient would be `−d·c′`, forcing `c′ = 0` in characteristic zero and hence `G = Y^d` —
+contradiction.  So every root of `G` has multiplicity below `d`, and the first case applies
+to the transform, giving a factor of degree in `[1, d)`; recurse on it, pull the recursive
+ramification back through `map_expand_newtonTransform`, and push the root out through the
+substitution and the two translations.
+
+Characteristic zero enters exactly once — in the Tschirnhaus shift and in the
+`−d·c′ = 0 ⇒ c′ = 0` step — and algebraic closedness exactly twice, to produce a root of
+each special fibre.
+
+### Where the Hilbert-irreducibility chain now stands
+
+```text
+HIT  ←  Eisenstein's theorem on algebraic power series   ← NOT BUILT
+     ←  Newton–Puiseux                                   ← BUILT (this entry)
+     ←  Newton polygon                                   ← BUILT (this entry)
+     ←  Hensel factorisation                             ← BUILT (previous entry)
+```
+
+The remaining mathematical content is the arithmetic half: Eisenstein's theorem (the
+Puiseux coefficients of an algebraic power series have a common denominator) and then
+Hilbert irreducibility itself.
+
+### Remaining Lean layers for the card
+
+- Hilbert irreducibility (§1): Eisenstein's theorem, then HIT;
+- Tarski–Seidenberg (§4), as re-scoped two entries above.

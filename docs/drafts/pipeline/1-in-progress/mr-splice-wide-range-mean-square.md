@@ -4879,3 +4879,69 @@ The mean value theorem gives `β ≍ M²`; any saving whatever closes the card. 
 averaged Chowla, equivalently the Matomäki–Radziwiłł short-interval theorem — a single named
 theorem, now reached by four independent formal routes and stated here in the most elementary of
 them.
+
+## Unit 26 — Ramaré's factorization for the Dirichlet polynomial (Lean, unconditional)
+
+`Sieve/RamareComplex.lean`, `[propext, Classical.choice, Quot.sound]`.  The first brick of the
+attack on the residue.
+
+The corpus's Ramaré identities (`RamareWeight`) are stated for a **real** weight, because their
+consumers are real short sums.  Matomäki–Radziwiłł apply them to the **Dirichlet polynomial**, whose
+weight `a(n)·n^{2πiw}` is complex.  The identity is purely combinatorial, so it transfers verbatim:
+
+```lean
+sum_eq_sum_ramare_complex          : ∑_{n ∈ S} g n = ∑_{p ∈ P} ∑_{n ∈ S, p ∣ n} g n / ω_P(n)
+sum_div_image_complex              : reindexing by the cofactor
+sum_eq_sum_ramare_bilinear_complex : = ∑_{p ∈ P} ∑_m g(p·m)/ω_P(p·m)
+sum_eq_ramare_add_rough_complex    : … + ∑_{n ∈ S, ω_P(n) = 0} g n
+logPoly_eq_ramare_add_rough        : the same, applied to `logPoly a s w`
+```
+
+This is the decomposition on which MR's estimate of the off-diagonal runs: the designated prime
+carries `a(p)·p^{2πiw}` and the cofactor carries the rest, so the polynomial becomes a sum of
+products `P_p(w)·Q_p(w)` plus the rough part (integers with no prime factor in the designated
+range), which a sieve bounds separately.
+
+**Where this sits.**  The card's residue is `OffDiagonalSmall μ hh` (unit 24), i.e. the height-free
+part `β` of the frequency mean square must beat `M²`.  The accounting of units 23–25 shows the
+binding range is the *moderate* heights `1/log M ≲ T ≲ M`: below them PNT with Abel summation
+suffices (`mertensSup = o(M)`), above them the mean value theorem does, and in between only the
+Ramaré factorization plus the large-values layer can act.  Unit 26 supplies the factorization on the
+complex side; what follows is the choice of the prime range and the estimate of the resulting
+bilinear form.
+
+## Unit 27 — the low-height half of the residue (Lean, unconditional)
+
+`Sieve/LowHeightPoly.lean`, `[propext, Classical.choice, Quot.sound]`.
+
+```lean
+norm_exp_mul_I_sub_one_le : ‖e^{iθ} − 1‖ ≤ |θ|
+norm_exp_mul_I_sub_le     : ‖e^{ia} − e^{ib}‖ ≤ |a − b|
+norm_sum_mul_le_of_bounded_partial_bv :
+  (∀ k, |∑_{j<k} g j| ≤ B) →
+    ‖∑_{i<n} φ i · g i‖ ≤ B·( ‖φ(n−1)‖ + ∑_{i<n−1} ‖φ(i+1) − φ i‖ )
+```
+
+The first is proved from `e^{iθ} − 1 = (cos θ − 1) + i sin θ`, `(cos θ − 1)² + sin²θ = 4 sin²(θ/2)`
+(`Real.cos_two_mul_eq_one_sub`) and `|sin t| ≤ |t|`.  The third is Abel summation in `ℂ`
+(`Finset.sum_range_by_parts`), the complex counterpart of the corpus's real
+`abs_sum_mul_le_of_bounded_partial_bv`.
+
+**What it gives.**  The phase `n^{2πiw} = e^{2πi w log n}` has total variation
+`2π|w|·(log M − log 1) = 2π|w| log M` across `n ≤ M`, so for real coefficients
+
+```text
+‖ ∑_{n ≤ M} a(n)·n^{2πiw} ‖  ≤  B·(1 + 2π|w| log M) ,     B = max_k |∑_{n ≤ k} a(n)| ,
+```
+
+and for `a = μ` the corpus's `mertensSup M = o(M)` (`tendsto_mertensSup_div`, PNT) makes this
+`o(M)·(1 + 2π|w| log M)`.  Hence
+
+```text
+∫_{|w| ≤ T} ‖F‖² dw  ≤  2T·mertensSup(M)²·(1 + 2πT log M)²  =  o(M²)   for  T ≲ 1/log M ,
+```
+
+which is the **low-height half of `OffDiagonalSmall`**, unconditionally, from the prime number
+theorem alone.  Together with the mean value theorem at heights `T ≳ M` (unit 23's accounting), the
+residue is confined to the moderate range `1/log M ≲ T ≲ M`, where the Ramaré factorization of
+unit 26 and the large-values layer must act.

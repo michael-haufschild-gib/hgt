@@ -65,7 +65,7 @@ Theorem 2 — the first-order law symbol, for a local `k`-algebra with a coeffic
 
 The concrete sharp model, with its coefficient field:
 
-17. `congruencePiFieldTower`, `quotientRestrictScalarsEquiv`, `headLayerEquiv` — the sheet algebra
+17. `congruencePiFieldTower`, `headLayerEquiv` — the sheet algebra
     of the congruence order is a tower over any coefficient field of the base, so the cotangent
     module and the trace-law defect carry the `k`-structure Theorem 2 needs, and the abstract head
     layer `M/𝔪M` is the closed fibre used in coordinates.

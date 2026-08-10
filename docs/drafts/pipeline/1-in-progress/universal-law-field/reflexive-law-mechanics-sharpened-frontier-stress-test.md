@@ -163,7 +163,7 @@ before the endpoint and the general mechanism predicts a theorem not used in the
 
 ### 7.1 Finite mechanism stack
 
-Thirty-five RLM laws are already Lean-certified: future reporter corridors, promotion
+Thirty-six RLM laws are now Lean-certified: future reporter corridors, promotion
 differentials, admission exchange, contextual arity tests, serial obstruction spectra,
 observer-relationalization, adaptive challenge depth, endogenous grammar birth, completion
 heredity, and native two-storey repair.
@@ -259,9 +259,9 @@ charts reconstruct one another.  Never identify shadows by analogy.
 
 ### F. Formalize the cross-source capstone
 
-After hostile paper audit, certify ULF-RLM-36 in Lean under the Universal Law Field umbrella.  The
-gas exchange theorem is the remaining substantial formal input; elliptic-gamma transgression and
-general coefficient-lift machinery are already certified.
+Closed. ULF-RLM-36 is Lean-certified under the Universal Law Field umbrella. Certification uses
+the actual `AbelianZetaConvergentParameters` depth shift and independent elliptic-gamma
+Dixmier--Douady non-coboundary theorem, not a fitted route model.
 
 ## 11. Death criteria
 

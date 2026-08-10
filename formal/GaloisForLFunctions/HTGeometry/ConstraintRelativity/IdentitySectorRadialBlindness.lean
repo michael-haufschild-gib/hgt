@@ -299,6 +299,64 @@ section CrossGrade
 variable {ι A : Type*} [DecidableEq ι] [AddCommGroup ι] [CommRing A] [Algebra ℂ A]
   (𝒜 : ι → Submodule ℂ A) [GradedAlgebra 𝒜]
 
+/-- The grade component of a homogeneous finite sum picks out its term. -/
+theorem gradeComponent_sum {s : Finset ι} {x : ι → A} (hx : ∀ i ∈ s, x i ∈ 𝒜 i) {i : ι}
+    (hi : i ∈ s) : gradeComponent 𝒜 i (∑ j ∈ s, x j) = x i := by
+  classical
+  rw [map_sum, Finset.sum_eq_single_of_mem i hi]
+  · exact gradeComponent_of_mem 𝒜 (hx i hi)
+  · intro j hj hji
+    exact gradeComponent_of_mem_ne 𝒜 hji (hx j hj)
+
+/-- **Theorem 4, general form.**  The radial stabilizer of a finite nonhomogeneous vector is the
+intersection of the equal-character conditions across its grade support. -/
+theorem radial_finite_invariant_iff {ν : ι → ℝ} (s : Finset ι) (x : ι → A)
+    (hx : ∀ i ∈ s, x i ∈ 𝒜 i) (hx0 : ∀ i ∈ s, x i ≠ 0) (c : ℝ) :
+    (∃ lam : ℂ, gradeDiag 𝒜 (radialMultiplier ν c) (∑ i ∈ s, x i) = lam • ∑ i ∈ s, x i)
+      ↔ ∀ i ∈ s, ∀ j ∈ s, ν i ^ c = ν j ^ c := by
+  classical
+  constructor
+  · rintro ⟨lam, hlam⟩ i hi j hj
+    have key : ∀ k ∈ s, radialMultiplier ν c k = lam := by
+      intro k hk
+      have hcomp := congrArg (gradeComponent 𝒜 k) hlam
+      rw [map_smul, gradeComponent_sum 𝒜 hx hk] at hcomp
+      have hleft : gradeComponent 𝒜 k (gradeDiag 𝒜 (radialMultiplier ν c) (∑ i ∈ s, x i))
+          = radialMultiplier ν c k • x k := by
+        rw [gradeComponent_gradeDiag, gradeComponent_sum 𝒜 hx hk]
+      rw [hleft] at hcomp
+      by_contra hcon
+      refine hx0 k hk ?_
+      have hz : (radialMultiplier ν c k - lam) • x k = 0 := by rw [sub_smul, hcomp, sub_self]
+      exact (smul_eq_zero.1 hz).resolve_left (sub_ne_zero.2 hcon)
+    have h1 := key i hi
+    have h2 := key j hj
+    have : (((ν i ^ c : ℝ) : ℂ)) = (((ν j ^ c : ℝ) : ℂ)) := by
+      rw [show (((ν i ^ c : ℝ) : ℂ)) = radialMultiplier ν c i from rfl, h1,
+        ← h2, show radialMultiplier ν c j = (((ν j ^ c : ℝ) : ℂ)) from rfl]
+    exact_mod_cast this
+  · intro heq
+    rcases Finset.eq_empty_or_nonempty s with rfl | ⟨i₀, hi₀⟩
+    · exact ⟨0, by simp⟩
+    refine ⟨radialMultiplier ν c i₀, ?_⟩
+    rw [map_sum, Finset.smul_sum]
+    refine Finset.sum_congr rfl fun k hk => ?_
+    rw [gradeDiag_of_mem 𝒜 _ (hx k hk)]
+    congr 1
+    show (((ν k ^ c : ℝ) : ℂ)) = (((ν i₀ ^ c : ℝ) : ℂ))
+    exact_mod_cast congrArg (fun r : ℝ => (r : ℂ)) (heq k hk i₀ hi₀)
+
+/-- **Theorem 4, general form, sharp reading.**  Two distinct positive absolute grades in the
+support already force zero drift: the stabilizer of any finite nonhomogeneous vector with two
+different grades is trivial. -/
+theorem radial_finite_invariant_eq_zero {ν : ι → ℝ} (hνpos : ∀ i, 0 < ν i) (s : Finset ι)
+    (x : ι → A) (hx : ∀ i ∈ s, x i ∈ 𝒜 i) (hx0 : ∀ i ∈ s, x i ≠ 0) {i j : ι}
+    (hi : i ∈ s) (hj : j ∈ s) (hij : ν i ≠ ν j) {c : ℝ}
+    (h : ∃ lam : ℂ, gradeDiag 𝒜 (radialMultiplier ν c) (∑ k ∈ s, x k) = lam • ∑ k ∈ s, x k) :
+    c = 0 :=
+  (rpow_eq_rpow_iff (hνpos i) (hνpos j) hij).1
+    ((radial_finite_invariant_iff 𝒜 s x hx hx0 c).1 h i hi j hj)
+
 /-- **Theorem 4.**  A line spanned by a vector with two distinct absolute grades is gauge invariant
 only at zero drift. -/
 theorem radial_line_invariant_iff {ν : ι → ℝ} (hνpos : ∀ i, 0 < ν i) {i j : ι} (hij : ν i ≠ ν j)

@@ -238,6 +238,41 @@ theorem logPairing_eq_sum {P : ι → ℝ} (hP : ∀ i, 0 < P i) (a : PrimeAlgeb
   rw [mul_smul_comm, map_smul, smul_eq_mul]
   rfl
 
+/-! ### The no-cancellation theorem in its completion form -/
+
+section Completion
+
+variable {ι : Type*} [DecidableEq ι]
+
+omit [DecidableEq ι] in
+/-- A receiver on which the valuation functionals separate points has an injective coordinate
+map. -/
+theorem injective_coord_of_separating {N : Type*} [AddCommGroup N] [Module ℂ N]
+    (ψ : ι → N →ₗ[ℂ] ℂ) (hsep : ∀ n : N, (∀ ℓ, ψ ℓ n = 0) → n = 0) :
+    Function.Injective (fun n : N => fun ℓ => ψ ℓ n) := by
+  intro m n h
+  refine sub_eq_zero.1 (hsep _ fun ℓ => ?_)
+  have hℓ : ψ ℓ m = ψ ℓ n := congrFun h ℓ
+  rw [map_sub, hℓ, sub_self]
+
+omit [DecidableEq ι] in
+/-- **The no-cancellation theorem, completion form.**  On *any* receiver where the valuation
+functionals extend and separate points, the diagonal physical defect off the critical line stays
+coordinatewise injective: multiplying each coordinate by a nonzero multiplier cannot create
+nullity.  Adding primes, averaging, or faithfully completing the existing quotient therefore
+cannot produce the missing cancellation — the receiver already sees each prime independently. -/
+theorem injective_defect_coord_of_separating {N : Type*} [AddCommGroup N] [Module ℂ N]
+    {P : ι → ℝ} (hP : ∀ i, 1 < P i) {a : ℝ} (ha : a ≠ 0)
+    (ψ : ι → N →ₗ[ℂ] ℂ) (hsep : ∀ n : N, (∀ ℓ, ψ ℓ n = 0) → n = 0) :
+    Function.Injective (fun n : N => fun ℓ => defectMultiplier P a ℓ * ψ ℓ n) := by
+  intro m n h
+  refine injective_coord_of_separating ψ hsep ?_
+  funext ℓ
+  have hℓ : defectMultiplier P a ℓ * ψ ℓ m = defectMultiplier P a ℓ * ψ ℓ n := congrFun h ℓ
+  exact mul_left_cancel₀ (defectMultiplier_ne_zero hP ha ℓ) hℓ
+
+end Completion
+
 end ScalarContraction
 
 end HTGeometry.ConstraintRelativity

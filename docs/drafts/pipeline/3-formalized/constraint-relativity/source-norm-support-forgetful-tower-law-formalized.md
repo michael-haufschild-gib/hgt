@@ -67,7 +67,7 @@ The arithmetic instantiation `(9)`–`(12)` is formalized as well:
     `identity-sector-radial-gauge-blindness-and-cross-grade-selection-law`.
 18. `sum_normSq_pseudoInverse_wall` — the exact squared pseudo-inverse gain
     `1/(|c_ρ|² (e^κ − 1)²)`.
-19. `tendsto_exp_sub_one_div_atZero`, `tendsto_pseudoInverse_gain_ratio` — **card `(12)`**: the
+19. `tendsto_pseudoInverse_gain_ratio` — **card `(12)`**: the
     ratio of the exact gain to the model `1/(|c_ρ|² κ²)` tends to one as `κ → 0`.  The card's `∼`
     is thus a proved limit, not a heuristic; the slope input is the derivative of `exp` at `0`.
 20. `tendsto_pseudoInverse_gain_atTop` — **card `(12)`, the reading**: the gain blows up as

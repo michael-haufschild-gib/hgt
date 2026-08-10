@@ -69,6 +69,13 @@ Theorem 4 and the no-cancellation law:
 16. `defect_injective_of_ne_zero` — **cards `(11)`, `(12)` and the no-cancellation theorem**: off
     the critical line, a finite cross-prime combination annihilated by the diagonal defect has all
     coefficients zero.
+17. `injective_coord_of_separating`, `injective_defect_coord_of_separating` — the card's stated
+    **generalization** of the no-cancellation theorem: on *any* receiver where the valuation
+    functionals extend and separate points, the diagonal defect off the critical line remains
+    coordinatewise injective, because it multiplies each coordinate by a nonzero scalar.  Adding
+    primes, averaging, or faithfully completing the quotient therefore cannot produce the missing
+    nullity — the receiver already sees each prime independently.  Item 16 is the finite-span case.
+
 
 ## Scope
 

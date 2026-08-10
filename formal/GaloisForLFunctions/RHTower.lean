@@ -2403,6 +2403,7 @@ import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
 import GaloisForLFunctions.RHTower.GaussSampleTranslationL2
 import GaloisForLFunctions.RHTower.GaussTranslationL2Convergence
 import GaloisForLFunctions.RHTower.GaussUniformTranslationL2
+import GaloisForLFunctions.RHTower.GaussDiagonalLogResidue
 import GaloisForLFunctions.RHTower.GaussFourierDiagonal
 import GaloisForLFunctions.RHTower.GaussIterate
 import GaloisForLFunctions.RHTower.GaussIterateInner
@@ -4235,6 +4236,8 @@ import GaloisForLFunctions.RHTower.Sieve.AveragedFromFrequency
 import GaloisForLFunctions.RHTower.Sieve.FibreIndexRange
 import GaloisForLFunctions.RHTower.Sieve.FrequencyFromOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.MRFromOffDiagonal
+import GaloisForLFunctions.RHTower.Sieve.RamareComplex
+import GaloisForLFunctions.RHTower.Sieve.LowHeightPoly
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaEndpoints
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHead
 import GaloisForLFunctions.RHTower.Sieve.DirichletSigmaHeadSimplify
@@ -6864,6 +6867,8 @@ import GaloisForLFunctions.RHTower.Sieve.AveragedFromFrequency
 import GaloisForLFunctions.RHTower.Sieve.FibreIndexRange
 import GaloisForLFunctions.RHTower.Sieve.FrequencyFromOffDiagonal
 import GaloisForLFunctions.RHTower.Sieve.MRFromOffDiagonal
+import GaloisForLFunctions.RHTower.Sieve.RamareComplex
+import GaloisForLFunctions.RHTower.Sieve.LowHeightPoly
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeight
 import GaloisForLFunctions.RHTower.DeningerKotheComplete
 import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
@@ -6948,3 +6953,9 @@ import GaloisForLFunctions.RHTower.DeningerLogSeries
 import GaloisForLFunctions.RHTower.DeningerLandauInterpolation
 import GaloisForLFunctions.RHTower.DeningerSchwartzOfDecay
 import GaloisForLFunctions.RHTower.DeningerMeyerPeriodization
+import GaloisForLFunctions.RHTower.DeningerFourierBoundedDerivs
+import GaloisForLFunctions.RHTower.DeningerEvenPreimageDecay
+import GaloisForLFunctions.RHTower.DeningerCommutatorKernelConverse
+import GaloisForLFunctions.RHTower.DeningerPreimageContinuous
+import GaloisForLFunctions.RHTower.DeningerEvenPreimageMassZero
+import GaloisForLFunctions.RHTower.DeningerCommutatorExactKernel

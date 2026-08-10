@@ -25,32 +25,32 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Polynomial PowerSeries
 
-variable {K : Type} [Field K]
-
 /-! ## Division by a power of the variable -/
 
+variable {R : Type*} [CommRing R]
+
 /-- Division of a power series by `X ^ k`, read off coefficientwise. -/
-noncomputable def shiftPow (k : ℕ) (φ : PowerSeries K) : PowerSeries K :=
+noncomputable def shiftPow (k : ℕ) (φ : PowerSeries R) : PowerSeries R :=
   PowerSeries.mk fun n => PowerSeries.coeff (n + k) φ
 
 @[simp]
-theorem coeff_shiftPow (k n : ℕ) (φ : PowerSeries K) :
+theorem coeff_shiftPow (k n : ℕ) (φ : PowerSeries R) :
     PowerSeries.coeff n (shiftPow k φ) = PowerSeries.coeff (n + k) φ :=
   PowerSeries.coeff_mk _ _
 
 @[simp]
-theorem shiftPow_zero (φ : PowerSeries K) : shiftPow 0 φ = φ := by
+theorem shiftPow_zero (φ : PowerSeries R) : shiftPow 0 φ = φ := by
   ext n
   rw [coeff_shiftPow, Nat.add_zero]
 
 /-- **Dividing by a power of the variable inverts multiplying by it.** -/
-theorem X_pow_mul_shiftPow {k : ℕ} {φ : PowerSeries K}
-    (h : (PowerSeries.X : PowerSeries K) ^ k ∣ φ) :
-    (PowerSeries.X : PowerSeries K) ^ k * shiftPow k φ = φ := by
+theorem X_pow_mul_shiftPow {k : ℕ} {φ : PowerSeries R}
+    (h : (PowerSeries.X : PowerSeries R) ^ k ∣ φ) :
+    (PowerSeries.X : PowerSeries R) ^ k * shiftPow k φ = φ := by
   ext n
   rcases Nat.lt_or_ge n k with hn | hn
-  · have hzero : (PowerSeries.X : PowerSeries K) ^ k ∣
-        (PowerSeries.X : PowerSeries K) ^ k * shiftPow k φ := ⟨_, rfl⟩
+  · have hzero : (PowerSeries.X : PowerSeries R) ^ k ∣
+        (PowerSeries.X : PowerSeries R) ^ k * shiftPow k φ := ⟨_, rfl⟩
     rw [PowerSeries.X_pow_dvd_iff] at hzero h
     rw [hzero n hn, h n hn]
   · obtain ⟨d, hd⟩ : ∃ d, n = d + k := ⟨n - k, by omega⟩
@@ -58,9 +58,11 @@ theorem X_pow_mul_shiftPow {k : ℕ} {φ : PowerSeries K}
     rw [PowerSeries.coeff_X_pow_mul, coeff_shiftPow]
 
 /-- The constant term of the quotient is the coefficient at the divided-out order. -/
-theorem constantCoeff_shiftPow (k : ℕ) (φ : PowerSeries K) :
+theorem constantCoeff_shiftPow (k : ℕ) (φ : PowerSeries R) :
     PowerSeries.constantCoeff (shiftPow k φ) = PowerSeries.coeff k φ := by
   rw [← PowerSeries.coeff_zero_eq_constantCoeff, coeff_shiftPow, Nat.zero_add]
+
+variable {K : Type} [Field K]
 
 /-! ## The transform -/
 

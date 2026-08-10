@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.GaussRelativeDiagonal
 import GaloisForLFunctions.HTGeometry.HarmonicComplexResidueTransfer
+import GaloisForLFunctions.RHTower.GaussComponentLocalResidueLaw
 
 /-!
 # The logarithmic mean of the Fourier diagonal
@@ -15,6 +16,8 @@ statement about the operator itself.
 namespace RHTower
 
 open MeasureTheory GaloisForLFunctions Filter Topology
+
+open GaloisForLFunctions.RHTower
 
 noncomputable section
 
@@ -45,7 +48,6 @@ theorem gaussStepScalar_neg {m : ℕ} (k : Fin m) (p : Nat.Primes) (i : ℤ) :
       = ((p : ℝ) : ℂ) *
         (gaussSampleValue k p i * starRingEnd ℂ (gaussSampleValue k p i)) := by
   rw [gaussSampleValue_neg, Complex.conj_conj]
-  ring
 
 theorem norm_gaussStepScalar_eq {m : ℕ} (k : Fin m) (p : Nat.Primes) (i : ℤ) :
     ‖((p : ℝ) : ℂ) * (gaussSampleValue k p i * starRingEnd ℂ (gaussSampleValue k p i))‖
@@ -70,8 +72,7 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
           inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
             ((gaussQuasiInnerGFull (le_refl 1) k p ^ 1)
               (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ))
-      atTop (nhds ((2 * ((p : ℝ) ^ 1 - 1) ^ 2 /
-        ((1 : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ)) := by
+      atTop (nhds ((2 * ((p : ℝ) - 1) ^ 2 / Real.log (p : ℝ) : ℝ) : ℂ)) := by
   have hm : (1 : ℕ) ≤ 1 := le_refl 1
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.one_lt
   have hppos : (0 : ℝ) < (p : ℝ) := lt_trans zero_lt_one hp
@@ -82,11 +83,13 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
     gaussPrimeScaleBlock hp (fourierLp 2 0) with hbdef
   set F : ℤ → ℝ := fun i =>
     gaussFoldDefect hm k p hp i * (gaussFoldDefect hm k p hp i + 2 * ‖b‖) with hF
+  have hFval : ∀ i : ℤ, F i
+      = gaussFoldDefect hm k p hp i * (gaussFoldDefect hm k p hp i + 2 * ‖b‖) := fun _ => rfl
   have hFnn : ∀ i : ℤ, 0 ≤ F i := by
     intro i
     have h0 : (0 : ℝ) ≤ gaussFoldDefect hm k p hp i := norm_nonneg _
     have h1 : (0 : ℝ) ≤ ‖b‖ := norm_nonneg _
-    rw [hF]
+    rw [hFval i]
     positivity
   have hιp : Tendsto (fun n : ℕ => (((n : ℤ) + 1)).natAbs) atTop atTop := by
     refine (Filter.tendsto_add_atTop_nat 1).congr fun n => ?_
@@ -129,15 +132,18 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
       have hval2 := inner_gaussQuasiInnerGFull_pow hm k p 1 (-((n : ℤ) + 1))
       have hphase : gaussSamplePhase 1 p (-((n : ℤ) + 1))
           = gaussSamplePhase 1 p ((n : ℤ) + 1) := gaussSamplePhase_neg 1 p _
-      have hscal := gaussStepScalar_neg k p ((n : ℤ) + 1)
-      rw [herrdef, hSdef, ← hpdt, hval1, hval2, hX, hY, hphase]
-      simp only [pow_one]
+      show S n - gaussPrincipalDiagonalTerm k p n
+          = ((gaussArchScale 1 ^ (2 * 1) : ℝ) : ℂ) * (X + Y)
+      rw [← hpdt]
+      simp only [hSdef]
+      rw [hval1, hval2]
+      simp only [hX, hY, pow_one, hphase]
       rw [gaussSampleValue_neg, Complex.conj_conj]
       ring
     have h1 := norm_inner_gaussQuasiInnerG_sub_amplitude_le hm k p hp hip
     have h2 := norm_inner_gaussQuasiInnerG_sub_amplitude_le hm k p hp him
-    rw [← hX, norm_gaussStepScalar_eq, ← hF] at h1
-    rw [← hY, norm_gaussStepScalar_eq, ← hF] at h2
+    rw [← hX, norm_gaussStepScalar_eq, ← hFval ((n : ℤ) + 1)] at h1
+    rw [← hY, norm_gaussStepScalar_eq, ← hFval (-((n : ℤ) + 1))] at h2
     have hvalneg : ‖gaussSampleValue k p (-((n : ℤ) + 1))‖
         = ‖gaussSampleValue k p ((n : ℤ) + 1)‖ := by
       rw [gaussSampleValue_neg, RCLike.norm_conj]
@@ -193,14 +199,44 @@ theorem tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
     rw [Finset.sum_congr rfl fun n _ => hinner n, Complex.real_smul,
       Complex.ofReal_inv, div_eq_mul_inv, mul_comm]
   have hPDT := gaussPrincipalDiagonalTerm_logResidue hm k p
+  have hval : ((2 * ((p : ℝ) ^ (1 : ℕ) - 1) ^ 2 /
+      (((1 : ℕ) : ℝ) ^ 2 * Real.log (p : ℝ)) : ℝ) : ℂ)
+      = ((2 * ((p : ℝ) - 1) ^ 2 / Real.log (p : ℝ) : ℝ) : ℂ) := by norm_num
+  rw [hval] at hPDT
   have hsum := hPDT.add herr
   rw [add_zero] at hsum
   refine hsum.congr fun N => ?_
-  rw [div_add_div_same, ← Finset.sum_add_distrib]
-  refine congrArg (fun z : ℂ => z / (Real.log N : ℂ)) ?_
+  rw [← add_div, ← Finset.sum_add_distrib]
+  congr 1
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [herrdef]
+  show gaussPrincipalDiagonalTerm k p n + (S n - gaussPrincipalDiagonalTerm k p n) = S n
   ring
+
+/-! ## The local factor -/
+
+/-- **Formula (A) for the operator, at `m = 1`.**  Restoring the local-factor coefficient of the
+source reduction turns the logarithmic mean of the Fourier diagonal into the exact critical
+residue `2(p-1)^4/(p^2 log p)`. -/
+theorem tendsto_gaussLocalDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
+    Tendsto (fun N : ℕ =>
+      ((gaussLocalFactorWeight 1 p : ℝ) : ℂ) *
+        ((∑ n ∈ Finset.range N,
+          ((inner ℂ (fourierLp 2 ((n : ℤ) + 1))
+              ((gaussQuasiInnerGFull (le_refl 1) k p ^ 1) (fourierLp 2 ((n : ℤ) + 1))) : ℂ) +
+            inner ℂ (fourierLp 2 (-((n : ℤ) + 1)))
+              ((gaussQuasiInnerGFull (le_refl 1) k p ^ 1)
+                (fourierLp 2 (-((n : ℤ) + 1)))))) / (Real.log N : ℂ)))
+      atTop (nhds ((gaussChannelResidue 1 p : ℝ) : ℂ)) := by
+  have hbase := (tendsto_gaussFourierDiagonal_logResidue k p).const_mul
+    ((gaussLocalFactorWeight 1 p : ℝ) : ℂ)
+  have hval : ((gaussLocalFactorWeight 1 p : ℝ) : ℂ) *
+      ((2 * ((p : ℝ) - 1) ^ 2 / Real.log (p : ℝ) : ℝ) : ℂ)
+      = ((gaussChannelResidue 1 p : ℝ) : ℂ) := by
+    rw [← Complex.ofReal_mul]
+    have h := gaussLocalFactorWeight_mul_principalResidue (le_refl 1) p
+    norm_num at h
+    rw [← h]
+  rwa [hval] at hbase
 
 end
 

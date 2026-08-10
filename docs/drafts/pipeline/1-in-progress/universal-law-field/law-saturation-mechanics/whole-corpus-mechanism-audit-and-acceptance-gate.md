@@ -174,10 +174,11 @@ defect but a nonzero mixed coefficient/Dixmier--Douady transgression.  This inde
 the predicted need to inspect coefficient/admission coherence after endpoint flatness and
 falsifies first-commutator universality.
 
-The field gate remains open.  Condition 6 still requires Lean certification of the gas exchange,
-the coupled cross-source capstone, and its sharp marking boundary.  The stronger field programme
-also requires one cofinal source-generated history with derived topology and work, not only finite
-or analytic genesis cells.
+ULF-RLM-36 closes condition 6 for this theorem: Lean certifies the gas exchange on the actual
+convergent chamber, pointwise noncommutation, commuting elliptic endpoint translations, and the
+coupled non-coboundary capstone. The stronger field gate remains open because it still requires
+one cofinal source-generated history with derived topology and work, not only finite or analytic
+genesis cells.
 
 ## 5. Immediate research programme
 

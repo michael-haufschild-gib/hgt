@@ -63,6 +63,13 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.
    `∂_Ω d(∂^j x_z) = d(∂^{j+1} x_z)` moves each basis vector one step up, so `(dx_z)` generate
    freely as a differential module of differential rank `m`.
 
+10. `creation_without_obstruction` — the card's named **Consequence**: the two conclusions hold
+    simultaneously, so a genuinely creative extension (differential transcendence degree the size
+    of the fused family) coexists with a vanishing positive-degree cotangent obstruction.  This is
+    the card's refutation of "obstruction ≃ successor law" when *obstruction* means a
+    relation/anomaly class, stated as one checkable proposition rather than left as a reading of
+    items 4 and 8.
+
 ## Scope
 
 The card's items 1 and 2 of the "Setup" (`V_n(b_z) ⋆ V_0(1) = V_{n+1}(b_z)` and the differential

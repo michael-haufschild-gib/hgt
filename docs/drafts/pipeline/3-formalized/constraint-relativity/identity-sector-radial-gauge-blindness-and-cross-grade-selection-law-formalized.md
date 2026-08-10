@@ -66,6 +66,11 @@ Theorems 4 and 5, cross-grade lines:
 17. `rpow_eq_rpow_iff` — for distinct positive grades, `a^c = b^c` iff `c = 0`.
 18. `radial_line_invariant_iff` — **Theorem 4, equation `(13)`**: the line spanned by a sum of two
     nonzero homogeneous vectors of distinct absolute grade is `Γ_c`-invariant iff `c = 0`.
+18b. `gradeComponent_sum`, `radial_finite_invariant_iff`, `radial_finite_invariant_eq_zero` —
+    the card's **"more generally"** after Theorem 4: the radial stabilizer of a finite
+    nonhomogeneous vector is the intersection of the equal-character conditions `ν i ^ c = ν j ^ c`
+    across its grade support, and two distinct positive absolute grades in the support already
+    force `c = 0`.  Item 18 is the two-summand case.
 19. `radial_line_transport` — **Theorem 5, equation `(15)`**: `Γ_c L_λ = L_{λ(ν_j/ν_i)^c}`.
 20. `radial_parameter_transitive` — **Theorem 5**: the radial family is transitive on the positive
     parameters, so trivial stabilizer does not select a member: the family is a gauge slice.

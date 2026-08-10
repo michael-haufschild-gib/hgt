@@ -9,8 +9,8 @@
   coefficient transgression.  Any common mechanics must therefore grade execution history and
   coefficient/admission coherence separately.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [TWO NONISOMORPHIC SOURCES]
-  [FIRST-COMMUTATOR UNIVERSALITY FALSIFIED] [LEAN PARENTS CERTIFIED]
-  [CAPSTONE LEAN TARGET OPEN] [NOT RH]
+  [FIRST-COMMUTATOR UNIVERSALITY FALSIFIED] [LEAN-CERTIFIED]
+  [UNIVERSAL-LAW-FIELD UMBRELLA] [NOT RH]
 
 ## 1. The conjecture being tested
 
@@ -245,7 +245,7 @@ No external novelty claim is made for those ingredients.  The theorem records th
 two-source mechanism boundary required by this corpus: source-generated law birth has more than
 one irreducible formation mode.
 
-## 10. Lean status and target
+## 10. Lean certification
 
 The significant parents are already certified:
 
@@ -255,9 +255,18 @@ The significant parents are already certified:
 - `GaloisForLFunctions.HTGeometry.GammaGerbeThetaCocycle`;
 - the abelian-zeta-gas response, entropy, KMS, GNS, and natural-boundary modules.
 
-The new capstone still needs a small Lean module under the Universal Law Field umbrella certifying
-the marked noncollapse statement and the gas exchange instance.  No Lean was written or built
-during this paper audit.
+`GaloisForLFunctions.HTGeometry.ConstitutiveGradedSourceGenesis` now certifies:
+
+- the affine exchange shadow;
+- its realization on the actual `AbelianZetaConvergentParameters` chamber;
+- noncommutation at every admitted gas state;
+- endpoint commutativity on the triptic source lattice;
+- the coupled noncollapse theorem using the certified non-coboundary gamma-gerbe class.
+
+The module is imported by `GaloisForLFunctions.HTGeometry.UniversalLawField`. Direct elaboration,
+module build, and an axiom audit passed; the declarations use only Lean/mathlib's standard
+`propext`, `Classical.choice`, and quotient soundness principles, with no project axiom, `sorry`,
+`admit`, `opaque`, or `unsafe` declaration.
 
 ## Log
 
@@ -265,3 +274,5 @@ during this paper audit.
 - 2026-08-10 -- elliptic gamma supplied the second nonisomorphic source: commuting endpoint
   translations, trivial pure Koszul defect, nonzero mixed coefficient/Dixmier--Douady
   transgression.
+- 2026-08-10 -- ULF-RLM-36 Lean-certified on the actual convergent gas chamber and wired into the
+  Universal Law Field umbrella.

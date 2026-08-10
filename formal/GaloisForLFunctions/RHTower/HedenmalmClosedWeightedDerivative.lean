@@ -461,6 +461,8 @@ theorem thetaCentered_isClosed : IsClosed (thetaCentered : Set H) := by
   simpa only [thetaCentered] using
     (Submodule.isClosed_orthogonal (ℂ ∙ pinnedOne : Submodule ℂ H))
 
+local instance : CompleteSpace thetaCentered := thetaCentered_isClosed.completeSpace_coe
+
 /-- Closure of `-i d/dx`, realized as graph inverse of the compact centered source inverse. -/
 def thetaWeightedDerivative : H →ₗ.[ℂ] H :=
   closedHyperplaneInverse thetaCentered thetaCenteredSourceInverse
@@ -774,6 +776,161 @@ theorem thetaWeightedDerivative_hasCore :
     thetaWeightedDerivative.HasCore thetaDerivativeCoreSubmodule := by
   refine ⟨thetaDerivativeCoreSubmodule_le_domain, ?_⟩
   exact thetaDerivativeCore_closure_eq
+
+theorem thetaDerivativeCore_dense_domain :
+    Dense (thetaDerivativeCore.domain : Set H) := by
+  have hsub : DenseRange (fun u : thetaSmoothSourceSubmodule => (u : HS)) := by
+    rw [denseRange_subtype_val]
+    change Dense thetaSmoothSource
+    exact dense_thetaSmoothSource
+  have hU : DenseRange (quantileUnitary thetaSource : HS → H) :=
+    (quantileUnitary thetaSource).surjective.denseRange
+  have hcomp := hU.comp hsub (quantileUnitary thetaSource).continuous
+  have hcoreSub : Dense (thetaDerivativeCoreSubmodule : Set H) := by
+    apply hcomp.mono
+    rintro _ ⟨u, rfl⟩
+    exact ⟨u, u.property, rfl⟩
+  have hdomain : thetaDerivativeCore.domain = thetaDerivativeCoreSubmodule := by
+    change thetaDerivativeCoreSubmodule ⊓ thetaWeightedDerivative.domain =
+      thetaDerivativeCoreSubmodule
+    exact inf_eq_left.mpr thetaDerivativeCoreSubmodule_le_domain
+  rw [hdomain]
+  exact hcoreSub
+
+/-- Maximal weak first-order operator paired with the closed derivative. -/
+def thetaMaximalWeightedAdjoint : H →ₗ.[ℂ] H := thetaWeightedDerivative.adjoint
+
+/-- A vector lies in the maximal adjoint domain exactly when its weak derivative is represented by
+an ambient Hilbert vector on every literal `C_c^∞` test vector. -/
+theorem mem_thetaMaximalWeightedAdjoint_domain_iff (y : H) :
+    y ∈ thetaMaximalWeightedAdjoint.domain ↔
+      ∃ w : H, ∀ x : thetaDerivativeCore.domain,
+        inner ℂ w (x : H) = inner ℂ y (thetaDerivativeCore x) := by
+  exact LinearPMap.mem_adjoint_domain_iff_of_graph_core
+    thetaWeightedDerivative thetaDerivativeCore thetaWeightedDerivative_dense_domain
+    (LinearPMap.domRestrict_le : thetaDerivativeCore ≤ thetaWeightedDerivative)
+    thetaDerivativeCore_graph_closure y
+
+/-- Representing weak derivative is unique and is exactly the maximal-adjoint value. -/
+theorem thetaMaximalWeightedAdjoint_apply_eq
+    (y : thetaMaximalWeightedAdjoint.domain) (w : H)
+    (hw : ∀ x : thetaDerivativeCore.domain,
+      inner ℂ w (x : H) = inner ℂ (y : H) (thetaDerivativeCore x)) :
+    thetaMaximalWeightedAdjoint y = w := by
+  apply thetaDerivativeCore_dense_domain.eq_of_inner_left ℂ
+  intro _ hx
+  let x : thetaDerivativeCore.domain := ⟨_, hx⟩
+  let xA : thetaWeightedDerivative.domain :=
+    ⟨(x : H), thetaDerivativeCoreSubmodule_le_domain x.property.1⟩
+  have hcoreApply : thetaDerivativeCore x = thetaWeightedDerivative xA :=
+    (LinearPMap.domRestrict_le : thetaDerivativeCore ≤ thetaWeightedDerivative).2 rfl
+  calc
+    inner ℂ (thetaMaximalWeightedAdjoint y) (x : H) =
+        inner ℂ (y : H) (thetaWeightedDerivative xA) :=
+      LinearPMap.adjoint_isFormalAdjoint thetaWeightedDerivative_dense_domain y xA
+    _ = inner ℂ (y : H) (thetaDerivativeCore x) :=
+      congrArg (inner ℂ (y : H)) hcoreApply.symm
+    _ = inner ℂ w (x : H) := (hw x).symm
+
+/-! ### Exact adjoint square and compact Witten resolvent -/
+
+/-- Bounded inverse of the Witten Hamiltonian `A†A`. -/
+def thetaWittenResolvent : H →L[ℂ] H :=
+  thetaCenteredSourceInverse.comp thetaCenteredSourceInverse.adjoint
+
+theorem thetaCenteredSourceInverse_adjoint_injective :
+    Function.Injective thetaCenteredSourceInverse.adjoint := by
+  intro x y hxy
+  apply thetaCenteredSourceInverse_dense_range.eq_of_inner_left ℂ
+  intro _ hk
+  rcases hk with ⟨k, rfl⟩
+  calc
+    inner ℂ x (thetaCenteredSourceInverse k : H) =
+        inner ℂ (thetaCenteredSourceInverse.adjoint x) k :=
+      (thetaCenteredSourceInverse.adjoint_inner_left k x).symm
+    _ = inner ℂ (thetaCenteredSourceInverse.adjoint y) k :=
+      congrArg (fun z => inner ℂ z k) hxy
+    _ = inner ℂ y (thetaCenteredSourceInverse k : H) :=
+      thetaCenteredSourceInverse.adjoint_inner_left k y
+
+theorem thetaWittenResolvent_injective : Function.Injective thetaWittenResolvent := by
+  simpa only [thetaWittenResolvent, ContinuousLinearMap.coe_comp] using
+    (thetaCenteredSourceInverse.self_comp_adjoint_injective_iff.mpr
+      thetaCenteredSourceInverse_adjoint_injective)
+
+theorem thetaWittenResolvent_isSelfAdjoint : IsSelfAdjoint thetaWittenResolvent := by
+  change thetaWittenResolvent.adjoint = thetaWittenResolvent
+  rw [thetaWittenResolvent]
+  rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_adjoint]
+
+theorem thetaWittenResolvent_dense_range :
+    Dense (thetaWittenResolvent.range : Set H) := by
+  have horth : thetaWittenResolvent.rangeᗮ = ⊥ := by
+    rw [thetaWittenResolvent.orthogonal_range,
+      show thetaWittenResolvent.adjoint = thetaWittenResolvent from
+        thetaWittenResolvent_isSelfAdjoint]
+    exact LinearMap.ker_eq_bot.mpr thetaWittenResolvent_injective
+  rw [Submodule.dense_iff_topologicalClosure_eq_top]
+  apply Submodule.orthogonal_eq_bot_iff.mp
+  simpa using horth
+
+theorem thetaWittenResolvent_compact : IsCompactOperator thetaWittenResolvent := by
+  exact (isCompactOperator_thetaCompactSourceInverse.comp_clm
+    thetaCentered.subtypeL).comp_clm thetaCenteredSourceInverse.adjoint
+
+/-- Positive self-adjoint Witten Hamiltonian. The following equality identifies it with the
+literal natural-domain composition `A†A`. -/
+def thetaWittenHamiltonian : H →ₗ.[ℂ] H :=
+  closedDenseInverse thetaWittenResolvent
+
+theorem thetaWittenHamiltonian_isClosed : thetaWittenHamiltonian.IsClosed :=
+  closedDenseInverse_isClosed thetaWittenResolvent thetaWittenResolvent_injective
+
+theorem thetaWittenHamiltonian_dense_domain :
+    Dense (thetaWittenHamiltonian.domain : Set H) :=
+  closedDenseInverse_dense_domain thetaWittenResolvent thetaWittenResolvent_dense_range
+
+theorem thetaWittenHamiltonian_isSelfAdjoint : IsSelfAdjoint thetaWittenHamiltonian :=
+  closedDenseInverse_isSelfAdjoint thetaWittenResolvent thetaWittenResolvent_injective
+    thetaWittenResolvent_dense_range thetaWittenResolvent_isSelfAdjoint
+
+theorem thetaWittenHamiltonian_eq_adjointSquare :
+    thetaWittenHamiltonian = LinearPMap.adjointSquare thetaWeightedDerivative := by
+  exact (closedHyperplaneInverse_adjointSquare_eq_closedDenseInverse
+    thetaCentered thetaCenteredSourceInverse thetaCenteredSourceInverse_injective
+      thetaCenteredSourceInverse_dense_range).symm
+
+theorem thetaWittenHamiltonian_kernel_eq_bot : thetaWittenHamiltonian.kernel = ⊥ :=
+  closedDenseInverse_kernel_eq_bot thetaWittenResolvent thetaWittenResolvent_injective
+
+theorem thetaWittenHamiltonian_hasCompactResolventAt_zero :
+    LinearPMap.HasCompactResolventAt thetaWittenHamiltonian 0 :=
+  closedDenseInverse_hasCompactResolventAt_zero thetaWittenResolvent
+    thetaWittenResolvent_injective thetaWittenResolvent_compact
+
+theorem thetaWittenHamiltonian_nonnegative (x : thetaWittenHamiltonian.domain) :
+    0 ≤ (inner ℂ (thetaWittenHamiltonian x) (x : H)).re := by
+  have hxRange : (x : H) ∈ thetaWittenResolvent.range := by
+    rw [← closedDenseInverse_domain thetaWittenResolvent]
+    exact x.property
+  rcases hxRange with ⟨y, hy⟩
+  have hApply := (closedDenseInverse_apply_C thetaWittenResolvent
+    thetaWittenResolvent_injective y).2
+  have heq : x = ⟨thetaWittenResolvent y,
+      (closedDenseInverse_apply_C thetaWittenResolvent
+        thetaWittenResolvent_injective y).1⟩ := Subtype.ext hy.symm
+  have hTx : thetaWittenHamiltonian x = y := by
+    exact (congrArg thetaWittenHamiltonian heq).trans hApply
+  calc
+    0 ≤ (inner ℂ (thetaCenteredSourceInverse.adjoint y)
+        (thetaCenteredSourceInverse.adjoint y)).re :=
+      (inner_self_nonneg (𝕜 := ℂ) (x := thetaCenteredSourceInverse.adjoint y))
+    _ = (inner ℂ y (thetaCenteredSourceInverse
+        (thetaCenteredSourceInverse.adjoint y) : H)).re := by
+      rw [thetaCenteredSourceInverse.adjoint_inner_left]
+    _ = (inner ℂ (thetaWittenHamiltonian x) (x : H)).re := by
+      congr 2
+      exact hTx.symm
 
 end HedenmalmClosedWeightedDerivative
 

@@ -1549,3 +1549,111 @@ For `m = 1`, `Σ_(n<N) p|d_n|² ε_n / log N → 0` because `p|d_n|² ≍ 1/n` a
 logarithmic mean (14) and formula (A) hold for the actual operator, not only for the model.
 Assembling that summation step, and then the interior replacement `Λ → Λ_0` that carries the same
 argument to `m ≥ 2`, are what remain.
+
+## Lean status, thirty-fourth pass: equation (14) for the operator, `m = 1`
+
+`RHTower/GaussDiagonalLogResidue.lean` (new); unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+tendsto_gaussFourierDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
+    (1 / log N) · Σ_(n<N) ( ⟪e_(n+1), G e_(n+1)⟫ + ⟪e_(-(n+1)), G e_(-(n+1))⟫ )
+        →  2 (p-1)² / log p
+```
+
+This is **the card's equation (14) for the operator itself** at `m = 1`, and with §7 it is formula
+(A) in the displayed case `2(p-1)⁴/(p² log p)`.  Until now (14) was a theorem about the principal
+diagonal *model*; the model is now what the operator does.
+
+### How the rate obstruction was avoided
+
+The pieces are exactly the ones the previous two passes built:
+
+```text
+exists_norm_gaussSampleValue_sq_mul_succ_le : ‖d_(n+1)‖² (n+1) ≤ C      (from the energy bounds)
+gaussStepScalar_neg, norm_gaussStepScalar_eq                            (the ± frequencies agree)
+gaussPrincipalDiagonalTerm_eq                                           (hoisted from the previous pass)
+norm_inner_gaussQuasiInnerG_sub_amplitude_le                            (the relative bound)
+tendsto_gaussRelativeDiagonalFactor                                     (the cofactor vanishes)
+GaloisForLFunctions.tendsto_complexHarmonicWeighted_error_zero          (already in the corpus)
+```
+
+and the assembly is
+
+```text
+(n+1)‖err n‖ ≤ (π) · (p C) · (F(n+1) + F(-(n+1)))  →  0,
+```
+
+so `err n` is `((n+1)^(-1)) · o(1)`, and a harmonically weighted vanishing error has partial sums
+`o(log N)`.  No rate on equation (5) or (9) is used anywhere: the relative form of the diagonal
+supplies the factor `1/n` *outside* the vanishing quantity, which is exactly what the harmonic
+transfer lemma consumes.
+
+The last ingredient was already in the corpus (`HTGeometry/HarmonicComplexResidueTransfer.lean`)
+and was reused, not rebuilt.
+
+### Card state
+
+| Card step | status |
+|---|---|
+| (2)–(5), (7), (8), (9), (12), (13), §6, §7, (A), `k`-independence | formalized |
+| (10), (11) — absolute form, all `m` | formalized |
+| Fourier diagonal = principal model, absolute, all `m` | formalized |
+| the fold (`⟪u, Gu⟫ = p⟪D*Bu, B^(-2)D*Bu⟫`) | formalized |
+| (11) relative, `m = 1` | formalized |
+| **(14) for the operator, `m = 1`** | **formalized** |
+| (11) relative and (14) for `m ≥ 2` | open: needs the interior replacement `Λ → Λ_0` |
+
+For `m ≥ 2` the fold gives `⟪e_n, G^m e_n⟫ = p^m|d_n|^(2m) ⟪g_n, Λ^(m-1) B^(-2) g_n⟫` with
+`Λ = B^(-2) S* B² S` and `Λ_0 = M_(a_δ(·-δ))`; the remaining step is the replacement `Λ → Λ_0`,
+which is the moving-translation estimate applied to the family `B² S v`.
+
+## Lean status, thirty-fifth pass: formula (A) for the operator at `m = 1`, and the `m ≥ 2` route
+
+### Formula (A), operator level, `m = 1`
+
+`RHTower/GaussDiagonalLogResidue.lean`, extended; unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+tendsto_gaussLocalDiagonal_logResidue (k : Fin 1) (p : Nat.Primes) :
+    ((p-1)/p)² · (1/log N) · Σ_(n<N) ( ⟪e_(n+1), G e_(n+1)⟫ + ⟪e_(-(n+1)), G e_(-(n+1))⟫ )
+        →  gaussChannelResidue 1 p = 2 (p-1)^4 / (p² log p)
+```
+
+The §7 restoration was already formalized (`gaussLocalFactorWeight_mul_principalResidue`); this
+feeds the operator-level logarithmic mean into it.  **This is the card's displayed case of formula
+(A), now for the operator and not for the model.**
+
+### The `m ≥ 2` route, identified
+
+The obstruction is that the vectors produced by the iteration do *not* satisfy the uniform decay
+hypothesis of the moving-translation estimate: `S v` has coefficients `ρ_j v̂(j)` with
+`‖ρ_j‖ = ‖d_(i+j)‖/‖d_i‖ ≍ (|i|/|i+j|)^(1/(2m))`, which is `≍ i^(1/(2m))` near `j = -i` — so no
+constant `A` works.
+
+But the *conclusion* still holds, and the reason is arithmetic in `m`.  What is needed is
+
+```text
+∑_j ‖defect_j(i)‖² ‖ρ_j(i)‖² · A²/(1+|j|)²  →  0,
+```
+
+and `‖defect_j‖² ≤ 2 + 2‖ρ_j‖²` reduces this to controlling `∑_j ‖ρ_j‖⁴/(1+|j|)²`.  The corpus's
+uniform ratio bound is
+
+```text
+exists_norm_gaussSampleValue_pow_ratio_bound :  ‖ρ_j(i)‖^(2m) ≤ K · |i| / |i+j|,
+```
+
+so `‖ρ_j‖⁴ ≤ 1 + ‖ρ_j‖^(2m) ≤ 1 + K|i|/|i+j|` **exactly when `4 ≤ 2m`, i.e. `m ≥ 2`**.  For `m ≥ 2`
+the far-band shape is then literally the one already formalized
+(`tendsto_tsum_farBandRatio_zero`), so the new estimate reuses the whole band-splitting skeleton
+(`tendsto_tsum_zero_of_dominated`, `intQuadWeight`, the far-band tail).
+
+For `m = 1` the same computation gives an `O(1)` far-band contribution — it genuinely fails — which
+is why `m = 1` had to be done by the fold, and was.  The two cases are complementary, not
+redundant.
+
+**Next module**: `norm_gaussSampleRatioDefect_sq_mul_ratio_sq_le` (for `2 ≤ m`) and
+`gaussTranslationL2DefectBoundRatio`, followed by the interior replacement `Λ → Λ_0` in
+`⟪e_n, G^m e_n⟫ = p^m |d_n|^(2m) ⟪g_n, Λ^(m-1) B^(-2) g_n⟫`.

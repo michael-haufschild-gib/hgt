@@ -157,3 +157,71 @@ theorem deningerLogSeries_zero_eq {h : 𝓢(ℝ, ℂ)} (t : ℝ) :
 end
 
 end RHTower
+
+/-! ## Rapid decay of every derivative on the far ray -/
+
+namespace RHTower
+
+open SchwartzMap ArithmeticFunction
+
+noncomputable section
+
+/-- **Every derivative of the canonical preimage decays faster than every power on the far ray**,
+in the logarithmic coordinate: the translate series at order `r` is bounded by `C e^{-kt}` for
+`t ≥ 0`.  This is `(16)`. -/
+theorem deningerLogSeries_decay {h : 𝓢(ℝ, ℂ)} (hh : h ∈ DeningerExpSchwartz) (r k : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ, 0 ≤ t →
+      ‖deningerLogSeries h r t‖ ≤ C * Real.exp (-((k : ℝ) * t)) := by
+  obtain ⟨C, hCnn, hC⟩ := deningerExpSchwartz_iteratedDeriv_norm_le hh ((k : ℝ) + 2) r
+  have hzeta : Summable fun n : ℕ => 1 / (n : ℝ) ^ 2 :=
+    Real.summable_one_div_nat_pow.mpr one_lt_two
+  have hzetann : 0 ≤ ∑' n : ℕ, 1 / (n : ℝ) ^ 2 := tsum_nonneg fun n => by positivity
+  refine ⟨C * ∑' n : ℕ, 1 / (n : ℝ) ^ 2, mul_nonneg hCnn hzetann, fun t ht => ?_⟩
+  have hterm : ∀ n : ℕ,
+      ‖((moebius n : ℤ) : ℂ) * iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t)‖
+        ≤ (C * Real.exp (-((k : ℝ) * t))) * (1 / (n : ℝ) ^ 2) := by
+    intro n
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · have hmu : ((moebius 0 : ℤ) : ℂ) = 0 := by simp
+      rw [hmu, zero_mul, norm_zero]
+      positivity
+    · have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+      have hnpos : (0 : ℝ) < (n : ℝ) := lt_of_lt_of_le zero_lt_one hn1
+      have hlog : 0 ≤ Real.log (n : ℝ) := Real.log_nonneg hn1
+      have hmu : ‖((moebius n : ℤ) : ℂ)‖ ≤ 1 := by
+        rcases moebius_eq_or n with h1 | h1 | h1 <;> rw [h1] <;> norm_num
+      rw [norm_mul]
+      have hstep : ‖((moebius n : ℤ) : ℂ)‖ * ‖iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t)‖
+          ≤ 1 * ‖iteratedDeriv r (h : ℝ → ℂ) (Real.log n + t)‖ :=
+        mul_le_mul_of_nonneg_right hmu (norm_nonneg _)
+      rw [one_mul] at hstep
+      refine le_trans hstep (le_trans (hC (Real.log n + t)) ?_)
+      have hge : Real.log (n : ℝ) + t ≤ |Real.log (n : ℝ) + t| := le_abs_self _
+      have hexp : Real.exp (-(((k : ℝ) + 2) * |Real.log (n : ℝ) + t|))
+          ≤ Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ 2) := by
+        have hle : -(((k : ℝ) + 2) * |Real.log (n : ℝ) + t|)
+            ≤ -((k : ℝ) * t) + -(2 * Real.log (n : ℝ)) := by
+          have hknn : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+          nlinarith [hge, hlog, ht]
+        refine le_trans (Real.exp_le_exp.mpr hle) (le_of_eq ?_)
+        have hsq : Real.exp (2 * Real.log (n : ℝ)) = (n : ℝ) ^ 2 := by
+          rw [show (2 : ℝ) * Real.log (n : ℝ) = Real.log (n : ℝ) + Real.log (n : ℝ) by ring,
+            Real.exp_add, Real.exp_log hnpos, ← pow_two]
+        rw [Real.exp_add]
+        congr 1
+        rw [Real.exp_neg, hsq, one_div]
+      calc C * Real.exp (-(((k : ℝ) + 2) * |Real.log (n : ℝ) + t|))
+          ≤ C * (Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ 2)) :=
+            mul_le_mul_of_nonneg_left hexp hCnn
+        _ = C * Real.exp (-((k : ℝ) * t)) * (1 / (n : ℝ) ^ 2) := by ring
+  have hsum := deningerLogSeries_summable hh r t
+  have hmaj : Summable fun n : ℕ => (C * Real.exp (-((k : ℝ) * t))) * (1 / (n : ℝ) ^ 2) :=
+    hzeta.mul_left _
+  refine le_trans (norm_tsum_le_tsum_norm hsum.norm) ?_
+  refine le_trans (Summable.tsum_le_tsum hterm hsum.norm hmaj) (le_of_eq ?_)
+  rw [Summable.tsum_mul_left _ hzeta]
+  ring
+
+end
+
+end RHTower

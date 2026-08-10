@@ -131,7 +131,9 @@ supplies the rapid decay; Landau interpolation combines them. -/
 theorem deningerCommutatorKernel_schwartz {h : DeningerExpSchwartz}
     (hker : deningerMobiusCommutator h = 0) :
     ∃ f : 𝓢(ℝ, ℂ),
-      deningerEvenPreimage ((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) =ᵐ[volume] (f : ℝ → ℂ) := by
+      deningerEvenPreimage ((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) =ᵐ[volume] (f : ℝ → ℂ) ∧
+        (f : ℝ → ℂ) = 𝓕 (deningerEvenPreimage
+          ((deningerCollarExchange h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ))) := by
   set G : ℝ → ℂ := deningerEvenPreimage
     ((deningerCollarExchange h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) with hGdef
   have hGint : Integrable G := deningerEvenPreimage_integrable (deningerCollarExchange h).2
@@ -176,7 +178,7 @@ theorem deningerCommutatorKernel_schwartz {h : DeningerExpSchwartz}
       rw [habsx] at hb
       refine le_trans hb ?_
       exact (div_le_div_iff_of_pos_right (by positivity)).mpr (le_max_left _ _)
-  exact ⟨deningerSchwartzOfDecay (𝓕 G) hsmooth hbd hR hL, hae⟩
+  exact ⟨deningerSchwartzOfDecay (𝓕 G) hsmooth hbd hR hL, hae, rfl⟩
 
 end
 

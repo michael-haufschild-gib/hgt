@@ -24,29 +24,6 @@ namespace HTGeometry.ConstraintRelativity
 
 open MvPolynomial
 
-/-! ## Restriction of scalars does not change a quotient -/
-
-section RestrictQuotient
-
-variable {k A M : Type*} [Field k] [CommRing A] [Algebra k A]
-  [AddCommGroup M] [Module A M] [Module k M] [IsScalarTower k A M]
-
-/-- The quotient by a submodule and by its restriction of scalars are the same `k`-space. -/
-def quotientRestrictScalarsEquiv (P : Submodule A M) :
-    (M ⧸ P.restrictScalars k) ≃ₗ[k] (M ⧸ P) where
-  toFun := id
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-  invFun := id
-  left_inv _ := rfl
-  right_inv _ := rfl
-
-@[simp] theorem quotientRestrictScalarsEquiv_mk (P : Submodule A M) (x : M) :
-    quotientRestrictScalarsEquiv (k := k) P (Submodule.Quotient.mk x) =
-      Submodule.Quotient.mk x := rfl
-
-end RestrictQuotient
-
 /-! ## The head layer over a coefficient field -/
 
 section HeadLayerField
@@ -58,7 +35,7 @@ variable {N : Type*} [AddCommGroup N] [Module A N] [Module k N] [IsScalarTower k
 /-- The abstract head layer is the closed fibre. -/
 def headLayerEquiv :
     headLayer (k := k) m M ≃ₗ[k] (M ⧸ (m • (⊤ : Submodule A M))) :=
-  quotientRestrictScalarsEquiv _
+  Submodule.Quotient.restrictScalarsEquiv k _
 
 /-- The maximal ideal kills the closed fibre. -/
 theorem smul_quotient_eq_zero {u : A} (hu : u ∈ m)

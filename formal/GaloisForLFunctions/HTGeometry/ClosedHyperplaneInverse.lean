@@ -50,6 +50,123 @@ theorem hyperplaneInjectionPMap_toFun_ker_eq_bot
   rw [map_zero]
   exact hx
 
+/-! ### Bounded transforms of a closed graph inverse -/
+
+/-- The closed graph inverse of `B`, followed by an arbitrary bounded output map `J` on the
+graph coordinate.  For `J k = k + α B k`, this is literally the translate `A + α` of the
+inverse operator `A`. -/
+def closedGraphTransform (K : Submodule ℂ H) (B J : K →L[ℂ] H) : H →ₗ.[ℂ] H :=
+  J.toLinearMap.compPMap (hyperplaneInjectionPMap K B).inverse
+
+theorem closedGraphTransform_domain
+    (K : Submodule ℂ H) (B J : K →L[ℂ] H) :
+    (closedGraphTransform K B J).domain = B.range := by
+  change ((hyperplaneInjectionPMap K B).inverse).domain = B.range
+  rw [LinearPMap.inverse_domain]
+  ext y
+  constructor
+  · rintro ⟨x, hx⟩
+    exact ⟨(x : K), hx⟩
+  · rintro ⟨x, hx⟩
+    exact ⟨⟨x, by simp [hyperplaneInjectionPMap]⟩, hx⟩
+
+theorem closedGraphTransform_apply_B
+    (K : Submodule ℂ H) (B J : K →L[ℂ] H) (hB : Function.Injective B) (x : K) :
+    B x ∈ (closedGraphTransform K B J).domain ∧
+      closedGraphTransform K B J
+        ⟨B x, by simpa [closedGraphTransform_domain]⟩ = J x := by
+  have hmem : B x ∈ (closedGraphTransform K B J).domain := by
+    rw [closedGraphTransform_domain]
+    exact ⟨x, rfl⟩
+  refine ⟨hmem, ?_⟩
+  change J
+      ((hyperplaneInjectionPMap K B).inverse
+        ⟨B x, by
+          rw [LinearPMap.inverse_domain]
+          exact ⟨⟨x, by simp [hyperplaneInjectionPMap]⟩, rfl⟩⟩) = J x
+  exact congrArg J (LinearPMap.inverse_apply_eq
+    (hyperplaneInjectionPMap_toFun_ker_eq_bot K B hB)
+    (x := ⟨x, by simp [hyperplaneInjectionPMap]⟩)
+    (y := ⟨B x, by
+      rw [LinearPMap.inverse_domain]
+      exact ⟨⟨x, by simp [hyperplaneInjectionPMap]⟩, rfl⟩⟩)
+    rfl)
+
+theorem closedGraphTransform_graph
+    (K : Submodule ℂ H) (B J : K →L[ℂ] H) (hB : Function.Injective B) :
+    (closedGraphTransform K B J).graph = LinearMap.range (B.toLinearMap.prod J) := by
+  ext p
+  constructor
+  · intro hp
+    rw [LinearPMap.mem_graph_iff] at hp
+    rcases hp with ⟨x, hx, hout⟩
+    have hxrange : (x : H) ∈ B.range := by
+      simpa only [closedGraphTransform_domain] using x.property
+    rcases hxrange with ⟨y, hy⟩
+    have happ := (closedGraphTransform_apply_B K B J hB y).2
+    have hxeq : x = ⟨B y, (closedGraphTransform_apply_B K B J hB y).1⟩ :=
+      Subtype.ext hy.symm
+    refine ⟨y, ?_⟩
+    apply Prod.ext
+    · exact hy.trans hx
+    · have hout' : closedGraphTransform K B J
+          ⟨B y, (closedGraphTransform_apply_B K B J hB y).1⟩ = p.2 := by
+        rw [← hxeq]
+        exact hout
+      exact happ.symm.trans hout'
+  · rintro ⟨y, hyp⟩
+    have hp1 : B y = p.1 := congrArg Prod.fst hyp
+    have hp2 : J y = p.2 := congrArg Prod.snd hyp
+    rw [LinearPMap.mem_graph_iff]
+    let x : (closedGraphTransform K B J).domain :=
+      ⟨B y, (closedGraphTransform_apply_B K B J hB y).1⟩
+    refine ⟨x, hp1, ?_⟩
+    exact (closedGraphTransform_apply_B K B J hB y).2.trans hp2
+
+theorem closedGraphTransform_isClosed
+    (K : Submodule ℂ H) [CompleteSpace K]
+    (B J : K →L[ℂ] H) (hB : Function.Injective B)
+    {c : NNReal} (hBJ : AntilipschitzWith c (B.prod J)) :
+    (closedGraphTransform K B J).IsClosed := by
+  rw [LinearPMap.IsClosed, closedGraphTransform_graph K B J hB]
+  exact hBJ.isClosed_range (B.prod J).uniformContinuous
+
+theorem closedGraphTransform_range
+    (K : Submodule ℂ H) (B J : K →L[ℂ] H) (hB : Function.Injective B) :
+    (closedGraphTransform K B J).rangeSubmodule = J.range := by
+  apply le_antisymm
+  · rintro y ⟨x, rfl⟩
+    have hxrange : (x : H) ∈ B.range := by
+      simpa only [closedGraphTransform_domain] using x.property
+    rcases hxrange with ⟨k, hk⟩
+    have hxeq : x = ⟨B k, (closedGraphTransform_apply_B K B J hB k).1⟩ :=
+      Subtype.ext hk.symm
+    refine ⟨k, ?_⟩
+    exact ((congrArg (closedGraphTransform K B J) hxeq).trans
+      (closedGraphTransform_apply_B K B J hB k).2).symm
+  · rintro y ⟨k, rfl⟩
+    exact ⟨⟨B k, (closedGraphTransform_apply_B K B J hB k).1⟩,
+      (closedGraphTransform_apply_B K B J hB k).2⟩
+
+theorem closedGraphTransform_kernel_eq_bot
+    (K : Submodule ℂ H) (B J : K →L[ℂ] H)
+    (hB : Function.Injective B) (hJ : Function.Injective J) :
+    (closedGraphTransform K B J).kernel = ⊥ := by
+  rw [LinearPMap.kernel_eq_bot_iff]
+  intro x hx
+  have hxrange : (x : H) ∈ B.range := by
+    simpa only [closedGraphTransform_domain] using x.property
+  rcases hxrange with ⟨k, hk⟩
+  have hxeq : x = ⟨B k, (closedGraphTransform_apply_B K B J hB k).1⟩ :=
+    Subtype.ext hk.symm
+  have hJk : J k = 0 := by
+    simpa [hxeq, (closedGraphTransform_apply_B K B J hB k).2] using hx
+  have hk0 : k = 0 := hJ (by simpa using hJk)
+  calc
+    (x : H) = B k := hk.symm
+    _ = B 0 := by rw [hk0]
+    _ = 0 := map_zero B
+
 theorem closedHyperplaneInverse_domain
     (K : Submodule ℂ H) (B : K →L[ℂ] H) :
     (closedHyperplaneInverse K B).domain = B.range := by
@@ -354,24 +471,18 @@ theorem LinearPMap.adjointSquare_apply (T : H →ₗ.[ℂ] H)
   apply congrArg T
   rfl
 
-theorem closedHyperplaneInverse_isFredholm
-    (K : Submodule ℂ H) (hK : IsClosed (K : Set H))
-    (B : K →L[ℂ] H) (hB : Function.Injective B)
-    (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ)
-    (hKφ : K = LinearMap.ker φ.toLinearMap) :
-    (closedHyperplaneInverse K B).IsFredholm := by
-  apply LinearPMap.isFredholm_of_injective_of_range_eq_ker φ.continuous
-    (closedHyperplaneInverse_kernel_eq_bot K B hB) hφ
-  rw [closedHyperplaneInverse_range K B hB, hKφ]
-
-theorem closedHyperplaneInverse_index_eq_neg_one
-    (K : Submodule ℂ H) (B : K →L[ℂ] H) (hB : Function.Injective B)
-    (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ)
-    (hKφ : K = LinearMap.ker φ.toLinearMap) :
-    (closedHyperplaneInverse K B).index = -1 := by
-  apply LinearPMap.index_eq_neg_one_of_injective_of_range_eq_ker
-    (closedHyperplaneInverse_kernel_eq_bot K B hB) hφ
-  rw [closedHyperplaneInverse_range K B hB, hKφ]
+theorem continuousLinearMap_adjoint_injective_of_dense_range
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    (B : K →L[ℂ] H) (hDense : Dense (B.range : Set H)) :
+    Function.Injective B.adjoint := by
+  intro x y hxy
+  apply hDense.eq_of_inner_left ℂ
+  intro _ hk
+  rcases hk with ⟨k, rfl⟩
+  calc
+    inner ℂ x (B k) = inner ℂ (B.adjoint x) k := (B.adjoint_inner_left k x).symm
+    _ = inner ℂ (B.adjoint y) k := congrArg (fun z => inner ℂ z k) hxy
+    _ = inner ℂ y (B k) := B.adjoint_inner_left k y
 
 /-! ## Inverses of bounded operators with dense range -/
 
@@ -407,6 +518,125 @@ theorem closedDenseInverse_apply_C (C : H →L[ℂ] H) (hC : Function.Injective 
         ⟨(C.comp (⊤ : Submodule ℂ H).subtypeL) xTop, h.1⟩ := Subtype.ext rfl
     rw [heq]
     exact h.2
+
+/-- For an injective compact inverse coordinate `B`, the natural operator `A†A` is exactly the
+closed inverse of the bounded Gram operator `BB†`. -/
+theorem closedHyperplaneInverse_adjointSquare_eq_closedDenseInverse
+    (K : Submodule ℂ H) [CompleteSpace K] (B : K →L[ℂ] H)
+    (hB : Function.Injective B) (hDense : Dense (B.range : Set H)) :
+    LinearPMap.adjointSquare (closedHyperplaneInverse K B) =
+      closedDenseInverse (B.comp B.adjoint) := by
+  let A := closedHyperplaneInverse K B
+  let C := B.comp B.adjoint
+  have hBadj : Function.Injective B.adjoint :=
+    continuousLinearMap_adjoint_injective_of_dense_range B hDense
+  have hCinj : Function.Injective C := by
+    simpa only [C, ContinuousLinearMap.coe_comp] using
+      (B.self_comp_adjoint_injective_iff.mpr hBadj)
+  have hdomain :
+      (LinearPMap.adjointSquare A).domain = (closedDenseInverse C).domain := by
+    ext x
+    rw [LinearPMap.adjointSquare_domain,
+      LinearPMap.mem_adjointSquareDomain_iff, closedDenseInverse_domain]
+    constructor
+    · rintro ⟨hxA, hAxdom⟩
+      have hxRange : x ∈ B.range := by
+        rw [← closedHyperplaneInverse_domain K B]
+        exact hxA
+      rcases hxRange with ⟨k, hk⟩
+      have hAeq : A ⟨x, hxA⟩ = (k : H) := by
+        have happly := (closedHyperplaneInverse_apply_B K B hB k).2
+        have heq : (⟨x, hxA⟩ : A.domain) =
+            ⟨B k, (closedHyperplaneInverse_apply_B K B hB k).1⟩ :=
+          Subtype.ext hk.symm
+        exact (congrArg A heq).trans happly
+      have hkdom : (k : H) ∈ A.adjoint.domain := by
+        rw [← hAeq]
+        exact hAxdom
+      have hkRange : k ∈ B.adjoint.range :=
+        (closedHyperplaneInverse_mem_adjoint_domain_iff K B hB hDense k).mp hkdom
+      rcases hkRange with ⟨y, hy⟩
+      refine ⟨y, ?_⟩
+      change B (B.adjoint y) = x
+      exact (congrArg B hy).trans hk
+    · rintro ⟨y, hy⟩
+      have hy' : B (B.adjoint y) = x := by
+        change B (B.adjoint y) = x at hy
+        exact hy
+      have hxA : x ∈ A.domain := by
+        change x ∈ (closedHyperplaneInverse K B).domain
+        rw [closedHyperplaneInverse_domain]
+        exact ⟨B.adjoint y, hy'⟩
+      have hAeq : A ⟨x, hxA⟩ = (B.adjoint y : H) := by
+        have happly := (closedHyperplaneInverse_apply_B K B hB (B.adjoint y)).2
+        have heq : (⟨x, hxA⟩ : A.domain) =
+            ⟨B (B.adjoint y),
+              (closedHyperplaneInverse_apply_B K B hB (B.adjoint y)).1⟩ :=
+          Subtype.ext hy'.symm
+        exact (congrArg A heq).trans happly
+      obtain ⟨hmem, _⟩ :=
+        closedHyperplaneInverse_adjoint_apply_adjoint K B hB hDense y
+      refine ⟨hxA, ?_⟩
+      rw [hAeq]
+      exact hmem
+  apply LinearPMap.ext hdomain
+  intro x hxSquare hxInverse
+  have hxRange : x ∈ C.range := by
+    rw [← closedDenseInverse_domain C]
+    exact hxInverse
+  rcases hxRange with ⟨y, hy⟩
+  have hy' : B (B.adjoint y) = x := by
+    change B (B.adjoint y) = x at hy
+    exact hy
+  have hxA : x ∈ A.domain := by
+    change x ∈ (closedHyperplaneInverse K B).domain
+    rw [closedHyperplaneInverse_domain]
+    exact ⟨B.adjoint y, hy'⟩
+  have hAeq : A ⟨x, hxA⟩ = (B.adjoint y : H) := by
+    have happly := (closedHyperplaneInverse_apply_B K B hB (B.adjoint y)).2
+    have heq : (⟨x, hxA⟩ : A.domain) =
+        ⟨B (B.adjoint y),
+          (closedHyperplaneInverse_apply_B K B hB (B.adjoint y)).1⟩ :=
+      Subtype.ext hy'.symm
+    exact (congrArg A heq).trans happly
+  obtain ⟨hmem, hadjApply⟩ :=
+    closedHyperplaneInverse_adjoint_apply_adjoint K B hB hDense y
+  have hAxdom : A ⟨x, hxA⟩ ∈ A.adjoint.domain := by
+    rw [hAeq]
+    exact hmem
+  have hSquareApply :=
+    LinearPMap.adjointSquare_apply A ⟨x, hxSquare⟩ hxA hAxdom
+  have hAdjSubtype :
+      (⟨A ⟨x, hxA⟩, hAxdom⟩ : A.adjoint.domain) =
+        ⟨(B.adjoint y : H), hmem⟩ := Subtype.ext hAeq
+  have hSquareY : LinearPMap.adjointSquare A ⟨x, hxSquare⟩ = y :=
+    hSquareApply.trans ((congrArg A.adjoint hAdjSubtype).trans hadjApply)
+  have hInverseApply := (closedDenseInverse_apply_C C hCinj y).2
+  have hInverseSubtype :
+      (⟨x, hxInverse⟩ : (closedDenseInverse C).domain) =
+        ⟨C y, (closedDenseInverse_apply_C C hCinj y).1⟩ := Subtype.ext hy.symm
+  have hInverseY : closedDenseInverse C ⟨x, hxInverse⟩ = y :=
+    (congrArg (closedDenseInverse C) hInverseSubtype).trans hInverseApply
+  exact hSquareY.trans hInverseY.symm
+
+theorem closedHyperplaneInverse_isFredholm
+    (K : Submodule ℂ H) (hK : IsClosed (K : Set H))
+    (B : K →L[ℂ] H) (hB : Function.Injective B)
+    (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ)
+    (hKφ : K = LinearMap.ker φ.toLinearMap) :
+    (closedHyperplaneInverse K B).IsFredholm := by
+  apply LinearPMap.isFredholm_of_injective_of_range_eq_ker φ.continuous
+    (closedHyperplaneInverse_kernel_eq_bot K B hB) hφ
+  rw [closedHyperplaneInverse_range K B hB, hKφ]
+
+theorem closedHyperplaneInverse_index_eq_neg_one
+    (K : Submodule ℂ H) (B : K →L[ℂ] H) (hB : Function.Injective B)
+    (φ : H →L[ℂ] ℂ) (hφ : Function.Surjective φ)
+    (hKφ : K = LinearMap.ker φ.toLinearMap) :
+    (closedHyperplaneInverse K B).index = -1 := by
+  apply LinearPMap.index_eq_neg_one_of_injective_of_range_eq_ker
+    (closedHyperplaneInverse_kernel_eq_bot K B hB) hφ
+  rw [closedHyperplaneInverse_range K B hB, hKφ]
 
 theorem closedDenseInverse_isClosed (C : H →L[ℂ] H) (hC : Function.Injective C) :
     (closedDenseInverse C).IsClosed := by
@@ -528,6 +758,51 @@ theorem closedDenseInverse_hasCompactResolventAt_zero (C : H →L[ℂ] H)
     calc
       C (closedDenseInverse C x) = C y := congrArg C hxApply
       _ = (x : H) := hy
+
+/-- A graph core determines the maximal Hilbert-space adjoint: testing its weak pairing only on
+the core is equivalent to membership in the full adjoint domain. -/
+theorem LinearPMap.mem_adjoint_domain_iff_of_graph_core
+    (T C : H →ₗ.[ℂ] H) (hDense : Dense (T.domain : Set H))
+    (hCT : C ≤ T) (hgraph : closure (C.graph : Set (H × H)) = T.graph)
+    (y : H) :
+    y ∈ T.adjoint.domain ↔
+      ∃ w : H, ∀ x : C.domain, inner ℂ w (x : H) = inner ℂ y (C x) := by
+  constructor
+  · intro hy
+    let yAdj : T.adjoint.domain := ⟨y, hy⟩
+    refine ⟨T.adjoint yAdj, ?_⟩
+    intro x
+    let xT : T.domain := ⟨(x : H), hCT.1 x.property⟩
+    have happly : C x = T xT := hCT.2 rfl
+    calc
+      inner ℂ (T.adjoint yAdj) (x : H) = inner ℂ y (T xT) :=
+        LinearPMap.adjoint_isFormalAdjoint hDense yAdj xT
+      _ = inner ℂ y (C x) := congrArg (inner ℂ y) happly.symm
+  · rintro ⟨w, hw⟩
+    apply LinearPMap.mem_adjoint_domain_of_exists
+    refine ⟨w, ?_⟩
+    intro x
+    let S : Set (H × H) := {p | inner ℂ w p.1 = inner ℂ y p.2}
+    have hSclosed : IsClosed S := by
+      change IsClosed {p : H × H | inner ℂ w p.1 = inner ℂ y p.2}
+      apply isClosed_eq
+      · fun_prop
+      · fun_prop
+    have hcore : (C.graph : Set (H × H)) ⊆ S := by
+      intro p hp
+      change p ∈ C.graph at hp
+      rw [LinearPMap.mem_graph_iff] at hp
+      rcases hp with ⟨z, hz1, hz2⟩
+      change inner ℂ w p.1 = inner ℂ y p.2
+      rw [← hz1, ← hz2]
+      exact hw z
+    have hpGraph : ((x : H), T x) ∈ T.graph := by
+      rw [LinearPMap.mem_graph_iff]
+      exact ⟨x, rfl, rfl⟩
+    have hpClosure : ((x : H), T x) ∈ closure (C.graph : Set (H × H)) := by
+      rw [hgraph]
+      exact hpGraph
+    exact closure_minimal hcore hSclosed hpClosure
 
 end
 

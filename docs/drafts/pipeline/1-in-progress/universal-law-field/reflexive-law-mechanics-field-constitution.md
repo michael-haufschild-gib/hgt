@@ -567,7 +567,9 @@ Hence a complete mechanics must inspect, separately and in order, endpoint excha
 exchange, coefficient/admission lift, mixed descent, and cofinal formation.  The first nonzero
 entry is the source's genesis grade.  Observation or completion may erase one grade without
 making the source history flat.  ULF-RLM-36 proves the two-source noncollapse and the exact
-observer prediction: every pure-translation observer misses the elliptic mixed class.
+observer prediction: every pure-translation observer misses the elliptic mixed class. Lean
+certifies the gas exchange on `AbelianZetaConvergentParameters`, its pointwise noncommutation,
+commuting triptic translations, and the coupled non-coboundary capstone.
 
 ## 3. Certified promotion decision mechanism
 
@@ -624,7 +626,7 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-ECM-1 | arbitrary transition dynamics from one-test endogenous compatibility | certified |
 | ULF-GTM-1 | finite monotone compatibility revision terminates | certified |
 | ULF-DDE-1 | repair torsor, shear no-selector, and manufactured least-work no-go | certified |
-| ULF-RLM-36 | two-source graded genesis: gas endpoint exchange versus elliptic mixed transgression | paper-closed; Lean parents certified; capstone open |
+| ULF-RLM-36 | two-source graded genesis: gas endpoint exchange versus elliptic mixed transgression | certified |
 
 These theorems use finite sets, free law words, integer central extensions, additive cochains, and
 admitted sequence primitives as structurally different laboratories. No RH endpoint enters their
@@ -828,4 +830,5 @@ Retire RLM as theatre if:
   Lean-certifies the actual topology and universal nonconvergence barrier.
 - 2026-08-10 -- added graded source genesis as Law XXXVI: abelian gas and pointed elliptic gamma
   prove that endpoint exchange and mixed coefficient transgression are noncollapsible formation
-  modes; first-commutator universality is retired.
+  modes; first-commutator universality is retired. ULF-RLM-36 is Lean-certified under the
+  Universal Law Field umbrella.
