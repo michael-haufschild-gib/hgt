@@ -1190,20 +1190,47 @@ a `*`-algebra and the Gibbs functional is hermitian on it:
 | the charge changes sign | `charge_wstar` |
 | **the Gibbs weight is adjoint-invariant** | **`gibbsWeight_wstar`** |
 
-**Scope, and what remains.**  What is certified is Theorem 4.1 on the dense monomial `*`-algebra —
-where the card's proof lives — for the *algebraic* KMS condition (the exchange identity) and
-normalisation.  Two further layers would make the statement literally the C\*-one:
+#### Positivity: the Gibbs functional is a state
 
-1. *Positivity*, i.e. `φ(a^* a) ≥ 0`, which upgrades "normalised functional" to "state".  The Gram
-   matrix `ω(x^* y)` factorises over modes — `gibbsWeight` is a product and `wstar` acts mode by
-   mode — so positivity reduces by a Kronecker-product argument to the *single-mode* bicyclic Gram
-   matrix, which the corpus already realises concretely: `toeplitzGibbsState` on `ToeplitzSpace`
-   with `toeplitzGibbsState_eq_inner` exhibits it as a genuine diagonal expectation, and
-   `toeplitzGibbsState_faithful` is already proved.  Every element of the monomial algebra involves
-   finitely many modes, so no infinite tensor product is needed for this step.
-2. *The C\*-completion*: continuity of the state and density of the monomials.  This needs
-   C\*-tensor products and inductive limits, which mathlib does not carry; it is the one genuinely
-   large remaining piece of this card.
+`formal/GaloisForLFunctions/HTGeometry/AbelianZetaGas/GasPositivity.lean` (wired into
+`GaloisForLFunctions.HTGeometry`).
+
+The Gram kernel has a closed form — and it is the one the Toeplitz picture predicts:
+`φ(x^* y)` vanishes unless `x` and `y` carry the same charge, and on that locus it is
+`∏_i q_i^{max(x.lower i, y.lower i)}`.  Positive semidefiniteness of that kernel is then elementary:
+it is a Hadamard product of the charge-equality kernel with one kernel per mode, and each mode
+kernel is a *finite* nonnegative combination of rank-one kernels because
+`q^{max(b,d)} = q^b q^d q^{-min(b,d)}` and `q^{-m}` telescopes with nonnegative increments
+`q^{-k}(1−q)`.  Mathlib's Schur product theorem does the rest.
+
+| Clause | Lean |
+|---|---|
+| the weight in natural exponents | `zprod_natToInt`, `natWeight`, `gibbsWeight_eq_natWeight` |
+| **the Gram pairing is charge-diagonal** | **`diag_wstar_mul_iff`** |
+| **the Gram exponent is the pointwise maximum** | **`raise_wstar_mul_eq_sup`** |
+| **the Gram kernel in closed form** | **`gibbsWeight_wstar_mul`** |
+| a real rank-one kernel has a nonnegative form | `quadForm_rankOne_nonneg`, `quadForm_nonneg_of_decomp`, `quadForm_congr` |
+| the telescoping coefficients of `q^{-m}` | `telCoeff`, `telCoeff_nonneg`, `sum_telCoeff` |
+| **the single-mode decomposition `q^{max(b,d)} = ∑_k α_k v_k(b) v_k(d)`** | **`modeKernel_decomp`** |
+| **each mode kernel is positive semidefinite** | **`modeKernel_posSemidef`** |
+| **the charge kernel is positive semidefinite** | **`chargeKernel_posSemidef`** |
+| the Hadamard product over a finite mode set | `modeProd`, `modeProd_empty`, `modeProd_insert`, **`modeProd_posSemidef`** |
+| on any finite set of monomials the Gram kernel is that product | **`gramKernel_eq_on`** |
+| **the Gram kernel is positive semidefinite** | **`gramKernel_quadForm_nonneg`** |
+| the adjoint on the algebra, and the Gram expansion of `φ(a^* a)` | `gasAdjoint`, **`gibbs_gasAdjoint_mul_self`** |
+| **`φ(a^* a) ≥ 0` for the gas, at every `σ > 0`** | **`gasGibbs_adjoint_mul_self_nonneg`**, `gasGibbs_gram_nonneg` |
+
+`gasGibbs_adjoint_mul_self_nonneg` has no hypotheses beyond the parameters: for every
+`AbelianZetaParameters` and every element `a` of the gas algebra, `0 ≤ φ(a^* a)`.  Combined with
+`gas_kms_existsUnique`, **Theorem 4.1 now reads on the monomial `*`-algebra exactly as the card
+states it: for every `σ > 0` there is exactly one normalised KMS *state*.**  Note the uniqueness is
+proved among *all* normalised functionals, which is stronger than uniqueness among states.
+
+Axiom prints: `propext`, `Classical.choice`, `Quot.sound` only; module green at 8 665 jobs.
+
+**What remains of this card.**  One item: the C\*-completion — continuity of the state and density
+of the monomials in the C\*-norm.  That needs C\*-tensor products and inductive limits of
+C\*-algebras, neither of which mathlib carries.
 
 ### Theorem 7.1 (GAS.11) — the operator-algebraic clause (DONE)
 

@@ -281,7 +281,7 @@ noncomputable def modeProd (t : M → ℝ) (T : Finset M) : Matrix (GasWord M) (
 theorem posSemidef_ones : (Matrix.of (fun (_ : GasWord M) (_ : GasWord M) => (1 : ℂ))).PosSemidef := by
   classical
   constructor
-  · exact Matrix.IsHermitian.ext fun _ _ => star_one 1
+  · exact Matrix.IsHermitian.ext fun _ _ => star_one ℂ
   · intro c
     refine quadForm_nonneg_of_decomp _ c (Finset.univ : Finset Unit) (fun _ _ => (1 : ℝ)) ?_
     intro x _ y _
@@ -310,6 +310,116 @@ theorem modeProd_posSemidef [DecidableEq M] {t : M → ℝ} (ht0 : ∀ i, 0 < t 
     rw [modeProd_insert t hi]
     exact (modeKernel_posSemidef (ht0 i) (ht1 i) i).hadamard ih
 
+/-! ## The Gram kernel of the Gibbs functional -/
+
+theorem support_sup_subset {f g : M →₀ ℕ} {T : Finset M} (hf : f.support ⊆ T)
+    (hg : g.support ⊆ T) : (f ⊔ g).support ⊆ T := by
+  intro i hi
+  rw [Finsupp.mem_support_iff, Finsupp.sup_apply] at hi
+  by_cases hfi : f i = 0
+  · refine hg ?_
+    rw [Finsupp.mem_support_iff]
+    intro hgi
+    exact hi (by rw [hfi, hgi]; simp)
+  · exact hf (Finsupp.mem_support_iff.mpr hfi)
+
+/-- The Gram kernel of the Gibbs functional on monomials. -/
+noncomputable def gramKernel (t : M → ℝ) : Matrix (GasWord M) (GasWord M) ℂ :=
+  Matrix.of fun x y => gibbsWeight (fun i => ((t i : ℝ) : ℂ)) (wstar x * y)
+
+open Classical in
+/-- **On any finite set of monomials the Gram kernel is the Hadamard product of the charge kernel
+with finitely many mode kernels.** -/
+theorem gramKernel_eq_on [DecidableEq M] (t : M → ℝ) {s : Finset (GasWord M)}
+    {T : Finset M} (hT : ∀ x ∈ s, x.lower.support ⊆ T) :
+    ∀ x ∈ s, ∀ y ∈ s,
+      gramKernel t x y = Matrix.hadamard (chargeKernel M) (modeProd t T) x y := by
+  intro x hx y hy
+  show gibbsWeight (fun i => ((t i : ℝ) : ℂ)) (wstar x * y)
+    = (chargeKernel M x y) * (modeProd t T x y)
+  rw [gibbsWeight_wstar_mul, chargeKernel_apply]
+  by_cases h : charge x = charge y
+  · rw [if_pos h, if_pos h, one_mul, natWeight,
+      Finsupp.prod_of_support_subset _ (support_sup_subset (hT x hx) (hT y hy)) _
+        (fun i _ => pow_zero _)]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [Finsupp.sup_apply]
+  · rw [if_neg h, if_neg h, zero_mul]
+
+/-- **The Gram kernel of the Gibbs functional is positive semidefinite.** -/
+theorem gramKernel_quadForm_nonneg [DecidableEq M] {t : M → ℝ} (ht0 : ∀ i, 0 < t i)
+    (ht1 : ∀ i, t i < 1) (c : GasWord M →₀ ℂ) :
+    0 ≤ c.sum fun i ci => c.sum fun j cj => star ci * gramKernel t i j * cj := by
+  classical
+  have hsub : ∀ x ∈ c.support, x.lower.support
+      ⊆ c.support.biUnion (fun x : GasWord M => x.lower.support) := by
+    intro x hx
+    exact Finset.subset_biUnion_of_mem (fun x : GasWord M => x.lower.support) hx
+  rw [quadForm_congr c (gramKernel_eq_on t hsub)]
+  exact ((chargeKernel_posSemidef (M := M)).hadamard
+    (modeProd_posSemidef ht0 ht1 _)).2 c
+
 end GasWord
+
+/-! ## Positivity of the gas Gibbs functional -/
+
+open scoped ComplexOrder
+
+open GasWord in
+/-- **The Gibbs functional of the gas is positive.**  On the monomial basis of the `*`-algebra its
+Gram matrix is positive semidefinite, which is exactly the statement that `φ(a^* a) ≥ 0`. -/
+theorem gasGibbs_gram_nonneg (θ : AbelianZetaParameters)
+    (c : GasWord AbelianZetaMode →₀ ℂ) :
+    0 ≤ c.sum fun x cx => c.sum fun y cy =>
+      star cx * gasGibbs θ (MonoidAlgebra.single (wstar x * y) (1 : ℂ)) * cy := by
+  have hval : ∀ x y : GasWord AbelianZetaMode,
+      gasGibbs θ (MonoidAlgebra.single (wstar x * y) (1 : ℂ))
+        = gramKernel (fun i => θ.ratio i) x y := by
+    intro x y
+    rw [gasGibbs, gibbs_single, one_mul]
+    rfl
+  simp only [hval]
+  exact gramKernel_quadForm_nonneg (fun i => θ.ratio_pos i) (fun i => θ.ratio_lt_one i) c
+
+/-! ## The adjoint on the algebra -/
+
+open GasWord in
+/-- The adjoint of an element of the gas algebra. -/
+noncomputable def gasAdjoint {M : Type*} (a : GasAlgebra M) : GasAlgebra M :=
+  MonoidAlgebra.ofCoeff (Finsupp.mapDomain wstar
+    (Finsupp.mapRange (starRingEnd ℂ) (by simp) a.coeff))
+
+open GasWord in
+theorem coeff_gasAdjoint {M : Type*} (a : GasAlgebra M) :
+    (gasAdjoint a).coeff = Finsupp.mapDomain wstar
+      (Finsupp.mapRange (starRingEnd ℂ) (by simp) a.coeff) := rfl
+
+open GasWord in
+/-- **The Gram expansion of `φ(a^* a)`.** -/
+theorem gibbs_gasAdjoint_mul_self {M : Type*} (q : M → ℂ) (a : GasAlgebra M) :
+    gibbs q (gasAdjoint a * a)
+      = a.coeff.sum fun x cx => a.coeff.sum fun y cy =>
+          star cx * gibbsWeight q (wstar x * y) * cy := by
+  classical
+  rw [MonoidAlgebra.mul_def, coeff_gasAdjoint,
+    Finsupp.sum_mapDomain_index_inj wstar_injective,
+    Finsupp.sum_mapRange_index (by intro m; simp)]
+  simp only [Finsupp.sum, map_sum]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  refine Finset.sum_congr rfl fun y _ => ?_
+  rw [gibbs_single, Complex.star_def]
+  ring
+
+open GasWord in
+/-- **Theorem 4.1, positivity.**  The Gibbs functional of the gas is a positive functional on the
+monomial `*`-algebra: `φ(a^* a) ≥ 0` for every `a`. -/
+theorem gasGibbs_adjoint_mul_self_nonneg (θ : AbelianZetaParameters)
+    (a : GasAlgebra AbelianZetaMode) :
+    0 ≤ gasGibbs θ (gasAdjoint a * a) := by
+  rw [gasGibbs, gibbs_gasAdjoint_mul_self]
+  have hval : ∀ x y : GasWord AbelianZetaMode,
+      gibbsWeight (gasNome θ) (wstar x * y) = gramKernel (fun i => θ.ratio i) x y := fun _ _ => rfl
+  simp only [hval]
+  exact gramKernel_quadForm_nonneg (fun i => θ.ratio_pos i) (fun i => θ.ratio_lt_one i) a.coeff
 
 end GaloisForLFunctions.HTGeometry

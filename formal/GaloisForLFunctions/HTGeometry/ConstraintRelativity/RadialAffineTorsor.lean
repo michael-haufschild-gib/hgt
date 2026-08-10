@@ -185,7 +185,7 @@ theorem riemannProfile_prime_flat (P : Type*) (p : P → ℕ) (hp : ∀ i, (p i)
 section RadialInvariants
 
 /-- The radial character of a frequency, as a monoid homomorphism from the additive flow. -/
-noncomputable def expChar (lam : ℝ) : Multiplicative ℝ →* ℝ where
+noncomputable def radialExpChar (lam : ℝ) : Multiplicative ℝ →* ℝ where
   toFun t := Real.exp (lam * Multiplicative.toAdd t)
   map_one' := by
     show Real.exp (lam * (0 : ℝ)) = 1
@@ -195,10 +195,10 @@ noncomputable def expChar (lam : ℝ) : Multiplicative ℝ →* ℝ where
       = Real.exp (lam * Multiplicative.toAdd s) * Real.exp (lam * Multiplicative.toAdd t)
     rw [mul_add, Real.exp_add]
 
-@[simp] theorem expChar_apply (lam t : ℝ) :
-    expChar lam (Multiplicative.ofAdd t) = Real.exp (lam * t) := rfl
+@[simp] theorem radialExpChar_apply (lam t : ℝ) :
+    radialExpChar lam (Multiplicative.ofAdd t) = Real.exp (lam * t) := rfl
 
-theorem expChar_injective : Function.Injective expChar := by
+theorem radialExpChar_injective : Function.Injective radialExpChar := by
   intro lam mu h
   have h1 : Real.exp (lam * 1) = Real.exp (mu * 1) :=
     congrArg (fun f => f (Multiplicative.ofAdd (1 : ℝ))) h
@@ -206,9 +206,9 @@ theorem expChar_injective : Function.Injective expChar := by
   exact Real.exp_injective h1
 
 /-- **Card `(10)`.**  Distinct radial frequencies give linearly independent characters. -/
-theorem linearIndependent_expChar :
-    LinearIndependent ℝ (fun lam : ℝ => ⇑(expChar lam)) :=
-  (linearIndependent_monoidHom (Multiplicative ℝ) ℝ).comp expChar expChar_injective
+theorem linearIndependent_radialExpChar :
+    LinearIndependent ℝ (fun lam : ℝ => ⇑(radialExpChar lam)) :=
+  (linearIndependent_monoidHom (Multiplicative ℝ) ℝ).comp radialExpChar radialExpChar_injective
 
 /-- A finite combination of distinct radial frequencies that vanishes identically has zero
 coefficients. -/
@@ -216,12 +216,12 @@ theorem coeff_eq_zero_of_expSum_eq_zero {ι : Type*} [Fintype ι] (lam : ι → 
     (hlam : Function.Injective lam) (a : ι → ℝ)
     (h : ∀ t : ℝ, ∑ i, a i * Real.exp (lam i * t) = 0) (i : ι) : a i = 0 := by
   classical
-  have hind : LinearIndependent ℝ (fun i : ι => ⇑(expChar (lam i))) :=
-    linearIndependent_expChar.comp lam hlam
+  have hind : LinearIndependent ℝ (fun i : ι => ⇑(radialExpChar (lam i))) :=
+    linearIndependent_radialExpChar.comp lam hlam
   refine Fintype.linearIndependent_iff.1 hind a ?_ i
   funext t
   have ht := h (Multiplicative.toAdd t)
-  simpa [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, expChar] using ht
+  simpa [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, radialExpChar] using ht
 
 /-- **Theorem 4.**  A finite combination of *nonzero* radial frequencies that is constant along the
 flow is identically zero: no nonconstant finite algebraic invariant survives the radial flow, so

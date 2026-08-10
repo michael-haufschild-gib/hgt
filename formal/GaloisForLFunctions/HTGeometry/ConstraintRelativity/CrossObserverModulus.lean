@@ -81,6 +81,75 @@ theorem liftingModulus_zero_eq_zero_iff (p : S → I) (q : S → B) :
       exact dist_eq_zero.1 this
     rw [h x y hq, dist_self, ENNReal.ofReal_zero]
 
+/-- **Card `(3)`.**  For a compact source with continuous observers, exactness at scale zero forces
+the modulus to be small at some positive scale.  Without compactness the modulus can jump at zero:
+this is where the card's compactness assumption is used. -/
+theorem exists_liftingModulus_le_of_zero {S : Type*} [MetricSpace S] [CompactSpace S]
+    {p : S → I} {q : S → B} (hp : Continuous p) (hq : Continuous q)
+    (h0 : liftingModulus p q 0 = 0) {δ : ℝ} (hδ : 0 < δ) :
+    ∃ ε > (0 : ℝ), liftingModulus p q ε ≤ ENNReal.ofReal δ := by
+  classical
+  by_contra hcon
+  have hbig : ∀ n : ℕ, ∃ x y : S,
+      dist (q x) (q y) ≤ 1 / ((n : ℝ) + 1) ∧ δ < dist (p x) (p y) := by
+    intro n
+    have hpos : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
+    have hnot : ¬ liftingModulus p q (1 / ((n : ℝ) + 1)) ≤ ENNReal.ofReal δ := fun h =>
+      hcon ⟨1 / ((n : ℝ) + 1), hpos, h⟩
+    rw [not_le] at hnot
+    simp only [liftingModulus, lt_iSup_iff] at hnot
+    obtain ⟨x, y, hxy, hlt⟩ := hnot
+    exact ⟨x, y, hxy, by rwa [ENNReal.ofReal_lt_ofReal_iff_of_nonneg hδ.le] at hlt⟩
+  choose X Y hQ hP using hbig
+  obtain ⟨x₀, -, φ, hφ, hx⟩ :=
+    (isCompact_univ (X := S)).tendsto_subseq (x := X) fun n => Set.mem_univ (X n)
+  obtain ⟨y₀, -, ψ, hψ, hy⟩ :=
+    (isCompact_univ (X := S)).tendsto_subseq (x := fun n => Y (φ n)) fun n => Set.mem_univ _
+  set χ : ℕ → ℕ := fun n => φ (ψ n) with hχ
+  have hXχ : Filter.Tendsto (fun n => X (χ n)) Filter.atTop (nhds x₀) :=
+    hx.comp hψ.tendsto_atTop
+  have hYχ : Filter.Tendsto (fun n => Y (χ n)) Filter.atTop (nhds y₀) := hy
+  have hqlim : Filter.Tendsto (fun n => dist (q (X (χ n))) (q (Y (χ n)))) Filter.atTop
+      (nhds (dist (q x₀) (q y₀))) :=
+    ((hq.tendsto x₀).comp hXχ).dist ((hq.tendsto y₀).comp hYχ)
+  have hsmall : Filter.Tendsto (fun n => 1 / ((χ n : ℝ) + 1)) Filter.atTop (nhds 0) :=
+    (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).comp
+      (tendsto_natCast_atTop_atTop.comp (hφ.comp hψ).tendsto_atTop)
+  have hqzero : dist (q x₀) (q y₀) ≤ 0 :=
+    le_of_tendsto_of_tendsto' hqlim hsmall fun n => hQ (χ n)
+  have hqeq : q x₀ = q y₀ := dist_le_zero.1 hqzero
+  have hpeq : p x₀ = p y₀ := (liftingModulus_zero_eq_zero_iff p q).1 h0 x₀ y₀ hqeq
+  have hplim : Filter.Tendsto (fun n => dist (p (X (χ n))) (p (Y (χ n)))) Filter.atTop
+      (nhds (dist (p x₀) (p y₀))) :=
+    ((hp.tendsto x₀).comp hXχ).dist ((hp.tendsto y₀).comp hYχ)
+  have hδle : δ ≤ dist (p x₀) (p y₀) :=
+    ge_of_tendsto' hplim fun n => (hP (χ n)).le
+  rw [hpeq, dist_self] at hδle
+  exact absurd hδle (not_le.2 hδ)
+
+/-- **Card `(3)`.**  Equivalently: for a compact source with continuous observers, the observer
+factors continuously exactly when the modulus tends to zero with the scale. -/
+theorem tendsto_liftingModulus_nhdsGT_zero_iff {S : Type*} [MetricSpace S] [CompactSpace S]
+    {p : S → I} {q : S → B} (hp : Continuous p) (hq : Continuous q) :
+    liftingModulus p q 0 = 0 ↔
+      Filter.Tendsto (liftingModulus p q) (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) := by
+  constructor
+  · intro h0
+    rw [ENNReal.tendsto_nhds_zero]
+    intro η hη
+    rcases eq_or_ne η ⊤ with rfl | hηtop
+    · exact Filter.Eventually.of_forall fun _ => le_top
+    · have hpos : 0 < η.toReal := ENNReal.toReal_pos hη.ne' hηtop
+      obtain ⟨ε, hε, hle⟩ := exists_liftingModulus_le_of_zero hp hq h0 hpos
+      rw [ENNReal.ofReal_toReal hηtop] at hle
+      filter_upwards [Ioo_mem_nhdsGT hε] with t ht
+      exact le_trans (liftingModulus_mono p q ht.2.le) hle
+  · intro hlim
+    refine le_antisymm ?_ bot_le
+    refine ge_of_tendsto hlim ?_
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact liftingModulus_mono p q (le_of_lt ht)
+
 /-- **Card `(2)`.**  In that case the factoring map exists on the image. -/
 noncomputable def liftFactor (p : S → I) (q : S → B) [Nonempty I]
     (_h : ∀ x y : S, q x = q y → p x = p y) : B → I := by

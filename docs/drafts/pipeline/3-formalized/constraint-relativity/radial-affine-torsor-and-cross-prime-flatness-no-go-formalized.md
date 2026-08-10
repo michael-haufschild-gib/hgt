@@ -54,7 +54,7 @@ Corollary 3 — flatness never selects the critical slope:
 
 Theorem 4 — finite algebraic radial invariants are constant:
 
-11. `expChar`, `expChar_injective`, `linearIndependent_expChar` — **card `(10)`**: the radial
+11. `radialExpChar`, `radialExpChar_injective`, `linearIndependent_radialExpChar` — **card `(10)`**: the radial
     character of a frequency is a monoid homomorphism of the additive flow, distinct frequencies
     give distinct characters, and Artin's independence of characters
     (`linearIndependent_monoidHom`) makes them linearly independent.

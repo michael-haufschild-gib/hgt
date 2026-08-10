@@ -562,3 +562,96 @@ What remains in §1 is *supplying* that Galois action for a concrete rational
 two-local `H_n`, which is Hilbert irreducibility.  mathlib has no Hilbert
 irreducibility theorem (checked: no `IsHilbertian`, no
 `hilbert_irreducibility`), so that is a build-from-scratch item.
+
+## Rigidity may be proved in the splitting field (2026-08-10)
+
+`HTGeometry/RelationSpaceTransfer.lean` (new, unconditional, axiom-clean, in
+the umbrella) removes an awkwardness in the previous entry.
+
+`SpectralExponentialIndependence.isPermInvariant_ker_relationForm` asks for the
+symmetric action to be realised by ring endomorphisms **of `ℂ`**.  Supplying
+that from a Galois group would require extending an automorphism of the
+splitting field to an endomorphism of `ℂ`, which needs a transcendence basis and
+choice.  It is unnecessary:
+
+- **`ker_form_comp`** — the rational relation space is unchanged by an injective
+  `ℚ`-algebra map.  So it may be computed in *any* field containing the family;
+- **`isPermInvariant_ker`** and **`ker_form_eq_constLine`** — the same rigidity
+  statements as before, over an arbitrary `ℚ`-algebra field rather than `ℂ`.
+
+The chain therefore runs: prove rigidity inside the splitting field, where the
+Galois group acts by honest field automorphisms; transport it to `ℂ` along the
+embedding; then apply Lindemann–Weierstrass there.  No endomorphism of `ℂ` is
+ever constructed.
+
+### Remaining Lean layers
+
+- the Hilbert irreducibility specialization (§1) — not in mathlib, a
+  build-from-scratch item;
+- o-minimality of `R_an` and one-dimensional definable finiteness (§4's upgrade
+  from empty interior to finiteness).
+
+## §4: one-dimensional finiteness for equation constraints (2026-08-10)
+
+`HTGeometry/RealAnalyticZeroFiniteness.lean` (new, unconditional, axiom-clean,
+in the umbrella).
+
+Corpus check first: `AnalyticBallZeroSet.finite_zeros_of_analyticOnNhd_closedBall`
+is **complex**, and `AnalyticNullPreimage.analytic_zero_set_countable` gives
+*countability* for a **globally** analytic real function, deriving local
+finiteness only inside its proof.  The exported real, compact-set statement was
+missing.
+
+- `eventually_ne_zero_of_analyticOnNhd` — on a preconnected set a single nonzero
+  value forbids local vanishing anywhere (identity theorem);
+- **`finite_zeros_of_analyticOnNhd`** — a real-analytic function that is nonzero
+  somewhere has finitely many zeros on any compact subset.  Each point gets a
+  punctured zero-free neighbourhood; a finite subcover leaves only the centres.
+
+This supplies §4's finiteness **when the constraint is an equation**: the times
+in `[-T,T]` at which an analytic coordinate expression vanishes are finite.  It
+does **not** cover `S_s`, which is semialgebraic — defined by inequalities as
+well — and the set where an analytic function is nonnegative can contain
+intervals.  So §4 still needs o-minimality for the general case; what is now
+Lean is the equational core plus (earlier) the empty-interior statement.
+
+### Remaining Lean layers
+
+- the Hilbert irreducibility specialization (§1) — not in mathlib;
+- o-minimality of `R_an`, for the inequality part of §4.
+
+## Corpus check: §1's generic half is already Lean (2026-08-10)
+
+The card cites `generic-two-local-spectral-monodromy` as "paper-proved and
+Lean-proved".  Verified, with the declaration names:
+
+- **`TwoLocalCommonBaseEdgeMonodromy.commonBaseTwoLocalMonodromySubgroup_eq_top`**
+  — the spectral monodromy group of the universal complexified two-local family
+  at the explicit fixed diagonal Hamiltonian is the full symmetric group;
+- **`TwoLocalCharacteristicIrreducibility.universalTwoLocalCharacteristicPolynomial_irreducible`**;
+- supporting: `GenericPolynomialVieta.symmetricPartField_eq_adjoin_genericCoeff`,
+  `PolynomialHermitianMatrixProjectiveGenericity.*`.
+
+So §1 splits cleanly: the *generic* symmetric action is corpus-owned, and the
+only missing step is the passage from the generic point to a **rational**
+specialization — Hilbert irreducibility.  That is the single remaining
+obstruction in §1, not the monodromy.
+
+Also checked: neither the corpus nor mathlib has any semialgebraic-set
+machinery, so §4's inequality part is a from-scratch build.
+
+## §4: closed low-complexity time sets are nowhere dense (2026-08-10)
+
+Added to `HTGeometry/NonzeroAlgebraicDense.lean`:
+**`isNowhereDense_of_isClosed_of_forall_not_algebraic`** — a *closed* set of
+reals containing no nonzero algebraic number is nowhere dense.
+
+`S_s` is compact and the orbit map is continuous, so the low-complexity time set
+is closed; with equation (1) it contains no nonzero algebraic time.  It is
+therefore nowhere dense in `[-T,T]`, strengthening the earlier empty-interior
+statement.  Finiteness still needs o-minimality.
+
+### Remaining Lean layers
+
+- Hilbert irreducibility (§1) — the sole remaining step there;
+- o-minimality of `R_an` for the inequality part of §4.

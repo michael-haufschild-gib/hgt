@@ -26,6 +26,13 @@ All declarations live in namespace `HTGeometry.ConstraintRelativity`.  The modul
 4. `liftingModulus_zero_eq_zero_iff` — **card `(2)`**: the zero-scale modulus vanishes exactly when
    the interior observer is constant on the fibres of the boundary observer.
 5. `liftFactor`, `liftFactor_comp` — the factoring map in that case.
+5b. `exists_liftingModulus_le_of_zero`, `tendsto_liftingModulus_nhdsGT_zero_iff` — **card `(3)`**:
+    for a compact source with continuous observers, exactness at scale zero is *equivalent* to the
+    modulus tending to zero with the scale.  The hard direction is the card's compactness argument:
+    a scale sequence `1/(n+1)` with modulus bounded below yields pairs whose observed separations
+    vanish, and two subsequence extractions plus continuity produce a limit pair with `q x₀ = q y₀`
+    but `d(p x₀, p y₀) ≥ δ`, contradicting item 4.  Without compactness the modulus can jump at
+    zero — the resolution floor of item 9 is exactly that phenomenon in the finite case.
 6. `dist_le_of_lipschitz_factor` — **cards `(17)`, `(18)` boxed**: a `K`-Lipschitz decoder forces
    `|ΔL| ≤ K·δ`, i.e. `K ≥ |ΔL|/δ`.
 7. `liftingModulus_comp` — **card `(5)`**: the modulus composes.

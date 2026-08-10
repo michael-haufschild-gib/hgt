@@ -2403,6 +2403,7 @@ import GaloisForLFunctions.RHTower.GaussSampleIntegerLattice
 import GaloisForLFunctions.RHTower.GaussSampleTranslationL2
 import GaloisForLFunctions.RHTower.GaussTranslationL2Convergence
 import GaloisForLFunctions.RHTower.GaussUniformTranslationL2
+import GaloisForLFunctions.RHTower.GaussFourierDiagonal
 import GaloisForLFunctions.RHTower.GaussIterate
 import GaloisForLFunctions.RHTower.GaussIterateInner
 import GaloisForLFunctions.RHTower.GaussIteratedAmplitude
@@ -6915,3 +6916,7 @@ import GaloisForLFunctions.RHTower.DeningerDilationIntegral
 import GaloisForLFunctions.RHTower.DeningerMajorantIntegrable
 import GaloisForLFunctions.RHTower.DeningerPreimageZeroMass
 import GaloisForLFunctions.RHTower.DeningerEvenPreimage
+import GaloisForLFunctions.RHTower.DeningerWindowSwapPow
+import GaloisForLFunctions.RHTower.DeningerHigherMassBound
+import GaloisForLFunctions.RHTower.DeningerHigherMajorant
+import GaloisForLFunctions.RHTower.DeningerHigherPreimageMass

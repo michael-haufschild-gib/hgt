@@ -301,3 +301,22 @@ ALM becomes more than an organizing metaphor only after all of the following:
 
 Until then, honest status is a mechanism-first research programme with four certified
 calibrations and open anti-theatre gates.
+
+## 9. Endogenous viability and observer exchange
+
+The enlarged frontier forces one sharper law beyond finite repair laboratories. A current law must
+generate its next challenge, and finite survival must be distinguished from one coherent infinite
+strategy. The active extension is
+`autopoietic-law-mechanics/endogenous-viability-observer-exchange-field-programme.md`.
+
+Its paper-proved bridge `ULF-EVM-1` establishes the exchange
+
+\[
+ q(\bigcap_n W_n)=\bigcap_nq(W_n)
+\]
+
+under closed coherent horizons and compact observer fibres, proves proper-cost escape whenever the
+exchange fails, and derives the greatest viable fixed point from a compact endogenous predecessor.
+This closes a route-independent compactness/coercivity law but not the field gate. Live task: one
+source-normal predecessor with literal realizations in three unlike frontier classes and one
+withheld cross-class prediction. Lean status is pending; no proof claim exceeds paper level.

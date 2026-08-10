@@ -46,6 +46,7 @@ theorem ker_form_comp {M : Type*} [Field M] [Algebra ℚ M] (f : L →ₐ[ℚ] M
 
 variable [DecidableEq ι]
 
+omit [DecidableEq ι] in
 /-- **A symmetric action by ring endomorphisms makes the relation space permutation invariant.** -/
 theorem isPermInvariant_ker {E : ι → L}
     (hgal : ∀ σ : Equiv.Perm ι, ∃ φ : L →+* L, ∀ i, φ (E i) = E (σ i)) :
@@ -58,7 +59,9 @@ theorem isPermInvariant_ker {E : ι → L}
     rw [map_sum, map_zero] at hmap
     rw [← hmap]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Rat.smul_def, Rat.smul_def, map_mul, map_ratCast, hφ i]
+    simp only [Algebra.smul_def, map_mul, hφ i]
+    congr 1
+    simp
   calc ∑ i, ((fun j => a (σ j)) i : ℚ) • E i
       = ∑ i, (a (σ i) : ℚ) • E i := rfl
     _ = ∑ i, (a i : ℚ) • E (σ⁻¹ i) := by
@@ -88,7 +91,7 @@ theorem ker_form_eq_constLine {E : ι → L} [Nonempty ι]
       rw [htop]; exact Submodule.mem_top
     rw [LinearMap.mem_ker, form_apply] at hmem
     rw [Finset.sum_eq_single i₀] at hmem
-    · simp only [if_pos rfl, one_smul] at hmem
+    · simp at hmem
       exact hi₀ hmem
     · intro b _ hb
       simp [hb]

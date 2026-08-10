@@ -4455,3 +4455,118 @@ So the deficit is now located precisely: it is the *height-free* part `β` of th
 square — `β ≍ M²` from the diagonal, against a target `o(h·M²/(ℓ³(log h)²))`.  Beating the diagonal
 by `ℓ³(log h)²/h` at the top dyadic level `ℓ ≍ h` — i.e. by `h²(log h)²` — is exactly what the
 Ramaré factorization plus the large-values layer plus Halász is for.
+
+## Unit 17 — the located obstruction: the block count multiplies the Gallagher budget
+
+`Sieve/LinearMeanSquareGeneric.setIntegral_normSq_linWindowSum_range_le_sum`,
+`[propext, Classical.choice, Quot.sound]`.
+
+**The accounting fails, and here is exactly where.**  Optimise the two `α`-terms of unit 16 over the
+height `W`:
+
+```text
+min_W [ 2 log(1+ℓ/A)²·α·W + 4α/(π²W) ]  =  (4√2/π)·log(1+ℓ/A)·α  ≍  (ℓ/A)·α ,
+```
+
+so the best the chain can give, *whatever* `W`, is
+
+```text
+C ≍ A · K' · (ℓ/A)·α  ≍  K'·ℓ·α .
+```
+
+With `ε ≍ 1/ℓ` (the choice that keeps the truncation term `2(εℓ+1)²log(1+ε)` bounded) `K' ≍ ℓ`, and
+with the mean-value `α ≍ ∑_{n≤M}|a_n|² ≍ M ≍ √x`:
+
+```text
+C ≍ ℓ²√x ,          target  C = o( h√x/(log h)² ) ,          truth  ≍ ℓ√x .
+```
+
+So the chain overshoots the *truth* by a factor `ℓ`, and overshoots the target by `h(log h)²` at the
+top level `ℓ ≍ h`.  Enlarging `ε` to shrink `K'` does not help: `K' ≥ ℓ/(εℓ)` and the truncation term
+grows as `(εℓ)²`, so `K'·(εℓ)²` is minimised at `εℓ ≍ 1`.
+
+**The factor is `K'`, and it is structural, not a slack estimate.**  Each of the `K'` blocks carries
+its own window width `log(1 + L/Y(1+ε)^k)`, and Gallagher's identity is a *whole-line* identity —
+there is no localised form.  So `..._range_le_gen` pays a whole budget `G` per block.  Were the
+widths equal, the `K'` block integrals would be over disjoint sets and would sum to a single line
+integral, costing `G` once.
+
+**What was built.**  The range estimate restated with the per-block budgets kept separate, which
+makes the loss removable rather than baked in:
+
+```lean
+setIntegral_normSq_linWindowSum_range_le_sum :
+  (∀ k, ∫_{block k} ‖logWindowSum a s (log(1 + L/Y(1+ε)^k)) u‖² ≤ g k) →
+    ∫_{log Y}^{log Y(1+ε)^K} ‖linWindowSum a s L u‖²
+      ≤ 2·∑_{k<K} g k  +  K·2(εL+1)²log(1+ε)
+```
+
+Anyone who bounds `∑_k g k` directly — rather than `K'·max_k g k` — gets the `K'`-free chain and,
+with it, `C ≍ ℓ√x`, which is the truth and is within `(log h)²` of the target.
+
+**This is the next problem on the card**, and it is a clean one: bound
+
+```text
+∑_{k < K'} ∫_{block k} ‖logWindowSum a s (log(1 + ℓ/Y_k)) u‖² du ,     Y_k = A(1+ε)^k ,
+```
+
+by a single Gallagher application.  Two candidate mechanisms: (i) replace the `K'` widths by one
+width and absorb the mismatch into the truncation term with a second, finer block decomposition;
+(ii) prove a localised Gallagher inequality — the identity is global, but the *inequality* over a
+sub-interval may be recoverable from the Fejér weight's positivity.
+
+## Unit 18 — STRUCTURAL FINDING: the fibres are already multiplicative windows of one width
+
+**No new Lean.**  A corpus check that changes the plan.
+
+`FibreFixedWidth.fibreWidth x h := log(1 + h/√x)` is the **common** multiplicative width of every
+fibre (`innerFibre_log_bounds`), and `FibreToLogWindow.abs_fibre_sum_sub_open_le` already rewrites
+
+```text
+∑_{b ∈ innerFibre x h a} f(b)  =  (log-window sum at u_a = log(x/a), width fibreWidth x h)  ± 1 ,
+```
+
+*at one and the same width for every `a`*.  So the object `AveragedMeanSquare` is built from is a
+mean square of **multiplicative** windows of a single fixed ratio — not of additive windows, and not
+of maximal windows.
+
+**Consequence: the `K'` cap of unit 17 is an artefact of the route, not of the problem.**  The route
+of units 12–17 goes fibre → `maxWindowSq` (additive, maximal) → dyadic → linear windows → geometric
+blocks, and the block count `K' ≍ ℓ` enters only because the *additive* window has a different
+multiplicative width at each starting point.  Keeping the fibres multiplicative removes it, together
+with the Rademacher–Menshov `(J+1)²` — there is no maximum over lengths in the fibre object at all.
+
+**The direct route, and its accounting.**  With `δ := fibreWidth x h ≍ h/√x` and
+`W(u) := logWindowSum f s δ u`:
+
+1. `∑_a (∑_{b ∈ innerFibre a} f b)² ≤ 2∑_a ‖W(log(x/a))‖² + 2·#outerBlock`  — the `±1` of
+   `abs_fibre_sum_sub_open_le` and `(u+v)² ≤ 2u² + 2v²`; the second term is `O(√x)`.
+2. The sample points `log(x/a)`, `a ∈ (√x, 2√x]`, are `σ`-separated with `σ ≍ 1/(2√x)`, and on an
+   interval of length `σ` the window sum changes by at most the number of integers in two windows of
+   log-width `σ` at height `√x`, i.e. by `O(1)`.  Averaging:
+   `‖W(u_a)‖² ≤ (2/σ)∫_{u_a}^{u_a+σ}‖W‖² + O(1)`, and the intervals are disjoint, so
+   `∑_a ‖W(u_a)‖² ≤ (2/σ)∫_ℝ ‖W‖² + O(√x) ≍ √x·∫_ℝ‖W‖² + O(√x)`.
+3. One Gallagher application: `∫_ℝ ‖W‖² ≤ 2δ²(αW₀+β) + 4α/(π²W₀) + 4β/(3π²W₀²)`
+   (`gallagher_split_integral_dyadic`), optimising to `≍ δα`.
+
+Total: `√x·δα + O(√x) ≍ √x·(h/√x)·α + O(√x) = hα + O(√x)`.  Against the target `o(h²√x)` this needs
+
+```text
+α = o(h√x)          i.e.   ∫_{|w| ≤ T} ‖logPoly μ (Icc 1 M) w‖² ≤ α·T + β  with  α = o(h√x) ,
+```
+
+whereas the mean-value baseline gives `α ≍ ∑_{n ≤ M}|μ(n)|² ≍ M ≍ √x`.  **The deficit is a single
+factor `h`** — no logs, no block count, no Rademacher–Menshov — and it is exactly a saving of `h` in
+the diagonal of the Dirichlet-polynomial mean square, which is what the Ramaré factorization and the
+large-values layer are for.
+
+**What to build next (in this order).**
+1. The averaging step 2: `∑ over σ-separated sample points ≤ (2/σ)∫ + O(count)` for the step function
+   `‖logWindowSum f s δ ·‖²`, using that a log-window of width `σ ≍ 1/√x` at height `√x` holds `O(1)`
+   integers.  Nothing in the corpus does this for a step function (`GallagherPointwise`/`GallagherSum`
+   are for `C¹` trigonometric polynomials).
+2. The assembly of steps 1–3 into `AveragedMeanSquare f hh ⟸ α = o(h√x)`.
+3. The arithmetic input `α = o(h√x)`.
+
+Units 12–17 remain valid theorems and keep their value for additive/maximal windows (they are what
+`MaximalWindowMeanSquare` needs), but they are **not** on the shortest path to `AveragedMeanSquare`.

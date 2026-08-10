@@ -63,4 +63,12 @@ theorem dense_compl_of_forall_not_algebraic {S : Set ℝ}
     (h : ∀ t ∈ S, t = 0 ∨ ¬ IsAlgebraic ℚ t) : Dense Sᶜ := by
   exact interior_eq_empty_iff_dense_compl.mp (interior_eq_empty_of_forall_not_algebraic h)
 
+/-- **A closed set avoiding every nonzero algebraic real is nowhere dense.**  For a set of times
+cut out by a closed condition, avoiding the algebraic times is already enough to make it
+topologically negligible. -/
+theorem isNowhereDense_of_isClosed_of_forall_not_algebraic {S : Set ℝ} (hS : IsClosed S)
+    (h : ∀ t ∈ S, t = 0 ∨ ¬ IsAlgebraic ℚ t) : IsNowhereDense S := by
+  rw [IsNowhereDense, hS.closure_eq]
+  exact interior_eq_empty_of_forall_not_algebraic h
+
 end GaloisForLFunctions.HTGeometry
