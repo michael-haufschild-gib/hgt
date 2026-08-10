@@ -271,6 +271,80 @@ noncomputable def coneRelativeObserverDuality (V : Type*) [AddCommGroup V] [Modu
   relativeObserverDuality ((coneInc Φ).cohomologyMap n) (conePr Φ n) (Φ.cohomologyMap (n + 1))
     (cone_exact_left Φ n) (cone_exact_right Φ n)
 
+/-! ## Cone characters -/
+
+variable {V : Type*} [AddCommGroup V] [Module k V]
+
+/-- A functional on the source that kills coboundaries descends to source cohomology. -/
+noncomputable def sourceCharacter (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
+    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0) : C.cohomology (n + 1) →ₗ[k] V := by
+  refine Submodule.liftQ _ (P.comp (C.cocycles (n + 1)).subtype) ?_
+  rintro c hc
+  have hc' : (c : M (n + 1 + 1)) ∈ C.coboundaries (n + 1) := hc
+  obtain ⟨b, hb⟩ := hc'
+  show P (c : M (n + 1 + 1)) = 0
+  rw [← hb]
+  exact hP b
+
+@[simp] theorem sourceCharacter_cls (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
+    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0) (c : C.cocycles (n + 1)) :
+    sourceCharacter (C := C) n P hP (C.cls c) = P (c : M (n + 1 + 1)) := rfl
+
+/-- The same functional read on the mapping cone: a cone class is sent to the value of `P` on its
+source coordinate. -/
+noncomputable def coneCharacter (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
+    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0) :
+    (coneComplex Φ).cohomology n →ₗ[k] V := by
+  refine Submodule.liftQ _
+    (P.comp ((LinearMap.snd k (N (n + 1)) (M (n + 1 + 1))).comp
+      ((coneComplex Φ).cocycles n).subtype)) ?_
+  rintro y hy
+  have hy' : (y : N (n + 1) × M (n + 1 + 1)) ∈ (coneComplex Φ).coboundaries n := hy
+  obtain ⟨w, hw⟩ := hy'
+  show P (y : N (n + 1) × M (n + 1 + 1)).2 = 0
+  rw [← congrArg Prod.snd hw, coneComplex_d_apply]
+  show P (-(C.d (n + 1) w.2)) = 0
+  rw [map_neg, hP, neg_zero]
+
+@[simp] theorem coneCharacter_cls (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
+    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0) (y : (coneComplex Φ).cocycles n) :
+    coneCharacter Φ n P hP ((coneComplex Φ).cls y)
+      = P (y : N (n + 1) × M (n + 1 + 1)).2 := rfl
+
+/-- A cone character reads the source coordinate only: it annihilates every class coming from the
+target complex, so it never sees the chosen primitive. -/
+theorem coneCharacter_coneInc (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
+    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0) (u : X.cohomology n) :
+    coneCharacter Φ n P hP ((coneInc Φ).cohomologyMap n u) = 0 := by
+  obtain ⟨x, rfl⟩ := X.cls_surjective n u
+  rw [ZCochainMap.cohomologyMap_cls, coneCharacter_cls]
+  show P (0 : M (n + 1 + 1)) = 0
+  exact map_zero _
+
+/-- Consequently the character descends to the relative-law space. -/
+noncomputable def coneCharacterRel (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
+    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0) :
+    ((coneComplex Φ).cohomology n ⧸ LinearMap.range ((coneInc Φ).cohomologyMap n)) →ₗ[k] V :=
+  Submodule.liftQ _ (coneCharacter Φ n P hP)
+    (by
+      rintro _ ⟨u, rfl⟩
+      exact coneCharacter_coneInc Φ n P hP u)
+
+/-- **Card `(ROD.12)`, `(ROD.17)`–`(ROD.18)` shape.**  Pairing a cone character with a relative-law
+class computes the source character on the class that the relative law names in `ker f`. -/
+theorem coneCharacterRel_eq (n : ℤ) (P : M (n + 1 + 1) →ₗ[k] V)
+    (hP : ∀ b : M (n + 1), P (C.d (n + 1) b) = 0)
+    (z : (coneComplex Φ).cohomology n ⧸ LinearMap.range ((coneInc Φ).cohomologyMap n)) :
+    coneCharacterRel Φ n P hP z
+      = sourceCharacter (C := C) n P hP
+        ((coneRelativeLawEquiv Φ n z : C.cohomology (n + 1))) := by
+  obtain ⟨w, rfl⟩ := Submodule.Quotient.mk_surjective _ z
+  obtain ⟨y, rfl⟩ := (coneComplex Φ).cls_surjective n w
+  show coneCharacter Φ n P hP ((coneComplex Φ).cls y) = _
+  rw [coneRelativeLawEquiv, relativeLawEquiv_mk, conePr_cls, coneCharacter_cls,
+    sourceCharacter_cls]
+  rfl
+
 end Cone
 
 end HTGeometry.ConstraintRelativity

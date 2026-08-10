@@ -122,6 +122,71 @@ theorem integrable_exp_mul_thetaCuspFullSource (a : ℝ) :
     ring
   simpa [Iic_union_Ioi] using hneg.union hpos
 
+/-- A symmetric exponential envelope is integrable at every real rate. -/
+theorem integrable_exp_abs_mul_thetaCuspFullSource (b : ℝ) :
+    Integrable (fun x : ℝ =>
+      Real.exp (b * |x|) * thetaCuspFullSource x) := by
+  have hmajor := (integrable_exp_mul_thetaCuspFullSource b).add
+    (integrable_exp_mul_thetaCuspFullSource (-b))
+  apply Integrable.mono hmajor
+  · exact ((Real.continuous_exp.comp
+      (continuous_const.mul continuous_abs)).mul
+        contDiff_thetaCuspFullSource.continuous).aestronglyMeasurable
+  · filter_upwards with x
+    have hk : 0 ≤ thetaCuspFullSource x := (thetaCuspFullSource_pos x).le
+    have hexp : Real.exp (b * |x|) ≤
+        Real.exp (b * x) + Real.exp ((-b) * x) := by
+      rcases le_total 0 x with hx | hx
+      · rw [abs_of_nonneg hx]
+        exact le_add_of_nonneg_right (Real.exp_pos _).le
+      · rw [abs_of_nonpos hx]
+        have heq : b * -x = (-b) * x := by ring
+        rw [heq]
+        exact le_add_of_nonneg_left (Real.exp_pos _).le
+    simp only [Pi.add_apply]
+    rw [Real.norm_eq_abs, Real.norm_eq_abs,
+      abs_of_nonneg (mul_nonneg (Real.exp_pos _).le hk),
+      abs_of_nonneg (add_nonneg
+        (mul_nonneg (Real.exp_pos _).le hk)
+        (mul_nonneg (Real.exp_pos _).le hk))]
+    calc
+      Real.exp (b * |x|) * thetaCuspFullSource x ≤
+          (Real.exp (b * x) + Real.exp ((-b) * x)) * thetaCuspFullSource x :=
+        mul_le_mul_of_nonneg_right hexp hk
+      _ = Real.exp (b * x) * thetaCuspFullSource x +
+          Real.exp ((-b) * x) * thetaCuspFullSource x := by ring
+
+/-- One source-coordinate factor is absorbed by one additional symmetric exponential tilt. -/
+theorem integrable_abs_mul_exp_abs_mul_thetaCuspFullSource (b : ℝ) :
+    Integrable (fun x : ℝ =>
+      |x| * Real.exp (b * |x|) * thetaCuspFullSource x) := by
+  have hmajor := integrable_exp_abs_mul_thetaCuspFullSource (b + 1)
+  apply Integrable.mono hmajor
+  · exact ((continuous_abs.mul
+      (Real.continuous_exp.comp (continuous_const.mul continuous_abs))).mul
+        contDiff_thetaCuspFullSource.continuous).aestronglyMeasurable
+  · filter_upwards with x
+    have hk : 0 ≤ thetaCuspFullSource x := (thetaCuspFullSource_pos x).le
+    have hxexp : |x| ≤ Real.exp |x| := by
+      calc
+        |x| ≤ |x| + 1 := by linarith
+        _ ≤ Real.exp |x| := Real.add_one_le_exp |x|
+    have hbound : |x| * Real.exp (b * |x|) ≤
+        Real.exp ((b + 1) * |x|) := by
+      calc
+        |x| * Real.exp (b * |x|) ≤
+            Real.exp |x| * Real.exp (b * |x|) :=
+          mul_le_mul_of_nonneg_right hxexp (Real.exp_pos _).le
+        _ = Real.exp ((b + 1) * |x|) := by
+          rw [← Real.exp_add]
+          congr 1
+          ring
+    rw [Real.norm_eq_abs, Real.norm_eq_abs,
+      abs_of_nonneg (mul_nonneg
+        (mul_nonneg (abs_nonneg x) (Real.exp_pos _).le) hk),
+      abs_of_nonneg (mul_nonneg (Real.exp_pos _).le hk)]
+    exact mul_le_mul_of_nonneg_right hbound hk
+
 /-- The quantile source tail condition holds at every complex spectral parameter. -/
 theorem hasShiftedTail_thetaSource_all (z : ℂ) : HasShiftedTail thetaSource z := by
   rw [HasShiftedTail]

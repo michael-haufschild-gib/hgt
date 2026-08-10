@@ -806,3 +806,15 @@ umbrella. Axiom prints on both exchange criteria, anti-diagonal classification, 
 theorem, finite diagonal-stage law, and unconditional capstone report only `propext`,
 `Classical.choice`, and `Quot.sound`. No computation certificate, route premise, project axiom, or
 RH statement occurs.
+
+## Session 2026-08-10 addition (Controlled Naturality Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CNM-1 | Orbit-complete equivariant reporter is effective iff symmetry moves an attained response; invariant-output inertness; Curie stabilizer inheritance; fixed-mark equivariance under mark stabilizer; orbit-completeness and marking insufficiency cells | `HTGeometry.ConstitutiveControlledNaturalityMechanics` |
+
+Direct foreground elaboration is warning-free. The leaf build passes with 8,665 jobs and the final
+`HTGeometry.UniversalLawField` umbrella build passes with 11,583 jobs. The module is wired into the
+umbrella. Axiom prints report at most `propext`, `Classical.choice`, and `Quot.sound`; the exact
+attained-fixed equivalence reports no axioms. No computation certificate, route premise, project
+axiom, or RH statement occurs.

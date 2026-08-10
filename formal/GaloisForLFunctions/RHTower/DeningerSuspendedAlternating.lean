@@ -273,7 +273,7 @@ theorem deningerSuspAlt_slice_le {k : ℕ} {R : ℝ} (hR : 1 ≤ R) (c : Deninge
 
 /-! ## The antisymmetrizer as an operator of the source -/
 
-private theorem deningerSuspWordKotheData_weightR (k : ℕ) (w : DeningerSuspWord) :
+theorem deningerSuspWordKotheData_weightR (k : ℕ) (w : DeningerSuspWord) :
     deningerSuspWordKotheData.w k w = deningerSuspWeightR k ((k : ℝ) + 1) w := by
   rw [deningerSuspWordKotheData_w, deningerSuspWeightR]
   ring

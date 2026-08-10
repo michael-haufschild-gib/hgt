@@ -83,6 +83,70 @@ theorem classLaw_absolutelyContinuous (θ θ' : AbelianZetaConvergentParameters)
   · exact absurd hzero (classMass_pos θ A).ne'
   · rw [hind, mul_zero]
 
+/-! ## The atomwise mass ratio of the canonical tilt -/
+
+/-- The canonical unit tilt, in the convergence chamber. -/
+def tiltConv (σ : EulerSigma) : AbelianZetaConvergentParameters where
+  toAbelianZetaParameters := tiltParameters σ
+  firstDepth := by
+    have h := σ.one_lt
+    have hp := σ.pos
+    show (1 : ℝ) < σ.val + σ.val
+    linarith
+
+/-- **The atomwise mass of the canonical tilt.**  The class mass of the unit tilt is its normaliser
+times the untilted Gibbs weight times `|soc A|^{−σ}`. -/
+theorem classMass_tiltConv (σ : EulerSigma) (A : AbelianZetaGroupClass) :
+    abelianZetaClassMass (tiltConv σ).toAbelianZetaParameters A
+      = (tiltConv σ).ennNormalizer
+        * ENNReal.ofReal (abelianZetaTwoObservableWeight
+            (AbelianZetaParameters.temperatureParameters σ.val σ.pos) A
+          * ((A.socleOrder : ℝ) ^ (-σ.val))) := by
+  rw [(tiltConv σ).classMass_eq_ennNormalizer_mul_twoObservableWeight A]
+  congr 2
+  exact twoObservableWeight_tiltParameters σ A
+
+/-! ## The tilt as a density -/
+
+theorem withDensity_singleton (μ : Measure AbelianZetaGroupClass)
+    (d : AbelianZetaGroupClass → ℝ≥0∞) (A : AbelianZetaGroupClass) :
+    (μ.withDensity d) {A} = d A * μ {A} := by
+  rw [withDensity_apply d (by trivial), lintegral_singleton]
+
+/-- The constant in the Radon–Nikodym density of the canonical tilt. -/
+def densityConst (σ : EulerSigma) : ℝ≥0∞ :=
+  (tiltConv σ).ennNormalizer / (temperatureConv σ).ennNormalizer
+
+/-- **The canonical unit tilt is a density against the untilted law.** -/
+theorem classLaw_tiltConv_eq_withDensity (σ : EulerSigma) :
+    classLaw (tiltConv σ).toAbelianZetaParameters
+      = (classLaw (temperatureConv σ).toAbelianZetaParameters).withDensity
+        (fun A => densityConst σ * ENNReal.ofReal ((A.socleOrder : ℝ) ^ (-σ.val))) := by
+  refine Measure.ext_of_singleton fun A => ?_
+  rw [classLaw_singleton, withDensity_singleton, classLaw_singleton,
+    classMass_tiltConv σ A,
+    (temperatureConv σ).classMass_eq_ennNormalizer_mul_twoObservableWeight A]
+  have hw : (0 : ℝ) ≤ abelianZetaTwoObservableWeight
+      (AbelianZetaParameters.temperatureParameters σ.val σ.pos) A :=
+    AbelianZetaConvergentParameters.twoObservableWeight_nonneg _ A
+  have hs : (0 : ℝ) ≤ ((A.socleOrder : ℝ) ^ (-σ.val)) := Real.rpow_nonneg (by positivity) _
+  rw [ENNReal.ofReal_mul hw]
+  have hne : (temperatureConv σ).ennNormalizer ≠ 0 :=
+    AbelianZetaConvergentParameters.ennNormalizer_ne_zero _
+  have htop : (temperatureConv σ).ennNormalizer ≠ ⊤ := by
+    rw [AbelianZetaConvergentParameters.ennNormalizer]
+    exact ENNReal.coe_ne_top
+  have hc : (tiltConv σ).ennNormalizer / (temperatureConv σ).ennNormalizer
+      * (temperatureConv σ).ennNormalizer = (tiltConv σ).ennNormalizer :=
+    ENNReal.div_mul_cancel hne htop
+  have hweq : abelianZetaTwoObservableWeight (temperatureConv σ).toAbelianZetaParameters A
+      = abelianZetaTwoObservableWeight
+          (AbelianZetaParameters.temperatureParameters σ.val σ.pos) A := rfl
+  rw [densityConst, hweq]
+  conv_lhs => rw [← hc]
+  ring
+
+
 end
 
 end GaloisForLFunctions.HTGeometry

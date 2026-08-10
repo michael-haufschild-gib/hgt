@@ -3700,3 +3700,63 @@ MRBilinear μ hh
 
 Every arrow is an unconditional theorem of this corpus except the last, which is a published
 theorem (Matomäki–Radziwiłł–Tao) not yet formalised here.
+
+## 2026-08-10 the shift-sum interface
+
+`Sieve/ShiftSumBound.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9045 jobs).
+
+```text
+CorrelationPartialBound f K B :=
+  ∀ k ∈ [1, K], ∀ j,  | ∑_{i<j} f(i)·f(i+k) | ≤ B k
+
+abs_shift_sum_le :  CorrelationPartialBound f K B,  B ≥ 0,
+  every weight's last value plus variation ≤ W  →
+    | ∑_{k=1}^{K} ∑_{i<n} w(k,i)·f(i)·f(i+k) | ≤ W·∑_{k=1}^{K} B k
+```
+
+This is the interface the off-diagonal consumes.  For the fibre kernel `W = O(h)`, so
+
+```text
+OffDiagonalVanishes μ hh  ⟸  ∑_{k ≤ 2h} B k = o(h√x) ,
+```
+
+with `B k` the largest partial correlation sum at shift `k` — the averaged Chowla theorem in the
+maximal-partial-sum form that partial summation requires.  (The maximal form follows from the plain
+one by applying it at each truncation point; that step is not yet formalised here.)
+
+The last link is now a named `Prop` with an explicit interface, not prose.
+
+### Lint note
+
+`scripts/formal_tools.py lint` reports four unreachable modules — `DeningerSuspendedAlternating`,
+`HedenmalmThetaAllShiftedTails`, `HedenmalmThetaSourceDeterminantMultiplicity` and one more — all
+untracked files of a concurrent agent.  None of the ~40 modules added for this card is among them;
+every one is wired into `GaloisForLFunctions.RHTower`.
+
+## 2026-08-10 truncation does not increase variation
+
+`Sieve/VariationTruncation.lean`, unconditional, `[propext, Classical.choice, Quot.sound]`, wired,
+builds clean (9046 jobs).
+
+```text
+abs_max_zero_sub_le :  |max a 0 − max b 0| ≤ |a − b|
+variation_max_zero_le :  the same, summed
+variation_max_zero_of_sub_antitone :  u, v nonincreasing  →
+  ∑_{i<n} |max((u−v)(i+1),0) − max((u−v)(i),0)| ≤ (u(0) − u(n)) + (v(0) − v(n))
+```
+
+The fibre kernel is a *count*, so it is the positive part of a difference of two monotone functions,
+not the difference itself: `⌊(x + h√x)/(n+k)⌋ + 1 − ⌈x/n⌉` where that is nonnegative, `0` where it is
+not.  Positive part is `1`-Lipschitz (`max a 0 = (a + |a|)/2`, and both pieces are), so the
+truncation cannot increase the variation.
+
+That closes the last gap between the abstract Abel machinery and the kernel as it actually is:
+`abs_weighted_correlation_le` now applies to the real kernel, not to an idealised version of it.
+This is the kind of detail that is invisible in a sketch — a count is not a difference of monotone
+functions, and pretending otherwise would have left a hole.
+
+### What is left
+
+The numerical assembly (monotonicity of the two pieces, the `O(h)` swing, the sum over `k`), and the
+averaged Chowla theorem.

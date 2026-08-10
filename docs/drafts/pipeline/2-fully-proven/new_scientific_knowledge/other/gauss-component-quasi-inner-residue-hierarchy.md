@@ -772,3 +772,29 @@ The weight in `gaussTranslationL2DefectBound` does not mention the amplitude at 
 convergence rate depends only on the decay constant `A`: the estimate is uniform over every family
 of amplitudes sharing one constant, which is precisely the hypothesis the fixed number of
 iterations in §4 needs.
+
+## Lean status, thirteenth pass: the shifted block and its coefficients
+
+`RHTower/GaussShiftedBlockCoefficients.lean` (new), unconditional,
+`[propext, Classical.choice, Quot.sound]`, wired, built.
+
+```text
+fourierCoeff_gaussDiagonalBlock      : fourierCoeff (D u) l = d_l · fourierCoeff u l
+fourierCoeff_gaussDiagonalBlockStar  : fourierCoeff (D* u) l = conj(d_l) · fourierCoeff u l
+fourierMulBlock n                    : multiplication by e_n on L²(R/Z)
+fourierCoeff_fourierMulBlock         : fourierCoeff (e_n u) l = fourierCoeff u (l - n)
+gaussShiftedBlock hm k p n           : v_n = (conj d_n)^(-1) · e_(-n) · D* B e_n
+fourierCoeff_gaussShiftedBlock       : fourierCoeff v_n j
+                                         = conj(d_(n+j)) · b̂(j) / conj(d_n)
+```
+
+The left-hand side of equation (9) is now an explicit `L²` vector with explicitly computed Fourier
+coefficients.  Its distance from the translate `b(· - δ_n)` — whose coefficients are
+`e^{-2π i j δ_n} b̂(j)` by `fourierCoeff_gaussPrimeScaleCircle_translate` — is, coefficientwise,
+
+```text
+‖fourierCoeff v_n j - e^{-2π i j δ_n} b̂(j)‖ = ‖b̂(j)‖ · ‖defect_j(n)‖,
+```
+
+so Parseval turns the already-proved `ℓ²` statement `tendsto_gaussTranslationL2Defect` into the
+literal `L²` convergence of (9).

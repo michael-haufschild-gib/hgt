@@ -5,7 +5,7 @@
 - **Type:** NEW-FIELD CONSTITUTION / MECHANISM OF SELF-REVISING LAWS
 - **Thesis:** Mathematics with a fixed rulebook studies consequences. Reflexive Law Mechanics studies
   the laws by which consequences, failures, and conservation requirements revise the rulebook.
-- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [THIRTY-TWO LAWS LEAN-CALIBRATED]
+- **Status:** [MECHANISM NOT OBJECT] [FRANKENSTEIN SYNTHESIS] [THIRTY-THREE LAWS LEAN-CALIBRATED]
   [ROUTES EXCLUDED FROM FOUNDATIONS] [UNIVERSAL DYNAMICS OPEN] [NOT RH]
 
 ## 1. Founding shift
@@ -37,7 +37,7 @@ reflexive and path-dependent.
 Objects, categories, complexes, topologies, and operators are laboratories in which this mechanism
 may run. None is the universal primitive.
 
-## 2. The thirty-two field laws
+## 2. The thirty-three field laws
 
 ### RLM Law I -- typed exposure
 
@@ -476,6 +476,32 @@ source-normal representer production is not yet reflexive law genesis. Every fut
 must certify the old-invisible execution it destroys, or a specified future history in which the
 currently inert birth becomes effective.
 
+### RLM Law XXXIII -- effective naturality allocates symmetry; it does not erase it
+
+“Source-native” has no mathematical content until the target action is typed. If old semantic
+fibres are exactly orbits of a group `G`, then a `G`-equivariant challenge is operationally
+effective exactly when `G` moves one attained response. Full invariance is inert; full equivariance
+can remain effective by exporting symmetry into the response.
+
+Deterministic equivariance obeys Curie's stabilizer law:
+
+\[
+ \operatorname{Stab}_G(x)\subseteq\operatorname{Stab}_G(c(x)).
+ \tag{RLM.9}
+\]
+
+It cannot deterministically create an output with less point symmetry than its input. A jointly
+equivariant law can instead receive a mark; fixing the mark retains equivariance under its
+stabilizer. Distributional output supplies a third possible allocation channel, with symmetry
+retained by the distribution while individual histories break it.
+
+ULF-CNM-1 Lean-certifies orbit-complete symmetry export, invariant-output inertness, Curie
+inheritance, and mark-stabilizer naturalization. It also proves both load-bearing no-gos: without
+orbit-completeness target motion is not necessary, and a genuinely moved mark can still feed an
+inert constant law. Therefore “equivariant” and “marked” are not synonyms for “generative.” Static
+marks accumulate by stabilizer intersection and are order-independent; reflexive dynamics begins
+only when one allocation changes the next source-generated challenge.
+
 ## 3. Certified promotion decision mechanism
 
 Given a typed residual and conserved reporter doctrine:
@@ -516,6 +542,7 @@ formerly independent promotion classes now have several exact transition laws.
 | ULF-DKO-1 | three-stage downstream-kernel obstruction filtration and exact tower | certified |
 | ULF-LHSM-1 | finite-history survival filtration, exact refactorization, and split-cancellation transgression | certified |
 | ULF-REE-1 | representation/execution fibre-splitting exchange, four independence chambers, and finite diagonal-tower inertness | certified |
+| ULF-CNM-1 | orbit-complete symmetry export, invariant-output no-go, Curie stabilizer inheritance, marked naturalization, and sharp scope cells | certified |
 | ULF-ALG-2 | laminar static-dimension-one doctrine with arbitrary adaptive stress and exact convex value | certified |
 | ULF-ALG-3 | intertwined challenge-prolongation transport, observer rank contraction, and exact hidden residual for apparent closure | certified |
 | ULF-DLG-1 | marked-context production, nested-repair chain law, strict outer locality, and interaction-ancestry erasure no-go | certified |
@@ -718,3 +745,7 @@ Retire RLM as theatre if:
   semantic execution birth are independent; exact novelty is row-fibre splitting; the finite
   diagonal-genesis tower is unrepresented but operationally inert at every stage. ULF-REE-1
   Lean-certifies the four chambers and the feedback no-go.
+- 2026-08-10 -- added Controlled Naturality Mechanics as Law XXXIII: an effective natural reporter
+  must export symmetry to a moving response, reduce naturality through a mark, or retain a random
+  lift; invariant output is inert on complete orbits. ULF-CNM-1 Lean-certifies the deterministic
+  allocation law and both sharp insufficiency cells.

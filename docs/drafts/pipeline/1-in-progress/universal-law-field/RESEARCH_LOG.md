@@ -1082,3 +1082,24 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
 - Field pivot: next law must close the causal cycle from semantic fibre contraction to changed legal
   execution to the next source-generated failure. Carrier growth, diagonal escape, stable pages,
   and scalar obstruction accumulation cannot substitute for that mechanism.
+
+## 2026-08-10 -- controlled naturality replaces the source-native selector slogan
+
+- Rejected “effective genesis requires symmetry breaking” after hostile comparison with the corpus's
+  equivariant arity theorems. A natural reporter can be effective by exporting symmetry into a
+  moving target response.
+- Replaced the slogan by symmetry allocation: deterministic birth either exports symmetry through
+  target covariance or fixes a mark and retains its stabilizer; probabilistic birth may retain
+  symmetry at distribution level while samples carry broken-symmetry history.
+- Proved ULF-CNM-1. Under orbit-complete semantics, equivariant operational effectivity is exactly
+  moved attained response. Deterministic equivariance preserves input stabilizers. Fixing a mark in
+  a jointly equivariant law preserves equivariance under the mark stabilizer.
+- Closed two hostile scope cells in Lean: without orbit-completeness an effective reporter can have
+  entirely fixed target values, and a genuinely moved mark can feed a constant inert reporter.
+- Lean module `ConstitutiveControlledNaturalityMechanics` passes direct elaboration, an 8,665-job
+  leaf build, and the 11,583-job Universal Law Field umbrella build. Axiom audit reports no project
+  axioms.
+- Parent collision is explicit: Curie's principle, orbit--stabilizer, ASEN subgroup conditioning,
+  and probabilistic symmetry breaking own the static mathematics. Field dynamics remains open:
+  one allocation must change which next challenge the source generates. Fixed reporter lists and
+  stabilizer intersections do not count.

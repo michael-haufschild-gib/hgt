@@ -165,6 +165,7 @@ theorem zero_fromBlocks_mem {m p : Type u} [Fintype m] [Fintype p] [DecidableEq 
   rwa [compress_fromCols, compress_one, mulRight_zero, Matrix.conjTranspose_zero, zero_mulLeft,
     zero_mulRight, zero_compress] at h
 
+omit [StarModule ℂ V] in
 /-- **The cones are closed under direct sums.** -/
 theorem blockDiagonal_mem {m p : Type u} [Fintype m] [Fintype p] [DecidableEq m] [DecidableEq p]
     {x : Matrix m m V} {y : Matrix p p V} (hx : x ∈ C m) (hy : y ∈ C p) :

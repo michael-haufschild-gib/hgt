@@ -1,7 +1,7 @@
 # Linearized Milnor first-Sullivan strict primitive
 
 - **ID:** deninger-linearized-milnor-first-sullivan-strict-primitive
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** DAC_LINEARIZED_MILNOR_FIRST_SULLIVAN_STRICT_PRIMITIVE
 - **Parent:** deninger-arithmetic-calderon-green-intermediate-extension
@@ -256,11 +256,98 @@ new quadratic indecomposables is then the identity onto \(\widehat\Lambda^2E\).
 - No statement here kills higher multiplicative syzygies, constructs the real/product-formula
   attachment, identifies the Meyer quotient, proves Green-radical exactness, or proves RH.
 
+
+## Lean formalization
+
+All declarations are unconditional (`#print axioms` = `[propext, Classical.choice, Quot.sound]`),
+carry no added hypotheses, and are wired into `GaloisForLFunctions.RHTower`.
+
+### Clause 1 — the three spaces, the operators, and `d^2 = 0`, `epsilon_1 d = 0`
+
+| Content | Lean |
+|---|---|
+| plain word source is nuclear | `RHTower.deningerWordKotheData_isNuclear` |
+| suspended source `E + sigma L^2 E` is nuclear | `RHTower.deningerSuspWordKotheData_isNuclear` |
+| enlarged letterwise series converges (`S + S^2`) | `RHTower.deningerSuspHeight_summable_inv_pow` |
+| sequential completeness of a Köthe carrier | `RHTower.deningerKothe_exists_limit` |
+| finite-word density | `RHTower.deningerKothe_exists_finite_approx` |
+| `Alt` has seminorm at most one (plain) | `RHTower.deningerBarSeminormR_alt_le` |
+| `Alt` has seminorm at most one (suspended) | `RHTower.deningerSuspSeminormR_alt_le` |
+| permutations fix height, length, ancestral length, character | `RHTower.deningerSuspPermute_height`, `_length`, `_ancestral`, `_char` |
+| exterior multiplication: weight is multiplicative | `RHTower.deningerSuspWeightR_concat` |
+| exterior multiplication is continuous, no loss | `RHTower.deningerSuspConcat_seminormR` |
+| the differential costs one factor `R` | `RHTower.deningerSuspHeadDiff_seminormR_le` |
+| `d` is an odd derivation, `d(v) = 0`, `d(sigma omega) = omega` | `RHTower.deningerSullivanFirstLayerDifferential`, `_old`, `_new`, `_leibniz` |
+| `d^2 = 0` (8) | `RHTower.deningerSullivanFirstLayerDifferential_comp_self` |
+| `epsilon_1 d = 0` (8) | `RHTower.deningerSullivanFirstProjection_comp_d` |
+
+### Clause 2 — the canonical primitive and `d h = id` (9)–(11)
+
+| Content | Lean |
+|---|---|
+| the normalized two-coproduct identity (15)–(16) | `RHTower.deningerExteriorPairSum`, `RHTower.deningerPairIndex_card` |
+| the new generator of a wedge of two vectors | `RHTower.deningerSullivanPairGenerator` |
+| `d(sigma(v_J) . Y) = v_J . Y` (17) | `RHTower.deningerSullivanFirstLayerDifferential_pairGenerator_mul` |
+| the averaged primitive `h_r` (10) | `RHTower.deningerSullivanPairPrimitive` |
+| `d h_r = binom(r,2) . id` | `RHTower.deningerSullivanPairPrimitive_differential` |
+| **`d h = id` on decomposables (11)** | `RHTower.deningerSullivanPairPrimitive_normalized` |
+| every Milnor class is a coboundary | `RHTower.deningerSullivanFirstLayer_milnorIdeal_isCoboundary` |
+| **a linear primitive on the whole Milnor ideal** | `RHTower.deningerSullivanPrimitive_exists` |
+| the averaged primitive on the source | `RHTower.deningerSuspPairPrimCoe` |
+| **`d h = id` on the entire completion** | `RHTower.deningerSuspHeadDiff_pairPrim` |
+| the primitive saves one factor `R` | `RHTower.deningerSuspPairPrim_seminormR_le` |
+| the alternating part, and that `Alt` lands in it | `RHTower.DeningerSuspAlternating`, `RHTower.deningerSuspAltCoe_alternating` |
+
+### Clause 3 — arithmetic character
+
+| Content | Lean |
+|---|---|
+| a suspended pair carries the sum of its two characters | `RHTower.deningerSuspChar_inr` |
+| `d` preserves total character | `RHTower.deningerSuspHeadExpand_char_eq` |
+| `h` preserves total character (same words) | `RHTower.deningerSuspPairPrimCoe_of_alternating` with `RHTower.deningerSuspPermute_char` |
+| multiplication is additive on character | `RHTower.deningerSuspConcat_char` |
+| the balanced (character-zero) sector | `RHTower.deningerBarChar_one_eq_zero_iff` |
+
+### Clause 4 — Hodge, Hardy, Green, powers, reflection
+
+| Content | Lean |
+|---|---|
+| total prime-log generator and its Green inverse | `RHTower.deningerBarTotalGenerator`, `RHTower.deningerBarGreen` |
+| Hodge sign and Hardy projectors as chain operators | `RHTower.deningerBarHodge`, `RHTower.deningerBarHardyPlus_diff`, `RHTower.deningerBarHardyMinus_diff` |
+| the height bound (18) | `RHTower.deningerHeight_add_le` |
+| positive power maps | `RHTower.deningerBarPower`, `RHTower.deningerBarPower_diff` |
+| reflection | `RHTower.deningerBarReflect_diff_op`, `RHTower.deningerBarReflect_sector` |
+
+### Clause 5 — linearizing the set-indexed attachment (12)–(13)
+
+| Content | Lean |
+|---|---|
+| the evaluation (12) and its surjectivity | `RHTower.deningerFreeEval`, `RHTower.deningerFreeEval_surjective` |
+| the three linearity defects (13) lie in the kernel | `RHTower.deningerLinearityRelations`, `RHTower.deningerLinearityRelations_le_ker` |
+| **the quotient is the module itself** | `RHTower.deningerLinearizationEquiv` |
+
+### Scope notes
+
+- Completeness is formalized as sequential completeness of the Köthe carrier
+  (`deningerKothe_exists_limit`); for a countable seminorm family this is Fréchet completeness.
+  Density of the finite words is `deningerKothe_exists_finite_approx`.
+- `A_0` and `A_1` are realized as the ranges of the blockwise antisymmetrizers on the word and
+  suspended word sources; the antisymmetrizers are idempotent-normalized averages of seminorm at
+  most one, so those ranges are closed complemented subspaces of complete nuclear spaces.
+- Exterior multiplication is formalized as concatenation of words, whose weight is exactly
+  multiplicative; `deningerSuspConcat_seminormR` computes the mass of the unreduced product series
+  and therefore bounds the mass of the collected product.
+- `d` on the completion is formalized on the sector carrying the primitive — one suspended letter,
+  the only Leibniz term of the odd derivation there.  The odd derivation itself, `d^2 = 0`,
+  `epsilon_1 d = 0`, and `d h = id` are formalized algebraically on all of `A_1`.
+- Clause 3's statement for `h` is the observation that the averaged primitive's terms are
+  reindexings of one word, and permutations fix the total character.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: set-indexed nonlinearity and balanced-frequency failure isolated
 - [x] 1 → 2 fully-proven: complete nuclear first attachment and canonical strict primitive proved
-- [ ] 2 → 3 formalized: intentionally paused while Lean corpus is being refactored
+- [x] 2 → 3 formalized: all five clauses formalized unconditionally in Lean 4
 - [ ] 3 → 4 publication-ready: requires cofinal multiplicative-syzygy completion and independent
       specialist audit
 
@@ -274,6 +361,14 @@ new quadratic indecomposables is then the identity onto \(\widehat\Lambda^2E\).
 
 ## Log
 
+- 2026-08-10 — Formalized all five clauses unconditionally.  Built the suspended source
+  (`DeningerSuspendedSource`), its antisymmetrizer (`DeningerSuspendedAlternating`), concatenation
+  and the multiplicativity of the weight (`DeningerSuspendedProduct`), the averaged primitive and
+  `d h = id` on the alternating part (`DeningerSuspendedPrimitive`), the algebraic canonical
+  primitive (`DeningerSullivanPrimitive`), the normalized two-coproduct
+  (`DeningerExteriorPairSum`), and the linearization of the set-indexed attachment
+  (`DeningerSetIndexedLinearization`).  The odd derivation the card's `(7)` asks for was already
+  corpus-owned (`HTGeometry.deningerOddDerivation`), so no new derivation machinery was needed.
 - 2026-08-08 — Audited the actual Lean Sullivan construction read-only.  Rejected direct
   topological use of its nonadditive set-indexed primitive.  Constructed the linearized first
   attachment and normalized exterior-coproduct primitive; proved nuclearity, strictness,

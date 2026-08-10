@@ -1227,5 +1227,30 @@ So the last step of Theorem 8.1 is *not* purely definitional; it needs, in this 
 3. `klDiv_of_ac_of_integrable` twice, and the log-density computation
    `llr = log ζ(σ) − σ·log|soc A|`.
 
-Steps 2 and 3 are bookkeeping; step 1 is the genuine analytic obligation, and it is the same
-finiteness that `socleExpectation_eq_tilt_add_residue` was deliberately stated to avoid.
+Steps 1 and 2 are closed, and step 3 has its atomwise input:
+
+| Clause | Lean |
+|---|---|
+| the canonical unit tilt in the convergence chamber | `tiltConv` |
+| **the atomwise mass of the tilt** | **`classMass_tiltConv`** |
+
+`classMass_tiltConv` reads: the class mass of `P_{σ,σ}` is its normaliser times the untilted Gibbs
+weight times `|soc A|^{−σ}`.  With `classLaw_singleton` this is the atomwise Radon–Nikodym ratio, and
+with `zetaPartition_temperatureConv` its constant is `ζ(σ)`.
+
+The density presentation is certified as well:
+
+| Clause | Lean |
+|---|---|
+| the atom mass of a `withDensity` | `withDensity_singleton` |
+| the density constant | `densityConst` |
+| **the canonical tilt is a density against the untilted law** | **`classLaw_tiltConv_eq_withDensity`** |
+
+`classLaw_tiltConv_eq_withDensity` exhibits `P_{σ,σ}` as
+`P_σ.withDensity (fun A ↦ densityConst σ · |soc A|^{−σ})`, proved atomwise through
+`Measure.ext_of_singleton` on the countable class space.
+
+What is left of Theorem 8.1: quote `Measure.rnDeriv_withDensity` to turn that into
+`rnDeriv`, read `llr = log(densityConst σ) − σ·log|soc A|` (with `densityConst σ = ζ(σ)` from
+`zetaPartition_temperatureConv`), check its integrability against
+`summable_primes_log_mul_ladderBound`, and apply `klDiv_of_ac_of_integrable` in both directions.

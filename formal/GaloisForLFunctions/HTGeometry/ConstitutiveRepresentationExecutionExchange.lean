@@ -116,13 +116,13 @@ theorem projection_identity_represented :
 theorem projection_identity_effective :
     ReporterOperationallyEffective projectionEvaluator identityBoolChallenge := by
   rw [operationallyEffective_iff_fibre_split]
-  exact ⟨false, true, fun _ ↦ rfl, by decide⟩
+  exact ⟨false, true, fun _ ↦ rfl, by simp [identityBoolChallenge]⟩
 
 theorem projection_antiDiagonal_effective :
     ReporterOperationallyEffective projectionEvaluator
       (evaluatorAntiDiagonal projectionEvaluator) := by
   rw [antiDiagonal_operationallyEffective_iff]
-  exact ⟨false, true, fun _ ↦ rfl, by decide⟩
+  exact ⟨false, true, fun _ ↦ rfl, by simp [projectionEvaluator]⟩
 
 /-- Equal strict-order rows on a finite ordinal have equal row indices. -/
 theorem finiteDiagonalRowReporter_injective (n : ℕ) :

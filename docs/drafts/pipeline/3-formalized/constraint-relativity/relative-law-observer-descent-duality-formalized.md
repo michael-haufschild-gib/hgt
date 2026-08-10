@@ -53,11 +53,22 @@ The mapping cone, built from scratch so that no exactness is assumed anywhere:
     cochains (`(0, b)` on one side, `(x, c)` on the other).
 15. `coneRelativeLawEquiv` — **card `(ROD.10)`, boxed, unconditional**; and
     `coneRelativeObserverDuality` — **card `(ROD.11)`, boxed, unconditional**.
+16. `sourceCharacter`, `coneCharacter`, `coneCharacter_coneInc`, `coneCharacterRel` — the character
+    layer of **cards `(ROD.16)`, `(RRC.26)`–`(RRC.30)`**: a functional on the source that kills
+    coboundaries (the card's `I_p D_0 = 0`) defines a character of the cone cohomology, that
+    character annihilates every class coming from the target complex — so it reads the shifted
+    source coordinate and never the chosen primitive `L_p` — and it therefore descends to the
+    relative-law space.
+17. `coneCharacterRel_eq` — **cards `(ROD.12)`, `(ROD.17)`–`(ROD.18)`, `(RRC.31)`**, abstract form:
+    pairing a cone character with a relative-law class computes the source character on the class
+    that the relative law names in `ker f`.  Instantiating `P` at `c_ρ I_p(·)[F_{∓t}]` is exactly
+    the card's forward and reflected values; that instantiation names the Route-R objects below.
 
 ## Scope
 
 The exactness that item 7 takes as input is *proved* in items 13–14, so items 15 give `(ROD.10)`
-and `(ROD.11)` with no hypotheses at all.  The literal Route-R instantiation `(ROD.13)`–`(ROD.18)`
+and `(ROD.11)` with no hypotheses at all, and items 16–17 give the character/pairing layer that
+`(ROD.16)`–`(ROD.18)` compute with.  The literal Route-R instantiation `(ROD.13)`–`(ROD.18)`
 names objects built in
 `route-r-raw-resolved-relative-cone-character-law`, which is still in stage 2; it is therefore not
 instantiated here.  Item 10 formalizes the §6 consequence abstractly from the vanishing pattern, so
