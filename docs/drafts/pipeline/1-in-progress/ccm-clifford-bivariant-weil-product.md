@@ -2,11 +2,11 @@
 
 - **ID:** `ccm-clifford-bivariant-weil-product`
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE with exact circularity obstruction and dependency-closed positive bridge
+- **Type:** FALSIFIED principal-effectivity conjecture with dependency-closed positive bridge
 - **Parent:** `rh-current-frontier-map.md`, Route C1--CCM
-- **Statement:** the two Real-odd symmetries of the exact CCM quotient have a Clifford-corrected
-  composite equal to critical-line reflection; its Lefschetz coefficient is the Weil form, while
-  scalar positivity requires a source-built homotopy of that composite to the identity.
+- **Statement:** the source modular sharp and the spectral critical-line reflection are different
+  typed operations; the proposed complex-linear homotopy between reflection and the identity is
+  impossible on nonzero complex homology, while the Clifford matrix lift remains positive.
 
 ## Goal
 
@@ -60,10 +60,22 @@ J z = conj(z) = S R z    (critical-line reflection).
 ```
 
 `S` and `R` commute.  Both reverse the upper/lower Real-corona orientation, while their composite
-`J` preserves it.  On the CCM test convolution algebra this composite is encoded by the modular
-involution `f |-> f^sharp`.  If `L_f` denotes the integrated Lefschetz action, its Real-even
-character has the Clifford correction `i L_f`; the correction of its dagger is
-`-i L_(f^sharp)`.  Their two-sided product is therefore
+`J` preserves it.  A hostile typing audit exposes a distinction suppressed in the original
+conjecture:
+
+```text
+source sharp:   F(z) |-> conj(F(conj z))       conjugate-linear, holomorphic;
+spectral J:     E(F)(q) |-> E(F)(lineConj q)  complex-linear divisor reindexing.
+```
+
+The first is the actual source operation formalized by `XiWeilSourceInvolution.lean`.  The second
+is the fundamental symmetry formalized by `XiWeilLineConjHilbert.lean` and
+`GaussHodgeWeilFundamentalSymmetry.lean`.  The apparent test-function action
+`F(z) |-> F(conj z)` is anti-holomorphic unless `F` is constant, so it is not an endomorphism of
+the holomorphic CCM test category.
+
+If `L_f` denotes the integrated Lefschetz action, the source sharp still supports the formal
+Clifford-corrected product
 
 ```text
 Omega_Cl(f) := (-i L_(f^sharp)) # (i L_f)
@@ -72,9 +84,9 @@ Omega_Cl(f) := (-i L_(f^sharp)) # (i L_f)
 
 Here `#` is composition/Yoneda product in the derived cyclic-module category; on a bornological
 algebra realization it is the corresponding bivariant cyclic product.  The scalar phases cancel.
-The CCM Lefschetz trace of `(1)` is the modular trace pairing.  In the multiplicity-exact divisor
-realization, `f^sharp` is implemented by `J`; hence for square-summable evaluation vectors
-`E(F),E(G)` its polarized numerical coefficient is
+But passing from the source-sharp product to the spectral `J` coefficient is now an explicit
+comparison obligation, not a typing identity.  Once such a landing has been supplied, the
+multiplicity-exact divisor coefficient is
 
 ```text
 <J E(G), E(F)>
@@ -82,12 +94,9 @@ realization, `f^sharp` is implemented by `J`; hence for square-summable evaluati
   = Weil(F,G).                                                (2)
 ```
 
-The second displayed equality is unconditional and is the exact coefficient that any CCM
-bivariant realization must reproduce.  Equation `(1)` is already an all-degree cyclic-module
-composition for finite Lefschetz translations and is the algebraic formula for integrated tests.
-What remains to call the integrated class a bivariant *entire Chern character* is a smooth
-bornological algebra model, justified integration, and required theta-summability; the
-cyclic-module formula itself does not supply those analytic data.
+The displayed divisor equality is unconditional.  Identification of `(1)` with it is not.  Any
+CCM bivariant realization must construct the source-to-spectral comparison as well as the smooth
+bornological model, justified integration, and required theta-summability.
 
 ## First conjecture and hostile verdict
 
@@ -104,7 +113,7 @@ derived from an independently constructed arithmetic chain homotopy or effectivi
 Perrot/Voigt multiplicativity, Clifford/Morita invariance, self-adjoint finite truncations, and
 completion in the Weil norm do not provide that input.
 
-## Relentless interrogation and stronger conjecture
+## Relentless interrogation and falsified stronger conjecture
 
 The killing mechanism is not failure of the product.  It is the false identification
 
@@ -116,7 +125,7 @@ The two Clifford phases disappear in `(1)`, so stabilization preserves the Witt/
 of `J`.  A stronger conjecture must explain why `J`, rather than merely its Clifford lift, becomes
 the identity on source cohomology.
 
-`[CONJECTURE] [CCM_CLIFFORD_PRINCIPAL_EFFECTIVITY]`
+`[FALSIFIED] [CCM_CLIFFORD_PRINCIPAL_EFFECTIVITY]`
 
 On the completed reduced CCM cyclic complex there is a source-built, scaling-equivariant bounded
 odd operator `K`, defined before spectral decomposition and from the adelic restriction/Poisson
@@ -130,16 +139,39 @@ with `K` compatible with the closed restriction quotient and the Lefschetz trace
 construction is functorial under finite enlargement of places and does not use zero locations,
 the Weil form, a completion by that form, or an RH-equivalent sign assumption.
 
-This is the characteristic-zero principal-correspondence law missing in CCM 2007.  If `(3)` holds,
-then `J=1` on reduced cyclic homology, and `(2)` becomes the norm square
+The displayed equation is not a well-typed source conjecture.  There are two readings, and both
+fail before any boundedness or trace-domain question.
+
+1. If `J` means source modular sharp, then `J-1` is conjugate-linear while `(b+B)K+K(b+B)` is
+   complex-linear for a complex-linear odd homotopy `K`.
+2. If `J` means spectral divisor reindexing, it is born only after divisor evaluation and has no
+   pre-divisor endomorphism on the holomorphic test complex.
+
+Allowing a real-linear `K` does not repair the proposal.  A homotopy would make source sharp the
+identity on homology.  For any class `x`, conjugate-linearity gives
+
+```text
+sharp(i*x) = -i*sharp(x),
+```
+
+whereas the identity gives `i*x`.  Thus `sharp=id` on complex homology forces `2i*x=0`, hence
+`x=0`.  The retained prime class is nonzero, so no such principal-effectivity homotopy exists on
+the intended reduced homology.
+
+Had `(3)` existed, it would have made `J=1` on reduced cyclic homology and turned `(2)` into
 
 ```text
 Weil(F,F) = ||E(F)||^2 >= 0,                                  (4)
 ```
 
-because the trace kills `(b+B)`-boundaries.  Hence `(3)` implies RH non-circularly from a source
-identity.  `[OPEN CORE]` Construct `K` and prove the boundedness, quotient descent, and trace-domain
-compatibility in `(3)`.  No current corpus or audited literature supplies this operator.
+because the trace kills `(b+B)`-boundaries.  That implication explains why the false conjecture
+looked attractive; it does not rescue it.
+
+**Strongest positive survivor.**  Source modular sharp remains a valid conjugate-linear Real
+structure, and the spectral `J` remains a valid complex-linear fundamental symmetry.  The positive
+product must therefore come from a comparison/compression or intersection form carrying source
+sharp to the fixed spectral polarization; it cannot come from homotopy-trivializing either
+involution.  This is exactly the enlarged Gate-II/Route-R positive-polar handoff.
 
 ## Dependency-closed positive survivor
 
@@ -182,13 +214,13 @@ calculation in `(5)` is direct.  No positivity of `Q_J` is used.
 
 This bridge is the strongest honest unconditional survivor of the failed positivity claim.  It
 changes the representation: Weil is an indefinite Clifford coefficient of a positive matrix
-product, not itself the positive product.  The unresolved arithmetic content is selection of the
-`+` channel, equivalently `(3)`.
+product, not itself the positive product.  The unresolved arithmetic content is a source-to-spectral
+comparison or compression selecting the `+` channel; `(3)` is no longer an admissible formulation.
 
 ## Falsifiers
 
-1. A source-defined `K` satisfying `(3)` but leaving a nontrivial `-1` eigenspace of `J` on reduced
-   homology falsifies trace compatibility or the conjecture.
+1. A complex-linear source endomorphism realizing spectral `J` on nonconstant holomorphic tests
+   would falsify the typing obstruction and must exhibit its action explicitly.
 2. A Clifford correction which changes the scalar signature while preserving the exact coefficient
    `(2)` falsifies the phase-cancellation/Witt law.
 3. A published construction of the characteristic-zero principal correspondence with the exact
@@ -199,10 +231,10 @@ product, not itself the positive product.  The unresolved arithmetic content is 
 - [x] 0 -> 1: exact frontier, source-pure conjecture, hostile circularity audit
 - [x] exact Clifford product and Weil coefficient on divisor/Hilbert realization
 - [x] dependency-closed paper proof of the positive matrix lift
-- [ ] external novelty audit of the source-homotopy conjecture after exact chain model is fixed
-- [ ] construct source-only homotopy `K`
+- [x] source-sharp/spectral-`J` typing audit
+- [x] dependency-closed no-go for complex-linear and real-linear homotopy repairs
 - [ ] prove smooth bornological/entire realization of the product
-- [ ] 1 -> 2: complete proof of `(3)` and all analytic descent obligations
+- [ ] construct the surviving source-to-spectral comparison/compression
 - [ ] 2 -> 3: exact unconditional Lean theorem after paper closure
 
 ## Log
@@ -210,3 +242,7 @@ product, not itself the positive product.  The unresolved arithmetic content is 
 - 2026-08-04 — initial positive-square conjecture killed as circular by the exact CCM/Weil
   criterion.  Clifford phases were found to cancel in the two-sided product, exposing the stronger
   source-homotopy conjecture `(3)` and the unconditional positive matrix lift `(5)`--`(6)`.
+- 2026-08-11 — hostile typing audit falsified `(3)`: source sharp is conjugate-linear, spectral
+  `J` is a post-evaluation complex-linear reindexing, and real-linear homotopy trivialization would
+  kill every nonzero complex homology class.  Positive matrix lift retained; comparison/compression
+  handoff survives.  Lean corpus remained read-only during refactor.

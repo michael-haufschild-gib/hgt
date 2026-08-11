@@ -61,8 +61,8 @@ theorem vanishesBelow_heathBrownDyadicTermBox
     (L X k m : ℕ) (a : Fin (k - m) → ℕ) (b : Fin (k - m - 1) → ℕ) (q : ℕ) :
     VanishesBelow (heathBrownDyadicTermBox L X k m a b q)
       (heathBrownDyadicCoreLower (k - m) a b q) := by
-  have hsign := (arithmeticFunction_vanishesBelow_one
-    (-1 : ArithmeticFunction ℝ)).pow (m + k + 1)
+  have hsign := vanishesBelow_pow (arithmeticFunction_vanishesBelow_one
+    (-1 : ArithmeticFunction ℝ)) (k := m + k + 1)
   have hchoose := arithmeticFunction_vanishesBelow_one
     (k.choose m : ArithmeticFunction ℝ)
   have hcore := vanishesBelow_heathBrownDyadicCoreBox_lower
@@ -196,8 +196,8 @@ theorem weightedArithmeticPrefix_heathBrownDyadicTermBox_eq_zero
   intro n hn
   have hnX := (Finset.mem_Icc.mp hn).2
   have hnlow : n < heathBrownDyadicCoreLower (k - m) a b q := hnX.trans_lt hX
-  rw [vanishesBelow_heathBrownDyadicTermBox L X k m a b q n hnlow,
-    complexCoeff_apply, Complex.ofReal_zero, zero_mul]
+  have hzero := vanishesBelow_heathBrownDyadicTermBox L X k m a b q n hnlow
+  rw [complexCoeff_apply, hzero, Complex.ofReal_zero, zero_mul]
 
 /-- **Exact weighted von Mangoldt prefix as a finite sum of dyadic `2j`-factor boxes.** -/
 theorem sum_Icc_vonMangoldt_eq_sum_heathBrownDyadicTermBoxes

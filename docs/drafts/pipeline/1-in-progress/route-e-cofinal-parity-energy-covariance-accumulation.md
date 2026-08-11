@@ -1422,3 +1422,227 @@ mass remain explicit residual.
 Full proof and sharpness audit:
 ../2-fully-proven/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md.
 No Lean source was edited or built.
+
+## 2026-08-11 two-sided load-gradient and component pair-switch reduction
+
+Read-only audit of grown HTGeometry/RHTower corpus produced one sharp failure and two positive
+survivors.  Full proofs are in
+`../2-fully-proven/new_scientific_knowledge/route-e-two-sided-column-load-gradient-pairswitch-law.md`.
+
+First, retaining signs in complete inverse-load edge flux is circular.  For symmetric incidence
+`b`, reciprocal degree `q`, isolated signed current `J_iso`, and physical orientation `n<m`, exact
+edge pairing gives
+
+\[
+ J=J_{\rm iso}
+ +\sum_{n<m}b_{nm}\mu(n)(e^{-n/X}-e^{-m/X})q_n
+ +\sum_{n<m}b_{nm}\mu(n)e^{-m/X}(q_n-q_m).
+\tag{A76}
+\]
+
+First edge sum has absolute value at most `(H/X)Z`.  Therefore last fully signed sum is exactly
+`J-J_iso` modulo already-controlled co-moving term.  Bounding it is endpoint theorem rewritten,
+not independent covariance production.  This extends circularity firewall `(A10)` to grown
+conductance lane.
+
+Second, complete outgoing rows on both parity classes remove inverse-load singularity.  For
+row-stochastic `P`, column load `ell_n=sum_m P_mn`, and `b=(P+P^T)/2`,
+
+\[
+ q_n={2\over1+\ell_n},\qquad
+ |q_n-q_m|={2|\ell_n-\ell_m|\over(1+\ell_n)(1+\ell_m)}
+ \le2|\ell_n-\ell_m|.
+\tag{A77}
+\]
+
+Hence inverse-load energy in `(A73)` obeys
+
+\[
+ \mathcal E_P\le4\mathcal G_P,
+ \qquad
+ \mathcal G_P=
+ \sum_{n<m}{P_{nm}+P_{mn}\over2}e^{-m/X}(\ell_n-\ell_m)^2,
+\tag{A78}
+\]
+
+and direct current consumer becomes
+
+\[
+ \boxed{|J|\le {H\over X}Z+
+ \sqrt{(1+e^{H/X})Z\mathcal G_P}.}
+\tag{A79}
+\]
+
+Thus new non-circular sufficient producer is ordinary column-load edge roughness
+`G_P<=X^(o(1))`, not global near-unit column load.  If within each reciprocal-marker/seam sector
+
+\[
+ \ell_n=\Lambda_a(n/X)+\eta_n
+\tag{A80}
+\]
+
+with `Lambda_a` having Lipschitz norm `X^(o(1))`, exact same-sector/cross-sector decomposition gives
+
+\[
+ \mathcal G_P
+ \le2\mathcal G_{\eta,\rm same}+\mathcal G_{\rm cross}
+ +{L^2H^2\over2X^2}(1+e^{H/X})Z.
+\tag{A81}
+\]
+
+Macroscopic order-one load profiles are therefore harmless.  Hard terms are microscopic
+rough-convolution gradient and literal cross-seam load energy.  Complete-bipartite two-way blocks
+show row mass one, reverse support, constant-factor near-Hall, and even alternating block currents
+of square-root total size can coexist with `G_P` and inverse-load energy of linear size.  Existing
+degree/near-Hall/sign information cannot prove `(A78)`.
+
+Third, grown component-recombination corpus opens a collision-switching avenue without physical
+Gibbs mismatch.  Component switches preserve pair product.  If
+`a,b,c,d in [X-H,X+H]` and `ab=cd`, Taylor expansion plus
+`X[(a-X)+(b-X)-(c-X)-(d-X)]=(c-X)(d-X)-(a-X)(b-X)` proves
+
+\[
+ |e^{-a/X}+e^{-b/X}-e^{-c/X}-e^{-d/X}|
+ \le2(e^{-1}+e^{-1+H/X}){H^2\over X^2}.
+\tag{A82}
+\]
+
+At strict-half displacement, pair-switching total mass `X^(1+o(1))` therefore costs only
+`X^(o(1))`.  Physical Gibbs curvature is closed; remaining switching problem is arithmetic:
+prove sequential structured-token admissibility and weighted dispersion of recombined incoming
+histories.  Boolean component-switch orbit has only `2^(O(log log X))=X^(o(1))` states and cannot
+by cardinality alone remove linear raw collision.
+
+Revised direct target:
+
+**ENTROPY-COMPLEMENT-TWO-SIDED-COLUMN-LOAD-HYDRODYNAMIC-ROUGHNESS**:
+construct common-aperture full rows outside square-root Gibbs boundary mass, prove same-sector
+rough-convolution gradient and cross-seam load energy in `(A81)` are `X^(o(1))`, and retain same
+kernel through normalized signed recurrence.  Pair-switching of actual structured-token histories
+is new candidate for same-sector term.  Route E and RH remain open.  No Lean file was edited or
+built.
+
+## 2026-08-11 all-order replica-shuffle conditional-parity reduction
+
+Further read-only audit found a stronger all-order HTGeometry input than pair switching.
+`ReplicaHistoryFactorizationLaw.lean` proves that, under projective component independence, every
+equal-energy `m`-history is exactly an independent rearrangement of each component history, with
+collision class equal to the product of component arrangement classes.  Prime logarithms satisfy
+the required projective independence in `ComponentProjectiveIndependenceWitness.lean`.
+
+This opens a new Route E lane, but raw arrangement entropy is not its producer.  Let histories in
+one common physical aperture be partitioned by complete prime-incidence histograms.  Uniform
+component shuffling inside each histogram cell is an exact symmetric bistochastic idempotent
+kernel, so its unrestricted column load is one.  Fix one anchor replica and split a cell `O` into
+anchor Möbius signs with sizes `a_O,b_O`.  Uniform full rows to the opposite sign give exactly
+
+\[
+ \ell_+={b_O\over a_O},\qquad \ell_-={a_O\over b_O},
+ \qquad
+ \mathcal E_q(O)={2(a_O-b_O)^2\over a_O+b_O}.
+\tag{A83}
+\]
+
+Thus opposite-parity replica recurrence is neither a vague collision gain nor a cardinality
+claim.  Its positive energy is precisely conditional parity ANOVA
+
+\[
+ \mathfrak D_A={1\over|A|}\sum_O{(a_O-b_O)^2\over a_O+b_O}
+ =\mathbb E\!\left[\mathbb E(\mu(n_1)\mid\text{prime histograms})^2\right],
+\tag{A84}
+\]
+
+and conditional Cauchy--Schwarz gives
+
+\[
+ {\left|\sum_{x\in A}\mu(x_1)\right|\over|A|}
+ \le\sqrt{\mathfrak D_A}.
+\tag{A85}
+\]
+
+Exact ANOVA decomposition is
+`D_A=Var(E(mu(n_1)|prime histograms))+(sum_A mu(n_1)/|A|)^2`.  Hence this lane is
+non-circular only when cell biases are bounded by source-local signed enumeration.  Controlling
+the centered variance and assuming the scalar endpoint term would be the same theatre already
+excluded for complete signed flux.
+
+For an unrestricted binary component orbit with component occurrence counts `k_p`, the anchor
+sign mean is explicit:
+
+\[
+ \theta^*=\prod_p\left(1-{2k_p\over m}\right).
+\tag{A86}
+\]
+
+If only a fraction `1-epsilon_O` of this orbit stays in the common physical aperture, restricted
+mean obeys
+
+\[
+ |\theta_O-\theta_O^*|\le2\varepsilon_O.
+\tag{A87}
+\]
+
+This exposes exact arithmetic admission cost.  It is not automatically small.  Indeed `q`
+singleton components give orbit size `m^q` but sign mean `(1-2/m)^q`.  Taking
+`q=ceil(log log X)` and `m=ceil(X^(1/q))` produces orbit size at least `X` while sign mean tends to
+one.  Even power-size all-order recurrence entropy can carry essentially no Möbius mixing.
+
+Physical Gibbs mismatch, however, is closed through all replica orders relevant to strict half.
+If `n_r,n'_r in [X-H,X+H]` and their products agree, logarithmic Taylor remainder gives
+
+\[
+ \left|\sum_{r=1}^m n_r-\sum_{r=1}^m n'_r\right|
+ \le {mH^2\over X-H},
+ \qquad
+ \left|\log{\prod_r e^{-n_r/X}\over\prod_r e^{-n'_r/X}}\right|
+ \le {mH^2\over X(X-H)}.
+\tag{A88}
+\]
+
+Let `V` be a squarefree common aperture, `nu(n)=e^(-n/X)/Z`, and let `pi_O=nu^m(O)` for its
+prime-histogram cells.  With uniform cell bias
+
+\[
+ \theta_O={1\over|O|}\sum_{x\in O}\mu(x_1),\qquad
+ \mathfrak D_{V,m}^{\nu}=\sum_O\pi_O\theta_O^2,
+\tag{A89}
+\]
+
+the exact weighted comparison is
+
+\[
+ \boxed{
+ {|J_V(1/X)|\over Z_V(1/X)}
+ \le\sqrt{2\mathfrak D_{V,m}^{\nu}
+ +2\left(\exp\!\left({mH^2\over X(X-H)}\right)-1\right)^2}.}
+\tag{A90}
+\]
+
+Therefore any replica schedule `m<=X^(1/2+o(1))` satisfying
+
+\[
+ \boxed{\mathfrak D_{V,m}^{\nu}\le X^{-1+o(1)}}
+\tag{A91}
+\]
+
+implies the strict-half normalized endpoint.  This retains literal product Gibbs weights and all
+finite-volume signs.  Descent to the existing prime-dilation recurrence still requires proving
+that the source-defined histories occupy the same common aperture and preserve its seam
+orientation; `(A90)` does not assume that missing incidence theorem.
+
+New alternate target:
+
+**ENTROPY-COMPLEMENT-APERTURE-CONDITIONED-REPLICA-PARITY-ANOVA**:
+prove `(A91)` by signed enumeration of physical prime-histogram cells, or prove enough
+shell-admissible component switching to transfer explicit full-orbit product `(A86)`, while
+retaining zero/one-large-prime seam sectors.  This may exploit all-order contingency switching
+invisible to pairwise column gradients.  Route E and RH remain open.
+
+Do not confuse this with cofinal orthogonal replication in
+`MobiusCofinalReplicaOneCorner.lean`.  That exact Lean law preserves complete Möbius score and
+divides only omitted diagonal collision by replica count.  Its vanishing `2/k` correction cannot
+bound `(A89)` or endpoint current; it is packaging, not physical component mixing.
+
+Full proof and hostile entropy audit:
+`../2-fully-proven/new_scientific_knowledge/route-e-replica-shuffle-conditional-parity-anova-law.md`.
+No Lean file was edited or built.

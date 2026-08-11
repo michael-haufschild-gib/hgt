@@ -15,8 +15,8 @@ critical Abel norm.  Preserve ordered prime labels and the source reflection-odd
 ## Gates
 
 - [x] 0 -> 1: exact finite deformation and asymptotic invariant identified
-- [ ] 1 -> 2: dependency-closed paper proof
-- [ ] 2 -> 3: unconditional Lean formalization and audit
+- [x] 1 -> 2: dependency-closed paper proof
+- [x] 2 -> 3: unconditional Lean formalization and targeted audit
 - [ ] RH handoff
 
 ## Heavy conjecture loop
@@ -65,7 +65,7 @@ Equivalently, for the prime-clock-normalized path `theta |-> P_N(theta/H_N)`, th
 is `R_N/H_N -> 0`, while the third derivative tends `-2/3`.  Cofinal normalization is
 moment-neutral at first order but not source-trivial: it exposes a universal odd cubic remnant.
 
-### C6 -- the cubic is the Taylor shadow of a universal full-grade profile -- ACTIVE
+### C6 -- the cubic is the Taylor shadow of a universal full-grade profile -- PROVED
 
 The exact source deformation is not merely jet-equivalent to the Wold coefficient.  Primewise,
 
@@ -98,10 +98,58 @@ prime-clock limit would therefore be a global, not infinitesimal, critical-line 
 reflection product `-F(u)F(-u)=F(u)^2` is a canonical nonnegative profile with exact critical
 radical, aligning the R/T handoff with the Gauss--Hodge/global-index target.
 
-Lean now proves the two displayed finite identities unconditionally.  Remaining C6 work is the
-full cofinal limit and sign theorem.  Planned proof: general Wold log-moment asymptotic
-`M_r(X)/log(X)^(r+1) -> 1/(r+1)` from the same bounded discrepancy, followed by dominated
-interchange of the `sinh` series.  This is a theorem-producing extension of C5, not infrastructure.
+Lean now proves the complete statement unconditionally.  Every normalized Wold moment, including
+mass, converges to `1/(r+1)`; all orders are uniformly dominated by normalized mass.  Dominated
+summation gives the full profile limit, exact Taylor resummation identifies it with the literal
+finite source deformation, and the terminal holonomy vanishes.  The resulting `F` is odd, has
+sign opposite `u`, and vanishes only at `u=0`.
+
+### C7 -- codiagonal/zero-mass conservation annihilates the nonlinear profile -- FAILED
+
+Pair the reflection-odd complete-resolution tail with the reflection-odd profile.  Their product
+
+```text
+W_q = -(log 2/2) t_q F(t_q)
+```
+
+is reflection-even, nonnegative, and zero exactly on the critical line.  But ordinary codiagonal
+conservation controls bounded linear label-blind readers.  `W_q` is a cofinal nonlinear reading.
+The existing Gauss--Hodge firewall already admits reflection-closed abstract off-line
+configurations with positive analogous mass.  Therefore source symmetry and zero total signed mass
+do not force `W_q=0`.
+
+### C8 -- polar work is quantitatively proper -- PROVED
+
+For `u>=0`, every profile deficit mode is nonnegative and the first surviving mode is
+
+```text
+u^3/3! * (1-1/3) = u^3/9.
+```
+
+Hence `F(u)<=-u^3/9`.  Reflection extends this to the unconditional quartic lower bound
+
+```text
+(log 2/18) u^4 <= -(log 2/2) u F(u).
+```
+
+Thus every nonzero grade has polar work tending to infinity along every expanding source-scale
+orbit.  Uniform boundedness of that orbit is equivalent to `u=0`.
+
+### C9 -- global bounded source-polar orbit work is RH -- PROVED AS RECEIVER; PRODUCER OPEN
+
+Specialize `u` to every multiplicity-labelled Xi centered rate.  For any fixed `d>1`, Lean proves
+
+```text
+(forall q, exists B, forall n,
+  PolarWork (d^n * centeredRate q) <= B) <-> RiemannHypothesis.
+```
+
+This is not an RH proof: no existing normalized carrier bounds this cofinal nonlinear observer.
+Route L's source-forced critical-edge Köthe wall is the reciprocal-domain version of the same
+properness principle: forward and reciprocal orientations are simultaneously admitted exactly at
+zero grade.  The shared missing producer is therefore source-derived simultaneous landing, or an
+equivalent pre-zero uniform bound on the polar orbit.  Reflection, bounded scalarization, and
+ambient `l1/l2` admission do not supply it.
 
 ## Paper proof outline
 

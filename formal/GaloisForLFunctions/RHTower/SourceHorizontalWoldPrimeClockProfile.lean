@@ -414,12 +414,15 @@ private theorem tendsto_sourceHorizontalWoldNaturalMass_normalized :
   have hdiff := tendsto_xiHeatCassiniWoldNatWeightSum_sub_log
   have hzero := hdiff.div_atTop hlog
   have hone := hzero.add_const 1
-  apply hone.congr'
-  filter_upwards [eventually_ge_atTop 2] with X hX
-  have hlog0 : Real.log (X : ℝ) ≠ 0 :=
-    (Real.log_pos (by exact_mod_cast hX)).ne'
-  simp only [Function.comp_apply]
-  field_simp [hlog0]
+  have heq : (fun X : ℕ =>
+      (xiHeatCassiniWoldNatWeightSum X - Real.log X) / Real.log X + 1) =ᶠ[atTop]
+        (fun X : ℕ => xiHeatCassiniWoldNatWeightSum X / Real.log X) := by
+    filter_upwards [eventually_ge_atTop 2] with X hX
+    have hlog0 : Real.log (X : ℝ) ≠ 0 :=
+      (Real.log_pos (by exact_mod_cast hX)).ne'
+    field_simp [hlog0]
+    ring
+  simpa using hone.congr' heq
 
 /-- All ordered normalized moments, including mass (`r=0`), converge to `1/(r+1)`. -/
 theorem tendsto_sourceHorizontalWoldOrderedNormalizedMoment (r : ℕ) :
@@ -429,17 +432,679 @@ theorem tendsto_sourceHorizontalWoldOrderedNormalizedMoment (r : ℕ) :
   | zero =>
       have h := tendsto_sourceHorizontalWoldNaturalMass_normalized.comp
         nthPrimeSubtype_strictMono.tendsto_atTop
-      apply h.congr'
-      filter_upwards with N
-      rw [Function.comp_apply]
-      simp only [sourceHorizontalWoldOrderedNormalizedMoment, pow_zero,
-        mul_one, pow_one, Nat.zero_add, Nat.cast_one, div_one]
-      rw [← xiHeatCassiniOrderedWoldPartialMass]
-      rw [xiHeatCassiniOrderedWoldPartialMass_eq_natWeightSum,
-        xiMassNthPrimeLogHeight]
+      have heq : ((fun X : ℕ =>
+          xiHeatCassiniWoldNatWeightSum X / Real.log X) ∘
+            fun n => (nthPrimeSubtype n : ℕ)) =
+          fun N => sourceHorizontalWoldOrderedNormalizedMoment N 0 := by
+        funext N
+        rw [Function.comp_apply]
+        simp only [sourceHorizontalWoldOrderedNormalizedMoment, pow_zero,
+          mul_one, pow_one, Nat.zero_add]
+        rw [← xiHeatCassiniOrderedWoldPartialMass]
+        rw [xiHeatCassiniOrderedWoldPartialMass_eq_natWeightSum,
+          xiMassNthPrimeLogHeight]
+      simpa using h.congr' (Eventually.of_forall fun N => congrFun heq N)
   | succ r =>
       exact tendsto_sourceHorizontalWoldOrderedLogMoment_normalized
         (r + 1) (by omega)
+
+theorem sourceHorizontalWoldOrderedNormalizedMoment_nonneg (N r : ℕ) :
+    0 ≤ sourceHorizontalWoldOrderedNormalizedMoment N r := by
+  rw [sourceHorizontalWoldOrderedNormalizedMoment]
+  exact div_nonneg
+    (Finset.sum_nonneg fun n _ =>
+      mul_nonneg (woldCoeff_nonneg 1 _)
+        (pow_nonneg (xiMassNthPrimeLogHeight_pos n).le r))
+    (pow_nonneg (xiMassNthPrimeLogHeight_pos N).le (r + 1))
+
+/-- Higher normalized moments are dominated by normalized total Wold mass, uniformly in order. -/
+theorem sourceHorizontalWoldOrderedNormalizedMoment_le_mass (N r : ℕ) :
+    sourceHorizontalWoldOrderedNormalizedMoment N r ≤
+      sourceHorizontalWoldOrderedNormalizedMoment N 0 := by
+  have hHN : 0 < xiMassNthPrimeLogHeight N := xiMassNthPrimeLogHeight_pos N
+  rw [sourceHorizontalWoldOrderedNormalizedMoment,
+    sourceHorizontalWoldOrderedNormalizedMoment]
+  simp only [pow_zero, mul_one]
+  rw [Finset.sum_div, Finset.sum_div]
+  apply Finset.sum_le_sum
+  intro n hn
+  have hnN : n ≤ N := by
+    rw [Finset.mem_range] at hn
+    omega
+  have hheight : xiMassNthPrimeLogHeight n ≤ xiMassNthPrimeLogHeight N :=
+    nthPrimeSubtype_log_strictMono.monotone hnN
+  have hpow : xiMassNthPrimeLogHeight n ^ r ≤
+      xiMassNthPrimeLogHeight N ^ r :=
+    pow_le_pow_left₀ (xiMassNthPrimeLogHeight_pos n).le hheight r
+  rw [div_le_iff₀ (pow_pos hHN (r + 1))]
+  rw [pow_succ]
+  field_simp [hHN.ne']
+  simpa [pow_succ, mul_assoc] using
+    (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left hpow
+        (woldCoeff_nonneg 1 (nthPrimeSubtype n))) hHN.le)
+
+/-- Universal nonlinear profile selected by prime-clock normalization. -/
+def sourceHorizontalWoldPrimeClockUniversalProfile (u : ℝ) : ℝ :=
+  ∑' k : ℕ,
+    u ^ (2 * k + 1) / (2 * k + 1).factorial *
+      ((1 / (2 * k + 1 : ℕ) : ℝ) - 1)
+
+/-- Finite-stage coefficient series for the centered prime-clock deformation. -/
+def sourceHorizontalWoldPrimeClockProfileSeries (N : ℕ) (u : ℝ) : ℝ :=
+  ∑' k : ℕ,
+    u ^ (2 * k + 1) / (2 * k + 1).factorial *
+      (sourceHorizontalWoldOrderedNormalizedMoment N (2 * k) - 1)
+
+/-- The full finite-stage coefficient profile converges termwise and uniformly summably to the
+universal odd source profile.  Thus the cubic survivor is not an isolated jet: every retained odd
+jet has a forced coefficient. -/
+theorem tendsto_sourceHorizontalWoldPrimeClockProfileSeries (u : ℝ) :
+    Tendsto (fun N : ℕ => sourceHorizontalWoldPrimeClockProfileSeries N u) atTop
+      (𝓝 (sourceHorizontalWoldPrimeClockUniversalProfile u)) := by
+  have hmass : Tendsto
+      (fun N : ℕ => sourceHorizontalWoldOrderedNormalizedMoment N 0)
+      atTop (𝓝 1) := by
+    simpa using tendsto_sourceHorizontalWoldOrderedNormalizedMoment 0
+  have hmass_lt_two : ∀ᶠ N : ℕ in atTop,
+      sourceHorizontalWoldOrderedNormalizedMoment N 0 < 2 :=
+    hmass.eventually_lt_const (by norm_num)
+  unfold sourceHorizontalWoldPrimeClockProfileSeries
+  unfold sourceHorizontalWoldPrimeClockUniversalProfile
+  apply tendsto_tsum_of_dominated_convergence
+      (Real.hasSum_sinh |u|).summable
+  · intro k
+    have hk := tendsto_sourceHorizontalWoldOrderedNormalizedMoment (2 * k)
+    exact (tendsto_const_nhds.mul (hk.sub tendsto_const_nhds))
+  · filter_upwards [hmass_lt_two] with N hN k
+    have hk0 : 0 ≤ sourceHorizontalWoldOrderedNormalizedMoment N (2 * k) :=
+      sourceHorizontalWoldOrderedNormalizedMoment_nonneg N (2 * k)
+    have hkle : sourceHorizontalWoldOrderedNormalizedMoment N (2 * k) < 2 :=
+      (sourceHorizontalWoldOrderedNormalizedMoment_le_mass N (2 * k)).trans_lt hN
+    have habs :
+        |sourceHorizontalWoldOrderedNormalizedMoment N (2 * k) - 1| ≤ 1 :=
+      (abs_le).2 ⟨by linarith, by linarith⟩
+    rw [Real.norm_eq_abs, abs_mul, abs_div, abs_pow]
+    simp only [Nat.cast_nonneg, abs_of_nonneg]
+    exact mul_le_of_le_one_right (by positivity) habs
+
+private theorem sourceHorizontalWoldPrimeClockProfileSeries_term_eq
+    (N k : ℕ) (u : ℝ) :
+    u ^ (2 * k + 1) / (2 * k + 1).factorial *
+        (sourceHorizontalWoldOrderedNormalizedMoment N (2 * k) - 1) =
+      (∑ n ∈ Finset.range (N + 1),
+        (woldCoeff 1 (nthPrimeSubtype n) / xiMassNthPrimeLogHeight n) *
+          ((u * xiMassNthPrimeLogHeight n / xiMassNthPrimeLogHeight N) ^
+              (2 * k + 1) /
+            (2 * k + 1).factorial)) -
+        u ^ (2 * k + 1) / (2 * k + 1).factorial := by
+  have hHN : xiMassNthPrimeLogHeight N ≠ 0 :=
+    (xiMassNthPrimeLogHeight_pos N).ne'
+  rw [sourceHorizontalWoldOrderedNormalizedMoment, mul_sub, mul_one, mul_div,
+    Finset.mul_sum]
+  congr 1
+  rw [Finset.sum_div]
+  apply Finset.sum_congr rfl
+  intro n hn
+  have hHn : xiMassNthPrimeLogHeight n ≠ 0 :=
+    (xiMassNthPrimeLogHeight_pos n).ne'
+  rw [div_pow]
+  field_simp [hHN, hHn]
+  ring
+
+/-- Exact Taylor resummation of the finite source carrier.  No information is discarded: the
+coefficient-faithful ordered prime deformation is precisely the all-order moment series. -/
+theorem sourceHorizontalWoldPrimeClockProfileSeries_eq_finiteDeformation
+    (N : ℕ) (u : ℝ) :
+    sourceHorizontalWoldPrimeClockProfileSeries N u =
+      (∑ n ∈ Finset.range (N + 1),
+        woldCoeff 1 (nthPrimeSubtype n) *
+          (Real.sinh
+              (u * xiMassNthPrimeLogHeight n / xiMassNthPrimeLogHeight N) /
+            xiMassNthPrimeLogHeight n)) -
+        Real.sinh u := by
+  have hprime : ∀ n ∈ Finset.range (N + 1), Summable (fun k : ℕ =>
+      (woldCoeff 1 (nthPrimeSubtype n) / xiMassNthPrimeLogHeight n) *
+        ((u * xiMassNthPrimeLogHeight n / xiMassNthPrimeLogHeight N) ^
+            (2 * k + 1) /
+          (2 * k + 1).factorial)) := by
+    intro n hn
+    exact (Real.hasSum_sinh
+      (u * xiMassNthPrimeLogHeight n / xiMassNthPrimeLogHeight N)).summable.mul_left _
+  have hfinite : Summable (fun k : ℕ =>
+      ∑ n ∈ Finset.range (N + 1),
+        (woldCoeff 1 (nthPrimeSubtype n) / xiMassNthPrimeLogHeight n) *
+          ((u * xiMassNthPrimeLogHeight n / xiMassNthPrimeLogHeight N) ^
+              (2 * k + 1) /
+            (2 * k + 1).factorial)) :=
+    summable_sum hprime
+  have hu : Summable (fun k : ℕ =>
+      u ^ (2 * k + 1) / (2 * k + 1).factorial) :=
+    (Real.hasSum_sinh u).summable
+  rw [sourceHorizontalWoldPrimeClockProfileSeries]
+  rw [show (∑' k : ℕ,
+      u ^ (2 * k + 1) / (2 * k + 1).factorial *
+        (sourceHorizontalWoldOrderedNormalizedMoment N (2 * k) - 1)) =
+      (∑' k : ℕ, ((∑ n ∈ Finset.range (N + 1),
+          (woldCoeff 1 (nthPrimeSubtype n) / xiMassNthPrimeLogHeight n) *
+            ((u * xiMassNthPrimeLogHeight n / xiMassNthPrimeLogHeight N) ^
+                (2 * k + 1) /
+              (2 * k + 1).factorial)) -
+          u ^ (2 * k + 1) / (2 * k + 1).factorial)) by
+    exact tsum_congr fun k =>
+      sourceHorizontalWoldPrimeClockProfileSeries_term_eq N k u]
+  rw [hfinite.tsum_sub hu]
+  rw [Summable.tsum_finsetSum hprime]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [Summable.tsum_mul_left _
+    (Real.hasSum_sinh
+      (u * xiMassNthPrimeLogHeight n / xiMassNthPrimeLogHeight N)).summable]
+  rw [(Real.hasSum_sinh
+    (u * xiMassNthPrimeLogHeight n / xiMassNthPrimeLogHeight N)).tsum_eq]
+  have hHn : xiMassNthPrimeLogHeight n ≠ 0 :=
+    (xiMassNthPrimeLogHeight_pos n).ne'
+  field_simp [hHn]
+  exact (Real.hasSum_sinh u).tsum_eq
+
+theorem tendsto_xiMassNthPrimeLogHeight_atTop :
+    Tendsto (fun N : ℕ => xiMassNthPrimeLogHeight N) atTop atTop := by
+  rw [show (fun N : ℕ => xiMassNthPrimeLogHeight N) =
+      (fun x : ℝ => Real.log x) ∘
+        (fun N : ℕ => (nthPrimeSubtype N : ℝ)) by
+    funext N
+    rfl]
+  exact Real.tendsto_log_atTop.comp
+    (tendsto_natCast_atTop_atTop.comp nthPrimeSubtype_strictMono.tendsto_atTop)
+
+theorem tendsto_sourceHorizontalWoldPrimeClockHolonomy_zero (u : ℝ) :
+    Tendsto (fun N : ℕ =>
+      xiHeatCassiniWoldLogHolonomyConstant *
+        (u / xiMassNthPrimeLogHeight N)) atTop (𝓝 0) := by
+  have hu : Tendsto (fun N : ℕ => u / xiMassNthPrimeLogHeight N)
+      atTop (𝓝 0) := tendsto_const_nhds.div_atTop
+        tendsto_xiMassNthPrimeLogHeight_atTop
+  simpa using tendsto_const_nhds.mul hu
+
+/-- Literal source deformation equals its all-order coefficient profile plus a vanishing terminal
+holonomy. -/
+theorem sourceHorizontalWoldResidualPrimitiveDeformation_primeClock_eq_profile
+    (N : ℕ) (u : ℝ) :
+    sourceHorizontalWoldResidualPrimitiveDeformation N
+        (u / xiMassNthPrimeLogHeight N) =
+      sourceHorizontalWoldPrimeClockProfileSeries N u -
+        xiHeatCassiniWoldLogHolonomyConstant *
+          (u / xiMassNthPrimeLogHeight N) := by
+  rw [sourceHorizontalWoldResidualPrimitiveDeformation_primeClock]
+  rw [sourceHorizontalWoldPrimeClockProfileSeries_eq_finiteDeformation]
+
+/-- Full nonlinear source law in the prime-clock window. -/
+theorem tendsto_sourceHorizontalWoldResidualPrimitiveDeformation_primeClock
+    (u : ℝ) :
+    Tendsto (fun N : ℕ =>
+      sourceHorizontalWoldResidualPrimitiveDeformation N
+        (u / xiMassNthPrimeLogHeight N)) atTop
+      (𝓝 (sourceHorizontalWoldPrimeClockUniversalProfile u)) := by
+  have hprofile := tendsto_sourceHorizontalWoldPrimeClockProfileSeries u
+  have hholonomy := tendsto_sourceHorizontalWoldPrimeClockHolonomy_zero u
+  have hsub := hprofile.sub hholonomy
+  simpa only [sub_zero] using hsub.congr'
+    (Eventually.of_forall fun N =>
+      (sourceHorizontalWoldResidualPrimitiveDeformation_primeClock_eq_profile N u).symm)
+
+private theorem summable_sourceHorizontalWoldPrimeClockProfileDeficit
+    {u : ℝ} (hu : 0 ≤ u) :
+    Summable (fun k : ℕ =>
+      u ^ (2 * k + 1) / (2 * k + 1).factorial *
+        (1 - (1 / (2 * k + 1 : ℕ) : ℝ))) := by
+  refine Summable.of_norm_bounded (Real.hasSum_sinh u).summable ?_
+  intro k
+  have hden : (1 : ℝ) ≤ (2 * k + 1 : ℕ) := by
+    exact_mod_cast (Nat.one_le_iff_ne_zero.mpr (by omega : 2 * k + 1 ≠ 0))
+  have hden0 : (0 : ℝ) < (2 * k + 1 : ℕ) := by positivity
+  have hinv0 : 0 ≤ (1 / (2 * k + 1 : ℕ) : ℝ) := by positivity
+  have hinv_le : (1 / (2 * k + 1 : ℕ) : ℝ) ≤ 1 :=
+    (div_le_one hden0).2 hden
+  have hcoeff0 : 0 ≤ (1 - (1 / (2 * k + 1 : ℕ) : ℝ)) := by linarith
+  have hcoeff1 : (1 - (1 / (2 * k + 1 : ℕ) : ℝ)) ≤ 1 := by linarith
+  have hbase0 : 0 ≤ u ^ (2 * k + 1) / (2 * k + 1).factorial := by positivity
+  rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hbase0 hcoeff0)]
+  exact mul_le_of_le_one_right hbase0 hcoeff1
+
+/-- Reflection reverses the complete source profile, preserving both orientations. -/
+@[simp] theorem sourceHorizontalWoldPrimeClockUniversalProfile_neg (u : ℝ) :
+    sourceHorizontalWoldPrimeClockUniversalProfile (-u) =
+      -sourceHorizontalWoldPrimeClockUniversalProfile u := by
+  unfold sourceHorizontalWoldPrimeClockUniversalProfile
+  calc
+    (∑' k : ℕ,
+        (-u) ^ (2 * k + 1) / (2 * k + 1).factorial *
+          ((1 / (2 * k + 1 : ℕ) : ℝ) - 1)) =
+        ∑' k : ℕ,
+          -(u ^ (2 * k + 1) / (2 * k + 1).factorial *
+            ((1 / (2 * k + 1 : ℕ) : ℝ) - 1)) := by
+              apply tsum_congr
+              intro k
+              have hodd : Odd (2 * k + 1) := ⟨k, by omega⟩
+              rw [hodd.neg_pow]
+              ring
+    _ = -(∑' k : ℕ,
+        u ^ (2 * k + 1) / (2 * k + 1).factorial *
+          ((1 / (2 * k + 1 : ℕ) : ℝ) - 1)) := tsum_neg
+
+/-- Positive horizontal rate produces strictly negative source response.  The `k=1` cubic term
+already makes the complete nonnegative deficit strict; higher odd orders reinforce it. -/
+theorem sourceHorizontalWoldPrimeClockUniversalProfile_neg_of_pos
+    {u : ℝ} (hu : 0 < u) :
+    sourceHorizontalWoldPrimeClockUniversalProfile u < 0 := by
+  let g : ℕ → ℝ := fun k =>
+    u ^ (2 * k + 1) / (2 * k + 1).factorial *
+      (1 - (1 / (2 * k + 1 : ℕ) : ℝ))
+  have hsum : Summable g :=
+    summable_sourceHorizontalWoldPrimeClockProfileDeficit hu.le
+  have hg0 : ∀ k : ℕ, 0 ≤ g k := by
+    intro k
+    have hden : (1 : ℝ) ≤ (2 * k + 1 : ℕ) := by
+      exact_mod_cast (Nat.one_le_iff_ne_zero.mpr (by omega : 2 * k + 1 ≠ 0))
+    have hden0 : (0 : ℝ) < (2 * k + 1 : ℕ) := by positivity
+    have hinv_le : (1 / (2 * k + 1 : ℕ) : ℝ) ≤ 1 :=
+      (div_le_one hden0).2 hden
+    exact mul_nonneg (by positivity) (by linarith)
+  have hg1 : 0 < g 1 := by
+    dsimp [g]
+    norm_num
+    positivity
+  have hpositive : 0 < ∑' k : ℕ, g k := hsum.tsum_pos hg0 1 hg1
+  have heq : sourceHorizontalWoldPrimeClockUniversalProfile u =
+      -(∑' k : ℕ, g k) := by
+    unfold sourceHorizontalWoldPrimeClockUniversalProfile
+    rw [← tsum_neg]
+    apply tsum_congr
+    intro k
+    dsimp [g]
+    ring
+  rw [heq]
+  exact neg_lt_zero.mpr hpositive
+
+theorem sourceHorizontalWoldPrimeClockUniversalProfile_pos_of_neg
+    {u : ℝ} (hu : u < 0) :
+    0 < sourceHorizontalWoldPrimeClockUniversalProfile u := by
+  have h := sourceHorizontalWoldPrimeClockUniversalProfile_neg_of_pos
+    (u := -u) (neg_pos.mpr hu)
+  rw [sourceHorizontalWoldPrimeClockUniversalProfile_neg] at h
+  linarith
+
+/-- The full coefficient-faithful source profile has exactly one zero. -/
+theorem sourceHorizontalWoldPrimeClockUniversalProfile_eq_zero_iff (u : ℝ) :
+    sourceHorizontalWoldPrimeClockUniversalProfile u = 0 ↔ u = 0 := by
+  constructor
+  · intro hzero
+    by_contra hu
+    rcases lt_or_gt_of_ne hu with huNeg | huPos
+    · linarith [sourceHorizontalWoldPrimeClockUniversalProfile_pos_of_neg huNeg]
+    · linarith [sourceHorizontalWoldPrimeClockUniversalProfile_neg_of_pos huPos]
+  · intro hu
+    subst u
+    simp [sourceHorizontalWoldPrimeClockUniversalProfile]
+
+theorem sourceHorizontalWoldPrimeClockUniversalProfile_mul_rate_neg_iff
+    (u : ℝ) :
+    sourceHorizontalWoldPrimeClockUniversalProfile u * u < 0 ↔ u ≠ 0 := by
+  constructor
+  · intro h
+    exact fun hu => by simp [hu] at h
+  · intro hu
+    rcases lt_or_gt_of_ne hu with huNeg | huPos
+    · exact mul_neg_of_pos_of_neg
+        (sourceHorizontalWoldPrimeClockUniversalProfile_pos_of_neg huNeg) huNeg
+    · exact mul_neg_of_neg_of_pos
+        (sourceHorizontalWoldPrimeClockUniversalProfile_neg_of_pos huPos) huPos
+
+/-- The first surviving nonlinear mode is already coercive.  All later odd modes have the same
+sign, so the complete source profile lies below its cubic term on the positive ray. -/
+theorem sourceHorizontalWoldPrimeClockUniversalProfile_le_neg_cubic
+    {u : ℝ} (hu : 0 ≤ u) :
+    sourceHorizontalWoldPrimeClockUniversalProfile u ≤ -(u ^ 3 / 9) := by
+  let g : ℕ → ℝ := fun k =>
+    u ^ (2 * k + 1) / (2 * k + 1).factorial *
+      (1 - (1 / (2 * k + 1 : ℕ) : ℝ))
+  have hsum : Summable g :=
+    summable_sourceHorizontalWoldPrimeClockProfileDeficit hu
+  have hg0 : ∀ k : ℕ, 0 ≤ g k := by
+    intro k
+    have hden : (1 : ℝ) ≤ (2 * k + 1 : ℕ) := by
+      exact_mod_cast (Nat.one_le_iff_ne_zero.mpr (by omega : 2 * k + 1 ≠ 0))
+    have hden0 : (0 : ℝ) < (2 * k + 1 : ℕ) := by positivity
+    have hinv_le : (1 / (2 * k + 1 : ℕ) : ℝ) ≤ 1 :=
+      (div_le_one hden0).2 hden
+    exact mul_nonneg (by positivity) (by linarith)
+  have hterm : g 1 ≤ ∑' k : ℕ, g k := hsum.le_tsum 1 (fun k _ => hg0 k)
+  have hg1 : g 1 = u ^ 3 / 9 := by
+    dsimp [g]
+    norm_num
+    ring
+  have heq : sourceHorizontalWoldPrimeClockUniversalProfile u =
+      -(∑' k : ℕ, g k) := by
+    unfold sourceHorizontalWoldPrimeClockUniversalProfile
+    rw [← tsum_neg]
+    apply tsum_congr
+    intro k
+    dsimp [g]
+    ring
+  rw [hg1] at hterm
+  rw [heq]
+  linarith
+
+/-- Reflection-even polar work before specialization to a Xi divisor class. -/
+def sourceHorizontalWoldPrimeClockPolarRateWork (u : ℝ) : ℝ :=
+  -(Real.log 2 / 2) * u * sourceHorizontalWoldPrimeClockUniversalProfile u
+
+@[simp] theorem sourceHorizontalWoldPrimeClockPolarRateWork_neg (u : ℝ) :
+    sourceHorizontalWoldPrimeClockPolarRateWork (-u) =
+      sourceHorizontalWoldPrimeClockPolarRateWork u := by
+  rw [sourceHorizontalWoldPrimeClockPolarRateWork,
+    sourceHorizontalWoldPrimeClockPolarRateWork,
+    sourceHorizontalWoldPrimeClockUniversalProfile_neg]
+  ring
+
+/-- Positive-ray quantitative source properness. -/
+theorem sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower_of_nonneg
+    {u : ℝ} (hu : 0 ≤ u) :
+    Real.log 2 / 18 * u ^ 4 ≤
+      sourceHorizontalWoldPrimeClockPolarRateWork u := by
+  have hcubic :=
+    sourceHorizontalWoldPrimeClockUniversalProfile_le_neg_cubic hu
+  have hfactor : 0 ≤ Real.log 2 / 2 * u := by positivity
+  have hmul := mul_le_mul_of_nonneg_left hcubic hfactor
+  rw [sourceHorizontalWoldPrimeClockPolarRateWork]
+  calc
+    Real.log 2 / 18 * u ^ 4 =
+        -((Real.log 2 / 2 * u) * (-(u ^ 3 / 9))) := by ring
+    _ ≤ -((Real.log 2 / 2 * u) *
+        sourceHorizontalWoldPrimeClockUniversalProfile u) := neg_le_neg hmul
+    _ = -(Real.log 2 / 2) * u *
+        sourceHorizontalWoldPrimeClockUniversalProfile u := by ring
+
+/-- Quantitative source properness: polar work dominates a universal quartic.  The quartic is the
+product of the complete-resolution linear tail and the first retained nonlinear Wold mode. -/
+theorem sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower (u : ℝ) :
+    Real.log 2 / 18 * u ^ 4 ≤
+      sourceHorizontalWoldPrimeClockPolarRateWork u := by
+  by_cases hu : 0 ≤ u
+  · exact sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower_of_nonneg hu
+  · have hneg : 0 ≤ -u := by linarith
+    have h :=
+      sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower_of_nonneg hneg
+    calc
+      Real.log 2 / 18 * u ^ 4 = Real.log 2 / 18 * (-u) ^ 4 := by ring
+      _ ≤ sourceHorizontalWoldPrimeClockPolarRateWork (-u) := h
+      _ = sourceHorizontalWoldPrimeClockPolarRateWork u :=
+        sourceHorizontalWoldPrimeClockPolarRateWork_neg u
+
+/-- Every nonzero horizontal grade has unbounded source polar work along an expanding source-scale
+orbit.  This is the nonlinear source analogue of global formation properness. -/
+theorem sourceHorizontalWoldPrimeClockPolarRateWork_scale_tendsto
+    {d u : ℝ} (hd : 1 < d) (hu : u ≠ 0) :
+    Tendsto (fun n : ℕ =>
+      sourceHorizontalWoldPrimeClockPolarRateWork (d ^ n * u)) atTop atTop := by
+  have hbase : (1 : ℝ) < d ^ 4 := one_lt_pow₀ hd (by norm_num)
+  have hpow : Tendsto (fun n : ℕ => (d ^ 4) ^ n) atTop atTop :=
+    tendsto_pow_atTop_atTop_of_one_lt hbase
+  have hu4 : 0 < u ^ 4 := by positivity
+  have hc : 0 < Real.log 2 / 18 * u ^ 4 := by positivity
+  have hlower : Tendsto (fun n : ℕ =>
+      (Real.log 2 / 18 * u ^ 4) * (d ^ 4) ^ n) atTop atTop :=
+    hpow.const_mul_atTop hc
+  refine tendsto_atTop_mono' atTop ?_ hlower
+  filter_upwards with n
+  calc
+    (Real.log 2 / 18 * u ^ 4) * (d ^ 4) ^ n =
+        Real.log 2 / 18 * (d ^ n * u) ^ 4 := by
+          rw [mul_pow, ← pow_mul, ← pow_mul]
+          rw [Nat.mul_comm 4 n]
+          ring
+    _ ≤ sourceHorizontalWoldPrimeClockPolarRateWork (d ^ n * u) :=
+      sourceHorizontalWoldPrimeClockPolarRateWork_quartic_lower _
+
+/-- Uniform boundedness of the nonlinear source work on a complete source-generated scale orbit. -/
+def SourceHorizontalWoldPrimeClockBoundedPolarScaleWork (d u : ℝ) : Prop :=
+  ∃ B : ℝ, ∀ n : ℕ,
+    sourceHorizontalWoldPrimeClockPolarRateWork (d ^ n * u) ≤ B
+
+/-- Exact source selection law: bounded nonlinear polar work is equivalent to neutral horizontal
+grade. -/
+theorem sourceHorizontalWoldPrimeClockBoundedPolarScaleWork_iff
+    {d u : ℝ} (hd : 1 < d) :
+    SourceHorizontalWoldPrimeClockBoundedPolarScaleWork d u ↔ u = 0 := by
+  constructor
+  · rintro ⟨B, hB⟩
+    by_contra hu
+    have htop :=
+      sourceHorizontalWoldPrimeClockPolarRateWork_scale_tendsto hd hu
+    have hevent := htop.eventually_gt_atTop B
+    rcases hevent.exists with ⟨n, hn⟩
+    linarith [hB n]
+  · rintro rfl
+    refine ⟨0, fun n => ?_⟩
+    simp [sourceHorizontalWoldPrimeClockPolarRateWork,
+      sourceHorizontalWoldPrimeClockUniversalProfile]
+
+/-- Complete source response attached to each multiplicity-labelled Xi divisor class. -/
+def sourceZeroHorizontalWoldPrimeClockProfileResponse
+    (q : XiZeroCopy) (N : ℕ) : ℝ :=
+  sourceHorizontalWoldResidualPrimitiveDeformation N
+    (primeDepthBVWoldXiCenteredRate q.1 / xiMassNthPrimeLogHeight N)
+
+theorem tendsto_sourceZeroHorizontalWoldPrimeClockProfileResponse
+    (q : XiZeroCopy) :
+    Tendsto (sourceZeroHorizontalWoldPrimeClockProfileResponse q) atTop
+      (𝓝 (sourceHorizontalWoldPrimeClockUniversalProfile
+        (primeDepthBVWoldXiCenteredRate q.1))) := by
+  change Tendsto (fun N : ℕ =>
+    sourceHorizontalWoldResidualPrimitiveDeformation N
+      (primeDepthBVWoldXiCenteredRate q.1 / xiMassNthPrimeLogHeight N)) atTop _
+  exact tendsto_sourceHorizontalWoldResidualPrimitiveDeformation_primeClock
+    (primeDepthBVWoldXiCenteredRate q.1)
+
+/-- Source reflection exchanges the two retained cofinal orientations by exact negation at every
+finite cutoff, before scalarization or passage to the horizon. -/
+@[simp] theorem sourceZeroHorizontalWoldPrimeClockProfileResponse_reflection
+    (q : XiZeroCopy) (N : ℕ) :
+    sourceZeroHorizontalWoldPrimeClockProfileResponse
+        (xiZeroCopyLineConjEquiv q) N =
+      -sourceZeroHorizontalWoldPrimeClockProfileResponse q N := by
+  rw [sourceZeroHorizontalWoldPrimeClockProfileResponse,
+    sourceZeroHorizontalWoldPrimeClockProfileResponse]
+  have hrate :
+      primeDepthBVWoldXiCenteredRate (xiZeroCopyLineConjEquiv q).1 =
+        -primeDepthBVWoldXiCenteredRate q.1 := by
+    change primeDepthBVWoldXiCenteredRate (xiZeroLineConjEquiv q.1) =
+      -primeDepthBVWoldXiCenteredRate q.1
+    exact primeDepthBVWoldXiCenteredRate_reflection q.1
+  rw [hrate]
+  have harg :
+      -primeDepthBVWoldXiCenteredRate q.1 / xiMassNthPrimeLogHeight N =
+        -(primeDepthBVWoldXiCenteredRate q.1 / xiMassNthPrimeLogHeight N) := by ring
+  rw [harg, sourceHorizontalWoldResidualPrimitiveDeformation_neg]
+
+/-- The literal all-order Xi response vanishes at the horizon exactly on the critical line. -/
+theorem sourceZeroHorizontalWoldPrimeClockProfileLimit_eq_zero_iff
+    (q : XiZeroCopy) :
+    sourceHorizontalWoldPrimeClockUniversalProfile
+        (primeDepthBVWoldXiCenteredRate q.1) = 0 ↔
+      (q.1 : ℂ).re = 1 / 2 := by
+  rw [sourceHorizontalWoldPrimeClockUniversalProfile_eq_zero_iff]
+  exact primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1
+
+/-- Squaring identifies both reflection transports on the same coefficient-faithful source carrier;
+the common value is positive exactly for an off-line divisor class. -/
+theorem sourceZeroHorizontalWoldPrimeClockProfileReflectionSquare
+    (q : XiZeroCopy) :
+    sourceHorizontalWoldPrimeClockUniversalProfile
+          (primeDepthBVWoldXiCenteredRate (xiZeroCopyLineConjEquiv q).1) ^ 2 =
+        sourceHorizontalWoldPrimeClockUniversalProfile
+          (primeDepthBVWoldXiCenteredRate q.1) ^ 2 := by
+  have hrate :
+      primeDepthBVWoldXiCenteredRate (xiZeroCopyLineConjEquiv q).1 =
+        -primeDepthBVWoldXiCenteredRate q.1 := by
+    change primeDepthBVWoldXiCenteredRate (xiZeroLineConjEquiv q.1) =
+      -primeDepthBVWoldXiCenteredRate q.1
+    exact primeDepthBVWoldXiCenteredRate_reflection q.1
+  rw [hrate, sourceHorizontalWoldPrimeClockUniversalProfile_neg]
+  ring
+
+theorem sourceZeroHorizontalWoldPrimeClockProfileSquare_pos_iff
+    (q : XiZeroCopy) :
+    0 < sourceHorizontalWoldPrimeClockUniversalProfile
+        (primeDepthBVWoldXiCenteredRate q.1) ^ 2 ↔
+      (q.1 : ℂ).re ≠ 1 / 2 := by
+  rw [sq_pos_iff]
+  rw [Ne, sourceZeroHorizontalWoldPrimeClockProfileLimit_eq_zero_iff]
+
+/-- Cross-corpus positive polar handoff: pair the ordered complete-resolution tail with the full
+Wold horizon response.  Both factors are reflection-odd, so their product retains both source
+orientations as one nonnegative work. -/
+def sourceZeroHorizontalWoldPrimeClockPolarWork (q : XiZeroCopy) : ℝ :=
+  sourceZeroHorizontalTailLog q *
+    sourceHorizontalWoldPrimeClockUniversalProfile
+      (primeDepthBVWoldXiCenteredRate q.1)
+
+theorem sourceZeroHorizontalWoldPrimeClockPolarWork_closedForm
+    (K : ℕ) (q : XiZeroCopy) :
+    sourceZeroHorizontalWoldPrimeClockPolarWork q =
+      -(Real.log 2 / 2) * primeDepthBVWoldXiCenteredRate q.1 *
+        sourceHorizontalWoldPrimeClockUniversalProfile
+          (primeDepthBVWoldXiCenteredRate q.1) := by
+  rw [sourceZeroHorizontalWoldPrimeClockPolarWork,
+    primeDepthBVWoldXiCenteredRate_eq_sourceTailLog K q]
+  have hlog : Real.log 2 ≠ 0 := (Real.log_pos one_lt_two).ne'
+  field_simp [hlog]
+
+/-- The Xi-specialized polar work is exactly the universal rate work; no divisor label or
+multiplicity copy is erased in the specialization. -/
+theorem sourceZeroHorizontalWoldPrimeClockPolarWork_eq_rateWork
+    (K : ℕ) (q : XiZeroCopy) :
+    sourceZeroHorizontalWoldPrimeClockPolarWork q =
+      sourceHorizontalWoldPrimeClockPolarRateWork
+        (primeDepthBVWoldXiCenteredRate q.1) := by
+  rw [sourceZeroHorizontalWoldPrimeClockPolarWork_closedForm K,
+    sourceHorizontalWoldPrimeClockPolarRateWork]
+
+/-- Bounded Adams/source-dilation orbit for one multiplicity-labelled Xi class. -/
+def sourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork
+    (d : ℝ) (q : XiZeroCopy) : Prop :=
+  SourceHorizontalWoldPrimeClockBoundedPolarScaleWork d
+    (primeDepthBVWoldXiCenteredRate q.1)
+
+/-- Pointwise endpoint: bounded nonlinear source work on an expanding orbit forces and is forced
+by critical-line placement. -/
+theorem sourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork_iff
+    {d : ℝ} (hd : 1 < d) (q : XiZeroCopy) :
+    sourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork d q ↔
+      (q.1 : ℂ).re = 1 / 2 := by
+  rw [sourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork,
+    sourceHorizontalWoldPrimeClockBoundedPolarScaleWork_iff hd,
+    primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+
+/-- Global source producer target: every retained divisor class has bounded nonlinear polar work
+along the same expanding source-scale orbit. -/
+def SourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork (d : ℝ) : Prop :=
+  ∀ q : XiZeroCopy,
+    sourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork d q
+
+/-- Exact RH endpoint for source-scale properness.  Remaining mathematical burden is no longer a
+sign or classifier: it is a source theorem establishing this global boundedness from the pre-zero
+normalized carrier. -/
+theorem sourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork_iff_riemannHypothesis
+    {d : ℝ} (hd : 1 < d) :
+    SourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork d ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hbounded
+    have hline : ∀ q : XiZeroCopy, (q.1 : ℂ).re = 1 / 2 := by
+      intro q
+      exact (sourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork_iff hd q).1
+        (hbounded q)
+    apply riemannHypothesis_of_xiSpectralPoint_real
+    intro q
+    refine ⟨(q.1 : ℂ).im, ?_⟩
+    apply Complex.ext
+    · simp [xiSpectralPoint]
+    · simp [xiSpectralPoint, hline q]
+  · intro hRH q
+    apply (sourceZeroHorizontalWoldPrimeClockBoundedPolarScaleWork_iff hd q).2
+    exact xi_divisor_support_re_eq_half_of_rh hRH q.1
+
+@[simp] theorem sourceZeroHorizontalWoldPrimeClockPolarWork_reflection
+    (K : ℕ) (q : XiZeroCopy) :
+    sourceZeroHorizontalWoldPrimeClockPolarWork
+        (xiZeroCopyLineConjEquiv q) =
+      sourceZeroHorizontalWoldPrimeClockPolarWork q := by
+  rw [sourceZeroHorizontalWoldPrimeClockPolarWork,
+    sourceZeroHorizontalWoldPrimeClockPolarWork,
+    sourceZeroHorizontalTailLog_reflection K q]
+  have hrate :
+      primeDepthBVWoldXiCenteredRate (xiZeroCopyLineConjEquiv q).1 =
+        -primeDepthBVWoldXiCenteredRate q.1 := by
+    change primeDepthBVWoldXiCenteredRate (xiZeroLineConjEquiv q.1) =
+      -primeDepthBVWoldXiCenteredRate q.1
+    exact primeDepthBVWoldXiCenteredRate_reflection q.1
+  rw [hrate, sourceHorizontalWoldPrimeClockUniversalProfile_neg]
+  ring
+
+theorem sourceZeroHorizontalWoldPrimeClockPolarWork_pos_iff
+    (K : ℕ) (q : XiZeroCopy) :
+    0 < sourceZeroHorizontalWoldPrimeClockPolarWork q ↔
+      (q.1 : ℂ).re ≠ 1 / 2 := by
+  rw [sourceZeroHorizontalWoldPrimeClockPolarWork_closedForm K]
+  have hlog : 0 < Real.log 2 := Real.log_pos one_lt_two
+  constructor
+  · intro h
+    exact fun hline => by
+      have hrate : primeDepthBVWoldXiCenteredRate q.1 = 0 :=
+        (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).2 hline
+      simp [hrate] at h
+  · intro hline
+    have hrate : primeDepthBVWoldXiCenteredRate q.1 ≠ 0 := by
+      intro hrate
+      exact hline ((primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).1 hrate)
+    have hproduct :=
+      (sourceHorizontalWoldPrimeClockUniversalProfile_mul_rate_neg_iff
+        (primeDepthBVWoldXiCenteredRate q.1)).2 hrate
+    nlinarith
+
+theorem sourceZeroHorizontalWoldPrimeClockPolarWork_nonneg
+    (K : ℕ) (q : XiZeroCopy) :
+    0 ≤ sourceZeroHorizontalWoldPrimeClockPolarWork q := by
+  by_cases hline : (q.1 : ℂ).re = 1 / 2
+  · have hrate : primeDepthBVWoldXiCenteredRate q.1 = 0 :=
+      (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).2 hline
+    simp [sourceZeroHorizontalWoldPrimeClockPolarWork_closedForm K, hrate]
+  · exact (sourceZeroHorizontalWoldPrimeClockPolarWork_pos_iff K q).2 hline |>.le
+
+theorem sourceZeroHorizontalWoldPrimeClockPolarWork_eq_zero_iff
+    (K : ℕ) (q : XiZeroCopy) :
+    sourceZeroHorizontalWoldPrimeClockPolarWork q = 0 ↔
+      (q.1 : ℂ).re = 1 / 2 := by
+  constructor
+  · intro hzero
+    by_contra hline
+    exact (sourceZeroHorizontalWoldPrimeClockPolarWork_pos_iff K q).2 hline |>.ne' hzero
+  · intro hline
+    have hrate : primeDepthBVWoldXiCenteredRate q.1 = 0 :=
+      (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).2 hline
+    simp [sourceZeroHorizontalWoldPrimeClockPolarWork_closedForm K, hrate]
+
+/-- Finite-cutoff mixed source work converges to the positive polar handoff. -/
+theorem tendsto_sourceZeroHorizontalWoldPrimeClockPolarWork
+    (q : XiZeroCopy) :
+    Tendsto (fun N : ℕ =>
+      sourceZeroHorizontalTailLog q *
+        sourceZeroHorizontalWoldPrimeClockProfileResponse q N) atTop
+      (𝓝 (sourceZeroHorizontalWoldPrimeClockPolarWork q)) := by
+  exact (tendsto_sourceZeroHorizontalWoldPrimeClockProfileResponse q).const_mul
+    (sourceZeroHorizontalTailLog q)
 
 end
 

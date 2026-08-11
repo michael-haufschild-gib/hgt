@@ -328,6 +328,100 @@ non-absolutely summable, but singularity alone earns no credit without `(1)` and
     adelic \(L^1/L^2\) Rost--Schmid topology, not a second \(L^2\) tail. Full proof:
     ../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-orientation-residue-wall.md.
 
+13. **Conjecture:** the honest Gamma-six Steinberg normal has only the normalized
+    \(\infty,2,3\) place support. **Falsified.** Its unique complementary pair has denominator
+    \(1+6^m\). The set of prime divisors of these denominators is infinite, and a canonical
+    cofinal family \((m_k,\ell_k)\) is obtained recursively from multiplicative orders.
+14. **Conjecture:** equal denominator valuations make the extra places irrelevant.
+    **Falsified with a positive survivor.** At every \(\ell\mid1+6^m\), the two entries have
+    equal valuation, their tame symbol is \(1\), and the local Kummer regulator of their ratio is
+    zero. Nevertheless the common-pole normal residue is the nonzero Frobenius-fixed
+    rational-Witt packet \([-1]-[1]\), with sign-character evaluation \(-2\).
+15. **Conjecture:** this denominator packet carries the reflection-odd Gamma anomaly.
+    **Falsified sharply.** Forward and reciprocal common-pole residues are both
+    \([-1]-[1]\). Their oriented difference is zero; direct reduction gives
+    \([-1]-[-1]=0\). The entire denominator layer is reflection-even.
+16. **Conjecture:** cofinal denominator support leaves a topology obstruction.
+    **Falsified constructively.** The tensor-square half-density grade \(6^{-m}\) gives the
+    source-defined even packet
+
+    \[
+      \mathcal E_6=\bigoplus_k6^{-m_k}z_k\in\ell^1\cap\ell^2,
+    \]
+
+    with a nuclear Köthe refinement. This completely controls the denominator summand but adds
+    no odd coefficient.
+17. **Conjecture:** the larger available packet \([\bar6]-[1]\) repairs orientation collapse.
+    **Rejected as coefficient fitting.** It is Frobenius-fixed, but it is not the common-pole
+    residue of the oriented normal. Coupling it to
+    \(6^{m\delta}-6^{-m\delta}\) is precisely a new signed relative differential and must be
+    proved, not declared. Full proof:
+    ../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-cyclotomic-denominator-admission.md.
+18. **Conjecture:** the actual odd forward/opposite-pole pair has no common source-first mixed
+    coefficient domain. **Falsified constructively.** Keeping the two normal orientations in
+    separate slots and applying the tensor-square grade gives
+
+    \[
+      V_6(\delta)=
+      \left((6^{-m(1-\delta)})_{m\ge1},
+            (-6^{-m(1+\delta)})_{m\ge1}\right).
+    \]
+
+    This vector lies in
+    \((\ell^1\cap\ell^2)\oplus(\ell^1\cap\ell^2)\) exactly when
+    \(|\delta|<1\), the full open critical strip. The underlying two-slot Köthe source is nuclear,
+    and tensoring with the canonical pole-germ pair preserves coefficient admission.
+19. **Conjecture:** this admission itself supplies the Route-L zero. **Falsified
+    transparently.** Its actual oriented codiagonal is
+    \(6^{-m}(6^{m\delta}-6^{-m\delta})\), which vanishes exactly at \(\delta=0\).
+    Remaining theorem is promotion to the strict Rost--Schmid/Meyer domain, construction of the
+    relative chain differential, and fixed-reader cyclicity.
+20. **Conjecture:** the tensor-square grade \(6^{-m}\) is a freely chosen damping which can be
+    strengthened until the strict domain becomes automatic. **Falsified by the literal source.**
+    If \(H_m\) is the corrected complete Gamma-six Möbius tail, then
+    \[
+      \|H_m\|/(6^{-m/2}\|\Theta\|)\longrightarrow1,
+      \qquad
+      \|H_m\otimes H_m\|/(6^{-m}\|\Theta\|^2)\longrightarrow1.
+    \]
+    The first surviving Möbius atom \(n=6\) forces critical exponent one.
+21. **Conjecture:** ambient open-strip admission promotes automatically to the source-normalized
+    strict domain. **Falsified sharply.** In the critical-edge nuclear Köthe space
+    \[
+      q_a(c)=\sum_{m\ge1}6^{am}(|c_m^+|+|c_m^-|),
+      \qquad 0<a<1,
+    \]
+    the forward evaluated orientation is admitted for every \(a<1\) exactly when
+    \(\delta\le0\), while the reciprocal orientation is admitted exactly when \(\delta\ge0\).
+    Their simultaneous strict admission is therefore equivalent to \(\delta=0\).
+22. **Conjecture:** the natural adjacent-grade coface annihilates the odd class. **Falsified
+    coefficient-faithfully.** For \(u=[6]\), the orientation-specific cofaces
+    \(S-u/6\) and \(S-u^{-1}/6\) flatten their own slots for every character. The common
+    critical coface \(S-1/6\) instead has lower endpoint
+    \[
+       \frac16(u-u^{-1})\xrightarrow{\chi_\delta}\frac16K_6(\delta).
+    \]
+    It exposes the physical charge rather than killing it.
+23. **Conjecture:** another fixed finite grade-local convolution can remove this endpoint.
+    **Falsified completely.** A scalar polynomial \(P(S)\) annihilating the odd Gamma-six family
+    on any open character interval is identically zero. At one fixed nonzero \(\delta\), its
+    minimal two-slot annihilator has coefficient
+    \((6^\delta+6^{-\delta})/6\), so specializing it to the critical value is an RH receiver.
+24. **Conjecture:** marked \(2\)- or \(3\)-Euler depletion supplies the opposite Poisson charge.
+    **Falsified by conservativity.** The periodization defect \(\Delta_L\) is injective on the
+    exponentially decreasing Meyer source, hence
+    \[
+       \Delta_Lg\in\Delta_L Z(H_\cap)
+       \Longleftrightarrow g\in Z(H_\cap).
+    \]
+    Depletion transports admission but cannot create it. Full proof of items 20--24:
+    ../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-critical-edge-coface-rigidity.md.
+25. **Surviving conjecture:** the completed Green/pole-germ comparison lands, before divisor
+    scalarization, in both source-forced critical-edge orientation domains. Combined with item 21,
+    this would force every divisor displacement to vanish. Its proof must be a nonlocal,
+    place-marked Rost--Schmid-to-Meyer chain identity; it cannot install critical-edge membership
+    as a domain definition.
+
 ## Falsifiers
 
 A proposed closure fails if it:
@@ -357,6 +451,22 @@ A proposed closure fails if it:
     unavoidable nonzero Gamma residue.
 16. uses functional-equation or product-formula scalar cancellation after place/orientation
     codiagonalization; that layer is formally character-blind.
+17. truncates the honest pre-normal source to \(\infty,2,3\), omitting the \(5\)-tail correction
+    and cofinal denominator primes dividing \(1+6^m\).
+18. treats tame-symbol or Kummer-regulator invisibility as rational-Witt packet vanishing.
+19. attaches the physical coefficient \(6^{m\delta}-6^{-m\delta}\) to the available packet
+    \([\bar6]-[1]\) without a source-derived differential; the actual oriented denominator
+    residue is zero.
+20. counts the sharp open-strip coefficient admission of the actual pole pair as a
+    Rost--Schmid-to-Meyer chain map or as fixed-reader annihilation.
+21. replaces strict critical-edge landing by ambient \(\ell^1/\ell^2\) admission; the former is
+    equivalent to the critical line for the actual two-slot Gamma-six vector.
+22. uses an orientation-specific grade recurrence as the target differential; it flattens every
+    character and erases the detector.
+23. treats the common adjacent-grade coface as closed Stokes annihilation despite its exact lower
+    endpoint charge \(K_6/6\).
+24. claims Euler depletion creates Poisson admission, contrary to injective depletion
+    conservativity.
 
 ## Route-L status
 
@@ -373,6 +483,15 @@ A proposed closure fails if it:
 - [x] exact critical six-tail Gamma residue and regular-counterterm no-go
 - [x] canonical functional-equation opposite pole germ
 - [x] exact coefficient match with BV, Burnol, cofinal Tate, and actual Gamma target
+- [x] cofinal cyclotomic denominator place family and tame/Kummer-null Witt-visible packets
+- [x] exact reflection-even parity of denominator residues and odd-counterterm no-go
+- [x] nuclear source-first mixed \(\ell^1/\ell^2\) admission of even denominator layer
+- [x] sharp nuclear mixed coefficient admission of actual odd pole pair on open strip
+- [x] source-forced tensor-square critical exponent and nuclear critical-edge domain
+- [x] exact forward/reciprocal strict-domain intersection at \(\delta=0\)
+- [x] adjacent-grade endpoint transgression and finite-local differential no-go
+- [x] Euler-depletion admission-conservativity no-go
+- [ ] source-derived landing of the completed Green pole pair in both critical-edge slots
 - [ ] `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, equations `(1)`--`(2)`
 - [ ] consequent endpoint test `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] ambient nuclear/Hodge comparison, oriented Paugam identification, and resolvent-faithful
@@ -380,6 +499,19 @@ A proposed closure fails if it:
 
 ## Log
 
+- 2026-08-11 — Corrected Gamma-six source support: honest Steinberg normal forces infinitely many
+  cyclotomic denominator places. Proved their tame/Kummer invisibility, rational-Witt visibility,
+  common-pole residue, and nuclear tensor-square mixed admission. Hostile audit proves forward and
+  reciprocal residues coincide, so the whole denominator layer is reflection-even and cannot be
+  the missing counterterm. Separately proved a sharp nuclear mixed coefficient admission of the
+  actual odd pole pair exactly on the open strip. Strict Rost--Schmid/Meyer realization, relative
+  chain differential, and fixed-reader cyclicity remain.
+- 2026-08-11 — Located the strict topology wall. Proved the literal \(n=6\) Möbius atom forces
+  tensor-square exponent one; simultaneous return of the evaluated forward/reciprocal normal to
+  the resulting critical-edge Köthe domain is exactly \(\delta=0\). Proved the common local
+  coface has endpoint \(K_6/6\), all fixed finite local annihilators are trivial or
+  divisor-dependent receivers, and Euler depletion is admission-conservative. Remaining producer
+  is now the source-derived nonlocal Green landing into both critical-edge slots.
 - 2026-08-08 — Reclassified fixed two-prime strict transport as endpoint falsifier rather than
   source premise. Audited six post-transgression conjectures; conserved Wronskian, pullback
   Hilbertization, adiabatic tomography, flat Euler curvature, codiagonal radialization, and local

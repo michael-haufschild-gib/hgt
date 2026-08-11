@@ -301,16 +301,32 @@ The source now forced by \((13)\), \((16)\), and \((17)\)--\((19)\) is a place-m
 living in a mixed topology with three simultaneous requirements:
 
 1. the \(L^1\)/Rost--Schmid channel keeps the principal-divisor relation and its separate
-   \(\infty,2,3\) faces closed;
+   \(\infty,2,3\) clock faces, the \(5\)-tail correction, and the cyclotomic denominator
+   packets of the honest Steinberg normal;
 2. the \(L^2\)/Meyer channel admits the completed Green primitive and its Xi multiplicity jets;
 3. the target differential transports the two singular germs before their scalar sum, so the
    fixed Burnol/Deninger reader is cyclic on the **transported principal-divisor boundary**, not
    merely on its already-zero scalar codiagonal.
 
-The first two coefficient topologies exist separately in the corpus. What is not proved is their
-strict, coefficient-faithful chain comparison on the explicit pole-bearing class \((21)\). This is
-the concrete specialization of the mixed adelic \(L^1/L^2\) Rost--Schmid-to-Hodge problem needed
-by Route L.
+The denominator layer is now classified in
+deninger-gamma-six-cyclotomic-denominator-admission.md. The pre-normal source has infinitely many
+tame/Kummer-null but rational-Witt-visible denominator places. Their forward and reciprocal
+common-pole residues are both \([-1]-[1]\), so the whole cofinal layer is reflection-even. Its
+tensor-square grade \(6^{-m}\) has a nuclear mixed \(\ell^1/\ell^2\) admission, but it cannot
+carry the odd physical anomaly. The same tensor-square grade gives the actual two normal
+orientations a sharp mixed coefficient admission exactly for \(|\delta|<1\), retaining the fixed
+Gamma-six coefficient in grade one. What is not proved is promotion of that coefficient carrier
+to the strict Rost--Schmid/Meyer domain and the coefficient-faithful **relative chain
+differential** for the odd pole pair \((21)\) into the existing Meyer--Calderón target. This is
+the concrete specialization of the adelic Rost--Schmid-to-Hodge problem needed by Route L.
+
+The strict topology is now fixed rather than conjectural. The first surviving Möbius atom forces
+tensor-square edge \(6^{-m}\), and the corresponding nuclear critical-edge Köthe domain admits
+both evaluated orientations exactly at \(\delta=0\). The common adjacent-grade coface has the
+nonzero lower endpoint \(K_6/6\); every fixed finite grade convolution is trivial or a
+divisor-dependent receiver; Euler depletion preserves rather than creates Poisson admission.
+Full proof:
+deninger-gamma-six-critical-edge-coface-rigidity.md.
 
 ## 7. Novelty and hostile audit
 
@@ -335,5 +351,9 @@ by Route L.
 - [x] construct canonical functional-equation opposite pole germ
 - [x] construct explicit place-marked \(\infty,2,3\) Stokes polygon
 - [x] prove reciprocity/polygon cancellation alone is character-blind
-- [ ] construct strict mixed \(L^1/L^2\) Rost--Schmid-to-Meyer transport of \((21)\)
+- [x] classify and mixed-admit the reflection-even cyclotomic denominator family
+- [x] construct sharp mixed coefficient admission of the odd pole pair on \(|\delta|<1\)
+- [x] classify the source-forced critical-edge domain and local-coface obstruction
+- [ ] prove completed Green landing in both critical-edge orientation slots
+- [ ] construct strict Rost--Schmid-to-Meyer realization and relative differential for \((21)\)
 - [ ] prove fixed-reader cyclicity on that transported, provenance-retaining boundary

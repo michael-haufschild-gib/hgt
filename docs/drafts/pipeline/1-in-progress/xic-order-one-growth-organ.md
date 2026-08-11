@@ -171,3 +171,44 @@ Recorded 2026-08-11 after hostile check.
   both charts; the wall is (exactly as the frontier map's Route U dossier records) all-degree
   positivity, where the corpus's Lean-closed crossing classification and the paper-level
   hard-edge theorems live.
+- 2026-08-11 — **degrees 1 and 2 of the tower [LEAN-PROVED]:**
+  `RHTower/XiResolventTowerLowDegreePositivity.lean` (wired, umbrella green 18924 jobs, all 9
+  theorems `[propext, Classical.choice, Quot.sound]`).  The formalized height gap
+  `2 < (Im ρ)²` beats the strip bound: **the 45° cone law**
+  (`xiSpectralSq_add_abs_im_lt_re` — every shifted squared spectral point has `|Im| < Re` for
+  all `X ≥ 0`) and the **30° cone inequality** at `X ≥ 3/4`.  Hence termwise strict positivity
+  of the squared and cubed resolvent coordinates, and
+  **`xiResolventMoment_one_re_pos`** (unconditional) and **`xiResolventMoment_two_re_pos`**
+  (`X ≥ 3/4`).  The power-kernel dictionary (`xiWeilPolarization_powerKernel_eq_moment` — the
+  diagonal Weil value of the `(n+1)`-power Cauchy test IS the `n`-th resolvent moment, all n)
+  transfers these to two new strictly positive Weil-diagonal families (squared and cubed
+  kernels).  Fifth sweep reuse: `XiResolventHankelLadder.lean` (pow-summability, Hankel form,
+  its RH criterion, off-line pair negativity).  Frontier after this brick: degrees 0–2 of the
+  arithmetic moment tower are strictly positive with explicit shift thresholds; the Hankel-form
+  criterion needs all mixed `2×2` blocks (`M₀M₂ − M₁²`-type, Cauchy–Schwarz on the tower) —
+  the first genuinely non-termwise question, where cancellation begins and Route U's crossing
+  classification takes over.
+- 2026-08-11 — **the resolvent-chart iff [LEAN-PROVED], and the sixth sweep's harvest.**
+  Corpus-first (user prompt) found the Turán/Hankel programme far advanced: the HEAT chart
+  already owns the full iff (`riemannHypothesis_iff_forall_xiHeatHankelForm_nonneg`,
+  `XiGaussianHeatHankelLadder.lean`), ladder nesting (`HeatHankelLadderNesting.lean`), the
+  Turán variance expansion with exact negative core in BOTH charts
+  (`XiGaussianHeatTuranPairSum.lean`, `XiResolventHankelLadder.lean` —
+  `two_mul_xiResolventTuranMinor_eq_tsum_pair`, `xiResolventPairTerm_lineConj` = −4‖u‖²(Im u)²)
+  and bottom-shell detection (`XiHeatTuranBottomDetection.lean`: nonneg Turán defect at all
+  times forces the bottom copy onto the line).  The resolvent chart lacked only its forward
+  direction: new `RHTower/XiResolventHankelEquivalence.lean` (wired, umbrella green 18931
+  jobs, all 5 theorems axiom-clean) supplies the Hamburger mechanism — under RH every
+  resolvent coordinate is a strictly positive real (`exists_pos_ofReal_xiResolventPoint_of_rh`,
+  via the height gap), every polynomial trace is a sum of nonnegative reals (junk-value
+  convention absorbs non-summable weights: no norm bounds needed), hence
+  **`riemannHypothesis_iff_forall_xiResolventHankelForm_re_nonneg`: for EVERY single shift
+  `X ≥ 0`, RH ⟺ positive semidefiniteness of the resolvent Hankel matrix at that one shift**
+  — whose entries at `X = x²`, `x > ½`, are the Euler-ray jets of `logDeriv ξ` (arithmetic).
+  Plus `xiResolventTuranMinor_re_nonneg_of_riemannHypothesis` (order-two consequence).
+  **Chart parity achieved**: heat and resolvent both carry complete iffs; resolvent
+  additionally carries unconditional degrees 0–2 (cone laws) and the arithmetic entry
+  evaluation; heat additionally carries bottom detection.  Frontier: the Turán minor's SIGN at
+  low degree/small shift (negative cores −4‖u‖²(Im u)² vs positive bulk — the deviation-mass
+  war at Hankel level); heat-chart bottom detection says its large-parameter sign is decided
+  by the bottom copy alone.

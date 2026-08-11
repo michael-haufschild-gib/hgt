@@ -1420,3 +1420,20 @@ foreground umbrella build completes 11,825 jobs.  Formal lint passes.  Scratch a
 class-law pushforward, exact Bernoulli KL formula, data-processing domination, and full-source
 selection theorem report only `propext`, `Classical.choice`, and `Quot.sound`.  No RH premise,
 divisor specialization, or target-route receiver occurs.
+
+## Session 2026-08-11 addition (Static-Heterogeneity Observer Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SHPC-3 | Positive finite rate-mixture posterior curvature, exact response balance, rigidity, and finite-window properness | `HTGeometry.ConstitutiveStaticHeterogeneityObserver` |
+
+Lean certifies the mechanism extracted from arXiv:2604.15084 without importing its specific
+first-passage model. Elapsed time tilts a finite static rate packet; posterior mean rate dissipates
+exactly by negative posterior variance; the local apparent exponent obeys
+`alpha' = mean - t * variance`; and a positive rate floor forces every bounded exponent sublevel
+into a bounded clock interval. Zero variance is equivalent to collapse of all active rates.
+
+Direct foreground elaboration and the 8,699-job leaf build pass. The module is wired into
+`HTGeometry.UniversalLawField`; final foreground umbrella build completes 11,829 jobs. Formal lint
+passes. Scratch axiom prints for eight capstones report only `propext`, `Classical.choice`, and
+`Quot.sound`. No RH premise or route-specific zero specialization occurs.

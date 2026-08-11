@@ -1,13 +1,16 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`, `SR-89`, `SR-90`, `SR-91`, `SR-92`, `SR-93`, `SR-94`, `SR-95`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
   Sections 14.13--14.14, in the literal normalized-Hankel theorems of Sections 14.15--14.19, and
   in the first-jet part of Theorem AC; yes as the hypothesis of the global-limit and Xi-target
-  audits in Sections 14.8--14.14 and in the complete-family consequences of Theorems AC--AE
+  audits in Sections 14.8--14.14 and in the complete-family consequences of Theorems AC--AL and
+  AN--AO;
+  Theorem AM is an unconditional abstract compatibility construction from the RH-declared target
+  data
 - **Computation used:** no
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
   `[LEAN READ-ONLY AUDITED]`
@@ -4256,11 +4259,11 @@ reason, not a loose estimate.  Zero shift, vanishing negative shifts, and positi
 remain the only complete-family scales.  The source-normalized Hankel/pointed-occupancy theorem at
 that zero-mass interface is now the unique negative-side frontier.
 
-### 14.23 The zero-mass survivor has inverse-aperture width
+### 14.23 The attempted inverse-aperture bound has a fatal growing-block gap
 
-The loss of a fixed high-block mass at `r->0` is quantitative.  Classical local zero counting still
-allows a cutoff whose cross-block Gram coupling grows only polylogarithmically.  Combining that
-cutoff with the exact source tail shows that most vanishing shifts are free as well.
+The loss of a fixed high-block mass at `r->0` invites a quantitative cutoff argument.  Classical
+local zero counting does control the source tail and the coupling across a well-chosen cutoff, but
+hostile audit shows that this is not enough to control the growing low block.
 
 Let
 
@@ -4293,61 +4296,38 @@ distances `j,k>=1`, the contribution is
 `O(N(T)delta(2T))=O((log T)^2)`.  Opposite signs are farther apart.  This proves `(314)` without a
 zero-spacing hypothesis.
 
-#### Theorem AF — quantitative vanishing-shift boundary layer
-
-Let `a_j->infinity`, `r_j->0+`, and assume
-
-```text
-a_j r_j/(1+|log r_j|)^4 ->infinity.                    (315)
-```
-
-Then the free-response conclusions `(301)--(302)` still hold.  Consequently every complete
-Xi-identifying family satisfies, on its negative-shift indices,
+The retracted argument set `T_j=r_j^(-2)` in `(308)`.  Its tail term would indeed vanish by
+`(313)`, and `(314)` would control the low--high penalty.  But the low-block estimate `(306)` is
+only a **fixed-`T`** statement:
 
 ```text
-r_j=max(0,-lambda_j)=O((1+log a_j)^4/a_j).             (316)
+k_(a,T)>=2a-D_T-2C_T^2/r.                              (315)
 ```
 
-#### Proof
+When `T=T_j->infinity`, no bound for `D_(T_j)` was proved.  Riemann--von Mangoldt unit-window
+counting cannot provide one: it controls how many zeros enter a window but not how close distinct
+ordinates inside that window may be.  Arbitrarily close ordinates make the corresponding
+exponentials almost linearly dependent and can make the growing low-block Gram lower bound
+arbitrarily small.  The cutoff gap used in `(314)` separates the low and high blocks; it says
+nothing about internal low-block gaps.
 
-In `(308)--(311)` choose `T_j=r_j^(-2)` and the cutoffs above.  Equations `(313)` and `(310)` give
+Therefore the inference `k_(a_j,T_j)->infinity` is invalid.  The claimed consequences
+`ar/log^4(1/r)->infinity =>` free response and `r=O(log^4(a)/a)` are retracted.  The strongest
+proved schedule statement remains Theorem AE:
 
 ```text
-||(1-P_(T_j))u_(sigma,a_j)||^2/r_j
- =O(delta(T_j)/r_j)
- =O(r_j|log r_j|)->0.                                  (317)
+max(0,-lambda_a)->0                                   (316)
 ```
 
-The cross penalty in the low-block coercivity is, by `(314)`,
+for every complete Xi-identifying family.  No unconditional aperture rate is currently known.
+The failed proof exposes the real zero-side frontier: quantitative source-aligned control of the
+small singular values of a growing sinc Gram block, or equivalently its high-block Schur
+complement.  Zero counting and cross-cutoff Hilbert--Schmidt capacity alone do not control this.
+This correction is ledger item `SR-85`; Theorem label `AF` is retired rather than reassigned.
 
-```text
-C_(T_j)^2/r_j=O((1+|log r_j|)^4/r_j)=o(a_j)            (318)
-```
+### 14.24 The exact positive survivor is rate-free odd hard-edge separation
 
-under `(315)`.  Thus `k_(a_j,T_j)->infinity` in `(308)`.  The low source norms remain uniformly
-bounded by `(292)`, so `(309)` tends to zero.  Equations `(304)` and `(289)` prove the free
-response.
-
-If the quotient `a_jr_j/(1+|log r_j|)^4` were unbounded along a complete target family, a
-subsequence would satisfy `(315),` contradicting `kappa->kappa_Xi`.  It is therefore bounded.
-When `r_j<=1/a_j`, `(316)` is immediate; when `r_j>1/a_j`, one has
-`|log r_j|<log a_j`, and the same boundedness gives `(316)`.
-
-The exponent four is not claimed sharp.  It records the strongest bound obtained from local
-Riemann--von Mangoldt counting alone, without pair-correlation, simplicity, or a minimum zero gap.
-Generic nonharmonic Fourier estimates are classical.  Candidate-new content is the literal Suzuki
-source/resolvent synthesis `(315)--(316)`, which turns the qualitative zero-mass survivor into an
-explicit inverse-aperture polylogarithmic boundary layer.
-
-This does **not** cross zero.  At `r=O((log a)^4/a)` the mass term can be of the same order as the
-worst low--high cancellation capacity allowed by classical zero counting.  Improving `(316)` to
-`o(1/a)` or reaching `r=0` requires new information about clustered zero-exponential combinations
-as seen by the specific boundary source, or a direct prime-side normalized-Hankel estimate.  That
-is the hard frontier; repeating PNT leading terms or assuming zero spacing would be theatre.
-
-### 14.24 The exact positive survivor is a mesoscopic odd hard-edge annulus
-
-Theorems AE--AF do more than constrain the shift.  They identify the spectral geometry which must
+Theorem AE does more than constrain the shift.  It identifies the spectral geometry which must
 survive inside the boundary layer.  Let `mu_(e,a)` and `mu_(o,a)` be the probability spectral laws
 of the nonnegative parity operators at the unit sources `h_(e,a),h_(o,a)` from `(300)`.  For `r>0`
 put
@@ -4365,7 +4345,7 @@ bound `1-x(r)>=epsilon/(epsilon+r)mu([epsilon,infinity))`, therefore gives
 mu_(e,a),mu_(o,a) weakly ->delta_0.                    (320)
 ```
 
-#### Theorem AG — target-forced mesoscopic odd mass
+#### Theorem AG — target-forced odd hard-edge separation
 
 Let `a_j->infinity`, let `lambda_j=-r_j<0`, and suppose the complete Suzuki quotients identify the
 Xi target.  Then
@@ -4382,22 +4362,13 @@ Consequently, for every fixed `epsilon>0`,
 liminf_j mu_(o,a_j)((r_j,epsilon))>73/81.              (323)
 ```
 
-The outer edge may itself shrink.  If `epsilon_j->0+` and
-
-```text
-a_j epsilon_j/(1+|log epsilon_j|)^4 ->infinity,
-```
-
-then
+There exists a rate-free diagonal sequence `epsilon_j->0+` with
+`r_j/epsilon_j->0` such that
 
 ```text
 mu_(o,a_j)([epsilon_j,infinity))->0,
 liminf_j mu_(o,a_j)((r_j,epsilon_j))>73/81.            (323a)
 ```
-
-In particular one may take `epsilon_j=a_j^(-1/2)`.  The surviving packet is therefore confined to
-the explicit shrinking annulus `(r_j,a_j^(-1/2))`, not merely to an unspecified neighborhood of
-zero.
 
 More generally, for every fixed `L>=0`,
 
@@ -4427,10 +4398,10 @@ On `[0,Lr]` the Stieltjes multiplier obeys `r/(t+r)>=1/(L+1)`.  Equation `(324)`
 `(321)`; `L=1` gives `(322)`.  Finally `(320)` makes
 `mu_(o,a_j)([epsilon,infinity))->0` for every fixed `epsilon` which is not an atom of `delta_0`,
 and subtracting this tail and `[0,r_j]` from total mass proves `(323)`.  To prove `(323a)`, apply
-Theorem AF's estimate with the independent probe mass `epsilon_j` in place of the selected shift.
-It gives `x_(o,a_j)(epsilon_j)->1`; since
-`1-x_o(epsilon)>=mu_o([epsilon,infinity))/2`, the moving upper tail vanishes.  Subtract `(322)`
-again.
+the fixed-`epsilon` convergence diagonally.  Choose decreasing `epsilon_n->0`; after increasing
+successive index thresholds, both
+`mu_(o,a_j)([epsilon_n,infinity))<1/n` and `r_j<epsilon_n/n` hold throughout the `n`-th block.
+Set `epsilon_j=epsilon_n` on that block and subtract `(322)` again.  No aperture rate is obtained.
 
 The constants are target-sharp at the information level used: they come only from
 `R_Xi>81/4`, the fact that the even Stieltjes factor is at most one, and the threshold value
@@ -4440,8 +4411,8 @@ inequality on the odd channel.
 Weak convergence to a hard edge and elementary Stieltjes band bounds are classical.  Candidate-new
 content is the Suzuki conjunction `(320)--(324)`: the complete target forces a quantitatively
 macroscopic odd spectral packet into a vanishing interval strictly above the moving shift scale.
-This is the strongest positive survivor exposed by the negative-shift no-go.  It replaces the
-phrase “singular zero-mass behavior” by one falsifiable source theorem.
+This is the strongest one-channel survivor exposed by the negative-shift no-go.  Section 14.25
+sharpens it to the coupled parity-transport law and proves why the packet alone is nonterminal.
 
 ### 14.25 The complete parity-transport cost condenses at the zero-mass edge
 
@@ -4482,10 +4453,13 @@ Let `a_j->infinity`, let `lambda_j=-r_j<0`, and suppose the complete Suzuki quot
 Xi target.  Let `epsilon_j->0+` be any independent free probe satisfying
 
 ```text
-a_j epsilon_j/(1+|log epsilon_j|)^4 ->infinity.        (328)
+r_j<epsilon_j,
+x_(e,a_j)(epsilon_j)->1,
+x_(o,a_j)(epsilon_j)->1.                               (328)
 ```
 
-Then `r_j<epsilon_j` eventually and
+Such probes exist by a rate-free diagonal use of Theorem AE and `r_j->0`; one may additionally
+arrange `r_j/epsilon_j->0`.  For every probe satisfying `(328)`,
 
 ```text
 int_(r_j)^(epsilon_j)
@@ -4508,10 +4482,11 @@ liminf_j epsilon_j/r_j >=R_Xi>81/4,
 limsup_j r_j/epsilon_j <=1/R_Xi<4/81.                  (331)
 ```
 
-At asymptotic equality in `(331)`, the nonnegative slack in `(330)` vanishes: in logarithmic
-mean across the whole transition layer, the odd posterior spectrum lies above the running scale
-and the even posterior spectrum lies below it.  Thus minimal-width transport requires almost
-perfect paired parity separation, not merely the odd packet from Theorem AG.
+The identity also records a sharp future rigidity statement: for any sharper outer probe at which
+`F_a(epsilon)->1` and `epsilon/r->R_Xi`, the nonnegative slack in `(330)` must vanish.  In
+logarithmic mean across that transition layer, the odd posterior spectrum then lies above the
+running scale and the even posterior spectrum below it.  The rate-free diagonal probes above may
+be chosen with `epsilon/r->infinity`, so this saturation statement is not asserted for them.
 
 The same law has the additive shift form used in the source-superselection paper.  Put
 
@@ -4545,11 +4520,11 @@ sup_(r_j<s<epsilon_j) max(0,mathfrak h_(a_j)(-s))
  >=[log R_Xi+o(1)]/(epsilon_j-r_j).                    (334)
 ```
 
-Taking `epsilon_j=a_j^(-1/2)` forces a hazard peak of order at least `sqrt(a_j)`.  Taking any
-`epsilon_j=L_j(1+log a_j)^4/a_j` with `L_j->infinity` forces a peak at least
-`(log R_Xi+o(1))a_j/[L_j(1+log a_j)^4]`.  A successful negative branch therefore cannot be a
-bounded finite-shift excursion squeezed toward zero: its literal source-pointed parity transport
-must become singular at essentially the inverse-aperture scale.
+For a diagonal probe with `r_j/epsilon_j->0`, this is
+`[log R_Xi+o(1)]/epsilon_j`, which diverges.  No unconditional rate in aperture follows.  A
+successful negative branch therefore cannot be a bounded finite-shift excursion squeezed toward
+zero: its literal source-pointed parity transport must become singular at some cofinal zero-edge
+scale.
 
 #### Proof
 
@@ -4567,8 +4542,7 @@ int_(r_j)^(epsilon_j)(v_o-v_e)ds/s
  =log[F_(a_j)(r_j)/F_(a_j)(epsilon_j)].                (335)
 ```
 
-Target identification gives `F_(a_j)(r_j)->R_Xi`.  Theorem AF applied to the independent probe
-`epsilon_j` gives `x_e(epsilon_j),x_o(epsilon_j)->1`, while `(289)` gives `N_e/N_o->1`; hence
+Target identification gives `F_(a_j)(r_j)->R_Xi`.  Condition `(328)` and `(289)` give
 `F_(a_j)(epsilon_j)->1`.  This proves `(329)`.  Subtract `(335)` from
 `log(epsilon_j/r_j)=int ds/s` and use `0<=v_e,v_o<=1` to obtain `(330)--(331)`.
 
@@ -4579,19 +4553,19 @@ comparing the integral of the positive part with interval length.
 
 The differential hazard identity and its product-measure Jordan split are already present in the
 updated source-superselection paper and are not claimed again.  Candidate-new content is their
-joint localization by Theorems AF--AG: every complete negative family condenses the full
-`log R_Xi` cost at the zero-mass edge, the exact capacity slack `(330)`, and the forced
-inverse-aperture hazard blow-up `(334)`.
+joint rate-free localization by Theorems AE--AG: every complete negative family condenses the full
+`log R_Xi` cost at the zero-mass edge, with exact capacity slack `(330)` and a necessarily
+diverging hazard peak `(334)`.  The retracted Theorem AF means no aperture rate is claimed.
 
-The capacity law is sharp at the information level used.  For any `R>2`, `r_j->0`, and
-`r_j/epsilon_j->0`, the abstract one-dimensional laws
+The capacity law is sharp at the information level used.  For any `R>2`, `r_j->0`,
+`r_j/epsilon_j->0`, and `eta_j->0+`, the strictly positive abstract one-dimensional laws
 
 ```text
-mu_(e,j)=delta_0,
-mu_(o,j)=delta_((R-1)r_j)                               (336)
+mu_(e,j)=delta_(eta_j r_j),
+mu_(o,j)=delta_([R(1+eta_j)-1]r_j)                     (336)
 ```
 
-satisfy `F_j(r_j)=R`, converge weakly to `delta_0`, put all odd mass in
+satisfy `F_j(r_j)=R` exactly, converge weakly to `delta_0`, put all odd mass in
 `(r_j,epsilon_j)`, and have `F_j(epsilon_j)->1`.  Hence neither weak hard-edge collapse, the odd
 annulus, nor generic Stieltjes transport can retire Suzuki.  The remaining theorem must use the
 literal prime--Gamma coupling between the two parity laws.
@@ -4662,16 +4636,726 @@ This exact paired energy is genuine literal-source information, but it still doe
 layer.  A probability law may place vanishing mass at an energy tending to infinity and thereby
 carry any prescribed first moment while leaving every Stieltjes factor at scales `O(r_j)`
 unchanged.  Thus `(338)--(340)` eliminate countermodels with vanishing total Rayleigh energy but
-do not eliminate `(336)` after an asymptotically invisible high-energy correction.  Any successful
-no-go needs a source-specific uniform-integrability or relative-Hankel theorem, not another finite
-moment identity.
+do not eliminate `(336)` after an asymptotically invisible high-energy correction.  The next
+theorem shows that this correction is not optional: the literal Suzuki laws themselves force it.
 
 The Fourier algebra and Jensen inequality are classical.  Candidate-new content is the exact
 literal parity sum `(338)`, its asymptotic conservation law `(339)`, and its placement against the
 condensed Suzuki scale in `(340)`.  This is a proved constraint and a proved failure of the
 first-moment closure attempt, not a claim that Route G is dead.
 
-### 14.27 Conjecture loop and novelty correction
+### 14.27 Literal source energy bifurcates between zero and infinity
+
+Put
+
+```text
+nu_a=mu_(e,a)+mu_(o,a).                                (341)
+```
+
+This is a finite measure of mass two.  Equations `(320)` and `(339)` give simultaneously
+
+```text
+nu_a weakly ->2delta_0,
+int_[0,infinity] t dnu_a(t)->4M_0(1)>0.                (342)
+```
+
+These two limits force a second spectral layer at infinity.
+
+#### Theorem AJ — exact infrared/ultraviolet source-energy split
+
+For every fixed `T>0`,
+
+```text
+nu_a((T,infinity))->0,
+int_[0,infinity] min(t,T)dnu_a(t)->0,
+int_[0,infinity] (t-T)_+ dnu_a(t)->4M_0(1).            (343)
+```
+
+Consequently the conditional mean energy in the vanishing tail `(T,infinity)` diverges.  Moreover,
+in the extended sense,
+
+```text
+int t^2 dnu_a(t)->infinity.                            (344)
+```
+
+Thus the literal normalized boundary sources have an exact two-scale spectrum: almost all
+probability collapses to the hard edge, while essentially all nonzero Rayleigh energy escapes to
+spectral infinity through asymptotically zero probability.
+
+#### Proof
+
+Weak convergence in `(342)` applied to the bounded continuous function `min(t,T)` gives the second
+limit in `(343)`; applying it to a continuous cutoff dominating `1_(T,infinity)` gives the first
+for every fixed `T` after an arbitrarily small enlargement of the threshold.  Equivalently one may
+use `(320)` directly, since the limit has no atom at `T`.  The identity
+
+```text
+t=min(t,T)+(t-T)_+
+```
+
+and the first-moment limit in `(342)` prove the last limit.  Since the tail probability tends to
+zero while its excess-energy integral tends to `4M_0(1)>0`, its conditional mean diverges.  Finally
+Cauchy--Schwarz on `(T,infinity)` gives
+
+```text
+int_(T,infinity) t^2 dnu_a
+ >=[int_(T,infinity)(t-T)dnu_a]^2/nu_a((T,infinity)),
+```
+
+which tends to infinity and proves `(344)`.
+
+Weak-convergence truncation and Cauchy--Schwarz are classical.  Candidate-new content is their
+forced Suzuki conjunction `(342)--(344)`: Theorems AE and AI imply simultaneous infrared
+probability collapse and ultraviolet Rayleigh-energy escape for the literal cosh/sinh sources.
+This kills uniform integrability and every uniform second-moment attack in the opposite direction
+from the hoped-for no-go.  The missing source theorem must couple the low-energy parity transport
+to this ultraviolet escape through the relative prime--Gamma Hankel geometry; it cannot suppress
+the escaping layer.
+
+### 14.28 The ultraviolet layer is the Xi multiplicity clock
+
+Theorem AJ only says that source energy escapes.  The zero-sampling factorization locates it
+exactly.  Keep the distinct-ordinate convention in `(299)` and put
+
+```text
+K_a=S_aS_a^*,
+(M c)_gamma=m_gamma c_gamma.                           (345)
+```
+
+Thus the diagonal of `K_a` is `2aM`.  For the two unit source vectors in `(300)`, write
+`u_(sigma,a)=S_ah_(sigma,a)` as before.  Define the combined size-biased source-energy probability
+
+```text
+deta_a(t)=t[dmu_(e,a)(t)+dmu_(o,a)(t)]/[m_e(a)+m_o(a)]. (346)
+```
+
+Finally define the source-declared multiplicity probability
+
+```text
+zeta_mult
+ =1/M_0(1) sum_gamma m_gamma/(1+gamma^2) delta_(m_gamma). (347)
+```
+
+The weights in `(347)` are exactly the fixed-anchor inverse-square Xi probability, pushed forward
+by the zero-multiplicity map `gamma|->m_gamma`.
+
+#### Theorem AK — aperture-scaled ultraviolet multiplicity law
+
+Under RH, as `a->infinity`,
+
+```text
+(t|->t/(2a))_* eta_a  weakly ->zeta_mult.              (348)
+```
+
+Equivalently, for every bounded continuous `phi:[0,infinity)->C`,
+
+```text
+1/[m_e(a)+m_o(a)] int t phi(t/(2a))
+  d[mu_(e,a)+mu_(o,a)](t)
+ ->1/M_0(1) sum_gamma m_gamma phi(m_gamma)/(1+gamma^2). (349)
+```
+
+If all Xi zeros are simple, the limit is `delta_1`; no simplicity is assumed in `(348)--(349)`.
+For every `delta>0` there is a finite `M_delta` such that a proportion at least `1-delta` of the
+combined source energy eventually lies in
+
+```text
+a <=t<=(2M_delta+1)a.                                  (350)
+```
+
+Consequently the combined source probability of a suitable linear-aperture ultraviolet band is
+`Theta_delta(1/a)`: vanishing probability of order `1/a` carries an order-one energy and records
+the inverse-square weighted Xi multiplicities.
+
+#### Proof
+
+The nonzero spectral calculi of `S_a^*S_a` and `S_aS_a^*` give, first for resolvent kernels and then
+for bounded continuous functions,
+
+```text
+int t phi(t/(2a))dmu_(sigma,a)(t)
+ =<u_(sigma,a),phi(K_a/(2a))u_(sigma,a)>.              (351)
+```
+
+Let `P_T` project onto the finitely many distinct ordinates `|gamma|<=T`.  Formula `(305)` gives
+diagonal entries `2am_gamma`.  The finite off-diagonal block is bounded independently of `a`, and
+the finite/high block has the aperture-independent square bound `(307)`.  Therefore
+
+```text
+||(K_a/(2a)-M)P_T||->0                                 (352)
+```
+
+for every fixed `T`.  The resolvent identity first proves strong resolvent convergence
+`K_a/(2a)->M` on the finitely supported core.  The source tail `(310)` is uniform:
+
+```text
+sum_(|gamma|>T)(|u_(e,a),gamma|^2+|u_(o,a),gamma|^2)
+ <=C sum_(|gamma|>T)m_gamma/(1+gamma^2).               (353)
+```
+
+Since `(339)` bounds the combined source norm away from zero, `(352)--(353)` transfer the
+size-biased spectral law in `(351)` to the diagonal multiplicity law of the explicit coordinate
+vectors.
+
+It remains to identify their weights.  Equations `(337)--(338)`, the exponentially equivalent
+norms `N_e,N_o`, and dominated summation using `(310)` give, for each fixed ordinate and jointly in
+`ell^1(Gamma)`,
+
+```text
+|u_(e,a),gamma|^2+|u_(o,a),gamma|^2
+ ->4m_gamma/(1+gamma^2).                               (354)
+```
+
+The denominator tends to `4M_0(1)` by `(339)`.  Thus the diagonal laws converge in total variation
+to `(347)`.  Combining this with `(351)--(353)` proves `(348)--(349)`.
+
+The probability `(347)` is supported on positive integers.  Choose `M_delta` so its mass on
+`{1,...,M_delta}` exceeds `1-delta`.  Equation `(348)` gives `(350)` after a fixed half-unit
+thickening.  The energy in that band is bounded below by a positive constant depending on
+`delta`, while every point in it is at most `(2M_delta+1)a`; hence its original source probability
+is at least `c_delta/a`.  Its energy is bounded above by `(339)` and every point is at least `a`,
+so the probability is at most `C/a`.
+
+Polar-decomposition transfer, strong-resolvent convergence on a core, and size biasing are
+classical.  Candidate-new content is their exact Suzuki synthesis: the forced ultraviolet escape
+from Theorem AJ occurs at linear aperture and converges to the inverse-square Xi source probability
+with only the multiplicity label retained.  This is compatible with, rather than fatal to, the Xi
+target.  It replaces an unspecified high-energy correction by a precise arithmetic clock.  The
+remaining cross-scale theorem must couple the infrared parity-transport sign to this ultraviolet
+multiplicity law through the relative prime--Gamma Hankel form.
+
+### 14.29 The ultraviolet clock retains a recurrent parity phase
+
+The combined law in Theorem AK deliberately forgets parity.  The separate source coefficients
+retain one more exact label.  Put
+
+```text
+theta_gamma(a)=gamma a-arctan(gamma)                    (355)
+```
+
+and define a probability on `{e,o} x {1,2,...}` by
+
+```text
+zeta_a^ph
+ =1/M_0(1) sum_gamma m_gamma/(1+gamma^2)
+    [cos(theta_gamma(a))^2 delta_(e,m_gamma)
+     +sin(theta_gamma(a))^2 delta_(o,m_gamma)].         (356)
+```
+
+The multiplicity marginal of `(356)` is `zeta_mult` for every `a`.  Define the actual joint
+size-biased parity-energy probability by
+
+```text
+Eta_a({sigma} x B)
+ =1/[m_e(a)+m_o(a)] int_B t dmu_(sigma,a)(t).           (357)
+```
+
+#### Theorem AL — parity-resolved ultraviolet phase clock
+
+Under RH, the pushforward of `Eta_a` by
+`(sigma,t)|->(sigma,t/(2a))` is asymptotic to the moving probability `zeta_a^ph`: for every
+bounded continuous `Psi` on `{e,o} x [0,infinity)`,
+
+```text
+int Psi(sigma,t/(2a)) dEta_a(sigma,t)
+ -int Psi d zeta_a^ph ->0.                             (358)
+```
+
+Its aperture Cesaro law is stationary and parity-balanced:
+
+```text
+1/A int_1^A (sigma,t|->sigma,t/(2a))_*Eta_a da
+ weakly ->(delta_e+delta_o)/2 tensor zeta_mult.         (359)
+```
+
+Nevertheless no pointwise parity balance follows.  For every fixed base aperture `a_0>0` there
+are arbitrarily large `a_n` such that
+
+```text
+zeta_(a_n)^ph ->zeta_(a_0)^ph in total variation.      (360)
+```
+
+Consequently every phase profile already visible at one aperture recurs as a cofinal ultraviolet
+subsequential law.  The ultraviolet layer has a fixed arithmetic multiplicity marginal, a
+balanced long-aperture mean, and an almost-periodic parity split.
+
+#### Proof
+
+Equations `(337)`, `(288)`, and `sinh(a)/cosh(a)->1` give, first coordinatewise and then jointly in
+`ell^1(Gamma)` using `(310)`,
+
+```text
+|u_(e,a),gamma|^2
+ -4m_gamma cos(theta_gamma(a))^2/(1+gamma^2) ->0,
+
+|u_(o,a),gamma|^2
+ -4m_gamma sin(theta_gamma(a))^2/(1+gamma^2) ->0.      (361)
+```
+
+Here the displayed convergence means that the sum of the two absolute errors over `gamma` tends
+to zero.  Indeed
+
+```text
+cos(gamma a)+gamma sin(gamma a)
+ =sqrt(1+gamma^2)cos(theta_gamma(a)),
+
+sin(gamma a)-gamma cos(gamma a)
+ =sqrt(1+gamma^2)sin(theta_gamma(a)),
+```
+
+and the exponentially small discrepancy between `sinh(a)`, `cosh(a)`, and the two normalizing
+factors is dominated by `Cm_gamma/(1+gamma^2)`.
+
+Apply the spectral transfer `(351)--(353)` separately to the two parity sources.  On every fixed
+zero block `K_a/(2a)->M`; the joint source tail remains uniformly summable.  Equation `(361)` and
+`m_e+m_o->4M_0(1)` then prove `(358)`.
+
+For every nonzero ordinate,
+
+```text
+1/A int_1^A cos(theta_gamma(a))^2 da ->1/2,
+1/A int_1^A sin(theta_gamma(a))^2 da ->1/2.
+```
+
+Dominated summation against `m_gamma/(1+gamma^2)` proves the Cesaro limit for `(356)`.  The error
+in `(358)` is bounded and tends to zero, so its Cesaro mean also vanishes; this proves `(359)`.
+
+For recurrence, fix finitely many ordinates.  The one-parameter subgroup
+
+```text
+t|->(gamma t mod pi)_gamma
+```
+
+in their compact torus returns arbitrarily close to its identity at unbounded times.  Choose a
+diagonal sequence of such returns while increasing the finite set.  The tail of `(356)` is
+uniformly bounded by the summable inverse-square weights, and `sin^2,cos^2` are uniformly
+continuous.  Hence the resulting phase laws converge in total variation, proving `(360)`.
+
+Fourier phase rewriting, Cesaro averaging, and recurrence of a compact one-parameter group are
+classical.  The relation-hull, tail-recurrence, and Haar/Cesaro infrastructure is already
+formalized in the corpus theorem `SuzukiScrewCompactHullParityLaw` and its universal parents; none
+of that infrastructure is claimed new.  Candidate-new content is the source calculation and its
+ultraviolet placement with Theorem AK: energy is not merely the Xi multiplicity clock but the
+parity-resolved clock `(356)` with the literal inhomogeneous phase `gamma a-arctan(gamma)`.  This
+still supplies no infrared contradiction: a complete family may select exceptional apertures
+rather than Cesaro-typical ones.
+
+### 14.30 All extracted marginal laws admit an exact survivor
+
+Theorems AH--AL constrain the two source spectral measures at both ends, but they do not yet use
+the off-diagonal geometry of their common zero Gram operator.  The following realization theorem
+tests whether the marginal constraints alone can retire Route G.
+
+#### Theorem AM — infrared/ultraviolet marginal compatibility model
+
+Fix `R>2`, arbitrary `eta_a->0+`, and arbitrary `r_a->0+`.  There are explicit probability
+measures `mu_(e,a)^#`, `mu_(o,a)^#` such that
+
+```text
+mu_(e,a)^#,mu_(o,a)^# weakly ->delta_0,
+x_(e,a)^#(r_a)/x_(o,a)^#(r_a)->R,                     (362)
+```
+
+all but `o(1)` of the odd probability lies at the hard-edge point
+`[R(1+eta_a)-1]r_a>r_a`, their combined first moment tends to `4M_0(1)`, and their joint
+size-biased ultraviolet law obeys the full moving phase clock `(356)--(358)`.  In particular the
+zero-edge transport cost, rate-free odd packet, exact paired energy limit, ultraviolet
+multiplicity law, parity phase law, Cesaro balance, and phase recurrence are mutually compatible.
+
+#### Construction and proof
+
+For `sigma=e,o` and every distinct ordinate put
+
+```text
+E_(e,gamma)(a)
+ =4m_gamma cos(theta_gamma(a))^2/(1+gamma^2),
+E_(o,gamma)(a)
+ =4m_gamma sin(theta_gamma(a))^2/(1+gamma^2),
+
+p_(sigma,gamma)(a)=E_(sigma,gamma)(a)/(2a m_gamma),
+p_sigma(a)=sum_gamma p_(sigma,gamma)(a).               (363)
+```
+
+The inverse-square sum gives `p_sigma(a)=O(1/a)`, so the following are probability measures for
+all sufficiently large `a`:
+
+```text
+mu_(e,a)^#
+ =(1-p_e(a))delta_(eta_a r_a)
+   +sum_gamma p_(e,gamma)(a)delta_(2a m_gamma),
+
+mu_(o,a)^#
+ =(1-p_o(a))delta_([R(1+eta_a)-1]r_a)
+   +sum_gamma p_(o,gamma)(a)delta_(2a m_gamma).         (364)
+```
+
+Their ultraviolet probability is `O(1/a)` and their remaining atoms tend to zero, proving weak
+hard-edge collapse.  At the selected Stieltjes scale,
+
+```text
+x_e^#(r_a)=(1-p_e(a))/(1+eta_a)+O(r_a/a^2),
+x_o^#(r_a)=(1-p_o(a))/[R(1+eta_a)]+O(r_a/a^2).         (365)
+```
+
+Thus `(362)` holds, while the odd low atom lies strictly above `r_a` and carries mass `1-O(1/a)`.
+For every `epsilon_a->0` with `r_a/epsilon_a->0`, both Stieltjes factors at `epsilon_a` tend to
+one.  Hence the complete logarithmic transport cost tends to `log R` inside
+`(r_a,epsilon_a)`, exactly as in Theorem AH.  This is deliberately rate-free.
+The ultraviolet contribution to the first moment is exactly
+
+```text
+sum_(sigma,gamma)E_(sigma,gamma)(a)
+ =4 sum_gamma m_gamma/(1+gamma^2)=4M_0(1).             (366)
+```
+
+The low atoms contribute `o(1)`.  After size biasing and division of energy by `2a`, the atoms in
+`(364)` have exactly the weights and locations in `(356)`, up to the vanishing low-energy
+contribution and normalization error.  This proves the asserted ultraviolet phase law and all of
+its consequences.
+
+The model is intentionally a marginal realization, not a claim that `(364)` is generated by the
+literal Suzuki operator.  Its force is logical: no contradiction can be obtained from the proved
+one-source spectral laws, their paired first moment, or even the complete parity-resolved
+ultraviolet clock.  Any successful no-go must use information erased by passage to those
+marginals.  The earliest missing datum is now precise: a cross-scale restriction imposed by the
+off-diagonal sinc Gram matrix `K_a`, equivalently by the relative prime--Gamma normalized-Hankel
+form, which forbids `(or realizes)` the simultaneous low odd ridge leverage in `(321)` and the
+high coordinate phase law `(361)`.
+
+### 14.31 Vanishing odd ultraviolet energy is an arithmetic relation problem
+
+The almost-periodic split in `(356)` leaves one potentially useful dichotomy.  If its odd mass
+has a positive floor, then the same literal odd source must occupy both the infrared packet of
+Theorem AG and a linear-aperture ultraviolet band.  If its odd mass can approach zero, the even
+source may carry essentially the entire ultraviolet budget.  This alternative is classified by
+finite integer relations among the Xi ordinates.
+
+Choose one ordinate from each `+-` pair, call the resulting set `Gamma_+`, and normalize
+
+```text
+w_gamma
+ =[m_gamma/(1+gamma^2)]
+   /sum_(eta in Gamma_+)m_eta/(1+eta^2),
+
+q_o(a)=sum_(gamma in Gamma_+)w_gamma
+              sin(gamma a-arctan(gamma))^2.            (367)
+```
+
+Thus `q_o(a)` is exactly the odd mass of `zeta_a^ph`.
+
+#### Theorem AN — Kronecker classification of ultraviolet parity collapse
+
+The following are equivalent:
+
+1. `inf_(a>=A) q_o(a)=0` for every `A>0`;
+2. for every finitely supported integer family `(n_gamma)` satisfying
+
+```text
+sum_gamma n_gamma gamma=0,                             (368)
+```
+
+one has
+
+```text
+sum_gamma n_gamma arctan(gamma) in pi Z.               (369)
+```
+
+If a relation `(368)` violates `(369)`, put
+
+```text
+Delta_n=dist(sum_gamma n_gamma arctan(gamma),pi Z)>0.
+```
+
+Then the explicit uniform floor
+
+```text
+q_o(a)>=4 Delta_n^2/
+ [pi^2 sum_gamma n_gamma^2/w_gamma] >0                 (370)
+```
+
+holds at every aperture.  Conversely, if `(369)` holds for every relation, there is a cofinal
+sequence `a_j` along which the full odd ultraviolet energy tends to zero and
+`zeta_(a_j)^ph` tends in total variation to the purely even law
+`delta_e tensor zeta_mult`.
+
+The analogous even-collapse criterion is obtained by replacing `(369)` with
+
+```text
+sum_gamma n_gamma[arctan(gamma)+pi/2] in pi Z.          (371)
+```
+
+#### Proof
+
+Work in the product torus `T=product_(gamma in Gamma_+) R/(pi Z)`.  The target point is
+`beta=(arctan(gamma))_gamma`, and the aperture orbit is
+`a|->(a gamma)_gamma`.  Every continuous character of `T` depends on finitely many coordinates.
+Such a character, indexed by integers `n_gamma`, annihilates the aperture orbit exactly when
+`(368)` holds; it takes value one at `beta` exactly when `(369)` holds.  The character
+description of the closure of a subgroup therefore says that `beta` lies in the orbit closure if
+and only if `(368)--(369)` hold for every finite relation.
+
+Membership in that closure gives a sequence for which every fixed phase
+`gamma a-arctan(gamma)` tends to zero modulo `pi`.  Dominated summation against the probability
+weights `w_gamma` gives `q_o(a)->0` and total-variation convergence of the two-atom parity laws.
+Compact-group recurrence makes the approximating sequence cofinal.  The converse follows because
+`q_o(a_j)->0` forces each positive-weight coordinate phase to tend to zero modulo `pi`, placing
+`beta` in the same closure.
+
+For the quantitative bound, let
+`d_gamma=dist(gamma a-arctan(gamma),pi Z) in [0,pi/2]`.  Relation `(368)` gives
+
+```text
+Delta_n<=sum_gamma |n_gamma|d_gamma
+ <=[sum_gamma n_gamma^2/w_gamma]^(1/2)
+   [sum_gamma w_gamma d_gamma^2]^(1/2).
+```
+
+Since `sin(d)>=2d/pi` on `[0,pi/2]`, equation `(370)` follows.  Replacing the target phase by
+`arctan(gamma)+pi/2` proves `(371)`.
+
+Kronecker--Pontryagin duality is classical, and the corpus already formalizes the homogeneous
+relation-hull/parity classification for Suzuki's screw function.  Those are parent results, not
+new knowledge here.  Candidate-new content is only the inhomogeneous literal-source
+specialization `(368)--(371)`, its quantitative floor `(370)`, and its placement against the
+infrared packet.  It kills another tempting no-go: a uniform odd ultraviolet floor cannot be
+obtained from zero counting, multiplicity, or generic almost periodicity.  It would require a
+finite rational linear relation among Xi ordinates whose `arctan` phases violate `(369)`.  In the
+absence of such a relation, odd ultraviolet collapse is not only possible abstractly but forced
+along some cofinal phase-revival sequence.
+
+For a complete negative Suzuki family this yields the exact next dichotomy.  If `(369)` fails,
+Theorems AG and AL put a macroscopic fraction of the odd source spectral probability at energies
+`(r_a,epsilon_a)` for some rate-free `epsilon_a->0`, while an order-one amount of its Rayleigh
+energy is carried by probability `Theta(1/a)` at energy `Theta(a)`.  Any no-go must then forbid this same-source spectral
+bifurcation using the off-diagonal Gram geometry.  If `(369)` holds, the selected family may
+instead approach purely even ultraviolet revivals, and the required cross-scale theorem must also
+exclude that arithmetic escape.  Neither branch is resolved by current knowledge.
+
+### 14.32 The exact open core is source-aligned Schur leverage
+
+Section 14.23 shows why a growing cutoff cannot be treated as a fixed finite block.  The correct
+rate-free object is its Schur complement.  Let `r_j->0` be a complete negative target schedule.
+Choose the symmetric cutoff from `(314)` with
+
+```text
+T_j=r_j^(-4),
+P_j=1_(|gamma|<b_(T_j)),
+Q_j=I-P_j.                                              (372)
+```
+
+For either parity source, decompose `u=u_L+u_H` and the positive coordinate operator `K+rI` as
+
+```text
+K+rI =[[L_j,B_j],[B_j^*,D_j]],
+
+Sigma_j=L_j-B_jD_j^(-1)B_j^*,
+d_j=u_L-B_jD_j^(-1)u_H.                                (373)
+```
+
+Here `L_j` is finite dimensional, `D_j>=r_jI`, and `Sigma_j>0` is its Schur complement.
+
+#### Theorem AO — target-forced source-aligned Schur-leverage certificate
+
+Under RH and complete negative Xi-target identification, the odd source satisfies
+
+```text
+<u_H,D_j^(-1)u_H>->0,
+||d_j-u_L||->0,                                        (374)
+
+<d_j,Sigma_j^(-1)d_j>
+ >=1-1/R_Xi-o(1)>77/81-o(1).                           (375)
+```
+
+Equivalently,
+
+```text
+sup_v [2 Re<d_j,v>-<v,Sigma_jv>]
+ >=1-1/R_Xi-o(1).                                      (376)
+```
+
+For both parities let `ell_(sigma,j)` denote the left side of `(375)` with its parity source and
+let `tau_(sigma,j)=<u_(sigma,H),D_j^(-1)u_(sigma,H)>`.  The complete first-defect condition is
+exactly
+
+```text
+[1-tau_(e,j)-ell_(e,j)]
+ /[1-tau_(o,j)-ell_(o,j)] ->R_Xi,                      (377)
+```
+
+up to the already-vanishing norm ratio `N_e/N_o->1`.  Thus the missing negative-side theorem is
+not a counting estimate: it must exclude or construct the parity ratio `(377)` for the two Schur
+leverage scores of the literal common sinc Gram matrix.
+
+#### Proof
+
+The block inverse identity gives exactly
+
+```text
+<u,(K+rI)^(-1)u>
+ =<u_H,D^(-1)u_H>+<d,Sigma^(-1)d>.                    (378)
+```
+
+Equations `(310)`, `(313)`, and `(314)` at `T=r^(-4)` give
+
+```text
+||u_H||^2/r=O(r^3|log r|)->0,
+||B||||u_H||/r=O(r|log r|^(5/2))->0.                  (379)
+```
+
+Since `D>=rI`, these are precisely `(374)`.  The push-through identity `(304)` says
+
+```text
+x_o(r)=1-<u_o,(K+rI)^(-1)u_o>.
+```
+
+Equation `(321)` and `(378)` therefore prove `(375)`.  The finite-dimensional inverse variational
+formula proves `(376)`.  Applying `(378)` to both parities and using `(325)` proves `(377)`.
+
+Schur complements, block inversion, and Tikhonov leverage are classical.  The corpus theorem
+`SuzukiExteriorFeshbachPruning` already formalizes the generic elimination algebra and a different
+Suzuki prime-adjacency exterior self-energy; neither is claimed new.  Candidate-new content is the
+zero-sampling, source-tail-renormalized certificate `(372)--(377)` and, crucially, its correction
+of the invalid growing-block coercivity argument.  It identifies exactly what the cutoff estimates
+do prove: the explicit high source tail is negligible, yet the high zero-coordinate block may
+still act through `B D^(-1)B^*` and create order-one low source leverage.  This can happen either
+through internal low-block near-dependence or through high-block cancellation.  Zero counting
+controls neither mechanism.  Bondarenko--Radchenko--Seip's global interpolation theorem
+establishes zero--integer dual completeness in an adjacent analytic space but supplies no uniform
+estimate for `(377)`.
+
+### 14.33 Target capture forces square-root active-zero complexity
+
+The Schur certificate in Theorem AO can be rewritten as a literal approximation problem.  For the
+odd source and every finitely supported zero-coordinate vector `c`, put
+
+```text
+J_(a,r)(c)=||h_(o,a)-S_a^*c||_2^2+r||c||_2^2.
+```
+
+Completing the square on the finite-coordinate form core gives
+
+```text
+inf_(c finite) J_(a,r)(c)
+ =1-<u_(o,a),(K_a+rI)^(-1)u_(o,a)>
+ =x_(o,a)(r).                                           (380)
+```
+
+The needed dimension estimate is not a zero-spacing theorem.  It is the classical pure-frequency
+Nikolskii inequality: if
+
+```text
+p(x)=sum_(j=1)^m b_j exp(-i gamma_j x)
+```
+
+is reduced, with arbitrary distinct real frequencies, then on every bounded interval `I`,
+
+```text
+||p||_(L^infinity(I))
+ <=(pi m/2)[|I|^(-1) int_I |p|^2]^(1/2).               (381)
+```
+
+No frequency separation, diameter bound, or coefficient bound occurs in `(381)`.
+
+#### Theorem AP — square-root active-zero law
+
+Assume RH and let `a_j->infinity`, `r_j->0` be a complete negative Xi-target schedule.  For all
+sufficiently large `j`, there exists a finitely supported `c_j` with
+
+```text
+J_(a_j,r_j)(c_j)<1/16.                                  (382)
+```
+
+Moreover, every finitely supported `c` satisfying `(382)` has, after deleting zero coefficients,
+at least
+
+```text
+m(c)>=c_* sqrt(a_j)                                    (383)
+```
+
+distinct signed Xi ordinates in its support, where `c_*>0` is absolute for the fixed odd source.
+Consequently no bounded-cardinality or `o(sqrt(a))` zero cluster can produce the target-forced odd
+ridge leverage.  If `G(c)=max{|gamma|:c_gamma ne 0}`, then Riemann--von Mangoldt counting also
+forces
+
+```text
+G(c) log(G(c)+2)>=c_** sqrt(a_j),
+G(c)>=c_*** sqrt(a_j)/log(a_j+2).                       (384)
+```
+
+Thus the source-aligned Schur mechanism is necessarily many-body and reaches a diverging zero
+height.  This conclusion is uniform over all possible internal zero gaps.
+
+#### Proof
+
+Complete target identification and `(321)` give
+
+```text
+limsup_j x_(o,a_j)(r_j)<=1/R_Xi<4/81<1/16.
+```
+
+Finite zero-coordinate vectors are the defining form core of the closed synthesis in `(299)`.
+Equation `(380)` therefore supplies `(382)`.
+
+Fix `L>0` so large that `exp(-2L)<1/64`, and decompose
+
+```text
+C_(a,L)=(-a+L,a-L),
+B_(a,L)=(-a,a)\C_(a,L).
+```
+
+The exact normalized `sinh` source and `(288)` give
+
+```text
+||h_(o,a)||_(C_(a,L))^2 ->exp(-2L),
+||h_(o,a)||_(B_(a,L))>7/8                              (385)
+```
+
+for all sufficiently large `a`.  Let `p=S_a^*c` and suppose `(382)` holds.  Then
+
+```text
+||h_(o,a)-p||_2<1/4,
+||p||_2<5/4,
+||p||_(B_(a,L))>5/8.                                  (386)
+```
+
+If `m` is the reduced number of frequencies of `p`, apply `(381)` on `(-a,a)`.  Since
+`|B_(a,L)|=2L`,
+
+```text
+||p||_(B_(a,L))
+ <=sqrt(2L)||p||_infinity
+ <sqrt(2L)(pi m/2)(5/4)/sqrt(2a)
+ =5 pi m sqrt(L)/(8 sqrt(a)).                          (387)
+```
+
+Comparing `(386)` and `(387)` yields
+
+```text
+m>sqrt(a)/(pi sqrt(L)),                                (388)
+```
+
+which is `(383)`.  Finally the number of signed distinct Xi ordinates in `[-G,G]` is
+`O(G log(G+2))`.  Combining this with `(388)` gives the first assertion of `(384)`; the second
+follows by separating `G>=sqrt(a)` from `G<sqrt(a)`.
+
+Inequality `(381)` is classical; in this normalization it is Theorem 2.5 of Erdelyi,
+*Inequalities for exponential sums* (Sb. Math. 208 (2017)), and is also recorded as Proposition
+6.2 in the modern clustered-Fourier literature.  Measurable Turan--Nazarov alone would give only
+an `Omega(log a)` support floor by comparing the fixed endpoint strips with a large central set.
+The `L^2` Nikolskii inequality is the decisive stronger parent, so neither estimate is claimed new.
+Candidate-new content is their Suzuki-specific consequence `(380)--(388)`: the numerical Xi gap,
+the literal normalized `sinh` boundary layer, and the zeta-zero synthesis together force
+square-root active-zero complexity and the height floor `(384)` for every successful ridge
+certificate.
+
+This does not close Route G.  It kills every finite or sub-square-root cluster explanation of
+Theorem AO, including clusters whose internal spacings are arbitrarily small.  The live mechanism
+is now a collective packet of at least order `sqrt(a)` distinct ordinates.  Closing the negative
+branch requires either a coefficient-penalized stability refinement of `(381)` on the actual Xi
+zero set or an explicit many-zero construction attaining `(382)` while also satisfying the paired
+ratio `(377)`.
+
+### 14.34 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -4926,20 +5610,23 @@ first-moment closure attempt, not a claim that Route G is dead.
     block at vanishing price, and the argument supplies no bound.  This is the same singular
     pointed mechanism left by weak anchor escape, not a technical omission.  Complete negative
     schedules are forced to `lambda->0^-`, but that interface remains open.
-91. **Any vanishing negative shift remains viable -- failed.**  Local Riemann--von Mangoldt
-    counting supplies spectral cutoffs with reciprocal-square cross capacity `O(log^4 T)`, while
-    the literal source tail is `O(log T/T)`.  Theorem AF kills every scale satisfying
-    `ar/log^4(1/r)->infinity` and forces successful complete negative schedules into
-    `r=O(log^4(a)/a)`.
-92. **Classical zero counting closes the inverse-aperture boundary layer -- failed.**  At the
-    remaining scale the vanishing resolvent mass and the worst low--high cluster cancellation have
-    the same permitted order.  A further theorem needs source-sensitive cluster control or the
-    prime-side relative Hankel bound; neither simplicity nor a guessed minimum zero gap is legal.
+91. **Cross-cutoff capacity and source-tail decay quantify every vanishing shift -- failed by a
+    proof gap.**  The cutoff estimate `C_T^2=O(log^4 T)` and source tail
+    `delta(T)=O(log T/T)` are valid, but the attempted choice `T=r^(-2)` also makes the internal low
+    block grow.  Estimate `(306)` supplies only a fixed-`T` constant `D_T`; no bound on
+    `D_(r^(-2))` was proved.  The former Theorem AF and `r=O(log^4(a)/a)` conclusion are retracted.
+92. **Classical zero counting controls the growing low-block Gram minimum -- failed
+    class-completely.**  Unit-window counts do not bound internal zero gaps.  Near-colliding
+    ordinates can make the corresponding exponentials almost dependent while preserving every
+    counting estimate used in `(312)--(314)`.  A new source-aligned Schur-complement theorem or
+    direct prime-side relative Hankel bound is required; assuming simplicity or a minimum gap is
+    illegal.
 93. **The residual zero-mass singularity has no quantitative shape -- failed.**  Fixed-mass
     expanding-frame annihilation first forces both normalized source spectral laws weakly to
     `delta_0`.  Target ratio then forces less than `8/81` of the odd law below `r_a` and more than
-    `73/81` into the shrinking annulus `(r_a,a^(-1/2))`.  Theorem AG is the exact mesoscopic
-    hard-edge survivor.
+    `73/81` into `(r_a,epsilon)` for every fixed `epsilon>0`.  A diagonal argument supplies some
+    rate-free `epsilon_a->0` with the same mass bound, but no explicit aperture scale.  Theorem AG
+    is the exact hard-edge survivor.
 94. **Weak hard-edge collapse itself kills the target -- failed.**  Weak convergence sees only the
     fixed scale `epsilon`; it is compatible with a macroscopic packet whose energy tends to zero
     while its ratio to `r_a` stays above one.  Closing Suzuki now means ruling out this literal
@@ -4951,8 +5638,8 @@ first-moment closure attempt, not a claim that Route G is dead.
 96. **The updated finite-shift parity-transport budget remains spread over a macroscopic shift
     interval -- failed for every complete negative family.**  Theorem AH condenses its entire
     cost `log R_Xi>log(81/4)` into `(-epsilon_a,-r_a)` for every free probe `epsilon_a->0`.
-    Consequently its positive hazard is unbounded and reaches the inverse-aperture scale modulo
-    the zero-counting polylogarithm.
+    A rate-free diagonal probe always exists and forces an unbounded positive hazard.  The
+    retracted Theorem AF means no inverse-aperture rate follows.
 97. **A shrinking interval can pay the Xi transport cost without a scale-capacity law -- failed.**
     The exact nonnegative slack `(330)` forces `epsilon_a/r_a>=R_Xi-o(1)`.  Near equality, odd
     posterior hardness and even posterior softness both saturate in logarithmic mean.  This is a
@@ -4960,9 +5647,68 @@ first-moment closure attempt, not a claim that Route G is dead.
 98. **The literal paired Fourier energy excludes the sharp Stieltjes countermodel -- failed.**
     Equation `(338)` gives the exact source conservation `m_e+m_o->4M_0(1)` and target matching
     forces `m_o/r>=R_Xi-1`.  A vanishing high-energy mass can carry that finite first moment while
-    remaining invisible at the condensed scale.  Closure therefore requires uniform
-    integrability or the relative prime--Gamma Hankel estimate; finitely many source moments are
-    structurally insufficient.
+    remaining invisible at the condensed scale.  This leaves uniform integrability or the relative
+    prime--Gamma Hankel estimate as the next candidates; finitely many source moments are
+    structurally insufficient, and item 99 kills the former candidate.
+99. **Uniform integrability is the missing literal-source input -- failed in the opposite
+    direction.**  Theorem AJ combines the already-proved weak collapse with the exact paired first
+    moment: above every fixed energy threshold, source probability tends to zero while excess
+    Rayleigh energy tends to `4M_0(1)`.  The literal source is maximally non-uniformly integrable.
+100. **A uniform second spectral moment can suppress that ultraviolet escape -- failed.**
+     Cauchy--Schwarz and the vanishing tail probability force the combined second moment to diverge.
+     The remaining theorem must relate infrared parity transport to ultraviolet escape through the
+     prime--Gamma relative form; it cannot discard either layer by moment bounds.
+101. **The forced ultraviolet energy can escape on arbitrary spectral scales -- failed.**  Theorem
+     AK transfers the size-biased source law through `S_aS_a^*`: after division by `2a`, it
+     converges to the zero-multiplicity clock `(347)`.  Order-one energy sits at linear aperture,
+     carried by source probability of order `1/a`.
+102. **Locating that clock requires simple Xi zeros -- failed.**  Distinct-ordinate coordinates
+     have diagonal `2am_gamma`; the limit retains arbitrary multiplicity exactly.  Simplicity only
+     collapses the already-proved limit to `delta_1`.
+103. **The ultraviolet clock contradicts the desired Xi weights -- failed in the opposite
+     direction.**  Its weights are precisely `m_gamma/[(1+gamma^2)M_0(1)]`, the fixed-anchor
+     inverse-square Xi probability, pushed through `gamma|->m_gamma`.  This is positive evidence
+     of source compatibility, not full carrier convergence and not RH.
+104. **Resolving the ultraviolet clock by parity forces asymptotic half--half balance -- failed
+     pointwise.**  Theorem AL proves half--half balance only after aperture Cesaro averaging.  The
+     literal split is the almost-periodic phase clock `(356)`, and every base profile recurs at
+     arbitrarily large apertures.  A complete family may select exceptional apertures.
+105. **The parity-resolved ultraviolet law contradicts the infrared odd packet -- failed by exact
+     marginal realization.**  Theorem AM simultaneously realizes the target Stieltjes ratio,
+     weak hard-edge collapse, macroscopic odd annulus, paired first-moment limit, multiplicity
+     clock, and moving parity phase clock.  Therefore every argument using only separate source
+     spectral marginals is exhausted.  The live core is an off-diagonal cross-scale theorem for
+     the common sinc Gram/relative prime--Gamma Hankel form.
+106. **Almost periodicity gives a uniform positive odd ultraviolet budget -- failed.**  It gives
+     recurrence, not a floor.  Theorem AN proves that a floor exists exactly when some finite
+     integer relation among positive Xi ordinates has a nonintegral `arctan` phase sum.
+107. **Zero counting or multiplicities can provide that floor -- failed class-completely.**  The
+     criterion `(368)--(369)` depends on exact rational linear relations among ordinates, data
+     erased by counting and multiplicity.  A violating relation gives the quantitative floor
+     `(370)`; if every relation is compatible, purely even ultraviolet revivals occur cofinally.
+108. **An odd ultraviolet floor, if available, would itself kill Suzuki -- failed.**  It would
+     force the same odd source to carry macroscopic infrared probability and order-one
+     ultraviolet energy, but positive measures permit exactly that bifurcation.  The missing step
+     still has to use the literal off-diagonal sinc Gram geometry to forbid it.
+109. **A negligible explicit high-coordinate source tail makes the high Gram block irrelevant --
+     failed.**  Theorem AO kills its direct inverse-resolvent contribution, but the same block
+     survives inside the Schur correction `B D^(-1)B^*`.  Target matching forces order-one odd
+     leverage after this correction.
+110. **Global completeness or Fourier interpolation controls that leverage -- failed as an
+     inference.**  Bondarenko--Radchenko--Seip provide a global zero/integer interpolation basis,
+     not uniform finite-aperture Tikhonov bounds for the two literal parity sources.  The exact
+     remaining first-defect datum is the coupled Schur ratio `(377)`.
+111. **A bounded or slowly growing zero cluster can supply the odd leverage -- failed.**  Theorem
+     AP turns the target into `L^2` approximation of the normalized `sinh` boundary layer.  The
+     pure-frequency Nikolskii inequality forces every successful finite certificate to use at
+     least `c sqrt(a)` distinct ordinates and to reach height `c sqrt(a)/log a`.
+112. **Measurable Turan--Nazarov gives the optimal active-support obstruction -- failed.**  Its
+     direct central-set argument gives only `Omega(log a)`.  The frequency-independent `L^2`
+     Nikolskii inequality upgrades this to the square-root law `(383)--(388)`.
+113. **Square-root active complexity kills Suzuki -- failed.**  Riemann--von Mangoldt counting
+     supplies enough ordinates at growing height, while current knowledge gives no
+     coefficient-penalized stability theorem excluding their collective sinc-Gram leverage.  The
+     remaining branch is genuinely many-body, not impossible by dimension alone.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -4981,8 +5727,29 @@ equivalence, source-impedance calibration, all-anchor weak-escape law, and fixed
 rigidity `(163)--(200)`, together with the compactified two-extension spectral-shift and
 smoothing-trace reduction `(201)--(215)`, the low-energy support/regular phase-mixing wall
 `(216)--(223)`, and the source-specific Toeplitz `sech`/normalized-Hankel rapidity,
-source-alignment, localization, reflection-rigidity, nonuniform-PNT, and negative-shift recession
-walls `(224)--(325)`.
+source-alignment, localization, reflection-rigidity, nonuniform-PNT, negative-shift recession,
+zero-edge transport condensation, paired source-energy, infrared/ultraviolet bifurcation,
+ultraviolet multiplicity and recurrent parity clocks, marginal-compatibility wall, exact
+Kronecker classification of parity collapse, and source-aligned Schur-leverage certificate
+`(224)--(379)`, followed by the square-root active-zero law `(380)--(388)`.
+The internal novelty audit found a direct parent for the compact-group parts of Theorems AL and
+AN: the already-formalized `suzuki-screw-compact-hull-parity-law.md` proves the universal relation
+hull, cofinal recurrence, Haar law, and homogeneous all-minus-one parity criterion.  Accordingly
+none of those mechanisms is claimed new here.  The surviving candidate-new statements are the
+literal source Fourier phase `(355)--(361)`, its parity-resolved aperture-scaled energy law, the
+inhomogeneous `arctan(gamma)` relation criterion and quantitative floor `(368)--(371)`, and the
+exact IR/UV marginal compatibility construction `(362)--(366)`, together with the corrected
+source-aligned Schur-leverage reduction `(372)--(379)` and target-forced active-zero/height law
+`(380)--(388)`.  The pure-frequency Nikolskii inequality used for the latter is classical
+Erdelyi and is not claimed new.  Targeted arXiv searches found
+Suzuki's finite-interval operator conjecture and an unrelated Ferrar-type probability literature
+using the phrase “size-biased distribution,” but no matching source-energy scaling, parity clock,
+or inhomogeneous zero-relation theorem.  Bondarenko--Radchenko--Seip's Fourier interpolation basis
+with zeta zeros is a serious adjacent parent: it couples zero jets to Fourier samples at logarithms
+of integers, but supplies neither finite-aperture Tikhonov/ridge asymptotics nor the parity-resolved
+common sinc-Gram estimate required here.  It reinforces that the missing information is the
+quantitative zero--integer dual coupling, not completeness of the zero exponentials.  External
+priority remains unverified.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
 specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
 formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the

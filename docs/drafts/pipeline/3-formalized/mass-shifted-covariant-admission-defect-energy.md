@@ -1,7 +1,7 @@
 # Mass-shifted covariant admission defect energy
 
 - **ID:** `mass-shifted-covariant-admission-defect-energy`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` §9.3
 - **RH used:** no
 - **Computation used:** no
@@ -19,7 +19,7 @@ Fixed-mass transport is already exact. Missing object is source-mass variation r
 admission. Existing moving-current law contains connection term `2 h_y a_y'`, where
 `h_y=L_y(P_y^2)` and `a_y=[X^(n-1)]P_y`.
 
-## Theorem `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+## Theorem `[LEAN-PROVED] [NOVELTY UNVERIFIED]`
 
 Put
 
@@ -135,5 +135,31 @@ and ancestry audit.
 
 ## Lean target
 
-Formalize (CDE.3)--(CDE.7), pointwise derivative law (CDE.1), and its exact interval-integral
-consequence using corpus primitives only.
+Completed in
+`formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionDefectEnergy.lean`.
+
+The module proves unconditionally:
+
+1. same-degree monic defect has degree below current admission;
+2. exact odd-current decomposition (CDE.3)--(CDE.4);
+3. current odd-current derivative with its unique connection coefficient;
+4. pointwise covariant defect-energy law (CDE.1);
+5. literal square-mass identification with rational--Gamma/von Mangoldt arithmetic transgression
+   and the corresponding arithmetic derivative law;
+6. continuity of fixed and canonical adaptive shear using only finite coefficient sums, shifted-Xi
+   moment jets, and nonsingular inverse-Hankel admission;
+7. continuity of full density
+   `S_y=T_y(P_y,A)+2h_y'd_y` on every positive compact chamber;
+8. exact fundamental-theorem identity
+   `∫_[a,b] S_y dy=J_a-J_b`;
+9. actual `L¹` Lipschitz theorem
+   `|J_b-J_a|≤∫_[a,b]|S_y|dy` and uniform consequence
+   `|J_b-J_a|≤C(b-a)`;
+10. frozen-left-endpoint identity `∫_[a,b]S_y(P_y,P_a)dy=-J_b`.
+
+No continuity or integrability hypothesis is assumed: continuity is derived inside Lean from corpus
+primitives. Direct `lake env lean` check and targeted `lake build` pass. Module is wired into
+`RHTower.lean`. Axiom audit of arithmetic derivative, exact integral, `L¹`, uniform Lipschitz, and
+frozen-endpoint capstones reports only `propext`, `Classical.choice`, and `Quot.sound`. Forbidden
+declaration scan and `git diff --check` pass. Whole-corpus lint remains red only on nineteen unrelated
+pre-existing umbrella-unreachable modules; this module is reachable from `RHTower.lean`.

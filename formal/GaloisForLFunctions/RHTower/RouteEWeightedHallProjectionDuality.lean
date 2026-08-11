@@ -33,28 +33,29 @@ def rawKernelSet (R : RouteEHallRelation S T) : Set (S → T → ℝ) :=
 
 /-- Target output marginal of a raw supported kernel. -/
 def rawOutput
-    (D : RouteEHallANOVAData S T) (P : S → T → ℝ) (t : T) : ℝ :=
+    (_R : RouteEHallRelation S T) (D : RouteEHallANOVAData S T)
+    (P : S → T → ℝ) (t : T) : ℝ :=
   ∑ s, D.sourceLaw s * P s t
 
-theorem rawKernel_nonneg
+omit [DecidableEq T] in theorem rawKernel_nonneg
     (R : RouteEHallRelation S T) {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet)
     (s : S) (t : T) :
     0 ≤ P s t :=
   hP.1 s t
 
-theorem rawKernel_row_sum
+omit [DecidableEq T] in theorem rawKernel_row_sum
     (R : RouteEHallRelation S T) {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet)
     (s : S) :
     ∑ t, P s t = 1 :=
   hP.2.1 s
 
-theorem rawKernel_eq_zero_of_not_neighbor
+omit [DecidableEq T] in theorem rawKernel_eq_zero_of_not_neighbor
     (R : RouteEHallRelation S T) {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet)
     (s : S) (t : T) (ht : t ∉ R.neighbors s) :
     P s t = 0 :=
   hP.2.2 s t ht
 
-theorem rawKernel_le_one
+omit [DecidableEq T] in theorem rawKernel_le_one
     (R : RouteEHallRelation S T) {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet)
     (s : S) (t : T) :
     P s t ≤ 1 := by
@@ -64,7 +65,7 @@ theorem rawKernel_le_one
 noncomputable def chosenNeighbor (R : RouteEHallRelation S T) (s : S) : T :=
   (R.neighbors_nonempty s).choose
 
-theorem chosenNeighbor_mem (R : RouteEHallRelation S T) (s : S) :
+omit [DecidableEq T] in theorem chosenNeighbor_mem (R : RouteEHallRelation S T) (s : S) :
     R.chosenNeighbor s ∈ R.neighbors s :=
   (R.neighbors_nonempty s).choose_spec
 
@@ -75,7 +76,7 @@ theorem rawKernelSet_nonempty (R : RouteEHallRelation S T) :
   refine ⟨P, ?_⟩
   constructor
   · intro s t
-    simp [P]
+    by_cases h : t = R.chosenNeighbor s <;> simp [P, h]
   constructor
   · intro s
     simp [P]
@@ -93,7 +94,7 @@ theorem isClosed_rawKernelSet (R : RouteEHallRelation S T) :
   have hrow : IsClosed {P : S → T → ℝ | ∀ s, ∑ t, P s t = 1} := by
     simp only [setOf_forall]
     exact isClosed_iInter fun s => isClosed_eq
-      (continuous_finset_sum Finset.univ fun t _ht => continuous_apply_apply s t)
+      (continuous_finsetSum Finset.univ fun t _ht => continuous_apply_apply s t)
       continuous_const
   have hsupp :
       IsClosed {P : S → T → ℝ | ∀ s t, t ∉ R.neighbors s → P s t = 0} := by
@@ -117,7 +118,7 @@ theorem isCompact_rawKernelSet (R : RouteEHallRelation S T) :
   simpa [Set.inter_eq_right.mpr hsubset] using
     hcompact.inter_right R.isClosed_rawKernelSet
 
-theorem convex_rawKernelSet (R : RouteEHallRelation S T) :
+omit [DecidableEq T] in theorem convex_rawKernelSet (R : RouteEHallRelation S T) :
     Convex ℝ R.rawKernelSet := by
   intro P hP Q hQ a b ha hb hab
   constructor
@@ -128,12 +129,12 @@ theorem convex_rawKernelSet (R : RouteEHallRelation S T) :
   · intro s
     simp_rw [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_add_distrib,
       ← Finset.mul_sum, R.rawKernel_row_sum hP, R.rawKernel_row_sum hQ]
-    exact hab
+    simpa only [mul_one] using hab
   · intro s t ht
     simp [R.rawKernel_eq_zero_of_not_neighbor hP s t ht,
       R.rawKernel_eq_zero_of_not_neighbor hQ s t ht]
 
-theorem rawOutput_sum
+omit [DecidableEq T] in theorem rawOutput_sum
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) :
     ∑ t, R.rawOutput D P t = 1 := by
@@ -142,18 +143,18 @@ theorem rawOutput_sum
   simp_rw [← Finset.mul_sum, R.rawKernel_row_sum hP, mul_one]
   exact D.source_sum
 
-theorem rawOutput_nonneg
+omit [DecidableEq T] in theorem rawOutput_nonneg
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) (t : T) :
     0 ≤ R.rawOutput D P t :=
   Finset.sum_nonneg fun s _hs =>
     mul_nonneg (D.source_pos s).le (R.rawKernel_nonneg hP s t)
 
-private theorem continuous_rawOutput
+omit [DecidableEq T] in private theorem continuous_rawOutput
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (t : T) :
     Continuous fun P : S → T → ℝ => R.rawOutput D P t := by
   unfold rawOutput
-  exact continuous_finset_sum Finset.univ fun s _hs =>
+  exact continuous_finsetSum Finset.univ fun s _hs =>
     continuous_const.mul (continuous_apply_apply s t)
 
 /-- Weighted Euclidean coordinate of a reachable target marginal. -/
@@ -162,9 +163,26 @@ noncomputable def standardizedOutput
     (P : S → T → ℝ) : EuclideanSpace ℝ T :=
   WithLp.toLp 2 fun t => (R.rawOutput D P t - D.targetLaw t) / Real.sqrt (D.targetLaw t)
 
-private theorem continuous_standardizedOutput
+/-- Weighted chi-square of a raw output marginal against the target law. -/
+noncomputable def rawChiSquare
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    (P : S → T → ℝ) : ℝ :=
+  ∑ t, (R.rawOutput D P t - D.targetLaw t) ^ 2 / D.targetLaw t
+
+omit [DecidableEq T] in theorem standardizedOutput_norm_sq
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    (P : S → T → ℝ) :
+    ‖standardizedOutput D R P‖ ^ 2 = rawChiSquare D R P := by
+  rw [EuclideanSpace.real_norm_sq_eq]
+  unfold standardizedOutput rawChiSquare
+  apply Finset.sum_congr rfl
+  intro t _ht
+  have hβ : 0 < D.targetLaw t := D.target_pos t
+  rw [div_pow, Real.sq_sqrt hβ.le]
+
+omit [DecidableEq T] in private theorem continuous_standardizedOutput
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    Continuous (D.standardizedOutput R) := by
+    Continuous (standardizedOutput D R) := by
   apply (PiLp.continuousLinearEquiv 2 ℝ (fun _ : T => ℝ)).symm.continuous.comp
   rw [continuous_pi_iff]
   intro t
@@ -174,122 +192,254 @@ private theorem continuous_standardizedOutput
 def standardizedMarginalSet
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
     Set (EuclideanSpace ℝ T) :=
-  D.standardizedOutput R '' R.rawKernelSet
+  standardizedOutput D R '' R.rawKernelSet
 
 theorem standardizedMarginalSet_nonempty
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    (D.standardizedMarginalSet R).Nonempty :=
+    (standardizedMarginalSet D R).Nonempty :=
   R.rawKernelSet_nonempty.image _
 
 theorem isCompact_standardizedMarginalSet
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    IsCompact (D.standardizedMarginalSet R) :=
+    IsCompact (standardizedMarginalSet D R) :=
   R.isCompact_rawKernelSet.image (continuous_standardizedOutput D R)
 
-private theorem standardizedOutput_affine
+omit [DecidableEq T] in private theorem standardizedOutput_affine
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     (P Q : S → T → ℝ) (a b : ℝ) (hab : a + b = 1) :
-    D.standardizedOutput R (a • P + b • Q) =
-      a • D.standardizedOutput R P + b • D.standardizedOutput R Q := by
-  apply WithLp.toLp_injective
-  funext t
-  simp only [standardizedOutput, WithLp.ofLp_toLp, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-  unfold rawOutput
-  simp_rw [Finset.sum_add_distrib, ← Finset.mul_sum]
+    standardizedOutput D R (a • P + b • Q) =
+      a • standardizedOutput D R P + b • standardizedOutput D R Q := by
+  have hout (t : T) :
+      R.rawOutput D (a • P + b • Q) t =
+        a * R.rawOutput D P t + b * R.rawOutput D Q t := by
+    unfold rawOutput
+    calc
+      (∑ s, D.sourceLaw s * (a • P + b • Q) s t) =
+          ∑ s, (a * (D.sourceLaw s * P s t) +
+            b * (D.sourceLaw s * Q s t)) := by
+        apply Finset.sum_congr rfl
+        intro s _hs
+        simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+        ring
+      _ = _ := by rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+  apply PiLp.ext
+  intro t
+  simp only [standardizedOutput, WithLp.ofLp_toLp, PiLp.add_apply,
+    PiLp.smul_apply, smul_eq_mul]
+  rw [hout]
   have hsqrt : Real.sqrt (D.targetLaw t) ≠ 0 :=
     ne_of_gt (Real.sqrt_pos.2 (D.target_pos t))
   field_simp
-  nlinarith
+  linear_combination D.targetLaw t * hab
 
 theorem convex_standardizedMarginalSet
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    Convex ℝ (D.standardizedMarginalSet R) := by
+    Convex ℝ (standardizedMarginalSet D R) := by
   rintro _ ⟨P, hP, rfl⟩ _ ⟨Q, hQ, rfl⟩ a b ha hb hab
   refine ⟨a • P + b • Q, R.convex_rawKernelSet hP hQ ha hb hab, ?_⟩
-  exact D.standardizedOutput_affine R P Q a b hab
+  exact standardizedOutput_affine D R P Q a b hab
 
 theorem exists_standardized_projection
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    ∃ v ∈ D.standardizedMarginalSet R,
+    ∃ v ∈ standardizedMarginalSet D R,
       ‖(0 : EuclideanSpace ℝ T) - v‖ =
-        ⨅ w : D.standardizedMarginalSet R, ‖(0 : EuclideanSpace ℝ T) - w‖ :=
+        ⨅ w : standardizedMarginalSet D R, ‖(0 : EuclideanSpace ℝ T) - w‖ :=
   exists_norm_eq_iInf_of_complete_convex
-    (D.standardizedMarginalSet_nonempty R)
-    (D.isCompact_standardizedMarginalSet R).isComplete
-    (D.convex_standardizedMarginalSet R) 0
+    (standardizedMarginalSet_nonempty D R)
+    (isCompact_standardizedMarginalSet D R).isComplete
+    (convex_standardizedMarginalSet D R) (0 : EuclideanSpace ℝ T)
 
 /-- Canonical choice of nearest standardized reachable marginal. -/
 noncomputable def projectionPoint
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
     EuclideanSpace ℝ T :=
-  (D.exists_standardized_projection R).choose
+  (exists_standardized_projection D R).choose
 
 theorem projectionPoint_mem
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    D.projectionPoint R ∈ D.standardizedMarginalSet R :=
-  (D.exists_standardized_projection R).choose_spec.1
+    projectionPoint D R ∈ standardizedMarginalSet D R :=
+  (exists_standardized_projection D R).choose_spec.1
 
 theorem projectionPoint_isMin
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    ‖(0 : EuclideanSpace ℝ T) - D.projectionPoint R‖ =
-      ⨅ w : D.standardizedMarginalSet R, ‖(0 : EuclideanSpace ℝ T) - w‖ :=
-  (D.exists_standardized_projection R).choose_spec.2
+    ‖(0 : EuclideanSpace ℝ T) - projectionPoint D R‖ =
+      ⨅ w : standardizedMarginalSet D R, ‖(0 : EuclideanSpace ℝ T) - w‖ :=
+  (exists_standardized_projection D R).choose_spec.2
 
 /-- Supported kernel realizing the canonical projection point. -/
 noncomputable def projectionKernel
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) : S → T → ℝ :=
-  (D.projectionPoint_mem R).choose
+  (projectionPoint_mem D R).choose
 
 theorem projectionKernel_mem
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    D.projectionKernel R ∈ R.rawKernelSet :=
-  (D.projectionPoint_mem R).choose_spec.1
+    projectionKernel D R ∈ R.rawKernelSet :=
+  (projectionPoint_mem D R).choose_spec.1
 
 theorem standardizedOutput_projectionKernel
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    D.standardizedOutput R (D.projectionKernel R) = D.projectionPoint R :=
-  (D.projectionPoint_mem R).choose_spec.2
+    standardizedOutput D R (projectionKernel D R) = projectionPoint D R :=
+  (projectionPoint_mem D R).choose_spec.2
 
 /-- Squared weighted distance from target law to the reachable marginal polytope. -/
 noncomputable def projectionDistanceSq
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) : ℝ :=
-  ‖D.projectionPoint R‖ ^ 2
+  ‖projectionPoint D R‖ ^ 2
+
+/-- The chosen projection realizes the exact minimum chi-square. -/
+theorem projectionDistanceSq_eq_rawChiSquare
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    projectionDistanceSq D R = rawChiSquare D R (projectionKernel D R) := by
+  unfold projectionDistanceSq
+  rw [← standardizedOutput_projectionKernel D R,
+    standardizedOutput_norm_sq]
+
+theorem projectionDistanceSq_nonneg
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    0 ≤ projectionDistanceSq D R := by
+  unfold projectionDistanceSq
+  positivity
+
+/-- Exact finite optimum: projection distance is no larger than every supported-kernel
+chi-square, with no assumed optimizer. -/
+theorem projectionDistanceSq_le_rawChiSquare
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) :
+    projectionDistanceSq D R ≤ rawChiSquare D R P := by
+  have hiInf :
+      (⨅ w : standardizedMarginalSet D R,
+          ‖(0 : EuclideanSpace ℝ T) - w‖) ≤
+        ‖(0 : EuclideanSpace ℝ T) - standardizedOutput D R P‖ := by
+    have hbdd : BddBelow (Set.range fun w : standardizedMarginalSet D R =>
+        ‖(0 : EuclideanSpace ℝ T) - w‖) := by
+      refine ⟨0, ?_⟩
+      rintro _ ⟨w, rfl⟩
+      exact norm_nonneg _
+    exact ciInf_le hbdd
+      ⟨standardizedOutput D R P, ⟨P, hP, rfl⟩⟩
+  have hnorm : ‖projectionPoint D R‖ ≤ ‖standardizedOutput D R P‖ := by
+    rw [← norm_neg, ← zero_sub]
+    rw [projectionPoint_isMin D R]
+    simpa only [zero_sub, norm_neg] using hiInf
+  unfold projectionDistanceSq
+  rw [← standardizedOutput_norm_sq D R P]
+  exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 hnorm
+
+/-- Zero projection distance exactly means an exact supported transport to the target law. -/
+theorem projectionDistanceSq_eq_zero_iff
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    projectionDistanceSq D R = 0 ↔
+      ∃ P ∈ R.rawKernelSet, ∀ t, R.rawOutput D P t = D.targetLaw t := by
+  constructor
+  · intro hzero
+    refine ⟨projectionKernel D R, projectionKernel_mem D R, ?_⟩
+    have hnorm : ‖projectionPoint D R‖ = 0 := by
+      unfold projectionDistanceSq at hzero
+      nlinarith [norm_nonneg (projectionPoint D R)]
+    have hpoint : projectionPoint D R = 0 := norm_eq_zero.mp hnorm
+    intro t
+    have hcoord := congrArg (fun v : EuclideanSpace ℝ T => v t)
+      ((standardizedOutput_projectionKernel D R).trans hpoint)
+    simp only [standardizedOutput, WithLp.ofLp_toLp] at hcoord
+    have hsqrt : Real.sqrt (D.targetLaw t) ≠ 0 :=
+      ne_of_gt (Real.sqrt_pos.2 (D.target_pos t))
+    rcases (div_eq_zero_iff).mp hcoord with hnum | hden
+    · exact sub_eq_zero.mp hnum
+    · exact (hsqrt hden).elim
+  · rintro ⟨P, hP, hout⟩
+    apply le_antisymm
+    · refine (projectionDistanceSq_le_rawChiSquare D R hP).trans_eq ?_
+      unfold rawChiSquare
+      simp [hout]
+    · exact projectionDistanceSq_nonneg D R
+
+/-- Normalized weighted Hall condition for the physical source and target laws. -/
+def WeightedHall
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) : Prop :=
+  ∀ U : Finset S,
+    ∑ s ∈ U, D.sourceLaw s ≤
+      ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t
+
+/-- Every exact supported transport satisfies normalized weighted Hall. -/
+theorem weightedHall_of_exactTransport
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet)
+    (hout : ∀ t, R.rawOutput D P t = D.targetLaw t) :
+    WeightedHall D R := by
+  intro U
+  let N := U.biUnion R.neighbors
+  have houtside (t : T) (ht : t ∉ N) :
+      ∑ s ∈ U, D.sourceLaw s * P s t = 0 := by
+    apply Finset.sum_eq_zero
+    intro s hs
+    have htN : t ∉ R.neighbors s := by
+      intro hts
+      exact ht (Finset.mem_biUnion.mpr ⟨s, hs, hts⟩)
+    rw [R.rawKernel_eq_zero_of_not_neighbor hP s t htN, mul_zero]
+  calc
+    (∑ s ∈ U, D.sourceLaw s) =
+        ∑ s ∈ U, D.sourceLaw s * ∑ t, P s t := by
+      apply Finset.sum_congr rfl
+      intro s _hs
+      rw [R.rawKernel_row_sum hP s, mul_one]
+    _ = ∑ t, ∑ s ∈ U, D.sourceLaw s * P s t := by
+      simp_rw [Finset.mul_sum]
+      rw [Finset.sum_comm]
+    _ = ∑ t ∈ N, ∑ s ∈ U, D.sourceLaw s * P s t := by
+      apply Eq.symm
+      apply Finset.sum_subset
+        (by intro t _ht; exact Finset.mem_univ t)
+      intro t _htuniv htN
+      exact houtside t htN
+    _ ≤ ∑ t ∈ N, R.rawOutput D P t := by
+      apply Finset.sum_le_sum
+      intro t _ht
+      unfold rawOutput
+      apply Finset.sum_le_sum_of_subset_of_nonneg
+        (by intro s _hs; exact Finset.mem_univ s)
+      intro s _hs _hsU
+      exact mul_nonneg (D.source_pos s).le (R.rawKernel_nonneg hP s t)
+    _ = ∑ t ∈ N, D.targetLaw t := by
+      apply Finset.sum_congr rfl
+      intro t _ht
+      exact hout t
 
 theorem projection_variational_inequality
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) :
-    inner ℝ (D.projectionPoint R)
-        (D.standardizedOutput R P - D.projectionPoint R) ≥ 0 := by
+    inner ℝ (projectionPoint D R)
+        (standardizedOutput D R P - projectionPoint D R) ≥ 0 := by
   have hchar :=
-    (norm_eq_iInf_iff_real_inner_le_zero (D.convex_standardizedMarginalSet R)
-      (D.projectionPoint_mem R)).1 (D.projectionPoint_isMin R)
-      (D.standardizedOutput R P) ⟨P, hP, rfl⟩
+    (norm_eq_iInf_iff_real_inner_le_zero (convex_standardizedMarginalSet D R)
+      (projectionPoint_mem D R)).1 (projectionPoint_isMin D R)
+      (standardizedOutput D R P) ⟨P, hP, rfl⟩
   simpa [real_inner_comm] using neg_nonneg.mpr hchar
 
 private theorem projection_variational_inequality_raw
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) :
     0 ≤ ∑ t,
-      ((R.rawOutput D (D.projectionKernel R) t - D.targetLaw t) / D.targetLaw t) *
-        (R.rawOutput D P t - R.rawOutput D (D.projectionKernel R) t) := by
-  have h := D.projection_variational_inequality R hP
-  rw [← D.standardizedOutput_projectionKernel R] at h
+      ((R.rawOutput D (projectionKernel D R) t - D.targetLaw t) / D.targetLaw t) *
+        (R.rawOutput D P t - R.rawOutput D (projectionKernel D R) t) := by
+  have h := projection_variational_inequality D R hP
+  rw [← standardizedOutput_projectionKernel D R] at h
   simp only [PiLp.inner_apply, RCLike.inner_apply, starRingEnd_apply, star_trivial,
-    WithLp.ofLp_sub, standardizedOutput, WithLp.ofLp_toLp] at h
+    WithLp.ofLp_sub, standardizedOutput, Pi.sub_apply] at h
   convert h using 1
   apply Finset.sum_congr rfl
   intro t _ht
   have hβ : 0 < D.targetLaw t := D.target_pos t
   have hsqrt : Real.sqrt (D.targetLaw t) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hβ)
+  field_simp [ne_of_gt hβ, hsqrt]
   rw [Real.sq_sqrt hβ.le]
-  field_simp
   ring
 
 /-! ## Exact reporter lower envelope -/
 
-private theorem exists_neighbor_argmin
+omit [DecidableEq T] in private theorem exists_neighbor_argmin
     (R : RouteEHallRelation S T) (f : T → ℝ) (s : S) :
     ∃ t ∈ R.neighbors s, ∀ u ∈ R.neighbors s, f t ≤ f u := by
+  classical
   let image := (R.neighbors s).image f
   have himage : image.Nonempty := (R.neighbors_nonempty s).image f
   let m := image.min' himage
@@ -297,19 +447,19 @@ private theorem exists_neighbor_argmin
   rcases Finset.mem_image.mp hm with ⟨t, ht, hft⟩
   refine ⟨t, ht, ?_⟩
   intro u hu
-  rw [← hft]
+  rw [hft]
   exact Finset.min'_le image (f u) (Finset.mem_image.mpr ⟨u, hu, rfl⟩)
 
 noncomputable def neighborArgmin
     (R : RouteEHallRelation S T) (f : T → ℝ) (s : S) : T :=
   (R.exists_neighbor_argmin f s).choose
 
-theorem neighborArgmin_mem
+omit [DecidableEq T] in theorem neighborArgmin_mem
     (R : RouteEHallRelation S T) (f : T → ℝ) (s : S) :
     R.neighborArgmin f s ∈ R.neighbors s :=
   (R.exists_neighbor_argmin f s).choose_spec.1
 
-theorem neighborArgmin_le
+omit [DecidableEq T] in theorem neighborArgmin_le
     (R : RouteEHallRelation S T) (f : T → ℝ) (s : S)
     {t : T} (ht : t ∈ R.neighbors s) :
     f (R.neighborArgmin f s) ≤ f t :=
@@ -323,7 +473,7 @@ noncomputable def reporterLowerEnvelope
 theorem reporterLowerEnvelope_le_kernel
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     (f : T → ℝ) {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) :
-    D.reporterLowerEnvelope R f ≤ ∑ t, f t * R.rawOutput D P t := by
+    reporterLowerEnvelope D R f ≤ ∑ t, f t * R.rawOutput D P t := by
   have hrow (s : S) :
       f (R.neighborArgmin f s) ≤ ∑ t, P s t * f t := by
     calc
@@ -338,20 +488,30 @@ theorem reporterLowerEnvelope_le_kernel
             (R.rawKernel_nonneg hP s t)
         · simp [R.rawKernel_eq_zero_of_not_neighbor hP s t ht]
   calc
-    D.reporterLowerEnvelope R f ≤
+    reporterLowerEnvelope D R f ≤
         ∑ s, D.sourceLaw s * ∑ t, P s t * f t := by
       apply Finset.sum_le_sum
       intro s _hs
       exact mul_le_mul_of_nonneg_left (hrow s) (D.source_pos s).le
     _ = ∑ t, f t * R.rawOutput D P t := by
-      unfold reporterLowerEnvelope rawOutput
-      rw [Finset.sum_comm]
-      apply Finset.sum_congr rfl
-      intro t _ht
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro s _hs
-      ring
+      unfold rawOutput
+      calc
+        (∑ s, D.sourceLaw s * ∑ t, P s t * f t) =
+            ∑ s, ∑ t, D.sourceLaw s * P s t * f t := by
+          apply Finset.sum_congr rfl
+          intro s _hs
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro t _ht
+          ring
+        _ = ∑ t, ∑ s, D.sourceLaw s * P s t * f t := Finset.sum_comm
+        _ = ∑ t, f t * ∑ s, D.sourceLaw s * P s t := by
+          apply Finset.sum_congr rfl
+          intro t _ht
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro s _hs
+          ring
 
 noncomputable def argminKernel
     (R : RouteEHallRelation S T) (f : T → ℝ) : S → T → ℝ :=
@@ -363,7 +523,7 @@ theorem argminKernel_mem
   classical
   constructor
   · intro s t
-    simp [argminKernel]
+    by_cases h : t = R.neighborArgmin f s <;> simp [argminKernel, h]
   constructor
   · intro s
     simp [argminKernel]
@@ -374,87 +534,113 @@ theorem argminKernel_mem
 
 theorem reporterLowerEnvelope_eq_argminKernel
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) :
-    D.reporterLowerEnvelope R f =
+    reporterLowerEnvelope D R f =
       ∑ t, f t * R.rawOutput D (R.argminKernel f) t := by
   unfold reporterLowerEnvelope rawOutput argminKernel
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro s _hs
-  rw [Finset.mul_sum]
-  congr 1
   classical
-  simp
+  calc
+    (∑ s, D.sourceLaw s * f (R.neighborArgmin f s)) =
+        ∑ s, ∑ t,
+          D.sourceLaw s * (if t = R.neighborArgmin f s then 1 else 0) * f t := by
+      apply Finset.sum_congr rfl
+      intro s _hs
+      simp
+    _ = ∑ t, ∑ s,
+          D.sourceLaw s * (if t = R.neighborArgmin f s then 1 else 0) * f t :=
+      Finset.sum_comm
+    _ = ∑ t, f t * ∑ s,
+          D.sourceLaw s * (if t = R.neighborArgmin f s then 1 else 0) := by
+      apply Finset.sum_congr rfl
+      intro t _ht
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro s _hs
+      ring
 
 /-- Reporter selected by the canonical projection. -/
 noncomputable def projectionReporter
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (t : T) : ℝ :=
-  (R.rawOutput D (D.projectionKernel R) t - D.targetLaw t) / D.targetLaw t
+  (R.rawOutput D (projectionKernel D R) t - D.targetLaw t) / D.targetLaw t
 
 theorem projectionReporter_centered
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    ∑ t, D.targetLaw t * D.projectionReporter R t = 0 := by
+    ∑ t, D.targetLaw t * projectionReporter D R t = 0 := by
   unfold projectionReporter
   have hβ (t : T) : D.targetLaw t ≠ 0 := ne_of_gt (D.target_pos t)
   simp_rw [mul_div_cancel₀ _ (hβ _), Finset.sum_sub_distrib,
-    R.rawOutput_sum D (D.projectionKernel_mem R), D.target_sum, sub_self]
+    R.rawOutput_sum D (projectionKernel_mem D R), D.target_sum, sub_self]
 
 theorem projectionReporter_secondMoment
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    ∑ t, D.targetLaw t * (D.projectionReporter R t) ^ 2 =
-      D.projectionDistanceSq R := by
+    ∑ t, D.targetLaw t * (projectionReporter D R t) ^ 2 =
+      projectionDistanceSq D R := by
   unfold projectionDistanceSq projectionReporter
-  rw [← D.standardizedOutput_projectionKernel R,
+  rw [← standardizedOutput_projectionKernel D R,
     EuclideanSpace.real_norm_sq_eq]
   apply Finset.sum_congr rfl
   intro t _ht
   have hβ : 0 < D.targetLaw t := D.target_pos t
   have hsqrt : Real.sqrt (D.targetLaw t) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 hβ)
-  simp only [standardizedOutput, WithLp.ofLp_toLp, Real.norm_eq_abs]
-  rw [abs_sq]
-  rw [Real.sq_sqrt hβ.le]
-  field_simp
-  ring
+  simp only [standardizedOutput, WithLp.ofLp_toLp]
+  rw [div_pow, div_pow, Real.sq_sqrt hβ.le]
+  field_simp [ne_of_gt hβ]
 
 theorem reporterLowerEnvelope_projectionReporter
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    D.reporterLowerEnvelope R (D.projectionReporter R) =
-      ∑ t, D.projectionReporter R t *
-        R.rawOutput D (D.projectionKernel R) t := by
+    reporterLowerEnvelope D R (projectionReporter D R) =
+      ∑ t, projectionReporter D R t *
+        R.rawOutput D (projectionKernel D R) t := by
   apply le_antisymm
-  · exact D.reporterLowerEnvelope_le_kernel R _ (D.projectionKernel_mem R)
-  · rw [D.reporterLowerEnvelope_eq_argminKernel R]
-    have hvar := D.projection_variational_inequality_raw R (R.argminKernel_mem _)
-    unfold projectionReporter at hvar
+  · exact reporterLowerEnvelope_le_kernel D R _ (projectionKernel_mem D R)
+  · rw [reporterLowerEnvelope_eq_argminKernel D R]
+    have hvar := projection_variational_inequality_raw D R
+      (R.argminKernel_mem (projectionReporter D R))
+    change 0 ≤ ∑ t, projectionReporter D R t *
+      (R.rawOutput D (R.argminKernel (projectionReporter D R)) t -
+        R.rawOutput D (projectionKernel D R) t) at hvar
+    have hrearrange :
+        (∑ t, projectionReporter D R t *
+          (R.rawOutput D (R.argminKernel (projectionReporter D R)) t -
+            R.rawOutput D (projectionKernel D R) t)) =
+          (∑ t, projectionReporter D R t *
+            R.rawOutput D (R.argminKernel (projectionReporter D R)) t) -
+          ∑ t, projectionReporter D R t *
+            R.rawOutput D (projectionKernel D R) t := by
+      rw [← Finset.sum_sub_distrib]
+      apply Finset.sum_congr rfl
+      intro t _ht
+      ring
+    rw [hrearrange] at hvar
     linarith
 
 /-- Nonlinear reporter objective from equation (12). -/
 noncomputable def reporterObjective
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) : ℝ :=
-  2 * (D.reporterLowerEnvelope R f - ∑ t, D.targetLaw t * f t) -
+  2 * (reporterLowerEnvelope D R f - ∑ t, D.targetLaw t * f t) -
     ∑ t, D.targetLaw t * (f t) ^ 2
 
 /-- Exact projection duality: squared projection distance is greatest reporter objective value,
 and the canonical projection reporter attains it. -/
 theorem projection_reporter_duality
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
-    IsGreatest (Set.range (D.reporterObjective R)) (D.projectionDistanceSq R) := by
+    IsGreatest (Set.range (reporterObjective D R)) (projectionDistanceSq D R) := by
   constructor
-  · refine ⟨D.projectionReporter R, ?_⟩
+  · refine ⟨projectionReporter D R, ?_⟩
     unfold reporterObjective
-    rw [D.reporterLowerEnvelope_projectionReporter R,
-      D.projectionReporter_centered R,
-      D.projectionReporter_secondMoment R]
+    rw [reporterLowerEnvelope_projectionReporter D R,
+      projectionReporter_centered D R,
+      projectionReporter_secondMoment D R]
     have hid :
-        (∑ t, D.projectionReporter R t *
-          R.rawOutput D (D.projectionKernel R) t) =
-          D.projectionDistanceSq R := by
+        (∑ t, projectionReporter D R t *
+          R.rawOutput D (projectionKernel D R) t) =
+          projectionDistanceSq D R := by
       calc
-        _ = ∑ t, D.targetLaw t * (D.projectionReporter R t) ^ 2 +
-            ∑ t, D.targetLaw t * D.projectionReporter R t := by
+        _ = ∑ t, D.targetLaw t * (projectionReporter D R t) ^ 2 +
+            ∑ t, D.targetLaw t * projectionReporter D R t := by
           apply Eq.symm
           calc
-            _ = ∑ t, (D.targetLaw t * (D.projectionReporter R t) ^ 2 +
-                D.targetLaw t * D.projectionReporter R t) := by
+            _ = ∑ t, (D.targetLaw t * (projectionReporter D R t) ^ 2 +
+                D.targetLaw t * projectionReporter D R t) := by
               rw [Finset.sum_add_distrib]
             _ = _ := by
               apply Finset.sum_congr rfl
@@ -463,40 +649,49 @@ theorem projection_reporter_duality
               have hβ : D.targetLaw t ≠ 0 := ne_of_gt (D.target_pos t)
               field_simp
               ring
-        _ = _ := by rw [D.projectionReporter_secondMoment R,
-          D.projectionReporter_centered R, add_zero]
+        _ = _ := by rw [projectionReporter_secondMoment D R,
+          projectionReporter_centered D R, add_zero]
     rw [hid]
     ring
   · rintro y ⟨f, rfl⟩
     unfold reporterObjective
-    have hlower := D.reporterLowerEnvelope_le_kernel R f (D.projectionKernel_mem R)
+    have hlower := reporterLowerEnvelope_le_kernel D R f (projectionKernel_mem D R)
     have hsquare :
         2 * (∑ t, f t *
-            (R.rawOutput D (D.projectionKernel R) t - D.targetLaw t)) -
+            (R.rawOutput D (projectionKernel D R) t - D.targetLaw t)) -
             ∑ t, D.targetLaw t * (f t) ^ 2 ≤
-          D.projectionDistanceSq R := by
+          projectionDistanceSq D R := by
       have hβsum :
           (∑ t, f t *
-            (R.rawOutput D (D.projectionKernel R) t - D.targetLaw t)) =
-          ∑ t, D.targetLaw t * f t * D.projectionReporter R t := by
+            (R.rawOutput D (projectionKernel D R) t - D.targetLaw t)) =
+          ∑ t, D.targetLaw t * f t * projectionReporter D R t := by
         apply Finset.sum_congr rfl
         intro t _ht
         unfold projectionReporter
         have hβ : D.targetLaw t ≠ 0 := ne_of_gt (D.target_pos t)
         field_simp
-        ring
-      rw [hβsum, ← D.projectionReporter_secondMoment R]
-      apply Finset.sum_le_sum
-      intro t _ht
-      have hβ := (D.target_pos t).le
-      nlinarith [mul_nonneg hβ ((sq_nonneg (f t - D.projectionReporter R t)))]
+      rw [hβsum, ← projectionReporter_secondMoment D R]
+      calc
+        2 * (∑ t, D.targetLaw t * f t * projectionReporter D R t) -
+            ∑ t, D.targetLaw t * f t ^ 2 =
+            ∑ t, (2 * D.targetLaw t * f t * projectionReporter D R t -
+              D.targetLaw t * f t ^ 2) := by
+          rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+          apply Finset.sum_congr rfl
+          intro t _ht
+          ring
+        _ ≤ ∑ t, D.targetLaw t * projectionReporter D R t ^ 2 := by
+          apply Finset.sum_le_sum
+          intro t _ht
+          have hβ := (D.target_pos t).le
+          nlinarith [mul_nonneg hβ
+            (sq_nonneg (f t - projectionReporter D R t))]
     have hrearrange :
-        (∑ t, f t * R.rawOutput D (D.projectionKernel R) t) -
+        (∑ t, f t * R.rawOutput D (projectionKernel D R) t) -
             ∑ t, D.targetLaw t * f t =
           ∑ t, f t *
-            (R.rawOutput D (D.projectionKernel R) t - D.targetLaw t) := by
-      rw [Finset.sum_sub_distrib]
-      apply congrArg₂ (· - ·) rfl
+            (R.rawOutput D (projectionKernel D R) t - D.targetLaw t) := by
+      rw [← Finset.sum_sub_distrib]
       apply Finset.sum_congr rfl
       intro t _ht
       ring

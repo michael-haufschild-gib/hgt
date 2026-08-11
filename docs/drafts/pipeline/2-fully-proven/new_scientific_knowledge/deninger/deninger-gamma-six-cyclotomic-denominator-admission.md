@@ -1,14 +1,14 @@
-# Gamma-six cyclotomic denominator admission
+# Gamma-six cyclotomic denominator parity wall
 
 - **Stage:** 2 — dependency-closed paper proof
-- **Type:** SOURCE-SUPPORT CORRECTION / MIXED COEFFICIENT ADMISSION / ROUTE-L FRONTIER ADVANCE
+- **Type:** SOURCE-SUPPORT CORRECTION / SHARP PARITY NO-GO / POSITIVE EVEN ADMISSION
 - **Status:** PAPER-PROVED / PROJECT-SPECIFIC NEW KNOWLEDGE / NOT RH / NO LEAN WORK DURING CORPUS REFACTOR
-- **Parents:** `deninger-mobius-gamma-six-normal-transgression.md` and
-  `deninger-gamma-six-orientation-residue-wall.md`
-- **Corpus inputs:** `DeningerRationalWittFiniteEvaluationBridge.lean`,
-  `DeningerRationalWittGaugeFirstSuspensionDescent.lean`,
-  `DeningerCalderonWittAlgebraicSource.lean`, and
-  `DeningerCalderonWittSingularGammaTransgression.lean`.
+- **Parents:** deninger-mobius-gamma-six-normal-transgression.md and
+  deninger-gamma-six-orientation-residue-wall.md
+- **Corpus inputs:** DeningerRationalWittFiniteEvaluationBridge.lean,
+  DeningerRationalWittGaugeFirstSuspensionDescent.lean,
+  DeningerCalderonWittAlgebraicSource.lean, and
+  DeningerCalderonWittSingularGammaTransgression.lean.
 
 ## 1. Frontier correction
 
@@ -20,15 +20,37 @@ The Gamma-six normal is extracted from the unique complementary rational pair
 \tag{1}
 \]
 
-Its normalized output has ratio (x_m/y_m=6^m), so the final Kummer normal is supported only
-at the archimedean, (2)-adic, and (3)-adic clock faces. That does not mean the strict source
-cell has only those places. Before the normal selector and the multiplication by ([y_m]^{-1}),
-every prime divisor of (1+6^m) is a genuine place of both entries in (1).
+Its normalized outputs are
 
-This distinction was absent from the previous Route-L frontier. It is load-bearing because the
-denominator places are invisible to the scalar Kummer regulator and to the first tame-symbol
-boundary, but visible to the rational-Witt packet. Consequently a strict source comparison cannot
-replace the honest Steinberg cell by its already-normalized three-place shadow.
+\[
+ [y_m]^{-1}Q_m(N)P_m=[6^m]-1,
+ \qquad
+ [x_m]^{-1}Q_m^{\mathrm{op}}(N)P_m=[6^{-m}]-1.
+\tag{2}
+\]
+
+The difference is the reflection-odd physical class
+
+\[
+                         [6^m]-[6^{-m}].
+\tag{3}
+\]
+
+Because the ratios in (2) are \(6^{\pm m}\), the final Kummer normal has only the
+\(\infty,2,3\) clock support. Before normal extraction, however, both entries of (1) have a pole
+at every prime dividing \(1+6^m\). A strict pre-normal source comparison must classify these
+denominator places before it discards them.
+
+The classification below has two parts:
+
+1. the denominator layer is nonzero and rational-Witt visible even though its tame symbol and
+   logarithmic Kummer regulator vanish;
+2. the two normal orientations have exactly the same denominator residue, so this entire layer is
+   reflection-even and cannot cancel the reflection-odd class (3).
+
+The second point is the hostile correction. Merely attaching the physical coefficient (3) to a
+nonzero denominator packet would be an added coefficient map, not a consequence of the honest
+Steinberg cell.
 
 ## 2. Denominator places are infinite and cofinal
 
@@ -36,10 +58,10 @@ Put
 
 \[
                          d_m=1+6^m.
-\tag{2}
+\tag{4}
 \]
 
-Every prime divisor of (d_m) is different from (2) and (3).
+Every prime divisor of \(d_m\) is different from \(2\) and \(3\).
 
 ### Theorem 2.1 — infinitely many cyclotomic denominator places
 
@@ -48,103 +70,99 @@ The set
 \[
  \mathcal L_6=\{\ell\text{ prime}:\ell\mid 1+6^m
                          \text{ for some }m\ge1\}
-\tag{3}
+\tag{5}
 \]
 
 is infinite.
 
 ### Proof
 
-Assume that (mathcal L_6=S) is finite. For every (ell\in S), let
-(o_ell=\operatorname{ord}_ell(6)). Since (ellmid 6^m+1) for some (m), the order
-(o_ell) is even. Let
+Assume that \(\mathcal L_6=S\) is finite. For every \(\ell\in S\), let
+\(o_\ell=\operatorname{ord}_\ell(6)\), and put
 
 \[
-                         M=\operatorname{lcm}_{\ell\in S}o_ell.
+                         M=\operatorname{lcm}_{\ell\in S}o_\ell.
 \]
 
-Then (6^M\equiv1\pmodell) for every (ell\in S). On the other hand, the odd integer
-(6^M+1>1) has a prime divisor (r). By the definition of (S), one has (r\in S), hence
-simultaneously
+Then \(6^M\equiv1\pmod\ell\) for every \(\ell\in S\). The odd integer \(6^M+1>1\) has a prime
+divisor \(r\). By definition of \(S\), one has \(r\in S\). Hence
 
 \[
-                       6^M\equiv1\pmod r,
-                       \qquad 6^M\equiv-1\pmod r.
+                         6^M\equiv1\equiv-1\pmod r,
 \]
 
-Thus (rmid2), contradicting that (6^M+1) is odd. ∎
+so \(r\mid2\), contradicting that \(6^M+1\) is odd. ∎
 
 The proof gives a source-defined recursive family. Start with
 
 \[
                          m_1=1,\qquad \ell_1=7.
-\tag{4}
+\tag{6}
 \]
 
-After (ell_1,\ldots,\ell_k) have been chosen, put
+After \(\ell_1,\ldots,\ell_k\) have been chosen, put
 
 \[
  m_{k+1}=\operatorname{lcm}_{1\le j\le k}
                \operatorname{ord}_{\ell_j}(6)
-\tag{5}
+\tag{7}
 \]
 
-and let (ell_{k+1}) be the least prime divisor of (6^{m_{k+1}}+1). No previously chosen
-prime divides that integer, by (5). Moreover
-(operatorname{ord}_{\ell_{k+1}}(6)
- \nmid m_{k+1}) but divides (2m_{k+1}), so the next least common multiple is strictly larger.
-Thus
+and let \(\ell_{k+1}\) be the least prime divisor of \(6^{m_{k+1}}+1\). No previously chosen
+prime divides that integer. Moreover
+\(\operatorname{ord}_{\ell_{k+1}}(6)\nmid m_{k+1}\) but divides \(2m_{k+1}\), so the next least
+common multiple is strictly larger. Thus
 
 \[
  m_1<m_2<\cdots,\qquad
  \ell_i\ne\ell_j\quad(i\ne j).
-\tag{6}
+\tag{8}
 \]
 
-No primitive-divisor theorem is needed for this cofinal family.
+No primitive-divisor theorem is needed.
 
-## 3. Tame-null and Kummer-null, but Witt-visible
+## 3. Tame and Kummer invisibility
 
-Fix (m\ge1), let (ellmid d_m), and write
+Fix \(m\ge1\), let \(\ell\mid d_m\), and put
 
 \[
-                         e=v_ell(d_m)>0.
+                         e=v_\ell(d_m)>0.
 \]
 
-Since (gcd(6,d_m)=1), equation (1) gives
+Since \(\gcd(6,d_m)=1\), equation (1) gives
 
 \[
- v_ell(x_m)=v_ell(y_m)=-e,
+ v_\ell(x_m)=v_\ell(y_m)=-e,
  \qquad
- v_ell(x_m/y_m)=0,
+ v_\ell(x_m/y_m)=0,
  \qquad
  \overline{x_m/y_m}=\overline{6^m}=-1
-       \quad\text{in }\mathbb F_ell^	imes.
-\tag{7}
+       \quad\text{in }\mathbb F_\ell^\times.
+\tag{9}
 \]
 
 ### Theorem 3.1 — exact tame and Kummer invisibility
 
-At every denominator place (ellmid d_m),
+At every denominator place \(\ell\mid d_m\),
 
 \[
- \partial_ell\{x_m,y_m\}=1,
+ \partial_\ell\{x_m,y_m\}=1,
  \qquad
- \log|x_m/y_m|_ell=0.
-\tag{8}
+ \log|x_m/y_m|_\ell=0.
+\tag{10}
 \]
 
 ### Proof
 
-The second identity is immediate from (7). For the tame symbol, use
+The second identity follows from (9). For the tame symbol,
 
 \[
- \partial_ell\{x,y\}
-  =(-1)^{v_ell(x)v_ell(y)}
-    \overline{x^{v_ell(y)}y^{-v_ell(x)}}.
+ \partial_\ell\{x,y\}
+  =(-1)^{v_\ell(x)v_\ell(y)}
+    \overline{x^{v_\ell(y)}y^{-v_\ell(x)}}.
 \]
 
-With both valuations equal to (-e), this becomes
+With both valuations equal to \(-e\), this is
 
 \[
  (-1)^{e^2}\overline{(y_m/x_m)^e}
@@ -152,327 +170,450 @@ With both valuations equal to (-e), this becomes
  =(-1)^e(-1)^e=1.
 \]
 
-Here (e^2\equiv e\pmod2) and (6^m\equiv-1\pmodell). ∎
+Here \(e^2\equiv e\pmod2\) and \(6^m\equiv-1\pmod\ell\). ∎
 
-The first Rost--Schmid residue and the scalar logarithmic regulator therefore both erase this
-place. The rational-Witt packet does not.
+Thus the first Rost--Schmid residue and scalar logarithmic regulator erase the denominator place.
+This does not imply rational-Witt packet vanishing.
+
+## 4. Exact common-pole normal residue
+
+On the span of group-basis terms of valuation \(-e\), define common-pole reduction by
+
+\[
+ \operatorname{red}_{\ell,e}([u])
+     =[\overline{\ell^e u}]
+     \in\mathbb C[\mathbb F_\ell^\times].
+\tag{11}
+\]
 
 Let
 
 \[
-                         n_{m,\ell}=\operatorname{ord}_ell(6).
-\tag{9}
+ \bar y_{m,\ell}=\overline{\ell^e y_m}\in\mathbb F_\ell^\times.
 \]
 
-Then (n_{m,ell}) is even, (n_{m,ell}mid2m),
-(n_{m,ell}\nmid m), and (n_{m,ell}midell-1). In particular, the stage modulus
-(n_{m,ell}) is prime to (ell), and arithmetic Frobenius acts trivially on that cyclotomic
-stage because
+The archimedean normal selector satisfies
 
 \[
-                         \ell\equiv1\pmod{n_{m,\ell}}.
-\tag{10}
-\]
-
-### Theorem 3.2 — denominator Witt packet survives Frobenius descent
-
-Let (ar6\in\mathbb F_ell^	imes) be the residue of (6), of order (n_{m,ell}). In the
-complexified rational-Witt group-algebra presentation at (ell), the element
-
-\[
-                         \eta_{m,ell}=[\bar6]-[1]
-\tag{11}
-\]
-
-is nonzero, fixed by arithmetic Frobenius, and has a nonzero finite cyclotomic packet evaluation.
-
-### Proof
-
-The two basis vectors in (11) are distinct because (ar6) has order at least two. Both lie in
-(mathbb F_ell^	imes), so Frobenius (u\mapsto u^ell) fixes them separately. Identify the
-cyclic group generated by (ar6) with (mathbb Z/n_{m,ell}mathbb Z), sending (1) to
-(ar6). Evaluation at the primitive character sends (11) to
-
-\[
-                  \exp(2\pi i/n_{m,ell})-1\ne0.
-\]
-
-This is exactly one of the finite cyclotomic evaluations used by the rational-Witt packet
-presentation. ∎
-
-Thus denominator-place cancellation occurs only after forgetting finite packet data. At the
-strict source level it is a nonzero, Frobenius-fixed rational-Witt class.
-
-## 4. Source-first mixed coefficient topology
-
-Apply the construction above to the recursive family ((m_k,\ell_k)) from (4)--(6). Put
-
-\[
- n_k=\operatorname{ord}_{\ell_k}(6)
-\]
-
-and let (z_k) be the normalized nonzero finite packet vector obtained from
-(eta_{m_k,ell_k}). Different (k) belong to different prime summands, so the (z_k) are
-orthonormal in the Hilbert direct sum of packet spaces.
-
-Define the Köthe source
-
-\[
- \mathcal E_{\Gamma,6}=
- \left\{c=(c_k^+,c_k^-)_{k\ge1}:
-   q_a(c):=\sum_{k\ge1}6^{a m_k}
-        (|c_k^+|+|c_k^-|)<\infty
-   \text{ for every }0<a<1\right\}.
+                         Q_m(N)P_m=[x_m]-[y_m].
 \tag{12}
 \]
 
-It is enough to take a countable cofinal family of rational (a\uparrow1). The unweighted
-(ell^1) norm, and hence the unweighted (ell^2) norm, is continuous on this space.
+### Theorem 4.1 — forward denominator residue
 
-### Theorem 4.1 — the coefficient space is nuclear
-
-(mathcal E_{Gamma,6}) is a nuclear Fréchet Köthe space, continuously embedded in the mixed
-(ell^1/\ell^2) packet carrier.
-
-### Proof
-
-For (0<a<b<1), the ratio of the two Köthe weights is
+The translated common-pole residue of (12) is
 
 \[
-                         6^{-(b-a)m_k}.
-\]
-
-The integers (m_k) are strictly increasing, hence (m_k\ge k), and therefore
-
-\[
-             \sum_{k\ge1}6^{-(b-a)m_k}
-             \le\sum_{k\ge1}6^{-(b-a)k}<\infty.
+ \boxed{
+ [\bar y_{m,\ell}]^{-1}
+   \operatorname{red}_{\ell,e}\bigl(Q_m(N)P_m\bigr)
+   =[-1]-[1].}
 \tag{13}
 \]
 
-The bonding map from the (b)-weighted (ell^1) step to the (a)-weighted step is thus a
-nuclear diagonal map. The standard projective-limit criterion for Köthe echelon spaces proves
-nuclearity. Since all weights are at least one, (q_a) dominates the unweighted (ell^1) norm,
-which dominates (ell^2). ∎
+### Proof
 
-For a real horizontal displacement (delta) with (|\delta|<1), define the packet evaluation
+By (11)--(12),
 
 \[
- \operatorname{Ev}_\delta(c)
-  =\bigoplus_{k\ge1}
-    \left(c_k^+6^{m_k\delta}
-          +c_k^-6^{-m_k\delta}\right)z_k.
+\begin{aligned}
+ [\bar y_{m,\ell}]^{-1}
+   \operatorname{red}_{\ell,e}([x_m]-[y_m])
+ &= [\overline{x_m/y_m}]-[1]\\
+ &= [-1]-[1]
+\end{aligned}
+\]
+
+by (9). ∎
+
+The opposite selector swaps \(x_m\) and \(y_m\), giving
+
+\[
+                         Q_m^{\mathrm{op}}(N)P_m=[y_m]-[x_m].
 \tag{14}
 \]
 
-### Theorem 4.2 — continuous source-first evaluation on the whole open strip
+### Theorem 4.2 — reciprocal denominator residue is identical
 
-For every (|\delta|<1), (14) is a continuous map
+Writing
+\(\bar x_{m,\ell}=\overline{\ell^e x_m}\), one has
 
 \[
-       \operatorname{Ev}_\delta:
-       \mathcal E_{\Gamma,6}\longrightarrow
-       \bigoplus
-       {}^{\ell^1}_{k\ge1}\mathcal P_{\ell_k,n_k}
-       \hookrightarrow
-       \bigoplus
-       {}^{\ell^2}_{k\ge1}\mathcal P_{\ell_k,n_k}.
+ \boxed{
+ [\bar x_{m,\ell}]^{-1}
+   \operatorname{red}_{\ell,e}\bigl(Q_m^{\mathrm{op}}(N)P_m\bigr)
+   =[-1]-[1].}
 \tag{15}
 \]
 
 ### Proof
 
-Choose (a) with (|\delta|<a<1). Then
+Equations (9), (11), and (14) give
 
 \[
-\begin{aligned}
- \|\operatorname{Ev}_\delta(c)\|_{\ell^1}
- &\le\sum_k6^{|\delta|m_k}(|c_k^+|+|c_k^-|)\\
- &\le q_a(c).
-\end{aligned}
+ [\bar x_{m,\ell}]^{-1}
+   \operatorname{red}_{\ell,e}([y_m]-[x_m])
+ =[\overline{y_m/x_m}]-[1]
+ =[-1]-[1],
 \]
 
-The inclusion (ell^1\hookrightarrowell^2) is continuous. ∎
+because \((-1)^{-1}=-1\). ∎
 
-## 5. Canonical tensor-square Gamma-six grade
+### Corollary 4.3 — denominator orientation collapse
 
-The complete corrected tail satisfies
+The reflection-odd difference of the two normalized denominator residues is zero:
 
 \[
- H_{6,m}=6^{-m/2}U_{-m\log6}R_{6,m}.
+             ([-1]-[1])-([-1]-[1])=0.
 \tag{16}
 \]
 
-Thus its tensor-square scale is exactly (6^{-m}), independently of any Xi zero. This forces the
-source vector
+Equivalently, direct reduction of the final oriented normal gives
 
 \[
- \gamma_6=(c_k^+,c_k^-)_{k\ge1},
- \qquad
- c_k^+=6^{-m_k},\qquad c_k^-=-6^{-m_k}.
+          [\overline{6^m}]-[\overline{6^{-m}}]
+          =[-1]-[-1]=0.
 \tag{17}
 \]
 
-For every (a<1),
+Thus denominator places are present before the normal selector but lie entirely in the
+reflection-even sector after common-pole normalization.
+
+## 5. Nonzero rational-Witt survivor
+
+Put
 
 \[
- q_a(\gamma_6)
-   =2\sum_k6^{-(1-a)m_k}<\infty,
-\]
-
-so (gamma_6\in\mathcal E_{Gamma,6}).
-
-### Theorem 5.1 — unconditional mixed admission of the full-grade oriented character
-
-For every real (|\delta|<1),
-
-\[
- \boxed{
- \mathcal W_6(\delta):=\operatorname{Ev}_\delta(\gamma_6)
- =\bigoplus_{k\ge1}6^{-m_k}
-   \left(6^{m_k\delta}-6^{-m_k\delta}\right)z_k
- \in\ell^1\cap\ell^2.}
+                         \varepsilon_\ell=[-1]-[1]
+       \in\mathbb C[\mathbb F_\ell^\times].
 \tag{18}
 \]
 
-It satisfies
+Every denominator prime is odd, so \(-1\ne1\) in \(\mathbb F_\ell^\times\).
+
+### Theorem 5.1 — even residue survives rational-Witt descent
+
+\(\varepsilon_\ell\) is nonzero, fixed by arithmetic Frobenius, and has nonzero evaluation at
+the order-two cyclotomic character:
 
 \[
- \mathcal W_6(-\delta)=-\mathcal W_6(\delta),
- \qquad
- \mathcal W_6(\delta)=0\Longleftrightarrow\delta=0.
+                         \operatorname{ev}_{-}(\varepsilon_\ell)=-2.
 \tag{19}
-\]
-
-The first coordinate recovers the fixed physical Gamma-six coefficient:
-
-\[
- \operatorname{coord}_1\mathcal W_6(\delta)
-   =6^{-1}(6^\delta-6^{-\delta})z_1.
-\tag{20}
 \]
 
 ### Proof
 
-Only (19) needs proof beyond Theorem 4.2. Reflection oddness is termwise. If (delta=0), every
-coefficient vanishes. Conversely, (m_1=1) and (z_1\ne0), so vanishing of the first coordinate
-gives (6^\delta=6^{-\delta}), hence (delta=0). Equation (20) is the (k=1) component. ∎
+The two group-basis vectors in (18) are distinct. Frobenius \(u\mapsto u^\ell\) fixes both
+\(\pm1\). The sign character sends \([-1]\) to \(-1\) and \([1]\) to \(1\), proving (19). This
+is the modulus-two finite cyclotomic packet in the complexified rational-Witt presentation, and
+\(\ell\equiv1\pmod2\), so its Frobenius action is the identity. ∎
 
-For every nontrivial Xi zero (ho), one has
+There is also a larger Frobenius-fixed stage generated by \(\bar6\), of modulus
+\(\operatorname{ord}_\ell(6)\). Its element \([\bar6]-[1]\) is nonzero. But equations
+(13)--(17) show that this larger root packet is **not** the residue of the oriented normal.
+Using it with coefficient \(6^{m\delta}-6^{-m\delta}\) would add precisely the non-principal
+signed comparison Route L is missing. It cannot be counted as a denominator consequence.
+
+## 6. Mixed admission of the even denominator layer
+
+Use the cofinal family \((m_k,\ell_k)\) from (6)--(8), and let \(z_k\) be the normalized
+order-two packet vector obtained from \(\varepsilon_{\ell_k}\). Different \(k\) lie in different
+prime summands.
+
+For every honest convergence grade \(m\ge3\), the complete corrected tail has half-density factor
+\(6^{-m/2}\). Its tensor-square factor is \(6^{-m}\). Extending this same ordinary-integer law
+over the two finite grades \(m=1,2\), define
 
 \[
-                       \delta_\rho=2\Re\rho-1\in(-1,1).
+                         \mathcal E_6
+       =\bigoplus_{k\ge1}6^{-m_k}z_k.
+\tag{20}
 \]
 
-Therefore (18) is an unconditional, source-first, place-resolved mixed
-(ell^1/\ell^2) admission of the full Gamma-six orientation on every actual divisor fibre. It
-uses no divisor-dependent horizon grade. The grade (6^{-m}) comes from the tensor square of the
-complete Möbius source itself.
-
-## 6. Pole-pair admission and the exact remaining wall
-
-Tensoring (17) with the canonical meromorphic pair
+### Theorem 6.1 — unconditional mixed admission
 
 \[
- \left(B_6(s),
-       -\frac{A(s)}{A(1-s)}B_6(1-s)\right)
+                         \mathcal E_6\in\ell^1\cap\ell^2.
 \tag{21}
 \]
 
-gives a coefficientwise mixed-admissible pole pair on every fixed divisor germ. The two principal
-parts cancel on the codiagonal by the functional equation. Keeping the two orientation slots and
-the (z_k) labels retains the antidiagonal (18). Hence the following are now proved rather than
-left as topology conjectures:
+Moreover \(\mathcal E_6\) is reflection-even.
 
-1. the honest Gamma-six source requires a cofinal family of denominator places;
-2. those places are zero under tame and logarithmic Kummer residue but nonzero in rational-Witt
-   packets;
-3. their finite cyclotomic stages are Frobenius-trivial, so arithmetic descent retains the whole
-   packet instead of averaging it away;
-4. the tensor-square complete-source grade gives a nuclear source and simultaneous mixed
-   (ell^1/\ell^2) admission throughout the open strip;
-5. the fixed physical (m=1) coefficient survives as a bounded coordinate of that completion.
+### Proof
 
-This does not prove Route-L annihilation. In fact the completion makes the remaining obstruction
-sharper. Let (	au_k) be the normalized packet coordinate with (	au_k(z_k)=1). The continuous
-(ell^1) codiagonal reader gives
+Since \(m_k\ge k\),
 
 \[
- \Tau(\mathcal W_6(\delta))
- =\sum_{k\ge1}6^{-m_k}
-       \left(6^{m_k\delta}-6^{-m_k\delta}\right).
+ \sum_k6^{-m_k}\le\sum_k6^{-k}<\infty,
+ \qquad
+ \sum_k6^{-2m_k}\le\sum_k6^{-2k}<\infty.
+\]
+
+Reflection fixes every \(z_k\) by Corollary 4.3. ∎
+
+The natural Köthe refinement
+
+\[
+ \mathcal E_{\Gamma,6}^{+}
+ =\left\{c=(c_k):
+   \sum_k6^{a m_k}|c_k|<\infty
+   \text{ for every }0<a<1\right\}
 \tag{22}
 \]
 
-Every summand has the sign of (delta). Therefore
+is a nuclear Fréchet space. Indeed, for \(0<a<b<1\),
 
 \[
-                 \Tau(\mathcal W_6(\delta))=0
-                 \Longleftrightarrow\delta=0.
+                    \sum_k6^{-(b-a)m_k}<\infty,
 \tag{23}
 \]
 
-Frobenius descent, positive packet averaging, and scalar functional-equation cancellation cannot
-annihilate the resolved class. The strict theorem still missing is a source-derived **relative
-chain differential**, formed before the normal selector forgets the denominator places, which
-maps the pole pair and all denominator packets into the existing Meyer--Calderón target and makes
-the fixed Burnol/Deninger reader cyclic on that transported boundary. Equation (23) proves that
-the differential must be signed and non-principal; no cooriented packet trace can supply it.
+so every bonding inclusion is nuclear. Thus topology and cofinal support of the denominator layer
+are completely controlled. They do not contribute to the odd physical obstruction.
 
-The corrected place set is at least
+## 7. Sharp mixed admission of the actual odd pole pair
+
+The failure of denominator repair does not obstruct coefficient admission of the two actual
+normal orientations. Keep those orientations as two separate slots and use the tensor-square
+half-density grade forced by the complete source:
 
 \[
- \{\infty,2,3,5\}
- \cup\{\ell_k:k\ge1\}.
+ \Gamma_6=
+ \left(6^{-m}[6^m],-6^{-m}[6^{-m}]\right)_{m\ge1}.
 \tag{24}
 \]
 
-Here (5) belongs to the finite correction defining (B_6), while the cofinal (ell_k) belong
-to the honest Steinberg-normal source before denominator cancellation. The old fixed
-({\infty,2,3\}) description was only the normalized clock polygon, not the full source.
+This is the actual oriented Kummer normal, not a coefficient attached to an unrelated finite
+packet.
 
-## 7. Heavy conjecture audit
+Define the two-slot Köthe source
 
-1. **Conjecture:** the honest Gamma-six Steinberg source has only the normalized
-   (infty,2,3) place support. **Falsified.** Equation (1) forces every prime divisor of
-   (1+6^m), and Theorem 2.1 proves these places are infinite.
-2. **Conjecture:** equal denominator valuations make those places irrelevant to strict descent.
-   **Falsified with a positive survivor.** They are tame-null and Kummer-null by Theorem 3.1 but
-   rational-Witt-visible by Theorem 3.2.
-3. **Conjecture:** arithmetic Frobenius averaging kills the surviving denominator packet.
-   **Falsified maximally.** Its source cyclotomic stage has
-   (ell\equiv1\pmod n), so Frobenius acts as the identity.
-4. **Conjecture:** cofinal denominator support prevents any mixed Hilbert admission.
-   **Falsified constructively.** The tensor-square source scale (6^{-m}) produces the nuclear
-   Köthe carrier and the unconditional mixed admission (18).
-5. **Conjecture:** admitted packet averaging plus pole cancellation supplies the missing zero.
-   **Falsified sharply.** The resolved antidiagonal has the sign-definite trace (22), whose zero
-   set is exactly the critical line.
+\[
+ \mathcal K_{\Gamma,6}=
+ \left\{c=(c_m^+,c_m^-)_{m\ge1}:
+   q_a(c)=\sum_{m\ge1}6^{am}
+      (|c_m^+|+|c_m^-|)<\infty
+   \text{ for every }0<a<1\right\}.
+\tag{25}
+\]
 
-## 8. Novelty and hostile audit
+The same weight-ratio proof as (23) makes this a nuclear Fréchet space:
+for \(0<a<b<1\),
 
-- Infinitude of prime divisors of (6^m+1), tame-symbol calculation, finite cyclic characters,
-  and the Köthe nuclearity criterion are classical ingredients; no independent novelty is claimed
-  for them.
-- Project-specific new knowledge is their forced fusion with the honest Gamma-six Steinberg
-  normal: denominator places are precisely the source data lost between the Steinberg cell and
-  its normalized (6^m) output.
-- The source-derived tensor-square grade (6^{-m}) gives a coefficient-faithful mixed admission
-  for the entire open critical strip, not merely for one selected divisor configuration.
-- The construction neither assumes nor proves the fixed-reader zero. Equations (19), (20), and
-  (23) explicitly retain the RH-bearing class.
-- No numerical experiment, Xi-zero location, positivity premise, reflected compatibility, new
-  coefficient reader, or quotient defined by the desired kernel is used.
+\[
+                         \sum_{m\ge1}6^{-(b-a)m}<\infty.
+\tag{26}
+\]
 
-## 9. Frontier ledger
+For a real horizontal character \(\chi_\delta([u])=u^\delta\), evaluation of (24) is
 
-- [x] identify full pre-normal place support of the Gamma-six Steinberg cell
+\[
+ V_6(\delta)=
+ \left(
+   \left(6^{-m(1-\delta)}\right)_{m\ge1},
+   \left(-6^{-m(1+\delta)}\right)_{m\ge1}
+ \right).
+\tag{27}
+\]
+
+### Theorem 7.1 — exact open-strip admission
+
+\[
+ \boxed{
+ V_6(\delta)\in
+   (\ell^1\cap\ell^2)\oplus(\ell^1\cap\ell^2)
+   \Longleftrightarrow |\delta|<1.}
+\tag{28}
+\]
+
+For \(|\delta|<1\), character evaluation
+\[
+ \operatorname{Ev}_\delta:
+   \mathcal K_{\Gamma,6}\longrightarrow
+   \ell^1\oplus\ell^1
+   \hookrightarrow\ell^2\oplus\ell^2
+\tag{29}
+\]
+is continuous.
+
+### Proof
+
+The forward sequence in (27) is geometric with ratio \(6^{-(1-\delta)}\); it lies in
+\(\ell^1\), equivalently in \(\ell^2\), exactly when \(\delta<1\). The reciprocal sequence has
+ratio \(6^{-(1+\delta)}\), so it is admitted exactly when \(\delta>-1\). This proves (28).
+
+For continuity, choose \(a\) with \(|\delta|<a<1\). For
+\(c\in\mathcal K_{\Gamma,6}\),
+
+\[
+\begin{aligned}
+ \|\operatorname{Ev}_\delta(c)\|_{\ell^1\oplus\ell^1}
+ &\le \sum_m6^{|\delta|m}(|c_m^+|+|c_m^-|)\\
+ &\le q_a(c).
+\end{aligned}
+\]
+
+∎
+
+Let reflection on the two slots be
+
+\[
+                         R(a,b)=(-b,-a).
+\tag{30}
+\]
+
+Then
+
+\[
+                         R V_6(\delta)=V_6(-\delta).
+\tag{31}
+\]
+
+The physical oriented reader is the codiagonal
+
+\[
+ \operatorname{OddRead}(a,b)_m=a_m+b_m.
+\tag{32}
+\]
+
+It gives
+
+\[
+ \operatorname{OddRead}(V_6(\delta))_m
+   =6^{-m}\left(6^{m\delta}-6^{-m\delta}\right).
+\tag{33}
+\]
+
+Consequently
+
+\[
+ \operatorname{OddRead}(V_6(\delta))=0
+       \Longleftrightarrow\delta=0,
+\tag{34}
+\]
+
+and its \(m=1\) coordinate is \(6^{-1}K_6(\delta)\). Thus admission is unconditional on every
+nontrivial Xi divisor fibre, while annihilation remains exactly the critical-line statement.
+
+Tensoring (24) with the canonical two-dimensional Laurent-germ pair
+
+\[
+ \left(B_6(s),-\frac{A(s)}{A(1-s)}B_6(1-s)\right)
+\tag{35}
+\]
+
+preserves (28): at any fixed nontrivial divisor germ, both germ factors span a finite-dimensional
+principal-part space, and the coefficient sequences remain in \(\ell^1\cap\ell^2\). The scalar
+functional-equation codiagonal cancels their poles, while the resolved orientation codiagonal is
+(33). This constructs the source-first mixed **coefficient** admission of the actual odd pole
+pair. It does not construct the Rost--Schmid-to-Meyer chain differential or prove cyclicity of the
+fixed physical reader.
+
+The source-normalized strict refinement is now classified in
+deninger-gamma-six-critical-edge-coface-rigidity.md. The literal \(n=6\) Möbius atom forces
+tensor-square edge \(6^{-m}\). In the resulting projective Köthe domain, the forward slot is
+admitted exactly for \(\delta\le0\), the reciprocal slot exactly for \(\delta\ge0\), and both
+exactly for \(\delta=0\). Thus the remaining problem is not to guess a stricter topology. It is
+to derive, from the completed Green chain before divisor selection, simultaneous landing in both
+of those source-forced slots.
+
+## 8. Exact no-go for denominator repair
+
+Let \(R\) denote reflection exchanging the two Gamma-six normal orientations, and let
+\(\operatorname{Odd}=(1-R)/2\). For any placewise linear transport \(F_\ell\) which factors
+through the common-pole normalized residue (11), Theorems 4.1--4.2 give
+
+\[
+ \operatorname{Odd}\,
+ F_\ell\bigl(\text{Gamma-six normal cell at }\ell\bigr)=0.
+\tag{36}
+\]
+
+This remains true after arbitrary direct sums, completions, weights, Frobenius traces, and
+continuous packet maps. Therefore no denominator-place construction functorial in the honest
+common-pole residue can cancel the nonzero reflection-odd archimedean coefficient
+
+\[
+                         6^{m\delta}-6^{-m\delta}.
+\tag{37}
+\]
+
+Any proposed repair using \([\bar6]-[1]\), a chosen primitive packet, or a signed coefficient
+proportional to (37) must prove a new source differential connecting that extra packet to the
+normal cell. Without such a theorem it is coefficient fitting.
+
+This is the positive/no-go split:
+
+- **positive survivor:** a nonzero, Frobenius-fixed, cofinally mixed-admissible rational-Witt
+  boundary layer \(\mathcal E_6\);
+- **rigidity:** that layer is canonically reflection-even and annihilated by every resolved odd
+  reader;
+- **remaining core:** signed relative chain descent of the forward/opposite-pole pair on the
+  reduced odd source, not construction or weighting of denominator packets.
+
+The full honest place set is
+
+\[
+ \{\infty,2,3,5\}\cup\{\ell:\ell\mid1+6^m
+       \text{ for some }m\}.
+\tag{38}
+\]
+
+Here \(5\) belongs to the finite correction defining \(B_6\), while the denominator set belongs
+to the pre-normal Steinberg cell. After source-resolved reflection splitting, the denominator
+summand lies in the even sector and the RH-bearing odd square still involves the fixed
+Gamma/Burnol/BV landing.
+
+## 9. Heavy conjecture audit
+
+1. **Conjecture:** the honest Gamma-six source has only normalized \(\infty,2,3\) support.
+   **Falsified.** Denominator primes dividing \(1+6^m\) are infinite.
+2. **Conjecture:** tame and Kummer invisibility mean denominator packet vanishing.
+   **Falsified.** The exact residue \(\varepsilon_\ell=[-1]-[1]\) is a nonzero
+   Frobenius-fixed rational-Witt packet.
+3. **Conjecture:** the denominator packet carries the reflection-odd Gamma anomaly.
+   **Falsified sharply.** Forward and reciprocal residues are identical; their odd difference is
+   zero.
+4. **Conjecture:** a larger packet \([\bar6]-[1]\) repairs this collapse automatically.
+   **Rejected as coefficient fitting.** It is source-available but is not the residue of the
+   oriented normal; a new signed relative differential is required to connect it.
+5. **Conjecture:** cofinal denominator support creates a remaining topology obstruction.
+   **Falsified constructively.** Tensor-square grade \(6^{-m}\) gives the mixed admission (20)--(23).
+6. **Conjecture:** the odd forward/opposite-pole pair itself has no source-first common mixed
+   coefficient domain. **Falsified sharply.** Its tensor-square grade has the exact admission
+   domain \(|\delta|<1\), equation (28), and retains \(K_6\) in grade one.
+7. **Conjecture:** this admission supplies the missing zero. **Falsified transparently.**
+   Its actual oriented codiagonal is (33), which vanishes exactly at \(\delta=0\).
+
+## 10. Novelty and hostile audit
+
+- Infinitude of prime divisors, tame symbols, finite cyclic characters, and Köthe nuclearity are
+  classical ingredients; no independent novelty is claimed for them.
+- Project-specific new knowledge is the exact common-pole residue calculation (13)--(17) for the
+  Gamma-six normal and its consequence: the hidden cyclotomic denominator layer is nonzero but
+  purely reflection-even.
+- The exact open-strip coefficient admission (24)--(35) is source-derived from the two actual
+  normal orientations and the tensor-square complete-tail scale; it is not the rejected
+  denominator coupling.
+- The paper explicitly retracts the tempting stronger construction
+  \((6^{m\delta}-6^{-m\delta})([\bar6]-[1])\): no source theorem derived that coefficient-packet
+  coupling.
+- No Xi-zero location, RH premise, positivity assumption, numerical experiment, new reader, or
+  quotient defined by the desired kernel is used.
+
+## 11. Frontier ledger
+
+- [x] identify full pre-normal denominator support
 - [x] prove denominator places form an infinite cofinal family
-- [x] prove exact tame/Kummer invisibility and rational-Witt visibility
-- [x] prove denominator cyclotomic stages survive Frobenius descent without orbit collapse
-- [x] construct nuclear source-first mixed (ell^1/\ell^2) coefficient topology
-- [x] admit full-grade Gamma-six orientation on every nontrivial Xi divisor fibre
-- [x] retain fixed physical (m=1) coefficient as a bounded coordinate
-- [x] rule out cooriented packet averaging as annihilator
-- [ ] construct strict relative Rost--Schmid-to-Meyer chain differential on the full place family
-- [ ] prove fixed Burnol/Deninger reader cyclic on that transported boundary
+- [x] prove tame/Kummer invisibility
+- [x] compute exact nonzero common-pole rational-Witt residue
+- [x] prove forward and reciprocal denominator residues coincide
+- [x] prove denominator layer is reflection-even and odd-reader invisible
+- [x] construct nuclear mixed admission of the cofinal even layer
+- [x] rule out denominator packets as automatic signed counterterm
+- [x] construct sharp mixed coefficient admission of the reduced odd pole pair on \(|\delta|<1\)
+- [x] classify the source-forced critical-edge strict domain and its exact zero locus
+- [x] rule out adjacent-grade, finite-convolution, and Euler-depletion shortcuts
+- [ ] prove source-derived completed Green landing in both critical-edge slots
+- [ ] construct strict Rost--Schmid-to-Meyer chain differential on that admitted odd pair
+- [ ] prove fixed Burnol/Deninger reader cyclic on that transported odd boundary

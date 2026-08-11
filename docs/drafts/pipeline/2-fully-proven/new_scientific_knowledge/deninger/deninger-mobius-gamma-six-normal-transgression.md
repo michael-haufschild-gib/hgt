@@ -380,12 +380,13 @@ required.
 This still does not prove RH.  The open theorem is no longer construction of a Gamma-clock
 source, a Steinberg cell, its Tate primitive, or a coefficient comparison.  It is:
 
-> Admit the forward complete source \(H_{6,m}\) and a genuine opposite-collar pole face into one
-> place-marked mixed \(L^1/L^2\) Rost--Schmid/Meyer complex. Its target differential must be the
-> existing Gamma/co-Poisson boundary and the fixed physical reader must be cyclic on the
-> transported principal-divisor boundary. Equivalently, prove that the realized class (18) lies
-> in the literal Meyer--Poisson range without quotienting its nonzero Kummer residue or identifying
-> its two orientations by assumption.
+> Promote the now-constructed sharp mixed coefficient admission of the forward complete source
+> \(H_{6,m}\) and opposite-collar pole face to the strict Rost--Schmid/Meyer domain, retain the
+> classified reflection-even cyclotomic denominator layer, and construct the relative chain
+> differential. Its target differential must be the existing Gamma/co-Poisson boundary and the
+> fixed physical reader must be cyclic on the transported principal-divisor boundary.
+> Equivalently, prove that the realized class (18) lies in the literal Meyer--Poisson range without
+> quotienting its nonzero Kummer residue or identifying its two orientations by assumption.
 
 Ordinary cyclic descent is impossible by (22).  Adelic scalarization is impossible by (24).
 The required map must be a place-marked, orientation-retaining singular admission with a genuine
@@ -408,6 +409,14 @@ residue cancellation theorem, not an abstract mapping cone or a new coefficient 
   asymmetry, critical Gamma residue, regular-counterterm no-go, and canonical
   functional-equation opposite pole are proved in
   deninger-gamma-six-orientation-residue-wall.md.
+- The honest pre-normal place support, exact reflection-even parity of its tame/Kummer-null but
+  Witt-visible denominator packets, their nuclear tensor-square mixed admission, and the sharp
+  open-strip mixed coefficient admission of the actual odd pole pair are proved in
+  deninger-gamma-six-cyclotomic-denominator-admission.md.
+- The first surviving Möbius atom forces the tensor-square critical edge; exact forward/reciprocal
+  strict-domain intersection, adjacent-grade endpoint charge, finite-local rigidity, and
+  Euler-depletion conservativity are proved in
+  deninger-gamma-six-critical-edge-coface-rigidity.md.
 
 ## 10. Frontier ledger
 
@@ -421,6 +430,9 @@ residue cancellation theorem, not an abstract mapping cone or a new coefficient 
 - [x] canonical functional-equation opposite pole germ constructed
 - [x] exact coefficient comparison with BV, Burnol, cofinal Tate, and actual Gamma target
 - [x] no-go for prime-two deletion and unmarked adelic product-formula scalarization
-- [ ] strict mixed \(L^1/L^2\) place-marked transport of both pole germs into the literal
-      Meyer--Poisson target range
+- [x] reflection-even cyclotomic denominator layer and its nuclear mixed admission
+- [x] sharp mixed coefficient admission of the odd pole pair
+- [x] source-forced critical-edge domain and finite/local coface classification
+- [ ] source-derived completed Green landing in both critical-edge slots
+- [ ] strict Rost--Schmid-to-Meyer realization and relative differential for that odd pair
 - [ ] fixed-reader cyclicity/residue cancellation on that admitted boundary
