@@ -3409,3 +3409,91 @@ If even (RJG186) loses to the timelike half-density variation, that failure will
 radiation scale requiring theta-current cancellation rather than coefficient decay.
 
 Verdict: `[PROVED — STATIC HOLONOMY CHARGE; QUANTITATIVE RESIDUAL RATE OPEN]`.
+
+---
+
+## 64. Conjecture loop 40 — exponential square-root-log holonomy damping
+
+### Conjecture
+
+The qualitative tail `E_N -> 0` in (RJG184)--(RJG186) should inherit the exponential
+square-root-log remainder already proved for the repository's Mertens sum.  The only extra term is
+the positive Euler-depletion trace, whose coefficient is pointwise `O(log n/n^2)` and therefore
+has a strictly smaller tail.
+
+### Closure
+
+Lean proves the explicit trace estimate
+
+```text
+0 <= mass(R_trace)-sum_(n<=N)R_trace(n)
+   <= 3(log N+1)/N.                                    (RJG187)
+```
+
+The existing Mertens exponential-rate center is identified with the selected limit constant by
+uniqueness of limits.  Combining it with (RJG187) gives constants `B>=0`, `c>0` such that,
+eventually,
+
+```text
+|E_N| <= B exp(-c sqrt(log p_N)).                        (RJG188)
+```
+
+Consequently every residual connection atom satisfies the phase-preserving estimate
+
+```text
+|E_N (G_N-G_(N+1))|
+ <= B exp(-c sqrt(log p_N)) |G_N-G_(N+1)|.              (RJG189)
+```
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldHolonomyExpRate.lean`.
+
+### Hostile audit and pivot
+
+(RJG188) is subpower damping.  It cannot beat the restored half-density factor `sqrt(p)` by
+pointwise comparison: `sqrt(p) exp(-c sqrt(log p))` is unbounded.  Thus the conjecture succeeds as
+arithmetic information but fails as a terminal norm estimate.  Any continuation that simply
+inserts (RJG189) into total variation plays theorem theatre and recreates the timelike radiation
+wall.
+
+Verdict: `[PROVED — QUANTITATIVE HOLONOMY DAMPING; POINTWISE RADIATION CLOSURE IMPOSSIBLE]`.
+
+---
+
+## 65. Conjecture loop 41 — critical harmonic Fisher energy of residual holonomy
+
+### Conjecture
+
+Although (RJG188) loses pointwise against the half-density envelope, its square should be
+integrable in the exact critical arithmetic coframe.  The natural measure is not counting measure
+but the Route-T harmonic prime measure `dmu(p)=log(p)/p`.
+
+### Closure
+
+Burnol's unconditional prime Poisson summability absorbs every fixed logarithmic factor against
+`exp(-2c sqrt(log p))/p`.  After clipping finitely many pre-asymptotic coordinates, Lean proves
+
+```text
+sum_N (log p_N/p_N) |E_N|^2 < infinity.                 (RJG190)
+```
+
+Thus centered Wold holonomy is a genuine finite-energy vector in the same critical coframe that
+reconstructs the valuation-one Route-T source.  This is stronger than convergence or a pointwise
+rate: it identifies a canonical Hilbert geometry for the residual arithmetic connection.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldHolonomyFisherEnergy.lean`.
+
+### Hostile audit and higher principle
+
+Cauchy--Schwarz closes a phase-linear connection only if the transported profile has uniformly
+bounded dual Dirichlet energy.  The restored timelike half-density has precisely the opposite
+radiation growth, so (RJG190) alone cannot supply that dual bound.  Finite Fisher energy is a
+positive survivor, not an RH proof.
+
+The accumulated structure now has a one-dimensional Hodge form: static holonomy is one harmonic
+boundary charge, `E` is a finite-energy exact component, and scalar theta--Wold compensation sees
+only their common anti-diagonal anomaly.  Missing datum must separate source phase grades before
+the pinned scalar trace.  Norm completion cannot do so.
+
+Verdict: `[PROVED — FINITE CRITICAL HOLONOMY ENERGY; SOURCE-LEVEL PHASE GRADE OPEN]`.

@@ -119,6 +119,7 @@ section
 
 variable (K : IntermediateField C E) {S : Set (Fin r → Cˣ)}
 
+omit [CharZero E] in
 include hx hgen in
 /-- Rescaling the palette rescales the variables of a polynomial with coefficients in a fixed
 intermediate field. -/
@@ -141,6 +142,7 @@ theorem torusScaleEquiv_aeval (hKfix : ∀ u ∈ S, ∀ z ∈ K, torusScaleEquiv
 
 end
 
+omit [CharZero E] in
 include hx hgen in
 /-- **Scaling invariants of a torus torsor.**  Let a set `S` of constant rescalings fix an
 intermediate field `K` pointwise, let the palette be algebraically independent over `K`, and let `S`
@@ -260,24 +262,167 @@ theorem mem_of_torusScale_invariant (K : IntermediateField C E) {S : Set (Fin r 
       by_contra hc
       exact hm (hsingle P htwistP m (MvPolynomial.mem_support_iff.mpr hc))
   -- read off the quotient
-  set mon : E := ∏ i ∈ d.support, x i ^ d i with hmon
-  have hmon0 : mon ≠ 0 := Finset.prod_ne_zero_iff.mpr fun i _ ↦ pow_ne_zero _ (hx0 i)
-  have hQval : MvPolynomial.aeval x Q = algebraMap (↥K) E (MvPolynomial.coeff d Q) * mon := by
-    rw [hQmono, MvPolynomial.aeval_monomial, Finsupp.prod, ← hmon]
-  have hPval : MvPolynomial.aeval x P = algebraMap (↥K) E (MvPolynomial.coeff d P) * mon := by
-    rw [hPmono, MvPolynomial.aeval_monomial, Finsupp.prod, ← hmon]
+  have hmon0 : (∏ i ∈ d.support, x i ^ d i) ≠ 0 :=
+    Finset.prod_ne_zero_iff.mpr fun i _ ↦ pow_ne_zero _ (hx0 i)
+  have hQval : MvPolynomial.aeval x Q
+      = algebraMap (↥K) E (MvPolynomial.coeff d Q) * ∏ i ∈ d.support, x i ^ d i := by
+    conv_lhs => rw [hQmono]
+    rw [MvPolynomial.aeval_monomial]
+    rfl
+  have hPval : MvPolynomial.aeval x P
+      = algebraMap (↥K) E (MvPolynomial.coeff d P) * ∏ i ∈ d.support, x i ^ d i := by
+    conv_lhs => rw [hPmono]
+    rw [MvPolynomial.aeval_monomial]
+    rfl
   have hcQ : MvPolynomial.coeff d Q ≠ 0 := MvPolynomial.mem_support_iff.mp hd
   have hcQ0 : algebraMap (↥K) E (MvPolynomial.coeff d Q) ≠ 0 := by
     simpa using hcQ
   rw [hQval, hPval] at hPQeq
+  have hcancel : z * algebraMap (↥K) E (MvPolynomial.coeff d Q)
+      = algebraMap (↥K) E (MvPolynomial.coeff d P) := by
+    refine mul_right_cancel₀ hmon0 ?_
+    rw [mul_assoc]
+    exact hPQeq
   have hzeq : z = algebraMap (↥K) E (MvPolynomial.coeff d P / MvPolynomial.coeff d Q) := by
-    rw [map_div₀]
-    field_simp at hPQeq ⊢
-    linear_combination hPQeq
+    rw [map_div₀, eq_div_iff hcQ0]
+    exact hcancel
   rw [hzeq]
   exact (MvPolynomial.coeff d P / MvPolynomial.coeff d Q).2
 
 end Invariance
+
+section Consequences
+
+variable {C E : Type u} [Field C] [Field E] [Algebra C E] [Differential C] [Differential E]
+  [DifferentialAlgebra C E] [CharZero E]
+
+variable {r : ℕ} {x : Fin r → E} (hx : DifferentialIndependent C x)
+  (hgen : differentialAdjoin C (Set.range x) = ⊤)
+
+omit [Differential C] [Differential E] [DifferentialAlgebra C E] [CharZero E] in
+/-- **The full constant torus separates the characters of exponent vectors.** -/
+theorem exponent_eq_of_forall_prod_pow_eq [CharZero C] {r : ℕ} (e d : Fin r →₀ ℕ)
+    (h : ∀ u : Fin r → Cˣ, (∏ i, ((u i : C)) ^ e i) = ∏ i, ((u i : C)) ^ d i) : e = d := by
+  classical
+  ext j
+  have htwo : ((2 : C)) ≠ 0 := two_ne_zero
+  set u : Fin r → Cˣ := fun i ↦ if i = j then Units.mk0 (2 : C) htwo else 1 with hu
+  have hprod : ∀ g : Fin r →₀ ℕ, (∏ i, ((u i : C)) ^ g i) = (2 : C) ^ g j := by
+    intro g
+    rw [Finset.prod_eq_single j]
+    · simp only [hu, if_pos rfl, Units.val_mk0]
+    · intro i _ hij
+      simp only [hu, if_neg hij]
+      norm_num
+    · intro hj
+      exact absurd (Finset.mem_univ j) hj
+  have hval := h u
+  rw [hprod e, hprod d] at hval
+  have hcast : ((2 ^ (e j) : ℕ) : C) = ((2 ^ (d j) : ℕ) : C) := by
+    push_cast
+    exact hval
+  exact Nat.pow_right_injective (le_refl 2) (Nat.cast_injective hcast)
+
+include hx hgen in
+/-- **The invariants of a separating set of rescalings are exactly the velocity field.**  An
+element of the ambient field is fixed by every rescaling in a character-separating set precisely
+when it lies in the differential field of the logarithmic derivatives of the palette. -/
+theorem torusScale_invariant_iff_mem_torusVelocityField [CharZero C] (hconst : ∀ c : C, c′ = 0)
+    {S : Set (Fin r → Cˣ)}
+    (hsep : ∀ e d : Fin r →₀ ℕ,
+      (∀ u ∈ S, (∏ i, ((u i : C)) ^ e i) = ∏ i, ((u i : C)) ^ d i) → e = d)
+    {z : E} :
+    (∀ u ∈ S, torusScaleEquiv hx hgen u z = z) ↔ z ∈ torusVelocityField C x := by
+  constructor
+  · intro hfix
+    refine mem_of_torusScale_invariant hx hgen (torusVelocityField C x)
+      (algebraicIndependent_palette_over_velocityField hx hgen hconst)
+      (fun u _ w hw ↦ torusScaleEquiv_fixes_velocityField hx hgen hconst u hw) hsep ?_ hfix
+    rw [adjoin_velocity_palette_eq_top hx hgen]
+    exact IntermediateField.mem_top
+  · intro hz u _
+    exact torusScaleEquiv_fixes_velocityField hx hgen hconst u hz
+
+include hx hgen in
+/-- **The fixed field of a separating deck group is the velocity field.** -/
+theorem fixedField_torusScaleRep_eq_torusVelocityField [CharZero C] (hconst : ∀ c : C, c′ = 0)
+    (S : Subgroup (Fin r → Cˣ))
+    (hsep : ∀ e d : Fin r →₀ ℕ,
+      (∀ u ∈ S, (∏ i, ((u i : C)) ^ e i) = ∏ i, ((u i : C)) ^ d i) → e = d) :
+    IntermediateField.fixedField (S.map (torusScaleRep hx hgen)) = torusVelocityField C x := by
+  refine SetLike.ext fun z ↦ ?_
+  rw [IntermediateField.mem_fixedField_iff]
+  constructor
+  · intro hfix
+    exact (torusScale_invariant_iff_mem_torusVelocityField hx hgen hconst hsep).mp
+      fun u hu ↦ hfix _ ⟨u, hu, rfl⟩
+  · intro hz σ hσ
+    obtain ⟨u, hu, rfl⟩ := hσ
+    exact (torusScale_invariant_iff_mem_torusVelocityField hx hgen hconst hsep).mpr hz u hu
+
+omit [Differential C] [Differential E] [DifferentialAlgebra C E] [CharZero E] in
+/-- The image of the base under the bottom intermediate field's identification. -/
+theorem algebraMap_botEquiv_coe (w : ↥(⊥ : IntermediateField C E)) :
+    algebraMap C E (IntermediateField.botEquiv C E w) = (w : E) := by
+  obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp w.2
+  have hw : w = algebraMap C (↥(⊥ : IntermediateField C E)) c := by
+    apply Subtype.ext
+    simpa using hc.symm
+  rw [hw, AlgEquiv.commutes]
+  simp
+
+omit [Differential C] [Differential E] [DifferentialAlgebra C E] [CharZero E] in
+/-- Algebraic independence over the base transfers to the bottom intermediate field. -/
+theorem algebraicIndependent_bot {ι : Type*} {y : ι → E} (h : AlgebraicIndependent C y) :
+    AlgebraicIndependent (↥(⊥ : IntermediateField C E)) y := by
+  rw [algebraicIndependent_iff]
+  intro p hp
+  have hcomp : (algebraMap C E).comp (IntermediateField.botEquiv C E).toRingHom
+      = algebraMap (↥(⊥ : IntermediateField C E)) E := by
+    ext w
+    exact algebraMap_botEquiv_coe w
+  have hmap : MvPolynomial.aeval y
+      (MvPolynomial.map (IntermediateField.botEquiv C E).toRingHom p) = 0 := by
+    rw [MvPolynomial.aeval_def, MvPolynomial.eval₂_map, hcomp, ← MvPolynomial.aeval_def]
+    exact hp
+  have hzero := algebraicIndependent_iff.mp h _ hmap
+  exact MvPolynomial.map_injective _
+    (IntermediateField.botEquiv C E).injective (by rw [hzero, map_zero])
+
+include hx hgen in
+/-- **The velocity field meets the rational function field of the palette in the constants.**  This
+is the statement that the persistent velocity coordinate carries no information about the position:
+a differential-rational function of the logarithmic derivatives which is an ordinary rational
+function of the palette is constant. -/
+theorem torusVelocityField_inf_adjoin_eq_bot [CharZero C] (hconst : ∀ c : C, c′ = 0) :
+    torusVelocityField C x ⊓ IntermediateField.adjoin C (Set.range x)
+      = (⊥ : IntermediateField C E) := by
+  refine le_antisymm (fun z hz ↦ ?_) bot_le
+  obtain ⟨hzL, hzC⟩ := hz
+  refine mem_of_torusScale_invariant hx hgen (⊥ : IntermediateField C E)
+    (algebraicIndependent_bot (algebraicIndependent_of_differentialIndependent hx))
+    (fun u _ w hw ↦ ?_) (fun e d hed ↦ exponent_eq_of_forall_prod_pow_eq e d
+      fun u ↦ hed u (Set.mem_univ u)) ?_ (fun u _ ↦ ?_)
+  · obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp hw
+    rw [← hc, AlgEquiv.commutes]
+  · have hres := IntermediateField.restrictScalars_adjoin C (⊥ : IntermediateField C E)
+      (Set.range x)
+    have hunion : IntermediateField.adjoin C
+        ((⊥ : IntermediateField C E) ∪ Set.range x : Set E)
+        = IntermediateField.adjoin C (Set.range x) := by
+      refine le_antisymm (IntermediateField.adjoin_le_iff.mpr ?_)
+        (IntermediateField.adjoin.mono _ _ _ Set.subset_union_right)
+      rintro w (hw | hw)
+      · exact (bot_le : (⊥ : IntermediateField C E) ≤ _) hw
+      · exact IntermediateField.subset_adjoin _ _ hw
+    have : z ∈ IntermediateField.restrictScalars C
+        (IntermediateField.adjoin (↥(⊥ : IntermediateField C E)) (Set.range x)) := by
+      rw [hres, hunion]
+      exact hzC
+    exact this
+  · exact torusScaleEquiv_fixes_velocityField hx hgen hconst u hzL
+
+end Consequences
 
 end
 

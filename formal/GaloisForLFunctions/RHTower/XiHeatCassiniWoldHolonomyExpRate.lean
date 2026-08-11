@@ -76,7 +76,7 @@ theorem xiHeatCassiniWoldNatTraceCorrectionMass_sub_sum_le
     intro i
     calc
       xiHeatCassiniWoldNatTraceCorrection (i + (N + 1)) ≤
-          3 * (Real.log (i + (N + 1)) /
+          3 * (Real.log (((i + (N + 1) : ℕ) : ℝ)) /
             ((i + (N + 1) : ℕ) : ℝ) ^ 2) :=
         xiHeatCassiniWoldNatTraceCorrection_le_log_div_sq _
       _ = 3 * (Real.log ((N : ℝ) + (i + 1)) /
@@ -197,7 +197,7 @@ theorem eventually_xiHeatCassiniWoldNatTraceCorrection_tail_le_exp
   have hshapeTail : (Real.log (N : ℝ) + 1) / N ≤ 2 * E := by
     calc
       (Real.log (N : ℝ) + 1) / N =
-          Real.log (N : ℝ) / N + 1 / N := by field_simp; ring
+          Real.log (N : ℝ) / N + 1 / N := by field_simp
       _ ≤ E + E := add_le_add hlogDiv honeDiv
       _ = 2 * E := by ring
   calc
@@ -245,7 +245,7 @@ theorem exists_xiHeatCassiniWoldNatResidualLogDiscrepancy_exp_rate :
           xiHeatCassiniWoldNatTraceCorrectionSum N)| ≤
       |Sieve.mertensA N - Real.log N - xiHeatCassiniMertensLogConstant| +
         |xiHeatCassiniWoldNatTraceCorrectionMass -
-          xiHeatCassiniWoldNatTraceCorrectionSum N| := abs_add _ _
+          xiHeatCassiniWoldNatTraceCorrectionSum N| := abs_add_le _ _
     _ = |Sieve.mertensA N - Real.log N - xiHeatCassiniMertensLogConstant| +
         (xiHeatCassiniWoldNatTraceCorrectionMass -
           xiHeatCassiniWoldNatTraceCorrectionSum N) := by

@@ -155,6 +155,7 @@ import GaloisForLFunctions.HTGeometry.AmplifiedGenerativeAdmission
 import GaloisForLFunctions.HTGeometry.CompleteTestClosureFusion
 import GaloisForLFunctions.HTGeometry.WittFormationMechanics
 import GaloisForLFunctions.HTGeometry.PoleUnitFormationMechanics
+import GaloisForLFunctions.HTGeometry.LongitudinalTransverseFormationMechanics
 
 /-!
 # Universal-law-field Lean umbrella

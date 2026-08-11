@@ -143,9 +143,10 @@ degree-escape estimate, not construction of another source or orientation.
   `HTGeometry.eq_monicMomentAdmissionPolynomial_of_monic_of_orthogonal`,
   `HTGeometry.tendsto_monicMomentAdmissionPolynomial_coeff`,
   `RHTower.XiShiftedCanonicalAdmission.monicMomentAdmissionPolynomial_normalizedCentralBinom_eq_amplitude`,
+  `RHTower.XiShiftedCanonicalAdmission.dimensionlessAdmission_eventually_unique`,
   `RHTower.XiShiftedCanonicalAdmission.scaled_arithmeticSource_sourceCoordinateDilation`,
   `RHTower.XiShiftedCanonicalAdmission.tendsto_scaled_canonicalArithmeticSource`, and
-  `RHTower.XiShiftedCanonicalAdmission.canonicalArithmeticSource_eventually_pos`.
+  `RHTower.XiShiftedCanonicalAdmission.canonicalUniqueAdmissionArithmeticSource_eventually_pos`.
 - Verification: direct `lake env lean` checks passed; targeted
   `lake build GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionSourceRecession` passed;
   axiom audit reports only `[propext, Classical.choice, Quot.sound]`.

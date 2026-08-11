@@ -50,7 +50,7 @@ theorem inner_gaussPlaceEmbed_same {J : Type*} [Fintype J] [DecidableEq J] (j : 
   rw [PiLp.inner_apply, Finset.sum_eq_single j]
   · simp [gaussPlaceEmbed]
   · intro b _ hb
-    simp [gaussPlaceEmbed, Pi.single_apply, hb]
+    simp [gaussPlaceEmbed, hb]
   · intro h
     exact absurd (Finset.mem_univ j) h
 
@@ -113,10 +113,11 @@ theorem inner_gaussPlaceEmbed_assembled_ne {J : Type*} [Fintype J] [DecidableEq 
   by_cases hij : i = j
   · subst hij
     have hsingle : (gaussPlaceEmbed j' v).ofLp i = 0 := by
-      simp [gaussPlaceEmbed, Pi.single_apply, (Ne.symm hjj' : j' ≠ i)]
+      simp [gaussPlaceEmbed, (Ne.symm hjj' : j' ≠ i)]
     rw [hsingle, map_zero, inner_zero_right]
-  · have hsingle : (gaussPlaceEmbed j u).ofLp i = 0 := by
-      simp [gaussPlaceEmbed, Pi.single_apply, fun h => hij h.symm]
+  · have hji : j ≠ i := fun h => hij h.symm
+    have hsingle : (gaussPlaceEmbed j u).ofLp i = 0 := by
+      simp [gaussPlaceEmbed, hji]
     rw [hsingle, inner_zero_left]
 
 /-- **Place-faithfulness**: the same-place matrix elements of every power are the actual
@@ -132,8 +133,9 @@ theorem inner_gaussPlaceEmbed_assembled_same {J : Type*} [Fintype J] [DecidableE
     simp [gaussPlaceEmbed]
   · intro b _ hb
     rw [gaussAssembledBlock_pow_apply]
+    have hjb : j ≠ b := Ne.symm hb
     have hsingle : (gaussPlaceEmbed j u).ofLp b = 0 := by
-      simp [gaussPlaceEmbed, Pi.single_apply, fun h => hb h.symm]
+      simp [gaussPlaceEmbed, hjb]
     rw [hsingle, inner_zero_left]
   · intro h
     exact absurd (Finset.mem_univ j) h
@@ -248,12 +250,12 @@ theorem gaussCanonicalPrimeFamily_injective (N : ℕ) :
     have := congrArg (fun q : Nat.Primes => (q : ℕ)) hab
     simpa [gaussCanonicalPrimeFamily] using this
   by_contra hne
-  rcases lt_or_gt_of_ne (fun h => hne (Fin.ext h) :
-      (a : ℕ) ≠ (b : ℕ)) with h | h
-  · have := (Nat.nth_lt_nth Nat.infinite_setOf_prime).mpr h
-    omega
-  · have := (Nat.nth_lt_nth Nat.infinite_setOf_prime).mpr h
-    omega
+  have hvne : (a : ℕ) ≠ (b : ℕ) := fun h => hne (Fin.ext h)
+  rcases lt_or_gt_of_ne hvne with h | h
+  · exact absurd hval
+      (ne_of_lt ((Nat.nth_lt_nth Nat.infinite_setOf_prime).mpr h))
+  · exact absurd hval.symm
+      (ne_of_lt ((Nat.nth_lt_nth Nat.infinite_setOf_prime).mpr h))
 
 /-- The canonical assembled block at aperture `N`, with two-fold components. -/
 def gaussCanonicalAssembledBlock (N : ℕ) :
@@ -309,7 +311,6 @@ theorem gaussChannelResidueCurrent_mul_log {m : ℕ} (hm : 1 ≤ m) (p : Nat.Pri
     exact this.ne'
   rw [gaussChannelResidueCurrent, gaussChannelResidue, gaussLocalFactorWeight, div_pow]
   field_simp
-  ring
 
 /-- The current reads the left-half carrier orientation positively at every label. -/
 theorem gaussChannelResidueCurrent_mul_carrier_pos_of_leftHalf {m : ℕ} (hm : 1 ≤ m)

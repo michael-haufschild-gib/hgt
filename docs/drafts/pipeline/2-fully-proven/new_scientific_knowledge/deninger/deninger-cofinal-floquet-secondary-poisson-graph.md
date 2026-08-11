@@ -174,11 +174,46 @@ singular endpoint/Fourier regularity defect, not another reflected trace.
   lengths, and cofinal identity-theorem tomography only.
 - **No Lean claim.** Lean corpus was read only during its ongoing refactor.
 
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerSecondaryCollarDefect.lean`, together with
+`DeningerCollarExchange.lean` and `DeningerMeyerPeriodization.lean`.  Axiom audit for every
+declaration: `propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- `(1)` — `deningerRealExpWeight`, `deningerExpMul`: **multiplication by any real exponential
+  `e^{ct}` is an operation of `H_-`**, costing `|c|` units of the source exponent.  The proof is the
+  Leibniz bound plus `‖D^n e^{ct}‖ = |c|^n e^{ct}`.  `deningerHalfDensityLift` is the case
+  `c = 1/2`, i.e. `U`.
+- `(2)` — `deningerSecondaryDefect`, the centred two-collar defect, built from `U` and reflection.
+- `(4)` — `deningerSecondaryDefect_value`: the scalar two-collar coefficient before orbit
+  summation, `x^{-1} d_sec(log x) = x^{-1/2}h₊(log x) - x^{-3/2}h₋(-log x)`.
+- **`(6)` ⟺ `(7)`** — `deningerSecondaryDefect_eq_zero_iff`: the radical of the defect is exactly
+  the reflected Calderón graph.  This identifies `Γ_sec` as **the graph of the collar exchange `J`**
+  of the Möbius--Fourier card: `h₊ = J h₋` is literally `h₊(t) = e^{-t}h₋(-t)`, so the two cards
+  share one object.
+- `(3)` — the full-circle secondary trace is the corpus's `deningerPeriodizationSum` applied to
+  `d_sec`; its absolute convergence at every point is `deningerShiftInt_summable`.
+
+### Not yet formalized
+
+- `(5)`: finiteness and continuity of the all-prime energy `∑_q q^{-2}∫_0^{L_q}|S_q|²`.  The
+  pointwise convergence of each `S_q` is proved; what is missing is the uniform-in-`q` periodization
+  estimate and the `L²` integral over the fundamental interval.
+- The `⟸` half of the radical computation at the level of `(5)`: that vanishing of the *energy*
+  forces every prime periodization to vanish needs the cofinal tomography injectivity, which is the
+  companion card `deninger-cofinal-prime-periodization-tomography-instability`.
+- `(8)` invariance of the energy under the contragredient flow (the defect's translation covariance
+  is elementary once `(5)` exists).
+
 ## Gates
 
 - [x] 0 → 1 in-progress: exact source map, topology, and falsifiers specified
 - [x] 1 → 2 fully-proven: dependency-closed proof `(1)`--`(14)`
-- [ ] 2 → 3 formalized: paused during Lean corpus refactor
+- [ ] 2 → 3 formalized: `(1)`, `(2)`, `(3)`, `(4)` and the radical computation `(6)`⟺`(7)`
+  proved unconditionally; the all-prime energy `(5)`, its flow invariance `(8)`, and the tomography
+  input remain (see *Lean status*)
 - [ ] 3 → 4 publication-ready
 
 ## Log

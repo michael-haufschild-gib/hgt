@@ -1,11 +1,12 @@
 # Route-R raw-resolved-relative cone character law
 
 - **ID:** `route-r-raw-resolved-relative-cone-character-law`
-- **Stage:** 2 — fully proven on paper
 - **Type:** THEOREM (paper) / NO-GO CORRECTION WITH POSITIVE SURVIVOR
-- **Status:** `[PAPER-PROVED] [RAW PREDIFFERENTIAL NON-NILPOTENCE]`
+- **Stage:** 3 — formalized in Lean 4
+- **Status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
+  `[RAW PREDIFFERENTIAL NON-NILPOTENCE]`
   `[RESOLVED ABSOLUTE FACTORIZATION NO-GO] [ORDINARY RELATIVE CONE CHARACTER]`
-  `[UNRESTRICTED COMPLEX NO-GO RETRACTED] [NOVELTY UNVERIFIED] [NOT RH] [NO LEAN WRITTEN]`
+  `[UNRESTRICTED COMPLEX NO-GO RETRACTED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Statement:** Literal raw Route-R reporter is non-nilpotent off centre, and every nonzero
   physical orientation fails to factor through resolved absolute cohomology. Retained source class
   instead gives a nonzero relative mapping-cone class carrying two ordinary cone characters whose
@@ -460,8 +461,9 @@ Formalized, unconditionally, in
   `coneCharacterRel`, `coneCharacterRel_eq`, `coneCharacter_retained`,
   `exactify_forward_value`, `exactify_reflected_value`.
 
-Still on paper only: Theorems A–D (§2–§5), the countertheorem (§7), and the exact positive
-survivor (§8).  The card therefore stays in stage 2.
+Theorems A–E (§2–§6), the countertheorem (§7) and the exact positive survivor (§8) are formalized
+as well; the full chain is listed in the companion card
+`route-r-raw-resolved-relative-cone-character-law-formalized.md`.
 
 ## Gates
 
@@ -470,7 +472,7 @@ survivor (§8).  The card therefore stays in stage 2.
 - [x] strongest positive survivor extracted
 - [x] hostile counterexample integrated
 - [x] no circular critical-line/nonerasure assumption
-- [ ] Lean formalization
+- [x] Lean formalization
 - [ ] source-defined simultaneous two-orientation law
 - [ ] RH
 
