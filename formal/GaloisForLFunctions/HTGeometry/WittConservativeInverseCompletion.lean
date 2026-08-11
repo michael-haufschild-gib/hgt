@@ -97,3 +97,34 @@ theorem wittConservativeInverseCompletion_closed :
       hinverse hformation hexterior⟩
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+/-! ## The sharp completion obstruction -/
+
+/-- **The unit group need not be closed (CIC, section 4).**  In `ℝ` the units `N⁻¹` are
+conservative — each has an exterior companion `N` with `N⁻¹ · N = 1` — yet they converge to the
+nonunit `0` while their companions escape every bounded set.  Losing the exterior companion is
+exactly how a completion creates a divisor, so the inverse coordinate cannot be dropped. -/
+theorem wittConservativeInverse_unitGroup_not_closed :
+    (∀ N : ℕ, 0 < N → ((N : ℝ))⁻¹ * (N : ℝ) = 1) ∧
+      Filter.Tendsto (fun N : ℕ => ((N : ℝ))⁻¹) Filter.atTop (nhds 0) ∧
+      ¬ ∃ e : ℝ, Filter.Tendsto (fun N : ℕ => (N : ℝ)) Filter.atTop (nhds e) := by
+  refine ⟨fun N hN => inv_mul_cancel₀ (by exact_mod_cast hN.ne'), tendsto_inv_atTop_zero.comp
+    tendsto_natCast_atTop_atTop, ?_⟩
+  rintro ⟨e, he⟩
+  have hbdd := he.isBoundedUnder_le
+  obtain ⟨C, hC⟩ := hbdd
+  obtain ⟨N, hN⟩ := exists_nat_gt (max C 0 + 1)
+  have hev : ∀ᶠ n : ℕ in Filter.atTop, (n : ℝ) ≤ C := hC
+  obtain ⟨M, hM⟩ := Filter.eventually_atTop.mp hev
+  have hle := hM (max M N) (le_max_left _ _)
+  have hlt : (max C 0 + 1 : ℝ) < ((max M N : ℕ) : ℝ) := by
+    refine lt_of_lt_of_le hN ?_
+    exact_mod_cast Nat.cast_le.mpr (le_max_right M N)
+  have : C < (max C 0 + 1 : ℝ) := by
+    have := le_max_left C 0
+    linarith
+  linarith
+
+end GaloisForLFunctions.HTGeometry

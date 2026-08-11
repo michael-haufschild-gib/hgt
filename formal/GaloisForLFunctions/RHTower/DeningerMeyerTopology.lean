@@ -53,6 +53,15 @@ instance : ContinuousSMul ℂ DeningerMeyerSource := by
   rw [withSeminorms.withSeminorms_eq]
   exact seminorms.moduleFilterBasis.continuousSMul
 
+noncomputable instance : UniformSpace DeningerMeyerSource :=
+  (seminorms.addGroupFilterBasis.uniformSpace).replaceTopology rfl
+
+instance : IsUniformAddGroup DeningerMeyerSource :=
+  seminorms.addGroupFilterBasis.isUniformAddGroup
+
+instance : FirstCountableTopology DeningerMeyerSource :=
+  withSeminorms.firstCountableTopology
+
 end DeningerMeyerSource
 
 end RHTower

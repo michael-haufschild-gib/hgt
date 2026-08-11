@@ -173,6 +173,32 @@ theorem differentiallyAlgebraic_toMeromorphicNFOn_of_vanishing_orbital_divisor
   rw [toMeromorphicNFOn_eq_of_eq_off_countable hF hgmer hScount fun z hz ↦ hFS z hz]
   exact RealizedDA.differentiallyAlgebraic ⟨x, hx, hxmem⟩
 
+
+set_option maxHeartbeats 1000000 in
+/-- **A mixed-constraint source with vanishing orbital divisor agrees, off a countable set, with a
+realized differentially algebraic function.**  This is the kernel theorem in the form that keeps the
+realizing germ, so that differential algebraicity can be transported through sums of functions
+without factorising the source itself. -/
+theorem exists_realizesMero_of_vanishing_orbital_divisor
+    {F : ℂ → ℂ} {τ σ : ℂ}
+    (hF : MeromorphicOn F (Set.univ : Set ℂ))
+    (hper : PeriodicOneGerm F)
+    {Cst : ℂ} (hmixed : MixedConstGerm F τ σ Cst)
+    (hτ : 0 < τ.im) (hσ : 0 < σ.im)
+    (hindep : ∀ n m j : ℤ, (n : ℂ) * τ + (m : ℂ) * σ + (j : ℂ) = 0 → n = 0 ∧ m = 0 ∧ j = 0)
+    (hindepτ : LinearIndependent ℝ ![(1 : ℂ), τ]) (hindepσ : LinearIndependent ℝ ![(1 : ℂ), σ])
+    (hvanish : ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
+      ∑ᶠ m : ℤ, laurentCoeff (fun z ↦ F (z + σ) - F z) (p + (m : ℂ) * σ) ℓ = 0) :
+    Cst = 0 ∧ ∃ (x : meroField (Set.univ : Set ℂ)) (g : ℂ → ℂ) (S : Set ℂ),
+      RealizesMero x g ∧ x ∈ daOverRatFuncField ∧ S.Countable ∧ ∀ z ∉ S, F z = g z := by
+  obtain ⟨hCst, n, Rτ, Rσ, c, S, hScount, hFS⟩ :=
+    exists_const_sub_totalAtomSum_of_vanishing_divisor hF hper hmixed hτ hσ hindep hindepτ hindepσ
+      hvanish
+  obtain ⟨x, hx, hxmem⟩ :=
+    (realizedDA_totalAtomSum hτ hσ F n Rτ Rσ).add (realizedDA_const c)
+  exact ⟨hCst, x, totalAtomSum F τ σ n Rτ Rσ + fun _ : ℂ ↦ c, S, hx, hxmem, hScount,
+    fun z hz ↦ hFS z hz⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

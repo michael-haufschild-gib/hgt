@@ -508,10 +508,16 @@ The 33-module `GaloisForLFunctions.HTGeometry.AbelianZetaGas` layer already owns
 1. **`(AZC.12)` as an expectation.**  Identify `socleResponse σ τ z` with `E e^{-zQ}` through the
    socle characteristic function of `SocleCharFun`; the real case is already
    `Response.gasResponse_eq`.
-2. **`(AZC.18)`.**  The divisor of `v ↦ socleLadder σ v`, i.e.
-   `meromorphicOrderAt (socleLadder σ) v₀ = ∑_{j<J} meromorphicOrderAt ζ ((j+1)σ + v₀)`.  The
-   `v`-variable tail layer it needs is now built (`SocleTail`); what remains is the order
-   bookkeeping, mirroring `GrandResponse.meromorphicOrderAt_grandResponse`.
+2. **`(AZC.18)` — DONE.**
+   `GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleDivisor` proves
+   `meromorphicOrderAt_socleLadder`: the order of the socle ladder at `v` is
+   `∑_{j<J} ord_{(j+1)σ + v} ζ` for every depth `J` above the uniform threshold, so only finitely
+   many depths contribute.  The socle depth factor is an affine pullback of `ζ` of **slope one**
+   (`socleFactor`, `meromorphicOrderAt_socleFactor` through `meromorphicOrderAt_comp_affine`),
+   unlike the dilation variable where the slope is the depth; `meromorphicOrderAt_socleProduct`
+   sums the truncation and `analyticAt_tprod_zeta_socleTail` with
+   `SocleTail.tprod_zeta_socleTail_ne_zero` give the tail order zero.
+
 3. **`(AZC.15)`/`(AZC.16)`, Theorem 5.1.**  The fugacity-direction analogue of
    `RelativeEntropy.klDiv_symmetrised_temperature_shift`, with the socle observable `Q` in place of
    the order observable, plus the variance-integral form and the explicit `−ζ'/ζ` series.
@@ -607,3 +613,5 @@ The 33-module `GaloisForLFunctions.HTGeometry.AbelianZetaGas` layer already owns
 - 2026-08-11 — Theorem 7.1 closed for the response itself: the ladder obstruction extracted as
   `not_differentiallyAlgebraicOn_of_zetaLadder`, and the domain-local argument-scaling closure
   lemma `differentiallyAlgebraicOn_comp_const_mul` built to carry it from the ladder to `C`.
+- 2026-08-11 — (AZC.18) closed: the socle-variable divisor of the ladder, with the slope-one
+  affine pullback replacing the dilation organ's slope-`j` one (`AbelianZetaGas.SocleDivisor`).

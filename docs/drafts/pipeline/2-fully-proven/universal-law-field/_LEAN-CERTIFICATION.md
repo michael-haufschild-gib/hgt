@@ -1305,3 +1305,28 @@ with several requiring fewer.
 
 The module is wired into `HTGeometry.UniversalLawField`; the final foreground umbrella build
 completes 11,670 jobs.  Repository formal lint and generated-index checks pass.
+
+## Session 2026-08-11 addition (Inverse-Response Ward Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-IRWM-1 | Inverse derivative law, mixed Riccati fusion, exact mixed-acceleration reconstruction, affine product boundary, strict and anomalous Ward conservation, strict-trace grade blindness, and faithful-square selection | `HTGeometry.InverseResponseWardMechanics` |
+
+The mixed identity is
+
+```text
+D1 (M * D2 E) + (M * D1 E) * (M * D2 E) = M * D1 (D2 E)
+```
+
+under the sole formation law `M * E = 1`.  No commutation of derivations is assumed.  Under mixed
+affinity, the fused product is an exact derivative; every additive reporter annihilating that
+derivative kills the product.  The anomalous identity identifies the general value as source
+acceleration trace minus boundary anomaly.  Lean also proves that a strict linear Ward reporter
+vanishes on every nonzero derivation eigengrade.  The module contains no arithmetic realization or
+RH premise.
+
+Direct leaf elaboration and the 1,347-job foreground leaf build pass.  Axiom prints for inverse
+response, mixed reconstruction, strict/anomalous Ward balance, grade blindness, faithful-square
+selection, and the capstone report only `propext`, `Classical.choice`, and `Quot.sound` (most omit
+`Classical.choice`).  Generated-index validation and formal lint pass.  The module is wired into
+`HTGeometry.UniversalLawField`; the final foreground umbrella build completes 11,672 jobs.

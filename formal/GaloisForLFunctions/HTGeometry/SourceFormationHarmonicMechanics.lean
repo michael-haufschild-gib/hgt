@@ -407,3 +407,33 @@ theorem rankTwelve_fiveShadow_fusion_certificate :
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-! ## The physical prime receiver on the critical line -/
+
+/-- **(FF.19).**  The physical receiver's two-edge refinement excess is the fourth power of its
+radial defect. -/
+theorem primeReceiver_twoEdge_refinement_energy (p : ℕ) (ρ : ℂ) :
+    2 * ((((p : ℝ) ^ (2 * ρ.re - 1)) - 1) ^ 2 +
+        (((p : ℝ) ^ (2 * ρ.re - 1)) ^ 2 - ((p : ℝ) ^ (2 * ρ.re - 1))) ^ 2) -
+        (((p : ℝ) ^ (2 * ρ.re - 1)) ^ 2 - 1) ^ 2
+      = (((p : ℝ) ^ (2 * ρ.re - 1)) - 1) ^ 4 :=
+  geometric_twoEdge_refinement_energy _
+
+/-- **(FF.20).**  For every prime base the physical receiver's two-edge refinement excess vanishes
+exactly on the critical line.  This is a receiver classification, not a zero-location theorem: it
+says nothing about which `ρ` are admitted. -/
+theorem primeReceiver_twoEdge_refinement_energy_eq_zero_iff
+    {p : ℕ} (hp : p.Prime) {ρ : ℂ} :
+    2 * ((((p : ℝ) ^ (2 * ρ.re - 1)) - 1) ^ 2 +
+        (((p : ℝ) ^ (2 * ρ.re - 1)) ^ 2 - ((p : ℝ) ^ (2 * ρ.re - 1))) ^ 2) -
+        (((p : ℝ) ^ (2 * ρ.re - 1)) ^ 2 - 1) ^ 2 = 0 ↔ ρ.re = 1 / 2 := by
+  rw [primeRadial_twoEdge_refinement_energy_eq_zero_iff hp]
+  constructor <;> intro h <;> linarith
+
+end
+
+end GaloisForLFunctions.HTGeometry

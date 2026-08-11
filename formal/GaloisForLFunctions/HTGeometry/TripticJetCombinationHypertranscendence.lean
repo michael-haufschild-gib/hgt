@@ -136,16 +136,16 @@ theorem not_differentiallyAlgebraic_jetCombination {τ σ : ℂ} (hτ : 0 < τ.i
 class of the source itself.  One class of base points — the one carrying the untranslated source —
 is not a nonresonant translate; it is the extra element of the translation packet, and its
 representative is the point `-(τ/2 + 1/2)`. -/
-theorem not_differentiallyAlgebraic_jetCombination_option {τ σ : ℂ} (hτ : 0 < τ.im)
+theorem exists_realizesMero_jetCombination_option {τ σ : ℂ} (hτ : 0 < τ.im)
     (hσ : 0 < σ.im) (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods τ σ))
     (P₀ : Finset ℂ) (J : ℕ) (c : ℂ → ℕ → ℂ)
     (hnonres : ∀ q ∈ P₀, ThetaTranslationNonresonant σ τ (-(gammaPresentationShift σ) - q))
     (hsep : ∀ q ∈ P₀, ∀ q' ∈ P₀, q ≠ q' → ThetaTranslationNonresonant σ τ (q - q'))
     {q₀ : ℂ} (hq₀ : q₀ ∈ insert (-(gammaPresentationShift σ)) P₀) {j₀ : ℕ} (hj₀ : j₀ < J)
     (hc : c q₀ j₀ ≠ 0) :
-    ¬ DifferentiallyAlgebraic (toMeromorphicNFOn
-        (jetCombination τ σ c (insert (-(gammaPresentationShift σ)) P₀) J)
-        (Set.univ : Set ℂ)) := by
+    ∃ X : meroField (Set.univ : Set ℂ),
+      RealizesMero X (jetCombination τ σ c (insert (-(gammaPresentationShift σ)) P₀) J) ∧
+      HypertranscendentalOver ℂ X := by
   classical
   set s : ℂ := gammaPresentationShift σ with hsdef
   have hbase : (-s) ∉ P₀ := by
@@ -224,9 +224,24 @@ theorem not_differentiallyAlgebraic_jetCombination_option {τ σ : ℂ} (hτ : 0
         (fun q ↦ ∑ j ∈ Finset.range J, fun z ↦ c q j * gammaJetSource τ σ q j z)]
       exact Finset.sum_congr rfl fun i _ ↦ by rw [hptsome i]
   rw [hfun] at hsum
+  exact ⟨_, hsum, hHT⟩
+
+/-- **A nonzero jet combination is not differentially algebraic**, base class included. -/
+theorem not_differentiallyAlgebraic_jetCombination_option {τ σ : ℂ} (hτ : 0 < τ.im)
+    (hσ : 0 < σ.im) (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods τ σ))
+    (P₀ : Finset ℂ) (J : ℕ) (c : ℂ → ℕ → ℂ)
+    (hnonres : ∀ q ∈ P₀, ThetaTranslationNonresonant σ τ (-(gammaPresentationShift σ) - q))
+    (hsep : ∀ q ∈ P₀, ∀ q' ∈ P₀, q ≠ q' → ThetaTranslationNonresonant σ τ (q - q'))
+    {q₀ : ℂ} (hq₀ : q₀ ∈ insert (-(gammaPresentationShift σ)) P₀) {j₀ : ℕ} (hj₀ : j₀ < J)
+    (hc : c q₀ j₀ ≠ 0) :
+    ¬ DifferentiallyAlgebraic (toMeromorphicNFOn
+        (jetCombination τ σ c (insert (-(gammaPresentationShift σ)) P₀) J)
+        (Set.univ : Set ℂ)) := by
+  obtain ⟨X, hX, hHT⟩ := exists_realizesMero_jetCombination_option hτ hσ hperiods P₀ J c hnonres
+    hsep hq₀ hj₀ hc
   intro hDA
   exact hHT (differentialAlgebraicOver_complex_of_ratFunc
-    (differentialAlgebraicOver_of_realizesMero hsum hDA))
+    (differentialAlgebraicOver_of_realizesMero hX hDA))
 
 end
 

@@ -1,11 +1,12 @@
 # GHZ coherence-graph state and history reconstruction law
 
 - **ID:** `cmr-ghz-coherence-graph-state-history-reconstruction`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [PHYSICAL OBSERVATION CALIBRATION]`
   `[STATE/HISTORY SEPARATION] [NOT A WORMHOLE THEOREM] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+  `[LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `ghz-coherence-graph-state-and-history-reconstruction-law-formalized.md`
 - **Parent physics card:**
   `../nomological-geometry-and-dynamics/framed-two-boundary-phase-fibre-recurrence-and-history-separation.md`.
 - **Parent field:**
@@ -248,8 +249,8 @@ metric/cost, and an independent bulk map.
   coherence graphs retain componentwise phase gauge.
 - **Strongest positive survivor:** connected graph is necessary and sufficient for state and
   winding reconstruction from the corresponding edge probes; path action remains a higher layer.
-- **Scope:** unconditional finite-dimensional theorem; no Lean written or built; no gravity or RH
-  claim.
+- **Scope:** unconditional finite-dimensional theorem; Lean formalization complete and
+  unconditional; no gravity or RH claim.
 
 ## Log
 

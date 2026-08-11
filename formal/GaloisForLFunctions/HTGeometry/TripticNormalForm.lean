@@ -160,15 +160,17 @@ variable {F : ℂ → ℂ} {τ σ : ℂ} (hF : MeromorphicOn F (Set.univ : Set �
   (hτ : 0 < τ.im) (hσ : 0 < σ.im) (hindep : IndepPeriods τ σ)
   (hindepτ : LinearIndependent ℝ ![(1 : ℂ), τ]) (hindepσ : LinearIndependent ℝ ![(1 : ℂ), σ])
 
-include hF hper hmixed hτ hσ hindep hindepτ in
-/-- **Subtracting the correction cancels the orbital divisor everywhere.** -/
-theorem exists_gammaCorrection_vanishing_divisor :
-    ∃ (P : Finset ℂ) (J : ℕ), ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
+include hF hper hmixed hτ hσ hindep in
+/-- **Subtracting the correction cancels the orbital divisor**, for any set of representatives
+covering the pole classes and any order bound past the boundary function's own. -/
+theorem gammaCorrection_vanishing_divisor_of_represents (P : Finset ℂ) (J : ℕ)
+    (hP : ∀ z : ℂ, meromorphicOrderAt (fun w ↦ F (w + σ) - F w) z < 0 →
+      ∃ q ∈ P, SameClass τ σ q z)
+    (hJ : ∀ (z : ℂ) (ℓ : ℤ), ℓ < -(J : ℤ) → laurentCoeff (fun w ↦ F (w + σ) - F w) z ℓ = 0) :
+    ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
       additiveOrbitalDivisorAt (fun z ↦ F z - gammaCorrection τ σ F P J z) σ p ℓ = 0 := by
   classical
-  obtain ⟨P, hP⟩ := exists_finset_boundaryPoleClasses hF hper hmixed hindepτ
-  obtain ⟨L, hL⟩ := exists_orderBound_boundary hF hper hmixed hindepτ
-  refine ⟨P, (-L).toNat, fun p ℓ hℓ ↦ ?_⟩
+  intro p ℓ hℓ
   obtain ⟨i, rfl⟩ : ∃ i : ℕ, ℓ = -((i : ℤ) + 1) := ⟨(-ℓ - 1).toNat, by omega⟩
   have hUmero : MeromorphicOn (fun w ↦ F (w + σ) - F w) (Set.univ : Set ℂ) := fun y _ ↦
     (meromorphicAt_comp_add.mpr (hF (y + σ) (Set.mem_univ _))).sub (hF y (Set.mem_univ y))
@@ -187,24 +189,41 @@ theorem exists_gammaCorrection_vanishing_divisor :
     by_contra hne
     have hpole : meromorphicOrderAt (fun w ↦ F (w + σ) - F w) (p + (m : ℂ) * σ) < 0 :=
       meromorphicOrderAt_neg_of_laurentCoeff_ne_zero (hUmero _ (Set.mem_univ _)) (by omega) hne
-    obtain ⟨u, v, hmem⟩ := hP _ hpole
-    refine hp ⟨_, hmem, ?_⟩
-    refine ⟨-u, -v, m, ?_⟩
-    simp only [zsmul_eq_mul]
-    push_cast
-    ring
-  by_cases hiJ : i < (-L).toNat
+    obtain ⟨q, hqP, hq⟩ := hP _ hpole
+    refine hp ⟨q, hqP, ?_⟩
+    obtain ⟨u, v, k, huvk⟩ := hq
+    exact ⟨u, v, k + m, by push_cast; linear_combination huvk⟩
+  by_cases hiJ : i < J
   · by_cases hcls : ∃ q ∈ P, SameClass τ σ q p
     · exact (additiveOrbitalDivisorAt_gammaCorrection hτ hσ hindep hF hper hmixed P hiJ hcls).symm
     · rw [hFoff hcls, additiveOrbitalDivisorAt_jetCombination_of_notMem hτ hσ hindep
         (gammaCorrectionCoeff τ σ F P) P _ hcls]
   · have hbound : additiveOrbitalDivisorAt F σ p (-((i : ℤ) + 1)) = 0 := by
       refine additiveOrbitalDivisorAt_eq_zero_of_terms F σ p _ fun m ↦ ?_
-      refine hL _ _ ?_
-      have hJ : (-L) ≤ (((-L).toNat : ℕ) : ℤ) := Int.self_le_toNat _
-      omega
+      exact hJ _ _ (by omega)
     rw [hbound, additiveOrbitalDivisorAt_jetCombination_of_le hτ hσ hindep
-      (gammaCorrectionCoeff τ σ F P) P (by omega : (-L).toNat ≤ i) p]
+      (gammaCorrectionCoeff τ σ F P) P (by omega : J ≤ i) p]
+
+include hF hper hmixed hτ hσ hindep hindepτ in
+/-- **Subtracting the correction cancels the orbital divisor everywhere.** -/
+theorem exists_gammaCorrection_vanishing_divisor :
+    ∃ (P : Finset ℂ) (J : ℕ), ∀ (p : ℂ) (ℓ : ℤ), ℓ < 0 →
+      additiveOrbitalDivisorAt (fun z ↦ F z - gammaCorrection τ σ F P J z) σ p ℓ = 0 := by
+  classical
+  obtain ⟨P, hP⟩ := exists_finset_boundaryPoleClasses hF hper hmixed hindepτ
+  obtain ⟨L, hL⟩ := exists_orderBound_boundary hF hper hmixed hindepτ
+  refine ⟨P, (-L).toNat,
+    gammaCorrection_vanishing_divisor_of_represents hF hper hmixed hτ hσ hindep P _ ?_ ?_⟩
+  · intro z hz
+    obtain ⟨u, v, hmem⟩ := hP z hz
+    refine ⟨_, hmem, ⟨-u, -v, 0, ?_⟩⟩
+    simp only [zsmul_eq_mul]
+    push_cast
+    ring
+  · intro z ℓ hℓ
+    refine hL _ _ ?_
+    have hbnd : (-L) ≤ (((-L).toNat : ℕ) : ℤ) := Int.self_le_toNat _
+    omega
 
 include hF hper hmixed hτ hσ hindep hindepτ hindepσ in
 /-- **The triptic normal form.**  A mixed-constraint source differs from an explicit finite

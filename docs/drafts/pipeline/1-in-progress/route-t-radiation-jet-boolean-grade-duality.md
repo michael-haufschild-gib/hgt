@@ -4205,3 +4205,79 @@ safe-half-plane Laplace symbol and audit whether its upper continuation is preci
 Xi divisor carrier.  This is a divisor-bearing pivot, not another residual norm.
 
 Verdict: `[PROVED — RESIDUAL WAVEFRONT IS ONE-SIDED; DIVIDED SOURCE IS A GLOBAL LOWER-HARDY CARRIER; UPPER LAPLACE/DIVISOR CONTINUATION OPEN]`.
+
+---
+
+## 76. Conjecture loop 52 — exact Laplace renormalization of the Wold/mesh pair
+
+### Conjecture
+
+The lower-Hardy carrier from Section 75 should not be treated as one more isolated boundary
+function.  After the rotation `z=-i s`, finite Abel transport should split it into the depth-one
+Wold prime current and the ordered prime-log mesh current.  Each current is expected to diverge at
+the wall; the residual must therefore appear as an exact renormalized difference, not as two
+separately continued sums.
+
+### Closure
+
+For `Re(s)>0`, put `phi_N(s)=exp(-s h_N)`, where `h_N=log(p_N)`.  Lean first proves
+
+```text
+|phi_N(s)|=exp(-Re(s) h_N),                              (RJG229)
+```
+
+and absolute convergence of both safe currents
+
+```text
+W(s)=sum_N woldCoeff(1,p_N) phi_N(s),
+M(s)=sum_N delta_N phi_(N+1)(s).                         (RJG230)
+```
+
+The mesh proof uses only Bertrand, exponential absorption, and the already-closed reciprocal-log
+telescope.  No prime number theorem or gap hypothesis enters.  The centered residual increment is
+exactly
+
+```text
+(E_(N+1)-E_N) phi_(N+1)(s)
+ = woldCoeff(1,p_(N+1)) phi_(N+1)(s)
+   -delta_N phi_(N+1)(s).
+```
+
+Taking the limit in finite Abel transport, including the first atom, gives the identity
+
+```text
+K(-i s)=W(s)-M(s)-(h_0+H_W) phi_0(s),       Re(s)>0,     (RJG231)
+```
+
+where `H_W` is the already-proved Wold log-holonomy constant.  This counterterm is forced by the
+zeroth residual discrepancy; it is not a fitted regularization parameter.
+
+The global lower-Hardy estimate from (RJG228) now becomes a cancellation theorem for the two
+Laplace currents:
+
+```text
+|W(s)-M(s)-(h_0+H_W)phi_0(s)| <= 2 V |s|,
+|(W(s)-M(s)-(h_0+H_W)phi_0(s))/s| <= 2 V.                (RJG232)
+```
+
+Lean status: `[FORMALIZED] [FULL MODULE BUILD PASSED — 12370 JOBS]` in
+`XiHeatCassiniWoldResidualLaplaceRenormalization.lean`.
+
+### Hostile audit and higher universal principle
+
+(RJG231)--(RJG232) are new cancellation knowledge.  Neither `W` nor `M` has a finite value at
+`s=0`, but their canonical holonomy-renormalized difference vanishes to first order there.  Bounds
+on either current alone necessarily destroy this information.
+
+This does not continue the difference to `Re(s)<0`: (RJG231) currently identifies only the honest
+safe-half-plane sums.  Nor does boundedness of the quotient near the boundary force a continuation
+through it.  Claiming either would be theatre.
+
+Higher principle: Route T is a renormalized resolvent problem.  Wold depletion and Stieltjes mesh
+are two presentations of one singular current; residual Hardy polarization is their Ward
+cancellation.  The physical upper half-shift can be reached only by continuing this *paired*
+object, or by proving compatible continuations of both components whose singular parts still
+cancel.  Next step is to identify `W` with a classical divisor-bearing symbol and `M` with an exact
+quadrature resolvent, then compare their continuation defects.
+
+Verdict: `[PROVED — EXACT WOLD/MESH/HOLONOMY RENORMALIZATION AND FIRST-ORDER WALL CANCELLATION; PAIRED CONTINUATION OPEN]`.

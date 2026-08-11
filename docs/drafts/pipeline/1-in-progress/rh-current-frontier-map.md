@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 11 August 2026, committed snapshot
-**7f2871abcd72211fd71bf86fa3d40bbbb1420c63**.
+**3e7fee73fb4c14f7f394514217df8b2f78daedc0**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -100,8 +100,10 @@ source-specific contact-weighted hyperedge orientation. The proposed quantitativ
 fourth-cumulant reserve is now equivalent at contact to the terminal-flux/adjacent-minor sign and
 is therefore circular rather than an independent producer. Canonical first-face rank filling is
 now fully classified: a nonzero odd remainder preempts positive extension, while at tangency the
-completed source sign is exactly equivalent to positivity of the next principal block. The open
-core has moved to cofinal exclusion of unbounded flat plateaux/degree escape.
+  completed source sign is exactly equivalent to positivity of the next principal block. A
+  dependency-closed paper theorem now goes further: at any first nonzero even contact, positive
+  rank fill survives exactly one block and the following block is indefinite. The open core is
+  therefore cofinal drift of contact order/face degree, not an unbounded plateau on one fixed face.
 
 A now umbrella-reachable Cassini--Wold/Deninger chain recuts Route T exactly. It
 identifies a positive Stieltjes--Cassini orientation defect, its reflected phase-clock and BV--Wold
@@ -111,8 +113,11 @@ an exact lower-half contour realization of the unbounded physical observer, and 
 convergent smooth residual connection. Its main term is now an exact prime-log right-endpoint
 quadrature whose total error reduces to a mean-square prime-gap sum. The residual has every
 polynomial log moment and a literal `C^infinity` boundary kernel. Its negative-frequency
-polarization is now a globally bounded divided holomorphic carrier on the entire lower half-plane;
-only upper Laplace/divisor continuation remains open.
+polarization is now a globally bounded divided holomorphic carrier on the entire lower half-plane.
+Committed but not yet umbrella-reachable Lean identifies its safe-half-plane Laplace symbol exactly
+as a four-shift prime-zeta derivative current minus ordered log-mesh quadrature and one holonomy
+counterterm. After umbrella wiring, only continuation from `Re s>0` to the physical wall
+`Re s=-1/2` and identification with the Xi divisor carrier remain open.
 This is a Route-T recut, not an independent Route V. None of these additions changes route count.
 
 ## 1. Reading rules and status vocabulary
@@ -160,8 +165,8 @@ existing route.
 | Q | open, secondary | all-degree closure of the paper-surviving selected carrier, or direct Cassini saturation; Lean closes the absolute-moment height-ratio mechanism, not its two arithmetic inputs |
 | R | open, advanced | construct pre-divisor source/observer discriminant transversality: select nonzero coefficients in both reflection projections despite the vertical-gauge torsor; gauge invariance erases the class and marked splitting leaves coefficient arbitrary |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open, new | identify the explicit lower-Hardy residual carrier's upper Laplace continuation with the Xi divisor carrier, after formalizing mean-square prime-gap closure of the main mesh |
-| U | open, new | cofinally exclude unbounded flat plateaux/degree escape after complete canonical first-face rank-fill classification |
+| T | open, new | wire the committed exact safe-side prime-zeta/mesh symbol, then continue it through `Re s=-1/2` and identify it with the Xi divisor carrier; formalize mean-square prime-gap closure of the main mesh |
+| U | open, new | cofinally exclude drift of first-contact order/face degree after Lean first-face classification and paper-proved one-block capacity at every fixed positive even contact |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -207,10 +212,22 @@ unconditionally nonnegative, reflection-even, label-faithful, with exact critica
 total mass of this nonnegative current is proved equivalent to RH. A formalized interface
 firewall shows the mass-zero law cannot follow from the pairing's own interface even with
 divisor-reflection closure: an explicit reflection-closed off-line configuration has positive
-mass. The common open core is therefore refined to one global trace identity evaluating the
-nonnegative `H`-mass through prime-side data — a bilinear/Poisson upgrade of the explicit
-formula reaching one non-holomorphic positive-definite divisor sample — without
-codiagonalization or another bounded label-blind observer. Route L asks for this through the resolved-Green
+mass. The seam-energy bridge (`GaussHodgeSeamEnergyBridge.lean`, with the hyperbolic
+comparison layer in `HTGeometry/HyperbolicBounds.lean`) then proves the Hodge mass current and
+the Burnol FE--Schwarz seam reflection energy are one invariant: two-sided domination with
+explicit constants (`log p/2` and `2√p/log p`; every divisor copy is proved to lie in the open
+strip), pointwise co-vanishing, and RH ⟺ prime-2 seam-charge vanishing ⟺ prime-2 Burnol
+character unimodularity ⟺ full seam-energy vanishing on the divisor. Because the corpus's seam
+layer already evaluates the full prime sum — seam energy at a copy equals the convexity second
+difference `M(1+2σ)+M(3−2σ)−2M(2)` of the moment curve `M(β)=Σ_p (log p)² p^{−β}` — the
+common open core is now exactly one **horizontal divisor transform**: the divisor average of
+that convexity defect. A formalized information-gap theorem fences it: the FE-pair sample of
+the prime character is the constant `1` and no function of it computes the Hermitian sample
+`‖char‖` — the missing evaluation lies strictly outside the holomorphic sample algebra
+(the `Σg²` vs `Σ|g|²` gap as a theorem). Known fencing no-gos: density envelopes cannot decide
+the horizontal transform, and its bilinear upgrade lands on diagonal-vs-off-diagonal
+separation — the MR/correlation wall. External anchors: Suzuki's screw function
+(arXiv:2206.03682) and Connes--Consani Sonin-space Weil positivity (arXiv:2006.13771). Route L asks for this through the resolved-Green
 rational-Witt/Milnor source annihilator; Route R asks for it through singular Cartier/Stokes
 non-amplification. These target realizations remain distinct even though they retain the same
 horizontal class.
@@ -726,6 +743,11 @@ longer missing:
 - the full coordinate-fixing vertical gauge is the dual of source coinvariants and acts simply
   transitively on Stokes primitives. Gauge-invariant readers erase the retained class, whereas a
   marked splitting leaves every physical target coefficient available;
+- a committed two-endpoint refinement restricts the isotropy coordinate to simultaneous zero-adele
+  and Haar kernels. It collapses the pure Haar shift exactly, but normalized Stokes covectors still
+  form an affine space over the full dual of the surviving two-endpoint coinvariants. This theorem
+  is not yet umbrella-reachable and receives no formal-frontier credit at this cutoff; even after
+  wiring it removes one ambiguity direction rather than selecting the Burnol/Deninger coefficient;
 - free-commutative-algebra presentation of the Deninger rank quotient: evaluation maps the free
   augmentation ideal exactly onto the low-rank image ideal, identifying the ideal quotient with
   the degree-zero shadow of the proposed derived pushout;
@@ -775,6 +797,10 @@ longer missing:
 - the full Fréchet open-mapping and bounded-inverse theorems, plus the generic closed-range
   criterion, are now formal. Their source-specific Deninger nonclosed-range corollary is not yet a
   named declaration and would only certify the already-proved nonembedding wall.
+- the smooth periodic Deninger test space now has an umbrella-reachable sequential completeness
+  theorem: every sequence Cauchy in all derivative sup-seminorms converges to a smooth periodic
+  limit in every such seminorm. A separate committed file supplies a one-index neighborhood basis
+  but is not umbrella-reachable and does not yet declare a `CompleteSpace` instance.
 
 The converse Schwartz bootstrap, endpoint recovery, and exact kernel are no longer paper-only or
 unwired. The new theorem `deningerCommutator_exact_kernel` is umbrella-reachable and proves the
@@ -832,7 +858,8 @@ It is the singular comparison between resolved boundary flatness and the fixed p
 The new gauge classification makes “fixed” load-bearing: the comparison must include a
 source-derived constitutive rule selecting the actual Burnol/Deninger coefficient before quotient,
 because cohomology, Stokes normalization, Haar/scaling invariance, and abstract naturality leave it
-free; treating that freedom as gauge forces zero.
+free; treating that freedom as gauge forces zero. Adding the second Haar endpoint removes only the
+Haar-shift line; the residual two-endpoint coinvariant dual remains the exact observer moduli.
 Generic mapping cones, Koszul exactness, cyclic traces, KMS untwisting, closed relations, or
 declaring the physical vector a boundary merely relocate or erase `K_n`; they do not prove this
 comparison. Cofinal prime tomography also cannot replace it: prime-period labels determine the
@@ -1286,6 +1313,15 @@ that gauge annihilates the retained class; choosing a splitting leaves the targe
 Thus homology, duality, normalization, scaling, reflection, and ordinary naturality cannot select
 the physical coefficient.
 
+A committed two-endpoint Stokes calculation tests the strongest immediate repair. Intersecting
+zero-adele and Haar kernels makes the Haar translate of a primitive invisible, but splits the new
+first cohomology as surviving coinvariants times one retained line. Every normalized covector is
+still obtained by adding an arbitrary functional on those coinvariants, and every such covector
+comes from an honest primitive. This file is currently outside the `RHTower` umbrella, so the map
+records it as a committed certification candidate rather than formal frontier. Its mathematical
+verdict is already clear: a second endpoint quotients one gauge direction but does not produce the
+constitutive selector Route R needs.
+
 The positive survivor is an exact observer discriminant. In the fixed physical quotient, the
 reflection-doubled coefficient never vanishes in `|t|<1`, but avoids both coordinate axes exactly
 at `t=0`; reflection merely swaps axes. At an actual divisor grade this is an RH receiver, not a
@@ -1361,8 +1397,9 @@ classifies arbitrary protocol invariants and proves expanding protocols retain o
 differentially independent velocity whose intersection with palette rational functions is
 constant. Lean now also proves the two gamma presentations agree, realization commutes with
 division, logarithmic derivative, translation, and every jet, and every nonzero finite jet
-combination is not differentially algebraic. Thus the concrete germ/function kernel half is
-closed. These theorems expose a credible new orbital-divisor architecture, but no Xi-typed
+combination—including a packet containing the untranslated base source—is not differentially
+algebraic. Thus the concrete germ/function kernel half is closed. These theorems expose a credible
+new orbital-divisor architecture, but no Xi-typed
 coefficient-faithful landing or critical reflection law exists.
 
 The shared-gauge/source-coherence layer supplies a separate finite mechanism, not a route. Fusion
@@ -1373,6 +1410,15 @@ trivial response equalizer makes synchronization select zero source displacement
 Boolean/mass/Hankel packet realizes the finite fusion side, but no Xi-typed organ family is proved
 to synchronize and no trivial arithmetic equalizer is constructed. This is a candidate producer
 grammar, not Route V.
+
+The umbrella-reachable prime phase-port law closes another false completion escape. The literal
+Mellin clock `p^(-it)` is dense and recurrent on every finite prime aperture. Its algebraic
+coisotropic reduction is one hyperbolic port at every time; `ell1` preserves that port, whereas
+every `ell^p`, `p>1`, and `c0` completion erases it after Hausdorff reduction. Finite jet systems
+are Vandermonde-complete at matching aperture, but the infinite weak-star orbit has no derivative
+in unweighted `ell-infinity`; its generator exists only on logarithmically weighted preduals.
+Recurrence, finite tomography, and positive norm therefore do not select a faithful global
+completion or an infinitesimal source law. This is a compatibility/no-go theorem, not Route V.
 
 None of these theorems constrains the landed divisor to
 the critical line or supplies an RH endpoint. Route S remains research infrastructure, not yet an
@@ -1499,15 +1545,25 @@ polynomial.
     linear-growth estimate on the closed lower half-plane, and after division by the coordinate is
     globally bounded. This is an unconditional Hardy polarization; it does not continue the
     defining series through the upper half-plane required by the physical observer.
+31. Committed Lean now performs the safe-side Laplace computation, but the two modules are not yet
+    imported by `RHTower` and therefore receive no formal-frontier credit at this cutoff. For
+    `Re s>0`, finite Abel transport gives
+    `Hardy(-i s)=Wold(s)-mesh(s)-holonomy(s)`. The Wold current is exactly
+    `-P'(s+1)+3P'(s+2)-3P'(s+3)+P'(s+4)`, where `P` is the corpus prime-zeta trace. Both Wold and
+    mesh currents converge absolutely on the safe half-plane, while their renormalized difference
+    has the already-proved bounded divided boundary value. This closes symbol formation once the
+    modules are wired; it does not cross the physical wall `Re s=-1/2`.
 
 **Open core.** Prove cofinal cancellation of centered von Mangoldt atoms inside finite mass light
 cone, preferably through exact joint pairing before norms. In the Wold/Deninger chart, the main
 logarithmic mesh is now literature-closable and a formalization backlog rather than the scientific
-wall. The surviving RH-bearing core is the upper continuation of one explicit divided lower-Hardy
-carrier. Compute its exact safe-half-plane Laplace symbol from the Wold increments and ordered
-prime-log quadrature, then prove its upper continuation is the existing Xi divisor carrier—or
-prove the equivalent finite-stage source/divisor cancellation survives the cofinal limit. Lower
-Hardy regularity itself is closed. This is a recut of the same source theorem, not a second route.
+wall. The surviving RH-bearing core is continuation of one explicit divided lower-Hardy carrier.
+After wiring the committed symbol modules, continue the explicit prime-zeta-minus-mesh-minus-
+holonomy expression from `Re s>0` through the critical Laplace wall `Re s=-1/2` and identify the
+continued object with the existing Xi divisor carrier—or prove the equivalent finite-stage
+source/divisor cancellation survives the cofinal limit. Lower-Hardy regularity and safe-side symbol
+formation are closed at theorem level; only the former currently has umbrella certification. This
+is a recut of the same source theorem, not a second route.
 Safe-line Perron bounds hit critical
 zero barrier; termwise absolute estimates lose square root; local Lipschitz control sees mass
 radiation; Toeplitz and pinned-Volterra metrics cannot kill constant boundary-cohomology class.
@@ -1693,15 +1749,22 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     nonnegativity is equivalent to positive-semidefinite rank-one filling of `H_(n+2)`. Positive
     even defect fills the next block; zero defect prolongs the flat plateau. The sign is an exact
     admission-sensitive boundary classifier, not a new orientation premise.
+41. A dependency-closed paper theorem classifies every later first nonzero even contact. If lower
+    defects vanish through order `2n+2m-1`, then the admitted amplitude `P X^(m-1)` emits completed
+    source `2(n+m) delta_(2n+2m)`. A positive defect makes `H_(n+m+1)` positive semidefinite, but
+    `H_(n+m+2)` is indefinite. Thus one fixed flat face has exactly one-block positive rank-fill
+    capacity. This result is paper-proved; its present Lean file is untracked and receives no
+    formal credit at this cutoff.
 
-**Open core.** Cofinally exclude an unbounded flat plateau/degree-escape chain. Every finite first
-face, its odd preemption branch, and its even rank-fill branch are classified. Remaining source
-theorem must show that the literal shifted-Xi moment tower cannot continue through arbitrarily
-many zero even defects while degree escapes and the canonical arcsine margin collapses. Equivalently,
-prove a cofinal prime--Gamma/archimedean law that eventually makes one completed even source defect
-strictly positive or forces an earlier odd/lower-minor preemption. Finite face data cannot decide
-this: the first even successor is free with all lower defects fixed. Post-contact cumulant bounds,
-generic moment positivity, or another fixed-degree asymptotic do not address the cofinal plateau.
+**Open core.** Cofinally exclude drift of first-contact order and face degree to infinity. Every
+finite first face, its odd preemption branch, its first even rank-fill branch, and—on paper—the
+one-block capacity of every later positive even contact are classified. Remaining source theorem
+must show that the literal shifted-Xi moment tower cannot postpone its first nonzero defect to
+arbitrarily high order while canonical degree escapes and the arcsine margin collapses.
+Equivalently, prove a cofinal prime--Gamma/archimedean law that bounds contact order/degree or forces
+an earlier odd/lower-minor preemption. Fixed-face plateau construction is no longer a viable
+escape. Post-contact cumulant bounds, generic moment positivity, or another fixed-degree asymptotic
+do not control the moving contact order.
 
 **Dead subclasses.** Generic moment positivity, positive atoms, tied-power sectors, positive/root
 location, stochastic order, factorial-normalized carriers, fixed corona continuous reporters,
@@ -1757,7 +1820,8 @@ while an expanding protocol leaves only a differentially independent velocity wh
 with palette rational functions is constant. The concrete presentation gap is closed as well:
 elliptic-gamma cone and multiplicative presentations agree after the explicit coordinate shift,
 meromorphic realization commutes with translation, logarithmic derivative, and every jet, and any
-nonzero finite jet combination is formally hypertranscendental.
+nonzero finite jet combination, including the untranslated base-source class, is formally
+hypertranscendental.
 
 No committed theorem maps this quotient coefficient-faithfully to the Xi divisor or supplies a
 reflection/polarization law forcing critical orientation. Those two constructions would instantiate
@@ -1880,10 +1944,10 @@ a critical-line orientation.
 
 A new law-control layer extracts a marked source commutator from this gas. Lean now proves that
 exchanging temperature translation with source-selected socle tilt generates the pure fugacity
-parameter translation. The full four-shadow response package—positive relative-entropy cost,
-divisor transgression, recurrence/open lift, and hypertranscendence—remains paper-proved. It is
-explicitly not RH and strengthens the candidate mechanism without providing the missing
-critical-line handoff.
+parameter translation. Lean also proves the socle response quotient, its exact translation law,
+safe-chamber holomorphy/zero-freeness, and hypertranscendence. Positive fugacity entropy,
+recurrence/open lift, complete socle-divisor order, and any critical-line handoff remain open. The
+mechanism is explicitly not RH.
 
 A second comparison prevents overgeneralizing that commutator mechanism. The gas realizes
 law genesis by noncommuting endpoint schedules, whereas the elliptic-gamma source has commuting
@@ -1963,10 +2027,11 @@ Hardy bound. The main logarithmic mesh is an exact right-endpoint quadrature who
 error reduces to the classical mean-square prime-gap sum.
 
 This does not instantiate Route V. Main-mesh convergence is external-theorem formalization
-backlog. Surviving scientific work is now one-sided continuation: compute the lower-Hardy
-carrier's exact safe Laplace symbol and prove its upper continuation is the Xi divisor carrier, or
-retain the equivalent finite-stage source/divisor cancellation through the cofinal limit. The
-reflected two-line scalar quadrature is closed and should not be pursued.
+backlog. Committed unwired Lean has already computed the lower-Hardy carrier's exact safe Laplace
+symbol. Surviving scientific work is continuation of that prime-zeta-minus-mesh-minus-holonomy
+symbol through `Re s=-1/2` and identification with the Xi divisor carrier, or retention of the
+equivalent finite-stage source/divisor cancellation through the cofinal limit. The reflected
+two-line scalar quadrature is closed and should not be pursued.
 
 ### Tight-source coalitional / collective-repair architecture
 
@@ -2275,8 +2340,8 @@ Across live routes, first unresolved statements fall into five mathematical clas
 | Class | Routes | Missing knowledge |
 |---|---|---|
 | singular source descent | C1, L, R, CCM-FU | positive closure or coefficient-faithful annihilation before scalar quotient; R/L additionally need a constitutive coefficient selector because vertical-gauge invariance erases and marked splitting is arbitrary |
-| all-prime oscillatory transport | D2, E, T | cancellation or finite ceiling retaining arithmetic phase and physical normalization; T has a lower-Hardy carrier and needs its upper Laplace/Xi continuation |
-| adaptive spectral orientation | G, U | source-conditioned sign on moving boundary/null data; U's first singular face is fully classified, leaving cofinal exclusion of unbounded flat plateaux/degree escape |
+| all-prime oscillatory transport | D2, E, T | cancellation or finite ceiling retaining arithmetic phase and physical normalization; T has a lower-Hardy carrier and a committed exact safe-side symbol, leaving umbrella certification plus continuation through the physical Laplace wall to Xi |
+| adaptive spectral orientation | G, U | source-conditioned sign on moving boundary/null data; U's first singular face is Lean-classified and every fixed positive even contact has paper-proved one-block capacity, leaving cofinal contact-order/degree drift |
 | whole-space coercivity | O | classify all low-energy ground-space escape directions, not one test vector; N's analogous receiver has been terminalized |
 | positive carrier existence | P, Q | build literal compact measure after coupled pole--zeta--Gamma cancellation |
 
@@ -2331,7 +2396,9 @@ The following constructions are closed at advertised strength:
 - algebraic prime augmentation as a new symplectic obstruction: reduction is only one hyperbolic
   plane and supplies no arithmetic Witt-rank producer;
 - Hilbert or `c0` completion as a faithful all-prime one-port receiver: the augmentation constraint
-  is dense and Hausdorff reduction erases the port; only the `ell1` phase preserves it;
+  is dense and Hausdorff reduction erases the port; only the `ell1` phase preserves it. Finite
+  phase recurrence and complete finite jet tomography do not repair this, and the global
+  unweighted observer has no admitted infinitesimal generator;
 - transverse complete-shell perturbations or radical-preserving interventions as a new divisor
   selector;
 - first-order displacement tests of a complete functional-equation quadruple;
@@ -2398,14 +2465,15 @@ open. Numerical evidence is not accepted as proof or disproof.
    formal. The comparison must select the existing physical coefficient before quotient; arbitrary
    prelift or normalized Stokes covector construction is no longer work.
 3. **T:** prove uniform signed mass-light-cone centered von Mangoldt pairing in fixed/sublinear
-   aperture, before positive completion or termwise norms. First formalize the unconditional
-   mean-square prime-gap theorem and its dyadic quadrature consequence. Scientific work then
-   computes the exact safe Laplace symbol of the now-formal lower-Hardy carrier and identifies its
-   upper continuation with the Xi divisor carrier; reflected exterior packets add no equation.
-4. **U:** exclude unbounded zero-defect plateaux under cofinal degree escape. First-face odd
-   preemption, tangential completed-source flux, and even rank-fill equivalence are formal. Needed
-   source theorem eventually forces a positive even defect or an earlier odd/lower-minor failure;
-   fixed-degree or post-contact cumulant restatements remain dead.
+    aperture, before positive completion or termwise norms. First formalize the unconditional
+    mean-square prime-gap theorem and its dyadic quadrature consequence. Scientific work then
+   wires the committed exact safe Laplace symbol and identifies its continuation across
+   `Re s=-1/2` with the Xi divisor carrier; reflected exterior packets add no equation.
+4. **U:** exclude unbounded drift of first-contact order and degree. First-face odd preemption,
+   tangential completed-source flux, and first even rank-fill equivalence are formal; exact
+   one-block capacity at every later positive even contact is paper-proved. Needed source theorem
+   bounds moving contact order/degree or forces an earlier odd/lower-minor failure; fixed-degree or
+   post-contact cumulant restatements remain dead.
 5. **E:** prove entropy-complement unit-shell capacity, normalized seam flux, and recurrence
    accumulation for fixed relation. Separately formalize the published averaged-Chowla theorem
    with the exact Möbius specialization, or prove the direct Gallagher lane's now-isolated
@@ -2565,6 +2633,7 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean
 - formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean
 - formal/GaloisForLFunctions/RHTower/DeningerChainLiftObstruction.lean
+- formal/GaloisForLFunctions/RHTower/DeningerCircleComplete.lean
 - formal/GaloisForLFunctions/RHTower/DeningerGreenSumSource.lean
 - formal/GaloisForLFunctions/RHTower/DeningerEulerDepletionTower.lean
 - formal/GaloisForLFunctions/RHTower/FisherDeconvolvedSameCarrierOrientationLaw.lean
@@ -2904,6 +2973,7 @@ anchors identified as wired below receive ordinary formal credit.
 - formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/PrimePortCapacityHierarchy.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/PrimeAugmentationSymplectic.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/PrimeAugmentationCompletion.lean
+- formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/PrimePhasePortRecurrence.lean
 - formal/GaloisForLFunctions/HTGeometry/CompactHyperplanePerturbation.lean
 - formal/GaloisForLFunctions/HTGeometry/ClosedHyperplaneInverse.lean
 - formal/GaloisForLFunctions/HTGeometry/CriticalFibreSharedTangentRigidity.lean
@@ -2985,6 +3055,27 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussSquareDiagonalLogResidue.lean
 - formal/GaloisForLFunctions/RHTower/GaussMultiPlaceAssembly.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeMassCurrent.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeSeamEnergyBridge.lean
+- formal/GaloisForLFunctions/HTGeometry/HyperbolicBounds.lean
+
+### Committed certification queue excluded from formal status
+
+The following committed theorem files affect the scientific reading above but are not reachable
+from a committed umbrella at this cutoff. They are deliberately excluded from the formal anchor
+lists until wired:
+
+- `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean` — collapses
+  the Haar primitive shift, classifies residual normalized-observer moduli by the two-endpoint
+  coinvariant dual;
+- `formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldResidualLaplaceRenormalization.lean` — exact
+  safe-half-plane Abel renormalization and bounded divided symbol;
+- `formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldPrimeZetaLaplaceSymbol.lean` — exact
+  four-shift prime-zeta derivative normal form and the `Re s=-1/2` physical-wall dictionary;
+- `formal/GaloisForLFunctions/RHTower/DeningerCircleCompleteSpace.lean` — monotone seminorms and a
+  one-index neighborhood basis, without a declared `CompleteSpace` instance.
+
+The Stage-2 even-contact one-block-capacity theorem is paper-proved. Its current Lean source is
+untracked, so neither the file nor its theorem receives certification credit.
 
 ## Final frontier statement
 
@@ -3007,9 +3098,10 @@ realization and C-star-level state uniqueness, hypertranscendence, and zero-free
 the complete modulus-defect ladder, wired modulus budget and prime-window nonsummability, and
 nonsummable condensed-phase symmetrization,
 but it lacks a critical-line orientation and RH handoff, so it remains a candidate rather than
-Route V. Its marked parameter commutator is formal, while the complete four-shadow response
-remains paper-only; the two-source exchange-versus-mixed-transgression noncollapse is formal, but
-also has no RH handoff. Two additional Route-V candidates are now mathematically substantial.
+Route V. Its marked parameter commutator and socle translation/holomorphy/hypertranscendence are
+formal; fugacity entropy, recurrence/open lift, and complete socle-divisor order remain open. The
+two-source exchange-versus-mixed-transgression noncollapse is formal, but also has no RH handoff.
+Two additional Route-V candidates are now mathematically substantial.
 The conservative Euler-shell/Witt completion has an exact formal receiver and paper-level
 zero-exclusion endpoint but lacks the
 literal jointly convergent source/exterior inverse pair; one common Banach receiver is formally
@@ -3034,10 +3126,12 @@ propagated-iterate control (`m >= 3`),
 identification with the actual Weil/intersection object, and that global annihilating trace remain.
 Route L's cofinal prime-period tomography now proves algebraic label sufficiency and topological
 non-strictness, so more compact-orbit periodization is not progress. Route T's lower-half residual
-is smooth and absolutely connection-summable and its main mesh is reduced to a known mean-square
-prime-gap theorem; its scientific wall is survival of signed residual cancellation through the
-cofinal vertical limit. Route U has strict canonical Jacobi flux in every finite positive chamber;
-its wall is singular-boundary extension and degree-uniform conditioning.
+is smooth and absolutely connection-summable, its main mesh is reduced to a known mean-square
+prime-gap theorem, and committed unwired Lean computes its exact safe-side prime-zeta/mesh symbol;
+its scientific wall is continuation across the physical Laplace wall and identification with the
+Xi divisor carrier. Route U has strict canonical Jacobi flux in every finite positive chamber and
+a complete Lean first-face classification; paper proof shows every fixed positive even contact has
+only one-block capacity. Its wall is cofinal escape of contact order and face degree.
 
 The coalitional/collective-repair/cofinal-viability laws, primitive-degree escape, and observer
 execution-gap laws expose a second route-design primitive, but no arithmetic repair family or Xi

@@ -9,7 +9,8 @@
   high-exponent Euler-shell pole unit, such a completion on the strict-right half-plane would imply
   RH by reflection.
 - **Status:** `[PAPER-PROVED ABSTRACT CORE] [DEPENDENCY-CLOSED] [SELECTION CONSEQUENCE]`
-  `[LEAN-FORMALIZED] [UMBRELLA WIRED] [SOURCE COMPLETION OPEN] [NOT RH]`
+  `[LEAN-FORMALIZED] [UMBRELLA WIRED] [GATE CERTIFIED AND SHOWN RH-EQUIVALENT]`
+  `[SOURCE COMPLETION OPEN] [NOT RH]`
 
 ## 1. Why this is the legal fifth step
 
@@ -218,7 +219,40 @@ Formalized in
 - `wittConservativeInverse_limit_ne_zero`;
 - `wittConservativeInverse_receiver_ne_zero`;
 - `wittConservativeInverse_pointwise_ne_zero`;
-- unconditional capstone `wittConservativeInverseCompletion_closed`.
+- unconditional capstone `wittConservativeInverseCompletion_closed`;
+- `wittConservativeInverse_unitGroup_not_closed` — the sharp completion obstruction of section 4:
+  in `ℝ` the units `N⁻¹` are conservative (`N⁻¹ · N = 1`) yet converge to the nonunit `0` while
+  their exterior companions escape every bounded set.  This certifies that the inverse coordinate
+  cannot be dropped.
 
 Lean proves only the abstract conservative-completion law.  It neither assumes nor constructs the
 open Euler-shell completion.
+
+### Corollary 5.1
+
+`GaloisForLFunctions.HTGeometry.WittEulerShellSelectionGate` certifies the selection gate:
+
+- `PointwiseConservativeEulerShellCompletion m` — the pointwise shadow of the structured
+  completion of section 5: at every point of the open right half-strip the shell current
+  `ζ(s)·H_m(s)` is a limit of units whose exterior companions converge;
+- `shellCriticalStripZeroFree_of_pointwiseConservativeEulerShellCompletion` — the completion
+  forces the shell current to be zero-free there, by the conservative inverse-completion law;
+- `riemannHypothesis_of_pointwiseConservativeEulerShellCompletion` — **Corollary 5.1**: the
+  completion implies the Riemann hypothesis.  The functional-equation reflection is carried by the
+  corpus's `RHTower.riemannHypothesis_iff_shellCriticalStripZeroFree`, so no new zero-location
+  input is used;
+- `pointwiseConservativeEulerShellCompletion_iff_riemannHypothesis` — **the sharpening**: the
+  pointwise shadow is *equivalent* to the Riemann hypothesis.
+
+The equivalence is the honest reading of the gate.  Nothing can be extracted from the completion
+property as such; whatever selection power the section-5 statement has must come from the
+source-formed structure of the stages and from their convergence in one Hausdorff multiplicative
+completion — exactly the data the pointwise shadow discards.  That structured statement remains
+open and is not assumed anywhere in Lean.
+
+## Log
+
+- 2026-08-11 — section 4's completion obstruction certified
+  (`wittConservativeInverse_unitGroup_not_closed`); Corollary 5.1 certified in implication form
+  and sharpened to an RH-equivalence (`WittEulerShellSelectionGate`), which localises the card's
+  remaining content in the source-formed structure rather than in the completion property.

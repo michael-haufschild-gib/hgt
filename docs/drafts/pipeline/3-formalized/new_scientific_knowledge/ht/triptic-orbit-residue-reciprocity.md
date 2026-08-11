@@ -1,9 +1,10 @@
 # Triptic Orbit-Residue Reciprocity
 
 - **ID:** `triptic-orbit-residue-reciprocity`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized
+- **Formalization certificate:** `triptic-orbit-residue-reciprocity-formalized.md`
 - **Type:** THEOREM (paper) / RECIPROCITY LAW / COMPLETE INVARIANT
-- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — the reciprocity law has an unconditional paper proof; completeness as a DA/HT invariant additionally depends on independent audit of the elliptic-gamma atomic theorem
+- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — every statement of this card is now formalized unconditionally in Lean, including completeness as a DA/HT invariant; the elliptic-gamma atomic theorem it rests on is itself formalized in this corpus
 - **Statement:** A meromorphic `1`-periodic function with constant mixed difference determines labelled orbital principal-part divisors on two noncommensurable elliptic curves. After the natural identification of their orbit sets with one rank-three quotient group, those divisors are exactly equal. Their common value is a complete invariant modulo differentially algebraic functions.
 
 ## Setup

@@ -5936,3 +5936,43 @@ receive a new title and an independent significance audit.
   pass.  Repository-wide lint is currently blocked by unrelated newly added unreachable RHTower
   and HTGeometry modules; the new module itself is umbrella-reachable and contains no forbidden
   declarations.
+- 2026-08-11 -- Excised every subexponential gate-observer sector from the Brown obstruction.
+  For a discounted first-entrance potential `h_A`, its positive equilibrium charge
+  `q_A=(I-aP)h_A` has total mass `cap_a(A)` and is supported on the target.  On any finite
+  `P`-invariant bounded eigenmode sector `E`, this gives the exact formula
+  `<h_A,phi_j>=cap_a(A) E_(rho_A)[phi_j]/(1-a lambda_j)`.  Consequently the expectation of the
+  entire projected reporter under an arbitrary endpoint law--even one singular to Haar and with
+  order-one permanent distinguishing bias--differs from the stationary capacity baseline by at
+  most `cap_a(A) B_(E,a)`, where `B_(E,a)` is the centered resolvent reproducing-kernel sup norm.
+  Composing with prefix-free first entrance proves a complete-circuit-union bound whose only
+  uncontrolled term is `int (I-Pi_E)h_A dnu`.  Thus every sector with
+  `B_(E,a)=exp(o(D))` is harmless against `exp(-Theta(D))` target capacity.  A Neumann-resolvent
+  argument proves `B_(E,a)<=L_E/(1-a)` from projection leverage; for every homogeneous
+  `K`-dimensional sector this is `(K-1)/(1-a)`, and the standard `k`-copy unitary
+  matrix-coefficient sector has real dimension `K<=2D^(4k)+1`.  Hence all `poly(log D)`-copy
+  locality observers are covered unconditionally.  The same charge formula and Parseval prove the
+  capacity--replica uncertainty law
+  `||Pi_E h_A||_2^2/||h_A||_2^2 <= cap_a(A)K/(1-a)^2`.  Since orthogonal projection is the best
+  `L^2` approximation, every function in `E` obeys the complementary lower bound.  For a
+  projective trace-distance ball, `pi(A_epsilon)=epsilon^(2(D-1))`; capturing any fixed fraction of
+  the global accessibility reporter therefore forces replica order `Omega(D/log D)`.  This is
+  intrinsic and precedes the circuit union--not an artifact of its entropy estimate.  Operationally,
+  every adaptive `k`-copy experiment has a `k`-copy polynomial conditional mean, so Jensen upgrades
+  the same theorem to a Haar-average mean-square sample lower bound
+  `k=Omega(D/log D)=Omega(2^n/n)` for estimating global preparation accessibility with nontrivial
+  relative accuracy.  Normalizing the reporter as
+  `A_(A,a)=(1-a)h_A/cap_a(A)` gives Haar mean one, return value `(1-a)/cap_a(A)`, and exact
+  complexity sandwich
+  `-log h_A/log(M/a) <= C <= -log h_A/log(1/a)`.  Growth, plateau, and recurrence are therefore
+  logarithmic accessibility loss and reamplification regimes of one canonical order parameter;
+  their physical-time schedule remains open.  This rigorously
+  separates permanent efficient non-Haar locality from maximal complexity and retains the full
+  capacity exponent; an `L^2` argument would lose its square root.  Pointwise, the same theorem
+  makes `(I-Pi_E)h_A` an exact complexity--recurrence coordinate: it is at least
+  `1-cap_a(A)((1-a)^(-1)+B_(E,a))` on every return, while complexity at least `s` forces it below
+  `a^s-cap_a(A)/(1-a)+cap_a(A)B_(E,a)`.  Thus recurrence and the plateau realign only in the
+  high-mode complement; persistent low locality modes stay capacity-small throughout.  It does not
+  prove Brown growth.  Exact remaining core is now the **high-mode** Bellman remainder after common return and
+  fast-forwardable-carrier removal.  Dependency-closed proof and hostile audit:
+  `../2-fully-proven/capacitary-observer-sector-excision-law.md`.  Lean remained read only during
+  corpus refactoring.

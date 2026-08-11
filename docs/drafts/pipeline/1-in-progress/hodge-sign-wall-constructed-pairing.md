@@ -12,8 +12,14 @@
   with `t_q = 2 Re(q) − 1`, `H = 0 ↔ Re(q) = 1/2`, and `H` invariant under the line-conjugate
   reflection.  **The Hodge sign of the constructed pairing holds.**  The Hodge-index
   application — total mass zero, forcing every copy onto the line — is proved equivalent to RH.
-- **Open core `[OPEN CORE]`:** the mass-zero law: a trace identity evaluating the nonnegative
-  `H`-mass through prime-side data and showing it vanishes.  This is the residual wall.
+- **Open core `[OPEN CORE]` (refined by attempt 4):** the divisor average of the moment-curve
+  convexity defect.  The prime side is now completely evaluated: `H` is two-sidedly equivalent
+  to the Burnol seam reflection energy, whose full prime sum at a copy equals
+  `M(1+2σ) + M(3−2σ) − 2·M(2)` with `M(β) = Σ_p (log p)² p^{−β}` — an explicit strictly convex
+  Dirichlet moment curve.  RH ⟺ the divisor annihilates this convexity defect.  What is missing
+  is exactly one horizontal divisor transform: an evaluation of `Σ_ρ (samples of Re ρ)` that no
+  holomorphic (explicit-formula) channel can perform — formalized as the information-gap
+  theorem below.
 
 ## The wall, well-posed
 
@@ -62,6 +68,38 @@ target the `H`-mass — closes RH.  Nothing weaker suffices, by the firewall bel
 below.  All difficulty is the mass evaluation; the firewall shows it cannot come from the
 pairing's own interface.
 
+**Attempt 4 — the seam-energy pivot (two lanes, one invariant).**  Pushing on the sharpened
+Poisson conjecture revealed that the corpus already owns the prime side.  The Burnol
+FE–Schwarz seam layer (`orbitwiseScaleSeamCharge`, `XiPrimeSeamReflectionEnergy`,
+`XiPrimeSeamPairAsymptotics`) carries a reflection-energy density
+`‖seam(p,ρ)‖²/p = (log p)² p^{−2} (p^t + p^{−t} − 2)`, `t = 2 Re ρ − 1` — the centered cosh
+defect.  The Hodge mass shape `t(p^t − p^{−t})` and the cosh defect dominate each other with
+explicit hyperbolic constants (`log p / 2` one way at every rate; `2√p / log p` the other way
+on `|t| ≤ 1`, and every divisor copy lies in the open strip — now also formalized).  Hence
+**the Gauss-lane Hodge mass current and the Burnol seam reflection energy are the same
+invariant**, two-sidedly, pointwise, unconditionally, and:
+
+```
+RH ⟺ prime-2 seam charge = 0 on the divisor
+   ⟺ the prime-2 Burnol character is unimodular on the divisor
+   ⟺ full prime-summed seam energy = 0 on the divisor
+   ⟺ divisor annihilates the moment-curve convexity defect M(1+2σ)+M(3−2σ)−2M(2).
+```
+
+The last form is the sharpest: the prime sum is completely evaluated (corpus theorem,
+`Σ_p`-side absolutely convergent in the open strip), so the entire open core has been pushed
+into the single divisor average `Σ_ρ`.  **Formal fencing of that residue:** the FE-pair sample
+`char(ρ)·char(1−ρ) ≡ 1` is constant — divisor-blind — and *no function of it computes the
+Hermitian sample* `‖char(ρ)‖` (impossibility theorem).  This is the `Σg²` vs `Σ|g|²` gap as a
+theorem about the exact objects of this card.  External anchors for the analytic family:
+Weil/Bombieri quadratic functional; Suzuki's screw function (arXiv:2206.03682) parametrizes
+divisor-summed cosh defects; Connes–Consani Weil positivity via Sonin/prolate compression
+(arXiv:2006.13771, arXiv:2310.18423) is the operator route to the same missing positivity.
+Corpus no-gos fencing the divisor average: density envelopes cannot decide it
+(`density-envelope-cannot-decide-rh`), and its bilinear/Poisson upgrade lands on
+diagonal-vs-off-diagonal separation — the MR/correlation wall
+(`mr-bilinear-scope-boundary`, `route-e-dependency-reduced-to-correlations`).
+
 ## Kill-tests passed and formalized
 
 1. **Beurling/interface firewall (formalized).**  The sign, evenness, and radical laws of the
@@ -90,3 +128,13 @@ pairing's own interface.
 - 2026-08-11 — created; attempts 1–3 executed and recorded; Hodge sign proved for the
   constructed pairing (odd-square positivity); mass-zero ⟺ RH formalized; boost-square closed
   form formalized; interface firewall formalized with reflection-closed positive-mass witness.
+- 2026-08-11 — attempt 4 (seam-energy pivot) executed: Hodge mass current proved two-sidedly
+  equivalent to the Burnol seam reflection energy (`RHTower/GaussHodgeSeamEnergyBridge.lean`,
+  with the hyperbolic comparison layer appended to `HTGeometry/HyperbolicBounds.lean`).  New
+  unconditional theorems: strip placement of every divisor copy; seam density in cosh-defect
+  form; per-scale seam-charge critical-line law; two-sided Hodge↔seam domination with explicit
+  constants; RH ⟺ prime-2 seam charge vanishing ⟺ prime-2 character unimodularity ⟺ full seam
+  energy vanishing; seam energy at a copy = moment-curve convexity second difference; the
+  information-gap impossibility theorem (no function of the FE-pair sample computes the
+  Hermitian sample).  Open core refined to the divisor average of the moment-curve convexity
+  defect.

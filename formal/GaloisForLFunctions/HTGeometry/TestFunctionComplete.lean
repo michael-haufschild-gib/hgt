@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.TestFunctionCauchy
+import GaloisForLFunctions.HTGeometry.UniformIteratedDerivLimit
 
 /-!
 # Completeness of the test space

@@ -1,11 +1,12 @@
 # Two-endpoint prime-orbit Stokes moduli and infinite coinvariant law
 
 - **ID:** `two-endpoint-prime-orbit-stokes-moduli-and-infinite-coinvariant-law`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CONSTITUTIVE-RIGIDITY NO-GO WITH POSITIVE CLASSIFICATION
-- **Status:** `[PAPER-PROVED] [LITERAL RATIONAL-ADELIC SOURCE]`
+- **Status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
+  `[PAPER-PROVED] [LITERAL RATIONAL-ADELIC SOURCE]`
   `[HAAR AMBIGUITY COLLAPSES] [INFINITE ORBIT-PHASE MODULI SURVIVE]`
-  `[NEW-TO-CORPUS BRIDGE] [NOVELTY UNVERIFIED] [NOT RH] [NO LEAN WRITTEN]`
+  `[NEW-TO-CORPUS BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Statement:** Restricting prime-isotropy Stokes complex to simultaneous zero/Haar endpoint kernel
   identifies all regulators differing by Haar trace, but normalized observer covectors still form
   affine space over infinite-dimensional dilation coinvariant dual. Explicit orbit-sampling
@@ -357,12 +358,14 @@ observer torsor. External priority unverified; no claim of new general theorem.
 
 ## Lean-return note
 
-- No Lean code was written or built.
-- Corpus already formalizes endpoint invariance, partial evaluation intertwining, and Stokes law.
-- Potential future formalization needs bilateral integer summability for zero-at-origin Schwartz
-  functions, telescoping, compact bumps with zero integral, and finite-Haar indicator.
-- Suggested file if returned:
-  `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicTwoEndpointPrimeOrbitCoinvariant.lean`.
+Formalized in
+`formal/GaloisForLFunctions/RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean`
+(wired into `GaloisForLFunctions.RHTower`).  Theorems A, B, E and Lemma D are green and
+unconditional; the declaration-by-equation map, the corpus reuse ledger and the axiom audit are in
+the companion card
+`two-endpoint-prime-orbit-stokes-moduli-and-infinite-coinvariant-law-formalized.md`.  The three
+open gates (induced Fourier action, all-prime compatibility, target fixed-ideal rigidity) are
+untouched.
 
 ## Gates
 
@@ -372,6 +375,7 @@ observer torsor. External priority unverified; no claim of new general theorem.
 - [x] orbit-phase boundary invariance
 - [x] infinite-dimensional residual coinvariants
 - [x] independent hostile correctness audit
+- [x] Lean formalization
 - [ ] induced Fourier action on coinvariant quotient
 - [ ] all-prime compatibility classification
 - [ ] target fixed-ideal coefficient rigidity

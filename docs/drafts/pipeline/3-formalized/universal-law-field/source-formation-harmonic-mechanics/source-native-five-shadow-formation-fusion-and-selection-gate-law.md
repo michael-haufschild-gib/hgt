@@ -281,5 +281,15 @@ execution, character reconstruction, parity recurrence/open variation, faithful 
 source realization, differential independence of the depth-12 source family, and bilateral
 reflection-energy unitarity selection.
 
+The physical receiver of section 8 is certified too: `primeReceiver_twoEdge_refinement_energy` is
+`(FF.19)`, the fourth-power identity for the receiver's refinement excess, and
+`primeReceiver_twoEdge_refinement_energy_eq_zero_iff` is `(FF.20)`, its vanishing exactly at
+`Re ρ = 1/2`, for every prime base.  Both are receiver classifications and neither says which `ρ`
+are admitted.
+
 No RH statement, source harmonic-descent theorem, bilateral Xi-zero admission bridge, or analytic
 completion-selection premise is formalized or claimed.
+
+- 2026-08-11 — receiver clauses (FF.19)/(FF.20) added to the Lean surface; every displayed theorem
+  of the card is now certified, and the two source theorems remain explicitly unformalized because
+  the card explicitly does not claim them.

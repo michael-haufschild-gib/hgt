@@ -31,9 +31,15 @@ theorem xiHeatCassiniOrderedPrimeLaplacePhase_eq_coronaPrimeEigenvalue
     exact_mod_cast Nat.cast_ne_zero.mpr (nthPrimeSubtype N).prop.ne_zero
   rw [xiHeatCassiniOrderedPrimeLaplacePhase,
     xiHeatCassiniOrderedPrimeComplexNegativePhase, coronaPrimeEigenvalue,
-    Complex.cpow_def_of_ne_zero hp0, Complex.natCast_log]
+    Complex.cpow_def_of_ne_zero hp0]
+  change Complex.exp
+      (-(Complex.I *
+        (Real.log (((nthPrimeSubtype N : ℕ) : ℝ)) : ℂ) * (-Complex.I * s))) =
+    Complex.exp (Complex.log (((nthPrimeSubtype N : ℕ) : ℂ)) * -s)
+  rw [Complex.natCast_log]
   congr 1
   push_cast
+  rw [Complex.I_sq]
   ring
 
 /-- Prime-zeta eigenvalues multiply under spectral translation. -/
@@ -43,21 +49,25 @@ theorem coronaPrimeEigenvalue_add_nat
       coronaPrimeEigenvalue s p * (((p : ℕ) : ℂ)⁻¹) ^ k := by
   have hp0 : (((p : ℕ) : ℂ)) ≠ 0 := by
     exact_mod_cast Nat.cast_ne_zero.mpr p.prop.ne_zero
-  rw [coronaPrimeEigenvalue, coronaPrimeEigenvalue,
-    show -(s + (k : ℂ)) = -s + -(k : ℂ) by ring,
-    Complex.cpow_add _ _ hp0, Complex.cpow_neg,
-    Complex.cpow_natCast, inv_pow]
+  rw [coronaPrimeEigenvalue, coronaPrimeEigenvalue]
+  let q : ℂ := ((p : ℕ) : ℂ)
+  change q ^ (-(s + (k : ℂ))) = q ^ (-s) * (q⁻¹) ^ k
+  rw [show -(s + (k : ℂ)) = -s + -(k : ℂ) by ring,
+    Complex.cpow_add _ _ (by simpa only [q] using hp0)]
+  congr 1
+  rw [Complex.cpow_neg, Complex.cpow_natCast, inv_pow]
 
 /-- The cubic Wold Euler depletion is the four-shift finite difference of one prime trace. -/
 theorem woldCoeff_one_mul_coronaPrimeEigenvalue_eq_fourShift
     (s : ℂ) (p : Nat.Primes) :
     (woldCoeff 1 p : ℂ) * coronaPrimeEigenvalue s p =
-      (Real.log (p : ℝ) : ℂ) * coronaPrimeEigenvalue (s + 1) p -
-        3 * ((Real.log (p : ℝ) : ℂ) * coronaPrimeEigenvalue (s + 2) p) +
-        3 * ((Real.log (p : ℝ) : ℂ) * coronaPrimeEigenvalue (s + 3) p) -
-        (Real.log (p : ℝ) : ℂ) * coronaPrimeEigenvalue (s + 4) p := by
-  have hp0R : (p : ℝ) ≠ 0 := by positivity
-  have hp0C : ((p : ℂ)) ≠ 0 := by exact_mod_cast hp0R
+      (Real.log ((p : ℕ) : ℝ) : ℂ) * coronaPrimeEigenvalue (s + 1) p -
+        3 * ((Real.log ((p : ℕ) : ℝ) : ℂ) * coronaPrimeEigenvalue (s + 2) p) +
+        3 * ((Real.log ((p : ℕ) : ℝ) : ℂ) * coronaPrimeEigenvalue (s + 3) p) -
+        (Real.log ((p : ℕ) : ℝ) : ℂ) * coronaPrimeEigenvalue (s + 4) p := by
+  have hp0R : ((p : ℕ) : ℝ) ≠ 0 := by
+    exact_mod_cast Nat.cast_ne_zero.mpr p.prop.ne_zero
+  have hp0C : (((p : ℕ) : ℂ)) ≠ 0 := by exact_mod_cast hp0R
   rw [coronaPrimeEigenvalue_add_nat s 1 p,
     coronaPrimeEigenvalue_add_nat s 2 p,
     coronaPrimeEigenvalue_add_nat s 3 p,
@@ -117,7 +127,7 @@ theorem xiHeatCassiniWoldLaplaceCurrent_eq_primeZetaDerivFourShift
           (-deriv coronaPrimeZeta (s + 4))) := by
     refine hcomb.congr_fun ?_
     intro p
-    exact (woldCoeff_one_mul_coronaPrimeEigenvalue_eq_fourShift s p).symm
+    exact woldCoeff_one_mul_coronaPrimeEigenvalue_eq_fourShift s p
   rw [xiHeatCassiniWoldLaplaceCurrent_eq_prime_tsum]
   exact hwold.tsum_eq.trans (by ring)
 

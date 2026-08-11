@@ -188,6 +188,24 @@ if the source forces all organ responses to agree and the intersection of the re
 kernels is zero, then the source displacement is zero.  This is the first legal shape of an RH
 selector after fusion; deriving the pre-zero arithmetic synchronization premise remains open.
 
+The next fusion law is **inverse-response Ward mechanics**.  For one invertible formation
+`M E=1` and two legal source derivations, the currents `Theta_i=M D_iE` obey
+
+\[
+ D_1\Theta_2+\Theta_1\Theta_2=M D_1D_2E.             \tag{WFG.6}
+\]
+
+It reconstructs mixed source acceleration and predicts the fourth-organ response under any
+additive reporter `tau` with boundary anomaly `tau D_1=beta`:
+
+\[
+ \tau(\Theta_1\Theta_2)=\tau(MD_1D_2E)-\beta(\Theta_2). \tag{WFG.7}
+\]
+
+This closes a false lead.  A strict linear reporter with `tau D_1=0` vanishes on every nonzero
+derivation eigengrade, so it cannot read prime-log labels.  The frontier's missing global Hodge
+identity must therefore be an acceleration--boundary-anomaly balance, not an invariant trace.
+
 ## 5. Field-level consequence and boundary
 
 Finite Witt mechanics does not prove that the full RH source is a completed special lambda-ring.
@@ -218,7 +236,9 @@ reflection-marked, and conservative before Xi specialization.
 - [x] derive the shared gauge from one source intervention and prove relative reconstruction
 - [x] prove pole-unit completed formation and divisor reconstruction for the literal Euler shell
 - [x] prove abstract inverse conservation across joint Hausdorff multiplicative completion
+- [x] inverse-response reconstruction and anomalous Ward balance, with strict-trace grade-blindness
 - [ ] construct the literal joint formation/exterior completion on `Re(s)>1/2`
+- [ ] identify Gauss Hodge mass with one pre-zero acceleration--boundary-anomaly balance
 - [ ] derive any RH selection statement only after those gates
 
 ## Log
