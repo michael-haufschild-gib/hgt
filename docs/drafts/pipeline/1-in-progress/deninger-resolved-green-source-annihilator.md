@@ -465,6 +465,45 @@ non-absolutely summable, but singularity alone earns no credit without `(1)` and
     to the completed Xi Green/Calderón--Witt coefficient, and transports both reflected principal
     symbols into the projective trace ideal of item 27. This is now the only missing source-to-
     physical step before fixed-reader cyclicity.
+31. **Conjecture:** multiplicative exponent depth by itself generates the completed Xi source.
+    **Rejected by the prior normal-cone conservation law.** Exponent arithmetic and archimedean
+    completion are independent. The surviving construction keeps their roles separate: the
+    literal source is
+    \(E(z,s)=\zeta(s)/\zeta(zs)\), while completed Xi supplies the actual divisor centre,
+    multiplicity, and critical reflection.
+32. **Conjecture:** the exponent/divisor collision has only incompatible shell-first and
+    divisor-first scalar limits. **Falsified constructively.** In the blow-up chart
+    \(z=1+t\), \(s=\rho+tw\),
+    \[
+      zs-\rho=t(w+\rho+tw),
+      \qquad
+      E(1+t,\rho+tw)\longrightarrow
+        \left(\frac{w}{w+\rho}\right)^{d(\rho)},
+    \]
+    for every regular exceptional direction. Here \(d(\rho)\) is exactly the Xi divisor
+    multiplicity. This constructs the pre-specialization singular source object instead of
+    choosing one of the incompatible limits.
+33. **Conjecture:** the exceptional normal still lacks a canonical map to the Xi Green and
+    Gamma-six boundaries. **Falsified coefficient-faithfully.** Its marked source and reflected
+    pole sections are \(-\rho\) and \(-(1-\bar\rho)\); their oriented displacement is exactly
+    `xiNearbyPoleDualityAdjunctionFracture`. For
+    \(f_\rho(w)=(w+\rho)/(w+1-\bar\rho)\), the marked constant-leg tame boundary of
+    \(\{f_\rho,6^m\}\) has exponents \((-m,m)\). The Deninger horizontal character reads their
+    difference as the exact degree-\(6^m\) mate curvature, and both this coefficient and the pole
+    displacement land coefficient-faithfully in completed Calderón--Witt incidence. Full paper
+    proof and Lean certificate:
+    ../3-formalized/deninger-exponent-exceptional-tame-green-bridge.md.
+34. **Conjecture:** tame reciprocity supplies the required Stokes zero. **Falsified sharply.** It
+    proves only that the two local tame units multiply to one. The additive oriented reader is
+    \(6^{m\delta}-6^{-m\delta}\), generally nonzero. Reciprocity constructs and calibrates the
+    physical boundary; it does not annihilate it.
+35. **Refined surviving conjecture:** lift the now-formalized exceptional marked-tame
+    principal-symbol comparison from one divisor coefficient to the complete shell-amplified
+    corrected source modulo trace class. Prove that this lift preserves the trace-class
+    subobject, transports both marked branches into the two critical-edge slots, intertwines the
+    full source boundary, and makes the already fixed physical reader cyclic on that transported
+    boundary. Source object, singular pole transport, local tame symbol, exact physical
+    coefficient, and completed incidence landing are no longer open.
 
 ## Falsifiers
 
@@ -520,6 +559,15 @@ A proposed closure fails if it:
     coefficient makes it flat for every character.
 28. invokes the critical Dixmier/Abel trace before proving that the actual completed Green
     comparison preserves the trace-class subobject; that domain preservation is the open theorem.
+29. treats multiplicative exponent depth as a replacement for Xi completion; the proved
+    exceptional construction uses exponent depth only for the singular normal chart and uses Xi
+    independently for divisor multiplicity and reflection.
+30. collapses the two exceptional pole sections before taking their oriented displacement or
+    constant-leg tame boundary.
+31. invokes tame reciprocity as additive Stokes annihilation; reciprocity proves product one while
+    the fixed physical reader remains the generally nonzero oriented difference.
+32. counts the one-coordinate exceptional-to-incidence landing as transport of the complete
+    shell weak-trace class; preservation of its trace-class remainder is still open.
 
 ## Route-L status
 
@@ -549,8 +597,13 @@ A proposed closure fails if it:
 - [x] operator-ideal realization of critical-edge Köthe seminorms
 - [x] exact normalized Green Gibbs reader equal to the physical BV/Deninger coefficient
 - [x] principal-ideal classification of every finite source-valued common coface
-- [ ] strict completed-Green comparison preserving the shell trace-class subobject and both
-  reflected principal symbols
+- [x] literal exponent-deformation source and actual-multiplicity exceptional-fibre limit
+- [x] reflected exceptional-pole displacement equal to completed-Xi Green fracture
+- [x] marked constant-leg tame boundary `(-m,m)` with exact all-grade Gamma/Deninger reader
+- [x] coefficient-faithful exceptional Green and tame landings in completed Calderón--Witt incidence
+- [ ] strict lift of the exceptional principal-symbol comparison preserving the complete shell
+  trace-class subobject and both reflected critical-edge slots
+- [ ] fixed-reader cyclicity on that transported complete-source boundary
 - [ ] `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, equations `(1)`--`(2)`
 - [ ] consequent endpoint test `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] ambient nuclear/Hodge comparison, oriented Paugam identification, and resolvent-faithful
@@ -558,6 +611,15 @@ A proposed closure fails if it:
 
 ## Log
 
+- 2026-08-11 — Constructed and formalized the missing local singular source comparison. The
+  literal exponent deformation `zeta(s)/zeta(zs)` has an actual-multiplicity exceptional fibre
+  `(w/(w+rho))^d`; reflected exceptional pole displacement is exactly the Xi Green fracture; the
+  marked Milnor constant-leg tame boundary is `(-m,m)` and its Deninger character is the exact
+  degree-`6^m` physical mate curvature. Both coefficients land faithfully in the existing
+  completed Calderón--Witt incidence carrier. Tame reciprocity was audited and shown to give only
+  product neutrality. Remaining theorem is the global strict lift from this local principal
+  symbol to the full shell-amplified corrected source modulo trace class, followed by physical
+  reader cyclicity.
 - 2026-08-11 — Corrected Gamma-six source support: honest Steinberg normal forces infinitely many
   cyclotomic denominator places. Proved their tame/Kummer invisibility, rational-Witt visibility,
   common-pole residue, and nuclear tensor-square mixed admission. Hostile audit proves forward and

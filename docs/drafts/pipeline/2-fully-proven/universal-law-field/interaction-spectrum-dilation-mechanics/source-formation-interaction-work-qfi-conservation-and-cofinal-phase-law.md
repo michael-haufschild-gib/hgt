@@ -3,10 +3,10 @@
 - **ID:** ULF-ISDM-1
 - **Stage:** 2-fully-proven
 - **Type:** UNIVERSAL FORMATION / INTERACTION / PASSIVITY / INFORMATION MECHANICS
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM, NOT ROUTE]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-PROVED CORE] [MECHANISM, NOT ROUTE]
   [FINITE RECONSTRUCTION] [EXACT WORK--QFI CONSERVATION]
   [COFINAL PROPERNESS PHASE] [LITERAL PRIME SPECIALIZATION] [NOT RH]
-- **Lean:** pending; this card is the only source authorized for its formalization
+- **Lean:** `HTGeometry.ConstitutiveInteractionSpectrumMechanics`
 
 ## 1. The mechanism
 
@@ -342,6 +342,7 @@ forced by the Euler-shell product source.
 - [x] fourth-organ QFI prediction and proof
 - [x] cofinal tight/escaping properness phase
 - [x] reciprocal phase classifier
-- [ ] Lean formalization
+- [x] Lean finite formation, reconstruction, passivity, work--QFI, prime phase, and reflection core
+- [ ] Lean cofinal fixed-degree escape limit `(ISD.22)--(ISD.23)`
 - [ ] source-native reflection comparison preserving formation phase
 - [ ] RH selection consequence

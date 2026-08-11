@@ -1449,3 +1449,25 @@ Direct foreground elaboration and the 1,666-job leaf build pass.  The module is 
 axiom prints for the headline theorems report only `propext`, `Classical.choice`, and `Quot.sound`.
 Lean certifies the abstract rigidity mechanism; it does not construct the literal source-generated
 passive compression/reconstruction required for RH selection.
+
+## Session 2026-08-11 addition (Constitutive Interaction-Spectrum Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ISDM-1 | Source parity generates a normalized product interaction-work ledger; marginals reconstruct activation; degree truncation is passive; hidden work obeys a Markov bound and equals one quarter of lost coherent QFI; prime formation is summable exactly above exponent one; reciprocal reflection preserves phase exactly at exponent one | `HTGeometry.ConstitutiveInteractionSpectrumMechanics` |
+
+Direct foreground elaboration and the 2,350-job leaf build pass.  The module is wired into
+`HTGeometry.UniversalLawField`; final foreground umbrella build passes.  Scratch axiom prints for
+the headline theorems report only `propext`, `Classical.choice`, and `Quot.sound`.  The paper's
+explicit Chebyshev fixed-degree escape limit remains outside this certified core.
+
+## Session 2026-08-11 addition (Essential Formation Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-EFM-1 | Summable-work equivalence preserves global formation phase; finite corrections are inessential; reciprocal prime formations are essentially equivalent exactly at exponent one; no summable compensator exists off criticality; any three-leg essential source bridge forces exponent one | `HTGeometry.ConstitutiveEssentialFormationMechanics` |
+
+Direct foreground elaboration and the 2,351-job leaf build pass.  The module is wired into
+`HTGeometry.UniversalLawField`; final foreground umbrella build completes 11,832 jobs.  Scratch
+axiom prints for headline theorems report only `propext`, `Classical.choice`, and `Quot.sound`.
+Lean certifies the selection mechanism, not the open global source-duality producer or RH.

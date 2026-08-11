@@ -88,9 +88,10 @@ performed before arithmetic aggregation.
 
 ## Open consequence
 
-Need quantify canonical projection leakage from source-parallel half-density transport.  Because
-`K` raises degree, finite Hankel faces are observations of this dynamics, not faithful carriers.
-This locates finite-to-global failure in effectivity/admission, not missing orientation.
+Successor card `mass-shifted-adaptive-half-density-boundary-port` quantifies projection leakage:
+current orthogonal admission removes exactly `P_(n+1)`, its admitted landing is positive, and the
+terminal port strengthens covariant dissipation. Remaining burden is actual canonical/frozen
+admission-velocity mismatch or next-block failure, not projection loss or missing orientation.
 
 ## Log
 
@@ -100,3 +101,5 @@ This locates finite-to-global failure in effectivity/admission, not missing orie
   finite-degree non-invariance in
   `RHTower.XiShiftedHalfDensityMobiusSourceConnection`; direct Lean and targeted module build pass;
   axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-11 — adaptive successor closes projection leakage in current orthogonal flag; see
+  `mass-shifted-adaptive-half-density-boundary-port`.

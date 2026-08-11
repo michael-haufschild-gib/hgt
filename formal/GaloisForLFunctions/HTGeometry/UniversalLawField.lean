@@ -188,6 +188,7 @@ import GaloisForLFunctions.HTGeometry.ConstitutiveFormationDepthProperness
 import GaloisForLFunctions.HTGeometry.ConstitutiveStaticHeterogeneityObserver
 import GaloisForLFunctions.HTGeometry.ConstitutivePassiveCycleMechanics
 import GaloisForLFunctions.HTGeometry.ConstitutiveInteractionSpectrumMechanics
+import GaloisForLFunctions.HTGeometry.ConstitutiveEssentialFormationMechanics
 
 /-!
 # Universal-law-field Lean umbrella

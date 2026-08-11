@@ -204,6 +204,17 @@ theorem xiShiftedMobiusHalfDensityGenerator_monicOrtho_eq_adaptiveLanding_add_bo
   unfold xiShiftedAdaptiveHalfDensityLanding
   module
 
+/-- Adaptive projection has a pure terminal covariant defect. -/
+theorem xiShiftedMobiusHalfDensityCovariantVelocity_adaptiveLanding_eq_neg_boundary
+    (s : ℕ → ℝ) (n : ℕ) :
+    xiShiftedMobiusHalfDensityCovariantVelocity
+        (xiShiftedAdaptiveHalfDensityLanding s n)
+        (HTGeometry.monicOrtho s n) =
+      -((n : ℝ) + 1 / 2) • HTGeometry.monicOrtho s (n + 1) := by
+  unfold xiShiftedMobiusHalfDensityCovariantVelocity
+    xiShiftedAdaptiveHalfDensityLanding
+  module
+
 /-- The moment-adaptive landing lies inside the current degree-`n` admission. -/
 theorem natDegree_xiShiftedAdaptiveHalfDensityLanding_le (s : ℕ → ℝ) (n : ℕ) :
     (xiShiftedAdaptiveHalfDensityLanding s n).natDegree ≤ n := by
@@ -252,6 +263,52 @@ theorem momentInner_monicOrtho_succ_X_monicOrtho_eq_norm_below
     HTGeometry.monicOrtho_inner_eq_zero_below h (by omega) (by omega) (by omega)
   rw [hsame, hlow]
   simp [HTGeometry.monicOrthoNormSq]
+
+/-- Projecting the half-density transport into the adaptive flag strengthens, rather than loses,
+odd-current dissipation by exactly the positive terminal norm port. -/
+theorem xiShiftedAdaptiveHalfDensity_projectedCovariantDissipation_eq_neg_gram_sub_boundary
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hnN : n + 2 ≤ N) :
+    2 * HTGeometry.momentInner s
+        (xiShiftedMobiusHalfDensityCovariantVelocity
+          (xiShiftedAdaptiveHalfDensityLanding s n) (HTGeometry.monicOrtho s n))
+        (X * HTGeometry.monicOrtho s n) -
+      HTGeometry.momentInner s (X * HTGeometry.monicOrtho s n)
+        (X * HTGeometry.monicOrtho s n) =
+      -HTGeometry.momentInner s (X * HTGeometry.monicOrtho s n)
+          (X * HTGeometry.monicOrtho s n) -
+        ((2 : ℝ) * n + 1) * HTGeometry.monicOrthoNormSq s (n + 1) := by
+  rw [xiShiftedMobiusHalfDensityCovariantVelocity_adaptiveLanding_eq_neg_boundary,
+    HTGeometry.momentInner_smul_left,
+    momentInner_monicOrtho_succ_X_monicOrtho_eq_norm_below h hnN]
+  ring
+
+/-- Adaptive projected half-density transport is strictly dissipative on every finite positive
+block large enough to contain the terminal port. -/
+theorem xiShiftedAdaptiveHalfDensity_projectedCovariantDissipation_neg
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hnN : n + 2 ≤ N) :
+    2 * HTGeometry.momentInner s
+        (xiShiftedMobiusHalfDensityCovariantVelocity
+          (xiShiftedAdaptiveHalfDensityLanding s n) (HTGeometry.monicOrtho s n))
+        (X * HTGeometry.monicOrtho s n) -
+      HTGeometry.momentInner s (X * HTGeometry.monicOrtho s n)
+        (X * HTGeometry.monicOrtho s n) < 0 := by
+  rw [xiShiftedAdaptiveHalfDensity_projectedCovariantDissipation_eq_neg_gram_sub_boundary
+    h hnN]
+  have hbulk : 0 < HTGeometry.momentInner s (X * HTGeometry.monicOrtho s n)
+      (X * HTGeometry.monicOrtho s n) := by
+    apply HTGeometry.PositiveMomentFormBelow.self_pos h
+    · exact mul_ne_zero Polynomial.X_ne_zero (HTGeometry.monicOrtho_ne_zero s n)
+    · rw [Polynomial.natDegree_mul Polynomial.X_ne_zero
+          (HTGeometry.monicOrtho_ne_zero s n), Polynomial.natDegree_X,
+        HTGeometry.natDegree_monicOrtho_eq]
+      omega
+  have hterminal : 0 < ((2 : ℝ) * n + 1) *
+      HTGeometry.monicOrthoNormSq s (n + 1) := by
+    exact mul_pos (by positivity)
+      (HTGeometry.monicOrthoNorm_pos_below h (by omega))
+  linarith
 
 /-- The half-density connection cost is the adaptive admitted landing plus one positive terminal
 norm channel. -/
@@ -425,6 +482,178 @@ theorem xiShiftedAdaptiveHalfDensityLandingEnergy_pos_below
     mul_pos (by positivity) (HTGeometry.monicOrthoBeta_pos_below h hn (by omega))
   unfold xiShiftedAdaptiveHalfDensityLandingEnergy
   linarith
+
+/-! ## Monic-tangent refinement -/
+
+/-- Coefficient of `P_n` that must be removed from the degree-`n` adaptive landing to obtain a
+genuine tangent to the monic flag. -/
+def xiShiftedAdaptiveMonicHalfDensityCoefficient (s : ℕ → ℝ) (n : ℕ) : ℝ :=
+  ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoAlpha s n -
+    HTGeometry.monicOrthoFirstCoeff s n
+
+/-- Source-native half-density landing tangent to the monic degree-`n` flag. -/
+def xiShiftedAdaptiveMonicHalfDensityLanding (s : ℕ → ℝ) (n : ℕ) : Polynomial ℝ :=
+  xiShiftedAdaptiveHalfDensityLanding s n -
+    xiShiftedAdaptiveMonicHalfDensityCoefficient s n • HTGeometry.monicOrtho s n
+
+/-- Positive energy carried by the genuine monic-tangent landing. -/
+def xiShiftedAdaptiveMonicHalfDensityLandingEnergy (s : ℕ → ℝ) (n : ℕ) : ℝ :=
+  (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+    2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j) +
+    ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoBeta s n
+
+/-- Exact top coefficient of the degree-`n` adaptive landing. -/
+theorem coeff_xiShiftedAdaptiveHalfDensityLanding_self_below
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hn : 0 < n) (hnN : n + 1 ≤ N) :
+    (xiShiftedAdaptiveHalfDensityLanding s n).coeff n =
+      xiShiftedAdaptiveMonicHalfDensityCoefficient s n := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
+  rw [xiShiftedAdaptiveHalfDensityLanding, Polynomial.coeff_sub,
+    Polynomial.coeff_smul, coeff_xiShiftedMobiusHalfDensityGenerator_succ]
+  change
+    ((k : ℝ) + 1 / 2) * HTGeometry.monicOrthoFirstCoeff s (k + 1) -
+      (((k + 1 : ℕ) : ℝ) + 1 / 2) *
+        HTGeometry.monicOrthoFirstCoeff s (k + 2) = _
+  rw [HTGeometry.monicOrthoFirstCoeff_succ_below h hnN]
+  unfold xiShiftedAdaptiveMonicHalfDensityCoefficient
+  push_cast
+  ring
+
+/-- The monic adaptive landing has degree strictly below `n`. -/
+theorem degree_xiShiftedAdaptiveMonicHalfDensityLanding_lt
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hn : 0 < n) (hnN : n + 1 ≤ N) :
+    (xiShiftedAdaptiveMonicHalfDensityLanding s n).degree < (n : WithBot ℕ) := by
+  rw [Polynomial.degree_lt_iff_coeff_zero]
+  intro k hk
+  have hkn : n ≤ k := by exact_mod_cast hk
+  by_cases hkeq : k = n
+  · subst k
+    rw [xiShiftedAdaptiveMonicHalfDensityLanding, Polynomial.coeff_sub,
+      Polynomial.coeff_smul,
+      coeff_xiShiftedAdaptiveHalfDensityLanding_self_below h hn hnN,
+      HTGeometry.coeff_monicOrtho_self]
+    ring
+  · have hnk : n < k := lt_of_le_of_ne hkn (Ne.symm hkeq)
+    have hA : (xiShiftedAdaptiveHalfDensityLanding s n).coeff k = 0 := by
+      apply Polynomial.coeff_eq_zero_of_natDegree_lt
+      exact lt_of_le_of_lt (natDegree_xiShiftedAdaptiveHalfDensityLanding_le s n) hnk
+    have hP : (HTGeometry.monicOrtho s n).coeff k = 0 := by
+      apply Polynomial.coeff_eq_zero_of_natDegree_lt
+      rw [HTGeometry.natDegree_monicOrtho]
+      exact hnk
+    simp [xiShiftedAdaptiveMonicHalfDensityLanding, hA, hP]
+
+/-- Nat-degree form of the monic-tangent admission law. -/
+theorem natDegree_xiShiftedAdaptiveMonicHalfDensityLanding_lt
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hn : 0 < n) (hnN : n + 1 ≤ N) :
+    (xiShiftedAdaptiveMonicHalfDensityLanding s n).natDegree < n := by
+  by_cases hz : xiShiftedAdaptiveMonicHalfDensityLanding s n = 0
+  · rw [hz, Polynomial.natDegree_zero]
+    exact hn
+  · exact (Polynomial.natDegree_lt_iff_degree_lt hz).mpr
+      (degree_xiShiftedAdaptiveMonicHalfDensityLanding_lt h hn hnN)
+
+/-- The diagonal Jacobi coefficient evaluates the `P_n`--`XP_n` pairing. -/
+theorem momentInner_monicOrtho_X_monicOrtho_eq_alpha_mul_norm_below
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hnN : n + 1 ≤ N) :
+    HTGeometry.momentInner s (HTGeometry.monicOrtho s n)
+        (X * HTGeometry.monicOrtho s n) =
+      HTGeometry.monicOrthoAlpha s n * HTGeometry.monicOrthoNormSq s n := by
+  have hnormne : HTGeometry.monicOrthoNormSq s n ≠ 0 :=
+    ne_of_gt (HTGeometry.monicOrthoNorm_pos_below h (by omega))
+  have hrawne : HTGeometry.momentInner s (HTGeometry.monicOrtho s n)
+      (HTGeometry.monicOrtho s n) ≠ 0 := by
+    simpa only [HTGeometry.monicOrthoNormSq] using hnormne
+  rw [HTGeometry.momentInner_comm, HTGeometry.monicOrthoAlpha,
+    HTGeometry.monicOrthoNormSq, div_mul_cancel₀ _ hrawne]
+
+/-- **Monic null-flag shear law.**  Pairing the genuine monic-tangent landing with `XP_n`
+collapses to a simpler positive Jacobi energy; every `alpha_n` cross term cancels. -/
+theorem momentInner_xiShiftedAdaptiveMonicHalfDensityLanding_eq_norm_mul_energy_below
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hn : 0 < n) (hnN : n + 2 ≤ N) :
+    HTGeometry.momentInner s (xiShiftedAdaptiveMonicHalfDensityLanding s n)
+        (X * HTGeometry.monicOrtho s n) =
+      HTGeometry.monicOrthoNormSq s n *
+        xiShiftedAdaptiveMonicHalfDensityLandingEnergy s n := by
+  rw [xiShiftedAdaptiveMonicHalfDensityLanding, HTGeometry.momentInner_sub_left,
+    HTGeometry.momentInner_smul_left,
+    momentInner_xiShiftedAdaptiveHalfDensityLanding_eq_norm_mul_energy_below h hn hnN,
+    momentInner_monicOrtho_X_monicOrtho_eq_alpha_mul_norm_below h (by omega)]
+  have hsquares :
+      (∑ j ∈ Finset.range n,
+          (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ 2) =
+        (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) +
+          HTGeometry.monicOrthoAlpha s n *
+            (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
+          (n : ℝ) * HTGeometry.monicOrthoAlpha s n ^ 2 / 4 := by
+    have hpoint (j : ℕ) :
+        (HTGeometry.monicOrthoAlpha s j + HTGeometry.monicOrthoAlpha s n / 2) ^ 2 =
+          HTGeometry.monicOrthoAlpha s j ^ 2 +
+            HTGeometry.monicOrthoAlpha s n * HTGeometry.monicOrthoAlpha s j +
+            HTGeometry.monicOrthoAlpha s n ^ 2 / 4 := by ring
+    simp_rw [hpoint]
+    rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
+    simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+    ring
+  unfold xiShiftedAdaptiveMonicHalfDensityCoefficient
+    xiShiftedAdaptiveMonicHalfDensityLandingEnergy
+    xiShiftedAdaptiveHalfDensityLandingEnergy
+  have hfirst := HTGeometry.monicOrthoFirstCoeff_eq_neg_sum_below h (by omega : n ≤ N)
+  rw [hsquares, hfirst]
+  ring
+
+/-- Strict positivity of the genuine monic-tangent source energy. -/
+theorem xiShiftedAdaptiveMonicHalfDensityLandingEnergy_pos_below
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hn : 0 < n) (hnN : n + 2 ≤ N) :
+    0 < xiShiftedAdaptiveMonicHalfDensityLandingEnergy s n := by
+  have halpha : 0 ≤ ∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2 :=
+    Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hbeta : 0 ≤ 2 * ∑ j ∈ Finset.range n, HTGeometry.monicOrthoBeta s j := by
+    apply mul_nonneg (by norm_num)
+    apply Finset.sum_nonneg
+    intro j hj
+    rcases j with _ | j
+    · simp [HTGeometry.monicOrthoBeta]
+    · exact (HTGeometry.monicOrthoBeta_pos_below h (Nat.succ_pos j) (by
+        have hjn := Finset.mem_range.mp hj
+        omega)).le
+  have hlast : 0 < ((n : ℝ) + 1 / 2) * HTGeometry.monicOrthoBeta s n :=
+    mul_pos (by positivity) (HTGeometry.monicOrthoBeta_pos_below h hn (by omega))
+  unfold xiShiftedAdaptiveMonicHalfDensityLandingEnergy
+  linarith
+
+/-- The only monic-tangent coefficient visible to `XP_n` is exactly the positive landing energy.
+This converts all future canonical-velocity mismatch into one scalar coordinate. -/
+theorem coeff_xiShiftedAdaptiveMonicHalfDensityLanding_prev_eq_energy_below
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hn : 0 < n) (hnN : n + 2 ≤ N) :
+    (xiShiftedAdaptiveMonicHalfDensityLanding s n).coeff (n - 1) =
+      xiShiftedAdaptiveMonicHalfDensityLandingEnergy s n := by
+  have hpair := momentInner_velocity_X_monicOrtho_eq_norm_mul_coeff_below
+    h hn (by omega)
+      (natDegree_xiShiftedAdaptiveMonicHalfDensityLanding_lt h hn (by omega))
+  rw [momentInner_xiShiftedAdaptiveMonicHalfDensityLanding_eq_norm_mul_energy_below
+    h hn hnN] at hpair
+  have hnorm : 0 < HTGeometry.monicOrthoNormSq s n :=
+    HTGeometry.monicOrthoNorm_pos_below h (by omega)
+  nlinarith
+
+/-- The genuine monic-tangent landing has strictly positive source pairing. -/
+theorem momentInner_xiShiftedAdaptiveMonicHalfDensityLanding_pos_below
+    {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
+    (hn : 0 < n) (hnN : n + 2 ≤ N) :
+    0 < HTGeometry.momentInner s (xiShiftedAdaptiveMonicHalfDensityLanding s n)
+      (X * HTGeometry.monicOrtho s n) := by
+  rw [momentInner_xiShiftedAdaptiveMonicHalfDensityLanding_eq_norm_mul_energy_below
+    h hn hnN]
+  exact mul_pos (HTGeometry.monicOrthoNorm_pos_below h (by omega))
+    (xiShiftedAdaptiveMonicHalfDensityLandingEnergy_pos_below h hn hnN)
 
 /-- The source-native landing remaining inside the current flag is itself strictly positive. -/
 theorem momentInner_xiShiftedAdaptiveHalfDensityLanding_pos_below

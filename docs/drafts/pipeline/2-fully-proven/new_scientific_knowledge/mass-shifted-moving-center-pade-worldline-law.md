@@ -211,7 +211,67 @@ that source factor, its hard limit, or the equivalent hyperbolic capacity from
 `mass-shifted-hard-edge-hyperbolic-source-capacity`.  Integrating the generic center flow merely
 repackages the same pole worldline.
 
-## 6. Conjecture -> proof/failure -> pivot
+## 6. Absolute-divisor high-moment no-go `[PAPER-PROVED]`
+
+The most direct source-specific attempt is to dominate a super-apex Gauss weight by the highest
+exact moment.  It fails sharply at the Route-U scale.
+
+Let
+
+\[
+ \lambda_q(y)={1\over y+\zeta_q},
+ \qquad \zeta_q=\text{the squared centered Xi node}.       \tag{MPW.15}
+\]
+
+The completed endpoint gap gives `Re zeta_q>81/4`, hence `|lambda_q(y)|<1/y`.  If `a_i` is a
+positive-axis Padé pole and `x_i=(y-a_i)^(-1)`, positivity of the Gauss weights and exactness at
+degree `2n-2` give
+
+\[
+ \begin{aligned}
+ \rho_i={\omega_i\over x_i}
+ &\le {s_y(2n-2)\over x_i^{2n-1}}\\
+ &\le \sum_q
+ \left|{y-a_i\over y+\zeta_q}\right|^{2n-1}.
+ \end{aligned}                                             \tag{MPW.16}
+\]
+
+Every sum in `(MPW.16)` is finite.  Nevertheless, if
+
+\[
+ y_j\longrightarrow\infty,
+ \qquad {n_j\over y_j}\longrightarrow0,
+ \qquad a_{j,i}\longrightarrow a\in\mathbb R,             \tag{MPW.17}
+\]
+
+then
+
+\[
+ \boxed{\qquad
+ \liminf_{j\to\infty}
+ \sum_q\left|{y_j-a_{j,i}\over y_j+\zeta_q}\right|^{2n_j-1}
+ =+\infty.
+ \qquad}                                                   \tag{MPW.18}
+\]
+
+Indeed, for every fixed divisor copy `q`,
+
+\[
+ (2n_j-1)\left[
+ \log\left|1-{a_{j,i}\over y_j}\right|
+ -\log\left|1+{\zeta_q\over y_j}\right|
+ \right]\longrightarrow0,                                \tag{MPW.19}
+\]
+
+so its summand tends to one.  Restricting to any fixed finite set of `M` divisor copies gives
+liminf at least `M`; then let `M` grow.  Route U has `n_j asymp sqrt(y_j)`, so `(MPW.17)` applies.
+
+Thus literal spectral-radius separation is real but asymptotically too thin for the available
+moment order.  Taking absolute values destroys exactly the collective phase/off-diagonal
+information selected by the hard-edge prime--Gamma limit.  No highest-moment, absolute-divisor,
+or norm-majorant argument can prove Padé-atom vanishing at this scale.
+
+## 7. Conjecture -> proof/failure -> pivot
 
 1. **Conjecture:** current Padé center variation has uncontrolled rational complexity.
    **FALSIFIED.** It collapses to the one-monomial law `(MPW.5)`.
@@ -224,8 +284,12 @@ repackages the same pole worldline.
 4. **Positive survivor:** pole velocity, residue transport, and source-error cancellation are one
    exact worldline law.  The remaining discriminator is the literal source capacity, not another
    rational-flow estimate.
+5. **Conjecture:** the strict source radius `|lambda_q(y)|<1/y` suppresses every super-apex
+   residue through the highest exact moment.  **FALSIFIED AT THE CRITICAL SCALE.**  The resulting
+   literal bound diverges by `(MPW.18)` because `n/y->0` leaves every fixed divisor copy
+   unsuppressed.  Any successful estimate must retain phase or common-operator correlation.
 
-## 7. Literature and Lean audit
+## 8. Literature and Lean audit
 
 Gauss quadrature error formulas, orthogonal-polynomial Padé denominators, and deformation equations
 for orthogonal polynomials are classical parents.  Targeted searches found no exact statement of
@@ -242,3 +306,5 @@ source bound would not close a Route-U obstruction and would repeat infrastructu
 - 2026-08-11 — proved the exact moving-center equation, source-error factor, transverse source
   zero, individual residue ODE, and total-residue growth; generic flow closed as an anchoring
   mechanism.
+- 2026-08-11 — proved that the literal highest-moment absolute-divisor bound diverges throughout
+  the Route-U critical scale; spectral-radius domination closed as a residue-vanishing mechanism.

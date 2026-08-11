@@ -217,6 +217,7 @@ theorem fibre_centered_sum (D : RouteEPhysicalFibreData Ω Λ) (l : Λ) :
   change D.fibreMoment l - D.fibreMass l *
     (D.fibreMoment l / D.fibreMass l) = 0
   field_simp [D.fibreMass_ne_zero l]
+  ring
 
 /-- Conditional residuals are orthogonal to every function of the fibre label. -/
 theorem projection_orthogonal
@@ -456,6 +457,159 @@ theorem relabel_projectedEnergy_le
   exact le_add_of_nonneg_right
     (Finset.sum_nonneg fun ω _hω => mul_nonneg (D.mass_pos ω).le (sq_nonneg _))
 
+/-! ## Independent physical extension before coarsening -/
+
+/-- Adjoin one independent physical factor while retaining both the old fibre label and the new
+factor.  This is the correct fine sigma-algebra for a convolution step. -/
+def independentExtensionData
+    {Y : Type*} [Fintype Y]
+    (D : RouteEPhysicalFibreData Ω Λ) (factorMass : Y → ℝ)
+    (factorMass_pos : ∀ y, 0 < factorMass y)
+    (factorMass_sum : ∑ y, factorMass y = 1) :
+    RouteEPhysicalFibreData (Ω × Y) (Λ × Y) where
+  mass p := D.mass p.1 * factorMass p.2
+  observable p := D.observable p.1
+  label p := (D.label p.1, p.2)
+  mass_pos p := mul_pos (D.mass_pos p.1) (factorMass_pos p.2)
+  mass_sum := by
+    rw [Fintype.sum_prod_type]
+    simp_rw [← Finset.mul_sum, factorMass_sum, mul_one]
+    exact D.mass_sum
+  label_surjective := by
+    rintro ⟨l, y⟩
+    obtain ⟨ω, hω⟩ := D.label_surjective l
+    exact ⟨(ω, y), by simp [hω]⟩
+
+theorem independentExtension_fibreMass
+    {Y : Type*} [Fintype Y] [DecidableEq Y]
+    (D : RouteEPhysicalFibreData Ω Λ) (factorMass : Y → ℝ)
+    (factorMass_pos : ∀ y, 0 < factorMass y)
+    (factorMass_sum : ∑ y, factorMass y = 1) (l : Λ) (y : Y) :
+    (D.independentExtensionData factorMass factorMass_pos factorMass_sum).fibreMass (l, y) =
+      D.fibreMass l * factorMass y := by
+  classical
+  let E := D.independentExtensionData factorMass factorMass_pos factorMass_sum
+  have hfibre :
+      (Finset.univ.filter fun p : Ω × Y => E.label p = (l, y)) =
+        (Finset.univ.filter fun ω : Ω => D.label ω = l) ×ˢ ({y} : Finset Y) := by
+    ext p
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_product,
+      Finset.mem_singleton]
+    change ((D.label p.1, p.2) = (l, y)) ↔
+      (D.label p.1 = l ∧ p.2 = y)
+    exact Prod.ext_iff
+  unfold fibreMass
+  rw [hfibre, Finset.sum_product]
+  simp only [E, independentExtensionData, Finset.sum_singleton]
+  rw [← Finset.sum_mul]
+
+theorem independentExtension_fibreMoment
+    {Y : Type*} [Fintype Y] [DecidableEq Y]
+    (D : RouteEPhysicalFibreData Ω Λ) (factorMass : Y → ℝ)
+    (factorMass_pos : ∀ y, 0 < factorMass y)
+    (factorMass_sum : ∑ y, factorMass y = 1) (l : Λ) (y : Y) :
+    (D.independentExtensionData factorMass factorMass_pos factorMass_sum).fibreMoment (l, y) =
+      D.fibreMoment l * factorMass y := by
+  classical
+  let E := D.independentExtensionData factorMass factorMass_pos factorMass_sum
+  have hfibre :
+      (Finset.univ.filter fun p : Ω × Y => E.label p = (l, y)) =
+        (Finset.univ.filter fun ω : Ω => D.label ω = l) ×ˢ ({y} : Finset Y) := by
+    ext p
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_product,
+      Finset.mem_singleton]
+    change ((D.label p.1, p.2) = (l, y)) ↔
+      (D.label p.1 = l ∧ p.2 = y)
+    exact Prod.ext_iff
+  unfold fibreMoment
+  rw [hfibre, Finset.sum_product]
+  simp only [E, independentExtensionData, Finset.sum_singleton]
+  calc
+    (∑ x with D.label x = l, D.mass x * factorMass y * D.observable x) =
+        ∑ x with D.label x = l, (D.mass x * D.observable x) * factorMass y := by
+      apply Finset.sum_congr rfl
+      intro ω _hω
+      ring
+    _ = (∑ ω with D.label ω = l, D.mass ω * D.observable ω) * factorMass y := by
+      rw [Finset.sum_mul]
+
+/-- Retaining the old label and the new independent factor leaves the conditional field unchanged. -/
+theorem independentExtension_projection
+    {Y : Type*} [Fintype Y] [DecidableEq Y]
+    (D : RouteEPhysicalFibreData Ω Λ) (factorMass : Y → ℝ)
+    (factorMass_pos : ∀ y, 0 < factorMass y)
+    (factorMass_sum : ∑ y, factorMass y = 1) (ω : Ω) (y : Y) :
+    (D.independentExtensionData factorMass factorMass_pos factorMass_sum).projection (ω, y) =
+      D.projection ω := by
+  unfold projection conditionalMean
+  change
+    (D.independentExtensionData factorMass factorMass_pos factorMass_sum).fibreMoment
+        (D.label ω, y) /
+      (D.independentExtensionData factorMass factorMass_pos factorMass_sum).fibreMass
+        (D.label ω, y) =
+      D.fibreMoment (D.label ω) / D.fibreMass (D.label ω)
+  rw [D.independentExtension_fibreMoment factorMass factorMass_pos factorMass_sum,
+    D.independentExtension_fibreMass factorMass factorMass_pos factorMass_sum]
+  have hB : D.fibreMass (D.label ω) ≠ 0 := D.fibreMass_ne_zero _
+  have hb : factorMass y ≠ 0 := ne_of_gt (factorMass_pos y)
+  field_simp
+
+/-- Independent extension preserves the fine conditional energy exactly. -/
+theorem independentExtension_projectedEnergy
+    {Y : Type*} [Fintype Y] [DecidableEq Y]
+    (D : RouteEPhysicalFibreData Ω Λ) (factorMass : Y → ℝ)
+    (factorMass_pos : ∀ y, 0 < factorMass y)
+    (factorMass_sum : ∑ y, factorMass y = 1) :
+    (D.independentExtensionData factorMass factorMass_pos factorMass_sum).projectedEnergy =
+      D.projectedEnergy := by
+  classical
+  unfold projectedEnergy
+  simp_rw [D.independentExtension_projection factorMass factorMass_pos factorMass_sum]
+  rw [Fintype.sum_prod_type]
+  apply Finset.sum_congr rfl
+  intro ω _hω
+  change (∑ y, (D.mass ω * factorMass y) * D.projection ω ^ 2) =
+    D.mass ω * D.projection ω ^ 2
+  calc
+    (∑ y, (D.mass ω * factorMass y) * D.projection ω ^ 2) =
+        (D.mass ω * D.projection ω ^ 2) * ∑ y, factorMass y := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro y _hy
+      ring
+    _ = _ := by rw [factorMass_sum, mul_one]
+
+/-- **Independent-extension coarsening law.**  Appending a physical factor and then forgetting down
+to any surjective cell map dissipates exactly the squared reverse-factor discrepancy. -/
+theorem independentExtension_projectedEnergy_eq_relabel_add_defect
+    {Y Γ : Type*} [Fintype Y] [DecidableEq Y] [Fintype Γ] [DecidableEq Γ]
+    (D : RouteEPhysicalFibreData Ω Λ) (factorMass : Y → ℝ)
+    (factorMass_pos : ∀ y, 0 < factorMass y)
+    (factorMass_sum : ∑ y, factorMass y = 1)
+    (π : Λ × Y → Γ) (hπ : Function.Surjective π) :
+    D.projectedEnergy =
+      ((D.independentExtensionData factorMass factorMass_pos factorMass_sum).relabel π hπ).projectedEnergy +
+      ∑ p : Ω × Y, D.mass p.1 * factorMass p.2 *
+        (D.projection p.1 -
+          ((D.independentExtensionData factorMass factorMass_pos factorMass_sum).relabel π hπ).projection p) ^ 2 := by
+  let E := D.independentExtensionData factorMass factorMass_pos factorMass_sum
+  have h := E.projectedEnergy_eq_relabel_add_defect π hπ
+  rw [D.independentExtension_projectedEnergy factorMass factorMass_pos factorMass_sum] at h
+  have hsum :
+      (∑ p : Ω × Y, D.mass p.1 * factorMass p.2 *
+        (D.projection p.1 - (E.relabel π hπ).projection p) ^ 2) =
+      ∑ p : Ω × Y, E.mass p *
+        (E.projection p - (E.relabel π hπ).projection p) ^ 2 := by
+    apply Finset.sum_congr rfl
+    intro p _hp
+    rw [D.independentExtension_projection factorMass factorMass_pos factorMass_sum]
+    rfl
+  change D.projectedEnergy = (E.relabel π hπ).projectedEnergy +
+    ∑ p : Ω × Y, D.mass p.1 * factorMass p.2 *
+      (D.projection p.1 - (E.relabel π hπ).projection p) ^ 2
+  rw [hsum]
+  exact h
+
 end RouteEPhysicalFibreData
 
 /-! ## Signed convolution as physical coarsening -/
@@ -523,31 +677,33 @@ theorem fineData_fibreMass (S : RouteEPhysicalConvolutionStep T Y Z) (p : T × Y
     S.fineData.fibreMass p = S.predecessorMass p.1 * S.factorMass p.2 := by
   classical
   unfold RouteEPhysicalFibreData.fibreMass fineData
-  rw [Finset.sum_eq_single p]
-  · rfl
-  · intro b hb hbp
-    exact (hbp ((Finset.mem_filter.mp hb).2)).elim
-  · intro hp
-    exact (hp (by simp)).elim
+  change (∑ x with x = p, S.predecessorMass x.1 * S.factorMass x.2) =
+    S.predecessorMass p.1 * S.factorMass p.2
+  have hfilter : (Finset.univ.filter fun x : T × Y => x = p) = {p} := by
+    ext x
+    simp
+  rw [hfilter, Finset.sum_singleton]
 
 theorem fineData_fibreMoment (S : RouteEPhysicalConvolutionStep T Y Z) (p : T × Y) :
     S.fineData.fibreMoment p =
       S.predecessorMass p.1 * S.factorMass p.2 * S.predecessorMean p.1 := by
   classical
   unfold RouteEPhysicalFibreData.fibreMoment fineData
-  rw [Finset.sum_eq_single p]
-  · rfl
-  · intro b hb hbp
-    exact (hbp ((Finset.mem_filter.mp hb).2)).elim
-  · intro hp
-    exact (hp (by simp)).elim
+  change (∑ x with x = p,
+    S.predecessorMass x.1 * S.factorMass x.2 * S.predecessorMean x.1) =
+      S.predecessorMass p.1 * S.factorMass p.2 * S.predecessorMean p.1
+  have hfilter : (Finset.univ.filter fun x : T × Y => x = p) = {p} := by
+    ext x
+    simp
+  rw [hfilter, Finset.sum_singleton]
 
 theorem fineData_projection (S : RouteEPhysicalConvolutionStep T Y Z) (p : T × Y) :
     S.fineData.projection p = S.predecessorMean p.1 := by
   unfold RouteEPhysicalFibreData.projection RouteEPhysicalFibreData.conditionalMean
   change S.fineData.fibreMoment p / S.fineData.fibreMass p = S.predecessorMean p.1
   rw [S.fineData_fibreMoment p, S.fineData_fibreMass p]
-  field_simp [ne_of_gt (mul_pos (S.predecessorMass_pos p.1) (S.factorMass_pos p.2))]
+  exact mul_div_cancel_left₀ (S.predecessorMean p.1)
+    (ne_of_gt (mul_pos (S.predecessorMass_pos p.1) (S.factorMass_pos p.2)))
 
 theorem relabel_fibreMass (S : RouteEPhysicalConvolutionStep T Y Z) (z : Z) :
     (S.fineData.relabel S.combine S.combine_surjective).fibreMass z = S.successorMass z :=
@@ -602,7 +758,11 @@ theorem predecessorEnergy_eq_successorEnergy_add_dissipation
   rw [S.fine_projectedEnergy_eq_predecessorEnergy,
     S.coarse_projectedEnergy_eq_successorEnergy] at h
   unfold dissipation
-  simpa only [S.fineData_projection, S.relabel_projection] using h
+  simp only [S.fineData_projection, S.relabel_projection] at h
+  change S.predecessorEnergy = S.successorEnergy +
+    ∑ p, S.predecessorMass p.1 * S.factorMass p.2 *
+      (S.predecessorMean p.1 - S.successorMean (S.combine p)) ^ 2 at h
+  exact h
 
 theorem successorEnergy_le_predecessorEnergy
     (S : RouteEPhysicalConvolutionStep T Y Z) :

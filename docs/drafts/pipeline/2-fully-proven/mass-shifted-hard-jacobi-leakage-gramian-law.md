@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Route:** mass-shifted spectral face / hard first-contact chamber
 - **Type:** THEOREM + NO-GO + FRONTIER REDUCTION
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN PARTIAL]`
 - **Depends on:** shifted reciprocal moment ODE, half-density Möbius source connection, finite
   orthogonal-polynomial recurrence, positive-chamber differentiability
 - **Statement:** In the normalized orthogonal frame, the shifted-Xi half-density connection is an
@@ -261,7 +261,9 @@ comparison.
 
 Formalize, in this order:
 
-1. exact coefficient projection of `K` as a single top-degree channel;
+1. exact coefficient projection of `K` as a single top-degree channel; **FORMALIZED**, together
+   with stronger adaptive orthogonal landing, positive landing energy, and strict projected
+   covariant dissipation in `RHTower.XiShiftedHalfDensityAdmissionBoundaryPort`;
 2. orthonormal nearest-neighbor connection law from actual shifted-Xi coefficient curves;
 3. finite Jacobi Riccati boundary term `2n a_n^2 ee^T`;
 4. inverse hard-operator square and finite Gramian identity.
@@ -272,3 +274,5 @@ No abstract theorem with (HJLG.2) supplied as a hypothesis counts as route forma
 
 - 2026-08-11 — internal/external audit, conjecture loop, paper proof, and exact remaining
   reserve-minus-Gramian open core completed.
+- 2026-08-11 — item 1 formalized. Fixed coefficient truncation was rejected as final producer;
+  current orthogonal admission gives a stronger positive three-channel completed source law.

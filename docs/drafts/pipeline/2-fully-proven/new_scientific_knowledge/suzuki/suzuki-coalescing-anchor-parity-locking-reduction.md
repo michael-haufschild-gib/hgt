@@ -1,7 +1,7 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`, `SR-89`, `SR-90`, `SR-91`, `SR-92`, `SR-93`, `SR-94`, `SR-95`, `SR-96`, `SR-97`, `SR-98`, `SR-99`, `SR-100`, `SR-101`, `SR-102`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`, `SR-89`, `SR-90`, `SR-91`, `SR-92`, `SR-93`, `SR-94`, `SR-95`, `SR-96`, `SR-97`, `SR-98`, `SR-99`, `SR-100`, `SR-101`, `SR-102`, `SR-103`, `SR-104`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
@@ -6053,7 +6053,238 @@ false rate.  Neither branch is presently contradictory.  Closing the high-assist
 requires excluding relative near-null packets with the source-bearing/core-cloud geometry, while
 the exponential-scale branch must be attacked by a genuinely quantitative interpolation theorem.
 
-### 14.41 Conjecture loop and novelty correction
+### 14.41 The low-only branch has a valid aperture-rate ceiling
+
+The growing-block gap in retired Theorem AF forbids deducing a rate from a lower Gram eigenvalue.
+The low-only branch of Theorem AT has different information: its successful certificate is
+literally supported below the selected cutoff.  Active-zero counting can therefore be used
+without any spectral coercivity claim.
+
+#### Theorem AX — low-only schedule ceiling and negative-branch phase diagram
+
+Along every cofinal low-only subsequence of a complete negative target family,
+
+```text
+sqrt(a_j)<<r_j^(-4)log(r_j^(-1)+2),                    (431)
+
+r_j=O(a_j^(-1/8)log(a_j+2)^(1/4)).                    (432)
+```
+
+Combining this with Theorem AW gives the complete first-defect mechanism diagram for negative
+shifts.  Every cofinal negative family decomposes into subsequences of the following types:
+
+1. a low-only subsequence satisfying `(432)`;
+2. a high-assisted subsequence with
+
+   ```text
+   r_j<=exp(-c sqrt(a_j));                              (433)
+   ```
+
+   after further extraction;
+3. a high-assisted subsequence carrying a cross-coherent low/high packet with
+
+   ```text
+   min(R_L,R_H)=o(a_j).                                (434)
+   ```
+
+Types 2 and 3 may coexist on different extractions.
+
+#### Proof
+
+On a low-only index, Theorem AT supplies a certificate supported on the ordinates below
+`T_j=r_j^(-4)` with at least `c_*sqrt(a_j)` nonzero coordinates.  Riemann--von Mangoldt gives
+`O(T_j log(T_j+2))` signed distinct ordinates there.  Comparison proves `(431)`.
+
+To obtain `(432)`, split into two cases.  If `r_j<=a_j^(-1/8)`, the claim is immediate.  Otherwise
+`log(r_j^(-1)+2)=O(log(a_j+2))`; rearranging `(431)` gives
+
+```text
+r_j^4<<log(a_j+2)/sqrt(a_j),
+```
+
+which is `(432)`.  The three-type diagram is Theorems AT and AW plus this bound.
+
+Zero counting and elementary rearrangement are classical.  Candidate-new content is the exact
+branch-sensitive Suzuki rate: a rate is valid once support confinement is proved, whereas the
+same conclusion was invalid for a growing unconstrained Schur block.  This does not close the
+negative interface.  It proves that every survivor lies in a quantitatively singular phase and
+leaves only the relative near-null packet without an explicit shift ceiling.
+
+### 14.42 Relative near-null packets are unconditionally available under the target RH conclusion
+
+Theorem AW leaves relative near-null packets as an apparent exceptional mechanism.  They are not
+exceptional at sufficiently high zero ordinates.  A short-interval count plus confluent
+exponential cancellation constructs them without a zero-spacing conjecture or simplicity.
+
+#### Theorem AY — ultraviolet ultranull abundance
+
+Assume RH.  For every sequences `a_j->infinity`, `r_j->0`, and cutoffs `T_j->infinity`, there are
+finite coefficient vectors `c_j`, supported on distinct positive Xi ordinates above `T_j`, such
+that the unregularized packet is smaller than the prescribed ridge scale:
+
+```text
+<c_j,K_(a_j)c_j>/||c_j||^2=o(r_j),
+<c_j,(K_(a_j)+r_jI)c_j>/||c_j||^2
+ =r_j(1+o(1))=o(a_j).                                 (435)
+```
+
+The support may be chosen inside one interval of ordinate width `a_j^(-2)`.  Consequently the
+high block in Theorems AO--AW always contains relative near-null packets after moving sufficiently
+far into the ultraviolet.  What remains nonautomatic is their normalized coupling to the
+source-bearing low core.
+
+#### Proof
+
+Write `L=log log Y`.  Under RH, the Littlewood bound and Riemann--von Mangoldt formula give,
+uniformly for `0<h<=1`,
+
+```text
+N(Y+h)-N(Y)
+ =h/(2pi) log Y+O(log Y/log log Y).                   (436)
+```
+
+The maximal zero multiplicity is `O(log Y/log log Y)`.  Set `h=a^(-2)` and choose `Y` so large
+that `L/a^2->infinity` and, more strongly,
+
+```text
+log L/a^2->infinity.                                   (437)
+```
+
+Then `(436)` contains at least
+
+```text
+n>=c L/a^2                                             (438)
+```
+
+distinct ordinates `gamma_1,...,gamma_n` in `[Y,Y+h]`.  Increase `Y` further so this interval lies
+above the prescribed cutoff.
+
+Put `delta_k=gamma_k-gamma_1`.  The `(n-1) x n` Vandermonde moment matrix has a nonzero kernel, so
+choose `d in C^n` with `||d||_2=1` and
+
+```text
+sum_k d_k delta_k^q=0,       0<=q<=n-2.               (439)
+```
+
+For `|x|<=a`, Taylor's remainder and `|delta_k x|<=ah=1/a` yield
+
+```text
+|sum_k d_k exp(-i gamma_k x)|
+ <=sqrt(n) exp(1/a) a^(-(n-1))/(n-1)!.                (440)
+```
+
+Let `m_k` be the zero multiplicities and set the collapsed zero-coordinate coefficient
+`c_k=d_k/sqrt(m_k)`.  Then the Suzuki synthesis is exactly the sum in `(440)`, while
+
+```text
+||c||_2^2=sum_k |d_k|^2/m_k>=1/M(Y),
+M(Y)=O(log Y/log log Y).                               (441)
+```
+
+Integrating `(440)` over `(-a,a)` and using `(441)` bounds the unregularized Rayleigh quotient by
+
+```text
+2a M(Y)n exp(2/a)a^(-2(n-1))/[(n-1)!]^2.
+```
+
+For each fixed pair `(a,r)` this bound tends to zero as `Y->infinity`; condition `(437)` makes
+the negative factorial exponent dominate `log M(Y)`.  Increase `Y_j` once more until the displayed
+bound is at most `r_j/j`.  This proves the first line of `(435)`.  The regularization adds exactly
+`r_j`, proving its second line.
+
+Short-interval Riemann--von Mangoldt, Littlewood multiplicity, Vandermonde nullspaces, and Taylor
+remainder bounds are classical.  In particular, Batenkov--Diederichs--Goldman--Yomdin,
+*The spectral properties of Vandermonde matrices with clustered nodes* (arXiv:1909.01927), and
+Batenkov--Goldman, *Single-exponential bounds for the smallest singular value of Vandermonde
+matrices in the sub-Rayleigh regime* (arXiv:2107.09326), directly own clustered-Vandermonde
+small-singular-value technology; no novelty is claimed for that mechanism.  Candidate-new content
+is restricted to the multiplicity-weighted Xi/Suzuki placement and the ability to put its energy
+below an independently prescribed ridge scale.  The next theorem shows that this stronger packet
+is too null to drive high assistance.
+
+### 14.43 Ultranull packets are invisible: high assistance is ridge-matched
+
+Theorem AY settles existence of extremely small high-block singular values, but it does not settle
+the normalized coherence in `(418)`.  Regularization suppresses a packet once its unregularized
+energy falls below `r`.
+
+For nonzero low/high coordinate vectors write
+
+```text
+p_L=S_a^*P x,                 p_H=S_a^*Q y,
+q_L(x)=||p_L||_2^2/||x||_2^2, q_H(y)=||p_H||_2^2/||y||_2^2,
+
+eta(x,y)^2=
+ |<B y,x>|^2/[<Lx,x><Dy,y>].
+```
+
+#### Theorem AZ — ridge-matched visibility barrier
+
+Every nonzero low/high pair obeys
+
+```text
+eta(x,y)^2
+ <=[q_L(x)/(q_L(x)+r)][q_H(y)/(q_H(y)+r)]
+ <=min{q_L(x)/(q_L(x)+r),q_H(y)/(q_H(y)+r)}.          (442)
+```
+
+Consequently
+
+```text
+eta(x,y)^2>1/15
+ => q_L(x)>r/14 and q_H(y)>r/14.                      (443)
+```
+
+The packets constructed in Theorem AY satisfy the stronger uniform invisibility law
+
+```text
+sup_(x ne 0) eta(x,c_j)^2
+ <=q_H(c_j)/(q_H(c_j)+r_j)=o(1).                     (444)
+```
+
+They therefore cannot witness the high-assisted branch.  Conversely, on every high-assisted
+subsequence one may choose near-maximizing pairs for `(418)` such that
+
+```text
+liminf q_L(x_j)/r_j>=1/14,
+liminf q_H(y_j)/r_j>=1/14.                            (445)
+```
+
+Choosing the same pairs in the cross-capacity argument of Theorem AW also gives
+
+```text
+min{q_L(x_j)+r_j,q_H(y_j)+r_j}=O(log(T_j+2)^2).       (446)
+```
+
+Thus the live high packet is neither arbitrary near-null nor merely relative-`o(a)`.  It must lie
+in a ridge-matched energy band, remain coherently paired with a source-bearing low packet, and
+cross the exact normalized threshold `1/15`.
+
+#### Proof
+
+The Gram-block identities and Cauchy--Schwarz give
+
+```text
+<Lx,x>=||p_L||^2+r||x||^2,
+<Dy,y>=||p_H||^2+r||y||^2,
+|<By,x>|=|<p_H,p_L>|<=||p_H||||p_L||.
+```
+
+Division proves `(442)`.  If either `q_L<=r/14` or `q_H<=r/14`, its visibility factor is at most
+`1/15`; hence `(443)`.  The strengthened `(435)` inserted into the second factor proves `(444)`.
+Theorem AV supplies near-maximizers with `eta^2>=1/15-o(1)`; solving
+`q/(q+r)>=eta^2` proves `(445)`.  The capacity comparison from `(427)` applies to those same
+near-maximizers and proves `(446)`.
+
+The visibility inequality is elementary regularized Cauchy--Schwarz and is not claimed new.
+Candidate-new knowledge is the exact Suzuki conjunction: the target-forced `1/15` threshold,
+ultraviolet Xi packets below the ridge scale, and their resulting exclusion from the high-assisted
+mechanism.  The unconditional Hilbert-space inequality, its division-free `epsilon/(1+epsilon)`
+form, and the exact `r/14` consequence are Lean-proved in
+`HTGeometry/RidgeMatchedCoherenceBarrier.lean`.  Source-aligned Xi sinc-Gram existence or
+exclusion inside the ridge-matched band `(445)--(446)` remains open.
+
+### 14.44 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -6483,6 +6714,34 @@ the exponential-scale branch must be attacked by a genuinely quantitative interp
 134. **A low-Rayleigh packet alone kills high assistance -- failed.**  Such packets are precisely
      what hereditary completeness and uncontrolled Xi gaps leave available.  A no-go must couple
      the packet to the literal source-bearing core, not merely prove its existence.
+135. **The retracted aperture-rate argument means no branch-sensitive rate is available --
+     failed.**  A low-only certificate is genuinely confined below `T=r^(-4)`, so active-zero
+     complexity and total zero counting give the valid ceiling `(432)` without a Gram lower bound.
+136. **That ceiling removes the low-only branch -- failed.**  It forces
+     `r=O(a^(-1/8)log(a)^(1/4))`, but the negative interface already permits arbitrarily fast
+     `r->0`; no contradiction follows.
+137. **All negative survivors now have an explicit shift rate -- failed.**  The high-assisted
+     relative near-null branch `(434)` still has no rate.  Its exclusion is exactly the missing
+     coefficient-penalized small-singular-value theorem.
+138. **Relative near-null high packets may be absent for the actual Xi ordinates -- failed.**
+     Short-interval zero counting after multiplicity removal supplies arbitrarily large distinct
+     clusters; Vandermonde moment cancellation makes their finite exponential Gram energy even
+     `o(r)` after moving sufficiently far into the ultraviolet.
+139. **Unknown zero simplicity blocks that construction -- failed.**  Choosing collapsed
+     coordinates `c_k=d_k/sqrt(m_k)` transfers the unweighted cancellation sum exactly, while the
+     Littlewood multiplicity ceiling costs only `M(Y)` and is beaten by factorial cancellation.
+140. **High-block small-singular-value exclusion can close Suzuki -- failed structurally.**
+     Theorem AY proves singular values below every prescribed ridge scale exist at every aperture
+     far enough in the ultraviolet.  A lower bound on the high block is impossible.
+141. **Those ultranull packets validate high assistance -- failed sharply.**  Theorem AZ bounds
+     their normalized coupling to the entire opposite block by `q_H/(q_H+r)=o(1)`.  They are
+     asymptotically invisible and cannot approach the target threshold `1/15`.
+142. **Any relative-`o(a)` packet remains a candidate -- failed as too coarse.**  Crossing the
+     threshold forces both unregularized packet energies above `r/14`.  The relevant singular
+     scale is ridge-matched, not merely small relative to aperture.
+143. **The ridge floor closes high assistance -- failed.**  It is a necessary lower scale, not an
+     upper coercivity bound.  Current zero information neither constructs nor excludes pairs in
+     the band `(445)--(446)` with source-aligned coherence square at least `1/15`.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -6510,6 +6769,9 @@ relative-ridge reduction `(389)--(396)`, with hereditary high-tail completeness 
 Its nonuniform coefficient price, pure-tail moving-scale barrier, and complementary low/high
 improvement split, source-bearing-core/shaping-cloud law, and sharp cross-coherence barrier are
 `(401)--(425)`; the corrected cross-capacity/near-null alternative is `(426)--(430)`.
+The valid low-only aperture ceiling and complete negative mechanism diagram are `(431)--(434)`.
+Ultraviolet ultranull abundance, including multiplicities, is `(435)--(441)`; the ridge-matched
+visibility correction is `(442)--(446)`.
 The internal novelty audit found a direct parent for the compact-group parts of Theorems AL and
 AN: the already-formalized `suzuki-screw-compact-hull-parity-law.md` proves the universal relation
 hull, cofinal recurrence, Haar law, and homogeneous all-minus-one parity criterion.  Accordingly
@@ -6524,6 +6786,9 @@ tail barrier `(401)--(405)`, the exact low-only/coupled-self-energy dichotomy `(
 the source-correlation core/cloud separation `(411)--(417)`.
 The sharp normalized cross-block coherence threshold is `(418)--(425)`.
 The resulting relative near-null-packet/exponential-scale alternative is `(426)--(430)`.
+The branch-sensitive low-only schedule ceiling is `(431)--(434)`.
+The multiplicity-robust ultraviolet ultranull construction is `(435)--(441)`.
+The exact visibility barrier and ridge-matched frontier correction are `(442)--(446)`.
 The pure-frequency Nikolskii inequality used for the former and the
 Paley--Wiener/Jensen uniqueness mechanism used for the latter are classical and are not claimed
 new.  Targeted arXiv searches found

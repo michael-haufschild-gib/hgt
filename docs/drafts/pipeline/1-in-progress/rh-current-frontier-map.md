@@ -1350,6 +1350,29 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
   `r<=exp(-c sqrt(a))` or a relative near-null packet whose Rayleigh quotient is `o(a)`.  This is
   the corrected remnant of the retracted aperture-rate argument: it is a disjunction, and neither
   member is currently impossible;
+- the low-only branch does have a valid rate because its certificate is literally supported below
+  `T=r^(-4)`.  The `c sqrt(a)` active-zero floor and `O(T log T)` zero count give
+  `r=O(a^(-1/8)log(a+2)^(1/4))` on every low-only subsequence.  Combined with the high-assisted
+  result, every negative mechanism is now either low-only at this polynomial ceiling,
+  high-assisted at an exponential shift scale, or high-assisted through a relative near-null
+  packet.  Only the last class lacks an explicit schedule ceiling;
+- ultranull high packets are not conjectural.  Under RH, choose a width-`a^(-2)` interval
+  at sufficiently high ordinate.  Short-interval Riemann--von Mangoldt and the Littlewood
+  multiplicity ceiling leave `>>log log Y/a^2` distinct frequencies.  A Vandermonde moment-null
+  vector cancels `n-1` Taylor terms; factorial decay beats the maximal multiplicity after passing
+  to collapsed coordinates.  Moving the cluster farther makes its unregularized Gram Rayleigh
+  quotient `o(r)` for any prescribed ridge scale.  Clustered-Vandermonde small-singular-value
+  technology is classical; no novelty is assigned to that mechanism.  These packets do not
+  validate high assistance: regularized Cauchy--Schwarz bounds their coherence with the whole
+  opposite block by `q_H/(q_H+r)=o(1)`;
+- the surviving packet scale is now exact.  For any low/high pair, normalized coherence square is
+  at most `[q_L/(q_L+r)][q_H/(q_H+r)]`.  Crossing the target threshold `1/15` forces both
+  unregularized Rayleigh energies above `r/14`.  Combined with cross capacity, a high-assisted
+  near-maximizer has both sides ridge-visible while one regularized energy is
+  `O(log(T+2)^2)`.  Thus smallest-singular-value constructions and high-block coercivity are both
+  dead as closure strategies.  Missing fact is exclusively source-aligned Xi sinc-Gram coherence
+  inside this ridge-matched band.  Generic visibility and the exact `r/14` threshold are
+  Lean-proved in `HTGeometry/RidgeMatchedCoherenceBarrier.lean`;
 - the surviving zero-mass geometry is quantitative.  Fixed-mass annihilation makes both normalized
   literal-source spectral laws converge weakly to `delta_0`.  Yet exact target response and
   `R_Xi>81/4` force the odd Stieltjes factor below `4/81`, hence less than `8/81` of odd mass below
@@ -1993,6 +2016,49 @@ generator is `(S-u/6)(S-u^(-1)/6)`. It annihilates every character adaptively; d
 critical coface is equivalent to zero displacement. Full proof:
 `../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-shell-green-trace-ideal-transgression.md`.
 
+**Formalized exponent-exceptional source and marked-tame local square.** The singular
+pre-specialization object is no longer conjectural. Put
+
+~~~
+E(z,s)=zeta(s)/zeta(zs),
+z=1+t,
+s=rho+t w.
+~~~
+
+At every multiplicity-exact Xi divisor point,
+
+~~~
+s-rho=t w,
+zs-rho=t(w+rho+t w),
+E(1+t,rho+t w) -> (w/(w+rho))^d,
+~~~
+
+where `d` is exactly the Xi divisor multiplicity and the limit holds on every regular
+exceptional direction. The profile has divisor direction `w=0`, marked pole `w=-rho`, and unit
+physical endpoint in the reciprocal chart. Critical reflection moves the marked pole to
+`-(1-conj rho)`, and the oriented pole displacement is exactly
+`xiNearbyPoleDualityAdjunctionFracture(rho)`.
+
+Retain the two sections before codiagonalization. For
+
+~~~
+f_rho(w)=(w+rho)/(w+1-conj rho),
+~~~
+
+the constant-leg tame boundary of `{f_rho,6^m}` has marked exponents `(-m,m)`. Its local tame
+units multiply to one, but the Deninger horizontal character reads their oriented difference as
+the exact degree-`6^m` tensor-square radial mate curvature. At `m=1` this is the actual ordered
+`(2,3)` Gamma/Calderon--Witt coefficient up to the already-proved positive calibration. Both the
+exceptional pole displacement and the physical tame readout have coefficient-faithful
+finite-support landings in completed Calderon--Witt incidence. Paper proof, hostile audit, and
+unconditional Lean certificate:
+`../3-formalized/deninger-exponent-exceptional-tame-green-bridge.md`.
+
+This closes construction of the singular source normal, its reflected transport, its local
+principal symbol, exact physical readout, and pointwise completed incidence comparison. It does
+not transport the complete shell-amplified trace-class remainder and does not prove fixed-reader
+cyclicity. Tame reciprocity is therefore a calibration theorem here, not the missing zero theorem.
+
 **Closed completion escape.** Any closed complex-linear relation on the Calderón--Witt packet
 Hilbert space that contains the old zero boundary on the dense actual arithmetic core equals the
 full source times a constant vertical fibre. Single-valued or closable realizations therefore
@@ -2020,25 +2086,31 @@ completed Green tensor BV_1  --id tensor b-->  completed Green tensor BV_0
                                              fixed physical reader
 ~~~
 
-Source-side counterterm, physical clock, nonlocal source class, and singular coefficient topology
-are now fixed. The class is the shell amplification of the countertransported complete
-tensor-square tail in `L^(1,infinity)/L1`; its trace-order remainder and critical Wold coface are
-proved, not postulated. At grade `m`, the algebraic two-sided Tate--Wold primitive still has
-boundary `[6^m]-[6^(-m)]`, while only its forward face acts as the complete corrected Möbius
-singular transport in physical `L2`; the reciprocal analytic face is the
-functional-equation/contragredient pole germ. Construct `F_1` as a strict signed relative
-place-marked Rost--Schmid/Meyer comparison which preserves the trace-class subobject, sends the
-source quotient reader to the completed Xi Green incidence coefficient, and transports the two
-reflected principal symbols to both critical-edge slots. This cannot be installed by defining the
-target domain: simultaneous membership already has exact zero set \(\delta=0\). Retain the
-normalized `infinity,2,3` clock faces and regular `5`-tail face. Also retain
-the cofinal denominator places dividing `1+6^m` until the proved reflection-even splitting sends
-them out of the odd square. Construct source-first specialization `F_0` before divisor selection so that
-`d_T F_1 = F_0(id tensor b)`. Here `F_0` must be the already existing coefficient-faithful
-Burnol/Deninger physical landing, not a newly defined quotient; the physical reader must become
-cyclic on these admitted target boundaries; ordinary-prime provenance and multiplicity jets must
-survive. At `m=1` the endpoint reads the boundary as `c_rho K_6(rho)` with `c_rho != 0`, so
-strict compatibility forces the critical line.
+Source-side counterterm, physical clock, nonlocal source class, singular coefficient topology,
+local exceptional source normal, reflected pole transport, marked tame principal symbol, exact
+physical coefficient, and pointwise completed incidence landing are now fixed. The complete class
+is the shell amplification of the countertransported tensor-square tail in
+`L^(1,infinity)/L1`; its trace-order remainder and critical Wold coface are proved, not
+postulated. The exponent chart proves that the grade-`m` local principal symbol is literally the
+marked tame boundary `(-m,m)` of the exceptional pole pair, and its oriented character is the
+degree-`6^m` physical mate curvature.
+
+Construct remaining `F_1` as a **global strict lift** of this fixed local comparison to the
+complete shell-amplified corrected source. It must preserve the trace-class subobject, carry the
+full quotient reader to the completed Xi Green incidence coefficient, and transport both marked
+branches to the two critical-edge slots. The local one-coordinate incidence landing does not
+prove this ideal preservation. Nor can the lift be installed by defining the target domain:
+simultaneous membership already has exact zero set \(\delta=0\). Retain the normalized
+`infinity,2,3` clock faces, regular `5`-tail face, and cofinal denominator places dividing
+`1+6^m` until the proved reflection-even splitting sends the latter out of the odd square.
+
+Construct source-natural global specialization `F_0` and prove
+`d_T F_1 = F_0(id tensor b)` before codiagonalization. Its divisor-coordinate value is already
+forced by the formalized exceptional Green/tame incidence theorem; what remains is naturality on
+the complete source and compatibility with the trace-class remainder. Finally prove the already
+fixed physical reader is cyclic on these transported target boundaries. Ordinary-prime
+provenance and multiplicity jets must survive. At `m=1` the endpoint reads the boundary as
+`c_rho K_6(rho)` with `c_rho != 0`, so strict compatibility forces the critical line.
 
 Equivalently, prove vanishing of the already explicit realized two-prime obstruction
 
@@ -2054,13 +2126,16 @@ singular detector, kernel, coefficient topology, moment continuity, or arbitrary
 It is the signed relative chain identity between resolved boundary flatness and the fixed physical
 landing.
 The explicit conormal interval and pair
-`(B_6(s),-A(s)A(1-s)^(-1)B_6(1-s))` fix the source shape and both principal germs. The cyclotomic
-denominator construction fixes and splits off their common reflection-even denominator layer.
-The shell theorem fixes the complete source class modulo trace class, realizes the Köthe domain as
-`D G_6^epsilon in L1` for every positive `epsilon`, and identifies the normalized source Gibbs
-reader with the actual BV coefficient. Missing theorem is preservation of this already constructed
-singular class under the actual completed Green/pole-germ comparison, followed by its strict
-place-marked relative descent into the existing target square and fixed-reader cyclicity there.
+`(B_6(s),-A(s)A(1-s)^(-1)B_6(1-s))` fix the source shape and both principal germs. The exponent
+deformation `zeta(s)/zeta(zs)` now fixes their singular exceptional normal, reflected pole
+displacement, marked tame boundary, exact all-grade physical character, and divisor-coordinate
+incidence landing. The cyclotomic denominator construction fixes and splits off the common
+reflection-even denominator layer. The shell theorem fixes the complete source class modulo trace
+class, realizes the Köthe domain as `D G_6^epsilon in L1` for every positive `epsilon`, and
+identifies the normalized source Gibbs reader with the actual BV coefficient. Missing theorem is
+the global ideal-preserving lift of the formalized local exceptional comparison to this complete
+singular class, followed by strict place-marked relative descent in the existing target square and
+fixed-reader cyclicity there.
 Postulating reflected compatibility, quotienting by
 the anomaly, factoring through ordinary Milnor/Hochschild homology, or demanding a closable
 successor graph would impose or erase the critical line rather than derive it.
@@ -3169,6 +3244,26 @@ polynomial.
     can improve the cubic `R*` barrier. The required saving must use Dirichlet-polynomial structure,
     precisely the role of Heath--Brown's `R*` estimate and Maynard's quantized product-length case
     split.
+54. Umbrella-reachable and direct-checked `Sieve/MaynardWeakLargeValues.lean` exploits the actual
+    Route-T threshold instead of Maynard's optimal target. For complementary factor lengths and
+    sizes
+
+    ~~~
+    x=M N,  x^sigma=M^alpha N^beta,
+    R<=T M^(1-2alpha),  R<=T N^(1-2beta),
+    ~~~
+
+    Lean proves the exact interpolation `R<=T x^(1/2-sigma)`. Hence the `R` alternative needed for
+    a gap-square exponent `1+nu` holds whenever `sigma<=1/2+nu`. The concrete
+    `nu=49/100` theorem closes every `sigma<=99/100` level without `R*`. Exact unbalanced
+    interpolation shows that one height-dominated and one length-dominated factor suffice when
+    `x^(2sigma-2nu)<=TM`; exact sixth/second-moment interpolation gives the residual condition
+    `x^(2+2sigma-4nu)<=(TM)^3`. This is a genuine weakening of the arithmetic wall: full
+    Heath--Brown `R*` machinery is unnecessary off a thin near-maximal-value band. Corpus audit
+    also retires a standalone affine-spatial-mean-square bypass: uncentred Gallagher estimates,
+    global PNT, and upper-bound interval sieves leave an `X H^2` main-scale term and cannot supply
+    the required centred second-moment cancellation. The surviving task is dyadic factor grouping
+    plus pointwise/large-value exclusion in the high-`sigma` band.
 
 **Open core.** Prove cofinal cancellation of centered von Mangoldt atoms inside the finite mass
 light cone, preferably through exact joint pairing before norms. In the Wold/Deninger chart, safe
@@ -3179,9 +3274,12 @@ stronger positive domination that implies it. Live analytic source theorem must 
 signed/coherent radial continuation of the residual-plus-mesh package while preserving the
 critical Wold principal part, or use a distributional/Hardy boundary class that permits those
 poles. On arithmetic side, complete Maynard finite-product assembly and smooth aggregate passage
-are formal through item 53. Sharp aggregate truncation optimization is retired by item 52. The
-structured `R/R*` large-values estimate and its product-length classification remain live routes
-to critical mesh energy but cannot by themselves impose absolute residual boundary trace.
+are formal through item 54. Sharp aggregate truncation optimization is retired by item 52. Item 54
+removes `R*` from every level `sigma<=99/100`; first close dyadic factor grouping and the remaining
+near-maximal-value band using the corpus's zeta-block derivative-test and Möbius-twist cancellation
+estimates. Full structured `R/R*` analysis remains a fallback, not the default wall. Either
+large-values route can produce critical mesh energy but cannot by itself impose absolute residual
+boundary trace.
 Control at only one small positive residual height excludes only corresponding outer substrip and
 does not prove full RH. Merely
 postulating continuity of that required carrier at every `rho-1` is exactly RH. Equivalently,
@@ -3561,12 +3659,28 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     If `gamma_r>0`, `cosh(kappa t)` is orthogonal to the whole even ground space and
     `Cap_sigma(kappa)^(-1)` is its finite zero-edge reduced-resolvent response.  If `gamma_r=0`,
     the terminal descendant is a source-visible ground vector and that response has a pole.
+    Under the regularization `A_sigma^+ + tau`, positive terminal mass is equivalently an `O(1)`
+    Lorentzian capacity spike on the `sqrt(tau)` scale around `kappa`; zero terminal mass gives
+    only `O(tau)` capacity even at the root.  Hence pointwise estimates away from the root and
+    unscaled source averages are provably blind to the atom; a closing source estimate must rule
+    out this precise square-root boundary layer uniformly.
     Thus Route U's two residue branches are the finite-impedance/ground-pole alternatives of one
     literal hyperbolic source, not separate Padé pathologies.  This is paper-proved in
     `mass-shifted-hard-edge-hyperbolic-source-capacity`; no Lean declaration is claimed.
+58. The canonical Padé resolvent has an exact moving-center worldline.  At fixed absolute mass
+    `Y`, `partial_y R_y(Y)=2n h_n(Y-y)^(2n-1)/D_y(Y)^2`; every pole moves left, its residue obeys
+    an explicit pair-interaction ODE, and total residue grows.  The exact error against the
+    completed-Xi source is `(Y-y)^(2n) H_y(Y)/D_y(Y)^2`, where every Padé pole is a transverse
+    source zero with derivative `-x_i^3 gamma_i`.  This proves analyticity cancels rather than
+    forbids the spurious pole.  The tempting literal radius bound also fails sharply: at
+    `n asymp sqrt(y)`, the highest-moment absolute-divisor majorant for any bounded pole worldline
+    diverges because each fixed Xi divisor copy becomes asymptotically unsuppressed.  Thus generic
+    center flow, analyticity, spectral-radius separation, and every absolute-divisor majorant are
+    closed as anchoring mechanisms.  This is paper-proved in
+    `mass-shifted-moving-center-pade-worldline-law`; no Lean declaration is claimed.
 
 **Open core.** Route U has two irreducible branches. In the degenerate/root-sign branch, items
-55--57 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
+55--58 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
 statement. Define
 `mu_j^+=sum_(u_(j,i)<0) (omega_(j,i)/x_(j,i)) delta_(-u_(j,i))`. Prove
 `mu_j^+(K)->0` on every compact `K` in `(0,infinity)`, or the equivalent source-side vanishing of
@@ -3577,7 +3691,10 @@ resulting parity-doubled terminal radical instead. Full odd-sector operator admi
 require liminf control on the complete odd form domain.  Equivalently at a simple limiting root,
 exclude a finite nonzero zero-edge response of the literal source `cosh(kappa t)`; forcing a
 ground pole collapses the Padé residue but must then be combined with the explicit degeneracy
-contradiction.  Generic reduced-resolvent positivity does not decide which alternative occurs.
+contradiction.  Equivalently, rule out the `sqrt(tau)` Lorentzian regularized-capacity spike
+uniformly on every compact positive `kappa` interval.  Generic reduced-resolvent positivity,
+pointwise control off the roots, and unscaled capacity averaging do not decide which alternative
+occurs.
 
 Contact orientation is closed as a mechanism: every first Padé defect gives the same signed first
 nonzero derivative to every hard node, but a positive derivative at a flat face does not make its
@@ -4488,19 +4605,19 @@ open. Numerical evidence is not accepted as proof or disproof.
    must therefore be a named nonfunctorial polar choice derived from extra arithmetic, not a
    recombination of pre-polar invariants. The neutral-jet bridge is useful only through Route T's
    full residual upper-abscissa control.
-2. **L:** transport the explicit pole pair
-   `(B_6(s),-A(s)A(1-s)^(-1)B_6(1-s))` through one place-marked mixed `L1/L2`
-   Rost--Schmid-to-Meyer chain map, prove its completed Green image lands in both slots of the
-   source-forced critical-edge Köthe domain, and prove the fixed Burnol/Deninger reader is cyclic on its
-   transported principal-divisor boundary. The algebraic boundary `[6^m]-[6^(-m)]` has the
-   actual depth-`m-1` Gamma/Burnol/BV coefficient, but hostile audit proves only its forward face
-   is a vanishing-source physical `L2` singular transport. The reciprocal face must come from the
-   contragredient pole germ; scalar functional-equation or product-formula cancellation is
-   character-blind. This is equivalently the remaining source-derived proof of
-   `Omega_(mu,Gamma)(w_23)=0`. Counterterm shape, both principal germs, full-grade clock,
-   detector, Poisson-range kernel, strict provenance, and observer-freedom no-gos are closed.
-   Ambient open-strip admission and the exact critical-edge zero locus are also closed; proving
-   source-derived strict-edge landing is now the RH-bearing continuity statement.
+2. **L:** lift the formalized exponent-exceptional marked-tame comparison from one divisor
+   coefficient to the complete shell-amplified corrected Gamma-six source modulo trace class.
+   Prove this global place-marked mixed `L1/L2` Rost--Schmid-to-Meyer map preserves the trace-class
+   remainder, sends both exceptional branches to the two source-forced critical-edge Köthe slots,
+   intertwines the full source boundary, and makes the fixed Burnol/Deninger reader cyclic there.
+   Source object `zeta(s)/zeta(zs)`, actual-multiplicity exceptional profile, reflected pole/Green
+   displacement, local boundary `[6^m]-[6^(-m)]`, exact all-grade Gamma/Burnol/BV character, and
+   pointwise completed incidence landing are now closed and Lean-formalized. Tame reciprocity gives
+   only product neutrality; the local incidence vector does not preserve the complete shell ideal.
+   This global ideal-preserving lift and cyclicity are equivalently the remaining source-derived
+   proof of `Omega_(mu,Gamma)(w_23)=0`. Counterterm shape, principal germs, full-grade clock,
+   detector, Poisson-range kernel, strict provenance, observer-freedom no-gos, ambient open-strip
+   admission, and exact critical-edge zero locus are closed.
 3. **T:** prove signed/coherent continuation of the centered residual-plus-mesh package to the
    critical wall while retaining critical Wold residues, or complete Maynard's aggregate
    `R/R*` large-values argument for mesh energy and pair it with a non-absolute residual boundary
@@ -4728,6 +4845,7 @@ obstruction, Green-sum range theorem, finite depletion tower, converse, exact-ke
 Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive formal credit.
 
 - formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCompletedSourceGreen.lean
+- formal/GaloisForLFunctions/RHTower/DeningerExponentExceptionalTameGreenBridge.lean
 - formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCompletedXiGreenIncidenceComparison.lean
 - formal/GaloisForLFunctions/RHTower/DeningerBurnolConormalRadialTopBoundaryComparison.lean
 - formal/GaloisForLFunctions/RHTower/DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean

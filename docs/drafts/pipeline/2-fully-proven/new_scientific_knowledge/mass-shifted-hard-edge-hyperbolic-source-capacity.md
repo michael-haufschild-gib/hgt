@@ -119,14 +119,25 @@ of `eta_r` and its first derivative to vanish, so no boundary distribution appea
  L_\kappa\eta_r=\xi.                                      \tag{HSC.10}
 \]
 
-For an even `psi in C_c^infty(I_sigma)`, convolution of the restricted-Weil distribution
-commutes with the constant-coefficient operator `L_kappa`.  Hence `(HSC.2)` and `(HSC.10)` give
+For an even `psi in C_c^infty(I_sigma)`, write its Fourier transform as
+`widehat psi(z)=K(z^2)`.  The Fourier transform of `L_kappa psi` is
+`(z^2+kappa^2)K(z^2)`.  Therefore the **literal squared-variable form**, including its atom at
+`u=-1/4`, gives directly
 
 \[
+ \begin{aligned}
  \mathfrak q_\sigma(\eta_r,L_\kappa\psi)
- =\mathfrak q_\sigma(L_\kappa\eta_r,\psi)
- =\mathfrak q_\sigma(\xi,\psi)=0.                         \tag{HSC.11}
+ &=\int_{\mathbb R}
+   {F(u)\over u+\kappa^2}(u+\kappa^2)K(u)\,d\eta_\sigma(u)\\
+ &=\mathfrak b_\sigma(F,K)=0.
+ \end{aligned}                                             \tag{HSC.11}
 \]
+
+There is no hidden commutation assumption here.  At the polar atom, the same cancellation is
+the ordinary scalar identity
+`[F(-1/4)/(-1/4+kappa^2)](-1/4+kappa^2)=F(-1/4)`, with continuous
+cancellation if `r=-1/4`.  Equation `(HSC.10)` is the time-domain version of the same multiplier
+identity.
 
 Define the even distribution `w_r` on `I_sigma` by
 
@@ -267,13 +278,104 @@ Thus the two Route-U branches are the two possible zero-edge impedances of one l
  \end{array}                                               \tag{HSC.23}
 \]
 
-## 5. Route-U consequence
+## 5. Square-root zero-edge capacity spike `[PAPER-PROVED]`
+
+The singular dichotomy has a quantitative regularization that distinguishes the two branches
+before `lambda` reaches zero.  Let `P_sigma` be the orthogonal projection onto `K_sigma`, put
+`Q_sigma=1-P_sigma`, and for `tau>0` define
+
+\[
+ M_\tau(\kappa)
+ :=\langle v_\kappa,(A_\sigma^++\tau)^{-1}v_\kappa\rangle,
+ \qquad C_\tau(\kappa):=M_\tau(\kappa)^{-1}.              \tag{HSC.24}
+\]
+
+Equivalently, `C_tau(kappa)` is the minimum of
+`mathfrak q_sigma(psi,psi)+tau||psi||_2^2` under the unit-source constraint.  Spectral
+decomposition at zero gives the exact identity
+
+\[
+ M_\tau(\kappa)
+ ={\|P_\sigma v_\kappa\|_2^2\over\tau}
+ +\left\langle Q_\sigma v_\kappa,
+   (A_\sigma^+|_{K_\sigma^\perp}+\tau)^{-1}
+   Q_\sigma v_\kappa\right\rangle.                       \tag{HSC.25}
+\]
+
+Fix a simple negative root `r=-kappa_0^2`.
+
+### Positive terminal mass
+
+If `gamma_r>0`, then `P_sigma v_(kappa_0)=0`.  Put
+
+\[
+ c_r:=\|P_\sigma v'_{\kappa_0}\|_2^2.                    \tag{HSC.26}
+\]
+
+This coefficient is strictly positive.  Indeed, the hard-edge ground vector `xi` lies in
+`K_sigma` and
+
+\[
+ \langle v_\kappa,\xi\rangle=F(-\kappa^2),
+ \qquad
+ \langle v'_{\kappa_0},\xi\rangle
+ =-2\kappa_0F'(r)\ne0,                                   \tag{HSC.27}
+\]
+
+so
+
+\[
+ c_r\ge {4\kappa_0^2F'(r)^2\over\|\xi\|_2^2}>0.
+\]
+
+For every fixed real `s`, analyticity of `kappa mapsto v_kappa` in `L^2(I_sigma)`, `(HSC.19)`,
+and `(HSC.25)` give the square-root profile
+
+\[
+ \boxed{\qquad
+ \lim_{\tau\downarrow0}
+ C_\tau(\kappa_0+s\sqrt\tau)
+ ={1\over c_rs^2+\rho_r^{-1}}
+ ={\rho_r\over1+\rho_rc_rs^2}.
+ \qquad}                                                  \tag{HSC.28}
+\]
+
+The convergence is locally uniform in `s`.  To prove it, expand
+
+\[
+ P_\sigma v_{\kappa_0+s\sqrt\tau}
+ =s\sqrt\tau\,P_\sigma v'_{\kappa_0}+O(\tau)
+\]
+
+locally uniformly in `s`.  The first term of `(HSC.25)` tends to `c_rs^2`; the second tends to
+`<v_(kappa_0),S_sigma v_(kappa_0)>=rho_r^(-1)` because zero is isolated on
+`K_sigma^perp`.
+
+### Zero terminal mass
+
+If `gamma_r=0`, then `zeta_r in K_sigma` and
+`<v_(kappa_0),zeta_r>=1`, so `P_sigma v_(kappa_0) ne 0`.  Equation `(HSC.25)` instead yields
+
+\[
+ \boxed{\qquad
+ {C_\tau(\kappa_0)\over\tau}
+ \longrightarrow {1\over\|P_\sigma v_{\kappa_0}\|_2^2}.
+ \qquad}                                                  \tag{HSC.29}
+\]
+
+Thus a nonzero positive-axis Padé atom is exactly an `O(1)` regularized capacity spike of width
+`sqrt(tau)` and Lorentzian local profile.  The parity-radical branch has no such spike: its
+regularized capacity is only `O(tau)` even at the root.  Any source-side proof of Padé-atom
+vanishing must therefore rule out `(HSC.28)` uniformly; an unscaled integral or pointwise estimate
+away from the root cannot see the obstruction.
+
+## 6. Route-U consequence
 
 Along the selected finite faces, the Gauss-node residue theorem gives
 
 \[
  \rho_{j,i}\longrightarrow\rho_r
- =\operatorname{Cap}_\sigma(\sqrt{-r})                    \tag{HSC.24}
+ =\operatorname{Cap}_\sigma(\sqrt{-r})                    \tag{HSC.30}
 \]
 
 at every simple negative limiting root.  Therefore the positive-axis Padé-measure target is
@@ -281,13 +383,13 @@ at a simple limiting root a hyperbolic-capacity collapse target.  A literal sour
 excluding the finite nonzero alternative `(HSC.21)` forces `gamma_r=0` and hands that root to the
 already explicit parity-doubled radical branch.  A simultaneous ground-simplicity theorem would
 then exclude the root completely.  Proving vague vanishing of the whole finite pole measure still
-requires a prelimit uniform version; `(HSC.24)` alone makes no claim about clusters converging to
+requires a prelimit uniform version; `(HSC.30)` alone makes no claim about clusters converging to
 multiple roots.
 
 This is strictly sharper than asking for generic Padé convergence.  It names the exact
 prime--Gamma observable whose finite value is the nonvanishing Padé atom.
 
-## 6. Conjecture -> proof/failure -> pivot
+## 7. Conjecture -> proof/failure -> pivot
 
 1. **Conjecture:** analyticity of the completed-Xi resolvent excludes the positive Padé pole.
    **FAILED.** Moving-order Padé approximation need not be locally bounded.
@@ -303,8 +405,12 @@ prime--Gamma observable whose finite value is the nonvanishing Padé atom.
    part cannot stay nonzero on a selected negative-root branch, or prove that any resulting ground
    pole contradicts source-derived ground multiplicity.  Generic moment, Padé, or abstract
    semidefinite arguments cannot decide this response.
+6. **Conjecture:** ordinary zero-edge regularization blurs the two branches into the same limit.
+   **FALSIFIED.** Positive terminal mass produces the square-root Lorentzian spike `(HSC.28)`;
+   zero terminal mass produces the linear collapse `(HSC.29)`.  This is the exact boundary-layer
+   observable a prelimit prime--Gamma estimate must exclude.
 
-## 7. Higher universal principle
+## 8. Higher universal principle
 
 Four objects previously treated separately are one source-capacity invariant:
 
@@ -315,7 +421,9 @@ Four objects previously treated separately are one source-capacity invariant:
  \longleftrightarrow
  \text{unit hyperbolic source capacity}
  \longleftrightarrow
- \text{inverse zero-edge reduced susceptibility}.          \tag{HSC.26}
+ \text{inverse zero-edge reduced susceptibility}
+ \longleftrightarrow
+ \text{square-root capacity spike}.                        \tag{HSC.31}
 \]
 
 The derivative/level obstruction is therefore a source-visibility obstruction.  A negative hard
@@ -327,7 +435,7 @@ This identifies the missing mathematical primitive more narrowly than “global 
 it is zero-edge source visibility for the continuum of hyperbolic vectors `cosh(kappa t)` in the
 literal finite-prime Gamma operator.
 
-## 8. Literature, corpus, and Lean audit
+## 9. Literature, corpus, and Lean audit
 
 - `[LOCAL-RESEARCH]` The hard-edge root-jet card proves terminal energy `gamma_r`; the Padé card
   proves `rho_r=gamma_r/F'(r)^2`.  Neither identifies this scalar with a literal source capacity
@@ -354,3 +462,5 @@ ground-pole alternative.
 
 - 2026-08-11 — derived the weak hyperbolic source equation, exact source-capacity identity, and
   finite-response/ground-pole dichotomy for Route U's limiting positive-axis Padé atom.
+- 2026-08-11 — derived the exact regularized zero-edge decomposition and proved the positive-mass
+  Lorentzian `sqrt(tau)` spike versus zero-mass `O(tau)` collapse.

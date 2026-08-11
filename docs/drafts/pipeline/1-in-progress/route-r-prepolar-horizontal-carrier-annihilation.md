@@ -67,7 +67,7 @@ cannot exist.
 - [x] construct and identify the enlarged positive-polar handoff on the modular coefficient line
 - [ ] lift the handoff to the actual rational-adelic two-prime Stokes/Koszul operators
 - [ ] derive or dependency-close independent global annihilation of that operator class
-- [ ] Lean formalization of C17--C36 internal no-go core after refactor
+- [x] Lean formalization of C17--C36 internal no-go core after refactor
 - [ ] retire Route R only if the enlarged handoff is also dependency-closed dead; otherwise close RH
 
 ## Conjecture / proof-or-failure ledger
@@ -77,6 +77,19 @@ landing. Each failed conjecture must record its killing mechanism and a stronger
 
 ## Log
 
+- 2026-08-11 — C37 formal contract closed in four unconditional Lean modules:
+  `RouteRHyperbolicGaugePolarReductionNoGo`,
+  `RouteRCompletionCountertermBlindnessNoGo`,
+  `RouteRPrimeClockCubicSymmetrizationNoGo`, and
+  `RouteRPrepolarTerminalNoGo`.  Targeted build
+  `lake build GaloisForLFunctions.RHTower.RouteRPrepolarTerminalNoGo` is green and the modules are
+  wired into `RHTower.lean`.  Axiom audit of the terminal theorem, the external-handoff-to-RH
+  theorem, and the exact handoff/RH equivalence reports only
+  `[propext, Classical.choice, Quot.sound]`.  Global lint reaches unrelated concurrent umbrella
+  failures (sixteen non-Route-R modules not imported by their area umbrellas); no forbidden
+  declaration occurs in the four new Route-R modules.  Intrinsic prepolar mechanism is now
+  formally dead.  Full Route R remains open exactly at `RouteRExternalPositivePolarHandoff`, and
+  Lean proves `Nonempty RouteRExternalPositivePolarHandoff ↔ RiemannHypothesis`.
 - 2026-08-09 — reoriented after carrier construction and full Bockstein/Stokes formalization;
   independent pre-polar annihilation isolated as sole Route-R source producer.
 
