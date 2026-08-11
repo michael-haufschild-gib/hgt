@@ -1264,3 +1264,24 @@ Lean certifies the exact cross-organ law
 `I_perp * ||j_sigma||^2 = 4 * pi^2 * det(H_1)`, its strict positive chamber, the finite-moment
 reconstruction theorem, and the predicted recurrence shadow.  It contains no RH premise, Xi
 specialization, computation certificate, project axiom, or cofinal-completion claim.
+
+## Session 2026-08-11 addition (Quotient--Fusion Genesis Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-QFGM-1 | Pairwise and centered reconstruction of the shared-gauge genesis numerator, exact binary quotient--fusion conservation, nonnegativity, zero/compatibility classification, and binary partition-QFI conservation | `HTGeometry.SharedGaugeQuotientFusion` |
+
+Direct foreground elaboration and the 8,676-job leaf build pass.  The module is wired into
+`HTGeometry.UniversalLawField`, whose source elaboration passes.  Axiom prints for the seven main
+theorems and the closed capstone report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Lean proves the mechanism without denominators or side conditions:
+
+```text
+c1*c2*det(fused) - c2*(c1+c2)*det(block1) - c1*(c1+c2)*det(block2)
+  = (c2*b1 - c1*b2)^2.
+```
+
+Thus quotient-after-fusion differs from fusion-after-local-quotient by one exact compatibility
+square.  No computation certificate, project axiom, route endpoint, Xi specialization, RH premise,
+or cofinal-completion claim occurs.

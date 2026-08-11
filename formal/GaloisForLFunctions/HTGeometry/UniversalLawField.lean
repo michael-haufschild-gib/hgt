@@ -165,10 +165,12 @@ import GaloisForLFunctions.HTGeometry.HermitianInertia
 import GaloisForLFunctions.HTGeometry.CompleteAtomicInertiaFusion
 import GaloisForLFunctions.HTGeometry.AbelianZetaGas.LawCommutator
 import GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleResponse
+import GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleHypertranscendence
 import GaloisForLFunctions.HTGeometry.LongitudinalTransverseFormationMechanics
 import GaloisForLFunctions.HTGeometry.SourceFormationHarmonicMechanics
 import GaloisForLFunctions.HTGeometry.FormationScaleReceiver
 import GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion
+import GaloisForLFunctions.HTGeometry.SharedGaugeQuotientFusion
 
 /-!
 # Universal-law-field Lean umbrella

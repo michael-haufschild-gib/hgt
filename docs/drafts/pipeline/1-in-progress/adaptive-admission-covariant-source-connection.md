@@ -81,7 +81,12 @@ lower-contact residual, then rational--Gamma/von Mangoldt formation, before refl
 
    `h_n'=(2a_n-(2n+1)α_n)h_n`.
 
-   **PROVED AND FORMALIZED.**  Only finite `H_(n+2)≻0` is used.
+   **PROVED AND FORMALIZED.**  Positive-chamber Jacobi quotient form needs only
+   `H_(n+1)≻0`.  Stronger division-free form
+
+   `N_n'=2a_nN_n-(2n+1)B_n`
+
+   uses only `det H_n≠0` and therefore survives first `H_(n+1)` singular face.
 
 8. **Conjecture G — one gauge-invariant cumulative flux cancels connection.**  With
    `a_n=-Σ_(j<n) α_j`, set
@@ -97,12 +102,28 @@ lower-contact residual, then rational--Gamma/von Mangoldt formation, before refl
    admission, not a fixed reporter.  It replaces failed attempt to sign single connection
    coefficient.
 
-9. **Next conjecture — first-face extension or singular holonomy.**  On any positive chamber
-   connected to far right, strict decrease toward far-right zero suggests `C_n>0`.  This alone does
-   not yet forbid first boundary: Jacobi coordinates may diverge when `det H_n→0`, or finite limit
-   may survive.  Required theorem is exact boundary classification: show `C_n` extends with a sign
-   incompatible with outgoing null-flag contact, or prove every nonextendable branch forces a
-   prohibited smaller principal-minor failure.  No sign claim is made without that audit.
+9. **Conjecture H — first-face division-free producer/preemption classifier.**  At flat
+   `H_(n+1)c_n=0`, set `R_n=Δ_(2n+1)` and
+   `Φ_n=2a_nN_n-(2n+1)B_n`.  Predict exhaustive alternatives
+
+   `R_n≠0 → H_(n+2) is not PSD`,
+
+   `R_n=0 → Φ_n'=(2n+1)A_completed^sharp`,
+
+   with `A_completed^sharp=2(n+1)Δ_(2n+2)` and
+   `H_(n+2)⪰0 ↔ A_completed^sharp≥0`.
+
+   **PROVED AND FORMALIZED.**  Degree-`n` inverse admission cannot blow up here because its head
+   `H_n` remains positive definite.  Actual velocity is tangent to null flag; connection term
+   cancels.  Rank-one decomposition proves both directions of PSD/source-sign equivalence.
+
+10. **Next conjecture — cofinal parity-lift exclusion.**  First-face problem is closed, but positive
+    even defect rank-fills successor and zero even defect prolongs flat plateau.  Corpus odd-contact
+    theorem says first later nonzero odd defect preempts following block.  Required arithmetic law
+    must exclude unbounded plateau/degree escape, or coherently sign/control first odd defect across
+    all lifts.  Lower finite face cannot do this: first even successor—and hence adaptive shear—is
+    freely variable while every lower defect is fixed.  No fixed reporter or finite compactness
+    argument can replace this cofinal law.
 
 ## Door passport
 
@@ -112,8 +133,8 @@ lower-contact residual, then rational--Gamma/von Mangoldt formation, before refl
   reporter, post-aggregation orientation, or numerical evidence.
 - **Output sought:** corrected arithmetic producer identity, covariant dissipation, then a theorem
   eliminating both higher-block failure and admission holonomy along any genuine crossing ray.
-- **Current boundary:** positivity does not control connection one-form or rule out infinite degree
-  escape; that is next hard theorem, not hidden in notation.
+- **Current boundary:** connection and first face are closed.  Positivity does not rule out infinite
+  parity-lift degree escape; required input is cofinal arithmetic coherence, not finite observation.
 
 ## Log
 
@@ -126,3 +147,6 @@ lower-contact residual, then rational--Gamma/von Mangoldt formation, before refl
   inverse jets.  Exact completed canonical aggregate `2h_nE_n`, norm ODE, cumulative trace identity,
   and strictly negative cumulative Jacobi-flux derivative proved in Lean.  Open core moved to
   boundary extension versus singular holonomy, not connection sign.
+- 2026-08-11 — first-face boundary classification proved in Lean.  Raw norm flux extends through
+  singular face; completed canonical packet equals first even Padé defect and exactly classifies
+  rank-one PSD filling.  Open core moved to cofinal higher-contact degree escape.

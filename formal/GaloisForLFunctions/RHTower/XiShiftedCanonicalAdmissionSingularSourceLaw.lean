@@ -57,7 +57,10 @@ theorem xiShiftedCompletedMomentAggregate_flatTangent_eq_evenPadeDefect
       c hhead hflat hlast
   rw [show 2 * n + (2 * 0 + 1) = 2 * n + 1 by omega,
     hfirst, htangent] at hadj
-  convert hadj using 1 <;> push_cast <;> ring
+  rw [pow_zero, mul_one] at hadj
+  convert hadj using 1
+  push_cast
+  ring
 
 /-- **First even source coordinate.**  For actual inverse-Hankel admission, terminal
 normalization is already built in.  Hence the source law above is literally a canonical
@@ -112,12 +115,17 @@ theorem xiShiftedMomentHankelMatrix_succ_posSemidef_iff_evenPadeDefect_nonneg_of
       rw [hkfirst, hfirst, htangent]
   constructor
   · intro hpsd
+    let v := xiShiftedHankelBoundaryLiftedNullVector c 1
     have hquad := (Matrix.posSemidef_iff_dotProduct_mulVec.mp hpsd).2
-      (xiShiftedHankelBoundaryLiftedNullVector c 1)
-    rw [star_trivial, xiShiftedMomentHankelMatrix,
-      GaloisForLFunctions.HTGeometry.finiteHankelMatrix,
-      HTGeometry.dotProduct_mulVec_momentHankelMatrix,
-      ofFn_xiShiftedHankelBoundaryLiftedNullVector c hlast] at hquad
+      v
+    change 0 ≤ star v ⬝ᵥ (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).mulVec v at hquad
+    rw [star_trivial, HTGeometry.dotProduct_mulVec_momentHankelMatrix] at hquad
+    change 0 ≤ HTGeometry.momentFunctional
+      (fun k => (xiShiftedReciprocalMoment y k).re)
+      ((Polynomial.ofFn (n + 2)
+        (xiShiftedHankelBoundaryLiftedNullVector c 1)) ^ 2) at hquad
+    rw [ofFn_xiShiftedHankelBoundaryLiftedNullVector c hlast] at hquad
     rw [xiShiftedHankelBoundaryPadeDefect_first_even_eq_liftedSquare
       c hlast (by omega : 0 < 1) hzero]
     exact hquad
@@ -181,7 +189,6 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_evenPadeDefect_of_flat
     hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_completedAggregate_of_flatTangent
       hw hn hhead hflat htangent
   dsimp only at hflux
-  simp only [xiShiftedRealMomentSequence] at hflux
   have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
   have hsource :=
     xiShiftedCompletedMomentAggregate_canonicalFlatTangent_eq_evenPadeDefect

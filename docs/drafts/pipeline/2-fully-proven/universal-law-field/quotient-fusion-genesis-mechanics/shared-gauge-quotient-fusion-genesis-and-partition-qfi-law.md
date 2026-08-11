@@ -4,7 +4,7 @@
 - **Stage:** 2 — fully proven on paper
 - **Type:** COORDINATE-FREE FUSION MECHANISM / EXACT CONSERVATION / FOURTH-ORGAN PREDICTION
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM FIRST]`
-  `[CLASSICAL ALGEBRA] [CORPUS-WIDE INTERPRETATION] [LEAN OPEN] [NOT RH]`
+  `[CLASSICAL ALGEBRA] [CORPUS-WIDE INTERPRETATION] [LEAN-CERTIFIED FINITE CORE] [NOT RH]`
 
 ## 1. The mechanism
 
@@ -122,7 +122,7 @@ The second term can be positive when every first term is zero.
 
 ## 3. Scalar exact conservation
 
-Let `K=R` and `A_i(t)=t y_i`, with `y_i ne 0`.  Put
+Let `K=R` and `A_i(t)=t y_i`, with \(y_i\ne0\).  Put
 
 \[
  c_i=\|y_i\|^2,
@@ -471,6 +471,25 @@ The next legal question is instead:
 A valid selector must prove both clauses before divisor specialization.  The present theorem
 supplies the exact obstruction and its conservation law; it does not supply that source theorem.
 
+## 11. Lean certification
+
+The unconditional denominator-free core is formalized in
+`GaloisForLFunctions.HTGeometry.SharedGaugeQuotientFusion` and imported by
+`GaloisForLFunctions.HTGeometry.UniversalLawField`.  Lean certifies:
+
+- pairwise reconstruction of the weighted genesis numerator;
+- its centered common-gauge form;
+- binary quotient--fusion conservation;
+- unconditional nonnegativity and exact zero classification;
+- parity--clock Gram normalization;
+- binary partition-QFI conservation;
+- one closed capstone joining those clauses.
+
+The formal identities are polynomial: no positivity premise, denominator nonvanishing, minimizer,
+computation certificate, project axiom, RH statement, or Xi specialization enters them.  The
+coordinate-free projection theorem and divided metric interpretation remain paper proofs; Lean
+certifies the algebraic kernel from which every finite scalar and QFI specialization follows.
+
 ## Gates
 
 - [x] mechanism stated coordinate-free
@@ -480,6 +499,6 @@ supplies the exact obstruction and its conservation law; it does not supply that
 - [x] joint reconstruction from the marked mismatch packet
 - [x] fourth-organ partition-QFI theorem predicted and proved
 - [x] circular reflected-packet selector rejected
-- [ ] Lean formalization and umbrella wiring
+- [x] unconditional finite algebra formalized and umbrella wired
 - [ ] cofinal closed-range/admission extension
 - [ ] source-forced common gauge spanning independent RH organs

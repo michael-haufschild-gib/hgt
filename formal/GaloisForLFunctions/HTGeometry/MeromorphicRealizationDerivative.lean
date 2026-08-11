@@ -21,6 +21,10 @@ open GaloisForLFunctions Bottcher
 
 noncomputable section
 
+attribute [local instance] relativeGaugeDomain relativeGaugeDifferential
+  relativeGaugeRatFuncAlgebra relativeGaugeRatFuncDifferential relativeGaugeDifferentialAlgebra
+  relativeGaugeCharZeroBase relativeGaugeCharZero
+
 /-- The Leibniz rule for the derivation of a differential ring. -/
 theorem differential_deriv_mul {K : Type*} [CommRing K] [Differential K] (a b : K) :
     (a * b)′ = a′ * b + a * b′ := by
@@ -64,11 +68,7 @@ theorem realizesMero_fraction {A B f : ℂ → ℂ} (hA : AnalyticOnNhd ℂ A (S
 /-- **Realization commutes with the derivation.** -/
 theorem realizesMero_deriv {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ}
     (h : RealizesMero x f) :
-    letI := meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
     RealizesMero (x′) (deriv f) := by
-  letI := Bottcher.isDomain_analyticSubring (Set.univ : Set ℂ) isOpen_univ isPreconnected_univ
-    Set.univ_nonempty
-  letI := meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
   obtain ⟨a, b, A, B, hb0, hA, hB, hAa, hBb, hxab, hfAB⟩ := h
   -- replace the abstract germs by the entire representatives
   have ha : a = entireElem A hA := Subtype.ext hAa.symm
@@ -134,14 +134,11 @@ theorem realizesMero_deriv {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ
   rw [hev.deriv_eq, deriv_fun_div ((hA z (Set.mem_univ z)).differentiableAt)
     ((hB z (Set.mem_univ z)).differentiableAt) hBz]
   field_simp
-  ring
 
 /-- **Realization commutes with all jets.** -/
 theorem realizesMero_iteratedDeriv {x : meroField (Set.univ : Set ℂ)} {f : ℂ → ℂ}
     (h : RealizesMero x f) (j : ℕ) :
-    letI := meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
     RealizesMero (differentialJet j x) (iteratedDeriv j f) := by
-  letI := meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
   induction j with
   | zero =>
       have hjet : differentialJet 0 x = x := differentialJet_zero x

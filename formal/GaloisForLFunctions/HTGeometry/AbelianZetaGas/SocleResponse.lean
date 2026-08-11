@@ -272,6 +272,13 @@ theorem tprod_zeta_socleTail_ne_zero {σ b : ℝ} (hσ : 0 < σ) {J : ℕ}
   rw [hid] at h0
   exact h0
 
+
+end
+
+end SocleTail
+
+noncomputable section
+
 /-! ## The socle chamber: holomorphy and zero-freeness of the ladder -/
 
 /-- The socle chamber: the half-plane on which every depth argument has real part above one. -/
@@ -322,11 +329,11 @@ set_option maxHeartbeats 1000000 in
 theorem socleLadder_ne_zero_of_mem {σ : ℝ} (hσ : 0 < σ) {v : ℂ} (hv : v ∈ socleChamber σ) :
     socleLadder σ v ≠ 0 := by
   have hb : 1 - σ < v.re := hv
-  set J : ℕ := SocleTail.socleTailThreshold σ v.re with hJ
+  obtain ⟨J, hJ⟩ : ∃ J : ℕ, SocleTail.socleTailThreshold σ v.re ≤ J := ⟨_, le_rfl⟩
   rw [socleLadder_split hσ v J]
   refine mul_ne_zero (depthProduct_ne_zero_of_lt_re hσ hb le_rfl J) ?_
-  exact SocleTail.tprod_zeta_socleTail_ne_zero hσ
-    (le_trans (le_of_eq hJ.symm) (Nat.le_succ J)) le_rfl
+  exact SocleTail.tprod_zeta_socleTail_ne_zero (J := J + 1) hσ
+    (le_trans hJ (Nat.le_succ J)) le_rfl
 
 set_option maxHeartbeats 1000000 in
 /-- **The socle ladder is holomorphic on the socle chamber.** -/
@@ -337,24 +344,18 @@ theorem differentiableOn_socleLadder {σ : ℝ} (hσ : 0 < σ) :
   set b : ℝ := (1 - σ + v.re) / 2 with hbdef
   have hb1 : 1 - σ < b := by rw [hbdef]; linarith
   have hb2 : b < v.re := by rw [hbdef]; linarith
-  set J : ℕ := SocleTail.socleTailThreshold σ b with hJ
+  obtain ⟨J, hJ⟩ : ∃ J : ℕ, SocleTail.socleTailThreshold σ b ≤ J := ⟨_, le_rfl⟩
   have hopen : IsOpen {w : ℂ | b < w.re} := isOpen_lt continuous_const Complex.continuous_re
-  have heq : Set.EqOn (socleLadder σ)
-      (fun w : ℂ => depthProduct σ w J 0 * ∏' j : ℕ, riemannZeta (depthArg σ w (j + J + 1) 0))
-      {w : ℂ | b < w.re} := fun w _ => socleLadder_split hσ w J
   have hdiff : DifferentiableOn ℂ
       (fun w : ℂ => depthProduct σ w J 0 * ∏' j : ℕ, riemannZeta (depthArg σ w (j + J + 1) 0))
       {w : ℂ | b < w.re} := by
     refine DifferentiableOn.mul (differentiableOn_depthProduct hσ hb1 J) ?_
-    exact SocleTail.differentiableOn_tprod_zeta_socleTail hσ
-      (le_trans (le_of_eq hJ.symm) (Nat.le_succ J))
+    exact SocleTail.differentiableOn_tprod_zeta_socleTail (J := J + 1) hσ
+      (le_trans hJ (Nat.le_succ J))
   have hdiff' : DifferentiableOn ℂ (socleLadder σ) {w : ℂ | b < w.re} :=
-    hdiff.congr heq
+    hdiff.congr (fun w _ => socleLadder_split hσ w J)
   exact ((hdiff' v hb2).differentiableAt (hopen.mem_nhds hb2)).differentiableWithinAt
 
-
 end
-
-end SocleTail
 
 end GaloisForLFunctions.HTGeometry.AbelianZetaGas

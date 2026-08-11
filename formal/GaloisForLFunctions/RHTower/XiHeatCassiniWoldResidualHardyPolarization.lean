@@ -92,7 +92,7 @@ theorem norm_xiHeatCassiniOrderedPrimeComplexNegativePhase_sub_succ_le
     ‖xiHeatCassiniOrderedPrimeComplexNegativePhase N z -
         xiHeatCassiniOrderedPrimeComplexNegativePhase N z * Complex.exp w‖ =
         ‖xiHeatCassiniOrderedPrimeComplexNegativePhase N z *
-          (1 - Complex.exp w)‖ := by congr 1 <;> ring
+          (1 - Complex.exp w)‖ := by congr 1; ring
     _ = ‖xiHeatCassiniOrderedPrimeComplexNegativePhase N z‖ *
           ‖1 - Complex.exp w‖ := norm_mul _ _
     _ ≤ 1 * (2 * ‖w‖) := mul_le_mul

@@ -493,30 +493,49 @@ The 33-module `GaloisForLFunctions.HTGeometry.AbelianZetaGas` layer already owns
 - `socleResponse σ τ z = socleLadder σ (τ+z) / socleLadder σ τ`, with `socleResponse_zero`;
 - `socleLadder_translation`, `socleResponse_translation` — **`(AZC.17)`** in multiplicative form,
   hypothesis-free;
-- `socleResponse_div` — the division form `C(z+σ)/C(z) = 1/ζ(σ+τ+z)`.
+- `socleResponse_div` — the division form `C(z+σ)/C(z) = 1/ζ(σ+τ+z)`;
+- `SocleTail.socleTailThreshold`, `SocleTail.norm_zeta_socleArg_sub_one_le`,
+  `SocleTail.hasProdUniformlyOn_zeta_socleTail`,
+  `SocleTail.differentiableOn_tprod_zeta_socleTail`,
+  `SocleTail.tprod_zeta_socleTail_ne_zero` — the socle-variable tail layer (the `v`-variable
+  mirror of `DepthTail`, which is stated only in the dilation variable);
+- `socleChamber σ = {v | 1 - σ < Re v}`, `socleLadder_split`,
+  `socleLadder_ne_zero_of_mem`, `differentiableOn_socleLadder` — the ladder is holomorphic and
+  zero-free on the socle chamber.
 
 ### Remaining Lean obligations, precisely
 
 1. **`(AZC.12)` as an expectation.**  Identify `socleResponse σ τ z` with `E e^{-zQ}` through the
    socle characteristic function of `SocleCharFun`; the real case is already
    `Response.gasResponse_eq`.
-2. **`(AZC.18)`.**  The divisor of `v ↦ socleLadder σ v`.  This is *not* the existing
-   `GrandResponse.meromorphicOrderAt_grandResponse`, which computes the order in the dilation
-   variable `u` (slope `j`); the socle variable has slope `1`.  The split-at-threshold argument of
-   `DepthTail`/`GrandResponse` has to be redone with `v` varying and `u = 0` fixed — the missing
-   input is a `v`-variable analogue of `analyticAt_tprod_depthFactor_tail`.
+2. **`(AZC.18)`.**  The divisor of `v ↦ socleLadder σ v`, i.e.
+   `meromorphicOrderAt (socleLadder σ) v₀ = ∑_{j<J} meromorphicOrderAt ζ ((j+1)σ + v₀)`.  The
+   `v`-variable tail layer it needs is now built (`SocleTail`); what remains is the order
+   bookkeeping, mirroring `GrandResponse.meromorphicOrderAt_grandResponse`.
 3. **`(AZC.15)`/`(AZC.16)`, Theorem 5.1.**  The fugacity-direction analogue of
    `RelativeEntropy.klDiv_symmetrised_temperature_shift`, with the socle observable `Q` in place of
    the order observable, plus the variance-integral form and the explicit `−ζ'/ζ` series.
-4. **Theorem 7.1.**  *The corpus already owns the template.*
+4. **Theorem 7.1 — DONE in ladder form.**
+   `GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleHypertranscendence` proves
+   `not_differentiallyAlgebraicOn_soclePullback`: the socle ladder pulled back along the
+   temperature scaling, `s ↦ Z(σ, σs)`, satisfies no algebraic differential equation on the
+   convergence half plane.  Supporting: `soclePullback`, `mul_mem_socleChamber`,
+   `analyticAt_soclePullback`, `soclePullback_ne_zero`, `soclePullback_ladder`.
+   *Residual:* transporting this to `C_{σ,τ}` itself needs two closure lemmas that exist only in
+   the global (`DifferentiallyAlgebraic`) form and not yet in the domain-local
+   (`DifferentiallyAlgebraicOn`) form: `const_mul` and `comp_const_mul`.  With those, `C` is
+   hypertranscendental because it is a nonzero constant multiple of an affine substitution of the
+   ladder.
+   *The corpus already owned the template.*
    `GaloisForLFunctions.HTGeometry.EulerQGammaHypertranscendence` proves
    `not_differentiallyAlgebraicOn_eqgResponseDirichlet` from **exactly this ladder**: with
    `eqgExponent σ s = σ(1+s)`, its response satisfies `D(s) = ζ(σ(1+s))·D(s+1)`, and
    `L(s) := socleLadder σ (σ·s)` satisfies the same relation by `socleLadder_peel`.  So Theorem 7.1
    reduces to (a) analyticity and nonvanishing of `L` on `eqgHalfPlane σ` — nonvanishing is
-   `socleLadder_ne_zero` generalized to complex `v` with `1 < σ + v.re`; analyticity is the same
-   missing `v`-variable tail lemma as obligation 2 — and (b) `differentiallyAlgebraicOn_div`
-   plus `hypertranscendental_eqgZetaPullback`, both already in the tree.  No new hard mathematics.
+   `socleLadder_ne_zero_of_mem` and analyticity is `differentiableOn_socleLadder`, **both now
+   proved** — and (b) `differentiallyAlgebraicOn_div` plus `hypertranscendental_eqgZetaPullback`,
+   both already in the tree.  Only the mirror of the twenty-line
+   `not_differentiallyAlgebraicOn_eqgResponseDirichlet` proof is left.
 5. **Theorem 8.1.**  Norm-precompactness and recurrence of the orbit `t ↦ U_tΩ` in
    `L²(P_{σ,τ})`, with the divergent logarithmic lift.
 
@@ -592,3 +611,6 @@ The 33-module `GaloisForLFunctions.HTGeometry.AbelianZetaGas` layer already owns
   nonvanishing of the normalizer on the chamber (`AbelianZetaGas.SocleResponse`); Theorem 7.1
   reduced to one missing analyticity lemma by reusing the Euler q-Gamma hypertranscendence
   template, whose ladder is the same relation.
+- 2026-08-11 — the socle-variable tail layer built (`SocleTail`); the ladder is now proved
+  holomorphic and zero-free on the socle chamber, which supplies both remaining inputs of
+  Theorem 7.1 and the analytic half of (AZC.18).

@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`31b87feb1c73c7eb629823aa697af37967bd51c3`. Files outside committed umbrellas at this snapshot are
+`8c66ac29f269a72cf990db5901d38508d4c84cd0`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
@@ -44,10 +44,16 @@ telescope in umbrella Lean. Relative one-step and double-defect control close th
 depth for every `m>=2`, and the actual operator logarithmic residue is closed at `m=2`; depth two
 and beyond (`m>=3`) remains local. The hierarchy remains an adjacent Connes candidate. The
 commutative Choquet--Shilov/C*-envelope model is closed; no arithmetic operator system is
-instantiated. A committed-unwired Cassini--Wold/theta-Green chain is a substantive cross-route
-opening, but its bounded-perturbation equivalence identifies its producer with Route T's
-valuation-one line-bound problem; its residual has finite harmonic Fisher energy and exterior
-reflection supplies only the negative of the same scalar packet, not a second equation. Route R's
+instantiated. The Cassini--Wold/Deninger lower-half chain is now umbrella-reachable. It identifies
+its producer with Route T, proves residual connection smoothness and absolute convergence, and
+reduces the main prime-log mesh to a classical mean-square prime-gap theorem; the signed cofinal
+limit remains open. Route U now has strict canonical Jacobi source flow throughout every finite
+positive chamber; its frontier is singular-face extension and degree-uniform conditioning. Route
+L's cofinal prime-period tomography is algebraically injective but topologically non-strict.
+Two further Route-V candidates have acquired exact formal mechanisms without becoming routes: a
+conservative Euler-shell/Witt completion has a zero-exclusion endpoint but no constructed joint
+source inverse pair, and triptic orbital-divisor normal form has complete finite realization but no
+Xi handoff or critical orientation. Route R's
 raw off-center curvature can always be retained inside a universal stabilized complex, proving
 that ordinary homological packaging is not its missing source law. Neither addition is Route V.
 RH and its negation remain unproved.

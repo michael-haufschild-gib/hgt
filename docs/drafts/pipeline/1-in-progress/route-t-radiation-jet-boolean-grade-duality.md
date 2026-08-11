@@ -4124,3 +4124,84 @@ step must identify that analytic wavefront with the Xi divisor carrier, or prese
 source/divisor cancellation through the limit; another residual norm cannot cross the wall.
 
 Verdict: `[PROVED — RESIDUAL CONNECTION IS C-INFINITY WITH EXPLICIT SUMMABLE JETS; ANALYTIC HALF-SHIFT/WAVEFRONT REMAINS THE RH-STRENGTH WALL]`.
+
+---
+
+## 75. Conjecture loop 51 — one-sided Hardy polarization of the residual source
+
+### Conjecture
+
+Section 74 treated the residual kernel only on the real source boundary.  Its phases all have the
+same negative-frequency orientation.  Complexifying the source coordinate should therefore expose
+one legal analytic side even though the physical upper half-shift remains unavailable.
+
+### Closure
+
+For `h_N=log(p_N)`, `delta_N=h_(N+1)-h_N`, and `Im z<=0`, Lean proves
+
+```text
+|exp(-i h_N z)| <= 1,
+|exp(-i h_N z)-exp(-i h_(N+1) z)| <= 2 delta_N |z|.      (RJG225)
+```
+
+The second estimate retains the full prime-log gap.  Combining it with (RJG214) makes every
+complex edge series absolutely summable on the closed lower half-plane.  Its derivative atoms
+retain the same gap with one logarithmic moment:
+
+```text
+|d/dz [E_N(exp(-i h_N z)-exp(-i h_(N+1) z))]|
+ <= |E_N| delta_N [2 h_(N+1)|z|+1].                      (RJG226)
+```
+
+The all-moment theorem from Section 74 supplies locally uniform derivative majorants on every
+lower-half-plane ball.  Termwise holomorphic differentiation therefore gives an unconditional
+extension
+
+```text
+K(z)=sum_N E_N(exp(-i h_N z)-exp(-i h_(N+1) z)),
+K holomorphic on {Im z<0},
+K(x)=K_0(x) for x real.                                  (RJG227)
+```
+
+Let
+
+```text
+V=sum_N |E_N| delta_N < infinity.
+```
+
+The same chord bound survives the infinite sum and proves the global Hardy estimate
+
+```text
+|K(z)| <= 2 V |z|               (Im z<=0),
+|K(z)/z| <= 2 V                 (Im z<0).                 (RJG228)
+```
+
+Thus the coordinate-divided residual is a bounded holomorphic carrier on the whole lower
+half-plane, not merely a smooth real-boundary function.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldResidualHardyPolarization.lean`.
+
+### Hostile audit and higher principle
+
+This corrects the coarse formulation at the end of Section 74.  The residual analytic wavefront is
+not unknown on both sides.  It is completely polarized: the lower side is an unconditional bounded
+Hardy carrier after division by `z`; only the upper side required by the physical half-density
+observer remains inaccessible to the defining series.
+
+(RJG228) alone does not prove the Route-T vertical line bound.  Using a lower-half-plane sup norm
+against an absolute mass-test norm would still pay exponential vertical growth.  The new theorem is
+useful because it changes the next question from regularity to continuation of one explicit
+one-sided carrier.  On the Laplace ray `z=-i s`, `Re s>0`, finite Abel transport expresses this
+carrier through the local increments
+
+```text
+E_(N+1)-E_N = woldCoeff(p_(N+1))-delta_N.
+```
+
+The Wold part is algebraically a four-shift finite difference of the derivative of complex prime
+zeta; the mesh part is its ordered prime-log quadrature.  Next conjecture must identify that exact
+safe-half-plane Laplace symbol and audit whether its upper continuation is precisely the existing
+Xi divisor carrier.  This is a divisor-bearing pivot, not another residual norm.
+
+Verdict: `[PROVED — RESIDUAL WAVEFRONT IS ONE-SIDED; DIVIDED SOURCE IS A GLOBAL LOWER-HARDY CARRIER; UPPER LAPLACE/DIVISOR CONTINUATION OPEN]`.
