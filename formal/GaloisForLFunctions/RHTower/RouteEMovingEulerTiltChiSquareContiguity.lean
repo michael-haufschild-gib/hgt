@@ -140,6 +140,12 @@ lemma bernoulliExp_sq_nonneg
   exact Finset.sum_nonneg fun S hS => mul_nonneg
     (bernoulliWeight_nonneg r hr0 hr1 S) (sq_nonneg _)
 
+lemma bernoulliChiSquare_nonneg
+    (q r : ι → ℝ) (hr0 : ∀ p, 0 ≤ r p) (hr1 : ∀ p, r p ≤ 1) :
+    0 ≤ bernoulliChiSquare q r := by
+  exact bernoulliExp_sq_nonneg r hr0 hr1
+    (fun S => bernoulliLikelihood q r S - 1)
+
 /-- Finite chi-square transfer for every observable, not only events. -/
 theorem bernoulliExp_sub_sq_le_chiSquare_mul_secondMoment
     (q r : ι → ℝ) (hr0 : ∀ p, 0 < r p) (hr1 : ∀ p, r p < 1)
@@ -200,6 +206,109 @@ theorem bernoulliExp_sub_sq_le_chiSquare_mul_secondMoment
         intro S hS
         have hsqrt := Real.sq_sqrt (hw0 S)
         rw [mul_pow, hsqrt]
+
+/-- Relative chi-square transfer for a normalized finite observable.  The reference numerator and
+both reference second moments are dominated by the reference denominator.  If chi-square is at
+most `eta^2` times that denominator, both normalized ratios differ by at most
+`2 * eta / (1 - eta)`. -/
+theorem bernoulliNormalizedRatio_sub_abs_le
+    (q r : ι → ℝ) (hr0 : ∀ p, 0 < r p) (hr1 : ∀ p, r p < 1)
+    (numerator weight : Finset ι → ℝ)
+    (hmass : 0 < bernoulliExp r weight)
+    (hnum : |bernoulliExp r numerator| ≤ bernoulliExp r weight)
+    (hnumSecond :
+      bernoulliExp r (fun S => numerator S ^ 2) ≤ bernoulliExp r weight)
+    (hweightSecond :
+      bernoulliExp r (fun S => weight S ^ 2) ≤ bernoulliExp r weight)
+    (eta : ℝ) (heta0 : 0 ≤ eta) (heta1 : eta < 1)
+    (hchi : bernoulliChiSquare q r ≤ eta ^ 2 * bernoulliExp r weight) :
+    |bernoulliExp q numerator / bernoulliExp q weight -
+        bernoulliExp r numerator / bernoulliExp r weight| ≤
+      2 * eta / (1 - eta) := by
+  let Aq := bernoulliExp q numerator
+  let Ar := bernoulliExp r numerator
+  let Bq := bernoulliExp q weight
+  let Br := bernoulliExp r weight
+  have hBr : 0 < Br := by simpa [Br] using hmass
+  have hchi0 : 0 ≤ bernoulliChiSquare q r :=
+    bernoulliChiSquare_nonneg q r (fun p => (hr0 p).le) (fun p => (hr1 p).le)
+  have hnumSecond0 : 0 ≤ bernoulliExp r (fun S => numerator S ^ 2) :=
+    bernoulliExp_sq_nonneg r (fun p => (hr0 p).le) (fun p => (hr1 p).le) numerator
+  have hweightSecond0 : 0 ≤ bernoulliExp r (fun S => weight S ^ 2) :=
+    bernoulliExp_sq_nonneg r (fun p => (hr0 p).le) (fun p => (hr1 p).le) weight
+  have hnumSq : (Aq - Ar) ^ 2 ≤ (eta * Br) ^ 2 := by
+    have htransfer := bernoulliExp_sub_sq_le_chiSquare_mul_secondMoment
+      q r hr0 hr1 numerator
+    change (Aq - Ar) ^ 2 ≤ _ at htransfer
+    calc
+      (Aq - Ar) ^ 2 ≤ bernoulliChiSquare q r *
+          bernoulliExp r (fun S => numerator S ^ 2) := htransfer
+      _ ≤ (eta ^ 2 * Br) * bernoulliExp r (fun S => numerator S ^ 2) :=
+        mul_le_mul_of_nonneg_right (by simpa [Br] using hchi) hnumSecond0
+      _ ≤ (eta ^ 2 * Br) * Br :=
+        mul_le_mul_of_nonneg_left (by simpa [Br] using hnumSecond)
+          (mul_nonneg (sq_nonneg eta) hBr.le)
+      _ = (eta * Br) ^ 2 := by ring
+  have hweightSq : (Bq - Br) ^ 2 ≤ (eta * Br) ^ 2 := by
+    have htransfer := bernoulliExp_sub_sq_le_chiSquare_mul_secondMoment
+      q r hr0 hr1 weight
+    change (Bq - Br) ^ 2 ≤ _ at htransfer
+    calc
+      (Bq - Br) ^ 2 ≤ bernoulliChiSquare q r *
+          bernoulliExp r (fun S => weight S ^ 2) := htransfer
+      _ ≤ (eta ^ 2 * Br) * bernoulliExp r (fun S => weight S ^ 2) :=
+        mul_le_mul_of_nonneg_right (by simpa [Br] using hchi) hweightSecond0
+      _ ≤ (eta ^ 2 * Br) * Br :=
+        mul_le_mul_of_nonneg_left (by simpa [Br] using hweightSecond)
+          (mul_nonneg (sq_nonneg eta) hBr.le)
+      _ = (eta * Br) ^ 2 := by ring
+  have hetaBr : 0 ≤ eta * Br := mul_nonneg heta0 hBr.le
+  have hnumAbs : |Aq - Ar| ≤ eta * Br := by
+    rw [abs_le]
+    constructor <;> nlinarith [sq_nonneg (Aq - Ar + eta * Br),
+      sq_nonneg (Aq - Ar - eta * Br)]
+  have hweightAbs : |Bq - Br| ≤ eta * Br := by
+    rw [abs_le]
+    constructor <;> nlinarith [sq_nonneg (Bq - Br + eta * Br),
+      sq_nonneg (Bq - Br - eta * Br)]
+  have hBqLower : (1 - eta) * Br ≤ Bq := by
+    have h := (abs_le.mp hweightAbs).1
+    linarith
+  have hbase : 0 < (1 - eta) * Br := mul_pos (sub_pos.mpr heta1) hBr
+  have hBq : 0 < Bq := lt_of_lt_of_le hbase hBqLower
+  have hcross : |Aq * Br - Ar * Bq| ≤ 2 * eta * Br ^ 2 := by
+    calc
+      |Aq * Br - Ar * Bq| = |(Aq - Ar) * Br + Ar * (Br - Bq)| := by
+        congr 1
+        ring
+      _ ≤ |(Aq - Ar) * Br| + |Ar * (Br - Bq)| := abs_add_le _ _
+      _ = |Aq - Ar| * Br + |Ar| * |Br - Bq| := by
+        rw [abs_mul, abs_mul, abs_of_pos hBr]
+      _ ≤ (eta * Br) * Br + Br * (eta * Br) := by
+        have hweightAbs' : |Br - Bq| ≤ eta * Br := by
+          rw [abs_sub_comm]
+          exact hweightAbs
+        gcongr
+      _ = 2 * eta * Br ^ 2 := by ring
+  have hnum0 : 0 ≤ 2 * eta * Br ^ 2 :=
+    mul_nonneg (mul_nonneg (by norm_num) heta0) (sq_nonneg Br)
+  change |Aq / Bq - Ar / Br| ≤ _
+  rw [show Aq / Bq - Ar / Br = (Aq * Br - Ar * Bq) / (Bq * Br) by
+    field_simp [hBq.ne', hBr.ne']]
+  rw [abs_div, abs_of_pos (mul_pos hBq hBr)]
+  calc
+    |Aq * Br - Ar * Bq| / (Bq * Br) ≤
+        (2 * eta * Br ^ 2) / (Bq * Br) :=
+      div_le_div_of_nonneg_right hcross (mul_pos hBq hBr).le
+    _ ≤ (2 * eta * Br ^ 2) / ((1 - eta) * Br ^ 2) := by
+      have hbaseSq : 0 < (1 - eta) * Br ^ 2 :=
+        mul_pos (sub_pos.mpr heta1) (sq_pos_of_pos hBr)
+      apply div_le_div_of_nonneg_left hnum0 hbaseSq
+      calc
+        (1 - eta) * Br ^ 2 = ((1 - eta) * Br) * Br := by ring
+        _ ≤ Bq * Br := mul_le_mul_of_nonneg_right hBqLower hBr.le
+    _ = 2 * eta / (1 - eta) := by
+      field_simp [hBr.ne', (sub_pos.mpr heta1).ne']
 
 def routeEEulerBernoulliProb (sigma : ℝ) (p : Nat.Primes) : ℝ :=
   (p : ℝ) ^ (-sigma) / (1 + (p : ℝ) ^ (-sigma))
@@ -434,6 +543,122 @@ theorem tendsto_routeEEulerTiltChiSquareBelow_zero
       filter_upwards [hdelta] with N hN
       exact routeEEulerTiltChiSquareBelow_le_primeClock (delta N) hN N)
   exact hupper
+
+/-- Chi-square at a sub-`1 / (log N)^(3/2)` displacement is negligible relative to a
+critical unit-shell mass of order `1 / log N`. -/
+theorem tendsto_routeEEulerTiltChiSquareBelow_mul_log_zero
+    (delta : ℕ → ℝ)
+    (hdelta : ∀ᶠ N : ℕ in atTop, 0 ≤ delta N)
+    (hscaled : Tendsto
+      (fun N : ℕ => delta N * Real.log N * Real.sqrt (Real.log N))
+      atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ => routeEEulerTiltChiSquareBelow (delta N) N * Real.log N)
+      atTop (𝓝 0) := by
+  let eps : ℕ → ℝ := fun N => delta N / 2
+  let K : ℝ := 4 * Real.cosh 1 ^ 2
+  have hscaledHalf : Tendsto
+      (fun N : ℕ => eps N * Real.log N * Real.sqrt (Real.log N))
+      atTop (𝓝 0) := by
+    have hfun :
+        (fun N : ℕ => eps N * Real.log N * Real.sqrt (Real.log N)) =
+          fun N : ℕ => (1 / 2 : ℝ) *
+            (delta N * Real.log N * Real.sqrt (Real.log N)) := by
+      funext N
+      dsimp [eps]
+      ring
+    rw [hfun]
+    simpa using hscaled.const_mul (1 / 2 : ℝ)
+  have hratio := tendsto_primeClockSusceptibility_div_log_sq
+  have hupper : Tendsto
+      (fun N : ℕ => K *
+        ((eps N * Real.log N * Real.sqrt (Real.log N)) ^ 2 *
+          (primeClockSusceptibility N / Real.log N ^ 2)))
+      atTop (𝓝 0) := by
+    have hsquare := hscaledHalf.pow 2
+    have h := (hsquare.mul hratio).const_mul K
+    simpa [K] using h
+  have hlogTop : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hlogOne : ∀ᶠ N : ℕ in atTop, 1 ≤ Real.log N :=
+    hlogTop.eventually_ge_atTop 1
+  have hmetric := (Metric.tendsto_atTop.mp hscaledHalf) 1 zero_lt_one
+  rcases hmetric with ⟨N₀, hN₀⟩
+  have hwindow : ∀ᶠ N : ℕ in atTop, |eps N| * Real.log N ≤ 1 := by
+    filter_upwards [eventually_ge_atTop N₀, hlogOne] with N hNN₀ hlog
+    have hd := (hN₀ N hNN₀).le
+    rw [Real.dist_eq, sub_zero, abs_mul, abs_mul,
+      abs_of_nonneg (by linarith : 0 ≤ Real.log N),
+      abs_of_nonneg (Real.sqrt_nonneg _)] at hd
+    have hsqrtOne : 1 ≤ Real.sqrt (Real.log N) := by
+      exact Real.one_le_sqrt.mpr hlog
+    calc
+      |eps N| * Real.log N ≤
+          (|eps N| * Real.log N) * Real.sqrt (Real.log N) :=
+        le_mul_of_one_le_right
+          (mul_nonneg (abs_nonneg _) (by linarith : 0 ≤ Real.log N)) hsqrtOne
+      _ ≤ 1 := hd
+  have henergyLog : Tendsto
+      (fun N : ℕ => primeClockCutoffEnergy N (eps N) * Real.log N)
+      atTop (𝓝 0) := by
+    apply squeeze_zero'
+      (show ∀ᶠ N : ℕ in atTop,
+        0 ≤ primeClockCutoffEnergy N (eps N) * Real.log N by
+        filter_upwards [hlogOne] with N hlog
+        exact mul_nonneg (primeClockCutoffEnergy_nonneg N (eps N)) (by linarith))
+      ?_ hupper
+    filter_upwards [hwindow, hlogOne] with N hwin hlog
+    have hE := primeClockCutoffEnergy_quadratic_upper N (eps N) 1 (by norm_num) hwin
+    have hlogne : Real.log N ≠ 0 := (lt_of_lt_of_le zero_lt_one hlog).ne'
+    calc
+      primeClockCutoffEnergy N (eps N) * Real.log N ≤
+          (K * eps N ^ 2 * primeClockSusceptibility N) * Real.log N := by
+        exact mul_le_mul_of_nonneg_right (by simpa [K] using hE) (by linarith)
+      _ = K * ((eps N * Real.log N * Real.sqrt (Real.log N)) ^ 2 *
+          (primeClockSusceptibility N / Real.log N ^ 2)) := by
+        rw [mul_pow, Real.sq_sqrt (by linarith : 0 ≤ Real.log N)]
+        field_simp [hlogne]
+  have henergy : Tendsto
+      (fun N : ℕ => primeClockCutoffEnergy N (eps N)) atTop (𝓝 0) := by
+    apply squeeze_zero'
+      (Eventually.of_forall fun N => primeClockCutoffEnergy_nonneg N (eps N))
+      ?_ henergyLog
+    filter_upwards [hlogOne] with N hlog
+    exact le_mul_of_one_le_right (primeClockCutoffEnergy_nonneg N (eps N)) hlog
+  have henergySmall : ∀ᶠ N : ℕ in atTop,
+      |primeClockCutoffEnergy N (eps N)| ≤ 1 := by
+    have hmetricE := (Metric.tendsto_atTop.mp henergy) 1 zero_lt_one
+    rcases hmetricE with ⟨N₁, hN₁⟩
+    filter_upwards [eventually_ge_atTop N₁] with N hNN₁
+    simpa [Real.dist_eq] using (hN₁ N hNN₁).le
+  apply squeeze_zero'
+    (show ∀ᶠ N : ℕ in atTop,
+      0 ≤ routeEEulerTiltChiSquareBelow (delta N) N * Real.log N by
+      filter_upwards [hlogOne] with N hlog
+      exact mul_nonneg (routeEEulerTiltChiSquareBelow_nonneg (delta N) N) (by linarith))
+    (show ∀ᶠ N : ℕ in atTop,
+      routeEEulerTiltChiSquareBelow (delta N) N * Real.log N ≤
+        2 * (primeClockCutoffEnergy N (eps N) * Real.log N) by
+      filter_upwards [hdelta, hlogOne, henergySmall] with N hdeltaN hlog hsmall
+      have hchi := routeEEulerTiltChiSquareBelow_le_primeClock (delta N) hdeltaN N
+      have hExp := Real.abs_exp_sub_one_le hsmall
+      have hE0 := primeClockCutoffEnergy_nonneg N (eps N)
+      have hExp0 : 0 ≤ Real.exp (primeClockCutoffEnergy N (eps N)) - 1 := by
+        exact sub_nonneg.mpr (Real.one_le_exp hE0)
+      have hExpBound : Real.exp (primeClockCutoffEnergy N (eps N)) - 1 ≤
+          2 * primeClockCutoffEnergy N (eps N) := by
+        rw [abs_of_nonneg hExp0, abs_of_nonneg hE0] at hExp
+        exact hExp
+      calc
+        routeEEulerTiltChiSquareBelow (delta N) N * Real.log N ≤
+            (Real.exp (primeClockCutoffEnergy N (delta N / 2)) - 1) *
+              Real.log N := mul_le_mul_of_nonneg_right hchi (by linarith)
+        _ = (Real.exp (primeClockCutoffEnergy N (eps N)) - 1) * Real.log N := by
+          rfl
+        _ ≤ (2 * primeClockCutoffEnergy N (eps N)) * Real.log N :=
+          mul_le_mul_of_nonneg_right hExpBound (by linarith)
+        _ = 2 * (primeClockCutoffEnergy N (eps N) * Real.log N) := by ring)
+  simpa using henergyLog.const_mul 2
 
 end
 

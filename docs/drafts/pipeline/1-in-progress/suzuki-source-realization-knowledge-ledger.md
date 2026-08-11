@@ -36,10 +36,20 @@
   `2a(u wedge v)` when the ports are locally absolutely continuous. It leaves port coalescence,
   order-`a` derivative countertransport, shrinking-set concentration, or failure of port
   regularity as survival mechanisms. The exact logarithmic tail upgrades actual ports to local
-  `H^1` away from zero, eliminating rough-port escape on every nonzero target window. The pole-compatible
-  two-angle meromorphic Livšic/Hermite--Biehler producer remains
-  Suzuki and is exact live Route-G core; cofinal adjacent/resonant control, real-axis
-  anti-fragmentation, noncancellation, and full theta/Xi identification remain unproved.
+  `H^1` away from zero, eliminating rough-port escape on every nonzero target window. `SR-66`
+  then kills every nonadjacent coalescing ground branch at full-carrier level: its quotient is the
+  free kernel and its Clark probability escapes. Only adjacent ground and interior resolvent
+  branches survive. `SR-67` identifies their exact endpoint as pointed weak convergence to the
+  inverse-square screw probability, reconstructs that target from Suzuki's unconditional
+  prime--Gamma screw line, and proves normalized coalescing anchors weakly escape Suzuki's regular
+  global Weil embedding. `SR-68` proves exact-node real defect vectors instead Galerkin-lock to
+  global Xi modes and gives the sharp scale `sqrt(alpha_a/a^3)` below which their Clark weights
+  vanish. `SR-69` bounds metric amplification by `1+lambda/(alpha_a-lambda)` and shows its only
+  escape is a positive floor-hugging shift; proving such a shift admissible cofinally already
+  proves RH. Clean fast one-mode and regular metric convergence are therefore dead. Exact
+  nonterminal Route-G core is singular pointed convergence by local rank excess/crowding or
+  sub-resolution projection rotation, sufficient to prove the mixed-anchor residual on one
+  imaginary interval. No such literal source estimate is yet proved.
 - **Read first:** this file, `suzuki-terminal-frontier-ledger.md`, and every cited failed card.
 
 ## Admission rule
@@ -135,6 +145,9 @@ they are not novel scientific knowledge.
 | `SR-62` | `TARGET-QUANTIFICATION` / `FORMAL-CLOSURE` | Safe shifting strictly decreases every response mass and damps each transverse density by `4/85` relative to central orientation. Hence `Q_1<116/7,968,750,000`. Independently, shifted slopes vanish cofinally but remain positive, so infinite Xi support gives the exact centered-energy law `H_y=Re M_0(y) sum a_q(tau_q-bar_tau_y)^2>0`. | This is candidate new quantitative target knowledge, not source admission. It replaces two unscaled nonnegative terms by strict positive dispersion and an explicit charge ceiling. The sufficient floor `116/7,968,750,000<=H_1` remains unproved; qualitative `H_1>0` cannot substitute for it. Cofinal selection, normality, Xi/Hermite--Biehler identification, and RH remain open. | `3-formalized/new_scientific_knowledge/suzuki-safe-shift-transverse-charge-budget.md`; `SuzukiSafeShiftTransverseChargeBudget.lean` |
 | `SR-65` | `ADVANCE` / `FRONTIER-CORRECTION` | At a locked parity floor, first visible degrees give endpoint gap `c^(2|r-s|)`, while Xi has gap `2 tau_0 c^2+O(c^4)`. The intrinsic tangent is `q_a(lambda)=<X,(A_a-lambda)^(-1)X>/<1,(A_a-lambda)^(-1)1>` and theta gives `tau_src=mu_1/2-mu_2/(6mu_1)=tau_0`. A simple tangent root lifts uniquely to an exact analytic branch. Reduced-resolvent boundary layers give singular schedules `lambda_0-lambda~rho c^(2s+2)` in odd-leading sectors and `~rho c^(2r)` in even-leading sectors. Every sufficiently large nonadjacent locked floor therefore has a pre-divisor exact schedule. For adjacent even-leading floors, `min{eta_a,D/C}<tau_src` also guarantees matching; only the joint unfavorable wall can defeat automatic selection. Exact matching implies normality of the blown quotient on `C\R`, but rational-inner finite HB families show sharp real-axis failure. For literal Suzuki, each Clark atom is squared resolvent-vector coherence `C(x)=|<v_(ic),v_x>_T|^2/(||v_(ic)||_T^2||v_x||_T^2)` and phase speed is `2c/((x^2+c^2)C(x))`; overcrowding forces source-probability fragmentation. | Refutes parity-floor locking, nonadjacent scheduling, and generic off-axis compactness as terminal obstructions. Scalar matching is not source admission. Still open: cofinal adjacent joint-wall/resonant control, literal real-axis Clark-count tightness or another anti-fragmentation theorem, divisor noncancellation, full theta/Xi carrier identification, higher-jet reality, and RH. No Lean files were changed during corpus refactor. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`; `1-in-progress/suzuki-movable-defect-anchor-parity-purification.md` |
 | `SR-66` | `ADVANCE` / `FULL-CARRIER NO-GO` / `FRONTIER-CORRECTION` | The complete coalescing quotient is `i/z-H/G`. On every nonadjacent ground-pole boundary branch `H=0`, so exact first-defect matching still converges to the free kernel `i/z`, not `M_0(0)/mathcalL(-iz)`. Its oriented Clark probability escapes every bounded real interval. Adjacent ground branches retain their first two ground Fourier modes; interior branches retain the resolvent pair `G_(a,lambda),H_(a,lambda)`. Matched-jet normality forces either surviving ratio to extend as a strict Caratheodory function and forces all upper-half-plane denominator zeros to divide the numerator. Vitali shows convergence on one imaginary uniqueness set already implies global target identification and RH. The exact source endpoint is bounded Clark Stieltjes convergence, equivalently on an interior branch a resolvent-position Ward equation. A two-/four-atom counterfamily has the same first defect and strict Pick positivity but a different cubic jet. | Nonadjacent boundary schedules are fully dead, not route-closing. Real-axis Clark tightness, separate divisor noncancellation, and higher-jet HB passage are bypassable once interval source identification is proved. Still open: construct a source-admitted cofinal adjacent or interior branch and prove its interval transform/Ward residual. No Lean files were changed. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Section 14 |
+| `SR-67` | `ADVANCE` / `POINTED-SPECTRAL CLASSIFICATION` / `FAILED-REGULAR-CLASS` / `FRONTIER-CORRECTION` | The imaginary-interval law is equivalent to RH plus weak convergence of the squared movable Clark probabilities to the complete multiplicity-weighted inverse-square Xi probability. It forces both endpoint tightness and every local source-coherence mass. Suzuki's unconditional prime--Gamma screw line source-declares this target: negative Cesaro averages converge under RH, at explicit `O(T^-1)` Hilbert rate, to the unique zero-energy coboundary origin with exactly those weights. In Suzuki's RH-conditional global Weil embedding, however, every normalized `lambda=0`, `c->0` finite deficiency anchor converges weakly to zero and its unnormalized energy norm diverges. The same weak escape holds for any `lambda_n->0` family bounded in global Weil norm; evasion forces unbounded shifted-metric amplification. Norm convergence of isolated local spectral projections then forces the Clark mass to zero, contradicting the target. | Kills target-fitting objections, strong anchor convergence, and clean strong-resolvent/one-stable-mode transport as Route-G closure mechanisms. Does not prove the interval law. Live source theorem is necessarily singular: adjacent/interior source selection plus projection rotation or local rank excess/crowding, or unbounded shifted-metric amplification, sufficient to make the exact mixed-anchor parity residual vanish on one imaginary interval. Lean corpus was audited read-only and no Lean files were changed. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Sections 14.6--14.10 |
+| `SR-68` | `ADVANCE` / `POINTED-RESOLUTION NO-GO` / `FRONTIER-CORRECTION` | Under RH in Suzuki's `lambda=0` nesting, the finite real defect vector at an exact Xi ordinate is exactly the Galerkin projection of the global Xi evaluation/eigenvector. If `alpha_a` is the finite Weil floor, its displacement obeys `||K_(a,x)-K_gamma||<=epsilon_a(gamma)+|x-gamma|sqrt(2a^3/(3alpha_a))`. Hence any finite extension eigenvalue approaching `gamma` faster than `sqrt(alpha_a/a^3)` has a normalized eigenvector converging strongly to the global Xi mode. The coalescing anchor converges weakly to zero, so that mode's Clark coherence tends to zero. Positive target mass therefore forces a sharp trilemma: unbounded local rank/crowding, slower ill-conditioned locking of a mass-carrying mode, or the shifted-metric blow-up from `SR-67`. | Kills the tempting claim that faster clean one-for-one eigenvalue convergence helps pointed Suzuki convergence. Does not force crowding: bounded but sub-resolution/rotating modes remain live, as does singular metric amplification. It does not prove the interval transform or RH. No Lean files were changed. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Section 14.10 |
+| `SR-69` | `ADVANCE` / `SHIFTED-METRIC CLASSIFICATION` / `TERMINAL-LOGIC` | For `0<lambda<alpha_a=inf spec(A_a)`, the global-to-shifted norm amplification of the normalized movable anchor is at most `1+lambda/(alpha_a-lambda)`. Hence any positive vanishing-shift family at bounded relative distance below the floor remains globally bounded and weakly escapes. Metric evasion requires `lambda>0` and `(alpha_a-lambda)/lambda->0`: positive relative floor hugging. But existence of any positive admissible shift on a cofinal aperture sequence already makes every compact Weil test positive and proves RH by Weil's criterion. | Kills ordinary interior positive shifts as a distinct regular pointed mechanism and shows positive metric blow-up is already terminal source admission, not downstream infrastructure. It does not kill varying-metric Clark convergence through sub-resolution mode rotation or local rank growth, especially for nonpositive source-selected shifts. No Lean files were changed. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Section 14.11 |
 
 ## Level lift forced by `SR-35`--`SR-49`: cyclic mechanism retired, `SR-41` terminalized
 
@@ -691,3 +704,37 @@ Before claiming progress, record all answers:
   shortcut. Exact remaining source theorem is the bounded Clark Stieltjes transform `(107)`, or
   interior resolvent-position Ward residual `(112)`, on one interval. Paper proof closed;
   external priority remains unverified; Lean corpus remained read only.
+- **2026-08-11 — pointed screw target and regular-embedding escape (`SR-67`).** The bounded
+  imaginary-interval law determines the entire squared Clark probability: it is equivalent to RH
+  plus weak convergence to the multiplicity-exact inverse-square Xi measure, and therefore forces
+  endpoint tightness and every local coherence mass. Suzuki's unconditional prime--Gamma screw
+  line source-declares the same probability. Its negative Cesaro average converges under RH at an
+  explicit inverse-linear rate to the unique zero-energy coboundary origin. The next conjecture
+  fails: normalized coalescing finite anchors do not converge to that origin in Suzuki's global
+  Weil space. Their unnormalized norms diverge and they converge weakly to zero. More generally,
+  every vanishing-shift family bounded in global Weil norm weakly escapes; evasion requires
+  unbounded shifted-metric amplification. Consequently clean local spectral-projection
+  convergence makes every Clark mass vanish and cannot realize the target. Route G remains open,
+  but its live theorem is now forced into singular pointed convergence on an adjacent or interior
+  branch: projection rotation/local rank excess, or shifted-metric blow-up, must drive the exact
+  mixed-anchor residual to zero on one imaginary interval. Paper proof closed; primary-literature
+  search found parent screw-line expansion but not this synthesis; Lean corpus remained read only.
+- **2026-08-11 — critical-node Galerkin resolution wall (`SR-68`).** Under RH, global evaluation
+  at an actual Xi ordinate is bounded with squared norm `1/m_gamma`. Its finite Riesz vector is
+  exactly the orthogonal projection of the global Xi eigenvector onto Suzuki's aperture space.
+  Resolvent coercivity gives the explicit displacement bound
+  `epsilon_a(gamma)+|x-gamma|sqrt(2a^3/(3alpha_a))`. Thus a finite extension mode locking faster
+  than `sqrt(alpha_a/a^3)` converges strongly to the global Xi mode; the weakly escaping
+  coalescing anchor gives it zero Clark mass. Positive inverse-square mass forces either local
+  rank growth, slower ill-conditioned locking, or shifted-metric blow-up. This kills clean fast
+  one-for-one approximation but not all bounded-rank scalar limits. Paper proof closed; corpus
+  search found no Suzuki-specific predecessor; Lean corpus remained read only.
+- **2026-08-11 — relative-floor metric classification (`SR-69`).** For a positive admissible
+  shift, spectral calculus bounds normalized global Weil amplification by
+  `1+lambda/(alpha_a-lambda)`. Bounded relative gap therefore returns to weak anchor escape;
+  metric evasion forces positive floor hugging at vanishing relative distance. This apparent
+  survivor is already terminal: one positive admissible shift on every aperture of a cofinal
+  sequence gives positivity of every compact Weil test and proves RH. Thus shifted-metric blow-up
+  is not missing post-limit infrastructure. Remaining nonterminal scalar mechanism is
+  sub-resolution projection rotation or local rank growth in the varying shifted geometries.
+  Paper proof closed; Lean corpus remained read only.

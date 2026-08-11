@@ -328,3 +328,54 @@ compressed-trace identity consumes adelic Poisson, which Beurling systems lack.
   form) that forces W = its J-twist — i.e., that the fundamental symmetry can be taken to be
   the identity.  All 12 key theorems `[propext, Classical.choice, Quot.sound]`; module wired,
   RHTower umbrella green.
+- 2026-08-11 — attempt 12 (entire detection — the producer's burden minimized):
+  `RHTower/GaussHodgeWeilEntireDetection.lean`.  Asked for the exogenous reason the odd ℓ²
+  sector is null, the honest finding is that no unconditional producer exists in the corpus or
+  the literature short of RH itself; the executed best shot instead proves the producer's
+  burden is far lighter than the criteria demanded.  All previous converses (positivity
+  criterion, odd-vanishing, J-twist invariance) used rough indicator witnesses, so the criteria
+  formally required control of arbitrary ℓ² divisor test functions.  New: a
+  **multiplicity-exact entire witness** — at any off-line divisor copy, the two terminal
+  divided quotients `XiC(z)/(z−α)^m`, `XiC(z)/(z−conj α)^m'` (corpus `xiThetaDividedChain`,
+  entire by iterated dslope, nonzero center values, vanishing at every other divisor point via
+  the global factorization `XiC = (z−α)^m·chain`), normalized and differenced, give an entire,
+  square-summable, divisor-odd test with value 1 at α — no simplicity hypothesis, no
+  conjugation symmetry of XiC used (`exists_entire_divisorOdd_unit_test`).  Consequences:
+  `riemannHypothesis_iff_xiWeilPolarization_nonneg_entire` (**RH ⟺ Weil positivity on entire
+  square-summable tests alone** — Weil positivity cannot fail only on rough tests),
+  `riemannHypothesis_iff_forall_entire_divisorOdd_eval_eq_zero` (the odd sector cannot hide
+  from analytic tests), `riemannHypothesis_iff_polarization_parityFlip_invariant_entire`.
+  Producer statement after this attempt: it suffices to produce positivity of the diagonal
+  Weil form on ENTIRE square-summable tests — the class where explicit-formula, compressed-
+  trace, and CC-style constructions actually live.  [OPEN CORE] unchanged in substance but
+  now minimal in form: an unconditional positivity source for `Re W(F,F)` with F entire.
+  All 5 theorems `[propext, Classical.choice, Quot.sound]`; wired; RHTower umbrella green
+  (18899 jobs).
+- 2026-08-11 — attempt 13 (the positivity source itself — verdict and the two theorems it
+  leaves): asked to produce the unconditional positivity source for `Re W(F,F)` on entire
+  square-summable tests, the frontier answer is that this is exactly RH
+  (`riemannHypothesis_iff_xiWeilPolarization_nonneg_entire`) and no producible source exists in
+  the corpus or the formalized literature; the best shot produced the two strongest true
+  theorems around the target.  (1) `RHTower/GaussHodgeWeilSymmetryInsufficiency.lean` — **the
+  symmetry package cannot source the positivity** (the Davenport–Heilbronn lesson made exact
+  and formal): `exists_entire_finiteWeilForm_neg` (any finite conj-stable divisor with an
+  off-line point carries an entire polynomial test with Weil diagonal −2; interpolation witness)
+  and the capstone `weilPositivity_not_symmetry_consequence` — an explicit entire comparison
+  function that is even, conjugation-real, all zeros in the open strip |Im| < 1/2, with an
+  off-line reflection-stable quadruple whose finite Weil form fails entire positivity.  Hence
+  every producer must consume input distinguishing ξ inside this symmetry class — the Euler
+  product — a no-go now closed as theorems, [BRIDGE]/[REDISCOVERED] at concept level
+  (Davenport–Heilbronn folklore), corpus-new as formal mathematics.  (2)
+  `RHTower/GaussHodgeWeilDeviationMoment.lean` — **the exact quantity the arithmetic must
+  control**: the odd part factors as deviation × divided difference
+  (`xiWeilOddPart_eq_deviation_mul_dslope`: odd = i·Im(α)·dslope F (conj α) α), giving the
+  deviation moment identity `Re W(F,F) = Σ‖even‖² − Σ (Im α_q)²·‖dslope F (conj α_q) α_q‖²`
+  — in classical coordinates (Im α)² = (β−1/2)²: the Weil-positivity defect IS the second
+  moment of zero deviations weighted by divided differences of the test.  The strip gives the
+  unconditional weight bound |Im α| < 1/2 (`abs_xiSpectralPoint_im_lt_half`) and the lower
+  bound `Re W(F,F) ≥ Σ‖even‖² − (1/4)·Σ‖dslope‖²`; RH ⟺ the deviation moment vanishes on all
+  square-summable tests (`riemannHypothesis_iff_deviation_moment_eq_zero`).  Refined
+  [OPEN CORE]: an arithmetic (Euler-product-derived) inequality dominating
+  `Σ m(ρ)(β−1/2)²·|ΔF(ρ)|²` by the even energy for entire tests — with the formal proof that
+  nothing weaker than arithmetic can do it.  All 7 key theorems
+  `[propext, Classical.choice, Quot.sound]`; both modules wired; umbrella green (18904 jobs).

@@ -837,3 +837,44 @@ oriented seam flux, and transport same weights through exact prime-dilation recu
 forming endpoint current.
 
 No Lean file was edited or built.
+
+## 2026-08-11 exact Euler-gauge cancellation and endpoint-rate correction
+
+The bare-source chi-square continuation is valid but not an RH-scale transport theorem. On the
+critical unit shell its relative normalized error at the forced tilt is only controlled by
+
+\[
+ O\!\left(\frac{\log\log Y}{\sqrt{\log Y}}\right),
+\]
+
+which is far larger than (Y^{-1/2+o(1)}). The conjecture that absolute or relative contiguity would
+move a critical proof of `(A1)` to the saddle therefore fails.
+
+The literal physical source has exact cancellation. For every occupied subset (T),
+
+\[
+ \mathcal P_{\sigma,Y}\nu_{\sigma,Y}(T)
+ e^{\sigma E(T)-xe^{E(T)}}=e^{-xm(T)}.                    \tag{A37}
+\]
+
+Consequently every predeclared normalized physical observable and relation flow is exactly
+independent of Euler gauge. Critical and moving gauges are two factorizations of the same finite
+Gibbs atoms, not two physical sources. This removes moving-tilt transfer and its second-moment
+premise from the open core.
+
+For a partial opposite-parity matching with normalized unmatched physical mass (u_X), whose
+matched products satisfy (|m-n|\le H_X), pairwise polarization gives the exact receiver
+
+\[
+ \frac{|J_Y(1/X)|}{Z_Y(1/X)}
+ \le u_X+\tanh\!\left(\frac{H_X}{2X}\right)
+ \le u_X+\frac{H_X}{2X}.                                 \tag{A38}
+\]
+
+Thus (u_X\le X^{-1/2+o(1)}) and (H_X\le X^{1/2+o(1)}) suffice with no tilt loss. This does not
+construct the matching: the joint breadth--rough short-interval incidence, column load,
+zero/one-large-prime seam orientation, and recurrence compatibility remain the producer. The new
+knowledge is exact removal of a false interface, not endpoint closure.
+
+Lean corpus was inspected read-only. The atomwise core `(A37)` was already certified as
+`routeEEulerTiltTerm_eq_gibbsTerm`; no Lean source was written during refactor.

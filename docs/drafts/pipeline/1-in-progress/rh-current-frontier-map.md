@@ -294,6 +294,21 @@ the diagonal Weil form is real. RH is the degeneracy law: RH ⟺ every divisor-o
 on the divisor ⟺ W equals its own J-twist. The producer target is thereby minimal: any exogenous
 positivity that forces J-twist invariance of W closes RH; nothing weaker than killing the odd
 ℓ² sector suffices.
+`GaussHodgeWeilEntireDetection.lean` minimizes the producer's burden: a multiplicity-exact
+entire witness (normalized terminal divided quotients at an off-line point and its reflection)
+shows the rough test class adds nothing — RH ⟺ Weil positivity on entire square-summable tests
+alone, ⟺ entire divisor-odd tests vanish on the divisor, ⟺ parity-twist invariance on entire
+tests. Any producer controlling the analytic class (explicit formula, compressed trace, CC
+compression) therefore controls everything; no positivity on non-analytic tests is ever needed.
+`GaussHodgeWeilDeviationMoment.lean` and `GaussHodgeWeilSymmetryInsufficiency.lean` close the
+producer question from both sides. The deviation moment identity factors the negative sector
+exactly: Re W(F,F) = Σ‖even‖² − Σ (β−1/2)²·‖ΔF‖² (deviation × divided difference), with the
+unconditional strip bound Re W ≥ Σ‖even‖² − (1/4)Σ‖ΔF‖², and RH ⟺ the deviation moment
+vanishes. The insufficiency theorem proves the source cannot be symmetry: an explicit even,
+conjugation-real entire comparison function with strip-placed off-line zeros carries an entire
+test of negative Weil diagonal, so any producer must consume the Euler product. The open core
+in final form: an arithmetic inequality dominating the deviation-weighted divided-difference
+moment by the even energy on entire tests.
 `GaussReciprocalCharacterAdmission.lean` supplies a second exact normalization: the Hodge mass is
 the virial derivative of one reciprocal-character split energy, has a quadratic centered-rate
 lower bound, and its all-prime family is summable exactly at centered rate zero. Universal
@@ -601,9 +616,14 @@ critical Mertens cancellation and RH.
    log-product shell at slightly supercritical moving Euler edge.
 5. Entropy-complement breadth mixture recovers full factorial mass across coupled reservoir/token
    branches and keeps every terminal at opposite Möbius parity.
-6. Moving Euler-tilt chi-square contiguity identifies the forced source-faithful saddle tilt as
-   asymptotically equivalent to the critical Bernoulli source for every bounded-second-moment
-   finite observable.
+6. Moving Euler-tilt chi-square contiguity identifies the forced saddle tilt as asymptotically
+   equivalent to the critical **bare Bernoulli** source for every bounded-second-moment finite
+   observable. A hostile normalized-rate audit shows this comparison is only polylogarithmic and
+   cannot transport the strict-half endpoint.
+7. The stronger atomwise source identity cancels Euler gauge exactly:
+   `P_(sigma,S) nu_(sigma,S)(T) W_(sigma,x)(T)=exp(-x m(T))`. Hence every predeclared physical
+   observable/relation is independent of `sigma`; critical-versus-moving parameter transfer costs
+   zero when the full physical multiplier is retained.
 
 Lean formally closes critical terminal variance minimax, physical-saddle antiscale barrier,
 shell-conditioned parity--energy regression, product-truncated reservoir mass, source-faithful
@@ -619,9 +639,20 @@ short-interval rough-token lower bound, column-balance source, or recurrence sea
 physical frontier is therefore not further mixture algebra: prove the actual source
 token density `delta >= gL/log X` columnwise and the normalized co-moving seam recurrence.
 
-The source-parameter mismatch is now also closed in umbrella-reachable Lean. For the Euler
-Bernoulli product laws below aperture `N`, the exact finite likelihood product and local defect
-comparison give
+The physical source-parameter mismatch is closed exactly, not by approximation. For every subset
+`T`, umbrella-reachable Lean proves
+
+~~~
+P_(sigma,N) nu_(sigma,N)(T) W_(sigma,x)(T) = exp(-x m(T)).
+~~~
+
+Thus normalized source-faithful observables and relation flows are Euler-gauge invariant. The
+forced moving tilt locates the unit-shell mass but does not deform its physical atom weights. A
+proof may use the critical or moving gauge with zero loss, provided it retains the matching
+physical multiplier.
+
+Separately, for fixed observables under the bare Euler Bernoulli product laws below aperture `N`,
+the exact finite likelihood product and local defect comparison give
 
 ~~~
 chiSq(nu_(1+delta,N) || nu_(1,N))
@@ -629,12 +660,30 @@ chiSq(nu_(1+delta,N) || nu_(1,N))
 ~~~
 
 Therefore every eventually nonnegative `delta_N` with `delta_N log N -> 0` has chi-square distance
-to the critical source tending to zero, and exact Cauchy--Schwarz transfers every finite observable
-with its critical second moment. The forced source-faithful tilt
-`delta_N ~ 2 log log N/(log N)^2` lies in this regime. Hence the missing rough-token/column theorem
-may be proved at critical Euler parameter and transported to the forced moving saddle; it must
-still supply the relevant critical second-moment control. This bridge supplies no incidence,
-incoming-capacity, seam, or recurrence estimate by itself.
+to the critical bare source tending to zero, and exact Cauchy--Schwarz transfers fixed finite
+observables with controlled critical second moment. The stronger formal rate
+`delta_N log N sqrt(log N) -> 0` gives `chi-square * log N -> 0`, and the formal normalized-ratio
+theorem then gives qualitative `o(1)` transfer on a critical unit shell of mass `>> 1/log N`.
+For the forced tilt this generic normalized error is only
+`O(log log N / sqrt(log N))`, far above `N^(-1/2+o(1))`. Hence chi-square supplies no RH-scale
+endpoint transport. It remains useful for coarse fixed-observable comparisons, but supplies no
+incidence, incoming-capacity, seam, or recurrence estimate. Literal physical relations use the
+exact gauge cancellation above instead.
+
+The newest HTGeometry incidence and prime-port files do not close the remaining column estimate.
+`PauliXorIncidenceHypercontractivityLaw.lean` proves a dimension-free fourth-incidence bound
+`I_4(c) <= 9^(4q) ||c||_2^4` for nonnegative Boolean/Pauli coefficients of Hamming weight at most
+`q`. At Route E breadth `q=O(log log X)` its constant is only `X^(o(1))`, but it controls **raw**
+collision energy. For total physical mass `asymp X`, this reaches only `X^(1+o(1))`; the Hellinger
+consumer needs centered weighted column excess `X^(o(1))`. Low degree alone cannot improve this:
+a source-dependent increment of the same low breadth can send every row to one prescribed column.
+Thus this theorem becomes useful only after an independent centered/factorized mixing law for the
+actual arithmetic kernel, which is precisely absent. `PrimePhasePortRecurrence.lean` makes
+simultaneous finite-aperture phase `-1` approximation explicit and therefore reinforces the
+antiscale escape no-go rather than providing dissipation. `WittEulerShellSelectionGate.lean` is an
+RH-equivalent receiver, while `GaussPositiveCubicCriticalMass.lean` has no source connector to the
+Möbius relation. No abstract capacity, Pauli incidence, or shell-completion theorem removes the
+ordinary-integer joint incidence/seam producer.
 
 The independent analytic support layer is now closed to two exact interfaces. The complete
 Granville--Harper--Soundararajan partition, height choice, explicit error table, and eventual
@@ -753,8 +802,9 @@ stated hypotheses.
 ENTROPY-COMPLEMENT-UNIT-SHELL-ROUGH-CONVOLUTION:
 for one fixed source-predeclared weighted relation, prove
 (i) joint short-interval lower mass for coupled breadth branches outside square-root Gibbs mass,
-    at the critical Bernoulli source with the second-moment control needed for the now-closed
-    moving-tilt chi-square transfer;
+    stated directly for the source-predeclared physical atom weights (equivalently in any Euler
+    gauge with its compensating physical multiplier); no chi-square or second-moment transfer is
+    needed;
 (ii) unit incoming load, or unmatched mass <= X^(1/2+o(1)) together with global column
      chi-square <= X^(o(1));
 (iii) normalized zero/one-large-prime seam charge;
@@ -800,20 +850,43 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
 - real-axis Clark tightness is no longer a logically separate endpoint. Matched-jet normality plus
   source identification on one imaginary interval gives global half-plane identification by
   Vitali and implies RH. A sharp finite atomic family proves first-jet matching plus Pick
-  positivity does not determine the full carrier.
+  positivity does not determine the full carrier;
+- the interval law is equivalent to RH plus weak convergence of the squared movable Clark
+  probabilities to the complete multiplicity-weighted inverse-square Xi probability. It forces
+  endpoint tightness and every local source-coherence mass; eigenvalue-set convergence alone is
+  strictly insufficient;
+- this target is source-declared, not divisor-fitted: negative Cesaro averages of Suzuki's
+  unconditional prime--Gamma screw line converge under RH, at explicit `O(T^-1)` Hilbert rate, to
+  its unique zero-energy coboundary origin, whose spectral probability is exactly the target;
+- the regular pointed operator bridge is impossible. In Suzuki's RH-conditional global Weil
+  embedding, normalized `lambda=0`, `c->0` finite deficiency anchors converge weakly to zero and
+  their unnormalized norms diverge. Any `lambda_a->0` family bounded in global Weil norm has the
+  same weak escape; evasion forces unbounded shifted-metric amplification. Clean finite-rank local
+  spectral-projection convergence would force all limiting Clark masses to zero;
+- at an exact Xi ordinate, a real finite defect vector is the Galerkin projection of the global Xi
+  eigenvector. If `alpha_a` is the finite Weil floor, displacement from that vector is at most
+  `epsilon_a(gamma)+|x-gamma|sqrt(2a^3/(3alpha_a))`. A mode locking faster than
+  `sqrt(alpha_a/a^3)` therefore converges strongly to the Xi mode and has zero Clark weight against
+  the weakly escaping anchor. Positive target mass forces local rank growth, slower
+  sub-resolution/rotating modes, or shifted-metric blow-up;
+- shifted-metric blow-up has no broad interior regime. For `0<lambda<alpha_a`, its amplification
+  is at most `1+lambda/(alpha_a-lambda)`, so evasion requires positive relative floor hugging.
+  Proving any positive admissible shift on a cofinal aperture sequence already proves RH directly
+  by positivity of every compact Weil test.
 
-A committed but not yet umbrella-reachable movable-anchor theorem gives the positive survivor of
-the real-axis overcrowding obstruction. It derives the exact normalized Donoghue kernel,
-Nevanlinna atom weight, and Clark phase speed, then identifies finite Clark weights with squared
-source coherences. Bessel's inequality forces total coherence of any orthonormal extension family
-to be at most one, hence one of `N` modes has coherence at most `1/N`; conversely, a uniform
-positive coherence floor bounds `N`. Thus cofinal orthonormal mode proliferation necessarily
-fragments a fixed source anchor. Route G needs a source-derived moving-anchor/two-angle allocation
-law, not generic extension multiplicity.
+The positive survivor of real-axis overcrowding remains the exact Clark coherence law, but its
+interpretation has reversed. Generic mode-count bounds do not close Route G, and a regular
+one-mode-per-zero operator approximation cannot carry the required weights. Unless source work
+first proves a positive admissible shift and thereby proves RH, a successful scalar limit must be
+singular at the pointed level: local projection rotation or rank excess/crowding, with rotation
+slower than the exact Galerkin resolution scale when rank stays bounded, while the bounded
+imaginary-axis transform converges.
 
 **Open core.** Construct on one cofinal aperture family, before scalar fusion and without
-divisor-fitted shifts, an adjacent ground-pole or interior tangent branch. On one nonempty
-imaginary interval prove either exact Clark-transform convergence
+divisor-fitted shifts, an adjacent ground-pole or interior tangent branch exhibiting local rank
+growth or sub-resolution projection rotation. Alternatively, prove a positive admissible shift
+cofinally, which terminates the route immediately by Weil positivity. On one nonempty imaginary
+interval prove either exact Clark-transform convergence
 
 ~~~
 int_R (t^2+c_a^2)/(t^2+y^2) dnu_a(t) -> M_0(y^2)/M_0(0),
@@ -828,7 +901,8 @@ g_a'(y)+(1/y-M_0(0)/(yM_0(y^2)))g_a(y)-c_a(y) -> 0.
 Source admission still requires the label-sensitive or singular category left alive by the
 updated modular-superselection and source-horizon papers. Their regular label-blind no-gos do not
 kill Suzuki's scalar two-angle family. Nonadjacent boundary schedules, generic real-axis
-anti-fragmentation, and any finite-jet substitute are no longer live endpoints.
+anti-fragmentation, clean strong-resolvent/one-stable-mode convergence, and any finite-jet
+substitute are no longer live endpoints.
 
 ### Route G2 — relative-Volterra source-germ weld [RETIRED]
 
@@ -1729,18 +1803,36 @@ polynomial.
     physical defect is equivalent—not merely implied by—the normalized consecutive-prime-gap
     square energy. The published mean-square gap theorem remains the formalization input for this
     summability; improving the same quadrature estimate cannot bypass it.
+34. The complete four-shift Wold divisor is now formally identified as a cubic translation
+    coboundary, so its global orbit residue vanishes. The three shifts outside the physical
+    half-strip carry exactly the negative orbit residue of the visible first pole. After
+    anti-reflection, the physical supports are `rho-1` and `-conj(rho)`; their pair is a finite
+    shift-two coboundary exactly when `Re rho=1/2`. Thus global Wold/Gamma exactness does not close
+    Route T: any off-critical completion must instead introduce a nonzero compensating principal
+    part with an explicitly computed quotient-orbit vector. The producer problem is equivalently
+    exclusion of that relative orbit flux from mesh, holonomy, and the continued residual source.
+35. Under the exact critical prime-gap-energy hypothesis isolated in item 33, the scaled mesh
+    defects now converge locally normally throughout `-1/2<Re s<=0`: Lean differentiates the
+    second-order exponential remainder and absorbs its one log-height loss into spare abscissa
+    before the critical wall. The forced resolvent formula
+    `mesh_cont=(phase_0-sum defects)/s` agrees with the original mesh current on `Re s>0` and is
+    holomorphic at every nonzero point of that half-strip. Consequently mesh and static holonomy
+    have zero residue at every off-critical Wold pole `s=rho-1`, while the genuine continued
+    `Wold-mesh-holonomy` residual retains residue `-m(rho)`. After formalizing the published gap
+    theorem, residual Hardy continuation is therefore the sole possible compensator channel.
 
 **Open core.** Prove cofinal cancellation of centered von Mangoldt atoms inside the finite mass
 light cone, preferably through exact joint pairing before norms. In the Wold/Deninger chart, safe
 symbol formation, Wold meromorphic continuation, higher-valuation holomorphy, and the exact
 off-critical residue are formal. Main-mesh absolute convergence is now equivalent to a classical
 mean-square consecutive-prime-gap input and is formalization backlog rather than the scientific
-wall. The surviving RH-bearing theorem is a source-side continuation/noncancellation law for the
-complete divided Hardy carrier: continue the physical `Hardy = Wold - mesh - holonomy` identity
-from `Re s>0` far enough toward `Re s=-1/2` that the already-identified Wold pole at every
-off-critical `rho-1` cannot be canceled by mesh or holonomy, or prove the equivalent finite-stage
-source/divisor cancellation survives the cofinal limit. This is a recut of the same source theorem,
-not a second route.
+wall. Conditional on that input, canonical mesh continuation and holonomy are now formally
+pole-free at every off-critical candidate, and the continued paired residual retains the exact
+Wold residue. The surviving RH-bearing theorem is therefore narrower: prove directly from the
+pre-divisor lower-Hardy source that its canonical continuation has zero relative orbit flux (or is
+holomorphic) at every `rho-1` with `1/2<Re rho<1`. Equivalently, prove the finite-stage residual
+source/divisor cancellation survives the cofinal continuation. This is a recut of the same source
+theorem, not a second route.
 Safe-line Perron bounds hit critical
 zero barrier; termwise absolute estimates lose square root; local Lipschitz control sees mass
 radiation; Toeplitz and pinned-Volterra metrics cannot kill constant boundary-cohomology class.
@@ -1936,16 +2028,23 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     source matrix on the base null amplitude and its lifted amplitude has zero base diagonal and a
     nonzero polarized entry; neither it nor its negative is positive semidefinite. Thus full
     two-amplitude positivity cannot orient a higher first contact.
+42. The filtered Gamma identity and coefficient-uniform completed-source heat wedge now compose
+    into a quantitative cofinal theorem. There is a universal `K>0` such that the shifted-Xi
+    Hankel block `H_N(y)` is strictly positive definite whenever `y>=K N^2`. Hence any first
+    contact at shift `y` has `N>sqrt(y/K)`. The proof filters by the actual reciprocal polynomial
+    before Gamma averaging, obtains a coefficient-free global source lower envelope, and uses an
+    exponential Gamma-tail separation. It is paper-proved in
+    `mass-shifted-parabolic-degree-horizon`; Lean formalization has not started.
 
 **Open core.** Cofinally exclude drift of first-contact order and face degree to infinity. Every
 finite first face, its odd preemption branch, its first even rank-fill branch, and the one-block
-capacity of every later positive even contact are Lean-classified. Remaining source theorem
-must show that the literal shifted-Xi moment tower cannot postpone its first nonzero defect to
-arbitrarily high order while canonical degree escapes and the arcsine margin collapses.
-Equivalently, prove a cofinal prime--Gamma/archimedean law that bounds contact order/degree or forces
-an earlier odd/lower-minor preemption. Fixed-face plateau construction is no longer a viable
-escape. Post-contact cumulant bounds, generic moment positivity, or another fixed-degree asymptotic
-do not control the moving contact order.
+capacity of every later positive even contact are Lean-classified. The paper-proved parabolic
+degree horizon also excludes every escape with `N^2/y->0`. Remaining source theorem must control
+the critical/supercritical double-scaling region `N^2/y` bounded away from zero: show that the
+literal shifted-Xi moment tower cannot postpone its first nonzero defect there while the arcsine
+margin collapses, or force an earlier odd/lower-minor preemption. Fixed-face plateau construction
+and subparabolic degree drift are no longer viable escapes. Post-contact cumulant bounds, generic
+moment positivity, or another fixed-degree asymptotic do not control this moving contact order.
 
 **Dead subclasses.** Generic moment positivity, positive atoms, tied-power sectors, positive/root
 location, stochastic order, factorial-normalized carriers, fixed corona continuous reporters,
@@ -3324,6 +3423,9 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilGNSSocket.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilKreinDecomposition.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilFundamentalSymmetry.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeWeilEntireDetection.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeWeilDeviationMoment.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeWeilSymmetryInsufficiency.lean
 - formal/GaloisForLFunctions/RHTower/GaussReciprocalCharacterAdmission.lean
 - formal/GaloisForLFunctions/HTGeometry/HyperbolicBounds.lean
 

@@ -18,6 +18,9 @@ Test whether collapse is intrinsic or caused by monic coordinate normalization.
 2. **Divide source by admitted orthogonal norm.** Succeeded exactly.
 3. **Fixed-degree relative recession closes cofinal drift.** Failed: convergence remains nonuniform
    in degree, and pointwise moment convergence has delayed high-moment counterexamples.
+4. **Relative quotient has a degree-uniform open neighborhood.** Failed sharply: coordinate
+   contraction by any fixed `0 < r < 1` preserves positivity and canonical admission but multiplies
+   source/norm by `r²`, forcing cofinal failure below degree.
 
 ## Paper proof
 
@@ -50,22 +53,30 @@ to `n + 3/8` and is eventually greater than `n`.
 - `XiShiftedCanonicalAdmission.tendsto_normalizedAdmissionNorm`
 - `XiShiftedCanonicalAdmission.tendsto_normalizedAdmissionSource_div_norm`
 - `XiShiftedCanonicalAdmission.relativeArithmeticSource_eq_normalizedAdmissionSource_div_norm`
+- `XiShiftedCanonicalAdmission.relativeArithmeticSource_eq_adaptiveOrthoJacobiEnergy`
+- `XiShiftedArcsineAdmission.coordinateDilatedMoment_positiveMomentForm`
+- `XiShiftedArcsineAdmission.coordinateDilatedAmplitude_eq_monicMomentAdmissionPolynomial`
+- `XiShiftedArcsineAdmission.coordinateDilated_adaptiveShear_div_norm_gt_degree_iff`
+- `XiShiftedArcsineAdmission.coordinateDilated_adaptiveShear_div_norm_eventually_lt_degree`
 - `XiShiftedCanonicalAdmission.tendsto_relativeArithmeticSource`
 - `XiShiftedCanonicalAdmission.relativeArithmeticSource_eventually_gt_degree`
 
 ## Exact survivor and open core
 
-Absolute target `error < n * 16⁻ⁿ` was wrong gauge. Sufficient intrinsic diagonal target is
+Absolute target `error < n * 16⁻ⁿ` was wrong amplitude gauge. Exact Jacobi localization proves
+`R_n = E_n`. However, sufficient diagonal target
 
 `|R_(n(w))(w) - (n(w) + 3/8)| < 3/8`.
 
-Tolerance is degree-independent. Missing theorem is now degree-uniform relative arithmetic-source
-control along actual least-defect schedule, or equivalent source-specific Jacobi/Christoffel
-conditioning. Fixed-degree limits, compactness, orientation maps, and fixed reporters cannot supply
-it.
+is not an open degree-uniform coordinate neighborhood. In the positive canonical dilation model it
+is equivalent to `8n(1-r²) < 3r²`, so fixed contraction fails cofinally. Missing structure is the
+admission-derived Christoffel coordinate scale and then shape-only admission holonomy; this is
+formalized in the successor card/module. Fixed-degree limits, compactness, orientation maps, and
+fixed reporters cannot supply it.
 
 ## Verification
 
 - Direct `lake env lean` passed.
-- Targeted module build and axiom audit pending final session audit.
+- Targeted module build passed.
+- Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound` for audited capstones.
 - No RH hypothesis, `sorry`, `admit`, `axiom`, `opaque`, `unsafe`, or numerical computation.

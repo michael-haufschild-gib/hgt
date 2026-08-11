@@ -4281,3 +4281,196 @@ cancel.  Next step is to identify `W` with a classical divisor-bearing symbol an
 quadrature resolvent, then compare their continuation defects.
 
 Verdict: `[PROVED — EXACT WOLD/MESH/HOLONOMY RENORMALIZATION AND FIRST-ORDER WALL CANCELLATION; PAIRED CONTINUATION OPEN]`.
+
+---
+
+## 77. Conjecture loop 53 — relative orbit leakage of the Wold pole
+
+### Conjecture
+
+The newly identified Wold pole may admit a source-cohomological noncancellation proof.  The
+four-shift symbol has cubic coefficient pattern `1,-3,3,-1`, while completed Xi supplies a
+canonical translation step two.  Test whether global Wold exactness forces the reflected physical
+pole pair to be exact in the shift-two orbit quotient, which would place every zero on the
+critical line.
+
+### Proof, failure, and positive pivot
+
+Let `T_q` translate formal principal parts by `q`.  For one zeta zero `rho` of multiplicity `m`,
+the complete Wold principal-part chain is
+
+```text
+C_rho = -m [rho-1] + 3m [rho-2] - 3m [rho-3] + m [rho-4].   (RJG233)
+```
+
+Lean proves the exact factorization
+
+```text
+C_rho = delta_(-1) P_rho,       delta_q=T_q-1,              (RJG234)
+```
+
+for an explicit quadratic primitive `P_rho`.  Hence the complete four-shift divisor has zero
+orbit residue.  Adjacent polarization is also automatically exact:
+
+```text
+T_(-1) C_rho + C_rho = delta_(-2) P_rho.                    (RJG235)
+```
+
+This kills the naive conjecture.  Global Wold exactness is too strong in the wrong direction: it
+retains three compensating shifts outside the physical half-strip.
+
+The positive survivor is a relative law.  If the visible head `[x]c` is completed to a finite
+translation coboundary by a compensator `R`, then
+
+```text
+orbitResidue_q(R) = -[x mod q]c.                            (RJG236)
+```
+
+For an anti-reflected pair the exact vector law is
+
+```text
+orbitResidue_q(R)
+  = -([x mod q]c-[y mod q]c).                               (RJG237)
+```
+
+The Route-T physical/reflected first-shift supports are
+
+```text
+x=rho-1,                 y=-conj(rho).                      (RJG238)
+```
+
+Inside `0<Re rho<1`, Lean proves
+
+```text
+exists E, [physical anti-reflected head]=delta_2 E
+  iff Re rho=1/2.                                           (RJG239)
+```
+
+Indeed equality of the two classes in `C/2Z` gives
+`2n=2 Re(rho)-1`; both sides lie strictly between `-1` and `1`, so `n=0`.  More sharply, if
+`Re rho != 1/2`, every shift-two completion has `R != 0` and its quotient-orbit vector is exactly
+the nonzero value in (RJG237).
+
+The analytic and formal descriptions are joined, not merely juxtaposed.  The existing analytic
+Wold theorem supplies a residue `-m` at `s=rho-1`; the new capstone packages that residue with
+global exactness of (RJG233) and the exact negative tail charge created by deleting its physical
+head.
+
+Lean status: `[FORMALIZED] [DIRECT COMPILE PASSED]` in
+`XiHeatCassiniWoldRelativeOrbitLeakage.lean`, imported by the `RHTower` umbrella.
+
+### Hostile audit and higher universal principle
+
+Activation/divisor blow-up does not repair the failure: its projective limit
+`(1+lambda)^(-m)` records multiplicity but is independent of `rho`.  Positivity of the activation
+ratio and Xi reflection are compatible with every off-critical zero.  The completed affine Xi
+current retains `rho-1/2`, but demanding Pick/Stieltjes positivity of that current is an
+RH-equivalent transported positivity, not a source-created one.
+
+The new higher principle is **relative divisor leakage**.  A finite-difference source can be
+globally exact while its restriction to a physical continuation chamber carries a nonzero
+boundary charge.  Passing from the complete Wold chain to its first visible shift does not commute
+with orbit cohomology; the discarded shifts are the exact commutator.  Therefore neither global
+translation exactness, Hodge reflection, nor activation can prove Route T by itself.
+
+The remaining producer is now sharper than “continue the Hardy carrier.”  One must prove from the
+pre-divisor prime--Gamma source that the complete paired continuation introduces no compensating
+principal part with the orbit vector (RJG237).  Equivalently: prove that mesh, holonomy, and the
+continued residual boundary contribute zero relative orbit flux before inspecting a zero.  The
+holonomy atom is entire; mesh summability has the exact sub-`3/2` prime-gap-moment threshold; the
+unresolved RH-strength component is exclusion of this orbit charge from the continued residual
+Hardy source.
+
+Verdict: `[PROVED — GLOBAL CUBIC EXACTNESS LEAKS A PRECISE PHYSICAL ORBIT CHARGE; REFLECTED HEAD EXACTNESS IS CRITICAL-LINE EQUIVALENT; SOURCE EXCLUSION OF THE COMPENSATOR OPEN]`.
+
+---
+
+## 78. Conjecture loop 54 — canonical mesh continuation and compensator localization
+
+### Conjecture
+
+The relative-leakage theorem reduces Route T to excluding compensating principal parts from mesh,
+holonomy, and residual Hardy continuation.  The static holonomy atom is entire.  Test whether the
+critical prime-gap energy does more than give pointwise mesh-defect convergence: perhaps it gives
+locally normal convergence, hence a genuine holomorphic mesh continuation with zero residue at the
+Wold pole.
+
+### Proof
+
+Write the scaled cell defect as
+
+```text
+D_N(s)=phi_(N+1)(s)(exp(s delta_N)-1-s delta_N).             (RJG240)
+```
+
+Its exact derivative is
+
+```text
+D_N'(s)=phi_(N+1)(s)[-h_(N+1)(exp(s delta_N)-1-s delta_N)
+                     +delta_N(exp(s delta_N)-1)].           (RJG241)
+```
+
+Both brackets retain the factor `delta_N^2`.  Differentiation costs one factor `h_(N+1)`, but on
+every ball compactly inside `Re s>-1/2` one may choose abscissae `a<b<1/2`.  The spare exponential
+`exp(-(b-a)h)` absorbs that height, while the depth-`b` prime-gap energy remains summable whenever
+the critical depth-`1/2` energy is summable.  Lean formalizes the derivative, its global Taylor
+majorant, the local summable derivative majorant, and termwise differentiation.  Therefore
+
+```text
+sum_N D_N(s) is holomorphic on -1/2<Re(s)<=0               (RJG242)
+```
+
+under the single critical prime-gap-energy hypothesis.
+
+The finite resolvent telescope then forces—not chooses—the mesh continuation
+
+```text
+M_cont(s)=(phi_0(s)-sum_N D_N(s))/s.                        (RJG243)
+```
+
+Taking the safe-half-plane limit of the same finite identity proves
+`M_cont(s)=M(s)` for `Re(s)>0`.  Thus (RJG243) is the actual continuation of the ordered mesh, not
+an unrelated left-half-plane regularization.  It is holomorphic at every nonzero point with
+`-1/2<Re(s)<=0`.  For every zeta zero `rho` with `Re(rho)>1/2`, Lean consequently proves
+
+```text
+Res_(s=rho-1) M_cont(s)=0,
+Res_(s=rho-1) holonomy(s)=0.                                (RJG244)
+```
+
+Define the continued safe residual by the exact signs in (RJG231):
+
+```text
+K_cont(s)=W_cont(s)-M_cont(s)-holonomy(s).
+```
+
+It agrees with `K(-i s)` on `Re(s)>0`.  Combining (RJG244) with the already-proved Wold residue
+gives the exact surviving pole law
+
+```text
+Res_(s=rho-1) K_cont(s)=-m(rho) != 0.                       (RJG245)
+```
+
+Lean status: `[FORMALIZED] [DIRECT COMPILES PASSED]` in
+`XiHeatCassiniLogMeshLaplaceContinuation.lean` and
+`XiHeatCassiniWoldRelativeOrbitLeakage.lean`; the new continuation module is imported by the
+`RHTower` umbrella.
+
+### Hostile audit and higher universal principle
+
+This is genuine compensator elimination, but it is conditional on summability of the critical
+prime-gap energy.  The published mean-square prime-gap theorem proves that hypothesis on paper;
+its full Lean formalization remains required.  Even after that input, (RJG245) does not contradict
+anything: it says the canonical continuation of the lower Hardy residual has the Wold pole.  To
+force RH, Route T must independently prove from the pre-divisor Hardy source that this residual
+continuation is holomorphic, or otherwise has zero relative orbit flux, at every point
+`rho-1` in the physical half-strip.  Assuming that regularity would be the missing theorem, not a
+proof.
+
+Higher principle: **boundary charge localizes after canonical quadrature continuation**.  Global
+Wold exactness hides a relative divisor charge; exact mesh telescoping plus normal convergence
+shows that neither discretization nor static holonomy can carry it.  Once the classical arithmetic
+energy is supplied, the entire obstruction is forced into one object: continuation of the paired
+residual Hardy source.  Route T is no longer a three-channel noncancellation problem.
+
+Verdict: `[PROVED — CANONICAL MESH CONTINUATION IS HOLOMORPHIC AND POLE-FREE UNDER CRITICAL GAP ENERGY; MESH AND HOLONOMY CANNOT CANCEL THE WOLD POLE; RESIDUAL HARDY CONTINUATION IS THE SOLE REMAINING CHANNEL]`.

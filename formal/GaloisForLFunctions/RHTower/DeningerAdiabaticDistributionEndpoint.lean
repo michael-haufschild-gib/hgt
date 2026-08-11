@@ -86,6 +86,7 @@ theorem deningerAdiabaticPreimageDistribution_zero
     MeasureTheory.Lp.toTemperedDistribution_apply,
     deningerPreimageDistribution, deningerL1Distribution,
     MeasureTheory.Lp.toTemperedDistribution_apply]
+  simp only [deningerAdiabaticEvenPreimageLp]
   apply integral_congr_ae
   filter_upwards [
     Integrable.coeFn_toL1
@@ -131,13 +132,13 @@ theorem deningerAdiabaticEvenPreimageLp_dist_eq_two_mul
         (deningerAdiabaticEvenPreimageLp (a := 0) le_rfl h) =
         ∫ x : ℝ, F x := by
       rw [L1.dist_eq_integral_dist]
+      simp only [deningerAdiabaticEvenPreimageLp]
       apply integral_congr_ae
       filter_upwards [
         Integrable.coeFn_toL1 (deningerAdiabaticEvenPreimage_integrable ha h),
         Integrable.coeFn_toL1
           (deningerAdiabaticEvenPreimage_integrable (a := 0) le_rfl h)] with x hx hy
       rw [hx, hy]
-      rfl
     _ = 2 * ∫ x in Set.Ioi (0 : ℝ), F x :=
       deninger_integral_even_eq_two_Ioi hF hFeven
     _ = 2 * dist (deningerAdiabaticMomentLp ha 0 h) (deningerMomentLp 0 h) := by
@@ -178,12 +179,17 @@ theorem tendsto_deningerAdiabaticPreimageDistribution_zero
       (fun a : Set.Ioi (0 : ℝ) =>
         deningerAdiabaticPreimageDistribution a.property.le h)
       atBot (𝓝 (deningerPreimageDistribution (DeningerMeyerSource.toSource h))) := by
+  rw [← deningerAdiabaticPreimageDistribution_zero]
   have hmap :=
     (MeasureTheory.Lp.toTemperedDistributionCLM ℂ volume 1).continuous.continuousAt.tendsto.comp
       (tendsto_deningerAdiabaticEvenPreimageLp_zero h)
-  simpa only [deningerAdiabaticPreimageDistribution,
-    MeasureTheory.Lp.toTemperedDistributionCLM_apply,
-    deningerAdiabaticPreimageDistribution_zero] using hmap
+  change Tendsto
+    ((MeasureTheory.Lp.toTemperedDistributionCLM ℂ volume 1) ∘
+      fun a : Set.Ioi (0 : ℝ) => deningerAdiabaticEvenPreimageLp a.property.le h)
+    atBot
+    (𝓝 ((MeasureTheory.Lp.toTemperedDistributionCLM ℂ volume 1)
+      (deningerAdiabaticEvenPreimageLp (a := 0) le_rfl h)))
+  exact hmap
 
 /-- Collar exchange transported to the Meyer-topologized source. -/
 def deningerMeyerCollarExchange (h : DeningerMeyerSource) : DeningerMeyerSource :=

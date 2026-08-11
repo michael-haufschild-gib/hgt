@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.OrbitMarkerSourceFaceReconstruction
 import GaloisForLFunctions.HTGeometry.PrincipalPartDifferentialOperator
+import GaloisForLFunctions.RHTower.XiHeatCassiniLogMeshLaplaceContinuation
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldZetaPoleCarrier
 
 /-!
@@ -312,6 +313,36 @@ theorem xiHeatCassiniReflectedWoldPhysicalPoleHead_compensator_ne_zero
     (xiHeatCassiniReflectedWoldPhysicalPoleHead_re_eq_half_of_coboundary
       hstrip hm E hcob)
 
+/-- Static holonomy counterterm in the safe Wold/mesh/Hardy identity. -/
+def xiHeatCassiniWoldLaplaceHolonomyCounterterm (s : ℂ) : ℂ :=
+  ((xiMassNthPrimeLogHeight 0 +
+      xiHeatCassiniWoldLogHolonomyConstant : ℝ) : ℂ) *
+    xiHeatCassiniOrderedPrimeLaplacePhase 0 s
+
+/-- The forced holonomy counterterm is entire in the Laplace coordinate. -/
+theorem analyticAt_xiHeatCassiniWoldLaplaceHolonomyCounterterm
+    (s : ℂ) :
+    AnalyticAt ℂ xiHeatCassiniWoldLaplaceHolonomyCounterterm s := by
+  unfold xiHeatCassiniWoldLaplaceHolonomyCounterterm
+    xiHeatCassiniOrderedPrimeLaplacePhase
+    xiHeatCassiniOrderedPrimeComplexNegativePhase
+  fun_prop
+
+/-- Holonomy carries no principal part at any candidate continuation point. -/
+theorem xiHeatCassiniWoldLaplaceHolonomyCounterterm_zero_residue
+    (a : ℂ) :
+    Tendsto
+      (fun s : ℂ =>
+        (s - a) * xiHeatCassiniWoldLaplaceHolonomyCounterterm s)
+      (𝓝[≠] a) (𝓝 0) := by
+  have hlin := tendsto_sub_self_punctured_zero a
+  have hhol : Tendsto xiHeatCassiniWoldLaplaceHolonomyCounterterm
+      (𝓝[≠] a)
+      (𝓝 (xiHeatCassiniWoldLaplaceHolonomyCounterterm a)) :=
+    (analyticAt_xiHeatCassiniWoldLaplaceHolonomyCounterterm a).continuousAt.tendsto.mono_left
+      nhdsWithin_le_nhds
+  simpa using hlin.mul hhol
+
 /-- **Analytic/formal relative-leakage package.**  Every off-critical zeta zero supplies the
 already-proved analytic Wold residue `-m`.  Its complete four-shift formal divisor is globally
 exact, while deleting the physical head leaves precisely its negative orbit residue in the tail. -/
@@ -340,6 +371,52 @@ theorem xiHeatCassiniWoldPole_relativeOrbitLeakage
       simplePoleDifferentialOperator_one_eq_single] using
       orbitResidueVector_xiHeatCassiniWoldCubicPoleTail
         1 (rho - 1) (simplePoleDifferentialOperator 1 (-(m : ℂ)))
+
+/-- Canonical continuation of the safe Wold-minus-mesh-minus-holonomy residual.  Under critical
+gap energy the mesh term is the genuine continuation constructed from the finite resolvent
+telescope. -/
+def xiHeatCassiniWoldResidualLaplaceContinuation (s : ℂ) : ℂ :=
+  xiHeatCassiniWoldLaplaceContinuation s -
+    xiHeatCassiniLogMeshLaplaceContinuation s -
+    xiHeatCassiniWoldLaplaceHolonomyCounterterm s
+
+/-- The continued residual agrees with the rotated lower Hardy kernel on the safe half-plane. -/
+theorem xiHeatCassiniWoldResidualLaplaceContinuation_eq_lowerHardy
+    {s : ℂ} (hs : 0 < s.re)
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    xiHeatCassiniWoldResidualLaplaceContinuation s =
+      xiHeatCassiniWoldResidualLowerHardyKernel (-Complex.I * s) := by
+  rw [xiHeatCassiniWoldResidualLaplaceContinuation,
+    xiHeatCassiniWoldLaplaceContinuation_eq hs,
+    xiHeatCassiniLogMeshLaplaceContinuation_eq_current hs hcritical,
+    xiHeatCassiniWoldLaplaceHolonomyCounterterm]
+  exact (xiHeatCassiniWoldResidualLowerHardyKernel_negI_mul_eq_renormalizedLaplace hs).symm
+
+/-- **Mesh-and-holonomy noncompensation theorem.**  At every zeta zero right of the critical
+line, critical prime-gap energy makes the genuine continuation of the safe residual retain the
+full nonzero Wold residue.  Therefore the only remaining Route-T compensation channel is a
+singularity in continuation of the residual Hardy kernel itself. -/
+theorem xiHeatCassiniWoldResidualLaplaceContinuation_nonzero_residue_of_criticalEnergy
+    {rho : ℂ} (hrho : 1 / 2 < rho.re)
+    (hzeta : riemannZeta rho = 0)
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    ∃ m : ℕ, 1 ≤ m ∧
+      Tendsto (fun s : ℂ =>
+        (s - (rho - 1)) * xiHeatCassiniWoldResidualLaplaceContinuation s)
+        (𝓝[≠] (rho - 1)) (𝓝 (-(m : ℂ))) := by
+  obtain ⟨m, hm, hWold⟩ :=
+    xiHeatCassiniWoldLaplaceContinuation_zero_residue hrho hzeta
+  have hmesh :=
+    xiHeatCassiniLogMeshLaplaceContinuation_zero_residue_at_zetaPole_of_criticalEnergy
+      hrho hzeta hcritical
+  have hhol := xiHeatCassiniWoldLaplaceHolonomyCounterterm_zero_residue (rho - 1)
+  refine ⟨m, hm, ?_⟩
+  have hres := (hWold.sub hmesh).sub hhol
+  convert hres using 1
+  · funext s
+    rw [xiHeatCassiniWoldResidualLaplaceContinuation]
+    ring
+  · ring
 
 end
 

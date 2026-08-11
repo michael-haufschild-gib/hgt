@@ -2,7 +2,7 @@
 
 - **ID:** gauss-positive-cubic-critical-mass
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Type:** THEOREM (paper) / THEOREM (Lean)
 - **Source:** rh-current-frontier-map.md · C1/CCM-FU propagated-iterate wall
 - **Statement:** Every actual three-component Gauss quasi-inner block has eventually positive two-sided cubic Fourier diagonal bounded below by one quarter of its critical sampled energy; consequently its cubic diagonal partial sums diverge.
 
@@ -17,7 +17,7 @@ assume divisor location, Weil positivity, or RH.
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `tendsto_gaussCubeTwoSidedDiagonal_sum_atTop`, targeted module build, axiom audit
+- [x] 2 → 3  formalized: Lean theorem `tendsto_gaussCubeTwoSidedDiagonal_sum_atTop`; targeted module build passes; axiom audit has only `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach

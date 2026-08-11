@@ -422,3 +422,67 @@ source-faithful unit-shell splice and resulting hybrid frontier did not.
 
 No endpoint estimate is claimed.  No literature search was used under current instruction.  No
 Lean file was written or built.
+
+## 9. Exact Euler-gauge cancellation and local physical receiver
+
+The moving parameter is an analysis gauge, not a physical deformation. For every occupied subset
+(T), with (m(T)=\prod_{p\in T}p),
+
+\[
+ \nu_{\sigma,Y}(T)=\frac{m(T)^{-\sigma}}{\mathcal P_{\sigma,Y}},
+ \qquad W_{\sigma,x}(T)=m(T)^\sigma e^{-xm(T)},
+\]
+
+so
+
+\[
+ \boxed{\mathcal P_{\sigma,Y}\nu_{\sigma,Y}(T)W_{\sigma,x}(T)
+ =e^{-xm(T)}.}                                             \tag{28}
+\]
+
+Multiplying `(28)` by an arbitrary predeclared observable (F(T)) and summing proves
+
+\[
+ \boxed{
+ \frac{\mathbb E_{\sigma,Y}[F W_{\sigma,x}]}
+      {\mathbb E_{\sigma,Y}[W_{\sigma,x}]}
+ =\frac{\sum_TF(T)e^{-xm(T)}}{\sum_Te^{-xm(T)}}.}          \tag{29}
+\]
+
+Thus every source-faithful normalized observable and every relation flow formed from the physical
+atom weights is exactly independent of (\sigma). The forced saddle `(9)` locates the mass; it does
+not create a source-transfer error.
+
+This also identifies the exact local receiver already implicit in boundary transport. If a
+predeclared opposite-parity matching leaves normalized unmatched physical mass (u_X) and every
+matched pair (m,n) obeys (|m-n|\le H_X), then
+
+\[
+ \frac{|J_Y(1/X)|}{Z_Y(1/X)}
+ \le u_X+\tanh\!\left(\frac{H_X}{2X}\right)
+ \le u_X+\frac{H_X}{2X}.                                  \tag{30}
+\]
+
+The first inequality is pairwise polarization of
+(e^{-m/X},e^{-n/X}); the second uses (\tanh v\le v). Hence
+
+\[
+ u_X\le X^{-1/2+o(1)},\qquad H_X\le X^{1/2+o(1)}          \tag{31}
+\]
+
+already implies the Route E endpoint. No chi-square transfer, critical second-moment premise, or
+moving-tilt penalty remains. What remains hard is exactly construction of the source-predeclared
+matching/flow with `(31)`, unit column load, zero/one-large-prime seam orientation, and recurrence
+compatibility. Equation `(30)` is a receiver, not that producer.
+
+### Hostile correction
+
+The later bare-Bernoulli chi-square bridge is valid but too weak for this endpoint. Even after a
+unit-shell lower mass (\gg1/\log Y), its normalized Cauchy--Schwarz error at forced tilt is only
+(O(\log\log Y/\sqrt{\log Y})), not (Y^{-1/2+o(1)}). Applying it to the physical relation would
+also discard the exact compensating factor (m^\sigma) in `(28)`. The correct proof route is exact
+gauge cancellation `(28)`--`(29)` plus physical locality `(30)`.
+
+The atomwise identity `(28)` is already Lean-certified as
+`routeEEulerTiltTerm_eq_gibbsTerm`. Arbitrary-observable and matching corollaries are recorded on
+paper only while the Lean corpus is under refactor.

@@ -298,6 +298,252 @@ theorem relativeArithmeticSource_eventually_gt_degree
 
 end XiShiftedCanonicalAdmission
 
+namespace XiShiftedArcsineAdmission
+
+/-- Coordinate dilation of the arcsine moment sequence. -/
+def coordinateDilatedMoment (r : ℝ) (k : ℕ) : ℝ :=
+  r ^ k * GaloisForLFunctions.HTGeometry.normalizedCentralBinom k
+
+/-- Monic arcsine admission transported through the coordinate dilation `X ↦ rX`. -/
+def coordinateDilatedAmplitude (r : ℝ) (n : ℕ) : Polynomial ℝ :=
+  r ^ n • (amplitude n).comp (Polynomial.C r⁻¹ * X)
+
+/-- Evaluation of the dilated moment functional is exactly polynomial pullback by `X ↦ rX`. -/
+theorem momentFunctional_coordinateDilatedMoment
+    {r : ℝ} (hr : r ≠ 0) (Q : Polynomial ℝ) :
+    HTGeometry.momentFunctional (coordinateDilatedMoment r) Q =
+      HTGeometry.momentFunctional
+        GaloisForLFunctions.HTGeometry.normalizedCentralBinom
+        (Q.comp (Polynomial.C r * X)) := by
+  have hlin : (Polynomial.C r * X : Polynomial ℝ).natDegree = 1 :=
+    Polynomial.natDegree_C_mul_X r hr
+  have hdegree : (Q.comp (Polynomial.C r * X)).natDegree ≤ Q.natDegree := by
+    calc
+      _ ≤ Q.natDegree * (Polynomial.C r * X : Polynomial ℝ).natDegree :=
+        Polynomial.natDegree_comp_le
+      _ = Q.natDegree := by rw [hlin, Nat.mul_one]
+  rw [XiShiftedCanonicalAdmission.momentFunctional_eq_sum_range_of_natDegree_le
+      (s := coordinateDilatedMoment r) (P := Q) le_rfl,
+    XiShiftedCanonicalAdmission.momentFunctional_eq_sum_range_of_natDegree_le
+      (s := GaloisForLFunctions.HTGeometry.normalizedCentralBinom) hdegree]
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [Polynomial.comp_C_mul_X_coeff]
+  simp only [coordinateDilatedMoment]
+  ring
+
+/-- Pulling the transported admission back by `X ↦ rX` recovers the original arcsine flag. -/
+theorem coordinateDilatedAmplitude_comp
+    {r : ℝ} (hr : r ≠ 0) (n : ℕ) :
+    (coordinateDilatedAmplitude r n).comp (Polynomial.C r * X) =
+      r ^ n • amplitude n := by
+  simp only [coordinateDilatedAmplitude,
+    Polynomial.comp_assoc, Polynomial.mul_comp, Polynomial.C_comp,
+    Polynomial.X_comp, Polynomial.smul_eq_C_mul]
+  have hscalar : Polynomial.C r⁻¹ * (Polynomial.C r * X) = X := by
+    rw [← mul_assoc, ← Polynomial.C_mul]
+    field_simp [hr]
+    simp
+  rw [hscalar, Polynomial.comp_X]
+
+/-- Coordinate-dilated arcsine admission remains monic. -/
+theorem coordinateDilatedAmplitude_monic
+    {r : ℝ} (hr : r ≠ 0) {n : ℕ} (hn : n ≠ 0) :
+    (coordinateDilatedAmplitude r n).Monic := by
+  apply Polynomial.monic_of_natDegree_le_of_coeff_eq_one n
+  · rw [coordinateDilatedAmplitude, Polynomial.natDegree_smul _ (pow_ne_zero _ hr),
+      Polynomial.natDegree_comp,
+      Polynomial.natDegree_C_mul_X r⁻¹ (inv_ne_zero hr),
+      XiShiftedCanonicalAdmission.amplitude_natDegree hn, Nat.mul_one]
+  · simp only [coordinateDilatedAmplitude, Polynomial.coeff_smul,
+      Polynomial.comp_C_mul_X_coeff]
+    have hamp : (amplitude n).coeff n = 1 := by
+      have hcoeff := (amplitude_monic hn).coeff_natDegree
+      rw [XiShiftedCanonicalAdmission.amplitude_natDegree hn] at hcoeff
+      exact hcoeff
+    rw [hamp]
+    change r ^ n * (1 * r⁻¹ ^ n) = 1
+    rw [one_mul, ← mul_pow]
+    field_simp [hr]
+    simp
+
+/-- Coordinate-dilated arcsine admission retains degree. -/
+theorem coordinateDilatedAmplitude_natDegree
+    {r : ℝ} (hr : r ≠ 0) {n : ℕ} (hn : n ≠ 0) :
+    (coordinateDilatedAmplitude r n).natDegree = n := by
+  rw [coordinateDilatedAmplitude, Polynomial.natDegree_smul _ (pow_ne_zero _ hr),
+    Polynomial.natDegree_comp,
+    Polynomial.natDegree_C_mul_X r⁻¹ (inv_ne_zero hr),
+    XiShiftedCanonicalAdmission.amplitude_natDegree hn, Nat.mul_one]
+
+/-- The dilated arcsine sequence is still a positive moment form. -/
+theorem coordinateDilatedMoment_positiveMomentForm
+    {r : ℝ} (hr : r ≠ 0) :
+    HTGeometry.PositiveMomentForm (coordinateDilatedMoment r) := by
+  refine ⟨fun Q hQ => ?_⟩
+  rw [HTGeometry.momentInner_self,
+    momentFunctional_coordinateDilatedMoment hr]
+  have hcomp : Q.comp (Polynomial.C r * X) ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg (fun P : Polynomial ℝ => P.coeff Q.natDegree) hzero
+    rw [Polynomial.comp_C_mul_X_coeff, Polynomial.coeff_zero] at hcoeff
+    exact (mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hQ)
+      (pow_ne_zero _ hr)) hcoeff
+  rw [Polynomial.pow_comp, ← HTGeometry.momentInner_self]
+  exact
+    GaloisForLFunctions.HTGeometry.normalizedCentralBinom_positiveMomentForm.pos_of_ne_zero
+      _ hcomp
+
+/-- The transported flag is the actual canonical admission of the dilated positive moment form. -/
+theorem coordinateDilatedAmplitude_eq_monicMomentAdmissionPolynomial
+    {r : ℝ} (hr : r ≠ 0) {n : ℕ} (hn : n ≠ 0) :
+    coordinateDilatedAmplitude r n =
+      HTGeometry.monicMomentAdmissionPolynomial (coordinateDilatedMoment r) n := by
+  have hpos := coordinateDilatedMoment_positiveMomentForm hr
+  apply HTGeometry.eq_monicMomentAdmissionPolynomial_of_monic_of_orthogonal
+    (ne_of_gt ((HTGeometry.positiveMomentForm_iff_momentHankelMatrix_posDef.mp hpos n).det_pos))
+    (coordinateDilatedAmplitude_monic hr hn)
+    (coordinateDilatedAmplitude_natDegree hr hn)
+  intro i
+  rw [momentFunctional_coordinateDilatedMoment hr]
+  have hpoly :
+      (X ^ (i : ℕ) * coordinateDilatedAmplitude r n).comp
+          (Polynomial.C r * X) =
+        r ^ ((i : ℕ) + n) • (X ^ (i : ℕ) * amplitude n) := by
+    rw [Polynomial.mul_comp, Polynomial.pow_comp, Polynomial.X_comp,
+      coordinateDilatedAmplitude_comp hr n]
+    simp only [Polynomial.smul_eq_C_mul]
+    rw [mul_pow, Polynomial.C_pow, pow_add, Polynomial.C_mul]
+    simp only [Polynomial.C_pow]
+    ring
+  rw [hpoly, HTGeometry.momentFunctional_smul]
+  have hzero := XiShiftedCanonicalAdmission.momentFunctional_X_pow_mul_arcsine_amplitude_eq_zero
+    hn i
+  rw [hzero, mul_zero]
+
+/-- Adaptive source shear has coordinate weight two relative to admitted norm. -/
+theorem adaptiveShear_coordinateDilatedAmplitude_comp
+    {r : ℝ} (hr : r ≠ 0) (n : ℕ) :
+    (xiShiftedBoundaryAdaptiveShearPolynomial
+        (coordinateDilatedAmplitude r n)).comp (Polynomial.C r * X) =
+      r ^ (2 * n + 2) •
+        xiShiftedBoundaryAdaptiveShearPolynomial (amplitude n) := by
+  have h := XiShiftedCanonicalAdmission.adaptiveShear_comp_C_mul_X hr
+    (coordinateDilatedAmplitude r n)
+  rw [coordinateDilatedAmplitude_comp hr n,
+    XiShiftedCanonicalAdmission.adaptiveShear_smul] at h
+  rw [← h, smul_smul]
+  congr 1
+  rw [pow_add, pow_mul]
+  ring
+
+/-- Exact norm scaling of the transported canonical admission. -/
+theorem momentFunctional_coordinateDilatedAmplitude_sq
+    {r : ℝ} (hr : r ≠ 0) (n : ℕ) :
+    HTGeometry.momentFunctional (coordinateDilatedMoment r)
+        ((coordinateDilatedAmplitude r n) ^ 2) =
+      r ^ (2 * n) *
+        HTGeometry.momentFunctional
+          GaloisForLFunctions.HTGeometry.normalizedCentralBinom
+          ((amplitude n) ^ 2) := by
+  rw [momentFunctional_coordinateDilatedMoment hr]
+  have hpoly :
+      ((coordinateDilatedAmplitude r n) ^ 2).comp (Polynomial.C r * X) =
+        r ^ (2 * n) • ((amplitude n) ^ 2) := by
+    rw [Polynomial.pow_comp, coordinateDilatedAmplitude_comp hr n]
+    simp only [Polynomial.smul_eq_C_mul]
+    rw [pow_mul, Polynomial.C_pow]
+    simp only [Polynomial.C_pow]
+    ring
+  rw [hpoly, HTGeometry.momentFunctional_smul]
+
+/-- Exact adaptive-source scaling of the transported canonical admission. -/
+theorem momentFunctional_coordinateDilatedAmplitude_adaptiveShear
+    {r : ℝ} (hr : r ≠ 0) (n : ℕ) :
+    HTGeometry.momentFunctional (coordinateDilatedMoment r)
+        (xiShiftedBoundaryAdaptiveShearPolynomial
+          (coordinateDilatedAmplitude r n)) =
+      r ^ (2 * n + 2) *
+        HTGeometry.momentFunctional
+          GaloisForLFunctions.HTGeometry.normalizedCentralBinom
+          (xiShiftedBoundaryAdaptiveShearPolynomial (amplitude n)) := by
+  rw [momentFunctional_coordinateDilatedMoment hr,
+    adaptiveShear_coordinateDilatedAmplitude_comp hr n,
+    HTGeometry.momentFunctional_smul]
+
+/-- **Exact thermodynamic sensitivity law.**  On a positive canonical admission family obtained
+by coordinate dilation, source divided by admitted norm scales by `r²`. -/
+theorem coordinateDilated_adaptiveShear_div_norm
+    {r : ℝ} (hr : r ≠ 0) {n : ℕ} (hn : n ≠ 0) :
+    HTGeometry.momentFunctional (coordinateDilatedMoment r)
+        (xiShiftedBoundaryAdaptiveShearPolynomial
+          (coordinateDilatedAmplitude r n)) /
+      HTGeometry.momentFunctional (coordinateDilatedMoment r)
+        ((coordinateDilatedAmplitude r n) ^ 2) =
+      r ^ 2 * ((n : ℝ) + 3 / 8) := by
+  rw [momentFunctional_coordinateDilatedAmplitude_adaptiveShear hr n,
+    momentFunctional_coordinateDilatedAmplitude_sq hr n,
+    momentFunctional_adaptiveShear_amplitude_eq_norm_mul_linear hn]
+  have hnorm := momentFunctional_amplitude_sq_pos hn
+  field_simp [hr, ne_of_gt hnorm]
+  ring
+
+/-- Sharp admission window in the dilation model: relative source beats degree exactly when the
+coordinate contraction is within an inverse-degree edge window. -/
+theorem coordinateDilated_adaptiveShear_div_norm_gt_degree_iff
+    {r : ℝ} (hr : r ≠ 0) {n : ℕ} (hn : n ≠ 0) :
+    (n : ℝ) <
+        HTGeometry.momentFunctional (coordinateDilatedMoment r)
+            (xiShiftedBoundaryAdaptiveShearPolynomial
+              (coordinateDilatedAmplitude r n)) /
+          HTGeometry.momentFunctional (coordinateDilatedMoment r)
+            ((coordinateDilatedAmplitude r n) ^ 2) ↔
+      8 * (n : ℝ) * (1 - r ^ 2) < 3 * r ^ 2 := by
+  rw [coordinateDilated_adaptiveShear_div_norm hr hn]
+  constructor <;> intro h <;> nlinarith
+
+/-- A large enough degree defeats the `> degree` target after any fixed strict coordinate
+contraction, even though every dilated moment form remains positive and every flag is canonical. -/
+theorem coordinateDilated_adaptiveShear_div_norm_lt_degree
+    {r : ℝ} (hr : 0 < r) (_hrone : r < 1) {n : ℕ} (hn : n ≠ 0)
+    (hlarge : 3 * r ^ 2 < 8 * (n : ℝ) * (1 - r ^ 2)) :
+    HTGeometry.momentFunctional (coordinateDilatedMoment r)
+        (xiShiftedBoundaryAdaptiveShearPolynomial
+          (coordinateDilatedAmplitude r n)) /
+      HTGeometry.momentFunctional (coordinateDilatedMoment r)
+        ((coordinateDilatedAmplitude r n) ^ 2) < (n : ℝ) := by
+  rw [coordinateDilated_adaptiveShear_div_norm (ne_of_gt hr) hn]
+  nlinarith
+
+/-- Fixed positive contractions violate relative degree coercivity at all sufficiently large
+degrees.  Therefore no degree-independent open neighborhood of the arcsine face can prove the
+cofinal source inequality. -/
+theorem coordinateDilated_adaptiveShear_div_norm_eventually_lt_degree
+    {r : ℝ} (hr : 0 < r) (hrone : r < 1) :
+    ∀ᶠ n : ℕ in atTop,
+      HTGeometry.momentFunctional (coordinateDilatedMoment r)
+          (xiShiftedBoundaryAdaptiveShearPolynomial
+            (coordinateDilatedAmplitude r n)) /
+        HTGeometry.momentFunctional (coordinateDilatedMoment r)
+          ((coordinateDilatedAmplitude r n) ^ 2) < (n : ℝ) := by
+  have hrSq : r ^ 2 < 1 := by
+    have hprod : 0 < (1 - r) * (1 + r) :=
+      mul_pos (sub_pos.mpr hrone) (add_pos zero_lt_one hr)
+    nlinarith
+  have hden : 0 < 8 * (1 - r ^ 2) := by positivity
+  obtain ⟨N, hN⟩ := exists_nat_gt (3 * r ^ 2 / (8 * (1 - r ^ 2)))
+  filter_upwards [eventually_ge_atTop (max N 1)] with n hnmax
+  have hnN : N ≤ n := le_trans (Nat.le_max_left _ _) hnmax
+  have hn0 : n ≠ 0 := by omega
+  have hratio : 3 * r ^ 2 / (8 * (1 - r ^ 2)) < (n : ℝ) :=
+    lt_of_lt_of_le hN (by exact_mod_cast hnN)
+  have hlarge : 3 * r ^ 2 < 8 * (n : ℝ) * (1 - r ^ 2) := by
+    have := (div_lt_iff₀ hden).mp hratio
+    nlinarith
+  exact coordinateDilated_adaptiveShear_div_norm_lt_degree hr hrone hn0 hlarge
+
+end XiShiftedArcsineAdmission
+
 end
 
 end RHTower

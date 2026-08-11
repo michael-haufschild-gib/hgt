@@ -1,12 +1,14 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
-- **RH used:** no
+- **RH used:** no in Sections 2--14.7; yes as the hypothesis of the global-limit audit in
+  Sections 14.8--14.9
 - **Computation used:** no
-- **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [LEAN READ-ONLY AUDITED]`
+- **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
+  `[LEAN READ-ONLY AUDITED]`
   `[CANDIDATE NEW SUZUKI-SPECIFIC SYNTHESIS] [EXTERNAL PRIORITY UNVERIFIED]`
   `[NOT FULL XI IDENTIFICATION] [NOT RH]`
 
@@ -45,6 +47,29 @@ identification by Vitali, and finite-source positivity then implies RH.  The cor
 frontier is therefore convergence, on one source-declared imaginary interval, of the explicit
 adjacent ground Fourier ratio or interior resolvent Fourier ratio in Section 14.  First-defect
 matching, Pick positivity, and nonadjacent scalar scheduling do not supply that convergence.
+
+That interval theorem has an exact spectral meaning.  It is equivalent to weak convergence of
+the squared movable Clark probabilities to the normalized inverse-square spectral measure of the
+global zeta screw function.  Consequently interval identification forces, rather than assumes,
+both zero escape at finite and projective infinity and every limiting local Clark mass.  In
+dynamical form the missing theorem is convergence of the normalized cyclic correlations of the
+finite self-adjoint extensions to the normalized screw signal.  Suzuki's conjectural convergence
+of eigenvalue sets alone does not contain this weight information.
+
+The target probability is nevertheless source-declared.  Suzuki's unconditional prime--Gamma
+screw line has, under RH, a unique zero-energy coboundary origin obtained by Cesaro averaging the
+line itself; its spectral probability is exactly the inverse-square target.  This removes target
+fitting but exposes a new obstruction in Suzuki's own RH-conditional `lambda=0` embedding:
+normalized coalescing finite deficiency anchors converge weakly to zero in the global Weil space.
+Hence clean local spectral-projection convergence cannot carry the required positive Clark
+weights.  Any successful Route-G limit must be singular at the pointed level (projection
+rotation/crowding), or must use shifted metrics outside that `lambda=0` embedding.  Exact-node
+real defect vectors behave oppositely: they Galerkin-lock to the global Xi eigenvectors.  The
+combination yields a quantitative resolution wall: any mass-carrying one-for-one eigenvalue must
+lock slower than `sqrt(alpha_a/a^3)`, unless local rank or metric comparison becomes singular.
+The metric alternative is itself rigid: amplification is at most
+`lambda/(alpha_a-lambda)`.  Evasion requires a positive floor-hugging shift, while proving any
+positive admissible shift cofinally already proves RH directly by Weil positivity.
 
 ## 2. Locked ground bundle and first visible moments
 
@@ -1736,7 +1761,558 @@ Pick positivity still leave infinitely many complete carriers.  The interval tra
 `(107)` or Ward law `(112)` is genuinely new source information; it cannot be replaced by any
 argument that merely rechecks the first jet.
 
-### 14.6 Conjecture loop and novelty correction
+### 14.6 The interval law is a complete weighted spectral convergence theorem
+
+The transform in `(107)` determines much more than one half-plane function.  Let `nu_n` be the
+even movable-anchor Clark probability for the `n`-th source system, and let `mu_n` be its squared
+pushforward to the one-point compactification `[0,infinity]`:
+
+```text
+mu_n=(t |-> t^2)_* nu_n,
+k_(s,c)(u)=(u+c^2)/(u+s),       k_(s,c)(infinity)=1.    (115)
+```
+
+For `s>0`, `k_(s,c)` is continuous on this compactification and
+
+```text
+sup_(u in [0,infinity]) |k_(s,c)(u)-u/(u+s)| <= c^2/s. (116)
+```
+
+Assume the interval law `(107)` on a uniqueness set and retain the actual finite-source
+hypotheses of Theorem I.  Theorem I first gives RH.  Hence every centered squared Xi coordinate
+`omega_q` is positive real.  Define the canonical probability
+
+```text
+mu_Xi
+ =1/M_0(0) sum_q omega_q^(-1) delta_(omega_q).          (117)
+```
+
+The sum of its masses is one, and for every `s>0`,
+
+```text
+int_[0,infinity] u/(u+s) dmu_Xi(u)
+ =1/M_0(0) sum_q 1/(omega_q+s)
+ =M_0(s)/M_0(0).                                        (118)
+```
+
+### Theorem J — Clark--screw spectral rigidity
+
+For an exactly matched cofinal Suzuki source sequence, the following are equivalent:
+
+1. the imaginary-interval transform law `(107)` holds on any set with an interior accumulation
+   point;
+2. RH holds and
+
+   ```text
+   mu_n  -->  mu_Xi                                     (119)
+   ```
+
+   weakly on `[0,infinity]`.
+
+Thus `(107)` forces the complete squared Clark probability, not merely its Stieltjes values.
+In particular,
+
+```text
+lim_(delta downarrow 0) limsup_n mu_n([0,delta])=0,
+lim_(T to infinity)     limsup_n mu_n([T,infinity])=0.  (120)
+```
+
+If `u_0` is an isolated squared Xi ordinate and `delta` isolates it from the other squared
+ordinates, then
+
+```text
+mu_n((u_0-delta,u_0+delta))
+ -> 1/M_0(0) sum_(q:omega_q=u_0) omega_q^(-1).           (121)
+```
+
+#### Proof
+
+The implication `2=>1` follows from weak convergence, continuity of `u/(u+s)`, and the uniform
+estimate `(116)`.  For the converse, probability measures on `[0,infinity]` form a compact space.
+Take a weakly convergent subsequence `mu_(n_j)->mu`.  Equations `(107)` and `(116)` give
+
+```text
+int u/(u+s) dmu(u)=M_0(s)/M_0(0)                        (122)
+```
+
+on the squared uniqueness set.  Both sides are holomorphic for `Re s>0` after RH, so the identity
+holds for every positive `s`.
+
+The functions
+
+```text
+r_s(u)=s/(u+s),        r_s(infinity)=0,                 (123)
+```
+
+together with the constants separate the points of `[0,infinity]`.  For distinct `s,t`, the
+product `r_s r_t` is a linear combination of `r_s,r_t`; moreover `r_s^2` is the uniform limit as
+`t->s` of those products.  Hence the uniform closure of their linear span is a unital separating
+subalgebra.  Stone--Weierstrass makes that closure all real continuous functions.  Since
+`u/(u+s)=1-r_s(u)`, equations `(118)` and `(122)` imply
+`mu=mu_Xi`.  Every convergent subsequence has the same limit, so the whole sequence converges,
+proving `(119)`.  Portmanteau and the fact that `mu_Xi` has no mass at `0` or `infinity` give
+`(120)`.  Applying weak convergence to an isolating interval whose boundary has zero `mu_Xi`
+mass gives `(121)`.
+
+This also recovers the exact source coherence weights: by Theorem G, the left side of `(121)` is
+the sum of squared angles between the movable deficiency anchor and all extension modes in the
+window.  Suzuki's predicted convergence of extension eigenvalue sets does not control these
+sums.  Even a fixed two-point support carries a continuum of probability weights and hence a
+continuum of distinct transforms.  The missing theorem is weighted, or **pointed**, spectral
+convergence.
+
+There is a source-native dynamical form.  Under RH the even lift of `mu_Xi` to the signed
+ordinate line is the normalized inverse-square spectral probability of Suzuki's global screw
+function.  If `g_zeta` denotes that screw function and `nu_Xi` the even lift, then, in the
+signed-copy convention,
+
+```text
+int cos(tx) dnu_Xi(x)
+ =1-g_zeta(t)/M_0(0).                                   (124)
+```
+
+Consequently `(119)` is equivalent to convergence of the cyclic extension correlations
+
+```text
+<g_n, exp(it L_n) g_n>
+ -> 1-g_zeta(t)/M_0(0)          for every real t,        (125)
+```
+
+where `L_n` is the selected self-adjoint extension and `g_n` is its normalized movable
+deficiency vector.  Equation `(125)` is precisely the pointed finite-to-global screw theorem
+absent from the published Suzuki heuristic.  It is declared entirely by the restricted-Weil
+source, its extension, and its anchor; no target zero may be fitted into the finite systems.
+
+### 14.7 Exact mixed-anchor parity response
+
+The Clark measure is useful for classifying the limit, but it is not necessary for proving it
+from the literal operator.  Fix `a,lambda`, write `R=(A_a-lambda)^(-1)`, and put
+
+```text
+E_c(y)=<cosh(yX),R cosh(cX)>,
+O_c(y)=<sinh(yX),R sinh(cX)>.                            (126)
+```
+
+Reflection invariance removes the cross-parity terms and gives the exact finite identities
+
+```text
+F_c(iy)=E_c(y)-O_c(y),
+F_c(-iy)=E_c(y)+O_c(y).                                 (127)
+```
+
+Let `sigma=+1` or `-1` be the orientation in `widehat(Theta)_c=sigma Theta_c`.  Direct insertion
+of `b_c(iy)=(y-c)/(y+c)` into `(90)` gives, wherever the displayed denominators are nonzero,
+
+```text
+sigma=+1:
+ R_c(iy)=(c E_c(y)+y O_c(y))/(c(y E_c(y)+c O_c(y))),
+
+sigma=-1:
+ R_c(iy)=(y E_c(y)+c O_c(y))/(c(c E_c(y)+y O_c(y))).    (128)
+```
+
+This is an exact two-anchor formula, not an asymptotic expansion.  Relative to the free kernel it
+has the sharp rank-one parity gaps
+
+```text
+sigma=+1:
+ R_c(iy)-1/y
+  =(y^2-c^2)O_c(y)/[c y(yE_c(y)+cO_c(y))],
+
+sigma=-1:
+ R_c(iy)-1/y
+  =(y^2-c^2)E_c(y)/[c y(cE_c(y)+yO_c(y))].              (129)
+```
+
+For the Xi target `T(y)=M_0(0)/(yM_0(y^2))`, define
+
+```text
+Delta_c^+(y)
+ =E_c(y)+y O_c(y)/c-T(y)(yE_c(y)+cO_c(y)),
+
+Delta_c^-(y)
+ =y E_c(y)/c+O_c(y)-T(y)(cE_c(y)+yO_c(y)).              (130)
+```
+
+Then `(128)` gives exactly
+
+```text
+R_c(iy)-T(y)=Delta_c^+(y)/(yE_c(y)+cO_c(y))   (sigma=+1),
+R_c(iy)-T(y)=Delta_c^-(y)/(cE_c(y)+yO_c(y))   (sigma=-1). (131)
+```
+
+Thus Route G's live theorem can be attacked directly as convergence of one normalized mixed
+parity residual, with no real-axis eigenvalue enumeration.  On an interior even-oriented branch,
+
+```text
+E_c(y)->g(y)=<cosh(yX),R1>,
+O_c(y)/c->o(y)=<sinh(yX),RX>,                            (132)
+```
+
+and `(131)` reduces to
+
+```text
+g(y)+y o(y)-yT(y)g(y)=0,                                (133)
+```
+
+which is the imaginary-axis form of the Ward equation `(112)`.  The new formula identifies the
+finite-`c` error that `(112)` had suppressed.  The hard source estimate is now one of the
+equivalent statements `(119)`, `(125)`, or normalized residual decay in `(131)`.
+
+### 14.8 The inverse-square target has a source-declared Green origin
+
+Theorem J identifies the needed weights but does not by itself prove that they are source-native.
+Suzuki's global screw line removes that concern.  Let `mathfrak S_t` be the unconditional
+`L^2(R)`-valued prime--Gamma screw line from his source formula.  Under RH his spectral expansion,
+in the orthonormal screw coordinates `e_gamma=F_gamma^sharp`, is
+
+```text
+x(t):=pi^(-1/2) mathfrak S_t
+    =sum_(gamma in Gamma) sqrt(m_gamma)
+       (exp(-i gamma t)-1)/gamma e_gamma.               (134)
+```
+
+For `T>0`, make the declaration before using any zero:
+
+```text
+Omega_T=-1/T int_0^T x(t)dt.                            (135)
+```
+
+This is an unconditional Bochner integral of Suzuki's explicit source line.  Under RH define only
+for the proof
+
+```text
+Omega=sum_(gamma in Gamma) sqrt(m_gamma)/gamma e_gamma. (136)
+```
+
+The reciprocal-square summability of the Xi ordinates makes `Omega` a Hilbert vector.  Integrating
+`(134)` coefficientwise gives
+
+```text
+Omega_T-Omega
+ =-sum_gamma sqrt(m_gamma)
+   (1-exp(-i gamma T))/(i T gamma^2)e_gamma,
+
+||Omega_T-Omega||^2
+ <=4/T^2 sum_gamma m_gamma/gamma^4.                     (137)
+```
+
+### Theorem K — source-Cesaro screw-origin theorem
+
+Under RH, `Omega_T` converges in `L^2(R)` to `Omega` at the explicit rate `(137)`.  If `U_t` is
+the diagonal screw evolution, then
+
+```text
+x(t)=(U_t-I)Omega.                                      (138)
+```
+
+Moreover `Omega` is the unique vector with `(138)`: the difference of two such origins is fixed by
+every `U_t`, while the Xi spectrum has no zero ordinate.  Its norm and normalized spectral
+probability are
+
+```text
+||Omega||^2=M_0(0)=sum_gamma m_gamma/gamma^2,
+
+nu_Omega
+ =1/M_0(0) sum_gamma m_gamma/gamma^2 delta_gamma.       (139)
+```
+
+Therefore
+
+```text
+<Omega,U_t Omega>/||Omega||^2
+ =1-g_zeta(t)/M_0(0),                                  (140)
+```
+
+in the signed-copy convention.  The right side is exactly the target correlation in `(125)`.
+Thus the inverse-square Clark target is not a divisor-fitted probability: it is the unique
+zero-energy coboundary origin recovered by Cesaro averaging the unconditional prime--Gamma screw
+line.  Divisors enter only in the RH-conditional proof of what that source-declared limit equals.
+
+The source paper already proves `(134)` and the screw-line norm identities.  The new point here is
+the finite source declaration `(135)`, the quantitative Green-origin limit `(137)`, uniqueness,
+and its identification with the movable Clark target from Theorem J.
+
+### 14.9 Coalescing finite anchors escape the published global embedding
+
+The most natural next conjecture is that Suzuki's finite deficiency anchors themselves converge
+to `Omega` inside his RH-conditional global Weil space.  That conjecture is false.
+
+Assume RH and use Suzuki's `lambda=0` spaces.  Let `a_n->infinity`, `c_n downarrow 0`, and let
+`j_n : H(A_(a_n))->H(A_infinity)` be the canonical isometric embedding.  Define
+
+```text
+A_(a_n) v_n=e^(c_n X),
+N_n=||v_n||_(A_(a_n))^2,
+g_n=j_n(v_n/sqrt(N_n)).                                 (141)
+```
+
+For every `u in C_c^infinity(R)` and all sufficiently large `n`, the literal Riesz identity is
+
+```text
+<[u],g_n>_(A_infinity)
+ =1/sqrt(N_n) int_R conjugate(u(x))e^(c_n x)dx.         (142)
+```
+
+### Theorem L — global weak-escape theorem
+
+Every sequence `(141)` satisfies
+
+```text
+N_n->infinity,                 g_n -> 0 weakly
+                                in H(A_infinity).        (143)
+```
+
+#### Proof
+
+If `N_n` failed to tend to infinity, take a subsequence on which it is bounded above.  Choose a
+compact smooth `u` with nonzero integral.  Cauchy--Schwarz in `(142)` bounds `N_n` away from zero
+on this subsequence.  After a further subsequence, `N_n->N_* in (0,infinity)` and the unit vectors
+`g_n` have a weak limit `g`.  Since `c_n->0`, equation `(142)` gives
+
+```text
+<[u],g>=N_*^(-1/2) int_R conjugate(u(x))dx              (144)
+```
+
+for every compact smooth `u`.  This is nonzero and translation-invariant.  Compact smooth classes
+are dense, so `g` is fixed by the global translation group.  But in Suzuki's spectral model that
+group is diagonal on the nonzero Xi ordinates; it has no nonzero fixed vector.  This contradiction
+proves `N_n->infinity`.  Equation `(142)` then tends to zero on a dense set, and boundedness of
+`g_n` gives weak convergence to zero.
+
+The escape is not repaired by a small spectral shift.  Let `lambda_n->0`, put
+
+```text
+T_n=A_(a_n)-lambda_n>0,
+T_n v_n=e^(c_n X),
+N_n=||v_n||_(T_n)^2,
+h_n=j_n(v_n/sqrt(N_n)).                                 (145)
+```
+
+Whenever `(h_n)` is bounded in the global Weil norm, the exact comparison identities are
+
+```text
+||h_n||_(A_infinity)^2
+ =1+lambda_n||v_n/sqrt(N_n)||_2^2,
+
+<[u],h_n>_(A_infinity)
+ =1/sqrt(N_n) int conjugate(u)e^(c_n X)
+  +lambda_n<u,v_n/sqrt(N_n)>_2.                         (146)
+```
+
+The last term tends to zero.  For `lambda_n>=0`, this follows from
+
+```text
+|lambda_n<u,v_n/sqrt(N_n)>_2|
+ <=sqrt(lambda_n)||u||_2
+   sqrt(lambda_n||v_n/sqrt(N_n)||_2^2),
+```
+
+and boundedness of the first identity; for `lambda_n<0`, positivity and unit `T_n`-norm give
+`|lambda_n| ||v_n/sqrt(N_n)||_2^2<=1`.  Repeating the invariant-vector argument proves
+
+```text
+h_n -> 0 weakly in H(A_infinity).                       (147)
+```
+
+Hence no vanishing-shift finite anchor can converge strongly to the nonzero Green origin
+`Omega`.  For positive shifts, every attempted escape from `(147)` requires the explicit metric
+amplification
+
+```text
+lambda_n||v_n||_2^2/N_n
+ =||h_n||_(A_infinity)^2-1                              (148)
+```
+
+to be unbounded.  This is the precise singular shifted-metric alternative; a regular
+`lambda_n->0` comparison is dead.
+
+This has a sharp projection consequence.  Let `P_n(J)` be the orthogonal projection onto the
+selected finite extension modes in a bounded interval `J`, extended by zero off the embedded
+finite space, and let `P_infinity(J)` be the global Xi spectral projection.  If
+
+```text
+||P_n(J)-P_infinity(J)||->0,                            (149)
+```
+
+then finite rank of `P_infinity(J)` and `(143)` imply
+
+```text
+nu_n(J)=||P_n(J)g_n||^2->0.                             (150)
+```
+
+For an interval isolating a Xi ordinate, `(150)` contradicts the positive mass forced by
+`(121)`.  In particular, strong convergence of local spectral projections together with eventual
+equality of their finite ranks is also impossible, because equal-rank strong convergence to a
+finite-rank projection upgrades to operator-norm convergence.
+
+The conclusion is not that the scalar Route G is dead.  It is that the clean pointed version of
+Suzuki's published `lambda=0` operator heuristic is dead.  A successful source sequence must
+exhibit at least one singular feature: local projection rotation or excess local modes preventing
+`(149)`, or shifted-metric amplification `(148)` outside bounded global Weil geometry.  This is
+exactly the singular/label-sensitive survivor left by the updated modular-superselection and
+source-horizon classifications.  Unpointed eigenvalue-set convergence cannot decide between
+these alternatives.
+
+### 14.10 Exact Xi-node Galerkin locking and the resolution wall
+
+Weak anchor escape does not mean every finite real defect vector escapes.  At a genuine Xi
+ordinate the opposite happens, and the contrast gives a quantitative obstruction.
+
+Continue under RH with `lambda=0`.  Let `H_a` be the embedded finite Weil space,
+`P_a : H(A_infinity)->H_a` its orthogonal projection, and let `gamma in Gamma` have multiplicity
+`m_gamma`.  The global functional
+
+```text
+ell_gamma([u])=widehat u(gamma)                          (151)
+```
+
+is continuous.  Indeed Suzuki's global spectral isometry gives
+
+```text
+||ell_gamma||^2=1/m_gamma.                              (152)
+```
+
+Let `K_gamma` be its global Riesz vector.  For real `x`, let
+
+```text
+K_(a,x)=A_a^(-1)e^(-ixX) in H_a.                       (153)
+```
+
+This is the real adjoint defect vector used by the finite self-adjoint extensions.  At the exact
+node, the Riesz identities on `H_a` give
+
+```text
+K_(a,gamma)=P_a K_gamma.                                (154)
+```
+
+The spaces increase with dense union, so `P_a K_gamma->K_gamma` strongly.  Put
+`epsilon_a(gamma)=||(I-P_a)K_gamma||` and let `alpha_a>0` be the lowest eigenvalue of `A_a`.
+Since `|exp(-ixX)-exp(-i gamma X)|<=|x-gamma||X|`, the finite resolvent gives the exact estimate
+
+```text
+||K_(a,x)-K_gamma||_(A_infinity)
+ <=epsilon_a(gamma)
+   +|x-gamma| sqrt(2a^3/(3alpha_a)).                    (155)
+```
+
+### Theorem M — critical-node locking and Clark resolution wall
+
+If `a_n->infinity`, `x_n->gamma`, and
+
+```text
+|x_n-gamma| sqrt(a_n^3/alpha_(a_n))->0,                (156)
+```
+
+then the normalized finite real defect vectors at `x_n` converge strongly to the normalized
+global Xi eigenvector `K_gamma/||K_gamma||`.  For the coalescing normalized anchors `g_n` of
+Theorem L, their individual Clark coherences therefore satisfy
+
+```text
+|<g_n,K_(a_n,x_n)/||K_(a_n,x_n)||>|^2->0.              (157)
+```
+
+#### Proof
+
+Equation `(154)` is uniqueness of the Riesz representative on the closed subspace `H_a`.
+Increasing density gives `epsilon_a(gamma)->0`.  For
+`f=e^(-ixX)-e^(-i gamma X)`, positivity of `A_a>=alpha_a I` gives
+
+```text
+||A_a^(-1)f||_(A_a)^2
+ =<f,A_a^(-1)f>_2
+ <=alpha_a^(-1)||f||_2^2
+ <=2a^3|x-gamma|^2/(3alpha_a),
+```
+
+which proves `(155)` and the strong normalized limit under `(156)`.  Equation `(157)` follows
+from that strong convergence and `g_n->0` weakly.
+
+Let `J` isolate `gamma`.  If the number of selected extension eigenvalues in `J` stays bounded
+and every eigenvalue carrying nonvanishing Clark mass obeys `(156)`, summing `(157)` forces
+`nu_n(J)->0`, contradicting `(121)`.  Hence the positive inverse-square target mass forces at
+least one of the following:
+
+```text
+unbounded local rank/crowding;
+failure of the resolution scale (156) for a mass-carrying mode;
+failure of the regular global metric through (148).    (158)
+```
+
+This does not prove that crowding is necessary: a bounded number of sufficiently ill-conditioned,
+slowly locking modes can survive.  It does prove that fast accurate eigenvalue approximation is
+not helpful to the pointed problem; in the regular embedding it destroys the required weight.
+
+### 14.11 Relative-gap rigidity of the shifted-metric survivor
+
+The metric-amplification alternative in `(148)` is not an unspecified shift effect.  Spectral
+calculus pins it to the ground pole.
+
+Assume RH, let `alpha_a=inf spec(A_a)>0`, choose `0<lambda<alpha_a`, and put
+
+```text
+delta=alpha_a-lambda,
+T=A_a-lambda,
+v=T^(-1)e^(cX),
+N=||v||_T^2.                                             (159)
+```
+
+Since `T>=delta I`,
+
+```text
+||v||_2^2=<e^(cX),T^(-2)e^(cX)>
+          <=delta^(-1)<e^(cX),T^(-1)e^(cX)>
+          =N/delta.
+```
+
+Therefore the exact comparison satisfies
+
+```text
+1<=||v/sqrt(N)||_(A_a)^2
+   =1+lambda||v||_2^2/N
+   <=1+lambda/delta=alpha_a/delta.                      (160)
+```
+
+### Theorem N — relative-floor metric wall
+
+For any cofinal family with `c_a->0`, `lambda_a->0`, and positive admissible shifts, a bounded
+relative ground gap
+
+```text
+sup_a lambda_a/(alpha_a-lambda_a)<infinity              (161)
+```
+
+makes the normalized anchors bounded in the global Weil norm.  The shifted escape theorem
+`(145)--(147)` then makes them converge weakly to zero.  Hence evasion through the metric requires
+
+```text
+lambda_a>0 cofinally,
+(alpha_a-lambda_a)/lambda_a -> 0                        (162)
+```
+
+along a subsequence: the selected shift must hug the positive spectral floor at vanishing relative
+distance.  Nonpositive shifts and positive interior shifts with `(161)` cannot provide a regular
+global pointed limit.
+
+There is a terminal logical consequence.  If a source argument proves merely that
+
+```text
+0<lambda_(a_n)<inf spec(A_(a_n))
+```
+
+on any cofinal aperture sequence `a_n->infinity`, then RH already follows.  Every compact smooth
+test is supported in one sufficiently large aperture, where
+
+```text
+Q_W(u)=<A_(a_n)u,u>_2>=alpha_(a_n)||u||_2^2>0.
+```
+
+Weil's criterion completes the implication.  Thus the positive floor-hugging alternative is not
+missing post-limit infrastructure: source admission into it is itself a terminal RH proof.  The
+only nonterminal scalar survivor which does not first prove positivity is singular rotation or
+crowding of the Clark modes in the varying `T_a` geometries.
+
+### 14.12 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -1752,6 +2328,51 @@ argument that merely rechecks the first jet.
 22. **The remaining source theorem is an unspecified meromorphic convergence problem -- failed.**
     Equations `(107)` and `(112)` give two exact, bounded, interval-local forms: Clark Stieltjes
     convergence and the resolvent-position Ward residual.
+23. **The interval law can bypass real spectral information even as an output -- failed.**
+    Theorem J proves that it forces complete weak convergence to the canonical inverse-square
+    Clark--screw probability and hence both endpoint tightness statements `(120)`.
+24. **Suzuki's conjectural convergence of extension spectra is enough -- failed.**  The target
+    fixes the local masses `(121)` as well as support.  A fixed support with varying cyclic-vector
+    weights gives different transforms, so unpointed strong-resolvent or eigenvalue-set
+    convergence misses exactly the needed datum.
+25. **A proof of the live source theorem must first control real Clark points -- failed.**  The
+    exact mixed-anchor formulas `(126)--(131)` reduce it directly to a normalized parity-resolvent
+    residual on one imaginary interval.
+26. **Sign of the surviving parity response should close the residual -- failed.**  Equation
+    `(129)` fixes only which side of the free kernel is reached.  The atomic Pick counterfamily
+    `(113)--(114)` already realizes the correct sign and first coefficient with different full
+    transforms.  Magnitude and all weighted spectral data in `(119)` remain essential.
+27. **The inverse-square target probability is merely divisor-fitted -- failed.**  Theorem K
+    reconstructs its Green origin by Cesaro averaging Suzuki's unconditional prime--Gamma screw
+    line and proves the quantitative source-to-spectral identification `(137)--(140)`.
+28. **The finite coalescing deficiency anchors should converge strongly to that Green origin in
+    Suzuki's global `lambda=0` embedding -- failed.**  Theorem L proves their norms before
+    normalization diverge and the normalized anchors converge weakly to zero.
+29. **Clean strong-resolvent convergence with one stable local mode per Xi ordinate can still
+    transport the Clark weights -- failed.**  Norm convergence of the corresponding finite-rank
+    local projections forces every local anchor mass to vanish by `(150)`, contradicting `(121)`.
+30. **Weak anchor escape kills every Suzuki scalar limit -- failed.**  It kills only a regular
+    pointed operator limit.  Projection rotation, local rank excess/crowding, or a genuinely
+    shifted metric can retain the scalar spectral probability.  These singular alternatives are
+    now the exhaustive live frontier.
+31. **A finite real defect vector at an exact Xi ordinate may also escape -- failed.**  It is
+    exactly the Galerkin projection `(154)` of the global Xi evaluation vector and converges
+    strongly.
+32. **Faster one-for-one eigenvalue convergence should improve the pointed limit -- failed.**
+    The resolution estimate `(155)` and weak anchor escape force the corresponding Clark weight
+    to zero whenever `(156)` holds.
+33. **The target therefore forces local spectral crowding -- failed as a class-complete claim.**
+    The sharp survivor `(158)` also permits a bounded number of mass-carrying modes whose locking
+    is slower than `sqrt(alpha_a/a^3)`, or singular shifted-metric amplification.
+34. **Any vanishing positive shift can create the needed metric singularity -- failed.**  The
+    comparison bound `(160)` shows that every bounded relative distance below the floor remains
+    globally bounded and weakly escapes.
+35. **The metric survivor is a broad new analytic regime -- failed.**  It requires the positive
+    floor-hugging law `(162)`.  Proving cofinal admissibility of even one positive shift already
+    proves RH directly by Weil positivity.
+36. **This eliminates the whole scalar Route G -- failed.**  Clark probabilities live in the
+    varying `T_a` metrics and can still converge through sub-resolution projection rotation or
+    local rank growth without a nonzero vector limit in the global Weil metric.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -1761,8 +2382,20 @@ not compute the moving-base `c^(-1)` boundary layer, distinguish adjacent from n
 degrees, or imply Clark escape `(103)`.
 Candidate-new Suzuki-specific content is their exact conjunction in `(93)--(112)`: the
 nonadjacent free-kernel collapse, Clark escape classification, adjacent/interior Pick divisibility,
-and reduction of full source identification to one imaginary-interval transform or Ward equation.
+reduction of full source identification to one imaginary-interval transform or Ward equation,
+the Clark--screw weak-limit rigidity `(115)--(125)`, the finite mixed-anchor residual
+`(126)--(133)`, the source-Cesaro Green origin `(134)--(140)`, the global weak-escape/singular
+metric/projection wall `(141)--(150)`, and the critical-node Galerkin resolution trilemma
+`(151)--(158)`, and the relative-floor metric wall `(159)--(162)`.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
-specialization, or `(101)--(112)`.  Targeted primary-literature searches found Suzuki's fixed
-anchor `+-i` construction and general Livsic base-change theory, but no coalescing restricted-Weil
-full-quotient boundary layer.  Specialist priority review remains required.
+specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
+formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the
+two classical parents separately:
+compactified Donoghue weak convergence and the inverse-square critical-ordinate screw series.  It
+does not identify them as the unique movable-anchor target.  Suzuki's global paper contains the
+screw-line expansion that is the parent of Theorem K, but not its source-Cesaro origin or its
+comparison with coalescing finite anchors.  Targeted primary-literature searches found Suzuki's
+fixed-anchor `+-i` construction, its conjecture of extension-operator/eigenvalue convergence,
+general Livsic base-change theory, and general Donoghue spectral encoding, but no coalescing
+restricted-Weil full-quotient boundary layer, inverse-square Clark-weight theorem, or anchor-escape
+projection trilemma.  Specialist priority review remains required.

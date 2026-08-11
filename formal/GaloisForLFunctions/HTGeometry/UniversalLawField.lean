@@ -180,6 +180,8 @@ import GaloisForLFunctions.HTGeometry.ReciprocalCharacterRealFormReconstruction
 import GaloisForLFunctions.RHTower.GaussReciprocalCharacterAdmission
 import GaloisForLFunctions.HTGeometry.ConstitutiveTropicalProjectiveWork
 import GaloisForLFunctions.HTGeometry.AdelicPluckerHistoryMechanics
+import GaloisForLFunctions.HTGeometry.ConstitutiveGlobalFormationProperness
+import GaloisForLFunctions.HTGeometry.ConstitutiveGlobalFormationInformationProperness
 
 /-!
 # Universal-law-field Lean umbrella

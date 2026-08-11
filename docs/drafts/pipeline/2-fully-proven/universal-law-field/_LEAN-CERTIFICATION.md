@@ -1394,3 +1394,29 @@ Direct foreground elaboration and the foreground leaf build pass.  The module is
 `HTGeometry.UniversalLawField`; final foreground umbrella build completes 11,817 jobs.  Axiom
 prints for the capstones report only `propext`, `Classical.choice`, and `Quot.sound`.  Repository
 formal lint and generated-index checks pass.  No RH premise or divisor specialization occurs.
+
+## Session 2026-08-11 addition (Global Formation-Properness Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-GFPM-1 | Source-generated formation scaling, canonical reporter coercivity, divergent scale-orbit work, bounded-orbit neutrality, and bounded dominating-work selection | `HTGeometry.ConstitutiveGlobalFormationProperness` |
+| ULF-GFPM-2 | Exact convergent class-law reporter pushforward, Bernoulli symmetric-KL identification, two-sided data-processing domination, and full-source bounded-work selection | `HTGeometry.ConstitutiveGlobalFormationInformationProperness` |
+
+Lean certifies a global producer mechanism.  Existing source exchange generates the central
+fugacity formation; literal depth dilation amplifies its size; the canonical least-prime,
+least-depth reporter has exact log-odds work with a linear coercive lower bound.  Every nonzero
+scale orbit therefore has work tending to infinity, and bounded scale-orbit work is equivalent to
+neutral formation.  More generally, any uniformly bounded global work dominating the reporter
+forces neutrality; exact vanishing is unnecessary.  The second module closes this interface for
+the actual convergent source class law: its least-mode occupation marginal is exactly Bernoulli,
+symmetric Bernoulli `klDiv` is the reporter work, and two-sided data processing bounds it by full
+class-law Jeffreys work.  A finite uniform bound on that full extended-real work along every source
+scale is equivalent to neutral formation.
+
+Both modules elaborate in direct foreground runs and are wired into
+`HTGeometry.UniversalLawField`.  Full-source work is allowed to be `⊤`; the boundedness hypothesis
+requires one finite `ENNReal` upper bound and therefore hides no finiteness assumption.  Final
+foreground umbrella build completes 11,825 jobs.  Formal lint passes.  Scratch axiom prints for the
+class-law pushforward, exact Bernoulli KL formula, data-processing domination, and full-source
+selection theorem report only `propext`, `Classical.choice`, and `Quot.sound`.  No RH premise,
+divisor specialization, or target-route receiver occurs.

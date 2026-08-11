@@ -60,9 +60,9 @@ This applies to the source-faithful saddle tilt
  +\frac{(\log\log N)^2}{(\log N)^3}\right),                  \tag{6}
 \]
 
-because (delta_N\log N\to0). Thus Route E may prove its unit-shell relation at the critical
-Bernoulli source and transfer it to the forced moving source, provided the consumed observable has
-controlled critical second moment.
+because (delta_N\log N\to0). This transfers fixed finite observables between the two bare
+Bernoulli laws. It does **not** by itself transport an RH-strength normalized Gibbs ratio; the
+hostile rate audit in Section 5 explains the distinction.
 
 The transfer is exact for every finite observable (f):
 
@@ -182,7 +182,84 @@ Cauchy--Schwarz gives
 which is `(7)`. In particular, bounded critical second moments make the forced moving tilt and
 critical source asymptotically interchangeable for the same finite observable.
 
-## 5. Conjecture--proof/fail loop
+## 5. Normalized-ratio hostile audit and exact physical-gauge correction
+
+The absolute theorem `(5)` is not the scale needed by the endpoint. Let
+
+\[
+ B_N=\mathbb E_{1,N}w_N,
+ \qquad A_N=\mathbb E_{1,N}f_N,
+\]
+
+with (0\le w_N\le1), (|f_N|\le w_N), and (B_N>0). Exact likelihood
+Cauchy--Schwarz gives the relative statement
+
+\[
+ \chi_N^2\le\eta_N^2B_N,quad 0\le\eta_N<1
+ \quad\Longrightarrow\quad
+ \left|\frac{\mathbb E_{1+\delta_N,N}f_N}
+                 {\mathbb E_{1+\delta_N,N}w_N}
+       -\frac{A_N}{B_N}\right|
+ \le\frac{2\eta_N}{1-\eta_N}.                             \tag{20}
+\]
+
+For the critical physical unit-shell weight, elementary squarefree dyadic density and Mertens
+give (B_N\gg1/\log N) once the aperture contains the physical dyadic shell. The strengthened
+prime-clock estimate proves
+
+\[
+ \delta_N\log N\sqrt{\log N}\to0
+ \quad\Longrightarrow\quad
+ \chi_N^2\log N\to0.                                      \tag{21}
+\]
+
+Thus the forced tilt gives only the generic guarantee
+
+\[
+ \eta_N\ll\frac{\log\log N}{\sqrt{\log N}}=o(1),          \tag{22}
+\]
+
+not (N^{-1/2+o(1)}). Relative chi-square closes qualitative normalized contiguity, but cannot
+certify Route E's strict-half power. This invalidates the earlier inference that a critical
+normalized endpoint estimate could be moved to the saddle by `(7)` alone.
+
+The physical source has a stronger exact law. If
+
+\[
+ m(T)=\prod_{p\in T}p,\qquad
+ \nu_{\sigma,N}(T)=\frac{m(T)^{-\sigma}}
+                         {\mathcal P_{\sigma,N}},\qquad
+ W_{\sigma,x}(T)=m(T)^\sigma e^{-xm(T)},                  \tag{23}
+\]
+
+then atomwise
+
+\[
+ \boxed{\mathcal P_{\sigma,N}\nu_{\sigma,N}(T)
+        W_{\sigma,x}(T)=e^{-xm(T)}.}                      \tag{24}
+\]
+
+Consequently, for every predeclared finite observable (F),
+
+\[
+ \boxed{
+ \frac{\mathbb E_{\sigma,N}[F W_{\sigma,x}]}
+      {\mathbb E_{\sigma,N}[W_{\sigma,x}]}
+ =\frac{\sum_TF(T)e^{-xm(T)}}{\sum_Te^{-xm(T)}}}
+                                                                  \tag{25}
+\]
+
+is exactly independent of (\sigma). The moving Euler parameter is a concentration gauge, not a
+deformation of the physical Gibbs source. A source-faithful incidence proof may therefore work in
+any Euler gauge with the matching physical multiplier and loses **zero** at the RH scale. If it
+freezes the observable while changing only the Bernoulli law, it has left this exact gauge class;
+then `(7)`, `(20)`, and their polylogarithmic rate are the appropriate but weaker statements.
+
+Equation `(24)` is already the umbrella-reachable Lean theorem
+`routeEEulerTiltTerm_eq_gibbsTerm`. Equation `(25)` is its finite termwise corollary. No new Lean
+source was written during the corpus refactor.
+
+## 6. Conjecture--proof/fail loop
 
 1. **Conjecture:** every supercritical Euler tilt is contiguous to the critical source.
    **Failed.** At fixed (\delta>0), the expected occupied-prime count under
@@ -198,8 +275,15 @@ critical source asymptotically interchangeable for the same finite observable.
    **Failed.** Equation `(7)` compares two expectations of the same observable. It supplies no
    joint short-interval rough-token mass, column capacity, seam orientation, or recurrence
    accumulation. Those remain independent producer theorems.
+5. **Conjecture:** relative chi-square repairs the normalization loss at strict-half scale.
+   **Failed.** Equations `(20)`--`(22)` give only a polylogarithmic normalized error for the forced
+   tilt, far above the target power.
+6. **Conjecture:** a moving-to-critical source transfer theorem is nevertheless required for the
+   literal physical relation.
+   **Failed more strongly.** Atomwise gauge cancellation `(24)` proves exact invariance `(25)`.
+   Chi-square is needed only for fixed observables that omit the compensating physical multiplier.
 
-## 6. Lean theorem map
+## 7. Lean theorem map
 
 - `bernoulliChiSquare_eq_prod_local`: exact arbitrary finite Bernoulli product law `(11)`.
 - `bernoulliExp_changeOfMeasure`: exact likelihood transport `(18)`.
@@ -210,17 +294,21 @@ critical source asymptotically interchangeable for the same finite observable.
 - `routeEEulerTiltChiSquareBelow_le_primeClock`: finite global bound `(3)`.
 - `routeEEulerBernoulliExpBelow_sub_sq_le`: source-specific finite observable transfer.
 - `tendsto_routeEEulerTiltChiSquareBelow_zero`: asymptotic contiguity `(5)` under `(2)`.
+- `bernoulliNormalizedRatio_sub_abs_le`: relative normalized transfer `(20)`.
+- `tendsto_routeEEulerTiltChiSquareBelow_mul_log_zero`: relative shell rate `(21)`.
+- `routeEEulerTiltTerm_eq_gibbsTerm` in the source-faithful module: exact physical gauge
+  cancellation `(24)`.
 
 Direct check and targeted module build pass. `#print axioms` for all principal declarations reports
 only `propext`, `Classical.choice`, and `Quot.sound`. No project axiom, `sorry`, `admit`, `opaque`,
 `unsafe`, or computation is used.
 
-## 7. Route E consequence and anti-theatre boundary
+## 8. Route E consequence and anti-theatre boundary
 
-This theorem removes one genuine mismatch: source-faithful saddle analysis forces
-(\sigma_N=1+o(1/\log N)), while many incidence statements are most naturally formulated at
-critical Euler parameter (1). The mismatch now costs (o(1)) in chi-square for every bounded-
-second-moment consumer.
+This theorem removes the bare-product mismatch for fixed bounded-second-moment consumers. It does
+not remove that mismatch at RH power scale. For literal physical relations, the stronger atomwise
+identity `(24)` removes it exactly: analysis may choose the critical or moving Euler gauge provided
+the source-faithful multiplier changes with the gauge.
 
 It does **not** close Route E. Live producer remains
 `ENTROPY-COMPLEMENT-UNIT-SHELL-ROUGH-CONVOLUTION`: joint rough-token lower mass, unit incoming
@@ -232,3 +320,6 @@ accumulation. This card changes where that theorem may be proved; it does not as
 - 2026-08-11 — exact Bernoulli product law, Euler local defect, prime-clock domination, observable
   transfer, and sub-prime-clock asymptotic formalized; moved directly to stage 3 after targeted
   Lean, build, lint-token, and axiom audits.
+- 2026-08-11 — hostile normalized-rate audit added. Relative transfer and
+  `chi-square * log N -> 0` declarations pass targeted build and axiom audit. Endpoint-transfer
+  overclaim removed after recognizing exact physical Euler-gauge cancellation.
