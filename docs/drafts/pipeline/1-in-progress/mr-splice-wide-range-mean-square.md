@@ -5318,3 +5318,74 @@ The remaining object is a bilinear oscillatory sum over pairs of primes — spar
 well-separated in the logarithmic scale, which is where the corpus's prime near-diagonal weight
 `q/log q` (`PrimeWindowSharpLevel`, `PrimePowerSupport`) and the large-values layer act.  At a
 single frequency it is the Halász deficit of unit 4.
+
+## Unit 38 — correction: Ramaré recombination, coprime firewall, and ternary marker survivor
+
+Paper proof:
+`../2-fully-proven/new_scientific_knowledge/route-e-ramare-recombination-ternary-antiscale-law.md`.
+Lean was inspected read-only and was not changed during corpus refactoring.
+
+The last sentence of unit 37 is not correct after integer reindexing. The prime blocks are sparse
+as a list of outer labels, but they are not frequency-separated: for one squarefree integer `n`,
+every designated divisor `p | n` produces the same frequency through `p*(n/p)=n`.
+
+Put `k_n=omega_P(n)` and `c_P(n,m)=omega_P(gcd(n,m))`. Exact finite reindexing proves
+
+```text
+B(w) = sum_{n<=M, mu(n)^2=1, k_n>=1} mu(n) n^(2 pi i w),
+
+ramarePrimeOffDiagonal P M W
+  = sum_{n,m} mu(n)mu(m) (1-c_P(n,m)/(k_n k_m)) K_W(n,m).
+```
+
+The square-multiple polynomial in unit 36 is identically zero: if its counting coefficient is
+nonzero, some `p^2 | n`, hence `mu(n)=0`. The `n=m` part of the prime off-diagonal is
+
+```text
+2W * sum_n (1-1/k_n) <= 2WM.
+```
+
+For `(n,m)=1`, `c_P(n,m)=0`, so the full Möbius covariance coefficient is exactly one. Enlarging
+the designated prime set cannot attenuate this coprime sector. Therefore the live object is not a
+generic sparse prime-pair sum but the coprime Möbius near-diagonal covariance. A sufficient bound
+has affine shape `CWM+o(M^2)` with the diagonal constant tracked; demanding the entire prime
+off-diagonal be `o(M^2)` uniformly through `W=M` incorrectly includes the unavoidable collision
+diagonal.
+
+The correction also exposes one surviving mean-value mechanism. For a finite marker packet `Q`,
+the unrestricted coprime squarefree transform is exactly
+
+```text
+T_Q(t) = product_{p in Q} (1-p^(it)-p^(-it)).
+```
+
+Antiscale recurrence is its exact pointwise escape:
+`sup_{t>T}|T_Q(t)|=3^|Q|` for every `T`. Nevertheless, with
+`R_Q=product_{p in Q}p`, separated-frequency summation proves
+
+```text
+integral_{-W}^W |T_Q(t)|^2 dt
+  <= (2W + 4 R_Q^2 (1+|Q| log 3)) 3^|Q|.
+```
+
+Thus near-maximal recurrence occupies relative frequency measure `O(3^(-|Q|))` when
+`R_Q^2(1+|Q|)=O(W)`. The new missing theorem is tensorized cofactor flatness: after splitting each
+coprime pair into its three-state marker assignment and rough cofactors with sharp state-dependent
+cutoffs, prove this large-values saving survives and supplies both `CWM+o(M^2)` and the physical
+column/seam law. Existing Turán and Ramaré energy estimates control total support and diagonal
+energy, not this statewise flatness.
+
+At the actual reciprocal marker weights `1,1/p,1/p`, normalization gives
+
+```text
+Phi_Q(t) = product_p (1-p^(-1+it)-p^(-1-it))/(1+2/p),
+
+integral_{-W}^W |Phi_Q(t)|^2 dt
+  <= (2W + 4 R_Q^2 (1+|Q| log 3))
+     * product_p (1+2/p^2)/(1+2/p)^2.
+```
+
+The product is at most `exp(2 sum_p p^-2 - 2 sum_p p^-1)` and therefore tends to zero with
+harmonic marker mass. Modulus-one antiscale recurrence still occurs cofinally. This proves the
+precise mean-square saturation statement: recurrence cannot be removed pointwise, but its weighted
+frequency mass vanishes. Transfer through state-dependent cofactor cutoffs remains open.

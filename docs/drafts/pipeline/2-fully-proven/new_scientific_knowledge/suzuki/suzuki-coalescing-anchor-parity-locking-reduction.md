@@ -1,11 +1,12 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
-- **RH used:** no in Sections 2--14.7; yes as the hypothesis of the global-limit and target audits
-  in Sections 14.8--14.12
+- **RH used:** no in Sections 2--14.7 and in the finite spectral-shift identities/selector of
+  Sections 14.13--14.14; yes as the hypothesis of the global-limit and Xi-target audits in
+  Sections 14.8--14.14
 - **Computation used:** no
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
   `[LEAN READ-ONLY AUDITED]`
@@ -2433,8 +2434,8 @@ Condition `(174)` is the complete movable-anchor debt.  In source-operator form 
 
 ```text
 lim_(delta downarrow 0) limsup_n
- <g_(1,n), 1_[0,delta](L_n^2)
-   (L_n^2+1)(L_n^2+c_n^2)^(-1) g_(1,n)> = 0            (176)
+ inner(g_(1,n), 1_[0,delta](L_n^2)
+   (L_n^2+1)(L_n^2+c_n^2)^(-1) g_(1,n)) = 0            (176)
 ```
 
 Here `g_(1,n)` is the
@@ -2573,7 +2574,470 @@ source-selected adjacent or interior shifted family.  Operator convergence witho
 the normalized fixed defect vector still does not imply `(173)`; eigenvalue-set convergence is
 even weaker.  But once `(173)` is proved, no further movable-anchor spectral theorem is missing.
 
-### 14.13 Conjecture loop and novelty correction
+The fixed anchor itself does not converge as a vector in Suzuki's published global embedding.
+Theorem L used `c_n->0`, where translation covariance becomes an invariant-functional
+contradiction.  The same argument is stronger at every positive limiting exponent.
+
+#### Theorem Q — all bounded exponential anchors weakly escape
+
+Assume RH and use Suzuki's `lambda=0` nested Weil spaces.  Let `a_n->infinity`, let
+`c_n->c_*` for any `c_*>=0`, and put
+
+```text
+A_(a_n)v_n=e^(c_n X),
+N_n=||v_n||_(A_(a_n))^2,
+g_n=j_n(v_n/sqrt(N_n)).                                (186)
+```
+
+Then
+
+```text
+N_n->infinity,
+g_n weakly ->0 in H(A_infinity).                       (187)
+```
+
+In particular `(187)` holds for Suzuki's original fixed deficiency base `c_n=1`.  Therefore the
+fixed-anchor pointed law `(173)`, if true, is necessarily singular in the global embedding too.
+
+#### Proof
+
+For a compact test `u`, eventually supported in every aperture under consideration,
+
+```text
+<[u],j_n v_n>_(A_infinity)
+ =int_R conjugate(u(x))e^(c_n x)dx.                    (188)
+```
+
+If `N_n` were bounded on a subsequence, weak compactness would produce a global Riesz vector for
+the nonzero functional
+
+```text
+ell_(c_*)(u)=int_R conjugate(u(x))e^(c_* x)dx.          (189)
+```
+
+For physical translation `tau_t u(x)=u(x-t)`, direct change of variables gives
+
+```text
+ell_(c_*)(tau_t u)=e^(c_* t)ell_(c_*)(u).               (190)
+```
+
+Translations are unitary in `H(A_infinity)`.  If `c_*>0`, the norm of a nonzero bounded
+functional cannot be multiplied by `e^(c_*t)` for arbitrary real `t`; this contradicts `(190)`.
+If `c_*=0`, its Riesz vector would be fixed by every translation, hence would give the forbidden
+zero eigenvalue of Suzuki's global translation generator.  Thus `N_n->infinity`.  Dividing `(188)`
+by `sqrt(N_n)` proves convergence to zero against the dense compact-test core, and boundedness of
+`g_n` upgrades it to weak convergence.
+
+Theorem Q changes the interpretation of Theorem P.  Impedance calibration proves that a movable
+Clark probability contains no more information than the fixed probability, but it cannot turn the
+finite defect vectors into the global kernels in norm or weak topology.  If `(173)` holds, its
+positive mass must be carried by local projection rotation, rank excess, or another noncompact
+pointed mechanism already at base `i`.  Coalescing then transports that singular probability
+without adding a second singular layer.
+
+There is nevertheless a direct source declaration of the fixed-anchor target.  Let the
+unconditional source screw line `x(t)=pi^(-1/2)mathfrak S_t` be as in Theorem K and define, for
+finite `T`,
+
+```text
+Psi_T=-int_0^T e^(-t)x(t)dt.                            (191)
+```
+
+This is a source-native Bochner integral: Suzuki proves continuity and locally uniform `L^2`
+bounds for the line.  No zero is used in `(191)`.
+
+#### Theorem R — Laplace screw-origin theorem
+
+Under RH, the vectors `(191)` converge exponentially in Suzuki's screw-line Hilbert space to
+
+```text
+Psi_i=sum_gamma sqrt(m_gamma)/(gamma-i) e_gamma,        (192)
+
+||Psi_T-Psi_i||^2<=4e^(-2T)M_0(0),
+||Psi_i||^2=M_0(1).                                    (193)
+```
+
+The squared spectral probability of `Psi_i` is exactly `mu_Xi^(1)`.  Its correlation is
+
+```text
+<Psi_i,U_t Psi_i>/||Psi_i||^2
+ =1/M_0(1) sum_gamma m_gamma e^(-i gamma t)/(gamma^2+1). (194)
+```
+
+Thus Suzuki's original fixed-anchor target is source-declared by exponential averaging of the
+same unconditional prime--Gamma line whose Cesaro average declares the zero-anchor target.  The
+impedance constant has the source-norm form
+
+```text
+B_Xi=||Omega||^2/||Psi_i||^2.                           (195)
+```
+
+#### Proof
+
+Insert the RH-conditional expansion `(134)` into `(191)`.  For each ordinate,
+
+```text
+-int_0^infinity e^(-t)(e^(-i gamma t)-1)/gamma dt
+ =1/(gamma-i).                                         (196)
+```
+
+The omitted tail has modulus at most `2e^(-T)/|gamma|`.  Orthogonality and reciprocal-square
+summability give `(193)`.  Equations `(192)`, `(139)`, and the diagonal action of `U_t` give
+`(194)--(195)`.
+
+The exact fixed-anchor endpoint can now be stated without reference to moving atoms.  For `s>0`
+put
+
+```text
+k_s^(1)(u)=(u+1)/(u+s),        k_s^(1)(infinity)=1.     (197)
+```
+
+Equation `(169)` gives
+
+```text
+int k_s^(1) dmu_Xi^(1)=M_0(s)/M_0(1).                  (198)
+```
+
+#### Theorem S — fixed-anchor screw rigidity
+
+For a source-selected finite Suzuki family, the fixed-anchor law `(173)` is equivalent to
+
+```text
+<g_(1,n),(L_n^2+1)(L_n^2+s)^(-1)g_(1,n)>
+ ->M_0(s)/M_0(1)                                       (199)
+```
+
+on any set of positive `s` with an interior accumulation point.  Equivalently, the cyclic
+correlations converge to `(194)` for every real time.
+
+#### Proof
+
+Weak convergence implies `(199)` because `(197)` is continuous on `[0,infinity]`.  Conversely,
+compactness gives a weakly convergent subsequence.  Since
+
+```text
+k_s^(1)(u)-1=(1-s)/(u+s),                               (200)
+```
+
+the identities on a uniqueness set determine all Stieltjes transforms by holomorphic
+continuation.  Constants together with `1/(u+s)` form a separating algebra after uniform closure,
+exactly as in Theorem J.  Stone--Weierstrass identifies the subsequential limit with
+`mu_Xi^(1)`.  Uniqueness removes extraction.  The correlation statement is the spectral theorem.
+
+Equation `(199)` is the actual remaining Route-G statement.  It is bounded, fixed-base,
+source-operator local, and its target vector is the finite source declaration `(191)`.  Theorem Q
+proves it cannot follow from regular convergence of `g_(1,n)`; source arithmetic must instead
+control the singular cyclic spectral measures.
+
+### 14.13 Compactified two-extension spectral shift: singular weights become gap occupancy
+
+Theorem S still presents the fixed law through the moving cyclic vector.  For Suzuki's canonical
+parity pair there is an equivalent invariant which contains no cyclic vector and remains meaningful
+under the spectral pollution forced by Theorem Q.
+
+First note the exact target identity.  With `XiC(z)=xi(1/2-iz)` and the convention of Section 3,
+
+```text
+m_(Xi,1)(z)
+ =i mathcalL(-iz)/M_0(1)
+ =-XiC'(z)/(M_0(1)XiC(z)).                              (201)
+```
+
+Thus the target is a normalized logarithmic derivative.  At a simple pole `x` of the finite even
+pencil, write `mu_x` for its Nevanlinna mass.  Since
+
+```text
+m_n=-i W_(n,1)/W_(n,-1),
+mu_x=i W_(n,1)(x)/W_(n,-1)'(x),
+```
+
+the entire derivative-companion defect
+
+```text
+J_n(z)=W_(n,-1)'(z)-i M_0(1)W_(n,1)(z)                 (202)
+```
+
+satisfies
+
+```text
+J_n(x)/W_(n,-1)'(x)=1-M_0(1)mu_x.
+```
+
+Consequently `(202)` is not a formal pencil identity: at the even eigenvalues it is exactly the
+missing flat-Jacobian law `mu_x -> 1/M_0(1)`.  The free clock has constant masses for a different
+reason and with the wrong cofinal scale, so it does not prove `(202)`.
+
+There is, however, a second exact description.  Let the positive eigenvalues of the canonical even
+and odd extensions be respectively
+
+```text
+0<p_(n,1)<q_(n,1)<p_(n,2)<q_(n,2)<... .                (203)
+```
+
+The odd extension has in addition its forced eigenvalue at zero.  Put
+
+```text
+x(t)=1/(1+t^2),
+E_n=union_(k>=1) (x(q_(n,k)),x(p_(n,k))),
+sigma_n=1_(E_n)(x) dx.                                  (204)
+```
+
+Strict interlacing makes the intervals in `(204)` disjoint, so `sigma_n` is a subprobability
+measure dominated by Lebesgue measure on the fixed compact interval `[0,1]`.  The classical
+canonical product for a normalized odd meromorphic Herglotz function gives
+
+```text
+H_n(s):=m_n(i sqrt(s))/(i sqrt(s))
+ =product_(k>=1)
+   [1+(s-1)x(q_(n,k))]/[1+(s-1)x(p_(n,k))],             (205)
+```
+
+where the constant is fixed by `m_n(i)=i`.  Taking the real logarithm for `s>0` and integrating
+each factor across its interlacing interval yields the exact linearization
+
+```text
+log H_n(s)
+ =(1-s) integral_[0,1] 1/[1+(s-1)x] dsigma_n(x).        (206)
+```
+
+No limiting argument occurs in `(206)`.  A pole--zero pollution pair contributes only the length
+of its compactified gap.  Arbitrarily many pairs may therefore cancel while a nonzero singular
+limit survives.  This is precisely the mechanism that one-extension eigenvalue convergence and
+the regular pointed-vector picture both miss.
+
+#### Theorem T — fixed-anchor law is compactified spectral-shift convergence
+
+Under RH, let `sigma_Xi` be the measure obtained from the normalized target `(201)` by `(203)--(204)`:
+its pole locations are the distinct positive Xi ordinates and its zero locations are the positive
+zeros of the meromorphic logarithmic derivative between consecutive poles.  Equivalently it is
+the unique finite measure on `[0,1]` satisfying
+
+```text
+integral_[0,1] 1/[1+(s-1)x] dsigma_Xi(x)
+ = log(M_0(s)/M_0(1))/(1-s),       s>0, s!=1.           (207)
+```
+
+For any source-selected finite Suzuki sequence, the following are equivalent:
+
+1. the fixed-anchor transform law `(199)` holds on a positive uniqueness set;
+2. the paired-extension occupancy measures satisfy
+
+   ```text
+   sigma_n --> sigma_Xi                                  (208)
+   ```
+
+   weakly on `[0,1]`.
+
+Indeed, evenness of the fixed Clark probability and the Donoghue identity give
+
+```text
+H_n(s)
+ =integral_[0,infinity] (u+1)/(u+s) dmu_(1,n)(u).       (209)
+```
+
+Thus `(199)`, `(206)`, and `(207)` identify the transforms.  Weak convergence in `(208)` implies
+the transform limit because the kernel in `(206)` is continuous.  Conversely the measures
+`sigma_n<=dx` are compact.  Every weak subsequential limit has the transform in `(207)` on the
+given uniqueness set; holomorphic continuation in `s` and uniqueness of the Stieltjes transform
+identify it with `sigma_Xi`.  Hence every subsequence has the same limit.
+
+The measure in `(204)` is the compactified Krein spectral-shift occupancy of the two rank-one
+self-adjoint extensions.  Spectral-shift theory and exponential Herglotz representations are
+classical.  The new Suzuki-specific point is that the singular fixed-anchor Clark law is exactly
+this **two-extension eigenvalue-only** invariant.  One extension remains insufficient; the
+opposite extension records its missing Jacobians through the pole--zero gaps.
+
+#### Theorem U — smoothing-trace hierarchy and first source selector
+
+For `j>=0`, let `f_j(t)=(1+t^2)^(-(j+1))`, and denote the canonical even and odd extensions by
+`L_n^-` and `L_n^+`.  Their finite-aperture spectra make both `f_j(L_n^-)` and `f_j(L_n^+)` trace
+class.  Directly from `(203)--(204)`,
+
+```text
+Tr(f_j(L_n^-)-f_j(L_n^+))
+ =2(j+1) integral_[0,1] x^j dsigma_n(x)-1.              (210)
+```
+
+The `-1` is the forced odd eigenvalue at zero.  Expanding `(206)` at `s=1` gives the target moments
+
+```text
+c_j^Xi
+ :=integral_[0,1] x^j dsigma_Xi(x)
+ =(-1)^(j+1)/(j+1)!
+   [d^(j+1)/ds^(j+1) log M_0(s)]_(s=1).                 (211)
+```
+
+Since polynomials are dense on `[0,1]`, `(199)` is therefore equivalent to the countable,
+source-declared trace hierarchy
+
+```text
+Tr(f_j(L_n^-)-f_j(L_n^+)) -> 2(j+1)c_j^Xi-1
+for every j>=0.                                         (212)
+```
+
+This is not a regular strong-resolvent consequence.  Strong convergence of moving rank-one
+resolvent differences does not by itself control their traces; rank-one projections onto a weakly
+escaping orthonormal sequence are the elementary model of the missing implication.  Theorem Q
+therefore does not kill `(208)--(212)`, but it proves that their limit must be singular.
+
+The zeroth occupancy moment is already the anchored defect:
+
+```text
+sigma_n([0,1])=(1-kappa_n)/2,       kappa_n=m_n'(i),
+c_0^Xi=(1-kappa_Xi)/2 in (0,4/85).                      (213)
+```
+
+The scalar defect and its endpoint transport are not new here: they are the content of the existing
+`suzuki-parity-resolvent-transport-budget` route (`SR-55` and its interior refinements).  What is
+new in the present reduction is the identification of that known defect as the **zeroth moment** of
+the two-extension occupancy and its placement inside the full trace hierarchy `(210)--(212)`.
+At fixed anchor `i`, the far-negative endpoint is
+
+```text
+kappa_free(a)=2a/sinh(2a),                              (214)
+```
+
+while a source-visible simple even ground state gives `kappa_(a,lambda)->1` as `lambda` rises to
+the spectral floor.  Here source-visible means that its inner product with the even anchor
+`cosh(X)` is nonzero.  The corpus theorem `77/85<kappa_Xi<1` is unconditional.  Hence, for every
+sufficiently large aperture with source-visible simple even ground state, continuity in `lambda`
+gives at least one admissible shift satisfying
+
+```text
+kappa_(a,lambda_a^*)=kappa_Xi.                          (215)
+```
+
+Taking, for example, the least crossing makes `(215)` source-measurable from the finite resolvent
+and the theta-declared scalar; it uses no Xi zero location.  This crossing is an application of the
+already-known defect transport, not a separate novelty claim.  A source-visible simple odd ground
+state approaches `-1`, so the same endpoint argument genuinely fails there; an interior overshoot
+or cofinal source-visible even-ground theorem would be required.
+
+Equation `(215)` matches only `j=0` in `(212)`.  The sharp finite-atomic counterfamily of Section
+14.5 proves that no first-moment argument can supply the rest.  The exact nonterminal Route-G
+theorem is now:
+
+> construct a source-selected cofinal family and prove compactified spectral-shift convergence
+> `(208)`, equivalently all smoothing-trace laws `(212)`; or prove that Suzuki's literal paired
+> extensions cannot have the source-declared limit `(207)`.
+
+This formulation survives both weak anchor escape and eigenvalue overcrowding.  It is strictly
+stronger than one-extension spectral convergence and strictly less pointwise than matching every
+polluted eigenvalue: only the total compactified pole--zero gap occupancy matters.
+
+### 14.14 Low-energy extinction and the regular phase-mixing no-go
+
+The occupancy formulation yields a quantitative obstruction which is invisible in the pointed
+probability alone.  The unconditional zero-height estimate used in the Xi first-defect theorem is
+
+```text
+gamma^2>81/4
+```
+
+for every real centered Xi ordinate under RH.  Every positive zero of the target logarithmic
+derivative lies between two consecutive positive poles, so it obeys the same lower bound.  Hence
+
+```text
+supp(sigma_Xi) subset [0,4/85),                         (216)
+```
+
+because `x(t)=(1+t^2)^(-1)`.  In particular
+
+```text
+0<=c_j^Xi< (4/85)^(j+1),
+-1<2(j+1)c_j^Xi-1
+   <-1+2(j+1)(4/85)^(j+1).                              (217)
+```
+
+The first inequality uses `c_0^Xi<4/85` and `x^j<=(4/85)^j` on the support.  Thus `(208)` forces
+the positive low-energy extinction law
+
+```text
+lim_n sigma_n([4/85+epsilon,1])=0
+for every epsilon>0.                                    (218)
+```
+
+There is no cancellation hidden in `(218)`: it is the sum of the compactified lengths of all
+even-pole/odd-zero gaps meeting that low-energy window.  Any source theorem giving a uniform
+positive lower bound for one such window would retire Route G.
+
+The opposite regular regime is already class-completely dead.  Let `phi_n` be the increasing
+boundary phase of `Theta_n`, normalized by `phi_n(0)=pi`, and for `0<x<1` put
+
+```text
+t(x)=sqrt(x^(-1)-1),
+vartheta_n(x)=phi_n(t(x)).                              (219)
+```
+
+The phase runs from the central odd zero through alternating even poles and positive odd zeros.
+Consequently, away from the discrete endpoints,
+
+```text
+d sigma_n/dx
+ =1_{sin(vartheta_n(x))>0}.                             (220)
+```
+
+This is an exact phase form of `(204)`.  The periodic square wave in `(220)` has mean `1/2` and a
+bounded periodic primitive after subtracting that mean.
+
+#### Theorem V — regular high-frequency phase mixing is a dead end
+
+Assume that on every compact interval `I subset (0,1)`, `vartheta_n` is `C^1`, has no stationary
+point, and its signed inverse speed obeys
+
+```text
+||1/vartheta_n'||_(L^infinity(I))
+ +Var_I(1/vartheta_n') ->0.                             (221)
+```
+
+Then
+
+```text
+sigma_n --> (1/2)dx                                    (222)
+```
+
+weakly on `[0,1]`.  Therefore no sequence satisfying `(221)` can obey the Xi law `(208)`.
+
+To prove the theorem, write `S(y)=1_{sin y>0}-1/2` and choose a bounded periodic primitive `P` of
+`S`.  For a `C^1` test function `h` supported in `I`, integration by parts gives
+
+```text
+integral_I h(x)S(vartheta_n(x))dx
+ =boundary[h P(vartheta_n)/vartheta_n']
+  -integral_I P(vartheta_n)d(h/vartheta_n').
+```
+
+The right side tends to zero by `(221)`.  Approximation extends this to continuous compactly
+supported tests.  Exhausting `(0,1)` and using `0<=sigma_n<=dx` handles the two endpoints, proving
+`(222)`.  But `(216)` gives
+
+```text
+sigma_Xi((4/85,1])=0,
+(1/2)dx((4/85,1])=81/170,
+```
+
+so the two limits are different by a fixed amount.
+
+Condition `(221)` is the precise regular-clock hypothesis: phase frequency diverges while inverse
+phase speed becomes locally flat.  Free-clock homogenization is its model.  Theorem V proves that
+smoothly distorted clocks are just as dead.  A successful Suzuki branch must violate `(221)` on
+some fixed compact subinterval of `(4/85,1)`: either its phase does not become high-frequency
+there, or its inverse speed develops nonvanishing bounded-variation concentration locked to the
+alternating extension parity.  Combined with Theorem Q, this is the exact singular survivor:
+
+```text
+weak vector escape
+ + spectral overcrowding
+ + alternating phase-speed boundary layers
+ -> possible nonfree paired occupancy.                 (223)
+```
+
+The periodic averaging lemma is classical and is not claimed new.  Candidate-new content is the
+Suzuki/Xi support wall `(216)--(218)`, the exact parity square wave `(220)`, and the resulting proof
+that every regular high-clock realization of the fixed-anchor route converges to the wrong
+half-Lebesgue spectral-shift state.
+
+### 14.15 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -2664,6 +3128,66 @@ even weaker.  But once `(173)` is proved, no further movable-anchor spectral the
     original source-to-limit problem.  The one remaining nonterminal theorem is fixed-anchor
     pointed convergence `(173)` for a source-selected shifted family; neither eigenvalue-set
     convergence nor generic strong-resolvent language supplies its cyclic vector weights.
+46. **Suzuki's original fixed defect anchor should converge strongly to the global kernel at `i`
+    -- failed.**  Theorem Q proves its norm diverges before normalization and its normalized vector
+    converges weakly to zero in the global Weil embedding.
+47. **Impedance calibration restores a regular vector limit -- failed.**  It calibrates normalized
+    spectral probabilities only.  Every bounded exponential base, including the calibrated bases
+    and base `i`, obeys the same weak-escape mechanism.
+48. **Fixed-anchor weak escape kills its scalar probability -- failed.**  As in Theorems L--M,
+    varying projections can retain mass through rank excess or sub-resolution rotation.  Theorem Q
+    forces singularity but does not exclude it.
+49. **Suzuki's clean one-to-one extension-eigenvalue convergence supplies the missing fixed law --
+    failed.**  Stable finite-rank local projections paired with the weakly escaping fixed anchor
+    have zero limiting mass.  Any successful fixed-anchor form of the conjecture must include
+    spectral pollution/rank growth or projection rotation, not merely support convergence.
+50. **The fixed-anchor probability target is still divisor-fitted -- failed.**  The finite Laplace
+    averages `(191)` source-declare its global vector; under RH they converge at the exponential
+    rate `(193)` and have exactly the probability `(169)`.
+51. **The remaining fixed law is an unbounded boundary-moment problem -- failed.**  Theorem S
+    reduces it to the bounded resolvent observable `(199)` on one positive uniqueness set.
+52. **This bounded transform follows from abstract strong-resolvent convergence -- failed.**  Its
+    cyclic vectors weakly escape by Theorem Q.  Strong-resolvent convergence tests fixed vectors,
+    not this moving pointed state; singular source control remains essential.
+53. **Finite restriction of the screw metric gives an exact boundary-free correlation window --
+    failed.**  The fixed deficiency vector has full interval support.  Only compactly supported
+    test vectors enjoy a pre-return translation window, and Theorem Q excludes a regular limit of
+    the cyclic anchor.
+54. **The odd pencil is automatically the derivative companion of the even pencil -- failed.**
+    Equation `(202)` is equivalent pole by pole to flat Nevanlinna weights.  That is the missing
+    Jacobian theorem, not an algebraic consequence of the pencil definitions.
+55. **The fixed law is intrinsically cyclic-vector data -- failed.**  Equations `(203)--(209)`
+    replace it exactly by the compactified spectral-shift occupancy of the two canonical
+    extensions, using only their interlacing eigenvalues.
+56. **One canonical extension spectrum should determine that occupancy -- failed.**  With a fixed
+    pole sequence, every choice of one zero in each pole gap produces a different normalized
+    meromorphic Herglotz function.  The opposite extension is the missing datum.
+57. **Spectral overcrowding makes every eigenvalue-only invariant useless -- failed.**  In `(206)`
+    a polluted pole--zero pair contributes only its compactified gap length.  Arbitrarily many
+    nearly cancelling pairs can disappear while a nonzero occupancy limit survives.
+58. **Weak anchor escape kills the paired spectral-shift invariant -- failed.**  A weakly escaping
+    rank-one channel can retain trace and spectral-shift mass.  The escape proves singularity, not
+    vanishing of `(208)`.
+59. **Strong resolvent convergence of the two extensions supplies `(208)` -- failed.**  Strong
+    convergence does not control traces of moving rank-one resolvent differences; trace-norm or
+    the exact hierarchy `(212)` is new source information.
+60. **Even the first fixed-anchor occupancy moment has no source-selected schedule -- failed on
+    every sufficiently large source-visible simple-even-ground aperture.**  The endpoint crossing
+    `(214)--(215)` matches it without divisor fitting.  Source-visible simple odd ground remains a
+    real parity obstruction.
+61. **Matching that first occupancy moment closes the fixed law -- failed sharply.**  It is only
+    `j=0` in `(212)`; Section 14.5 already supplies carriers with the same first moment and
+    different higher moments.
+62. **High-frequency overcrowding automatically kills the occupancy route -- failed without a
+    regularity hypothesis.**  Phase cells can have extremely unequal compactified lengths.
+    Theorem V kills exactly the locally flat inverse-speed regime; alternating phase-speed boundary
+    layers remain possible.
+63. **A smoothly distorted high clock could realize Xi occupancy -- failed class-completely.**
+    Condition `(221)` forces the universal half-Lebesgue limit `(222)`, which has mass `81/170`
+    above the unconditional Xi support wall while the target has none.
+64. **The target hierarchy has no finite-window falsifier -- failed.**  Equations `(216)--(218)`
+    force every low-energy paired gap length above `x=4/85` to vanish.  Any uniform positive source
+    lower bound there retires Route G without identifying individual Xi zeros.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -2678,7 +3202,10 @@ the Clark--screw weak-limit rigidity `(115)--(125)`, the finite mixed-anchor res
 `(126)--(133)`, the source-Cesaro Green origin `(134)--(140)`, the global weak-escape/singular
 metric/projection wall `(141)--(150)`, and the critical-node Galerkin resolution trilemma
 `(151)--(158)`, the relative-floor metric wall `(159)--(162)`, and the defect-base/hard-edge
-equivalence and source-impedance calibration `(163)--(185)`.
+equivalence, source-impedance calibration, all-anchor weak-escape law, and fixed-source Laplace
+rigidity `(163)--(200)`, together with the compactified two-extension spectral-shift and
+smoothing-trace reduction `(201)--(215)` and the low-energy support/regular phase-mixing wall
+`(216)--(223)`.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
 specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
 formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the
@@ -2695,4 +3222,18 @@ targeted source and literature audit found no prior reduction of Suzuki's movabl
 limit to his fixed-anchor pointed measure plus the exact hard-edge condition `(174)`, nor the
 identification of his screw-Cesaro origin with the zero-anchor model-space kernel or the
 source-impedance selector `(180)--(184)` which removes that hard edge once fixed-anchor convergence
-is known.  Specialist priority review remains required.
+is known.  The unitary-character obstruction behind Theorem Q is elementary; the candidate-new
+part is its application to every fixed and coalescing Suzuki defect base and the resulting proof
+that even the original fixed-anchor pointed law must be singular.  Targeted searches also found
+Suzuki's screw-line and model-space expansions but not the Laplace declaration `(191)--(196)` or
+its identification with the exact fixed-anchor rigidity law `(199)`.  Meromorphic-Herglotz
+canonical products, exponential Herglotz representations, and Krein spectral-shift functions are
+classical; they are not claimed new.  The targeted literature search found no Suzuki-specific
+identification of the singular fixed-anchor law with compactified even/odd gap occupancy, no theta
+log-moment trace hierarchy `(210)--(212)`, and no fixed-anchor endpoint selector `(215)`.
+Primary parent comparisons are Reiffenstein, *Higher-order interlacing for matrix-valued
+meromorphic Herglotz functions*, arXiv:2108.10746, Theorem 2.3 for the scalar product law;
+Poltoratski, *The Krein spectral shift and rank one perturbations of spectra*,
+arXiv:math/9601206; and Yafaev, *Perturbation determinants, the spectral shift function, trace
+identities, and all that*, arXiv:math/0701301.
+Specialist priority review remains required.

@@ -1,8 +1,8 @@
 # Adaptive Source Gauss-Edge Decomposition
 
 - **ID:** mass-shifted-adaptive-source-gauss-edge-decomposition
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` §9.3; exact adaptive
   Jacobi-energy and Christoffel-scale laws
 - **Statement:** The admission-first adaptive mixed source splits exactly into one Gaussian-visible
@@ -106,9 +106,27 @@ positive current scale `16 beta_(n+1)` proves the completed decomposition and `G
 
 - [x] 0 -> 1 in-progress: source-pure statement and hostile tests isolated.
 - [x] 1 -> 2 fully-proven: complete dependency-closed paper proof above.
-- [ ] 2 -> 3 formalized: finite-block Gauss theorem and shifted-Xi completed capstone.
+- [x] 2 -> 3 formalized: finite-block Gauss theorem and shifted-Xi completed capstone.
 - [ ] 3 -> 4 publication-ready.
+
+## Lean certificate
+
+- `HTGeometry.FiniteGaussQuadrature`
+  - `gaussQuadrature_eq_momentFunctional_below`
+  - `momentFunctional_sub_gaussSum_eq_topCoeff_mul_nextNorm_below`
+- `HTGeometry.AdaptiveOrthogonalSourceGaussDecomposition`
+  - `coeff_adaptiveOrthoSourcePolynomial_top`
+  - `momentFunctional_adaptiveOrthoSourcePolynomial_sub_gaussAggregate_eq_nextNorm`
+  - `adaptiveOrthoGaussAggregate_eq_visibleJacobiEnergy`
+  - `adaptiveOrthoGaussAggregate_pos`
+- `RHTower.XiShiftedCanonicalAdmissionGaussEdgeArithmeticSource`
+  - `xiShiftedAdaptiveMixedCompletedArithmeticSource_eq_gaussBulk_add_nextEdge`
+  - `scaleCompletedAdmissionGaussBulk_pos`
+  - `scaleCompletedRelativeArithmeticSource_eq_universalEdge_add_gaussBulk`
 
 ## Log
 
-- 2026-08-11 — Paper theorem proved after Christoffel-scale completion; formalization started.
+- 2026-08-11 — Paper theorem proved after Christoffel-scale completion.
+- 2026-08-11 — Unconditional Lean formalization completed. Direct checks and targeted builds pass.
+  Axiom audit of capstones reports only `propext`, `Classical.choice`, and `Quot.sound`; no
+  computation or added axiom.

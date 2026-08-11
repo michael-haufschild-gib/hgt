@@ -217,10 +217,16 @@ Under RH, every `alpha_q` is real, so every shifted reciprocal atom is positive 
  \text{no negative hard-edge Paley--Wiener limit occurs}.        \tag{HEPW.19}
 \]
 
-The value of (HEPW.1) is not the equivalence (HEPW.19). It is the two-sided scale theorem: a
-hypothetical first defect cannot hide at `o(sqrt(y))`, and it never needs degree
-`omega(sqrt(y))`. Any cofinal first-contact sequence has, after a subsequence, bounded nonzero
-scaled degree `N/sqrt(y)` and a finite-exponential-type limiting test.
+The value of (HEPW.1) is not the equivalence (HEPW.19). It is the two-sided scale theorem for the
+**least** defective block: a hypothetical first defect cannot hide at `o(sqrt(y))`, and a negative
+witness never needs degree `omega(sqrt(y))`.  Starting from these least-block witnesses and moving
+each fixed block rightward to its first positive-semidefinite re-entry produces at least one
+cofinal singular first-contact sequence with bounded nonzero scaled degree.  The theorem does not
+bound every independently chosen higher-order contact sequence.
+
+Degree/type control alone permits the resulting packets to translate to spectral height infinity.
+`mass-shifted-completed-source-hard-edge-compactness` uses the literal completed source to prevent
+that escape and produce a nonzero limiting test.
 
 To finish Route U one must now exclude a finite-type limit that also inherits the canonical
 first-contact null incidence and real-rooted Schur boundary structure. Generic Paley--Wiener/Weil

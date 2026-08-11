@@ -914,3 +914,176 @@ Full proofs:
 and
 `../2-fully-proven/new_scientific_knowledge/route-e-opposite-parity-metropolis-rejection-law.md`.
 No Lean source was edited or built during corpus refactor.
+
+## 2026-08-11 Ramaré recombination and ternary recurrence splice
+
+Exact integer reindexing changes the identity of the Gallagher residue. For
+`k_n=omega_P(n)` and `c_P(n,m)=omega_P(gcd(n,m))`, the Ramaré bilinear polynomial is precisely the
+Möbius polynomial on nonrough squarefree integers, while its square-multiple polynomial vanishes
+termwise. The prime off-diagonal is
+
+\[
+ O_P(M,W)=\sum_{n,m}\mu(n)\mu(m)
+ \left(1-{c_P(n,m)\over k_nk_m}\right)K_W(n,m).          \tag{A41}
+\]
+
+Its same-integer block collisions contribute
+
+\[
+ 2W\sum_n(1-1/k_n)\le2WM,                               \tag{A42}
+\]
+
+and every coprime pair has coefficient exactly one. Hence prime spacing and common-prime incidence
+cannot close the raw residue; the exact untouched analytic core is coprime Möbius near-diagonal
+covariance. Correct sufficient target is affine `CWM+o(M^2)`, with diagonal constant retained.
+
+The coprime sector has a new exact finite model. For a finite prime marker packet `Q`,
+
+\[
+ \mathcal T_Q(t)=\prod_{p\in Q}(1-p^{it}-p^{-it}).        \tag{A43}
+\]
+
+Its pointwise supremum `3^|Q|` is approached at arbitrarily large simultaneous antiscale
+recurrences. Thus pointwise dissipation fails in the exact escape mode already identified by Route
+E. In contrast, if `R_Q=prod_{p in Q}p`, then
+
+\[
+ \int_{-W}^{W}|\mathcal T_Q(t)|^2dt
+ \le(2W+4R_Q^2(1+|Q|\log3))3^{|Q|}.                     \tag{A44}
+\]
+
+When `R_Q^2(1+|Q|)=O(W)`, near-maximal recurrence therefore has relative frequency measure
+`O(3^{-|Q|})`. This is a finite-height, sign-retaining large-values law, not a pointwise
+pretentious-distance restatement.
+
+With actual reciprocal prime-dilation state weights `1,1/p,1/p`, the normalized alternating
+character is
+
+\[
+ \Phi_Q(t)=\prod_{p\in Q}
+ {1-p^{-1}e^{it\log p}-p^{-1}e^{-it\log p}\over1+2/p}.
+\tag{A45}
+\]
+
+It still has cofinal antiscale recurrences of modulus one, but
+
+\[
+ \int_{-W}^{W}|\Phi_Q(t)|^2dt
+ \le(2W+4R_Q^2(1+|Q|\log3))
+ \prod_{p\in Q}{1+2/p^2\over(1+2/p)^2}.                \tag{A46}
+\]
+
+The product in `(A46)` is at most
+
+\[
+ \exp\left(2\sum_{p\in Q}p^{-2}-2\sum_{p\in Q}p^{-1}\right),
+\tag{A47}
+\]
+
+so it vanishes with growing harmonic marker mass. Equations `(A45)`--`(A47)` prove critical
+dissipation saturation with exact escape retained: uniform pointwise damping is false, while the
+frequency weight of recurrence peaks tends to zero.
+
+New hard target is
+**TERNARY-MARKER-COFACTOR-FLATNESS-AND-RECURRENCE-SEAM**: tensor `(A44)` with actual
+state-dependent rough-cofactor cutoffs and Ramaré/physical weights (using `(A46)` at reciprocal
+marker density), obtaining `(A41)` with affine
+strict-half budget plus unit column load and normalized prime-dilation recurrence seam. Turán rough
+counts and Ramaré diagonal energy do not imply this statewise flatness.
+
+Full proof:
+`../2-fully-proven/new_scientific_knowledge/route-e-ramare-recombination-ternary-antiscale-law.md`.
+No Lean source was edited or built.
+
+## 2026-08-11 critical antiscale diffuse-codiagonal reduction
+
+Read-only audit of the grown Fisher and antiscale corpus exposes a strictly weaker successor to
+statewise cofactor flatness.
+
+For every finite prime packet `Q`, exponent `r>0`, and
+
+\[
+ \Psi_{Q,r}(t)=\prod_{p\in Q}
+   {1-p^{-r}e^{-it\log p}\over1+p^{-r}},
+\]
+
+the exact local deficit is
+
+\[
+ \left|{1-p^{-r}e^{-it\log p}\over1+p^{-r}}\right|^2
+ =1-{p^{-r}|1+e^{it\log p}|^2\over(1+p^{-r})^2}.       \tag{A48}
+\]
+
+Thus simultaneous antiscale phase is the unique zero-dissipation torus point and is approached
+cofinally. If `R_Q=prod Q`, separated divisor frequencies give
+
+\[
+ \int_{-W}^{W}|\Psi_{Q,r}(t)|^2dt
+ \le\left(2W+4R_Q(1+|Q|\log2)\right)
+ \prod_{p\in Q}{1+p^{-2r}\over(1+p^{-r})^2}.            \tag{A49}
+\]
+
+The product is at most
+
+\[
+ \exp\left(-\frac12\sum_{p\in Q}p^{-r}\right),         \tag{A50}
+\]
+
+so it vanishes for every `0<r<=1` along a prime exhaustion. This completes the exact critical
+dissipation classification: no pointwise gap exists, but finite-height recurrence mass vanishes;
+`r=1` is the sharp Euler boundary.
+
+More importantly, sharp cofactor tensoring has an exact centered decomposition. For a finite
+probability law `(w_s)`, a centered state family `sum_s w_s A_s=0`, and `|d_s|<=1`, define
+
+\[
+ O_w(A,d)=\sum_{s\ne q}w_sw_q(A_s+A_q)d_s,
+ \qquad R_w(A,d)=\sum_sw_s^2A_sd_s.
+\]
+
+Then
+
+\[
+ \boxed{
+ O_w(A,d)=\sum_sw_sA_sd_s-2R_w(A,d),
+ \qquad
+ |2R_w(A,d)|\le2w_{\max}\|A\|_{L^2(w)}.}               \tag{A51}
+\]
+
+For reciprocal ternary states `s=(a,b)`,
+`w_(a,b)=1/(Z_Qab)` and `w_max=1/Z_Q<=exp(-sum_(p in Q)1/p)`. Therefore every arbitrary sharp
+cofactor family splits into its state mean times `(A45)`, one centered off-diagonal reporter, and
+an exponentially diffuse atomic collision. Uniform comparison of all `3^|Q|` cofactor blocks to
+one common block is sufficient but no longer necessary.
+
+The grown Lean corpus already proves the matching abstract operator bound. Any contraction-generated
+joined reporter paired with the actual squarefree critical Fisher lower corner obeys
+
+\[
+ |\langle B,\operatorname{Reporter}\rangle_{HS}|^2
+ \le\frac12\|B\|_{HS}^2,
+\]
+
+while limiting one-corner energy satisfies
+
+\[
+ \mathcal E_\downarrow(u)\le4(1-e^{-u}),
+ \qquad \mathcal E_\downarrow(u)/u\to4.                 \tag{A52}
+\]
+
+Hence every genuinely contractive physical realization has abstract small-cutoff receiver
+`sqrt(2(1-e^-u))<=sqrt(2u)`. This is a real square-root source law, not row/co-degree exponent
+counting.
+
+It does **not** yet prove `(A1)`: no theorem identifies the finite sharp Ramaré/unit-shell centered
+reporter with this Fisher one-corner while preserving physical normalization. A vanishing source
+expectation could erase the `sqrt(u)` gain. Revised hard target is
+
+**CENTERED-COFACTOR-ONE-CORNER-CONTRACTION-AND-UNIT-SHELL-SEAM**: realize `(A51)` by a
+source-predeclared `L^2` contraction for the actual finite physical atoms, compare its moving
+corner energy to `(A52)` without inverse shell-probability loss, and carry the same reporter
+through normalized zero/one-large-prime seam and exact signed recurrence.
+
+Full proof and collision audit:
+`../2-fully-proven/new_scientific_knowledge/route-e-critical-antiscale-diffuse-codiagonal-transfer-law.md`.
+No Lean source was edited or built.

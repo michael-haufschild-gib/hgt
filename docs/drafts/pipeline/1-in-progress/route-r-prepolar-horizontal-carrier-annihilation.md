@@ -444,3 +444,457 @@ and the third requires a genuinely infinite-prime strict topology.  Hence the on
 Route-R producer is now a strict-topology, non-module constitutive selector constructed before
 Xi scalarization.  Merely quotienting by a larger ideal or declaring the essential tail a
 boundary is dependency-closed dead.
+
+## C18. Fixed same-fibre positive polarizations are universally amplifying
+
+The unweighted two-head energy is not special.  Let
+
+\[
+  L=\log 2,\qquad
+  g_\rho={\overline\rho\over 1-\rho},\qquad
+  g_\rho^\vee={1-\overline\rho\over\rho}={1\over\overline{g_\rho}}.
+\]
+
+The fixed source head vector is, up to a common sign, \(v_0=(1,L)\), and Cartier transfer sends it
+to
+
+\[
+  v_\rho=(g_\rho,Lg_\rho^\vee).
+\]
+
+Consider any fixed positive-definite Hermitian form on the two physical heads which is invariant
+under exchange of the two Gamma orientations.  Its matrix has equal diagonal entries,
+
+\[
+  M=\begin{pmatrix}A&C\\ \overline C&A\end{pmatrix},
+  \qquad A>0,
+\]
+
+with the usual additional determinant inequality on \(C\).  This class includes the inverse-Gram
+polarization of the two actual head Riesz vectors: cosine unitarity makes those vectors have equal
+norm, so both their Gram matrix and its inverse have equal diagonals.
+
+Put \(r_\rho=|g_\rho|^2=|\rho|^2/|1-\rho|^2\).  The mixed term of the Hermitian form is unchanged by
+Cartier transfer, because
+
+\[
+  \overline{g_\rho}\,g_\rho^\vee=1.
+\]
+
+Consequently the full polarization defect is independent of \(C\):
+
+\[
+\begin{aligned}
+  \langle v_\rho,Mv_\rho\rangle-
+  \langle v_0,Mv_0\rangle
+   &=A\bigl[(r_\rho-1)+L^2(r_\rho^{-1}-1)\bigr]\\
+   &=A(r_\rho-1)\left(1-{L^2\over r_\rho}\right).
+\end{aligned}
+\tag{C18.1}
+\]
+
+If \(1/2<\Re\rho<1\), then \(r_\rho>1\), while \(0<L^2<1\).  Both factors on the last line of
+\((\mathrm{C18.1})\) are therefore strictly positive.  Thus
+
+\[
+  \boxed{
+  \langle v_0,Mv_0\rangle<\langle v_\rho,Mv_\rho\rangle
+  }
+\]
+
+for every fixed orientation-symmetric positive Hermitian polarization, not merely for the
+unweighted sum already formalized in `BurnolCartierZeroTransferHeadPolarization.lean`.
+
+This kills the apparent inverse-Gram escape.  Nonorthogonality of the two head reporters cannot
+repair the sign: the entire off-diagonal Gram correction is exactly conserved, while the equal
+diagonal part is strictly amplified.  A positive same-fibre producer would have to abandon at
+least one of:
+
+1. fixedness before seeing the divisor;
+2. Fourier/Gamma-orientation symmetry;
+3. positive-definite Hermitian geometry on the physical two-head quotient.
+
+A divisor-dependent metric can of course be tuned to the required sign, but then its construction
+is itself the missing horizontal-divisor information and is not a pre-divisor producer.
+
+## C19. FE pairing converts the Route-R defect into an archimedean Hodge square
+
+Let \(\iota\rho=1-\overline\rho\).  Then
+
+\[
+  g_{\iota\rho}=g_\rho^{-1},\qquad
+  r_{\iota\rho}=r_\rho^{-1}.
+\]
+
+Adding the two defects from \((\mathrm{C18.1})\) gives
+
+\[
+\begin{aligned}
+  \Delta_M(\rho)+\Delta_M(\iota\rho)
+    &=A(1+L^2)(r_\rho+r_\rho^{-1}-2)\\
+    &=A(1+L^2){(|\rho|^2-|1-\rho|^2)^2
+         \over |\rho|^2|1-\rho|^2}\\
+    &=4A(1+L^2){(\Re\rho-1/2)^2
+         \over |\rho|^2|1-\rho|^2}.
+\end{aligned}
+\tag{C19.1}
+\]
+
+This is nonnegative and has exact radical \(\Re\rho=1/2\).  Functional-equation pairing therefore
+does not cancel the Route-R head defect.  It squares it into the same reflection-even horizontal
+mass geometry isolated by `GaussHodgeMassCurrent.lean` and
+`GaussHodgeSeamEnergyBridge.lean`.
+
+The consequence for producer design is sharp.  Operator-level Poisson reflection or a source
+dagger which merely exchanges the two Gamma orientations preserves the positive square
+\((\mathrm{C19.1})\).
+It cannot annihilate it.  To close Route R through this interface one needs an additional global
+index/supertrace identity, sourced from arithmetic self-duality before scalarization, whose value
+is zero while its positive ordinary trace is \((\mathrm{C19.1})\).  That is exactly the global
+compressed-trace/Hodge gate; it is not a local head-metric comparison.
+
+**Status:** paper proof complete; not yet formalized because the Lean corpus is under refactor.
+The identities are elementary but scientifically useful: they close the whole fixed,
+orientation-symmetric, positive same-fibre polarization class and fuse Route R's local head defect
+with the global Hodge-mass socket without assuming RH or critical-line placement.
+
+## C20. Classification of Cartier-conserved same-fibre Hermitian forms
+
+The preceding computation gives a complete conservation theorem, not only an amplification
+theorem.  Let
+
+\[
+  H=\begin{pmatrix}A&C\\ \overline C&B\end{pmatrix}
+\]
+
+be an arbitrary fixed Hermitian form and let
+
+\[
+  T_\rho=\operatorname{diag}(g_\rho,g_\rho^\vee),
+  \qquad g_\rho^\vee=1/\overline{g_\rho}.
+\]
+
+Then
+
+\[
+  T_\rho^*HT_\rho-H=
+  \begin{pmatrix}
+    A(r_\rho-1)&0\\
+    0&B(r_\rho^{-1}-1)
+  \end{pmatrix}.
+\tag{C20.1}
+\]
+
+The off-diagonal entry cancels exactly; no positivity or divisor hypothesis is used.  At any
+off-line point, \(r_\rho\ne1\), so
+
+\[
+  T_\rho^*HT_\rho=H
+  \quad\Longleftrightarrow\quad
+  A=B=0.
+\tag{C20.2}
+\]
+
+Thus every nonzero Cartier-conserved same-fibre Hermitian form is purely off-diagonal,
+
+\[
+  H_C=\begin{pmatrix}0&C\\ \overline C&0\end{pmatrix}.
+\]
+
+For \(C\ne0\), its eigenvalues are \(\pm|C|\), hence it has signature \((1,1)\).  In particular:
+
+* no nonzero positive-semidefinite same-fibre Hermitian form is conserved at an off-line point;
+* the pre-polar, sign-indefinite off-diagonal source form is not one candidate among many: it is
+  the complete invariant family;
+* its value on the physical vector is conserved and horizontal-blind,
+  \(langle T_\rho v_0,H_C T_\rho v_0\rangle
+    =\langle v_0,H_Cv_0\rangle=2L\Re C\);
+* adding any positive diagonal polarization necessarily breaks conservation by the explicit
+  diagonal cocycle in \((\mathrm{C20.1})\), whose FE-paired value is the Hodge square
+  \((\mathrm{C19.1})\).
+
+This is the exact source-dagger verdict.  The dagger supplies unconditional Hermiticity only for
+the split off-diagonal form.  It cannot yield a positive same-fibre norm identity without already
+annihilating the horizontal cocycle.  Therefore a `SourceDaggerIdentity` or
+`SameFiberNormIdentity` based solely on fixed Cartier covariance has no unclassified metric
+freedom left: its positive version is precisely the RH-strength step, while its unconditional
+version is indefinite and blind.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.  The future
+formal module should state the matrix identity \((\mathrm{C20.1})\), the off-line invariance
+classification \((\mathrm{C20.2})\), signature of \(H_C\), and the positive-polarization cocycle
+as a bridge to `GaussHodgeMassCurrent`.
+
+## C21. Projective Stokes flatness is blind to the Cartier boost
+
+The invariant form in C20 puts the two-head transport in canonical Krein coordinates.  Write
+
+\[
+  g_\rho=e^{\eta_\rho+i\phi_\rho},
+  \qquad
+  T_\rho=e^{i\phi_\rho}
+    \begin{pmatrix}e^{\eta_\rho}&0\\0&e^{-\eta_\rho}\end{pmatrix},
+  \qquad
+  S=\begin{pmatrix}0&1\\1&0\end{pmatrix}.
+\]
+
+Here \(S\) exchanges the two Gamma orientations and
+
+\[
+  \eta_\rho=\log|g_\rho|
+  ={1\over2}\log{|\rho|^2\over|1-\rho|^2}.
+\]
+
+The unconditional source-dagger relation is
+
+\[
+  S T_\rho S=e^{2i\phi_\rho}T_\rho^{-1}.
+\tag{C21.1}
+\]
+
+Therefore the closed reflection/Cartier loop is already projectively flat for every horizontal
+grade:
+
+\[
+  T_\rho S T_\rho S=e^{2i\phi_\rho}I.
+\tag{C21.2}
+\]
+
+Neither \((\mathrm{C21.1})\) nor \((\mathrm{C21.2})\) forces \(\eta_\rho=0\).  They are satisfied by
+the full one-parameter family of nontrivial boosts.  This gives an explicit two-dimensional
+countermodel to any proposed annihilation derived only from dagger reversal, determinant
+holonomy, projective monodromy, or ordinary Stokes flatness.
+
+The horizontal obstruction is the failure of centrality, not the closed-loop holonomy:
+
+\[
+  [T_\rho,S]=
+  \begin{pmatrix}
+    0&g_\rho-g_\rho^\vee\\
+    g_\rho^\vee-g_\rho&0
+  \end{pmatrix},
+\]
+
+and
+
+\[
+\begin{aligned}
+  {1\over2}\|[T_\rho,S]\|_{\mathrm{HS}}^2
+    &=|g_\rho-g_\rho^\vee|^2\\
+    &=r_\rho+r_\rho^{-1}-2\\
+    &={4(\Re\rho-1/2)^2\over|\rho|^2|1-\rho|^2}.
+\end{aligned}
+\tag{C21.3}
+\]
+
+Combining C19 and C21 gives the exact commutator-energy form of the FE-paired physical defect:
+
+\[
+  \Delta_M(\rho)+\Delta_M(\iota\rho)
+   ={A(1+L^2)\over2}\|[T_\rho,S]\|_{\mathrm{HS}}^2.
+\tag{C21.4}
+\]
+
+Thus the quadratic anomaly is precisely what abelian/projective flatness forgets.  A viable
+pre-divisor producer must prove a genuinely nonabelian statement whose physical consequence is
+
+\[
+  [T_\rho,S]=0,
+\]
+
+or an index/trace identity forcing the nonnegative quantity in \((\mathrm{C21.4})\) to vanish.
+But the ordinary rational-adelic Fourier--dilation relation supplies only \(STS=T^{-1}\), which
+the boost countermodel already satisfies.  Any proof using only that relation is
+dependency-closed dead.
+
+**Strongest positive survivor.**  Route R's missing producer is now typed as a nonabelian
+centrality theorem, not a flatness theorem: arithmetic self-duality must kill the commutator
+energy while retaining the prime-dilation class.  This is exactly where a global
+compressed-trace/index construction could add information unavailable to the local
+Fourier--dilation algebra.
+
+**Status:** paper proof complete; Lean formalization deferred during refactor.
+
+## C22. The Cartier commutator energy is a causal Hodge--Green resolvent with unit source
+
+The new adiabatic Euler--Gamma--Möbius chain makes it tempting to try to kill the positive
+commutator energy in C21 by ordinary Green--Stokes descent.  The exact transform below shows why
+that cannot work, and identifies the one boundary term a viable arithmetic producer must cancel.
+
+Write
+
+\[
+  \rho=x+iy,\qquad t=2x-1,\qquad 0<x<1,
+\]
+
+and put
+
+\[
+  \mathcal H_t(u)
+    =hodgeMassShape(e^{u/2},t)
+    =t\bigl(e^{tu/2}-e^{-tu/2}\bigr).
+\]
+
+For \(y\ne0\), define the causal sine--Laplace kernel
+
+\[
+  k_y(u)=e^{-u/2}{\sin(yu)\over y},\qquad u\ge0,
+\]
+
+and set \(k_0(u)=u e^{-u/2}\), its continuous \(y\to0\) limit.  Direct Laplace evaluation gives
+
+\[
+\begin{aligned}
+ \int_0^\infty k_y(u)\mathcal H_t(u)\,du
+ &=t\left(
+   {1\over ((1-t)/2)^2+y^2}
+   -{1\over ((1+t)/2)^2+y^2}\right)\\
+ &= {t^2\over (x^2+y^2)((1-x)^2+y^2)}\\
+ &= {1\over2}\|[T_\rho,S]\|_{\mathrm{HS}}^2.
+\end{aligned}
+\tag{C22.1}
+\]
+
+The integral is absolutely convergent because \(|t|<1\).  The same formula at \(y=0\) follows by
+the elementary Laplace moment integral or by dominated passage on compact \(t\)-subintervals.
+Thus the local Route-R Cartier obstruction and the global Gauss Hodge obstruction are not merely
+comparable: the former is the exact causal Green reading of the latter.
+
+This transform has a rigid boundary anomaly.  With \(D=d/du\), the kernel satisfies on the open
+collar
+
+\[
+  \bigl((D+\tfrac12)^2+y^2\bigr)k_y=0,
+  \qquad k_y(0)=0,
+  \qquad (D+\tfrac12)k_y(0)=1.
+\tag{C22.2}
+\]
+
+After causal extension by zero to the whole line, (C22.2) becomes the distribution identity
+
+\[
+  \boxed{
+  \bigl((D+\tfrac12)^2+y^2\bigr)(\mathbf 1_{u\ge0}k_y)=\delta_0.
+  }
+\tag{C22.3}
+\]
+
+Hence the dual kernel required to read the physical commutator is a Green kernel, not a closed
+Stokes test.  Its boundary charge is exactly one.  This is also unique: any causal solution of the
+homogeneous interior equation with zero value and zero covariant derivative at \(u=0\) is
+identically zero, and therefore cannot represent the nonzero functional in (C22.1).
+
+Consequences:
+
+1. `XI_BV_GREEN_STOKES_STRICT_DESCENT` does not supply the missing annihilation.  Its
+   transgression is an exact source endpoint difference; pairing it with the only scalar Green
+   kernel that reads the Cartier energy exposes the unit source (C22.3).
+2. Ordinary source exactness, causal Green descent, or a claim that the physical dual test is
+   Stokes-flat is dependency-closed dead.  Setting its boundary flux to zero deletes the physical
+   reading itself.
+3. A surviving producer must construct a *second*, arithmetic boundary contribution of charge
+   \(-1\) before divisor specialization, so that the combined causal kernel is source-free while
+   its physical specialization retains (C22.1).  This is a relative-index/anomaly-cancellation
+   problem, not an absolute Stokes-flatness problem.
+
+The transform and its source charge were numerically pre-certified at right-half, left-half,
+high-ordinate, and \(y=0\) points before recording the proof.  No Xi-zero location, RH, critical
+line placement, or physical annihilation is used.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.  This closes
+the scalar causal Green--Stokes producer class and leaves one sharply typed survivor: construct an
+independent rational-adelic boundary carrying the opposite unit source.
+
+## C23. Local relative anomaly cancellation is incompatible with coefficient faithfulness
+
+C22 leaves an apparent escape: add an independently constructed arithmetic boundary with opposite
+unit source.  The local Poisson--Gaussian germ determines whether this can preserve the physical
+carrier.  It cannot.
+
+Fix an actual Xi divisor point ρ of multiplicity \(m\), let
+
+\[
+  Z(s)=\zeta(s),\qquad U(s)=archFactor(s),\qquad \Xi(s)=U(s)Z(s),
+\]
+
+and let \(D(s)\) be any coefficient-faithful Green denominator with a simple zero at ρ.  Thus
+
+\[
+  \operatorname{ord}_\rho Z=m,
+  \qquad D(\rho)=0,
+  \qquad D'(\rho)\ne0,
+  \qquad U(\rho)\ne0.
+\]
+
+The canonical singular Poisson lift is
+
+\[
+  P(s)={1\over Z(s)D(s)}.
+\]
+
+It has order \(-(m+1)\), while completed transport has the universal simple Green pole
+
+\[
+  \Xi(s)P(s)={U(s)\over D(s)},
+  \qquad
+  \operatorname*{res}_{s=\rho}\Xi(s)P(s)
+    ={U(\rho)\over D'(\rho)}\ne0.
+\tag{C23.1}
+\]
+
+Now allow the most general local correction invisible at the level of the retained Green
+principal coefficient: suppose a meromorphic lift Ṕ satisfies
+
+\[
+  Z(s)\widetilde P(s)=D(s)^{-1}+H(s)
+\tag{C23.2}
+\]
+
+with \(H\) holomorphic at ρ.  Multiplication by the completed factor gives
+
+\[
+  \Xi(s)\widetilde P(s)
+    =U(s)D(s)^{-1}+U(s)H(s).
+\]
+
+The second summand is holomorphic, so
+
+\[
+  \boxed{
+  \operatorname*{res}_{s=\rho}\Xi(s)\widetilde P(s)
+    ={U(\rho)\over D'(\rho)}\ne0.
+  }
+\tag{C23.3}
+\]
+
+Therefore no holomorphic correction, lower principal jet, source-exact term, or locally invisible
+relative boundary changes the unit Green residue.
+
+Conversely, let \(C\) be a second meromorphic boundary whose completed transport cancels the
+residue in (C23.1).  Since \(U(\rho)\ne0\), the Poisson image \(ZC\) must have principal part
+
+\[
+  -D(s)^{-1}.
+\]
+
+Hence \(Z(P+C)\) is holomorphic at ρ: the correction cancels the retained physical Green
+principal coefficient itself.  Cancellation and coefficient faithfulness are mutually exclusive
+for every local relative lift.
+
+This gives the promised hostile test for the survivor of C22:
+
+* a boundary invisible to the physical principal part cannot cancel its unit source;
+* a boundary that cancels the unit source necessarily erases that principal part;
+* increasing source pole depth only changes lower jets: the completed top residue remains the
+  same nonzero \(U(\rho)/D'(\rho)\).
+
+The argument includes arbitrary Xi multiplicity and does not assume simplicity, RH, critical-line
+placement, or a norm identity.  It is the germ-theoretic content behind the formal order laws in
+`DeningerMeyerXiGaussianSingularPoissonLift.lean`, strengthened to a classification of all local
+coefficient-faithful corrections.
+
+**Verdict:** local singular Cartier/Poisson anomaly cancellation is dependency-closed dead.  Any
+remaining Route-R producer must be nonlocal across divisor fibres or prime places and create a
+global positive trace/index identity; no additional same-fibre Green boundary can do it.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.

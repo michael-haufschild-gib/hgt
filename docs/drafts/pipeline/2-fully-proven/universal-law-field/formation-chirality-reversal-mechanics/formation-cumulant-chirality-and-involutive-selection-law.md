@@ -4,14 +4,16 @@
 - **Stage:** 2-fully-proven
 - **Type:** POSITIVE-JUMP FORMATION / INFORMATION-ARROW / INVOLUTIVE-SELECTION THEOREM
 - **Source:** universal-law-field formation/properness and time-reversal likelihood mechanisms
-- **Statement:** Every nontrivial positive-jump compound-Poisson formation has a strictly positive
-  directed relative-entropy commutator, equal to the integral of one universal Lévy kernel. The
-  exchange-generated abelian-zeta-gas formation is an exact realization, so no nonzero source
-  formation can be exchanged by an involutive source reversal.
+- **Statement:** Every nontrivial positive-jump compound-Poisson Esscher family carries a strict
+  information chronology: the sign of directed relative-entropy asymmetry reconstructs the order
+  of every two formation parameters. The exchange-generated abelian-zeta-gas formation is an exact
+  realization. Hence no two distinct source formations can be exchanged by an involution, and every
+  finite-order law symmetry acting on the full formation family fixes its formation parameter.
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HOSTILE REVIEW PASSED]
   [INTERNAL FRONTIER AUDITED] [EXTERNAL PARENTS AUDITED] [MECHANISM FIRST]
-  [POSITIVE-JUMP LEVY FORMATION] [INFORMATION ARROW] [INVOLUTIVE SELECTION]
-  [NO LEAN YET] [NOT RH]`
+  [POSITIVE-JUMP LEVY FORMATION] [INFORMATION CHRONOLOGY] [FINITE-SYMMETRY RIGIDITY]
+  [CENTERED REVERSAL SELECTION]
+  [BRIDGE] [NOVELTY UNVERIFIED] [NO LEAN YET] [NOT RH]`
 
 ## 1. Goal and higher pivot
 
@@ -95,6 +97,11 @@ computes the antisymmetric directed difference for this source.
   develops the compound-Poisson cumulant parent; Qiu--Koor--Rebentrost, *The Quantum Esscher
   Transform* (arXiv:2401.07561), recalls the classical Esscher transform as the minimum-relative-
   entropy tilt before extending it.
+- `[LITERATURE]` Choi, *Information geometry of Lévy processes and financial models*
+  (arXiv:2507.23646), computes directed and dual Kullback--Leibler divergences for equivalent Lévy
+  laws from their Lévy triplets. It occupies the general Lévy information-geometry receiver. The
+  order reconstruction and finite-order symmetry consequences below are obtained here from the
+  source's one-sided jump law; no priority claim is made for the surrounding machinery.
 
 These parents occupy the abstract machinery. The source-specific residue is the exact sign and
 cumulant formula forced by the abelian-group formation, and its incompatibility with involutive
@@ -286,6 +293,79 @@ This is the higher law: a positive-jump formation has an intrinsic information a
 and other quadratic formations fail because their Lévy carrier has no positive-jump third response,
 not because positivity alone is insufficiently strong.
 
+### Theorem 5.2 -- pairwise information chronology
+
+The third-moment hypothesis of Theorem 5.1 is unnecessary for pairwise orientation. Assume only
+that \(\nu\) is a nonzero finite positive Borel measure on \((0,\infty)\) with finite first moment,
+and define its admitted Esscher domain
+
+\[
+ I_\nu=\left\{t\in\mathbb R:
+ \int (1+x)e^{-tx}\,d\nu(x)<\infty\right\}.
+ \tag{FCRM.16a}
+\]
+
+For every \(t\in I_\nu\), let \(P_t\) be the Esscher formation of the compound-Poisson law with
+Lévy measure \(\nu\). For any \(s,t\in I_\nu\),
+
+\[
+ \boxed{
+ \chi(s,t):=D(P_s\Vert P_t)-D(P_t\Vert P_s)
+ =\int e^{-sx}K((t-s)x)\,d\nu(x).}
+ \tag{FCRM.16b}
+\]
+
+Consequently,
+
+\[
+ \boxed{
+ s<t\quad\Longleftrightarrow\quad
+ D(P_s\Vert P_t)>D(P_t\Vert P_s).}
+ \tag{FCRM.16c}
+\]
+
+Thus directed relative entropy reconstructs the complete order of the formation parameter. It is
+not merely a nonzero local tensor at the neutral law.
+
+#### Proof
+
+Write
+
+\[
+ F(t)=\log\mathbb E_0e^{-tQ}
+ =\int(e^{-tx}-1)\,d\nu(x),
+ \qquad
+ m(t)=\mathbb E_tQ=\int xe^{-tx}\,d\nu(x).
+\]
+
+The definition of \(I_\nu\) makes both quantities finite. The strictly positive Esscher density
+gives mutual absolute continuity, and direct integration of its log likelihood gives
+
+\[
+ D(P_s\Vert P_t)=F(t)-F(s)+(t-s)m(s),
+\]
+
+\[
+ D(P_t\Vert P_s)=F(s)-F(t)-(t-s)m(t).
+\]
+
+Subtracting and then integrating coefficientwise yields
+
+\[
+\begin{aligned}
+ \chi(s,t)
+ &=2(F(t)-F(s))+(t-s)(m(s)+m(t))\\
+ &=\int e^{-sx}
+ \bigl[(t-s)x-2+((t-s)x+2)e^{-(t-s)x}\bigr]\,d\nu(x)\\
+ &=\int e^{-sx}K((t-s)x)\,d\nu(x).
+\end{aligned}
+\]
+
+If \(s<t\), every factor \(e^{-sx}\) is positive and Theorem 5.1 proved
+\(K((t-s)x)>0\) for every \(x>0\). Since \(\nu\ne0\), the integral is strictly positive. If
+\(s=t\), it is zero. If \(s>t\), antisymmetry
+\(\chi(s,t)=-\chi(t,s)\) makes it strictly negative. This proves (FCRM.16c). QED.
+
 ## 6. Abelian-zeta-gas realization
 
 ### Theorem 6.1 -- source Lévy measure and strict chirality
@@ -415,49 +495,124 @@ exactly (FCRM.18) at \(t=0\). Thus Theorem 5.1 applies directly. Equivalently, s
 
 for \(u>0\), because the integrand is continuous and strictly positive on \((0,u)\). QED.
 
-## 7. Involutive-selection theorem
+### Corollary 6.2 -- exact source chronology on the full convergence chamber
 
-### Theorem 7.1 -- involutive source reversal selects neutrality
-
-Fix \(u\ge0\). Let \(\Theta\) be a measurable involution of the finite-abelian-group class space.
-If
-
-\[
- \Theta_*P_0=P_u,
- \tag{FCRM.23}
-\]
-
-then \(u=0\). Indeed, involutivity gives \(\Theta_*P_u=P_0\), while invariance of KL under a
-measurable bijection gives
+For fixed \(\sigma>0\) and \(\tau\ge0\) with \(\sigma+\tau>1\), the complete admitted source
+coefficient-defined convergence interval and the literal nonnegative-chemical-potential source
+interval are respectively
 
 \[
- D(P_0\Vert P_u)
- =D(\Theta_*P_0\Vert\Theta_*P_u)
- =D(P_u\Vert P_0),
- \tag{FCRM.24}
+ J_{\sigma,\tau}=(1-\sigma-\tau,\infty),
+ \qquad
+ I_{\sigma,\tau}=J_{\sigma,\tau}\cap[-\tau,\infty).
+ \tag{FCRM.22a}
 \]
 
-contradicting (FCRM.20) for \(u>0\). Conversely, at \(u=0\), the identity involution works.
-
-Therefore
+For every \(s<t\) in \(J_{\sigma,\tau}\), the coefficient-defined abelian-group class laws satisfy
 
 \[
- \boxed{
- \exists\Theta,\ \Theta^2=1,\ \Theta_*P_0=P_u
- \quad\Longleftrightarrow\quad u=0.}
- \tag{FCRM.25}
+\boxed{
+ D(P_s\Vert P_t)-D(P_t\Vert P_s)
+ =\sum_p\sum_{j\ge1}\sum_{k\ge1}
+ \frac{p^{-k(j\sigma+\tau+s)}}{k}
+ K\bigl((t-s)k\log p\bigr)>0.}
+ \tag{FCRM.22b}
 \]
-
-This is a selection law for generated formations admitting an actual involutive reversal, not a
-claim that the physical Xi reflection has already been realized on this source law.
 
 #### Proof
 
-The class space is countable with its discrete measurable structure. Hence every map is measurable,
-and an involution is a measurable bijection with measurable inverse. If \(\Theta_*P_0=P_u\), then
-applying \(\Theta_*\) again gives \(\Theta_*P_u=P_0\). Invariance of relative entropy under a
-measurable bijection proves (FCRM.24). Theorem 6.1 rules this out for \(u>0\). Since \(u\ge0\), one
-must have \(u=0\). The identity map supplies the converse. QED.
+Multiplying the atom of (FCRM.17) at \(k\log p\) by its Esscher factor
+\(e^{-sk\log p}\) gives the displayed coefficient. For \(s>1-\sigma-\tau\), the least exponent
+\(\sigma+\tau+s\) exceeds one. The same prime-Dirichlet majorant used in Theorem 6.1 therefore
+proves convergence of the mass and first-moment series, so \(s,t\in I_{\nu_{\sigma,\tau}}\).
+Theorem 5.2 gives the equality and strict sign. Conversely, at or left of the boundary of
+\(J_{\sigma,\tau}\), the least-depth zeta factor is outside the absolute convergence chamber, so
+this coefficient-defined probability formation is not admitted. Intersecting with
+\(\tau+t\ge0\) gives the literal source interval \(I_{\sigma,\tau}\) used by the existing source
+parameter type. QED.
+
+## 7. Involutive-selection theorem
+
+### Theorem 7.1 -- pairwise involutive selection
+
+Let \(s,t\in I_{\sigma,\tau}\), and let \(\Theta\) be a measurable involution of the
+finite-abelian-group class space. If
+
+\[
+ \Theta_*P_s=P_t,
+ \tag{FCRM.23}
+\]
+
+then \(s=t\). Conversely, at \(s=t\), the identity involution works. Therefore
+
+\[
+ \boxed{
+ \exists\Theta,\ \Theta^2=1,\ \Theta_*P_s=P_t
+ \quad\Longleftrightarrow\quad s=t.}
+ \tag{FCRM.24}
+\]
+
+In particular, if \(c-a,c+a\in I_{\sigma,\tau}\) and \(a\ge0\), then
+
+\[
+ \boxed{
+ \Theta_*P_{c-a}=P_{c+a},\quad \Theta^2=1
+ \quad\Longrightarrow\quad a=0.}
+ \tag{FCRM.25}
+\]
+
+This is the centered-reversal statement missing from the earlier neutral-to-displaced formulation.
+
+#### Proof
+
+Involutivity gives \(\Theta_*P_t=P_s\). Invariance of relative entropy under a measurable
+bijection gives
+
+\[
+ D(P_s\Vert P_t)
+ =D(\Theta_*P_s\Vert\Theta_*P_t)
+ =D(P_t\Vert P_s).
+\]
+
+Corollary 6.2 says this equality is impossible when \(s\ne t\). Hence \(s=t\). The identity map
+supplies the converse. Substituting \(s=c-a\), \(t=c+a\) gives \(a=0\). QED.
+
+### Theorem 7.2 -- finite-order formation-symmetry rigidity
+
+Let \(I\subseteq I_{\sigma,\tau}\) be an interval. Suppose a measurable bijection \(\Theta\) of
+the class space and a map \(\varphi:I\to I\) satisfy
+
+\[
+ \Theta_*P_t=P_{\varphi(t)}\qquad(t\in I).
+ \tag{FCRM.26}
+\]
+
+Then \(\varphi\) is strictly increasing. If \(\Theta^N=1\) for some integer \(N\ge1\), then
+
+\[
+ \boxed{\varphi=\operatorname{id}_I.}
+ \tag{FCRM.27}
+\]
+
+Thus a finite-order source symmetry cannot reverse, permute, or translate positive-jump formation
+time. It fixes every admitted formation law.
+
+#### Proof
+
+For \(s<t\), Corollary 6.2 gives \(\chi(s,t)>0\). KL invariance under \(\Theta\) gives
+
+\[
+ \chi(s,t)=\chi(\varphi(s),\varphi(t)).
+\]
+
+The order reconstruction (FCRM.16c) therefore implies \(\varphi(s)<\varphi(t)\), so \(\varphi\)
+is strictly increasing. If \(\Theta^N=1\), iteration of (FCRM.26) gives
+\(P_{\varphi^N(t)}=P_t\). The source family is injective because Corollary 6.2 separates every
+two distinct parameters. Hence \(\varphi^N(t)=t\).
+
+If \(\varphi(t)>t\), strict monotonicity yields
+\(t<\varphi(t)<\cdots<\varphi^N(t)=t\), a contradiction. The case \(\varphi(t)<t\) is identical
+with reversed inequalities. Therefore \(\varphi(t)=t\) for every \(t\in I\). QED.
 
 ## 8. Hostile conjecture loops
 
@@ -527,13 +682,36 @@ reversible for every \(u\).
 **Positive survivor.** Theorem 7.1 is native to the full source law. A receiver inherits it only
 through an information-sufficient comparison, making loss of selection an exact observer defect.
 
+### Loop G -- neutral-to-displaced reversal
+
+**Conjecture.** It is enough to obstruct an involution exchanging \(P_0\) and \(P_u\).
+
+**Verdict:** `[FALSIFIED AS RH TYPING]`. Functional-equation reflection should exchange two
+centered endpoints, not the center with one displaced endpoint. The earlier theorem was correct but
+its proposed RH interface was misaligned.
+
+**Stronger survivor.** The pairwise kernel formula (FCRM.16b) orients every admitted pair, so the
+centered exchange \(P_{c-a}\leftrightarrow P_{c+a}\) forces \(a=0\). The same order reconstruction
+proves the stronger finite-order rigidity theorem. This is a representation change, not an added
+route hypothesis.
+
+### Loop H -- arbitrary symmetry order
+
+**Conjecture.** Every source symmetry acts trivially on formation time.
+
+**Verdict:** `[FALSIFIED]`. KL invariance forces the induced parameter map only to be increasing;
+infinite-order increasing maps need not be the identity.
+
+**Positive survivor.** Finite order is load-bearing and source-natural for reflection. An increasing
+finite-order self-map of an interval is exactly the identity, yielding Theorem 7.2.
+
 ## 9. Fourth-organ prediction
 
-The real Esscher, Fisher, and time-reversal organs cannot all be represented by a reversible
-formation at \(u>0\). If a fourth KMS, modular, or reflected-path realization transports the same
-source laws and their directed relative entropies faithfully, then its entropy-production
-orientation must equal (FCRM.11). An involutive realization forces that orientation to vanish and
-therefore selects \(u=0\).
+The real Esscher, Fisher, and time-reversal organs cannot all be represented by a nontrivially
+reversible positive-jump formation interval. If a fourth KMS, modular, or reflected-path
+realization transports the same source laws and their directed relative entropies faithfully, its
+parameter action must preserve the chronology (FCRM.16c). Any finite-order realization must act
+trivially by Theorem 7.2; a centered involution therefore selects zero displacement.
 
 This predicts a concrete audit test for any proposed reflected arithmetic completion: compute its
 two directed formation costs. Equality off neutrality proves that the realization has forgotten
@@ -555,8 +733,8 @@ this card.
 ## 11. Gates
 
 - [x] 0 -> 1: exact source, exact conjecture, internal audit, external parents, hostile loops.
-- [x] 1 -> 2: positive-jump kernel, source Lévy realization, sufficiency, strict chirality, and
-  involution proof closed under hostile review.
+- [x] 1 -> 2: positive-jump kernel, pairwise chronology, source Lévy realization, centered
+  involutive selection, and finite-order symmetry rigidity closed under hostile review.
 - [ ] 2 -> 3: formalize the exact paper theorem with no additional hypothesis or project axiom.
 - [ ] 3 -> 4: publication/priority audit and standalone exposition.
 
@@ -568,3 +746,6 @@ this card.
   involutive-selection theorem.
 - 2026-08-11 -- closed the geometric-mode third-cumulant expansion by a uniform Dirichlet majorant;
   obtained strict source chirality and the involutive-selection equivalence.
+- 2026-08-11 -- hostile RH-typing audit killed the neutral-to-displaced reflection interface.
+  Replaced it by the first-moment pairwise kernel law, full source-parameter chronology, centered
+  reversal selection, and finite-order formation-symmetry rigidity.

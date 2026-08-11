@@ -158,6 +158,28 @@ codiagonalization and before Hermitian polarization. Because regular connection 
 bounded comparisons erase resolved antidiagonal, relation may have to be singular or
 non-absolutely summable, but singularity alone earns no credit without `(1)` and `(2)`.
 
+8. **Conjecture:** the complete Möbius prime-normal horizon contains a source-derived singular
+   successor relation joining the \(2\)- and \(3\)-channels before divisor specialization.
+   **Proved, with exact residual obstruction.**  If \(r>p\) is the next index with
+   \(\mu(r)\ne0\), the exact complete-source identity is
+
+   \[
+   (r/p)^{m/2}U_{m\log(r/p)}
+      (R_{p,m}-\mu(p)\Theta)=R_{r,m}.
+   \]
+
+   Hence \((3/2)^{m/2}U_{m\log(3/2)}(R_{2,m}+\Theta)=R_{3,m}\) at every honest exponent.
+   The input tends strongly to zero while the output tends to the nonzero source
+   \(-\Theta\), so this constructs the required pre-divisor cross-prime singular transport and
+   proves its horizon graph nonclosable.  Fourier--Laplace landing retains the first nonzero Xi
+   multiplicity jet.  The construction does **not** annihilate the Route-L class: reflection
+   changes its normalizer by the exact radial factor
+   \((r/p)^{m(2\Re s-1)}\).  For \(2\to3\) its \(m=1\) shadow is the fixed two-prime gain ratio, so
+   reflected compatibility is again the critical-line condition.  Exact remaining source theorem
+   is now construction of a rational-Witt/Milnor degree-two, same-full-grade counterterm absorbing
+   this explicit reflection anomaly, not construction of another singular transport.  Full paper
+   proof: `../2-fully-proven/new_scientific_knowledge/deninger/deninger-mobius-prime-normal-successor-blowup.md`.
+
 ## Falsifiers
 
 A proposed closure fails if it:

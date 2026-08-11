@@ -398,3 +398,21 @@ compressed-trace identity consumes adelic Poisson, which Beurling systems lack.
   The distance from 1/4 − δ to 0 is the exact analytic distance between 3-4-1 positivity and
   the socket's demand.  All 6 theorems `[propext, Classical.choice, Quot.sound]`; wired;
   umbrella green (18908 jobs).
+- 2026-08-11 — attempt 15 (the total deviation mass and the all-heights ceiling):
+  `RHTower/GaussHodgeWeilTotalDeviationMass.lean`.  Two closures of the deviation programme.
+  (1) **The total deviation mass**: `xiTotalDeviationMass := Σ' (Im α_q)²/‖α_q‖²` — the
+  corpus's genus-one Hadamard convergence (`xiSpectralPoint_inv_sq_summable`,
+  XiCanonicalProduct.lean) plus the strip dominate it, so it converges UNCONDITIONALLY,
+  is nonnegative, and is at most a quarter of the Hadamard sum.
+  **`riemannHypothesis_iff_totalDeviationMass_eq_zero`: RH ⟺ this single real number is
+  zero.**  The whole hypothesis is now the vanishing of one unconditionally convergent
+  nonnegative series over the multiplicity-exact divisor.  (2) **The all-heights arithmetic
+  ceiling** `xiArithmeticDeviationCeiling δ A q` (uniform gap at height ≤ 3, de la
+  Vallée-Poussin log⁹ margin above): `exists_arithmetic_weighted_moment_bound` upgrades
+  attempt 14's fragment to every test with convergent divided-difference energy — no support
+  restriction — with the ceiling strictly below 1/4 at EVERY divisor copy; and
+  `xiTotalDeviationMass_le_arithmetic_ceiling` caps the mass by the ceiling-weighted Hadamard
+  sum.  Final shape of the wall after attempts 11–15: RH ⟺ xiTotalDeviationMass = 0;
+  unconditional mathematics gives 0 ≤ mass ≤ Σ ceiling/‖α‖² with ceiling < 1/4 everywhere
+  (arithmetic) — the two ends of the same quantity.  All 5 key theorems
+  `[propext, Classical.choice, Quot.sound]`; wired; umbrella green (18910 jobs).
