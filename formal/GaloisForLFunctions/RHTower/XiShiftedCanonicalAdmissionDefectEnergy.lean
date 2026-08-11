@@ -78,6 +78,7 @@ theorem natDegree_sub_lt_of_monic_same_degree
 
 /-- **Odd-current defect decomposition.**  Frozen/current odd-current mismatch is one canonical
 connection displacement plus the odd energy of the full admission defect. -/
+set_option maxHeartbeats 800000 in
 theorem xiShiftedCanonicalAdmission_oddCurrentGap_eq_normCoeff_add_defectEnergy
     {y : ℝ} {n : ℕ} (hn : 0 < n) (A : Polynomial ℝ)
     (hA : A.Monic) (hAdeg : A.natDegree = n)
@@ -216,11 +217,8 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionDefectOddEnergy
   have hgap : HasDerivAt gap
       (-(finitePolynomialVelocity
         (xiShiftedCanonicalAdmissionVelocity y n)).coeff (n - 1)) y := by
-    have hrawgap := (hasDerivAt_const y (A.coeff (n - 1))).sub hfirst
-    convert hrawgap using 1
-    · funext v
-      rfl
-    · ring
+    simpa only [gap, xiShiftedCanonicalAdmissionDefectFirstCoeff] using
+      hfirst.const_sub (A.coeff (n - 1))
   have hrhs := (hfixed.sub hcurrent).sub ((hnorm.mul hgap).const_mul 2)
   have hposAdd := eventually_posDef_xiShiftedMomentHankelMatrix_add hy hH
   have hshift : Tendsto (fun v : ℝ => v - y) (nhds y) (nhds 0) :=
@@ -260,7 +258,8 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionDefectOddEnergy
     ring
   apply (hrhs.congr_deriv hderiv).congr_of_eventuallyEq
   filter_upwards [heq] with v hv
-  simpa only [Pi.sub_apply, Pi.mul_apply] using hv
+  change defect v = fixedOdd v - currentOdd v - 2 * norm v * gap v
+  exact hv
 
 end
 

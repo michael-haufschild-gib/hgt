@@ -267,7 +267,8 @@ theorem sector_centered_sum_eq_zero
   simp_rw [mul_sub, Finset.sum_sub_distrib, D.target_mul_density K]
   unfold sectorDensity outputSectorWeight targetSectorWeight
   rw [← Finset.sum_mul]
-  simp [hβj]
+  rw [sub_eq_zero]
+  field_simp [hβj]
 
 /-- Exact total-variance partition law, retaining every marker or moving-seam mean. -/
 theorem chiSquare_eq_within_add_between
@@ -285,17 +286,13 @@ theorem chiSquare_eq_within_add_between
   apply Finset.sum_congr rfl
   intro j _hj
   have hcenter := P.sector_centered_sum_eq_zero D K j
-  rw [← Finset.sum_add_distrib]
   calc
-    (∑ t ∈ Finset.univ with P.sector t = j,
+    (∑ t with P.sector t = j,
         D.targetLaw t * (D.density K t - 1) ^ 2) =
-        ∑ t with P.sector t = j,
-          D.targetLaw t * (D.density K t - 1) ^ 2 := by simp
-    _ = (∑ t with P.sector t = j,
+        (∑ t with P.sector t = j,
           D.targetLaw t * (D.density K t - P.sectorDensity D K j) ^ 2) +
         P.targetSectorWeight D j * (P.sectorDensity D K j - 1) ^ 2 := by
       unfold targetSectorWeight
-      rw [← Finset.sum_mul]
       calc
         (∑ t with P.sector t = j,
             D.targetLaw t * (D.density K t - 1) ^ 2) =

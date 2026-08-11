@@ -152,7 +152,7 @@ Suppose (J_1,J_2) have the same (S,H).  Put
 
 The affine transform of (J_1) has (M=M(J_2)), (E=E(J_2)), and unchanged (S,H).  Full
 reconstruction `(RFC.5)` makes all four transformed coordinates equal those of (J_2).  The
-required (alpha,eta) are unique because (M) and (E) determine them.  Conversely, affine
+required \((\alpha,\beta)\) are unique because (M) and (E) determine them.  Conversely, affine
 equivalence preserves (S,H).  This proves `(RFC.8)`.
 
 Finally, `(RFC.6)` makes simultaneous nonnegativity equivalent to

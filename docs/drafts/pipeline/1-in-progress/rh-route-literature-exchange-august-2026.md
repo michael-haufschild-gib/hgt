@@ -1353,21 +1353,30 @@ shift line but leaves the coinvariant-dual moduli. Route L must therefore derive
 Burnol/Deninger coefficient from source before quotient, not choose a normalized Stokes covector
 afterward.
 
-First unresolved theorem is now place-marked singular admission of the explicit reciprocal
-Gamma-six Tate--Wold interval, together with its complete source `H_(6,m)`, into the fixed source-
-to-physical specialization. Before divisor selection, construct
-the comparison from `completed Green tensor BV_1` and its literal BV boundary
-to the resolved target so that it commutes with the target differential, while its degree-zero map
-is exactly the existing Burnol/Deninger physical landing and the fixed physical reader annihilates
-the relevant target boundaries. Prime/depth provenance, multiplicity jets, and the nonzero Xi
-leading coefficient must survive. The existing endpoint then reads the resulting boundary as
-`c_rho K_6(rho)`, with `c_rho != 0`.
+The direct Gamma-six route is now narrower than reciprocal Tate--Wold admission. Only its forward
+normal is a vanishing-source physical `L2` singular transport: the corrected complete tail tends
+to the theta source, while any nonzero reciprocal landing forces the primitive norm to diverge.
+At the critical exponent its six-tail multiplier satisfies
 
-The direct Gamma-six and Kummer theorems fix source, physical anomaly, and candidate primitive.
-Declaring the
-difference zero, quotienting away its nonzero regulator, forcing ordinary Milnor/Hochschild
-descent, or making the successor graph closable would insert or erase the critical line rather
-than construct the upstream singular admission.
+```text
+Xi(s) B_6(s)=A(s)+Xi(s)P_6(s),
+A(s)=s(s-1)pi^(-s/2)Gamma(s/2)/2,
+```
+
+so every nontrivial Xi zero receives the nonzero Gamma residue `A(rho)`. No holomorphic or finite
+Dirichlet counterterm can cancel it. Functional equation supplies the canonical opposite pole
+germ `-A(s)B_6(1-s)/A(1-s)`, but scalar pole cancellation forgets its character/phase orientation.
+
+First unresolved theorem is therefore a strict place-marked mixed-`L1/L2`
+Rost--Schmid-to-Meyer transport of both pole germs into the fixed source-to-physical
+specialization. Before divisor selection, it must commute with the target differential, land in
+the actual Burnol/Deninger physical reader, preserve prime/depth provenance, multiplicity jets,
+and the nonzero Xi leading coefficient, and make the fixed reader cancel the two residues without
+scalarizing their orientation. The existing endpoint then forces `K_6(rho)=0`. Complete source,
+full-grade clock, Tate--Wold primitives, analytic orientation asymmetry, exact Gamma residue, and
+opposite pole germ are paper-closed. Declaring the difference zero, quotienting away its regulator,
+regular counterterms, ordinary Milnor/Hochschild descent, or a character-blind functional-equation
+scalar cancellation would insert or erase the critical line rather than construct this transport.
 
 Equivalently, prove the independent source identity
 `Omega_(mu,Gamma)(w_23)=S_mu G_Gamma D(w_23)=0`. The new chain-lift classification proves that

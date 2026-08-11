@@ -32,6 +32,17 @@ gauge action, relative formation current, and reflection evenization. It proves:
 
 No `sorry`, `admit`, added axiom, `opaque`, `unsafe`, or numerical computation is used.
 
+## Verification
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/ConstitutiveRelativeFormationCompletion.lean
+lake build GaloisForLFunctions.HTGeometry.UniversalLawField
+```
+
+The direct module check, formal lint gate, and universal-law umbrella build pass. `#print axioms`
+on `relativeFormationCompletion_capstone` reports only `propext`, `Classical.choice`, and
+`Quot.sound`; no project axiom or theorem premise is hidden in the certificate.
+
 ## Exact selection consequence
 
 Even completion does not select a center. It is the quotient `(S,H) ↦ (S,0)`. Any selection proof

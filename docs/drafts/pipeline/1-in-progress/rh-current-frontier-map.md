@@ -4063,12 +4063,13 @@ open. Numerical evidence is not accepted as proof or disproof.
 7. **O:** prove low-energy profile exhaustion and bulk coercivity for whole restricted-Weil ground
    space.
 8. **G:** first settle both literal source-admission branches: exclude or prove the source-visible
-   ground-residue reflection cone, then exclude or prove every bounded finite-shift response above
-   `R_Xi>81/4`.  The normalized-Hankel classification leaves maximal ground-edge collapse,
+   ground-residue reflection cone, then resolve the singular negative zero-shift boundary layer
+   `r=O(log^4(a)/a)` above `R_Xi>81/4`. The normalized-Hankel classification leaves maximal ground-edge collapse,
    nonvanishing edge overshoot, or near-minimal forced source alignment; isolated microlocal prime
    seams are now closed, so an interior survivor must be delocalized and coherently multi-seam.
-   Macroscopic safe negative shifts are source-blind, and any complete family has uniformly
-   bounded negative part; no further shift-recession analysis replaces this finite window.
+   Macroscopic, unbounded, and bounded-away-from-zero negative schedules are classified out for a
+   complete family; no further recession or ordinary finite-window analysis replaces the
+   inverse-aperture polylogarithmic interface.
    Only after admission, prove compactified even/odd occupancy convergence/every paired smoothing
    trace for a source-selected adjacent/interior branch.  One trace moment and regular
    vector/resolvent convergence are insufficient.

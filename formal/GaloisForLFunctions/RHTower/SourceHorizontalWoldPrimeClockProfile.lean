@@ -161,7 +161,9 @@ theorem abs_integral_sourceHorizontalWoldLogMomentDiscrepancy_le
     have htpos : 0 < t := by linarith
     have hk : 0 ≤ k t := by
       dsimp only [k]
-      positivity
+      exact div_nonneg
+        (mul_nonneg (Nat.cast_nonneg r)
+          (pow_nonneg (Real.log_nonneg ht1) (r - 1))) htpos.le
     have hdisc := abs_xiHeatCassiniWoldNatWeightSum_floor_sub_log_le ht1
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hk]
     simpa [B, mul_comm] using mul_le_mul_of_nonneg_left hdisc hk
