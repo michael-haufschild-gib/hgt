@@ -1,11 +1,11 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
-  Sections 14.13--14.14, and in the literal normalized-Hankel theorems of Sections 14.15--14.18;
+  Sections 14.13--14.14, and in the literal normalized-Hankel theorems of Sections 14.15--14.20;
   yes as the
   hypothesis of the global-limit and Xi-target audits in Sections 14.8--14.14
 - **Computation used:** no
@@ -3649,7 +3649,345 @@ delocalized profile whose common Cauchy energy stays comparable to the coherent 
 reflections, or the ground-pole mechanism of Theorem Y.  Establishing or excluding that global
 multi-seam coherence is now the literal arithmetic hard problem.
 
-### 14.19 Conjecture loop and novelty correction
+### 14.19 Prime-reflection rigidity and the nonuniform PNT wall
+
+Theorem Z kills isolated narrow seam packets but does not quantify a delocalized packet meeting
+many prime reflections.  There is an exact square identity for that problem.  It yields genuine
+log-ratio translation rigidity only when the negative-edge budget leaves little unused prime
+mass.  A second theorem then proves why the prime number theorem cannot supply that small reserve
+uniformly: on every fixed endpoint window the centered prime--archimedean Hankel operators converge
+strongly to zero but stay a fixed positive distance from zero in operator norm.
+
+Extend `f in L^2(0,a)` by zero to the real line and define
+
+```text
+(R_t f)(x)=f(t-x),              (tau_h f)(x)=f(x+h).
+```
+
+For the visible prime powers put
+
+```text
+w_n=Lambda(n)/sqrt(n),
+W_a=sum_(2<=n<e^(2a)) w_n,
+D_a(f)=sum_(2<=n<e^(2a)) w_n||f-R_(log n)f||_2^2.       (268)
+```
+
+#### Theorem AA — prime-reflection Dirichlet budget and log-ratio rigidity
+
+For every half-interval form vector,
+
+```text
+D_a(f)=2W_a||f||_2^2-2P_a(f,f).                         (269)
+```
+
+Consequently any normalized negative-edge witness
+
+```text
+P_a(f,f)-H_(a,infinity)(f,f)>=b C_(a,lambda)(f,f)
+```
+
+obeys the exact reserve bound
+
+```text
+D_a(f)
+ <=2[W_a||f||_2^2-H_(a,infinity)(f,f)
+                     -b C_(a,lambda)(f,f)].             (270)
+```
+
+Two prime reflections generate a log-ratio translation.  For every visible `m,n`,
+
+```text
+R_(log m)R_(log n)=tau_(log n-log m),
+||f-tau_(log n-log m)f||_2^2
+ <=2[||f-R_(log n)f||_2^2+||f-R_(log m)f||_2^2].       (271)
+```
+
+Hence
+
+```text
+sum_(m,n) w_m w_n
+  ||f-tau_(log n-log m)f||_2^2
+ <=4W_aD_a(f).                                          (272)
+```
+
+If `pi_a(n)=w_n/W_a`, then for every `epsilon>0`,
+
+```text
+(pi_a tensor pi_a){(m,n):
+  ||f-tau_(log n-log m)f||_2>epsilon||f||_2}
+ <=4D_a(f)/(epsilon^2 W_a||f||_2^2).                    (273)
+```
+
+Thus near-invariance under a positive proportion of prime reflections is not an extra heuristic:
+it forces near-invariance under the corresponding weighted family of logarithmic prime ratios.
+But `(270)` also records the missing hypothesis.  A large negative normalized Hankel edge alone
+does not make `D_a/(W_a||f||^2)` small; the prime-mass reserve on the right can remain macroscopic.
+
+#### Proof
+
+Each `R_t` is a self-adjoint unitary on `L^2(R)`, and the zero-extension form of `(9)` is
+
+```text
+P_a(f,f)=sum_n w_n<f,R_(log n)f>.
+```
+
+Expanding the squares proves `(269)`, and insertion of the assumed edge inequality proves `(270)`.
+The reflection product is direct substitution.  The triangle inequality followed by
+`(u+v)^2<=2u^2+2v^2` proves `(271)`.  Summing first in `m` and then in `n` proves `(272)`;
+weighted Markov proves `(273)`.
+
+The square identity and the fact that two reflections compose to a translation are classical.
+Candidate-new content is their exact Suzuki placement: `(270)` turns the Xi-required normalized
+prime surplus into a finite reserve for the physical reflection Dirichlet energy, while
+`(272)--(273)` identifies logarithmic prime-ratio rigidity as the precise global coherence forced
+when that reserve is small.  Internal search found prime autocorrelation and a different
+divisor-horizontal reflection energy, but no physical reflection-square or log-ratio translation
+budget for Suzuki's half-interval carrier.
+
+The fixed-profile endpoint asymptotic gives a hostile test of whether the reserve can be controlled
+by the prime number theorem.  Fix `L>0`, take `a>L`, put
+
+```text
+u_(a,n)=2a-log n,
+mu_(a,L)=e^(-a) sum_(0<=u_(a,n)<=2L) w_n delta_(u_(a,n)). (274)
+```
+
+The prime number theorem gives the already-known weak limit
+
+```text
+mu_(a,L) -> nu_L,          dnu_L(u)=e^(-u/2)1_[0,2L]du. (275)
+```
+
+On `L^2(0,L)`, with `g` extended by zero, define the rescaled physical boundary compressions
+
+```text
+(B_(a,L)g)(x)=int g(u-x)dmu_(a,L)(u),
+(A_(a,L)g)(x)=e^(-a)int_0^L K_reg(2a-x-y)g(y)dy,
+(B_(infinity,L)g)(x)=e^(-x/2)int_0^L e^(-y/2)g(y)dy.   (276)
+```
+
+Here `B_(a,L)` is exactly the endpoint-window compression of `e^(-a)P_a`, `A_(a,L)` is that of
+`e^(-a)H_(a,infinity)`, and `B_(infinity,L)` is the rank-one Laplace limit common to both.
+
+#### Theorem AB — PNT cancellation is strong but never uniform
+
+As `a->infinity`,
+
+```text
+B_(a,L) -> B_(infinity,L) strongly,
+A_(a,L) -> B_(infinity,L) in operator norm,
+Z_(a,L):=B_(a,L)-A_(a,L) ->0 strongly.                  (277)
+```
+
+Nevertheless, if
+
+```text
+M_(a,L)(x)=mu_(a,L)((x,x+L)),
+```
+
+then for every `a`
+
+```text
+||Z_(a,L)|| >= ||M_(a,L)||_(L^2(0,L))/sqrt(L),          (278)
+```
+
+and therefore
+
+```text
+liminf_(a->infinity)||Z_(a,L)||
+ >=2(1-e^(-L/2))sqrt((1-e^(-L))/L)>0.                  (279)
+```
+
+Thus leading prime--Laplace cancellation holds for every fixed boundary profile but fails
+maximally as a uniform operator statement.  The centered prime discrepancy has high-frequency
+almost-periodic revivals at every finite aperture.
+
+#### Proof
+
+Weak convergence `(275)`, compact support, and bounded total masses imply pointwise convergence of
+the Fourier transforms with a uniform bound.  Plancherel and dominated convergence therefore give
+strong convergence of the full-line convolution operators, hence of their reflected interval
+compressions `B_(a,L)`.  The explicit regular kernel gives, uniformly for `0<=u<=2L`,
+
+```text
+e^(-a)K_reg(2a-u)
+ =e^(-u/2)-e^(-6a+5u/2)/(1-e^(-4a+2u)),                (280)
+```
+
+so the second convergence in `(277)` holds even in Hilbert--Schmidt norm.
+
+Fix `a`.  The measure `mu_(a,L)` has finitely many atoms `u_1,...,u_N`.  Simultaneous Dirichlet
+approximation supplies `xi_k->infinity` with `exp(i xi_k u_j)->1` for every `j`.  For
+
+```text
+g_k(y)=L^(-1/2)exp(i xi_k y)1_(0,L)(y),
+```
+
+one has in `L^2(0,L)`
+
+```text
+B_(a,L)g_k
+ -L^(-1/2)exp(-i xi_k x)M_(a,L)(x) ->0.
+```
+
+The integral-kernel operator `A_(a,L)` is compact, while `g_k` converges weakly to zero, so
+`A_(a,L)g_k->0`.  This proves `(278)`.  From `(275)`, for almost every `x`,
+
+```text
+M_(a,L)(x)->int_x^(x+L)e^(-u/2)du
+             =2(1-e^(-L/2))e^(-x/2).
+```
+
+Uniform boundedness of the total masses gives `L^2` convergence by dominated convergence.  Taking
+the norm proves `(279)`.
+
+Strong-not-norm convergence of atomic convolution operators to an absolutely continuous limit is
+a classical Fourier phenomenon, and the PNT boundary measure `(275)` is corpus-known.  Candidate-
+new content is the exact Suzuki conclusion `(277)--(279)`: the physical prime and archimedean
+endpoint Hankel compressions have the same rank-one Laplace strong limit, yet their centered
+difference stays uniformly nonzero in operator norm.  Targeted search found general
+multiplicative-Hankel and Helson operator theory, but no von-Mangoldt endpoint-window theorem or
+this Suzuki prime--archimedean topology split.  Specialist priority review remains required.
+
+This does **not** construct the normalized edge required by Theorem W.  The revival vectors in the
+proof can have large common finite-part Cauchy energy; Theorem Z already shows the analogous
+localization penalty.  The literal interior problem is now more precise: compare the centered
+strongly-null-but-nonnorm-null family `Z_(a,L)` with the rescaled common form, rather than compare
+prime and archimedean masses separately.  Fixed-profile PNT asymptotics and unweighted operator
+norm both use the wrong topology for deciding `77/85`.
+
+### 14.20 Macroscopically safe negative shifts are source-blind
+
+The operator-norm recurrence in Theorem AB is not automatically visible to Suzuki's two
+exponential sources.  At a negative shift of the same `e^a` scale as the endpoint prime mass,
+strong prime--archimedean cancellation is enough to identify both source resolvents whenever the
+shift stays a fixed `e^a` distance below both parity floors.  Hence a macroscopic negative-shift
+survivor must itself be singular: it must hug at least one parity floor at that scale.
+
+Let `A_(e,a)=T_a+H_a` and `A_(o,a)=T_a-H_a`, and let `U_a` be the boundary-coordinate unitary
+
+```text
+(U_af)(z)=f(a-z),              0<z<a.
+```
+
+Normalize the literal half-interval sources by
+
+```text
+s_(e,a)=e^(-a)U_a(cosh),       s_(o,a)=e^(-a)U_a(sinh).
+```
+
+After extension by zero to `L^2(0,infinity)`,
+
+```text
+s_(e,a),s_(o,a) -> s,          s(z)=e^(-z)/2,
+||s||_2^2=1/8.                                           (281)
+```
+
+#### Theorem AC — macroscopic safe-shift source blindness
+
+Let `a_j->infinity` and let `lambda_j` lie below both parity floors.  Assume
+
+```text
+-e^(-a_j)lambda_j -> c in (0,infinity)                  (282)
+```
+
+and that for some `delta>0` both shifted parity forms obey
+
+```text
+A_(e,a_j)-lambda_j I >=delta e^(a_j)I,
+A_(o,a_j)-lambda_j I >=delta e^(a_j)I.                  (283)
+```
+
+Then the literal responses satisfy
+
+```text
+e^(-a_j)E_(a_j,lambda_j) ->1/(8c),
+e^(-a_j)O_(a_j,lambda_j) ->1/(8c),
+kappa_(a_j,lambda_j) ->0.                               (284)
+```
+
+In particular no such family reaches the positive Xi wall.  Therefore every Xi-admitted family
+with `(282)` must, after passage to a subsequence, satisfy the macroscopic floor-hugging law
+
+```text
+min{alpha_(e,a_j)-lambda_j,alpha_(o,a_j)-lambda_j}
+   =o(e^(a_j)).                                         (285)
+```
+
+For a **full Xi-identifying Route-G family**, even that singular alternative is impossible.  The
+imaginary-interval target implies RH by Theorem I, so Weil positivity gives
+`alpha_(e,a),alpha_(o,a)>=0` at every aperture.  If the negative part of the shift were not
+submacroscopic, a subsequence would satisfy `(282)` and `(283)`, contradicting `(284)`.  Hence every
+successful complete Suzuki family necessarily obeys
+
+```text
+max(0,-lambda_a)=o(e^a).                                  (285a)
+```
+
+Thus macroscopic negative shifts can appear at the isolated first-jet level only by forcing a
+macroscopic negative Weil floor, a condition incompatible with the RH conclusion of the complete
+carrier.  They are class-completely dead as a Route-G closure mechanism.
+
+#### Proof
+
+On every compact boundary test `g in C_c^infinity(0,infinity)`, Theorem AB and the full PNT
+boundary measure give
+
+```text
+e^(-a)U_aH_aU_a^*g ->0 in L^2(0,infinity).              (286)
+```
+
+The common difference channel sees only translations of length at most `a`, hence prime cutoff
+`n<e^a` and polar growth `e^(a/2)`.  Its exact kernel decomposition therefore gives
+
+```text
+e^(-a)U_aT_aU_a^*g ->0 in L^2(0,infinity).              (287)
+```
+
+Equation `(286)` is the centered endpoint cancellation, not separate convergence of its two
+`e^a`-sized terms.  Equation `(287)` is easier by a full exponential factor: the common channel
+has only the half-aperture prime mass `O(e^(a/2))` on a fixed boundary test.
+
+Put
+
+```text
+B_(sigma,j)=e^(-a_j)U_(a_j)(A_(sigma,a_j)-lambda_j I)U_(a_j)^*,
+x_(sigma,j)=B_(sigma,j)^(-1)s_(sigma,a_j),
+```
+
+for `sigma=e,o`.  Coercivity `(283)` gives `||x_(sigma,j)||<=delta^(-1)||s_(sigma,j)||`.
+Take a weakly convergent subsequence.  For every compact smooth `g`, self-adjointness, `(282)`,
+and `(286)--(287)` give
+
+```text
+<x_(sigma,j),B_(sigma,j)g>=<s_(sigma,j),g>
+   -> c<x_sigma,g>=<s,g>.
+```
+
+Thus every weak cluster point is `x_sigma=c^(-1)s`; uniqueness removes the subsequence.  Finally,
+
+```text
+e^(-a_j)E_(a_j,lambda_j)=<s_(e,a_j),x_(e,j)>,
+e^(-a_j)O_(a_j,lambda_j)=<s_(o,a_j),x_(o,j)>.
+```
+
+Strong convergence of the sources and weak convergence of the solutions prove `(284)`.  If
+`(285)` failed, a subsequence would satisfy `(283)`, contradicting `kappa_Xi>0`.
+
+Fixed-aperture far-negative resolvent expansion and the free projective boundary are already in
+the corpus.  They do not address the coupled scale `-lambda asymp e^a` where endpoint prime mass
+also grows.  Candidate-new content is the cofinal source theorem `(281)--(285)`: strong
+prime--archimedean cancellation plus a uniform macroscopic parity margin forces equality of the
+two literal exponential responses and turns every surviving macroscopic negative shift into a
+floor-hugging singularity.  Internal search found no such coupled aperture/shift theorem.
+
+This closes the regular `-lambda asymp e^a` chart, not Suzuki.  The remaining negative-shift
+possibilities at the first admission gate are submacroscopic shifts `-lambda=o(e^a)`, or
+macroscopic shifts satisfying `(285)`.  For the complete Xi-identifying route, `(285a)` removes the
+latter.  The live negative-shift scale is therefore strictly submacroscopic; it must still be
+compared with Theorem Y's source-visible ground residue and Theorem X's edge-alignment alternatives.
+
+### 14.21 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -3854,6 +4192,37 @@ multi-seam coherence is now the literal arithmetic hard problem.
     microlocal construction.**  A viable interior source must maintain common Cauchy energy
     comparable to a coherent all-prime reflection sum; it cannot be assembled from asymptotically
     isolated delta-Hankel packets.
+80. **Delocalized multi-seam coherence has no exact positive structure -- failed.**  The
+    reflection-square identity `(269)` makes unused prime mass an exact Dirichlet reserve, and
+    `(271)--(273)` turn a small reserve into weighted approximate invariance under the logarithmic
+    prime-ratio translations.  What remains open is proving that a Suzuki edge witness must have a
+    small reserve.
+81. **The fixed-profile PNT boundary cancellation is uniform on the endpoint profile space --
+    failed sharply.**  The prime and archimedean boundary Hankel operators have the same rank-one
+    Laplace strong limit, but their centered difference has the positive operator-norm lower bound
+    `(279)` at every cofinal scale.  Finite atomic prime measures retain arbitrarily high-frequency
+    simultaneous phase revivals.
+82. **Those phase revivals construct the normalized `77/85` edge -- failed as an inference.**
+    Operator norm in `L^2` ignores the common finite-part Cauchy energy.  The revival frequencies
+    may be charged at a large logarithmic scale, exactly as localized seam packets are charged in
+    Theorem Z.  The missing estimate is relative to `C_(a,lambda)`, not absolute norm of the
+    centered prime--archimedean operator.
+83. **Leading PNT asymptotics decide whether Suzuki is dead -- failed class-completely.**  Fixed
+    profiles see strong cancellation, while aperture-dependent oscillatory profiles see nonuniform
+    atomic recurrence.  Neither topology is the normalized form topology.  A genuine no-go must
+    control the centered critical Mellin discrepancy against the common logarithmic form, uniformly
+    on the source-visible finite-shift branch.
+84. **A regular negative shift of endpoint-mass scale can convert the nonuniform prime recurrence
+    into source admission -- failed.**  If `-lambda asymp e^a` and both parity coercivity margins
+    remain comparable to `e^a`, Theorem AC shows the rescaled even and odd resolvent responses have
+    the same limit `1/(8c)`.  Their defect tends to zero, not to `kappa_Xi`.
+85. **This kills every macroscopic negative shift -- failed.**  It kills only the uniformly safe
+    first-jet chart.  Any merely admitted `-lambda asymp e^a` family can hug a negative parity
+    floor within `o(e^a)`, so rotating near-floor modes can defeat the weak source limit.
+86. **That singular macroshift remains viable for the complete Route G -- failed.**  Full target
+    identification implies RH and hence nonnegative parity floors.  It restores a uniform
+    `e^a` coercivity margin and contradicts Theorem AC.  Every complete Suzuki family must satisfy
+    the strict recession law `(285a)`; only submacroscopic negative shifts remain open.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -3871,8 +4240,9 @@ metric/projection wall `(141)--(150)`, and the critical-node Galerkin resolution
 equivalence, source-impedance calibration, all-anchor weak-escape law, and fixed-source Laplace
 rigidity `(163)--(200)`, together with the compactified two-extension spectral-shift and
 smoothing-trace reduction `(201)--(215)`, the low-energy support/regular phase-mixing wall
-`(216)--(223)`, and the source-specific Toeplitz `sech`/normalized-Hankel rapidity wall
-`(224)--(267)`.
+`(216)--(223)`, and the source-specific Toeplitz `sech`/normalized-Hankel rapidity,
+source-alignment, localization, reflection-rigidity, nonuniform-PNT, and macroscopic safe-shift
+walls `(224)--(287)`.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
 specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
 formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the
@@ -3905,7 +4275,13 @@ prime-correlation consequence `(229)--(241)`, exact edge/source-alignment slack 
 multiplicity law `(242)--(251)`, or the Suzuki relative-edge/parity-floor correspondence
 `(255)--(260)`.  Yafaev's singular-Hankel analysis contains the isolated delta-reflection parent,
 but the search found no Suzuki common-Toeplitz logarithmic localization penalty or normalized
-prime-seam collapse `(262)--(267)`.
+prime-seam collapse `(262)--(267)`.  The physical prime-reflection square and log-ratio translation
+budget are classical in their components, but the corpus and targeted search found no
+Suzuki-specific reserve law `(268)--(273)`.  Likewise the PNT boundary Laplace limit is known;
+candidate-new content is the strong-versus-operator-norm split for the centered physical
+prime--archimedean compression `(274)--(280)`.  Fixed-aperture far-negative projective collapse is
+corpus-known; the coupled `-lambda asymp e^a` source-blindness and forced floor-hugging law
+`(281)--(287)` was not found internally or in the targeted Suzuki source audit.
 Primary parent comparisons are Reiffenstein, *Higher-order interlacing for matrix-valued
 meromorphic Herglotz functions*, arXiv:2108.10746, Theorem 2.3 for the scalar product law;
 Poltoratski, *The Krein spectral shift and rank one perturbations of spectra*,

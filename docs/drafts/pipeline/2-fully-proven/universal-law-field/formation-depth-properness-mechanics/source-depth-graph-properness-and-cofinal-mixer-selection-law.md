@@ -264,8 +264,15 @@ The least-atom asymptotic implies
 \]
 
 Exponential decay dominates `N`, so the terminal term in `(FDP.19)` tends to zero. The left side
-converges absolutely by `(FDP.18)`; consequently the deficit series converges and passage to the
-limit proves `(FDP.15)`.
+converges absolutely by `(FDP.18)`. Moreover, the normalized least-atom asymptotic gives
+
+\[
+2^{(K+j)\operatorname{Re}s}\left|1-\zeta((K+j)s)^{-1}\right|\longrightarrow 1.
+\]
+
+Hence the normalized deficits are eventually bounded, and a constant multiple of the geometric
+series `2^{-j Re s}` majorizes their tail. Thus the deficit series converges absolutely, and passage
+to the limit proves `(FDP.15)`.
 
 For real `u>1`, the Dirichlet series gives `zeta(u)>1`. Hence
 `0<zeta(u)^{-1}<1`. Under `(FDP.16)`, `(K+j)s>1` for every `j`, so every deficit is positive. At
@@ -329,4 +336,3 @@ estimate. It is one pre-zero constitutive comparison:
 
 intertwining physical reflection/evolution with source formation and bounded below in the graph
 gauge. Once such a comparison is proved, Theorem 3.1 and Section 4 force the displacement to vanish.
-

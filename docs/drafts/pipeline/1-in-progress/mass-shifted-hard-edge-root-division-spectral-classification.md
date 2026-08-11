@@ -20,8 +20,8 @@ positivity.
 - [x] 0 -> 1 in-progress: exact source-pure algebra and hostile alternatives isolated
 - [ ] 1 -> 2 fully-proven: finish source-specific bounded-scale transport theorem and audit all
   analytic dependencies
-- [ ] 2 -> 3 formalized: root-division spectral theorem is Lean-proved; source-specific bounded
-  transport still awaits the hard-edge degree theorem's literal analytic formalization
+- [ ] 2 -> 3 formalized: no Lean credit until the literal completed-Xi hard-edge form, boundary
+  state, and bounded transport are constructed unconditionally
 - [ ] 3 -> 4 publication-ready
 
 ## Exact algebraic survivor `[PROVED HERE]`
@@ -118,9 +118,10 @@ compatibility on a bounded scale interval; no static root equation sees it.
   classification.
 - **New insight:** hard-edge boundary is a legitimate ground-edge spectral state. Arithmetic must
   act through aperture/current history before reflection aggregation.
-- **Status:** algebraic survivor dependency-closed and Lean-proved; bounded-scale bridge depends
-  on the paper-proved hard-edge degree theorem whose literal analytic Lean formalization remains
-  open.
+- **Status:** algebraic survivor is paper-proved and subsumed by
+  `../2-fully-proven/new_scientific_knowledge/mass-shifted-hard-edge-root-jet-radical-rigidity.md`;
+  bounded-scale bridge depends on the paper-proved hard-edge degree theorem.  No abstract Lean
+  wrapper receives formal credit.
 
 ## Literature collision audit
 
@@ -140,5 +141,5 @@ compatibility on a bounded scale interval; no static root equation sees it.
 - 2026-08-11 — static Cauchy annihilation and virial routes failed under hostile audit.
 - 2026-08-11 — root-deletion orthogonality/multiplicity law proved; bounded-scale terminal bridge
   isolated.
-- 2026-08-11 — algebraic and literal polynomial-moment specializations formalized and audited in
-  `HTGeometry.NullRootDivisionSpectralLaw`.
+- 2026-08-11 — removed abstract Lean wrapper and false Stage-3 status; it supplied its own nullity
+  and semidefiniteness instead of constructing the literal completed-Xi objects.

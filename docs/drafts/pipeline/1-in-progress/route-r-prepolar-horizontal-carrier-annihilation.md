@@ -900,6 +900,7 @@ global positive trace/index identity; no additional same-fibre Green boundary ca
 **Status:** paper proof complete; Lean formalization deferred during corpus refactor.
 
 
+
 ## C24. Full Poisson symmetry leaves a nonzero double-endpoint theta shear
 
 C17 and the vertical-gauge modules prove that rational scaling and the Real structure do not
@@ -1103,5 +1104,380 @@ can replace that relative index.
 **Route status:** still open.  These are dependency-closed no-go results and a sharper unique
 survivor, not an RH proof and not yet an exhaustive death proof for the remaining relative-index
 class.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+
+## C27. The physical BV--Green reader is a modular Gibbs weight; the source trace is its singular wall
+
+The surviving relative-index proposal can be normalized exactly on the already constructed
+ordinary-integer Wold--Green model.  This removes another unspecified comparison from Route R.
+
+Write
+
+\[
+  Qe_k=k^{-1}e_k,\qquad S_ne_k=e_{nk},\qquad P_n=S_nS_n^*,
+\]
+
+and
+
+\[
+  B_n=[S_n^*,QS_n]=n^{-1}Q-P_nQ.
+\tag{C27.1}
+\]
+
+For a positive modular exponent \(a>0\), define on the diagonal Green ideal
+
+\[
+  \Phi_a(T)
+   ={1\over\zeta(1+a)}\sum_{k\ge1} k^{-a}d_k(T),
+  \qquad d_k(T)=\langle e_k,Te_k\rangle .
+\tag{C27.2}
+\]
+
+This is a positive normal diagonal weight on that ideal and is normalized by
+\(\Phi_a(Q)=1\).  The two products in (C27.1) have exact values
+
+\[
+  \Phi_a(S_n^*QS_n)=n^{-1},
+  \qquad
+  \Phi_a(P_nQ)
+   ={\sum_{n\mid k}k^{-1-a}\over\zeta(1+a)}
+   =n^{-1-a}.
+\tag{C27.3}
+\]
+
+Consequently
+
+\[
+  \boxed{\Phi_a(B_n)=n^{-1}(1-n^{-a}).}
+\tag{C27.4}
+\]
+
+The corpus proves
+
+\[
+  \operatorname{Gain}_n(s)=n^{\,2\Re s-1}.
+\]
+
+Putting \(a=2\Re s-1\), (C27.4) is literally
+`deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation n s`.  Thus Route R's fixed physical
+reader is not merely analogous to a KMS reader: on the decisive Wold pair it is the unique
+power-law modular Gibbs weight with exponent \(a\).
+
+At \(a=0\), the normalizing series diverges.  The canonical replacement on the explicit Green
+algebra is the logarithmic residue
+
+\[
+  \operatorname{Res}(T)
+   =\lim_{N\to\infty}{1\over\log N}\sum_{k\le N}d_k(T).
+\tag{C27.5}
+\]
+
+The harmonic asymptotic gives
+
+\[
+  \operatorname{Res}(Q)=1,
+  \qquad
+  \operatorname{Res}(n^{-1}Q)=n^{-1},
+  \qquad
+  \operatorname{Res}(P_nQ)=n^{-1},
+\]
+
+so
+
+\[
+  \boxed{\operatorname{Res}(B_n)=0.}
+\tag{C27.6}
+\]
+
+This is the singular-trace version of the explicit degree-six cyclic source reader.  It kills
+every ordinary-integer Wold--Green boundary simultaneously, not only \(B_6\).
+
+There is also a rigidity statement.  Suppose a positive diagonal weight is given by coefficients
+\(w_k\ge0\) and obeys the modular dilation law
+
+\[
+  w_{nk}=n^{-a}w_k\qquad(n,k\ge1).
+\tag{C27.7}
+\]
+
+Taking \(k=1\) forces \(w_k=w_1k^{-a}\).  Normalization on \(Q\) is finite precisely for \(a>0\)
+and then forces \(w_1=\zeta(1+a)^{-1}\).  If this weight is cyclic even on one Wold pair with
+\(n>1\), (C27.3) gives
+
+\[
+  n^{-1}=n^{-1-a},
+\]
+
+hence \(a=0\).  At that point the normal weight ceases to exist and the logarithmic residue is
+the canonical singular continuation.  Therefore
+
+\[
+  \boxed{
+  \text{physical cyclic descent is exactly the normal-to-singular modular phase transition.}}
+\tag{C27.8}
+\]
+
+This also closes the proposed two-orientation shortcut.  For \(a>0\), the reflected coefficient
+weight \(k^{a}\) is not finite on \(Q\); variable ideals can retain it, but a common fixed Green
+ideal cannot.  The existing
+`PrimeFirstTraceGradedVariableIdealFixedXiComparison.lean` theorem is the prime-side form of the
+same wall: simultaneous fixed-ideal coefficient faithfulness is equivalent to \(a=0\), hence to
+RH after Xi specialization.  Two-orientation normalizability is not an independent source law.
+
+**Verdict:** every positive diagonal/KMS or trace-preserving producer on the explicit Wold--Green
+algebra is classified.  A normal physical weight is noncyclic by exactly the Route-R anomaly;
+the cyclic source reader is its singular \(a=0\) residue.  A trace-preserving comparison between
+them exists on the decisive pair exactly at neutral grade.  This is a new normal form, not an
+annihilation theorem.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.  Existing
+formal ingredients include
+`DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean`,
+`RouteRDegreeSixBVGreenPhysicalCyclicDescentWall.lean`,
+`MarkedHalfCharacterCofinalDiagonalInverseLaw.lean`, `WeakSchattenResidue.lean`, and
+`HTGeometry/DixmierIdeal.lean`.
+
+## C28. The neutral finite part is the nonzero Bockstein current
+
+The singular residue in (C27.6) kills only the logarithmic coefficient.  Its natural finite part
+does not vanish.  Indeed, with \(H_N=\sum_{k\le N}k^{-1}\), the ordered diagonal cutoff of (C27.1)
+is
+
+\[
+  \sum_{k\le N}d_k(B_n)
+   ={1\over n}H_N-{1\over n}H_{\lfloor N/n\rfloor}.
+\tag{C28.1}
+\]
+
+Since \(H_N-\log N\to\gamma\),
+
+\[
+  \boxed{
+  \lim_{N\to\infty}\sum_{k\le N}d_k(B_n)={\log n\over n}>0.}
+\tag{C28.2}
+\]
+
+On the other hand differentiating the exact modular anomaly gives
+
+\[
+  {d\over da}\Phi_a(B_n)\bigg|_{a=0^+}
+   ={d\over da}\left[{1\over n}(1-e^{-a\log n})\right]_{a=0}
+   ={\log n\over n}.
+\tag{C28.3}
+\]
+
+Thus the finite-part trace of the Wold--Green boundary is exactly the first Bockstein jet of the
+physical KMS anomaly.  It is source-native, strictly positive, and cannot be removed by changing
+the logarithmic-residue representative.
+
+This falsifies a stronger form of the remaining producer:
+
+> a pre-divisor Stokes trace identity, analytic in horizontal grade, annihilates the physical
+> Wold--Green boundary on a grade neighbourhood.
+
+Such an identity would make every derivative at neutral grade vanish, contradicting (C28.2)--
+(C28.3).  The new `SourceHorizontalWoldNeutralJetBridge.lean` is the all-prime version of this
+fact: after a uniformly positive gauge, the neutral Gamma-Bockstein jet is the literal Wold
+coefficient, and its adjacent-prime correction is the Route-T residual increment.
+
+Therefore the final source theorem cannot be a grade-flat Stokes law, an analytic deformation of
+the singular trace, or a common normal KMS state.  It must be both:
+
+1. divisor-selective -- it may vanish only on the actual Xi support, not on an open grade family;
+2. nonlinear/nonlocal -- it must consume a quadratic reflection-paired or relative-index object,
+   since every linear trace sees either the nonzero finite part or only the zero logarithmic
+   residue.
+
+The two reflected modular anomalies satisfy the exact self-product law
+
+\[
+  -\Phi_a(B_n)\Phi_{-a}(B_n)
+   ={4\over n^2}\sinh^2\!\left({a\log n\over2}\right)\ge0,
+\tag{C28.4}
+\]
+
+with equality exactly at \(a=0\).  This is the Wold--Green normal form of the Gauss--Hodge mass
+current.  Hence the sole surviving producer is now explicit: a coefficient-faithful arithmetic
+relative-index pairing must identify its source-exact signed self-product with (C28.4).  Proving
+that identification would annihilate the positive mass and close RH; assuming it would merely
+rename RH.
+
+**Route status:** still open.  C27--C28 eliminate positive KMS, common fixed-ideal, analytic
+grade-flat, and linear singular-trace producers.  They leave one precise quadratic relative-index
+comparison, not a terminal death proof.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+
+## C29. Closed positive descent also erases the prime atom
+
+C25 used bounded Riesz representation.  The same obstruction holds for unbounded positive forms
+as soon as they are closed, so passing from bounded GNS data to an honest closed quadratic form
+does not rescue the retained class.
+
+Let \(H=\ell^2(\mathbb Q^\times)\), let \(U=U_p\) be prime dilation, and let
+\(D\subset H\) be a dense \(U\)-invariant linear domain.  Let
+\(q:D\times D\to\mathbb C\) be a positive sesquilinear form, closed for
+
+\[
+  \|x\|_q^2=\|x\|_H^2+q(x,x).
+\tag{C29.1}
+\]
+
+Assume homological descent in the minimal diagonal form
+
+\[
+  q((U-1)x,(U-1)x)=0\qquad(x\in D).
+\tag{C29.2}
+\]
+
+For a positive form, its zero set
+
+\[
+  N_q=\{x\in D:q(x,x)=0\}
+\]
+
+is a linear radical by Cauchy--Schwarz.  Equation (C29.2) puts
+\((U-1)D\subset N_q\).
+
+This range is dense in \(H\).  Indeed, if \(y\perp(U-1)D\), then
+
+\[
+  \langle x,(U^*-1)y\rangle=0\qquad(x\in D).
+\]
+
+Density of \(D\) gives \(U^*y=y\).  Prime dilation has no nonzero fixed vector on
+\(\ell^2(\mathbb Q^\times)\), because its orbits are bilateral copies of \(\mathbb Z\).
+Hence \(y=0\).
+
+Now fix \(x\in D\) and choose \(n_j\in (U-1)D\) with \(n_j\to x\) in \(H\).  Since \(N_q\) is
+linear,
+
+\[
+  q(n_j-n_k,n_j-n_k)=0,
+\]
+
+so \((n_j)\) is Cauchy in the form norm (C29.1).  Closedness supplies a form-norm limit in \(D\);
+its Hilbert limit is \(x\), and therefore \(q(x,x)=0\).  Thus
+
+\[
+  \boxed{q=0.}
+\tag{C29.3}
+\]
+
+The conclusion applies to closed Dirichlet forms, closed GNS forms, graph-norm Hodge energies,
+and closable positive forms after closure.  Any one of them that genuinely descends through the
+prime coinvariant erases every localized atom.  The remaining relative-index proposal must
+therefore be signed or discontinuous *before* its positive physical part is extracted.  Source
+exactness of a signed supertrace alone cannot annihilate that positive part: it only equates it
+with the opposite graded contribution.
+
+**Verdict:** the boundedness qualifier in C25 was inessential.  No honest closed positive
+homological completion can be Route R's quadratic producer.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+
+## C30. One Hilbert--Schmidt trace defect is the complete quadratic endpoint
+
+The remaining signed/relative-index problem can be compressed to one scalar without losing any
+zero.  Let
+
+\[
+  \alpha_q=\operatorname{xiSpectralPoint}(q)
+\]
+
+on the multiplicity-exact centered Xi divisor.  The corpus proves \(\alpha_q\ne0\) and
+\(\sum_q|\alpha_q|^{-2}<\infty\).  Define
+
+\[
+  A_\Xi=\sum_q{1\over|\alpha_q|^2},
+  \qquad
+  H_\Xi=\sum_q{1\over\alpha_q^2}.
+\tag{C30.1}
+\]
+
+Both sums converge absolutely.  Conjugation permutes the divisor copies, so \(H_\Xi\in\mathbb R\).
+For \(\alpha=x+iy\),
+
+\[
+  {1\over|\alpha|^2}-\Re{1\over\alpha^2}
+   ={2y^2\over|\alpha|^4}.
+\]
+
+Summing gives the exact positive defect
+
+\[
+  \boxed{
+  A_\Xi-H_\Xi
+    =2\sum_q{(\Im\alpha_q)^2\over|\alpha_q|^4}\ge0.}
+\tag{C30.2}
+\]
+
+Every summand on the right is nonnegative.  Hence
+
+\[
+  \boxed{\mathrm{RH}\iff A_\Xi=H_\Xi.}
+\tag{C30.3}
+\]
+
+The holomorphic moment is already source-readable.  Differentiating the absolutely convergent
+relative-resolvent identity at the center gives
+
+\[
+  H_\Xi=-{\,\Xi_C''(0)\over\Xi_C(0)},
+\tag{C30.4}
+\]
+
+because \(\Xi_C\) is even and \(\Xi_C(0)\ne0\).  Thus the endpoint is the single explicit equality
+
+\[
+  \boxed{
+  \sum_q{1\over|\alpha_q|^2}
+    =-{\,\Xi_C''(0)\over\Xi_C(0)}.}
+\tag{C30.5}
+\]
+
+There is an exact operator normal form.  On \(\ell^2(\mathrm{XiZeroCopy})\), let
+
+\[
+  Te_q=\alpha_q^{-1}e_q.
+\]
+
+Then \(T\) is Hilbert--Schmidt,
+
+\[
+  A_\Xi=\operatorname{Tr}(T^*T),\qquad
+  H_\Xi=\operatorname{Tr}(T^2),
+\]
+
+and
+
+\[
+  A_\Xi-H_\Xi={1\over2}\|T-T^*\|_{\mathrm{HS}}^2.
+\tag{C30.6}
+\]
+
+Therefore RH is equivalent to self-adjointness of this one canonical inverse-divisor operator.
+Generic positivity supplies only the already known direction
+
+\[
+  \Re\operatorname{Tr}(T^2)\le\operatorname{Tr}(T^*T);
+\]
+
+it cannot supply the reverse inequality.  A successful arithmetic relative-index comparison must
+identify the positive conjugate-diagonal trace \(\operatorname{Tr}(T^*T)\) with the holomorphic
+trace \(\operatorname{Tr}(T^2)\).  This is exactly the conjugate-pair diagonal extraction isolated
+by `GaussHodgeCoherenceBudget.lean`, now reduced from every test and every prime to one scalar
+resolvent vector.
+
+The new explicit formula computes the holomorphic side (C30.4) from Euler--Gamma--von Mangoldt
+data.  It does not compute \(A_\Xi\): that term is the genuinely Hermitian two-zero diagonal.
+Thus one-variable explicit formula, ordinary trace cyclicity, and positivity each stop on a
+different side of (C30.5).
+
+**Route status:** still open.  Quadratic Route R now has one exact target: construct a
+coefficient-faithful squared explicit-formula/relative-index source whose conjugate diagonal is
+\(A_\Xi\), and prove its source Stokes law identifies it with (C30.4).  No other GNS or
+all-test infrastructure is needed.
 
 **Status:** paper proof complete; Lean formalization deferred during corpus refactor.

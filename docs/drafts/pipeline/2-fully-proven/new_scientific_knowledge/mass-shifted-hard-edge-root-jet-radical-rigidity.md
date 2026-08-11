@@ -4,10 +4,11 @@
 - **Stage:** 2-fully-proven / needs independent specialist audit
 - **Type:** THEOREM (paper)
 - **Source:** Route U item 48 and `mass-shifted-hard-edge-hyperbolic-weil-boundary`
-- **Statement:** At a critical hard-edge boundary, every repeated squared-variable zero creates
-  additional exact null descendants; consequently root multiplicity is bounded by restricted-Weil
-  ground multiplicity, and the one-dimensional-ground branch collapses to the known simple-ground
-  real-zero problem.
+- **Statement:** At a critical hard-edge boundary, a squared-variable zero of multiplicity `m`
+  creates a complete flag of `m-1` exact null descendants.  Its divided-jet Gram matrix is zero
+  except for one terminal nonnegative scalar.  Consequently total multiplicity excess is bounded
+  by restricted-Weil ground multiplicity, and the one-dimensional-ground branch collapses to the
+  known simple-ground real-zero problem.
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
 
 ## Goal
@@ -66,11 +67,18 @@ For a real zero `r` of multiplicity `m_r` and `1<=k<=m_r`, define the entire roo
    \mathfrak b_\sigma(H,H)\ge0.                             \tag{RJRR.5}
    \]
 
-2. `F` lies in the radical and every allowed divided moment vanishes:
+2. `F` lies in the radical.  Define every continuously cancelled moment
+
+   \[
+   M_{r,k}:=\int_{\mathbb R}{F(u)^2\over(u-r)^k}\,d\eta_\sigma(u)
+   \qquad(1\le k\le2m_r).
+   \]
+
+   Every initially allowed divided moment vanishes:
 
    \[
    \mathfrak b_\sigma(F,H)=0,\qquad
-   M_{r,k}:=\int_{\mathbb R}{F(u)^2\over(u-r)^k}\,d\eta_\sigma(u)=0
+   M_{r,k}=0
    \quad(1\le k\le m_r).                                   \tag{RJRR.6}
    \]
 
@@ -84,20 +92,44 @@ For a real zero `r` of multiplicity `m_r` and `1<=k<=m_r`, define the entire roo
    \quad(r\ne s,\ 1\le p\le m_r,\ 1\le q\le m_s).          \tag{RJRR.7}
    \]
 
-4. Each repeated root forces extra radical dimension:
+4. Each repeated root forces the complete nonterminal divided-jet flag into the radical:
 
    \[
    F_{r,k}\in\operatorname{rad}\mathfrak b_\sigma
-   \quad\left(1\le k\le\left\lfloor{m_r\over2}\right\rfloor\right), \tag{RJRR.8}
+   \quad(1\le k<m_r),                                       \tag{RJRR.8}
    \]
 
-   and the rational principal parts are linearly independent.  Hence
+   and in fact
+
+   \[
+   M_{r,k}=0\quad(1\le k<2m_r).                             \tag{RJRR.9}
+   \]
+
+   Put `gamma_r=M_(r,2m_r)>=0`.  The complete divided-jet Gram law is
+
+   \[
+   \mathfrak b_\sigma(F_{r,p},F_{s,q})=
+   \begin{cases}
+     \gamma_r,&r=s,\ p=q=m_r,\\
+     0,&\text{otherwise}.
+   \end{cases}                                               \tag{RJRR.10}
+   \]
+
+   The rational principal parts are linearly independent.  Hence
 
    \[
    \boxed{\quad
    \dim\operatorname{rad}\mathfrak b_\sigma
-   \ \ge\ 1+\sum_{F(r)=0}\left\lfloor{m_r\over2}\right\rfloor.
-   \quad}                                                    \tag{RJRR.9}
+   \ \ge\ 1+\sum_{F(r)=0}(m_r-1).
+   \quad}                                                    \tag{RJRR.11}
+   \]
+
+   More sharply, if `S` is any finite root set, every root in `S` with `gamma_r=0` contributes its
+   terminal descendant as well:
+
+   \[
+   \dim\operatorname{rad}\mathfrak b_\sigma
+   \ge 1+\sum_{r\in S}\bigl(m_r-1+\mathbf1_{\{\gamma_r=0\}}\bigr).
    \]
 
 5. The literal localized restricted-Weil operator has discrete spectrum and finite-dimensional
@@ -109,7 +141,8 @@ For a real zero `r` of multiplicity `m_r` and `1<=k<=m_r`, define the entire roo
    \[
    \dim\ker A_\sigma=1
    \quad\Longrightarrow\quad
-   \text{every root of }F\text{ is simple and nonnegative}. \tag{RJRR.10}
+   m_r=1,\quad r\ge0,\quad\gamma_r>0
+   \quad\text{for every root }r.                            \tag{RJRR.12}
    \]
 
 ## 2. Proof
@@ -154,49 +187,111 @@ For `r \ne s`, ordinary partial fractions give constants `a_j,b_l` such that
 
 \[
  {1\over(u-r)^p(u-s)^q}
- =\sum_{j=1}^p{a_j\over(u-r)^j}+\sum_{\ell=1}^q{b_\ell\over(u-s)^\ell}. \tag{RJRR.11}
+ =\sum_{j=1}^p{a_j\over(u-r)^j}+\sum_{\ell=1}^q{b_\ell\over(u-s)^\ell}.
 \]
 
 After multiplication by `F(u)^2`, every apparent singularity is removable.  Integrating
-(RJRR.11) against `eta_sigma` and applying (RJRR.6) term by term proves (RJRR.7).  Thus the
+this identity against `eta_sigma` and applying (RJRR.6) term by term proves (RJRR.7).  Thus the
 simultaneous simple-root Cauchy equations are the Lagrange orthogonality relations of a critical
 extremizer; by themselves they are not an overdetermined contradiction.
 
-### 2.4 Multiplicity creates null descendants
+### 2.4 Multiplicity creates a complete null flag
 
 If `2k<=m_r`, then `F_(r,2k)` is admissible and
 
 \[
  \mathfrak b_\sigma(F_{r,k},F_{r,k})
  =\int {F(u)^2\over(u-r)^{2k}}\,d\eta_\sigma(u)
- =\mathfrak b_\sigma(F,F_{r,2k})=0.                          \tag{RJRR.12}
+ =\mathfrak b_\sigma(F,F_{r,2k})=0.                          \tag{RJRR.13}
 \]
 
-Nonnegativity of the form makes every zero-norm vector radical, proving (RJRR.8).
+Nonnegativity of the form makes every zero-norm vector radical.  This starts with
+`F_(r,k)` radical for `1<=k<=floor(m_r/2)`.
 
-For linear independence, take any finite relation among `F` and the descendants in (RJRR.8),
+Put `F_(r,0)=F` and start with `d=floor(m_r/2)`.  The apparent half-multiplicity barrier is not
+real.  Suppose inductively that `F_(r,1),...,F_(r,d)` are radical, where `d<m_r-1`.  Pairing each
+of them with every admissible `F_(r,k)`, `0<=k<=m_r`, gives
+
+\[
+ M_{r,j+k}=\mathfrak b_\sigma(F_{r,j},F_{r,k})=0
+ \qquad(1\le j\le d,\ 0\le k\le m_r).                       \tag{RJRR.14}
+\]
+
+Together with the initial vanishing in (RJRR.6), this covers every index
+`1<=s<=m_r+d`.  Since `d<=m_r-2`,
+
+\[
+ 2(d+1)\le m_r+d,
+ \qquad
+ \mathfrak b_\sigma(F_{r,d+1},F_{r,d+1})=M_{r,2d+2}=0.
+\]
+
+Thus `F_(r,d+1)` is radical.  Induction reaches `d=m_r-1` and proves (RJRR.8).
+Taking `j<=m_r-1` and `k=m_r` in (RJRR.14) then gives every remaining moment through
+`M_(r,2m_r-1)`, proving (RJRR.9).  Therefore
+
+\[
+ \mathfrak b_\sigma(F_{r,p},F_{r,q})=M_{r,p+q}=0
+\]
+
+unless `p=q=m_r`; in that terminal case it equals
+`gamma_r=M_(r,2m_r)>=0` by nonnegativity.  Section 2.3 already gives zero for different roots, so
+the complete diagonal law (RJRR.10) follows.
+
+For linear independence, take any finite relation among `F` and the nonterminal descendants,
 divide on the complement of the zero set by the nonzero entire function `F`, and obtain a rational
 identity
 
 \[
- c_0+\sum_{r,k}{c_{r,k}\over(u-r)^k}=0.                     \tag{RJRR.13}
+ c_0+\sum_{r,k}{c_{r,k}\over(u-r)^k}=0.                     \tag{RJRR.15}
 \]
 
-Every principal part in (RJRR.13) vanishes, and then `c_0=0`.  Arbitrary finite subsets are
-independent, proving the dimension bound (RJRR.9).
+Every principal part in (RJRR.15) vanishes, and then `c_0=0`.  Arbitrary finite subsets are
+independent, proving the dimension bound (RJRR.11).  If `gamma_r=0`, nonnegativity puts the
+terminal descendant `F_(r,m_r)` in the radical too.  The same rational-principal-part argument for
+any finite root set proves the sharper terminal-zero bound.
 
-### 2.5 Compact-resolvent and simple-ground consequences
+### 2.5 The radical root pencil and failure of polar cyclicity
+
+Let `r` be repeated and write `F(u)=(u-r)^mG(u)`.  Since both `F` and `F_(r,1)` are radical, every
+member of the exact pencil
+
+\[
+ F_c(u)=F(u)+cF_{r,1}(u)
+       =(u-r)^{m-1}(u-r+c)G(u)                              \tag{RJRR.16}
+\]
+
+is radical.  It remains in the Laguerre--Polya class: the pencil removes one copy of the real root
+`r` and replaces it by the arbitrary real root `r-c`.  If `F(-1/4)\ne0`, direct evaluation gives
+
+\[
+ F_c(-1/4)=F(-1/4)\left(1+{c\over-1/4-r}\right).
+\]
+
+The unique polar-dark member therefore has `c=r+1/4`, so its replacement root is exactly the
+completion point `-1/4`.  If
+`F(-1/4)=0`, the original state is already polar-dark.  Thus every repeated root supplies a
+nonzero radical state annihilated by evaluation at `i/2`.
+
+Consequently the polar functional is not cyclic on a degenerate ground space and cannot prove
+ground simplicity.  More strongly, the location of one copy of a repeated squared root is a
+projective gauge inside the radical pencil; polar evaluation selects the completion root `-1/4`,
+not the critical sign boundary `0`.
+
+### 2.6 Compact-resolvent and simple-ground consequences
 
 Suzuki records that the self-adjoint localized Weil operator is lower bounded with discrete
 spectrum and `+infinity` as its only accumulation point.  Its zero eigenspace is therefore finite
-dimensional.  Equation (RJRR.9) rules out infinitely many multiple roots.  A one-dimensional
+dimensional.  Equation (RJRR.11) rules out infinitely many multiple roots.  A one-dimensional
 zero eigenspace rules out even one root with multiplicity at least two.
+It also forces every terminal scalar to be positive: if `gamma_r=0`, the independent terminal
+descendant belongs to the radical by Section 2.4.
 
 The hard-edge `f` is the Fourier transform of the even zero-mode on the finite frequency interval.
 Connes--van Suijlekom prove that the Fourier transform of a simple isolated even ground state has
 only real zeros.  If `F` had a negative root `r`, then `f` would vanish at the nonreal points
 `z=\pm i\sqrt{-r}`.  Thus simple ground excludes negative roots.  Together with the
-previous paragraph this proves (RJRR.10).
+previous paragraph this proves (RJRR.12).
 
 ## 3. Conjecture--failure--pivot audit
 
@@ -207,12 +302,17 @@ previous paragraph this proves (RJRR.10).
    INFERENCE]`.  Positive finite quadrature already diagonalizes root-division functions; its
    second-kind ratio explains (RJRR.7) but supplies no sign for the critical scalar floor.
 3. **Root coalescence loses only zero-location information.** `[FALSIFIED]`.  A root of
-   multiplicity `m` emits `floor(m/2)` independent exact null descendants.  Coalescence is
-   spectral degeneracy, not a harmless defect of compact convergence.
+   multiplicity `m` emits a complete flag of `m-1` independent exact null descendants.  All
+   divided-jet mass vanishes except one terminal scalar.  Coalescence is spectral degeneracy, not
+   a harmless defect of compact convergence.
 4. **The squared-variable `LP` constraint is an independent last mile in the simple-ground
    branch.** `[FALSIFIED BY COLLISION]`.  In that branch the Connes--van Suijlekom theorem already
    forces all zeros of `f` real, hence all squared roots nonnegative.  Route U adds no independent
    sign there.
+5. **Polar evaluation is cyclic on the degenerate ground and restores simplicity.**
+   `[FALSIFIED]`.  The radical pencil (RJRR.16) always contains a nonzero polar-dark member.  Polar
+   evaluation chooses the completion root `-1/4`; it cannot distinguish the sign of the repeated
+   root that generated the pencil.
 
 ## 4. Higher universal principle and exact new frontier
 
@@ -220,22 +320,24 @@ Root geometry is the projective spectrum of the radical, not an auxiliary decora
 
 \[
  \text{root coalescence}
- \longrightarrow \text{divided null jets}
- \longrightarrow \text{ground-space multiplicity}.         \tag{RJRR.14}
+ \longrightarrow \text{complete nonterminal null flag}
+ \longrightarrow \text{one terminal positive mass}.         \tag{RJRR.17}
 \]
 
-Finite flat quadrature, second-kind ratios, hard-edge `LP` closure, and restricted-Weil ground
-degeneracy are shadows of this one radical-jet law.
+Equation (RJRR.10) is an exact confluent diagonalization law: coalescence pushes every nonterminal
+direction into the radical and leaves at most the terminal mass `gamma_r`.  Finite flat
+quadrature, second-kind ratios, hard-edge `LP` closure, and restricted-Weil ground degeneracy are
+shadows of this one radical-jet law.
 
 `[OPEN CORE]` Route U now has two genuinely different branches.
 
-- **Simple birth:** (RJRR.10) merges Route U with the known simple-even restricted-Weil ground
+- **Simple birth:** (RJRR.12) merges Route U with the known simple-even restricted-Weil ground
   problem.  Further `LP` or root-division work is theatre unless it supplies a new literal
   prime--Gamma sign.
 - **Degenerate birth:** prove that the literal completed-Xi source forbids
-  `dim ker A_sigma>=2`, or exploit two independent zero modes to force a source contradiction.
-  This is the only branch where finite Hankel coalescence supplies information absent from the
-  existing simple-ground literature.
+  `dim ker A_sigma>=2`, or force a source contradiction from the complete null flag and terminal
+  masses `gamma_r`.  Polar cyclicity is impossible by (RJRR.16).  This is the only branch where
+  finite Hankel coalescence supplies information absent from existing simple-ground literature.
 
 The next discriminator is therefore a **source-derived simplicity or degeneracy contradiction**,
 not classification of one-root Cauchy equations.
@@ -256,20 +358,23 @@ not classification of one-root Cauchy equations.
   lower-bounded discrete localized Weil spectrum and continuous aperture floor.
 - `[LITERATURE]` Connes--van Suijlekom,
   [*Quadratic Forms, Real Zeros and Echoes of the Spectral Action*](https://arxiv.org/abs/2511.23257),
-  prove the simple isolated even-ground real-zero theorem used only in (RJRR.10).
+  prove the simple isolated even-ground real-zero theorem used only in (RJRR.12).
 
-No located source states the literal prime--Gamma root-jet dimension bound (RJRR.9).  The algebraic
-mechanism is elementary once the critical form closure is known, so priority and significance
-remain unverified pending specialist review.
+No located source states the literal prime--Gamma complete radical flag, diagonal jet law
+(RJRR.10), or dimension bound (RJRR.11).  The bootstrap is elementary once the critical form
+closure is known, so priority and significance remain unverified pending specialist review.
 
 ## Lean status
 
-No Lean theorem is claimed.  An abstract semidefinite-form theorem with a supplied null vector
-would be a wrapper and would not satisfy Route U's formal target.  Exact formalization must wait
+No Lean theorem is claimed.  An abstract semidefinite-form theorem with a supplied null vector is
+theorem laundering and does not satisfy Route U's formal target.  Exact formalization must wait
 for the unconditional literal hard-edge boundary construction and restricted-Weil form domain in
-Lean, then prove (RJRR.5)--(RJRR.10) for those concrete objects.
+Lean, then prove (RJRR.5)--(RJRR.12) for those concrete objects.
 
 ## Log
 
 - 2026-08-11 -- simple Cauchy line killed as ordinary extremal orthogonality; repeated-root
   radical-jet survivor proved; simple/degenerate ground dichotomy isolated.
+- 2026-08-11 -- bootstrapped the initial half-flag to all `m-1` nonterminal descendants, proved
+  complete divided-jet Gram diagonalization, and falsified polar cyclicity by the explicit radical
+  root pencil.  Removed abstract Lean-wrapper status.

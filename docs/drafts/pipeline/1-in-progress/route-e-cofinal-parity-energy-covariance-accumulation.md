@@ -1385,6 +1385,25 @@ by order one across aperture provided its edge gradient is diffuse. It retains a
 weights, prime-dilation intervals, alternating signs, and finite Gibbs factors. Symmetrization
 (P+P^T)/2 does not require forward/reverse Metropolis support overlap.
 
+However restricting reciprocal kernel to one sign does not gain. If rows run only from source
+side to target side, source row mass is one and target row mass zero, so exact substitution gives
+
+\[
+ \boxed{
+ \mathcal E_P(x)
+ =2\sum_{t:\ell_t>0}\omega_t(x){(\ell_t-1)^2\over\ell_t},
+ \qquad
+ \omega_t(x)={1\over\ell_t}\sum_sP_{st}e^{-x\max(s,t)},}
+\tag{A75}
+\]
+
+with $e^{-xH}e^{-xt}\le\omega_t(x)\le e^{-xt}$. It is exactly target-weighted reverse Pearson
+column chi-square for monotone $s<t$ transitions, and uniformly equivalent to it when
+$xH=o(1)$. Genuine Dirichlet escape therefore requires outgoing
+recurrence rows on both Möbius parities. Full reciprocal formula is parity-agnostic and is
+candidate, but common-aperture closure is unproved. Forward/reverse supports need not overlap and
+no detailed balance is assumed.
+
 This lane is not automatic. Complete-bipartite blocks of length H with fixed parity imbalance have
 both degrees comparable to H, all edge lengths <=H, but linear Gibbs current and degree BV.
 Row/co-degree exponents cannot prove (A74). Existing bounded one/two/four-prime graph is also
@@ -1395,9 +1414,10 @@ covered and is surviving candidate.
 Final alternate target:
 
 **ENTROPY-COMPLEMENT-RECURRENCE-WEIGHTED-INVERSE-LOAD-DIRICHLET-STRICT-HALF**:
-construct actual source-defined finite substochastic kernel on common physical aperture and prove
-(A74) uniformly on same nested apertures used by alternating recurrence. Atoms with neither
-incoming nor outgoing mass are explicit residual; terminal rows need not be invented.
+instantiate parity-agnostic source-defined kernel on common physical aperture and prove (A74)
+uniformly on same nested apertures used by alternating recurrence. To improve on column
+chi-square, retain outgoing rows on both parity classes. Atoms with neither incoming nor outgoing
+mass remain explicit residual.
 
 Full proof and sharpness audit:
 ../2-fully-proven/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md.

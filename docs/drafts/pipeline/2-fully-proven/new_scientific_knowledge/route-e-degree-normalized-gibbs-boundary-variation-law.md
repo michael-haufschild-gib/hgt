@@ -385,10 +385,68 @@ optimizer is selected from endpoint. Symmetrizing
 $P$ uses union of forward and transposed supports and therefore does not require Metropolis
 forward/reverse support overlap.
 
-Current reciprocal-allocation kernel on chosen anchor class embeds by setting absent reverse rows
-to zero; Theorem E does not require every terminal to own outgoing row. Remaining formation
-obligation is physical quotient on common finite vertex aperture and bound on atoms with neither
-incoming nor outgoing kernel mass. No row deficit is silently renormalized.
+Current reciprocal-allocation formula is parity-agnostic in anchor $n$, so it is a candidate for
+outgoing rows on both signs. What is not proved is one common finite aperture closed enough that
+its physical terminal quotient and next outgoing rows use same kernel, especially after
+entropy-complement successor. Theorem E also permits absent boundary rows, but their zero-incidence
+atoms remain explicit. No row deficit is silently renormalized.
+
+But one-sided embedding does not reduce quantitative burden.
+
+### Theorem F — one-sided energy is co-moving reverse column chi-square
+
+Suppose $V=S\sqcup T$, rows on $S$ have mass one, rows on $T$ vanish, and $P$ is supported from
+$S$ to $T$. Put $\ell_t=\sum_{s\in S}P_{st}$. Then on nonisolated targets,
+
+\[
+ q_s=2,
+ \qquad q_t=\frac2{\ell_t},
+ \qquad b_{st}=\frac{P_{st}}2,
+\tag{23a}
+\]
+
+and therefore
+
+\[
+ \boxed{
+ \mathcal E_P(x)
+ =2\sum_{t:\ell_t>0}
+ \omega_t(x)\frac{(\ell_t-1)^2}{\ell_t},
+ \qquad
+ \omega_t(x):=\frac1{\ell_t}\sum_sP_{st}e^{-x\max(s,t)}.}
+\tag{23b}
+\]
+
+Moreover the displacement hypothesis gives
+
+\[
+ e^{-xH}e^{-xt}\le \omega_t(x)\le e^{-xt},
+\tag{23c}
+\]
+
+and if every supported transition has $s<t$, then $\omega_t(x)=e^{-xt}$ exactly.
+
+#### Proof
+
+Substitute (23a) into (19). Remembering that the endpoint weight on an unoriented edge is
+$e^{-x\max(s,t)}$ gives
+
+\[
+ \sum_s\frac{P_{st}}2e^{-x\max(s,t)}
+ \left(2-\frac2{\ell_t}\right)^2
+ =2\omega_t(x)\frac{(\ell_t-1)^2}{\ell_t}.
+\]
+
+Sum over targets. Since $|s-t|\le H$, one has
+$t\le\max(s,t)\le t+H$ on every supported transition; averaging its exponential proves
+(23c). If $s<t$, then $\max(s,t)=t$. ∎
+
+Thus restricting reciprocal relation to one sign source recovers a co-moving reverse Pearson
+column divergence and needs same strict-half scale. At $x=X^{-1}$ and
+$H=X^{1/2+o(1)}$, its weight differs from $e^{-xt}$ by only $1+o(1)$; for monotone forward
+transitions it is literally $e^{-xt}$. Genuine Dirichlet escape uses parity-agnostic rows on both
+classes so inverse incidence load can change through alternating paths. This does not require
+detailed balance or common forward/reverse support: symmetrized base still uses union support.
 
 ## 6. Exact collision with existing local replacement graph
 
@@ -467,6 +525,19 @@ signed imbalance. Choosing unrestricted flow reparameterizes endpoint.
 and enough row incidence at power scale. Fixed-token friable isolation theorem does not apply.
 Neither current corpus nor degree counts prove isolated Gibbs mass or (3).
 
+### Loop F: restrict reciprocal kernel to one sign source
+
+[FAILED AS BURDEN REDUCTION] Theorem F. Its Dirichlet energy is co-moving reverse column
+chi-square (23b)--(23c), uniformly equivalent to target-weighted reverse chi-square at strict-half
+displacement, so column balance remains.
+
+### Loop G: two-sided alternating rows without detailed balance
+
+[SURVIVES] Use parity-agnostic reciprocal formula on one common physical aperture, then
+$b=(P+P^\mathsf T)/2$. Forward and reverse supports need not overlap. Open formation step is
+closure/boundary control of this two-sided kernel; open estimate is (23), with moving seam labels
+retained.
+
 ## 9. New alternate Route E target
 
 Define symmetric ordinary-integer graph before forming current:
@@ -498,17 +569,23 @@ prime-dilation displacement, and recurrence weights $P_{nm}$ are retained atomwi
 Finite-aperture row deficits must be included as explicit residual Gibbs mass; they cannot be
 renormalized away. If recurrence accumulation remains chosen presentation, (23) must hold
 uniformly on same nested apertures so boundary increments retain their signs.
+One-sign restriction yields (23b)--(23c), so genuine new branch must retain parity-agnostic outgoing rows
+already suggested by full relation and close them on common aperture. This is weaker than detailed
+balance and does not require Metropolis support overlap.
 
 ## 10. Honest status
 
-Theorems A--E and inequalities (4), (16), and (20) are dependency-closed paper consequences of existing
+Theorems A--F and inequalities (4), (16), and (20) are dependency-closed paper consequences of existing
 unconditional Lean consumer and exact exponential edge bound. They create new Route E knowledge:
 
 - grown corpus converts direct current into explicit graph BV;
 - strict-half displacement term is already exactly right size;
 - simple-graph form leaves isolated mass and reciprocal-degree variation;
-- row-kernel form removes isolation and reduces producer to subpolynomial inverse-load Dirichlet
-  energy (23);
+- substochastic-kernel form isolates only zero-incidence mass and reduces remaining producer to
+  subpolynomial inverse-load Dirichlet energy (23);
+- one-sided specialization collapses to co-moving reverse column chi-square, uniformly equivalent
+  to target-weighted chi-square at strict-half displacement, so only genuinely
+  two-sided alternating rows open new lane;
 - exponent-level near-Hall cannot control this variation; and
 - local bounded-prime replacement graph is retired by linear friable isolation.
 

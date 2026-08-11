@@ -223,13 +223,67 @@ non-absolutely summable, but singularity alone earns no credit without `(1)` and
     \Pi([(3/2)^m]-1)h_m=R_{3,m}-h_m\longrightarrow-\Theta.
     \]
 
-    Thus the previously unspecified same-full-grade counterterm candidate is constructed and
-    is the same object as the singular successor edge.  Its Kummer regulator is
+    Thus the previously unspecified same-full-grade successor counterterm candidate is constructed
+    and is the same object as the singular successor edge.  Its Kummer regulator is
     \(m\log(3/2)\ne0\), proving it is not an ordinary Milnor/Hochschild boundary.  Remaining
-    theorem is an actual singular relative K/cyclic-to-Meyer admission carrying this concrete
-    conormal class to the existing Gamma target differential while retaining its anomaly until
-    boundary annihilation.  Full proof:
+    clock-matching problem is solved in item 11; singular Meyer--Poisson admission and boundary
+    annihilation remain.  Full proof:
     `../2-fully-proven/new_scientific_knowledge/deninger/deninger-steinberg-kummer-successor-normal-transgression.md`.
+
+11. **Conjecture:** a finite Möbius correction produces the actual full-grade Gamma clock directly,
+    so no fitted \(3/2\to6\) gauge is needed. **Proved, including the exact physical coefficient.**
+    Define
+
+    \[
+    H_{6,m}=R_{1,m}-\Theta+
+      \sum_{p\in\{2,3,5\}}p^{-m/2}U_{-m\log p}\Theta
+      =\sum_{n\ge6}\mu(n)n^{-m/2}U_{-m\log n}\Theta.
+    \]
+
+    Then, for \(m\ge3\),
+
+    \[
+      6^{m/2}U_{m\log6}H_{6,m}=R_{6,m},
+      \qquad H_{6,m}\to0,\qquad R_{6,m}\to\Theta\ne0.
+    \]
+
+    The honest depth-\(m\) Steinberg pair
+
+    \[
+      x_m=\frac{6^m}{1+6^m},\qquad y_m=\frac1{1+6^m}
+    \]
+
+    has a cubic Kummer-normal extraction \([6^m]-1\).  Swapping its normal orientation uses the
+    same unoriented Steinberg cell and extracts \([6^{-m}]-1\); their difference is
+
+    \[
+      [6^m]-[6^{-m}].
+    \]
+
+    Horizontal character evaluation is exactly
+
+    \[
+      6^{m(2\Re s-1)}-6^{-m(2\Re s-1)}
+      =K_{6^m}(s).
+    \]
+
+    At common \((2,3)\) Gamma depth \(m-1\), \(6^m\) is the literal modular clock.  For \(m=1\)
+    this is the existing fixed Gamma/Burnol/BV coefficient up to its fixed positive calibration.
+    Both orientations have genuine Tate--Wold primitives
+
+    \[
+      [6^m]-1=(1-[6^{-1}])\sum_{j=1}^m[6^j],\qquad
+      [6^{-m}]-1=(1-[6])\sum_{j=1}^m[6^{-j}].
+    \]
+
+    Thus source construction, full-grade clock matching, and coefficient comparison are closed.
+    The oriented Kummer regulator is \(2m\log6\ne0\), so ordinary cyclic descent remains
+    impossible.  Prime-two deletion fails because Euler depletion is injective; unmarked adelic
+    product-formula summation fails because it makes the rational Kummer derivation identically
+    zero and erases the detector.  Exact remaining theorem is a place-marked, orientation-retaining
+    singular admission of this explicit two-sided primitive into the literal Meyer--Poisson range,
+    with a genuine fixed-reader residue-cancellation law.  Full proof:
+    ../2-fully-proven/new_scientific_knowledge/deninger/deninger-mobius-gamma-six-normal-transgression.md.
 
 ## Falsifiers
 
@@ -243,11 +297,17 @@ A proposed closure fails if it:
 5. reconstructs already-existing Gamma/co-Poisson transport or Möbius detector;
 6. supplies positivity or Hilbert completion without arithmetic zero identity in `(1)`;
 7. uses flat Euler connection curvature as if it were cross-prime incidence;
-8. gives conditional Lean wrapper instead of unconditional paper proof of source map.
+8. gives conditional Lean wrapper instead of unconditional paper proof of source map;
 9. treats the Steinberg normal selector as an endomorphism of ordinary Milnor incidence despite
    its nonzero Kummer regulator;
 10. replaces the singular relative admission of the explicit class \([(3/2)^m]-1\) by an
-    artificial mapping cone in which that class is a boundary by definition.
+    artificial mapping cone in which that class is a boundary by definition;
+11. factors the actual clock \(6\) through \(4(3/2)\) and discards the prime-two edge despite
+    injectivity of Euler depletion;
+12. invokes the adelic product formula only after summing away all place marks, thereby erasing
+    the Kummer/Gamma coefficient it was required to retain;
+13. reconstructs another Gamma-clock source or coefficient comparison instead of proving the
+    explicit class \([6^m]-[6^{-m}]\) lies in the literal Meyer--Poisson range.
 
 ## Route-L status
 
@@ -258,6 +318,9 @@ A proposed closure fails if it:
 - [x] Möbius--Fourier boundary operator with exact literal kernel
 - [x] canonical Möbius chain prelift and exact opposite-collar lift obstruction
 - [x] full-grade honest Steinberg cell and exact Kummer-normal successor anomaly
+- [x] finite-corrected complete Möbius tail at literal full-grade Gamma clock \(6^m\)
+- [x] reciprocal Steinberg-normal orientation and two-sided Tate--Wold primitive
+- [x] exact coefficient match with BV, Burnol, cofinal Tate, and actual Gamma target
 - [ ] `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, equations `(1)`--`(2)`
 - [ ] consequent endpoint test `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] ambient nuclear/Hodge comparison, oriented Paugam identification, and resolvent-faithful

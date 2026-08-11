@@ -5520,7 +5520,20 @@ E_P = sum_{n~m,n<m} b_nm exp(-m/X) (q_n-q_m)^2.
 
 Hence sufficient producer is weighted-isolated mass <=X^(1/2+o(1)) and E_P<=X^(o(1)). It retains
 recurrence weights and permits slow order-one load variation; no Metropolis forward/reverse support
-overlap or invented terminal rows are needed because symmetrized base uses union support.
+overlap is needed because symmetrized base uses union support.
+
+For one-sign source-to-target restriction, identity collapses to
+
+~~~text
+E_P = 2 * sum_t omega_t(X) * (ell_t-1)^2/ell_t,
+omega_t(X) = ell_t^(-1) * sum_s P_st exp(-max(s,t)/X),
+exp(-H/X) exp(-t/X) <= omega_t(X) <= exp(-t/X),
+~~~
+
+co-moving reverse column chi-square. It is exactly target-weighted for monotone forward edges and
+uniformly equivalent at strict-half displacement. New Dirichlet lane therefore retains parity-agnostic outgoing rows of
+full reciprocal relation on one common aperture, but needs neither detailed balance nor support
+overlap.
 
 This is not consequence of row/co-degree exponents. Complete bipartite graph with constant weights
 saturates defect exactly: edge BV equals |L-R|, signed imbalance. Existing bounded one/two/four
