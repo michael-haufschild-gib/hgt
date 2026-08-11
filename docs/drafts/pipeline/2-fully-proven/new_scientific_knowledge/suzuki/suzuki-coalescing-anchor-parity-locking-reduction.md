@@ -1,7 +1,7 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`, `SR-89`, `SR-90`, `SR-91`, `SR-92`, `SR-93`, `SR-94`, `SR-95`, `SR-96`, `SR-97`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`, `SR-89`, `SR-90`, `SR-91`, `SR-92`, `SR-93`, `SR-94`, `SR-95`, `SR-96`, `SR-97`, `SR-98`, `SR-99`, `SR-100`, `SR-101`, `SR-102`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
@@ -13,7 +13,7 @@
   data
 - **Computation used:** no
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
-  `[LEAN READ-ONLY AUDITED]`
+  `[LEAN-PROVED SR-99 SCHUR + SR-100 CORRELATION CORES] [LEAN READ-ONLY AUDITED ELSEWHERE]`
   `[CANDIDATE NEW SUZUKI-SPECIFIC SYNTHESIS] [EXTERNAL PRIORITY UNVERIFIED]`
   `[NOT FULL XI IDENTIFICATION] [NOT RH]`
 
@@ -5565,7 +5565,495 @@ low-density skeleton.  A valid no-go must give a joint moving-scale lower bound 
 at the target schedule, or control the equivalent Schur correction in `(373)`.  Pointwise
 completeness proves no such bound and prevents any qualitative high-tail exclusion.
 
-### 14.36 Conjecture loop and novelty correction
+### 14.36 Tail completeness has an exact coefficient price
+
+Theorem AR is qualitative and its coefficient norm is uncontrolled.  The literal source tail
+turns that omission into a sharp moving-scale obstruction.
+
+#### Theorem AS — coefficient-penalized tail barrier
+
+Assume RH.  There is an absolute source constant `C_0` such that, for every sufficiently large
+`a,T`, every `r>0`, and every finitely supported `c` with support in `|gamma|>T`,
+
+```text
+||h_(o,a)-S_a^*c||_2<1/4
+ => ||c||_2^2>=C_0^(-1) T/log(T+2).                    (401)
+```
+
+Consequently
+
+```text
+J_(a,r)(c)<1/16
+ => rT/log(T+2)<=C_0.                                  (402)
+```
+
+In particular, at the source-tail cutoff used in Theorem AO,
+
+```text
+T=r^(-4),
+```
+
+no tail-supported vector can satisfy the target certificate `(382)` for all sufficiently small
+`r`:
+
+```text
+inf_(supp c subset {|gamma|>r^(-4)}) J_(a,r)(c)>1/16. (403)
+```
+
+Thus the high block cannot create the target leverage by reconstructing the odd source on its own.
+Its only surviving role at cutoff `(372)` is the genuinely coupled self-energy
+`B D^(-1)B^*` acting on low coordinates.
+
+#### Proof
+
+Let `u_H` be the source analysis vector restricted to `|gamma|>T`.  Equations `(310)` and `(313)`
+give, uniformly in large `a`,
+
+```text
+||u_H||_2^2<=C_1 log(T+2)/T.                           (404)
+```
+
+Put `p=S_a^*c`.  If the approximation error is below `1/4`, then
+
+```text
+|<h_(o,a),p>|
+ >=1-||h_(o,a)-p||_2>3/4.
+```
+
+Since `c` is tail supported,
+
+```text
+<h_(o,a),p>=<u_H,c>.
+```
+
+Cauchy--Schwarz and `(404)` yield
+
+```text
+||c||_2^2>9/[16||u_H||_2^2]
+ >=[9/(16C_1)]T/log(T+2),
+```
+
+which proves `(401)`.  The ridge penalty `r||c||^2` proves `(402)`.  At `T=r^(-4)`, its lower
+bound is a constant times `r^(-3)/log(r^(-1)+2)`, which diverges; this proves `(403)`.
+
+Cauchy--Schwarz and the zero-counting tail estimate are classical.  Candidate-new content is the
+exact reconciliation of Theorems AO and AR at the Suzuki target scale: the high synthesis tail is
+dense at every frozen aperture, but its coefficient price is at least `T/log T`, so the ridge mass
+blocks pure tail reconstruction whenever `rT/log T` diverges.  This is the first quantitative
+moving-scale theorem that remains valid without internal zero-spacing information.
+
+The open core is now narrower than `(377)` alone suggested.  At `T=r^(-4)`, order-one odd leverage
+must be carried by low coordinates after high-block renormalization:
+
+```text
+<u_L-BD^(-1)u_H,
+ (L-BD^(-1)B^*)^(-1)(u_L-BD^(-1)u_H)>77/81-o(1),      (405)
+```
+
+while neither the direct high inverse term nor any high-only ridge certificate contributes.  A
+no-go must therefore control source-aligned low/high cancellation in the Schur self-energy; plain
+tail completeness, tail smallness, and pure tail approximation are all settled.
+
+### 14.37 The last mechanism splits into low-only leverage or quantified self-energy gain
+
+There is a complementary block elimination which measures exactly how much the high block improves
+the best low-only certificate.  With the blocks from `(373)`, put
+
+```text
+z_L=L^(-1)u_L,
+e_H=u_H-B^*z_L,
+Omega=D-B^*L^(-1)B.                                   (406)
+```
+
+Here `z_L` is the low-only ridge minimizer and `e_H` is the high-coordinate analysis residual it
+leaves behind.
+
+#### Theorem AT — low-only/coupled-self-energy dichotomy
+
+Under the hypotheses and cutoff `T=r^(-4)` of Theorem AO, define
+
+```text
+ell_L=<u_L,L^(-1)u_L>,
+chi_H=<e_H,Omega^(-1)e_H>.                             (407)
+```
+
+Then the full odd leverage and the low-only ridge defect satisfy exactly
+
+```text
+<u,(K+rI)^(-1)u>=ell_L+chi_H,
+x_L:=inf_(supp c subset low)J_(a,r)(c)=1-ell_L,
+chi_H=x_L-x_(o,a)(r).                                  (408)
+```
+
+Every sufficiently large member of a complete negative family obeys one of the following two
+alternatives:
+
+1. **Growing low-only packet:**
+
+   ```text
+   ell_L>7/8,
+   x_L<1/8,                                            (409)
+   ```
+
+   and the finite low minimizer `z_L` has at least `c sqrt(a)` nonzero ordinate coefficients.
+
+2. **Coupled high-block gain:**
+
+   ```text
+   chi_H>1/16,
+   ||e_H||_2^2>r/16,
+   ||B^*L^(-1)u_L||_2^2>r/64                          (410)
+   ```
+
+   for all sufficiently large indices.
+
+The second branch is not autonomous tail reconstruction: Theorem AS excludes that.  It is an
+order-one improvement generated by the high analysis leakage of the low-only optimizer.
+
+#### Proof
+
+Eliminate the low block instead of the high block.  The standard complementary Schur inverse gives
+the first identity in `(408)` with `Omega` from `(406)`.  Completing the square in the low-only
+problem gives the second; subtraction gives the third.
+
+The target bound `x_o<1/16` makes the full leverage larger than `15/16`.  Therefore
+
+```text
+ell_L+chi_H>15/16.
+```
+
+If `ell_L>7/8`, then `(409)` holds.  The proof of Theorem AP applies with low synthesis only and
+ridge objective below `1/8`: choose the fixed endpoint strip slightly wider, replace the residual
+bound `1/4` by `1/sqrt(8)`, and obtain the same `Omega(sqrt(a))` Nikolskii lower bound.
+
+Otherwise `ell_L<=7/8`, so `chi_H>1/16`.  Since `K+rI>=rI`, the variational characterization of
+the Schur complement gives `Omega>=rI`.  Hence
+
+```text
+chi_H<=||e_H||_2^2/r,
+```
+
+which proves the middle inequality in `(410)`.  Equation `(374)` gives `||u_H||=o(sqrt(r))`.
+The definition `e_H=u_H-B^*L^(-1)u_L` and the reverse triangle inequality then give
+
+```text
+||B^*L^(-1)u_L||>sqrt(r)/8
+```
+
+eventually, proving the last inequality.
+
+Complementary Schur inversion and positivity of Schur complements are classical and are not new.
+The exact low-first solve, inverse quadratic split, nonnegative gain, defect-drop identity, and
+`15/16` threshold dichotomy are now proved without arithmetic axioms in
+`HTGeometry/ComplementaryFeshbachImprovement.lean`; the older
+`SuzukiExteriorFeshbachPruning` module owns the opposite elimination for a prime-adjacency seam.
+Candidate-new content is restricted to the literal zero-sampling source placement, the exact
+improvement identity in `(408)`, its target constants, and the resulting exhaustive mechanism
+split `(409)--(410)` after autonomous tail reconstruction has been removed.
+
+This is the current hard frontier.  A Route-G no-go must exclude both a low-only ridge packet with
+at least square-root active complexity and a coupled branch in which the low optimizer leaks at
+least order `sqrt(r)` into the high analysis block and recovers more than `1/16` of ridge error
+through `Omega^(-1)`.  Zero counting, direct source-tail bounds, and generic Feshbach positivity do
+not exclude either branch.
+
+### 14.38 Every slow certificate has a source-bearing core and a source-orthogonal cloud
+
+Theorem AT separates low-only reconstruction from high-assisted improvement at the Schur cutoff.
+There is a second, cutoff-flexible separation which does not use block inversion.  It distinguishes
+the coordinates which carry correlation with the literal source from those needed only to shape
+the synthesized function.
+
+For a finitely supported odd certificate `c`, let
+
+```text
+A(c;H)={gamma in supp c:|gamma|<=H},
+c_<=H=1_(|gamma|<=H)c,
+c_>H=c-c_<=H.                                         (411)
+```
+
+#### Theorem AU — source-bearing-core/shaping-cloud law
+
+Assume RH and let `a_j->infinity`, `r_j->0` be a complete negative Xi-target schedule.  Let
+`H_j->infinity` satisfy
+
+```text
+r_j H_j/log(H_j+2)->infinity.                          (412)
+```
+
+For every finite certificate `c_j` with `J_(a_j,r_j)(c_j)<1/16`, one has
+
+```text
+Re<1_(|gamma|<=H_j)u_(o,a_j),c_(j,<=H_j)> >3/4-o(1),
+
+sum_(gamma in A(c_j;H_j)) m_gamma/(1+gamma^2)
+ >=c_0 r_j                                              (413)
+```
+
+for an absolute `c_0>0` and all sufficiently large `j`.  Thus the coordinates below `H_j`
+carry asymptotically all correlation required by the target and contain a definite
+inverse-square source weight at the ridge scale.
+
+Every such certificate still has at least `c_*sqrt(a_j)` active ordinates by Theorem AP.  Since
+zero counting gives
+
+```text
+#{gamma:|gamma|<=H}=O(H log(H+2)),                     (414)
+```
+
+the additional condition `H_j log(H_j+2)=o(sqrt(a_j))` forces at least
+`c_**sqrt(a_j)` active ordinates above `H_j`.  Those high ordinates carry only `o(1)` direct
+source correlation.  They form a genuinely source-orthogonal shaping/cancellation cloud around a
+source-bearing low core.
+
+A canonical admissible choice is
+
+```text
+H(r)=r^(-1) log(r^(-1)+2)^3.                           (415)
+```
+
+Consequently, if
+
+```text
+r_j^(-1)log(r_j^(-1)+2)^4=o(sqrt(a_j)),
+```
+
+every target certificate has the core/cloud architecture above.  Equivalently, a certificate
+without an order-`sqrt(a)` source-orthogonal cloud forces
+`r_j=O(log(r_j^(-1)+2)^4/sqrt(a_j))` along a subsequence.  This is a mechanism dichotomy, not an
+unconditional explicit schedule rate.
+
+#### Proof
+
+Write `h=h_(o,a_j)`, `p=S_(a_j)^*c_j`, and `u=S_(a_j)h`.  The objective bound gives
+
+```text
+||h-p||<1/4,
+||c_j||<1/(4sqrt(r_j)),
+Re<h,p>>3/4.                                           (416)
+```
+
+The uniform source tail `(310)` and `(313)` give
+
+```text
+||u_>H_j||^2<=C log(H_j+2)/H_j.
+```
+
+Hence Cauchy--Schwarz and `(412)` imply
+
+```text
+|<u_>H_j,c_(j,>H_j)>|
+ <=[C log(H_j+2)/(16r_jH_j)]^(1/2)=o(1).              (417)
+```
+
+Subtracting `(417)` from the last inequality in `(416)` proves the first line of `(413)`.  Delete
+zero coefficients inside `A(c_j;H_j)`.  Another Cauchy--Schwarz application and the coefficient
+bound in `(416)` give
+
+```text
+||1_A u||>(3-o(1))sqrt(r_j).
+```
+
+The coordinate estimate `(310)` therefore implies the second line of `(413)`, after decreasing
+an absolute constant.  Theorem AP supplies the total `c_*sqrt(a_j)` support floor.  Subtracting
+the counting bound `(414)` proves the high-cloud conclusion.  For `(415)`, both claims follow from
+`log H(r)=Theta(log(r^(-1)+2))`.
+
+The source-tail estimate, Cauchy--Schwarz, and zero counting are classical.  Candidate-new content
+is their exact Suzuki ridge synthesis: high coordinates cannot buy target response through direct
+source correlation, yet in the slow-shift regime almost all active complexity must live there.
+Thus the surviving high mechanism is now localized as source-orthogonal shaping/cancellation,
+not merely called a Schur self-energy.  This still does not close Route G: no proved estimate
+prices cancellation of the low synthesis by that cloud in the common sinc-Gram norm.  The
+unit-residual correlation bound, split-correlation localization, and core analysis-norm floor are
+Lean-proved without arithmetic axioms in `HTGeometry/RidgeSourceCorrelationLocalization.lean`;
+the reciprocal-square Xi tail and moving zero-count application remain paper-level.
+
+### 14.39 High assistance forces a sharp normalized cross-block coherence
+
+Theorems AT--AU localize the surviving high block but do not yet measure how strongly it must
+couple to the low block.  That strength has a canonical scale-free coordinate.  For the blocks in
+`(373)`, define
+
+```text
+rho_j=sup_(x ne 0,y ne 0)
+ |<B_j y,x>|/
+ [<L_jx,x>^(1/2)<D_jy,y>^(1/2)] in [0,1].             (418)
+```
+
+This is the regularized canonical correlation between low and high synthesis coordinates.  Block
+positivity gives `rho_j<=1`; no internal zero gap enters its definition.
+
+#### Theorem AV — sharp cross-coherence barrier
+
+Retain the notation of Theorem AT and put
+
+```text
+tau_H=<u_H,D^(-1)u_H>,
+ell_L=<u_L,L^(-1)u_L>,
+chi_H=<e_H,Omega^(-1)e_H>.                             (419)
+```
+
+Whenever `rho_j<1`, one has the exact envelope
+
+```text
+chi_H<=[sqrt(tau_H)+rho_j sqrt(ell_L)]^2/(1-rho_j^2). (420)
+```
+
+Consequently, along every cofinal high-assisted subsequence from Theorem AT,
+
+```text
+ell_L<=7/8,
+chi_H>1/16,
+tau_H->0
+
+ => liminf rho_j^2>=1/15.                              (421)
+```
+
+The constant is sharp for the information used:
+
+```text
+[(1/15)(7/8)]/[1-1/15]=1/16.                          (422)
+```
+
+Thus every complete negative family has the following subsequential mechanism classification:
+either low-only target packets occur cofinally, or every cofinal high-assisted branch has
+regularized low/high coherence at least `1/sqrt(15)` asymptotically.
+
+#### Proof
+
+Let `z=L^(-1)u_L` and, for a high vector `y`, put
+
+```text
+b(y)=<D y,y>^(1/2).
+```
+
+The definition `(418)` and `e_H=u_H-B^*z` give
+
+```text
+|<u_H,y>|<=sqrt(tau_H)b(y),
+|<B^*z,y>|<=rho_j sqrt(ell_L)b(y).                     (423)
+```
+
+The first line is Cauchy--Schwarz in the `D` metric.  To control the complementary Schur form,
+apply `(418)` with `x=L^(-1)By`.  Since
+
+```text
+<B^*L^(-1)By,y>=<Lx,x>,
+```
+
+one obtains
+
+```text
+<Omega y,y>
+ =<Dy,y>-<B^*L^(-1)By,y>
+ >=(1-rho_j^2)b(y)^2.                                 (424)
+```
+
+The inverse variational formula now yields
+
+```text
+chi_H
+ =sup_y [2Re<e_H,y>-<Omega y,y>]
+ <=sup_(b>=0){2[sqrt(tau_H)+rho_j sqrt(ell_L)]b
+               -(1-rho_j^2)b^2},
+```
+
+whose scalar maximum is `(420)`.  If `(421)` failed, some cofinal high-assisted subsequence would
+have `rho_j^2<=1/15-delta`.  Using `tau_H->0` and `ell_L<=7/8` in `(420)` would give
+`limsup chi_H<1/16` by `(422)`, contradicting Theorem AT.  Indices with `rho_j=1` already satisfy
+the conclusion.
+
+Canonical correlation, Schur coercivity, and the scalar quadratic maximum are classical.
+Candidate-new content is the literal Suzuki zero-sampling placement and the exact target-forced
+threshold `1/15`.  The residual inverse-norm envelope and the exact zero-tail `1/15` numerical
+barrier are Lean-proved in `HTGeometry/ComplementaryFeshbachImprovement.lean`; the normalized
+sinc-Gram coercivity transport and cofinal tail limit remain paper-level.  This moves the live
+negative-side frontier to one falsifiable estimate:
+
+```text
+limsup rho_j^2<1/15                                   (425)
+```
+
+would exclude every high-assisted branch, leaving only the explicitly many-zero low-only branch;
+an actual construction with `liminf rho_j^2>=1/15` would validate the cancellation mechanism.
+Neither inequality is supplied by zero counting, Beurling--Malliavin completeness, or the
+cross-cutoff Hilbert--Schmidt bound `(314)`.
+
+### 14.40 Cross coherence forces a low-Rayleigh packet or exponential shift scale
+
+The unnormalized cross-capacity estimate `(314)` cannot bound `rho` by itself.  Once Theorem AV
+forces `rho` away from zero, however, the same estimate acquires a valid converse interpretation.
+For nonzero low/high coordinate vectors define their regularized block Rayleigh quotients
+
+```text
+R_L(x)=<Lx,x>/||x||^2,
+R_H(y)=<Dy,y>/||y||^2.                                 (426)
+```
+
+#### Theorem AW — cross-coherent near-null packet dichotomy
+
+Along every cofinal high-assisted subsequence, for all sufficiently large indices there exist
+nonzero form-domain vectors `x_j,y_j` such that
+
+```text
+|<B_jy_j,x_j>|
+ >1/4 [<L_jx_j,x_j><D_jy_j,y_j>]^(1/2),
+
+[R_L(x_j)R_H(y_j)]^(1/2)<4C_(T_j),
+min(R_L(x_j),R_H(y_j))=O(log(T_j+2)^2),                (427)
+```
+
+where `T_j=r_j^(-4)` and `C_T^2=O(log(T+2)^4)` is `(314)`.  Consequently every such branch obeys
+the following subsequential alternative:
+
+1. **exponential shift scale:** for some `c>0`,
+
+   ```text
+   r_j<=exp(-c sqrt(a_j));                              (428)
+   ```
+
+2. **relative near-null packet:** one of the two witnesses in `(427)` satisfies
+
+   ```text
+   min(R_L(x_j),R_H(y_j))/a_j->0.                      (429)
+   ```
+
+The alternative is subsequential because the ratio `log(r_j^(-1)+2)^2/a_j` need not have a full
+limit.
+
+#### Proof
+
+Theorem AV gives `liminf rho_j^2>=1/15>1/16`.  Hence eventually `rho_j>1/4`; by the definition of
+the supremum `(418)`, choose a pair with normalized cross ratio above `1/4`.  The cross-capacity
+estimate gives
+
+```text
+|<B_jy_j,x_j>|<=C_(T_j)||x_j||||y_j||.                (430)
+```
+
+Comparing the two inequalities and dividing by the coefficient norms proves the middle line of
+`(427)`.  The minimum of two nonnegative numbers is at most their geometric mean, and `(314)`
+proves the last line.
+
+Now split according to `log(T_j+2)^2/a_j`.  If it tends to zero on a subsequence, `(427)` gives
+`(429)`.  Otherwise pass to a subsequence on which
+
+```text
+a_j<=C log(T_j+2)^2=O(log(r_j^(-1)+2)^2).
+```
+
+Since `r_j->0`, rearrangement yields `(428)` after decreasing `c`.
+
+The geometric-mean step is elementary and the capacity input was already proved in `(314)`.
+Candidate-new content is the corrected Suzuki synthesis: cross capacity does not coerce a growing
+block, but target-forced normalized coherence turns it into an exact near-null-packet/exponential-
+scale alternative.  This repairs the intuition behind retired Theorem AF without restoring its
+false rate.  Neither branch is presently contradictory.  Closing the high-assisted class now
+requires excluding relative near-null packets with the source-bearing/core-cloud geometry, while
+the exponential-scale branch must be attacked by a genuinely quantitative interpolation theorem.
+
+### 14.41 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -5941,6 +6429,60 @@ completeness proves no such bound and prevents any qualitative high-tail exclusi
      approximation after choosing `r` smaller than the certificate's coefficient cost.  It gives
      no uniform coefficient bound, no paired parity ratio, and no control along a prescribed
      moving `r_a`.  That quantitative ill-conditioning is now the exact high-block frontier.
+120. **The coefficient cost of tail completeness is completely opaque -- failed.**  Source
+     correlation and the reciprocal-square analysis tail force every error-`<1/4` tail
+     certificate above height `T` to have coefficient norm squared at least `cT/log T`.
+121. **The high block can produce target leverage by itself at the Schur cutoff -- failed.**  Its
+     ridge cost is at least `crT/log T`; for `T=r^(-4)` this diverges.  Pure high-tail
+     reconstruction is impossible along every small-`r` target schedule.
+122. **Theorem AO therefore reduces to internal low-block near-dependence -- failed as too
+     strong.**  Direct high action is dead, but `B D^(-1)B^*` can still renormalize low coordinates.
+     The sole surviving high mechanism is coupled low/high Schur cancellation, not an autonomous
+     high packet.
+123. **Complementary elimination may leave the surviving high mechanism qualitative -- failed.**
+     The exact identity `chi_H=x_L-x_o` prices it as the improvement over the best low-only ridge
+     certificate.  If low-only leverage is at most `7/8`, the high block must recover more than
+     `1/16` of the source defect.
+124. **That improvement can be attributed to the explicit high source tail -- failed.**  At the
+     cutoff `T=r^(-4)`, `u_H=o(sqrt(r))`; any high-assisted branch instead forces
+     `||B^*L^(-1)u_L||>sqrt(r)/8`.  The effect is leakage of the low optimizer through the common
+     Gram geometry, not direct high-source correlation.
+125. **Removing autonomous tail reconstruction closes the negative branch -- failed.**  Theorem
+     AT leaves an exhaustive genuine alternative: a low-only packet with at least order
+     `sqrt(a)` active ordinates, or an order-one high-assisted reduction of its residual.  Neither
+     branch is excluded by known zero counts, source-tail decay, or generic Schur positivity.
+126. **The high-assisted cloud may still carry the source directly -- failed.**  Ridge coefficient
+     control and the reciprocal-square source tail show that above every cutoff satisfying
+     `rH/log H->infinity`, its total direct source correlation is `o(1)`.
+127. **Source-correlation localization makes the remaining high block dispensable -- failed.**
+     Theorem AP still forces `Omega(sqrt(a))` active ordinates.  If the source-bearing core contains
+     `o(sqrt(a))` available zeros, an order-`sqrt(a)` source-orthogonal cloud remains necessary to
+     shape or cancel its synthesis.
+128. **That core/cloud split yields a negative-shift no-go -- failed at the actual frontier.**  No
+     unconditional theorem prices cancellation between the low source-bearing synthesis and the
+     high source-orthogonal Xi cloud in the finite-aperture sinc-Gram norm.  This is now the precise
+     quantitative completeness problem; Beurling--Malliavin completeness radius alone does not
+     control one-vector Tikhonov cost.
+129. **The cancellation cloud may interact through arbitrarily weak normalized coupling --
+     failed.**  The complementary variational envelope `(420)` shows that an order-one high gain
+     with vanishing direct tail requires scale-free low/high canonical correlation.
+130. **Any positive cross coherence can sustain the target -- failed quantitatively.**  On a
+     high-assisted subsequence, the constants `ell_L<=7/8`, `chi_H>1/16`, and `tau_H->0` force
+     `liminf rho^2>=1/15`; the threshold is exact for this information.
+131. **The cross-capacity bound `(314)` decides that threshold -- failed.**  It controls an
+     unnormalized Hilbert--Schmidt numerator by `O(log^4 T)` but supplies no matching lower bounds
+     for the two block energies in `(418)`.  Internal near-dependence can keep normalized coherence
+     order one.  Proving `rho^2<1/15` requires new source-aligned sinc-Gram stability.
+132. **The cross-capacity estimate is therefore useless after normalization -- failed.**  Once
+     `rho>1/4`, any witnessing pair must have geometric-mean regularized Rayleigh quotient below
+     `4C_T=O(log^2 T)`.
+133. **This recovers the retired inverse-aperture schedule bound -- failed sharply.**  The valid
+     conclusion is a disjunction, not coercivity: either `r` is exponentially small in
+     `sqrt(a)`, or a low/high packet has Gram energy `o(a)`.  The latter cannot be discarded
+     without internal small-singular-value information.
+134. **A low-Rayleigh packet alone kills high assistance -- failed.**  Such packets are precisely
+     what hereditary completeness and uncontrolled Xi gaps leave available.  A no-go must couple
+     the packet to the literal source-bearing core, not merely prove its existence.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -5965,6 +6507,9 @@ ultraviolet multiplicity and recurrent parity clocks, marginal-compatibility wal
 Kronecker classification of parity collapse, and source-aligned Schur-leverage certificate
 `(224)--(379)`, followed by the square-root active-zero law `(380)--(388)` and the canonical
 relative-ridge reduction `(389)--(396)`, with hereditary high-tail completeness `(397)--(400)`.
+Its nonuniform coefficient price, pure-tail moving-scale barrier, and complementary low/high
+improvement split, source-bearing-core/shaping-cloud law, and sharp cross-coherence barrier are
+`(401)--(425)`; the corrected cross-capacity/near-null alternative is `(426)--(430)`.
 The internal novelty audit found a direct parent for the compact-group parts of Theorems AL and
 AN: the already-formalized `suzuki-screw-compact-hull-parity-law.md` proves the universal relation
 hull, cofinal recurrence, Haar law, and homogeneous all-minus-one parity criterion.  Accordingly
@@ -5974,7 +6519,12 @@ inhomogeneous `arctan(gamma)` relation criterion and quantitative floor `(368)--
 exact IR/UV marginal compatibility construction `(362)--(366)`, together with the corrected
 source-aligned Schur-leverage reduction `(372)--(379)` and target-forced active-zero/height law
 `(380)--(388)`, together with the fixed-aperture distinct-zero completeness/canonical ridge curve
-`(389)--(396)` and its hereditary tail consequence `(397)--(400)`.  The pure-frequency Nikolskii inequality used for the former and the
+`(389)--(396)`, its hereditary tail consequence `(397)--(400)`, and the coefficient-penalized
+tail barrier `(401)--(405)`, the exact low-only/coupled-self-energy dichotomy `(406)--(410)`, and
+the source-correlation core/cloud separation `(411)--(417)`.
+The sharp normalized cross-block coherence threshold is `(418)--(425)`.
+The resulting relative near-null-packet/exponential-scale alternative is `(426)--(430)`.
+The pure-frequency Nikolskii inequality used for the former and the
 Paley--Wiener/Jensen uniqueness mechanism used for the latter are classical and are not claimed
 new.  Targeted arXiv searches found
 Suzuki's finite-interval operator conjecture and an unrelated Ferrar-type probability literature

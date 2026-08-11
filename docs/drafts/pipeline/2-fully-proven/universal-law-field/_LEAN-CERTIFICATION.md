@@ -1437,3 +1437,15 @@ Direct foreground elaboration and the 8,699-job leaf build pass. The module is w
 `HTGeometry.UniversalLawField`; final foreground umbrella build completes 11,829 jobs. Formal lint
 passes. Scratch axiom prints for eight capstones report only `propext`, `Classical.choice`, and
 `Quot.sound`. No RH premise or route-specific zero specialization occurs.
+
+## Session 2026-08-11 addition (Constitutive Passive-Cycle Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CDM-1 | Exact heterogeneous defect composition, passivity equivalence, passive two- and three-cycle rigidity, strict-neutral selection, and positive-defect impossibility | `HTGeometry.ConstitutivePassiveCycleMechanics` |
+
+Direct foreground elaboration and the 1,666-job leaf build pass.  The module is wired into
+`HTGeometry.UniversalLawField`; final foreground umbrella build completes 11,830 jobs.  Scratch
+axiom prints for the headline theorems report only `propext`, `Classical.choice`, and `Quot.sound`.
+Lean certifies the abstract rigidity mechanism; it does not construct the literal source-generated
+passive compression/reconstruction required for RH selection.

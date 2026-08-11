@@ -2,7 +2,7 @@
 
 - **ID:** `shifted-hankel-square-half-density-boundary-escape`
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) / EXACT CROSS-ROUTE CLASSIFIER / NOT RH PROOF
+- **Type:** THEOREM (paper + Lean 4) / EXACT CROSS-ROUTE CLASSIFIER / NOT RH PROOF
 - **Source:** `rh-current-frontier-map.md`; shifted reciprocal Hankel, Route-L half-density,
   Route-U positive-axis boundary, source-horizontal polar properness
 - **Statement:** Möbius mass-shift preserves the multiplicity-exact Xi trace term only on the
@@ -20,7 +20,7 @@ the exact covariant carrier and identify the source theorem that would have to c
 - [x] 0 → 1 in-progress: source-pure question, hostile failures, exact survivor, literature audit
 - [x] dependency-closed paper proof below
 - [ ] 1 → 2 fully-proven: external novelty classification and standalone audit
-- [ ] 2 → 3 formalized: Lean module, targeted build, axiom audit
+- [x] Lean formalization complete; pipeline remains Stage 1 until external novelty gate closes
 - [ ] RH
 
 ## Heavy conjecture loop
@@ -146,7 +146,7 @@ spectrum.
   rescaled square-half-density boundary charge is tight/admitted in both reflection orientations.
   Any theorem controlling only polynomial coefficients, ambient `L2`, finite moments, or one
   orientation misses the pole and cannot close RH.
-- **Status:** dependency-closed paper theorem; Lean formalization in progress. RH remains open.
+- **Status:** dependency-closed paper theorem and unconditional Lean formalization. RH remains open.
 
 ## External boundary
 
@@ -157,7 +157,32 @@ Burnol's Sonine/co-Poisson work supplies classical spectral-evaluation context. 
 states the Xi shifted-reciprocal square-half-density covariance (1)--(7) or its cross-route boundary
 classification. Novelty claim is restricted to that corpus-specific synthesis.
 
+## Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/XiShiftedTraceHalfDensityBoundaryEscape.lean`
+
+Main declarations:
+
+- `mobiusSquareHalfDensityTransport_add`;
+- `reciprocalMassShift_mul_squareHalfDensityTransport`;
+- `xiShiftedSquareHalfDensityTraceTerm_eq_zeroShift`;
+- `xiShiftedSquareHalfDensityTraceHankel_eq_zeroShift`;
+- `xiShifted_denominatorClearedPolynomialTrace_eq_oddCocycle`;
+- `mobiusSquareHalfDensityTransport_evenMonomial`.
+
+Targeted verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/XiShiftedTraceHalfDensityBoundaryEscape.lean
+lake build GaloisForLFunctions.RHTower.XiShiftedTraceHalfDensityBoundaryEscape
+```
+
+Both passed. `#print axioms` for the five capstones reports only `propext`, `Classical.choice`, and
+`Quot.sound`. No umbrella build was run. RHTower import is wired.
+
 ## Log
 
 - 2026-08-11 — C0, C1, C2 falsified against exact corpus theorems; C3 paper-proved; boundary-pole
   survivor frozen for Lean formalization.
+- 2026-08-11 — C3 formalized unconditionally; leaf check, target build, axiom audit, and umbrella
+  wiring completed without an umbrella build.

@@ -48,7 +48,7 @@ The proposed field laws are:
 2. **Serial conservation.** $J_{g\circ f}(x)=J_f(x)+J_g(fx)$.
 3. **Dilation reconstruction.** A terminal state plus the ordered defect ledger reconstructs the
    initial work exactly.
-4. **Split-cycle rigidity.** If legal passive reconstruction (r) satisfies (r(fx)=x), then
+4. **Split-cycle rigidity.** If legal passive reconstruction $r$ satisfies $r(fx)=x$, then
    $J_f(x)=J_r(fx)=0$.
 5. **Conservative polarization.** Recurrent/open history with zero total defect belongs to a
    marked conservative lift, not to the positive defect current.

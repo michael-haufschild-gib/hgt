@@ -230,3 +230,34 @@ Recorded 2026-08-11 after hostile check.
   likely be improved to pure `M`-terms with weights, tightening toward the exact negative core
   `−4Σ‖u‖²(Im u)²`; (ii) the same control at general Hankel order via the polynomial trace;
   (iii) the heat-chart mirror.
+- 2026-08-11 — **the quantitative Hamburger bound at EVERY order [LEAN-PROVED].**
+  `RHTower/XiResolventTraceMassControl.lean` (wired, umbrella green 18940 jobs, all 6 theorems
+  axiom-clean).  The 45° cone transfers to the resolvent coordinates themselves
+  (`abs_im_lt_re_xiResolventPoint`: |Im u_q| < Re u_q — inversion preserves the cone); real
+  polynomials are imaginary-Lipschitz on the unit disc
+  (`abs_im_evalRealPolynomial_le`: |Im P(u)| ≤ L_p·|Im u| with L_p = Σ|coeff k|·k, via
+  conj-reflection + the unit-disc power-difference bound `norm_pow_sub_pow_le_of_norm_le_one`);
+  the cone gives the pointwise law `re_mul_sq_ge_of_cone`: Re(u·w²) ≥ −2(Im w)² for cone-u.
+  Chained: **`xiResolventTrace_re_ge_neg_mass`:
+  Re(xiResolventTrace X p) ≥ −2·L_p²·M for EVERY real polynomial p and every shift X ≥ 0**,
+  and `xiResolventHankelForm_re_ge_neg_mass` for every Hankel order and coefficient vector —
+  where M = Σ(Im u_q)² is the single ℓ² imaginary mass with M = 0 ⟺ RH.  This subsumes the
+  step-24 Turán control (purely quadratic mass, no S₁ terms) and quantifies the entire Hankel
+  criterion: **the failure of ANY instance of the RH-equivalent positivity is explicitly
+  bounded by one deviation mass.**  Equivalently: RH is within `2L²·M` of being a theorem at
+  every order simultaneously — the number M is the exact, unique, order-uniform obstruction.
+- 2026-08-11 — **quadratic mass decay [LEAN-PROVED].**  `RHTower/XiResolventMassDecay.lean`
+  (wired, umbrella green 18944 jobs, all 3 theorems axiom-clean).
+  `im_sq_xiResolventPoint_le` — termwise `(Im u_q)² ≤ 2/(‖α_q‖²(X+1)²)` (height gap + strip:
+  numerator 4γ²b² ≤ γ², denominator (γ²−b²+X)⁴ ≥ (7/8)⁴γ⁴(X+1)², rational constants close at
+  2·(7/8)⁴ ≥ 9/8);  `xiResolventImSqMass_le` — **M(X) ≤ 2H/(X+1)²** with H the genus-one
+  Hadamard sum;  `xiResolventTrace_re_ge_neg_div` — **every polynomial trace obeys the
+  explicit decaying floor `Re(trace X p) ≥ −4L_p²H/(X+1)²`**.  The complete quantitative
+  picture of the Hankel criterion is now: at every shift X ≥ 0 RH ⟺ all forms nonneg (iff);
+  every form's failure ≤ 2L²M(X) (order-uniform control); and M(X) ≤ 2H/(X+1)² (decay) — so
+  the RH-equivalent positivity holds asymptotically in the shift with explicit rate, uniformly
+  over each polynomial, and the one number standing in the way at finite shift is M(X), with
+  M = 0 ⟺ RH.  Route U's far-right chamber now has a formal trace-level quantitative
+  counterpart with explicit constants.  Lean traps this brick: `div_le_div_iff` renamed
+  `div_le_div_iff₀`; prefer `pow_le_pow_left₀` chains over nested nlinarith on fourth powers
+  (heartbeat blowups); `set`-folded goals may need `rw [← hdef]` before closing.

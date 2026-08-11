@@ -368,6 +368,32 @@ theorem exists_criticalZero_residualLowerHardyKernel_radial_residue
     exact heq.mono fun t ht => by rw [ht]; ring
   simpa only [zero_mul, sub_zero, s0] using hresidue.congr' hcongr
 
+/-- The survivor is a genuine boundary blow-up: the residual Hardy norm diverges along the same
+radial approach to a critical zero. -/
+theorem exists_criticalZero_residualLowerHardyKernel_radial_norm_atTop
+    (hsource : AnalyticOnNhd ℂ xiHeatCassiniWoldResidualLowerHardyKernel
+      {z : ℂ | z.im < 1 / 2})
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    ∃ rho : ℂ, riemannZeta rho = 0 ∧ rho.re = 1 / 2 ∧
+      Tendsto (fun t : ℝ =>
+        ‖xiHeatCassiniWoldResidualLowerHardyKernel
+          (-Complex.I * ((rho - 1) + (t : ℂ)))‖)
+        (𝓝[>] (0 : ℝ)) atTop := by
+  obtain ⟨rho, m, hzeta, hhalf, hm, hresidue⟩ :=
+    exists_criticalZero_residualLowerHardyKernel_radial_residue hsource hcritical
+  refine ⟨rho, hzeta, hhalf, ?_⟩
+  have hmpos : 0 < ‖-(m : ℂ)‖ := by
+    rw [norm_neg, Complex.norm_natCast]
+    exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hm)
+  have hinv : Tendsto (fun t : ℝ => t⁻¹) (𝓝[>] (0 : ℝ)) atTop :=
+    tendsto_inv_nhdsGT_zero
+  have hprod := Filter.Tendsto.atTop_mul_pos hmpos hinv hresidue.norm
+  refine hprod.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  change 0 < t at ht
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos ht]
+  field_simp [ht.ne']
+
 /-- Critical residual absolute convergence and critical mesh energy cannot coexist. -/
 theorem not_half_residualUpperVariation_and_primeGapCriticalEnergy :
     ¬ (Summable (xiHeatCassiniWoldResidualUpperVariationAtom (1 / 2)) ∧

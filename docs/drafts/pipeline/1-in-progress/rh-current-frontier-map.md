@@ -1306,6 +1306,50 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
   `q` as coordinate puts every negative shift on one canonical curve `Phi_a(q)`; the whole
   first-defect question is whether `Phi_a(q)/q` can approach `R_Xi` for
   `q<=1/R_Xi+o(1)`.  Density and completeness contain no answer to this relative-decay question;
+- completeness is hereditary under every bounded-density deletion.  In particular, removing all
+  ordinates below an arbitrary cutoff leaves a tail system dense in both parity subspaces at each
+  fixed aperture.  Tail-only finite sums can approximate either boundary source arbitrarily well
+  once `r` is chosen below their coefficient cost.  Thus the high Schur block is a genuine
+  ill-conditioned survivor despite its vanishing direct analysis-source mass; only a uniform
+  moving-scale coefficient bound can eliminate it;
+- that coefficient price is now explicit.  Any odd approximation supported above height `T` with
+  error below `1/4` needs coefficient norm squared at least `cT/log T`, hence ridge cost at least
+  `crT/log T`.  At the gap-free cutoff `T=r^(-4)`, autonomous high-tail reconstruction is
+  impossible.  The high block can survive only through coupled Schur self-energy
+  `BD^(-1)B^*` acting on low coordinates;
+- complementary elimination now prices that last mechanism exactly.  If `x_L` is the best
+  low-only defect and `x_o` the full defect, then the high gain is `chi_H=x_L-x_o`.  Every target
+  family has either `x_L<1/8`, with at least `c sqrt(a)` active low ordinates, or
+  `chi_H>1/16`, with residual analysis norm above `sqrt(r)/4` and low-optimizer leakage
+  `||B^*L^(-1)u_L||>sqrt(r)/8`.  Thus direct high source and pure high reconstruction are both
+  dead; growing low leverage and high-assisted recovery of its residual are the two exact live
+  branches.  Generic complementary elimination, inverse quadratic splitting, gain positivity,
+  defect-drop, and the threshold dichotomy are Lean-proved in
+  `HTGeometry/ComplementaryFeshbachImprovement.lean`; literal zero-sampling asymptotics are not;
+- the high-assisted branch has a sharper core/cloud structure.  For every cutoff with
+  `rH/log H->infinity`, ridge coefficient control and reciprocal-square source decay make all
+  direct source correlation above `H` vanish.  Active coordinates below `H` carry correlation
+  `>3/4-o(1)` and inverse-square source weight `>=c r`, while Nikolskii still requires
+  `c sqrt(a)` total active ordinates.  If `H log H=o(sqrt(a))`, an order-`sqrt(a)`
+  source-orthogonal cloud is therefore forced above the source-bearing core.  Remaining theorem
+  must price its cancellation/shaping action in the common sinc-Gram norm.  Generic residual,
+  correlation-split, and core-norm inequalities are Lean-proved in
+  `HTGeometry/RidgeSourceCorrelationLocalization.lean`; Xi tail/counting transport is not;
+- normalize low/high coupling by block energies as in `(418)`, with canonical correlation `rho`.
+  The high gain obeys
+  `chi_H<=[sqrt(tau_H)+rho sqrt(ell_L)]^2/(1-rho^2)`. Since the direct tail
+  `tau_H->0`, while a high-assisted branch has `ell_L<=7/8` and `chi_H>1/16`, every such branch
+  satisfies `liminf rho^2>=1/15`.  This exact threshold is the first scale-free price on the
+  cancellation cloud.  Proving the literal Xi sinc-Gram coherence stays below `1/15` excludes
+  high assistance; constructing coherence above it validates the mechanism.  Existing
+  Hilbert--Schmidt cross capacity has the wrong normalization and decides neither outcome;
+- once target forcing supplies `rho>1/4`, that same capacity has a valid converse use.  A
+  coherence witness has geometric-mean regularized block Rayleigh quotient below
+  `4C_T=O(log^2 T)`, so one low/high packet has energy `O(log^2 T)`.  At `T=r^(-4)`, every
+  high-assisted branch therefore has a further subsequence with either
+  `r<=exp(-c sqrt(a))` or a relative near-null packet whose Rayleigh quotient is `o(a)`.  This is
+  the corrected remnant of the retracted aperture-rate argument: it is a disjunction, and neither
+  member is currently impossible;
 - the surviving zero-mass geometry is quantitative.  Fixed-mass annihilation makes both normalized
   literal-source spectral laws converge weakly to `delta_0`.  Yet exact target response and
   `R_Xi>81/4` force the odd Stieltjes factor below `4/81`, hence less than `8/81` of odd mass below
@@ -1528,6 +1572,12 @@ At fixed aperture the Xi exponentials are complete, so both individual ridge def
 arbitrarily small.  All schedule freedom is equivalently encoded by the source-defined curve
 `Phi_a(q)`; closing the negative first gate means excluding the relative ratio
 `Phi_a(q)/q->R_Xi`, not excluding approximation in either channel.
+Even every zero tail above a moving finite cutoff is complete when the aperture is frozen.  The
+missing theorem must therefore be uniform in the simultaneous `a,T,r` limit and must charge
+synthesis coefficients or the equivalent Schur self-energy; qualitative tail pruning is false.
+The source tail supplies the autonomous coefficient charge `cT/log T`, which kills pure high
+reconstruction at `T=r^(-4)`.  Remaining object is specifically source-aligned low/high
+cancellation inside the Schur self-energy.
 
 The exact edge/source slack law leaves three operator regimes: `r=1` along a subsequence, a
 nonvanishing overshoot `limsup(r-r_*)>0`, or `r-r_*->0` with both literal exponential-source
@@ -3091,7 +3141,34 @@ polynomial.
     plus critical mesh energy forces existence of a critical zero where the residual Hardy carrier
     itself has exact radial residue `-m`, because mesh and holonomy have zero radial residue. Any
     surviving Route-T closure must retain this signed principal part or use a weaker distributional
-    boundary value.
+    boundary value. The strengthened survivor
+    `exists_criticalZero_residualLowerHardyKernel_radial_norm_atTop` proves that the residual
+    Hardy norm tends to `+infinity` along the same radial approach. Thus failure of closed absolute
+    trace is quantitative boundary blow-up, not merely a missing convergence proof.
+52. Umbrella-reachable and direct-checked `Sieve/HeathBrownSmoothAggregatePerron.lean` removes the
+    sharp-Perron support cascade rather than estimating it. If the compact support of the smooth
+    cutoff lies inside `X<(L+1)^k`, Lean proves pointwise that every coefficient seen by the weight
+    is exactly `Lambda`; coefficients beyond the identity range are killed by the weight. The
+    smoothed von-Mangoldt sum is therefore exactly one vertical Mellin integral of the complete
+    signed aggregate of all literal dyadic Möbius/zeta/log products. No boxwise finite-height
+    truncation error, coefficient tail, or support enlargement remains. Subtracting adjacent
+    smooth prefixes also gives an exact short-window formula supported in `[N,N+2H]`, as the
+    difference of two aggregate Mellin integrals. This retires aggregate truncation optimization
+    as a necessary gate; remaining arithmetic theorem is weighted large-values control of the
+    explicit aggregate.
+53. Umbrella-reachable and direct-checked `Sieve/MaynardAdditiveEnergy.lean` formalizes the exact
+    combinatorial meaning of Maynard's `R*`. For any finite set `S` of large-value integer cells,
+    its additive energy satisfies
+
+    ~~~
+    |S|^2 <= R*(S) <= |S|^3.
+    ~~~
+
+    Both bounds are closed in Lean: diagonal pairs give the lower bound and the fourth cell is
+    uniquely determined by the first three for the upper bound. Hence no cardinality-only argument
+    can improve the cubic `R*` barrier. The required saving must use Dirichlet-polynomial structure,
+    precisely the role of Heath--Brown's `R*` estimate and Maynard's quantized product-length case
+    split.
 
 **Open core.** Prove cofinal cancellation of centered von Mangoldt atoms inside the finite mass
 light cone, preferably through exact joint pairing before norms. In the Wold/Deninger chart, safe
@@ -3101,9 +3178,10 @@ formal. Item 51 retires endpoint absolute residual variation, its two-sided grap
 stronger positive domination that implies it. Live analytic source theorem must instead establish
 signed/coherent radial continuation of the residual-plus-mesh package while preserving the
 critical Wold principal part, or use a distributional/Hardy boundary class that permits those
-poles. On arithmetic side, complete Maynard finite-product assembly is formal through item 49;
-aggregate truncation optimization and the `R/R*` large-values classification remain live routes to
-critical mesh energy but cannot by themselves impose absolute residual boundary trace.
+poles. On arithmetic side, complete Maynard finite-product assembly and smooth aggregate passage
+are formal through item 53. Sharp aggregate truncation optimization is retired by item 52. The
+structured `R/R*` large-values estimate and its product-length classification remain live routes
+to critical mesh energy but cannot by themselves impose absolute residual boundary trace.
 Control at only one small positive residual height excludes only corresponding outer substrip and
 does not prove full RH. Merely
 postulating continuity of that required carrier at every `rho-1` is exactly RH. Equivalently,
@@ -3474,16 +3552,32 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     positive-axis Padé atom of nonvanishing mass even though its ordinary Christoffel weight
     vanishes. This is paper-proved in the current working tree in
     `mass-shifted-hard-edge-gauss-node-jet-residue-law`; no Lean declaration is claimed.
+57. The surviving hard Padé residue now has a literal restricted-Weil source meaning.  If a
+    simple negative hard root is `r=-kappa^2`, cancelled division by `z^2+kappa^2` produces a
+    time-domain vector `eta_r` satisfying the weak source equation
+    `A_sigma^+ eta_r=(gamma_r/F'(r)) cosh(kappa t)`.  After unit-source normalization, its energy
+    is exactly
+    `Cap_sigma(kappa)=gamma_r/F'(r)^2`, hence exactly the limiting positive-axis Padé residue.
+    If `gamma_r>0`, `cosh(kappa t)` is orthogonal to the whole even ground space and
+    `Cap_sigma(kappa)^(-1)` is its finite zero-edge reduced-resolvent response.  If `gamma_r=0`,
+    the terminal descendant is a source-visible ground vector and that response has a pole.
+    Thus Route U's two residue branches are the finite-impedance/ground-pole alternatives of one
+    literal hyperbolic source, not separate Padé pathologies.  This is paper-proved in
+    `mass-shifted-hard-edge-hyperbolic-source-capacity`; no Lean declaration is claimed.
 
 **Open core.** Route U has two irreducible branches. In the degenerate/root-sign branch, items
-55--56 replace unspecified odd descent by a literal Padé spectral-measure statement. Define
+55--57 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
+statement. Define
 `mu_j^+=sum_(u_(j,i)<0) (omega_(j,i)/x_(j,i)) delta_(-u_(j,i))`. Prove
 `mu_j^+(K)->0` on every compact `K` in `(0,infinity)`, or the equivalent source-side vanishing of
 the Poisson boundary atoms. This is weaker than full first-Hausdorff positivity: it permits
 super-apex nodes whose residues collapse or whose hard coordinates escape. It excludes every
 simple negative hard root with `gamma_r>0` by the exact residue limit. If `gamma_r=0`, use the
 resulting parity-doubled terminal radical instead. Full odd-sector operator admission would still
-require liminf control on the complete odd form domain.
+require liminf control on the complete odd form domain.  Equivalently at a simple limiting root,
+exclude a finite nonzero zero-edge response of the literal source `cosh(kappa t)`; forcing a
+ground pole collapses the Padé residue but must then be combined with the explicit degeneracy
+contradiction.  Generic reduced-resolvent positivity does not decide which alternative occurs.
 
 Contact orientation is closed as a mechanism: every first Padé defect gives the same signed first
 nonzero derivative to every hard node, but a positive derivative at a flat face does not make its

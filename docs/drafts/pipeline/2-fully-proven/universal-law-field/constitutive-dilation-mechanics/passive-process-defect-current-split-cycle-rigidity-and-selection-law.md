@@ -6,9 +6,9 @@
 - **Source:** Constitutive Dilation Mechanics field programme
 - **Statement:** Passive process defects compose additively; a passive split cycle has zero defect
   on every leg; any strict source detector therefore selects the neutral formation.
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM FIRST]
+- **Status:** [LEAN-PROVED] [DEPENDENCY-CLOSED] [MECHANISM FIRST]
   [SERIAL CONSERVATION] [SPLIT-CYCLE RIGIDITY] [SELECTION SCHEMA]
-  [RECURRENCE/DISSIPATION SEPARATION] [LEAN TARGET] [NOT RH]
+  [RECURRENCE/DISSIPATION SEPARATION] [NOT RH]
 
 ## 1. Heterogeneous work chart
 
@@ -159,7 +159,7 @@ Under the hypotheses of Theorem 3.1,
 
 #### Proof
 
-Theorem 3.1 gives $\\mathfrak J_q(x)=0$; apply `(PDC.7)`.  ∎
+Theorem 3.1 gives $\mathfrak J_q(x)=0$; apply `(PDC.7)`.  ∎
 
 Equivalently, if every nonneutral source state suffers strict loss under $q$, no nonneutral state
 can belong to a passive split cycle.
@@ -230,7 +230,7 @@ specialization.  This is a producer specification, not a disguised endpoint crit
 
 1. **Expansive decoder.** $q(x)=x/2$, $r(y)=2y$ has $rq=1$ but positive $q$-defect.
    Passivity of both legs is necessary.
-2. **Endpoint norm only.** Equality (|rqx|=\|x\|) without passivity does not localize loss;
+2. **Endpoint norm only.** Equality $\|rqx\|=\|x\|$ without passivity does not localize loss;
    one leg may contract and another expand.
 3. **Zero defect, nonzero memory.** A unitary phase rotation has zero defect and nontrivial
    winding.  The theorem does not erase conservative history.
@@ -248,9 +248,9 @@ and information data processing.  No priority claim is made.  Its field signific
 separation between dissipative defect and conservative memory, and the replacement of another
 endpoint receiver by one constructive source target: passive reconstruction.
 
-## 10. Lean target
+## 10. Lean certification
 
-Formalize in
+Formalized in
 `GaloisForLFunctions.HTGeometry.ConstitutivePassiveCycleMechanics`:
 
 1. pointwise defect and passivity equivalence;
@@ -268,9 +268,12 @@ No theorem may use RH, a target zero-location premise, `sorry`, `admit`, `axiom`
 - [x] dependency-closed paper proof
 - [x] expansive-decoder and conservative-memory boundaries
 - [x] exact serial conservation and strict selection
-- [ ] Lean module direct build
-- [ ] universal-law-field umbrella build and axiom audit
+- [x] Lean module direct build
+- [x] universal-law-field umbrella build and axiom audit
 
 ## Log
 
 - 2026-08-11 — paper proof closed as finite core of Constitutive Dilation Mechanics.
+- 2026-08-11 — Lean module, leaf build, umbrella build, and axiom audit completed.  The formal
+  theorem closes the abstract passive-cycle mechanism only; construction of a literal
+  source-generated passive reconstruction remains the field programme's open core.
