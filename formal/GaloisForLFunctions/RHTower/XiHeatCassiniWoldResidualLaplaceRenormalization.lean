@@ -126,9 +126,12 @@ theorem summable_xiHeatCassiniOrderedHarmonicLaplaceMajor
     Real.log p * p ^ (-(1 + s.re))
   rw [Real.rpow_def_of_pos hp]
   rw [show Real.log p * -(1 + s.re) =
-      -Real.log p + -(s.re * Real.log p) by ring, Real.exp_add,
-    Real.exp_neg, Real.exp_log hp]
-  field_simp
+      -Real.log p + -(s.re * Real.log p) by ring, Real.exp_add]
+  have hexpNegLog : Real.exp (-Real.log p) = 1 / p := by
+    rw [Real.exp_neg, Real.exp_log hp]
+    simp [one_div]
+  rw [hexpNegLog]
+  ring
 
 /-- Depth-one Wold current is absolutely convergent after every positive Laplace shift. -/
 theorem summable_xiHeatCassiniWoldLaplaceAtom
@@ -299,9 +302,17 @@ theorem xiHeatCassiniWoldResidualLowerHardyKernel_negI_mul_eq_renormalizedLaplac
         xiHeatCassiniOrderedPrimeLaplacePhase (N + 1) s) =
       (∑' N : ℕ, xiHeatCassiniWoldLaplaceAtom s (N + 1)) -
         xiHeatCassiniLogMeshLaplaceCurrent s by
-      rw [xiHeatCassiniLogMeshLaplaceCurrent, ← hw.tsum_sub hm]
-      apply tsum_congr
-      exact xiHeatCassiniWoldResidualLaplaceIncrement_eq s]
+      rw [xiHeatCassiniLogMeshLaplaceCurrent]
+      calc
+        (∑' N : ℕ,
+          ((xiHeatCassiniOrderedWoldResidualLogDiscrepancy (N + 1) -
+              xiHeatCassiniOrderedWoldResidualLogDiscrepancy N : ℝ) : ℂ) *
+            xiHeatCassiniOrderedPrimeLaplacePhase (N + 1) s) =
+            ∑' N : ℕ, (xiHeatCassiniWoldLaplaceAtom s (N + 1) -
+              xiHeatCassiniLogMeshLaplaceAtom s N) := by
+                apply tsum_congr
+                exact xiHeatCassiniWoldResidualLaplaceIncrement_eq s
+        _ = _ := hw.tsum_sub hm]
   rw [xiHeatCassiniWoldLaplaceCurrent_eq_head_add_tail hs,
     xiHeatCassiniWoldLaplaceAtom]
   push_cast
@@ -310,14 +321,14 @@ theorem xiHeatCassiniWoldResidualLowerHardyKernel_negI_mul_eq_renormalizedLaplac
   push_cast at hzeroC
   have hE : (xiHeatCassiniOrderedWoldResidualLogDiscrepancy 0 : ℂ) =
       (woldCoeff 1 (nthPrimeSubtype 0) : ℂ) -
-        ((xiMassNthPrimeLogHeight 0 +
-          xiHeatCassiniWoldLogHolonomyConstant : ℝ) : ℂ) := by
+        ((xiMassNthPrimeLogHeight 0 : ℂ) +
+          (xiHeatCassiniWoldLogHolonomyConstant : ℂ)) := by
     calc
       (xiHeatCassiniOrderedWoldResidualLogDiscrepancy 0 : ℂ) =
           (woldCoeff 1 (nthPrimeSubtype 0) : ℂ) +
             ((xiHeatCassiniOrderedWoldResidualLogDiscrepancy 0 : ℂ) -
               (woldCoeff 1 (nthPrimeSubtype 0) : ℂ)) := by ring
-      _ = _ := by rw [hzeroC]; push_cast; ring
+      _ = _ := by rw [hzeroC]; ring
   rw [hE]
   ring
 

@@ -111,6 +111,15 @@ instance : ContinuousSMul ℂ (DeningerCircle P) := by
   rw [(withSeminorms P).withSeminorms_eq]
   exact (seminorms P).moduleFilterBasis.continuousSMul
 
+noncomputable instance : UniformSpace (DeningerCircle P) :=
+  ((seminorms P).addGroupFilterBasis.uniformSpace).replaceTopology rfl
+
+instance : IsUniformAddGroup (DeningerCircle P) :=
+  (seminorms P).addGroupFilterBasis.isUniformAddGroup
+
+instance : FirstCountableTopology (DeningerCircle P) :=
+  (withSeminorms P).firstCountableTopology
+
 end DeningerCircle
 
 /-! ## Both arrows are continuous -/

@@ -26,7 +26,7 @@ In `formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/`, namespac
 4. `PortDouble`, `portForm`, `portOrth`, `augIsotropic`, `augIsotropic_isotropic` — `(RC.2)`: the
    cotangent double with `ω((x,α),(y,β)) = α y - β x` and the isotropic subspace `I₀ ⊕ 0`.
 5. **`portOrth_augIsotropic`** — `(RC.3)`: `(I₀ ⊕ 0)^ω = K₀ ⊕ ℂ ε`.
-6. `portRed`, `hyperbolicForm`, **`portForm_eq_hyperbolicForm`**, **`portRed_surjOn`**,
+6. `portRed`, `hyperbolicForm`, **`portForm_eq_hyperbolicForm_aug`**, **`portRed_surjOn`**,
    **`ker_portRed_inf`** and **`coisotropic_reduction`** — `(RC.4)`: the reduction
    `(x, a ε) ↦ (ε x, a)` maps `I₀^ω` onto `ℂ × ℂ`, its kernel there is exactly `I₀`, and it carries
    the cotangent form to the hyperbolic form.  So `I₀^ω/I₀ ≅ ℍ(ℂ)`.
@@ -39,8 +39,8 @@ In `formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/`, namespac
 9. **`mem_closure_image_augIdeal`** — the generic erasure criterion: if the chart contains vectors
    of augmentation one and arbitrarily small norm, the augmentation constraint is dense in the
    chart image.  This is `(RC.9)` stripped to the only property it uses.
-10. `augment_spread`, `lpEmb_spread` — the spread vector `N⁻¹(e_{q₁} + ⋯ + e_{q_N})` has
-    augmentation one.
+10. `spreadVec`, `wtPort_spreadVec`, `lpEmb_spreadVec` — the spread vector
+    `N⁻¹(e_{q₁} + ⋯ + e_{q_N})` has augmentation one.
 11. **`exists_small_spread_lp`** — in `ℓ^p` with `p > 1` its norm is `N^{1/p-1} → 0`; the proof
     computes `‖·‖^{p} = N^{1-p}` with `lp.norm_sum_single`.
 12. **`exists_small_spread_top`** — in `ℓ^∞` its norm is `N⁻¹ → 0`.
@@ -50,9 +50,9 @@ In `formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/`, namespac
 14. **`eq_zero_on_range_of_vanishing_on_augIdeal`** — `(RC.8)`, annihilator half: any continuous
     functional vanishing on the constraint vanishes on the whole chart image, so `I₀^⊥ = 0` and
     Hausdorff reduction of the port is zero.
-15. `summable_norm_lp_one`, `summable_lp_one`, `norm_eq_tsum_one`, `augLin`, **`augCLM`**,
-    `augCLM_apply`, `augCLM_lpEmb` — the augmentation extends to a continuous functional of norm at
-    most one on `ℓ¹`, by `‖∑' x_q‖ ≤ ∑' ‖x_q‖ = ‖x‖₁`.
+15. `summable_norm_lp_one`, `summable_lp_one`, `norm_eq_tsum_one`, `wtLin`, `wtCLM`,
+    `wtCLM_apply`, **`augCLM`**, `augCLM_lpEmb` — the augmentation extends to a continuous
+    functional of norm at most one on `ℓ¹`, by `‖∑' x_q‖ ≤ ∑' ‖x_q‖ = ‖x‖₁`.
 16. `coeFn_trunc_one`, `norm_sub_trunc_one` — the truncation error in `ℓ¹` is the tail mass.
 17. **`closure_image_augIdeal_one`** — `(RC.7)`: in `ℓ¹` the closure of the constraint is exactly
     `ker ε`.  Truncate, then correct the finite augmentation in one coordinate; both errors tend to
@@ -87,6 +87,17 @@ Green with no warnings.  `#print axioms` on `dualAnnihilator_augIdeal`, `portOrt
 `closure_image_augIdeal_one`, `augCLM_surjective`, `eq_smul_augCLM_of_vanishing`,
 `separation_defect_one` and `separation_defect_erasure` reports only `propext`, `Classical.choice`,
 `Quot.sound`.
+
+## Generality note
+
+Both modules are stated for an arbitrary nowhere-vanishing (respectively unimodular) coefficient
+covector `c` — `wtPort`, `wtIdeal`, `wtIsotropic`, `wtRed`, `dualAnnihilator_wtIdeal`,
+`portOrth_wtIsotropic`, `coisotropic_reduction_wt`, `wtIdeal_quotient_equiv`,
+`mem_closure_image_wtIdeal`, `closure_image_wtIdeal_lp/_top/_one`, `wtCLM`, `wtCLM_surjective`,
+`eq_smul_wtCLM_of_vanishing`, `separation_defect_one`, `separation_defect_erasure`.  The
+augmentation `ε x = ∑ x_p` is the case `c ≡ 1`, and every statement of this card is the
+corresponding instance under the `aug`-prefixed name listed above.  The general form is what the
+phase-port card `prime-phase-port-recurrence-completion-law` instantiates at `c = (p^{-it})`.
 
 ## Scope notes
 

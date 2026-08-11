@@ -6959,3 +6959,5 @@ import GaloisForLFunctions.HTGeometry.ConstraintMotiveRelativity.PrimeAugmentati
 
 import GaloisForLFunctions.HTGeometry.FrechetClosedRange
 import GaloisForLFunctions.HTGeometry.SmoothUniformLimit
+import GaloisForLFunctions.HTGeometry.PeriodicUniformComplete
+import GaloisForLFunctions.HTGeometry.ConstraintMotiveRelativity.PrimePhasePortRecurrence

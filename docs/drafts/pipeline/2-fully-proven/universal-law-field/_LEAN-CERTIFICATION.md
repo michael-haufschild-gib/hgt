@@ -1298,3 +1298,10 @@ intersection of organ response-difference kernels turns global compatibility int
 selection.  The capstone contains no target specialization or RH premise.  Together with
 `SharedGaugeQuotientFusion`, it supplies the missing source-coherence premise behind the finite
 three-organ fusion and fourth-organ QFI conservation law.
+
+Direct foreground elaboration passes and the foreground leaf build completes 8,677 jobs.  Axiom
+prints for eight main declarations report only `propext`, `Classical.choice`, and `Quot.sound`,
+with several requiring fewer.
+
+The module is wired into `HTGeometry.UniversalLawField`; the final foreground umbrella build
+completes 11,670 jobs.  Repository formal lint and generated-index checks pass.

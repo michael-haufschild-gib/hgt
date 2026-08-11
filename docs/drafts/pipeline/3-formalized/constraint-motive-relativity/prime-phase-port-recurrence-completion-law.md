@@ -1,11 +1,12 @@
 # Prime phase-port recurrence and completion law
 
 - **ID:** `cmr-prime-phase-port-recurrence-completion`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM / SIX-ORGAN SOURCE CALIBRATION
 - **Status:** `[PAPER-PROVED] [BRIDGE/COMPATIBILITY] [HOSTILE REPAIR APPLIED]`
   `[ARITHMETIC/SPECTRAL/RECURRENCE/HISTORY/POSITIVE/TOPOLOGICAL]`
-  `[NOT HT BY ITSELF] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[NOT HT BY ITSELF] [NOT RH] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `prime-phase-port-recurrence-completion-law-formalized.md`
 - **Parents:** `prime-port-algebraic-continuous-separation-law.md`;
   `../nomological-geometry-and-dynamics/euler-prime-orbit-prolongation-recurrence-polar-cofinal-law.md`.
 - **Field card:**
@@ -327,7 +328,8 @@ claim is needed.
 - **New insight:** phase recurrence is compatible with multiple observer topologies and does not
   select one. The nontrivial new formula within this bridge is the weak-star
   continuity/non-differentiability wall for the literal prime-log generator.
-- **Status:** dependency-closed paper proof; hostile repairs applied; no Lean written.
+- **Status:** dependency-closed paper proof; hostile repairs applied; Lean formalization
+  complete and unconditional.
 
 ## Log
 

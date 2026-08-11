@@ -291,3 +291,22 @@ This field programme fails if any of the following occurs:
 
 This is a mechanism programme, not a claim that generic quotient, Čech, ANOVA, or equalizer algebra
 is individually new.
+
+## 11. Parent mechanisms
+
+The Frankenstein synthesis deliberately uses occupied mathematics:
+
+- global-section obstructions and contextuality
+  ([Abramsky--Brandenburger](https://arxiv.org/abs/1102.0264));
+- preparation-side stochastic extension and source-context compatibility
+  ([Williams--Doosti--Shahandeh](https://arxiv.org/abs/2605.00975));
+- weighted ANOVA/Cochran heterogeneity and efficient-information Schur complements;
+- synchronization/Hodge theory on graphs and group actions;
+- quotient, descent, and equalizer constructions;
+- closed-range and non-Hausdorff completion theory.
+
+The field claim is the interpretation and coupling: source interventions are formation laws;
+relative response is the reconstructive quotient state; fusion creates information by enforcing
+source coherence; doctrine controls executability; and selection is an equalizer theorem.  A live
+arithmetic realization must prove all transitions from one marked source rather than import them as
+independent premises.

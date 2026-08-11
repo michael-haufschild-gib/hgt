@@ -1511,3 +1511,41 @@ hypertranscendental over `ℂ`, and since `ℂ(z)` is a differentially algebraic
 function is not differentially algebraic over `ℂ(z)` either.
 
 This is the germ-to-function transfer the kernel half was waiting for.
+
+## Lean progress — the base class of the source itself
+
+One class of base points is special: the class of `-(τ/2 + 1/2)`, whose translate is the untranslated
+source `Ψ` rather than a nonresonant translate of it.  That class is exactly the extra element of the
+translation packet, so the freeness statement extends over it:
+
+    TripticJetRowFreeness.differentialIndependent_ellipticGammaTranslateFamily_option :
+      the packet indexed by `Option ι`, with `none` carrying the shift `0`, is differentially
+      independent over `ℂ`
+    ne_zero_of_differentialIndependent :
+      a member of a differentially independent family is nonzero — two distinct jets of `0` would
+      coincide, contradicting injectivity of the jet family
+
+and with it the function-level statement:
+
+    TripticJetCombinationHypertranscendence.not_differentiallyAlgebraic_jetCombination_option :
+      for base points `insert (-(τ/2+1/2)) P₀` with `P₀` nonresonant and pairwise separated, a jet
+      combination with any nonzero weight is not differentially algebraic
+
+So no class of base points is excluded any more: an arbitrary finite set of distinct classes can be
+normalised to this shape by taking `-(τ/2+1/2)` as the representative of the one class that may meet
+the shifted lattice.
+
+### The remaining step, precisely
+
+`ker R_trip ⊆ Q ∩ Mer_DA` still needs one closure fact.  Writing `A` for the correction, the normal
+form gives `F - A ∈ Mer_DA` and the theorem above gives `A ∉ Mer_DA`; concluding `F ∉ Mer_DA`
+requires knowing that differential algebraicity of meromorphic *functions* is closed under
+subtraction, which the corpus currently has only for realized germs (`realizesMero_*`) and for
+analytic functions (`differentiallyAlgebraic_sub`).
+
+The route that avoids a Weierstrass factorisation of `F`: the kernel identification already presents
+`F - A` explicitly, off a countable set, as `totalAtomSum + const`, and that presentation *is*
+realized (`realizedDA_totalAtomSum`).  Hence `F` itself agrees off a countable set with the realized
+function `(totalAtomSum + const) + A`, and `toMeromorphicNFOn` does not see countable sets
+(`toMeromorphicNFOn_eq_of_eq_off_countable`).  Exposing that realizing germ from the kernel chain
+turns the closure into ordinary field arithmetic in `daOverRatFuncField`, and closes the kernel.

@@ -131,6 +131,103 @@ theorem not_differentiallyAlgebraic_jetCombination {τ σ : ℂ} (hτ : 0 < τ.i
   exact hHT (differentialAlgebraicOver_complex_of_ratFunc
     (differentialAlgebraicOver_of_realizesMero hreal hDA))
 
+
+/-- **A nonzero jet combination is not differentially algebraic**, in the form that admits the base
+class of the source itself.  One class of base points — the one carrying the untranslated source —
+is not a nonresonant translate; it is the extra element of the translation packet, and its
+representative is the point `-(τ/2 + 1/2)`. -/
+theorem not_differentiallyAlgebraic_jetCombination_option {τ σ : ℂ} (hτ : 0 < τ.im)
+    (hσ : 0 < σ.im) (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods τ σ))
+    (P₀ : Finset ℂ) (J : ℕ) (c : ℂ → ℕ → ℂ)
+    (hnonres : ∀ q ∈ P₀, ThetaTranslationNonresonant σ τ (-(gammaPresentationShift σ) - q))
+    (hsep : ∀ q ∈ P₀, ∀ q' ∈ P₀, q ≠ q' → ThetaTranslationNonresonant σ τ (q - q'))
+    {q₀ : ℂ} (hq₀ : q₀ ∈ insert (-(gammaPresentationShift σ)) P₀) {j₀ : ℕ} (hj₀ : j₀ < J)
+    (hc : c q₀ j₀ ≠ 0) :
+    ¬ DifferentiallyAlgebraic (toMeromorphicNFOn
+        (jetCombination τ σ c (insert (-(gammaPresentationShift σ)) P₀) J)
+        (Set.univ : Set ℂ)) := by
+  classical
+  set s : ℂ := gammaPresentationShift σ with hsdef
+  have hbase : (-s) ∉ P₀ := by
+    intro hmem
+    have h := hnonres (-s) hmem
+    exact h ⟨0, 0, 0, by push_cast; ring⟩
+  set hs : {x // x ∈ P₀} → ℂ := fun q ↦ -s - (q : ℂ) with hhs
+  set v : Option {x // x ∈ P₀} → Polynomial ℂ :=
+    fun i ↦ i.elim (jetRowPoly c (-s) J) (fun q ↦ jetRowPoly c (q : ℂ) J) with hvdef
+  have hvne : v ≠ 0 := by
+    intro hzero
+    rcases Finset.mem_insert.mp hq₀ with rfl | hq₀'
+    · exact jetRowPoly_ne_zero_of_coeff hj₀ hc (congrFun hzero none)
+    · exact jetRowPoly_ne_zero_of_coeff hj₀ hc (congrFun hzero (some ⟨q₀, hq₀'⟩))
+  have hnonres' : ∀ i, ThetaTranslationNonresonant σ τ (hs i) := fun i ↦ hnonres (i : ℂ) i.2
+  have hsep' : ∀ i j : {x // x ∈ P₀}, i ≠ j →
+      ThetaTranslationNonresonant σ τ (hs j - hs i) := by
+    intro i j hij
+    have hval : hs j - hs i = (i : ℂ) - (j : ℂ) := by
+      simp only [hhs]
+      ring
+    rw [hval]
+    exact hsep (i : ℂ) i.2 (j : ℂ) j.2 (fun hh ↦ hij (Subtype.ext hh))
+  have hHT := hypertranscendentalOver_ellipticGammaTranslateRow_option hτ hσ hperiods hs
+    hnonres' hsep' v hvne
+  have hrow : ∀ i : Option {x // x ∈ P₀},
+      RealizesMero (differentialOperatorApply (v i)
+          (ellipticGammaTranslateFamily (optionShift hs) τ σ hτ hσ i))
+        (∑ j ∈ Finset.range J, fun z ↦
+          c (-(gammaPresentationShift σ + optionShift hs i)) j
+            * gammaJetSource τ σ (-(gammaPresentationShift σ + optionShift hs i)) j z) := by
+    intro i
+    have hpt : -(gammaPresentationShift σ + optionShift hs i)
+        = i.elim (-s) (fun q ↦ (q : ℂ)) := by
+      rw [← hsdef]
+      cases i with
+      | none => show -(s + 0) = -s; ring
+      | some q => show -(s + (-s - (q : ℂ))) = (q : ℂ); ring
+    have hvi : v i = jetRowPoly c (i.elim (-s) (fun q ↦ (q : ℂ))) J := by
+      cases i with
+      | none => rfl
+      | some q => rfl
+    rw [hpt, hvi, differentialOperatorApply_jetRowPoly]
+    refine realizesMero_sum _ _ _ fun j _ ↦ ?_
+    refine realizesMero_const_mul _ ?_
+    have h := realizesMero_gammaJetSource hτ hσ (optionShift hs i) j
+    rw [hpt] at h
+    exact h
+  have hsum := realizesMero_sum (Finset.univ : Finset (Option {x // x ∈ P₀}))
+    (fun i ↦ differentialOperatorApply (v i)
+      (ellipticGammaTranslateFamily (optionShift hs) τ σ hτ hσ i))
+    (fun i ↦ ∑ j ∈ Finset.range J, fun z ↦
+      c (-(gammaPresentationShift σ + optionShift hs i)) j
+        * gammaJetSource τ σ (-(gammaPresentationShift σ + optionShift hs i)) j z)
+    fun i _ ↦ hrow i
+  have hfun : (∑ i : Option {x // x ∈ P₀}, ∑ j ∈ Finset.range J, fun z ↦
+        c (-(gammaPresentationShift σ + optionShift hs i)) j
+          * gammaJetSource τ σ (-(gammaPresentationShift σ + optionShift hs i)) j z)
+      = jetCombination τ σ c (insert (-(gammaPresentationShift σ)) P₀) J := by
+    have hptnone : -(gammaPresentationShift σ + optionShift hs none) = -s := by
+      rw [← hsdef]
+      show -(s + 0) = -s
+      ring
+    have hptsome : ∀ q : {x // x ∈ P₀},
+        -(gammaPresentationShift σ + optionShift hs (some q)) = (q : ℂ) := by
+      intro q
+      rw [← hsdef]
+      show -(s + (-s - (q : ℂ))) = (q : ℂ)
+      ring
+    rw [jetCombination]
+    conv_rhs => rw [Finset.sum_comm]
+    rw [Finset.sum_insert hbase, Fintype.sum_option]
+    refine congrArg₂ (· + ·) ?_ ?_
+    · rw [hptnone]
+    · rw [← Finset.sum_coe_sort P₀
+        (fun q ↦ ∑ j ∈ Finset.range J, fun z ↦ c q j * gammaJetSource τ σ q j z)]
+      exact Finset.sum_congr rfl fun i _ ↦ by rw [hptsome i]
+  rw [hfun] at hsum
+  intro hDA
+  exact hHT (differentialAlgebraicOver_complex_of_ratFunc
+    (differentialAlgebraicOver_of_realizesMero hsum hDA))
+
 end
 
 end GaloisForLFunctions.HTGeometry

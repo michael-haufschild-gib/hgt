@@ -119,6 +119,13 @@ def ccmRationalArchimedeanPrimeOrbitStokes
     (p : Nat.Primes) (f : Arch) : ℂ :=
   primeOrbitPositiveSum p f + primeOrbitNegativeSum p f
 
+/-- The bilateral orbit functional written out as its two explicit tails. -/
+theorem ccmRationalArchimedeanPrimeOrbitStokes_eq
+    (p : Nat.Primes) (f : Arch) :
+    ccmRationalArchimedeanPrimeOrbitStokes p f =
+      (∑' n : ℕ, f ((p.1 : ℝ) ^ n)) +
+        ∑' n : ℕ, (f (((p.1 : ℝ)⁻¹) ^ (n + 1)) - f 0) := rfl
+
 private theorem primeOrbitPositiveSum_add
     (p : Nat.Primes) (f g : Arch) :
     primeOrbitPositiveSum p (f + g) =

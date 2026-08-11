@@ -99,14 +99,14 @@ would coincide. -/
 theorem ne_zero_of_differentialIndependent {ι : Type*} {x : ι → meroField (Set.univ : Set ℂ)}
     (hx : DifferentialIndependent ℂ x) (i : ι) : x i ≠ 0 := by
   intro hzero
-  have hinj := hx.injective
+  have hAI : AlgebraicIndependent ℂ (fun p : ι × ℕ ↦ differentialJet p.2 (x p.1)) := hx
   have h01 : (fun p : ι × ℕ ↦ differentialJet p.2 (x p.1)) (i, 0)
       = (fun p : ι × ℕ ↦ differentialJet p.2 (x p.1)) (i, 1) := by
     simp only [hzero]
     rw [differentialJet_zero, differentialJet_succ, differentialJet_zero]
     simp
-  have := hinj h01
-  simp at this
+  have hcon := hAI.injective h01
+  simp at hcon
 
 /-- The shift family of a translation packet, with the base source adjoined at the index `none`. -/
 def optionShift {ι : Type*} (hs : ι → ℂ) : Option ι → ℂ := fun i ↦ i.elim 0 hs
@@ -150,10 +150,8 @@ theorem differentialIndependent_ellipticGammaTranslateFamily_option {ι : Type*}
     exact addTranslationMeroEquiv_zero_apply _
   have hsome : ∀ i, t (some i) = F + d i := by
     intro i
-    have h := ellipticGammaTranslateFamily_eq_add_defect (optionShift hs) sigma tau hsigma htau
+    exact ellipticGammaTranslateFamily_eq_add_defect (optionShift hs) sigma tau hsigma htau
       (some i)
-    rw [ht, h, ← hF, ← hd, ellipticGammaExternalDefectFamily, ellipticGammaExternalDefectFamily,
-      optionShift_some]
   have hinj : Function.Injective t := by
     intro i j hij
     cases i with
@@ -182,10 +180,8 @@ theorem differentialIndependent_ellipticGammaTranslateFamily_option {ι : Type*}
         rw [hnone]
         exact Set.mem_insert _ _
     | some i =>
-        refine Set.mem_insert_of_mem _ ⟨⟨hs i, Finset.mem_image.mpr ⟨i, Finset.mem_univ i, rfl⟩⟩, ?_⟩
-        rw [hsome i, ellipticGammaTranslateFamily,
-          ellipticGammaTranslateFamily_eq_add_defect hs sigma tau hsigma htau i] at *
-        rfl
+        exact Set.mem_insert_of_mem _
+          ⟨⟨hs i, Finset.mem_image.mpr ⟨i, Finset.mem_univ i, rfl⟩⟩, rfl⟩
   exact DifferentialIndependent.comp hpacket (fun i ↦ ⟨t i, hmem i⟩)
     (fun i j hij ↦ hinj (congrArg Subtype.val hij))
 
