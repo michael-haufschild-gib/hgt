@@ -237,6 +237,10 @@ reflection-marked, and conservative before Xi specialization.
 - [x] prove pole-unit completed formation and divisor reconstruction for the literal Euler shell
 - [x] prove abstract inverse conservation across joint Hausdorff multiplicative completion
 - [x] inverse-response reconstruction and anomalous Ward balance, with strict-trace grade-blindness
+- [x] multi-parent formation law: tropical-projective width, exact observer memory, and closed-work
+  conservation
+- [x] three-organ Boolean--Mass--Hankel reconstruction predicts recurrent observation with
+  linearly open projective work
 - [ ] construct the literal joint formation/exterior completion on `Re(s)>1/2`
 - [ ] identify Gauss Hodge mass with one pre-zero acceleration--boundary-anomaly balance
 - [ ] derive any RH selection statement only after those gates
@@ -245,3 +249,6 @@ reflection-marked, and conservative before Xi specialization.
 
 - 2026-08-11 — extracted from the complete frontier after rejecting route-local martingale and
   affine-cocycle pivots as already occupied corpus programmes.
+- 2026-08-11 — multi-parent formation added: common source parents generate a tropical-projective
+  action profile; scalar width detects descent failure, full projective profile is minimal memory,
+  and finite prime recurrence inherits an exact open-work lower bound.

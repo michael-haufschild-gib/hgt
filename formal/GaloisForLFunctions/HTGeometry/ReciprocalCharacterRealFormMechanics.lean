@@ -35,10 +35,10 @@ theorem hasDerivAt_reciprocalCharacterSplitEnergy (a lambda t : ℝ) :
   have hcosh : HasDerivAt (fun x : ℝ => Real.cosh (lambda * x))
       (Real.sinh (lambda * t) * lambda) t :=
     (Real.hasDerivAt_cosh (lambda * t)).comp t hlin
-  have hmain : HasDerivAt (fun x : ℝ => 2 * a * (Real.cosh (lambda * x) - 1))
-      (2 * a * lambda * Real.sinh (lambda * t)) t :=
-    ((hcosh.sub_const 1).const_mul (2 * a)).congr_deriv (by ring)
-  exact hmain
+  change HasDerivAt (fun x : ℝ => 2 * a * (Real.cosh (lambda * x) - 1))
+    (2 * a * lambda * Real.sinh (lambda * t)) t
+  have hmain := (hcosh.sub_const 1).const_mul (2 * a)
+  simpa only [mul_assoc, mul_left_comm, mul_comm] using hmain
 
 /-- Exact conservation law: virial current is Euler differentiation of split energy. -/
 theorem reciprocalCharacterVirial_eq_t_mul_deriv (a lambda t : ℝ) :
@@ -47,6 +47,49 @@ theorem reciprocalCharacterVirial_eq_t_mul_deriv (a lambda t : ℝ) :
   rw [(hasDerivAt_reciprocalCharacterSplitEnergy a lambda t).deriv]
   simp [reciprocalCharacterVirialCurrent]
   ring
+
+/-- The compact-real phase energy has the same clock and weight response. -/
+theorem hasDerivAt_reciprocalCharacterPhaseEnergy (a lambda s : ℝ) :
+    HasDerivAt (reciprocalCharacterPhaseEnergy a lambda)
+      (2 * a * lambda * Real.sin (lambda * s)) s := by
+  have hlin : HasDerivAt (fun x : ℝ => lambda * x) lambda s := by
+    simpa using (hasDerivAt_id s).const_mul lambda
+  have hcos : HasDerivAt (fun x : ℝ => Real.cos (lambda * x))
+      (-Real.sin (lambda * s) * lambda) s :=
+    (Real.hasDerivAt_cos (lambda * s)).comp s hlin
+  change HasDerivAt (fun x : ℝ => 2 * a * (1 - Real.cos (lambda * x)))
+    (2 * a * lambda * Real.sin (lambda * s)) s
+  have hmain := (hcos.const_sub 1).const_mul (2 * a)
+  simpa [mul_assoc, mul_left_comm, mul_comm] using hmain
+
+/-- Split and compact real forms have one common positive quadratic jet. -/
+theorem reciprocalCharacter_common_quadratic_jet (a lambda : ℝ) :
+    deriv (fun t => deriv (reciprocalCharacterSplitEnergy a lambda) t) 0 =
+        2 * a * lambda ^ 2 ∧
+      deriv (fun s => deriv (reciprocalCharacterPhaseEnergy a lambda) s) 0 =
+        2 * a * lambda ^ 2 := by
+  have hsplitFun :
+      (fun t => deriv (reciprocalCharacterSplitEnergy a lambda) t) =
+        fun t => 2 * a * lambda * Real.sinh (lambda * t) := by
+    funext t
+    exact (hasDerivAt_reciprocalCharacterSplitEnergy a lambda t).deriv
+  have hphaseFun :
+      (fun s => deriv (reciprocalCharacterPhaseEnergy a lambda) s) =
+        fun s => 2 * a * lambda * Real.sin (lambda * s) := by
+    funext s
+    exact (hasDerivAt_reciprocalCharacterPhaseEnergy a lambda s).deriv
+  rw [hsplitFun, hphaseFun]
+  constructor
+  · have hlin : HasDerivAt (fun t : ℝ => lambda * t) lambda 0 := by
+      exact hasDerivAt_const_mul lambda
+    have hsinh := hlin.sinh
+    simpa [pow_two, mul_assoc, mul_left_comm, mul_comm] using
+      (hsinh.const_mul (2 * a * lambda)).deriv
+  · have hlin : HasDerivAt (fun s : ℝ => lambda * s) lambda 0 := by
+      exact hasDerivAt_const_mul lambda
+    have hsin := hlin.sin
+    simpa [pow_two, mul_assoc, mul_left_comm, mul_comm] using
+      (hsin.const_mul (2 * a * lambda)).deriv
 
 /-- Universal scalar hyperbolic coercivity. -/
 theorem sq_le_mul_sinh (x : ℝ) : x ^ 2 ≤ x * Real.sinh x := by
@@ -63,9 +106,10 @@ theorem reciprocalCharacterVirial_quadratic_lower
     2 * a * (lambda * t) ^ 2 ≤ reciprocalCharacterVirialCurrent a lambda t := by
   have hs := sq_le_mul_sinh (lambda * t)
   rw [reciprocalCharacterVirialCurrent]
-  calc 2 * a * (lambda * t) ^ 2 = 2 * a * ((lambda * t) ^ 2) := by ring
-    _ ≤ 2 * a * ((lambda * t) * Real.sinh (lambda * t)) :=
-        mul_le_mul_of_nonneg_left hs (by linarith)
+  calc
+    2 * a * (lambda * t) ^ 2 ≤
+        2 * a * ((lambda * t) * Real.sinh (lambda * t)) :=
+      mul_le_mul_of_nonneg_left hs (by linarith)
     _ = 2 * a * (lambda * t) * Real.sinh (lambda * t) := by ring
 
 /-- Positive split weights have exact neutral virial radical. -/
@@ -137,7 +181,7 @@ theorem reciprocalPacketVirial_quadratic_lower {ι : Type*} (I : Finset ι)
 theorem rpow_sub_rpow_neg_eq_two_sinh {s : ℝ} (hs : 0 < s) (t : ℝ) :
     s ^ t - s ^ (-t) = 2 * Real.sinh (Real.log s * t) := by
   rw [Real.rpow_def_of_pos hs, Real.rpow_def_of_pos hs, Real.sinh_eq]
-  congr 1 <;> ring
+  ring_nf
 
 end
 

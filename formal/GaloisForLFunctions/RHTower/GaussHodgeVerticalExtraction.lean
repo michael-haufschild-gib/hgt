@@ -51,12 +51,10 @@ theorem norm_cesaro_geom_le_one {w : ℂ} (hw : ‖w‖ = 1) (N : ℕ) :
           intro n _
           rw [norm_pow, hw, one_pow]
       _ = N := by simp
-  have h2 : ‖(((N : ℝ)⁻¹ : ℝ) : ℂ)‖ = (N : ℝ)⁻¹ := by
-    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · simp
   · have hNpos : (0 : ℝ) < N := by exact_mod_cast hN
-    rw [h2]
+    rw [norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Nat.cast_nonneg N)]
     calc (N : ℝ)⁻¹ * ‖∑ n ∈ Finset.range N, w ^ n‖ ≤ (N : ℝ)⁻¹ * N :=
           mul_le_mul_of_nonneg_left h1 (by positivity)
       _ = 1 := by field_simp
@@ -71,7 +69,7 @@ theorem star_mul_eq_one_iff_eq {x y : ℂ} (hx : ‖x‖ = 1) (hy : ‖y‖ = 1)
       _ = (x * star x) * y := by ring
       _ = y := by rw [hui, one_mul]
   · rintro rfl
-    simpa [hy] using Complex.conj_mul' y
+    simpa [hx] using Complex.conj_mul' x
 
 /-! ## The ℓ¹ limit exchange -/
 
@@ -141,14 +139,21 @@ theorem tendsto_tsum_pencil_cesaro_star_mul
         (nhds (if w pq.1 = w pq.2 then star (c pq.1) * c pq.2 else 0)) := by
     have hu : ‖star (w pq.1) * w pq.2‖ = 1 := by
       rw [norm_mul, norm_star, hw pq.1, hw pq.2, one_mul]
-    have h := tendsto_const_nhds.mul
-      (tendsto_complex_geom_cesaro_of_norm_eq_one (star (w pq.1) * w pq.2) hu)
+    have h : Tendsto (fun N : ℕ => star (c pq.1) * c pq.2 *
+        (((N : ℝ)⁻¹ : ℂ) * ∑ n ∈ Finset.range N, (star (w pq.1) * w pq.2) ^ n))
+        atTop (nhds (star (c pq.1) * c pq.2 *
+          (if star (w pq.1) * w pq.2 = 1 then (1 : ℂ) else 0))) :=
+      tendsto_const_nhds.mul
+        (tendsto_complex_geom_cesaro_of_norm_eq_one (star (w pq.1) * w pq.2) hu)
     have hval : star (c pq.1) * c pq.2 *
         (if star (w pq.1) * w pq.2 = 1 then (1 : ℂ) else 0) =
         if w pq.1 = w pq.2 then star (c pq.1) * c pq.2 else 0 := by
-      rw [show (star (w pq.1) * w pq.2 = 1) = (w pq.1 = w pq.2) from
-        propext (star_mul_eq_one_iff_eq (hw pq.1) (hw pq.2))]
-      split_ifs <;> simp
+      by_cases hcase : w pq.1 = w pq.2
+      · rw [if_pos hcase,
+          if_pos ((star_mul_eq_one_iff_eq (hw pq.1) (hw pq.2)).mpr hcase), mul_one]
+      · rw [if_neg hcase,
+          if_neg (fun h => hcase ((star_mul_eq_one_iff_eq (hw pq.1) (hw pq.2)).mp h)),
+          mul_zero]
     rw [← hval]
     exact h
   have hdom : ∀ᶠ N : ℕ in atTop, ∀ pq : ι × ι,
@@ -184,10 +189,8 @@ theorem tendsto_tsum_pencil_cesaro_norm_sq
   have h := tendsto_tsum_pencil_cesaro_star_mul c w hc hw
   have hre := (Complex.continuous_re.tendsto _).comp h
   refine hre.congr fun N => ?_
-  rw [Function.comp_apply, Complex.mul_re]
-  have hreN : ((((N : ℝ)⁻¹ : ℝ) : ℂ)).re = (N : ℝ)⁻¹ := by norm_num
-  have himN : ((((N : ℝ)⁻¹ : ℝ) : ℂ)).im = 0 := by norm_num
-  rw [hreN, himN, zero_mul, sub_zero]
+  rw [Function.comp_apply, Complex.mul_re, ← Complex.ofReal_inv,
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
   congr 1
   rw [← Complex.reCLM_apply, map_sum]
   apply Finset.sum_congr rfl
@@ -320,7 +323,7 @@ theorem charPair_oddBlock {p : ℝ} (hp : 0 < p) (s : ℂ) :
   have hcross' : star (burnolPrimeCharacter p (1 - (starRingEnd ℂ) s)) *
       burnolPrimeCharacter p s = 1 := by
     have h := congrArg star hcross
-    rw [star_mul', star_star, star_one] at h
+    rw [star_mul', star_star, star_one, mul_comm] at h
     exact h
   rw [hA, hB, hcross, hcross']
   push_cast

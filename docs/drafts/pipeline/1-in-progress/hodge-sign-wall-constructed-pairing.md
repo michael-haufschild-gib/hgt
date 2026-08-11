@@ -129,6 +129,32 @@ truncation — the exchange the co-Poisson layer proved must be done truncate-fi
 (`copoisson-mellin-truncate-first`).  The open core is thus a *limit-exchange* statement: an
 interchange of the vertical mean with the divisor closure, priced by multiplicity squares.
 
+**Attempt 6 — the truncation exchange is proven (`GaussHodgeVerticalExtraction.lean`).**  The
+feared half of the limit-exchange gate is not a wall.  Theorem
+(`tendsto_tsum_pencil_cesaro_star_mul` / `_norm_sq`): for ANY absolutely summable coefficient
+family on ANY index and ANY unimodular mode family — with no separation, gap, injectivity, or
+correlation hypothesis — the Cesàro mean of the squared pencil converges to the equal-mode
+pair diagonal.  Proof: dominated convergence over coefficient pairs against the ℓ¹ × ℓ¹
+product, the scalar geometric Cesàro law deciding each pair.  (Externally this is Bohr's
+almost-periodic Parseval `[REDISCOVERED]`; corpus-new at infinite index without gap
+hypotheses — the corpus's own `GeneralizedDirichletMeanValue` is finite-polynomial only.)
+Instantiated at the divisor (`tendsto_cesaro_divisorCharPencil_norm_sq`): for every ℓ¹ weight
+on the Xi copies, the vertical flow extracts the equal-ordinate pair diagonal from the squared
+weighted Burnol character pencil, over the FULL divisor, unconditionally (the strip bound
+supplies the uniform character bound).  The reflected partner shares the ordinate
+(`xiZeroCopyVerticalMode_lineConjEquiv`), and the reflection-odd `2×2` block of the extracted
+diagonal is exactly the centered cosh defect (`charPair_oddBlock`) — the extracted diagonal
+carries the Hodge/seam mass, and is nonnegative as a limit of mean squares.
+
+**The wall after attempt 6 — the final relocation.**  With extraction and truncation both
+proven, the only unproven step left in the entire chain is *sourcing the pencil*: the vertical
+mode `exp(i·Im ρ)` is a conjugate-pair (bilinear) sample of the divisor — `Im ρ` needs `ρ` and
+its conjugate zero — and the information-gap theorem proves no holomorphic channel supplies
+it.  The open core in final form: **produce the values of the ℓ¹ vertical pencil
+`Σ_ρ v_ρ · char(ρ) · e^{i n Im ρ}` from prime-side data** (for one good weight family `v`).
+Every other step — extraction, truncation, positivity, the mass identification, the RH
+equivalence — is now an unconditional Lean theorem.
+
 ## Kill-tests passed and formalized
 
 1. **Beurling/interface firewall (formalized).**  The sign, evenness, and radical laws of the
@@ -174,3 +200,79 @@ interchange of the vertical mean with the divisor closure, priced by multiplicit
   Successor gate recorded: limit-exchange of the vertical time-mean with the divisor closure,
   priced by multiplicity squares (torus-mean assets; zero-simplicity layer; truncate-first
   no-go).
+- 2026-08-11 — attempt 6 formalized: `RHTower/GaussHodgeVerticalExtraction.lean` (ℓ¹ limit
+  exchange with no gap/separation/correlation input; divisor instantiation; ordinate-sharing of
+  reflected pairs; odd-block = cosh defect; positivity).  Build green, umbrella-wired,
+  axiom-clean (6 theorems).  Open core final form: sourcing the ℓ¹ vertical pencil from
+  prime-side data — the single remaining unproven step of the whole chain.
+- 2026-08-11 — attempt 7 formalized: `RHTower/GaussHodgePencilSourcing.lean`.  The vertical
+  mode has a holomorphic FE companion `e^{ρ−1/2}`; the sourcing identity
+  `char_p(ρ)·(e^{ρ−1/2})ⁿ = char_{p·eⁿ}(ρ)` shows the companion pencil is the one-variable
+  zero current at flowed scales — explicit-formula data; the companion's polar factorization
+  exhibits the sourcing defect as the radial mass factor `e^{t/2}`; and **sourcing ⟺ RH** is
+  proved in two exact forms (`riemannHypothesis_iff_feMode_eq_verticalMode`,
+  `riemannHypothesis_iff_feMode_unimodular`), with the conditional collapse
+  (`verticalPencil_eq_flowedScaleCurrent_of_riemannHypothesis`): under RH every value of the
+  vertical pencil is prime-side data.  The programme is now one closed equivalence loop, every
+  link an unconditional Lean theorem; the single non-circular entry point left is an
+  independent evaluation of the vertical pencil, which the formalized information-gap and
+  firewall theorems prove must consume bilinear (conjugate-pair) input.
+
+## Where a non-circular formal proof can enter (assessment, 2026-08-11)
+
+Every route in corpus and literature funnels to exactly two dual gates; the loop's theorems
+say precisely what each must produce.
+
+**Gate I — cancellation (analytic side).**  By the sourcing module, RH ⟺ every ℓ¹-weighted
+flowed-scale zero current `Σ_ρ v_ρ x^{ρ−1/2}`, `x = p·eⁿ`, stays bounded in `n` (converse via
+the singleton weight at the right-half representative of an off-line zero; forward trivial
+under unimodularity).  Each such current is explicit-formula data, so this gate is an
+unconditional O(1)-bound for smoothed prime sums — the rectangular terminus
+(`rectangular-programme-terminus`), in the smoothed form that dodges Littlewood's Ω.  The
+mechanism it needs is a source of cancellation that does not factor through zero-free regions
+(capped: `zero-free-region-exponent-is-the-mr-wall`, `moebius-saving-exponent`), density
+envelopes (no-go), or correlations at Montgomery-diagonal strength (the MRBilinear boundary).
+No such mechanism exists in corpus or literature; this gate is where the loop says the
+analytic lanes must land, not where a proof is visible.
+
+**Gate II — created positivity (spectral/geometric side).**  The two proofs of RH-type
+statements that exist in mathematics both enter here, by manufacturing positivity from a
+structure exogenous to the divisor interface: the function-field proof via the Hodge index
+theorem on the self-product `C×C` (the two-variable object whose diagonal is the otherwise
+unreachable conjugate-pair diagonal — exactly what our classification theorem says is
+needed), and Connes–Consani's semi-local theorem via Sonin/prolate compression (positivity of
+a compressed trace is free *by operator structure* — created, per `five-lanes-one-wall` — and
+the labor is the identity with the Weil form, proved so far at the archimedean place plus one
+prime).  The corpus's own two entry interfaces have the same shape: `xiWeilPolarization`
+(unconditional Hermitian polarization with radical; nonnegativity ⟺ RH; blocked at the
+full-test-algebra gate) and the Deninger Green-energy detection hypothesis
+(`∀ x, energy x = 0 → x = 0` — definiteness of an energy form).
+
+**Verdict.**  The realistic origin of a formal proof is Gate II in the compression form: what
+Connes–Consani lack is exactly what the corpus uniquely owns — the label-faithful multi-place
+assembly (step 2) that keeps prime labels and both orientations alive through the place sum,
+plus the closed loop pinning what the compressed trace must equal (the H-mass/odd-sector
+form).  Formal milestones that assume nothing: (a) bridge the H-mass form to
+`xiWeilPolarization` as its reflection-odd sector restriction; (b) formalize semi-local
+compressed positivity (CC archimedean case — heavy, unconditional); (c) attack the
+multi-place extension of the compressed-trace identity with the assembly machinery — the one
+step that is research, not transcription.  The Beurling kill-test passes structurally: the
+compressed-trace identity consumes adelic Poisson, which Beurling systems lack.
+- 2026-08-11 — attempt 8 (milestone (a)) formalized:
+  `RHTower/GaussHodgeWeilPolarizationFusion.lean`.  Hostile check first: the naive "odd-sector
+  restriction" is FALSE — the polarization is irreducibly the holomorphic channel (its prime-
+  test summand is constantly 1, now a theorem: `xiWeilPairTerm_primeTest`).  The true fusion,
+  proved unconditionally and pointwise (no summability hypotheses): the pair-square law
+  (`xiWeilPairTerm_add_lineConj` — over each reflection pair, Weil summands = Hermitian pair
+  energy − sharp-difference square, for EVERY test); the sharp-difference square of the prime
+  test = the centered cosh defect (`norm_sq_primeTest_sub_lineConj`); hence **the H-mass
+  density is exactly the per-pair gap between the Hermitian pair energy and the Weil
+  polarization value at the prime test** (`massDensity_eq_hermitianPair_sub_weilPair`), and
+  **RH ⟺ that gap closes at every copy for the prime-2 test**
+  (`riemannHypothesis_iff_hermitianPair_eq_weilPair`).  Bonus: the unconditional
+  conjugate-pair eigen-Gram (`xiWeilPolarization_thetaEigen_conjPair_vanishing/_value`) —
+  the polarization couples the Hedenmalm eigenfunction at α only to the one at conj α, value
+  = multiplicity·XiC′(α)·conj XiC′(conj α); the module's RH-conditional orthogonality is this
+  law's collapse onto the diagonal.  The loop and the Weil-positivity interface are now one
+  formal object: a Gate-II entry (compressed-trace positivity matching xiWeilPolarization)
+  lands directly on the H-mass.

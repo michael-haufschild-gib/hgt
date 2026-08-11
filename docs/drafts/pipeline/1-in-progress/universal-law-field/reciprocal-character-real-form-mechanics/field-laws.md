@@ -138,9 +138,10 @@ reconstruction, and admission.
 - [x] full-frontier intervention grammar extracted
 - [x] literal Boolean--Mass--Hankel--recurrence fusion proved
 - [x] compact/split reciprocal-character mechanism isolated
-- [x] exact virial identity and finite joint reconstruction proved on paper
+- [x] exact virial identity, common real-form jet, and finite joint reconstruction proved in Lean
 - [x] existing Gauss Hodge/seam bridge refined by a canonical fourth-organ virial generator
 - [x] cofinal Gauss admission criterion reduced exactly to radial neutrality
+- [x] cofinal admission classification and RH equivalence certified in Lean
 - [ ] construct a pre-divisor source trace/ideal law that forces this admission
 - [ ] transport that law through the literal Xi divisor realization
 

@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** FOUR-ORGAN FUSION / JOINT RECONSTRUCTION / COFINAL ADMISSION CLASSIFICATION
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [UNIVERSAL FINITE LAW]
-  [LITERAL GAUSS SPECIALIZATION] [RH SELECTION GATE, NOT RH]
+  [LITERAL GAUSS SPECIALIZATION] [LEAN-PROVED CORE] [RH SELECTION GATE, NOT RH]
 
 ## 1. Finite reciprocal-character packet
 
@@ -291,8 +291,7 @@ Since `p>=2`,
 
 \[
  \left({p-1\over p}\right)^{2m}\ge2^{-2m},
- \qquad
- (p^m-1)^2\ge {p^{2m}\over4}.
+ \qquad (p^m-1)^2\ge1.
  \tag{RCV.24}
 \]
 
@@ -300,13 +299,12 @@ Combining `(RCV.20)--(RCV.24)` gives
 
 \[
  H_m(q,p)\ge
- {\log2\,t_q^2\over2^{2m+3}m^2}\,p^{2m-1}
- \ge {\log2\,t_q^2\over2^{2m+3}m^2}>0.
+ {\log2\,t_q^2\over2^{2m+1}m^2}\,{1\over p}.
  \tag{RCV.25}
 \]
 
-The prime set is infinite, so a family bounded below by one fixed positive constant is not
-summable.  This contradiction proves `(RCV.21)`.  QED.
+The prime harmonic family is not summable.  Since the coefficient in `(RCV.25)` is strictly
+positive off the neutral form, comparison proves nonsummability and hence `(RCV.21)`.  QED.
 
 ### Corollary 6.2 -- exact RH admission gate
 
@@ -360,13 +358,16 @@ data.  Neither the external parents nor the internal Wick/Hodge-seam parents giv
 Euler generator `(RCV.19)`, finite joint reconstruction from one real-form packet, or the cofinal
 classification `(RCV.21)`.
 
-## 9. Lean gate
+## 9. Lean certification
 
-The theorem is eligible for Lean only after the paper identities and the cofinal lower bound above
-have been checked against the literal corpus definitions.  Formalization must include:
+The significant claims are certified without added axioms in:
 
-1. half-character square and virial derivative;
-2. virial quadratic coercivity and radical;
-3. compact phase identity at the common jet;
-4. literal Gauss specialization `(RCV.19)--(RCV.20)`;
-5. prime-summability classification `(RCV.21)` and RH gate `(RCV.26)`.
+1. `HTGeometry/ReciprocalCharacterRealFormMechanics.lean`: split/compact common quadratic jet,
+   Euler--virial conservation, coercivity, radical, and finite-packet conservation;
+2. `HTGeometry/ReciprocalCharacterRealFormReconstruction.lean`: positive Prony spectrum,
+   all-future-moment reconstruction, and fixed-clock weight reconstruction;
+3. `RHTower/GaussReciprocalCharacterAdmission.lean`: literal Gauss realization, harmonic lower
+   bound, cofinal summability classification `(RCV.21)`, and RH equivalence `(RCV.26)`.
+
+The formal RH equivalence remains a conditional selection gate: Lean proves the equivalence, not
+the missing independent theorem asserting its trace-ideal premise.

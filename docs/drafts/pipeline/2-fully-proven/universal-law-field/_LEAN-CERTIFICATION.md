@@ -1330,3 +1330,49 @@ response, mixed reconstruction, strict/anomalous Ward balance, grade blindness, 
 selection, and the capstone report only `propext`, `Classical.choice`, and `Quot.sound` (most omit
 `Classical.choice`).  Generated-index validation and formal lint pass.  The module is wired into
 `HTGeometry.UniversalLawField`; the final foreground umbrella build completes 11,672 jobs.
+
+## Session 2026-08-11 addition (Reciprocal-Character Real-Form Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-RCRFM-2A | Split/compact common quadratic jet, Euler--virial conservation, coercivity, radical, and finite-packet conservation | `HTGeometry.ReciprocalCharacterRealFormMechanics` |
+| ULF-RCRFM-2B | Squared-clock positive Prony spectrum, all-future-moment reconstruction, and fixed-clock weight reconstruction | `HTGeometry.ReciprocalCharacterRealFormReconstruction` |
+| ULF-RCRFM-2C | Literal Gauss virial realization, prime-harmonic admission lower bound, summability classification, and RH selection equivalence | `RHTower.GaussReciprocalCharacterAdmission` |
+
+Direct foreground elaboration passes for all three leaves and umbrella source.  Final foreground
+umbrella build completes 11,798 jobs.  Axiom prints for ten capstones report only `propext`,
+`Classical.choice`, and `Quot.sound`.  Target scans contain no `sorry`, `admit`, project `axiom`,
+`opaque`, or `unsafe` declaration.
+
+Lean proves that one reciprocal character packet has a common split/compact quadratic jet, that
+its virial current is exactly Euler differentiation of split energy, and that its finite moment
+packet reconstructs squared clocks and weights.  In literal Gauss realization it also proves
+
+```text
+Summable (gaussHodgeMassCurrent m q)
+  <-> primeDepthBVWoldXiCenteredRate q.1 = 0
+```
+
+and universal summability over Xi-zero copies iff `RiemannHypothesis`.  Latter is exact selection
+gate, not RH proof: no independent source theorem forcing universal summability is assumed or
+proved.
+
+Repository-wide formal lint reached unrelated pre-existing/concurrent umbrella error:
+`CriticalSchurIdealInertiaTransport` is not imported by theorem-area umbrella `HTGeometry`.
+No file outside this card's scope was changed to mask that failure.
+
+## Session 2026-08-11 addition (Multi-parent Tropical-Projective Work)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-DDEM-TPW-1 | Finite-family maximum-work formation, tropical-projective zero law, common-gauge invariance, finite-history conservation, closed-work positivity, observer-memory reconstruction, affine clock width, centered selection reduction, and recurrent prime observer with linearly open projective work | `HTGeometry.ConstitutiveTropicalProjectiveWork` |
+
+Direct foreground elaboration passes.  The module is wired into
+`HTGeometry.UniversalLawField`; final foreground umbrella build completes 11,799 jobs.  Formal lint
+passes.  Axiom prints for five capstones report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Lean closes the multi-parent open core left by the two-action total-variation theorem.  It also
+certifies the withheld recurrence prediction: arbitrarily late finite-prime phase returns coexist
+with a projective work lower bound equal to elapsed time times the reconstructed prime-clock span.
+The centered zero-width equivalence is an exact RH selection reduction, not an RH proof; no source
+theorem forcing profile descent at Xi zeros is assumed.

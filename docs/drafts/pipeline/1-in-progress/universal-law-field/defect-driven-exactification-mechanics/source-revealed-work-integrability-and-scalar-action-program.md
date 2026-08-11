@@ -177,3 +177,10 @@ common explanation of completion, coercivity, positive-carrier existence, or can
   positive two-cycle unless parent actions are gauge-equivalent; permissive minimum survives.
 - 2026-08-09 -- pathwise extension proved and Lean-certified: closed competitive work is relative
   total variation, with exact observer-descent criterion.
+- 2026-08-11 -- multi-parent open core closed by
+  `multi-parent-tropical-projective-work-reconstruction-and-prime-recurrence-law.md`.
+  Mandatory family work is the tropical maximum of exact parent increments; reversible work is
+  exact projective width, closed histories are nonnegative, and observer descent is equivalent to
+  vanishing on collapsed two-cycles.  Scalar action exists only on the common-gauge stratum.
+  Boolean formation, Mass clocks, and Hankel reconstruction instantiate the law and force a new
+  recurrence theorem with linearly escaping projective work.

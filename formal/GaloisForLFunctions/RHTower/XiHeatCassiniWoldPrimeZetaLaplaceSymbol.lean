@@ -38,7 +38,6 @@ theorem xiHeatCassiniOrderedPrimeLaplacePhase_eq_coronaPrimeEigenvalue
     Complex.exp (Complex.log (((nthPrimeSubtype N : ℕ) : ℂ)) * -s)
   rw [Complex.natCast_log]
   congr 1
-  push_cast
   linear_combination (Complex.log ((nthPrimeSubtype N : ℕ) : ℂ) * s) * Complex.I_sq
 
 /-- Prime-zeta eigenvalues multiply under spectral translation. -/

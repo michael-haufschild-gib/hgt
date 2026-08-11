@@ -237,7 +237,23 @@ certificate for zero-side exponential-sum coherence, collapsing to square-root c
 extracts the (multiplicity-squared) diagonal for finite families via the completed-time torus
 layer; what is open is the interchange of that mean with the divisor closure, priced by
 multiplicity squares (zero-simplicity layer) and fenced by the truncate-first co-Poisson
-no-go. Route L asks for this through the resolved-Green
+no-go. That interchange is now itself PROVED (`GaussHodgeVerticalExtraction.lean`): for every
+ℓ¹ weight and every unimodular mode family — no gap, separation, or correlation input — the
+Cesàro mean-square converges to the equal-mode pair diagonal (dominated convergence over
+coefficient pairs), instantiated over the full divisor with the vertical flow at the
+ordinates; the reflected partner shares the ordinate and the reflection-odd 2×2 block of the
+extracted diagonal is exactly the cosh defect. The single unproven step left in the whole
+chain is sourcing the ℓ¹ vertical pencil `Σ_ρ v_ρ·char(ρ)·e^{i n Im ρ}` from prime-side data:
+the vertical mode is a conjugate-pair (bilinear) sample, and the information-gap theorem
+proves no holomorphic channel supplies it. `GaussHodgePencilSourcing.lean` then closes the
+loop on that step: the vertical mode has a holomorphic FE companion `e^{ρ−1/2}` whose pencil
+IS prime-side data (`char_p·(e^{ρ−1/2})ⁿ = char_{p·eⁿ}` — the zero current at flowed scales),
+whose polar factorization exhibits the sourcing defect as the radial mass factor `e^{t/2}`,
+and **sourcing ⟺ RH** exactly (`riemannHypothesis_iff_feMode_eq_verticalMode`); under RH
+every vertical-pencil value collapses to explicit-formula data. The Gauss/Hodge/seam
+programme is now a single closed equivalence loop with every link an unconditional Lean
+theorem; its one non-circular entry point is an independent (necessarily bilinear) evaluation
+of the vertical pencil. Route L asks for this through the resolved-Green
 rational-Witt/Milnor source annihilator; Route R asks for it through singular Cartier/Stokes
 non-amplification. These target realizations remain distinct even though they retain the same
 horizontal class.
@@ -3067,6 +3083,8 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussHodgeMassCurrent.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeSeamEnergyBridge.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeCoherenceBudget.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeVerticalExtraction.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgePencilSourcing.lean
 - formal/GaloisForLFunctions/HTGeometry/HyperbolicBounds.lean
 
 ### Committed certification queue excluded from formal status
@@ -3160,3 +3178,26 @@ Beurling system layer is a Route-E firewall rather than a new producer.
 RH remains open. Any claim of progress must now prove one named source theorem above, refute one
 route with an exact no-go and positive survivor, or construct a literal new source architecture
 with an unconditional handoff not source-isogenous to an existing route.
+
+## 2026-08-11 universal-law-field update: multi-parent projective work
+
+The revealed-work frontier has advanced beyond two-parent total variation.  For every finite
+family of exact source actions, mandatory maximum formation generates a tropical-projective action
+profile.  Forward-plus-reverse work is exactly its Hilbert projective width; closed mandatory
+histories have nonnegative work; and the full relative profile descends through an observer exactly
+when every observer-collapsed two-cycle has zero width.  Scalar integrability is rigid: it occurs
+only when all parent actions differ by constants.
+
+The literal finite prime source now realizes this mechanism across Boolean formation, Mass clocks,
+and positive Hankel reconstruction.  It predicts in the recurrence organ that arbitrarily accurate
+late phase returns coexist with linearly escaping, reconstruction-determined projective work
+
+\[
+ H(0,t)=t\log(p_{\max}/p_{\min}).
+\]
+
+For the centered divisor parameter (a_\rho=\Re\rho-1/2), zero projective width is equivalent to
+(a_\rho=0).  The remaining RH theorem is not another scalar receiver: construct a source-normal
+observer through which the complete prime projective action profile descends at every Xi zero, and
+prove source-natively that its kernel identifies the physical state (a_\rho) with the centered
+state (0).
