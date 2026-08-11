@@ -141,5 +141,7 @@ lower-tangent mismatch but does not prove RH.
 
 - Direct `lake env lean GaloisForLFunctions/RHTower/XiShiftedHalfDensityAdmissionBoundaryPort.lean`:
   PASS.
-- Targeted module build and axiom audit: pending final gate.
+- `lake build GaloisForLFunctions.RHTower.XiShiftedHalfDensityAdmissionBoundaryPort`: PASS.
+- Axiom audit of principal source, monic-landing, and projected-dissipation theorems: only
+  `propext`, `Classical.choice`, and `Quot.sound`.
 - No computation, `sorry`, `admit`, new axiom, or RH premise.

@@ -5976,7 +5976,9 @@ limsup rho_j^2<1/15                                   (425)
 ```
 
 would exclude every high-assisted branch, leaving only the explicitly many-zero low-only branch;
-an actual construction with `liminf rho_j^2>=1/15` would validate the cancellation mechanism.
+an actual construction with `liminf rho_j^2>=1/15` would only pass this necessary canonical-
+correlation gate.  It would not by itself align the corresponding singular directions with the
+literal low source residual.
 Neither inequality is supplied by zero counting, Beurling--Malliavin completeness, or the
 cross-cutoff Hilbert--Schmidt bound `(314)`.
 
@@ -6256,9 +6258,10 @@ Choosing the same pairs in the cross-capacity argument of Theorem AW also gives
 min{q_L(x_j)+r_j,q_H(y_j)+r_j}=O(log(T_j+2)^2).       (446)
 ```
 
-Thus the live high packet is neither arbitrary near-null nor merely relative-`o(a)`.  It must lie
-in a ridge-matched energy band, remain coherently paired with a source-bearing low packet, and
-cross the exact normalized threshold `1/15`.
+Thus a necessary high packet is neither arbitrary near-null nor merely relative-`o(a)`.  It must
+lie in a ridge-matched energy band, remain coherently paired with a low packet, and cross the exact
+normalized threshold `1/15`.  This is still not sufficient: the pair must also lie in the cyclic
+directions selected by the literal low source residual.
 
 #### Proof
 
@@ -6284,7 +6287,88 @@ form, and the exact `r/14` consequence are Lean-proved in
 `HTGeometry/RidgeMatchedCoherenceBarrier.lean`.  Source-aligned Xi sinc-Gram existence or
 exclusion inside the ridge-matched band `(445)--(446)` remains open.
 
-### 14.44 Conjecture loop and novelty correction
+### 14.44 High-assisted coherence has a polynomial ordinate horizon
+
+Theorem AZ removes packets below the ridge scale, but its upper band still allows ordinates at
+arbitrary height.  Cross-tail summability gives a second localization that is insensitive to
+internal gaps.
+
+Fix `kappa>0`, retain `T_j=r_j^(-4)`, and put
+
+```text
+Y_j=r_j^(-(6+kappa)).
+```
+
+Let `Q_(T,Y)` project onto the high collar `b_T<|gamma|<=Y`, and let `F_Y` project onto
+`|gamma|>Y`.
+
+#### Theorem BA — polynomial coherence horizon and collar-mass floor
+
+Under RH, the regularized canonical correlation between the low block `P_T` and the far block
+`F_Y` satisfies
+
+```text
+rho_(L,F)^2
+ <=||P_T K_a F_Y||_HS^2/r^2
+ =O(r^kappa log(r^(-1)+2)^2)=o(1).                    (447)
+```
+
+On every high-assisted subsequence, choose the near-maximizing pairs from `(445)` and decompose
+`y_j=y_(C,j)+y_(F,j)` with `y_C=Q_(T,Y)y` and `y_F=F_Yy`.  Then for all sufficiently large `j`,
+
+```text
+|<B_C y_(C,j),x_j>|/
+ [<Lx_j,x_j><Dy_j,y_j>]^(1/2)
+ >=1/sqrt(15)-o(1),                                  (448)
+
+||y_(C,j)||/||y_j||
+ >=c r_j/log(r_j^(-1)+2)^2,                          (449)
+
+sum_(b_T<|gamma|<=Y_j)|y_(j,gamma)|^2
+ >=c^2 r_j^2/log(r_j^(-1)+2)^4 ||y_j||^2.            (450)
+```
+
+In particular, no necessary high-assisted coherence witness can be supported entirely above
+`r^(-(6+kappa))`.  Astronomically remote clusters from Theorem AY are irrelevant twice over:
+their energy can be below the ridge scale, and the whole low/far block interaction vanishes after
+ridge normalization.
+
+#### Proof
+
+For `Y>=2b_T`, the sinc-kernel formula `(305)` gives
+
+```text
+||P_T K_a F_Y||_HS^2
+ <=16 N(2T) sum_(|eta|>Y)m_eta/(1+eta^2)
+ =O(T log(T+2) log(Y+2)/Y).                           (451)
+```
+
+Here only Riemann--von Mangoldt counting and partial summation are used.  Since `L>=rI` and the
+far principal block is at least `rI`, division by the two ridge energies proves `(447)` after
+substituting `T=r^(-4)` and `Y=r^(-(6+kappa))`.
+
+For a full high vector, positivity of the complete Gram block gives
+`<Lx,x>^(1/2)<Dy,y>^(1/2)>=r||x||||y||`.  The far contribution to its normalized cross pairing is
+therefore at most `||P_TK_aF_Y||/r=o(1)`.  Subtract this from the near-maximal total pairing in
+`(445)` to obtain `(448)`.  The collar block norm is at most the full cross-cutoff capacity
+`C_T=O(log(T+2)^2)`.  Thus its normalized contribution is at most
+
+```text
+[C_T/r] ||y_C||/||y||.
+```
+
+Comparison with `(448)` proves `(449)`, and squaring proves `(450)`.
+
+The sinc tail, Hilbert--Schmidt estimate, and triangle inequality are classical and are not claimed
+new.  Candidate-new content is the exact Suzuki frontier consequence: the `T=r^(-4)` Schur split,
+two ridge normalizations, and target coherence threshold force a polynomial ordinate horizon and
+a quantitative collar coefficient mass.  The exponent `6+kappa` is the strongest output of these
+inputs, not claimed sharp.  Generic collar-mass extraction from total-minus-far coherence is
+Lean-proved in `HTGeometry/RidgeMatchedCoherenceBarrier.lean`; the Xi tail estimate and moving-
+cutoff transport remain paper-level.  This theorem still does not align the collar singular
+direction with the literal source residual or control its internal sinc-Gram gaps.
+
+### 14.45 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -6741,7 +6825,20 @@ exclusion inside the ridge-matched band `(445)--(446)` remains open.
      scale is ridge-matched, not merely small relative to aperture.
 143. **The ridge floor closes high assistance -- failed.**  It is a necessary lower scale, not an
      upper coercivity bound.  Current zero information neither constructs nor excludes pairs in
-     the band `(445)--(446)` with source-aligned coherence square at least `1/15`.
+     the band `(445)--(446)` with coherence square at least `1/15`; even such a pair must still be
+     aligned with the literal source-residual cyclic subspace.
+144. **A necessary ridge-matched packet may live at arbitrarily high ordinate -- failed.**  The
+     low/far Hilbert--Schmidt tail, divided by both ridge floors, tends to zero beyond every horizon
+     `Y=r^(-(6+kappa))`.
+145. **The high witness can remain entirely beyond that horizon while a low collar mediates the
+     coupling -- failed.**  Splitting its own coordinates shows a near-maximal witness must place
+     coefficient fraction at least `c r/log(1/r)^2` inside `r^(-4)<|gamma|<=r^(-(6+kappa))`.
+146. **Polynomial confinement closes the high-assisted branch -- failed.**  The collar still
+     contains polynomially many zeros and has uncontrolled internal gaps.  Neither counting nor
+     the cross-tail estimate controls its ridge-matched singular directions.
+147. **A collar canonical-correlation witness is already source admission -- failed.**  Theorem
+     AV uses global canonical correlation as a necessary envelope.  The corresponding singular
+     pair may be orthogonal to the cyclic direction selected by the literal source residual.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -6772,6 +6869,7 @@ improvement split, source-bearing-core/shaping-cloud law, and sharp cross-cohere
 The valid low-only aperture ceiling and complete negative mechanism diagram are `(431)--(434)`.
 Ultraviolet ultranull abundance, including multiplicities, is `(435)--(441)`; the ridge-matched
 visibility correction is `(442)--(446)`.
+The polynomial coherence horizon and collar-mass floor are `(447)--(451)`.
 The internal novelty audit found a direct parent for the compact-group parts of Theorems AL and
 AN: the already-formalized `suzuki-screw-compact-hull-parity-law.md` proves the universal relation
 hull, cofinal recurrence, Haar law, and homogeneous all-minus-one parity criterion.  Accordingly
@@ -6789,6 +6887,7 @@ The resulting relative near-null-packet/exponential-scale alternative is `(426)-
 The branch-sensitive low-only schedule ceiling is `(431)--(434)`.
 The multiplicity-robust ultraviolet ultranull construction is `(435)--(441)`.
 The exact visibility barrier and ridge-matched frontier correction are `(442)--(446)`.
+The polynomial ordinate horizon and necessary collar mass are `(447)--(451)`.
 The pure-frequency Nikolskii inequality used for the former and the
 Paley--Wiener/Jensen uniqueness mechanism used for the latter are classical and are not claimed
 new.  Targeted arXiv searches found

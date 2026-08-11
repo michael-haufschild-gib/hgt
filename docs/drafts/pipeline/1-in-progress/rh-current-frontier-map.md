@@ -1341,7 +1341,8 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
   `tau_H->0`, while a high-assisted branch has `ell_L<=7/8` and `chi_H>1/16`, every such branch
   satisfies `liminf rho^2>=1/15`.  This exact threshold is the first scale-free price on the
   cancellation cloud.  Proving the literal Xi sinc-Gram coherence stays below `1/15` excludes
-  high assistance; constructing coherence above it validates the mechanism.  Existing
+  high assistance; constructing coherence above it only passes a necessary gate and does not
+  align its singular directions with the literal source residual.  Existing
   Hilbert--Schmidt cross capacity has the wrong normalization and decides neither outcome;
 - once target forcing supplies `rho>1/4`, that same capacity has a valid converse use.  A
   coherence witness has geometric-mean regularized block Rayleigh quotient below
@@ -1370,9 +1371,17 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
   unregularized Rayleigh energies above `r/14`.  Combined with cross capacity, a high-assisted
   near-maximizer has both sides ridge-visible while one regularized energy is
   `O(log(T+2)^2)`.  Thus smallest-singular-value constructions and high-block coercivity are both
-  dead as closure strategies.  Missing fact is exclusively source-aligned Xi sinc-Gram coherence
-  inside this ridge-matched band.  Generic visibility and the exact `r/14` threshold are
-  Lean-proved in `HTGeometry/RidgeMatchedCoherenceBarrier.lean`;
+  dead as closure strategies.  Missing facts are ridge-matched Xi sinc-Gram coherence and its
+  alignment with the literal source-residual cyclic direction.  Generic visibility and the exact
+  `r/14` threshold are Lean-proved in `HTGeometry/RidgeMatchedCoherenceBarrier.lean`;
+- necessary canonical-correlation witnesses cannot escape arbitrarily far into that high block.
+  For every fixed `kappa>0`, the low block below `T=r^(-4)` has regularized coherence `o(1)` with
+  ordinates above `Y=r^(-(6+kappa))`; this follows from the exact tail bound
+  `||P_TK_aF_Y||_HS^2=O(T log T log Y/Y)`. A near-maximal witness must place coefficient fraction
+  at least `c r/log^2(1/r)` in the polynomial collar `T<|gamma|<=Y`. Thus remote clustered packets
+  and far-only high vectors are dead. The remaining collar still has uncontrolled internal gaps,
+  and its global canonical pair need not align with the literal source residual. Generic collar
+  extraction is Lean-proved in `HTGeometry/RidgeMatchedCoherenceBarrier.lean`;
 - the surviving zero-mass geometry is quantitative.  Fixed-mass annihilation makes both normalized
   literal-source spectral laws converge weakly to `delta_0`.  Yet exact target response and
   `R_Xi>81/4` force the odd Stieltjes factor below `4/81`, hence less than `8/81` of odd mass below
@@ -3264,6 +3273,36 @@ polynomial.
     global PNT, and upper-bound interval sieves leave an `X H^2` main-scale term and cannot supply
     the required centred second-moment cancellation. The surviving task is dyadic factor grouping
     plus pointwise/large-value exclusion in the high-`sigma` band.
+55. Umbrella-reachable and direct-checked `Sieve/HeathBrownDyadicPointwise.lean` and
+    `Sieve/MaynardPointwiseExclusion.lean` close the pointwise half of that high-`sigma`
+    classification. A sharply truncated zeta or logarithm dyadic factor is proved to be exactly the
+    half-open block
+
+    ~~~
+    [2^q, min(X+1,2^(q+1))).
+    ~~~
+
+    The existing `k_0`-th derivative test therefore gives the zeta factor the power saving
+    `N^(-1/(3*2^k_0))`. A new increasing-weight Abel theorem inserts the unique `log n`
+    coefficient at cost only `2 log M`, preserving that power. Lean then extracts the exact
+    large-value exponent ceiling
+
+    ~~~
+    alpha <= 1 - delta + log(C)/log(N),  delta=1/(3*2^k_0),
+    ~~~
+
+    absorbs the constant at sufficiently large factor length to retain deficit `delta/2`, and
+    propagates one factor of relative length `N>=x^ell` to the global exclusion
+
+    ~~~
+    sigma <= 1 - ell*delta/2.
+    ~~~
+
+    This formalizes Maynard's near-one long-zeta/log-factor derivative-test case, including the
+    degree-one logarithm packet, without `R*`, moment input, or an external exponential-sum axiom.
+    The surviving high-`sigma` cases are now exact: all factors short enough for a raised Huxley
+    estimate, and the ultra-near-one configuration whose long factor can be Möbius and therefore
+    requires a polynomial-height quantitative inverse-zeta contour (or new aggregate cancellation).
 
 **Open core.** Prove cofinal cancellation of centered von Mangoldt atoms inside the finite mass
 light cone, preferably through exact joint pairing before norms. In the Wold/Deninger chart, safe
@@ -3274,10 +3313,12 @@ stronger positive domination that implies it. Live analytic source theorem must 
 signed/coherent radial continuation of the residual-plus-mesh package while preserving the
 critical Wold principal part, or use a distributional/Hardy boundary class that permits those
 poles. On arithmetic side, complete Maynard finite-product assembly and smooth aggregate passage
-are formal through item 54. Sharp aggregate truncation optimization is retired by item 52. Item 54
-removes `R*` from every level `sigma<=99/100`; first close dyadic factor grouping and the remaining
-near-maximal-value band using the corpus's zeta-block derivative-test and Möbius-twist cancellation
-estimates. Full structured `R/R*` analysis remains a fallback, not the default wall. Either
+are formal through item 55. Sharp aggregate truncation optimization is retired by item 52. Item 54
+removes `R*` from every level `sigma<=99/100`; item 55 closes every near-maximal configuration with
+a sufficiently long zeta or logarithm factor in the derivative-test window. First close the
+all-short-factor raised-Huxley estimate, then the ultra-near-one long-Möbius survivor using a
+polynomial-height quantitative inverse-zeta contour or cancellation of the complete signed
+aggregate. Full structured `R/R*` analysis remains a fallback, not the default wall. Either
 large-values route can produce critical mesh energy but cannot by itself impose absolute residual
 boundary trace.
 Control at only one small positive residual height excludes only corresponding outer substrip and
@@ -3678,6 +3719,20 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     center flow, analyticity, spectral-radius separation, and every absolute-divisor majorant are
     closed as anchoring mechanisms.  This is paper-proved in
     `mass-shifted-moving-center-pade-worldline-law`; no Lean declaration is claimed.
+59. The simple-ground Fourier real-zero theorem is parity-free.  Connes--van Suijlekom prove the
+    even case.  In the missing odd case, the first-order commutator does not control the Fourier
+    resolvent, but its restriction after squaring the frequency operator does.  If `xi` spans a
+    one-dimensional odd kernel, normalize `<D eta,xi>=1` and set
+    `T'=D^2-|D^2 xi><D eta|` on the odd sector.  The commutator makes `T'` self-adjoint in the
+    separated `Q`-metric, while one exact `Q`-Cauchy--Schwarz estimate makes it nonnegative.  Its
+    determinant is the numerator of the odd Fourier resolvent in the variable `z^2`; hence every
+    Fourier zero is real.  Approximation and Hurwitz remove the parity assumption for every simple
+    isolated truncated-convolution ground.  This falsifies the proposed odd-ground closure of
+    Route U: an earlier odd descent is compatible with the real-zero theorem and need not vanish at
+    the even root `i kappa`.  The real wall is full-ground parity selection or a literal
+    cross-parity coupling, not extension of zero reality.  This is paper-proved in
+    `parity-free-simple-ground-fourier-real-zero-law`; novelty is unverified and no Lean wrapper is
+    claimed.
 
 **Open core.** Route U has two irreducible branches. In the degenerate/root-sign branch, items
 55--58 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
@@ -3695,6 +3750,14 @@ contradiction.  Equivalently, rule out the `sqrt(tau)` Lorentzian regularized-ca
 uniformly on every compact positive `kappa` interval.  Generic reduced-resolvent positivity,
 pointwise control off the roots, and unscaled capacity averaging do not decide which alternative
 occurs.
+
+Odd or degenerate Connes--van Suijlekom extension is also closed as a stand-alone mechanism.
+Positive terminal mass makes `i kappa` common only to the even kernel; it does not constrain an odd
+lower-ground vector there.  Moreover item 59 proves that a simple odd lower ground is itself
+Fourier-real-rooted, so odd descent supplies no contradiction.  A viable use of the full-ground
+theorem must first prove from the literal completed-Xi source that the selected even boundary state
+is the full bottom, or derive a new cross-parity identity forcing its nonreal zero onto every lower
+odd ground.
 
 Contact orientation is closed as a mechanism: every first Padé defect gives the same signed first
 nonzero derivative to every hard node, but a positive derivative at a flat face does not make its

@@ -101,4 +101,73 @@ theorem cross_sq_gt_oneFifteenth_forces_ridge_matched
     have hvis := cross_sq_visibility_le_right A C r (1 / 14) x y hr (by norm_num) hsmall
     nlinarith
 
+/-- If a total cross interaction exceeds `theta` ridge units while its far part costs at most
+`delta` ridge units, the intermediate collar carries the remaining coefficient mass.  Arithmetic
+applications separately bound the two displayed component pairings. -/
+theorem cross_coherence_forces_collar_mass
+    (Bmid Bfar : Y →L[ℂ] X) (r theta delta C : ℝ)
+    (x : X) (y yMid yFar : Y)
+    (hmid : ‖inner ℂ (Bmid yMid) x‖ ≤ C * ‖yMid‖ * ‖x‖)
+    (hfar : ‖inner ℂ (Bfar yFar) x‖ ≤ delta * r * ‖y‖ * ‖x‖)
+    (hcoh : theta * r * ‖x‖ * ‖y‖ <
+      ‖inner ℂ (Bmid yMid + Bfar yFar) x‖) :
+    (theta - delta) * r * ‖y‖ < C * ‖yMid‖ := by
+  have hx0 : x ≠ 0 := by
+    intro hx
+    subst x
+    simp at hcoh
+  have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr hx0
+  have hsplit : ‖inner ℂ (Bmid yMid + Bfar yFar) x‖ ≤
+      C * ‖yMid‖ * ‖x‖ + delta * r * ‖y‖ * ‖x‖ := by
+    calc
+      ‖inner ℂ (Bmid yMid + Bfar yFar) x‖ =
+          ‖inner ℂ (Bmid yMid) x + inner ℂ (Bfar yFar) x‖ := by rw [inner_add_left]
+      _ ≤ ‖inner ℂ (Bmid yMid) x‖ + ‖inner ℂ (Bfar yFar) x‖ := norm_add_le _ _
+      _ ≤ C * ‖yMid‖ * ‖x‖ + delta * r * ‖y‖ * ‖x‖ := add_le_add hmid hfar
+  have hfact : ((theta - delta) * r * ‖y‖) * ‖x‖ <
+      (C * ‖yMid‖) * ‖x‖ := by
+    nlinarith [lt_of_lt_of_le hcoh hsplit]
+  exact lt_of_mul_lt_mul_right hfact hxpos.le
+
+omit [InnerProductSpace ℂ H] in
+/-- A vector difference with squared norm above `1/16` has one component above `1/64`. -/
+theorem oneSixteenth_lt_norm_sub_sq_split (p q : H)
+    (hgain : 1 / 16 < ‖p - q‖ ^ 2) :
+    1 / 64 < ‖p‖ ^ 2 ∨ 1 / 64 < ‖q‖ ^ 2 := by
+  by_contra h
+  rw [not_or] at h
+  have hp := le_of_not_gt h.1
+  have hq := le_of_not_gt h.2
+  have hp' : ‖p‖ ≤ 1 / 8 := by nlinarith [norm_nonneg p]
+  have hq' : ‖q‖ ≤ 1 / 8 := by nlinarith [norm_nonneg q]
+  have htri : ‖p - q‖ ≤ ‖p‖ + ‖q‖ := norm_sub_le p q
+  nlinarith [norm_nonneg (p - q)]
+
+/-- If the direct-source part alone exceeds `1/64`, its resolvent envelope forces the normalized
+Schur gap below `64 tau`. -/
+theorem directSource_gain_forces_gap_lt
+    {rho tau direct : ℝ}
+    (hrho : 0 ≤ rho) (hrho1 : rho < 1)
+    (hdirect : 1 / 64 < direct)
+    (henvelope : direct ≤ tau / (1 - rho ^ 2)) :
+    1 - rho ^ 2 < 64 * tau := by
+  have hden : 0 < 1 - rho ^ 2 := by nlinarith
+  have hscaled : direct * (1 - rho ^ 2) ≤ tau :=
+    (le_div_iff₀ hden).mp henvelope
+  nlinarith
+
+/-- The exact source-cyclic threshold: gain above `1/64`, low source mass at most `7/8`, and a
+spectral envelope `beta / (1 - beta)` force `beta > 1/57`. -/
+theorem sourceCyclic_sq_gt_oneFiftySeventh
+    {beta ell gain : ℝ}
+    (hbeta : 0 ≤ beta) (hbeta1 : beta < 1)
+    (hell : ell ≤ 7 / 8)
+    (hgain : 1 / 64 < gain)
+    (henvelope : gain ≤ beta * ell / (1 - beta)) :
+    1 / 57 < beta := by
+  have hden : 0 < 1 - beta := sub_pos.mpr hbeta1
+  have hscaled : gain * (1 - beta) ≤ beta * ell :=
+    (le_div_iff₀ hden).mp henvelope
+  nlinarith
+
 end GaloisForLFunctions.HTGeometry
