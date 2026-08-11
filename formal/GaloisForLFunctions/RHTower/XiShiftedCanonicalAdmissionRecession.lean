@@ -197,6 +197,30 @@ theorem monicMomentAdmissionPolynomial_normalizedCentralBinom_eq_amplitude
 def dimensionlessAdmission (w : ℝ) (n : ℕ) : Polynomial ℝ :=
   HTGeometry.monicMomentAdmissionPolynomial (xiShiftedFarRightNormalizedMoment w) n
 
+/-- Every fixed-degree inverse-Hankel polynomial is eventually an actual shifted-Xi admission,
+not merely a totalized inverse-matrix expression. -/
+theorem dimensionlessAdmission_eventually_orthogonal (n : ℕ) :
+    ∀ᶠ w : ℝ in atTop, ∀ i : Fin n,
+      HTGeometry.momentFunctional (xiShiftedFarRightNormalizedMoment w)
+        (X ^ (i : ℕ) * dimensionlessAdmission w n) = 0 := by
+  filter_upwards [xiShiftedFarRightNormalizedHankelMatrix_posDef_eventually n] with w hw
+  intro i
+  apply HTGeometry.momentFunctional_X_pow_mul_monicMomentAdmissionPolynomial_eq_zero
+  exact ne_of_gt hw.det_pos
+
+/-- Eventually, the dimensionless admission is the unique monic degree-`n` polynomial satisfying
+the shifted-Xi lower-moment equations. -/
+theorem dimensionlessAdmission_eventually_unique (n : ℕ) :
+    ∀ᶠ w : ℝ in atTop, ∀ p : Polynomial ℝ,
+      p.Monic → p.natDegree = n →
+      (∀ i : Fin n, HTGeometry.momentFunctional
+        (xiShiftedFarRightNormalizedMoment w) (X ^ (i : ℕ) * p) = 0) →
+      p = dimensionlessAdmission w n := by
+  filter_upwards [xiShiftedFarRightNormalizedHankelMatrix_posDef_eventually n] with w hw
+  intro p hp hdegree horth
+  exact HTGeometry.eq_monicMomentAdmissionPolynomial_of_monic_of_orthogonal
+    (ne_of_gt hw.det_pos) hp hdegree horth
+
 /-- Every coefficient of a fixed-degree shifted-Xi admission converges to shifted Chebyshev. -/
 theorem tendsto_dimensionlessAdmission_coeff
     {n : ℕ} (hn : n ≠ 0) (k : ℕ) :

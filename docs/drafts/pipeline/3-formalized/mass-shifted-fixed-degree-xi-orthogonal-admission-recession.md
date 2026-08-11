@@ -1,8 +1,8 @@
 # Fixed-degree Xi orthogonal admission and adaptive-source recession
 
 - **ID:** mass-shifted-fixed-degree-xi-orthogonal-admission-recession
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean 4)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` · §9.3 Exact open core
 - **Statement:** Every fixed nonzero degree has a canonical monic Xi moment admission; after exact mass dilation it converges coefficientwise to shifted monic Chebyshev, and its source-first adaptive arithmetic aggregate has the strictly positive arcsine margin already computed in Lean.
 
@@ -18,7 +18,7 @@ without a reporter, orientation map, or RH assumption.
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, axiom audit PASS
+- [x] 2 → 3  formalized: Lean certificates below, targeted `lake build` green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -130,6 +130,28 @@ degree-escape estimate, not construction of another source or orientation.
 - **Exact output:** canonical admission, boundary specialization, exact dilation identity, fixed-
   degree positive arithmetic-source recession, and sharp degree-escape obstruction.
 
+## Lean certificate
+
+- Generic canonical monic admission and uniqueness:
+  `GaloisForLFunctions.HTGeometry.MonicMomentAdmission`
+- Shifted-arcsine identification and fixed-degree Xi coefficient recession:
+  `GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionRecession`
+- Exact source-coordinate dilation, scaled literal-source recession, exact margins, and eventual
+  positivity:
+  `GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionSourceRecession`
+- Capstones:
+  `HTGeometry.eq_monicMomentAdmissionPolynomial_of_monic_of_orthogonal`,
+  `HTGeometry.tendsto_monicMomentAdmissionPolynomial_coeff`,
+  `RHTower.XiShiftedCanonicalAdmission.monicMomentAdmissionPolynomial_normalizedCentralBinom_eq_amplitude`,
+  `RHTower.XiShiftedCanonicalAdmission.scaled_arithmeticSource_sourceCoordinateDilation`,
+  `RHTower.XiShiftedCanonicalAdmission.tendsto_scaled_canonicalArithmeticSource`, and
+  `RHTower.XiShiftedCanonicalAdmission.canonicalArithmeticSource_eventually_pos`.
+- Verification: direct `lake env lean` checks passed; targeted
+  `lake build GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionSourceRecession` passed;
+  axiom audit reports only `[propext, Classical.choice, Quot.sound]`.
+
 ## Log
 
 - 2026-08-11 — created directly in `1-in-progress`; dependency-closed paper proof completed.
+- 2026-08-11 — formalized full fixed-degree producer law and source recession; targeted build and
+  axiom audit passed; moved to `3-formalized`.

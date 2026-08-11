@@ -582,6 +582,10 @@ theorem finiteUnitaryAdjointAutocorrelationIntegrand_reindex
         (Matrix.reindexAlgEquiv ℂ ℂ e H) (unitaryGroupReindex e U) =
       finiteUnitaryAdjointAutocorrelationIntegrand H U := by
   unfold finiteUnitaryAdjointAutocorrelationIntegrand
+  have hcoe :
+      (((unitaryGroupReindex e U : Matrix.unitaryGroup κ' ℂ) : Matrix κ' κ' ℂ)) =
+        Matrix.reindexAlgEquiv ℂ ℂ e (U : Matrix κ κ ℂ) := rfl
+  rw [hcoe]
   rw [← reindexAlgEquiv_star, ← map_mul, ← map_mul, ← map_mul,
     reindexAlgEquiv_trace]
 
@@ -600,7 +604,8 @@ theorem haar_adjointAutocorrelationIntegral_eq_traceEnergy
     Matrix.reindexAlgEquiv ℂ ℂ e H
   have hA : A.IsHermitian := reindexAlgEquiv_isHermitian e hH
   have hAtrace : A.trace = 0 := by
-    rw [A, reindexAlgEquiv_trace]
+    change (Matrix.reindexAlgEquiv ℂ ℂ e H).trace = 0
+    rw [reindexAlgEquiv_trace]
     exact htrace
   have htrans := integral_finiteUnitaryHaar_reindex e
     (finiteUnitaryAdjointAutocorrelationIntegrand A)
@@ -622,7 +627,10 @@ theorem haar_adjointAutocorrelationIntegral_eq_traceEnergy
         ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) := by
       rw [trace_mul_self_re_eq_sum_sq_eigenvalues A hA]
     _ = _ := by
-      rw [A, ← map_mul, reindexAlgEquiv_trace]
+      change (Matrix.trace
+        (Matrix.reindexAlgEquiv ℂ ℂ e H * Matrix.reindexAlgEquiv ℂ ℂ e H)).re ^ 2 /
+          ((((d + 2 : ℕ) : ℝ) ^ 2) - 1) = _
+      rw [← map_mul, reindexAlgEquiv_trace]
 
 /-- **Register-independent half-energy Haar tail.** On every finite register of dimension
 `D ≥ 2`, Haar probability of retaining at least half the full adjoint autocorrelation of a fixed
@@ -639,7 +647,8 @@ theorem haar_measureReal_half_traceEnergy_adjointAutocorrelation_le
   let S : ℝ := (Matrix.trace (H * H)).re
   let ε : ℝ := (S / 2) ^ 2
   have hS : 0 < S := by
-    rw [S, trace_mul_self_re_eq_sum_sq_eigenvalues H hH]
+    change 0 < (Matrix.trace (H * H)).re
+    rw [trace_mul_self_re_eq_sum_sq_eigenvalues H hH]
     exact sum_sq_eigenvalues_pos_of_ne_zero H hH hzero
   have hε : 0 < ε := sq_pos_of_pos (div_pos hS (by norm_num))
   have hnonneg : 0 ≤ᵐ[finiteUnitaryHaar κ]

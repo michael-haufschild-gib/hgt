@@ -185,6 +185,13 @@ noncomputable def conePr (n : ℤ) :
 @[simp] theorem conePr_cls (n : ℤ) (y : (coneComplex Φ).cocycles n) :
     conePr Φ n ((coneComplex Φ).cls y) = C.cls (conePrCocycles Φ n y) := rfl
 
+/-- A cone class whose source projection is a nonzero source class is itself nonzero: a degree-zero
+cone boundary has source coordinate a source coboundary. -/
+theorem cone_cls_ne_zero_of_conePr_ne_zero (n : ℤ) (y : (coneComplex Φ).cocycles n)
+    (h : C.cls (conePrCocycles Φ n y) ≠ 0) : (coneComplex Φ).cls y ≠ 0 := by
+  intro hz
+  exact h (by rw [← conePr_cls, hz, map_zero])
+
 /-- **Card `(ROD.9)`, exactness at the cone.**  The image of the target cohomology is exactly the
 kernel of the projection. -/
 theorem cone_exact_left (n : ℤ) :

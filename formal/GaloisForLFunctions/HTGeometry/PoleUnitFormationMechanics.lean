@@ -40,7 +40,8 @@ theorem polarScaleResponse_cocycle (r : ℕ) (U : ℂ → ℂ) (ε u v : ℂ)
       polarScaleResponse r U ε u * polarScaleResponse r U (ε * u) v := by
   rw [polarScaleResponse, polarScaleResponse, polarScaleResponse,
     correctedScaleResponse_cocycle U ε u v hε hεu]
-  field_simp [hu, hv] <;> ring_nf
+  field_simp [hu, hv]
+  ring_nf
 
 /-- Multiplying the pole response by the universal pole factor recovers the regular response. -/
 theorem polar_corrected_split (r : ℕ) (U : ℂ → ℂ) (ε w : ℂ) (hw : w ≠ 0) :
@@ -103,12 +104,13 @@ def correctionJetPolynomial (ell : ℕ → ℂ) (N : ℕ) (w : ℂ) : Polynomial
 theorem correctionJetPolynomial_coeff (ell : ℕ → ℂ) (N k : ℕ) (w : ℂ) (hk : k ≤ N) :
     (correctionJetPolynomial ell N w).coeff k = ell k * (w ^ k - 1) := by
   classical
-  rw [correctionJetPolynomial, Polynomial.coeff_sum]
+  rw [correctionJetPolynomial, Polynomial.finsetSum_coeff]
   rw [Finset.sum_eq_single k]
   · simp
   · intro b hb hbk
-    simp [Polynomial.coeff_monomial, Ne.symm hbk]
-  · exact Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hk)
+    exact Polynomial.coeff_monomial_of_ne _ (Ne.symm hbk)
+  · intro hnot
+    exact (hnot (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hk))).elim
 
 /-- **One-scale reconstruction.**  Every nonresonant scale recovers each retained coefficient. -/
 theorem correctionJetPolynomial_reconstruct (ell : ℕ → ℂ) (N k : ℕ) (w : ℂ)

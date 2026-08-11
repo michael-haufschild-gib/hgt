@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.AdaptiveEigenframeTwoQuerySourceMemory
+import GaloisForLFunctions.HTGeometry.FiniteUnitaryAdjointAutocorrelationLaw
 
 /-!
 # Energy-matched eigenframe source memory
@@ -164,6 +164,157 @@ theorem autonomous_majoranaQBody_energyMatchedEigenframeAmplitude_ge
     (MajoranaQBodyDictionary n q) (majoranaQBodyHamiltonian c)
     (majoranaQBodyHamiltonian_ne_zero c hc)
     (majoranaQBodyHamiltonian_hasDictionarySupport c) t
+
+/-! ## Generator-matched Haar separation -/
+
+/-- Unnormalized Hilbert--Schmidt autocorrelation of a source with its conjugate. -/
+def matrixEnergyAdjointAutocorrelation
+    {κ : Type*} [Fintype κ]
+    (H U : Matrix κ κ ℂ) : ℝ :=
+  (Matrix.trace (H * star U * H * U)).re
+
+/-- Every conjugation fixing `H` retains its full spectral energy. -/
+theorem matrixEnergyAdjointAutocorrelation_eq_trace_mul_self_of_fixed
+    {κ : Type*} [Fintype κ]
+    (H U : Matrix κ κ ℂ) (hfix : star U * H * U = H) :
+    matrixEnergyAdjointAutocorrelation H U = (Matrix.trace (H * H)).re := by
+  calc
+    matrixEnergyAdjointAutocorrelation H U =
+        (Matrix.trace (H * (star U * H * U))).re := by
+      unfold matrixEnergyAdjointAutocorrelation
+      congr 2
+      noncomm_ring
+    _ = (Matrix.trace (H * H)).re := by rw [hfix]
+
+/-- Every conjugation fixing `H` retains its full spectral energy. -/
+theorem matrixEnergyAdjointAutocorrelation_eq_sum_sq_eigenvalues_of_fixed
+    {κ : Type*} [Fintype κ] [DecidableEq κ]
+    (H U : Matrix κ κ ℂ) (hH : H.IsHermitian)
+    (hfix : star U * H * U = H) :
+    matrixEnergyAdjointAutocorrelation H U =
+      ∑ i, (hH.eigenvalues i) ^ 2 := by
+  calc
+    matrixEnergyAdjointAutocorrelation H U = (Matrix.trace (H * H)).re :=
+      matrixEnergyAdjointAutocorrelation_eq_trace_mul_self_of_fixed H U hfix
+    _ = _ := trace_mul_self_re_eq_sum_sq_eigenvalues H hH
+
+/-- Autonomous Schrödinger evolution retains full generator autocorrelation at every real time. -/
+theorem autonomous_matrixEnergyAdjointAutocorrelation_eq
+    {κ : Type*} [Fintype κ] [DecidableEq κ]
+    (H : selfAdjoint (Matrix κ κ ℂ)) (t : ℝ) :
+    matrixEnergyAdjointAutocorrelation (H : Matrix κ κ ℂ)
+        (exp (t • ((-Complex.I) • (H : Matrix κ κ ℂ)))) =
+      (Matrix.trace ((H : Matrix κ κ ℂ) * (H : Matrix κ κ ℂ))).re := by
+  apply matrixEnergyAdjointAutocorrelation_eq_trace_mul_self_of_fixed
+  exact congrArg Subtype.val (finiteMatrixSelfAdjointConjugation_fixes_energy H t)
+
+/-- The Haar integrand is the square of the literal matrix energy autocorrelation. -/
+theorem finiteUnitaryAdjointAutocorrelationIntegrand_eq_energy_sq
+    {κ : Type*} [Fintype κ] [DecidableEq κ]
+    (H : Matrix κ κ ℂ) (U : Matrix.unitaryGroup κ ℂ) :
+    finiteUnitaryAdjointAutocorrelationIntegrand H U =
+      matrixEnergyAdjointAutocorrelation H (U : Matrix κ κ ℂ) ^ 2 := by
+  rfl
+
+/-- **Permanent autonomous-source versus Haar separation on qubits.** Every nonzero traceless
+autonomous Hamiltonian retains its entire generator autocorrelation at every time, whereas a Haar
+unitary retains even half that amplitude with probability at most `4 / (D² - 1)`, `D = 2ⁿ`.
+The tail has no spectral-gap or dictionary-size hypothesis. -/
+theorem autonomous_full_energy_and_haar_half_energy_separation
+    {n : ℕ} (hn : 1 ≤ n)
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration (Fin n))
+        (FiniteQubitConfiguration (Fin n)) ℂ))
+    (htrace : (H : Matrix (FiniteQubitConfiguration (Fin n))
+      (FiniteQubitConfiguration (Fin n)) ℂ).trace = 0)
+    (hzero : H ≠ 0) (t : ℝ) :
+    matrixEnergyAdjointAutocorrelation
+        (H : Matrix (FiniteQubitConfiguration (Fin n))
+          (FiniteQubitConfiguration (Fin n)) ℂ)
+        (exp (t • ((-Complex.I) •
+          (H : Matrix (FiniteQubitConfiguration (Fin n))
+            (FiniteQubitConfiguration (Fin n)) ℂ)))) =
+        (Matrix.trace
+          ((H : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ) *
+            (H : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ))).re ∧
+      (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
+          {U | ((Matrix.trace
+              ((H : Matrix (FiniteQubitConfiguration (Fin n))
+                  (FiniteQubitConfiguration (Fin n)) ℂ) *
+                (H : Matrix (FiniteQubitConfiguration (Fin n))
+                  (FiniteQubitConfiguration (Fin n)) ℂ))).re / 2) ^ 2 ≤
+            finiteUnitaryAdjointAutocorrelationIntegrand
+              (H : Matrix (FiniteQubitConfiguration (Fin n))
+                (FiniteQubitConfiguration (Fin n)) ℂ) U} ≤
+        4 / ((((2 ^ n : ℕ) : ℝ) ^ 2) - 1) := by
+  have hpow : 2 ≤ 2 ^ n := by
+    calc
+      2 = 2 ^ 1 := by norm_num
+      _ ≤ 2 ^ n := Nat.pow_le_pow_right (by norm_num) hn
+  have hcard :
+      Fintype.card (FiniteQubitConfiguration (Fin n)) =
+        Fintype.card (Fin 2 ⊕ Fin (2 ^ n - 2)) := by
+    simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin,
+      Fintype.card_sum]
+    omega
+  let e : FiniteQubitConfiguration (Fin n) ≃ Fin 2 ⊕ Fin (2 ^ n - 2) :=
+    Fintype.equivOfCardEq hcard
+  constructor
+  · exact autonomous_matrixEnergyAdjointAutocorrelation_eq H t
+  · have hHmatrix :
+        (H : Matrix (FiniteQubitConfiguration (Fin n))
+          (FiniteQubitConfiguration (Fin n)) ℂ) ≠ 0 := by
+      intro h
+      apply hzero
+      exact Subtype.ext h
+    have hHherm :
+        (H : Matrix (FiniteQubitConfiguration (Fin n))
+          (FiniteQubitConfiguration (Fin n)) ℂ).IsHermitian := by
+      rw [Matrix.IsHermitian, ← Matrix.star_eq_conjTranspose]
+      exact H.prop
+    have htail := haar_measureReal_half_traceEnergy_adjointAutocorrelation_le
+      (2 ^ n - 2) e
+      (H : Matrix (FiniteQubitConfiguration (Fin n))
+        (FiniteQubitConfiguration (Fin n)) ℂ)
+      hHherm htrace hHmatrix
+    have hdim : 2 ^ n - 2 + 2 = 2 ^ n := Nat.sub_add_cancel hpow
+    simpa only [hdim] using htail
+
+/-- Local-dictionary specialization combining the permanent one-query inverse-participation signal
+with dimension-only Haar anti-concentration for the same Hamiltonian source. -/
+theorem autonomous_dictionary_energyMatched_and_haar_separation
+    {n : ℕ} (hn : 1 ≤ n)
+    (p : (Fin n → Option (Fin 3)) → Prop) [DecidablePred p]
+    [Nonempty {P // p P}]
+    (H : selfAdjoint
+      (Matrix (FiniteQubitConfiguration (Fin n))
+        (FiniteQubitConfiguration (Fin n)) ℂ))
+    (hzero : H ≠ 0) (hsupport : HasPauliDictionarySupport p H)
+    (htrace : (H : Matrix (FiniteQubitConfiguration (Fin n))
+      (FiniteQubitConfiguration (Fin n)) ℂ).trace = 0)
+    (t : ℝ) :
+    1 / (Fintype.card {P // p P} : ℝ) ≤
+        energyMatchedEigenframeAmplitude (fun P : {P // p P} => P.1)
+          (pauliDictionaryEnergyCoordinates p H)
+          (exp (t • ((-Complex.I) •
+            (H : Matrix (FiniteQubitConfiguration (Fin n))
+              (FiniteQubitConfiguration (Fin n)) ℂ)))) ∧
+      (finiteUnitaryHaar (FiniteQubitConfiguration (Fin n))).real
+          {U | ((Matrix.trace
+              ((H : Matrix (FiniteQubitConfiguration (Fin n))
+                  (FiniteQubitConfiguration (Fin n)) ℂ) *
+                (H : Matrix (FiniteQubitConfiguration (Fin n))
+                  (FiniteQubitConfiguration (Fin n)) ℂ))).re / 2) ^ 2 ≤
+            finiteUnitaryAdjointAutocorrelationIntegrand
+              (H : Matrix (FiniteQubitConfiguration (Fin n))
+                (FiniteQubitConfiguration (Fin n)) ℂ) U} ≤
+        4 / ((((2 ^ n : ℕ) : ℝ) ^ 2) - 1) := by
+  constructor
+  · exact autonomous_energyMatchedEigenframeAmplitude_ge p H hzero hsupport t
+  · exact (autonomous_full_energy_and_haar_half_energy_separation
+      hn H htrace hzero t).2
 
 end
 

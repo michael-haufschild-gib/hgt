@@ -294,6 +294,23 @@ theorem canonicalArithmeticSource_eventually_pos
   · exact h.2
   · exact (not_lt_of_ge hfactor.le h.1).elim
 
+/-- **Admission-sensitive source producer.**  In every fixed positive degree, the unique monic
+shifted-Xi admission is selected before landing, and its mass-dilated adaptive arithmetic source
+is eventually strictly positive. -/
+theorem canonicalUniqueAdmissionArithmeticSource_eventually_pos
+    {n : ℕ} (hn : n ≠ 0) :
+    ∀ᶠ w : ℝ in atTop,
+      (∀ p : Polynomial ℝ,
+        p.Monic → p.natDegree = n →
+        (∀ i : Fin n, HTGeometry.momentFunctional
+          (xiShiftedFarRightNormalizedMoment w) (X ^ (i : ℕ) * p) = 0) →
+        p = dimensionlessAdmission w n) ∧
+      0 < xiShiftedAdaptiveMixedCompletedArithmeticSource w
+        (sourceCoordinateAdmission w n) := by
+  filter_upwards [dimensionlessAdmission_eventually_unique n,
+    canonicalArithmeticSource_eventually_pos hn] with w hadmission hsource
+  exact ⟨hadmission, hsource⟩
+
 end
 
 end XiShiftedCanonicalAdmission

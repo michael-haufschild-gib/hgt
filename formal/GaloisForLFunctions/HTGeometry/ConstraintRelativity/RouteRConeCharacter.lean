@@ -555,6 +555,174 @@ end RouteRSource
 
 end Exactification
 
+/-! ## The relative class is nonzero, and no orientation descends absolutely -/
+
+section RelativeNoGo
+
+namespace RouteRSource
+
+variable {A : Type} [AddCommGroup A] [Module ℂ A] (S : RouteRSource A)
+
+/-- **Card `(RRC.21)`.**  The relative cone class is nonzero.  A degree-zero cone boundary has
+source coordinate a source coboundary, and the retained class is not one. -/
+theorem exactifyConeClass_ne_zero : S.exactifyConeClass ≠ 0 :=
+  cone_cls_ne_zero_of_conePr_ne_zero S.exactifyMap (-1) ⟨_, S.exactify_cone_cocycle⟩
+    S.eta_class_ne_zero
+
+end RouteRSource
+
+variable {A : Type} [AddCommGroup A] [Module ℂ A] (S : RouteRSource A)
+  {Nfam : ℤ → Type} [∀ n, AddCommGroup (Nfam n)] [∀ n, Module ℂ (Nfam n)]
+  {X : ZCochain ℂ Nfam} (Φ : ZCochainMap S.complex X)
+
+/-- **Card `(RRC.23)`.**  A degree-one functional on the resolved complex that is a cochain map
+into a complex concentrated in degree one annihilates the image of the retained class, because
+that image is a coboundary of the adjoined primitive. -/
+theorem orientation_vanishes_of_primitive {V : Type} [AddCommGroup V] [Module ℂ V]
+    (Ψ : Nfam (0 + 1) →ₗ[ℂ] V) (hΨ : ∀ x : Nfam 0, Ψ (X.d 0 x) = 0)
+    (L : Nfam 0) (hL : (Φ.f 1 S.eta : Nfam (0 + 1)) = X.d 0 L) :
+    Ψ (Φ.f 1 S.eta) = 0 := by
+  rw [hL]
+  exact hΨ L
+
+/-- **Card `(RRC.23)`, Theorem C.**  No such functional can agree with a nonzero physical
+orientation on the retained class: the physical observer does not descend through resolved
+absolute cohomology. -/
+theorem no_orientation_factors {V : Type} [AddCommGroup V] [Module ℂ V]
+    (Ψ : Nfam (0 + 1) →ₗ[ℂ] V) (hΨ : ∀ x : Nfam 0, Ψ (X.d 0 x) = 0)
+    (L : Nfam 0) (hL : (Φ.f 1 S.eta : Nfam (0 + 1)) = X.d 0 L)
+    (cρ : ℂ) (v : V) (hne : cρ • v ≠ 0)
+    (hagree : Ψ (Φ.f 1 S.eta) = cρ • v) : False :=
+  hne (hagree ▸ orientation_vanishes_of_primitive S Φ Ψ hΨ L hL)
+
+namespace RouteRSource
+
+/-- **Card `(RRC.23)`, forward orientation.**  At and below the centre the forward physical value
+is nonzero, so it does not factor through the universal exactification. -/
+theorem exactify_no_forward_orientation {cρ : ℂ} (hc : cρ ≠ 0) {t : ℝ} (ht : t ≤ 0)
+    (Ψ : (A × ℂ) →ₗ[ℂ] physicalQuotient)
+    (hΨ : ∀ x : (A × ℂ), Ψ (S.exactifyComplex.d 0 x) = 0)
+    (hagree : Ψ (S.exactifyMap.f 1 S.eta) = cρ • eulerClass (-t)) : False := by
+  refine no_orientation_factors S S.exactifyMap Ψ hΨ S.exactifyPrimitive S.exactify_comm_eta
+    cρ (eulerClass (-t)) ?_ hagree
+  rw [smul_ne_zero_iff_right hc, eulerClass_ne_zero_iff, neg_nonneg]
+  exact ht
+
+/-- **Card `(RRC.23)`, reflected orientation.**  At and above the centre the reflected physical
+value is nonzero, so it does not factor through the universal exactification. -/
+theorem exactify_no_reflected_orientation {cρ : ℂ} (hc : cρ ≠ 0) {t : ℝ} (ht : 0 ≤ t)
+    (Ψ : (A × ℂ) →ₗ[ℂ] physicalQuotient)
+    (hΨ : ∀ x : (A × ℂ), Ψ (S.exactifyComplex.d 0 x) = 0)
+    (hagree : Ψ (S.exactifyMap.f 1 S.eta) = cρ • eulerClass t) : False := by
+  refine no_orientation_factors S S.exactifyMap Ψ hΨ S.exactifyPrimitive S.exactify_comm_eta
+    cρ (eulerClass t) ?_ hagree
+  rw [smul_ne_zero_iff_right hc, eulerClass_ne_zero_iff]
+  exact ht
+
+end RouteRSource
+
+end RelativeNoGo
+
+/-! ## The two displayed degree-zero sequences -/
+
+section DegreeZero
+
+variable {M₀ : Type} [AddCommGroup M₀] [Module ℂ M₀]
+
+/-- A module placed in cochain degree zero, with the zero module in every other degree. -/
+noncomputable def degreeZeroComplex (M₀ : Type) [AddCommGroup M₀] [Module ℂ M₀] :
+    ZCochain ℂ (fun n => (pieceCat (ModuleCat.of ℂ M₀) (ModuleCat.of ℂ PUnit)
+      (ModuleCat.of ℂ PUnit) n : Type)) :=
+  truncComplex (0 : M₀ →ₗ[ℂ] PUnit) (0 : PUnit →ₗ[ℂ] PUnit) (fun _ => rfl)
+
+theorem degreeZeroComplex_cohomology_one_eq_zero
+    (z : (degreeZeroComplex M₀).cohomology 0) : z = 0 := by
+  obtain ⟨c, rfl⟩ := (degreeZeroComplex M₀).cls_surjective 0 z
+  haveI : Subsingleton ((pieceCat (ModuleCat.of ℂ M₀) (ModuleCat.of ℂ PUnit)
+      (ModuleCat.of ℂ PUnit) (0 + 1)) : Type) := inferInstanceAs (Subsingleton PUnit)
+  have hc : c = 0 := Subtype.ext (Subsingleton.elim _ _)
+  rw [hc, ZCochain.cls]
+  exact Submodule.Quotient.mk_zero _
+
+/-- **Card `(RRC.24)`, `(RRC.25)`, Theorem D.**  Every linear map from the degree-zero cohomology
+of a degree-zero complex into the degree-one cohomology of another vanishes: both displayed short
+exact sequences have zero connecting homomorphism into degree one. -/
+theorem degreeZero_connecting_eq_zero {N₀ : Type} [AddCommGroup N₀] [Module ℂ N₀]
+    (δ : (degreeZeroComplex N₀).cohomology (-1) →ₗ[ℂ] (degreeZeroComplex M₀).cohomology 0) :
+    δ = 0 :=
+  LinearMap.ext fun z => degreeZeroComplex_cohomology_one_eq_zero (δ z)
+
+end DegreeZero
+
+section Sequences
+
+variable {E : Type} [AddCommGroup E] [Module ℂ E]
+
+/-- **Card `(RRC.24)`.**  A regulator taking the value one on a vector is split by the line it
+spans: `c ↦ c • e` is a section. -/
+theorem regulator_section (π : E →ₗ[ℂ] ℂ) (e : E) (he : π e = 1) (c : ℂ) :
+    π (c • e) = c := by
+  rw [map_smul, he, smul_eq_mul, mul_one]
+
+/-- **Card `(RRC.24)`.**  The variable-ideal extension splits: kernel and section line are
+complementary. -/
+theorem isCompl_ker_span (π : E →ₗ[ℂ] ℂ) (e : E) (he : π e = 1) :
+    IsCompl (LinearMap.ker π) (ℂ ∙ e) := by
+  constructor
+  · rw [Submodule.disjoint_def]
+    rintro x hx hspan
+    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hspan
+    have h0 : π (c • e) = 0 := hx
+    rw [regulator_section π e he] at h0
+    rw [h0, zero_smul]
+  · rw [codisjoint_iff, eq_top_iff]
+    intro x _
+    have hx : x = (x - π x • e) + π x • e := by abel
+    rw [hx]
+    refine Submodule.add_mem_sup ?_ (Submodule.mem_span_singleton.mpr ⟨π x, rfl⟩)
+    show π (x - π x • e) = 0
+    rw [map_sub, regulator_section π e he, sub_self]
+
+/-- **Card `(RRC.25)`.**  The fixed physical sequence `0 → ℓ¹(𝒫) → ℂ^𝒫 → V → 0` is exact. -/
+theorem ellOnePrimes_range_eq_ker :
+    LinearMap.range ellOnePrimes.subtype = LinearMap.ker ellOnePrimes.mkQ := by
+  rw [Submodule.range_subtype, Submodule.ker_mkQ]
+
+end Sequences
+
+namespace RouteRSource
+
+variable {A : Type} [AddCommGroup A] [Module ℂ A] (S : RouteRSource A)
+
+/-- **Card `(RRC.25)`.**  The physical map is a nonzero direct coefficient multiplication, so it is
+not the connecting homomorphism of either displayed degree-zero sequence, all of which vanish. -/
+theorem physChar_ne_zero {V : Type} [AddCommGroup V] [Module ℂ V] (cρ : ℂ) (v : V)
+    (h : cρ • v ≠ 0) : S.physChar cρ v ≠ 0 := by
+  intro hz
+  refine h ?_
+  rw [← S.physChar_eta cρ v, hz, LinearMap.zero_apply]
+
+/-- **Card `(RRC.35)`, boxed — the exact positive survivor.**  The universal exactification carries
+a nonzero relative cone class, and the two ordinary cone characters evaluate on it to the forward
+and reflected physical Cartier classes, which are simultaneously nonzero exactly at the centre. -/
+theorem routeR_positive_survivor {cρ : ℂ} (hc : cρ ≠ 0) (t : ℝ) :
+    S.exactifyConeClass ≠ 0
+      ∧ coneCharacter S.exactifyMap (-1) (S.forwardPhysChar cρ t)
+          (fun b => S.physChar_comp_D₀ cρ (eulerClass (-t)) b) S.exactifyConeClass
+        = cρ • eulerClass (-t)
+      ∧ coneCharacter S.exactifyMap (-1) (S.reflectedPhysChar cρ t)
+          (fun b => S.physChar_comp_D₀ cρ (eulerClass t) b) S.exactifyConeClass
+        = cρ • eulerClass t
+      ∧ ((coneCharacter S.exactifyMap (-1) (S.forwardPhysChar cρ t)
+            (fun b => S.physChar_comp_D₀ cρ (eulerClass (-t)) b) S.exactifyConeClass ≠ 0
+          ∧ coneCharacter S.exactifyMap (-1) (S.reflectedPhysChar cρ t)
+            (fun b => S.physChar_comp_D₀ cρ (eulerClass t) b) S.exactifyConeClass ≠ 0)
+        ↔ t = 0) :=
+  ⟨S.exactifyConeClass_ne_zero, S.exactify_forward_value cρ t, S.exactify_reflected_value cρ t,
+    S.exactify_both_ne_zero_iff hc t⟩
+
+end RouteRSource
+
 end RouteR
 
 end HTGeometry.ConstraintRelativity

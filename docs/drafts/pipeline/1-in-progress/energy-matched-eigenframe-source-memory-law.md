@@ -1,6 +1,6 @@
 # Energy-matched eigenframe source-memory law
 
-**Status:** `[ACTIVE] [ALGEBRAIC CORE IN LEAN] [HAAR SECOND MOMENT OPEN]`
+**Status:** `[ACTIVE] [ALGEBRAIC CORE IN LEAN] [HAAR TRACE TAIL IN LEAN] [COEFFICIENT LINK OPEN]`
 
 ## Frontier target
 
@@ -66,3 +66,51 @@ New module `HTGeometry/EnergyMatchedEigenframeSourceMemory.lean`:
 - inverse-cardinality participation lower bound;
 - autonomous arbitrary-dictionary and fixed-body Majorana specializations;
 - later: exact Haar adjoint variance and false-positive tail.
+
+## 2026-08-11 exact Haar advance
+
+The adjoint-representation conjecture has now been proved unconditionally for every finite register.
+For every nonzero traceless Hermitian matrix `H` on a `D >= 2` dimensional space,
+
+```text
+E_Haar (Re tr(H U* H U))^2 = (tr(H^2))^2 / (D^2 - 1),
+Pr_Haar{|Re tr(H U* H U)| >= tr(H^2)/2} <= 4 / (D^2 - 1).
+```
+
+The proof first establishes the balanced diagonal law from exchangeability and exact Haar fourth
+moments, extends it to arbitrary Hermitian sources by spectral conjugation invariance, and transfers
+it across every finite coordinate reindexing.  It uses no minimum spectral gap, nondegeneracy,
+locality-dictionary size, or asymptotic approximation.
+
+For every autonomous Hamiltonian, exact Schrödinger conjugation simultaneously gives
+
+```text
+Re tr(H exp(+itH) H exp(-itH)) = tr(H^2)
+```
+
+at every real time.  Hence a known local generator supplies a permanent source-memory witness while
+the Haar false-positive probability is `O(D^-2)`.  The combined Lean theorem also retains the
+one-query coefficient-matched inverse-participation lower bound for arbitrary supported Pauli
+dictionaries.
+
+### Conjecture-loop audit
+
+1. Entrywise squared-score route paid `M^2`; proved but too weak.
+2. Coefficient contraction predicted a `D^-2` Haar scale; algebraic fixed-vector law proved.
+3. Diagonal-only Haar calculation succeeded but was not basis invariant; conjugation transport
+   initially failed from elaboration blow-up, then succeeded after isolating trace cycling and Haar
+   left/right invariance.
+4. Canonical-index theorem did not yet apply to qubit registers; exact Haar-measure reindexing closed
+   this gap and yielded the register-independent law above.
+
+### Remaining exact bridge
+
+The trace-autocorrelation witness is now complete.  To transfer the same `4/(D^2-1)` tail verbatim
+to the literal signed product-eigenframe statistic, prove the Pauli-coordinate identity
+
+```text
+sum_(Q,P) h_Q h_P C(U)_(Q,P) = D^-1 Re tr(H U* H U)
+```
+
+under dictionary support, together with the matching `l1` normalization.  Until that identity is
+formalized, the trace witness and coefficient-sampled witness are distinct operational statements.
