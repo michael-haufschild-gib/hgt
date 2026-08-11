@@ -169,3 +169,21 @@ The honest calibration, now visible as theorems on both ends of one inequality: 
 Audit: module compiled clean on the first substantive pass, wired into the umbrella (18908 jobs green), all 6 theorems axiom-clean [propext, Classical.choice, Quot.sound]. Card, frontier map, index, and memories updated — including the newly discovered reusable PNTPlus surface (LogDerivZetaHolcLargeT, the holomorphy of ζ'/ζ on the zero-free region, is recorded as the natural germ for a future explicit-formula fragment, which is the next milestone this lane points at).
 
 The synthesis this completes. After twenty-one steps, the picture is finally one picture: the Weil socket (attempts 8–15), the resolvent-Hankel criterion, Route U's shifted-Hankel tower, and the deviation mass are one arithmetic moment problem — positivity of the resolvent moment tower, whose entries are formally jets of logDeriv ξ on the Euler ray, arithmetic for t > ½. Degree zero of that tower is now proven positive in both charts. The wall is all-degree positivity — which is precisely Route U's open core, exactly where the frontier map said the frontier was. The difference made this session: the charts are now formally identified, the base level is proven rather than believed, the entries are arithmetic rather than abstract, and every future degree gained on the tower propagates through Lean-proved dictionaries into every other programme simultaneously.
+
+The Turán control theorem is proved — the first quantitative statement about the first Hankel obstruction that isn't visible copy-by-copy:
+
+two_mul_xiResolventTuranMinor_re_ge (XiResolventTuranDeviationControl.lean, axiom-clean, umbrella green):
+
+Re(2·(M₀M₂ − M₁²)) ≥ −(4S₁² + 4MS₀ + 8S₁S₀)
+
+where S₀ = Σ‖u_q‖, S₁ = Σ|Im u_q|, M = Σ(Im u_q)² are mass functionals of the resolvent coordinates — all unconditionally finite. The mechanism has three layers, each now formal:
+
+- A pointwise pair inequality: for unit-bounded complex numbers, Re(uv(u−v)²) ≥ Re u·Re v·(Re u−Re v)² − err(u,v) with an exact product-form error — every term in the error is a product of single-copy quantities, which is what makes the infinite double sum evaluable.
+- Bulk nonnegativity: the real-part bulk is termwise ≥ 0 because every resolvent coordinate has strictly positive real part — the height gap again.
+- Exact factorization: the error's double tsum collapses to 4S₁² + 4MS₀ + 8S₁S₀ by five applications of the product-tsum law.
+
+And the companion iff, riemannHypothesis_iff_xiResolventImSqMass_eq_zero, closes the loop: the mass M appearing in the bound is the RH obstruction — with a pleasingly clean converse, since the formalized height gap (γ ≠ 0) removes all the case analysis that previous mass criteria needed.
+
+What this means. The order-two Hankel inequality — the first place where RH stops being a copy-by-copy statement — can now fail only by an explicitly bounded amount, and the bound is a polynomial in deviation masses that vanish exactly on RH. Contrapositively: any certified negative Turán value forces a quantified amount of imaginary mass on the divisor. The deviation-mass war from the Krein and Weil charts is now fought, with explicit constants, at the Hankel level.
+
+Recorded next steps on the card: sharpening the S₁-terms toward the exact negative core −4Σ‖u‖²(Im u)² (my error bounds are loose precisely where the linear-in-Im cross terms sit), the same control at general Hankel order through the polynomial trace, and the heat-chart mirror. Session tally at this point: 24 steps, 15 new modules, ~120 theorems, every one unconditional and axiom-clean — and the whole arc, from the Hodge mass to this Turán bound, is now one connected formal object.

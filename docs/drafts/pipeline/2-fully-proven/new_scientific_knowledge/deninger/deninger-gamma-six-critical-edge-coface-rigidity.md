@@ -133,6 +133,10 @@ Define the two-slot critical-edge Köthe space
 \tag{9}
 \]
 
+Write \(\mathcal K_6^{\partial,+}\) and
+\(\mathcal K_6^{\partial,-}\) for the two one-slot factors, each equipped with the seminorms
+\(q_a(c)=\sum_{m\ge1}6^{am}|c_m|\).
+
 For \(0<a<b<1\), the weight quotient is \(6^{-(b-a)m}\), whose sum is finite. Thus
 \(\mathcal K_6^{\partial}\) is a nuclear Fréchet Köthe space.
 
@@ -414,6 +418,16 @@ Theorems 4.1, 5.1, and (26) show what that identity cannot be:
 
 It must be nonlocal in grade or place support and must contribute an independently source-derived
 opposite endpoint charge while remaining coefficient-faithful.
+
+The required nonlocal source object has since been constructed on paper. Ordinary-integer shell
+amplification of the countertransported full tensor-square tail differs by a trace-class operator
+from the shell reciprocal Green operator \(G_6\), and therefore defines a nonzero class in
+\(\mathcal L^{1,\infty}/\mathcal L^1\). Its Wold compression satisfies the critical coface law
+modulo trace class, while its normalized Green Gibbs reader is exactly
+\(6^{-1}(1-6^{-\delta})\), the physical BV boundary coefficient. What remains is the strict
+place-marked comparison preserving this trace-class subobject and carrying its two reflected
+principal symbols to the completed Xi Green/Calderón--Witt target. Full proof:
+`deninger-gamma-six-shell-green-trace-ideal-transgression.md`.
 
 ## 8. Novelty and hostile audit
 

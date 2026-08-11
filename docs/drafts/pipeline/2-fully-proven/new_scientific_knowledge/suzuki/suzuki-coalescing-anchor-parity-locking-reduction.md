@@ -1,7 +1,7 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`, `SR-89`, `SR-90`, `SR-91`, `SR-92`, `SR-93`, `SR-94`, `SR-95`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`, `SR-89`, `SR-90`, `SR-91`, `SR-92`, `SR-93`, `SR-94`, `SR-95`, `SR-96`, `SR-97`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
@@ -5355,7 +5355,217 @@ branch requires either a coefficient-penalized stability refinement of `(381)` o
 zero set or an explicit many-zero construction attaining `(382)` while also satisfying the paired
 ratio `(377)`.
 
-### 14.34 Conjecture loop and novelty correction
+### 14.34 One-channel leverage is automatic; only relative ridge decay remains
+
+Theorem AP proves that high odd leverage is expensive in active dimension.  It is nevertheless
+always attainable at one fixed aperture.  Multiplicity must be handled before making that claim.
+Let
+
+```text
+D_Xi(T)=#{gamma in Gamma:0<gamma<=T}
+```
+
+count distinct positive ordinates.  Under RH, the Littlewood bound for the argument of zeta gives
+
+```text
+max_(0<gamma<=T) m_gamma=O(log T/log log T).
+```
+
+Together with Riemann--von Mangoldt this implies
+
+```text
+D_Xi(T)>>T log log T.                                  (389)
+```
+
+#### Theorem AQ — distinct-zero completeness and canonical ridge curve
+
+Assume RH and fix `a>0`.
+
+1. The exponential system
+
+   ```text
+   {exp(-i gamma x):gamma in Gamma}
+   ```
+
+   is complete in `L^2(-a,a)`.  Its cosine and sine parts are complete in the even and odd
+   subspaces.  Equivalently, the closed zero-sampling operator `S_a` in `(299)` is injective.
+
+2. For `sigma=e,o`, the ridge defect
+
+   ```text
+   x_(sigma,a)(r)=r<h_(sigma,a),(A_a+rI)^(-1)h_(sigma,a)>
+   ```
+
+   is continuous and strictly increasing from `0` to `1` as `r` runs from `0` to `infinity`:
+
+   ```text
+   lim_(r downarrow 0)x_(sigma,a)(r)=0,
+   lim_(r to infinity)x_(sigma,a)(r)=1.                (390)
+   ```
+
+3. For every `q in (0,1)`, let `r_(o,a)(q)` be the unique source-defined solution of
+
+   ```text
+   x_(o,a)(r_(o,a)(q))=q
+   ```
+
+   and define the canonical paired ridge curve
+
+   ```text
+   Phi_a(q)=x_(e,a)(r_(o,a)(q)).                       (391)
+   ```
+
+   Every negative-shift first-defect ratio is exactly a point on this curve:
+
+   ```text
+   F_a(r)=[N_e(a)/N_o(a)] Phi_a(q)/q,
+   q=x_(o,a)(r).                                       (392)
+   ```
+
+   Hence a complete negative first-defect family is possible only through source-defined points
+   `q_a` satisfying
+
+   ```text
+   Phi_a(q_a)/q_a ->R_Xi,
+   limsup q_a<=1/R_Xi.                                 (393)
+   ```
+
+   At the extremal calibration `q=1/R_Xi`,
+
+   ```text
+   r_(o,a)(1/R_Xi)->0,                                 (394)
+   ```
+
+   and this calibration gives the target ratio exactly in the limit if and only if
+   `Phi_a(1/R_Xi)->1`.
+
+4. With the posterior hardnesses `v_sigma` from `(327)`, the curve obeys the exact differential
+   law
+
+   ```text
+   d log Phi_a(q)/d log q
+    =v_e(r_(o,a)(q))/v_o(r_(o,a)(q)),
+
+   d log[Phi_a(q)/q]/d log q
+    =v_e(r_(o,a)(q))/v_o(r_(o,a)(q))-1.                (395)
+   ```
+
+#### Proof
+
+Let `f in L^2(-a,a)` be orthogonal to every zero exponential and set
+
+```text
+F(z)=int_(-a)^a f(x)exp(i z x)dx.
+```
+
+Then `F` is entire of exponential type at most `a`.  If it is nonzero, Jensen's formula gives only
+`O_(F,a)(T)` zeros in `|z|<=T`.  But `F(gamma)=0` at every distinct Xi ordinate, contradicting
+`(389)`.  Hence `F=0` and Fourier uniqueness gives `f=0`.  Reflection projection proves the
+separate cosine/sine assertions.  This also proves `ker S_a=ker A_a={0}`.
+
+Let `mu_(sigma,a)` be the spectral probability of `A_a` at `h_(sigma,a)`.  Injectivity removes its
+atom at zero, so
+
+```text
+x_(sigma,a)(r)=int_[0,infinity) r/(t+r)dmu_(sigma,a)(t). (396)
+```
+
+Dominated convergence proves `(390)`.  Differentiation gives a strictly positive derivative
+because `mu_(sigma,a)` is carried by `(0,infinity)`.  Thus the inverse `r_(o,a)(q)` exists and is
+unique.  Equations `(391)--(393)` are then `(325)` rewritten in the odd ridge coordinate.
+
+For fixed `r_0>0`, Theorem AE gives `x_(o,a)(r_0)->1`.  If the sequence in `(394)` failed to tend
+to zero, monotonicity would force `1/R_Xi=x_o(r_(o,a)(1/R_Xi))->1` along a subsequence, impossible.
+The extremal statement follows from `(392)` and `N_e/N_o->1`.  Finally `(327)` gives
+
+```text
+d log x_(sigma,a)(r)/d log r=v_sigma(r).
+```
+
+The chain rule through the inverse odd coordinate proves `(395)`.
+
+Paley--Wiener uniqueness, Jensen zero counting, Riemann--von Mangoldt, and Littlewood's RH bound
+`S(T)=O(log T/log log T)` are classical.  In particular, completeness of a superlinearly dense
+real frequency set is not claimed new.  The internal
+`order-separation-of-the-weil-deficit.md` card also already identifies `A_a` as the zeta-zero
+exponential frame operator and interprets its density through Nyquist matching; neither point is
+new here.  It does not remove multiplicities to prove fixed-aperture injectivity, pass that fact to
+the two literal ridge defects, or construct `(391)--(395)`.  Candidate-new content is restricted
+to that exact Suzuki consequence: both one-channel ridge defects vanish at fixed aperture, while
+the canonical odd coordinate removes arbitrary negative-shift scheduling and identifies the sole
+remaining first-defect datum as relative parity decay along one source curve.
+
+This kills a broader no-go class than Theorem AP.  Neither failure to approximate the odd boundary
+source nor absence of large odd leverage can retire Suzuki; both are false under RH.  A genuine
+negative-side no-go must prove that the curve ratio `Phi_a(q)/q` cannot approach `R_Xi` anywhere in
+`0<q<=1/R_Xi+o(1)`, or construct such points and then continue to the full carrier.  This is a
+parity-resolved small-singular-value problem, not a completeness problem.
+
+### 14.35 The high zero block is hereditarily complete
+
+The fixed-aperture completeness argument is insensitive to every linearly sparse deletion.  This
+turns the high-block alternative in Theorem AO from a formal loophole into a genuine positive
+survivor.
+
+#### Theorem AR — hereditary tail completeness and high-block reconstruction
+
+Assume RH.  Let `Lambda subset Gamma` be obtained by deleting a symmetric set `E` satisfying
+
+```text
+#{gamma in E:|gamma|<=T}=O(T).                         (397)
+```
+
+Then for every `a>0`, the exponentials with frequencies in `Lambda` are complete in
+`L^2(-a,a)`, separately in both parity subspaces.  In particular, for every cutoff `T_0`, every
+`epsilon>0`, and `sigma=e,o`, there is a finitely supported coordinate vector `c`, supported on
+`|gamma|>T_0`, such that
+
+```text
+||h_(sigma,a)-S_a^*c||_2<epsilon.                      (398)
+```
+
+After choosing
+
+```text
+0<r<epsilon^2/(1+||c||_2^2),
+```
+
+the same tail-only vector satisfies
+
+```text
+||h_(sigma,a)-S_a^*c||_2^2+r||c||_2^2<2epsilon^2.     (399)
+```
+
+Thus every finite high-coordinate tail can by itself create arbitrarily large one-channel ridge
+leverage at that aperture.  This remains true after deleting any additional frequency set of
+bounded asymptotic density.
+
+#### Proof
+
+Equation `(389)` gives `D_Xi(T)>>T log log T`.  Deleting `(397)` leaves a distinct frequency count
+still growing faster than linearly.  The Paley--Wiener/Jensen proof of Theorem AQ therefore applies
+unchanged and proves completeness.  Taking `E={gamma:|gamma|<=T_0}` gives `(398)`.  The displayed
+choice of `r` proves `(399)`.
+
+The completeness mechanism and deletion observation are classical.  Candidate-new content is
+their exact source-aligned Suzuki placement.  Equations `(310)` and `(379)` say the explicit high
+analysis tail is uniformly small, while Theorem AR says the corresponding synthesis tail is dense
+at every fixed aperture.  There is no contradiction: the tail synthesis is violently
+ill-conditioned, and its coefficient norm may diverge arbitrarily fast.  The ridge penalty is the
+only term that sees that cost.
+
+Consequently a proof that discards the high block because `||u_H||` is small cannot be repaired by
+moving the cutoff, deleting finitely many problematic zeros, or retaining only a sparse
+low-density skeleton.  A valid no-go must give a joint moving-scale lower bound for
+
+```text
+||h_(o,a)-S_(a,>T)^*c||_2^2+r||c||_2^2               (400)
+```
+
+at the target schedule, or control the equivalent Schur correction in `(373)`.  Pointwise
+completeness proves no such bound and prevents any qualitative high-tail exclusion.
+
+### 14.36 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -5709,6 +5919,28 @@ ratio `(377)`.
      supplies enough ordinates at growing height, while current knowledge gives no
      coefficient-penalized stability theorem excluding their collective sinc-Gram leverage.  The
      remaining branch is genuinely many-body, not impossible by dimension alone.
+114. **The odd one-channel leverage might itself be unavailable -- failed literally.**  Under RH,
+     distinct Xi ordinates grow faster than linearly even after multiplicities are removed.
+     Paley--Wiener/Jensen uniqueness makes their exponentials complete on every finite aperture,
+     so both parity ridge defects tend to zero as `r downarrow 0`.
+115. **Superlinear zero density should determine the target parity ratio -- failed.**  It proves
+     injectivity and separate approximation in both channels, hence contains no relative
+     even--odd decay information.  The target lives precisely in that missing relative rate.
+116. **The arbitrary negative-shift schedule is an irreducible degree of freedom -- failed.**
+     Theorem AQ uses the odd defect itself as coordinate.  Every shift lies on the canonical curve
+     `Phi_a(q)`, and the first-defect frontier is exactly whether `Phi_a(q)/q` can approach `R_Xi`
+     for `q<=1/R_Xi+o(1)`.
+117. **A small high-coordinate source tail makes tail-only reconstruction impossible -- failed
+     literally.**  Theorem AR proves that after removing all zeros below any cutoff, the remaining
+     Xi exponentials are still complete on every finite aperture.  Their analysis tail is small
+     but their synthesis range is dense.
+118. **Deleting exceptional zeros can regularize the high-block escape -- failed for every
+     bounded-density deletion.**  The distinct ordinate count remains superlinear after deleting
+     `O(T)` frequencies up to height `T`, so hereditary completeness survives.
+119. **Hereditary completeness constructs the target schedule -- failed.**  It gives tail-only
+     approximation after choosing `r` smaller than the certificate's coefficient cost.  It gives
+     no uniform coefficient bound, no paired parity ratio, and no control along a prescribed
+     moving `r_a`.  That quantitative ill-conditioning is now the exact high-block frontier.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -5731,7 +5963,8 @@ source-alignment, localization, reflection-rigidity, nonuniform-PNT, negative-sh
 zero-edge transport condensation, paired source-energy, infrared/ultraviolet bifurcation,
 ultraviolet multiplicity and recurrent parity clocks, marginal-compatibility wall, exact
 Kronecker classification of parity collapse, and source-aligned Schur-leverage certificate
-`(224)--(379)`, followed by the square-root active-zero law `(380)--(388)`.
+`(224)--(379)`, followed by the square-root active-zero law `(380)--(388)` and the canonical
+relative-ridge reduction `(389)--(396)`, with hereditary high-tail completeness `(397)--(400)`.
 The internal novelty audit found a direct parent for the compact-group parts of Theorems AL and
 AN: the already-formalized `suzuki-screw-compact-hull-parity-law.md` proves the universal relation
 hull, cofinal recurrence, Haar law, and homogeneous all-minus-one parity criterion.  Accordingly
@@ -5740,8 +5973,10 @@ literal source Fourier phase `(355)--(361)`, its parity-resolved aperture-scaled
 inhomogeneous `arctan(gamma)` relation criterion and quantitative floor `(368)--(371)`, and the
 exact IR/UV marginal compatibility construction `(362)--(366)`, together with the corrected
 source-aligned Schur-leverage reduction `(372)--(379)` and target-forced active-zero/height law
-`(380)--(388)`.  The pure-frequency Nikolskii inequality used for the latter is classical
-Erdelyi and is not claimed new.  Targeted arXiv searches found
+`(380)--(388)`, together with the fixed-aperture distinct-zero completeness/canonical ridge curve
+`(389)--(396)` and its hereditary tail consequence `(397)--(400)`.  The pure-frequency Nikolskii inequality used for the former and the
+Paley--Wiener/Jensen uniqueness mechanism used for the latter are classical and are not claimed
+new.  Targeted arXiv searches found
 Suzuki's finite-interval operator conjecture and an unrelated Ferrar-type probability literature
 using the phrase “size-biased distribution,” but no matching source-energy scaling, parity clock,
 or inhomogeneous zero-relation theorem.  Bondarenko--Radchenko--Seip's Fourier interpolation basis

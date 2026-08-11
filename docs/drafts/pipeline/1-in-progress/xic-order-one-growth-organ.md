@@ -212,3 +212,21 @@ Recorded 2026-08-11 after hostile check.
   low degree/small shift (negative cores −4‖u‖²(Im u)² vs positive bulk — the deviation-mass
   war at Hankel level); heat-chart bottom detection says its large-parameter sign is decided
   by the bottom copy alone.
+- 2026-08-11 — **quantitative Turán control [LEAN-PROVED].**
+  `RHTower/XiResolventTuranDeviationControl.lean` (wired, umbrella green 18938 jobs, all key
+  theorems axiom-clean).  Mass functionals `S₀ = Σ‖u_q‖`, `S₁ = Σ|Im u_q|`, `M = Σ(Im u_q)²`
+  (all unconditionally finite), the pointwise pair inequality `re_pair_ge_bulk_sub_err`
+  (`Re(uv(u−v)²) ≥ Re u·Re v·(Re u−Re v)² − err(u,v)` with exact product-form error for
+  unit-bounded u, v), exact factorization `tsum_xiResolventPairErr = 4S₁² + 4MS₀ + 8S₁S₀`,
+  and the headline **`two_mul_xiResolventTuranMinor_re_ge`**:
+  `Re(2·(M₀M₂−M₁²)) ≥ −(4S₁² + 4MS₀ + 8S₁S₀)` — the bulk is termwise nonnegative because
+  every resolvent coordinate has positive real part (height gap), so the ENTIRE possible
+  failure of the order-two Hankel inequality is explicitly carried by the imaginary masses.
+  Plus `riemannHypothesis_iff_xiResolventImSqMass_eq_zero` (the mass in the bound is exactly
+  the RH obstruction; converse via the height gap needs no norm cases).  This is the
+  quantitative Hamburger direction at order two: Turán defect < −(mass expression) is
+  impossible; contrapositively a certified negative Turán value would force explicit
+  imaginary mass.  Next: (i) sharpen — the error's `S₁`-terms carry no decay pairing and can
+  likely be improved to pure `M`-terms with weights, tightening toward the exact negative core
+  `−4Σ‖u‖²(Im u)²`; (ii) the same control at general Hankel order via the polynomial trace;
+  (iii) the heat-chart mirror.
