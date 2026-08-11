@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldLowerHalfShiftGapSummability
 
 /-!
-# Gevrey source regularity of the physical Route-T residual connection
+# Smooth source regularity of the physical Route-T residual connection
 
 The centered Wold primitive has square-root-exponential decay, while every adjacent phase chord
 contributes one prime-log gap.  Their product remains summable after multiplication by every
@@ -9,11 +9,12 @@ polynomial prime-log moment.  Thus the lower-half residual phase connection has 
 jet, with locally uniform termwise differentiation.
 
 This is stronger than pointwise convergence and different from the earlier weighted Hilbert graph
-smoothness: it is literal smoothness of the physical source kernel in its real boundary coordinate.
+smoothness: it is literal `C^∞` regularity of the physical source kernel in its real boundary
+coordinate.  Quantitative Gevrey constants are deliberately not claimed here.
 -/
 
 open Complex Filter MeasureTheory Set Topology
-open scoped BigOperators
+open scoped BigOperators ContDiff
 
 namespace RHTower
 
@@ -222,9 +223,10 @@ theorem norm_xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom_le
         gcongr
       _ ≤ s ^ k * (xiHeatCassiniOrderedPrimeLogGap N * |x|) +
           (xiHeatCassiniOrderedPrimeLogGap N * (k : ℝ) * s ^ (k - 1)) := by
-        exact add_le_add_right
+        exact add_le_add
           (mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hh hle k)
-            (mul_nonneg (xiHeatCassiniOrderedPrimeLogGap_nonneg N) (abs_nonneg x))) _
+            (mul_nonneg (xiHeatCassiniOrderedPrimeLogGap_nonneg N) (abs_nonneg x)))
+          le_rfl
       _ = xiHeatCassiniOrderedPrimeLogGap N *
           (s ^ k * |x| + (k : ℝ) * s ^ (k - 1)) := by ring
   simpa only [s, mul_assoc] using
@@ -262,6 +264,110 @@ theorem xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel_zero
   simp only [xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel,
     xiHeatCassiniWoldResidualLowerHalfPhaseKernelLimit,
     xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom_zero]
+
+/-- The infinite physical residual kernel differentiates termwise through its complete jet. -/
+theorem hasDerivAt_xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel
+    (k : ℕ) (x : ℝ) :
+    HasDerivAt
+      (xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel k)
+      (xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel (k + 1) x) x := by
+  let M : ℕ → ℝ := fun N =>
+    |xiHeatCassiniOrderedWoldResidualLogDiscrepancy N| *
+      xiHeatCassiniOrderedPrimeLogGap N *
+        (xiMassNthPrimeLogHeight (N + 1) ^ (k + 1) * (|x| + 1) +
+          ((k + 1 : ℕ) : ℝ) * xiMassNthPrimeLogHeight (N + 1) ^ k)
+  have hM : Summable M := by
+    have hmajor :=
+      ((summable_xiHeatCassiniWoldResidual_primeLogMoment_mul_gap (k + 1)).mul_right
+        (|x| + 1)).add
+      ((summable_xiHeatCassiniWoldResidual_primeLogMoment_mul_gap k).mul_left
+        ((k + 1 : ℕ) : ℝ))
+    exact hmajor.congr (fun N => by dsimp only [M]; ring)
+  have hxmem : x ∈ Ioo (x - 1) (x + 1) := by constructor <;> linarith
+  have hmain := hasDerivAt_tsum_of_isPreconnected
+    (u := M) (t := Ioo (x - 1) (x + 1))
+    (g := fun N y =>
+      xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom k y N)
+    (g' := fun N y =>
+      xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom (k + 1) y N)
+    (y₀ := x) (y := x) hM isOpen_Ioo isPreconnected_Ioo
+    (fun N y _ =>
+      hasDerivAt_xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom k y N)
+    (fun N y hy => by
+      have hyabs : |y| ≤ |x| + 1 := by
+        rw [abs_le]
+        constructor
+        · have hxlower := neg_abs_le x
+          linarith [hy.1]
+        · have hxupper := le_abs_self x
+          linarith [hy.2]
+      have hraw :=
+        norm_xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom_le (k + 1) y N
+      apply hraw.trans
+      dsimp only [M]
+      simp only [Nat.add_sub_cancel]
+      apply mul_le_mul_of_nonneg_left
+      · exact add_le_add
+          (mul_le_mul_of_nonneg_left hyabs
+            (pow_nonneg (xiMassNthPrimeLogHeight_pos (N + 1)).le (k + 1)))
+          le_rfl
+      · exact mul_nonneg (abs_nonneg _)
+          (xiHeatCassiniOrderedPrimeLogGap_nonneg N))
+    hxmem
+    (summable_xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom k x)
+    hxmem
+  change HasDerivAt
+    (fun z => ∑' N : ℕ,
+      xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom k z N)
+    (∑' N : ℕ,
+      xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetAtom (k + 1) x N) x
+  exact hmain
+
+/-- In particular, the physical lower-half residual source is differentiable everywhere. -/
+theorem differentiable_xiHeatCassiniWoldResidualLowerHalfPhaseKernelLimit :
+    Differentiable ℝ xiHeatCassiniWoldResidualLowerHalfPhaseKernelLimit := by
+  have hzero :
+      xiHeatCassiniWoldResidualLowerHalfPhaseKernelLimit =
+        xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel 0 := by
+    funext x
+    exact (xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel_zero x).symm
+  rw [hzero]
+  intro x
+  exact (hasDerivAt_xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel 0 x).differentiableAt
+
+/-- **Physical residual source regularity.**  The convergent lower-half phase connection is
+`C^∞`; its `k`th derivative is the explicitly summable `k`th prime-log jet. -/
+theorem contDiff_infty_xiHeatCassiniWoldResidualLowerHalfPhaseKernelLimit :
+    ContDiff ℝ ∞ xiHeatCassiniWoldResidualLowerHalfPhaseKernelLimit := by
+  have hderiv (j : ℕ) :
+      deriv (xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel j) =
+        xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel (j + 1) := by
+    funext x
+    exact
+      (hasDerivAt_xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel j x).deriv
+  have hiter (j : ℕ) :
+      iteratedDeriv j
+          (xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel 0) =
+        xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel j := by
+    induction j with
+    | zero => simp
+    | succ j ih =>
+        rw [iteratedDeriv_succ, ih, hderiv]
+  have hsmooth : ContDiff ℝ ∞
+      (xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel 0) := by
+    apply contDiff_of_differentiable_iteratedDeriv
+    intro j _
+    rw [hiter]
+    intro x
+    exact
+      (hasDerivAt_xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel j x).differentiableAt
+  have hzero :
+      xiHeatCassiniWoldResidualLowerHalfPhaseKernelLimit =
+        xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel 0 := by
+    funext x
+    exact (xiHeatCassiniWoldResidualLowerHalfPhaseConnectionJetKernel_zero x).symm
+  rw [hzero]
+  exact hsmooth
 
 end
 

@@ -1,15 +1,15 @@
 # Complete atomic Fourier--Hankel order and inertia fusion law
 
 - **ID:** ULF-CTCM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / THREE-ORGAN FUSION / FOURTH-ORGAN PREDICTION
 - **Statement:** For finitely many distinct real source atoms with Hermitian matrix interventions,
   full Fourier packets, the order-`N` block Hankel packet, and atomwise matrix order reconstruct one
   another; their compensation gauges and inertia triples are identical.
 - **Status:** [PROVED HERE] [DEPENDENCY-CLOSED] [FINITE COMMUTATIVE SOURCE]
   [JOINT RECONSTRUCTION] [EXACT GAUGE CONSERVATION] [EXACT INERTIA CONSERVATION]
-  [NONCOMMUTATIVE BOUNDARY EXPLICIT] [FINITE FUSION CORE LEAN-CERTIFIED]
-  [EXACT INERTIA COUNT LEAN OPEN] [NOT RH]
+  [NONCOMMUTATIVE BOUNDARY EXPLICIT] [FULLY LEAN-CERTIFIED INCLUDING THE EXACT INERTIA TRIPLE]
+  [NOT RH]
 
 ## 1. Setup
 
@@ -316,12 +316,73 @@ The dependency-closed finite core is certified in
 6. pairwise-distinct real Vandermonde evaluation gives an invertible congruence and therefore exact
    finite Hankel order reflection.
 
-The exact numerical inertia triple `(CFH.14)` remains paper-level because the present Lean surface
-certifies noncancellation/existence of negative directions, not Sylvester inertia multiplicities.
-Under the project epistemic rule, only the six clauses above currently count as truly proved.
+The exact numerical inertia triple `(CFH.14)` is certified in two new modules, both wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`.
+
+`GaloisForLFunctions.HTGeometry.HermitianInertia` builds the inertia triple of a complex Hermitian
+matrix from scratch — neither mathlib nor this corpus had it; mathlib's `QuadraticForm.sigPos`
+covers only real quadratic forms, and the corpus's `KreinLangerInertia` /
+`ChamberNegInertiaBound` / `NegativeIndexRankBound` layer proves upper bounds on negative
+subspaces, not the triple:
+
+- `hermQuad`, `IsPosDefOn`, `hermPosIndex`, `hermNegIndex`, `hermNullIndex` — the variational
+  positive and negative indices and the kernel dimension;
+- `hermPosIndex_conjugate`, `hermNegIndex_conjugate`, `hermNullIndex_conjugate` — **Sylvester's
+  law of inertia**: invertible congruence `H ↦ Sᴴ H S` preserves all three;
+- `hermPosIndex_diagonal`, `hermNegIndex_diagonal`, `hermNullIndex_diagonal` — the exact counts
+  for a real diagonal matrix;
+- `hermPosIndex_eq_card_pos_eigenvalues` and its negative and null companions — the triple as
+  eigenvalue counts, via the spectral theorem;
+- `hermPosIndex_add_hermNegIndex_add_hermNullIndex` — the completeness relation
+  `n₊ + n₋ + n₀ = card`.
+
+`GaloisForLFunctions.HTGeometry.CompleteAtomicInertiaFusion` runs the card's fusion through it:
+
+- `atomDiag`, `evalMatrix` and the block-diagonal calculus (`atomDiag_mul`,
+  `atomDiag_conjTranspose`, `atomDiag_diagonal`, `isUnit_atomDiag`, `isUnit_evalMatrix` via the
+  Vandermonde determinant);
+- `evalMatrix_conjugate_atomDiag` — `(CFH.15)`: the fused block is exactly the evaluation
+  congruence `Sᴴ D S` of the block-diagonal atom matrix, entrywise
+  `∑_x conj(z_x^i) z_x^j A_x(c)_{ab}`;
+- `evalMatrix_conjugate_atomDiag_real` — for real nodes that entry is the moment `M_{i+j}(c)_{ab}`,
+  i.e. the block Hankel matrix `(CFH.3)`; the general form is the Fourier block `(CFH.5)`;
+- `inertia_atomDiag` — the block-diagonal atom matrix has the componentwise sum of the atom
+  inertia triples;
+- `inertia_evalMatrix_fusion` — **`(CFH.14)`**: for pairwise distinct nodes,
+  `In(fused) = ∑_x In(A_x(c))` in all three components;
+- `hankel_fourier_inertia_eq` — the Hankel and Fourier organs have identical inertia triples;
+- `atomPencil`, `isHermitian_atomPencil` — the compensated pencil `c·W_x − H_x` of `(CFH.1)` is
+  Hermitian;
+- `fourierNode`, `exists_fourierNode_injective` — the card's choice of `τ ≠ 0` making the
+  `z_x = e^{−iτλ_x}` pairwise distinct, with the explicit scale `π/(1 + max|λ_x − λ_y|)`.
+
+Theorems 3.1 and 4.1 are certified in the same module in their concrete matrix form:
+
+- `atomDiag_mulVec`, `atomDiag_quadratic`, `isHermitian_atomDiag`,
+  `posSemidef_atomDiag_iff` — the fused quadratic form splits atomwise, and the block-diagonal
+  matrix is positive semidefinite exactly when every atom is;
+- `posSemidef_evalMatrix_fusion_iff` — **`(CFH.11)`**: the fused block is positive semidefinite
+  exactly when every atom matrix is, for either organ; with `posSemidef_conjugate_iff` this is
+  also the exact gauge conservation `(CFH.12)`, since the two feasible sets coincide pointwise
+  in `c`;
+- `sourceMap`, `sourceAmplification`, `posSemidef_sourceMap`,
+  `posSemidef_sourceAmplification`, `posSemidef_of_posSemidef_sourceMap`,
+  `posSemidef_of_posSemidef_sourceAmplification`, `sourceMap_amplification_collapse` —
+  **Theorem 4.1**: positivity of `Φ_c`, atomwise positive semidefiniteness, complete positivity
+  at every finite matrix level, and positive semidefiniteness of the complete fused block are
+  all equivalent.  Complete positivity is proved from `Matrix.PosSemidef.kronecker`, and
+  reflected back by level-one amplification.
+
+Every declaration audits to `propext`, `Classical.choice`, `Quot.sound`.  Theorem 5.1 is therefore
+no longer paper-level: the withheld finite-atomic converse and the signed statement — the block
+Hankel negative-square count is exactly the sum of the atom negative-square counts — are machine
+checked.
 
 ## Log
 
 - 2026-08-11 — paper proof closed after witness-bundle/properness pivot was found to duplicate RBD.
 - 2026-08-11 — noncommutative amplification retained as a sharp counterchamber, not silently
   collapsed into scalar positivity.
+- 2026-08-11 — Theorem 5.1 closed in Lean: complex Hermitian inertia triple and Sylvester's law
+  built from scratch (`HermitianInertia`), the fusion identified as an evaluation congruence, and
+  `In(Hankel) = In(Fourier) = ∑ In(atoms)` certified (`CompleteAtomicInertiaFusion`).

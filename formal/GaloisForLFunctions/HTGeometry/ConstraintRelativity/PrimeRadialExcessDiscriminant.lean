@@ -435,17 +435,81 @@ section InfiniteExcess
 variable {ι κ : Type*}
 
 omit [IsDomain R] [IsDiscreteValuationRing R] in
-/-- **Card `(21)`.**  Zero extension along an injection of prime sets carries excess conormals into
-excess conormals: the finite relation modules form a compatible system. -/
-theorem mapDomain_mem_unitWeightedFinsuppRelations [DecidableEq κ] (u : κ → Rˣ) (f : ι → κ)
+/-- Restricting a finitely supported function to its support and extending by zero is the
+identity. -/
+theorem mapDomain_subtypeDomain_support (x : ι →₀ R) :
+    Finsupp.mapDomain (Subtype.val : {i : ι // i ∈ x.support} → ι)
+      (Finsupp.subtypeDomain (fun i => i ∈ x.support) x) = x := by
+  classical
+  ext a
+  by_cases ha : a ∈ x.support
+  · have h : (Subtype.val : {i : ι // i ∈ x.support} → ι) ⟨a, ha⟩ = a := rfl
+    rw [← h, Finsupp.mapDomain_apply Subtype.val_injective]
+    rfl
+  · have hnr : a ∉ Set.range (Subtype.val : {i : ι // i ∈ x.support} → ι) := by
+      rintro ⟨⟨b, hb⟩, rfl⟩
+      exact ha hb
+    rw [Finsupp.mapDomain_notin_range _ _ hnr]
+    exact (Finsupp.notMem_support_iff.mp ha).symm
+
+omit [IsDomain R] [IsDiscreteValuationRing R] in
+/-- Zero extension along an injection transports the weighted augmentation to the restricted
+weight family. -/
+theorem unitWeightedFinsuppAugmentation_mapDomain_comp (u : κ → Rˣ) (f : ι → κ)
+    (hf : Function.Injective f) (x : ι →₀ R) :
+    unitWeightedFinsuppAugmentation u (Finsupp.mapDomain f x)
+      = unitWeightedFinsuppAugmentation (u ∘ f) x := by
+  rw [unitWeightedFinsuppAugmentation, Finsupp.lsum_apply,
+    Finsupp.sum_mapDomain_index_inj hf, unitWeightedFinsuppAugmentation, Finsupp.lsum_apply]
+  rfl
+
+omit [IsDomain R] [IsDiscreteValuationRing R] in
+/-- **Card `(21)`.**  Zero extension along an injection of prime sets identifies the excess
+conormal of the smaller set with the relations supported on its image: the finite relation modules
+form a compatible system. -/
+theorem mem_unitWeightedFinsuppRelations_mapDomain_iff (u : κ → Rˣ) (f : ι → κ)
+    (hf : Function.Injective f) (x : ι →₀ R) :
+    Finsupp.mapDomain f x ∈ unitWeightedFinsuppRelations u ↔
+      x ∈ unitWeightedFinsuppRelations (u ∘ f) := by
+  rw [LinearMap.mem_ker, LinearMap.mem_ker,
+    unitWeightedFinsuppAugmentation_mapDomain_comp u f hf]
+
+omit [IsDomain R] [IsDiscreteValuationRing R] in
+/-- **Card `(21)`.**  Zero extension carries excess conormals into excess conormals. -/
+theorem mapDomain_mem_unitWeightedFinsuppRelations (u : κ → Rˣ) (f : ι → κ)
     (hf : Function.Injective f) {x : ι →₀ R}
     (hx : x ∈ unitWeightedFinsuppRelations (u ∘ f)) :
-    Finsupp.mapDomain f x ∈ unitWeightedFinsuppRelations u := by
-  rw [LinearMap.mem_ker] at hx ⊢
-  rw [unitWeightedFinsuppAugmentation, Finsupp.lsum_apply,
-    Finsupp.sum_mapDomain_index_inj hf]
-  rw [unitWeightedFinsuppAugmentation, Finsupp.lsum_apply] at hx
-  exact hx
+    Finsupp.mapDomain f x ∈ unitWeightedFinsuppRelations u :=
+  (mem_unitWeightedFinsuppRelations_mapDomain_iff u f hf x).mpr hx
+
+omit [IsDomain R] [IsDiscreteValuationRing R] in
+/-- **Card `(21)`.**  Every excess conormal is born at a finite cutoff: it is the zero extension of
+an excess conormal for the finite prime set carrying its support. -/
+theorem exists_finiteCutoff_unitWeightedFinsuppRelations (u : ι → Rˣ) {x : ι →₀ R}
+    (hx : x ∈ unitWeightedFinsuppRelations u) :
+    ∃ y : {i : ι // i ∈ x.support} →₀ R,
+      y ∈ unitWeightedFinsuppRelations (u ∘ (Subtype.val : {i : ι // i ∈ x.support} → ι)) ∧
+        Finsupp.mapDomain (Subtype.val : {i : ι // i ∈ x.support} → ι) y = x := by
+  classical
+  refine ⟨Finsupp.subtypeDomain (fun i => i ∈ x.support) x, ?_, ?_⟩
+  · rw [← mem_unitWeightedFinsuppRelations_mapDomain_iff u _ Subtype.val_injective]
+    rwa [mapDomain_subtypeDomain_support]
+  · exact mapDomain_subtypeDomain_support x
+
+omit [IsDomain R] [IsDiscreteValuationRing R] in
+/-- **Card `(21)`, boxed.**  The excess conormal over an arbitrary prime set is the filtered
+colimit of the excess conormals of its finite cutoffs. -/
+theorem unitWeightedFinsuppRelations_eq_iSup (u : ι → Rˣ) :
+    unitWeightedFinsuppRelations u
+      = ⨆ F : Finset ι,
+          Submodule.map (Finsupp.lmapDomain R R (Subtype.val : {i : ι // i ∈ F} → ι))
+            (unitWeightedFinsuppRelations (u ∘ (Subtype.val : {i : ι // i ∈ F} → ι))) := by
+  refine le_antisymm (fun x hx => ?_) (iSup_le fun F => ?_)
+  · obtain ⟨y, hy, hyx⟩ := exists_finiteCutoff_unitWeightedFinsuppRelations u hx
+    exact Submodule.mem_iSup_of_mem x.support ⟨y, hy, hyx⟩
+  · rw [Submodule.map_le_iff_le_comap]
+    intro y hy
+    exact mapDomain_mem_unitWeightedFinsuppRelations u _ Subtype.val_injective hy
 
 omit [IsDomain R] [IsDiscreteValuationRing R] in
 /-- **Card `(21)`, `(22)`, boxed.**  Over an infinite prime set the excess conormal has an infinite
@@ -459,6 +523,44 @@ theorem infinite_unitWeightedFinsuppAway [Infinite ι] (i₀ : ι) :
     rw [hset]
     exact Set.Finite.infinite_compl (Set.finite_singleton i₀)
   exact Set.infinite_coe_iff.mpr hcompl
+
+/-- A free module with an infinite basis has a nonzero exterior power in every degree: a choice of
+`n` distinct basis indices gives a surjection onto `R^n`, whose top exterior power is a line. -/
+theorem nontrivial_exteriorPower_of_infinite_basis {M : Type*} [AddCommGroup M] [Module R M]
+    [Infinite κ] (b : Module.Basis κ R M) (n : ℕ) :
+    Nontrivial ↥(⋀[R]^n M) := by
+  classical
+  have hg : Function.Injective fun i : Fin n => (Infinite.natEmbedding κ) (i : ℕ) :=
+    fun i j hij => Fin.val_injective ((Infinite.natEmbedding κ).injective hij)
+  set g : Fin n → κ := fun i => (Infinite.natEmbedding κ) (i : ℕ) with hgdef
+  set φ : M →ₗ[R] (Fin n → R) :=
+    LinearMap.pi fun i => (Finsupp.lapply (g i)).comp (b.repr : M →ₗ[R] (κ →₀ R)) with hφ
+  have hsurj : Function.Surjective φ := by
+    intro c
+    refine ⟨∑ i, c i • b (g i), ?_⟩
+    funext j
+    have hval : φ (∑ i, c i • b (g i)) j = (b.repr (∑ i, c i • b (g i))) (g j) := rfl
+    rw [hval, map_sum]
+    simp only [map_smul, Module.Basis.repr_self, Finsupp.smul_single, smul_eq_mul, mul_one,
+      Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.single_apply]
+    rw [Finset.sum_eq_single j]
+    · simp
+    · intro i _ hij
+      simp [hg.ne hij]
+    · simp
+  have hline : Nontrivial ↥(⋀[R]^n (Fin n → R)) := by
+    refine Module.nontrivial_of_finrank_pos (R := R) ?_
+    rw [exteriorPower.finrank_eq, Module.finrank_pi]
+    simp
+  exact (exteriorPower.map_surjective (n := n) hsurj).nontrivial
+
+/-- **Card `(22)`, boxed.**  Over an infinite prime set every exterior degree of the excess
+conormal is nonzero, so there is no top determinant line and no stable top homology degree. -/
+theorem nontrivial_exteriorPower_infinite_excess [Infinite ι] (u : ι → Rˣ) (i₀ : ι) (n : ℕ) :
+    Nontrivial ↥(⋀[R]^n ↥(unitWeightedFinsuppRelations u)) := by
+  classical
+  haveI : Infinite (unitWeightedFinsuppAway i₀) := infinite_unitWeightedFinsuppAway i₀
+  exact nontrivial_exteriorPower_of_infinite_basis (unitWeightedFinsuppRelationsBasis u i₀) n
 
 end InfiniteExcess
 

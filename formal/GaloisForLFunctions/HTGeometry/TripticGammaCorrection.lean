@@ -2,20 +2,22 @@ import GaloisForLFunctions.HTGeometry.TripticGammaCorrectionBasis
 import GaloisForLFunctions.HTGeometry.TripticOrbitalDivisorClassFunction
 
 /-!
-# The correcting combination of gamma jets
+# Finite combinations of gamma jets, and the correcting one
 
-Given a finite set of class representatives and an order bound, the combination
+The orbital divisor of a finite combination of elliptic gamma jets is computed slot by slot: only
+the slice of the matching order contributes, and inside that slice only the base points of the class
+in question.  The correcting combination of a source is the one whose weights are
 
-`A = Σ_{j<J} Σ_{q∈P} ( d(q, -(j+1)) / ((-1)ʲ j! · classCount P q) ) · gammaJetSource τ σ q j`
+`d(q, -(j+1)) / ((-1)ʲ j! · classCount P q)`,
 
-has exactly the orbital divisor of the source it is built from, on every class represented in `P`
-and at every order below `J`, and no divisor anywhere else.  The multiplicity divisor is what makes
-this work without deduplicating `P`: each representative of a class contributes its share, and
-because the divisor is a class function the shares sum to the class value.
+and it has exactly the orbital divisor of the source on every class represented in `P`.  The
+multiplicity divisor is what makes this work without deduplicating `P`: each representative of a
+class contributes its share, and because the divisor is a class function the shares sum to the class
+value.
 
-* `gammaCorrection`;
-* `additiveOrbitalDivisorAt_gammaCorrection` — the value on a represented class;
-* `additiveOrbitalDivisorAt_gammaCorrection_of_notMem`, `..._of_le` — zero elsewhere.
+* `jetCombination`, `additiveOrbitalDivisorAt_jetCombination_eq_single`;
+* `additiveOrbitalDivisorAt_jetCombination_of_notMem`, `..._of_le`;
+* `gammaCorrection`, `additiveOrbitalDivisorAt_gammaCorrection`.
 -/
 
 open Filter Set Topology
@@ -47,11 +49,18 @@ theorem finiteOrbitSupport_const_mul {F : ℂ → ℂ} {σ p : ℂ} {ℓ : ℤ}
 
 variable {τ σ : ℂ}
 
+/-- A finite combination of elliptic gamma jets, one weight for each base point and order. -/
+def jetCombination (τ σ : ℂ) (c : ℂ → ℕ → ℂ) (P : Finset ℂ) (J : ℕ) : ℂ → ℂ :=
+  ∑ j ∈ Finset.range J, ∑ q ∈ P, fun z ↦ c q j * gammaJetSource τ σ q j z
+
+/-- The weight the correction of a source attaches to a base point and an order. -/
+def gammaCorrectionCoeff (τ σ : ℂ) (F : ℂ → ℂ) (P : Finset ℂ) (q : ℂ) (j : ℕ) : ℂ :=
+  additiveOrbitalDivisorAt F σ q (-((j : ℤ) + 1)) /
+    ((-1 : ℂ) ^ j * (j.factorial : ℂ) * (classCount P τ σ q : ℂ))
+
 /-- The correcting combination of gamma jets attached to a finite set of representatives. -/
 def gammaCorrection (τ σ : ℂ) (F : ℂ → ℂ) (P : Finset ℂ) (J : ℕ) : ℂ → ℂ :=
-  ∑ j ∈ Finset.range J, ∑ q ∈ P,
-    (fun z ↦ (additiveOrbitalDivisorAt F σ q (-((j : ℤ) + 1)) /
-      ((-1 : ℂ) ^ j * (j.factorial : ℂ) * (classCount P τ σ q : ℂ))) * gammaJetSource τ σ q j z)
+  jetCombination τ σ (gammaCorrectionCoeff τ σ F P) P J
 
 section
 
@@ -64,16 +73,32 @@ theorem meromorphicOn_gammaJetSource (g : ℂ) (j : ℕ) :
     (((meromorphicOn_ellipticGammaConeTranslate hτ hσ g z (Set.mem_univ z)).deriv).div
       (meromorphicOn_ellipticGammaConeTranslate hτ hσ g z (Set.mem_univ z))) j
 
+include hτ hσ in
+theorem meromorphicOn_jetCombination (c : ℂ → ℕ → ℂ) (P : Finset ℂ) (J : ℕ) :
+    MeromorphicOn (jetCombination τ σ c P J) (Set.univ : Set ℂ) := by
+  rw [jetCombination]
+  exact meromorphicOn_finsetSum _ _ fun j _ ↦ meromorphicOn_finsetSum _ _ fun q _ ↦
+    meromorphicOn_const_mul (meromorphicOn_gammaJetSource hτ hσ q j) _
+
 include hτ hσ hindep in
-/-- **The divisor of one order slice of the correction.** -/
-theorem additiveOrbitalDivisorAt_gammaSlice (F : ℂ → ℂ) (P : Finset ℂ) (j : ℕ) (i : ℕ) (p : ℂ) :
-    additiveOrbitalDivisorAt
-        (∑ q ∈ P, (fun z ↦ (additiveOrbitalDivisorAt F σ q (-((j : ℤ) + 1)) /
-          ((-1 : ℂ) ^ j * (j.factorial : ℂ) * (classCount P τ σ q : ℂ)))
-            * gammaJetSource τ σ q j z)) σ p (-((i : ℤ) + 1))
-      = ∑ q ∈ P, (additiveOrbitalDivisorAt F σ q (-((j : ℤ) + 1)) /
-          ((-1 : ℂ) ^ j * (j.factorial : ℂ) * (classCount P τ σ q : ℂ)))
-            * additiveOrbitalDivisorAt (gammaJetSource τ σ q j) σ p (-((i : ℤ) + 1)) := by
+theorem finiteOrbitSupport_jetCombination (c : ℂ → ℕ → ℂ) (P : Finset ℂ) (J : ℕ) (p : ℂ) (i : ℕ) :
+    FiniteOrbitSupport (jetCombination τ σ c P J) σ p (-((i : ℤ) + 1)) := by
+  rw [jetCombination]
+  exact finiteOrbitSupport_finsetSum _ _
+    (fun j _ ↦ meromorphicOn_finsetSum _ _ fun q _ ↦
+      meromorphicOn_const_mul (meromorphicOn_gammaJetSource hτ hσ q j) _)
+    fun j _ ↦ finiteOrbitSupport_finsetSum _ _
+      (fun q _ ↦ meromorphicOn_const_mul (meromorphicOn_gammaJetSource hτ hσ q j) _)
+      fun q _ ↦ finiteOrbitSupport_const_mul (meromorphicOn_gammaJetSource hτ hσ q j)
+        (finiteOrbitSupport_gammaJetSource hτ hσ hindep q p j i) _
+
+include hτ hσ hindep in
+/-- **The divisor of one order slice of a jet combination.** -/
+theorem additiveOrbitalDivisorAt_jetSlice (c : ℂ → ℕ → ℂ) (P : Finset ℂ) (j : ℕ) (i : ℕ) (p : ℂ) :
+    additiveOrbitalDivisorAt (∑ q ∈ P, fun z ↦ c q j * gammaJetSource τ σ q j z) σ p
+        (-((i : ℤ) + 1))
+      = ∑ q ∈ P,
+          c q j * additiveOrbitalDivisorAt (gammaJetSource τ σ q j) σ p (-((i : ℤ) + 1)) := by
   rw [additiveOrbitalDivisorAt_finsetSum P _
     (fun q _ ↦ meromorphicOn_const_mul (meromorphicOn_gammaJetSource hτ hσ q j) _)
     (fun q _ ↦ finiteOrbitSupport_const_mul (meromorphicOn_gammaJetSource hτ hσ q j)
@@ -82,32 +107,29 @@ theorem additiveOrbitalDivisorAt_gammaSlice (F : ℂ → ℂ) (P : Finset ℂ) (
     additiveOrbitalDivisorAt_const_mul (meromorphicOn_gammaJetSource hτ hσ q j) _ σ p _
 
 include hτ hσ hindep in
-/-- The correction splits into its order slices. -/
-theorem additiveOrbitalDivisorAt_gammaCorrection_eq_sum (F : ℂ → ℂ) (P : Finset ℂ) (J : ℕ)
+/-- A jet combination splits into its order slices. -/
+theorem additiveOrbitalDivisorAt_jetCombination_eq_sum (c : ℂ → ℕ → ℂ) (P : Finset ℂ) (J : ℕ)
     (i : ℕ) (p : ℂ) :
-    additiveOrbitalDivisorAt (gammaCorrection τ σ F P J) σ p (-((i : ℤ) + 1))
+    additiveOrbitalDivisorAt (jetCombination τ σ c P J) σ p (-((i : ℤ) + 1))
       = ∑ j ∈ Finset.range J, ∑ q ∈ P,
-          (additiveOrbitalDivisorAt F σ q (-((j : ℤ) + 1)) /
-            ((-1 : ℂ) ^ j * (j.factorial : ℂ) * (classCount P τ σ q : ℂ)))
-              * additiveOrbitalDivisorAt (gammaJetSource τ σ q j) σ p (-((i : ℤ) + 1)) := by
-  rw [gammaCorrection, additiveOrbitalDivisorAt_finsetSum (Finset.range J) _
+          c q j * additiveOrbitalDivisorAt (gammaJetSource τ σ q j) σ p (-((i : ℤ) + 1)) := by
+  rw [jetCombination, additiveOrbitalDivisorAt_finsetSum (Finset.range J) _
     (fun j _ ↦ meromorphicOn_finsetSum P _
       fun q _ ↦ meromorphicOn_const_mul (meromorphicOn_gammaJetSource hτ hσ q j) _)
     (fun j _ ↦ finiteOrbitSupport_finsetSum P _
       (fun q _ ↦ meromorphicOn_const_mul (meromorphicOn_gammaJetSource hτ hσ q j) _)
       (fun q _ ↦ finiteOrbitSupport_const_mul (meromorphicOn_gammaJetSource hτ hσ q j)
         (finiteOrbitSupport_gammaJetSource hτ hσ hindep q p j i) _))]
-  exact Finset.sum_congr rfl fun j _ ↦ additiveOrbitalDivisorAt_gammaSlice hτ hσ hindep F P j i p
+  exact Finset.sum_congr rfl fun j _ ↦ additiveOrbitalDivisorAt_jetSlice hτ hσ hindep c P j i p
 
 include hτ hσ hindep in
 /-- Only the slice of the matching order contributes. -/
-theorem additiveOrbitalDivisorAt_gammaCorrection_eq_single (F : ℂ → ℂ) (P : Finset ℂ) {J : ℕ}
+theorem additiveOrbitalDivisorAt_jetCombination_eq_single (c : ℂ → ℕ → ℂ) (P : Finset ℂ) {J : ℕ}
     {i : ℕ} (hi : i < J) (p : ℂ) :
-    additiveOrbitalDivisorAt (gammaCorrection τ σ F P J) σ p (-((i : ℤ) + 1))
-      = ∑ q ∈ P, (additiveOrbitalDivisorAt F σ q (-((i : ℤ) + 1)) /
-          ((-1 : ℂ) ^ i * (i.factorial : ℂ) * (classCount P τ σ q : ℂ)))
-            * additiveOrbitalDivisorAt (gammaJetSource τ σ q i) σ p (-((i : ℤ) + 1)) := by
-  rw [additiveOrbitalDivisorAt_gammaCorrection_eq_sum hτ hσ hindep F P J i p]
+    additiveOrbitalDivisorAt (jetCombination τ σ c P J) σ p (-((i : ℤ) + 1))
+      = ∑ q ∈ P,
+          c q i * additiveOrbitalDivisorAt (gammaJetSource τ σ q i) σ p (-((i : ℤ) + 1)) := by
+  rw [additiveOrbitalDivisorAt_jetCombination_eq_sum hτ hσ hindep c P J i p]
   refine Finset.sum_eq_single i (fun j _ hj ↦ ?_) (fun hcon ↦ absurd (Finset.mem_range.mpr hi) hcon)
   refine Finset.sum_eq_zero fun q _ ↦ ?_
   rw [additiveOrbitalDivisorAt_gammaJetSource_of_ne_order hτ hσ q p j (fun h ↦ hj h.symm),
@@ -136,6 +158,30 @@ theorem additiveOrbitalDivisorAt_gammaJetSource_of_not_sameClass {q p : ℂ}
   have hneg := periodGroupMem_neg hmem
   rw [neg_sub] at hneg
   exact h ((sameClass_iff τ σ q p).mpr hneg)
+
+include hτ hσ hindep in
+/-- Off every class represented in `P` a jet combination has no divisor. -/
+theorem additiveOrbitalDivisorAt_jetCombination_of_notMem (c : ℂ → ℕ → ℂ) (P : Finset ℂ) (J : ℕ)
+    {i : ℕ} {p : ℂ} (hp : ¬ ∃ q ∈ P, SameClass τ σ q p) :
+    additiveOrbitalDivisorAt (jetCombination τ σ c P J) σ p (-((i : ℤ) + 1)) = 0 := by
+  rw [additiveOrbitalDivisorAt_jetCombination_eq_sum hτ hσ hindep c P J i p]
+  refine Finset.sum_eq_zero fun j _ ↦ Finset.sum_eq_zero fun q hq ↦ ?_
+  rcases eq_or_ne i j with rfl | hne
+  · rw [additiveOrbitalDivisorAt_gammaJetSource_of_not_sameClass hτ hσ
+      (fun h ↦ hp ⟨q, hq, h⟩) i, mul_zero]
+  · rw [additiveOrbitalDivisorAt_gammaJetSource_of_ne_order hτ hσ q p j hne, mul_zero]
+
+include hτ hσ hindep in
+/-- Above its order bound a jet combination has no divisor. -/
+theorem additiveOrbitalDivisorAt_jetCombination_of_le (c : ℂ → ℕ → ℂ) (P : Finset ℂ) {J i : ℕ}
+    (hi : J ≤ i) (p : ℂ) :
+    additiveOrbitalDivisorAt (jetCombination τ σ c P J) σ p (-((i : ℤ) + 1)) = 0 := by
+  rw [additiveOrbitalDivisorAt_jetCombination_eq_sum hτ hσ hindep c P J i p]
+  refine Finset.sum_eq_zero fun j hj ↦ Finset.sum_eq_zero fun q _ ↦ ?_
+  have hne : i ≠ j := by
+    have := Finset.mem_range.mp hj
+    omega
+  rw [additiveOrbitalDivisorAt_gammaJetSource_of_ne_order hτ hσ q p j hne, mul_zero]
 
 end
 
@@ -181,22 +227,21 @@ theorem additiveOrbitalDivisorAt_gammaCorrection {Cst : ℂ} (hmixed : MixedCons
   have hfac : ((-1 : ℂ) ^ i * (i.factorial : ℂ)) ≠ 0 :=
     mul_ne_zero (pow_ne_zero i (by norm_num)) hfacn
   have hcnt : (classCount P τ σ p : ℂ) ≠ 0 := classCount_ne_zero_of_exists hp
-  rw [additiveOrbitalDivisorAt_gammaCorrection_eq_single hτ hσ hindep F P hi p,
+  rw [gammaCorrection, additiveOrbitalDivisorAt_jetCombination_eq_single hτ hσ hindep _ P hi p,
     ← Finset.sum_filter_add_sum_filter_not P (fun q ↦ SameClass τ σ q p)]
   have hoff : ∑ q ∈ P.filter (fun q ↦ ¬ SameClass τ σ q p),
-      (additiveOrbitalDivisorAt F σ q (-((i : ℤ) + 1)) /
-        ((-1 : ℂ) ^ i * (i.factorial : ℂ) * (classCount P τ σ q : ℂ)))
+      gammaCorrectionCoeff τ σ F P q i
           * additiveOrbitalDivisorAt (gammaJetSource τ σ q i) σ p (-((i : ℤ) + 1)) = 0 := by
     refine Finset.sum_eq_zero fun q hq ↦ ?_
     rw [additiveOrbitalDivisorAt_gammaJetSource_of_not_sameClass hτ hσ
       (Finset.mem_filter.mp hq).2 i, mul_zero]
   have hon : ∀ q ∈ P.filter (fun q ↦ SameClass τ σ q p),
-      (additiveOrbitalDivisorAt F σ q (-((i : ℤ) + 1)) /
-        ((-1 : ℂ) ^ i * (i.factorial : ℂ) * (classCount P τ σ q : ℂ)))
+      gammaCorrectionCoeff τ σ F P q i
           * additiveOrbitalDivisorAt (gammaJetSource τ σ q i) σ p (-((i : ℤ) + 1))
         = additiveOrbitalDivisorAt F σ p (-((i : ℤ) + 1)) / (classCount P τ σ p : ℂ) := by
     intro q hq
     have hqc := (Finset.mem_filter.mp hq).2
+    simp only [gammaCorrectionCoeff]
     rw [additiveOrbitalDivisorAt_gammaJetSource_sameClass hτ hσ hindep hqc i,
       additiveOrbitalDivisorAt_congr_sameClass hF hper hmixed hqc hneg, classCount_congr P hqc]
     field_simp

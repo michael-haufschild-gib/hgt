@@ -232,12 +232,13 @@ def unitWeightedSection (u : ι → Rˣ) (i₀ : ι) : R →ₗ[R] (ι → R) wh
     by_cases hi : i = i₀ <;> simp [hi, mul_add]
   map_smul' r x := by
     ext i
-    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul] <;> ring
+    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul]
+    ring
 
 @[simp] theorem unitWeightedAugmentation_section (u : ι → Rˣ) (i₀ : ι) (r : R) :
     unitWeightedAugmentation u (unitWeightedSection u i₀ r) = r := by
   classical
-  simp [unitWeightedAugmentation, unitWeightedSection, mul_assoc]
+  simp [unitWeightedAugmentation, unitWeightedSection]
 
 /-- Kernel of the unit-weighted augmentation: the shell-presentation relation module. -/
 abbrev unitWeightedRelations (u : ι → Rˣ) : Submodule R (ι → R) :=
@@ -271,14 +272,14 @@ def unitWeightedSplitEquiv (u : ι → Rˣ) (i₀ : ι) :
         simp
         abel
       map_smul' := fun r x => by
-        simpa only [map_smul, Prod.smul_fst, Submodule.coe_smul, Prod.smul_snd,
+        simp only [map_smul, Prod.smul_fst, Submodule.coe_smul, Prod.smul_snd,
           smul_add, RingHom.id_apply] }
   exact LinearEquiv.ofLinear f g
     (by
       apply LinearMap.ext
       rintro ⟨r, e⟩
       apply Prod.ext
-      · simpa [f, g, s, h] using e.2
+      · simp [f, g, s, h]
       · apply Subtype.ext
         ext i
         simp [f, g, s, h])
@@ -408,6 +409,7 @@ variable {ι : Type*} [DecidableEq ι]
 def unitWeightedFinsuppAugmentation (u : ι → Rˣ) : (ι →₀ R) →ₗ[R] R :=
   Finsupp.lsum R fun i => LinearMap.toSpanSingleton R R (u i : R)
 
+omit [DecidableEq ι] in
 @[simp] theorem unitWeightedFinsuppAugmentation_single
     (u : ι → Rˣ) (i : ι) (r : R) :
     unitWeightedFinsuppAugmentation u (Finsupp.single i r) = (u i : R) * r := by
@@ -420,7 +422,8 @@ def unitWeightedFinsuppSection (u : ι → Rˣ) (i₀ : ι) : R →ₗ[R] (ι �
   map_add' x y := by rw [mul_add, Finsupp.single_add]
   map_smul' r x := by
     ext i
-    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul] <;> ring
+    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul]
+    ring
 
 @[simp] theorem unitWeightedFinsuppAugmentation_section
     (u : ι → Rˣ) (i₀ : ι) (r : R) :
@@ -465,14 +468,14 @@ def unitWeightedFinsuppSplitEquiv (u : ι → Rˣ) (i₀ : ι) :
         simp
         abel
       map_smul' := fun r x => by
-        simpa only [map_smul, Prod.smul_fst, Submodule.coe_smul, Prod.smul_snd,
+        simp only [map_smul, Prod.smul_fst, Submodule.coe_smul, Prod.smul_snd,
           smul_add, RingHom.id_apply] }
   exact LinearEquiv.ofLinear f g
     (by
       apply LinearMap.ext
       rintro ⟨r, e⟩
       apply Prod.ext
-      · simpa [f, g, s, h] using e.2
+      · simp [f, g, s, h]
       · apply Subtype.ext
         simp [f, g, s, h])
     (by
@@ -489,6 +492,7 @@ def unitWeightedFinsuppRelationVector (u : ι → Rˣ) (i₀ : ι)
   Finsupp.single j.1 1 -
     Finsupp.single i₀ ((u j.1 : R) * (↑((u i₀)⁻¹) : R))
 
+omit [DecidableEq ι] in
 theorem unitWeightedFinsuppRelationVector_mem (u : ι → Rˣ) (i₀ : ι)
     (j : unitWeightedFinsuppAway i₀) :
     unitWeightedFinsuppRelationVector u i₀ j ∈ unitWeightedFinsuppRelations u := by
@@ -506,6 +510,7 @@ def unitWeightedFinsuppAwayAugmentation (u : ι → Rˣ) (i₀ : ι) :
     (unitWeightedFinsuppAway i₀ →₀ R) →ₗ[R] R :=
   Finsupp.lsum R fun j => LinearMap.toSpanSingleton R R (u j.1 : R)
 
+omit [DecidableEq ι] in
 theorem unitWeightedFinsuppAugmentation_mapDomain
     (u : ι → Rˣ) (i₀ : ι) (y : unitWeightedFinsuppAway i₀ →₀ R) :
     unitWeightedFinsuppAugmentation u (Finsupp.mapDomain Subtype.val y) =
@@ -525,7 +530,8 @@ private def unitWeightedFinsuppToRelationsRaw (u : ι → Rˣ) (i₀ : ι) :
   map_smul' r x := by
     rw [Finsupp.mapDomain_smul, map_smul]
     ext i
-    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul] <;> ring
+    by_cases hi : i = i₀ <;> simp [hi, smul_eq_mul]
+    ring
 
 /-- Build a relation from arbitrary finitely supported non-pivot coordinates. -/
 def unitWeightedFinsuppToRelations (u : ι → Rˣ) (i₀ : ι) :
@@ -560,7 +566,7 @@ theorem unitWeightedFinsuppFromRelations_toRelations
       (unitWeightedFinsuppToRelations u i₀ y) = y := by
   ext j
   simp only [unitWeightedFinsuppFromRelations, unitWeightedFinsuppToRelations,
-    unitWeightedFinsuppToRelationsRaw, Finsupp.comapDomain_apply]
+    unitWeightedFinsuppToRelationsRaw]
   change (Finsupp.mapDomain Subtype.val y -
     Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) *
       unitWeightedFinsuppAwayAugmentation u i₀ y)) j.1 = y j
@@ -579,7 +585,7 @@ private theorem unitWeightedFinsuppRelations_ext
     · simp [hi, h ⟨i, hi⟩]
   have hker : unitWeightedFinsuppAugmentation u (x.1 - y.1) = 0 := by
     rw [map_sub]
-    simpa [LinearMap.mem_ker.mp x.2, LinearMap.mem_ker.mp y.2]
+    simp [LinearMap.mem_ker.mp x.2, LinearMap.mem_ker.mp y.2]
   rw [hdiff, unitWeightedFinsuppAugmentation_single] at hker
   have hzero : x.1 i₀ - y.1 i₀ = 0 := by
     calc
@@ -599,7 +605,7 @@ theorem unitWeightedFinsuppToRelations_fromRelations
   apply unitWeightedFinsuppRelations_ext u i₀
   intro j
   simp only [unitWeightedFinsuppFromRelations, unitWeightedFinsuppToRelations,
-    unitWeightedFinsuppToRelationsRaw, Finsupp.comapDomain_apply]
+    unitWeightedFinsuppToRelationsRaw]
   change (Finsupp.mapDomain Subtype.val
     (Finsupp.comapDomain Subtype.val x.1 Subtype.val_injective.injOn) -
       Finsupp.single i₀ ((↑((u i₀)⁻¹) : R) *
@@ -648,7 +654,7 @@ theorem unitWeightedFinsuppRelationsBasis_apply (u : ι → Rˣ) (i₀ : ι)
       Finsupp.single i₀ ((u j.1 : R) * (↑((u i₀)⁻¹) : R))) : ι →₀ R) i
   simp only [Finsupp.sub_apply]
   rw [Finsupp.mapDomain_single]
-  simp [unitWeightedFinsuppAwayAugmentation, Finsupp.single_apply, j.2, mul_comm]
+  simp [unitWeightedFinsuppAwayAugmentation, Finsupp.single_apply, mul_comm]
 
 end FinsuppSplitFamily
 

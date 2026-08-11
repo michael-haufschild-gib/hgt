@@ -467,6 +467,49 @@ def xiShiftedCanonicalAdmissionOddCurrent (y : ℝ) (n : ℕ) : ℝ :=
     (X * HTGeometry.monicMomentAdmissionPolynomial
       (fun k => (xiShiftedReciprocalMoment y k).re) n)
 
+/-- Adaptive bilinear source shear formed from the actual inverse-Hankel admission. -/
+def xiShiftedCanonicalAdmissionAdaptiveShear (y : ℝ) (n : ℕ) : ℝ :=
+  let P := HTGeometry.monicMomentAdmissionPolynomial
+    (fun k => (xiShiftedReciprocalMoment y k).re) n
+  HTGeometry.momentInner (fun k => (xiShiftedReciprocalMoment y k).re)
+    (X * P) (X * xiShiftedBoundaryShiftedEuler 1 P)
+
+/-- Division-free norm flux.  Unlike Jacobi quotients, this coordinate remains defined on a flat
+Hankel face. -/
+def xiShiftedCanonicalAdmissionNormFlux (y : ℝ) (n : ℕ) : ℝ :=
+  2 * xiShiftedCanonicalAdmissionFirstCoeff y n *
+      xiShiftedCanonicalAdmissionNorm y n -
+    ((2 * n + 1 : ℕ) : ℝ) * xiShiftedCanonicalAdmissionOddCurrent y n
+
+/-- At a flat next face, actual canonical odd current is the first-unseen monic arithmetic
+remainder. -/
+theorem xiShiftedCanonicalAdmissionOddCurrent_eq_monicRemainder_of_flatFace
+    {y : ℝ} {n : ℕ}
+    (hflat : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ
+      HTGeometry.monicMomentAdmissionVector
+        (fun k => (xiShiftedReciprocalMoment y k).re) n = 0) :
+    xiShiftedCanonicalAdmissionOddCurrent y n =
+      xiShiftedHankelBoundaryMonicRemainder y
+        (HTGeometry.monicMomentAdmissionVector
+          (fun k => (xiShiftedReciprocalMoment y k).re) n) := by
+  let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
+  let c : Fin (n + 1) → ℝ := HTGeometry.monicMomentAdmissionVector s n
+  have hmono : HTGeometry.finiteHankelNullMonicPolynomial c =
+      HTGeometry.finiteHankelNullPolynomial c := by
+    rw [HTGeometry.finiteHankelNullMonicPolynomial,
+      HTGeometry.finiteHankelNullPolynomial_leadingCoeff_eq_terminal c (by simp [c])]
+    simp [c]
+  have hrem := xiShiftedHankelBoundaryMonicRemainder_eq_shiftedSquare
+    c hflat (by simp [c])
+  rw [hmono] at hrem
+  rw [xiShiftedCanonicalAdmissionOddCurrent,
+    HTGeometry.monicMomentAdmissionPolynomial]
+  change HTGeometry.momentInner s (HTGeometry.finiteHankelNullPolynomial c)
+      (X * HTGeometry.finiteHankelNullPolynomial c) = _
+  rw [HTGeometry.momentInner_def, hrem]
+  congr 1
+  ring
+
 /-- Canonical diagonal Jacobi coordinate, defined from actual moving admission currents. -/
 def xiShiftedCanonicalAdmissionAlpha (y : ℝ) (n : ℕ) : ℝ :=
   xiShiftedCanonicalAdmissionOddCurrent y n /
@@ -724,6 +767,189 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNorm_of_flatFace
       finitePolynomialCurve_xiShiftedCanonicalAdmission]
   rw [hfun]
   simpa only [s, c, dc] using hmoving'
+
+/-- At a flat face the inverse-Hankel coefficient velocity is tangent to the null flag, so the
+actual moving odd current loses its connection term and differentiates to minus twice the adaptive
+bilinear source shear. -/
+theorem hasDerivAt_xiShiftedCanonicalAdmissionOddCurrent_eq_adaptiveShear_of_flatFace
+    {y : ℝ} (hy : 0 < y) {n : ℕ} (hn : 0 < n)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ
+      HTGeometry.monicMomentAdmissionVector
+        (fun k => (xiShiftedReciprocalMoment y k).re) n = 0) :
+    HasDerivAt (fun v => xiShiftedCanonicalAdmissionOddCurrent v n)
+      (-2 * xiShiftedCanonicalAdmissionAdaptiveShear y n) y := by
+  let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
+  let c : Fin (n + 1) → ℝ := HTGeometry.monicMomentAdmissionVector s n
+  let dc : Fin (n + 1) → ℝ := xiShiftedCanonicalAdmissionVelocity y n
+  have hdet : (HTGeometry.momentHankelMatrix s n).det ≠ 0 :=
+    ne_of_gt hhead.det_pos
+  have hflat' : HTGeometry.momentHankelMatrix s (n + 1) *ᵥ c = 0 := by
+    change HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment y k).re) (n + 1) *ᵥ
+        HTGeometry.monicMomentAdmissionVector
+          (fun k => (xiShiftedReciprocalMoment y k).re) n = 0 at hflat
+    simpa only [s, c] using hflat
+  have hcurve := hasDerivAt_xiShiftedCanonicalAdmissionCurve hy n hdet
+  have hmoving := hasDerivAt_xiShiftedMomentInner_movingOddCurrent hy
+    (xiShiftedCanonicalAdmissionCurve n) dc hcurve
+  have hPy : finitePolynomialCurve (xiShiftedCanonicalAdmissionCurve n) y =
+      HTGeometry.finiteHankelNullPolynomial c := by
+    rfl
+  have hvelocity :=
+    natDegree_finitePolynomialVelocity_xiShiftedCanonicalAdmission_lt hn y
+  have hXvelocity :
+      (X * finitePolynomialVelocity dc).natDegree < n + 1 := by
+    have hsum : 1 + (finitePolynomialVelocity dc).natDegree < 1 + n :=
+      Nat.add_lt_add_left hvelocity 1
+    calc
+      (X * finitePolynomialVelocity dc).natDegree ≤
+          X.natDegree + (finitePolynomialVelocity dc).natDegree :=
+        Polynomial.natDegree_mul_le
+      _ = 1 + (finitePolynomialVelocity dc).natDegree := by
+        rw [Polynomial.natDegree_X]
+      _ < 1 + n := hsum
+      _ = n + 1 := by omega
+  have hmovezero : HTGeometry.momentInner s (finitePolynomialVelocity dc)
+      (X * HTGeometry.finiteHankelNullPolynomial c) = 0 := by
+    have hcomm : HTGeometry.momentInner s (finitePolynomialVelocity dc)
+        (X * HTGeometry.finiteHankelNullPolynomial c) =
+      HTGeometry.momentInner s (HTGeometry.finiteHankelNullPolynomial c)
+        (X * finitePolynomialVelocity dc) := by
+      simp only [HTGeometry.momentInner_def]
+      congr 1
+      ring
+    rw [hcomm]
+    exact HTGeometry.momentInner_finiteHankelNullPolynomial_eq_zero_of_kernel
+      hflat' hXvelocity
+  rw [hPy, hmovezero, mul_zero, add_zero] at hmoving
+  have hfun :
+      (fun v => xiShiftedCanonicalAdmissionOddCurrent v n) =
+      (fun v => HTGeometry.momentInner
+        (fun k => (xiShiftedReciprocalMoment v k).re)
+        (finitePolynomialCurve (xiShiftedCanonicalAdmissionCurve n) v)
+        (X * finitePolynomialCurve (xiShiftedCanonicalAdmissionCurve n) v)) := by
+    funext v
+    rw [xiShiftedCanonicalAdmissionOddCurrent,
+      finitePolynomialCurve_xiShiftedCanonicalAdmission]
+  rw [hfun]
+  have hshear : xiShiftedCanonicalAdmissionAdaptiveShear y n =
+      HTGeometry.momentInner s (X * HTGeometry.finiteHankelNullPolynomial c)
+        (X * xiShiftedBoundaryShiftedEuler 1
+          (HTGeometry.finiteHankelNullPolynomial c)) := by
+    rfl
+  rw [hshear]
+  exact hmoving
+
+/-- **Singular producer law.**  If the first-unseen remainder also vanishes, the division-free
+norm flux differentiates to the adaptive source.  This is the source-side replacement for the
+Jacobi quotient, which is undefined on the flat face. -/
+theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_of_flatTangent
+    {y : ℝ} (hy : 0 < y) {n : ℕ} (hn : 0 < n)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ
+      HTGeometry.monicMomentAdmissionVector
+        (fun k => (xiShiftedReciprocalMoment y k).re) n = 0)
+    (htangent : xiShiftedHankelBoundaryMonicRemainder y
+      (HTGeometry.monicMomentAdmissionVector
+        (fun k => (xiShiftedReciprocalMoment y k).re) n) = 0) :
+    HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
+      (2 * ((2 * n + 1 : ℕ) : ℝ) *
+        xiShiftedCanonicalAdmissionAdaptiveShear y n) y := by
+  have hdet : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment y k).re) n).det ≠ 0 := by
+    exact ne_of_gt hhead.det_pos
+  have ha := hasDerivAt_xiShiftedCanonicalAdmissionFirstCoeff hy hn hdet
+  have hNraw := hasDerivAt_xiShiftedCanonicalAdmissionNorm_of_flatFace
+    hy hn hhead hflat
+  have hN : HasDerivAt (fun v => xiShiftedCanonicalAdmissionNorm v n) 0 y := by
+    refine hNraw.congr_deriv ?_
+    rw [htangent]
+    ring
+  have hNzero := xiShiftedCanonicalAdmissionNorm_eq_zero_of_flatFace hflat
+  have hB :=
+    hasDerivAt_xiShiftedCanonicalAdmissionOddCurrent_eq_adaptiveShear_of_flatFace
+      hy hn hhead hflat
+  have hraw := ((ha.mul hN).const_mul 2).sub
+    (hB.const_mul (((2 * n + 1 : ℕ) : ℝ)))
+  have hderiv :
+      2 *
+          ((finitePolynomialVelocity
+            (xiShiftedCanonicalAdmissionVelocity y n)).coeff (n - 1) *
+              xiShiftedCanonicalAdmissionNorm y n +
+            xiShiftedCanonicalAdmissionFirstCoeff y n * 0) -
+        ((2 * n + 1 : ℕ) : ℝ) *
+          (-2 * xiShiftedCanonicalAdmissionAdaptiveShear y n) =
+      2 * ((2 * n + 1 : ℕ) : ℝ) *
+        xiShiftedCanonicalAdmissionAdaptiveShear y n := by
+    rw [hNzero]
+    ring
+  have hfun : (fun v => xiShiftedCanonicalAdmissionNormFlux v n) =
+      (fun v => 2 *
+          (xiShiftedCanonicalAdmissionFirstCoeff v n *
+            xiShiftedCanonicalAdmissionNorm v n) -
+        ((2 * n + 1 : ℕ) : ℝ) *
+          xiShiftedCanonicalAdmissionOddCurrent v n) := by
+    funext v
+    simp only [xiShiftedCanonicalAdmissionNormFlux]
+    ring
+  rw [hfun]
+  exact hraw.congr_deriv hderiv
+
+/-- **Arithmetic source-first boundary law.**  At a tangential flat face, the derivative of the
+actual inverse-Hankel norm flux is the odd-contact factor times the literal completed mixed
+arithmetic source formed from that admission before reflection aggregation. -/
+theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_arithmeticSource_of_flatTangent
+    {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+      HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
+    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2)
+      (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) = 0) :
+    HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
+      (((2 * n + 1 : ℕ) : ℝ) *
+        xiShiftedAdaptiveMixedCompletedArithmeticSource w
+          (HTGeometry.monicMomentAdmissionPolynomial
+            (xiShiftedRealMomentSequence w) n)) (w ^ 2) := by
+  have hy : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
+  have hflux := hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_of_flatTangent
+    hy hn hhead hflat htangent
+  let P := HTGeometry.monicMomentAdmissionPolynomial
+    (xiShiftedRealMomentSequence w) n
+  have hsource := two_mul_xiShiftedAdaptiveShear_eq_arithmeticSource hw P
+  change 2 * HTGeometry.momentInner (xiShiftedRealMomentSequence w)
+      (X * P) (X * xiShiftedBoundaryShiftedEuler 1 P) =
+    xiShiftedAdaptiveMixedCompletedArithmeticSource w P at hsource
+  have hshear : xiShiftedCanonicalAdmissionAdaptiveShear (w ^ 2) n =
+      HTGeometry.momentInner (xiShiftedRealMomentSequence w)
+        (X * P) (X * xiShiftedBoundaryShiftedEuler 1 P) := by
+    rfl
+  rw [hshear] at hflux
+  refine hflux.congr_deriv ?_
+  rw [← hsource]
+  dsimp only [P]
+  ring
+
+/-- The same singular producer law stated for completed adaptive `P^sharp` packet itself. -/
+theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_completedAggregate_of_flatTangent
+    {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+      HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0)
+    (htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2)
+      (HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n) = 0) :
+    let P := HTGeometry.monicMomentAdmissionPolynomial
+      (xiShiftedRealMomentSequence w) n
+    HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
+      (((2 * n + 1 : ℕ) : ℝ) *
+        xiShiftedCompletedMomentAggregate (w ^ 2) 2
+          (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
+            (xiShiftedOddCrossingCoefficientPacket P))) (w ^ 2) := by
+  dsimp only
+  rw [xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_arithmeticSource hw]
+  exact
+    hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_arithmeticSource_of_flatTangent
+      hw hn hhead hflat htangent
 
 /-- Exact norm flow needs only the next Hankel block, one degree less than adaptive source energy. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_jacobiFlow_of_succ_posDef

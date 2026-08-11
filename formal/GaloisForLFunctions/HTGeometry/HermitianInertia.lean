@@ -11,7 +11,7 @@ triple and proves:
 * invariance under invertible congruence `H ↦ Sᴴ H S` (**Sylvester's law of inertia**);
 * the exact values for a real diagonal matrix, as counts of positive, negative and zero entries;
 * the same values for a Hermitian matrix in terms of its eigenvalues;
-* the completeness relation `posIndex + negIndex + nullIndex = card`.
+* the completeness relation `hermPosIndex + hermNegIndex + hermNullIndex = card`.
 
 The variational definition makes congruence invariance immediate; the spectral theorem then
 transports every computation to the diagonal case.
@@ -50,33 +50,33 @@ theorem hermQuad_diagonal [DecidableEq n] (μ : n → ℝ) (x : n → ℂ) :
   rw [h, Complex.ofReal_re]
 
 /-- The set of dimensions realized by positive-definite subspaces. -/
-def posIndexSet (H : Matrix n n ℂ) : Set ℕ :=
+def hermPosIndexSet (H : Matrix n n ℂ) : Set ℕ :=
   {r | ∃ W : Submodule ℂ (n → ℂ), Module.finrank ℂ W = r ∧ IsPosDefOn H W}
 
-theorem posIndexSet_nonempty (H : Matrix n n ℂ) : (posIndexSet H).Nonempty :=
+theorem posIndexSet_nonempty (H : Matrix n n ℂ) : (hermPosIndexSet H).Nonempty :=
   ⟨0, ⊥, by simp, fun x hx hx0 => absurd (by simpa using hx) hx0⟩
 
-theorem posIndexSet_bddAbove (H : Matrix n n ℂ) : BddAbove (posIndexSet H) := by
+theorem posIndexSet_bddAbove (H : Matrix n n ℂ) : BddAbove (hermPosIndexSet H) := by
   refine ⟨Fintype.card n, ?_⟩
   rintro r ⟨W, rfl, -⟩
   have h := Submodule.finrank_le W
   rwa [Module.finrank_fintype_fun_eq_card] at h
 
 /-- The positive index: the largest dimension of a positive-definite subspace. -/
-def posIndex (H : Matrix n n ℂ) : ℕ := sSup (posIndexSet H)
+def hermPosIndex (H : Matrix n n ℂ) : ℕ := sSup (hermPosIndexSet H)
 
 /-- The negative index. -/
-def negIndex (H : Matrix n n ℂ) : ℕ := posIndex (-H)
+def hermNegIndex (H : Matrix n n ℂ) : ℕ := hermPosIndex (-H)
 
 /-- The null index: the dimension of the kernel. -/
-def nullIndex (H : Matrix n n ℂ) : ℕ := Module.finrank ℂ (LinearMap.ker H.mulVecLin)
+def hermNullIndex (H : Matrix n n ℂ) : ℕ := Module.finrank ℂ (LinearMap.ker H.mulVecLin)
 
 theorem exists_isPosDefOn_finrank_eq_posIndex (H : Matrix n n ℂ) :
-    ∃ W : Submodule ℂ (n → ℂ), Module.finrank ℂ W = posIndex H ∧ IsPosDefOn H W :=
+    ∃ W : Submodule ℂ (n → ℂ), Module.finrank ℂ W = hermPosIndex H ∧ IsPosDefOn H W :=
   Nat.sSup_mem (posIndexSet_nonempty H) (posIndexSet_bddAbove H)
 
 theorem finrank_le_posIndex {H : Matrix n n ℂ} {W : Submodule ℂ (n → ℂ)} (hW : IsPosDefOn H W) :
-    Module.finrank ℂ W ≤ posIndex H :=
+    Module.finrank ℂ W ≤ hermPosIndex H :=
   le_csSup (posIndexSet_bddAbove H) ⟨W, rfl, hW⟩
 
 /-! ### Congruence -/
@@ -101,7 +101,7 @@ theorem isUnit_conjTranspose [DecidableEq n] {S : Matrix n n ℂ} (hS : IsUnit S
   exact ((Matrix.isUnit_iff_isUnit_det S).mp hS).map (starRingEnd ℂ)
 
 theorem posIndex_conjugate_le [DecidableEq n] (H : Matrix n n ℂ) {S : Matrix n n ℂ}
-    (hS : IsUnit S) : posIndex (Sᴴ * H * S) ≤ posIndex H := by
+    (hS : IsUnit S) : hermPosIndex (Sᴴ * H * S) ≤ hermPosIndex H := by
   obtain ⟨W, hrank, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex (Sᴴ * H * S)
   have hinj := mulVecLin_injective hS
   have hmap : IsPosDefOn H (W.map S.mulVecLin) := by
@@ -114,33 +114,41 @@ theorem posIndex_conjugate_le [DecidableEq n] (H : Matrix n n ℂ) {S : Matrix n
   rw [← hrank, ← heq]
   exact finrank_le_posIndex hmap
 
+/-- Congruence by the inverse undoes a congruence. -/
+theorem conjugate_nonsing_inv [DecidableEq n] (H : Matrix n n ℂ) {S : Matrix n n ℂ}
+    (hS : IsUnit S) : (S⁻¹)ᴴ * (Sᴴ * H * S) * S⁻¹ = H := by
+  have hdet : IsUnit S.det := (Matrix.isUnit_iff_isUnit_det S).mp hS
+  have hdetH : IsUnit (Sᴴ).det := by
+    rw [Matrix.det_conjTranspose]
+    exact hdet.map (starRingEnd ℂ)
+  rw [Matrix.conjTranspose_nonsing_inv, Matrix.mul_assoc, Matrix.mul_assoc,
+    Matrix.mul_nonsing_inv S hdet, Matrix.mul_one, ← Matrix.mul_assoc,
+    Matrix.nonsing_inv_mul _ hdetH, Matrix.one_mul]
+
 /-- **Sylvester's law of inertia, positive index.**  Invertible congruence preserves the positive
 index. -/
 theorem posIndex_conjugate [DecidableEq n] (H : Matrix n n ℂ) {S : Matrix n n ℂ} (hS : IsUnit S) :
-    posIndex (Sᴴ * H * S) = posIndex H := by
+    hermPosIndex (Sᴴ * H * S) = hermPosIndex H := by
   refine le_antisymm (posIndex_conjugate_le H hS) ?_
   have hdet : IsUnit S.det := (Matrix.isUnit_iff_isUnit_det S).mp hS
   have hdetH : IsUnit (Sᴴ).det := by
     rw [Matrix.det_conjTranspose]
     exact hdet.map (starRingEnd ℂ)
   have hinvU : IsUnit S⁻¹ := Matrix.isUnit_nonsing_inv_iff.mpr hS
-  have hback : (S⁻¹)ᴴ * (Sᴴ * H * S) * S⁻¹ = H := by
-    rw [Matrix.conjTranspose_nonsing_inv, Matrix.mul_assoc, Matrix.mul_assoc,
-      Matrix.mul_nonsing_inv S hdet, Matrix.mul_one, ← Matrix.mul_assoc,
-      Matrix.nonsing_inv_mul _ hdetH, Matrix.one_mul]
-  calc posIndex H = posIndex ((S⁻¹)ᴴ * (Sᴴ * H * S) * S⁻¹) := by rw [hback]
-    _ ≤ posIndex (Sᴴ * H * S) := posIndex_conjugate_le _ hinvU
+  have hback := conjugate_nonsing_inv H hS
+  calc hermPosIndex H = hermPosIndex ((S⁻¹)ᴴ * (Sᴴ * H * S) * S⁻¹) := by rw [hback]
+    _ ≤ hermPosIndex (Sᴴ * H * S) := posIndex_conjugate_le _ hinvU
 
 /-- **Sylvester's law of inertia, negative index.** -/
 theorem negIndex_conjugate [DecidableEq n] (H : Matrix n n ℂ) {S : Matrix n n ℂ} (hS : IsUnit S) :
-    negIndex (Sᴴ * H * S) = negIndex H := by
+    hermNegIndex (Sᴴ * H * S) = hermNegIndex H := by
   have h : -(Sᴴ * H * S) = Sᴴ * (-H) * S := by
     rw [Matrix.mul_neg, Matrix.neg_mul]
-  rw [negIndex, h, posIndex_conjugate _ hS, negIndex]
+  rw [hermNegIndex, h, posIndex_conjugate _ hS, hermNegIndex]
 
 /-- **Sylvester's law of inertia, null index.** -/
 theorem nullIndex_conjugate [DecidableEq n] (H : Matrix n n ℂ) {S : Matrix n n ℂ} (hS : IsUnit S) :
-    nullIndex (Sᴴ * H * S) = nullIndex H := by
+    hermNullIndex (Sᴴ * H * S) = hermNullIndex H := by
   have hinj := mulVecLin_injective hS
   have hbij : Function.Bijective S.mulVecLin :=
     ⟨hinj, LinearMap.surjective_of_injective hinj⟩
@@ -160,9 +168,17 @@ theorem nullIndex_conjugate [DecidableEq n] (H : Matrix n n ℂ) {S : Matrix n n
       simpa using hinjH h0
     · intro h
       rw [h, Matrix.mulVec_zero]
-  rw [nullIndex, hker, Submodule.comap_equiv_eq_map_symm, nullIndex]
+  rw [hermNullIndex, hker, Submodule.comap_equiv_eq_map_symm, hermNullIndex]
   exact ((Submodule.equivMapOfInjective (e.symm : (n → ℂ) →ₗ[ℂ] (n → ℂ))
     e.symm.injective _).symm).finrank_eq
+
+open scoped ComplexOrder in
+/-- Invertible congruence preserves and reflects positive semidefiniteness. -/
+theorem posSemidef_conjugate_iff [DecidableEq n] (H : Matrix n n ℂ) {S : Matrix n n ℂ}
+    (hS : IsUnit S) : (Sᴴ * H * S).PosSemidef ↔ H.PosSemidef := by
+  refine ⟨fun h => ?_, fun h => h.conjTranspose_mul_mul_same _⟩
+  have := h.conjTranspose_mul_mul_same (S⁻¹)
+  rwa [conjugate_nonsing_inv H hS] at this
 
 /-! ### Coordinate subspaces -/
 
@@ -234,7 +250,7 @@ theorem isPosDefOn_coordSupport_diagonal [DecidableEq n] {μ : n → ℝ} {s : F
 
 /-- **Positive index of a real diagonal matrix.** -/
 theorem posIndex_diagonal [DecidableEq n] (μ : n → ℝ) :
-    posIndex (diagonal (fun i => (μ i : ℂ))) = ({i | 0 < μ i} : Finset n).card := by
+    hermPosIndex (diagonal (fun i => (μ i : ℂ))) = ({i | 0 < μ i} : Finset n).card := by
   classical
   refine le_antisymm ?_ ?_
   · obtain ⟨W, hrank, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex
@@ -272,19 +288,19 @@ theorem posIndex_diagonal [DecidableEq n] (μ : n → ℝ) :
 
 /-- **Negative index of a real diagonal matrix.** -/
 theorem negIndex_diagonal [DecidableEq n] (μ : n → ℝ) :
-    negIndex (diagonal (fun i => (μ i : ℂ))) = ({i | μ i < 0} : Finset n).card := by
+    hermNegIndex (diagonal (fun i => (μ i : ℂ))) = ({i | μ i < 0} : Finset n).card := by
   classical
   have h : -(diagonal (fun i => (μ i : ℂ))) = diagonal (fun i => ((-μ i : ℝ) : ℂ)) := by
     ext i j
     by_cases hij : i = j <;> simp [hij]
-  rw [negIndex, h, posIndex_diagonal]
+  rw [hermNegIndex, h, posIndex_diagonal]
   congr 1
   ext i
   simp
 
 /-- **Null index of a real diagonal matrix.** -/
 theorem nullIndex_diagonal [DecidableEq n] (μ : n → ℝ) :
-    nullIndex (diagonal (fun i => (μ i : ℂ))) = ({i | μ i = 0} : Finset n).card := by
+    hermNullIndex (diagonal (fun i => (μ i : ℂ))) = ({i | μ i = 0} : Finset n).card := by
   classical
   have hker : LinearMap.ker (diagonal (fun i => (μ i : ℂ))).mulVecLin =
       coordSupport ({i | μ i = 0} : Finset n) := by
@@ -302,7 +318,7 @@ theorem nullIndex_diagonal [DecidableEq n] (μ : n → ℝ) :
       · simp [hz]
       · rw [h i (by simpa using hz)]
         ring
-  rw [nullIndex, hker, finrank_coordSupport]
+  rw [hermNullIndex, hker, finrank_coordSupport]
 
 /-! ### The inertia of a Hermitian matrix -/
 
@@ -323,19 +339,19 @@ theorem conjTranspose_mul_mul_eigenvectorUnitary [DecidableEq n] {H : Matrix n n
 
 /-- **Positive index from the spectrum.** -/
 theorem posIndex_eq_card_pos_eigenvalues [DecidableEq n] {H : Matrix n n ℂ} (hH : H.IsHermitian) :
-    posIndex H = ({i | 0 < hH.eigenvalues i} : Finset n).card := by
+    hermPosIndex H = ({i | 0 < hH.eigenvalues i} : Finset n).card := by
   rw [← posIndex_conjugate H (isUnit_eigenvectorUnitary hH),
     conjTranspose_mul_mul_eigenvectorUnitary hH, posIndex_diagonal]
 
 /-- **Negative index from the spectrum.** -/
 theorem negIndex_eq_card_neg_eigenvalues [DecidableEq n] {H : Matrix n n ℂ} (hH : H.IsHermitian) :
-    negIndex H = ({i | hH.eigenvalues i < 0} : Finset n).card := by
+    hermNegIndex H = ({i | hH.eigenvalues i < 0} : Finset n).card := by
   rw [← negIndex_conjugate H (isUnit_eigenvectorUnitary hH),
     conjTranspose_mul_mul_eigenvectorUnitary hH, negIndex_diagonal]
 
 /-- **Null index from the spectrum.** -/
 theorem nullIndex_eq_card_zero_eigenvalues [DecidableEq n] {H : Matrix n n ℂ} (hH : H.IsHermitian) :
-    nullIndex H = ({i | hH.eigenvalues i = 0} : Finset n).card := by
+    hermNullIndex H = ({i | hH.eigenvalues i = 0} : Finset n).card := by
   rw [← nullIndex_conjugate H (isUnit_eigenvectorUnitary hH),
     conjTranspose_mul_mul_eigenvectorUnitary hH, nullIndex_diagonal]
 
@@ -365,7 +381,7 @@ theorem card_filter_trichotomy (μ : n → ℝ) :
 
 /-- **Completeness of the inertia triple.** -/
 theorem posIndex_add_negIndex_add_nullIndex [DecidableEq n] {H : Matrix n n ℂ}
-    (hH : H.IsHermitian) : posIndex H + negIndex H + nullIndex H = Fintype.card n := by
+    (hH : H.IsHermitian) : hermPosIndex H + hermNegIndex H + hermNullIndex H = Fintype.card n := by
   rw [posIndex_eq_card_pos_eigenvalues hH, negIndex_eq_card_neg_eigenvalues hH,
     nullIndex_eq_card_zero_eigenvalues hH]
   exact card_filter_trichotomy _

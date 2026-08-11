@@ -166,6 +166,7 @@ import GaloisForLFunctions.HTGeometry.CompleteAtomicInertiaFusion
 import GaloisForLFunctions.HTGeometry.LongitudinalTransverseFormationMechanics
 import GaloisForLFunctions.HTGeometry.SourceFormationHarmonicMechanics
 import GaloisForLFunctions.HTGeometry.FormationScaleReceiver
+import GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion
 
 /-!
 # Universal-law-field Lean umbrella

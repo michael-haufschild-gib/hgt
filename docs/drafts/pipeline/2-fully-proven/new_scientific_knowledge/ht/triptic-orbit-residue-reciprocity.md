@@ -1346,3 +1346,61 @@ shift-order support, which the corpus already knows is a single index
 That was the last side condition the finite-sum divisor law needs, so every summand of the
 correction now satisfies the hypotheses of `additiveOrbitalDivisorAt_finsetSum`, and `classCount`
 supplies the multiplicity divisor that makes the class sum collapse.
+
+## Lean progress — the triptic normal form, and the class `Q` restated as it is defined
+
+An audit of the Lean class `Q` found the formalisation too narrow.  The card defines
+
+    Q = {F ∈ Mer(ℂ) : Δ₁F = 0 and Δ_τΔ_σF ∈ ℂ},
+
+an identity in `Mer(ℂ)`; the Lean statements demanded it pointwise, `∀ z`.  For a function with
+poles the pointwise form is *unsatisfiable*: at a pole one side of the mixed identity has a finite
+artefact value where the identity requires the cancellation of an infinity.  In particular the
+elliptic gamma source `Ψ` — the very element the completeness theorem needs in `Q` — does not
+satisfy it, so the old hypotheses admitted only pole-free sources.
+
+`GaloisForLFunctions/HTGeometry/TripticGermConstraint.lean` restates the class as it is defined:
+
+    PeriodicOneGerm F        ∀ z, ∀ᶠ w in 𝓝[≠] z, F (w+1) = F w
+    MixedConstGerm F τ σ C   ∀ z, ∀ᶠ w in 𝓝[≠] z, F(w+τ+σ) - F(w+τ) - F(w+σ) + F w = C
+
+with the transport toolkit (`tendsto_nhdsNE_add_const`, `eventuallyEq_boundary_shift_one/_tau/
+_sigma`), the pointwise recovery at points of analyticity (`mixedConst_eq_of_analyticAt`), and the
+differentiation law `mixedConstGerm_deriv` / `mixedConstGerm_iteratedDeriv_succ`.  Laurent
+coefficients depend only on the punctured germ, so every coefficient-level consequence survives:
+the whole chain from `laurentCoeff_boundary_periodic_one` up through the reciprocity theorem, the
+separation of the principal-part array, the kernel normal form, the kernel identification and the
+kernel differential algebraicity now runs on the germ hypotheses, unchanged in conclusion.
+
+`GaloisForLFunctions/HTGeometry/EllipticGammaSourceGermConstraint.lean` then proves the membership
+the card asserts:
+
+    mixedConstGerm_ellipticGammaSource : MixedConstGerm (ellipticGammaSource a b) a b (-2πi)
+    periodicOneGerm_gammaJetSource     : every jet is exactly `1`-periodic
+    mixedConstGerm_gammaJetSource_zero : the source jet carries the constant `-2πi`
+    mixedConstGerm_gammaJetSource_succ : every higher jet carries the constant `0`
+
+The twelve cone- and single-product nonvanishing side conditions of the pointwise cocycle are
+discharged by `eventually_nhdsNE_ne_zero_of_countable_zeroSet`: each product is entire with a
+countable zero set, hence nonzero on a punctured neighbourhood of every point.
+
+`GaloisForLFunctions/HTGeometry/TripticNormalForm.lean` assembles the correction and closes the
+normal form:
+
+    exists_gammaCorrection_vanishing_divisor :
+      ∃ P J, ∀ p ℓ < 0, additiveOrbitalDivisorAt (F - gammaCorrection τ σ F P J) σ p ℓ = 0
+
+    exists_gammaCorrection_differentiallyAlgebraic :
+      ∃ P J, Cst = gammaCorrectionConst τ σ F P J ∧
+        DifferentiallyAlgebraic (toMeromorphicNFOn (F - gammaCorrection τ σ F P J))
+
+The first is a three-way case split: on a class represented in `P` the correction reproduces the
+divisor exactly; off every represented class the source has no divisor either, because a nonzero
+boundary coefficient forces a pole and every pole class is represented; and above the order bound of
+the boundary function both sides vanish.  The second feeds that to the kernel theorem, which applies
+because `F - A` is again a member of the class: `A` is a finite combination of gamma jets, each
+exactly `1`-periodic with a constant mixed difference.
+
+The second conjunct is the normal form `F - R_trip(F)Ψ ∈ Mer_DA`.  The first is the mixed-value
+augmentation law (A2): the mixed constant of a source is exactly the constant carried by the
+zeroth-order slice of its own correction, which is `-2πi` times the total simple-residue mass.

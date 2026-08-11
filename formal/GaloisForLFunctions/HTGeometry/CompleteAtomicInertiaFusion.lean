@@ -175,9 +175,9 @@ theorem eq_conjugate_diagonal_eigenvalues {A : Matrix E E ℂ} (hA : A.IsHermiti
 
 /-- **Exact inertia additivity of the block-diagonal atom matrix.** -/
 theorem inertia_atomDiag {A : Fin N → Matrix E E ℂ} (hA : ∀ x, (A x).IsHermitian) :
-    posIndex (atomDiag A) = ∑ x, posIndex (A x) ∧
-      negIndex (atomDiag A) = ∑ x, negIndex (A x) ∧
-      nullIndex (atomDiag A) = ∑ x, nullIndex (A x) := by
+    hermPosIndex (atomDiag A) = ∑ x, hermPosIndex (A x) ∧
+      hermNegIndex (atomDiag A) = ∑ x, hermNegIndex (A x) ∧
+      hermNullIndex (atomDiag A) = ∑ x, hermNullIndex (A x) := by
   classical
   set U : Fin N → Matrix E E ℂ :=
     fun x => ((hA x).eigenvectorUnitary : Matrix E E ℂ)ᴴ with hU
@@ -208,9 +208,9 @@ the fused block carries exactly the componentwise sum of the atom inertia triple
 spectral channel cancels between atoms. -/
 theorem inertia_evalMatrix_fusion {A : Fin N → Matrix E E ℂ} (hA : ∀ x, (A x).IsHermitian)
     {z : Fin N → ℂ} (hz : Function.Injective z) :
-    posIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) = ∑ x, posIndex (A x) ∧
-      negIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) = ∑ x, negIndex (A x) ∧
-      nullIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) = ∑ x, nullIndex (A x) := by
+    hermPosIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) = ∑ x, hermPosIndex (A x) ∧
+      hermNegIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) = ∑ x, hermNegIndex (A x) ∧
+      hermNullIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) = ∑ x, hermNullIndex (A x) := by
   obtain ⟨hp, hn, h0⟩ := inertia_atomDiag hA
   have hunit : IsUnit (evalMatrix E z) := isUnit_evalMatrix hz
   exact ⟨by rw [posIndex_conjugate _ hunit, hp], by rw [negIndex_conjugate _ hunit, hn],
@@ -233,21 +233,222 @@ triple, namely the atomwise sum. -/
 theorem hankel_fourier_inertia_eq {A : Fin N → Matrix E E ℂ} (hA : ∀ x, (A x).IsHermitian)
     {lam : Fin N → ℝ} (hlam : Function.Injective lam)
     {z : Fin N → ℂ} (hz : Function.Injective z) :
-    posIndex ((evalMatrix E (fun x => ((lam x : ℝ) : ℂ)))ᴴ * atomDiag A *
+    hermPosIndex ((evalMatrix E (fun x => ((lam x : ℝ) : ℂ)))ᴴ * atomDiag A *
         evalMatrix E (fun x => ((lam x : ℝ) : ℂ))) =
-      posIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) ∧
-    negIndex ((evalMatrix E (fun x => ((lam x : ℝ) : ℂ)))ᴴ * atomDiag A *
+      hermPosIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) ∧
+    hermNegIndex ((evalMatrix E (fun x => ((lam x : ℝ) : ℂ)))ᴴ * atomDiag A *
         evalMatrix E (fun x => ((lam x : ℝ) : ℂ))) =
-      negIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) ∧
-    nullIndex ((evalMatrix E (fun x => ((lam x : ℝ) : ℂ)))ᴴ * atomDiag A *
+      hermNegIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) ∧
+    hermNullIndex ((evalMatrix E (fun x => ((lam x : ℝ) : ℂ)))ᴴ * atomDiag A *
         evalMatrix E (fun x => ((lam x : ℝ) : ℂ))) =
-      nullIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) := by
+      hermNullIndex ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z) := by
   have hlamC : Function.Injective (fun x => ((lam x : ℝ) : ℂ)) :=
     fun a b h => hlam (Complex.ofReal_injective h)
   obtain ⟨hp1, hn1, h01⟩ := inertia_evalMatrix_fusion hA hlamC
   obtain ⟨hp2, hn2, h02⟩ := inertia_evalMatrix_fusion hA hz
   exact ⟨by rw [hp1, hp2], by rw [hn1, hn2], by rw [h01, h02]⟩
 
+/-! ### The card's compensation pencil and Fourier nodes -/
+
+/-- The compensated atom pencil `A x c = c • W x - H x`. -/
+def atomPencil (W H : Fin N → Matrix E E ℂ) (c : ℝ) (x : Fin N) : Matrix E E ℂ :=
+  (c : ℂ) • W x - H x
+
+omit [Fintype E] [DecidableEq E] in
+theorem isHermitian_atomPencil {W H : Fin N → Matrix E E ℂ} (hW : ∀ x, (W x).IsHermitian)
+    (hH : ∀ x, (H x).IsHermitian) (c : ℝ) (x : Fin N) :
+    (atomPencil W H c x).IsHermitian := by
+  unfold Matrix.IsHermitian atomPencil
+  rw [Matrix.conjTranspose_sub, Matrix.conjTranspose_smul, (hH x).eq, (hW x).eq]
+  simp
+
+/-- The Fourier node attached to a time scale. -/
+def fourierNode (τ : ℝ) (lam : Fin N → ℝ) (x : Fin N) : ℂ :=
+  Complex.exp ((-(τ * lam x) : ℝ) * Complex.I)
+
+/-- **A nonzero time scale separating the Fourier nodes exists.**  Any scale below
+`π / (1 + max |λ x - λ y|)` keeps every phase difference inside one period. -/
+theorem exists_fourierNode_injective {lam : Fin N → ℝ} (hlam : Function.Injective lam) :
+    ∃ τ : ℝ, τ ≠ 0 ∧ Function.Injective (fourierNode τ lam) := by
+  obtain ⟨D, hD⟩ := Finite.exists_le (fun p : Fin N × Fin N => |lam p.1 - lam p.2|)
+  set D' : ℝ := max D 0 with hD'
+  have hD'0 : 0 ≤ D' := le_max_right _ _
+  have hden : (0 : ℝ) < 1 + D' := by linarith
+  set τ : ℝ := Real.pi / (1 + D') with hτ
+  have hτpos : 0 < τ := by positivity
+  refine ⟨τ, hτpos.ne', ?_⟩
+  intro x y hxy
+  by_contra hne
+  have hbound : |τ * (lam y - lam x)| < 2 * Real.pi := by
+    rw [abs_mul, abs_of_pos hτpos]
+    have h1 : |lam y - lam x| ≤ D' := le_trans (hD (y, x)) (le_max_left _ _)
+    have h2 : τ * |lam y - lam x| ≤ τ * D' := mul_le_mul_of_nonneg_left h1 hτpos.le
+    have h3 : τ * D' < Real.pi := by
+      rw [hτ, div_mul_eq_mul_div, div_lt_iff₀ hden]
+      nlinarith [Real.pi_pos]
+    linarith [Real.pi_pos]
+  obtain ⟨m, hm⟩ := Complex.exp_eq_exp_iff_exists_int.mp hxy
+  have hreal : (-(τ * lam x) : ℝ) = (-(τ * lam y) : ℝ) + 2 * Real.pi * m := by
+    have h := congrArg Complex.im hm
+    simp at h
+    linarith
+  have hm0 : m = 0 := by
+    by_contra hm0
+    have h1 : (1 : ℝ) ≤ |(m : ℝ)| := by
+      have hm1 : (1 : ℤ) ≤ |m| := Int.one_le_abs (by exact_mod_cast hm0)
+      have h2 := (Int.cast_le (R := ℝ)).mpr hm1
+      rwa [Int.cast_abs, Int.cast_one] at h2
+    have heq : τ * (lam y - lam x) = 2 * Real.pi * m := by ring_nf; ring_nf at hreal; linarith
+    rw [heq, abs_mul, abs_of_pos (by positivity : (0:ℝ) < 2 * Real.pi)] at hbound
+    nlinarith [Real.pi_pos]
+  rw [hm0] at hreal
+  simp only [Int.cast_zero, mul_zero, add_zero, neg_inj] at hreal
+  have : lam x = lam y := by
+    have := mul_left_cancel₀ hτpos.ne' hreal
+    exact this
+  exact hne (hlam this)
+
+
+/-! ### Complete order reflection and the collapse of amplification -/
+
+open scoped ComplexOrder
+
+omit [DecidableEq E] in
+theorem atomDiag_mulVec (A : Fin N → Matrix E E ℂ) (v : Fin N × E → ℂ) (p : Fin N × E) :
+    (atomDiag A *ᵥ v) p = (A p.1 *ᵥ fun a => v (p.1, a)) p.2 := by
+  simp only [Matrix.mulVec, dotProduct, atomDiag, Fintype.sum_prod_type]
+  rw [Finset.sum_eq_single p.1]
+  · simp
+  · intro b _ hb
+    simp [Ne.symm hb]
+  · simp
+
+omit [DecidableEq E] in
+theorem atomDiag_quadratic (A : Fin N → Matrix E E ℂ) (v : Fin N × E → ℂ) :
+    star v ⬝ᵥ atomDiag A *ᵥ v =
+      ∑ x, star (fun a => v (x, a)) ⬝ᵥ A x *ᵥ (fun a => v (x, a)) := by
+  simp only [dotProduct, Fintype.sum_prod_type, Pi.star_apply, atomDiag_mulVec]
+
+omit [Fintype E] [DecidableEq E] in
+theorem isHermitian_atomDiag {A : Fin N → Matrix E E ℂ} (hA : ∀ x, (A x).IsHermitian) :
+    (atomDiag A).IsHermitian := by
+  unfold Matrix.IsHermitian
+  rw [atomDiag_conjTranspose]
+  congr 1
+  funext x
+  exact (hA x).eq
+
+omit [DecidableEq E] in
+/-- **Complete order reflection for the block-diagonal atom matrix.** -/
+theorem posSemidef_atomDiag_iff {A : Fin N → Matrix E E ℂ} :
+    (atomDiag A).PosSemidef ↔ ∀ x, (A x).PosSemidef := by
+  constructor
+  · intro h x
+    refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg ?_ ?_
+    · ext a b
+      have hh : atomDiag (fun y => (A y)ᴴ) = atomDiag A := by
+        rw [← atomDiag_conjTranspose]
+        exact h.1
+      have hab := congrFun (congrFun hh (x, a)) (x, b)
+      simpa [atomDiag] using hab
+    · intro u
+      have hq := h.dotProduct_mulVec_nonneg (fun p : Fin N × E => if p.1 = x then u p.2 else 0)
+      rw [atomDiag_quadratic, Finset.sum_eq_single x] at hq
+      · simpa using hq
+      · intro y _ hy
+        have hzero : (fun a => (if y = x then u a else 0)) = (0 : E → ℂ) := by
+          funext a
+          simp [hy]
+        simp [hzero]
+      · simp
+  · intro h
+    refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+      (isHermitian_atomDiag (fun x => (h x).1)) (fun v => ?_)
+    rw [atomDiag_quadratic]
+    exact Finset.sum_nonneg (fun x _ => (h x).dotProduct_mulVec_nonneg _)
+
+/-- **Complete order reflection for the fused block (CFH.11).**  The fused response is positive
+semidefinite exactly when every atom is. -/
+theorem posSemidef_evalMatrix_fusion_iff {A : Fin N → Matrix E E ℂ} {z : Fin N → ℂ}
+    (hz : Function.Injective z) :
+    ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z).PosSemidef ↔ ∀ x, (A x).PosSemidef := by
+  rw [← posSemidef_atomDiag_iff]
+  exact posSemidef_conjugate_iff _ (isUnit_evalMatrix hz)
+
+/-- The finite commutative source map `Φ(f) = ∑_x f x • A x`. -/
+def sourceMap (A : Fin N → Matrix E E ℂ) (f : Fin N → ℝ) : Matrix E E ℂ := ∑ x, f x • A x
+
+/-- The matrix amplification of the source map at a finite matrix level. -/
+def sourceAmplification {k : Type*} (A : Fin N → Matrix E E ℂ) (F : Fin N → Matrix k k ℂ) :
+    Matrix (k × E) (k × E) ℂ := ∑ x, Matrix.kroneckerMap (fun a b => a * b) (F x) (A x)
+
+omit [Fintype E] [DecidableEq E] in
+/-- **Positivity of the source map (Theorem 4.1, clause 1).** -/
+theorem posSemidef_sourceMap {A : Fin N → Matrix E E ℂ} (hA : ∀ x, (A x).PosSemidef)
+    {f : Fin N → ℝ} (hf : ∀ x, 0 ≤ f x) : (sourceMap A f).PosSemidef :=
+  posSemidef_sum _ (fun x _ => (hA x).smul (hf x))
+
+omit [DecidableEq E] in
+/-- **Complete positivity of the source map (Theorem 4.1, clause 3).**  Every matrix
+amplification of a positive source map is positive. -/
+theorem posSemidef_sourceAmplification {A : Fin N → Matrix E E ℂ} (hA : ∀ x, (A x).PosSemidef)
+    {k : Type*} [Finite k] (F : Fin N → Matrix k k ℂ) (hF : ∀ x, (F x).PosSemidef) :
+    (sourceAmplification A F).PosSemidef :=
+  posSemidef_sum _ (fun x _ => (hF x).kronecker (hA x))
+
+omit [Fintype E] [DecidableEq E] in
+/-- **Positivity reflects to the atoms.**  Testing the source map on the minimal projections
+recovers positive semidefiniteness of every atom. -/
+theorem posSemidef_of_posSemidef_sourceMap {A : Fin N → Matrix E E ℂ}
+    (h : ∀ f : Fin N → ℝ, (∀ x, 0 ≤ f x) → (sourceMap A f).PosSemidef) (x : Fin N) :
+    (A x).PosSemidef := by
+  have hx := h (fun y => if y = x then 1 else 0) (by
+    intro y
+    by_cases hy : y = x <;> simp [hy])
+  simpa [sourceMap, Finset.sum_ite_eq'] using hx
+
+omit [Fintype E] [DecidableEq E] in
+/-- **Complete positivity reflects to the atoms.**  Level-one amplification already recovers
+positive semidefiniteness of every atom. -/
+theorem posSemidef_of_posSemidef_sourceAmplification {A : Fin N → Matrix E E ℂ}
+    (h : ∀ (k : Type) [Fintype k] [DecidableEq k] (F : Fin N → Matrix k k ℂ),
+      (∀ x, (F x).PosSemidef) → (sourceAmplification A F).PosSemidef) (x : Fin N) :
+    (A x).PosSemidef := by
+  have hx := h (Fin 1) (fun y => if y = x then 1 else 0) (by
+    intro y
+    by_cases hy : y = x
+    · simpa [hy] using (Matrix.PosSemidef.one : (1 : Matrix (Fin 1) (Fin 1) ℂ).PosSemidef)
+    · simpa [hy] using (Matrix.PosSemidef.zero : (0 : Matrix (Fin 1) (Fin 1) ℂ).PosSemidef))
+  have hsub := hx.submatrix (fun a : E => ((0 : Fin 1), a))
+  have hEq : (sourceAmplification A (fun y => if y = x then 1 else 0)).submatrix
+      (fun a : E => ((0 : Fin 1), a)) (fun a : E => ((0 : Fin 1), a)) = A x := by
+    ext a b
+    rw [Matrix.submatrix_apply, sourceAmplification, Matrix.sum_apply,
+      Finset.sum_eq_single x]
+    · simp [Matrix.kroneckerMap_apply]
+    · intro y _ hy
+      simp [hy, Matrix.kroneckerMap_apply]
+    · simp
+  rwa [hEq] at hsub
+
+/-- **Amplification collapses on a finite commutative source (Theorem 4.1).**  Positivity of the
+source map, atomwise positive semidefiniteness, complete positivity, and positive semidefiniteness
+of the complete fused block are all equivalent. -/
+theorem sourceMap_amplification_collapse {A : Fin N → Matrix E E ℂ} {z : Fin N → ℂ}
+    (hz : Function.Injective z) :
+    ((∀ f : Fin N → ℝ, (∀ x, 0 ≤ f x) → (sourceMap A f).PosSemidef) ↔ ∀ x, (A x).PosSemidef) ∧
+      ((∀ x, (A x).PosSemidef) ↔
+        ((evalMatrix E z)ᴴ * atomDiag A * evalMatrix E z).PosSemidef) ∧
+      ((∀ x, (A x).PosSemidef) ↔
+        ∀ (k : Type) [Fintype k] [DecidableEq k] (F : Fin N → Matrix k k ℂ),
+          (∀ x, (F x).PosSemidef) → (sourceAmplification A F).PosSemidef) :=
+  ⟨⟨fun h => posSemidef_of_posSemidef_sourceMap h, fun h _ hf => posSemidef_sourceMap h hf⟩,
+    (posSemidef_evalMatrix_fusion_iff hz).symm,
+    ⟨fun h _ _ _ F hF => posSemidef_sourceAmplification h F hF,
+      fun h => posSemidef_of_posSemidef_sourceAmplification h⟩⟩
+
+
 end
 
 end GaloisForLFunctions.HTGeometry
+

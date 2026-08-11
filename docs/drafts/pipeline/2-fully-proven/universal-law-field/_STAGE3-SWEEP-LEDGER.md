@@ -20,7 +20,6 @@ has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/`.
 | 11 | `coefficient-lift-transgression-central-history-to-higher-coherence-law.md` | DONE |
 | 12 | `coherent-history-mechanics/finite-coherent-history-envelope-reconstruction-interference-and-recurrence-law.md` | HARD — needs the arbitrary finite-history conditional-variance identity (CH.8) |
 | 13 | `coherent-history-mechanics/marked-variation-defect-fusion-observer-chain-refinement-and-carrier-distance-law.md` | HARD — rowwise common-phase classification now closed (positiveObserverLoss_eq_zero_iff); still needs parent-indexed refinement plateau classification, subsequential infinite-chain recurrence, explicit matrix block-sum expansion |
-| 14 | `complete-test-closure-mechanics/complete-atomic-fourier-hankel-order-and-inertia-fusion-law.md` | HARD — needs Theorem 5.1 exact inertia triple (Sylvester's law of inertia for congruence) |
 | 15 | `condensed-phase-probabilistic-death-modulus-budget-and-gaussian-fluctuation-law.md` | NEEDS-LEAN — audit which clauses already have modules |
 | 16 | `conservative-repair-viability-coercivity-transmutation-and-open-history-law.md` | DONE |
 | 17 | `contextual-promotion-exchange-and-arity-birth-law.md` | DONE |
@@ -112,3 +111,6 @@ has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/`.
 Completed and promoted:
 
 - `pole-unit-formation-mechanics/pole-unit-scale-cocycle-correction-jet-reconstruction-and-divisor-memory-law.md` — 2026-08-11
+- `complete-test-closure-mechanics/complete-atomic-fourier-hankel-order-and-inertia-fusion-law.md` — 2026-08-11
+  (Theorem 5.1 closed by a new complex-Hermitian inertia layer: `HermitianInertia`,
+  `CompleteAtomicInertiaFusion`; Theorems 3.1 and 4.1 also closed in concrete matrix form)

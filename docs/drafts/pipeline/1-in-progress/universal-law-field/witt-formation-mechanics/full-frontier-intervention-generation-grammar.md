@@ -83,7 +83,7 @@ The corpus has already killed four tempting substitutes for the grammar.
 Thus the missing law is not another local response extractor.  It must generate *formation,
 companion tests, and their conservation together*.
 
-## 4. First exact realization: finite Witt--formation mechanics
+## 4. Algebraic calibration: finite Witt--formation mechanics
 
 For a finite marked mode packet `x=(x_1,...,x_r)`, one formation series
 
@@ -104,10 +104,39 @@ They are respectively formation/allocation, exterior cancellation/orientation, p
 current, and Adams intervention.  None is an independently chosen organ.  The separate Stage-2
 card proves joint reconstruction, exact conservation, and the fourth-organ memory prediction.
 
+This finite Witt theorem calibrates the grammar but does **not** by itself pass the strict
+cross-route gate: its organs are algebraic models rather than three literal open-frontier
+executors.
+
+### 4.1 First literal cross-organ cell
+
+The first strict cell is now the prime Boolean--Mass--Hankel--recurrence theorem.  On the
+ramification diagonal of the high-exponent Euler shell, one source generates
+
+1. the finite Route-E parity/clock Schur capacity \(D\);
+2. the Gibbs-damped primitive Mass current \(j\);
+3. the positive prime-clock Hankel block \(H_1\);
+4. a recurrent phase orbit with transverse quantum Fisher information \(\mathcal I_\perp\).
+
+They obey the exact conservation law
+
+\[
+ \boxed{\mathcal I_\perp\,\|j\|^2=4\pi^2\det H_1,\qquad
+        \mathcal I_\perp=4D.}
+ \tag{WFG.3}
+\]
+
+This is not a comparison chosen after seeing four outputs.  Boolean formation supplies the common
+probability law, its logarithmic clock supplies the Mass column, the covariance executor supplies
+the Hankel block, and projective phase execution supplies the QFI.  The same finite moment packet
+jointly reconstructs all four.
+
 ## 5. Field-level consequence and boundary
 
 Finite Witt mechanics does not prove that the full RH source is a completed special lambda-ring.
-It establishes a non-theatrical target for the next source theorem:
+The literal transverse-information cell additionally proves that cross-organ fusion exists on one
+actual arithmetic source.  Together they establish a non-theatrical target for the next source
+theorem:
 
 > construct a source-marked completed formation law for which inverse/exterior, ghost/current,
 > Adams/ramification, and source admission commute in one Hausdorff multiplicative topology.
@@ -124,6 +153,9 @@ reflection-marked, and conservative before Xi specialization.
 - [x] all live frontier dossiers typed by one operation grammar
 - [x] martingale, commutator, cocycle, and arbitrary-endogeneity regressions excluded
 - [x] one finite source-native formation calculus identified
+- [x] one literal arithmetic source fused across Route-E, Mass, Hankel, and recurrence organs
+- [x] exact four-organ transverse-volume conservation and finite reconstruction proved on paper
+- [x] vanishing-QFI critical-line selector refuted; nonzero reflected balance survives
 - [x] prove pole-unit completed formation and divisor reconstruction for the literal Euler shell
 - [x] prove abstract inverse conservation across joint Hausdorff multiplicative completion
 - [ ] construct the literal joint formation/exterior completion on `Re(s)>1/2`

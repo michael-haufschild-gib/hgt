@@ -3966,3 +3966,161 @@ this Stieltjes connection while treating vertical oscillation, rather than rever
 prime amplitudes.
 
 Verdict: `[PROVED — PHYSICAL RESIDUAL HAS FINITE PRIME-LOG VARIATION; VERTICAL GLANCING AND MAIN MESH OPEN]`.
+
+---
+
+## 73. Conjecture loop 49 — prime-log quadrature and the exact mean-square-gap threshold
+
+### Conjecture
+
+The logarithmic main connection left by the centered Wold recut should be compared with the
+already-bounded continuous growing-profile integral before estimating individual prime samples.
+Right-endpoint quadrature ought to expose the precise arithmetic cost, rather than the much larger
+termwise half-density envelope.
+
+### Closure
+
+For `h_N=log(p_N)`, `delta_N=h_(N+1)-h_N`, and
+
+```text
+G_u(h)=exp(h/2) Fourier[g_(sigma+iu)](h),
+```
+
+Lean proves the exact finite identity
+
+```text
+LogMeshFlux_N
+ = h_0 G_u(h_0) + sum_(n<N) delta_n G_u(h_(n+1)).       (RJG216)
+```
+
+Thus the main Wold logarithmic connection is literal right-endpoint quadrature of the same
+continuous current whose cone integral is already uniformly bounded in
+`XiMassCriticalIntegerFace.lean`.  Naming the derivative gives
+
+```text
+G'_u(h)=exp(h/2)[(1/2) Fourier[g_(sigma+iu)](h)
+                         + Fourier[-ix g_(sigma+iu)](h)],
+|G'_u(h)| <= exp(h/2) J_sigma,                            (RJG217)
+```
+
+with `J_sigma` independent of `u`.  Integration by parts on one cell gives the exact Peano-kernel
+formula
+
+```text
+delta G_u(s)-integral_r^s G_u(h) dh
+ = integral_r^s (h-r)G'_u(h) dh,
+|cell error| <= delta^2 exp(s/2) J_sigma.                 (RJG218)
+```
+
+For consecutive primes `p<q`, elementary logarithmic concavity and Bertrand give
+
+```text
+delta <= (q-p)/p,
+delta^2 exp(log(q)/2)
+ <= 2 ((q-p)/p)^2 sqrt(p).                                (RJG219)
+```
+
+Consequently the entire main-mesh quadrature error is reduced, without a hidden vertical
+parameter, to the positive arithmetic series
+
+```text
+sum_n (p_(n+1)-p_n)^2 / p_n^(3/2).                        (RJG220)
+```
+
+Maynard's unconditional mean-square consecutive-prime-gap estimate
+`sum_(p_n<=X) (p_(n+1)-p_n)^2 <<_epsilon X^(5/4+epsilon)` makes (RJG220) convergent by dyadic
+summation.  This literature input has been audited against the primary paper, but is not yet
+formalized in the corpus; it is not used as a Lean premise.
+
+Lean status: `[FORMALIZED] [COMPILES]` for (RJG216)--(RJG219) in
+`XiHeatCassiniLogMeshPrimeGapQuadrature.lean`.  (RJG220) remains an unconditional theorem target,
+not an assumption.
+
+### Hostile audit and higher principle
+
+This is genuine obstacle reduction.  Previous estimates charged `sqrt(p)` to every prime.  The
+joint Stieltjes comparison charges only square mesh curvature, and it identifies a known
+unconditional mean-square theorem strong enough to close the whole logarithmic main layer.  It
+does not close the residual Wold connection: that layer contains the half-strip timelike radiation
+and cannot be absorbed into the positive quadrature error.
+
+Higher principle: main mesh and Wold residual are different microlocal defects.  Main mesh is
+second-order partition curvature and belongs to mean-square prime-gap theory.  Residual is a
+signed boundary source and belongs to timelike propagation.  Treating either with the other's norm
+loses the exact cancellation and recreates the critical square-root wall.
+
+Verdict: `[PROVED — MAIN LOG MESH REDUCED TO ONE UNCONDITIONAL MEAN-SQUARE PRIME-GAP THEOREM; RESIDUAL TIMELIKE SOURCE STILL OPEN]`.
+
+---
+
+## 74. Conjecture loop 50 — complete smooth jet of the residual boundary source
+
+### Conjecture
+
+The square-root-log decay of the centered Wold primitive, combined with one adjacent prime-log
+chord, should survive every polynomial frequency moment.  If so, the infinite physical residual
+phase connection is not merely pointwise convergent: it has a locally uniform derivative tower.
+
+### Closure
+
+For every natural `k`, Lean proves
+
+```text
+sum_N h_(N+1)^k |E_N| delta_N < infinity.                 (RJG221)
+```
+
+The proof uses only the already-formalized Wold rate, Bertrand's
+`h_(N+1)<=2h_N`, polynomial absorption into `exp(-c sqrt(h_N))`, and the reciprocal-log telescope
+from (RJG213).  Define the `k`th edge jet
+
+```text
+J_(k,N)(x)
+ = E_N[(-i h_N)^k exp(-i h_N x)
+       -(-i h_(N+1))^k exp(-i h_(N+1)x)].
+```
+
+Lean proves the exact derivative ladder
+
+```text
+d/dx J_(k,N)(x)=J_(k+1,N)(x),                             (RJG222)
+```
+
+and the gap-preserving bound
+
+```text
+|J_(k,N)(x)|
+ <= |E_N| delta_N
+      [h_(N+1)^k |x| + k h_(N+1)^(k-1)].                 (RJG223)
+```
+
+Hence every jet series is absolutely summable at every real `x`.  On each unit neighborhood the
+`(k+1)`st series has one summable majorant, so the smooth-series theorem applies recursively:
+
+```text
+K_k(x)=sum_N J_(k,N)(x),
+K'_k=K_(k+1),
+K_0 in C^infinity(R).                                    (RJG224)
+```
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldLowerHalfShiftGevreyKernel.lean`.
+
+### Hostile audit and higher principle
+
+(RJG221)--(RJG224) are new physical regularity, not Hilbert-graph relabeling: derivatives are
+actual real-boundary derivatives of the infinite residual source, and all interchanges are backed
+by locally uniform summable majorants.
+
+They do not authorize the fixed lower-half contour at the infinite-source level.  `C^infinity`
+regularity and all polynomial moments are weaker than exponential frequency moments.  The
+half-density observer applies `exp(h/2)`, so calling this kernel analytic or claiming its smoothness
+closes vertical propagation would be false.  Quantitative Gevrey constants are also not claimed by
+the Lean theorem.
+
+Higher principle: finite physical half-shift and infinite residual limit do not commute for purely
+regularity-theoretic reasons.  The residual is a smooth boundary distribution whose forbidden
+analytic continuation is exactly where timelike Route-T information lives.  A successful next
+step must identify that analytic wavefront with the Xi divisor carrier, or preserve finite-stage
+source/divisor cancellation through the limit; another residual norm cannot cross the wall.
+
+Verdict: `[PROVED — RESIDUAL CONNECTION IS C-INFINITY WITH EXPLICIT SUMMABLE JETS; ANALYTIC HALF-SHIFT/WAVEFRONT REMAINS THE RH-STRENGTH WALL]`.
