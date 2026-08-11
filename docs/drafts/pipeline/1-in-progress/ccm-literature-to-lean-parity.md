@@ -66,6 +66,10 @@ strongest unconditional trace identity preceding it.
 3. Formalize source test algebra and integrated scaling representation.  Integrated L1 scaling,
    contractivity, Haar involution, and adjoint law are complete in
    `CCMArchimedeanIntegratedScaling.lean` and `CCMArchimedeanScalingStar.lean`.
+   The literal half-line projection `P`, Hardy projection `F P F⁻¹`, involution
+   `H = 2 F P F⁻¹ - 1`, intrinsic Schwartz multiplier, and exact cross-Hardy-block decomposition
+   are complete in `CCMArchimedeanQuantizedCalculus.lean`.  This is only the algebraic reduction
+   preceding Lemma `quantsmooth`; it does not count as trace-class coverage.
 4. Formalize exact Sonin projection and compressed positive trace.  Cutoff-one projection and
    bounded-operator positivity are complete in
    `CCMArchimedeanSoninCompressionPositive.lean`; trace-classness and trace nonnegativity remain.

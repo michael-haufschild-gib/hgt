@@ -11,9 +11,11 @@
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaGreenSquareBoundaryLaw.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaGreenReflectionPairNoGo.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaGreenHyperbolicGaugeNoGo.lean
+formal/GaloisForLFunctions/RHTower/HedenmalmThetaRouteRPositiveUnitCurrentBridge.lean
+formal/GaloisForLFunctions/RHTower/HedenmalmThetaKakutaniFluxPolarization.lean
 ```
 
-All three modules are imported by `formal/GaloisForLFunctions/RHTower.lean`.
+All five modules are imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Closed theorem chain
 
@@ -39,6 +41,15 @@ Namespace `RHTower.HedenmalmThetaSource`.
 | split current equals incoming-minus-outgoing intensity and is boost-invariant | `thetaGreenHyperbolicCurrent_eq_amplitudeDifference`, `thetaGreenHyperbolicCurrent_gauge` |
 | conserved current cannot select neutral grade on a prime-character orbit | `thetaGreenHyperbolicCurrent_not_neutralSelector` |
 | fixed positive polar energy is boost-invariant exactly at neutral grade | `thetaGreenFixedPolarEnergy_gauge_eq_iff` |
+| quantile source and its boundary image are independent lightlike axes | `thetaGreenQuantileNullFrame_current_zero`, `thetaGreenQuantileNullFrame_det_ne_zero` |
+| their positive energies balance after boost exactly at neutral grade | `thetaGreenQuantileNullFrame_gauge_balanced_iff` |
+| theta Green flux is negative positive-unit equivalent to actual Route R Hodge mate | `thetaXiRankTwoBoundaryFlux_eq_neg_positiveUnit_mul_routeRHodgeMate` |
+| theta Green flux is negative positive-unit equivalent to literal reflected Deninger boundary | `thetaXiRankTwoBoundaryFlux_eq_neg_positiveUnit_mul_deningerBoundary` |
+| either source-current annihilation is exactly individual Route P node positivity | `thetaXiReciprocalEigenvalue_sq_positiveReal_iff_routeRHodgeMate_eq_zero`, `thetaXiReciprocalEigenvalue_sq_positiveReal_iff_deningerBoundary_eq_zero` |
+| Route N current is centered grade times a completed strictly positive Krein slope | `routeNGammaSewnCriticalHorizonKreinCharge_eq_neg_grade_mul_slope`, `thetaRouteNKreinSlope_pos` |
+| local Hellinger defect is a strictly positive unit times squared theta Green flux | `primeValuationHellingerGap_eq_positiveUnit_mul_thetaFlux_sq`, `thetaKakutaniFluxPositiveUnit_pos` |
+| reflected signed currents cancel but their positive polarizations add to twice one defect | `thetaKakutaniFluxPolarization_add_reflect_eq_two_gap`, `thetaKakutaniFluxPolarization_add_reflect_pos_iff` |
+| all-prime polarization summability is exactly same-fibre current neutrality and node positivity | `summable_thetaKakutaniFluxPolarization_iff_boundaryFlux_zero`, `thetaXiReciprocalEigenvalue_sq_positiveReal_iff_summable_kakutaniFluxPolarization` |
 
 ## New obstruction law
 
@@ -69,6 +80,26 @@ the fixed positive Euclidean polarization is preserved for all vectors only at g
 P and R share one hyperbolic-gauge obstruction: intrinsic conserved boundary data cannot build
 the missing positive polarization.
 
+Theta source nevertheless fixes a canonical gauge-breaking target frame: quantile coordinate and
+its rank-two boundary image are independent lightlike axes, normalized by one nonzero theta
+dipole. Their positive axis energies balance under horizontal boost exactly at grade zero. Hence
+open work is coefficient-faithful Euler--Gamma transport into this explicit frame, not discovery
+of an abstract positive metric.
+
+Physical comparison is sharper still: theta flux, Route R adjacent-depth Hodge mate, and literal
+reflected degree-six Deninger boundary differ only by explicit strictly positive units and one
+orientation reversal. Their nullity is the same copy by copy, and either source-boundary nullity
+is exactly positivity of the associated Route P squared node. The remaining theorem is common
+pre-divisor annihilation, not another comparison map.
+
+The Route N/Kakutani polarization supplies the missing reflection-safe positive receiver. Minus
+the Route N Krein current divided by centered grade has an explicit positive removable completion
+at grade zero. Consequently every local Hellinger gap equals a strictly positive explicit unit
+times squared theta Green flux. Reflection reverses signed flux but doubles this positive defect,
+and summability over all primes is exactly same-fibre flux neutrality, hence individual Route P
+node positivity. This does not prove summability: it isolates pre-divisor admission to this exact
+Kakutani domain as the remaining source theorem.
+
 ## Verification
 
 ```text
@@ -78,9 +109,13 @@ lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaGreenReflectionPairNoGo.
 lake build GaloisForLFunctions.RHTower.HedenmalmThetaGreenReflectionPairNoGo
 lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaGreenHyperbolicGaugeNoGo.lean
 lake build GaloisForLFunctions.RHTower.HedenmalmThetaGreenHyperbolicGaugeNoGo
+lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaRouteRPositiveUnitCurrentBridge.lean
+lake build GaloisForLFunctions.RHTower.HedenmalmThetaRouteRPositiveUnitCurrentBridge
+lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaKakutaniFluxPolarization.lean
+lake build GaloisForLFunctions.RHTower.HedenmalmThetaKakutaniFluxPolarization
 ```
 
-All six commands pass.  `/tmp` `#print axioms` audits for every declaration above report only
+All ten commands pass.  `/tmp` `#print axioms` audits for every declaration above report only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
 Whole-umbrella compilation is presently blocked earlier by an unrelated missing object file for

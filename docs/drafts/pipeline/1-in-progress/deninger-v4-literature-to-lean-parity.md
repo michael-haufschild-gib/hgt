@@ -50,15 +50,22 @@ Therefore Theorem 10.2 is not yet formalized.
 
 `DeningerGeneralizedDivisorSupport.lean` places the identity
 `gdiv u = pr⁻¹(div u)` in the field `DeningerGeneralizedDivisorLaw.pullback_law` and derives prime
-support from that field.  The cited proposition is assumed, not proved.  Therefore Proposition
-11.7 is not yet formalized.
+support from that field.  That abstract declaration still does not count as a proof.
+
+`DeningerSpecZFrobeniusDivisorPullback.lean` now constructs the exact existing `Spec ℤ`
+Frobenius-colimit source, defines residue evaluation through `Scheme.Spec.residueFieldIso`, and
+proves unconditionally that the prime generalized divisor is the inverse image of the ordinary
+prime support.  It further identifies that inverse image with the pulled-back Kummer residue-sheaf
+stalk support.  This closes the concrete `Spec ℤ` specialization of Proposition 11.7 without a
+`DeningerGeneralizedDivisorLaw` premise.  It does **not** yet close Proposition 11.7 over arbitrary
+normal finite-type arithmetic schemes.
 
 ## Formalization order
 
 1. Build the literal `Spec ℤ` geometric-character/root source and arithmetic projection used by
    the rational-Witt specialization.
-2. Prove Proposition 11.7 from residue-field evaluation; remove the assumed law from formal
-   credit.
+2. Generalize the proved `Spec ℤ` residue-field argument to Deninger's arbitrary normal finite-type
+   arithmetic scheme; only then credit full Proposition 11.7.
 3. Build the v4 inductive-limit/Frobenius source packet and its suspension map; prove Corollary
    7.9 and Theorem 7.10 on that source.
 4. Build the locally-leaf-constant sheaf/degree-zero section object and prove Theorem 10.2 and
@@ -71,3 +78,5 @@ support from that field.  The cited proposition is assumed, not proved.  Therefo
 - 2026-08-11 — audited v4 rather than the older arXiv numbering; found 28 Route-L source results.
   Demoted four locally claimed results from formal coverage because existing Lean supplies only
   internal factors, consequences, or an assumed interface.
+- 2026-08-11 — closed the exact `Spec ℤ` Frobenius-colimit specialization of Proposition 11.7 in
+  `DeningerSpecZFrobeniusDivisorPullback.lean`; generic-scheme proposition remains open.

@@ -33,7 +33,7 @@ must not be relabelled unconditional.
 |---|---|---|---|
 | Theorem 1.1 | For every `a > 0`, the actual self-adjoint operator `A_a` associated with the localized Weil form is the Friedrichs extension of the actual symmetric `B_a = D* G_a D`. | **MISSING.** `SuzukiRestrictedWeilForm.lean` defines and decomposes a real test-function form and explicitly says no operator is constructed. No corpus declaration defines these actual unbounded operators or proves the extension equality. | Construct the localized complex `L²` form, prove closability/lower semiboundedness, construct its representing self-adjoint operator, construct `B_a` on `H₀¹`, and prove graph/form-core equality giving the Friedrichs extension. |
 | Corollary 1.2 | Infimum attained in form closure and equals the Rayleigh infimum over `C_c^∞(-a,a)`. | **MISSING EXACT.** Generic Rayleigh and compact-operator results exist, but no literal localized Weil form domain/core theorem. | Form-core density plus representation theorem and exact equality `Q_W^a(v)=⟨B_av,v⟩`. |
-| Theorem 1.3 | Actual lowest eigenvalue `a ↦ λ_a` is continuous. | **MISSING.** No actual `λ_a` is defined. Generic resolvent-limit modules do not instantiate Suzuki's scaled logarithmic form. | Formalize fixed-interval scaled forms `q_a`, upper semicontinuity by a common smooth core, lower semicontinuity by compact embedding of `H^log(-1,1)` and continuity of bounded remainder forms. |
+| Theorem 1.3 | Actual lowest eigenvalue `a ↦ λ_a` is continuous. | **MISSING OPERATOR INSTANTIATION.** No actual `λ_a` is defined. The exact bounded-interval `H^log` compact embedding needed by the proof is now formalized. Generic resolvent-limit modules still do not instantiate Suzuki's scaled logarithmic form. | Formalize fixed-interval scaled forms `q_a`, upper semicontinuity by a common smooth core, and lower semicontinuity using `SuzukiHlogCompactEmbedding.lean` plus continuity of the literal bounded remainder forms. |
 | Theorem 1.4 | For small `a`, `λ_a` is positive and simple, has the stated logarithmic asymptotic, and its eigenfunction is even. | **MISSING.** Kernel asymptotic pieces exist, but no spectral instantiation. | Exact small-aperture form asymptotic, compactness, first eigenvalue of the limiting logarithmic form, perturbative simplicity, reflection commutation, and even-sector ground-state selection. |
 | Theorem 1.5 | Actual minimal derivative on the completed form space has deficiency indices `(1,1)`; the actual `W(a,θ;z)` is entire, its zeros are exactly the spectrum of the actual self-adjoint extension, and every zero is real. | **MISSING EXACT.** `SuzukiFiniteApertureHermiteBiehler.lean` begins from `SuzukiAllAngleRealZeros`; the comment says Suzuki supplies it. `SuzukiProjectedContinuousDeficiency.lean` proves interval identities under ODE and regularity premises. Neither defines the actual completion/operator/deficiency vectors. | Build `H(T_a)`, the densely defined derivative `𝒟_a`, its adjoint and one-dimensional deficiency spaces; construct von Neumann extensions; define actual normalized `v_±`; prove the Lagrange identity and characteristic equivalence; derive reality from self-adjointness. |
 | Corollary 1.6 | Compact-open convergence of gauged `W(a,θ(a);·)` to `z² ξ/ξ'` implies RH. | **PARTIAL EXACT NO-GO, NOT THE COROLLARY.** `SuzukiCharacteristicEntireLimitNoGo.lean` treats an ordinary one-angle holomorphic-gauge target obstruction. | Formalize the literal meromorphic target and Hurwitz/pole-removal implication, while retaining the source's convergence premise as a premise because it is conjectural rather than a theorem. Do not claim that premise. |
@@ -46,6 +46,10 @@ must not be relabelled unconditional.
   bridge on prime-free intervals.
 - `SuzukiRestrictedWeilForm.lean`: explicit four-block test-function form and representative
   decomposition; deliberately stops before constructing `A_a` or `B_a`.
+- `SuzukiHlogCompactEmbedding.lean`: exact source weight `1 + log⁺|ξ|`, exact zero-extended
+  bounded-interval unit ball, published uniform Fourier-tail estimate, and compact closure for every
+  bundled bounded interval.  This closes Suzuki (2026), Proposition 4.1 / the compact-embedding
+  ingredient cited from CCM (2025), rather than a discrete or finite-dimensional proxy.
 - `CompactFourierEntire.lean`: exact entire/exponential-type theorem for compact interval Fourier
   integrals; usable for the entireness clause once the actual deficiency vectors are constructed.
 - `SuzukiFiniteApertureHermiteBiehler.lean`, `SuzukiAllAngleWitnesses.lean`,
@@ -56,9 +60,10 @@ must not be relabelled unconditional.
 
 | Source result | Corpus status |
 |---|---|
-| Lemma 2.2, common-translation invariance of `f* * g` and `q(f,g)` | Generic translation/convolution infrastructure exists; literal zero-extended real-line statement not yet identified as an exact theorem. |
+| Lemma 2.2, common-translation invariance of `f* * g` and `q(f,g)` | **EXACT.** `CCMTranslationInvariance.lean` defines the literal complex `L¹(ℝ,dx)` source, CCM translation convention, involution, additive convolution, and even Hermitian correlation, then proves both common-translation identities as closed theorems. |
 | Lemma 2.3, exact convolution formulas for finite-interval Fourier modes | **EXACT.** `CCMZeroExtendedFourierCorrelation.lean` defines the normalized periodic modes on `[0,L]`, extends them by zero to `ℝ`, defines the literal convolution correlation, and proves equations (2.7), (2.10), and the complete diagonal/off-diagonal Lemma 2.3 formula. Positive aperture and legal lag are bundled, so the final theorem is closed and has no spectral or RH premise. |
 | Proposition 3.2, logarithmic isometry and restriction of the Weil form to `Ψ#(q(f,g)∘log)` | **PARTIAL.** Literal restricted functional/matrix has been defined, but full `L²` logarithmic isometry and form transport have not been identified as one exact theorem. |
+| Theorem 3.6 analytic compactness ingredient, compact embedding for Fourier weights tending to infinity; Suzuki specialization `H^log(I) ↪ L²(I)` | **EXACT.** `CCMGeneralFourierWeightCompactEmbedding.lean` proves the published theorem for every bundled positive monotone Fourier weight tending to infinity, on every bounded interval. `SuzukiHlogCompactEmbedding.lean` separately proves the literal `1 + log⁺|ξ|` specialization used by Suzuki, including its exact tail estimate and compact closure. Both use actual `L²(ℝ)` zero extensions and time-band compact operators, not sequence or finite-dimensional proxies. |
 | Theorem 1.1(i), rank-one perturbed scaling operator is self-adjoint under simple/even lowest-eigenvector assumptions | **GENERIC CORE ONLY.** Boundary-completion and metric-self-adjoint matrix laws exist. Actual source matrix is defined. The simple/even assumptions are not proved universally and must not be erased. |
 | Theorem 1.1(ii), regularized determinant formula | **MISSING EXACT.** |
 | Theorem 1.1(iii), Fourier transform entire, real-zeroed, with zeros equal to spectrum | **GENERIC/PARTIAL.** Entire compact Fourier infrastructure and generic real-spectrum arguments exist; literal source operator/eigenvector identity is not closed. |
@@ -99,15 +104,15 @@ The recent source-realization paper developments are not literature parity.  Cur
 
 ## Current hard boundary
 
-Literature is ahead of corpus at the unbounded-operator layer, not at finite scalar algebra.  Exact
-parity requires a localized Weil-form/operator stack:
+Literature remains ahead of corpus at the unbounded-operator layer, not at finite scalar algebra.
+The logarithmic compact-embedding item is now closed. Exact parity still requires a localized
+Weil-form/operator stack:
 
 1. complex localized Weil sesquilinear form on a genuine `L²(-a,a)` domain;
-2. logarithmic Sobolev form and compact embedding;
-3. lower-semibounded closed-form representation/Friedrichs extension;
-4. actual first-order derivative on the form completion, adjoint, deficiency indices, and von
+2. lower-semibounded closed-form representation/Friedrichs extension;
+3. actual first-order derivative on the form completion, adjoint, deficiency indices, and von
    Neumann extensions;
-5. actual characteristic Fourier function and spectral zero equivalence.
+4. actual characteristic Fourier function and spectral zero equivalence.
 
 Until those objects exist, counting generic Schur, Cayley, CFC, or finite-matrix consequences as
 Suzuki's theorems is theatre.

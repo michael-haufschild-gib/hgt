@@ -293,7 +293,7 @@ existing route.
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced | source-side subexponential upper bound for the actual restricted-Weil negative floor, equivalently no negative spectral birth. Prolate profile exhaustion is one structural producer, not the route-wide endpoint; completed Suzuki/Evans and noncompact incidence/direct-floor producers remain live |
-| P | open, newly cross-linked to C1 | construct source-side neutralization of the explicit rank-two Green-square boundary current `i R_2 B`, then derive the compact completed-seam Thorin/Markov measure without passing through RH or a zero-selected spectral measure. Umbrella Lean proves positive nonzero spectrum of `B^2` is equivalent to both P endpoints and to C1 real spectrum/RH, and localizes the square to positive bulk plus the rank-two correction. These are receivers/obstruction localization; they do not construct neutralization or a direct measure |
+| P | open, newly cross-linked to C1/R/N | construct a pre-divisor source proof that the explicit theta Green-current Kakutani polarization is all-prime summable, equivalently neutralize `i R_2 B`, then derive the compact completed-seam Thorin/Markov measure without passing through RH or a zero-selected spectral measure. Umbrella Lean proves positive nonzero spectrum of `B^2` is equivalent to both P endpoints and C1/RH; it now also identifies each local Route N Hellinger defect as a strictly positive unit times squared theta flux. Reflection cancels signed flux but doubles this positive polarization. These are exact receivers/obstruction localization; they do not prove source admission or construct a direct measure |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
@@ -906,18 +906,22 @@ incidence base as `(P+P^T)/2`, then pay edge Dirichlet energy of inverse row-plu
 This is not free reversibilization because unused capacity remains explicit and subpolynomial
 Dirichlet bound is still arithmetic producer.
 
-Umbrella-reachable `RouteEOppositeParityMetropolisRejection.lean` formalizes
-the finite abstract part of this classification: for a row-stochastic parity-flipping kernel it defines accepted
-conductance, proves total rejection is exactly one half of edge-law/reversal total variation, and
-proves the signed current is bounded by that rejection. It receives only provisional scientific
-value as a consumer/no-go; it does not construct the physical entropy-complement kernel or
-bound its rejection. It closes packaging, not Route E's producer.
+Umbrella-reachable `RouteEOppositeParityMetropolisRejection.lean` now formalizes the complete
+finite classification. For a row-stochastic parity-flipping kernel it proves total rejection is
+exactly one half of edge-law/reversal total variation and bounds signed current by rejection. Under
+edge-law absolute continuity it identifies the explicit finite entropy sum with normalized
+`D(Q/W || Q^R/W)` and proves the sharp Pinsker rate
 
-The same file makes the strict rate exact: two-sided edge-mass comparison within
-`exp(eta)` gives normalized rejection at most `(exp(eta)-1)/2`, while disjoint forward/reverse
-support rejects the entire physical mass. This certifies both the required logarithmic defect
-scale and the zero-acceptance firewall for current one-way proposals; it still proves neither
-comparison for an arithmetic source relation.
+~~~
+R/W <= sqrt(edgeRelativeEntropy/2).
+~~~
+
+Literal pairwise log-likelihood oscillation `|log(Q/Q^R)|<=eta` gives
+`R/W<=(exp(eta)-1)/2`; the Gibbs specialization proves exactly
+`|log(exp(-m/X)/exp(-n/X))|=|m-n|/X`; disjoint forward/reverse support rejects the entire physical
+mass. This closes every finite theorem on the promoted Metropolis card, including its sharp rate
+and hostile firewall. It still does not construct a two-sided arithmetic proposal or prove its
+entropy/likelihood defect, so Route E's producer remains open.
 
 Umbrella-reachable `RouteEDegreeNormalizedGibbsBoundaryVariation.lean`
 formalizes the other finite consumer through the exact weighted total-variation and co-moving
@@ -2900,9 +2904,31 @@ vectors exactly at neutral grade. Thus any producer natural for the intrinsic hy
 formally unable to select Route P neutrality. P and R share one external source-selected positive
 polarization problem; P additionally needs coefficient-faithful theta comparison and compact
 measure assembly after that gauge-breaking selection.
+Theta target polarization is now explicit rather than abstract: canonical quantile coordinate and
+its rank-two boundary image form two independent lightlike axes, and their fixed positive energies
+balance after horizontal boost exactly at neutral grade. Remaining P/R handoff must transport
+ordered Euler--Gamma orientations into this normalized theta null frame and prove axis-energy
+balance from a pre-divisor law.
+
+**P/R/Deninger current merger, formal.** Copy by copy, theta Green flux is the negative of an
+explicit strictly positive unit times Route R's actual adjacent-depth Hodge-mate coefficient, and
+also the negative of a strictly positive unit times the literal reflected degree-six Deninger
+BV--Green boundary. No centered grade is divided out. Thus annihilation of either source current
+is exactly positivity of that individual Route P squared node. Physical comparison and sign
+calibration are closed; one common pre-divisor annihilation law remains.
+
+**P/R/N Kakutani polarization, formal.** The Route N critical-horizon Krein current is centered Xi
+grade times a strictly negative orientation and an explicit positive slope whose grade-zero value
+is the removable limit `2 log(p)/p`. Prime by prime, Route N's Hellinger gap is therefore an
+explicit strictly positive unit times squared theta Green flux. Functional-equation reflection
+cancels the two signed currents but adds their polarizations to twice the same Hellinger defect.
+All-prime summability of this theta-flux polarization is exactly same-fibre current neutrality and
+individual Route P node positivity. Missing producer is now a source-domain theorem, not selection
+of a metric or local positive density.
 
 **Open core.** Construct from literal coupled prime--polar--Gamma/theta source a pre-scalar
-neutralization of `i R_2 B` that forces the nonzero Green-square spectrum positive, and derive one
+proof that every multiplicity-resolved theta divisor mode lies in the all-prime Kakutani
+polarization domain, equivalently a neutralization of `i R_2 B` that forces the nonzero Green-square spectrum positive, and derive one
 finite positive compact measure with the local Thorin/Markov identity without zero locations or a
 pre-assumed positive moment functional. A direct compact-carrier construction satisfying the
 coalitional tightness criterion remains an alternate P producer until a typed theorem proves it

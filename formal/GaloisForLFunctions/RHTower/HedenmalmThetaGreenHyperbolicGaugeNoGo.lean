@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.HedenmalmThetaGreenReflectionPairNoGo
+import GaloisForLFunctions.RHTower.HedenmalmThetaQuantileBoundaryNull
 import GaloisForLFunctions.RHTower.RouteRHyperbolicGaugePolarReductionNoGo
 
 /-!
@@ -96,6 +97,89 @@ theorem thetaGreenFixedPolarEnergy_gauge_eq_iff (a : ℝ) :
       routeRFixedPolarEnergy z) ↔ a = 0 := by
   simpa [routeRTransportedPolarEnergy] using
     routeRTransportedPolarEnergy_eq_fixed_iff (-a)
+
+/-! ## Canonical gauge-breaking null frame -/
+
+/-- The theta quantile source is the centered-moment null axis. -/
+theorem thetaGreenBoundaryMomentPlane_quantile :
+    thetaGreenBoundaryMomentPlane thetaQuantileCoordinate =
+      (0, pinnedFirstMoment thetaQuantileCoordinate) := by
+  apply Prod.ext
+  · exact pinnedMean_thetaQuantileCoordinate_eq_zero
+  · exact pinnedCentered_thetaQuantileCoordinate_eq_firstMoment
+
+/-- Applying the rank-two boundary operator to the quantile source gives
+the transverse monopole null axis. -/
+theorem thetaGreenBoundaryMomentPlane_boundary_quantile :
+    thetaGreenBoundaryMomentPlane
+        (pinnedBoundaryCLM thetaQuantileCoordinate) =
+      (-pinnedFirstMoment thetaQuantileCoordinate, 0) := by
+  rw [pinnedBoundaryCLM_thetaQuantileCoordinate_eq_dipole]
+  apply Prod.ext
+  · rw [thetaGreenBoundaryMomentPlane, pinnedMean_smul,
+      pinnedMean_pinnedOne]
+    simp
+  · rw [thetaGreenBoundaryMomentPlane, pinnedCentered,
+      pinnedFirstMoment_smul, pinnedMean_smul,
+      pinnedFirstMoment_pinnedOne, pinnedMean_pinnedOne]
+    ring
+
+/-- Both source-selected axes are lightlike for the split Green current. -/
+theorem thetaGreenQuantileNullFrame_current_zero :
+    thetaGreenHyperbolicCurrent
+          (thetaGreenBoundaryMomentPlane thetaQuantileCoordinate) = 0 ∧
+      thetaGreenHyperbolicCurrent
+          (thetaGreenBoundaryMomentPlane
+            (pinnedBoundaryCLM thetaQuantileCoordinate)) = 0 := by
+  rw [thetaGreenBoundaryMomentPlane_quantile,
+    thetaGreenBoundaryMomentPlane_boundary_quantile]
+  simp [thetaGreenHyperbolicCurrent, thetaGreenConjugateMomentPlane,
+    routeRSplitPoincarePairing]
+
+/-- The two canonical lightlike axes are independent; their determinant is
+the nonzero square of the theta quantile dipole. -/
+theorem thetaGreenQuantileNullFrame_det_ne_zero :
+    let u := thetaGreenBoundaryMomentPlane thetaQuantileCoordinate
+    let v := thetaGreenBoundaryMomentPlane
+      (pinnedBoundaryCLM thetaQuantileCoordinate)
+    u.1 * v.2 - u.2 * v.1 ≠ 0 := by
+  rw [thetaGreenBoundaryMomentPlane_quantile,
+    thetaGreenBoundaryMomentPlane_boundary_quantile]
+  simp only [zero_mul, mul_neg, sub_neg_eq_add, zero_add]
+  exact mul_ne_zero pinnedFirstMoment_thetaQuantileCoordinate_ne_zero
+    pinnedFirstMoment_thetaQuantileCoordinate_ne_zero
+
+/-- **Canonical theta polar selector.**  The fixed positive energy balances
+the two source-selected null axes after a horizontal boost exactly at neutral
+boost.  Thus theta data supplies an explicit gauge-breaking target frame. -/
+theorem thetaGreenQuantileNullFrame_gauge_balanced_iff (a : ℝ) :
+    routeRFixedPolarEnergy
+        (routeRHyperbolicSourceGauge a
+          (thetaGreenBoundaryMomentPlane thetaQuantileCoordinate)) =
+      routeRFixedPolarEnergy
+        (routeRHyperbolicSourceGauge a
+          (thetaGreenBoundaryMomentPlane
+            (pinnedBoundaryCLM thetaQuantileCoordinate))) ↔
+      a = 0 := by
+  rw [thetaGreenBoundaryMomentPlane_quantile,
+    thetaGreenBoundaryMomentPlane_boundary_quantile]
+  simp only [routeRFixedPolarEnergy, routeRHyperbolicSourceGauge_apply,
+    mul_zero, Complex.normSq_zero, zero_add, add_zero, Complex.normSq_mul,
+    Complex.normSq_neg, Complex.normSq_ofReal]
+  let d : ℝ := Complex.normSq (pinnedFirstMoment thetaQuantileCoordinate)
+  have hd : 0 < d := Complex.normSq_pos.mpr
+    pinnedFirstMoment_thetaQuantileCoordinate_ne_zero
+  constructor
+  · intro h
+    have hsquares : Real.exp (-a) ^ 2 = Real.exp a ^ 2 := by
+      dsimp only [d] at hd
+      nlinarith
+    have hexp : Real.exp (-a) = Real.exp a := by
+      nlinarith [Real.exp_pos (-a), Real.exp_pos a]
+    have harg : -a = a := Real.exp_injective hexp
+    linarith
+  · rintro rfl
+    simp
 
 end
 

@@ -1,13 +1,13 @@
 # Route E opposite-parity Metropolis rejection law
 
 - **ID:** `ROUTE-E-OPPOSITE-PARITY-METROPOLIS-REJECTION-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT REVERSIBILITY REDUCTION / SHARP RATE GATE
 - **Parent:** `route-e-entropy-complement-breadth-mixture-load-law.md`
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** paper-only while the Lean corpus is being refactored
+- **Lean status:** complete in `GaloisForLFunctions.RHTower.RouteEOppositeParityMetropolisRejection`; umbrella-reachable
 
 ## 1. Exact theorem
 
@@ -120,3 +120,20 @@ This is not weaker arithmetic disguised as Markov-chain language.  Equation `(5)
 required rate and also proves why forward-only or merely subpower-balanced proposals cannot close
 Route E.
 
+## 6. Lean formalization record
+
+`RouteEOppositeParityMetropolisRejection.lean` now closes every finite exact claim used above:
+
+- `totalRejection_eq_half_edgeVariation` and `abs_signedCurrent_le_totalRejection` prove `(5)`;
+- `edgeRelativeEntropy_eq_normalizedEdgeLawSum` identifies the finite formula with the normalized
+  edge-law KL divergence, and
+  `totalRejection_div_totalWeight_le_sqrt_half_edgeRelativeEntropy` proves `(7)`;
+- `totalRejection_div_totalWeight_le_half_exp_defect_of_log_ratio` proves `(8) ⇒ (9)` from literal
+  logarithmic likelihood-ratio oscillation and reversal absolute continuity;
+- `abs_log_routeEGibbsLikelihoodWeight_div` and its aperture corollary prove `(11)` exactly;
+- `totalRejection_eq_totalWeight_of_reverse_disjoint` proves the hostile law `(12)`.
+
+The Pinsker proof is internal and finite: reversal symmetry identifies pair dissipation with twice
+forward entropy, the sharp scalar logarithmic inequality controls each squared edge defect, and a
+weighted finite Cauchy--Schwarz inequality sums the result. No generic measure-theory black box or
+asymptotic premise is used.

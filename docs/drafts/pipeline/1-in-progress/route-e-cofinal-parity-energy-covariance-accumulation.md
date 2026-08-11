@@ -912,7 +912,7 @@ Radon--Nikodym rate before `(A40)` is invoked, while retaining normalized seam f
 Full proofs:
 `../2-fully-proven/new_scientific_knowledge/route-e-deninger-vacuum-finite-dilation-fracture.md`
 and
-`../2-fully-proven/new_scientific_knowledge/route-e-opposite-parity-metropolis-rejection-law.md`.
+`../3-formalized/new_scientific_knowledge/route-e-opposite-parity-metropolis-rejection-law.md`.
 No Lean source was edited or built during corpus refactor.
 
 ## 2026-08-11 Ramaré recombination and ternary recurrence splice

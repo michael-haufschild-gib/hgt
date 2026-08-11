@@ -585,6 +585,313 @@ theorem routeEParityEnergyFourierSum_eq_eulerProduct
   apply (eq_div_iff (by exact_mod_cast hDpos.ne')).2
   simpa [mul_comm] using hsum
 
+/-! ## Exact Euler-gauge cancellation for arbitrary observables -/
+
+/-- Normalized Euler-tilted expectation of an arbitrary predeclared finite observable. -/
+def routeEEulerTiltObservableMean
+    (sigma x : ℝ) (P : Finset Nat.Primes) (F : Finset Nat.Primes → ℝ) : ℝ :=
+  (∑ T ∈ P.powerset,
+      routeEEulerTiltOccupancyWeight sigma P T *
+        routeEPhysicalTiltWeight sigma x (routeEPrimeLogEnergy T) * F T) /
+    (∑ T ∈ P.powerset,
+      routeEEulerTiltOccupancyWeight sigma P T *
+        routeEPhysicalTiltWeight sigma x (routeEPrimeLogEnergy T))
+
+/-- Normalized literal Gibbs expectation of the same observable. -/
+def routeESquarefreeGibbsObservableMean
+    (x : ℝ) (P : Finset Nat.Primes) (F : Finset Nat.Primes → ℝ) : ℝ :=
+  (∑ T ∈ P.powerset,
+      Real.exp (-x * (finitePrimeActivationRadical T : ℝ)) * F T) /
+    routeESquarefreeGibbsPartition P x
+
+/-- Atomwise Euler-gauge cancellation survives multiplication by every predeclared observable. -/
+theorem routeEEulerTiltObservableSum_eq_gibbsSum
+    (sigma x : ℝ) (P : Finset Nat.Primes) (F : Finset Nat.Primes → ℝ) :
+    routeEEulerTiltNormalizer sigma P *
+        (∑ T ∈ P.powerset,
+          routeEEulerTiltOccupancyWeight sigma P T *
+            routeEPhysicalTiltWeight sigma x (routeEPrimeLogEnergy T) * F T) =
+      ∑ T ∈ P.powerset,
+        Real.exp (-x * (finitePrimeActivationRadical T : ℝ)) * F T := by
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro T hT
+  calc
+    routeEEulerTiltNormalizer sigma P *
+          (routeEEulerTiltOccupancyWeight sigma P T *
+            routeEPhysicalTiltWeight sigma x (routeEPrimeLogEnergy T) * F T) =
+        (routeEEulerTiltNormalizer sigma P *
+          routeEEulerTiltOccupancyWeight sigma P T *
+            routeEPhysicalTiltWeight sigma x (routeEPrimeLogEnergy T)) * F T := by ring
+    _ = Real.exp (-x * (finitePrimeActivationRadical T : ℝ)) * F T := by
+      rw [routeEEulerTiltTerm_eq_gibbsTerm sigma x P
+        ⟨T, Finset.mem_powerset.mp hT⟩]
+
+/-- **Exact arbitrary-observable gauge law.** The moving Euler parameter locates mass but cannot
+change any normalized observable formed from the literal physical Gibbs atoms. -/
+theorem routeEEulerTiltObservableMean_eq_gibbsObservableMean
+    (sigma x : ℝ) (P : Finset Nat.Primes) (F : Finset Nat.Primes → ℝ) :
+    routeEEulerTiltObservableMean sigma x P F =
+      routeESquarefreeGibbsObservableMean x P F := by
+  let A := ∑ T ∈ P.powerset,
+    routeEEulerTiltOccupancyWeight sigma P T *
+      routeEPhysicalTiltWeight sigma x (routeEPrimeLogEnergy T) * F T
+  let B := ∑ T ∈ P.powerset,
+    routeEEulerTiltOccupancyWeight sigma P T *
+      routeEPhysicalTiltWeight sigma x (routeEPrimeLogEnergy T)
+  let C := ∑ T ∈ P.powerset,
+    Real.exp (-x * (finitePrimeActivationRadical T : ℝ)) * F T
+  let D := routeESquarefreeGibbsPartition P x
+  have hnum : routeEEulerTiltNormalizer sigma P * A = C := by
+    simpa [A, C] using routeEEulerTiltObservableSum_eq_gibbsSum sigma x P F
+  have hden : D = routeEEulerTiltNormalizer sigma P * B := by
+    simpa [D, B] using routeESquarefreeGibbsPartition_eq_eulerTilt sigma x P
+  have hD : D ≠ 0 := (routeESquarefreeGibbsPartition_pos P x).ne'
+  have hB : B ≠ 0 := by
+    intro h
+    rw [h, mul_zero] at hden
+    exact hD hden
+  change A / B = C / D
+  apply (div_eq_div_iff hB hD).2
+  rw [hden]
+  calc
+    A * (routeEEulerTiltNormalizer sigma P * B) =
+        (routeEEulerTiltNormalizer sigma P * A) * B := by ring
+    _ = C * B := by rw [hnum]
+
+/-! ## Sharp local physical matching receiver -/
+
+/-- Exponential form of the real hyperbolic tangent. -/
+private lemma routeETanh_eq_expTwoRatio (y : ℝ) :
+    Real.tanh y = (Real.exp (2 * y) - 1) / (Real.exp (2 * y) + 1) := by
+  rw [Real.tanh_eq, show Real.exp (2 * y) = Real.exp y * Real.exp y by
+    rw [show 2 * y = y + y by ring, Real.exp_add], Real.exp_neg]
+  have hden : Real.exp y ^ 2 + 1 ≠ 0 := by positivity
+  field_simp [Real.exp_ne_zero y, hden]
+
+/-- Monotonicity of `tanh`, supplied here in the exact algebraic form used by the receiver. -/
+private lemma routeETanh_mono {a b : ℝ} (hab : a ≤ b) : Real.tanh a ≤ Real.tanh b := by
+  rw [routeETanh_eq_expTwoRatio a, routeETanh_eq_expTwoRatio b]
+  apply (div_le_div_iff₀ (by positivity : 0 < Real.exp (2 * a) + 1)
+    (by positivity : 0 < Real.exp (2 * b) + 1)).2
+  have hexp : Real.exp (2 * a) ≤ Real.exp (2 * b) :=
+    Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hab (by norm_num))
+  nlinarith
+
+/-- The sharp elementary estimate `tanh y ≤ y` on the physical half-line. -/
+private lemma routeETanh_le_self_of_nonneg (y : ℝ) (hy : 0 ≤ y) :
+    Real.tanh y ≤ y := by
+  have hx : 0 ≤ Real.exp (2 * y) - 1 := by
+    rw [sub_nonneg]
+    exact Real.one_le_exp (by positivity : 0 ≤ 2 * y)
+  have hlog := Real.le_log_one_add_of_nonneg hx
+  have hone : 1 + (Real.exp (2 * y) - 1) = Real.exp (2 * y) := by ring
+  rw [hone, Real.log_exp] at hlog
+  have htanh :
+      2 * (Real.exp (2 * y) - 1) / (Real.exp (2 * y) - 1 + 2) =
+        2 * Real.tanh y := by
+    rw [routeETanh_eq_expTwoRatio]
+    ring
+  rw [htanh] at hlog
+  linarith
+
+/-- **Exact pair polarization.** Relative imbalance of two physical Gibbs atoms is the hyperbolic
+tangent of half their normalized displacement. -/
+theorem routeEGibbsPair_abs_sub_eq_tanh
+    (X m n : ℝ) (hX : 0 < X) :
+    |Real.exp (-m / X) - Real.exp (-n / X)| =
+      Real.tanh (|m - n| / (2 * X)) *
+        (Real.exp (-m / X) + Real.exp (-n / X)) := by
+  wlog hmn : m ≤ n generalizing m n
+  · have hswap := this n m (le_of_not_ge hmn)
+    simpa [abs_sub_comm, add_comm] using hswap
+  · rw [abs_of_nonneg (sub_nonneg.mpr (Real.exp_le_exp.mpr (by
+      exact div_le_div_of_nonneg_right (neg_le_neg hmn) hX.le)))]
+    rw [abs_of_nonpos (sub_nonpos.mpr hmn)]
+    have hplus :
+        Real.exp (-m / X) =
+          Real.exp (-(m + n) / (2 * X)) * Real.exp ((n - m) / (2 * X)) := by
+      rw [← Real.exp_add]
+      congr 1
+      field_simp [hX.ne']
+      ring
+    have hminus :
+        Real.exp (-n / X) =
+          Real.exp (-(m + n) / (2 * X)) * Real.exp (-((n - m) / (2 * X))) := by
+      rw [← Real.exp_add]
+      congr 1
+      field_simp [hX.ne']
+      ring
+    rw [hplus, hminus, Real.tanh_eq]
+    have hden :
+        Real.exp ((n - m) / (2 * X)) + Real.exp (-((n - m) / (2 * X))) ≠ 0 := by
+      positivity
+    field_simp [hden]
+    ring
+
+/-- Ratio form of exact pair polarization. -/
+theorem routeEGibbsPair_abs_sub_div_add_eq_tanh
+    (X m n : ℝ) (hX : 0 < X) :
+    |Real.exp (-m / X) - Real.exp (-n / X)| /
+        (Real.exp (-m / X) + Real.exp (-n / X)) =
+      Real.tanh (|m - n| / (2 * X)) := by
+  rw [routeEGibbsPair_abs_sub_eq_tanh X m n hX]
+  field_simp [ne_of_gt (add_pos (Real.exp_pos _) (Real.exp_pos _))]
+
+/-- Finite source-predeclared opposite-sign matching, including unmatched positive and negative
+physical mass. All validity conditions are fields of the datum, so consumers need no route
+hypothesis. -/
+structure RouteELocalPhysicalMatchingReceiver (ι : Type*) [Fintype ι] where
+  X : ℝ
+  H : ℝ
+  left : ι → ℝ
+  right : ι → ℝ
+  unmatchedPositive : ℝ
+  unmatchedNegative : ℝ
+  X_pos : 0 < X
+  H_nonneg : 0 ≤ H
+  gap : ∀ i, |left i - right i| ≤ H
+  unmatchedPositive_nonneg : 0 ≤ unmatchedPositive
+  unmatchedNegative_nonneg : 0 ≤ unmatchedNegative
+  total_pos : 0 <
+    (∑ i, (Real.exp (-left i / X) + Real.exp (-right i / X))) +
+      unmatchedPositive + unmatchedNegative
+
+namespace RouteELocalPhysicalMatchingReceiver
+
+variable {ι : Type*} [Fintype ι]
+
+def leftWeight (d : RouteELocalPhysicalMatchingReceiver ι) (i : ι) : ℝ :=
+  Real.exp (-d.left i / d.X)
+
+def rightWeight (d : RouteELocalPhysicalMatchingReceiver ι) (i : ι) : ℝ :=
+  Real.exp (-d.right i / d.X)
+
+def matchedMass (d : RouteELocalPhysicalMatchingReceiver ι) : ℝ :=
+  ∑ i, (d.leftWeight i + d.rightWeight i)
+
+def unmatchedMass (d : RouteELocalPhysicalMatchingReceiver ι) : ℝ :=
+  d.unmatchedPositive + d.unmatchedNegative
+
+def totalMass (d : RouteELocalPhysicalMatchingReceiver ι) : ℝ :=
+  d.matchedMass + d.unmatchedMass
+
+def signedCurrent (d : RouteELocalPhysicalMatchingReceiver ι) : ℝ :=
+  (∑ i, (d.leftWeight i - d.rightWeight i)) +
+    d.unmatchedPositive - d.unmatchedNegative
+
+def normalizedCurrent (d : RouteELocalPhysicalMatchingReceiver ι) : ℝ :=
+  d.signedCurrent / d.totalMass
+
+def unmatchedFraction (d : RouteELocalPhysicalMatchingReceiver ι) : ℝ :=
+  d.unmatchedMass / d.totalMass
+
+theorem totalMass_pos (d : RouteELocalPhysicalMatchingReceiver ι) : 0 < d.totalMass := by
+  simpa [totalMass, matchedMass, unmatchedMass, leftWeight, rightWeight,
+    add_assoc] using d.total_pos
+
+theorem matchedMass_nonneg (d : RouteELocalPhysicalMatchingReceiver ι) : 0 ≤ d.matchedMass := by
+  rw [matchedMass]
+  apply Finset.sum_nonneg
+  intro i _hi
+  exact add_nonneg (Real.exp_pos _).le (Real.exp_pos _).le
+
+theorem unmatchedMass_nonneg
+    (d : RouteELocalPhysicalMatchingReceiver ι) : 0 ≤ d.unmatchedMass :=
+  add_nonneg d.unmatchedPositive_nonneg d.unmatchedNegative_nonneg
+
+private theorem abs_pair_sub_le
+    (d : RouteELocalPhysicalMatchingReceiver ι) (i : ι) :
+    |d.leftWeight i - d.rightWeight i| ≤
+      Real.tanh (d.H / (2 * d.X)) * (d.leftWeight i + d.rightWeight i) := by
+  rw [leftWeight, rightWeight,
+    routeEGibbsPair_abs_sub_eq_tanh d.X (d.left i) (d.right i) d.X_pos]
+  apply mul_le_mul_of_nonneg_right
+  · apply routeETanh_mono
+    exact div_le_div_of_nonneg_right (d.gap i)
+      (mul_nonneg (by norm_num) d.X_pos.le)
+  · positivity
+
+/-- **Sharp local receiver.** Normalized physical current is bounded by normalized unmatched mass
+plus the exact worst-pair polarization. -/
+theorem abs_normalizedCurrent_le_unmatchedFraction_add_tanh
+    (d : RouteELocalPhysicalMatchingReceiver ι) :
+    |d.normalizedCurrent| ≤
+      d.unmatchedFraction + Real.tanh (d.H / (2 * d.X)) := by
+  let tau := Real.tanh (d.H / (2 * d.X))
+  have htau : 0 ≤ tau := by
+    dsimp [tau]
+    have harg : 0 ≤ d.H / (2 * d.X) :=
+      div_nonneg d.H_nonneg (mul_nonneg (by norm_num) d.X_pos.le)
+    simpa using routeETanh_mono harg
+  have hunmatched :
+      |d.unmatchedPositive - d.unmatchedNegative| ≤ d.unmatchedMass := by
+    rw [unmatchedMass, abs_sub_le_iff]
+    constructor <;> linarith [d.unmatchedPositive_nonneg, d.unmatchedNegative_nonneg]
+  have hpair :
+      ∑ i, |d.leftWeight i - d.rightWeight i| ≤ tau * d.matchedMass := by
+    calc
+      ∑ i, |d.leftWeight i - d.rightWeight i| ≤
+          ∑ i, tau * (d.leftWeight i + d.rightWeight i) := by
+            apply Finset.sum_le_sum
+            intro i _hi
+            exact d.abs_pair_sub_le i
+      _ = tau * d.matchedMass := by rw [matchedMass, Finset.mul_sum]
+  have hcurrent : |d.signedCurrent| ≤ d.unmatchedMass + tau * d.matchedMass := by
+    calc
+      |d.signedCurrent| =
+          |(∑ i, (d.leftWeight i - d.rightWeight i)) +
+            (d.unmatchedPositive - d.unmatchedNegative)| := by
+              simp [signedCurrent]
+              ring
+      _ ≤ |∑ i, (d.leftWeight i - d.rightWeight i)| +
+          |d.unmatchedPositive - d.unmatchedNegative| := abs_add_le _ _
+      _ ≤ (∑ i, |d.leftWeight i - d.rightWeight i|) + d.unmatchedMass :=
+        add_le_add (Finset.abs_sum_le_sum_abs _ _) hunmatched
+      _ ≤ d.unmatchedMass + tau * d.matchedMass := by linarith
+  have hmatched_le : d.matchedMass ≤ d.totalMass := by
+    rw [totalMass]
+    linarith [d.unmatchedMass_nonneg]
+  have hratio : d.matchedMass / d.totalMass ≤ 1 :=
+    (div_le_one d.totalMass_pos).2 hmatched_le
+  rw [normalizedCurrent, abs_div, abs_of_pos d.totalMass_pos]
+  calc
+    |d.signedCurrent| / d.totalMass ≤
+        (d.unmatchedMass + tau * d.matchedMass) / d.totalMass :=
+      div_le_div_of_nonneg_right hcurrent d.totalMass_pos.le
+    _ = d.unmatchedFraction + tau * (d.matchedMass / d.totalMass) := by
+      simp [unmatchedFraction]
+      ring
+    _ ≤ d.unmatchedFraction + tau * 1 :=
+      add_le_add (le_refl _) (mul_le_mul_of_nonneg_left hratio htau)
+    _ = d.unmatchedFraction + Real.tanh (d.H / (2 * d.X)) := by simp [tau]
+
+/-- Linear physical-scale corollary `u + H/(2X)`. -/
+theorem abs_normalizedCurrent_le_unmatchedFraction_add_gap
+    (d : RouteELocalPhysicalMatchingReceiver ι) :
+    |d.normalizedCurrent| ≤ d.unmatchedFraction + d.H / (2 * d.X) := by
+  exact d.abs_normalizedCurrent_le_unmatchedFraction_add_tanh.trans
+    (add_le_add (le_refl d.unmatchedFraction)
+      (routeETanh_le_self_of_nonneg _
+        (div_nonneg d.H_nonneg (mul_nonneg (by norm_num) d.X_pos.le))))
+
+/-- Paper notation for the sharp receiver, with `|J|/Z` displayed literally. -/
+theorem abs_signedCurrent_div_totalMass_le_unmatchedFraction_add_tanh
+    (d : RouteELocalPhysicalMatchingReceiver ι) :
+    |d.signedCurrent| / d.totalMass ≤
+      d.unmatchedFraction + Real.tanh (d.H / (2 * d.X)) := by
+  simpa [normalizedCurrent, abs_div, abs_of_pos d.totalMass_pos] using
+    d.abs_normalizedCurrent_le_unmatchedFraction_add_tanh
+
+/-- Paper notation for the linear receiver `|J|/Z ≤ u + H/(2X)`. -/
+theorem abs_signedCurrent_div_totalMass_le_unmatchedFraction_add_gap
+    (d : RouteELocalPhysicalMatchingReceiver ι) :
+    |d.signedCurrent| / d.totalMass ≤ d.unmatchedFraction + d.H / (2 * d.X) := by
+  simpa [normalizedCurrent, abs_div, abs_of_pos d.totalMass_pos] using
+    d.abs_normalizedCurrent_le_unmatchedFraction_add_gap
+
+end RouteELocalPhysicalMatchingReceiver
+
 end
 
 end RHTower

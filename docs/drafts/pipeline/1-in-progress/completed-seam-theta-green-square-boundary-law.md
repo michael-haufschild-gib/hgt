@@ -240,6 +240,147 @@ Route P and Route R now share one external positive-polar producer class. Route 
 its own fixed-theta comparison and compact-measure assembly, so this is an obstruction
 identification rather than endpoint-equivalence packaging.
 
+### P-G9 -- canonical theta null-frame polar selector
+
+`[PAPER- AND LEAN-PROVED]` The positive polarization required by P-G8 need not be guessed at the
+theta target. Let `q_theta` be the canonical theta quantile coordinate and put
+
+```text
+d=pinnedFirstMoment(q_theta),  d!=0.
+```
+
+Its moment plane and the moment plane of its boundary image are
+
+```text
+v(q_theta)=(0,d),
+v(R_2 q_theta)=(-d,0).                                   (P-G9.1)
+```
+
+Both vectors are lightlike for `J`; their determinant is `d^2!=0`, so they are the two independent
+null axes of the entire rank-two boundary plane. The fixed Euclidean polar energy gives both axes
+the same strictly positive energy. After horizontal boost,
+
+```text
+E(T_a v(q_theta))       =exp(-2a)|d|^2,
+E(T_a v(R_2 q_theta))   =exp( 2a)|d|^2,
+these two energies agree iff a=0.                        (P-G9.2)
+```
+
+Thus full numerical theta source already selects and normalizes a gauge-breaking positive target
+frame. Abstract metric construction is not open. The load-bearing source theorem is now a typed
+transport: map the ordered Euler--Gamma/Stokes orientations coefficient-faithfully into these two
+fixed theta null axes, identify physical horizontal character with `T_a`, and prove equality of
+the transported positive axis energies from a pre-divisor source law. Equation `(P-G9.2)` then
+forces `a=0` before squaring.
+
+**No-theatre boundary.** Merely defining transported vectors so their energies equal, or inserting
+the Xi grade into the transport, is circular. The comparison must be derived from literal ordered
+prime/Gamma incidence and retain both null axes; a scalar zero-set identity is insufficient.
+
+### P-G10 -- exact positive-unit physical-current merger
+
+`[PAPER- AND LEAN-PROVED]` P and R share more than a hyperbolic model. Let
+
+```text
+a(q)=2 Re(rho_q)-1=-2 Im(z_q)
+```
+
+and let `kappa_p>0` be Route R's adjacent-depth Rees--corona attenuation. Its actual Hodge-mate
+coefficient is
+
+```text
+H_p(q)=a(q) kappa_p.
+```
+
+The theta current is `F(q)=2 M Im(z_q) E(q)`, with `M,E(q)>0`. Therefore, without dividing by the
+horizontal grade,
+
+```text
+F(q)=-U_p(q) H_p(q),
+U_p(q)=M E(q)/kappa_p>0.                                (P-G10.1)
+```
+
+Route R's literal degree-six reflected Deninger BV--Green boundary satisfies
+
+```text
+D_6(q)=V_p(q) H_p(q),  V_p(q)>0,
+```
+
+so
+
+```text
+F(q)=-W_p(q) D_6(q),  W_p(q)=U_p(q)/V_p(q)>0.           (P-G10.2)
+```
+
+Equations `(P-G10.1)`--`(P-G10.2)` are multiplicity-safe and remain valid on the critical fibre;
+no zero-set division occurs. Theta Green flux, rational-adelic Route R Hodge mate, and reflected
+Deninger degree-six boundary are one physical horizontal current with explicit positive gauges
+and one orientation reversal.
+
+**Frontier consequence.** These routes do not provide independent equations whose conjunction
+could kill the grade. Conversely, any genuine pre-divisor source law annihilating the literal
+Deninger boundary transfers immediately to pointwise Route P positivity through a strictly
+positive unit. The common open theorem is source annihilation; all physical comparison and sign
+calibration are now closed.
+
+### P-G11 -- reflection-safe Kakutani polarization of theta Green current
+
+`[PAPER- AND LEAN-PROVED]` Signed-current aggregation was the wrong order of operations in P-G4
+and P-G5. Put `a=a(q)` and let `Q_p(a)` be the Route N critical-horizon Krein current. Complete its
+grade quotient at the removable singularity by
+
+```text
+L_p(a) = 2 log(p)/p       if a=0,
+       = -Q_p(a)/a        if a!=0.
+```
+
+Direct prime-clock algebra proves, including the neutral fibre,
+
+```text
+L_p(a)>0,
+Q_p(a)=-a L_p(a).                                      (P-G11.1)
+```
+
+Route N's local Hellinger defect is its canonical Krein polarization
+
+```text
+K_p(a)=p Q_p(a)^2/(1+p^(-|a|))^2.
+```
+
+Since P-G10 gives the sharper grade law `F(q)=-M E(q) a`, `(P-G11.1)` yields the exact positive-unit
+identity
+
+```text
+K_p(a(q))=Omega_p(q) F(q)^2,
+Omega_p(q)=p L_p(a(q))^2 /
+  ((1+p^(-|a(q)|))^2 (M E(q))^2)>0.                   (P-G11.2)
+```
+
+No horizontal grade is divided out in `(P-G11.2)`. Under functional-equation reflection,
+`a(q#)=-a(q)` and `F(q#)=-F(q)`, but
+
+```text
+Omega_p(q)F(q)^2+Omega_p(q#)F(q#)^2=2K_p(a(q)).       (P-G11.3)
+```
+
+Thus signed reflection cancellation becomes strict positive addition once the first-order
+orientation is polarized before folding. Moreover the existing Kakutani radial-purity theorem
+now gives the dependency-closed criterion
+
+```text
+sum_p Omega_p(q)F(q)^2 < infinity
+  iff F(q)=0
+  iff thetaXiReciprocalEigenvalue(q)^2 is positive real. (P-G11.4)
+```
+
+**New knowledge delta.** Route P's missing positive receiver is no longer an unspecified metric or
+compact carrier. It has an explicit source-derived local density, exact prime normalization, and
+reflection-safe assembly. The remaining producer theorem is equally exact: prove from literal
+pre-divisor Euler--Gamma/theta source that the multiplicity-resolved mode belongs to this all-prime
+Kakutani domain. Pointwise nonnegativity is automatic; global summability is the RH-bearing step.
+Defining a zero-selected mode, assuming this summability, or summing signed currents first remains
+circular.
+
 ## Dependency-closed theorem target
 
 The current pass targets the unconditional part, not the open neutralization:
@@ -330,6 +471,10 @@ measure, diffusion, or continuous theta reporter.
 - [x] square-fold blindness proved on paper and in Lean
 - [x] pointwise positive-node/current criterion proved on paper and in Lean
 - [x] theta/Route-R hyperbolic boundary identification and gauge no-go formalized
+- [x] canonical theta null-frame polar selector proved on paper and in Lean
+- [x] exact theta/Route-R/Deninger positive-unit current bridge formalized
+- [x] exact reflection-safe theta/Kakutani positive polarization formalized
 - [ ] exact source construction neutralizing `i R_2 B`
+- [ ] pre-divisor proof of all-prime theta/Kakutani polarization summability
 - [ ] positive compact carrier
 - [ ] RH

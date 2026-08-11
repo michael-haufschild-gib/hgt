@@ -188,3 +188,81 @@ It proves:
 
 All proofs are unconditional. No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is
 introduced.
+
+## 2026-08-11 Euler--Green anomaly refinement
+
+### C7 — neutral Route-T collapse controls the complete nonlinear profile
+
+**Falsified coefficientwise; exact survivor proved in Lean.** Define
+
+\[
+ G(u)=\sum_{k\ge0}\frac{u^{2k+1}}{(2k+1)!}\frac1{2k+1}.
+\]
+
+Then the complete prime-clock profile is not an unspecified odd remainder but
+
+\[
+ \boxed{F(u)=G(u)-\sinh u=(D^{-1}-1)\sinh u,\qquad D=u\frac d{du}.}
+\]
+
+The inverse-Euler interpretation is analytic, not formal notation: Lean proves
+
+\[
+ \boxed{uG'(u)=\sinh u.}
+\]
+
+At odd degree \(2k+1\), the anomaly multiplier is exactly
+
+\[
+ \frac1{2k+1}-1=-\frac{2k}{2k+1}.
+\]
+
+It vanishes only for \(k=0\). Thus the neutral Route-T increment removes exactly the linear Euler
+mode; every odd mode of degree at least three survives with the same orientation. No fixed finite
+jet or moment cancellation can be promoted to the complete profile without an additional
+all-order source law.
+
+### C8 — cyclic exactness or Kummer nullity supplies the Euler--Green fixed-point law
+
+**Falsified by the existing Beck--Chevalley theorem.** The desired identity \(G(u)=\sinh u\) is
+equivalent to \(F(u)=0\). The harmonic class is already a literal \((t-1)\)-boundary, but physical
+specialization satisfies
+
+\[
+ \chi_a((t-1)f)=(e^a-1)\chi_a(f).
+\]
+
+Hence applying the cyclic regulator, a conservative Ward reporter, or source reflection after
+physical specialization cannot prove the Euler--Green fixed-point law. Each would require the
+specialization/base-change map to descend, and that descent is already classified as equivalent to
+neutral grade. This closes the apparent shortcut rather than moving the RH premise into a domain
+or cyclicity hypothesis.
+
+### C9 — Frankenstein universal principle
+
+**Positive survivor.** Prime-clock Wold moments, Route-L shell Green averaging, Route-T neutral
+residuals, Deninger cyclic exactness, and the Gamma-six character anomaly are one mechanism:
+
+> source contraction and physical character specialization fail to commute; their exact
+> Beck--Chevalley commutator is the retained horizontal profile.
+
+The polar work consequently has the coefficient-faithful endpoint/Green form
+
+\[
+ \boxed{W(u)=\frac{\log 2}{2}\,u\bigl(\sinh u-G(u)\bigr).}
+\]
+
+This sharpens the producer without restating bounded scalarization. Required source theorem must
+construct a pre-zero, coefficient-faithful base-change map identifying endpoint character and
+inverse-Euler Green contraction on the same Xi-labelled carrier. Reflection alone commutes with
+both sides and only reverses the anomaly; boundary membership alone is annihilated before the
+nonlinear character and therefore loses the obstruction.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/SourceHorizontalWoldEulerGreenAnomaly.lean`.
+
+Direct verification:
+
+- `lake env lean GaloisForLFunctions/RHTower/SourceHorizontalWoldEulerGreenAnomaly.lean` — PASS;
+- `lake build GaloisForLFunctions.RHTower.SourceHorizontalWoldEulerGreenAnomaly` — PASS;
+- `#print axioms` on six capstone theorems — only `propext`, `Classical.choice`, `Quot.sound`.

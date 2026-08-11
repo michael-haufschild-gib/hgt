@@ -99,6 +99,7 @@ theorem sourceHorizontalWoldEulerAnomalyMultiplier_neg
   rw [sourceHorizontalWoldEulerAnomalyMultiplier_eq]
   have hnum : 0 < (2 * k : ℝ) := by positivity
   have hden : 0 < ((2 * k + 1 : ℕ) : ℝ) := by positivity
+  rw [neg_div]
   exact neg_lt_zero.mpr (div_pos hnum hden)
 
 /-- Degree one is the unique odd Euler mode erased by prime-clock centering. -/

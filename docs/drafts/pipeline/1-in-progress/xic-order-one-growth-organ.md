@@ -531,3 +531,50 @@ R_0, R_1, R_2 at X=1. Ingredients all classical/closed-form: pole parts exact ra
 (a sign-changing-test positivity at a concrete small shift, currently known only under RH).
 
 Files on pod: /root/jacobi.py, /root/jacobi.out.
+
+## Step 32 (2026-08-11): DIAGONAL EDGE DETECTION — moment positivity pins the lowest zero to the line
+
+**The theorem** (formalizing step 31's empirical edge-locking as exact mathematics):
+`RHTower/XiResolventDiagonalEdgeDetection.lean`, all axioms [propext, Classical.choice, Quot.sound]:
+- `exists_criticalLine_copy_of_forall_moment_re_nonneg`: **if every resolvent moment Rₙ(X) at a
+  single shift X ≥ 0 is nonnegative, then among the divisor copies of MAXIMAL resolvent modulus
+  (the zeros minimizing ‖α²+X‖ — the lowest zeros of ξ) at least one lies ON THE CRITICAL LINE.**
+- `exists_moment_re_neg_of_offline_edge` (contrapositive): if every maximal-modulus copy is
+  off-critical, some diagonal moment is strictly negative — a single sign detects the edge.
+- `exists_max_norm_xiResolventPoint`: the resolvent modulus attains its maximum (via
+  finite_setOf_le_norm_xiResolventPoint).
+
+**Generic engine** `HTGeometry/UnitPowerSumOscillation.lean` (reusable, axioms clean):
+`unitPowerSum_no_decaying_lower_bound` — a nonempty finite family of unit-modulus points ≠ 1
+cannot keep Re Σ vᵢ^(n+1) above −Cκⁿ (κ < 1). Finite second-moment proof: Cesàro sums bounded by
+2/‖z−1‖ (`norm_geom_sum_le_of_norm_le_one`, `norm_sum_pow_succ_le`, `re_sum_pow_succ_ge`);
+(Re A)² = (‖A‖² + Re A²)/2; pair expansion of ‖Aₙ‖² has diagonal +N per index ⇒ square sums grow
+linearly; decaying floor ⇒ square sums bounded ⇒ contradiction. Fully effective (explicit
+constants C₁, C₄, C₅; negativity threshold explicit in the data).
+
+**Application mechanism**: normalize the finitely many max-modulus points to the unit circle;
+"no critical-line copy at the edge" ⇒ all normalized points ≠ 1 (real positive max point ⇒
+α²+X real ⇒ α real by height gap 2 < γ²); moments dominate the top power sums modulo a
+geometric tail (S₀c·ρⁿ from the strictly smaller second level ρ < r built with the max(·, r/2)
+trick — avoids needing Infinite XiZeroCopy); the oscillation engine finishes.
+
+**Status and honest labels**: theorems [LEAN-PROVED]. Mechanism = classical power-sum/dominant-
+singularity circle (Turán; Pringsheim flavor) — [LITERATURE] as a technique. The zeta statement —
+partial (diagonal-only) positivity ⇒ partial (edge-only) zero reality in the shifted-resolvent
+chart, at one shift, with the effective contrapositive — appears in no literature found (closest:
+arXiv:1510.03420, full power-sum positivity ⟺ all zeros real for genus-0 with positive zeros —
+an iff, not the localized partial implication; their setting also lacks the shift/height-gap
+forcing). Label: [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] provisional — significance: FIRST theorem
+in the corpus converting partial positivity into partial zero-location (all prior results were
+full iff's), completing the arc: experiment saw edge-locking (step 31) → now a theorem (step 32).
+
+**Composition targets recorded**: (i) iterate = deflation: diagonal positivity + 2×2 minors ⇒
+two lowest zero classes on-line? (needs deflated-sequence positivity — open); (ii) hypothesis
+supply: prove ∀n Rₙ(X₀) ≥ 0 at ONE X₀ unconditionally (weaker than RH; sector theorems give
+n ≤ √X₀ only; the missing tail is the edge content again — the hypothesis is exactly
+"diagonal-RH"); (iii) quantitative version with the explicit N-threshold from the engine.
+
+**Lean traps**: split on a `set`-bound if-function needs `simp only [hdef]` (beta) before
+`split`; targeted `Finset.add_sum_erase` needs the explicit function argument or it rewrites the
+wrong Σ; `field_simp` can close goals fully (remove trailing `ring`); Complex division by a real:
+rw-chain ofReal_pow/div_eq_mul_inv/ofReal_inv/mul_re/ofReal_re/ofReal_im, NOT bare simp.
