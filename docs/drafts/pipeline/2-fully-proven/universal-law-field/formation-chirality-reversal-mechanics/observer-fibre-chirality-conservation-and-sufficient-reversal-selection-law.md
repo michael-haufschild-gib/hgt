@@ -6,7 +6,7 @@
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [CLASSICAL CHAIN-RULE PARENT]
   [CHIRALITY CONSERVATION] [SERIAL CURRENT COMPOSITION] [SUFFICIENT-OBSERVER SELECTION]
   [FOUR-ORGAN FUSION] [FOURTH-ORGAN PREDICTION]
-  [NO LEAN YET] [NOT RH]
+  [LEAN 4 FORMALIZED] [NOT RH]
 
 ## 1. Exact question
 
@@ -378,4 +378,6 @@ here.
 - [x] Dependency-closed finite conservation and sufficiency proofs.
 - [x] Exact source sufficient-statistic realization.
 - [x] Exact serial composition and observer-tower localization theorem.
-- [ ] Lean formalization of the exact finite theorem and source corollary.
+- [x] Lean formalization of conservation, serial composition, conditional-KL identification,
+  sufficient reversal, and abstract chronology selection.
+- [ ] Lean construction of the Abelian-zeta source as the abstract strict chronology interface.

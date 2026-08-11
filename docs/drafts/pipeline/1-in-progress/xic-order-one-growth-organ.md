@@ -56,3 +56,14 @@ Recorded 2026-08-11 after hostile check.
   `entire_reBound_imp_affine`, `xiHadamardQuotient_has_log`,
   `xiHadamardQuotient_mul_canonicalProduct`. `riemannZeta_two` and `Real.pi_gt_three` confirm
   the nonconstancy witness needs no computation.
+- 2026-08-11 — brick 1 [LEAN-PROVED]: `HTGeometry/MellinGrowthBounds.lean` (wired, HTGeometry
+  umbrella green 18187 jobs, all 4 theorems `[propext, Classical.choice, Quot.sound]`):
+  `rpow_mul_exp_neg_pi_le` (pointwise: `t^a·e^{−πt} ≤ (2a²+9)^a·e^{−πt} + e^{−πt/2}` for
+  `t ≥ 1, a ≥ 0` — split at `2a²+9`; above it `log t ≤ 2√t` and `16a² ≤ π²t` via `π > 3`),
+  `integrableOn_rpow_mul_exp_neg_pi`, `integral_rpow_mul_exp_neg_pi_le`
+  (`∫₁^∞ t^a e^{−πt} ≤ (2a²+9)^a + 1`), `log_gammaTail_bound_le` (Hadamard shape:
+  `log((2a²+9)^a+1) ≤ (1+a)(1+3·log(3+a))`).  No Stirling anywhere.  Next brick: the
+  `f_modif` majorant for `hurwitzEvenFEPair 0` (BigO extraction from mathlib
+  `isBigO_atTop_evenKernel_sub` + compact-interval sup + FE transport `hf_modif_FE` to (0,1)),
+  then the Mellin-norm assembly `‖Λ₀(s)‖ ≤ C·G(|Re s|+…)`, then `xi`/`XiC` polynomial wrap,
+  then the nonemptiness capstone.

@@ -1087,3 +1087,133 @@ through normalized zero/one-large-prime seam and exact signed recurrence.
 Full proof and collision audit:
 `../2-fully-proven/new_scientific_knowledge/route-e-critical-antiscale-diffuse-codiagonal-transfer-law.md`.
 No Lean source was edited or built.
+
+## 2026-08-11 Fisher gauge/clock mismatch and strict-right graph firewall
+
+Further read-only audit of the grown Fisher corpus closes two false escapes from the centered
+codiagonal frontier.
+
+For finite reciprocal Euler law, signed unit state `psi`, centered log-energy variance `V`, and
+critical Fisher connection `F`, exact energy is
+
+\[
+ \|F\|_{HS}^2=4(\sigma-1)^2V.
+\tag{A53}
+\]
+
+Dividing by the Euler gauge gives
+
+\[
+ \|F/(\sigma-1)\|_{HS}^2=4V,
+ \qquad
+ |\langle(1-e)F e/(\sigma-1),\operatorname{Reporter}\rangle|
+ \le\sqrt{2V}.
+\tag{A54}
+\]
+
+At source-faithful tilt, `V=ell^2/2+O(ell log ell)`, so the gauge-neutralized universal bound grows
+like `ell`. The apparent `sigma-1` saving is pure coordinate damping.
+
+The corpus hard cutoff is not free: its clock is `(sigma-1) log n`. On the literal physical unit
+shell,
+
+\[
+ u_{\mathrm{shell}}
+ =(\sigma_x-1)\log(\sigma_x/x)+O(\sigma_x-1)
+ ={2\log\ell\over\ell}+O(\ell^{-1}).
+\tag{A55}
+\]
+
+Even granting a uniform finite-to-critical passage, the four-density one-corner profile at this
+forced clock supplies only
+`2 sqrt(log ell/ell)(1+o(1))`, not `X^(-1/2+o(1))`. Therefore the previous suggestion to choose
+`u_X=X^(-1+o(1))` is invalid.
+
+There is a genuine positive survivor. The new singular graph-normal source cancels the complete
+Euler gauge and overlap exactly:
+
+\[
+ N_{\sigma,u}(\mathcal A_{\sigma,u}(x)-\mathcal A_{\sigma,u}(y))
+ =\langle x-y,\eta_{\sigma,u}\rangle,
+ \qquad \|\eta_{\sigma,u}\|\le1,
+\tag{A56}
+\]
+
+for every complex inward node `Re u>=0`; the actual tangent simultaneously retains its completed
+prime--Gamma Xi landing before normalization. This is exact coordinate covariance, but it is
+strict-right. Its analytic node is `s=sigma+u(sigma-1)>1`. Reaching `Re s=1/2` forces `Re u<0`.
+The Mellin-inversion temptation is also blocked exactly: realizing
+`sum mu(n)n^(-s)` against normalized squarefree source requires observer squared norm
+
+\[
+ \mathcal Z_\sigma\sum_{n\ \mathrm{squarefree}}n^{\sigma-2\Re s},
+\tag{A57}
+\]
+
+which diverges on `Re s=1/2`. Diffuse codiagonal recovery produces centered Fisher score, not this
+raw scalar Möbius sum.
+
+The former target
+`CENTERED-COFACTOR-ONE-CORNER-CONTRACTION-AND-UNIT-SHELL-SEAM` is therefore sharpened to
+
+**FINITE-PHYSICAL-CENTERED-CODIAGONAL-STRICT-HALF-AND-RECURRENCE-SEAM**:
+construct strict-half corner energy or unit column capacity directly in the finite physical
+relation, then retain normalized zero/one-large-prime seam flux and exact signed recurrence.
+Universal Fisher cutoff tuning, graph-normal strict-right transport, statewise cofactor flatness,
+prime spacing, and square-multiple control are no longer candidate producers.
+
+Full proof and corpus trace:
+`../2-fully-proven/new_scientific_knowledge/route-e-critical-antiscale-diffuse-codiagonal-transfer-law.md`.
+Lean corpus was inspected read-only; no Lean source was edited or built.
+
+## 2026-08-11 finite physical column-ANOVA identification
+
+The abstract Fisher comparison is not needed for centered sharp columns. Let `rho_i` and `nu_i`
+be literal pushed and positive target physical masses, with totals `P` and `N`. Set
+`w_i=nu_i/N`, `r_i=rho_i/nu_i`, and `A_i=r_i-P/N`. Then `sum w_i A_i=0` and
+
+\[
+ \boxed{
+ \chi^2(\rho\mid\nu)
+ =N\sum_iw_iA_i^2+{(P-N)^2\over N}.}
+\tag{A58}
+\]
+
+Thus centered physical codiagonal energy is exactly column-likelihood ANOVA
+
+\[
+ E_{\rm cent}=N\operatorname{Var}_w(r)
+ =\chi^2(\rho\mid\nu)-{(P-N)^2\over N},
+\tag{A59}
+\]
+
+not a universal critical-clock Fisher energy. For `N=X^(1+o(1))`, exact strict-half target is
+
+\[
+ E_{\rm cent}\le X^{o(1)}
+ \quad\Longleftrightarrow\quad
+ \operatorname{Var}_w(r)\le X^{-1+o(1)}.
+\tag{A60}
+\]
+
+For every unit-modulus signed reporter `d`, Cauchy--Schwarz and centered codiagonal identity give
+
+\[
+ N|L_w(A,d)|\le\sqrt{NE_{\rm cent}},
+ \qquad
+ N|L_w(A,d)-O_w(A,d)|
+ \le2w_{\max}\sqrt{NE_{\rm cent}}.
+\tag{A61}
+\]
+
+Hence `(A60)` puts both centered score and atomic codiagonal correction at
+`X^(1/2+o(1))`; maximum-state diffuseness is helpful but no additional power gap. Mean Euler
+channel and moving seam remain separate.
+
+Final hard target is now
+
+**FINITE-PHYSICAL-COLUMN-ANOVA-STRICT-HALF-AND-SIGNED-RECURRENCE-SEAM**:
+prove `(A60)` for one source-predeclared finite physical relation, then carry same likelihood-ratio
+reporter through normalized zero/one-large-prime seam and exact alternating recurrence. This is
+the non-circular part of global column chi-square; scalar term in `(A58)` is the signed mass
+discrepancy itself and may not be assumed small.

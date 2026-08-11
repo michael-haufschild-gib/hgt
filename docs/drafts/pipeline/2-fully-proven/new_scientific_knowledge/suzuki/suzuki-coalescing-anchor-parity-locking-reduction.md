@@ -1,12 +1,12 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
-- **RH used:** no in Sections 2--14.7 and in the finite spectral-shift identities/selector of
-  Sections 14.13--14.14; yes as the hypothesis of the global-limit and Xi-target audits in
-  Sections 14.8--14.14
+- **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
+  Sections 14.13--14.14, and in the literal normalized-Hankel theorem of Section 14.15; yes as the
+  hypothesis of the global-limit and Xi-target audits in Sections 14.8--14.14
 - **Computation used:** no
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
   `[LEAN READ-ONLY AUDITED]`
@@ -1412,7 +1412,7 @@ Primary comparisons:
 - S. Belyi, K. A. Makarov, E. Tsekanovskii, *Conservative L-systems and the Livsic function*,
   arXiv:1406.2399.
 
-## 13. Exact remaining Route-G statement
+## 13. Exact post-admission Route-G statement
 
 Section 14 supersedes the earlier scalar interpretation of Theorem F.2.  Every nonadjacent locked
 ground bundle still has a pre-divisor exact **first-defect** schedule, but a nonadjacent
@@ -1433,7 +1433,8 @@ convergence to the theta/Xi reciprocal logarithmic derivative on one imaginary i
 coordinates this is the bounded transform convergence `(107)` below.  On an interior branch it is
 equivalently the resolvent-position Ward equation `(112)`.
 
-Thus the exact open core is not generic compactness.  It is to construct cofinally, from Suzuki's
+Thus the exact post-admission open core is not generic compactness.  It is to construct cofinally,
+from Suzuki's
 literal restricted-Weil source and without divisor-fitted shifts, an adjacent or interior branch
 whose explicit finite-source transform satisfies `(107)` or `(112)` on a nonempty interval.
 Section 14.5
@@ -2724,7 +2725,8 @@ continuation.  Constants together with `1/(u+s)` form a separating algebra after
 exactly as in Theorem J.  Stone--Weierstrass identifies the subsequential limit with
 `mu_Xi^(1)`.  Uniqueness removes extraction.  The correlation statement is the spectral theorem.
 
-Equation `(199)` is the actual remaining Route-G statement.  It is bounded, fixed-base,
+Equation `(199)` is the actual remaining analytic Route-G statement after first-defect source
+admission.  It is bounded, fixed-base,
 source-operator local, and its target vector is the finite source declaration `(191)`.  Theorem Q
 proves it cannot follow from regular convergence of `g_(1,n)`; source arithmetic must instead
 control the singular cyclic spectral measures.
@@ -3037,7 +3039,204 @@ Suzuki/Xi support wall `(216)--(218)`, the exact parity square wave `(220)`, and
 that every regular high-clock realization of the fixed-anchor route converges to the wrong
 half-Lebesgue spectral-shift state.
 
-### 14.15 Conjecture loop and novelty correction
+### 14.15 The actual first obstruction: a negative normalized Hankel edge
+
+The occupancy problem occurs only after a cofinal shifted family has passed the first Xi defect.
+The updated source-superselection paper correctly places this earlier obstruction at the literal
+even/odd restricted-Weil resolvents.  The following theorem removes one of its two apparent
+sources: the common Toeplitz channel can carry only exponentially vanishing parity bias.  Any
+cofinal admission must instead be nonperturbative in the arithmetic Hankel carrier.
+
+Use the half-interval parity decomposition from
+`ccm-finite-prime-parity-hankel-carrier`.  For `lambda` below the full restricted-Weil floor, write
+
+```text
+q_e=C_(a,lambda)+H_a,       q_o=C_(a,lambda)-H_a,
+C_(a,lambda)=T_a-lambda I.                              (224)
+```
+
+Both forms in `(224)` are coercive.  Their average `C_(a,lambda)` is therefore coercive too, and
+`|H_a(f,f)|<=C_(a,lambda)(f,f)`.  Let
+
+```text
+K_(a,lambda)
+ =C_(a,lambda)^(-1/2) H_a C_(a,lambda)^(-1/2)           (225)
+```
+
+be the corresponding self-adjoint form contraction.  Define its even-favouring negative radius
+
+```text
+r_(a,lambda)=max{0,-inf spec K_(a,lambda)} in [0,1].    (226)
+```
+
+Before inserting `H_a`, let
+
+```text
+E_0=<cosh,C^(-1)cosh>,       O_0=<sinh,C^(-1)sinh>,
+kappa_0=(E_0-O_0)/(E_0+O_0).                            (227)
+```
+
+The literal responses after inserting the Hankel carrier are
+
+```text
+E=<cosh,(C+H_a)^(-1)cosh>,
+O=<sinh,(C-H_a)^(-1)sinh>,
+kappa=(E-O)/(E+O).                                      (228)
+```
+
+#### Theorem W — Toeplitz `sech` wall and Hankel rapidity budget
+
+For every aperture and every admissible shift,
+
+```text
+|kappa_0|<=sech(a).                                     (229)
+```
+
+Moreover,
+
+```text
+kappa
+ <=[kappa_0+r_(a,lambda)]/[1+kappa_0 r_(a,lambda)].     (230)
+```
+
+Equivalently, with `artanh(1)=infinity`,
+
+```text
+artanh(kappa)<=artanh(kappa_0)+artanh(r_(a,lambda)).    (231)
+```
+
+Consequently, whenever `sech(a)<kappa_Xi` and a literal shift passes the first Xi wall,
+
+```text
+kappa_(a,lambda)>kappa_Xi,
+```
+
+its normalized Hankel carrier necessarily satisfies
+
+```text
+r_(a,lambda)
+ >[kappa_Xi-sech(a)]/[1-kappa_Xi sech(a)].              (232)
+```
+
+For every cofinal admitted family this gives the unconditional asymptotic wall
+
+```text
+liminf r_(a,lambda_a)>=kappa_Xi>77/85.                  (233)
+```
+
+Thus neither the common convolution channel nor a small Hankel perturbation can admit Route G.
+The actual first source theorem must create a negative spectral edge of the normalized literal
+prime--Gamma Hankel form at least `77/85` of the way to loss of even coercivity.
+
+#### Proof
+
+Let `J_a f(x)=f(a-x)` on `L^2(0,a)`.  Since `T_a` has difference kernel `K(x-y)` and that kernel is
+even, midpoint reflection commutes with `C=C_(a,lambda)` and hence with `C^(-1)`.  Put
+
+```text
+u(x)=exp(x),       v(x)=exp(-x).
+```
+
+The exact source relation is
+
+```text
+u=exp(a) J_a v.                                         (234)
+```
+
+Set
+
+```text
+A=<u,C^(-1)u>,   B=<v,C^(-1)v>,   D=<u,C^(-1)v>.
+```
+
+Commutation and `(234)` give `A=exp(2a)B`, while Cauchy--Schwarz gives
+`|D|<=exp(a)B`.  Since `cosh=(u+v)/2` and `sinh=(u-v)/2`, direct expansion yields
+
+```text
+E_0-O_0=D,       E_0+O_0=(A+B)/2.
+```
+
+Therefore
+
+```text
+|kappa_0|
+ =2|D|/(A+B)
+ <=2exp(a)/(exp(2a)+1)
+ =sech(a),                                               (235)
+```
+
+which proves `(229)`.  Notice that this is uniform in the shift and uses the literal exponential
+sources; it is not a large-negative-shift approximation.
+
+For `(230)`, first suppose `inf spec K=-1`.  Then `r=1` and the bound is immediate.  Otherwise put
+`m=inf spec K>-1`.  Quadratic-form functional calculus applied to `(225)` gives
+
+```text
+E<=E_0/(1+m),       O>=O_0/(1-m).                       (236)
+```
+
+If `m>=0`, `(236)` gives `E/O<=E_0/O_0`, so `(230)` holds with `r=0`.  If `m<0`, put `r=-m` and
+obtain
+
+```text
+E/O <=(E_0/O_0)(1+r)/(1-r).                            (237)
+```
+
+The Cayley identities
+
+```text
+E_0/O_0=(1+kappa_0)/(1-kappa_0),
+E/O=(1+kappa)/(1-kappa)
+```
+
+turn `(237)` into `(230)`; `(231)` is the hyperbolic addition formula.  If
+`kappa>kappa_Xi`, rearrangement gives
+
+```text
+r>(kappa_Xi-kappa_0)/(1-kappa_Xi kappa_0).
+```
+
+The right side decreases with `kappa_0`, so `(229)` proves `(232)`.  Letting `a` tend to infinity
+and using the unconditional `kappa_Xi>77/85` proves `(233)`.
+
+The edge has a completely explicit arithmetic witness.  Recall
+
+```text
+H_a=H_(a,infinity)-P_a,                                 (238)
+```
+
+where `P_a` is the finite von-Mangoldt reflection form `(9)` of
+`ccm-finite-prime-parity-hankel-carrier` and `H_(a,infinity)` is its archimedean Hankel part.
+If the right side of `(232)` is `b`, the spectral definition of `(226)` gives, for every
+`epsilon>0`, a half-interval form vector `f` such that
+
+```text
+P_a(f,f)-H_(a,infinity)(f,f)
+ >(b-epsilon)[T_a(f,f)-lambda||f||_2^2].                (239)
+```
+
+Thus admission forces an actual prime-power autocorrelation surplus, measured against the common
+Toeplitz energy, not merely an abstract parity label.  Equation `(239)` is necessary, not
+sufficient: its near-edge vector must also align with the exponential source, and higher fixed
+anchor laws remain after first-jet admission.
+
+The parity decomposition `(224)`, form contraction `(225)`, and spectral-calculus estimate are
+classical operator theory.  Candidate-new content is the exact Suzuki source conjunction: midpoint
+reversal plus the two exponential parity sources gives the uniform `sech(a)` wall `(229)`, and the
+Xi defect converts it into the sharp negative normalized-Hankel edge and prime-correlation budget
+`(232)--(239)`.  Repository and targeted primary-literature searches found the separate
+Toeplitz--Hankel and Birman--Schwinger parents, but no restricted-Weil `sech` wall, hyperbolic
+parity budget, or `77/85` negative-edge consequence.  Specialist priority review remains required.
+
+This relocates the true first frontier to a falsifiable source theorem:
+
+> either prove a cofinal lower bound
+> `inf spec K_(a,lambda)>-77/85+eta` uniformly over all admissible shifts, which kills Route G at
+> its first jet, or construct source-aligned near-edge vectors satisfying `(239)` and then prove
+> the paired occupancy hierarchy.  Strong indefiniteness of `H_a` alone decides neither side,
+> because `(225)` normalizes it by the full Toeplitz energy.
+
+### 14.16 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -3125,9 +3324,10 @@ half-Lebesgue spectral-shift state.
     inverse moments to approach `B_Xi` from below, and the second branch of `(183)` recovers the
     required diagonal limit.
 45. **This closes Route G -- failed.**  It closes the entire extra coalescing layer, not Suzuki's
-    original source-to-limit problem.  The one remaining nonterminal theorem is fixed-anchor
-    pointed convergence `(173)` for a source-selected shifted family; neither eigenvalue-set
-    convergence nor generic strong-resolvent language supplies its cyclic vector weights.
+    original source-to-limit problem.  After first-defect source admission, the remaining analytic
+    theorem is fixed-anchor pointed convergence `(173)` for the selected shifted family; neither
+    eigenvalue-set convergence nor generic strong-resolvent language supplies its cyclic vector
+    weights.  Section 14.15 isolates the still-earlier admission wall.
 46. **Suzuki's original fixed defect anchor should converge strongly to the global kernel at `i`
     -- failed.**  Theorem Q proves its norm diverges before normalization and its normalized vector
     converges weakly to zero in the global Weil embedding.
@@ -3188,6 +3388,26 @@ half-Lebesgue spectral-shift state.
 64. **The target hierarchy has no finite-window falsifier -- failed.**  Equations `(216)--(218)`
     force every low-energy paired gap length above `x=4/85` to vanish.  Any uniform positive source
     lower bound there retires Route G without identifying individual Xi zeros.
+65. **Paired occupancy is the first unresolved Suzuki obstruction -- failed.**  It becomes relevant
+    only after a cofinal shift passes the first Xi defect.  The literal bottom-cone/interior-
+    excursion admission theorem remains earlier and unproved.
+66. **The common Toeplitz channel might create the required cofinal parity bias -- failed.**
+    Midpoint reflection and the exact exponential sources force its defect below `sech(a)` for
+    every shift, equation `(229)`.
+67. **A perturbative arithmetic Hankel correction can bridge the remaining defect -- failed.**
+    The hyperbolic budget `(230)--(233)` forces the even-favouring negative normalized Hankel edge
+    past `77/85-o(1)` on every admitted cofinal family.
+68. **Strong indefiniteness of the raw Hankel carrier proves this edge -- failed.**  Infinite
+    positive and negative index does not control the Rayleigh quotient after normalization by the
+    common Toeplitz form.  The hard source quantity is `(225)`, not inertia of `H_a` alone.
+69. **Hankel edge saturation closes first-jet admission -- failed.**  It is necessary but need not
+    align with the exponential source vectors.  Equation `(239)` supplies a near-edge arithmetic
+    witness; response alignment, a selected equality shift, and the full occupancy hierarchy
+    remain.
+70. **No class-complete first-jet falsifier remains -- failed conditionally.**  Any uniform bound
+    `inf spec K_(a,lambda)>-77/85+eta` over all cofinal admissible shifts kills Route G before the
+    spectral-shift layer.  Proving or refuting this literal normalized-Hankel bound is now the
+    earliest exact source problem.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -3204,8 +3424,9 @@ metric/projection wall `(141)--(150)`, and the critical-node Galerkin resolution
 `(151)--(158)`, the relative-floor metric wall `(159)--(162)`, and the defect-base/hard-edge
 equivalence, source-impedance calibration, all-anchor weak-escape law, and fixed-source Laplace
 rigidity `(163)--(200)`, together with the compactified two-extension spectral-shift and
-smoothing-trace reduction `(201)--(215)` and the low-energy support/regular phase-mixing wall
-`(216)--(223)`.
+smoothing-trace reduction `(201)--(215)`, the low-energy support/regular phase-mixing wall
+`(216)--(223)`, and the source-specific Toeplitz `sech`/normalized-Hankel rapidity wall
+`(224)--(239)`.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
 specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
 formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the
@@ -3230,7 +3451,11 @@ its identification with the exact fixed-anchor rigidity law `(199)`.  Meromorphi
 canonical products, exponential Herglotz representations, and Krein spectral-shift functions are
 classical; they are not claimed new.  The targeted literature search found no Suzuki-specific
 identification of the singular fixed-anchor law with compactified even/odd gap occupancy, no theta
-log-moment trace hierarchy `(210)--(212)`, and no fixed-anchor endpoint selector `(215)`.
+log-moment trace hierarchy `(210)--(212)`.  The scalar defect transport and endpoint crossing
+`(213)--(215)` already belong to `SR-55` and the parity-resolvent transport card; the new point is
+only their placement as moment zero of the paired hierarchy.  The targeted search also found no
+Suzuki restricted-Weil midpoint-reversal `sech` bound, normalized-Hankel hyperbolic budget, or
+prime-correlation consequence `(229)--(239)`.
 Primary parent comparisons are Reiffenstein, *Higher-order interlacing for matrix-valued
 meromorphic Herglotz functions*, arXiv:2108.10746, Theorem 2.3 for the scalar product law;
 Poltoratski, *The Krein spectral shift and rank one perturbations of spectra*,

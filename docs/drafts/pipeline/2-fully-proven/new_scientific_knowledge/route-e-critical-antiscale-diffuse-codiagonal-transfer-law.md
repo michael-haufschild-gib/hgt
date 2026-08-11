@@ -32,14 +32,26 @@ block to be flat. Every cofactor family splits exactly into:
 
 For ternary coprime markers that maximum probability tends to zero exponentially in marker
 harmonic mass. Thus the previous target `TERNARY-MARKER-COFACTOR-FLATNESS` was sufficient but
-strictly stronger than necessary. The surviving theorem is a centered one-corner contraction and
-physical-normalization problem.
+strictly stronger than necessary. More sharply, the finite physical centered energy is exactly the
+ANOVA remainder of column likelihood-ratio chi-square:
+
+\[
+ E_{\mathrm{cent}}(\rho\mid\nu)
+ =N\operatorname{Var}_{\nu/N}(\rho/\nu)
+ =\chi^2(\rho\mid\nu)-\frac{(P-N)^2}{N}.
+\]
+
+At physical mass \(N=X^{1+o(1)}\), the exact strict-half producer target is therefore
+\(E_{\mathrm{cent}}\le X^{o(1)}\), equivalently
+\(\operatorname{Var}_{\nu/N}(\rho/\nu)\le X^{-1+o(1)}\). This target is weaker than uniform
+cofactor flatness and stronger than row/co-degree counting.
 
 The grown Lean corpus supplies the abstract one-corner contraction and the critical squarefree
-Fisher corner with four total units. Its small-cutoff consequence is a literal square-root law.
-What remains unproved is the source-faithful identification of the finite sharp Ramaré/unit-shell
-cofactor reporter with that contractive corner, with no inverse normalization loss and with the
-same moving prime seam.
+Fisher corner with four total units, but those theorems are receivers rather than arithmetic
+producers. Gauge-neutralization and the source-faithful critical clock show that universal Fisher
+identification has the wrong quantitative scale. What remains unproved is the finite physical
+column-ANOVA estimate above, followed by transport of the same signed reporter through the moving
+prime seam and exact recurrence, with mean and collision handled by the ternary decomposition.
 
 ## 2. One-sided critical dissipation for every \(0<r\le1\)
 
@@ -491,6 +503,215 @@ The finite physical theorem must consequently be **gauge-renormalized before con
 must prove that the renormalized centered source corner still has small physical energy. Raw
 finite Fisher energy `(34)` is not that theorem.
 
+### Corollary F — gauge-neutralized energy and forced-clock mismatch
+
+For \(\varepsilon>0\), put
+
+\[
+ \widehat h=\varepsilon^{-1}h,
+ \qquad
+ \widehat F_{\sigma,S}=\varepsilon^{-1}F_{\sigma,S}.
+\]
+
+Then `(34)`--`(35)` give
+
+\[
+ \boxed{
+ \|\widehat F_{\sigma,S}\|_{HS}^{2}=4V_{\sigma,S},
+ \qquad
+ |\langle(1-e)\widehat F_{\sigma,S}e,
+       \operatorname{Reporter}_D\rangle_{HS}|
+ \le\sqrt{2V_{\sigma,S}}.}
+\tag{38}
+\]
+
+At the source-faithful tilt `(37)`, the right side is
+
+\[
+ \sqrt{2V_{\sigma,S}}
+ =\ell\left(1+O\!\left(\frac{\log\ell}{\ell}\right)\right).
+\tag{39}
+\]
+
+Thus gauge-neutralization removes all apparent Fisher decay: universal one-corner contractivity
+alone gives a growing, not shrinking, physical-scale budget.
+
+There is a second exact scale obstruction. The hard cutoff in the corpus is the critical-clock
+cutoff
+
+\[
+ (\sigma-1)\log n\le u.
+\]
+
+On the physical unit shell \(\log n=E^*_{\sigma,x}+O(1)\), the forced tilt satisfies
+
+\[
+ \boxed{
+ u_{\mathrm{shell}}
+ =(\sigma_x-1)E^*_{\sigma_x,x}+O(\sigma_x-1)
+ =\frac{2\log\ell}{\ell}+O(\ell^{-1}).}
+\tag{40}
+\]
+
+Indeed \(E^*_{\sigma_x,x}=L+O(\sigma_x-1)\),
+\(L=\ell-\log\ell+O(1)\), and `(37)` gives `(40)`. Even if one grants the as-yet-unproved
+uniform passage from the finite moving cutoff to the critical profile `(30)`, inserting the
+source-forced shell scale yields only
+
+\[
+ \sqrt{2(1-e^{-u_{\mathrm{shell}}})}
+ =2\sqrt{\frac{\log\ell}{\ell}}\,(1+o(1)),
+\tag{41}
+\]
+
+which is \(X^{o(1)}\), not \(X^{-1/2+o(1)}\). The cutoff parameter in `(30)` therefore cannot be
+declared to be \(X^{-1+o(1)}\): its physical meaning fixes it at `(40)`.
+
+### Theorem G — graph-normal repair and strict-right firewall
+
+The grown corpus contains an exact contragredient repair for the coordinate gauge. Let
+\(\mathcal A_{\sigma,u}(x)\) be its affine Gamma--Xi source map and
+\(N_{\sigma,u}\) the forced graph normalizer
+
+\[
+ N_{\sigma,u}
+ =-2i(\sigma-1)\,
+   \operatorname{Overlap}_{\sigma,u}.
+\]
+
+For every complex inward node \(\Re u\ge0\), it proves
+
+\[
+ \boxed{
+ N_{\sigma,u}
+   \bigl(\mathcal A_{\sigma,u}(x)-\mathcal A_{\sigma,u}(y)\bigr)
+ =\langle x-y,\eta_{\sigma,u}\rangle,
+ \qquad
+ \|\eta_{\sigma,u}\|\le1.}
+\tag{42}
+\]
+
+For the actual Fisher tangent this graph-normal coordinate is the division-free squarefree
+Fisher numerator, while the unnormalized affine map lands in the completed prime--Gamma Xi trace.
+Thus the corpus does solve Euler-coordinate covariance: contractivity holds before the singular
+normal factor is inverted.
+
+It does **not** supply the Route E physical connector. The analytic node reached by `(42)` is
+
+\[
+ s=\sigma+u(\sigma-1),
+ \tag{43}
+\]
+
+so \(\Re u\ge0\) keeps \(\Re s>1\). Reaching the Mellin half-line \(\Re s=1/2\) would require
+
+\[
+ \Re u=\frac{1/2-\sigma}{\sigma-1}<0,
+\tag{44}
+\]
+
+outside the controlled Hardy column. This is a strict-right firewall, not a technical omission.
+
+There is a tempting but false Mellin shortcut. Formally,
+
+\[
+ e^{-xn}=\frac1{2\pi}\int_{\mathbb R}
+   \Gamma(1/2+it)(xn)^{-1/2-it}\,dt,
+\tag{45}
+\]
+
+and the prefactor \(x^{-1/2}\) has exactly the desired exponent. But representing
+\(\sum_n\mu(n)n^{-s}\) as a Hilbert pairing against the normalized squarefree source at parameter
+\(\sigma>1\) requires the observer
+
+\[
+ v_s(n)=\sqrt{\mathcal Z_\sigma}\,
+        n^{\sigma/2-\overline s},
+ \qquad
+ \|v_s\|_2^2
+ =\mathcal Z_\sigma\sum_{n\ \mathrm{squarefree}}
+       n^{\sigma-2\Re s}.
+\tag{46}
+\]
+
+At \(\Re s=1/2\), `(46)` diverges. It is exactly the nonclosable scalar codiagonal, not a bounded
+graph-normal reporter. The diffuse-codiagonal recovery theorem does not change this: it recovers
+the centered Fisher score \(\sum p_na_nd_n\), not the raw Möbius Dirichlet sum. Hence `(45)` does
+not smuggle an RH-strength estimate out of the safe Hilbert source.
+
+### Theorem H — finite column ANOVA is the physical centered energy
+
+The centered physical target can be stated without any Fisher identification. Let
+\(\rho_i\ge0\), \(\nu_i>0\) be finite pushed and target column masses, and put
+
+\[
+ P=\sum_i\rho_i,
+ \qquad N=\sum_i\nu_i>0,
+ \qquad w_i=\frac{\nu_i}{N},
+ \qquad r_i=\frac{\rho_i}{\nu_i},
+ \qquad A_i=r_i-\frac PN.
+\tag{47}
+\]
+
+Then \(\sum_iw_iA_i=0\), and target-weighted column chi-square has exact orthogonal decomposition
+
+\[
+ \boxed{
+ \sum_i\frac{(\rho_i-\nu_i)^2}{\nu_i}
+ =N\sum_iw_i|A_i|^2+\frac{(P-N)^2}{N}.}
+\tag{48}
+\]
+
+#### Proof
+
+Since \(\sum_iw_ir_i=P/N\), score \(A\) is centered. Write
+\(r_i-1=A_i+(P/N-1)\). Cross term in \(N\sum_iw_i(r_i-1)^2\) vanishes by centering, leaving
+`(48)`. ∎
+
+Equation `(48)` identifies physical meaning of Theorem C. Its first term is exactly centered
+likelihood-ratio variance available to diffuse codiagonal identity; its second term is scalar
+signed mass discrepancy Route E must bound. Thus global chi-square mixes producer and endpoint,
+while centered formulation separates them without loss:
+
+\[
+ \boxed{
+ E_{\mathrm{cent}}(\rho\mid\nu)
+ :=N\operatorname{Var}_{w}(r)
+ =\chi^2(\rho\mid\nu)-\frac{(P-N)^2}{N}.}
+\tag{49}
+\]
+
+Ternary mean dissipation acts on mean channel; one finite physical codiagonal acts on `(49)`;
+maximum state weight controls its atomic collision. No comparison with universal critical Fisher
+clock is needed. At physical mass \(N=X^{1+o(1)}\), endpoint-scale centered target is
+
+\[
+ \boxed{
+ E_{\mathrm{cent}}(\rho\mid\nu)\le X^{o(1)},
+ \qquad\text{equivalently}\qquad
+ \operatorname{Var}_{w}(r)\le X^{-1+o(1)}.}
+\tag{50}
+\]
+
+This is concrete strict-half producer. It is columnwise, retains actual physical weights, and
+cannot be discharged by row/co-degree counts alone.
+
+Moreover, for every \(|d_i|\le1\), Cauchy--Schwarz and Theorem C give
+
+\[
+ \boxed{
+ N|L_w(A,d)|\le\sqrt{N E_{\mathrm{cent}}},
+ \qquad
+ N|L_w(A,d)-O_w(A,d)|
+ \le2w_{\max}\sqrt{N E_{\mathrm{cent}}}.}
+\tag{51}
+\]
+
+Consequently `(50)` already puts both centered score and its atomic codiagonal correction at
+unnormalized size \(X^{1/2+o(1)}\). Diffuseness improves the collision but is not another power
+obligation once column ANOVA is proved. Remaining mean channel and moving seam must still be
+controlled separately.
+
 ## 7. Heavy conjecture--proof--failure loop
 
 ### Loop A: every cofactor state must be flat
@@ -545,6 +766,35 @@ normalization. Claiming `(30)` as the endpoint would be theatre.
 the physical observable is independent of it. Every source-faithful identification must undo this
 factor. Small gauge changes coordinates, not arithmetic cancellation.
 
+### Loop G: choose the critical cutoff at the desired power scale
+
+`[CONJECTURE]` Put \(u_X=X^{-1+o(1)}\) in `(30)` and obtain the endpoint from the square-root
+boundary law.
+
+`[FAILED SHARPLY]` Corollary F. On the literal source-faithful shell the critical clock is forced
+to \(u_{\mathrm{shell}}=2\log\ell/\ell+O(\ell^{-1})\). The limiting receiver then has only the
+logarithmic scale `(41)`, and the corpus contains no uniform two-parameter theorem permitting a
+different moving cutoff while retaining the physical reporter.
+
+### Loop H: Mellin-superpose the graph-normal Hardy column on \(\Re s=1/2\)
+
+`[CONJECTURE]` Equation `(45)` turns the uniform norm-one inward Hardy column into an
+\(x^{-1/2}\) bound for the signed Gibbs sum.
+
+`[FAILED EXACTLY]` Theorem G. The required scalar observer has divergent norm `(46)`, and the
+half-line lies on the forbidden outward side `(44)`. The safe graph normalizer controls a Fisher
+score and completed strict-right Xi source, not Möbius scalar summation.
+
+### Loop I: centered codiagonal needs a new Fisher-source comparison
+
+`[CONJECTURE]` To use Theorem C, first identify sharp physical columns with universal critical
+Fisher lower corner.
+
+`[FALSIFIED]` Theorem H. Center literal likelihood ratio \(r_i=\rho_i/\nu_i\). Its physical energy
+is exactly ANOVA remainder `(49)` of existing column chi-square. Universal Fisher comparison is
+unnecessary and, by Corollary F, has wrong scale. Genuinely new estimate is `(50)` for
+source-predeclared finite relation.
+
 ## 8. Revised Route E frontier
 
 Replace
@@ -553,32 +803,32 @@ Replace
 
 by the strictly weaker and source-aligned target
 
-**`CENTERED-COFACTOR-ONE-CORNER-CONTRACTION-AND-UNIT-SHELL-SEAM`**:
+**`FINITE-PHYSICAL-COLUMN-ANOVA-STRICT-HALF-AND-SIGNED-RECURRENCE-SEAM`**:
 
 1. group the actual sharp Ramaré or physical unit-shell source by ternary marker state and use
    exact normalization `(26)`;
-2. identify its centered term \(O_w(A,\chi)\) with a source-predeclared joined one-corner reporter
-   generated by an \(L^2\)-contraction after the source-forced Fisher gauge is explicitly
-   renormalized;
-3. compare its finite moving source-corner energy to the critical squarefree Fisher budget without
-   an inverse shell-probability loss, and prove that Euler-gauge renormalization does not cancel
-   the desired physical saving;
+2. form literal pushed/target likelihood ratio of finite physical relation and use `(48)` to
+   identify its centered codiagonal energy exactly;
+3. prove column ANOVA bound `(50)`, or equivalent unit-capacity estimate, without importing the
+   scalar signed discrepancy being estimated. Universal Fisher budget cannot supply it:
+   gauge-neutralization grows like `(39)` and forced critical clock gives only `(41)`;
 4. take the same reporter through the normalized zero/one-large-prime seam and exact signed
    recurrence;
 5. use `(24)`--`(25)` for state mean and collision, rather than proving uniform statewise
    cofactor flatness.
 
 Two abstract ingredients in this list are already unconditional Lean theorems: contractive
-one-corner half-energy and critical diffuse collision disappearance. Missing knowledge is the
-finite physical connector in items 2--4. If that connector realizes cutoff parameter
-\(u_X=X^{-1+o(1)}\) without normalization loss, `(30)` has exactly the strict-half scale. If its
-normalization costs \(u_X^{-1/2}\) or worse, this avenue fails and that loss must be proved, not
-hidden.
+one-corner half-energy and critical diffuse collision disappearance. They are receivers, not the
+missing arithmetic producer. Missing knowledge is finite physical estimate `(50)` and seam
+transport in items 3--4.
+Corollary F proves that the existing critical-clock corner cannot be assigned endpoint scale by
+parameter choice; Theorem G proves that the safe graph-normal Xi landing cannot be continued to
+the Mellin half-line by bounded Hilbert observation.
 
 ## 9. Honest status
 
-Theorems A--D and inequalities `(27)`--`(30)` are dependency-closed finite/abstract mathematics.
-They create new Route E knowledge:
+Theorems A--H are dependency-closed finite/abstract mathematics or exact consequences of the
+read-only formal corpus. They create new Route E knowledge:
 
 - critical dissipation saturation is now classified for the full range \(0<r\le1\);
 - antiscale coherence is the unique cofinal escape mode;
@@ -586,7 +836,13 @@ They create new Route E knowledge:
 - generic codiagonal unboundedness is bypassed exactly by centering and diffuseness;
 - the existing four-unit Fisher boundary exposes a genuine square-root receiver;
 - finite Fisher gauge collapse proves that shrinking the Euler coordinate cannot supply the
-  missing arithmetic power.
+  missing arithmetic power;
+- the physical shell fixes critical clock at \(2\log\ell/\ell+O(\ell^{-1})\), ruling out the
+  previously tempting \(u_X=X^{-1+o(1)}\) substitution;
+- graph normalization restores exact coordinate covariance on the strict-right Hardy family, but
+  the Mellin half-line requires an outward node and a non-\(\ell^2\) scalar observer;
+- physical centered codiagonal energy is exactly column-likelihood ANOVA `(49)`, eliminating need
+  for universal Fisher identification and isolating quantitative target `(50)`.
 
 No finite physical Fisher/Ramaré connector, unit-shell normalization theorem, affine coprime
 covariance estimate, Route E endpoint, or RH proof is claimed.

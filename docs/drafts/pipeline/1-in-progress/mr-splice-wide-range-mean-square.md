@@ -5389,3 +5389,50 @@ The product is at most `exp(2 sum_p p^-2 - 2 sum_p p^-1)` and therefore tends to
 harmonic marker mass. Modulus-one antiscale recurrence still occurs cofinally. This proves the
 precise mean-square saturation statement: recurrence cannot be removed pointwise, but its weighted
 frequency mass vanishes. Transfer through state-dependent cofactor cutoffs remains open.
+
+## Unit 39 — centered cofactor transfer and Fisher-rate firewall
+
+Paper proof:
+`../2-fully-proven/new_scientific_knowledge/route-e-critical-antiscale-diffuse-codiagonal-transfer-law.md`.
+Lean corpus was inspected read-only and was not changed or built during refactoring.
+
+Unit 38's statewise-flatness target is stronger than necessary. For probability weights `w_s`,
+centered blocks `A_s`, and `|d_s|<=1`, exact finite algebra gives
+
+```text
+sum_(s!=q) w_s w_q (A_s+A_q)d_s
+  = sum_s w_s A_s d_s - 2 sum_s w_s^2 A_s d_s,
+
+|2 sum_s w_s^2 A_s d_s| <= 2 w_max ||A||_(L2(w)).
+```
+
+For reciprocal ternary markers, `w_max=product_p(1+2/p)^(-1)`. Thus arbitrary sharp cofactor
+dependence splits into state mean, one centered off-diagonal codiagonal, and diffuse collision.
+Only centered reporter energy remains; uniform comparison of all cofactor blocks is not required.
+
+The universal critical Fisher one-corner is not that missing estimate. Gauge-neutralizing its
+finite tangent changes energy from `4(sigma-1)^2 V` to `4V`, which grows like `2 ell^2` at forced
+tilt. Its hard-clock parameter on physical unit shell is
+
+```text
+u_shell = 2 log ell / ell + O(1/ell),
+```
+
+so the limiting four-density profile gives only logarithmic decay, not `X^(-1/2+o(1))`. Exact
+graph normalization cancels Euler gauge contractively only at strict-right inward Hardy nodes;
+the Mellin half-line requires an outward parameter and a non-`l2` scalar Möbius observer.
+
+For literal pushed/target column masses `rho,nu`, finite ANOVA gives
+
+```text
+chiSquare(rho|nu)
+  = N * Var_(nu/N)(rho/nu) + (sum rho - sum nu)^2/N.
+```
+
+Thus current target is
+`FINITE-PHYSICAL-COLUMN-ANOVA-STRICT-HALF-AND-SIGNED-RECURRENCE-SEAM`: prove
+`N*Var_(nu/N)(rho/nu) <= X^(o(1))` directly for finite sharp cofactor relation, then preserve its
+moving zero/one-large-prime seam and signed recurrence. At `N=X^(1+o(1))`, this bound already puts
+centered score and atomic collision at `X^(1/2+o(1))`. Scalar ANOVA term is signed mass discrepancy
+itself and cannot be assumed small. Statewise flatness, universal Fisher cutoff tuning, prime
+spacing, and square-multiple estimates are not live producer gaps.

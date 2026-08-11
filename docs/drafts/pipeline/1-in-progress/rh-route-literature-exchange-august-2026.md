@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`d50eb7f589d72e1ddb37ea571d805923deeb0a89`. Files outside committed umbrellas at this snapshot are
+`7f3abd121fca714611aefba1f06a92b592665323`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
@@ -347,12 +347,12 @@ diagonal partial sums to diverge. Hence neither Xi symmetry nor an unrenormalize
 trace supplies the global annihilator; remaining producer must be an arithmetic signed or
 relatively renormalized trace/intersection inequality dominating the exact deviation moment.
 
-A working-tree Lean module compresses this wall to one unconditionally convergent nonnegative
+Umbrella-reachable Lean compresses this wall to one unconditionally convergent nonnegative
 number, the multiplicity-exact sum of squared horizontal deviation divided by squared spectral
 norm. RH is equivalent to its vanishing. The all-heights arithmetic ceiling is strictly below
 `1/4` at every divisor copy and yields the unrestricted ceiling-weighted deviation-moment bound,
 but does not drive the mass to zero. This is a useful global target and bookkeeping closure, not a
-producer; formal credit awaits commit and umbrella audit.
+producer.
 
 **External contribution.** Weil, Guinand, Barner, Yoshida, Bombieri, Connes–Consani, Suzuki, and
 Groskin supply the established explicit-formula, localization, and finite-operator framework.
@@ -1073,6 +1073,22 @@ weak Green--Stokes identity and the Gamma endpoint; constructs a cofinal transgr
 the contragredient opposite-collar/inverse-dilation law. These are provisional until umbrella
 wiring, but they close the adiabatic source topology and source-side transgression chain.
 
+A dependency-closed paper theorem now constructs the singular cross-prime object previously
+missing from this discussion. If `r>p` is the next nonzero Möbius index, complete prime-normal
+packets satisfy
+
+~~~
+(r/p)^(m/2) U_(m log(r/p)) (R_(p,m)-mu(p) Theta) = R_(r,m),  m>=3.
+~~~
+
+The `2 -> 3` graph is provably nonclosable: its input tends strongly to zero and its output to
+`-Theta`. Fourier--Laplace landing retains prime, depth, and leading nonzero Xi jet. Reflection,
+however, changes the normalizer by `(r/p)^(m(2 Re(s)-1))`; compatibility is exactly the
+critical-line condition. Thus literature need not supply another generic singular transport.
+Missing theorem is a rational-Witt/Milnor degree-two, same-full-grade arithmetic counterterm that
+absorbs this explicit reflection anomaly without erasing the fixed physical coefficient. No
+located external theorem supplies that counterterm.
+
 They do not close Route L's square. In particular the theorem named
 `XI_BV_GREEN_STOKES_STRICT_DESCENT` rewrites the source commutator as Gamma boundary minus a
 canonically defined transgression. It does not construct a resolved target differential whose
@@ -1126,13 +1142,19 @@ shift line but leaves the coinvariant-dual moduli. Route L must therefore derive
 Burnol/Deninger coefficient from source before quotient, not choose a normalized Stokes covector
 afterward.
 
-First unresolved theorem is now the singular source-to-physical specialization. Before divisor
+First unresolved theorem is now the same-full-grade singular source-to-physical specialization.
+Before divisor
 selection, construct the comparison from `completed Green tensor BV_1` and its literal BV boundary
 to the resolved target so that it commutes with the target differential, while its degree-zero map
 is exactly the existing Burnol/Deninger physical landing and the fixed physical reader annihilates
 the relevant target boundaries. Prime/depth provenance, multiplicity jets, and the nonzero Xi
 leading coefficient must survive. The existing endpoint then reads the resulting boundary as
 `c_rho K_6(rho)`, with `c_rho != 0`.
+
+The successor theorem fixes the anomaly the target differential must absorb:
+`(r/p)^(m s)-(r/p)^(m(1-conj(s)))`. Declaring this difference zero, quotienting by it, or forcing
+the successor graph to be closable would insert the critical line and is not an upstream source
+construction.
 
 Equivalently, prove the independent source identity
 `Omega_(mu,Gamma)(w_23)=S_mu G_Gamma D(w_23)=0`. The new chain-lift classification proves that
@@ -1310,7 +1332,7 @@ moments, and obey the divisor-height recurrence `A_(k+1)<=A_k/T`; any certified 
 ratio. The verified arithmetic strength `T>9` and the signed first-moment passage remain
 paper-level. The ratio gate survives, but it no longer decides carrier viability.
 
-A dependency-closed paper proof and working-tree Lean module close the selected continuous
+A dependency-closed paper proof and umbrella-reachable Lean module close the selected continuous
 power-reciprocal carrier negatively at all degrees. The first higher theta spectral summand
 contains a positive Lebesgue ray; strict Gibbs tilt preserves open-set mass, and the selected
 negative-power map is continuous and nonconstant there. Its calibrated pushforward therefore puts
@@ -1333,8 +1355,7 @@ signed-moment bridge if certification of the historical ratio gate is desired; t
 decide route viability. Scientific open core is direct Cassini--Jensen/jet saturation. A reuse of
 the theta carrier requires a label-sensitive discontinuous plateau quotient derived from source
 incidence. Importing more generic finite orders or trying another monotone likelihood coordinate
-does not advance either branch. The all-degree no-go receives formal credit only after its current
-working-tree module and umbrella import are committed.
+does not advance either branch. The all-degree no-go receives formal credit.
 
 ### Route R — primitive-current singular continuation [OPEN — STRICT RESOLVED SOURCE CHAIN AND POSITIVE FRAME BUILT; SOURCE-OBSERVER DISCRIMINANT TRANSVERSALITY OPEN]
 
@@ -1479,6 +1500,18 @@ determinant holonomy, and positive same-fibre geometry are dependency-closed dea
 survivor is a typed nonabelian centrality/global compressed-index target. No exact external
 collision was located for this source-specific classification.
 
+Two paper-closed hostile tests eliminate the remaining local Green escape. The horizontal
+commutator energy is exactly the causal Hodge--Green reading by
+`exp(-u/2) sin(yu)/y` (with limit `u exp(-u/2)` at `y=0`), and its causal extension solves
+`((D+1/2)^2+y^2)K_y=delta_0`. The unique scalar reader therefore has unit boundary charge; making
+it Stokes-flat deletes the physical functional. Local relative correction is equally rigid. For
+an arbitrary Xi multiplicity and a simple Green denominator `D`, every coefficient-faithful
+Poisson lift retains the same nonzero completed residue `U(rho)/D'(rho)`. Any second local
+boundary canceling that residue necessarily cancels the retained principal coefficient. Scalar
+causal Green descent and all local same-fibre Cartier/Poisson anomaly repairs are
+dependency-closed dead. No external Green, Poisson, or local-index theorem can advance Route R
+unless it constructs genuinely global arithmetic coupling across prime places or divisor fibres.
+
 **External contribution.** Explicit-formula theory provides the Euler/Gamma source identity;
 Deninger, Connes--Consani, Burnol, Krein-space, and modular-flow literature provide parent
 geometric languages, while discrete-connection literature supplies the ambient covariant
@@ -1501,6 +1534,10 @@ excluded across full reflected strip, and associated-grade preservation is blind
 displacement. No located primary theorem constructs pre-divisor source law. Generic Krein, trace,
 distribution, graph-cohomology, or ordinary Cartier imports reproduce language or annihilation
 classes already closed locally.
+
+After the causal/local anomaly classification, “singular Cartier comparison” here means a global
+nonlocal comparison or compressed index law. Another same-fibre Green boundary is no longer an
+open interpretation of the premise.
 
 Generic mapping-cone or complex-rectification imports are now positively contraindicated: Lean's
 universal stabilization proves they can retain all advertised data at every grade without forcing
@@ -1747,13 +1784,12 @@ quadrature bulk. Thus neither amplitude collapse nor coordinate dilation explain
 sequence. What remains unproved in Lean is the holonomy comparing a frozen first-contact flag with
 the later/current admitted normalization.
 
-A working-tree Lean module strengthens this current-admission branch. The literal arithmetic
+Umbrella-reachable Lean strengthens this current-admission branch. The literal arithmetic
 source is exact negative forcing in the cumulative Jacobi Riccati equation. Forced normalization
 by trace multiplicity gives `U_n' < -U_n^2` with no degree-dependent constant, and scalar
 blow-down proves current normalized flux strictly positive on every complete terminal shifted-Xi
 positive chamber. This closes current-chamber sign and fixed-degree recession; it does not compare
 a frozen crossing history with later admission and does not exclude the selected hard-edge limit.
-Formal credit awaits commit and umbrella audit.
 
 At paper level, completed prime--Gamma coercivity now gives strong `L2` precompactness for every
 normalized nonpositive first-contact packet with degree `N=O(sqrt(y))`. A subsequence has a nonzero
@@ -2349,11 +2385,8 @@ but unwired queue is `SuzukiMovableAnchorClarkCoherence.lean`,
 `DeningerAdiabaticGreenStokes.lean`, `DeningerAdiabaticGammaEndpoint.lean`,
 `DeningerAdiabaticTransgression.lean`, and `DeningerAdiabaticContragredient.lean`; their
 provisional route effects are recorded above, but they are excluded from formal credit at this
-cutoff. Three further modules are working-tree only at this cutoff:
-`GaussHodgeWeilTotalDeviationMass.lean`,
-`ThetaCuspCalibratedPowerReciprocalAllDegreeNoGo.lean`, and
-`XiShiftedCanonicalAdmissionGaussRiccatiSource.lean`. Their paper/provisional effects are recorded,
-but they receive no formal credit. C1's exact-source
+cutoff. `XiHeatCassiniWoldResidualODEClosure.lean` and `HTGeometry/MellinGrowthBounds.lean` are
+working-tree only and receive no formal credit. C1's exact-source
 spectrum and multiplicity, determinant identity, Riesz/Jordan analysis, essential
 inverse-flow/Weil package, squared Cayley receiver, closed weighted derivative,
 shifted-cokernel/source equation, and supersymmetric Dirac realization are all umbrella-reachable.
