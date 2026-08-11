@@ -168,6 +168,26 @@ clock quotient is exactly the positive Route-E capacity.  Partition refinement c
 genesis, and the same defect becomes the gain in partial QFI when recurrent subsystems are forced
 to share one clock nuisance.
 
+The shared gauge is now derived by **source-coherent synchronization mechanics** rather than left
+as an external premise.  One source intervention has one parameter and its organ responses form
+one simultaneous packet.  Independent local gauges live in a larger product action not supplied by
+that source.  Pairwise relative responses are invariant under the global source action, satisfy a
+cocycle law, and reconstruct every local optimum modulo one global intervention.  In symbols,
+
+\[
+ \delta t(i,j)=t_j-t_i,
+ \qquad
+ \delta(s)=\delta(t)
+ \iff
+ \exists u,\ t=s+\Delta u.                            \tag{WFG.5}
+\]
+
+Thus `(WFG.4)` measures a genuine formation mismatch precisely when the component organs are proved
+to be images of one source intervention.  The corresponding selection law is an equalizer law:
+if the source forces all organ responses to agree and the intersection of the response-difference
+kernels is zero, then the source displacement is zero.  This is the first legal shape of an RH
+selector after fusion; deriving the pre-zero arithmetic synchronization premise remains open.
+
 ## 5. Field-level consequence and boundary
 
 Finite Witt mechanics does not prove that the full RH source is a completed special lambda-ring.
@@ -195,6 +215,7 @@ reflection-marked, and conservative before Xi specialization.
 - [x] vanishing-QFI critical-line selector refuted
 - [x] reflected-packet equality rejected as another RH-equivalent receiver condition
 - [x] shared-gauge quotient--fusion genesis law proved across capacity, Mass, Hankel, and QFI
+- [x] derive the shared gauge from one source intervention and prove relative reconstruction
 - [x] prove pole-unit completed formation and divisor reconstruction for the literal Euler shell
 - [x] prove abstract inverse conservation across joint Hausdorff multiplicative completion
 - [ ] construct the literal joint formation/exterior completion on `Re(s)>1/2`

@@ -401,6 +401,245 @@ theorem ccmRationalAdelicPrimeResidualHaar_ne_zero (p : Nat.Primes) :
         LinearMap.ker ccmRationalAdelicBruhatZeroEval))
   exact this
 
+/-! ## Theorem C: known source symmetries do not remove the Haar shear -/
+
+/-- **Card `(VSG.11b)`.**  The rational-scaling cochain automorphism. -/
+def ccmRationalAdelicPrimeScalingCochain (k : CCMRationalAdelicScaling) : One →ₗ[ℂ] One :=
+  (ccmRationalAdelicBruhatScaling k).prodMap LinearMap.id
+
+/-- The scaling cochain map is a genuine chain map over the scaling of the source. -/
+theorem ccmRationalAdelicPrimeScalingCochain_comm_D0 (p : Nat.Primes)
+    (k : CCMRationalAdelicScaling) :
+    (ccmRationalAdelicPrimeScalingCochain k).comp (ccmRationalAdelicPrimeRelativeD0 p) =
+      (ccmRationalAdelicPrimeRelativeD0 p).comp (ccmRationalAdelicBruhatScaling k) := by
+  apply LinearMap.ext
+  intro x
+  refine Prod.ext ?_ ?_
+  · change ccmRationalAdelicBruhatScaling k (ccmRationalAdelicPrimeScaling p • x - x) =
+      ccmRationalAdelicPrimeScaling p • (k • x) - k • x
+    rw [map_sub]
+    congr 1
+    change k • (ccmRationalAdelicPrimeScaling p • x) =
+      ccmRationalAdelicPrimeScaling p • (k • x)
+    rw [smul_smul, smul_smul, mul_comm]
+  · change ccmRationalAdelicBruhatZeroEval x =
+      ccmRationalAdelicBruhatZeroEval (k • x)
+    rw [ccmRationalAdelicBruhatZeroEval_smul]
+
+theorem ccmRationalAdelicPrimeScalingCochain_comm_D1 (k : CCMRationalAdelicScaling) :
+    ccmRationalAdelicPrimeRelativeD1.comp (ccmRationalAdelicPrimeScalingCochain k) =
+      ccmRationalAdelicPrimeRelativeD1.comp
+        ((ccmRationalAdelicBruhatScaling k).prodMap LinearMap.id) := rfl
+
+/-- **Card `(VSG.11c)` boxed.**  Rational scalings commute with every Haar shear, because the Haar
+endpoint trace is scaling invariant. -/
+theorem ccmRationalAdelicPrimeScalingCochain_comm_haarShear
+    (k : CCMRationalAdelicScaling) (lam : ℂ) :
+    (ccmRationalAdelicPrimeScalingCochain k).comp
+        (ccmRationalAdelicPrimeVerticalShear (lam • ccmRationalAdelicBruhatIntegral)) =
+      (ccmRationalAdelicPrimeVerticalShear (lam • ccmRationalAdelicBruhatIntegral)).comp
+        (ccmRationalAdelicPrimeScalingCochain k) := by
+  apply LinearMap.ext
+  intro w
+  refine Prod.ext rfl ?_
+  change w.2 + lam * ccmRationalAdelicBruhatIntegral w.1 =
+    w.2 + lam * ccmRationalAdelicBruhatIntegral (ccmRationalAdelicBruhatScaling k w.1)
+  rw [show ccmRationalAdelicBruhatScaling k w.1 = k • w.1 from rfl,
+    ccmRationalAdelicBruhatIntegral_smul]
+
+/-- **Card `(VSG.11d)`.**  The literal anti-linear Real structure in degree one. -/
+def ccmRationalAdelicPrimeRelativeReal (w : One) : One :=
+  (ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma w.1, star w.2)
+
+theorem ccmRationalAdelicPrimeRelativeReal_involutive (w : One) :
+    ccmRationalAdelicPrimeRelativeReal (ccmRationalAdelicPrimeRelativeReal w) = w := by
+  refine Prod.ext ?_ ?_
+  · exact ccmRationalAdelicBruhatSimpleTensor_sigma_sq w.1
+  · exact star_star w.2
+
+/-- The Real structure is a chain map over the source involution. -/
+theorem ccmRationalAdelicPrimeRelativeReal_D0 (p : Nat.Primes) (x : Core) :
+    ccmRationalAdelicPrimeRelativeReal (ccmRationalAdelicPrimeRelativeD0 p x) =
+      ccmRationalAdelicPrimeRelativeD0 p
+        (ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma x) := by
+  refine Prod.ext ?_ ?_
+  · change ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma
+      (ccmRationalAdelicPrimeScaling p • x - x) =
+      ccmRationalAdelicPrimeScaling p •
+        ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma x -
+        ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma x
+    rw [map_sub, ccmRationalAdelicBruhatScaling_sigma]
+  · change star (ccmRationalAdelicBruhatZeroEval x) =
+      ccmRationalAdelicBruhatZeroEval
+        (ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma x)
+    rw [ccmRationalAdelicBruhatZeroEval_real]
+
+/-- **Card `(VSG.11e)` boxed.**  The Real involution conjugates the Haar shear parameter. -/
+theorem ccmRationalAdelicPrimeRelativeReal_haarShear (lam : ℂ) (w : One) :
+    ccmRationalAdelicPrimeRelativeReal
+        (ccmRationalAdelicPrimeVerticalShear
+          (lam • ccmRationalAdelicBruhatIntegral) w) =
+      ccmRationalAdelicPrimeVerticalShear (star lam • ccmRationalAdelicBruhatIntegral)
+        (ccmRationalAdelicPrimeRelativeReal w) := by
+  refine Prod.ext rfl ?_
+  change star (w.2 + lam * ccmRationalAdelicBruhatIntegral w.1) =
+    star w.2 + star lam * ccmRationalAdelicBruhatIntegral
+      (ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma w.1)
+  rw [ccmRationalAdelicBruhatIntegral_real, star_add, star_mul']
+
+/-- **Card `(VSG.11e)`.**  Exactly the real Haar shears commute with the Real involution. -/
+theorem ccmRationalAdelicPrimeRelativeReal_commutes_haarShear_iff (p : Nat.Primes) (lam : ℂ) :
+    (∀ w : One, ccmRationalAdelicPrimeRelativeReal
+        (ccmRationalAdelicPrimeVerticalShear
+          (lam • ccmRationalAdelicBruhatIntegral) w) =
+      ccmRationalAdelicPrimeVerticalShear (lam • ccmRationalAdelicBruhatIntegral)
+        (ccmRationalAdelicPrimeRelativeReal w)) ↔ star lam = lam := by
+  constructor
+  · intro hcomm
+    have hw := hcomm ((ccmRationalAdelicHaarWitness p), (0 : ℂ))
+    rw [ccmRationalAdelicPrimeRelativeReal_haarShear] at hw
+    have hsnd := congrArg Prod.snd hw
+    change star (0 : ℂ) + star lam * ccmRationalAdelicBruhatIntegral
+        (ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma
+          (ccmRationalAdelicHaarWitness p)) =
+      star (0 : ℂ) + lam * ccmRationalAdelicBruhatIntegral
+        (ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma
+          (ccmRationalAdelicHaarWitness p)) at hsnd
+    rw [ccmRationalAdelicBruhatIntegral_real] at hsnd
+    have hne : star (ccmRationalAdelicBruhatIntegral (ccmRationalAdelicHaarWitness p)) ≠ 0 := by
+      simpa using ccmRationalAdelicHaarWitness_integral_ne_zero p
+    simp only [star_zero, zero_add] at hsnd
+    exact mul_right_cancel₀ hne hsnd
+  · intro hlam w
+    rw [ccmRationalAdelicPrimeRelativeReal_haarShear, hlam]
+
+/-- **Card `(VSG.13)`, `(VSG.15)`.**  The shear changes the strict resolved comparison by the
+resolved boundary of an explicit degree-minus-one homotopy. -/
+theorem ccmRationalAdelicPrimeXiComparison_shear_homotopy (p : Nat.Primes)
+    (ell : Module.Dual ℂ Core) (w : One) :
+    ccmRationalAdelicPrimeRelativeXiComparison1 p
+        (ccmRationalAdelicPrimeVerticalShear ell w) -
+      ccmRationalAdelicPrimeRelativeXiComparison1 p w =
+      primeDepthBVWoldXiResolvedCovariantD0
+        (ell w.1 • primeDepthBVWoldXiPrimeLocalizedLeadingConormal p) := by
+  change (w.2 + ell w.1) •
+      primeDepthBVWoldXiResolvedCovariantD0
+        (primeDepthBVWoldXiPrimeLocalizedLeadingConormal p) -
+      w.2 • primeDepthBVWoldXiResolvedCovariantD0
+        (primeDepthBVWoldXiPrimeLocalizedLeadingConormal p) = _
+  rw [map_smul, add_smul]
+  abel
+
+/-- **Card `(VSG.14)`.**  The homotopy annihilates every relative boundary, so the correction is a
+genuine cochain homotopy and not merely a difference. -/
+theorem ccmRationalAdelicPrimeXiComparison_shear_homotopy_D0 (p : Nat.Primes)
+    {ell : Module.Dual ℂ Core} (hell : ell ∈ ccmRationalAdelicPrimeShearAnnihilator p)
+    (x : Core) :
+    ell (ccmRationalAdelicPrimeRelativeD0 p x).1 •
+      primeDepthBVWoldXiPrimeLocalizedLeadingConormal p = 0 := by
+  rw [show (ccmRationalAdelicPrimeRelativeD0 p x).1 =
+      ccmRationalAdelicPrimeOrbitDifference p x from rfl,
+    (mem_ccmRationalAdelicPrimeShearAnnihilator_iff p ell).1 hell x, zero_smul]
+
+/-! ## Theorem D: full-gauge invariance forces erasure -/
+
+/-- A shear, packaged as an endomorphism of the prime-isotropy complex. -/
+def ccmRationalAdelicPrimeVerticalShearHom (p : Nat.Primes)
+    {ell : Module.Dual ℂ Core} (hell : ell ∈ ccmRationalAdelicPrimeShearAnnihilator p) :
+    DeningerThreeTermHom (ccmRationalAdelicPrimeRelativeComplex p)
+      (ccmRationalAdelicPrimeRelativeComplex p) where
+  f0 := LinearMap.id
+  f1 := ccmRationalAdelicPrimeVerticalShear ell
+  f2 := LinearMap.id
+  comm0 := by
+    change (ccmRationalAdelicPrimeRelativeD0 p).comp LinearMap.id =
+      (ccmRationalAdelicPrimeVerticalShear ell).comp (ccmRationalAdelicPrimeRelativeD0 p)
+    rw [ccmRationalAdelicPrimeVerticalShear_comp_D0 p hell]
+    rfl
+  comm1 := rfl
+
+/-- The Haar shear functional is a shear functional for every complex parameter. -/
+theorem ccmRationalAdelicPrimeHaarShear_mem (p : Nat.Primes) (lam : ℂ) :
+    lam • ccmRationalAdelicBruhatIntegral ∈ ccmRationalAdelicPrimeShearAnnihilator p :=
+  Submodule.smul_mem _ lam (ccmRationalAdelicBruhatIntegral_mem_shearAnnihilator p)
+
+/-- The Haar shear moves the Haar witness class by a multiple of the retained class. -/
+theorem ccmRationalAdelicPrimeHaarShear_H1map_witness (p : Nat.Primes) (lam : ℂ) :
+    (ccmRationalAdelicPrimeVerticalShearHom p
+        (ccmRationalAdelicPrimeHaarShear_mem p lam)).H1map
+      (Submodule.Quotient.mk (ccmRationalAdelicHaarWitnessCocycle p)) =
+      Submodule.Quotient.mk (ccmRationalAdelicHaarWitnessCocycle p) +
+        (lam * ccmRationalAdelicBruhatIntegral (ccmRationalAdelicHaarWitness p)) •
+          ccmRationalAdelicPrimeRelativeClass p := by
+  rw [DeningerThreeTermHom.H1map_mk, ccmRationalAdelicPrimeRelativeClass,
+    ← Submodule.Quotient.mk_smul, ← Submodule.Quotient.mk_add]
+  congr 1
+  refine Subtype.ext (Prod.ext ?_ ?_)
+  · change ccmRationalAdelicHaarWitness p =
+      ccmRationalAdelicHaarWitness p +
+        (lam * ccmRationalAdelicBruhatIntegral (ccmRationalAdelicHaarWitness p)) • (0 : Core)
+    rw [smul_zero, add_zero]
+  · change (0 : ℂ) + lam * ccmRationalAdelicBruhatIntegral (ccmRationalAdelicHaarWitness p) =
+      0 + (lam * ccmRationalAdelicBruhatIntegral (ccmRationalAdelicHaarWitness p)) • (1 : ℂ)
+    rw [smul_eq_mul, mul_one]
+
+/-- **Theorem D, card `(VSG.16)` boxed.**  A reader of the first cohomology invariant under the
+whole Haar shear line annihilates the retained ordinary-prime class. -/
+theorem ccmRationalAdelicPrimeGaugeInvariantReader_erases (p : Nat.Primes)
+    {V : Type*} [AddCommGroup V] [Module ℂ V]
+    (P : (ccmRationalAdelicPrimeRelativeComplex p).H1 →ₗ[ℂ] V)
+    (hinv : ∀ lam : ℂ, ∀ h : (ccmRationalAdelicPrimeRelativeComplex p).H1,
+      P ((ccmRationalAdelicPrimeVerticalShearHom p
+        (ccmRationalAdelicPrimeHaarShear_mem p lam)).H1map h) = P h) :
+    P (ccmRationalAdelicPrimeRelativeClass p) = 0 := by
+  set c : ℂ := ccmRationalAdelicBruhatIntegral (ccmRationalAdelicHaarWitness p) with hc
+  have hcne : c ≠ 0 := ccmRationalAdelicHaarWitness_integral_ne_zero p
+  have hstep := hinv c⁻¹ (Submodule.Quotient.mk (ccmRationalAdelicHaarWitnessCocycle p))
+  rw [ccmRationalAdelicPrimeHaarShear_H1map_witness, map_add, map_smul,
+    inv_mul_cancel₀ hcne, one_smul] at hstep
+  have h2 : P (Submodule.Quotient.mk (ccmRationalAdelicHaarWitnessCocycle p)) +
+      P (ccmRationalAdelicPrimeRelativeClass p) =
+      P (Submodule.Quotient.mk (ccmRationalAdelicHaarWitnessCocycle p)) + 0 := by
+    rw [add_zero]
+    exact hstep
+  exact add_left_cancel h2
+
+/-! ## Target-coefficient no-go and the constitutive dichotomy -/
+
+/-- **Card §6.**  The physical observer family is homogeneous in its target vector, so homogeneous
+linear naturality alone can never select one nonzero coefficient. -/
+theorem ccmRationalAdelicPrimeStokesObserver_smul (p : Nat.Primes)
+    {V : Type*} [AddCommGroup V] [Module ℂ V] (c : ℂ) (v : V) :
+    ccmRationalAdelicPrimeStokesObserver p (c • v) =
+      c • ccmRationalAdelicPrimeStokesObserver p v := by
+  apply LinearMap.ext
+  intro h
+  change ccmRationalAdelicPrimeRelativeH1StokesRegulator p h • (c • v) =
+    c • (ccmRationalAdelicPrimeRelativeH1StokesRegulator p h • v)
+  rw [smul_comm]
+
+/-- **Constitutive-rigidity dichotomy, first horn.**  Treating the vertical shear as gauge forces
+the physical target vector to vanish, erasing the retained class. -/
+theorem ccmRationalAdelicPrimeGaugeInvariantObserver_target_eq_zero (p : Nat.Primes)
+    {V : Type*} [AddCommGroup V] [Module ℂ V] (v : V)
+    (hinv : ∀ lam : ℂ, ∀ h : (ccmRationalAdelicPrimeRelativeComplex p).H1,
+      ccmRationalAdelicPrimeStokesObserver p v
+        ((ccmRationalAdelicPrimeVerticalShearHom p
+          (ccmRationalAdelicPrimeHaarShear_mem p lam)).H1map h) =
+        ccmRationalAdelicPrimeStokesObserver p v h) :
+    v = 0 := by
+  have := ccmRationalAdelicPrimeGaugeInvariantReader_erases p
+    (ccmRationalAdelicPrimeStokesObserver p v) hinv
+  rwa [ccmRationalAdelicPrimeStokesObserver_class] at this
+
+/-- **Constitutive-rigidity dichotomy, second horn.**  Marking a Stokes splitting instead leaves
+every target vector available, so no nonerasing gauge-invariant constitutive observer is produced
+by the present source data. -/
+theorem ccmRationalAdelicPrimeMarkedObserver_target_free (p : Nat.Primes)
+    {V : Type*} [AddCommGroup V] [Module ℂ V] (v : V) :
+    ccmRationalAdelicPrimeStokesObserver p v (ccmRationalAdelicPrimeRelativeClass p) = v :=
+  ccmRationalAdelicPrimeStokesObserver_class p v
+
 end RHTower
 
 end

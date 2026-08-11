@@ -142,6 +142,7 @@ theorem not_summable_gasModeDefect {σ : ℝ} (hσ : 0 < σ) (hhalf : 1 / 2 < σ
     rw [ratio_temperatureParameters hσ p 0, cos_socleCoeff hσ t p] at hge
     simp only [Function.comp_apply, gasModeDefect]
     rw [pow_one] at hge
+    rw [ratio_temperatureParameters hσ p 0, pow_one]
     linarith
 
 /-! ## The characteristic functions of the finite-mode partial sums -/

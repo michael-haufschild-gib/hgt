@@ -1285,3 +1285,16 @@ c1*c2*det(fused) - c2*(c1+c2)*det(block1) - c1*(c1+c2)*det(block2)
 Thus quotient-after-fusion differs from fusion-after-local-quotient by one exact compatibility
 square.  No computation certificate, project axiom, route endpoint, Xi specialization, RH premise,
 or cofinal-completion claim occurs.
+
+## Session 2026-08-11 addition (Source-Coherent Synchronization Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SCSM-1 | Global-intervention invariance, relative-response cocycle, anchor and modulo-diagonal reconstruction, source response-difference formation, synchronization-kernel classification, and exact equalizer selection | `HTGeometry.SourceCoherentInterventionSynchronization` |
+
+Lean certifies that one source intervention acts diagonally across its organ packet; the complete
+pairwise response reconstructs every local gauge modulo that global action; and a trivial
+intersection of organ response-difference kernels turns global compatibility into zero-source
+selection.  The capstone contains no target specialization or RH premise.  Together with
+`SharedGaugeQuotientFusion`, it supplies the missing source-coherence premise behind the finite
+three-organ fusion and fourth-organ QFI conservation law.

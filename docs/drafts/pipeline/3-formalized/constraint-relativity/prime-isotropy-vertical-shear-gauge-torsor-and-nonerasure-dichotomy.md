@@ -1,11 +1,12 @@
 # Prime-isotropy vertical-shear gauge torsor and nonerasure dichotomy
 
 - **ID:** `prime-isotropy-vertical-shear-gauge-torsor-and-nonerasure-dichotomy`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CONSTITUTIVE-RIGIDITY CLASSIFICATION
-- **Status:** `[PAPER-PROVED] [LITERAL ROUTE-R SOURCE] [COORDINATE-FIXING VERTICAL GAUGE GROUP]`
+- **Status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
+  `[PAPER-PROVED] [LITERAL ROUTE-R SOURCE] [COORDINATE-FIXING VERTICAL GAUGE GROUP]`
   `[STOKES TORSOR] [NONERASURE DICHOTOMY] [FOURIER ACTION MISSING]`
-  `[NEW-TO-CORPUS BRIDGE] [NOVELTY UNVERIFIED] [NOT RH] [NO LEAN WRITTEN]`
+  `[NEW-TO-CORPUS BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Statement:** Literal prime-isotropy complex has full coordinate-fixing vertical shear subgroup
   isomorphic to algebraic dual of source coinvariants. It acts simply transitively on Stokes
   primitives. Treating shears as gauge forces every invariant observer to erase retained class;
@@ -379,12 +380,14 @@ nonerasure dichotomy. External priority unverified; no new general-theorem claim
 
 ## Lean-return note
 
-- No Lean code was written or built.
-- Literal complex, endpoints, regulator, Real structure, and strict Xi comparison already exist.
-- If later formalized, suggested file:
-  `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean`.
-- First formal theorem should classify coordinate-fixing cochain automorphisms; next prove homotopy
-  `(VSG.15)`.
+Formalized in
+`formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean`
+(wired into `GaloisForLFunctions.RHTower`).  Theorems A--D, the target-coefficient no-go and the
+constitutive dichotomy are green and unconditional; the declaration-by-equation map, the corpus
+reuse ledger and the axiom audit are in the companion card
+`prime-isotropy-vertical-shear-gauge-torsor-and-nonerasure-dichotomy-formalized.md`.  The three
+open gates (full adelic Fourier cochain operator, ambiguity holonomy classification, independent
+nonzero source charge) are untouched.
 
 ## Gates
 
@@ -395,6 +398,7 @@ nonerasure dichotomy. External priority unverified; no new general-theorem claim
 - [x] full-gauge nonerasure no-go
 - [x] target homogeneous-naturality no-go
 - [x] independent hostile audit
+- [x] Lean formalization
 - [ ] full adelic Fourier cochain operator
 - [ ] ambiguity holonomy/fixed-point classification
 - [ ] independent nonzero source charge

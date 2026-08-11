@@ -1475,3 +1475,39 @@ That is the freeness the kernel half needs, in the germ presentation.  The remai
 presentational: identify the germ of `jetCombination τ σ c P J` with the operator row
 `Σ_q (Σ_j c q j ∂ʲ) Ψ_q`, so that the hypertranscendence transfers to the function and contradicts
 differential algebraicity of a member of `Q` with nonzero divisor.
+
+## Lean progress — the germ-to-function bridge, and hypertranscendence of a nonzero jet combination
+
+The two presentations of the elliptic gamma function in the corpus — the meromorphic-field one built
+from the multiplicative coordinate and the nomes, and the divisor one built from the additive
+exponential cone product — are now identified:
+
+    EllipticGammaConePresentationBridge.ellipticGammaCone_shift_eq :
+      ellipticGammaCone σ τ (z + (τ/2 + 1/2))
+        = ellipticGammaForwardProduct σ τ z / ellipticGammaBackwardProduct σ τ z
+
+factor by factor, hence product by product; the shift `τ/2 + 1/2` is exactly the difference between
+the two coordinate conventions.
+
+On top of it the realization dictionary is completed:
+
+    MeromorphicRealizationDerivative : the quotient rule in a differential field, and
+      realizesMero_deriv, realizesMero_iteratedDeriv — realization commutes with all jets
+    MeromorphicRealizationAlgebra   : realizesMero_div, realizesMero_logDeriv, realizesMero_translate
+    EllipticGammaJetRealization     : realizesMero_gammaJetSource — the function
+      `gammaJetSource τ σ q j` realizes the `j`-th differential jet of the translated
+      `ellipticGammaLogDerivMero` germ
+
+and the freeness statement is generalized from a `Finset` of shifts to any finite injective family,
+which is what an indexing by base points needs.  Composing everything:
+
+    TripticJetCombinationHypertranscendence.not_differentiallyAlgebraic_jetCombination :
+      for base points that are distinct classes lying off the shifted period lattice, a jet
+      combination with any nonzero weight is **not** differentially algebraic
+
+The weights become one constant-coefficient differential-operator row per base point; the row acts
+on the translation packet, which is differentially independent over the constants; so the germ is
+hypertranscendental over `ℂ`, and since `ℂ(z)` is a differentially algebraic extension of `ℂ` the
+function is not differentially algebraic over `ℂ(z)` either.
+
+This is the germ-to-function transfer the kernel half was waiting for.

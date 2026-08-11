@@ -1,102 +1,94 @@
-import Mathlib.Analysis.Calculus.UniformLimitsDeriv
-import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+import Mathlib
 
 /-!
-# Smoothness of a uniform limit of all derivatives
+# Uniform limits of all derivatives
 
-If every iterated derivative of a sequence of smooth functions on the line converges uniformly,
-the limit is smooth and its iterated derivatives are the limits.  mathlib has the one-derivative
-statement (`hasDerivAt_of_tendstoUniformly`) but nothing at all orders, which is what completeness
-of a space of test functions needs.
+If a sequence of smooth functions on the line converges uniformly together with every one of its
+derivatives, the limit is smooth and its derivatives are the limits.  This is the completeness
+statement underlying every Fréchet space of smooth functions; mathlib has the one-step version
+(`hasDerivAt_of_tendstoUniformlyOn`) but not the iterated one.
 
-The argument is a chain: uniform convergence at order `m + 1` together with pointwise convergence
-at order `m` makes the limit at order `m` differentiable with derivative the limit at order
-`m + 1`.  Such a chain of derivatives forces smoothness by induction on the order.
-
-* `hasDerivAt_of_tendstoUniformly_iteratedDeriv` : the chain.
-* `contDiff_infty_of_hasDerivAt_chain` : a chain of derivatives is smooth.
-* `contDiff_infty_of_tendstoUniformly_iteratedDeriv` : the limit is smooth, with
-  `iteratedDeriv_eq_of_tendstoUniformly_iteratedDeriv` identifying its derivatives.
+* `hasDerivAt_limit_of_tendstoUniformly` : each limit differentiates to the next.
+* `iteratedDeriv_limit` : the limits are the iterated derivatives of the first.
+* `contDiff_of_tendstoUniformly_iteratedDeriv` : **the limit is smooth.**
 -/
 
-namespace GaloisForLFunctions.HTGeometry
+namespace GaloisForLFunctions
 
-open Filter
+open Filter Topology
+open scoped ContDiff
 
-section SmoothLimit
+variable {F : ℕ → ℝ → ℂ} {G : ℕ → ℝ → ℂ}
 
-variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+/-- Every finite order is below the smooth order. -/
+theorem natLt_infty (r : ℕ) : ((r : ℕ) : WithTop ℕ∞) < ∞ := by
+  exact_mod_cast WithTop.coe_lt_coe.2 (ENat.coe_lt_top r)
 
-/-- A chain of derivatives: each member is differentiable with the next as its derivative. -/
-theorem contDiff_of_hasDerivAt_chain {g : ℕ → ℝ → F}
-    (h : ∀ (m : ℕ) (x : ℝ), HasDerivAt (g m) (g (m + 1) x) x) (n m : ℕ) :
-    ContDiff ℝ (n : WithTop ℕ∞) (g m) := by
-  induction n generalizing m with
-  | zero =>
-      rw [Nat.cast_zero, contDiff_zero]
-      have hdiff : Differentiable ℝ (g m) := fun x => (h m x).differentiableAt
-      exact hdiff.continuous
-  | succ n ih =>
-      have hd : deriv (g m) = g (m + 1) := funext fun x => (h m x).deriv
-      have hcast : ((n + 1 : ℕ) : WithTop ℕ∞) = (n : WithTop ℕ∞) + 1 := by
-        push_cast
-        ring
-      rw [hcast, contDiff_succ_iff_deriv]
-      refine ⟨fun x => (h m x).differentiableAt, ?_, ?_⟩
-      · intro htop
-        exact absurd htop (by simp)
-      · rw [hd]
-        exact ih (m + 1)
+/-- **Each limit differentiates to the next.** -/
+theorem hasDerivAt_limit_of_tendstoUniformly
+    (hFsmooth : ∀ n, ContDiff ℝ ∞ (F n))
+    (hconv : ∀ r, TendstoUniformly (fun n => iteratedDeriv r (F n)) (G r) atTop)
+    (r : ℕ) (x : ℝ) : HasDerivAt (G r) (G (r + 1) x) x := by
+  refine hasDerivAt_of_tendstoUniformly (f := fun n => iteratedDeriv r (F n))
+    (f' := fun n z => iteratedDeriv (r + 1) (F n) z) (g := G r) (g' := G (r + 1))
+    (hconv (r + 1)) ?_ ?_ x
+  · refine Filter.Eventually.of_forall fun n z => ?_
+    have hdiff : Differentiable ℝ (iteratedDeriv r (F n)) :=
+      (hFsmooth n).differentiable_iteratedDeriv r (natLt_infty r)
+    have hd := (hdiff z).hasDerivAt
+    rwa [← iteratedDeriv_succ] at hd
+  · intro z
+    exact (hconv r).tendsto_at z
 
-/-- **A chain of derivatives is smooth.** -/
-theorem contDiff_infty_of_hasDerivAt_chain {g : ℕ → ℝ → F}
-    (h : ∀ (m : ℕ) (x : ℝ), HasDerivAt (g m) (g (m + 1) x) x) (m : ℕ) :
-    ContDiff ℝ (⊤ : ℕ∞) (g m) :=
-  contDiff_infty.mpr fun n => contDiff_of_hasDerivAt_chain h n m
+/-- **The limits are the iterated derivatives of the first.** -/
+theorem iteratedDeriv_limit
+    (hFsmooth : ∀ n, ContDiff ℝ ∞ (F n))
+    (hconv : ∀ r, TendstoUniformly (fun n => iteratedDeriv r (F n)) (G r) atTop) :
+    ∀ r, iteratedDeriv r (G 0) = G r := by
+  intro r
+  induction r with
+  | zero => exact iteratedDeriv_zero
+  | succ k ih =>
+    rw [iteratedDeriv_succ, ih]
+    funext x
+    exact (hasDerivAt_limit_of_tendstoUniformly hFsmooth hconv k x).deriv
 
-/-- Along a chain of derivatives, the `m`-th iterated derivative of the first member is the
-`m`-th member. -/
-theorem iteratedDeriv_of_hasDerivAt_chain {g : ℕ → ℝ → F}
-    (h : ∀ (m : ℕ) (x : ℝ), HasDerivAt (g m) (g (m + 1) x) x) (m : ℕ) :
-    iteratedDeriv m (g 0) = g m := by
+/-- Every limit is smooth of every finite order. -/
+theorem contDiff_limit_nat
+    (hFsmooth : ∀ n, ContDiff ℝ ∞ (F n))
+    (hconv : ∀ r, TendstoUniformly (fun n => iteratedDeriv r (F n)) (G r) atTop) :
+    ∀ (m : ℕ) (r : ℕ), ContDiff ℝ (m : WithTop ℕ∞) (G r) := by
+  intro m
   induction m with
-  | zero => rw [iteratedDeriv_zero]
-  | succ m ih =>
-      rw [iteratedDeriv_succ, ih]
-      exact funext fun x => (h m x).deriv
+  | zero =>
+    intro r
+    have hcont : Continuous (G r) := by
+      refine (hconv r).continuous (Filter.Eventually.frequently ?_)
+      exact Filter.Eventually.of_forall fun n =>
+        ((hFsmooth n).differentiable_iteratedDeriv r (natLt_infty r)).continuous
+    simpa using (contDiff_zero (𝕜 := ℝ) (f := G r)).2 hcont
+  | succ k ih =>
+    intro r
+    have hcast : (((k + 1 : ℕ)) : WithTop ℕ∞) = ((k : ℕ) : WithTop ℕ∞) + 1 := by
+      push_cast
+      ring
+    rw [hcast, contDiff_succ_iff_deriv]
+    refine ⟨fun x => (hasDerivAt_limit_of_tendstoUniformly hFsmooth hconv r x).differentiableAt,
+      fun hw => absurd hw (by simp), ?_⟩
+    have hderiv : deriv (G r) = G (r + 1) := by
+      funext x
+      exact (hasDerivAt_limit_of_tendstoUniformly hFsmooth hconv r x).deriv
+    rw [hderiv]
+    exact ih (r + 1)
 
-/-- **The chain produced by uniform convergence of all derivatives.**  If every iterated
-derivative of a sequence of smooth functions converges uniformly, the limits form a chain of
-derivatives. -/
-theorem hasDerivAt_of_tendstoUniformly_iteratedDeriv {f : ℕ → ℝ → F} {g : ℕ → ℝ → F}
-    (hsmooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (f n))
-    (hconv : ∀ m, TendstoUniformly (fun n => iteratedDeriv m (f n)) (g m) atTop)
-    (m : ℕ) (x : ℝ) : HasDerivAt (g m) (g (m + 1) x) x := by
-  refine hasDerivAt_of_tendstoUniformly (hconv (m + 1)) ?_ ((hconv m).tendsto_at) x
-  refine Filter.Eventually.of_forall fun n y => ?_
-  have hlt : ((m : ℕ) : WithTop ℕ∞) < ((⊤ : ℕ∞) : WithTop ℕ∞) := by
-    exact_mod_cast ENat.coe_lt_top m
-  have hdiff : Differentiable ℝ (iteratedDeriv m (f n)) :=
-    (hsmooth n).differentiable_iteratedDeriv m hlt
-  rw [iteratedDeriv_succ]
-  exact (hdiff y).hasDerivAt
+/-- **The uniform limit of smooth functions with all derivatives converging uniformly is
+smooth.** -/
+theorem contDiff_of_tendstoUniformly_iteratedDeriv
+    (hFsmooth : ∀ n, ContDiff ℝ ∞ (F n))
+    (hconv : ∀ r, TendstoUniformly (fun n => iteratedDeriv r (F n)) (G r) atTop) :
+    ContDiff ℝ ∞ (G 0) := by
+  rw [contDiff_infty]
+  intro m
+  exact contDiff_limit_nat hFsmooth hconv m 0
 
-/-- **The uniform limit of all derivatives is smooth.** -/
-theorem contDiff_infty_of_tendstoUniformly_iteratedDeriv {f : ℕ → ℝ → F} {g : ℕ → ℝ → F}
-    (hsmooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (f n))
-    (hconv : ∀ m, TendstoUniformly (fun n => iteratedDeriv m (f n)) (g m) atTop) :
-    ContDiff ℝ (⊤ : ℕ∞) (g 0) :=
-  contDiff_infty_of_hasDerivAt_chain
-    (hasDerivAt_of_tendstoUniformly_iteratedDeriv hsmooth hconv) 0
-
-/-- **The derivatives of the limit are the limits of the derivatives.** -/
-theorem iteratedDeriv_eq_of_tendstoUniformly_iteratedDeriv {f : ℕ → ℝ → F} {g : ℕ → ℝ → F}
-    (hsmooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (f n))
-    (hconv : ∀ m, TendstoUniformly (fun n => iteratedDeriv m (f n)) (g m) atTop) (m : ℕ) :
-    iteratedDeriv m (g 0) = g m :=
-  iteratedDeriv_of_hasDerivAt_chain
-    (hasDerivAt_of_tendstoUniformly_iteratedDeriv hsmooth hconv) m
-
-end SmoothLimit
-
-end GaloisForLFunctions.HTGeometry
+end GaloisForLFunctions

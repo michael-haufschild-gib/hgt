@@ -171,6 +171,7 @@ import GaloisForLFunctions.HTGeometry.SourceFormationHarmonicMechanics
 import GaloisForLFunctions.HTGeometry.FormationScaleReceiver
 import GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion
 import GaloisForLFunctions.HTGeometry.SharedGaugeQuotientFusion
+import GaloisForLFunctions.HTGeometry.SourceCoherentInterventionSynchronization
 
 /-!
 # Universal-law-field Lean umbrella

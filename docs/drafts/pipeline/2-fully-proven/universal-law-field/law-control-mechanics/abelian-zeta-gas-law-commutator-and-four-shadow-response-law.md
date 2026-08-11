@@ -10,7 +10,7 @@
   unitary observation with open lift, a zeta-divisor transgression, and a hypertranscendental germ.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [ONE SOURCE] [THREE FORMATIONS]
   [NONIDENTITY EXCHANGE] [WITHHELD POSITIVE COST] [FOUR RESPONSE CHARTS]
-  [THEOREM 3.1 LEAN-CERTIFIED] [FOUR-SHADOW LEAN OBLIGATIONS ENUMERATED] [NOT RH]
+  [THEOREMS 3.1, 6.1 AND 7.1 LEAN-CERTIFIED] [REMAINING OBLIGATIONS ENUMERATED] [NOT RH]
 
 ## 1. Source
 
@@ -515,27 +515,17 @@ The 33-module `GaloisForLFunctions.HTGeometry.AbelianZetaGas` layer already owns
 3. **`(AZC.15)`/`(AZC.16)`, Theorem 5.1.**  The fugacity-direction analogue of
    `RelativeEntropy.klDiv_symmetrised_temperature_shift`, with the socle observable `Q` in place of
    the order observable, plus the variance-integral form and the explicit `−ζ'/ζ` series.
-4. **Theorem 7.1 — DONE in ladder form.**
+4. **Theorem 7.1 — DONE.**
    `GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleHypertranscendence` proves
-   `not_differentiallyAlgebraicOn_soclePullback`: the socle ladder pulled back along the
-   temperature scaling, `s ↦ Z(σ, σs)`, satisfies no algebraic differential equation on the
-   convergence half plane.  Supporting: `soclePullback`, `mul_mem_socleChamber`,
-   `analyticAt_soclePullback`, `soclePullback_ne_zero`, `soclePullback_ladder`.
-   *Residual:* transporting this to `C_{σ,τ}` itself needs two closure lemmas that exist only in
-   the global (`DifferentiallyAlgebraic`) form and not yet in the domain-local
-   (`DifferentiallyAlgebraicOn`) form: `const_mul` and `comp_const_mul`.  With those, `C` is
-   hypertranscendental because it is a nonzero constant multiple of an affine substitution of the
-   ladder.
-   *The corpus already owned the template.*
-   `GaloisForLFunctions.HTGeometry.EulerQGammaHypertranscendence` proves
-   `not_differentiallyAlgebraicOn_eqgResponseDirichlet` from **exactly this ladder**: with
-   `eqgExponent σ s = σ(1+s)`, its response satisfies `D(s) = ζ(σ(1+s))·D(s+1)`, and
-   `L(s) := socleLadder σ (σ·s)` satisfies the same relation by `socleLadder_peel`.  So Theorem 7.1
-   reduces to (a) analyticity and nonvanishing of `L` on `eqgHalfPlane σ` — nonvanishing is
-   `socleLadder_ne_zero_of_mem` and analyticity is `differentiableOn_socleLadder`, **both now
-   proved** — and (b) `differentiallyAlgebraicOn_div` plus `hypertranscendental_eqgZetaPullback`,
-   both already in the tree.  Only the mirror of the twenty-line
-   `not_differentiallyAlgebraicOn_eqgResponseDirichlet` proof is left.
+   `not_differentiallyAlgebraicOn_socleResponse`: the socle response `C_{σ,τ}` satisfies no
+   algebraic differential equation on the chamber where the ladder converges.  Route:
+   `not_differentiallyAlgebraicOn_of_zetaLadder` isolates the obstruction — any function analytic
+   and zero-free on `eqgHalfPlane σ` satisfying `A(s) = ζ(σ(1+s))·A(s+1)` is hypertranscendental —
+   and the response is a nonzero constant multiple of an affine substitution of the ladder
+   (`soclePullback_ladder`, `differentiallyAlgebraicOn_comp_const_mul`, which is the new
+   domain-local mirror of `DifferentiallyAlgebraic.comp_const_mul_uncond`).  The final
+   contradiction is `hypertranscendental_eqgZetaPullback`, i.e. Hilbert's theorem for `ζ`.
+
 5. **Theorem 8.1.**  Norm-precompactness and recurrence of the orbit `t ↦ U_tΩ` in
    `L²(P_{σ,τ})`, with the divergent logarithmic lift.
 
@@ -614,3 +604,6 @@ The 33-module `GaloisForLFunctions.HTGeometry.AbelianZetaGas` layer already owns
 - 2026-08-11 — the socle-variable tail layer built (`SocleTail`); the ladder is now proved
   holomorphic and zero-free on the socle chamber, which supplies both remaining inputs of
   Theorem 7.1 and the analytic half of (AZC.18).
+- 2026-08-11 — Theorem 7.1 closed for the response itself: the ladder obstruction extracted as
+  `not_differentiallyAlgebraicOn_of_zetaLadder`, and the domain-local argument-scaling closure
+  lemma `differentiallyAlgebraicOn_comp_const_mul` built to carry it from the ladder to `C`.

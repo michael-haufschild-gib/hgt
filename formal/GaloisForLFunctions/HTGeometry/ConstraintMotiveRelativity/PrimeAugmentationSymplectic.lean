@@ -175,8 +175,8 @@ theorem wtRed_surjOn [Nonempty P] {c : P → ℂ} (hc : ∀ p, c p ≠ 0) (p₀ 
     exact ⟨Submodule.mem_top, Submodule.mem_span_singleton.2 ⟨z.2, rfl⟩⟩
   · rw [wtRed_apply]
     simp only [LinearMap.smul_apply, smul_eq_mul, wtPort_single]
-    rw [mul_assoc, inv_mul_cancel₀ (hc p₀), mul_one, inv_mul_cancel₀ (hc p₀), mul_one]
-    rfl
+    rw [mul_assoc, inv_mul_cancel₀ (hc p₀), mul_one]
+    simp
 
 /-- The kernel of the reduction inside the symplectic orthogonal is exactly the constraint. -/
 theorem ker_wtRed_inf [Nonempty P] {c : P → ℂ} (hc : ∀ p, c p ≠ 0) (p₀ : P) :

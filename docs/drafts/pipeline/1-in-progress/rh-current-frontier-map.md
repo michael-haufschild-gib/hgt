@@ -34,6 +34,11 @@ has a prime-normal domain classifier. Route U has an adaptive finite Hankel null
 whereas G seeks a cofinal Suzuki two-angle meromorphic carrier and P seeks one compact positive
 moment measure.
 
+No twelfth live lettered route is instantiated at this cutoff. Two possible Route-V architectures
+now have nontrivial formal cores: conservative Euler-shell/Witt scale completion, and triptic
+orbital-divisor normal form. The first lacks its literal jointly convergent source inverse pair;
+the second lacks a coefficient-faithful Xi landing and critical reflection law.
+
 Present older-route frontiers are also narrower. Route E has explicit source-predeclared physical
 relations, exact source-faithful shell laws, a complete Granville--Harper--Soundararajan reduction
 to the Halasz distance term, and two umbrella-reachable analytic bridges from fixed-width
@@ -104,7 +109,8 @@ half-density current, a convergent logarithmic holonomy with exponential square-
 an exact lower-half contour realization of the unbounded physical observer, and an absolutely
 convergent smooth residual connection. Its main term is now an exact prime-log right-endpoint
 quadrature whose total error reduces to a mean-square prime-gap sum. The residual has every
-polynomial log moment but no exponential moment, so it is smooth rather than analytic/Gevrey.
+polynomial log moment and a literal `C^infinity` boundary kernel; quantitative Gevrey or
+holomorphic continuation is not proved.
 This is a Route-T recut, not an independent Route V. None of these additions changes route count.
 
 ## 1. Reading rules and status vocabulary
@@ -1429,8 +1435,8 @@ polynomial.
 27. Finite Abel transport under this lower contour produces the exact residual connection kernel.
     Bertrand control and Wold square-root-log decay make
     `sum |E_n| (log p_(n+1)-log p_n)` finite. Every polynomial log moment is summable, giving a
-    locally uniform `C^infinity` derivative tower; absence of exponential moments excludes the
-    analytic/Gevrey shortcut.
+    locally uniform `C^infinity` derivative tower. Quantitative Gevrey or holomorphic continuation
+    is not claimed by the formal theorem.
 28. The main prime-log mesh is the exact right-endpoint quadrature of one growing continuous
     critical profile. Each cell has an exact Peano-kernel error bounded by
     `(p_(n+1)-p_n)^2 / p_n^(3/2)`. Hence convergence of the entire main mesh reduces to
@@ -1696,7 +1702,8 @@ unitary. It also constructs pole-unit memory, the Gamma base, and the Euler-shel
 The conservative inverse-completion theorem is exact: if finite formation and exterior companion
 stages are inverse pairs and converge jointly in one Hausdorff multiplicative completion, the
 inverse identity survives, so every multiplicative receiver sees a zero-free completed formation.
-On the literal Euler-shell target this gives the intended zero-exclusion/RH selection endpoint.
+A separate paper card specializes this receiver to the literal Euler shell and derives the intended
+zero-exclusion/RH selection endpoint; that specialization is not itself a Lean theorem.
 
 The missing source object is decisive: no committed theorem constructs the finite source-generated
 inverse pair and proves its joint convergence on the half-plane needed by the endpoint. A further
@@ -1757,6 +1764,20 @@ radical-preserving completion, or transverse source enrichment as a selector by 
 could begin only with a source-generated intervention having nonzero longitudinal--transverse
 mixing, followed by reflected analytic admission and a coefficient-faithful Xi handoff. No such
 intervention is instantiated.
+
+### Cofinal port, inertia, and phase-memory receivers
+
+New umbrella theorems identify limiting inverse capacity with admission, its zero set with the
+closed vertical fibre, and closability with nondegeneracy; divergent weighted capacity gives dense
+kernel. The prime port separates a finite zero jet from a divergent first prime-log jet. Complete
+atomic fusion preserves the sum of Hermitian inertias, so negative channels cannot disappear under
+full interpolation. Prime augmentation reduces to one hyperbolic plane and supplies no independent
+Witt-rank obstruction. Finite lattice directions force rational verticality, but a cofinally
+rotating lattice can converge to an irrational vertical line, excluding finite-direction
+extrapolation. Finite unitary/Choi/Pauli and phase-action laws retain source memory, but an
+alternating binary character reaches the phase maximum; phase complexity alone cannot select RH.
+These results sharpen L/R/U receiver and no-go categories but have no Xi-typed producer and are not
+Route V.
 
 ### Euler q-Gamma divisor-translation process
 
@@ -1886,8 +1907,8 @@ safe theta line and frequency negates the complete packet exactly and preserves 
 The physical observer is now classified. Its coefficient `p+1` is unbounded on the Fisher carrier,
 so residual-only bounded same-carrier landing is impossible; nevertheless it is exactly the legal
 lower contour shift by `-i/2`. The induced residual connection converges absolutely and is
-`C^infinity` with every polynomial log moment, but has no exponential moment and therefore no
-analytic/Gevrey shortcut. The main logarithmic mesh is an exact right-endpoint quadrature whose
+`C^infinity` with every polynomial log moment; quantitative Gevrey or holomorphic continuation is
+not proved. The main logarithmic mesh is an exact right-endpoint quadrature whose
 error reduces to the classical mean-square prime-gap sum.
 
 This does not instantiate Route V. Its first unresolved producer is exactly Route T's lower-half
@@ -2913,14 +2934,14 @@ but it lacks a critical-line orientation and RH handoff, so it remains a candida
 Route V. Its marked parameter commutator is formal, while the complete four-shadow response
 remains paper-only; the two-source exchange-versus-mixed-transgression noncollapse is formal, but
 also has no RH handoff. Two additional Route-V candidates are now mathematically substantial.
-The conservative Euler-shell/Witt completion has an exact zero-exclusion endpoint but lacks the
+The conservative Euler-shell/Witt completion has an exact formal receiver and paper-level
+zero-exclusion endpoint but lacks the
 literal jointly convergent source/exterior inverse pair; one common Banach receiver is formally
 excluded. The triptic/elliptic-gamma branch has a complete orbital-divisor normal form and finite
 realization theorem but lacks a coefficient-faithful Xi handoff and reflection orientation.
 Neither satisfies the corpus definition of an instantiated route.
 
-The
-Gauss-component residue hierarchy is an adjacent local Connes candidate whose actual circle
+The Gauss-component residue hierarchy is an adjacent local Connes candidate whose actual circle
 operators, principal factorization, finite iteration, full two-frequency diagonal, sandwich fold,
 relative one-step bound, rank-one operator logarithmic residue, and `m>=2` ratio-weighted
 translation estimate, general half-power tail closure, literal principal-step identity, and
@@ -2942,8 +2963,7 @@ prime-gap theorem; its scientific wall is survival of signed residual cancellati
 cofinal vertical limit. Route U has strict canonical Jacobi flux in every finite positive chamber;
 its wall is singular-boundary extension and degree-uniform conditioning.
 
-The
-coalitional/collective-repair/cofinal-viability laws, primitive-degree escape, and observer
+The coalitional/collective-repair/cofinal-viability laws, primitive-degree escape, and observer
 execution-gap laws expose a second route-design primitive, but no arithmetic repair family or Xi
 handoff exists. Exact Hedenmalm source spectrum, determinant/Riesz structure, essential
 inverse-flow/Weil package, squared Cayley receiver, closed weighted derivative,
