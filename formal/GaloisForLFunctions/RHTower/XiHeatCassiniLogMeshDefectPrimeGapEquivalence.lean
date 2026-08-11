@@ -239,16 +239,22 @@ theorem mul_primeGapAbscissaEnergy_le_norm_defect_neg_real
       Real.exp (a * xiMassNthPrimeLogHeight (N + 1))) ≤
     Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) *
       (Real.exp (-(a * delta)) - 1 + a * delta)
-  rw [mul_assoc]
   have hexp0 : 0 ≤ Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) :=
     Real.exp_nonneg _
-  apply mul_le_mul_of_nonneg_left _ hexp0
   calc
-    (a ^ 2 / 16) * (gap / p) ^ 2 = (a * (gap / (2 * p))) ^ 2 / 4 := by ring
-    _ ≤ (a * delta) ^ 2 / 4 := by
-      gcongr
-      exact mul_le_mul_of_nonneg_left hratio ha0.le
-    _ ≤ Real.exp (-(a * delta)) - 1 + a * delta := hrem
+    (a ^ 2 / 16) * ((gap / p) ^ 2 *
+        Real.exp (a * xiMassNthPrimeLogHeight (N + 1))) =
+        Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) *
+          ((a ^ 2 / 16) * (gap / p) ^ 2) := by ring
+    _ ≤ Real.exp (a * xiMassNthPrimeLogHeight (N + 1)) *
+        (Real.exp (-(a * delta)) - 1 + a * delta) := by
+      apply mul_le_mul_of_nonneg_left _ hexp0
+      calc
+        (a ^ 2 / 16) * (gap / p) ^ 2 =
+            (a * (gap / (2 * p))) ^ 2 / 4 := by ring
+        _ ≤ (a * delta) ^ 2 / 4 := by
+          gcongr
+        _ ≤ Real.exp (-(a * delta)) - 1 + a * delta := hrem
 
 /-- Uniform upper comparison: no more than the same weighted gap-square energy is present. -/
 theorem norm_defect_neg_real_le_mul_primeGapAbscissaEnergy
@@ -322,6 +328,130 @@ theorem summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_real_iff
     have hmajor := henergy.mul_left (a ^ 2 * Real.exp a)
     refine Summable.of_nonneg_of_le (fun N => norm_nonneg _) (fun N => ?_) hmajor
     exact norm_defect_neg_real_le_mul_primeGapAbscissaEnergy ha0 ha1 N
+
+/-- Deeper negative abscissae carry pointwise larger prime-gap energy. -/
+theorem xiHeatCassiniPrimeGapAbscissaEnergy_mono
+    {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) (N : ℕ) :
+    xiHeatCassiniPrimeGapAbscissaEnergy a N ≤
+      xiHeatCassiniPrimeGapAbscissaEnergy b N := by
+  unfold xiHeatCassiniPrimeGapAbscissaEnergy
+  apply mul_le_mul_of_nonneg_left _ (sq_nonneg _)
+  apply Real.exp_le_exp.mpr
+  exact mul_le_mul_of_nonneg_right hab (xiMassNthPrimeLogHeight_pos (N + 1)).le
+
+/-- Summability propagates monotonically from a deeper negative abscissa to every shallower one. -/
+theorem summable_primeGapAbscissaEnergy_of_le
+    {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b)
+    (h : Summable (xiHeatCassiniPrimeGapAbscissaEnergy b)) :
+    Summable (xiHeatCassiniPrimeGapAbscissaEnergy a) :=
+  Summable.of_nonneg_of_le (xiHeatCassiniPrimeGapAbscissaEnergy_nonneg a)
+    (xiHeatCassiniPrimeGapAbscissaEnergy_mono ha hab) h
+
+/-- The right-endpoint spectrum at depth `1/2` is exactly the intrinsic critical energy already
+isolated with left-endpoint half-density. -/
+theorem summable_primeGapAbscissaEnergy_half_iff_criticalEnergy :
+    Summable (xiHeatCassiniPrimeGapAbscissaEnergy (1 / 2)) ↔
+      Summable xiHeatCassiniPrimeGapCriticalEnergy := by
+  have hspectrum :=
+    summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_real_iff
+      (a := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
+  have hreal : -(1 / 2 : ℝ) = -1 / 2 := by ring
+  constructor
+  · intro henergy
+    have hdefect := hspectrum.mpr henergy
+    apply summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_half_iff.mp
+    simpa only [hreal] using hdefect
+  · intro hcritical
+    apply hspectrum.mp
+    have hdefect :=
+      summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_neg_half_iff.mpr hcritical
+    simpa only [hreal] using hdefect
+
+/-- One critical-wall energy estimate controls the complete real obstruction spectrum above the
+critical wall. -/
+theorem summable_primeGapAbscissaEnergy_of_criticalEnergy
+    {a : ℝ} (ha0 : 0 ≤ a) (hahalf : a ≤ 1 / 2)
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    Summable (xiHeatCassiniPrimeGapAbscissaEnergy a) := by
+  apply summable_primeGapAbscissaEnergy_of_le ha0 hahalf
+  exact summable_primeGapAbscissaEnergy_half_iff_criticalEnergy.mpr hcritical
+
+/-- Complex defects at any fixed spectral parameter are majorized by the energy indexed only by
+their negative real part.  Imaginary height affects the constant but not the arithmetic exponent. -/
+theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_abscissaEnergy
+    (s : ℂ) (N : ℕ) :
+    ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
+      (‖s‖ ^ 2 * Real.exp ‖s‖) *
+        xiHeatCassiniPrimeGapAbscissaEnergy (-s.re) N := by
+  let delta : ℝ := xiHeatCassiniOrderedPrimeLogGap N
+  let gap : ℝ := xiHeatCassiniOrderedPrimeGap N
+  let p : ℝ := nthPrimeSubtype N
+  have hdelta : 0 ≤ delta := xiHeatCassiniOrderedPrimeLogGap_nonneg N
+  have hdelta1 : delta ≤ 1 := xiHeatCassiniOrderedPrimeLogGap_le_one N
+  have hgap : 0 ≤ gap := xiHeatCassiniOrderedPrimeGap_nonneg N
+  have hp : 0 < p := nthPrimeSubtype_pos N
+  have hdle : delta ≤ gap / p := by
+    simpa only [gap, p, delta] using
+      xiHeatCassiniOrderedPrimeLogGap_le_gap_div_prime N
+  have hratio0 : 0 ≤ gap / p := by positivity
+  have hsq : delta ^ 2 ≤ (gap / p) ^ 2 :=
+    (sq_le_sq₀ hdelta hratio0).mpr hdle
+  have hexp : Real.exp (‖s‖ * delta) ≤ Real.exp ‖s‖ := by
+    apply Real.exp_le_exp.mpr
+    nlinarith [norm_nonneg s]
+  have hbase := norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le s N
+  rw [norm_xiHeatCassiniOrderedPrimeLaplacePhase] at hbase
+  have hnorm : ‖s * (delta : ℂ)‖ = ‖s‖ * delta := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hdelta]
+  rw [hnorm] at hbase
+  unfold xiHeatCassiniPrimeGapAbscissaEnergy
+  change ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
+    (‖s‖ ^ 2 * Real.exp ‖s‖) * ((gap / p) ^ 2 *
+      Real.exp (-s.re * xiMassNthPrimeLogHeight (N + 1)))
+  calc
+    ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖ ≤
+        Real.exp (-s.re * xiMassNthPrimeLogHeight (N + 1)) *
+          (‖s‖ * delta) ^ 2 * Real.exp (‖s‖ * delta) := by
+      simpa only [neg_mul] using hbase
+    _ ≤ Real.exp (-s.re * xiMassNthPrimeLogHeight (N + 1)) *
+          (‖s‖ ^ 2 * (gap / p) ^ 2) * Real.exp ‖s‖ := by
+      gcongr
+      nlinarith [hsq, sq_nonneg ‖s‖]
+    _ = (‖s‖ ^ 2 * Real.exp ‖s‖) * ((gap / p) ^ 2 *
+          Real.exp (-s.re * xiMassNthPrimeLogHeight (N + 1))) := by ring
+
+/-- Energy at the real abscissa implies absolute convergence of the full complex defect series. -/
+theorem summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_of_abscissaEnergy
+    (s : ℂ) (henergy : Summable (xiHeatCassiniPrimeGapAbscissaEnergy (-s.re))) :
+    Summable (fun N : ℕ => ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖) := by
+  have hmajor := henergy.mul_left (‖s‖ ^ 2 * Real.exp ‖s‖)
+  exact Summable.of_nonneg_of_le (fun N => norm_nonneg _)
+    (norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_abscissaEnergy s) hmajor
+
+/-- **Universal half-strip mesh law.**  A single critical energy estimate makes every physical
+mesh-defect series absolutely convergent throughout `-1/2 ≤ re s ≤ 0`, uniformly in arithmetic
+exponent (though not uniformly in imaginary height). -/
+theorem summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_of_criticalEnergy
+    {s : ℂ} (hsleft : -(1 / 2 : ℝ) ≤ s.re) (hsright : s.re ≤ 0)
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    Summable (fun N : ℕ => ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖) := by
+  apply summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_of_abscissaEnergy
+  apply summable_primeGapAbscissaEnergy_of_criticalEnergy
+  · linarith
+  · linarith
+  · exact hcritical
+
+/-- In zeta coordinates, every point in the closed critical-to-one strip shifts into the universal
+mesh half-strip.  The imaginary part changes only a harmless fixed constant. -/
+theorem summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_zeroShift_of_criticalEnergy
+    {rho : ℂ} (hhalf : (1 / 2 : ℝ) ≤ rho.re) (hone : rho.re ≤ 1)
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    Summable (fun N : ℕ =>
+      ‖xiHeatCassiniLogMeshLaplaceScaledDefect (rho - 1) N‖) := by
+  apply summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_of_criticalEnergy
+  · simpa using (show -(1 / 2 : ℝ) ≤ rho.re - 1 by linarith)
+  · simpa using (show rho.re - 1 ≤ 0 by linarith)
+  · exact hcritical
 
 
 end

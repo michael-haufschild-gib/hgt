@@ -276,3 +276,16 @@ compressed-trace identity consumes adelic Poisson, which Beurling systems lack.
   law's collapse onto the diagonal.  The loop and the Weil-positivity interface are now one
   formal object: a Gate-II entry (compressed-trace positivity matching xiWeilPolarization)
   lands directly on the H-mass.
+- 2026-08-11 — attempt 9 (the GNS socket): audit first — the corpus ALREADY owned the full
+  positivity criterion (`riemannHypothesis_iff_xiWeilPolarization_nonneg`,
+  `XiWeilPositivityCriterion.lean`, converse via `xiOffRealSignTest`), so no converse was
+  rebuilt.  New module `RHTower/GaussHodgeWeilGNSSocket.lean`:
+  `XiWeilSquareRealization` (every square-summable diagonal Weil value is a convergent sum of
+  real squares — the coordinate form of a GNS/compressed-trace realization) and the keystones
+  `riemannHypothesis_iff_xiWeilSquareRealization` (**RH ⟺ the diagonal Weil form is a sum of
+  squares**) and `xiWeilSquareRealization_iff_gaussHodgeMass_vanishing` (a square realization
+  ⟺ H-mass vanishing: Gate II lands on the loop).  Any future compressed-positivity
+  construction — CC-style Sonin compression extended multi-place, or a geometric self-product
+  realization — needs only to hit this socket; everything downstream is unconditional Lean.
+  Remaining milestones: (b) archimedean compressed positivity (analytic, heavy), (c) the
+  multi-place extension via the assembly machinery (research).

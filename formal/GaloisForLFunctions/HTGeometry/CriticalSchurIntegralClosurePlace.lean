@@ -58,10 +58,10 @@ noncomputable instance criticalSchurNormalIntegralClosure_isDedekindDomain
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     IsDedekindDomain (CriticalSchurNormalIntegralClosure K hm hn) := by
-  letI : FiniteDimensional (criticalObservationField K m n)
+  haveI : FiniteDimensional (criticalObservationField K m n)
       (criticalNormalClosure K m n) :=
     criticalNormalClosure_finiteDimensional K hm hn
-  letI : Algebra.IsSeparable (criticalObservationField K m n)
+  haveI : Algebra.IsSeparable (criticalObservationField K m n)
       (criticalNormalClosure K m n) := inferInstance
   exact IsIntegralClosure.isDedekindDomain
     (CriticalSchurNormalBaseRing K hm hn)
@@ -74,10 +74,10 @@ noncomputable instance criticalSchurNormalIntegralClosure_finite
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     Module.Finite (CriticalSchurNormalBaseRing K hm hn)
       (CriticalSchurNormalIntegralClosure K hm hn) := by
-  letI : FiniteDimensional (criticalObservationField K m n)
+  haveI : FiniteDimensional (criticalObservationField K m n)
       (criticalNormalClosure K m n) :=
     criticalNormalClosure_finiteDimensional K hm hn
-  letI : Algebra.IsSeparable (criticalObservationField K m n)
+  haveI : Algebra.IsSeparable (criticalObservationField K m n)
       (criticalNormalClosure K m n) := inferInstance
   exact IsIntegralClosure.finite
     (CriticalSchurNormalBaseRing K hm hn)
@@ -121,7 +121,7 @@ noncomputable instance criticalSchurNormalIntegralClosure_isFractionRing
     {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
     IsFractionRing (CriticalSchurNormalIntegralClosure K hm hn)
       (criticalNormalClosure K m n) := by
-  letI : FiniteDimensional (criticalObservationField K m n)
+  haveI : FiniteDimensional (criticalObservationField K m n)
       (criticalNormalClosure K m n) :=
     criticalNormalClosure_finiteDimensional K hm hn
   exact IsIntegralClosure.isFractionRing_of_finite_extension
@@ -142,7 +142,7 @@ theorem criticalSchurNormalIntegralClosure_mem_upper
   let A := criticalNormalClosureSchurValuationSubring K hm hn
   have hbase (a : O) : algebraMap O (criticalNormalClosure K m n) a ∈ A := by
     exact criticalNormalClosureSchurValuationSubring_observation_mem K hm hn a
-  letI : IsIntegrallyClosedIn A.toSubring (criticalNormalClosure K m n) := by
+  haveI : IsIntegrallyClosedIn A.toSubring (criticalNormalClosure K m n) := by
     rw [Subring.isIntegrallyClosedIn_iff]
     intro y hy
     exact Subring.isIntegrallyClosed_iff.mp
@@ -440,7 +440,7 @@ noncomputable instance criticalSchurNormalIntegralClosure_galoisAction
       (criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
         criticalNormalClosure K m n)
       (CriticalSchurNormalIntegralClosure K hm hn) := by
-  letI : FiniteDimensional (criticalObservationField K m n)
+  haveI : FiniteDimensional (criticalObservationField K m n)
       (criticalNormalClosure K m n) :=
     criticalNormalClosure_finiteDimensional K hm hn
   exact IsIntegralClosure.MulSemiringAction
@@ -542,24 +542,24 @@ theorem natCard_criticalSchurIdealInertiaGroup_eq_ramificationIdxIn
   let p := IsLocalRing.maximalIdeal O
   let P := criticalSchurNormalIntegralClosurePrime K hm hn
   let G := L ≃ₐ[F] L
-  letI : FiniteDimensional F E :=
+  haveI : FiniteDimensional F E :=
     criticalSourceField_finiteDimensional_criticalObservationField K hm hn
-  letI : Algebra.IsSeparable F E := inferInstance
-  letI : IsScalarTower F E (criticalSourceAlgebraicClosure K m n) :=
+  haveI : Algebra.IsSeparable F E := inferInstance
+  haveI : IsScalarTower F E (criticalSourceAlgebraicClosure K m n) :=
     AlgebraicClosure.instIsScalarTower E
-  letI : Algebra.IsAlgebraic F (criticalSourceAlgebraicClosure K m n) :=
+  haveI : Algebra.IsAlgebraic F (criticalSourceAlgebraicClosure K m n) :=
     Algebra.IsAlgebraic.trans F E (criticalSourceAlgebraicClosure K m n)
-  letI : Normal F (criticalSourceAlgebraicClosure K m n) :=
+  haveI : Normal F (criticalSourceAlgebraicClosure K m n) :=
     { splits' _ := IsAlgClosed.splits _ }
-  letI : FiniteDimensional F L := criticalNormalClosure_finiteDimensional K hm hn
-  letI : Normal F L :=
+  haveI : FiniteDimensional F L := criticalNormalClosure_finiteDimensional K hm hn
+  haveI : Normal F L :=
     normalClosure.normal F E (criticalSourceAlgebraicClosure K m n)
-  letI : IsGalois F L := inferInstance
-  letI : IsGaloisGroup G O S :=
+  haveI : IsGalois F L := inferInstance
+  haveI : IsGaloisGroup G O S :=
     IsGaloisGroup.of_isFractionRing G O S F L
-  letI : Finite G := IsGaloisGroup.finite G O S
-  letI : Module.Flat O S := inferInstance
-  letI : P.LiesOver p := criticalSchurNormalIntegralClosurePrime_liesOver K hm hn
+  haveI : Finite G := IsGaloisGroup.finite G O S
+  haveI : Module.Flat O S := inferInstance
+  haveI : P.LiesOver p := criticalSchurNormalIntegralClosurePrime_liesOver K hm hn
   simpa [F, L, O, S, p, P, G] using
     (Ideal.card_inertia_eq_ramificationIdxIn (G := G) p P)
 

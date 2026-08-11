@@ -299,6 +299,94 @@ theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_canonicalAdmission_eq
   rw [finiteHankelNullMonicPolynomial_monicMomentAdmissionVector] at hsource
   exact hsource
 
+/-! ### Polarized source matrix at higher contact -/
+
+/-- The literal bilinear arithmetic source is symmetric in its two amplitudes. -/
+theorem xiShiftedAdaptiveBilinearCompletedArithmeticSource_comm
+    (w : ℝ) (A B : Polynomial ℝ) :
+    xiShiftedAdaptiveBilinearCompletedArithmeticSource w A B =
+      xiShiftedAdaptiveBilinearCompletedArithmeticSource w B A := by
+  unfold xiShiftedAdaptiveBilinearCompletedArithmeticSource
+  unfold xiShiftedBilinearCrossingCoefficientPacket
+  rw [show B * A = A * B by ring]
+
+/-- Two-amplitude compression of the adaptive bilinear arithmetic source. -/
+def xiShiftedAdaptiveBilinearSourcePairMatrix
+    (w : ℝ) (A B : Polynomial ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  fun i j => xiShiftedAdaptiveBilinearCompletedArithmeticSource w (![A, B] i) (![A, B] j)
+
+theorem xiShiftedAdaptiveBilinearSourcePairMatrix_isHermitian
+    (w : ℝ) (A B : Polynomial ℝ) :
+    (xiShiftedAdaptiveBilinearSourcePairMatrix w A B).IsHermitian := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [xiShiftedAdaptiveBilinearSourcePairMatrix,
+      xiShiftedAdaptiveBilinearCompletedArithmeticSource_comm]
+
+/-- **Null-diagonal/live-polarization law.**  At every first contact of order at least three,
+the source matrix on the base null amplitude and the order-`d-2` lift is neither positive nor
+negative semidefinite.  Its base diagonal is zero because order two has not yet contacted, while
+its polarized entry is the nonzero literal arithmetic source `(2n+d) delta_(2n+d)`. -/
+theorem xiShiftedAdaptiveBilinearSourcePairMatrix_neither_posSemidef_of_first_contact
+    {w : ℝ} (hw : 1 / 2 < w) {n d : ℕ} (hd : 3 ≤ d)
+    (c : Fin (n + 1) → ℝ) (hlast : c (Fin.last n) ≠ 0)
+    (hzero : ∀ k < 2 * n + d,
+      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0)
+    (hcontact : xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d) ≠ 0) :
+    let P := HTGeometry.finiteHankelNullMonicPolynomial c
+    let B := P * X ^ (d - 2)
+    ¬ (xiShiftedAdaptiveBilinearSourcePairMatrix w P B).PosSemidef ∧
+      ¬ (-xiShiftedAdaptiveBilinearSourcePairMatrix w P B).PosSemidef := by
+  dsimp only
+  let P := HTGeometry.finiteHankelNullMonicPolynomial c
+  let B := P * X ^ (d - 2)
+  let M := xiShiftedAdaptiveBilinearSourcePairMatrix w P B
+  let e : Fin 2 → ℝ := ![1, 0]
+  have hzeroTwo : ∀ k < 2 * n + 2,
+      xiShiftedHankelBoundaryPadeDefect (w ^ 2) c k = 0 := by
+    intro k hk
+    exact hzero k (by omega)
+  have hdiag : xiShiftedAdaptiveBilinearCompletedArithmeticSource w P P = 0 := by
+    have h := xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_firstPadeDefect
+      (i := 0) (j := 0) hw (by omega : 2 ≤ 2)
+        (by omega : 0 + 0 + 2 = 2) c hlast hzeroTwo
+    have h' : xiShiftedAdaptiveBilinearCompletedArithmeticSource w P P =
+        ((2 * n + 2 : ℕ) : ℝ) *
+          xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + 2) := by
+      simpa [P] using h
+    rw [h', hzero _ (by omega), mul_zero]
+  have hoff : xiShiftedAdaptiveBilinearCompletedArithmeticSource w B P ≠ 0 := by
+    have h := xiShiftedAdaptiveBilinearCompletedArithmeticSource_eq_firstPadeDefect
+      (i := d - 2) (j := 0) hw (by omega : 2 ≤ d)
+        (by omega : (d - 2) + 0 + 2 = d) c hlast hzero
+    have h' : xiShiftedAdaptiveBilinearCompletedArithmeticSource w B P =
+        ((2 * n + d : ℕ) : ℝ) *
+          xiShiftedHankelBoundaryPadeDefect (w ^ 2) c (2 * n + d) := by
+      simpa [P, B] using h
+    rw [h']
+    exact mul_ne_zero (by positivity) hcontact
+  constructor
+  · intro hpsd
+    have hquad : e ⬝ᵥ M.mulVec e = 0 := by
+      simp [e, M, xiShiftedAdaptiveBilinearSourcePairMatrix, hdiag,
+        dotProduct, Matrix.mulVec, Fin.sum_univ_two]
+    have hkernel : M *ᵥ e = 0 :=
+      (hpsd.dotProduct_mulVec_zero_iff e).mp hquad
+    have hcoord := congrFun hkernel (1 : Fin 2)
+    simp [e, M, xiShiftedAdaptiveBilinearSourcePairMatrix,
+      Matrix.mulVec, dotProduct, Fin.sum_univ_two] at hcoord
+    exact hoff hcoord
+  · intro hpsd
+    have hquad : e ⬝ᵥ (-M).mulVec e = 0 := by
+      simp [e, M, xiShiftedAdaptiveBilinearSourcePairMatrix, hdiag,
+        dotProduct, Matrix.mulVec, Fin.sum_univ_two]
+    have hkernel : (-M) *ᵥ e = 0 :=
+      (hpsd.dotProduct_mulVec_zero_iff e).mp hquad
+    have hcoord := congrFun hkernel (1 : Fin 2)
+    simp [e, M, xiShiftedAdaptiveBilinearSourcePairMatrix,
+      Matrix.mulVec, dotProduct, Fin.sum_univ_two] at hcoord
+    exact hoff hcoord
+
 end
 
 end RHTower
