@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 11 August 2026, committed snapshot
-**7b4248546325381cafae16cd0676d1987f5fb076**.
+**d5acddbe0e567a414ae014f850a08472cd42e48c**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -156,7 +156,7 @@ existing route.
 | C2 | retired | detector saturated |
 | D | retired | finite prime--archimedean Hankel mechanism exhausted |
 | D2 | open | finite high-frequency ceiling for continued literal prime--Gamma source |
-| E | open, advanced | unit-capacity entropy-complement/physical-shell relation with normalized seam recurrence; direct analytic support is reduced in Lean to published-shape averaged Chowla, while the Gallagher lane is reduced to the prime-supported Ramaré off-diagonal/Halász deficit after an unconditionally good cofinal low-height window and Lean-closed rough term |
+| E | open, advanced | prove the source column-balance/rough-token lower bound at the sharp entropy-complement load threshold and normalized recurrence seam; direct analytic support is reduced in Lean to published-shape averaged Chowla, while the Gallagher lane is reduced to the prime-supported Ramaré off-diagonal/Halász deficit after an unconditionally good cofinal low-height window and Lean-closed rough term |
 | F | retired | finite-height Sonin transfer has wrong asymptotic order |
 | G | open, narrowed | source-selected two-angle Suzuki carrier and Xi/de Branges transfer |
 | G2 | retired | required germ is RH-equivalent |
@@ -270,9 +270,13 @@ of the polarization is unconditionally supported on conjugate pairs with value
 multiplicity·XiC′(α)·conj XiC′(conj α). A Gate-II entry — compressed-trace positivity matched
 to `xiWeilPolarization` — now lands directly on the H-mass. The remaining content of this entry
 is a source-derived global compressed-trace/intersection identity whose positivity controls the
-Hermitian pair energy, not merely the blind Weil pair sample. Neither a square realization of the
-diagonal form nor the required multi-place trace identity is committed and umbrella-reachable at
-this cutoff.
+Hermitian pair energy, not merely the blind Weil pair sample.
+`GaussHodgeWeilGNSSocket.lean` makes the handoff exact: RH is equivalent to a global coordinate
+square realization of every square-summable diagonal Weil value, and such a realization is
+equivalent to Hodge-mass vanishing. The converse realization constructed under RH is tautological,
+so this is a receiver socket, not a square-realization theorem. The missing producer is an
+unconditional source-derived square/GNS or compressed-trace realization on the actual multi-place
+class-space object.
 `GaussReciprocalCharacterAdmission.lean` supplies a second exact normalization: the Hodge mass is
 the virial derivative of one reciprocal-character split energy, has a quadratic centered-rate
 lower bound, and its all-prime family is summable exactly at centered rate zero. Universal
@@ -586,6 +590,15 @@ shell-conditioned parity--energy regression, product-truncated reservoir mass, s
 Euler-tilt unit shell, parity-coalesced full-mass cube, and harmonic reservoir capacity. Paper cards
 prove stronger relation-level convolution laws where noted.
 
+A committed but not yet umbrella-reachable entropy-complement module proves the finite mechanism
+exactly: divided-Poisson convolution, denominator-free conditional-binomial variance, a central
+Chebyshev window retaining at least `1-C^(-2)` of mass, the corrected column-load formula
+`gL/(delta log X)`, subpower cutoff/product and source-prime deletion bounds, both parity-reversing
+breadth directions, and a Hellinger/chi-square endpoint with unmatched mass. It assumes no
+short-interval rough-token lower bound, column-balance source, or recurrence seam estimate. Once
+certified, the physical frontier is therefore not further mixture algebra: prove the actual source
+token density `delta >= gL/log X` columnwise and the normalized co-moving seam recurrence.
+
 The independent analytic support layer is now closed to two exact interfaces. The complete
 Granville--Harper--Soundararajan partition, height choice, explicit error table, and eventual
 mean-value-per-unit theorem are umbrella-reachable; all unconditional terms tend to zero and only
@@ -740,6 +753,15 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
 - generic positive resolvent geometry, pointwise exponential sourcing, torque sign, and fixed
   covariance do not orient required transfer.
 
+A committed but not yet umbrella-reachable movable-anchor theorem gives the positive survivor of
+the real-axis overcrowding obstruction. It derives the exact normalized Donoghue kernel,
+Nevanlinna atom weight, and Clark phase speed, then identifies finite Clark weights with squared
+source coherences. Bessel's inequality forces total coherence of any orthonormal extension family
+to be at most one, hence one of `N` modes has coherence at most `1/N`; conversely, a uniform
+positive coherence floor bounds `N`. Thus cofinal orthonormal mode proliferation necessarily
+fragments a fixed source anchor. Route G needs a source-derived moving-anchor/two-angle allocation
+law, not generic extension multiplicity.
+
 **Open core.** Construct on one cofinal aperture family a source-predeclared parity profile before
 scalar fusion; prove either literal bottom-reflection cone or exact measure-level credit/debt
 budget; produce pre-divisor tangent roots and two-angle analytic lifts; prove source admission and
@@ -870,6 +892,12 @@ longer missing:
   earlier nonembedding sequence to an exact nonclosed-range theorem; it confirms that every
   trace-faithful comparison must retain singular/noncompact information and does not select the
   Burnol/Deninger coefficient.
+
+A committed but not yet umbrella-reachable adiabatic endpoint theorem proves strong convergence
+of the exponential gauge to the identity in Meyer's actual projective topology, with explicit
+seminorm loss absorbed by two stronger exponential weights. This closes pointwise-versus-source
+topology control for the Möbius adiabatic family. It does not identify the limiting source with
+the fixed Burnol/Deninger physical landing, so the singular specialization below remains open.
 
 The converse Schwartz bootstrap, endpoint recovery, and exact kernel are no longer paper-only or
 unwired. The new theorem `deningerCommutator_exact_kernel` is umbrella-reachable and proves the
@@ -1838,7 +1866,10 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     `H_(n+m+2)` is indefinite. Thus one fixed flat face has exactly one-block positive rank-fill
     capacity. The same module proves the source/rank/escape trichotomy for canonical inverse-Hankel
     admission, while the bilinear contact module identifies the admitted source with the first
-    Padé defect before scalarization.
+    Padé defect before scalarization. At every first contact of order at least three, the Hermitian
+    source matrix on the base null amplitude and its lifted amplitude has zero base diagonal and a
+    nonzero polarized entry; neither it nor its negative is positive semidefinite. Thus full
+    two-amplitude positivity cannot orient a higher first contact.
 
 **Open core.** Cofinally exclude drift of first-contact order and face degree to infinity. Every
 finite first face, its odd preemption branch, its first even rank-fill branch, and the one-block
@@ -2133,8 +2164,11 @@ error reduces to the classical mean-square prime-gap sum.
 
 This does not instantiate Route V. Lean now proves the exact two-sided mesh criterion: at critical
 depth, absolute mesh-defect convergence is equivalent to the weighted consecutive-prime-gap
-energy. Formalizing the published mean-square prime-gap theorem would close that analytic input,
-but not Route T. Lean also proves the exact safe Laplace symbol, holomorphy of every valuation
+energy. That critical energy monotonically controls the whole complex mesh-defect series on
+`-1/2 <= Re s <= 0`, including every shifted zero in `1/2 <= Re rho <= 1`; imaginary height changes
+only a fixed prefactor. Formalizing the published mean-square prime-gap theorem would therefore
+close the entire mesh half-strip input, but not Route T. Lean also proves the exact safe Laplace
+symbol, holomorphy of every valuation
 `>= 2` contribution on the critical half-plane, meromorphic continuation of the valuation-one
 Wold carrier, and a nonzero residue at the translated location of every off-critical zeta zero;
 later shifts and higher valuations cannot cancel it. Surviving scientific work is source-side
@@ -2449,8 +2483,8 @@ Across live routes, first unresolved statements fall into five mathematical clas
 | Class | Routes | Missing knowledge |
 |---|---|---|
 | singular source descent | C1, L, R, CCM-FU | positive closure or coefficient-faithful annihilation before scalar quotient; R/L additionally need a constitutive coefficient selector because vertical-gauge invariance erases and marked splitting is arbitrary |
-| all-prime oscillatory transport | D2, E, T | cancellation or finite ceiling retaining arithmetic phase and physical normalization; T has a lower-Hardy carrier and a committed exact safe-side symbol, leaving umbrella certification plus continuation through the physical Laplace wall to Xi |
-| adaptive spectral orientation | G, U | source-conditioned sign on moving boundary/null data; U's first singular face is Lean-classified and every fixed positive even contact has paper-proved one-block capacity, leaving cofinal contact-order/degree drift |
+| all-prime oscillatory transport | D2, E, T | cancellation or finite ceiling retaining arithmetic phase and physical normalization; T's safe symbol, Wold pole formation, and mesh-gap equivalence are formal, leaving continuation/noncancellation of the complete identity toward the physical wall |
+| adaptive spectral orientation | G, U | source-conditioned sign on moving boundary/null data; U's first singular face and every fixed positive even contact are Lean-classified, leaving cofinal contact-order/degree drift |
 | whole-space coercivity | O | classify all low-energy ground-space escape directions, not one test vector; N's analogous receiver has been terminalized |
 | positive carrier existence | P, Q | build literal compact measure after coupled pole--zeta--Gamma cancellation |
 
@@ -3206,26 +3240,22 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussHodgePencilSourcing.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilPolarizationFusion.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilGNSSocket.lean
+- formal/GaloisForLFunctions/RHTower/GaussReciprocalCharacterAdmission.lean
 - formal/GaloisForLFunctions/HTGeometry/HyperbolicBounds.lean
 
 ### Committed certification queue excluded from formal status
 
-The following committed theorem files affect the scientific reading above but are not reachable
-from a committed umbrella at this cutoff. They are deliberately excluded from the formal anchor
-lists until wired:
+These unconditional files are committed but not reached by a committed project umbrella at this
+cutoff. Their implications are recorded provisionally above, but they receive no formal anchor
+credit until wired:
 
-- `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean` — collapses
-  the Haar primitive shift, classifies residual normalized-observer moduli by the two-endpoint
-  coinvariant dual;
-- `formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldResidualLaplaceRenormalization.lean` — exact
-  safe-half-plane Abel renormalization and bounded divided symbol;
-- `formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldPrimeZetaLaplaceSymbol.lean` — exact
-  four-shift prime-zeta derivative normal form and the `Re s=-1/2` physical-wall dictionary;
-- `formal/GaloisForLFunctions/RHTower/DeningerCircleCompleteSpace.lean` — monotone seminorms and a
-  one-index neighborhood basis, without a declared `CompleteSpace` instance.
-
-The Stage-2 even-contact one-block-capacity theorem is paper-proved. Its current Lean source is
-untracked, so neither the file nor its theorem receives certification credit.
+- `formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementBreadthMixture.lean` — exact finite
+  entropy-complement convolution, central-window recovery, corrected load threshold, deletion and
+  parity laws, and Hellinger/chi-square endpoint;
+- `formal/GaloisForLFunctions/RHTower/SuzukiMovableAnchorClarkCoherence.lean` — movable Donoghue
+  normalization, Clark phase speed, and the source-coherence fragmentation budget;
+- `formal/GaloisForLFunctions/RHTower/DeningerMeyerAdiabatic.lean` — strong adiabatic gauge
+  convergence in the projective Meyer topology.
 
 ## Final frontier statement
 
@@ -3291,8 +3321,8 @@ execution-gap laws expose a second route-design primitive, but no arithmetic rep
 handoff exists. Exact Hedenmalm source spectrum, determinant/Riesz structure, essential
 inverse-flow/Weil package, squared Cayley receiver, closed weighted derivative,
 shifted-cokernel/source equation, and supersymmetric Dirac are now one umbrella-reachable C1
-opening. Its separate direct-Cayley/two-port extension awaits umbrella certification and does not
-define an independent route.
+opening. The direct-Cayley/two-port extension is now umbrella-reachable and remains a receiver; it
+does not define an independent route.
 Shilov matrix/tower and the now-complete commutative C*-envelope/boundary-representation model,
 cofinal Gamma relation law, congruence-symbol no-go, and constitutive repair laws strengthen
 receiver and obstruction bookkeeping, not source production.
@@ -3302,26 +3332,3 @@ Beurling system layer is a Route-E firewall rather than a new producer.
 RH remains open. Any claim of progress must now prove one named source theorem above, refute one
 route with an exact no-go and positive survivor, or construct a literal new source architecture
 with an unconditional handoff not source-isogenous to an existing route.
-
-## 2026-08-11 universal-law-field update: multi-parent projective work
-
-The revealed-work frontier has advanced beyond two-parent total variation.  For every finite
-family of exact source actions, mandatory maximum formation generates a tropical-projective action
-profile.  Forward-plus-reverse work is exactly its Hilbert projective width; closed mandatory
-histories have nonnegative work; and the full relative profile descends through an observer exactly
-when every observer-collapsed two-cycle has zero width.  Scalar integrability is rigid: it occurs
-only when all parent actions differ by constants.
-
-The literal finite prime source now realizes this mechanism across Boolean formation, Mass clocks,
-and positive Hankel reconstruction.  It predicts in the recurrence organ that arbitrarily accurate
-late phase returns coexist with linearly escaping, reconstruction-determined projective work
-
-\[
- H(0,t)=t\log(p_{\max}/p_{\min}).
-\]
-
-For the centered divisor parameter (a_\rho=\Re\rho-1/2), zero projective width is equivalent to
-(a_\rho=0).  The remaining RH theorem is not another scalar receiver: construct a source-normal
-observer through which the complete prime projective action profile descends at every Xi zero, and
-prove source-natively that its kernel identifies the physical state (a_\rho) with the centered
-state (0).

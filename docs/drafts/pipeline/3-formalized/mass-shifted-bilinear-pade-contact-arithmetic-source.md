@@ -1,8 +1,8 @@
 # Bilinear Padé-contact arithmetic source
 
 - **ID:** mass-shifted-bilinear-pade-contact-arithmetic-source
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** mass-shifted spectral-face §9.3, post-(9.3.406)
 - **Statement:** Every flat-shadow contact of order `d>=2` is produced exactly by completed adaptive bilinear source on two admitted null-ideal lifts whose lift degrees sum to `d-2`.
 
@@ -16,7 +16,7 @@ two independently admitted lifts removes that parity restriction.
 
 - [x] 0 → 1 in-progress: exact typed conjecture, internal/external audit, hostile parity attack
 - [x] 1 → 2 fully-proven: complete proof below, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: exact Lean theorem and arithmetic capstone
+- [x] 2 → 3 formalized: exact Lean theorem and arithmetic capstone
 - [ ] 3 → 4 publication-ready: independent priority audit
 
 ## Definitions
@@ -110,6 +110,11 @@ and equals `K delta_K`. This proves (BCS.3).
    lifts are optional. Same proof covers all splits and both parities.
 4. **Attempt to include `d=1` — FALSE by degree.** Any nonzero pair in ideal `(P)` has degrees at
    least `n,n`; Euler source raises total degree by two, so top degree is at least `2n+2`.
+5. **Semidefinite source-matrix conjecture — FALSE at every `d>=3`.** The literal two-amplitude
+   source compression on `P` and `P X^(d-2)` has zero `(0,0)` entry but nonzero polarized entry
+   `(2n+d) delta_(2n+d)`. Hence it is neither positive nor negative semidefinite. This is the exact
+   null-diagonal/live-polarization law; any created-sign mechanism must add a genuine
+   admission/Poisson/correlation structure rather than assert raw mixed-source positivity.
 
 External degenerate-Hamburger literature supplies kernel/flat-extension parent theory; Toda and
 orthogonal-polynomial deformation literature supplies source-connection parents. Neither source
@@ -123,8 +128,12 @@ Novelty claim remains provisional; theorem is at minimum a new corpus bridge and
   one is uniquely geometric/preemptive.
 - **New insight:** parity is not obstruction to source production; arity is. Quadratic diagonal
   reports only even top degree, while bilinear source spans every order from two upward.
-- **Status:** paper-proved; Lean pending.
+- **Status:** formalized in
+  `RHTower.XiShiftedCanonicalAdmissionBilinearContactSource`, including source symmetry, Hermitian
+  pair compression, and null-diagonal/live-polarization indefiniteness. Targeted build passes;
+  capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-08-11 — frozen after quadratic parity failure; dependency-closed proof completed.
+- 2026-08-11 — formalized, targeted build and axiom audit passed; promoted to Stage 3.

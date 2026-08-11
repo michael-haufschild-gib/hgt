@@ -37,14 +37,20 @@ theorem deningerRealExp_sub_one_norm_le {a t : ℝ} (ha : |a| ≤ 1) :
     fun_prop
   have hderiv : ∀ s : ℝ, deriv f s = -t * Real.exp (-s * t) := by
     intro s
+    have hlin : HasDerivAt (fun z : ℝ => -z * t) (-t) s := by
+      simpa using ((hasDerivAt_id s).neg.mul_const t)
     have hs : HasDerivAt f (-t * Real.exp (-s * t)) s := by
       dsimp [f]
-      convert (Real.hasDerivAt_exp (-s * t)).mul_const (-t) using 1 <;> ring
+      have hraw := (Real.hasDerivAt_exp (-s * t)).comp s hlin
+      have hraw' : HasDerivAt (Real.exp ∘ fun z : ℝ => -z * t)
+          (-t * Real.exp (-s * t)) s := hraw.congr_deriv (by ring)
+      exact hraw'.congr_of_eventuallyEq (Eventually.of_forall fun z => by
+        congr 1)
     exact hs.deriv
   have hbound : ∀ s ∈ Set.Icc (-1 : ℝ) 1,
       ‖deriv f s‖ ≤ |t| * Real.exp |t| := by
     intro s hs
-    rw [hderiv, Real.norm_eq_abs, abs_mul, Real.abs_exp]
+    rw [hderiv, Real.norm_eq_abs, abs_mul, abs_neg, Real.abs_exp]
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (abs_nonneg t)
     calc
       -s * t ≤ |-s * t| := le_abs_self _
@@ -54,11 +60,11 @@ theorem deningerRealExp_sub_one_norm_le {a t : ℝ} (ha : |a| ≤ 1) :
         exact hs) (abs_nonneg t)
       _ = |t| := one_mul _
   have hzero : (0 : ℝ) ∈ Set.Icc (-1 : ℝ) 1 := by norm_num
-  have hmem : a ∈ Set.Icc (-1 : ℝ) 1 := by rwa [← abs_le]
+  have hmem : a ∈ Set.Icc (-1 : ℝ) 1 := (abs_le.mp ha)
   have hmvt := Convex.norm_image_sub_le_of_norm_deriv_le hdiff hbound
     (convex_Icc (-1 : ℝ) 1) hzero hmem
   dsimp [f] at hmvt
-  rw [Real.exp_zero, Real.norm_eq_abs, Real.norm_eq_abs, abs_zero, sub_zero] at hmvt
+  simp only [neg_zero, zero_mul, Real.exp_zero, sub_zero] at hmvt
   simpa [mul_assoc, mul_comm, mul_left_comm] using hmvt
 
 /-- The difference weight `exp(-a t)-1`, as a complex-valued smooth function. -/
@@ -68,7 +74,7 @@ def deningerAdiabaticWeightDifference (a : ℝ) (t : ℝ) : ℂ :=
 theorem deningerAdiabaticWeightDifference_contDiff (a : ℝ) :
     ContDiff ℝ ∞ (deningerAdiabaticWeightDifference a) := by
   have h : ContDiff ℝ ∞ fun t : ℝ => Real.exp (-a * t) - 1 :=
-    (Real.contDiff_exp.comp (contDiff_const.mul contDiff_id).neg).sub contDiff_const
+    (Real.contDiff_exp.comp (contDiff_const.neg.mul contDiff_id)).sub contDiff_const
   exact Complex.ofRealCLM.contDiff.comp h
 
 /-- Every derivative of the difference weight is `O(|a| exp |t|)` uniformly for `|a| ≤ 1`.
@@ -79,7 +85,7 @@ theorem deningerAdiabaticWeightDifference_iteratedFDeriv_norm_le
       |a| * (1 + |t|) * Real.exp |t| := by
   cases i with
   | zero =>
-      rw [iteratedFDeriv_zero_apply]
+      rw [norm_iteratedFDeriv_zero]
       change ‖((Real.exp (-a * t) - 1 : ℝ) : ℂ)‖ ≤ _
       rw [Complex.norm_real, Real.norm_eq_abs]
       refine le_trans (deningerRealExp_sub_one_norm_le ha) ?_
@@ -91,14 +97,16 @@ theorem deningerAdiabaticWeightDifference_iteratedFDeriv_norm_le
         funext x
         simp [deningerAdiabaticWeightDifference, deningerRealExpWeight]
       rw [hsub, iteratedFDeriv_sub_apply
-        (deningerRealExpWeight_contDiff (-a)).contDiffAt contDiff_const.contDiffAt,
-        iteratedFDeriv_succ_const, sub_zero,
+        ((deningerRealExpWeight_contDiff (-a)).contDiffAt.of_le ENat.LEInfty.out)
+        (contDiff_const.contDiffAt.of_le ENat.LEInfty.out),
+        iteratedFDeriv_succ_const, Pi.zero_apply, sub_zero,
         deningerRealExpWeight_norm_iteratedFDeriv]
       rw [abs_neg]
       have hapow : |a| ^ (Nat.succ i) ≤ |a| := by
-        have ha0 : 0 ≤ |a| := abs_nonneg _
-        have := pow_le_pow_right₀ ha0 ha (Nat.succ_pos i)
-        simpa using this
+        rw [pow_succ]
+        have hp : |a| ^ i ≤ 1 := pow_le_one₀ (abs_nonneg _) ha
+        have hmul := mul_le_mul_of_nonneg_right hp (abs_nonneg a)
+        simpa using hmul
       have hexp : Real.exp ((-a) * t) ≤ Real.exp |t| := by
         apply Real.exp_le_exp.mpr
         calc
@@ -110,15 +118,18 @@ theorem deningerAdiabaticWeightDifference_iteratedFDeriv_norm_le
           |a| * Real.exp |t| :=
         mul_le_mul hapow hexp (Real.exp_pos _).le (abs_nonneg _)
       exact le_trans hprod (by
-        have he : 0 < Real.exp |t| := Real.exp_pos _
-        nlinarith [abs_nonneg a, abs_nonneg t])
+        have hfac : (1 : ℝ) ≤ 1 + |t| := by linarith [abs_nonneg t]
+        calc
+          |a| * Real.exp |t| = |a| * 1 * Real.exp |t| := by ring
+          _ ≤ |a| * (1 + |t|) * Real.exp |t| := by gcongr)
 
 /-- Polynomial loss from the zeroth derivative is absorbed by two exponential weights. -/
 theorem deninger_one_add_abs_mul_exp_le_two_exp_two (t : ℝ) :
     (1 + |t|) * Real.exp |t| ≤ 2 * Real.exp (2 * |t|) := by
   have ht : 0 ≤ |t| := abs_nonneg _
   have hone : 1 ≤ Real.exp |t| := by simpa using Real.one_le_exp ht
-  have habs : |t| ≤ Real.exp |t| := Real.self_le_exp |t|
+  have habs : |t| ≤ Real.exp |t| :=
+    (le_add_of_nonneg_right zero_le_one).trans (Real.add_one_le_exp |t|)
   calc
     (1 + |t|) * Real.exp |t| ≤
         (Real.exp |t| + Real.exp |t|) * Real.exp |t| := by gcongr
@@ -140,19 +151,22 @@ theorem deningerExpMul_sub_iteratedFDeriv_norm_le
         fun x => deningerAdiabaticWeightDifference a x *
           (((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ) x := by
     funext x
-    rw [Pi.sub_apply]
     change ((deningerExpMulLM (-a) h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) x -
         ((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) x = _
     rw [deningerExpMulLM_apply]
-    simp [deningerAdiabaticWeightDifference, deningerRealExpWeight]
+    simp [deningerAdiabaticWeightDifference]
     ring
   rw [hfun]
   refine le_trans (norm_iteratedFDeriv_mul_le
     (deningerAdiabaticWeightDifference_contDiff a)
     (((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)).smooth') t ENat.LEInfty.out) ?_
   exact Finset.sum_le_sum fun i _ => by
-    gcongr
-    exact deningerAdiabaticWeightDifference_iteratedFDeriv_norm_le ha i t
+    have hw := deningerAdiabaticWeightDifference_iteratedFDeriv_norm_le ha i t
+    have hc : 0 ≤ (n.choose i : ℝ) := by positivity
+    have hh' : 0 ≤ ‖iteratedFDeriv ℝ (n - i)
+        ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖ := norm_nonneg _
+    exact mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left hw hc) hh'
 
 /-- **Projective Meyer estimate for the adiabatic gauge.**  Each output seminorm is `O(|a|)`
 against finitely many two-weights-stronger input seminorms.  This is stronger than pointwise
@@ -168,45 +182,61 @@ theorem deningerExpMul_sub_seminorm_le
   refine le_trans (mul_le_mul_of_nonneg_left
     (deningerExpMul_sub_iteratedFDeriv_norm_le h ha n t) (Real.exp_pos _).le) ?_
   rw [Finset.mul_sum]
-  refine le_trans (Finset.sum_le_sum fun i _ => ?_) (le_of_eq ?_)
-  · have hq := deningerMeyerWeight_le ((A + 2 : ℕ) : ℝ) (n - i) h t
-    rw [deningerMeyerWeight] at hq
-    have habsorb := deninger_one_add_abs_mul_exp_le_two_exp_two t
-    have hAcast : (((A + 2 : ℕ) : ℝ)) = (A : ℝ) + 2 := by push_cast; ring
-    rw [hAcast] at hq
-    have hweight : Real.exp ((A : ℝ) * |t|) *
-          ((1 + |t|) * Real.exp |t|) ≤
-        2 * Real.exp (((A : ℝ) + 2) * |t|) := by
-      calc
-        Real.exp ((A : ℝ) * |t|) * ((1 + |t|) * Real.exp |t|) ≤
-            Real.exp ((A : ℝ) * |t|) * (2 * Real.exp (2 * |t|)) :=
-          mul_le_mul_of_nonneg_left habsorb (Real.exp_pos _).le
-        _ = 2 * Real.exp (((A : ℝ) + 2) * |t|) := by
-          rw [show ((A : ℝ) + 2) * |t| = (A : ℝ) * |t| + 2 * |t| by ring,
-            Real.exp_add]
-          ring
-    have hderiv : 0 ≤ ‖iteratedFDeriv ℝ (n - i)
-        ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖ := norm_nonneg _
-    calc
-      Real.exp ((A : ℝ) * |t|) *
-          ((n.choose i : ℝ) * (|a| * (1 + |t|) * Real.exp |t|) *
-            ‖iteratedFDeriv ℝ (n - i)
-              ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖)
-        = |a| * (n.choose i : ℝ) *
-          (Real.exp ((A : ℝ) * |t|) * ((1 + |t|) * Real.exp |t|) *
-            ‖iteratedFDeriv ℝ (n - i)
-              ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖) := by ring
-      _ ≤ |a| * (n.choose i : ℝ) *
-          (2 * Real.exp (((A : ℝ) + 2) * |t|) *
-            ‖iteratedFDeriv ℝ (n - i)
-              ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖) := by
-        gcongr
-      _ ≤ |a| * (n.choose i : ℝ) *
-          (2 * deningerMeyerSeminormFun ((A + 2 : ℕ) : ℝ) (n - i) h) := by
-        gcongr
-      _ = |a| * (2 * ((n.choose i : ℝ) *
-          deningerMeyerSeminormFun ((A + 2 : ℕ) : ℝ) (n - i) h)) := by ring
-  · ring
+  calc
+    (∑ i ∈ Finset.range (n + 1), Real.exp ((A : ℝ) * |t|) *
+        ((n.choose i : ℝ) * (|a| * (1 + |t|) * Real.exp |t|) *
+          ‖iteratedFDeriv ℝ (n - i)
+            ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖))
+      ≤ ∑ i ∈ Finset.range (n + 1), |a| *
+          (2 * ((n.choose i : ℝ) *
+            deningerMeyerSeminormFun ((A + 2 : ℕ) : ℝ) (n - i) h)) := by
+        apply Finset.sum_le_sum
+        intro i hi
+        have hq := deningerMeyerWeight_le ((A + 2 : ℕ) : ℝ) (n - i) h t
+        rw [deningerMeyerWeight] at hq
+        have habsorb := deninger_one_add_abs_mul_exp_le_two_exp_two t
+        have hAcast : (((A + 2 : ℕ) : ℝ)) = (A : ℝ) + 2 := by push_cast; ring
+        have hweight : Real.exp ((A : ℝ) * |t|) *
+              ((1 + |t|) * Real.exp |t|) ≤
+            2 * Real.exp (((A + 2 : ℕ) : ℝ) * |t|) := by
+          calc
+            Real.exp ((A : ℝ) * |t|) * ((1 + |t|) * Real.exp |t|) ≤
+                Real.exp ((A : ℝ) * |t|) * (2 * Real.exp (2 * |t|)) :=
+              mul_le_mul_of_nonneg_left habsorb (Real.exp_pos _).le
+            _ = 2 * Real.exp (((A + 2 : ℕ) : ℝ) * |t|) := by
+              rw [hAcast]
+              rw [show ((A : ℝ) + 2) * |t| = (A : ℝ) * |t| + 2 * |t| by ring,
+                Real.exp_add]
+              ring
+        calc
+          Real.exp ((A : ℝ) * |t|) *
+              ((n.choose i : ℝ) * (|a| * (1 + |t|) * Real.exp |t|) *
+                ‖iteratedFDeriv ℝ (n - i)
+                  ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖)
+              = |a| * (n.choose i : ℝ) *
+                (Real.exp ((A : ℝ) * |t|) * ((1 + |t|) * Real.exp |t|) *
+                  ‖iteratedFDeriv ℝ (n - i)
+                    ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖) := by ring
+          _ ≤ |a| * (n.choose i : ℝ) *
+                (2 * Real.exp (((A + 2 : ℕ) : ℝ) * |t|) *
+                  ‖iteratedFDeriv ℝ (n - i)
+                    ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖) := by
+              gcongr
+          _ ≤ |a| * (n.choose i : ℝ) *
+                (2 * deningerMeyerSeminormFun ((A + 2 : ℕ) : ℝ) (n - i) h) := by
+              have hq2 : 2 *
+                    (Real.exp (((A + 2 : ℕ) : ℝ) * |t|) *
+                      ‖iteratedFDeriv ℝ (n - i)
+                        ((((h : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) : ℝ → ℂ)) t‖) ≤
+                  2 * deningerMeyerSeminormFun ((A + 2 : ℕ) : ℝ) (n - i) h :=
+                mul_le_mul_of_nonneg_left hq (by norm_num)
+              have hc : 0 ≤ |a| * (n.choose i : ℝ) := by positivity
+              exact mul_le_mul_of_nonneg_left (by simpa [mul_assoc] using hq2) hc
+          _ = |a| * (2 * ((n.choose i : ℝ) *
+                deningerMeyerSeminormFun ((A + 2 : ℕ) : ℝ) (n - i) h)) := by ring
+    _ = |a| * (2 * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+          deningerMeyerSeminormFun ((A + 2 : ℕ) : ℝ) (n - i) h) := by
+        rw [Finset.mul_sum, Finset.mul_sum]
 
 /-- **Strong adiabatic endpoint in Meyer's actual projective topology.** -/
 theorem tendsto_deningerExpMul_neg_zero (h : DeningerMeyerSource) :
@@ -227,6 +257,8 @@ theorem tendsto_deningerExpMul_neg_zero (h : DeningerMeyerSource) :
   have hbound : ∀ᶠ a : ℝ in 𝓝 0, |a| * C < ε :=
     hlim.eventually_lt_const hε
   filter_upwards [hsmall, hbound] with a ha hC
+  simp only [DeningerMeyerSource.seminorms_apply, sub_zero, map_sub,
+    LinearEquiv.apply_symm_apply]
   change deningerMeyerSeminormFun (A : ℝ) n
       (deningerExpMulLM (-a) (DeningerMeyerSource.toSource h) -
         DeningerMeyerSource.toSource h) < ε

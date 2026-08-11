@@ -123,7 +123,7 @@ private theorem routeEConditionalBreadthCenteredVariance_succ
     _ = (S + R) * routeEConditionalBreadthCenteredVariance S R n +
         S * R * (S + R) * routeEConditionalBreadthMass S R n := by
           rw [routeEConditionalBreadthCenteredVariance, routeEConditionalBreadthMass]
-          rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
+          rw [Finset.mul_sum, Finset.mul_sum]
           rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
           apply Finset.sum_congr rfl
           intro i hi
@@ -205,7 +205,9 @@ theorem conditionalBreadthWeight_nonneg
     0 ≤ routeEConditionalBreadthWeight
       d.lowMass d.roughMass d.totalBreadth b := by
   unfold routeEConditionalBreadthWeight
-  positivity
+  exact mul_nonneg
+    (mul_nonneg (Nat.cast_nonneg _) (pow_nonneg d.lowMass_nonneg _))
+    (pow_nonneg d.roughMass_pos.le _)
 
 /-- Weighted Chebyshev inequality before central cancellation. -/
 theorem aperture_sq_mul_tailMass_le_variance
@@ -218,34 +220,50 @@ theorem aperture_sq_mul_tailMass_le_variance
       routeEConditionalBreadthCenteredVariance
         d.lowMass d.roughMass d.totalBreadth := by
   rw [routeEConditionalBreadthCenteredVariance, Finset.mul_sum]
-  apply Finset.sum_le_sum_of_subset_of_nonneg
-  · exact Finset.filter_subset _ _
-  · intro b hb hnot
-    exact mul_nonneg (sq_nonneg _)
-      (d.conditionalBreadthWeight_nonneg b)
-  · intro b hb
-    have hbRange : b ∈ Finset.range (d.totalBreadth + 1) :=
-      (Finset.mem_filter.mp hb).1
-    have hbOutside : b ∉ d.window := (Finset.mem_filter.mp hb).2
-    have hnotle :
-        ¬|routeEConditionalBreadthDisplacement
-            d.lowMass d.roughMass d.totalBreadth b| ≤ d.aperture := by
-      simpa [window, hbRange] using hbOutside
-    have hlt : d.aperture <
-        |routeEConditionalBreadthDisplacement
-          d.lowMass d.roughMass d.totalBreadth b| := lt_of_not_ge hnotle
-    have hsq : d.aperture ^ 2 ≤
-        routeEConditionalBreadthDisplacement
-          d.lowMass d.roughMass d.totalBreadth b ^ 2 := by
-      have ha := d.aperture_pos
-      have habs := abs_nonneg
-        (routeEConditionalBreadthDisplacement
-          d.lowMass d.roughMass d.totalBreadth b)
-      nlinarith [sq_abs
-        (routeEConditionalBreadthDisplacement
-          d.lowMass d.roughMass d.totalBreadth b)]
-    exact mul_le_mul_of_nonneg_right hsq
-      (d.conditionalBreadthWeight_nonneg b)
+  calc
+    (∑ b ∈ Finset.range (d.totalBreadth + 1) with b ∉ d.window,
+        d.aperture ^ 2 *
+          routeEConditionalBreadthWeight
+            d.lowMass d.roughMass d.totalBreadth b) ≤
+        ∑ b ∈ Finset.range (d.totalBreadth + 1) with b ∉ d.window,
+          routeEConditionalBreadthDisplacement
+              d.lowMass d.roughMass d.totalBreadth b ^ 2 *
+            routeEConditionalBreadthWeight
+              d.lowMass d.roughMass d.totalBreadth b := by
+      apply Finset.sum_le_sum
+      intro b hb
+      have hbRange : b ∈ Finset.range (d.totalBreadth + 1) :=
+        (Finset.mem_filter.mp hb).1
+      have hbOutside : b ∉ d.window := (Finset.mem_filter.mp hb).2
+      have hnotle :
+          ¬|routeEConditionalBreadthDisplacement
+              d.lowMass d.roughMass d.totalBreadth b| ≤ d.aperture := by
+        simpa [window, hbRange] using hbOutside
+      have hlt : d.aperture <
+          |routeEConditionalBreadthDisplacement
+            d.lowMass d.roughMass d.totalBreadth b| := lt_of_not_ge hnotle
+      have hsq : d.aperture ^ 2 ≤
+          routeEConditionalBreadthDisplacement
+            d.lowMass d.roughMass d.totalBreadth b ^ 2 := by
+        have ha := d.aperture_pos
+        have habs := abs_nonneg
+          (routeEConditionalBreadthDisplacement
+            d.lowMass d.roughMass d.totalBreadth b)
+        nlinarith [sq_abs
+          (routeEConditionalBreadthDisplacement
+            d.lowMass d.roughMass d.totalBreadth b)]
+      exact mul_le_mul_of_nonneg_right hsq
+        (d.conditionalBreadthWeight_nonneg b)
+    _ ≤ ∑ b ∈ Finset.range (d.totalBreadth + 1),
+          routeEConditionalBreadthDisplacement
+              d.lowMass d.roughMass d.totalBreadth b ^ 2 *
+            routeEConditionalBreadthWeight
+              d.lowMass d.roughMass d.totalBreadth b := by
+      apply Finset.sum_le_sum_of_subset_of_nonneg
+      · exact Finset.filter_subset _ _
+      · intro b hb hnot
+        exact mul_nonneg (sq_nonneg _)
+          (d.conditionalBreadthWeight_nonneg b)
 
 /-- **Central-window entropy recovery.**  The coupled breadth window retains at least
 `(1 - C⁻²)` of the complete conditional mass.  This is an exact finite theorem, not an
@@ -269,27 +287,34 @@ theorem one_sub_inv_windowConstant_sq_mul_totalMass_le_windowMass
           d.totalMass ^ d.totalBreadth ≤
         d.totalMass ^ 2 * d.roughMass *
           d.totalMass ^ d.totalBreadth := by
-    have hfactor : 0 ≤ d.roughMass * d.totalMass ^ d.totalBreadth := by positivity
-    exact mul_le_mul_of_nonneg_right d.central_balance hfactor
+    have hfactor : 0 ≤ d.roughMass * d.totalMass ^ d.totalBreadth :=
+      mul_nonneg d.roughMass_pos.le (pow_nonneg htotalNonneg _)
+    have hmul := mul_le_mul_of_nonneg_right d.central_balance hfactor
+    simpa only [totalMass, mul_assoc] using hmul
   have hapertureSq :
       d.aperture ^ 2 =
         d.windowConstant ^ 2 * d.totalMass ^ 2 * d.roughMass := by
     unfold aperture
-    rw [Real.sq_sqrt d.roughMass_pos.le]
-    ring
+    calc
+      (d.windowConstant * d.totalMass * Real.sqrt d.roughMass) ^ 2 =
+          d.windowConstant ^ 2 * d.totalMass ^ 2 *
+            Real.sqrt d.roughMass ^ 2 := by ring
+      _ = d.windowConstant ^ 2 * d.totalMass ^ 2 * d.roughMass := by
+        rw [Real.sq_sqrt d.roughMass_pos.le]
   have hscaled :
       d.windowConstant ^ 2 * d.totalMass ^ 2 * d.roughMass * tailMass ≤
         d.totalMass ^ 2 * d.roughMass * d.totalMass ^ d.totalBreadth := by
     rw [← hapertureSq]
     exact hvariance.trans hcentralScaled
-  have hcancelPos : 0 < d.totalMass ^ 2 * d.roughMass := by positivity
+  have hcancelPos : 0 < d.totalMass ^ 2 * d.roughMass :=
+    mul_pos (sq_pos_of_pos d.totalMass_pos) d.roughMass_pos
   have hcancel : d.windowConstant ^ 2 * tailMass ≤
       d.totalMass ^ d.totalBreadth := by
-    apply (mul_le_mul_left hcancelPos).mp
+    apply le_of_mul_le_mul_left _ hcancelPos
     simpa only [mul_assoc, mul_left_comm, mul_comm] using hscaled
   have hC2 : 0 < d.windowConstant ^ 2 := sq_pos_of_pos d.windowConstant_pos
   have htail : tailMass ≤ d.totalMass ^ d.totalBreadth / d.windowConstant ^ 2 := by
-    exact (le_div_iff₀ hC2).2 hcancel
+    exact (le_div_iff₀ hC2).2 (by simpa [mul_comm] using hcancel)
   have hsplit :
       d.windowMass + tailMass = d.totalMass ^ d.totalBreadth := by
     have hpartition := Finset.sum_filter_add_sum_filter_not
@@ -301,17 +326,21 @@ theorem one_sub_inv_windowConstant_sq_mul_totalMass_le_windowMass
         (∑ b ∈ Finset.range (d.totalBreadth + 1) with b ∈ d.window,
           routeEConditionalBreadthWeight
             d.lowMass d.roughMass d.totalBreadth b) = d.windowMass := by
-      rw [windowMass]
-      apply Finset.sum_subset
-      · intro b hb
-        exact (Finset.mem_filter.mp hb).1
-      · intro b hbRange hbNotWindow
-        simp [hbNotWindow]
-    rw [hinside] at hpartition
-    change d.windowMass + tailMass = _
-    rw [hpartition, ← routeEConditionalBreadthMass]
-    exact routeEConditionalBreadthMass_eq
-      d.lowMass d.roughMass d.totalBreadth
+      have hsets :
+          (Finset.range (d.totalBreadth + 1)).filter (fun b => b ∈ d.window) =
+            d.window := by
+        ext b
+        simp [window]
+      rw [windowMass, hsets]
+    calc
+      d.windowMass + tailMass =
+          routeEConditionalBreadthMass
+            d.lowMass d.roughMass d.totalBreadth := by
+        rw [routeEConditionalBreadthMass]
+        simpa only [tailMass, hinside] using hpartition
+      _ = (d.lowMass + d.roughMass) ^ d.totalBreadth :=
+        routeEConditionalBreadthMass_eq _ _ _
+      _ = d.totalMass ^ d.totalBreadth := by rfl
   have hmain :
       d.totalMass ^ d.totalBreadth -
           d.totalMass ^ d.totalBreadth / d.windowConstant ^ 2 ≤
@@ -422,7 +451,9 @@ theorem primeCutoff_pow_breadth_le (d : RouteEEntropyComplementBranch) :
       d.schedule.X ^ (2 / d.schedule.growth) := by
   have hX0 : 0 ≤ d.schedule.X :=
     le_trans zero_le_one d.schedule.one_le_X
-  have hcoef : 0 ≤ 1 / (d.schedule.growth * d.schedule.breadthScale) := by positivity
+  have hcoef : 0 ≤ 1 / (d.schedule.growth * d.schedule.breadthScale) :=
+    div_nonneg zero_le_one
+      (mul_nonneg d.schedule.growth_pos.le d.schedule.breadthScale_pos.le)
   have hexp :
       1 / (d.schedule.growth * d.schedule.breadthScale) * (d.breadth : ℝ) ≤
         2 / d.schedule.growth := by
@@ -562,25 +593,39 @@ private theorem massDifference_eq_sqrtFactorization
   rw [pushedTotal, targetTotal, ← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
   intro i hi
-  rw [sub_mul, mul_add, mul_add]
-  rw [Real.sq_sqrt (d.pushedMass_nonneg i),
-    Real.sq_sqrt (d.targetMass_pos i).le]
-  ring
+  calc
+    d.pushedMass i - d.targetMass i =
+        Real.sqrt (d.pushedMass i) ^ 2 -
+          Real.sqrt (d.targetMass i) ^ 2 := by
+      rw [Real.sq_sqrt (d.pushedMass_nonneg i),
+        Real.sq_sqrt (d.targetMass_pos i).le]
+    _ = (Real.sqrt (d.pushedMass i) - Real.sqrt (d.targetMass i)) *
+          (Real.sqrt (d.pushedMass i) + Real.sqrt (d.targetMass i)) := by ring
 
 private theorem sqrtSumSq_le_two_matchedTotal
     (d : RouteEFiniteColumnData ι) :
     (∑ i, (Real.sqrt (d.pushedMass i) + Real.sqrt (d.targetMass i)) ^ 2) ≤
       2 * d.matchedTotal := by
-  rw [matchedTotal, pushedTotal, targetTotal, Finset.mul_sum,
-    Finset.mul_sum, ← Finset.sum_add_distrib]
-  apply Finset.sum_le_sum
-  intro i hi
-  have hp := Real.sqrt_nonneg (d.pushedMass i)
-  have hn := Real.sqrt_nonneg (d.targetMass i)
-  have hpsq := Real.sq_sqrt (d.pushedMass_nonneg i)
-  have hnsq := Real.sq_sqrt (d.targetMass_pos i).le
-  nlinarith [sq_nonneg
-    (Real.sqrt (d.pushedMass i) - Real.sqrt (d.targetMass i))]
+  calc
+    (∑ i, (Real.sqrt (d.pushedMass i) + Real.sqrt (d.targetMass i)) ^ 2) ≤
+        ∑ i, 2 * (d.pushedMass i + d.targetMass i) := by
+      apply Finset.sum_le_sum
+      intro i hi
+      have hp := Real.sqrt_nonneg (d.pushedMass i)
+      have hn := Real.sqrt_nonneg (d.targetMass i)
+      have hpsq := Real.sq_sqrt (d.pushedMass_nonneg i)
+      have hnsq := Real.sq_sqrt (d.targetMass_pos i).le
+      nlinarith [sq_nonneg
+        (Real.sqrt (d.pushedMass i) - Real.sqrt (d.targetMass i))]
+    _ = 2 * d.matchedTotal := by
+      calc
+        (∑ i, 2 * (d.pushedMass i + d.targetMass i)) =
+            2 * ∑ i, (d.pushedMass i + d.targetMass i) := by
+          rw [Finset.mul_sum]
+        _ = 2 * ((∑ i, d.pushedMass i) + ∑ i, d.targetMass i) := by
+          rw [Finset.sum_add_distrib]
+        _ = 2 * d.matchedTotal := by
+          rfl
 
 /-- **Finite Hellinger endpoint law.** -/
 theorem massDifference_sq_le_two_matchedTotal_mul_hellingerSq
@@ -647,7 +692,8 @@ theorem abs_massDifference_le_sqrt_two_matchedTotal_mul_chiSquare
     exact d.massDifference_sq_le_two_matchedTotal_mul_hellingerSq.trans
       (mul_le_mul_of_nonneg_left d.hellingerSq_le_chiSquare
         (mul_nonneg (by positivity) d.matchedTotal_nonneg))
-  have hrad : 0 ≤ 2 * d.matchedTotal * d.chiSquare := by positivity
+  have hrad : 0 ≤ 2 * d.matchedTotal * d.chiSquare :=
+    mul_nonneg (mul_nonneg (by norm_num) d.matchedTotal_nonneg) d.chiSquare_nonneg
   have hsqrt := Real.sqrt_nonneg (2 * d.matchedTotal * d.chiSquare)
   have hsqrtSq := Real.sq_sqrt hrad
   have habsSq : |d.pushedTotal - d.targetTotal| ^ 2 =
@@ -697,11 +743,23 @@ theorem abs_totalDifference_le_unmatched_add_sqrt_chiSquare
         |d.toRouteEFiniteColumnData.pushedTotal -
             d.toRouteEFiniteColumnData.targetTotal| +
           |d.unmatchedPositive - d.unmatchedNegative| := by
-    unfold totalPositive totalNegative
-    convert abs_add
-      (d.toRouteEFiniteColumnData.pushedTotal -
-        d.toRouteEFiniteColumnData.targetTotal)
-      (d.unmatchedPositive - d.unmatchedNegative) using 1 <;> ring
+    have h := abs_sub_le d.totalPositive
+      (d.toRouteEFiniteColumnData.targetTotal + d.unmatchedPositive)
+      d.totalNegative
+    have hleft :
+        d.totalPositive -
+            (d.toRouteEFiniteColumnData.targetTotal + d.unmatchedPositive) =
+          d.toRouteEFiniteColumnData.pushedTotal -
+            d.toRouteEFiniteColumnData.targetTotal := by
+      unfold totalPositive
+      ring
+    have hright :
+        d.toRouteEFiniteColumnData.targetTotal + d.unmatchedPositive - d.totalNegative =
+          d.unmatchedPositive - d.unmatchedNegative := by
+      unfold totalNegative
+      ring
+    rw [hleft, hright] at h
+    exact h
   calc
     |d.totalPositive - d.totalNegative| ≤
         |d.toRouteEFiniteColumnData.pushedTotal -

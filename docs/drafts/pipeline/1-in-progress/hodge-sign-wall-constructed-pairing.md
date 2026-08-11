@@ -289,3 +289,16 @@ compressed-trace identity consumes adelic Poisson, which Beurling systems lack.
   realization — needs only to hit this socket; everything downstream is unconditional Lean.
   Remaining milestones: (b) archimedean compressed positivity (analytic, heavy), (c) the
   multi-place extension via the assembly machinery (research).
+- 2026-08-11 — attempt 10 (the square-realization construction, executed):
+  `RHTower/GaussHodgeWeilKreinDecomposition.lean`.  The direct construction produces exactly
+  one obstruction, now formalized.  **Krein signature decomposition** (unconditional, every
+  square-summable test): `4·Re(xiWeilPolarization F F) = Σ‖pair sum‖² − Σ‖pair difference‖²`
+  (`xiWeilPolarization_re_eq_krein`, with pointwise law `xiWeilPairTerm_re` and both sector
+  summabilities).  The negative sector's energy density at the prime test is exactly the cosh
+  defect (`norm_sq_pairDif_primeTest`): the negative Krein sector IS the Hodge mass sector.
+  `riemannHypothesis_iff_forall_pairDifEnergy_eq_zero` (indicator witness for the converse)
+  and `xiWeilSquareRealization_iff_forall_pairDifEnergy_eq_zero`: the square realization
+  exists ⟺ the negative sector is annihilated ⟺ RH.  Verdict: the construction cannot be
+  completed without RH — as the socket iff demands — but it now terminates in the exact
+  Pontryagin structure that a definitizable-intertwiner or compressed-trace argument must
+  rigidify.  The Krein survivor of attempt 2 is closed into theorems.

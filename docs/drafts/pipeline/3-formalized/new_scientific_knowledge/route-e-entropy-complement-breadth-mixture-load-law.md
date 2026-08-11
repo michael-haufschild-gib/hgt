@@ -1,13 +1,14 @@
 # Route E entropy-complement breadth-mixture load law
 
 - **ID:** `ROUTE-E-ENTROPY-COMPLEMENT-BREADTH-MIXTURE-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SHARP CAPACITY ACCOUNTING THEOREM / NEW FIXED-RELATION AVENUE
 - **Parent:** `route-e-product-truncated-reservoir-harmonic-mass-law.md`
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** intentionally deferred during corpus refactor
+- **Lean status:** dependency-closed finite core formalized in
+  `formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementBreadthMixture.lean`
 
 ## 1. Result
 
@@ -16,7 +17,7 @@ Throughout choose source-predeclared schedule
   g=g(L)\longrightarrow\infty,
   \qquad \log(gL)=o(\sqrt L),                          \tag{0}
 \]
-and impose stronger (g=o(L)) only when comparing with full natural (E_3) density.
+and impose stronger \(g=o(L)\) only when comparing with full natural \(E_3\) density.
 
 Previously stated whole-anchor target
 
@@ -437,14 +438,41 @@ and recurrence clauses remain source-bearing core.
 - Seam restriction loses no complementary harmonic scale by (26).
 - Hellinger inequality (32) is only a consumer; source chi-square (34) remains unproved.
 - No claim is made that joint local convolution or quadratic column theorem is proved.
-- No literature search, numerical computation, Lean edit, or Lean build was used.
+- No literature search or numerical computation was used.
 
-## 10. Status
+## 10. Formalization and status
 
 `[PAPER-PROVED]` for sharp threshold (2)--(3), fixed-split penalty (14)--(17), exact breadth
 convolution (7), central-window recovery (18)--(21), parity law (22), product/seam geometry
 (23)--(26), and finite quadratic-load consumer (28)--(36), conditional only on explicitly
 displayed local source-layer and token-density inputs where invoked.
+
+`[LEAN-CERTIFIED]` for every dependency-closed finite theorem used by those conclusions:
+
+1. `routeEDividedBreadthWeight_sum_eq` is exact identity (7), with the factorial conversion
+   proved from `Nat.choose_mul_factorial_mul_factorial` rather than assumed;
+2. `routeEConditionalBreadthCenteredVariance_eq` proves the exact denominator-free variance
+   identity
+   \[
+     \sum_b ((S+R)b-kS)^2\binom{k}{b}S^bR^{k-b}
+       =kSR(S+R)^k;
+   \]
+3. `one_sub_inv_windowConstant_sq_mul_totalMass_le_windowMass` proves a stronger finite version
+   of (21): under exact central balance (kS\le(S+R)^2), the closed source-predeclared window of
+   breadth radius (C\sqrt R) retains at least (1-C^{-2}) of total conditional mass, with no
+   asymptotic remainder;
+4. `columnLoadScale_eq` and `columnLoadScale_le_one_iff` certify corrected load (2) and sharp
+   threshold (3);
+5. `primeCutoff_pow_breadth_le` and `harmonicMass_le_two_scale_div_cutoff` certify product bound
+   (23) and source-prime deletion (\sum_{p\mid n,p>P}p^{-1}\le2L/P);
+6. upward/downward `parity_reversal` certify exact sign reversal branchwise; and
+7. `massDifference_sq_le_two_matchedTotal_mul_hellingerSq`, `hellingerSq_le_chiSquare`, and
+   `abs_totalDifference_le_unmatched_add_sqrt_chiSquare` certify (29), (32), and (33)--(35) as
+   finite source-independent endpoint consumers.
+
+Positivity and central-balance conditions are fields of finite data structures; no conjectural
+short-interval, column-source, recurrence, RH, or added-axiom premise enters any capstone theorem.
+Module is wired through `formal/GaloisForLFunctions/RHTower.lean`.
 
 `[OPEN]` for `ENTROPY-COMPLEMENT-UNIT-SHELL-ROUGH-CONVOLUTION`, especially joint local main term,
 quadratic column balance, and recurrence-weighted seam accumulation. Route E and RH remain open.

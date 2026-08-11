@@ -1,8 +1,8 @@
 # Adaptive even-contact arithmetic source and one-block capacity
 
 - **ID:** mass-shifted-adaptive-even-contact-source-one-block-capacity
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` §9.3, after (9.3.406)
 - **Statement:** At every first nonzero even Padé contact, admitted lift `P X^(m-1)` emits completed mixed arithmetic source `2(n+m) delta_(2n+2m)`; positive rank fill survives exactly one Hankel block and next block is indefinite.
 
@@ -17,7 +17,7 @@ aggregate is formed last.
 
 - [x] 0 → 1 in-progress: exact source type and hostile counterexample audit
 - [x] 1 → 2 fully-proven: dependency-closed proof below, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: Lean theorem, targeted build, axiom audit
+- [x] 2 → 3 formalized: Lean theorem, targeted build, axiom audit
 - [ ] 3 → 4 publication-ready: independent novelty/priority audit
 
 ## Exact theorem `[PROVED HERE]`
@@ -104,8 +104,11 @@ even-contact rank-one fill, first-contact square identity, and PSD zero-energy k
   capacity.
 - **New insight:** One fixed flat face never supports unbounded rank fill. Remaining escape is only
   nonuniform drift of first contact order/face degree across cofinal family.
-- **Status:** paper-proved; Lean pending.
+- **Status:** formalized in
+  `RHTower.XiShiftedCanonicalAdmissionEvenContactSource`; targeted module build passes and
+  capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-08-11 — conjectured, hostile-audited, paper-proved; moved directly to Stage 2.
+- 2026-08-11 — formalized without added axioms or computation; promoted to Stage 3.

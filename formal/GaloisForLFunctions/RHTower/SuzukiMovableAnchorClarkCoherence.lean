@@ -43,8 +43,8 @@ def suzukiMovableDonoghueKernel (c t : ℝ) (z : ℂ) : ℂ :=
     have him := congrArg im h
     simp [hc] at him
   apply (div_eq_iff hden).2
-  push_cast
   ring_nf
+  simp
 
 /-- Exact Nevanlinna decomposition of the movable kernel. -/
 theorem suzukiMovableDonoghueKernel_eq_nevanlinna
@@ -79,7 +79,6 @@ theorem mul_suzukiMovableDonoghueKernel_eq_weightedPole
     suzukiMovableNevanlinnaWeight]
   push_cast
   field_simp [ofReal_ne_zero.mpr hc, hxz]
-  ring
 
 /-- Clark boundary phase speed is the reciprocal of half the Nevanlinna atom mass. -/
 def suzukiMovableClarkPhaseSpeed (c x p : ℝ) : ℝ :=
@@ -96,7 +95,7 @@ theorem suzukiMovableClarkPhaseSpeed_eq
 
 /-! ## Source coherence and exact fragmentation -/
 
-variable {E : Type*} [SeminormedAddCommGroup E] [InnerProductSpace ℂ E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 
 /-- Squared cosine of the Hilbert-space angle between two nonzero source vectors.  The zero-vector
 convention is harmless and keeps the expression total. -/
@@ -121,8 +120,15 @@ theorem suzukiSourceCoherence_le_one (anchor mode : E) :
   · simp [suzukiSourceCoherence, ha]
   by_cases hm : mode = 0
   · simp [suzukiSourceCoherence, hm]
+  have ha_pos : 0 < ‖anchor‖ := norm_pos_iff.mpr ha
+  have hm_pos : 0 < ‖mode‖ := norm_pos_iff.mpr hm
+  have hcs := norm_inner_le_norm (𝕜 := ℂ) anchor mode
+  have hinner_nonneg : 0 ≤ ‖inner ℂ anchor mode‖ := norm_nonneg _
+  have hproduct_nonneg : 0 ≤ ‖anchor‖ * ‖mode‖ := mul_nonneg (norm_nonneg _) (norm_nonneg _)
+  have hfactor := mul_nonneg (sub_nonneg.mpr hcs)
+    (add_nonneg hproduct_nonneg hinner_nonneg)
   rw [suzukiSourceCoherence, div_le_one]
-  · simpa only [pow_two] using sq_norm_inner_le_mul_sq_norm anchor mode
+  · nlinarith
   · positivity
 
 /-- **Clark coherence budget.**  Every finite orthonormal family receives total normalized
