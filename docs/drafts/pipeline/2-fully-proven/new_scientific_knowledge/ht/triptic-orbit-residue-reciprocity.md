@@ -1404,3 +1404,46 @@ exactly `1`-periodic with a constant mixed difference.
 The second conjunct is the normal form `F - R_trip(F)Ψ ∈ Mer_DA`.  The first is the mixed-value
 augmentation law (A2): the mixed constant of a source is exactly the constant carried by the
 zeroth-order slice of its own correction, which is `-2πi` times the total simple-residue mass.
+
+## Lean progress — surjectivity of the orbit-residue divisor
+
+`GaloisForLFunctions/HTGeometry/TripticGammaCorrection.lean` now carries the general object rather
+than only the correcting one:
+
+    jetCombination τ σ c P J   = Σ_{j<J} Σ_{q∈P} c q j · gammaJetSource τ σ q j
+    gammaCorrection τ σ F P J  = jetCombination τ σ (gammaCorrectionCoeff τ σ F P) P J
+
+with the divisor laws proved once, for arbitrary weights: `..._jetCombination_eq_sum`,
+`..._eq_single`, `..._of_notMem`, `..._of_le`.  The counting theorem for the correction is the
+instantiation with the correcting weights.
+
+`TripticNormalForm.lean` adds
+
+    exists_mem_class_with_prescribed_divisor :
+      ∀ P J d, ∃ Y C, MeromorphicOn Y ℂ ∧ PeriodicOneGerm Y ∧ MixedConstGerm Y τ σ C ∧
+        (divisor of Y at order i < J on the class of q ∈ P is d q i) ∧
+        (divisor of Y vanishes off every class of P, and above the order bound)
+
+which is the **surjectivity half of the completeness theorem**: every prescribed divisor datum on
+finitely many classes and finitely many orders is realized inside the class `Q`, by the jet
+combination with weights `d q j / ((-1)ʲ j!)`.
+
+### What the kernel half still needs, and where it comes from
+
+`ker R_trip ⊇ Q ∩ Mer_DA` is the kernel theorem, already closed.  The reverse inclusion is the
+freeness of the differential translation orbit of `Ψ`.  The corpus owns that input already, and
+unconditionally:
+
+    EllipticGammaDefectFieldEscape.ellipticGammaTranslatePacket_diffIndepOn_of_separated
+      — the order-one translation packet `{Ψ} ∪ {Ψ(·+a) : a ∈ A}` is differentially independent
+        over `ℂ`, for `A` nonresonant and pairwise separated;
+    DifferentialOperatorRowHypertranscendence.hypertranscendentalOver_differentialOperatorRow_of_ne_zero
+      — a nonzero constant-coefficient differential-operator row applied to a differentially
+        independent family is hypertranscendental over the constants.
+
+Composing them: a nonzero jet combination is hypertranscendental over `ℂ`, hence — by transitivity
+of differential algebraicity over the differentially algebraic extension `ℂ(z)/ℂ` — not
+differentially algebraic over `ℂ(z)` either.  Since the correction's weights are recovered from its
+divisor, a differentially algebraic member of `Q` has vanishing divisor.  What remains is the
+bridge between the two presentations: the germ of `iteratedDeriv j (logDeriv (ellipticGammaConeTranslate τ σ q))`
+is the `j`-th differential jet of the translated `ellipticGammaLogDerivMero` germ.

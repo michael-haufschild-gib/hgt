@@ -255,7 +255,7 @@ normalized source vector and its parity/clock orbit
 \[
  |\psi_{\alpha,t}\rangle
  =\sum_{S\subseteq F}\sqrt{\mathbb P_\sigma(S)}
-   e^{,i(\pi\alpha N(S)-tE(S))}|S\rangle.
+   e^{\,i(\pi\alpha N(S)-tE(S))}|S\rangle.
  \tag{TIF.18}
 \]
 
@@ -413,9 +413,9 @@ new conservation problem; imposing the equality only at Xi zeros would be circul
 No external theorem supplies the arithmetic identification `(TIF.10)` or the conservation law
 `(TIF.21)` as one source statement.
 
-## 9. Lean target
+## 9. Lean certification
 
-The unconditional finite theorem is a Lean target in
+The unconditional finite theorem is formalized in
 `GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion`:
 
 - Mass norm equals the clock variance `C`;
@@ -426,7 +426,13 @@ The unconditional finite theorem is a Lean target in
 - finite-tilt QFI response `(TIF.22)` by reuse of the existing Boolean response theorem;
 - prime-log large-return recurrence by reuse of the existing phase-history theorem.
 
-No RH statement or cofinal source completion is a Lean target.
+The module directly elaborates and its foreground leaf build completes 8,675 jobs.  It is wired
+into `HTGeometry.UniversalLawField`; that foreground umbrella build completes 11,659 jobs.  Axiom
+prints for the pure-state QFI identity, four-organ conservation, positivity, Mass damping, tilt
+response, reconstruction, and recurrence capstones report only `propext`, `Classical.choice`, and
+`Quot.sound`.  Repository formal lint and the target forbidden-declaration scan pass.
+
+No RH statement or cofinal source completion is asserted in Lean.
 
 ## Gates
 
@@ -436,6 +442,5 @@ No RH statement or cofinal source completion is a Lean target.
 - [x] finite joint reconstruction proved
 - [x] fourth-organ recurrence/QFI theorem predicted and proved
 - [x] direct zero-QFI RH selector refuted with positive survivor
-- [ ] Lean formalization and umbrella wiring
+- [x] Lean formalization and umbrella wiring
 - [ ] reflected second-packet conservation theorem
-

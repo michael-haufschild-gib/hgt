@@ -175,9 +175,10 @@ theorem summable_shiftedDensityCapacity_iff {σ : ℝ} :
       exact mul_le_mul_of_nonneg_left hexp hlog
   · intro hσ
     have hbase : Summable fun n : ℕ => Real.log n ^ 2 / (n : ℝ) ^ (2 * σ) :=
-      GaloisForLFunctions.HTGeometry.summable_log_pow_div_nat_rpow 2 (by linarith)
+      HTGeometry.summable_log_pow_div_nat_rpow 2 (by linarith)
     refine (hbase.subtype (fun n : ℕ => n.Prime)).congr fun p => ?_
-    have hpp : (0 : ℝ) < (p : ℕ) := by exact_mod_cast p.2.pos
+    have hpp : (0 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.2.pos
+    simp only [Function.comp_apply]
     rw [Real.rpow_neg hpp.le, div_eq_mul_inv]
 
 end PrimeChart

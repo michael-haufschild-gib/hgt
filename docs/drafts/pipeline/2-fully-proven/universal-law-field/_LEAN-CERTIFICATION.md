@@ -1248,3 +1248,19 @@ declaration, the missing statement was proved rather than the claim dropped:
 for every added declaration report only `propext`, `Classical.choice`, and `Quot.sound`, several
 needing fewer.  The remaining stage-2 cards and their exact missing statements are tracked in
 `_STAGE3-SWEEP-LEDGER.md`.
+
+## Session 2026-08-11 addition (Transverse Information Fusion Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TIF-1 | Prime Boolean Schur capacity, Gibbs-damped Mass energy, finite Hankel determinant, pure-state transverse QFI, exact four-organ conservation, intervention response, finite joint reconstruction, and arbitrarily late prime-clock recurrence | `HTGeometry.PrimeBooleanMassHankelQuantumFusion` |
+
+Direct foreground elaboration passes.  Foreground leaf build completes 8,675 jobs.  The module is
+wired into `HTGeometry.UniversalLawField`; foreground umbrella build completes 11,659 jobs.
+Repository formal lint and target forbidden-declaration scan pass.  Axiom prints for nine capstones
+report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Lean certifies the exact cross-organ law
+`I_perp * ||j_sigma||^2 = 4 * pi^2 * det(H_1)`, its strict positive chamber, the finite-moment
+reconstruction theorem, and the predicted recurrence shadow.  It contains no RH premise, Xi
+specialization, computation certificate, project axiom, or cofinal-completion claim.

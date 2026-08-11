@@ -3,7 +3,8 @@
 - **ID:** ULF-WFM-1
 - **Stage:** 1-in-progress
 - **Type:** FIELD-MECHANISM SYNTHESIS / FRONTIER EXTRACTION
-- **Source:** `rh-current-frontier-map.md` at the 10 August 2026 corpus cutoff
+- **Source:** `rh-current-frontier-map.md` plus umbrella-reachable sharpenings through
+  11 August 2026
 - **Statement:** Every live frontier core can be typed by one seven-step intervention grammar; the
   first exact candidate realizing its middle steps is finite Witt--formation mechanics.
 - **Status:** [FULL FRONTIER EXTRACTED] [MECHANISM, NOT OBJECT] [FUSION THEOREM SEPARATE]
@@ -56,6 +57,23 @@ history objects recreates the independent-slot nonprediction theorem.
 | R | Euler--Gamma--Stokes mark and Bockstein formation | oriented prime-labelled horizontal class and relative carrier | **dualize/conserve:** simultaneous two-orientation source nonerasure forces annihilation |
 | T | mass shift and moving light-cone formation | centered von Mangoldt outgoing current | **ghost/admit:** cofinal signed cancellation before positive completion |
 | U | shifted-Hankel null flag and one-Euler mixed factorial mark | crossing form, hyperedge law, exact completed source germ | **mark/saturate:** source orients every adaptive hyperedge before cumulant compression |
+| S (upstream) | q-Gamma/zeta-gas formation, law commutator, HT and divisor translation | positive GNS/KMS source, recurrence, natural boundary, Cartier multiplicity landing | **dualize/conserve:** no source law couples these axes to critical-line orientation |
+
+The not-yet-instantiated candidates impose further grammar constraints.  They are included here so
+that `(WFG.1)` is not merely a quotient of the lettered live routes.
+
+| candidate family | generated mechanism | unresolved grammar transition |
+|---|---|---|
+| post-J principal-relative current / order-one Sonin successor | proposed non-coboundary current or corrected-order transfer | **mark/form:** no literal source operator and chain |
+| Nyman--Beurling finite sections | exact Gram, least-square, determinant, and Möbius receivers | **form/saturate:** no unconditional approximation producer |
+| adaptive eigenframe memory | autonomous Hamiltonian memory and Haar separation | **conserve:** no arithmetic Xi-typed Hamiltonian or coefficient-faithful handoff |
+| longitudinal--transverse gate | exact decomposition and mixing-defect classifier | **mark/form:** no source-generated nonzero mixing intervention |
+| q-Gamma divisor translation | positive gas, commutator genesis, HT, recurrence, divisor transgression | **dualize/conserve:** no critical-line orientation law |
+| Gauss multi-place assembly | label-faithful positive residue current over all places | **conserve:** no identification with literal Weil/intersection pairing |
+| Cassini--Wold/theta--Green weld | exact Route-T recut with finite-energy residual | **admit/conserve:** missing signed profile pairing; reflection adds no equation |
+| coalitional/collective repair | tightness, proper pricing, primitive execution degree, cofinal escape | **mark/form:** no arithmetic repair family or Xi handoff |
+| universal-law/analytic receivers | exact reconstruction, completion, boundary, response, and no-go calculi | **mark/conserve:** generic receiver has no source-generated constitutive transition |
+| Hedenmalm determinant/finite-trace and external finite compression | exact divisor realization or finite critical-density bounds | **dualize/saturate:** orientation remains absent or density-zero exceptional blocks survive |
 
 This table reproduces the frontier's five obstruction classes as failures of `(WFG.1)`:
 

@@ -1,10 +1,11 @@
 # Prime-radial excess intersection and normalized discriminant law
 
 - **ID:** `prime-radial-excess-intersection-discriminant-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / DERIVED PRIME-HORIZON MODEL / CROSS-FACE BRIDGE
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [CORPUS-NEW INSTANTIATION]`
-  `[GENERIC KOSZUL ALGEBRA PREEXISTING] [NO RH CLAIM] [NO LEAN WRITTEN]`
+- **Status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
+  `[PAPER PROOF COMPLETE] [CORPUS-NEW INSTANTIATION]`
+  `[GENERIC KOSZUL ALGEBRA PREEXISTING] [NO RH CLAIM]`
 - **Parent:** `../positive-shell-koszul-cartier-obstruction-reciprocity.md`.
 - **Statement:** finite prime radial holonomy defects have one underived horizon port, full
   type-`A_(N-1)` excess conormal in degree one, exterior higher coherences, and cutoff-normalized
@@ -642,9 +643,8 @@ RH leverage is exact architecture:
 
 ## Lean-return note
 
-No Lean work authorized. Later files should reuse generic Koszul/exterior algebra corpus theorem;
-new formal targets would be formal-exponential factorization, weighted root-space isomorphism, and
-discriminant valuation. Verify current mathlib before any plan.
+Formalized.  See `prime-radial-excess-intersection-discriminant-law-formalized.md` (same
+directory).
 
 ## Gates
 
@@ -653,7 +653,7 @@ discriminant valuation. Verify current mathlib before any plan.
 - [x] generalized-prime falsifier recorded
 - [ ] external novelty audit
 - [ ] coefficient-faithful literal Route-L comparison
-- [ ] Lean formalization
+- [x] Lean formalization
 
 ## Log
 
@@ -662,77 +662,8 @@ discriminant valuation. Verify current mathlib before any plan.
 
 ## Lean build progress
 
-Formalization in progress in
+Complete.  Every boxed equation of Theorems 1--7 is a green, unconditional Lean declaration in
 `formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/PrimeRadialExcessDiscriminant.lean`
-(wired into `GaloisForLFunctions.HTGeometry`).  Built and green so far:
-
-- `vandermondeProd_contactSheets` — **card `(20)`**: the orientation of `f_p = a·u_p` is
-  `a^{N(N−1)/2}` times the residue orientation;
-- `addVal_pow`, `addVal_sheetDiscriminant_contact` — **cards `(17)`, `(18)`, `(19)` boxed**: the
-  discriminant has order exactly `N(N−1)` in the horizon parameter, so the normalised divisor is
-  cutoff-independent;
-- `primeRadial_cokernel_equiv` — **cards `(20c)`, `(20d)` boxed**: the exact Smith staircase
-  `diag(1, a, …, a^{N−1})` and the barcode `⊕_j R/(a^j)`;
-- `primeRadial_detIdeal` — every determinantal ideal of the observer;
-- `primeRadial_fitting_square` — **card `(20j)` boxed**: the orientation ideal squares to the
-  cotangent Fitting ideal, at every height;
-- `primeRadial_grade_card`, `primeRadial_grade_eq_rootCount` — **card `(20f)`**: the `a`-adic
-  grade dimensions are `N−1, N−2, …, 1`, matching the type `A_{N−1}` positive-root height
-  distribution `N − h`.
-
-Reused, not rebuilt: `contactSheets`, `contact_cokernel_equiv`, `detIdeal_contact`,
-`detIdeal_contactScale_eq_sq`, `isUnit_det_vandermonde_of_separated`, `phaseSubdiscriminant`,
-`residueMult`, `contactScale` from
-`phase-subdiscriminant-kahler-smith-stratification-law-formalized.md`; `sheetDiscriminant`,
-`vandermondeProd`, `addVal_of_isUnit` from
-`ultrametric-horizon-energy-smith-correspondence-formalized.md` and the DVR layer.
-
-- `weightedSum`, `meanSum`, `weightDiag`, `weightDiag_map_ker`, `weightedSum_surjective`,
-  `finrank_ker_weightedSum` — **Corollary 2, cards `(10)`–`(14)` boxed**: the weighted diagonal
-  `(c_p) ↦ (c_p log p)` is a linear isomorphism carrying the weighted syzygy hyperplane
-  `{∑ c_p log p = 0}` onto the mean-zero type `A_{N−1}` root space `{∑ d_p = 0}`; the syzygy
-  functional is surjective, so the underived horizon port is one-dimensional `(13)` and the excess
-  conormal has rank `N − 1` `(14)`.
-
-- `splitKoszulHomology`, `splitKoszulHomologyEquiv` — **Theorem 1, cards `(5)`, `(9)` boxed**:
-  in split coordinates the Koszul homology of a common-factor family is
-  `H_{p+1}(K) ≅ (⋀^{p+1}E) ⧸ z·(⋀^{p+1}E)`, i.e. `R/(a) ⊗ ⋀^• E_F`.
-
-**mathlib has no Koszul complexes at all** (no `Mathlib/**/Koszul*` file), but the corpus does:
-`HTGeometry/CommonFactorKoszulHomology.lean` already owns the whole split-coordinate layer —
-`unitWeightedAugmentation` (the card's `h_F`), `unitWeightedSplitEquiv` (the splitting `(7)`),
-`unitWeightedRelationsBasis` and `card_unitWeightedAway` (`E_F` free of rank `N−1`),
-`splitCommonFactorCyclesEquiv` (cycles `≅ ⋀^{p+1}E`) and
-`map_scalarRange_splitCommonFactorCyclesEquiv_eq_boundaries` (boundaries `= z·⋀^{p+1}E`).  The card's
-Theorem 1 is those two facts glued by `Submodule.Quotient.equiv`.  One practical note: forming the
-nested quotient `↥(cycles) ⧸ boundaries` needs `set_option maxSynthPendingDepth 4`, otherwise
-instance search fails to find `HasQuotient` even though every ingredient is present.
-
-- `finrank_exteriorPower_ker_weightedSum` — **card `(6)` boxed**: the Koszul homology dimensions
-  are `C(N−1, j)`;
-- `rootFrame_normalised`, `rootDifference_mem_relations` — **Theorem 7, cards `(22f)`, `(22g)`**:
-  the canonical root frame `s_p = u_p⁻¹e_p` is normalised and its ordered differences are excess
-  syzygies (reusing the corpus `unitWeightedSection` and `unitWeightedAugmentation_section`);
-- `trace_commutator_eq_zero` — **card `(22e)` boxed**: the determinant-line curvature is flat;
-- `commutator_eq_zero_of_finrank_one` — **card `(22d)` at `N = 2`**: a one-dimensional excess
-  bundle has vanishing phase curvature;
-- `exists_cutoff_exteriorPower_ne_zero` — **cards `(21)`, `(22)`**: every fixed exterior degree is
-  born at a finite cutoff, so there is no largest nonzero degree and no stable top determinant.
-
-- `rankOneOp`, `rankOneOp_not_commute` — **card `(22d)`, the `N ≥ 3` mechanism**: non-orthogonal,
-  non-collinear rank-one Hermitian operators do not commute.  This is exactly the step the card's
-  proof invokes for the pair claim.
-
-- `orthoProj`, `inner_orthoProj_orthoProj`, `orthoProj_not_collinear`,
-  `phaseCurvature_commutator_ne_zero` — **card `(22d)` boxed, `N ≥ 3`**: orthogonal unit vectors
-  project to non-orthogonal ones (`⟪P₀a, P₀b⟫ = −⟪a,w⟫⟪w,b⟫ ≠ 0`), a third direction meeting the
-  weight vector separates them, and hence every pair commutator of the phase curvature is nonzero.
-  Stated over an arbitrary complex inner-product space rather than in prime coordinates, so no
-  `EuclideanSpace` bookkeeping is needed.
-
-Remaining: the filtered-colimit form of `(21)`, i.e. `H_•(K_∞) ≅ ℂ ⊗ ⋀^• E_∞` for
-`E_∞ = colim_F E_F`.  The degree-count half of `(21)`/`(22)` — every fixed degree is born at a
-finite cutoff and there is no stable top — is already proved as
-`exists_cutoff_exteriorPower_ne_zero`; what is left is the interchange
-`⋀^j (colim E) ≅ colim (⋀^j E)`, for which mathlib has `Module.DirectLimit` but no exterior-power
-commutation lemma.
+(wired into `GaloisForLFunctions.HTGeometry`).  The declaration-by-card map, the corpus reuse
+ledger and the axiom audit are in the companion card
+`prime-radial-excess-intersection-discriminant-law-formalized.md`.

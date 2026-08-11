@@ -1,12 +1,13 @@
 # Weighted port capacity, admission, and recurrence law
 
 - **ID:** `cmr-weighted-port-capacity-admission-recurrence`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM / CAPACITY--TOPOLOGY--TIME CALIBRATION
 - **Status:** `[PAPER-PROVED] [HOSTILE ACCEPT] [BRIDGE/CLASSICAL SYNTHESIS]`
   `[CAPACITY/POSITIVITY/TOPOLOGY/RECURRENCE/PROLONGATION]`
   `[ROUTE-E/STOKES ABSTRACT BRIDGE, NOT LITERAL IDENTIFICATION]`
-  `[NOT HT BY ITSELF] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[NOT HT BY ITSELF] [NOT RH] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `weighted-port-capacity-admission-recurrence-law-formalized.md`
 - **Parents:** `prime-port-algebraic-continuous-separation-law.md`;
   `prime-phase-port-recurrence-completion-law.md`.
 - **Statement:** For a weighted prime Hilbert chart, continuous port admission, finite effective
@@ -292,7 +293,8 @@ reduction phase, recurrence metric, and derivative-domain hierarchy for one sour
   becomes topologically invisible. This is a precise complementarity principle rather than a
   metaphorical uncertainty relation.
 - **Status:** dependency-closed paper proof; hostile review accepted mathematics and classified it
-  as a strong classical/corpus bridge, not GR-level core; no Lean written.
+  as a strong classical/corpus bridge, not GR-level core; Lean formalization complete and
+  unconditional.
 
 ## Log
 

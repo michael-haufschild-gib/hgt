@@ -172,6 +172,7 @@ theorem exists_gammaCorrection_vanishing_divisor :
   obtain ⟨i, rfl⟩ : ∃ i : ℕ, ℓ = -((i : ℤ) + 1) := ⟨(-ℓ - 1).toNat, by omega⟩
   have hUmero : MeromorphicOn (fun w ↦ F (w + σ) - F w) (Set.univ : Set ℂ) := fun y _ ↦
     (meromorphicAt_comp_add.mpr (hF (y + σ) (Set.mem_univ _))).sub (hF y (Set.mem_univ y))
+  simp only [gammaCorrection]
   rw [additiveOrbitalDivisorAt_sub hF
     (meromorphicOn_jetCombination hτ hσ (gammaCorrectionCoeff τ σ F P) P _)
     (finite_support_orbitalDivisorTerm hF hper hmixed hτ (indepSwap_of_indepPeriods hindep) p
