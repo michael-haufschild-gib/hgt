@@ -414,7 +414,7 @@ theorem xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho
 
 /-- Canonical connection term forced by the moving inverse-Hankel admission. -/
 def xiShiftedCanonicalAdmissionSourceConnection (y : ℝ) (n : ℕ) : ℝ :=
-  2 * HTGeometry.monicOrthoNorm
+  2 * HTGeometry.monicOrthoNormSq
       (fun k => (xiShiftedReciprocalMoment y k).re) n *
     (finitePolynomialVelocity
       (xiShiftedCanonicalAdmissionVelocity y n)).coeff (n - 1)
@@ -554,7 +554,7 @@ theorem xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm
     (hH : (HTGeometry.momentHankelMatrix
       (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
     xiShiftedCanonicalAdmissionNorm y n =
-      HTGeometry.monicOrthoNorm
+      HTGeometry.monicOrthoNormSq
         (fun k => (xiShiftedReciprocalMoment y k).re) n := by
   rw [xiShiftedCanonicalAdmissionNorm,
     xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho hH]
@@ -610,7 +610,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionOddCurrent_eq_jacobiEnergy
           (fun k => (xiShiftedReciprocalMoment v k).re) n)
         (X * HTGeometry.monicMomentAdmissionPolynomial
           (fun k => (xiShiftedReciprocalMoment v k).re) n))
-      (-2 * HTGeometry.monicOrthoNorm
+      (-2 * HTGeometry.monicOrthoNormSq
           (fun k => (xiShiftedReciprocalMoment y k).re) n *
           HTGeometry.adaptiveOrthoJacobiEnergy
             (fun k => (xiShiftedReciprocalMoment y k).re) n +
@@ -961,7 +961,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_jacobiFlow_of_succ_posDef
           (fun k => (xiShiftedReciprocalMoment y k).re) n -
         ((2 * n + 1 : ℕ) : ℝ) * HTGeometry.monicOrthoAlpha
           (fun k => (xiShiftedReciprocalMoment y k).re) n) *
-        HTGeometry.monicOrthoNorm
+        HTGeometry.monicOrthoNormSq
           (fun k => (xiShiftedReciprocalMoment y k).re) n) y := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
@@ -983,9 +983,9 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_jacobiFlow_of_succ_posDef
   have htransport : HTGeometry.momentFunctional s
       (X * xiShiftedBoundaryShiftedEuler 1 ((HTGeometry.monicOrtho s n) ^ 2)) =
       ((2 * n + 1 : ℕ) : ℝ) * HTGeometry.monicOrthoAlpha s n *
-          HTGeometry.monicOrthoNorm s n -
+          HTGeometry.monicOrthoNormSq s n -
         2 * HTGeometry.monicOrthoFirstCoeff s n *
-          HTGeometry.monicOrthoNorm s n := by
+          HTGeometry.monicOrthoNormSq s n := by
     simpa only [xiShiftedBoundaryShiftedEuler, C_1, one_mul] using
       HTGeometry.momentFunctional_X_shiftedEuler_one_sq_monicOrtho
         hbelow hn (by omega)
@@ -1016,7 +1016,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_jacobiFlow
           (fun k => (xiShiftedReciprocalMoment y k).re) n -
         ((2 * n + 1 : ℕ) : ℝ) * HTGeometry.monicOrthoAlpha
           (fun k => (xiShiftedReciprocalMoment y k).re) n) *
-        HTGeometry.monicOrthoNorm
+        HTGeometry.monicOrthoNormSq
           (fun k => (xiShiftedReciprocalMoment y k).re) n) y := by
   exact hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_jacobiFlow_of_succ_posDef
     hy hn (xiShiftedMomentHankel_posDef_of_le (by omega) hH)
@@ -1039,7 +1039,7 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionAlpha_eq_sourceConnection
             ((2 * n + 1 : ℕ) : ℝ) * HTGeometry.monicOrthoAlpha
               (fun k => (xiShiftedReciprocalMoment y k).re) n)) y := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
-  let hval := HTGeometry.monicOrthoNorm s n
+  let hval := HTGeometry.monicOrthoNormSq s n
   let aval := HTGeometry.monicOrthoFirstCoeff s n
   let alpha := HTGeometry.monicOrthoAlpha s n
   let energy := HTGeometry.adaptiveOrthoJacobiEnergy s n
@@ -1235,7 +1235,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_canonicalAdmission_eq_ja
     xiShiftedAdaptiveMixedCompletedArithmeticSource w
         (HTGeometry.monicMomentAdmissionPolynomial
           (xiShiftedRealMomentSequence w) n) =
-      2 * HTGeometry.monicOrthoNorm (xiShiftedRealMomentSequence w) n *
+      2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n := by
   have heq := xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho
     (y := w ^ 2) hH
@@ -1271,7 +1271,7 @@ theorem xiShiftedCompletedMomentAggregate_canonicalAdaptiveOddPacket_eq_jacobiEn
           (xiShiftedOddCrossingCoefficientPacket
             (HTGeometry.monicMomentAdmissionPolynomial
               (xiShiftedRealMomentSequence w) n))) =
-      2 * HTGeometry.monicOrthoNorm (xiShiftedRealMomentSequence w) n *
+      2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n := by
   rw [xiShiftedCompletedMomentAggregate_adaptiveOddPacket_eq_arithmeticSource hw]
   exact

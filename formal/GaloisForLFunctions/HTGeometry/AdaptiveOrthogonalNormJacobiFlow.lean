@@ -105,7 +105,7 @@ theorem momentInner_monicOrtho_adaptiveOrthoNormCompanion
     (hn : 0 < n) (hnN : n + 1 ≤ N) :
     momentInner s (monicOrtho s n) (adaptiveOrthoNormCompanion s n) =
       ((n : ℝ) * monicOrthoAlpha s n - monicOrthoFirstCoeff s n) *
-        monicOrthoNorm s n := by
+        monicOrthoNormSq s n := by
   have hhigh : momentInner s (monicOrtho s n) (monicOrtho s (n + 1)) = 0 :=
     monicOrtho_inner_eq_zero_below h (by omega) hnN (by omega)
   have hrem : momentInner s (monicOrtho s n)
@@ -120,7 +120,7 @@ theorem momentInner_monicOrtho_adaptiveOrthoNormCompanion
       module]
   rw [momentInner_add_right, momentInner_add_right,
     momentInner_smul_right, momentInner_smul_right, hhigh, hrem]
-  simp [monicOrthoNorm]
+  simp [monicOrthoNormSq]
 
 /-- Euler transport of `Pₙ²` collapses to the norm-flow coefficient. -/
 theorem momentFunctional_X_shiftedEuler_one_sq_monicOrtho
@@ -128,16 +128,16 @@ theorem momentFunctional_X_shiftedEuler_one_sq_monicOrtho
     (hn : 0 < n) (hnN : n + 1 ≤ N) :
     momentFunctional s
         (X * (X * ((monicOrtho s n) ^ 2).derivative + (monicOrtho s n) ^ 2)) =
-      ((2 * n + 1 : ℕ) : ℝ) * monicOrthoAlpha s n * monicOrthoNorm s n -
-        2 * monicOrthoFirstCoeff s n * monicOrthoNorm s n := by
+      ((2 * n + 1 : ℕ) : ℝ) * monicOrthoAlpha s n * monicOrthoNormSq s n -
+        2 * monicOrthoFirstCoeff s n * monicOrthoNormSq s n := by
   have hcomp := momentInner_monicOrtho_adaptiveOrthoNormCompanion h hn hnN
   have hodd : momentInner s (monicOrtho s n) (X * monicOrtho s n) =
-      monicOrthoAlpha s n * monicOrthoNorm s n := by
-    have hnormne : monicOrthoNorm s n ≠ 0 :=
+      monicOrthoAlpha s n * monicOrthoNormSq s n := by
+    have hnormne : monicOrthoNormSq s n ≠ 0 :=
       ne_of_gt (monicOrthoNorm_pos_below h (by omega))
     have hrawne : momentInner s (monicOrtho s n) (monicOrtho s n) ≠ 0 := by
-      simpa only [monicOrthoNorm] using hnormne
-    rw [momentInner_comm, monicOrthoAlpha, monicOrthoNorm,
+      simpa only [monicOrthoNormSq] using hnormne
+    rw [momentInner_comm, monicOrthoAlpha, monicOrthoNormSq,
       div_mul_cancel₀ _ hrawne]
   have hpoly :
       X * (X * ((monicOrtho s n) ^ 2).derivative + (monicOrtho s n) ^ 2) =

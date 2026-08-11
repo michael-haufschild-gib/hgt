@@ -37,7 +37,7 @@ theorem deningerEscapeSource_circle_tendsto_zero (P : {x : ℝ // 0 < x}) {a : �
       deningerPeriodicSup m (deningerPeriodizationMap P.2
         (deningerEscapeFamily a (n : ℝ) (DeningerMeyerSource.toSource h))))
       atTop (𝓝 0) := by
-    have := tendsto_finset_sum (Finset.range (r + 1))
+    have := tendsto_finsetSum (Finset.range (r + 1))
       (f := fun m (n : ℕ) => deningerPeriodicSup m (deningerPeriodizationMap P.2
         (deningerEscapeFamily a (n : ℝ) (DeningerMeyerSource.toSource h))))
       (a := fun _ => (0 : ℝ))
@@ -104,6 +104,13 @@ theorem deningerTomography_not_continuous_symm (hQinf : Q.Infinite)
     {ψ : DeningerMeyerSource} (hψK : deningerPeriodizationLM P0 ψ = 0) (hψ : ψ ≠ 0) :
     ¬ Continuous (frechetRangeEquiv (deningerTomographyRestricted P P0)
       (deningerTomographyRestricted_injective P P0 hQinf hQp hP)).symm := by
+  haveI : CompleteSpace ↥(LinearMap.ker (deningerPeriodizationLM P0)) :=
+    ((deningerPeriodizationLM_isClosed_ker P0).isComplete).completeSpace_coe
+  haveI : FirstCountableTopology ↥(LinearMap.ker (deningerPeriodizationLM P0)) :=
+    Topology.IsInducing.subtypeVal.firstCountableTopology
+  haveI : IsUniformAddGroup ↥(LinearMap.ker (deningerPeriodizationLM P0)) :=
+    inferInstanceAs (IsUniformAddGroup
+      ↥((LinearMap.ker (deningerPeriodizationLM P0)).toAddSubgroup))
   set f := deningerTomographyRestricted P P0 with hf
   set hinj := deningerTomographyRestricted_injective P P0 hQinf hQp hP with hinjdef
   intro hsymm
@@ -113,27 +120,36 @@ theorem deningerTomography_not_continuous_symm (hQinf : Q.Infinite)
     deningerEscapeSource_mem_ker P0 1 (n : ℝ) hφK
   set X : ℕ → ↥(LinearMap.ker (deningerPeriodizationLM P0)) := fun n => ⟨x n, hxK n⟩ with hX
   -- the tomogram tends to zero
+  have heq : (fun n : ℕ => ((frechetRangeEquiv f hinj (X n) :
+      ↥(LinearMap.range f)) : (i : Q) → DeningerCircle (P i)))
+      = fun n : ℕ => deningerTomographyLM P (deningerEscapeSource 1 (n : ℝ) φ) :=
+    funext fun n => frechetRangeEquiv_coe f hinj (X n)
   have himg : Tendsto (fun n : ℕ => ((frechetRangeEquiv f hinj (X n) :
       ↥(LinearMap.range f)) : (i : Q) → DeningerCircle (P i))) atTop (𝓝 0) := by
-    have h0 := deningerEscapeSource_tomography_tendsto_zero P (a := 1) one_pos φ
-    simpa [frechetRangeEquiv_coe, hf, deningerTomographyRestricted, hX, hx] using h0
+    rw [heq]
+    exact deningerEscapeSource_tomography_tendsto_zero P (a := 1) one_pos φ
   have hrange : Tendsto (fun n : ℕ => frechetRangeEquiv f hinj (X n)) atTop (𝓝 0) := by
-    refine (IsInducing.subtypeVal (p := fun y => y ∈ LinearMap.range f)).tendsto_nhds_iff.2 ?_
-    simpa using himg
+    refine IsInducing.subtypeVal.tendsto_nhds_iff.2 ?_
+    simpa [Function.comp_def] using himg
   -- continuity of the inverse would drag the source along
   have hker : Tendsto X atTop (𝓝 0) := by
-    have := (hsymm.tendsto (0 : ↥(LinearMap.range f))).comp hrange
-    simpa using this
+    have hcomp := (hsymm.tendsto (0 : ↥(LinearMap.range f))).comp hrange
+    have hfun : ((frechetRangeEquiv f hinj).symm ∘
+        fun n : ℕ => frechetRangeEquiv f hinj (X n)) = X :=
+      funext fun n => (frechetRangeEquiv f hinj).symm_apply_apply (X n)
+    rw [hfun, map_zero] at hcomp
+    exact hcomp
   have hsrc : Tendsto x atTop (𝓝 0) := by
-    have := (continuous_subtype_val (p := fun y => y ∈ LinearMap.ker
-      (deningerPeriodizationLM P0))).continuousAt.tendsto.comp hker
-    simpa [hX] using this
+    have hcomp := (continuous_subtype_val (X := DeningerMeyerSource)
+      (p := fun y => y ∈ LinearMap.ker (deningerPeriodizationLM P0))).continuousAt.tendsto.comp hker
+    simpa [Function.comp_def] using hcomp
   -- but the Meyer seminorm stays above a positive constant
   have hsem : Tendsto
       (fun n : ℕ => DeningerMeyerSource.seminorms (1, 0) (x n)) atTop (𝓝 0) := by
     have hcont := DeningerMeyerSource.withSeminorms.continuous_seminorm (1, 0)
-    have := hcont.continuousAt.tendsto.comp hsrc
-    simpa using this
+    have hcomp := hcont.continuousAt.tendsto.comp hsrc
+    rw [map_zero] at hcomp
+    exact hcomp
   have hlow : ∀ n : ℕ, ‖((DeningerMeyerSource.toSource φ : DeningerExpSchwartz) : 𝓢(ℝ, ℂ)) 0‖
       ≤ DeningerMeyerSource.seminorms (1, 0) (x n) := fun n =>
     deningerEscapeSource_meyer_ge φ n
@@ -151,6 +167,9 @@ theorem deningerTomography_not_isClosed_range (hQinf : Q.Infinite)
       Set ((i : Q) → DeningerCircle (P i))) := by
   haveI : CompleteSpace ↥(LinearMap.ker (deningerPeriodizationLM P0)) :=
     ((deningerPeriodizationLM_isClosed_ker P0).isComplete).completeSpace_coe
+  haveI : FirstCountableTopology
+      ↥(LinearMap.ker (deningerPeriodizationLM P0)) :=
+    Topology.IsInducing.subtypeVal.firstCountableTopology
   haveI : IsUniformAddGroup ↥(LinearMap.ker (deningerPeriodizationLM P0)) :=
     inferInstanceAs (IsUniformAddGroup
       ↥((LinearMap.ker (deningerPeriodizationLM P0)).toAddSubgroup))

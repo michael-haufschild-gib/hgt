@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.FisherDeconvolvedSameCarrierOrientationLaw
 import GaloisForLFunctions.RHTower.GaussHodgeMassCurrent
 import GaloisForLFunctions.RHTower.XiPrimeSeamReflectionEnergy
 import GaloisForLFunctions.RHTower.BurnolPrimeDilationCoPoissonQuotient
@@ -100,7 +101,7 @@ theorem orbitwiseNatSeamCharge_eq_zero_iff (rho : ℂ) {n : ℕ} (hn : 1 < n) :
       rw [orbitwiseNatSeamCharge_weighted_norm_sq_eq_coshDefect rho hn]
       have ht : 2 * rho.re - 1 = 0 := by rw [h]; ring
       rw [ht]
-      simp
+      norm_num
     have hsq : ‖orbitwiseNatPrimeSeamCharge n rho‖ ^ 2 = 0 :=
       (div_eq_zero_iff.mp hzero).resolve_right hp.ne'
     rw [sq_eq_zero_iff, norm_eq_zero] at hsq
@@ -155,7 +156,6 @@ theorem hodgeMassShape_le_seamDensity (q : XiZeroCopy) {n : ℕ} (hn : 1 < n) :
           (Real.log (n : ℝ) ^ 2 * (n : ℝ) ^ (-2 : ℝ) *
             ((n : ℝ) ^ (2 * ((q.1 : ℂ)).re - 1) + (n : ℝ) ^ (-(2 * ((q.1 : ℂ)).re - 1)) - 2)) := by
         field_simp
-        ring
 
 /-! ## The two-lane bridge at every copy, label, and depth -/
 

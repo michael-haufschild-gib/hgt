@@ -24,7 +24,7 @@ variable {A B : Type*} [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
 variable [CommRing B] [IsDomain B] [IsDiscreteValuationRing B]
 
 /-- A unit has valuation zero. -/
-theorem addVal_of_isUnit {x : B} (hx : IsUnit x) : addVal B x = 0 := by
+theorem addVal_of_isUnit_target {x : B} (hx : IsUnit x) : addVal B x = 0 := by
   have hdvd : x ∣ 1 := hx.dvd
   have hle : addVal B x ≤ addVal B 1 := addVal_le_iff_dvd.mpr hdvd
   rw [AddValuation.map_one] at hle
@@ -51,11 +51,11 @@ theorem addVal_map_eq_mul_ramification (φ : A →+* B) {π : A} (hπ : Irreduci
     addVal B (φ a) = (e : ℕ∞) * addVal A a := by
   obtain ⟨n, u, rfl⟩ := eq_unit_mul_pow_irreducible ha hπ
   have hdown : addVal A ((u : A) * π ^ n) = (n : ℕ∞) := by
-    rw [AddValuation.map_mul, addVal_of_isUnit u.isUnit, zero_add,
+    rw [AddValuation.map_mul, addVal_of_isUnit_target u.isUnit, zero_add,
       addVal_pow_uniformizer hπ]
   have hup : addVal B (φ ((u : A) * π ^ n)) = (e : ℕ∞) * (n : ℕ∞) := by
     rw [map_mul, map_pow, AddValuation.map_mul,
-      addVal_of_isUnit (u.isUnit.map φ), zero_add]
+      addVal_of_isUnit_target (u.isUnit.map φ), zero_add]
     exact addVal_map_pow_of_addVal_eq φ e he n
   rw [hup, hdown]
 

@@ -30,7 +30,8 @@ theorem adjoint_thetaBoundarySquareGenerator :
       Complex.I • (thetaKernelOperator.adjoint * thetaKernelOperator.adjoint) := by
   simp only [thetaBoundarySquareGenerator, ContinuousLinearMap.mul_def,
     ContinuousLinearMap.adjoint.map_smulₛₗ, ContinuousLinearMap.adjoint_comp,
-    RCLike.conj_neg, RCLike.conj_I, neg_neg]
+    map_neg, RCLike.conj_I, neg_neg]
+  simp [Complex.conj_I]
 
 /-- The rotated square has boundary-work source `C B + B† C` in the singular metric. -/
 theorem thetaMetric_rotatedSquare_greenSource :
@@ -53,7 +54,7 @@ theorem thetaMetric_rotatedSquare_greenSource :
       _ = (Complex.I • C) * B + B.adjoint * (Complex.I • C) := by rw [hcomm]
       _ = Complex.I • (C * B + B.adjoint * C) := by
         simp only [smul_mul_assoc, mul_smul_comm, smul_add]
-  rw [thetaBoundarySquareGenerator, adjoint_thetaBoundarySquareGenerator]
+  rw [adjoint_thetaBoundarySquareGenerator, thetaBoundarySquareGenerator]
   change G * ((-Complex.I) • (B * B)) +
       (Complex.I • (B.adjoint * B.adjoint)) * G = C * B + B.adjoint * C
   rw [mul_smul_comm, smul_mul_assoc]

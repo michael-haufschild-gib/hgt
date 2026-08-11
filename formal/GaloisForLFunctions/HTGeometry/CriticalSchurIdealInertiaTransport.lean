@@ -38,8 +38,10 @@ noncomputable def criticalSchurIdealInertiaIntegralClosureEquiv
         CriticalSchurNormalIntegralClosure K hm hn) :
       criticalNormalClosure K m n) =
       (σ : criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
-        criticalNormalClosure K m n) • (x : criticalNormalClosure K m n) :=
-  rfl
+        criticalNormalClosure K m n) • (x : criticalNormalClosure K m n) := by
+  simp only [criticalSchurIdealInertiaIntegralClosureEquiv,
+    MulSemiringAction.toRingAut_apply, AlgEquiv.smul_def]
+  exact algebraMap_galRestrict_apply (CriticalSchurNormalBaseRing K hm hn) (σ : _) x
 
 /-- Ideal inertia preserves the complement of the contracted prime. -/
 theorem criticalSchurIdealInertiaIntegralClosureEquiv_map_primeCompl
@@ -96,8 +98,6 @@ noncomputable def criticalSchurIdealInertiaUpperEquiv
         (criticalNormalClosureSchurValuationSubring K hm hn)
         (criticalSchurIdealInertiaIntegralClosureEquiv K hm hn σ x) :=
   IsLocalization.ringEquivOfRingEquiv_eq
-    (criticalNormalClosureSchurValuationSubring K hm hn)
-    (criticalNormalClosureSchurValuationSubring K hm hn)
     (criticalSchurIdealInertiaIntegralClosureEquiv_map_primeCompl K hm hn σ) x
 
 /-- The localized automorphism is the restriction of the original normal-closure automorphism. -/

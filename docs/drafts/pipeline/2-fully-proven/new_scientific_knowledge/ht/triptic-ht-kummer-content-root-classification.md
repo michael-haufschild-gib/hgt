@@ -616,3 +616,35 @@ missing for the third is the reverse inclusion — a source with nonzero charge 
 hypertranscendental — which is the freeness of the differential translation orbit of the elliptic
 gamma source, and the group-theoretic packaging of the class `M` itself as an `AddCommGroup` on
 which the divisor map is an `AddMonoidHom`.
+
+## Lean progress — statement (4), both directions
+
+`GaloisForLFunctions/HTGeometry/TripticMultiplicativeKernelConverse.lean` (wired, axiom-clean):
+
+    tripticOrbitCharge_eq_zero_of_differentiallyAlgebraic :
+      a multiplicative triptic source whose logarithmic derivative is differentially algebraic has
+      vanishing orbital charge on every orbit
+    differentiallyAlgebraic_logDeriv_iff_tripticOrbitCharge_eq_zero :
+      **`Y` is differentially algebraic ⟺ `D_Y = 0`**  — statement (4) of this card
+
+The missing direction was "a source with nonzero charge is hypertranscendental".  It is now a
+two-line consequence of the parent card's kernel inclusion
+(`additiveOrbitalDivisorAt_eq_zero_of_differentiallyAlgebraic`, proved on
+`triptic-orbit-residue-reciprocity`, now in stage 3): a logarithmic derivative carries its whole
+orbital divisor in order `-1`, where `laurentCoeff_shiftDiff_logDeriv` identifies it with the shift
+order, so vanishing of the additive orbital divisor at order `-1` *is* vanishing of the orbital
+charge.
+
+With this, the three inputs of the abstract Kummer classification are all proved for the concrete
+class:
+
+    tripticOrbitCharge_mul                                   D is additive
+    tripticOrbitCharge_ellipticGammaConeTranslate            every class [g] is realized
+    differentiallyAlgebraic_logDeriv_iff_tripticOrbitCharge_eq_zero
+                                                             ker D = M_DA
+
+What remains is purely structural: packaging the class `M` as a group with `D` an `AddMonoidHom`
+into `ℤ[G]`, `G = ℂ/H₃`, so that `hasSourceRootModuloKernel_iff_content_dvd_of_single` applies
+verbatim.  Note that the class is a group only at germ level — as functions, `Y · Y⁻¹ = 1` fails at
+the zeros — so the packaging is over `meroField ℂ`, where every element is by construction a
+fraction of entire germs.

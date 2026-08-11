@@ -491,12 +491,15 @@ theorem exists_separating_point {n : ℕ} (hn : 2 ≤ n) {U : Set ℂ} (hU : IsO
   · rw [show s₁ + ((ε / 2 : ℝ) : ℂ) - 1 / 2 = (s₁ - 1 / 2) + ((ε / 2 : ℝ) : ℂ) by ring,
       Complex.cpow_add _ _ hn0]
     intro heq
-    have hXne : (n : ℂ) ^ (s₁ - 1 / 2) ≠ 0 := Complex.cpow_ne_zero_iff_of_exponent_ne_zero
-      |>.mpr hn0 |>.elim (fun _ => by exact Complex.cpow_ne_zero_iff.mpr hn0)
-      (fun _ => by exact Complex.cpow_ne_zero_iff.mpr hn0)
+    have hXne : (n : ℂ) ^ (s₁ - 1 / 2) ≠ 0 := by
+      intro h0
+      exact hn0 ((Complex.cpow_eq_zero_iff _ _).mp h0).1
     have hone : (n : ℂ) ^ ((ε / 2 : ℝ) : ℂ) = 1 := by
-      field_simp at heq
-      tauto
+      have hcancel : (n : ℂ) ^ (s₁ - 1 / 2) * 1 =
+          (n : ℂ) ^ (s₁ - 1 / 2) * (n : ℂ) ^ ((ε / 2 : ℝ) : ℂ) := by
+        rw [mul_one]
+        exact heq
+      exact (mul_right_cancel₀ hXne (by linear_combination hcancel)).symm
     have hreal : (n : ℂ) ^ ((ε / 2 : ℝ) : ℂ) = (((n : ℝ) ^ (ε / 2 : ℝ) : ℝ) : ℂ) := by
       rw [← Complex.ofReal_natCast, ← Complex.ofReal_cpow (by positivity)]
     rw [hreal] at hone

@@ -61,7 +61,7 @@ theorem xiShiftedAdaptiveNullGaugeCorrectedArithmeticProducer_monicOrtho_eq_jaco
     xiShiftedAdaptiveNullGaugeCorrectedArithmeticProducer w
         (HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n) n =
       ((2 * n + 1 : ℕ) : ℝ) *
-        (2 * HTGeometry.monicOrthoNorm (xiShiftedRealMomentSequence w) n *
+        (2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
           HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n) := by
   rw [xiShiftedAdaptiveNullGaugeCorrectedArithmeticProducer_eq_arithmeticSource hw
       (HTGeometry.monicOrtho_monic _ _)

@@ -5962,17 +5962,29 @@ receive a new title and an independent significance audit.
   `k=Omega(D/log D)=Omega(2^n/n)` for estimating global preparation accessibility with nontrivial
   relative accuracy.  Normalizing the reporter as
   `A_(A,a)=(1-a)h_A/cap_a(A)` gives Haar mean one, return value `(1-a)/cap_a(A)`, and exact
+  likelihood representation `d sigma_(A,a)/d pi=A_(A,a)`.  The return tube carries between
+  `1-a` and one of the tilted probability mass; its KL divergence is at least
+  `(1-a)log(1/pi(A))-log 2` and its chi-square divergence at least
+  `(1-a)^2/cap_a(A)-1`, although every subexponential copy sector captures a vanishing fraction.
+  This is the exact sense in which gate accessibility is globally non-Haar while remaining hidden
+  from simple observers.  The
   complexity sandwich
   `-log h_A/log(M/a) <= C <= -log h_A/log(1/a)`.  Growth, plateau, and recurrence are therefore
   logarithmic accessibility loss and reamplification regimes of one canonical order parameter;
-  their physical-time schedule remains open.  This rigorously
+  their physical-time schedule remains open.  Crucially, the exact complete-union identity becomes
+  `Pr{R,C<=s} <= (M/a)^s cap_a(A)/(1-a) E[1_R A_(A,a)(V)]`.  Therefore an exponential capacity
+  margin needs only the return/carrier-excised bound `E[1_R A_(A,a)(V)]<=exp(o(D))`; exponential
+  high-mode decay or convergence to Haar was an overstrong target.  This rigorously
   separates permanent efficient non-Haar locality from maximal complexity and retains the full
   capacity exponent; an `L^2` argument would lose its square root.  Pointwise, the same theorem
   makes `(I-Pi_E)h_A` an exact complexity--recurrence coordinate: it is at least
   `1-cap_a(A)((1-a)^(-1)+B_(E,a))` on every return, while complexity at least `s` forces it below
   `a^s-cap_a(A)/(1-a)+cap_a(A)B_(E,a)`.  Thus recurrence and the plateau realign only in the
   high-mode complement; persistent low locality modes stay capacity-small throughout.  It does not
-  prove Brown growth.  Exact remaining core is now the **high-mode** Bellman remainder after common return and
-  fast-forwardable-carrier removal.  Dependency-closed proof and hostile audit:
+  prove Brown growth.  Exact remaining core is now **subexponential accessibility amplification**
+  after common return and fast-forwardable-carrier removal.  Frozen primary conjecture: for the
+  Gaussian full nearest-neighbour Pauli shell and fixed `a<1/M`, this expectation is `exp(o(D))`
+  uniformly on the geometric Brown skeleton, while the first certified recurrence reamplifies it
+  to `exp(Theta(D))`.  Dependency-closed proved reduction and hostile audit:
   `../2-fully-proven/capacitary-observer-sector-excision-law.md`.  Lean remained read only during
   corpus refactoring.

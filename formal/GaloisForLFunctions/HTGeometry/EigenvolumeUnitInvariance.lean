@@ -45,7 +45,7 @@ theorem formOrder_eq_of_cross (P : PrimeDivisor B) {a b a' b' : B}
 
 /-- A unit has order zero along every prime divisor. -/
 theorem orderAt_unit (P : PrimeDivisor B) (u : Bˣ) : orderAt P (u : B) = 0 :=
-  addVal_of_isUnit (u.isUnit.map (algebraMap B (Localization.AtPrime P.1)))
+  addVal_of_isUnit_target (u.isUnit.map (algebraMap B (Localization.AtPrime P.1)))
 
 @[simp] theorem formOrder_unit_mul (P : PrimeDivisor B) (u : Bˣ) (a b : B) :
     formOrder ((u : B) * a) b P = formOrder a b P := by

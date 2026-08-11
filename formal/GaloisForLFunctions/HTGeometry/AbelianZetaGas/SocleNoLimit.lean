@@ -155,7 +155,8 @@ noncomputable def socleSum {σ : ℝ} (_hσ : 0 < σ) (c : AbelianZetaMode → �
 theorem measurable_socleSum {σ : ℝ} (hσ : 0 < σ) (c : AbelianZetaMode → ℝ)
     (s : Finset AbelianZetaMode) : Measurable (socleSum hσ c s) := by
   refine Finset.measurable_sum s fun m _ => ?_
-  exact ((measurable_pi_apply m).natCast.const_mul _).sub measurable_const
+  have hm : Measurable fun k : AbelianZetaMode → ℕ => ((k m : ℕ) : ℝ) := by fun_prop
+  exact (hm.const_mul _).sub measurable_const
 
 /-- The law of the centred socle observable over a finite set of modes. -/
 noncomputable def socleLaw {σ : ℝ} (hσ : 0 < σ) (c : AbelianZetaMode → ℝ)
@@ -164,7 +165,7 @@ noncomputable def socleLaw {σ : ℝ} (hσ : 0 < σ) (c : AbelianZetaMode → �
 
 instance socleLaw_isProbability {σ : ℝ} (hσ : 0 < σ) (c : AbelianZetaMode → ℝ)
     (s : Finset AbelianZetaMode) : IsProbabilityMeasure (socleLaw hσ c s) :=
-  isProbabilityMeasure_map (measurable_socleSum hσ c s).aemeasurable
+  Measure.isProbabilityMeasure_map (measurable_socleSum hσ c s).aemeasurable
 
 /-- **The modulus of the characteristic function is the exponential of minus the mode deficit.** -/
 theorem norm_charFun_socleLaw {σ : ℝ} (hσ : 0 < σ) (c : AbelianZetaMode → ℝ)
@@ -187,19 +188,20 @@ theorem norm_charFun_socleLaw {σ : ℝ} (hσ : 0 < σ) (c : AbelianZetaMode →
     rw [← Complex.exp_add]
     congr 1
     rw [socleSum, Finset.sum_sub_distrib]
-    push_cast
-    rw [← Finset.sum_mul, ← Finset.sum_mul, ← Finset.sum_mul]
     have hcoeff : ∀ m ∈ s, socleCoeff σ 1 m.1 * (k m : ℝ) * t
         = socleCoeff σ t m.1 * (k m : ℝ) := by
       intro m _
       rw [socleCoeff, socleCoeff]
       ring
-    rw [show (∑ m ∈ s, socleCoeff σ 1 m.1 * (k m : ℝ)) = ∑ m ∈ s, socleCoeff σ 1 m.1 * (k m : ℝ)
-      from rfl]
+    have hkey : (∑ m ∈ s, socleCoeff σ 1 m.1 * (k m : ℝ)) * t
+        = ∑ m ∈ s, socleCoeff σ t m.1 * (k m : ℝ) := by
+      rw [Finset.sum_mul]
+      exact Finset.sum_congr rfl hcoeff
+    have hC : (∑ m ∈ s, (socleCoeff σ 1 m.1 : ℂ) * (k m : ℂ)) * (t : ℂ)
+        = ∑ m ∈ s, (socleCoeff σ t m.1 : ℂ) * (k m : ℂ) := by
+      exact_mod_cast congrArg (fun x : ℝ => (x : ℂ)) hkey
     push_cast
-    rw [Finset.sum_mul]
-    rw [Finset.sum_congr rfl hcoeff]
-    ring
+    linear_combination Complex.I * hC
   rw [hcf]
   simp only [hsplit]
   rw [MeasureTheory.integral_const_mul,

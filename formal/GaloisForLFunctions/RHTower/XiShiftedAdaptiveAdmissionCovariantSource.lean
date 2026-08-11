@@ -74,7 +74,7 @@ lemma momentInner_lowerPolynomial_prevMonic_eq_coeff_mul_norm_below
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hn : 0 < n) (hnN : n ≤ N) {V : Polynomial ℝ} (hVdeg : V.natDegree < n) :
     HTGeometry.momentInner s V (HTGeometry.monicOrtho s (n - 1)) =
-      V.coeff (n - 1) * HTGeometry.monicOrthoNorm s (n - 1) := by
+      V.coeff (n - 1) * HTGeometry.monicOrthoNormSq s (n - 1) := by
   let R := V - V.coeff (n - 1) • HTGeometry.monicOrtho s (n - 1)
   have hRdeg : R.degree < ((n - 1 : ℕ) : WithBot ℕ) := by
     rw [Polynomial.degree_lt_iff_coeff_zero]
@@ -103,14 +103,14 @@ lemma momentInner_lowerPolynomial_prevMonic_eq_coeff_mul_norm_below
   dsimp only [R] at hRorth
   rw [HTGeometry.momentInner_sub_left,
     HTGeometry.momentInner_smul_left] at hRorth
-  rw [HTGeometry.monicOrthoNorm.eq_def]
+  rw [HTGeometry.monicOrthoNormSq.eq_def]
   linarith
 
 lemma momentInner_velocity_X_monicOrtho_eq_norm_mul_coeff_below
     {s : ℕ → ℝ} {N n : ℕ} (h : HTGeometry.PositiveMomentFormBelow s N)
     (hn : 0 < n) (hnN : n + 1 ≤ N) {V : Polynomial ℝ} (hVdeg : V.natDegree < n) :
     HTGeometry.momentInner s V (X * HTGeometry.monicOrtho s n) =
-      HTGeometry.monicOrthoNorm s n * V.coeff (n - 1) := by
+      HTGeometry.monicOrthoNormSq s n * V.coeff (n - 1) := by
   rw [HTGeometry.X_mul_monicOrtho_below h hnN,
     HTGeometry.momentInner_add_right, HTGeometry.momentInner_add_right,
     HTGeometry.momentInner_smul_right, HTGeometry.momentInner_smul_right]
@@ -128,7 +128,7 @@ lemma momentInner_velocity_X_monicOrtho_eq_norm_mul_coeff_below
   rcases n with _ | n
   · omega
   · simp only [HTGeometry.monicOrthoBeta.eq_def, Nat.succ_sub_one]
-    have hprev : HTGeometry.monicOrthoNorm s n ≠ 0 :=
+    have hprev : HTGeometry.monicOrthoNormSq s n ≠ 0 :=
       ne_of_gt (HTGeometry.monicOrthoNorm_pos_below h (by omega))
     field_simp [hprev]
     ring
@@ -263,11 +263,11 @@ theorem hasDerivAt_xiShiftedMovingAdmissionOddCurrent_eq_jacobiEnergy
       (fun v => HTGeometry.momentInner
         (fun k => (xiShiftedReciprocalMoment v k).re)
         (finitePolynomialCurve c v) (X * finitePolynomialCurve c v))
-      (-2 * HTGeometry.monicOrthoNorm
+      (-2 * HTGeometry.monicOrthoNormSq
           (fun k => (xiShiftedReciprocalMoment y k).re) n *
           HTGeometry.adaptiveOrthoJacobiEnergy
             (fun k => (xiShiftedReciprocalMoment y k).re) n +
-        2 * HTGeometry.monicOrthoNorm
+        2 * HTGeometry.monicOrthoNormSq
           (fun k => (xiShiftedReciprocalMoment y k).re) n *
           (finitePolynomialVelocity dc).coeff (n - 1)) y := by
   let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
@@ -278,7 +278,7 @@ theorem hasDerivAt_xiShiftedMovingAdmissionOddCurrent_eq_jacobiEnergy
   have hsourceInner : HTGeometry.momentInner s
       (X * HTGeometry.monicOrtho s n)
       (X * xiShiftedBoundaryShiftedEuler 1 (HTGeometry.monicOrtho s n)) =
-    HTGeometry.monicOrthoNorm s n *
+    HTGeometry.monicOrthoNormSq s n *
       HTGeometry.adaptiveOrthoJacobiEnergy s n := by
     rw [HTGeometry.momentInner_def]
     simpa only [xiShiftedBoundaryShiftedEuler, C_1, one_mul,
@@ -306,7 +306,7 @@ theorem xiShiftedMovingAdmissionOddCurrent_covariantDerivative_neg
       (fun v => HTGeometry.momentInner
         (fun k => (xiShiftedReciprocalMoment v k).re)
         (finitePolynomialCurve c v) (X * finitePolynomialCurve c v)) Bdot y) :
-    Bdot - 2 * HTGeometry.monicOrthoNorm
+    Bdot - 2 * HTGeometry.monicOrthoNormSq
         (fun k => (xiShiftedReciprocalMoment y k).re) n *
         (finitePolynomialVelocity dc).coeff (n - 1) < 0 := by
   have hcanonical :=

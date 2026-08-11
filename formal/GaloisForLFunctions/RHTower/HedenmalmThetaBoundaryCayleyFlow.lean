@@ -86,6 +86,21 @@ theorem norm_thetaBoundaryScaledSquareGenerator_lt_one :
   change thetaBoundaryCayleyStep * a < 1
   simpa [thetaBoundaryCayleyStep, div_eq_mul_inv, mul_comm] using hfrac
 
+/-- An eigenvalue of a bounded operator lies in its spectrum. -/
+theorem mem_spectrum_of_eigen {H : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
+    (T : H →L[ℂ] H) {mu : ℂ} {v : H} (hv : v ≠ 0) (h : T v = mu • v) :
+    mu ∈ spectrum ℂ T := by
+  rw [spectrum.mem_iff]
+  intro hu
+  obtain ⟨u, hueq⟩ := hu
+  have h0 : (algebraMap ℂ (H →L[ℂ] H) mu - T) v = 0 := by
+    simp [Algebra.algebraMap_eq_smul_one, h]
+  have hinv : ((↑u⁻¹ : H →L[ℂ] H) * (algebraMap ℂ (H →L[ℂ] H) mu - T)) v = v := by
+    rw [← hueq, ← Units.val_mul, inv_mul_cancel, Units.val_one,
+      ContinuousLinearMap.one_apply]
+  rw [ContinuousLinearMap.mul_apply, h0, map_zero] at hinv
+  exact hv hinv.symm
+
 /-- The Cayley denominator is a unit before any spectral information is used. -/
 theorem isUnit_thetaBoundaryCayleyDenominator :
     IsUnit (1 - thetaBoundaryScaledSquareGenerator) :=
@@ -125,8 +140,9 @@ theorem one_sub_thetaXiBoundaryScaledEigenvalue_ne_zero (q : XiZeroCopy) :
     1 - thetaXiBoundaryScaledEigenvalue q ≠ 0 := by
   intro hzero
   have hone : thetaXiBoundaryScaledEigenvalue q = 1 := (sub_eq_zero.mp hzero).symm
-  rw [hone, norm_one] at norm_thetaXiBoundaryScaledEigenvalue_lt_one q
-  exact (lt_irrefl 1) (norm_thetaXiBoundaryScaledEigenvalue_lt_one q)
+  have hlt := norm_thetaXiBoundaryScaledEigenvalue_lt_one q
+  rw [hone, norm_one] at hlt
+  exact lt_irrefl 1 hlt
 
 /-- The source Cayley clock acts diagonally on every canonical theta divisor mode. -/
 theorem thetaBoundaryCayleyClock_thetaXi_eigen (q : XiZeroCopy) :
@@ -138,7 +154,7 @@ theorem thetaBoundaryCayleyClock_thetaXi_eigen (q : XiZeroCopy) :
       (thetaXiDivisorEigenvector_ne_zero q)
       (thetaBoundaryScaledSquareGenerator_thetaXi_eigen q)]
   rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.one_apply, map_smul,
-    thetaBoundaryScaledSquareGenerator_thetaXi_eigen, smul_smul, add_smul]
+    thetaBoundaryScaledSquareGenerator_thetaXi_eigen, smul_smul, ← add_smul]
   simp only [one_smul, thetaXiBoundaryCayleyMultiplier]
   congr 1
   field_simp [one_sub_thetaXiBoundaryScaledEigenvalue_ne_zero q]
@@ -165,29 +181,37 @@ theorem norm_thetaBoundaryCayleyObservation_thetaXi_eigen (q : XiZeroCopy) (n : 
 theorem isCompactOperator_thetaBoundarySquareGenerator :
     IsCompactOperator thetaBoundarySquareGenerator := by
   rw [thetaBoundarySquareGenerator]
-  apply IsCompactOperator.smul
-  simpa only [ContinuousLinearMap.mul_def] using
-    isCompactOperator_thetaKernelOperator.comp_clm thetaKernelOperator
+  exact (isCompactOperator_thetaKernelOperator.comp_clm thetaKernelOperator).smul
+    (-Complex.I)
 
 /-- The source-scaled square remains compact. -/
 theorem isCompactOperator_thetaBoundaryScaledSquareGenerator :
     IsCompactOperator thetaBoundaryScaledSquareGenerator := by
   rw [thetaBoundaryScaledSquareGenerator]
-  exact isCompactOperator_thetaBoundarySquareGenerator.smul _
+  exact isCompactOperator_thetaBoundarySquareGenerator.smul
+    (thetaBoundaryCayleyStep : ℂ)
 
 /-- The Cayley clock differs from the identity by a compact operator. -/
 theorem thetaBoundaryCayleyClock_sub_one :
     thetaBoundaryCayleyClock - 1 =
       (thetaBoundaryScaledSquareGenerator + thetaBoundaryScaledSquareGenerator) *
         Ring.inverse (1 - thetaBoundaryScaledSquareGenerator) := by
-  rw [thetaBoundaryCayleyClock, ← thetaBoundaryCayleyDenominator_mul_inverse]
-  noncomm_ring
+  calc thetaBoundaryCayleyClock - 1
+      = (1 + thetaBoundaryScaledSquareGenerator) *
+            Ring.inverse (1 - thetaBoundaryScaledSquareGenerator) -
+          (1 - thetaBoundaryScaledSquareGenerator) *
+            Ring.inverse (1 - thetaBoundaryScaledSquareGenerator) := by
+        rw [thetaBoundaryCayleyClock, thetaBoundaryCayleyDenominator_mul_inverse]
+    _ = (thetaBoundaryScaledSquareGenerator + thetaBoundaryScaledSquareGenerator) *
+          Ring.inverse (1 - thetaBoundaryScaledSquareGenerator) := by
+        noncomm_ring
 
 theorem isCompactOperator_thetaBoundaryCayleyClock_sub_one :
-    IsCompactOperator (thetaBoundaryCayleyClock - 1) := by
+    IsCompactOperator (⇑(thetaBoundaryCayleyClock - 1)) := by
   rw [thetaBoundaryCayleyClock_sub_one]
   exact (isCompactOperator_thetaBoundaryScaledSquareGenerator.add
-    isCompactOperator_thetaBoundaryScaledSquareGenerator).comp_clm _
+    isCompactOperator_thetaBoundaryScaledSquareGenerator).comp_clm
+    (Ring.inverse (1 - thetaBoundaryScaledSquareGenerator))
 
 /-- A nonzero Cayley eigenline transports through the unit denominator to the corresponding
 scaled square eigenline. -/
@@ -213,7 +237,7 @@ theorem thetaBoundaryScaledSquareGenerator_eigen_of_cayley_eigen
   have hclock :
       (1 + thetaBoundaryScaledSquareGenerator) g = k • D g := by
     rw [hDg]
-    simpa only [thetaBoundaryCayleyClock, g, D] using hf
+    simpa only [thetaBoundaryCayleyClock, g, D, ContinuousLinearMap.mul_apply] using hf
   have hlinear :
       g + thetaBoundaryScaledSquareGenerator g =
         k • g - k • thetaBoundaryScaledSquareGenerator g := by
@@ -223,14 +247,14 @@ theorem thetaBoundaryScaledSquareGenerator_eigen_of_cayley_eigen
     intro hk
     apply hg0
     rw [hk] at hlinear
-    module
+    linear_combination (norm := module) (2⁻¹ : ℂ) • hlinear
   have hkp : k + 1 ≠ 0 := by
     intro hzero
     apply hkneg
     linear_combination hzero
   have hscale :
       (k + 1) • thetaBoundaryScaledSquareGenerator g = (k - 1) • g := by
-    module
+    linear_combination (norm := module) hlinear
   refine ⟨hkneg, g, hg0, ?_⟩
   rw [div_eq_mul_inv, mul_comm, mul_smul]
   exact (eq_inv_smul_iff₀ hkp).2 hscale
@@ -269,12 +293,9 @@ theorem thetaBoundaryScaledSquareGenerator_eigenvalue_re_eq_zero_of_rh
     by_cases hw : w = 0
     · have hneg : thetaKernelOperator v = (-mu) • v := by
         dsimp only [w] at hw
-        module
-      have hevec : HasEigenvector
-          (thetaKernelOperator : Module.End ℂ ThetaH) (-mu) v :=
-        ⟨mem_eigenspace_iff.mpr hneg, hv0⟩
+        linear_combination (norm := module) hw
       have hspec : -mu ∈ spectrum ℂ thetaKernelOperator :=
-        hevec.hasUnifEigenvalue.mem_spectrum
+        mem_spectrum_of_eigen thetaKernelOperator hv0 hneg
       obtain ⟨t, ht⟩ :=
         (riemannHypothesis_iff_thetaKernelOperator_nonzero_spectrum_real.mp hRH)
           (-mu) hspec (neg_ne_zero.mpr hmu0)
@@ -285,23 +306,21 @@ theorem thetaBoundaryScaledSquareGenerator_eigenvalue_re_eq_zero_of_rh
         dsimp only [w]
         rw [map_add, map_smul, hsqmu, smul_add, smul_smul]
         module
-      have hevec : HasEigenvector
-          (thetaKernelOperator : Module.End ℂ ThetaH) mu w :=
-        ⟨mem_eigenspace_iff.mpr hpos, hw⟩
       have hspec : mu ∈ spectrum ℂ thetaKernelOperator :=
-        hevec.hasUnifEigenvalue.mem_spectrum
+        mem_spectrum_of_eigen thetaKernelOperator hw hpos
       exact (riemannHypothesis_iff_thetaKernelOperator_nonzero_spectrum_real.mp hRH)
         mu hspec hmu0
   obtain ⟨t, ht⟩ := hmuReal
   have hyReal : y = ((t ^ 2 : ℝ) : ℂ) := by
     rw [← hmu, ht]
     push_cast
+    ring
   have hxy : x = c * y := by
-    dsimp only [y]
-    rw [mul_assoc, mul_inv_cancel₀ hc0, one_mul]
+    show x = c * (c⁻¹ * x)
+    field_simp
   rw [hxy, hyReal]
   dsimp only [c]
-  simp [Complex.mul_re]
+  simp [Complex.mul_re, ← Complex.ofReal_pow]
 
 /-! ## RH upper spectral bound -/
 
@@ -319,16 +338,17 @@ theorem norm_eq_one_of_mem_spectrum_thetaBoundaryCayleyClock_of_rh
         (a := thetaBoundaryCayleyClock) (r := k) (s := (-1 : ℂ))).2 hk
       simpa [sub_eq_add_neg, Algebra.algebraMap_eq_smul_one, add_comm] using h
     have hdelta : k - 1 ≠ 0 := sub_ne_zero.mpr hk1
-    have heig : HasEigenvalue
+    have heig : Module.End.HasEigenvalue
         ((thetaBoundaryCayleyClock - 1 : ThetaH →L[ℂ] ThetaH) : Module.End ℂ ThetaH)
         (k - 1) :=
       (isCompactOperator_thetaBoundaryCayleyClock_sub_one.hasEigenvalue_iff_mem_spectrum
         hdelta).2 hshift
     obtain ⟨f, hfvec⟩ := heig.exists_hasEigenvector
     have hUf : thetaBoundaryCayleyClock f = k • f := by
-      apply sub_right_inj.mp
-      simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
-        sub_smul, one_smul] using hfvec.apply_eq_smul
+      have hap := hfvec.apply_eq_smul
+      simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.sub_apply,
+        ContinuousLinearMap.one_apply, sub_smul, one_smul] at hap
+      exact sub_left_inj.mp hap
     obtain ⟨hkneg, g, hg0, hXg⟩ :=
       thetaBoundaryScaledSquareGenerator_eigen_of_cayley_eigen hfvec.2 hUf
     have hkp : k + 1 ≠ 0 := by
@@ -380,7 +400,9 @@ theorem thetaBoundaryCayleyGrowth_subexponential_of_rh
     linarith
   have hspos : 0 < s := by
     dsimp only [s]
-    linarith [ENNReal.toReal_nonneg]
+    have h0 : 0 ≤ (spectralRadius ℂ thetaBoundaryCayleyClock).toReal :=
+      ENNReal.toReal_nonneg
+    linarith
   have hslt : s < r := by
     dsimp only [s, eps]
     linarith
@@ -426,7 +448,6 @@ theorem thetaXiBoundaryScaledEigenvalue_re (q : XiZeroCopy) :
   rw [thetaXiBoundaryScaledEigenvalue,
     thetaXiReciprocalEigenvalue_sq_eq_reciprocalSquare]
   simp [Complex.mul_re]
-  ring
 
 theorem xiZeroCopyReciprocalSquare_boundaryLineConj (q : XiZeroCopy) :
     xiZeroCopyReciprocalSquare (xiZeroCopyLineConjEquiv q) =
@@ -487,15 +508,14 @@ theorem not_thetaBoundaryCayleyGrowth_subexponential_of_expanding_mode
         d * a ^ n * ‖f‖ = a ^ n * b := by
           dsimp only [d]
           field_simp
-          ring
         _ ≤ thetaBoundaryCayleyGrowth n * ‖f‖ := hop'
     have hbase : d * a ^ n ≤ thetaBoundaryCayleyGrowth n :=
-      (mul_le_mul_right hfnorm).mp hmul
+      le_of_mul_le_mul_right hmul hfnorm
     exact (le_div_iff₀ (pow_pos hapos n)).2 hbase
   have hlim := hsub a ha
   have hevent : ∀ᶠ n : ℕ in atTop, thetaBoundaryCayleyGrowth n / a ^ n < d :=
     (tendsto_order.1 hlim).2 d hdpos
-  filter_upwards [hevent] with n hn
+  obtain ⟨n, hn⟩ := hevent.exists
   exact (not_lt_of_ge (hlower n)) hn
 
 theorem not_thetaBoundaryCayleyGrowth_subexponential_of_not_rh

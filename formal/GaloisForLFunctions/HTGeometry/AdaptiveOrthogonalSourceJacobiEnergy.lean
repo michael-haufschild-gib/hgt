@@ -22,18 +22,18 @@ open Polynomial
 namespace HTGeometry
 
 /-- Squared moment norm of the monic orthogonal polynomial. -/
-noncomputable def monicOrthoNorm (s : ℕ → ℝ) (n : ℕ) : ℝ :=
+noncomputable def monicOrthoNormSq (s : ℕ → ℝ) (n : ℕ) : ℝ :=
   momentInner s (monicOrtho s n) (monicOrtho s n)
 
 /-- Diagonal Jacobi coefficient in degree `n`. -/
 noncomputable def monicOrthoAlpha (s : ℕ → ℝ) (n : ℕ) : ℝ :=
   momentInner s (Polynomial.X * monicOrtho s n) (monicOrtho s n) /
-    monicOrthoNorm s n
+    monicOrthoNormSq s n
 
 /-- Lower monic Jacobi coefficient, with the unused degree-zero value set to zero. -/
 noncomputable def monicOrthoBeta (s : ℕ → ℝ) : ℕ → ℝ
   | 0 => 0
-  | n + 1 => monicOrthoNorm s (n + 1) / monicOrthoNorm s n
+  | n + 1 => monicOrthoNormSq s (n + 1) / monicOrthoNormSq s n
 
 /-- Literal source-first adaptive mixed amplitude. -/
 noncomputable def adaptiveOrthoSourcePolynomial (s : ℕ → ℝ) (n : ℕ) : Polynomial ℝ :=
@@ -53,14 +53,14 @@ noncomputable def adaptiveOrthoJacobiEnergy (s : ℕ → ℝ) (n : ℕ) : ℝ :=
     2 * (∑ j ∈ Finset.range n, monicOrthoBeta s j) +
     (n + 1 : ℝ) * (monicOrthoBeta s n + monicOrthoBeta s (n + 1))
 
-theorem monicOrthoNorm_pos {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) :
-    0 < monicOrthoNorm s n := by
+theorem monicOrthoNormSq_pos {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) :
+    0 < monicOrthoNormSq s n := by
   exact monicOrtho_inner_self_pos h n
 
 theorem monicOrthoBeta_pos {s : ℕ → ℝ} (h : PositiveMomentForm s) {n : ℕ}
     (hn : 0 < n) : 0 < monicOrthoBeta s n := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
-  exact div_pos (monicOrthoNorm_pos h (k + 1)) (monicOrthoNorm_pos h k)
+  exact div_pos (monicOrthoNormSq_pos h (k + 1)) (monicOrthoNormSq_pos h k)
 
 theorem monicOrthoBeta_nonneg {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) :
     0 ≤ monicOrthoBeta s n := by
@@ -86,9 +86,9 @@ theorem X_mul_monicOrtho {s : ℕ → ℝ} (h : PositiveMomentForm s) (n : ℕ) 
         monicOrthoBeta s n • monicOrtho s (n - 1) := by
   rcases n with _ | n
   · rw [monicOrtho_eq s 1]
-    simp [monicOrthoAlpha, monicOrthoBeta, monicOrthoNorm,
+    simp [monicOrthoAlpha, monicOrthoBeta, monicOrthoNormSq,
       Polynomial.smul_eq_C_mul]
-  · simpa [monicOrthoAlpha, monicOrthoBeta, monicOrthoNorm] using
+  · simpa [monicOrthoAlpha, monicOrthoBeta, monicOrthoNormSq] using
       monicOrtho_three_term h n
 
 /-- First subleading coefficient of `Pₙ`, with its absent degree-zero value set to zero. -/
@@ -337,7 +337,7 @@ theorem adaptiveOrthoSourcePolynomial_eq_mul_companion (s : ℕ → ℝ) (n : �
 theorem momentFunctional_adaptiveOrthoSourcePolynomial_eq_jacobiEnergy
     {s : ℕ → ℝ} (h : PositiveMomentForm s) {n : ℕ} (hn : 0 < n) :
     momentFunctional s (adaptiveOrthoSourcePolynomial s n) =
-      monicOrthoNorm s n * adaptiveOrthoJacobiEnergy s n := by
+      monicOrthoNormSq s n * adaptiveOrthoJacobiEnergy s n := by
   have hhigh2 : momentInner s (monicOrtho s n) (monicOrtho s (n + 2)) = 0 :=
     monicOrtho_inner_eq_zero h (by omega)
   have hhigh1 : momentInner s (monicOrtho s n) (monicOrtho s (n + 1)) = 0 :=
@@ -350,7 +350,7 @@ theorem momentFunctional_adaptiveOrthoSourcePolynomial_eq_jacobiEnergy
     momentInner_add_right, momentInner_add_right, momentInner_smul_right,
     momentInner_smul_right, momentInner_smul_right, hhigh2, hhigh1, hrem,
     adaptiveOrthoProjectionCoeff_eq_energy h hn]
-  simp [monicOrthoNorm]
+  simp [monicOrthoNormSq]
   ring
 
 /-- The completed Jacobi energy is strictly positive in every positive degree. -/
@@ -379,13 +379,13 @@ theorem momentFunctional_adaptiveOrthoSourcePolynomial_pos
     {s : ℕ → ℝ} (h : PositiveMomentForm s) {n : ℕ} (hn : 0 < n) :
     0 < momentFunctional s (adaptiveOrthoSourcePolynomial s n) := by
   rw [momentFunctional_adaptiveOrthoSourcePolynomial_eq_jacobiEnergy h hn]
-  exact mul_pos (monicOrthoNorm_pos h n) (adaptiveOrthoJacobiEnergy_pos h hn)
+  exact mul_pos (monicOrthoNormSq_pos h n) (adaptiveOrthoJacobiEnergy_pos h hn)
 
 /-! ## Finite Hankel-block localization -/
 
 theorem monicOrthoNorm_pos_below {s : ℕ → ℝ} {N n : ℕ}
     (h : PositiveMomentFormBelow s N) (hnN : n < N) :
-    0 < monicOrthoNorm s n := by
+    0 < monicOrthoNormSq s n := by
   exact monicOrtho_inner_self_pos_below h hnN
 
 theorem monicOrthoBeta_pos_below {s : ℕ → ℝ} {N n : ℕ}
@@ -402,9 +402,9 @@ theorem X_mul_monicOrtho_below {s : ℕ → ℝ} {N n : ℕ}
         monicOrthoBeta s n • monicOrtho s (n - 1) := by
   rcases n with _ | n
   · rw [monicOrtho_eq s 1]
-    simp [monicOrthoAlpha, monicOrthoBeta, monicOrthoNorm,
+    simp [monicOrthoAlpha, monicOrthoBeta, monicOrthoNormSq,
       Polynomial.smul_eq_C_mul]
-  · simpa [monicOrthoAlpha, monicOrthoBeta, monicOrthoNorm] using
+  · simpa [monicOrthoAlpha, monicOrthoBeta, monicOrthoNormSq] using
       monicOrtho_three_term_below h hnN
 
 theorem monicOrthoFirstCoeff_succ_below {s : ℕ → ℝ} {N : ℕ}
@@ -555,7 +555,7 @@ theorem momentFunctional_adaptiveOrthoSourcePolynomial_eq_jacobiEnergy_below
     {s : ℕ → ℝ} {N : ℕ} (h : PositiveMomentFormBelow s N)
     {n : ℕ} (hn : 0 < n) (hnN : n + 2 ≤ N) :
     momentFunctional s (adaptiveOrthoSourcePolynomial s n) =
-      monicOrthoNorm s n * adaptiveOrthoJacobiEnergy s n := by
+      monicOrthoNormSq s n * adaptiveOrthoJacobiEnergy s n := by
   have hhigh2 : momentInner s (monicOrtho s n) (monicOrtho s (n + 2)) = 0 :=
     monicOrtho_inner_eq_zero_below h (by omega) hnN (by omega)
   have hhigh1 : momentInner s (monicOrtho s n) (monicOrtho s (n + 1)) = 0 :=
@@ -568,7 +568,7 @@ theorem momentFunctional_adaptiveOrthoSourcePolynomial_eq_jacobiEnergy_below
     momentInner_add_right, momentInner_add_right, momentInner_smul_right,
     momentInner_smul_right, momentInner_smul_right, hhigh2, hhigh1, hrem,
     adaptiveOrthoProjectionCoeff_eq_energy_below h hn hnN]
-  simp [monicOrthoNorm]
+  simp [monicOrthoNormSq]
   ring
 
 theorem momentFunctional_adaptiveOrthoSourcePolynomial_pos_below

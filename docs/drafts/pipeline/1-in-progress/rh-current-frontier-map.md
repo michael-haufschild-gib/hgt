@@ -227,7 +227,17 @@ the prime character is the constant `1` and no function of it computes the Hermi
 (the `Σg²` vs `Σ|g|²` gap as a theorem). Known fencing no-gos: density envelopes cannot decide
 the horizontal transform, and its bilinear upgrade lands on diagonal-vs-off-diagonal
 separation — the MR/correlation wall. External anchors: Suzuki's screw function
-(arXiv:2206.03682) and Connes--Consani Sonin-space Weil positivity (arXiv:2006.13771). Route L asks for this through the resolved-Green
+(arXiv:2206.03682) and Connes--Consani Sonin-space Weil positivity (arXiv:2006.13771).
+`GaussHodgeCoherenceBudget.lean` then prices the residue exactly: the divisor is
+conjugation-closed and `char(ρ)·char(conj ρ) = p^{2Reρ−1}` — the missing transform is the
+conjugate-pair diagonal of a squared explicit formula (the pair-correlation classification as
+a theorem) — and a Cauchy--Schwarz coherence budget makes the Hodge/seam mass an exact
+certificate for zero-side exponential-sum coherence, collapsing to square-root cancellation
+`2·|F|` under RH. The successor gate is a limit-exchange statement: vertical time-averaging
+extracts the (multiplicity-squared) diagonal for finite families via the completed-time torus
+layer; what is open is the interchange of that mean with the divisor closure, priced by
+multiplicity squares (zero-simplicity layer) and fenced by the truncate-first co-Poisson
+no-go. Route L asks for this through the resolved-Green
 rational-Witt/Milnor source annihilator; Route R asks for it through singular Cartier/Stokes
 non-amplification. These target realizations remain distinct even though they retain the same
 horizontal class.
@@ -3056,6 +3066,7 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussMultiPlaceAssembly.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeMassCurrent.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeSeamEnergyBridge.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeCoherenceBudget.lean
 - formal/GaloisForLFunctions/HTGeometry/HyperbolicBounds.lean
 
 ### Committed certification queue excluded from formal status

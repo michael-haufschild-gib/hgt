@@ -37,7 +37,8 @@ theorem xiHeatCassiniOrderedPrimeLaplacePhase_eq_succ_mul_exp_gap
   congr 1
   unfold xiHeatCassiniOrderedPrimeLogGap
   push_cast
-  ring
+  linear_combination ((((xiMassNthPrimeLogHeight N : ℝ) : ℂ) -
+    ((xiMassNthPrimeLogHeight (N + 1) : ℝ) : ℂ)) * s) * Complex.I_sq
 
 /-- Exact second-order exponential remainder on one mesh cell. -/
 theorem xiHeatCassiniLogMeshLaplaceScaledDefect_eq_expRemainder
@@ -58,10 +59,8 @@ theorem sum_xiHeatCassiniLogMeshLaplaceScaledDefect
       xiHeatCassiniOrderedPrimeLaplacePhase 0 s -
         xiHeatCassiniOrderedPrimeLaplacePhase N s -
         s * ∑ n ∈ Finset.range N, xiHeatCassiniLogMeshLaplaceAtom s n := by
-  simp only [xiHeatCassiniLogMeshLaplaceScaledDefect,
-    Finset.sum_sub_distrib, Finset.sum_mul]
-  rw [Finset.sum_range_sub']
-  ring
+  simp only [xiHeatCassiniLogMeshLaplaceScaledDefect]
+  rw [Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_range_sub']
 
 /-- Global Taylor bound for one scaled defect. -/
 theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le
@@ -70,11 +69,13 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le
       ‖xiHeatCassiniOrderedPrimeLaplacePhase (N + 1) s‖ *
         ‖s * (xiHeatCassiniOrderedPrimeLogGap N : ℂ)‖ ^ 2 *
           Real.exp ‖s * (xiHeatCassiniOrderedPrimeLogGap N : ℂ)‖ := by
-  rw [xiHeatCassiniLogMeshLaplaceScaledDefect_eq_expRemainder, norm_mul]
+  rw [xiHeatCassiniLogMeshLaplaceScaledDefect_eq_expRemainder, norm_mul, mul_assoc]
   apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
   have hTaylor := Complex.norm_exp_sub_sum_le_norm_mul_exp
     (s * (xiHeatCassiniOrderedPrimeLogGap N : ℂ)) 2
-  simpa [Finset.sum_range_succ, Nat.factorial] using hTaylor
+  rw [sub_sub]
+  simpa [Finset.sum_range_succ, Nat.factorial, norm_mul, Complex.norm_real,
+    Real.norm_eq_abs] using hTaylor
 
 /-- Bertrand bounds every ordered prime-log cell by one. -/
 theorem xiHeatCassiniOrderedPrimeLogGap_le_one (N : ℕ) :
@@ -134,7 +135,7 @@ theorem norm_xiHeatCassiniLogMeshLaplaceScaledDefect_le_primeGapSq
     _ ≤ ‖s‖ ^ 2 * Real.exp ‖s‖ *
           (2 * (xiHeatCassiniOrderedPrimeGap N / (nthPrimeSubtype N : ℝ)) ^ 2 *
             Real.sqrt (nthPrimeSubtype N : ℝ)) := by
-      gcongr
+      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       simpa only [delta] using primeLogGap_sq_mul_criticalHalfDensity_le_primeGapSq N
     _ = _ := by ring
 

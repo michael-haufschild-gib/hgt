@@ -20,18 +20,19 @@ open Metric Set
 
 variable {𝕜 : Type*} [RCLike 𝕜]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E]
+variable {F₀ : Type*} [NormedAddCommGroup F₀] [NormedSpace 𝕜 F₀]
 
 omit [CompleteSpace E] in
 /-- The closed unit ball of a closed subspace on which a compact operator is bounded below is
 totally bounded. -/
 theorem totallyBounded_closedBall_of_isCompactOperator_of_bounded_below
-    {K : E →L[𝕜] E} (hK : IsCompactOperator K)
+    {K : E →L[𝕜] F₀} (hK : IsCompactOperator K)
     (S : Submodule 𝕜 E) {c : ℝ} (hc : 0 < c)
     (hbdd : ∀ x ∈ S, c * ‖x‖ ≤ ‖K x‖) :
     TotallyBounded (Metric.closedBall (0 : S) 1) := by
   classical
   -- the restriction of `K` to `S` is antilipschitz
-  set f : S → E := fun x => K (x : E) with hf
+  set f : S → F₀ := fun x => K (x : E) with hf
   have hanti : AntilipschitzWith (Real.toNNReal c⁻¹) f := by
     rw [antilipschitzWith_iff_le_mul_dist]
     intro x y
@@ -60,7 +61,7 @@ theorem totallyBounded_closedBall_of_isCompactOperator_of_bounded_below
 
 /-- **A compact operator bounded below on a closed subspace forces finite dimension.** -/
 theorem finiteDimensional_of_isCompactOperator_of_bounded_below
-    {K : E →L[𝕜] E} (hK : IsCompactOperator K)
+    {K : E →L[𝕜] F₀} (hK : IsCompactOperator K)
     (S : Submodule 𝕜 E) (hS : IsClosed (S : Set E)) {c : ℝ} (hc : 0 < c)
     (hbdd : ∀ x ∈ S, c * ‖x‖ ≤ ‖K x‖) :
     FiniteDimensional 𝕜 S := by

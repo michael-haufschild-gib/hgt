@@ -23,23 +23,28 @@ def xiMassCubicAperture (n : ℕ) : ℝ := (n : ℝ) + 1
 theorem xiMassCubicAperture_half_le (n : ℕ) :
     1 / 2 ≤ xiMassCubicAperture n := by
   rw [xiMassCubicAperture]
-  positivity
+  have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+  linarith
 
 theorem xiMassCubicAperture_pos (n : ℕ) : 0 < xiMassCubicAperture n :=
   lt_of_lt_of_le (by norm_num) (xiMassCubicAperture_half_le n)
 
 theorem tendsto_xiMassCubicAperture_atTop :
     Tendsto xiMassCubicAperture atTop atTop := by
-  simpa only [xiMassCubicAperture] using
-    (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds :
-      Tendsto (fun n : ℕ => (n : ℝ) + 1) atTop atTop)
+  have h : Tendsto (fun n : ℕ => (n : ℝ) + 1) atTop atTop :=
+    tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds
+  exact h
 
 /-- Cubic vertical clock. -/
 def xiMassCubicTime (n : ℕ) : ℝ := xiMassCubicAperture n ^ 3
 
 theorem xiMassCubicTime_nonneg (n : ℕ) : 0 ≤ xiMassCubicTime n := by
   rw [xiMassCubicTime]
-  positivity
+  exact pow_nonneg (xiMassCubicAperture_pos n).le 3
+
+/-- The real part of the square of a real point is the square of its real part. -/
+theorem sq_re_of_im_eq_zero {z : ℂ} (h : z.im = 0) : (z ^ 2).re = z.re ^ 2 := by
+  rw [pow_two, Complex.mul_re, h]; ring
 
 /-- One reflection-diagonal squared half-wave term. -/
 def xiMassCubicVerticalHilbertTerm (n : ℕ) (q : XiZeroCopy) : ℝ :=
@@ -57,7 +62,7 @@ theorem xiMassCubicVerticalHilbertTerm_eq_norm_sq (n : ℕ) (q : XiZeroCopy) :
   let F := xiPoissonAbstract.mass (xiMassCubicAperture_half_le n)
   rw [xiMassCubicVerticalHilbertTerm, F.norm_term, ← Real.exp_nat_mul]
   simp only [add_re, one_re, mul_re, ofReal_re, I_re, ofReal_im, I_im, add_zero,
-    one_mul, add_im, one_im, zero_add]
+    one_mul, add_im, one_im, zero_add, mul_I_im]
   congr 1
   ring
 
@@ -73,7 +78,8 @@ theorem summable_xiMassCubicVerticalHilbertTerm (n : ℕ) :
   have hbound : ∀ q : XiZeroCopy,
       xiMassCubicVerticalHilbertTerm n q ≤ Real.exp u * F.weight 2 q := by
     intro q
-    rw [xiMassCubicVerticalHilbertTerm, F.weight, ← Real.exp_add]
+    rw [xiMassCubicVerticalHilbertTerm, HTGeometry.AbstractSpectralFamily.weight,
+      ← Real.exp_add]
     apply Real.exp_le_exp.mpr
     have hK : (F.pt q).im ≤ 1 / 2 :=
       (le_abs_self _).trans (F.abs_im_lt q).le
@@ -109,15 +115,25 @@ theorem xiMassCubicVerticalHilbertEnergy_le_of_riemannHypothesis
     have hK : (F.pt q).im = 0 :=
       (xiPoissonAbstract.mass_im_eq_zero_iff ha q).mpr
         (xiPoissonPoint_im_eq_zero_of_riemannHypothesis hRH q)
-    have haM : a ≤ (F.pt q).re := F.base_le q
+    have hK0 : (xiPoissonAbstract.pt q).im = 0 := by
+      simpa only [xiPoissonAbstract_pt] using
+        xiPoissonPoint_im_eq_zero_of_riemannHypothesis hRH q
+    have hMsq : (F.pt q).re ^ 2 = (xiPoissonAbstract.pt q).re ^ 2 + a ^ 2 := by
+      have hre := congrArg Complex.re (xiPoissonAbstract.mass_pt_sq ha q)
+      rwa [sq_re_of_im_eq_zero hK, Complex.add_re, sq_re_of_im_eq_zero hK0,
+        Complex.ofReal_re] at hre
+    have haM : a ≤ (F.pt q).re := by
+      have hre0 : 0 ≤ (F.pt q).re := F.re_nonneg q
+      nlinarith [sq_nonneg ((xiPoissonAbstract.pt q).re), xiMassCubicAperture_pos n]
     have hRM : (xiPoissonPoint q).re ≤ (F.pt q).re := by
-      simpa only [F, xiPoissonAbstract_pt] using
-        (xiPoissonAbstract.re_lt_csqrtRe_massArg ha q).le
+      simpa only [F, xiPoissonAbstract_pt, HTGeometry.AbstractSpectralFamily.mass_pt,
+        HTGeometry.csqrt_re] using (xiPoissonAbstract.re_lt_csqrtRe_massArg ha q).le
     rw [xiMassCubicVerticalHilbertTerm, hK, mul_zero, sub_zero,
-      xiPoissonAbstract.weight, ← Real.exp_add]
+      HTGeometry.AbstractSpectralFamily.weight, ← Real.exp_add]
     apply Real.exp_le_exp.mpr
-    dsimp only [a]
-    nlinarith
+    dsimp only [a, F] at haM hRM ⊢
+    simp only [xiPoissonAbstract_pt] at hRM ⊢
+    linarith
   rw [xiMassCubicVerticalHilbertEnergy]
   calc
     (∑' q : XiZeroCopy, xiMassCubicVerticalHilbertTerm n q)
@@ -126,7 +142,7 @@ theorem xiMassCubicVerticalHilbertEnergy_le_of_riemannHypothesis
       Summable.tsum_le_tsum hterm (summable_xiMassCubicVerticalHilbertTerm n)
         ((xiPoissonAbstract.summable_weight (by norm_num : (0 : ℝ) < 1)).mul_left _)
     _ = Real.exp (-a) * xiPoissonAbstract.traceReal 1 := by
-      rw [xiPoissonAbstract.traceReal, tsum_mul_left]
+      rw [HTGeometry.AbstractSpectralFamily.traceReal, tsum_mul_left]
     _ = Real.exp (-xiMassCubicAperture n) * xiPoissonAbstract.traceReal 1 := rfl
 
 /-- RH makes the complete cubic-clock vertical Hilbert energy vanish. -/
@@ -135,7 +151,7 @@ theorem tendsto_xiMassCubicVerticalHilbertEnergy_zero_of_riemannHypothesis
     Tendsto xiMassCubicVerticalHilbertEnergy atTop (nhds 0) := by
   refine squeeze_zero xiMassCubicVerticalHilbertEnergy_nonneg
     (xiMassCubicVerticalHilbertEnergy_le_of_riemannHypothesis hRH) ?_
-  exact (Real.tendsto_exp_neg_atTop_nhds_zero.comp
+  simpa using (Real.tendsto_exp_neg_atTop_nhds_zero.comp
     tendsto_xiMassCubicAperture_atTop).mul_const (xiPoissonAbstract.traceReal 1)
 
 /-- Failure of RH supplies a divisor copy in the positive displacement half of its reflection
@@ -156,7 +172,9 @@ theorem exists_xiPoissonPoint_im_pos_of_not_riemannHypothesis
   · exact ⟨q, hpos⟩
   · refine ⟨xiZeroCopyLineConjEquiv q, ?_⟩
     rw [xiPoissonPoint_lineConj, Complex.conj_im]
-    linarith
+    have hne : (xiPoissonPoint q).im ≠ 0 := hq
+    have hle : (xiPoissonPoint q).im ≤ 0 := not_lt.1 hpos
+    exact neg_pos.2 (lt_of_le_of_ne hle hne)
 
 /-- One fixed off-line copy has exponentially divergent cubic-clock squared response. -/
 theorem tendsto_xiMassCubicVerticalHilbertTerm_atTop_of_im_pos
@@ -180,10 +198,11 @@ theorem tendsto_xiMassCubicVerticalHilbertTerm_atTop_of_im_pos
     let K := (F.pt q).im
     have ha0 : 0 < a := xiMassCubicAperture_pos n
     have hM0 : 0 < M := F.re_pos q
+    have hcharge : M * K = c := by
+      simpa only [M, K, R, J, c, F, xiPoissonAbstract_pt] using
+        xiPoissonAbstract.re_mul_im_mass ha q
     have hK0 : 0 < K := by
-      have hprod := xiPoissonAbstract.re_mul_im_mass ha q
-      have : 0 < M * K := by
-        simpa only [M, K, R, J, F, xiPoissonAbstract_pt] using hc
+      have hMK : 0 < M * K := by rw [hcharge]; exact hc
       nlinarith
     have hMup : M ≤ R + a := by
       simpa only [M, F, R, a, xiPoissonAbstract_pt,
@@ -191,9 +210,6 @@ theorem tendsto_xiMassCubicVerticalHilbertTerm_atTop_of_im_pos
         xiPoissonAbstract.csqrtRe_massArg_le_add ha q
     have hMtwo : M ≤ 2 * a := by
       linarith
-    have hcharge : M * K = c := by
-      simpa only [M, K, R, J, c, F, xiPoissonAbstract_pt] using
-        xiPoissonAbstract.re_mul_im_mass ha q
     have hboost : c * a ^ 2 ≤ 2 * a ^ 3 * K := by
       have hmul := mul_le_mul_of_nonneg_right hMtwo hK0.le
       rw [hcharge] at hmul
@@ -211,7 +227,8 @@ theorem tendsto_xiMassCubicVerticalHilbertTerm_atTop_of_im_pos
     ext n
     rw [abs_of_nonneg]
     · ring
-    · positivity
+    · have := (xiMassCubicAperture_pos n).le
+      linarith
   have hexponent : Tendsto
       (fun n : ℕ => -2 *
         (((xiPoissonAbstract.mass (xiMassCubicAperture_half_le n)).pt q).re -
@@ -220,7 +237,7 @@ theorem tendsto_xiMassCubicVerticalHilbertTerm_atTop_of_im_pos
       atTop atTop :=
     tendsto_atTop_mono' atTop hminor hquad
   exact (Real.tendsto_exp_atTop.comp hexponent).congr'
-    (Eventually.of_forall fun n => by rw [xiMassCubicVerticalHilbertTerm])
+    (Eventually.of_forall fun n => rfl)
 
 /-- Off RH the complete positive energy diverges; no tail estimate or interchange is needed. -/
 theorem tendsto_xiMassCubicVerticalHilbertEnergy_atTop_of_not_riemannHypothesis

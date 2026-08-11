@@ -36,7 +36,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_monicOrtho_eq_jacobiEner
     {n : ℕ} (hn : 0 < n) :
     xiShiftedAdaptiveMixedCompletedArithmeticSource w
         (HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n) =
-      2 * HTGeometry.monicOrthoNorm (xiShiftedRealMomentSequence w) n *
+      2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n := by
   let P := HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n
   have hsquare : 0 < w ^ 2 := sq_pos_of_pos (by linarith : 0 < w)
@@ -61,7 +61,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_monicOrtho_pos
   rw [xiShiftedAdaptiveMixedCompletedArithmeticSource_monicOrtho_eq_jacobiEnergy
     hw hpos hn]
   exact mul_pos
-    (mul_pos (by norm_num) (HTGeometry.monicOrthoNorm_pos hpos n))
+    (mul_pos (by norm_num) (HTGeometry.monicOrthoNormSq_pos hpos n))
     (HTGeometry.adaptiveOrthoJacobiEnergy_pos hpos hn)
 
 /-- Finite-block exact law: no positivity assumption beyond the `(n+2)` Hankel face. -/
@@ -70,7 +70,7 @@ theorem xiShiftedAdaptiveMixedCompletedArithmeticSource_monicOrtho_eq_jacobiEner
     (hH : (HTGeometry.momentHankelMatrix (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
     xiShiftedAdaptiveMixedCompletedArithmeticSource w
         (HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n) =
-      2 * HTGeometry.monicOrthoNorm (xiShiftedRealMomentSequence w) n *
+      2 * HTGeometry.monicOrthoNormSq (xiShiftedRealMomentSequence w) n *
         HTGeometry.adaptiveOrthoJacobiEnergy (xiShiftedRealMomentSequence w) n := by
   let P := HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH

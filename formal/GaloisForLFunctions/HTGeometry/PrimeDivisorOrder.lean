@@ -45,7 +45,7 @@ theorem orderAt_ne_zero_iff (P : PrimeDivisor B) (a : B) :
   constructor
   · intro h
     by_contra hmem
-    exact h (addVal_of_isUnit ((IsLocalization.AtPrime.isUnit_to_map_iff
+    exact h (addVal_of_isUnit_target ((IsLocalization.AtPrime.isUnit_to_map_iff
       (Localization.AtPrime P.1) P.1 a).mpr hmem))
   · intro hmem hzero
     exact ((IsLocalization.AtPrime.isUnit_to_map_iff

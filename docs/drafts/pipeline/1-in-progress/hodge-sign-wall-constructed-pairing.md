@@ -100,6 +100,35 @@ Corpus no-gos fencing the divisor average: density envelopes cannot decide it
 diagonal-vs-off-diagonal separation — the MR/correlation wall
 (`mr-bilinear-scope-boundary`, `route-e-dependency-reduced-to-correlations`).
 
+**Attempt 5 — conjugate-pair classification and the coherence budget.**  Two further
+unconditional laws price the residual transform (`GaussHodgeCoherenceBudget.lean`):
+
+1. *Conjugate-pair classification.*  The divisor is conjugation-closed
+   (`xiZeroCopyConjEquiv`, point law by `rfl`), and at every copy
+   `char(ρ)·char(conj ρ) = p^{2 Re ρ − 1}`: the Hermitian sample the transform must reach is
+   the holomorphic bilinear kernel evaluated at the conjugate copy pair.  The wall is
+   *literally* the conjugate-pair diagonal of a squared explicit formula — the
+   pair-correlation classification, as a theorem rather than a remark.
+2. *Coherence budget.*  Cauchy–Schwarz on any finite copy family `F` with weights `v`:
+   `‖Σ_F v(q)·char(q)‖² ≤ (Σ‖v‖²)·(cosh-defect mass of F + 2·|F|)`.  The Hodge/seam mass is
+   an exact upper-bound certificate for zero-side exponential-sum coherence at frequency
+   `log p`; under RH the budget collapses to the diagonal count `2·|F|` (square-root
+   cancellation per frequency, from mass-zero alone).  This ties the Gauss/Burnol invariant to
+   the rectangular `ψ(x) − x` carrier's vocabulary at the finite level.
+
+**The successor gate (exact next `[OPEN CORE]` refinement).**  For finite families the
+conjugate-pair diagonal *is* reachable: vertical time-averaging
+`(1/T)∫ |Σ_q v_q e^{i Im(ρ_q) t} char(q)|² dt → diagonal` by Kronecker/Weyl character
+orthogonality — the corpus's completed-time torus layer owns these assets
+(`TorusCharacterMean`, `LinearPhaseObservable`, equidistribution).  Two exact obstructions
+remain, both already named in the corpus: (i) the extraction yields a multiplicity-*squared*
+diagonal (`m_ρ²` vs `m_ρ`) — the gap closes exactly on zero-simplicity
+(`cauchy-core-density-is-zero-simplicity`); (ii) the explicit formula reaches the full zero
+sum, so the diagonal identity requires exchanging `T → ∞` with the infinite-divisor
+truncation — the exchange the co-Poisson layer proved must be done truncate-first
+(`copoisson-mellin-truncate-first`).  The open core is thus a *limit-exchange* statement: an
+interchange of the vertical mean with the divisor closure, priced by multiplicity squares.
+
 ## Kill-tests passed and formalized
 
 1. **Beurling/interface firewall (formalized).**  The sign, evenness, and radical laws of the
@@ -138,3 +167,10 @@ diagonal-vs-off-diagonal separation — the MR/correlation wall
   information-gap impossibility theorem (no function of the FE-pair sample computes the
   Hermitian sample).  Open core refined to the divisor average of the moment-curve convexity
   defect.
+- 2026-08-11 — attempt 5 formalized: `RHTower/GaussHodgeCoherenceBudget.lean` (conjugate-pair
+  classification `char(ρ)·char(conj ρ) = p^{2Reρ−1}` at copies; Cauchy–Schwarz coherence
+  budget; RH collapse to `2·|F|`).  Both new modules + hyperbolic layer build clean,
+  umbrella-wired, axiom-audited (`propext, Classical.choice, Quot.sound` only, 17 theorems).
+  Successor gate recorded: limit-exchange of the vertical time-mean with the divisor closure,
+  priced by multiplicity squares (torus-mean assets; zero-simplicity layer; truncate-first
+  no-go).

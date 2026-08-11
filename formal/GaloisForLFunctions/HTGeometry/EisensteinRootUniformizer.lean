@@ -154,7 +154,7 @@ theorem irreducible_of_addVal_eq_one {x : B} (h : addVal B x = 1) : Irreducible 
     simp at h
   obtain ⟨n, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hx0 hπ
   have hval : addVal B ((u : B) * π ^ n) = (n : ℕ∞) := by
-    rw [AddValuation.map_mul, addVal_of_isUnit u.isUnit, zero_add, addVal_pow_uniformizer hπ]
+    rw [AddValuation.map_mul, addVal_of_isUnit_target u.isUnit, zero_add, addVal_pow_uniformizer hπ]
   rw [hval] at h
   have hn : n = 1 := by exact_mod_cast h
   subst hn

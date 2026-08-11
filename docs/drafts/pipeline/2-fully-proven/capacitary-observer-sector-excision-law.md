@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
 - **Source:** `first-entrance-gate-capacity-discrepancy-law.md`, `first-entrance-gate-renewal-prefix-law.md`
-- **Statement:** Every bounded finite-dimensional gate-observer sector contributes to first-entrance circuit capture only at target-capacity scale, even for singular and permanently non-Haar endpoint laws.
+- **Statement:** Circuit complexity is logarithmic loss of a capacity-normalized gate-accessibility likelihood; every subexponential observer sector sees only target-capacity mass, while estimating the global likelihood requires growing replica order.
 
 ## Goal
 
@@ -622,6 +622,169 @@ preparation accessibility from permanent low-mode locality, while (11v) converts
 loss exactly into circuit-complexity bounds.  Unit Haar mean does not imply pointwise concentration
 near one; no such concentration claim is made.
 
+### Theorem F (accessibility likelihood and low-degree invisibility)
+
+Define the accessibility-biased probability measure
+
+\[
+ d\sigma_{A,a}:=\mathfrak A_{A,a}\,d\pi.
+ \tag{11y}
+\]
+
+Then `mathfrak A_(A,a)=d sigma_(A,a)/d pi`, and the return tube carries
+
+\[
+ \boxed{
+ \sigma_{A,a}(A)
+ ={(1-a)\pi(A)\over\operatorname{cap}_a(A)}
+ \in[1-a,1].}
+ \tag{11z}
+\]
+
+Writing `q=pi(A)`, data processing to the partition `{A,A^c}` gives
+
+\[
+ \boxed{
+ D_{\mathrm{KL}}(\sigma_{A,a}\Vert\pi)
+ \ge (1-a)\log(1/q)-\log2.}
+ \tag{11aa}
+\]
+
+The chi-square divergence satisfies
+
+\[
+ \boxed{
+ \chi^2(\sigma_{A,a}\Vert\pi)
+ =\|\mathfrak A_{A,a}\|_2^2-1
+ \ge{(1-a)^2\over\operatorname{cap}_a(A)}-1
+ \ge{(1-a)^2\over\pi(A)}-1.}
+ \tag{11ab}
+\]
+
+Nevertheless, every homogeneous `K`-dimensional observer sector obeys
+
+\[
+ \boxed{
+ {\|\Pi_E\mathfrak A_{A,a}\|_2^2
+  \over\|\mathfrak A_{A,a}\|_2^2}
+ \le{\operatorname{cap}_a(A)K\over(1-a)^2}.}
+ \tag{11ac}
+\]
+
+Finally, the pointwise complexity law (11v) is the exact log-likelihood formula
+
+\[
+ \boxed{
+ {-\log h_A(x)}
+ =\log{1-a\over\operatorname{cap}_a(A)}
+  -\log{d\sigma_{A,a}\over d\pi}(x),}
+ \tag{11ad}
+\]
+
+inserted between the two fixed gate-alphabet conversion factors in (11v).
+
+#### Proof
+
+Theorem E proves that (11y) has total mass one.  Because `h_A=1` on `A`, its mass there is the
+displayed ratio in (11z); the capacity window (1a) gives the interval.  Relative entropy decreases
+under the two-cell partition, so with `p=sigma_(A,a)(A)`,
+
+\[
+ D_{\mathrm{KL}}(\sigma_{A,a}\Vert\pi)
+ \ge p\log{p\over q}+(1-p)\log{1-p\over1-q}.
+\]
+
+The right side equals
+
+\[
+ p\log(1/q)+(1-p)\log(1/(1-q))-H_2(p)
+ \ge(1-a)\log(1/q)-\log2,
+\]
+
+proving (11aa).  Normalization gives the first equality in (11ab).  From (11h),
+
+\[
+ \|\mathfrak A_{A,a}\|_2^2
+ ={(1-a)^2\over\operatorname{cap}_a(A)^2}\|h_A\|_2^2
+ \ge{(1-a)^2\over\operatorname{cap}_a(A)}.
+\]
+
+Use `cap_a(A)<=pi(A)` for the last inequality.  Equation (11ac) is (11i) after multiplying numerator
+and denominator by the same normalization factor.  Equation (11ad) is the definition (11r).  QED.
+
+Theorem F supplies the ontological reversal suggested by all prior no-gos:
+
+> circuit complexity is not convergence to Haar randomness; it is pointwise surprisal relative to
+> a gate-accessibility-biased law whose likelihood ratio is globally enormous but invisible to
+> every subexponential observer sector.
+
+Permanent locality witnesses and preparation complexity can therefore coexist because they occupy
+different likelihood sectors.  Brown growth would be the physical-time loss of this accessibility
+likelihood, the plateau its prolonged suppression, and recurrence its reamplification.  Only the
+last time-dependent sentence remains conjectural; equations (11y)--(11ad) are unconditional.
+
+### Theorem G (subexponential accessibility closes the circuit union)
+
+Let `R_D` be any return/carrier-excision event and let `V_D` have an arbitrary endpoint law.  Then
+
+\[
+ \boxed{
+ \Pr\{R_D,\ C_\epsilon(V_D)\le s_D\}
+ \le (M/a)^{s_D}
+ {\operatorname{cap}_a(A_D)\over1-a}
+ \mathbb E\!left[
+  \mathbf1_{R_D}\mathfrak A_{A_D,a}(V_D)
+ \right].}
+ \tag{11ae}
+\]
+
+Suppose, for fixed `alpha>0` and `beta>=0`,
+
+\[
+ \operatorname{cap}_a(A_D)\le\exp[-\alpha D+o(D)],
+ \qquad
+ s_D\le\beta D,
+ \tag{11af}
+\]
+
+and
+
+\[
+ \boxed{
+ \mathbb E\!\left[
+  \mathbf1_{R_D}\mathfrak A_{A_D,a}(V_D)
+ \right]\le\exp[o(D)].}
+ \tag{11ag}
+\]
+
+If
+
+\[
+ \alpha>\beta\log(M/a),
+ \tag{11ah}
+\]
+
+then
+
+\[
+ \boxed{
+ \Pr\{R_D,\ C_\epsilon(V_D)\le s_D\}
+ \le\exp[-(\alpha-\beta\log(M/a))D+o(D)].}
+ \tag{11ai}
+\]
+
+#### Proof
+
+Multiply the pointwise complete-union inequality (9) by `1_(R_D)`, average, and substitute
+`h_A=cap_a(A) mathfrak A_(A,a)/(1-a)`.  This proves (11ae).  Taking logarithms and inserting
+(11af)--(11ah) proves (11ai).  QED.
+
+Theorem G corrects an overstrong frontier formulation.  Brown growth does not require the
+high-mode Bellman remainder to decay exponentially to zero.  Capacity already supplies the
+exponential factor that pays the complete circuit union.  After its entropy margin is fixed, the
+only remaining demand is **no exponential accessibility amplification away from returns and named
+shortcut carriers**.  Permanent low-mode non-Haar memory is compatible with (11ag) by Theorem A.
+
 ## 4. Brown-scale blindness of subexponential observers
 
 Consider a sequence with Hilbert-space dimension `D->infinity`.  Suppose
@@ -709,30 +872,52 @@ detection of a return.
 
 ### C5. Circuit complexity is logarithmic loss of capacity-normalized accessibility
 
-Verdict: `[PAPER-PROVED AS AN EXACT REPRESENTATION]` by Theorem E.
+Verdict: `[PAPER-PROVED AS AN EXACT REPRESENTATION]` by Theorems E--F.
 
-The normalized first-entrance potential has Haar mean one, reciprocal-capacity amplification at
-returns, and logarithmic loss bilipschitz-equivalent to robust word complexity.  This unifies
-growth, plateau, and recurrence as regimes of one order parameter, but does not establish their
-physical-time schedule.
+The normalized first-entrance potential is the likelihood ratio of the accessibility-biased law
+`sigma_(A,a)` to Haar.  It has Haar mean one, reciprocal-capacity amplification at returns, globally
+exponential chi-square divergence, exponentially vanishing low-copy captured fraction, and
+logarithmic loss bilipschitz-equivalent to robust word complexity.  This unifies growth, plateau,
+and recurrence as regimes of one order parameter, but does not establish their physical-time
+schedule.
 
 ### C6. The high-mode Bellman remainder has Brown-rate decay for ordinary static-local dynamics
 
-Verdict: `[OPEN]`.
+Verdict: `[FROZEN PRIMARY CONJECTURE; OPEN]`.
+
+For the Gaussian coefficient ensemble on the full nearest-neighbour two-local Pauli shell, fix
+`a<1/M` and the product-state or Choi target used by the completed-phase theorem.  On the prescribed
+geometric Brown skeleton, after the target-independent spectral-return excision and the named
+capacity-compatible fast-forwardable-carrier excision already defined in the parent programme,
+
+\[
+ \boxed{
+ \sup_{t\in\mathcal T_D}
+ \mathbb E_H\!left[
+  \mathbf1_{R_D(H,t)}\mathfrak A_{A_D,a}(V_{H,t})
+ \right]=\exp[o(D)].}
+ \tag{C6}
+\]
+
+At the first certified recurrence window, the same accessibility amplification returns to
+`exp[Theta(D)]` on the recurrent coefficient set.  Statement (C6) is frozen as the truth-hunch; its
+shape is not chosen around a visible proof route.
 
 The remaining core is now strictly smaller:
 
 \[
  \boxed{
- \mathcal R^+_{E_D,a}(\nu_{H,t},A_D)
- \le \exp[-\beta D\log(M/a)-\kappa D]}
+ \mathbb E_H\!left[
+  \mathbf1_{R_D(H,t)}\mathfrak A_{A_D,a}(V_{H,t})
+ \right]\le\exp[o(D)]}
  \tag{15}
 \]
 
 on the geometric Brown skeleton, after the common return and fast-forwardable-carrier excision.
-Unlike global Haar convergence, (15) concerns only the high-mode component of one first-entrance
-equilibrium potential.  Any future growing-replica or Bellman argument should be centered against
-`Pi_E` before estimating it.
+Unlike global Haar convergence, (15) only excludes exponential amplification of one
+capacity-normalized first-entrance likelihood.  Theorem G proves that target capacity then pays the
+entire complete circuit union.  Any future growing-replica or Bellman argument should be centered
+against `Pi_E` before estimating this normalized quantity.
 
 ## 6. Hostile audit
 
@@ -764,8 +949,12 @@ equilibrium potential.  Any future growing-replica or Bellman argument should be
 10. **Low-degree is not automatically computational complexity.**  Theorem D is an unconditional
    approximation lower bound for named invariant copy sectors.  Turning it into a lower bound for
    arbitrary classical preprocessing or adaptive algorithms requires a separate representation
-   theorem.
-11. **Lean boundary.**  No theorem from this card may enter a final manuscript until its exact
+   theorem.  Corollary D.2 supplies that representation only for finite-copy quantum experiments.
+11. **Accessibility law is not the physical endpoint law.**  `sigma_(A,a)` is a canonical tilt
+   constructed from the gate first-entrance problem.  Its large KL or chi-square divergence does
+   not assert that a static-Hamiltonian endpoint ensemble has that divergence, nor does it prove a
+   black-hole interior statement.
+12. **Lean boundary.**  No theorem from this card may enter a final manuscript until its exact
    finite-dimensional form is formalized and audited.  Lean work is intentionally deferred during
    the active corpus refactor.
 
@@ -824,6 +1013,23 @@ Theorem D adds the quantitative uncertainty principle
 Exponential recurrence capacity therefore forces growing replica order before any static-dynamics
 estimate begins.  This identifies the order-`D/log D` observer scale as intrinsic rather than a
 union-bound artifact.
+
+Theorems E--F then identify the missing universal primitive:
+
+\[
+ \boxed{
+ {d\sigma_{A,a}\over d\pi}
+ ={(1-a)h_A\over\operatorname{cap}_a(A)},
+ \qquad
+ \text{complexity}
+ \asymp-\log h_A
+ =\log{1-a\over\operatorname{cap}_a(A)}
+  -\log{d\sigma_{A,a}\over d\pi}.}
+\]
+
+The accessibility likelihood is globally exponentially non-Haar yet asymptotically absent from
+every polynomial-copy sector.  Complexity therefore measures loss of gate accessibility, not
+production of Haar randomness.
 
 This is the positive advance.  It proves that locality's permanent visibility is compatible with
 maximal complexity without appealing to Haar randomness, and it tells the next proof exactly which

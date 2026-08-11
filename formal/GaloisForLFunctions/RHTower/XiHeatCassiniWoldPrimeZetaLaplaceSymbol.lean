@@ -39,8 +39,7 @@ theorem xiHeatCassiniOrderedPrimeLaplacePhase_eq_coronaPrimeEigenvalue
   rw [Complex.natCast_log]
   congr 1
   push_cast
-  rw [Complex.I_sq]
-  ring
+  linear_combination (Complex.log ((nthPrimeSubtype N : ℕ) : ℂ) * s) * Complex.I_sq
 
 /-- Prime-zeta eigenvalues multiply under spectral translation. -/
 theorem coronaPrimeEigenvalue_add_nat
@@ -68,11 +67,12 @@ theorem woldCoeff_one_mul_coronaPrimeEigenvalue_eq_fourShift
   have hp0R : ((p : ℕ) : ℝ) ≠ 0 := by
     exact_mod_cast Nat.cast_ne_zero.mpr p.prop.ne_zero
   have hp0C : (((p : ℕ) : ℂ)) ≠ 0 := by exact_mod_cast hp0R
-  rw [coronaPrimeEigenvalue_add_nat s 1 p,
-    coronaPrimeEigenvalue_add_nat s 2 p,
-    coronaPrimeEigenvalue_add_nat s 3 p,
-    coronaPrimeEigenvalue_add_nat s 4 p,
-    woldCoeff]
+  have e1 := coronaPrimeEigenvalue_add_nat s 1 p
+  have e2 := coronaPrimeEigenvalue_add_nat s 2 p
+  have e3 := coronaPrimeEigenvalue_add_nat s 3 p
+  have e4 := coronaPrimeEigenvalue_add_nat s 4 p
+  push_cast at e1 e2 e3 e4
+  rw [e1, e2, e3, e4, woldCoeff]
   push_cast
   field_simp [hp0C]
   ring

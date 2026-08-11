@@ -1,18 +1,16 @@
-import GaloisForLFunctions.RHTower.GaussHodgeMassCurrent
+import Mathlib
 
 /-!
 # Reciprocal-character real-form mechanics
 
 One reciprocal exponential character has a split positive energy and a compact phase energy.
-Its Euler derivative is the virial current.  For the literal Gauss residue/Fisher weights this
-virial current is exactly the Gauss Hodge mass, and prime summability selects the neutral real
-form.  This file certifies the generator and cofinal-admission part of the paper theorem; finite
-moment reconstruction is already formalized in `PrimeBooleanMassHankelQuantumFusion`.
+Its Euler derivative is the virial current.  This file certifies the route-independent scalar
+mechanics.  The literal Gauss realization and cofinal admission theorem live in
+`GaussReciprocalCharacterAdmission`; finite moment reconstruction is already formalized in
+`PrimeBooleanMassHankelQuantumFusion`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
-
-open RHTower
 
 noncomputable section
 
@@ -33,12 +31,14 @@ theorem hasDerivAt_reciprocalCharacterSplitEnergy (a lambda t : ℝ) :
     HasDerivAt (reciprocalCharacterSplitEnergy a lambda)
       (2 * a * lambda * Real.sinh (lambda * t)) t := by
   have hlin : HasDerivAt (fun x : ℝ => lambda * x) lambda t := by
-    convert (hasDerivAt_id t).const_mul lambda using 1 <;> ring
+    simpa using (hasDerivAt_id t).const_mul lambda
   have hcosh : HasDerivAt (fun x : ℝ => Real.cosh (lambda * x))
       (Real.sinh (lambda * t) * lambda) t :=
     (Real.hasDerivAt_cosh (lambda * t)).comp t hlin
-  convert (hcosh.sub_const 1).const_mul (2 * a) using 1 <;>
-    simp [reciprocalCharacterSplitEnergy] <;> ring
+  have hmain : HasDerivAt (fun x : ℝ => 2 * a * (Real.cosh (lambda * x) - 1))
+      (2 * a * lambda * Real.sinh (lambda * t)) t :=
+    ((hcosh.sub_const 1).const_mul (2 * a)).congr_deriv (by ring)
+  exact hmain
 
 /-- Exact conservation law: virial current is Euler differentiation of split energy. -/
 theorem reciprocalCharacterVirial_eq_t_mul_deriv (a lambda t : ℝ) :
@@ -63,7 +63,10 @@ theorem reciprocalCharacterVirial_quadratic_lower
     2 * a * (lambda * t) ^ 2 ≤ reciprocalCharacterVirialCurrent a lambda t := by
   have hs := sq_le_mul_sinh (lambda * t)
   rw [reciprocalCharacterVirialCurrent]
-  exact mul_le_mul_of_nonneg_left hs (mul_nonneg (by norm_num) ha)
+  calc 2 * a * (lambda * t) ^ 2 = 2 * a * ((lambda * t) ^ 2) := by ring
+    _ ≤ 2 * a * ((lambda * t) * Real.sinh (lambda * t)) :=
+        mul_le_mul_of_nonneg_left hs (by linarith)
+    _ = 2 * a * (lambda * t) * Real.sinh (lambda * t) := by ring
 
 /-- Positive split weights have exact neutral virial radical. -/
 theorem reciprocalCharacterVirial_eq_zero_iff
@@ -74,63 +77,67 @@ theorem reciprocalCharacterVirial_eq_zero_iff
     by_contra ht
     have hpos : 0 < 2 * a * (lambda * t) ^ 2 := by
       positivity
-    have hlower := reciprocalCharacterVirial_quadratic_lower (t := t) ha.le
+    have hlower := reciprocalCharacterVirial_quadratic_lower
+      (a := a) (lambda := lambda) (t := t) ha.le
     rw [h] at hlower
     linarith
   · rintro rfl
     simp [reciprocalCharacterVirialCurrent]
+
+/-! ## Finite multi-clock fusion -/
+
+/-- Split energy of a finite reciprocal-character packet. -/
+def reciprocalPacketSplitEnergy {ι : Type*} (I : Finset ι)
+    (a lambda : ι → ℝ) (t : ℝ) : ℝ :=
+  ∑ i ∈ I, reciprocalCharacterSplitEnergy (a i) (lambda i) t
+
+/-- Virial current of the same finite packet. -/
+def reciprocalPacketVirialCurrent {ι : Type*} (I : Finset ι)
+    (a lambda : ι → ℝ) (t : ℝ) : ℝ :=
+  ∑ i ∈ I, reciprocalCharacterVirialCurrent (a i) (lambda i) t
+
+/-- Compact phase energy of the same finite packet. -/
+def reciprocalPacketPhaseEnergy {ι : Type*} (I : Finset ι)
+    (a lambda : ι → ℝ) (s : ℝ) : ℝ :=
+  ∑ i ∈ I, reciprocalCharacterPhaseEnergy (a i) (lambda i) s
+
+/-- Finite-packet response is the sum of its local responses. -/
+theorem hasDerivAt_reciprocalPacketSplitEnergy {ι : Type*} (I : Finset ι)
+    (a lambda : ι → ℝ) (t : ℝ) :
+    HasDerivAt (reciprocalPacketSplitEnergy I a lambda)
+      (∑ i ∈ I, 2 * a i * lambda i * Real.sinh (lambda i * t)) t := by
+  change HasDerivAt
+    (fun x : ℝ => ∑ i ∈ I, reciprocalCharacterSplitEnergy (a i) (lambda i) x)
+    (∑ i ∈ I, 2 * a i * lambda i * Real.sinh (lambda i * t)) t
+  exact HasDerivAt.fun_sum fun i _ =>
+    hasDerivAt_reciprocalCharacterSplitEnergy (a i) (lambda i) t
+
+/-- Multi-clock conservation: fused virial equals Euler differentiation of fused split energy. -/
+theorem reciprocalPacketVirial_eq_t_mul_deriv {ι : Type*} (I : Finset ι)
+    (a lambda : ι → ℝ) (t : ℝ) :
+    reciprocalPacketVirialCurrent I a lambda t =
+      t * deriv (reciprocalPacketSplitEnergy I a lambda) t := by
+  rw [(hasDerivAt_reciprocalPacketSplitEnergy I a lambda t).deriv,
+    reciprocalPacketVirialCurrent, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  simp [reciprocalCharacterVirialCurrent]
+  ring
+
+/-- Fused virial retains the sum of all positive quadratic clock jets. -/
+theorem reciprocalPacketVirial_quadratic_lower {ι : Type*} (I : Finset ι)
+    (a lambda : ι → ℝ) (t : ℝ) (ha : ∀ i ∈ I, 0 ≤ a i) :
+    (∑ i ∈ I, 2 * a i * (lambda i * t) ^ 2) ≤
+      reciprocalPacketVirialCurrent I a lambda t := by
+  rw [reciprocalPacketVirialCurrent]
+  exact Finset.sum_le_sum fun i hi =>
+    reciprocalCharacterVirial_quadratic_lower (ha i hi)
 
 /-- Real powers are the split real form of the logarithmic character. -/
 theorem rpow_sub_rpow_neg_eq_two_sinh {s : ℝ} (hs : 0 < s) (t : ℝ) :
     s ^ t - s ^ (-t) = 2 * Real.sinh (Real.log s * t) := by
   rw [Real.rpow_def_of_pos hs, Real.rpow_def_of_pos hs, Real.sinh_eq]
   congr 1 <;> ring
-
-/-- Source weight placing the Gauss Hodge shape in the reciprocal-character normalization. -/
-def gaussReciprocalCharacterWeight (m : ℕ) (p : Nat.Primes) : ℝ :=
-  Real.log 2 / 2 * gaussChannelResidueCurrent m p *
-    primeActivationOccupancyFisherDensity p / Real.log (p : ℝ)
-
-theorem gaussReciprocalCharacterWeight_pos {m : ℕ} (hm : 1 ≤ m)
-    (p : Nat.Primes) : 0 < gaussReciprocalCharacterWeight m p := by
-  have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
-  have hlogp : 0 < Real.log (p : ℝ) := Real.log_pos (by exact_mod_cast p.prop.one_lt)
-  have hc := gaussChannelResidueCurrent_pos hm p
-  have hf := primeActivationOccupancyFisherDensity_pos' p
-  rw [gaussReciprocalCharacterWeight]
-  positivity
-
-/-- Fourth-organ generator identity: Gauss Hodge mass is the reciprocal virial current. -/
-theorem gaussHodgeMassCurrent_eq_reciprocalCharacterVirial
-    (m : ℕ) (q : XiZeroCopy) (p : Nat.Primes) :
-    gaussHodgeMassCurrent m q p =
-      reciprocalCharacterVirialCurrent (gaussReciprocalCharacterWeight m p)
-        (Real.log (p : ℝ)) (primeDepthBVWoldXiCenteredRate q.1) := by
-  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.prop.pos
-  have hlog : Real.log (p : ℝ) ≠ 0 := (Real.log_pos (by exact_mod_cast p.prop.one_lt)).ne'
-  rw [gaussHodgeMassCurrent_eq_boost_square, hodgeMassShape,
-    reciprocalCharacterVirialCurrent, gaussReciprocalCharacterWeight,
-    rpow_sub_rpow_neg_eq_two_sinh hp]
-  field_simp
-  ring
-
-/-- Literal Gauss Hodge current inherits the universal virial quadratic lower bound. -/
-theorem gaussHodgeMassCurrent_virial_lower {m : ℕ} (hm : 1 ≤ m)
-    (q : XiZeroCopy) (p : Nat.Primes) :
-    Real.log 2 * gaussChannelResidueCurrent m p *
-        primeActivationOccupancyFisherDensity p * Real.log (p : ℝ) *
-          primeDepthBVWoldXiCenteredRate q.1 ^ 2 ≤
-      gaussHodgeMassCurrent m q p := by
-  rw [gaussHodgeMassCurrent_eq_reciprocalCharacterVirial]
-  have hweight := (gaussReciprocalCharacterWeight_pos hm p).le
-  have h := reciprocalCharacterVirial_quadratic_lower
-    (a := gaussReciprocalCharacterWeight m p)
-    (lambda := Real.log (p : ℝ))
-    (t := primeDepthBVWoldXiCenteredRate q.1) hweight
-  have hlog : Real.log (p : ℝ) ≠ 0 :=
-    (Real.log_pos (by exact_mod_cast p.prop.one_lt)).ne'
-  rw [gaussReciprocalCharacterWeight] at h
-  convert h using 1 <;> field_simp <;> ring
 
 end
 
