@@ -65,8 +65,8 @@ theorem sum_norm_inner_dyadicDirRow_le_huxley {N K : ℕ} (hN : 1 ≤ N)
     have hsr : s ≠ r := (Finset.mem_erase.1 hs).1
     have htu : lam r ≠ lam s := by
       rcases lt_or_gt_of_ne hsr with hsr' | hrs'
-      · exact ne_of_lt (lt_of_gap hdelta hgap hsr')
-      · exact ne_of_gt (lt_of_gap hdelta hgap hrs')
+      · exact ne_of_gt (lt_of_gap hdelta hgap hsr')
+      · exact ne_of_lt (lt_of_gap hdelta hgap hrs')
     have hpoint := norm_inner_dyadicDirRow_le_huxley hN htu hU
       (hdiam r hrmem s hsmem) hnear hlamT hB hB1
     convert hpoint using 1 <;> ring
@@ -118,7 +118,7 @@ theorem sum_norm_inner_dyadicDirRow_le_huxley {N K : ℕ} (hN : 1 ≤ N)
 theorem huxley_local_large_values {N : ℕ} (hN : 1 ≤ N)
     (a : EuclideanSpace ℂ (Fin N)) {lam : ℕ → ℝ}
     {delta U T B V G : ℝ} (hdelta : 0 < delta) (hU : 0 < U) (hV : 0 < V)
-    (hG : 0 ≤ G) (hmass : ‖a‖ ^ 2 ≤ G)
+    (hmass : ‖a‖ ^ 2 ≤ G)
     (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
     (hnear : 3 * U ≤ 4 * Real.pi * (N : ℝ))
     (hlamT : logDyadicLambda N T ≤ 1)
@@ -168,6 +168,119 @@ theorem huxley_local_large_values {N : ℕ} (hN : 1 ≤ N)
   have habsorb' := mul_le_mul_of_nonneg_left habsorb (by positivity :
     (0 : ℝ) ≤ (R : ℝ) + 1)
   dsimp [Delta] at hmaster
+  nlinarith
+
+/-- **Multi-block Huxley theorem.**  A large value of a sum of finitely many dyadic blocks is
+controlled without choosing a block point-by-point.  Cauchy--Schwarz is applied before the
+Halasz--Montgomery bounds, so the same frequency set is retained and the only absorption condition
+is the aggregate `card * sum (G_q B_q) <= V^2/2`.  This is the form needed after raising a short
+Maynard factor: its fixed-width multiplicative support is split into finitely many dyadic blocks. -/
+theorem huxley_multiblock_large_values {ι : Type*} [Fintype ι]
+    (N : ι → ℕ) (hN : ∀ q, 1 ≤ N q)
+    (a : ∀ q, EuclideanSpace ℂ (Fin (N q)))
+    (G U B : ι → ℝ) {lam : ℕ → ℝ} {delta T V : ℝ}
+    (hdelta : 0 < delta) (hV : 0 < V)
+    (hmass : ∀ q, ‖a q‖ ^ 2 ≤ G q)
+    (hU : ∀ q, 0 < U q)
+    (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
+    (hnear : ∀ q, 3 * U q ≤ 4 * Real.pi * (N q : ℝ))
+    (hlamT : ∀ q, logDyadicLambda (N q) T ≤ 1)
+    (hB : ∀ q, logDyadicSecondEnvelope (N q) (U q) T ≤ B q)
+    (hB1 : ∀ q, 1 ≤ B q)
+    (R : ℕ)
+    (hdiam : ∀ r ∈ Finset.range (R + 1), ∀ s ∈ Finset.range (R + 1),
+      |lam s - lam r| ≤ T)
+    (hbig : ∀ r ∈ Finset.range (R + 1),
+      V ≤ ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖)
+    (habsorb : (Fintype.card ι : ℝ) * ∑ q : ι, G q * B q ≤ V ^ 2 / 2) :
+    ((R : ℝ) + 1) * V ^ 2
+      ≤ 2 * (Fintype.card ι : ℝ) * ∑ q : ι,
+          G q * ((N q : ℝ) + (12 * Real.pi * (N q : ℝ) / delta)
+            * ∑ i ∈ Finset.range (R + 1), 1 / ((i : ℝ) + 1)) := by
+  let base : ι → ℝ := fun q => (N q : ℝ) + (12 * Real.pi * (N q : ℝ) / delta)
+    * ∑ i ∈ Finset.range (R + 1), 1 / ((i : ℝ) + 1)
+  let Delta : ι → ℝ := fun q => base q + ((R : ℝ) + 1) * B q
+  have hDelta0 : ∀ q, 0 ≤ Delta q := by
+    intro q
+    have hsum0 : 0 ≤ ∑ i ∈ Finset.range (R + 1), 1 / ((i : ℝ) + 1) := by positivity
+    have hB0 : 0 ≤ B q := le_trans (by norm_num) (hB1 q)
+    dsimp [Delta, base]
+    positivity
+  have henergy : ∀ q, ∑ r ∈ Finset.range (R + 1),
+      ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 ≤ Delta q * G q := by
+    intro q
+    have hrow : ∀ r ∈ Finset.range (R + 1),
+        ∑ s ∈ Finset.range (R + 1),
+            ‖⟪dyadicDirRow (N q) (lam r), dyadicDirRow (N q) (lam s)⟫_ℂ‖
+          ≤ Delta q := by
+      intro r hr
+      simpa [Delta, base] using sum_norm_inner_dyadicDirRow_le_huxley (hN q)
+        hdelta hgap hdiam (hU q) (hnear q) (hlamT q) (hB q) (hB1 q)
+        (Finset.mem_range.1 hr)
+    have hbessel := sum_norm_inner_sq_le_of_schur (Finset.range (R + 1))
+      (fun r => dyadicDirRow (N q) (lam r)) (hDelta0 q) hrow (a q)
+    exact hbessel.trans (mul_le_mul_of_nonneg_left (hmass q) (hDelta0 q))
+  have hpoint : ∀ r ∈ Finset.range (R + 1),
+      V ^ 2 ≤ (Fintype.card ι : ℝ)
+        * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+    intro r hr
+    have hsq := pow_le_pow_left₀ hV.le (hbig r hr) 2
+    exact hsq.trans (sq_sum_le_card_mul_sum_sq
+      (s := (Finset.univ : Finset ι))
+      (f := fun q => ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖))
+  have htotal : ((R : ℝ) + 1) * V ^ 2
+      ≤ (Fintype.card ι : ℝ) * ∑ q : ι, Delta q * G q := by
+    calc
+      ((R : ℝ) + 1) * V ^ 2
+          = ∑ r ∈ Finset.range (R + 1), V ^ 2 := by
+              rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+              push_cast
+              ring
+      _ ≤ ∑ r ∈ Finset.range (R + 1),
+          (Fintype.card ι : ℝ)
+            * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 :=
+          Finset.sum_le_sum hpoint
+      _ = (Fintype.card ι : ℝ) * ∑ q : ι,
+          ∑ r ∈ Finset.range (R + 1),
+            ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+          calc
+            ∑ r ∈ Finset.range (R + 1),
+                (Fintype.card ι : ℝ)
+                  * ∑ q : ι, ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2
+                = ∑ r ∈ Finset.range (R + 1), ∑ q : ι,
+                    (Fintype.card ι : ℝ)
+                      * ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+                    refine Finset.sum_congr rfl fun r _ => ?_
+                    rw [Finset.mul_sum]
+            _ = ∑ q : ι, ∑ r ∈ Finset.range (R + 1),
+                    (Fintype.card ι : ℝ)
+                      * ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+                    rw [Finset.sum_comm]
+            _ = (Fintype.card ι : ℝ) * ∑ q : ι,
+                  ∑ r ∈ Finset.range (R + 1),
+                    ‖⟪dyadicDirRow (N q) (lam r), a q⟫_ℂ‖ ^ 2 := by
+                    rw [Finset.mul_sum]
+                    refine Finset.sum_congr rfl fun q _ => ?_
+                    rw [Finset.mul_sum]
+      _ ≤ (Fintype.card ι : ℝ) * ∑ q : ι, Delta q * G q := by
+          exact mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun q _ => henergy q)
+            (Nat.cast_nonneg _)
+  have hsplit : ∑ q : ι, Delta q * G q
+      = ∑ q : ι, G q * base q + ((R : ℝ) + 1) * ∑ q : ι, G q * B q := by
+    simp only [Delta]
+    calc
+      ∑ q : ι, (base q + ((R : ℝ) + 1) * B q) * G q
+          = ∑ q : ι, (G q * base q + ((R : ℝ) + 1) * (G q * B q)) := by
+              refine Finset.sum_congr rfl fun q _ => ?_
+              ring
+      _ = ∑ q : ι, G q * base q
+          + ∑ q : ι, ((R : ℝ) + 1) * (G q * B q) := Finset.sum_add_distrib
+      _ = ∑ q : ι, G q * base q
+          + ((R : ℝ) + 1) * ∑ q : ι, G q * B q := by rw [Finset.mul_sum]
+  rw [hsplit] at htotal
+  have habsorb' := mul_le_mul_of_nonneg_left habsorb (by positivity :
+    (0 : ℝ) ≤ (R : ℝ) + 1)
+  dsimp [base] at htotal
   nlinarith
 
 end RHTower.Sieve

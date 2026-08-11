@@ -108,22 +108,58 @@ at every finite (N), not merely in the horizon.
 **Falsified sharply.** (B_2\) has zero Kummer moment but strictly negative nonlinear evaluation at
 every positive character. Ordinary regulator descent cannot be the producer.
 
-### C4 — current surviving producer
+### C4 — construct a literal cyclic lift
 
-Construct a source cyclic/Milnor refinement (\widetilde B_N) of (B_N) for which:
+**Proved, and it does not prove descent.** Every oriented exponent atom and therefore every
+complete harmonic class (B_N) lies in the range of the actual Deninger (t-1) differential on the
+infinite-cyclic group algebra. The lift preserves every grade and both exponent orientations; its
+coefficient column is exactly (B_N). Thus no cyclic/Milnor carrier remains to be invented.
 
-1. marked shells (m=1,\dots,N), divisor multiplicity, prime provenance, and both exponent
-   orientations remain separate;
-2. its image in the Gamma-six exponent carrier is exactly (B_N);
-3. the strict singular physical character is defined on the same quotient, not after scalar
-   codiagonalization;
-4. source boundary/cyclicity kills (\widetilde B_N), so its physical readout vanishes or remains
-   uniformly bounded along complete horizontal dilation orbits.
+### C5 — physical character descends through the literal source boundary
 
-Because the readout is (2F_N(u)) and its horizon is (2F(u)), a cofinal version of item 4 forces
-(u=0). Exact obstruction from C3 says the required refinement must contain nonlinear
-Beck--Chevalley/base-change data; ordinary linear Kummer regulator, Hochschild boundary inclusion,
-or reflection symmetry is insufficient.
+**Classified exactly; this is current producer.** On the actual cyclic group algebra let
+
+\[
+ \chi_a([k])=e^{ak}.
+\]
+
+Lean proves for every source chain (f)
+
+\[
+ \boxed{\chi_a((t-1)f)=(e^a-1)\chi_a(f)}.
+\]
+
+Consequently
+
+\[
+ \chi_a\circ(t-1)=0\quad\Longleftrightarrow\quad a=0.
+\]
+
+For the physical Gamma-six parameter
+
+\[
+ a(s)=(2\Re s-1)\log 6,
+\]
+
+this group-algebra character agrees grade by grade with the existing marked exceptional
+Gamma-six/Burnol/BV reader. Therefore physical cyclic descent at one Xi multiplicity copy is
+equivalent to critical-line placement, and descent at every copy is equivalent to RH.
+
+This is the exact nonlinear Beck--Chevalley anomaly. Source exactness does not make physical
+evaluation vanish: character specialization commutes with the source differential only at the
+neutral grade. Current producer is now one source theorem proving fixed physical reader cyclicity
+on the completed place-marked shell comparison. Ordinary boundary membership, reflection
+covariance, tame reciprocity, and Kummer nullity cannot supply it.
+
+### C6 — completed-exponent reflection transport plus bilateral moderation
+
+**Failed as an automatic producer.** The new anti-birational completed-exponent involution gives
+reciprocal normal coefficients on the two reflected fibres. Iterating it produces a bounded
+two-periodic transport for every divisor, including off-line divisors. Bilateral moderation of
+that alternating family is therefore automatic and cannot force either individual coefficient
+unimodular. Converting it into a constant-character bilateral eigenfamily requires identifying
+the two fibre metrics/trivializations; that is precisely the non-equivariant fixed-reader polar
+selection law, not a consequence of involutivity.
 
 ## Lean status
 
@@ -141,6 +177,14 @@ It proves:
 - unconditional Kummer-moment nullity;
 - exact nonlinear evaluation as tame transgression and shell profile;
 - strict negative two-shell evaluation and (B_2\ne0).
+- exact lift of every oriented atom and complete harmonic class through the existing Deninger
+  `(t-1)` differential;
+- exact physical-character boundary anomaly
+  `chi_a((t-1)f)=(exp(a)-1)chi_a(f)`;
+- descent classification `chi_a o (t-1)=0 iff a=0`;
+- gradewise equality between cyclic character evaluation at
+  `(2 Re(s)-1) log 6` and the marked exceptional Gamma-six reader;
+- pointwise physical descent iff critical-line placement and global physical descent iff RH.
 
 All proofs are unconditional. No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is
 introduced.

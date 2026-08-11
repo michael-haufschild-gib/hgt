@@ -314,10 +314,11 @@ $+1$.  More generally, any fixed number $M$ of removed divisor copies supplies a
 budget $M$ against a bounded physical residue.  Any depletion with $c_y\to\infty$ eventually
 contains arbitrarily many such fixed copies.
 
-Thus moving the positive-real boundary left does not improve the normalized atom inequality: the
-larger analytic half-plane and the inserted head-pole budget are two sides of the same operation.
-Finite-head depletion can redistribute the Julia charge but cannot force it to vanish.  This is
-the Padé boundary analogue of the corpus's Euler-depletion conservativity laws.
+Thus moving the positive-real boundary left does not improve any inequality extracted only from
+the matched Carathéodory jet: the larger analytic half-plane and the inserted head-pole budget are
+two sides of the same operation.  Finite-head depletion alone cannot force the Julia charge to
+vanish by this mechanism.  This is the Padé boundary analogue of the corpus's Euler-depletion
+conservativity laws.
 
 ## 6. Conjecture--failure--pivot
 
@@ -335,16 +336,25 @@ the Padé boundary analogue of the corpus's Euler-depletion conservativity laws.
 4. **Stronger replacement conjecture:** the literal prime--Gamma source has no cofinal
    Julia-normalized Padé atom at $z=-1$.  Unlike ordinary capacity convergence, this statement is
    exactly equivalent to the Route-U target on compact positive mass intervals.
-5. **Conjecture:** remove $o(n)$ low divisor points so the tail half-plane resolves the atom.
-   **FALSIFIED.**  Every removed point reappears as an opposite rational pole, and `(PCR.28)` shows
-   that its entire matched boundary jet is asymptotically indistinguishable from the forbidden
-   atom's jet.  Depletion conserves rather than removes the boundary charge.
+5. **Conjecture:** remove $o(n)$ low divisor points so the tail half-plane resolves the atom by a
+   matched-jet or Carathéodory estimate.  **FALSIFIED.**  Every removed point reappears as an
+   opposite rational pole, and `(PCR.28)` shows that its entire matched boundary jet is
+   asymptotically indistinguishable from the forbidden atom's jet.  At this level, depletion
+   conserves rather than removes the boundary charge.
 
 ## 7. Hostile and literature audit
 
 - `[CORPUS]` The shifted-Xi zeroth-moment asymptotic used in `(PCR.24)` is already Lean-proved in
   `XiShiftedHankelFarRightPositiveDefinite.lean`.  The moving Padé error and residue are paper-proved
   in the parent card.  No corpus result uses the positive-real disk chart or proves `(PCR.19)`.
+- `[CORPUS]` The qualitative warning that depletion can conserve rather than remove an admission
+  obstruction already appears in
+  `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-critical-edge-coface-rigidity.md`
+  and is formalized for that Deninger operator in
+  `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/deninger/deninger-euler-depleted-meyer-periodization-extension.md`.
+  The exact Padé
+  boundary-jet covariance `(PCR.28)` is the source-specific survivor here; no general novelty is
+  claimed for the conservativity principle.
 - `[LITERATURE]` Convergence in capacity and spurious-pole theory are classical Padé parents; see
   Aptekarev--Yattselev,
   [Padé approximants for functions with branch points](https://arxiv.org/abs/1109.0332), and

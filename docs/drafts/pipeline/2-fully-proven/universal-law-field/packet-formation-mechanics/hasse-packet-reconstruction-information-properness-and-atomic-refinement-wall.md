@@ -28,7 +28,9 @@ formation kernel at zero information cost.  The properness theorem would then fo
 
 - [x] 0 -> 1 in-progress: literal pre-zero source law and exact hostile falsifier identified
 - [x] 1 -> 2 fully-proven: dependency-closed proof below
-- [ ] 2 -> 3 formalized: Lean module, umbrella build, lint, and axiom audit
+- [x] 2 -> 3 formalized: certified core in
+  `GaloisForLFunctions.HTGeometry.ConstitutiveHassePacketFormation`; umbrella build, lint, and
+  axiom audit passed
 - [ ] 3 -> 4 publication-ready
 
 ## 1. The finite-difference packet
@@ -363,3 +365,7 @@ instantiation.  No RH conclusion is claimed.
 
 - 2026-08-11 — source identity, reconstruction kernel, information properness, quantum prediction,
   and atomic-refinement wall proved on paper; Lean gate opened.
+- 2026-08-11 — finite packet formation, common-kernel reconstruction, exact atomic wall, finite
+  positive formation measures, parameter recovery, and reflected Jeffreys selection certified in
+  Lean.  The complex Hasse integral, eta phase identity, and QFI corollary remain paper-level source
+  links and are not counted among the certified declarations.

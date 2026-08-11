@@ -64,13 +64,14 @@ canonical odd-current derivative `I_n'=-2h_nE_n+C_n` and collect terms.
 
 ## Remaining open core
 
-Need identify or bound `delta_n`, preferably by deriving the adjacent orthogonal connection law for
-actual canonical velocity. Paper prediction is
+This card's scalar identification burden is now closed by successor
+`mass-shifted-half-density-adjacent-connection`. Actual canonical velocity satisfies
 
 `V_n=M_n+(n-1/2)beta_n P_(n-1)`,
 
-which would make `delta_n=(n-1/2)beta_n`. This prediction is not claimed formalized here. Even if
-proved, sign of resulting raw reserve still requires audit. RH is not proved.
+so `delta_n=(n-1/2)beta_n` unconditionally. The remaining open core is sign or accumulated control
+of resulting terminal Jacobi Riccati defect along cofinal degree-changing first contact. RH is not
+proved.
 
 ## Verification
 

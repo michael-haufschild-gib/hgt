@@ -182,6 +182,30 @@ theorem deningerExponentExceptionalLineReflectionDirection_sourcePole
   simp only [map_neg]
   field_simp [hrhoStar]
 
+/-- **Forced exceptional coefficient.**  There is exactly one anti-linear
+degree-one direction map `w ↦ a * conj(w)` carrying the source marked pole
+to its line-reflected marked pole, and its coefficient is the one induced by
+the completed exponent source involution. -/
+theorem existsUnique_deningerExponentExceptionalLineReflectionCoefficient
+    (rho : XiDivisorSupport) :
+    ∃! a : ℂ,
+      a * (starRingEnd ℂ) (-(rho : ℂ)) =
+        -((xiZeroLineConjEquiv rho : XiDivisorSupport) : ℂ) := by
+  let sigma : ℂ :=
+    ((xiZeroLineConjEquiv rho : XiDivisorSupport) : ℂ)
+  have hrhoStar : (starRingEnd ℂ) (rho : ℂ) ≠ 0 :=
+    (map_ne_zero (starRingEnd ℂ)).2 (xiDivisorSupport_ne_zero rho)
+  refine ⟨sigma / (starRingEnd ℂ) (rho : ℂ), ?_, ?_⟩
+  · dsimp [sigma]
+    simp only [map_neg]
+    field_simp [hrhoStar]
+  · intro a ha
+    dsimp [sigma] at ha ⊢
+    simp only [map_neg] at ha
+    apply (mul_right_cancel₀ hrhoStar)
+    field_simp [hrhoStar] at ha ⊢
+    exact neg_inj.mp ha
+
 /-- Critical-line reflection preserves the exact exceptional multiplicity. -/
 theorem deningerExponentExceptionalOrder_lineReflection
     (rho : XiDivisorSupport) :

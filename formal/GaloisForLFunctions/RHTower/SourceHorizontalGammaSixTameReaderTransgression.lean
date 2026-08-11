@@ -668,28 +668,107 @@ exponent-carrier character. -/
   rw [sourceHorizontalGammaSixCyclicGroupAtom, map_sub,
     sourceHorizontalGammaSixCyclicCharacterReadout_single,
     sourceHorizontalGammaSixCyclicCharacterReadout_single]
-  simp only [Multiplicative.toAdd_ofAdd, Int.cast_neg, Int.cast_natCast,
-    Real.sinh_eq]
+  simp only [mul_one]
+  have hp : Multiplicative.toAdd (Multiplicative.ofAdd (m : ℤ)) = (m : ℤ) := rfl
+  have hn : Multiplicative.toAdd (Multiplicative.ofAdd (-(m : ℤ))) = -(m : ℤ) := rfl
+  rw [hp, hn]
+  simp only [Int.cast_neg, Int.cast_natCast, Real.sinh_eq]
   ring
 
 /-- The literal cyclic boundary—not a coefficient surrogate—has physical value exactly equal to
 twice the finite Gamma-six Green/Wold shell profile. -/
 theorem sourceHorizontalGammaSixCyclicCharacterReadout_harmonicBoundaryClass_eq_profile
-    {N : ℕ} (_hN : 0 < N) (u : ℝ) :
+    {N : ℕ} (hN : 0 < N) (u : ℝ) :
     sourceHorizontalGammaSixCyclicCharacterReadout (u / N)
         (sourceHorizontalGammaSixCyclicHarmonicBoundaryClass N) =
       2 * sourceHorizontalGammaSixShellPrimeClockProfileSeries N u := by
-  rw [sourceHorizontalGammaSixCyclicHarmonicBoundaryClass, map_sub,
-    map_smul, map_sum]
-  simp_rw [map_smul, sourceHorizontalGammaSixCyclicCharacterReadout_atom]
-  simp only [smul_eq_mul]
-  rw [sourceHorizontalGammaSixShellPrimeClockProfileSeries]
-  congr 1
-  · congr 1
-    apply Finset.sum_congr rfl
-    intro j _hj
+  calc
+    sourceHorizontalGammaSixCyclicCharacterReadout (u / N)
+        (sourceHorizontalGammaSixCyclicHarmonicBoundaryClass N) =
+        sourceHorizontalGammaSixExponentCharacterReadout (u / N)
+          (sourceHorizontalGammaSixHarmonicBoundaryClass N) := by
+      rw [sourceHorizontalGammaSixCyclicHarmonicBoundaryClass,
+        sourceHorizontalGammaSixHarmonicBoundaryClass, map_sub, map_sub,
+        map_smul, map_smul, map_sum, map_sum]
+      simp_rw [map_smul, sourceHorizontalGammaSixCyclicCharacterReadout_atom,
+        sourceHorizontalGammaSixExponentCharacterReadout_atom]
+    _ = 2 * sourceHorizontalGammaSixShellPrimeClockProfileSeries N u :=
+      sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_eq_profile hN u
+
+/-! ## Actual Xi-specialized physical descent -/
+
+/-- Additive exponent of the literal degree-six half-density character. -/
+def sourceHorizontalGammaSixPhysicalCharacterParameter (s : ℂ) : ℝ :=
+  (2 * s.re - 1) * Real.log 6
+
+/-- The cyclic group-algebra character is exactly the existing marked exceptional
+Gamma-six/Burnol/BV reader at every spectral parameter and every retained grade. -/
+theorem sourceHorizontalGammaSixCyclicCharacterReadout_atom_eq_exceptionalTameReader
+    (s : ℂ) (m : ℕ) :
+    sourceHorizontalGammaSixCyclicCharacterReadout
+        (sourceHorizontalGammaSixPhysicalCharacterParameter s)
+        (sourceHorizontalGammaSixCyclicGroupAtom m) =
+      deningerGammaSixExceptionalTameReader m s := by
+  rw [sourceHorizontalGammaSixCyclicCharacterReadout_atom,
+    deningerGammaSixExceptionalTameReader_eq_mateCurvature,
+    deningerTensorSquareRadialMateCurvature_eq_sinh]
+  · congr 2
+    rw [sourceHorizontalGammaSixPhysicalCharacterParameter,
+      Nat.cast_pow, Real.log_pow]
+    norm_num
     ring
-  · ring
+  · positivity
+
+/-- Pointwise source producer isolated after all connectors: the actual physical character of an
+Xi divisor copy descends through the literal Deninger `t - 1` source boundary. -/
+def SourceZeroGammaSixCyclicPhysicalCharacterDescends (q : XiZeroCopy) : Prop :=
+  (sourceHorizontalGammaSixCyclicCharacterReadout
+      (sourceHorizontalGammaSixPhysicalCharacterParameter (q.1 : ℂ))).comp
+        (deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom.toLinearMap = 0
+
+/-- Exact pointwise classification: physical homological descent is neither weaker nor stronger
+than critical-line placement. -/
+theorem sourceZeroGammaSixCyclicPhysicalCharacterDescends_iff
+    (q : XiZeroCopy) :
+    SourceZeroGammaSixCyclicPhysicalCharacterDescends q ↔
+      (q.1 : ℂ).re = 1 / 2 := by
+  rw [SourceZeroGammaSixCyclicPhysicalCharacterDescends,
+    sourceHorizontalGammaSixCyclicCharacterReadout_comp_boundary_eq_zero_iff,
+    sourceHorizontalGammaSixPhysicalCharacterParameter]
+  have hlog : Real.log (6 : ℝ) ≠ 0 := (Real.log_pos (by norm_num)).ne'
+  constructor
+  · intro h
+    exact (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).1
+      ((mul_eq_zero.mp h).resolve_right hlog)
+  · intro hline
+    change primeDepthBVWoldXiCenteredRate q.1 * Real.log 6 = 0
+    rw [(primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).2 hline, zero_mul]
+
+/-- Global physical cyclic descent statement.  This names the remaining producer without hiding
+its quantifiers or replacing the fixed reader. -/
+def SourceZeroGammaSixCyclicPhysicalCharactersDescend : Prop :=
+  ∀ q : XiZeroCopy, SourceZeroGammaSixCyclicPhysicalCharacterDescends q
+
+/-- Frankenstein endpoint: fixed-reader cyclicity on the constructed Gamma-six source boundary
+for every multiplicity copy is exactly RH.  The theorem is a receiver and does not assert that
+cyclicity producer. -/
+theorem sourceZeroGammaSixCyclicPhysicalCharactersDescend_iff_riemannHypothesis :
+    SourceZeroGammaSixCyclicPhysicalCharactersDescend ↔ RiemannHypothesis := by
+  constructor
+  · intro hdescends
+    have hline : ∀ q : XiZeroCopy, (q.1 : ℂ).re = 1 / 2 := by
+      intro q
+      exact (sourceZeroGammaSixCyclicPhysicalCharacterDescends_iff q).1
+        (hdescends q)
+    apply riemannHypothesis_of_xiSpectralPoint_real
+    intro q
+    refine ⟨(q.1 : ℂ).im, ?_⟩
+    apply Complex.ext
+    · simp [xiSpectralPoint]
+    · simp [xiSpectralPoint, hline q]
+  · intro hRH q
+    apply (sourceZeroGammaSixCyclicPhysicalCharacterDescends_iff q).2
+    exact xi_divisor_support_re_eq_half_of_rh hRH q.1
 
 end
 

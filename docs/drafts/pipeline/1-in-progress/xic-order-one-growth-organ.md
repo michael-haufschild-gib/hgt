@@ -345,3 +345,51 @@ lane) currently fails to build with genuine proof errors and is umbrella-wired;
 HTGeometry/CriticalSchurIdealInertiaTransport.lean times out under the working-tree state; both are
 the other lane's in-flight work, left untouched. Unwired-but-green Suzuki modules
 (MovableAnchorClarkCoherence, TwoPortProjectiveWedge) were wired into RHTower to fix the lint gate.
+
+## Step 28 (2026-08-11): DISCOVERY — quartic shift rigidity of the deviation mass; RH as an escape law
+
+**Claim** (exact): the deviation mass `M X = Σ'_q (Im u_q)²`, `u_q = (α_q²+X)⁻¹`, obeys the
+differential law `M′(X) = −4·D(X)` with `D X = Σ' Re(u_q)(Im u_q)²`, and the strip+gap bound
+`Re u_q ≤ 1/(X+1)` makes `(X+1)⁴·M(X)` MONOTONE NONDECREASING on `(0,∞)`. Consequences, all
+unconditional: quartic floor `M(X) ≥ (X₀+1)⁴M(X₀)/(X+1)⁴` for `X ≥ X₀ > 0`; dichotomy (M ≡ 0 = RH,
+or M everywhere positive in the corridor `c/(X+1)⁴ ≤ M(X) ≤ 2H/(X+1)²`); and the new equivalent
+criterion **RH ⟺ (X+1)⁴M(X) → 0 as X → ∞ ⟺ (Xₙ+1)⁴M(Xₙ) → 0 along ONE sequence Xₙ → ∞**.
+RH is thereby compressed into an exponent gap: unconditional ceiling `X⁻²` (step 26) versus
+rigidity floor `X⁻⁴`; any arithmetic bound `M(X) = o(X⁻⁴)` proves RH.
+
+**Module**: `RHTower/XiResolventMassRigidity.lean` (wired after XiSquaredCompleteMonotonicityFarRay).
+9 theorems, all axioms [propext, Classical.choice, Quot.sound]:
+`xiResolventDampedMass` (def) + nonneg + summable; `xiResolventPoint_re_le` (Re u ≤ 1/(X+1));
+`xiResolventDampedMass_mul_le` ((X+1)D ≤ M); `hasDerivAt_im_sq_xiResolventPoint` (termwise
+d/dX(Im u)² = −4Re u(Im u)²); `hasDerivAt_xiResolventImSqMass` (M′ = −4D, via
+hasDerivAt_tsum_of_isPreconnected with majorant 8/‖α‖² from ‖u‖ ≤ 2/‖α‖², ‖α‖² > 2);
+`monotoneOn_quartic_mul_xiResolventImSqMass`; `antitoneOn_xiResolventImSqMass`;
+`xiResolventImSqMass_quartic_floor`; `_pos_of_pos`; `_corridor`;
+`riemannHypothesis_iff_tendsto_quartic_mass_zero`; `riemannHypothesis_of_escape_sequence`;
+`riemannHypothesis_iff_exists_escape_sequence`.
+
+**Status**: [LEAN-PROVED]; [CANDIDATE NEW SCIENTIFIC KNOWLEDGE], provisional. Priority audit:
+standard criterion families (Li, Weil, de Branges, Nyman–Beurling) have no shift-rigidity/escape
+form; closest flavor relative is de Bruijn–Newman/Rodgers–Tao Lyapunov monotonicity — but that is
+attraction of zeros of a heat-DEFORMED ξ, while here the divisor is FIXED, only the resolvent
+chart moves, and the law is a persistence FLOOR (opposite direction). The functional M is
+corpus-native. Keep provisional pending expert audit.
+
+**Paper mechanism** (verified termwise, then Lean): d/dX u = −u²; Im(−u²) = −2Re u·Im u;
+d/dX(Im u)² = −4Re u(Im u)². Termwise the renormalized density
+`(X+1)⁴(Im w₀)²/|w₀+X|⁴ = (Im w₀)²((X+1)²/((X+p)²+s²))²` increases because `p = γ²−b² > 1`
+(sign of derivative = (X+1)[(X+p)(p−1)+s²] > 0) — the quartic exponent is exactly critical
+against the strip+gap constant `p > 7/4 > 1`; exponent 4+ε would break monotonicity.
+
+**Lean traps hit**: pow_two must take its explicit argument or it rewrites the spectral square;
+imCLM comp value needs an `rfl`-rewrite then `exact` (simpa mangles the Module instance path:
+InnerProductSpace vs Semiring.toModule); id-wrapped derivative values need `simp only [id_eq]`
+before value rewrites; there is no `HasDerivAt.im`.
+
+**Next candidates from here**: (i) beat exponent 4 arithmetically — any `o(X⁻⁴)` ceiling on M is
+RH; the unconditional ceiling stands at 2 (step 26); zero-density estimates would raise the
+ceiling exponent but are not formalized; (ii) the same rigidity in the heat chart (t-derivative
+of the heat-deviation mass — compare against genuine de Bruijn dynamics); (iii) D-mass ladder:
+D′ computes similarly (all coefficients cone-signed) — a full CM-type hierarchy for M;
+(iv) transfer the floor through the Turán defect bound: quantitative lower bounds on how negative
+a Hankel form can get at large X if ¬RH.

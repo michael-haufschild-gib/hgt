@@ -104,9 +104,12 @@ The even analogue is identical.  Thus every eigenvalue strictly below the opposi
 is simple.  This conclusion uses no positivity of $Q$ and no generic-simplicity assumption.
 
 The same proof applies to an infinite-dimensional reflection-invariant self-adjoint operator on a
-common commutator core whenever eigenvectors lie in the domain of $D$ and `(PMB.2)` holds there.
-Compact resolvent then makes every relevant eigenspace finite-dimensional and every isolated
-parity-separated floor simple.
+common commutator core only under the explicit domain and injectivity conditions used above:
+every relevant eigenvector lies in the domain of $D$, `(PMB.2)` holds there,
+$\ker(D|_{H^-})=0$, and
+$\ker D\cap H^+\cap\eta^\perp=0$.  Compact resolvent then makes every relevant eigenspace
+finite-dimensional and every isolated parity-separated floor simple.  No infinite-dimensional
+domain theorem is claimed without these hypotheses.
 
 ## 3. Route-U consequence `[PAPER-PROVED]`
 
