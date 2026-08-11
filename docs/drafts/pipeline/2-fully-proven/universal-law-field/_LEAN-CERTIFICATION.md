@@ -991,3 +991,183 @@ no-revival, permanent triangle death, and the unconditional capstone report only
 computation certificate, route premise, project axiom, or RH statement occurs. Final foreground
 umbrella build passes with 11,606 jobs. Repository lint reaches the module with no target error; its
 global nonzero exit comes from unrelated unwired modules.
+
+## Session 2026-08-11 addition (Generative Response Fusion)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-GRM-1 | One centered intervention is reconstructed by finite phase moments, localized by positive Gram-null geometry, generates exactly the newborn feature span, conserves leverage, and predicts Hankel plus simple-null determinant response | `HTGeometry.GenerativeResponseFusion` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints for centered conservation, moment reconstruction,
+positive null localization, newborn-span rank, leverage conservation, literal Gram and
+log-determinant derivatives, Hankel response, determinant response, and the unconditional full
+capstone report only `propext`, `Classical.choice`, and `Quot.sound`. No computation certificate,
+route premise, project axiom, or RH statement occurs. Final foreground umbrella build passes with
+11,608 jobs. The arbitrary positive corank-one spectral reduction remains a paper-level bridge;
+Lean certifies its adjugate-certificate and diagonal simple-null forms.
+
+The same module now also certifies the exact finite selection law: conservation of the zeroth phase
+moment together with inward response on every positive Gram null face is equivalent to membership
+in the generative tangent cone. Any negative first response yields an absent source coordinate with
+negative tangent coefficient. `generativeSelection_capstone` is unconditional and introduces no RH
+premise; the infinite arithmetic transport of this cone is the next open gate.
+
+## Session 2026-08-11 addition (Cofinal Generative Admission)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-GRM-2 | Reciprocal admission/domination feasibility, positive-map data processing, exact finite-aperture/contingent equivalence, and a mass-conserving probability system with strict finite positivity but zero global straight-line radius | `HTGeometry.CofinalGenerativeAdmission` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Axiom prints on reciprocal feasibility, finite observer
+classification, positive transport, the abstract cofinal collapse, and the conserved probability
+capstone report only `propext`, `Classical.choice`, and `Quot.sound`. Final foreground umbrella
+build passes with 11,609 jobs; repository lint passes. The paper's full `ell^1` norm-closure and
+Fourier uniqueness clauses remain explicit formal boundaries.
+
+The module also certifies joint-conservative fusion. Positivity-reflecting observer families
+reconstruct source admission and domination at every fixed scale; failure produces an observer
+witness that may depend on scale. Coordinate evaluations jointly reflect positivity, yet the
+conserved probability countermodel is admitted by every fixed coordinate observer and not by the
+source. This is the exact migrating-obstruction theorem behind the uniform cofinal gate.
+
+## Session 2026-08-11 addition (Complex-Time Generative Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-GRM-3 | Exponential tilt preserves probability, its derivative is the centered score tangent, and positive Markov observation satisfies exact source Fisher = observed Fisher + conditional score loss | `HTGeometry.ComplexTimeGenerativeMechanics` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. The countable literal Euler-shell complex-time identity remains a
+paper-level bridge; Lean certifies the universal finite generation and Fisher conservation laws,
+including impossibility of strict receiver amplification under any positive Markov score
+realization.
+
+Source-level axiom prints on exponential-tilt differentiation, exact Fisher conservation,
+data processing, and the strict-amplification no-go report only `propext`, `Classical.choice`, and
+`Quot.sound`. Final foreground `HTGeometry.UniversalLawField` build passes with 11,610 jobs, and
+repository formal lint passes. No `sorry`, `admit`, custom `axiom`, `opaque`, `unsafe`, computation
+certificate, route premise, or RH statement occurs in either new module.
+
+## Session 2026-08-11 addition (Coherent History Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-HIST-1 | Total polar reconstruction, exact phase-dispersion conservation, least positive matrix majorant, nonnegative composition-interference defect, exact associativity conservation, and a closed period-two coherent process with exponentially open positive history | `HTGeometry.CoherentHistoryMechanics` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`.  Axiom prints on phase reconstruction, phase dispersion,
+least-majorant minimality, interference positivity, associativity conservation, recurrent witness,
+exponential history, and the unconditional capstone report only `propext`, `Classical.choice`, and
+`Quot.sound`.  No project axiom, route premise, computation certificate, or RH statement occurs.
+Final foreground umbrella build passes with 11,611 jobs.
+
+## Session 2026-08-11 addition (Marked Variation Dynamics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-MVD-1 | Positive-kernel modulus and composition, marked-defect fusion, exact generation-observation interchange, serial loss budget and exact-return rigidity, three-sector conservation, and exact nearest genuine-carrier distance | `HTGeometry.MarkedVariationDynamics` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`.  Final foreground umbrella build passes with 11,612 jobs.
+Axiom prints on the fusion capstone, interchange law, macroscopic-loss bound, exact-return rigidity,
+and carrier-distance theorem report only `propext`, `Classical.choice`, and `Quot.sound`.  The
+module contains no `sorry`, `admit`, project `axiom`, `opaque`, `unsafe`, computational
+certificate, route premise, or RH statement.
+
+Generated indexes were refreshed. Repository-wide lint reaches
+`HTGeometry.MarkedVariationDynamics` through its theorem-area and ULF umbrellas; its nonzero exit is
+caused only by nineteen unrelated pre-existing/unowned modules currently unwired from the RHTower
+or HTGeometry umbrellas.
+
+## Session 2026-08-11 addition (Calibration-Spectrum Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CSM-1 | Four-calibrator reconstruction, exact positive-observer spectral transport, adaptive-calibration exchange, nonnegative source ancestry, serial ancestry conservation, refinement transport, and response-stiffness conservation | `HTGeometry.CalibrationSpectrumMechanics` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`.  Final foreground umbrella build passes with 11,613 jobs.  Axiom
+prints for reconstruction, transport, ground exchange, one-stage ancestry, observer ancestry,
+serial ancestry, refinement, both response-derivative theorems, stiffness conservation, and the
+unconditional capstone report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The theorem proves more than the preceding scalar marked-variation law: the four-point response
+spectrum reconstructs the positive envelope and coherent complex output, and every unit of scalar
+defect is assigned exact source/observer ancestry.  It also predicts and certifies the same defect
+as lost infinitesimal response stiffness in a fourth organ.  No computation certificate, route
+premise, arithmetic specialization, custom axiom, or RH statement occurs.
+
+## Session 2026-08-11 addition (Norming-Face Fusion Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-NFFM-1 | Exact residual minimization, perfect-fusion/common-calibrator equivalence, norming-face convexity, Helly witness extraction, minimal-defect dimension bound, observer exchange, and refinement conservation | `HTGeometry.NormingFaceFusion` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Final foreground umbrella build passes with 11,614 jobs. Axiom
+prints for exact attainment, common calibration, convex norming faces, bounded witness arity,
+minimal-defect dimension, observer exchange, and refinement conservation report only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+Lean certifies the coordinate-free finite mechanism and the dimension-escape lower bound. Complex
+phase, finite-port incidence, and trace-norm spectral realizations remain paper-level corollaries;
+the arithmetic source realization needed for an RH selection theorem remains an explicit open
+gate. No `sorry`, `admit`, project `axiom`, `opaque`, `unsafe`, computation certificate, route
+premise, or RH statement occurs in the module.
+
+## Session 2026-08-11 addition (Compact Calibration Globalization)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-GRM-WCG-1 | Weak-star norming-face closedness/nonemptiness, finite-packet-to-global common normer, exact finite/global equivalence, and finite witness for every failure | `HTGeometry.CompactCalibrationGlobalization` |
+
+Direct foreground elaboration passes and the module is wired into
+`HTGeometry.UniversalLawField`. Final foreground umbrella build passes with 11,615 jobs. Axiom
+prints for globalization, equivalence, and finite failure witness report only `propext`,
+`Classical.choice`, and `Quot.sound`. Universal-law lint passes.
+
+This formally kills fixed compact norming-face geometry as an explanation of a purely cofinal
+obstruction invisible on every finite packet. Any surviving mechanism must change doctrine, lose
+closedness/compactness, or retain a separate collapsing execution radius. No `sorry`, `admit`,
+project `axiom`, `opaque`, `unsafe`, computation certificate, route premise, or RH statement occurs.
+
+## Session 2026-08-11 addition (Complete Test-Closure Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CTCM-2 | Complete atom/test reconstruction, complete-order reflection under arbitrary packet equivalence, exact negative-witness preservation, compensation-feasible-set conservation, invertible congruence reflection, and real Vandermonde test closure | `HTGeometry.CompleteTestClosureFusion` |
+
+Direct foreground elaboration passes. Final foreground leaf build passes with 8,655 jobs, and the
+module is wired into `HTGeometry.UniversalLawField`, whose final foreground build passes with
+11,620 jobs. Axiom prints for the capstone, compensation conservation, and Vandermonde PSD
+reflection report only `propext`, `Classical.choice`, and `Quot.sound`. Repository formal lint
+reaches the target through its theorem-area and universal-law-field umbrellas; its nonzero exit is
+caused only by unrelated pre-existing RHTower/HTGeometry modules that remain unwired from their
+theorem-area umbrellas. Target forbidden-declaration scan passes, and no Lean or Lake process
+remains.
+
+Lean certifies the route-independent finite fusion core: complete invertible test calculi preserve
+and reflect atom reconstruction, positivity, strict negative witnesses, and the exact feasible
+compensation set. Exact Sylvester inertia multiplicities, complex Fourier realization,
+Kronecker-channel lift, infinite-support closure, and arithmetic source realization remain
+paper-level or open and do not count as proved. No `sorry`, `admit`, project `axiom`, `opaque`,
+`unsafe`, computation certificate, route premise, or RH statement occurs in the module.
+
+## Session 2026-08-11 addition (Witt Formation Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-WFM-2 | Exact exterior/complete formation conservation, Newton ghost generation, first-`r` ghost reconstruction, Adams subsampling, powered-mode bucket aggregation, exact post-Adams Hankel rank, minimal recurrence order, and positive-real memory preservation | `HTGeometry.WittFormationMechanics` |
+
+Direct foreground elaboration and compiled leaf build pass. The module is wired into
+`HTGeometry.UniversalLawField`; its final foreground umbrella build passes with 11,626 jobs.
+Axiom prints for conservation, reconstruction, recurrence, exact Hankel rank, recurrence
+minimality, and positive-real memory report only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The module reuses the corpus's generic finite packet recurrence/Hankel machinery. Its certified
+fusion content is exact formation conservation plus Adams collision aggregation: the number of
+distinct powered-mode buckets is both saturated Hankel rank and minimal constant-recurrence order.
+No infinite completion, arithmetic source realization, custom axiom, computation certificate, or
+RH statement occurs.

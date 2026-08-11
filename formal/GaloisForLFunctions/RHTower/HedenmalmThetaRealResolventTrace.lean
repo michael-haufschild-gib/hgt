@@ -15,7 +15,7 @@ noncomputable section
 open GaloisForLFunctions.HTGeometry
 open HedenmalmQuantile HedenmalmHilbertSchmidt ContinuousLinearMap
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopThetaRealResolventTrace : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-- Real resolvent of the source inverse pencil. -/
 def thetaRealResolvent (r : ℝ) : H →L[ℂ] H :=

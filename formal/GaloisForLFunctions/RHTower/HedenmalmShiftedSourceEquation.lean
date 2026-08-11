@@ -25,7 +25,7 @@ open HedenmalmQuantile HedenmalmHilbertSchmidt HedenmalmPrimeTranslation
 private abbrev H := Lp ℂ 2 unitIntervalMeasure
 private abbrev HS := SourceSpace thetaSource
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopShiftedSourceEquation : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-! ### Source-coordinate representative of the compact inverse -/
 

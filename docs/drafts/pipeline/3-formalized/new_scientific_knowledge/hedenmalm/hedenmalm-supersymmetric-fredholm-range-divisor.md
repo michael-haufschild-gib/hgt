@@ -1,7 +1,7 @@
 # Hedenmalm's theta pencil is a supersymmetric Fredholm range divisor
 
 - **ID:** `hedenmalm-supersymmetric-fredholm-range-divisor`
-- **Stage:** 2-fully-proven / range-divisor half formalized; unbounded-operator half open
+- **Stage:** 3-formalized / Lean-closed
 - **Type:** THEOREM / FREDHOLM--WITTEN REINTERPRETATION
 - **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:** Hedenmalm's theta boundary problem;
@@ -407,7 +407,24 @@ Primary references:
 
 ## Lean status
 
-`[PARTIAL]`  `formal/GaloisForLFunctions/RHTower/HedenmalmFredholmRangeDivisor.lean`
+`[FORMALIZED UNCONDITIONALLY]`  Authoritative modules:
+`HedenmalmClosedWeightedDerivative.lean`, `HedenmalmShiftedClosedWeightedDerivative.lean`,
+`HedenmalmShiftedCokernel.lean`, `HedenmalmShiftedSourceEquationExact.lean`, and
+`HedenmalmSupersymmetricDirac.lean`. They construct the actual closed densely defined derivative
+and maximal adjoint, prove the literal smooth core is a graph core, compute kernel/range/cokernel
+and Fredholm index `-1`, treat every complex translate with the same index and exact cokernel line,
+prove `thetaShifted_sourceEquation_exact_iff` with unique closed-operator solution and both
+two-ended source formulas, identify every translated Witten Hamiltonian with the natural adjoint
+square, and prove self-adjointness, compact resolvent, nonnegativity, and trivial kernel. The final
+Dirac module constructs the natural-domain block operator, an explicit compact resolvent at `i`,
+proves self-adjointness, exact kernel/range, Fredholm index `0`, and Witten index `-1`. Every result
+is theorem-level and hypothesis-free. Targeted `lake env lean` and theorem-area umbrella checks
+pass.
+
+Historical development status follows; statements that unbounded-operator infrastructure was
+missing are superseded by the new `LinearPMap` infrastructure and closed proofs.
+
+`[HISTORICAL PARTIAL STATUS]`  `formal/GaloisForLFunctions/RHTower/HedenmalmFredholmRangeDivisor.lean`
 (namespace `RHTower.HedenmalmFredholmRange`) formalizes the **range-divisor half** of the theorem
 in explicit integral form over the general source class
 `GaloisForLFunctions.HTGeometry.PositiveDensitySource`.  Every declaration has `#print axioms`
@@ -477,6 +494,6 @@ of `(10)` as an operator inequality.  That passage needs genuine unbounded-opera
 - [x] audit exact Lean unbounded-operator feasibility
 - [x] Lean cokernel conormal `(5)` and exact Fredholm alternative `(6)`--`(7)` in
       explicit integral form
-- [ ] formalize the full weighted Fredholm theorem
+- [x] formalize the full weighted Fredholm theorem
 - [ ] construct the essential chiral Hodge transmutation
 - [ ] deduce and formalize RH

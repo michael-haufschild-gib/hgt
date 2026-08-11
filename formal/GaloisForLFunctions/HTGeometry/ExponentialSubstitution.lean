@@ -20,7 +20,7 @@ open MeasureTheory Set intervalIntegral
 
 namespace HTGeometry
 
-theorem sqrt_exp (s : ℝ) : Real.sqrt (Real.exp s) = Real.exp (s / 2) := by
+theorem sqrt_exp' (s : ℝ) : Real.sqrt (Real.exp s) = Real.exp (s / 2) := by
   have h : Real.exp s = Real.exp (s / 2) ^ 2 := by
     rw [sq, ← Real.exp_add]
     ring_nf
@@ -54,7 +54,7 @@ theorem integral_exp_half_comp_exp (f : ℝ → ℝ) {t : ℝ} (ht : 0 ≤ t)
   rw [← hmain]
   refine intervalIntegral.integral_congr (fun s _ => ?_)
   simp only [Function.comp_apply, smul_eq_mul]
-  rw [sqrt_exp]
+  rw [sqrt_exp']
   have hne : Real.exp (s / 2) ≠ 0 := ne_of_gt (Real.exp_pos _)
   field_simp
   have hsq : Real.exp (s / 2) ^ 2 = Real.exp s := by

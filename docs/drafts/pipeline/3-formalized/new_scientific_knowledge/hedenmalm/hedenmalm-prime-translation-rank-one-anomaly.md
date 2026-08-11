@@ -1,7 +1,7 @@
 # Prime-translation rank-one anomaly of the Hedenmalm compact source operator
 
 - **ID:** `hedenmalm-prime-translation-rank-one-anomaly`
-- **Stage:** 2-fully-proven / partially formalized; awaiting the parent Fredholm card
+- **Stage:** 3-formalized / Lean-closed
 - **Type:** THEOREM / FIBREWISE ORDINARY-INTEGER INCIDENCE LANDING
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
@@ -436,6 +436,21 @@ combined theorem remains `[NOVELTY UNVERIFIED]` pending an independent operator-
    successor theorem survives.
 
 ## Lean status
+
+`[FORMALIZED UNCONDITIONALLY]`  Authoritative closure modules:
+`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationAnomaly.lean` and
+`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationJordanCapstone.lean`. The latter
+closes the former parent dependency with `integerShift_mul`,
+`analyticOrderAt_XiC_eq_finrank_maxGenEigenspace_thetaKernelOperator`, and
+`thetaSource_geometricUniqueness_and_fullAlgebraicMultiplicity`. Together with the imported theta
+series and determinant capstones, these prove the rank-one anomaly and nonvanishing, literal
+positive-integer semigroup character, explicit nonzero two-ended right mode, integer Mellin-tail
+expansion, reflection/conjugation, geometric multiplicity one, exact full Jordan length, and
+triangular logarithmic prime-jet law. No theorem assumes RH or simplicity. `lake env lean` and the
+theorem-area umbrella checks pass.
+
+Historical development status follows; the parent-multiplicity blocker is superseded by the exact
+entire-determinant multiplicity theorem.
 
 `formal/GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationAnomaly.lean` (namespace
 `RHTower.HedenmalmPrimeTranslation`) formalizes the source core over the general positive-density

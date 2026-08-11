@@ -25,7 +25,7 @@ theorem zero_mem_projectiveInterval : (0 : ℝ) ∈ projectiveInterval := by
 /-- The centre of the projective interval. -/
 def projectiveIntervalCentre : ↥projectiveInterval := ⟨0, zero_mem_projectiveInterval⟩
 
-instance : Nonempty ↥projectiveInterval := ⟨projectiveIntervalCentre⟩
+instance nonemptyProjectiveIntervalCentre : Nonempty ↥projectiveInterval := ⟨projectiveIntervalCentre⟩
 
 /-- **The Dirac mass at the centre is a probability measure on the projective interval.** -/
 theorem exists_isProbabilityMeasure_projectiveInterval :

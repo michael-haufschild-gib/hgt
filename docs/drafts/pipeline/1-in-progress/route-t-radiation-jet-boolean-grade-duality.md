@@ -1413,14 +1413,16 @@ endpoint audit.  For `g in L^2(0,1)`, its pinned primitive satisfies
 |h_g(t)| <= min(sqrt(t),sqrt(1-t)) ||g-pinnedMean(g)||_2.
 ```
 
-The theta tail bound gives `t <= K exp(Q(t))` at the left endpoint and
+The coarse unit-rate theta tail gives `t <= K exp(Q(t))` at the left endpoint and
 `1-t <= K exp(-Q(t))` at the right endpoint.  Consequently
 
 ```text
 sourceChar(z,Q(t)) h_g(t) -> 0 at both endpoints
 ```
 
-whenever `|Im(z)|<1/2`.  Integration of the exact first-order resolvent equation then yields
+whenever `|Im(z)|<1/2`.  Existing all-shift theta theorem upgrades this provisional bound to every
+fixed complex `z`; Section 36 performs exact audit.  Integration of first-order resolvent equation
+then yields
 
 ```text
 pinnedMean((I+zB)^(-1)f)
@@ -1430,8 +1432,8 @@ pinnedMean((I+zB)^(-1)f)
 rootA(thetaSource,z,1)=XiC(z)/thetaSource.mass.
 ```
 
-The factor `4` in (RJG73) was chosen after this audit: it gives `0<h_1<1/2` unconditionally as well
-as `h_1 norm(B)<1`.  At `z=+-i h_1`, integrating factor is real exponential
+The factor `4` in (RJG73) leaves a uniform Neumann margin; no finite endpoint-strip restriction is
+ultimately needed.  At `z=+-i h_1`, integrating factor is real exponential
 `exp(-/+h_1 Q(t))`.  Hence direct Cayley ports have a coefficient-exact fixed safe-pencil
 representation before divisor decomposition.
 This is the concrete generating-law interface missing after (RJG71): powers of `U_1` become
@@ -1457,7 +1459,7 @@ complex resolvent moment law rather than assume it from the real-parameter theor
 Formula (RJG81) should follow for every complex `z` in the Neumann disk by copying the real
 integrating-factor proof.
 
-### Verdict: `[FALSE AS STATED; TRUE IN THE SHARP L2 ENDPOINT STRIP]`
+### Verdict: `[GENERICALLY FALSE AS STATED; TRUE FOR THETA AT EVERY COMPLEX PARAMETER]`
 
 The algebraic ODE is unchanged, but the endpoint argument is not.  If
 
@@ -1476,35 +1478,40 @@ For real `z`, `|E_z|=1` and this term vanishes from the pinned endpoints.  For n
 factor grows at one quantile endpoint, so Neumann invertibility alone does not remove (RJG82).
 This is a genuine logical gap in the initial version of (RJG81).
 
-There is, however, an exact source-independent repair.  Cauchy--Schwarz gives
+There is an exact generic repair.  Cauchy--Schwarz gives
 
 ```text
 |h_g(t)| <= sqrt(t) ||g-m||_2,
 |h_g(t)| <= sqrt(1-t) ||g-m||_2.                         (RJG83)
 ```
 
-The exponential theta tail and `cdf(Q(t))=t` give, near the two endpoints,
+The coarse unit exponential tail and `cdf(Q(t))=t` give, near the two endpoints,
 
 ```text
 t <= K exp(Q(t)),
 1-t <= K exp(-Q(t)).                                    (RJG84)
 ```
 
-Since `|E_z(t)|=exp(-Im(z)Q(t))`, (RJG83)--(RJG84) imply
+Since `|E_z(t)|=exp(-Im(z)Q(t))`, (RJG83)--(RJG84) first imply
 
 ```text
 E_z(t)h_g(t) -> 0 at 0 and 1 whenever |Im(z)|<1/2.      (RJG85)
 ```
 
-Thus (RJG81) is paper-proved under the two independent hypotheses
+This threshold is not sharp for theta.  Existing theorem `hasShiftedTail_thetaSource_all` proves
+integrability after every real exponential tilt.  For fixed `z`, choose a tail rate strictly larger
+than `2|Im(z)|`; same quantile-tail argument forces (RJG85) at both endpoints.  Thus theta has no
+finite endpoint strip, and (RJG81) is paper-proved for every `z` for which source pencil is a unit.
+Elementary Neumann sufficient condition is only
 
 ```text
-|z| norm(B)<1,     |Im(z)|<1/2.                         (RJG86)
+|z| norm(B)<1.                                          (RJG86)
 ```
 
-The revised direct step `h_1=1/[4(1+norm(B))]` satisfies both strictly.  This is why merely reusing
-the real theorem would have been proof theatre: the missing endpoint estimate dictates the clock
-normalization.
+Direct step satisfies this strictly.  Initial `1/2` conclusion came from stopping at coarse source
+envelope and was itself an incomplete corpus audit.  Surviving point is stronger: reusing real
+theorem without proving boundary term false would be theatre, while all-shift corpus removes that
+term for every fixed complex parameter.
 
 ### Positive survivor — two exact Esscher rows
 
@@ -1585,3 +1592,1820 @@ the boundary-before-norm principle.
 - 2026-08-10 — discovered reflected Esscher probability rows (RJG87) at the two direct safe pencils.
 - 2026-08-10 — derived full two-port Green kernel (RJG88)--(RJG91); rejected mean-only Markov
   passivity and isolated one monotone single-crossing profile as the remaining source obstruction.
+
+---
+
+## 38. Conjecture loop 15 — exploit theta reflection inside the single-crossing profile
+
+Reflection collapses (RJG89) further.  Write `E=E_-` and keep `A(t)=integral_0^t E`.  Since
+
+```text
+E(1-t)=E(t)^(-1),
+```
+
+one has
+
+```text
+integral_u^1 E(t)^(-1)dt=A(1-u),
+psi(u)=J/A-A(1-u),
+J=integral_{u+v<=1} E(u)E(v)dudv.                       (RJG92)
+```
+
+Let `X,Y` be independent draws from normalized even theta source on the line.  Quantile change of
+variables identifies
+
+```text
+A=E[exp(h_1 X)],
+J=E[exp(h_1(X+Y)) 1_(X+Y<=0)],
+A^2-J=E[exp(h_1(X+Y)) 1_(X+Y>0)].                       (RJG93)
+```
+
+The law of `X+Y` is symmetric.  Hence `J<=1/2` for every `h_1>0`.  Substitution into (RJG90) gives
+the exact port-positivity classification
+
+```text
+the In row is strictly positive unconditionally,
+the Out row is nonnegative iff A^2-J<=1.                (RJG94)
+```
+
+Indeed the In density is
+
+```text
+E(u)[(1-J)/A+A(1-u)]/sqrt(2)>0,
+```
+
+while the Out density is
+
+```text
+E(u)[(1+J)/A-A(1-u)]/sqrt(2),
+```
+
+whose minimum is at `u=0` and equals `(1+J-A^2)/A` up to the positive factor.
+
+### Conjecture and verdict
+
+Choose the safe Cayley step small enough that (RJG94) holds, then infer RH from positive ports.
+
+Status: `[FIRST CLAUSE TRUE; INFERENCE FALSE]`.  At zero step, `A=1` and `J=1/2`, so
+`A^2-J=1/2<1`.  Continuity supplies a fixed positive source-defined step satisfying simultaneously
+the Neumann bound, endpoint strip, and both port-positivity inequalities.  Thus one-step two-port
+positivity is unconditional source structure.
+
+It still cannot imply RH: `U_1=2R_--I`, and every hypothetical off-line divisor mode has an
+expanding multiplier for every positive step, however small.  Local positivity of the two rows
+does not close their span under `U_1^dagger` and cannot control repeated signed extrapolation.
+
+### Positive survivor — all-order tilted convolution is the real producer
+
+Equations (RJG92)--(RJG94) replace an infinite-dimensional one-step sign problem by a one-sided
+exponential moment of the symmetric convolution source.  The unresolved object is now its
+all-order analogue generated by `(2R_--I)^n`: a signed binomial family of iterated Green kernels.
+Required cancellation is not arbitrary operator cancellation; it is an all-order variation law
+for reflected Esscher convolutions.  This is the first source-side formulation that simultaneously
+retains positivity, reflection, and Cayley order without mentioning Xi zeros.
+
+## Log, reflected-convolution reduction
+
+- 2026-08-10 — collapsed single-crossing profile to triangular reflected Esscher integral.
+- 2026-08-10 — proved incoming row positive and classified outgoing positivity by one scalar
+  convolution moment; proved a sufficiently small positive safe step exists unconditionally.
+- 2026-08-10 — falsified one-step port positivity as an RH producer; isolated all-order reflected
+  Esscher convolution variation as next hard source statement.
+
+---
+
+## 39. Conjecture loop 16 — sum all Cayley orders before estimating
+
+Put `K=qV=-iB`, so
+
+```text
+R_h=(I+hK)^(-1),
+U_1=(I-hK)(I+hK)^(-1)=2R_h-I,
+h=h_1.
+```
+
+For a formal orbit variable `w`, direct operator algebra gives
+
+```text
+(I-wU_1)^(-1)
+ = 1/(1-w) (I+hK)(I+a(w)K)^(-1),
+a(w)=h(1+w)/(1-w).                                     (RJG95)
+```
+
+Since
+
+```text
+I+hK = a(w)^(-1)h (I+a(w)K) + (1-a(w)^(-1)h)I,
+```
+
+the exact orbit generating row of any linear functional `L` is
+
+```text
+sum_(n>=0) w^n L(U_1^n f)
+ = L(f)/(1+w)
+   + [2w/(1-w^2)] L((I+a(w)K)^(-1)f).                  (RJG96)
+```
+
+For `L=pinnedMean`, (RJG81) turns this into
+
+```text
+sum_(n>=0) w^n pinnedMean(U_1^n f)
+ = pinnedMean(f)/(1+w)
+   + [2w/(1-w^2)]
+       integral_0^1 exp(a(w)Q(t))f(t)dt
+       / rootA(thetaSource,-i a(w),1).                  (RJG97)
+```
+
+Formula (RJG97) is the coefficient-exact generating identity demanded after (RJG71).  It sums all
+signed Cayley orders before taking any norm, contains no divisor enumeration, and exposes literal
+theta source in numerator and completed Xi source in denominator.  The centered and In/Out rows
+have the same formula with the single-crossing kernel (RJG89) in place of the mean row.
+
+Status: `[PAPER-PROVED] [NOVELTY UNVERIFIED]`.  This is strictly stronger than the two fixed safe
+pencils: the entire orbit is one moving Esscher resolvent under Cayley--half-plane coordinate.
+
+### Hostile audit — endpoint wall disappears, leaving genuine zero-freeness
+
+All-shift theorem changes conclusion.  Every exponential theta tilt, its square, and one additional
+quantile factor are integrable.  Hence
+
+```text
+a |-> exp(a Q(·))                                    (RJG98)
+```
+
+is an entire `L2(0,1)`-valued map.  Formula (RJG97) is therefore meromorphic wherever algebraic
+moving resolvent is defined; no horodisk boundary comes from source integrability.
+
+Moreover numerator vector `exp(aQ(·))` is never zero.  Every zero of
+
+```text
+A(a)=rootA(thetaSource,-i a,1)
+```
+
+is a genuine pole of mean-row generating function; no scalar numerator cancellation can hide it.
+Under `a=h(1+w)/(1-w)`, RH becomes exactly zero-freeness of this normalized bilateral Laplace
+transform on right half-plane, equivalently analyticity of `L2` row on unit disk:
+
+```text
+RH <=> A(a)!=0 for Re(a)>0
+   <=> row in (RJG97) is analytic for |w|<1.             (RJG99)
+```
+
+This removes one apparent obstacle rather than renaming it: theta decay is already strong enough,
+and remaining obstruction is purely zero geometry of an entire positive-source Laplace transform.
+Next producer must exploit structure stronger than positivity and all exponential moments--for
+example total positivity, convolution factorization, or a prime--Gamma variation law forcing
+right-half-plane zero-freeness.  Generic endpoint estimates are now proved irrelevant.
+
+## Log, all-order resolvent summation
+
+- 2026-08-10 — summed direct Cayley orbit exactly into one moving source resolvent (RJG95)--(RJG97).
+- 2026-08-10 — used existing all-shift theorem to remove provisional endpoint horodisk; reduced
+  remaining problem to genuine right-half-plane zero-freeness of entire positive-source Laplace
+  transform, detected faithfully by an `L2`-valued Cayley row.
+
+---
+
+## 40. Conjecture loop 17 — is the moving mean row complete or only faithful on named modes?
+
+Define normalized Esscher row, away from zeros of `A`, by
+
+```text
+v_a(t)=exp(aQ(t))/A(a).
+```
+
+All-shift theta theorem implies `a |-> exp(aQ(·))` is entire as an `L2(0,1)`-valued map: square
+integrability uses tilt `2 Re(a)`, and local differentiation is dominated by one additional
+exponential tilt.  Its Gram kernel is exact:
+
+```text
+<v_a,v_b>=A(conj(a)+b)/(conj(A(a))A(b)).                (RJG100)
+```
+
+At any positive safe `h`, derivatives have triangular form
+
+```text
+D^n v_a|_(a=h)
+ = exp(hQ)/A(h) * [Q^n + polynomial of degree < n].     (RJG101)
+```
+
+### Density theorem
+
+Existing `EntireExponentialMomentPolynomialDensity.lean` says polynomials are dense in `L2` of any
+finite measure with all bilateral exponential moments.  Apply it to theta law tilted by
+`exp(2hQ)`.  Multiplication by `exp(hQ)` transports its polynomial core to ordinary quantile space.
+Therefore
+
+```text
+closure span {D^n v_h : n>=0}=L2(0,1).                 (RJG102)
+```
+
+This is paper-proved without RH, zero simplicity, divisor completeness, or computation.
+
+### Direct-clock cyclicity
+
+In (RJG97), `a(w)=h(1+w)/(1-w)` has `a(0)=h` and `a'(0)=2h!=0`.  Coefficient comparison is
+triangular: zeroth orbit row is pinned mean, first gives `v_h`, and coefficient `n+1` contains a
+nonzero multiple of `D^n v_h` plus earlier derivatives.  Consequently
+
+```text
+closure span {(U_1^dagger)^n pinnedOne : n>=0}=L2(0,1). (RJG103)
+```
+
+Status: `[PAPER-PROVED] [NOVELTY UNVERIFIED]`.  Direct Cayley receiver is not merely nonzero on
+canonical divisor modes: one scalar boundary row is cyclic for full adjoint clock.  Every invariant
+subspace is exposed by its all-order source orbit.  This also explains why multiplicity copies do
+not defeat observation: source ODE supplies one geometric eigenline while algebraic multiplicity
+can remain in its Jordan chain.
+
+### Hostile audit
+
+Cyclicity closes observability, not orientation.  A cyclic compact perturbation can still have
+off-axis eigenvalues, and (RJG103) makes any proposed positive form more demanding because its sign
+must extend from a dense polynomial core.  Route-U corpus already proves generic moment positivity,
+PF2/log-concavity, and total-positivity shortcuts insufficient or circular at adaptive contact.
+
+Positive survivor is exact: combine dense cyclic core with rank-two Green identity before cumulant
+compression.  If a nonnegative source form controls direct orbit on all weighted quantile
+polynomials, density upgrades it to whole state space; if it vanishes on one cyclic source vector,
+existing dense-radical no-go forces nonclosability unless arithmetic prime--Gamma term supplies
+orientation.  Thus missing producer cannot be another finite observer.  It must be a closable
+source-specific form orienting adaptive prime--Gamma shear on dense cyclic core.
+
+## Log, direct-clock cyclicity
+
+- 2026-08-10 — proved moving Esscher row is entire `L2`-valued and has exact Gram kernel.
+- 2026-08-10 — transported existing entire-moment polynomial density to weighted quantile jets.
+- 2026-08-10 — derived unconditional cyclicity of pinned mean for adjoint direct Cayley clock;
+  eliminated hidden-subspace/finite-observer explanations of Route T obstruction.
+
+---
+
+## 41. Conjecture loop 18 — determinant-weighted resolvent-frame energy
+
+### Conjecture
+
+Use the now-dense adjoint resolvent frame to synthesize a positive whole-space form.  If its
+determinant weight retains enough of the moving divisor, positivity plus cyclicity might orient the
+direct clock.
+
+### Exact source--Fourier bridge
+
+For `u` in the reciprocal-density source space, put
+
+```text
+z(h,tau)=-tau-i h,
+p_(h,u)(x)=exp(hx)u(x)/sqrt(M).
+```
+
+The all-complex source-character moment satisfies the pointwise identity
+
+```text
+Moment(z(h,tau),Uu)=Fourier(p_(h,u))(tau/(2*pi)).       (RJG104)
+```
+
+Hence, whenever the tilted profile lies in `L1 intersect L2`, Plancherel gives
+
+```text
+integral_R |Moment(z(h,tau),Uu)|^2 d tau
+  =2*pi integral_R |p_(h,u)(x)|^2 dx.                 (RJG105)
+```
+
+At zero tilt every source vector satisfies the required `L1 intersect L2` conditions.  The `L2`
+claim is not an extra domain premise: boundedness of the theta density makes ordinary Lebesgue
+`L2` weaker than the defining reciprocal-density norm.  Therefore
+
+```text
+integral_R |Moment(z(0,tau),Uu)|^2 d tau
+  =2*pi <G Uu,Uu>,                                    (RJG106)
+```
+
+where `G` is the canonical singular metric.
+
+The law is fully polarized.  For arbitrary source vectors `u,v`,
+
+```text
+integral_R conj(Moment(z(0,tau),Uu)) Moment(z(0,tau),Uv) d tau
+ =2*pi integral_R conj(p_(0,u)(x)) p_(0,v)(x) dx.      (RJG107)
+```
+
+Thus off-diagonal complex Gram data does not retain hidden zero orientation.
+
+### Exterior resolvent cancellation
+
+On every exterior line `|h|>=1/2`, every pencil is unconditionally invertible and
+
+```text
+pinnedMean(R_z Uu)=Moment(z,Uu)/A(z).
+```
+
+Consequently the determinant weight cancels the divisor pointwise:
+
+```text
+|A(z)|^2 |pinnedMean(R_z Uu)|^2=|Moment(z,Uu)|^2,      (RJG108)
+```
+
+and, before any absolute value or diagonalization,
+
+```text
+|A(z)|^2 conj(pinnedMean(R_z Uu)) pinnedMean(R_z Uv)
+ =conj(Moment(z,Uu)) Moment(z,Uv).                     (RJG109)
+```
+
+### Verdict: `[FAILED AS PRODUCER — FULL POLARIZED NO-GO; POSITIVE SURVIVOR FORMALIZED]`
+
+The obstruction is stronger than failure of one energy estimate.  Every determinant-weighted
+quadratic or sesquilinear synthesis of this complete resolvent row cancels the scalar Xi divisor
+before Plancherel and lands on physical source pairing.  Cyclicity supplies complete observation,
+but determinant weighting followed by Gram formation is an information-loss functor from divisor
+phase to source metric.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`HedenmalmThetaResolventMetricPlancherel.lean`; the exterior adjoint-resolvent frame is formalized
+in `HedenmalmThetaEsscherResolventFrame.lean` and the exact fixed-line Gram/cyclicity law in
+`HedenmalmThetaEsscherCyclicity.lean`.
+
+## 42. Higher universal principle and revised Route T producer
+
+Repeated failures now have one common explanation:
+
+```text
+source phase --divide by A--> resolvent row
+             --multiply by |A|^2 and polarize--> source metric.
+```
+
+Positive completion, determinant packaging, and even full complex polarization all apply the
+second arrow.  They cannot orient a zero because they algebraically remove the divisor that needs
+orientation.  This is why finite ports, dense cyclic observers, positive Green completions, and
+metric-frame synthesis keep producing strong receivers without moving the centered-prime frontier.
+
+The next admissible producer must remain phase-linear before determinant weighting.  The canonical
+candidate is the normalized first Esscher jet
+
+```text
+(partial_a A(a))/A(a)=partial_a log A(a),              (RJG110)
+```
+
+or its centered version, read as one unsquared resolvent row.  Unlike (RJG108)--(RJG109), it keeps
+oriented poles with multiplicity.  Route T's continued centered von Mangoldt--Gamma current already
+lands on this logarithmic derivative, so (RJG110) is the first exact interface between the dense
+source receiver and the unresolved timelike-plus-glancing prime flux.
+
+New open core: derive a source-side phase law for the unsquared normalized jet that controls the
+cofinal `Lambda-1` pairing before norms, Gram formation, or reflection aggregation.  Any proposal
+that first multiplies by `A`, `conj(A)`, `|A|^2`, or takes a norm is now ruled out by
+(RJG108)--(RJG109), not merely suspected to be lossy.
+
+## Log, resolvent-frame Plancherel pivot
+
+- 2026-08-11 — formalized exact all-complex moment/Fourier bridge and its `2*pi` Plancherel law.
+- 2026-08-11 — proved every reciprocal theta-source vector is ordinary Lebesgue `L2` and identified
+  critical moment energy exactly with canonical singular metric.
+- 2026-08-11 — proved full polarized cross-pairing law; closed off-diagonal Gram loophole.
+- 2026-08-11 — proved pointwise exterior determinant cancellation for diagonal and complex
+  cross-Gram resolvent rows; retired determinant-weighted frame synthesis as Route T producer.
+
+---
+
+## 43. Conjecture loop 19 — quantile log-jet as phase-linear prime receiver
+
+### Conjecture
+
+The first quantile coordinate, rather than a positive completion of the full source frame, should
+extract the normalized first Xi jet before determinant cancellation.  This would give a canonical
+unsquared receiver for Route T's continued centered prime--Gamma current.
+
+Let `Q` be the theta-source quantile coordinate, viewed in `L2(0,1)`.  Its square integrability is
+unconditional because the theta source has finite second moment.  Differentiating the exact
+quantile characteristic representation of `XiC` and using source evenness gives, for every complex
+`z`,
+
+```text
+Moment(z,Q)=-i XiC'(z)/M.                              (RJG111)
+```
+
+At every invertible pencil point, the exact scalar resolvent row therefore is
+
+```text
+pinnedMean(R_z Q)=-i XiC'(z)/XiC(z)
+                 =-i logDeriv(XiC)(z).                (RJG112)
+```
+
+Unlike (RJG108)--(RJG109), (RJG112) is linear in phase and retains every divisor pole with its
+algebraic multiplicity.  No norm, conjugation, Gram formation, or determinant weighting occurs.
+
+On the fixed exterior line `z=-tau-i`, invertibility and zeta nonvanishing are unconditional.
+The existing prime--Gamma continuation theorem then identifies the same receiver with the exact
+Route T source trace:
+
+```text
+pinnedMean(R_(-tau-i) Q)
+  =-i continuedPrimeArchSourceRelativeTrace(-tau-i).  (RJG113)
+```
+
+Verdict: `[PROVED — PHASE-SENSITIVE SOURCE/ARITHMETIC INTERFACE]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`HedenmalmThetaResolventLogJet.lean`.
+
+### Hostile audit
+
+(RJG113) is an exact safe-line boundary identity, not a zero-free continuation theorem.  Resolvent
+analyticity cannot be carried through an unknown pole, and the formal identity deliberately assumes
+invertibility away from the exterior line.  Thus this result does not prove RH and does not move the
+centered `Lambda-1` cancellation frontier by itself.
+
+Positive survivor is nevertheless stronger than every previous receiver: Route T's arithmetic
+current is now literally one cyclic theta-resolvent matrix coefficient, with full complex phase and
+pole multiplicity intact.  The remaining producer problem has a precise operator form: transport
+the unsquared row from the safe exterior line toward the critical line using a cancellation law that
+is proved before norms and remains meaningful at a first hypothetical pole.
+
+## Log, quantile log-jet pivot
+
+- 2026-08-11 — formalized unconditional `L2` membership of theta quantile coordinate.
+- 2026-08-11 — proved exact all-complex first-jet moment formula (RJG111).
+- 2026-08-11 — proved exact phase-linear resolvent/logarithmic-derivative identity (RJG112).
+- 2026-08-11 — welded fixed safe-line receiver to continued prime--Gamma trace (RJG113).
+
+---
+
+## 44. Conjecture loop 20 — coherent exterior-row realization of the mass current
+
+### Conjecture
+
+Do not transport one safe resolvent value through the unknown strip.  Instead place the entire
+legal Euler bottom line inside Route T's analytic mass packet.  The prime--Gamma split may then
+turn the complete mass current into one coherent superposition of phase-linear theta rows while
+remaining wholly inside the unconditionally invertible exterior resolvent set.
+
+For `c>1/2`, real `x`, and
+
+```text
+z_(c,x)=x-i c,
+s_(c,x)=1/2+c+i x=1/2+i z_(c,x),
+```
+
+the quantile log-jet and safe Euler source identity give the pointwise law
+
+```text
+L(Lambda)(s_(c,x))
+ =logDeriv(archFactor)(s_(c,x))
+  -pinnedMean(R_(z_(c,x)) Q).                           (RJG114)
+```
+
+Every pencil in (RJG114) is unconditionally invertible.  Multiplying before integration by Route
+T's analytic mass bottom test and retaining complex phase gives
+
+```text
+MassPrime(a,c,tau)
+ =MassArch(a,c,tau)
+  -integral_R MassTest(a,c,tau,x)
+      pinnedMean(R_(x-i c) Q) dx.                       (RJG115)
+```
+
+The archimedean term has an existing height-independent bound.  Consequently, for every legal
+`1/2<c<a` and `sigma>0`,
+
+```text
+RH iff sup_(u>=0) |
+  integral_R MassTest(a,c,sigma+i u,x)
+    pinnedMean(R_(x-i c) Q) dx| < infinity.             (RJG116)
+```
+
+Verdict: `[PROVED — EXACT PHASE-LINEAR ROUTE-T/THETA WELD]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`HedenmalmThetaXiMassPhaseLinearWeld.lean`.
+
+### New structural knowledge
+
+Route T obstruction is not failure to control individual safe-line resolvents: every row in
+(RJG116) lies on one fixed zero-free exterior line.  Obstruction is coherent mass modulation of
+the whole row family.  Taking norms rowwise destroys precisely the `u`-dependent cancellation.
+Thus safe-line continuation and finite prime cutoff are both inessential representations; same
+open core is a source-fixed operator wave packet.
+
+### Hostile audit
+
+(RJG116) is still a receiver criterion.  Generic resolvent bounds combined with absolute
+integration inherit exponential `u` growth from the shifted mass test.  Any proof that estimates
+rows separately, applies Cauchy--Schwarz before the `x` integration, or assumes an anti-Herglotz
+sign merely recreates the already retired square-root loss or an RH-equivalent positivity
+condition.  Admissible next step must use the resolvent identity and rank-two Green law coherently
+under the mass integral, before norms.
+
+## Log, coherent exterior-row pivot
+
+- 2026-08-11 — proved pointwise Euler/Gamma/theta-resolvent split (RJG114).
+- 2026-08-11 — proved complete integrated mass-current weld (RJG115).
+- 2026-08-11 — isolated exact pure-theta exterior-wave-packet RH criterion (RJG116).
+
+---
+
+## 45. Conjecture loop 21 — lightlike quantile source and polarized Green current
+
+### Conjecture
+
+Use the rank-two Green law coherently before norms.  The quantile source might have exceptional
+boundary orientation allowing the phase-sensitive monopole row to be recovered from flux.
+
+### Exact source geometry
+
+Let `Q` be the theta quantile coordinate and put
+
+```text
+d = pinnedFirstMoment(Q).
+```
+
+Evenness and strict quantile monotonicity prove, unconditionally,
+
+```text
+pinnedMean(Q)=0,
+Re(d)>0,
+pinnedIn(Q)=-pinnedOut(Q) != 0,
+<C Q,Q>=0,
+C Q=-d pinnedOne != 0.                                  (RJG117)
+```
+
+Thus `Q` is not in the boundary kernel.  It is a genuinely nonzero lightlike state of the
+mixed-inertia rank-two form.  Quadratic Green energy is exactly blind to the canonical source.
+
+The apparent no-go has a phase-linear polarization.  For every quantile-space state `g`,
+
+```text
+<C Q,g>=-d pinnedMean(g),                                (RJG118)
+```
+
+and the polarized metric commutator gives
+
+```text
+d pinnedMean(g)
+ =-i( <G B Q,g> - <G Q,B g> ).                          (RJG119)
+```
+
+For every invertible theta pencil, `g=R_z Q` and the log-jet law therefore yield
+
+```text
+d logDeriv(XiC)(z)
+ = <G B Q,R_z Q> - <G Q,B R_z Q>.                       (RJG120)
+```
+
+This is an exact fixed-source symplectic representation of the oriented Xi divisor current.  It
+uses neither determinant weighting nor a quadratic form.
+
+### Route T mass weld
+
+On every legal exterior line `c>1/2`, define the coherent polarized current packet by integrating
+the right side of (RJG120) against the analytic mass test, retaining the difference as one
+integrand.  Then
+
+```text
+PolarizedPacket(a,c,tau)
+ = i d ThetaResolventPacket(a,c,tau),                   (RJG121)
+```
+
+and for `1/2<c<a`, `sigma>0`,
+
+```text
+RH iff sup_(u>=0) |PolarizedPacket(a,c,sigma+i u)|<infinity. (RJG122)
+```
+
+Verdict: `[PROVED — PHASE-LINEAR GREEN POLARIZATION; PRODUCER BOUND STILL OPEN]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`HedenmalmThetaQuantileBoundaryNull.lean`,
+`HedenmalmThetaQuantileResolventPortLaw.lean`, and
+`HedenmalmThetaXiMassPolarizedGreenWeld.lean`.
+
+### Hostile audit and higher principle
+
+Quadratic Green failure was not merely mixed inertia.  Canonical arithmetic source itself lies on
+the boundary light cone, and desired monopole is symmetric port sum while energy sees difference
+of port intensities.  Correct observable is cross flux with fixed lightlike source.
+
+Polarization repairs information loss but does not yet prove boundedness: (RJG120) is exactly
+`d logDeriv(XiC)`.  Splitting its two metric terms and estimating separately would destroy the
+commutator cancellation and recreate the retired norm barrier.  Next admissible producer must
+assemble the full `H`-valued exterior response packet and apply inverse-pencil equation or an exact
+transport primitive to the combined symplectic current before any norm.
+
+## Log, polarized Green pivot
+
+- 2026-08-11 — proved quantile source has strictly positive dipole but zero quadratic boundary
+  flux: a nonzero lightlike state.
+- 2026-08-11 — proved cross boundary current extracts the phase-sensitive monopole exactly.
+- 2026-08-11 — proved all-complex polarized metric representation of `logDeriv XiC`.
+- 2026-08-11 — welded complete Route T mass packet to one coherent polarized Green current and
+  isolated its exact RH line-bound criterion.
+
+---
+
+## 46. Conjecture loop 22 — divisor-wide affine interpolation by a rank-two source port
+
+### Conjecture
+
+The lightlike source `Q` may still control every divisor direction after quadratic energy loses it.
+Test the two fixed source-built metric probes
+
+```text
+u = G Q,
+v = G B Q
+```
+
+directly on each multiplicity-exact Xi divisor eigenvector `f_q`.
+
+### Exact interpolation law
+
+Every divisor mode has the same nonzero monopole:
+
+```text
+pinnedMean(f_q)=sqrt(M),                                 (RJG123)
+```
+
+where `M=thetaSource.mass`.  Since `B f_q=mu_q f_q`, the polarized Green law becomes the affine
+interpolation identity
+
+```text
+<v,f_q>-mu_q <u,f_q>=i d sqrt(M),                       (RJG124)
+```
+
+with `d=pinnedFirstMoment(Q)` and `Re(d)>0`.  Right side is independent of `q`, nonzero, and retains
+complex phase.
+
+Source port is genuinely two-dimensional.  For every scalar `c`,
+
+```text
+B Q != c Q,
+G B Q != c G Q.                                         (RJG125)
+```
+
+Zero-eigenvalue case of first assertion follows from injectivity of pinned primitive on centered
+hyperplane.  Nonzero-eigenvalue case follows from exact theorem that every nonzero eigenvector of
+`B` has nonzero monopole, whereas `Q` has zero monopole.  Second assertion follows from injectivity
+of singular metric `G`.
+
+Consequently no Xi divisor mode is dark to both fixed probes:
+
+```text
+not (<u,f_q>=0 and <v,f_q>=0).                           (RJG126)
+```
+
+Verdict: `[PROVED — UNCONDITIONAL DIVISOR-WIDE RANK-TWO OBSERVABILITY]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`HedenmalmThetaDivisorPolarizedInterpolation.lean`.
+
+### Hostile audit
+
+(RJG126) is qualitative observability, not uniform coercivity.  It supplies no lower bound on
+`max(|<u,f_q>|,|<v,f_q>|)` after normalization, and `G` is proved not bounded below.  Compactness
+allows observed amplitudes to approach zero along high modes while affine compensation in
+`mu_q<u,f_q>` remains exact.  Any argument replacing (RJG124) by separate absolute-value bounds
+again destroys its cancellation and returns to the receiver barrier.
+
+This closes the naive finite-frame conjecture.  Positive survivor is sharper: all divisor modes lie
+on one fixed affine hyperplane in the two-probe/eigenvalue incidence space.  Missing producer is
+therefore not visibility but a source-side uniform control of this affine incidence under the
+coherent mass modulation.
+
+### Failed pivots and higher principle
+
+- A second scalar compensator cannot repair FCRJ: exact checkpoint is invariant under arbitrary
+  linear stopped compensators.
+- Hilbert cofinal meets collapse to zero; radial codiagonals saturate; common-carrier squares remain
+  indefinite.
+- Normalized resolvent profiles are exponentially unstable on mass-packet wings.
+- Divisor boundary-flux positivity is precisely transverse-zero sign and hence RH-equivalent.
+- Fixed integration by parts only yields polynomial decay against an exponential wing; all-order
+  contour transport crosses exactly the unknown off-line poles.
+- Fixed phase-natural source-faithful coefficient transport is identity; arbitrary positive
+  transport exists only when the target RH scalar is already nonnegative.
+
+Unified obstruction: arithmetic FCRJ defect and theta Green current are two realizations of a
+noncommuting completion/trace curvature.  Scalar or radial completion kills its phase, while norm
+completion loses coherent cancellation.  Live successor must be connection-valued and preserve the
+full affine current before taking terminal trace; merely enlarging a scalar receiver is circular.
+
+## Log, divisor interpolation pivot
+
+- 2026-08-11 — proved exact constant monopole for every multiplicity-exact theta divisor mode.
+- 2026-08-11 — proved fixed affine two-probe interpolation law (RJG124).
+- 2026-08-11 — proved source port is genuinely nonproportional before and after the singular metric.
+- 2026-08-11 — proved no Xi divisor mode is jointly dark to the two fixed probes.
+- 2026-08-11 — rejected qualitative observability as a substitute for uniform mass-packet control.
+
+---
+
+## 47. Conjecture loop 23 — monopole rigidity of the full nonzero point spectrum
+
+### Conjecture
+
+The theorem that every nonzero `B`-eigenvector has nonzero monopole may force more than
+observability: it should rigidify each nonzero eigenspace itself.
+
+### Geometric simplicity theorem
+
+Let `B=thetaCompactSourceInverse`.  If `c != 0`, `Bf=cf`, `Bg=cg`, and `g != 0`, then
+
+```text
+f = (pinnedMean(f)/pinnedMean(g)) g.                     (RJG127)
+```
+
+Indeed the displayed difference is a `c`-eigenvector with zero monopole.  If nonzero it
+contradicts the exact eigenmonopole theorem.  Therefore every nonzero point eigenspace of `B` is
+geometrically one-dimensional.
+
+For every Xi divisor copy `q`, the canonical mode has monopole `sqrt(M)`, hence every vector in its
+eigenspace is reconstructed from one scalar:
+
+```text
+Bf=mu_q f
+  implies
+f=(pinnedMean(f)/sqrt(M)) f_q.                           (RJG128)
+```
+
+In particular the mean-normalized divisor eigenvector is unique:
+
+```text
+Bf=mu_q f and pinnedMean(f)=sqrt(M) implies f=f_q.       (RJG129)
+```
+
+Verdict: `[PROVED — ALL NONZERO POINT EIGENSPACES ARE CANONICAL LINES]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`HedenmalmThetaDivisorPolarizedInterpolation.lean`.
+
+### Hostile audit
+
+Geometric simplicity is not algebraic simplicity.  A Jordan chain at `mu_q` is equivalent to
+higher Xi multiplicity through the Fredholm characteristic function; excluding it would prove the
+open simplicity conjecture for Xi zeros and cannot be inferred from (RJG127).  Thus no semisimple
+spectral expansion or orthogonal eigenbasis may be used downstream.
+
+Positive survivor changes correct state space for the producer.  Divisor-location freedom is
+one-dimensional at each point; all unresolved multiplicity is longitudinal jet data in the
+generalized eigenspace.  Connection-valued aperture evolution must therefore act on Jordan jets,
+not on an artificial family of independent eigenvectors at the same divisor point.
+
+## Log, monopole-rigidity pivot
+
+- 2026-08-11 — proved proportionality of arbitrary same-eigenvalue nonzero source-inverse modes.
+- 2026-08-11 — proved exact reconstruction of every Xi eigenspace vector from its monopole.
+- 2026-08-11 — separated geometric simplicity from open algebraic simplicity/Jordan-chain control.
+
+---
+
+## 48. Conjecture loop 24 — extinction of prime-path terminal flux
+
+### Conjecture
+
+The scalar valuation-one source may be the terminal holonomy of the ordered adjacent-prime path.
+Finite Abel summation gives such a terminal term, but does not decide whether it survives at
+infinity.  If it vanishes, the full source must instead be carried by a distributed
+connection-gradient current.
+
+### Sharp cumulative-mass law
+
+Let
+
+```text
+A_(N+1)=sum_(n<=N) log(p_n)/sqrt(p_n).
+```
+
+The first `N+1` prime atoms inject into full von-Mangoldt mass through `p_N`.  The corpus sharp
+Chebyshev-scale law therefore gives
+
+```text
+||A_(N+1)|| <= primeMassHalf(p_N) <= 21 sqrt(p_N).       (RJG130)
+```
+
+This removes logarithmic loss.  For any legal interior shift `1/2<d<a`, deep-strip Fourier decay
+then gives
+
+```text
+||F(log p_N) A_(N+1)||
+  <= 21 J_sigma exp(|u|d) exp(-(d-1/2) log p_N),         (RJG131)
+```
+
+and right side tends to zero since ordered primes are cofinal.  Thus terminal prime-path flux
+vanishes unconditionally for every fixed vertical height.
+
+### Exact ordered connection reconstruction
+
+Define edge current
+
+```text
+C_n(a,tau)=A_(n+1) (F_tau(log p_n)-F_tau(log p_(n+1))).
+```
+
+Finite Abel identity becomes
+
+```text
+sum_(n<=N) primeAtom_n = F_tau(log p_N) A_(N+1) + sum_(n<N) C_n.  (RJG132)
+```
+
+The source series is absolutely summable for fixed `tau` with positive real part, while first term
+vanishes by (RJG131).  Therefore ordered graph prefixes satisfy
+
+```text
+lim_(N->infinity) sum_(n<N) C_n
+  = xiMassValuationOnePrimeLayer(a,tau).                 (RJG133)
+```
+
+Order is intrinsic.  (RJG133) is an ordered improper limit, not an unordered `tsum`; no absolute
+summability of `C_n` is asserted.  Lean rejected that stronger inference and forced this distinction.
+
+Consequently, for every `a>1/2` and `sigma>0`,
+
+```text
+RH iff sup_u ||lim_N sum_(n<N) C_n(a,sigma+iu)|| < infinity.  (RJG134)
+```
+
+Verdict: `[PROVED — TERMINAL FLUX EXTINCT; FULL SOURCE IS ORDERED CONNECTION CURRENT]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiMassFullAdjacentPrimeConnection.lean`.
+
+### Hostile audit
+
+(RJG133) is not by itself a bound: pointwise equality with the original valuation-one layer would
+be a renaming if terminal extinction were omitted.  New content is exact removal of boundary at
+infinity using sharp square-root mass, plus localization of every surviving source contribution to
+cumulative-mass-weighted graph gradients.  Taking absolute values of those gradients is not known
+to be uniformly summable and would recreate the receiver barrier.
+
+Higher principle: Route T obstruction is not scalar mass escaping at prime infinity.  Terminal
+holonomy is zero.  Obstruction is distributed noncommutative transport along prime-log connection;
+the scalar source appears only after ordered path integration.  Next producer must control coherent
+connection current before terminal trace, likely by a curvature or square law coupling adjacent
+prime transport to theta/Jordan jet connection.  Any proof based on a terminal boundary charge or
+unordered norm sum is now ruled out.
+
+## Log, prime-path connection pivot
+
+- 2026-08-11 — proved sharp cumulative first-prime mass bound by full von-Mangoldt mass.
+- 2026-08-11 — proved unconditional extinction of adjacent-prime terminal flux.
+- 2026-08-11 — proved ordered connection-gradient prefixes converge to full valuation-one source.
+- 2026-08-11 — proved RH equivalent to vertical boundedness of exact ordered connection current.
+- 2026-08-11 — rejected unordered `tsum` claim; convergence order is essential source structure.
+
+---
+
+## 49. Conjecture loop 25 — exact Klein--Gordon propagation of the Xi mass profile
+
+### Conjecture
+
+The analytic Xi mass test should be a literal free Klein--Gordon orbit, including enough Bochner
+derivative calculus to move the PDE through its Fourier integral.  If propagation itself supplied
+the missing estimate, its conserved energy might control Route T.
+
+### Exact specialization
+
+For radial frequency
+
+```text
+omega_a(x)=sqrt(x^2+a^2),
+```
+
+all polynomial radial moments of the damped Xi mass integrand are integrable.  Differentiation
+under the integral gives the full temporal moment tower, the exact mass-shell second-moment law,
+and therefore
+
+```text
+partial_u^2 F_a(u,h)-partial_h^2 F_a(u,h)+a^2 F_a(u,h)=0.  (RJG135)
+```
+
+No weak derivative or distributional placeholder remains in (RJG135): both second derivatives are
+the actual Bochner derivatives of the concrete mass profile.
+
+Verdict: `[PROVED — EXACT PROPAGATION; REJECTED AS PRODUCER]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in `XiMassKleinGordonConnection.lean`.
+
+### Hostile novelty audit
+
+Corpus C42-I already identified Klein--Gordon energy conservation and proved why it fails at the
+source observation map.  Thus (RJG135) is valuable formal closure of the exact Xi specialization,
+not new evidence for an RH bound.  The missing theorem is still continuity of the arithmetic
+observation on the actual cyclic orbit; assuming that continuity would assume the open core.
+
+The half-density gauge `G=e^(h/2)F` obeys the drifted equation
+
+```text
+G_uu-G_hh+G_h+(a^2-1/4)G=0.                              (RJG136)
+```
+
+but C43-L already proves its outgoing factor `1/2-partial_h` is the exact inverse of harmonic-tail
+smoothing.  Consequently (RJG136) is a recoding of critical radiation, not a coercive gap.
+
+## Log, Klein--Gordon audit
+
+- 2026-08-11 — closed concrete Xi mass PDE with genuine Bochner second derivatives.
+- 2026-08-11 — rejected ordinary or half-density Klein--Gordon energy as source producer by C42-I/L.
+
+---
+
+## 50. Conjecture loop 26 — critical half-density conditioning of the prime connection
+
+### Conjecture
+
+Square-root cumulative mass in (RJG130) may be a coordinate artifact rather than intrinsic
+connection curvature.  Move the critical half-density from each prime coefficient into the mass
+profile before Abel summation.
+
+### Exact gauge and Mertens-scale connection
+
+Put `h_n=log p_n` and
+
+```text
+b_n=log(p_n)/p_n,
+G_tau(h_n)=e^(h_n/2)F_tau(h_n).
+```
+
+Then every literal source atom is preserved before summation:
+
+```text
+b_n G_tau(h_n)=(log p_n/sqrt p_n)F_tau(h_n).             (RJG137)
+```
+
+The cumulative connection coordinate now satisfies the unconditional Mertens bound
+
+```text
+||sum_(n<=N)b_n|| <= log p_N + K_M,                       (RJG138)
+```
+
+with an explicit corpus constant `K_M`.  For every legal interior depth `1/2<d<a`,
+
+```text
+||G_(sigma+iu)(h_N) sum_(n<=N)b_n||
+ <= J_sigma e^(|u|d)(h_N+K_M)e^(-(d-1/2)h_N) -> 0.       (RJG139)
+```
+
+Hence the valuation-one source is exactly the ordered harmonic connection current
+
+```text
+lim_N sum_(n<N) (sum_(j<=n)b_j)(G_tau(h_n)-G_tau(h_(n+1))), (RJG140)
+```
+
+and boundedness of (RJG140) on one positive vertical line is equivalent to RH.
+
+Verdict: `[PROVED — CONNECTION MASS CONDITIONED; CRITICAL RADIATION SURVIVES]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiMassHalfDensityAdjacentPrimeConnection.lean`.
+
+### Hostile novelty audit and higher principle
+
+(RJG137)--(RJG140) prove square-root cumulative growth in the ungauged connection is not
+intrinsic: exact half-density gauge reduces it to logarithmic growth and still kills terminal
+flux.  Therefore neither prime infinity nor cumulative connection mass is Route T's obstruction.
+
+This does not provide smoothing.  Corpus C43-J--L already shows harmonic primitive and mass
+outgoing differential are exact inverse resolvents at every log-frequency.  Half-density profile
+inherits precisely the critical radiation removed from the coefficient.  Taking total variation
+of (RJG140) restores critical type.  New invariant separation is:
+
+```text
+terminal holonomy = 0;
+cumulative-mass exponent = gauge-dependent;
+ordered phase curvature = gauge-invariant open core.      (RJG141)
+```
+
+Live successor must compare this ordered prime curvature directly with the phase-linear theta
+Green curvature before either is scalarized or normed.
+
+## Log, half-density connection pivot
+
+- 2026-08-11 — proved exact atomwise half-density gauge and explicit Mertens cumulative bound.
+- 2026-08-11 — proved unconditional terminal extinction and ordered connection reconstruction.
+- 2026-08-11 — isolated ordered phase curvature, not mass growth, as gauge-invariant obstruction.
+
+---
+
+## 51. Conjecture loop 27 — prime-connection / theta-Green anomaly compensation
+
+### Conjecture
+
+The ordered half-density prime connection and polarized theta Green current may be two gauges of
+one anomaly.  Add them before taking norms and test whether valuation-one source cancels exactly.
+
+### Exact Ward identity
+
+Let `M_theta` be the pinned theta first moment, `G_theta(tau)` the polarized quantile Green packet,
+and `C_prime(tau)` the half-density ordered prime connection.  Then
+
+```text
+G_theta(tau)+i M_theta C_prime(tau)
+ = i M_theta [A_arch(tau)-(P_square(tau)+P_high(tau))].    (RJG142)
+```
+
+The right side is uniformly bounded on every positive vertical line.  Thus the two RH-strength
+currents represent one common anomaly modulo the bounded ideal; any unbounded component is exactly
+phase-antialigned before scalarization.
+
+Verdict: `[PROVED — EXACT CROSS-ROUTE COMPENSATION]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`HedenmalmThetaXiMassConnectionGreenCompensation.lean`.
+
+### Hostile novelty audit
+
+(RJG142) is stronger than two independent boundedness comparisons: it is an exact phase-linear Ward
+identity.  It is not RH.  The identity cancels the valuation-one open core between two
+representatives and therefore cannot bound either representative separately.  Successor question:
+classify the entire bounded quotient rather than calling it harmless.
+
+## Log, anomaly compensation
+
+- 2026-08-11 — proved exact theta-Green / ordered-prime cancellation.
+- 2026-08-11 — isolated one common quotient class modulo bounded background.
+
+---
+
+## 52. Conjecture loop 28 — timelike mass-shell Riemann--Lebesgue theorem
+
+### Conjecture
+
+Every integrable centered Xi mass-shell packet should vanish in future vertical time even though
+the phase `sqrt(x^2+a^2)` is nonlinear and stationary-phase infrastructure was absent from Lean.
+
+### Exact positive-energy pushforward
+
+For `a>0`, put
+
+```text
+q_a(y)=sqrt(y^2-a^2),
+D_(a,f)(y)=1_(a,infinity)(y) y/q_a(y) [f(q_a(y))+f(-q_a(y))].
+```
+
+The threshold singularity is integrable whenever `f` is integrable, and exact change of variables
+gives
+
+```text
+integral_R e^(-iu sqrt(x^2+a^2)) f(x) dx
+ = integral_R e^(-iuy) D_(a,f)(y) dy -> 0.                (RJG143)
+```
+
+Consequently every fixed Xi centered prime atom tends to zero vertically.
+
+Verdict: `[PROVED — FULL TIMELIKE DISPERSION]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiMassRadialRiemannLebesgue.lean`; one-sided zero-free contour transport is in
+`StripHorizontalShift.lean`.
+
+### Hostile novelty audit
+
+This is not generic stationary-phase rhetoric: Lean proves the exact two-sheet pushforward,
+Jacobian, image, injectivity, integrability, Fourier identity, and limit.  It removes the continuous
+mass shell as a possible Route T obstruction.  It cannot be passed naively through the prime-square
+series because its critical envelope is `sum_p log(p)/p`, which diverges.  Attempting dominated
+convergence there would be false proof theatre and was rejected.
+
+## Log, timelike dispersion
+
+- 2026-08-11 — proved exact positive-energy threshold density and its integrability.
+- 2026-08-11 — proved radial Riemann--Lebesgue extinction and fixed-atom extinction.
+- 2026-08-11 — identified nonsummable prime-square boundary as sole failed interchange.
+
+---
+
+## 53. Conjecture loop 29 — residue spectrum of the compensated current
+
+### Conjecture
+
+The bounded quotient in (RJG142) may have a finite persistent carrier.  Classify it exactly rather
+than estimating it.  Prime-square nonsummability should be a contour-crossing residue, not failure
+of mass-shell dispersion.
+
+### Prime-square pole and two-carrier classification
+
+One-sided transport remains entirely in `Re s>=1`, so it uses the unconditional zeta zero-free
+boundary and never enters the critical strip.  The square channel decomposes exactly as
+
+```text
+P_square(tau)
+ = (pi/2) Phi_tau(0) + R_reg(tau)-R_high(tau),            (RJG144)
+```
+
+where both remainders tend to zero vertically.  The higher correction is reindexed exactly as the
+absolutely summable even-prime-power tail `p^(2(k+2))`; no analytic continuation of its series is
+assumed.
+
+The centered archimedean packet and all high prime powers also tend to zero.  Therefore
+
+```text
+G_theta(sigma+iu)+i M_theta C_prime(sigma+iu)
+ - i M_theta [2pi Phi_(sigma+iu)(-i/2)
+              -(pi/2) Phi_(sigma+iu)(0)] -> 0.            (RJG145)
+```
+
+The surviving frequencies are exactly
+
+```text
+omega_arch=sqrt(a^2-1/4),   omega_square=a.               (RJG146)
+```
+
+Verdict: `[PROVED — COMPLETE TWO-RESIDUE ASYMPTOTIC CARRIER]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiMassPrimeSquareAsymptoticCarrier.lean` and
+`HedenmalmThetaXiMassCompensatedAsymptoticCarrier.lean`.
+
+### Hostile novelty audit and higher universal principle
+
+(RJG144)--(RJG146) create new source classification: every continuous-spectrum and absolutely
+summable arithmetic component disperses; persistent vertical modes are exactly contour-crossing
+residues.  The earlier bounded-quotient description hid this finite residue spectrum.
+
+This still does not prove RH.  Valuation-one ordered phase curvature canceled in (RJG142), so
+(RJG145) classifies the quotient but gives no separate bound for theta Green or prime connection.
+The big-picture principle is now sharper:
+
+```text
+continuous mass shell       -> dispersive zero;
+absolutely summable powers  -> dispersive zero;
+crossed source divisors     -> finite residue spectrum;
+valuation-one phase order   -> only remaining RH-strength degree of freedom. (RJG147)
+```
+
+Any successor route that acts only on the bounded quotient, mass shell, or repeated prime powers is
+closed.  Progress must produce a phase-sensitive constraint on valuation-one order before its exact
+theta/prime cancellation.
+
+## Log, residue-spectrum pivot
+
+- 2026-08-11 — proved square pole plus decaying regular and even-prime-power pieces.
+- 2026-08-11 — proved centered arch and high-prime-power extinction.
+- 2026-08-11 — proved full compensated current converges modulo two explicit residue carriers.
+- 2026-08-11 — isolated valuation-one ordered phase as sole non-dispersive, non-residue open core.
+
+---
+
+## 54. Conjecture loop 30 — adaptive mass source/receiver phase wall
+
+### Conjecture
+
+A growing but sublinear mass aperture might damp the valuation-one source while retaining an
+off-critical divisor boost.  Determine the exact faithful scale before attempting any source
+estimate.
+
+### Sharp faithfulness classification
+
+For one Xi divisor copy `q`, write `R+iJ` for its Poisson point and `M_a+iK_a` for its mass image.
+Charge conservation and the universal height bounds give
+
+```text
+M_a |K_a| = R |J|,       a <= M_a <= a+R.                (RJG148)
+```
+
+Consequently, for every aperture schedule `a_n>=1/2` and every off-line copy `J!=0`,
+
+```text
+n |K_(a_n)| -> infinity
+  iff n/M_(a_n) -> infinity
+  iff n/a_n -> infinity.                                 (RJG149)
+```
+
+The second equivalence is the new sharp half.  Its reverse direction uses
+`M_(a_n)<=a_n+R<=(1+2R)a_n`; its forward direction uses `a_n<=M_(a_n)`.
+
+Every unconditional oblique absorber has a positive linear velocity `v` with
+`v*n<=a_n` eventually (and source phase chamber `4*sigma*v>1`).  Such a schedule cannot satisfy
+`n/a_n->infinity`.  Hence
+
+```text
+oblique source extinction chamber  intersection
+off-line faithful receiver chamber = empty.              (RJG150)
+```
+
+Verdict: `[PROVED — SHARP ADAPTIVE SOURCE/RECEIVER WALL]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiMassAdaptiveApertureSharpFaithfulnessWall.lean`.
+
+### Hostile novelty audit and pivot
+
+(RJG149) is stronger than the earlier necessary sublinear condition: it classifies every adaptive
+schedule exactly and is independent of which off-line Xi copy is selected.  (RJG150) kills the
+remaining purely kinematic aperture hope.  No choice of mass graph can use the corpus's
+unconditional oblique extinction estimate and simultaneously retain divergent off-line signal.
+
+This does not rule out phase cancellation inside a faithful sublinear cone; proving that
+cancellation remains the RH-strength arithmetic problem.  The positive survivor from the earlier
+co-moving no-go is now forced: progress must be transverse to the aperture graph.  First mass
+rescaling recovers the conserved signed charge `RJ` at `O(1/a)`, while the paper-proved
+mass--Bessel obstruction excludes every finite radiation-jet subtraction.  Therefore the next
+producer must be an infinite-jet, phase-linear aperture current, not another scalar mass schedule.
+
+## Log, sharp adaptive wall
+
+- 2026-08-11 — proved raised height is at most aperture plus fixed original height.
+- 2026-08-11 — proved off-line boost divergence iff time/aperture ratio diverges.
+- 2026-08-11 — proved faithful schedules and unconditional oblique absorbers are disjoint.
+- 2026-08-11 — retired kinematic sublinear aperture as an RH closure mechanism.
+
+---
+
+## 55. Conjecture loop 31 — transverse parabolic mass face
+
+### Corpus collision and surviving conjecture
+
+Rest-energy renormalization suggests the parabolic face
+
+```text
+exp(2 a^2 t) exp(-2 a t sqrt(a^2+z^2))
+  = exp(-2 a t (sqrt(a^2+z^2)-a))
+  -> exp(-t z^2).                                        (RJG151)
+```
+
+This is not new paper mathematics: `mass-xi-finite-true-prime-cone.md`, especially its
+C43-R--C43-V chain, already proves the exact remainder identity, divisor domination, heat-Hankel
+bridge, and Euler-line Gaussian transfer.  Lean corpus does not yet contain the full-divisor
+transfer.  Rebranding the limit as a discovery would be theatre.
+
+The live conjecture is therefore formal and quantitative: construct the parabolic mass trace over
+every Xi divisor copy, prove a uniform summable majorant, and prove unconditional convergence of
+the complete multiplicity-exact `tsum` to the Gaussian Xi heat trace.  The algebraic core is
+
+```text
+2 a (beta-a) = z^2 - z^4/(beta+a)^2,
+beta = sqrt(a^2+z^2),                                   (RJG152)
+```
+
+with a divisor-uniform positive-time majorant obtained from the mass height equation, not from
+finite truncation or computation.
+
+Status: `[IN PROGRESS — LEAN-DEFERRED PAPER THEOREM SELECTED FOR CLOSURE]`.
+
+### Hostile audit and required pivot
+
+Even complete formalization of (RJG151) does not prove RH: every linear chart currently known
+(vertical mass, parabolic heat, theta resolvent, Cauchy/Hurwitz) transports the same signed
+reflection defect instead of forcing it to vanish.  Value comes from removing the possibility that
+the transverse limit hides an analytic gap and from exposing which nonlinear source laws survive
+both mass and heat charts.  After the transfer theorem closes, next conjecture must constrain
+valuation-one orientation nonlinearly; another linear smoothing identity is not progress.
+
+## Log, transverse parabolic face
+
+- 2026-08-11 — identified existing complete paper proof and refused duplicate novelty claim.
+- 2026-08-11 — selected full multiplicity-exact mass-to-heat `tsum` convergence as missing Lean gap.
+
+### Closure
+
+The conjecture is now formalized.  Lean proves (RJG152), the `O(a^-2)` divisorwise error, the sharp
+uniform gap `a(M_a-a)>=R/4`, domination by `xiPoissonWeight(t/2)`, and unconditional convergence
+of the complete multiplicity-exact parabolic mass trace to the Gaussian Xi heat trace.
+
+Verdict: `[PROVED ON PAPER BEFORE THIS LOOP; LEAN GAP NOW CLOSED]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in `XiMassParabolicHeatTransfer.lean`.
+
+---
+
+## 56. Conjecture loop 32 — Stieltjes--Cassini orientation midpoint
+
+### Conjecture
+
+The parabolic heat chart and shifted-Cassini chart may retain complementary nonlinear halves of
+the same orientation loss.  For one squared Xi coordinate `w=A+iB` and a fixed shift `y>0`, put
+
+```text
+lambda=(y+w)^(-1),
+E=1/(y+A),
+V=Re(lambda^2)/Re(lambda).                              (RJG153)
+```
+
+Direct algebra predicts the exact midpoint law
+
+```text
+E-Re(lambda)=Re(lambda)-V
+  =B^2/((y+A)((y+A)^2+B^2)) >= 0.                       (RJG154)
+```
+
+Thus Route T's Hermitian heat envelope and Route U's Cassini intrinsic velocity should be
+symmetric around the phase-linear shifted resolvent response.  Summing (RJG154) over the complete
+Xi divisor is legal because every term is bounded by `1/(y+A)`, hence by the reciprocal-square
+majorant.  The summed gap should vanish exactly under RH.
+
+### Anti-theatre audit
+
+Corpus contains the parabolic heat--resolvent Gamma bridge and the orbitwise Cassini phase-tax
+threshold, but repository search found no theorem identifying their phase taxes as the same
+Stieltjes midpoint gap or compressing it to one multiplicity-exact scalar.  This remains a receiver,
+not annihilation.  Value is a new cross-route invariant: two apparently different nonlinear
+obstructions are one positive density, so separate T/U source estimates would duplicate the same
+open core.
+
+### Closure
+
+The conjecture is exact.  For every positive shift, Lean proves the orbitwise midpoint law,
+summability of all three complete traces, and
+
+```text
+E_total-V_total=2 D_y,
+D_y=sum_q B_q^2/((y+A_q)((y+A_q)^2+B_q^2)) >= 0.        (RJG155)
+```
+
+Moreover
+
+```text
+D_y=0
+ iff E_total=Re M_y(0)
+ iff E_total=V_total
+ iff RH.                                                 (RJG156)
+```
+
+Since `V_total<=E_total` unconditionally, the reverse weak order `E_total<=V_total` is already an
+exact one-scalar RH criterion.  This is a receiver theorem, not source annihilation.
+
+The common atom has intrinsic Fisher form
+
+```text
+B_q^2/((y+A_q)((y+A_q)^2+B_q^2))
+  = Im(lambda_q)^2/Re(lambda_q).                          (RJG157)
+```
+
+Hostile collision audit: Suzuki's pre-existing shifted transverse charge is not (RJG157); it is
+the cubic density `|lambda_q|^2 Im(lambda_q)^2/Re(lambda_q)`.  The new midpoint density is its
+radially normalized degree-one form.
+
+Verdict: `[PROVED — EXACT STIELTJES--CASSINI MIDPOINT DEFECT]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniStieltjesOrientationDefect.lean`.
+
+---
+
+## 57. Conjecture loop 33 — valuation-one BV--Wold Fisher landing
+
+### Conjecture
+
+The valuation-one Wold source is not `ell^1` off the critical line, but its centered coefficient
+is `ell^2`.  Let
+
+```text
+c_q(p)=primeDepthBVWoldXiRelativeLogCoefficient(q,1,p)-woldRemainder(p)
+      =a_q woldCoeff(1,p),
+a_q=2 Re(rho_q)-1,
+C_W=sum_p woldCoeff(1,p)^2.                              (RJG158)
+```
+
+Then `0<C_W<infinity` and
+
+```text
+sum_p c_q(p)^2=a_q^2 C_W.                                (RJG159)
+```
+
+The shifted-imaginary coordinate formula predicts a strictly positive geometric gauge `G_y(q)`
+with
+
+```text
+Im(lambda_q)^2/Re(lambda_q)=a_q^2 G_y(q),                (RJG160)
+```
+
+and hence the complete source/receiver conservation law
+
+```text
+C_W D_y=sum_q G_y(q) sum_p c_q(p)^2.                     (RJG161)
+```
+
+This would identify Route T's parabolic/Stieltjes defect as an honest positively weighted Hilbert
+energy of the actual centered valuation-one source, not a divisor-only receiver.
+
+### Hostile audit and expected wall
+
+The law cannot itself prove RH: it transports, rather than annihilates, the horizontal source
+rate.  Its value is sharper typing.  Existing polynomial Hilbert-charge flow with probe `X`
+produces
+
+```text
+|lambda_q|^2 Im(lambda_q)^2/Re(lambda_q),                (RJG162)
+```
+
+so recovering (RJG157) requires division by `|lambda_q|^2`, equivalently the orbit-normalized
+phase probe `lambda_q/|lambda_q|`.  That normalization is non-holomorphic and divisor-adaptive.
+Thus fixed polynomial source probes necessarily land one radial degree too high.  If (RJG161)
+closes, next conjecture must seek a source-native projective/unitary normalization or prove that
+every such normalization is necessarily target-adaptive.
+
+### Closure and sharp maximality wall
+
+The conjecture is exact.  Lean proves `0<C_W<infinity`, (RJG159)--(RJG161), atomwise positivity of
+`G_y`, and the complete source-energy landing without changing divisor multiplicity.  The existing
+Suzuki/Hankel transverse charge is also proved to equal `|lambda_q|^2` times the midpoint density;
+the degree mismatch is literal, not heuristic.
+
+There is a stronger obstruction than non-holomorphic normalization.  Schwarz conjugation preserves
+`a_q` and hence the entire centered Wold coefficient vector `p |-> c_q(p)`, while it reverses
+`Im(lambda_q)`.  Therefore no function of that complete vector alone can recover the phase-linear
+shifted orientation at an off-line copy.  The valuation-one Wold source is a maximal quadratic
+receiver but cannot be a phase-linear producer.
+
+Verdict: `[PROVED — EXACT FISHER LANDING AND SCHWARZ-PARITY MAXIMALITY NO-GO]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniBVWoldFisherLanding.lean`.
+
+---
+
+## 58. Conjecture loop 34 — phase-clock and reflected mixed-source jet
+
+### Conjecture
+
+The orientation density may retain a phase-linear source coordinate before its Fisher square.  For
+one squared node `A+iB`, direct Laplace algebra predicts
+
+```text
+D_y(q)=integral_(0,infinity)
+  exp(-(y+A)u) (1-cos(Bu)) du.                           (RJG163)
+```
+
+The corpus factorization `B=-(2 Re(rho)-1) Im(rho)` says this clock frequency is the product of
+centered horizontal Wold grade `a` and physical height `gamma`.  The independent pre-divisor
+phase/half-grade source should expose that product as a genuine mixed jet.
+
+### Closure
+
+Both statements are exact.  Lean proves integrability, nonnegativity, (RJG163), complete `tsum`
+equality with `D_y`, and the resulting RH zero-energy criterion.  On continuous log-prime scale
+`x`, reflection-minus-identity has imaginary source boundary
+
+```text
+J_(a,gamma)(x)=2 sinh(a x/2) sin(gamma x).               (RJG164)
+```
+
+It specializes exactly at `x=log p` to the existing reflected physical prime moment.  Its neutral
+jets are
+
+```text
+J(0)=J'(0)=0,   J''(0)=2 a gamma=-2B.                   (RJG165)
+```
+
+Thus the Cassini clock is exactly driven by minus one half of a pre-divisor mixed source jet.  The
+jet is odd under grade reflection, odd under Schwarz phase reversal, and even under their product:
+it is the tensor-product sign representation lost by every separately completed quadratic source.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniPhaseClockLanding.lean` and
+`XiHeatCassiniReflectedPhaseSourceJet.lean`.
+
+### Hostile audit and pivot
+
+(RJG164)--(RJG165) close source provenance, not source annihilation.  Continuous interpolation near
+`x=0` has no unconditional arithmetic law forcing its curvature to vanish; treating analyticity
+alone as such a law would be theatre.  The exact two-prime reflected Hermiticity specialization is
+already RH-equivalent.  Therefore no further receiver normalization, Wold energy, or local source
+jet can close Route T.
+
+The surviving producer question returns to the actual open core: valuation-one ordered phase
+curvature in the finite timelike/glancing mass cone.  New useful constraint is representation
+theoretic: any proposed producer must retain the bi-odd grade--height tensor before Schwarz orbit
+completion and before taking norms.  Phase-even or grade-even source completions are now ruled out
+by theorem, not preference.
+
+Verdict: `[PROVED — EXACT MIXED SOURCE-JET IDENTIFICATION; RETIRED AS ANNIHILATOR]`.
+
+---
+
+## 59. Conjecture loop 35 — raw Cassini/Wold compact-smoothing wall
+
+### Conjecture and failure
+
+The Fisher landing suggested that the depth-one Wold coefficient might directly control the raw
+Route-T valuation-one critical coefficient.  Put
+
+```text
+r(p)=log(p)/sqrt(p),
+c_1(p)=(1-1/p)^3 log(p)/p,
+kappa(p)=(1-1/p)^3/sqrt(p).                              (RJG166)
+```
+
+The exact relation is
+
+```text
+c_1(p)=kappa(p) r(p),    0<kappa(p),    kappa(p)->0.      (RJG167)
+```
+
+Thus the conjectured coercive landing is false.  Lean proves
+
+```text
+sum_p r(p)^2=infinity,       sum_p c_1(p)^2<infinity,     (RJG168)
+```
+
+and there is no `c>0` with `c r(p)<=c_1(p)` at every prime.  Cassini Fisher energy is a compact
+diagonal image of the ungauged critical source and cannot recover it by a bounded inverse.
+
+### Positive survivor and pivot
+
+This no-go exposed that the comparison had been made before Route T's canonical half-density
+gauge.  The vanishing factor in (RJG167) contains exactly the `p^(-1/2)` moved from arithmetic
+coefficient into mass profile by `XiMassHalfDensityAdjacentPrimeConnection.lean`.  Therefore the
+correct next conjecture is not another inverse estimate on `r`; it is to compare Wold and Route T
+after the half-density conjugation.
+
+Verdict: `[PROVED — RAW COMPACT-SMOOTHING WALL; POSITIVE GAUGE SURVIVOR EXTRACTED]`.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniMassCriticalSmoothingWall.lean`.
+
+---
+
+## 60. Conjecture loop 36 — bounded Wold coframe and trace reduction
+
+### Conjecture
+
+After moving `sqrt(p)` into the mass test, Route T's arithmetic coefficient becomes
+
+```text
+h(p)=log(p)/p.
+```
+
+The depth-one Wold coefficient should then be uniformly coframe-equivalent rather than compactly
+smoothed, and the difference should be harmless after restoring the half-density:
+
+```text
+c_1(p)=(1-1/p)^3 h(p),
+1 <= (1-1/p)^(-3) <= 8,                                 (RJG169)
+0 <= h(p)-c_1(p) <= 3 log(p)/p^2.                       (RJG170)
+```
+
+Multiplication of (RJG170) by `sqrt(p)` predicts the raw correction
+`O(log(p)/p^(3/2))`, summable against the prime-uniform vertical mass Fourier bound.
+
+### Closure
+
+All predictions are exact.  Lean proves the bounded inverse coframe (RJG169), the positive
+summable Euler depletion (RJG170), and the atomwise source decomposition
+
+```text
+critical Route-T atom(p)
+  = sqrt(p)c_1(p) F_u(log p) + correction(p,u),           (RJG171)
+
+|correction(p,u)|
+  <= 3 log(p) p^(-3/2) integral_R exp(-sigma|x|) dx.      (RJG172)
+```
+
+The majorant is independent of vertical time `u`.  Consequently, with multiplicity and the full
+cofinal prime sum preserved,
+
+```text
+L_T(a,sigma+iu)=L_W(a,sigma+iu)+R(a,sigma+iu),
+sup_u |R(a,sigma+iu)| < infinity,                        (RJG173)
+
+RH iff sup_u |L_W(a,sigma+iu)| < infinity,               (RJG174)
+```
+
+where `L_W` is the pure depth-one Wold coefficient paired with the physical Route-T mass
+half-density profile.  This is stronger than a classifier rephrasing: it removes the full mismatch
+between Cassini/Wold arithmetic data and the Route-T critical source modulo an explicitly
+trace-class, uniformly bounded current.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniHalfDensityWoldCoframe.lean` and
+`XiHeatCassiniWoldHalfDensityTraceReduction.lean`.
+
+### Hostile audit and next pivot
+
+(RJG174) does not bound `L_W`.  The fixed Wold coefficient is square summable, but the restored
+half-density profile has timelike radiation; Cauchy--Schwarz on profile norms would again erase the
+phase and can grow.  Fisher energy controls arithmetic coframe, not propagated test orbit.
+
+The surviving open core is now sharper: prove a phase-linear bound for one positive depth-one Wold
+logarithmic measure under the non-normal mass half-wave.  Mertens gives bounded discrepancy of the
+underlying harmonic log-prime measure from Lebesgue measure, and (RJG170) changes that measure only
+by finite positive mass.  Next conjecture must exploit this centered Wold discrepancy inside the
+ordered joint pairing before total variation or Hilbert norms; another coefficient-space estimate
+would be theatre.
+
+Verdict: `[PROVED — PURE WOLD HALF-DENSITY PRODUCER REDUCTION; CANCELLATION OPEN]`.
+
+---
+
+## 61. Conjecture loop 37 — bounded Wold discrepancy and centered log connection
+
+### Conjecture
+
+Treat the depth-one Wold coefficient as a positive measure on the ordered prime-log mesh.  The
+Euler depletion in (RJG170) has finite total mass, while Mertens' logarithmic prime measure has
+bounded cumulative discrepancy from Lebesgue log mass.  Therefore the cumulative Wold mass should
+satisfy
+
+```text
+W(N)=sum_(p<=N) c_1(p),
+|W(N)-log N| <= C_M+C_trace.                            (RJG175)
+```
+
+At the `N`th prime cutoff, Abel summation should then retain phase and split every finite pure-Wold
+prefix into a deterministic logarithmic-mesh current and one centered connection whose arithmetic
+primitive is uniformly bounded.
+
+### Closure
+
+The conjecture is exact.  Lean proves the natural-number identity
+
+```text
+c_1(p) + (h(p)-c_1(p)) = log(p)/p,
+```
+
+including zero extension off the primes, summability and positivity of the Euler correction, and
+(RJG175) for every natural cutoff.  It also proves that the first `N+1` ordered primes are exactly
+the primes through `p_N`, so the same bound holds for
+
+```text
+D_N=sum_(n<=N)c_1(p_n)-log(p_N),
+|D_N| <= C_M+C_trace.                                   (RJG176)
+```
+
+Writing `G_N(tau)=sqrt(p_N) F_tau(log p_N)`, exact finite Abel summation gives
+
+```text
+sum_(n<=N)c_1(p_n)G_n
+  = G_N W_N + sum_(n<N) W_n(G_n-G_(n+1))
+
+  = [G_N log(p_N)+sum_(n<N)log(p_n)(G_n-G_(n+1))]
+    +[G_N D_N+sum_(n<N)D_n(G_n-G_(n+1))].               (RJG177)
+```
+
+No norm, rearrangement, asymptotic replacement, or RH premise enters (RJG177).  This is the first
+exact Route-T representation in which the remaining arithmetic input is a uniformly bounded
+primitive rather than a growing critical coefficient mass.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldLogDiscrepancy.lean` and
+`XiHeatCassiniWoldCenteredLogConnection.lean`.
+
+### Hostile audit and higher principle
+
+Bounded discrepancy is not yet a bound for the second bracket of (RJG177).  Taking absolute values
+would charge total variation of the restored half-density profile; that profile carries precisely
+the timelike radiation which made (RJG174) RH-complete.  Thus (RJG177) is genuine reduction, not
+closure.
+
+The higher invariant is now visible:
+
+```text
+critical coefficient growth
+  = logarithmic reference transport + bounded arithmetic holonomy,
+
+Route-T obstruction
+  = phase-linear action of that holonomy on the non-normal mass half-wave. (RJG178)
+```
+
+Mertens controls the primitive, theta Green compensation controls the quotient current, and the
+two-residue theorem controls its persistent asymptotic carrier.  What remains is their common
+unsquared joint phase: a centered Wold holonomy/Green-current weld.  Any next conjecture that
+separately bounds `D_N` and `G_n-G_(n+1)` repeats the total-variation failure and is rejected.
+
+Verdict: `[PROVED — BOUNDED-DISCREPANCY LOG CONNECTION; JOINT PHASE WELD OPEN]`.
+
+---
+
+## 62. Conjecture loop 38 — Wold/theta-Green common-anomaly Ward identity
+
+### Conjecture
+
+The theta Green current and pure depth-one Wold current should not be treated as transverse
+quantities.  The exact valuation-one decomposition (RJG170) suggests they are two representatives
+of one quotient anomaly: replacing valuation one by pure Wold should remove only the positive
+trace-class Euler depletion current.  Hence the joint packet
+
+```text
+Q_W(a,c,tau)=Theta_metric(a,c,tau)+i M_theta L_W(a,tau)
+```
+
+should satisfy an exact Ward identity whose surviving terms are archimedean, prime-square,
+higher-prime-power, and trace-correction faces.
+
+### Closure
+
+The conjecture is exact.  For every legal pair of depths and every `Re(tau)>0`, Lean proves
+
+```text
+Q_W
+ = Q_valuation-one - i M_theta R_trace
+ = i M_theta [A_arch - (P_square + P_high) - R_trace].   (RJG179)
+```
+
+The trace correction has a prime-square majorant at quarter depth.  Pointwise vertical
+Riemann--Lebesgue extinction plus dominated convergence therefore gives
+
+```text
+R_trace(sigma+i u) -> 0  as u -> +infinity.              (RJG180)
+```
+
+Consequently the Wold/theta packet is uniformly bounded on every positive vertical line and has
+exactly the already-proved two-residue asymptotic carrier:
+
+```text
+sup_u |Q_W(sigma+i u)| < infinity,
+Q_W(sigma+i u)-C_two-residue(sigma+i u) -> 0.            (RJG181)
+```
+
+No RH premise, added axiom, total-variation estimate, or coefficient-space closure enters these
+statements.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldThetaGreenCompensation.lean`.
+
+### Hostile audit and higher principle
+
+(RJG179)--(RJG181) do not separately bound theta current or pure Wold current.  They prove the
+opposite structural fact needed to avoid a false coercivity programme: these currents are
+anti-diagonal representatives of one anomaly modulo a finite dispersive ideal.  Any Gram or energy
+argument declaring them orthogonal would contradict their exact Ward cancellation.
+
+The higher principle is a quotient-current gauge law:
+
+```text
+theta Green representative - valuation-one representative
+  = pure Wold representative modulo dispersive Euler trace.             (RJG182)
+```
+
+Persistent two-residue carrier belongs to this quotient class, not to either representative in
+isolation.  Remaining obstruction is to resolve arithmetic holonomy inside this common phase
+class.  Corpus Mertens exponential-rate theorem now predicts more than (RJG176): `D_N` converges,
+so persistent holonomy should telescope to one static first-prime boundary atom and leave a
+zero-tail primitive.
+
+Verdict: `[PROVED — COMMON ANOMALY AND CARRIER RIGIDITY; HOLONOMY LIMIT OPEN]`.
+
+---
+
+## 63. Conjecture loop 39 — convergent Wold holonomy and static boundary charge
+
+### Conjecture
+
+The bounded primitive `D_N` in (RJG176)--(RJG178) should have a genuine limit.  Corpus already
+contains an exponential-rate Mertens first theorem, while the Euler-depletion correction is a
+positive summable measure.  Their difference therefore predicts a canonical Wold logarithmic
+holonomy
+
+```text
+D_infinity = c_Mertens - mass(R_trace),
+D_N -> D_infinity.                                      (RJG183)
+```
+
+Centering at this limit should expose a stronger Abel law: constant holonomy is an exact
+coboundary and must telescope to a single boundary atom, leaving a residual primitive tending to
+zero.
+
+### Closure
+
+The conjecture is exact.  Lean first identifies the repository's prime-window Mertens sum with the
+sieve sum `mertensA`.  The existing exponential error theorem implies convergence of
+`mertensA(N)-log N`; ordinary partial sums of the Euler trace correction converge to its `tsum`.
+Combining these with (RJG170) proves (RJG183) both for natural cutoffs and ordered-prime cutoffs.
+
+Define
+
+```text
+E_N = D_N-D_infinity.
+```
+
+Then Lean proves `E_N -> 0` and the exact finite telescope
+
+```text
+G_N D_N + sum_(n<N) D_n (G_n-G_(n+1))
+ = D_infinity G_0
+   + G_N E_N + sum_(n<N) E_n (G_n-G_(n+1)).             (RJG184)
+```
+
+Substitution into (RJG177) gives the sharpened pure-Wold law
+
+```text
+sum_(n<=N)c_1(p_n)G_n
+ = logarithmic-mesh current
+   + D_infinity G_0
+   + zero-tail residual connection.                     (RJG185)
+```
+
+Thus the entire persistent bounded arithmetic obstruction is rank one in boundary location: it is
+one fixed first-prime profile, not an infinite connection.  All remaining connection coefficients
+vanish.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldConvergentLogHolonomy.lean`.
+
+### Hostile audit and pivot
+
+`E_N -> 0` alone does not yield a uniform vertical-line bound after multiplying by adjacent profile
+variation.  Arbitrarily slow convergence would still permit timelike radiation to outrun the
+arithmetic tail.  Therefore (RJG184) removes the persistent infinite-dimensional obstruction but
+does not close Route T.
+
+The next conjecture must use the actual rate already latent in its proof.  Euler trace tail is
+bounded by `O((log N)/N)`, faster than Mertens' `exp(-c sqrt(log N))`; hence
+
+```text
+|E_N| <= B exp(-c sqrt(log p_N))                         (RJG186)
+```
+
+eventually.  This is substantive because it converts residual holonomy from a qualitative null
+sequence into a quantified arithmetic damping factor available for direct phase-gradient pairing.
+If even (RJG186) loses to the timelike half-density variation, that failure will identify exact
+radiation scale requiring theta-current cancellation rather than coefficient decay.
+
+Verdict: `[PROVED — STATIC HOLONOMY CHARGE; QUANTITATIVE RESIDUAL RATE OPEN]`.

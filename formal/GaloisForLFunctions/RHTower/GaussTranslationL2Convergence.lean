@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.GaussShiftedBlockCoefficients
 import GaloisForLFunctions.RHTower.GaussSampleTranslationL2
+import GaloisForLFunctions.HTGeometry.FourierCircleTruncation
 
 /-!
 # The moving-translation estimate in `L²(ℝ/ℤ)`
@@ -55,14 +56,8 @@ theorem fourierCoeff_gaussPrimeScaleTranslateLp {p : ℝ} (hp : 1 < p) (δ : Add
 /-! ## Parseval for the Fourier basis -/
 
 theorem norm_sq_eq_tsum_fourierCoeff (u : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) :
-    ‖u‖ ^ (2 : ℝ) = ∑' j : ℤ, ‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖ ^ (2 : ℝ) := by
-  have hiso : ‖(fourierBasis (T := (1 : ℝ))).repr u‖ = ‖u‖ :=
-    (fourierBasis (T := (1 : ℝ))).repr.norm_map u
-  have hlp := lp.norm_rpow_eq_tsum (p := 2) (E := fun _ : ℤ => ℂ) (by norm_num)
-    ((fourierBasis (T := (1 : ℝ))).repr u)
-  simp only [ENNReal.toReal_ofNat] at hlp
-  rw [← hiso, hlp]
-  exact tsum_congr fun j => by rw [fourierBasis_repr]
+    ‖u‖ ^ (2 : ℝ) = ∑' j : ℤ, ‖fourierCoeff ((u : AddCircle (1 : ℝ) → ℂ)) j‖ ^ (2 : ℝ) :=
+  GaloisForLFunctions.norm_sq_eq_tsum_fourierCoeff u
 
 /-! ## The `L²` convergence -/
 

@@ -62,7 +62,7 @@ theorem analyticAt_translate_jet {θ : BoundedRealSequence} (r : ℕ) (σ : ℂ)
     AnalyticAt ℂ (fun w => iteratedDeriv r (movingCanonicalLogDerivative θ) (w + σ)) ζ := by
   have hinner : AnalyticAt ℂ (fun w : ℂ => w + σ) ζ := analyticAt_id.add analyticAt_const
   have houter : AnalyticAt ℂ (iteratedDeriv r (movingCanonicalLogDerivative θ)) (ζ + σ) :=
-    analyticAt_iteratedDeriv (analyticAt_movingCanonicalLogDerivative θ hpos) r
+    analyticAt_iteratedDeriv' (analyticAt_movingCanonicalLogDerivative θ hpos) r
   have hcomp : AnalyticAt ℂ
       ((iteratedDeriv r (movingCanonicalLogDerivative θ)) ∘ (fun w : ℂ => w + σ)) ζ :=
     AnalyticAt.comp (g := iteratedDeriv r (movingCanonicalLogDerivative θ))

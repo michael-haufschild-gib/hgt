@@ -50,7 +50,7 @@ theorem mul_quasiTransformDividedDiff (s : ℕ → ℝ) (n : ℕ) (t z : ℝ) :
   linear_combination h1 + C t * h2
 
 /-- The divided difference of a first-kind polynomial has degree below the index. -/
-theorem firstKindDividedDiff_degree_lt (s : ℕ → ℝ) (n : ℕ) (z : ℝ) :
+theorem firstKindDividedDiff_degree_lt' (s : ℕ → ℝ) (n : ℕ) (z : ℝ) :
     (firstKindDividedDiff s n z).degree < (n : WithBot ℕ) := by
   rcases Nat.eq_zero_or_pos n with hn | hn
   · subst hn
@@ -74,10 +74,10 @@ theorem firstKindDividedDiff_degree_lt (s : ℕ → ℝ) (n : ℕ) (z : ℝ) :
 theorem quasiDividedDiff_degree_le (s : ℕ → ℝ) (n : ℕ) (t z : ℝ) :
     (quasiTransformDividedDiff s n t z).degree ≤ (n : WithBot ℕ) := by
   refine le_trans (Polynomial.degree_add_le _ _) (max_le ?_ ?_)
-  · exact Order.le_of_lt_succ (firstKindDividedDiff_degree_lt s (n + 1) z)
+  · exact Order.le_of_lt_succ (firstKindDividedDiff_degree_lt' s (n + 1) z)
   · refine le_trans (Polynomial.degree_mul_le _ _) ?_
     have h1 : (firstKindDividedDiff s n z).degree ≤ (n : WithBot ℕ) :=
-      le_of_lt (firstKindDividedDiff_degree_lt s n z)
+      le_of_lt (firstKindDividedDiff_degree_lt' s n z)
     calc (C t).degree + (firstKindDividedDiff s n z).degree
         ≤ 0 + (n : WithBot ℕ) := add_le_add Polynomial.degree_C_le h1
       _ = (n : WithBot ℕ) := zero_add _

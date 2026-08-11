@@ -72,7 +72,7 @@ theorem analyticAt_evenTranslate_jet (θ : BoundedRealSequence) (r : ℕ) (σ : 
     AnalyticAt ℂ (fun w => iteratedDeriv r (movingEvenCanonicalCarrier θ) (w + σ)) ζ := by
   have hinner : AnalyticAt ℂ (fun w : ℂ => w + σ) ζ := analyticAt_id.add analyticAt_const
   have houter : AnalyticAt ℂ (iteratedDeriv r (movingEvenCanonicalCarrier θ)) (ζ + σ) :=
-    analyticAt_iteratedDeriv (analyticAt_movingEvenCanonicalCarrier θ hpos) r
+    analyticAt_iteratedDeriv' (analyticAt_movingEvenCanonicalCarrier θ hpos) r
   have hcomp : AnalyticAt ℂ
       ((iteratedDeriv r (movingEvenCanonicalCarrier θ)) ∘ (fun w : ℂ => w + σ)) ζ :=
     AnalyticAt.comp (g := iteratedDeriv r (movingEvenCanonicalCarrier θ)) houter hinner
@@ -104,7 +104,7 @@ theorem tendsto_iteratedDeriv_translate_movingEvenCanonicalCarrier
     exact hconj.neg
   have hana : AnalyticAt ℂ (iteratedDeriv r (movingCanonicalLogDerivative θ))
       (-((movingCanonicalZero θ p : ℂ))) := by
-    refine analyticAt_iteratedDeriv (analyticAt_movingCanonicalLogDerivative_of_re_lt θ ?_) r
+    refine analyticAt_iteratedDeriv' (analyticAt_movingCanonicalLogDerivative_of_re_lt θ ?_) r
     have hpos := movingCanonicalZero_pos θ p
     simp only [Complex.neg_re, Complex.ofReal_re]
     linarith

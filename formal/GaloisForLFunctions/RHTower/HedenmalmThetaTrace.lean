@@ -23,7 +23,7 @@ namespace HedenmalmThetaSource
 
 open HedenmalmQuantile HedenmalmHilbertSchmidt ContinuousLinearMap
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopThetaTrace : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-- The source inverse of the Riemann source as an operator on the quantile space. -/
 def thetaKernelOperator : Lp ℂ 2 unitIntervalMeasure →L[ℂ] Lp ℂ 2 unitIntervalMeasure :=

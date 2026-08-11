@@ -82,7 +82,7 @@ theorem abs_integral_mul_besselJ0_le_interior {c R M : ℝ} {B B' : ℝ → ℝ}
       hR0.le ?_ (M := M * (c * 2)) ?_
     · exact (hBc.mono Ioo_subset_Ioc_self).mul
         (((continuous_const.mul continuous_id).mul
-          (continuous_besselJ0.comp (continuous_const.mul continuous_id))).continuousOn)
+          (continuous_besselJ0'.comp (continuous_const.mul continuous_id))).continuousOn)
     · intro r hr
       rw [abs_mul]
       have hJ : |c * r * besselJ0 (c * r)| ≤ c * 2 := by

@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.RHTower
 
 open MeasureTheory Set intervalIntegral
 
-theorem continuous_besselJ0 : Continuous besselJ0 :=
+theorem continuous_besselJ0' : Continuous besselJ0 :=
   continuous_iff_continuousAt.mpr fun u => (hasDerivAt_besselJ0 u).continuousAt
 
 theorem continuous_besselJ1 : Continuous besselJ1 :=
@@ -102,7 +102,7 @@ theorem abs_integral_mul_besselJ0_le {c R M : ℝ} {B B' : ℝ → ℝ}
   have hiB' : IntervalIntegrable B' volume 0 R := hB'c.intervalIntegrable
   have hiv : IntervalIntegrable (fun r : ℝ => c * r * besselJ0 (c * r)) volume 0 R :=
     ((continuous_const.mul continuous_id).mul
-      (continuous_besselJ0.comp (continuous_const.mul continuous_id))).intervalIntegrable _ _
+      (continuous_besselJ0'.comp (continuous_const.mul continuous_id))).intervalIntegrable _ _
   have hIBP := intervalIntegral.integral_mul_deriv_eq_deriv_mul hB hv hiB' hiv
   have hzero : B 0 * (0 * besselJ1 (c * 0)) = 0 := by ring
   rw [hzero] at hIBP
@@ -185,7 +185,7 @@ theorem integral_abs_mul_besselJ0_le {c R M : ℝ} {B : ℝ → ℝ}
   have hint : IntervalIntegrable (fun r : ℝ => |r * B r * besselJ0 (c * r)|) volume 0 R := by
     refine (ContinuousOn.abs ?_).intervalIntegrable
     exact (continuousOn_id.mul hBc).mul
-      (continuous_besselJ0.comp_continuousOn (continuousOn_const.mul continuousOn_id))
+      (continuous_besselJ0'.comp_continuousOn (continuousOn_const.mul continuousOn_id))
   have hpt : ∀ r ∈ Set.Icc (0 : ℝ) R, |r * B r * besselJ0 (c * r)| ≤ 144 * M / Real.sqrt c := by
     intro r hr
     have hrmem : r ∈ Set.uIcc (0 : ℝ) R := huIcc ▸ hr

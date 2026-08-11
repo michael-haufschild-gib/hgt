@@ -132,4 +132,100 @@ theorem integral_horizontal_shift_of_decay {F : ℂ → ℂ} {c C r : ℝ} (hc :
   rw [← hL, ← hR]
   exact hshift.symm
 
+/-- **One-sided lower horizontal contour shift.**  Only the closed lower strip
+`-c ≤ Im z ≤ 0` is required.  This form is essential when `F` is built from an Euler factor known
+to be zero-free on `Re s ≥ 1`: demanding a symmetric strip would cross into the critical strip. -/
+theorem integral_horizontal_shift_neg_of_lower_decay
+    {F : ℂ → ℂ} {c C r : ℝ} (hc : 0 ≤ c) (hr : 0 < r)
+    (hF : ∀ z : ℂ, -c ≤ z.im → z.im ≤ 0 → DifferentiableAt ℂ F z)
+    (hbound : ∀ z : ℂ, -c ≤ z.im → z.im ≤ 0 →
+      ‖F z‖ ≤ C * Real.exp (-(r * |z.re|))) :
+    (∫ x : ℝ, F ((x : ℂ) - (c : ℂ) * Complex.I)) = ∫ x : ℝ, F (x : ℂ) := by
+  set G : ℂ → ℂ := fun w => F (-Complex.I * w) with hG
+  have hrot : ∀ u s : ℝ, G ((u : ℂ) + (s : ℂ) * Complex.I) =
+      F ((s : ℂ) + ((-u : ℝ) : ℂ) * Complex.I) := by
+    intro u s
+    rw [hG]
+    simp only
+    rw [rotate_neg_I]
+  have hline : ∀ u y : ℝ, G ((u : ℂ) + (y : ℝ) * Complex.I) =
+      F ((y : ℂ) - (u : ℂ) * Complex.I) := by
+    intro u y
+    rw [hrot]
+    congr 1
+    push_cast
+    ring
+  have hdiff : DifferentiableOn ℂ G (verticalStrip 0 c) := by
+    intro w hw
+    refine DifferentiableAt.differentiableWithinAt ?_
+    refine (hF (-Complex.I * w) ?_ ?_).comp w (by fun_prop)
+    · have him : (-Complex.I * w).im = -w.re := by simp [Complex.mul_im]
+      rw [him]
+      linarith [hw.2]
+    · have him : (-Complex.I * w).im = -w.re := by simp [Complex.mul_im]
+      rw [him]
+      linarith [hw.1]
+  have hnormG : ∀ u s : ℝ, 0 ≤ u → u ≤ c →
+      ‖G ((u : ℂ) + (s : ℂ) * Complex.I)‖ ≤
+        C * Real.exp (-(r * |s|)) := by
+    intro u s hu0 huc
+    rw [hrot]
+    have hre : ((s : ℂ) + ((-u : ℝ) : ℂ) * Complex.I).re = s := by simp
+    have him : ((s : ℂ) + ((-u : ℝ) : ℂ) * Complex.I).im = -u := by simp
+    have h := hbound _ (by rw [him]; linarith) (by rw [him]; linarith)
+    rwa [hre] at h
+  have hintline : ∀ u : ℝ, 0 ≤ u → u ≤ c →
+      Integrable (fun y : ℝ => G ((u : ℂ) + (y : ℝ) * Complex.I)) := by
+    intro u hu0 huc
+    refine Integrable.mono' ((integrable_exp_neg_mul_abs' hr).const_mul C) ?_
+      (Filter.Eventually.of_forall fun y => hnormG u y hu0 huc)
+    have hcont : Continuous (fun y : ℝ =>
+        G ((u : ℂ) + (y : ℝ) * Complex.I)) := by
+      refine continuous_iff_continuousAt.mpr fun y => ?_
+      have hpoint := hF (-Complex.I * ((u : ℂ) + (y : ℝ) * Complex.I))
+        (by simp [Complex.mul_im]; linarith)
+        (by simp [Complex.mul_im]; linarith)
+      exact (hpoint.continuousAt.comp (x := y)
+        (f := fun t : ℝ => -Complex.I * ((u : ℂ) + (t : ℝ) * Complex.I))
+        (by fun_prop))
+    exact hcont.aestronglyMeasurable
+  have hedge : ∀ sgn : ℝ → ℝ, (∀ T : ℝ, |sgn T| = |T|) →
+      Tendsto (fun T : ℝ =>
+        ∫ u in (0 : ℝ)..c,
+          G ((u : ℂ) + ((sgn T : ℝ) : ℂ) * Complex.I)) atTop (𝓝 0) := by
+    intro sgn hsgn
+    refine tendsto_intervalIntegral_of_tendsto_bound
+      (M := fun T => C * Real.exp (-(r * |T|))) ?_ ?_
+    · filter_upwards with T
+      intro u hu
+      have hu' : 0 ≤ u ∧ u ≤ c := by
+        rcases Set.mem_uIoc.mp hu with h | h
+        · exact ⟨h.1.le, h.2⟩
+        · constructor <;> linarith
+      rw [← hsgn T]
+      exact hnormG u (sgn T) hu'.1 hu'.2
+    · have hbase : Tendsto (fun T : ℝ => Real.exp (-(r * |T|)))
+          atTop (𝓝 0) := by
+        have h1 : Tendsto (fun T : ℝ => -(r * |T|)) atTop atBot := by
+          have h2 : Tendsto (fun T : ℝ => r * |T|) atTop atTop :=
+            Filter.Tendsto.const_mul_atTop hr tendsto_abs_atTop_atTop
+          exact tendsto_neg_atTop_atBot.comp h2
+        exact Real.tendsto_exp_atBot.comp h1
+      simpa using hbase.const_mul C
+  have hshift := integral_vertical_line_eq_of_horizontal_tendsto
+    (G := G) (c := 0) (d := c) hc hdiff
+    (hintline 0 le_rfl hc) (hintline c hc le_rfl)
+    (hedge (fun T => -T) (fun T => by rw [abs_neg]))
+    (hedge (fun T => T) (fun _ => rfl))
+  have hL : (∫ y : ℝ, G (((0 : ℝ) : ℂ) + (y : ℝ) * Complex.I)) =
+      ∫ x : ℝ, F (x : ℂ) := by
+    refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+    simpa using hline 0 y
+  have hR : (∫ y : ℝ, G ((c : ℂ) + (y : ℝ) * Complex.I)) =
+      ∫ x : ℝ, F ((x : ℂ) - (c : ℂ) * Complex.I) := by
+    refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+    exact hline c y
+  rw [← hL, ← hR]
+  exact hshift
+
 end RHTower

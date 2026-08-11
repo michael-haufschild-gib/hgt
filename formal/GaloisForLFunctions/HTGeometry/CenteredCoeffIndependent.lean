@@ -38,7 +38,7 @@ theorem coeffSub_universalCenteredCoeff (hd : 0 < d) (k : ℕ) :
   have h : Polynomial.map (coeffSub K d).toRingHom
       (Polynomial.taylor (centeringShift K d hd) (universalMonic K d)) =
       centeredMonicF K d := by
-    rw [map_taylor, map_coeffSub_universalMonic hd]
+    rw [map_taylor', map_coeffSub_universalMonic hd]
     have hshift : (coeffSub K d).toRingHom (centeringShift K d hd) = genericAverage K d :=
       coeffSub_centeringShift hd
     rw [hshift]

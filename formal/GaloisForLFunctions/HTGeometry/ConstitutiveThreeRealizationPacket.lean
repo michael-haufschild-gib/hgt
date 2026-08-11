@@ -108,7 +108,7 @@ theorem packetMoment_eq_orbit (lam : Fin r → ℂ) (w : Fin r → ℝ) (hw : �
 noncomputable def packetFun (lam w : Fin r → ℂ) (t : ℂ) : ℂ :=
   ∑ j, w j * Complex.exp (lam j * t)
 
-theorem hasDerivAt_exp_mul (lam t : ℂ) :
+theorem hasDerivAt_exp_mul' (lam t : ℂ) :
     HasDerivAt (fun s : ℂ => Complex.exp (lam * s)) (lam * Complex.exp (lam * t)) t := by
   have h : HasDerivAt (fun s : ℂ => lam * s) lam t := by
     simpa using (hasDerivAt_id t).const_mul lam
@@ -128,11 +128,11 @@ theorem iteratedDeriv_packetFun (lam w : Fin r → ℂ) (n : ℕ) :
     funext t
     have hdiff : ∀ j : Fin r, DifferentiableAt ℂ
         (fun s => w j * lam j ^ m * Complex.exp (lam j * s)) t :=
-      fun j => ((hasDerivAt_exp_mul (lam j) t).differentiableAt).const_mul _
+      fun j => ((hasDerivAt_exp_mul' (lam j) t).differentiableAt).const_mul _
     rw [deriv_fun_sum fun j _ => hdiff j]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [deriv_const_mul _ (hasDerivAt_exp_mul (lam j) t).differentiableAt,
-      (hasDerivAt_exp_mul (lam j) t).deriv]
+    rw [deriv_const_mul _ (hasDerivAt_exp_mul' (lam j) t).differentiableAt,
+      (hasDerivAt_exp_mul' (lam j) t).deriv]
     ring
 
 /-- **Equation (4).**  The jets at the origin are the response sequence. -/

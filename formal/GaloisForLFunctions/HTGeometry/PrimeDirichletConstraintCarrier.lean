@@ -36,7 +36,7 @@ theorem arithmeticFunctionRationalCoordinateField_deriv_complexConstant (c : ℂ
     (algebraMap arithmeticFunctionFractionField
       arithmeticFunctionRationalCoordinateField).map_zero]
 
-local instance complexFinitePrimeRationalAmbientScalarTower :
+local instance complexFinitePrimeRationalAmbientScalarTower' :
     IsScalarTower ℂ finitePrimeRationalCoefficientField
       arithmeticFunctionRationalCoordinateField :=
   .of_algebraMap_eq fun c => by

@@ -28,7 +28,7 @@ namespace HedenmalmThetaSource
 
 open HedenmalmQuantile HedenmalmHilbertSchmidt ContinuousLinearMap
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopThetaTraceKernel : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 theorem toDual_symm_innerSL {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
     [CompleteSpace E] (v : E) :

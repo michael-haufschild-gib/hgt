@@ -65,7 +65,7 @@ theorem im_extendedProjectiveKernel_pos {z : ℂ} (hz : 0 < z.im) (t : ℝ) :
 
 /-! ## The Donoghue transform -/
 
-instance : Nonempty ↥projectiveInterval := ⟨projectiveLeft⟩
+instance nonemptyProjectiveIntervalLeft : Nonempty ↥projectiveInterval := ⟨projectiveLeft⟩
 
 /-- The Donoghue transform of a compactified spectral probability. -/
 noncomputable def donoghueTransform (nu : Measure ↥projectiveInterval) (z : ℂ) : ℂ :=

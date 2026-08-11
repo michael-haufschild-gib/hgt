@@ -466,7 +466,7 @@ def riemannSourceClockDefect (n : ℕ) (s : ℂ) : ℝ :=
   deningerHalfDensityMateGain n s - 1
 
 /-- The actual positive radial source character is the real power with rate `2 Re(s)-1`. -/
-theorem deningerHalfDensityMateGain_eq_rpow
+theorem deningerHalfDensityMateGain_eq_rpow'
     {n : ℕ} (hn : 0 < n) (s : ℂ) :
     deningerHalfDensityMateGain n s = (n : ℝ) ^ (2 * s.re - 1) := by
   rw [deningerHalfDensityMateGain, Real.rpow_def_of_pos (by exact_mod_cast hn)]
@@ -477,7 +477,7 @@ theorem deningerHalfDensityMateGain_eq_rpow
 theorem riemannSourceClockDefect_eq_radialClockDefect
     {n : ℕ} (hn : 0 < n) (s : ℂ) :
     riemannSourceClockDefect n s = radialClockDefect (n : ℝ) (2 * s.re - 1) := by
-  rw [riemannSourceClockDefect, radialClockDefect, deningerHalfDensityMateGain_eq_rpow hn]
+  rw [riemannSourceClockDefect, radialClockDefect, deningerHalfDensityMateGain_eq_rpow' hn]
 
 /-- Exact finite-clock Maurer--Cartan law on the actual positive radial Riemann source. -/
 theorem riemannSourceClockDefect_mul

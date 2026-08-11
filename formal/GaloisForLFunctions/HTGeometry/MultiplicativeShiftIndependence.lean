@@ -26,15 +26,15 @@ variable {K : Type*} [Field K] {r : ℕ}
 
 /-- The automorphism of the polynomial algebra induced by a base automorphism together with a
 diagonal scaling of the variables. -/
-def shiftScale (tau : K →+* K) (q : Fin r → K) (P : MvPolynomial (Fin r) K) :
+def shiftScale' (tau : K →+* K) (q : Fin r → K) (P : MvPolynomial (Fin r) K) :
     MvPolynomial (Fin r) K :=
   ∑ e ∈ P.support, MvPolynomial.monomial e (tau (P.coeff e) * ∏ i : Fin r, q i ^ e i)
 
-theorem coeff_shiftScale (tau : K →+* K) (q : Fin r → K) (P : MvPolynomial (Fin r) K)
+theorem coeff_shiftScale' (tau : K →+* K) (q : Fin r → K) (P : MvPolynomial (Fin r) K)
     (e : Fin r →₀ ℕ) :
-    (shiftScale tau q P).coeff e = tau (P.coeff e) * ∏ i : Fin r, q i ^ e i := by
+    (shiftScale' tau q P).coeff e = tau (P.coeff e) * ∏ i : Fin r, q i ^ e i := by
   classical
-  rw [shiftScale, MvPolynomial.coeff_sum]
+  rw [shiftScale', MvPolynomial.coeff_sum]
   by_cases he : e ∈ P.support
   · rw [Finset.sum_eq_single e]
     · rw [MvPolynomial.coeff_monomial, if_pos rfl]
@@ -50,10 +50,10 @@ theorem coeff_shiftScale (tau : K →+* K) (q : Fin r → K) (P : MvPolynomial (
 
 theorem support_shiftScale (tau : K →+* K) (htau : Function.Injective tau)
     {q : Fin r → K} (hq : ∀ i, q i ≠ 0)
-    (P : MvPolynomial (Fin r) K) : (shiftScale tau q P).support = P.support := by
+    (P : MvPolynomial (Fin r) K) : (shiftScale' tau q P).support = P.support := by
   classical
   ext e
-  simp only [MvPolynomial.mem_support_iff, coeff_shiftScale]
+  simp only [MvPolynomial.mem_support_iff, coeff_shiftScale']
   constructor
   · intro h hzero
     rw [hzero, map_zero, zero_mul] at h
@@ -69,7 +69,7 @@ theorem aeval_shiftScale {L : Type*} [Field L] [Algebra K L] (sigma : L →+* L)
     (y : Fin r → L) (q : Fin r → K)
     (hshift : ∀ i, sigma (y i) = algebraMap K L (q i) * y i)
     (P : MvPolynomial (Fin r) K) :
-    MvPolynomial.aeval y (shiftScale tau q P) = sigma (MvPolynomial.aeval y P) := by
+    MvPolynomial.aeval y (shiftScale' tau q P) = sigma (MvPolynomial.aeval y P) := by
   classical
   have hsupp : ∀ (f : Fin r → K) (e : Fin r →₀ ℕ),
       (∏ i : Fin r, f i ^ e i) = ∏ i ∈ e.support, f i ^ e i := by
@@ -95,7 +95,7 @@ theorem aeval_shiftScale {L : Type*} [Field L] [Algebra K L] (sigma : L →+* L)
     rw [map_pow, map_pow, hshift, mul_pow]
   have hP : P = ∑ e ∈ P.support, MvPolynomial.monomial e (P.coeff e) :=
     (MvPolynomial.support_sum_monomial_coeff P).symm
-  rw [shiftScale, map_sum]
+  rw [shiftScale', map_sum]
   rw [show MvPolynomial.aeval y P
       = ∑ e ∈ P.support, MvPolynomial.aeval y (MvPolynomial.monomial e (P.coeff e)) by
     conv_lhs => rw [hP]
@@ -132,7 +132,7 @@ theorem algebraicIndependent_of_multiplicativeShift
     intro h
     exact hPne (MvPolynomial.support_eq_empty.mp h)
   have hc₀ : P.coeff e₀ ≠ 0 := MvPolynomial.mem_support_iff.mp he₀
-  set S : MvPolynomial (Fin r) K := shiftScale tau q P with hS
+  set S : MvPolynomial (Fin r) K := shiftScale' tau q P with hS
   have hSeval : MvPolynomial.aeval y S = 0 := by
     rw [hS, aeval_shiftScale sigma tau hcomp y q hshift P, hPeval, map_zero]
   set R : MvPolynomial (Fin r) K :=
@@ -154,7 +154,7 @@ theorem algebraicIndependent_of_multiplicativeShift
       by_contra hnot
       have hPe : P.coeff e = 0 := MvPolynomial.notMem_support_iff.mp hnot
       have hSe : S.coeff e = 0 := by
-        rw [hS, coeff_shiftScale, hPe, map_zero, zero_mul]
+        rw [hS, coeff_shiftScale', hPe, map_zero, zero_mul]
       rw [hPe, hSe, mul_zero, mul_zero, sub_zero] at he
       exact he rfl
   have hRzero : R = 0 := by
@@ -204,9 +204,9 @@ theorem algebraicIndependent_of_multiplicativeShift
       omega
     refine Hcob u m hune hmne ?_
     have hSe₀ : S.coeff e₀ = tau (P.coeff e₀) * ∏ i : Fin r, q i ^ e₀ i := by
-      rw [hS, coeff_shiftScale]
+      rw [hS, coeff_shiftScale']
     have hSe : S.coeff e = tau (P.coeff e) * ∏ i : Fin r, q i ^ e i := by
-      rw [hS, coeff_shiftScale]
+      rw [hS, coeff_shiftScale']
     have hkey := hrel e
     rw [hSe₀, hSe] at hkey
     have hq₀ : (∏ i : Fin r, q i ^ e₀ i) ≠ 0 :=

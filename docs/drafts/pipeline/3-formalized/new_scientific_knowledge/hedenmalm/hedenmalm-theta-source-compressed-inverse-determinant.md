@@ -1,7 +1,7 @@
 # The Hedenmalm theta source has an intrinsic compact reciprocal-divisor operator
 
 - **ID:** `hedenmalm-theta-source-compressed-inverse-determinant`
-- **Stage:** 2-fully-proven / weighted kernel layer formalized; determinant layer open
+- **Stage:** 3-formalized / Lean-closed
 - **Type:** THEOREM / SOURCE-DERIVED HILBERT--SCHMIDT EVANS OPERATOR
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Lean core:** `GaloisForLFunctions.HTGeometry.SourceGrushinInverse`
@@ -311,7 +311,21 @@ matching `(3)`--`(8)`.  Novelty remains unverified pending a focused operator-th
 
 ## Lean status
 
-`[PARTIAL]`  Two layers exist.
+`[FORMALIZED UNCONDITIONALLY]`  Authoritative capstone:
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceCompressedInverseDeterminant.lean`, with
+`HedenmalmThetaSourceDeterminantIdentity.lean`, `HedenmalmThetaSourceDeterminantMultiplicity.lean`,
+and `HedenmalmThetaTraceKernel.lean`. The concrete source-derived operator is Hilbert--Schmidt and
+compact; its pencil is noninvertible exactly at the centered Xi divisor; analytic order equals the
+finrank of the full maximal generalized eigenspace; reflection preserves spectrum and algebraic
+multiplicity; the entire Hilbert--Carleman determinant is exactly `XiC(z)/XiC(0)` globally; the
+trace-square equals source variance; and nonzero spectral reality is equivalent to RH. Definitions
+do not enumerate Xi zeros. All displayed identities are unconditional, while RH occurs only in the
+terminal equivalence. Targeted `lake env lean` and theorem-area umbrella checks pass.
+
+Historical development status follows; its determinant, trace, and multiplicity missing-item
+ledger is superseded by these modules.
+
+`[HISTORICAL PARTIAL STATUS]`  Two layers exist.
 
 **Bounded algebraic core.** `GaloisForLFunctions.HTGeometry.SourceGrushinInverse` gives the
 Grushin factorization `G_z G_0^(-1) = I + z B`, the reciprocal eigenvalue law
@@ -524,6 +538,6 @@ identification `(8)` of the regularized determinant with `Xi_C(z)/Xi_C(0)`.  The
 - [x] bounded Grushin factorization, reciprocal eigenvalue law, and compactness transfer in Lean
 - [ ] focused Livsic/triangular-model novelty audit
 - [x] Lean pinned kernel `(4)`, Hilbert--Schmidt energy `(5)`, and reflection law `(7)`
-- [ ] formalize the assembled Hilbert--Schmidt operator, the multiplicity clause of `(6)`,
+- [x] formalize the assembled Hilbert--Schmidt operator, the multiplicity clause of `(6)`,
       and the regularized determinant `(8)` in Lean
 - [ ] prove source-specific spectral reality

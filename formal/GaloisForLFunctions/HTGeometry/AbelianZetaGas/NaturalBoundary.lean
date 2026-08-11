@@ -153,7 +153,7 @@ theorem exists_zetaZero_depth_near (t : ℝ) {ε : ℝ} (hε : 0 < ε) :
 
 /-! ## Every zeta zero lands at every depth -/
 
-theorem div_natCast_re (w : ℂ) {j : ℕ} (hj : j ≠ 0) : (w / (j : ℂ)).re = w.re / (j : ℝ) := by
+theorem div_natCast_re' (w : ℂ) {j : ℕ} (hj : j ≠ 0) : (w / (j : ℂ)).re = w.re / (j : ℝ) := by
   have hjR : ((j : ℝ)) ≠ 0 := Nat.cast_ne_zero.mpr hj
   rw [Complex.div_re]
   simp [Complex.normSq_apply]
@@ -164,7 +164,7 @@ def landing (σ : ℝ) (w : ℂ) (j : ℕ) : ℂ := w / (j : ℂ) - ((σ : ℝ) 
 
 theorem re_landing (σ : ℝ) (w : ℂ) {j : ℕ} (hj : j ≠ 0) :
     (landing σ w j).re = w.re / (j : ℝ) - σ := by
-  rw [landing, Complex.sub_re, div_natCast_re w hj, Complex.ofReal_re]
+  rw [landing, Complex.sub_re, div_natCast_re' w hj, Complex.ofReal_re]
 
 /-- **The landings sit in the chamber and hug the boundary line.**  A zero of real part in `(0,1)`
 lands at real part in `(−σ, −σ + 1/j]`, so depth `j` pushes the landing to within `1/j` of the

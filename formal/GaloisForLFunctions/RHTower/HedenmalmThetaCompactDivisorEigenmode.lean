@@ -288,7 +288,7 @@ theorem memLp_sourceModeF_thetaSource_weighted {z : ℂ} (hz : |z.im| < 1)
 
 open HedenmalmHilbertSchmidt
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopThetaCompactDivisorEigenmode : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-- The pinned kernel field evaluates to the intrinsic pinned primitive. -/
 theorem pinnedKernelField_apply_eq_pinnedVolterraFun (S : PositiveDensitySource) (t : ℝ)

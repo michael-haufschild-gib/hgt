@@ -22,7 +22,7 @@ noncomputable section
 
 /-- The Xi divisor has infinitely many multiplicity copies: over a finite index type every family
 is summable, contradicting the divergence of the reciprocal spectral norms. -/
-instance instInfiniteXiZeroCopy : Infinite XiZeroCopy := by
+instance instInfiniteXiZeroCopy' : Infinite XiZeroCopy := by
   refine not_finite_iff_infinite.mp fun hfin => ?_
   haveI := hfin
   exact not_summable_inv_norm_xiSpectralPoint Summable.of_finite

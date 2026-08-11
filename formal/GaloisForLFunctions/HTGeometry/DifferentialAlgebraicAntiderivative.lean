@@ -14,7 +14,7 @@ descent returns a relation over `k` itself.
 The analytic counterpart is a pure change of jet coordinates: a differential relation among the
 jets of `f'` is a relation among the jets of `f` after shifting every slot by one.
 
-* `differentialAlgebraicOver_of_deriv` — the field statement;
+* `differentialAlgebraicOver_of_deriv'` — the field statement;
 * `differentiallyAlgebraic_of_deriv` — the statement for functions on `ℂ`.
 -/
 
@@ -24,7 +24,7 @@ open scoped Differential
 
 /-- **Differential algebraicity passes to antiderivatives.**  If the derivative of `y` is
 differentially algebraic over `k`, so is `y`. -/
-theorem differentialAlgebraicOver_of_deriv
+theorem differentialAlgebraicOver_of_deriv'
     {k K : Type*} [Field k] [Field K] [Algebra k K]
     [Differential k] [Differential K] [DifferentialAlgebra k K] [CharZero K]
     {y : K} (hy : DifferentialAlgebraicOver k y′) :

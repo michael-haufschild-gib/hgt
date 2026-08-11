@@ -25,7 +25,7 @@ open HedenmalmQuantile HedenmalmHilbertSchmidt HedenmalmPrimeTranslation
 private abbrev H := Lp ℂ 2 unitIntervalMeasure
 private abbrev HS := SourceSpace thetaSource
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopShiftedSourceEquationExact : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-- The literal quantile forcing pulls back to `-i k` in weighted source space. -/
 theorem quantileSymm_thetaSourceForcingVector :

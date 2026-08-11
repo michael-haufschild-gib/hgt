@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.HenselFactorization
 import GaloisForLFunctions.HTGeometry.NewtonFibreLift
 
 /-!
@@ -16,16 +17,6 @@ namespace GaloisForLFunctions.HTGeometry
 open Polynomial
 
 variable {S : Type*} [CommRing S]
-
-theorem CoeffMem.neg {J : Ideal S} {p : S[X]} (hp : CoeffMem J p) :
-    CoeffMem J (-p) := fun i => by
-  rw [Polynomial.coeff_neg]
-  exact J.neg_mem (hp i)
-
-theorem CoeffMem.sub {J : Ideal S} {p q : S[X]} (hp : CoeffMem J p)
-    (hq : CoeffMem J q) : CoeffMem J (p - q) := by
-  rw [sub_eq_add_neg]
-  exact hp.add hq.neg
 
 /-- A polynomial below the horizon that is divisible by the horizon is zero, over any nontrivial
 coefficient ring. -/

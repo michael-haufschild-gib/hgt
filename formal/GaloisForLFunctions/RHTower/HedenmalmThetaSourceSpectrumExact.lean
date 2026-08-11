@@ -25,7 +25,7 @@ namespace HedenmalmThetaSource
 
 open HedenmalmQuantile HedenmalmHilbertSchmidt
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopThetaSourceSpectrumExact : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-- Every weighted source-space vector remains Lebesgue integrable after multiplication by any
 complex source character.  The two `L²` factors are `v / √k` and `√k · exp(izx)`; the

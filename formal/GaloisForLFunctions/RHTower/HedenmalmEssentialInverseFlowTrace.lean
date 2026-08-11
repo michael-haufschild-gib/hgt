@@ -353,7 +353,7 @@ theorem thetaNonzeroSpectrumCutoffSet_finite
 def thetaSpectrumCutoffCopies (eps : ℝ) : Finset ThetaSpectrumCopy :=
   if heps : 0 < eps then
     (thetaNonzeroSpectrumCutoffSet_finite heps).toFinset.sigma
-      (fun mu => Finset.univ)
+      (fun _ => Finset.univ)
   else ∅
 
 theorem mem_thetaSpectrumCutoffCopies {eps : ℝ} (heps : 0 < eps)

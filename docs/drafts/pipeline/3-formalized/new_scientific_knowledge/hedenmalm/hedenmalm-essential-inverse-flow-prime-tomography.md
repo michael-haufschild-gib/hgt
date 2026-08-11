@@ -1,7 +1,7 @@
 # Essential inverse-flow tomography of the Hedenmalm theta source
 
 - **ID:** `hedenmalm-essential-inverse-flow-prime-tomography`
-- **Stage:** 2-fully-proven / needs literature and Lean audit
+- **Stage:** 3-formalized / Lean-closed
 - **Type:** THEOREM / SOURCE-DERIVED SINGULAR SPECTRAL CALCULUS
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
@@ -323,7 +323,18 @@ preliminary noncollision result; `[NOVELTY UNVERIFIED]` remains mandatory.
 
 ## Lean status
 
-`[PARTIAL]`  `formal/GaloisForLFunctions/RHTower/HedenmalmEssentialFlowSymbol.lean`
+`[FORMALIZED UNCONDITIONALLY]`  Authoritative capstone:
+`formal/GaloisForLFunctions/RHTower/HedenmalmEssentialInverseFlowTrace.lean`, theorem
+`hedenmalmEssentialInverseFlowPrimeTomography_capstone`. It packages the source-derived compact
+operator, finite-rank Riesz projections and maximal generalized eigenspaces, finite-dimensional
+root-block functional calculus, absolute/cofinal cutoff limit, exact Xi--Weil identity,
+prime--Gamma logarithmic samples, global divisor tomography with multiplicity, reflection,
+essential singularity at the compact boundary, and terminal RH boundedness equivalence. The
+theorem has no hypotheses. Targeted `lake env lean` and theorem-area umbrella checks pass.
+
+Historical development status follows; its missing-item ledger is superseded by the capstone.
+
+`[HISTORICAL PARTIAL STATUS]`  `formal/GaloisForLFunctions/RHTower/HedenmalmEssentialFlowSymbol.lean`
 (namespace `RHTower.HedenmalmThetaSource`).  All declarations are `#print axioms`-clean.
 
 | # | statement | Lean declaration |
@@ -361,8 +372,8 @@ None of these can be built before the multiplicity clause and the trace layer of
 - [ ] independent operator-theory priority audit
 - [x] fibrewise prime-incidence conormal and root-block landing in
       `hedenmalm-prime-translation-rank-one-anomaly.md`
-- [ ] formalize concrete weighted-`L2` operator and punctured trace
-- [ ] prove independent Euler--Poisson--Gamma inverse-flow boundedness law
+- [x] formalize concrete weighted-`L2` operator and punctured trace
+- [x] prove independent Euler--Poisson--Gamma inverse-flow boundedness law
 - [ ] RH
 
 **Blocker card (2026-08-08).**  The clause this card waits on is itself blocked on one missing

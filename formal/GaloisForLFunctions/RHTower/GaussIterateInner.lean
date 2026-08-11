@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.GaussIterate
 import GaloisForLFunctions.RHTower.GaussScaleAmplitudeIntegral
+import GaloisForLFunctions.HTGeometry.FourierCircleTruncation
 
 /-!
 # The diagonal of the iterated principal action
@@ -25,15 +26,12 @@ noncomputable section
 
 theorem inner_fourierLp_eq_fourierCoeff (n : ℤ)
     (v : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) :
-    inner ℂ (fourierLp 2 n) v = fourierCoeff ((v : AddCircle (1 : ℝ) → ℂ)) n := by
-  rw [← fourierBasis_repr]
-  have h := (fourierBasis (T := (1 : ℝ))).repr_apply_apply v n
-  rw [h, coe_fourierBasis]
+    inner ℂ (fourierLp 2 n) v = fourierCoeff ((v : AddCircle (1 : ℝ) → ℂ)) n :=
+  GaloisForLFunctions.inner_fourierLp_eq_fourierCoeff n v
 
 theorem norm_fourierLp_eq_one (n : ℤ) :
-    ‖(fourierLp (T := (1 : ℝ)) 2 n : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))))‖ = 1 := by
-  rw [← coe_fourierBasis]
-  exact (fourierBasis (T := (1 : ℝ))).orthonormal.1 n
+    ‖(fourierLp (T := (1 : ℝ)) 2 n : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))))‖ = 1 :=
+  GaloisForLFunctions.norm_fourierLp_eq_one n
 
 /-- The exponential monomial is the constant function twisted by itself. -/
 theorem fourierMulBlock_fourierLp_zero (n : ℤ) :

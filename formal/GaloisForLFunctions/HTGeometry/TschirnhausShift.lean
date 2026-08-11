@@ -57,6 +57,28 @@ theorem taylor_coeff_natDegree_sub_one {R : Type*} [CommRing R] {f : R[X]} (hf :
   rw [Polynomial.taylor_coeff, hasseDeriv_natDegree_sub_one hf he, Polynomial.eval_add,
     Polynomial.eval_C, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
 
+/-- **The next-to-leading coefficient after translation, indexed by the degree.** -/
+theorem taylor_coeff_pred {R : Type*} [CommRing R] {f : R[X]} {d : ℕ} (hd : 1 ≤ d)
+    (hdeg : f.natDegree = d) (hf : f.Monic) {a : R} :
+    (Polynomial.taylor a f).coeff (d - 1) = f.coeff (d - 1) + (d : R) * a := by
+  have he : f.natDegree = (d - 1) + 1 := by rw [hdeg]; omega
+  have hdd : (d - 1) + 1 = d := by omega
+  rw [taylor_coeff_natDegree_sub_one hf he a, hdd]
+
+/-- **Translation changes every coefficient by a multiple of the translation.**  The `k`-th
+coefficient of the translate is the `k`-th Hasse derivative evaluated at `a`, and evaluation at `a`
+differs from evaluation at `0` by a multiple of `a`. -/
+theorem taylor_coeff_eq_add {R : Type*} [CommRing R] (f : R[X]) (a : R) (k : ℕ) :
+    ∃ s : R, (Polynomial.taylor a f).coeff k = f.coeff k + a * s := by
+  obtain ⟨s, hs⟩ := Polynomial.sub_dvd_eval_sub a 0 ((Polynomial.hasseDeriv k) f)
+  refine ⟨s, ?_⟩
+  have h0 : ((Polynomial.hasseDeriv k) f).eval 0 = f.coeff k := by
+    rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.hasseDeriv_coeff]
+    simp
+  rw [sub_zero, h0] at hs
+  rw [Polynomial.taylor_coeff, ← hs]
+  ring
+
 /-! ## Translation preserves everything else -/
 
 theorem monic_taylor {R : Type*} [CommRing R] {f : R[X]} (hf : f.Monic) (a : R) :

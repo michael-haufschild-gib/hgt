@@ -17,7 +17,7 @@ open Filter Topology
 namespace GaloisForLFunctions.HTGeometry
 
 /-- Every iterated derivative of an analytic germ is analytic. -/
-theorem analyticAt_iteratedDeriv {f : ℂ → ℂ} {x : ℂ} (hf : AnalyticAt ℂ f x) (m : ℕ) :
+theorem analyticAt_iteratedDeriv' {f : ℂ → ℂ} {x : ℂ} (hf : AnalyticAt ℂ f x) (m : ℕ) :
     AnalyticAt ℂ (iteratedDeriv m f) x := by
   induction m with
   | zero => simpa [iteratedDeriv_zero] using hf
@@ -156,7 +156,7 @@ theorem tendsto_iteratedDeriv_movingCanonicalLogDerivative_mul_pow
     have := h0.pow (m + 1)
     rwa [zero_pow (Nat.succ_ne_zero m)] at this
   have hkc : Tendsto (fun j => iteratedDeriv m k (u j)) atTop (𝓝 (iteratedDeriv m k ζ)) :=
-    (analyticAt_iteratedDeriv (hkA ζ hUmem) m).continuousAt.tendsto.comp hu
+    (analyticAt_iteratedDeriv' (hkA ζ hUmem) m).continuousAt.tendsto.comp hu
   have hlim : Tendsto (fun j =>
       -((-1) ^ m * (m.factorial : ℂ)) + iteratedDeriv m k (u j) * (u j - ζ) ^ (m + 1)) atTop
       (𝓝 (-((-1) ^ m * (m.factorial : ℂ)) + iteratedDeriv m k ζ * 0)) :=

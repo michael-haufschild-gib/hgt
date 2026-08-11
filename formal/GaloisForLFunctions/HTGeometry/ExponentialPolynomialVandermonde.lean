@@ -41,7 +41,7 @@ theorem natDegree_comp_X_add_one (p : Polynomial ℂ) :
     (p.comp (X + C 1)).natDegree = p.natDegree := by
   rw [natDegree_comp, natDegree_X_add_C, mul_one]
 
-theorem leadingCoeff_comp_X_add_one (p : Polynomial ℂ) :
+theorem leadingCoeff_comp_X_add_one' (p : Polynomial ℂ) :
     (p.comp (X + C 1)).leadingCoeff = p.leadingCoeff := by
   rw [leadingCoeff_comp (by rw [natDegree_X_add_C]; exact one_ne_zero),
     leadingCoeff_X_add_C, one_pow, mul_one]
@@ -54,7 +54,7 @@ theorem polyWeight_vandermondeStep_of_ne {p : Polynomial ℂ} {zi za : ℂ}
     simp [polyWeight]
   have hlead : (vandermondeStep p zi za).coeff p.natDegree = p.leadingCoeff * (zi - za) := by
     rw [vandermondeStep, coeff_sub, coeff_mul_C, coeff_C_mul,
-      ← natDegree_comp_X_add_one p, ← leadingCoeff, leadingCoeff_comp_X_add_one]
+      ← natDegree_comp_X_add_one p, ← leadingCoeff, leadingCoeff_comp_X_add_one']
     rw [natDegree_comp_X_add_one]
     rw [leadingCoeff]
     ring
@@ -85,7 +85,7 @@ theorem polyWeight_vandermondeStep_self_lt {p : Polynomial ℂ} {za : ℂ}
     ring
   have hcompne : p.comp (X + C 1) ≠ 0 :=
     leadingCoeff_ne_zero.mp (by
-      rw [leadingCoeff_comp_X_add_one]
+      rw [leadingCoeff_comp_X_add_one']
       exact leadingCoeff_ne_zero.mpr hp)
   by_cases hdiff : p.comp (X + C 1) - p = 0
   · rw [hstep, hdiff, mul_zero, polyWeight, if_pos rfl, polyWeight, if_neg hp]
@@ -93,7 +93,7 @@ theorem polyWeight_vandermondeStep_self_lt {p : Polynomial ℂ} {za : ℂ}
   have hdegeq : (p.comp (X + C 1)).degree = p.degree := by
     rw [degree_eq_natDegree hcompne, degree_eq_natDegree hp, natDegree_comp_X_add_one]
   have hdeg : (p.comp (X + C 1) - p).degree < p.degree := by
-    have := degree_sub_lt hdegeq hcompne (leadingCoeff_comp_X_add_one p)
+    have := degree_sub_lt hdegeq hcompne (leadingCoeff_comp_X_add_one' p)
     rwa [hdegeq] at this
   have hnat : (p.comp (X + C 1) - p).natDegree < p.natDegree :=
     natDegree_lt_natDegree hdiff hdeg

@@ -31,7 +31,7 @@ namespace HedenmalmThetaSource
 
 open HedenmalmQuantile HedenmalmHilbertSchmidt
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopTransposeKernelField : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 /-- The transposed row of the pinned kernel at the parameter `t`:
 `u ↦ conj (K(u,t)) = -i q(u) (1_{t ≤ u} - u)`. -/

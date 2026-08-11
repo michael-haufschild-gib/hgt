@@ -27,7 +27,7 @@ theorem norm_eigenvalue_lt_one_of_strict_contraction
   have hle : ‖x‖ * ‖v‖ ≤ ‖T‖ * ‖v‖ := by
     rw [← norm_smul, ← hv]
     exact T.le_opNorm v
-  have hxle : ‖x‖ ≤ ‖T‖ := (mul_le_mul_right hvn).mp hle
+  have hxle : ‖x‖ ≤ ‖T‖ := by nlinarith
   exact hxle.trans_lt hT
 
 /-- Inversion of a unit Cayley denominator on an eigenline. -/
@@ -39,7 +39,7 @@ theorem ringInverse_one_sub_apply_of_eigen
     intro hx
     have hker : (1 - T) v = 0 := by
       rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply, hv]
-      have : x = 1 := sub_eq_zero.mp hx
+      have : x = 1 := (sub_eq_zero.mp hx).symm
       rw [this, one_smul, sub_self]
     exact hv0 ((ContinuousLinearMap.isUnit_iff_bijective.mp hunit).1 (by simpa using hker))
   apply (ContinuousLinearMap.isUnit_iff_bijective.mp hunit).1
@@ -47,8 +47,10 @@ theorem ringInverse_one_sub_apply_of_eigen
     Ring.mul_inverse_cancel _ hunit, ContinuousLinearMap.one_apply,
     ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
     map_smul, hv, smul_smul]
+  rw [← sub_smul]
   congr 1
   field_simp
+  simp
 
 /-- Powers of a bounded operator preserve an eigenline with corresponding scalar power. -/
 theorem pow_apply_of_complex_eigen
@@ -81,10 +83,13 @@ theorem norm_one_add_eq_norm_one_sub_of_re_eq_zero
     {x : ℂ} (hx : x.re = 0) :
     ‖1 + x‖ = ‖1 - x‖ := by
   have hsq : ‖1 + x‖ ^ 2 = ‖1 - x‖ ^ 2 := by
-    rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
-      Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im]
-    simp only [Complex.one_re, Complex.one_im, hx]
-    ring
+    calc
+      ‖1 + x‖ ^ 2 = Complex.normSq (1 + x) := Complex.sq_norm (1 + x)
+      _ = Complex.normSq (1 - x) := by
+        simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im,
+          Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im, hx]
+        ring
+      _ = ‖1 - x‖ ^ 2 := (Complex.sq_norm (1 - x)).symm
   nlinarith [norm_nonneg (1 + x), norm_nonneg (1 - x)]
 
 theorem norm_cayley_eq_one_of_re_eq_zero
@@ -98,10 +103,13 @@ theorem one_lt_norm_cayley_of_re_pos
     {x : ℂ} (hx : 0 < x.re) (hden : 1 - x ≠ 0) :
     1 < ‖(1 + x) / (1 - x)‖ := by
   have hsq : ‖1 - x‖ ^ 2 < ‖1 + x‖ ^ 2 := by
-    rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
-      Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im]
-    simp only [Complex.one_re, Complex.one_im]
-    nlinarith
+    calc
+      ‖1 - x‖ ^ 2 = Complex.normSq (1 - x) := Complex.sq_norm (1 - x)
+      _ < Complex.normSq (1 + x) := by
+        simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im,
+          Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im]
+        nlinarith
+      _ = ‖1 + x‖ ^ 2 := (Complex.sq_norm (1 + x)).symm
   have hnorm : ‖1 - x‖ < ‖1 + x‖ := by
     nlinarith [norm_nonneg (1 - x), norm_nonneg (1 + x)]
   rw [norm_div, one_lt_div (norm_pos_iff.mpr hden)]

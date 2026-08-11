@@ -358,9 +358,18 @@ local critical residue when `m=1`. For every `m>=2` it also proves the ratio-wei
 moving-translation estimate for every decay exponent above `1/2`; the formerly borderline tail
 exponent is no longer an obstruction. The new principal-step block defines the literal `R_n`,
 proves the exact Fourier-block identity for `G^r`, and bounds `R_n^r` against the moving-amplitude
-model by an operator-power telescope. The remaining local theorem is stage-by-stage control of
-the propagated iterates `R_n^i f` inside that telescope, followed by the logarithmic mean; neither
-the tail exponent nor the abstract power telescope is missing. Beyond that, what remains
+model by an operator-power telescope. The propagated-iterate wall is now breached at its first depth: the
+principal step is self-adjoint, its relative one-step law
+`‖R_n·1 - a_(delta_n)‖ -> 0` holds for every `m >= 2` with no step scalar in front, and the
+decisive new estimate — the double-defect vanishing
+`‖(S - T_(-delta))(B^-2((S* - T_delta) b))‖ -> 0` — is umbrella-reachable Lean for every
+`m >= 2`, via a lattice harmonic-power-convolution decay and a far-band dominated convergence at
+exponent `3/2`. Consequently formula (A) holds for the operator at `m = 2`: the two-sided
+diagonal of `G^2` has relative deviation `o(1/n)` from the principal model and its logarithmic
+mean is the exact critical residue `2(p^2-1)^2/(4 log p)`, localized to
+`gaussChannelResidue 2 p`. The remaining local theorem is propagated-iterate control at depth
+two and beyond (components `m >= 3`), whose paper architecture is the k-fold defect-chain
+extension of the same band split. Beyond that, what remains
 scientifically is multi-place/channel
 assembly, identification with the actual Connes--Consani intersection/Weil object, and a
 source-derived positivity or orientation law. Without that handoff this remains C1/CCM
@@ -1402,6 +1411,15 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     `Q_(1,c(p))`, and before reflection aggregation it equals twice the archimedean plus
     Chebyshev-discrepancy source pairing on the adaptive shear `(Xp,X E_1p)`. Thus the missing
     producer type is now formalized, not merely inferred from a linear packet.
+30. The adaptive packet is the second coefficient of one source-first null-gauged Padé germ.
+    The gauge is literally the leading coefficient of the Möbius-transported amplitude, and one
+    inverse gauge is forced by mixed bilinearity. Away from flat contact the same coefficient is
+    `(2N+1)` times adaptive shear plus an explicit polynomial residual of degree `<2N+1`. Flat
+    admission kills this residual; downstream it is the exact memory of the original flag. Thus a
+    later negative shear is a negative corrected coefficient, not necessarily a negative raw
+    source coefficient. The corrected coefficient is exactly the literal completed
+    Archimedean-plus-Chebyshev-discrepancy packet, and every genuine crossing is now Lean-proved to
+    force its strict negativity at a later Euler aperture.
 
 **Open core.** Exclude the now isolated off-critical negative-index obstruction on every actual
 adaptive genuine-crossing flag. Equivalently, rule out strict negativity of the off-critical
@@ -1427,7 +1445,9 @@ reserve is circular: at contact the proposed cap is already equivalent to the te
 flux/adjacent-minor sign. The non-circular source location is now the exact odd-to-even adaptive
 shear in item 29, equivalently its completed mixed `Q` aggregate. Future work must strictly orient
 the intact prime--Gamma/archimedean terms in that identity before cumulant compression, or prove an
-all-degree contact-weighted hyperedge current extending it. Items 25--29 identify its invariant
+all-degree contact-weighted hyperedge current extending it. Downstream work must transport the
+explicit lower-contact residual together with the source germ; dropping it reuses a flat-contact
+identity outside its admission locus. Items 25--30 identify its invariant
 form: prove that this source-specific coupling orients the self-selected hyperedge barycenter in
 every degree. Additional cumulant inequalities after contact scalarization do not advance route.
 
@@ -1553,9 +1573,10 @@ form with a vanishing dimensionless defect. The exact local logarithmic residue 
 operator in the rank-one case is now umbrella-reachable. For `m>=2`, the umbrella proves the
 ratio-weighted moving-translation defect for every decay exponent above `1/2`, so the former
 tail-exponent wall is closed. It also constructs the literal principal step, proves the exact
-Fourier-block identity for its powers, and supplies the general operator-power telescope. The
-remaining local theorem is control of the propagated intermediate iterates inside that telescope
-and the resulting logarithmic mean. A potential
+Fourier-block identity for its powers, and supplies the general operator-power telescope. The first propagated-iterate depth is now closed in umbrella Lean: the relative one-step law and
+the double-defect estimate hold for every `m >= 2`, and the operator logarithmic-mean residue law
+holds at `m = 2`. The remaining local theorem is propagated-iterate control at depth two and
+beyond (`m >= 3`). A potential
 new architecture would assemble these component laws over all places into the actual
 Connes--Consani intersection/Weil pairing and extract a positive or oriented global source law.
 No such multi-place assembly, arithmetic comparison, or unconditional RH handoff exists. Until it
@@ -1942,8 +1963,9 @@ open. Numerical evidence is not accepted as proof or disproof.
    `delta_M^(-2/3) << T << M`.
 6. **C1/CCM-FU:** prove a source-derived real-spectrum/positive-closure theorem or
    intersection/Ward incidence. Certify the newer determinant/essential-trace/weighted-derivative
-   capstones; complete Gauss propagated-iterate control inside the now-formal principal-step
-   power telescope, and widening-limit assembly only for the parallel connector branches.
+   capstones; extend the now-Lean-closed `m = 2` operator residue law (relative one-step and
+   double-defect estimates hold for every `m >= 2`) to `m >= 3` via the k-fold defect chains,
+   and widening-limit assembly only for the parallel connector branches.
 7. **O:** prove low-energy profile exhaustion and bulk coercivity for whole restricted-Weil ground
    space.
 8. **G:** construct source-selected two-angle carrier and transfer it to Xi target.
@@ -2369,6 +2391,11 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/HTGeometry/FarBandPowerTail.lean
 - formal/GaloisForLFunctions/HTGeometry/OperatorPowerTelescope.lean
 - formal/GaloisForLFunctions/RHTower/GaussPrincipalStepBlock.lean
+- formal/GaloisForLFunctions/HTGeometry/HarmonicPowerConvolution.lean
+- formal/GaloisForLFunctions/RHTower/GaussConvolutionCoefficient.lean
+- formal/GaloisForLFunctions/RHTower/GaussDoubleDefect.lean
+- formal/GaloisForLFunctions/RHTower/GaussRelativeOneStep.lean
+- formal/GaloisForLFunctions/RHTower/GaussSquareDiagonalLogResidue.lean
 
 ## Final frontier statement
 
@@ -2397,7 +2424,10 @@ Gauss-component residue hierarchy is an adjacent local Connes candidate whose ac
 operators, principal factorization, finite iteration, full two-frequency diagonal, sandwich fold,
 relative one-step bound, rank-one operator logarithmic residue, and `m>=2` ratio-weighted
 translation estimate, general half-power tail closure, literal principal-step identity, and
-operator-power telescope are umbrella-reachable. Propagated-intermediate-iterate control, multi-place assembly,
+operator-power telescope are umbrella-reachable, and the first propagated-iterate depth is
+closed: the relative one-step and double-defect estimates hold in umbrella Lean for every
+`m >= 2`, giving the operator logarithmic-mean residue law at `m = 2`. Deeper propagated-iterate
+control (`m >= 3`), multi-place assembly,
 identification with the actual Weil/intersection object, and a global orientation law remain. The
 coalitional/collective-repair/cofinal-viability laws, primitive-degree escape, and observer
 execution-gap laws expose a second route-design primitive, but no arithmetic repair family or Xi

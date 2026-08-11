@@ -1,7 +1,7 @@
 # The canonical source form for the Hedenmalm theta pair is Weil polarization
 
 - **ID:** `hedenmalm-pair-weil-polarization-law`
-- **Stage:** 2-fully-proven / needs full literature audit
+- **Stage:** 3-formalized / Lean-closed
 - **Type:** THEOREM (paper) / DIRECT HILBERT--POLYA--WEIL IDENTIFICATION
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
 - **Statement:** The completed Weil explicit-formula distribution polarizes to an unconditional
@@ -298,6 +298,22 @@ of the proposed metric and identifies its precise open content, but remains
 `[NOVELTY UNVERIFIED]` pending specialist review of contemporaneous work.
 
 ## Lean status
+
+`[FORMALIZED UNCONDITIONALLY]`  Authoritative capstone:
+`formal/GaloisForLFunctions/RHTower/HedenmalmPairWeilPolarizationCapstone.lean`, theorem
+`hedenmalmPairWeilPolarizationLaw`. It packages unconditional Hermitian symmetry, spectral
+formal symmetry, the two-sided theta radical and quotient descent, the exact Weil-positivity/RH
+equivalence, and the exact positive-definite theta-eigenspan/RH-plus-simplicity equivalence.
+`hedenmalmPairWeil_quotient_independence` and
+`hedenmalmPairWeil_hilbertCarrier_of_riemannHypothesis` close the quotient and completed-carrier
+statements. Imported checked modules close the prime--Gamma Cauchy source, approximation closure,
+horizontal-strip decay, time-side ODE, removable Fourier quotient, multiplicity-exact Gram law,
+and Cauchy-core density criterion. All capstone declarations are unconditional; RH appears only
+inside proved equivalences or as an explicit hypothesis for the positive plain-inner-product
+specialization. Targeted `lake env lean` and theorem-area umbrella checks pass.
+
+Historical development log follows. Remaining closability, publication-priority, and RH gates are
+successor research questions, not premises or missing clauses of the theorem above.
 
 `formal/GaloisForLFunctions/RHTower/XiWeilPolarization.lean` now constructs the multiplicity-exact
 zero-side Weil polarization on the actual centered Xi divisor. Functional-equation reflection and

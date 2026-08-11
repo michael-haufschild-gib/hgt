@@ -36,9 +36,9 @@ theorem thetaSourcePencil_eq_rescaled_resolvent {z : ℂ} (hz : z ≠ 0) :
         (algebraMap ℂ (ThetaH →L[ℂ] ThetaH) (-z⁻¹) - thetaKernelOperator) := by
   apply ContinuousLinearMap.ext
   intro f
-  simp only [thetaSourcePencil, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.one_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.mul_apply, ContinuousLinearMap.sub_apply,
+  simp only [thetaSourcePencil, add_apply,
+    one_apply_eq_self, smul_apply,
+    mul_apply_eq_comp, sub_apply,
     ContinuousLinearMap.algebraMap_apply]
   have hscalar : (-z) * (-z⁻¹) = 1 := by field_simp [hz]
   rw [smul_sub, smul_smul, hscalar, one_smul]
@@ -75,8 +75,8 @@ theorem thetaSourcePencil_not_isUnit_iff_XiC_eq_zero (z : ℂ) :
       obtain ⟨f, hf0, hf⟩ :=
         (thetaSourceEntireDet2_eq_zero_iff_exists_eigenvector hz).1 hdet
       have hker : thetaSourcePencil z f = 0 := by
-        rw [thetaSourcePencil, ContinuousLinearMap.add_apply,
-          ContinuousLinearMap.one_apply, ContinuousLinearMap.smul_apply, hf, smul_smul]
+        rw [thetaSourcePencil, add_apply,
+          one_apply_eq_self, smul_apply, hf, smul_smul]
         field_simp [hz]
         simp
       exact hf0 ((ContinuousLinearMap.isUnit_iff_bijective.mp hunit).1
@@ -118,7 +118,7 @@ theorem thetaKernelOperator_mem_spectrum_iff_exists_XiC_zero {mu : ℂ} (hmu : m
       apply XiC_eq_zero_of_thetaCompactSourceInverse_eigen
         (neg_ne_zero.mpr (inv_ne_zero hmu)) hf.2
       simpa only [inv_neg, inv_inv, neg_neg] using hf'
-    · simp [hmu]
+    · simp
   · rintro ⟨z, hXi, rfl⟩
     have hz : z ≠ 0 := fun hz ↦ XiC_zero_ne (hz ▸ hXi)
     have hdet : thetaSourceEntireDet2 z = 0 :=
@@ -142,7 +142,7 @@ theorem neg_mem_spectrum_thetaKernelOperator {mu : ℂ}
   refine ⟨-z, ?_, ?_⟩
   · simpa only [XiC_even] using hXi
   · rw [hmuEq]
-    simp [hz]
+    simp
 
 /-- The entire source determinant is even, reflecting `RBR = -B`. -/
 theorem thetaSourceEntireDet2_even (z : ℂ) :
@@ -229,7 +229,7 @@ theorem riemannHypothesis_iff_thetaKernelOperator_nonzero_spectrum_real :
     obtain ⟨t, ht⟩ := hreal mu hspec hmu
     refine ⟨-t⁻¹, ?_⟩
     change z = ((-t⁻¹ : ℝ) : ℂ)
-    have hzmu : z = -mu⁻¹ := by simp [mu, hz]
+    have hzmu : z = -mu⁻¹ := by simp [mu]
     rw [hzmu, ht]
     simp
 

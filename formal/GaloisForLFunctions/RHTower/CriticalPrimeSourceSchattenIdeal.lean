@@ -28,7 +28,7 @@ noncomputable section
 
 /-! ## Elementary bounds on the two critical source weights -/
 
-theorem criticalMellinAtomWeight_nonneg (k : ℕ) : 0 ≤ criticalMellinAtomWeight k :=
+theorem criticalMellinAtomWeight_nonneg' (k : ℕ) : 0 ≤ criticalMellinAtomWeight k :=
   mul_nonneg (Real.rpow_nonneg (by positivity) _) ArithmeticFunction.vonMangoldt_nonneg
 
 /-- The square-root von Mangoldt mass is bounded by the logarithmic half-density profile. -/
@@ -85,7 +85,7 @@ theorem criticalIncidenceDiagonal_nonneg (pk : Nat.Primes × ℕ) :
 
 theorem criticalIncidenceLogDiagonal_nonneg (pk : Nat.Primes × ℕ) :
     0 ≤ criticalIncidenceLogDiagonal pk :=
-  criticalMellinAtomWeight_nonneg _
+  criticalMellinAtomWeight_nonneg' _
 
 theorem criticalIncidenceDiagonal_le (pk : Nat.Primes × ℕ) :
     criticalIncidenceDiagonal pk ≤ (criticalIncidenceIndex pk : ℝ) ^ (-1 / 2 : ℝ) :=

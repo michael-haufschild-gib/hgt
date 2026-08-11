@@ -21,7 +21,7 @@ theorem genericAverage_mem_symmetricPart :
     genericAverage K d ∈ symmetricPart K d := fun e => smul_genericAverage e
 
 /-- **A ring homomorphism carries a shift to a shift.** -/
-theorem map_taylor {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S) (r : R)
+theorem map_taylor' {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S) (r : R)
     (p : Polynomial R) :
     Polynomial.map f (Polynomial.taylor r p) =
       Polynomial.taylor (f r) (Polynomial.map f p) := by
@@ -42,7 +42,7 @@ noncomputable def centeredMonicPart (K : Type*) [Field K] [CharZero K] (d : ℕ)
 theorem map_centeredMonicPart :
     Polynomial.map (algebraMap (symmetricPart K d) (SymmetricRationalField K d))
       (centeredMonicPart K d) = centeredMonicF K d := by
-  rw [centeredMonicPart, map_taylor, map_genericMonic]
+  rw [centeredMonicPart, map_taylor', map_genericMonic]
   exact taylor_genericMonicF
 
 /-- **Shifting back recovers the generic polynomial.**  So its coefficients are expressions in the

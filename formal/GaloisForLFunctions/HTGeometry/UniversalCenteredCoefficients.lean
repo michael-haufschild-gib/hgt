@@ -38,7 +38,7 @@ theorem universalCenteredCoeff_pred (hd : 0 < d) :
   have hcast : ((d : ℕ) : MvPolynomial (Fin d) K) = MvPolynomial.C ((d : ℕ) : K) :=
     (map_natCast MvPolynomial.C _).symm
   rw [hcast, smul_eq_C_mul, mul_neg, ← mul_assoc, ← map_mul, mul_inv_cancel₀ hdne, map_one,
-    one_mul, neg_add_cancel]
+    one_mul, add_neg_cancel]
 
 omit [CharZero K] in
 /-- **Every centered coefficient is the original one plus a multiple of the shift.** -/

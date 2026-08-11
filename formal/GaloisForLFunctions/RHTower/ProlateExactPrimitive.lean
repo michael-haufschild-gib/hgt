@@ -28,7 +28,7 @@ theorem intervalIntegrable_radialProlateBesselProfile {s c a b : ℝ}
     hab ?_ (M := 2 * Real.sqrt c) ?_
   · have hsub : Ioo a b ⊆ Ioi 1 := fun x hx => lt_of_le_of_lt ha hx.1
     refine (continuousOn_const.mul ((continuousOn_xiAmplitude hs0 hs1).mono hsub)).mul ?_
-    exact continuous_besselJ0.comp_continuousOn
+    exact continuous_besselJ0'.comp_continuousOn
       (continuousOn_const.mul (((continuousOn_xiEndpointPhase hs0).mono hsub)))
   · intro x hx
     have hx1 : (1 : ℝ) < x := lt_of_le_of_lt ha hx.1
@@ -78,7 +78,7 @@ theorem abs_integral_sqrt_mul_radialProlate_le
   have hdiffc : ContinuousOn
       (fun x : ℝ => R x - xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) (Icc A X) := by
     refine hRc.continuousOn.sub (((continuousOn_xiAmplitude hs0 hs1).mono hsubIoi).mul ?_)
-    exact continuous_besselJ0.comp_continuousOn
+    exact continuous_besselJ0'.comp_continuousOn
       (continuousOn_const.mul ((continuousOn_xiEndpointPhase hs0).mono hsubIoi))
   have hi1 : IntervalIntegrable
       (fun x : ℝ => R x - xiAmplitude s x * besselJ0 (c * xiEndpointPhase s x)) volume A X :=
