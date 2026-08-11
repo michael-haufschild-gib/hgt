@@ -18,7 +18,7 @@ namespace HTGeometry.ConstraintMotiveRelativity
 
 section AlgebraicPort
 
-variable {P : Type*} [DecidableEq P]
+variable {P : Type*}
 
 /-- The augmentation of finitely supported prime coordinates. -/
 noncomputable def augment : (P →₀ ℂ) →ₗ[ℂ] ℂ := Finsupp.linearCombination ℂ fun _ => (1 : ℂ)
@@ -52,6 +52,7 @@ theorem dualAnnihilator_augIdeal [Nonempty P] :
   obtain ⟨p₀⟩ := ‹Nonempty P›
   apply le_antisymm
   · intro α hα
+    rw [Submodule.mem_dualAnnihilator] at hα
     set a : ℂ := α (Finsupp.single p₀ (1 : ℂ)) with hadef
     have hcoord : ∀ p : P, α (Finsupp.single p (1 : ℂ)) = a := by
       intro p
@@ -59,7 +60,7 @@ theorem dualAnnihilator_augIdeal [Nonempty P] :
       rw [map_sub, sub_eq_zero] at h0
       exact h0
     have hα' : α = a • (augment : Module.Dual ℂ (P →₀ ℂ)) := by
-      ext l
+      refine LinearMap.ext fun l => ?_
       have hl : l = ∑ p ∈ l.support, Finsupp.single p (l p) := (Finsupp.sum_single l).symm
       rw [hl, map_sum]
       simp only [LinearMap.smul_apply, smul_eq_mul, map_sum]
@@ -68,15 +69,16 @@ theorem dualAnnihilator_augIdeal [Nonempty P] :
         have : Finsupp.single p (l p) = l p • Finsupp.single p (1 : ℂ) := by
           rw [Finsupp.smul_single, smul_eq_mul, mul_one]
         rw [this, map_smul, hcoord p, smul_eq_mul]
-      rw [Finset.sum_congr rfl hterm, ← Finset.sum_mul, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun p _ => ?_
-      rw [augment_single]
+      rw [Finset.sum_congr rfl hterm, ← Finset.sum_mul]
+      have hval : ∀ p ∈ l.support, a * augment (Finsupp.single p (l p)) = a * l p := by
+        intro p _
+        rw [augment_single]
+      rw [Finset.sum_congr rfl hval, ← Finset.mul_sum]
       ring
     rw [hα']
     exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _)
   · rw [Submodule.span_le, Set.singleton_subset_iff]
-    intro l hl
-    exact hl
+    exact (Submodule.mem_dualAnnihilator _).2 fun x hx => hx
 
 /-- The algebraic cotangent double. -/
 abbrev PortDouble (P : Type*) := (P →₀ ℂ) × Module.Dual ℂ (P →₀ ℂ)
@@ -128,11 +130,11 @@ theorem portOrth_augIsotropic [Nonempty P] :
   · intro hu
     refine ⟨Submodule.mem_top, ?_⟩
     rw [← dualAnnihilator_augIdeal]
-    intro x hx
+    refine (Submodule.mem_dualAnnihilator _).2 fun x hx => ?_
     have := hu (x, 0) ⟨hx, by simp⟩
     simpa [portForm] using this
   · rintro ⟨-, hu2⟩
-    rw [← dualAnnihilator_augIdeal] at hu2
+    rw [← dualAnnihilator_augIdeal, Submodule.mem_dualAnnihilator] at hu2
     rintro ⟨x, α⟩ ⟨hx, hα⟩
     have hα0 : α = 0 := by simpa using hα
     have := hu2 x hx
@@ -142,8 +144,8 @@ theorem portOrth_augIsotropic [Nonempty P] :
 along the augmentation on the fibre. -/
 noncomputable def portRed (p₀ : P) : PortDouble P →ₗ[ℂ] ℂ × ℂ where
   toFun := fun u => (augment u.1, u.2 (Finsupp.single p₀ 1))
-  map_add' := fun u v => by simp [Prod.ext_iff]
-  map_smul' := fun a u => by simp [Prod.ext_iff]
+  map_add' := fun u v => by simp
+  map_smul' := fun a u => by simp
 
 @[simp] theorem portRed_apply (p₀ : P) (u : PortDouble P) :
     portRed p₀ u = (augment u.1, u.2 (Finsupp.single p₀ 1)) := rfl
@@ -168,13 +170,15 @@ theorem portRed_surjOn [Nonempty P] (p₀ : P) (z : ℂ × ℂ) :
   refine ⟨(Finsupp.single p₀ z.1, z.2 • (augment : Module.Dual ℂ (P →₀ ℂ))), ?_, ?_⟩
   · rw [portOrth_augIsotropic, Submodule.mem_prod]
     exact ⟨Submodule.mem_top, Submodule.mem_span_singleton.2 ⟨z.2, rfl⟩⟩
-  · simp [Prod.ext_iff]
+  · simp
 
 /-- The kernel of the reduction inside the symplectic orthogonal is exactly the constraint. -/
 theorem ker_portRed_inf [Nonempty P] (p₀ : P) :
     portOrth (augIsotropic (P := P)) ⊓ LinearMap.ker (portRed p₀) = augIsotropic := by
   apply le_antisymm
-  · rintro u ⟨hu, hker⟩
+  · intro u humem
+    rw [Submodule.mem_inf] at humem
+    obtain ⟨hu, hker⟩ := humem
     rw [portOrth_augIsotropic, Submodule.mem_prod] at hu
     obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.1 hu.2
     have hk : augment u.1 = 0 ∧ u.2 (Finsupp.single p₀ 1) = 0 := by
@@ -190,43 +194,30 @@ theorem ker_portRed_inf [Nonempty P] (p₀ : P) :
     exact Submodule.zero_mem _
   · intro u hu
     have h2 : u.2 = 0 := by simpa using hu.2
+    rw [Submodule.mem_inf]
     constructor
     · rw [portOrth_augIsotropic, Submodule.mem_prod]
       exact ⟨Submodule.mem_top, by rw [h2]; exact Submodule.zero_mem _⟩
     · rw [LinearMap.mem_ker, portRed_apply, h2]
-      simp [Prod.ext_iff]
-      exact hu.1
+      simp only [LinearMap.zero_apply, Prod.mk_eq_zero]
+      exact ⟨hu.1, trivial⟩
 
-/-- **Theorem 1, `(RC.4)`.**  The coisotropic quotient of the algebraic prime augmentation port is
-the hyperbolic plane. -/
-theorem coisotropic_quotient_equiv [Nonempty P] (p₀ : P) :
-    Nonempty ((↥(portOrth (augIsotropic (P := P)))
-      ⧸ Submodule.comap (portOrth (augIsotropic (P := P))).subtype
-          (augIsotropic (P := P))) ≃ₗ[ℂ] ℂ × ℂ) := by
-  set L : ↥(portOrth (augIsotropic (P := P))) →ₗ[ℂ] ℂ × ℂ :=
-    (portRed p₀).comp (portOrth (augIsotropic (P := P))).subtype with hL
-  have hsurj : Function.Surjective L := by
-    intro z
-    obtain ⟨u, hu, hz⟩ := portRed_surjOn p₀ z
-    exact ⟨⟨u, hu⟩, hz⟩
-  have hker : LinearMap.ker L
-      = Submodule.comap (portOrth (augIsotropic (P := P))).subtype (augIsotropic (P := P)) := by
-    ext u
-    constructor
-    · intro hu
-      have : (u : PortDouble P) ∈ portOrth (augIsotropic (P := P))
-          ⊓ LinearMap.ker (portRed p₀) := ⟨u.2, hu⟩
-      rw [ker_portRed_inf p₀] at this
-      exact this
-    · intro hu
-      have : (u : PortDouble P) ∈ portOrth (augIsotropic (P := P))
-          ⊓ LinearMap.ker (portRed p₀) := by
-        rw [ker_portRed_inf p₀]
-        exact hu
-      exact this.2
-  refine ⟨?_⟩
-  rw [← hker]
-  exact LinearMap.quotKerEquivOfSurjective L hsurj
+/-- The augmentation identifies `K₀/I₀` with `ℂ`. -/
+theorem augIdeal_quotient_equiv [Nonempty P] :
+    Nonempty ((((P →₀ ℂ) ⧸ (augIdeal : Submodule ℂ (P →₀ ℂ)))) ≃ₗ[ℂ] ℂ) :=
+  ⟨LinearMap.quotKerEquivOfSurjective _ (augment_surjective (P := P))⟩
+
+/-- **Theorem 1, `(RC.4)`.**  The reduction `(x, a ε) ↦ (ε x, a)` maps the symplectic orthogonal of
+the augmentation constraint onto `ℂ × ℂ`, its kernel there is exactly the constraint, and it
+carries the cotangent form to the hyperbolic form.  So the coisotropic quotient `I₀^ω/I₀` is the
+hyperbolic plane `ℍ(ℂ)`. -/
+theorem coisotropic_reduction [Nonempty P] (p₀ : P) :
+    (∀ z : ℂ × ℂ, ∃ u ∈ portOrth (augIsotropic (P := P)), portRed p₀ u = z) ∧
+    portOrth (augIsotropic (P := P)) ⊓ LinearMap.ker (portRed p₀) = augIsotropic ∧
+    (∀ u ∈ portOrth (augIsotropic (P := P)), ∀ v ∈ portOrth (augIsotropic (P := P)),
+      portForm u v = hyperbolicForm (portRed p₀ u) (portRed p₀ v)) :=
+  ⟨portRed_surjOn p₀, ker_portRed_inf p₀,
+    fun _ hu _ hv => portForm_eq_hyperbolicForm p₀ hu hv⟩
 
 end AlgebraicPort
 

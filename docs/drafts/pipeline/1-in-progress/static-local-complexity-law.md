@@ -5920,3 +5920,19 @@ receive a new title and an independent significance audit.
   `HTGeometry/PauliXorIncidenceHypercontractivityLaw.lean`; direct compile, module build, lint, and
   axiom audit pass.  Card:
   `../3-formalized/pauli-xor-incidence-hypercontractivity-law.md`.
+- 2026-08-11 -- Proved the gap-free Choi form of ordered spectral phase extraction.  Nearest-neighbour
+  chord action is subadditive under phase multiplication and loses at most
+  `4 sqrt(D) sqrt(E)` under radial recovery from total diagonal square error `E`.  For finite
+  unitaries, trace alignment gives the exact identity
+  `||W-cT||_HS^2=2D-2|tr(T^*W)|`; hence normalized Choi overlap directly yields a recovered exact
+  centralizer phase profile without operator-norm conversion, a minimum spectral gap, or a
+  minimum diagonal modulus.  Hostile falsification is part of the theorem: the alternating binary
+  character attains the maximal action `2(D-1)`, so one shallow carrier gate can already saturate
+  this invariant.  Spectral chord action is therefore a safe Choi-stable extraction auxiliary, not
+  a circuit lower bound.  It closes the operator/Choi extraction gap in the phase-bandwidth branch
+  but leaves the actual Brown core unchanged: quenched finite-scale undistortion/Bellman escape for
+  the moving centralizer after return and carrier removal.  Lean module:
+  `HTGeometry/FiniteSpectralPhaseActionLaw.lean`; direct compile, module-only build, and axiom audit
+  pass.  Repository-wide lint is currently blocked by unrelated newly added unreachable RHTower
+  and HTGeometry modules; the new module itself is umbrella-reachable and contains no forbidden
+  declarations.

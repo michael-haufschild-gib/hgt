@@ -394,10 +394,13 @@ The exact positive survivor is a design constraint:
 > volumes, or produce a singular cofinal renormalized balance.  It cannot set the finite Boolean,
 > Mass, Hankel, or QFI factor to zero.
 
-The next admissible RH question is therefore not whether one of the four shadows vanishes.  It is
-whether source reflection supplies a second independently generated transverse packet whose
-four-organ volume is forced to equal the forward packet before divisor specialization.  That is a
-new conservation problem; imposing the equality only at Xi zeros would be circular.
+The next admissible RH question is therefore not whether one of the four shadows vanishes.  A
+subsequent hostile audit also rejects equality of a forward and reflected packet as the next field
+gate: the corpus's fixed-carrier and bilateral-energy classifications show that, without an
+independent pre-zero source theorem, that equality is another presentation of horizontal
+neutrality.  The legal successor is the shared-gauge quotient--fusion problem: derive a common
+gauge from the source before divisor specialization, compute its compatibility defect across
+independent organs, and only then test whether an off-critical divisor forces positive defect.
 
 ## 8. Parent mathematics and corpus dependencies
 
@@ -443,4 +446,5 @@ No RH statement or cofinal source completion is asserted in Lean.
 - [x] fourth-organ recurrence/QFI theorem predicted and proved
 - [x] direct zero-QFI RH selector refuted with positive survivor
 - [x] Lean formalization and umbrella wiring
-- [ ] reflected second-packet conservation theorem
+- [x] reflected second-packet equality rejected as a circular/regressive receiver condition
+- [ ] source-forced common-gauge compatibility theorem across independent organs

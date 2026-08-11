@@ -189,9 +189,19 @@ component is strictly positive exactly off the critical line. The physical Rees-
 retains prime, depth, divisor, and multiplicity provenance.
 
 This completes carrier construction and orientation, not annihilation. Lean proves global carrier
-vanishing equivalent to RH. The common open core is now an independent source law pairing the two
-retained cofinal orientations so the constructed carrier vanishes, without codiagonalization or
-another bounded label-blind observer. Route L asks for this through the resolved-Green
+vanishing equivalent to RH. The pairing of the two retained cofinal orientations is now itself
+constructed and signed: weighting the product of the tail-log and prime-Bockstein odd components
+by the assembled Gauss residue current gives the Hodge mass current
+`H(q,p) = (log 2/2)·current(p)·density(p)·t_q·(p^{t_q} - p^{-t_q})`, `t_q = 2 Re q - 1` —
+unconditionally nonnegative, reflection-even, label-faithful, with exact critical radical
+(`GaussHodgeMassCurrent.lean`). The Hodge sign of the constructed pairing therefore holds; zero
+total mass of this nonnegative current is proved equivalent to RH. A formalized interface
+firewall shows the mass-zero law cannot follow from the pairing's own interface even with
+divisor-reflection closure: an explicit reflection-closed off-line configuration has positive
+mass. The common open core is therefore refined to one global trace identity evaluating the
+nonnegative `H`-mass through prime-side data — a bilinear/Poisson upgrade of the explicit
+formula reaching one non-holomorphic positive-definite divisor sample — without
+codiagonalization or another bounded label-blind observer. Route L asks for this through the resolved-Green
 rational-Witt/Milnor source annihilator; Route R asks for it through singular Cartier/Stokes
 non-amplification. These target realizations remain distinct even though they retain the same
 horizontal class.
@@ -2696,6 +2706,7 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussRelativeOneStep.lean
 - formal/GaloisForLFunctions/RHTower/GaussSquareDiagonalLogResidue.lean
 - formal/GaloisForLFunctions/RHTower/GaussMultiPlaceAssembly.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeMassCurrent.lean
 
 ## Final frontier statement
 

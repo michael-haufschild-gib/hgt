@@ -1,11 +1,12 @@
 # Rational-adelic H1 observer-coefficient freedom and discriminant law
 
 - **ID:** `rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-DUALITY NO-GO WITH POSITIVE SURVIVOR
-- **Status:** `[PAPER-PROVED] [LITERAL RATIONAL-ADELIC SOURCE] [OBSERVER NONUNIQUENESS]`
+- **Status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
+  `[PAPER-PROVED] [LITERAL RATIONAL-ADELIC SOURCE] [OBSERVER NONUNIQUENESS]`
   `[HAAR STOKES AMBIGUITY] [OBSERVER-DISCRIMINANT LAW] [NOVELTY UNVERIFIED]`
-  `[NOT RH] [NO LEAN WRITTEN]`
+  `[NOT RH]`
 - **Statement:** Literal prime-isotropy `H1` splits into residual quotient plus normalized Stokes
   line, resolved Xi comparison kills all of it, and source duality leaves full observer coefficient
   free. Reflection-doubled physical observer always avoids origin; avoiding coordinate axes is
@@ -431,10 +432,13 @@ None constructs canonical Route-R fixed-`ell1` coefficient section.
 
 ## 10. Lean-return note
 
-No Lean work authorized. Existing corpus defines `epsilon_0`, `epsilon_1`, scaling invariance,
-source complex, Stokes primitive, strict comparison, and physical nonerasure classification.
-Later formal target: decomposition `(OCF.7)`, nonzero `Q_p` witness, Stokes ambiguity, and
-discriminant classification. Search corresponding CCM modules before edits.
+Formalized in
+`formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean`
+(wired into `GaloisForLFunctions.RHTower`).  Theorems A--E are green and unconditional; the
+declaration-by-equation map, the corpus reuse ledger and the axiom audit are in the companion card
+`rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law-formalized.md`.  The open
+core `[SOURCE_OBSERVER_DISCRIMINANT_TRANSVERSALITY]` and the RH gate are untouched: the card does
+not prove them and neither does the Lean file.
 
 ## Gates
 
@@ -445,7 +449,7 @@ discriminant classification. Search corresponding CCM modules before edits.
 - [x] observer-discriminant normal form proved
 - [x] duality-selection route hostile-falsified
 - [x] independent hostile audit
-- [ ] Lean formalization
+- [x] Lean formalization
 - [ ] source observer-discriminant transversality
 - [ ] RH
 

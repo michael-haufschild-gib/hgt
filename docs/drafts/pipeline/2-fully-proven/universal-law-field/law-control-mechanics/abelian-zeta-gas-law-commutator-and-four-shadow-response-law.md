@@ -10,7 +10,7 @@
   unitary observation with open lift, a zeta-divisor transgression, and a hypertranscendental germ.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [ONE SOURCE] [THREE FORMATIONS]
   [NONIDENTITY EXCHANGE] [WITHHELD POSITIVE COST] [FOUR RESPONSE CHARTS]
-  [LEAN TARGET OPEN] [NOT RH]
+  [THEOREM 3.1 LEAN-CERTIFIED] [FOUR-SHADOW LEAN OBLIGATIONS ENUMERATED] [NOT RH]
 
 ## 1. Source
 
@@ -447,3 +447,148 @@ directive.
   literal realization of source-selected central promotion.
 - 2026-08-10 — hostile audit killed generic nonholonomic and unmarked-control readings; exact
   discrete marked exchange, four-shadow reconstruction, and positive cost survived.
+
+## 11. Lean status
+
+`GaloisForLFunctions.HTGeometry.AbelianZetaGas.LawCommutator` (wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`) certifies **Theorem 3.1** in full, as an
+identity in the permutation group of the parameter plane:
+
+- `tempTranslate`, `socleTilt`, `fugacityTranslate` — the three formations as bijections of `ℝ²`;
+- `socleTilt_comp_tempTranslate` — `(AZC.7)`;
+- `fugacityTranslate_mul`, `fugacityTranslate_zero`, `fugacityTranslate_commute`,
+  `fugacityTranslate_commute_tempTranslate`, `fugacityTranslate_commute_socleTilt` — `(AZC.8)`
+  and the centrality clauses;
+- `commutator_socleTilt_tempTranslate` — `(AZC.9)`, central birth: `⁅S, H_u⁆ = V_u`;
+- `commutator_ne_one` — the commutator is nonidentity for every `u ≠ 0`;
+- `commutator_conjugate` — `(AZC.10)`, coordinate invariance, from the fact that conjugation is a
+  group automorphism;
+- `chamber`, `socleTilt_mapsTo_chamber`, `tempTranslate_mapsTo_chamber`,
+  `fugacityTranslate_mapsTo_chamber` — admissibility of the schedules on `Θ`.
+
+All of these audit to `propext`, `Classical.choice`, `Quot.sound`.
+
+### What the existing gas layer already supplies
+
+The 33-module `GaloisForLFunctions.HTGeometry.AbelianZetaGas` layer already owns:
+
+- `Response.gasResponse_eq`, `gasResponse_mul_ennNormalizer`,
+  `gasResponse_toReal_mul_zetaPartition` — the real-parameter form of `(AZC.12)`/`(AZC.13)`: the
+  expectation of the two-observable tilt is the ratio of the two zeta partition functions;
+- `DepthLadder.zetaPartition_depthShift` — the real depth-ladder telescoping that becomes
+  `(AZC.17)`;
+- `RelativeEntropy.klDiv_symmetrised_temperature_shift` — the exact analogue of `(AZC.15)` in the
+  **temperature** direction with the order observable `log|A|`: `J = u·(E₀E − E_uE) ≥ 0`;
+- `GrandResponse.meromorphicOrderAt_grandResponse`, `DilationDivisor`, `DepthTail`,
+  `NaturalBoundary` — the divisor and continuation theory of the **dilation** organ;
+- `SocleCharFun`, `SocleNoLimit`, `ModeExpectation`, `VonMangoldtEuler` — the socle observable,
+  its characteristic function and its expectation ladder.
+
+`GaloisForLFunctions.HTGeometry.AbelianZetaGas.SocleResponse` adds the socle-direction organ:
+
+- `socleLadder σ v = grandResponse σ v 0 = ∏_{j≥1} ζ(jσ + v)` and `socleLadder_eq_tprod`;
+- `socleLadder_peel` — the exact one-step ladder `Z(σ,v) = ζ(σ+v)·Z(σ,v+σ)`;
+- `depthProduct_socle_ne_zero`, `socleLadder_ne_zero` — the normalizer is nonzero on the whole
+  convergence chamber, so the response is a genuine normalized intervention;
+- `socleResponse σ τ z = socleLadder σ (τ+z) / socleLadder σ τ`, with `socleResponse_zero`;
+- `socleLadder_translation`, `socleResponse_translation` — **`(AZC.17)`** in multiplicative form,
+  hypothesis-free;
+- `socleResponse_div` — the division form `C(z+σ)/C(z) = 1/ζ(σ+τ+z)`.
+
+### Remaining Lean obligations, precisely
+
+1. **`(AZC.12)` as an expectation.**  Identify `socleResponse σ τ z` with `E e^{-zQ}` through the
+   socle characteristic function of `SocleCharFun`; the real case is already
+   `Response.gasResponse_eq`.
+2. **`(AZC.18)`.**  The divisor of `v ↦ socleLadder σ v`.  This is *not* the existing
+   `GrandResponse.meromorphicOrderAt_grandResponse`, which computes the order in the dilation
+   variable `u` (slope `j`); the socle variable has slope `1`.  The split-at-threshold argument of
+   `DepthTail`/`GrandResponse` has to be redone with `v` varying and `u = 0` fixed — the missing
+   input is a `v`-variable analogue of `analyticAt_tprod_depthFactor_tail`.
+3. **`(AZC.15)`/`(AZC.16)`, Theorem 5.1.**  The fugacity-direction analogue of
+   `RelativeEntropy.klDiv_symmetrised_temperature_shift`, with the socle observable `Q` in place of
+   the order observable, plus the variance-integral form and the explicit `−ζ'/ζ` series.
+4. **Theorem 7.1.**  *The corpus already owns the template.*
+   `GaloisForLFunctions.HTGeometry.EulerQGammaHypertranscendence` proves
+   `not_differentiallyAlgebraicOn_eqgResponseDirichlet` from **exactly this ladder**: with
+   `eqgExponent σ s = σ(1+s)`, its response satisfies `D(s) = ζ(σ(1+s))·D(s+1)`, and
+   `L(s) := socleLadder σ (σ·s)` satisfies the same relation by `socleLadder_peel`.  So Theorem 7.1
+   reduces to (a) analyticity and nonvanishing of `L` on `eqgHalfPlane σ` — nonvanishing is
+   `socleLadder_ne_zero` generalized to complex `v` with `1 < σ + v.re`; analyticity is the same
+   missing `v`-variable tail lemma as obligation 2 — and (b) `differentiallyAlgebraicOn_div`
+   plus `hypertranscendental_eqgZetaPullback`, both already in the tree.  No new hard mathematics.
+5. **Theorem 8.1.**  Norm-precompactness and recurrence of the orbit `t ↦ U_tΩ` in
+   `L²(P_{σ,τ})`, with the divergent logarithmic lift.
+
+## Log
+
+- 2026-08-10 — extracted from the mature abelian-zeta-gas and Euler q-Gamma corpus as the first
+  literal realization of source-selected central promotion.
+- 2026-08-10 — hostile audit killed generic nonholonomic and unmarked-control readings; exact
+  discrete marked exchange, four-shadow reconstruction, and positive cost survived.
+
+## 11. Lean status
+
+`GaloisForLFunctions.HTGeometry.AbelianZetaGas.LawCommutator` (wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`) certifies **Theorem 3.1** in full, as an
+identity in the permutation group of the parameter plane:
+
+- `tempTranslate`, `socleTilt`, `fugacityTranslate` — the three formations as bijections of `ℝ²`;
+- `socleTilt_comp_tempTranslate` — `(AZC.7)`;
+- `fugacityTranslate_mul`, `fugacityTranslate_zero`, `fugacityTranslate_commute`,
+  `fugacityTranslate_commute_tempTranslate`, `fugacityTranslate_commute_socleTilt` — `(AZC.8)`
+  and the centrality clauses;
+- `commutator_socleTilt_tempTranslate` — `(AZC.9)`, central birth: `⁅S, H_u⁆ = V_u`;
+- `commutator_ne_one` — the commutator is nonidentity for every `u ≠ 0`;
+- `commutator_conjugate` — `(AZC.10)`, coordinate invariance, from the fact that conjugation is a
+  group automorphism;
+- `chamber`, `socleTilt_mapsTo_chamber`, `tempTranslate_mapsTo_chamber`,
+  `fugacityTranslate_mapsTo_chamber` — admissibility of the schedules on `Θ`.
+
+All of these audit to `propext`, `Classical.choice`, `Quot.sound`.
+
+### What the existing gas layer already supplies
+
+The 33-module `GaloisForLFunctions.HTGeometry.AbelianZetaGas` layer already owns:
+
+- `Response.gasResponse_eq`, `gasResponse_mul_ennNormalizer`,
+  `gasResponse_toReal_mul_zetaPartition` — the real-parameter form of `(AZC.12)`/`(AZC.13)`: the
+  expectation of the two-observable tilt is the ratio of the two zeta partition functions;
+- `DepthLadder.zetaPartition_depthShift` — the real depth-ladder telescoping that becomes
+  `(AZC.17)`;
+- `RelativeEntropy.klDiv_symmetrised_temperature_shift` — the exact analogue of `(AZC.15)` in the
+  **temperature** direction with the order observable `log|A|`: `J = u·(E₀E − E_uE) ≥ 0`;
+- `GrandResponse.meromorphicOrderAt_grandResponse`, `DilationDivisor`, `DepthTail`,
+  `NaturalBoundary` — the divisor and continuation theory of the **dilation** organ;
+- `SocleCharFun`, `SocleNoLimit`, `ModeExpectation`, `VonMangoldtEuler` — the socle observable,
+  its characteristic function and its expectation ladder.
+
+### Remaining Lean obligations, precisely
+
+1. **`(AZC.12)` in the socle direction, complex `z`.**  Define
+   `C_{σ,τ}(z) = grandResponse σ (τ + z) 0 / grandResponse σ τ 0` — this is literally
+   `∏_{j≥1} ζ(jσ+τ+z) / ∏_{j≥1} ζ(jσ+τ)` in the corpus's own vocabulary — and identify it with
+   `E e^{-zQ}` via the socle characteristic function.
+2. **`(AZC.17)`, complex form.**  The ladder identity
+   `grandResponse σ (v+σ) 0 · ζ(σ+v) = grandResponse σ v 0`, a re-indexing of the depth product.
+3. **`(AZC.18)`.**  The divisor of `v ↦ grandResponse σ v 0`.  This is *not* the existing
+   `meromorphicOrderAt_grandResponse`, which computes the order in the dilation variable `u`
+   (slope `j`); the socle variable has slope `1`.  The split-at-threshold argument of
+   `DepthTail`/`GrandResponse` has to be redone with `v` varying and `u = 0` fixed.
+4. **`(AZC.15)`/`(AZC.16)`, Theorem 5.1.**  The fugacity-direction analogue of
+   `klDiv_symmetrised_temperature_shift`, with the socle observable `Q` in place of the order
+   observable, plus the variance-integral form and the explicit `−ζ'/ζ` series.
+5. **Theorem 7.1.**  Hypertranscendence of `z ↦ C_{σ,τ}(z)`, from `(AZC.17)` and closure of
+   differentially algebraic meromorphic functions under translation, product and reciprocal.
+6. **Theorem 8.1.**  Norm-precompactness and recurrence of the orbit `t ↦ U_tΩ` in
+   `L²(P_{σ,τ})`, with the divergent logarithmic lift.
+
+## Log
+
+- 2026-08-11 — Theorem 3.1 (AZC.7-AZC.10) certified in Lean as a permutation-group commutator
+  identity (`AbelianZetaGas.LawCommutator`); the remaining five obligations enumerated against the
+  existing 33-module gas layer.
+- 2026-08-11 — (AZC.17) certified in both multiplicative and division form, together with
+  nonvanishing of the normalizer on the chamber (`AbelianZetaGas.SocleResponse`); Theorem 7.1
+  reduced to one missing analyticity lemma by reusing the Euler q-Gamma hypertranscendence
+  template, whose ladder is the same relation.

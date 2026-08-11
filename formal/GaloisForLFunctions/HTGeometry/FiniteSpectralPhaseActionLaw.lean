@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.FiniteUnitaryEnergyDefectLaw
 
 /-!
 # Finite spectral phase action
@@ -9,13 +10,18 @@ Radial normalization therefore recovers a quantitative amount of target phase ac
 minimum-modulus or minimum-spectral-gap hypothesis.  The matrix form retains only diagonal error
 and is controlled by the full entrywise square error.
 
+For diagonal unitary targets, normalized Choi overlap now supplies the error term exactly: after
+choosing the trace-aligning global phase, squared Hilbert--Schmidt distance is
+`2D - 2 |tr(T⁺W)|`.  The recovered diagonal phase therefore retains target action with a fully
+explicit Choi-scale loss.
+
 The final alternating-phase theorem is the hostile boundary: a single binary character already
 attains the maximal action.  Hence phase action is a robust recurrence/phase-recovery invariant,
 but by itself cannot certify local circuit complexity; any such use requires a separate bound on
 the action of the permitted generators in the source eigenbasis.
 -/
 
-open scoped BigOperators
+open scoped BigOperators Matrix ComplexConjugate
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -225,6 +231,215 @@ theorem spectralPhaseAction_const_mul {n : ℕ} (c : ℂ)
   apply Finset.sum_congr rfl
   intro j hj
   rw [← mul_sub, norm_mul, hc, one_mul]
+
+/-- Radial normalization aligns a complex number with the positive real axis. -/
+theorem star_phaseNormalize_one_mul (z : ℂ) :
+    star (phaseNormalize 1 z) * z = ‖z‖ := by
+  by_cases hz : z = 0
+  · simp [phaseNormalize, hz]
+  · rw [phaseNormalize, if_neg hz]
+    change (starRingEnd ℂ) (z / (‖z‖ : ℂ)) * z = (‖z‖ : ℂ)
+    rw [map_div₀ (starRingEnd ℂ), Complex.conj_ofReal]
+    have hn : (‖z‖ : ℂ) ≠ 0 := by
+      exact_mod_cast norm_ne_zero_iff.mpr hz
+    rw [div_mul_eq_mul_div, ← Complex.normSq_eq_conj_mul_self]
+    rw [← Complex.sq_norm]
+    field_simp
+    norm_num
+
+/-- Global phase aligning the normalized trace overlap of two finite unitaries. -/
+noncomputable def unitaryTraceAlignmentPhase
+    {n : ℕ} (T W : Matrix.unitaryGroup (Fin (n + 1)) ℂ) : ℂ :=
+  phaseNormalize 1
+    (Matrix.trace
+      (star (T : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) *
+        (W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)))
+
+theorem norm_unitaryTraceAlignmentPhase {n : ℕ}
+    (T W : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+    ‖unitaryTraceAlignmentPhase T W‖ = 1 := by
+  exact norm_phaseNormalize (by norm_num)
+
+/-- Entrywise square error is the trace-defined Hilbert--Schmidt energy of the difference. -/
+theorem matrixEntryErrorEnergy_eq_finiteMatrixHilbertSchmidtEnergy {n : ℕ}
+    (A B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) :
+    matrixEntryErrorEnergy A B = finiteMatrixHilbertSchmidtEnergy (A - B) := by
+  rw [finiteMatrixHilbertSchmidtEnergy_eq_sum_normSq]
+  unfold matrixEntryErrorEnergy
+  simp_rw [Complex.sq_norm, Matrix.sub_apply]
+  rw [Finset.sum_comm]
+
+/-- **Exact projective unitary distance law.** Trace alignment converts squared Hilbert--Schmidt
+distance into `2D - 2 |tr(T⁺W)|`. -/
+theorem finiteMatrixHilbertSchmidtEnergy_unitary_sub_aligned {n : ℕ}
+    (T W : Matrix.unitaryGroup (Fin (n + 1)) ℂ) :
+    finiteMatrixHilbertSchmidtEnergy
+        ((W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) -
+          unitaryTraceAlignmentPhase T W •
+            (T : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)) =
+      2 * (n + 1) - 2 *
+        ‖Matrix.trace
+          (star (T : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) *
+            (W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ))‖ := by
+  let TM : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ := T
+  let WM : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ := W
+  let z : ℂ := Matrix.trace (star TM * WM)
+  let c : ℂ := unitaryTraceAlignmentPhase T W
+  have hc : ‖c‖ = 1 := norm_unitaryTraceAlignmentPhase T W
+  have halign : star c * z = ‖z‖ := by
+    exact star_phaseNormalize_one_mul z
+  have hW : (∑ i, ∑ j, Complex.normSq (WM i j)) =
+      (n + 1 : ℝ) := by
+    calc
+      _ = ∑ _i : Fin (n + 1), (1 : ℝ) := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        simpa [WM, finiteUnitaryEntryWeight] using
+          sum_finiteUnitaryEntryWeight_row W i
+      _ = (n + 1 : ℝ) := by simp
+  have hT : (∑ i, ∑ j, Complex.normSq (TM i j)) =
+      (n + 1 : ℝ) := by
+    calc
+      _ = ∑ _i : Fin (n + 1), (1 : ℝ) := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        simpa [TM, finiteUnitaryEntryWeight] using
+          sum_finiteUnitaryEntryWeight_row T i
+      _ = (n + 1 : ℝ) := by simp
+  have hcrossComplex :
+      (∑ i, ∑ j,
+        WM i j * star (c * TM i j)) =
+        star c * z := by
+    dsimp [z]
+    simp only [map_mul]
+    calc
+      _ = star c * (∑ i, ∑ j,
+          star (TM i j) * WM i j) := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro i hi
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro j hj
+        simp only [RCLike.star_def]
+        ring
+      _ = _ := by
+        congr 1
+        rw [Matrix.trace]
+        simp only [Matrix.diag, Matrix.mul_apply, star, Matrix.conjTranspose_apply]
+        rw [Finset.sum_comm]
+  rw [← matrixEntryErrorEnergy_eq_finiteMatrixHilbertSchmidtEnergy]
+  change matrixEntryErrorEnergy WM (c • TM) = 2 * (n + 1) - 2 * ‖z‖
+  unfold matrixEntryErrorEnergy
+  simp only [Matrix.smul_apply, smul_eq_mul]
+  simp_rw [Complex.sq_norm]
+  simp only [Complex.normSq_sub, Complex.normSq_mul]
+  have hcSq : Complex.normSq c = 1 := by
+    rw [← Complex.sq_norm, hc]
+    norm_num
+  have hscaled :
+      (∑ i, ∑ j, Complex.normSq c *
+        Complex.normSq (TM i j)) =
+      Complex.normSq c * (n + 1 : ℝ) := by
+    rw [← hT, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [Finset.mul_sum]
+  have hcrossRe :
+      (∑ i, ∑ j,
+        ((WM i j * star (c * TM i j)).re)) =
+        ‖z‖ := by
+    calc
+      _ = ((∑ i, ∑ j, WM i j * star (c * TM i j)) : ℂ).re := by
+        rw [Complex.re_sum]
+        apply Finset.sum_congr rfl
+        intro i hi
+        rw [Complex.re_sum]
+      _ = (star c * z).re := by rw [hcrossComplex]
+      _ = ‖z‖ := by rw [halign]; simp
+  have hcrossScaled :
+      (∑ i, ∑ j, 2 *
+        ((WM i j * star (c * TM i j)).re)) =
+        2 * ‖z‖ := by
+    rw [← hcrossRe, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [Finset.mul_sum]
+  let eW : Fin (n + 1) → Fin (n + 1) → ℝ :=
+    fun i j => Complex.normSq (WM i j)
+  let eT : Fin (n + 1) → Fin (n + 1) → ℝ :=
+    fun i j => Complex.normSq c * Complex.normSq (TM i j)
+  let eX : Fin (n + 1) → Fin (n + 1) → ℝ :=
+    fun i j => 2 * (WM i j * star (c * TM i j)).re
+  change (∑ i : Fin (n + 1), ∑ j : Fin (n + 1), (eW i j + eT i j - eX i j)) =
+    2 * (n + 1) - 2 * ‖z‖
+  have heW : (∑ i, ∑ j, eW i j) = (n + 1 : ℝ) := by
+    simpa only [eW] using hW
+  have heT : (∑ i, ∑ j, eT i j) = Complex.normSq c * (n + 1 : ℝ) := by
+    simpa only [eT] using hscaled
+  have heX : (∑ i, ∑ j, eX i j) = 2 * ‖z‖ := by
+    simpa only [eX] using hcrossScaled
+  calc
+    _ = ∑ i, ((∑ j, eW i j) + (∑ j, eT i j) - (∑ j, eX i j)) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+    _ = (∑ i, ∑ j, eW i j) + (∑ i, ∑ j, eT i j) -
+        (∑ i, ∑ j, eX i j) := by
+      rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+    _ = _ := by
+      rw [heW, heT, heX, hcSq]
+      ring
+
+/-- **Choi-to-phase-action extraction.** Every unitary shortcut to a diagonal phase target has,
+after the optimal global-phase alignment and radial diagonal normalization, the target's phase
+action up to the exact normalized-trace Hilbert--Schmidt loss. -/
+theorem finiteUnitary_choiPhaseAction_lower {n : ℕ}
+    (target : Fin (n + 1) → ℂ) (htarget : ∀ i, ‖target i‖ = 1)
+    (T W : Matrix.unitaryGroup (Fin (n + 1)) ℂ)
+    (hTdiag : (T : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) =
+      phaseDiagonalMatrix target) :
+    spectralPhaseAction target -
+        4 * Real.sqrt (n + 1) *
+          Real.sqrt
+            (2 * (n + 1) - 2 *
+              ‖Matrix.trace
+                (star (T : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) *
+                  (W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ))‖) ≤
+      spectralPhaseAction (fun i =>
+        phaseNormalize
+          (unitaryTraceAlignmentPhase T W * target i)
+          ((W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) i i)) := by
+  let c : ℂ := unitaryTraceAlignmentPhase T W
+  have hc : ‖c‖ = 1 := norm_unitaryTraceAlignmentPhase T W
+  have hctarget : ∀ i, ‖c * target i‖ = 1 := by
+    intro i
+    rw [norm_mul, hc, htarget, one_mul]
+  have haction : spectralPhaseAction (fun i => c * target i) =
+      spectralPhaseAction target := spectralPhaseAction_const_mul c target hc
+  have hdiagc : phaseDiagonalMatrix (fun i => c * target i) =
+      c • (T : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) := by
+    rw [hTdiag]
+    ext i j
+    by_cases hij : i = j
+    · subst j
+      simp [phaseDiagonalMatrix]
+    · simp [phaseDiagonalMatrix, hij]
+  have herror :
+      matrixEntryErrorEnergy
+          (W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)
+          (phaseDiagonalMatrix (fun i => c * target i)) =
+        2 * (n + 1) - 2 *
+          ‖Matrix.trace
+            (star (T : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) *
+              (W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ))‖ := by
+    rw [hdiagc, matrixEntryErrorEnergy_eq_finiteMatrixHilbertSchmidtEnergy]
+    exact finiteMatrixHilbertSchmidtEnergy_unitary_sub_aligned T W
+  have hbase := spectralPhaseAction_phaseNormalize_diagonal_lower_l2
+    (fun i => c * target i)
+    (W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) hctarget
+  rw [haction, herror] at hbase
+  exact hbase
 
 theorem spectralPhaseAction_mul_le {n : ℕ} (z w : Fin (n + 1) → ℂ)
     (hz : ∀ i, ‖z i‖ = 1) (hw : ∀ i, ‖w i‖ = 1) :

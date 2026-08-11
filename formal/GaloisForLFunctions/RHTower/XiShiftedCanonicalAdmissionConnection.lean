@@ -913,6 +913,44 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_completedAggregate_of_
     hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_arithmeticSource_of_flatTangent
       hw hn hhead hflat htangent
 
+/-- **First-face producer/preemption dichotomy.**  A canonical flat admission has exactly two
+source-side outcomes.  A nonzero first-unseen remainder is already a witness that the next Hankel
+block is not positive semidefinite.  If that remainder vanishes, the completed adaptive
+`P^sharp` packet is the derivative of the division-free admission-norm flux.  Thus no orientation
+choice and no fixed linear reporter is missing at the first singular face. -/
+theorem xiShiftedCanonicalAdmission_firstFace_preemption_or_completedSource
+    {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
+    (hhead : (xiShiftedMomentHankelMatrix (w ^ 2) n).PosDef)
+    (hflat : xiShiftedMomentHankelMatrix (w ^ 2) (n + 1) *ᵥ
+      HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n = 0) :
+    (¬ (xiShiftedMomentHankelMatrix (w ^ 2) (n + 2)).PosSemidef) ∨
+      HasDerivAt (fun v => xiShiftedCanonicalAdmissionNormFlux v n)
+        (((2 * n + 1 : ℕ) : ℝ) *
+          xiShiftedCompletedMomentAggregate (w ^ 2) 2
+            (xiShiftedBoundaryAdaptiveMidpointCoefficients 1
+              (xiShiftedOddCrossingCoefficientPacket
+                (HTGeometry.monicMomentAdmissionPolynomial
+                  (xiShiftedRealMomentSequence w) n)))) (w ^ 2) := by
+  let c := HTGeometry.monicMomentAdmissionVector (xiShiftedRealMomentSequence w) n
+  by_cases htangent : xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c = 0
+  · right
+    exact
+      hasDerivAt_xiShiftedCanonicalAdmissionNormFlux_eq_completedAggregate_of_flatTangent
+        hw hn hhead hflat htangent
+  · left
+    apply xiShiftedMomentHankelMatrix_succ_not_posSemidef_of_kernel_of_coupling_ne_zero
+      (w ^ 2) (n + 1) c hflat
+    have hterminal :=
+      xiShiftedHankel_terminal_mul_coupling_eq_sq_mul_monicRemainder
+        (w ^ 2) c (by simp [c])
+    have hcoupling :
+        xiShiftedHankelFirstOmittedCoupling (w ^ 2) (n + 1) c =
+          xiShiftedHankelBoundaryMonicRemainder (w ^ 2) c := by
+      simpa only [c, HTGeometry.monicMomentAdmissionVector_last,
+        one_mul, one_pow] using hterminal
+    rw [hcoupling]
+    exact htangent
+
 /-- Exact norm flow needs only the next Hankel block, one degree less than adaptive source energy. -/
 theorem hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_jacobiFlow_of_succ_posDef
     {y : ℝ} (hy : 0 < y) {n : ℕ} (hn : 0 < n)

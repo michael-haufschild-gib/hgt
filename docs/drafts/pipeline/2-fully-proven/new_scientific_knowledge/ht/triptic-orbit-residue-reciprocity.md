@@ -1447,3 +1447,31 @@ differentially algebraic over `ℂ(z)` either.  Since the correction's weights a
 divisor, a differentially algebraic member of `Q` has vanishing divisor.  What remains is the
 bridge between the two presentations: the germ of `iteratedDeriv j (logDeriv (ellipticGammaConeTranslate τ σ q))`
 is the `j`-th differential jet of the translated `ellipticGammaLogDerivMero` germ.
+
+## Lean progress — freeness of the differential translation orbit
+
+`GaloisForLFunctions/HTGeometry/TripticJetRowFreeness.lean` (wired, axiom-clean):
+
+    differentialIndependent_ellipticGammaTranslateFamily :
+      a finite family of translates of the elliptic gamma logarithmic derivative, at nonresonant
+      and pairwise separated shifts, is differentially independent over the constants
+
+    hypertranscendentalOver_ellipticGammaTranslateRow :
+      hence any nonzero constant-coefficient differential-operator row applied to it is
+      hypertranscendental over `ℂ`
+
+The first is the packet theorem of `EllipticGammaDefectFieldEscape` transported from the set form
+`DiffIndepOn` to the family form: the translates are pairwise distinct because the defects are, and
+a family whose members lie in a differentially independent set and are pairwise distinct is
+differentially independent.  The second is the operator-row criterion of
+`DifferentialOperatorRowHypertranscendence` — the two were built for the all-order multiple
+elliptic-gamma argument and apply verbatim here.
+
+Neither carries an added hypothesis: the inputs are the card's own standing assumptions on the
+periods, plus the statement that the base points are distinct classes lying off the period lattice —
+which is what "distinct orbits in `G`" means.
+
+That is the freeness the kernel half needs, in the germ presentation.  The remaining step is
+presentational: identify the germ of `jetCombination τ σ c P J` with the operator row
+`Σ_q (Σ_j c q j ∂ʲ) Ψ_q`, so that the hypertranscendence transfers to the function and contradicts
+differential algebraicity of a member of `Q` with nonzero divisor.

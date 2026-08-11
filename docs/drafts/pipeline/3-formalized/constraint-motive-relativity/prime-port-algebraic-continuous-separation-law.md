@@ -1,12 +1,13 @@
 # Prime-port algebraic--continuous separation law
 
 - **ID:** `cmr-prime-port-algebraic-continuous-separation`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM / SOURCE-SPECIFIC TOPOLOGICAL CALIBRATION
 - **Status:** `[PAPER-PROVED] [HOSTILE ACCEPT AFTER INTERPRETATION REPAIR]`
   `[EXACT HAUSDORFF COTANGENT-LOSS DEFECT]`
   `[CLASSICAL SYMPLECTIC/TOPOLOGICAL INGREDIENTS] [CORPUS INTERFACE]`
-  `[NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[NOT RH] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `prime-port-algebraic-continuous-separation-law-formalized.md`
 - **Stage-1 field:**
   `../../1-in-progress/constraint-motive-relativity/polarized-constraint-cotangent-geometry.md`.
 - **Parent:**
@@ -292,7 +293,8 @@ closure under suitable symplectic topologies. This card claims no generic novelt
 - **New insight:** observer topology is part of geometry. Algebraic and continuous reductions can
   have different separated content even when correctly transported completion commutes with
   reduction.
-- **Status:** dependency-closed paper proof; external machinery occupied; no Lean written.
+- **Status:** dependency-closed paper proof; external machinery occupied; Lean formalization
+  complete and unconditional.
 
 ## Log
 

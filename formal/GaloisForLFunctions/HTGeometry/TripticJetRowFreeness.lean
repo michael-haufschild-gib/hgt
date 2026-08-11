@@ -88,7 +88,7 @@ theorem hypertranscendentalOver_ellipticGammaTranslateRow (hsigma : 0 < sigma.im
       (∑ a : {x // x ∈ A}, differentialOperatorApply (v a)
         (ellipticGammaTranslateFamily (fun a : {x // x ∈ A} ↦ (a : ℂ)) sigma tau hsigma htau a)) :=
   hypertranscendentalOver_differentialOperatorRow_of_ne_zero
-    (fun c ↦ meroFieldDifferential_algebraMap_complex c) v hv _
+    (fun c ↦ deriv_algebraMap_complex c) v hv _
     (differentialIndependent_ellipticGammaTranslateFamily hsigma htau hindependent A hnonres hsep)
 
 end

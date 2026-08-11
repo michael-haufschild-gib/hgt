@@ -149,6 +149,25 @@ probability law, its logarithmic clock supplies the Mass column, the covariance 
 the Hankel block, and projective phase execution supplies the QFI.  The same finite moment packet
 jointly reconstructs all four.
 
+The first higher operation extracted from this cell is **quotient--fusion genesis**.  If components
+are each allowed an independent nuisance/gauge before fusion, information can vanish locally; if
+they are fused first and constrained to one shared gauge, their incompatible local optima generate
+a positive residual.  In finite Hilbert form,
+
+\[
+ \min_u\sum_i\|x_i-A_i u\|^2
+ =\sum_i\min_{u_i}\|x_i-A_i u_i\|^2
+  +\operatorname{dist}\bigl((z_i)_i,\operatorname{ran}(u\mapsto(A_i u)_i)\bigr)^2,
+ \tag{WFG.4}
+\]
+
+where `z_i` is the local fitted projection.  This is a generation law, not another receiver:
+nontrivial structure is born because shared-history formation does not commute with local
+quotienting.  On prime singleton cells every local parity/clock quotient is zero, while the shared
+clock quotient is exactly the positive Route-E capacity.  Partition refinement conserves total
+genesis, and the same defect becomes the gain in partial QFI when recurrent subsystems are forced
+to share one clock nuisance.
+
 ## 5. Field-level consequence and boundary
 
 Finite Witt mechanics does not prove that the full RH source is a completed special lambda-ring.
@@ -173,7 +192,9 @@ reflection-marked, and conservative before Xi specialization.
 - [x] one finite source-native formation calculus identified
 - [x] one literal arithmetic source fused across Route-E, Mass, Hankel, and recurrence organs
 - [x] exact four-organ transverse-volume conservation and finite reconstruction proved on paper
-- [x] vanishing-QFI critical-line selector refuted; nonzero reflected balance survives
+- [x] vanishing-QFI critical-line selector refuted
+- [x] reflected-packet equality rejected as another RH-equivalent receiver condition
+- [x] shared-gauge quotient--fusion genesis law proved across capacity, Mass, Hankel, and QFI
 - [x] prove pole-unit completed formation and divisor reconstruction for the literal Euler shell
 - [x] prove abstract inverse conservation across joint Hausdorff multiplicative completion
 - [ ] construct the literal joint formation/exterior completion on `Re(s)>1/2`
