@@ -1420,7 +1420,7 @@ chi-square, retain outgoing rows on both parity classes. Atoms with neither inco
 mass remain explicit residual.
 
 Full proof and sharpness audit:
-../2-fully-proven/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md.
+../3-formalized/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md.
 No Lean source was edited or built.
 
 ## 2026-08-11 two-sided load-gradient and component pair-switch reduction

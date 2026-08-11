@@ -31,7 +31,8 @@ equal. Conflating them would turn a reversible symmetry into a false RH proof.
 
 - [x] 0 -> 1 in-progress: typed action, literal theta source, and exact counterprediction identified
 - [x] 1 -> 2 fully-proven: dependency-closed measure-kernel proof and hostile audit
-- [ ] 2 -> 3 formalized: exact survivor in \`ConstitutiveFunctionalEquationPacketLift.lean\`
+- [x] 2 -> 3 formalized: split-formation action/isometry and sheet-swap core in
+  \`ConstitutiveFunctionalEquationPacketLift.lean\`
 - [ ] 3 -> 4 publication-ready
 
 ## 1. The mechanism: split formation rather than a route object
@@ -548,7 +549,9 @@ functional equation.
 - **New insight:** functional equation is a reversible transport symmetry. RH selection needs a
   second mechanism that **annihilates reflected work**, not another mechanism preserving
   information or making directed costs symmetric.
-- **Status:** dependency-closed paper proof; hostile audit passed; Lean formalization pending.
+- **Status:** dependency-closed paper proof; hostile audit passed; significant universal mechanism
+  certified in Lean. Literal theta integral and Hellinger/Radon--Nikodym analytic construction
+  remain inherited/paper-level components, not re-formalized in this module.
 
 The corrected RH-facing target is now:
 
@@ -624,3 +627,6 @@ literal Hasse packet. No external novelty claim is needed for universal-law prog
   zero-chirality/positive-work no-go; Stage-1 proof written.
 - 2026-08-11 — hostile audit repaired same-sheet normalization typing and verified the literal Hasse
   cocycle, theta sign convention, and reflected-work classification; promoted to Stage 2.
+- 2026-08-11 — formalized common-kernel recovery, stochastic action naturality, strict composition,
+  involution, KL/Jeffreys isometry, involutive capstone, and two-sheet reflection swap in
+  \`ConstitutiveFunctionalEquationPacketLift.lean\`.

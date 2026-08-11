@@ -5488,7 +5488,7 @@ normalization does not bound scalar signed mass difference.
 ## Unit 41 — direct degree-normalized Gibbs boundary variation
 
 Paper proof:
-../2-fully-proven/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md.
+../3-formalized/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md.
 Lean corpus was inspected read-only and was not changed or built during refactoring.
 
 Grown umbrella theorem abs_sum_sign_weight_le_degreeNormalizedReplacementDefect supplies direct

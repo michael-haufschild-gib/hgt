@@ -96,4 +96,29 @@ theorem exists_grouped_complex_product_large
     _ = ‖∏ j, fibreProduct g z j‖ := by rw [prod_fibreProduct]
     _ = ∏ j, ‖fibreProduct g z j‖ := Complex.norm_prod _ _
 
+/-- Literal Heath--Brown specialization of `exists_grouped_complex_product_large`.  The selected
+fibre is expressed in exactly the shape consumed by `huxley_heathBrown_grouped_large_values`. -/
+theorem exists_heathBrown_group_large
+    {ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq κ] [Nonempty κ]
+    (L X : ℕ) (kind : ι → HeathBrownFactorKind) (q : ι → ℕ) (g : ι → κ)
+    (s : ℂ) (e : ℝ)
+    (hlarge : (groupedDyadicLower q : ℝ) ^ e ≤
+      ‖∏ i, LSeries
+        (complexCoeff (arithmeticDyadicBlock (heathBrownFactorBase L X (kind i)) (q i))) s‖) :
+    ∃ j, ((groupedDyadicLower (fun i : GroupFibre g j => q i) : ℕ) : ℝ) ^ e ≤
+      ‖∏ i : GroupFibre g j, LSeries
+        (complexCoeff (arithmeticDyadicBlock
+          (heathBrownFactorBase L X (kind i)) (q i))) s‖ := by
+  have hlarge' : (∏ i, (((2 ^ q i : ℕ) : ℝ))) ^ e ≤
+      ‖∏ i, LSeries
+        (complexCoeff (arithmeticDyadicBlock (heathBrownFactorBase L X (kind i)) (q i))) s‖ := by
+    simpa [groupedDyadicLower] using hlarge
+  obtain ⟨j, hj⟩ := exists_grouped_complex_product_large g
+    (fun i => (((2 ^ q i : ℕ) : ℝ)))
+    (fun i => LSeries
+      (complexCoeff (arithmeticDyadicBlock (heathBrownFactorBase L X (kind i)) (q i))) s)
+    e (fun i => by positivity) hlarge'
+  refine ⟨j, ?_⟩
+  simpa [fibreProduct, groupedDyadicLower] using hj
+
 end RHTower.Sieve

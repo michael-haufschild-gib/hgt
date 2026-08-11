@@ -8,7 +8,7 @@
 - **Companions:** `route-e-ramare-recombination-ternary-antiscale-law.md`,
   `route-e-source-faithful-euler-tilt-unit-shell-law.md`,
   `route-e-weighted-hall-anova-projection-duality-law.md`,
-  `route-e-degree-normalized-gibbs-boundary-variation-law.md`
+  `../../3-formalized/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md`
 - **RH used:** no
 - **Computation used:** no
 - **Literature used:** no; internal-corpus derivation only

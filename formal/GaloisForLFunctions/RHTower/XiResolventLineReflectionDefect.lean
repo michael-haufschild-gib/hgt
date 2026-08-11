@@ -144,6 +144,129 @@ theorem exists_separatedContinuedCauchyPackets_tendsto_xiResolvent_bothOrientati
   refine ⟨P, Psharp, hP, ?_⟩
   rwa [xiWeilEvaluationLp_xiResolventReflectedTest X hX] at hPsharp
 
+/-! ## Source-moment rigidity
+
+Closure membership by itself cannot identify the two orientations.  The continued Cauchy atoms,
+however, are total in that closure.  Equality of their unsquared source moments is therefore a
+coefficient-faithful, pre-scalar criterion for equality on the horizontal carrier.
+-/
+
+theorem eq_of_continuedCauchy_sourceMoments
+    {v r : lp (fun _ : XiZeroCopy => ℂ) 2}
+    (hv : v ∈ xiWeilContinuedCauchyHilbertSubspace)
+    (hr : r ∈ xiWeilContinuedCauchyHilbertSubspace)
+    (hmoment : ∀ w : XiContinuedCauchyPoint,
+      inner ℂ v (xiWeilContinuedCauchyLp w) =
+        inner ℂ r (xiWeilContinuedCauchyLp w)) :
+    v = r := by
+  let x := v - r
+  have hx : x ∈ xiWeilContinuedCauchyHilbertSubspace :=
+    xiWeilContinuedCauchyHilbertSubspace.sub_mem hv hr
+  have hgen : ∀ w : XiContinuedCauchyPoint,
+      inner ℂ x (xiWeilContinuedCauchyLp w) = 0 := by
+    intro w
+    simp only [x, inner_sub_left, hmoment w, sub_self]
+  have halg : ∀ u ∈ xiWeilContinuedCauchyAlgebraicSubspace,
+      inner ℂ x u = 0 := by
+    intro u hu
+    have hker : xiWeilContinuedCauchyAlgebraicSubspace ≤
+        LinearMap.ker (innerSL ℂ x).toLinearMap := by
+      rw [xiWeilContinuedCauchyAlgebraicSubspace, Submodule.span_le]
+      rintro _ ⟨w, rfl⟩
+      simpa only [LinearMap.mem_ker, ContinuousLinearMap.coe_coe,
+        innerSL_apply_apply] using! hgen w
+    have hu' := hker hu
+    simpa only [LinearMap.mem_ker, ContinuousLinearMap.coe_coe,
+      innerSL_apply_apply] using hu'
+  have hclosed : IsClosed {u | inner ℂ x u = 0} :=
+    isClosed_eq (by fun_prop) continuous_const
+  have hxclosure : x ∈ closure
+      (↑xiWeilContinuedCauchyAlgebraicSubspace :
+        Set (lp (fun _ : XiZeroCopy => ℂ) 2)) := by
+    exact hx
+  have hxx : inner ℂ x x = 0 :=
+    (closure_minimal halg hclosed) hxclosure
+  have hxzero : x = 0 := inner_self_eq_zero.mp hxx
+  exact sub_eq_zero.mp hxzero
+
+/-- The ordinary resolvent moment against a source atom is the reflected source polarization. -/
+theorem inner_xiResolventLp_cauchy_eq_reflectedSourcePolarization
+    (X : ℝ) (hX : 0 ≤ X) (w : XiContinuedCauchyPoint) :
+    inner ℂ (xiResolventLp X hX) (xiWeilContinuedCauchyLp w) =
+      xiWeilPolarization (xiWeilCauchyTest (w : ℂ))
+        (xiResolventReflectedTest X) := by
+  rw [← xiWeilLineConjLinearIsometry_involutive (xiResolventLp X hX)]
+  rw [← xiWeilEvaluationLp_xiResolventReflectedTest X hX]
+  change inner ℂ
+      (xiWeilLineConjLp
+        (xiWeilEvaluationLp (xiResolventReflectedTest X)
+          (xiResolventReflectedTest_squareSummable hX)))
+      (xiWeilEvaluationLp (xiWeilCauchyTest (w : ℂ))
+        (XiWeilSquareSummable_cauchy (w : ℂ))) = _
+  exact inner_xiWeilLineConjLp_evaluation_eq_polarization
+    (xiWeilCauchyTest (w : ℂ)) (xiResolventReflectedTest X)
+    (XiWeilSquareSummable_cauchy (w : ℂ))
+    (xiResolventReflectedTest_squareSummable hX)
+
+/-- The reflected resolvent moment against a source atom is the holomorphic source polarization. -/
+theorem inner_reflected_xiResolventLp_cauchy_eq_sourcePolarization
+    (X : ℝ) (hX : 0 ≤ X) (w : XiContinuedCauchyPoint) :
+    inner ℂ (xiWeilLineConjLinearIsometry (xiResolventLp X hX))
+        (xiWeilContinuedCauchyLp w) =
+      xiWeilPolarization (xiWeilCauchyTest (w : ℂ))
+        (xiResolventTest X) := by
+  change inner ℂ
+      (xiWeilLineConjLp
+        (xiWeilEvaluationLp (xiResolventTest X)
+          (xiResolventTest_squareSummable hX)))
+      (xiWeilEvaluationLp (xiWeilCauchyTest (w : ℂ))
+        (XiWeilSquareSummable_cauchy (w : ℂ))) = _
+  exact inner_xiWeilLineConjLp_evaluation_eq_polarization
+    (xiWeilCauchyTest (w : ℂ)) (xiResolventTest X)
+    (XiWeilSquareSummable_cauchy (w : ℂ))
+    (xiResolventTest_squareSummable hX)
+
+/-- Exact source-side formula for every unsquared moment of the reflection defect. -/
+theorem inner_xiResolvent_reflectionDefect_cauchy_eq_sourcePolarization_sub
+    (X : ℝ) (hX : 0 ≤ X) (w : XiContinuedCauchyPoint) :
+    inner ℂ
+        (xiResolventLp X hX -
+          xiWeilLineConjLinearIsometry (xiResolventLp X hX))
+        (xiWeilContinuedCauchyLp w) =
+      xiWeilPolarization (xiWeilCauchyTest (w : ℂ))
+          (xiResolventReflectedTest X) -
+        xiWeilPolarization (xiWeilCauchyTest (w : ℂ))
+          (xiResolventTest X) := by
+  rw [inner_sub_left,
+    inner_xiResolventLp_cauchy_eq_reflectedSourcePolarization X hX w,
+    inner_reflected_xiResolventLp_cauchy_eq_sourcePolarization X hX w]
+
+/-- **Coefficient-faithful source endpoint.**  At one nonnegative shift, RH is equivalent to
+equality of the holomorphic and reflected resolvent polarizations against every continued Cauchy
+source atom.  No norm, square, bounded scalarization, or target-selected packet occurs. -/
+theorem riemannHypothesis_iff_xiResolvent_sourcePolarizations_eq
+    {X : ℝ} (hX : 0 ≤ X) :
+    RiemannHypothesis ↔
+      ∀ w : XiContinuedCauchyPoint,
+        xiWeilPolarization (xiWeilCauchyTest (w : ℂ))
+            (xiResolventReflectedTest X) =
+          xiWeilPolarization (xiWeilCauchyTest (w : ℂ))
+            (xiResolventTest X) := by
+  rw [riemannHypothesis_iff_xiResolventLp_lineConj_fixed hX]
+  constructor
+  · intro hfixed w
+    rw [← inner_xiResolventLp_cauchy_eq_reflectedSourcePolarization X hX w,
+      ← inner_reflected_xiResolventLp_cauchy_eq_sourcePolarization X hX w,
+      hfixed]
+  · intro hsource
+    apply eq_of_continuedCauchy_sourceMoments
+    · exact (xiResolvent_bothOrientations_mem_continuedCauchyHilbertSubspace X hX).2
+    · exact (xiResolvent_bothOrientations_mem_continuedCauchyHilbertSubspace X hX).1
+    · intro w
+      rw [inner_reflected_xiResolventLp_cauchy_eq_sourcePolarization X hX w,
+        inner_xiResolventLp_cauchy_eq_reflectedSourcePolarization X hX w,
+        hsource w]
+
 end
 
 end RHTower

@@ -1,7 +1,7 @@
 # Route E degree-normalized Gibbs boundary-variation law
 
 - **ID:** ROUTE-E-DEGREE-NORMALIZED-GIBBS-BV-001
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** [DIRECT SIGNED PRODUCER REDUCTION] / [LEAN-CORPUS SYNTHESIS] /
   [SHARPNESS FIREWALL]
 - **Parent:** ../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md
@@ -9,8 +9,8 @@
 - **RH used:** no
 - **Computation used:** no
 - **Literature used:** no; internal-corpus derivation only
-- **Lean status:** paper consequence of existing umbrella-reachable unconditional theorems. No
-  Lean source was edited or built during active corpus refactor.
+- **Lean status:** exact finite content formalized in umbrella-wired
+  `RouteEDegreeNormalizedGibbsBoundaryVariation.lean`.
 
 ## 1. Result
 
@@ -590,4 +590,16 @@ unconditional Lean consumer and exact exponential edge bound. They create new Ro
 - local bounded-prime replacement graph is retired by linear friable isolation.
 
 No estimate (23) or (26), entropy-complement physical degree/Dirichlet theorem, Route E endpoint,
-or RH proof is claimed. No new Lean was written.
+or RH proof is claimed.
+
+## Lean implementation and verification
+
+- Theorems A--F, weighted isolated-mass decomposition, co-moving Gibbs bound, recurrence-weighted
+  Cauchy--Schwarz bridge `(20)`, complete-bipartite saturation, and one-sided reverse-column
+  chi-square identity are unconditional Lean theorems in
+  `RouteEDegreeNormalizedGibbsBoundaryVariation.lean`.
+- Public co-moving variation wrapper retains Laplace scale, displacement, and total physical
+  weight without hiding an asymptotic premise.
+- Module is imported by `GaloisForLFunctions.RHTower`; targeted `lake env lean` and
+  `lake build GaloisForLFunctions.RHTower.RouteEDegreeNormalizedGibbsBoundaryVariation` pass.
+- Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

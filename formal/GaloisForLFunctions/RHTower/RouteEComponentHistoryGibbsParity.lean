@@ -102,11 +102,64 @@ theorem routeE_binary_componentHistogram_cell_subtype_character_mean
     simpa [Fintype.sum_bool] using hk c
   rw [Fintype.sum_bool]
   simp only [routeEBinaryPresenceCharacter, Bool.false_eq_true, ↓reduceIte,
-    Bool.true_eq, Nat.cast_one, mul_one, mul_neg, mul_neg_one]
-  push_cast at hcount
+    mul_one, mul_neg]
+  have hcountR :
+      (k c true : ℝ) + (k c false : ℝ) = ((m + 1 : ℕ) : ℝ) := by
+    exact_mod_cast hcount
   have hm : (0 : ℝ) < ((m + 1 : ℕ) : ℝ) := by positivity
   field_simp [ne_of_gt hm]
-  linarith
+  linarith [hcountR]
+
+/-- Balanced incidence mass of a binary component histogram.  A component contributes its
+smaller empirical occupancy, so both sparse presence and sparse absence are detected. -/
+def routeEBinaryHistogramBalancedMass
+    (m : ℕ) (k : C → Bool → ℕ) : ℝ :=
+  ∑ c, min ((k c true : ℝ) / ((m + 1 : ℕ) : ℝ))
+    (1 - (k c true : ℝ) / ((m + 1 : ℕ) : ℝ))
+
+/-- One binary empirical parity factor is exponentially controlled by its balanced occupancy. -/
+theorem routeE_abs_one_sub_two_mul_le_exp_neg_two_min (u : ℝ) :
+    |1 - 2 * u| ≤ Real.exp (-2 * min u (1 - u)) := by
+  rcases le_total u (1 / 2 : ℝ) with hu | hu
+  · have habs : |1 - 2 * u| = 1 - 2 * u := abs_of_nonneg (by linarith)
+    have hmin : min u (1 - u) = u := min_eq_left (by linarith)
+    rw [habs, hmin]
+    simpa only [neg_mul] using Real.one_sub_le_exp_neg (2 * u)
+  · have habs : |1 - 2 * u| = 2 * u - 1 := by
+      rw [abs_of_nonpos (by linarith)]
+      ring
+    have hmin : min u (1 - u) = 1 - u := min_eq_right (by linarith)
+    rw [habs, hmin]
+    calc
+      2 * u - 1 = 1 - 2 * (1 - u) := by ring
+      _ ≤ Real.exp (-(2 * (1 - u))) := Real.one_sub_le_exp_neg (2 * (1 - u))
+      _ = Real.exp (-2 * (1 - u)) := by congr 1; ring
+
+omit [DecidableEq C] in
+/-- Exact histogram bias is bounded by the exponential of minus twice balanced incidence mass. -/
+theorem routeE_abs_binary_histogramBias_le_exp_balancedMass
+    (m : ℕ) (k : C → Bool → ℕ) :
+    |∏ c, ((1 : ℝ) - 2 * (k c true : ℝ) / ((m + 1 : ℕ) : ℝ))| ≤
+      Real.exp (-2 * routeEBinaryHistogramBalancedMass m k) := by
+  classical
+  rw [Finset.abs_prod]
+  calc
+    (∏ c, |(1 : ℝ) - 2 * (k c true : ℝ) / ((m + 1 : ℕ) : ℝ)|) ≤
+        ∏ c, Real.exp (-2 * min
+          ((k c true : ℝ) / ((m + 1 : ℕ) : ℝ))
+          (1 - (k c true : ℝ) / ((m + 1 : ℕ) : ℝ))) := by
+      apply Finset.prod_le_prod (fun _ _ => abs_nonneg _)
+      intro c _hc
+      have hform :
+          (1 : ℝ) - 2 * (k c true : ℝ) / ((m + 1 : ℕ) : ℝ) =
+            1 - 2 * ((k c true : ℝ) / ((m + 1 : ℕ) : ℝ)) := by ring
+      rw [hform]
+      exact routeE_abs_one_sub_two_mul_le_exp_neg_two_min _
+    _ = Real.exp (-2 * routeEBinaryHistogramBalancedMass m k) := by
+      rw [← Real.exp_sum]
+      congr 1
+      simp only [routeEBinaryHistogramBalancedMass]
+      rw [Finset.mul_sum]
 
 /-- Uniform anchored parity on the subtype of a binary singleton cell has the exact hostile bias. -/
 theorem routeE_binary_singleton_cell_subtype_character_mean
@@ -175,6 +228,55 @@ theorem routeE_binary_componentHistory_gibbsParity_sub_histogramBias_le
   have huniform := routeE_binary_componentHistogram_cell_subtype_character_mean m k hk
   rw [huniform] at hcompare
   simpa only [Fintype.card_fin, Nat.cast_add, Nat.cast_one] using hcompare
+
+/-- **Balanced-incidence physical endpoint.**  Physical all-order parity is bounded by an explicit
+sum of histogram imbalance and Gibbs curvature.  No orbit-size surrogate remains. -/
+theorem routeE_abs_binary_componentHistory_gibbsParity_le_balancedMass_add_curvature
+    (m : ℕ) (k : C → Bool → ℕ) (value : C → Bool → ℝ) (X H : ℝ)
+    (hk : ∀ c, ∑ b, k c b = m + 1)
+    (hX : 0 < X) (hH : 0 ≤ H) (hHX : H < X)
+    (haperture : ∀ x ∈ routeEComponentHistogramCell (fun _ : C => Bool) (m + 1) k,
+      ∀ r, routeEComponentSlotReceiver (fun _ : C => Bool) value x r ∈
+        Set.Icc (X - H) (X + H)) :
+    let cell := routeEComponentHistogramCell (fun _ : C => Bool) (m + 1) k
+    let physicalMean :=
+      (∑ x : {x // x ∈ cell},
+          routeEProductHistoryGibbsWeight X
+              (routeEComponentSlotReceiver (fun _ : C => Bool) value x.1) *
+            ∏ c, routeEBinaryPresenceCharacter (x.1 0 c)) /
+        (∑ x : {x // x ∈ cell},
+          routeEProductHistoryGibbsWeight X
+            (routeEComponentSlotReceiver (fun _ : C => Bool) value x.1))
+    |physicalMean| ≤
+      Real.exp (-2 * routeEBinaryHistogramBalancedMass m k) +
+        (Real.exp (((m + 1 : ℕ) : ℝ) * H ^ 2 / (X * (X - H))) - 1) := by
+  dsimp only
+  let cell := routeEComponentHistogramCell (fun _ : C => Bool) (m + 1) k
+  let physicalMean :=
+    (∑ x : {x // x ∈ cell},
+        routeEProductHistoryGibbsWeight X
+            (routeEComponentSlotReceiver (fun _ : C => Bool) value x.1) *
+          ∏ c, routeEBinaryPresenceCharacter (x.1 0 c)) /
+      (∑ x : {x // x ∈ cell},
+        routeEProductHistoryGibbsWeight X
+          (routeEComponentSlotReceiver (fun _ : C => Bool) value x.1))
+  let histogramBias :=
+    ∏ c, ((1 : ℝ) - 2 * (k c true : ℝ) / ((m + 1 : ℕ) : ℝ))
+  let curvatureDefect :=
+    Real.exp (((m + 1 : ℕ) : ℝ) * H ^ 2 / (X * (X - H))) - 1
+  have hcomparison : |physicalMean - histogramBias| ≤ curvatureDefect := by
+    dsimp [physicalMean, histogramBias, curvatureDefect, cell]
+    exact routeE_binary_componentHistory_gibbsParity_sub_histogramBias_le
+      m k value X H hk hX hH hHX haperture
+  have hbias : |histogramBias| ≤
+      Real.exp (-2 * routeEBinaryHistogramBalancedMass m k) := by
+    exact routeE_abs_binary_histogramBias_le_exp_balancedMass m k
+  calc
+    |physicalMean| ≤ |physicalMean - histogramBias| + |histogramBias| := by
+      linarith [abs_sub_abs_le_abs_sub physicalMean histogramBias]
+    _ ≤ curvatureDefect + Real.exp (-2 * routeEBinaryHistogramBalancedMass m k) :=
+      add_le_add hcomparison hbias
+    _ = _ := by ring
 
 /-- Arbitrary binary histogram version of the physical conditional parity-energy split. -/
 theorem routeE_binary_componentHistory_gibbsParity_histogramEnergy_le

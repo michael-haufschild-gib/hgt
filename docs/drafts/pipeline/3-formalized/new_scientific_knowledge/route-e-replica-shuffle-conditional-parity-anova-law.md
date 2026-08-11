@@ -416,6 +416,59 @@ Then `(28)` gives
 \tag{30}
 \]
 
+### Exact multiplicative component-history specialization
+
+There is no remaining equal-product premise for multiplicative component histories.  If a slot
+receiver factorizes as
+
+\[
+ n_r(x)=\prod_{c\in C}v_c(x_{r,c}),
+\]
+
+then every component-histogram cell satisfies the identity
+
+\[
+ \boxed{
+ \prod_{r=1}^{M}n_r(x)
+ =\prod_{c\in C}\prod_{a\in I_c}v_c(a)^{h_{c,a}},}
+\tag{30a}
+\]
+
+so the product is literally constant on the cell.  For binary components, with
+`k_c=h_{c,1}`, the physical product-Gibbs anchored parity mean therefore obeys
+
+\[
+ \boxed{
+ \left|\theta_O^\nu-
+   \prod_{c\in C}\left(1-{2k_c\over M}\right)\right|
+ \le e^{MH^2/[X(X-H)]}-1.}
+\tag{30b}
+\]
+
+Define exact balanced incidence mass
+
+\[
+ B_M(k)=\sum_{c\in C}
+  \min\left({k_c\over M},1-{k_c\over M}\right).
+\tag{30c}
+\]
+
+The scalar inequality
+`|1-2u| <= exp(-2 min(u,1-u))` gives the new physical endpoint
+
+\[
+ \boxed{
+ |\theta_O^\nu|
+ \le e^{-2B_M(k)}+left(e^{MH^2/[X(X-H)]}-1\right),}
+\tag{30d}
+\]
+
+and, equivalently, its squared energy is at most twice the squared exact histogram bias plus twice
+the squared curvature defect.  This removes orbit cardinality from the producer completely.
+At strict-half curvature, `B_M(k)>=(1/4-o(1)) log X` is a transparent sufficient
+square-root-rate condition.  Singleton cells have `B_M(k)=|C|/M`; Proposition H shows that
+power-size orbit entropy can still leave this quantity far below logarithmic scale.
+
 This retains the literal Gibbs weight, prime-component history, one common physical aperture, and
 every finite-volume Möbius sign.  It is compatible with a prime-dilation construction only after
 that construction proves its histories land in this aperture; no such interval-incidence theorem
@@ -532,6 +585,8 @@ seam descent, not at finite shuffle, counting, Gibbs distortion, or measure-chan
   `RouteEComponentHistoryShuffle.lean`, `RouteEPhysicalFibreCoarea.lean`,
   `RouteETwoSidedColumnLoadGradient.lean`, `RouteEGibbsProductHistoryStability.lean`,
   `RouteEUniformComparisonEndpoint.lean`, and `RouteEGibbsUniformCellComparison.lean`.
+- 2026-08-11 — closed the multiplicative component-history splice and balanced-incidence endpoint
+  in `RouteEComponentHistoryGibbsParity.lean`.
 
 ## Lean implementation and verification
 
@@ -540,6 +595,10 @@ seam descent, not at finite shuffle, counting, Gibbs distortion, or measure-chan
 - Pairwise logarithmic weight oscillation gives physical-versus-uniform mean defect at most
   `exp(eta)-1`; equal-product histories instantiate
   `eta=|R| H^2/(X(X-H))`; physical-fibre conditional energy gives the endpoint.
+- Component histograms now discharge equal-product histories exactly.  Arbitrary binary
+  multiplicities give the physical bias `prod_c(1-2k_c/M)`, balanced-mass exponential bound
+  `(30d)`, and corresponding conditional parity-energy inequality.
 - Targeted builds of `RouteEComponentHistoryShuffle`, `RouteEGibbsUniformCellComparison`, and
-  `RouteEPhysicalProductFibreReplica` pass.  No umbrella or full build was run.
+  `RouteEPhysicalProductFibreReplica` pass.  Targeted build of
+  `RouteEComponentHistoryGibbsParity` also passes.  No umbrella or full build was run.
 - Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
