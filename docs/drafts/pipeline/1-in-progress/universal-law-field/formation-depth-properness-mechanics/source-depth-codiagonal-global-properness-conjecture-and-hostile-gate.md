@@ -88,6 +88,6 @@ Changing any one independently reopens escape. The surviving field primitive is 
 ## 5. Disposition
 
 The unrestricted conjecture is retired. The weighted-graph survivor is proved in
-`source-depth-graph-properness-and-cofinal-mixer-selection-law.md` and must be formalized before it
-counts as closed.
-
+`source-depth-graph-properness-and-cofinal-mixer-selection-law.md`. Its selection-bearing coercivity,
+tail, bounded-orbit, weighted-admission, and infinite-mixer theorems are formalized in
+`GaloisForLFunctions.HTGeometry.ConstitutiveFormationDepthProperness`.

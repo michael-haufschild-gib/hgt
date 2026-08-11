@@ -338,6 +338,126 @@ theorem tendsto_sourceHorizontalWoldNaturalCubicMoment_normalized :
             field_simp [hlogpos.ne'])
       hmajor
 
+/-- At a prime cutoff the natural moment is literally the ordered, prime-labelled Wold moment. -/
+theorem sourceHorizontalWoldNaturalCubicMoment_nthPrime_eq_ordered
+    (N : ℕ) :
+    sourceHorizontalWoldNaturalCubicMoment (nthPrimeSubtype N : ℕ) =
+      ∑ n ∈ Finset.range (N + 1),
+        woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2 := by
+  classical
+  have hinj : Function.Injective (fun n : ℕ => (nthPrimeSubtype n : ℕ)) :=
+    nthPrimeSubtype_strictMono.injective
+  symm
+  calc
+    (∑ n ∈ Finset.range (N + 1),
+        woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2) =
+      ∑ p ∈ (Finset.range (N + 1)).image
+          (fun n => (nthPrimeSubtype n : ℕ)),
+        Real.log (p : ℝ) ^ 2 * xiHeatCassiniWoldNatWeight p := by
+          rw [Finset.sum_image]
+          · apply Finset.sum_congr rfl
+            intro n hn
+            simp only [xiMassNthPrimeLogHeight, xiHeatCassiniWoldNatWeight,
+              dif_pos (nthPrimeSubtype n).2]
+            change woldCoeff 1 (nthPrimeSubtype n) *
+                Real.log (nthPrimeSubtype n : ℝ) ^ 2 =
+              Real.log (nthPrimeSubtype n : ℝ) ^ 2 *
+                woldCoeff 1 (nthPrimeSubtype n)
+            ring
+          · exact hinj.injOn
+    _ = ∑ p ∈ (Finset.Icc 0 (nthPrimeSubtype N : ℕ)).filter Nat.Prime,
+        Real.log (p : ℝ) ^ 2 * xiHeatCassiniWoldNatWeight p := by
+          rw [image_range_succ_nthPrimeSubtype_eq_primes_Icc]
+    _ = ∑ p ∈ Finset.Icc 0 (nthPrimeSubtype N : ℕ),
+        Real.log (p : ℝ) ^ 2 * xiHeatCassiniWoldNatWeight p := by
+          apply Finset.sum_subset (Finset.filter_subset _ _)
+          intro p hpIcc hpNotPrimeFilter
+          have hnp : ¬ p.Prime := by
+            intro hpPrime
+            exact hpNotPrimeFilter (Finset.mem_filter.mpr ⟨hpIcc, hpPrime⟩)
+          simp [xiHeatCassiniWoldNatWeight, hnp]
+    _ = sourceHorizontalWoldNaturalCubicMoment (nthPrimeSubtype N : ℕ) := by
+          rw [sourceHorizontalWoldNaturalCubicMoment]
+
+/-- Cubic coefficient of the cofinal source-horizontal residual primitive.  The terminal
+prime-holonomy contributes the subtracted log cube. -/
+def sourceHorizontalWoldResidualPrimitiveCubicCoefficient (N : ℕ) : ℝ :=
+  sourceHorizontalWoldNaturalCubicMoment (nthPrimeSubtype N : ℕ) -
+    xiMassNthPrimeLogHeight N ^ 3
+
+/-- Prime-clock normalization leaves the universal cubic coefficient `-2/3`. -/
+theorem tendsto_sourceHorizontalWoldResidualPrimitiveCubicCoefficient_normalized :
+    Tendsto (fun N : ℕ =>
+      sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
+        xiMassNthPrimeLogHeight N ^ 3)
+      atTop (𝓝 (-2 / 3 : ℝ)) := by
+  have hmoment :=
+    tendsto_sourceHorizontalWoldNaturalCubicMoment_normalized.comp
+      nthPrimeSubtype_strictMono.tendsto_atTop
+  have hsub := hmoment.sub_const (1 : ℝ)
+  have hsub' : Tendsto (fun N : ℕ =>
+      sourceHorizontalWoldNaturalCubicMoment (nthPrimeSubtype N : ℕ) /
+          xiMassNthPrimeLogHeight N ^ 3 - 1)
+      atTop (𝓝 ((1 / 3 : ℝ) - 1)) := by
+    simpa only [Function.comp_apply, xiMassNthPrimeLogHeight] using hsub
+  convert hsub' using 1
+  · funext N
+    have hH : 0 < xiMassNthPrimeLogHeight N := xiMassNthPrimeLogHeight_pos N
+    rw [sourceHorizontalWoldResidualPrimitiveCubicCoefficient]
+    field_simp [hH.ne']
+  · norm_num
+
+/-- Multiplicity-labelled Xi cubic horizon response. -/
+def sourceZeroHorizontalWoldPrimeClockCubicResponse
+    (q : XiZeroCopy) (N : ℕ) : ℝ :=
+  primeDepthBVWoldXiCenteredRate q.1 ^ 3 *
+    (sourceHorizontalWoldResidualPrimitiveCubicCoefficient N /
+      xiMassNthPrimeLogHeight N ^ 3)
+
+/-- Each Xi copy has a finite, coefficient-faithful cubic horizon limit. -/
+theorem tendsto_sourceZeroHorizontalWoldPrimeClockCubicResponse
+    (q : XiZeroCopy) :
+    Tendsto (sourceZeroHorizontalWoldPrimeClockCubicResponse q) atTop
+      (𝓝 ((-2 / 3 : ℝ) * primeDepthBVWoldXiCenteredRate q.1 ^ 3)) := by
+  have h :=
+    tendsto_sourceHorizontalWoldResidualPrimitiveCubicCoefficient_normalized.const_mul
+      (primeDepthBVWoldXiCenteredRate q.1 ^ 3)
+  simpa only [sourceZeroHorizontalWoldPrimeClockCubicResponse, mul_comm] using! h
+
+/-- Line conjugation reverses the complete finite cubic horizon response. -/
+@[simp] theorem sourceZeroHorizontalWoldPrimeClockCubicResponse_reflection
+    (q : XiZeroCopy) (N : ℕ) :
+    sourceZeroHorizontalWoldPrimeClockCubicResponse
+        (xiZeroCopyLineConjEquiv q) N =
+      -sourceZeroHorizontalWoldPrimeClockCubicResponse q N := by
+  rw [sourceZeroHorizontalWoldPrimeClockCubicResponse,
+    sourceZeroHorizontalWoldPrimeClockCubicResponse]
+  have hrate :
+      primeDepthBVWoldXiCenteredRate (xiZeroCopyLineConjEquiv q).1 =
+        -primeDepthBVWoldXiCenteredRate q.1 := by
+    change primeDepthBVWoldXiCenteredRate (xiZeroLineConjEquiv q.1) =
+      -primeDepthBVWoldXiCenteredRate q.1
+    exact primeDepthBVWoldXiCenteredRate_reflection q.1
+  rw [hrate]
+  ring
+
+/-- The universal cubic horizon limit vanishes exactly on the critical line. -/
+theorem sourceZeroHorizontalWoldPrimeClockCubicLimit_eq_zero_iff
+    (q : XiZeroCopy) :
+    (-2 / 3 : ℝ) * primeDepthBVWoldXiCenteredRate q.1 ^ 3 = 0 ↔
+      (q.1 : ℂ).re = 1 / 2 := by
+  constructor
+  · intro h
+    have hrpow : primeDepthBVWoldXiCenteredRate q.1 ^ 3 = 0 :=
+      (mul_eq_zero.mp h).resolve_left (by norm_num)
+    have hr : primeDepthBVWoldXiCenteredRate q.1 = 0 :=
+      (pow_eq_zero_iff (by norm_num : (3 : ℕ) ≠ 0)).mp hrpow
+    exact (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).mp hr
+  · intro hline
+    have hr : primeDepthBVWoldXiCenteredRate q.1 = 0 :=
+      (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).mpr hline
+    rw [hr, zero_pow (by norm_num : (3 : ℕ) ≠ 0), mul_zero]
+
 end
 
 end RHTower

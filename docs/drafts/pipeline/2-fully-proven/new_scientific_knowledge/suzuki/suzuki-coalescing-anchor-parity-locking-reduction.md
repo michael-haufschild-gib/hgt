@@ -1,13 +1,13 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
-  Sections 14.13--14.14, and in the literal normalized-Hankel theorems of Sections 14.15--14.20;
-  yes as the
-  hypothesis of the global-limit and Xi-target audits in Sections 14.8--14.14
+  Sections 14.13--14.14, in the literal normalized-Hankel theorems of Sections 14.15--14.19, and
+  in the first-jet part of Theorem AC; yes as the hypothesis of the global-limit and Xi-target
+  audits in Sections 14.8--14.14 and in the complete-family consequences of Theorems AC--AD
 - **Computation used:** no
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
   `[LEAN READ-ONLY AUDITED]`
@@ -3987,7 +3987,133 @@ macroscopic shifts satisfying `(285)`.  For the complete Xi-identifying route, `
 latter.  The live negative-shift scale is therefore strictly submacroscopic; it must still be
 compared with Theorem Y's source-visible ground residue and Theorem X's edge-alignment alternatives.
 
-### 14.21 Conjecture loop and novelty correction
+### 14.21 Complete Xi identification forbids negative-shift recession at every scale
+
+The submacroscopic region left by Theorem AC is still much too large.  For a complete Route-G
+family it collapses to a bounded window.  This conclusion does not use another PNT asymptotic.  It
+uses the zero-side Gram representation which is available after the putative complete family has
+already implied RH, together with the exact exponential sources.
+
+Put
+
+```text
+N_e(a)=||cosh||_L2(0,a)^2=sinh(2a)/4+a/2,
+N_o(a)=||sinh||_L2(0,a)^2=sinh(2a)/4-a/2.              (288)
+```
+
+Thus
+
+```text
+(N_e(a)-N_o(a))/(N_e(a)+N_o(a))=2a/sinh(2a)->0.       (289)
+```
+
+Use the unitary parity lifts `U_+`,`U_-` from Section 14.15.  Under RH the restricted Weil form is
+the zero-side Gram form
+
+```text
+<phi,A_(e,a)phi>=sum_gamma m_gamma |widehat(U_+phi)(gamma)|^2,
+<phi,A_(o,a)phi>=sum_gamma m_gamma |widehat(U_-phi)(gamma)|^2. (290)
+```
+
+For the literal sources, elementary integration of the two exponentials gives, uniformly in every
+real zero ordinate `gamma`,
+
+```text
+|widehat(U_+ cosh)(gamma)|^2,
+|widehat(U_- sinh)(gamma)|^2
+   <=2 cosh(a)^2/(1+gamma^2).                          (291)
+```
+
+With the convention of `(193)`, `M_0(1)=sum_gamma m_gamma/(1+gamma^2)<infinity`.  Hence the two
+source Rayleigh means satisfy
+
+```text
+m_e(a):=<cosh,A_(e,a)cosh>/N_e(a) <=M_a,
+m_o(a):=<sinh,A_(o,a)sinh>/N_o(a) <=M_a,
+M_a:=2 cosh(a)^2 M_0(1)/N_o(a) ->4M_0(1).             (292)
+```
+
+#### Theorem AD — all-scale negative-recession obstruction
+
+Let `a_j->infinity` and suppose a complete Suzuki family at shifts `lambda_j` identifies the Xi
+target.  Then its negative parts `r_j=max(0,-lambda_j)` are bounded.  More precisely, along the
+indices with `lambda_j<0`, put
+
+```text
+R_j=E_(a_j,lambda_j)/O_(a_j,lambda_j)
+   =(1+kappa_(a_j,lambda_j))/(1-kappa_(a_j,lambda_j)),
+R_Xi=(1+kappa_Xi)/(1-kappa_Xi).
+```
+
+Then
+
+```text
+limsup_j r_j <=4M_0(1)/(R_Xi-1)<16M_0(1)/77.          (293)
+```
+
+In particular every complete Xi-identifying Suzuki family obeys the strict all-scale recession
+law
+
+```text
+sup_(j sufficiently large) max(0,-lambda_j)<infinity. (294)
+```
+
+#### Proof
+
+Complete half-plane identification implies RH by Theorem I.  Therefore both parity operators in
+`(290)` are nonnegative.  For a nonnegative self-adjoint operator `A`, a nonzero source `h` with
+spectral mean `m=<h,Ah>/||h||^2`, and `r>0`, Jensen's inequality for the convex function
+`x|->1/(x+r)` gives the exact sandwich
+
+```text
+||h||^2/(r+m) <= <h,(A+rI)^(-1)h> <= ||h||^2/r.       (295)
+```
+
+Apply the upper bound to the even response and the lower bound to the odd response.  Equations
+`(288)` and `(292)` yield
+
+```text
+R_j<=N_e(a_j)/N_o(a_j) [1+M_(a_j)/r_j].               (296)
+```
+
+Whenever `R_jN_o(a_j)/N_e(a_j)>1`, rearrangement gives
+
+```text
+r_j<=M_(a_j)/[R_jN_o(a_j)/N_e(a_j)-1].                (297)
+```
+
+Target identification gives `R_j->R_Xi`; equations `(288)--(289)` give
+`N_o/N_e->1`, and `(292)` gives `M_a->4M_0(1)`.  Taking the upper limit in `(297)` proves the first
+inequality in `(293)`.  The unconditional target bound `kappa_Xi>77/85` gives
+`R_Xi>81/4`, and hence the strict second inequality.  If the negative parts were unbounded, their
+unbounded subsequence would contradict `(293)`.  This proves `(294)`.
+
+The same argument without rearrangement shows the mechanism transparently.  If `r_j->infinity`,
+both inequalities in `(295)` become asymptotic equalities uniformly because of `(292)`.  Thus
+
+```text
+E_(a_j,-r_j)~N_e(a_j)/r_j,
+O_(a_j,-r_j)~N_o(a_j)/r_j,
+kappa_(a_j,-r_j)->0,                                  (298)
+```
+
+regardless of how slowly `r_j` diverges relative to `e^(a_j)`.
+
+Fixed-aperture Neumann collapse, the dyadic negative-shift scalar-jump obstruction, and the
+existence of a bounded-below admissible schedule exactly under RH are already in the corpus.  None
+proves `(293)`: they respectively keep the aperture fixed, use two far-negative shifts in a
+different scalar quotient, or classify existence rather than the scale of every complete
+Xi-producing family.  Generic spectral Jensen bounds are classical.  Candidate-new content is the
+uniform literal-source Rayleigh law `(291)--(292)` and its all-scale Suzuki recession consequence
+`(293)--(294)`.
+
+This still does **not** kill Suzuki.  It collapses all negative complete-family schedules to a
+fixed absolute window.  Bounded negative shifts, the zero shift, and positive floor-hugging shifts
+remain possible; proving a cofinal positive admissible shift is already RH-strength.  The earliest
+unconditional source problem is now unambiguously the finite-shift normalized-Hankel admission
+problem, not any negative-shift escape chart.
+
+### 14.22 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -4223,6 +4349,15 @@ compared with Theorem Y's source-visible ground residue and Theorem X's edge-ali
     identification implies RH and hence nonnegative parity floors.  It restores a uniform
     `e^a` coercivity margin and contradicts Theorem AC.  Every complete Suzuki family must satisfy
     the strict recession law `(285a)`; only submacroscopic negative shifts remain open.
+87. **Submacroscopic negative recession remains a live complete-family mechanism -- failed
+    class-completely.**  Under the RH conclusion forced by complete identification, the literal
+    exponential sources have uniformly bounded parity Rayleigh means.  Spectral Jensen then makes
+    every diverging negative shift asymptotically free at the first jet, however slowly it diverges
+    relative to aperture.  Theorem AD gives the quantitative ceiling `(293)`.
+88. **Theorem AD kills the remaining Suzuki family -- failed.**  It forces the negative part into
+    a fixed absolute window, not to zero.  Bounded negative and zero shifts still face the genuine
+    finite-shift normalized-Hankel/source-visibility problem, while positive admissibility is
+    already RH-strength.  No shift asymptotic replaces that finite-window theorem.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -4241,8 +4376,8 @@ equivalence, source-impedance calibration, all-anchor weak-escape law, and fixed
 rigidity `(163)--(200)`, together with the compactified two-extension spectral-shift and
 smoothing-trace reduction `(201)--(215)`, the low-energy support/regular phase-mixing wall
 `(216)--(223)`, and the source-specific Toeplitz `sech`/normalized-Hankel rapidity,
-source-alignment, localization, reflection-rigidity, nonuniform-PNT, and macroscopic safe-shift
-walls `(224)--(287)`.
+source-alignment, localization, reflection-rigidity, nonuniform-PNT, and negative-shift recession
+walls `(224)--(298)`.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
 specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
 formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the

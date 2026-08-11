@@ -4,23 +4,23 @@ import GaloisForLFunctions.RHTower.RHLadderTheory
 import Mathlib.NumberTheory.LSeries.Dirichlet
 
 /-!
-# The logarithmic-derivative explicit formula on the right half-plane
+# The classical logarithmic-derivative form of the explicit formula
 
-The corpus's unconditional Hadamard partial fraction
-(`logDeriv_XiC_eq_relativeResolventTrace`) is transported from centered spectral coordinates to
-the classical `s`-plane and glued to the arithmetic side.  The results:
+The corpus's Guinand–Weil layer (`XiGuinandWeilExplicitFormula.lean`) states the explicit
+formula for regularized Cauchy-kernel superpositions in centered coordinates, reaching the
+continued admissible region.  This module presents the same mathematics in the classical
+textbook normal form on the completed zeta itself:
 
 * `logDeriv_xi_eq_partialFraction` — wherever `xi s ≠ 0`, the logarithmic derivative of the
   completed zeta is the absolutely convergent multiplicity-exact sum
-  `Σ'_ρ (1/(ρ − 1/2) + 1/(s − ρ))` over the divisor, with no linear term.
-* `xi_explicitFormula_logDeriv` — for `Re s > 1` the zero side equals the arithmetic side:
+  `Σ'_ρ (1/(ρ − 1/2) + 1/(s − ρ))` over the divisor, with no linear term (evenness removes
+  the exponential factor inside the Hadamard constancy theorem).
+* `logDeriv_xi_split` — on `Re s > 1` the polar, archimedean, and zeta logarithmic
+  derivatives separate additively.
+* `xi_explicitFormula_logDeriv` — for `Re s > 1` the zero side equals the arithmetic side in
+  mathlib vocabulary:
 
   `Σ'_ρ (1/(ρ − 1/2) + 1/(s − ρ)) = 1/s + 1/(s−1) + logDeriv Γℝ s − Σ_n Λ(n) n^{-s}`.
-
-This is the first unconditional zero-sum = prime-sum identity in the corpus: the
-logarithmic-derivative fragment of the Guinand–Weil explicit formula, assembled from the
-Hadamard factorization (zero side), the factor split of `xi` (polar and archimedean terms), and
-mathlib's Dirichlet-series evaluation of `−ζ'/ζ` (prime side).
 -/
 
 open Complex
@@ -145,10 +145,9 @@ theorem logDeriv_xi_split {s : ℂ} (hs : 1 < s.re) :
   rw [hpolylog]
   ring
 
-/-- **The logarithmic-derivative explicit formula.**  On `Re s > 1` the multiplicity-exact zero
-sum equals the arithmetic side: polar terms, archimedean logarithmic derivative, and minus the
-von Mangoldt Dirichlet series.  Unconditional — the corpus's first zero-sum = prime-sum
-identity. -/
+/-- **The logarithmic-derivative explicit formula in classical normal form.**  On `Re s > 1`
+the multiplicity-exact zero sum equals the arithmetic side: polar terms, archimedean
+logarithmic derivative, and minus the von Mangoldt Dirichlet series. -/
 theorem xi_explicitFormula_logDeriv {s : ℂ} (hs : 1 < s.re) :
     ∑' q : XiZeroCopy, (((q.1 : ℂ) - 1 / 2)⁻¹ + (s - (q.1 : ℂ))⁻¹) =
       s⁻¹ + (s - 1)⁻¹ + logDeriv Complex.Gammaℝ s -

@@ -6,9 +6,10 @@
 - **Source:** Route U item 48 and `mass-shifted-hard-edge-hyperbolic-weil-boundary`
 - **Statement:** At a critical hard-edge boundary, a squared-variable zero of multiplicity `m`
   creates a complete flag of `m-1` exact null descendants.  Its divided-jet Gram matrix is zero
-  except for one terminal nonnegative scalar.  Consequently total multiplicity excess is bounded
-  by restricted-Weil ground multiplicity, and the one-dimensional-ground branch collapses to the
-  known simple-ground real-zero problem.
+  except for one terminal nonnegative scalar.  Globally, all forced flags saturate a full
+  polynomial module over the squarefree-root core.  Convolution perturbation and the
+  Connes--van Suijlekom theorem then show that this forced module can never exhaust a degenerate
+  isolated ground: every repeated-root boundary has at least one additional non-jet ground mode.
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
 
 ## Goal
@@ -145,6 +146,31 @@ For a real zero `r` of multiplicity `m_r` and `1<=k<=m_r`, define the entire roo
    \quad\text{for every root }r.                            \tag{RJRR.12}
    \]
 
+6. Assume `0` is the isolated lowest eigenvalue of the full localized convolution operator, as in
+   the Connes--van Suijlekom ground-state setting.  Let
+
+   \[
+   E=\sum_r(m_r-1),\qquad
+   R(u)=\prod_r(u-r)^{m_r-1},\qquad D(u)={F(u)\over R(u)},   \tag{RJRR.13}
+   \]
+
+   where the finite products run over the multiple roots.  Then the forced root-jet space is the
+   entire polynomial module
+
+   \[
+   D\cdot\mathbb R_{\le E}[u]\ \subseteq\ \ker A_\sigma.    \tag{RJRR.14}
+   \]
+
+   If `E>0`, this module cannot be the whole ground space.  Consequently
+
+   \[
+   \boxed{\qquad E>0\quad\Longrightarrow\quad
+   \dim\ker A_\sigma\ge E+2.\qquad}                         \tag{RJRR.15}
+   \]
+
+   Thus repeated roots force **excess degeneracy** beyond every root-division direction; the
+   equality case in (RJRR.11) is impossible for an isolated convolution ground.
+
 ## 2. Proof
 
 ### 2.1 Closing the critical aperture
@@ -202,7 +228,7 @@ If `2k<=m_r`, then `F_(r,2k)` is admissible and
 \[
  \mathfrak b_\sigma(F_{r,k},F_{r,k})
  =\int {F(u)^2\over(u-r)^{2k}}\,d\eta_\sigma(u)
- =\mathfrak b_\sigma(F,F_{r,2k})=0.                          \tag{RJRR.13}
+ =\mathfrak b_\sigma(F,F_{r,2k})=0.                          \tag{RJRR.16}
 \]
 
 Nonnegativity of the form makes every zero-norm vector radical.  This starts with
@@ -214,7 +240,7 @@ of them with every admissible `F_(r,k)`, `0<=k<=m_r`, gives
 
 \[
  M_{r,j+k}=\mathfrak b_\sigma(F_{r,j},F_{r,k})=0
- \qquad(1\le j\le d,\ 0\le k\le m_r).                       \tag{RJRR.14}
+ \qquad(1\le j\le d,\ 0\le k\le m_r).                       \tag{RJRR.17}
 \]
 
 Together with the initial vanishing in (RJRR.6), this covers every index
@@ -227,7 +253,7 @@ Together with the initial vanishing in (RJRR.6), this covers every index
 \]
 
 Thus `F_(r,d+1)` is radical.  Induction reaches `d=m_r-1` and proves (RJRR.8).
-Taking `j<=m_r-1` and `k=m_r` in (RJRR.14) then gives every remaining moment through
+Taking `j<=m_r-1` and `k=m_r` in (RJRR.17) then gives every remaining moment through
 `M_(r,2m_r-1)`, proving (RJRR.9).  Therefore
 
 \[
@@ -243,10 +269,10 @@ divide on the complement of the zero set by the nonzero entire function `F`, and
 identity
 
 \[
- c_0+\sum_{r,k}{c_{r,k}\over(u-r)^k}=0.                     \tag{RJRR.15}
+ c_0+\sum_{r,k}{c_{r,k}\over(u-r)^k}=0.                     \tag{RJRR.18}
 \]
 
-Every principal part in (RJRR.15) vanishes, and then `c_0=0`.  Arbitrary finite subsets are
+Every principal part in (RJRR.18) vanishes, and then `c_0=0`.  Arbitrary finite subsets are
 independent, proving the dimension bound (RJRR.11).  If `gamma_r=0`, nonnegativity puts the
 terminal descendant `F_(r,m_r)` in the radical too.  The same rational-principal-part argument for
 any finite root set proves the sharper terminal-zero bound.
@@ -258,7 +284,7 @@ member of the exact pencil
 
 \[
  F_c(u)=F(u)+cF_{r,1}(u)
-       =(u-r)^{m-1}(u-r+c)G(u)                              \tag{RJRR.16}
+       =(u-r)^{m-1}(u-r+c)G(u)                              \tag{RJRR.19}
 \]
 
 is radical.  It remains in the Laguerre--Polya class: the pencil removes one copy of the real root
@@ -293,6 +319,98 @@ only real zeros.  If `F` had a negative root `r`, then `f` would vanish at the n
 `z=\pm i\sqrt{-r}`.  Thus simple ground excludes negative roots.  Together with the
 previous paragraph this proves (RJRR.12).
 
+### 2.7 Polynomial-module saturation cannot be a degenerate convolution ground
+
+Let the multiple roots be `r_1,...,r_t`, put `e_i=m_(r_i)-1`, and use `E,R,D` from (RJRR.13).
+The forced radical vectors are
+
+\[
+ F=DR,\qquad F_{r_i,k}=D{R\over(u-r_i)^k}
+ \quad(1\le i\le t,\ 1\le k\le e_i).
+\]
+
+Their polynomial factors are `E+1` linearly independent members of
+`mathbb R_(<=E)[u]`: independence is the rational-principal-part argument from Section 2.4 after
+division by `R`.  Since that polynomial space also has dimension `E+1`, they span it.  This proves
+(RJRR.14).
+
+Assume for contradiction that `E>0` and that this forced module is the entire ground space
+`mathcal K=ker A_sigma`.  For `0<=i<=E`, let `xi_i` be the inverse Fourier transform of
+`D(z^2)z^(2i)`.  Its Hilbert Gram matrix is positive definite and Hankel:
+
+\[
+ G_{ij}=\langle\xi_i,\xi_j\rangle=g_{i+j}.
+\]
+
+Choose `E` distinct real nodes `rho_1,...,rho_E`, with `rho_1=-1`, and put
+
+\[
+ P_*(u)=\prod_{q=1}^E(u-\rho_q),\qquad
+ c_k=\sum_{q=1}^E\rho_q^k,
+ \qquad C_{ij}=c_{i+j}.
+\]
+
+The matrix `C` is positive semidefinite of rank `E`, because it is the Gram matrix of evaluation
+at the `E` distinct real nodes.  Its kernel is exactly the coefficient line of `P_*`.  Define the
+Hankel target `H=C-G`, or `h_k=c_k-g_k`.
+
+Now choose `2E+1` distinct positive numbers `s_l` away from the zeros of `D`.  The Vandermonde
+matrix of the `s_l` is invertible, so there are real signed weights `w_l` with
+
+\[
+ \sum_{\ell=0}^{2E}w_\ell D(s_\ell)^2s_\ell^k=h_k
+ \qquad(0\le k\le2E).                                     \tag{RJRR.20}
+\]
+
+Let `B` be the bounded self-adjoint convolution operator on the finite time interval whose real
+even kernel is the corresponding finite signed cosine sum
+
+\[
+ k_B(t-s)=\sum_{\ell=0}^{2E}w_\ell
+            \cos\!\left(\sqrt{s_\ell}(t-s)\right),
+\]
+
+with harmless Fourier-normalization constants absorbed into `w_l`.  If `P,Q` have degree at most
+`E`, let `xi_P,xi_Q` be the inverse Fourier transforms of `D(z^2)P(z^2)` and
+`D(z^2)Q(z^2)`.  Fourier evaluation and (RJRR.20) give
+
+\[
+ \langle \xi_P,B\xi_Q\rangle
+   =\sum_{i,j=0}^E p_iq_jh_{i+j}.
+\]
+
+Thus the compression form of `B` to `mathcal K=D\mathbb R_(<=E)[u]` is `H=C-G`.  For every
+coefficient vector `v`,
+
+\[
+ v^THv=v^TCv-v^TGv\ge-v^TGv,
+\]
+
+with equality exactly on the coefficient line of `P_*`.  Relative to the actual Hilbert metric
+`G`, the compressed operator therefore has simple lowest eigenvalue `-1`, with Fourier-side
+eigenvector
+
+\[
+ g(z)=D(z^2)P_*(z^2).
+\]
+
+Now set `A_epsilon=A_sigma+epsilon B`.  Because `0` is an isolated lowest eigenvalue of
+`A_sigma`, standard finite-multiplicity self-adjoint perturbation theory gives, for all sufficiently
+small positive `epsilon`, a simple isolated lowest eigenvalue of `A_epsilon`.  Its normalized
+eigenfunction is even and converges in `L^2` to the inverse Fourier transform of `g`: the rescaled
+ground-cluster compression converges to `H`, whose lowest eigenvalue is simple.
+
+The Schwartz kernel of `A_epsilon` is still a real even distribution of the difference variable,
+so the Connes--van Suijlekom theorem applies.  The Fourier transform `g_epsilon` of its lowest
+eigenfunction has only real zeros.  Finite-interval `L^2` convergence implies locally uniform convergence
+`g_epsilon->g` on `mathbb C`; Hurwitz therefore forces every zero of the nonzero limit `g` to be
+real.  But `rho_1=-1` makes `g(i)=g(-i)=0`.  This contradiction proves (RJRR.15).
+
+The full-ground hypothesis is load-bearing.  The hard-edge theorem by itself establishes the
+closed **even-sector** form and does not promote `0` past a lower odd eigenvalue.  Therefore this
+argument sharpens the ground-multiplicity branch once full ground admission is known; it does not
+smuggle that admission into Route U.
+
 ## 3. Conjecture--failure--pivot audit
 
 1. **The simultaneous Cauchy equations overdetermine `F`.** `[FALSIFIED AS A MECHANISM]`.
@@ -310,9 +428,18 @@ previous paragraph this proves (RJRR.12).
    forces all zeros of `f` real, hence all squared roots nonnegative.  Route U adds no independent
    sign there.
 5. **Polar evaluation is cyclic on the degenerate ground and restores simplicity.**
-   `[FALSIFIED]`.  The radical pencil (RJRR.16) always contains a nonzero polar-dark member.  Polar
+   `[FALSIFIED]`.  The radical pencil (RJRR.19) always contains a nonzero polar-dark member.  Polar
    evaluation chooses the completion root `-1/4`; it cannot distinguish the sign of the repeated
    root that generated the pencil.
+6. **The divided root jets may exhaust a minimally degenerate convolution ground.**
+   `[FALSIFIED]`.  Globally those jets equal `D` times every polynomial of degree at most the total
+   multiplicity excess `E`.  A metric-corrected finite signed cosine perturbation selects
+   `D(z^2)P_*(z^2)` as simple lowest state, where `P_*` has a prescribed negative root.  This
+   contradicts the Connes--van Suijlekom real-zero theorem.  Repeated roots require at least one
+   additional non-jet ground mode.
+7. **Even-sector boundary positivity already supplies the full convolution-ground hypothesis.**
+   `[NOT PROVED]`.  An unobserved lower odd mode would invalidate the ground-state perturbation
+   theorem.  Full-ground admission remains a separate source/operator obligation.
 
 ## 4. Higher universal principle and exact new frontier
 
@@ -321,7 +448,7 @@ Root geometry is the projective spectrum of the radical, not an auxiliary decora
 \[
  \text{root coalescence}
  \longrightarrow \text{complete nonterminal null flag}
- \longrightarrow \text{one terminal positive mass}.         \tag{RJRR.17}
+ \longrightarrow \text{one terminal positive mass}.         \tag{RJRR.21}
 \]
 
 Equation (RJRR.10) is an exact confluent diagonalization law: coalescence pushes every nonterminal
@@ -329,18 +456,29 @@ direction into the radical and leaves at most the terminal mass `gamma_r`.  Fini
 quadrature, second-kind ratios, hard-edge `LP` closure, and restricted-Weil ground degeneracy are
 shadows of this one radical-jet law.
 
+The global saturation and perturbation theorem add a stricter layer:
+
+\[
+ \text{all root jets}=D\mathbb R_{\le E}[u]
+ \quad\Longrightarrow\quad
+ \text{degenerate full ground has a non-jet mode}.           \tag{RJRR.22}
+\]
+
+Root coalescence therefore cannot account for its own spectral degeneracy.  The missing direction
+is genuinely source/operator data, not another divided root.
+
 `[OPEN CORE]` Route U now has two genuinely different branches.
 
 - **Simple birth:** (RJRR.12) merges Route U with the known simple-even restricted-Weil ground
   problem.  Further `LP` or root-division work is theatre unless it supplies a new literal
   prime--Gamma sign.
-- **Degenerate birth:** prove that the literal completed-Xi source forbids
-  `dim ker A_sigma>=2`, or force a source contradiction from the complete null flag and terminal
-  masses `gamma_r`.  Polar cyclicity is impossible by (RJRR.16).  This is the only branch where
-  finite Hankel coalescence supplies information absent from existing simple-ground literature.
+- **Degenerate birth:** first promote the even hard edge to the full isolated convolution ground.
+  Then every repeated-root configuration has an additional ground mode outside the saturated
+  module `D mathbb R_(<=E)[u]`.  Closure must forbid that excess mode or couple it to the literal
+  prime--Gamma source.  More root division and polar cyclicity cannot see it.
 
-The next discriminator is therefore a **source-derived simplicity or degeneracy contradiction**,
-not classification of one-root Cauchy equations.
+The next discriminator is therefore **full-ground admission plus source classification of the
+excess non-jet mode**, not classification of one-root Cauchy equations.
 
 ## 5. Literature and corpus audit
 
@@ -358,18 +496,23 @@ not classification of one-root Cauchy equations.
   lower-bounded discrete localized Weil spectrum and continuous aperture floor.
 - `[LITERATURE]` Connes--van Suijlekom,
   [*Quadratic Forms, Real Zeros and Echoes of the Spectral Action*](https://arxiv.org/abs/2511.23257),
-  prove the simple isolated even-ground real-zero theorem used only in (RJRR.12).
+  prove the simple isolated even-ground real-zero theorem used in (RJRR.12) and in the signed-cosine
+  perturbation argument for (RJRR.15).
 
 No located source states the literal prime--Gamma complete radical flag, diagonal jet law
-(RJRR.10), or dimension bound (RJRR.11).  The bootstrap is elementary once the critical form
-closure is known, so priority and significance remain unverified pending specialist review.
+(RJRR.10), polynomial-module saturation (RJRR.14), or excess-degeneracy theorem (RJRR.15).
+Targeted searches found generic Paley--Wiener reproducing-kernel and Toeplitz theory, but no
+degenerate-ground convolution perturbation theorem with this root-jet consequence.  Priority and
+significance remain unverified pending specialist review.
 
 ## Lean status
 
 No Lean theorem is claimed.  An abstract semidefinite-form theorem with a supplied null vector is
 theorem laundering and does not satisfy Route U's formal target.  Exact formalization must wait
 for the unconditional literal hard-edge boundary construction and restricted-Weil form domain in
-Lean, then prove (RJRR.5)--(RJRR.12) for those concrete objects.
+Lean.  The excess-degeneracy theorem additionally requires the literal full convolution operator,
+its isolated zero floor, bounded cosine perturbations, and the Connes--van Suijlekom theorem; none
+may be replaced by supplied abstract hypotheses.
 
 ## Log
 
@@ -378,3 +521,6 @@ Lean, then prove (RJRR.5)--(RJRR.12) for those concrete objects.
 - 2026-08-11 -- bootstrapped the initial half-flag to all `m-1` nonterminal descendants, proved
   complete divided-jet Gram diagonalization, and falsified polar cyclicity by the explicit radical
   root pencil.  Removed abstract Lean-wrapper status.
+- 2026-08-11 -- proved global polynomial-module saturation and a signed-cosine perturbation
+  theorem: a repeated-root isolated convolution ground must contain an additional non-jet mode
+  beyond every forced descendant.  Isolated full-ground admission remains open and explicit.

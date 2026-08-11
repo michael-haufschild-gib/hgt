@@ -899,6 +899,112 @@ global positive trace/index identity; no additional same-fibre Green boundary ca
 
 **Status:** paper proof complete; Lean formalization deferred during corpus refactor.
 
+## C31. Hyperbolic central-gauge completeness of the existing pre-polar source laws
+
+The remaining pre-polar structures admit an exact nonneutral deformation.  This is stronger than
+the earlier phase-defect no-go because it simultaneously covers the two Gamma sectors, their
+Poincare cup, the Kummer cocycle, and the coefficient-generated Stokes contact form.
+
+Let `V_-`, `V_+` be the two source sectors with bilinear Poincare pairing
+
+\[
+  B:V_-\times V_+\longrightarrow\mathbb C
+\]
+
+and alternating double
+
+\[
+  \omega((x_-,x_+),(y_-,y_+))=B(x_-,y_+)-B(y_-,x_+).
+\]
+
+For every `lambda in C^x`, define the hyperbolic central gauge
+
+\[
+  T_\lambda(x_-,x_+)=(\lambda x_-,\lambda^{-1}x_+).
+\tag{C31.1}
+\]
+
+Then, identically,
+
+\[
+  B(\lambda x_-,\lambda^{-1}y_+)=B(x_-,y_+),
+  \qquad
+  \omega(T_\lambda x,T_\lambda y)=\omega(x,y).
+\tag{C31.2}
+\]
+
+Scalar linearity also makes `T_lambda` commute with each source differential.  It therefore
+preserves cycles, boundaries, exactness, radicals, the radical quotients, and the nondegenerate
+source Poincare form.  On the rational-adelic group-graded source algebra, the corresponding
+character twist is an algebra automorphism: a homogeneous scaling `q` is multiplied by
+`chi(q)`, while its inverse is multiplied by `chi(q)^-1`.  The zero-adele trace is unchanged and
+the logarithmic Kummer derivation commutes with the twist.  Consequently the trace--derivation
+cocycle on the retained forward/backward prime atom is unchanged:
+
+\[
+  \phi(\chi(p)u_p,\chi(p)^{-1}u_{p^{-1}})
+    =\phi(u_p,u_{p^{-1}})=-\log p\ne0.
+\tag{C31.3}
+\]
+
+Thus both atom legs remain nonzero.  This is the same rigidity already formalized by
+`RouteRCocycleTransportNonErasure.lean`, now combined with the dual-sector gauge.
+
+The Stokes layer is equally blind.  A common central scalar cancels on every mixed Hom channel,
+and coefficient-generated contact/coarea depends only on coefficient equality patterns.  Hence
+the contact form, one-port coarea identity, Stokes flatness, and formal-contact class survive the
+gauge.  At the phase level, twisting by a rational-adelic character leaves the full coboundary
+defect unchanged by `RouteRAdelicDefectCharacterBlindness.lean`.
+
+The actual horizontal deformation is a member of this family.  At an ordinary prime,
+
+\[
+  \lambda_p(a)=p^{2a},\qquad
+  \lambda_p(-a)=\lambda_p(a)^{-1},
+  \qquad a=\Re\rho-\tfrac12.
+\tag{C31.4}
+\]
+
+It is nonzero for every grade and is trivial exactly at `a=0`.  Therefore all of the following
+data coexist unchanged with an arbitrary nonneutral horizontal character:
+
+1. strict source complex and `D_1D_0=0`;
+2. retained prime/depth class and its nonzero Kummer cocycle;
+3. algebraic Poincare duality of the two Gamma sectors;
+4. product-formula/reciprocity defect;
+5. coefficient-generated mixed-Hom Stokes contact and flatness;
+6. reflection orientation and simultaneous non-erasure before physical scalar base change.
+
+This gives a model-theoretic no-go: no predicate factoring only through these existing pre-polar
+invariants can imply triviality of the horizontal character.  Such a predicate has the same value
+throughout the family (C31.4), whereas triviality holds only at `a=0`.
+
+Two constructions in the corpus are not gauge-blind, but neither is a producer:
+
+* the specialized scalar Cartier complex has differential `lambda-1` and is contractible exactly
+  off the neutral character;
+* the fixed cofinal singular domain admits both character orientations exactly at neutral grade.
+
+In both cases, noncontractibility, two-sided coefficient faithfulness, or domain membership is
+already the critical-line condition.  Existing pre-polar source laws do not imply those added
+support predicates.
+
+**Verdict.** The complete currently constructed pre-polar algebraic/contact/flatness package is
+dependency-closed dead as an annihilation producer.  This does **not** yet kill Route R: a
+source-defined singular topology or relative index may break the hyperbolic gauge.  But such a
+producer must add a non-gauge-invariant admission law not present in differential, cup, cocycle,
+reciprocity, contact, or flatness data.  Recombining those invariants cannot close RH.
+
+**Strongest survivor.** The open core is now exactly: construct, from literal pre-divisor
+Euler--Gamma--rational-adelic data, a canonical singular domain/relative-index class whose
+membership is not invariant under (C31.1), prove the retained prime atom belongs to it in both
+Gamma orientations, and do so without importing the equivalent scalar Cartier survival
+condition.  If every canonical source topology is also hyperbolic-gauge invariant or erases the
+atom, the entire remaining Route-R producer class becomes terminally dead.
+
+**Status:** dependency-closed paper proof for the existing invariant package; Lean formalization
+deferred during corpus refactor.  Route R remains open.
+
 
 
 ## C24. Full Poisson symmetry leaves a nonzero double-endpoint theta shear

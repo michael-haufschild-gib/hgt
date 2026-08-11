@@ -123,3 +123,28 @@ Recorded 2026-08-11 after hostile check.
   `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` (prime side).  The Guinand–Weil organ now has
   its trunk: differentiating in `s`, pairing against tests, and moving the contour are the
   remaining limbs (each a separate later brick — contour motion is the analytically hard one).
+- 2026-08-11 — **CORRECTION (third corpus sweep): the Guinand–Weil layer ALREADY EXISTS.**
+  `XiGuinandWeilExplicitFormula.lean` owns the STRONGER statement:
+  `xiGuinandWeilExplicitFormula` (finite superpositions of regularized Cauchy kernels; base
+  points in the CONTINUED admissible region `0 < Re s`, `s ≠ 1`, `ζ s ≠ 0` — reaching inside
+  the strip), `_primeSeries` (honest von Mangoldt Dirichlet-series source on `Re > 1`),
+  `_single`.  It rests on `XiRelativeResolventFlux.lean`'s
+  `continuedPrimeArchSourceRelativeTrace_eq_xiRelativeResolventTrace`.  My earlier log entry
+  claiming "the corpus's first zero-sum = prime-sum identity" is WRONG; the new module
+  `XiExplicitFormulaLogDeriv.lean` is honestly a [BRIDGE]: the classical textbook normal form
+  (`logDeriv xi` partial fraction centered at 1/2, polar/arch/ζ split, mathlib `LSeries`
+  vocabulary), now cross-referenced in its docstring.  Search lesson recorded: concept greps
+  must be case-insensitive (`explicitFormula` missed `GuinandWeilExplicitFormula`).
+  Additionally found already formal: `XiWeilResolventGram.lean`
+  (`xiWeilPolarization_cauchyKernel_diagonal`, `xiSecondInverseMoment`) and
+  `XiWeilCriterionConverse.lean` (`xiWeilPolarization_diagonal_eq_sub_two_re` — Weil diagonal
+  = second inverse moment − 2·Re(coeff·logDeriv XiC), and
+  `riemannHypothesis_of_weilDiagonal_nonneg` — RH from diagonal positivity on the regularized
+  Cauchy kernel family alone).  **The organ and the Weil socket are therefore ALREADY FUSED in
+  the corpus.**  The genuine open frontier of this card, after three sweeps: prove a
+  POSITIVITY REGION — e.g., nonnegativity of
+  `xiSecondInverseMoment − 2·Re(xiWeilDiagonalCoeff z · logDeriv XiC z)` for admissible base
+  points in the PNTPlus zero-free region, using formalized `ζ'/ζ` bounds
+  (`ZetaBounds` DerivUpperBnd/LogDerivZeta lemmas) — the first proven nontrivial positive
+  region of the Weil diagonal, feeding `riemannHypothesis_of_weilDiagonal_nonneg`'s hypothesis
+  on a quantified subfamily.

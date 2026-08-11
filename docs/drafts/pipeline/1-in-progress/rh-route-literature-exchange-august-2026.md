@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`26e0611e3d0bf58287a4e25d108787352b3ecd03`. Files outside committed umbrellas at this snapshot are
+`78bdf19a7ab2dcda22ba153b4ecd941865512890`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
@@ -604,7 +604,7 @@ Thus strict half requires `d_E^2<=X^(-1+o(1))`, equivalently an all-reporter def
 `1+epsilon` gives only `d_E^2<=epsilon`, sharply, so `1+o(1)` capacity is not enough; its excess
 must reach `X^(-1+o(1))`, or a two-sided balance must reach `X^(-1/2+o(1))`. Exact partition ANOVA
 also makes the moving seam mismatch an orthogonal energy term, so it must be transported by the
-same recurrence-compatible kernel. This theorem is currently outside committed `HEAD` and has no
+same recurrence-compatible kernel. This theorem is present as a committed paper card and has no
 Lean formalization.
 
 A second dependency-closed paper consequence of existing umbrella Lean gives a direct scalar
@@ -635,6 +635,22 @@ one/two/four-prime replacement graphs isolate every sufficiently friable vertex;
 density audit upgrades this to linear isolated Gibbs mass, retiring that local graph. Full growing-
 breadth entropy complement survives. This lane is paper synthesis of committed Lean consumers,
 not a new Lean theorem or an independent route.
+
+Committed but not umbrella-reachable `RouteEOppositeParityMetropolisRejection.lean` certifies the
+abstract Metropolis subclaim for every finite
+row-stochastic opposite-parity kernel: accepted conductance is symmetric, total rejection is
+exactly one half of total variation between directed edge law and its reversal, and signed current
+is bounded by rejection. It receives only provisional scientific credit and does not construct or estimate
+the physical entropy-complement relation. Certification would close a generic consumer/no-go,
+not Route E's arithmetic producer.
+
+Untracked `RouteEDegreeNormalizedGibbsBoundaryVariation.lean` independently certifies the finite
+weighted graph consumer through the exact total-variation stage: unused minimum-endpoint
+conductance equals isolated Gibbs mass plus edge variation of degree-normalized density, which
+bounds signed current. No committed umbrella imports it, and its current declarations do not yet
+prove the co-moving split or recurrence-kernel inverse-load Dirichlet estimate. This is formal
+backlog around a consumer; it does not advance physical relation formation or the strict-half
+estimate.
 
 The generalized Beurling-system layer supplies a complementary firewall. It formalizes the same
 Gibbs decomposition, one-large-prime transition, PNT/Mertens windows, Mellin inversion, and
@@ -1209,6 +1225,29 @@ annihilation and multiplicity fidelity. No located external theorem supplies tha
 generic tangent-K/cyclic theory is only parent language. This result is paper-level and has no
 Lean proof.
 
+A stronger paper theorem removes the remaining clock mismatch with the actual physical reader.
+The finite-corrected complete Möbius tail
+
+```text
+H_(6,m)=sum_(n>=6) mu(n)n^(-m/2)U_(-m log n)Theta
+```
+
+is transported exactly to `R_(6,m)` by `6^(m/2)U_(m log 6)`. The honest reciprocal Steinberg
+normals at `x_m=6^m/(1+6^m)`, `y_m=1/(1+6^m)` extract the two orientations
+`[6^m]-1` and `[6^(-m)]-1`; their difference has horizontal character
+
+```text
+6^(m(2 Re(s)-1))-6^(-m(2 Re(s)-1))=K_(6^m)(s).
+```
+
+At common `(2,3)` depth `m-1`, this is the literal Gamma clock, and at `m=1` it is the existing
+Gamma/Burnol/BV coefficient up to its fixed positive calibration. Both orientations have explicit
+Tate--Wold interval primitives. Their Kummer regulator is `2m log 6`, so ordinary cyclic descent
+is impossible; factoring through `6=4(3/2)` cannot discard the prime-two edge, and unmarked adelic
+product-formula scalarization erases the detector. Source formation, full-grade physical clock,
+two-sided primitive, and coefficient fidelity are therefore closed on paper. No Lean theorem is
+claimed.
+
 They do not close Route L's square. In particular the theorem named
 `XI_BV_GREEN_STOKES_STRICT_DESCENT` rewrites the source commutator as Gamma boundary minus a
 canonically defined transgression. It does not construct a resolved target differential whose
@@ -1262,8 +1301,9 @@ shift line but leaves the coinvariant-dual moduli. Route L must therefore derive
 Burnol/Deninger coefficient from source before quotient, not choose a normalized Stokes covector
 afterward.
 
-First unresolved theorem is now singular admission of the explicit full-grade Steinberg--Kummer
-interval into the fixed source-to-physical specialization. Before divisor selection, construct
+First unresolved theorem is now place-marked singular admission of the explicit reciprocal
+Gamma-six Tate--Wold interval, together with its complete source `H_(6,m)`, into the fixed source-
+to-physical specialization. Before divisor selection, construct
 the comparison from `completed Green tensor BV_1` and its literal BV boundary
 to the resolved target so that it commutes with the target differential, while its degree-zero map
 is exactly the existing Burnol/Deninger physical landing and the fixed physical reader annihilates
@@ -1271,7 +1311,8 @@ the relevant target boundaries. Prime/depth provenance, multiplicity jets, and t
 leading coefficient must survive. The existing endpoint then reads the resulting boundary as
 `c_rho K_6(rho)`, with `c_rho != 0`.
 
-The successor and Kummer theorems fix both anomaly and candidate primitive. Declaring the
+The direct Gamma-six and Kummer theorems fix source, physical anomaly, and candidate primitive.
+Declaring the
 difference zero, quotienting away its nonzero regulator, forcing ordinary Milnor/Hochschild
 descent, or making the successor graph closable would insert or erase the critical line rather
 than construct the upstream singular admission.
@@ -1675,7 +1716,12 @@ A Stage-1 R/T candidate normalizes the full source-horizontal residual primitive
 prime clock. Its linear jet is `R_N/log p_N ->0`, while a finite-cell quadrature and bounded-
 residual Abel-summation outline predicts the universal cubic limit `-2/3`. This would show the
 cofinal deformation is not source-trivial after neutralization. It is not yet a dependency-closed
-paper theorem and has no Lean file. Reflection negates the cubic, so an additional reflection-even
+source-annihilation theorem. Committed but unwired `SourceHorizontalWoldPrimeClockCubic.lean`
+proves the key natural-cutoff Wold moment asymptotic with coefficient `1/3` and an explicit
+`O(log(X)^2)` Abel error, so it receives provisional scientific credit. Its active uncommitted
+extension proves the complete prime-indexed `-2/3` limit, the multiplicity-labelled Xi cubic
+limit, reflection oddness, and vanishing exactly on the critical line. These remain receivers:
+reflection negates the cubic, so an additional reflection-even
 or source-null horizon law is required; the candidate does not itself annihilate Xi displacement
 or create a new route.
 
@@ -1868,6 +1914,15 @@ norm lane, which derives critical gap energy internally.
 Umbrella-reachable `XiHeatCassiniPrimeGapMomentBigOBridge.lean` accepts the literature-shaped
 eventual prefix `IsBigO` statement directly, absorbs its finite exceptional prefix, and at exponent
 `11/8` feeds the committed critical-energy threshold.
+
+Umbrella-reachable `Sieve/HeathBrownIdentity.lean` formalizes
+the finite algebraic decomposition used upstream of Maynard's estimate. Sharp Möbius truncation
+gives defect `E_L=1-M_L*zeta` with `E_L^k` supported only from `(L+1)^k`; below that cutoff Lean
+derives `Lambda=M_L*log*sum_(j<k)E_L^j` and expands it into finite signed monomials
+`M_L^(r+1)*zeta^r*log`. This contains no short-interval Perron analysis or large-values estimate.
+It narrows literature import to Maynard's analytic assembly; it does not prove the prime-gap
+moment. An active uncommitted extension compresses the binomial expansion to the classical
+`k`-term packet; that refinement is packaging, not the missing analytic theorem.
 Thus only the published number-theoretic premise remains on this interface; no additional finite-
 prefix or Big-O repackaging theorem is needed.
 
@@ -1991,15 +2046,33 @@ still scales it quadratically. The Christoffel current scale
 scale-completed source is again exactly `n+3/8`; on every finite positive chamber the literal
 source decomposes as the universal Gauss edge `(n+1)/16` plus a strictly positive adaptive
 quadrature bulk. Thus neither amplitude collapse nor coordinate dilation explains a bad cofinal
-sequence. What remains unproved in Lean is the holonomy comparing a frozen first-contact flag with
-the later/current admitted normalization.
+sequence. The committed corpus does not yet compare a frozen first-contact flag with later/current
+admission. The working-tree transgression module below makes the fixed-mass part exact and leaves
+only mixed mass--admission curvature.
 
 Umbrella-reachable Lean strengthens this current-admission branch. The literal arithmetic
 source is exact negative forcing in the cumulative Jacobi Riccati equation. Forced normalization
 by trace multiplicity gives `U_n' < -U_n^2` with no degree-dependent constant, and scalar
 blow-down proves current normalized flux strictly positive on every complete terminal shifted-Xi
-positive chamber. This closes current-chamber sign and fixed-degree recession; it does not compare
-a frozen crossing history with later admission and does not exclude the selected hard-edge limit.
+positive chamber. This closes current-chamber sign and fixed-degree recession; it does not bound
+the mixed mass--admission term in a frozen/current comparison and does not exclude the selected
+hard-edge limit.
+
+Umbrella-reachable `XiShiftedCanonicalAdmissionArithmeticTransgression.lean` makes that
+frozen/current comparison algebraically exact. If `Q_w` is literal completed arithmetic formation
+and `B_w` its bilinear polarization,
+then
+
+```text
+T_w(P,A)=2B_w(P,A-P)+Q_w(A-P)=Q_w(A)-Q_w(P).
+```
+
+Fixed-mass admission transport is therefore an exact path-independent cocycle, not unknown shape
+holonomy. For current admission `P_(n,w)` and an amplitude frozen at mass `a`, the completed packet
+is positive current Jacobi energy plus `T_w(P_(n,w),P_(n,a))`; negativity occurs exactly when this
+transgression debt exceeds the full current energy. Only mixed mass--admission curvature remains,
+measured by an exact rectangle identity. The module does not bound that curvature. It narrows the alternate U producer without replacing the
+hard-edge ground-multiplicity core.
 
 At paper level, completed prime--Gamma coercivity now gives strong `L2` precompactness for every
 normalized nonpositive first-contact packet with degree `N=O(sqrt(y))`. A subsequence has a nonzero
@@ -2022,18 +2095,19 @@ A further paper theorem awaiting specialist audit resolves what root division ca
 Closed critical-aperture nonnegativity places `F` in the radical. A root of multiplicity `m` emits
 all `m-1` nonterminal divided null descendants, and its complete jet Gram matrix vanishes except
 for one terminal nonnegative scalar. Thus ground multiplicity is at least
-`1+sum_r (m_r-1)`. Distinct-root descendants are only Lagrange orthogonality. Compact resolvent
-permits only finitely many multiple roots; a one-dimensional ground forces every root simple,
-after which the Connes--van Suijlekom theorem gives the required real-zero conclusion. The explicit
-radical root pencil also falsifies polar cyclicity on a degenerate ground.
+`1+sum_r (m_r-1)`. More sharply, the complete forced space is `D` times every polynomial through
+the total multiplicity-excess degree. Under full isolated-convolution-ground admission, that module
+cannot exhaust a degenerate ground: a Hilbert-metric-corrected finite signed-cosine perturbation
+would select a simple lowest state with a prescribed negative squared root, contradicting
+Connes--van Suijlekom. Therefore multiplicity excess `E>0` forces ground dimension at least `E+2`.
+The extra direction is not another root jet. Distinct-root descendants remain ordinary Lagrange
+orthogonality, and the explicit radical pencil falsifies polar cyclicity.
 
-At committed cutoff, umbrella-reachable `HTGeometry/NullRootDivisionSpectralLaw.lean` proves the
-abstract algebraic shadow: distinct shifted deletions are orthogonal, repeated deletion is
-isotropic and enters the kernel of a positive-semidefinite form, with polynomial-moment
-specializations. It assumes radicality and positivity rather than constructing the literal
-completed-Xi hard edge, and it does not prove the complete `m-1` flag, terminal mass, or ground-
-multiplicity conclusion. Active working tree deletes this wrapper after the stronger paper audit;
-no literal Route-U theorem is credited from it. A Stage-1 successor observes that the parabolic degree lower bound puts terminal positivity
+The former `HTGeometry/NullRootDivisionSpectralLaw.lean` abstract wrapper has been removed from the
+committed corpus. It assumed radicality and positivity rather than constructing the literal
+completed-Xi hard edge, and did not prove the complete `m-1` flag, terminal mass, or ground-
+multiplicity conclusion. No literal Route-U theorem is credited from it. A Stage-1 successor
+observes that the parabolic degree lower bound puts terminal positivity
 within a bounded relative mass interval; it proposes adjacent frozen-to-current admission
 transport there as the only U-native survivor after static divisions. That source-specific bridge
 is not dependency-closed, so it refines rather than replaces the stated open core.
@@ -2045,10 +2119,11 @@ moment positivity. They do not orient signed adaptive discrepancy after shifted-
 normalization. Suzuki's operator work supplies neighboring canonical-system geometry, not strict
 completed-source crossing on every actual null flag.
 
-**Exchange verdict and Lean action.** Exact open theorem is now the ground-multiplicity dichotomy
-inside the nonzero finite-type state `f(z)=F(z^2)`: in the simple branch, find a new literal
-prime--Gamma sign beyond the known restricted-Weil real-zero theorem; in the degenerate branch,
-forbid `dim ker>=2` or use two zero modes to force a source contradiction. First-face admission,
+**Exchange verdict and Lean action.** Exact open theorem first requires full-ground admission for
+the nonzero finite-type even state `f(z)=F(z^2)`; current hard-edge positivity is even-sector only.
+In the simple branch, find a new literal prime--Gamma sign beyond the known restricted-Weil
+real-zero theorem. In the degenerate branch, classify or source-couple the excess non-jet mode now
+forced beyond the saturated root module. First-face admission,
 flux, one-block capacity, admitted-norm normalization, Christoffel
 scale completion, and positive Gauss edge/bulk decomposition are Lean-closed. Paper theorems close
 least-defect parabolic scale, translation escape, and boundary hyperbolicity. Lean must certify
@@ -2287,7 +2362,11 @@ source-generated mixer and its cofinal properness, not merely abstract frame gra
 constitutive comparison is still physical: identify off-center Xi displacement with a nonneutral
 graph-domain class and intertwine physical evolution with conservative source formation. Classical
 weighted sequence/closed-operator theory supplies parents; the exact complete-resolution identity
-is corpus-specific. Paper has no Lean formalization and does not instantiate Route V.
+is corpus-specific. Working-tree `HTGeometry/ConstitutiveFormationDepthProperness.lean` now
+formalizes the graph-gauge inequality and faithfulness, expanding-orbit properness, cofinal tail
+bound, complete-resolution depth summability, vanishing terminal flux, and exact reciprocal-zeta
+mixer. Its `UniversalLawField` umbrella import is uncommitted, so it receives no formal credit at
+cutoff. It still has no Xi constitutive comparison and does not instantiate Route V.
 
 Umbrella-reachable `ConstitutiveObserverFibreChirality.lean` gives an exact observer law for that
 formation chirality:
@@ -2668,12 +2747,18 @@ provisional route effects are recorded above, but they are excluded from formal 
 cutoff. `XiHeatCassiniWoldResidualODEClosure.lean`, `HTGeometry/MellinGrowthBounds.lean`,
 `RHTower/XiExplicitFormulaLogDeriv.lean`, `XiHeatCassiniPrimeGapMomentBigOBridge.lean`,
 `XiHeatCassiniWoldResidualTwoSidedClosure.lean`, and
-`SourceHorizontalWoldNeutralJetBridge.lean` are committed, umbrella-reachable, and receive formal
+`SourceHorizontalWoldNeutralJetBridge.lean`, `Sieve/HeathBrownIdentity.lean`, and
+`XiShiftedCanonicalAdmissionArithmeticTransgression.lean` are committed, umbrella-reachable, and receive formal
 credit for their exact declarations. They prove conditional receivers and interfaces, not the
 two-sided residual norm, Maynard--Peck premise, or nonzero-grade source estimate. C1's exact-source
 spectrum and multiplicity, determinant identity, Riesz/Jordan analysis, essential
 inverse-flow/Weil package, squared Cayley receiver, closed weighted derivative,
 shifted-cokernel/source equation, and supersymmetric Dirac realization are all umbrella-reachable.
+Committed `RouteEOppositeParityMetropolisRejection.lean` and
+`SourceHorizontalWoldPrimeClockCubic.lean` are not umbrella-reachable at cutoff. Active
+working-tree extensions of the cubic and Heath--Brown files, plus untracked
+`RouteEDegreeNormalizedGibbsBoundaryVariation.lean` and
+`HTGeometry/ConstitutiveFormationDepthProperness.lean`, are likewise excluded from formal credit.
 The remaining scientific gap is spectral reality/positive symmetrization; the parallel
 explicit-form connector has one widening-limit assembly left. Route Q's structural absolute-moment
 height gate is Lean-certified; the verified `T>9` floor and signed first-moment bridge remain

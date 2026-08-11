@@ -7,7 +7,8 @@
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM FIRST] [GLOBAL PROPERNESS]`
   `[FORMATION-GENERATED GRAPH DOMAIN] [ADAPTIVE ESCAPE EXCLUDED]`
   `[COFINAL MIXER ADMITTED] [BRIDGE] [NOT RH]`
-- **Formal status:** Lean formalization required before promotion to Stage 3.
+- **Formal status:** Lean formalized in
+  `GaloisForLFunctions.HTGeometry.ConstitutiveFormationDepthProperness`; Stage-3 certificate added.
 
 ## 1. Mathematical delta
 
@@ -106,6 +107,10 @@ For every `x in D_1`:
    `(FDP.6)`. Hence every `Phi`-sublevel is relatively compact in `ell^1`; because `Phi` is lower
    semicontinuous, it is compact. Equivalently, `Phi:D_1->R_{>=0}` is a proper exhaustion when
    `D_1` is viewed inside `ell^1`.
+
+   This compact-sublevel refinement is the paper-level topological corollary. Under the project
+   policy, the certified selection theorem is clause 5 together with the Lean-formalized coercive
+   and tail laws; no claim that this compactness sentence is Lean-certified is made here.
 
 ### Proof
 

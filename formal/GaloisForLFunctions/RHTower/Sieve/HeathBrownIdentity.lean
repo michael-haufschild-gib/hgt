@@ -196,4 +196,102 @@ theorem heathBrown_monomial_identity_of_lt_pow (L k n : ℕ) (hn : n < (L + 1) ^
   rw [← heathBrown_geometricPacket_eq_monomialPacket]
   exact heathBrown_identity_of_lt_pow L k n hn
 
+/-- The `k`-term reverse-indexed Heath--Brown packet.  Index `m<k` corresponds to the usual
+degree `j=k-m`, so every degree `1 ≤ j ≤ k` occurs exactly once. -/
+def heathBrownCompressedPacket (L k : ℕ) : ArithmeticFunction ℝ :=
+  ∑ m ∈ Finset.range k,
+    (-1 : ArithmeticFunction ℝ) ^ (m + k + 1) *
+      (k.choose m : ArithmeticFunction ℝ) *
+      (truncatedMoebius L) ^ (k - m) *
+      (zeta : ArithmeticFunction ℝ) ^ (k - m - 1) * ArithmeticFunction.log
+
+/-- The quadratic-size geometric expansion cancels to exactly `k` monomial terms. -/
+theorem heathBrownCompressedPacket_eq_geometricPacket (L k : ℕ) :
+    heathBrownCompressedPacket L k =
+      truncatedMoebius L * ArithmeticFunction.log *
+        (∑ j ∈ Finset.range k, (moebiusZetaDefect L) ^ j) := by
+  set M := truncatedMoebius L
+  set Z := (zeta : ArithmeticFunction ℝ)
+  set VM := (vonMangoldt : ArithmeticFunction ℝ)
+  set E := moebiusZetaDefect L
+  let S : ArithmeticFunction ℝ :=
+    ∑ m ∈ Finset.range k,
+      (-1 : ArithmeticFunction ℝ) ^ (m + k) * M ^ (k - m) * Z ^ (k - m) *
+        (k.choose m : ArithmeticFunction ℝ)
+  have hexp := moebiusZetaDefect_pow_expansion L k
+  have hlast :
+      (-1 : ArithmeticFunction ℝ) ^ (k + k) * M ^ (k - k) * Z ^ (k - k) *
+          (k.choose k : ArithmeticFunction ℝ) = 1 := by
+    have heven : Even (2 * k) := even_two_mul k
+    have hsign : (-1 : ArithmeticFunction ℝ) ^ (k + k) = 1 := by
+      rw [show k + k = 2 * k by omega]
+      exact Even.neg_one_pow (α := ArithmeticFunction ℝ) heven
+    rw [hsign]
+    simp
+  have hEk : E ^ k = S + 1 := by
+    rw [hexp, Finset.sum_range_succ, hlast]
+  have hpacket : heathBrownCompressedPacket L k = -VM * S := by
+    rw [heathBrownCompressedPacket]
+    dsimp only [S]
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun m hm => ?_
+    have hmk : m < k := Finset.mem_range.mp hm
+    have hpos : 0 < k - m := Nat.sub_pos_of_lt hmk
+    have hsucc : k - m = (k - m - 1) + 1 := by omega
+    have hVMZ : VM * Z = ArithmeticFunction.log := by
+      dsimp only [VM, Z]
+      rw [vonMangoldt_mul_zeta]
+    have hVMZpow : VM * Z ^ (k - m) =
+        Z ^ (k - m - 1) * ArithmeticFunction.log := by
+      rw [hsucc, pow_succ]
+      calc
+        VM * (Z ^ (k - m - 1) * Z) = Z ^ (k - m - 1) * (VM * Z) := by ring
+        _ = Z ^ (k - m - 1) * ArithmeticFunction.log := by rw [hVMZ]
+    change
+      (-1 : ArithmeticFunction ℝ) ^ (m + k + 1) *
+          (k.choose m : ArithmeticFunction ℝ) * M ^ (k - m) *
+          Z ^ (k - m - 1) * ArithmeticFunction.log =
+        -VM * ((-1 : ArithmeticFunction ℝ) ^ (m + k) * M ^ (k - m) *
+          Z ^ (k - m) * (k.choose m : ArithmeticFunction ℝ))
+    rw [show m + k + 1 = (m + k) + 1 by omega, pow_succ]
+    calc
+      (-1 : ArithmeticFunction ℝ) ^ (m + k) * -1 *
+            (k.choose m : ArithmeticFunction ℝ) * M ^ (k - m) *
+            Z ^ (k - m - 1) * ArithmeticFunction.log =
+          -(((-1 : ArithmeticFunction ℝ) ^ (m + k)) *
+            (k.choose m : ArithmeticFunction ℝ) * M ^ (k - m) *
+            (Z ^ (k - m - 1) * ArithmeticFunction.log)) := by ring
+      _ = -(((-1 : ArithmeticFunction ℝ) ^ (m + k)) *
+            (k.choose m : ArithmeticFunction ℝ) * M ^ (k - m) *
+            (VM * Z ^ (k - m))) := by rw [hVMZpow]
+      _ = -VM * ((-1 : ArithmeticFunction ℝ) ^ (m + k) * M ^ (k - m) *
+            Z ^ (k - m) * (k.choose m : ArithmeticFunction ℝ)) := by ring
+  have hgeom :
+      (1 - E) * (∑ j ∈ Finset.range k, E ^ j) = 1 - E ^ k :=
+    mul_neg_geom_sum E k
+  have hOneSubE : 1 - E = M * Z := by
+    simp [E, moebiusZetaDefect, M, Z]
+  rw [hpacket]
+  have hnegS : -S = 1 - E ^ k := by rw [hEk]; ring
+  have hVMMZ : VM * (M * Z) = M * ArithmeticFunction.log := by
+    dsimp only [VM, Z]
+    calc
+      (vonMangoldt : ArithmeticFunction ℝ) * (M * (zeta : ArithmeticFunction ℝ)) =
+          M * (vonMangoldt * (zeta : ArithmeticFunction ℝ)) := by ring
+      _ = M * ArithmeticFunction.log := by rw [vonMangoldt_mul_zeta]
+  calc
+    -VM * S = VM * (-S) := by ring
+    _ = VM * (1 - E ^ k) := by rw [hnegS]
+    _ = VM * ((1 - E) * (∑ j ∈ Finset.range k, E ^ j)) := by rw [hgeom]
+    _ = (VM * (1 - E)) * (∑ j ∈ Finset.range k, E ^ j) := by ring
+    _ = (VM * (M * Z)) * (∑ j ∈ Finset.range k, E ^ j) := by rw [hOneSubE]
+    _ = M * ArithmeticFunction.log * (∑ j ∈ Finset.range k, E ^ j) := by rw [hVMMZ]
+
+/-- **Finite Heath--Brown identity, compressed form.**  Below `(L+1)^k`, `Λ(n)` is exactly a
+`k`-term signed packet, one term for every degree `M_L^j * ζ^(j-1) * log`, `1 ≤ j ≤ k`. -/
+theorem heathBrown_compressed_identity_of_lt_pow (L k n : ℕ) (hn : n < (L + 1) ^ k) :
+    vonMangoldt n = heathBrownCompressedPacket L k n := by
+  rw [heathBrownCompressedPacket_eq_geometricPacket]
+  exact heathBrown_identity_of_lt_pow L k n hn
+
 end RHTower.Sieve
