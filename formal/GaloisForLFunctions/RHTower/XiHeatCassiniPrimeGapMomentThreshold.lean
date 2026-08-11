@@ -49,7 +49,8 @@ theorem xiHeatCassiniPrimeGapCriticalAbelWeight_antitone :
   intro M N hMN
   apply Real.exp_le_exp.mpr
   have hheight := nthPrimeSubtype_log_strictMono.monotone hMN
-  dsimp only [xiHeatCassiniPrimeGapCriticalAbelWeight]
+  have hheight' : xiMassNthPrimeLogHeight M ≤ xiMassNthPrimeLogHeight N := by
+    simpa [xiMassNthPrimeLogHeight] using hheight
   linarith
 
 /-- The physical critical energy is exactly gap-square against the `p^(-3/2)` Abel weight. -/
@@ -62,8 +63,8 @@ theorem xiHeatCassiniPrimeGapCriticalEnergy_eq_square_mul_abelWeight (N : ℕ) :
     rw [← Real.log_sqrt hp.le, Real.exp_log (Real.sqrt_pos.mpr hp)]
   have hp2 : Real.exp (2 * Real.log p) = p ^ 2 := by
     rw [show 2 * Real.log p = Real.log p + Real.log p by ring, Real.exp_add,
-      Real.exp_log hp, Real.exp_log hp]
-    ring
+      Real.exp_log hp]
+    exact (pow_two p).symm
   have hweight : Real.exp (-(3 / 2 : ℝ) * Real.log p) = Real.sqrt p / p ^ 2 := by
     rw [show -(3 / 2 : ℝ) * Real.log p = Real.log p / 2 - 2 * Real.log p by ring,
       Real.exp_sub, hsqrt, hp2]
@@ -100,10 +101,11 @@ theorem summable_primeLogGap_mul_exp_neg_height
     apply sub_nonneg.mpr
     apply Real.exp_le_exp.mpr
     have hheight := nthPrimeSubtype_log_strictMono.monotone (Nat.le_succ N)
-    dsimp only [w]
+    have hheight' : xiMassNthPrimeLogHeight N ≤ xiMassNthPrimeLogHeight (N + 1) := by
+      simpa [xiMassNthPrimeLogHeight] using hheight
     nlinarith
   have hdrop_summable : Summable (fun N : ℕ => w N - w (N + 1)) := by
-    apply summable_of_sum_range_le hdrop_nonneg
+    apply summable_of_sum_range_le (c := w 0) hdrop_nonneg
     intro M
     rw [Finset.sum_range_sub']
     have hwM : 0 ≤ w M := (Real.exp_pos _).le
@@ -140,8 +142,8 @@ theorem summable_primeLogGap_mul_exp_neg_height
       calc
         delta = (Real.exp c / c) * (c * delta * Real.exp (-c)) := by
           field_simp [hc.ne']
-          rw [← Real.exp_add]
-          ring_nf
+          rw [show delta * Real.exp c * Real.exp (-c) =
+            delta * (Real.exp c * Real.exp (-c)) by ring, ← Real.exp_add]
           simp
         _ ≤ (Real.exp c / c) * (1 - Real.exp (-(c * delta))) :=
           mul_le_mul_of_nonneg_left hsmall (by positivity)
@@ -226,15 +228,25 @@ theorem summable_primeGapCriticalEnergy_of_prefix_moment_lt_three_halves
           xiHeatCassiniPrimeGapCriticalAbelWeight M :=
         mul_le_mul_of_nonneg_right hmom hweight
       _ = C * Real.exp (-c * xiMassNthPrimeLogHeight M) := by
-        dsimp only [xiHeatCassiniPrimeGapCriticalAbelWeight, c]
-        rw [← Real.exp_add]
-        congr 2
-        ring
+        have hexpcombine :
+            Real.exp (theta * xiMassNthPrimeLogHeight M) *
+                Real.exp (-(3 / 2 : ℝ) * xiMassNthPrimeLogHeight M) =
+              Real.exp (-c * xiMassNthPrimeLogHeight M) := by
+          rw [← Real.exp_add]
+          congr 1
+          dsimp only [c]
+          ring
+        dsimp only [xiHeatCassiniPrimeGapCriticalAbelWeight]
+        rw [show (C * Real.exp (theta * xiMassNthPrimeLogHeight M)) *
+            Real.exp (-(3 / 2 : ℝ) * xiMassNthPrimeLogHeight M) =
+          C * (Real.exp (theta * xiMassNthPrimeLogHeight M) *
+            Real.exp (-(3 / 2 : ℝ) * xiMassNthPrimeLogHeight M)) by ring,
+          hexpcombine]
       _ ≤ C := by
         have hheight := xiMassNthPrimeLogHeight_pos M
         have hexp : Real.exp (-c * xiMassNthPrimeLogHeight M) ≤ 1 := by
           rw [← Real.exp_zero]
-          exact Real.exp_le_exp.mpr (by positivity)
+          exact Real.exp_le_exp.mpr (by nlinarith)
         nlinarith [Real.exp_nonneg (-c * xiMassNthPrimeLogHeight M)]
   have hterms (N : ℕ) :
       xiHeatCassiniPrimeGapSquarePrefix (N + 1) *
@@ -272,18 +284,42 @@ theorem summable_primeGapCriticalEnergy_of_prefix_moment_lt_three_halves
       _ ≤ (C * Real.exp (theta * xiMassNthPrimeLogHeight (N + 1))) *
           ((3 / 2 : ℝ) * xiHeatCassiniOrderedPrimeLogGap N *
             xiHeatCassiniPrimeGapCriticalAbelWeight N) :=
-        mul_le_mul_of_nonneg_left hdrop (by positivity)
+        mul_le_mul_of_nonneg_left hdrop
+          (mul_nonneg hC (Real.exp_nonneg _))
       _ ≤ (C * (Real.exp theta * Real.exp
           (theta * xiMassNthPrimeLogHeight N))) *
           ((3 / 2 : ℝ) * xiHeatCassiniOrderedPrimeLogGap N *
             xiHeatCassiniPrimeGapCriticalAbelWeight N) := by
-        gcongr
+        apply mul_le_mul_of_nonneg_right
+        · exact mul_le_mul_of_nonneg_left hthetaShift hC
+        · exact mul_nonneg
+            (mul_nonneg (by norm_num) (xiHeatCassiniOrderedPrimeLogGap_nonneg N))
+            (xiHeatCassiniPrimeGapCriticalAbelWeight_pos N).le
       _ = K * (xiHeatCassiniOrderedPrimeLogGap N *
           Real.exp (-c * xiMassNthPrimeLogHeight N)) := by
-        dsimp only [K, c, xiHeatCassiniPrimeGapCriticalAbelWeight]
-        rw [← Real.exp_add]
-        congr 1
-        ring
+        have hexpcombine :
+            Real.exp (theta * xiMassNthPrimeLogHeight N) *
+                Real.exp (-(3 / 2 : ℝ) * xiMassNthPrimeLogHeight N) =
+              Real.exp (-c * xiMassNthPrimeLogHeight N) := by
+          rw [← Real.exp_add]
+          congr 1
+          dsimp only [c]
+          ring
+        dsimp only [K, xiHeatCassiniPrimeGapCriticalAbelWeight]
+        calc
+          (C * (Real.exp theta * Real.exp
+              (theta * xiMassNthPrimeLogHeight N))) *
+              ((3 / 2 : ℝ) * xiHeatCassiniOrderedPrimeLogGap N *
+                Real.exp (-(3 / 2 : ℝ) * xiMassNthPrimeLogHeight N)) =
+            (C * Real.exp theta * (3 / 2 : ℝ)) *
+              xiHeatCassiniOrderedPrimeLogGap N *
+                (Real.exp (theta * xiMassNthPrimeLogHeight N) *
+                  Real.exp (-(3 / 2 : ℝ) * xiMassNthPrimeLogHeight N)) := by ring
+          _ = (C * Real.exp theta * (3 / 2 : ℝ)) *
+              (xiHeatCassiniOrderedPrimeLogGap N *
+                Real.exp (-c * xiMassNthPrimeLogHeight N)) := by
+            rw [hexpcombine]
+            ring
   calc
     xiHeatCassiniPrimeGapSquarePrefix M *
           xiHeatCassiniPrimeGapCriticalAbelWeight M +
@@ -299,7 +335,9 @@ theorem summable_primeGapCriticalEnergy_of_prefix_moment_lt_three_halves
         K * (xiHeatCassiniOrderedPrimeLogGap N *
           Real.exp (-c * xiMassNthPrimeLogHeight N)) := by
       gcongr
-      exact hmajor.sum_le_tsum (Finset.range M) (fun N _ => by positivity)
+      exact hmajor.sum_le_tsum (Finset.range M) (fun N _ =>
+        mul_nonneg hK (mul_nonneg (xiHeatCassiniOrderedPrimeLogGap_nonneg N)
+          (Real.exp_nonneg _)))
 
 /-- Concrete margin selected from the classical `5/4 + epsilon` prime-gap second moment. -/
 theorem summable_primeGapCriticalEnergy_of_eleven_eighth_prefix_moment
@@ -321,9 +359,9 @@ theorem summable_logMeshDefect_of_eleven_eighth_prefix_moment
     {s : ℂ} (hsleft : -(1 / 2 : ℝ) ≤ s.re) (hsright : s.re ≤ 0) :
     Summable (fun N : ℕ =>
       ‖xiHeatCassiniLogMeshLaplaceScaledDefect s N‖) := by
-  exact summable_norm_logMeshDefect_of_criticalEnergy
-    (summable_primeGapCriticalEnergy_of_eleven_eighth_prefix_moment hC hmoment)
+  exact summable_norm_xiHeatCassiniLogMeshLaplaceScaledDefect_of_criticalEnergy
     hsleft hsright
+    (summable_primeGapCriticalEnergy_of_eleven_eighth_prefix_moment hC hmoment)
 
 end
 

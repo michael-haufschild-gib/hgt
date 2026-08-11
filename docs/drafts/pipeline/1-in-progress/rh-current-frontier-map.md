@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 11 August 2026, committed snapshot
-**d5acddbe0e567a414ae014f850a08472cd42e48c**.
+**7276393bae74ed4ba2bc094e9d26c73998079376**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -277,6 +277,14 @@ equivalent to Hodge-mass vanishing. The converse realization constructed under R
 so this is a receiver socket, not a square-realization theorem. The missing producer is an
 unconditional source-derived square/GNS or compressed-trace realization on the actual multi-place
 class-space object.
+`GaussHodgeWeilKreinDecomposition.lean` executes the direct reflection-pair construction and
+classifies its exact obstruction. Unconditionally
+`4·Re W(F,F) = Σ‖pair sum‖² − Σ‖pair difference‖²` on square-summable tests. The negative
+sector's prime-test density is exactly the Hodge/cosh mass, and its annihilation for every test,
+the square realization, Hodge-mass vanishing, and RH are equivalent. Thus indefinite Krein
+realization is unconditional but not a producer: the direct pair-sum GNS subroute leaves precisely
+the RH-bearing negative sector. A Gate-II theorem must annihilate that sector through an
+independent arithmetic class-space law, not repackage it.
 `GaussReciprocalCharacterAdmission.lean` supplies a second exact normalization: the Hodge mass is
 the virial derivative of one reciprocal-character split energy, has a quadratic centered-rate
 lower bound, and its all-prime family is summable exactly at centered rate zero. Universal
@@ -590,13 +598,13 @@ shell-conditioned parity--energy regression, product-truncated reservoir mass, s
 Euler-tilt unit shell, parity-coalesced full-mass cube, and harmonic reservoir capacity. Paper cards
 prove stronger relation-level convolution laws where noted.
 
-A committed but not yet umbrella-reachable entropy-complement module proves the finite mechanism
-exactly: divided-Poisson convolution, denominator-free conditional-binomial variance, a central
+Umbrella-reachable Lean proves the entropy-complement finite mechanism exactly: divided-Poisson
+convolution, denominator-free conditional-binomial variance, a central
 Chebyshev window retaining at least `1-C^(-2)` of mass, the corrected column-load formula
 `gL/(delta log X)`, subpower cutoff/product and source-prime deletion bounds, both parity-reversing
 breadth directions, and a Hellinger/chi-square endpoint with unmatched mass. It assumes no
-short-interval rough-token lower bound, column-balance source, or recurrence seam estimate. Once
-certified, the physical frontier is therefore not further mixture algebra: prove the actual source
+short-interval rough-token lower bound, column-balance source, or recurrence seam estimate. The
+physical frontier is therefore not further mixture algebra: prove the actual source
 token density `delta >= gL/log X` columnwise and the normalized co-moving seam recurrence.
 
 The independent analytic support layer is now closed to two exact interfaces. The complete
@@ -896,8 +904,12 @@ longer missing:
 A committed but not yet umbrella-reachable adiabatic endpoint theorem proves strong convergence
 of the exponential gauge to the identity in Meyer's actual projective topology, with explicit
 seminorm loss absorbed by two stronger exponential weights. This closes pointwise-versus-source
-topology control for the Möbius adiabatic family. It does not identify the limiting source with
-the fixed Burnol/Deninger physical landing, so the singular specialization below remains open.
+topology control for the Möbius adiabatic family. A second committed unwired module constructs the
+full all-integer inverse `sum mu(n)n^(-a)h(log(nx))` through that exact gauge, specializes it at
+`a=0` to the canonical critical preimage, and proves every polynomial moment finite for all
+`a>=0`. Source formation and critical adiabatic passage are therefore closed pending umbrella
+certification. Neither theorem identifies the limit with the fixed Burnol/Deninger physical
+landing, so the singular specialization below remains open.
 
 The converse Schwartz bootstrap, endpoint recovery, and exact kernel are no longer paper-only or
 unwired. The new theorem `deningerCommutator_exact_kernel` is umbrella-reachable and proves the
@@ -2176,6 +2188,14 @@ continuation/noncancellation of the complete prime-zeta-minus-mesh-minus-holonom
 `Re s=-1/2`, or the equivalent finite-stage source/divisor cancellation through the cofinal
 limit. The reflected two-line scalar quadrature is closed and should not be pursued.
 
+A committed but not yet umbrella-reachable Abel-threshold module closes the local bridge from
+prime-gap moments to this mesh. If the prefix gap-square moment grows like `p_M^theta` for any
+`theta<3/2`, the critical energy is summable; the concrete `theta=11/8` specialization closes the
+whole complex half-strip mesh. Thus the only literature-to-Lean debt in this component is the
+published unconditional consecutive-prime-gap moment itself in the required prefix form, plus
+umbrella certification of the already-proved Abel bridge. Neither supplies the remaining
+Hardy/Wold noncancellation theorem.
+
 ### Tight-source coalitional / collective-repair architecture
 
 The new universal-law theorems expose another possible producer grammar. Positive-carrier
@@ -2722,6 +2742,7 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 - formal/GaloisForLFunctions/RHTower/RouteEPhysicalShellParityEnergyRegression.lean
 - formal/GaloisForLFunctions/RHTower/RouteEProductTruncatedReservoirMass.lean
 - formal/GaloisForLFunctions/RHTower/RouteESourceFaithfulEulerTiltUnitShell.lean
+- formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementBreadthMixture.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/HarmonicReservoirCapacity.lean
 - formal/GaloisForLFunctions/RHTower/RouteEForbiddenSupportStability.lean
 - formal/GaloisForLFunctions/RHTower/RouteECofactorParityBalance.lean
@@ -3240,6 +3261,7 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussHodgePencilSourcing.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilPolarizationFusion.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilGNSSocket.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeWeilKreinDecomposition.lean
 - formal/GaloisForLFunctions/RHTower/GaussReciprocalCharacterAdmission.lean
 - formal/GaloisForLFunctions/HTGeometry/HyperbolicBounds.lean
 
@@ -3249,13 +3271,14 @@ These unconditional files are committed but not reached by a committed project u
 cutoff. Their implications are recorded provisionally above, but they receive no formal anchor
 credit until wired:
 
-- `formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementBreadthMixture.lean` — exact finite
-  entropy-complement convolution, central-window recovery, corrected load threshold, deletion and
-  parity laws, and Hellinger/chi-square endpoint;
 - `formal/GaloisForLFunctions/RHTower/SuzukiMovableAnchorClarkCoherence.lean` — movable Donoghue
   normalization, Clark phase speed, and the source-coherence fragmentation budget;
 - `formal/GaloisForLFunctions/RHTower/DeningerMeyerAdiabatic.lean` — strong adiabatic gauge
-  convergence in the projective Meyer topology.
+  convergence in the projective Meyer topology;
+- `formal/GaloisForLFunctions/RHTower/DeningerAdiabaticMobiusPreimage.lean` — literal all-integer
+  adiabatic Möbius inverse, critical specialization, and all polynomial moments;
+- `formal/GaloisForLFunctions/RHTower/XiHeatCassiniPrimeGapMomentThreshold.lean` — exact
+  `theta<3/2` Abel threshold and concrete `11/8` prefix-moment bridge to the full Route-T mesh.
 
 ## Final frontier statement
 

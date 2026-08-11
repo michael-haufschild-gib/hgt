@@ -1,13 +1,14 @@
 # Route E product-truncated reservoir harmonic-mass law
 
 - **ID:** `ROUTE-E-PRODUCT-TRUNCATED-RESERVOIR-MASS-001`
-- **Stage:** 2-fully-proven
-- **Type:** `[PAPER-PROVED] [EXACT FINITE INEQUALITY] [WHOLE-ANCHOR FRONTIER REDUCTION]`
+- **Stage:** 3-formalized
+- **Type:** `[LEAN-CERTIFIED] [EXACT FINITE INEQUALITY] [WHOLE-ANCHOR FRONTIER REDUCTION]`
 - **Parent:** `route-e-whole-anchor-capacity-displacement-conservation-law.md`
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** not started; Lean corpus was read only during active refactor
+- **Lean status:** dependency-closed exact theorem formalized in
+  `formal/GaloisForLFunctions/RHTower/RouteEProductTruncatedReservoirMass.lean`
 - **Scientific status:** project-local new synthesis; external priority unclaimed
 
 ## 1. Exact theorem
@@ -283,4 +284,35 @@ after subset formation.  Fine physical incidence is sole whole-anchor obstructio
 - Mertens/PNT inputs in `(16)` already exist in project corpus.
 - New knowledge is exact product-truncation lower bound and its cofinal Route E parameter regime.
 - Result does not rename row normalization as Hall capacity.
-- No literature search, computation, Lean edit, or Lean build was performed.
+- No literature search or numerical computation was used.
+
+## 9. Formalization and exact scope
+
+`[LEAN-CERTIFIED]` for every dependency-closed finite assertion carrying new content:
+
+1. `weightedBirthdayCollisionBound` proves `(8)` before normalization, by an explicit injection
+   from every non-injective tuple into a marked colliding pair;
+2. `weightedProductTruncationLowerBound` and
+   `weightedProductTruncationLowerBound_normalized` prove `(4)` for arbitrary finite weighted
+   types and nonnegative logarithmic energy;
+3. `productTruncatedHarmonicMass_lowerBound` specializes that theorem to finite prime reservoirs,
+   with product truncation converted exactly to logarithmic-energy truncation;
+4. `harmonicSum_ge_mertensWindow`, `harmonicLogMoment_le`, and `harmonicSquareSum_le` discharge
+   the three prime-window estimates by existing explicit corpus bounds, with no asymptotic premise;
+5. `productTruncatedMass_ge_explicitMertens` is an exact finite replacement for the asymptotic
+   specialization `(16)`--`(17)`; and
+6. `sevenTenths_fullMass_le_productTruncatedMass` proves the displayed (7/10) retention whenever
+   its explicit collision-plus-tail budget is at most (3/10).
+
+The cofinal notation in `(13)`--`(19)` is paper-level interpretation of this stronger finite
+certificate. In particular, `(19)` is not being counted as an independent Lean theorem: its only
+Route E input is the certified (7/10) mass law, while its Stirling rewriting adds no new
+reservoir mechanism. Module is wired through `formal/GaloisForLFunctions/RHTower.lean`.
+
+Foreground `lake env lean` verification succeeds. `#print axioms` on ten capstones reports only
+Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, or
+analytic conjecture enters the proof.
+
+`[OPEN]` exactly as in Section 7: local rough-token/source-layer convolution, quadratic physical
+column balance, and normalized recurrence/seam accumulation. Product-truncated harmonic mass is
+no longer part of the open core.

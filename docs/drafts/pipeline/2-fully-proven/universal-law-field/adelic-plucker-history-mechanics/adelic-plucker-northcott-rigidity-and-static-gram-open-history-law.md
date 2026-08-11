@@ -36,6 +36,18 @@ This is the basis set of the represented column matroid.  Let `u_i in K^×` and 
 Let `P_m=[p_B(m)]_(B in mathcal B)` be the projective Plücker packet and `h(P_m)` its absolute
 logarithmic projective height.
 
+Fix an active label `b` and define the complete relative response height
+
+\[
+ \mathcal H_b(m)=\sum_{i\in E_{\mathrm{act}}}
+ h\!\left(\left(\frac{u_i}{u_b}\right)^m\right),
+ \tag{APN.3a}
+\]
+
+where `E_act` is the set of nonloop labels.  This is projectively invariant under common scaling
+of all intervention characters.  It is also coefficient-free: the initial minors choose the
+active relation chart, while `mathcal H_b` measures only its generated diagonal history.
+
 Two bases are adjacent when `B'=B-{i}+{j}` for `i in B`, `j notin B`.  The basis graph is
 connected: if `B != C`, basis exchange supplies `j in C\B` and `i in B\C` with
 `B-i+j` a basis, reducing `|B\C|`; induction reaches `C`.
@@ -54,9 +66,10 @@ For every adjacent exchange `B'=B-i+j`,
  \tag{APN.4}
 \]
 
-Consequently the `m=1` exchange responses reconstruct every ratio `u_j/u_i` on an exchange edge.
-Products along paths reconstruct all ratios within each exchange-connected component, independently
-of the path because they come from the already existing vertex labels `u_i`.
+Consequently the `m=1` exchange responses reconstruct every ratio `u_j/u_i` on an edge of the
+**element-exchange graph**.  Products along paths reconstruct all ratios inside each connected
+component of that graph, independently of path because they come from the already existing vertex
+labels `u_i`.  This reconstruction graph is distinct from the basis graph used below.
 
 #### Proof
 
@@ -88,6 +101,30 @@ This is the conservation law joining the relation organ (basis exchange), the in
 completion is used.
 
 ## 3. Northcott classification
+
+### Theorem 3.0 — exact complete-height law
+
+For every `m>=0`,
+
+\[
+ \boxed{\mathcal H_b(m)=m\mathcal H_b(1).}
+ \tag{APN.5a}
+\]
+
+Moreover, the following are equivalent:
+
+1. `mathcal H_b(1)=0`;
+2. `mathcal H_b(m)` is bounded for `m>=0`;
+3. every relative character `u_i/u_b` is a root of unity;
+4. the normalized relative packet `((u_i/u_b)^m)_i` is periodic from time zero.
+
+#### Proof
+
+Height homogeneity gives `h(x^m)=m h(x)` termwise, proving `(APN.5a)`.  Every summand is
+nonnegative, and Kronecker's height-zero theorem says it vanishes exactly on roots of unity.  A
+finite family of torsion characters has a common exponent, giving periodicity.  Conversely any
+positive period kills every relative character.  Finally, exact linear growth makes boundedness
+equivalent to zero initial height. ∎
 
 ### Theorem 3.1 — bounded history, finite history, and torsion exchange are equivalent
 
@@ -141,6 +178,15 @@ Then for every `m>=0`,
 
 If `beta` is not a root of unity, then `h(beta)>0` by Kronecker's height-zero theorem, and the
 projective history escapes at least linearly.
+
+The complete relative height gives the coefficient-free stronger estimate
+
+\[
+ \mathcal H_b(m)\ge m h(u_j/u_i)
+ \tag{APN.6a}
+\]
+
+whenever that exchange ratio is reconstructed inside the active component.
 
 #### Proof
 
@@ -273,4 +319,3 @@ Formalize only after hostile paper audit.  Required surface:
 5. umbrella import and axiom audit.
 
 No RH declaration belongs in this module.
-

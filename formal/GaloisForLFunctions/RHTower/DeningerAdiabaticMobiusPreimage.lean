@@ -88,11 +88,23 @@ theorem deningerAdiabaticMobiusPreimage_eq_tsum
                 𝓢(ℝ, ℂ))) (Real.log (n : ℝ) + Real.log x))) = _
     rw [Real.rpow_def_of_pos hx]
     simp only [deningerAdiabaticMobiusCoefficient]
-    push_cast
-    rw [← Real.exp_add]
-    congr 1
-    · ring
-    · ring
+    have hscalar :
+        Real.exp (Real.log x * a) *
+            Real.exp (-a * (Real.log (n : ℝ) + Real.log x)) =
+          Real.exp (-a * Real.log (n : ℝ)) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    have hscalarC := congrArg (fun y : ℝ => (y : ℂ)) hscalar
+    calc
+      _ = ((moebius n : ℤ) : ℂ) *
+          (((Real.exp (Real.log x * a) *
+            Real.exp (-a * (Real.log (n : ℝ) + Real.log x)) : ℝ) : ℂ) *
+              (((DeningerMeyerSource.toSource h : DeningerExpSchwartz) :
+                𝓢(ℝ, ℂ))) (Real.log (n : ℝ) + Real.log x)) := by ring
+      _ = _ := by
+        rw [hscalarC, map_mul]
+        ring
 
 /-- The adiabatic family specializes exactly to the canonical critical preimage. -/
 @[simp]
@@ -125,15 +137,22 @@ theorem deningerAdiabaticMoment_aestronglyMeasurable
       (volume.restrict (Set.Ioi (0 : ℝ))) := by
   have hpow : AEStronglyMeasurable (fun x : ℝ => ((x ^ a : ℝ) : ℂ))
       (volume.restrict (Set.Ioi (0 : ℝ))) :=
-    ((Complex.measurable_ofReal.comp
-      ((continuousOn_id.rpow_const fun x hx => Or.inl hx.ne').measurable
-        measurableSet_Ioi)).aestronglyMeasurable).mono_measure Measure.restrict_le_self
+    (Complex.continuous_ofReal.comp_continuousOn
+      (continuousOn_id.rpow_const fun _ hx => Or.inl hx.ne')).aestronglyMeasurable
+        measurableSet_Ioi
   have hpre := deningerMobiusPreimage_aestronglyMeasurable
     (DeningerMeyerSource.toSource (deningerAdiabaticSource a h)).2
   have hnat : AEStronglyMeasurable (fun x : ℝ => ((x ^ r : ℝ) : ℂ))
       (volume.restrict (Set.Ioi (0 : ℝ))) :=
     (Complex.measurable_ofReal.comp (measurable_id.pow_const r)).aestronglyMeasurable
-  simpa only [deningerAdiabaticMobiusPreimage, mul_assoc] using hnat.mul (hpow.mul hpre)
+  change AEStronglyMeasurable
+    ((fun x : ℝ => ((x ^ r : ℝ) : ℂ)) *
+      ((fun x : ℝ => ((x ^ a : ℝ) : ℂ)) *
+        deningerMobiusPreimage
+          (((DeningerMeyerSource.toSource (deningerAdiabaticSource a h) :
+            DeningerExpSchwartz) : 𝓢(ℝ, ℂ)))))
+      (volume.restrict (Set.Ioi (0 : ℝ)))
+  exact hnat.mul (hpow.mul hpre)
 
 /-- **All polynomial moments of the full adiabatic inverse are finite**, including the critical
 `r = 0` moment.  At `a = 0` this uses the PNT-strength cancellation already built into the
@@ -159,9 +178,8 @@ theorem deningerAdiabaticMobiusPreimage_moment_integrable
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   have hx0 : (0 : ℝ) < x := hx
   have hpow := deninger_rpow_le_one_add_pow ha haN hx0
-  rw [deningerAdiabaticMobiusPreimage, norm_mul, norm_mul, norm_mul,
-    Complex.norm_real, Complex.norm_real, Complex.norm_real,
-    Real.norm_eq_abs, Real.norm_eq_abs, Real.norm_eq_abs,
+  simp only [deningerAdiabaticMobiusPreimage, norm_mul, Complex.norm_real,
+    Real.norm_eq_abs,
     abs_of_nonneg (pow_nonneg hx0.le r), abs_of_nonneg (Real.rpow_nonneg hx0.le a),
     abs_of_nonneg (pow_nonneg hx0.le (r + N))]
   change x ^ r * (x ^ a * ‖g x‖) ≤ x ^ r * ‖g x‖ + x ^ (r + N) * ‖g x‖

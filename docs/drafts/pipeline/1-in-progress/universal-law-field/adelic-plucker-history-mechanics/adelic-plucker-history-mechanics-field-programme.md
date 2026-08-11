@@ -63,9 +63,11 @@ It obeys the exact all-place conservation law
  \tag{APH.4}
 \]
 
-The first response reconstructs every relative intervention character on the basis-exchange
-graph.  Bounded projective height of the complete Plücker orbit is equivalent to periodicity of
-that orbit and to torsion of every exchange ratio `u_j/u_i`.
+The first response reconstructs every relative intervention character on the element-exchange
+graph.  Its complete relative height obeys the exact law `mathcal H_b(m)=m mathcal H_b(1)` and is
+bounded exactly when the normalized character packet is periodic.  Bounded standard projective
+height of the complete Plücker orbit is likewise equivalent to periodicity and to torsion of every
+exchange ratio `u_j/u_i`.
 
 ## 3. Withheld fourth-organ prediction
 
@@ -146,4 +148,3 @@ that construction may torsion rigidity be compared with the critical-line charac
 - [x] explicit non-torsion unit-modulus witness
 - [ ] source-normal Xi formation frame over a fixed-degree adelic family
 - [ ] RH selection, only after the preceding gate
-

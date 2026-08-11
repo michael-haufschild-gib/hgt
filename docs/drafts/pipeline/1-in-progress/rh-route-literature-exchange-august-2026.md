@@ -43,7 +43,9 @@ telescope in umbrella Lean. Relative one-step and double-defect control close th
 depth for every `m>=2`, and the actual operator logarithmic residue is closed at `m=2`; depth two
 and beyond (`m>=3`) remains local. Its assembled Hodge mass is already nonnegative with exact
 critical radical; missing theorem is a global annihilating trace, not local sign. The hierarchy
-remains an adjacent Connes candidate. The
+now has an exact GNS receiver socket: a square realization of the diagonal Weil form is equivalent
+to RH and to Hodge-mass vanishing, but no unconditional square realization is constructed. The
+hierarchy remains an adjacent Connes candidate. The
 commutative Choquet--Shilov/C*-envelope model is closed; no arithmetic operator system is
 instantiated. The Cassini--Wold/Deninger lower-half chain is now umbrella-reachable. It identifies
 its producer with Route T, proves residual connection smoothness, absolute convergence, and a
@@ -53,11 +55,15 @@ valuations, and a nonzero valuation-one Wold residue at every translated off-cri
 Continuation/noncancellation of the complete identity toward the physical Laplace wall remains
 open. Route U now has strict canonical Jacobi source flow throughout every finite positive chamber
 and a Lean classification of every fixed positive even first contact: one positive rank-fill block
-is followed by an indefinite block. Remaining escape is cofinal drift of contact order/degree.
+is followed by an indefinite block, and the higher-contact two-amplitude source matrix is
+intrinsically indefinite. Remaining escape is cofinal drift of contact order/degree.
 Route L's cofinal prime-period tomography is algebraically injective but topologically non-strict;
 its source and circle targets are formal Fréchet spaces and the source-specific tomography range is
 formally nonclosed. Two-endpoint Stokes normalization removes only the Haar ambiguity while the
 surviving coinvariant space, hence normalized-observer freedom, is infinite-dimensional.
+Three additional committed modules are not umbrella-reachable and receive only provisional
+scientific classification: Route E's exact finite entropy-complement load/mixture theorem, Route
+G's movable-anchor Clark coherence budget, and Route L's strong Meyer adiabatic endpoint.
 Three further Route-V candidates have acquired exact formal mechanisms without becoming routes: a
 conservative Euler-shell/Witt completion has a zero-exclusion endpoint but no constructed joint
 source inverse pair; triptic orbital-divisor normal form has exact additive and multiplicative
@@ -633,6 +639,15 @@ this subgate is the theta-specific skewness budget
 `-mu*kappa_3 <= (mu-v)(mu+2v)`. Generic moment positivity does not imply it, and even its proof
 would not construct the cofinal two-angle producer.
 
+A committed but unwired movable-anchor theorem gives the sharp positive survivor of real-axis
+overcrowding. It derives the normalized Donoghue kernel, Nevanlinna atom weight, and Clark phase
+speed, and identifies Clark probability with squared source coherence. Any finite orthonormal
+family has total coherence at most one, so one of `N` extension modes has coherence at most
+`1/N`; a fixed positive coherence floor bounds `N`. Cofinal orthonormal proliferation therefore
+fragments a fixed source anchor. The remaining G mechanism must supply a source-derived
+moving-anchor/two-angle coherence allocation, not more abstract self-adjoint extensions. No exact
+external collision was located for this combined movable-anchor/source-budget statement.
+
 **External contribution.** Suzuki's
 [Weil quadratic form via the screw function](https://arxiv.org/abs/2606.09096) proves the concrete
 Friedrichs realization, continuity of the lowest eigenvalue, small-aperture positivity/simplicity
@@ -915,6 +930,12 @@ Calderón--Witt incidence, and source-to-Xi graph landing. It also proves severa
   is injective and continuous, its inverse on the range is discontinuous, and its range is not
   closed. These theorems prove the required comparison is genuinely singular/noncompact; they do
   not supply physical specialization.
+
+A committed but unwired adiabatic module proves strong convergence of the exponential gauge to
+the identity in Meyer's projective topology, with an explicit output-seminorm estimate against
+finitely many two-weights-stronger input seminorms. This closes the source-topology endpoint needed
+to pass from the adiabatic Möbius family to its critical source. It does not identify that limit
+with the fixed Burnol/Deninger physical landing, so Route L's singular comparison remains open.
 
 Umbrella-reachable inverse-capacity and weighted-port theorems quantify the last closure statement
 for finite-dimensional targets: infimal lift norms along a cofinal port tower converge to a
@@ -1367,7 +1388,9 @@ critical half-plane. The valuation-one current has a meromorphic continuation, a
 off-critical zeta zero `rho` with `Re rho>1/2` contributes nonzero residue `-mult(rho)` at
 `s=rho-1`; later shifts and the higher-valuation tail cannot cancel it. Lean also proves a
 two-sided mesh theorem: at critical depth, absolute mesh-defect convergence is equivalent to the
-weighted consecutive-prime-gap energy. Symbol and Wold pole formation are therefore closed;
+weighted consecutive-prime-gap energy. The critical energy monotonically controls the full
+complex mesh series throughout `-1/2 <= Re s <= 0`, hence every shifted zero in
+`1/2 <= Re rho <= 1`; height changes only a fixed prefactor. Symbol and Wold pole formation are therefore closed;
 continuation/noncancellation of the complete Hardy identity toward the physical wall is not.
 
 **External contribution.** Hedenmalm's
@@ -1501,7 +1524,10 @@ contact occurs at order `2n+2m`, admitted amplitude `P X^(m-1)` emits source
 `2(n+m) delta_(2n+2m)`. Positive contact makes `H_(n+m+1)` PSD but forces
 `H_(n+m+2)` indefinite. A fixed flat face therefore has exactly one-block positive rank-fill
 capacity. The bilinear precursor identifies this admitted source/shear with the first Padé defect
-before scalarization.
+before scalarization. Its newest polarization law is stronger: at every first contact of order at
+least three, the Hermitian source matrix on the base null amplitude and lifted amplitude has zero
+base diagonal and nonzero cross entry, so neither it nor its negative is positive semidefinite.
+Two-amplitude PSD completion therefore cannot orient the higher contact.
 
 **External contribution.** Berg--Szwarc's
 [Hankel determinant analysis](https://arxiv.org/abs/1405.7267) and Salazar's
@@ -2050,7 +2076,10 @@ External results that can still strengthen a live route, in dependency order, ar
    T's exact prime-log quadrature. This closes only the main mesh, not continuation of the explicit
    safe-side symbol through the physical Laplace wall.
 
-Local certification backlog should not be confused with literature import. C1's exact-source
+Local certification backlog should not be confused with literature import. The current committed
+but unwired queue is `RouteEEntropyComplementBreadthMixture.lean`,
+`SuzukiMovableAnchorClarkCoherence.lean`, and `DeningerMeyerAdiabatic.lean`; their provisional route
+effects are recorded above, but they are excluded from formal credit at this cutoff. C1's exact-source
 spectrum and multiplicity, determinant identity, Riesz/Jordan analysis, essential
 inverse-flow/Weil package, squared Cayley receiver, closed weighted derivative,
 shifted-cokernel/source equation, and supersymmetric Dirac realization are all umbrella-reachable.
