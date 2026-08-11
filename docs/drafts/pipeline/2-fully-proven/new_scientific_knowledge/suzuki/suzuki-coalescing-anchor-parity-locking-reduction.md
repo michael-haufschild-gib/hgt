@@ -6475,7 +6475,82 @@ and the exact `1/57` scalar threshold are Lean-proved in
 `HTGeometry/RidgeMatchedCoherenceBarrier.lean`; operator whitening and the literal moving-block
 transport remain paper-level.  Route G is still open in both alternatives.
 
-### 14.46 Conjecture loop and novelty correction
+### 14.46 Cross capacity kills direct-tail saturation
+
+The first branch of Theorem BB looks possible only if the normalized cross operator approaches an
+isometry extraordinarily fast.  The same unnormalized capacity that could not bound `rho` away
+from the target threshold does prevent this near-perfect saturation.
+
+#### Theorem BC — capacity gap and source-cyclic survival
+
+For every nonzero low/high pair with normalized coherence `eta`, unregularized Rayleigh energies
+`q_L,q_H`, and regularized energies `R_L=q_L+r`, `R_H=q_H+r`, equations `(430)` and `(442)` imply
+
+```text
+eta sqrt(R_LR_H)<=C_T,
+R_L,R_H>=r/(1-eta^2),
+
+eta r<=C_T(1-eta^2).                                  (459)
+```
+
+Passing to the supremum in `(418)` gives the exact block gap law
+
+```text
+rho r<=C_T(1-rho^2).                                  (460)
+```
+
+On a high-assisted branch `rho>=1/4` eventually, so
+
+```text
+1-rho^2>=r/(4C_T)
+ >>r/log(r^(-1)+2)^2.                                 (461)
+```
+
+The literal source tail at `T=r^(-4)` has the stronger rate
+
+```text
+tau_H<=||u_H||^2/r=O(r^3 log(r^(-1)+2)).              (462)
+```
+
+Therefore the direct branch `(456)` would require simultaneously
+
+```text
+r/[4C_T]<=1-rho^2
+ <64 tau_H=O(r^3 log(r^(-1)+2)),                      (463)
+```
+
+which is impossible because `C_T=O(log(r^(-1)+2)^2)`.  Hence every sufficiently large
+high-assisted index lies in the second branch of Theorem BB:
+
+```text
+beta_src>1/57.                                        (464)
+```
+
+#### Proof
+
+The first line of `(459)` is cross capacity.  From `(442)`, each visibility factor is at least
+`eta^2`; hence
+
+```text
+q_L>=eta^2(q_L+r), q_H>=eta^2(q_H+r),
+```
+
+which gives the second line and then the third.  The function
+`eta/(1-eta^2)` is increasing on `[0,1)`, so near-maximizers pass `(459)` to `(460)`.  Theorem AV
+gives `rho>=1/4`, proving `(461)`.  Equations `(374)` and `(379)`, together with `D>=rI`, prove
+`(462)`.  Substitution into `(456)` yields `(463)` and the contradiction.  Theorem BB then leaves
+only `(464)`.
+
+The capacity/visibility gap is elementary Hilbert-space algebra and is not claimed new.
+Candidate-new content is the exact Suzuki consequence: the literal reciprocal-square high-source
+tail vanishes two powers of `r` too fast to exploit near-perfect complementary-Schur saturation.
+Thus global coherence is no longer a two-branch ambiguity; every high-assisted survivor must be
+carried by the cyclic singular spectrum of the low source.  The scalar capacity-gap inequality and
+the exact finite-index incompatibility criterion `256 C_T tau_H<=r` are Lean-proved in
+`HTGeometry/RidgeMatchedCoherenceBarrier.lean`; the Xi tail/capacity asymptotics remain paper-level.
+This closes the direct-tail branch, not Route G.
+
+### 14.47 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -6957,6 +7032,16 @@ transport remain paper-level.  Route G is still open in both alternatives.
 151. **The source-amplification dichotomy closes Suzuki -- failed.**  Current Xi sinc-Gram
      knowledge excludes neither near-perfect saturation at the tail rate nor source-cyclic
      spectrum above `1/57` inside the polynomial collar.
+152. **Near-perfect saturation can amplify the vanishing direct tail -- failed for literal
+     Suzuki.**  Visibility plus unregularized cross capacity forces
+     `rho r<=C_T(1-rho^2)`.
+153. **The capacity gap is too weak because `C_T` grows -- failed quantitatively.**  Its growth is
+     only logarithmic, so high assistance forces `1-rho^2>>r/log^2(1/r)`.
+154. **That lower gap remains compatible with direct-tail gain -- failed.**  The literal high
+     source has `tau_H=O(r^3log(1/r))`; direct amplification needs
+     `1-rho^2<64tau_H`, two powers of `r` smaller than the capacity floor.
+155. **Both Theorem BB branches remain live -- failed.**  The direct branch is now closed.  Every
+     high-assisted survivor must force low-source cyclic squared singular spectrum above `1/57`.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -6989,6 +7074,7 @@ Ultraviolet ultranull abundance, including multiplicities, is `(435)--(441)`; th
 visibility correction is `(442)--(446)`.
 The polynomial coherence horizon and collar-mass floor are `(447)--(451)`.
 The source-amplification dichotomy and cyclic threshold are `(452)--(458)`.
+The capacity-gap exclusion of direct-tail amplification is `(459)--(464)`.
 The internal novelty audit found a direct parent for the compact-group parts of Theorems AL and
 AN: the already-formalized `suzuki-screw-compact-hull-parity-law.md` proves the universal relation
 hull, cofinal recurrence, Haar law, and homogeneous all-minus-one parity criterion.  Accordingly
@@ -7008,6 +7094,7 @@ The multiplicity-robust ultraviolet ultranull construction is `(435)--(441)`.
 The exact visibility barrier and ridge-matched frontier correction are `(442)--(446)`.
 The polynomial ordinate horizon and necessary collar mass are `(447)--(451)`.
 The direct-tail/source-cyclic amplification dichotomy is `(452)--(458)`.
+The exact capacity gap and surviving source-cyclic threshold are `(459)--(464)`.
 The pure-frequency Nikolskii inequality used for the former and the
 Paley--Wiener/Jensen uniqueness mechanism used for the latter are classical and are not claimed
 new.  Targeted arXiv searches found

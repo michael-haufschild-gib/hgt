@@ -447,6 +447,26 @@ theorem sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_e
   rw [sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_eq_tame hN u,
     ← sourceHorizontalGammaSixShellProfile_eq_tameReaderTransgression hN u]
 
+/-- The regulator kernel is strictly larger than the kernel of nonlinear character evaluation:
+already the two-shell class has a negative readout at every positive horizontal character. -/
+theorem sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_two_neg
+    {u : ℝ} (hu : 0 < u) :
+    sourceHorizontalGammaSixExponentCharacterReadout (u / (2 : ℕ))
+        (sourceHorizontalGammaSixHarmonicBoundaryClass 2) < 0 := by
+  rw [sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass
+    (N := 2) (by norm_num) u]
+  norm_num [sourceHorizontalGammaSixShellClock, Finset.sum_range_succ]
+  have hsinh : 0 < Real.sinh (u / 2) :=
+    Real.sinh_pos_iff.mpr (by linarith)
+  have hcosh0 : 0 < Real.cosh (u / 2) := Real.cosh_pos _
+  have hcosh1 : 1 < Real.cosh (u / 2) := by
+    nlinarith [Real.cosh_sq (u / 2)]
+  have hdouble :
+      Real.sinh u = 2 * Real.sinh (u / 2) * Real.cosh (u / 2) := by
+    convert Real.sinh_two_mul (u / 2) using 1 <;> ring
+  rw [hdouble]
+  nlinarith
+
 end
 
 end RHTower

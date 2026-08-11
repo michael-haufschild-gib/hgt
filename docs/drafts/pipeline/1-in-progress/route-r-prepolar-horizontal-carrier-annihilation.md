@@ -2242,7 +2242,14 @@ rename RH.
 grade-flat, and linear singular-trace producers.  They leave one precise quadratic relative-index
 comparison, not a terminal death proof.
 
-**Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+**Status:** paper proof and Lean formalization complete.  Module
+`RHTower/RouteRDegreeSixBVGreenNeutralFinitePart.lean` identifies the scalar coefficient with the
+actual BV--Green boundary operator, proves the exact harmonic cutoff (C28.1), its limit (C28.2),
+the neutral modular derivative (C28.3), and their equality.  In particular,
+`deningerDegreeSixBVGreenNeutralBocksteinJet_ne_zero` and
+`not_tendsto_deningerDegreeSixBVGreenDiagonalCutoff_zero` formally exclude grade-flat trace
+annihilation at degree six.  Targeted module build and axiom audit pass with only
+`[propext, Classical.choice, Quot.sound]`.
 
 ## C29. Closed positive descent also erases the prime atom
 

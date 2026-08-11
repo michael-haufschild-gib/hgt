@@ -595,6 +595,9 @@ A proposed closure fails if it:
 - [x] full corrected-source shell amplification and trace-class remainder
 - [x] nonzero weak-trace Green principal class and Wold coface modulo trace class
 - [x] operator-ideal realization of critical-edge Köthe seminorms
+- [x] unconditional Lean realization of exact sorted shell approximation numbers, nonzero
+  weak-Schatten principal operator, shell trace mass, Wold scaling, and strict two-edge projective
+  domain
 - [x] exact normalized Green Gibbs reader equal to the physical BV/Deninger coefficient
 - [x] principal-ideal classification of every finite source-valued common coface
 - [x] literal exponent-deformation source and actual-multiplicity exceptional-fibre limit
@@ -611,6 +614,12 @@ A proposed closure fails if it:
 
 ## Log
 
+- 2026-08-11 — Formalized the actual Gamma-six leading shell operator. Exact sorted approximation
+  numbers are `6^(-floor(log_6(n+216)))`; the operator is weak Schatten one but not trace class,
+  complete shell mass is five, literal Wold coordinate multiplication scales by `1/6`, and the
+  positive-power projective trace domain contains both reflected edges exactly at zero horizontal
+  rate. This closes principal operator-ideal infrastructure but not the vector-valued corrected
+  Möbius remainder or its global completed-Xi chain comparison.
 - 2026-08-11 — Constructed and formalized the missing local singular source comparison. The
   literal exponent deformation `zeta(s)/zeta(zs)` has an actual-multiplicity exceptional fibre
   `(w/(w+rho))^d`; reflected exceptional pole displacement is exactly the Xi Green fracture; the

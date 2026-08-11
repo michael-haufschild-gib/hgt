@@ -74,6 +74,13 @@ theorem inverseDegree_eq_twoSidedInverseLoad
   rw [if_neg (by linarith : 1 + K.columnLoad i ≠ 0)]
   rfl
 
+theorem isolatedResidual_eq_zero_of_fullRow
+    (K : RouteERecurrenceKernel ι) (hrow : ∀ i, K.rowMass i = 1) (i : ι) :
+    K.toWeightedGibbsGraph.isolatedResidual i = 0 := by
+  rw [RouteEWeightedGibbsGraph.isolatedResidual, if_neg]
+  rw [K.toWeightedGibbsGraph_degree, hrow]
+  linarith [K.columnLoad_nonneg i]
+
 /-- **Ordinary column-load gradient reduction.** -/
 theorem inverseDegreeDirichletEnergy_le_four_columnLoadDirichletEnergy
     (K : RouteERecurrenceKernel ι) (hrow : ∀ i, K.rowMass i = 1) :
@@ -101,6 +108,54 @@ theorem inverseDegreeDirichletEnergy_le_four_columnLoadDirichletEnergy
     _ = 4 * (K.toWeightedGibbsGraph.base p.1 p.2 *
           K.toWeightedGibbsGraph.weight p.2 *
             (K.columnLoad p.1 - K.columnLoad p.2) ^ 2) := by ring
+
+/-- Full two-sided rows turn the recurrence Dirichlet bridge into an ordinary column-load
+gradient bound, with no isolated term and no hidden denominator. -/
+theorem abs_signedCurrent_le_columnLoadDirichletBridge
+    (K : RouteERecurrenceKernel ι) (hrow : ∀ i, K.rowMass i = 1) :
+    |K.toWeightedGibbsGraph.signedCurrent| ≤
+      K.laplace * K.displacement * K.toWeightedGibbsGraph.totalWeight +
+        Real.sqrt
+          ((1 + Real.exp (K.laplace * K.displacement)) *
+            K.toWeightedGibbsGraph.totalWeight * K.columnLoadDirichletEnergy) := by
+  have hbridge := K.abs_signedCurrent_le_recurrenceDirichletBridge
+  have hisolated : ∑ i, K.toWeightedGibbsGraph.isolatedResidual i = 0 := by
+    apply Finset.sum_eq_zero
+    intro i _hi
+    exact K.isolatedResidual_eq_zero_of_fullRow hrow i
+  rw [hisolated, zero_add] at hbridge
+  let A := (1 + Real.exp (K.laplace * K.displacement)) *
+    K.toWeightedGibbsGraph.totalWeight
+  have hA : 0 ≤ A := by
+    dsimp [A]
+    exact mul_nonneg (add_nonneg zero_le_one (Real.exp_pos _).le)
+      (Finset.sum_nonneg fun i _hi => K.toWeightedGibbsGraph.weight_nonneg i)
+  have hE := K.inverseDegreeDirichletEnergy_le_four_columnLoadDirichletEnergy hrow
+  have hcol := K.columnLoadDirichletEnergy_nonneg
+  have hmul : A * K.toWeightedGibbsGraph.inverseDegreeDirichletEnergy ≤
+      4 * (A * K.columnLoadDirichletEnergy) := by
+    have := mul_le_mul_of_nonneg_left hE hA
+    nlinarith
+  have harg : 0 ≤ A * K.toWeightedGibbsGraph.inverseDegreeDirichletEnergy :=
+    mul_nonneg hA K.inverseDegreeDirichletEnergy_nonneg
+  have hcolarg : 0 ≤ A * K.columnLoadDirichletEnergy := mul_nonneg hA hcol
+  have hsqrt : (1 / 2 : ℝ) *
+      Real.sqrt (A * K.toWeightedGibbsGraph.inverseDegreeDirichletEnergy) ≤
+        Real.sqrt (A * K.columnLoadDirichletEnergy) := by
+    have hleft : 0 ≤ (1 / 2 : ℝ) *
+        Real.sqrt (A * K.toWeightedGibbsGraph.inverseDegreeDirichletEnergy) := by positivity
+    have hright : 0 ≤ Real.sqrt (A * K.columnLoadDirichletEnergy) := Real.sqrt_nonneg _
+    apply (sq_le_sq₀ hleft hright).mp
+    rw [mul_pow, Real.sq_sqrt harg, Real.sq_sqrt hcolarg]
+    nlinarith
+  change |K.toWeightedGibbsGraph.signedCurrent| ≤
+      K.laplace * K.displacement * K.toWeightedGibbsGraph.totalWeight +
+        Real.sqrt (A * K.columnLoadDirichletEnergy)
+  change |K.toWeightedGibbsGraph.signedCurrent| ≤
+      K.laplace * K.displacement * K.toWeightedGibbsGraph.totalWeight +
+        (1 / 2 : ℝ) *
+          Real.sqrt (A * K.toWeightedGibbsGraph.inverseDegreeDirichletEnergy) at hbridge
+  linarith
 
 /-- Same-sector residual edge energy. -/
 def sameSectorResidualEnergy

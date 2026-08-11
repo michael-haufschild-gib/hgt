@@ -170,4 +170,51 @@ theorem sourceCyclic_sq_gt_oneFiftySeventh
     (le_div_iff₀ hden).mp henvelope
   nlinarith
 
+/-- Visibility of both packets plus an unregularized cross-capacity bound forces an exact lower
+gap for normalized coherence.  `EL` and `EH` are the two regularized Rayleigh energies. -/
+theorem coherence_capacity_gap
+    {eta r C EL EH qL qH : ℝ}
+    (heta : 0 ≤ eta) (heta1 : eta ≤ 1) (hr : 0 ≤ r) (hC : 0 ≤ C)
+    (hEL0 : 0 ≤ EL)
+    (hEL : EL = qL + r) (hEH : EH = qH + r)
+    (hvisL : eta ^ 2 * EL ≤ qL) (hvisH : eta ^ 2 * EH ≤ qH)
+    (hcapacity : eta ^ 2 * EL * EH ≤ C ^ 2) :
+    eta * r ≤ C * (1 - eta ^ 2) := by
+  have hgap : 0 ≤ 1 - eta ^ 2 := by nlinarith
+  have hL : r ≤ (1 - eta ^ 2) * EL := by
+    rw [hEL] at hvisL
+    nlinarith
+  have hH : r ≤ (1 - eta ^ 2) * EH := by
+    rw [hEH] at hvisH
+    nlinarith
+  have hprod : r * r ≤
+      ((1 - eta ^ 2) * EL) * ((1 - eta ^ 2) * EH) := by
+    gcongr
+  have hsq : (eta * r) ^ 2 ≤ (C * (1 - eta ^ 2)) ^ 2 := by
+    calc
+      (eta * r) ^ 2 = eta ^ 2 * (r * r) := by ring
+      _ ≤ eta ^ 2 *
+          (((1 - eta ^ 2) * EL) * ((1 - eta ^ 2) * EH)) := by gcongr
+      _ = (1 - eta ^ 2) ^ 2 * (eta ^ 2 * EL * EH) := by ring
+      _ ≤ (1 - eta ^ 2) ^ 2 * C ^ 2 := by gcongr
+      _ = (C * (1 - eta ^ 2)) ^ 2 := by ring
+  nlinarith [mul_nonneg heta hr, mul_nonneg hC hgap]
+
+/-- The direct-tail amplification branch is incompatible with the capacity gap once
+`256 C tau ≤ r` and coherence is at least `1/4`. -/
+theorem directSource_branch_incompatible_with_capacity
+    {eta r C tau : ℝ}
+    (heta : 1 / 4 ≤ eta) (hr : 0 < r) (hC : 0 ≤ C)
+    (hcapacity : eta * r ≤ C * (1 - eta ^ 2))
+    (hdirect : 1 - eta ^ 2 < 64 * tau)
+    (hsmall : 256 * C * tau ≤ r) : False := by
+  have hetaPos : 0 < eta := lt_of_lt_of_le (by norm_num) heta
+  have hCpos : 0 < C := by
+    by_contra h
+    have hC0 : C = 0 := le_antisymm (le_of_not_gt h) hC
+    rw [hC0] at hcapacity
+    nlinarith [mul_pos hetaPos hr]
+  have hmul := mul_lt_mul_of_pos_left hdirect hCpos
+  nlinarith
+
 end GaloisForLFunctions.HTGeometry
