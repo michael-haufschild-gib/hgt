@@ -27,3 +27,4 @@ limit-continuity failure. It does not call that failure curvature or anomaly by 
 ## Certification
 
 See companion formalization record. Module is wired into dedicated universal-law-field umbrella.
+- 2026-08-11 — Lean surface audited complete against the card; promoted to stage 3.

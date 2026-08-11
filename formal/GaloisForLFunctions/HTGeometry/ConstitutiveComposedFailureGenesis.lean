@@ -273,6 +273,401 @@ theorem composedFailureParity_flip_of_active
             (Finset.mem_univ i)]
           simp [hxi]
 
+/-- In `ZMod 2` distinct elements differ by one. -/
+theorem zmodTwo_eq_add_one_of_ne {a b : ZMod 2} (h : a ≠ b) : b = a + 1 := by
+  revert h
+  revert a b
+  decide
+
+/-! ## Flipping a whole coordinate set -/
+
+/-- Flip every coordinate in a set, leaving inactive coordinates inactive. -/
+def composedFailureFlipSet {I : Type*} [DecidableEq I] (T : Finset I)
+    (x : ComposedFailureConfig I) : ComposedFailureConfig I :=
+  fun j => if j ∈ T then (x j).map (fun b => b + 1) else x j
+
+@[simp] theorem composedFailureFlipSet_empty {I : Type*} [DecidableEq I]
+    (x : ComposedFailureConfig I) : composedFailureFlipSet ∅ x = x := by
+  funext j
+  simp [composedFailureFlipSet]
+
+theorem composedFailureFlipSet_insert {I : Type*} [DecidableEq I]
+    {i : I} {T : Finset I} (hi : i ∉ T) (x : ComposedFailureConfig I) :
+    composedFailureFlipSet (insert i T) x =
+      composedFailureFlip i (composedFailureFlipSet T x) := by
+  funext j
+  by_cases hji : j = i
+  · subst j
+    simp [composedFailureFlipSet, composedFailureFlip, hi]
+  · simp [composedFailureFlipSet, composedFailureFlip, hji, Finset.mem_insert]
+
+theorem composedFailureSupport_flipSet {I : Type*} [Fintype I] [DecidableEq I]
+    (T : Finset I) (x : ComposedFailureConfig I) :
+    composedFailureSupport (composedFailureFlipSet T x) = composedFailureSupport x := by
+  classical
+  ext j
+  by_cases hjT : j ∈ T <;>
+    cases hxj : x j <;>
+      simp [composedFailureSupport, composedFailureFlipSet, hjT, hxj]
+
+theorem composedFailureParity_flipSet {I : Type*} [Fintype I] [DecidableEq I]
+    {x : ComposedFailureConfig I} {T : Finset I}
+    (hT : T ⊆ composedFailureSupport x) :
+    composedFailureParity (composedFailureFlipSet T x) =
+      composedFailureParity x + (T.card : ZMod 2) := by
+  classical
+  induction T using Finset.induction with
+  | empty => simp
+  | @insert i T hi ih =>
+      have hTsub : T ⊆ composedFailureSupport x :=
+        fun j hj => hT (Finset.mem_insert_of_mem hj)
+      have hiS : i ∈ composedFailureSupport x := hT (Finset.mem_insert_self i T)
+      have hactive : composedFailureFlipSet T x i ≠ none := by
+        have : i ∈ composedFailureSupport (composedFailureFlipSet T x) := by
+          rw [composedFailureSupport_flipSet]; exact hiS
+        simpa [composedFailureSupport] using this
+      rw [composedFailureFlipSet_insert hi,
+        composedFailureParity_flip_of_active i _ hactive, ih hTsub,
+        Finset.card_insert_of_notMem hi]
+      push_cast
+      ring
+
+/-- Two records with the same support differ by flipping a subset of that support. -/
+theorem exists_flipSet_of_support_eq {I : Type*} [Fintype I] [DecidableEq I]
+    {x z : ComposedFailureConfig I}
+    (hsupp : composedFailureSupport x = composedFailureSupport z) :
+    ∃ T : Finset I, T ⊆ composedFailureSupport x ∧ composedFailureFlipSet T x = z := by
+  classical
+  refine ⟨Finset.univ.filter fun i => x i ≠ z i ∧ x i ≠ none, ?_, ?_⟩
+  · intro i hi
+    have := (Finset.mem_filter.mp hi).2.2
+    simpa [composedFailureSupport] using this
+  · funext j
+    by_cases hj : x j ≠ z j ∧ x j ≠ none
+    · obtain ⟨hne, hnone⟩ := hj
+      have hjS : j ∈ composedFailureSupport x := by simpa [composedFailureSupport] using hnone
+      have hjT : j ∈ composedFailureSupport z := by rwa [hsupp] at hjS
+      have hznone : z j ≠ none := by simpa [composedFailureSupport] using hjT
+      cases hxj : x j with
+      | none => exact absurd hxj hnone
+      | some a =>
+          cases hzj : z j with
+          | none => exact absurd hzj hznone
+          | some b =>
+              have hab : a ≠ b := by
+                intro h
+                rw [hxj, hzj, h] at hne
+                exact hne rfl
+              have hb : b = a + 1 := zmodTwo_eq_add_one_of_ne hab
+              simp [composedFailureFlipSet, hxj, hzj, hb]
+    · have hj' : ¬ (x j ≠ z j ∧ x j ≠ none) := hj
+      by_cases heq : x j = z j
+      · simp [composedFailureFlipSet, heq]
+      · have hnone : x j = none := by
+          by_contra hc
+          exact hj' ⟨heq, hc⟩
+        have hzn : z j = none := by
+          by_contra hc
+          have hjT : j ∈ composedFailureSupport z := by
+            simpa [composedFailureSupport] using hc
+          rw [← hsupp] at hjT
+          have : x j ≠ none := by simpa [composedFailureSupport] using hjT
+          exact this hnone
+        simp [composedFailureFlipSet, hnone, hzn]
+
+/-! ## Equality rigidity of a sharp reporter -/
+
+/-- A minimal-image legal reporter takes exactly the two canonical values on each nonempty
+support stratum. -/
+theorem composedFailureReporter_stratum_two_valued
+    {I Y : Type*} [Fintype I] [DecidableEq I] [Fintype Y] [DecidableEq Y]
+    (R : ComposedFailureReporter I Y)
+    (hmin : Fintype.card (ComposedFailureReporterImage R) =
+      2 ^ (Fintype.card I + 1) - 1)
+    (S : NonemptyComposedFailureSupport I) {y : ComposedFailureConfig I}
+    (hy : composedFailureSupport y = S.1) :
+    R.q y = R.q (composedFailureBase S.1) ∨
+      R.q y = R.q (composedFailureFlip (composedFailureChosen S)
+        (composedFailureBase S.1)) := by
+  classical
+  have hcard : Fintype.card (ComposedFailureResponseLabel I) =
+      Fintype.card (ComposedFailureReporterImage R) := by
+    rw [card_composedFailureResponseLabel_closed I, hmin]
+  have hbij : Function.Bijective (composedFailureLabelToImage R) :=
+    (Fintype.bijective_iff_injective_and_card _).mpr
+      ⟨composedFailureLabelToImage_injective R, hcard⟩
+  obtain ⟨a, ha⟩ := hbij.surjective ⟨R.q y, ⟨y, rfl⟩⟩
+  have hqa : R.q (composedFailureConfigOfLabel a) = R.q y := congrArg Subtype.val ha
+  have hsa := R.support_eq_of_q_eq hqa
+  rw [composedFailureSupport_configOfLabel, hy] at hsa
+  rcases a with (_ | ⟨T, p⟩)
+  · exact absurd hsa.symm S.property.ne_empty
+  · have hTS : T = S := Subtype.ext hsa
+    subst T
+    cases p
+    · exact Or.inl hqa.symm
+    · exact Or.inr hqa.symm
+
+/-- On a nonempty stratum, a single active flip toggles between the two canonical values. -/
+theorem composedFailureReporter_flipSet_eq_iff_even
+    {I Y : Type*} [Fintype I] [DecidableEq I] [Fintype Y] [DecidableEq Y]
+    (R : ComposedFailureReporter I Y)
+    (hmin : Fintype.card (ComposedFailureReporterImage R) =
+      2 ^ (Fintype.card I + 1) - 1)
+    (S : NonemptyComposedFailureSupport I) {x : ComposedFailureConfig I}
+    (hx : composedFailureSupport x = S.1) {T : Finset I} (hT : T ⊆ S.1) :
+    (R.q (composedFailureFlipSet T x) = R.q x) ↔ Even T.card := by
+  classical
+  set a := R.q (composedFailureBase S.1) with ha
+  set b := R.q (composedFailureFlip (composedFailureChosen S)
+    (composedFailureBase S.1)) with hb
+  have hab : a ≠ b := by
+    intro h
+    exact (R.resolves (composedFailureChosen S) (composedFailureBase S.1)
+      (by simp [composedFailureBase, composedFailureChosen_mem S])) h.symm
+  induction T using Finset.induction with
+  | empty => simp
+  | @insert i T hi ih =>
+      have hTsub : T ⊆ S.1 := fun j hj => hT (Finset.mem_insert_of_mem hj)
+      have hiS : i ∈ S.1 := hT (Finset.mem_insert_self i T)
+      have hsuppT : composedFailureSupport (composedFailureFlipSet T x) = S.1 := by
+        rw [composedFailureSupport_flipSet, hx]
+      have hactive : composedFailureFlipSet T x i ≠ none := by
+        have : i ∈ composedFailureSupport (composedFailureFlipSet T x) := by
+          rw [hsuppT]; exact hiS
+        simpa [composedFailureSupport] using this
+      have hstep : R.q (composedFailureFlipSet (insert i T) x) ≠
+          R.q (composedFailureFlipSet T x) := by
+        rw [composedFailureFlipSet_insert hi]
+        exact R.resolves i _ hactive
+      have hvalT := composedFailureReporter_stratum_two_valued R hmin S hsuppT
+      have hsuppI : composedFailureSupport (composedFailureFlipSet (insert i T) x) = S.1 := by
+        rw [composedFailureSupport_flipSet, hx]
+      have hvalI := composedFailureReporter_stratum_two_valued R hmin S hsuppI
+      have hvalx : R.q x = a ∨ R.q x = b :=
+        composedFailureReporter_stratum_two_valued R hmin S hx
+      rw [Finset.card_insert_of_notMem hi, Nat.even_add_one]
+      constructor
+      · intro hEq hEven
+        have hTeq : R.q (composedFailureFlipSet T x) = R.q x := ih hTsub |>.mpr hEven
+        exact hstep (hEq.trans hTeq.symm)
+      · intro hOdd
+        have hTne : R.q (composedFailureFlipSet T x) ≠ R.q x := by
+          intro hc
+          exact hOdd ((ih hTsub).mp hc)
+        rcases hvalx with hx' | hx' <;> rcases hvalT with hT' | hT' <;>
+          rcases hvalI with hI' | hI'
+        · exact absurd (hT'.trans hx'.symm) hTne
+        · exact absurd (hT'.trans hx'.symm) hTne
+        · rw [hI', hx']
+        · exact absurd (hI'.trans hT'.symm) hstep
+        · exact absurd (hI'.trans hT'.symm) hstep
+        · rw [hI', hx']
+        · exact absurd (hT'.trans hx'.symm) hTne
+        · exact absurd (hT'.trans hx'.symm) hTne
+
+/-- **Equality rigidity.**  A legal reporter attaining the sharp bound identifies exactly the
+support/parity classes: its image is the canonical Walsh chart. -/
+theorem composedFailureReporter_sharp_eq_iff
+    {I Y : Type*} [Fintype I] [DecidableEq I] [Fintype Y] [DecidableEq Y]
+    (R : ComposedFailureReporter I Y)
+    (hmin : Fintype.card (ComposedFailureReporterImage R) =
+      2 ^ (Fintype.card I + 1) - 1)
+    (x z : ComposedFailureConfig I) :
+    R.q x = R.q z ↔
+      composedFailureSupport x = composedFailureSupport z ∧
+        composedFailureParity x = composedFailureParity z := by
+  classical
+  constructor
+  · intro hq
+    have hsupp := R.support_eq_of_q_eq hq
+    refine ⟨hsupp, ?_⟩
+    obtain ⟨T, hTsub, hTz⟩ := exists_flipSet_of_support_eq hsupp
+    by_cases hempty : composedFailureSupport x = ∅
+    · have hzempty : composedFailureSupport z = ∅ := by rw [← hsupp]; exact hempty
+      rw [composedFailureParity_eq_zero_of_support_empty hempty,
+        composedFailureParity_eq_zero_of_support_empty hzempty]
+    · have hne : (composedFailureSupport x).Nonempty := Finset.nonempty_of_ne_empty hempty
+      have heven : Even T.card := by
+        refine (composedFailureReporter_flipSet_eq_iff_even R hmin
+          ⟨composedFailureSupport x, hne⟩ rfl hTsub).mp ?_
+        rw [hTz]
+        exact hq.symm
+      have hpar := composedFailureParity_flipSet (x := x) (T := T) hTsub
+      rw [hTz] at hpar
+      rw [hpar, ZMod.natCast_eq_zero_iff_even.mpr heven, add_zero]
+  · rintro ⟨hsupp, hpar⟩
+    obtain ⟨T, hTsub, hTz⟩ := exists_flipSet_of_support_eq hsupp
+    by_cases hempty : composedFailureSupport x = ∅
+    · have hxall : ∀ j, x j = none := by
+        intro j
+        by_contra hc
+        have hj : j ∈ composedFailureSupport x := by
+          simp only [composedFailureSupport, Finset.mem_filter, Finset.mem_univ, true_and]
+          exact hc
+        rw [hempty] at hj
+        simp at hj
+      have hzall : ∀ j, z j = none := by
+        intro j
+        by_contra hc
+        have hj : j ∈ composedFailureSupport z := by
+          simp only [composedFailureSupport, Finset.mem_filter, Finset.mem_univ, true_and]
+          exact hc
+        rw [← hsupp, hempty] at hj
+        simp at hj
+      have hxz : x = z := by
+        funext j
+        rw [hxall j, hzall j]
+      rw [hxz]
+    · have hne : (composedFailureSupport x).Nonempty := Finset.nonempty_of_ne_empty hempty
+      have hparT := composedFailureParity_flipSet (x := x) (T := T) hTsub
+      rw [hTz, ← hpar] at hparT
+      have hzero : (T.card : ZMod 2) = 0 := by
+        have := hparT.symm
+        exact (add_eq_left).mp this
+      have heven : Even T.card := ZMod.natCast_eq_zero_iff_even.mp hzero
+      have hval := (composedFailureReporter_flipSet_eq_iff_even R hmin
+        ⟨composedFailureSupport x, hne⟩ rfl hTsub).mpr heven
+      rw [hTz] at hval
+      exact hval.symm
+
+/-! ## Convex doctrine exchange: a linear pure-outcome realization -/
+
+/-- Pure outcome doctrine of the convex repair: two atoms over every failure coordinate. -/
+abbrev ComposedFailureOutcome (I : Type*) := I × ZMod 2
+
+theorem sum_zmodTwo (f : ZMod 2 → ℚ) : ∑ c : ZMod 2, f c = f 0 + f 1 := by
+  have huniv : (Finset.univ : Finset (ZMod 2)) = {0, 1} := by decide
+  rw [huniv, Finset.sum_insert (by decide), Finset.sum_singleton]
+
+theorem zmodTwo_add_one_eq_iff (a b : ZMod 2) : a + 1 = b ↔ a = b + 1 := by
+  revert a b
+  decide
+
+theorem zmodTwo_add_one_ne (a : ZMod 2) : a + 1 ≠ a := by
+  revert a
+  decide
+
+/-- Weight placed on one atom by one coordinate state. -/
+noncomputable def composedFailureAtomWeight {I : Type*} [Fintype I]
+    (o : Option (ZMod 2)) (c : ZMod 2) : ℚ :=
+  1 / (2 * (Fintype.card I : ℚ)) +
+    (if o = some c then 1 / (4 * (Fintype.card I : ℚ))
+      else if o = none then 0 else -(1 / (4 * (Fintype.card I : ℚ))))
+
+/-- The convex composed-failure reporter: a strictly positive probability vector on `2n` atoms. -/
+noncomputable def composedFailureConvexReporter {I : Type*} [Fintype I]
+    (x : ComposedFailureConfig I) (z : ComposedFailureOutcome I) : ℚ :=
+  composedFailureAtomWeight (I := I) (x z.1) z.2
+
+theorem composedFailureAtomWeight_pair_sum {I : Type*} [Fintype I]
+    (hI : 0 < Fintype.card I) (o : Option (ZMod 2)) :
+    ∑ c : ZMod 2, composedFailureAtomWeight (I := I) o c = 1 / (Fintype.card I : ℚ) := by
+  have hn : (0 : ℚ) < (Fintype.card I : ℚ) := by exact_mod_cast hI
+  rw [sum_zmodTwo]
+  cases o with
+  | none =>
+      simp [composedFailureAtomWeight]
+      ring
+  | some b =>
+      have hb : b = 0 ∨ b = 1 := by revert b; decide
+      rcases hb with rfl | rfl <;>
+        · simp [composedFailureAtomWeight]
+          ring
+
+/-- **Convex doctrine exchange, mass.**  The convex reporter is a probability vector on the `2n`
+pure outcomes. -/
+theorem composedFailureConvexReporter_sum {I : Type*} [Fintype I] [DecidableEq I]
+    (hI : 0 < Fintype.card I) (x : ComposedFailureConfig I) :
+    ∑ z : ComposedFailureOutcome I, composedFailureConvexReporter x z = 1 := by
+  classical
+  have hn : (0 : ℚ) < (Fintype.card I : ℚ) := by exact_mod_cast hI
+  have hrow : ∀ i : I,
+      ∑ c : ZMod 2, composedFailureConvexReporter x (i, c) = 1 / (Fintype.card I : ℚ) :=
+    fun i => composedFailureAtomWeight_pair_sum (I := I) hI (x i)
+  rw [Fintype.sum_prod_type, Finset.sum_congr rfl fun i _ => hrow i,
+    Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+  field_simp
+
+/-- **Convex doctrine exchange, positivity.**  Every pure outcome receives strictly positive
+weight. -/
+theorem composedFailureConvexReporter_pos {I : Type*} [Fintype I]
+    (hI : 0 < Fintype.card I) (x : ComposedFailureConfig I)
+    (z : ComposedFailureOutcome I) : 0 < composedFailureConvexReporter x z := by
+  have hn : (0 : ℚ) < (Fintype.card I : ℚ) := by exact_mod_cast hI
+  have hquarter : (0 : ℚ) < 1 / (4 * (Fintype.card I : ℚ)) := by positivity
+  have hhalf : 1 / (2 * (Fintype.card I : ℚ)) = 2 * (1 / (4 * (Fintype.card I : ℚ))) := by
+    field_simp
+    ring
+  rw [composedFailureConvexReporter, composedFailureAtomWeight]
+  by_cases h1 : x z.1 = some z.2
+  · rw [if_pos h1]
+    positivity
+  · rw [if_neg h1]
+    by_cases h2 : x z.1 = none
+    · rw [if_pos h2, add_zero]
+      positivity
+    · rw [if_neg h2, hhalf]
+      linarith
+
+/-- **Convex doctrine exchange, equivariance.**  Flipping a coordinate permutes exactly the two
+atoms over that coordinate. -/
+theorem composedFailureConvexReporter_equivariant {I : Type*} [Fintype I] [DecidableEq I]
+    (i : I) (x : ComposedFailureConfig I) (j : I) (c : ZMod 2) :
+    composedFailureConvexReporter (composedFailureFlip i x) (j, c) =
+      composedFailureConvexReporter x (j, if j = i then c + 1 else c) := by
+  classical
+  by_cases hji : j = i
+  · subst j
+    cases hx : x i with
+    | none =>
+        simp [composedFailureConvexReporter, composedFailureAtomWeight,
+          composedFailureFlip, hx]
+    | some b =>
+        have hxflip : composedFailureFlip i x i = some (b + 1) := by
+          simp [composedFailureFlip, hx]
+        have hidx : (if (i : I) = i then c + 1 else c) = c + 1 := if_pos rfl
+        show composedFailureAtomWeight (composedFailureFlip i x i) c
+            = composedFailureAtomWeight (x i) (if (i : I) = i then c + 1 else c)
+        rw [hidx, hxflip, hx, composedFailureAtomWeight, composedFailureAtomWeight]
+        have hiff : (some (b + 1) = (some c : Option (ZMod 2))) ↔
+            (some b = (some (c + 1) : Option (ZMod 2))) := by
+          simp only [Option.some.injEq]
+          exact zmodTwo_add_one_eq_iff b c
+        by_cases hcb : some (b + 1) = (some c : Option (ZMod 2))
+        · rw [if_pos hcb, if_pos (hiff.mp hcb)]
+        · rw [if_neg hcb, if_neg (fun h => hcb (hiff.mpr h)), if_neg (by simp),
+            if_neg (by simp)]
+  · simp [composedFailureConvexReporter, composedFailureAtomWeight,
+      composedFailureFlip, hji]
+
+/-- **Convex doctrine exchange, contextwise resolution.**  Flipping an active coordinate changes
+the mixture. -/
+theorem composedFailureConvexReporter_resolves {I : Type*} [Fintype I] [DecidableEq I]
+    (hI : 0 < Fintype.card I) (i : I) (x : ComposedFailureConfig I) (hx : x i ≠ none) :
+    composedFailureConvexReporter (composedFailureFlip i x) ≠
+      composedFailureConvexReporter x := by
+  classical
+  intro hEq
+  have hn : (0 : ℚ) < (Fintype.card I : ℚ) := by exact_mod_cast hI
+  have hquarter : (0 : ℚ) < 1 / (4 * (Fintype.card I : ℚ)) := by positivity
+  cases hxi : x i with
+  | none => exact hx hxi
+  | some b =>
+      have hxflip : composedFailureFlip i x i = some (b + 1) := by
+        simp [composedFailureFlip, hxi]
+      have h := congrFun hEq (i, b)
+      simp only [composedFailureConvexReporter, composedFailureAtomWeight,
+        hxflip, hxi, Option.some.injEq, zmodTwo_add_one_ne, if_false, if_true] at h
+      rw [if_neg (Option.some_ne_none (b + 1))] at h
+      linarith
+
+/-- **Exact pure-outcome count.**  The convex realization uses exactly `2n` pure outcomes. -/
+theorem card_composedFailureOutcome {I : Type*} [Fintype I] :
+    Fintype.card (ComposedFailureOutcome I) = 2 * Fintype.card I := by
+  rw [Fintype.card_prod, ZMod.card]
+  ring
+
 /-- Target flip on the marked support/parity chart. -/
 def composedFailureCanonicalTargetFlip
     {I : Type*} [DecidableEq I]

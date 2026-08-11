@@ -94,19 +94,27 @@ from “find another carrier” to the following mechanism-level problem:
 > that it remains admitted under the continuation which the correction tower reconstructs.
 
 No critical-line conclusion may be claimed from the leading exponential clock, a finite jet, or
-positivity on the convergent real axis.
+positivity on the convergent real axis.  The downstream selection theorem is now exact: finite
+formation and exterior responses obey an inverse conservation law, and any joint Hausdorff
+multiplicative completion preserves that inverse.  For the Euler-shell pole unit this would exclude
+every strict-right zero.  The missing construction is therefore a source-generated joint
+formation/exterior completion, not an unspecified “complete-order” condition.
 
 ## Gates
 
 - [x] leading universal clock separated from constitutive corrections
 - [x] exact cocycle and correction-jet reconstruction conjecture frozen
 - [x] known critical-clock blindness installed as falsifier
-- [ ] dependency-closed analytic theorem promoted
-- [ ] Lean certification of exact algebraic/reconstruction core
-- [ ] source-generated reflected complete-order continuation
+- [x] dependency-closed analytic theorem promoted
+- [x] Lean certification of exact algebraic/reconstruction core
+- [x] abstract conservative-inverse completion and RH selection consequence
+- [ ] source-generated joint formation/exterior completion on the strict-right half-plane
 - [ ] RH selection consequence
 
 ## Log
 
 - 2026-08-11 — opened after the full-frontier fusion experiment showed that finite Witt formation
   and safe-fibre complete test closure still stop at the normalization wall.
+- 2026-08-11 — pole/unit scale cocycle, correction reconstruction, and finite-depth divisor
+  blindness proved on paper and certified in Lean.  The remaining gate is a source-generated
+  reflected complete-order continuation, not another local response identity.

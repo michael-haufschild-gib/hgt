@@ -183,6 +183,108 @@ theorem no_strictly_smaller_exchange_strictification {α : Type u}
   rintro ⟨hf, hg, hexchange⟩
   exact hsmaller (exchangeCongruence_least hR hf hg hexchange)
 
+/-- The induced left law is the unique quotient law intertwining the quotient map. -/
+theorem exchangeQuotientLeft_unique {α : Type u} (f g : α → α)
+    (F : ExchangeQuotient f g → ExchangeQuotient f g)
+    (hF : ∀ x, F (exchangeQuotientMap f g x) = exchangeQuotientMap f g (f x)) :
+    F = exchangeQuotientLeft f g := by
+  funext q
+  refine Quotient.inductionOn q ?_
+  intro x
+  exact hF x
+
+/-- The induced right law is the unique quotient law intertwining the quotient map. -/
+theorem exchangeQuotientRight_unique {α : Type u} (f g : α → α)
+    (G : ExchangeQuotient f g → ExchangeQuotient f g)
+    (hG : ∀ x, G (exchangeQuotientMap f g x) = exchangeQuotientMap f g (g x)) :
+    G = exchangeQuotientRight f g := by
+  funext q
+  refine Quotient.inductionOn q ?_
+  intro x
+  exact hG x
+
+/-! ## Calibration: successor against doubling -/
+
+/-- The successor law. -/
+def calibrationSucc (n : ℕ) : ℕ := n + 1
+
+/-- The doubling law. -/
+def calibrationDouble (n : ℕ) : ℕ := 2 * n
+
+/-- The two-class partition of the naturals into zero and the positives. -/
+def zeroClassRelation (x y : ℕ) : Prop := x = 0 ↔ y = 0
+
+theorem zeroClassRelation_equivalence : Equivalence zeroClassRelation :=
+  ⟨fun _ => Iff.rfl, fun h => h.symm, fun h₁ h₂ => h₁.trans h₂⟩
+
+/-- **Nontrivial strictification.**  For successor against doubling the least exchange congruence
+is exactly the zero/positive partition: strictification does not collapse the whole source. -/
+theorem calibration_exchangeCongruence_iff (x y : ℕ) :
+    ExchangeCongruence calibrationSucc calibrationDouble x y ↔ zeroClassRelation x y := by
+  constructor
+  · intro hxy
+    refine exchangeCongruence_least (f := calibrationSucc) (g := calibrationDouble)
+      zeroClassRelation_equivalence ?_ ?_ ?_ hxy
+    · intro a b _
+      simp [zeroClassRelation, calibrationSucc]
+    · intro a b hab
+      simpa [zeroClassRelation, calibrationDouble] using hab
+    · intro a
+      simp [zeroClassRelation, calibrationSucc, calibrationDouble]
+  · intro hxy
+    have hone : ExchangeCongruence calibrationSucc calibrationDouble 1 2 := by
+      simpa [calibrationSucc, calibrationDouble] using
+        exchangeCongruence_contains calibrationSucc calibrationDouble 0
+    have hsucc : ∀ n : ℕ,
+        ExchangeCongruence calibrationSucc calibrationDouble (n + 1) (n + 2) := by
+      intro n
+      induction n with
+      | zero => simpa using hone
+      | succ n ih =>
+          have := exchangeCongruence_preserves_left calibrationSucc calibrationDouble ih
+          simpa [calibrationSucc] using this
+    have hall : ∀ n : ℕ,
+        ExchangeCongruence calibrationSucc calibrationDouble 1 (n + 1) := by
+      intro n
+      induction n with
+      | zero => exact (exchangeCongruence_equivalence _ _).refl 1
+      | succ n ih => exact (exchangeCongruence_equivalence _ _).trans ih (hsucc n)
+    rcases Nat.eq_zero_or_pos x with hx | hx
+    · have hy : y = 0 := hxy.mp hx
+      subst hx; subst hy
+      exact (exchangeCongruence_equivalence _ _).refl 0
+    · have hy : 0 < y := by
+        rcases Nat.eq_zero_or_pos y with hy0 | hy0
+        · exact absurd (hxy.mpr hy0) (by omega)
+        · exact hy0
+      obtain ⟨a, rfl⟩ : ∃ a, x = a + 1 := ⟨x - 1, by omega⟩
+      obtain ⟨b, rfl⟩ : ∃ b, y = b + 1 := ⟨y - 1, by omega⟩
+      exact (exchangeCongruence_equivalence _ _).trans
+        ((exchangeCongruence_equivalence _ _).symm (hall a)) (hall b)
+
+/-- The calibration quotient has exactly two classes. -/
+theorem calibration_quotient_two_classes :
+    (∀ n : ℕ,
+        exchangeQuotientMap calibrationSucc calibrationDouble n =
+          exchangeQuotientMap calibrationSucc calibrationDouble 0 ∨
+        exchangeQuotientMap calibrationSucc calibrationDouble n =
+          exchangeQuotientMap calibrationSucc calibrationDouble 1) ∧
+      exchangeQuotientMap calibrationSucc calibrationDouble 0 ≠
+        exchangeQuotientMap calibrationSucc calibrationDouble 1 := by
+  constructor
+  · intro n
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · exact Or.inl rfl
+    · refine Or.inr (Quotient.sound ?_)
+      refine (calibration_exchangeCongruence_iff n 1).mpr ?_
+      constructor
+      · intro h; omega
+      · intro h; omega
+  · intro h
+    have := (calibration_exchangeCongruence_iff 0 1).mp (Quotient.exact h)
+    have h1 : (1 : ℕ) = 0 := this.mp rfl
+    omega
+
 theorem constitutiveExchangeStrictificationMechanism_closed {α : Type u} {β : Type v} :
     (∀ (f g : α → α), Equivalence (ExchangeCongruence f g)) ∧
     (∀ (f g : α → α) (x : α), ExchangeCongruence f g (f (g x)) (g (f x))) ∧

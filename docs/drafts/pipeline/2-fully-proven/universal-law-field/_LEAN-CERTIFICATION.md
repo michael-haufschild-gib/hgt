@@ -7,6 +7,16 @@ even when their paper argument is dependency-closed.
 Dedicated Lean umbrella:
 `GaloisForLFunctions.HTGeometry.UniversalLawField`.
 
+## Session 2026-08-11 addition (formation-scale receivers)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-FSR-1-CORE | One-norm derivation impossibility; formal-receiver collapse; analytic-collar ghost transport; exact Adams/ghost/evaluation exchange | `HTGeometry.FormationScaleReceiver` |
+
+The source card remains Stage 2 because its full Wiener character-space classification and
+infinite exterior/formation inverse have not yet been formalized.  The declarations above are
+wired into `HTGeometry.UniversalLawField` and recorded separately in Stage 3.
+
 ## Session 2026-08-10 addition (native sequential repair heredity)
 
 | ID | Theorem | Lean module |
@@ -1160,6 +1170,7 @@ paper-level or open and do not count as proved. No `sorry`, `admit`, project `ax
 | ID | Theorem | Lean module |
 |---|---|---|
 | ULF-WFM-2 | Exact exterior/complete formation conservation, Newton ghost generation, first-`r` ghost reconstruction, Adams subsampling, powered-mode bucket aggregation, exact post-Adams Hankel rank, minimal recurrence order, and positive-real memory preservation | `HTGeometry.WittFormationMechanics` |
+| ULF-WFM-3 | Joint Hausdorff completion preserves exact formation/exterior inversion; completed formations and all multiplicative receivers are nonzero, pointwise | `HTGeometry.WittConservativeInverseCompletion` |
 
 Direct foreground elaboration and compiled leaf build pass. The module is wired into
 `HTGeometry.UniversalLawField`; its final foreground umbrella build passes with 11,626 jobs.
@@ -1171,3 +1182,69 @@ fusion content is exact formation conservation plus Adams collision aggregation:
 distinct powered-mode buckets is both saturated Hankel rank and minimal constant-recurrence order.
 No infinite completion, arithmetic source realization, custom axiom, computation certificate, or
 RH statement occurs.
+
+## Session 2026-08-11 addition (pole-unit formation mechanics, full card)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PUFM-2 | Analytic distinguished logarithm, exact ghost law, one-ray coefficient inversion, germ rigidity, divisor memory | `HTGeometry.PoleUnitFormationAnalytic` |
+| ULF-PUFM-2 | Universal Gamma base limit, ascending-factorial moments, strict Hankel positivity, exact cumulant slope and curvature laws | `HTGeometry.PoleUnitGammaBase` |
+| ULF-PUFM-2 | Euler-shell relative response, first constitutive coefficient `γ + H_m'(1)/H_m(1)`, shell clock mean and variance | `HTGeometry.PoleUnitEulerShell` |
+
+Direct elaboration of all three modules passes; the foreground
+`lake build GaloisForLFunctions.HTGeometry.UniversalLawField` completed 11,632 jobs.  Axiom prints
+for every listed capstone report only `propext`, `Classical.choice`, and `Quot.sound`.  The card
+`pole-unit-scale-cocycle-correction-jet-reconstruction-and-divisor-memory-law.md` is promoted to
+Stage 3 with its full displayed surface certified.
+
+## Session 2026-08-11 addition (Source-Formation Harmonic Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-SFHM-2/3 | Literal Möbius prime-exponent edges, block boundary conservation, marked-history reconstruction, exact refinement-energy split, source-coefficient character execution, character reconstruction, polar criticality, parity recurrent shadow with linearly open positive history, maximal differential rank of the faithful depth-12 source realization, and bilateral reflection-energy unitarity selection | `HTGeometry.SourceFormationHarmonicMechanics` |
+
+Direct foreground elaboration passes. The module is wired into
+`HTGeometry.UniversalLawField`; final foreground leaf build passes with 9,026 jobs. The umbrella
+build reaches and builds this module, then fails in unrelated concurrent module
+`HTGeometry.ConstitutiveAdversarialLawStress` on pre-existing type errors and heartbeat timeouts.
+Axiom prints for arithmetic source realization, reconstruction, energy conservation, polar
+criticality, source-native differential independence, and the closed five-shadow fusion certificate
+as well as the bilateral summability selector report only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+This is the first literal source realization of the coherent-history/refinement fusion mechanism:
+one arithmetic formation has incidence, coherent phase execution, positive variation execution,
+a phase-quotiented harmonic radial detector, recurrent/open-history behavior, and maximal
+countable differential formation rank. It does not prove the Xi deformation is a harmonic source
+section and contains no RH premise, computation certificate, `sorry`, `admit`, project `axiom`,
+`opaque`, or `unsafe` declaration.
+
+## Session 2026-08-11 sweep (stage-3 promotion of the certified stage-2 backlog)
+
+Sixty-seven universal-law-field cards were audited statement-by-statement against their Lean
+modules and promoted to stage 3.  Where the audit exposed a displayed claim without a matching
+declaration, the missing statement was proved rather than the claim dropped:
+
+| Card | Added Lean |
+|---|---|
+| ULF-PUFM-2 pole-unit formation | new `HTGeometry.PoleUnitFormationAnalytic`, `HTGeometry.PoleUnitGammaBase`, `HTGeometry.PoleUnitEulerShell` |
+| ULF-CRT-2 coefficient lift | `kernelHigherDefect_unique` |
+| ULF-ALM-1 conservative repair | `conservativeRepairKernelEquiv`, `finrank_conservativeRepairBoundary_ker` |
+| ULF-OPM-3 exchange residual | `heisExchangeProjection_ker`, `commutator_heis_eq_center`, `heisStrictShadowEquiv` |
+| ULF-OPM-2 minimal strictification | `exchangeQuotientLeft_unique`, `exchangeQuotientRight_unique`, `calibration_exchangeCongruence_iff`, `calibration_quotient_two_classes` |
+| ULF-ALG-3 challenge prolongation | exact finite false-closure laboratory `lab_false_closure` |
+| ULF-ALG-2 adversarial stress | `versionSpace_card`, `shatteredChallengeDepth_le` |
+| ULF-LSM-1 law saturation | `finite_reporter_family_stabilizes`, `reporterVector_tendsto` |
+| ULF-SEG-1 mutational genesis | `pentagonLineage_exchange`, `pentagon_versus_open_lineage` |
+| ULF-NFF-1 norming-face fusion | `no_finiteDimensional_receiver_of_unbounded_minimallyDefective`, `receiver_closedBall_not_isCompact_of_unbounded_minimallyDefective` |
+| ULF-CSM-1 calibration spectrum | `weighted_triangle_eq_iff`, `positiveObserverLoss_eq_zero_iff` |
+| ULF-PCG-1 prospective geometry | `prospectiveGauge` and its pseudoultrametric laws |
+| ULF-FKT-1 failure-kernel transversal | `minimalSuccessfulKernelRevision_iff_core_certificate` |
+| ULF-FKT-TVCC-1 conflict coloring | `stagewise_observerWidthAtMost_iff_conflictColorable` |
+| ULF-ECM-1 endogenous compatibility | `constitutiveEndogenousCompatibility_conjugate` |
+| ULF-EVM-1 proper-observer viability | `noncompactEscape_countermodel`, `nonclosedAdmission_countermodel`, `incoherentHorizon_countermodel` |
+
+`lake build GaloisForLFunctions.HTGeometry.UniversalLawField` completes 11,633 jobs.  Axiom prints
+for every added declaration report only `propext`, `Classical.choice`, and `Quot.sound`, several
+needing fewer.  The remaining stage-2 cards and their exact missing statements are tracked in
+`_STAGE3-SWEEP-LEDGER.md`.

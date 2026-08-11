@@ -139,6 +139,65 @@ theorem exists_hiddenChallenge_of_observerDependence
     (observerRelation_iff_hiddenKernel D E q hintertwine v a).mp haObserved
   exact ⟨a, ha, haSource, haKernel, haObserved⟩
 
+/-! ## Exact finite false-closure laboratory -/
+
+/-- Source promoter: one nilpotent challenge step on a two-stage reporter. -/
+def labPromoter : (ℚ × ℚ) →ₗ[ℚ] (ℚ × ℚ) where
+  toFun p := (0, p.1)
+  map_add' x y := by simp
+  map_smul' c x := by simp
+
+/-- Observed promoter: the erased stage has no observed successor. -/
+def labObserved : ℚ →ₗ[ℚ] ℚ := 0
+
+/-- Observer retaining only the current reporter coordinate. -/
+def labObserver : (ℚ × ℚ) →ₗ[ℚ] ℚ := LinearMap.fst ℚ ℚ ℚ
+
+theorem labObserver_intertwines :
+    labObserver.comp labPromoter = labObserved.comp labObserver := by
+  apply LinearMap.ext
+  intro p
+  simp [labObserver, labPromoter, labObserved]
+
+theorem lab_source_independent :
+    LinearIndependent ℚ
+      (fun i : Fin 2 => challengeProlongation labPromoter ((1 : ℚ), (0 : ℚ)) (i : ℕ)) := by
+  rw [Fintype.linearIndependent_iff]
+  intro g hg i
+  simp only [Fin.sum_univ_two] at hg
+  have h0 : challengeProlongation labPromoter ((1 : ℚ), (0 : ℚ)) ((0 : Fin 2) : ℕ) = (1, 0) := rfl
+  have h1 : challengeProlongation labPromoter ((1 : ℚ), (0 : ℚ)) ((1 : Fin 2) : ℕ) = (0, 1) := rfl
+  rw [h0, h1] at hg
+  have hx : g 0 = 0 := by simpa using congrArg Prod.fst hg
+  have hy : g 1 = 0 := by simpa using congrArg Prod.snd hg
+  fin_cases i <;> assumption
+
+theorem lab_observed_dependent :
+    ¬ LinearIndependent ℚ
+      (fun i : Fin 2 =>
+        challengeProlongation labObserved (labObserver ((1 : ℚ), (0 : ℚ))) (i : ℕ)) := by
+  rw [Fintype.linearIndependent_iff]
+  push Not
+  refine ⟨![0, 1], ?_, 1, by simp⟩
+  have h0 : challengeProlongation labObserved (labObserver ((1 : ℚ), (0 : ℚ)))
+      ((0 : Fin 2) : ℕ) = 1 := rfl
+  have h1 : challengeProlongation labObserved (labObserver ((1 : ℚ), (0 : ℚ)))
+      ((1 : Fin 2) : ℕ) = 0 := by simp [labObserved]
+  simp only [Fin.sum_univ_two, h0, h1]
+  simp
+
+/-- **Exact false-closure witness.**  The laboratory observer intertwines exactly, the source
+challenge packet is independent, the observed packet is dependent, and the manufactured recurrence
+is carried by a definite nonzero erased source challenge. -/
+theorem lab_false_closure :
+    ∃ a : Fin 2 → ℚ,
+      a ≠ 0 ∧
+      challengeCombination labPromoter ((1 : ℚ), (0 : ℚ)) a ≠ 0 ∧
+      challengeCombination labPromoter ((1 : ℚ), (0 : ℚ)) a ∈ LinearMap.ker labObserver ∧
+      challengeCombination labObserved (labObserver ((1 : ℚ), (0 : ℚ))) a = 0 :=
+  exists_hiddenChallenge_of_observerDependence labPromoter labObserved labObserver
+    labObserver_intertwines ((1 : ℚ), (0 : ℚ)) 2 lab_source_independent lab_observed_dependent
+
 theorem constitutiveChallengeProlongation_closed
     (D : V →ₗ[𝕜] V) (E : W →ₗ[𝕜] W) (q : V →ₗ[𝕜] W)
     (hintertwine : q.comp D = E.comp q) (v : V) :

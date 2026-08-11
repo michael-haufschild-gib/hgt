@@ -40,6 +40,19 @@ theorem constitutiveEndogenousCompatibility_realizes_deterministic
   exact constitutiveEndogenousCompatibility_realizes
     (constitutiveDeterministicTransition update) state
 
+/-- **Conjugacy naturality.**  Relabelling the state space transports the endogenous compatibility
+law and its one-test polar, so equivariance under renaming does not constrain the realized
+dynamics. -/
+theorem constitutiveEndogenousCompatibility_conjugate {S' : Type u}
+    (e : S ≃ S') (next : S → Set S) (next' : S' → Set S')
+    (hnat : ∀ s, next' (e s) = e '' next s) (state : S) :
+    constitutiveTestPolar
+        (constitutiveEndogenousCompatibility next' (e state)) Set.univ =
+      e '' (constitutiveTestPolar
+        (constitutiveEndogenousCompatibility next state) Set.univ) := by
+  rw [constitutiveEndogenousCompatibility_realizes,
+    constitutiveEndogenousCompatibility_realizes, hnat]
+
 /-- Closed capstone: a one-test endogenous polarity realizes every transition system. -/
 theorem constitutiveEndogenousCompatibilityUniversality_closed :
     ∀ (S : Type u) (next : S → Set S) (state : S),

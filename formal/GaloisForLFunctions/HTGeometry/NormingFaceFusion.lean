@@ -250,6 +250,33 @@ theorem minimallyDefective_pred_card_le_finrank
   have hbound := minimallyDefective_card_le_finrank_add_one_primal s v hdef hproper
   omega
 
+/-- **Cofinal calibration escape.**  Minimally defective packets of unbounded arity cannot all
+live in one finite-dimensional receiver. -/
+theorem no_finiteDimensional_receiver_of_unbounded_minimallyDefective
+    [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (packet : ℕ → Finset ι) (v : ℕ → ι → V)
+    (hdef : ∀ n, 0 < fusionDefectOn (packet n) (v n))
+    (hproper : ∀ n, ∀ t ⊆ packet n, t ≠ packet n → fusionDefectOn t (v n) = 0)
+    (hgrow : ∀ N : ℕ, ∃ n, N < (packet n).card) : False := by
+  obtain ⟨n, hn⟩ := hgrow (Module.finrank ℝ V + 1)
+  have hbound := minimallyDefective_card_le_finrank_add_one_primal
+    (packet n) (v n) (hdef n) (hproper n)
+  omega
+
+/-- **Receiver noncompactness.**  A receiver carrying minimally defective packets of unbounded
+arity has noncompact closed unit ball: by Riesz's criterion it is infinite-dimensional. -/
+theorem receiver_closedBall_not_isCompact_of_unbounded_minimallyDefective
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
+    (packet : ℕ → Finset ι) (v : ℕ → ι → V)
+    (hdef : ∀ n, 0 < fusionDefectOn (packet n) (v n))
+    (hproper : ∀ n, ∀ t ⊆ packet n, t ≠ packet n → fusionDefectOn t (v n) = 0)
+    (hgrow : ∀ N : ℕ, ∃ n, N < (packet n).card) :
+    ¬ IsCompact (Metric.closedBall (0 : V) 1) := by
+  intro hcompact
+  haveI : FiniteDimensional ℝ V :=
+    FiniteDimensional.of_isCompact_closedBall₀ ℝ one_pos hcompact
+  exact no_finiteDimensional_receiver_of_unbounded_minimallyDefective packet v hdef hproper hgrow
+
 /-- Norm lost by a linear observer on one effect. -/
 def normLoss [NormedAddCommGroup V] [NormedSpace ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]

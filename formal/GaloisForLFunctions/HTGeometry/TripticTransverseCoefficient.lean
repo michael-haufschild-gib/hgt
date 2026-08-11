@@ -41,8 +41,8 @@ def colCoeff (F : ℂ → ℂ) (σ : ℂ) (ℓ : ℤ) (w : ℂ) : ℂ :=
 /-- **The principal part splits into the two transverse fields.** -/
 theorem laurentCoeff_eq_rowCoeff_add_colCoeff
     (hF : MeromorphicOn F Set.univ)
-    (hper : ∀ z : ℂ, F (z + 1) = F z)
-    {Cst : ℂ} (hmixed : ∀ z : ℂ, F (z + τ + σ) - F (z + τ) - F (z + σ) + F z = Cst)
+    (hper : PeriodicOneGerm F)
+    {Cst : ℂ} (hmixed : MixedConstGerm F τ σ Cst)
     (hτ : 0 < τ.im) (hσ : 0 < σ.im)
     (hindep : ∀ n m j : ℤ, (n : ℂ) * τ + (m : ℂ) * σ + (j : ℂ) = 0 → n = 0 ∧ m = 0 ∧ j = 0)
     {ℓ : ℤ} (hℓ : ℓ < 0) (w : ℂ)

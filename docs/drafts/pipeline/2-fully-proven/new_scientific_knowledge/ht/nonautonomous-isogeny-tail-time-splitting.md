@@ -1431,3 +1431,116 @@ differential field, from the Weierstrass relation and the chain rule alone:
 The invariant coordinate of each signature is an explicit function of `℘` whose degree matches the
 order of the rotation in the deck group.  No existence theorem for a doubly periodic function is
 needed: the identity is algebraic in the Weierstrass relation.
+
+## Items (6) and (7) for `G_m^r` — PROVED
+
+The invariant theory the previous section isolated is now formal, and with it the whole
+position/velocity splitting at rank `r` for a degree-expanding protocol.
+
+    TorusInvariantField.lean
+      scaleMvPolynomial, coeff_scaleMvPolynomial, aeval_scaleMvPolynomial
+                                        rescaling the variables of a multivariate polynomial
+      scaleBase, scaleChar, scaleChar_eq_iff
+      torusScaleEquiv_aeval             rescaling the palette rescales the variables
+      mem_of_torusScale_invariant :
+        **the scaling invariants of a character-separating set are the base**: for an
+        intermediate field `K` fixed pointwise by the rescalings, with the palette algebraically
+        independent over `K`, every element of `K(x)` fixed by every rescaling in `S` lies in `K`
+      exponent_eq_of_forall_prod_pow_eq  the full constant torus separates exponent vectors
+      torusScale_invariant_iff_mem_torusVelocityField
+      fixedField_torusScaleRep_eq_torusVelocityField :
+        fixedField of a separating deck group `= C<x_1'/x_1, ..., x_r'/x_r>`
+      algebraMap_botEquiv_coe, algebraicIndependent_bot
+      torusVelocityField_inf_adjoin_eq_bot :
+        **`C<x'/x> ⊓ C(x) = ⊥`** — the velocity carries no position information
+
+    TorusVelocityIndependence.lean
+      logDeriv_injective_of_differentialIndependent
+      differentialIndependent_logDeriv :
+        **the velocity coordinates are differentially independent**, so the velocity field has
+        differential transcendence degree `r = dim G_m^r`
+
+    TorusExpandingProtocolTail.lean
+      scalarPrefixExponent, scalarStepMatrix, prefixMatrix_scalarStepMatrix
+      two_pow_le_scalarPrefixExponent, exists_scalarPrefixExponent_gt
+      scalarProtocol_separates          the deck groups of a degree-expanding scalar protocol
+                                        separate exponent vectors
+      scalarTorusProtocol_nonautonomousTail_eq_torusVelocityField  = card (6) at rank `r`
+      scalarTorusProtocol_velocity_only                            = card (6) + (7) at rank `r`
+
+All wired into `GaloisForLFunctions.HTGeometry`, all `[propext, Classical.choice, Quot.sound]`.
+
+The mechanism of `mem_of_torusScale_invariant` is a minimal-denominator argument, and it replaces
+the UFD/coprimality route entirely.  Present an invariant `z` as `P/Q` with `Q` of the fewest
+monomials.  For a rescaling `u` in the acting set, the twisted difference
+
+    scale_u Q - chi_d(u) Q
+
+kills the coefficient at a fixed exponent `d` of `Q` and is again a denominator for `z` (its
+numerator is the same twist of `P`), so minimality forces it to vanish.  Hence `Q` — and then `P`,
+because the twisted numerator evaluates to `z` times the vanishing twisted denominator — is an
+eigenvector of every rescaling, so every exponent occurring in it has the character of `d`.  A
+character-separating acting set collapses both to the single monomial `x^d`, and the quotient is the
+ratio of two coefficients.
+
+`torusVelocityField_inf_adjoin_eq_bot` is the same theorem with `K = ⊥` and `S` the whole constant
+torus; the algebraic independence of the palette over `⊥` is transferred from `C` through
+`IntermediateField.botEquiv`, which mathlib does not provide.
+
+### Card status by item, updated
+
+| item | general `G` | `G_m` | `G_m^r` |
+|---|---|---|---|
+| (1) deck closure | bridge, conditional on one degree bound | proved | proved |
+| (2) position + velocity | needs the Lie functor | proved | prefix identity proved |
+| (3) `a^{-1}(H_(i+1)) = H_i` | proved | proved | proved |
+| (4) `q_i : Q_i ≅ Q_(i+1)` | proved | instantiated | instantiated |
+| (5) velocity transport | needs the Lie functor | proved | proved |
+| (6) purely expanding | needs the Lie functor | proved | **proved** |
+| (7) dtrdeg and `T ∩ C(G) = C` | needs the Lie functor | proved | **proved** |
+
+So the split torus is closed, and with it — since in characteristic zero `G_a` has no nontrivial
+isogeny — every connected commutative **linear** group.  What the `2 -> 3` gate still needs is the
+abelian-variety column, i.e. the class of groups, not any further mechanism.
+
+## The complete torus tail, with no hypothesis on the protocol — PROVED
+
+The `hsep` hypothesis of the previous section is only the *purely expanding* branch.  The general
+statement needs no separation hypothesis at all: the eigen-representation is enough by itself, and
+the invariants are exactly the annihilating monomials over the velocity field.
+
+    TorusInvariantField.lean   (refactored)
+      exists_torusScale_eigen_representation :
+        an invariant is `P/Q` with `d ∈ supp Q` and every exponent of `P` and of `Q` carrying the
+        character of `d` on the acting set
+      mem_of_torusScale_invariant                now a corollary of it
+
+    TorusInvariantMonomials.lean
+      laurentMonomial, laurentMonomial_natCast, laurentMonomial_add, laurentMonomial_ne_zero
+      scaleAnnihilator C S                       the exponent vectors of trivial character on `S`
+      torusScaleEquiv_laurentMonomial            rescaling multiplies a monomial by its character
+      torusInvariantMonomialField C x S          `C<x′/x>` with the annihilating monomials adjoined
+      torusScale_invariant_of_mem_torusInvariantMonomialField
+      mem_torusInvariantMonomialField_of_torusScale_invariant
+      torusScale_invariant_iff_mem_torusInvariantMonomialField :
+        **the invariant field of an arbitrary set of rescalings**
+
+    TorusProtocolMonomialTail.lean
+      fixedField_torusScaleRep_eq_torusInvariantMonomialField
+      torusProtocol_nonautonomousTail_eq_torusInvariantMonomialField :
+        **the complete phase tail of any nonsingular torus protocol** is the velocity field with
+        the monomials annihilating the erased sector adjoined
+
+All wired, all `[propext, Classical.choice, Quot.sound]`.
+
+This is the card's `(2)` at rank `r` in its exact form — position (the surviving monomials of the
+reversible quotient) plus velocity (the Maurer--Cartan coordinates) — with no boundedness,
+primitive-root, or degree hypothesis; only `det (m j) ≠ 0`, `C` algebraically closed of
+characteristic zero, and a freely generating palette.  The purely expanding case `(6)` is the branch
+where the annihilator is trivial, and `TorusExpandingProtocolTail` exhibits an unconditional
+protocol in that branch.
+
+The one-line mechanism: an invariant's numerator and denominator are eigenvectors of the whole deck
+group with a common eigen-character, so dividing both by any one monomial of that character class
+turns them into combinations of monomials of trivial character; conversely such monomials are fixed
+because their character is one.

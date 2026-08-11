@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaXiMassPhaseLinearWeld
+import GaloisForLFunctions.RHTower.XiHeatCassiniWoldThetaGreenCompensation
 
 /-!
 # Exterior theta reflection is a scalar grade lock
@@ -106,6 +106,171 @@ theorem norm_xiMassThetaQuantileResolventIntegral_neg_height
     ‖xiMassThetaQuantileResolventIntegral a (-c) tau‖ =
       ‖xiMassThetaQuantileResolventIntegral a c tau‖ := by
   rw [xiMassThetaQuantileResolventIntegral_neg_height a hc, norm_neg]
+
+/-- Polarized theta Green packet is the same fixed scalar times the phase-linear packet on either
+exterior line. -/
+theorem xiMassThetaQuantileMetricSymplecticIntegral_eq_I_mul_resolventIntegral_of_half_le_abs
+    (a : ℝ) {c : ℝ} (hc : 1 / 2 ≤ |c|) (tau : ℂ) :
+    xiMassThetaQuantileMetricSymplecticIntegral a c tau =
+      Complex.I * pinnedFirstMoment thetaQuantileCoordinate *
+        xiMassThetaQuantileResolventIntegral a c tau := by
+  rw [xiMassThetaQuantileMetricSymplecticIntegral,
+    xiMassThetaQuantileResolventIntegral]
+  have hfun : xiMassThetaQuantileMetricSymplecticIntegrand a c tau =
+      fun x => (Complex.I * pinnedFirstMoment thetaQuantileCoordinate) *
+        xiMassThetaQuantileResolventIntegrand a c tau x := by
+    funext x
+    have hpencil : IsUnit
+        (thetaSourcePencil (thetaEsscherResolventParameter c (-x))) :=
+      isUnit_thetaSourcePencil_thetaEsscherResolventParameter_of_half_le_abs hc (-x)
+    rw [xiMassThetaQuantileMetricSymplecticIntegrand,
+      xiMassThetaQuantileResolventIntegrand,
+      thetaQuantileMetricSymplecticCurrent_resolvent_eq_I_mul_pinnedMean hpencil]
+    ring
+  rw [hfun, MeasureTheory.integral_const_mul]
+
+/-- Polarized theta Green current belongs to the odd exterior-reflection grade. -/
+theorem xiMassThetaQuantileMetricSymplecticIntegral_neg_height
+    (a : ℝ) {c : ℝ} (hc : 1 / 2 ≤ |c|) (tau : ℂ) :
+    xiMassThetaQuantileMetricSymplecticIntegral a (-c) tau =
+      -xiMassThetaQuantileMetricSymplecticIntegral a c tau := by
+  have hnegc : 1 / 2 ≤ |-c| := by simpa using hc
+  rw [xiMassThetaQuantileMetricSymplecticIntegral_eq_I_mul_resolventIntegral_of_half_le_abs
+      a hnegc,
+    xiMassThetaQuantileMetricSymplecticIntegral_eq_I_mul_resolventIntegral_of_half_le_abs
+      a hc,
+    xiMassThetaQuantileResolventIntegral_neg_height a hc]
+  ring
+
+/-- Grade-compatible reflected Ward packet.  Wold current receives the same odd-grade sign as the
+theta current. -/
+def xiHeatCassiniReflectedWoldThetaGreenCompensatedPacket
+    (a c : ℝ) (tau : ℂ) : ℂ :=
+  xiMassThetaQuantileMetricSymplecticIntegral a (-c) tau -
+    Complex.I * pinnedFirstMoment thetaQuantileCoordinate *
+      xiHeatCassiniPureWoldHalfDensityLayer a tau
+
+/-- Reflected Ward packet is exactly the negative of the original packet, not a second equation. -/
+theorem xiHeatCassiniReflectedWoldThetaGreenCompensatedPacket_eq_neg
+    (a : ℝ) {c : ℝ} (hc : 1 / 2 ≤ |c|) (tau : ℂ) :
+    xiHeatCassiniReflectedWoldThetaGreenCompensatedPacket a c tau =
+      -xiHeatCassiniWoldThetaGreenCompensatedPacket a c tau := by
+  rw [xiHeatCassiniReflectedWoldThetaGreenCompensatedPacket,
+    xiHeatCassiniWoldThetaGreenCompensatedPacket,
+    xiMassThetaQuantileMetricSymplecticIntegral_neg_height a hc]
+  ring
+
+/-- The grade-compatible reflected Ward packet inherits the unconditional vertical bound, but
+only because it is the negative of the original Ward law. -/
+theorem exists_norm_xiHeatCassiniReflectedWoldThetaGreenCompensatedPacket_vertical_bound
+    {a c sigma : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
+    (hsigma : 0 < sigma) :
+    ∃ C : ℝ, ∀ u : ℝ,
+      ‖xiHeatCassiniReflectedWoldThetaGreenCompensatedPacket a c
+        ((sigma : ℂ) + u * Complex.I)‖ ≤ C := by
+  obtain ⟨C, hC⟩ :=
+    exists_norm_xiHeatCassiniWoldThetaGreenCompensatedPacket_vertical_bound
+      hhalf hca hsigma
+  refine ⟨C, fun u => ?_⟩
+  rw [xiHeatCassiniReflectedWoldThetaGreenCompensatedPacket_eq_neg a
+    (by rw [abs_of_pos (lt_trans (by norm_num) hhalf)]; exact hhalf.le), norm_neg]
+  exact hC u
+
+/-- Even exterior-grade projection of the two plus-sign packets isolates twice the pure Wold
+current.  Bounding both plus-sign packets would therefore solve the original RH-strength current,
+and is not supplied by reflection. -/
+theorem xiHeatCassiniWoldThetaGreenCompensatedPacket_add_neg_height_eq_pureWold
+    (a : ℝ) {c : ℝ} (hc : 1 / 2 ≤ |c|) (tau : ℂ) :
+    xiHeatCassiniWoldThetaGreenCompensatedPacket a c tau +
+        xiHeatCassiniWoldThetaGreenCompensatedPacket a (-c) tau =
+      2 * (Complex.I * pinnedFirstMoment thetaQuantileCoordinate *
+        xiHeatCassiniPureWoldHalfDensityLayer a tau) := by
+  rw [xiHeatCassiniWoldThetaGreenCompensatedPacket,
+    xiHeatCassiniWoldThetaGreenCompensatedPacket,
+    xiMassThetaQuantileMetricSymplecticIntegral_neg_height a hc]
+  ring
+
+/-- Uniform bound for the wrong-grade reflected packet, which keeps the even Wold sign while
+reflecting only the odd theta current. -/
+def XiHeatCassiniWrongGradeReflectedWoldThetaGreenLineBound
+    (a c sigma : ℝ) : Prop :=
+  ∃ C : ℝ, ∀ u : ℝ,
+    ‖xiHeatCassiniWoldThetaGreenCompensatedPacket a (-c)
+      ((sigma : ℂ) + u * Complex.I)‖ ≤ C
+
+/-- Since the right-line Ward packet is already bounded, the wrong-grade reflected packet is
+bounded exactly when the even Wold current is bounded. -/
+theorem xiHeatCassiniPureWoldHalfDensityLineBound_iff_wrongGradeReflected
+    {a c sigma : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
+    (hsigma : 0 < sigma) :
+    XiHeatCassiniPureWoldHalfDensityLineBound a sigma ↔
+      XiHeatCassiniWrongGradeReflectedWoldThetaGreenLineBound a c sigma := by
+  let q : ℂ := 2 * (Complex.I * pinnedFirstMoment thetaQuantileCoordinate)
+  have hq : q ≠ 0 := by
+    dsimp only [q]
+    exact mul_ne_zero (by norm_num)
+      (mul_ne_zero Complex.I_ne_zero
+        pinnedFirstMoment_thetaQuantileCoordinate_ne_zero)
+  have hcabs : 1 / 2 ≤ |c| := by
+    rw [abs_of_pos (lt_trans (by norm_num) hhalf)]
+    exact hhalf.le
+  obtain ⟨CR, hCR⟩ :=
+    exists_norm_xiHeatCassiniWoldThetaGreenCompensatedPacket_vertical_bound
+      hhalf hca hsigma
+  constructor
+  · rintro ⟨CW, hCW⟩
+    refine ⟨‖q‖ * CW + CR, fun u => ?_⟩
+    let tau : ℂ := (sigma : ℂ) + u * Complex.I
+    have hpair :=
+      xiHeatCassiniWoldThetaGreenCompensatedPacket_add_neg_height_eq_pureWold
+        a hcabs tau
+    have hsolve :
+        xiHeatCassiniWoldThetaGreenCompensatedPacket a (-c) tau =
+          q * xiHeatCassiniPureWoldHalfDensityLayer a tau -
+            xiHeatCassiniWoldThetaGreenCompensatedPacket a c tau := by
+      dsimp only [q] at hpair ⊢
+      linear_combination hpair
+    rw [hsolve]
+    calc
+      ‖q * xiHeatCassiniPureWoldHalfDensityLayer a tau -
+          xiHeatCassiniWoldThetaGreenCompensatedPacket a c tau‖ ≤
+        ‖q * xiHeatCassiniPureWoldHalfDensityLayer a tau‖ +
+          ‖xiHeatCassiniWoldThetaGreenCompensatedPacket a c tau‖ :=
+            norm_sub_le _ _
+      _ ≤ ‖q‖ * CW + CR := by
+        rw [norm_mul]
+        exact add_le_add
+          (mul_le_mul_of_nonneg_left (hCW u) (norm_nonneg q)) (hCR u)
+  · rintro ⟨CL, hCL⟩
+    refine ⟨‖q⁻¹‖ * (CR + CL), fun u => ?_⟩
+    let tau : ℂ := (sigma : ℂ) + u * Complex.I
+    have hpair :=
+      xiHeatCassiniWoldThetaGreenCompensatedPacket_add_neg_height_eq_pureWold
+        a hcabs tau
+    have hsolve :
+        xiHeatCassiniPureWoldHalfDensityLayer a tau =
+          q⁻¹ *
+            (xiHeatCassiniWoldThetaGreenCompensatedPacket a c tau +
+              xiHeatCassiniWoldThetaGreenCompensatedPacket a (-c) tau) := by
+      dsimp only [q] at hpair ⊢
+      rw [hpair]
+      field_simp [pinnedFirstMoment_thetaQuantileCoordinate_ne_zero]
+    rw [hsolve, norm_mul]
+    exact mul_le_mul_of_nonneg_left
+      ((norm_add_le _ _).trans (add_le_add (hCR u) (hCL u)))
+      (norm_nonneg _)
+
+/-- **Wrong-grade reflection criterion.**  Asking the reflected theta line to retain the same Wold
+sign is exactly RH; exterior reflection itself provides only the opposite, grade-compatible sign. -/
+theorem riemannHypothesis_iff_xiHeatCassiniWrongGradeReflectedWoldThetaGreenLineBound
+    {a c sigma : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
+    (hsigma : 0 < sigma) :
+    RiemannHypothesis ↔
+      XiHeatCassiniWrongGradeReflectedWoldThetaGreenLineBound a c sigma :=
+  (riemannHypothesis_iff_xiHeatCassiniPureWoldHalfDensityLineBound
+    hhalf hca hsigma).trans
+      (xiHeatCassiniPureWoldHalfDensityLineBound_iff_wrongGradeReflected
+        hhalf hca hsigma)
 
 end
 

@@ -65,6 +65,18 @@ theorem exists_kernelHigherDefect
   choose h hh using fun a b c => hexact _ (hkernel a b c)
   exact ⟨h, hh⟩
 
+/-- The kernel-valued higher defect is unique: an injective coefficient inclusion reflects it. -/
+theorem kernelHigherDefect_unique
+    {M : Type u} {K : Type v} {A : Type w}
+    [Add M] [AddCommGroup K] [AddCommGroup A]
+    (i : K →+ A) (hi : Function.Injective i)
+    (κ : M → M → A) (h h' : M → M → M → K)
+    (hh : ∀ a b c, i (h a b c) = PromotionAssociator κ a b c)
+    (hh' : ∀ a b c, i (h' a b c) = PromotionAssociator κ a b c) :
+    h = h' := by
+  funext a b c
+  exact hi ((hh a b c).trans (hh' a b c).symm)
+
 /-- The kernel-valued defect born from a fine lift automatically satisfies pentagon coherence. -/
 theorem kernelHigherDefect_pentagon
     {M : Type u} {K : Type v} {A : Type w}

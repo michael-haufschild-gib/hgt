@@ -66,8 +66,8 @@ theorem laurentCoeff_atomCombination (hτ : 0 < τ.im) (hσ : 0 < σ.im)
 theta-source translates at every point of the rank-two orbit through `p`. -/
 theorem exists_atomCombination_residue_normalForm
     (hF : MeromorphicOn F Set.univ)
-    (hper : ∀ z : ℂ, F (z + 1) = F z)
-    {Cst : ℂ} (hmixed : ∀ z : ℂ, F (z + τ + σ) - F (z + τ) - F (z + σ) + F z = Cst)
+    (hper : PeriodicOneGerm F)
+    {Cst : ℂ} (hmixed : MixedConstGerm F τ σ Cst)
     (hτ : 0 < τ.im) (hσ : 0 < σ.im)
     (hindep : ∀ n m j : ℤ, (n : ℂ) * τ + (m : ℂ) * σ + (j : ℂ) = 0 → n = 0 ∧ m = 0 ∧ j = 0)
     (p : ℂ)

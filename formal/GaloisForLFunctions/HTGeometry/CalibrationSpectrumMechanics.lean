@@ -98,6 +98,29 @@ theorem calibrationResponse_ground_le (envelope : ℝ) (z : ℂ) (u : UnitCalibr
   rw [norm_mul, Complex.norm_conj, u.norm_eq_one, one_mul] at hre
   exact sub_le_sub_left hre envelope
 
+/-- **Equality case of the weighted triangle inequality.**  A nonnegatively weighted family of
+coherent outputs saturates the triangle bound exactly when a single calibrator aligns every
+positively weighted entry. -/
+theorem weighted_triangle_eq_iff {Y : Type*} [Fintype Y] (w : Y → ℝ) (hw : ∀ y, 0 ≤ w y)
+    (c : Y → ℂ) :
+    (∑ y, w y * ‖c y‖) = ‖∑ y, (w y : ℂ) * c y‖ ↔
+      ∃ u : UnitCalibrator, ∀ y, 0 < w y → c y = (‖c y‖ : ℂ) * u.val := by
+  rw [weighted_norm_sum_eq_iff w hw c]
+  constructor
+  · rintro ⟨u, hu, hcu⟩
+    exact ⟨⟨u, hu⟩, hcu⟩
+  · rintro ⟨u, hcu⟩
+    exact ⟨u.val, u.norm_eq_one, hcu⟩
+
+/-- **Exchange-defect equality classification.**  The positive observer loss vanishes exactly when
+one calibrator aligns every positively weighted coherent output. -/
+theorem positiveObserverLoss_eq_zero_iff {Y Z : Type*} [Fintype Y]
+    (S : FinitePositiveKernel Y Z) (c : Y → ℂ) (z : Z) :
+    positiveObserverLoss S c z = 0 ↔
+      ∃ u : UnitCalibrator, ∀ y, 0 < S.weight z y → c y = (‖c y‖ : ℂ) * u.val := by
+  rw [positiveObserverLoss, sub_eq_zero]
+  exact weighted_triangle_eq_iff (fun y => S.weight z y) (fun y => S.nonneg z y) c
+
 /-- Four calibration values reconstruct the positive envelope. -/
 theorem calibrationResponse_four_reconstruct_envelope (envelope : ℝ) (z : ℂ) :
     (calibrationResponse envelope z UnitCalibrator.one +

@@ -311,6 +311,17 @@ theorem finiteTaskObserverWidthAtMost_iff_conflictColorable
   · rintro ⟨kappa, hkappa⟩
     exact ⟨kappa, (finiteTaskLossless_iff_properColoring u v kappa).mpr hkappa⟩
 
+/-- **Cofinal width law.**  A fixed finite observer width is lossless at every stage of a
+sequence of finite task systems exactly when every stage conflict system is colorable at that
+width. -/
+theorem stagewise_observerWidthAtMost_iff_conflictColorable
+    {ι J : Type*} {P : ι → Type*} [∀ n, Fintype (P n)] [∀ n, DecidableEq (P n)]
+    (u v : ∀ n, J → P n → ℝ) (q : ℕ) :
+    (∀ n, finiteTaskObserverWidthAtMost (u n) (v n) q) ↔
+      ∀ n, finiteTaskConflictColorable (u n) (v n) q :=
+  ⟨fun h n => (finiteTaskObserverWidthAtMost_iff_conflictColorable (u n) (v n) q).mp (h n),
+    fun h n => (finiteTaskObserverWidthAtMost_iff_conflictColorable (u n) (v n) q).mpr (h n)⟩
+
 def relationEdgeLeftProfile {P : Type*} [DecidableEq P]
     (R : P → P → Prop) [DecidableRel R] (e : P × P) (z : P) : ℝ :=
   if R e.1 e.2 then if z = e.1 then 1 else 0 else 0

@@ -3497,3 +3497,472 @@ only their common anti-diagonal anomaly.  Missing datum must separate source pha
 the pinned scalar trace.  Norm completion cannot do so.
 
 Verdict: `[PROVED — FINITE CRITICAL HOLONOMY ENERGY; SOURCE-LEVEL PHASE GRADE OPEN]`.
+
+---
+
+## 66. Conjecture loop 42 — exterior-reflection Boolean grade duality
+
+### Conjecture
+
+The opposite safe exterior theta line might supply a second scalar Ward equation.  If reflection
+preserved the Wold sign while reversing the theta current, adding the two bounded packets would
+isolate the RH-strength Wold producer.
+
+### Exact reflection law
+
+The conjectured second equation is false, but its failure exposes an exact Boolean grading.  Under
+simultaneous exterior-height and frequency reflection,
+
+```text
+zeta_(-c)(-x)=-zeta_c(x),
+MassTest_(-c)(x)=MassTest_c(-x),
+ThetaRow_(-c)(-x)=-ThetaRow_c(x).                       (RJG191)
+```
+
+The first identity is algebraic, the second uses evenness of the analytic Xi-mass test, and the
+third uses oddness of `XiC'/XiC`.  Hence both the phase-linear theta packet and its polarized Green
+realization belong to the odd exterior grade:
+
+```text
+Theta(-c)=-Theta(c),
+Green(-c)=-Green(c).                                    (RJG192)
+```
+
+Pure Wold current has no exterior-line parameter and belongs to the even grade.  Therefore the
+two plus-sign packets satisfy the exact parity projection
+
+```text
+(Green(c)+i d Wold)+(Green(-c)+i d Wold)=2 i d Wold.    (RJG193)
+```
+
+The actual reflected Ward law must reflect the complete odd-grade packet, including the Wold
+sign:
+
+```text
+Green(-c)-i d Wold=-(Green(c)+i d Wold).                (RJG194)
+```
+
+It is unconditionally bounded, but is only the negative of the known equation.  Define the
+wrong-grade reflected packet by retaining the plus Wold sign on the left line.  Since the right
+packet is already bounded and `d != 0`, Lean proves
+
+```text
+WrongGradeReflectedBound
+ iff PureWoldBound
+ iff RH.                                                (RJG195)
+```
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniThetaExteriorReflectionGradeLock.lean`.
+
+### Hostile audit and higher universal principle
+
+Exterior reflection does not create missing quadrature.  It defines a `Z/2` representation:
+theta/Green is odd, Wold arithmetic is even, and known Ward identity controls only one
+anti-diagonal grade.  Desired RH estimate is exactly a grade-changing law, not stronger decay or
+another scalar norm.
+
+This reinterprets previous stalls uniformly.  Fisher squaring forgets the Boolean grade; scalar
+theta--Wold compensation identifies only anti-diagonal quotient; reflected scalarization repeats
+same character.  Existing Hedenmalm--Euler reflection-admission fracture additionally rules out a
+fixed-domain finite-energy linear transport at nonzero displacement.  A viable producer must
+therefore be source-selected and domain-changing (or equivalently carry an unbounded closed
+supercharge) while preserving the phase-linear current.  Searching for a bounded same-domain
+intertwiner is now a proved dead route.
+
+Verdict: `[PROVED — EXACT EXTERIOR BOOLEAN GRADE; WRONG-GRADE LAW IS RH-EQUIVALENT]`.
+
+---
+
+## 67. Conjecture loop 43 — residual holonomy landing in source-selected Fisher graph domain
+
+### Conjecture
+
+The Boolean-grade theorem says a successful flip must be graph-singular and source-selected.
+Section 65 supplied finite energy only in Route T's harmonic coframe `log(p)/p`.  Corpus has two
+independently constructed source-selected prime measures: diagonal Euler activation Fisher density
+and literal strict-preclosure essential edge.  Both are uniformly comparable to `1/p`.  Therefore
+the centered Wold residual should land in their Hilbert and prime-log graph domains without any
+new decay hypothesis.
+
+### Closure
+
+Transport the ordered residual through the prime enumeration and write it as `E(p)`.  Lean proves
+
+```text
+sum_p (1/p) |E(p)|^2 < infinity.                         (RJG196)
+```
+
+The activation Fisher density `d_F(p)=p/(p+1)^2` and actual essential-edge coordinate
+`d_A(p)=1/p-p/farPrime(p)^2` satisfy `0<=d_F,d_A<=1/p`.  Consequently
+
+```text
+sum_p d_F(p)|E(p)|^2 < infinity,
+sum_p d_A(p)|E(p)|^2 < infinity.                         (RJG197)
+```
+
+More strongly, the original `log(p)/p` energy is exactly enough for the graph norm of the
+unbounded prime-log half-gradient:
+
+```text
+sum_p log(p)d_F(p)|E(p)|^2 < infinity,
+sum_p log(p)d_A(p)|E(p)|^2 < infinity.                   (RJG198)
+```
+
+The two residual energy densities differ by a summable sequence.  Thus the Route-T residual lands
+in one concrete source-selected graph domain represented equally by activation Fisher and actual
+essential edge modulo trace class.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldHolonomyActivationFisherLanding.lean`.
+
+### Hostile audit and pivot
+
+(RJG198) is genuine graph-domain landing, but it supplies no operator that changes the exterior
+Boolean character.  It proves arithmetic residual regularity is sufficient for the first
+unbounded log derivative.  Remaining obstruction is constructing the source-derived closed
+off-diagonal action and proving it sends odd theta grade to even Wold grade without erasing the
+unsquared current.
+
+Verdict: `[PROVED — SOURCE-SELECTED FISHER GRAPH LANDING; GRADE ACTION OPEN]`.
+
+---
+
+## 68. Conjecture loop 44 — all-orders prime-log graph smoothness
+
+### Conjecture
+
+First graph-domain landing might be accidental: one factor of `log(p)` is already present in the
+critical harmonic coframe.  To support a genuine closed grade operator, residual should survive
+every finite power of signed prime-log generator.
+
+### Closure
+
+Square-root-log exponential rate absorbs every polynomial in `log(p)`.  For every `k : Nat`, Lean
+proves unconditionally
+
+```text
+sum_p log(p)^(2k) d_F(p) |E(p)|^2 < infinity,
+sum_p log(p)^(2k) d_A(p) |E(p)|^2 < infinity.            (RJG199)
+```
+
+Proof first establishes harmonic majorant
+
+```text
+sum_p log(p)^(2k) exp(-2c sqrt(log(p))) / p < infinity
+```
+
+from Burnol Poisson-subordinate summability, clips finite exceptional prefix in eventual holonomy
+rate, then transports through prime enumeration.  Source-density bounds finish activation-Fisher
+and literal essential-edge forms.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldHolonomyLogSmooth.lean`.
+
+### Hostile audit and pivot
+
+Arithmetic residual is a smooth vector for signed prime-log generator: no finite differential
+order causes admission loss.  This is stronger than first graph landing and removes polynomial
+regularity as possible obstruction.
+
+It does not imply analytic-vector or multiplicative-height Köthe landing.  Powers of
+multiplicative height are exponential weights in `log(p)`; square-root-log decay does not certify
+them.  Correct next domain is doubled positive/negative prime-log boundary, where Deninger
+`i sign(log p)` Hodge action can change Boolean sheet grade without demanding false power decay.
+
+Verdict: `[PROVED — ALL FINITE LOG-GRAPH ORDERS; DOUBLED HODGE GRADE ACTION NEXT]`.
+
+---
+
+## 69. Conjecture loop 45 — concrete Deninger boundary grade and observer parity
+
+### Conjecture
+
+All-orders prime-log smoothness should permit a genuine source-selected grade change on the
+doubled prime boundary.  The remaining question is whether scalar observation preserves the
+unsquared residual or repeats the Fisher-squaring loss.
+
+### Closure
+
+Double each ordinary prime into sheets with frequencies `+log(p)` and `-log(p)`, and put the same
+activation-Fisher amplitude on both sheets:
+
+```text
+x(p,+)=x(p,-)=sqrt(d_F(p)) E(p).
+```
+
+Lean constructs this as an honest `DiagonalL2` vector in every polynomial domain of the maximal
+signed-log generator.  Deninger's canonical boundary Hodge operator acts pointwise by
+
+```text
+H x(p,+)= i x(p,+),
+H x(p,-)=-i x(p,-),
+H^2 x=-x,             ||H x||=||x||.                    (RJG200)
+```
+
+Thus `H` sends the even residual to the odd Boolean sheet grade without any multiplicative-height
+admission claim.  Observer parity is decisive.  The even sheet sum annihilates the transformed
+residual at every prime, whereas odd sheet contrast retains its sign:
+
+```text
+Hx(p,+)+Hx(p,-)=0,
+Hx(p,+)-Hx(p,-)=2 i sqrt(d_F(p)) E(p).                  (RJG201)
+```
+
+The same dichotomy survives quadratic contraction.  Same-grade pairing cancels, while cross-grade
+pairing recovers exact activation-Fisher energy:
+
+```text
+conj(x_+) Hx_+ + conj(x_-) Hx_- = 0,
+conj(x_+) Hx_+ - conj(x_-) Hx_- = 2 i d_F(p) E(p)^2.   (RJG202)
+```
+
+The real coefficients of the surviving cross-grade Fisher flux are summable over all primes.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldDeningerBoundaryGrade.lean`.
+
+### Hostile audit and pivot
+
+Concrete source-grade action now exists; missing theorem is no longer construction of a Boolean
+flip.  Failure is observation: every reflection-even scalar observer is provably blind, while a
+reflection-odd observer preserves the unsquared arithmetic residual.  Fisher squaring was not
+merely too weak—it selected the wrong observer character.
+
+To reach physical Route-T terminal flux, the odd observer must undo the activation-Fisher square
+root and restore mass half-density.  Exact multiplier of that deconvolution is next object; its
+growth determines whether source transgression can land on physical boundary.
+
+Verdict: `[PROVED — CONCRETE UNITARY GRADE CHANGE; REFLECTION-ODD PHYSICAL OBSERVER OPEN]`.
+
+---
+
+## 70. Conjecture loop 46 — exact physical observer and multiplicative-height wall
+
+### Conjecture
+
+The odd Hodge observer from Section 69 preserves `sqrt(d_F(p)) E(p)`, while Route T's physical
+terminal flux contains `sqrt(p) E(p)`.  Exact deconvolution coefficient should identify whether
+missing landing is another finite log derivative or a genuinely different horizontal grade.
+
+### Closure
+
+For activation Fisher density `d_F(p)=p/(p+1)^2`, Lean proves
+
+```text
+sqrt(d_F(p)) = sqrt(p)/(p+1),
+sqrt(p)/sqrt(d_F(p)) = p+1.                              (RJG203)
+```
+
+Thus physical observation costs exactly one multiplicative-height step.  It is not an arbitrary
+growth factor: corpus comparison transport identifies it literally as
+
+```text
+p+1 = fisherDeconvolvedComparisonWeight(-1,p).           (RJG204)
+```
+
+The sharp same-carrier orientation theorem then proves this multiplier is unbounded and does not
+preserve the fixed Fisher-deconvolved `ell^1` ideal.  Physical observation lies in the forbidden
+negative horizontal chamber.
+
+Source probability gives a second exact interpretation.  At the critical reciprocal-prime node,
+the occupancy probability is `pi_p=1/(p+1)`, so physical coefficient is `pi_p^{-1}`.  Moreover
+
+```text
+d_F(p)(p+1) = - OccupancyScore(p,true),
+sqrt(p) = - OccupancyScore(p,true)/sqrt(d_F(p)).          (RJG205)
+```
+
+Restored physical half-density is therefore the occupied Boolean score whitened by its literal
+source Fisher metric.  This explains both its canonical provenance and its rare-event
+unboundedness.
+
+For every mass profile and ordered prime, Lean proves exact physical landing
+
+```text
+sqrt(d_F(p_N)) E_N * ((p_N+1) F_u(log p_N))
+  = sqrt(p_N) F_u(log p_N) E_N,
+
+OddHodgePhysicalObserver(p_N)
+  = 2 i * ResidualTerminalFlux_N.                        (RJG206)
+```
+
+Finally, strict domain separation is constructive.  The single probe `x(p)=1/p` satisfies
+
+```text
+for every k, sum_p |log(p)^k x(p)|^2 < infinity,
+but sum_p |(p+1)x(p)|^2 = infinity.                      (RJG207)
+```
+
+Hence intersection of all finite signed-log graph domains is provably insufficient for physical
+observation; no finite-order log regularity argument can close this step.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldDeningerPhysicalObserverWall.lean`.
+
+### Hostile audit and pivot
+
+This closes observer identification but not its uniform vertical bound.  Same-carrier bounded
+operator strategy is now rigorously dead: required observer is exactly negative-grade transport,
+and an explicit smooth vector witnesses failure.
+
+Positive survivor is sharper than a no-go.  Physical multiplier is canonical inverse occupancy,
+and resulting `sqrt(p)` is Fisher-whitened Boolean score.  Since `sqrt(p)=exp(log(p)/2)`, same factor
+should also be internal to mass geometry as lower contour translation by `-i/2`.  Every legal
+Route-T aperture has width greater than `1/2`; next test is whether joint source pairing moves the
+observer onto that legal strip boundary before norms.
+
+Verdict: `[PROVED — EXACT NEGATIVE-GRADE PHYSICAL OBSERVER; FINITE LOG SMOOTHNESS STRICTLY FAILS]`.
+
+---
+
+## 71. Conjecture loop 47 — internalizing physical observation as half-strip transgression
+
+### Conjecture
+
+Section 70 identified physical restoration as `sqrt(p)=exp(log(p)/2)`.  Fourier covariance suggests
+this is exactly a downward imaginary translation of mass integration contour by `1/2`.  Since every
+legal Route-T aperture satisfies `a>1/2`, physical observer may be internal to analytic source
+geometry even though it is unbounded on abstract Fisher boundary.
+
+### Closure
+
+For every legal lower depth `0<=c<a`, Lean proves exact contour covariance
+
+```text
+integral_R g_tau(x-c i) exp(-i log(p) x) dx
+  = exp(c log(p)) F_tau(log(p)).                         (RJG208)
+```
+
+Proof applies full-line horizontal contour transport to the complete analytic Fourier kernel
+before splitting phase.  At critical half depth,
+
+```text
+integral_R g_tau(x-i/2) exp(-i log(p) x) dx
+  = sqrt(p) F_tau(log(p)).                               (RJG209)
+```
+
+No limiting argument or off-strip continuation enters: `1/2<a` is exactly Route T's legal aperture
+condition.  Therefore ordered physical residual terminal flux has joint-pairing form
+
+```text
+ResidualTerminalFlux_N
+  = LowerHalfShiftProfile_tau(p_N) E(p_N).               (RJG210)
+```
+
+Combining with Section 70 gives direct source-grade landing
+
+```text
+OddHodgePhysicalObserver(p_N)
+  = 2 i LowerHalfShiftProfile_tau(p_N) E(p_N).           (RJG211)
+```
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldHalfShiftPhysicalObserver.lean`.
+
+### Hostile audit and higher principle
+
+Unbounded diagonal multiplier and legal contour translation are two charts of same object.
+Abstract all-log-smooth boundary cannot admit `exp(|D|/2)`, but actual Xi-mass test already carries
+strip analyticity wide enough to realize that analytic-vector step exactly.  Thus multiplicative
+wall is not mathematical impossibility; it says operator must act jointly on arithmetic residual
+and analytic mass source, never on residual Hilbert vector alone.
+
+This reframes every previous stall.  Termwise norms separate Fisher coefficient from mass strip and
+see forbidden inverse occupancy.  Exact joint pairing absorbs inverse occupancy into source contour
+geometry.  Remaining hard theorem is now sharply localized: control finite lower-half-strip
+connection pairing while retaining adjacent-prime phase cancellation.  No further residual-only
+regularity can help.
+
+Verdict: `[PROVED — PHYSICAL OBSERVER IS LEGAL HALF-STRIP TRANSGRESSION; JOINT CONNECTION BOUND OPEN]`.
+
+---
+
+## 72. Conjecture loop 48 — lower-half connection and reciprocal prime-log telescope
+
+### Conjecture
+
+After Section 71 internalizes `sqrt(p)` into the lower contour, retain the whole centered Wold
+primitive under that integral and perform finite Abel transport there.  Adjacent phases should
+contribute a prime-log gap, and exponential square-root-log residual decay may then become
+summable without requiring a prime-gap asymptotic.
+
+### Closure
+
+For `h_N=log(p_N)`, `E_N` the centered Wold residual, and
+`q_N(x)=exp(-i h_N x)`, Lean constructs one joint lower-boundary kernel and proves
+
+```text
+JointKernel_N(x)
+  = g_tau(x-i/2) [E_N q_N(x) + sum_(n<N) E_n(q_n(x)-q_(n+1)(x))],
+
+integral_R JointKernel_N
+  = ResidualTerminalFlux_N + sum_(n<N) ResidualConnectionAtom_n.    (RJG212)
+```
+
+No norm or sheet projection occurs before adjacent-prime cancellation.  The phase kernel also has
+the exact local arithmetic normal form
+
+```text
+E_0 q_0 + sum_(n<N) [woldCoeff(p_(n+1))-(h_(n+1)-h_n)] q_(n+1).
+```
+
+Bertrand's theorem supplies the elementary height comparison `h_(n+1)<=2h_n`.  Positivity then
+gives the reciprocal charge inequality
+
+```text
+(h_(n+1)-h_n)/h_n^2
+  <= 2(1/h_n-1/h_(n+1)),
+
+sum_n (h_(n+1)-h_n)/h_n^2 < infinity.                    (RJG213)
+```
+
+Since every `exp(-c sqrt(h))` is bounded by `C/h^2`, the proven Wold rate implies the new
+finite-variation law on the *actual prime-log mesh*
+
+```text
+sum_n |E_n| (h_(n+1)-h_n) < infinity.                    (RJG214)
+```
+
+The Fourier chord estimate
+
+```text
+|q_n(x)-q_(n+1)(x)| <= (h_(n+1)-h_n)|x|
+```
+
+therefore proves absolute convergence of the physical residual phase connection at every source
+coordinate and convergence of finite primitive kernels to
+
+```text
+sum_n E_n(q_n-q_(n+1)).                                  (RJG215)
+```
+
+The formal proof caught and removed an extra `E_0 q_0` in the initially conjectured primitive
+limit: that base term belongs to the increment normal form, not to the sum of primitive connection
+atoms.
+
+Lean status: `[FORMALIZED] [COMPILES]` in
+`XiHeatCassiniWoldLowerHalfShiftConnectionKernel.lean` and
+`XiHeatCassiniWoldLowerHalfShiftGapSummability.lean`.
+
+### Hostile audit and higher principle
+
+This is genuine new quantitative knowledge: earlier pointwise residual decay did not give total
+variation, while the physical half-shift exposes exactly the mesh factor that makes a reciprocal
+telescope possible.  It closes prime-height amplification inside the residual phase connection
+without PNT-scale gap estimates.
+
+It does **not** yet prove the uniform vertical line bound.  Pointwise absolute convergence of the
+phase connection may be integrated for each fixed `tau`, but taking the lower-contour mass-test
+norm first costs exponential vertical growth.  The explicit logarithmic-mesh main current also
+remains outside this residual theorem.  The obstruction has moved cleanly: arithmetic residual
+summation is closed; joint timelike/glancing transport in vertical time, together with the main
+log-mesh current, is open.
+
+Higher principle: prime height is not the correct local norm variable after physical observation.
+The invariant quantity is residual variation against the Stieltjes mesh `dh`; Bertrand bounds its
+reciprocal curvature, and Wold decay supplies all missing damping.  Next conjecture must preserve
+this Stieltjes connection while treating vertical oscillation, rather than reverting to termwise
+prime amplitudes.
+
+Verdict: `[PROVED — PHYSICAL RESIDUAL HAS FINITE PRIME-LOG VARIATION; VERTICAL GLANCING AND MAIN MESH OPEN]`.

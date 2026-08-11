@@ -29,8 +29,8 @@ set_option maxHeartbeats 1000000 in
 coefficients of negative index, at every point, as an explicit finite atom sum. -/
 theorem exists_totalAtomSum_no_principal_part
     (hF : MeromorphicOn F Set.univ)
-    (hper : ∀ z : ℂ, F (z + 1) = F z)
-    {Cst : ℂ} (hmixed : ∀ z : ℂ, F (z + τ + σ) - F (z + τ) - F (z + σ) + F z = Cst)
+    (hper : PeriodicOneGerm F)
+    {Cst : ℂ} (hmixed : MixedConstGerm F τ σ Cst)
     (hτ : 0 < τ.im) (hσ : 0 < σ.im)
     (hindep : ∀ n m j : ℤ, (n : ℂ) * τ + (m : ℂ) * σ + (j : ℂ) = 0 → n = 0 ∧ m = 0 ∧ j = 0)
     (hindepτ : LinearIndependent ℝ ![(1 : ℂ), τ]) (hindepσ : LinearIndependent ℝ ![(1 : ℂ), σ])
@@ -48,37 +48,36 @@ theorem exists_totalAtomSum_no_principal_part
       laurentCoeff (fun z => F (z + h) - F z) (a + 1) ℓ
         = laurentCoeff (fun z => F (z + h) - F z) a ℓ := by
     intro h ℓ a
-    have hfun : (fun z => F (z + 1 + h) - F (z + 1)) = fun z => F (z + h) - F z := by
-      funext z
-      rw [show z + 1 + h = z + h + 1 from by ring, hper (z + h), hper z]
+    have hmero : MeromorphicAt (fun z => F (z + 1 + h) - F (z + 1)) a :=
+      meromorphicAt_comp_add.mpr
+        ((meromorphicAt_comp_add.mpr (hF (a + 1 + h) (Set.mem_univ _))).sub
+          (hF (a + 1) (Set.mem_univ _)))
     calc laurentCoeff (fun z => F (z + h) - F z) (a + 1) ℓ
         = laurentCoeff (fun z => F (z + 1 + h) - F (z + 1)) a ℓ :=
           (laurentCoeff_comp_add (fun z => F (z + h) - F z) a 1 ℓ).symm
-      _ = laurentCoeff (fun z => F (z + h) - F z) a ℓ := by rw [hfun]
+      _ = laurentCoeff (fun z => F (z + h) - F z) a ℓ :=
+          laurentCoeff_congr hmero (eventuallyEq_boundary_shift_one hper h a) ℓ
   have hUtauperτ : ∀ (ℓ : ℤ), ℓ < 0 → ∀ a : ℂ,
       laurentCoeff (fun z => F (z + σ) - F z) (a + τ) ℓ = laurentCoeff (fun z => F (z + σ) - F z) a ℓ := by
     intro ℓ hℓ a
-    have hfun : (fun z => F (z + τ + σ) - F (z + τ)) = fun z => (F (z + σ) - F z) + Cst := by
-      funext z
-      
-      have h := hmixed z
-      linear_combination h
+    have hmero : MeromorphicAt (fun z => F (z + τ + σ) - F (z + τ)) a :=
+      meromorphicAt_comp_add.mpr (hUtaumero (a + τ) (Set.mem_univ _))
     calc laurentCoeff (fun z => F (z + σ) - F z) (a + τ) ℓ
-        = laurentCoeff (fun z => F (z + τ + σ) - F (z + τ)) a ℓ := (laurentCoeff_comp_add (fun z => F (z + σ) - F z) a τ ℓ).symm
-      _ = laurentCoeff (fun z => (F (z + σ) - F z) + Cst) a ℓ := by rw [hfun]
+        = laurentCoeff (fun z => F (z + τ + σ) - F (z + τ)) a ℓ :=
+          (laurentCoeff_comp_add (fun z => F (z + σ) - F z) a τ ℓ).symm
+      _ = laurentCoeff (fun z => (F (z + σ) - F z) + Cst) a ℓ :=
+          laurentCoeff_congr hmero (eventuallyEq_boundary_shift_tau hmixed a) ℓ
       _ = laurentCoeff (fun z => F (z + σ) - F z) a ℓ := laurentCoeff_add_const (hUtaumero a (Set.mem_univ a)) Cst hℓ
   have hUsigperσ : ∀ (ℓ : ℤ), ℓ < 0 → ∀ a : ℂ,
       laurentCoeff (fun z => F (z + τ) - F z) (a + σ) ℓ = laurentCoeff (fun z => F (z + τ) - F z) a ℓ := by
     intro ℓ hℓ a
-    have hfun : (fun z => F (z + σ + τ) - F (z + σ)) = fun z => (F (z + τ) - F z) + Cst := by
-      funext z
-      
-      have h := hmixed z
-      rw [show z + τ + σ = z + σ + τ from by ring] at h
-      linear_combination h
+    have hmero : MeromorphicAt (fun z => F (z + σ + τ) - F (z + σ)) a :=
+      meromorphicAt_comp_add.mpr (hUsigmero (a + σ) (Set.mem_univ _))
     calc laurentCoeff (fun z => F (z + τ) - F z) (a + σ) ℓ
-        = laurentCoeff (fun z => F (z + σ + τ) - F (z + σ)) a ℓ := (laurentCoeff_comp_add (fun z => F (z + τ) - F z) a σ ℓ).symm
-      _ = laurentCoeff (fun z => (F (z + τ) - F z) + Cst) a ℓ := by rw [hfun]
+        = laurentCoeff (fun z => F (z + σ + τ) - F (z + σ)) a ℓ :=
+          (laurentCoeff_comp_add (fun z => F (z + τ) - F z) a σ ℓ).symm
+      _ = laurentCoeff (fun z => (F (z + τ) - F z) + Cst) a ℓ :=
+          laurentCoeff_congr hmero (eventuallyEq_boundary_shift_sigma hmixed a) ℓ
       _ = laurentCoeff (fun z => F (z + τ) - F z) a ℓ := laurentCoeff_add_const (hUsigmero a (Set.mem_univ a)) Cst hℓ
   have hindepBA : ∀ m n j : ℤ, (m : ℂ) * σ + (n : ℂ) * τ + (j : ℂ) = 0 →
       m = 0 ∧ n = 0 ∧ j = 0 := by

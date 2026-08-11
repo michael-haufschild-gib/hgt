@@ -69,6 +69,43 @@ theorem conservativeRepairBoundary_birth (B : W →ₗ[ℝ] V) (c : W) :
     conservativeRepairBoundary B c (c, 1) = 0 := by
   simp [conservativeRepairBoundary]
 
+/-- **Split history isomorphism.**  Old closed histories together with the new repair coordinate
+are exactly the closed histories of the repaired execution, by the shear `(k,t) ↦ (k + t·c, t)`. -/
+def conservativeRepairKernelEquiv (B : W →ₗ[ℝ] V) (c : W) :
+    (LinearMap.ker B × ℝ) ≃ₗ[ℝ] LinearMap.ker (conservativeRepairBoundary B c) where
+  toFun kt := ⟨((kt.1 : W) + kt.2 • c, kt.2), by
+      rw [LinearMap.mem_ker, show ((kt.1 : W) + kt.2 • c, kt.2) =
+        (((kt.1 : W) + kt.2 • c : W), (kt.2 : ℝ)) from rfl,
+        conservativeRepairBoundary_eq_zero_iff]
+      simp⟩
+  invFun z := (⟨(z : W × ℝ).1 - (z : W × ℝ).2 • c, by
+      have hz : conservativeRepairBoundary B c ((z : W × ℝ).1, (z : W × ℝ).2) = 0 := by
+        simp
+      exact (conservativeRepairBoundary_eq_zero_iff B c _ _).mp hz⟩, (z : W × ℝ).2)
+  map_add' a b := by
+    apply Subtype.ext
+    simp [Prod.ext_iff, add_smul]
+    abel
+  map_smul' r a := by
+    apply Subtype.ext
+    simp [smul_add, smul_smul]
+  left_inv a := by
+    apply Prod.ext
+    · apply Subtype.ext; simp
+    · simp
+  right_inv z := by
+    apply Subtype.ext
+    simp
+
+/-- **Dimension of the born history.**  Conservative repair leaves the semantic image fixed and
+raises the closed-history dimension by exactly one. -/
+theorem finrank_conservativeRepairBoundary_ker (B : W →ₗ[ℝ] V) (c : W)
+    [FiniteDimensional ℝ (LinearMap.ker B)] :
+    Module.finrank ℝ (LinearMap.ker (conservativeRepairBoundary B c)) =
+      Module.finrank ℝ (LinearMap.ker B) + 1 := by
+  rw [← (conservativeRepairKernelEquiv B c).finrank_eq, Module.finrank_prod,
+    Module.finrank_self]
+
 end GeneralRepair
 
 /-! ## Canonical two-resource transmutation cell -/

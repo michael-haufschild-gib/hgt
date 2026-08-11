@@ -56,6 +56,9 @@ and stiffness conservation in one theorem.
 - `phaseCosineResponse_hasDerivAt_min`
 - `phaseCosineVelocity_hasDerivAt_min`
 - `responseStiffness_conservation`
+- `eq_ofReal_norm_of_re_eq_norm`
+- `weighted_triangle_eq_iff`
+- `positiveObserverLoss_eq_zero_iff`
 - `calibrationSpectrumMechanics_capstone`
 
 ## Verification
@@ -71,9 +74,10 @@ and stiffness conservation in one theorem.
 ## Exact boundary
 
 Lean proves lower bound plus canonical attainment instead of introducing a separate compact-circle
-minimum API; together these are exactly the minimum theorem.  The rowwise common-phase equality
-classification remains paper-level, but is not used by reconstruction, ancestry, exchange, or
-stiffness conservation.
+minimum API; together these are exactly the minimum theorem.  The common-phase equality
+classification of the exchange defect is now certified as well:
+`weighted_triangle_eq_iff` and `positiveObserverLoss_eq_zero_iff` say the observer loss vanishes
+exactly when one calibrator aligns every positively weighted coherent output.
 
 No route object, arithmetic realization, Xi specialization, RH statement, or global calibration
 section occurs.  A later selection theorem must construct a pre-zero source realization of this

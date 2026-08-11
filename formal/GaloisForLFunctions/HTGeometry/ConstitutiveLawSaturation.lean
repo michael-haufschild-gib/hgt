@@ -291,6 +291,36 @@ theorem strict_global_history (r : ℕ) :
     change 2 * r + 1 ≤ 2 * r at hsmall
     omega
 
+/-- Reporter vector of the saturation stage: which levels the observer already certifies. -/
+def reporterVector (r : ℕ) : ℕ → Bool := fun j => decide (j ≤ 2 * r)
+
+@[simp] theorem reporterVector_apply (r j : ℕ) :
+    reporterVector r j = true ↔ j ∈ (sweep^[r]) (levelPrefix 0) := by
+  rw [reporter_stabilization]
+  simp [reporterVector]
+
+/-- **Finite observer stabilization.**  Every finite reporter family is constant from a finite
+stage onwards, while the global history never stabilizes. -/
+theorem finite_reporter_family_stabilizes (J : Finset ℕ) :
+    ∃ N : ℕ, ∀ r, N ≤ r → ∀ j ∈ J, j ∈ (sweep^[r]) (levelPrefix 0) := by
+  classical
+  refine ⟨J.sup id, ?_⟩
+  intro r hr j hj
+  rw [reporter_stabilization]
+  have hjle : j ≤ J.sup id := Finset.le_sup (f := id) hj
+  omega
+
+/-- **Compact convergence of the observer history.**  In the product topology the reporter vectors
+converge to the all-one vector, so an open law history does not force noncompact observation. -/
+theorem reporterVector_tendsto :
+    Filter.Tendsto reporterVector Filter.atTop (nhds fun _ : ℕ => true) := by
+  rw [tendsto_pi_nhds]
+  intro j
+  refine Filter.Tendsto.congr' ?_ (tendsto_const_nhds (x := true))
+  filter_upwards [Filter.eventually_ge_atTop j] with r hr
+  simp [reporterVector]
+  omega
+
 /-- Primitive repair letters for the directed law-word geometry. -/
 inductive RepairStep
   | even

@@ -110,7 +110,7 @@ Finite Witt mechanics does not prove that the full RH source is a completed spec
 It establishes a non-theatrical target for the next source theorem:
 
 > construct a source-marked completed formation law for which inverse/exterior, ghost/current,
-> Adams/ramification, and source admission commute in the required bornology.
+> Adams/ramification, and source admission commute in one Hausdorff multiplicative topology.
 
 If such a law exists, route outputs become generated shadows and their exchange identities can
 constrain one another.  If it does not, the failure must be located as a specific noncommutation of
@@ -124,8 +124,9 @@ reflection-marked, and conservative before Xi specialization.
 - [x] all live frontier dossiers typed by one operation grammar
 - [x] martingale, commutator, cocycle, and arbitrary-endogeneity regressions excluded
 - [x] one finite source-native formation calculus identified
-- [ ] prove completed/source-marked Witt formation for the literal Euler--Gamma source
-- [ ] prove strict conservation across singular completion
+- [x] prove pole-unit completed formation and divisor reconstruction for the literal Euler shell
+- [x] prove abstract inverse conservation across joint Hausdorff multiplicative completion
+- [ ] construct the literal joint formation/exterior completion on `Re(s)>1/2`
 - [ ] derive any RH selection statement only after those gates
 
 ## Log

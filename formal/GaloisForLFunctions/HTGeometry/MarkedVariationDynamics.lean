@@ -431,6 +431,144 @@ theorem observerLoss_zero_before_exactReturn (mass : ℕ → ℝ) (hmono : Antit
   rw [hreturn] at hnext
   linarith
 
+/-! ## Equality case of the weighted triangle inequality -/
+
+/-- A complex number whose real part equals its modulus is that nonnegative real. -/
+theorem eq_ofReal_norm_of_re_eq_norm' {z : ℂ} (h : z.re = ‖z‖) : z = (‖z‖ : ℂ) := by
+  have hsq : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+    simp [Complex.norm_def, Complex.normSq_apply, Real.sq_sqrt, add_nonneg, mul_self_nonneg]
+    ring
+  have him : z.im = 0 := by
+    have hz : z.im ^ 2 = 0 := by
+      rw [h] at hsq
+      linarith
+    exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hz
+  refine Complex.ext ?_ ?_
+  · simp [h]
+  · simp [him]
+
+/-- **Equality case of the weighted triangle inequality.**  A nonnegatively weighted family
+saturates the triangle bound exactly when one unit phase aligns every positively weighted entry. -/
+theorem weighted_norm_sum_eq_iff {J : Type*} [Fintype J] (w : J → ℝ) (hw : ∀ j, 0 ≤ w j)
+    (c : J → ℂ) :
+    (∑ j, w j * ‖c j‖) = ‖∑ j, (w j : ℂ) * c j‖ ↔
+      ∃ u : ℂ, ‖u‖ = 1 ∧ ∀ j, 0 < w j → c j = (‖c j‖ : ℂ) * u := by
+  classical
+  constructor
+  · intro heq
+    by_cases hs : (∑ j, (w j : ℂ) * c j) = 0
+    · refine ⟨1, by simp, ?_⟩
+      intro j hj
+      have hzero : ∑ j, w j * ‖c j‖ = 0 := by rw [heq, hs, norm_zero]
+      have hterm : ∀ i ∈ (Finset.univ : Finset J), w i * ‖c i‖ = 0 := by
+        refine (Finset.sum_eq_zero_iff_of_nonneg ?_).mp hzero
+        intro i _
+        exact mul_nonneg (hw i) (norm_nonneg _)
+      have := hterm j (Finset.mem_univ j)
+      have hcj : ‖c j‖ = 0 := by
+        rcases mul_eq_zero.mp this with h | h
+        · exact absurd h (ne_of_gt hj)
+        · exact h
+      rw [norm_eq_zero] at hcj
+      simp [hcj]
+    · set p : ℂ := (∑ j, (w j : ℂ) * c j) / (‖∑ j, (w j : ℂ) * c j‖ : ℂ) with hp
+      have hns : (‖∑ j, (w j : ℂ) * c j‖ : ℝ) ≠ 0 := by
+        simpa [norm_eq_zero] using hs
+      have hpn : ‖p‖ = 1 := by
+        rw [hp, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+        field_simp
+      have hstar : (starRingEnd ℂ) p * (∑ j, (w j : ℂ) * c j)
+          = ((‖∑ j, (w j : ℂ) * c j‖ : ℝ) : ℂ) := by
+        rw [hp, map_div₀, Complex.conj_ofReal, div_mul_eq_mul_div, mul_comm,
+          Complex.mul_conj]
+        have hnorm : (Complex.normSq (∑ j, (w j : ℂ) * c j) : ℂ)
+            = ((‖∑ j, (w j : ℂ) * c j‖ : ℝ) : ℂ) ^ 2 := by
+          rw [Complex.normSq_eq_norm_sq]
+          push_cast
+          ring
+        rw [hnorm]
+        have hne : ((‖∑ j, (w j : ℂ) * c j‖ : ℝ) : ℂ) ≠ 0 := by
+          exact_mod_cast hns
+        field_simp
+      refine ⟨p, hpn, ?_⟩
+      have hval : ((starRingEnd ℂ) p * (∑ j, (w j : ℂ) * c j)).re
+          = ‖∑ j, (w j : ℂ) * c j‖ := by rw [hstar]; simp
+      have hexpand : ((starRingEnd ℂ) p * (∑ j, (w j : ℂ) * c j)).re
+          = ∑ j, w j * ((starRingEnd ℂ) p * c j).re := by
+        rw [show ((starRingEnd ℂ) p * (∑ j, (w j : ℂ) * c j))
+            = ∑ j, ((w j : ℂ) * ((starRingEnd ℂ) p * c j)) from by
+              rw [Finset.mul_sum]
+              exact Finset.sum_congr rfl fun j _ => by ring]
+        rw [show ((∑ j, (w j : ℂ) * ((starRingEnd ℂ) p * c j)).re)
+            = ∑ j, ((w j : ℂ) * ((starRingEnd ℂ) p * c j)).re from
+              map_sum Complex.reAddGroupHom
+                (fun j => (w j : ℂ) * ((starRingEnd ℂ) p * c j)) Finset.univ]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        simp [Complex.mul_re]
+      have hle : ∀ j ∈ (Finset.univ : Finset J),
+          w j * ((starRingEnd ℂ) p * c j).re ≤ w j * ‖c j‖ := by
+        intro j _
+        have hre := Complex.re_le_norm ((starRingEnd ℂ) p * c j)
+        rw [norm_mul, Complex.norm_conj, hpn, one_mul] at hre
+        exact mul_le_mul_of_nonneg_left hre (hw j)
+      have hsum : ∑ j, w j * ((starRingEnd ℂ) p * c j).re = ∑ j, w j * ‖c j‖ := by
+        rw [← hexpand, hval, ← heq]
+      have hterm := (Finset.sum_eq_sum_iff_of_le hle).mp hsum
+      intro j hj
+      have hre : ((starRingEnd ℂ) p * c j).re = ‖c j‖ :=
+        mul_left_cancel₀ (ne_of_gt hj) (hterm j (Finset.mem_univ j))
+      have hnormeq : ‖(starRingEnd ℂ) p * c j‖ = ‖c j‖ := by
+        rw [norm_mul, Complex.norm_conj, hpn, one_mul]
+      have hcj : (starRingEnd ℂ) p * c j = (‖c j‖ : ℂ) := by
+        have hz := eq_ofReal_norm_of_re_eq_norm' (z := (starRingEnd ℂ) p * c j)
+          (by rw [hre, hnormeq])
+        rwa [hnormeq] at hz
+      have hunit : p * (starRingEnd ℂ) p = 1 := by
+        rw [mul_comm, RCLike.conj_mul, hpn]
+        simp
+      calc c j = (p * (starRingEnd ℂ) p) * c j := by rw [hunit, one_mul]
+        _ = p * ((starRingEnd ℂ) p * c j) := by ring
+        _ = p * (‖c j‖ : ℂ) := by rw [hcj]
+        _ = (‖c j‖ : ℂ) * p := by ring
+  · rintro ⟨u, hu, hcu⟩
+    have hsum : ∑ j, (w j : ℂ) * c j = ((∑ j, w j * ‖c j‖ : ℝ) : ℂ) * u := by
+      push_cast
+      rw [Finset.sum_mul]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rcases lt_or_eq_of_le (hw j) with hj | hj
+      · conv_lhs => rw [hcu j hj]
+        ring
+      · rw [← hj]; simp
+    rw [hsum, norm_mul, hu, mul_one, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg]
+    exact Finset.sum_nonneg fun j _ => mul_nonneg (hw j) (norm_nonneg _)
+
+/-- **Plateau rigidity.**  A finite complex family saturates the triangle bound exactly when all
+its nonzero members share one phase. -/
+theorem norm_sum_eq_sum_norm_iff {J : Type*} [Fintype J] (c : J → ℂ) :
+    (∑ j, ‖c j‖) = ‖∑ j, c j‖ ↔
+      ∃ u : ℂ, ‖u‖ = 1 ∧ ∀ j, c j = (‖c j‖ : ℂ) * u := by
+  have h := weighted_norm_sum_eq_iff (fun _ : J => (1 : ℝ)) (fun _ => zero_le_one) c
+  simpa using h
+
+/-- A nonincreasing sequence with a subsequence returning to its initial value is constant. -/
+theorem antitone_eq_head_of_subseq_tendsto {mass : ℕ → ℝ} (hmono : Antitone mass)
+    {φ : ℕ → ℕ} (hφ : StrictMono φ)
+    (hlim : Filter.Tendsto (fun j => mass (φ j)) Filter.atTop (nhds (mass 0))) (k : ℕ) :
+    mass k = mass 0 := by
+  refine le_antisymm (hmono (Nat.zero_le k)) ?_
+  refine le_of_tendsto hlim ?_
+  filter_upwards [Filter.eventually_ge_atTop k] with j hj
+  exact hmono (le_trans hj (hφ.le_apply))
+
+/-- **Subsequential recurrence rigidity.**  If a nonincreasing observer mass returns to its initial
+value along a subsequence, every loss increment vanishes. -/
+theorem observerLoss_zero_of_subseq_return {mass : ℕ → ℝ} (hmono : Antitone mass)
+    {φ : ℕ → ℕ} (hφ : StrictMono φ)
+    (hlim : Filter.Tendsto (fun j => mass (φ j)) Filter.atTop (nhds (mass 0))) (k : ℕ) :
+    mass k - mass (k + 1) = 0 := by
+  rw [antitone_eq_head_of_subseq_tendsto hmono hφ hlim k,
+    antitone_eq_head_of_subseq_tendsto hmono hφ hlim (k + 1), sub_self]
+
 /-- Macroscopic observer-loss events have a finite exact budget. -/
 theorem macroscopicObserverLoss_count (mass : ℕ → ℝ) (hmono : Antitone mass)
     (ε : ℝ) (n : ℕ) :
@@ -460,6 +598,201 @@ theorem macroscopicObserverLoss_count (mass : ℕ → ℝ) (hmono : Antitone mas
   exact hlarge.trans hsum
 
 end SerialLossBudget
+
+/-- Finset form of the plateau classification. -/
+theorem norm_sum_eq_sum_norm_iff_finset {J : Type*} (s : Finset J) (c : J → ℂ) :
+    (∑ j ∈ s, ‖c j‖) = ‖∑ j ∈ s, c j‖ ↔
+      ∃ u : ℂ, ‖u‖ = 1 ∧ ∀ j ∈ s, c j = (‖c j‖ : ℂ) * u := by
+  classical
+  have hcoe : ∀ f : J → ℂ, (∑ j : (s : Finset J), f (j : J)) = ∑ j ∈ s, f j :=
+    fun f => Finset.sum_coe_sort s f
+  have hcoeR : ∀ f : J → ℝ, (∑ j : (s : Finset J), f (j : J)) = ∑ j ∈ s, f j :=
+    fun f => Finset.sum_coe_sort s f
+  have h := norm_sum_eq_sum_norm_iff (J := (s : Finset J)) (fun j => c (j : J))
+  rw [hcoe (fun j => c j), hcoeR (fun j => ‖c j‖)] at h
+  rw [h]
+  constructor
+  · rintro ⟨u, hu, hcu⟩
+    exact ⟨u, hu, fun j hj => hcu ⟨j, hj⟩⟩
+  · rintro ⟨u, hu, hcu⟩
+    exact ⟨u, hu, fun j => hcu (j : J) j.2⟩
+
+/-- A parent-indexed conservative refinement: every coarse mark is the coherent sum of its newborn
+children. -/
+structure ParentIndexedRefinement (I J X : Type*) [Fintype I] [Fintype J] [DecidableEq I] where
+  parent : J → I
+  coarse : I → X → ℂ
+  fine : J → X → ℂ
+  fiber_sum : ∀ i x, (∑ j ∈ Finset.univ with parent j = i, fine j x) = coarse i x
+
+namespace ParentIndexedRefinement
+
+variable {I J X : Type*} [Fintype I] [Fintype J] [DecidableEq I]
+
+/-- Positive envelope born in a parent-indexed refinement. -/
+def excess (R : ParentIndexedRefinement I J X) (x : X) : ℝ :=
+  markedEnvelope R.fine x - markedEnvelope R.coarse x
+
+theorem coherent_eq (R : ParentIndexedRefinement I J X) :
+    markedCoherent R.fine = markedCoherent R.coarse := by
+  funext x
+  simp only [markedCoherent]
+  rw [← Finset.sum_fiberwise Finset.univ R.parent (fun j => R.fine j x)]
+  exact Finset.sum_congr rfl fun i _ => R.fiber_sum i x
+
+theorem excess_eq_sum (R : ParentIndexedRefinement I J X) (x : X) :
+    R.excess x = ∑ i, ((∑ j ∈ Finset.univ with R.parent j = i, ‖R.fine j x‖)
+      - ‖R.coarse i x‖) := by
+  simp only [excess, markedEnvelope, Finset.sum_sub_distrib]
+  congr 1
+  exact (Finset.sum_fiberwise Finset.univ R.parent (fun j => ‖R.fine j x‖)).symm
+
+theorem excess_nonneg (R : ParentIndexedRefinement I J X) (x : X) : 0 ≤ R.excess x := by
+  rw [excess_eq_sum]
+  refine Finset.sum_nonneg fun i _ => ?_
+  rw [sub_nonneg, ← R.fiber_sum i x]
+  exact norm_sum_le _ _
+
+/-- **Plateau rigidity.**  A parent-indexed refinement leaves the positive envelope unchanged at a
+coordinate exactly when every newborn fibre is phase-aligned there. -/
+theorem excess_eq_zero_iff (R : ParentIndexedRefinement I J X) (x : X) :
+    R.excess x = 0 ↔
+      ∀ i : I, ∃ u : ℂ, ‖u‖ = 1 ∧
+        ∀ j ∈ Finset.univ.filter fun j => R.parent j = i,
+          R.fine j x = (‖R.fine j x‖ : ℂ) * u := by
+  classical
+  have hterm : ∀ i : I,
+      0 ≤ (∑ j ∈ Finset.univ with R.parent j = i, ‖R.fine j x‖) - ‖R.coarse i x‖ := by
+    intro i
+    rw [sub_nonneg, ← R.fiber_sum i x]
+    exact norm_sum_le _ _
+  rw [excess_eq_sum, Finset.sum_eq_zero_iff_of_nonneg fun i _ => hterm i]
+  constructor
+  · intro hall i
+    have hi := hall i (Finset.mem_univ i)
+    have heq : (∑ j ∈ Finset.univ with R.parent j = i, ‖R.fine j x‖)
+        = ‖∑ j ∈ Finset.univ with R.parent j = i, R.fine j x‖ := by
+      rw [R.fiber_sum i x]
+      linarith
+    exact (norm_sum_eq_sum_norm_iff_finset _ _).mp heq
+  · intro hall i _
+    obtain ⟨u, hu, hcu⟩ := hall i
+    have heq : (∑ j ∈ Finset.univ with R.parent j = i, ‖R.fine j x‖)
+        = ‖∑ j ∈ Finset.univ with R.parent j = i, R.fine j x‖ :=
+      (norm_sum_eq_sum_norm_iff_finset _ _).mpr ⟨u, hu, hcu⟩
+    rw [R.fiber_sum i x] at heq
+    linarith
+
+end ParentIndexedRefinement
+
+section BlockSumExpansion
+
+/-- Observed block sum of an amplitude kernel across two observers. -/
+def observedBlockSum {Xr Xc Br Bc : Type*} [Fintype Xr] [Fintype Xc]
+    [DecidableEq Br] [DecidableEq Bc]
+    (qr : Xr → Br) (qc : Xc → Bc) (K : Xr → Xc → ℂ) (r : Br) (c : Bc) : ℂ :=
+  ∑ u ∈ Finset.univ with qr u = r, ∑ v ∈ Finset.univ with qc v = c, K u v
+
+/-- Genuine histories: the two amplitude edges share one hidden midpoint. -/
+def genuineHistorySum {X0 X1 X2 B0 B2 : Type*} [Fintype X0] [Fintype X1] [Fintype X2]
+    [DecidableEq B0] [DecidableEq B2]
+    (q2 : X2 → B2) (q0 : X0 → B0) (Bk : X2 → X1 → ℂ) (A : X1 → X0 → ℂ)
+    (γ : B2) (α : B0) : ℂ :=
+  ∑ z ∈ Finset.univ with q2 z = γ, ∑ x ∈ Finset.univ with q0 x = α, ∑ y, Bk z y * A y x
+
+/-- Splice histories: the two amplitude edges use different hidden midpoints with the same
+observation. -/
+def spliceHistorySum {X0 X1 X2 B0 B1 B2 : Type*} [Fintype X0] [Fintype X1] [Fintype X2]
+    [DecidableEq X1] [DecidableEq B0] [DecidableEq B1] [DecidableEq B2]
+    (q2 : X2 → B2) (q1 : X1 → B1) (q0 : X0 → B0) (Bk : X2 → X1 → ℂ) (A : X1 → X0 → ℂ)
+    (γ : B2) (α : B0) : ℂ :=
+  ∑ z ∈ Finset.univ with q2 z = γ, ∑ x ∈ Finset.univ with q0 x = α,
+    ∑ y, ∑ y' ∈ (Finset.univ.filter fun y' => q1 y' = q1 y).erase y, Bk z y * A y' x
+
+/-- **Source/splice execution conservation.**  The observed block product splits exactly into
+genuine histories and observer-manufactured splice histories. -/
+theorem observedBlock_mul_eq_genuine_add_splice
+    {X0 X1 X2 B0 B1 B2 : Type*} [Fintype X0] [Fintype X1] [Fintype X2]
+    [Fintype B1] [DecidableEq X1] [DecidableEq B0] [DecidableEq B1] [DecidableEq B2]
+    (q2 : X2 → B2) (q1 : X1 → B1) (q0 : X0 → B0) (Bk : X2 → X1 → ℂ) (A : X1 → X0 → ℂ)
+    (γ : B2) (α : B0) :
+    (∑ β, observedBlockSum q2 q1 Bk γ β * observedBlockSum q1 q0 A β α)
+      = genuineHistorySum q2 q0 Bk A γ α + spliceHistorySum q2 q1 q0 Bk A γ α := by
+  classical
+  have key : ∀ β : B1,
+      observedBlockSum q2 q1 Bk γ β * observedBlockSum q1 q0 A β α
+        = ∑ z ∈ Finset.univ with q2 z = γ, ∑ y ∈ Finset.univ with q1 y = β,
+            ∑ y' ∈ Finset.univ with q1 y' = q1 y,
+              ∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y' x := by
+    intro β
+    rw [observedBlockSum, observedBlockSum, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun z _ => ?_
+    rw [Finset.sum_mul_sum]
+    refine Finset.sum_congr rfl fun y hy => ?_
+    have hqy : q1 y = β := (Finset.mem_filter.mp hy).2
+    rw [hqy]
+    refine Finset.sum_congr rfl fun y' _ => ?_
+    rw [Finset.mul_sum]
+  have hfiber : ∀ z : X2,
+      (∑ β : B1, ∑ y ∈ Finset.univ with q1 y = β,
+          ∑ y' ∈ Finset.univ with q1 y' = q1 y,
+            ∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y' x)
+        = ∑ y, ∑ y' ∈ Finset.univ with q1 y' = q1 y,
+            ∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y' x :=
+    fun z => Finset.sum_fiberwise Finset.univ q1
+      (fun y => ∑ y' ∈ Finset.univ with q1 y' = q1 y,
+        ∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y' x)
+  have hsplit : ∀ z : X2,
+      (∑ y, ∑ y' ∈ Finset.univ with q1 y' = q1 y,
+          ∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y' x)
+        = (∑ x ∈ Finset.univ with q0 x = α, ∑ y, Bk z y * A y x)
+          + ∑ x ∈ Finset.univ with q0 x = α,
+              ∑ y, ∑ y' ∈ (Finset.univ.filter fun y' => q1 y' = q1 y).erase y,
+                Bk z y * A y' x := by
+    intro z
+    have hy : ∀ y : X1, y ∈ Finset.univ.filter fun y' => q1 y' = q1 y := by
+      intro y
+      simp
+    have hterm : ∀ y : X1,
+        (∑ y' ∈ Finset.univ with q1 y' = q1 y,
+            ∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y' x)
+          = (∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y x)
+            + ∑ y' ∈ (Finset.univ.filter fun y' => q1 y' = q1 y).erase y,
+                ∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y' x := by
+      intro y
+      exact (Finset.add_sum_erase _ _ (hy y)).symm
+    rw [Finset.sum_congr rfl fun y _ => hterm y, Finset.sum_add_distrib]
+    congr 1
+    · exact Finset.sum_comm
+    · have h1 : ∀ y : X1,
+          (∑ y' ∈ (Finset.univ.filter fun y' => q1 y' = q1 y).erase y,
+              ∑ x ∈ Finset.univ with q0 x = α, Bk z y * A y' x)
+            = ∑ x ∈ Finset.univ with q0 x = α,
+                ∑ y' ∈ (Finset.univ.filter fun y' => q1 y' = q1 y).erase y,
+                  Bk z y * A y' x := fun y => Finset.sum_comm
+      rw [Finset.sum_congr rfl fun y _ => h1 y]
+      exact Finset.sum_comm
+  rw [Finset.sum_congr rfl fun β _ => key β, Finset.sum_comm]
+  rw [Finset.sum_congr rfl fun z _ => (hfiber z).trans (hsplit z)]
+  rw [Finset.sum_add_distrib]
+  rfl
+
+/-- **Positive-weight block conservation.**  The same split holds after replacing every amplitude
+by its modulus, giving the positive genuine and splice sectors. -/
+theorem observedBlock_abs_mul_eq_genuine_add_splice
+    {X0 X1 X2 B0 B1 B2 : Type*} [Fintype X0] [Fintype X1] [Fintype X2]
+    [Fintype B1] [DecidableEq X1] [DecidableEq B0] [DecidableEq B1] [DecidableEq B2]
+    (q2 : X2 → B2) (q1 : X1 → B1) (q0 : X0 → B0) (Bk : X2 → X1 → ℂ) (A : X1 → X0 → ℂ)
+    (γ : B2) (α : B0) :
+    (∑ β, observedBlockSum q2 q1 (fun z y => (‖Bk z y‖ : ℂ)) γ β *
+        observedBlockSum q1 q0 (fun y x => (‖A y x‖ : ℂ)) β α)
+      = genuineHistorySum q2 q0 (fun z y => (‖Bk z y‖ : ℂ)) (fun y x => (‖A y x‖ : ℂ)) γ α
+        + spliceHistorySum q2 q1 q0 (fun z y => (‖Bk z y‖ : ℂ))
+            (fun y x => (‖A y x‖ : ℂ)) γ α :=
+  observedBlock_mul_eq_genuine_add_splice q2 q1 q0
+    (fun z y => (‖Bk z y‖ : ℂ)) (fun y x => (‖A y x‖ : ℂ)) γ α
+
+end BlockSumExpansion
 
 section GenuineCarrierDistance
 

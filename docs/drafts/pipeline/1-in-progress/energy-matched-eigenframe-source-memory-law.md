@@ -1,6 +1,6 @@
 # Energy-matched eigenframe source-memory law
 
-**Status:** `[ACTIVE] [ALGEBRAIC CORE IN LEAN] [HAAR TRACE TAIL IN LEAN] [COEFFICIENT LINK OPEN]`
+**Status:** `[ACTIVE] [ALGEBRAIC CORE IN LEAN] [HAAR TAIL IN LEAN] [OPERATIONAL BRIDGE IN LEAN]`
 
 ## Frontier target
 
@@ -103,14 +103,22 @@ dictionaries.
 4. Canonical-index theorem did not yet apply to qubit registers; exact Haar-measure reindexing closed
    this gap and yielded the register-independent law above.
 
-### Remaining exact bridge
+### Operational bridge closed
 
-The trace-autocorrelation witness is now complete.  To transfer the same `4/(D^2-1)` tail verbatim
-to the literal signed product-eigenframe statistic, prove the Pauli-coordinate identity
+The trace-autocorrelation witness is now connected exactly to the literal signed
+product-eigenframe statistic by the Pauli-coordinate identity
 
 ```text
 sum_(Q,P) h_Q h_P C(U)_(Q,P) = D^-1 Re tr(H U* H U)
 ```
 
-under dictionary support, together with the matching `l1` normalization.  Until that identity is
-formalized, the trace witness and coefficient-sampled witness are distinct operational statements.
+under dictionary support, together with the matching `l1` normalization.  Consequently the literal
+one-forward-query mean satisfies the same half-autonomous-value Haar tail
+
+```text
+Pr_Haar{|A_h(U)| >= A_h(autonomous)/2} <= 4 / (D^2 - 1).
+```
+
+This theorem is exact at every finite `n`, contains no dictionary-size or spectral-gap condition,
+and applies to every nonzero traceless autonomous Hamiltonian supported on the declared Pauli
+dictionary.

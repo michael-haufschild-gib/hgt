@@ -111,6 +111,39 @@ theorem minimalSuccessfulKernelRevision_core_certificate
     subst x
     exact Finset.mem_inter.mpr ⟨hr, hyr ▸ hyK⟩
 
+/-- **Converse core-retainment certificate.**  A successful repair whose every cut is the unique
+cut of some live kernel is inclusion-minimal. -/
+theorem minimalSuccessfulKernelRevision_of_core_certificate
+    (C : FiniteConsequence α) (T : Finset α) (a : α) {R : Finset α}
+    (hsucc : SuccessfulKernelRevision C T a R)
+    (hcert : ∀ r ∈ R, ∃ K : Finset α, IsFailureKernel C T a K ∧ R ∩ K = {r}) :
+    MinimalSuccessfulKernelRevision C T a R := by
+  refine ⟨hsucc, ?_⟩
+  intro S hS hSsucc
+  obtain ⟨r, hrR, hrS⟩ : ∃ r, r ∈ R ∧ r ∉ S := by
+    by_contra hc
+    push Not at hc
+    exact absurd (Finset.Subset.antisymm hS.subset (fun x hx => hc x hx)) (ne_of_lt hS)
+  obtain ⟨K, hK, hKeq⟩ := hcert r hrR
+  obtain ⟨x, hxS, hxK⟩ :=
+    (successfulKernelRevision_iff_hits_all_failureKernels C T a S).1 hSsucc K hK
+  have hxR : x ∈ R := hS.subset hxS
+  have hxr : x = r := by
+    have : x ∈ R ∩ K := Finset.mem_inter.mpr ⟨hxR, hxK⟩
+    rw [hKeq] at this
+    exact Finset.mem_singleton.mp this
+  exact hrS (hxr ▸ hxS)
+
+/-- **Exact core-retainment certificate.**  A successful repair is inclusion-minimal exactly when
+every cut fact is the unique cut of some live minimal derivation kernel. -/
+theorem minimalSuccessfulKernelRevision_iff_core_certificate
+    (C : FiniteConsequence α) (T : Finset α) (a : α) {R : Finset α}
+    (hsucc : SuccessfulKernelRevision C T a R) :
+    MinimalSuccessfulKernelRevision C T a R ↔
+      ∀ r ∈ R, ∃ K : Finset α, IsFailureKernel C T a K ∧ R ∩ K = {r} :=
+  ⟨fun hR _r hr => minimalSuccessfulKernelRevision_core_certificate C T a hR hr,
+    fun hcert => minimalSuccessfulKernelRevision_of_core_certificate C T a hsucc hcert⟩
+
 /-- A repair hits every kernel in a finite failure family. -/
 def HitsFailureFamily (R : Finset α) (H : Finset (Finset α)) : Prop :=
   ∀ K ∈ H, HitsFailureKernel R K

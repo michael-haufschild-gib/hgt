@@ -114,6 +114,95 @@ theorem adversarialTranscript_forces_every_round
   exact ⟨adversarialPrefix_length policy d,
     fun _ hk => adversarialQuery_membership_iff_prediction_false policy hk⟩
 
+/-- Binary words of a fixed length are counted by powers of two. -/
+theorem card_lengthWords (n : ℕ) : Nat.card {c : List Bool // c.length = n} = 2 ^ n := by
+  have h : Nat.card (List.Vector Bool n) = 2 ^ n := by
+    rw [Nat.card_eq_fintype_card, card_vector]
+    simp
+  exact h
+
+/-- **Version space count.**  After `k` rounds the source-consistent laws are exactly the
+completions of the current prefix, so there are `2 ^ (d - k)` of them. -/
+theorem versionSpace_card (policy : List Bool → Bool) {k d : ℕ} (hk : k ≤ d) :
+    Nat.card {b : List Bool //
+        b.length = d ∧ prefixCylinderContains (adversarialPrefix policy k) b} = 2 ^ (d - k) := by
+  have hlen : (adversarialPrefix policy k).length = k := adversarialPrefix_length policy k
+  have e : {b : List Bool //
+      b.length = d ∧ prefixCylinderContains (adversarialPrefix policy k) b} ≃
+      {c : List Bool // c.length = d - k} := by
+    refine
+      { toFun := fun b => ⟨b.1.drop k, ?_⟩
+        invFun := fun c => ⟨adversarialPrefix policy k ++ c.1, ?_, ?_⟩
+        left_inv := ?_
+        right_inv := ?_ }
+    · rw [List.length_drop, b.2.1]
+    · rw [List.length_append, hlen, c.2]
+      omega
+    · exact List.prefix_append _ _
+    · rintro ⟨bl, hlend, hpref⟩
+      apply Subtype.ext
+      have hpre : bl.take k = adversarialPrefix policy k := by
+        rw [prefixCylinderContains, List.prefix_iff_eq_take, hlen] at hpref
+        exact hpref.symm
+      show adversarialPrefix policy k ++ bl.drop k = bl
+      rw [← hpre, List.take_append_drop]
+    · intro c
+      apply Subtype.ext
+      show (adversarialPrefix policy k ++ c.1).drop k = c.1
+      exact List.drop_left' hlen
+  rw [Nat.card_congr e, card_lengthWords]
+
+/-- A depth-`r` shattered challenge tree over length-`d` source laws: every label history is
+realized by some law, and the test asked at stage `k` depends only on the earlier labels. -/
+def ShatteredChallengeDepth (d r : ℕ) (query : ∀ k : ℕ, (Fin k → Bool) → List Bool) : Prop :=
+  ∀ y : Fin r → Bool, ∃ b : List Bool, b.length = d ∧
+    ∀ k : Fin r,
+      (prefixCylinderContains
+        (query (k : ℕ) fun j : Fin (k : ℕ) => y ⟨(j : ℕ), j.2.trans k.2⟩) b ↔ y k = true)
+
+/-- **Sequential dimension bound.**  Distinct label histories of a shattered challenge tree need
+distinct source laws, so a depth-`r` tree over length-`d` laws forces `r ≤ d`. -/
+theorem shatteredChallengeDepth_le (d r : ℕ) (query : ∀ k : ℕ, (Fin k → Bool) → List Bool)
+    (h : ShatteredChallengeDepth d r query) : r ≤ d := by
+  classical
+  letI : Fintype {l : List Bool // l.length = d} := List.Vector.instFintype
+  choose f hflen hfspec using h
+  have hinj : Function.Injective
+      (fun y : Fin r → Bool => (⟨f y, hflen y⟩ : {l : List Bool // l.length = d})) := by
+    intro y y' hyy
+    have hff : f y = f y' := congrArg Subtype.val hyy
+    by_contra hne
+    have hex : ∃ k : ℕ, ∃ hk : k < r, y ⟨k, hk⟩ ≠ y' ⟨k, hk⟩ := by
+      obtain ⟨i, hi⟩ := Function.ne_iff.mp hne
+      exact ⟨(i : ℕ), i.2, by simpa using hi⟩
+    obtain ⟨hm, hmne⟩ := Nat.find_spec hex
+    have hbefore : ∀ (j : ℕ) (hj : j < r), j < Nat.find hex → y ⟨j, hj⟩ = y' ⟨j, hj⟩ := by
+      intro j hj hjm
+      by_contra hjne
+      have hp : ∃ hk : j < r, y ⟨j, hk⟩ ≠ y' ⟨j, hk⟩ := ⟨hj, hjne⟩
+      have := Nat.find_min' hex hp
+      omega
+    have hquery : (fun j : Fin (Nat.find hex) => y ⟨(j : ℕ), j.2.trans hm⟩)
+        = fun j : Fin (Nat.find hex) => y' ⟨(j : ℕ), j.2.trans hm⟩ := by
+      funext j
+      exact hbefore (j : ℕ) (j.2.trans hm) j.2
+    have h1 := hfspec y ⟨Nat.find hex, hm⟩
+    have h2 := hfspec y' ⟨Nat.find hex, hm⟩
+    rw [hquery, hff] at h1
+    have hiff : y ⟨Nat.find hex, hm⟩ = true ↔ y' ⟨Nat.find hex, hm⟩ = true := h1.symm.trans h2
+    refine hmne ?_
+    cases hy : y ⟨Nat.find hex, hm⟩ <;> cases hy' : y' ⟨Nat.find hex, hm⟩ <;>
+      simp only [hy, hy'] at hiff ⊢ <;> simp at hiff
+  have hcard := Fintype.card_le_of_injective _ hinj
+  have hleft : Fintype.card (Fin r → Bool) = 2 ^ r := by simp
+  have hright : Fintype.card {l : List Bool // l.length = d} = 2 ^ d := by
+    have hv : Fintype.card (List.Vector Bool d) = 2 ^ d := by
+      rw [card_vector]
+      simp
+    exact hv
+  rw [hleft, hright] at hcard
+  exact (Nat.pow_le_pow_iff_right (by norm_num)).mp hcard
+
 def convexAdversarialNextBit (u : ℝ) : Bool :=
   if (1 / 2 : ℝ) ≤ u then true else false
 

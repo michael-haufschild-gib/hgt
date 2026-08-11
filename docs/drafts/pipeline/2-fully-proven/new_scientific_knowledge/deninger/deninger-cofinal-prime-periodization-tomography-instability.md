@@ -358,11 +358,124 @@ its exact Route-L frontier consequence, not for the analytic ingredients separat
 - `DAC_MEYER_PRIME_SAMPLING_COHOMOLOGY_OBSTRUCTION`.
 - `DeningerMeyerHalfDensityL1Completion.lean`.
 
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerFinitePeriodizationKernel.lean`, on the periodization
+layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
+`DeningerEulerDepletionTower.lean`, `DeningerDepletedPoisson.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- `(1)`/`(2)` — `deningerExpShiftSource`, `deningerPeriodizationDefect`,
+  `deningerPeriodizationSum` are corpus-owned; `deningerShiftInt_summable` gives absolute
+  convergence of `(2)` at every point, geometrically in the lattice index.
+- `Δ_q` injective — `deningerPeriodizationDefect_injective`: an `L_q`-periodic element of the
+  source vanishes, because the source decays at `+∞`.  This is the card's own argument.
+- `Per_q Δ_q = 0` and `ker Per_q = Δ_q H_-` — `deningerPeriodization_defect`,
+  `deningerPeriodization_range_eq_kernel`.  The second is `(8)`'s `K_p = Δ_p H_-`.
+- the defects commute — `deningerPeriodizationDefect_comm`; `deningerDepletion` is the operator
+  `Δ_Q` of a finite family and `deningerDepletion_injective` is its injectivity.
+- **`(7)`** — `deningerFinitePeriodization_kernel_nontrivial`: **`0 ≠ Δ_Q H_- ⊆ ker 𝒫_Q` for every
+  finite `Q`.**  The nonzero witness is the Poisson boundary of the corpus's Meyer witness
+  (`deningerSourceWitness_ne_zero`, from injectivity of `Z`), rather than a bump function.
+
+### Not yet formalized
+
+- **The entire Fourier--Laplace transform is now built** —
+  `formal/GaloisForLFunctions/RHTower/DeningerPaleyWiener.lean`:
+  `deningerFourierLaplace`, `deningerFourierLaplace_integrable` (integrable against every
+  polynomial moment, at every complex frequency), `deningerFourierLaplace_hasDerivAt` and
+  **`deningerFourierLaplace_differentiable`: `ĥ` is entire.**  The kernel bound is
+  `‖e^{-izt}‖ = e^{(Im z)t} ≤ e^{|Im z||t|}`, absorbed by the source margin; differentiating costs
+  one factor of `t`, absorbed by the same margin; the domination is uniform on a unit ball of
+  frequencies, so `hasDerivAt_integral_of_dominated_loc_of_deriv_le` applies.
+- **`(5)` is proved in the form the theorem uses** —
+  `formal/GaloisForLFunctions/RHTower/DeningerLatticeFrequency.lean`:
+  `deningerFourierLaplace_shift` (translation multiplies `ĥ` by `e^{izL}`),
+  `deningerFourierLaplace_defect` (`ĥ = (1 - e^{izL})ĝ` on a defect) and
+  **`deningerFourierLaplace_vanishes_at_lattice`: `Per_L h = 0` forces `ĥ(2πk/L) = 0` for every
+  `k ∈ ℤ`.**  This is a shorter route than the card's own: because `ker Per_L = Δ_L H_-` is already
+  proved, no unfolding of the periodization over a fundamental interval is needed — no interchange
+  of sum and integral, and no tiling of the line.
+- **`(6)` is proved unconditionally** —
+  `formal/GaloisForLFunctions/RHTower/DeningerTomographyInjective.lean`:
+  `deningerFourierLaplace_real` (`ĥ(2πξ) = ℱh(ξ)`), `deningerSource_eq_zero_of_fourierLaplace_zero`
+  (Fourier inversion), `deningerSource_eq_zero_of_zeros_tendsto` (identity theorem on the entire
+  `ĥ` from zeros accumulating at the origin), **`deningerCofinalTomography`** (unbounded periods)
+  and **`deningerCofinalPrimeTomography`**: for an infinite set of primes `Q`,
+  `Per_{log q} h = 0` for all `q ∈ Q` forces `h = 0`.  This is `ker 𝒫_Q = 0`.
+- **The algebraic content of `(10)` is proved unconditionally** — same module,
+  **`deningerCofinalPrimeTomography_eq`**: two cochains with the same periodization on every prime
+  circle of an infinite prime set are equal.  This is exactly the injectivity argument the card
+  gives for `(10)` ("if `𝒫_Q h = 𝒫_Q b` for `b ∈ B_p`, then `(6)` gives `h = b`"), stated without
+  reference to `M_ζ`, so it does not wait on the Euler-depleted extension `(9)`.
+- **§4 is proved unconditionally** —
+  `formal/GaloisForLFunctions/RHTower/DeningerCompactOrbitWeightNoGo.lean`:
+  `deningerPeriodizationSum_shift` (`Per_L ∘ T_L = Per_L`),
+  **`deningerCompactOrbitEnergy_weight_one_eq_zero`** (a weight-one functional factoring through a
+  single compact orbit vanishes — the card's stronger form, with no rotation hypothesis) and
+  `deningerRotationInvariantEnergy_weight_one_eq_zero` (`(16)` vs `(17)`).
+- **The quantitative core of §3 is proved unconditionally** —
+  `formal/GaloisForLFunctions/RHTower/DeningerTomographyNonstrict.lean`:
+  `deningerPeriodizationSum_expShift` (translation ↦ rotation), `deningerPeriodizationSum_periodic`,
+  `deningerEscapeFamily_periodizationSum` (`(13)`: every compact trace carries the damping factor
+  `e^{-as}`) and **`deningerEscapeFamily_meyer_ge`** (`(14)`: the Meyer seminorm cancels the damping
+  exactly, so `q_{a,0}(h_s) ≥ e^{au}‖h(u)‖` independently of `s`), with
+  `deningerEscapeFamily_meyer_pos`.
+- **The target of `(3)` is now a real object.**  The earlier note on this card that
+  `C^∞(ℝ/Lℤ)` was missing was wrong: `RHTower/DeningerSmoothPeriodic.lean` and
+  `DeningerSmoothPeriodicNuclear.lean` already carried the space and its nuclearity.  The one
+  genuinely missing link — that the periodization *lands* there — is now built:
+  `formal/GaloisForLFunctions/RHTower/DeningerPeriodCutoff.lean` and
+  `DeningerPeriodizationSmooth.lean` prove **`deningerPeriodizationSum_contDiff`** (`Per_L h` is
+  `C^∞`) and **`deningerPeriodizationMem`** (`Per_L h ∈ C^∞(ℝ/Lℤ)`), and
+  `DeningerPeriodizationMap.lean` assembles **`deningerPeriodizationMap`** (`Per_L` as a linear map),
+  `deningerPeriodizationMap_ker` (`ker Per_L = Δ_L H_-`), **`deningerTomographyMap`** — this is
+  equation `(3)`, `𝒫_Q : H_- → ∏_{q} C^∞(ℝ/L_qℤ)` — and
+  **`deningerTomographyMap_injective`**, which is `(6)` stated for that map.
+  The lattice sum has no summable majorant on `ℝ`, so `contDiff_tsum` does not apply directly; the
+  proof cuts by a `ContDiffBump` equal to `1` on one period, where `|t+jL| ≥ |j|L - R` restores a
+  geometric majorant, then propagates smoothness by periodicity.
+- **§3's primary statement is proved** — `formal/GaloisForLFunctions/RHTower/DeningerTomographyNotEmbedding.lean`:
+  `deningerEscape_trace_le` (every `C^r` circle seminorm of the escaped trace carries the damping
+  factor `e^{-as}`, because the trace is a rotation of the original scaled by that factor),
+  `deningerEscape_trace_tendsto_zero`, and **`deningerPeriodization_not_isEmbedding`**: the traces
+  tend to `0` in every circle seminorm while the Meyer seminorm stays above a *positive* constant
+  independent of the escape parameter.  That is `(12)`--`(14)`, i.e. the inverse on the range is
+  discontinuous.
+- **`(9)` and `(10)` are proved** —
+  `formal/GaloisForLFunctions/RHTower/DeningerTomographyConservative.lean`:
+  **`deningerIotaEquiv`** is `M_ζ ≃ ker Per̄_p`, which is `(9)`, assembled from card
+  `deninger-euler-depleted-meyer-periodization-extension`'s `deningerIota_injective` and
+  `deningerIota_range_eq_perBar_ker`; and **`deningerCofinalTrace_mod_mem`** with
+  `deningerCofinalTrace_quotient_injective` give `(10)` — cross-prime traces are conservative
+  modulo any subspace, exactly the argument the card gives.
+
+- **Still not formalized, and the reason is specific.**  Only two items remain.
+  1. §3's *corollary* "the range is not closed".  The card derives it from the **open mapping
+     theorem for Fréchet spaces**: a closed range would make `𝒫_Q : K_p → \operatorname{range}`
+     a continuous bijection of Fréchet spaces, hence a homeomorphism, contradicting
+     `deningerPeriodization_not_isEmbedding`.  mathlib has the open mapping theorem only for Banach
+     spaces, so this needs the Fréchet version built first.  The primary statement it is a
+     corollary of is proved.
+  2. §5's transport corollary `(20)`--`(25)`, which needs
+     `DeningerMeyerHalfDensityL1Completion`.  The card itself records this as transport, not as an
+     independent novelty claim.
+- Superseded note, kept for the record: `log q → ∞` along an infinite prime set,
+  so the zeros `2π/log q` are distinct and accumulate at `0`; the identity theorem for the entire
+  `ĥ` then gives `ĥ ≡ 0`, and matching `ĥ(2πξ)` with mathlib's `𝓕 h ξ` gives `h = 0` by Fourier
+  injectivity.  Both analytic inputs — entirety and the lattice vanishing — are now in place.
+- `(9)`--`(10)` and the nonclosed-range / weight-zero classification, which are statements about the
+  product Fréchet topology and quotients by `𝒫_Q(B_p)`.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: tomography and instability falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed proofs `(5)`--`(25)`
-- [ ] 2 → 3 formalized: intentionally paused during Lean corpus refactor
+- [ ] 2 → 3 formalized: `(1)`, `(2)`, `(7)`, `(8)`'s `K_p = Δ_p H_-`, injectivity and
+  commutation of the defects proved unconditionally; `(5)`/`(6)` need an entire Fourier--Laplace
+  transform for `H_-` (see *Lean status*)
 - [ ] 3 → 4 publication-ready
 
 ## Log

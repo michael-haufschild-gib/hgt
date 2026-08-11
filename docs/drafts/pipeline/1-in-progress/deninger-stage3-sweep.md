@@ -82,8 +82,10 @@ What else exists and must not be rebuilt:
 - `HTGeometry` strong-continuity of the dilation group, and mathlib's `SchwartzMap`,
   `fourierIntegral`, Poisson summation.
 
-1. `deninger-euler-depleted-meyer-periodization-extension` — `S_exp(ℝ)`, `τ_L`, `Δ_p = 1 - τ_L`
-   are **built**; what is left is the strict nuclear extension and the zero-periodization sector.
+1. `deninger-euler-depleted-meyer-periodization-extension` — **DONE, promoted to 3-formalized.**
+   The strict nuclear extension and the zero-periodization sector are both proved; nuclearity of
+   `H_-` itself is `deningerMeyerSup_isNuclearSpaceC`.  See the companion
+   `3-formalized/new_scientific_knowledge/deninger/…-formalized.md`.
 2. `deninger-cofinal-prime-periodization-tomography-instability` — cofinal tomography, nonclosed
    range, compact-orbit weight-zero no-go.
 3. `deninger-half-density-floquet-euler-boundary-dichotomy` — half-density Floquet trace, all-prime

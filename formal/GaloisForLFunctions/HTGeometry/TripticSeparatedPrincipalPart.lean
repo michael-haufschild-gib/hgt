@@ -32,8 +32,8 @@ principal-part mass along the `σ`-orbit through `p` vanishes, then the order-`�
 `F` on the orbit is `a n + b m` with both `a` and `b` finitely supported. -/
 theorem exists_finiteSupport_separation_of_orbit_sum_eq_zero
     (hF : MeromorphicOn F Set.univ)
-    (hper : ∀ z : ℂ, F (z + 1) = F z)
-    {Cst : ℂ} (hmixed : ∀ z : ℂ, F (z + τ + σ) - F (z + τ) - F (z + σ) + F z = Cst)
+    (hper : PeriodicOneGerm F)
+    {Cst : ℂ} (hmixed : MixedConstGerm F τ σ Cst)
     (hτ : 0 < τ.im) (hσ : 0 < σ.im)
     (hindep : ∀ n m j : ℤ, (n : ℂ) * τ + (m : ℂ) * σ + (j : ℂ) = 0 → n = 0 ∧ m = 0 ∧ j = 0)
     (p : ℂ) {ℓ : ℤ} (hℓ : ℓ < 0)
@@ -49,45 +49,43 @@ theorem exists_finiteSupport_separation_of_orbit_sum_eq_zero
     (meromorphicAt_comp_add.mpr (hF (z + τ) (Set.mem_univ _))).sub (hF z (Set.mem_univ z))
   have hFper : ∀ a : ℂ, laurentCoeff F (a + 1) ℓ = laurentCoeff F a ℓ := by
     intro a
-    have hfun : (fun z => F (z + 1)) = F := funext hper
     calc laurentCoeff F (a + 1) ℓ
         = laurentCoeff (fun z => F (z + 1)) a ℓ := (laurentCoeff_comp_add F a 1 ℓ).symm
-      _ = laurentCoeff F a ℓ := by rw [hfun]
+      _ = laurentCoeff F a ℓ :=
+          laurentCoeff_congr (meromorphicAt_comp_add.mpr (hF (a + 1) (Set.mem_univ _)))
+            (hper a) ℓ
   have hUper1 : ∀ h : ℂ, ∀ a : ℂ,
       laurentCoeff (fun z => F (z + h) - F z) (a + 1) ℓ
         = laurentCoeff (fun z => F (z + h) - F z) a ℓ := by
     intro h a
-    have hfun : (fun z => F (z + 1 + h) - F (z + 1)) = fun z => F (z + h) - F z := by
-      funext z
-      rw [show z + 1 + h = z + h + 1 from by ring, hper (z + h), hper z]
+    have hmero : MeromorphicAt (fun z => F (z + 1 + h) - F (z + 1)) a :=
+      meromorphicAt_comp_add.mpr
+        ((meromorphicAt_comp_add.mpr (hF (a + 1 + h) (Set.mem_univ _))).sub
+          (hF (a + 1) (Set.mem_univ _)))
     calc laurentCoeff (fun z => F (z + h) - F z) (a + 1) ℓ
         = laurentCoeff (fun z => F (z + 1 + h) - F (z + 1)) a ℓ :=
           (laurentCoeff_comp_add (fun z => F (z + h) - F z) a 1 ℓ).symm
-      _ = laurentCoeff (fun z => F (z + h) - F z) a ℓ := by rw [hfun]
+      _ = laurentCoeff (fun z => F (z + h) - F z) a ℓ :=
+          laurentCoeff_congr hmero (eventuallyEq_boundary_shift_one hper h a) ℓ
   have hUτper1 : ∀ a : ℂ, laurentCoeff Uτ (a + 1) ℓ = laurentCoeff Uτ a ℓ := hUper1 σ
   have hUσper1 : ∀ a : ℂ, laurentCoeff Uσ (a + 1) ℓ = laurentCoeff Uσ a ℓ := hUper1 τ
   have hUτperτ : ∀ a : ℂ, laurentCoeff Uτ (a + τ) ℓ = laurentCoeff Uτ a ℓ := by
     intro a
-    have hfun : (fun z => Uτ (z + τ)) = fun z => Uτ z + Cst := by
-      funext z
-      simp only [hUτdef]
-      have h := hmixed z
-      linear_combination h
+    have hmero : MeromorphicAt (fun z => Uτ (z + τ)) a :=
+      meromorphicAt_comp_add.mpr (hUτmero (a + τ) (Set.mem_univ _))
     calc laurentCoeff Uτ (a + τ) ℓ
         = laurentCoeff (fun z => Uτ (z + τ)) a ℓ := (laurentCoeff_comp_add Uτ a τ ℓ).symm
-      _ = laurentCoeff (fun z => Uτ z + Cst) a ℓ := by rw [hfun]
+      _ = laurentCoeff (fun z => Uτ z + Cst) a ℓ :=
+          laurentCoeff_congr hmero (eventuallyEq_boundary_shift_tau hmixed a) ℓ
       _ = laurentCoeff Uτ a ℓ := laurentCoeff_add_const (hUτmero a (Set.mem_univ a)) Cst hℓ
   have hUσperσ : ∀ a : ℂ, laurentCoeff Uσ (a + σ) ℓ = laurentCoeff Uσ a ℓ := by
     intro a
-    have hfun : (fun z => Uσ (z + σ)) = fun z => Uσ z + Cst := by
-      funext z
-      simp only [hUσdef]
-      have h := hmixed z
-      rw [show z + τ + σ = z + σ + τ from by ring] at h
-      linear_combination h
+    have hmero : MeromorphicAt (fun z => Uσ (z + σ)) a :=
+      meromorphicAt_comp_add.mpr (hUσmero (a + σ) (Set.mem_univ _))
     calc laurentCoeff Uσ (a + σ) ℓ
         = laurentCoeff (fun z => Uσ (z + σ)) a ℓ := (laurentCoeff_comp_add Uσ a σ ℓ).symm
-      _ = laurentCoeff (fun z => Uσ z + Cst) a ℓ := by rw [hfun]
+      _ = laurentCoeff (fun z => Uσ z + Cst) a ℓ :=
+          laurentCoeff_congr hmero (eventuallyEq_boundary_shift_sigma hmixed a) ℓ
       _ = laurentCoeff Uσ a ℓ := laurentCoeff_add_const (hUσmero a (Set.mem_univ a)) Cst hℓ
   set cc : ℤ → ℤ → ℂ := fun n m => laurentCoeff F (p + (n : ℂ) * τ + (m : ℂ) * σ) ℓ with hccdef
   set B : ℤ → ℂ := fun m => laurentCoeff Uτ (p + (m : ℂ) * σ) ℓ with hBdef

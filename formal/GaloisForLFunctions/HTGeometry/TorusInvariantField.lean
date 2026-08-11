@@ -144,25 +144,25 @@ end
 
 omit [CharZero E] in
 include hx hgen in
-/-- **Scaling invariants of a torus torsor.**  Let a set `S` of constant rescalings fix an
-intermediate field `K` pointwise, let the palette be algebraically independent over `K`, and let `S`
-separate the characters of exponent vectors.  Then every element of `K(x)` fixed by every rescaling
-in `S` already lies in `K`. -/
-theorem mem_of_torusScale_invariant (K : IntermediateField C E) {S : Set (Fin r → Cˣ)}
+/-- **Eigen-representation of a scaling invariant.**  An invariant element is a quotient of two
+polynomials in the palette all of whose exponents carry one common character on the acting set.  The
+denominator is chosen with the fewest monomials; twisting it by a rescaling and subtracting the
+multiple matching its coefficient at one fixed exponent produces a shorter denominator, hence zero,
+so both numerator and denominator are eigenvectors. -/
+theorem exists_torusScale_eigen_representation (K : IntermediateField C E)
+    {S : Set (Fin r → Cˣ)}
     (halg : AlgebraicIndependent (↥K) x)
-    (hKfix : ∀ u ∈ S, ∀ z ∈ K, torusScaleEquiv hx hgen u z = z)
-    (hsep : ∀ e d : Fin r →₀ ℕ,
-      (∀ u ∈ S, (∏ i, ((u i : C)) ^ e i) = ∏ i, ((u i : C)) ^ d i) → e = d)
-    {z : E} (hz : z ∈ IntermediateField.adjoin (↥K) (Set.range x))
+    (hKfix : ∀ u ∈ S, ∀ w ∈ K, torusScaleEquiv hx hgen u w = w)
+    {z : E} (hz0 : z ≠ 0)
+    (hz : z ∈ IntermediateField.adjoin (↥K) (Set.range x))
     (hfix : ∀ u ∈ S, torusScaleEquiv hx hgen u z = z) :
-    z ∈ K := by
+    ∃ (d : Fin r →₀ ℕ) (P Q : MvPolynomial (Fin r) ↥K),
+      d ∈ Q.support ∧ z * MvPolynomial.aeval x Q = MvPolynomial.aeval x P ∧
+      (∀ e ∈ Q.support, ∀ u ∈ S, scaleChar K u e = scaleChar K u d) ∧
+      (∀ e ∈ P.support, ∀ u ∈ S, scaleChar K u e = scaleChar K u d) := by
   classical
-  have hx0 : ∀ i, x i ≠ 0 := torus_palette_ne_zero hx
   have haeval0 : ∀ W : MvPolynomial (Fin r) ↥K, MvPolynomial.aeval x W = 0 → W = 0 :=
     algebraicIndependent_iff.mp halg
-  by_cases hz0 : z = 0
-  · rw [hz0]
-    exact K.zero_mem
   obtain ⟨P₀, Q₀, hPQ⟩ := (IntermediateField.mem_adjoin_range_iff (↥K) x z).mp hz
   have hQ₀ : MvPolynomial.aeval x Q₀ ≠ 0 := by
     intro h
@@ -235,32 +235,52 @@ theorem mem_of_torusScale_invariant (K : IntermediateField C E) {S : Set (Fin r 
     intro u hu
     apply haeval0
     rw [← hden u hu, htwistQ u hu, map_zero, mul_zero]
-  -- every exponent occurring in numerator or denominator equals the fixed one
+  -- every exponent occurring in numerator or denominator has the character of the fixed one
   have hsingle : ∀ W : MvPolynomial (Fin r) ↥K, (∀ u ∈ S, twist u W = 0) →
-      ∀ e ∈ W.support, e = d := by
-    intro W hW e he
-    refine hsep e d fun u hu ↦ ?_
+      ∀ e ∈ W.support, ∀ u ∈ S, scaleChar K u e = scaleChar K u d := by
+    intro W hW e he u hu
     have hc := congrArg (MvPolynomial.coeff e) (hW u hu)
     rw [hcoeff_twist, MvPolynomial.coeff_zero] at hc
     rcases mul_eq_zero.mp hc with h | h
-    · exact (scaleChar_eq_iff K u e d).mp (sub_eq_zero.mp h)
+    · exact sub_eq_zero.mp h
     · exact absurd h (MvPolynomial.mem_support_iff.mp he)
-  have hQmono : Q = MvPolynomial.monomial d (MvPolynomial.coeff d Q) := by
+  exact ⟨d, P, Q, hd, hPQeq, hsingle Q htwistQ, hsingle P htwistP⟩
+
+omit [CharZero E] in
+include hx hgen in
+/-- **Scaling invariants of a torus torsor.**  Let a set `S` of constant rescalings fix an
+intermediate field `K` pointwise, let the palette be algebraically independent over `K`, and let `S`
+separate the characters of exponent vectors.  Then every element of `K(x)` fixed by every rescaling
+in `S` already lies in `K`. -/
+theorem mem_of_torusScale_invariant (K : IntermediateField C E) {S : Set (Fin r → Cˣ)}
+    (halg : AlgebraicIndependent (↥K) x)
+    (hKfix : ∀ u ∈ S, ∀ w ∈ K, torusScaleEquiv hx hgen u w = w)
+    (hsep : ∀ e d : Fin r →₀ ℕ,
+      (∀ u ∈ S, (∏ i, ((u i : C)) ^ e i) = ∏ i, ((u i : C)) ^ d i) → e = d)
+    {z : E} (hz : z ∈ IntermediateField.adjoin (↥K) (Set.range x))
+    (hfix : ∀ u ∈ S, torusScaleEquiv hx hgen u z = z) :
+    z ∈ K := by
+  classical
+  have hx0 : ∀ i, x i ≠ 0 := torus_palette_ne_zero hx
+  by_cases hz0 : z = 0
+  · rw [hz0]
+    exact K.zero_mem
+  obtain ⟨d, P, Q, hd, hPQeq, hQchar, hPchar⟩ :=
+    exists_torusScale_eigen_representation hx hgen K halg hKfix hz0 hz hfix
+  have hmono : ∀ W : MvPolynomial (Fin r) ↥K,
+      (∀ e ∈ W.support, ∀ u ∈ S, scaleChar K u e = scaleChar K u d) →
+      W = MvPolynomial.monomial d (MvPolynomial.coeff d W) := by
+    intro W hW
     refine MvPolynomial.ext _ _ fun m ↦ ?_
     rw [MvPolynomial.coeff_monomial]
     by_cases hm : m = d
     · rw [if_pos hm.symm, hm]
     · rw [if_neg (fun h ↦ hm h.symm)]
       by_contra hc
-      exact hm (hsingle Q htwistQ m (MvPolynomial.mem_support_iff.mpr hc))
-  have hPmono : P = MvPolynomial.monomial d (MvPolynomial.coeff d P) := by
-    refine MvPolynomial.ext _ _ fun m ↦ ?_
-    rw [MvPolynomial.coeff_monomial]
-    by_cases hm : m = d
-    · rw [if_pos hm.symm, hm]
-    · rw [if_neg (fun h ↦ hm h.symm)]
-      by_contra hc
-      exact hm (hsingle P htwistP m (MvPolynomial.mem_support_iff.mpr hc))
+      exact hm (hsep m d fun u hu ↦ (scaleChar_eq_iff K u m d).mp
+        (hW m (MvPolynomial.mem_support_iff.mpr hc) u hu))
+  have hQmono := hmono Q hQchar
+  have hPmono := hmono P hPchar
   -- read off the quotient
   have hmon0 : (∏ i ∈ d.support, x i ^ d i) ≠ 0 :=
     Finset.prod_ne_zero_iff.mpr fun i _ ↦ pow_ne_zero _ (hx0 i)
@@ -389,6 +409,7 @@ theorem algebraicIndependent_bot {ι : Type*} {y : ι → E} (h : AlgebraicIndep
   exact MvPolynomial.map_injective _
     (IntermediateField.botEquiv C E).injective (by rw [hzero, map_zero])
 
+omit [CharZero E] in
 include hx hgen in
 /-- **The velocity field meets the rational function field of the palette in the constants.**  This
 is the statement that the persistent velocity coordinate carries no information about the position:

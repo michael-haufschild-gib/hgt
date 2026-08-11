@@ -7,7 +7,7 @@
   source inequality normalizedPrimeArchMoment 2 < normalizedPrimeArchMoment 1 / 81. Failure
   retires selected carrier; success still needs all-degree closure.")
 - **Status:** [GATE HOLDS — PROVED, MARGIN ×2.51 RIGOROUS / ×3.18 NUMERICAL] [CONVENTION AUDIT PASSED] [NOT RH]
-  [NO LEAN — directive; mpmath pre-certification per project rules]
+  [LEAN: GATE MECHANISM CERTIFIED — two numerical inputs remain]
 
 ## The identification (read in-tree this cycle)
 
@@ -59,6 +59,45 @@ detector of Landau type, and the D2–T difference is the classical gap between
 "bounded on every compact sub-strip" and "bounded up to the boundary" — recorded as the
 pair's typed residual, closing the graph's last annotation.
 
+## Lean status: the gate mechanism is certified; the arithmetic input is not
+
+`GaloisForLFunctions.HTGeometry.DivisorHeightRatioGate` (wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`) replaces the card's 200-zero numerical
+argument by the exact structural mechanism, unconditionally:
+
+- `xiCentralAbsMoment n` — the absolute centered reciprocal moments
+  `∑_ρ mult(ρ) ‖ρ − 1/2‖^{−2(n+1)}` of the actual xi divisor; `xiCentralAbsMoment_summable`.
+- `norm_xiCentralReciprocalMoment_le`, `abs_normalizedPrimeArchMoment_le` — the absolute moments
+  dominate the signed corpus moments, through
+  `primeArchSourceMoment_eq_xiCentralReciprocalMoment`.
+- `xiCentralAbsMoment_succ_le_div` — **height damping**: a lower bound `c` on the centered heights
+  gives `absMoment (n+1) ≤ absMoment n / c²`, for every `n`, by one bounded multiplier under the
+  sum.  No tail estimate, no zero table, no density majorant.
+- `xiCentralAbsMoment_add_le_div` — the iterated form `absMoment (n+k) ≤ absMoment n / c^{2k}`.
+- `exists_pos_xiCentralHeightFloor`, `exists_pos_xiCentralAbsMoment_ratio` — such a `c > 0` always
+  exists, from local finiteness of the divisor alone; so geometric decay of the absolute moments
+  is unconditional, with only the *size* of `c` arithmetic.
+- `xiCentralAbsMoment_two_lt_div_of_height`, `normalizedPrimeArchMoment_two_lt_of_height` — **the
+  gate**: `9 < c` already forces `absMoment 2 < absMoment 1 / 81`.  The margin the card computes
+  numerically as ×2.51 is, structurally, `(γ₁/9)² = (14.134…/9)² = 2.466…`; the numerical work was
+  never needed for the mechanism, only for the constant.
+
+All declarations audit to `propext`, `Classical.choice`, `Quot.sound`.
+
+**What is not formalizable here.**  Two arithmetic inputs remain, and both are numerical facts
+about the zeta zeros rather than mathematics of the gate:
+
+1. `9 < c`, i.e. the divisor of xi has no point within distance `9` of `1/2`.  Classically this is
+   `γ₁ = 14.1347…`; certifying it in Lean is a verified-zero computation (argument principle plus
+   explicit bounds on `ξ` along a contour), which the project's working rules exclude.
+2. A lower bound on the *signed* moment `normalizedPrimeArchMoment 1`.  The Lean gate above bounds
+   the second moment against the *absolute* first moment; the two coincide exactly when every zero
+   is on the critical line, so replacing `xiCentralAbsMoment 1` by `normalizedPrimeArchMoment 1`
+   unconditionally is not a matter of effort but requires a zero-location input.
+
+The card therefore stays at stage 2: the decision's mathematics is certified, its two numerical
+inputs are named and are computations.
+
 ## Log
 
 - 2026-08-09 — gate decided (pre-certified ×3.18); identification read in-tree; promotion
@@ -91,3 +130,7 @@ Everything above is three cited enclosures, one cited explicit counting theorem,
 elementary integration — dependency-closed at paper level. Status upgraded; card moves to
 stage 2. Route Q's recorded decision point is settled: the selected carrier SURVIVES, and
 Q's open core is the all-degree closure alone.
+
+- 2026-08-11 — the gate mechanism formalized unconditionally as a height-damping law
+  (`DivisorHeightRatioGate`); the numerical proof is superseded by `9 < c ⇒ gate`, and the two
+  remaining inputs are isolated as verified-zero computations.

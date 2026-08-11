@@ -5861,3 +5861,62 @@ receive a new title and an independent significance audit.
   and hostile audit:
   `../2-fully-proven/all-replica-static-centralizer-planar-separation-law.md`.  Lean remained read
   only during corpus refactoring.
+- 2026-08-11 -- Closed the permanent-locality/Haar half with a dimension-only operational tail.
+  For every nonzero traceless Hermitian source on a `D >= 2` dimensional register, exact Haar
+  adjoint covariance gives
+  `E(Re tr(HU*HU))^2=tr(H^2)^2/(D^2-1)` and therefore half-energy false-positive probability at
+  most `4/(D^2-1)`.  Exact Pauli Hilbert--Schmidt orthogonality identifies the literal signed
+  coefficient-matched product-eigenframe mean with
+  `Re tr(HU*HU)/(D||h||_1^2)`.  Autonomous evolution retains its full value at every real time, so
+  the same `4/(D^2-1)` bound applies at half the permanent operational value for every supported
+  Pauli dictionary, with no dictionary-cardinality, spectral-gap, or nondegeneracy condition.
+  This strengthens the existing same-Hamiltonian complexity--locality coexistence theorem; it does
+  not prove initial growth.  It also confirms the preceding centralizer diagnosis: conserved-source
+  memory is a permanent physical sector to condition on, not an error term that may be forced to
+  decay to the full-Haar vacuum.  The Brown open core remains centralizer-conditioned Bellman
+  escape/finite-scale undistortion after named return and shortcut-carrier excision.  Lean modules:
+  `HTGeometry/FiniteUnitaryAdjointAutocorrelationLaw.lean` and
+  `HTGeometry/EnergyMatchedEigenframeSourceMemory.lean`; final module build and axiom audit pass.
+- 2026-08-11 -- Replaced the qualitative phrase “near the moving centralizer” by an exact,
+  gap-free defect.  For every finite Hermitian `H` and unitary `U`,
+  `||HU-UH||_HS^2 = 2(tr(H^2)-Re tr(HU*HU))`; hence full energy-matched source memory is
+  equivalent to exact commutation.  Combining this identity with the exact Haar second moment
+  proves that the Haar mass of the literal approximate-centralizer tube
+  `{U: ||HU-UH||_HS^2 <= tr(H^2)}` is at most `4/(D^2-1)` for every nonzero traceless source.
+  This removes minimum-gap and operator-versus-Hilbert--Schmidt normalization ambiguity from the
+  tube itself.  It does not transfer Haar rarity to an adaptive circuit selected from a static
+  local `H`; the remaining theorem is still quenched Bellman escape *inside* this low-defect
+  sector, after return/carrier excision.  Lean module:
+  `HTGeometry/FiniteUnitaryEnergyDefectLaw.lean`; development compile, final module build, and axiom
+  audit pass.  Card: `../3-formalized/finite-unitary-energy-defect-law.md`.
+- 2026-08-11 -- Closed a logical gap between robust Choi state shortcuts and the low energy-defect
+  sector.  The naive operator-norm bridge loses system-size effective rank and cannot support fixed
+  robust error.  In the source eigenbasis, the squared entries of the relative shortcut form a
+  doubly stochastic coupling.  Its quadratic energy transport cost obeys the exact fourth-moment
+  law
+  `||[H,W]||_HS^4 <= 16 kappa_4(H) tr(H^2)^2 (1-F_Choi(T,W))` whenever the autonomous target `T`
+  commutes with `H`.  Hence infidelity at most `1/(16 kappa_4(H))` forces every selected shortcut
+  into the certified half-energy tube, with no minimum gap, nondegeneracy, or dictionary union.
+  Established quantum hypercontractivity gives `kappa_4(H) <= 9^q` for degree-`q` Pauli
+  Hamiltonians, making the required resolution dimension-independent; that Pauli corollary remains
+  to be formalized before final use.  This bridge does not prove escape inside the tube, so the
+  Brown growth core remains selector-aware quenched Bellman escape after return/carrier removal.
+  Lean module `HTGeometry/ChoiShortcutEnergyDefectKurtosisLaw.lean`; final module build and axiom
+  audit pass.  Card: `../3-formalized/choi-shortcut-energy-defect-kurtosis-law.md`.
+- 2026-08-11 -- Closed the previously informal fixed-locality robustness premise by an elementary
+  coefficient-to-matrix theorem.  Phase-free XOR autocorrelation satisfies an exact triple
+  reindexing identity and a four-linear Cauchy--Schwarz law that tensorizes over qubits.  The
+  one-qubit quartic has no term with exactly one nonidentity label, closing weight induction with a
+  qubit-count-independent constant.  Regrouping `H^2` by XOR output retains Pauli orthogonality
+  exactly and removes unit-modulus multiplication phases only afterward.  Consequently every real
+  weight-`q` Pauli Hamiltonian obeys normalized spectral kurtosis at most `(9^q)^4`, and Choi
+  infidelity at most `1/(16(9^q)^4)` forces any shortcut to a commuting target into the half-energy
+  commutator tube.  This corrects the preceding log's sharper informal `9^q` constant: that value
+  belongs to standard quantum hypercontractivity and is not what the new elementary Lean proof
+  establishes.  The bound is dimension-independent but deliberately nonsharp, and no external
+  novelty is claimed for its numerical strength.  Brown growth remains unproved: exact next core
+  is quenched selector-aware Bellman escape inside this tube after return and fast-forwardable
+  carrier removal.  Lean module:
+  `HTGeometry/PauliXorIncidenceHypercontractivityLaw.lean`; direct compile, module build, lint, and
+  axiom audit pass.  Card:
+  `../3-formalized/pauli-xor-incidence-hypercontractivity-law.md`.

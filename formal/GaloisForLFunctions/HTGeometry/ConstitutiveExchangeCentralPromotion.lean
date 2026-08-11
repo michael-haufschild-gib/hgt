@@ -10,6 +10,8 @@ central, and no group-homomorphic section can reconstruct the promoted history.
 
 namespace GaloisForLFunctions.HTGeometry
 
+open scoped commutatorElement
+
 /-- Strict commuting shadow of the two-generator exchange history. -/
 abbrev ExchangeAbelian := Multiplicative (ℤ × ℤ)
 
@@ -167,11 +169,63 @@ theorem no_heisExchangeProjection_group_section :
   dsimp [p, q]
   rw [← map_mul, ← map_mul, mul_comm]
 
+/-- The promoted residual is central. -/
+theorem heis_center_mem_center (n : ℤ) : Heis.center n ∈ Subgroup.center Heis := by
+  rw [Subgroup.mem_center_iff]
+  intro g
+  exact (Heis.center_comm n g).symm
+
+/-- **Central extension.**  The kernel of the strict projection is exactly the centre. -/
+theorem heisExchangeProjection_ker : heisExchangeProjection.ker = Subgroup.center Heis := by
+  ext p
+  constructor
+  · intro hp
+    have hxy := (heisExchangeProjection_eq_one_iff p).mp (MonoidHom.mem_ker.mp hp)
+    have hc : p = Heis.center p.z := by ext <;> simp [Heis.center, hxy.1, hxy.2]
+    obtain ⟨n, rfl⟩ : ∃ n : ℤ, p = Heis.center n := ⟨p.z, hc⟩
+    exact heis_center_mem_center n
+  · intro hp
+    rw [Subgroup.mem_center_iff] at hp
+    have hc := (heis_center_characterization p).mp
+      ⟨(hp exchangeGenF).symm, (hp exchangeGenG).symm⟩
+    refine MonoidHom.mem_ker.mpr ((heisExchangeProjection_eq_one_iff p).mpr ⟨?_, ?_⟩)
+    · simpa [Heis.center] using congrArg Heis.x hc
+    · simpa [Heis.center] using congrArg Heis.y hc
+
+/-- **Exact commutator subgroup.**  Commutator subgroup and centre of the promotion coincide. -/
+theorem commutator_heis_eq_center : commutator Heis = Subgroup.center Heis := by
+  apply le_antisymm
+  · rw [commutator_def]
+    refine Subgroup.commutator_le.mpr ?_
+    intro p _ q _
+    obtain ⟨n, hn⟩ := every_heis_commutator_is_central p q
+    have hcomm : ⁅p, q⁆ = Heis.center n := hn
+    rw [hcomm]
+    exact heis_center_mem_center n
+  · intro p hp
+    rw [Subgroup.mem_center_iff] at hp
+    have hc := (heis_center_characterization p).mp
+      ⟨(hp exchangeGenF).symm, (hp exchangeGenG).symm⟩
+    obtain ⟨n, rfl⟩ : ∃ n : ℤ, p = Heis.center n := ⟨p.z, hc⟩
+    rw [commutator_def]
+    have hrep : Heis.center n = ⁅exchangeGenF, (⟨0, n, 0⟩ : Heis)⁆ :=
+      every_center_is_exchange_commutator n
+    rw [hrep]
+    exact Subgroup.commutator_mem_commutator (Subgroup.mem_top _) (Subgroup.mem_top _)
+
+/-- **The strict shadow is the quotient by the promoted central residual.** -/
+noncomputable def heisStrictShadowEquiv :
+    Heis ⧸ Subgroup.center Heis ≃* ExchangeAbelian :=
+  (QuotientGroup.quotientMulEquivOfEq heisExchangeProjection_ker.symm).trans
+    (QuotientGroup.quotientKerEquivOfSurjective _ heisExchangeProjection_surjective)
+
 theorem constitutiveExchangeCentralPromotionMechanism_closed :
     (∀ u v w : ℤ × ℤ,
       exchangeCarry u v + exchangeCarry (u + v) w =
         exchangeCarry v w + exchangeCarry u (v + w)) ∧
     Function.Surjective heisExchangeProjection ∧
+    heisExchangeProjection.ker = Subgroup.center Heis ∧
+    commutator Heis = Subgroup.center Heis ∧
     exchangeGenF * exchangeGenG =
       Heis.center 1 * (exchangeGenG * exchangeGenF) ∧
     (∀ p q : Heis, comm p q = Heis.center (p.x * q.y - q.x * p.y)) ∧
@@ -183,6 +237,7 @@ theorem constitutiveExchangeCentralPromotionMechanism_closed :
     ¬ ∃ s : ExchangeAbelian →* Heis,
       heisExchangeProjection.comp s = MonoidHom.id ExchangeAbelian := by
   exact ⟨exchangeCarry_cocycle, heisExchangeProjection_surjective,
+    heisExchangeProjection_ker, commutator_heis_eq_center,
     exchangeGenerators_central_residual, heis_commutator_formula,
     (fun n => ⟨exchangeGenF, ⟨0, n, 0⟩, every_center_is_exchange_commutator n⟩),
     lifts_of_exchange_basis_do_not_commute,

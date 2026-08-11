@@ -1,5 +1,8 @@
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Data.Real.Basic
+import Mathlib.Topology.Order.Basic
+import Mathlib.Topology.Instances.Real.Lemmas
+import Mathlib.Order.Interval.Finset.Nat
 
 /-!
 # Endogenous viability and observer exchange
@@ -319,5 +322,72 @@ theorem endogenousViability_greatest_fixedPoint
   exact viabilityHorizon_greatest_fixedPoint Φ S hΦmono hΦS hexchange
 
 end EndogenousFixedPoint
+
+
+/-! ## Sharp countermodels: compactness, closedness, and coherence are independent -/
+
+/-- **Noncompact escape.**  Closed, nonempty, nested horizons on a noncompact discrete carrier can
+have empty intersection, even with a proper cost whose sublevels are finite. -/
+theorem noncompactEscape_countermodel :
+    (∀ n : ℕ, IsClosed (Set.Ici n)) ∧
+      (∀ n : ℕ, (Set.Ici n).Nonempty) ∧
+      Antitone (fun n : ℕ => Set.Ici n) ∧
+      (⋂ n : ℕ, Set.Ici n) = (∅ : Set ℕ) ∧
+      (∀ c : ℕ, (Set.Iic c).Finite) := by
+  refine ⟨fun n => isClosed_Ici, fun n => ⟨n, Set.mem_Ici.mpr le_rfl⟩, ?_, ?_, fun c => Set.finite_Iic c⟩
+  · intro a b hab
+    exact Set.Ici_subset_Ici.mpr hab
+  · ext m
+    simp only [Set.mem_iInter, Set.mem_Ici, Set.mem_empty_iff_false, iff_false]
+    intro hall
+    exact absurd (hall (m + 1)) (by omega)
+
+/-- **Nonclosed admission.**  Nonempty nested horizons inside a compact carrier can have empty
+intersection when they are not closed. -/
+theorem nonclosedAdmission_countermodel :
+    (∀ n : ℕ, (Set.Ioc (0 : ℝ) (1 / (n + 1))).Nonempty) ∧
+      Antitone (fun n : ℕ => Set.Ioc (0 : ℝ) (1 / (n + 1))) ∧
+      (⋂ n : ℕ, Set.Ioc (0 : ℝ) (1 / (n + 1))) = (∅ : Set ℝ) := by
+  have hpos : ∀ n : ℕ, (0 : ℝ) < 1 / (n + 1) := by
+    intro n
+    have : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+    exact div_pos one_pos this
+  refine ⟨fun n => ⟨1 / (n + 1), hpos n, le_rfl⟩, ?_, ?_⟩
+  · intro a b hab
+    refine Set.Ioc_subset_Ioc_right ?_
+    have hb : (0 : ℝ) < (b : ℝ) + 1 := by positivity
+    have hab' : ((a : ℝ) + 1) ≤ ((b : ℝ) + 1) := by
+      have : (a : ℝ) ≤ (b : ℝ) := Nat.cast_le.mpr hab
+      linarith
+    have ha : (0 : ℝ) < (a : ℝ) + 1 := by positivity
+    exact one_div_le_one_div_of_le ha hab'
+  · ext x
+    simp only [Set.mem_iInter, Set.mem_Ioc, Set.mem_empty_iff_false, iff_false]
+    intro hall
+    have hx : 0 < x := (hall 0).1
+    obtain ⟨n, hn⟩ := Archimedean.arch (1 : ℝ) hx
+    have hle : x ≤ 1 / ((n : ℝ) + 1) := (hall n).2
+    have hb : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+    rw [le_div_iff₀ hb] at hle
+    have hnsmul : (n : ℝ) * x = n • x := by simp [nsmul_eq_mul]
+    nlinarith [hn, hle, hx]
+
+/-- **Incoherent horizons.**  A nonmonotone family of nonempty closed horizons in a compact carrier
+can have empty intersection. -/
+theorem incoherentHorizon_countermodel :
+    (∀ n : ℕ, (if Even n then ({false} : Set Bool) else {true}).Nonempty) ∧
+      (∀ n : ℕ, IsClosed (if Even n then ({false} : Set Bool) else {true})) ∧
+      (⋂ n : ℕ, (if Even n then ({false} : Set Bool) else {true})) = (∅ : Set Bool) := by
+  refine ⟨fun n => ?_, fun n => ?_, ?_⟩
+  · by_cases h : Even n <;> simp [h]
+  · by_cases h : Even n <;> simp [h]
+  · ext b
+    simp only [Set.mem_iInter, Set.mem_empty_iff_false, iff_false]
+    intro hall
+    have h0 := hall 0
+    have h1 := hall 1
+    simp only [Nat.even_iff, if_pos] at h0 h1
+    revert h0 h1
+    cases b <;> simp
 
 end GaloisForLFunctions.HTGeometry

@@ -14,7 +14,7 @@
   native geometry (Castelnuovo/Deligne); the rationals sit at the top of the import chain with no
   upstream world, which derives the exact fork the two major programs occupy.
 - **Status:** [PAPER-PROVED AT CITATION LEVEL] [VACUITY CAVEAT CLOSED] [IMPORT STRUCTURE
-  OBSERVED, NOT CLAIMED AS THEOREM] [NOT RH] [NO LEAN]
+  OBSERVED, NOT CLAIMED AS THEOREM] [NOT RH] [LEAN CORE CERTIFIED]
 
 ## 1. Theorem B′ — the non-vacuous independence witness
 
@@ -92,8 +92,27 @@ fork inherits a specific, machine-checked constraint list.
   falsifiable targets remain ULF-INV-4 (general-d barrier) and the fork-(a)/(b) constraint
   instantiations.
 
+## 4. Lean status
+
+The self-contained quantitative content of Theorem B′ clause 3 is certified in
+`GaloisForLFunctions.HTGeometry.SelbergSpectralParameter`, wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`: for `0 < λ < 1/4` the two spectral parameters
+`1/2 ± √(1/4 − λ)` are real, lie in `(0,1)`, are distinct, are neither equal to `1/2`, and sum to
+`1` (`selbergSmallEigenvalue_offCritical`); they coincide with `1/2` exactly at the Selberg bound
+(`selbergSpectralParameter_eq_half_iff`).
+
+The remaining clauses of B′ are citation-level: the existence of pinched finite-area cusped
+hyperbolic surfaces with `λ₁ < 1/4` (Buser; Colin de Verdière) and the Selberg-zeta zero
+dictionary (Hejhal).  Formalizing them requires a hyperbolic-surface spectral layer — Laplace
+spectrum on `Γ\ℍ`, Eisenstein series, Maass–Selberg truncation, the Selberg trace formula and the
+Selberg zeta function — which is present neither in mathlib nor in this corpus.  Theorem D′ is
+explicitly recorded as an observation about existing proofs, not a theorem, so it carries no Lean
+obligation.
+
 ## Log
 
 - 2026-08-09 — created: vacuity caveat of ULF-INV-5 closed with the cusped thin-neck witness;
   Selberg's conjecture identified as N7's instance in the continuous world; polarization import
   structure tabulated; the two-fork conclusion derived with per-fork constraint lists.
+- 2026-08-11 — the off-critical spectral-parameter core certified in Lean; the remaining clauses
+  recorded as citation-level, with the missing hyperbolic-spectral layer named explicitly.

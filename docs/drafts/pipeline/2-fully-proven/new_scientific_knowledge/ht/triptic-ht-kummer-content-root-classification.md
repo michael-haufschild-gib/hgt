@@ -592,3 +592,27 @@ is stable under **integration**, not only differentiation (`k⟨y′⟩` has fin
 What is left is the extension from order `-1` to all orders (the jets of the theta source, with pole
 order `j+1`), the passage from one orbit to the finitely many that occur, and the application of
 `const_of_entire_of_periodic_of_mixed_const` to the pole-free remainder.
+
+## Lean progress — the kernel of the multiplicative orbital charge
+
+`GaloisForLFunctions/HTGeometry/TripticMultiplicativeKernel.lean` (wired, axiom-clean):
+
+    differentiallyAlgebraic_logDeriv_of_vanishing_orbitCharge :
+      **a multiplicative triptic source whose orbital charge vanishes on every orbit has a
+      differentially algebraic logarithmic derivative, and its mixed constant is zero**
+
+This is the multiplicative kernel, and it is a two-line consequence of the additive one once the
+order bookkeeping is done: a logarithmic derivative has no Laurent coefficient below its residue
+(`laurentCoeff_logDeriv_eq_zero_of_le`), so the orbital divisor of `δ log Y` is concentrated in
+order `-1`, where `laurentCoeff_shiftDiff_logDeriv` identifies it with the shift order; vanishing
+orbital charge therefore means a vanishing orbital divisor at *every* order, which is exactly the
+hypothesis of `differentiallyAlgebraic_toMeromorphicNFOn_of_vanishing_orbital_divisor`.
+
+Together with `tripticOrbitCharge_mul` (the charge is additive) and
+`tripticOrbitCharge_ellipticGammaConeTranslate` (every class is realized) this supplies two of the
+three inputs of the abstract Kummer classification: the divisor map is a homomorphism, every class
+is in its image, and its kernel contains the differentially algebraic sources.  What is still
+missing for the third is the reverse inclusion — a source with nonzero charge is
+hypertranscendental — which is the freeness of the differential translation orbit of the elliptic
+gamma source, and the group-theoretic packaging of the class `M` itself as an `AddCommGroup` on
+which the divisor map is an `AddMonoidHom`.

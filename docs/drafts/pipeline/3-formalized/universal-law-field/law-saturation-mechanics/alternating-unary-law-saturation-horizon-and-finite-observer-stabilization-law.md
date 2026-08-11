@@ -271,6 +271,8 @@ Formalize the closed concrete theorem in
 - exact \(r\)-sweep prefix law;
 - no finite common fixed stage;
 - coordinate reporter stabilization;
+- finite reporter-family stabilization;
+- product-topology convergence of the reporter vectors to the all-one vector;
 - strict global history.
 
 ## Log
@@ -278,3 +280,5 @@ Formalize the closed concrete theorem in
 - 2026-08-09 — paper proof completed; generic closure collision recorded.
 - 2026-08-09 — Lean module, umbrella wiring, lint, build, and axiom audit passed; promoted to Stage 3.
 
+- 2026-08-11 — finite reporter-family stabilization and product-topology convergence of the
+  observer reporter vectors certified in Lean; the stale stage-2 duplicate was removed.

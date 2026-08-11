@@ -142,6 +142,59 @@ end CompositionDefect
 
 section RecurrentOpenEnvelope
 
+/-! ## Interventional energy conservation -/
+
+/-- **Exact interventional energy conservation.**  Positive intervention energy splits exactly into
+the coherent phase-weighted response energy and the unresolved within-fibre history variance. -/
+theorem coherentHistory_energy_decomposition {H Y : Type*} [Fintype H] [Fintype Y]
+    [DecidableEq Y] (π : H → Y) (m : H → ℝ) (z : H → ℂ) (s : Y → ℂ)
+    (hs : ∀ y : Y, (∑ h ∈ Finset.univ with π h = y, (m h : ℂ) * z h)
+        = ((∑ h ∈ Finset.univ with π h = y, m h : ℝ) : ℂ) * s y) :
+    ∑ h, m h * Complex.normSq (z h)
+      = (∑ y, (∑ h ∈ Finset.univ with π h = y, m h) * Complex.normSq (s y))
+        + ∑ h, m h * Complex.normSq (z h - s (π h)) := by
+  classical
+  have hfib : ∀ f : H → ℝ, ∑ h, f h = ∑ y, ∑ h ∈ Finset.univ with π h = y, f h :=
+    fun f => (Finset.sum_fiberwise Finset.univ π f).symm
+  rw [hfib (fun h => m h * Complex.normSq (z h)),
+    hfib (fun h => m h * Complex.normSq (z h - s (π h))), ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun y _ => ?_
+  set F : Finset H := Finset.univ.filter fun h => π h = y with hF
+  have hmem : ∀ h ∈ F, π h = y := by
+    intro h hh
+    exact (Finset.mem_filter.mp hh).2
+  set v : ℝ := ∑ h ∈ F, m h with hv
+  have hexpand : ∑ h ∈ F, m h * Complex.normSq (z h - s (π h))
+      = (∑ h ∈ F, m h * Complex.normSq (z h))
+        + v * Complex.normSq (s y)
+        - 2 * ((∑ h ∈ F, (m h : ℂ) * z h) * (starRingEnd ℂ) (s y)).re := by
+    have hpt : ∀ h ∈ F, m h * Complex.normSq (z h - s (π h))
+        = m h * Complex.normSq (z h) + m h * Complex.normSq (s y)
+          - 2 * (((m h : ℂ) * z h) * (starRingEnd ℂ) (s y)).re := by
+      intro h hh
+      rw [hmem h hh]
+      simp [Complex.normSq_apply, Complex.mul_re, Complex.sub_re, Complex.sub_im,
+        Complex.mul_im]
+      ring
+    rw [Finset.sum_congr rfl hpt]
+    rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+    congr 1
+    · congr 1
+      rw [← Finset.sum_mul, ← hv]
+    · rw [← Finset.mul_sum]
+      congr 1
+      rw [show ((∑ h ∈ F, (m h : ℂ) * z h) * (starRingEnd ℂ) (s y))
+          = ∑ h ∈ F, ((m h : ℂ) * z h * (starRingEnd ℂ) (s y)) from Finset.sum_mul _ _ _]
+      exact (map_sum Complex.reAddGroupHom
+        (fun h => (m h : ℂ) * z h * (starRingEnd ℂ) (s y)) F).symm
+  have hmean : ((∑ h ∈ F, (m h : ℂ) * z h) * (starRingEnd ℂ) (s y)).re
+      = v * Complex.normSq (s y) := by
+    rw [hs y]
+    simp [hv, hF, Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
+    ring
+  rw [hexpand, hmean]
+  ring
+
 abbrev CoherentTwoMatrix := Matrix (Fin 2) (Fin 2) ℝ
 
 /-- Closed rational coherent witness. -/
@@ -198,6 +251,68 @@ theorem coherentExpandingRay_tendsto :
       Filter.atTop Filter.atTop := by
   simpa [coherentExpandingRay_coordinate] using
     (tendsto_pow_atTop_atTop_of_one_lt (show (1 : ℝ) < 7 / 5 by norm_num))
+
+/-- The positive envelope has nonnegative entries, so it is monotone on vectors. -/
+theorem coherentEnvelopeWitness_mulVec_mono {u v : Fin 2 → ℝ} (huv : ∀ i, u i ≤ v i) (i : Fin 2) :
+    coherentEnvelopeWitness.mulVec u i ≤ coherentEnvelopeWitness.mulVec v i := by
+  fin_cases i <;>
+    · simp only [Matrix.mulVec, dotProduct, coherentEnvelopeWitness, Fin.sum_univ_succ]
+      norm_num
+      nlinarith [huv 0, huv 1]
+
+/-- Iterating a subinvariant vector keeps it subinvariant. -/
+theorem coherentEnvelopeWitness_pow_mulVec_le {u : Fin 2 → ℝ}
+    (hMu : ∀ i, coherentEnvelopeWitness.mulVec u i ≤ u i) (n : ℕ) :
+    ∀ i, (coherentEnvelopeWitness ^ n).mulVec u i ≤ u i := by
+  induction n with
+  | zero => intro i; simp
+  | succ n ih =>
+      intro i
+      rw [pow_succ', ← Matrix.mulVec_mulVec]
+      calc coherentEnvelopeWitness.mulVec ((coherentEnvelopeWitness ^ n).mulVec u) i
+          ≤ coherentEnvelopeWitness.mulVec u i :=
+            coherentEnvelopeWitness_mulVec_mono ih i
+        _ ≤ u i := hMu i
+
+/-- **Positive-carrier obstruction.**  No positive vector comparable with the expanding ray is
+subinvariant for the coherent history envelope. -/
+theorem coherentEnvelope_no_invariant_positive_carrier
+    (u : Fin 2 → ℝ) (c C : ℝ) (hc : 0 < c)
+    (hcq : ∀ i, c * coherentExpandingRay i ≤ u i)
+    (huC : ∀ i, u i ≤ C * coherentExpandingRay i)
+    (hMu : ∀ i, coherentEnvelopeWitness.mulVec u i ≤ u i) : False := by
+  have hstep : ∀ (m : ℕ) (i : Fin 2),
+      (coherentEnvelopeWitness ^ m).mulVec (fun j => c * coherentExpandingRay j) i
+        ≤ (coherentEnvelopeWitness ^ m).mulVec u i := by
+    intro m
+    induction m with
+    | zero => intro i; simpa using hcq i
+    | succ m ih =>
+        intro i
+        rw [pow_succ', ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
+        exact coherentEnvelopeWitness_mulVec_mono ih i
+  have hlin : ∀ n : ℕ,
+      (coherentEnvelopeWitness ^ n).mulVec (fun j => c * coherentExpandingRay j) 0
+        = c * (7 / 5 : ℝ) ^ n := by
+    intro n
+    have hc' : (fun j => c * coherentExpandingRay j) = c • coherentExpandingRay := by
+      funext j
+      simp [Pi.smul_apply, smul_eq_mul]
+    rw [hc', Matrix.mulVec_smul, coherentEnvelopeWitness_pow_mulVec]
+    simp [coherentExpandingRay, Pi.smul_apply, smul_eq_mul]
+  have hgrow : ∀ n : ℕ, c * (7 / 5 : ℝ) ^ n ≤ C := by
+    intro n
+    have hlow := hstep n 0
+    rw [hlin n] at hlow
+    have hup : (coherentEnvelopeWitness ^ n).mulVec u 0 ≤ C * coherentExpandingRay 0 :=
+      le_trans (coherentEnvelopeWitness_pow_mulVec_le hMu n 0) (huC 0)
+    have h2 : coherentExpandingRay 0 = 1 := by simp [coherentExpandingRay]
+    rw [h2, mul_one] at hup
+    linarith
+  obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (C / c) (show (1 : ℝ) < 7 / 5 by norm_num)
+  have hgn := hgrow n
+  rw [div_lt_iff₀ hc] at hn
+  linarith
 
 /-- Unconditional fusion capstone: exact coherent recurrence and exact open positive history occur
 in one closed finite process. -/

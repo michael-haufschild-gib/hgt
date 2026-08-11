@@ -46,3 +46,4 @@ defect.
 
 See the companion formalization record. The module is part of the dedicated universal-law-field
 umbrella.
+- 2026-08-11 — Lean surface audited complete against the card; promoted to stage 3.

@@ -236,3 +236,4 @@ least repair, fixedness, kernel factorization, no-descent, and monotonicity. It 
 
 - 2026-08-09 — dependency-closed paper proof completed.\n- 2026-08-09 — Lean source check, module build, umbrella wiring, lint, and axiom audit passed; promoted to Stage 3.
 
+- 2026-08-11 — Lean surface audited complete against the card; stale stage-2 duplicate removed.

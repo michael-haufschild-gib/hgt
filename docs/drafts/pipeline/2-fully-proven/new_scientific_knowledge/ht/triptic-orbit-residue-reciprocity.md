@@ -907,3 +907,442 @@ is stable under **integration**, not only differentiation (`k⟨y′⟩` has fin
 What is left is the extension from order `-1` to all orders (the jets of the theta source, with pole
 order `j+1`), the passage from one orbit to the finitely many that occur, and the application of
 `const_of_entire_of_periodic_of_mixed_const` to the pole-free remainder.
+
+## Correction — the "what is left" list above is stale
+
+The closing sentence of the previous section ("the extension from order `-1` to all orders, the
+passage from one orbit to the finitely many that occur, and the application of
+`const_of_entire_of_periodic_of_mixed_const` to the pole-free remainder") names work that is
+**already in the tree**.  An audit of the modules resolves every item:
+
+    TripticJetAtom.lean            jetAtom, rowJetAtom, colJetAtom and the incidence laws at
+                                   order j+1; a jet is invisible at every other negative order
+    TripticJetAtomShift.lean       atomPoleSet, its countability and open complement, the σ-shift
+                                   law for positive-order jets, the mixed second difference
+    TripticGlobalCoefficient.lean  the base-point-free formula for every Laurent coefficient
+    TripticTransverseCoefficient.lean   the row and column fields
+    TripticIndexBound.lean         only finitely many shift indices connect two pole classes
+    TripticLineFiniteness.lean     poles with invariant principal part lie on finitely many cosets
+    TripticLineSupportFinite.lean  only finitely many lines carry a nonzero transverse coefficient
+    TripticOrderBound.lean         the column field is a row field, and the orders are bounded
+    TripticAtomSum.lean            the weighted atom sum of one order in one direction
+    TripticTotalAtomSum.lean       the total atom sum, 1-periodic with vanishing mixed difference
+    TripticRemainderRigidity.lean  the pole-free remainder is entire, and constant off a countable
+                                   set
+    TripticKernelNormalForm.lean   exists_totalAtomSum_no_principal_part
+    TripticKernelIdentification.lean
+      exists_const_sub_totalAtomSum_of_vanishing_divisor :
+        **a source with vanishing orbital divisor is, off a countable set, an explicit finite
+        combination of theta-source jets plus a constant, and its mixed constant is zero**
+
+So the whole principal-part half of the kernel identification is formal, at every order and over all
+orbits.  Do not rebuild any of it.
+
+## Lean progress — the atoms are differentially algebraic
+
+The remaining half of `ker R_trip = Q ∩ Mer_DA` is that the atom family itself is differentially
+algebraic.  That is now proved.
+
+`GaloisForLFunctions/HTGeometry/ThetaLogDerivDifferentialAlgebraic.lean` (wired, axiom-clean):
+
+    differentialAlgebraicOver_ratFunc_thetaLogDerivMero :
+      **the theta logarithmic derivative is differentially algebraic over `ℂ(z)`**
+    differentialAlgebraicOver_ratFunc_differentialJet          DA passes to every jet
+    differentialAlgebraicOver_ratFunc_differentialJet_thetaLogDerivMero
+    differentialAlgebraicOver_ratFunc_addTranslationMeroEquiv_thetaLogDerivMero :
+      and to every translate
+    differentialAlgebraicOver_ratFunc_differentialJet_addTranslationMeroEquiv_thetaLogDerivMero :
+      hence to the whole atom family of the normal form
+
+The mechanism is that the source is *not* elliptic — a quasiperiod step changes it by `-2πi` — but
+its derivative is, and differential algebraicity is stable under integration.  Both inputs were
+already corpus-owned: `thetaLogDerivMero_deriv_mem_ellipticMeroField` (the quasiperiod constant
+disappears under differentiation), `differentialAlgebraicOver_of_mem_ellipticMeroField` (a doubly
+periodic germ is DA, with no elliptic generation theorem), and `differentialAlgebraicOver_of_deriv'`
+(the antiderivative law).  The translate statement additionally uses the compositum-to-`ℂ(z)` base
+change.
+
+### The one remaining step of the kernel theorem
+
+`exists_const_sub_totalAtomSum_of_vanishing_divisor` produces a *function* identity off a countable
+set; the differential algebraicity above is a statement about *germs* in `meroField ℂ`.  What is
+left is exactly the realization bridge in the germ-to-function direction: a jet relation over
+`ℂ(z)` satisfied by a germ is satisfied by its meromorphic normal form.  The opposite direction
+(`differentialAlgebraicOver_of_differentiallyAlgebraic_toMeromorphicNFOn`) is already in the tree, so
+this is one lemma, not a layer.  With it, `ker R_trip = Q ∩ Mer_DA` closes, and with the surjectivity
+of `R_trip` — realized by the already-built gamma-translate sources — so does the completeness
+theorem.
+
+## Lean progress — the germ-to-function jet bridge is proved
+
+The step the previous section isolated is closed.
+
+`GaloisForLFunctions/HTGeometry/MeromorphicNormalFormJetBridge.lean` (wired, axiom-clean):
+
+    analyticAt_mvPolynomialJetEval :
+      a polynomial in the point and the jets of a function analytic at a point is analytic there
+    differentiallyAlgebraic_toMeromorphicNFOn_of_differentialAlgebraicOver :
+      **a differentially algebraic germ has a globally differentially algebraic normal form**
+
+The tree already contained the opposite direction
+(`differentialAlgebraicOver_of_differentiallyAlgebraic_toMeromorphicNFOn`), so the jet bridge of the
+meromorphic field is now an equivalence for fractions of entire representatives.
+
+Three steps carry it.  A relation in the field restricts along `restrictMeroAlgHomRatFunc` to a disc
+on which the denominator does not vanish; there the fraction is analytic and
+`exists_relation_of_differentialAlgebraicOver_analyticMeroElement` turns the field relation into a
+pointwise one.  The evaluated relation is analytic on the whole analytic locus of the normal form,
+which is the complement of a countable set (`Meromorphic.countable_compl_analyticAt`) and therefore
+connected, so the identity theorem spreads the vanishing from the disc to the entire locus.  At a
+pole every jet of the normal form is the junk value `0`, so multiplying the relation by the value
+slot — the same device that makes the Weierstrass equation global — absorbs those points and gives
+an equation valid at every point of the plane.
+
+### What the kernel theorem still needs
+
+Only the realization dictionary: that the germ of the atom sum is the corresponding finite
+combination of jets of translates of `thetaLogDerivMero`, i.e. that passing from germs to functions
+commutes with the field operations off the poles.  With it, the chain closes:
+
+    atoms are DA germs      (ThetaLogDerivDifferentialAlgebraic)
+    → the atom sum is a DA germ            (field closure)
+    → its normal form is DA as a function  (MeromorphicNormalFormJetBridge)
+    → F is DA                              (F agrees with the atom sum plus a constant off a
+                                            countable set)
+
+and `ker R_trip = Q ∩ Mer_DA` follows from `exists_const_sub_totalAtomSum_of_vanishing_divisor`.
+
+## Lean progress — the positive-order atoms are differentially algebraic as functions
+
+`GaloisForLFunctions/HTGeometry/JetAtomDifferentiallyAlgebraic.lean` (wired, axiom-clean):
+
+    norm_lattice_ge                 a nonzero point of `ℤ + ℤσ` has norm at least `min 1 (Im σ)`
+    dist_atomPoleSet_ge             so two distinct poles of a line atom are separated
+    eventually_nhdsNE_notMem_atomPoleSet
+                                    hence the poles are isolated: on every punctured neighbourhood
+                                    the atom is eventually regular
+    meromorphicOn_jetAtom
+    periodic_toMeromorphicNFOn_jetAtom_one, ..._sigma
+                                    the normal form of a positive-order jet is periodic for both
+                                    generators
+    differentiallyAlgebraic_toMeromorphicNFOn_jetAtom_succ :
+      **every positive-order jet of a line atom satisfies a global algebraic differential
+      equation**
+
+This route needs no germ theory: the jet is lattice-periodic because the quasiperiod constant
+disappears under one differentiation, and a lattice-periodic meromorphic normal form is
+differentially algebraic by the corpus's own elliptic theorem — the elliptic generation theorem is
+never used.  The isolation of the poles is elementary lattice separation, not the identity theorem.
+
+Remaining for the kernel: the order-zero atom (its normal form's derivative is the order-one jet's
+normal form, so `differentiallyAlgebraic_of_deriv` applies once the pole-value bookkeeping is
+recorded), and the passage from the individual atoms to their finite combination, which runs through
+the two jet bridges and the field closure of `daOverRatFuncField`.
+
+## Lean progress — the kernel of the orbit-residue divisor is proved
+
+The chain the previous section laid out is complete.  Four new modules, all wired, all
+`[propext, Classical.choice, Quot.sound]`:
+
+    MeromorphicFractionRealization.lean
+      toMeromorphicNFOn_congr             the normal form depends only on the punctured germs
+      eventually_nhdsNE_ne_zero_of_germ_ne_zero
+                                          the zeros of an entire function with a nonzero germ are
+                                          isolated
+      RealizesMero x f                    `f` agrees with a fraction of entire representatives of
+                                          the germ `x` off the zeros of the denominator
+      meromorphicOn_of_fraction, toMeromorphicNFOn_eq_of_fraction
+      differentialAlgebraicOver_of_realizesMero,
+      differentiallyAlgebraic_of_realizesMero
+                                          realization transports differential algebraicity both ways
+      realizesMero_zero, realizesMero_add, realizesMero_const_mul, realizesMero_sum
+      differentiallyAlgebraic_toMeromorphicNFOn_sum
+
+    JetAtomDifferentiallyAlgebraic.lean   (extended)
+      not_differentiableAt_of_not_analyticAt, meromorphicOrderAt_deriv_neg
+      eventuallyEq_deriv_of_eventuallyEq_nhdsNE
+      deriv_toMeromorphicNFOn             **differentiation commutes with the normal form**
+      deriv_jetAtom
+      differentiallyAlgebraic_toMeromorphicNFOn_jetAtom
+                                          every jet of a line atom, the atom itself included
+
+    TripticAtomSumDifferentiallyAlgebraic.lean
+      exists_fraction_jetAtom             every jet of a line atom is a quotient of two entire
+                                          functions: the base case is `θ′/θ`, the step is the
+                                          quotient rule
+      RealizedDA and its closure under constant multiples, sums and finite sums
+      realizedDA_jetAtom, realizedDA_rowAtomSum, realizedDA_totalAtomSum
+      differentiallyAlgebraic_toMeromorphicNFOn_totalAtomSum
+
+    TripticKernelDifferentialAlgebraicity.lean
+      frequently_nhdsNE_notMem_of_countable
+      toMeromorphicNFOn_eq_of_eq_off_countable :
+        two meromorphic functions agreeing off a countable set have the same normal form
+      realizedDA_const
+      differentiallyAlgebraic_toMeromorphicNFOn_of_vanishing_orbital_divisor :
+        **`Cst = 0` and the source is differentially algebraic**
+
+That last theorem is the kernel half of the completeness statement:
+
+    F ∈ Q  with vanishing orbital divisor  ⟹  F ∈ Mer_DA,
+
+with no hypothesis beyond the card's own setting — `F` meromorphic on `ℂ`, `1`-periodic, constant
+mixed second difference, `1, τ, σ` independent over `ℤ` and each of `τ, σ` in the upper half plane.
+
+Three mechanisms carry it, and each is worth keeping:
+
+* the *quotient-rule induction*: a jet of a line atom is `A_j / B_j` with `A_{j+1} = A_j′B_j -
+  A_jB_j′` and `B_{j+1} = B_j²`, so every atom has an entire fraction presentation and therefore a
+  germ, without any theory of meromorphic functions as quotients;
+* the *realization dictionary*: sums and constant multiples of realized functions are realized by
+  the corresponding germs, so the field-theoretic closure of `daOverRatFuncField` becomes a closure
+  statement about functions — this is what makes a finite combination of atoms differentially
+  algebraic;
+* *agreement off a countable set does not move the normal form*: the complement of a countable set
+  is dense, so the difference of the two normal forms vanishes frequently near a point of its
+  analytic locus, the identity theorem spreads that over the locus, and the locus contains a
+  punctured neighbourhood of every point.
+
+### What the completeness theorem still needs
+
+Only the other half: surjectivity of `R_trip` and the converse `R_trip(F) ≠ 0 ⟹ F` is
+hypertranscendental.  The first is the realization of an arbitrary finite divisor by a product of
+gamma translates, for which the corpus already owns `SourceDivisorSurjectivity`,
+`EllipticGammaConeDivisor` and `EllipticGammaConeOrder`; the second is freeness of the differential
+translation orbit of the source.
+
+## Lean progress — the kernel of the multiplicative orbital charge
+
+`GaloisForLFunctions/HTGeometry/TripticMultiplicativeKernel.lean` (wired, axiom-clean):
+
+    differentiallyAlgebraic_logDeriv_of_vanishing_orbitCharge :
+      **a multiplicative triptic source whose orbital charge vanishes on every orbit has a
+      differentially algebraic logarithmic derivative, and its mixed constant is zero**
+
+This is the multiplicative kernel, and it is a two-line consequence of the additive one once the
+order bookkeeping is done: a logarithmic derivative has no Laurent coefficient below its residue
+(`laurentCoeff_logDeriv_eq_zero_of_le`), so the orbital divisor of `δ log Y` is concentrated in
+order `-1`, where `laurentCoeff_shiftDiff_logDeriv` identifies it with the shift order; vanishing
+orbital charge therefore means a vanishing orbital divisor at *every* order, which is exactly the
+hypothesis of `differentiallyAlgebraic_toMeromorphicNFOn_of_vanishing_orbital_divisor`.
+
+Together with `tripticOrbitCharge_mul` (the charge is additive) and
+`tripticOrbitCharge_ellipticGammaConeTranslate` (every class is realized) this supplies two of the
+three inputs of the abstract Kummer classification: the divisor map is a homomorphism, every class
+is in its image, and its kernel contains the differentially algebraic sources.  What is still
+missing for the third is the reverse inclusion — a source with nonzero charge is
+hypertranscendental — which is the freeness of the differential translation orbit of the elliptic
+gamma source, and the group-theoretic packaging of the class `M` itself as an `AddCommGroup` on
+which the divisor map is an `AddMonoidHom`.
+
+## Lean progress — the additive orbital divisor of the elliptic gamma source
+
+`GaloisForLFunctions/HTGeometry/EllipticGammaSourceOrbitalDivisor.lean` (wired, axiom-clean):
+
+    additiveOrbitalDivisor F σ p          the order `-1` orbital divisor of an additive source
+    additiveOrbitalDivisor_logDeriv :
+      the additive divisor of a logarithmic derivative is the multiplicative orbital charge
+    additiveOrbitalDivisor_ellipticGammaSourceTranslate :
+      **the translated elliptic gamma source realizes the unit class**
+    additiveOrbitalDivisor_ellipticGammaSource_of_notMem :
+      and carries no charge on any orbit outside the period group
+    additiveOrbitalDivisor_ellipticGammaSource
+
+This is the source side of the normal form: with the kernel theorem already proved, what a general
+mixed-constraint source needs is a *subtractable* object carrying a prescribed divisor, and the
+gamma translates are exactly that.  The remaining structural step is the finiteness of the divisor
+support of a general source in `Q` — finitely many orbit classes, by the coset finiteness of the
+pole set of `Δ_σ F`, and finitely many orders, by the boundedness of its pole orders — after which
+`F` minus the corresponding finite gamma combination has vanishing divisor and the kernel theorem
+applies, giving the normal form `F - R_trip(F)Ψ ∈ Mer_DA` for arbitrary `F`.
+
+## Lean progress — the divisor support of a general source is finite
+
+`GaloisForLFunctions/HTGeometry/TripticBoundaryPoleClasses.lean` (wired, axiom-clean):
+
+    pole_invariant_zsmul          a translation invariance of the negative Laurent coefficients
+                                  invariates the pole set under the whole cyclic group it generates
+    laurentCoeff_invariant_zsmul  and the coefficients themselves
+    exists_finset_boundaryPoleClasses :
+      **the poles of `Δ_σ F` lie on finitely many cosets of `ℤ + ℤτ`**
+    exists_orderBound_boundary :
+      **and their orders are bounded below by a single integer**
+
+Neither needs the vanishing hypothesis; both hold for every source of the mixed-constraint class.
+The mechanism is that `Δ_σ F` is exactly `1`-periodic and changes by the mixed constant under a
+`τ`-step, and a constant moves no Laurent coefficient of negative index — so the whole negative
+principal-part data is invariant under `ℤ + ℤτ`, the pole set is lattice invariant, and the corpus's
+`exists_finset_pole_classes` (finitely many poles in a compact fundamental parallelogram) applies.
+The order bound is then one minimum over a finite set of coset representatives, transported back by
+the same invariance.
+
+This is the finiteness the general normal form needs: the orbital divisor of an arbitrary `F ∈ Q`
+is carried by finitely many orbit classes and finitely many orders, so a finite combination of
+gamma translates — whose divisors are computed in `EllipticGammaSourceOrbitalDivisor` — can be
+subtracted to leave a source of vanishing divisor, which the kernel theorem sends to `Mer_DA`.
+
+## Lean progress — the gamma jets are an exact divisor basis
+
+`GaloisForLFunctions/HTGeometry/EllipticGammaJetSourceDivisor.lean` (wired, axiom-clean):
+
+    additiveOrbitalDivisorAt F σ p ℓ           the orbital divisor at an arbitrary order
+    additiveOrbitalDivisorAt_iteratedDeriv :
+      **the jet law for orbital divisors** — differentiating a source multiplies its orbital
+      divisor by the falling product and shifts the order
+    additiveOrbitalDivisorAt_logDeriv_of_le    a logarithmic derivative has no divisor below `-1`
+    gammaJetSource a b g j                     the `j`-th jet of the translated gamma source
+    additiveOrbitalDivisorAt_gammaJetSource_self :
+      **`(-1)ʲ j!` at order `-(j+1)` on its own class**
+    additiveOrbitalDivisorAt_gammaJetSource_of_ne_order :
+      **and `0` at every other order**
+    additiveOrbitalDivisorAt_gammaJetSource_of_notMem :
+      and `0` on every orbit outside the period group
+
+The jet law needs no commutation of `Δ_σ` with differentiation — which would be false at the poles,
+where the junk values of the two constructions differ.  It goes through `laurentCoeff_shiftDiff`
+first, so only the *coefficients* are differentiated, and there the corpus's jet law applies
+verbatim.
+
+With this the divisor basis is complete: one gamma jet per class and per order, each carrying its
+own slot and invisible in every other, and the finiteness theorems of
+`TripticBoundaryPoleClasses` say that a general source occupies only finitely many slots.  What
+remains for the general normal form is the finite bookkeeping that assembles the correcting
+combination — after which `F` minus it has vanishing divisor and the kernel theorem applies.
+
+## Lean progress — the orbital divisor is linear
+
+`GaloisForLFunctions/HTGeometry/TripticOrbitalDivisorLinearity.lean` (wired, axiom-clean):
+
+    laurentCoeff_const_mul
+    laurentCoeff_boundary_periodic_one, laurentCoeff_boundary_periodic_tau
+                                        the two invariances of the boundary coefficients, extracted
+    finite_support_orbitalDivisorTerm :
+      **only finitely many points of a `σ`-orbit carry a nonzero boundary coefficient**
+    additiveOrbitalDivisorAt_add, additiveOrbitalDivisorAt_sub,
+    additiveOrbitalDivisorAt_const_mul :
+      **the orbital divisor is linear on sources of finite orbit support**
+
+Linearity is not formal: the orbital divisor is an unrestricted sum, and `finsum` splits over a sum
+only when both families are finitely supported.  The finite-support theorem is what licenses it, and
+it holds for every mixed-constraint source — `Δ_σ F` has `1`- and `τ`-invariant negative
+coefficients, and the corpus's orbit accumulation theorem turns that invariance into finiteness on
+each orbit.
+
+With linearity, the correction can be assembled slot by slot: subtracting a scaled gamma jet changes
+the divisor in exactly one `(class, order)` slot and leaves every other slot untouched, so a finite
+induction over the occupied slots — finite by `TripticBoundaryPoleClasses` — reduces an arbitrary
+source to one of vanishing divisor.
+
+## Lean progress — the divisor is a class function, and the basis is translation covariant
+
+Two more modules, wired and axiom-clean.
+
+`GaloisForLFunctions/HTGeometry/TripticOrbitalDivisorClassFunction.lean`:
+
+    additiveOrbitalDivisorAt_shift_sigma   moving the base point along its own orbit reindexes the
+                                           unrestricted sum
+    additiveOrbitalDivisorAt_shift_one, ..._shift_tau
+    additiveOrbitalDivisorAt_classFunction :
+      **the orbital divisor depends only on the class of the base point in `ℂ/(ℤ+ℤτ+ℤσ)`**
+
+`EllipticGammaJetSourceDivisor.lean` (extended):
+
+    additiveOrbitalDivisorAt_gammaJetSource_translate :
+      the divisor of a translated gamma jet is that of the untranslated one at the translated base
+      point
+    additiveOrbitalDivisorAt_gammaJetSource_of_notMem_translate :
+      hence a gamma jet carries no divisor off the class of its translation point
+
+The class-function property is what makes a correction well posed: the number to be cancelled is
+attached to the class, not to a chosen representative, so a coefficient computed at one
+representative kills the divisor at every other point of the same class simultaneously.
+
+### The assembly, and the one device it needs
+
+With the divisor a class function, the correction can be written down in closed form rather than
+built by induction:
+
+    A = Σ_{j<J} Σ_{q∈P} ( d(q, -(j+1)) / ((-1)ʲ j! · #{q' ∈ P : q' ≡ q}) ) · gammaJetSource τ σ q j
+
+where `P` is the finite pole-class set of `TripticBoundaryPoleClasses` and `J` its order bound.  The
+multiplicity divisor is the corpus's own `lineCount` device from `TripticAtomSum`, and it removes
+the need to deduplicate `P` modulo the full period group: every representative of a class
+contributes its share, and because `d` is a class function the shares sum to `d` exactly.  Its
+divisor is then computed by `additiveOrbitalDivisorAt_add`/`_const_mul` over the two finite sums,
+with `additiveOrbitalDivisorAt_gammaJetSource_self`, `..._of_ne_order` and
+`..._of_notMem_translate` evaluating each term.
+
+## Lean progress — the basis is a class function too
+
+Added to `EllipticGammaJetSourceDivisor.lean` (wired, axiom-clean):
+
+    additiveOrbitalDivisor_ellipticGammaSource_periodPoint :
+      the additive orbital divisor of the gamma source is `1` at **every** period point
+    additiveOrbitalDivisorAt_gammaJetSource_periodPoint :
+      **a gamma jet realizes `(-1)ʲ j!` at every point of its own class**
+
+No new analytic input was needed: the corpus already proved the multiplicative statement
+`tripticOrbitCharge_ellipticGammaCone_periodPoint` — the charge of the elliptic gamma at an
+arbitrary period point `c + d·τ + e·σ` is `1`, by the half-line laws
+`coneProduct_periodPoint_orbit_eq_zero_iff` and `coneProduct_num_periodPoint_orbit_eq_zero_iff` —
+and `additiveOrbitalDivisor_logDeriv` converts it, after which the jet law lifts it to order
+`-(j+1)`.
+
+This was the last evaluation lemma the closed-form correction needed.  Every term of
+
+    A = Σ_{j<J} Σ_{q∈P} ( d(q, -(j+1)) / ((-1)ʲ j! · #{q' ∈ P : q' ≡ q}) ) · gammaJetSource τ σ q j
+
+is now computable at every base point and order:
+
+* `additiveOrbitalDivisorAt_gammaJetSource_periodPoint` — on its own class, at its own order;
+* `additiveOrbitalDivisorAt_gammaJetSource_of_ne_order` — zero at every other order;
+* `additiveOrbitalDivisorAt_gammaJetSource_of_notMem_translate` — zero off its class;
+
+and the divisor of the sum is assembled by `additiveOrbitalDivisorAt_add` and
+`additiveOrbitalDivisorAt_const_mul`, whose finite-support hypotheses come from
+`finite_support_orbitalDivisorTerm`.
+
+## Lean progress — the divisor of a finite sum
+
+`GaloisForLFunctions/HTGeometry/TripticOrbitalDivisorFinsetSum.lean` (wired, axiom-clean):
+
+    FiniteOrbitSupport F σ p ℓ            the boundary coefficients are nonzero at only finitely
+                                          many points of the orbit
+    meromorphicOn_finsetSum
+    finiteOrbitSupport_add, finiteOrbitSupport_finsetSum
+    additiveOrbitalDivisorAt_finsetSum :
+      **the orbital divisor of a finite sum of sources is the sum of their orbital divisors**
+
+The two statements have to be proved by the same induction and cannot be separated: additivity of
+the divisor is conditional on finite orbit support, so the induction step needs the support of the
+partial sum, which is itself only available inductively.  The support of a sum sits inside the union
+of the supports because the boundary coefficient of a sum is the sum of the boundary coefficients —
+that is where meromorphy at each orbit point is used.
+
+This is the last general-purpose lemma the correction needs.  Its divisor is now a finite double sum
+of evaluated terms, each computed by the three gamma-jet lemmas, and the remaining work is the
+counting identity: over the representatives of one class the multiplicity-divided coefficients sum
+back to the class value, because the divisor is a class function.
+
+## Lean progress — the class relation and the support of a gamma jet
+
+`GaloisForLFunctions/HTGeometry/TripticGammaCorrectionBasis.lean` (wired, axiom-clean):
+
+    SameClass τ σ q p                     `q - p` lies in the period group
+    sameClass_iff, sameClass_refl, sameClass_symm, sameClass_trans, periodGroupMem_neg
+    classCount P τ σ p                    the number of representatives of the class of `p` in `P`
+    classCount_congr                      it depends only on the class
+    laurentCoeff_shiftDiff_gammaJetSource the boundary coefficients of a gamma jet, in terms of the
+                                          source it differentiates
+    finiteOrbitSupport_gammaJetSource :
+      **every gamma jet has finite orbit support at every negative order**
+
+The support statement is a three-way case split and each branch closes for a different reason:
+above the jet's own order the falling product of the jet law vanishes; below it the underlying
+logarithmic derivative has no coefficient at all; and at its own order the support is exactly the
+shift-order support, which the corpus already knows is a single index
+(`finite_shiftOrder_support_ellipticGammaConeTranslate`).
+
+That was the last side condition the finite-sum divisor law needs, so every summand of the
+correction now satisfies the hypotheses of `additiveOrbitalDivisorAt_finsetSum`, and `classCount`
+supplies the multiplicity divisor that makes the class sum collapse.

@@ -155,6 +155,46 @@ theorem visibleMutationRule_not_period_one :
     visibleMutationRule 1 ≠ visibleMutationRule 0 := by
   norm_num [visibleMutationRule]
 
+/-! ## Exponent-one calibration: finite semantic recurrence -/
+
+/-- Lineage of the exponent-one exchange, whose semantic phase closes after five steps. -/
+def pentagonLineage : ℕ → ℤ
+  | 0 => 1
+  | 1 => 1
+  | 2 => 2
+  | 3 => 3
+  | 4 => 2
+  | (n + 5) => pentagonLineage n
+
+/-- The exponent-one semantic phase is exactly periodic of period five. -/
+theorem pentagonLineage_period_five (n : ℕ) :
+    pentagonLineage (n + 5) = pentagonLineage n := rfl
+
+/-- The same local exchange law drives the finite lineage. -/
+theorem pentagonLineage_exchange (n : ℕ) :
+    pentagonLineage n * pentagonLineage (n + 2) = pentagonLineage (n + 1) + 1 := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+      match n with
+      | 0 => norm_num [pentagonLineage]
+      | 1 => norm_num [pentagonLineage]
+      | 2 => norm_num [pentagonLineage]
+      | 3 => norm_num [pentagonLineage]
+      | 4 => norm_num [pentagonLineage]
+      | (m + 5) =>
+          have h0 : pentagonLineage (m + 5) = pentagonLineage m := rfl
+          have h1 : pentagonLineage (m + 5 + 1) = pentagonLineage (m + 1) := rfl
+          have h2 : pentagonLineage (m + 5 + 2) = pentagonLineage (m + 2) := rfl
+          rw [h0, h1, h2]
+          exact ih m (by omega)
+
+/-- **Exponent separation.**  Exponent one has a finite semantic phase while exponent two has an
+open lineage, although both have the same period-two visible orientation. -/
+theorem pentagon_versus_open_lineage :
+    (∀ n, pentagonLineage (n + 5) = pentagonLineage n) ∧
+      (∀ p : ℕ, 0 < p → ∃ n, mutationalLineage (n + p + 1) ≠ mutationalLineage (n + 1)) :=
+  ⟨pentagonLineage_period_five, fun p hp => mutationalLineage_has_no_positive_period p hp⟩
+
 /-- Closed certificate for structured endogenous genesis: recurrent compatibility, exact nonlinear
 exchange, transported certificate, and open predictable lineage coexist in one fixed process. -/
 theorem constitutiveMutationalGenesisMechanism_closed :

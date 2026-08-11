@@ -5,7 +5,8 @@
 - **Type:** MECHANISM-LEVEL FIELD PROGRAMME
 - **Source:** full-frontier intervention/generation audit
 - **Status:** [COMMON GRAMMAR EXTRACTED] [FIRST FUSION LAW PAPER-CLOSED]
-  [FOURTH-ORGAN PREDICTION PAPER-CLOSED] [SOURCE REALIZATION OPEN] [NOT RH]
+  [FOURTH-ORGAN PREDICTION PAPER-CLOSED] [FIRST LITERAL SOURCE REALIZATION LEAN-CLOSED]
+  [GLOBAL SOURCE REALIZATION OPEN] [NOT RH]
 
 ## 1. Field question
 
@@ -121,6 +122,13 @@ The theorem repairs two older failures at once:
 CHM retains the full generated history process, not only a pure amplitude or its positive kernel.
 The positive envelope and phase packet are derived from that process.
 
+The later source-formation theorem
+`source-edge-polar-reconstruction-variation-recurrence-law.md` closes the first literal source
+realization: adjacent power-dilated Möbius channels are exponent edges, complex characters give
+their coherent phase execution, edge norms give their positive variation execution, and harmonic
+refinement of the polar quotient gives a complementary radial detector.  This is one real
+pre-zero arithmetic sector, not yet the global Euler--Gamma--Stokes realization required below.
+
 ## 5. Three failed stronger conjectures
 
 ### Failure A — every route is a regular linear operator
@@ -235,8 +243,9 @@ CHM becomes an actual HGT field mechanism only after all of these pass:
 4. cofinal completion preserves the needed envelope or produces a classified singular defect;
 5. the resulting selection inequality is independent of the RH endpoint.
 
-The finite theorem passes items 2 and 3 abstractly and supplies the exact target for item 1.  It
-does not yet pass items 1, 4, or 5 on the actual arithmetic source.
+The finite theorem passes items 2 and 3 abstractly.  The Möbius exponent-edge realization now
+passes item 1 on one literal arithmetic sector and proves a source-native recurrent/open-history
+prediction.  It does not pass item 1 for three full frontier classes, or items 4 and 5 globally.
 
 ## Log
 
@@ -245,3 +254,5 @@ does not yet pass items 1, 4, or 5 on the actual arithmetic source.
   execution promoted.
 - 2026-08-11 — finite fusion, reconstruction, associativity conservation, and recurrent-shadow
   prediction closed on paper.
+- 2026-08-11 — literal Möbius exponent-edge realization closed on paper and in Lean; coherent
+  phase memory and radial harmonic memory separated, with exact parity recurrence/open variation.

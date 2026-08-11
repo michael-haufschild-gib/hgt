@@ -90,6 +90,127 @@ theorem futureReporterKernel_iff_forall_prospectiveAgreement
   · intro hall word
     exact hall (ExchangeLawWord.depth word + 1) word (by omega)
 
+section SeparationGauge
+
+open Classical
+
+/-- **Non-Archimedean separation gauge.**  Two states are placed at distance `2 ^ (-tau)`, where
+`tau` is the least context depth separating them, and at distance zero when no context does. -/
+noncomputable def prospectiveGauge {α : Type u} {β : Type v}
+    (f g : α → α) (report : α → β) (x y : α) : ℝ :=
+  if h : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n x y then
+    (2 : ℝ) ^ (1 - (Nat.find h : ℤ))
+  else 0
+
+theorem prospectiveGauge_nonneg {α : Type u} {β : Type v}
+    (f g : α → α) (report : α → β) (x y : α) :
+    0 ≤ prospectiveGauge f g report x y := by
+  rw [prospectiveGauge]
+  split
+  · positivity
+  · exact le_rfl
+
+theorem prospectiveGauge_eq_zero_iff {α : Type u} {β : Type v}
+    (f g : α → α) (report : α → β) (x y : α) :
+    prospectiveGauge f g report x y = 0 ↔ FutureReporterKernel f g report x y := by
+  rw [prospectiveGauge, futureReporterKernel_iff_forall_prospectiveAgreement]
+  split
+  · rename_i h
+    constructor
+    · intro hzero
+      exact absurd hzero (by positivity)
+    · intro hall
+      exact absurd (Nat.find_spec h) (not_not.mpr (hall _))
+  · rename_i h
+    refine ⟨fun _ n => ?_, fun _ => rfl⟩
+    by_contra hc
+    exact h ⟨n, hc⟩
+
+theorem prospectiveGauge_comm {α : Type u} {β : Type v}
+    (f g : α → α) (report : α → β) (x y : α) :
+    prospectiveGauge f g report x y = prospectiveGauge f g report y x := by
+  have hiff : ∀ n : ℕ, ProspectiveAgreement f g report n x y ↔
+      ProspectiveAgreement f g report n y x :=
+    fun n => ⟨fun h => (prospectiveAgreement_equivalence f g report n).symm h,
+      fun h => (prospectiveAgreement_equivalence f g report n).symm h⟩
+  rw [prospectiveGauge, prospectiveGauge]
+  by_cases h : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n x y
+  · have h' : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n y x := by
+      obtain ⟨n, hn⟩ := h
+      exact ⟨n, fun hc => hn ((hiff n).mpr hc)⟩
+    rw [dif_pos h, dif_pos h']
+    have hfind : Nat.find h = Nat.find h' := by
+      refine le_antisymm ?_ ?_
+      · exact Nat.find_min' h (fun hc => Nat.find_spec h' ((hiff _).mp hc))
+      · exact Nat.find_min' h' (fun hc => Nat.find_spec h ((hiff _).mpr hc))
+    rw [hfind]
+  · have h' : ¬ ∃ n : ℕ, ¬ ProspectiveAgreement f g report n y x := by
+      rintro ⟨n, hn⟩
+      exact h ⟨n, fun hc => hn ((hiff n).mp hc)⟩
+    rw [dif_neg h, dif_neg h']
+
+theorem prospectiveGauge_le_of_find_le {α : Type u} {β : Type v}
+    {f g : α → α} {report : α → β} {x z a b : α}
+    (hxz : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n x z)
+    (hab : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n a b)
+    (hle : Nat.find hab ≤ Nat.find hxz) :
+    prospectiveGauge f g report x z ≤ prospectiveGauge f g report a b := by
+  rw [prospectiveGauge, prospectiveGauge, dif_pos hxz, dif_pos hab]
+  refine zpow_le_zpow_right₀ (by norm_num) ?_
+  omega
+
+/-- **Ultrametric inequality.**  Transitivity of every finite horizon makes the separation gauge a
+pseudoultrametric. -/
+theorem prospectiveGauge_ultrametric {α : Type u} {β : Type v}
+    (f g : α → α) (report : α → β) (x y z : α) :
+    prospectiveGauge f g report x z ≤
+      max (prospectiveGauge f g report x y) (prospectiveGauge f g report y z) := by
+  by_cases hxz : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n x z
+  · by_cases hxy : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n x y
+    · by_cases hyz : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n y z
+      · have hmin : min (Nat.find hxy) (Nat.find hyz) ≤ Nat.find hxz := by
+          by_contra hc
+          have hc' : Nat.find hxz < min (Nat.find hxy) (Nat.find hyz) := by omega
+          have h1 : ProspectiveAgreement f g report (Nat.find hxz) x y :=
+            not_not.mp (Nat.find_min hxy (lt_of_lt_of_le hc' (min_le_left _ _)))
+          have h2 : ProspectiveAgreement f g report (Nat.find hxz) y z :=
+            not_not.mp (Nat.find_min hyz (lt_of_lt_of_le hc' (min_le_right _ _)))
+          exact (Nat.find_spec hxz)
+            ((prospectiveAgreement_equivalence f g report (Nat.find hxz)).trans h1 h2)
+        rcases min_cases (Nat.find hxy) (Nat.find hyz) with ⟨heq, _⟩ | ⟨heq, _⟩
+        · exact le_trans (prospectiveGauge_le_of_find_le hxz hxy (by omega)) (le_max_left _ _)
+        · exact le_trans (prospectiveGauge_le_of_find_le hxz hyz (by omega)) (le_max_right _ _)
+      · have hyzall : ∀ n, ProspectiveAgreement f g report n y z := by
+          intro n
+          by_contra hc
+          exact hyz ⟨n, hc⟩
+        have hxyfind : Nat.find hxy ≤ Nat.find hxz := by
+          refine Nat.find_min' hxy ?_
+          intro hc
+          exact (Nat.find_spec hxz)
+            ((prospectiveAgreement_equivalence f g report (Nat.find hxz)).trans hc
+              (hyzall (Nat.find hxz)))
+        exact le_trans (prospectiveGauge_le_of_find_le hxz hxy hxyfind) (le_max_left _ _)
+    · have hxyall : ∀ n, ProspectiveAgreement f g report n x y := by
+        intro n
+        by_contra hc
+        exact hxy ⟨n, hc⟩
+      have hyz : ∃ n : ℕ, ¬ ProspectiveAgreement f g report n y z := by
+        obtain ⟨n, hn⟩ := hxz
+        refine ⟨n, fun hc => hn ?_⟩
+        exact (prospectiveAgreement_equivalence f g report n).trans (hxyall n) hc
+      have hyzfind : Nat.find hyz ≤ Nat.find hxz := by
+        refine Nat.find_min' hyz ?_
+        intro hc
+        exact (Nat.find_spec hxz)
+          ((prospectiveAgreement_equivalence f g report (Nat.find hxz)).trans
+            (hxyall (Nat.find hxz)) hc)
+      exact le_trans (prospectiveGauge_le_of_find_le hxz hyz hyzfind) (le_max_right _ _)
+  · rw [prospectiveGauge, dif_neg hxz]
+    exact le_max_of_le_left (prospectiveGauge_nonneg f g report x y)
+
+end SeparationGauge
+
 /-- A single exact plateau is already the full future reporter kernel. -/
 theorem prospectiveAgreement_plateau_iff_futureReporterKernel
     {α : Type u} {β : Type v} (f g : α → α) (report : α → β) (n : ℕ)
