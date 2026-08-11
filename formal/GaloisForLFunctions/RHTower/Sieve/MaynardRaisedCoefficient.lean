@@ -134,4 +134,40 @@ theorem convPow_support_dyadic {N A ℓ : ℕ} (a : Fin N → ℂ)
   rw [hindex] at hlo hhi
   exact ⟨hlo, hhi⟩
 
+/-- **General fixed-width multiplicative support.**  A factor supported in
+`[A,A*2^w]` has its `ℓ`-th power supported in `[A^ℓ,(A*2^w)^ℓ]`.  This is the form needed for a
+grouped product of several Heath--Brown dyadic factors: `w` is the number of factors in the group
+and remains bounded independently of height. -/
+theorem convPow_support_fixedWidth {N A w ℓ : ℕ} (a : Fin N → ℂ)
+    (hsupp : ∀ n : Fin N, a n ≠ 0 →
+      A ≤ (n : ℕ) + 1 ∧ (n : ℕ) + 1 ≤ A * 2 ^ w)
+    (j : Fin (N ^ ℓ)) (hj : convPow N ℓ a j ≠ 0) :
+    A ^ ℓ ≤ (j : ℕ) + 1 ∧ (j : ℕ) + 1 ≤ (A * 2 ^ w) ^ ℓ := by
+  classical
+  have hex : ∃ p ∈ (Finset.univ : Finset (Fin ℓ → Fin N)).filter (fun p => powIdx p = j),
+      ∏ i : Fin ℓ, a (p i) ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply hj
+    rw [convPow]
+    exact Finset.sum_eq_zero h
+  obtain ⟨p, hp, hpne⟩ := hex
+  have hcoord : ∀ i : Fin ℓ, a (p i) ≠ 0 := by
+    intro i
+    exact (Finset.prod_ne_zero_iff.mp hpne) i (Finset.mem_univ i)
+  have hlo : A ^ ℓ ≤ ∏ i : Fin ℓ, ((p i : ℕ) + 1) := by
+    simpa only [Finset.prod_const, Finset.card_univ, Fintype.card_fin] using
+      (Finset.prod_le_prod' (s := (Finset.univ : Finset (Fin ℓ)))
+        (fun i _ => (hsupp (p i) (hcoord i)).1))
+  have hhi : (∏ i : Fin ℓ, ((p i : ℕ) + 1)) ≤ (A * 2 ^ w) ^ ℓ := by
+    simpa only [Finset.prod_const, Finset.card_univ, Fintype.card_fin] using
+      (Finset.prod_le_prod' (s := (Finset.univ : Finset (Fin ℓ)))
+        (fun i _ => (hsupp (p i) (hcoord i)).2))
+  have hindex : ∏ i : Fin ℓ, ((p i : ℕ) + 1) = (j : ℕ) + 1 := by
+    rw [← powIdx_val_add_one p]
+    have := congrArg Fin.val (Finset.mem_filter.mp hp).2
+    omega
+  rw [hindex] at hlo hhi
+  exact ⟨hlo, hhi⟩
+
 end RHTower.Sieve

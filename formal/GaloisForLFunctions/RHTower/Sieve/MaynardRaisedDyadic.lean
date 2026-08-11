@@ -138,11 +138,76 @@ theorem norm_dyadicWeightedCoeff_sq_le (M D : ℕ) (b : Fin M → ℂ)
         (fun j : ℕ => ‖anchoredCoeff M b (D + j)‖ ^ 2) D
     _ ≤ ∑ j : Fin M, ‖b j‖ ^ 2 := sum_normSq_anchoredCoeff_Ico_le M D b
 
+/-- Insert the real-axis weight `n^{-sigma}` into a finite coefficient vector. -/
+noncomputable def sigmaWeightedCoeff (M : ℕ) (b : Fin M → ℂ)
+    (sigma : ℝ) : Fin M → ℂ := fun j =>
+  b j * ((((((j : ℕ) + 1 : ℕ) : ℝ) ^ (-sigma) : ℝ)) : ℂ)
+
+/-- Weighting commutes exactly with multiplicative convolution powers. -/
+theorem convPow_sigmaWeightedCoeff (N ℓ : ℕ) (a : Fin N → ℂ) (sigma : ℝ)
+    (j : Fin (N ^ ℓ)) :
+    convPow N ℓ (sigmaWeightedCoeff N a sigma) j =
+      sigmaWeightedCoeff (N ^ ℓ) (convPow N ℓ a) sigma j := by
+  classical
+  rw [convPow, sigmaWeightedCoeff, convPow, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun p hp => ?_
+  rw [show (∏ i : Fin ℓ, sigmaWeightedCoeff N a sigma (p i)) =
+      (∏ i : Fin ℓ, a (p i)) *
+        ∏ i : Fin ℓ, (((((p i : ℕ) + 1 : ℕ) : ℝ) ^ (-sigma) : ℝ) : ℂ) by
+    simp only [sigmaWeightedCoeff]
+    exact Finset.prod_mul_distrib]
+  have hreal : (∏ i : Fin ℓ, ((((p i : ℕ) + 1 : ℕ) : ℝ) ^ (-sigma))) =
+      ((((j : ℕ) + 1 : ℕ) : ℝ) ^ (-sigma)) := by
+    rw [Real.finsetProd_rpow Finset.univ
+      (fun i : Fin ℓ => (((p i : ℕ) + 1 : ℕ) : ℝ)) (fun i _ => by positivity)]
+    congr 1
+    have hnat : ∏ i : Fin ℓ, ((p i : ℕ) + 1) = (j : ℕ) + 1 := by
+      rw [← powIdx_val_add_one p]
+      have hpj := congrArg Fin.val (Finset.mem_filter.mp hp).2
+      omega
+    exact_mod_cast hnat
+  have hcomplex : (∏ i : Fin ℓ,
+      (((((p i : ℕ) + 1 : ℕ) : ℝ) ^ (-sigma) : ℝ) : ℂ)) =
+      (((((j : ℕ) + 1 : ℕ) : ℝ) ^ (-sigma) : ℝ) : ℂ) := by
+    exact_mod_cast hreal
+  rw [hcomplex]
+
+/-- Anchored weighted sum is the ordinary phase-normalized Dirichlet polynomial at `-t`. -/
+theorem sum_anchoredDirichletTerm_eq_dirPoly (M : ℕ) (b : Fin M → ℂ)
+    (sigma t : ℝ) :
+    (∑ n ∈ Finset.Ico 1 (M + 1), anchoredDirichletTerm M b sigma t n) =
+      dirPoly M (sigmaWeightedCoeff M b sigma) (-t) := by
+  rw [Finset.sum_Ico_eq_sum_range]
+  have hlen : M + 1 - 1 = M := by omega
+  rw [hlen]
+  simp_rw [Nat.add_comm 1]
+  rw [← Fin.sum_univ_eq_sum_range
+    (fun j : ℕ => anchoredDirichletTerm M b sigma t (j + 1)) M]
+  rw [dirPoly]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  simp only [anchoredDirichletTerm, anchoredCoeff_add_one, sigmaWeightedCoeff]
+  congr 1
+  push_cast
+  ring
+
 /-- Complete weighted value of the raised coefficient vector. -/
 noncomputable def raisedDirichletValue (N ℓ : ℕ) (a : Fin N → ℂ)
     (sigma t : ℝ) : ℂ :=
   ∑ n ∈ Finset.Ico 1 (N ^ ℓ + 1),
     anchoredDirichletTerm (N ^ ℓ) (convPow N ℓ a) sigma t n
+
+/-- **Exact powering law for the raised value.** -/
+theorem raisedDirichletValue_eq_pow (N ℓ : ℕ) (a : Fin N → ℂ)
+    (sigma t : ℝ) :
+    raisedDirichletValue N ℓ a sigma t =
+      (dirPoly N (sigmaWeightedCoeff N a sigma) (-t)) ^ ℓ := by
+  rw [raisedDirichletValue, sum_anchoredDirichletTerm_eq_dirPoly]
+  have hcoeff : sigmaWeightedCoeff (N ^ ℓ) (convPow N ℓ a) sigma =
+      convPow N ℓ (sigmaWeightedCoeff N a sigma) := by
+    funext j
+    exact (convPow_sigmaWeightedCoeff N ℓ a sigma j).symm
+  rw [hcoeff]
+  exact dirPoly_convPow N ℓ (sigmaWeightedCoeff N a sigma) (-t)
 
 /-- A nonzero anchored coefficient names a nonzero entry of the original vector. -/
 theorem anchoredCoeff_ne_zero_support {M : ℕ} {b : Fin M → ℂ} {n : ℕ}
@@ -179,6 +244,27 @@ theorem anchoredDirichletTerm_convPow_support {N A ℓ : ℕ} (hA : 1 ≤ A)
     nlinarith
   exact Finset.mem_Ico.2 ⟨by omega, by omega⟩
 
+/-- Fixed-width version for a grouped product of `w` dyadic factors. -/
+theorem anchoredDirichletTerm_convPow_fixedWidth_support {N A w ℓ : ℕ} (hA : 1 ≤ A)
+    (a : Fin N → ℂ)
+    (hsupp : ∀ n : Fin N, a n ≠ 0 →
+      A ≤ (n : ℕ) + 1 ∧ (n : ℕ) + 1 ≤ A * 2 ^ w)
+    {sigma t : ℝ} {n : ℕ}
+    (hn : anchoredDirichletTerm (N ^ ℓ) (convPow N ℓ a) sigma t n ≠ 0) :
+    n ∈ Finset.Ico (A ^ ℓ) (A ^ ℓ * 2 ^ (w * ℓ + 1)) := by
+  have hcoeff : anchoredCoeff (N ^ ℓ) (convPow N ℓ a) n ≠ 0 := by
+    intro hzero
+    exact hn (by simp [anchoredDirichletTerm, hzero])
+  obtain ⟨j, hj, hjn⟩ := anchoredCoeff_ne_zero_support hcoeff
+  have hraised := convPow_support_fixedWidth a hsupp j hj
+  have hupper_eq : (A * 2 ^ w) ^ ℓ = A ^ ℓ * 2 ^ (w * ℓ) := by
+    rw [mul_pow, ← pow_mul]
+  have hpos : 0 < A ^ ℓ * 2 ^ (w * ℓ) := by positivity
+  have hstrict : (A * 2 ^ w) ^ ℓ < A ^ ℓ * 2 ^ (w * ℓ + 1) := by
+    rw [hupper_eq, pow_succ]
+    nlinarith
+  exact Finset.mem_Ico.2 ⟨by omega, by omega⟩
+
 /-- Restricting the complete raised polynomial to its multiplicative support changes no term. -/
 theorem raisedDirichletValue_eq_sum_support {N A ℓ : ℕ} (hA : 1 ≤ A)
     (a : Fin N → ℂ)
@@ -208,6 +294,38 @@ theorem raisedDirichletValue_eq_sum_support {N A ℓ : ℕ} (hA : 1 ≤ A)
       exact hnu hmem
     by_contra hne
     exact hnot (anchoredDirichletTerm_convPow_support hA a hsupp hne)
+  exact hs.trans hu.symm
+
+/-- Restriction to the support of a grouped fixed-width factor. -/
+theorem raisedDirichletValue_eq_sum_fixedWidth_support {N A w ℓ : ℕ} (hA : 1 ≤ A)
+    (a : Fin N → ℂ)
+    (hsupp : ∀ n : Fin N, a n ≠ 0 →
+      A ≤ (n : ℕ) + 1 ∧ (n : ℕ) + 1 ≤ A * 2 ^ w)
+    (sigma t : ℝ) :
+    raisedDirichletValue N ℓ a sigma t =
+      ∑ n ∈ Finset.Ico (A ^ ℓ) (A ^ ℓ * 2 ^ (w * ℓ + 1)),
+        anchoredDirichletTerm (N ^ ℓ) (convPow N ℓ a) sigma t n := by
+  let s := Finset.Ico 1 (N ^ ℓ + 1)
+  let u := Finset.Ico (A ^ ℓ) (A ^ ℓ * 2 ^ (w * ℓ + 1))
+  let f : ℕ → ℂ := fun n =>
+    anchoredDirichletTerm (N ^ ℓ) (convPow N ℓ a) sigma t n
+  have hs : ∑ n ∈ s, f n = ∑ n ∈ s ∪ u, f n := by
+    apply Finset.sum_subset Finset.subset_union_left
+    intro n hn hns
+    have hnot : n ∉ s := by
+      intro hmem
+      exact hns hmem
+    have hzero : anchoredCoeff (N ^ ℓ) (convPow N ℓ a) n = 0 :=
+      anchoredCoeff_eq_zero_of_not_mem_Ico _ _ hnot
+    simp [f, anchoredDirichletTerm, hzero]
+  have hu : ∑ n ∈ u, f n = ∑ n ∈ s ∪ u, f n := by
+    apply Finset.sum_subset Finset.subset_union_right
+    intro n hn hnu
+    have hnot : n ∉ u := by
+      intro hmem
+      exact hnu hmem
+    by_contra hne
+    exact hnot (anchoredDirichletTerm_convPow_fixedWidth_support hA a hsupp hne)
   exact hs.trans hu.symm
 
 /-- **Exact fixed-cardinality dyadic decomposition of a raised factor.**  Raising a factor from
@@ -246,6 +364,45 @@ theorem norm_raisedDirichletValue_le_sum_dyadic {N A ℓ : ℕ} (hA : 1 ≤ A)
     ‖⟪dyadicDirRow (A ^ ℓ * 2 ^ r) t,
       dyadicWeightedCoeff (N ^ ℓ) (convPow N ℓ a) sigma
         (A ^ ℓ * 2 ^ r)⟫_ℂ‖) (ℓ + 1)]
+
+/-- **Exact fixed-width grouped-factor decomposition.**  A group of width `2^w`, raised to the
+`ℓ`-th power, needs exactly `w*ℓ+1` Huxley blocks. -/
+theorem raisedDirichletValue_eq_sum_fixedWidth_dyadic {N A w ℓ : ℕ} (hA : 1 ≤ A)
+    (a : Fin N → ℂ)
+    (hsupp : ∀ n : Fin N, a n ≠ 0 →
+      A ≤ (n : ℕ) + 1 ∧ (n : ℕ) + 1 ≤ A * 2 ^ w)
+    (sigma t : ℝ) :
+    raisedDirichletValue N ℓ a sigma t =
+      ∑ r ∈ Finset.range (w * ℓ + 1),
+        ⟪dyadicDirRow (A ^ ℓ * 2 ^ r) t,
+          dyadicWeightedCoeff (N ^ ℓ) (convPow N ℓ a) sigma (A ^ ℓ * 2 ^ r)⟫_ℂ := by
+  rw [raisedDirichletValue_eq_sum_fixedWidth_support hA a hsupp]
+  rw [sum_Ico_dyadic (A ^ ℓ)
+    (anchoredDirichletTerm (N ^ ℓ) (convPow N ℓ a) sigma t) (w * ℓ + 1)]
+  refine Finset.sum_congr rfl fun r hr => ?_
+  rw [inner_dyadicDirRow_dyadicWeightedCoeff]
+  congr 2
+  rw [pow_succ]
+  ring
+
+/-- Triangle inequality for the fixed-width grouped-factor decomposition. -/
+theorem norm_raisedDirichletValue_le_sum_fixedWidth_dyadic
+    {N A w ℓ : ℕ} (hA : 1 ≤ A)
+    (a : Fin N → ℂ)
+    (hsupp : ∀ n : Fin N, a n ≠ 0 →
+      A ≤ (n : ℕ) + 1 ∧ (n : ℕ) + 1 ≤ A * 2 ^ w)
+    (sigma t : ℝ) :
+    ‖raisedDirichletValue N ℓ a sigma t‖ ≤
+      ∑ r : Fin (w * ℓ + 1),
+        ‖⟪dyadicDirRow (A ^ ℓ * 2 ^ (r : ℕ)) t,
+          dyadicWeightedCoeff (N ^ ℓ) (convPow N ℓ a) sigma
+            (A ^ ℓ * 2 ^ (r : ℕ))⟫_ℂ‖ := by
+  rw [raisedDirichletValue_eq_sum_fixedWidth_dyadic hA a hsupp]
+  refine (norm_sum_le _ _).trans_eq ?_
+  rw [← Fin.sum_univ_eq_sum_range (fun r : ℕ =>
+    ‖⟪dyadicDirRow (A ^ ℓ * 2 ^ r) t,
+      dyadicWeightedCoeff (N ^ ℓ) (convPow N ℓ a) sigma
+        (A ^ ℓ * 2 ^ r)⟫_ℂ‖) (w * ℓ + 1)]
 
 /-- **Raised-factor Huxley theorem.**  This is the complete structural Case 1A estimate: an
 `ℓ`-fold power of one dyadic factor is handled by `ℓ+1` simultaneous Huxley rows, each with mass
@@ -295,6 +452,60 @@ theorem huxley_raised_factor_large_values {N A ℓ : ℕ} (hA : 1 ≤ A)
       (norm_raisedDirichletValue_le_sum_dyadic hA a hsupp sigma (lam r))
   have habsorb' : (Fintype.card (Fin (ℓ + 1)) : ℝ) *
       ∑ q : Fin (ℓ + 1), G * B q ≤ V ^ 2 / 2 := by
+    simpa using habsorb
+  simpa [D, c] using huxley_multiblock_large_values D hD c
+    (fun _ => G) U B hdelta hV hmass hU hgap hnear hlamT hB hB1 R hdiam hbig habsorb'
+
+/-- **Grouped-factor Huxley theorem.**  This removes the hidden width-one assumption from Case 1A:
+any grouped product of `w` dyadic Heath--Brown factors, raised to power `ℓ`, is handled by the
+fixed family of `w*ℓ+1` rows. -/
+theorem huxley_raised_fixedWidth_factor_large_values {N A w ℓ : ℕ} (hA : 1 ≤ A)
+    (a : Fin N → ℂ)
+    (hsupp : ∀ n : Fin N, a n ≠ 0 →
+      A ≤ (n : ℕ) + 1 ∧ (n : ℕ) + 1 ≤ A * 2 ^ w)
+    {sigma : ℝ} (hsigma : 0 ≤ sigma)
+    (G : ℝ) (henergy : ∑ j : Fin (N ^ ℓ), ‖convPow N ℓ a j‖ ^ 2 ≤ G)
+    (U B : Fin (w * ℓ + 1) → ℝ) {lam : ℕ → ℝ} {delta T V : ℝ}
+    (hdelta : 0 < delta) (hV : 0 < V)
+    (hU : ∀ q : Fin (w * ℓ + 1), 0 < U q)
+    (hgap : ∀ i, lam i + delta ≤ lam (i + 1))
+    (hnear : ∀ q : Fin (w * ℓ + 1),
+      3 * U q ≤ 4 * Real.pi * ((A ^ ℓ * 2 ^ (q : ℕ) : ℕ) : ℝ))
+    (hlamT : ∀ q : Fin (w * ℓ + 1),
+      logDyadicLambda (A ^ ℓ * 2 ^ (q : ℕ)) T ≤ 1)
+    (hB : ∀ q : Fin (w * ℓ + 1),
+      logDyadicSecondEnvelope (A ^ ℓ * 2 ^ (q : ℕ)) (U q) T ≤ B q)
+    (hB1 : ∀ q : Fin (w * ℓ + 1), 1 ≤ B q)
+    (R : ℕ)
+    (hdiam : ∀ r ∈ Finset.range (R + 1), ∀ s ∈ Finset.range (R + 1),
+      |lam s - lam r| ≤ T)
+    (hlarge : ∀ r ∈ Finset.range (R + 1),
+      V ≤ ‖raisedDirichletValue N ℓ a sigma (lam r)‖)
+    (habsorb : ((w * ℓ + 1 : ℕ) : ℝ) *
+      ∑ q : Fin (w * ℓ + 1), G * B q ≤ V ^ 2 / 2) :
+    ((R : ℝ) + 1) * V ^ 2
+      ≤ 2 * ((w * ℓ + 1 : ℕ) : ℝ) * ∑ q : Fin (w * ℓ + 1),
+          G * ((((A ^ ℓ * 2 ^ (q : ℕ) : ℕ) : ℝ)) +
+            (12 * Real.pi * (((A ^ ℓ * 2 ^ (q : ℕ) : ℕ) : ℝ)) / delta) *
+              ∑ i ∈ Finset.range (R + 1), 1 / ((i : ℝ) + 1)) := by
+  let D : Fin (w * ℓ + 1) → ℕ := fun q => A ^ ℓ * 2 ^ (q : ℕ)
+  let c : ∀ q : Fin (w * ℓ + 1), EuclideanSpace ℂ (Fin (D q)) := fun q =>
+    dyadicWeightedCoeff (N ^ ℓ) (convPow N ℓ a) sigma (D q)
+  have hD : ∀ q, 1 ≤ D q := by
+    intro q
+    dsimp [D]
+    exact Nat.one_le_iff_ne_zero.mpr
+      (mul_ne_zero (pow_ne_zero ℓ (by omega)) (pow_ne_zero (q : ℕ) (by norm_num)))
+  have hmass : ∀ q, ‖c q‖ ^ 2 ≤ G := by
+    intro q
+    exact (norm_dyadicWeightedCoeff_sq_le _ _ _ hsigma (hD q)).trans henergy
+  have hbig : ∀ r ∈ Finset.range (R + 1),
+      V ≤ ∑ q : Fin (w * ℓ + 1), ‖⟪dyadicDirRow (D q) (lam r), c q⟫_ℂ‖ := by
+    intro r hr
+    exact (hlarge r hr).trans
+      (norm_raisedDirichletValue_le_sum_fixedWidth_dyadic hA a hsupp sigma (lam r))
+  have habsorb' : (Fintype.card (Fin (w * ℓ + 1)) : ℝ) *
+      ∑ q : Fin (w * ℓ + 1), G * B q ≤ V ^ 2 / 2 := by
     simpa using habsorb
   simpa [D, c] using huxley_multiblock_large_values D hD c
     (fun _ => G) U B hdelta hV hmass hU hgap hnear hlamT hB hB1 R hdiam hbig habsorb'

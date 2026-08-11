@@ -22,8 +22,8 @@ section OneComponentCounting
 
 variable {I : Type*} [Fintype I] [DecidableEq I]
 
-/-- A permutation of replica slots leaves a tuple histogram unchanged. -/
 omit [Fintype I] in
+/-- A permutation of replica slots leaves a tuple histogram unchanged. -/
 theorem routeE_tupleHistogram_comp_perm {m : ℕ}
     (f : Fin m → I) (e : Equiv.Perm (Fin m)) :
     tupleHistogram (fun r => f (e r)) = tupleHistogram f := by

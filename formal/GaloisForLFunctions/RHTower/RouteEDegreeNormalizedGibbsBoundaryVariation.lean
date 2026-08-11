@@ -394,6 +394,14 @@ private theorem coMovingVariation_le (G : RouteEWeightedGibbsGraph ι) :
       mul_le_mul_of_nonneg_left G.strict_incidence_le_totalWeight
         (mul_nonneg G.laplace_nonneg G.displacement_nonneg)
 
+/-- Public recurrence edge-budget form of the co-moving Gibbs variation bound. -/
+theorem coMovingVariation_le_laplace_mul_displacement_mul_totalWeight
+    (G : RouteEWeightedGibbsGraph ι) :
+    (∑ p ∈ strictPairs (Finset.univ : Finset ι),
+      G.base p.1 p.2 * (G.weight p.1 - G.weight p.2) * G.inverseDegree p.1) ≤
+        G.laplace * G.displacement * G.totalWeight :=
+  G.coMovingVariation_le
+
 private theorem normalizedEdgeVariation_le_coMoving_add_inverseDegreeVariation
     (G : RouteEWeightedGibbsGraph ι) :
     (∑ p ∈ strictPairs (Finset.univ : Finset ι),

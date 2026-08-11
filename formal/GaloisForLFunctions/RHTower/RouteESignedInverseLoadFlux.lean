@@ -40,6 +40,7 @@ private theorem routeESumProduct_eq_sum_strictPairs_add_swap
     ring
   have hdiagS : ∀ p, p.1 = p.2 → S p = 0 := by
     rintro ⟨i, j⟩ hij
+    change i = j at hij
     subst j
     simp [S, hdiag]
   have hstrict := routeERealSumProduct_eq_two_mul_sum_strictPairs S hsymm hdiagS
@@ -48,10 +49,10 @@ private theorem routeESumProduct_eq_sum_strictPairs_add_swap
         2 * ∑ p ∈ (Finset.univ : Finset ι) ×ˢ Finset.univ, F p := by
     rw [Finset.sum_product, Finset.sum_product]
     simp only [S]
-    rw [Finset.sum_add_distrib]
     simp_rw [Finset.sum_add_distrib]
     have hswap : (∑ i : ι, ∑ j : ι, F (j, i)) = ∑ i : ι, ∑ j : ι, F (i, j) :=
       Finset.sum_comm
+    simp only [Prod.swap_prod_mk]
     rw [hswap]
     ring
   change (∑ p ∈ (Finset.univ : Finset ι) ×ˢ Finset.univ, F p) =
@@ -106,7 +107,10 @@ theorem signedCurrent_eq_signedIsolated_add_signedCoMoving_add_signedInverseLoad
     intro i
     rw [G.weight_eq_isolatedResidual_add_degree_mul_normalizedWeight i]
     unfold F RouteEWeightedGibbsGraph.degree
-    rw [Finset.sum_mul, Finset.mul_sum]
+    rw [mul_add, Finset.sum_mul, Finset.mul_sum]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro j _hj
     ring
   have hdiag : ∀ i, F (i, i) = 0 := by
     intro i
@@ -170,7 +174,8 @@ theorem abs_signedCoMovingFlux_le_laplace_mul_displacement_mul_totalWeight
         abs_of_nonneg (G.base_nonneg p.1 p.2), abs_of_nonneg hweight,
         abs_of_nonneg (G.inverseDegree_nonneg p.1)]
       ring
-    _ ≤ G.laplace * G.displacement * G.totalWeight := G.coMovingVariation_le
+    _ ≤ G.laplace * G.displacement * G.totalWeight :=
+      G.coMovingVariation_le_laplace_mul_displacement_mul_totalWeight
 
 /-- **Circularity firewall.**  A bound on complete signed inverse-load flux is literally the same
 bound on current after removing isolated and co-moving terms. -/

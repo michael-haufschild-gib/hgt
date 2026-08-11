@@ -41,7 +41,7 @@ private theorem projectedEnergy_eq_sum_fibreMass_mul_conditionalMean_sq
 /-- Cellwise comparison with a reference mean controls physical projected energy. -/
 theorem projectedEnergy_le_two_reference_add_two_defect_sq
     (D : RouteEPhysicalFibreData Ω Λ) (theta : Λ → ℝ) (delta : ℝ)
-    (hdelta : 0 ≤ delta)
+    (_hdelta : 0 ≤ delta)
     (hcompare : ∀ l, |D.conditionalMean l - theta l| ≤ delta) :
     D.projectedEnergy ≤ 2 * D.referenceFibreEnergy theta + 2 * delta ^ 2 := by
   rw [D.projectedEnergy_eq_sum_fibreMass_mul_conditionalMean_sq]

@@ -762,11 +762,21 @@ projection, while exposing rather than proving the arithmetic rejection estimate
 
 Current untracked `RouteEComponentHistoryShuffle.lean` makes componentwise histogram shuffling
 literal. Orbit cardinalities are product multinomials and anchored product-character means
-factorize into empirical component means. Its binary singleton example is a sharp firewall:
+factorize into empirical component means at every distinguished slot; the shuffle kernel is the
+same symmetric bistochastic idempotent projection. Its binary singleton example is a sharp firewall:
 an orbit of size `(m+1)^|C|` has anchored parity bias exactly
 `(1-2/(m+1))^|C|`. Large arrangement entropy alone therefore supplies no parity-mixing theorem.
 No external counting result changes this identity; progress requires source control of the actual
 histogram regime, aperture rejection, and seam.
+
+Two other current untracked files close the remaining finite comparison chain provisionally.
+`RouteEUniformComparisonEndpoint.lean` turns reference-cell energy plus a cellwise comparison
+defect into a physical mean bound. `RouteEGibbsUniformCellComparison.lean` proves that pairwise
+logarithmic Gibbs oscillation at most `eta` changes every bounded cell mean from its uniform value
+by at most `exp(eta)-1`. Together with the umbrella product-history stability theorem, finite
+Gibbs-to-uniform passage inside an equal-product cell is no longer a research obstacle. The
+unproved producer is the arithmetic estimate for actual prime-exponent histogram cells, aperture
+rejection, and the moving seam. These files are uncommitted and receive no formal credit.
 
 `RouteESignedInverseLoadFlux.lean` is a formal no-go, not a third cancellation estimate: it
 decomposes signed current exactly into isolated, co-moving, and signed inverse-load terms and
@@ -2252,17 +2262,23 @@ Three committed but umbrella-unreachable modules provisionally supply the local 
 phase bounds; `Sieve/HuxleyDyadicRow.lean` identifies them with dyadic Gram entries; and
 `Sieve/HuxleyLargeValues.lean` proves the separated-frequency Schur/Halász--Montgomery estimate
 under `GB<=V^2/2`. Current working-tree changes repair that file and add a finite multiblock
-version. This still must be applied to the raised short factors and complete signed aggregate;
-none of the three files receives formal credit at the cutoff.
+version. At the committed cutoff this engine is not applied to a raised short factor or the
+complete signed aggregate; none of the three files receives formal credit.
 
-Current untracked `Sieve/MaynardRaisedCoefficient.lean` and
-`Sieve/MaynardAllShortHuxley.lean` provisionally close two prerequisites for that application.
+Current untracked `Sieve/MaynardRaisedCoefficient.lean`,
+`Sieve/MaynardAllShortHuxley.lean`, and `Sieve/MaynardRaisedDyadic.lean` provisionally close the
+single-raised-factor structural prerequisites for that application.
 The first gives arbitrarily small power loss for every fixed convolution-power coefficient energy
 and preserves dyadic support. The second selects a raising multiplier at most `51`, puts the
 raised length in `[T0^(9/16),T0^(5/8)]`, covers full height for `sigma>=17/18`, and leaves the
-exact `x^((1-sigma)/16)` reserve. Neither file proves the final large-value count for the actual
-signed Heath--Brown aggregate. Thus all-short work has narrowed to assembly with the local
-multiblock Huxley estimate; the ultra-near-one long-Möbius branch remains untouched.
+exact `x^((1-sigma)/16)` reserve. The third anchors the convolution coefficients, decomposes the
+raised Dirichlet factor into exactly `ell+1` dyadic Huxley rows, controls each row coefficient by
+the total convolution energy, and applies the multiblock theorem under an explicit aggregate
+absorption hypothesis. It therefore closes the structural Case 1A theorem for one raised factor,
+but not the passage from the complete signed Heath--Brown aggregate to its large-value and
+absorption hypotheses. Thus all-short work has narrowed to that aggregate-to-factor passage; the
+ultra-near-one long-Möbius branch remains untouched. All three files are uncommitted and receive no
+formal credit.
 
 **Exchange verdict and Lean action.** Generic Lorentz mass shell, rapidity, causal chamber, Hankel
 scattering, and modified-Bessel transform are not novelty claims. Corpus-specific candidate delta
