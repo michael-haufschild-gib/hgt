@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 11 August 2026, committed snapshot
-**694f9bfda4ce645951b9a0c4e435cb8f9e58c357**.
+**ff3b4f8caa7e0c672a1dcf73fae766743e231874**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -45,6 +45,11 @@ The fourth has an umbrella-reachable centered-jet/evenization classification, bu
 arithmetic relative extension or source law annihilating its hidden current.
 The reciprocal-character virial and inverse-response Ward laws give a concrete possible producer
 inside the existing C1/CCM/Gauss architecture, not a fourth independent candidate route.
+Umbrella-formal Green-square analysis also suggests a possible future quotient of P into C1:
+both endpoints meet at positive spectrum of the same source-built `B^2`, with all nonpositive bulk
+localized to one rank-two boundary current. The present Lean comparison reaches the P endpoints
+through RH equivalences and does not construct a direct source-to-measure factorization, so P is
+not merged at this cutoff.
 The newly formal adelic Plucker-history, interaction-spectrum formation wall, essential-formation
 quotient, passive-cycle law, and static-heterogeneity observer also do not instantiate Route V.
 They give exact source mechanics, including the prime reflection wall at exponent one and
@@ -173,6 +178,8 @@ coefficient. Lean now also realizes the finite harmonic Gamma-six shell class as
 `t-1` boundary in the Deninger cyclic resolution, while proving that physical-character evaluation
 of source boundaries has exact defect `exp(a)-1` and is cyclic only at neutral grade. Source
 boundary formation is therefore closed and direct source-homology descent is a no-go. Missing
+shell transport is also classified: the unique forward/reflected carrier acquires Wold factor
+`(1/6)^(2 delta)`, so no scalar exceptional coefficient transports every grade off center. Missing
 object is the strict place-marked Rost--Schmid/Meyer comparison preserving
 this trace-class subobject and carrying both reflected principal symbols to the completed Xi
 Green/Calderón--Witt target, together with signed relative descent and fixed-reader cyclicity. No
@@ -282,16 +289,16 @@ existing route.
 | I | retired | exact collision with C2 width |
 | J | retired negatively | unrenormalized energy budget impossible |
 | K | retired | all-order survivor belongs to P |
-| L | open, advanced | construct the strict place-marked Rost--Schmid/Meyer comparison preserving the full Gamma-six shell Green class modulo trace class and carrying both reflected principal symbols to the completed Xi Green/Calderón--Witt target; then prove fixed-reader cyclicity on the target. Lean now constructs the exact weak-`S1` principal operator, marked exponent-exceptional tame reader, shell/Wold universal profile, and a literal nonzero cyclic source boundary. It also proves the physical character fails to descend through that source boundary by exactly `exp(a)-1` and descends only at neutral grade. The remaining global ideal-preserving lift must absorb that defect without assuming neutrality. The finite common-annihilator ideal is adaptive and its fixed physical descent is RH-bearing |
+| L | open, advanced | construct the strict place-marked Rost--Schmid/Meyer comparison preserving the full Gamma-six shell Green class modulo trace class and carrying both reflected principal symbols to the completed Xi Green/Calderón--Witt target; then prove fixed-reader cyclicity on the target. Lean now constructs the exact weak-`S1` principal operator, marked exponent-exceptional tame reader, shell/Wold universal profile, and a literal nonzero cyclic source boundary. It also proves the unique coefficient-faithful forward/reflected shell carrier is grade-dependent off center, picks up the exact Wold factor `(1/6)^(2 delta)`, and no coordinate-independent exceptional scalar transports every shell unless `delta=0`. Thus the global singular lift must absorb both physical descent defect `exp(a)-1` and Wold grade defect without assuming neutrality. The finite common-annihilator ideal is adaptive and its fixed physical descent is RH-bearing |
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced | source-side subexponential upper bound for the actual restricted-Weil negative floor, equivalently no negative spectral birth. Prolate profile exhaustion is one structural producer, not the route-wide endpoint; completed Suzuki/Evans and noncompact incidence/direct-floor producers remain live |
-| P | open | source-built compact completed-seam Thorin/Markov measure |
+| P | open, newly cross-linked to C1 | construct source-side neutralization of the explicit rank-two Green-square boundary current `i R_2 B`, then derive the compact completed-seam Thorin/Markov measure without passing through RH or a zero-selected spectral measure. Umbrella Lean proves positive nonzero spectrum of `B^2` is equivalent to both P endpoints and to C1 real spectrum/RH, and localizes the square to positive bulk plus the rank-two correction. These are receivers/obstruction localization; they do not construct neutralization or a direct measure |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open, narrowed | absolute critical graph norm is formally impossible: Lean proves even left endpoint variation plus critical gap energy contradicts unconditional critical-line zeta-zero existence. Live source is signed/coherent continuation of centered residual atoms, or Maynard aggregate cancellation supplying mesh energy without imposing absolute residual boundary trace. A committed unwired Huxley/Maynard suite now includes literal grouped Heath--Brown coefficients, exact multiplicative group pigeonholing, the grouped Huxley application, and the uniform `6121`-block ceiling. Current working-tree work further selects a literal group and one box pointwise from a large smooth aggregate. Missing theorem is uniform aggregate counting: pay box/group multiplicities inside the exponent reserve, verify one common Huxley absorption schedule, and sum the selected packets. Ultra-near-one long-Möbius remains separate |
-| U | open, new | two branches remain. Degenerate/root-sign branch: exclude positive-axis atoms of the canonical selected Padé-pole measure or force the corresponding ground-pole degeneracy. Simple-birth branch: supply a literal prime--Gamma/global-Xi sign/full-ground parity law. Fixed-degree terminal recession, the exact geometric/arithmetic resolvent mass gap, and the resolvent line-reflection defect are now umbrella-formal. The last identifies `4M(X)` with squared distance between two independently reconstructed orientations in one continued-Cauchy source carrier, so carrier membership alone cannot close U. Current working-tree source-moment rigidity rewrites equality as agreement of all unsquared Cauchy polarizations, but this remains an RH-equivalent receiver; neither it nor the formal quartic collapse target supplies full-ground sign or diagonal decay |
+| T | open, narrowed | absolute critical graph norm is formally impossible: Lean proves even left endpoint variation plus critical gap energy contradicts unconditional critical-line zeta-zero existence. Live source is signed/coherent continuation of centered residual atoms, or Maynard aggregate cancellation supplying mesh energy without imposing absolute residual boundary trace. A committed unwired Huxley/Maynard suite now includes literal grouped Heath--Brown coefficients, exact multiplicative group pigeonholing, grouped Huxley application, uniform `6121`-block ceiling, and smooth-aggregate-to-box selection with one fixed-degree polylogarithmic loss. Current untracked work reindexes the box as its literal heterogeneous factor family, removes the binomial scalar at explicit `2^k` cost, and constructs robust finite weight packings in `[t,4t)`. Missing theorem is literal exponent instantiation plus uniform ordinate counting: pay box/group multiplicities inside the reserve, verify one common Huxley absorption schedule, and sum selected packets. Ultra-near-one long-Möbius remains separate |
+| U | open, new | two branches remain. Degenerate/root-sign branch: exclude positive-axis atoms of the canonical selected Padé-pole measure or force the corresponding ground-pole degeneracy. Simple-birth branch: supply a literal prime--Gamma/global-Xi sign/full-ground parity law. Fixed-degree terminal recession, exact geometric/arithmetic resolvent mass gap, line-reflection defect, continued-Cauchy source-moment totality, and the all-polarization endpoint are now umbrella-formal. The last results identify `4M(X)` with squared distance between two independently reconstructed orientations in one source carrier, so carrier membership alone cannot close U. Equality of all unsquared source polarizations remains an RH-equivalent receiver; neither it nor the formal quartic collapse target supplies full-ground sign or diagonal decay |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -630,6 +637,24 @@ source-pencil resolvent row, Esscher cyclicity and exterior resolvent frames, th
 rank-two Green commutator, and exact phase-linear welds to Route T. These declarations sharpen
 observability and transfer but still do not force a growth bound or real spectrum. They are a C1/T
 cross-route receiver, not Route V.
+
+Umbrella-reachable `HedenmalmThetaGreenSquareBoundaryLaw.lean` exposes a C1/P seam. If `G` is
+the singular positive theta metric, `B` the fixed theta source inverse, and `R_2` the pinned
+rank-two current, the proposed Lean identity is
+
+~~~
+G B^2 = B^* G B + i R_2 B.
+~~~
+
+The first term is a positive bulk square and the correction has range in the pinned affine
+two-dimensional boundary space. The same module proves that every nonzero spectral value of `B`
+has strictly positive real square iff the nonzero spectrum of `B` is real, hence iff RH; by
+composition with existing capstones this is also equivalent to Route P's compact Markov and
+Thorin properties. This formally localizes a shared candidate producer to neutralization of
+`i R_2 B` before scalarization. It does **not** yet merge
+C1 and P formally as routes: the property equivalences pass through RH and no theorem constructs
+the P measure from a source neutralization or proves every possible P producer factors through
+this Green square.
 
 **Parallel explicit-form connector, one Lean assembly remaining.** On the decisive eigen-pair class, the
 prime plus Gamma pairing is identified with the antidiagonal Hermitian Gram by a pinned
@@ -1158,6 +1183,18 @@ duality. Zero projection distance is exactly existence of an exact supported tra
 exact transport satisfies normalized weighted Hall. These are finite existence/duality theorems;
 they do not prove the relation-specific strict-half distance estimate.
 
+Current working-tree strengthening supplies the sharp cut obstruction. If a source subset has
+positive Hall deficit `delta` and its target-neighbor union has target mass `b` in `(0,1)`, then
+
+~~~
+projectionDistanceSq >= delta^2/(b(1-b)).
+~~~
+
+Thus strict-half projection energy forces every nontrivial physical cut deficit to be
+`X^(-1/2+o(1))*sqrt(b(1-b))`; normalized Hall expansion is quantitatively necessary at the same
+rate, not only a zero-energy sufficient condition. This provisional converse still does not
+estimate one arithmetic cut.
+
 The physical conditional-projection layer is now exact. `RouteEPhysicalFibreCoarea.lean` builds
 the original-law conditional kernel in every positive physical fibre and proves row stochasticity,
 detailed balance, stationarity, idempotence, exact coarea, orthogonal variance decomposition, and
@@ -1339,8 +1376,8 @@ prod_c (1-2 k_c(true)/(m+1)).
 On a common aperture `[X-H,X+H]`, physical Gibbs parity differs from this explicit bias by at most
 `exp((m+1)H^2/(X(X-H)))-1`; Lean also gives the corresponding squared-energy endpoint and the
 singleton specialization. Thus neither finite product equality nor Gibbs-to-uniform measure
-change remains open. Current working-tree strengthening, pending verification and committed
-umbrella certification, bounds the histogram bias by `exp(-2 B)`, where `B` is total balanced
+change remains open. The same umbrella-reachable module bounds the histogram bias by `exp(-2 B)`,
+where `B` is total balanced
 incidence mass `sum_c min(k_c(true)/(m+1),1-k_c(true)/(m+1))`; this replaces orbit size by
 the exact arithmetic statistic a producer must make large. It does not prove that the ordinary-
 prime histogram has large `B`, survives aperture rejection, or transports the moving seam.
@@ -2288,6 +2325,26 @@ Lean also proves uniqueness of the anti-linear degree-one coefficient carrying m
 reflected marked pole. The transport acts only on the local principal symbol: it does not transport the
 complete corrected Möbius trace-order remainder or make the fixed physical character cyclic.
 
+Umbrella-reachable `DeningerExponentGammaSixShellTransportRigidity.lean` now tests that coefficient
+against the complete shell grades. At horizontal displacement `delta`, the unique pointwise
+coefficient-faithful carrier is
+
+~~~
+d_n=lambda_n^(2 delta),
+d_(Wold(n))=(1/6)^(2 delta)d_n.
+~~~
+
+No coordinate-independent scalar transports forward exponent `1-delta` to reflected exponent
+`1+delta` at every shell grade unless `delta=0`, when the scalar is one. The literal exceptional
+coefficient is isometric, or transports all Gamma-six shells, exactly on RH. Thus scalar tensor
+amplification is formally retired. A legal singular comparison must absorb the grade-dependent
+Wold cocycle while retaining the full trace-class remainder and fixed physical reader; declaring
+that cocycle stationary is another RH receiver. Lean now also proves a pointwise TFAE identifying
+literal exceptional isometry, full coefficient-faithful shell transport, and fixed physical-
+character cyclic descent. These are three presentations of the same obstruction, not independent
+equations. The only surviving weld is target-side absorption of the explicit source anomaly by the
+strict ideal-preserving lift; source-side stationarity adds no producer.
+
 **Formal shell/Wold receiver.** `SourceHorizontalShellGreenPrimeClockProfile.lean` identifies the
 Gamma-six shell trace moments with the uniform moments `1/(r+1)`, resums the full coefficient-
 faithful odd response to the same universal Wold prime-clock profile, and proves the reflection
@@ -2777,13 +2834,32 @@ equivalently bounded in some proper source price. Without a carrier every approx
 escapes every proper price, and an explicit model shows residual convergence alone is insufficient.
 No Route-P source atoms or price satisfying this criterion have been constructed.
 
-**Open core.** Construct one finite positive compact measure from literal coupled
-prime--polar--Gamma/theta source and prove local Thorin/Markov identity without zero locations or
-pre-assumed positive moment functional.
+**C1/P Green-square opening, formal.** Umbrella Lean uses the already source-built
+Hedenmalm inverse `B` and its singular theta metric `G` to isolate
+
+~~~
+G B^2 = B^* G B + i R_2 B.
+~~~
+
+It proves that positive real nonzero spectrum of `B^2` is equivalent to real nonzero spectrum of
+`B`, RH, and the existing compact Markov/Thorin endpoints. Thus a concrete source square and one
+rank-two boundary current replace the vague request for another positive diffusion carrier. This
+is an endpoint and obstruction localization, not yet a measure construction: the Markov/Thorin
+equivalences are obtained through RH, and no direct spectral-measure or source-neutralization map
+is supplied.
+
+**Open core.** Construct from literal coupled prime--polar--Gamma/theta source a pre-scalar
+neutralization of `i R_2 B` that forces the nonzero Green-square spectrum positive, and derive one
+finite positive compact measure with the local Thorin/Markov identity without zero locations or a
+pre-assumed positive moment functional. A direct compact-carrier construction satisfying the
+coalitional tightness criterion remains an alternate P producer until a typed theorem proves it
+must factor through this Green-square seam.
 
 **Dead mechanisms.** Uniqueness does not imply existence. Separating polar factor as independent
 positive Thorin atom fails at invariant quarter-gap; pole--zeta cancellation must occur before
-positive decomposition.
+positive decomposition. Passing to `B^*B` or another unconditional positive square deletes the
+oriented Xi divisor; adding a decoupled positive scalar channel cannot cancel an indefinite
+rank-two boundary current.
 
 ### Route Q — theta--Cassini boundary saturation [OPEN / SECONDARY — SELECTED POWER CARRIER RETIRED]
 
@@ -3675,15 +3751,29 @@ feeds a literal grouped Heath--Brown product into the fixed-width Huxley theorem
 abstract group selection, and local grouped application provisionally. They do not yet place the
 complete smooth signed aggregate into one uniform counting argument.
 
-Current working-tree additions narrow that final passage further. A literal Heath--Brown
-specialization selects the group in exactly the shape consumed by the all-short theorem, and
-`Sieve/MaynardAggregateSelection.lean` proves pointwise that a large four-level smooth aggregate
-contains one literal dyadic box after explicit index-cardinality factors. The remaining theorem is
-not another existence pigeonhole: bound and sum all possible box/group selections over the
+Committed but umbrella-unreachable `Sieve/MaynardAggregateSelection.lean` and the strengthened
+`MaynardGroupSelection.lean` narrow that final passage further. Literal Heath--Brown specialization
+selects a group in exactly the shape consumed by the all-short theorem. A large four-level smooth
+aggregate contains one literal dyadic box after an exact fixed-degree polylogarithmic loss.
+Current untracked `Sieve/MaynardBoxFactorization.lean` reindexes that box as precisely
+`2(k-m)` heterogeneous Möbius/zeta/log factors, removes the signed binomial coefficient with
+explicit `2^k` loss, and applies literal group selection to its unsigned core. Remaining theorem is
+not another pointwise existence pigeonhole: bound and sum all possible box/group selections over the
 separated ordinate set, absorb their cardinal losses and coefficient energies into the
 `x^((1-sigma)/16)` reserve with one legal parameter schedule, and verify the multiblock Huxley
-absorption inequality. These working-tree declarations are provisional and receive no committed
-formal credit.
+absorption inequality. The box-factorization declarations are provisional; the aggregate and
+group-selection files are committed but receive no formal credit until umbrella wiring.
+
+Dirty `Sieve/MaynardAllShortHuxley.lean` also removes an unnecessarily brittle exact bin-packing
+window. Group exponent in `[mu/120,4mu/120]` lies in `[1/90,19/270]`; first crossing of `9/16`
+still uses a power at most `51`, overshoots only to `1367/2160`, and leaves the exact ambient
+reserve `73/1440`. Pending verification, a final short greedy remainder may therefore be merged
+without losing positive reserve. Current untracked `Sieve/MaynardGreedyGrouping.lean` proves the
+finite combinatorial constructor: nonnegative atoms of weight at most `2t` and total at least `t`
+partition into disjoint nonempty groups of weight in `[t,4t)`, with the final light remainder
+merged into the last group. What remains is to instantiate the atom/total hypotheses for every
+literal selected box and prove the uniform ordinate-level counting/absorption theorem, not exact
+three-threshold packing.
 
 **Open core.** Prove cofinal cancellation of centered von Mangoldt atoms inside the finite mass
 light cone, preferably through exact joint pairing before norms. In the Wold/Deninger chart, safe
@@ -3700,9 +3790,10 @@ a sufficiently long zeta or logarithm factor in the derivative-test window. The 
 local Huxley/Maynard suite closes the single-raised-factor decomposition and multiblock application
 and the fixed-width grouped-factor extension provisionally, so the remaining first survivor is
 passage from the actual signed aggregate to that theorem's group-selection, large-value, and
-absorption hypotheses. The committed literal grouping suite closes formation and local group
-selection; current working-tree selection closes only the pointwise aggregate-to-box and
-box-to-group steps. Close their uniform counting/absorption/summation passage, then
+absorption hypotheses. The committed literal grouping/aggregate suite closes formation and
+pointwise aggregate-to-box/group selection; current untracked box factorization removes the last
+heterogeneous-product and signed-binomial packaging. Close the uniform
+counting/absorption/summation passage, then
 the ultra-near-one long-Möbius survivor using a
 polynomial-height quantitative inverse-zeta contour or cancellation of the complete signed
 aggregate. Full structured `R/R*` analysis remains a fallback, not the default wall. Either
@@ -4228,10 +4319,23 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     separated finite-packet reconstruction on the same ray. Source closure therefore supplies
     both sides but cannot identify them. This merges U's stationary mass wall with the
     non-equivariant same-carrier wall isolated by R and L; it is a bridge/receiver, not a new
-    route or an unconditional defect bound. Current working-tree strengthening proves the
+    route or an unconditional defect bound. The same umbrella-reachable module proves the
     continued-Cauchy atoms are total in that closure and rewrites RH as equality of all unsquared
-    holomorphic/reflected source polarizations. That coefficient-faithful reformulation remains
-    RH-equivalent and receives only provisional credit.
+    holomorphic/reflected source polarizations. That coefficient-faithful reformulation is formal
+    but remains RH-equivalent.
+69. Current untracked `XiResolventHankelMatrixLadder.lean` packages the existing fixed-shift
+    resolvent criterion as finite real matrices
+
+    ~~~
+    H_N(X)_(ij)=Re R_(i+j)(X),
+    RH iff forall N, H_N(X) is positive semidefinite.
+    ~~~
+
+    It identifies the matrix quadratic form with the already formal Hankel form and derives
+    determinant nonnegativity under RH. This is useful arithmetic/J-fraction packaging, but the
+    all-rung positivity premise is exactly the existing RH receiver. No finite rung, determinant
+    ladder, or recurrence-coefficient calculation supplies the missing source sign; the module is
+    provisional and does not create a route.
 
 **Open core.** Route U has two irreducible branches. In the degenerate/root-sign branch, items
 55--58 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
@@ -4912,9 +5016,9 @@ refinement; a parameter-independent geometric depth kernel reconstructs the Sale
 formed packets are summable throughout `sigma>0`, while the absolute atomic refinement is
 summable exactly for `sigma>1`. Positive Fermi formation measures recover their Mellin exponent,
 and reflected Jeffreys work vanishes exactly at `sigma=1/2`, for any positive normalizer family.
-Current working-tree `HTGeometry/ConstitutiveFunctionalEquationPacketLift.lean`, pending committed
-umbrella certification, closes the previously missing generic action and changes the candidate's
-open core provisionally. Every reversible observer action has a canonical stochastic lift through a common recovery
+Umbrella-reachable `HTGeometry/ConstitutiveFunctionalEquationPacketLift.lean` closes the previously
+missing generic action and changes the candidate's open core. Every reversible observer action
+has a canonical stochastic lift through a common recovery
 kernel, and split formation plus that lift are exact KL isometries. Raw Hasse formation is not
 closed by reciprocal reflection in one sheet; its canonical Hellinger midpoint and likelihood
 half-cocycle produce a two-sheet closure, with reflection flipping both tilt and sheet. Separately,
@@ -5362,6 +5466,7 @@ formal credit. The direct-Cayley/two-port/Esscher/theta--Xi-mass cluster is also
 - formal/GaloisForLFunctions/RHTower/HedenmalmThetaEsscherCyclicity.lean
 - formal/GaloisForLFunctions/RHTower/HedenmalmThetaEsscherResolventFrame.lean
 - formal/GaloisForLFunctions/RHTower/HedenmalmThetaCayleyMetricGreen.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmThetaGreenSquareBoundaryLaw.lean
 - formal/GaloisForLFunctions/RHTower/HedenmalmThetaXiMassPhaseLinearWeld.lean
 - formal/GaloisForLFunctions/RHTower/HedenmalmThetaXiMassPolarizedGreenWeld.lean
 - formal/GaloisForLFunctions/RHTower/ThetaCuspSeedZeroMean.lean
@@ -5468,7 +5573,9 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCompletedSourceGreen.lean
 - formal/GaloisForLFunctions/RHTower/DeningerExponentExceptionalTameGreenBridge.lean
 - formal/GaloisForLFunctions/RHTower/DeningerExponentLineReflectionBlowupTransport.lean
+- formal/GaloisForLFunctions/RHTower/DeningerExponentGammaSixShellTransportRigidity.lean
 - formal/GaloisForLFunctions/RHTower/DeningerGammaSixShellPrincipalIdeal.lean
+- formal/GaloisForLFunctions/RHTower/DeningerExponentGammaSixShellTransportRigidity.lean
 - formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCompletedXiGreenIncidenceComparison.lean
 - formal/GaloisForLFunctions/RHTower/DeningerBurnolConormalRadialTopBoundaryComparison.lean
 - formal/GaloisForLFunctions/RHTower/DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean
@@ -6015,6 +6122,7 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/XiResolventTowerLowDegreePositivity.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstitutiveRelativeFormationCompletion.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstitutiveHassePacketFormation.lean
+- formal/GaloisForLFunctions/HTGeometry/ConstitutiveFunctionalEquationPacketLift.lean
 
 ### Committed certification queue excluded from formal status
 
@@ -6043,22 +6151,28 @@ credit until wired:
   decomposition and multiblock Huxley theorem for one raised factor; passage from the actual signed
   aggregate remains absent.
 - `formal/GaloisForLFunctions/RHTower/Sieve/MaynardGroupedFactor.lean`,
-  `Sieve/MaynardGroupSelection.lean`, and `Sieve/MaynardAllShortCase.lean` — literal grouped
+  `Sieve/MaynardGroupSelection.lean`, `Sieve/MaynardAllShortCase.lean`, and
+  `Sieve/MaynardAggregateSelection.lean` — literal grouped
   Heath--Brown coefficients and energy, multiplicative group selection, grouped Huxley
-  application, and the `6121`-block ceiling; uniform aggregate counting and absorption remain
-  absent.
+  application, the `6121`-block ceiling, and smooth-aggregate-to-box selection with exact
+  fixed-degree polylogarithmic loss; uniform ordinate counting and absorption remain absent.
 
-Current working-tree changes beyond the cutoff strengthen three already committed modules and add
-two provisional ones. `RouteEComponentHistoryGibbsParity.lean` adds the balanced-incidence
-exponential histogram endpoint; `Sieve/MaynardGroupSelection.lean` adds the literal Heath--Brown
-group specialization; and `XiResolventLineReflectionDefect.lean` adds totality of continued-Cauchy
-source moments and the all-polarization RH receiver. New untracked
-`Sieve/MaynardAggregateSelection.lean` adds pointwise smooth-aggregate-to-box selection.
-`HTGeometry/ConstitutiveFunctionalEquationPacketLift.lean` gives common-recovery KL isometry,
-formation-lift naturality, and two-sheet reflection closure; current umbrella wiring is also
-uncommitted. These additions receive provisional scientific interpretation but no committed formal
-credit. They narrow existing Route E/T/U and Route-V-candidate interfaces; none instantiates a new
-route or proves a Tier-1 producer.
+Current working-tree changes beyond the cutoff strengthen four committed modules and add three
+provisional modules. `RouteEWeightedHallProjectionDuality.lean` proves a sharp quantitative
+converse: source-cut Hall deficit `delta` with target-neighbor mass `b` forces projection energy at
+least `delta^2/(b(1-b))`. `DeningerExponentGammaSixShellTransportRigidity.lean` adds that the
+unique grade-dependent carrier is Wold-stationary exactly at neutral displacement, together with
+the corresponding RH receiver. `HedenmalmThetaGreenSquareBoundaryLaw.lean` defines pointwise
+theta Green-boundary neutrality and proves it equivalent to squared-spectrum positivity, P's
+compact endpoints, and RH. New untracked `Sieve/MaynardBoxFactorization.lean` gives the literal
+heterogeneous selected-box factor family, exact factor count, `2^k` binomial loss, and box-core
+group selection. Dirty `Sieve/MaynardAllShortHuxley.lean` widens the admissible greedy-group
+window, retains raising multiplier at most `51`, and leaves exact exponent reserve `73/1440`.
+New untracked `XiResolventHankelMatrixLadder.lean` packages the fixed-shift U receiver as positivity
+of every finite arithmetic Hankel matrix. New untracked `Sieve/MaynardGreedyGrouping.lean` proves
+the robust `[t,4t)` finite weight partition under explicit atom/total hypotheses. These additions receive provisional interpretation but no committed formal
+credit. They narrow existing E, L, P/C1, and T interfaces; none instantiates a new route or proves
+a Tier-1 producer.
 
 ### Frankenstein seam: source-horizontal neutral jet = Route-T residual increment
 

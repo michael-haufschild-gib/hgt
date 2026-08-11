@@ -404,6 +404,153 @@ theorem weightedHall_of_exactTransport
       intro t _ht
       exact hout t
 
+/-- Every supported row kernel sends the mass of a source subset into its relation-neighbor
+union.  This is the exact primal cut inequality before comparison with the target law. -/
+theorem sourceSubset_le_rawOutput_neighborUnion
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) (U : Finset S) :
+    ∑ s ∈ U, D.sourceLaw s ≤
+      ∑ t ∈ U.biUnion R.neighbors, R.rawOutput D P t := by
+  classical
+  let N := U.biUnion R.neighbors
+  have houtside (t : T) (ht : t ∉ N) :
+      ∑ s ∈ U, D.sourceLaw s * P s t = 0 := by
+    apply Finset.sum_eq_zero
+    intro s hs
+    have htN : t ∉ R.neighbors s := by
+      intro hts
+      exact ht (Finset.mem_biUnion.mpr ⟨s, hs, hts⟩)
+    rw [R.rawKernel_eq_zero_of_not_neighbor hP s t htN, mul_zero]
+  calc
+    (∑ s ∈ U, D.sourceLaw s) =
+        ∑ s ∈ U, D.sourceLaw s * ∑ t, P s t := by
+      apply Finset.sum_congr rfl
+      intro s _hs
+      rw [R.rawKernel_row_sum hP s, mul_one]
+    _ = ∑ t, ∑ s ∈ U, D.sourceLaw s * P s t := by
+      simp_rw [Finset.mul_sum]
+      rw [Finset.sum_comm]
+    _ = ∑ t ∈ N, ∑ s ∈ U, D.sourceLaw s * P s t := by
+      apply Eq.symm
+      apply Finset.sum_subset
+        (by intro t _ht; exact Finset.mem_univ t)
+      intro t _htuniv htN
+      exact houtside t htN
+    _ ≤ ∑ t ∈ N, R.rawOutput D P t := by
+      apply Finset.sum_le_sum
+      intro t _ht
+      unfold rawOutput
+      apply Finset.sum_le_sum_of_subset_of_nonneg
+        (by intro s _hs; exact Finset.mem_univ s)
+      intro s _hs _hsU
+      exact mul_nonneg (D.source_pos s).le (R.rawKernel_nonneg hP s t)
+
+/-- Positive normalized weighted-Hall deficit of a source subset. -/
+def weightedHallDeficit
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    (U : Finset S) : ℝ :=
+  max ((∑ s ∈ U, D.sourceLaw s) -
+    ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t) 0
+
+theorem weightedHallDeficit_nonneg
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    (U : Finset S) :
+    0 ≤ weightedHallDeficit D R U := by
+  exact le_max_right _ _
+
+/-- **Sharp normalized Hall-deficit obstruction.**  Every source cut with target-neighbor mass
+`b` forces projection chi-square at least `delta²/(b(1-b))`. -/
+theorem weightedHallDeficit_sq_div_le_projectionDistanceSq
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    (U : Finset S)
+    (hb0 : 0 < ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t)
+    (hb1 : ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t < 1) :
+    (weightedHallDeficit D R U) ^ 2 /
+        ((∑ t ∈ U.biUnion R.neighbors, D.targetLaw t) *
+          (1 - ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t)) ≤
+      projectionDistanceSq D R := by
+  classical
+  let N := U.biUnion R.neighbors
+  let P := projectionKernel D R
+  let gamma : T → ℝ := R.rawOutput D P
+  let residual : T → ℝ := fun t => gamma t - D.targetLaw t
+  let b : ℝ := ∑ t ∈ N, D.targetLaw t
+  let d : ℝ := ∑ t ∈ N, residual t
+  let delta : ℝ := weightedHallDeficit D R U
+  let Ncomp : Finset T := Finset.univ.filter fun t => t ∉ N
+  have hP : P ∈ R.rawKernelSet := projectionKernel_mem D R
+  have hsource := sourceSubset_le_rawOutput_neighborUnion D R hP U
+  have hdeltaAbs : delta ≤ |d| := by
+    by_cases hdef : (∑ s ∈ U, D.sourceLaw s) - b ≤ 0
+    · have hdeltaZero : delta = 0 := by
+        dsimp [delta, weightedHallDeficit, b, N]
+        rw [max_eq_right]
+        simpa [b, N] using hdef
+      rw [hdeltaZero]
+      exact abs_nonneg _
+    · have hdefPos : 0 < (∑ s ∈ U, D.sourceLaw s) - b := lt_of_not_ge hdef
+      have hdeltaEq : delta = (∑ s ∈ U, D.sourceLaw s) - b := by
+        dsimp [delta, weightedHallDeficit, b, N]
+        rw [max_eq_left]
+        simpa [b, N] using hdefPos.le
+      have hleD : (∑ s ∈ U, D.sourceLaw s) - b ≤ d := by
+        dsimp [d, residual, gamma]
+        rw [Finset.sum_sub_distrib]
+        simpa [b, N] using sub_le_sub_right hsource b
+      rw [hdeltaEq]
+      exact hleD.trans (le_abs_self d)
+  have hdeltaSq : delta ^ 2 ≤ d ^ 2 := by
+    rw [← sq_abs d]
+    exact (sq_le_sq₀ (weightedHallDeficit_nonneg D R U) (abs_nonneg d)).2 hdeltaAbs
+  have hb0' : 0 < b := by simpa [b, N] using hb0
+  have hb1' : b < 1 := by simpa [b, N] using hb1
+  have hbetaComp : ∑ t ∈ Ncomp, D.targetLaw t = 1 - b := by
+    have hsplit := Finset.sum_filter_add_sum_filter_not
+      (Finset.univ : Finset T) (fun t => t ∈ N) D.targetLaw
+    have hsplit' : b + ∑ t ∈ Ncomp, D.targetLaw t = 1 := by
+      simpa [b, Ncomp, D.target_sum] using hsplit
+    linarith
+  have hresidualTotal : ∑ t, residual t = 0 := by
+    dsimp [residual, gamma]
+    rw [Finset.sum_sub_distrib, R.rawOutput_sum D hP, D.target_sum]
+    ring
+  have hresidualComp : ∑ t ∈ Ncomp, residual t = -d := by
+    have hsplit := Finset.sum_filter_add_sum_filter_not
+      (Finset.univ : Finset T) (fun t => t ∈ N) residual
+    have hsplit' : d + ∑ t ∈ Ncomp, residual t = 0 := by
+      simpa [d, Ncomp] using hsplit.trans hresidualTotal
+    linarith
+  have hcsN : d ^ 2 / b ≤ ∑ t ∈ N, residual t ^ 2 / D.targetLaw t := by
+    exact Finset.sq_sum_div_le_sum_sq_div N residual
+      (fun t _ht => D.target_pos t)
+  have hcsComp : d ^ 2 / (1 - b) ≤
+      ∑ t ∈ Ncomp, residual t ^ 2 / D.targetLaw t := by
+    have hcs := Finset.sq_sum_div_le_sum_sq_div Ncomp residual
+      (fun t _ht => D.target_pos t)
+    rw [hbetaComp, hresidualComp, neg_sq] at hcs
+    exact hcs
+  have henergySplit : rawChiSquare D R P =
+      (∑ t ∈ N, residual t ^ 2 / D.targetLaw t) +
+        ∑ t ∈ Ncomp, residual t ^ 2 / D.targetLaw t := by
+    unfold rawChiSquare
+    have hsplit := Finset.sum_filter_add_sum_filter_not
+      (Finset.univ : Finset T) (fun t => t ∈ N)
+      (fun t => (R.rawOutput D P t - D.targetLaw t) ^ 2 / D.targetLaw t)
+    simpa [residual, gamma, Ncomp] using hsplit.symm
+  have hdEnergy : d ^ 2 / b + d ^ 2 / (1 - b) ≤ rawChiSquare D R P := by
+    rw [henergySplit]
+    exact add_le_add hcsN hcsComp
+  have hdenom : 0 < b * (1 - b) := mul_pos hb0' (sub_pos.mpr hb1')
+  calc
+    delta ^ 2 / (b * (1 - b)) ≤ d ^ 2 / (b * (1 - b)) :=
+      div_le_div_of_nonneg_right hdeltaSq hdenom.le
+    _ = d ^ 2 / b + d ^ 2 / (1 - b) := by
+      field_simp [ne_of_gt hb0', ne_of_gt (sub_pos.mpr hb1')]
+      ring
+    _ ≤ rawChiSquare D R P := hdEnergy
+    _ = projectionDistanceSq D R :=
+      (projectionDistanceSq_eq_rawChiSquare D R).symm
+
 theorem projection_variational_inequality
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) :

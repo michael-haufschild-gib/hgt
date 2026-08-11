@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerExponentLineReflectionBlowupTransport
 import GaloisForLFunctions.RHTower.DeningerGammaSixShellPrincipalIdeal
+import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixTameReaderTransgression
 
 /-!
 # Deninger exceptional transport versus Gamma-six shell reflection
@@ -41,6 +42,27 @@ def deningerExponentExceptionalLineReflectionCoefficient
     (rho : XiDivisorSupport) : ℂ :=
   ((xiZeroLineConjEquiv rho : XiDivisorSupport) : ℂ) /
     (starRingEnd ℂ) (rho : ℂ)
+
+/-- A canonical nonzero gauge on the exceptional divisor support. -/
+def deningerExponentExceptionalReflectionGauge
+    (rho : XiDivisorSupport) : ℂ := ((rho : ℂ))⁻¹
+
+/-- The exceptional reflection coefficient is a literal two-sheet
+coboundary.  Reflection covariance by itself therefore has no gauge-invariant
+horizontal holonomy. -/
+theorem deningerExponentExceptionalLineReflectionCoefficient_eq_gaugeCoboundary
+    (rho : XiDivisorSupport) :
+    deningerExponentExceptionalLineReflectionCoefficient rho =
+      (starRingEnd ℂ) (deningerExponentExceptionalReflectionGauge rho) /
+        deningerExponentExceptionalReflectionGauge (xiZeroLineConjEquiv rho) := by
+  have hrho : (rho : ℂ) ≠ 0 := xiDivisorSupport_ne_zero rho
+  have hsigma :
+      ((xiZeroLineConjEquiv rho : XiDivisorSupport) : ℂ) ≠ 0 :=
+    xiDivisorSupport_lineReflection_ne_zero rho
+  rw [deningerExponentExceptionalLineReflectionCoefficient,
+    deningerExponentExceptionalReflectionGauge,
+    deningerExponentExceptionalReflectionGauge, map_inv₀]
+  field_simp [hrho, hsigma]
 
 /-- The completed-exponent exceptional transport is conjugation followed by
 multiplication by its source-forced coefficient. -/
@@ -100,6 +122,15 @@ def deningerGammaSixReflectedShellWeight (delta : ℝ) (n : ℕ) : ℝ :=
 def deningerGammaSixShellReflectionMultiplier (delta : ℝ) (n : ℕ) : ℝ :=
   deningerGammaSixShellEigenvalue n ^ (2 * delta)
 
+/-- Half-gauge whose reflection coboundary is the shell carrier. -/
+def deningerGammaSixShellReflectionHalfGauge (delta : ℝ) (n : ℕ) : ℝ :=
+  deningerGammaSixShellEigenvalue n ^ delta
+
+/-- Mixed reflection--Wold curvature.  This is the gauge-invariant obstruction
+left after trivializing the two-sheet reflection cocycle. -/
+def deningerGammaSixReflectionWoldCurvature (delta : ℝ) : ℝ :=
+  (1 / 6 : ℝ) ^ (2 * delta)
+
 theorem deningerGammaSixShellEigenvalue_pos (n : ℕ) :
     0 < deningerGammaSixShellEigenvalue n := by
   rw [deningerGammaSixShellEigenvalue]
@@ -115,6 +146,63 @@ theorem deningerGammaSixShellReflectionMultiplier_transports
   rw [deningerGammaSixShellReflectionMultiplier,
     deningerGammaSixForwardShellWeight, deningerGammaSixReflectedShellWeight,
     ← Real.rpow_add (deningerGammaSixShellEigenvalue_pos n)]
+  congr 1
+  ring
+
+/-- The shell reflection multiplier is itself a two-sheet coboundary: after
+multiplying the reflected half-gauge it becomes the forward half-gauge. -/
+theorem deningerGammaSixShellReflectionMultiplier_mul_reflectedHalfGauge
+    (delta : ℝ) (n : ℕ) :
+    deningerGammaSixShellReflectionMultiplier delta n *
+        deningerGammaSixShellReflectionHalfGauge (-delta) n =
+      deningerGammaSixShellReflectionHalfGauge delta n := by
+  rw [deningerGammaSixShellReflectionMultiplier,
+    deningerGammaSixShellReflectionHalfGauge,
+    deningerGammaSixShellReflectionHalfGauge,
+    ← Real.rpow_add (deningerGammaSixShellEigenvalue_pos n)]
+  congr 1
+  ring
+
+/-- Wold scaling of the half-gauge. -/
+theorem deningerGammaSixShellReflectionHalfGauge_wold
+    (delta : ℝ) (n : ℕ) :
+    deningerGammaSixShellReflectionHalfGauge delta
+        (deningerGammaSixWoldCoordinate n) =
+      (1 / 6 : ℝ) ^ delta *
+        deningerGammaSixShellReflectionHalfGauge delta n := by
+  rw [deningerGammaSixShellReflectionHalfGauge,
+    deningerGammaSixShellReflectionHalfGauge,
+    deningerGammaSixShellEigenvalue_wold,
+    Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 1 / 6)
+      (deningerGammaSixShellEigenvalue_nonneg n)]
+
+/-- Mixed curvature is trivial exactly at neutral horizontal grade. -/
+theorem deningerGammaSixReflectionWoldCurvature_eq_one_iff
+    (delta : ℝ) :
+    deningerGammaSixReflectionWoldCurvature delta = 1 ↔ delta = 0 := by
+  constructor
+  · intro hcurvature
+    have hexp : 2 * delta = 0 := by
+      apply (Real.rpow_right_inj (by norm_num : (0 : ℝ) < 1 / 6)
+        (by norm_num : (1 / 6 : ℝ) ≠ 1)).mp
+      simpa [deningerGammaSixReflectionWoldCurvature] using hcurvature
+    linarith
+  · rintro rfl
+    simp [deningerGammaSixReflectionWoldCurvature]
+
+/-- The mixed shell curvature is the inverse-square exponential of the
+existing physical cyclic-character parameter.  This is the exact coordinate
+change between Wold drift and the Beck--Chevalley anomaly. -/
+theorem deningerGammaSixReflectionWoldCurvature_eq_exp_neg_two_physicalParameter
+    (s : ℂ) :
+    deningerGammaSixReflectionWoldCurvature (2 * s.re - 1) =
+      Real.exp (-2 * sourceHorizontalGammaSixPhysicalCharacterParameter s) := by
+  rw [deningerGammaSixReflectionWoldCurvature,
+    Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 1 / 6),
+    sourceHorizontalGammaSixPhysicalCharacterParameter]
+  have hlog : Real.log (1 / 6 : ℝ) = -Real.log 6 := by
+    rw [show (1 / 6 : ℝ) = (6 : ℝ)⁻¹ by norm_num, Real.log_inv]
+  rw [hlog]
   congr 1
   ring
 
@@ -139,13 +227,41 @@ theorem deningerGammaSixShellReflectionMultiplier_wold
     (delta : ℝ) (n : ℕ) :
     deningerGammaSixShellReflectionMultiplier delta
         (deningerGammaSixWoldCoordinate n) =
-      (1 / 6 : ℝ) ^ (2 * delta) *
+      deningerGammaSixReflectionWoldCurvature delta *
         deningerGammaSixShellReflectionMultiplier delta n := by
   rw [deningerGammaSixShellReflectionMultiplier,
     deningerGammaSixShellReflectionMultiplier,
+    deningerGammaSixReflectionWoldCurvature,
     deningerGammaSixShellEigenvalue_wold,
     Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 1 / 6)
       (deningerGammaSixShellEigenvalue_nonneg n)]
+
+/-- The unique coefficient-faithful shell carrier is stationary under the
+source Wold clock exactly at neutral horizontal grade. -/
+theorem deningerGammaSixShellReflectionMultiplier_wold_stationary_iff
+    (delta : ℝ) :
+    (∀ n : ℕ,
+      deningerGammaSixShellReflectionMultiplier delta
+          (deningerGammaSixWoldCoordinate n) =
+        deningerGammaSixShellReflectionMultiplier delta n) ↔
+      delta = 0 := by
+  constructor
+  · intro hstationary
+    have hstep := hstationary 0
+    rw [deningerGammaSixShellReflectionMultiplier_wold] at hstep
+    have hmultiplier :
+        0 < deningerGammaSixShellReflectionMultiplier delta 0 :=
+      Real.rpow_pos_of_pos (deningerGammaSixShellEigenvalue_pos 0) _
+    have hfactor : (1 / 6 : ℝ) ^ (2 * delta) = 1 := by
+      apply (mul_right_cancel₀ hmultiplier.ne')
+      simpa using hstep
+    have hexp : 2 * delta = 0 := by
+      apply (Real.rpow_right_inj (by norm_num : (0 : ℝ) < 1 / 6)
+        (by norm_num : (1 / 6 : ℝ) ≠ 1)).mp
+      simpa using hfactor
+    linarith
+  · rintro rfl n
+    simp [deningerGammaSixShellReflectionMultiplier]
 
 /-! ## Constant-transport no-go and RH endpoints -/
 
@@ -257,6 +373,99 @@ theorem riemannHypothesis_iff_deningerExceptionalCoefficient_transportsGammaSixS
       (htransport support)
     change 2 * rho.re - 1 = 0 at hdelta
     linarith
+
+/-- **Wold-stationary Frankenstein endpoint.**  RH is equivalent to the
+unique shell-orientation carrier being invariant under the literal Gamma-six
+source clock at every Xi divisor.  This removes the arbitrary scalar from the
+preceding endpoint and isolates the missing producer as a stationarity law. -/
+theorem riemannHypothesis_iff_deningerGammaSixShellReflectionMultiplier_wold_stationary :
+    RiemannHypothesis ↔
+      ∀ rho : XiDivisorSupport, ∀ n : ℕ,
+        deningerGammaSixShellReflectionMultiplier
+            (2 * (rho : ℂ).re - 1)
+            (deningerGammaSixWoldCoordinate n) =
+          deningerGammaSixShellReflectionMultiplier
+            (2 * (rho : ℂ).re - 1) n := by
+  constructor
+  · intro hRH rho
+    have hre := xi_divisor_support_re_eq_half_of_rh hRH rho
+    apply (deningerGammaSixShellReflectionMultiplier_wold_stationary_iff
+      (2 * (rho : ℂ).re - 1)).2
+    rw [hre]
+    norm_num
+  · intro hstationary
+    rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+    intro rho hrho
+    let support : XiDivisorSupport :=
+      ⟨rho, mem_xi_divisor_support_of_eq_zero hrho⟩
+    have hdelta :=
+      (deningerGammaSixShellReflectionMultiplier_wold_stationary_iff
+        (2 * (support : ℂ).re - 1)).1 (hstationary support)
+    change 2 * rho.re - 1 = 0 at hdelta
+    linarith
+
+/-! ## Cross-presentation obstruction dictionary -/
+
+/-- Shell Wold stationarity is exactly fixed-character cyclic descent for the
+same multiplicity-labelled Xi copy.  Hence the two source presentations do not
+provide independent equations. -/
+theorem deningerGammaSixShellReflectionMultiplier_wold_stationary_iff_cyclicPhysicalCharacterDescends
+    (q : XiZeroCopy) :
+    (∀ n : ℕ,
+      deningerGammaSixShellReflectionMultiplier
+          (primeDepthBVWoldXiCenteredRate q.1)
+          (deningerGammaSixWoldCoordinate n) =
+        deningerGammaSixShellReflectionMultiplier
+          (primeDepthBVWoldXiCenteredRate q.1) n) ↔
+      SourceZeroGammaSixCyclicPhysicalCharacterDescends q := by
+  rw [deningerGammaSixShellReflectionMultiplier_wold_stationary_iff,
+    sourceZeroGammaSixCyclicPhysicalCharacterDescends_iff,
+    primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+
+/-- Isometry of the literal exceptional blow-up coefficient is also exactly
+the same cyclic descent condition. -/
+theorem deningerExceptionalCoefficient_isometric_iff_cyclicPhysicalCharacterDescends
+    (q : XiZeroCopy) :
+    ‖deningerExponentExceptionalLineReflectionCoefficient q.1‖ = 1 ↔
+      SourceZeroGammaSixCyclicPhysicalCharacterDescends q := by
+  rw [norm_deningerExponentExceptionalLineReflectionCoefficient_eq_one_iff,
+    sourceZeroGammaSixCyclicPhysicalCharacterDescends_iff]
+
+/-- **Three-presentation no-duplication law.**  Literal blow-up isometry,
+coefficient-faithful shell transport, and fixed-reader cyclic descent coincide
+pointwise.  Combining them without a target-side defect absorption theorem
+cannot create a second constraint. -/
+theorem deningerExceptional_shellTransport_cyclicDescent_tfae
+    (q : XiZeroCopy) :
+    List.TFAE
+      [‖deningerExponentExceptionalLineReflectionCoefficient q.1‖ = 1,
+       ∀ n : ℕ,
+        ‖deningerExponentExceptionalLineReflectionCoefficient q.1‖ *
+            deningerGammaSixForwardShellWeight
+              (primeDepthBVWoldXiCenteredRate q.1) n =
+          deningerGammaSixReflectedShellWeight
+              (primeDepthBVWoldXiCenteredRate q.1) n,
+       SourceZeroGammaSixCyclicPhysicalCharacterDescends q] := by
+  tfae_have 1 → 2 := by
+    intro hisometry n
+    have hline :=
+      (norm_deningerExponentExceptionalLineReflectionCoefficient_eq_one_iff q.1).1
+        hisometry
+    rw [hisometry]
+    have hrate : primeDepthBVWoldXiCenteredRate q.1 = 0 :=
+      (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).2 hline
+    rw [hrate]
+    simp [deningerGammaSixForwardShellWeight,
+      deningerGammaSixReflectedShellWeight]
+  tfae_have 2 → 3 := by
+    intro htransport
+    have hrate := deningerGammaSix_constantScalarShellTransport_forces_neutral
+      htransport
+    apply (sourceZeroGammaSixCyclicPhysicalCharacterDescends_iff q).2
+    exact (primeDepthBVWoldXiCenteredRate_eq_zero_iff q.1).1 hrate
+  tfae_have 3 → 1 := by
+    exact deningerExceptionalCoefficient_isometric_iff_cyclicPhysicalCharacterDescends q |>.2
+  tfae_finish
 
 end
 
