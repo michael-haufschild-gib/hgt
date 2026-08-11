@@ -5436,3 +5436,95 @@ moving zero/one-large-prime seam and signed recurrence. At `N=X^(1+o(1))`, this 
 centered score and atomic collision at `X^(1/2+o(1))`. Scalar ANOVA term is signed mass discrepancy
 itself and cannot be assumed small. Statewise flatness, universal Fisher cutoff tuning, prime
 spacing, and square-multiple estimates are not live producer gaps.
+
+## Unit 40 — weighted-Hall projection dual and strict-half capacity rate
+
+Paper proof:
+../2-fully-proven/new_scientific_knowledge/route-e-weighted-hall-anova-projection-duality-law.md.
+Lean corpus was inspected read-only and was not changed or built during refactoring.
+
+Normalize finite physical source and target masses to laws alpha,beta on source-predeclared
+bipartite relation E. Let C_E be reachable target marginals of supported row-stochastic kernels.
+Exact projection identity is
+
+~~~text
+d_E^2 = min_(gamma in C_E) sum_t (gamma_t-beta_t)^2/beta_t,
+min_K E_centered(K) = (A^2/B) d_E^2.
+~~~
+
+For every target reporter f, set M_E(f)=sum_s alpha_s min_(t~s) f_t. Finite Hilbert projection
+gives exact dual
+
+~~~text
+d_E = sup_f [M_E(f)-E_beta(f)]_+ / sqrt(Var_beta(f)).
+~~~
+
+Thus strict-half ANOVA is not generic 1+o(1) capacity. At physical mass X it requires
+d_E^2<=X^(-1+o(1)), equivalently all-reporter defect
+<=X^(-1/2+o(1))*sqrt(Var). Exact normalized weighted Hall gives d_E=0.
+One-sided density ceiling r<=1+epsilon yields only Var_beta(r)<=epsilon, sharply, so its
+required excess is X^(-1+o(1)); two-sided balance needs X^(-1/2+o(1)).
+
+For fixed kernel, same producer is normalized collision defect
+
+~~~text
+sum_t (gamma_t-beta_t)^2/beta_t
+  = sum_(s,s') alpha_s alpha_s'
+      sum_t K(s,t)K(s',t)/beta_t - 1.
+~~~
+
+Target partitions obey exact total variance. In two friable/one-large-prime sectors, between-sector
+term is (gamma(sector)-beta(sector))^2/(b(1-b)). Hence seam charge is an orthogonal ANOVA
+summand and must be carried by same kernel through recurrence; it cannot be restored after global
+column optimization.
+
+Current producer is
+WEIGHTED-HALL-ANOVA-PROJECTION-STRICT-HALF-AND-SIGNED-RECURRENCE-SEAM: prove all-reporter
+dual rate, equivalent collision rate for one recurrence-compatible kernel, or exact normalized
+weighted Hall for actual finite sharp relation, then retain marker means, seam partition, and
+alternating recurrence. Arbitrary endpoint-dependent max-flow is not admissible, and separate
+normalization does not bound scalar signed mass difference.
+
+## Unit 41 — direct degree-normalized Gibbs boundary variation
+
+Paper proof:
+../2-fully-proven/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md.
+Lean corpus was inspected read-only and was not changed or built during refactoring.
+
+Grown umbrella theorem abs_sum_sign_weight_le_degreeNormalizedReplacementDefect supplies direct
+signed consumer on any symmetric parity-flipping physical graph. Pairing directed edge defects
+and using exact exponential displacement estimate gives
+
+~~~text
+|J_V(1/X)|
+  <= isolatedGibbsMass
+     + (H/X) Z_V(1/X)
+     + sum_{n~m, n<m} exp(-m/X) * |1/deg(n)-1/deg(m)|.
+~~~
+
+For H=X^(1/2+o(1)) and Z=X^(1+o(1)), displacement term already has strict-half size. Alternate
+producer is therefore isolated mass plus reciprocal-degree BV <=X^(1/2+o(1)) on ordinary-integer
+quotient of full entropy-complement/coalesced graph.
+
+Using actual nonnegative substochastic recurrence kernel P is sharper. Let r_n be row mass,
+ell_n column load, b_nm=(P_nm+P_mn)/2, and q_n=2/(r_n+ell_n) off weighted-isolated set.
+Exact weighted-conductance and Cauchy--Schwarz give
+
+~~~text
+|J_V(1/X)|
+  <= weightedIsolatedGibbsMass + (H/X) Z_V(1/X)
+     + 1/2 * sqrt((1+exp(H/X)) Z_V(1/X) E_P),
+
+E_P = sum_{n~m,n<m} b_nm exp(-m/X) (q_n-q_m)^2.
+~~~
+
+Hence sufficient producer is weighted-isolated mass <=X^(1/2+o(1)) and E_P<=X^(o(1)). It retains
+recurrence weights and permits slow order-one load variation; no Metropolis forward/reverse support
+overlap or invented terminal rows are needed because symmetrized base uses union support.
+
+This is not consequence of row/co-degree exponents. Complete bipartite graph with constant weights
+saturates defect exactly: edge BV equals |L-R|, signed imbalance. Existing bounded one/two/four
+prime replacement graph also cannot be substituted: formal friable-isolation theorem plus existing
+failed-route density audit gives linear isolated Gibbs mass. Surviving candidate must use growing
+entropy-complement breadth, retain seam labels, and prove physical degree coherence before scalar
+current is evaluated.

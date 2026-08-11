@@ -180,6 +180,57 @@ non-absolutely summable, but singularity alone earns no credit without `(1)` and
    this explicit reflection anomaly, not construction of another singular transport.  Full paper
    proof: `../2-fully-proven/new_scientific_knowledge/deninger/deninger-mobius-prime-normal-successor-blowup.md`.
 
+9. **Conjecture:** the physical exponential determinant descends directly through the ordinary
+   Steinberg relation. **Failed sharply.** For real horizontal displacement
+   \(\delta=2\Re s-1\), the crossed character \(c_\delta(u)=u^\delta-1\) obeys
+
+   \[
+   c_\delta(uv)=c_\delta(u)+c_\delta(v)+c_\delta(u)c_\delta(v),
+   \]
+
+   but on the honest pair \((3/5,2/5)\), its Steinberg product vanishes exactly when
+   \(\delta=0\).  Equivalently, the exponential two-character determinant is multiplicatively
+   biadditive only on the critical section.  Invoking ordinary Milnor descent here would assume
+   the wall it is meant to prove.
+
+10. **Conjecture:** a depth-dependent Steinberg normal transgression produces the full successor
+    anomaly before divisor specialization. **Proved, with exact remaining admission problem.**
+    Put
+
+    \[
+    x_m=\frac{3^m}{2^m+3^m},\qquad
+    y_m=\frac{2^m}{2^m+3^m}.
+    \]
+
+    Then \(x_m+y_m=1\) and \(x_m/y_m=(3/2)^m\).  In the rational Kummer group algebra, let
+    \(P_m=([x_m]-1)([y_m]-1)\) and let \(N[u]=(\log u)[u]\).  The explicit cubic selector
+
+    \[
+    q_m(T)=\frac{T(T-L_m)(2T-L_m)}{a_mb_m(a_m-b_m)},
+    \quad a_m=\log x_m,\quad b_m=\log y_m,\quad L_m=a_m+b_m,
+    \]
+
+    satisfies the unconditional identity
+
+    \[
+    [y_m]^{-1}q_m(N)P_m=[(3/2)^m]-1.
+    \]
+
+    Under the half-density Deninger representation this is exactly
+    \(T_{2\to3,m}-I\), and on the complete Möbius tail \(h_m=R_{2,m}+\Theta\),
+
+    \[
+    \Pi([(3/2)^m]-1)h_m=R_{3,m}-h_m\longrightarrow-\Theta.
+    \]
+
+    Thus the previously unspecified same-full-grade counterterm candidate is constructed and
+    is the same object as the singular successor edge.  Its Kummer regulator is
+    \(m\log(3/2)\ne0\), proving it is not an ordinary Milnor/Hochschild boundary.  Remaining
+    theorem is an actual singular relative K/cyclic-to-Meyer admission carrying this concrete
+    conormal class to the existing Gamma target differential while retaining its anomaly until
+    boundary annihilation.  Full proof:
+    `../2-fully-proven/new_scientific_knowledge/deninger/deninger-steinberg-kummer-successor-normal-transgression.md`.
+
 ## Falsifiers
 
 A proposed closure fails if it:
@@ -193,6 +244,10 @@ A proposed closure fails if it:
 6. supplies positivity or Hilbert completion without arithmetic zero identity in `(1)`;
 7. uses flat Euler connection curvature as if it were cross-prime incidence;
 8. gives conditional Lean wrapper instead of unconditional paper proof of source map.
+9. treats the Steinberg normal selector as an endomorphism of ordinary Milnor incidence despite
+   its nonzero Kummer regulator;
+10. replaces the singular relative admission of the explicit class \([(3/2)^m]-1\) by an
+    artificial mapping cone in which that class is a boundary by definition.
 
 ## Route-L status
 
@@ -202,6 +257,7 @@ A proposed closure fails if it:
 - [x] all-prime Euler--Gamma/Möbius source differential and strict PNT endpoint
 - [x] Möbius--Fourier boundary operator with exact literal kernel
 - [x] canonical Möbius chain prelift and exact opposite-collar lift obstruction
+- [x] full-grade honest Steinberg cell and exact Kummer-normal successor anomaly
 - [ ] `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, equations `(1)`--`(2)`
 - [ ] consequent endpoint test `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 - [ ] ambient nuclear/Hodge comparison, oriented Paugam identification, and resolvent-faithful

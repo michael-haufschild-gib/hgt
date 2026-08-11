@@ -67,3 +67,59 @@ Recorded 2026-08-11 after hostile check.
   `isBigO_atTop_evenKernel_sub` + compact-interval sup + FE transport `hf_modif_FE` to (0,1)),
   then the Mellin-norm assembly `‖Λ₀(s)‖ ≤ C·G(|Re s|+…)`, then `xi`/`XiC` polynomial wrap,
   then the nonemptiness capstone.
+- 2026-08-11 — **STATUS REWRITE after corpus-first audit (user directive)**: the card's
+  cornerstone, capstone, and the full Hadamard product are ALREADY FORMAL in the corpus:
+  `xi_growth_order_le_one` (`CompletedZetaGrowth.lean` — the exact target bound, via
+  `modifiedEvenKernelDecay_holds` + `intbound_of_decay`); `xiHadamardQuotient_constant` and
+  `XiC_eq_constant_mul_canonicalProduct` (`XiHadamardGrowth.lean` — unconditional Hadamard
+  factorization via Nevanlinna proximity, no Cartan needed); `xiDivisorSupport_infinite`
+  (`XiZerosInfinite.lean` — infinitely many zeros, superseding the planned nonemptiness
+  capstone); `nonempty_xiZeroCopy` + instance and `finite_xiHeatShell`
+  (`XiHeatShellMinimum.lean`).  Bricks 2–5 of the original plan are therefore CLOSED by
+  existing corpus theorems; brick 1 (`MellinGrowthBounds.lean`) stays as public reusable API.
+  **Reframed target (the genuine zero-side gap): the divisor partial fraction**
+  `logDeriv XiC z = Σ'_q z/((α_q−z)·α_q)` for z off the divisor — assemble from mathlib
+  `logDeriv_tprod_eq_tsum` + `canonicalProductE1Indexed_hasProdLocallyUniformlyOn`/`_ne_zero`/
+  `_analytic` + `XiC_eq_constant_mul_canonicalProduct` (the multiplicative constant contributes
+  zero log-derivative — evenness already killed the exponential factor upstream) +
+  `XiC_zero_ne` (so every α_q ≠ 0) + summability from `xiSpectralPoint_inv_sq_summable` with a
+  finite-ball split via `finite_xiHeatShell`.  Worked instantiation patterns:
+  `neg_logDeriv_movingCanonicalProduct_eq`, `EllipticGammaProduct.lean:355`,
+  `MovingCanonicalSurgery.lean:415`.  After that: the prime side (−ζ′/ζ = Σ Λ(n) n^{−s},
+  mathlib/PNTPlus) and the Γ-factor glue through `xi`'s definition complete the log-derivative
+  explicit formula on `Re s > 1`.
+- 2026-08-11 — **second corpus-first sweep: the partial fraction ALSO already exists.**
+  `XiRelativeResolventTrace.lean` owns the complete zero-side expansion:
+  `logDeriv_weierstrassE1_div`, `summable_xiRelativeResolventTerm`,
+  `logDeriv_xiCanonicalProduct_eq_relativeResolventTrace`,
+  **`logDeriv_XiC_eq_relativeResolventTrace`** (the Hadamard partial fraction, sole hypothesis
+  `XiC z ≠ 0`), the reciprocal-square resolvent form, and divisor power sums
+  (`tsum_xiZeroCopyReciprocalSquare_pow`).  My drafted duplicate module was deleted unbuilt.
+  Also present: `CompletedLogDerivStrip.lean` (`logDeriv_completed_split_strip` — arch/zeta
+  additive split on the strip), `SeamFluxCompletion.lean` (`logDeriv_xi_reciprocity` — FE
+  antisymmetry of `logDeriv xi`), `ArchEnvelope.lean` (archFactor derivative machinery).
+  Mathlib owns the prime side: `LSeries_vonMangoldt_eq : L ↗Λ s = −ζ′(s)/ζ(s)` on `Re s > 1`
+  (`Mathlib/NumberTheory/LSeries/Dirichlet.lean`).
+  **The organ's ACTUAL remaining theorem — the glue** (next execution target): on `Re s > 1`,
+  chain (i) `logDeriv XiC` at the spectral coordinate `z = (s−1/2)(−i)` to `logDeriv xi s`
+  (affine chain rule), (ii) `logDeriv xi s = logDeriv (s(s−1)/2) + logDeriv Gammaℝ s +
+  logDeriv ζ s` (factor split; all factors nonvanishing for `Re s > 1`), (iii) substitute the
+  zero side (`logDeriv_XiC_eq_relativeResolventTrace`, coordinate-transported so terms become
+  `1/(s − ρ_q)`-form) and the prime side (`LSeries_vonMangoldt_eq`), yielding the corpus's
+  first unconditional zero-sum = prime-sum identity — the log-derivative Guinand–Weil fragment.
+- 2026-08-11 — **THE GLUE THEOREM [LEAN-PROVED]: the log-derivative explicit formula.**
+  `RHTower/XiExplicitFormulaLogDeriv.lean` (wired, umbrella green 18916 jobs, all 4 theorems
+  `[propext, Classical.choice, Quot.sound]`):
+  `xi_eq_XiC_comp` (coordinate identity `xi s = XiC((s−1/2)(−i))`),
+  `logDeriv_xi_eq_partialFraction` (wherever `xi s ≠ 0`:
+  `logDeriv xi s = Σ'_ρ (1/(ρ−1/2) + 1/(s−ρ))`, multiplicity-exact, absolutely convergent,
+  no linear term — the classical Hadamard partial fraction in `s`-coordinates, transported by a
+  hypothesis-free rotation lemma `resolvent_coordinate_transport`),
+  `logDeriv_xi_split` (`Re s > 1`: `logDeriv xi = 1/s + 1/(s−1) + logDeriv Γℝ + logDeriv ζ`),
+  and the capstone **`xi_explicitFormula_logDeriv`**: for `Re s > 1`
+  `Σ'_ρ (1/(ρ−1/2) + 1/(s−ρ)) = 1/s + 1/(s−1) + logDeriv Γℝ s − Σ_n Λ(n) n^{−s}`
+  — **the corpus's first unconditional zero-sum = prime-sum identity**, assembled from the
+  corpus Hadamard partial fraction (zero side), the factor split, and mathlib's
+  `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` (prime side).  The Guinand–Weil organ now has
+  its trunk: differentiating in `s`, pairing against tests, and moving the contour are the
+  remaining limbs (each a separate later brick — contour motion is the analytically hard one).

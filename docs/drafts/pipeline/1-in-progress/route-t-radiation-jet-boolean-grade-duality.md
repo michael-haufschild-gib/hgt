@@ -4474,3 +4474,121 @@ energy is supplied, the entire obstruction is forced into one object: continuati
 residual Hardy source.  Route T is no longer a three-channel noncancellation problem.
 
 Verdict: `[PROVED — CANONICAL MESH CONTINUATION IS HOLOMORPHIC AND POLE-FREE UNDER CRITICAL GAP ENERGY; MESH AND HOLONOMY CANNOT CANCEL THE WOLD POLE; RESIDUAL HARDY CONTINUATION IS THE SOLE REMAINING CHANNEL]`.
+
+## 79. Conjecture loop 55 — exact residual Abel abscissa and first-order ODE closure
+
+### Conjecture
+
+The residual source should not be continued by postulating regularity of the meromorphic
+`Wold-mesh-holonomy` expression.  Its own ordered edge series should determine a sharp upper
+abscissa, and once that source is holomorphic the safe Euler identity should become a first-order
+ODE whose uniqueness excludes every off-critical zero.
+
+For `h_N=log p_N`, `delta_N=h_(N+1)-h_N`, and centered Wold residual `R_N`, evaluate one edge at
+`z=i a`.  Lean proves the exact identity
+
+```text
+||R_N(exp(-i h_N z)-exp(-i h_(N+1) z))||
+  = |R_N| exp(a h_N)(exp(a delta_N)-1).                    (RJG246)
+```
+
+For `0<a<=1`, Bertrand gives `0<=a delta_N<=1`, hence
+
+```text
+a |R_N| delta_N exp(a h_N)
+  <= edge_N(i a)
+  <= 2a |R_N| delta_N exp(a h_N).                          (RJG247)
+```
+
+Thus absolute convergence at height `a` is equivalent to summability of the explicit weighted
+residual variation
+
+```text
+V_a(N)=|R_N| delta_N exp(a h_N).                            (RJG248)
+```
+
+### Proof and pivot
+
+The first conjecture was too weak if read only pointwise: convergence at `i a` does not by itself
+state local normal convergence.  The derivative edge retains one factor `delta_N` but costs one
+factor `h_N`.  This exposes the sharp Abel mechanism.  On a ball strictly below height `a`, choose
+an intermediate height `b<a`; then
+
+```text
+h_N exp(-(a-b)h_N) <= 2/(a-b).                              (RJG249)
+```
+
+Consequently the same summable `V_a` uniformly majorizes both atom and derivative series on that
+ball.  Lean proves:
+
+```text
+Summable(V_a), 0<a
+  => residual Hardy source holomorphic on Im(z)<a.          (RJG250)
+```
+
+In particular, a single endpoint series `V_(1/2)` opens the full strict source half-strip.  A
+cofinal family of absolute edge sums at every `a<1/2` does the same.  Eventual exponential residual
+decay of rate `c` also opens exactly `Im(z)<c`; the proof includes a finite-prefix closure, so no
+uniform-in-`N` premise is hidden.
+
+The next conjecture was that this source continuation must be identified pointwise with the
+previously declared meromorphic residual continuation.  That is unnecessary and technically
+inferior.  Solve the safe residual identity for the first shifted valuation-one prime current.
+With `G` equal to residual source plus canonical mesh, holonomy, later Wold shifts, and the
+higher-valuation correction, the safe Euler region gives
+
+```text
+-zeta'(s+1)=G(s) zeta(s+1).                                (RJG251)
+```
+
+Under critical prime-gap energy, canonical mesh is holomorphic at every nonzero point of
+`Re(s)>-1/2`; higher valuations and later shifts are already holomorphic there.  If residual source
+is holomorphic on `Im(z)<1/2`, then `G` is holomorphic on each convex nonreal sector joining a
+hypothetical `s=rho-1` to safe Euler region.  Analytic identity theorem extends (RJG251) across
+that sector.
+
+Lean then proves general zero-propagation law for `F'=-GF`.  A local primitive `P'=G` makes
+`F exp(P)` derivative-free near any zero.  It is locally constant, hence zero on an open ball;
+analytic identity theorem makes `F` zero throughout connected sector, contradicting one safe
+Euler value.  Applied to `F(s)=zeta(s+1)`, this yields
+
+```text
+critical gap energy + residual source holomorphic on Im(z)<1/2 => RH.  (RJG252)
+```
+
+No regularity of separately declared meromorphic residual continuation is assumed.  Exact formal
+arithmetic corollaries are
+
+```text
+critical gap energy + Summable(V_(1/2))                         => RH,
+critical gap energy + absolute raw-edge convergence at z=i/2   => RH,
+critical gap energy + |R_N|<=B exp(-h_N/2) eventually           => RH,
+critical gap energy + absolute raw-edge convergence for all a<1/2 => RH.  (RJG253)
+```
+
+Lean status: `[FORMALIZED] [DIRECT COMPILES PASSED]`; upper-abscissa module also passed targeted
+`lake build`.  Files:
+`XiHeatCassiniWoldResidualUpperAbscissa.lean` and
+`XiHeatCassiniWoldResidualODEClosure.lean`, both wired into `RHTower.lean`.
+
+### Hostile audit and higher universal principle
+
+An exponential rate `c>1/2` couples residual decay to critical prime-gap energy, but it is the wrong
+producer target: it is stronger than the natural half-rate contribution of known critical-line
+zeros.  Existing unconditional `exp(-c sqrt(log p))` residual damping gives every polynomial and
+Gevrey boundary jet but cannot beat `exp(a log p)` for any `a>0`.  This is not a technical loss;
+it is exact abscissa mismatch.
+
+Higher principle: **Route T is a holomorphic logarithmic-derivative ODE, and its arithmetic wall is
+an Abel boundary norm**.  Mesh and residual are not independent after source closure: mesh removes
+quadrature error, residual supplies ODE coefficient, and any remaining off-critical divisor would
+violate uniqueness of a first-order holomorphic flow.  Reasons earlier approaches stalled—pole
+bookkeeping, Gevrey jets, static holonomy, and global orbit exactness—are shadows of missing
+holomorphic coefficient at half-height.
+
+Remaining inputs are exact and non-theatrical: formalize published Maynard--Peck prime-gap second
+moment to discharge critical mesh energy, then prove (RJG253)'s residual endpoint variation or a
+phase-sensitive signed substitute from pre-divisor Route-T transport.  Merely assuming source
+holomorphy or required-continuation regularity is RH itself.
+
+Verdict: `[PROVED — EXACT UPPER ABSCISSA, SHARP ABEL NORMALITY, INTRINSIC ZETA ODE, AND FORMAL CONDITIONAL RH CLOSURE; OPEN PRODUCER IS ENDPOINT RESIDUAL VARIATION]`.

@@ -64,8 +64,8 @@ Every strictly smaller Paley--Wiener aperture has nonnegative completed Weil for
 hypothetical Route U escape is not an arbitrary Weil witness: it is a hyperbolic
 squared-variable boundary state for one finite-prime, Gamma-confining restricted-Weil equation.
 
-For every real zero `r` of `F`, division by that zero is an admissible same-type variation and
-gives
+For every real zero `r` of `F` with $r\ne-1/4$, division by that zero is an admissible same-type
+variation and gives
 
 \[
  \boxed{\quad
@@ -74,7 +74,9 @@ gives
  \quad}                                                       \tag{HHWB.16}
 \]
 
-The apparent singularity is removable because `F(r)=0`.  The signed measure in (HHWB.16) has
+The apparent real-axis singularity is removable because `F(r)=0`.  If `r=-1/4`, the correct polar
+term is $2\pi F(-1/4)(F/(u-r))(-1/4)=0$, not the undefined scalar quotient `0/0`; in that case
+(HHWB.16) means the same integral identity with zero polar term.  The signed measure below has
 compactly supported negative part and a positive Gamma tail.
 
 ## 1. Exact Möbius numerator
@@ -86,7 +88,7 @@ Set
  z_{a_j}(z)={a_j^2-z^2\over a_j^2+z^2}.                       \tag{HHWB.7}
 \]
 
-Then
+Then, with each quotient interpreted after continuous cancellation at a zero of `F`,
 
 \[
  p_j((a_j^2+z^2)^{-1})=P_j(z_{a_j}(z)).                       \tag{HHWB.8}
@@ -236,7 +238,10 @@ one compact subset of `[0,infinity)`, while its tail is positive.  If `r` is sim
        +2\pi\delta_{-1/4}\right)=0.                            \tag{HHWB.20}
 \]
 
-This is the exact infinite hard-edge descendant of finite flat quadrature.
+This is the exact infinite hard-edge descendant of finite flat quadrature.  The stronger root-jet
+consequence is proved separately in `mass-shifted-hard-edge-root-jet-radical-rigidity`: distinct
+root divisions are ordinary Lagrange-orthogonal modes, while a root of multiplicity `m` creates
+$\lfloor m/2\rfloor$ additional exact radical vectors.
 
 ## Conjecture--failure--pivot audit
 
@@ -257,6 +262,9 @@ This is the exact infinite hard-edge descendant of finite flat quadrature.
 6. **Positive Gamma tail alone orients a root equation.** `[FALSIFIED AS AN INFERENCE]`.  The
    compact finite-prime well remains signed and can balance that tail.  Surviving object is the
    simultaneous Cauchy system (HHWB.19), not one selected barycenter.
+7. **The simultaneous simple-root Cauchy system is overdetermined.** `[FALSIFIED AS A MECHANISM]`.
+   Partial fractions identify it with ordinary extremal/Lagrange orthogonality.  Its non-trivial
+   survivor is root-jet radical rigidity: coalescing roots force ground-space degeneracy.
 
 ## Higher universal principle
 
@@ -282,10 +290,13 @@ equation.  Earlier root-sign no-gos remain valid: they show that the new invaria
 - the finite-prime Gamma equation (HHWB.6);
 - nonnegativity of every strictly smaller restricted-Weil aperture.
 
-Generic restricted-Weil positivity is RH.  Progress must use the `z^2`-hyperbolicity constraint
-inside the literal equation.  Exact next target is to classify whether a genus-zero real-root
-product can satisfy the **simultaneous** compact-negative/positive-tail Cauchy system (HHWB.19),
-not to orient one selected root or assume a positive source operator.
+Generic restricted-Weil positivity is RH.  The simple-root Cauchy equations themselves are generic
+extremal orthogonality and no longer qualify as the next target.  The exact remaining discriminator
+is the dichotomy proved in `mass-shifted-hard-edge-root-jet-radical-rigidity`: either the critical
+ground is simple, where Connes--van Suijlekom already force the zeros of `f` onto the real axis, or
+the literal completed-Xi source produces a degenerate first birth.  Progress must prove a new
+prime--Gamma sign in the simple branch or a source-derived simplicity/degeneracy contradiction in
+the second branch.
 
 ## Novelty and collision audit
 

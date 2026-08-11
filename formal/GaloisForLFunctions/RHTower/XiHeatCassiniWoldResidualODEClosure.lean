@@ -318,6 +318,239 @@ theorem analyticOnNhd_xiHeatCassiniWoldResidualODECoefficient
   exact (((((hH.add hmesh).add hhol).add (analyticAt_const.mul hQ2)).sub
     (analyticAt_const.mul hQ3)).add hQ4).add hHigher
 
+/-- Shifted zeta is holomorphic on every residual ODE sector; sector's nonreal condition removes
+the translated zeta pole at `s = 0`. -/
+theorem analyticOnNhd_riemannZeta_add_one_residualODESector (eta : ℝ) :
+    AnalyticOnNhd ℂ (fun s : ℂ => riemannZeta (s + 1))
+      (xiHeatCassiniWoldResidualODESector eta) := by
+  intro s hs
+  change -(1 / 2 : ℝ) < s.re ∧ 0 < eta * s.im at hs
+  have hs0 : s ≠ 0 := by
+    intro hs0
+    subst s
+    simp at hs
+  have hs1 : s + 1 ≠ 1 := by
+    intro h
+    apply hs0
+    linear_combination h
+  change AnalyticAt ℂ (riemannZeta ∘ fun w : ℂ => w + 1) s
+  exact AnalyticAt.comp (f := fun w : ℂ => w + 1) (x := s)
+    (analyticAt_riemannZeta_of_ne_one hs1)
+    (show AnalyticAt ℂ (fun w : ℂ => w + 1) s by fun_prop)
+
+/-- Identity-theorem continuation of the cleared residual ODE from `Re s > 0` to a full nonreal
+critical sector. -/
+theorem neg_deriv_riemannZeta_shift_eq_residualODECoefficient_mul_on_sector
+    {eta : ℝ} (heta : eta ≠ 0)
+    (hsource : AnalyticOnNhd ℂ xiHeatCassiniWoldResidualLowerHardyKernel
+      {z : ℂ | z.im < 1 / 2})
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    ∀ s ∈ xiHeatCassiniWoldResidualODESector eta,
+      -deriv riemannZeta (s + 1) =
+        xiHeatCassiniWoldResidualODECoefficient s * riemannZeta (s + 1) := by
+  let U : Set ℂ := xiHeatCassiniWoldResidualODESector eta
+  let L : ℂ → ℂ := fun s => -deriv riemannZeta (s + 1)
+  let R : ℂ → ℂ := fun s =>
+    xiHeatCassiniWoldResidualODECoefficient s * riemannZeta (s + 1)
+  have hUopen : IsOpen U := isOpen_xiHeatCassiniWoldResidualODESector eta
+  have hUpre : IsPreconnected U := isPreconnected_xiHeatCassiniWoldResidualODESector eta
+  have hL : AnalyticOnNhd ℂ L U := by
+    intro s hs
+    change -(1 / 2 : ℝ) < s.re ∧ 0 < eta * s.im at hs
+    have hs0 : s ≠ 0 := by
+      intro hs0
+      subst s
+      simp at hs
+    have hs1 : s + 1 ≠ 1 := by
+      intro h
+      apply hs0
+      linear_combination h
+    have hderiv : AnalyticAt ℂ
+        (fun w : ℂ => deriv riemannZeta (w + 1)) s := by
+      change AnalyticAt ℂ ((deriv riemannZeta) ∘ fun w : ℂ => w + 1) s
+      exact AnalyticAt.comp (f := fun w : ℂ => w + 1) (x := s)
+        (analyticAt_riemannZeta_of_ne_one hs1).deriv
+        (show AnalyticAt ℂ (fun w : ℂ => w + 1) s by fun_prop)
+    dsimp only [L]
+    exact hderiv.neg
+  have hR : AnalyticOnNhd ℂ R U := by
+    dsimp only [R, U]
+    exact (analyticOnNhd_xiHeatCassiniWoldResidualODECoefficient
+      hsource hcritical).mul
+        (analyticOnNhd_riemannZeta_add_one_residualODESector eta)
+  let q : ℂ := 1 + Complex.I * (eta : ℂ)
+  have hqU : q ∈ U := by
+    dsimp only [q, U, xiHeatCassiniWoldResidualODESector]
+    constructor
+    · norm_num
+    · simp only [Complex.add_im, Complex.one_im, Complex.mul_im, Complex.I_re,
+        Complex.ofReal_im, mul_zero, Complex.I_im, Complex.ofReal_re, one_mul,
+        zero_add]
+      exact mul_self_pos.mpr heta
+  have hevent : L =ᶠ[𝓝 q] R := by
+    have hopen : IsOpen {s : ℂ | 0 < s.re} :=
+      isOpen_lt continuous_const Complex.continuous_re
+    have hqpos : 0 < q.re := by dsimp only [q]; simp
+    filter_upwards [hopen.mem_nhds hqpos] with s hs
+    exact neg_deriv_riemannZeta_shift_eq_residualODECoefficient_mul hs hcritical
+  have heq : Set.EqOn L R U :=
+    hL.eqOn_of_preconnected_of_eventuallyEq hR hUpre hqU hevent
+  intro s hs
+  exact heq hs
+
+/-- Cleared residual identity in the standard first-order form for shifted zeta. -/
+theorem deriv_riemannZeta_add_one_eq_neg_residualODECoefficient_mul_on_sector
+    {eta : ℝ} (heta : eta ≠ 0)
+    (hsource : AnalyticOnNhd ℂ xiHeatCassiniWoldResidualLowerHardyKernel
+      {z : ℂ | z.im < 1 / 2})
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    ∀ s ∈ xiHeatCassiniWoldResidualODESector eta,
+      deriv (fun w : ℂ => riemannZeta (w + 1)) s =
+        -xiHeatCassiniWoldResidualODECoefficient s * riemannZeta (s + 1) := by
+  intro s hs
+  have hshiftAn := analyticOnNhd_riemannZeta_add_one_residualODESector eta s hs
+  have hs0 : s ≠ 0 := by
+    intro hs0
+    subst s
+    change -(1 / 2 : ℝ) < (0 : ℂ).re ∧ 0 < eta * (0 : ℂ).im at hs
+    simp at hs
+  have hs1 : s + 1 ≠ 1 := by
+    intro h
+    apply hs0
+    calc
+      s = (s + 1) - 1 := by ring
+      _ = 1 - 1 := by rw [h]
+      _ = 0 := sub_self 1
+  have hshiftDeriv : deriv (fun w : ℂ => riemannZeta (w + 1)) s =
+      deriv riemannZeta (s + 1) := by
+    change deriv (riemannZeta ∘ fun w : ℂ => w + 1) s =
+      deriv riemannZeta (s + 1)
+    have hcomp :=
+      (analyticAt_riemannZeta_of_ne_one hs1).differentiableAt.hasDerivAt.comp s
+          ((hasDerivAt_id s).add_const 1)
+    simpa only [id_eq, mul_one] using hcomp.deriv
+  have hcleared :=
+    neg_deriv_riemannZeta_shift_eq_residualODECoefficient_mul_on_sector
+      heta hsource hcritical s hs
+  rw [hshiftDeriv]
+  linear_combination -hcleared
+
+/-- **Route-T ODE closure criterion.**  Critical mesh energy plus holomorphy of canonical residual
+source on `Im z < 1/2` forces RH.  No continuity of separately declared meromorphic continuation is
+assumed: cleared Euler identity and first-order uniqueness supply continuation intrinsically. -/
+theorem riemannHypothesis_of_residualSource_analytic_criticalEnergy
+    (hsource : AnalyticOnNhd ℂ xiHeatCassiniWoldResidualLowerHardyKernel
+      {z : ℂ | z.im < 1 / 2})
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    RiemannHypothesis := by
+  rw [riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+  intro rho hrho hzeta
+  have hrhoOne : rho.re < 1 := riemannZeta_zero_re_lt_one hzeta
+  have him : rho.im ≠ 0 := by
+    intro him0
+    have hrhoReal : rho = (rho.re : ℂ) := by
+      apply Complex.ext
+      · simp
+      · simpa [him0]
+    have hzetaReal := hzeta
+    rw [hrhoReal] at hzetaReal
+    exact (riemannZeta_real_strip_ne_zero (by linarith) hrhoOne) hzetaReal
+  let eta : ℝ := rho.im
+  let U : Set ℂ := xiHeatCassiniWoldResidualODESector eta
+  let F : ℂ → ℂ := fun s => riemannZeta (s + 1)
+  let G : ℂ → ℂ := xiHeatCassiniWoldResidualODECoefficient
+  let s₀ : ℂ := rho - 1
+  let q : ℂ := 1 + Complex.I * (eta : ℂ)
+  have hUopen : IsOpen U := isOpen_xiHeatCassiniWoldResidualODESector eta
+  have hUpre : IsPreconnected U := isPreconnected_xiHeatCassiniWoldResidualODESector eta
+  have hF : AnalyticOnNhd ℂ F U := by
+    dsimp only [F, U]
+    exact analyticOnNhd_riemannZeta_add_one_residualODESector eta
+  have hG : AnalyticOnNhd ℂ G U := by
+    dsimp only [G, U]
+    exact analyticOnNhd_xiHeatCassiniWoldResidualODECoefficient hsource hcritical
+  have hODE : ∀ s ∈ U, deriv F s = -G s * F s := by
+    intro s hs
+    dsimp only [F, G, U]
+    exact deriv_riemannZeta_add_one_eq_neg_residualODECoefficient_mul_on_sector
+      (by simpa only [eta] using him) hsource hcritical s hs
+  have hs₀U : s₀ ∈ U := by
+    dsimp only [s₀, U, eta, xiHeatCassiniWoldResidualODESector]
+    constructor
+    · simp
+      linarith
+    · simp only [Complex.sub_im, Complex.one_im, sub_zero]
+      simpa only [pow_two] using sq_pos_of_ne_zero him
+  have hqU : q ∈ U := by
+    dsimp only [q, U, eta, xiHeatCassiniWoldResidualODESector]
+    constructor
+    · norm_num
+    · simp only [Complex.add_im, Complex.one_im, Complex.mul_im, Complex.I_re,
+        Complex.ofReal_im, mul_zero, Complex.I_im, Complex.ofReal_re, one_mul,
+        zero_add]
+      simpa only [pow_two] using sq_pos_of_ne_zero him
+  have hzero : F s₀ = 0 := by
+    dsimp only [F, s₀]
+    convert hzeta using 1 <;> ring
+  have hnonzero : F q ≠ 0 := by
+    dsimp only [F]
+    apply riemannZeta_ne_zero_of_one_lt_re
+    dsimp only [q]
+    simp
+  exact (false_of_analytic_firstOrderODE_zero_and_nonzero
+    hUopen hUpre hF hG hODE hs₀U hqU hzero hnonzero).elim
+
+/-- Pure arithmetic-analytic Route-T endpoint: cofinal absolute convergence of residual edges
+below the half-height, together with critical prime-gap energy, implies RH. -/
+theorem riemannHypothesis_of_subhalf_residual_absoluteConvergence_criticalEnergy
+    (hconv : ∀ a : ℝ, 0 < a → a < 1 / 2 →
+      Summable (fun N : ℕ =>
+        ‖xiHeatCassiniWoldResidualComplexPhaseConnectionAtom
+          (Complex.I * (a : ℂ)) N‖))
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    RiemannHypothesis := by
+  exact riemannHypothesis_of_residualSource_analytic_criticalEnergy
+    (analyticOnNhd_xiHeatCassiniWoldResidualLowerHardyKernel_of_subhalf_absoluteConvergence
+      hconv) hcritical
+
+/-- A single endpoint weighted-variation series is enough: Abel's margin opens every strict
+sub-half height, and ODE uniqueness then closes RH. -/
+theorem riemannHypothesis_of_half_residualUpperVariation_criticalEnergy
+    (hvariation : Summable
+      (xiHeatCassiniWoldResidualUpperVariationAtom (1 / 2)))
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    RiemannHypothesis := by
+  exact riemannHypothesis_of_residualSource_analytic_criticalEnergy
+    (analyticOnNhd_xiHeatCassiniWoldResidualLowerHardyKernel_of_upperVariation
+      (by norm_num) hvariation) hcritical
+
+/-- Equivalent raw-edge endpoint: absolute convergence at source point `i/2`, plus critical mesh
+energy, forces RH. -/
+theorem riemannHypothesis_of_half_residualAtom_absoluteConvergence_criticalEnergy
+    (hnorm : Summable (fun N : ℕ =>
+      ‖xiHeatCassiniWoldResidualComplexPhaseConnectionAtom
+        (Complex.I * ((1 / 2 : ℝ) : ℂ)) N‖))
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_half_residualUpperVariation_criticalEnergy
+  · exact (summable_norm_residualAtom_mul_I_iff_upperVariation
+      (by norm_num) (by norm_num)).1 hnorm
+  · exact hcritical
+
+/-- Half-rate pointwise Wold residual decay is the exact exponential producer compatible with
+critical-line zeros: it opens the strict source half-strip, while critical mesh energy handles the
+independent quadrature channel. -/
+theorem riemannHypothesis_of_half_residual_exp_height_rate_criticalEnergy
+    {B : ℝ} (hB : 0 ≤ B)
+    (hrate : ∀ᶠ N : ℕ in atTop,
+      |xiHeatCassiniOrderedWoldResidualLogDiscrepancy N| ≤
+        B * Real.exp (-(1 / 2 : ℝ) * xiMassNthPrimeLogHeight N))
+    (hcritical : Summable xiHeatCassiniPrimeGapCriticalEnergy) :
+    RiemannHypothesis := by
+  exact riemannHypothesis_of_residualSource_analytic_criticalEnergy
+    (analyticOnNhd_xiHeatCassiniWoldResidualLowerHardyKernel_of_exp_height_rate
+      (c := (1 / 2 : ℝ)) (B := B) (by norm_num) hB hrate) hcritical
+
 end
 
 end RHTower

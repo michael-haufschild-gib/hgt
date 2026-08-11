@@ -6,7 +6,9 @@
   `[PROOF-BURDEN REDUCTION]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **Companions:** `route-e-ramare-recombination-ternary-antiscale-law.md`,
-  `route-e-source-faithful-euler-tilt-unit-shell-law.md`
+  `route-e-source-faithful-euler-tilt-unit-shell-law.md`,
+  `route-e-weighted-hall-anova-projection-duality-law.md`,
+  `route-e-degree-normalized-gibbs-boundary-variation-law.md`
 - **RH used:** no
 - **Computation used:** no
 - **Literature used:** no; internal-corpus derivation only
@@ -52,6 +54,10 @@ producers. Gauge-neutralization and the source-faithful critical clock show that
 identification has the wrong quantitative scale. What remains unproved is the finite physical
 column-ANOVA estimate above, followed by transport of the same signed reporter through the moving
 prime seam and exact recurrence, with mean and collision handled by the ternary decomposition.
+The companion weighted-Hall projection law gives an exact equivalent: after normalizing physical
+source and target laws, required variance is squared distance from target law to relation's
+reachable marginal polytope. Its dual is an all-reporter minimum-neighbor inequality. It also
+proves that an unquantified one-sided column ceiling \(1+o(1)\) is not rate-sufficient.
 
 ## 2. One-sided critical dissipation for every \(0<r\le1\)
 
@@ -824,6 +830,10 @@ transport in items 3--4.
 Corollary F proves that the existing critical-clock corner cannot be assigned endpoint scale by
 parameter choice; Theorem G proves that the safe graph-normal Xi landing cannot be continued to
 the Mellin half-line by bounded Hilbert observation.
+The companion projection theorem sharpens “equivalent unit-capacity estimate”: exact normalized
+weighted Hall gives zero centered energy; a one-sided ceiling \(1+\varepsilon_X\) needs
+\(\varepsilon_X\le X^{-1+o(1)}\), while a two-sided relative ceiling needs
+\(\varepsilon_X\le X^{-1/2+o(1)}\). Merely \(1+o(1)\) is not enough.
 
 ## 9. Honest status
 

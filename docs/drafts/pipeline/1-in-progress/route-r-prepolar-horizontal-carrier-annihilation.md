@@ -898,3 +898,210 @@ remaining Route-R producer must be nonlocal across divisor fibres or prime place
 global positive trace/index identity; no additional same-fibre Green boundary can do it.
 
 **Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+
+
+## C24. Full Poisson symmetry leaves a nonzero double-endpoint theta shear
+
+C17 and the vertical-gauge modules prove that rational scaling and the Real structure do not
+select a Stokes primitive.  One possible escape was that the *full* additive Poisson law, together
+with both CCM endpoints, might remove the residual shear.  It does not.  The obstruction can be
+exhibited on the literal rational-adelic Bruhat core.
+
+For a Schwartz--Bruhat tensor (t), write
+
+\[
+  \Theta_{\mathbb Q}(t)=\sum_{q\in\mathbb Q}t(q)
+\]
+
+for the rational theta distribution.  Global rational dilation merely reindexes the sum, while
+adelic Poisson summation gives
+
+\[
+  \Theta_{\mathbb Q}(k\cdot t)=\Theta_{\mathbb Q}(t),
+  \qquad
+  \Theta_{\mathbb Q}(\mathcal Ft)=\Theta_{\mathbb Q}(t).
+\tag{C24.1}
+\]
+
+Thus \(\Theta_{\mathbb Q}\) annihilates every rational-dilation difference and every Fourier
+difference.  The issue is whether it vanishes after imposing both endpoint conditions.  It does
+not.
+
+Put
+
+\[
+  g_r(x)=e^{-\pi r^2x^2},
+  \qquad
+  f=g_1-4g_2+3g_3,
+  \qquad
+  t_f=f\otimes\mathbf 1_{\widehat{\mathbb Z}}.
+\tag{C24.2}
+\]
+
+The two endpoint cancellations are exact:
+
+\[
+  f(0)=1-4+3=0,
+  \qquad
+  \int_{\mathbb R}f(x)\,dx=1-4\cdot\frac12+3\cdot\frac13=0.
+\tag{C24.3}
+\]
+
+Hence \(t_f\in\ker\epsilon_0\cap\ker\epsilon_1\), and also
+\(\widehat f(0)=0\).  On the other hand the finite-adelic factor restricts the rational orbit to
+the integer lattice, so
+
+\[
+  \Theta_{\mathbb Q}(t_f)=\sum_{n\in\mathbb Z}f(n).
+\]
+
+This value is strictly positive.  Indeed the zero summand vanishes, and for \(n\ne0\), with
+\(y=e^{-\pi n^2}\),
+
+\[
+  f(n)=y-4y^4+3y^9
+      =y(1-4y^3+3y^8)>0,
+\tag{C24.4}
+\]
+
+because \(0<y<1/2\) gives
+\(1-4y^3+3y^8>1-4(1/2)^3=1/2\).  Absolute convergence is Schwartz decay.
+The witness is real and even, so the same nonzero class survives the fixed Real orientation.
+
+Consequently the Fourier-completed double-endpoint coinvariant is nonzero:
+
+\[
+  \boxed{
+  \frac{\ker\epsilon_0\cap\ker\epsilon_1}
+       {\sum_{k\in\mathbb Q^\times}\operatorname{im}(\alpha_k-1)
+        +\operatorname{im}(\mathcal F-1)}\ne0 .}
+\tag{C24.5}
+\]
+
+Equivalently, if \(R\) is any linear Stokes primitive satisfying the dilation, endpoint, Real,
+and Poisson compatibilities, then
+
+\[
+  R_\lambda=R+\lambda\Theta_{\mathbb Q},\qquad \lambda\in\mathbb R,
+\]
+
+satisfies the same compatibilities.  Full additive self-duality therefore does not select the
+physical coefficient at linear level.  Killing this theta line by normalization also kills the
+rational orbit distribution whose Mellin transform carries the completed-zeta channel, so that
+normalization is not coefficient-faithful.
+
+**Verdict:** the complete *linear* rational-adelic/Euler--Gamma--Poisson producer class is dead,
+including both endpoint conditions and both Gamma/Real orientations.  This strengthens the Haar
+shear theorem: Fourier completion does not remove the ambiguity; it replaces the Haar witness by
+the physical theta witness.
+
+**Status:** paper proof complete.  The required Lean ingredients already exist separately in
+`CCMRationalArchimedeanSchwartzPoisson.lean`,
+`CCMRationalAdelicPureTensorHaarDualCancellation.lean`,
+`CCMRationalAdelicMoritaTraceFormula.lean`, and
+`CCMRationalAdelicPrimeIsotropyVerticalGauge.lean`; assembly is deferred during corpus refactor.
+
+## C25. Every bounded positive prime-coinvariant pairing erases the atom
+
+C24 forces a nonlinear or bilinear producer.  The first candidate is a positive Hilbert/GNS form
+on the genuine Morita completion which descends through prime-dilation coinvariants.  This class
+also admits a complete obstruction.
+
+Let
+
+\[
+  \mathcal H=\ell^2(\mathbb Q^\times),
+  \qquad
+  U_p\delta_q=\delta_{pq}.
+\]
+
+The \(p\)-orbits are bilateral copies of \(\mathbb Z\).  If \(U_p^*\xi=\xi\), then the
+coefficients of \(\xi\) are constant on every infinite orbit \(p^{\mathbb Z}q\); square
+summability forces every such constant to be zero.  Therefore
+
+\[
+  \ker(U_p^*-1)=0,
+  \qquad
+  \overline{\operatorname{ran}(U_p-1)}
+    =\ker(U_p^*-1)^\perp=\mathcal H.
+\tag{C25.1}
+\]
+
+Let \(B\) be any bounded sesquilinear form on \(\mathcal H\) which descends through the
+prime coinvariants in its first variable:
+
+\[
+  B((U_p-1)x,y)=0\qquad\text{for all }x,y\in\mathcal H.
+\tag{C25.2}
+\]
+
+By Riesz representation, \(B(x,y)=\langle Tx,y\rangle\) for a bounded operator \(T\).
+Equation (C25.2) says \(T(U_p-1)=0\).  The range in (C25.1) is dense, hence \(T=0\), and
+therefore \(B=0\).  The same argument applies if descent is required in the second variable.
+Positivity is not even needed for the vanishing; boundedness and homological descent suffice.
+
+Thus
+
+\[
+  \boxed{
+  \text{every bounded positive form on the Morita Hilbert completion that descends to }
+  U_p\text{-coinvariants is zero}.}
+\tag{C25.3}
+\]
+
+In particular it assigns zero norm to every localized rational basis vector and erases the
+retained ordinary-prime atom.  A standard GNS quotient, bounded covariance operator, bounded
+same-fibre metric, or bounded positive theta covariance cannot supply Route R's independent
+annihilation while retaining the period-one class.
+
+This explains the exact location of the wall in
+`RouteRBoundedPrimeDepthCovarianceProducer.lean`: bounded covariance annihilates the Hodge-mate
+coefficient, but the source prime orbit has no bounded primitive.  The natural logarithmic
+primitive is unbounded, and replacing it by a bounded one is already the RH-strength assertion.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+
+## C26. Positive invariant means also erase every localized prime class
+
+One might evade C25 by leaving Hilbert space and using a singular positive invariant mean.  This
+does not retain coefficient provenance either.
+
+Let \(S\) be the bilateral shift on \(c_0(\mathbb Z)\), and let
+\(\Lambda:c_0(\mathbb Z)\to\mathbb C\) be positive and shift invariant.  Positivity makes
+\(\Lambda\) bounded.  Shift invariance gives a common value
+\(c=\Lambda(e_n)\ge0\) on all coordinate atoms.  For
+\(s_N=e_1+\cdots+e_N\),
+
+\[
+  Nc=\Lambda(s_N)\le\|\Lambda\|\,\|s_N\|_\infty=\|\Lambda\|.
+\]
+
+Hence \(c=0\).  Finite-support sequences are dense in \(c_0\), so \(\Lambda=0\).  Every
+positive invariant mean on \(\ell^\infty(\mathbb Z)\) consequently restricts to zero on
+\(c_0(\mathbb Z)\), and in particular on all finitely supported or trace-class orbit packets.
+Orbitwise application gives the same conclusion for \(\mathbb Q^\times\) under prime dilation.
+
+Therefore a positive singular mean can preserve dilation invariance only by deleting every
+localized ordinary-prime coefficient.  An unnormalized orbit sum retains the atom but is not a
+bounded positive mean; its failure of invariance under cutoff is precisely a boundary anomaly.
+
+Combining C24--C26 gives a trichotomy:
+
+1. linear Poisson/Stokes observers retain the atom but have a nontrivial theta shear;
+2. bounded positive homological pairings descend uniquely only by becoming zero;
+3. positive invariant singular means erase the localized atom.
+
+The strongest surviving producer is therefore not another reader or GNS norm.  It must be a
+**nonlocal relative index/self-product pairing**: a renormalized boundary supertrace whose signed
+index is source-exact, whose ordinary positive part is the Hodge mass, and whose cross-place term
+uses the diagonal embedding \(\mathbb Q\hookrightarrow\mathbb A_{\mathbb Q}\).  This is exactly
+the bilinear Hodge/compressed-trace gate isolated by `GaussHodgeWeilPolarizationFusion.lean` and
+`GaussHodgeWeilGNSSocket.lean`.  C24 proves why additive Poisson must be consumed at quadratic
+self-product level; C25--C26 prove why neither ordinary Hilbert positivity nor an invariant mean
+can replace that relative index.
+
+**Route status:** still open.  These are dependency-closed no-go results and a sharper unique
+survivor, not an RH proof and not yet an exhaustive death proof for the remaining relative-index
+class.
+
+**Status:** paper proof complete; Lean formalization deferred during corpus refactor.

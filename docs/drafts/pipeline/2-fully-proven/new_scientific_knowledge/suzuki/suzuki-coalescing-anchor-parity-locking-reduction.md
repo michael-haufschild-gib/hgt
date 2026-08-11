@@ -1,11 +1,12 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
-  Sections 14.13--14.14, and in the literal normalized-Hankel theorem of Section 14.15; yes as the
+  Sections 14.13--14.14, and in the literal normalized-Hankel theorems of Sections 14.15--14.18;
+  yes as the
   hypothesis of the global-limit and Xi-target audits in Sections 14.8--14.14
 - **Computation used:** no
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
@@ -3084,6 +3085,11 @@ O=<sinh,(C-H_a)^(-1)sinh>,
 kappa=(E-O)/(E+O).                                      (228)
 ```
 
+The harmless common factor from the unitary full-interval parity lifts cancels in `(227)--(228)`.
+The bounded Carleman-plus-finite-reflection realization of `H_a` also shows that the two closed
+forms in `(224)` have the same half-interval form domain; no identification of different Friedrichs
+domains is being assumed.
+
 #### Theorem W — Toeplitz `sech` wall and Hankel rapidity budget
 
 For every aperture and every admissible shift,
@@ -3105,18 +3111,20 @@ Equivalently, with `artanh(1)=infinity`,
 artanh(kappa)<=artanh(kappa_0)+artanh(r_(a,lambda)).    (231)
 ```
 
-Consequently, whenever `sech(a)<kappa_Xi` and a literal shift passes the first Xi wall,
+Consequently, whenever `sech(a)<kappa_Xi` and a literal shift reaches the first Xi wall,
 
 ```text
-kappa_(a,lambda)>kappa_Xi,
+kappa_(a,lambda)>=kappa_Xi,
 ```
 
 its normalized Hankel carrier necessarily satisfies
 
 ```text
 r_(a,lambda)
- >[kappa_Xi-sech(a)]/[1-kappa_Xi sech(a)].              (232)
+ >=[kappa_Xi-sech(a)]/[1-kappa_Xi sech(a)].             (232)
 ```
+
+Both inequalities are strict when `kappa_(a,lambda)>kappa_Xi`.
 
 For every cofinal admitted family this gives the unconditional asymptotic wall
 
@@ -3159,14 +3167,14 @@ E_0-O_0=D,       E_0+O_0=(A+B)/2.
 Therefore
 
 ```text
-|kappa_0|
- =2|D|/(A+B)
- <=2exp(a)/(exp(2a)+1)
- =sech(a),                                               (235)
+chi_(a,lambda):=D/[exp(a)B] in [-1,1],
+kappa_0=sech(a) chi_(a,lambda),
+|kappa_0|<=sech(a).                                     (235)
 ```
 
 which proves `(229)`.  Notice that this is uniform in the shift and uses the literal exponential
-sources; it is not a large-negative-shift approximation.
+sources; it is not a large-negative-shift approximation.  The scalar `chi_(a,lambda)` is the exact
+common-Toeplitz midpoint-reflection fidelity, so the exponential decay is structural.
 
 For `(230)`, first suppose `inf spec K=-1`.  Then `r=1` and the bound is immediate.  Otherwise put
 `m=inf spec K>-1`.  Quadratic-form functional calculus applied to `(225)` gives
@@ -3190,14 +3198,20 @@ E/O=(1+kappa)/(1-kappa)
 ```
 
 turn `(237)` into `(230)`; `(231)` is the hyperbolic addition formula.  If
-`kappa>kappa_Xi`, rearrangement gives
+`kappa>=kappa_Xi`, rearrangement gives
 
 ```text
-r>(kappa_Xi-kappa_0)/(1-kappa_Xi kappa_0).
+r>=(kappa_Xi-kappa_0)/(1-kappa_Xi kappa_0).
 ```
 
-The right side decreases with `kappa_0`, so `(229)` proves `(232)`.  Letting `a` tend to infinity
-and using the unconditional `kappa_Xi>77/85` proves `(233)`.
+The right side decreases with `kappa_0`, so `(229)` proves `(232)`; strict source passage makes
+both displayed comparisons strict.  Letting `a` tend to infinity and using the unconditional
+`kappa_Xi>77/85` proves `(233)`.
+
+The operator inequality is sharp at the abstract level: equality in `(237)` occurs when both
+source directions lie in the bottom spectral subspace of `K` and the midpoint Cauchy--Schwarz
+bound is saturated.  No such alignment is assumed for Suzuki; proving or excluding it is part of
+the remaining source problem.
 
 The edge has a completely explicit arithmetic witness.  Recall
 
@@ -3215,8 +3229,22 @@ P_a(f,f)-H_(a,infinity)(f,f)
  >(b-epsilon)[T_a(f,f)-lambda||f||_2^2].                (239)
 ```
 
+For the same vector, `q_e=C+H_a` and `q_o=C-H_a` give
+
+```text
+q_o(f)/q_e(f)>(1+b-epsilon)/(1-b+epsilon).              (240)
+```
+
+At the exact bound in `(232)`, the limiting right side of `(240)` is
+
+```text
+R_Xi [1-sech(a)]/[1+sech(a)]
+ > (81/4)[1-sech(a)]/[1+sech(a)].                       (241)
+```
+
 Thus admission forces an actual prime-power autocorrelation surplus, measured against the common
-Toeplitz energy, not merely an abstract parity label.  Equation `(239)` is necessary, not
+Toeplitz energy, and a same-profile odd/even form ratio approaching the full Xi cost.  These are
+not merely abstract parity labels.  Equations `(239)--(241)` are necessary, not
 sufficient: its near-edge vector must also align with the exponential source, and higher fixed
 anchor laws remain after first-jet admission.
 
@@ -3224,9 +3252,10 @@ The parity decomposition `(224)`, form contraction `(225)`, and spectral-calculu
 classical operator theory.  Candidate-new content is the exact Suzuki source conjunction: midpoint
 reversal plus the two exponential parity sources gives the uniform `sech(a)` wall `(229)`, and the
 Xi defect converts it into the sharp negative normalized-Hankel edge and prime-correlation budget
-`(232)--(239)`.  Repository and targeted primary-literature searches found the separate
+`(232)--(241)`.  Repository and targeted primary-literature searches found the separate
 Toeplitz--Hankel and Birman--Schwinger parents, but no restricted-Weil `sech` wall, hyperbolic
-parity budget, or `77/85` negative-edge consequence.  Specialist priority review remains required.
+parity budget, or `77/85` negative-edge and same-profile `81/4` consequence.  Specialist priority
+review remains required.
 
 This relocates the true first frontier to a falsifiable source theorem:
 
@@ -3236,7 +3265,391 @@ This relocates the true first frontier to a falsifiable source theorem:
 > the paired occupancy hierarchy.  Strong indefiniteness of `H_a` alone decides neither side,
 > because `(225)` normalizes it by the full Toeplitz energy.
 
-### 14.16 Conjecture loop and novelty correction
+### 14.16 The source-alignment slack law
+
+Theorem W leaves an apparent loophole: perhaps the normalized Hankel carrier has the required
+negative edge but the exponential source never sees it.  That is possible when the edge overshoots
+the minimum budget.  It is impossible near the minimum budget.  The exact excess over the sharp
+edge threshold pays for every source-alignment defect.
+
+Assume `sech(a)<kappa_Xi`, `kappa>=kappa_Xi`, and `r=r_(a,lambda)<1`.  Admission and Theorem W force
+`r>0`, so `inf spec K=-r`.  Put
+
+```text
+rho_0=E_0/O_0,                  R_Xi=(1+kappa_Xi)/(1-kappa_Xi),
+q=R_Xi/rho_0>1,
+r_*=(q-1)/(q+1)
+   =(kappa_Xi-kappa_0)/(1-kappa_Xi kappa_0).            (242)
+```
+
+The number `r_*` is the exact edge strength required by the actual common-channel fidelity
+`kappa_0`; replacing `kappa_0` by `sech(a)` gives the coarser wall `(232)`.  Define the unit
+common-channel source vectors
+
+```text
+x_e=C^(-1/2)cosh/sqrt(E_0),
+x_o=C^(-1/2)sinh/sqrt(O_0),                             (243)
+```
+
+and let `mu_e,mu_o` be their probability spectral measures for `K`.  Functional calculus gives
+
+```text
+A_e:=E/E_0=int 1/(1+t) dmu_e(t),
+A_o:=O/O_0=int 1/(1-t) dmu_o(t).                       (244)
+```
+
+Define nonnegative bottom-edge deficits
+
+```text
+Delta_e=1/(1-r)-A_e
+       =int (t+r)/[(1-r)(1+t)] dmu_e(t),
+
+Delta_o=A_o-1/(1+r)
+       =int (t+r)/[(1-t)(1+r)] dmu_o(t).               (245)
+```
+
+#### Theorem X — exact Hankel-edge/source-alignment dichotomy
+
+Every matching shift above satisfies the sharp slack law
+
+```text
+Delta_e+q Delta_o
+ <=S:=1/(1-r)-q/(1+r)
+     =(1+q)(r-r_*)/(1-r^2).                            (246)
+```
+
+If `kappa>kappa_Xi`, inequality `(246)` is strict.  In particular, for every `delta>0`,
+
+```text
+mu_e([-r+delta,1]) <=2(1-r)S/delta,
+mu_o([-r+delta,1]) <=(1+r)^2 S/(q delta).              (247)
+```
+
+The same law directly controls the normalized-Hankel Rayleigh defects:
+
+```text
+0<=<x_e,(K+r)x_e><=2(1-r)Delta_e<=2(1-r)S,
+0<=<x_o,(K+r)x_o><=(1+r)^2Delta_o<=(1+r)^2S/q.         (248)
+```
+
+Equivalently, with the unit common-form Riesz profiles
+
+```text
+f_e=C^(-1)cosh/sqrt(E_0),       f_o=C^(-1)sinh/sqrt(O_0),
+C(f_e,f_e)=C(f_o,f_o)=1,                               (249)
+```
+
+the literal finite-prime surplus obeys
+
+```text
+P_a(f_e,f_e)-H_(a,infinity)(f_e,f_e)
+ >=r-2(1-r)S,
+
+P_a(f_o,f_o)-H_(a,infinity)(f_o,f_o)
+ >=r-(1+r)^2S/q.                                       (250)
+```
+
+At exact target matching, `kappa=kappa_Xi`, if the edge merely equals its sharp minimum
+`r=r_*`, then `S=0`, both measures in `(245)` are supported on the singleton `{-r}`, and
+
+```text
+Kx_e=-r x_e,                 Kx_o=-r x_o.              (251)
+```
+
+The two vectors are linearly independent, because `C^(-1/2)` is injective and `cosh,sinh` are
+linearly independent.  Thus exact saturation forces bottom-edge multiplicity at least two.  A
+simple normalized-Hankel bottom edge cannot attain the sharp Xi response; it must overshoot
+`r_*`.  This statement concerns the bottom edge of `K`, not simplicity of a restricted-Weil
+ground state, and the existing ground-residue results do not supply it.
+
+#### Proof
+
+From `(244)` and `E/O>=R_Xi`,
+
+```text
+A_e/A_o>=(R_Xi/rho_0)=q.                               (252)
+```
+
+Substitute `A_e=1/(1-r)-Delta_e` and
+`A_o=1/(1+r)+Delta_o`.  Rearranging `(252)` is exactly the first expression in `(246)`.
+The second follows from the definition of `r_*`.  Strict source passage makes `(252)` and hence
+`(246)` strict.
+
+On `[-r+delta,1]`, the first integrand in `(245)` is at least
+`delta/[2(1-r)]`, while the second is at least `delta/(1+r)^2`; Markov's elementary integral
+bound proves `(247)`.  The pointwise identities
+
+```text
+t+r <=2(1-r) (t+r)/[(1-r)(1+t)],
+t+r <=(1+r)^2 (t+r)/[(1-t)(1+r)]
+```
+
+prove `(248)`.  For `(250)`, note that `x_e=C^(1/2)f_e`, `x_o=C^(1/2)f_o`, and
+
+```text
+<x,Kx>=H_a(f,f)=H_(a,infinity)(f,f)-P_a(f,f).
+```
+
+Finally, `r=r_*` makes the right side of `(246)` zero.  Both nonnegative deficits vanish, and
+their integrands vanish only at `t=-r`.  This proves `(251)` and the multiplicity statement.
+
+For a cofinal matching family, `|kappa_0|<=sech(a)` gives `rho_0->1` and `r_*->kappa_Xi`.  Hence
+there are only three surviving first-gate regimes:
+
+```text
+maximal edge collapse r=1 along a subsequence;
+nonvanishing edge overshoot limsup(r-r_*)>0;
+near-minimal edge with both source laws concentrating at -r.     (253)
+```
+
+The last regime forces the source-profile prime surplus in `(250)` to converge to at least
+`kappa_Xi>77/85`.  This is stronger than the arbitrary near-edge witness `(239)`: it uses the
+literal common-channel exponential Riesz profiles.  It still does not close Suzuki.  Regimes one
+and two remain possible, and even regime three supplies only first-jet admission, not the paired
+occupancy hierarchy.
+
+The probability spectral calculus and slack rearrangement are elementary and are not claimed new.
+Candidate-new content is their exact Suzuki/Xi specialization: minimum negative edge strength,
+source-alignment deficit, arithmetic prime surplus, and bottom-edge multiplicity are one identity
+`(246)`.  Repository and targeted primary-literature searches found the ground-residue
+polarization and parity-transport parents, plus generic Toeplitz--Hankel spectral theory, but no
+restricted-Weil alignment-slack or sharp-edge degeneracy theorem.  Specialist priority review
+remains required.
+
+### 14.17 Maximal normalized edge is the ground-pole branch
+
+The first regime in `(253)` is not an additional mysterious Hankel mechanism.  It is the relative
+form signature of an even parity floor.  This also exposes why a uniform edge ceiling over every
+admissible shift is only a sufficient no-go and may be much too strong: a source-invisible even
+ground mode still drives the abstract edge to `-1` without admitting the exponential source.
+
+Let `A_e,A_o` be the half-interval even and odd restricted-Weil operators, with common closed form
+domain and floors
+
+```text
+alpha_e=inf spec A_e,          alpha_o=inf spec A_o.
+```
+
+For `lambda<min(alpha_e,alpha_o)`, write
+
+```text
+q_(e,lambda)=q_e-lambda||.||_2^2=C_lambda+H_a,
+q_(o,lambda)=q_o-lambda||.||_2^2=C_lambda-H_a,          (254)
+```
+
+and form `K_lambda` as in `(225)`.  Put `m_lambda=inf spec K_lambda`.
+
+#### Theorem Y — exact relative-edge/parity-floor correspondence
+
+For every such shift,
+
+```text
+sup_(f!=0) q_(o,lambda)(f)/q_(e,lambda)(f)
+ =[1-m_lambda]/[1+m_lambda],                            (255)
+```
+
+with both sides interpreted as `infinity` when `m_lambda=-1`.  In particular, whenever
+`m_lambda<0`, the left side is `(1+r_lambda)/(1-r_lambda)`.
+
+Suppose `phi_e` is an `L^2`-unit even ground vector and put
+
+```text
+eta_e=q_(o,alpha_e)(phi_e)>=0.
+```
+
+Then for every `lambda<min(alpha_e,alpha_o)`,
+
+```text
+[1+r_lambda]/[1-r_lambda]
+ >=1+eta_e/(alpha_e-lambda),
+
+r_lambda>=eta_e/[2(alpha_e-lambda)+eta_e]              (256)
+```
+
+whenever `eta_e>0`.  If the even floor is strict, `alpha_e<alpha_o`, then
+
+```text
+eta_e>=alpha_o-alpha_e,
+r_lambda
+ >=(alpha_o-alpha_e)/[2(alpha_e-lambda)+alpha_o-alpha_e]
+ ->1                         as lambda->alpha_e-.       (257)
+```
+
+At a tied floor `alpha_e=alpha_o=alpha`, the same conclusion holds for every
+`phi_e in ker(A_e-alpha)` not belonging to `ker(A_o-alpha)`.  Therefore avoiding edge collapse
+from the even bottom space requires the rigid incidence
+
+```text
+ker(A_e-alpha) subset ker(A_o-alpha).                   (258)
+```
+
+This condition is necessary only for avoiding that pole-driven collapse, not sufficient for a
+uniform edge bound: other relative near-kernel sequences can still send `m_lambda` to `-1`.
+
+#### Proof
+
+For `y=C_lambda^(1/2)f`, the two shifted forms are
+
+```text
+q_(e,lambda)(f)=<y,(I+K_lambda)y>,
+q_(o,lambda)(f)=<y,(I-K_lambda)y>.
+```
+
+Since `C_lambda` is coercive, `C_lambda^(-1/2)` maps the whole Hilbert space into its form domain.
+The supremum over `f` is therefore the spectral supremum of
+`(I-K_lambda)(I+K_lambda)^(-1)`.  Its scalar symbol `(1-t)/(1+t)` is decreasing, which proves
+`(255)`.
+
+Let `d=alpha_e-lambda`.  The ground equation gives
+
+```text
+q_(e,lambda)(phi_e)=d,
+q_(o,lambda)(phi_e)=eta_e+d,
+q_(o,lambda)(phi_e)/q_(e,lambda)(phi_e)=1+eta_e/d.      (259)
+```
+
+Insert `(259)` into `(255)` and solve for `r_lambda`; this is `(256)`.  If
+`alpha_e<alpha_o`, the odd variational floor gives
+`q_(o,alpha_e)(phi_e)>=alpha_o-alpha_e`, proving `(257)`.  At a tied floor,
+nonnegativity of `q_(o,alpha)` gives `eta_e=0` exactly when `phi_e` belongs to its form kernel,
+which proves `(258)`.
+
+If additionally `<cosh,phi_e>!=0` and the even floor is strict, the even resolvent has a visible
+pole while the odd resolvent remains bounded, so `kappa(lambda)->1`.  Thus strict source-visible
+even ground is simultaneously
+
+```text
+ground-reflection-cone admission
+ = visible maximal normalized-Hankel edge.              (260)
+```
+
+If the overlap vanishes, `(257)` still forces the edge but the defect response need not see it.
+This is the exact reason raw edge collapse does not by itself prove admission.  At a mixed tied
+floor, the already-proved ground-residue polarization law replaces the pure-even conclusion.
+
+Generalized Rayleigh quotients and pole limits are classical and are not claimed new.  The advance
+is the exact Suzuki frontier identification `(255)--(260)`: maximal normalized-Hankel edge is the
+old bottom-cone branch, source invisibility separates operator edge from admission, and the
+uniform all-shift edge ceiling is not the complete no-go.  The actual negative closure must rule
+out the source-visible ground residue cone and the finite-shift source response, not merely one
+operator norm.
+
+### 14.18 The prime-seam localization penalty
+
+The literal first-prime seam proves infinite positive and negative index of `H_a` by reflected
+narrow bumps.  Theorem W shows that inertia is not the required quantity.  The following theorem
+proves more: those exact bump packets become asymptotically invisible after normalization by the
+common Toeplitz form.  Repeating the strong-indefiniteness construction at finer resolution drives
+the relative Hankel spectrum toward zero, not toward the required `-77/85` edge.
+
+Fix `a`, an admissible `lambda`, and a visible prime seam
+
+```text
+L=log p<2a,                  w_p=log(p)/sqrt(p)>0.
+```
+
+Choose finitely many disjoint intervals `I_(j,eta)` of common length `eta` and their seam
+reflections
+
+```text
+R_L I_(j,eta)={L-x:x in I_(j,eta)}                     (261)
+```
+
+inside `(0,a)`.  Keep their centers fixed as `eta downarrow 0`, choose them so all these intervals
+remain mutually disjoint, and exclude every other visible prime-power sum seam from their pairwise
+sum neighborhoods.  There is then a fixed `d>0` such that each component has an adjacent
+left/right buffer of length `d` disjoint from the whole packet.  Let `V_eta` be the finite packet
+space generated by bumps in the intervals and their reflected copies.
+
+#### Theorem Z — microlocal prime seams have zero normalized-Hankel strength
+
+There are finite constants `B_(a,lambda)` and `M_a`, independent of `eta`, such that every
+`f in V_eta` satisfies
+
+```text
+C_(a,lambda)(f,f)
+ >=[log(1+2d/eta)-B_(a,lambda)]||f||_2^2,              (262)
+
+|H_a(f,f)|
+ <=[w_p+2m M_a eta]||f||_2^2,                         (263)
+```
+
+where `m` is the fixed number of reflected interval pairs.  Consequently, once the denominator is
+positive,
+
+```text
+sup_(0!=f in V_eta) |H_a(f,f)|/C_(a,lambda)(f,f)
+ <=[w_p+2m M_a eta]/[log(1+2d/eta)-B_(a,lambda)]
+ ->0.                                                   (264)
+```
+
+In particular, the reflected-even directions on which the `p`-atom makes `H_a` negative and the
+reflected-odd directions on which it makes `H_a` positive both have relative Hankel Rayleigh
+quotient tending to zero.  The arbitrary finite-dimensional signed packets used to prove
+`ind_+(H_a)=ind_-(H_a)=infinity` therefore accumulate at the center of the relative contraction,
+not at either coercivity edge.
+
+#### Proof
+
+The exact finite-part decomposition of the restricted Weil form contains the positive common
+Toeplitz term
+
+```text
+J(f)=1/4 int_(0,a) int_(0,a)
+          |f(x)-f(y)|^2/|x-y| dx dy.                   (265)
+```
+
+After this singular term is removed, the regular difference kernel is bounded on the fixed compact
+half interval.  The finite prime translation block is a nonnegative sum of jump forms minus a
+finite scalar potential, and the shift contributes another scalar term.  Hence all remaining
+common-form terms are bounded below by
+`-B_(a,lambda)||f||_2^2` for one finite constant independent of `eta`.
+
+Let `I=(b,b+eta)` be one packet component and write `s=x-b`.  Since `f` vanishes on its two adjacent
+buffers, the two orientations of the cross pairs in `(265)` give
+
+```text
+J(f; I and its buffers)
+ >=1/2 int_I |f(x)|^2
+      [log(1+d/s)+log(1+d/(eta-s))] dx.
+```
+
+The bracket is symmetric, diverges at both endpoints, and has minimum
+`2log(1+2d/eta)` at `s=eta/2`.  Summing over disjoint components proves `(262)`.
+
+On `V_eta`, the selected prime atom is exactly the bounded reflection `-w_p R_L`, with norm `w_p`.
+All other atomic Hankel terms vanish by the sum-seam exclusion.  The remaining Hankel kernel is
+bounded in absolute value by `M_a` on the packet product.  Since the union of the `2m` intervals
+has measure `2m eta`, Cauchy--Schwarz gives
+
+```text
+|H_(a,infinity)(f,f)|
+ <=M_a||f||_1^2<=2m M_a eta||f||_2^2.                 (266)
+```
+
+Equations `(263)--(264)` follow.  The sign statements use the exact swap identities
+
+```text
+<-w_p R_L(u,+R_Lu),(u,+R_Lu)><0,
+<-w_p R_L(u,-R_Lu),(u,-R_Lu)>0,                        (267)
+```
+
+and the regular error in `(266)`.
+
+The logarithmic localization estimate for the finite-part Cauchy form and the reflection action of
+a delta Hankel seam are classical separately.  Candidate-new content is their exact Suzuki
+conjunction `(262)--(264)`: the prime-seam packets responsible for cofinal two-sided infinite
+inertia are quantitatively incapable of approaching the Xi-required normalized edge.  Targeted
+search found Yafaev's strong-singularity Hankel parent and general logarithmic-fractional form
+theory, but no comparison with Suzuki's common restricted-Weil Toeplitz energy or this relative
+edge conclusion.  Specialist priority review remains required.
+
+The surviving source mechanism is therefore not “more localized seam bumps.”  It must use a
+delocalized profile whose common Cauchy energy stays comparable to the coherent sum of many prime
+reflections, or the ground-pole mechanism of Theorem Y.  Establishing or excluding that global
+multi-seam coherence is now the literal arithmetic hard problem.
+
+### 14.19 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -3400,14 +3813,47 @@ This relocates the true first frontier to a falsifiable source theorem:
 68. **Strong indefiniteness of the raw Hankel carrier proves this edge -- failed.**  Infinite
     positive and negative index does not control the Rayleigh quotient after normalization by the
     common Toeplitz form.  The hard source quantity is `(225)`, not inertia of `H_a` alone.
-69. **Hankel edge saturation closes first-jet admission -- failed.**  It is necessary but need not
-    align with the exponential source vectors.  Equation `(239)` supplies a near-edge arithmetic
-    witness; response alignment, a selected equality shift, and the full occupancy hierarchy
-    remain.
+69. **An arbitrary strong Hankel edge closes first-jet admission -- failed.**  Edge strength alone
+    need not align with the exponential source vectors.  Equation `(239)` supplies an arbitrary
+    near-edge arithmetic witness; Theorem X identifies the additional alignment forced only when
+    an admitted edge is near its sharp minimum.
 70. **No class-complete first-jet falsifier remains -- failed conditionally.**  Any uniform bound
     `inf spec K_(a,lambda)>-77/85+eta` over all cofinal admissible shifts kills Route G before the
     spectral-shift layer.  Proving or refuting this literal normalized-Hankel bound is now the
     earliest exact source problem.
+71. **An admitted edge can approach its sharp threshold while both exponential sources avoid it --
+    failed.**  The exact nonnegative slack decomposition `(246)` forces both source spectral laws
+    to concentrate at the bottom edge whenever `r-r_*->0`; `(250)` turns this into a literal
+    source-profile prime-correlation surplus.
+72. **A simple normalized-Hankel bottom edge can attain the sharp Xi response -- failed.**  At
+    target equality and `r=r_*`, both independent common-channel source vectors are bottom
+    eigenvectors by `(251)`.  Exact saturation therefore requires bottom multiplicity at least two.
+73. **This alignment law closes Suzuki -- failed.**  A maximal edge, a nonvanishing edge overshoot,
+    or a near-minimal aligned edge all remain logically possible.  Even successful first-jet
+    admission leaves the singular paired-occupancy hierarchy unproved.
+74. **Maximal normalized-Hankel edge is a new independent admission mechanism -- failed.**
+    Equations `(255)--(260)` identify it with the existing even ground-pole branch.  Source
+    visibility, not the abstract edge, decides whether that pole admits the defect response.
+75. **A uniform edge ceiling over every admissible shift is the exact Suzuki no-go -- failed as an
+    equivalence.**  It is sufficient, but any strict even floor violates it near the floor even
+    when the even ground is source-invisible.  Exact negative closure must exclude the visible
+    ground-residue cone and every finite-shift source excursion.
+76. **A tied parity floor automatically avoids maximal negative edge -- failed.**  Any even ground
+    vector outside the odd ground kernel forces `r_lambda->1`.  Avoiding this pole contribution
+    requires the kernel-incidence rigidity `(258)`, and that condition still does not control other
+    relative near-kernel sequences.
+77. **The first-prime seam's infinite negative index can be amplified by narrower bumps into the
+    required edge -- failed.**  The prime reflection weight stays bounded while the common
+    finite-part Cauchy energy grows as `log(1/eta)`.  The normalized quotient tends to zero by
+    `(264)`.
+78. **Arbitrarily large raw packet index implies many large relative eigenvalues -- failed.**  For
+    every fixed packet dimension, the full signed packet compression of the relative Hankel form
+    tends to zero as resolution increases.  Letting dimension and resolution co-vary is a different
+    global multi-seam problem and is not supplied by inertia.
+79. **One isolated prime seam can supply the cofinal `77/85` mechanism -- failed for the literal
+    microlocal construction.**  A viable interior source must maintain common Cauchy energy
+    comparable to a coherent all-prime reflection sum; it cannot be assembled from asymptotically
+    isolated delta-Hankel packets.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -3426,7 +3872,7 @@ equivalence, source-impedance calibration, all-anchor weak-escape law, and fixed
 rigidity `(163)--(200)`, together with the compactified two-extension spectral-shift and
 smoothing-trace reduction `(201)--(215)`, the low-energy support/regular phase-mixing wall
 `(216)--(223)`, and the source-specific Toeplitz `sech`/normalized-Hankel rapidity wall
-`(224)--(239)`.
+`(224)--(267)`.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
 specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
 formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the
@@ -3454,8 +3900,12 @@ identification of the singular fixed-anchor law with compactified even/odd gap o
 log-moment trace hierarchy `(210)--(212)`.  The scalar defect transport and endpoint crossing
 `(213)--(215)` already belong to `SR-55` and the parity-resolvent transport card; the new point is
 only their placement as moment zero of the paired hierarchy.  The targeted search also found no
-Suzuki restricted-Weil midpoint-reversal `sech` bound, normalized-Hankel hyperbolic budget, or
-prime-correlation consequence `(229)--(239)`.
+Suzuki restricted-Weil midpoint-reversal `sech` bound, normalized-Hankel hyperbolic budget,
+prime-correlation consequence `(229)--(241)`, exact edge/source-alignment slack and sharp-edge
+multiplicity law `(242)--(251)`, or the Suzuki relative-edge/parity-floor correspondence
+`(255)--(260)`.  Yafaev's singular-Hankel analysis contains the isolated delta-reflection parent,
+but the search found no Suzuki common-Toeplitz logarithmic localization penalty or normalized
+prime-seam collapse `(262)--(267)`.
 Primary parent comparisons are Reiffenstein, *Higher-order interlacing for matrix-valued
 meromorphic Herglotz functions*, arXiv:2108.10746, Theorem 2.3 for the scalar product law;
 Poltoratski, *The Krein spectral shift and rank one perturbations of spectra*,

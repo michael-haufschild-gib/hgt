@@ -1217,3 +1217,188 @@ prove `(A60)` for one source-predeclared finite physical relation, then carry sa
 reporter through normalized zero/one-large-prime seam and exact alternating recurrence. This is
 the non-circular part of global column chi-square; scalar term in `(A58)` is the signed mass
 discrepancy itself and may not be assumed small.
+
+## 2026-08-11 weighted-Hall projection dual and capacity-rate fracture
+
+The ANOVA target now has an exact finite producer formulation. For source and target physical
+masses with totals A,B, normalize them to probability laws alpha,beta on a fixed bipartite
+relation E. Let C_E be all target marginals reachable by row-stochastic kernels supported
+on E, and put
+
+\[
+ d_E^2(\alpha,\beta)
+ =\min_{\gamma\in C_E}\sum_t{(\gamma_t-\beta_t)^2\over\beta_t}.
+\tag{A62}
+\]
+
+Then minimum physical centered energy is exactly
+
+\[
+ \boxed{\min_KE_{\rm cent}(K)={A^2\over B}d_E^2(\alpha,\beta).}
+\tag{A63}
+\]
+
+For f on target vertices, define
+(M_E f=\sum_s\alpha_s\min_{t\sim s} f_t). Finite Hilbert projection proves duality
+
+\[
+ \boxed{
+ d_E(\alpha,\beta)
+ =\sup_{\operatorname{Var}_\beta(f)>0}
+ { [M_Ef-\mathbb E_\beta f]_+\over
+   \sqrt{\operatorname{Var}_\beta(f)}}.}
+\tag{A64}
+\]
+
+Thus at (A,B=X^{1+o(1)}), (A60) is exactly all-reporter inequality
+
+\[
+ M_Ef-\mathbb E_\beta f
+ \le X^{-1/2+o(1)}\sqrt{\operatorname{Var}_\beta(f)}
+ \quad\hbox{for every }f.
+\tag{A65}
+\]
+
+Zero centered energy is equivalent to normalized weighted Hall
+(\alpha(U)\le\beta(N_E(U))) for every source set U. For a fixed kernel K, same defect is
+exact normalized two-row collision law
+
+\[
+ \sum_t{(\gamma_t^K-\beta_t)^2\over\beta_t}
+ =\sum_{s,s'}\alpha_s\alpha_{s'}
+   \sum_t{K_{st}K_{s't}\over\beta_t}-1.
+\tag{A66}
+\]
+
+This exposes a sharp correction to older target language. If column density
+(r=\gamma/\beta) only satisfies (r\le1+\varepsilon), then
+(\operatorname{Var}_\beta(r)\le\varepsilon), sharply. Hence one-sided load (1+o(1)) is
+not sufficient for strict half; required excess is (X^{-1+o(1)}). Two-sided
+(|r-1|\le\varepsilon) needs (\varepsilon\le X^{-1/2+o(1)}). Exact weighted Hall gives zero.
+
+Every target partition obeys total variance. For two moving seam sectors with target mass b
+and pushed mass g, between-sector ANOVA is exactly
+
+\[
+ \boxed{{(g-b)^2\over b(1-b)}.}
+\tag{A67}
+\]
+
+Therefore seam flux cannot be discarded during column optimization. Reciprocal marker states
+split similarly into within-state codiagonal energy plus state-mean energy.
+
+Final finite producer target is sharpened to:
+
+**WEIGHTED-HALL-ANOVA-PROJECTION-STRICT-HALF-AND-SIGNED-RECURRENCE-SEAM**:
+for actual source-predeclared entropy-complement/Ramaré graph, prove (A65), equivalently
+(d_E^2\le X^{-1+o(1)}), or construct one recurrence-compatible kernel satisfying (A66) at that
+rate. Exact normalized weighted Hall is a stronger zero-energy option, but arbitrary max-flow
+chosen after scalar endpoint inspection is not admissible: kernel selection must be source-defined
+and same weights must pass marker partition, normalized seam, and alternating recurrence.
+Scalar mass difference survives separate normalization and remains mean/recurrence channel.
+
+Full finite proof and hostile rate audit:
+../2-fully-proven/new_scientific_knowledge/route-e-weighted-hall-anova-projection-duality-law.md.
+Lean corpus was inspected read-only; no Lean source was edited or built.
+
+## 2026-08-11 grown-Lean recurrence-weighted symmetric-conductance avenue
+
+Read-only audit found umbrella theorem
+abs_sum_sign_weight_le_degreeNormalizedReplacementDefect in
+RHTower/MobiusBoundaryOppositeSignTransport.lean. For any finite symmetric sign-reversing graph
+on physical atoms, with degree d_n and Gibbs weight w_n=e^(-xn), it gives isolated weight plus
+directed variation of w_n/d_n. Pairing two orientations of each edge gives
+
+\[
+ \sum_{\{n,m\}:n\sim m}
+ \left|{e^{-xn}\over d_n}-{e^{-xm}\over d_m}\right|.
+\tag{A68}
+\]
+
+If every edge has |n-m|<=H, orient it n<m. Exact split and exponential edge estimate give
+
+\[
+ \boxed{
+ |J_V(x)|
+ \le W_{\rm iso}(x)+xH Z_V(x)
+ +\sum_{\{n,m\}:n<m}
+ e^{-xm}\left|{1\over d_n}-{1\over d_m}\right|.}
+\tag{A69}
+\]
+
+At x=X^(-1), H=X^(1/2+o(1)), and Z=X^(1+o(1)), middle term already has strict-half size.
+Simple-graph producer is
+
+\[
+ W_{\rm iso}(X)
+ +\sum_{\{n,m\}:n<m}e^{-m/X}
+   \left|{1\over d_n}-{1\over d_m}\right|
+ \le X^{1/2+o(1)}.
+\tag{A70}
+\]
+
+Actual recurrence weights yield sharper formulation. Let P be source-predeclared nonnegative
+substochastic kernel on finite aperture, supported only on opposite signs and |n-m|<=H. Set
+
+\[
+ r_n=\sum_mP_{nm}\le1,
+ \ell_n=\sum_mP_{mn},
+ \qquad b_{nm}={P_{nm}+P_{mn}\over2},
+ \qquad q_n={2\over r_n+\ell_n}
+\tag{A71}
+\]
+
+off set where r_n+ell_n=0. Symmetric base b has weighted degree (r_n+ell_n)/2. Applying general
+unused-conductance theorem to
+c_nm=b_nm min(e^(-xn)q_n,e^(-xm)q_m), then Cauchy--Schwarz, proves
+
+\[
+ \boxed{
+ |J_V(x)|
+ \le W_{P,0}(x)+xH Z_V(x)
+ +{1\over2}
+ \sqrt{(1+e^{xH})Z_V(x)\mathcal E_P(x)},}
+\tag{A72}
+\]
+
+where
+
+\[
+ \mathcal E_P(x)
+ =\sum_{\{n,m\}:n<m}
+ b_{nm}e^{-xm}(q_n-q_m)^2.
+\tag{A73}
+\]
+
+Therefore direct recurrence-weighted strict-half producer is only
+
+\[
+ \boxed{
+ W_{P,0}(X^{-1})\le X^{1/2+o(1)},
+ \qquad
+ \mathcal E_P(X^{-1})\le X^{o(1)}.}
+\tag{A74}
+\]
+
+This is geometrically weaker on slow modes than global column ANOVA: inverse column load may vary
+by order one across aperture provided its edge gradient is diffuse. It retains actual kernel
+weights, prime-dilation intervals, alternating signs, and finite Gibbs factors. Symmetrization
+(P+P^T)/2 does not require forward/reverse Metropolis support overlap.
+
+This lane is not automatic. Complete-bipartite blocks of length H with fixed parity imbalance have
+both degrees comparable to H, all edge lengths <=H, but linear Gibbs current and degree BV.
+Row/co-degree exponents cannot prove (A74). Existing bounded one/two/four-prime graph is also
+retired: formal y-friable isolation plus failed-route density audit gives linear isolated Gibbs
+mass in every uniformly sublinear pruning. Full growing-breadth entropy-complement kernel is not
+covered and is surviving candidate.
+
+Final alternate target:
+
+**ENTROPY-COMPLEMENT-RECURRENCE-WEIGHTED-INVERSE-LOAD-DIRICHLET-STRICT-HALF**:
+construct actual source-defined finite substochastic kernel on common physical aperture and prove
+(A74) uniformly on same nested apertures used by alternating recurrence. Atoms with neither
+incoming nor outgoing mass are explicit residual; terminal rows need not be invented.
+
+Full proof and sharpness audit:
+../2-fully-proven/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md.
+No Lean source was edited or built.
