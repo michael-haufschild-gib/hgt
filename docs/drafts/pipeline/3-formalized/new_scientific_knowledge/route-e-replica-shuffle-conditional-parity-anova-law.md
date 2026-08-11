@@ -1,7 +1,7 @@
 # Route E replica-shuffle conditional-parity ANOVA law
 
 - **ID:** `ROUTE-E-REPLICA-SHUFFLE-PARITY-ANOVA-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[THEOREM (paper)]` / `[NEW ROUTE-E PRODUCER]` / `[SHARP FIREWALL]`
 - **Source:** read-only use of
   `HTGeometry/ReplicaHistoryFactorizationLaw.lean`,
@@ -26,7 +26,7 @@ all information except the prime-incidence histogram of an entire finite history
 
 - [x] 0 → 1 in-progress: physical replica aperture and hostile cardinality test stated
 - [x] 1 → 2 fully-proven: Theorems A--G below are dependency-closed finite mathematics
-- [ ] 2 → 3 formalized: paused by user during Lean corpus refactor
+- [x] 2 → 3 formalized: exact finite laws are closed in umbrella-wired Lean
 - [ ] 3 → 4 publication-ready: requires arithmetic orbit-parity estimate `(29)`
 
 ## 1. Component-history shuffle
@@ -520,13 +520,26 @@ theorem, or physical kernel descent is claimed.
 
 ## Honest status
 
-Theorems A--G and Proposition H are dependency-closed paper proofs.  Existing Lean supplies the
-component-history equivalence, exact collision classification, all-order phase-average detector,
-prime-log projective-independence witness, and orthogonal-replica diagonal evacuation used in the
-audit.  Orthogonal replication explicitly preserves the score and therefore does not supply
-Theorems D--G or `(29)`.  Per user instruction during corpus refactor, no Lean file was edited or
-built.
+Theorems A--G and Proposition H are dependency-closed paper proofs and their exact finite content
+is formalized.  Orthogonal replication explicitly preserves the score and therefore still does
+not supply `(29)`.  Route E remains open at aperture-conditioned prime-histogram parity energy and
+seam descent, not at finite shuffle, counting, Gibbs distortion, or measure-change packaging.
 
 ## Log
 
 - 2026-08-11 — originated after read-only audit of grown all-order HTGeometry replica corpus.
+- 2026-08-11 — formalized in `RouteEUniformFibreShuffle.lean`,
+  `RouteEComponentHistoryShuffle.lean`, `RouteEPhysicalFibreCoarea.lean`,
+  `RouteETwoSidedColumnLoadGradient.lean`, `RouteEGibbsProductHistoryStability.lean`,
+  `RouteEUniformComparisonEndpoint.lean`, and `RouteEGibbsUniformCellComparison.lean`.
+
+## Lean implementation and verification
+
+- Exact product-multinomial orbit cardinality, arbitrary-anchor joint marginals, product-character
+  means, and binary hostile identities are unconditional Lean theorems.
+- Pairwise logarithmic weight oscillation gives physical-versus-uniform mean defect at most
+  `exp(eta)-1`; equal-product histories instantiate
+  `eta=|R| H^2/(X(X-H))`; physical-fibre conditional energy gives the endpoint.
+- Targeted builds of `RouteEComponentHistoryShuffle`, `RouteEGibbsUniformCellComparison`, and
+  `RouteEPhysicalProductFibreReplica` pass.  No umbrella or full build was run.
+- Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

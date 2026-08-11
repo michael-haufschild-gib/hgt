@@ -130,6 +130,10 @@ construction of another source or observer.
 ## Verification
 
 - Direct `lake env lean` check: PASS.
-- Targeted module build and axiom audit: pending final gate.
+- Targeted
+  `lake build GaloisForLFunctions.RHTower.XiShiftedHalfDensityAdjacentConnection`: PASS.
+- Capstone `#print axioms`: only `propext`, `Classical.choice`, and `Quot.sound`.
+- Module is reachable from `GaloisForLFunctions.RHTower`; full repository lint remains red on 18
+  unrelated pre-existing umbrella-reachability errors.
 - No computation, `sorry`, `admit`, custom axiom, `opaque`, `unsafe`, RH premise, orientation map,
   or fixed reporter.

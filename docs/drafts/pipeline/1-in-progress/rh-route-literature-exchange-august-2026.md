@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`bba4b49520bef17454f24a81a9c6bbf3ce3004f9`. Files outside committed umbrellas at this snapshot are
+`19d8544a7a48d35a6d72911d4c6bd53171e7ae73`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
@@ -118,9 +118,10 @@ exceptional fibre carries the marked tame exponents and actual physical coeffici
 moments also resum to the same nonlinear Wold prime-clock profile. These remove source-normal and
 principal-ideal ambiguity but not the global ideal-preserving Rost--Schmid/Meyer comparison.
 
-Route E's finite architecture is now formal through three charts: weighted-Hall projection duality,
-physical-fibre/product-fibre coarea with all-depth dissipation, and two-sided column-load
-Dirichlet reduction. Product-preserving recombination has an exact second-order Gibbs defect.
+Route E's finite architecture now has formal weighted-Hall ANOVA, physical-fibre/product-fibre
+coarea with all-depth dissipation, and two-sided column-load Dirichlet reduction. Stronger
+canonical weighted-Hall projection duality is committed but not umbrella-reachable at the cutoff.
+Product-preserving recombination has an exact second-order Gibbs defect.
 Uniform fibre projection, aperture-admission comparison, and all-order product-history Gibbs
 stability are now umbrella-reachable as well.
 Complete signed inverse-load flux is formally circular because it reconstructs the original
@@ -675,10 +676,11 @@ Thus strict half requires `d_E^2<=X^(-1+o(1))`, equivalently an all-reporter def
 `1+epsilon` gives only `d_E^2<=epsilon`, sharply, so `1+o(1)` capacity is not enough; its excess
 must reach `X^(-1+o(1))`, or a two-sided balance must reach `X^(-1/2+o(1))`. Exact partition ANOVA
 also makes the moving seam mismatch an orthogonal energy term, so it must be transported by the
-same recurrence-compatible kernel. `RouteEWeightedHallANOVA.lean` and
-`RouteEWeightedHallProjectionDuality.lean` formalize the finite normalization, compact reachable
-polytope, canonical projection, zero-distance transport equivalence, variational inequality, and
-extremal reporter. They do not prove the literal relation's distance rate.
+same recurrence-compatible kernel. Umbrella-reachable `RouteEWeightedHallANOVA.lean` formalizes
+finite normalization and seam ANOVA. Committed but umbrella-unreachable
+`RouteEWeightedHallProjectionDuality.lean` adds the compact reachable polytope, canonical
+projection, zero-distance transport equivalence, variational inequality, and extremal reporter.
+These results do not prove the literal relation's distance rate.
 
 A second umbrella-reachable Lean lane uses direct load roughness. On a symmetric parity-flipping
 physical graph with degrees `d_n`, Gibbs weights, and edge
@@ -738,11 +740,11 @@ rate wall: exact physical normalization and collision expansion, sharp
 `density<=1+epsilon => chiSquare<=epsilon`, two-sided
 `|density-1|<=epsilon => chiSquare<=epsilon^2`, and exact within/between-sector seam ANOVA. The
 one-sided rate has a symbolic sharpness witness. This closes generic finite algebra, not the
-literal arithmetic adjacency. Umbrella-reachable
+literal arithmetic adjacency. Committed but umbrella-unreachable
 `RouteEWeightedHallProjectionDuality.lean` closes the generic convex layer: compact
 reachable-marginal polytope, canonical weighted projection, variational inequality, extremal
-reporter, and exact greatest-value reporter/projection duality. This gives formal support for the
-duality but still does not estimate Route E's physical arithmetic relation.
+reporter, and exact greatest-value reporter/projection duality. This gives provisional Lean support
+for the duality but still does not estimate Route E's physical arithmetic relation.
 
 The product-fibre alternative is now formal rather than heuristic. The original physical law
 inside each fibre gives a reversible stationary idempotent conditional kernel, exact coarea, and
@@ -760,7 +762,7 @@ comparison bounds conditional parity energy by twice unrestricted fibre energy p
 squared rejection mass. These theorems close abstract product-history stability and fibre
 projection, while exposing rather than proving the arithmetic rejection estimate.
 
-Current untracked `RouteEComponentHistoryShuffle.lean` makes componentwise histogram shuffling
+Umbrella-reachable `RouteEComponentHistoryShuffle.lean` makes componentwise histogram shuffling
 literal. Orbit cardinalities are product multinomials and anchored product-character means
 factorize into empirical component means at every distinguished slot; the shuffle kernel is the
 same symmetric bistochastic idempotent projection. Its binary singleton example is a sharp firewall:
@@ -769,14 +771,16 @@ an orbit of size `(m+1)^|C|` has anchored parity bias exactly
 No external counting result changes this identity; progress requires source control of the actual
 histogram regime, aperture rejection, and seam.
 
-Two other current untracked files close the remaining finite comparison chain provisionally.
+Two other umbrella-reachable files close the remaining finite comparison chain.
 `RouteEUniformComparisonEndpoint.lean` turns reference-cell energy plus a cellwise comparison
 defect into a physical mean bound. `RouteEGibbsUniformCellComparison.lean` proves that pairwise
 logarithmic Gibbs oscillation at most `eta` changes every bounded cell mean from its uniform value
-by at most `exp(eta)-1`. Together with the umbrella product-history stability theorem, finite
-Gibbs-to-uniform passage inside an equal-product cell is no longer a research obstacle. The
-unproved producer is the arithmetic estimate for actual prime-exponent histogram cells, aperture
-rejection, and the moving seam. These files are uncommitted and receive no formal credit.
+by at most `exp(eta)-1`. It then composes the all-order product-history stability theorem into the
+literal defect `exp(mH^2/(X(X-H)))-1` and proves the physical endpoint
+`|mean|<=sqrt(2 E_uniform+2(exp(eta)-1)^2)`. Finite Gibbs-to-uniform and physical measure change
+inside an equal-product cell are no longer research obstacles. The unproved producer is the
+arithmetic uniform-reference energy for actual prime-exponent histogram cells, aperture rejection,
+and the moving seam.
 
 `RouteESignedInverseLoadFlux.lean` is a formal no-go, not a third cancellation estimate: it
 decomposes signed current exactly into isolated, co-moving, and signed inverse-load terms and
@@ -1518,15 +1522,14 @@ Calderón--Witt incidence. No exact external source was located for either sourc
 identification. They close the principal operator and local marked normal, not the trace-class
 corrected remainder or global strict comparison.
 
-Committed but umbrella-unreachable
-`DeningerExponentLineReflectionBlowupTransport.lean` provisionally constructs the forced
+Umbrella-reachable `DeningerExponentLineReflectionBlowupTransport.lean` constructs the forced
 anti-birational lift
 `(z,s)↦(conj((1-zs)/(1-s)),1-conj(s))`, proves it involutive and Xi-covariant, and transports the
 exceptional direction by `w↦conj(w)(1-conj(rho))/conj(rho)`. It carries marked pole to marked pole,
-preserves exact Xi multiplicity, conjugates the full exceptional profile, and negates the
-Gamma-six tame readout. Current working-tree changes add coefficient uniqueness and umbrella
-wiring. No exact external collision was located. This closes local reflection covariance once
-certified, not the global trace-ideal comparison or fixed-reader cyclicity.
+preserves exact Xi multiplicity, uniquely characterizes the anti-linear coefficient, conjugates the
+full exceptional profile, and negates the Gamma-six tame readout. No exact external collision was
+located. This formally closes local reflection covariance, not the global trace-ideal comparison or
+fixed-reader cyclicity.
 
 `SourceHorizontalShellGreenPrimeClockProfile.lean` further proves every normalized shell moment
 tends to `1/(r+1)` and resums the shell response to the same universal nonlinear Wold profile.
@@ -2261,24 +2264,30 @@ Three committed but umbrella-unreachable modules provisionally supply the local 
 `Sieve/HuxleyLogPhase.lean` proves reciprocal-frequency Kuzmin--Landau and order-two logarithmic
 phase bounds; `Sieve/HuxleyDyadicRow.lean` identifies them with dyadic Gram entries; and
 `Sieve/HuxleyLargeValues.lean` proves the separated-frequency Schur/Halász--Montgomery estimate
-under `GB<=V^2/2`. Current working-tree changes repair that file and add a finite multiblock
-version. At the committed cutoff this engine is not applied to a raised short factor or the
-complete signed aggregate; none of the three files receives formal credit.
+under `GB<=V^2/2` together with its finite multiblock version. None of the three files receives
+formal credit until umbrella wiring.
 
-Current untracked `Sieve/MaynardRaisedCoefficient.lean`,
+Committed but umbrella-unreachable `Sieve/MaynardRaisedCoefficient.lean`,
 `Sieve/MaynardAllShortHuxley.lean`, and `Sieve/MaynardRaisedDyadic.lean` provisionally close the
 single-raised-factor structural prerequisites for that application.
 The first gives arbitrarily small power loss for every fixed convolution-power coefficient energy
 and preserves dyadic support. The second selects a raising multiplier at most `51`, puts the
 raised length in `[T0^(9/16),T0^(5/8)]`, covers full height for `sigma>=17/18`, and leaves the
 exact `x^((1-sigma)/16)` reserve. The third anchors the convolution coefficients, decomposes the
-raised Dirichlet factor into exactly `ell+1` dyadic Huxley rows, controls each row coefficient by
-the total convolution energy, and applies the multiblock theorem under an explicit aggregate
-absorption hypothesis. It therefore closes the structural Case 1A theorem for one raised factor,
-but not the passage from the complete signed Heath--Brown aggregate to its large-value and
-absorption hypotheses. Thus all-short work has narrowed to that aggregate-to-factor passage; the
-ultra-near-one long-Möbius branch remains untouched. All three files are uncommitted and receive no
-formal credit.
+raised Dirichlet factor into exactly `ell+1` dyadic Huxley rows, proves its exact base-polynomial
+powering identity, controls each row coefficient by total convolution energy, and applies the
+multiblock theorem under an explicit aggregate absorption hypothesis. It also treats every
+fixed-width grouped factor: width `2^w` becomes exactly `w*ell+1` Huxley rows. It therefore closes
+the structural grouped-factor Case 1A theorem, but not passage from the complete signed
+Heath--Brown aggregate to its group-selection, large-value, and absorption hypotheses. Thus
+all-short work has narrowed to that aggregate-to-group passage; the ultra-near-one long-Möbius
+branch remains untouched. All three files receive no formal credit until umbrella wiring.
+
+Current untracked `Sieve/MaynardGroupedFactor.lean` provisionally constructs the literal grouped
+arithmetic coefficient vector, proves its exact `2^w` multiplicative width and raised-value power
+law, and therefore closes coefficient-level group formation. It still does not select the decisive
+group from the signed aggregate or verify the Huxley absorption budget, and receives no formal
+credit.
 
 **Exchange verdict and Lean action.** Generic Lorentz mass shell, rapidity, causal chamber, Hankel
 scattering, and modified-Bessel transform are not novelty claims. Corpus-specific candidate delta
@@ -2343,18 +2352,29 @@ source-native landing by one scalar mismatch, and square-half-density transport 
 summands while exposing the moving odd escape pole. These declarations identify the precise
 terminal channel but do not sign it.
 
-Current untracked `XiShiftedHalfDensityAdjacentConnection.lean` provisionally identifies that
+Umbrella-reachable `XiShiftedHalfDensityAdjacentConnection.lean` identifies that
 mismatch exactly with `(n-1/2) beta_n` times the previous orthogonal direction. It proves the
 subleading admission velocity is a strictly positive Jacobi energy and reduces the entire
 half-density reserve to half one terminal Jacobi Riccati defect; odd-current drift is minus the
-positive norm times that defect. This removes “mismatch classification” from the scientific core
-if certified. Remaining alternate theorem is a literal Xi sign for the terminal Riccati defect.
+positive norm times that defect. This removes “mismatch classification” from the scientific core.
+Remaining alternate theorem is a literal Xi sign for the terminal Riccati defect.
 
-Current untracked `XiResolventMassRigidity.lean` provisionally proves the complementary stationary
+Umbrella-reachable `XiResolventMassRigidity.lean` proves the complementary stationary
 rigidity law: `M'(X)=-4D(X)`, `(X+1)^4M(X)` is nondecreasing, and any nonzero defect persists above
 the quartic floor. RH is equivalent to quartically renormalized mass tending to zero, even along
 one escaping sequence. This supplies an exact escape receiver but no unconditional decay; no
 external resolvent theorem provides the missing source-specific escape estimate.
+
+Two current untracked modules sharpen these endpoints provisionally. In
+`XiShiftedCanonicalAdmissionRecessionConnection.lean`, normalized recession admission is exactly
+the actual inverse-Hankel admission in source coordinates; every fixed positive degree has a
+terminal chamber where its actual first coefficient is negative, strictly increasing, and tends to
+zero. This closes fixed-degree terminal trace, not terminal Riccati-defect sign, degree escape, or
+full-ground parity. In `XiResolventArithmeticTarget.lean`,
+`sum_q||u_q||^2=Re R_1+2M`; equality is RH, and any eventual upper error `o(X^-4)` proves RH by
+quartic collapse. The open stationary estimate is therefore conjugation-diagonal/zero-separating
+control of the `l2` mass, not another bilinear moment bound. Neither file is committed or receives
+formal credit, and neither creates another route.
 
 The first nonconstant face is now source-explicit. If `F` is the zeroth shifted moment, Lean proves
 `det H_2=-(F^3/2)(1/F)''` and identifies terminal flux with the third derivative of `1/F`. On the
@@ -2612,8 +2632,9 @@ main mesh. Cauchy--Schwarz or termwise absolute values still erase the sign need
 **Research action.** Do not attack the absolute two-sided critical graph norm: Lean proves it
 would erase the unavoidable critical Wold pole. Preserve the principal part through a signed or
 distributional continuation of residual plus mesh. On the arithmetic lane, apply the provisional
-local Huxley engine to the raised all-short signed aggregate and then isolate the ultra-near-one
-long-Möbius case. Formalize the mean-square prime-gap theorem only for the weaker split lane.
+local Huxley/Maynard suite by proving passage from the raised all-short signed aggregate to its
+single-factor large-value and absorption hypotheses, then isolate the ultra-near-one long-Möbius
+case. Formalize the mean-square prime-gap theorem only for the weaker split lane.
 More RH-equivalent Cassini energies, determinant weights, or unweighted termwise bounds do not
 advance this opening.
 
@@ -2817,8 +2838,8 @@ forces its fibre current to vanish. This is a fourth Route-V candidate, not a ro
 beyond certification should wait for the arithmetic relative extension and source-normal current
 identity; more generic evenization algebra would not advance the RH premise.
 
-Current untracked `HTGeometry/ConstitutiveHassePacketFormation.lean` adds a concrete positive
-formation model provisionally. Hasse cancellation packets form before atomic refinement; a common
+Umbrella-reachable `HTGeometry/ConstitutiveHassePacketFormation.lean` adds a concrete positive
+formation model. Hasse cancellation packets form before atomic refinement; a common
 geometric depth kernel reconstructs the Salem Fermi marginal; packet recovery is summable for
 every positive Mellin exponent, whereas absolute atomic refinement is summable exactly beyond
 `sigma=1`. The associated positive Fermi measures determine their exponent, and reflected
@@ -3186,14 +3207,16 @@ External results that can still strengthen a live route, in dependency order, ar
    weighted residual variation; the stronger two-sided graph-norm lane does not require this import.
 
 Local certification backlog should not be confused with literature import. The current committed
-but unwired queue is `DeningerExponentLineReflectionBlowupTransport.lean`,
-`DeningerMeyerAdiabatic.lean`,
+but unwired queue is `DeningerMeyerAdiabatic.lean`,
 `DeningerAdiabaticMobiusPreimage.lean`, `DeningerAdiabaticMobiusEndpoint.lean`,
 `DeningerAdiabaticDistributionEndpoint.lean`, `DeningerAdiabaticEulerConnection.lean`,
 `DeningerAdiabaticGreenStokes.lean`, `DeningerAdiabaticGammaEndpoint.lean`,
 `DeningerAdiabaticTransgression.lean`, `DeningerAdiabaticContragredient.lean`,
-`RouteEOppositeParityMetropolisRejection.lean`, `Sieve/HuxleyLogPhase.lean`,
-`Sieve/HuxleyDyadicRow.lean`, and `Sieve/HuxleyLargeValues.lean`; their
+`RouteEOppositeParityMetropolisRejection.lean`,
+`RouteEWeightedHallProjectionDuality.lean`, `Sieve/HuxleyLogPhase.lean`,
+`Sieve/HuxleyDyadicRow.lean`, `Sieve/HuxleyLargeValues.lean`,
+`Sieve/MaynardRaisedCoefficient.lean`, `Sieve/MaynardAllShortHuxley.lean`, and
+`Sieve/MaynardRaisedDyadic.lean`; their
 provisional route effects are recorded above, but they are excluded from formal credit at this
 cutoff. `XiHeatCassiniWoldResidualODEClosure.lean`, `HTGeometry/MellinGrowthBounds.lean`,
 `RHTower/XiExplicitFormulaLogDeriv.lean`, `XiHeatCassiniPrimeGapMomentBigOBridge.lean`,
@@ -3207,7 +3230,12 @@ cutoff. `XiHeatCassiniWoldResidualODEClosure.lean`, `HTGeometry/MellinGrowthBoun
 `XiResolventTowerLowDegreePositivity.lean`, `SuzukiMovableAnchorClarkCoherence.lean`,
 `SuzukiTwoPortProjectiveWedge.lean`, `RouteEUniformFibreShuffle.lean`,
 `RouteEGibbsProductHistoryStability.lean`, and
-`SourceHorizontalGammaSixTameReaderTransgression.lean` are committed, umbrella-reachable, and
+`SourceHorizontalGammaSixTameReaderTransgression.lean`,
+`DeningerExponentLineReflectionBlowupTransport.lean`,
+`RouteEUniformComparisonEndpoint.lean`, `RouteEComponentHistoryShuffle.lean`,
+`RouteEGibbsUniformCellComparison.lean`, `XiResolventMassRigidity.lean`,
+`XiShiftedHalfDensityAdjacentConnection.lean`, and
+`HTGeometry/ConstitutiveHassePacketFormation.lean` are committed, umbrella-reachable, and
 receive formal credit for their exact declarations. They prove conditional receivers and
 interfaces, or source-depth properness, not the
 signed residual continuation, Maynard--Peck premise, or nonzero-grade source annihilation. C1's exact-source
@@ -3216,15 +3244,15 @@ inverse-flow/Weil package, squared Cayley receiver, closed weighted derivative,
 shifted-cokernel/source equation, and supersymmetric Dirac realization are all umbrella-reachable.
 `RouteEDegreeNormalizedGibbsBoundaryVariation.lean`,
 `SourceHorizontalWoldPrimeClockCubic.lean`, `SourceHorizontalWoldPrimeClockProfile.lean`,
-`RouteEWeightedHallANOVA.lean`, `RouteEWeightedHallProjectionDuality.lean`,
+`RouteEWeightedHallANOVA.lean`,
 `Sieve/HeathBrownDyadicPerron.lean`, `Sieve/HeathBrownDyadicCoefficientBound.lean`,
 `XiShiftedCanonicalAdmissionDefectEnergy.lean`, and the full resolvent/half-density suite now also
-receive formal credit. Current working-tree coefficient-uniqueness, Huxley multiblock, and
-`RouteEUniformComparisonEndpoint.lean`, `RouteEComponentHistoryShuffle.lean`,
-`Sieve/MaynardRaisedCoefficient.lean`, `Sieve/MaynardAllShortHuxley.lean`,
-`XiResolventMassRigidity.lean`, `XiShiftedHalfDensityAdjacentConnection.lean`, and
-`HTGeometry/ConstitutiveHassePacketFormation.lean` changes remain outside cutoff. Their
-provisional frontier effects are recorded above; none changes route count or closes an endpoint.
+receive formal credit. Current working-tree umbrella imports for
+`RouteEOppositeParityMetropolisRejection.lean` and
+`RouteEWeightedHallProjectionDuality.lean`, and current untracked
+`Sieve/MaynardGroupedFactor.lean`, `XiShiftedCanonicalAdmissionRecessionConnection.lean`, and
+`XiResolventArithmeticTarget.lean` remain outside cutoff. Their provisional frontier effects are
+recorded above; none changes route count or closes an endpoint.
 The remaining scientific gap is spectral reality/positive symmetrization; the parallel
 explicit-form connector has one widening-limit assembly left. Route Q's structural absolute-moment
 height gate is Lean-certified; the verified `T>9` floor and signed first-moment bridge remain

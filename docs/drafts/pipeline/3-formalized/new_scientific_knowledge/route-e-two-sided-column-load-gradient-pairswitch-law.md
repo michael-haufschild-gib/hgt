@@ -1,7 +1,7 @@
 # Route E two-sided column-load gradient and pair-switch law
 
 - **ID:** `ROUTE-E-TWO-SIDED-LOAD-GRADIENT-PAIRSWITCH-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[THEOREM (paper)]` / `[FRONTIER REDUCTION]` / `[SHARP FIREWALL]`
 - **Source:** Route E direct recurrence-weighted conductance lane; read-only reuse of
   `RHTower/RouteEDegreeNormalizedGibbsBoundaryVariation.lean`,
@@ -24,7 +24,7 @@ convolution and by componentwise pair switching.
 
 - [x] 0 → 1 in-progress: source-pure finite objects and hostile tests stated
 - [x] 1 → 2 fully-proven: Theorems A--E below have complete finite proofs
-- [ ] 2 → 3 formalized: paused by user during Lean corpus refactor
+- [x] 2 → 3 formalized: exact finite laws are closed in umbrella-wired Lean
 - [ ] 3 → 4 publication-ready: requires arithmetic pair-switch admissibility theorem
 
 ## 1. Finite setup
@@ -487,8 +487,12 @@ knowledge:
 
 Route E and RH remain open.  No common-aperture full-row kernel, estimate `(28)`, recombination
 admissibility/dispersion theorem, normalized seam accumulation, endpoint bound, or RH proof is
-claimed.  No Lean file was edited or built.
+claimed.
 
 ## Log
 
 - 2026-08-11 — paper proofs completed after read-only audit of grown HTGeometry/RHTower corpus.
+- 2026-08-11 — formalized in `RouteESignedInverseLoadFlux.lean`,
+  `RouteETwoSidedColumnLoadGradient.lean`, and `RouteEGibbsProductStability.lean`; targeted builds
+  pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  No umbrella or
+  full build was run.

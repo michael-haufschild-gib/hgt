@@ -56,6 +56,8 @@ identifiability, and reflected-information selection.  The complex Hasse row int
 eta-series identity, the zero-phase orthogonality, and the QFI lower bound remain paper-level in the
 source card.  They are not claimed as Lean theorems here.
 
-Consequently this certificate does **not** prove RH.  It proves the selector conditional needed by
-the next source theorem: an information-neutral lift of functional reflection through the common
-packet-recovery kernel would force the critical center.
+Consequently this certificate does **not** prove RH.  The successor paper theorem now proves that
+functional reflection does lift information-neutrally through every common packet-recovery kernel,
+but also proves that this is an isometry and therefore preserves, rather than kills, reflected
+Jeffreys work.  The remaining selector conditional is strictly stronger: a pre-zero source relation
+must force that conserved symmetric work to vanish.

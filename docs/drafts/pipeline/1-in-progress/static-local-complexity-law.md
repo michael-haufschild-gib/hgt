@@ -5967,13 +5967,17 @@ receive a new title and an independent significance audit.
   `(1-a)log(1/pi(A))-log 2` and its chi-square divergence at least
   `(1-a)^2/cap_a(A)-1`, although every subexponential copy sector captures a vanishing fraction.
   This is the exact sense in which gate accessibility is globally non-Haar while remaining hidden
-  from simple observers.  The
-  complexity sandwich
+  from simple observers.  It obeys the complexity sandwich
   `-log h_A/log(M/a) <= C <= -log h_A/log(1/a)`.  Growth, plateau, and recurrence are therefore
   logarithmic accessibility loss and reamplification regimes of one canonical order parameter;
   their physical-time schedule remains open.  Crucially, the exact complete-union identity becomes
-  `Pr{R,C<=s} <= (M/a)^s cap_a(A)/(1-a) E[1_R A_(A,a)(V)]`.  Therefore an exponential capacity
-  margin needs only the return/carrier-excised bound `E[1_R A_(A,a)(V)]<=exp(o(D))`; exponential
+  `Pr{R,C<=s} <= (M/a)^s cap_a(A)/(1-a) E[1_R A_(A,a)(V)]`.  Writing
+  `Q=-log cap_a(A)`, `X=log E[1_R A_(A,a)(V)]`, and
+  `Q_eff=Q-X+log(1-a)`, the exact universal criterion is
+  `circuit entropy < Q_eff`: circuit entropy plus accessibility excess must stay below capacity
+  surprisal.  In the projective-state branch `Q=Theta(D)`, subexponential accessibility suffices
+  below the capacity rate.  In a Choi/unitary branch `Q` may be `Theta(D^2)` and `X` may pay the
+  ambient-to-static-support codimension; no state-to-Choi scaling transfer is made.  Exponential
   high-mode decay or convergence to Haar was an overstrong target.  This rigorously
   separates permanent efficient non-Haar locality from maximal complexity and retains the full
   capacity exponent; an `L^2` argument would lose its square root.  Pointwise, the same theorem
@@ -5981,10 +5985,11 @@ receive a new title and an independent significance audit.
   `1-cap_a(A)((1-a)^(-1)+B_(E,a))` on every return, while complexity at least `s` forces it below
   `a^s-cap_a(A)/(1-a)+cap_a(A)B_(E,a)`.  Thus recurrence and the plateau realign only in the
   high-mode complement; persistent low locality modes stay capacity-small throughout.  It does not
-  prove Brown growth.  Exact remaining core is now **subexponential accessibility amplification**
+  prove Brown growth.  Exact remaining core is now a **source-relative accessibility budget**
   after common return and fast-forwardable-carrier removal.  Frozen primary conjecture: for the
-  Gaussian full nearest-neighbour Pauli shell and fixed `a<1/M`, this expectation is `exp(o(D))`
-  uniformly on the geometric Brown skeleton, while the first certified recurrence reamplifies it
-  to `exp(Theta(D))`.  Dependency-closed proved reduction and hostile audit:
+  Gaussian full nearest-neighbour Pauli shell and fixed `a<1/M`, projective-state accessibility is
+  `exp(o(D))` uniformly on the geometric Brown skeleton; for a Choi branch the scale-correct claim
+  is instead `Q_eff-s log(M/a)>=kappa D`.  At recurrence the unexcised pointwise surprisal
+  `-log h_A` returns to zero.  Dependency-closed proved reduction and hostile audit:
   `../2-fully-proven/capacitary-observer-sector-excision-law.md`.  Lean remained read only during
   corpus refactoring.

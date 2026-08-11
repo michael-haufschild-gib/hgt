@@ -393,3 +393,53 @@ of the heat-deviation mass — compare against genuine de Bruijn dynamics); (iii
 D′ computes similarly (all coefficients cone-signed) — a full CM-type hierarchy for M;
 (iv) transfer the floor through the Turán defect bound: quantitative lower bounds on how negative
 a Hankel form can get at large X if ¬RH.
+
+## Step 29 (2026-08-11): the assignment "arithmetic bound M = o(X⁻⁴)" — collapse principle + exact open core
+
+**Assignment**: find and prove an arithmetic bound `M(X) = o(X⁻⁴)` (which proves RH).
+**Verdict, now a THEOREM**: no such bound exists short of RH itself. The quartic rigidity makes
+the solution space of the assignment equal to the set of proofs of RH: any eventual majorant `g`
+of `M` with `(X+1)⁴g(X) → 0` already implies RH (and then M ≡ 0, g was dominating zero). This is
+formalized as `riemannHypothesis_of_mass_eventually_le` — the **collapse principle**. There is no
+asymptotic/estimate route: "beating exponent 4" is not an inequality-improvement problem.
+
+**Module**: `RHTower/XiResolventArithmeticTarget.lean` (6 theorems, axioms
+[propext, Classical.choice, Quot.sound], wired after XiResolventMassRigidity):
+- `norm_sq_xiResolventPoint_decomposition` + `tsum_norm_sq_xiResolventPoint_eq`:
+  **ℓ²-mass decomposition** `Σ'‖u_q‖² = Re R₁(X) + 2M(X)` (termwise Pythagoras
+  ‖u‖² = Re(u²) + 2(Im u)²).
+- `moment_one_re_le_tsum_norm_sq`: geometry ≥ arithmetic, always (one-sided for free).
+- `riemannHypothesis_iff_tsum_norm_sq_eq_moment_one_re`: **RH ⟺ Σ'‖u_q‖² = Re R₁(X)** at any
+  one shift — RH as the exact equality of the ℓ²-mass (geometric/GNS side) with the arithmetic
+  second moment.
+- `hasDerivAt_xiResolventMoment_zero`: R₁ = −d/dX R₀ (and R₀(x²) = logDeriv ξ(1/2+x)/x is the
+  corpus's Euler-ray identity) — certifying the arithmetic status of the target's right side.
+- `riemannHypothesis_of_mass_eventually_le` (collapse principle).
+- `riemannHypothesis_of_tsum_norm_sq_eventually_le`: **THE exact open core**: any eventual
+  estimate `Σ'‖u_q‖² ≤ Re R₁(X) + g(X)` with `(X+1)⁴g → 0` proves RH.
+
+**Best-shot analysis of every arithmetic route (recorded honestly, all quantitative)**:
+1. Zero-free region (PNTPlus): shrinks |b| to ≤ 1/2 − A/log⁹γ — improves CONSTANTS in the
+   ceiling only; the X-exponent comes from |α²+X|⁻⁴ termwise and is untouched.
+2. Zero-density / b-decay hypotheses: even |b_q| ≤ C/γ_q^{1+δ} for ALL zeros gives only
+   X⁴M(X) → Σ4γ²b² < ∞ — a finite limit, not 0. The monotone limit identity forces: o(X⁻⁴) ⟺
+   the total deviation charge Σ4(γb)² = 0 ⟺ b ≡ 0. Only exact vanishing works (consistent with
+   the collapse principle).
+3. Bilinear arithmetic observables are σ-blind: for the conj-stable divisor, reindexing r ↦ σr
+   turns every twisted double sum Σ_{q,r}f(A_q+Ā_r) into the plain Σ_{q,r}f(A_q+A_r); e.g. the
+   vertical second moment (1/2π)∫|φ(X+it)|²dt = Σ_{q,r}1/(A_q+Ā_r+2X) equals the plain double
+   sum — verified by residue computation + reindexing. The ℓ²-mass is a σ-DIAGONAL object;
+   no product/second-moment of arithmetic functions reaches it.
+4. Diagonal extraction via ordinate-separating exponential sums (Bohr mean of
+   F_X(t) = Σu_q e^{iγ_q t}; Landau's formula links such sums to Λ at prime powers):
+   4M(X) = BohrMean|F_X|² − 4R₁ modulo ordinate collisions. This is the pair-correlation /
+   Route E correlations wall: unconditional error terms in Landau-type formulas are O(log)-scale,
+   astronomically above o(X⁻⁴). Route stays open only through that wall.
+5. Herglotz/Pick reformulation (φ Stieltjes ⟺ RH) = Lagarias's positivity criterion for ξ'/ξ —
+   [REDISCOVERED], not a new opening.
+
+**Net frontier statement (sharpest form to date)**: RH ⟺ the one-sided estimate
+`Σ'‖(α_q²+X)⁻¹‖² ≤ −(d/dX)[logDeriv ξ(1/2+√X)/√X] + o(X⁻⁴)`; the reverse inequality is a
+Lean theorem; every bilinear-arithmetic route to the left side is formally σ-blind; the two
+candidate mechanisms that could see the diagonal are (i) ordinate-separation (pair-correlation
+wall) and (ii) an operator/GNS realization computing the ℓ²-mass (the standing socket).

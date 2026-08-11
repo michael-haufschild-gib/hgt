@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 11 August 2026, committed snapshot
-**a6dae5ab91932ad47dda6759affc35933e0e96f5**.
+**19d8544a7a48d35a6d72911d4c6bd53171e7ae73**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -290,8 +290,8 @@ existing route.
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open, narrowed | absolute critical graph norm is formally impossible: Lean proves even left endpoint variation plus critical gap energy contradicts unconditional critical-line zeta-zero existence. Live source is signed/coherent continuation of centered residual atoms, or Maynard aggregate cancellation supplying mesh energy without imposing absolute residual boundary trace. A committed unwired local Huxley/Maynard suite proves logarithmic-phase, dyadic-Gram, separated large-values, raised-energy/support, exponent-window, and exact `ell+1`-block single-factor estimates. Current worktree adds the exact powering identity. Passage from the actual signed Heath--Brown aggregate to those hypotheses, plus the ultra-near-one long-Möbius case, remains open |
-| U | open, new | two branches remain. Degenerate/root-sign branch: exclude positive-axis atoms of the canonical selected Padé-pole measure or force the corresponding ground-pole degeneracy. Simple-birth branch: supply a literal prime--Gamma/global-Xi sign/full-ground parity law. The resolvent-Hankel criterion is RH-equivalent at every fixed shift; its unconditional sector proves every possible far-ray negative witness must change sign and is controlled by the decaying imaginary-mass defect. Half-density transport isolates the exact adaptive landing and terminal port. Lean now identifies the former scalar mismatch with the previous Jacobi edge, reduces odd-current orientation to one terminal Jacobi Riccati defect, and proves a quartic persistence/escape law for resolvent mass. None supplies the required Xi sign or decay |
+| T | open, narrowed | absolute critical graph norm is formally impossible: Lean proves even left endpoint variation plus critical gap energy contradicts unconditional critical-line zeta-zero existence. Live source is signed/coherent continuation of centered residual atoms, or Maynard aggregate cancellation supplying mesh energy without imposing absolute residual boundary trace. A committed unwired local Huxley/Maynard suite proves logarithmic-phase, dyadic-Gram, separated large-values, raised-energy/support, exponent-window, exact powering, and fixed-width `w*ell+1`-block grouped-factor estimates. Current untracked work makes a literal grouped Heath--Brown coefficient vector with that support. Passage from the complete signed aggregate to the grouped-factor hypotheses, plus the ultra-near-one long-Möbius case, remains open |
+| U | open, new | two branches remain. Degenerate/root-sign branch: exclude positive-axis atoms of the canonical selected Padé-pole measure or force the corresponding ground-pole degeneracy. Simple-birth branch: supply a literal prime--Gamma/global-Xi sign/full-ground parity law. The resolvent-Hankel criterion is RH-equivalent at every fixed shift; its unconditional sector proves every possible far-ray negative witness must change sign and is controlled by the decaying imaginary-mass defect. Half-density transport isolates the exact adaptive landing and terminal port. Lean identifies the former scalar mismatch with the previous Jacobi edge, reduces odd-current orientation to one terminal Jacobi Riccati defect, and proves quartic persistence/escape for resolvent mass. Current untracked work provisionally proves the actual fixed-degree first coefficient is eventually negative and increases to zero, and identifies the exact geometric/arithmetic resolvent mass gap; neither supplies the required full-ground Xi sign or diagonal decay |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -1151,7 +1151,7 @@ partition gives exact within-sector plus between-sector ANOVA; for two seam sect
 (g-b)^2/(b(1-b)). Seam cannot be optimized away and restored later.
 
 This projection-duality and strict-half rate firewall is dependency-closed on paper in
-`route-e-weighted-hall-anova-projection-duality-law`. Umbrella-reachable
+`route-e-weighted-hall-anova-projection-duality-law`. Committed but not umbrella-reachable
 `RouteEWeightedHallProjectionDuality.lean` contains the compact convex reachable-marginal set,
 canonical nearest projection, variational inequality, extremal reporter, and exact greatest-value
 duality. Zero projection distance is exactly existence of an exact supported transport, and every
@@ -1293,9 +1293,24 @@ aperture admission, or the moving seam. Umbrella-reachable
 reference-fibre energy and cellwise defect to a mean bound. Umbrella-reachable
 `RouteEGibbsUniformCellComparison.lean` closes the finite measure-change step: pairwise logarithmic
 weight oscillation at most `eta` makes every bounded weighted cell mean differ from its uniform
-mean by at most `exp(eta)-1`. Combined with the product-history estimate above, Gibbs distortion
-inside a fixed product cell is therefore no longer an independent obstacle. Neither file supplies
-the arithmetic reference energy, aperture admission, or seam.
+mean by at most `exp(eta)-1`. It composes this with the product-history theorem: on any equal-product
+`m`-history cell inside `[X-H,X+H]`, normalized product-Gibbs and uniform character means differ by
+at most
+
+~~~
+exp(m H^2/(X(X-H))) - 1.
+~~~
+
+Its physical-fibre capstone then gives
+
+~~~
+|physical signed mean|
+  <= sqrt(2 uniform-reference energy + 2(exp(eta)-1)^2).
+~~~
+
+Gibbs distortion and finite physical measure change inside a fixed product cell are therefore no
+longer independent obstacles. These theorems do not supply the arithmetic uniform-reference
+energy, aperture admission, or seam.
 
 Umbrella-reachable `RouteEComponentHistoryShuffle.lean` makes the component-histogram proposal
 literal and simultaneously supplies its sharp firewall. Complete componentwise histograms have
@@ -3547,8 +3562,8 @@ logarithmic derivative resonance and an exact order-two envelope above it.
 `Sieve/HuxleyDyadicRow.lean` identifies these sums with Gram entries of the dyadic Dirichlet row.
 `Sieve/HuxleyLargeValues.lean` combines the two regimes with Schur/Halász--Montgomery to prove a
 local separated-frequency large-values estimate under the explicit absorption condition
-`G B<=V^2/2`. Current working-tree changes repair that file and add a finite multiblock theorem
-with aggregate absorption `card(ι) sum_q G_q B_q<=V^2/2`. None receives formal credit at this
+`G B<=V^2/2` and a finite multiblock theorem with aggregate absorption
+`card(ι) sum_q G_q B_q<=V^2/2`. None receives formal credit at this
 cutoff. Even after wiring, this closes only the local dyadic analytic engine: Route T still needs
 the raised-factor interface and application to the complete signed Maynard aggregate, followed by
 the ultra-near-one long-Möbius survivor.
@@ -3561,17 +3576,22 @@ a raising multiplier at most `51`, place the raised length in
 `[T0^(9/16),T0^(5/8)]`, cover full height for `sigma>=17/18`, and leave the exact
 `x^((1-sigma)/16)` reserve. New `Sieve/MaynardRaisedDyadic.lean` gives the exact interface: it
 anchors the convolution coefficients, identifies each weighted dyadic block with a Huxley row,
-bounds every block by total convolution energy, decomposes a raised factor into exactly `ell+1`
-blocks, and applies the multiblock Huxley theorem under its explicit aggregate absorption
-condition. This closes the structural one-raised-factor Case 1A theorem provisionally. It does not
-derive the required large-value hypothesis from the complete signed Heath--Brown aggregate or sum
-the signed packet. The remaining all-short task is precisely that aggregate-to-factor passage and
-parameter verification; the ultra-near-one long-Möbius survivor remains separate. All three files
-receive no formal credit until umbrella wiring. Current working-tree additions to
-`MaynardRaisedDyadic.lean` further prove that real-axis weighting commutes with multiplicative
-convolution and that the raised value is exactly the corresponding base Dirichlet polynomial to
-the `ell`-th power. This removes the one-factor large-value transfer algebra provisionally, but is
-outside the cutoff and still does not select or sum the complete signed aggregate.
+bounds every block by total convolution energy, proves the exact powering identity, and applies
+the multiblock Huxley theorem under its explicit aggregate absorption condition. It also removes
+the hidden width-one assumption: a grouped factor of multiplicative width `2^w`, raised to power
+`ell`, has exactly `w*ell+1` Huxley blocks and satisfies the corresponding fixed-width
+large-values theorem. This closes the structural grouped-factor Case 1A theorem provisionally. It
+does not select the grouped factor from the complete signed Heath--Brown aggregate, verify the
+aggregate absorption budget, or sum the signed packet. The remaining all-short task is precisely
+that aggregate-to-group passage and parameter verification; the ultra-near-one long-Möbius
+survivor remains separate. All three files receive no formal credit until umbrella wiring.
+
+Current untracked `Sieve/MaynardGroupedFactor.lean` makes the fixed-width input literal: a finite
+product of arithmetic dyadic blocks has lower edge equal to the product of their lower edges,
+upper edge exactly `2^w` times that lower edge, a coefficient vector with the required fixed-width
+support, and an exact raised-value power law. This closes coefficient-level group formation
+provisionally, not selection/pigeonholing of the decisive group from the signed aggregate or the
+Huxley absorption estimate. It receives no formal credit.
 
 **Open core.** Prove cofinal cancellation of centered von Mangoldt atoms inside the finite mass
 light cone, preferably through exact joint pairing before norms. In the Wold/Deninger chart, safe
@@ -3586,9 +3606,10 @@ are formal through item 55. Sharp aggregate truncation optimization is retired b
 removes `R*` from every level `sigma<=99/100`; item 55 closes every near-maximal configuration with
 a sufficiently long zeta or logarithm factor in the derivative-test window. The committed unwired
 local Huxley/Maynard suite closes the single-raised-factor decomposition and multiblock application
-provisionally, so the remaining first survivor is passage from the actual signed aggregate to that
-theorem's large-value and absorption hypotheses. Current worktree also closes the exact powering
-identity, but not aggregate selection or absorption. Close that passage, then
+and the fixed-width grouped-factor extension provisionally, so the remaining first survivor is
+passage from the actual signed aggregate to that theorem's group-selection, large-value, and
+absorption hypotheses. Current untracked work closes literal coefficient-level group formation,
+but not aggregate selection or absorption. Close that passage, then
 the ultra-near-one long-Möbius survivor using a
 polynomial-height quantitative inverse-zeta contour or cancellation of the complete signed
 aggregate. Full structured `R/R*` analysis remains a fallback, not the default wall. Either
@@ -4084,6 +4105,24 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     `(X+1)^4M(X)->0`, and decay along one escaping sequence suffices. This is a sharp persistence
     law and a new receiver formulation, not an unconditional decay estimate; proving its escape
     premise remains RH-bearing.
+66. Current untracked `XiShiftedCanonicalAdmissionRecessionConnection.lean` identifies normalized
+    recession admission with actual inverse-Hankel admission in the exact source-coordinate gauge.
+    For every fixed positive degree, the actual first subleading coefficient tends to zero and is
+    eventually strictly negative with strictly positive derivative on one complete terminal
+    chamber. This closes the fixed-degree recession-to-moving trace connection provisionally. It
+    does not sign the terminal Riccati defect, control degree escape, or prove full-ground parity.
+67. Current untracked `XiResolventArithmeticTarget.lean` gives the exact stationary target
+
+    ~~~
+    sum_q ||u_q(X)||^2 = Re R_1(X) + 2 M(X).
+    ~~~
+
+    Hence the geometric side always dominates the arithmetic second moment, equality at any
+    nonnegative shift is equivalent to RH, and any eventual upper error `g(X)=o(X^-4)` proves RH.
+    Quartic rigidity then makes every successful beat-quartic majorant a collapse certificate, not
+    a gradual asymptotic gain. The missing source estimate is a zero-separating control of the
+    conjugation-diagonal `l2` mass; products of ordinary moments do not supply it. The file is
+    uncommitted and receives no formal credit.
 
 **Open core.** Route U has two irreducible branches. In the degenerate/root-sign branch, items
 55--58 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
@@ -4764,9 +4803,17 @@ refinement; a parameter-independent geometric depth kernel reconstructs the Sale
 formed packets are summable throughout `sigma>0`, while the absolute atomic refinement is
 summable exactly for `sigma>1`. Positive Fermi formation measures recover their Mellin exponent,
 and reflected Jeffreys work vanishes exactly at `sigma=1/2`, for any positive normalizer family.
-This is genuine packet-before-atom and information-properness structure, but it is still a
-receiver: no Xi-typed physical law forces reflected Jeffreys work to vanish. It therefore
-strengthens the fourth Route-V candidate without instantiating a twelfth route.
+The functional-equation successor now closes the previously missing action and changes the open
+core. Every reversible observer action has a canonical stochastic lift through a common recovery
+kernel, and split formation plus that lift are exact KL isometries. Raw Hasse formation is not
+closed by reciprocal reflection in one sheet; its canonical Hellinger midpoint and likelihood
+half-cocycle produce a two-sheet closure, with reflection flipping both tilt and sheet. Separately,
+the even positive theta carrier gives a literal Xi functional-equation action; attaching the same
+Hasse recovery kernel yields a reflected packet lift with zero directed KL chirality for every
+tilt, but Jeffreys work `4aF'(a)>0` off center. Thus `information-neutral reflection` is closed and
+cannot select: it preserves distinguishability. Missing law is now strictly sharper—a pre-zero
+source relation must annihilate conserved symmetric reflected work. This remains a receiver until
+that source relation is constructed.
 
 The adelic Plucker-history module closes a complementary observer no-go. One diagonal
 number-field intervention evolves every minor by its character, reconstructs relative characters
@@ -5076,11 +5123,14 @@ open. Numerical evidence is not accepted as proof or disproof.
    closed. Amplitude/coordinate gauges, one-block capacity, least-defect parabolic scale,
    translation escape, boundary hyperbolicity, and simple-root Cauchy orthogonality remain closed
    at their stated levels.
-   Alternate current-admission lane is now reduced provisionally to a label-sensitive
+   Alternate current-admission lane is now formally reduced to a label-sensitive
    prime--Gamma/global-Xi bound on the exact odd defect-energy/current-norm-flux expression.
    Fixed-mass transport is exact and explicit admission velocity cancels; a positive three-atom
    resolvent-flow countermodel rules out every argument using only finite Hankel positivity,
    canonical admission, smooth compact transport, and the generic moment ODE.
+   Current untracked recession work closes the fixed-degree terminal trace sign, while the
+   untracked arithmetic-target module proves that beating quartic resolvent mass is already an RH
+   collapse theorem. Neither replaces the required cofinal/full-ground Xi input.
 5. **E:** prove finite physical weighted projection
    `d_E^2 <= X^(-1+o(1))`, equivalently
    `N * Var_(nu/N)(rho/nu) <= X^(o(1))` or all-reporter minimum-neighbor expansion, then
@@ -5232,7 +5282,6 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 - formal/GaloisForLFunctions/RHTower/RouteECofactorParityBalance.lean
 - formal/GaloisForLFunctions/RHTower/RouteEDegreeNormalizedGibbsBoundaryVariation.lean
 - formal/GaloisForLFunctions/RHTower/RouteEWeightedHallANOVA.lean
-- formal/GaloisForLFunctions/RHTower/RouteEWeightedHallProjectionDuality.lean
 - formal/GaloisForLFunctions/RHTower/RouteEPhysicalFibreCoarea.lean
 - formal/GaloisForLFunctions/RHTower/RouteEPhysicalProductFibreReplica.lean
 - formal/GaloisForLFunctions/RHTower/RouteETwoSidedColumnLoadGradient.lean
@@ -5870,6 +5919,9 @@ credit until wired:
 - `formal/GaloisForLFunctions/RHTower/RouteEOppositeParityMetropolisRejection.lean` — exact
   rejection/edge-reversal total variation identity, signed-current bound, sharp multiplicative
   defect rate, and reverse-disjoint full-rejection law for finite opposite-parity kernels;
+- `formal/GaloisForLFunctions/RHTower/RouteEWeightedHallProjectionDuality.lean` — compact
+  reachable-marginal polytope, canonical nearest projection, variational inequality, and exact
+  extremal-reporter/projection duality;
 - `formal/GaloisForLFunctions/RHTower/Sieve/HuxleyLogPhase.lean`,
   `Sieve/HuxleyDyadicRow.lean`, and `Sieve/HuxleyLargeValues.lean` — unconditional logarithmic
   phase bounds, dyadic Gram-row realization, and local plus finite-multiblock Huxley large-values
@@ -5880,9 +5932,14 @@ credit until wired:
   decomposition and multiblock Huxley theorem for one raised factor; passage from the actual signed
   aggregate remains absent.
 
-Current working-tree changes beyond the cutoff add the exact base-polynomial powering law to
-`Sieve/MaynardRaisedDyadic.lean`. They receive no formal credit here. Other dirty proof repairs in
-already credited Route-E modules do not change their theorem surface.
+Current working-tree changes beyond the cutoff wire
+`RouteEOppositeParityMetropolisRejection.lean` and
+`RouteEWeightedHallProjectionDuality.lean` into the RHTower umbrella. The import changes receive no
+formal credit here. Current untracked `Sieve/MaynardGroupedFactor.lean` supplies the literal
+fixed-width grouped coefficient vector described above. Current untracked
+`XiShiftedCanonicalAdmissionRecessionConnection.lean` and `XiResolventArithmeticTarget.lean`
+respectively supply the fixed-degree terminal trace law and the exact geometric/arithmetic
+resolvent-mass collapse target. All receive no formal credit.
 
 ### Frankenstein seam: source-horizontal neutral jet = Route-T residual increment
 

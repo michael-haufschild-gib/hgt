@@ -318,15 +318,24 @@ The functional equation sends a zero at `sigma+i tau` to one at `1-sigma+i tau`,
 phase orthogonality in both reflected laws.  It does **not** imply that their Jeffreys work is zero.
 Shared vanishing of one Fourier coefficient is strictly weaker than equality of source laws.
 
-The next theorem is now sharply typed:
+The requested lift is now constructed in
+`functional-equation-split-formation-lift-information-isometry-and-work-no-go.md`.  Its answer is a
+sharp no-go: common-kernel lifting is information-neutral because it is a KL isometry, but an
+isometry preserves reflected Jeffreys work rather than annihilating it.  The raw Hasse formation is
+not reflection-closed in one sheet; its canonical Hellinger/modular double flips the hidden sheet.
+The even theta carrier is reflection-closed, yet its lifted reflected work is
 
-> Construct the functional-equation action on the packet source and prove that its lift through the
-> common recovery kernel `K` is information-neutral (or prove an equivalent source conservation
-> identity forcing `J(Q_sigma,Q_(1-sigma))=0`).
+\[
+ J(\widehat Q_a,\widehat Q_{-a})=4aF'(a),
+\]
 
-If that statement is proved before zero specialization, `(PFM.19)` forces `sigma=1/2`.  If it is
-false, the exact obstruction is no longer mysterious: functional reflection changes packet
-formation work even though both phase observers vanish.
+strictly positive off center.  Thus the corrected next theorem is:
+
+> Construct a pre-zero source relation whose image in the reflection-closed formation forces the
+> already conserved symmetric work `J(Q_sigma,Q_(1-sigma))` to vanish.
+
+If that stronger statement is proved before zero specialization, `(PFM.19)` forces `sigma=1/2`.
+Functional reflection and information neutrality alone do not.
 
 ## 7. Hostile checks
 
@@ -334,7 +343,8 @@ formation work even though both phase observers vanish.
    marginal formula `(PFM.10)`.  It does not contain the latent Hasse formation, the universal
    recovery kernel, the preserved Jeffreys work, or the atomic-refinement wall.
 2. **Zero orthogonality does not prove RH.**  Two distinct probability laws can share a vanishing
-   characteristic function value.  The exact missing premise is information-neutral reflection.
+   characteristic function value.  Information-neutral reflection is now proved and still does not
+   select; the exact missing premise is source-forced annihilation of symmetric reflected work.
 3. **Atomization cannot be used silently.**  `(PFM.23)` proves that absolute atomic refinement is
    illegal at every nontrivial zero.
 4. **The packet is not prime-local.**  Its atoms are integers and only subsequently factor into

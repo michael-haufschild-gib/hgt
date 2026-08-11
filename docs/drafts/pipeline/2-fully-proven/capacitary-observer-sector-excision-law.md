@@ -723,7 +723,7 @@ different likelihood sectors.  Brown growth would be the physical-time loss of t
 likelihood, the plateau its prolonged suppression, and recurrence its reamplification.  Only the
 last time-dependent sentence remains conjectural; equations (11y)--(11ad) are unconditional.
 
-### Theorem G (subexponential accessibility closes the circuit union)
+### Theorem G (capacity--entropy--accessibility budget)
 
 Let `R_D` be any return/carrier-excision event and let `V_D` have an arbitrary endpoint law.  Then
 
@@ -732,10 +732,35 @@ Let `R_D` be any return/carrier-excision event and let `V_D` have an arbitrary e
  \Pr\{R_D,\ C_\epsilon(V_D)\le s_D\}
  \le (M/a)^{s_D}
  {\operatorname{cap}_a(A_D)\over1-a}
- \mathbb E\!left[
+ \mathbb E\!\left[
   \mathbf1_{R_D}\mathfrak A_{A_D,a}(V_D)
  \right].}
  \tag{11ae}
+\]
+
+Equivalently, define capacity surprisal and accessibility excess by
+
+\[
+ Q_D:=-\log\operatorname{cap}_a(A_D),
+ \qquad
+ X_D:=\log\mathbb E\!\left[
+  \mathbf1_{R_D}\mathfrak A_{A_D,a}(V_D)
+ \right],
+ \qquad
+ Q_D^{\mathrm{eff}}:=Q_D-X_D+\log(1-a)
+ =-\log\mathbb E\!\left[
+  \mathbf1_{R_D}h_{A_D}(V_D)
+ \right],
+ \tag{11ae1}
+\]
+
+with `X_D=-infinity` when the expectation vanishes.  Then
+
+\[
+ \boxed{
+ -\log\Pr\{R_D,C_\epsilon(V_D)\le s_D\}
+ \ge Q_D^{\mathrm{eff}}-s_D\log(M/a).}
+ \tag{11ae2}
 \]
 
 Suppose, for fixed `alpha>0` and `beta>=0`,
@@ -780,10 +805,88 @@ Multiply the pointwise complete-union inequality (9) by `1_(R_D)`, average, and 
 (11af)--(11ah) proves (11ai).  QED.
 
 Theorem G corrects an overstrong frontier formulation.  Brown growth does not require the
-high-mode Bellman remainder to decay exponentially to zero.  Capacity already supplies the
-exponential factor that pays the complete circuit union.  After its entropy margin is fixed, the
-only remaining demand is **no exponential accessibility amplification away from returns and named
-shortcut carriers**.  Permanent low-mode non-Haar memory is compatible with (11ag) by Theorem A.
+high-mode Bellman remainder to decay exponentially to zero.  The exact universal requirement is
+
+\[
+ \boxed{
+ \text{circuit entropy}+\text{accessibility excess}
+ <\text{capacity surprisal}.}
+ \tag{11aj}
+\]
+
+For projective-state targets, `Q_D=Theta(D)`, so a depth chosen below the capacity rate leaves a
+linear margin and subexponential accessibility (11ag) suffices.  For Choi/unitary targets the
+stationary capacity may instead have `Q_D=Theta(D^2)`; then `X_D` may be exponential on the `D`
+scale and still satisfy (11aj).  The difference `Q_D-X_D`, not either term separately, removes the
+ambient-to-static-support codimension and is the physical source-relative accessibility surprisal.
+No state-to-Choi scaling transfer is claimed.  Permanent low-mode non-Haar memory is compatible
+with the budget by Theorem A.
+
+### Theorem H (carrier soft-min law)
+
+For a probability endpoint law `nu`, define its unexcised source-relative accessibility surprisal
+
+\[
+ \mathcal Q_{A,a}(\nu):=-\log\int h_A\,d\nu.
+ \tag{11ak}
+\]
+
+Let `nu=sum_(i=1)^N w_i nu_i`, where `w_i>0`, `sum_i w_i=1`, and every `nu_i` is a probability
+law.  Put `Q_i=mathcal Q_(A,a)(nu_i)`.  Then
+
+\[
+ \boxed{
+ e^{-\mathcal Q_{A,a}(\nu)}
+ =\sum_{i=1}^Nw_i e^{-Q_i}.}
+ \tag{11al}
+\]
+
+Consequently
+
+\[
+ \boxed{
+ \min_iQ_i
+ \le\mathcal Q_{A,a}(\nu)
+ \le\min_i\left(Q_i+\log{1\over w_i}\right).}
+ \tag{11am}
+\]
+
+For a measurable carrier set `B` of endpoint-law mass `w in (0,1)`, let `nu_B` and `nu_G` be the
+conditional carrier and good laws.  Then
+
+\[
+ \boxed{
+ e^{-\mathcal Q(\nu)}
+ =w e^{-\mathcal Q(\nu_B)}
+ +(1-w)e^{-\mathcal Q(\nu_G)}.}
+ \tag{11an}
+\]
+
+In particular, if the carrier can return or prepare the target with order-one first-entrance mass,
+so `mathcal Q(nu_B)=O(1)`, its contribution to a depth-`s` complete-union bound is negligible at
+exponent `kappa` only if
+
+\[
+ \boxed{w\le\exp[-s\log(M/a)-\kappa+O(1)].}
+ \tag{11ao}
+\]
+
+#### Proof
+
+The integral of `h_A` is linear in the endpoint law, proving (11al).  Since
+
+\[
+ e^{-\min_iQ_i}\ge\sum_iw_i e^{-Q_i}
+ \ge w_j e^{-Q_j}
+\]
+
+for every `j`, negative logarithms give (11am).  The two-cell specialization is (11an).
+Multiplying the carrier contribution by the circuit factor `(M/a)^s` gives (11ao).  QED.
+
+Theorem H classifies exactly when carrier removal is mathematically necessary.  Small probability
+alone is insufficient: an easy component pays its rarity only through `log(1/w)`.  Conversely, a
+carrier below the threshold (11ao) may remain in the ensemble without changing the Brown exponent.
+This replaces an informal exceptional-set instruction by a quantitative source-mixture law.
 
 ## 4. Brown-scale blindness of subexponential observers
 
@@ -881,43 +984,67 @@ logarithmic loss bilipschitz-equivalent to robust word complexity.  This unifies
 and recurrence as regimes of one order parameter, but does not establish their physical-time
 schedule.
 
-### C6. The high-mode Bellman remainder has Brown-rate decay for ordinary static-local dynamics
+### C6. Any small carrier neighbourhood is harmless
+
+Verdict: `[FALSIFIED; EXACT SURVIVOR PROVED]` by Theorem H.
+
+An easy carrier of endpoint-law mass `w` enters source-relative surprisal at cost only
+`log(1/w)`.  It is harmless at circuit depth `s` precisely when that rarity pays the circuit
+entropy as in (11ao).  Polynomial-codimension rarity cannot be silently discarded from an
+exponential-tail theorem.
+
+### C7. The high-mode Bellman remainder has Brown-rate decay for ordinary static-local dynamics
 
 Verdict: `[FROZEN PRIMARY CONJECTURE; OPEN]`.
 
 For the Gaussian coefficient ensemble on the full nearest-neighbour two-local Pauli shell, fix
-`a<1/M` and the product-state or Choi target used by the completed-phase theorem.  On the prescribed
-geometric Brown skeleton, after the target-independent spectral-return excision and the named
-capacity-compatible fast-forwardable-carrier excision already defined in the parent programme,
+`a<1/M`.  On the prescribed geometric Brown skeleton, after the target-independent spectral-return
+excision and the named capacity-compatible fast-forwardable-carrier excision already defined in the
+parent programme, freeze the following scale-correct pair.
+
+For the projective-state branch, where `Q_D=Theta(D)`,
 
 \[
  \boxed{
  \sup_{t\in\mathcal T_D}
- \mathbb E_H\!left[
+ \mathbb E_H\!\left[
   \mathbf1_{R_D(H,t)}\mathfrak A_{A_D,a}(V_{H,t})
  \right]=\exp[o(D)].}
- \tag{C6}
+ \tag{C6-S}
 \]
 
-At the first certified recurrence window, the same accessibility amplification returns to
-`exp[Theta(D)]` on the recurrent coefficient set.  Statement (C6) is frozen as the truth-hunch; its
-shape is not chosen around a visible proof route.
+For a Choi/unitary branch, no bound on `X_D` alone is frozen.  The scale-correct claim is instead
+
+\[
+ \boxed{
+ \inf_{t\in\mathcal T_D}
+ \left(Q_D^{\mathrm{eff}}(t)-s_D(t)\log(M/a)\right)
+ \ge\kappa D}
+ \tag{C6-C}
+\]
+
+for one `kappa>0` at the intended Brown depth.  This allows `X_D=Theta(D^2)` when it pays only the
+ambient-to-static-support codimension.
+
+At the first certified recurrence window, pointwise accessibility returns to its
+reciprocal-capacity value, so the unexcised pointwise accessibility surprisal `-log h_A` collapses
+to zero on the recurrent coefficient set.  Statements (C6-S)--(C6-C) are frozen as the truth-hunch;
+their shape is not chosen around a visible proof route.
 
 The remaining core is now strictly smaller:
 
 \[
  \boxed{
- \mathbb E_H\!left[
-  \mathbf1_{R_D(H,t)}\mathfrak A_{A_D,a}(V_{H,t})
- \right]\le\exp[o(D)]}
+ Q_D^{\mathrm{eff}}(t)-s_D(t)\log(M/a)\ge\kappa D}
  \tag{15}
 \]
 
 on the geometric Brown skeleton, after the common return and fast-forwardable-carrier excision.
-Unlike global Haar convergence, (15) only excludes exponential amplification of one
-capacity-normalized first-entrance likelihood.  Theorem G proves that target capacity then pays the
-entire complete circuit union.  Any future growing-replica or Bellman argument should be centered
-against `Pi_E` before estimating this normalized quantity.
+Unlike global Haar convergence, (15) asks only that source-relative accessibility surprisal beat
+circuit entropy.  Theorem G proves that this pays the entire complete circuit union.  Any future
+growing-replica or Bellman argument should be centered against `Pi_E` before estimating this
+normalized quantity.  In the projective-state branch, (C6-S) is one sufficient way to prove (15);
+it is not imposed on the Choi branch.
 
 ## 6. Hostile audit
 
@@ -954,7 +1081,12 @@ against `Pi_E` before estimating this normalized quantity.
    constructed from the gate first-entrance problem.  Its large KL or chi-square divergence does
    not assert that a static-Hamiltonian endpoint ensemble has that divergence, nor does it prove a
    black-hole interior statement.
-12. **Lean boundary.**  No theorem from this card may enter a final manuscript until its exact
+12. **State and Choi capacity scales differ.**  The projective-state copy bound has
+   `-log cap=Theta(D)` at fixed resolution.  A Choi/unitary gate space can have
+   `-log cap=Theta(D^2)` while its static phase support has only `Theta(D)` effective target
+   surprisal.  The accessibility excess `X_D` absorbs this codimension; imposing `X_D=o(D)` there
+   would be false or needlessly strong.
+13. **Lean boundary.**  No theorem from this card may enter a final manuscript until its exact
    finite-dimensional form is formalized and audited.  Lean work is intentionally deferred during
    the active corpus refactor.
 
@@ -1011,8 +1143,8 @@ Theorem D adds the quantitative uncertainty principle
 \]
 
 Exponential recurrence capacity therefore forces growing replica order before any static-dynamics
-estimate begins.  This identifies the order-`D/log D` observer scale as intrinsic rather than a
-union-bound artifact.
+estimate begins.  For projective-state `epsilon`-balls this identifies the order-`D/log D` observer
+scale as intrinsic rather than a union-bound artifact; no identical Choi scaling is asserted.
 
 Theorems E--F then identify the missing universal primitive:
 
