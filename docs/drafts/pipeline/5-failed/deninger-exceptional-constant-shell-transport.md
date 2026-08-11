@@ -12,7 +12,7 @@ Use degree-one source blow-up covariance to identify both retained shell orienta
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [x] 2 → 3  formalized: Lean theorem `deningerGammaSix_constantScalarShellTransport_iff`; source file elaborates
+- [x] 2 → 3  formalized: Lean theorem `deningerGammaSix_constantScalarShellTransport_iff`; targeted build and axiom audit pass
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach

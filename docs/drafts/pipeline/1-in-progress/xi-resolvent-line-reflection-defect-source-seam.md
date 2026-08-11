@@ -117,7 +117,9 @@ same-carrier theorem needed before any source bound; it does not assert that the
 - **Exact killing mechanism:** prime explicit formula sees the reflected Weil quadratic but not
   the ordinary norm square. Their gap is exactly the off-line mass.
 - **Strongest positive survivor:** `(1)`--`(4)` identify Route-U escape, Xi--Weil reflection
-  antisymmetry, and the R/L same-carrier producer as one literal defect.
+  antisymmetry, and the R/L same-carrier producer as one literal defect. Continued-Cauchy atoms
+  are total in that carrier, so equality is also equivalent to agreement of every unsquared
+  source polarization against those atoms.
 - **New insight:** arithmetic work must bound an ordinary Hilbert norm relative to a reflected Weil
   quadratic on the same source-selected sequence. A bound on analytic resolvent moments alone
   cannot close RH.
@@ -139,10 +141,12 @@ literally the same non-equivariant source-carrier wall already isolated by Route
 - [x] internal corpus audit
 - [x] external parent-theory/Weil-Hilbert boundary audit
 - [x] paper proof dependency-closed
-- [ ] Lean module and targeted elaboration
-- [ ] targeted module build and axiom audit
+- [x] Lean module and targeted elaboration
+- [x] targeted module build and axiom audit
 - [ ] source-side uniform defect bound
 
 ## Log
 
 - 2026-08-11 -- C0--C3 falsified; C4 dependency-closed on paper.
+- 2026-08-11 -- C4 and unsquared source-moment rigidity formalized; direct Lean check and targeted
+  module build pass. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

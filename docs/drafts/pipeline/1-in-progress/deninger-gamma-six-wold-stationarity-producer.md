@@ -33,7 +33,7 @@ with vertical maps induced by the literal Gamma-six Wold source coordinate and t
 - **Exact killing theorem/mechanism:** Covariance alone supplies an involution but no Wold stationarity. Unique carrier has nontrivial factor `(1/6)^(2*delta)` off line, while source boundary readout has exact defect `exp(a)-1`.
 - **Strongest positive survivor:** `RiemannHypothesis` iff unique shell-reflection multiplier is Wold-stationary globally. Pointwise TFAE theorem identifies literal blow-up isometry, full shell transport, and cyclic physical descent exactly.
 - **New insight:** Several frontier obstructions are shadows of one universal defect: reflected orientations are equivalent only by a cocycle whose multiplicative-clock holonomy is `(1/6)^(2*delta)`. Source involution gives covariance, and source boundary gives the same holonomy in exponential coordinates. Any real producer must absorb this anomaly after strict target transport; source-side flatness simply restates RH.
-- **Status:** C0--C3 paper-closed and Lean-formalized in `DeningerExponentGammaSixShellTransportRigidity.lean`. C4 is sole open core and matches Route L's strict global ideal-preserving lift. Internal and external novelty audits found no pre-existing target lift supplying absorption.
+- **Status:** C0--C3 paper-closed and Lean-formalized in `DeningerExponentGammaSixShellTransportRigidity.lean`. Lean also proves both reflection transports are explicit coboundaries and identifies mixed curvature with `exp(-2a)`, where `a` is the existing physical cyclic-character parameter. C4 is sole open core and matches Route L's strict global ideal-preserving lift. Internal and external novelty audits found no pre-existing target lift supplying absorption.
 
 ## Log
 - 2026-08-11 — frontier cross-audit isolated exceptional transport × Gamma-six shell seam.
@@ -41,3 +41,4 @@ with vertical maps induced by the literal Gamma-six Wold source coordinate and t
 - 2026-08-11 — C2 failed; covariance distinguished from stationarity.
 - 2026-08-11 — C3 failed against exact Beck--Chevalley defect; three-presentation TFAE formalized.
 - 2026-08-11 — C4 opened: strict target-side anomaly absorption/global ideal-preserving lift.
+- 2026-08-11 — Gauge attack: both reflection cocycles trivialized; mixed reflection--Wold curvature isolated as sole invariant and formally identified with physical Beck--Chevalley coordinate.

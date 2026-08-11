@@ -275,6 +275,16 @@ is positive semidefinite, and the shifted trace powers `Re Tr(A_X^(n+1))` form a
 reflection-positive Hankel sequence.  Thus no spectral theorem, diagonalization, support
 hypothesis, or independently chosen measure remains in this finite step.
 
+**Green-square order correction (Route P/C1 audit).** The formal theta Green reflection law now
+proves that functional-equation partners have opposite unsquared boundary currents but the same
+`B^2` eigenvalue. Their aggregate current on that single squared block is zero unconditionally.
+Accordingly, positivity of `A_X=-C_X^(-2)`, positive Hodge parity, or an even-power trace identity
+cannot supply the missing orientation: all three operate after the same reflection fold. A valid
+source comparison must first retain `G_X=C_X^(-1)` and prove an odd, same-oriented-fibre boundary
+Ward identity landing in the theta incoming/outgoing channels. Only after fibrewise current
+neutrality may `(20)` be used. Reflected-pair, supertrace, or squared-block cancellation is now a
+formalized no-go, not evidence for `(21)`.
+
 The source theorem to prove is
 
 ```text

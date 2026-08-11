@@ -1,19 +1,20 @@
 # Route E weighted-Hall ANOVA projection duality law
 
 - **ID:** `ROUTE-E-WEIGHTED-HALL-ANOVA-PROJECTION-DUALITY-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[EXACT FINITE DUALITY]` / `[RATE FIREWALL]` /
   `[RECURRENCE-SEAM DECOMPOSITION]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
-- **Companion:** `route-e-critical-antiscale-diffuse-codiagonal-transfer-law.md`
+- **Companion:** `../../2-fully-proven/new_scientific_knowledge/route-e-critical-antiscale-diffuse-codiagonal-transfer-law.md`
 - **RH used:** no
 - **Computation used:** no
 - **Literature used:** no; internal-corpus derivation only
-- **Lean status:** paper proof only. Lean corpus was inspected read-only during refactoring; no Lean
-  source was edited or built. Existing
-  MobiusBoundaryOppositeSignTransport.lean already formalizes weighted Hall-cut necessity and
-  unused-conductance lower bounds; new paper content is exact ANOVA projection/reporter dual,
-  capacity-rate fracture, and partition/seam synthesis.
+- **Lean status:** unconditional and umbrella-reachable. `RouteEWeightedHallANOVA.lean` formalizes
+  physical normalization, exact collision defect, sharp one/two-sided capacity rates, and
+  partition/seam ANOVA. `RouteEWeightedHallProjectionDuality.lean` formalizes compact convex
+  projection, quadratic and homogeneous reporter duality, weighted-Hall necessity and sufficiency,
+  exact zero-energy classification, and sharp normalized Hall-deficit obstruction. No project
+  axiom, `sorry`, `admit`, `opaque`, `unsafe`, or numerical computation is used.
 
 ## 1. Result
 
@@ -518,3 +519,42 @@ physical synthesis:
 
 No weighted Hall theorem for actual physical relation, estimate `(9)`, reporter inequality `(14)`,
 collision bound `(26)`, signed recurrence accumulation, Route E endpoint, or RH proof is claimed.
+
+## 11. Lean formalization audit
+
+Formal modules:
+
+- `formal/GaloisForLFunctions/RHTower/RouteEWeightedHallANOVA.lean`
+- `formal/GaloisForLFunctions/RHTower/RouteEWeightedHallProjectionDuality.lean`
+
+The projection module proves a finite upper-tail layer-cake identity and uses it to derive every
+nonlinear reporter inequality from weighted Hall. Applying that inequality to canonical projection
+reporter forces projection distance zero, constructs exact supported transport, and proves weighted
+Hall iff exact transport iff zero projection distance. This replaces paper proof's max-flow step by
+internal convex/reporter geometry.
+
+It also totalizes homogeneous quotient at zero variance and proves
+
+\[
+ \max_f \frac{[\mathcal M_Ef-\mathbb E_\beta f]_+}
+                    {\sqrt{\operatorname{Var}_\beta(f)}}
+ =\sqrt{d_E^2},
+\]
+
+with zero-variance reporters assigned quotient zero. Canonical projection reporter attains positive
+distance; zero reporter attains degenerate zero-distance case. Optimal all-reporter inequality
+`(14)` follows directly from weighted Cauchy--Schwarz against projection reporter.
+
+Verification on 2026-08-11:
+
+- direct `lake env lean GaloisForLFunctions/RHTower/RouteEWeightedHallProjectionDuality.lean`
+  passed without diagnostics;
+- targeted `lake build GaloisForLFunctions.RHTower.RouteEWeightedHallProjectionDuality` passed;
+- requested Gibbs comparison and component-history modules passed both direct Lean checks and
+  targeted module builds;
+- axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound` for all new Hall,
+  homogeneous-dual, conditional-mean, and product-history capstones;
+- formal lint reports no issue in these Route E modules. Its nonzero exit is pre-existing unrelated
+  umbrella reachability debt in Deninger adiabatic, Huxley/Maynard sieve, and one HTGeometry module.
+
+No umbrella or full build was run.

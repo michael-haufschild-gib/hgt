@@ -1298,8 +1298,9 @@ and same weights must pass marker partition, normalized seam, and alternating re
 Scalar mass difference survives separate normalization and remains mean/recurrence channel.
 
 Full finite proof and hostile rate audit:
-../2-fully-proven/new_scientific_knowledge/route-e-weighted-hall-anova-projection-duality-law.md.
-Lean corpus was inspected read-only; no Lean source was edited or built.
+../3-formalized/new_scientific_knowledge/route-e-weighted-hall-anova-projection-duality-law.md.
+Finite weighted-Hall equivalence, quadratic/homogeneous reporter duality, sharp cut obstruction,
+capacity rates, and seam ANOVA are now unconditional Lean theorems.
 
 ## 2026-08-11 grown-Lean recurrence-weighted symmetric-conductance avenue
 

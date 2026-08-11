@@ -20,6 +20,12 @@ two shell orientations unless `delta = 0`; then the scalar is one.  Applied to
 the literal exceptional blow-up coefficient, this gives a new exact RH
 criterion.
 
+Both the exceptional coefficient and shell reflection carrier are explicit
+two-sheet coboundaries.  Their reflection holonomy is therefore gauge-trivial;
+the surviving invariant is mixed reflection--Wold curvature
+`(1/6)^(2*delta)`, exactly `exp(-2*a)` in the physical cyclic-character
+coordinate `a`.
+
 Thus exceptional covariance and shell selection meet at a precise wall: a
 source proof that the degree-one exceptional coefficient transports all
 Gamma-six shell grades would prove RH.  Away from the critical line such a
@@ -254,7 +260,7 @@ theorem deningerGammaSixShellReflectionMultiplier_wold_stationary_iff
       Real.rpow_pos_of_pos (deningerGammaSixShellEigenvalue_pos 0) _
     have hfactor : (1 / 6 : ℝ) ^ (2 * delta) = 1 := by
       apply (mul_right_cancel₀ hmultiplier.ne')
-      simpa using hstep
+      simpa [deningerGammaSixReflectionWoldCurvature] using hstep
     have hexp : 2 * delta = 0 := by
       apply (Real.rpow_right_inj (by norm_num : (0 : ℝ) < 1 / 6)
         (by norm_num : (1 / 6 : ℝ) ≠ 1)).mp

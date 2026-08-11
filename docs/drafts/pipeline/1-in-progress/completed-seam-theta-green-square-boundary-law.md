@@ -82,6 +82,115 @@ G B^2 = B^* G B + i R_2 B.                               (3)
 The first term is a positive bulk square. Every obstruction to Route P spectral positivity is in
 the rank-two correction `i R_2 B`.
 
+### P-G4 -- reflected-pair boundary cancellation
+
+`[FALSIFIED AS A PRODUCER; PAPER-PROVED NO-GO]` Functional-equation reflection sends every
+multiplicity copy `q` to `q^#` with centered coordinate `z_(q^#)=-z_q`.  The theta root energy is
+even at a source zero, `E(-z)=E(z)`, while the exact signed boundary law is
+
+```text
+F(q)=2 M Im(z_q) E(z_q).
+```
+
+Therefore
+
+```text
+F(q^#)=-F(q),
+F(q)+F(q^#)=0                                            (P-G4.1)
+```
+
+for every `q`, unconditionally.  A reflected direct sum, paired trace, supertrace, or global
+source completion can consequently have zero total Green-boundary current even when neither
+individual fibre is neutral.  Pairwise cancellation is forced by the functional equation and
+contains no RH information.
+
+**Positive survivor.** The producer target is now diagonal and cannot be weakened further:
+equalize incoming and outgoing boundary intensities on each multiplicity-exact divisor fibre
+before scalar aggregation.  Reflection may supply the opposite channel, but a source-defined
+same-fibre exchange/isometry is required.  Any construction proving only a sum over a reflected
+orbit is rejected before analytic completion.
+
+### P-G5 -- boundary trace on a squared spectral fibre
+
+`[FALSIFIED AS A PRODUCER; PAPER-PROVED SQUARE-FOLD BLINDNESS]` Route P passes from `B` to `B^2`.
+Reflection negates the nonzero `B` eigenvalue,
+
+```text
+mu_(q^#)=-mu_q,
+```
+
+so both reflected eigenvectors lie over the same squared node:
+
+```text
+mu_(q^#)^2=mu_q^2.
+```
+
+Combined with `(P-G4.1)`, the full reflected block over that one `B^2` eigenvalue has zero
+aggregate Green current unconditionally.  The common node can nevertheless be nonreal: squaring
+folds the functional-equation double cover before the opposite currents are added.  Consequently
+zero boundary trace on each folded `B^2` spectral block, not merely zero global trace, still does
+not imply a positive Route P atom.
+
+**Positive survivor.** Positivity certification must remain on the oriented `B` eigenline until
+its individual current is neutral.  Only then may one quotient by `mu~-mu` and form the compact
+reciprocal-square carrier.  Equivalently, any completed source construction for P must retain a
+grading/double-cover label through its prime--Gamma boundary cancellation; an ungraded `B^2`
+spectral trace has discarded the sole faithful transverse sign.
+
+### P-G6 -- build the positive centered Green square first
+
+`[FALSIFIED AS A STANDALONE PRODUCER]` The prime--Gamma reflected-decimation programme proposes a
+finite skew-Hermitian centered generator `C_X` and its automatically positive Green square
+
+```text
+A_X=(C_X^(-1))^* C_X^(-1)=-C_X^(-2).
+```
+
+This is legitimate positive infrastructure, but `(P-G5)` shows it is orientation-blind: the
+functional-equation sign has already been folded before any trace of `A_X` is taken.  Positive
+parity of a Hodge projection and positivity of `Tr(P_X A_X^n)` therefore cannot by themselves
+neutralize the Hedenmalm current or identify the Route P carrier.  They hold in source models with
+no Xi reality mechanism.
+
+**Positive survivor / corrected producer order.** Construct an odd first-order completed Green
+transport `G_X=C_X^(-1)` together with a source boundary map into the two pinned channels.  Before
+forming `A_X`, prove a same-oriented-fibre Ward identity whose limit is
+
+```text
+||a_in(q)||^2-||a_out(q)||^2=0                          (P-G6.1)
+```
+
+for each multiplicity copy, without summing `q` with `q^#`.  Only after `(P-G6.1)` may the
+construction square `G_X`, discard the orientation label, and take positive moment traces.  This
+is the minimal interface between the finite prime--Gamma complex and the fixed theta Green
+system; a direct even-power trace comparison skips the only RH-faithful channel.
+
+### P-G7 -- pointwise positive-node/current criterion
+
+`[PAPER-PROVED]` For every multiplicity-exact copy `q`, not only after quantifying over the whole
+divisor,
+
+```text
+mu_q^2 is a strictly positive real number
+  iff F(q)=0.                                            (P-G7.1)
+```
+
+Indeed every reciprocal-square node has strictly positive real part unconditionally.  Its
+imaginary part is
+
+```text
+Im(mu_q^2)=-2 Re(z_q) Im(z_q)/|z_q|^4.
+```
+
+The Xi height gap gives `Re(z_q)!=0`, so this imaginary part vanishes exactly when
+`Im(z_q)=0`.  The signed Green law `F(q)=2 M Im(z_q) E(z_q)`, with `M>0` and `E(z_q)>0`, vanishes
+under precisely the same condition.  This proves `(P-G7.1)` without pairing, summation, a support
+hypothesis, or RH.
+
+**Producer contract.** The remaining source theorem may be tested copy by copy: its first-order
+Ward transport must kill `F(q)` on the oriented pre-fold fibre.  Positive Route P nodes then
+follow pointwise, and only afterwards may compact measure existence/tightness be assembled.
+
 ## Dependency-closed theorem target
 
 The current pass targets the unconditional part, not the open neutralization:
@@ -166,7 +275,10 @@ measure, diffusion, or continuous theta reporter.
 - [x] conjecture frozen before proof engineering
 - [x] Witten-carrier, universal-total-positivity, and positive-boundary-repair shortcuts attacked
 - [x] dependency-closed paper proof of `(3)`--`(4)`
-- [ ] Lean formalization and umbrella wiring
+- [x] Lean formalization, exact-module build, and umbrella wiring
+- [x] reflected-pair cancellation proved on paper; pairwise/global neutrality excluded as producer
+- [x] Lean formalization of the reflected-pair no-go
+- [x] square-fold blindness proved on paper and in Lean
 - [ ] exact source construction neutralizing `i R_2 B`
 - [ ] positive compact carrier
 - [ ] RH

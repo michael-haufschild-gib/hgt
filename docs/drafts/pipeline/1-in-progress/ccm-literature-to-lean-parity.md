@@ -32,43 +32,52 @@ formalized as theorems.
 | Connes--Consani, arXiv:2006.13771 | Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `MISSING`: continuous Sonin projections and trace ideals exist, but no theorem on the paper's concrete functional/operator | formalize source scaling representation, trace identity, and exact non-computational inequality; separately audit paper's numerical spectral bound |
 | Connes--Consani, arXiv:2106.01715 | lower-semicontinuous restricted Weil form; spectral triples; exact zeta-cycle spectral theorem | `MISSING/PARTIAL`: many restricted-Weil and prolate pieces exist; no literal zeta-cycle theorem located | formalize exact circle periodization, orthogonal complement, and spectral characterization |
 | Connes--Consani--Moscovici, arXiv:2310.18423 | semilocal Sonin Hilbert isomorphism; common de Branges image; Gamma-quarter Jacobi/metaplectic model; semilocal prolate operator | `PARTIAL`: Gamma density, moments, Jacobi recurrence, relative traces, and continuous Sonin pieces exist; exact Hilbert isomorphism not located | prove missing source-space isometries and identify every local surrogate |
-| Connes--Consani--Moscovici, arXiv:2511.22755 | finite simple-even ground rank-one perturbation is self-adjoint in the Weil quotient; regularized determinant equals the ground Fourier transform; every transform zero is real | `PARTIAL`: literal finite matrix, ground shift, source/response completion, determinant lemma, and real-rooted completion exist; paper's eta-channel theorem is not packaged end-to-end | first implementation target |
+| Connes--Consani--Moscovici, arXiv:2511.22755 | finite simple-even ground rank-one perturbation is self-adjoint in the Weil quotient; regularized determinant equals the ground Fourier transform; every transform zero is real | `CONDITIONAL SOURCE THEOREM`: literal finite matrix, unconditional ground shift, source/response completion, determinant lemma, and real-rooted completion already exist; paper does not discharge simplicity/evenness or convergence | do not add a hypothesis-packaging theorem; only an unconditional proof of the literal eta-channel assumptions would move parity |
 | Connes--van Suijlekom, arXiv:2511.23257 | lower-bounded convolution ground-state Fourier real-zero theorem; continuous-kernel and finite-matrix variants | `PARTIAL`: finite paraorthogonal connector and zero-limit transfer exist; continuous theorem absent | formalize exact continuous theorem after finite CCM capstone |
 | Connes, arXiv:2602.04022 | survey synthesis and finite CCM source statements | `AUDIT`: do not count restatements as new theorems | check only for genuinely stronger unconditional statements |
 
 ## First exact claim
 
-For the literal finite restricted-Weil matrix of arXiv:2511.22755, assume exactly the source
-paper's simple even lowest-eigenvector hypotheses and nonzero Dirichlet normalization.  Construct
-the eta-channel rank-one perturbation of the physical logarithmic clock and prove:
+Formalize the unconditional Connes--Consani archimedean compressed-trace theorem of
+arXiv:2006.13771 on the paper's concrete test algebra, scaling representation, and Sonin
+projection.  The final closed statement universally quantifies over the test function and proves
+the source inequality from its intrinsic support and Fourier-vanishing conditions; it must not
+take the inequality, a spectral bound, a positivity interface, or a numerical certificate as a
+premise.  Required endpoints are:
 
-1. the shifted Weil form descends to a positive-definite quotient by the ground line;
-2. the perturbation is self-adjoint for that quotient metric;
-3. its finite determinant is the exact resolvent/Fourier numerator;
-4. the compactly supported ground Fourier transform is entire and every zero is real after the
-   unchanged exterior logarithmic-clock spectrum is restored.
+1. multiplicative convolution, involution, and Fourier character identities on exact smooth
+   compactly supported tests;
+2. the unitary scaling representation on even `L2(Real)` and its integrated operator `rho(g)`;
+3. the concrete physical and Fourier cut projections and their Sonin intersection projection;
+4. trace-classness and positivity of `rho(g) S rho(g)^*`;
+5. the exact trace-remainder identity with the archimedean Weil distribution;
+6. the source inequality, without importing the paper's floating-point spectral estimates.
 
-Existing branch-free source/response completion is stronger in one direction but does not replace
-this claim: it may select the response channel, whereas the paper's theorem uses the constant
-Dirichlet boundary and the assumed even simple ground.
+The published proof's bound `gamma approximately 2.94355` is numerically sourced.  Under the
+no-computation rule it is not an admissible premise.  The formal proof must replace that step by an
+exact analytic estimate, or record a genuine rigor gap in the source theorem and formalize the
+strongest unconditional trace identity preceding it.
 
 ## Dependency order
 
-1. Package exact simple-ground/radical-line data for the literal published matrix.
-2. Prove eta-channel activation from reflection-evenness and Dirichlet normalization.
-3. Instantiate existing metric-adjoint and rank-one determinant lemmas at physical clock scale.
-4. Add removable-singularity-filled finite Fourier transform and prove determinant equality.
-5. Add exterior clock factor and the real-zero theorem.
-6. Wire module into `RHTower.lean`; run file Lean, targeted module build, lint, and axiom audit.
-7. Continue ledger in order of scientific leverage: arXiv:2006.13771, arXiv:2310.18423,
-   arXiv:2106.01715, then arXiv:2511.23257.
+1. Audit the source proof's non-computational lemmas and isolate the exact missing spectral bound.
+2. Reuse the corpus's continuous `L2`, Fourier, projection, and trace-ideal infrastructure.
+3. Formalize source test algebra and integrated scaling representation.
+4. Formalize exact Sonin projection and compressed positive trace.
+5. Formalize trace-remainder identity.
+6. Prove an exact analytic replacement for the numerical spectral step, or classify the source
+   endpoint as not presently unconditional at published proof level.
+7. Wire every completed exact module into `RHTower.lean`; run file Lean, targeted module build,
+   lint, and axiom audit.
+8. Continue with arXiv:2310.18423 and arXiv:2106.01715.  Revisit arXiv:2511.22755 only if its
+   simple-even eta-channel hypotheses are discharged unconditionally.
 
 ## Gates
 
 - [x] Existing corpus and failed-route audit checked before formalization.
 - [x] Exact paper hypotheses and theorem text recovered from primary TeX.
 - [x] Numerical convergence and experimental claims excluded.
-- [ ] Finite arXiv:2511.22755 theorem exact and umbrella-reachable.
+- [x] Conditional arXiv:2511.22755 hypothesis packaging rejected as non-progress.
 - [ ] Archimedean compressed positivity exact and umbrella-reachable.
 - [ ] Semilocal Sonin/de Branges source isomorphisms exact and umbrella-reachable.
 - [ ] Zeta-cycle spectral theorem exact and umbrella-reachable.

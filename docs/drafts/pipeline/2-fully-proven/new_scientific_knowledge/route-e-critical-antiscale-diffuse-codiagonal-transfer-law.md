@@ -7,7 +7,7 @@
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **Companions:** `route-e-ramare-recombination-ternary-antiscale-law.md`,
   `route-e-source-faithful-euler-tilt-unit-shell-law.md`,
-  `route-e-weighted-hall-anova-projection-duality-law.md`,
+  `../../3-formalized/new_scientific_knowledge/route-e-weighted-hall-anova-projection-duality-law.md`,
   `../../3-formalized/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md`
 - **RH used:** no
 - **Computation used:** no

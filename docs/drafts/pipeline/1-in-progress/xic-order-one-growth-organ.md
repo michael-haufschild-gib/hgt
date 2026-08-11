@@ -443,3 +443,91 @@ asymptotic/estimate route: "beating exponent 4" is not an inequality-improvement
 Lean theorem; every bilinear-arithmetic route to the left side is formally σ-blind; the two
 candidate mechanisms that could see the diagonal are (i) ordinate-separation (pair-correlation
 wall) and (ii) an operator/GNS realization computing the ℓ²-mass (the standing socket).
+
+## Step 30 (2026-08-11): certificate ladder recorded in matrix form; J-fraction normal form; socket spec
+
+**New module** `RHTower/XiResolventHankelMatrixLadder.lean` (axioms clean, wired after
+XiResolventArithmeticTarget):
+- `xiResolventHankelMatrix N X : Matrix (Fin N) (Fin N) ℝ`, entries `Re R_{i+j}(X)`;
+  `_isHermitian`; quadratic-form bridge `dotProduct_xiResolventHankelMatrix_mulVec`.
+- **`riemannHypothesis_iff_forall_xiResolventHankelMatrix_posSemidef`**: RH ⟺ ∀N,
+  `(xiResolventHankelMatrix N X).PosSemidef` at any one shift X ≥ 0 — the certificate ladder as a
+  formal object, connected to mathlib's PSD matrix theory.
+- `xiResolventHankelMatrix_det_nonneg_of_riemannHypothesis`: the Hankel determinant ladder Δ_N ≥ 0
+  under RH (converse direction of the rung ladder).
+- Lean traps: `⬝ᵥ`/`*ᵥ` are scoped notations — need `open Matrix` (otherwise the parser falls
+  into `subscriptTerm` errors); current `Matrix.PosSemidef` is Finsupp-based — use
+  `Matrix.posSemidef_iff_dotProduct_mulVec` (Fintype bridge) and
+  `Matrix.PosSemidef.dotProduct_mulVec_nonneg` (in the PosSemidef namespace).
+
+**Reasoning results recorded (from the route analysis, chat 2026-08-11)**:
+1. **J-fraction normal form**: rung-N certificate = first N three-term recurrence (Jacobi)
+   coefficients of the zero measure Σu_qδ_{u_q} = coefficients of the Stieltjes continued
+   fraction of the Euler-ray response logDeriv ξ(1/2+√X)/√X; obtained from prime data by FINITE
+   RATIONAL operations (qd-algorithm). RH ⟺ all J-fraction coefficients positive.
+2. **Closure analysis**: J-fraction positivity for all k is provable only via (i) an a priori
+   positive-measure construction, or (ii) a combinatorial generating law for the coefficients.
+   The FE is spent (chart variable is FE-invariant); multiplicativity lives in atom POSITIONS
+   (log n) and does not transfer to qd-arrays. No (ii) found; all re-coordinatizations
+   (Hankel dets ↔ Jacobi ↔ J-fraction ↔ OPs ↔ escape laws) are positivity-equivalent with no
+   independent generating principle ⇒ certificate must be MANUFACTURED (GNS), not verified.
+3. **Triangulation**: exactly three diagonal-seeing observable classes, each on a known wall:
+   potential pairing (Littlewood lemma: Σ(β−1/2)⁺g(γ) = line integral of log|ζ| − smooth; wall =
+   evaluation, killed by collapse principle), correlation separation (Bohr/Landau; wall =
+   pair-correlation, killed by collapse principle), realization (GNS; construction — the only
+   mechanism the collapse principle does not kill).
+4. **Socket sign spec** (new constraint for the Gauss-lane GNS entry): the Euler-ray response
+   splits exactly as [rank-one pole atom at −1/4, mass 2] + [c₀·X^{−1/2} continuum] − [manifestly
+   positive Stieltjes: digamma cut density + ½-subordinated primes (atom c = log n, weight
+   Λ(n)n^{−1/2}, stable-subordinator density — verified rep)]. The arithmetic enters NEGATIVELY:
+   any GNS construction must realize the prime part by CONJUGATION (c†·c inside a CP map), not as
+   a signed summand. This falsifies all "sum of positive place-states" ansätze immediately.
+5. Empirical falsification test for the "certificate pattern" hope (pending compute access): if
+   the Jacobi coefficients a_k at X=1 simply re-enumerate the resolvent points u_k = 1/(γ_k²+1)
+   with small couplings, the pattern hypothesis dies (certificates = zeros in disguise),
+   confirming the construction verdict; unexpected structure would redirect the program.
+   BLOCKED: runpod ssh key ~/.ssh/id_ed25519 not present on this machine, agent has no
+   identities.
+
+## Step 31 (2026-08-11): runpod experiment — Jacobi certificate structure of the ladder at X = 1
+
+Setup: moments R_0..R_20(1) from the arithmetic side (Cauchy circle, radius 0.3, 512 samples,
+dps 450, 32-core); validation: |Im c_n| ≤ 1.2e-442; exact pole-part check 1.5e-201; zero-side
+(1000 zeros, weight 2u) matches to 2e-10 (n=2, tail-limited), 1.3e-18 (n=4), 7e-35 (n=8);
+Jacobi→moment reconstruction exact. Numbers are certified-quality.
+
+**Data**: R_0(1) = 0.04613592806…, R_1 = 7.3772e-5, R_2 = 2.8441e-7, …, R_20 = 8.78e-49.
+Hankel determinants: Δ_2 = 7.68e-9, Δ_3 = 1.68e-21, Δ_4 = 1.78e-40, Δ_6 = 4.6e-98,
+Δ_8 = 3.4e-183, Δ_10 = 8.2e-297 (increments ≈ −13,−19,−26,−32,−39,−46,−53,−61 → Δ_N needs
+~5N²/2-digit precision; rung-N interval certification cost grows quadratically in N).
+
+**Finding 1 — the pattern hypothesis is DEAD, empirically**: the Gaussian-quadrature nodes of
+J_9 lock onto the true resolvent points u_k = 1/(γ_k²+1) from the top: node/u ratios
+1.0, 0.99999999, 0.99999, 0.992, 0.930, 0.797, 0.505, 0.204, 0.023 — with 9 rungs, ~4 zeros
+resolved (≈ N/2 locking rate); the last node collapses toward the accumulation point 0. The
+certificate's content at order N IS the location of the first ~N/2 zeros. No induction on N can
+supply that without knowing the zeros: closed-form-certificate hopes are refuted by data, in
+agreement with the closure analysis (step 30). Construction (GNS) verdict now confirmed both by
+reasoning and experiment.
+
+**Finding 2 — the equilibrium-bulk / edge-locking dichotomy (new, unanticipated)**: the coupling
+ratios b_k²/(a_k a_{k+1}) = 0.65, 0.21, 0.22, 0.235, 0.266, 0.24, 0.226, 0.263 — after k=0 they
+hover at ≈ 1/4, the CHEBYSHEV/EQUILIBRIUM value for a measure filling an interval [0,c]. The zero
+measure at X=1 (atoms u_k accumulating at 0 with density from N(T)) behaves through its first
+orthogonal polynomials like a continuum in equilibrium; individual atoms are resolved only at the
+top edge, one at a time. So the certificate = [equilibrium bulk profile — governed by
+zero-COUNTING, unconditional territory] + [edge-locking corrections — the RH content]. The RH
+obstruction concentrates at the spectral EDGE: rung positivity is about the top node converging
+to a real point, i.e., zero-by-zero reality, from the lowest zero downward. [CONJECTURE, bulk
+part]: b_k²/(a_k a_{k+1}) → 1/4 for the Euler-ray Jacobi sequence, provable from unconditional
+zero-counting while positivity persists. Recorded as a candidate unconditional theorem.
+
+**Finding 3 — rung 2 is cheap**: Δ_2/(R_0R_2) ≈ 0.585 — the Turán minor at X=1 is 58% of the
+product, NO delicate cancellation. Certifying D_2 ≻ 0 in Lean needs only ~1%-accurate bounds on
+R_0, R_1, R_2 at X=1. Ingredients all classical/closed-form: pole parts exact rationals;
+ψ(3/4) = −γ_E − 3 log 2 + π/2 and ψ′(3/4) = π² − 8G (Gauss/polygamma closed forms);
+ζ(3/2), ζ′(3/2), ζ″(3/2) via partial sums + integral tail bounds. → NEXT FORMAL TARGET:
+`D_2(1) ≻ 0` — the first unconditional rung of the ladder in Lean, beyond the sector theorems
+(a sign-changing-test positivity at a concrete small shift, currently known only under RH).
+
+Files on pod: /root/jacobi.py, /root/jacobi.out.

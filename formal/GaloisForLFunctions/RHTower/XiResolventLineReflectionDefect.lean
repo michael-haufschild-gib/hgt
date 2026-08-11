@@ -62,7 +62,9 @@ theorem norm_sq_xiResolvent_reflectionDefect (X : ℝ) (hX : 0 ≤ X) :
   change ‖xiResolventPoint X q -
       xiResolventPoint X (xiZeroCopyLineConjEquiv q)‖ ^ 2 =
     4 * (xiResolventPoint X q).im ^ 2
-  rw [xiResolventPoint_lineConj, Complex.norm_sub_conj]
+  rw [xiResolventPoint_lineConj, Complex.sq_norm]
+  simp only [Complex.normSq_apply, Complex.sub_re, Complex.conj_re,
+    Complex.sub_im, Complex.conj_im]
   ring
 
 /-- The same mass is the exact deficit between norm energy and the Weil quadratic form. -/
@@ -75,7 +77,8 @@ theorem two_mul_xiResolventImSqMass_eq_norm_sq_sub_quadratic
     xiWeilLineConjLinearIsometry xiWeilLineConjLinearIsometry_involutive
       (xiResolventLp X hX)
   rw [norm_sq_xiResolvent_reflectionDefect X hX] at hminus
-  unfold CliffordWeil.quadratic xiWeilHilbertQuadratic at hminus ⊢
+  unfold CliffordWeil.quadratic at hminus
+  unfold xiWeilHilbertQuadratic
   nlinarith
 
 /-- At any nonnegative resolvent parameter, RH is precisely line-reflection fixedness. -/
@@ -103,7 +106,8 @@ def xiResolventReflectedTest (X : ℝ) (z : ℂ) : ℂ :=
 
 theorem xiResolventReflectedTest_squareSummable {X : ℝ} (hX : 0 ≤ X) :
     XiWeilSquareSummable (xiResolventReflectedTest X) := by
-  simpa only [XiWeilSquareSummable, xiResolventReflectedTest, map_norm]
+  simpa only [XiWeilSquareSummable, xiResolventReflectedTest,
+    Complex.norm_conj]
     using xiResolventTest_squareSummable hX
 
 theorem xiWeilEvaluationLp_xiResolventReflectedTest

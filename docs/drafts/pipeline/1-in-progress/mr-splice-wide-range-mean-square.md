@@ -5440,8 +5440,8 @@ spacing, and square-multiple estimates are not live producer gaps.
 ## Unit 40 — weighted-Hall projection dual and strict-half capacity rate
 
 Paper proof:
-../2-fully-proven/new_scientific_knowledge/route-e-weighted-hall-anova-projection-duality-law.md.
-Lean corpus was inspected read-only and was not changed or built during refactoring.
+../3-formalized/new_scientific_knowledge/route-e-weighted-hall-anova-projection-duality-law.md.
+Finite weighted-Hall equivalence and both exact reporter duals are now unconditional Lean theorems.
 
 Normalize finite physical source and target masses to laws alpha,beta on source-predeclared
 bipartite relation E. Let C_E be reachable target marginals of supported row-stochastic kernels.

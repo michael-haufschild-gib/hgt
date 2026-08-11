@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.RouteEWeightedHallANOVA
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.InnerProductSpace.Projection.Minimal
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 /-!
 # Route E weighted-Hall projection duality
@@ -232,7 +233,7 @@ omit [DecidableEq T] in private theorem standardizedOutput_affine
   field_simp
   linear_combination D.targetLaw t * hab
 
-theorem convex_standardizedMarginalSet
+omit [DecidableEq T] in theorem convex_standardizedMarginalSet
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
     Convex ℝ (standardizedMarginalSet D R) := by
   rintro _ ⟨P, hP, rfl⟩ _ ⟨Q, hQ, rfl⟩ a b ha hb hab
@@ -617,6 +618,165 @@ noncomputable def reporterLowerEnvelope
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) : ℝ :=
   ∑ s, D.sourceLaw s * f (R.neighborArgmin f s)
 
+/-! ## Finite upper-tail layer cake -/
+
+private noncomputable def finiteUpperCutMass
+    {I : Type*} [Fintype I] (weight height : I → ℝ) (z : ℝ) : ℝ :=
+  ∑ i, if z ∈ Set.Ioo 0 (height i) then weight i else 0
+
+private theorem finiteUpperCutMass_integrable
+    {I : Type*} [Fintype I] (weight height : I → ℝ) :
+    MeasureTheory.Integrable (finiteUpperCutMass weight height) := by
+  classical
+  unfold finiteUpperCutMass
+  apply MeasureTheory.integrable_finsetSum Finset.univ
+  intro i _hi
+  have hfun : (fun z : ℝ => if z ∈ Set.Ioo 0 (height i) then weight i else 0) =
+      (Set.Ioo 0 (height i)).indicator (fun _ => weight i) := by
+    funext z
+    by_cases hz : z ∈ Set.Ioo 0 (height i) <;> simp [hz]
+  rw [hfun, MeasureTheory.integrable_indicator_iff measurableSet_Ioo]
+  exact MeasureTheory.integrableOn_const (by simp [Real.volume_Ioo])
+
+/-- Finite layer cake for a nonnegative height function.  This is the exact bridge from all
+strict upper cuts to a weighted first moment. -/
+private theorem integral_finiteUpperCutMass
+    {I : Type*} [Fintype I] (weight height : I → ℝ)
+    (hheight : ∀ i, 0 ≤ height i) :
+    (∫ z : ℝ, finiteUpperCutMass weight height z) =
+      ∑ i, weight i * height i := by
+  classical
+  unfold finiteUpperCutMass
+  rw [MeasureTheory.integral_finsetSum]
+  · apply Finset.sum_congr rfl
+    intro i _hi
+    have hfun : (fun z : ℝ => if z ∈ Set.Ioo 0 (height i) then weight i else 0) =
+        (Set.Ioo 0 (height i)).indicator (fun _ => weight i) := by
+      funext z
+      by_cases hz : z ∈ Set.Ioo 0 (height i) <;> simp [hz]
+    rw [hfun, MeasureTheory.integral_indicator measurableSet_Ioo,
+      MeasureTheory.setIntegral_const]
+    simp [MeasureTheory.Measure.real_def, Real.volume_Ioo, hheight i]
+    ring
+  · intro i _hi
+    have hfun : (fun z : ℝ => if z ∈ Set.Ioo 0 (height i) then weight i else 0) =
+        (Set.Ioo 0 (height i)).indicator (fun _ => weight i) := by
+      funext z
+      by_cases hz : z ∈ Set.Ioo 0 (height i) <;> simp [hz]
+    rw [hfun, MeasureTheory.integrable_indicator_iff measurableSet_Ioo]
+    exact MeasureTheory.integrableOn_const (by simp [Real.volume_Ioo])
+
+/-- **Weighted Hall suffices for every nonlinear reporter inequality.**  The proof is a finite
+layer-cake argument: every upper cut of the rowwise neighbor minimum has its whole neighbor union
+inside the corresponding target upper cut, so weighted Hall compares all tails. -/
+theorem reporterLowerEnvelope_le_target_of_weightedHall
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    (hHall : WeightedHall D R) (f : T → ℝ) :
+    reporterLowerEnvelope D R f ≤ ∑ t, D.targetLaw t * f t := by
+  classical
+  have hcardS : 0 < Fintype.card S := by
+    by_contra h
+    have hzero : Fintype.card S = 0 := Nat.eq_zero_of_not_pos h
+    have huniv : (Finset.univ : Finset S) = ∅ := Finset.card_eq_zero.mp (by simpa using hzero)
+    have hsum := D.source_sum
+    rw [huniv] at hsum
+    simp at hsum
+  letI : Nonempty S := Fintype.card_pos_iff.mp hcardS
+  let s₀ : S := Classical.choice (inferInstance : Nonempty S)
+  letI : Nonempty T := ⟨R.chosenNeighbor s₀⟩
+  obtain ⟨t₀, ht₀⟩ := Finite.exists_min f
+  let c : ℝ := f t₀
+  let sourceHeight : S → ℝ := fun s => f (R.neighborArgmin f s) - c
+  let targetHeight : T → ℝ := fun t => f t - c
+  have hsourceHeight : ∀ s, 0 ≤ sourceHeight s := by
+    intro s
+    dsimp [sourceHeight, c]
+    exact sub_nonneg.mpr (ht₀ (R.neighborArgmin f s))
+  have htargetHeight : ∀ t, 0 ≤ targetHeight t := by
+    intro t
+    dsimp [targetHeight, c]
+    exact sub_nonneg.mpr (ht₀ t)
+  have htail : ∀ z,
+      finiteUpperCutMass D.sourceLaw sourceHeight z ≤
+        finiteUpperCutMass D.targetLaw targetHeight z := by
+    intro z
+    by_cases hz : 0 < z
+    · let U : Finset S := Finset.univ.filter fun s => z < sourceHeight s
+      let A : Finset T := Finset.univ.filter fun t => z < targetHeight t
+      have hneighbor : U.biUnion R.neighbors ⊆ A := by
+        intro t ht
+        rcases Finset.mem_biUnion.mp ht with ⟨s, hs, hst⟩
+        have hzs : z < sourceHeight s := (Finset.mem_filter.mp hs).2
+        have hmin : sourceHeight s ≤ targetHeight t := by
+          dsimp [sourceHeight, targetHeight]
+          exact sub_le_sub_right (R.neighborArgmin_le f s hst) c
+        exact Finset.mem_filter.mpr ⟨Finset.mem_univ t, hzs.trans_le hmin⟩
+      have hcut := hHall U
+      have htargetCut :
+          ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t ≤
+            ∑ t ∈ A, D.targetLaw t := by
+        apply Finset.sum_le_sum_of_subset_of_nonneg hneighbor
+        intro t _htA _htN
+        exact (D.target_pos t).le
+      calc
+        finiteUpperCutMass D.sourceLaw sourceHeight z =
+            ∑ s ∈ U, D.sourceLaw s := by
+          unfold finiteUpperCutMass
+          rw [Finset.sum_filter]
+          apply Finset.sum_congr rfl
+          intro s _hs
+          simp only [Set.mem_Ioo]
+          by_cases hzs : z < sourceHeight s <;> simp [hz, hzs]
+        _ ≤ ∑ t ∈ U.biUnion R.neighbors, D.targetLaw t := hcut
+        _ ≤ ∑ t ∈ A, D.targetLaw t := htargetCut
+        _ = finiteUpperCutMass D.targetLaw targetHeight z := by
+          unfold finiteUpperCutMass
+          rw [Finset.sum_filter]
+          apply Finset.sum_congr rfl
+          intro t _ht
+          simp only [Set.mem_Ioo]
+          by_cases hzt : z < targetHeight t <;> simp [hz, hzt]
+    · unfold finiteUpperCutMass
+      apply le_of_eq
+      simp only [Set.mem_Ioo]
+      simp [hz]
+  have hintegral := MeasureTheory.integral_mono
+    (finiteUpperCutMass_integrable D.sourceLaw sourceHeight)
+    (finiteUpperCutMass_integrable D.targetLaw targetHeight) htail
+  rw [integral_finiteUpperCutMass D.sourceLaw sourceHeight hsourceHeight,
+    integral_finiteUpperCutMass D.targetLaw targetHeight htargetHeight] at hintegral
+  have hsourceShift :
+      (∑ s, D.sourceLaw s * sourceHeight s) = reporterLowerEnvelope D R f - c := by
+    unfold reporterLowerEnvelope
+    dsimp [sourceHeight]
+    calc
+      (∑ s, D.sourceLaw s * (f (R.neighborArgmin f s) - c)) =
+          (∑ s, D.sourceLaw s * f (R.neighborArgmin f s)) -
+            c * ∑ s, D.sourceLaw s := by
+        rw [mul_comm c, Finset.sum_mul, ← Finset.sum_sub_distrib]
+        apply Finset.sum_congr rfl
+        intro s _hs
+        ring
+      _ = (∑ s, D.sourceLaw s * f (R.neighborArgmin f s)) - c := by
+        rw [D.source_sum]
+        ring
+  have htargetShift :
+      (∑ t, D.targetLaw t * targetHeight t) =
+        (∑ t, D.targetLaw t * f t) - c := by
+    dsimp [targetHeight]
+    calc
+      (∑ t, D.targetLaw t * (f t - c)) =
+          (∑ t, D.targetLaw t * f t) - c * ∑ t, D.targetLaw t := by
+        rw [mul_comm c, Finset.sum_mul, ← Finset.sum_sub_distrib]
+        apply Finset.sum_congr rfl
+        intro t _ht
+        ring
+      _ = (∑ t, D.targetLaw t * f t) - c := by
+        rw [D.target_sum]
+        ring
+  rw [hsourceShift, htargetShift] at hintegral
+  linarith
+
 theorem reporterLowerEnvelope_le_kernel
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
     (f : T → ℝ) {P : S → T → ℝ} (hP : P ∈ R.rawKernelSet) :
@@ -760,6 +920,65 @@ theorem reporterLowerEnvelope_projectionReporter
     rw [hrearrange] at hvar
     linarith
 
+/-- The canonical projection reporter's nonlinear gap is exactly the squared projection
+distance. -/
+theorem projectionReporter_gap_eq_projectionDistanceSq
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    reporterLowerEnvelope D R (projectionReporter D R) -
+        ∑ t, D.targetLaw t * projectionReporter D R t =
+      projectionDistanceSq D R := by
+  rw [reporterLowerEnvelope_projectionReporter D R,
+    projectionReporter_centered D R, sub_zero]
+  calc
+    (∑ t, projectionReporter D R t *
+        R.rawOutput D (projectionKernel D R) t) =
+        ∑ t, (D.targetLaw t * (projectionReporter D R t) ^ 2 +
+          D.targetLaw t * projectionReporter D R t) := by
+      apply Finset.sum_congr rfl
+      intro t _ht
+      unfold projectionReporter
+      have hβ : D.targetLaw t ≠ 0 := ne_of_gt (D.target_pos t)
+      field_simp
+      ring
+    _ = (∑ t, D.targetLaw t * (projectionReporter D R t) ^ 2) +
+        ∑ t, D.targetLaw t * projectionReporter D R t :=
+      Finset.sum_add_distrib
+    _ = projectionDistanceSq D R := by
+      rw [projectionReporter_secondMoment D R, projectionReporter_centered D R, add_zero]
+
+/-- **Weighted Hall sufficiency.**  Normalized weighted Hall forces the canonical projection
+distance to vanish and hence constructs an exact supported transport internally. -/
+theorem exactTransport_of_weightedHall
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T)
+    (hHall : WeightedHall D R) :
+    ∃ P ∈ R.rawKernelSet, ∀ t, R.rawOutput D P t = D.targetLaw t := by
+  have hlower := reporterLowerEnvelope_le_target_of_weightedHall
+    D R hHall (projectionReporter D R)
+  have hgap := projectionReporter_gap_eq_projectionDistanceSq D R
+  have hle : projectionDistanceSq D R ≤ 0 := by
+    rw [← hgap]
+    linarith
+  have hzero : projectionDistanceSq D R = 0 :=
+    le_antisymm hle (projectionDistanceSq_nonneg D R)
+  exact (projectionDistanceSq_eq_zero_iff D R).mp hzero
+
+/-- Exact finite weighted Hall theorem for positive normalized source and target laws. -/
+theorem weightedHall_iff_exactTransport
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    WeightedHall D R ↔
+      ∃ P ∈ R.rawKernelSet, ∀ t, R.rawOutput D P t = D.targetLaw t := by
+  constructor
+  · exact exactTransport_of_weightedHall D R
+  · rintro ⟨P, hP, hout⟩
+    exact weightedHall_of_exactTransport D R hP hout
+
+/-- Weighted Hall is exactly the zero set of the chi-square projection distance. -/
+theorem weightedHall_iff_projectionDistanceSq_eq_zero
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    WeightedHall D R ↔ projectionDistanceSq D R = 0 := by
+  rw [projectionDistanceSq_eq_zero_iff D R]
+  exact weightedHall_iff_exactTransport D R
+
 /-- Nonlinear reporter objective from equation (12). -/
 noncomputable def reporterObjective
     (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) : ℝ :=
@@ -844,6 +1063,204 @@ theorem projection_reporter_duality
       ring
     rw [← hrearrange] at hsquare
     linarith
+
+/-! ## Homogeneous reporter dual -/
+
+/-- Target-law reporter mean. -/
+def reporterMean (D : RouteEHallANOVAData S T) (f : T → ℝ) : ℝ :=
+  ∑ t, D.targetLaw t * f t
+
+/-- Target-law reporter variance. -/
+def reporterVariance (D : RouteEHallANOVAData S T) (f : T → ℝ) : ℝ :=
+  ∑ t, D.targetLaw t * (f t - reporterMean D f) ^ 2
+
+/-- Positive nonlinear reporter gap. -/
+noncomputable def reporterPositiveGap
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) : ℝ :=
+  max (reporterLowerEnvelope D R f - reporterMean D f) 0
+
+/-- Totalized homogeneous reporter quotient.  Zero-variance reporters receive value zero, which
+also covers the degenerate one-target case without adding a nontriviality hypothesis. -/
+noncomputable def homogeneousReporterRatio
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) : ℝ :=
+  reporterPositiveGap D R f / Real.sqrt (reporterVariance D f)
+
+omit [DecidableEq T] in theorem reporterVariance_nonneg
+    (D : RouteEHallANOVAData S T) (f : T → ℝ) :
+    0 ≤ reporterVariance D f := by
+  unfold reporterVariance
+  exact Finset.sum_nonneg fun t _ht => mul_nonneg (D.target_pos t).le (sq_nonneg _)
+
+omit [DecidableEq T] in theorem reporterPositiveGap_nonneg
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) :
+    0 ≤ reporterPositiveGap D R f := by
+  exact le_max_right _ _
+
+theorem reporterVariance_projectionReporter
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    reporterVariance D (projectionReporter D R) = projectionDistanceSq D R := by
+  unfold reporterVariance reporterMean
+  rw [projectionReporter_centered D R]
+  simp only [sub_zero]
+  exact projectionReporter_secondMoment D R
+
+theorem reporterPositiveGap_projectionReporter
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    reporterPositiveGap D R (projectionReporter D R) = projectionDistanceSq D R := by
+  unfold reporterPositiveGap reporterMean
+  rw [projectionReporter_gap_eq_projectionDistanceSq D R,
+    max_eq_left (projectionDistanceSq_nonneg D R)]
+
+/-- Every reporter gap is bounded by covariance with the canonical projection reporter. -/
+theorem reporterGap_le_projectionCovariance
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) :
+    reporterLowerEnvelope D R f - reporterMean D f ≤
+      ∑ t, D.targetLaw t * (f t - reporterMean D f) * projectionReporter D R t := by
+  have hlower := reporterLowerEnvelope_le_kernel D R f (projectionKernel_mem D R)
+  have hraw :
+      (∑ t, f t * R.rawOutput D (projectionKernel D R) t) - reporterMean D f =
+        ∑ t, D.targetLaw t * f t * projectionReporter D R t := by
+    unfold reporterMean
+    rw [← Finset.sum_sub_distrib]
+    apply Finset.sum_congr rfl
+    intro t _ht
+    unfold projectionReporter
+    have hβ : D.targetLaw t ≠ 0 := ne_of_gt (D.target_pos t)
+    field_simp
+  have hcenter :
+      (∑ t, D.targetLaw t * f t * projectionReporter D R t) =
+        ∑ t, D.targetLaw t * (f t - reporterMean D f) * projectionReporter D R t := by
+    have hzero := projectionReporter_centered D R
+    calc
+      (∑ t, D.targetLaw t * f t * projectionReporter D R t) =
+          (∑ t, D.targetLaw t * (f t - reporterMean D f) *
+            projectionReporter D R t) +
+            reporterMean D f * ∑ t, D.targetLaw t * projectionReporter D R t := by
+        rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+        apply Finset.sum_congr rfl
+        intro t _ht
+        ring
+      _ = _ := by rw [hzero, mul_zero, add_zero]
+  rw [← hcenter, ← hraw]
+  linarith
+
+/-- Weighted Cauchy--Schwarz for the centered reporter and canonical projection reporter. -/
+theorem abs_projectionCovariance_le_sqrt_variance_mul_sqrt_distance
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) :
+    |∑ t, D.targetLaw t * (f t - reporterMean D f) * projectionReporter D R t| ≤
+      Real.sqrt (reporterVariance D f) * Real.sqrt (projectionDistanceSq D R) := by
+  let a : T → ℝ := fun t =>
+    Real.sqrt (D.targetLaw t) * |f t - reporterMean D f|
+  let b : T → ℝ := fun t =>
+    Real.sqrt (D.targetLaw t) * |projectionReporter D R t|
+  calc
+    |∑ t, D.targetLaw t * (f t - reporterMean D f) * projectionReporter D R t| ≤
+        ∑ t, |D.targetLaw t * (f t - reporterMean D f) * projectionReporter D R t| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ = ∑ t, a t * b t := by
+      apply Finset.sum_congr rfl
+      intro t _ht
+      dsimp [a, b]
+      rw [abs_mul, abs_mul, abs_of_pos (D.target_pos t)]
+      have hsqrt : Real.sqrt (D.targetLaw t) * Real.sqrt (D.targetLaw t) =
+          D.targetLaw t := Real.mul_self_sqrt (D.target_pos t).le
+      calc
+        D.targetLaw t * |f t - reporterMean D f| * |projectionReporter D R t| =
+            (Real.sqrt (D.targetLaw t) * Real.sqrt (D.targetLaw t)) *
+              |f t - reporterMean D f| * |projectionReporter D R t| := by rw [hsqrt]
+        _ = Real.sqrt (D.targetLaw t) * |f t - reporterMean D f| *
+              (Real.sqrt (D.targetLaw t) * |projectionReporter D R t|) := by ring
+    _ ≤ Real.sqrt (∑ t, a t ^ 2) * Real.sqrt (∑ t, b t ^ 2) :=
+      Real.sum_mul_le_sqrt_mul_sqrt Finset.univ a b
+    _ = Real.sqrt (reporterVariance D f) * Real.sqrt (projectionDistanceSq D R) := by
+      congr 1
+      · unfold reporterVariance
+        apply congrArg Real.sqrt
+        apply Finset.sum_congr rfl
+        intro t _ht
+        dsimp [a]
+        rw [mul_pow, sq_abs, Real.sq_sqrt (D.target_pos t).le]
+      · rw [← reporterVariance_projectionReporter D R]
+        apply congrArg Real.sqrt
+        unfold reporterVariance
+        rw [show reporterMean D (projectionReporter D R) = 0 by
+          exact projectionReporter_centered D R]
+        apply Finset.sum_congr rfl
+        intro t _ht
+        dsimp [b]
+        rw [sub_zero, mul_pow, sq_abs, Real.sq_sqrt (D.target_pos t).le]
+
+/-- Exact all-reporter inequality with optimal constant `sqrt projectionDistanceSq`. -/
+theorem reporterGap_le_sqrt_projectionDistanceSq_mul_sqrt_variance
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) :
+    reporterLowerEnvelope D R f - reporterMean D f ≤
+      Real.sqrt (projectionDistanceSq D R) * Real.sqrt (reporterVariance D f) := by
+  let covariance :=
+    ∑ t, D.targetLaw t * (f t - reporterMean D f) * projectionReporter D R t
+  calc
+    reporterLowerEnvelope D R f - reporterMean D f ≤ covariance :=
+      reporterGap_le_projectionCovariance D R f
+    _ ≤ |covariance| := le_abs_self covariance
+    _ ≤ Real.sqrt (reporterVariance D f) * Real.sqrt (projectionDistanceSq D R) :=
+      abs_projectionCovariance_le_sqrt_variance_mul_sqrt_distance D R f
+    _ = Real.sqrt (projectionDistanceSq D R) * Real.sqrt (reporterVariance D f) :=
+      mul_comm _ _
+
+/-- Homogeneous reporter quotient is bounded by projection distance, including zero variance. -/
+theorem homogeneousReporterRatio_le_sqrt_projectionDistanceSq
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) (f : T → ℝ) :
+    homogeneousReporterRatio D R f ≤ Real.sqrt (projectionDistanceSq D R) := by
+  let gap := reporterLowerEnvelope D R f - reporterMean D f
+  let covariance :=
+    ∑ t, D.targetLaw t * (f t - reporterMean D f) * projectionReporter D R t
+  have hgapCov : gap ≤ covariance := reporterGap_le_projectionCovariance D R f
+  have hcovAbs : |covariance| ≤
+      Real.sqrt (reporterVariance D f) * Real.sqrt (projectionDistanceSq D R) :=
+    abs_projectionCovariance_le_sqrt_variance_mul_sqrt_distance D R f
+  have hpositiveGap : reporterPositiveGap D R f ≤ |covariance| := by
+    unfold reporterPositiveGap
+    dsimp [gap] at hgapCov
+    rw [max_le_iff]
+    exact ⟨hgapCov.trans (le_abs_self covariance), abs_nonneg covariance⟩
+  by_cases hvar : reporterVariance D f = 0
+  · unfold homogeneousReporterRatio
+    rw [hvar, Real.sqrt_zero, div_zero]
+    exact Real.sqrt_nonneg _
+  · have hvarPos : 0 < reporterVariance D f :=
+      lt_of_le_of_ne (reporterVariance_nonneg D f) (Ne.symm hvar)
+    have hsqrtPos : 0 < Real.sqrt (reporterVariance D f) := Real.sqrt_pos.2 hvarPos
+    unfold homogeneousReporterRatio
+    apply (div_le_iff₀ hsqrtPos).2
+    calc
+      reporterPositiveGap D R f ≤ |covariance| := hpositiveGap
+      _ ≤ Real.sqrt (reporterVariance D f) * Real.sqrt (projectionDistanceSq D R) :=
+        hcovAbs
+      _ = Real.sqrt (projectionDistanceSq D R) * Real.sqrt (reporterVariance D f) :=
+        mul_comm _ _
+
+/-- **Exact homogeneous reporter duality.**  Squared-distance zero is handled by the zero
+reporter; positive distance is attained by the canonical projection reporter. -/
+theorem projection_homogeneous_reporter_duality
+    (D : RouteEHallANOVAData S T) (R : RouteEHallRelation S T) :
+    IsGreatest (Set.range (homogeneousReporterRatio D R))
+      (Real.sqrt (projectionDistanceSq D R)) := by
+  constructor
+  · by_cases hzero : projectionDistanceSq D R = 0
+    · refine ⟨fun _ => 0, ?_⟩
+      rw [hzero, Real.sqrt_zero]
+      unfold homogeneousReporterRatio reporterPositiveGap reporterVariance reporterMean
+      simp [reporterLowerEnvelope]
+    · refine ⟨projectionReporter D R, ?_⟩
+      unfold homogeneousReporterRatio
+      rw [reporterPositiveGap_projectionReporter D R,
+        reporterVariance_projectionReporter D R]
+      have hdPos : 0 < projectionDistanceSq D R :=
+        lt_of_le_of_ne (projectionDistanceSq_nonneg D R) (Ne.symm hzero)
+      have hsqrtPos : 0 < Real.sqrt (projectionDistanceSq D R) := Real.sqrt_pos.2 hdPos
+      apply (div_eq_iff (ne_of_gt hsqrtPos)).2
+      exact (Real.mul_self_sqrt hdPos.le).symm
+  · rintro _ ⟨f, rfl⟩
+    exact homogeneousReporterRatio_le_sqrt_projectionDistanceSq D R f
 
 end RouteEHallRelation
 

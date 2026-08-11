@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`ff3b4f8caa7e0c672a1dcf73fae766743e231874`. Files outside committed umbrellas at this snapshot are
+`ce0ebf9ef3df39df65bab99394ed922e3e9efe07`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
@@ -75,9 +75,9 @@ Heath--Brown packet, closes the finite-product and pointwise long-factor cases, 
 remaining external input is a genuine aggregate large-values theorem in the all-short and
 ultra-near-one long-Möbius regimes, not more Perron packaging. A committed but umbrella-unreachable
 suite now makes the all-short grouped Heath--Brown coefficient, multiplicative group selection,
-grouped Huxley application, `6121`-block ceiling, and fixed-degree-polylog aggregate-to-box
-selection literal. Current untracked factorization reindexes that box as its exact heterogeneous
-factor family. Missing all-short step is uniform
+grouped Huxley application, `6121`-block ceiling, fixed-degree-polylog aggregate-to-box selection,
+exact heterogeneous factorization, and robust greedy packing literal. These modules remain
+committed but umbrella-unreachable. Missing all-short step is uniform
 counting and absorption over those selections, not their pointwise existence.
 Route U now has strict canonical Jacobi source flow throughout every finite positive chamber
 and a Lean classification of every fixed positive even first contact: one positive rank-fill block
@@ -219,8 +219,11 @@ original source sign; universal feasibility is exactly RH.
 and finite-to-infinite limit, but leave rigorous convergence open. In particular, Theorem 1.1 of
 [Zeta Spectral Triples](https://arxiv.org/abs/2511.22755) proves self-adjointness and the
 regularized-determinant formula for the finite rank-one perturbation under its finite simple/even
-ground-state hypothesis. That finite theorem is absent as a concrete Lean object. It does not prove
-the Route-A source floor, tail lower bound, or continuous Bohr asymptote.
+ground-state hypothesis. Committed but umbrella-unreachable `CCMZetaSpectralTripleFinite.lean`
+now instantiates the literal restricted-Weil matrix, boundary, and source, and proves the finite
+metric-adjointness, real-root, and determinant/resolvent identities from an explicit simple-even
+ground data structure. It does not prove those hypotheses, finite-to-infinite convergence, the
+Route-A source floor, tail lower bound, or continuous Bohr asymptote.
 
 **Lean action.** None as a Route-A advance. CCM Theorem 1.1 remains useful finite operator
 infrastructure for Route O, but identifying another finite determinant coefficient or positive
@@ -706,12 +709,17 @@ finite normalization and seam ANOVA. Umbrella-reachable
 projection, zero-distance transport equivalence, variational inequality, and extremal reporter.
 These results do not prove the literal relation's distance rate.
 
-Current working-tree strengthening gives the sharp quantitative cut converse: Hall deficit
+The same umbrella-reachable module gives the sharp quantitative cut converse: Hall deficit
 `delta` on a source subset whose target-neighbor mass is `b` forces projection energy at least
 `delta^2/(b(1-b))`. Hence the route's strict-half projection target requires cut expansion at its
 natural variance-normalized rate. No located external result supplies that estimate for the
 literal entropy-complement relation; the theorem sharpens the consumer but does not produce one
 arithmetic cut bound.
+
+Current working-tree layer-cake strengthening provisionally completes the finite equivalence:
+weighted Hall, exact supported transport, and zero projection distance are the same condition; the
+canonical nonlinear reporter gap is exactly that distance. This removes finite transport duality
+from the import agenda but leaves the literal arithmetic Hall theorem and strict-half rate open.
 
 A second umbrella-reachable Lean lane uses direct load roughness. On a symmetric parity-flipping
 physical graph with degrees `d_n`, Gibbs weights, and edge
@@ -1579,8 +1587,10 @@ coordinate-independent exceptional scalar transports every shell grade only at `
 isometry and full-shell transport are RH-equivalent. No exact external collision was located for
 this source-specific shell/exceptional conjunction. The result removes scalar amplification from
 the literature-import agenda: missing L theorem must be a singular grade-dependent target lift
-absorbing the Wold cocycle and physical descent defect without assuming neutrality. Current
-working-tree Wold-stationarity endpoint is another RH receiver, not that lift.
+absorbing the Wold cocycle and physical descent defect without assuming neutrality. The formal
+Wold-stationarity endpoint, two-sheet coboundary laws, and three-presentation no-duplication theorem
+show that reflection isometry, full-shell transport, and physical cyclic descent are one
+RH-equivalent receiver, not that lift.
 
 `SourceHorizontalShellGreenPrimeClockProfile.lean` further proves every normalized shell moment
 tends to `1/(r+1)` and resums the shell response to the same universal nonlinear Wold profile.
@@ -1779,10 +1789,19 @@ G B^2 = B^* G B + i R_2 B.
 
 It also proves that strictly positive real nonzero spectrum of `B^2` is equivalent to real
 nonzero spectrum of `B`, RH, and—through existing capstones—the compact Markov and Thorin
-properties. Candidate local contribution is the source-specific identification of the full
-Green-square obstruction with `iR_2B`; elementary square-realness and generic positive bulk are
-not novelty claims. It does not yet construct the P measure or prove direct factorization of every
-P producer through C1, because its Markov/Thorin equivalences currently pass through RH.
+properties. It now also proves pointwise neutrality of the source-built Green boundary current on
+every multiplicity-exact divisor mode is equivalent to each of those endpoints. Candidate local
+contribution is the source-specific identification of the full Green-square obstruction with
+`iR_2B`; elementary square-realness, generic positive bulk, and endpoint equivalence alone are not
+novelty claims. This remains a receiver: it does not construct the P measure or prove direct
+factorization of every P producer through C1, because its Markov/Thorin equivalences pass through
+RH.
+
+Current untracked, dirty-umbrella `HedenmalmThetaGreenReflectionPairNoGo.lean` provisionally
+proves the reflected-pair shortcut is vacuous: functional-equation reflection preserves theta root
+energy and negates the signed boundary flux, so pair neutrality holds unconditionally. Same-fibre
+neutrality conjoined with that automatic law remains exactly RH. External reflection symmetry
+therefore cannot replace a source theorem neutralizing each divisor fibre before aggregation.
 
 **External contribution.** Polson's
 [Thorin/GGC paper](https://arxiv.org/abs/1804.10043), in its 2026 revision, proves a safe
@@ -2361,8 +2380,8 @@ receive provisional rather than formal credit because no committed umbrella reac
 
 Committed but umbrella-unreachable `Sieve/MaynardAggregateSelection.lean` and the strengthened
 group-selection file make this pointwise passage literal: a large smooth four-level aggregate
-contains one dyadic box after one exact fixed-degree polylogarithmic loss. Current untracked
-`Sieve/MaynardBoxFactorization.lean` packages the box as `2(k-m)` heterogeneous factors, pays the
+contains one dyadic box after one exact fixed-degree polylogarithmic loss. Committed but
+umbrella-unreachable `Sieve/MaynardBoxFactorization.lean` packages the box as `2(k-m)` heterogeneous factors, pays the
 signed binomial by explicit `2^k`, and selects a literal group from the unsigned core. Pointwise
 box/group existence is therefore no longer the scientific wall. Missing theorem must control those choices uniformly
 over the separated ordinates, pay their multiplicities inside the `x^((1-sigma)/16)` reserve,
@@ -2370,13 +2389,23 @@ verify one common multiblock absorption schedule, and sum the selected packets. 
 external large-values theorem supplies this exact aggregate interface. Ultra-near-one long-
 Möbius remains separate.
 
-Dirty `Sieve/MaynardAllShortHuxley.lean` provisionally widens the greedy group window to
+Committed but umbrella-unreachable `Sieve/MaynardAllShortHuxley.lean` widens the greedy group window to
 `[mu/120,4mu/120]`, retains a raising multiplier at most `51`, and leaves exact reserve
-`73/1440`. Current untracked `Sieve/MaynardGreedyGrouping.lean` constructs a disjoint `[t,4t)`
+`73/1440`. Committed but umbrella-unreachable `Sieve/MaynardGreedyGrouping.lean` constructs a disjoint `[t,4t)`
 partition for every finite nonnegative family with atoms at most `2t` and total at least `t`.
 This removes exact three-threshold bin packing as a prospective literature import. Literal
 instantiation on every selected box and the uniform ordinate-level absorption/counting argument
 remain open.
+
+Current untracked `Sieve/MaynardGreedyGroupSelection.lean` provisionally composes that packing
+with multiplicative pigeonholing and outputs one literal finset/subtype group carrying both the
+`[t,4t)` mass window and exact large-value threshold. Concurrent strengthening removes the
+unnecessary pointwise nonnegativity premise from the packing theorem. Current untracked
+`Sieve/MaynardDyadicGreedyGroup.lean` identifies group mass with the exact dyadic lower edge,
+specializes selection to one literal heterogeneous Heath--Brown box, and proves width at most
+`120` for `k=60`. No abstract partition or selection premise remains, but the actual box exponent
+atom/total bounds, uniform ordinate counting, common absorption schedule, and packet summation
+still do.
 
 **Exchange verdict and Lean action.** Generic Lorentz mass shell, rapidity, causal chamber, Hankel
 scattering, and modified-Bessel transform are not novelty claims. Corpus-specific candidate delta
@@ -2473,7 +2502,7 @@ polarization theorems make equality of every unsquared continued-Cauchy source
 moment an RH-equivalent endpoint. This is coefficient-faithful, but still a receiver: no local or
 external theorem forces the holomorphic and reflected polarizations to agree.
 
-Current untracked `XiResolventHankelMatrixLadder.lean` rewrites the same fixed-shift criterion as
+Umbrella-reachable `XiResolventHankelMatrixLadder.lean` rewrites the same fixed-shift criterion as
 positive semidefiniteness of every finite real matrix
 `H_N(X)_(ij)=Re R_(i+j)(X)` and obtains determinant nonnegativity under RH. This is finite
 arithmetic/J-fraction packaging of the existing receiver, not an unconditional rung or a new
@@ -3321,7 +3350,8 @@ but unwired queue is `DeningerMeyerAdiabatic.lean`,
 `Sieve/MaynardRaisedCoefficient.lean`, `Sieve/MaynardAllShortHuxley.lean`, and
 `Sieve/MaynardRaisedDyadic.lean`, `Sieve/MaynardGroupedFactor.lean`,
 `Sieve/MaynardGroupSelection.lean`, `Sieve/MaynardAllShortCase.lean`, and
-`Sieve/MaynardAggregateSelection.lean`; their
+`Sieve/MaynardAggregateSelection.lean`, `Sieve/MaynardBoxFactorization.lean`,
+`Sieve/MaynardGreedyGrouping.lean`, and `CCMZetaSpectralTripleFinite.lean`; their
 provisional route effects are recorded above, but they are excluded from formal credit at this
 cutoff. `XiHeatCassiniWoldResidualODEClosure.lean`, `HTGeometry/MellinGrowthBounds.lean`,
 `RHTower/XiExplicitFormulaLogDeriv.lean`, `XiHeatCassiniPrimeGapMomentBigOBridge.lean`,
@@ -3344,7 +3374,7 @@ cutoff. `XiHeatCassiniWoldResidualODEClosure.lean`, `HTGeometry/MellinGrowthBoun
 `RouteEWeightedHallProjectionDuality.lean`, `XiResolventMassRigidity.lean`,
 `XiShiftedHalfDensityAdjacentConnection.lean`,
 `XiShiftedCanonicalAdmissionRecessionConnection.lean`, `XiResolventArithmeticTarget.lean`,
-`XiResolventLineReflectionDefect.lean`, and
+`XiResolventLineReflectionDefect.lean`, `XiResolventHankelMatrixLadder.lean`, and
 `HedenmalmThetaGreenSquareBoundaryLaw.lean`,
 `HTGeometry/ConstitutiveHassePacketFormation.lean`, and
 `HTGeometry/ConstitutiveFunctionalEquationPacketLift.lean` are committed, umbrella-reachable, and
@@ -3359,13 +3389,24 @@ shifted-cokernel/source equation, and supersymmetric Dirac realization are all u
 `RouteEWeightedHallANOVA.lean`,
 `Sieve/HeathBrownDyadicPerron.lean`, `Sieve/HeathBrownDyadicCoefficientBound.lean`,
 `XiShiftedCanonicalAdmissionDefectEnergy.lean`, and the full resolvent/half-density suite now also
-receive formal credit. Current working-tree strengthening in
-`RouteEWeightedHallProjectionDuality.lean`,
-`DeningerExponentGammaSixShellTransportRigidity.lean`, and
-`HedenmalmThetaGreenSquareBoundaryLaw.lean`, and `Sieve/MaynardAllShortHuxley.lean`, plus new untracked
-`Sieve/MaynardBoxFactorization.lean`, `Sieve/MaynardGreedyGrouping.lean`, and
-`XiResolventHankelMatrixLadder.lean` remain outside cutoff. Their provisional
-frontier effects are recorded above; none changes route count or closes an endpoint.
+receive formal credit. Latest formal delta adds the Route-E Hall-deficit lower bound, Route-L
+reflection-coboundary/Wold-curvature no-duplication law, C1/P pointwise Green-boundary-neutrality
+receiver, and Route-U finite Hankel-matrix ladder. The new T box-factorization, widened-reserve,
+and greedy-packing modules remain committed but unwired; the finite CCM spectral-triple capstone is
+also committed but unwired and conditional on its explicit simple-even ground package. None
+changes route count or closes a Tier-1 endpoint.
+
+Current work beyond the cutoff is provisional. Route E's layer-cake argument proves weighted Hall
+equivalent to exact transport and zero projection distance. T's new greedy group-selection module
+combines packing with multiplicative large-value selection; its dyadic specialization identifies
+the exact lower edge and literal Heath--Brown box group. C1/P's reflection-pair no-go proves
+aggregate reflected cancellation is unconditional and cannot replace fibrewise neutrality. Dirty HTGeometry imports
+`ClusteredExponentialMomentAnnihilator.lean`, whose rectangular-Vandermonde theorem gives exact
+finite moment and truncated Taylor cancellation for arbitrary offsets. No Xi specialization,
+analytic remainder control, or source-provenance theorem connects it to a live endpoint, so it is
+generic infrastructure rather than a new route or a reopening of retired Route H. Concurrent
+Deninger and Xi-resolvent edits do not change theorem endpoints.
+
 The remaining scientific gap is spectral reality/positive symmetrization; the parallel
 explicit-form connector has one widening-limit assembly left. Route Q's structural absolute-moment
 height gate is Lean-certified; the verified `T>9` floor and signed first-moment bridge remain
