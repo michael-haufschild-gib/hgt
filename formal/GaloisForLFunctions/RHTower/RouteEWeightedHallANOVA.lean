@@ -264,6 +264,8 @@ theorem sector_centered_sum_eq_zero
   classical
   have hβj : P.targetSectorWeight D j ≠ 0 :=
     ne_of_gt (P.sectorWeight_pos j)
+  have hβj' : (∑ t with P.sector t = j, D.targetLaw t) ≠ 0 := by
+    simpa [targetSectorWeight] using hβj
   simp_rw [mul_sub, Finset.sum_sub_distrib, D.target_mul_density K]
   unfold sectorDensity outputSectorWeight targetSectorWeight
   rw [← Finset.sum_mul]
@@ -296,6 +298,17 @@ theorem chiSquare_eq_within_add_between
       calc
         (∑ t with P.sector t = j,
             D.targetLaw t * (D.density K t - 1) ^ 2) =
+            ∑ t with P.sector t = j,
+              (D.targetLaw t *
+                  (D.density K t - P.sectorDensity D K j) ^ 2 +
+                2 * (P.sectorDensity D K j - 1) *
+                  (D.targetLaw t *
+                    (D.density K t - P.sectorDensity D K j)) +
+                D.targetLaw t * (P.sectorDensity D K j - 1) ^ 2) := by
+          apply Finset.sum_congr rfl
+          intro t _ht
+          ring
+        _ =
             (∑ t with P.sector t = j,
               D.targetLaw t * (D.density K t - P.sectorDensity D K j) ^ 2) +
             2 * (P.sectorDensity D K j - 1) *
@@ -303,8 +316,8 @@ theorem chiSquare_eq_within_add_between
                 D.targetLaw t * (D.density K t - P.sectorDensity D K j)) +
             (∑ t with P.sector t = j, D.targetLaw t) *
               (P.sectorDensity D K j - 1) ^ 2 := by
-          simp_rw [Finset.sum_add_distrib, ← Finset.mul_sum]
-          ring
+          rw [Finset.sum_add_distrib, Finset.sum_add_distrib,
+            ← Finset.mul_sum, ← Finset.sum_mul]
         _ = _ := by rw [hcenter]; ring
 
 end Partition

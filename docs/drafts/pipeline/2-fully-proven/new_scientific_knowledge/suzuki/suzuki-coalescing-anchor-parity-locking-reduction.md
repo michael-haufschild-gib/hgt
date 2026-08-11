@@ -1,7 +1,7 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
@@ -4443,7 +4443,235 @@ macroscopic odd spectral packet into a vanishing interval strictly above the mov
 This is the strongest positive survivor exposed by the negative-shift no-go.  It replaces the
 phrase “singular zero-mass behavior” by one falsifiable source theorem.
 
-### 14.25 Conjecture loop and novelty correction
+### 14.25 The complete parity-transport cost condenses at the zero-mass edge
+
+The annulus in Theorem AG is a one-channel statement.  It is not by itself a no-go: a moving
+Stieltjes scale can always sit below a collapsing atom.  The updated source-superselection paper
+already identifies the correct coupled invariant at finite shifts as the integrated even--odd
+resolvent hazard.  The negative zero-mass reduction above supplies new information about that
+invariant: its entire Xi cost must be paid inside a shrinking shift interval.
+
+For `sigma=e,o`, write
+
+```text
+g_(sigma,a)(s)=int_[0,infinity] 1/(t+s) dmu_(sigma,a)(t)
+              =x_(sigma,a)(s)/s,
+
+v_(sigma,a)(s)
+ = [int_[0,infinity] s t/(t+s)^2 dmu_(sigma,a)(t)]
+      /x_(sigma,a)(s) in [0,1].                         (326)
+```
+
+Thus `v_sigma` is the posterior hardness of the source spectrum after Stieltjes tilting at scale
+`s`.  Put
+
+```text
+F_a(s)=[N_e(a)/N_o(a)] x_(e,a)(s)/x_(o,a)(s)
+      =E_(a,-s)/O_(a,-s).
+```
+
+Differentiation under the spectral integral gives the exact logarithmic flow
+
+```text
+d/d(log s) log F_a(s)=v_(e,a)(s)-v_(o,a)(s).           (327)
+```
+
+#### Theorem AH — zero-edge parity-transport condensation and capacity slack
+
+Let `a_j->infinity`, let `lambda_j=-r_j<0`, and suppose the complete Suzuki quotients identify the
+Xi target.  Let `epsilon_j->0+` be any independent free probe satisfying
+
+```text
+a_j epsilon_j/(1+|log epsilon_j|)^4 ->infinity.        (328)
+```
+
+Then `r_j<epsilon_j` eventually and
+
+```text
+int_(r_j)^(epsilon_j)
+ [v_(o,a_j)(s)-v_(e,a_j)(s)] ds/s
+ ->log R_Xi>log(81/4).                                  (329)
+```
+
+More precisely, the exact capacity-slack identity is
+
+```text
+log(epsilon_j/r_j)-log[F_(a_j)(r_j)/F_(a_j)(epsilon_j)]
+ =int_(r_j)^(epsilon_j)
+    [(1-v_(o,a_j)(s))+v_(e,a_j)(s)] ds/s >=0.          (330)
+```
+
+Consequently every such free probe obeys
+
+```text
+liminf_j epsilon_j/r_j >=R_Xi>81/4,
+limsup_j r_j/epsilon_j <=1/R_Xi<4/81.                  (331)
+```
+
+At asymptotic equality in `(331)`, the nonnegative slack in `(330)` vanishes: in logarithmic
+mean across the whole transition layer, the odd posterior spectrum lies above the running scale
+and the even posterior spectrum lies below it.  Thus minimal-width transport requires almost
+perfect paired parity separation, not merely the odd packet from Theorem AG.
+
+The same law has the additive shift form used in the source-superselection paper.  Put
+
+```text
+mathfrak h_a(-s)
+ = [int (t+s)^(-2)dmu_(e,a)(t)]/g_(e,a)(s)
+   -[int (u+s)^(-2)dmu_(o,a)(u)]/g_(o,a)(s)
+ =[v_(o,a)(s)-v_(e,a)(s)]/s.                           (332)
+```
+
+If `mathcal C_a(s)` and `mathcal D_a(s)` are respectively the positive and negative Jordan masses
+of
+
+```text
+(u-t)/[(t+s)^2(u+s)^2]
+  dmu_(e,a)(t)dmu_(o,a)(u),
+```
+
+then
+
+```text
+mathfrak h_a(-s)
+ =[mathcal C_a(s)-mathcal D_a(s)]/[g_(e,a)(s)g_(o,a)(s)]. (333)
+```
+
+Equations `(329)` and `(333)` prove that the complete credit-minus-debt cost `log R_Xi` is paid
+inside the vanishing additive interval `(-epsilon_j,-r_j)`.  In particular
+
+```text
+sup_(r_j<s<epsilon_j) max(0,mathfrak h_(a_j)(-s))
+ >=[log R_Xi+o(1)]/(epsilon_j-r_j).                    (334)
+```
+
+Taking `epsilon_j=a_j^(-1/2)` forces a hazard peak of order at least `sqrt(a_j)`.  Taking any
+`epsilon_j=L_j(1+log a_j)^4/a_j` with `L_j->infinity` forces a peak at least
+`(log R_Xi+o(1))a_j/[L_j(1+log a_j)^4]`.  A successful negative branch therefore cannot be a
+bounded finite-shift excursion squeezed toward zero: its literal source-pointed parity transport
+must become singular at essentially the inverse-aperture scale.
+
+#### Proof
+
+The derivative of `x_sigma` is
+
+```text
+x_sigma'(s)=int t/(t+s)^2 dmu_sigma(t),
+```
+
+so `(326)` gives `d log x_sigma/d log s=v_sigma`.  The aperture norms in `F_a` do not depend on
+`s`; subtraction proves `(327)`.  Integration from `r_j` to `epsilon_j` gives
+
+```text
+int_(r_j)^(epsilon_j)(v_o-v_e)ds/s
+ =log[F_(a_j)(r_j)/F_(a_j)(epsilon_j)].                (335)
+```
+
+Target identification gives `F_(a_j)(r_j)->R_Xi`.  Theorem AF applied to the independent probe
+`epsilon_j` gives `x_e(epsilon_j),x_o(epsilon_j)->1`, while `(289)` gives `N_e/N_o->1`; hence
+`F_(a_j)(epsilon_j)->1`.  This proves `(329)`.  Subtract `(335)` from
+`log(epsilon_j/r_j)=int ds/s` and use `0<=v_e,v_o<=1` to obtain `(330)--(331)`.
+
+For `(332)`, differentiate `g_sigma`; for `(333)`, put the two fractions over the common product
+denominator and use Fubini.  The numerator is `u-t`, so its Jordan split has the stated
+credit--debt orientation.  Integration is again `(335)`.  The supremum bound `(334)` follows by
+comparing the integral of the positive part with interval length.
+
+The differential hazard identity and its product-measure Jordan split are already present in the
+updated source-superselection paper and are not claimed again.  Candidate-new content is their
+joint localization by Theorems AF--AG: every complete negative family condenses the full
+`log R_Xi` cost at the zero-mass edge, the exact capacity slack `(330)`, and the forced
+inverse-aperture hazard blow-up `(334)`.
+
+The capacity law is sharp at the information level used.  For any `R>2`, `r_j->0`, and
+`r_j/epsilon_j->0`, the abstract one-dimensional laws
+
+```text
+mu_(e,j)=delta_0,
+mu_(o,j)=delta_((R-1)r_j)                               (336)
+```
+
+satisfy `F_j(r_j)=R`, converge weakly to `delta_0`, put all odd mass in
+`(r_j,epsilon_j)`, and have `F_j(epsilon_j)->1`.  Hence neither weak hard-edge collapse, the odd
+annulus, nor generic Stieltjes transport can retire Suzuki.  The remaining theorem must use the
+literal prime--Gamma coupling between the two parity laws.
+
+### 14.26 Exact paired source energy does not close the condensed layer
+
+The zero-side source formula contains one further literal coupling which the abstract model
+`(336)` omits.  Write `A=sinh(a)`, `B=cosh(a)`.  Direct integration gives
+
+```text
+widehat(U_+ cosh)(gamma)
+ =sqrt(2)[A cos(gamma a)+gamma B sin(gamma a)]/(1+gamma^2),
+
+widehat(U_- sinh)(gamma)
+ =i sqrt(2)[B sin(gamma a)-gamma A cos(gamma a)]/(1+gamma^2). (337)
+```
+
+The cross terms cancel after squaring and adding.  If
+
+```text
+Q_e(a)=<cosh,A_(e,a)cosh>,
+Q_o(a)=<sinh,A_(o,a)sinh>,
+```
+
+then the exact paired Rayleigh budget is
+
+```text
+Q_e(a)+Q_o(a)
+ =2sinh(a)^2 M_0(1)
+  +2 sum_gamma m_gamma sin(gamma a)^2/(1+gamma^2).      (338)
+```
+
+In particular
+
+```text
+2sinh(a)^2M_0(1)<=Q_e(a)+Q_o(a)<=2cosh(a)^2M_0(1),
+m_e(a)+m_o(a)->4M_0(1).                                (339)
+```
+
+#### Theorem AI — target scale versus literal odd Rayleigh energy
+
+Under the hypotheses of Theorem AH,
+
+```text
+liminf_j m_o(a_j)/r_j >=R_Xi-1>77/4.                  (340)
+```
+
+#### Proof
+
+Equations `(337)--(338)` follow from the two elementary antiderivatives and
+
+```text
+[A cos theta+gamma B sin theta]^2
+ +[B sin theta-gamma A cos theta]^2
+ =(1+gamma^2)[A^2+sin(theta)^2].
+```
+
+The bounds in `(339)` use `0<=sin^2<=1`; `(288)` and `N_e/N_o->1` give the limit.  Jensen's lower
+resolvent bound gives
+
+```text
+x_(o,a_j)(r_j)>=r_j/[r_j+m_o(a_j)].
+```
+
+Equation `(321)` gives `limsup x_o<=1/R_Xi`; rearrangement proves `(340)`.
+
+This exact paired energy is genuine literal-source information, but it still does not close the
+layer.  A probability law may place vanishing mass at an energy tending to infinity and thereby
+carry any prescribed first moment while leaving every Stieltjes factor at scales `O(r_j)`
+unchanged.  Thus `(338)--(340)` eliminate countermodels with vanishing total Rayleigh energy but
+do not eliminate `(336)` after an asymptotically invisible high-energy correction.  Any successful
+no-go needs a source-specific uniform-integrability or relative-Hankel theorem, not another finite
+moment identity.
+
+The Fourier algebra and Jensen inequality are classical.  Candidate-new content is the exact
+literal parity sum `(338)`, its asymptotic conservation law `(339)`, and its placement against the
+condensed Suzuki scale in `(340)`.  This is a proved constraint and a proved failure of the
+first-moment closure attempt, not a claim that Route G is dead.
+
+### 14.27 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -4716,6 +4944,25 @@ phrase “singular zero-mass behavior” by one falsifiable source theorem.
     fixed scale `epsilon`; it is compatible with a macroscopic packet whose energy tends to zero
     while its ratio to `r_a` stays above one.  Closing Suzuki now means ruling out this literal
     source packet or proving it and then solving the paired occupancy hierarchy.
+95. **The mesoscopic odd packet is already evidence that Suzuki is dead -- failed sharply.**  The
+    one-atom laws `(336)` satisfy the target ratio, weak hard-edge collapse, the moving annulus,
+    and free response at every outer probe with `r/epsilon->0`.  The packet is a necessary positive
+    survivor, not a contradiction.  A no-go must use literal even--odd source coupling.
+96. **The updated finite-shift parity-transport budget remains spread over a macroscopic shift
+    interval -- failed for every complete negative family.**  Theorem AH condenses its entire
+    cost `log R_Xi>log(81/4)` into `(-epsilon_a,-r_a)` for every free probe `epsilon_a->0`.
+    Consequently its positive hazard is unbounded and reaches the inverse-aperture scale modulo
+    the zero-counting polylogarithm.
+97. **A shrinking interval can pay the Xi transport cost without a scale-capacity law -- failed.**
+    The exact nonnegative slack `(330)` forces `epsilon_a/r_a>=R_Xi-o(1)`.  Near equality, odd
+    posterior hardness and even posterior softness both saturate in logarithmic mean.  This is a
+    paired spectral-separation obligation, not merely an odd mass bound.
+98. **The literal paired Fourier energy excludes the sharp Stieltjes countermodel -- failed.**
+    Equation `(338)` gives the exact source conservation `m_e+m_o->4M_0(1)` and target matching
+    forces `m_o/r>=R_Xi-1`.  A vanishing high-energy mass can carry that finite first moment while
+    remaining invisible at the condensed scale.  Closure therefore requires uniform
+    integrability or the relative prime--Gamma Hankel estimate; finitely many source moments are
+    structurally insufficient.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.

@@ -7,9 +7,10 @@
 - **Statement:** At a critical hard-edge boundary, a squared-variable zero of multiplicity `m`
   creates a complete flag of `m-1` exact null descendants.  Its divided-jet Gram matrix is zero
   except for one terminal nonnegative scalar.  Globally, all forced flags saturate a full
-  polynomial module over the squarefree-root core.  Convolution perturbation and the
-  Connes--van Suijlekom theorem then show that this forced module can never exhaust a degenerate
-  isolated ground: every repeated-root boundary has at least one additional non-jet ground mode.
+  polynomial module over the squarefree-root core. A parity lift gives every nonterminal
+  descendant an explicit odd zero-energy twin and transports terminal mass \(\gamma_r\) to odd
+  energy \(r\gamma_r\). Under full-ground positivity the radical dimension is at least
+  \(1+2\sum_r(m_r-1)\), and simple full ground forces every squared root to be strictly positive.
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
 
 ## Goal
@@ -142,7 +143,7 @@ For a real zero `r` of multiplicity `m_r` and `1<=k<=m_r`, define the entire roo
    \[
    \dim\ker A_\sigma=1
    \quad\Longrightarrow\quad
-   m_r=1,\quad r\ge0,\quad\gamma_r>0
+   m_r=1,\quad r>0,\quad\gamma_r>0
    \quad\text{for every root }r.                            \tag{RJRR.12}
    \]
 
@@ -170,6 +171,28 @@ For a real zero `r` of multiplicity `m_r` and `1<=k<=m_r`, define the entire roo
 
    Thus repeated roots force **excess degeneracy** beyond every root-division direction; the
    equality case in (RJRR.11) is impossible for an isolated convolution ground.
+
+7. The excess modes are not mysterious. The parity companion proved in
+   mass-shifted-hard-edge-parity-jet-inertia.md gives, for every terminal descendant,
+
+   \[
+   \mathcal W_\sigma\!\left(
+     zF_{r,m_r}(z^2),zF_{r,m_r}(z^2)\right)=r\gamma_r.     \tag{RJRR.23}
+   \]
+
+   Every nonterminal descendant has odd energy zero. If zero is the full lowest eigenvalue,
+   those odd descendants lie in the kernel and are independent of the even flag. Therefore
+
+   \[
+   \boxed{\qquad
+   \dim\ker A_\sigma\ge1+2E.
+   \qquad}                                                  \tag{RJRR.24}
+   \]
+
+   A negative root with positive terminal mass is incompatible with full-ground nonnegativity; a
+   zero root with positive terminal mass creates an odd ground mode; and
+   \(\gamma_r=0\) creates both terminal even and odd modes. This constructively classifies the
+   additional directions whose existence was inferred abstractly in (RJRR.15).
 
 ## 2. Proof
 
@@ -317,7 +340,9 @@ The hard-edge `f` is the Fourier transform of the even zero-mode on the finite f
 Connes--van Suijlekom prove that the Fourier transform of a simple isolated even ground state has
 only real zeros.  If `F` had a negative root `r`, then `f` would vanish at the nonreal points
 `z=\pm i\sqrt{-r}`.  Thus simple ground excludes negative roots.  Together with the
-previous paragraph this proves (RJRR.12).
+previous paragraph and the parity theorem below, this proves (RJRR.12). The strict exclusion of
+\(r=0\) is source-internal: its terminal odd descendant has energy
+\(r\gamma_r=0\), hence would be a second full-ground vector.
 
 ### 2.7 Polynomial-module saturation cannot be a degenerate convolution ground
 
@@ -411,6 +436,31 @@ closed **even-sector** form and does not promote `0` past a lower odd eigenvalue
 argument sharpens the ground-multiplicity branch once full ground admission is known; it does not
 smuggle that admission into Route U.
 
+### 2.8 Parity identifies every excess direction
+
+The separate parity-jet theorem gives the direct mechanism behind (RJRR.15). For squared-variable
+functions, the full odd-sector form is
+
+\[
+\mathfrak b_\sigma^-(H,K)=\int uH(u)K(u)\,d\eta_\sigma(u).
+\]
+
+Hence the odd Gram entry of two same-root descendants is
+
+\[
+M_{r,p+q-1}+rM_{r,p+q},
+\]
+
+and all divided moments below order \(2m_r\) vanish. The only possible nonzero odd entry is the
+terminal value \(r\gamma_r\). Distinct roots remain orthogonal because
+\(uF_{r,p}=rF_{r,p}+F_{r,p-1}\) and both even pairings vanish.
+
+Under full-ground nonnegativity, every nonterminal odd descendant has zero form energy and
+therefore lies in the kernel. Rational principal parts prove independence, while parity separates
+them from the even radical. This proves (RJRR.23)--(RJRR.24) and explicitly supplies the
+additional modes predicted by the signed-cosine argument. The latter remains an independent
+convolution-perturbation proof, but it is no longer the sharp classification.
+
 ## 3. Conjecture--failure--pivot audit
 
 1. **The simultaneous Cauchy equations overdetermine `F`.** `[FALSIFIED AS A MECHANISM]`.
@@ -440,6 +490,11 @@ smuggle that admission into Route U.
 7. **Even-sector boundary positivity already supplies the full convolution-ground hypothesis.**
    `[NOT PROVED]`.  An unobserved lower odd mode would invalidate the ground-state perturbation
    theorem.  Full-ground admission remains a separate source/operator obligation.
+8. **The excess non-jet mode is unclassified source data.** **FALSIFIED.** Multiplication by the
+   Fourier variable sends every nonterminal divided jet to an odd zero-energy descendant and
+   sends terminal mass \(\gamma_r\) to exact odd energy \(r\gamma_r\). Under full-ground
+   nonnegativity these parity lifts explicitly supply all \(E\) additional modes required by the
+   stronger bound \(1+2E\).
 
 ## 4. Higher universal principle and exact new frontier
 
@@ -464,21 +519,22 @@ The global saturation and perturbation theorem add a stricter layer:
  \text{degenerate full ground has a non-jet mode}.           \tag{RJRR.22}
 \]
 
-Root coalescence therefore cannot account for its own spectral degeneracy.  The missing direction
-is genuinely source/operator data, not another divided root.
+The parity law now accounts for the excess directly: every nonterminal even divided root has an
+odd twin, and the terminal odd signature is \(r\gamma_r\). The genuinely missing datum is no
+longer an unidentified mode; it is admission of the odd sector at the selected even boundary.
 
 `[OPEN CORE]` Route U now has two genuinely different branches.
 
 - **Simple birth:** (RJRR.12) merges Route U with the known simple-even restricted-Weil ground
   problem.  Further `LP` or root-division work is theatre unless it supplies a new literal
   prime--Gamma sign.
-- **Degenerate birth:** first promote the even hard edge to the full isolated convolution ground.
-  Then every repeated-root configuration has an additional ground mode outside the saturated
-  module `D mathbb R_(<=E)[u]`.  Closure must forbid that excess mode or couple it to the literal
-  prime--Gamma source.  More root division and polar cyclicity cannot see it.
+- **Degenerate birth:** parity already constructs the excess directions. Each repeated root emits
+  an odd copy of every nonterminal jet, while terminal odd signature is exactly
+  \(r\gamma_r\). Closure must promote or refute odd-sector admission and then use this explicit
+  Krein signature; no unknown-mode classification remains.
 
-The next discriminator is therefore **full-ground admission plus source classification of the
-excess non-jet mode**, not classification of one-root Cauchy equations.
+The next discriminator is therefore **self-selected odd-sector admission**, not classification of
+one-root Cauchy equations or search for an unspecified excess mode.
 
 ## 5. Literature and corpus audit
 
@@ -500,7 +556,8 @@ excess non-jet mode**, not classification of one-root Cauchy equations.
   perturbation argument for (RJRR.15).
 
 No located source states the literal prime--Gamma complete radical flag, diagonal jet law
-(RJRR.10), polynomial-module saturation (RJRR.14), or excess-degeneracy theorem (RJRR.15).
+(RJRR.10), polynomial-module saturation (RJRR.14), odd terminal law (RJRR.23), or parity-doubled
+kernel bound (RJRR.24).
 Targeted searches found generic Paley--Wiener reproducing-kernel and Toeplitz theory, but no
 degenerate-ground convolution perturbation theorem with this root-jet consequence.  Priority and
 significance remain unverified pending specialist review.
@@ -510,9 +567,10 @@ significance remain unverified pending specialist review.
 No Lean theorem is claimed.  An abstract semidefinite-form theorem with a supplied null vector is
 theorem laundering and does not satisfy Route U's formal target.  Exact formalization must wait
 for the unconditional literal hard-edge boundary construction and restricted-Weil form domain in
-Lean.  The excess-degeneracy theorem additionally requires the literal full convolution operator,
-its isolated zero floor, bounded cosine perturbations, and the Connes--van Suijlekom theorem; none
-may be replaced by supplied abstract hypotheses.
+Lean. The direct parity theorem requires both literal parity sectors, cancelled root descendants,
+and the actual full convolution floor. The independent perturbation theorem additionally requires
+bounded cosine perturbations and the Connes--van Suijlekom theorem. None may be replaced by
+supplied abstract hypotheses.
 
 ## Log
 
@@ -524,3 +582,7 @@ may be replaced by supplied abstract hypotheses.
 - 2026-08-11 -- proved global polynomial-module saturation and a signed-cosine perturbation
   theorem: a repeated-root isolated convolution ground must contain an additional non-jet mode
   beyond every forced descendant.  Isolated full-ground admission remains open and explicit.
+- 2026-08-11 -- proved the exact parity companion: terminal even mass \(\gamma_r\) becomes odd
+  energy \(r\gamma_r\), every nonterminal jet has an odd zero-energy twin, full-ground kernel
+  dimension is at least \(1+2E\), and simple full ground forces every squared root strictly
+  positive. Excess modes are now explicit; odd-sector admission is the remaining gate.

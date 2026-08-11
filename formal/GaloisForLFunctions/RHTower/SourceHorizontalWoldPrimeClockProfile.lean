@@ -181,6 +181,266 @@ theorem abs_integral_sourceHorizontalWoldLogMomentDiscrepancy_le
     _ = sourceHorizontalWoldFloorDiscrepancyBound * Real.log X ^ r := by
       rw [integral_Ioc_log_pow_derivative hr hX]
 
+/-- Uniform quantitative all-order log-moment law.  The error is one logarithmic degree below
+the main term, with the same discrepancy constant at every positive order. -/
+theorem abs_sourceHorizontalWoldNaturalLogMoment_sub_main_le
+    (r X : ℕ) (hr : 0 < r) (hX : 1 ≤ X) :
+    |sourceHorizontalWoldNaturalLogMoment r X -
+        (1 / (r + 1 : ℕ) : ℝ) * Real.log X ^ (r + 1)| ≤
+      2 * sourceHorizontalWoldFloorDiscrepancyBound * Real.log X ^ r := by
+  let x : ℝ := X
+  let k : ℝ → ℝ := fun t => (r : ℝ) * Real.log t ^ (r - 1) / t
+  let A : ℝ → ℝ := fun t => xiHeatCassiniWoldNatWeightSum ⌊t⌋₊
+  have hx : 1 ≤ x := by
+    dsimp only [x]
+    exact_mod_cast hX
+  have hdiscX : |xiHeatCassiniWoldNatWeightSum X - Real.log x| ≤
+      sourceHorizontalWoldFloorDiscrepancyBound := by
+    have h := abs_xiHeatCassiniWoldNatWeightSum_floor_sub_log_le hx
+    rw [Nat.floor_natCast] at h
+    exact h
+  have hkIntIcc : IntegrableOn k (Set.Icc (1 : ℝ) x) :=
+    (continuousOn_log_pow_derivative hr (X := x)).integrableOn_Icc
+  have hAInt : IntegrableOn (fun t => k t * A t) (Set.Ioc (1 : ℝ) x) := by
+    have hraw := integrableOn_mul_sum_Icc
+      (c := xiHeatCassiniWoldNatWeight) (a := (1 : ℝ))
+      (b := x) (m := 0) (by norm_num) hkIntIcc
+    refine (hraw.mono_set Set.Ioc_subset_Icc_self).congr_fun (fun t ht => ?_)
+      measurableSet_Ioc
+    rfl
+  have hlogInt : IntegrableOn (fun t => k t * Real.log t)
+      (Set.Ioc (1 : ℝ) x) := by
+    have hcont : ContinuousOn (fun t => k t * Real.log t) (Set.Icc (1 : ℝ) x) :=
+      (continuousOn_log_pow_derivative hr (X := x)).mul (by
+        intro t ht
+        exact (Real.continuousAt_log
+          (ne_of_gt (by linarith [ht.1] : 0 < t))).continuousWithinAt)
+    exact hcont.integrableOn_Icc.mono_set Set.Ioc_subset_Icc_self
+  have herrInt : IntegrableOn (fun t => k t * (A t - Real.log t))
+      (Set.Ioc (1 : ℝ) x) := by
+    have hsub := hAInt.sub hlogInt
+    refine hsub.congr_fun (fun t ht => ?_) measurableSet_Ioc
+    simp only [Pi.sub_apply]
+    ring
+  have hsplit :
+      (∫ t in Set.Ioc (1 : ℝ) x, k t * A t) =
+        (∫ t in Set.Ioc (1 : ℝ) x, k t * Real.log t) +
+          ∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t) := by
+    rw [← MeasureTheory.integral_add hlogInt herrInt]
+    apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioc
+    intro t ht
+    ring
+  have habel := sourceHorizontalWoldNaturalLogMoment_abel r X hr hX
+  have hmain := integral_Ioc_log_pow_derivative_mul_log hr hx
+  have herr := abs_integral_sourceHorizontalWoldLogMomentDiscrepancy_le hr hx
+  have hcast : ((r + 1 : ℕ) : ℝ) ≠ 0 := by positivity
+  change |sourceHorizontalWoldNaturalLogMoment r X -
+      (1 / (r + 1 : ℕ) : ℝ) * Real.log x ^ (r + 1)| ≤
+    2 * sourceHorizontalWoldFloorDiscrepancyBound * Real.log x ^ r
+  rw [habel]
+  change |Real.log x ^ r * xiHeatCassiniWoldNatWeightSum X -
+      (∫ t in Set.Ioc (1 : ℝ) x, k t * A t) -
+        (1 / (r + 1 : ℕ) : ℝ) * Real.log x ^ (r + 1)| ≤ _
+  rw [hsplit, hmain]
+  have hcoeff :
+      (r : ℝ) / (r + 1 : ℕ) + (1 / (r + 1 : ℕ) : ℝ) = 1 := by
+    field_simp [hcast]
+    norm_num
+  have hmaincoeff :
+      (r : ℝ) / (r + 1 : ℕ) * Real.log x ^ (r + 1) +
+          (1 / (r + 1 : ℕ) : ℝ) * Real.log x ^ (r + 1) =
+        Real.log x ^ (r + 1) := by
+    rw [← add_mul, hcoeff, one_mul]
+  have hrewrite :
+      Real.log x ^ r * xiHeatCassiniWoldNatWeightSum X -
+          ((r : ℝ) / (r + 1 : ℕ) * Real.log x ^ (r + 1) +
+            ∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t)) -
+            (1 / (r + 1 : ℕ) : ℝ) * Real.log x ^ (r + 1) =
+        Real.log x ^ r *
+            (xiHeatCassiniWoldNatWeightSum X - Real.log x) -
+          ∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t) := by
+    calc
+      Real.log x ^ r * xiHeatCassiniWoldNatWeightSum X -
+          ((r : ℝ) / (r + 1 : ℕ) * Real.log x ^ (r + 1) +
+            ∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t)) -
+            (1 / (r + 1 : ℕ) : ℝ) * Real.log x ^ (r + 1) =
+        Real.log x ^ r * xiHeatCassiniWoldNatWeightSum X -
+          ((r : ℝ) / (r + 1 : ℕ) * Real.log x ^ (r + 1) +
+            (1 / (r + 1 : ℕ) : ℝ) * Real.log x ^ (r + 1)) -
+          ∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t) := by ring
+      _ = Real.log x ^ r * xiHeatCassiniWoldNatWeightSum X -
+          Real.log x ^ (r + 1) -
+          ∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t) := by
+            rw [hmaincoeff]
+      _ = Real.log x ^ r *
+            (xiHeatCassiniWoldNatWeightSum X - Real.log x) -
+          ∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t) := by
+            rw [pow_succ]
+            ring
+  rw [hrewrite]
+  calc
+    |Real.log x ^ r *
+          (xiHeatCassiniWoldNatWeightSum X - Real.log x) -
+        ∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t)| ≤
+      |Real.log x ^ r *
+          (xiHeatCassiniWoldNatWeightSum X - Real.log x)| +
+        |∫ t in Set.Ioc (1 : ℝ) x, k t * (A t - Real.log t)| :=
+      abs_sub _ _
+    _ ≤ Real.log x ^ r * sourceHorizontalWoldFloorDiscrepancyBound +
+        sourceHorizontalWoldFloorDiscrepancyBound * Real.log x ^ r := by
+      gcongr
+      rw [abs_mul, abs_of_nonneg (pow_nonneg (Real.log_nonneg hx) r)]
+      exact mul_le_mul_of_nonneg_left hdiscX
+        (pow_nonneg (Real.log_nonneg hx) r)
+    _ = 2 * sourceHorizontalWoldFloorDiscrepancyBound * Real.log x ^ r := by
+      ring
+
+/-- Every positive fixed log moment has the uniform-distribution coefficient `1/(r+1)`. -/
+theorem tendsto_sourceHorizontalWoldNaturalLogMoment_normalized
+    (r : ℕ) (hr : 0 < r) :
+    Tendsto (fun X : ℕ =>
+      sourceHorizontalWoldNaturalLogMoment r X / Real.log X ^ (r + 1))
+      atTop (nhds (1 / (r + 1 : ℕ) : ℝ)) := by
+  have hlog : Tendsto (fun X : ℕ => Real.log X) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hmajor : Tendsto (fun X : ℕ =>
+      (2 * sourceHorizontalWoldFloorDiscrepancyBound) / Real.log X)
+      atTop (nhds 0) := tendsto_const_nhds.div_atTop hlog
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  simpa only [Real.norm_eq_abs] using
+    squeeze_zero'
+      (Eventually.of_forall fun X =>
+        abs_nonneg (sourceHorizontalWoldNaturalLogMoment r X /
+          Real.log X ^ (r + 1) - (1 / (r + 1 : ℕ) : ℝ)))
+      (show ∀ᶠ X : ℕ in atTop,
+          |sourceHorizontalWoldNaturalLogMoment r X / Real.log X ^ (r + 1) -
+            (1 / (r + 1 : ℕ) : ℝ)| ≤
+              (2 * sourceHorizontalWoldFloorDiscrepancyBound) / Real.log X by
+        filter_upwards [eventually_ge_atTop 2] with X hX
+        have hlogpos : 0 < Real.log (X : ℝ) :=
+          Real.log_pos (by exact_mod_cast hX)
+        have hbound :=
+          abs_sourceHorizontalWoldNaturalLogMoment_sub_main_le r X hr (by omega)
+        calc
+          |sourceHorizontalWoldNaturalLogMoment r X / Real.log X ^ (r + 1) -
+              (1 / (r + 1 : ℕ) : ℝ)| =
+              |sourceHorizontalWoldNaturalLogMoment r X -
+                (1 / (r + 1 : ℕ) : ℝ) * Real.log X ^ (r + 1)| /
+                  Real.log X ^ (r + 1) := by
+                    rw [show sourceHorizontalWoldNaturalLogMoment r X /
+                        Real.log X ^ (r + 1) - (1 / (r + 1 : ℕ) : ℝ) =
+                          (sourceHorizontalWoldNaturalLogMoment r X -
+                            (1 / (r + 1 : ℕ) : ℝ) *
+                              Real.log X ^ (r + 1)) /
+                            Real.log X ^ (r + 1) by
+                          field_simp [hlogpos.ne']]
+                    rw [abs_div, abs_of_pos (pow_pos hlogpos (r + 1))]
+          _ ≤ (2 * sourceHorizontalWoldFloorDiscrepancyBound * Real.log X ^ r) /
+              Real.log X ^ (r + 1) :=
+            div_le_div_of_nonneg_right hbound (pow_pos hlogpos (r + 1)).le
+          _ = (2 * sourceHorizontalWoldFloorDiscrepancyBound) / Real.log X := by
+            rw [pow_succ]
+            field_simp [hlogpos.ne'])
+      hmajor
+
+/-- At a prime cutoff, every natural log moment is the ordered prime-labelled moment. -/
+theorem sourceHorizontalWoldNaturalLogMoment_nthPrime_eq_ordered
+    (r N : ℕ) :
+    sourceHorizontalWoldNaturalLogMoment r (nthPrimeSubtype N : ℕ) =
+      ∑ n ∈ Finset.range (N + 1),
+        woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ r := by
+  classical
+  have hinj : Function.Injective (fun n : ℕ => (nthPrimeSubtype n : ℕ)) :=
+    nthPrimeSubtype_strictMono.injective
+  symm
+  calc
+    (∑ n ∈ Finset.range (N + 1),
+        woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ r) =
+      ∑ p ∈ (Finset.range (N + 1)).image
+          (fun n => (nthPrimeSubtype n : ℕ)),
+        Real.log (p : ℝ) ^ r * xiHeatCassiniWoldNatWeight p := by
+          rw [Finset.sum_image]
+          · apply Finset.sum_congr rfl
+            intro n hn
+            simp only [xiMassNthPrimeLogHeight, xiHeatCassiniWoldNatWeight,
+              dif_pos (nthPrimeSubtype n).2]
+            change woldCoeff 1 (nthPrimeSubtype n) *
+                Real.log (nthPrimeSubtype n : ℝ) ^ r =
+              Real.log (nthPrimeSubtype n : ℝ) ^ r *
+                woldCoeff 1 (nthPrimeSubtype n)
+            ring
+          · exact hinj.injOn
+    _ = ∑ p ∈ (Finset.Icc 0 (nthPrimeSubtype N : ℕ)).filter Nat.Prime,
+        Real.log (p : ℝ) ^ r * xiHeatCassiniWoldNatWeight p := by
+          rw [image_range_succ_nthPrimeSubtype_eq_primes_Icc]
+    _ = ∑ p ∈ Finset.Icc 0 (nthPrimeSubtype N : ℕ),
+        Real.log (p : ℝ) ^ r * xiHeatCassiniWoldNatWeight p := by
+          apply Finset.sum_subset (Finset.filter_subset _ _)
+          intro p hpIcc hpNotPrimeFilter
+          have hnp : ¬ p.Prime := by
+            intro hpPrime
+            exact hpNotPrimeFilter (Finset.mem_filter.mpr ⟨hpIcc, hpPrime⟩)
+          simp [xiHeatCassiniWoldNatWeight, hnp]
+    _ = sourceHorizontalWoldNaturalLogMoment r (nthPrimeSubtype N : ℕ) := by
+          rw [sourceHorizontalWoldNaturalLogMoment]
+
+/-- Ordered positive log moments have the same universal coefficients. -/
+theorem tendsto_sourceHorizontalWoldOrderedLogMoment_normalized
+    (r : ℕ) (hr : 0 < r) :
+    Tendsto (fun N : ℕ =>
+      (∑ n ∈ Finset.range (N + 1),
+          woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ r) /
+        xiMassNthPrimeLogHeight N ^ (r + 1))
+      atTop (nhds (1 / (r + 1 : ℕ) : ℝ)) := by
+  have h :=
+    (tendsto_sourceHorizontalWoldNaturalLogMoment_normalized r hr).comp
+      nthPrimeSubtype_strictMono.tendsto_atTop
+  apply h.congr'
+  filter_upwards with N
+  rw [Function.comp_apply, sourceHorizontalWoldNaturalLogMoment_nthPrime_eq_ordered]
+  rfl
+
+/-- Normalized ordered moment coefficient used by the nonlinear prime-clock profile. -/
+def sourceHorizontalWoldOrderedNormalizedMoment (N r : ℕ) : ℝ :=
+  (∑ n ∈ Finset.range (N + 1),
+      woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ r) /
+    xiMassNthPrimeLogHeight N ^ (r + 1)
+
+private theorem tendsto_sourceHorizontalWoldNaturalMass_normalized :
+    Tendsto (fun X : ℕ =>
+      xiHeatCassiniWoldNatWeightSum X / Real.log X) atTop (nhds 1) := by
+  have hlog : Tendsto (fun X : ℕ => Real.log X) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hdiff := tendsto_xiHeatCassiniWoldNatWeightSum_sub_log
+  have hzero := hdiff.div_atTop hlog
+  have hone := hzero.add_const 1
+  apply hone.congr'
+  filter_upwards [eventually_ge_atTop 2] with X hX
+  have hlog0 : Real.log (X : ℝ) ≠ 0 :=
+    (Real.log_pos (by exact_mod_cast hX)).ne'
+  simp only [Function.comp_apply]
+  field_simp [hlog0]
+
+/-- All ordered normalized moments, including mass (`r=0`), converge to `1/(r+1)`. -/
+theorem tendsto_sourceHorizontalWoldOrderedNormalizedMoment (r : ℕ) :
+    Tendsto (fun N : ℕ => sourceHorizontalWoldOrderedNormalizedMoment N r)
+      atTop (nhds (1 / (r + 1 : ℕ) : ℝ)) := by
+  cases r with
+  | zero =>
+      have h := tendsto_sourceHorizontalWoldNaturalMass_normalized.comp
+        nthPrimeSubtype_strictMono.tendsto_atTop
+      apply h.congr'
+      filter_upwards with N
+      rw [Function.comp_apply]
+      simp only [sourceHorizontalWoldOrderedNormalizedMoment, pow_zero,
+        mul_one, pow_one, Nat.zero_add, Nat.cast_one, div_one]
+      rw [← xiHeatCassiniOrderedWoldPartialMass]
+      rw [xiHeatCassiniOrderedWoldPartialMass_eq_natWeightSum,
+        xiMassNthPrimeLogHeight]
+  | succ r =>
+      exact tendsto_sourceHorizontalWoldOrderedLogMoment_normalized
+        (r + 1) (by omega)
+
 end
 
 end RHTower

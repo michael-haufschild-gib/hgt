@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionArithmeticTransgression
 import GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryPadeContactParity
+import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionSourceRecession
 
 /-!
 # Covariant defect energy for frozen/current shifted-Xi admission
@@ -49,6 +50,69 @@ def xiShiftedAdaptiveShearAdmissionTransgression
       (fun k => (xiShiftedReciprocalMoment y k).re)
       (X * P) (X * xiShiftedBoundaryShiftedEuler 1 P))
 
+/-- Total covariant source density driving frozen/current odd defect energy. -/
+def xiShiftedCanonicalAdmissionDefectSourceDensity
+    (y : ℝ) (n : ℕ) (A : Polynomial ℝ) : ℝ :=
+  xiShiftedAdaptiveShearAdmissionTransgression y
+      (HTGeometry.monicMomentAdmissionPolynomial
+        (fun k => (xiShiftedReciprocalMoment y k).re) n) A +
+    2 * xiShiftedCanonicalAdmissionNormFlux y n *
+      xiShiftedCanonicalAdmissionDefectFirstCoeff y n A
+
+/-- Every fixed finite adaptive shear packet is continuous in positive source mass. -/
+theorem continuousAt_xiShiftedFixedAdaptiveShearMoment
+    {y : ℝ} (hy : 0 < y) (A : Polynomial ℝ) :
+    ContinuousAt (fun v => HTGeometry.momentFunctional
+      (fun k => (xiShiftedReciprocalMoment v k).re)
+      (xiShiftedBoundaryAdaptiveShearPolynomial A)) y := by
+  rw [HTGeometry.momentFunctional_eq_support_sum]
+  apply continuousAt_finsetSum
+  intro k _
+  exact continuousAt_const.mul
+    (hasDerivAt_re_xiShiftedReciprocalMoment hy k).continuousAt
+
+/-- At a nonsingular shifted-Xi Hankel block, the adaptive shear selected by canonical admission
+is continuous in source mass. -/
+theorem continuousAt_xiShiftedCanonicalAdmissionAdaptiveShearMoment
+    {y : ℝ} (hy : 0 < y) (n : ℕ)
+    (hdet : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment y k).re) n).det ≠ 0) :
+    ContinuousAt (fun v =>
+      let P := HTGeometry.monicMomentAdmissionPolynomial
+        (fun k => (xiShiftedReciprocalMoment v k).re) n
+      HTGeometry.momentFunctional
+        (fun k => (xiShiftedReciprocalMoment v k).re)
+        (xiShiftedBoundaryAdaptiveShearPolynomial P)) y := by
+  let P : ℝ → Polynomial ℝ := fun v => HTGeometry.monicMomentAdmissionPolynomial
+    (fun k => (xiShiftedReciprocalMoment v k).re) n
+  let Q : ℝ → Polynomial ℝ := fun v => xiShiftedBoundaryAdaptiveShearPolynomial (P v)
+  let N := 2 * n + 2
+  have hs : ∀ k, Tendsto
+      (fun v => (xiShiftedReciprocalMoment v k).re) (nhds y)
+      (nhds (xiShiftedReciprocalMoment y k).re) := fun k =>
+    (hasDerivAt_re_xiShiftedReciprocalMoment hy k).continuousAt
+  have hPcoeff : ∀ k, Tendsto (fun v => (P v).coeff k) (nhds y)
+      (nhds ((P y).coeff k)) := fun k =>
+    HTGeometry.tendsto_monicMomentAdmissionPolynomial_coeff hs hdet k
+  have hQcoeff : ∀ k, Tendsto (fun v => (Q v).coeff k) (nhds y)
+      (nhds ((Q y).coeff k)) :=
+    XiShiftedCanonicalAdmission.tendsto_adaptiveShear_coeff hPcoeff
+  have hsum := tendsto_finsetSum (Finset.range (N + 1)) fun k _ =>
+    (hQcoeff k).mul (hs k)
+  have hdeg : ∀ v, (Q v).natDegree ≤ N := by
+    intro v
+    exact natDegree_xiShiftedBoundaryAdaptiveShearPolynomial_le
+      (HTGeometry.monicMomentAdmissionPolynomial_monic _ _)
+      (HTGeometry.monicMomentAdmissionPolynomial_natDegree _ _)
+  change Tendsto (fun v => HTGeometry.momentFunctional
+      (fun k => (xiShiftedReciprocalMoment v k).re) (Q v)) (nhds y)
+    (nhds (HTGeometry.momentFunctional
+      (fun k => (xiShiftedReciprocalMoment y k).re) (Q y)))
+  simpa only [XiShiftedCanonicalAdmission.momentFunctional_eq_sum_range_of_natDegree_le
+    (hdeg y)] using hsum.congr' (Eventually.of_forall fun v => by
+      rw [XiShiftedCanonicalAdmission.momentFunctional_eq_sum_range_of_natDegree_le
+        (hdeg v)])
+
 /-- Same-degree monic polynomials differ in strictly lower degree. -/
 theorem natDegree_sub_lt_of_monic_same_degree
     {A P : Polynomial ℝ} {n : ℕ} (hn : 0 < n)
@@ -78,7 +142,6 @@ theorem natDegree_sub_lt_of_monic_same_degree
 
 /-- **Odd-current defect decomposition.**  Frozen/current odd-current mismatch is one canonical
 connection displacement plus the odd energy of the full admission defect. -/
-set_option maxHeartbeats 800000 in
 theorem xiShiftedCanonicalAdmission_oddCurrentGap_eq_normCoeff_add_defectEnergy
     {y : ℝ} {n : ℕ} (hn : 0 < n) (A : Polynomial ℝ)
     (hA : A.Monic) (hAdeg : A.natDegree = n)
@@ -103,9 +166,16 @@ theorem xiShiftedCanonicalAdmission_oddCurrentGap_eq_normCoeff_add_defectEnergy
   let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   have hcross : HTGeometry.momentInner s P (X * D) =
       HTGeometry.monicOrthoNormSq s n * D.coeff (n - 1) := by
-    rw [hPeq, HTGeometry.momentInner_comm]
-    exact momentInner_velocity_X_monicOrtho_eq_norm_mul_coeff_below
-      (N := n + 2) (n := n) hbelow hn (by omega) hDdeg
+    rw [hPeq]
+    calc
+      HTGeometry.momentInner s (HTGeometry.monicOrtho s n) (X * D) =
+          HTGeometry.momentInner s (X * D) (HTGeometry.monicOrtho s n) :=
+        HTGeometry.momentInner_comm _ _ _
+      _ = HTGeometry.momentInner s D (X * HTGeometry.monicOrtho s n) :=
+        HTGeometry.momentInner_X_mul _ _ _
+      _ = HTGeometry.monicOrthoNormSq s n * D.coeff (n - 1) :=
+        momentInner_velocity_X_monicOrtho_eq_norm_mul_coeff_below
+          (N := n + 2) (n := n) hbelow hn (by omega) hDdeg
   have hAeq : A = P + D := by
     dsimp only [D]
     ring
@@ -258,8 +328,8 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionDefectOddEnergy
     ring
   apply (hrhs.congr_deriv hderiv).congr_of_eventuallyEq
   filter_upwards [heq] with v hv
-  change defect v = fixedOdd v - currentOdd v - 2 * norm v * gap v
-  exact hv
+  simpa [Pi.sub_apply, Pi.mul_apply, defect, fixedOdd, currentOdd, norm, gap,
+    mul_assoc] using hv
 
 end
 

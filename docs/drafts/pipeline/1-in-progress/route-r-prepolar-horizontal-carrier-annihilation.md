@@ -4,7 +4,7 @@
 - **Stage:** 1 — in progress
 - **Type:** CONJECTURE / SOURCE PRODUCER
 - **Route:** R
-- **Scientific status:** `[PAPER-TERMINALIZATION CANDIDATE] [LEAN PENDING] [NOT RH PROOF]`
+- **Scientific status:** `[PAPER-TERMINALIZED] [LEAN PENDING] [NOT RH PROOF]`
 - **Statement:** Derive `BurnolXiCartierDividedShiftHeadFluxDissipativity` from a literal
   pre-divisor Euler--Gamma--Stokes law acting before polar completion, without importing an
   RH-equivalent annihilation, sewing, norm, or critical-line premise.
@@ -46,11 +46,12 @@ orientations such that:
 ## Gates
 
 - [x] 0 → 1: exact source-pure question and circularity exclusions isolated
-- [x] internal conjecture/no-go audit: C1--C33 exhaust Route R's intrinsic producer classes
+- [x] internal conjecture/no-go audit: C1--C36 exhaust Route R's intrinsic producer classes
 - [x] dependency-closed paper terminalization of the pre-polar Cartier/Stokes route
-- [ ] Lean formalization of C17--C33 terminal core and umbrella/axiom audit after corpus refactor
-- [ ] terminal scope audit against all Route-R declarations, then move to failed/retired if clean
-- [ ] RH (not delivered; strongest survivor is handed to external C1/CCM Gate II)
+- [x] terminal scope audit against all 86 Route-R declarations plus shared carrier/handoff modules
+- [x] strongest positive survivor handed to external C1/CCM Gate II; no RH claimed for Route R
+- [ ] Lean formalization of C17--C36 terminal core and umbrella/build/lint/axiom audit after refactor
+- [ ] move Route R card to failed/retired only after the Lean terminal audit passes
 
 ## Conjecture / proof-or-failure ledger
 
@@ -900,6 +901,400 @@ global positive trace/index identity; no additional same-fibre Green boundary ca
 
 **Status:** paper proof complete; Lean formalization deferred during corpus refactor.
 
+## C37. Lean terminalization contract after the corpus refactor
+
+No Lean file is edited while the shared corpus is being refactored.  Once the refactor is declared
+stable, Route R is retired only after the following dependency-closed formal contract is met.
+
+### C37.1 — `RouteRHyperbolicGaugePolarReductionNoGo.lean`
+
+Formalize the actual two-sector source plane and its hyperbolic gauge, not an unconnected toy
+predicate.  Required unconditional declarations:
+
+1. the gauge is a linear equivalence and preserves the split Poincare pairing and alternating
+   double;
+2. any complex-linear landing to a fixed trivially gauged target which is natural for every
+   nonzero gauge is the zero map;
+3. therefore fixed-target naturality and non-erasure of either retained source leg are
+   incompatible;
+4. no positive-definite quadratic/Hermitian form on the source plane is invariant under every
+   hyperbolic gauge;
+5. transported positive metrics exist for every gauge, but equal the fixed source metric only on
+   the unitary subgroup;
+6. every gauge-invariant predicate is constant on the actual prime orbit
+   `a mapsto p^(2*a)`, so it cannot be equivalent to `a = 0`;
+7. the determinant-one boost path has constant pure index while its fixed-metric Hilbert--Schmidt
+   defect is the exact positive modular square from C32.
+
+The terminal theorem must quantify over the producer interface, rather than merely restate one
+counterexample:
+
+```lean
+theorem routeR_no_fixedNaturalCoefficientFaithfulPolarLanding :
+    ¬ Nonempty RouteRFixedNaturalCoefficientFaithfulPolarLanding
+```
+
+The interface records the actual split pairing, both retained orientations, hyperbolic naturality,
+fixed physical target, and positive fixed metric.  Omitting any of those fields would prove a
+weaker theorem than the route obstruction.
+
+### C37.2 — `RouteRCompletionCountertermBlindnessNoGo.lean`
+
+Formalize C34 generically and specialize it to the already constructed prime-two completion:
+
+1. every reflection-even scalar counterterm cancels from the reflection-odd current;
+2. equality with the reflected dressed current is equivalent to equality of bare currents;
+3. for the actual Xi support this equality is equivalent to critical-line placement;
+4. unconditional negativity of the dressed current does not imply bare dissipativity, witnessed
+   by the existing strict opposite-sign theorem at every hypothetical right-half divisor.
+
+The specialization must reuse
+`burnolXiCompletionDressedHeadCurrent_sub_reflectionPartner` and
+`xiDivisor_burnolCompletionDressed_and_bareHeadCurrents_opposed`, not duplicate their analysis.
+
+### C37.3 — `RouteRPrimeClockCubicSymmetrizationNoGo.lean`
+
+Formalize C35 on the actual cubic response:
+
+1. the reflected pair has zero invariant linear projection and doubled anti-invariant projection;
+2. every invariant linear map from the sign representation to a trivial representation is zero;
+3. the reflected product is the negative square and its cofinal limit is the explicit sixth-power
+   horizontal defect;
+4. any claimed multiplicative/cyclic physical descent is routed to the existing degree-six
+   BV--Green wall, whose global form is RH-equivalent rather than source-proved.
+
+Polynomial invariant-ring formalization is optional if the linear theorem plus exact product and
+degree-six bridge close the same branch without weakening the terminal umbrella.
+
+### C37.4 — `RouteRPrepolarTerminalNoGo.lean`
+
+This is the authoritative retirement endpoint.  It must import the three modules above and the
+existing no-go/receiver modules covering C17--C30.  It defines the allowed intrinsic Route-R
+producer interface from the route architecture, then proves:
+
+```lean
+theorem routeRPrepolarIntrinsicProducer_cannot_annihilate_horizontalCarrier :
+    ∀ P : RouteRPrepolarIntrinsicProducer,
+      ¬ P.Annihilates sourceZeroHorizontalCarrier
+```
+
+Equivalent formulation is acceptable if it retains all five terminal branches explicitly:
+source-natural carrier/landing, fixed-physical receiver, gauge/erasure no-go, reflection-even
+counterterm, and cross-route linear handoff.  The theorem must not quantify over an inductive list
+whose constructors merely assert the desired conclusion; each branch must discharge from its
+structural naturality, positivity, topology/index, or reflection law.
+
+The same module records the strongest positive survivor as an external interface, without an
+instance:
+
+```lean
+structure RouteRExternalPositivePolarHandoff where
+  -- full numerical Euler--Gamma source selects a positive self-product/compression metric
+  -- and lands it on the fixed Xi physical polarization
+```
+
+Absence of an instance is not used to prove the no-go; it documents the Gate-II handoff and avoids
+mistaking route retirement for an RH proof.
+
+### C37.5 — final formal gates
+
+After the refactor:
+
+1. run `lake env lean <file>` once per new module in the foreground, batching edits between runs;
+2. wire the terminal module into the RHTower area umbrella;
+3. run only final `lake build GaloisForLFunctions.RHTower.RouteRPrepolarTerminalNoGo`;
+4. run `scripts/formal_tools.py lint`;
+5. audit `#print axioms` for the terminal theorem in a scratch file and require only the project's
+   accepted kernel/meta axioms;
+6. verify no stale Lean process;
+7. rerun the 86-module census and the Lean frontier graph;
+8. only then move this card to `5-failed`, update Route R in the frontier map to retired, and mark
+   the persistent goal complete under the dead-route branch.
+
+Until C37.1--C37.5 are satisfied, paper terminality is not formal Route-R closure.
+
+## C36. Current Lean declaration census and terminal-class coverage
+
+The terminal claim was checked against the current worktree rather than the historical card.  The
+audit universe is the union of every `RHTower/RouteR*.lean` module and every RHTower module whose
+source text names Route R: 86 modules.  Dominant-role classification below is exhaustive and
+disjoint; a module may prove secondary facts belonging to another row, but appears once.
+
+### C36.A — literal source, carrier, regulator, and coefficient-faithful landing
+
+These modules construct or retain data but do not annihilate the physical horizontal coordinate.
+They lie on the source-natural/carrier side of C31--C33.
+
+```text
+ArithmeticThreeChartStableBoundary
+BurnolBocksteinLimit
+BurnolCoPoissonQuotientDilationCollapse
+BurnolDyadicCommutatorStaircase
+BurnolFirstWallResiduePolarization
+CCMRationalAdelicCompletedXiFixedCoronaPolarization
+CCMRationalAdelicPrimeIsotropyRelativeXiChainMap
+CCMRationalAdelicPrimeIsotropyStokesRegulator
+DeningerCalderonWittCrossPrimeSingularCorona
+EulerPrimitiveCommonTestBoundaryScore
+EulerPrimitiveCommonTestSource
+EulerPrimitiveJointDepthBiorthogonalCommonTest
+MobiusThetaComplexSourceToXiLanding
+MobiusThetaInternalJetPrimeNormalComplexGraph
+MobiusThetaInternalJetSourceLocalSpanning
+PrimeDepthBVWoldCurvedSourceDifferential
+RouteRCocycleTransportNonErasure
+RouteRComparisonPrimeSpectrumObligation
+RouteRKummerCyclicOneCocycleDetector
+RouteRPreDivisorRationalAdelicCorrectedMultiplierXiLanding
+RouteRPreDivisorRationalAdelicMultiplierKOneHomology
+RouteRPreDivisorRationalCartierCoinvariantFunctor
+RouteRPreDivisorRationalCartierSourceFunctor
+RouteRRationalCartierPrimeDilationLanding
+RouteRSignedKummerCyclicCartierLanding
+```
+
+### C36.B — exact receivers, criteria, and RH-equivalent descents
+
+These modules identify a scalar, sign, summability, cyclicity, admission, or globalization
+condition which would close RH.  None proves that condition from the pre-polar source.  They are
+the fixed-ideal/fixed-physical branch of C33.
+
+```text
+BurnolCartierHeadEnergyStokesFlux
+BurnolCartierZeroTransferHeadPolarization
+BurnolDividedShiftPhysicalDissipativity
+BurnolReflectedCoShiftCartierContinuation
+PrimeDepthBVWoldCalderonWittPointedSplittingObstruction
+PrimeDepthBVWoldReesCoronaQuotient
+PrimeGammaBocksteinReesCoronaComparison
+RouteRBoundedPrimeDepthCovarianceProducer
+RouteRCorrectedMultiplierGammaOrientationDescent
+RouteRCofinalSieveHarmonicResidue
+RouteRCofinalSieveIsUnitProfile
+RouteRCriticalWallOrientedHarmonicQuantization
+RouteRDegreeSixBVGreenPhysicalCyclicDescentWall
+RouteRDegreeSixGammaCoronaLocalGlobalFracture
+RouteRDeningerBVGreenPositiveUnitComparison
+RouteRDerivedScalarCartierBaseChangeWall
+RouteRFirstDivisorPartition
+RouteRFirstWallAbscissaCriterion
+RouteRFirstWallScaleQuantification
+RouteRFixedTraceTailRoos
+RouteRGammaCoronaHorizonGaugeIndependence
+RouteRHarmonicQuantumGapCriterion
+RouteRPrimeCapArakelovBoundaryLaw
+RouteRPrimeLogEssentialCapFixedGradePhaseDagger
+RouteRPrimeLogEssentialCapGaussianSourceHermiticity
+RouteRPrimeLogEssentialCapPhaseGeometry
+RouteRPrimeLogEssentialCapPhaseQuadraturePolarization
+RouteRPrimeLogEssentialCapRadialPhasePolarization
+RouteRPrimeLogEssentialCapReflectedPhaseHermiticity
+RouteRPrimeLogEssentialCapSingularStokesLaw
+RouteRPrimeSieveVariationCapReporter
+RouteRSieveWeightIsEventMass
+RouteRSquarefullStokesSummabilityProducer
+RouteRSquarefullTailGammaCartierIndex
+RouteRTwoThreeGammaCapComparison
+RouteRTwoThreeGammaSingularCoronaProducer
+```
+
+### C36.C — explicit blindness, erasure, gauge, and no-shorting theorems
+
+These modules close proposed producer subclasses.  They feed C17--C33 directly.
+
+```text
+BurnolDividedShiftSourceLeakage
+CCMFirstClockJuliaPrincipalRelativeNoGo
+CCMRationalAdelicPrimeIsotropyObserverFreedom
+EulerPrimitiveJointDepthFiniteClockJetGaugeNoGo
+GammaCoorientedPositiveConeNoShorting
+GammaSignedDistributionalOrbitNoShorting
+GammaSignedFiniteOrbitNoShorting
+GammaSignedSummableOrbitNoShorting
+GammaSignedUnconditionalOrbitNoShorting
+MobiusCriticalFisherReporterRankOneReduction
+PrimeDepthBVWoldAsymptoticStokesGaugeModulus
+PrimeDepthBVWoldGradedDet2ScalarDescentBoundary
+RouteRAdelicDefectCharacterBlindness
+RouteRPrimeChainHochschildCycleWall
+```
+
+### C36.D — completion and reflection counterterms
+
+These are the only current modules producing an unconditional negative source-dressed current.
+C34 proves that their reflection-even completion term cancels from the RH-bearing odd coordinate.
+
+```text
+RouteRBurnolReflectionPartnerCurrent
+RouteRBurnolThetaSameFiberOrientation
+RouteRBurnolXiPrimeTwoCompletedHeadDissipation
+RouteRBurnolXiPrimeTwoCompletionLanding
+RouteRBurnolXiPrimeTwoCompletionMultiplier
+RouteRBurnolXiPrimeTwoCompletionNormalDissipation
+```
+
+### C36.E — cross-route identifications and handoffs
+
+These show shared radicals or move the same burden to another route; they do not annihilate it.
+C35 closes the only apparently new R/T cubic escape.
+
+```text
+HedenmalmGammaSewnBurnolHolonomyMassShell
+HedenmalmGammaSewnRouteRCriticalWallBridge
+HedenmalmGammaSewnRouteRKreinGaugeBridge
+HedenmalmGammaSewnTransverseModularCocycle
+PrimeDepthBVWoldSourceDaggerAtlasTransition
+```
+
+The shared modules outside the 86-name census were audited separately:
+`SourceZeroHorizontalCarrier` constructs the exact carrier and proves global vanishing iff RH;
+`SourceZeroHedenmalmOrientationRigidity`, `GaussHodgeMassCurrent`,
+`GaussHodgeSeamEnergyBridge`, and `GaussHodgeWeilPolarizationFusion` identify the same radical;
+`SourceHorizontalWoldNeutralJetBridge` and `SourceHorizontalWoldPrimeClockCubic` are the R/T handoff
+closed by C35.  None supplies source annihilation.
+
+`scripts/formal_tools.py brief --area rh_tower` reports `Target closed by corpus: no`; therefore no
+unconditional RH theorem is hidden in the present import graph.  Conversely, no audited module
+escapes the C33 trichotomy: it is a carrier, an RH-bearing receiver, a proved no-go, a symmetric
+completion counterterm, or a cross-route handoff.
+
+**Paper terminal verdict:** current Route-R declaration graph has no unclassified internal
+producer.  Remaining proof burden is no longer mathematical discovery inside Route R; it is Lean
+formalization of C17--C35 plus final import-closure, lint, and axiom audit.  Until those gates pass,
+this is a terminalization candidate rather than a formally retired route.
+
+## C35. The R/T prime-clock cubic is a detector, not a linear annihilator
+
+The shared R/T handoff is the only source response outside the Route-R-named module census which
+could plausibly evade C33.  It does not.  The corpus constructs the exact cofinal response
+
+\[
+  L(q)=-\frac23\,a(q)^3,
+  \qquad a(q)=2\Re(q)-1,
+\tag{C35.1}
+\]
+
+with coefficient-faithful convergence at every multiplicity copy, and proves
+
+\[
+  L(q^\dagger)=-L(q).
+\tag{C35.2}
+\]
+
+Consider first a linear reflection-compatible descent of the ordered pair
+`(L(q),L(q-dagger))`.  Its invariant projection is the sum, which is zero for every horizontal
+grade and therefore erases all selecting information.  Its anti-invariant projection is the
+difference `2 L(q)`, which retains the detector but has no source law forcing it to vanish.  Thus
+no linear Stokes, trace, or cyclic symmetrization converts the cubic into annihilation.
+
+The algebraic invariant ring of the sign action is
+
+\[
+  \mathbb C[z]^{\{z\mapsto-z\}}=\mathbb C[z^2].
+\tag{C35.3}
+\]
+
+Hence the first non-erasing reflection-even output is the nonlinear self-product
+
+\[
+  L(q)^2=\frac49\,a(q)^6,
+\tag{C35.4}
+\]
+
+which is nonnegative and vanishes exactly at neutral grade.  But making (C35.4) source-exact is
+not a consequence of the cubic asymptotic.  It requires a multiplicative/cyclic comparison from
+the source product to the fixed physical product.  `RouteRDegreeSixBVGreenPhysicalCyclicDescentWall`
+already classifies precisely this escape: the source cyclic reader kills the explicit degree-six
+boundary unconditionally, while agreement with the fixed physical reader is equivalent to
+vanishing of the Route-R coefficient and globally to RH.  C30 identifies the same burden as the
+holomorphic-versus-Hermitian trace equality.
+
+**Verdict:** the prime-clock cubic contributes a new, coefficient-faithful odd coordinate but no
+annihilation law.  Linear reflection descent erases it identically; nonlinear descent is exactly
+the already isolated positive self-product/cyclic-comparison gate.
+
+**Strongest positive survivor:** use (C35.4) in the external Gate-II positive-polar architecture.
+Within Route R, proving its physical cyclic descent would merely restate the missing endpoint.
+
+**Lean evidence:**
+`tendsto_sourceZeroHorizontalWoldPrimeClockCubicResponse`,
+`sourceZeroHorizontalWoldPrimeClockCubicResponse_reflection`,
+`sourceZeroHorizontalWoldPrimeClockCubicLimit_eq_zero_iff`, and the degree-six cyclic-descent wall.
+The generic sign-invariant polynomial classification remains to be added to the terminal no-go
+umbrella after refactor.
+
+## C34. Reflection-even completion counterterms cannot orient the Burnol current
+
+The exact prime-two completion initially looks like an escape from C33.  It is coefficient-faithful,
+is constructed before selecting a divisor, and its critical-normal logarithmic energy current
+
+\[
+  A(y)=\texttt{burnolXiCompletionCriticalNormalLogEnergySlope}(y)
+\]
+
+is uniformly negative.  In fact the Lean corpus proves
+
+\[
+  A(y)<-\tfrac12,
+  \qquad
+  J(\rho)<\tfrac12,
+  \qquad
+  A(\Im\rho)+J(\rho)<0
+\tag{C34.1}
+\]
+
+at every Xi divisor, where `J` is the fixed physical divided-shift head current.  Thus one obtains
+an unconditional negative completion-dressed current even at every hypothetical right-half zero.
+This is not the desired dissipativity: the added completion budget is negative and cannot be
+discarded when landing on the bare fixed physical port.
+
+The obstruction is general.  Let `dagger` preserve the vertical coordinate and reverse the
+horizontal coordinate, and let `A` be any counterterm depending only on reflection-even source
+data.  Put
+
+\[
+  J_A(\rho)=A(\Im\rho)+J(\rho).
+\]
+
+Then identically
+
+\[
+\begin{aligned}
+ J_A(\rho)-J_A(\rho^\dagger)
+   &=J(\rho)-J(\rho^\dagger)\\
+   &=(1+(\log2)^2)\,
+     {2\Re\rho-1\over |\rho|^2|1-\rho|^2}.
+\end{aligned}
+\tag{C34.2}
+\]
+
+Therefore every reflection-even scalar completion, regardless of its size or sign, leaves the
+entire RH-bearing odd coordinate unchanged.  Making both completed currents negative gives no
+information about their difference.  Equality of the two completed currents remains equivalent
+to equality of the bare currents and hence to critical-line placement.  This is already realized
+exactly in Lean by
+`burnolXiCompletionDressedHeadCurrent_sub_reflectionPartner` and
+`burnolXiCompletionDressedHeadCurrent_eq_reflectionPartner_iff`; the domination estimate is
+`burnolXiCompletionDressedHeadCurrent_neg_at_xiDivisor`.
+
+A reflection-odd counterterm could alter (C34.2), but it must then choose one horizontal
+coorientation or a same-sector norm.  If it is source-natural, C31--C33 force it to factor through
+the conserved split pairing and it is blind.  If it is not source-natural, it is precisely the
+additional polar reduction isolated by C33.  Thus the analytic completion does not furnish a
+fourth branch of the C33 trichotomy.
+
+**Verdict:** unconditional negativity after coefficient-faithful completion is a strict no-go,
+not an RH producer.  A symmetric completion counterterm can dominate the physical current while
+remaining completely blind to its horizontal orientation.
+
+**Strongest positive survivor:** an odd comparison must be supplied by a source-selected positive
+self-product or compression trace landing on the fixed physical metric.  That is the external
+Gate-II survivor, not a scalar completion of Route R's prepolar current.
+
+**Status:** dependency-closed paper proof; core identities and the actual prime-two instance are
+already unconditional Lean theorems.  The generic counterterm statement and its placement in the
+terminal Route-R no-go umbrella remain to be formalized after the corpus refactor.
+
 ## C33. No functorial polar reduction of the dual Gamma source
 
 C31 left one apparently internal escape: choose a strict infinite-prime topology or positive
@@ -1056,9 +1451,17 @@ the fixed physical Xi fibre.  Its required equality is still
 
 or, in local coordinates, \(h_a=h_0\).  This survivor is precisely the external Gate-II/ultraviolet
 Hodge-sign construction identified in `docs/notes.md`; it is not obtainable from Route R's
-intrinsic pre-polar invariants.  A future terminal audit must decide whether to classify this as a
-handoff outside Route R or as an allowed enlargement of Route R.  Until that scope decision is
-formalized and the theorem is Lean-certified, the route and persistent goal remain open.
+intrinsic pre-polar invariants.
+
+**Scope decision.** Route R is the primitive-current singular-continuation architecture generated
+by the pre-polar Euler--Gamma--Cartier/Stokes source and its rational-adelic retained atom.  A
+numerical positive self-product, Hodge intersection form, or compression trace is the separately
+tracked Gate-II/ultraviolet polar architecture: importing it changes the generating structure and
+does not constitute a surviving Route-R producer.  Accordingly C31--C36 are a paper-level terminal
+classification of Route R, while the positive polar survivor is an explicit handoff outside the
+route.  The persistent goal nevertheless remains open until this terminal classification is
+formalized in Lean, every Route-R declaration is placed in the trichotomy, and the final umbrella,
+lint, and axiom audits pass.
 
 **Collision and status.** Nonexistence of a natural metric on `L direct-sum L-dual` is elementary
 representation theory.  New Route-R content is its combination with the retained Kummer atom,
