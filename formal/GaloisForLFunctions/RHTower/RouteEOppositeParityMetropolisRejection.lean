@@ -51,6 +51,10 @@ def totalRejection (K : RouteEOppositeParityKernel ι) : ℝ :=
 def signedCurrent (K : RouteEOppositeParityKernel ι) : ℝ :=
   ∑ i, K.sign i * K.weight i
 
+/-- Total physical mass of the row law. -/
+def totalWeight (K : RouteEOppositeParityKernel ι) : ℝ :=
+  ∑ i, K.weight i
+
 theorem edgeMass_nonneg (K : RouteEOppositeParityKernel ι) (i j : ι) :
     0 ≤ K.edgeMass i j :=
   mul_nonneg (K.weight_nonneg i) (K.transition_nonneg i j)
@@ -58,6 +62,14 @@ theorem edgeMass_nonneg (K : RouteEOppositeParityKernel ι) (i j : ι) :
 theorem sum_edgeMass (K : RouteEOppositeParityKernel ι) (i : ι) :
     ∑ j, K.edgeMass i j = K.weight i := by
   simp [edgeMass, ← Finset.mul_sum, K.row_stochastic]
+
+theorem sum_sum_edgeMass (K : RouteEOppositeParityKernel ι) :
+    ∑ i, ∑ j, K.edgeMass i j = K.totalWeight := by
+  simp [totalWeight, K.sum_edgeMass]
+
+theorem totalWeight_nonneg (K : RouteEOppositeParityKernel ι) :
+    0 ≤ K.totalWeight :=
+  Finset.sum_nonneg fun i _hi => K.weight_nonneg i
 
 theorem acceptedConductance_nonneg (K : RouteEOppositeParityKernel ι) (i j : ι) :
     0 ≤ K.acceptedConductance i j :=
@@ -149,6 +161,72 @@ theorem rejection_identity_and_current_bound (K : RouteEOppositeParityKernel ι)
         (1 / 2 : ℝ) * ∑ i, ∑ j, |K.edgeMass i j - K.edgeMass j i| ∧
       |K.signedCurrent| ≤ K.totalRejection :=
   ⟨K.totalRejection_eq_half_edgeVariation, K.abs_signedCurrent_le_totalRejection⟩
+
+private theorem abs_sub_le_exp_defect_mul_left
+    {a b η : ℝ} (hη : 0 ≤ η)
+    (hab : a ≤ Real.exp η * b) (hba : b ≤ Real.exp η * a) :
+    |a - b| ≤ (Real.exp η - 1) * a := by
+  have hexp : 1 ≤ Real.exp η := Real.one_le_exp hη
+  rcases le_total a b with hab' | hba'
+  · rw [abs_of_nonpos (sub_nonpos.mpr hab')]
+    linarith
+  · rw [abs_of_nonneg (sub_nonneg.mpr hba')]
+    calc
+      a - b ≤ (Real.exp η - 1) * b := by linarith
+      _ ≤ (Real.exp η - 1) * a :=
+        mul_le_mul_of_nonneg_left hba' (sub_nonneg.mpr hexp)
+
+/-- Sharp multiplicative Radon--Nikodym gate.  If every directed edge mass is within a factor
+`exp η` of its reverse (in both orientations), then Metropolis rejection is at most
+`(exp η - 1) / 2` of total mass. -/
+theorem two_mul_totalRejection_le_exp_defect_mul_totalWeight
+    (K : RouteEOppositeParityKernel ι) (η : ℝ) (hη : 0 ≤ η)
+    (hbalance : ∀ i j, K.edgeMass i j ≤ Real.exp η * K.edgeMass j i) :
+    2 * K.totalRejection ≤ (Real.exp η - 1) * K.totalWeight := by
+  classical
+  rw [K.totalRejection_eq_half_edgeVariation, ← K.sum_sum_edgeMass]
+  have hvariation :
+      (∑ i, ∑ j, |K.edgeMass i j - K.edgeMass j i|) ≤
+        (Real.exp η - 1) * ∑ i, ∑ j, K.edgeMass i j := by
+    calc
+      (∑ i, ∑ j, |K.edgeMass i j - K.edgeMass j i|) ≤
+          ∑ i, ∑ j, (Real.exp η - 1) * K.edgeMass i j := by
+        exact Finset.sum_le_sum fun i _hi => Finset.sum_le_sum fun j _hj =>
+          abs_sub_le_exp_defect_mul_left
+            hη (hbalance i j) (hbalance j i)
+      _ = (Real.exp η - 1) * ∑ i, ∑ j, K.edgeMass i j := by
+        simp_rw [Finset.mul_sum]
+  convert hvariation using 1
+  ring
+
+/-- Normalized sharp rate in the exact paper form. -/
+theorem totalRejection_div_totalWeight_le_half_exp_defect
+    (K : RouteEOppositeParityKernel ι) (η : ℝ) (hη : 0 ≤ η)
+    (hweight : 0 < K.totalWeight)
+    (hbalance : ∀ i j, K.edgeMass i j ≤ Real.exp η * K.edgeMass j i) :
+    K.totalRejection / K.totalWeight ≤ (Real.exp η - 1) / 2 := by
+  apply (div_le_iff₀ hweight).2
+  have h := K.two_mul_totalRejection_le_exp_defect_mul_totalWeight η hη hbalance
+  nlinarith [K.totalWeight_nonneg]
+
+/-- If no directed edge has its reversal in support, the Metropolis conductance vanishes. -/
+theorem acceptedConductance_eq_zero_of_reverse_disjoint
+    (K : RouteEOppositeParityKernel ι)
+    (hdisjoint : ∀ i j, K.edgeMass i j = 0 ∨ K.edgeMass j i = 0)
+    (i j : ι) :
+    K.acceptedConductance i j = 0 := by
+  rcases hdisjoint i j with hij | hji
+  · simp [acceptedConductance, hij, K.edgeMass_nonneg j i]
+  · simp [acceptedConductance, hji, K.edgeMass_nonneg i j]
+
+/-- Hostile sharpness law: disjoint forward/reverse support rejects all physical mass. -/
+theorem totalRejection_eq_totalWeight_of_reverse_disjoint
+    (K : RouteEOppositeParityKernel ι)
+    (hdisjoint : ∀ i j, K.edgeMass i j = 0 ∨ K.edgeMass j i = 0) :
+    K.totalRejection = K.totalWeight := by
+  classical
+  simp [totalRejection, rejectedAt, totalWeight,
+    K.acceptedConductance_eq_zero_of_reverse_disjoint hdisjoint]
 
 end RouteEOppositeParityKernel
 

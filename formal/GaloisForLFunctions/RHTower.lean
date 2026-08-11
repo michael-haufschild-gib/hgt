@@ -4345,6 +4345,8 @@ import GaloisForLFunctions.RHTower.Sieve.GoodStartCount
 import GaloisForLFunctions.RHTower.Sieve.GoodStartMarkov
 import GaloisForLFunctions.RHTower.Sieve.GrowthSubstitution
 import GaloisForLFunctions.RHTower.Sieve.HeathBrownIdentity
+import GaloisForLFunctions.RHTower.Sieve.HeathBrownFinitePacket
+import GaloisForLFunctions.RHTower.Sieve.HeathBrownPerronPacket
 import GaloisForLFunctions.RHTower.Sieve.HalaszDichotomy
 import GaloisForLFunctions.RHTower.Sieve.HalaszFullSeriesSum
 import GaloisForLFunctions.RHTower.Sieve.HalaszGhsMasterBound
@@ -7053,6 +7055,7 @@ import GaloisForLFunctions.RHTower.GaussHodgeWeilSymmetryInsufficiency
 import GaloisForLFunctions.RHTower.GaussHodgeWeilArithmeticDeviationGap
 import GaloisForLFunctions.RHTower.GaussHodgeWeilTotalDeviationMass
 import GaloisForLFunctions.RHTower.XiExplicitFormulaLogDeriv
+import GaloisForLFunctions.RHTower.XiWeilResolventChartDictionary
 import GaloisForLFunctions.RHTower.HedenmalmClosedWeightedDerivative
 import GaloisForLFunctions.RHTower.HedenmalmEssentialInverseFlowTrace
 import GaloisForLFunctions.RHTower.HedenmalmPairWeilPolarizationCapstone

@@ -278,12 +278,55 @@ non-absolutely summable, but singularity alone earns no credit without `(1)` and
 
     Thus source construction, full-grade clock matching, and coefficient comparison are closed.
     The oriented Kummer regulator is \(2m\log6\ne0\), so ordinary cyclic descent remains
-    impossible.  Prime-two deletion fails because Euler depletion is injective; unmarked adelic
+    impossible. Prime-two deletion fails because Euler depletion is injective; unmarked adelic
     product-formula summation fails because it makes the rational Kummer derivation identically
-    zero and erases the detector.  Exact remaining theorem is a place-marked, orientation-retaining
-    singular admission of this explicit two-sided primitive into the literal Meyer--Poisson range,
-    with a genuine fixed-reader residue-cancellation law.  Full proof:
+    zero and erases the detector. Item 12 proves that the two-sided primitive is algebraic while
+    the complete physical \(L^2\) singular transport is one-sided. Exact remaining theorem is a
+    strict place-marked mixed \(L^1/L^2\) transport of the forward tail and contragredient
+    opposite pole into the literal Meyer--Poisson range, with a genuine fixed-reader
+    residue-cancellation law. Full proof:
     ../2-fully-proven/new_scientific_knowledge/deninger/deninger-mobius-gamma-six-normal-transgression.md.
+
+12. **Conjecture:** the reciprocal Gamma-six normal supplies a second vanishing-source singular
+    edge which cancels the forward endpoint. **Falsified sharply, with a positive pole-germ
+    survivor.** Writing \(T_m=6^{m/2}U_{m\log6}\), \(H_m=T_m^{-1}R_m\), one has
+
+    \[
+      (T_m-T_m^{-1})H_m
+        =R_m-T_m^{-2}R_m\longrightarrow\Theta,
+    \]
+
+    because \(\|T_m^{-2}R_m\|=6^{-m}\|R_m\|\to0\). Conversely,
+    \(T_m^{-1}K_m\to Y\ne0\) forces
+    \(\|K_m\|=6^{m/2}\|T_m^{-1}K_m\|\to\infty\). Thus no reciprocal nonzero
+    endpoint comes from another vanishing physical \(L^2\) source.
+
+    At the critical exponent, put
+
+    \[
+      B_6(s)=\zeta(s)^{-1}-1+2^{-s}+3^{-s}+5^{-s},\qquad
+      A(s)=\tfrac12s(s-1)\pi^{-s/2}\Gamma(s/2).
+    \]
+
+    Then
+
+    \[
+      \Xi(s)B_6(s)=A(s)+\Xi(s)(-1+2^{-s}+3^{-s}+5^{-s}),
+    \]
+
+    so its continued value at every nontrivial Xi zero \(\rho\) is the nonzero Gamma residue
+    \(A(\rho)\). No holomorphic or finite Dirichlet counterterm can cancel it. The functional
+    equation constructs a canonical opposite pole germ
+
+    \[
+      -\frac{A(s)}{A(1-s)}B_6(1-s),
+    \]
+
+    and cancels the singular principal parts before divisor selection. That scalar cancellation
+    is reciprocity data and is character-blind; it does not transport the resolved phase. The
+    remaining source object is therefore this explicit pole pair in the already-motivated mixed
+    adelic \(L^1/L^2\) Rost--Schmid topology, not a second \(L^2\) tail. Full proof:
+    ../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-orientation-residue-wall.md.
 
 ## Falsifiers
 
@@ -308,6 +351,12 @@ A proposed closure fails if it:
     the Kummer/Gamma coefficient it was required to retain;
 13. reconstructs another Gamma-clock source or coefficient comparison instead of proving the
     explicit class \([6^m]-[6^{-m}]\) lies in the literal Meyer--Poisson range.
+14. treats the reciprocal algebraic Tate interval as a reciprocal vanishing-source \(L^2\)
+    transport, contrary to the exact orientation-asymmetry theorem.
+15. adds a holomorphic or finite Dirichlet counterterm to the critical six-tail despite its
+    unavoidable nonzero Gamma residue.
+16. uses functional-equation or product-formula scalar cancellation after place/orientation
+    codiagonalization; that layer is formally character-blind.
 
 ## Route-L status
 
@@ -320,6 +369,9 @@ A proposed closure fails if it:
 - [x] full-grade honest Steinberg cell and exact Kummer-normal successor anomaly
 - [x] finite-corrected complete Möbius tail at literal full-grade Gamma clock \(6^m\)
 - [x] reciprocal Steinberg-normal orientation and two-sided Tate--Wold primitive
+- [x] analytic one-sidedness and reciprocal \(L^2\) no-go
+- [x] exact critical six-tail Gamma residue and regular-counterterm no-go
+- [x] canonical functional-equation opposite pole germ
 - [x] exact coefficient match with BV, Burnol, cofinal Tate, and actual Gamma target
 - [ ] `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`, equations `(1)`--`(2)`
 - [ ] consequent endpoint test `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`

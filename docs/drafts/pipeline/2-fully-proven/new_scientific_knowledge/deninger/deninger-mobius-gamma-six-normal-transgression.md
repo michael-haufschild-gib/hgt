@@ -296,6 +296,31 @@ Hence the oriented boundary does not become an ordinary Milnor or Hochschild bou
 relative Tate/Wold boundary whose cofinal top coordinate is detected by the existing Kummer and
 Burnol readers.
 
+### 6.1 Analytic qualification: the complete transport is one-sided
+
+Equations (20)--(21) construct both **algebraic** interval primitives. They do not construct two
+singular \(L^2\) graph edges from the same vanishing source. On \(H_{6,m}\), the full oriented
+normal acts by
+
+\[
+ (T_{6,m}-T_{6,m}^{-1})H_{6,m}
+   =R_{6,m}-T_{6,m}^{-2}R_{6,m}
+   \longrightarrow\Theta,
+\tag{22a}
+\]
+
+because
+
+\[
+ \|T_{6,m}^{-2}R_{6,m}\|=6^{-m}\|R_{6,m}\|\longrightarrow0.
+\tag{22b}
+\]
+
+Conversely, \(T_{6,m}^{-1}K_m\to Y\ne0\) forces
+\(\|K_m\|=6^{m/2}\|T_{6,m}^{-1}K_m\|\to\infty\). Thus the reciprocal normal cannot produce a
+nonzero endpoint from another vanishing physical \(L^2\) tail. Any opposite analytic face must
+live in the contragredient collar or a mixed source/distribution topology.
+
 ## 7. Two exact failed shortcuts
 
 ### 7.1 Factoring through the \(2\to3\) successor
@@ -345,20 +370,22 @@ P^{(6)}_m\xrightarrow{\text{oriented Kummer normal}}
 \tag{25}
 \]
 
-At \(m=1\), (25) is the exact physical Gamma/Burnol/BV coefficient.  At every \(m\ge3\), it is
-the full-grade anomaly of the complete nonclosable source transport (6).  Prime labels, ordinary
-integer grade, and the existing Xi multiplicity landing can therefore be retained without a
-change of clock or a fitted scalar gauge.
+At \(m=1\), (25) is the exact physical Gamma/Burnol/BV coefficient. At every \(m\ge3\), its
+forward face is the full-grade anomaly of the complete nonclosable source transport (6), while
+(22a) proves that the reciprocal face does not cancel its vertical endpoint. Prime labels,
+ordinary integer grade, and the existing Xi multiplicity landing can therefore be retained
+without a change of clock or a fitted scalar gauge, but an opposite-collar singular face is still
+required.
 
 This still does not prove RH.  The open theorem is no longer construction of a Gamma-clock
 source, a Steinberg cell, its Tate primitive, or a coefficient comparison.  It is:
 
-> Admit the explicit two-sided Tate--Wold primitive (20)--(21), together with the complete source
-> vector \(H_{6,m}\), into the already fixed resolved Meyer--Poisson target complex so that its
-> target differential is the existing Gamma/co-Poisson boundary and the fixed physical reader is
-> cyclic on this admitted boundary.  Equivalently, prove that the realized class (18) lies in the
-> literal Meyer--Poisson range without quotienting its nonzero Kummer residue or identifying its
-> two orientations by assumption.
+> Admit the forward complete source \(H_{6,m}\) and a genuine opposite-collar pole face into one
+> place-marked mixed \(L^1/L^2\) Rost--Schmid/Meyer complex. Its target differential must be the
+> existing Gamma/co-Poisson boundary and the fixed physical reader must be cyclic on the
+> transported principal-divisor boundary. Equivalently, prove that the realized class (18) lies
+> in the literal Meyer--Poisson range without quotienting its nonzero Kummer residue or identifying
+> its two orientations by assumption.
 
 Ordinary cyclic descent is impossible by (22).  Adelic scalarization is impossible by (24).
 The required map must be a place-marked, orientation-retaining singular admission with a genuine
@@ -377,6 +404,10 @@ residue cancellation theorem, not an abstract mapping cone or a new coefficient 
   or numerical computation enters (2)--(17), (20)--(24).
 - Equation (19) is coefficient fidelity, not annihilation.  The final Meyer--Poisson range
   theorem remains open and RH-bearing.
+- The reciprocal interval is algebraic, not a second vanishing-source \(L^2\) transport. The exact
+  asymmetry, critical Gamma residue, regular-counterterm no-go, and canonical
+  functional-equation opposite pole are proved in
+  deninger-gamma-six-orientation-residue-wall.md.
 
 ## 10. Frontier ledger
 
@@ -385,7 +416,11 @@ residue cancellation theorem, not an abstract mapping cone or a new coefficient 
 - [x] honest full-grade Gamma-clock Steinberg cell
 - [x] reciprocal normal orientation giving exact physical curvature
 - [x] two-sided Tate--Wold primitive
+- [x] analytic one-sidedness and reciprocal \(L^2\) no-go classified
+- [x] critical six-tail Gamma residue and regular-counterterm no-go classified
+- [x] canonical functional-equation opposite pole germ constructed
 - [x] exact coefficient comparison with BV, Burnol, cofinal Tate, and actual Gamma target
 - [x] no-go for prime-two deletion and unmarked adelic product-formula scalarization
-- [ ] place-marked singular admission into the literal Meyer--Poisson target range
+- [ ] strict mixed \(L^1/L^2\) place-marked transport of both pole germs into the literal
+      Meyer--Poisson target range
 - [ ] fixed-reader cyclicity/residue cancellation on that admitted boundary

@@ -148,3 +148,26 @@ Recorded 2026-08-11 after hostile check.
   (`ZetaBounds` DerivUpperBnd/LogDerivZeta lemmas) — the first proven nontrivial positive
   region of the Weil diagonal, feeding `riemannHypothesis_of_weilDiagonal_nonneg`'s hypothesis
   on a quantified subfamily.
+- 2026-08-11 — **the chart dictionary [LEAN-PROVED]: first strictly positive Weil diagonals,
+  with arithmetic values.**  `RHTower/XiWeilResolventChartDictionary.lean` (wired, umbrella
+  green 18921 jobs, all 6 theorems `[propext, Classical.choice, Quot.sound]`).  Fourth
+  corpus-first sweep found `XiResolventTraceHankelCriterion.lean` already owning the resolvent
+  chart (termwise `Re(α²+X)⁻¹ > 0` via the formalized height gap `xiZeroCopy_two_lt_im_sq`,
+  the polynomial-weighted RH criterion `riemannHypothesis_of_forall_xiResolventTrace_re_nonneg`,
+  and `xiResolventMoment_zero_eq_logDeriv`).  The new module identifies the two charts at base
+  level: `xiWeilCauchyTest_pair_term_eq_resolventPoint` — at imaginary Cauchy parameter the
+  Weil pair summand IS the resolvent coordinate `(α²+t²)⁻¹`; hence
+  `xiWeilPolarization_cauchyTest_eq_resolventMoment` (diagonal = zeroth resolvent moment),
+  **`xiWeilPolarization_cauchyTest_re_pos`** (the FIRST strictly positive family of Weil
+  diagonals beyond the even sector — unconditional, consumes `nonempty_xiZeroCopy`),
+  `xiWeilPolarization_cauchyTest_eq_logDeriv` (= Euler-ray response `logDeriv ξ(½+t)/t`),
+  `logDeriv_xi_div_re_pos` (classical ray positivity, free corollary), and
+  **`xiWeilPolarization_cauchyTest_eq_arithmetic`** (t > ½: the diagonal in explicit
+  polar/Γℝ/von-Mangoldt terms — a strictly positive Weil diagonal evaluated in prime data).
+  **Synthesis now visible across the corpus:** the Weil socket, the resolvent-Hankel
+  criterion, Route U's shifted-Hankel tower, and the deviation mass are ONE arithmetic moment
+  problem — positivity of the resolvent moment tower, whose entries are formally jets of
+  `logDeriv ξ` on the Euler ray (arithmetic for `t > ½`).  Degree 0 is now proven positive in
+  both charts; the wall is (exactly as the frontier map's Route U dossier records) all-degree
+  positivity, where the corpus's Lean-closed crossing classification and the paper-level
+  hard-edge theorems live.

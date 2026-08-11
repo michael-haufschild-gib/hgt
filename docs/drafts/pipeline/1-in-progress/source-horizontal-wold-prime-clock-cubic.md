@@ -65,6 +65,44 @@ Equivalently, for the prime-clock-normalized path `theta |-> P_N(theta/H_N)`, th
 is `R_N/H_N -> 0`, while the third derivative tends `-2/3`.  Cofinal normalization is
 moment-neutral at first order but not source-trivial: it exposes a universal odd cubic remnant.
 
+### C6 -- the cubic is the Taylor shadow of a universal full-grade profile -- ACTIVE
+
+The exact source deformation is not merely jet-equivalent to the Wold coefficient.  Primewise,
+
+```text
+A_p(t) = c_p sinh(t log p) / log p.
+```
+
+Hence, with `H_N=log p_N`, the literal centered primitive satisfies
+
+```text
+P_N(u/H_N)
+ = sum_(n<=N) c_(p_n) sinh(u H_n/H_N)/H_n
+   - sinh(u) - C u/H_N.
+```
+
+The bounded Wold logarithmic discrepancy predicts the full cofinal law
+
+```text
+P_N(u/H_N) -> F(u) := integral_0^1 sinh(u x)/x dx - sinh(u).
+```
+
+This is compatible with C5 because `F'(0)=0` and `F'''(0)=-2/3`.  More strongly,
+
+```text
+F(u) = -sum_(k>=1) [2k/(2k+1)] u^(2k+1)/(2k+1)!,
+```
+
+so `F` is odd and has sign opposite `u`; its only real zero is `0`.  The source-horizontal
+prime-clock limit would therefore be a global, not infinitesimal, critical-line classifier.  Its
+reflection product `-F(u)F(-u)=F(u)^2` is a canonical nonnegative profile with exact critical
+radical, aligning the R/T handoff with the Gauss--Hodge/global-index target.
+
+Lean now proves the two displayed finite identities unconditionally.  Remaining C6 work is the
+full cofinal limit and sign theorem.  Planned proof: general Wold log-moment asymptotic
+`M_r(X)/log(X)^(r+1) -> 1/(r+1)` from the same bounded discrepancy, followed by dominated
+interchange of the `sinh` series.  This is a theorem-producing extension of C5, not infrastructure.
+
 ## Paper proof outline
 
 For one cell `x=H_n`, `y=H_(n+1)`, `delta=y-x`:

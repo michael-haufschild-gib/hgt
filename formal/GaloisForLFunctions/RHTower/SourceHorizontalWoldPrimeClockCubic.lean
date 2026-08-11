@@ -379,11 +379,278 @@ theorem sourceHorizontalWoldNaturalCubicMoment_nthPrime_eq_ordered
     _ = sourceHorizontalWoldNaturalCubicMoment (nthPrimeSubtype N : ℕ) := by
           rw [sourceHorizontalWoldNaturalCubicMoment]
 
+/-- The third neutral jet of one gauged source prime is its Wold coefficient times log-square.
+This identifies the arithmetic cubic moment with literal source-horizontal calculus. -/
+theorem iteratedDeriv_sourceHorizontalWoldPrimeDeformation_three
+    (p : Nat.Primes) :
+    iteratedDeriv 3 (sourceHorizontalWoldPrimeDeformation p) 0 =
+      woldCoeff 1 p * Real.log (p : ℝ) ^ 2 := by
+  have hp : (0 : ℝ) < p := by exact_mod_cast p.2.pos
+  change iteratedDeriv 3
+      (fun t : ℝ => -sourceHorizontalWoldNeutralJetGauge p *
+        primeGammaCofinalBocksteinCoefficient t p) 0 = _
+  simp only [primeGammaCofinalBocksteinCoefficient,
+    primeActivationOccupancyFisherTwist,
+    primeActivationOccupancyFisherTwist]
+  simp only [Real.rpow_def_of_pos hp]
+  rw [iteratedDeriv_const_mul_field]
+  have hfun :
+      (fun t : ℝ =>
+        Real.exp (Real.log (p : ℝ) * -t) * primeActivationOccupancyFisherDensity p -
+          Real.exp (Real.log (p : ℝ) * t) * primeActivationOccupancyFisherDensity p) =
+      (fun t : ℝ =>
+        primeActivationOccupancyFisherDensity p * Real.exp ((-Real.log (p : ℝ)) * t) -
+          primeActivationOccupancyFisherDensity p * Real.exp (Real.log (p : ℝ) * t)) := by
+    funext t
+    congr 1 <;> ring_nf
+  rw [hfun]
+  rw [iteratedDeriv_fun_sub (by fun_prop) (by fun_prop)]
+  rw [iteratedDeriv_const_mul_field, iteratedDeriv_const_mul_field]
+  simp only [iteratedDeriv_exp_const_mul, pow_succ]
+  rw [← sourceHorizontalWoldNeutralJetGauge_mul_bocksteinJet p]
+  simp
+  ring
+
+theorem contDiff_sourceHorizontalWoldPrimeDeformation
+    (p : Nat.Primes) (n : ℕ) :
+    ContDiff ℝ n (sourceHorizontalWoldPrimeDeformation p) := by
+  have hp : (0 : ℝ) < p := by exact_mod_cast p.2.pos
+  change ContDiff ℝ n
+    (fun t : ℝ => -sourceHorizontalWoldNeutralJetGauge p *
+      (primeActivationOccupancyFisherTwist (-t) p -
+        primeActivationOccupancyFisherTwist t p))
+  simp only [primeActivationOccupancyFisherTwist, Real.rpow_def_of_pos hp]
+  fun_prop
+
+/-- Exact nonlinear form of the gauged source prime deformation.  The Wold coefficient remains
+literal; horizontal grade only enters through the normalized hyperbolic prime clock. -/
+theorem sourceHorizontalWoldPrimeDeformation_eq_wold_sinh
+    (p : Nat.Primes) (t : ℝ) :
+    sourceHorizontalWoldPrimeDeformation p t =
+      woldCoeff 1 p *
+        (Real.sinh (t * Real.log (p : ℝ)) / Real.log (p : ℝ)) := by
+  have hp : (0 : ℝ) < p := by exact_mod_cast p.2.pos
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast p.2.one_lt
+  have hlog : Real.log (p : ℝ) ≠ 0 := (Real.log_pos hp1).ne'
+  rw [sourceHorizontalWoldPrimeDeformation,
+    primeGammaCofinalBocksteinCoefficient,
+    primeActivationOccupancyFisherTwist,
+    primeActivationOccupancyFisherTwist,
+    Real.rpow_def_of_pos hp, Real.rpow_def_of_pos hp,
+    Real.sinh_eq]
+  rw [← sourceHorizontalWoldNeutralJetGauge_mul_bocksteinJet p]
+  field_simp [hlog]
+  ring
+
+/-- Odd holonomy at the terminal prime clock. -/
+def sourceHorizontalTerminalPrimeHolonomyDeformation (N : ℕ) (t : ℝ) : ℝ :=
+  (1 / 2 : ℝ) *
+    ((nthPrimeSubtype N : ℝ) ^ t - (nthPrimeSubtype N : ℝ) ^ (-t))
+
+@[simp] theorem sourceHorizontalTerminalPrimeHolonomyDeformation_neg
+    (N : ℕ) (t : ℝ) :
+    sourceHorizontalTerminalPrimeHolonomyDeformation N (-t) =
+      -sourceHorizontalTerminalPrimeHolonomyDeformation N t := by
+  simp [sourceHorizontalTerminalPrimeHolonomyDeformation]
+  ring
+
+theorem contDiff_sourceHorizontalTerminalPrimeHolonomyDeformation
+    (N n : ℕ) :
+    ContDiff ℝ n (sourceHorizontalTerminalPrimeHolonomyDeformation N) := by
+  have hp : (0 : ℝ) < nthPrimeSubtype N := by
+    exact_mod_cast (nthPrimeSubtype N).2.pos
+  change ContDiff ℝ n (fun t : ℝ => (1 / 2 : ℝ) *
+    ((nthPrimeSubtype N : ℝ) ^ t - (nthPrimeSubtype N : ℝ) ^ (-t)))
+  simp only [Real.rpow_def_of_pos hp]
+  fun_prop
+
+/-- Terminal holonomy is the literal hyperbolic sine of horizontal grade times terminal clock. -/
+theorem sourceHorizontalTerminalPrimeHolonomyDeformation_eq_sinh
+    (N : ℕ) (t : ℝ) :
+    sourceHorizontalTerminalPrimeHolonomyDeformation N t =
+      Real.sinh (t * xiMassNthPrimeLogHeight N) := by
+  have hp : (0 : ℝ) < nthPrimeSubtype N := by
+    exact_mod_cast (nthPrimeSubtype N).2.pos
+  rw [sourceHorizontalTerminalPrimeHolonomyDeformation,
+    xiMassNthPrimeLogHeight, Real.rpow_def_of_pos hp,
+    Real.rpow_def_of_pos hp, Real.sinh_eq]
+  ring_nf
+
+/-- First neutral jet of terminal holonomy is terminal log height. -/
+theorem hasDerivAt_sourceHorizontalTerminalPrimeHolonomyDeformation_zero
+    (N : ℕ) :
+    HasDerivAt (sourceHorizontalTerminalPrimeHolonomyDeformation N)
+      (xiMassNthPrimeLogHeight N) 0 := by
+  let P : ℝ := nthPrimeSubtype N
+  have hP : 0 < P := by
+    dsimp only [P]
+    exact_mod_cast (nthPrimeSubtype N).2.pos
+  have hpos : HasDerivAt (fun t : ℝ => P ^ t) (Real.log P) 0 := by
+    apply ((hasDerivAt_id (0 : ℝ)).const_rpow hP).congr_deriv
+    simp
+  have hneg : HasDerivAt (fun t : ℝ => P ^ (-t)) (-Real.log P) 0 := by
+    have h := ((hasDerivAt_id (0 : ℝ)).neg.const_rpow hP)
+    convert h using 1 <;> simp
+  have h := (hpos.sub hneg).const_mul (1 / 2 : ℝ)
+  simpa only [sourceHorizontalTerminalPrimeHolonomyDeformation, P,
+    xiMassNthPrimeLogHeight] using! h.congr_deriv (by ring)
+
+/-- Third neutral jet of terminal holonomy is terminal log cube. -/
+theorem iteratedDeriv_sourceHorizontalTerminalPrimeHolonomyDeformation_three
+    (N : ℕ) :
+    iteratedDeriv 3 (sourceHorizontalTerminalPrimeHolonomyDeformation N) 0 =
+      xiMassNthPrimeLogHeight N ^ 3 := by
+  have hp : (0 : ℝ) < nthPrimeSubtype N := by
+    exact_mod_cast (nthPrimeSubtype N).2.pos
+  change iteratedDeriv 3 (fun t : ℝ => (1 / 2 : ℝ) *
+    ((nthPrimeSubtype N : ℝ) ^ t - (nthPrimeSubtype N : ℝ) ^ (-t))) 0 = _
+  simp only [Real.rpow_def_of_pos hp]
+  rw [iteratedDeriv_const_mul_field]
+  have hfun :
+      (fun t : ℝ =>
+        Real.exp (Real.log (nthPrimeSubtype N : ℝ) * t) -
+          Real.exp (Real.log (nthPrimeSubtype N : ℝ) * -t)) =
+      (fun t : ℝ =>
+        Real.exp (Real.log (nthPrimeSubtype N : ℝ) * t) -
+          Real.exp ((-Real.log (nthPrimeSubtype N : ℝ)) * t)) := by
+    funext t
+    congr 1
+    ring_nf
+  rw [hfun, iteratedDeriv_fun_sub (by fun_prop) (by fun_prop)]
+  simp only [iteratedDeriv_exp_const_mul, pow_succ]
+  simp [xiMassNthPrimeLogHeight]
+  ring
+
+/-- Literal centered source primitive: sum all coefficient-faithful prime deformations, subtract
+terminal holonomy, then remove the limiting Wold logarithmic holonomy at first order. -/
+def sourceHorizontalWoldResidualPrimitiveDeformation (N : ℕ) (t : ℝ) : ℝ :=
+  (∑ n ∈ Finset.range (N + 1),
+      sourceHorizontalWoldPrimeDeformation (nthPrimeSubtype n) t) -
+    sourceHorizontalTerminalPrimeHolonomyDeformation N t -
+      xiHeatCassiniWoldLogHolonomyConstant * t
+
+/-- Exact prime-clock rescaling of the complete centered source primitive.  This finite identity
+exposes the nonlinear profile whose cubic Taylor shadow is the `-2/3` remnant. -/
+theorem sourceHorizontalWoldResidualPrimitiveDeformation_primeClock
+    (N : ℕ) (u : ℝ) :
+    sourceHorizontalWoldResidualPrimitiveDeformation N
+        (u / xiMassNthPrimeLogHeight N) =
+      (∑ n ∈ Finset.range (N + 1),
+        woldCoeff 1 (nthPrimeSubtype n) *
+          (Real.sinh
+              (u * xiMassNthPrimeLogHeight n /
+                xiMassNthPrimeLogHeight N) /
+            xiMassNthPrimeLogHeight n)) -
+        Real.sinh u -
+          xiHeatCassiniWoldLogHolonomyConstant *
+            (u / xiMassNthPrimeLogHeight N) := by
+  have hHN : xiMassNthPrimeLogHeight N ≠ 0 :=
+    (xiMassNthPrimeLogHeight_pos N).ne'
+  have hlogN : Real.log (nthPrimeSubtype N : ℝ) ≠ 0 := by
+    simpa only [xiMassNthPrimeLogHeight] using hHN
+  rw [sourceHorizontalWoldResidualPrimitiveDeformation]
+  simp_rw [sourceHorizontalWoldPrimeDeformation_eq_wold_sinh]
+  rw [sourceHorizontalTerminalPrimeHolonomyDeformation_eq_sinh]
+  simp only [xiMassNthPrimeLogHeight]
+  have harg : ∀ n : ℕ,
+      u / Real.log (nthPrimeSubtype N : ℝ) *
+          Real.log (nthPrimeSubtype n : ℝ) =
+        u * Real.log (nthPrimeSubtype n : ℝ) /
+          Real.log (nthPrimeSubtype N : ℝ) := by
+    intro n
+    ring
+  simp_rw [harg]
+  have hterminal :
+      u * Real.log (nthPrimeSubtype N : ℝ) /
+          Real.log (nthPrimeSubtype N : ℝ) = u := by
+    field_simp [hlogN]
+  rw [hterminal]
+
+@[simp] theorem sourceHorizontalWoldResidualPrimitiveDeformation_neg
+    (N : ℕ) (t : ℝ) :
+    sourceHorizontalWoldResidualPrimitiveDeformation N (-t) =
+      -sourceHorizontalWoldResidualPrimitiveDeformation N t := by
+  simp_rw [sourceHorizontalWoldResidualPrimitiveDeformation,
+    sourceHorizontalWoldPrimeDeformation_neg,
+    sourceHorizontalTerminalPrimeHolonomyDeformation_neg]
+  simp only [Finset.sum_neg_distrib]
+  ring
+
+/-- First neutral jet is exactly the vanishing centered Wold residual. -/
+theorem hasDerivAt_sourceHorizontalWoldResidualPrimitiveDeformation_zero
+    (N : ℕ) :
+    HasDerivAt (sourceHorizontalWoldResidualPrimitiveDeformation N)
+      (xiHeatCassiniOrderedWoldResidualLogDiscrepancy N) 0 := by
+  have hsum : HasDerivAt
+      (fun t : ℝ => ∑ n ∈ Finset.range (N + 1),
+        sourceHorizontalWoldPrimeDeformation (nthPrimeSubtype n) t)
+      (∑ n ∈ Finset.range (N + 1), woldCoeff 1 (nthPrimeSubtype n)) 0 := by
+    exact HasDerivAt.fun_sum
+      (fun n (_hn : n ∈ Finset.range (N + 1)) =>
+        hasDerivAt_sourceHorizontalWoldPrimeDeformation_zero (nthPrimeSubtype n))
+  have hterminal :=
+    hasDerivAt_sourceHorizontalTerminalPrimeHolonomyDeformation_zero N
+  have hlinear : HasDerivAt
+      (fun t : ℝ => xiHeatCassiniWoldLogHolonomyConstant * t)
+      xiHeatCassiniWoldLogHolonomyConstant 0 := by
+    simpa using (hasDerivAt_id (0 : ℝ)).const_mul
+      xiHeatCassiniWoldLogHolonomyConstant
+  have h := (hsum.sub hterminal).sub hlinear
+  simpa only [sourceHorizontalWoldResidualPrimitiveDeformation,
+    xiHeatCassiniOrderedWoldResidualLogDiscrepancy,
+    xiHeatCassiniOrderedWoldLogDiscrepancy,
+    xiHeatCassiniOrderedWoldPartialMass, Finset.sum_apply,
+    Pi.sub_apply] using! h
+
 /-- Cubic coefficient of the cofinal source-horizontal residual primitive.  The terminal
 prime-holonomy contributes the subtracted log cube. -/
 def sourceHorizontalWoldResidualPrimitiveCubicCoefficient (N : ℕ) : ℝ :=
   sourceHorizontalWoldNaturalCubicMoment (nthPrimeSubtype N : ℕ) -
     xiMassNthPrimeLogHeight N ^ 3
+
+/-- The named cubic coefficient is not bookkeeping: it is the literal third neutral jet of the
+centered source-horizontal residual primitive. -/
+theorem iteratedDeriv_sourceHorizontalWoldResidualPrimitiveDeformation_three
+    (N : ℕ) :
+    iteratedDeriv 3 (sourceHorizontalWoldResidualPrimitiveDeformation N) 0 =
+      sourceHorizontalWoldResidualPrimitiveCubicCoefficient N := by
+  have hprime : ∀ n ∈ Finset.range (N + 1),
+      ContDiffAt ℝ 3 (sourceHorizontalWoldPrimeDeformation (nthPrimeSubtype n)) 0 :=
+    fun n _hn =>
+      (contDiff_sourceHorizontalWoldPrimeDeformation (nthPrimeSubtype n) 3).contDiffAt
+  have hsum : ContDiffAt ℝ 3
+      (fun t : ℝ => ∑ n ∈ Finset.range (N + 1),
+        sourceHorizontalWoldPrimeDeformation (nthPrimeSubtype n) t) 0 := by
+    fun_prop
+  have hterminal : ContDiffAt ℝ 3
+      (sourceHorizontalTerminalPrimeHolonomyDeformation N) 0 :=
+    (contDiff_sourceHorizontalTerminalPrimeHolonomyDeformation N 3).contDiffAt
+  have hlinear : ContDiffAt ℝ 3
+      (fun t : ℝ => xiHeatCassiniWoldLogHolonomyConstant * t) 0 := by
+    fun_prop
+  change iteratedDeriv 3
+      (fun t : ℝ =>
+        ((∑ n ∈ Finset.range (N + 1),
+            sourceHorizontalWoldPrimeDeformation (nthPrimeSubtype n) t) -
+          sourceHorizontalTerminalPrimeHolonomyDeformation N t) -
+            xiHeatCassiniWoldLogHolonomyConstant * t) 0 = _
+  rw [iteratedDeriv_fun_sub (hsum.sub hterminal) hlinear]
+  rw [iteratedDeriv_fun_sub hsum hterminal]
+  rw [iteratedDeriv_fun_sum hprime]
+  simp_rw [iteratedDeriv_sourceHorizontalWoldPrimeDeformation_three]
+  rw [iteratedDeriv_sourceHorizontalTerminalPrimeHolonomyDeformation_three]
+  have hlinearThird :
+      iteratedDeriv 3
+        (fun t : ℝ => xiHeatCassiniWoldLogHolonomyConstant * t) 0 = 0 := by
+    rw [iteratedDeriv_const_mul_field]
+    simp [iteratedDeriv_fun_id]
+  rw [hlinearThird, sub_zero]
+  change (∑ n ∈ Finset.range (N + 1),
+      woldCoeff 1 (nthPrimeSubtype n) * xiMassNthPrimeLogHeight n ^ 2) -
+        xiMassNthPrimeLogHeight N ^ 3 =
+      sourceHorizontalWoldResidualPrimitiveCubicCoefficient N
+  rw [← sourceHorizontalWoldNaturalCubicMoment_nthPrime_eq_ordered N]
+  rfl
 
 /-- Prime-clock normalization leaves the universal cubic coefficient `-2/3`. -/
 theorem tendsto_sourceHorizontalWoldResidualPrimitiveCubicCoefficient_normalized :

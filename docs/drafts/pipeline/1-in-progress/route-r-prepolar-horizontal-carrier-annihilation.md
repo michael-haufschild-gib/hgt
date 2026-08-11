@@ -4,7 +4,7 @@
 - **Stage:** 1 — in progress
 - **Type:** CONJECTURE / SOURCE PRODUCER
 - **Route:** R
-- **Scientific status:** `[OPEN CORE] [NOT RH PROOF]`
+- **Scientific status:** `[PAPER-TERMINALIZATION CANDIDATE] [LEAN PENDING] [NOT RH PROOF]`
 - **Statement:** Derive `BurnolXiCartierDividedShiftHeadFluxDissipativity` from a literal
   pre-divisor Euler--Gamma--Stokes law acting before polar completion, without importing an
   RH-equivalent annihilation, sewing, norm, or critical-line premise.
@@ -46,10 +46,11 @@ orientations such that:
 ## Gates
 
 - [x] 0 → 1: exact source-pure question and circularity exclusions isolated
-- [ ] conjecture survives internal and external audit
-- [ ] complete dependency-closed paper proof
-- [ ] Lean formalization
-- [ ] RH
+- [x] internal conjecture/no-go audit: C1--C33 exhaust Route R's intrinsic producer classes
+- [x] dependency-closed paper terminalization of the pre-polar Cartier/Stokes route
+- [ ] Lean formalization of C17--C33 terminal core and umbrella/axiom audit after corpus refactor
+- [ ] terminal scope audit against all Route-R declarations, then move to failed/retired if clean
+- [ ] RH (not delivered; strongest survivor is handed to external C1/CCM Gate II)
 
 ## Conjecture / proof-or-failure ledger
 
@@ -898,6 +899,303 @@ remaining Route-R producer must be nonlocal across divisor fibres or prime place
 global positive trace/index identity; no additional same-fibre Green boundary can do it.
 
 **Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+
+## C33. No functorial polar reduction of the dual Gamma source
+
+C31 left one apparently internal escape: choose a strict infinite-prime topology or positive
+source rigging which is not visible in the algebraic Poincare form, and use its closed-domain or
+relative-index law to select neutral horizontal grade.  There is a categorical obstruction before
+any topology is chosen.  The dual Gamma source has no functorial positive polar reduction.
+
+Let `L` be either nonzero rank-one Gamma sector and write the pre-polar source as
+
+\[
+  V=L\oplus L^\vee,
+  \qquad
+  B((x,0),(0,\ell))=\ell(x).
+\]
+
+For every \(\lambda\in\mathbb C^\times\), the source automorphism
+
+\[
+  T_\lambda(x,\ell)=(\lambda x,\lambda^{-1}\ell)
+\tag{C33.1}
+\]
+
+preserves the evaluation pairing, its alternating double, the two orientations, and the retained
+forward/backward Kummer atom.  On the rational-adelic source this is the character twist from C31.
+
+Suppose a positive-definite Hermitian form \(h_V\) were assigned to every such dual source
+*functorially*: every source isomorphism would be an isometry.  Applying naturality to
+\(T_\lambda\) and a nonzero \(x\in L\) gives
+
+\[
+  h_V((x,0),(x,0))
+   =h_V((\lambda x,0),(\lambda x,0))
+   =|\lambda|^2h_V((x,0),(x,0)).
+\tag{C33.2}
+\]
+
+Taking \(|\lambda|\ne1\) contradicts positive definiteness.  Therefore the evaluation/Poincare
+source admits no automorphism-natural positive Hermitian polarization.  Equivalently, reducing the
+source structure group from the hyperbolic \(\mathbb C^\times\) to its compact subgroup \(U(1)\)
+requires an additional choice of norm on `L`; that reduction is not encoded by duality, dagger,
+orientation, cyclic provenance, or Stokes flatness.
+
+There is a corresponding fixed-target landing dichotomy.  Let
+
+\[
+  F:V\longrightarrow H
+\]
+
+be a complex-linear source-to-physical landing.  If `H` is the fixed same-fibre target and carries
+the trivial source-gauge action, naturality says \(F T_\lambda=F\).  For \(x\in L\),
+
+\[
+  F(\lambda x,0)=\lambda F(x,0)=F(x,0).
+\]
+
+Choosing \(\lambda\ne1\) forces \(F(x,0)=0\); the same argument on `L-dual` erases the other
+orientation.  Thus no complex-linear landing can be simultaneously source-natural, fixed-target,
+and coefficient-faithful on the retained atom.  If the target is instead given the transported
+action \(G_\lambda\) and naturality is weakened to \(F T_\lambda=G_\lambda F\), coefficient
+faithfulness can survive, but the positive target metric is transported to
+\(G_\lambda^{-\!*}h_0G_\lambda^{-1}\).  This is C32.3: the landing now compares different metric
+fibres and supplies no fixed same-fibre norm identity.  Therefore the two possible naturality
+squares give an exact alternative:
+
+\[
+  \boxed{\text{fixed physical fibre }\Longrightarrow\text{ atom erasure},
+  \qquad
+  \text{atom retention }\Longrightarrow\text{ transported physical fibre}.}
+\tag{C33.3}
+\]
+
+Nor can a nonlinear algebraic pairing evade the dichotomy.  In coordinates `(x,y)` on
+`L plus L-dual`, the hyperbolic action has weights `(+1,-1)`.  A polynomial
+
+\[
+  P(x,y)=\sum_{m,n}c_{mn}x^my^n
+\]
+
+is invariant under \((x,y)\mapsto(\lambda x,\lambda^{-1}y)\) for every nonzero \(\lambda\) only
+if every occupied monomial has weight \(m-n=0\).  Therefore
+
+\[
+  \mathbb C[x,y]^{\mathbb C^\times}=\mathbb C[xy].
+\tag{C33.4}
+\]
+
+The same weight decomposition applies coefficientwise to a convergent holomorphic germ.  Hence
+every functorial finite algebraic or local-holomorphic scalar reporter factors through the conserved
+Poincare contraction \(xy\).  It is horizontal-blind.  The positive same-sector quantities
+\(|x|^2\) and \(|y|^2\) do detect the boost, but they are anti-holomorphic metric data and are not
+invariant under (C33.1); adjoining them is precisely a polar reduction.
+
+The same obstruction closes the natural strict-topology version.  Let \(\tau_V\) be a topology
+assigned functorially to the source, so every \(T_\lambda\) is a homeomorphism.  Any predicate
+formed intrinsically from
+
+* closure or closed-graph membership;
+* domain, vertical fibre, quotient survival, or non-erasure;
+* Fredholm admission, kernel/cokernel dimension, or homotopy index;
+* homology of a naturally transported subcomplex
+
+is constant on every \(\mathbb C^\times\)-orbit.  At an ordinary prime the actual horizontal
+family belongs to one such orbit:
+
+\[
+  \lambda_p(a)=p^{2a},
+  \qquad a=\Re\rho-\tfrac12.
+\tag{C33.5}
+\]
+
+Hence no functorial source topology or functorial relative-domain predicate can satisfy
+
+\[
+  \mathcal P(T_{\lambda_p(a)}v)=\mathrm{true}
+  \quad\Longleftrightarrow\quad a=0.
+\tag{C33.6}
+\]
+
+If it holds at the neutral source vector, naturality makes it hold at every grade; if it fails at
+one grade, it fails throughout the orbit.  C32 supplies the corresponding statement for a pure
+Fredholm/K-theoretic index even after a Hilbert realization: the boost path is index-trivial while
+the fixed-metric modular square is positive.
+
+This produces an exhaustive trichotomy for the last internal Route-R producer class.
+
+1. **Source-natural topology or polarization.** It is invariant under (C33.1), hence blind to
+   horizontal grade; a natural landing into a fixed target erases the atom by (C33.3).
+2. **Fixed ideal, norm, or singular domain which is not invariant under (C33.1).** It has added a
+   polar reduction.  The already proved fixed-ideal, all-order Schatten, and tail--Roos walls show
+   that simultaneous admission of the two actual Gamma orientations is equivalent to neutral
+   grade.  Admission is then the RH-bearing theorem, not a consequence of the pre-polar source.
+3. **Homotopy index or metric refinement.** A pure index is blind by C32.  A metric refinement
+   reads the exact positive defect, but its construction has supplied the missing positive polar
+   reduction and must still identify the fixed physical metric with that source choice.
+
+Thus a strict topology does not evade the hyperbolic gauge merely by being finer than product
+topology.  It evades it only by ceasing to be functorial under an actual source automorphism.  The
+non-invariant datum must then be named and proved from additional arithmetic structure.
+
+**Dependency-closed internal verdict.** Differential, cup, Kummer cocycle, reciprocity, dagger,
+orientation, mixed-Hom Stokes contact/flatness, source-natural strict topology, and pure relative
+index cannot construct Route R's fixed positive same-fibre comparison.  Recombining them cannot
+annihilate the horizontal carrier.  This closes the last producer generated internally by the
+current pre-polar Route-R source object.
+
+**Strongest positive survivor.** A genuinely new producer must be a nonfunctorial polar reduction
+selected by the full numerical Euler--Gamma source: equivalently, a source-defined norm on `L`, a
+positive self-product/intersection form, or a compression trace whose metric is proved to land on
+the fixed physical Xi fibre.  Its required equality is still
+
+\[
+  \operatorname{Tr}(T^*T)=\operatorname{Tr}(T^2),
+\]
+
+or, in local coordinates, \(h_a=h_0\).  This survivor is precisely the external Gate-II/ultraviolet
+Hodge-sign construction identified in `docs/notes.md`; it is not obtainable from Route R's
+intrinsic pre-polar invariants.  A future terminal audit must decide whether to classify this as a
+handoff outside Route R or as an allowed enlargement of Route R.  Until that scope decision is
+formalized and the theorem is Lean-certified, the route and persistent goal remain open.
+
+**Collision and status.** Nonexistence of a natural metric on `L direct-sum L-dual` is elementary
+representation theory.  New Route-R content is its combination with the retained Kummer atom,
+actual prime character orbit (C33.5), fixed-target landing dichotomy, strict-topology naturality,
+C32 index blindness, and the
+existing two-orientation admission walls into the trichotomy above.  Paper proof complete; Lean
+formalization deferred during corpus refactor.  No RH, critical-line placement, same-fibre norm,
+source-dagger identity, or carrier annihilation is assumed.
+
+## C32. Homotopy index is blind to the exact hyperbolic modular square
+
+The phrase "relative index" in the surviving Route-R proposal still mixes two mathematically
+different objects: a homotopy/Fredholm index and a metric refinement of that index.  The first is
+now dependency-closed as a producer.  The second is exactly the fixed-same-fibre polarization
+problem, not a consequence of the first.
+
+Fix an integer `n > 1`, a real horizontal grade `a`, and put
+
+\[
+  L=\log n,\qquad r=e^{aL/2}=n^{a/2},\qquad
+  G_a=\begin{pmatrix}r&0\\0&r^{-1}\end{pmatrix}.
+\tag{C32.1}
+\]
+
+In light-cone coordinates the split source form is
+
+\[
+  J=\begin{pmatrix}0&1\\1&0\end{pmatrix}.
+\]
+
+Direct multiplication gives
+
+\[
+  G_a^TJG_a=J,\qquad \det G_a=1,\qquad G_{-a}=G_a^{-1}.
+\tag{C32.2}
+\]
+
+Moreover `s mapsto G_(sa)`, `0 <= s <= 1`, is a path through split isometries from the identity
+to `G_a`.  Consequently the horizontal boost has trivial relative class in topological `K_1`;
+over `R` or `C` its additional algebraic `K_1` class is also trivial because it has determinant
+one.  Tensoring or conjugating the already retained prime atom by this path does **not** erase that
+atom: its Kummer regulator remains the same nonzero `-log n`.  It only proves that every
+homotopy-invariant *variation* of its Fredholm/K-theoretic index is zero throughout the horizontal
+family.
+
+Transported positivity does not change this conclusion.  Starting from the fixed Euclidean metric
+`h_0=I`, define
+
+\[
+  h_a=G_a^{-T}h_0G_a^{-1}
+      =\begin{pmatrix}r^{-2}&0\\0&r^2\end{pmatrix}>0.
+\tag{C32.3}
+\]
+
+Then
+
+\[
+  G_a^T h_a G_a=h_0.
+\tag{C32.4}
+\]
+
+Thus a positive source polarization can be transported isometrically for every real grade.  What
+fails off centre is not positivity or isometry between the transported fibres; it is equality of
+the transported metric `h_a` with the **fixed same-fibre** physical metric `h_0`.
+
+That failure is exactly the Route-R modular square.  Indeed,
+
+\[
+\begin{aligned}
+ E_n(a)
+  &:=-{1\over n^2}(1-n^{-a})(1-n^a)\\
+  &={1\over n^2}(r-r^{-1})^2
+   ={4\over n^2}\sinh^2\!\left({a\log n\over2}\right)\\
+  &={1\over 2n^2}\lVert G_a-G_a^{-1}\rVert_{\rm HS}^2.
+\end{aligned}
+\tag{C32.5}
+\]
+
+Hence `E_n(a) >= 0`, with equality exactly at `a=0`.  Formula (C32.5) is precisely the reflected
+BV--Green self-product in (C28.4), while (C32.2)--(C32.4) show that split Poincare conservation,
+determinant one, reflection, nonzero prime provenance, homotopy index, and transported positive
+polarization all coexist with `E_n(a)>0`.
+
+This yields the following dichotomy for any proposed global relative-index producer.
+
+1. If the completed family remains Fredholm and gap-continuous along `s mapsto G_(sa)`, its index
+   is constant.  It may retain the prime atom, but it cannot see or annihilate (C32.5).
+2. If Fredholmness or domain admission breaks along that path, the breaking condition is the
+   producer.  For the constructed prime coefficient families, the exact all-order Schatten,
+   fixed-ideal, and tail--Roos classifications already prove that two-orientation admission is
+   equivalent to `a=0`; calling that admission an index does not derive it.
+3. If the proposed "index" varies continuously with (C32.5), it is not a homotopy index.  It is a
+   metric determinant/torsion refinement.  C27--C30 then apply: its finite part is the nonzero
+   Bockstein anomaly, and identifying its conjugate-diagonal metric trace with the holomorphic
+   source trace is exactly the missing fixed-fibre comparison.
+
+The same argument survives arbitrary finite prime packets and divisor multiplicity copies by
+direct sum.  Each retained source index stays constant under the product hyperbolic path, while
+the fixed-metric defect is a sum of nonnegative terms (C32.5), strictly positive as soon as one
+horizontal grade is nonzero.  A genuinely nonlocal construction does not evade the dichotomy:
+if it is homotopy invariant on the global Fredholm domain it remains constant; if its global
+domain changes, that admission must be proved independently; if it reads the Hilbert defect, it
+has added the missing metric structure.
+
+**Verdict.** A pure relative/Fredholm/K-theoretic index is dependency-closed dead as Route R's
+annihilator.  It is too invariant, not too weakly normalized.  The source-exact signed index can
+vanish while the exact physical modular square is positive.
+
+**Strongest positive survivor.** The remaining comparison is irreducibly metric:
+
+\[
+  h_a=h_0
+  \quad\Longleftrightarrow\quad
+  E_n(a)=0
+  \quad\Longleftrightarrow\quad
+  a=0,
+\tag{C32.6}
+\]
+
+or globally, in C30's normal form,
+
+\[
+  \operatorname{Tr}(T^*T)=\operatorname{Tr}(T^2).
+\]
+
+Therefore the word "relative index" no longer names an independent escape.  The sole surviving
+Route-R theorem is a source-derived identification of transported and fixed physical
+polarizations (equivalently, the conjugate-diagonal trace identity), with no critical-line or
+same-fibre premise.  Proving that would close RH; index homotopy cannot supply it.
+
+**Collision and status.** The Lorentz colligation (C32.1)--(C32.2) and positive-metric rigidity are
+already recorded in
+`pipeline/2-fully-proven/not_new_scientific_knowledge/rational-hurwitz-lorentz-boost-colligation.md`.
+The new Route-R delta is the exact trichotomy above: nonzero Kummer-class retention is compatible
+with zero horizontal index variation, transported positivity is compatible with positive fixed-
+fibre defect, and every index jump is forced into the already classified admission wall.  Paper
+proof complete; novelty unverified.  Lean formalization remains deferred during corpus refactor.
 
 ## C31. Hyperbolic central-gauge completeness of the existing pre-polar source laws
 

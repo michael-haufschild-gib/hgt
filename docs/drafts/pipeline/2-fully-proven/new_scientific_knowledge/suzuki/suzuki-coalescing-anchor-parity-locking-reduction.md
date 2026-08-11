@@ -1,13 +1,13 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
   Sections 14.13--14.14, in the literal normalized-Hankel theorems of Sections 14.15--14.19, and
   in the first-jet part of Theorem AC; yes as the hypothesis of the global-limit and Xi-target
-  audits in Sections 14.8--14.14 and in the complete-family consequences of Theorems AC--AD
+  audits in Sections 14.8--14.14 and in the complete-family consequences of Theorems AC--AE
 - **Computation used:** no
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
   `[LEAN READ-ONLY AUDITED]`
@@ -4113,7 +4113,337 @@ remain possible; proving a cofinal positive admissible shift is already RH-stren
 unconditional source problem is now unambiguously the finite-shift normalized-Hankel admission
 problem, not any negative-shift escape chart.
 
-### 14.22 Conjecture loop and novelty correction
+### 14.22 Every negative shift bounded away from zero is asymptotically free
+
+The bounded window left by Theorem AD still contains an apparent continuum of negative shifts.
+The zero-side Gram geometry removes all of it except the singular endpoint `lambda->0`.  Unlike the
+first-moment Jensen argument, the next theorem uses the full expanding-interval exponential Gram
+matrix and therefore sees every fixed positive resolvent mass.
+
+Under RH let
+
+```text
+S_a:D(S_a) subset L2(-a,a)->ell2(Gamma),
+(S_af)_gamma=sqrt(m_gamma) widehat f(gamma),
+A_a=S_a^*S_a.                                           (299)
+```
+
+Here `Gamma` is the set of distinct real Xi ordinates and `m_gamma` their multiplicities.  Smooth
+compactly supported functions form a dense domain, and `(299)` is exactly the zero-side restricted
+Weil form.  Put
+
+```text
+h_(e,a)=U_+(cosh)/sqrt(N_e(a)),
+h_(o,a)=U_-(sinh)/sqrt(N_o(a)),
+u_(sigma,a)=S_a h_(sigma,a).                            (300)
+```
+
+#### Theorem AE — expanding-frame annihilation of fixed negative shifts
+
+Let `a_j->infinity` and `r_j>0` with `inf_j r_j>0`.  Then, for `sigma=e,o`,
+
+```text
+r_j <h_(sigma,a_j),(A_(sigma,a_j)+r_j I)^(-1)
+       h_(sigma,a_j)> ->1.                              (301)
+```
+
+Consequently
+
+```text
+r_j E_(a_j,-r_j)/N_e(a_j)->1,
+r_j O_(a_j,-r_j)/N_o(a_j)->1,
+kappa_(a_j,-r_j)->0.                                   (302)
+```
+
+Thus every complete Xi-identifying Route-G family necessarily satisfies the sharp negative-end
+law
+
+```text
+max(0,-lambda_j)->0.                                   (303)
+```
+
+#### Proof
+
+We give the expanding-frame estimate because this is where a false uniform-frame argument would
+otherwise enter.  For a closed densely defined `S` and `A=S^*S`, the push-through identity gives
+
+```text
+1-r<h,(A+rI)^(-1)h>
+ =<Sh,(SS^*+rI)^(-1)Sh>                                (304)
+```
+
+for every unit `h in D(S)`.  It is enough to prove that the right side tends to zero for the two
+vectors in `(300)`.
+
+Fix a finite symmetric set `Gamma_T={gamma:|gamma|<=T}` and let `P_T` be its coordinate
+projection.  For a finitely supported vector `c`,
+
+```text
+S_a^*c(x)=sum_gamma sqrt(m_gamma)c_gamma e^(-i gamma x),
+<e^(-i gamma x),e^(-i eta x)>_L2(-a,a)
+ =2sin(a(eta-gamma))/(eta-gamma).                       (305)
+```
+
+Distinctness of the finitely many low frequencies gives a constant `D_T<infinity` such that
+
+```text
+||S_a^*P_Tc||^2 >=(2a-D_T)||P_Tc||^2.                  (306)
+```
+
+The low--high coupling is bounded independently of aperture.  Indeed `(305)`, the
+Riemann--von Mangoldt bound, and reciprocal-square summability give
+
+```text
+|<S_a^*P_Tc,S_a^*(1-P_T)c>|
+ <=C_T||P_Tc||||(1-P_T)c||,                            (307)
+
+C_T^2
+ <=4 sum_(gamma in Gamma_T) m_gamma
+       sum_(|eta|>T) m_eta/(eta-gamma)^2 <infinity.
+```
+
+No separation estimate between high zeros is used.  Keeping the resolvent mass on the high block
+and applying Young's inequality to `(307)`, uniformly for `r>=r_0>0`, yields for all sufficiently
+large `a`
+
+```text
+||S_a^*c||^2+r||c||^2
+ >=k_(a,T)||P_Tc||^2+(r/2)||(1-P_T)c||^2,
+k_(a,T)>=2a-D_T-2C_T^2/r_0 ->infinity.                 (308)
+```
+
+The variational formula for the inverse of the positive form in `(308)` therefore gives
+
+```text
+<u,(S_aS_a^*+rI)^(-1)u>
+ <=||P_Tu||^2/k_(a,T)+2||(1-P_T)u||^2/r.               (309)
+```
+
+The source estimate `(291)` and the exact norms `(288)` imply a constant `C` independent of all
+large `a` such that
+
+```text
+|(u_(sigma,a))_gamma|^2<=C m_gamma/(1+gamma^2).        (310)
+```
+
+For fixed `T`, the first term of `(309)` tends to zero as `a->infinity`.  The second is at most
+
+```text
+(2C/r_0) sum_(|gamma|>T) m_gamma/(1+gamma^2),          (311)
+```
+
+which tends to zero as `T->infinity`.  Equations `(304)` and `(309)--(311)` prove `(301)`.
+The unitary parity decomposition identifies the two full-interval responses with `E/N_e` and
+`O/N_o`; then `(289)` proves `(302)`.
+
+If `(303)` failed, some subsequence of negative shifts would have `r_j>=r_0>0`, and `(302)` would
+contradict convergence to `kappa_Xi>77/85`.  This proves `(303)`.
+
+The argument is robust to multiplicity because `(299)` uses one distinct ordinate coordinate with
+weight `sqrt(m_gamma)`.  It also avoids the false claim that the full zero exponential system has
+a uniform lower frame bound: only one fixed finite block receives the growing `2a` diagonal, while
+the moving high block is controlled by the literal source's summable tail.
+
+Generic push-through identities, finite exponential Gram asymptotics, and the zero-counting tail
+bound are classical.  The corpus contains fixed-aperture far-negative collapse, weak escape at
+`lambda=0`, and RH equivalence for vanishing admissible shifts, but no expanding-aperture theorem
+for every mass `r>=r_0`.  Candidate-new content is their exact synthesis in `(299)--(303)`, which
+removes the entire negative finite-shift window from complete Suzuki families.
+
+This still does **not** kill Suzuki.  The singular interface `lambda->0^-` is precisely where the
+high-zero block in `(308)` loses its coercive `r/2` term, so the proof fails for a structural
+reason, not a loose estimate.  Zero shift, vanishing negative shifts, and positive floor-hugging
+remain the only complete-family scales.  The source-normalized Hankel/pointed-occupancy theorem at
+that zero-mass interface is now the unique negative-side frontier.
+
+### 14.23 The zero-mass survivor has inverse-aperture width
+
+The loss of a fixed high-block mass at `r->0` is quantitative.  Classical local zero counting still
+allows a cutoff whose cross-block Gram coupling grows only polylogarithmically.  Combining that
+cutoff with the exact source tail shows that most vanishing shifts are free as well.
+
+Let
+
+```text
+delta(T)=sum_(|gamma|>T) m_gamma/(1+gamma^2).           (312)
+```
+
+Riemann--von Mangoldt counting and partial summation give
+
+```text
+delta(T)=O(log(T)/T).                                  (313)
+```
+
+For every sufficiently large `T`, the unit-window bound
+`sum_(t<|gamma|<=t+1)m_gamma=O(log(t+2))` permits a symmetric cutoff `b_T in [T,T+1]` whose distance
+from every ordinate is at least `c/log T`.  Let `P_T` now project onto `|gamma|<b_T`.  Splitting
+both sides of each boundary into the near unit window, unit distance shells, and the far tail gives
+
+```text
+C_T^2
+ :=4 sum_(|gamma|<b_T) m_gamma
+       sum_(|eta|>b_T) m_eta/(eta-gamma)^2
+ =O((log T)^4).                                        (314)
+```
+
+For clarity, the near-boundary contribution is `O((log T)^4)` because each unit window contains
+`O(log T)` ordinates with multiplicity and the chosen gap is `Omega(1/log T)`.  For unit shells at
+distances `j,k>=1`, the contribution is
+`O((log T)^2 sum_(j,k<=2T)(j+k)^(-2))=O((log T)^3)`; ordinates beyond `2T` contribute
+`O(N(T)delta(2T))=O((log T)^2)`.  Opposite signs are farther apart.  This proves `(314)` without a
+zero-spacing hypothesis.
+
+#### Theorem AF — quantitative vanishing-shift boundary layer
+
+Let `a_j->infinity`, `r_j->0+`, and assume
+
+```text
+a_j r_j/(1+|log r_j|)^4 ->infinity.                    (315)
+```
+
+Then the free-response conclusions `(301)--(302)` still hold.  Consequently every complete
+Xi-identifying family satisfies, on its negative-shift indices,
+
+```text
+r_j=max(0,-lambda_j)=O((1+log a_j)^4/a_j).             (316)
+```
+
+#### Proof
+
+In `(308)--(311)` choose `T_j=r_j^(-2)` and the cutoffs above.  Equations `(313)` and `(310)` give
+
+```text
+||(1-P_(T_j))u_(sigma,a_j)||^2/r_j
+ =O(delta(T_j)/r_j)
+ =O(r_j|log r_j|)->0.                                  (317)
+```
+
+The cross penalty in the low-block coercivity is, by `(314)`,
+
+```text
+C_(T_j)^2/r_j=O((1+|log r_j|)^4/r_j)=o(a_j)            (318)
+```
+
+under `(315)`.  Thus `k_(a_j,T_j)->infinity` in `(308)`.  The low source norms remain uniformly
+bounded by `(292)`, so `(309)` tends to zero.  Equations `(304)` and `(289)` prove the free
+response.
+
+If the quotient `a_jr_j/(1+|log r_j|)^4` were unbounded along a complete target family, a
+subsequence would satisfy `(315),` contradicting `kappa->kappa_Xi`.  It is therefore bounded.
+When `r_j<=1/a_j`, `(316)` is immediate; when `r_j>1/a_j`, one has
+`|log r_j|<log a_j`, and the same boundedness gives `(316)`.
+
+The exponent four is not claimed sharp.  It records the strongest bound obtained from local
+Riemann--von Mangoldt counting alone, without pair-correlation, simplicity, or a minimum zero gap.
+Generic nonharmonic Fourier estimates are classical.  Candidate-new content is the literal Suzuki
+source/resolvent synthesis `(315)--(316)`, which turns the qualitative zero-mass survivor into an
+explicit inverse-aperture polylogarithmic boundary layer.
+
+This does **not** cross zero.  At `r=O((log a)^4/a)` the mass term can be of the same order as the
+worst low--high cancellation capacity allowed by classical zero counting.  Improving `(316)` to
+`o(1/a)` or reaching `r=0` requires new information about clustered zero-exponential combinations
+as seen by the specific boundary source, or a direct prime-side normalized-Hankel estimate.  That
+is the hard frontier; repeating PNT leading terms or assuming zero spacing would be theatre.
+
+### 14.24 The exact positive survivor is a mesoscopic odd hard-edge annulus
+
+Theorems AE--AF do more than constrain the shift.  They identify the spectral geometry which must
+survive inside the boundary layer.  Let `mu_(e,a)` and `mu_(o,a)` be the probability spectral laws
+of the nonnegative parity operators at the unit sources `h_(e,a),h_(o,a)` from `(300)`.  For `r>0`
+put
+
+```text
+x_(sigma,a)(r)
+ =int_[0,infinity] r/(t+r) dmu_(sigma,a)(t)
+ =r <h_(sigma,a),(A_(sigma,a)+rI)^(-1)h_(sigma,a)>.    (319)
+```
+
+Theorem AE at every fixed `r>0` gives `x_(sigma,a)(r)->1`.  Stieltjes uniqueness, or the elementary
+bound `1-x(r)>=epsilon/(epsilon+r)mu([epsilon,infinity))`, therefore gives
+
+```text
+mu_(e,a),mu_(o,a) weakly ->delta_0.                    (320)
+```
+
+#### Theorem AG — target-forced mesoscopic odd mass
+
+Let `a_j->infinity`, let `lambda_j=-r_j<0`, and suppose the complete Suzuki quotients identify the
+Xi target.  Then
+
+```text
+limsup_j x_(o,a_j)(r_j) <=1/R_Xi<4/81,                (321)
+
+limsup_j mu_(o,a_j)([0,r_j])<8/81.                    (322)
+```
+
+Consequently, for every fixed `epsilon>0`,
+
+```text
+liminf_j mu_(o,a_j)((r_j,epsilon))>73/81.              (323)
+```
+
+The outer edge may itself shrink.  If `epsilon_j->0+` and
+
+```text
+a_j epsilon_j/(1+|log epsilon_j|)^4 ->infinity,
+```
+
+then
+
+```text
+mu_(o,a_j)([epsilon_j,infinity))->0,
+liminf_j mu_(o,a_j)((r_j,epsilon_j))>73/81.            (323a)
+```
+
+In particular one may take `epsilon_j=a_j^(-1/2)`.  The surviving packet is therefore confined to
+the explicit shrinking annulus `(r_j,a_j^(-1/2))`, not merely to an unspecified neighborhood of
+zero.
+
+More generally, for every fixed `L>=0`,
+
+```text
+limsup_j mu_(o,a_j)([0,Lr_j])
+ <=(L+1)/R_Xi<4(L+1)/81.                              (324)
+```
+
+Thus a successful negative Suzuki family requires a literal odd-source spectral layer which
+collapses to zero in absolute energy by `(320)`, remains above its own resolvent mass scale by
+`(322)--(324)`, and carries more than `73/81` of the total probability in every fixed hard-edge
+window `(r_j,epsilon)`.
+
+#### Proof
+
+Equation `(319)` and the parity responses give
+
+```text
+E_(a,-r)/O_(a,-r)
+ =[N_e(a)/N_o(a)] x_(e,a)(r)/x_(o,a)(r).               (325)
+```
+
+Since `0<=x_e<=1`, target convergence, `(289)`, and `(325)` imply the first inequality in `(321)`.
+The strict constant uses `R_Xi>81/4`.
+
+On `[0,Lr]` the Stieltjes multiplier obeys `r/(t+r)>=1/(L+1)`.  Equation `(324)` follows from
+`(321)`; `L=1` gives `(322)`.  Finally `(320)` makes
+`mu_(o,a_j)([epsilon,infinity))->0` for every fixed `epsilon` which is not an atom of `delta_0`,
+and subtracting this tail and `[0,r_j]` from total mass proves `(323)`.  To prove `(323a)`, apply
+Theorem AF's estimate with the independent probe mass `epsilon_j` in place of the selected shift.
+It gives `x_(o,a_j)(epsilon_j)->1`; since
+`1-x_o(epsilon)>=mu_o([epsilon,infinity))/2`, the moving upper tail vanishes.  Subtract `(322)`
+again.
+
+The constants are target-sharp at the information level used: they come only from
+`R_Xi>81/4`, the fact that the even Stieltjes factor is at most one, and the threshold value
+`r/(r+r)=1/2`.  Improving them requires absolute information about the even response, not another
+inequality on the odd channel.
+
+Weak convergence to a hard edge and elementary Stieltjes band bounds are classical.  Candidate-new
+content is the Suzuki conjunction `(320)--(324)`: the complete target forces a quantitatively
+macroscopic odd spectral packet into a vanishing interval strictly above the moving shift scale.
+This is the strongest positive survivor exposed by the negative-shift no-go.  It replaces the
+phrase “singular zero-mass behavior” by one falsifiable source theorem.
+
+### 14.25 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -4358,6 +4688,34 @@ problem, not any negative-shift escape chart.
     a fixed absolute window, not to zero.  Bounded negative and zero shifts still face the genuine
     finite-shift normalized-Hankel/source-visibility problem, while positive admissibility is
     already RH-strength.  No shift asymptotic replaces that finite-window theorem.
+89. **A fixed negative shift can retain singular pointed Xi mass -- failed class-completely.**
+    The zero-side expanding Gram matrix gives every fixed finite ordinate block energy `2a`, while
+    the literal boundary sources have a uniform reciprocal-square high-zero tail.  Theorem AE
+    proves that every `-lambda>=r_0>0` family has free first defect, without any uniform frame bound
+    on the full zero system.
+90. **The expanding-frame proof extends through zero mass -- failed sharply.**  Its high-coordinate
+    coercivity is exactly `r||(1-P_T)c||^2`.  When `r->0`, high zero clusters can cancel the finite
+    block at vanishing price, and the argument supplies no bound.  This is the same singular
+    pointed mechanism left by weak anchor escape, not a technical omission.  Complete negative
+    schedules are forced to `lambda->0^-`, but that interface remains open.
+91. **Any vanishing negative shift remains viable -- failed.**  Local Riemann--von Mangoldt
+    counting supplies spectral cutoffs with reciprocal-square cross capacity `O(log^4 T)`, while
+    the literal source tail is `O(log T/T)`.  Theorem AF kills every scale satisfying
+    `ar/log^4(1/r)->infinity` and forces successful complete negative schedules into
+    `r=O(log^4(a)/a)`.
+92. **Classical zero counting closes the inverse-aperture boundary layer -- failed.**  At the
+    remaining scale the vanishing resolvent mass and the worst low--high cluster cancellation have
+    the same permitted order.  A further theorem needs source-sensitive cluster control or the
+    prime-side relative Hankel bound; neither simplicity nor a guessed minimum zero gap is legal.
+93. **The residual zero-mass singularity has no quantitative shape -- failed.**  Fixed-mass
+    expanding-frame annihilation first forces both normalized source spectral laws weakly to
+    `delta_0`.  Target ratio then forces less than `8/81` of the odd law below `r_a` and more than
+    `73/81` into the shrinking annulus `(r_a,a^(-1/2))`.  Theorem AG is the exact mesoscopic
+    hard-edge survivor.
+94. **Weak hard-edge collapse itself kills the target -- failed.**  Weak convergence sees only the
+    fixed scale `epsilon`; it is compatible with a macroscopic packet whose energy tends to zero
+    while its ratio to `r_a` stays above one.  Closing Suzuki now means ruling out this literal
+    source packet or proving it and then solving the paired occupancy hierarchy.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -4377,7 +4735,7 @@ rigidity `(163)--(200)`, together with the compactified two-extension spectral-s
 smoothing-trace reduction `(201)--(215)`, the low-energy support/regular phase-mixing wall
 `(216)--(223)`, and the source-specific Toeplitz `sech`/normalized-Hankel rapidity,
 source-alignment, localization, reflection-rigidity, nonuniform-PNT, and negative-shift recession
-walls `(224)--(298)`.
+walls `(224)--(325)`.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
 specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
 formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the
