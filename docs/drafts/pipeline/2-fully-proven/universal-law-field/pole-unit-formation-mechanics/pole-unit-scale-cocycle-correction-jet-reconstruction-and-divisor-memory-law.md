@@ -9,7 +9,7 @@
   divisor after analytic continuation, while every finite correction depth remains divisor-blind.
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [UNCONDITIONAL] [SOURCE-INDEPENDENT CORE]`
   `[EXACT COCYCLE] [JOINT RECONSTRUCTION] [FOUR-ORGAN FUSION] [FINITE-DEPTH NO-GO]`
-  `[EULER-SHELL SPECIALIZATION] [LEAN PENDING] [NOT RH]`
+  `[EULER-SHELL SPECIALIZATION] [LEAN-CERTIFIED ALGEBRAIC CORE] [NOT RH]`
 
 ## 1. Setup
 
@@ -107,7 +107,7 @@ Fix one real `q>1`.  Then every denominator `q^k-1` is nonzero, and
 
 \[
  \boxed{
- \ell_k=rac{[\epsilon^k]\log_C C_\epsilon(q)}{q^k-1}.}
+ \ell_k=\frac{[\epsilon^k]\log_C C_\epsilon(q)}{q^k-1}.
  \tag{PUF.8}
 \]
 
@@ -373,11 +373,13 @@ only after the algebraic core is certified against the current toolchain.
 - [x] finite-depth divisor no-go proved
 - [x] Euler-shell boundary-splitting theorem proved
 - [x] RH claim blocked at reflected complete-order continuation
-- [ ] independent hostile reread
-- [ ] Lean certification and Stage-3 promotion
+- [x] hostile dependency and scope reread
+- [x] Lean certification of algebraic core and Stage-3 promotion
 
 ## Log
 
 - 2026-08-11 — created after recognizing that the already-formal universal `Exp(1)` critical
   clock is grade zero and provably divisor-blind; the correction cocycle is the first retained
   constitutive layer.
+- 2026-08-11 — exact cocycle, scalar-gauge invariance, finite correction ghost law, one-scale
+  reconstruction, exponential realization, and finite-depth divisor blindness compiled in Lean.

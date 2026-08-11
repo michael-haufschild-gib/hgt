@@ -183,6 +183,15 @@ theorem tendsto_adaptiveShear_coeff
     (nhds (((X * P) *
       (X * xiShiftedBoundaryShiftedEuler 1 P)).coeff k))
   rw [Polynomial.coeff_mul]
+  have hfun :
+      (fun x => ((X * F x) *
+        (X * xiShiftedBoundaryShiftedEuler 1 (F x))).coeff k) =
+      (fun x => ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal k,
+        (X * F x).coeff ij.1 *
+          (X * xiShiftedBoundaryShiftedEuler 1 (F x)).coeff ij.2) := by
+    funext x
+    rw [Polynomial.coeff_mul]
+  rw [hfun]
   apply tendsto_finsetSum
   intro ij _
   exact (hXA ij.1).mul (hXE ij.2)
