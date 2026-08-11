@@ -1,7 +1,7 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`
+- **Ledger:** `SR-65`, `SR-66`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no
@@ -34,13 +34,17 @@ z^2 xi(1/2-iz) / xi'(1/2-iz).
 
 More is forced by the matched first defect.  Schwarz--Pick converts the exact quadratic defect
 `1-kappa_Xi(c)=O(c^2)` into local boundedness of the deterministically blown-up finite source
-quotients on both open half-planes.  Thus cofinal normality away from the real axis is automatic
-for every exactly first-jet-matched family; the remaining compactness obstruction lives on the
-real Clark divisor.  Exact matching is only finite-source target reachability here, not yet source
-admission in the superselection sense.
+quotients on both open half-planes.  Section 14 computes their complete first boundary layer.  A
+nonadjacent ground-pole branch loses all finite spectral response and converges to the free kernel
+`i/z`, not the Xi reciprocal logarithmic derivative.  Only an adjacent ground pair or an interior
+resolvent tangent can retain a nontrivial meromorphic limit.
 
-Thus the corrected source frontier is an adjacent-moment resonance or cofinal meromorphic
-real-axis tightness and identification, not parity-floor locking alone.
+Real-axis Clark tightness is sufficient but not logically necessary.  Normality plus agreement
+with the theta/Xi target on any upper-half-plane uniqueness set already gives global half-plane
+identification by Vitali, and finite-source positivity then implies RH.  The corrected source
+frontier is therefore convergence, on one source-declared imaginary interval, of the explicit
+adjacent ground Fourier ratio or interior resolvent Fourier ratio in Section 14.  First-defect
+matching, Pick positivity, and nonadjacent scalar scheduling do not supply that convergence.
 
 ## 2. Locked ground bundle and first visible moments
 
@@ -1384,27 +1388,381 @@ Primary comparisons:
 
 ## 13. Exact remaining Route-G statement
 
-After this theorem, every nonadjacent locked ground bundle has a pre-divisor exact matching
-schedule.  Cofinal scalar scheduling can fail only through an adjacent joint wall
-`eta_a>=tau_src` and `D/C>=tau_src` (where the latter applies to `r>=2`), equality/higher-order
-resonance, and failure of every literal finite-shift excursion.  Route G still requires:
+Section 14 supersedes the earlier scalar interpretation of Theorem F.2.  Every nonadjacent locked
+ground bundle still has a pre-divisor exact **first-defect** schedule, but a nonadjacent
+ground-pole boundary schedule has the wrong complete limit: its entire blown quotient is `i/z`.
+It therefore contributes no full Xi-identifying branch.  The live branches are exactly:
 
-1. local real-axis normality of the deterministically blown-up antipodal source quotients, via one
-   of the literal source anti-fragmentation laws `(43)`, now concretely reduced to Clark-count
-   tightness or a sufficient nonfragmentation bound on the coherences `(59)`; on boundary-layer
-   branches Corollary G.1 reduces this further to a cofinal normalized-overlap sublevel estimate
-   for `(68)`, with the explicit sufficient angular budget `(73)` and exact two-port residual
-   formulation `(79)--(80)`; Corollary G.5 licenses the port-wedge law `(83)` on every nonzero
-   target window;
-2. no meromorphic cancellation of the labeled zero/pole divisors;
-3. cofinal control of the remaining adjacent/resonant shift schedules and source-derived
-   identification with `(21)`;
-4. the higher-jet/Hermite--Biehler passage forcing the Xi divisor real.
+1. adjacent ground-pole branches whose two first visible ground modes survive through the quotient
+   `H_a/G_a`;
+2. interior tangent branches whose full source coordinate is the resolvent Fourier ratio
+   `H_(a,lambda)/G_(a,lambda)`;
+3. equality/higher-order resonances not covered by either first-order chart.
 
-Item 1 is now proved on both open half-planes by Theorem C.  Its exact surviving part is local
-normality through the real axis, equivalently source control of Clark-divisor overcrowding.  That
-real-axis tightness, noncancellation, and source-derived Xi identification -- not parity-floor
-equality or the safe-shift target minor -- are the surviving scientific frontier.
-Corollary F.1 closes the local-in-anchor scheduling problem whenever a source tangent root is
-simple, and Theorem F.2 closes it for every nonadjacent locked-floor branch.  Cofinal control of the
-remaining adjacent/resonant cases remains open.
+For either of the first two branches, exact first-defect matching already supplies open-half-plane
+normality and forces the limiting ratio to be a strict Caratheodory function.  Consequently
+real-axis Clark tightness, explicit divisor noncancellation, and a separate higher-jet
+Hermite--Biehler passage are **bypassable**, not mandatory: it suffices to prove source-derived
+convergence to the theta/Xi reciprocal logarithmic derivative on one imaginary interval.  In Clark
+coordinates this is the bounded transform convergence `(107)` below.  On an interior branch it is
+equivalently the resolvent-position Ward equation `(112)`.
+
+Thus the exact open core is not generic compactness.  It is to construct cofinally, from Suzuki's
+literal restricted-Weil source and without divisor-fitted shifts, an adjacent or interior branch
+whose explicit finite-source transform satisfies `(107)` or `(112)` on a nonempty interval.
+Section 14.5
+proves sharply that first-defect matching plus Pick positivity leaves infinitely many possible
+carriers, so no finite-jet substitute closes this core.
+
+## 14. Full-carrier boundary-layer classification and half-plane closure criterion
+
+This section corrects the only remaining overstatement in Theorem F.2.  Its schedules match one
+scalar jet.  The following computation decides what the **whole** coalescing quotient does on those
+schedules.
+
+### 14.1 Exact full quotient on every first-order chart
+
+For a source-selected shift `lambda(c)<lambda_a`, set
+
+```text
+F_c(z)=int_(-a)^a [(A_a-lambda(c))^(-1)e^(cX)](x)e^(izx) dx,
+b_c(z)=(z-ic)/(z+ic),
+Theta_c(z)=b_c(z)F_c(z)/F_c(-z).                         (90)
+```
+
+The last identity is the movable-anchor version of Suzuki's characteristic quotient: reflection
+sends the `+ic` deficiency vector to the `-ic` vector.  Multiplication by a constant unimodular
+phase only relabels the extension circle.
+
+Consider first a ground-pole boundary branch in Theorem F.2.  Put `k=min(r,s)`,
+`epsilon=(-1)^k`, and
+
+```text
+u=P_0(X^k/k!),          v=P_0(X^(k+1)/(k+1)!),
+G(z)=int u(x)e^(izx) dx,       H(z)=int v(x)e^(izx) dx. (91)
+```
+
+Minimality of `r,s` gives
+
+```text
+P_0e^(cX)=c^k(u+c v+O(c^2)),
+G(-z)=epsilon G(z),             H(-z)=-epsilon H(z).    (92)
+```
+
+On the odd-leading scale `lambda_0-lambda(c)=rho(c^2)c^(2s+2)`, and on the even-leading
+scale `lambda_0-lambda(c)=rho(c^2)c^(2r)` with `r>=2`, the reduced-resolvent expansion `(54l)`
+implies, locally uniformly in `z`,
+
+```text
+F_c(z)=(c^k/(lambda_0-lambda(c)))
+          (G(z)+cH(z)+o(c)).                             (93)
+```
+
+Indeed the bounded reduced term, divided by the ground term, is `O(c^(s+2))` in the odd-leading
+case and `O(c^r)=o(c)` in the even-leading case.  Thus no reduced-resolvent contribution has been
+silently dropped at first order.
+
+Orient the characteristic by `widehat(Theta)_c=epsilon Theta_c`, so that it tends to `1`.  Away
+from the discrete zero set of `G`, equations `(90)--(93)` give
+
+```text
+F_c(z)/F_c(-z)
+ =epsilon(1+2c H(z)/G(z)+o(c)),
+
+R_c(z):=(1-widehat(Theta)_c(z))/(c(1+widehat(Theta)_c(z)))
+ -> i/z-H(z)/G(z).                                      (94)
+```
+
+For an interior tangent branch, suppose
+
+```text
+lambda(c)=lambda_*+O(c^2),       lambda_*<lambda_a,
+G_(a,lambda)(z)=int [(A_a-lambda)^(-1)1](x)e^(izx) dx,
+H_(a,lambda)(z)=int [(A_a-lambda)^(-1)X](x)e^(izx) dx.  (95)
+```
+
+Reflection makes `G_(a,lambda)` even and `H_(a,lambda)` odd.  Analytic resolvent expansion now
+gives directly
+
+```text
+R_c(z) -> P_(a,lambda_*)(z)
+ :=i/z-H_(a,lambda_*)(z)/G_(a,lambda_*)(z).              (96)
+```
+
+Near zero,
+
+```text
+H_(a,lambda)(z)/G_(a,lambda)(z)
+ =i q_a(lambda)z+O(z^3).                                (97)
+```
+
+Thus Theorem E's scalar `q_a(lambda)` is exactly the first regular Taylor coefficient of the full
+meromorphic source coordinate `(96)`, not a separate observable.
+
+### Theorem H — full-carrier branch trichotomy
+
+For every exactly first-defect-matched branch covered above:
+
+1. if the ground degrees are nonadjacent, then `v=0` and every ground-pole boundary branch has
+   the universal limit
+
+   ```text
+   R_c(z) -> i/z;                                        (98)
+   ```
+
+2. if the ground degrees are adjacent, the boundary branch has the nontrivial ground two-port
+   limit `i/z-H/G`;
+3. an interior branch has the nontrivial resolvent two-port limit `(96)`.
+
+In cases 2 and 3 the apparent poles at upper-half-plane zeros of `G` are removable.  More
+precisely, the right sides of `(94)` and `(96)` extend to holomorphic functions on the upper half
+plane and have strictly positive real part there.  Consequently every upper-half-plane zero of
+the denominator `G` is a numerator zero of at least the same order.
+
+#### Proof
+
+Only the removability and positivity remain after `(90)--(97)`.  Exact first-defect matching gives
+`1-kappa_c=O(c^2)`, so Theorem C makes `R_c` locally bounded on the upper half plane.  Formula
+`(94)` or `(96)` gives convergence off the discrete zero set of `G`.  Every normal subsequential
+limit agrees there; the identity theorem makes it unique, so the whole family converges locally
+uniformly and the displayed quotient extends across every zero of `G`.
+
+Each finite `R_c` has positive real part because it is a positive multiple of the inverse Cayley
+transform of a Schur function.  Its limit has nonnegative real part.  At `z=iy` for sufficiently
+small `y>0`, minimality in `(91)` or parity in `(95)` gives `H/G=O(z)`, hence
+`R(iy)=1/y+O(y)>0`.  The harmonic minimum principle makes the real part strictly positive
+throughout the upper half plane.  A pole of `H/G` there is impossible, proving the zero-sharing
+claim.
+
+This Pick/divisibility law is not an added assumption.  It is forced by Suzuki's all-angle reality
+together with the exact scalar schedule.
+
+### 14.2 Nonadjacent ground-pole schedules are a full-carrier dead end
+
+The Xi quotient in `(20)` has the blown limit
+
+```text
+T_Xi(z)=M_0(0)/mathcalL(-iz),
+mathcalL(w)=w M_0(w^2).                                  (99)
+```
+
+For `z=iy`, with `y>0` sufficiently small,
+
+```text
+T_Xi(iy)
+ =M_0(0)/(y M_0(y^2))
+ =(1/y)(1+tau_0 y^2+O(y^4)),       tau_0>0.             (100)
+```
+
+The free limit `(98)` equals `1/y` on this ray, so `(98)` and `(99)` disagree for every
+sufficiently small positive `y`.  Therefore:
+
+> **No nonadjacent ground-pole boundary branch can identify the Xi reciprocal logarithmic
+> derivative, even when it matches the Xi first defect exactly for every small anchor.**
+
+This is a no-go only for the boundary branch.  A nonadjacent aperture can still have an interior
+tangent branch, which is governed by `(96)`.
+
+The no-go has an exact positive spectral survivor.  Let `nu_c` be the oriented Clark probability
+in `(56)`.  Reflection gives `widehat(Theta)_c(-z)=1/widehat(Theta)_c(z)`, so its Donoghue
+function is odd and `nu_c` is even.  At `z=iy`, `(56)--(57)` give
+
+```text
+m_c(iy)
+ =i(y/c) int_R (t^2+c^2)/(t^2+y^2) dnu_c(t),
+
+R_c(iy)
+ =1 / [y int_R (t^2+c^2)/(t^2+y^2) dnu_c(t)].           (101)
+```
+
+If `R_c(iy)->1/y`, the integral in `(101)` tends to `1`, and
+
+```text
+1-int_R (t^2+c^2)/(t^2+y^2) dnu_c(t)
+ =(y^2-c^2)int_R 1/(t^2+y^2) dnu_c(t) ->0.              (102)
+```
+
+For every fixed `T>0`,
+
+```text
+nu_c([-T,T])
+ <=(T^2+y^2)int_R 1/(t^2+y^2)dnu_c(t) ->0.              (103)
+```
+
+Thus nonadjacent boundary matching forces **complete Clark probability escape to infinity**.  The
+free kernel is not a mysterious cancellation; it records loss of every finite spectral response.
+The Xi target instead requires
+
+```text
+int_R (t^2+c^2)/(t^2+y^2)dnu_c(t)
+ -> M_0(y^2)/M_0(0)<1                                   (104)
+```
+
+for all sufficiently small `y>0`.  Equations `(103)--(104)` are incompatible.
+
+### 14.3 Half-plane uniqueness bypasses the real Clark divisor
+
+The preceding Clark laws do not make real-axis tightness necessary.  They expose a smaller
+source-identification theorem.
+
+### Theorem I — one imaginary interval closes the analytic Route-G endpoint
+
+Let `a_n->infinity`, `c_n->0`, and let `lambda_n` be a source-predeclared sequence of exact
+first-defect matches.  Orient the corresponding quotients as above.  Suppose there is a set
+`Y subset (0,infinity)` with an accumulation point in `(0,infinity)`, contained in a sufficiently
+small interval on which `M_0(y^2)>0`, such that
+
+```text
+R_n(iy) -> M_0(0)/(y M_0(y^2))       for every y in Y.  (105)
+```
+
+Then `R_n` converges locally uniformly on the upper half plane to `T_Xi`, and the Riemann
+Hypothesis holds.
+
+#### Proof
+
+The matched jet and Theorem C make `{R_n}` locally bounded on the upper half plane, uniformly in
+the changing apertures.  Vitali's theorem upgrades pointwise convergence on the uniqueness set
+`iY` to locally uniform convergence to a holomorphic function `R`.  The identity theorem for
+meromorphic functions gives
+
+```text
+R(z)=M_0(0)/mathcalL(-iz)                              (106)
+```
+
+throughout the upper half plane; any apparent target pole is removable because `R` is holomorphic.
+Since every `R_n` has positive real part, `Re R>=0`.  Equation `(105)` makes `R` positive at an
+interior point, so `Re R>0` everywhere by the minimum principle.
+
+If `XiC(w)` had a zero with `Re w>0`, then `XiC(w)/XiC'(w)` would extend holomorphically with a
+zero there, irrespective of its multiplicity.  Under `w=-iz`, equation `(106)` would make `R`
+vanish in the upper half plane, contradicting `Re R>0`.  Hence `XiC` has no right-half-plane zero.
+The functional equation reflects every left-half-plane zero to the right, so every zero is on the
+critical line.
+
+No real-axis passage occurs in this proof.  Once `(105)` is source-proved, separate Clark-count
+tightness, explicit divisor noncancellation, and higher-jet Hermite--Biehler reality are redundant.
+They remain possible sufficient routes to `(105)`, not independent obligations.
+
+Combining `(101)` with `(105)` gives the exact source-side statement:
+
+```text
+int_R (t^2+c_n^2)/(t^2+y^2)dnu_n(t)
+ -> M_0(y^2)/M_0(0)                   for y in Y.        (107)
+```
+
+Thus Route G's analytic endpoint is a bounded Stieltjes-transform convergence problem on one
+interval, not a global real-divisor counting problem.
+
+### 14.4 Interior source Ward equation
+
+The interior ratio `(96)` admits a pre-divisor differential form.  For fixed `a,lambda`, abbreviate
+`R=(A_a-lambda)^(-1)` and define the bounded resolvent-position commutator transform
+
+```text
+C_(a,lambda)(z)
+ =int [(R X-X R)1](x)e^(izx) dx.                        (108)
+```
+
+Differentiating `G_(a,lambda)` under its compact Fourier integral gives the exact identity
+
+```text
+C_(a,lambda)(z)=H_(a,lambda)(z)+i G_(a,lambda)'(z),
+
+P_(a,lambda)(z)
+ =i d/dz log(z G_(a,lambda)(z))
+   -C_(a,lambda)(z)/G_(a,lambda)(z).                    (109)
+```
+
+The first line is simply `RX-XR=[R,X]`.  On the operator/form domain, the existing inverse
+commutator law identifies it further as the dressed literal source torque
+
+```text
+[R,X]=R[X,A_a]R.                                        (110)
+```
+
+No Xi quantity occurs in `(108)--(110)`.  Put
+
+```text
+g_(a,lambda)(y)=G_(a,lambda)(iy),
+c_(a,lambda)(y)=C_(a,lambda)(iy),
+T(y)=M_0(0)/(yM_0(y^2)).                                (111)
+```
+
+Then interior identification on an imaginary interval is exactly the first-order source Ward
+equation
+
+```text
+g_(a,lambda)'(y)+(1/y-T(y))g_(a,lambda)(y)
+ =c_(a,lambda)(y).                                      (112)
+```
+
+For a cofinal family, Route G needs convergence of the residual in `(112)` to zero locally on one
+interval, with the source-selected shifts and the nonvanishing forced by Theorem H.  This is
+strictly stronger than the scalar equation `q_a(lambda)=tau_src`: the latter is only the coefficient
+of `y` at the singular endpoint.
+
+### 14.5 Sharpness: first defect plus Pick positivity does not determine the carrier
+
+The new Pick/divisibility law must not be mistaken for Xi identification.  Let `nu` be any even
+probability measure with finite support away from zero and put
+
+```text
+J_nu(z)=int_R t^2/(t^2-z^2)dnu(t),
+P_nu(z)=i/(z J_nu(z)).                                  (113)
+```
+
+For `z` in the upper half plane,
+
+```text
+zJ_nu(z)=int_R tz/(t-z)dnu(t)
+```
+
+has strictly positive imaginary part.  Hence `P_nu` has strictly positive real part.  If
+`m_j=int t^(-2j)dnu(t)`, then
+
+```text
+P_nu(z)=i/z-i m_1 z+i(m_1^2-m_2)z^3+O(z^5).            (114)
+```
+
+Fix `tau>0`.  The symmetric two-atom probability at `+-tau^(-1/2)` has `m_1=tau` and
+`m_2=tau^2`.  The symmetric four-atom probability with half its total mass on
+`+-sqrt(2/tau)` and half on `+-sqrt(2/(3tau))` also has `m_1=tau`, but has
+`m_2=5tau^2/4`.  Their strict Caratheodory functions therefore have the same singular term and
+the same first regular coefficient, but different cubic coefficients.
+
+This is a sharp finite atomic counterfamily.  Exact first-defect matching and all open-half-plane
+Pick positivity still leave infinitely many complete carriers.  The interval transform law
+`(107)` or Ward law `(112)` is genuinely new source information; it cannot be replaced by any
+argument that merely rechecks the first jet.
+
+### 14.6 Conjecture loop and novelty correction
+
+18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
+    proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
+19. **Real-axis Clark tightness is logically necessary -- failed.**  Theorem I proves that one
+    upper-half-plane uniqueness set suffices.  Real-axis estimates are optional providers of that
+    identification, not separate endpoints.
+20. **Adjacent or interior limits may retain uncancelled upper-half-plane Fourier poles -- failed
+    under exact matching.**  Theorem H forces strict Caratheodory extension and numerator
+    divisibility at every such zero.
+21. **First-defect matching plus the forced Pick law should identify Xi -- failed sharply.**  The
+    two- and four-atom family `(113)--(114)` has identical first defect and strict positivity but
+    different full carriers.
+22. **The remaining source theorem is an unspecified meromorphic convergence problem -- failed.**
+    Equations `(107)` and `(112)` give two exact, bounded, interval-local forms: Clark Stieltjes
+    convergence and the resolvent-position Ward residual.
+
+Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
+Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
+The corpus theorem `SuzukiGroundEdgeCayleyUniversality` is the closest internal parent: at a
+**fixed** defect base it turns derivative saturation into the ordinary free Cayley map.  It does
+not compute the moving-base `c^(-1)` boundary layer, distinguish adjacent from nonadjacent ground
+degrees, or imply Clark escape `(103)`.
+Candidate-new Suzuki-specific content is their exact conjunction in `(93)--(112)`: the
+nonadjacent free-kernel collapse, Clark escape classification, adjacent/interior Pick divisibility,
+and reduction of full source identification to one imaginary-interval transform or Ward equation.
+Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
+specialization, or `(101)--(112)`.  Targeted primary-literature searches found Suzuki's fixed
+anchor `+-i` construction and general Livsic base-change theory, but no coalescing restricted-Weil
+full-quotient boundary layer.  Specialist priority review remains required.

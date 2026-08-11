@@ -791,6 +791,16 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
 - exact Xi first-defect cone forces nontrivial even/odd source shares;
 - generic positive resolvent geometry, pointwise exponential sourcing, torque sign, and fixed
   covariance do not orient required transfer.
+- movable-anchor scalar scheduling is now classified on every first-order chart, but the complete
+  quotient is stricter: every nonadjacent ground-pole boundary branch converges to the free kernel
+  `i/z` and its Clark probability escapes every bounded spectral interval;
+- only adjacent ground-pole and interior resolvent branches retain nontrivial full limits,
+  respectively `i/z-H_a/G_a` and `i/z-H_(a,lambda)/G_(a,lambda)`; exact matching forces these
+  limits to be strict Caratheodory functions and forces upper-half-plane numerator divisibility;
+- real-axis Clark tightness is no longer a logically separate endpoint. Matched-jet normality plus
+  source identification on one imaginary interval gives global half-plane identification by
+  Vitali and implies RH. A sharp finite atomic family proves first-jet matching plus Pick
+  positivity does not determine the full carrier.
 
 A committed but not yet umbrella-reachable movable-anchor theorem gives the positive survivor of
 the real-axis overcrowding obstruction. It derives the exact normalized Donoghue kernel,
@@ -801,11 +811,24 @@ positive coherence floor bounds `N`. Thus cofinal orthonormal mode proliferation
 fragments a fixed source anchor. Route G needs a source-derived moving-anchor/two-angle allocation
 law, not generic extension multiplicity.
 
-**Open core.** Construct on one cofinal aperture family a source-predeclared parity profile before
-scalar fusion; prove either literal bottom-reflection cone or exact measure-level credit/debt
-budget; produce pre-divisor tangent roots and two-angle analytic lifts; prove source admission and
-first/second-jet meromorphic convergence to Xi/de Branges target. Current sharp local gate is a
-source-specific reflection/skewness budget, not generic positivity.
+**Open core.** Construct on one cofinal aperture family, before scalar fusion and without
+divisor-fitted shifts, an adjacent ground-pole or interior tangent branch. On one nonempty
+imaginary interval prove either exact Clark-transform convergence
+
+~~~
+int_R (t^2+c_a^2)/(t^2+y^2) dnu_a(t) -> M_0(y^2)/M_0(0),
+~~~
+
+or, for the interior chart, vanishing of the equivalent resolvent-position Ward residual
+
+~~~
+g_a'(y)+(1/y-M_0(0)/(yM_0(y^2)))g_a(y)-c_a(y) -> 0.
+~~~
+
+Source admission still requires the label-sensitive or singular category left alive by the
+updated modular-superselection and source-horizon papers. Their regular label-blind no-gos do not
+kill Suzuki's scalar two-angle family. Nonadjacent boundary schedules, generic real-axis
+anti-fragmentation, and any finite-jet substitute are no longer live endpoints.
 
 ### Route G2 — relative-Volterra source-germ weld [RETIRED]
 

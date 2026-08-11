@@ -23,7 +23,7 @@ noncomputable section
 namespace RHTower
 
 /-- Functional-equation partner `rho^dagger = 1 - conj rho`. -/
-def burnolXiReflectionPartner (rho : ℂ) : ℂ := 1 - conj rho
+def burnolXiReflectionPartner (rho : ℂ) : ℂ := 1 - starRingEnd ℂ rho
 
 @[simp] theorem burnolXiReflectionPartner_re (rho : ℂ) :
     (burnolXiReflectionPartner rho).re = 1 - rho.re := by
@@ -88,7 +88,6 @@ theorem burnolCartierDividedShiftHeadFlux_sub_reflectionPartner_eq_horizontal
   rw [burnolCartierDividedShiftHeadFlux_sub_reflectionPartner, norm_inv, norm_inv]
   rw [← hhorizontal]
   field_simp [hnormRho, hnormOneSub]
-  ring
 
 /-- The bare reflection-pair sum is strictly positive away from the reciprocal poles. -/
 theorem burnolCartierDividedShiftHeadFlux_add_reflectionPartner_pos
@@ -100,9 +99,10 @@ theorem burnolCartierDividedShiftHeadFlux_add_reflectionPartner_pos
   have hlogLt : Real.log 2 < 1 := by linarith [Real.log_two_lt_d9]
   have hcoefficient : 0 < 1 - (Real.log 2) ^ 2 := by nlinarith
   have hleft : 0 < ‖((1 : ℂ) - rho)⁻¹‖ ^ 2 := by
-    positivity
+    exact sq_pos_of_ne_zero
+      (norm_ne_zero_iff.mpr (inv_ne_zero (sub_ne_zero.mpr hrhoOne.symm)))
   have hright : 0 < ‖rho⁻¹‖ ^ 2 := by
-    positivity
+    exact sq_pos_of_ne_zero (norm_ne_zero_iff.mpr (inv_ne_zero hrho))
   positivity
 
 /-- Equality with the functional-equation partner is exactly the critical line. -/
@@ -134,7 +134,7 @@ theorem burnolCartierDividedShiftHeadFlux_reflectionPartner_lt
       norm_pos_iff.mpr (sub_ne_zero.mpr hrhoOne.symm)
     positivity
   have hcoefficient : 0 < 1 + (Real.log 2) ^ 2 := by positivity
-  positivity
+  exact div_pos (mul_pos hcoefficient (by linarith)) hden
 
 /-- Completion contributes the same normal current to functional-equation partners, hence cancels
 from their odd difference. -/
@@ -156,17 +156,19 @@ theorem burnolXiCompletionDressedHeadCurrent_eq_reflectionPartner_iff
     sub_eq_zero]
   exact burnolCartierDividedShiftHeadFlux_eq_reflectionPartner_iff hrho hrhoOne
 
-private theorem xiDivisorSupport_ne_zero (rho : XiDivisorSupport) : (rho : ℂ) ≠ 0 := by
+private theorem routeRBurnolXiDivisorSupport_ne_zero
+    (rho : XiDivisorSupport) : (rho : ℂ) ≠ 0 := by
   intro hzero
   have him := xi_divisor_support_im_ne_zero rho
   apply him
-  simpa [hzero]
+  simp [hzero]
 
-private theorem xiDivisorSupport_ne_one (rho : XiDivisorSupport) : (rho : ℂ) ≠ 1 := by
+private theorem routeRBurnolXiDivisorSupport_ne_one
+    (rho : XiDivisorSupport) : (rho : ℂ) ≠ 1 := by
   intro hone
   have him := xi_divisor_support_im_ne_zero rho
   apply him
-  simpa [hone]
+  simp [hone]
 
 /-- Unconditional Xi-support specialization: bare partner equality is the critical-line condition. -/
 theorem xiDivisor_burnolCartierDividedShiftHeadFlux_eq_reflectionPartner_iff
@@ -175,7 +177,7 @@ theorem xiDivisor_burnolCartierDividedShiftHeadFlux_eq_reflectionPartner_iff
         burnolCartierDividedShiftHeadFlux (burnolXiReflectionPartner (rho : ℂ)) ↔
       (rho : ℂ).re = 1 / 2 :=
   burnolCartierDividedShiftHeadFlux_eq_reflectionPartner_iff
-    (xiDivisorSupport_ne_zero rho) (xiDivisorSupport_ne_one rho)
+    (routeRBurnolXiDivisorSupport_ne_zero rho) (routeRBurnolXiDivisorSupport_ne_one rho)
 
 /-- Unconditional Xi-support specialization for the completion-dressed current. -/
 theorem xiDivisor_burnolXiCompletionDressedHeadCurrent_eq_reflectionPartner_iff
@@ -184,7 +186,7 @@ theorem xiDivisor_burnolXiCompletionDressedHeadCurrent_eq_reflectionPartner_iff
         burnolXiCompletionDressedHeadCurrent (burnolXiReflectionPartner (rho : ℂ)) ↔
       (rho : ℂ).re = 1 / 2 :=
   burnolXiCompletionDressedHeadCurrent_eq_reflectionPartner_iff
-    (xiDivisorSupport_ne_zero rho) (xiDivisorSupport_ne_one rho)
+    (routeRBurnolXiDivisorSupport_ne_zero rho) (routeRBurnolXiDivisorSupport_ne_one rho)
 
 /-- **Bare-current RH classification.** Global equality with the functional-equation partner is
 not a free reflection law: it is exactly RH. -/

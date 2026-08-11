@@ -78,9 +78,12 @@ form, so the result covers a larger finite regular operator class than the origi
 - [x] unconditional Lean formalization; no RH or Xi premise
 - [x] wired into `RHTower.lean`
 - [x] direct `lake env lean` check
-- [ ] final targeted `lake build` and axiom audit (recorded at session close)
+- [x] targeted `lake build GaloisForLFunctions.RHTower.BurnolStableResidueRegularOperatorClassification`
+- [x] axiom audit: `[propext, Classical.choice, Quot.sound]`
+- [x] corpus formal lint
 
 ## Log
 
 - 2026-08-11 — paper proof extracted from Route-R heavy-loop conjecture C5.
 - 2026-08-11 — formalized and promoted to stage 3.
+- 2026-08-11 — targeted build, axiom audit, and lint passed.

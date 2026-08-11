@@ -62,9 +62,12 @@ every nonempty finite combination with positive weights.
 - [x] unconditional Lean sign theorem and finite-sum corollary
 - [x] wired into `RHTower.lean`
 - [x] direct `lake env lean` check
-- [ ] final targeted `lake build` and axiom audit (recorded at session close)
+- [x] targeted `lake build GaloisForLFunctions.RHTower.BurnolPrimeWindowDiagonalHeadFluxNoGo`
+- [x] axiom audit: `[propext, Classical.choice, Quot.sound]`
+- [x] corpus formal lint
 
 ## Log
 
 - 2026-08-11 — paper proof extracted from Route-R heavy-loop conjecture C3.
 - 2026-08-11 — formalized and promoted to stage 3.
+- 2026-08-11 — targeted build, axiom audit, and lint passed.

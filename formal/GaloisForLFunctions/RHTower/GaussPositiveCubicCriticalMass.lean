@@ -362,7 +362,8 @@ theorem tendsto_gaussCubeTwoSidedDiagonal_sum_atTop (k : Fin 3) (p : Nat.Primes)
     have hNj := hN (N + j) (Nat.le_add_right N j)
     have hden : 4 * ((N : ℝ) + (j : ℝ) + 1) ≤
         4 * ((N : ℝ) + 1) * ((j : ℝ) + 1) := by
-      nlinarith [mul_nonneg (Nat.cast_nonneg N) (Nat.cast_nonneg j)]
+      nlinarith [mul_nonneg (show (0 : ℝ) ≤ (N : ℝ) from Nat.cast_nonneg N)
+        (show (0 : ℝ) ≤ (j : ℝ) from Nat.cast_nonneg j)]
     have hsmall : 0 < 4 * ((N : ℝ) + (j : ℝ) + 1) := by positivity
     have hfrac : c / (4 * ((N : ℝ) + 1) * ((j : ℝ) + 1)) ≤
         c / (4 * ((N : ℝ) + (j : ℝ) + 1)) :=
@@ -372,7 +373,6 @@ theorem tendsto_gaussCubeTwoSidedDiagonal_sum_atTop (k : Fin 3) (p : Nat.Primes)
           c / (4 * ((N : ℝ) + 1) * ((j : ℝ) + 1)) := by
         dsimp [r]
         field_simp
-        <;> ring
       _ ≤ c / (4 * ((N : ℝ) + (j : ℝ) + 1)) := hfrac
       _ = c / (4 * (((N + j : ℕ) : ℝ) + 1)) := by push_cast; ring
       _ ≤ gaussCubeTwoSidedDiagonalReal k p (N + j) := hNj

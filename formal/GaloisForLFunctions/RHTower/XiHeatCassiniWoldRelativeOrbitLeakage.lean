@@ -266,6 +266,52 @@ theorem xiHeatCassiniReflectedWoldPhysicalPoleHead_coboundary_iff_re_eq_half
       hhalf]
     simp [finiteOrbitCoboundary, translateFiniteSupport]
 
+/-- Exact quotient-orbit charge that any shift-two completion of the reflected physical head must
+carry in its compensating principal parts. -/
+theorem xiHeatCassiniReflectedWoldPhysicalPoleHead_compensator_orbitLeakage
+    (rho : ℂ) (m : ℕ)
+    (R E : ℂ →₀ (ℕ →₀ ℂ))
+    (h : xiHeatCassiniReflectedWoldPhysicalPoleHead rho m + R =
+      finiteOrbitCoboundary (2 : ℂ) E) :
+    orbitResidueVector (2 : ℂ) R =
+      -(Finsupp.single
+          ((rho - 1 : ℂ) : ℂ ⧸ AddSubgroup.zmultiples (2 : ℂ))
+          (simplePoleDifferentialOperator 1 (-(m : ℂ))) -
+        Finsupp.single
+          ((-(starRingEnd ℂ rho) : ℂ) :
+            ℂ ⧸ AddSubgroup.zmultiples (2 : ℂ))
+          (simplePoleDifferentialOperator 1 (-(m : ℂ)))) := by
+  change
+    (Finsupp.single (rho - 1)
+        (simplePoleDifferentialOperator 1 (-(m : ℂ))) -
+      Finsupp.single (-(starRingEnd ℂ rho))
+        (simplePoleDifferentialOperator 1 (-(m : ℂ)))) + R =
+      finiteOrbitCoboundary (2 : ℂ) E at h
+  exact relativePolePair_completion_orbitLeakage
+    2 (rho - 1) (-(starRingEnd ℂ rho))
+      (simplePoleDifferentialOperator 1 (-(m : ℂ))) R E h
+
+/-- **No tail-free off-critical completion.**  Away from the critical line, every shift-two
+coboundary completion of the reflected physical Wold head has a nonzero compensator. -/
+theorem xiHeatCassiniReflectedWoldPhysicalPoleHead_compensator_ne_zero
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1)
+    (hoff : rho.re ≠ 1 / 2)
+    {m : ℕ} (hm : 1 ≤ m)
+    (R E : ℂ →₀ (ℕ →₀ ℂ))
+    (h : xiHeatCassiniReflectedWoldPhysicalPoleHead rho m + R =
+      finiteOrbitCoboundary (2 : ℂ) E) :
+    R ≠ 0 := by
+  intro hR
+  subst R
+  have hcob : xiHeatCassiniReflectedWoldPhysicalPoleHead rho m =
+      finiteOrbitCoboundary (2 : ℂ) E := by
+    rw [← h]
+    ext z k
+    simp
+  exact hoff
+    (xiHeatCassiniReflectedWoldPhysicalPoleHead_re_eq_half_of_coboundary
+      hstrip hm E hcob)
+
 /-- **Analytic/formal relative-leakage package.**  Every off-critical zeta zero supplies the
 already-proved analytic Wold residue `-m`.  Its complete four-shift formal divisor is globally
 exact, while deleting the physical head leaves precisely its negative orbit residue in the tail. -/

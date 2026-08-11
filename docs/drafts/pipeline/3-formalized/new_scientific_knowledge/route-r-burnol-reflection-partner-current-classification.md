@@ -85,9 +85,12 @@ landing.
   classifier
 - [x] wired into `RHTower.lean`
 - [x] direct `lake env lean` check
-- [ ] final targeted `lake build` and axiom audit (recorded at session close)
+- [x] targeted `lake build GaloisForLFunctions.RHTower.RouteRBurnolReflectionPartnerCurrent`
+- [x] axiom audit: `[propext, Classical.choice, Quot.sound]`
+- [x] corpus formal lint
 
 ## Log
 
 - 2026-08-11 — reflection-partner decomposition extracted after the heavy-loop failures.
 - 2026-08-11 — formalized and promoted to stage 3.
+- 2026-08-11 — targeted build, axiom audit, and lint passed.

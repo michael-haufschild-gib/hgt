@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionSourceRecession
+import GaloisForLFunctions.RHTower.XiShiftedAdaptiveOrthogonalSourceJacobiEnergy
 
 /-!
 # Relative coercivity of canonical shifted-Xi source admission
@@ -189,6 +190,93 @@ theorem relativeArithmeticSource_eq_normalizedAdmissionSource_div_norm
   rw [relativeArithmeticSource, normalizedAdmissionSource,
     sourceCoordinateAdmission,
     scaled_arithmeticSource_sourceCoordinateDilation hw n (dimensionlessAdmission w n)]
+
+/-- Inside one normalized positive Hankel chamber, inverse-Hankel admission is literally the
+monic orthogonal polynomial.  This is the admission-sensitive identification needed before
+forming the Jacobi source energy. -/
+theorem dimensionlessAdmission_eq_monicOrtho_of_hankelPosDef
+    {w : ℝ} {n : ℕ}
+    (hH : (HTGeometry.momentHankelMatrix
+      (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef) :
+    dimensionlessAdmission w n =
+      HTGeometry.monicOrtho (xiShiftedFarRightNormalizedMoment w) n := by
+  let s := xiShiftedFarRightNormalizedMoment w
+  let e : Fin n → Fin (n + 2) := fun i => ⟨i, by omega⟩
+  have he : Function.Injective e := by
+    intro i j hij
+    apply Fin.ext
+    simpa [e] using congrArg Fin.val hij
+  have hhead : (HTGeometry.momentHankelMatrix s n).PosDef := by
+    have hsub := hH.submatrix he
+    have heq :
+        (HTGeometry.momentHankelMatrix
+          (xiShiftedFarRightNormalizedMoment w) (n + 2)).submatrix e e =
+          HTGeometry.momentHankelMatrix s n := by
+      ext i j
+      rfl
+    rwa [heq] at hsub
+  symm
+  apply HTGeometry.eq_monicMomentAdmissionPolynomial_of_monic_of_orthogonal
+    (ne_of_gt hhead.det_pos)
+    (HTGeometry.monicOrtho_monic s n)
+    (HTGeometry.natDegree_monicOrtho_eq s n)
+  intro i
+  change HTGeometry.momentInner s (X ^ (i : ℕ))
+      (HTGeometry.monicOrtho s n) = 0
+  rw [HTGeometry.momentInner_comm]
+  exact HTGeometry.monicOrtho_inner_eq_zero_of_degree_lt_below
+    (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH) (by omega)
+      (by rw [Polynomial.degree_X_pow]; exact_mod_cast i.isLt)
+
+/-- **Exact Jacobi localization of the arithmetic source.**  Before any limit, the literal
+mass-scaled rational--Gamma minus von Mangoldt source quotient is the adaptive Jacobi energy of
+the currently admitted normalized flag. -/
+theorem relativeArithmeticSource_eq_adaptiveOrthoJacobiEnergy
+    {w : ℝ} (hw : 1 < w) {n : ℕ} (hn : 0 < n)
+    (hH : (HTGeometry.momentHankelMatrix
+      (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef) :
+    relativeArithmeticSource w n =
+      HTGeometry.adaptiveOrthoJacobiEnergy
+        (xiShiftedFarRightNormalizedMoment w) n := by
+  let s := xiShiftedFarRightNormalizedMoment w
+  let P := HTGeometry.monicOrtho s n
+  have hP : dimensionlessAdmission w n = P :=
+    dimensionlessAdmission_eq_monicOrtho_of_hankelPosDef hH
+  have hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
+  have hnorm : 0 < HTGeometry.monicOrthoNormSq s n :=
+    HTGeometry.monicOrthoNorm_pos_below hbelow (by omega)
+  have hshear : xiShiftedBoundaryAdaptiveShearPolynomial P =
+      HTGeometry.adaptiveOrthoSourcePolynomial s n := by
+    simp only [P, xiShiftedBoundaryAdaptiveShearPolynomial,
+      xiShiftedBoundaryShiftedEuler, HTGeometry.adaptiveOrthoSourcePolynomial,
+      C_1, one_mul]
+  rw [relativeArithmeticSource_eq_normalizedAdmissionSource_div_norm hw n,
+    normalizedAdmissionSource, normalizedAdmissionNorm, hP, hshear]
+  rw [show HTGeometry.momentFunctional
+      (xiShiftedFarRightNormalizedMoment w) (P ^ 2) =
+      HTGeometry.momentInner (xiShiftedFarRightNormalizedMoment w) P P by
+    rw [HTGeometry.momentInner_def, pow_two]]
+  change HTGeometry.momentFunctional s
+      (HTGeometry.adaptiveOrthoSourcePolynomial s n) /
+      HTGeometry.momentInner s P P = _
+  rw [HTGeometry.momentFunctional_adaptiveOrthoSourcePolynomial_eq_jacobiEnergy_below
+    hbelow hn le_rfl]
+  change (HTGeometry.monicOrthoNormSq s n *
+      HTGeometry.adaptiveOrthoJacobiEnergy s n) /
+      HTGeometry.monicOrthoNormSq s n = _
+  field_simp [ne_of_gt hnorm]
+  rfl
+
+/-- The degree-uniform relative-source target is exactly a Jacobi-energy target in every current
+positive admission chamber. -/
+theorem relativeArithmeticSource_gt_degree_iff_jacobiEnergy_gt_degree
+    {w : ℝ} (hw : 1 < w) {n : ℕ} (hn : 0 < n)
+    (hH : (HTGeometry.momentHankelMatrix
+      (xiShiftedFarRightNormalizedMoment w) (n + 2)).PosDef) :
+    (n : ℝ) < relativeArithmeticSource w n ↔
+      (n : ℝ) < HTGeometry.adaptiveOrthoJacobiEnergy
+        (xiShiftedFarRightNormalizedMoment w) n := by
+  rw [relativeArithmeticSource_eq_adaptiveOrthoJacobiEnergy hw hn hH]
 
 /-- **Relative canonical arithmetic-source recession.**  The literal completed source has a
 linearly growing, not exponentially collapsing, source-to-admitted-norm limit. -/
