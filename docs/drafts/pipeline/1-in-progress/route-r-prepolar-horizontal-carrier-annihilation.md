@@ -379,3 +379,68 @@ divisors is exactly RH, not an independent functional-equation law. This is `[LE
 survivors reusable. They do not supply the missing non-equivariant, singular pre-divisor
 rational-adelic/Cartier relation identifying the two fixed-carrier orientations. The parent card
 therefore remains stage 1.
+
+### C17. Complete coefficient-module singular annihilation
+
+**Conjecture.** A topology-changing or ideal-valued singular boundary may kill the cofinal
+prime-log essential cap while retaining a nontrivial complete prime output.
+
+**Verdict.** `[PAPER-PROVED NO-GO] [NOT RH PROOF]`.
+
+Let `P` be the ordinary primes, let `A = ell-infinity(P,C)`, and let `M` be an `A`-module with a
+distinguished complete-output vector `e`.  Identify a coefficient profile `g` with `g*e`.  For a
+fixed Xi-divisor fibre `rho`, write
+
+```text
+S_rho = 2 * a_rho * c_rho,
+a_rho = 2 Re(rho) - 1,
+c_rho = first nonzero Xi Cartier jet at rho,
+f_rho(p) = a_rho * (1-p^-1) * (2-p^-1) * c_rho.
+```
+
+The established essential-cap calculation gives `f_rho(p) -> S_rho`.  If `a_rho != 0`, then
+`S_rho != 0`, because `c_rho != 0`.  More strongly, `f_rho` is a unit of `A`: every local factor
+`(1-p^-1)(2-p^-1)` is positive, it converges to `2`, and its explicit inverse
+
+```text
+p |-> 1 / ((1-p^-1)(2-p^-1))
+```
+
+is bounded.  Multiplication by the nonzero scalar `(a_rho*c_rho)^-1` then gives the inverse of
+`f_rho`.
+
+Consequently, if `N` is any `A`-submodule of `M`, then
+
+```text
+f_rho*e in N  ==>  e in N  ==>  A*e subset N.
+```
+
+In particular, for `M=A`, every ideal containing `f_rho` is the unit ideal and the quotient is
+zero.  More generally, after quotienting `M` by an `A`-submodule, annihilation of `f_rho*e` is
+equivalent to annihilation of the distinguished cyclic vector `e`; in an algebra quotient the
+image of `f_rho` is either invertible or the quotient has already killed its unit.
+
+For a closed linear relation retaining all prime-coordinate idempotents, the same argument puts
+every finite-coordinate output in the vertical fibre.  In the ordinary countable product
+topology those outputs are dense; closedness therefore gives the full vertical fibre and
+
+```text
+R = dom(R) x C^N.
+```
+
+Thus an ideal, Calkin-style module quotient, or product-topology module boundary cannot both
+annihilate the off-center cap and retain any output constraint.  This strengthens the earlier
+`c0` hostile test: no choice of proper coefficient ideal works, because the actual cap profile is
+already an invertible multiplier before taking an essential quotient.
+
+**Exact survivor.** A still-viable producer must abandon at least one of:
+
+1. module compatibility with the complete bounded prime coefficient algebra;
+2. complete finite-coordinate retention;
+3. ordinary product-topology closedness.
+
+The first abandons coefficient-faithful rational-adelic transport, the second erases provenance,
+and the third requires a genuinely infinite-prime strict topology.  Hence the only unclassified
+Route-R producer is now a strict-topology, non-module constitutive selector constructed before
+Xi scalarization.  Merely quotienting by a larger ideal or declaring the essential tail a
+boundary is dependency-closed dead.

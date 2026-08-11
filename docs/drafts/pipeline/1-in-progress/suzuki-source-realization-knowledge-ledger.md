@@ -46,10 +46,16 @@
   global Xi modes and gives the sharp scale `sqrt(alpha_a/a^3)` below which their Clark weights
   vanish. `SR-69` bounds metric amplification by `1+lambda/(alpha_a-lambda)` and shows its only
   escape is a positive floor-hugging shift; proving such a shift admissible cofinally already
-  proves RH. Clean fast one-mode and regular metric convergence are therefore dead. Exact
-  nonterminal Route-G core is singular pointed convergence by local rank excess/crowding or
-  sub-resolution projection rotation, sufficient to prove the mixed-anchor residual on one
-  imaginary interval. No such literal source estimate is yet proved.
+  proves RH. Clean fast one-mode and regular metric convergence are therefore dead. `SR-70`
+  then proves that movable and fixed defect-base Clark measures are not independent: exact
+  gamma-field reweighting reduces the inverse-square movable target to Suzuki's original
+  fixed-anchor pointed probability plus one amplified zero-energy hard-edge condition. Xi-node
+  rotation/rank growth belongs only to the fixed-anchor law; every additional coalescing debt is
+  concentrated at spectral zero. `SR-71` then removes even that extra debt: a source-measurable
+  impedance selector chooses `c_a` from the finite fixed-anchor probability and the theta-declared
+  scalar `M_0(0)/M_0(1)`; fixed-anchor convergence forces `c_a->0` and automatically pays the hard
+  edge. Exact nonterminal Route-G core is now only the original fixed-anchor pointed limit for a
+  source-selected shifted family. No such literal source theorem is yet proved.
 - **Read first:** this file, `suzuki-terminal-frontier-ledger.md`, and every cited failed card.
 
 ## Admission rule
@@ -148,6 +154,8 @@ they are not novel scientific knowledge.
 | `SR-67` | `ADVANCE` / `POINTED-SPECTRAL CLASSIFICATION` / `FAILED-REGULAR-CLASS` / `FRONTIER-CORRECTION` | The imaginary-interval law is equivalent to RH plus weak convergence of the squared movable Clark probabilities to the complete multiplicity-weighted inverse-square Xi probability. It forces both endpoint tightness and every local source-coherence mass. Suzuki's unconditional prime--Gamma screw line source-declares this target: negative Cesaro averages converge under RH, at explicit `O(T^-1)` Hilbert rate, to the unique zero-energy coboundary origin with exactly those weights. In Suzuki's RH-conditional global Weil embedding, however, every normalized `lambda=0`, `c->0` finite deficiency anchor converges weakly to zero and its unnormalized energy norm diverges. The same weak escape holds for any `lambda_n->0` family bounded in global Weil norm; evasion forces unbounded shifted-metric amplification. Norm convergence of isolated local spectral projections then forces the Clark mass to zero, contradicting the target. | Kills target-fitting objections, strong anchor convergence, and clean strong-resolvent/one-stable-mode transport as Route-G closure mechanisms. Does not prove the interval law. Live source theorem is necessarily singular: adjacent/interior source selection plus projection rotation or local rank excess/crowding, or unbounded shifted-metric amplification, sufficient to make the exact mixed-anchor parity residual vanish on one imaginary interval. Lean corpus was audited read-only and no Lean files were changed. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Sections 14.6--14.10 |
 | `SR-68` | `ADVANCE` / `POINTED-RESOLUTION NO-GO` / `FRONTIER-CORRECTION` | Under RH in Suzuki's `lambda=0` nesting, the finite real defect vector at an exact Xi ordinate is exactly the Galerkin projection of the global Xi evaluation/eigenvector. If `alpha_a` is the finite Weil floor, its displacement obeys `||K_(a,x)-K_gamma||<=epsilon_a(gamma)+|x-gamma|sqrt(2a^3/(3alpha_a))`. Hence any finite extension eigenvalue approaching `gamma` faster than `sqrt(alpha_a/a^3)` has a normalized eigenvector converging strongly to the global Xi mode. The coalescing anchor converges weakly to zero, so that mode's Clark coherence tends to zero. Positive target mass therefore forces a sharp trilemma: unbounded local rank/crowding, slower ill-conditioned locking of a mass-carrying mode, or the shifted-metric blow-up from `SR-67`. | Kills the tempting claim that faster clean one-for-one eigenvalue convergence helps pointed Suzuki convergence. Does not force crowding: bounded but sub-resolution/rotating modes remain live, as does singular metric amplification. It does not prove the interval transform or RH. No Lean files were changed. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Section 14.10 |
 | `SR-69` | `ADVANCE` / `SHIFTED-METRIC CLASSIFICATION` / `TERMINAL-LOGIC` | For `0<lambda<alpha_a=inf spec(A_a)`, the global-to-shifted norm amplification of the normalized movable anchor is at most `1+lambda/(alpha_a-lambda)`. Hence any positive vanishing-shift family at bounded relative distance below the floor remains globally bounded and weakly escapes. Metric evasion requires `lambda>0` and `(alpha_a-lambda)/lambda->0`: positive relative floor hugging. But existence of any positive admissible shift on a cofinal aperture sequence already makes every compact Weil test positive and proves RH by Weil's criterion. | Kills ordinary interior positive shifts as a distinct regular pointed mechanism and shows positive metric blow-up is already terminal source admission, not downstream infrastructure. It does not kill varying-metric Clark convergence through sub-resolution mode rotation or local rank growth, especially for nonpositive source-selected shifts. No Lean files were changed. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Section 14.11 |
+| `SR-70` | `ADVANCE` / `DEFECT-BASE CLASSIFICATION` / `FRONTIER-CORRECTION` | For one selected parity extension, changing the defect base from `i` to `ic` reweights its squared Clark probability exactly by `(u+1)/(u+c^2)`. Therefore movable inverse-square Xi convergence is equivalent to convergence of Suzuki's original fixed-anchor probability to `M_0(1)^(-1) sum_q (omega_q+1)^(-1)delta_(omega_q)` plus the exact hard-edge law `lim_delta limsup_n int_[0,delta](u+1)/(u+c_n^2)dmu_(1,n)=0`. Suzuki's model-space basis identifies these two targets as the normalized kernels at `i` and `0`; the latter is the source-Cesaro origin from `SR-67`. A one-atom leakage family proves the hard-edge condition sharp. | Kills any interpretation of one-sided ports or independent Xi-node crowding as extra movable-anchor data. Fixed-anchor convergence alone is insufficient because vanishing mass near zero can be amplified to arbitrary residual `delta_0` mass; abstract hard-edge amplification is not fatal because the same family can satisfy the no-leakage law. Literal restricted-Weil fixed-anchor convergence and zero-energy leakage remain open. Generic gamma-field base change is classical; candidate novelty is the exact Suzuki target reduction. Lean corpus remained read only. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Section 14.12 |
+| `SR-71` | `ADVANCE` / `SOURCE SELECTOR` / `FRONTIER-CORRECTION` | Let `Z_a(c)=int (u+1)/(u+c^2)dmu_(1,a)` and `B_Xi=M_0(0)/M_0(1)`. If the finite inverse moment `D_a=Z_a(0)` exceeds `B_Xi`, choose the unique `c_a` with `Z_a(c_a)=B_Xi`; otherwise choose `c_a<=1/a_index` with `Z_a(c_a)` within that tolerance of `D_a`. This rule uses only finite fixed-anchor Clark data and the source-declared theta scalar. If the fixed-anchor pointed probabilities converge to the global kernel at `i`, Portmanteau and strict impedance monotonicity force `c_a->0`, `Z_a(c_a)->B_Xi`, the hard-edge law, and full movable inverse-square convergence. | Removes zero-energy leakage as an independent conjecture once fixed-anchor pointed convergence is known. It does not prove that fixed-anchor convergence or a source-selected shifted family exists. Strong-resolvent/eigenvalue-set convergence without cyclic-vector control remains insufficient. Generic monotone calibration is elementary; candidate novelty is this Suzuki source selector and its exact elimination of the coalescing layer. Lean corpus remained read only. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-coalescing-anchor-parity-locking-reduction.md`, Theorem P |
 
 ## Level lift forced by `SR-35`--`SR-49`: cyclic mechanism retired, `SR-41` terminalized
 
@@ -738,3 +746,25 @@ Before claiming progress, record all answers:
   is not missing post-limit infrastructure. Remaining nonterminal scalar mechanism is
   sub-resolution projection rotation or local rank growth in the varying shifted geometries.
   Paper proof closed; Lean corpus remained read only.
+- **2026-08-11 — defect-base/hard-edge reduction (`SR-70`).** A direct gamma-field computation
+  proves that, for one selected parity extension, movable squared Clark probability is exactly the
+  fixed-anchor probability reweighted by `(u+1)/(u+c^2)`. The inverse-square Xi target is attained
+  exactly when Suzuki's original `+-i` probability converges to the fixed-anchor global kernel and
+  its vanishing mass near spectral zero satisfies one weighted Lindeberg condition. Suzuki's
+  model-space basis further identifies the inverse-square screw-Cesaro origin with the global
+  zero-anchor reproducing kernel. A sharp one-atom family proves fixed-anchor convergence alone
+  insufficient and proves hard-edge amplification is not abstractly fatal. This retracts the claim
+  that independent singular behavior must be solved near every Xi node: such behavior belongs to
+  the fixed-anchor law, while the only additional coalescing debt is zero-energy leakage. Paper
+  proof closed; targeted corpus and primary-literature audit found generic base-change parents but
+  no Suzuki-specific hard-edge equivalence; Lean corpus remained read only.
+- **2026-08-11 — source-impedance anchor calibration (`SR-71`).** The hard edge exposed by
+  `SR-70` is not an independent source theorem. The finite fixed-anchor probability defines
+  `Z_a(c)=int(u+1)/(u+c^2)dmu_(1,a)`. Calibrating this monotone impedance to the theta-declared
+  constant `M_0(0)/M_0(1)`, with a canonical inverse-moment fallback, uses no zero location. If the
+  fixed-anchor pointed measures converge, lower semicontinuity forces the fallback values to the
+  same constant and strict monotonicity forces the calibrated anchors to zero. The exact hard-edge
+  law and inverse-square movable target then follow automatically. Coalescing layer is closed
+  conditionally and removed from open frontier. Remaining source theorem is only Suzuki's original
+  fixed-anchor pointed convergence for a source-selected shifted family. Paper proof closed; Lean
+  corpus remained read only.

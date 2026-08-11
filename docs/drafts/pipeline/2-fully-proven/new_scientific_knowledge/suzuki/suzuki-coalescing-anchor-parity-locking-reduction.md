@@ -1,11 +1,11 @@
 # Suzuki coalescing-anchor parity-locking reduction
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
-- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`
+- **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`
 - **Stage:** 2 — dependency-closed paper proof
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
-- **RH used:** no in Sections 2--14.7; yes as the hypothesis of the global-limit audit in
-  Sections 14.8--14.9
+- **RH used:** no in Sections 2--14.7; yes as the hypothesis of the global-limit and target audits
+  in Sections 14.8--14.12
 - **Computation used:** no
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
   `[LEAN READ-ONLY AUDITED]`
@@ -2312,7 +2312,268 @@ missing post-limit infrastructure: source admission into it is itself a terminal
 only nonterminal scalar survivor which does not first prove positivity is singular rotation or
 crowding of the Clark modes in the varying `T_a` geometries.
 
-### 14.12 Conjecture loop and novelty correction
+### 14.12 Defect-base transport reduces the movable target to one hard edge
+
+The preceding weak-escape theorem concerns the vectors after embedding into Suzuki's changing
+global Weil geometry.  It must not be read as saying that Clark probabilities at different defect
+bases are independent.  They are tied by an exact Radon--Nikodym law before any aperture limit.
+
+Let `S` be one closed simple symmetric operator with deficiency indices `(1,1)`, let `L` be one
+self-adjoint extension, and choose nonzero defect vectors
+
+```text
+h_z in ker(S^*-z),             z in C\R.
+```
+
+Write `E_L` for the spectral resolution of `L` and
+
+```text
+nu_z(B)=||E_L(B)h_z||^2/||h_z||^2.                     (163)
+```
+
+The choice of scalar normalization of `h_z` is immaterial.  For nonreal `z,w`, the standard
+gamma-field identity follows directly from the resolvent equation:
+
+```text
+h_z is proportional to
+ [I+(z-w)(L-z)^(-1)]h_w.                               (164)
+```
+
+Indeed the vector on the right belongs to `ker(S^*-z)`, and that space is one-dimensional.  In
+the spectral representation of `L`, the bracket in `(164)` is multiplication by
+
+```text
+1+(z-w)/(t-z)=(t-w)/(t-z).                             (165)
+```
+
+Consequently the normalized spectral probabilities satisfy the exact base-change law
+
+```text
+dnu_z(t)
+ = [ |t-w|^2/|t-z|^2 ] dnu_w(t)
+   / int_R [ |s-w|^2/|s-z|^2 ] dnu_w(s).               (166)
+```
+
+This is classical gamma-field algebra.  Its consequence for Suzuki's coalescing source limit is
+the new source-specific reduction.  Take `w=i`, `z=ic`, keep the same parity extension, and pass to
+the squared spectral coordinate `u=t^2`.  If `mu_1` and `mu_c` are the corresponding squared Clark
+probabilities, then
+
+```text
+r_c(u)=(u+1)/(u+c^2),
+s_c(u)=1/r_c(u)=(u+c^2)/(u+1),
+
+dmu_c=r_c dmu_1/Z_c,       Z_c=int r_c dmu_1,
+dmu_1=s_c dmu_c/Y_c,       Y_c=int s_c dmu_c=1/Z_c.    (167)
+```
+
+Both formulas extend to `[0,infinity]`, with `r_c(infinity)=s_c(infinity)=1`.  Although `r_c`
+becomes singular at zero, the reciprocal multiplier has the uniform limit
+
+```text
+sup_[0,infinity] |s_c(u)-u/(u+1)| <= c^2.              (168)
+```
+
+Under RH define, in addition to the movable target `(117)`, the fixed-anchor probability
+
+```text
+mu_Xi^(1)
+ =1/M_0(1) sum_q 1/(omega_q+1) delta_(omega_q).        (169)
+```
+
+Equation `(118)` at `s=1` gives
+
+```text
+A_Xi:=int u/(u+1) dmu_Xi(u)=M_0(1)/M_0(0)>0,
+B_Xi:=1/A_Xi=M_0(0)/M_0(1),
+
+mu_Xi^(1)=[u/(u+1)]mu_Xi/A_Xi,
+mu_Xi=[(u+1)/u]mu_Xi^(1)/B_Xi.                         (170)
+```
+
+The apparent target fitting in `(169)` is only proof notation.  Suzuki's global model-space
+basis has
+
+```text
+F_gamma(z)
+ =sqrt(m_gamma/pi) i(1+Theta(z))/(2(z-gamma)).          (171)
+```
+
+The factor independent of `gamma` cancels after normalization.  Thus the global reproducing
+kernel at `i` has squared spectral probability `(169)`, while its real boundary kernel at `0` has
+probability `(117)`.  The vector `Omega` in Theorem K is, up to the fixed model-space scalar, this
+zero-anchor kernel.  Hence the source-Cesaro origin and the defect-base limit are the same global
+object, not merely two vectors with coincident weights.
+
+#### Theorem O — fixed-anchor/hard-edge equivalence
+
+Let `c_n->0`, and for each finite Suzuki system compare the movable and fixed defect bases for the
+same selected self-adjoint parity extension.  Then
+
+```text
+mu_(c_n,n) -> mu_Xi                                     (172)
+```
+
+weakly on `[0,infinity]` if and only if both
+
+```text
+mu_(1,n) -> mu_Xi^(1),                                  (173)
+
+lim_(delta downarrow 0) limsup_(n->infinity)
+ int_[0,delta] (u+1)/(u+c_n^2) dmu_(1,n)(u)=0.          (174)
+```
+
+When these conditions hold,
+
+```text
+Z_(c_n,n)->B_Xi.                                        (175)
+```
+
+Condition `(174)` is the complete movable-anchor debt.  In source-operator form it is
+
+```text
+lim_(delta downarrow 0) limsup_n
+ <g_(1,n), 1_[0,delta](L_n^2)
+   (L_n^2+1)(L_n^2+c_n^2)^(-1) g_(1,n)> = 0            (176)
+```
+
+Here `g_(1,n)` is the
+normalized fixed-anchor defect vector.  Thus the remaining singularity is exactly amplified
+zero-energy spectral leakage.  It is not an unspecified exterior port, an independent movable
+Clark law, or generic crowding near every Xi ordinate.
+
+#### Proof
+
+Assume `(172)`.  By `(168)`, weak convergence and `(167)` give
+
+```text
+Y_(c_n,n)->A_Xi,
+mu_(1,n)->[u/(u+1)]mu_Xi/A_Xi=mu_Xi^(1),
+Z_(c_n,n)->B_Xi.                                       (177)
+```
+
+Moreover the left side of `(174)` equals
+`Z_(c_n,n) mu_(c_n,n)([0,delta])`.  Portmanteau, followed by `delta downarrow 0`, makes this vanish
+because `mu_Xi({0})=0`.
+
+Conversely assume `(173)--(174)`.  On every interval `[delta,infinity]`, `r_(c_n)` converges
+uniformly to `(u+1)/u`.  Weak convergence handles that truncated bounded multiplier, while `(174)`
+removes the discarded neighborhood of zero.  Letting `delta downarrow 0` gives both `(175)` and,
+for every continuous test `f`,
+
+```text
+int f dmu_(c_n,n)
+ -> B_Xi^(-1) int f(u)(u+1)/u dmu_Xi^(1)(u)
+ =int f dmu_Xi.
+```
+
+This is `(172)`.  Equation `(176)` is the spectral theorem applied to `(174)`.
+
+The hard edge is sharp.  Let `rho=mu_Xi^(1)`, choose `u_n->0`, `epsilon_n->0`, and put
+
+```text
+q_n=(1-epsilon_n)rho+epsilon_n delta_(u_n),
+ell_n=epsilon_n(u_n+1)/(u_n+c_n^2).                    (178)
+```
+
+Always `q_n->rho`.  If `ell_n->ell` in `[0,infinity]`, its movable reweighting converges to
+
+```text
+[B_Xi mu_Xi+ell delta_0]/(B_Xi+ell),                   (179)
+```
+
+with the evident value `delta_0` for `ell=infinity`.  Hence fixed-anchor convergence alone does
+not control the movable limit.  But choosing `ell_n->0` realizes the target, so abstract hard-edge
+amplification is not a no-go either.  Only the literal restricted-Weil source can decide `(174)`.
+
+This corrects the last sentence of Section 14.11.  Projection rotation and local rank growth may
+still be needed to prove the fixed-anchor law `(173)` in Suzuki's changing global embedding, but
+they are not separate movable-anchor mechanisms at each Xi node.  Once `(173)` holds, every extra
+coalescing obstruction is concentrated at the single real boundary point `u=0` and is measured
+exactly by `(174)`.
+
+The hard edge is not an independent source theorem if the defect base itself may be selected from
+the finite source, as it may in the movable-anchor construction.  Define the finite impedance
+
+```text
+Z_n(c)=int_[0,infinity] (u+1)/(u+c^2) dmu_(1,n)(u),
+D_n=Z_n(0).                                             (180)
+```
+
+For Suzuki's canonical even extension, zero is not an eigenvalue.  Its spectrum is discrete, so
+`D_n<infinity`.  The map `c |-> Z_n(c)` is continuous and strictly decreasing on `[0,1]`, with
+`Z_n(0)=D_n` and `Z_n(1)=1`.  The constant
+
+```text
+B_Xi=M_0(0)/M_0(1)>1                                   (181)
+```
+
+is prime--Gamma/theta declared; no zero location is needed to evaluate it.
+
+#### Theorem P — source-impedance defect-base calibration
+
+Choose `c_n` using only `mu_(1,n)` and `(181)` as follows.
+
+1. If `D_n>B_Xi`, take the unique `c_n in (0,1)` satisfying
+
+   ```text
+   Z_n(c_n)=B_Xi.                                       (182)
+   ```
+
+2. If `D_n<=B_Xi`, choose `0<c_n<=1/n` so that
+
+   ```text
+   D_n-1/n <= Z_n(c_n) <= D_n.                          (183)
+   ```
+
+If the fixed-anchor law `(173)` holds, then
+
+```text
+c_n->0,
+Z_n(c_n)->B_Xi,
+mu_(c_n,n)->mu_Xi.                                     (184)
+```
+
+Thus fixed-anchor pointed convergence admits a canonical source-measurable coalescing selector
+which automatically pays the entire hard-edge debt.  No extra real-axis eigenvalue labels,
+Xi-node neighborhoods, or divisor-fitted shifts enter this calibration.
+
+#### Proof
+
+Existence in the first case is the intermediate value theorem and strict monotonicity.  Existence
+in the second follows from `Z_n(c)->D_n` as `c downarrow 0`.
+
+Under `(173)`, lower semicontinuity of the extended function `(u+1)/u` and Portmanteau give
+
+```text
+liminf_n D_n>=int (u+1)/u dmu_Xi^(1)=B_Xi.             (185)
+```
+
+Therefore on the second branch `D_n->B_Xi`, and `(183)` gives `Z_n(c_n)->B_Xi`; on the first
+branch this equality is exact.
+
+It remains to prove coalescence.  The second branch already has `c_n<=1/n`.  If a subsequence of
+the first branch had `c_n>=epsilon>0`, extract a further subsequence with `c_n->c_*>=epsilon`.
+The multipliers `r_(c_n)` then converge uniformly to the bounded continuous `r_(c_*)`, so `(173)`
+and `(182)` would give
+
+```text
+B_Xi=int r_(c_*) dmu_Xi^(1)
+    <int r_0 dmu_Xi^(1)=B_Xi,
+```
+
+a contradiction.  Hence `c_n->0`.  Fixed-anchor convergence plus `Z_n(c_n)->B_Xi` is equivalent
+to the hard-edge uniform integrability in Theorem O: away from zero the weighted integrals already
+converge to `B_Xi`, so no positive mass can remain in the discarded edge.  Theorem O now proves
+the last statement of `(184)`.
+
+Theorem P removes coalescing and zero-energy leakage as independent Route-G conjectures.  The
+remaining nonterminal theorem is the original fixed-anchor pointed law `(173)` for a
+source-selected adjacent or interior shifted family.  Operator convergence without convergence of
+the normalized fixed defect vector still does not imply `(173)`; eigenvalue-set convergence is
+even weaker.  But once `(173)` is proved, no further movable-anchor spectral theorem is missing.
+
+### 14.13 Conjecture loop and novelty correction
 
 18. **A nonadjacent exact boundary schedule advances the full carrier -- failed.**  Theorem H
     proves universal collapse to `i/z`; `(102)--(103)` identify complete Clark escape.
@@ -2373,6 +2634,36 @@ crowding of the Clark modes in the varying `T_a` geometries.
 36. **This eliminates the whole scalar Route G -- failed.**  Clark probabilities live in the
     varying `T_a` metrics and can still converge through sub-resolution projection rotation or
     local rank growth without a nonzero vector limit in the global Weil metric.
+37. **The one-sided exterior ports provide an independent movable-anchor datum -- failed.**  The
+    two Carleman sheets and their triangle split are corpus-known.  For one fixed extension, the
+    entire movable Clark probability is already the base reweighting `(167)` of Suzuki's original
+    fixed-anchor probability.
+38. **Singular rotation or crowding must be solved independently near every Xi ordinate for the
+    movable family -- failed.**  Theorem O reduces the movable target to the fixed-anchor pointed
+    law `(173)` plus one zero-energy Lindeberg condition `(174)`.  Any Xi-node complexity belongs
+    to the fixed-anchor convergence problem, not a second movable layer.
+39. **Fixed-anchor pointed convergence alone closes Route G -- failed sharply.**  The family
+    `(178)--(179)` has the correct fixed-anchor limit while an asymptotically invisible mass at zero
+    produces any desired residual `delta_0` component after coalescing reweighting.
+40. **The hard edge is automatically fatal -- failed as a class-complete claim.**  The same family
+    with `ell_n->0` satisfies exact hard-edge tightness.  Whether Suzuki's literal source-selected
+    branch does so is the remaining source theorem.
+41. **The source-Cesaro origin only happens to share the target weights -- failed.**  Suzuki's
+    global basis formula `(171)` identifies it with the real zero-anchor reproducing kernel; the
+    fixed and zero-anchor target probabilities obey the same exact base-change law as the finite
+    systems.
+42. **The hard-edge law is an independent analytic estimate after fixed-anchor convergence --
+    failed.**  The impedance selector `(180)--(183)` uses only the finite fixed-anchor probability
+    and source constant `B_Xi`; Theorem P makes its hard-edge law automatic.
+43. **The calibrated bases might fail to coalesce -- failed.**  Any positive limiting base would
+    give `int r_c dmu_Xi^(1)<int r_0 dmu_Xi^(1)=B_Xi`, contradicting the calibrated impedance.
+44. **Finite systems with `D_n<=B_Xi` obstruct calibration -- failed.**  Portmanteau forces their
+    inverse moments to approach `B_Xi` from below, and the second branch of `(183)` recovers the
+    required diagonal limit.
+45. **This closes Route G -- failed.**  It closes the entire extra coalescing layer, not Suzuki's
+    original source-to-limit problem.  The one remaining nonterminal theorem is fixed-anchor
+    pointed convergence `(173)` for a source-selected shifted family; neither eigenvalue-set
+    convergence nor generic strong-resolvent language supplies its cyclic vector weights.
 
 Classical parent tools, not claimed new, are reduced-resolvent expansion, Fourier parity,
 Schwarz--Pick, Montel--Vitali, the Herglotz representation, and the inverse commutator identity.
@@ -2386,7 +2677,8 @@ reduction of full source identification to one imaginary-interval transform or W
 the Clark--screw weak-limit rigidity `(115)--(125)`, the finite mixed-anchor residual
 `(126)--(133)`, the source-Cesaro Green origin `(134)--(140)`, the global weak-escape/singular
 metric/projection wall `(141)--(150)`, and the critical-node Galerkin resolution trilemma
-`(151)--(158)`, and the relative-floor metric wall `(159)--(162)`.
+`(151)--(158)`, the relative-floor metric wall `(159)--(162)`, and the defect-base/hard-edge
+equivalence and source-impedance calibration `(163)--(185)`.
 Repository-wide searches found no prior occurrence of the limit `i/z-H/G`, its nonadjacent
 specialization, `(101)--(112)`, the canonical inverse-square Clark weak limit, the mixed-anchor
 formula `(128)`, or the global weak-escape/projection wall.  The internal corpus does contain the
@@ -2398,4 +2690,9 @@ comparison with coalescing finite anchors.  Targeted primary-literature searches
 fixed-anchor `+-i` construction, its conjecture of extension-operator/eigenvalue convergence,
 general Livsic base-change theory, and general Donoghue spectral encoding, but no coalescing
 restricted-Weil full-quotient boundary layer, inverse-square Clark-weight theorem, or anchor-escape
-projection trilemma.  Specialist priority review remains required.
+projection trilemma.  Gamma-field base change itself is classical and is not claimed new.  The
+targeted source and literature audit found no prior reduction of Suzuki's movable inverse-square
+limit to his fixed-anchor pointed measure plus the exact hard-edge condition `(174)`, nor the
+identification of his screw-Cesaro origin with the zero-anchor model-space kernel or the
+source-impedance selector `(180)--(184)` which removes that hard edge once fixed-anchor convergence
+is known.  Specialist priority review remains required.

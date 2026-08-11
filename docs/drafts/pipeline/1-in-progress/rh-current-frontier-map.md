@@ -309,6 +309,13 @@ conjugation-real entire comparison function with strip-placed off-line zeros car
 test of negative Weil diagonal, so any producer must consume the Euler product. The open core
 in final form: an arithmetic inequality dominating the deviation-weighted divided-difference
 moment by the even energy on entire tests.
+`GaussHodgeWeilArithmeticDeviationGap.lean` makes the Euler product act on the Weil form for
+the first time: PNTPlus's zero-free region (3-4-1 positivity) plus the functional equation bound
+every zero's squared deviation strictly below 1/4 — by a uniform arithmetic gap at height ≤ 3
+and by the de la Vallée-Poussin log⁹ margin above — improving the deviation-moment lower bound
+to Re W ≥ Σ‖even‖² − (1/4 − δ)Σ‖ΔF‖² on low-supported tests. Calibration: known arithmetic
+positivity repels zeros from the strip walls (weight < 1/4); the socket needs the weight at 0.
+That remaining distance is the lane's exact open problem.
 `GaussReciprocalCharacterAdmission.lean` supplies a second exact normalization: the Hodge mass is
 the virial derivative of one reciprocal-character split energy, has a quadratic centered-rate
 lower bound, and its all-prime family is summable exactly at centered rate zero. Universal
@@ -899,21 +906,33 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
 - shifted-metric blow-up has no broad interior regime. For `0<lambda<alpha_a`, its amplification
   is at most `1+lambda/(alpha_a-lambda)`, so evasion requires positive relative floor hugging.
   Proving any positive admissible shift on a cofinal aperture sequence already proves RH directly
-  by positivity of every compact Weil test.
+  by positivity of every compact Weil test;
+- movable and fixed defect bases carry no independent Clark data. For the same selected parity
+  extension their squared probabilities obey
+  `dmu_c=((u+1)/(u+c^2))dmu_1/Z_c`. The movable inverse-square Xi law is therefore equivalent to
+  the original fixed-anchor pointed limit
+  `mu_1->M_0(1)^(-1)sum_q(omega_q+1)^(-1)delta_(omega_q)` plus the single hard-edge condition
+  `lim_delta limsup_a int_[0,delta](u+1)/(u+c_a^2)dmu_(1,a)=0`. Suzuki's global basis identifies
+  those target measures as the normalized model-space kernels at `i` and `0`; the zero-anchor
+  kernel is the source-Cesaro screw origin;
+- the hard edge need not be proved separately. The source-impedance selector sets
+  `Z_a(c)=int (u+1)/(u+c^2)dmu_(1,a)` equal, when possible, to the theta-declared constant
+  `M_0(0)/M_0(1)`, with a canonical near-zero fallback. Fixed-anchor pointed convergence forces
+  the selected `c_a->0` and automatically gives the hard-edge law and movable target.
 
-The positive survivor of real-axis overcrowding remains the exact Clark coherence law, but its
-interpretation has reversed. Generic mode-count bounds do not close Route G, and a regular
-one-mode-per-zero operator approximation cannot carry the required weights. Unless source work
-first proves a positive admissible shift and thereby proves RH, a successful scalar limit must be
-singular at the pointed level: local projection rotation or rank excess/crowding, with rotation
-slower than the exact Galerkin resolution scale when rank stays bounded, while the bounded
-imaginary-axis transform converges.
+The positive survivor is now one theorem, not two. Xi-node rotation or local rank growth can occur
+only inside the fixed-anchor pointed limit. Coalescing adds no second Xi-node problem, and the
+source-impedance selector removes its zero-energy edge debt once that fixed-anchor law holds.
+Generic mode-count bounds still do not prove the fixed-anchor weights.
 
 **Open core.** Construct on one cofinal aperture family, before scalar fusion and without
-divisor-fitted shifts, an adjacent ground-pole or interior tangent branch exhibiting local rank
-growth or sub-resolution projection rotation. Alternatively, prove a positive admissible shift
-cofinally, which terminates the route immediately by Weil positivity. On one nonempty imaginary
-interval prove either exact Clark-transform convergence
+divisor-fitted shifts, an adjacent ground-pole or interior tangent branch and prove its original
+fixed-anchor pointed probability converges to the global model-space kernel at `i`. This may require
+local rank growth or sub-resolution projection rotation. The source-impedance rule then selects the
+coalescing base and completes the movable target automatically. Alternatively, prove a positive
+admissible shift cofinally, which terminates the route immediately by Weil positivity.
+Equivalently, after impedance calibration, on one nonempty imaginary interval prove exact
+Clark-transform convergence
 
 ~~~
 int_R (t^2+c_a^2)/(t^2+y^2) dnu_a(t) -> M_0(y^2)/M_0(0),
@@ -3463,6 +3482,7 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilEntireDetection.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilDeviationMoment.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilSymmetryInsufficiency.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeWeilArithmeticDeviationGap.lean
 - formal/GaloisForLFunctions/RHTower/GaussReciprocalCharacterAdmission.lean
 - formal/GaloisForLFunctions/HTGeometry/HyperbolicBounds.lean
 

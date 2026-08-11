@@ -379,3 +379,22 @@ compressed-trace identity consumes adelic Poisson, which Beurling systems lack.
   `Σ m(ρ)(β−1/2)²·|ΔF(ρ)|²` by the even energy for entire tests — with the formal proof that
   nothing weaker than arithmetic can do it.  All 7 key theorems
   `[propext, Classical.choice, Quot.sound]`; both modules wired; umbrella green (18904 jobs).
+- 2026-08-11 — attempt 14 (arithmetic enters the deviation moment):
+  `RHTower/GaussHodgeWeilArithmeticDeviationGap.lean`.  The insufficiency theorem said the
+  producer must consume the Euler product; this attempt connects the first formalized
+  Euler-product positivity in the tree — PNTPlus's classical zero-free region (`ZetaZeroFree`,
+  log⁹ de la Vallée-Poussin margin, proved from the 3-4-1 inequality, plus the low-height box
+  `ZetaNoZerosInBox`) — to the Weil lane for the first time.  New bridge
+  `zeta_zero_of_xi_zero` (via corpus `xi_eq_zero_iff` + strip).  **Deviation gaps** (both
+  sides of the line via the functional equation): `exists_xi_deviation_gap_high` —
+  (β−1/2)² ≤ 1/4 − A/(2·log⁹|γ|) for |γ| > 3; `exists_xi_deviation_gap_low` — a single
+  uniform δ > 0 with (β−1/2)² ≤ 1/4 − δ for |γ| ≤ 3; divisor-coordinate versions
+  (`exists_xiSpectralPoint_deviation_gap_low/high`, with new `xiSpectralPoint_re` = ordinate).
+  **Producer fragment** `exists_arithmetic_gap_lowSupported`: for tests with divided
+  differences supported at height ≤ 3, `Re W(F,F) ≥ Σ‖even‖² − (1/4 − δ)·Σ‖ΔF‖²` — the
+  strip constant 1/4 strictly improved by arithmetic for the first time.  Honest calibration
+  on the card: the zero-free region pushes zeros away from the strip WALLS, so it shrinks the
+  deviation weight below 1/4; positivity needs the weight pushed to 0 (zeros ON the line).
+  The distance from 1/4 − δ to 0 is the exact analytic distance between 3-4-1 positivity and
+  the socket's demand.  All 6 theorems `[propext, Classical.choice, Quot.sound]`; wired;
+  umbrella green (18908 jobs).
