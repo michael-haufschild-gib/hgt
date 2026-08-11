@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 11 August 2026, committed snapshot
-**7276393bae74ed4ba2bc094e9d26c73998079376**.
+**df1e57da20b061f2d137a5c3695444f22e484243**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -285,6 +285,15 @@ the square realization, Hodge-mass vanishing, and RH are equivalent. Thus indefi
 realization is unconditional but not a producer: the direct pair-sum GNS subroute leaves precisely
 the RH-bearing negative sector. A Gate-II theorem must annihilate that sector through an
 independent arithmetic class-space law, not repackage it.
+`GaussHodgeWeilFundamentalSymmetry.lean` names that sector's geometry: the parity flip
+`J F = F ∘ conj` is an unconditional fundamental symmetry of the Weil form — J-self-adjoint,
+involutive, with J-twisted form equal to the divisor ℓ² inner product — so the GNS Hilbert space
+a realization would build already exists as the J-metric ℓ². Divisor parity is W-orthogonal;
+the even sector carries an unconditional square realization, the odd sector is exactly minus ℓ²;
+the diagonal Weil form is real. RH is the degeneracy law: RH ⟺ every divisor-odd test vanishes
+on the divisor ⟺ W equals its own J-twist. The producer target is thereby minimal: any exogenous
+positivity that forces J-twist invariance of W closes RH; nothing weaker than killing the odd
+ℓ² sector suffices.
 `GaussReciprocalCharacterAdmission.lean` supplies a second exact normalization: the Hodge mass is
 the virial derivative of one reciprocal-character split energy, has a quadratic centered-rate
 lower bound, and its all-prime family is summable exactly at centered rate zero. Universal
@@ -592,6 +601,9 @@ critical Mertens cancellation and RH.
    log-product shell at slightly supercritical moving Euler edge.
 5. Entropy-complement breadth mixture recovers full factorial mass across coupled reservoir/token
    branches and keeps every terminal at opposite Möbius parity.
+6. Moving Euler-tilt chi-square contiguity identifies the forced source-faithful saddle tilt as
+   asymptotically equivalent to the critical Bernoulli source for every bounded-second-moment
+   finite observable.
 
 Lean formally closes critical terminal variance minimax, physical-saddle antiscale barrier,
 shell-conditioned parity--energy regression, product-truncated reservoir mass, source-faithful
@@ -606,6 +618,23 @@ breadth directions, and a Hellinger/chi-square endpoint with unmatched mass. It 
 short-interval rough-token lower bound, column-balance source, or recurrence seam estimate. The
 physical frontier is therefore not further mixture algebra: prove the actual source
 token density `delta >= gL/log X` columnwise and the normalized co-moving seam recurrence.
+
+The source-parameter mismatch is now also closed in umbrella-reachable Lean. For the Euler
+Bernoulli product laws below aperture `N`, the exact finite likelihood product and local defect
+comparison give
+
+~~~
+chiSq(nu_(1+delta,N) || nu_(1,N))
+  <= exp(primeClockCutoffEnergy N (delta/2)) - 1.
+~~~
+
+Therefore every eventually nonnegative `delta_N` with `delta_N log N -> 0` has chi-square distance
+to the critical source tending to zero, and exact Cauchy--Schwarz transfers every finite observable
+with its critical second moment. The forced source-faithful tilt
+`delta_N ~ 2 log log N/(log N)^2` lies in this regime. Hence the missing rough-token/column theorem
+may be proved at critical Euler parameter and transported to the forced moving saddle; it must
+still supply the relevant critical second-moment control. This bridge supplies no incidence,
+incoming-capacity, seam, or recurrence estimate by itself.
 
 The independent analytic support layer is now closed to two exact interfaces. The complete
 Granville--Harper--Soundararajan partition, height choice, explicit error table, and eventual
@@ -723,7 +752,9 @@ stated hypotheses.
 ~~~
 ENTROPY-COMPLEMENT-UNIT-SHELL-ROUGH-CONVOLUTION:
 for one fixed source-predeclared weighted relation, prove
-(i) joint short-interval lower mass for coupled breadth branches outside square-root Gibbs mass;
+(i) joint short-interval lower mass for coupled breadth branches outside square-root Gibbs mass,
+    at the critical Bernoulli source with the second-moment control needed for the now-closed
+    moving-tilt chi-square transfer;
 (ii) unit incoming load, or unmatched mass <= X^(1/2+o(1)) together with global column
      chi-square <= X^(o(1));
 (iii) normalized zero/one-large-prime seam charge;
@@ -2188,13 +2219,12 @@ continuation/noncancellation of the complete prime-zeta-minus-mesh-minus-holonom
 `Re s=-1/2`, or the equivalent finite-stage source/divisor cancellation through the cofinal
 limit. The reflected two-line scalar quadrature is closed and should not be pursued.
 
-A committed but not yet umbrella-reachable Abel-threshold module closes the local bridge from
+An umbrella-reachable Abel-threshold module closes the local bridge from
 prime-gap moments to this mesh. If the prefix gap-square moment grows like `p_M^theta` for any
 `theta<3/2`, the critical energy is summable; the concrete `theta=11/8` specialization closes the
 whole complex half-strip mesh. Thus the only literature-to-Lean debt in this component is the
-published unconditional consecutive-prime-gap moment itself in the required prefix form, plus
-umbrella certification of the already-proved Abel bridge. Neither supplies the remaining
-Hardy/Wold noncancellation theorem.
+published unconditional consecutive-prime-gap moment itself in the required prefix form. Neither
+supplies the remaining Hardy/Wold noncancellation theorem.
 
 ### Tight-source coalitional / collective-repair architecture
 
@@ -2628,9 +2658,9 @@ open. Numerical evidence is not accepted as proof or disproof.
    formal. The comparison must select the existing physical coefficient before quotient; arbitrary
    prelift or normalized Stokes covector construction is no longer work.
 3. **T:** prove uniform signed mass-light-cone centered von Mangoldt pairing in fixed/sublinear
-    aperture, before positive completion or termwise norms. First formalize the unconditional
-    mean-square prime-gap theorem and its dyadic consequence for the now-exact mesh-defect
-    equivalence. Scientific work then proves source-side continuation/noncancellation of
+    aperture, before positive completion or termwise norms. Formalize the unconditional
+    mean-square prime-gap theorem in the prefix form consumed by the formal `theta<3/2`
+    Abel-threshold module. Scientific work then proves source-side continuation/noncancellation of
     `Hardy = Wold - mesh - holonomy` toward `Re s=-1/2`. Safe symbol, higher-valuation holomorphy,
     Wold meromorphic continuation, and the nonzero pole attached to every off-critical zero are
     already formal; reflected exterior packets add no equation.
@@ -2639,8 +2669,10 @@ open. Numerical evidence is not accepted as proof or disproof.
    one-block capacity at every later positive even contact is also formal. Needed source theorem
    bounds moving contact order/degree or forces an earlier odd/lower-minor failure; fixed-degree or
    post-contact cumulant restatements remain dead.
-5. **E:** prove entropy-complement unit-shell capacity, normalized seam flux, and recurrence
-   accumulation for fixed relation. Separately formalize the published averaged-Chowla theorem
+5. **E:** prove the source rough-token density `delta >= gL/log X` columnwise, then normalized seam
+   flux and recurrence accumulation for the fixed entropy-complement relation. Finite mixture,
+   corrected load threshold, parity, and endpoint consumer are formal. Separately formalize the
+   published averaged-Chowla theorem
    with the exact Möbius specialization, or prove the direct Gallagher lane's now-isolated
    `OffDiagonalSmall mu hh` premise. Its fixed/cofinally low-height and rough parts are closed; the analytic
    target is the prime-supported Ramaré off-diagonal/Halász deficit in the moving range
@@ -2652,12 +2684,16 @@ open. Numerical evidence is not accepted as proof or disproof.
    for every `m >= 2`) to `m >= 3` via the k-fold defect chains, then prove the global trace identity
    that forces the already-positive Gauss--Hodge mass to vanish and identify it with the actual
    Weil/intersection object. The pointwise mass gap inside `xiWeilPolarization`, virial
-   normalization, all-prime summability classification, and generic inverse-response Ward law are
-   formal; missing producer is the arithmetic compressed-trace/anomalous-Ward identity. Perform
+   normalization, all-prime summability classification, GNS socket, Krein signature decomposition,
+   and generic inverse-response Ward law are formal. Direct reflection-pair square completion is
+   terminal because its negative sector is exactly the Hodge mass; missing producer is the
+   arithmetic compressed-trace/anomalous-Ward identity. Perform
    widening-limit assembly only for parallel connector branches.
 7. **O:** prove low-energy profile exhaustion and bulk coercivity for whole restricted-Weil ground
    space.
-8. **G:** construct source-selected two-angle carrier and transfer it to Xi target.
+8. **G:** construct source-selected moving-anchor/two-angle carrier and transfer it to Xi target;
+   fixed-anchor orthonormal mode families have a committed coherence-fragmentation no-go pending
+   umbrella certification.
 9. **D2:** obtain a literal high-frequency ceiling for the continued prime--Gamma source. Route N
    is a terminalized receiver, not a parallel live task.
 10. **P/Q:** construct P's compact positive carrier or prove Q's all-degree closure for its
@@ -2743,6 +2779,7 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 - formal/GaloisForLFunctions/RHTower/RouteEProductTruncatedReservoirMass.lean
 - formal/GaloisForLFunctions/RHTower/RouteESourceFaithfulEulerTiltUnitShell.lean
 - formal/GaloisForLFunctions/RHTower/RouteEEntropyComplementBreadthMixture.lean
+- formal/GaloisForLFunctions/RHTower/RouteEMovingEulerTiltChiSquareContiguity.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/HarmonicReservoirCapacity.lean
 - formal/GaloisForLFunctions/RHTower/RouteEForbiddenSupportStability.lean
 - formal/GaloisForLFunctions/RHTower/RouteECofactorParityBalance.lean
@@ -2970,6 +3007,7 @@ umbrella-reachable; their listed declarations receive formal credit.
 - formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldPrimeZetaLaplaceSymbol.lean
 - formal/GaloisForLFunctions/RHTower/XiHeatCassiniLogMeshLaplaceResolventDefect.lean
 - formal/GaloisForLFunctions/RHTower/XiHeatCassiniLogMeshDefectPrimeGapEquivalence.lean
+- formal/GaloisForLFunctions/RHTower/XiHeatCassiniPrimeGapMomentThreshold.lean
 - formal/GaloisForLFunctions/RHTower/XiPrimeLogHigherValuationHalfPlane.lean
 - formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldZetaPoleCarrier.lean
 
@@ -3262,6 +3300,7 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilPolarizationFusion.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilGNSSocket.lean
 - formal/GaloisForLFunctions/RHTower/GaussHodgeWeilKreinDecomposition.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeWeilFundamentalSymmetry.lean
 - formal/GaloisForLFunctions/RHTower/GaussReciprocalCharacterAdmission.lean
 - formal/GaloisForLFunctions/HTGeometry/HyperbolicBounds.lean
 
@@ -3276,9 +3315,7 @@ credit until wired:
 - `formal/GaloisForLFunctions/RHTower/DeningerMeyerAdiabatic.lean` — strong adiabatic gauge
   convergence in the projective Meyer topology;
 - `formal/GaloisForLFunctions/RHTower/DeningerAdiabaticMobiusPreimage.lean` — literal all-integer
-  adiabatic Möbius inverse, critical specialization, and all polynomial moments;
-- `formal/GaloisForLFunctions/RHTower/XiHeatCassiniPrimeGapMomentThreshold.lean` — exact
-  `theta<3/2` Abel threshold and concrete `11/8` prefix-moment bridge to the full Route-T mesh.
+  adiabatic Möbius inverse, critical specialization, and all polynomial moments.
 
 ## Final frontier statement
 
@@ -3325,7 +3362,11 @@ multi-place assembly is also umbrella-reachable, with per-label residue laws for
 assembled operator at `m <= 2`, exact codiagonal collapse onto the paired scalar, an injective
 cofinal canonical aperture, and a carrier-compatible positive residue current. Its Hodge mass
 pairing is now nonnegative, reflection-even, and has exact critical radical; vanishing is RH.
-Local sign is therefore closed. The missing theorem is an independent global trace identity
+The GNS socket and Krein decomposition now show exactly why local sign is insufficient: the Weil
+form is unconditionally pair-sum energy minus reflection-difference energy, and eliminating the
+negative sector is itself equivalent to RH and Hodge-mass vanishing. Local sign and indefinite
+realization are therefore closed; direct reflection-pair square completion is terminal. The
+missing theorem is an independent arithmetic global trace/intersection identity
 forcing that positive mass to vanish, not another pairing construction. Deeper
 propagated-iterate control (`m >= 3`),
 identification with the actual Weil/intersection object, and that global annihilating trace remain.

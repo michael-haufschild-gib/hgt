@@ -302,3 +302,29 @@ compressed-trace identity consumes adelic Poisson, which Beurling systems lack.
   completed without RH — as the socket iff demands — but it now terminates in the exact
   Pontryagin structure that a definitizable-intertwiner or compressed-trace argument must
   rigidify.  The Krein survivor of attempt 2 is closed into theorems.
+- 2026-08-11 — attempt 11 (the fundamental symmetry): `RHTower/GaussHodgeWeilFundamentalSymmetry.lean`.
+  The Pontryagin structure of attempt 10 is now a *geometry*, unconditionally.  The parity flip
+  `J F = F ∘ conj` is a fundamental symmetry of the Weil form in the exact Krein-space sense:
+  J is an involution, J-self-adjoint for the form (`xiWeilPolarization_parityFlip_symm`, by
+  divisor reindexing), and the J-twisted form IS the divisor-coordinate ℓ² inner product
+  (`xiWeilPolarization_parityFlip_right`, term-by-term).  Consequences, all unconditional:
+  the GNS Hilbert space a square realization would generate ALREADY EXISTS — it is ℓ² of
+  divisor coordinates carried by the J-metric (`xiWeilParityFlip_hasSum_sq`); divisor-even and
+  divisor-odd tests are W-orthogonal for the full sesquilinear form (cross tsums vanish by the
+  reindexing involution, no summability needed); W on the even sector is the positive ℓ²
+  diagonal — the **unconditional even-sector square realization**
+  (`xiWeilEvenSector_hasSum_sq`), and on the odd sector it is minus the ℓ² diagonal; every
+  square-summable diagonal splits W-orthogonally into even + odd parts
+  (`xiWeilPolarization_parity_decomposition`, via the corpus's sesquilinear additivity), giving
+  the complex-valued Krein identity and the reality of the diagonal Weil form
+  (`xiWeilPolarization_self_im`).  RH is the degeneracy of the whole structure:
+  `riemannHypothesis_iff_forall_divisorOdd_eval_eq_zero` (RH ⟺ every divisor-odd test vanishes
+  on the divisor; converse = two-point indicator, no summation) and the capstone
+  `riemannHypothesis_iff_polarization_parityFlip_invariant` (**RH ⟺ W is its own J-twist ⟺ the
+  Weil form already equals the positive ℓ² form it is J-equivalent to**).  Structure-level this
+  is a [BRIDGE] to textbook Krein fundamental-symmetry theory; the corpus-new content is that
+  THIS form has THIS explicit fundamental symmetry with ℓ² J-metric and the RH ⟺ J-triviality
+  law.  Sharpened [OPEN CORE]: produce a positivity source (compressed trace / intersection
+  form) that forces W = its J-twist — i.e., that the fundamental symmetry can be taken to be
+  the identity.  All 12 key theorems `[propext, Classical.choice, Quot.sound]`; module wired,
+  RHTower umbrella green.

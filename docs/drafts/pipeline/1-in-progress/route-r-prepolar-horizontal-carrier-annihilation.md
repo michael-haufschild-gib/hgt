@@ -337,3 +337,45 @@ two analytic transports attached to each actual Xi divisor. Source involution gi
 `U_t at rho` corresponding to `U_-t at J(rho)`; it does not identify them in one fixed fibre.
 Any theorem making that final identification globally is RH-equivalent by C13 and must be derived
 from new rational-adelic/Cartier boundary input, not asserted as naturality.
+
+## Formalization extraction -- 2026-08-11
+
+### C14. Ordinary-prime diagonal cone
+
+The C3 pointwise sign is now `[LEAN-PROVED]`, including closure under every nonempty finite positive
+prime-diagonal combination. Module:
+`RHTower/BurnolPrimeWindowDiagonalHeadFluxNoGo.lean`. Stage-3 card:
+`3-formalized/new_scientific_knowledge/burnol-prime-window-diagonal-head-flux-no-go.md`.
+
+This closes the whole finite positive diagonal cone, not only the dyadic channel. It does not
+annihilate the carrier; it proves that this producer class has the wrong strict sign.
+
+### C15. Finite regular Gamma--Stein/translation algebra
+
+The C5 classification is now `[LEAN-PROVED]`. A free finite expression syntax retains scalar
+leaves, the Stein generator, arbitrary translations, addition, and noncommutative composition.
+Every expression restricts to its recursively computed scalar gain on the stable residue line.
+Annihilation is equivalent to zero gain and coefficient faithfulness to nonzero gain, so both are
+incompatible. Module:
+`RHTower/BurnolStableResidueRegularOperatorClassification.lean`. Stage-3 card:
+`3-formalized/new_scientific_knowledge/burnol-stable-residue-regular-operator-classification.md`.
+
+### C16. Functional-equation partner current
+
+The reflection partner `rho^dagger=1-conj(rho)` exchanges the two reciprocal heads. The exact odd
+current is
+
+```text
+(1+(log 2)^2)(2 Re rho-1)/(|rho|^2 |1-rho|^2),
+```
+
+while the bare pair sum is strictly positive. Completion cancels from the odd coordinate because
+the partner preserves imaginary part. Therefore bare or dressed scalar partner equality on all Xi
+divisors is exactly RH, not an independent functional-equation law. This is `[LEAN-PROVED]` in
+`RHTower/RouteRBurnolReflectionPartnerCurrent.lean`; stage-3 card:
+`3-formalized/new_scientific_knowledge/route-r-burnol-reflection-partner-current-classification.md`.
+
+**Open core unchanged.** C14--C16 close three false producer classes and make their exact positive
+survivors reusable. They do not supply the missing non-equivariant, singular pre-divisor
+rational-adelic/Cartier relation identifying the two fixed-carrier orientations. The parent card
+therefore remains stage 1.

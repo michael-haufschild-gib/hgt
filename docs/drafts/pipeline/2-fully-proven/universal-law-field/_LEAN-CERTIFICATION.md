@@ -1376,3 +1376,21 @@ certifies the withheld recurrence prediction: arbitrarily late finite-prime phas
 with a projective work lower bound equal to elapsed time times the reconstructed prime-clock span.
 The centered zero-width equivalence is an exact RH selection reduction, not an RH proof; no source
 theorem forcing profile descent at Xi zeros is assumed.
+
+## Session 2026-08-11 addition (Adelic Plücker History Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-APHM-1 | Plücker exchange reconstruction, exact complete-height growth, all-place conservation, bounded-height/periodic-history classification, static Gram observer, and linearly open adelic history | `HTGeometry.AdelicPluckerHistoryMechanics` |
+
+One diagonal number-field intervention evolves every maximal-minor packet, while normalized
+adjacent-minor cross-ratios recover its relative characters.  Every recovered character lies in
+the kernel of the Deninger place sum.  Complete exchange height grows exactly linearly and is
+bounded exactly when the normalized history is periodic.  Under a unitary complex embedding, the
+same intervention leaves the full Gram matrix exactly static while a non-torsion exchange response
+has strictly positive linear Weil-height growth.
+
+Direct foreground elaboration and the foreground leaf build pass.  The module is wired into
+`HTGeometry.UniversalLawField`; final foreground umbrella build completes 11,817 jobs.  Axiom
+prints for the capstones report only `propext`, `Classical.choice`, and `Quot.sound`.  Repository
+formal lint and generated-index checks pass.  No RH premise or divisor specialization occurs.

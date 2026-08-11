@@ -134,10 +134,32 @@ constant-Gram/linearly-open-height prediction.
 
 ## 7. RH gate
 
-No selection consequence is permitted yet.  Required upstream theorem is a pre-zero arithmetic
-formation frame whose reflected horizontal displacement acts by an algebraic diagonal character
-in a fixed-degree adelic family and whose complete Plücker height is source-bounded.  Only after
-that construction may torsion rigidity be compared with the critical-line character.
+The proved mechanism gives one exact selection implication, but not its source premise.  Suppose a
+pre-zero formation law assigns each divisor displacement a fixed-degree algebraic Plücker frame,
+the physical radial character occurs as a marked exchange response, and the complete projective
+height of the resulting history is source-bounded.  The Lean-certified Northcott classification
+then forces every exchange response to be torsion.  At the physical embedding, a marked response
+with absolute value
+
+\[
+ \left|p^{2\rho-1}\right|=p^{2\operatorname{Re}(\rho)-1}
+ \tag{APH.7}
+\]
+
+must therefore have absolute value one, forcing `Re(rho)=1/2`.
+
+This is not an RH theorem: the required algebraic avatar and its source-bounded height have not
+been constructed.  The product formula cannot supply that premise because it holds for every
+nonzero algebraic character, and one-place Gram stationarity cannot supply it because `(APH.5)` and
+`(APH.6)` coexist.  The exact missing mechanism is therefore not another route-local annihilator.
+It is a **source-normal algebraic formation law** that converts analytic divisor displacement into
+a fixed-degree adelic exchange packet and proves global height boundedness before zero
+specialization.
+
+This is the use of the fusion theorem: it turns the vague demand for a source-native selector into
+one falsifiable construction problem with a forced output.  Any proposed final RH mechanism must
+build this formation law, or replace height properness by another proper global history invariant
+and prove the corresponding reconstruction theorem.
 
 ## Gates
 
@@ -146,5 +168,7 @@ that construction may torsion rigidity be compared with the critical-line charac
 - [x] Northcott bounded-history classification
 - [x] withheld constant-Gram/open-height theorem
 - [x] explicit non-torsion unit-modulus witness
+- [x] exact conditional selection implication isolated from the certified rigidity theorem
+- [x] product-formula-only and positive-Gram-only selectors excluded
 - [ ] source-normal Xi formation frame over a fixed-degree adelic family
 - [ ] RH selection, only after the preceding gate

@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`d5acddbe0e567a414ae014f850a08472cd42e48c`. Files outside committed umbrellas at this snapshot are
+`df1e57da20b061f2d137a5c3695444f22e484243`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
@@ -44,7 +44,10 @@ depth for every `m>=2`, and the actual operator logarithmic residue is closed at
 and beyond (`m>=3`) remains local. Its assembled Hodge mass is already nonnegative with exact
 critical radical; missing theorem is a global annihilating trace, not local sign. The hierarchy
 now has an exact GNS receiver socket: a square realization of the diagonal Weil form is equivalent
-to RH and to Hodge-mass vanishing, but no unconditional square realization is constructed. The
+to RH and to Hodge-mass vanishing, but no unconditional square realization is constructed. Its
+Krein decomposition is unconditional and identifies the exact obstruction: the negative sector is
+reflection-difference energy, whose prime-test density is Hodge mass, and its annihilation is RH.
+The direct pair-sum square-completion subroute is therefore terminal. The
 hierarchy remains an adjacent Connes candidate. The
 commutative Choquet--Shilov/C*-envelope model is closed; no arithmetic operator system is
 instantiated. The Cassini--Wold/Deninger lower-half chain is now umbrella-reachable. It identifies
@@ -62,8 +65,9 @@ its source and circle targets are formal Fréchet spaces and the source-specific
 formally nonclosed. Two-endpoint Stokes normalization removes only the Haar ambiguity while the
 surviving coinvariant space, hence normalized-observer freedom, is infinite-dimensional.
 Three additional committed modules are not umbrella-reachable and receive only provisional
-scientific classification: Route E's exact finite entropy-complement load/mixture theorem, Route
-G's movable-anchor Clark coherence budget, and Route L's strong Meyer adiabatic endpoint.
+scientific classification: Route G's movable-anchor Clark coherence budget, Route L's strong Meyer
+adiabatic endpoint and full adiabatic Möbius inverse. Route E's finite entropy-complement
+load/mixture theorem and Route T's exact prime-gap Abel-threshold bridge are now wired.
 Three further Route-V candidates have acquired exact formal mechanisms without becoming routes: a
 conservative Euler-shell/Witt completion has a zero-exclusion endpoint but no constructed joint
 source inverse pair; triptic orbital-divisor normal form has exact additive and multiplicative
@@ -296,7 +300,11 @@ global compressed-trace/intersection identity. The wired GNS socket makes the ex
 explicit: RH is equivalent to a coordinate square realization of every square-summable diagonal
 Weil value, and that realization is equivalent to Hodge-mass vanishing. Its reverse implication
 uses the tautological realization available under RH, so the socket is a receiver, not the missing
-unconditional GNS construction.
+unconditional GNS construction. The wired Krein module executes the natural reflection-pair
+attempt: unconditionally, four times the diagonal Weil value is pair-sum energy minus
+pair-difference energy. The latter is exactly the Hodge/cosh sector at prime tests, and its
+annihilation on all square-summable tests is equivalent to RH. This is a sharp negative closure for
+direct pair-sum square completion, with the indefinite Krein decomposition as positive survivor.
 
 **External contribution.** Weil, Guinand, Barner, Yoshida, Bombieri, Connes–Consani, Suzuki, and
 Groskin supply the established explicit-formula, localization, and finite-operator framework.
@@ -396,12 +404,12 @@ source-faithful Euler tilt forces a bounded physical log-product shell; and the
 entropy-complement breadth mixture recovers the full factorial mass across coupled branches.
 No exact external collision was located for this combined ordinary-integer construction.
 
-A new committed but unwired Lean module proves the entropy-complement finite core: exact
+A new umbrella-reachable Lean module proves the entropy-complement finite core: exact
 divided-Poisson convolution and conditional variance, `1-C^(-2)` central-window mass recovery, the
 sharp column-load formula `gL/(delta log X)`, subpower cutoff/product and source-prime deletion,
 both parity-reversing breadth directions, and a finite Hellinger/chi-square endpoint including
 unmatched mass. It deliberately assumes no short-interval rough-token lower bound, source column
-balance, or recurrence seam estimate. Pending umbrella certification, it narrows the physical
+balance, or recurrence seam estimate. It narrows the physical
 producer to proving the actual source density `delta >= gL/log X` columnwise and the normalized
 co-moving recurrence seam; more breadth-mixture algebra is not the frontier.
 
@@ -934,8 +942,12 @@ Calderón--Witt incidence, and source-to-Xi graph landing. It also proves severa
 A committed but unwired adiabatic module proves strong convergence of the exponential gauge to
 the identity in Meyer's projective topology, with an explicit output-seminorm estimate against
 finitely many two-weights-stronger input seminorms. This closes the source-topology endpoint needed
-to pass from the adiabatic Möbius family to its critical source. It does not identify that limit
-with the fixed Burnol/Deninger physical landing, so Route L's singular comparison remains open.
+to pass from the adiabatic Möbius family to its critical source. A second committed unwired module
+constructs the literal all-integer inverse `sum mu(n)n^(-a)h(log(nx))`, specializes it at `a=0` to
+the canonical critical preimage, and proves all polynomial moments finite for every `a>=0`. These
+close source formation and critical adiabatic passage pending certification. They do not identify
+that limit with the fixed Burnol/Deninger physical landing, so Route L's singular comparison
+remains open.
 
 Umbrella-reachable inverse-capacity and weighted-port theorems quantify the last closure statement
 for finite-dimensional targets: infimal lift norms along a cofinal port tower converge to a
@@ -1390,8 +1402,15 @@ off-critical zeta zero `rho` with `Re rho>1/2` contributes nonzero residue `-mul
 two-sided mesh theorem: at critical depth, absolute mesh-defect convergence is equivalent to the
 weighted consecutive-prime-gap energy. The critical energy monotonically controls the full
 complex mesh series throughout `-1/2 <= Re s <= 0`, hence every shifted zero in
-`1/2 <= Re rho <= 1`; height changes only a fixed prefactor. Symbol and Wold pole formation are therefore closed;
-continuation/noncancellation of the complete Hardy identity toward the physical wall is not.
+`1/2 <= Re rho <= 1`; height changes only a fixed prefactor. Symbol and Wold pole formation are
+therefore closed; continuation/noncancellation of the complete Hardy identity toward the physical
+wall is not.
+
+An umbrella-reachable Abel-threshold module now proves that any prefix gap-square moment of order
+`theta<3/2` makes the critical energy summable, and that the concrete `theta=11/8` input closes
+the full complex mesh half-strip. Hence the local dyadic/Abel bridge is no longer missing science;
+the only external input is the published unconditional prime-gap moment in the
+required prefix form. That import still does not address Hardy/Wold noncancellation.
 
 **External contribution.** Hedenmalm's
 [spectral interpretation](https://arxiv.org/abs/2606.17494) constructs a differential-pair
@@ -2072,14 +2091,16 @@ External results that can still strengthen a live route, in dependency order, ar
    singular resolved-boundary-to-fixed-physical specialization. Theorem 7.10's prime fibre and
    Theorem 10.2's endpoint purity are already represented.
 4. Maynard--Peck mean-square consecutive-prime-gap bound
-   `sum_(p_n<=x)(p_(n+1)-p_n)^2 << x^(5/4+epsilon)`, followed by the dyadic summation closing Route
-   T's exact prime-log quadrature. This closes only the main mesh, not continuation of the explicit
-   safe-side symbol through the physical Laplace wall.
+   `sum_(p_n<=x)(p_(n+1)-p_n)^2 << x^(5/4+epsilon)`, in the prefix form consumed by the formal
+   `theta<3/2` Abel-threshold module. The local dyadic/Abel argument is already proved; instantiate
+   the published bound. This closes only the full mesh half-strip, not continuation of
+   the complete Hardy identity toward the physical Laplace wall.
 
 Local certification backlog should not be confused with literature import. The current committed
-but unwired queue is `RouteEEntropyComplementBreadthMixture.lean`,
-`SuzukiMovableAnchorClarkCoherence.lean`, and `DeningerMeyerAdiabatic.lean`; their provisional route
-effects are recorded above, but they are excluded from formal credit at this cutoff. C1's exact-source
+but unwired queue is `SuzukiMovableAnchorClarkCoherence.lean`, `DeningerMeyerAdiabatic.lean`, and
+`DeningerAdiabaticMobiusPreimage.lean`; their
+provisional route effects are recorded above, but they are excluded from formal credit at this
+cutoff. C1's exact-source
 spectrum and multiplicity, determinant identity, Riesz/Jordan analysis, essential
 inverse-flow/Weil package, squared Cayley receiver, closed weighted derivative,
 shifted-cokernel/source equation, and supersymmetric Dirac realization are all umbrella-reachable.
@@ -2094,7 +2115,8 @@ umbrella-reachable. Complex Ramaré decomposition, the fixed/cofinally low-heigh
 square-multiple error, rough term, and diagonal are formal; the exact sole analytic residue is the
 moving moderate/high `ramarePrimeOffDiagonal(P,M,W)`. Neither this external analytic input nor its
 Gallagher reformulation constructs Route E's source-predeclared unit-capacity central Hall
-relation, which remains the physical producer.
+relation. The new formal mixture theorem makes the exact local debt the source token-density bound
+`delta >= gL/log X` columnwise plus normalized co-moving recurrence.
 Route L's source, bar/first-Sullivan complex, strict resolved chain provenance, Möbius ray,
 Mertens/Abel/harmonic limits, all moments, zero-mass/even extension, concrete Möbius--Fourier
 detector, Poisson source, covariance, exact Poisson-range kernel, Euler-depleted kernel, Meyer
@@ -2116,7 +2138,9 @@ depth one and the double defect vanish for every `m >= 2`, and the operator loga
 residue is closed at `m = 2`. Label-faithful multi-place assembly is also formal. Depth `m >= 3`,
 identification with the actual Connes--Consani Weil/intersection object, and the global trace
 identity forcing the already-nonnegative Gauss--Hodge mass to vanish remain scientific work.
-These tasks improve formal closure but do not replace a Tier-1 source theorem.
+The GNS socket and Krein decomposition are formal; the latter proves direct reflection-pair square
+completion leaves an exact negative sector whose annihilation is RH. More indefinite
+definitizability does not replace a Tier-1 arithmetic trace/intersection theorem.
 
 Route O's compact and exterior radial primitive is now substantially formalized. Remaining Lean
 work is assembly/occupancy/promotion certification of full paper seed theorem, not a missing
@@ -2188,7 +2212,9 @@ operator-power telescope. First propagated depth and double-defect closure now h
 `m >= 2`, the logarithmic-mean residue holds at `m = 2`, and label-faithful multi-place assembly is
 formal. Its Gauss--Hodge mass is already nonnegative with exact critical radical; vertical
 extraction, functional-equation pencil sourcing, pointwise Weil/Hodge polarization gap, and
-reciprocal-character virial normalization are formal. It still needs depth `m >= 3` and an
+reciprocal-character virial normalization are formal. The GNS socket is exact, while the Krein
+decomposition retires direct reflection-pair square completion by identifying its negative sector
+with the RH-bearing Hodge mass. It still needs depth `m >= 3` and an
 independent global compressed-trace/intersection identity controlling that gap. Conservative
 Euler-shell/Witt completion, triptic orbital-divisor normal form, and tropical-projective
 source-normal descent are three serious Route-V candidates. They respectively lack the jointly

@@ -5,10 +5,14 @@
 - **Type:** `[PAPER-PROVED] [EXACT FINITE SOURCE IDENTITY] [COFINAL SADDLE CLASSIFICATION]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **Companions:** `route-e-physical-shell-conditioned-parity-energy-regression-law.md`,
-  `route-e-product-truncated-reservoir-harmonic-mass-law.md`
+  `route-e-product-truncated-reservoir-harmonic-mass-law.md`,
+  `../../3-formalized/new_scientific_knowledge/route-e-moving-euler-tilt-chi-square-contiguity-law.md`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** not started; Lean corpus is read only during active refactor
+- **Lean status:** exact finite source identity and unit-shell profile are formalized in
+  `RouteESourceFaithfulEulerTiltUnitShell.lean`; the moving-to-critical chi-square bridge is
+  formalized in `RouteEMovingEulerTiltChiSquareContiguity.lean`. The PNT asymptotics `(9)`--`(14)`
+  remain paper-only, so this full card remains stage 2.
 - **Scientific status:** project-local new synthesis; external priority unclaimed
 
 ## 1. Result

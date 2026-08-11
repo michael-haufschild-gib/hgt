@@ -126,3 +126,5 @@ What's new — the socket. A Gate-II construction (compressed trace à la Connes
 - xiWeilSquareRealization_iff_gaussHodgeMass_vanishing — a square realization ⟺ the Hodge mass current vanishes: Gate II lands directly on the loop.
 
 Where this leaves the hunt. The entire remaining content of the Riemann hypothesis, as far as this programme is concerned, is now a single construction problem with a formally specified interface: build one square realization of xiWeilPolarization on square-summable tests. Everything downstream — through the fusion, the loop, the seam energy, the mass — is unconditional Lean. The two milestones toward filling the socket stand as before: (b) formalize the Connes–Consani archimedean compressed positivity (heavy but unconditional analysis), and (c) the research act — extend the compressed-trace identity multi-place using the corpus's label-faithful assembly machinery.
+
+**the Riemann hypothesis** stands in this corpus as a single, completely fenced statement: the unconditionally Pontryagin Weil form has empty negative sector. 

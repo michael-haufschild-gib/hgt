@@ -95,16 +95,29 @@ theorem deningerAdiabaticMobiusPreimage_eq_tsum
       rw [← Real.exp_add]
       congr 1
       ring
-    have hscalarC := congrArg (fun y : ℝ => (y : ℂ)) hscalar
+    have hfactor :
+        ((Real.exp (Real.log x * a) : ℝ) : ℂ) *
+            ((Real.exp (-a * (Real.log (n : ℝ) + Real.log x)) : ℝ) : ℂ) =
+          ((Real.exp (-a * Real.log (n : ℝ)) : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_mul, hscalar]
+    have hmu :
+        ((moebius n : ℤ) : ℂ) = ((((moebius n : ℤ) : ℝ) : ℂ)) := by
+      norm_cast
+    rw [Complex.ofReal_mul, ← hmu]
     calc
       _ = ((moebius n : ℤ) : ℂ) *
-          (((Real.exp (Real.log x * a) *
-            Real.exp (-a * (Real.log (n : ℝ) + Real.log x)) : ℝ) : ℂ) *
+          (((Real.exp (Real.log x * a) : ℝ) : ℂ) *
+            (((Real.exp (-a * (Real.log (n : ℝ) + Real.log x)) : ℝ) : ℂ) *
               (((DeningerMeyerSource.toSource h : DeningerExpSchwartz) :
-                𝓢(ℝ, ℂ))) (Real.log (n : ℝ) + Real.log x)) := by ring
-      _ = _ := by
-        rw [hscalarC, map_mul]
-        ring
+                𝓢(ℝ, ℂ))) (Real.log (n : ℝ) + Real.log x))) :=
+        mul_left_comm _ _ _
+      _ = ((moebius n : ℤ) : ℂ) *
+          ((((Real.exp (Real.log x * a) : ℝ) : ℂ) *
+            ((Real.exp (-a * (Real.log (n : ℝ) + Real.log x)) : ℝ) : ℂ)) *
+              (((DeningerMeyerSource.toSource h : DeningerExpSchwartz) :
+                𝓢(ℝ, ℂ))) (Real.log (n : ℝ) + Real.log x)) := by
+        rw [mul_assoc]
+      _ = _ := by rw [hfactor, mul_assoc]
 
 /-- The adiabatic family specializes exactly to the canonical critical preimage. -/
 @[simp]
@@ -191,11 +204,21 @@ theorem deningerAdiabaticMobiusPreimage_moment_integrable
       rw [pow_add]
       ring
 
+/-- The `x^r`-weighted adiabatic inverse as an honest ray function. -/
+def deningerAdiabaticMomentFun (a : ℝ) (r : ℕ) (h : DeningerMeyerSource) : ℝ → ℂ :=
+  fun x => ((x ^ r : ℝ) : ℂ) * deningerAdiabaticMobiusPreimage a h x
+
+theorem deningerAdiabaticMomentFun_memLp {a : ℝ} (ha : 0 ≤ a) (r : ℕ)
+    (h : DeningerMeyerSource) :
+    MemLp (deningerAdiabaticMomentFun a r h) 1
+      (volume.restrict (Set.Ioi (0 : ℝ))) :=
+  memLp_one_iff_integrable.mpr
+    (deningerAdiabaticMobiusPreimage_moment_integrable ha r h)
+
 /-- The `x^r` adiabatic moment as an `L¹(0,∞)` element. -/
 def deningerAdiabaticMomentLp {a : ℝ} (ha : 0 ≤ a) (r : ℕ)
     (h : DeningerMeyerSource) : Lp ℂ 1 (volume.restrict (Set.Ioi (0 : ℝ))) :=
-  (memLp_one_iff_integrable.mpr
-    (deningerAdiabaticMobiusPreimage_moment_integrable ha r h)).toLp _
+  (deningerAdiabaticMomentFun_memLp ha r h).toLp _
 
 end
 

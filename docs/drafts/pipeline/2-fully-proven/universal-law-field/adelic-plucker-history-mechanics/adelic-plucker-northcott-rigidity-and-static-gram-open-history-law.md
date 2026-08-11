@@ -5,7 +5,7 @@
 - **Type:** CROSS-ORGAN FUSION / RECONSTRUCTION / ADELIC CONSERVATION / FOURTH-ORGAN PREDICTION
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [NUMBER-FIELD SOURCE]
   [MATROID EXCHANGE] [NORTHCOTT RIGIDITY] [STATIC POSITIVE OBSERVER]
-  [LINEARLY OPEN ARITHMETIC HISTORY] [NOT RH]
+  [LINEARLY OPEN ARITHMETIC HISTORY] [LEAN-FORMALIZED] [NOT RH]
 
 ## 1. Setup
 
@@ -308,14 +308,24 @@ law, filling capacity, and phase erasure.  The present theorem adds exact exchan
 reconstruction, all-place conservation, Northcott classification, quantitative height escape, and
 the static-Gram/open-height prediction.
 
-## 9. Lean plan
+## 9. Lean certification
 
-Formalize only after hostile paper audit.  Required surface:
+Certified module:
 
-1. finite basis support and adjacent exchange response;
-2. finite-orbit iff torsion-edge classification using connected basis graph;
-3. fixed-number-field height/finite-orbit implication;
-4. concrete `Q(i)` static-Gram/open-orbit witness;
-5. umbrella import and axiom audit.
+`formal/GaloisForLFunctions/HTGeometry/AdelicPluckerHistoryMechanics.lean`
 
-No RH declaration belongs in this module.
+Main declarations:
+
+- `completeExchangeHeight_exact_growth`;
+- `completeExchangeHeight_bounded_iff_periodic`;
+- `pluckerProjectiveHeight_bounded_iff_periodic`;
+- `relativePacketPeriodic_iff_pluckerPacketPeriodic`;
+- `pluckerExchangeResponse_exact`;
+- `exchangeResponse_allPlace_conservation`;
+- `frameMinor_adelicPhase` and `frameGram_adelicPhase_static`;
+- `staticGram_openAdelicHistory`;
+- `adelicPluckerFusion_capstone`.
+
+The module is imported by `HTGeometry/UniversalLawField.lean`.  Axiom audit reports only Lean's
+standard `propext`, `Classical.choice`, and `Quot.sound`; there are no project axioms, `sorry`,
+`admit`, `opaque`, or `unsafe` declarations.  No RH declaration belongs in this module.
