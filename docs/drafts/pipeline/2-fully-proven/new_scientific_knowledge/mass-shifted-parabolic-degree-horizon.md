@@ -216,17 +216,21 @@ no-go concerns an unfiltered factorial carrier.
 ## Higher universal principle
 
 Two previously separate Route U scales compose. A degree-`d` heat test remains in the
-unconditional source cone while `td=O(1)`. The exact Gamma transform of a degree-`d` reciprocal
-test concentrates at `t` of order `d/y`. Their composition is the invariant
+unconditional source cone while `td=O(1)`. The scalar domination used in the filtered Gamma
+transform has shape `2d+1` and therefore places its worst-case tail at `t` of order `d/y`. The
+literal coefficient-dependent integrand can concentrate earlier; no coefficient-independent
+clock identity is claimed. The worst-case composition is the invariant
 
 \[
  \boxed{\text{heat action}\times\text{Gamma clock}=d^2/y.}
 \]
 
 The moving-degree obstruction is therefore not arbitrary loss of compactness. It is a parabolic
-phase transition created by filtering and averaging in sequence. Earlier fixed-degree recession,
-degree--time heat positivity, and factorial-carrier failures are three shadows of this one
-double-scaling law.
+phase transition created by filtering and worst-case tail domination in sequence. Earlier
+fixed-degree recession, degree--time heat positivity, and factorial-carrier failures are three
+shadows of this one double-scaling law. The successor
+`mass-shifted-hard-edge-paley-wiener-compactification` proves that this worst-case scale is sharp
+for the least defective block under RH failure.
 
 ## Novelty audit
 

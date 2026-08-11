@@ -878,3 +878,39 @@ knowledge is exact removal of a false interface, not endpoint closure.
 
 Lean corpus was inspected read-only. The atomwise core `(A37)` was already certified as
 `routeEEulerTiltTerm_eq_gibbsTerm`; no Lean source was written during refactor.
+
+## 2026-08-11 Deninger-vacuum and detailed-balance fracture
+
+The strict Deninger adiabatic endpoint cannot absorb the physical vacuum by a finite recurrence.
+If
+\[
+ F(t)=\sum_{j=1}^r c_j e^{-a_je^t},\qquad a_j>0\text{ distinct},
+\]
+then Meyer decay at the left collar makes the analytic germ
+\(\sum_jc_je^{-a_jx}\) flat at \(x=0\).  Its first \(r\) Taylor equations form an invertible
+Vandermonde system, so every \(c_j=0\).  In particular
+\[
+ J_S(x)=(-1)^{|S|+1}\prod_{p\in S}(p-1)x+O_S(x^2),       \tag{A39}
+\]
+and no nonempty finite aperture is in `DeningerExpSchwartz`.  A cutoff decomposes the vacuum into
+a Meyer tail and one fixed compact collar; the collar inverse is exactly a smoothed Mertens sum.
+This gives a dependency-closed domain classification, not source cancellation.
+
+For the positive relation lane, every parity-flipping row proposal has an exact time-reversal
+audit.  With \(Q(n,v)=w_nP(n,v)\), symmetric accepted conductance
+\(C(n,v)=\min\{Q(n,v),Q(v,n)\}\), and total rejected mass \(R\),
+\[
+ R={1\over2}\sum_{n,v}|Q(n,v)-Q(v,n)|,
+ \qquad |J|\le R.                                      \tag{A40}
+\]
+Thus strict-half closure by detailed balance requires edge log-likelihood defect
+\(X^{-1/2+o(1)}\), not a qualitative or subpower comparison.  Current one-sided structured
+\(E_3\) proposals have disjoint forward/reverse edge support, hence \(R\) equals full mass.
+Surviving two-sided avenue must build reverse arithmetic support and the strict-half
+Radon--Nikodym rate before `(A40)` is invoked, while retaining normalized seam flux.
+
+Full proofs:
+`../2-fully-proven/new_scientific_knowledge/route-e-deninger-vacuum-finite-dilation-fracture.md`
+and
+`../2-fully-proven/new_scientific_knowledge/route-e-opposite-parity-metropolis-rejection-law.md`.
+No Lean source was edited or built during corpus refactor.

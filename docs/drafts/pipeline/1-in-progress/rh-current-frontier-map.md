@@ -685,6 +685,33 @@ RH-equivalent receiver, while `GaussPositiveCubicCriticalMass.lean` has no sourc
 Möbius relation. No abstract capacity, Pauli incidence, or shell-completion theorem removes the
 ordinary-integer joint incidence/seam producer.
 
+The new Deninger adiabatic endpoint also does not remove that producer.  For
+`V(t)=exp(-exp t)`, no nonzero finite linear combination of distinct dilates
+`sum_j c_j V(t+log a_j)` lies in `DeningerExpSchwartz`: all-orders left-collar decay forces the
+Vandermonde moments `sum_j c_j a_j^m` to vanish, hence every coefficient is zero.  In particular,
+every nonempty finite Route E current has exact first left-collar jet
+`(-1)^(|S|+1) prod_(p in S)(p-1) x`; prime defects amplify it rather than enter the Meyer domain.
+A smooth cutoff splits the vacuum into a Meyer tail plus one fixed collar, but the collar's
+Möbius inverse is literally a smoothed Mertens sum through `O(1/x)`.  Thus strict adiabatic
+convergence controls the easy tail and isolates, without estimating, `OPEN-SOURCE-001`.
+
+There is now a sharp two-sided-flow alternative to direct unit Carleson.  For any source-fixed
+parity-flipping row kernel `P` on physical weights `w`, let `Q(n,v)=w_n P(n,v)` and accept symmetric
+conductance `min(Q(n,v),Q(v,n))`.  Exact rejected mass is
+
+~~~
+R = (1/2) sum_(n,v) |Q(n,v)-Q(v,n)|,
+|J| <= R.
+~~~
+
+Consequently an edgewise detailed-balance proof needs log Radon--Nikodym defect
+`X^(-1/2+o(1))`, or normalized edge relative entropy `X^(-1+o(1))`; `1+o(1)`, polylogarithmic,
+and `X^(o(1))` comparisons do not suffice. Physical Gibbs weights already meet this rate on
+`X^(1/2+o(1))` edges. Current structured-E3 proposals are forward-only, so their edge law and
+time reversal are disjoint and generic Metropolis acceptance is zero. A surviving new avenue is
+therefore a genuinely two-sided entropy-complement proposal with strict-half detailed balance and
+the same normalized seam, not abstract reversibilization of the existing relation.
+
 The independent analytic support layer is now closed to two exact interfaces. The complete
 Granville--Harper--Soundararajan partition, height choice, explicit error table, and eventual
 mean-value-per-unit theorem are umbrella-reachable; all unconditional terms tend to zero and only
@@ -2035,16 +2062,26 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     before Gamma averaging, obtains a coefficient-free global source lower envelope, and uses an
     exponential Gamma-tail separation. It is paper-proved in
     `mass-shifted-parabolic-degree-horizon`; Lean formalization has not started.
+43. Hard-edge Chebyshev packets now close the opposite scale inequality. Every even
+    Paley--Wiener divisor test is the complete-divisor limit of reciprocal polynomials of degree
+    `O(sqrt(y))`. If RH is false, Fourier truncation of an existing negative Gaussian test gives
+    such a negative finite-type limit, so the least defective block satisfies
+    `c sqrt(y)<D(y)<=C sqrt(y)` eventually. Arbitrary degree escape is therefore replaced by a
+    compact nonzero `N/sqrt(y)` scale and a finite-exponential-type Weil limit. This is
+    paper-proved in `mass-shifted-hard-edge-paley-wiener-compactification`; Lean formalization has
+    not started.
 
 **Open core.** Cofinally exclude drift of first-contact order and face degree to infinity. Every
 finite first face, its odd preemption branch, its first even rank-fill branch, and the one-block
-capacity of every later positive even contact are Lean-classified. The paper-proved parabolic
-degree horizon also excludes every escape with `N^2/y->0`. Remaining source theorem must control
-the critical/supercritical double-scaling region `N^2/y` bounded away from zero: show that the
-literal shifted-Xi moment tower cannot postpone its first nonzero defect there while the arcsine
-margin collapses, or force an earlier odd/lower-minor preemption. Fixed-face plateau construction
-and subparabolic degree drift are no longer viable escapes. Post-contact cumulant bounds, generic
-moment positivity, or another fixed-degree asymptotic do not control this moving contact order.
+capacity of every later positive even contact are Lean-classified. Two paper theorems now trap the
+least hypothetical defect at exact scale `N=Theta(sqrt(y))` and compactify it to a finite-type
+Paley--Wiener divisor test. Remaining source theorem must exclude a finite-exponential-type limit
+that inherits canonical first-contact null incidence and real-rooted Schur-boundary structure, or
+force an earlier odd/lower-minor preemption. Generic Paley--Wiener/Weil positivity is RH itself;
+the producer must use these inherited boundary constraints and literal completed prime--Gamma
+incidence. Fixed-face plateau, subparabolic drift, and superparabolic least-defect escape are no
+longer viable. Post-contact cumulant bounds or another fixed-degree asymptotic do not address this
+compactified boundary problem.
 
 **Dead subclasses.** Generic moment positivity, positive atoms, tied-power sectors, positive/root
 location, stochastic order, factorial-normalized carriers, fixed corona continuous reporters,
