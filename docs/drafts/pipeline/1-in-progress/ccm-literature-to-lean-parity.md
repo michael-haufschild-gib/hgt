@@ -16,9 +16,10 @@ result that lies ahead of it.  Only the residual after this parity audit is a sc
 
 ## Acceptance rule
 
-An item is `EXACT` only when umbrella-reachable Lean constructs the source-defined objects, states
-the paper's hypotheses without strengthening or suppressing them, and proves the paper's endpoint
-without `sorry`, `admit`, project axioms, opaque declarations, unsafe code, or computation.  Generic
+An item is `EXACT` only when umbrella-reachable Lean constructs the source-defined objects,
+internalizes admissibility in the objects' types, proves every scientific hypothesis from those
+definitions, and proves the paper's endpoint without proposition-valued premises, `sorry`, `admit`,
+project axioms, opaque declarations, unsafe code, or computation.  Generic
 operator infrastructure, an abstract surrogate, a conditional RH receiver, or an unwired file is
 not exact coverage.  Numerical observations and convergence conjectures are recorded but never
 formalized as theorems.
@@ -29,7 +30,7 @@ formalized as theorems.
 |---|---|---|---|
 | Connes, *Trace formula in noncommutative geometry and the zeros of the Riemann zeta function* | semilocal trace formula and quotient spectral realization | `PARTIAL`: rational adelic/Bruhat and trace-norm infrastructure exists; no theorem-level source audit yet | inventory exact numbered results against declarations |
 | Connes--Consani, arXiv:1910.14368 | semilocal Fourier unitary; cutoff trace formula; projection/logarithmic-derivative sign criterion | `PARTIAL`: exact class-space pieces exist; source trace formula not identified end-to-end | formalize missing exact operator identities |
-| Connes--Consani, arXiv:2006.13771 | Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `MISSING`: continuous Sonin projections and trace ideals exist, but no theorem on the paper's concrete functional/operator | formalize source scaling representation, trace identity, and exact non-computational inequality; separately audit paper's numerical spectral bound |
+| Connes--Consani, arXiv:2006.13771 | Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `PARTIAL-EXACT`: source-normalized integrated scaling, Haar involution/adjoint, cutoff-one Sonin projection, and positive compressed Gram operator are unconditional and umbrella-wired; trace-classness, trace identity, and inequality remain open | formalize source trace-class bridge, trace identity, and exact non-computational inequality; separately audit paper's numerical spectral bound |
 | Connes--Consani, arXiv:2106.01715 | lower-semicontinuous restricted Weil form; spectral triples; exact zeta-cycle spectral theorem | `MISSING/PARTIAL`: many restricted-Weil and prolate pieces exist; no literal zeta-cycle theorem located | formalize exact circle periodization, orthogonal complement, and spectral characterization |
 | Connes--Consani--Moscovici, arXiv:2310.18423 | semilocal Sonin Hilbert isomorphism; common de Branges image; Gamma-quarter Jacobi/metaplectic model; semilocal prolate operator | `PARTIAL`: Gamma density, moments, Jacobi recurrence, relative traces, and continuous Sonin pieces exist; exact Hilbert isomorphism not located | prove missing source-space isometries and identify every local surrogate |
 | Connes--Consani--Moscovici, arXiv:2511.22755 | finite simple-even ground rank-one perturbation is self-adjoint in the Weil quotient; regularized determinant equals the ground Fourier transform; every transform zero is real | `CONDITIONAL SOURCE THEOREM`: literal finite matrix, unconditional ground shift, source/response completion, determinant lemma, and real-rooted completion already exist; paper does not discharge simplicity/evenness or convergence | do not add a hypothesis-packaging theorem; only an unconditional proof of the literal eta-channel assumptions would move parity |
@@ -62,8 +63,12 @@ strongest unconditional trace identity preceding it.
 
 1. Audit the source proof's non-computational lemmas and isolate the exact missing spectral bound.
 2. Reuse the corpus's continuous `L2`, Fourier, projection, and trace-ideal infrastructure.
-3. Formalize source test algebra and integrated scaling representation.
-4. Formalize exact Sonin projection and compressed positive trace.
+3. Formalize source test algebra and integrated scaling representation.  Integrated L1 scaling,
+   contractivity, Haar involution, and adjoint law are complete in
+   `CCMArchimedeanIntegratedScaling.lean` and `CCMArchimedeanScalingStar.lean`.
+4. Formalize exact Sonin projection and compressed positive trace.  Cutoff-one projection and
+   bounded-operator positivity are complete in
+   `CCMArchimedeanSoninCompressionPositive.lean`; trace-classness and trace nonnegativity remain.
 5. Formalize trace-remainder identity.
 6. Prove an exact analytic replacement for the numerical spectral step, or classify the source
    endpoint as not presently unconditional at published proof level.
@@ -78,7 +83,9 @@ strongest unconditional trace identity preceding it.
 - [x] Exact paper hypotheses and theorem text recovered from primary TeX.
 - [x] Numerical convergence and experimental claims excluded.
 - [x] Conditional arXiv:2511.22755 hypothesis packaging rejected as non-progress.
-- [ ] Archimedean compressed positivity exact and umbrella-reachable.
+- [x] Source-normalized integrated scaling representation exact and umbrella-reachable.
+- [x] Archimedean compressed bounded-operator positivity exact and umbrella-reachable.
+- [ ] Archimedean compressed operator trace-class and trace positivity exact.
 - [ ] Semilocal Sonin/de Branges source isomorphisms exact and umbrella-reachable.
 - [ ] Zeta-cycle spectral theorem exact and umbrella-reachable.
 - [ ] Continuous Connes--van Suijlekom theorem exact and umbrella-reachable.

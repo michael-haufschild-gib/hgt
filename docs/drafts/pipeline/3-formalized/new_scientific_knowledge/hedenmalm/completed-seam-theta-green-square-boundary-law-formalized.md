@@ -10,9 +10,10 @@
 ```text
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaGreenSquareBoundaryLaw.lean
 formal/GaloisForLFunctions/RHTower/HedenmalmThetaGreenReflectionPairNoGo.lean
+formal/GaloisForLFunctions/RHTower/HedenmalmThetaGreenHyperbolicGaugeNoGo.lean
 ```
 
-Both modules are imported by `formal/GaloisForLFunctions/RHTower.lean`.
+All three modules are imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Closed theorem chain
 
@@ -30,9 +31,14 @@ Namespace `RHTower.HedenmalmThetaSource`.
 | theta root energy is invariant under functional-equation reflection | `thetaXiRootEnergy_reflect` |
 | boundary current is reflection-odd | `thetaXiRankTwoBoundaryFlux_reflect` |
 | unsquared theta eigenvalue is reflection-odd; its square is reflection-invariant | `thetaXiReciprocalEigenvalue_reflect`, `thetaXiReciprocalEigenvalue_sq_reflect` |
+| one squared theta node is strictly positive real iff its same-fibre boundary current vanishes | `thetaXiReciprocalEigenvalue_sq_positiveReal_iff_boundaryFlux_zero` |
 | reflected-pair current cancels unconditionally | `thetaGreenReflectedPairNeutral_unconditional` |
 | one folded `B²` node contains both reflected eigenmodes and zero aggregate current | `thetaGreenSquaredReflectionFiber_sameNode_zeroCurrent` |
 | automatic pair neutrality plus individual neutrality is still exactly RH | `thetaGreenReflectedPairNeutral_and_fiberNeutral_iff_riemannHypothesis` |
+| theta rank-two current is Route R's split Hermitian form in moment coordinates | `inner_pinnedBoundaryCLM_eq_thetaGreenHyperbolicCurrent` |
+| split current equals incoming-minus-outgoing intensity and is boost-invariant | `thetaGreenHyperbolicCurrent_eq_amplitudeDifference`, `thetaGreenHyperbolicCurrent_gauge` |
+| conserved current cannot select neutral grade on a prime-character orbit | `thetaGreenHyperbolicCurrent_not_neutralSelector` |
+| fixed positive polar energy is boost-invariant exactly at neutral grade | `thetaGreenFixedPolarEnergy_gauge_eq_iff` |
 
 ## New obstruction law
 
@@ -53,6 +59,16 @@ eigenvalue.  Therefore even zero boundary trace block by block on the folded Rou
 unconditional.  Positivity must be certified on the oriented `B` double cover before the
 reflection quotient is taken.
 
+Pointwise, Lean now proves more than the global spectrum/RH equivalence: a single squared theta
+node is strictly positive real exactly when that copy's own Green current vanishes. This excludes
+all orbit-aggregate criteria even when imposed separately on every folded `B²` node.
+
+The monopole/dipole moment chart identifies this boundary form exactly with Route R's split
+Hermitian source plane. Its horizontal boost preserves the Green current for every grade, while
+the fixed positive Euclidean polarization is preserved for all vectors only at grade zero. Hence
+P and R share one hyperbolic-gauge obstruction: intrinsic conserved boundary data cannot build
+the missing positive polarization.
+
 ## Verification
 
 ```text
@@ -60,9 +76,11 @@ lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaGreenSquareBoundaryLaw.l
 lake build GaloisForLFunctions.RHTower.HedenmalmThetaGreenSquareBoundaryLaw
 lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaGreenReflectionPairNoGo.lean
 lake build GaloisForLFunctions.RHTower.HedenmalmThetaGreenReflectionPairNoGo
+lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaGreenHyperbolicGaugeNoGo.lean
+lake build GaloisForLFunctions.RHTower.HedenmalmThetaGreenHyperbolicGaugeNoGo
 ```
 
-All four commands pass.  `/tmp` `#print axioms` audits for every declaration above report only
+All six commands pass.  `/tmp` `#print axioms` audits for every declaration above report only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
 Whole-umbrella compilation is presently blocked earlier by an unrelated missing object file for

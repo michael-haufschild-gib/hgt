@@ -2889,6 +2889,17 @@ reflection-orbit aggregation. Stronger: the reflected vectors already have the s
 eigenvalue, so even zero current trace on every folded Route-P spectral block is unconditional.
 The oriented `B` double-cover label must survive until individual current neutrality is proved;
 an ungraded squared spectralization discards the faithful transverse sign.
+Pointwise, each squared theta eigenvalue is strictly positive real exactly when its own
+multiplicity-copy boundary current vanishes. Thus same-fibre Ward neutralization is sufficient
+node by node; compact assembly may occur only after this first-order condition is established.
+
+**P/R hyperbolic-gauge identification, formal.** In monopole/dipole coordinates, the theta
+rank-two current is literally Route R's split Hermitian pairing. Horizontal boosts preserve this
+current for every grade, while the fixed positive Euclidean energy is boost-invariant on all
+vectors exactly at neutral grade. Thus any producer natural for the intrinsic hyperbolic gauge is
+formally unable to select Route P neutrality. P and R share one external source-selected positive
+polarization problem; P additionally needs coefficient-faithful theta comparison and compact
+measure assembly after that gauge-breaking selection.
 
 **Open core.** Construct from literal coupled prime--polar--Gamma/theta source a pre-scalar
 neutralization of `i R_2 B` that forces the nonzero Green-square spectrum positive, and derive one

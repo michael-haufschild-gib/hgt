@@ -167,7 +167,7 @@ system; a direct even-power trace comparison skips the only RH-faithful channel.
 
 ### P-G7 -- pointwise positive-node/current criterion
 
-`[PAPER-PROVED]` For every multiplicity-exact copy `q`, not only after quantifying over the whole
+`[PAPER- AND LEAN-PROVED]` For every multiplicity-exact copy `q`, not only after quantifying over the whole
 divisor,
 
 ```text
@@ -190,6 +190,55 @@ hypothesis, or RH.
 **Producer contract.** The remaining source theorem may be tested copy by copy: its first-order
 Ward transport must kill `F(q)` on the oriented pre-fold fibre.  Positive Route P nodes then
 follow pointwise, and only afterwards may compact measure existence/tightness be assembled.
+
+### P-G8 -- hyperbolic-gauge universality of the boundary obstruction
+
+`[PAPER- AND LEAN-PROVED]` Put the two lowest theta boundary moments into the plane
+
+```text
+v(g)=(m(g),c(g)),
+m(g)=integral g,  c(g)=integral (t-1/2)g.
+```
+
+The rank-two Green current is exactly the split Hermitian form
+
+```text
+J(v)=-(conj(v_1)v_2+conj(v_2)v_1),
+<R_2 g,g>=J(v(g)).                                      (P-G8.1)
+```
+
+This is Route R's retained hyperbolic source plane in a literal moment chart, not an analogy.
+For its horizontal boost
+
+```text
+T_a(v_1,v_2)=(exp(a)v_1,exp(-a)v_2),
+```
+
+direct cancellation gives
+
+```text
+J(T_a v)=J(v).                                          (P-G8.2)
+```
+
+The positive Euclidean polarization behaves oppositely:
+
+```text
+E(T_a v)=exp(2a)|v_1|^2+exp(-2a)|v_2|^2,
+(forall v, E(T_a v)=E(v)) iff a=0.                      (P-G8.3)
+```
+
+Equations `(P-G8.1)`--`(P-G8.3)` identify the higher obstruction behind P-G1--P-G7. Functional
+equation, rank-two Green conservation, and all source constructions natural for the full
+hyperbolic gauge retain only the split form. They cannot select the neutral horizontal grade.
+Squaring then passes to an even quotient and erases the remaining orientation. A positive Route P
+producer must instead select a Euclidean polarization from the full numerical Euler--Gamma source
+before divisor specialization; that selection must break the hyperbolic gauge and then compare
+coefficient-faithfully with the fixed theta moment plane.
+
+**Pivot.** Local same-fibre Green corrections are exhausted, not merely unsuccessful examples.
+Route P and Route R now share one external positive-polar producer class. Route P still requires
+its own fixed-theta comparison and compact-measure assembly, so this is an obstruction
+identification rather than endpoint-equivalence packaging.
 
 ## Dependency-closed theorem target
 
@@ -279,6 +328,8 @@ measure, diffusion, or continuous theta reporter.
 - [x] reflected-pair cancellation proved on paper; pairwise/global neutrality excluded as producer
 - [x] Lean formalization of the reflected-pair no-go
 - [x] square-fold blindness proved on paper and in Lean
+- [x] pointwise positive-node/current criterion proved on paper and in Lean
+- [x] theta/Route-R hyperbolic boundary identification and gauge no-go formalized
 - [ ] exact source construction neutralizing `i R_2 B`
 - [ ] positive compact carrier
 - [ ] RH

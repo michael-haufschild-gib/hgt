@@ -1,3 +1,5 @@
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import GaloisForLFunctions.RHTower.MobiusBoundaryOppositeSignTransport
 
 /-!
@@ -7,9 +9,12 @@ This module formalizes the exact finite theorem from
 `route-e-opposite-parity-metropolis-rejection-law.md`.  A datum packages a finite weighted
 opposite-parity Markov kernel.  Its Metropolis conductance is the minimum of each directed edge
 mass and its reversal.  The total rejected mass is exactly one half of the edge-law total
-variation and bounds the signed current.
+variation and bounds the signed current.  Reversal absolute continuity additionally turns the
+pair dissipation into twice the forward edge relative entropy, giving the sharp Pinsker rate.
+The final statements instantiate the exact Gibbs likelihood-ratio oscillation.
 
-No reversibility, support-overlap, analytic, or asymptotic premise is used.
+No reversibility, analytic, or asymptotic premise is used.  Support absolute continuity appears
+only where finite relative entropy requires it.
 -/
 
 namespace RHTower
@@ -228,6 +233,272 @@ theorem totalRejection_eq_totalWeight_of_reverse_disjoint
   simp [totalRejection, rejectedAt, totalWeight,
     K.acceptedConductance_eq_zero_of_reverse_disjoint hdisjoint]
 
+private lemma routeEPairEntropy_sq_le
+    (a b : ℝ) (ha : 0 < a) (hb : 0 < b) :
+    2 * (a - b) ^ 2 ≤ (a + b) * ((a - b) * Real.log (a / b)) := by
+  wlog hab : b ≤ a generalizing a b
+  · have hswap := this b a hb ha (le_of_not_ge hab)
+    have hlog : Real.log (b / a) = -Real.log (a / b) := by
+      rw [Real.log_div hb.ne' ha.ne', Real.log_div ha.ne' hb.ne']
+      ring
+    rw [hlog] at hswap
+    convert hswap using 1 <;> ring
+  · have hdiff : 0 ≤ a - b := sub_nonneg.mpr hab
+    have hx : 0 ≤ (a - b) / b := div_nonneg hdiff hb.le
+    have hlog := Real.le_log_one_add_of_nonneg hx
+    have hone : 1 + (a - b) / b = a / b := by
+      field_simp [hb.ne']
+      ring
+    have hleft : 2 * ((a - b) / b) / ((a - b) / b + 2) =
+        2 * (a - b) / (a + b) := by
+      field_simp [ha.ne', hb.ne', (add_pos ha hb).ne']
+      ring
+    rw [hone, hleft] at hlog
+    have hmul := mul_le_mul_of_nonneg_left hlog hdiff
+    have hadd : 0 ≤ a + b := (add_pos ha hb).le
+    have hmul' := mul_le_mul_of_nonneg_left hmul hadd
+    calc
+      2 * (a - b) ^ 2 =
+          (a + b) * ((a - b) * (2 * (a - b) / (a + b))) := by
+            field_simp [(add_pos ha hb).ne']
+      _ ≤ (a + b) * ((a - b) * Real.log (a / b)) := hmul'
+
+private lemma routeEPairEntropy_sq_le_of_zero_iff
+    (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hz : a = 0 ↔ b = 0) :
+    2 * (a - b) ^ 2 ≤ (a + b) * ((a - b) * Real.log (a / b)) := by
+  by_cases ha0 : a = 0
+  · rw [ha0, hz.mp ha0]
+    norm_num
+  · have hb0 : b ≠ 0 := fun h ↦ ha0 (hz.mpr h)
+    exact routeEPairEntropy_sq_le a b (lt_of_le_of_ne ha (Ne.symm ha0))
+      (lt_of_le_of_ne hb (Ne.symm hb0))
+
+private lemma routeEPairEntropy_nonneg_of_zero_iff
+    (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hz : a = 0 ↔ b = 0) :
+    0 ≤ (a - b) * Real.log (a / b) := by
+  by_cases ha0 : a = 0
+  · rw [ha0, hz.mp ha0]
+    norm_num
+  · have hb0 : b ≠ 0 := fun h ↦ ha0 (hz.mpr h)
+    have ha' : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
+    have hb' : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
+    have h := routeEPairEntropy_sq_le a b ha' hb'
+    have hprod : 0 ≤ (a + b) * ((a - b) * Real.log (a / b)) :=
+      (mul_nonneg (by positivity) (sq_nonneg _)).trans h
+    exact (mul_nonneg_iff_of_pos_left (add_pos ha' hb')).mp hprod
+
+/-- Finite edge law is absolutely continuous with respect to reversal. -/
+def ReverseAbsolutelyContinuous (K : RouteEOppositeParityKernel ι) : Prop :=
+  ∀ i j, K.edgeMass j i = 0 → K.edgeMass i j = 0
+
+/-- Forward relative entropy of normalized edge law against its reversal. -/
+noncomputable def edgeRelativeEntropy (K : RouteEOppositeParityKernel ι) : ℝ :=
+  (∑ i, ∑ j, K.edgeMass i j * Real.log (K.edgeMass i j / K.edgeMass j i)) /
+    K.totalWeight
+
+/-- Normalized directed edge law. -/
+noncomputable def normalizedEdgeMass (K : RouteEOppositeParityKernel ι) (i j : ι) : ℝ :=
+  K.edgeMass i j / K.totalWeight
+
+/-- Total unnormalized edge-law variation against reversal. -/
+def edgeVariationMass (K : RouteEOppositeParityKernel ι) : ℝ :=
+  ∑ i, ∑ j, |K.edgeMass i j - K.edgeMass j i|
+
+private lemma log_reverse_div
+    (a b : ℝ) (hz : a = 0 ↔ b = 0) :
+    Real.log (b / a) = -Real.log (a / b) := by
+  by_cases ha : a = 0
+  · rw [ha, hz.mp ha]
+    norm_num
+  · have hb : b ≠ 0 := fun h ↦ ha (hz.mpr h)
+    rw [Real.log_div hb ha, Real.log_div ha hb]
+    ring
+
+private theorem pairEntropy_sum_eq_two_mul_forward
+    (K : RouteEOppositeParityKernel ι) (hac : K.ReverseAbsolutelyContinuous) :
+    (∑ i, ∑ j,
+        (K.edgeMass i j - K.edgeMass j i) *
+          Real.log (K.edgeMass i j / K.edgeMass j i)) =
+      2 * ∑ i, ∑ j,
+        K.edgeMass i j * Real.log (K.edgeMass i j / K.edgeMass j i) := by
+  classical
+  have hzero : ∀ i j, K.edgeMass i j = 0 ↔ K.edgeMass j i = 0 :=
+    fun i j ↦ ⟨hac j i, hac i j⟩
+  have hreverse :
+      (∑ i, ∑ j,
+          K.edgeMass j i * Real.log (K.edgeMass i j / K.edgeMass j i)) =
+        -(∑ i, ∑ j,
+          K.edgeMass i j * Real.log (K.edgeMass i j / K.edgeMass j i)) := by
+    rw [Finset.sum_comm]
+    rw [← Finset.sum_neg_distrib]
+    apply Finset.sum_congr rfl
+    intro i _hi
+    rw [← Finset.sum_neg_distrib]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    rw [log_reverse_div (K.edgeMass i j) (K.edgeMass j i) (hzero i j)]
+    ring
+  simp_rw [sub_mul, Finset.sum_sub_distrib]
+  rw [hreverse]
+  ring
+
+/-- The finite formula is literally KL divergence of normalized edge law from its reversal. -/
+theorem edgeRelativeEntropy_eq_normalizedEdgeLawSum
+    (K : RouteEOppositeParityKernel ι) (hweight : 0 < K.totalWeight) :
+    K.edgeRelativeEntropy =
+      ∑ i, ∑ j, K.normalizedEdgeMass i j *
+        Real.log (K.normalizedEdgeMass i j / K.normalizedEdgeMass j i) := by
+  classical
+  have hratio : ∀ i j,
+      K.normalizedEdgeMass i j / K.normalizedEdgeMass j i =
+        K.edgeMass i j / K.edgeMass j i := by
+    intro i j
+    simp only [normalizedEdgeMass]
+    field_simp [hweight.ne']
+  simp_rw [hratio, normalizedEdgeMass, div_mul_eq_mul_div, ← Finset.sum_div]
+  rfl
+
+private theorem edgeVariationMass_sq_le
+    (K : RouteEOppositeParityKernel ι) (hac : K.ReverseAbsolutelyContinuous) :
+    K.edgeVariationMass ^ 2 ≤
+      2 * K.totalWeight *
+        (∑ i, ∑ j,
+          K.edgeMass i j * Real.log (K.edgeMass i j / K.edgeMass j i)) := by
+  classical
+  have hzero : ∀ i j, K.edgeMass i j = 0 ↔ K.edgeMass j i = 0 :=
+    fun i j ↦ ⟨hac j i, hac i j⟩
+  let pairEntropy : ι × ι → ℝ := fun e ↦
+    (K.edgeMass e.1 e.2 - K.edgeMass e.2 e.1) *
+      Real.log (K.edgeMass e.1 e.2 / K.edgeMass e.2 e.1)
+  have hcs := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul
+    (Finset.univ : Finset (ι × ι))
+    (r := fun e ↦ |K.edgeMass e.1 e.2 - K.edgeMass e.2 e.1|)
+    (f := fun e ↦ K.edgeMass e.1 e.2 + K.edgeMass e.2 e.1)
+    (g := fun e ↦ pairEntropy e / 2)
+    (fun e _ ↦ add_nonneg (K.edgeMass_nonneg _ _) (K.edgeMass_nonneg _ _))
+    (fun e _ ↦ div_nonneg
+      (routeEPairEntropy_nonneg_of_zero_iff _ _
+        (K.edgeMass_nonneg _ _) (K.edgeMass_nonneg _ _) (hzero _ _)) (by norm_num))
+    (fun e _ ↦ by
+      have hp := routeEPairEntropy_sq_le_of_zero_iff
+        (K.edgeMass e.1 e.2) (K.edgeMass e.2 e.1)
+        (K.edgeMass_nonneg _ _) (K.edgeMass_nonneg _ _) (hzero _ _)
+      dsimp [pairEntropy]
+      rw [sq_abs]
+      nlinarith)
+  have hfirst :
+      (∑ e : ι × ι, (K.edgeMass e.1 e.2 + K.edgeMass e.2 e.1)) =
+        2 * K.totalWeight := by
+    rw [Fintype.sum_prod_type]
+    simp_rw [Finset.sum_add_distrib]
+    rw [K.sum_sum_edgeMass]
+    have hreverse : (∑ i, ∑ j, K.edgeMass j i) = K.totalWeight := by
+      rw [Finset.sum_comm]
+      exact K.sum_sum_edgeMass
+    rw [hreverse]
+    ring
+  have hsecond :
+      (∑ e : ι × ι, pairEntropy e / 2) =
+        (∑ i, ∑ j,
+          K.edgeMass i j * Real.log (K.edgeMass i j / K.edgeMass j i)) := by
+    rw [Fintype.sum_prod_type]
+    dsimp [pairEntropy]
+    simp_rw [← Finset.sum_div]
+    rw [K.pairEntropy_sum_eq_two_mul_forward hac]
+    ring
+  rw [Fintype.sum_prod_type] at hcs
+  change K.edgeVariationMass ^ 2 ≤ _ at hcs
+  rw [hfirst, hsecond] at hcs
+  simpa [mul_assoc] using hcs
+
+/-- Pinsker rate specialized to reversal: rejection fraction is controlled by edge entropy. -/
+theorem totalRejection_div_totalWeight_le_sqrt_half_edgeRelativeEntropy
+    (K : RouteEOppositeParityKernel ι)
+    (hac : K.ReverseAbsolutelyContinuous) (hweight : 0 < K.totalWeight) :
+    K.totalRejection / K.totalWeight ≤ Real.sqrt (K.edgeRelativeEntropy / 2) := by
+  have hsq := K.edgeVariationMass_sq_le hac
+  have hreject : K.totalRejection = (1 / 2 : ℝ) * K.edgeVariationMass := by
+    simpa [edgeVariationMass] using K.totalRejection_eq_half_edgeVariation
+  have hentropy : 0 ≤ K.edgeRelativeEntropy := by
+    have hforward : 0 ≤
+        (∑ i, ∑ j,
+          K.edgeMass i j * Real.log (K.edgeMass i j / K.edgeMass j i)) := by
+      have hpair := K.pairEntropy_sum_eq_two_mul_forward hac
+      have hpair_nonneg : 0 ≤
+          (∑ i, ∑ j,
+            (K.edgeMass i j - K.edgeMass j i) *
+              Real.log (K.edgeMass i j / K.edgeMass j i)) := by
+        apply Finset.sum_nonneg
+        intro i _hi
+        apply Finset.sum_nonneg
+        intro j _hj
+        exact routeEPairEntropy_nonneg_of_zero_iff _ _
+          (K.edgeMass_nonneg _ _) (K.edgeMass_nonneg _ _)
+          ⟨hac j i, hac i j⟩
+      nlinarith
+    exact div_nonneg hforward hweight.le
+  have hreject_nonneg : 0 ≤ K.totalRejection := by
+    apply Finset.sum_nonneg
+    intro i _hi
+    exact K.rejectedAt_nonneg i
+  apply (Real.le_sqrt (div_nonneg hreject_nonneg hweight.le)
+    (div_nonneg hentropy (by norm_num))).2
+  rw [hreject]
+  dsimp [edgeRelativeEntropy] at *
+  field_simp [hweight.ne'] at *
+  nlinarith
+
+/-- Literal logarithmic detailed balance implies the paper's exponential rejection rate. -/
+theorem totalRejection_div_totalWeight_le_half_exp_defect_of_log_ratio
+    (K : RouteEOppositeParityKernel ι) (η : ℝ) (hη : 0 ≤ η)
+    (hweight : 0 < K.totalWeight) (hac : K.ReverseAbsolutelyContinuous)
+    (hlog : ∀ i j, K.edgeMass i j ≠ 0 →
+      |Real.log (K.edgeMass i j / K.edgeMass j i)| ≤ η) :
+    K.totalRejection / K.totalWeight ≤ (Real.exp η - 1) / 2 := by
+  apply K.totalRejection_div_totalWeight_le_half_exp_defect η hη hweight
+  intro i j
+  by_cases ha0 : K.edgeMass i j = 0
+  · rw [ha0]
+    exact mul_nonneg (Real.exp_pos η).le (K.edgeMass_nonneg j i)
+  · have hb0 : K.edgeMass j i ≠ 0 := fun h ↦ ha0 (hac i j h)
+    have ha : 0 < K.edgeMass i j :=
+      lt_of_le_of_ne (K.edgeMass_nonneg i j) (Ne.symm ha0)
+    have hb : 0 < K.edgeMass j i :=
+      lt_of_le_of_ne (K.edgeMass_nonneg j i) (Ne.symm hb0)
+    have hlogle : Real.log (K.edgeMass i j / K.edgeMass j i) ≤ η :=
+      (le_abs_self _).trans (hlog i j ha0)
+    have hratio : K.edgeMass i j / K.edgeMass j i ≤ Real.exp η := by
+      have hexp := Real.exp_le_exp.mpr hlogle
+      rw [Real.exp_log (div_pos ha hb)] at hexp
+      exact hexp
+    calc
+      K.edgeMass i j = (K.edgeMass i j / K.edgeMass j i) * K.edgeMass j i := by
+        field_simp [hb0]
+      _ ≤ Real.exp η * K.edgeMass j i :=
+        mul_le_mul_of_nonneg_right hratio hb.le
+
 end RouteEOppositeParityKernel
+
+/-- One-site Gibbs weight used by the opposite-parity likelihood-ratio instantiation. -/
+noncomputable def routeEGibbsLikelihoodWeight (X energy : ℝ) : ℝ :=
+  Real.exp (-energy / X)
+
+/-- Exact Gibbs likelihood-ratio oscillation, with no asymptotic remainder. -/
+theorem abs_log_routeEGibbsLikelihoodWeight_div
+    (X m n : ℝ) (hX : 0 < X) :
+    |Real.log (routeEGibbsLikelihoodWeight X m / routeEGibbsLikelihoodWeight X n)| =
+      |m - n| / X := by
+  simp only [routeEGibbsLikelihoodWeight,
+    Real.log_div (Real.exp_ne_zero _) (Real.exp_ne_zero _), Real.log_exp]
+  have hrewrite : -m / X - -n / X = -(m - n) / X := by ring
+  rw [hrewrite, abs_div, abs_neg, abs_of_pos hX]
+
+/-- A finite energy aperture gives the exact pairwise Gibbs logarithmic defect. -/
+theorem abs_log_routeEGibbsLikelihoodWeight_div_le
+    (X H m n : ℝ) (hX : 0 < X) (hspan : |m - n| ≤ H) :
+    |Real.log (routeEGibbsLikelihoodWeight X m / routeEGibbsLikelihoodWeight X n)| ≤
+      H / X := by
+  rw [abs_log_routeEGibbsLikelihoodWeight_div X m n hX]
+  exact div_le_div_of_nonneg_right hspan hX.le
 
 end RHTower
