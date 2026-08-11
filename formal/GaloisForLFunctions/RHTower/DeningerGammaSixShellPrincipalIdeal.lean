@@ -227,7 +227,7 @@ theorem DeningerGammaSixReflectedEdgeInDomain_iff (delta : ℝ) :
   rw [DeningerGammaSixProjectiveTraceDomain_iff]
   constructor <;> intro h <;> linarith
 
-theorem testBothEdgesInDomain_iff (delta : ℝ) :
+theorem DeningerGammaSixBothEdgesInDomain_iff (delta : ℝ) :
     DeningerGammaSixForwardEdgeInDomain delta ∧ DeningerGammaSixReflectedEdgeInDomain delta ↔ delta = 0 := by
   rw [DeningerGammaSixForwardEdgeInDomain_iff, DeningerGammaSixReflectedEdgeInDomain_iff]
   constructor
@@ -279,7 +279,7 @@ theorem deningerGammaSixShellEigenvalue_eq_on_shell {m n : ℕ} (hm : 3 ≤ m)
   · omega
   · omega
 
-theorem testShellTraceMass_eq_five {m : ℕ} (hm : 3 ≤ m) :
+theorem deningerGammaSixShellTraceMass_eq_five {m : ℕ} (hm : 3 ≤ m) :
     ∑ n ∈ deningerGammaSixShellCoordinates m, deningerGammaSixShellEigenvalue n = 5 := by
   calc
     ∑ n ∈ deningerGammaSixShellCoordinates m, deningerGammaSixShellEigenvalue n =

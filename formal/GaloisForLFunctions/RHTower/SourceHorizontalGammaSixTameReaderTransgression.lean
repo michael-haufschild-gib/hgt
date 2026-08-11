@@ -316,6 +316,137 @@ theorem tendsto_sourceHorizontalGammaSixExceptionalTameReaderTransgression
   exact (tendsto_const_nhds.mul
     (tendsto_sourceHorizontalGammaSixShellPrimeClockProfileSeries u)).congr' hEq.symm
 
+/-! ## Pre-divisor regulator-kernel class -/
+
+/-- Finite real group algebra of the marked Gamma-six exponent lattice. -/
+abbrev SourceHorizontalGammaSixExponentCarrier := ℤ →₀ ℝ
+
+/-- Ordered pair of the two retained exponent orientations at shell grade `m`. -/
+def sourceHorizontalGammaSixOrientedExponentAtom
+    (m : ℕ) : SourceHorizontalGammaSixExponentCarrier :=
+  Finsupp.single (m : ℤ) 1 - Finsupp.single (-(m : ℤ)) 1
+
+/-- Linear Kummer exponent moment.  Multiplication by `log 6` gives the Gamma-six Kummer
+regulator. -/
+def sourceHorizontalGammaSixKummerExponentMoment :
+    SourceHorizontalGammaSixExponentCarrier →ₗ[ℝ] ℝ :=
+  Finsupp.lsum ℝ fun k => (k : ℝ) • LinearMap.id
+
+@[simp] theorem sourceHorizontalGammaSixKummerExponentMoment_atom
+    (m : ℕ) :
+    sourceHorizontalGammaSixKummerExponentMoment
+        (sourceHorizontalGammaSixOrientedExponentAtom m) =
+      2 * m := by
+  rw [sourceHorizontalGammaSixOrientedExponentAtom, map_sub,
+    sourceHorizontalGammaSixKummerExponentMoment,
+    Finsupp.lsum_single, Finsupp.lsum_single]
+  simp
+  ring
+
+/-- Nonlinear horizontal-character readout of the exponent carrier. -/
+def sourceHorizontalGammaSixExponentCharacterReadout (a : ℝ) :
+    SourceHorizontalGammaSixExponentCarrier →ₗ[ℝ] ℝ :=
+  Finsupp.lsum ℝ fun k => Real.exp (a * (k : ℝ)) • LinearMap.id
+
+@[simp] theorem sourceHorizontalGammaSixExponentCharacterReadout_atom
+    (a : ℝ) (m : ℕ) :
+    sourceHorizontalGammaSixExponentCharacterReadout a
+        (sourceHorizontalGammaSixOrientedExponentAtom m) =
+      2 * Real.sinh (a * m) := by
+  rw [sourceHorizontalGammaSixOrientedExponentAtom, map_sub,
+    sourceHorizontalGammaSixExponentCharacterReadout,
+    Finsupp.lsum_single, Finsupp.lsum_single]
+  simp only [LinearMap.smul_apply, LinearMap.id_apply, smul_eq_mul,
+    Real.sinh_eq, Int.cast_neg, Int.cast_natCast]
+  ring
+
+/-- Concrete finite source relation: harmonic average of all retained marked shell orientations
+minus the terminal orientation pair. -/
+def sourceHorizontalGammaSixHarmonicBoundaryClass
+    (N : ℕ) : SourceHorizontalGammaSixExponentCarrier :=
+  (1 / (N : ℝ)) •
+      ∑ j ∈ Finset.range N,
+        (sourceHorizontalGammaSixShellClock N j)⁻¹ •
+          sourceHorizontalGammaSixOrientedExponentAtom (N - j) -
+    sourceHorizontalGammaSixOrientedExponentAtom N
+
+/-- The harmonic shell class is unconditionally Kummer-regulator null before any horizontal
+character or Xi divisor is chosen. -/
+theorem sourceHorizontalGammaSixKummerExponentMoment_harmonicBoundaryClass
+    {N : ℕ} (hN : 0 < N) :
+    sourceHorizontalGammaSixKummerExponentMoment
+        (sourceHorizontalGammaSixHarmonicBoundaryClass N) = 0 := by
+  rw [sourceHorizontalGammaSixHarmonicBoundaryClass, map_sub, map_smul, map_sum]
+  simp_rw [map_smul, sourceHorizontalGammaSixKummerExponentMoment_atom]
+  have hterm : ∀ j ∈ Finset.range N,
+      (1 / (N : ℝ)) *
+          ((sourceHorizontalGammaSixShellClock N j)⁻¹ *
+            (2 * (N - j : ℕ))) = 2 := by
+    intro j hj
+    rw [Finset.mem_range] at hj
+    rw [sourceHorizontalGammaSixShellClock, Nat.cast_sub (Nat.le_of_lt hj)]
+    have hN0 : (N : ℝ) ≠ 0 := by exact_mod_cast hN.ne'
+    have hdiff : (N : ℝ) - j ≠ 0 := by
+      exact sub_ne_zero.mpr (by exact_mod_cast ne_of_gt hj)
+    field_simp [hN0, hdiff]
+  calc
+    (1 / (N : ℝ)) *
+          ∑ j ∈ Finset.range N,
+            (sourceHorizontalGammaSixShellClock N j)⁻¹ * (2 * ↑(N - j)) -
+        2 * ↑N =
+      ∑ j ∈ Finset.range N,
+        (1 / (N : ℝ)) *
+          ((sourceHorizontalGammaSixShellClock N j)⁻¹ * (2 * ↑(N - j))) -
+        2 * ↑N := by rw [Finset.mul_sum]
+    _ = ∑ _j ∈ Finset.range N, (2 : ℝ) - 2 * N := by
+      congr 1
+      apply Finset.sum_congr rfl
+      intro j hj
+      exact hterm j hj
+    _ = 0 := by simp; ring
+
+/-- Nonlinear horizontal evaluation of the regulator-kernel source class is the explicit
+hyperbolic shell transgression. -/
+theorem sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass
+    {N : ℕ} (_hN : 0 < N) (u : ℝ) :
+    sourceHorizontalGammaSixExponentCharacterReadout (u / N)
+        (sourceHorizontalGammaSixHarmonicBoundaryClass N) =
+      (1 / (N : ℝ)) *
+          ∑ j ∈ Finset.range N,
+            (sourceHorizontalGammaSixShellClock N j)⁻¹ *
+              (2 * Real.sinh (u * ((N - j : ℕ) : ℝ) / N)) -
+        2 * Real.sinh (u * (N : ℝ) / N) := by
+  rw [sourceHorizontalGammaSixHarmonicBoundaryClass, map_sub, map_smul, map_sum]
+  simp_rw [map_smul, sourceHorizontalGammaSixExponentCharacterReadout_atom]
+  simp only [smul_eq_mul]
+  congr 1
+  · congr 1
+    apply Finset.sum_congr rfl
+    intro j _hj
+    ring
+  · ring
+
+/-- Exact source interpretation of the Frankenstein seam: a class already killed by the linear
+Kummer regulator is sent by nonlinear character evaluation to the full marked-tame shell anomaly. -/
+theorem sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_eq_tame
+    {N : ℕ} (hN : 0 < N) (u : ℝ) :
+    sourceHorizontalGammaSixExponentCharacterReadout (u / N)
+        (sourceHorizontalGammaSixHarmonicBoundaryClass N) =
+      sourceHorizontalGammaSixExceptionalTameReaderTransgression N u := by
+  rw [sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass hN u,
+    sourceHorizontalGammaSixExceptionalTameReaderTransgression]
+  simp_rw [sourceHorizontalGammaSixExceptionalTameReader_cofinal_eq_sinh hN]
+
+/-- Consequently nonlinear evaluation of the regulator-null source class is exactly twice the
+finite Gamma-six Green/Wold shell profile. -/
+theorem sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_eq_profile
+    {N : ℕ} (hN : 0 < N) (u : ℝ) :
+    sourceHorizontalGammaSixExponentCharacterReadout (u / N)
+        (sourceHorizontalGammaSixHarmonicBoundaryClass N) =
+      2 * sourceHorizontalGammaSixShellPrimeClockProfileSeries N u := by
+  rw [sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_eq_tame hN u,
+    ← sourceHorizontalGammaSixShellProfile_eq_tameReaderTransgression hN u]
+
 end
 
 end RHTower
