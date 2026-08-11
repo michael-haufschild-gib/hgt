@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.RouteRRationalCartierPrimeDilationLanding
 import GaloisForLFunctions.RHTower.SourceHorizontalShellGreenPrimeClockProfile
 import GaloisForLFunctions.RHTower.DeningerExponentExceptionalTameGreenBridge
+import GaloisForLFunctions.RHTower.DeningerCyclicHomology
 
 /-!
 # Gamma-six tame-reader transgression of the source-horizontal shell profile
@@ -466,6 +467,108 @@ theorem sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_t
     convert Real.sinh_two_mul (u / 2) using 1 <;> ring
   rw [hdouble]
   nlinarith
+
+/-- Thus a concrete nonzero source class survives inside the linear Kummer-regulator kernel. -/
+theorem sourceHorizontalGammaSixHarmonicBoundaryClass_two_ne_zero :
+    sourceHorizontalGammaSixHarmonicBoundaryClass 2 ≠ 0 := by
+  intro hzero
+  have hneg :=
+    sourceHorizontalGammaSixExponentCharacterReadout_harmonicBoundaryClass_two_neg
+      (u := 1) zero_lt_one
+  rw [hzero, map_zero] at hneg
+  exact (lt_irrefl 0) hneg
+
+/-! ## Existing Deninger cyclic resolution realizes the source class -/
+
+/-- Multiplicative presentation of the Gamma-six exponent lattice. -/
+abbrev SourceHorizontalGammaSixCyclicGroup := Multiplicative ℤ
+
+/-- Canonical identification with the infinite cyclic group used by Deninger's resolution. -/
+def sourceHorizontalGammaSixCyclicGroupEquiv :
+    SourceHorizontalGammaSixCyclicGroup ≃* Multiplicative ℤ :=
+  MulEquiv.refl SourceHorizontalGammaSixCyclicGroup
+
+/-- Group-algebra presentation of the two marked exponent orientations. -/
+def sourceHorizontalGammaSixCyclicGroupAtom
+    (m : ℕ) : MonoidAlgebra ℝ SourceHorizontalGammaSixCyclicGroup :=
+  MonoidAlgebra.single (Multiplicative.ofAdd (m : ℤ)) 1 -
+    MonoidAlgebra.single (Multiplicative.ofAdd (-(m : ℤ))) 1
+
+/-- Its coefficient column is exactly the previously defined oriented exponent atom. -/
+theorem sourceHorizontalGammaSixCyclicGroupAtom_coeff
+    (m : ℕ) :
+    MonoidAlgebra.coeffLinearEquiv ℝ
+        (sourceHorizontalGammaSixCyclicGroupAtom m) =
+      Finsupp.domLCongr Multiplicative.ofAdd
+        (sourceHorizontalGammaSixOrientedExponentAtom m) := by
+  ext k
+  rcases k with ⟨k⟩
+  simp [sourceHorizontalGammaSixCyclicGroupAtom,
+    sourceHorizontalGammaSixOrientedExponentAtom]
+
+/-- The oriented atom is already a genuine `t - 1` boundary in Deninger's infinite-cyclic
+resolution. -/
+theorem sourceHorizontalGammaSixCyclicGroupAtom_mem_boundaryRange
+    (m : ℕ) :
+    sourceHorizontalGammaSixCyclicGroupAtom m ∈
+      LinearMap.range
+        (deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom.toLinearMap := by
+  have hp := deningerZ_pow_sub_one
+    sourceHorizontalGammaSixCyclicGroupEquiv ℝ (m : ℤ)
+  have hn := deningerZ_pow_sub_one
+    sourceHorizontalGammaSixCyclicGroupEquiv ℝ (-(m : ℤ))
+  have h := Submodule.sub_mem _ hp hn
+  convert h using 1
+  simp [sourceHorizontalGammaSixCyclicGroupAtom,
+    sourceHorizontalGammaSixCyclicGroupEquiv, deningerZPow]
+
+/-- Group-algebra lift of the harmonic shell relation. -/
+def sourceHorizontalGammaSixCyclicHarmonicBoundaryClass
+    (N : ℕ) : MonoidAlgebra ℝ SourceHorizontalGammaSixCyclicGroup :=
+  (1 / (N : ℝ)) •
+      ∑ j ∈ Finset.range N,
+        (sourceHorizontalGammaSixShellClock N j)⁻¹ •
+          sourceHorizontalGammaSixCyclicGroupAtom (N - j) -
+    sourceHorizontalGammaSixCyclicGroupAtom N
+
+/-- The cyclic group-algebra lift has exactly the coefficient column whose nonlinear evaluation
+was proved to be the finite shell profile. -/
+theorem sourceHorizontalGammaSixCyclicHarmonicBoundaryClass_coeff
+    (N : ℕ) :
+    MonoidAlgebra.coeffLinearEquiv ℝ
+        (sourceHorizontalGammaSixCyclicHarmonicBoundaryClass N) =
+      Finsupp.domLCongr Multiplicative.ofAdd
+        (sourceHorizontalGammaSixHarmonicBoundaryClass N) := by
+  rw [sourceHorizontalGammaSixCyclicHarmonicBoundaryClass,
+    sourceHorizontalGammaSixHarmonicBoundaryClass]
+  simp_rw [map_sub, map_smul, map_sum,
+    sourceHorizontalGammaSixCyclicGroupAtom_coeff]
+
+/-- **Source boundary theorem.** The complete finite harmonic marked-shell class is not merely
+regulator-null: it lies in the image of the literal `t - 1` differential of the existing Deninger
+infinite-cyclic resolution. -/
+theorem sourceHorizontalGammaSixCyclicHarmonicBoundaryClass_mem_boundaryRange
+    (N : ℕ) :
+    sourceHorizontalGammaSixCyclicHarmonicBoundaryClass N ∈
+      LinearMap.range
+        (deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom.toLinearMap := by
+  rw [sourceHorizontalGammaSixCyclicHarmonicBoundaryClass]
+  apply Submodule.sub_mem
+  · apply Submodule.smul_mem
+    apply Submodule.sum_mem
+    intro j _hj
+    exact Submodule.smul_mem _ _
+      (sourceHorizontalGammaSixCyclicGroupAtom_mem_boundaryRange (N - j))
+  · exact sourceHorizontalGammaSixCyclicGroupAtom_mem_boundaryRange N
+
+/-- Equivalent primitive form of the source boundary theorem. -/
+theorem exists_sourceHorizontalGammaSixCyclicHarmonicBoundaryPrimitive
+    (N : ℕ) :
+    ∃ primitive : MonoidAlgebra ℝ SourceHorizontalGammaSixCyclicGroup,
+      (deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom primitive =
+        sourceHorizontalGammaSixCyclicHarmonicBoundaryClass N := by
+  exact LinearMap.mem_range.mp
+    (sourceHorizontalGammaSixCyclicHarmonicBoundaryClass_mem_boundaryRange N)
 
 end
 

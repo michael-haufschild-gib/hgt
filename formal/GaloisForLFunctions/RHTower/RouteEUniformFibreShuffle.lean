@@ -67,13 +67,23 @@ theorem routeEUniformFibreKernel_row_sum (label : Ω → Λ) (x : Ω) :
   calc
     (∑ y, routeEUniformFibreKernel label x y) =
         ∑ y ∈ fibre, (1 : ℝ) / fibre.card := by
-      rw [Finset.sum_filter]
-      apply Finset.sum_congr rfl
-      intro y _hy
-      unfold routeEUniformFibreKernel fibre routeEUniformFibre
-      by_cases h : label x = label y
-      · rw [if_pos h, if_pos h.symm]
-      · rw [if_neg h, if_neg (Ne.symm h)]
+      calc
+        (∑ y, routeEUniformFibreKernel label x y) =
+            ∑ y, if label y = label x then (1 : ℝ) / fibre.card else 0 := by
+          apply Finset.sum_congr rfl
+          intro y _hy
+          unfold routeEUniformFibreKernel
+          change (if label x = label y then (1 : ℝ) /
+              (routeEUniformFibre label x).card else 0) = _
+          change (if label x = label y then (1 : ℝ) / fibre.card else 0) = _
+          by_cases h : label x = label y
+          · rw [if_pos h, if_pos h.symm]
+          · rw [if_neg h, if_neg (Ne.symm h)]
+        _ = ∑ y ∈ fibre, (1 : ℝ) / fibre.card := by
+          change (∑ y ∈ (Finset.univ : Finset Ω),
+            if label y = label x then (1 : ℝ) / fibre.card else 0) = _
+          rw [Finset.sum_ite]
+          simp [fibre, routeEUniformFibre]
     _ = (fibre.card : ℝ) * (1 / fibre.card) := by simp
     _ = 1 := by field_simp
 
@@ -130,7 +140,7 @@ theorem routeEUniformFibreKernel_columnLoadGradient_eq_zero
 /-- Restricting to an arbitrary nonempty aperture simply restricts the label map; the resulting
 conditional orbit kernel remains a symmetric bistochastic projection. -/
 theorem routeERestrictedUniformFibreKernel_projection
-    (label : Ω → Λ) (A : Set Ω) [Nonempty A] :
+    (label : Ω → Λ) (A : Finset Ω) [Nonempty A] :
     (∀ x y : A,
       routeEUniformFibreKernel (fun z : A => label z) x y =
         routeEUniformFibreKernel (fun z : A => label z) y x) ∧
@@ -161,11 +171,11 @@ theorem routeE_abs_conditionedMean_sub_totalMean_le_two_rejection
   rw [hdiff, abs_mul, abs_of_nonneg hepsilon]
   have htriangle : |thetaGood - thetaBad| ≤ |thetaGood| + |thetaBad| := abs_sub _ _
   have : |thetaGood - thetaBad| ≤ 2 := by linarith
-  exact mul_le_mul_of_nonneg_left this hepsilon
+  simpa [mul_comm] using mul_le_mul_of_nonneg_left this hepsilon
 
 /-- Squared admission comparison used cellwise in conditional parity ANOVA. -/
 theorem routeE_conditionedMean_sq_le_totalMean_sq_add_rejection_sq
-    (thetaGood thetaTotal epsilon : ℝ) (hepsilon : 0 ≤ epsilon)
+    (thetaGood thetaTotal epsilon : ℝ) (_hepsilon : 0 ≤ epsilon)
     (hdefect : |thetaGood - thetaTotal| ≤ 2 * epsilon) :
     thetaGood ^ 2 ≤ 2 * thetaTotal ^ 2 + 8 * epsilon ^ 2 := by
   have hlower := (abs_le.mp hdefect).1
@@ -192,8 +202,15 @@ theorem routeE_weightedConditionalParityEnergy_le_admission
           (thetaGood o) (thetaTotal o) (epsilon o) (hepsilon o) (hdefect o)) (hmass o)
     _ = 2 * ∑ o, mass o * thetaTotal o ^ 2 +
         8 * ∑ o, mass o * epsilon o ^ 2 := by
-      simp_rw [mul_add, Finset.sum_add_distrib, ← Finset.mul_sum]
-      ring
+      calc
+        (∑ o, mass o * (2 * thetaTotal o ^ 2 + 8 * epsilon o ^ 2)) =
+            ∑ o, (2 * (mass o * thetaTotal o ^ 2) +
+              8 * (mass o * epsilon o ^ 2)) := by
+          apply Finset.sum_congr rfl
+          intro o _ho
+          ring
+        _ = _ := by
+          rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
 
 end
 

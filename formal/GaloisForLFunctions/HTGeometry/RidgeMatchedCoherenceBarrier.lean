@@ -217,4 +217,31 @@ theorem directSource_branch_incompatible_with_capacity
   have hmul := mul_lt_mul_of_pos_left hdirect hCpos
   nlinarith
 
+/-- At the exact band edge `1/113`, low source mass at most `7/8` contributes at most `1/128`
+through the odds transform `t / (1 - t)`. -/
+theorem sourceCyclic_lowBand_le_oneOneTwentyEight
+    {ell low : ℝ}
+    (hell : ell ≤ 7 / 8) (hlow : low ≤ ell / 112) :
+    low ≤ 1 / 128 := by
+  linarith
+
+/-- If total source-cyclic gain is above `1/64`, its low band contributes at most `1/128`, and
+the high-band density is bounded by `C / r`, then high-band source mass exceeds `r / (128 C)`. -/
+theorem sourceCyclic_highBand_mass_gt
+    {r C gain low high mass : ℝ}
+    (hr : 0 < r) (hC : 0 < C)
+    (hsplit : gain = low + high)
+    (hgain : 1 / 64 < gain) (hlow : low ≤ 1 / 128)
+    (hhigh : high ≤ C / r * mass) :
+    r / (128 * C) < mass := by
+  have hhigh' : 1 / 128 < high := by linarith
+  have hden : 0 < 128 * C := mul_pos (by norm_num) hC
+  have hcm : 1 / 128 < C / r * mass := lt_of_lt_of_le hhigh' hhigh
+  have hmass : r / 128 < C * mass := by
+    calc
+      r / 128 = r * (1 / 128) := by ring
+      _ < r * (C / r * mass) := mul_lt_mul_of_pos_left hcm hr
+      _ = C * mass := by field_simp
+  exact (div_lt_iff₀ hden).mpr (by nlinarith)
+
 end GaloisForLFunctions.HTGeometry
