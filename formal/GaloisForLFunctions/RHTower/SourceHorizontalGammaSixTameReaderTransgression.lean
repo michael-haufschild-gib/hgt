@@ -499,12 +499,13 @@ theorem sourceHorizontalGammaSixCyclicGroupAtom_coeff
     (m : ℕ) :
     MonoidAlgebra.coeffLinearEquiv ℝ
         (sourceHorizontalGammaSixCyclicGroupAtom m) =
-      Finsupp.domLCongr Multiplicative.ofAdd
+      Finsupp.domLCongr (M := ℝ) (R := ℝ)
+        (Multiplicative.ofAdd : ℤ ≃ SourceHorizontalGammaSixCyclicGroup)
         (sourceHorizontalGammaSixOrientedExponentAtom m) := by
-  ext k
-  rcases k with ⟨k⟩
-  simp [sourceHorizontalGammaSixCyclicGroupAtom,
-    sourceHorizontalGammaSixOrientedExponentAtom]
+  rw [sourceHorizontalGammaSixCyclicGroupAtom,
+    sourceHorizontalGammaSixOrientedExponentAtom, map_sub, map_sub,
+    Finsupp.domLCongr_single, Finsupp.domLCongr_single]
+  rfl
 
 /-- The oriented atom is already a genuine `t - 1` boundary in Deninger's infinite-cyclic
 resolution. -/
@@ -537,12 +538,13 @@ theorem sourceHorizontalGammaSixCyclicHarmonicBoundaryClass_coeff
     (N : ℕ) :
     MonoidAlgebra.coeffLinearEquiv ℝ
         (sourceHorizontalGammaSixCyclicHarmonicBoundaryClass N) =
-      Finsupp.domLCongr Multiplicative.ofAdd
+      Finsupp.domLCongr (M := ℝ) (R := ℝ)
+        (Multiplicative.ofAdd : ℤ ≃ SourceHorizontalGammaSixCyclicGroup)
         (sourceHorizontalGammaSixHarmonicBoundaryClass N) := by
   rw [sourceHorizontalGammaSixCyclicHarmonicBoundaryClass,
     sourceHorizontalGammaSixHarmonicBoundaryClass]
-  simp_rw [map_sub, map_smul, map_sum,
-    sourceHorizontalGammaSixCyclicGroupAtom_coeff]
+  simp only [map_sub, map_smul, map_sum]
+  simp_rw [sourceHorizontalGammaSixCyclicGroupAtom_coeff]
 
 /-- **Source boundary theorem.** The complete finite harmonic marked-shell class is not merely
 regulator-null: it lies in the image of the literal `t - 1` differential of the existing Deninger
@@ -569,6 +571,125 @@ theorem exists_sourceHorizontalGammaSixCyclicHarmonicBoundaryPrimitive
         sourceHorizontalGammaSixCyclicHarmonicBoundaryClass N := by
   exact LinearMap.mem_range.mp
     (sourceHorizontalGammaSixCyclicHarmonicBoundaryClass_mem_boundaryRange N)
+
+/-! ## Physical-character descent anomaly -/
+
+/-- Physical horizontal character on the actual Deninger cyclic group algebra. -/
+def sourceHorizontalGammaSixCyclicCharacterReadout (a : ℝ) :
+    MonoidAlgebra ℝ SourceHorizontalGammaSixCyclicGroup →ₗ[ℝ] ℝ :=
+  (Finsupp.lsum ℝ fun k =>
+    Real.exp (a * ((Multiplicative.toAdd k : ℤ) : ℝ)) • LinearMap.id).comp
+      (MonoidAlgebra.coeffLinearEquiv ℝ).toLinearMap
+
+@[simp] theorem sourceHorizontalGammaSixCyclicCharacterReadout_single
+    (a : ℝ) (k : SourceHorizontalGammaSixCyclicGroup) (c : ℝ) :
+    sourceHorizontalGammaSixCyclicCharacterReadout a (MonoidAlgebra.single k c) =
+      Real.exp (a * ((Multiplicative.toAdd k : ℤ) : ℝ)) * c := by
+  rw [sourceHorizontalGammaSixCyclicCharacterReadout, LinearMap.comp_apply]
+  change (Finsupp.lsum ℝ fun k : SourceHorizontalGammaSixCyclicGroup =>
+    Real.exp (a * ((Multiplicative.toAdd k : ℤ) : ℝ)) • LinearMap.id)
+      (Finsupp.single k c) = _
+  rw [Finsupp.lsum_single]
+  simp [smul_eq_mul]
+
+/-- Exact Beck--Chevalley defect: applying a physical character after the source differential
+multiplies its input readout by `exp a - 1`.  Thus character specialization does not descend
+through the source boundary away from the neutral horizontal grade. -/
+theorem sourceHorizontalGammaSixCyclicCharacterReadout_boundary
+    (a : ℝ) (f : MonoidAlgebra ℝ SourceHorizontalGammaSixCyclicGroup) :
+    sourceHorizontalGammaSixCyclicCharacterReadout a
+        ((deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom f) =
+      (Real.exp a - 1) * sourceHorizontalGammaSixCyclicCharacterReadout a f := by
+  refine MonoidAlgebra.induction_on (p := fun f =>
+    sourceHorizontalGammaSixCyclicCharacterReadout a
+        ((deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom f) =
+      (Real.exp a - 1) * sourceHorizontalGammaSixCyclicCharacterReadout a f) f ?_ ?_ ?_
+  · intro k
+    rw [show (MonoidAlgebra.of ℝ SourceHorizontalGammaSixCyclicGroup) k =
+          MonoidAlgebra.single k 1 from rfl,
+      deningerZBoundary_single, one_smul, map_sub,
+      sourceHorizontalGammaSixCyclicCharacterReadout_single,
+      sourceHorizontalGammaSixCyclicCharacterReadout_single]
+    have hval :
+        Multiplicative.toAdd
+            (k * deningerZGen sourceHorizontalGammaSixCyclicGroupEquiv) =
+          Multiplicative.toAdd k + 1 := by
+      exact deningerZVal_mul_gen sourceHorizontalGammaSixCyclicGroupEquiv k
+    rw [hval]
+    push_cast
+    rw [mul_add, Real.exp_add]
+    ring
+  · intro x y hx hy
+    simp only [map_add, hx, hy]
+    ring
+  · intro c x hx
+    simp only [map_smul, hx, smul_eq_mul]
+    ring
+
+/-- **Exact descent classification.** Physical-character evaluation kills every source
+`t - 1` boundary exactly at horizontal grade zero. -/
+theorem sourceHorizontalGammaSixCyclicCharacterReadout_comp_boundary_eq_zero_iff
+    (a : ℝ) :
+    (sourceHorizontalGammaSixCyclicCharacterReadout a).comp
+          (deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom.toLinearMap = 0 ↔
+      a = 0 := by
+  constructor
+  · intro hzero
+    have h := LinearMap.congr_fun hzero
+      (MonoidAlgebra.single (1 : SourceHorizontalGammaSixCyclicGroup) (1 : ℝ))
+    rw [LinearMap.comp_apply, LinearMap.zero_apply] at h
+    change sourceHorizontalGammaSixCyclicCharacterReadout a
+      ((deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom
+        (MonoidAlgebra.single (1 : SourceHorizontalGammaSixCyclicGroup) (1 : ℝ))) = 0 at h
+    rw [sourceHorizontalGammaSixCyclicCharacterReadout_boundary,
+      sourceHorizontalGammaSixCyclicCharacterReadout_single] at h
+    have hone :
+        (Multiplicative.toAdd (1 : SourceHorizontalGammaSixCyclicGroup) : ℤ) = 0 := rfl
+    rw [hone] at h
+    norm_num at h
+    have hexp : Real.exp a = 1 := sub_eq_zero.mp h
+    exact Real.exp_injective (by simpa using hexp)
+  · rintro rfl
+    apply LinearMap.ext
+    intro f
+    rw [LinearMap.comp_apply, LinearMap.zero_apply]
+    change sourceHorizontalGammaSixCyclicCharacterReadout 0
+      ((deningerZBoundary sourceHorizontalGammaSixCyclicGroupEquiv ℝ).hom f) = 0
+    rw [sourceHorizontalGammaSixCyclicCharacterReadout_boundary]
+    simp
+
+/-- On each retained orientation pair, group-algebra evaluation agrees exactly with the original
+exponent-carrier character. -/
+@[simp] theorem sourceHorizontalGammaSixCyclicCharacterReadout_atom
+    (a : ℝ) (m : ℕ) :
+    sourceHorizontalGammaSixCyclicCharacterReadout a
+        (sourceHorizontalGammaSixCyclicGroupAtom m) =
+      2 * Real.sinh (a * m) := by
+  rw [sourceHorizontalGammaSixCyclicGroupAtom, map_sub,
+    sourceHorizontalGammaSixCyclicCharacterReadout_single,
+    sourceHorizontalGammaSixCyclicCharacterReadout_single]
+  simp only [Multiplicative.toAdd_ofAdd, Int.cast_neg, Int.cast_natCast,
+    Real.sinh_eq]
+  ring
+
+/-- The literal cyclic boundary—not a coefficient surrogate—has physical value exactly equal to
+twice the finite Gamma-six Green/Wold shell profile. -/
+theorem sourceHorizontalGammaSixCyclicCharacterReadout_harmonicBoundaryClass_eq_profile
+    {N : ℕ} (_hN : 0 < N) (u : ℝ) :
+    sourceHorizontalGammaSixCyclicCharacterReadout (u / N)
+        (sourceHorizontalGammaSixCyclicHarmonicBoundaryClass N) =
+      2 * sourceHorizontalGammaSixShellPrimeClockProfileSeries N u := by
+  rw [sourceHorizontalGammaSixCyclicHarmonicBoundaryClass, map_sub,
+    map_smul, map_sum]
+  simp_rw [map_smul, sourceHorizontalGammaSixCyclicCharacterReadout_atom]
+  simp only [smul_eq_mul]
+  rw [sourceHorizontalGammaSixShellPrimeClockProfileSeries]
+  congr 1
+  · congr 1
+    apply Finset.sum_congr rfl
+    intro j _hj
+    ring
+  · ring
 
 end
 

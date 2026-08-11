@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`d4d4397f1165ef9d28bf46fe2b61d693ae2a74c0`. Files outside committed umbrellas at this snapshot are
+`ea0433908b0371edce2b41e659d70beee388668b`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
@@ -65,7 +65,16 @@ source has a sharp upper-abscissa criterion: positive-height absolute convergenc
 exponentially weighted residual variation. Umbrella Lean now packages the ODE uniqueness capstone,
 the single two-sided critical Abel graph-norm implication to RH, the Route-R neutral-jet handoff,
 the literature-shaped prime-gap Big-O receiver, and the direct classical-coordinate Xi explicit
-formula. Their remaining premises are not proved. Route U now has strict canonical Jacobi source flow throughout every finite positive chamber
+formula. Their remaining premises are not proved.
+The former absolute critical graph-norm target is now formally impossible: endpoint residual
+variation plus critical prime-gap energy would suppress the nonzero Wold boundary pole at an
+unconditionally existing critical-line zeta zero. Route T must retain a signed/distributional
+principal part. On the arithmetic side, Lean now reaches the exact smooth aggregate of the signed
+Heath--Brown packet, closes the finite-product and pointwise long-factor cases, removes `R*` below
+`sigma=99/100`, and proves cardinality alone cannot improve the cubic additive-energy wall. The
+remaining external input is a genuine aggregate large-values theorem in the all-short and
+ultra-near-one long-Möbius regimes, not more Perron packaging.
+Route U now has strict canonical Jacobi source flow throughout every finite positive chamber
 and a Lean classification of every fixed positive even first contact: one positive rank-fill block
 is followed by an indefinite block, and the higher-contact two-amplitude source matrix is
 intrinsically indefinite. Amplitude and coordinate gauges are now removed by admitted norm and
@@ -75,8 +84,14 @@ a nonzero finite-type Weil-null limit; exact Möbius numerator clearing now make
 squared-variable Laguerre--Polya state satisfying a finite-prime Gamma equation and smaller-aperture
 positivity. Remaining science is exclusion of that explicit hyperbolic boundary state, not generic
 admission holonomy. Its alternate current-admission lane is now exactly odd defect-energy drift
-plus norm flux; a positive three-atom resolvent countermodel rules out every generic finite-moment
-sign argument, leaving only label-sensitive prime--Gamma/global-Xi input.
+plus norm flux, and this identity, its arithmetic source density, and its integrated `L1` budget
+are now umbrella-reachable Lean. A positive three-atom resolvent countermodel rules out every
+generic finite-moment sign argument, leaving only label-sensitive prime--Gamma/global-Xi input.
+The fixed-shift resolvent-Hankel criterion is now an exact RH equivalence at every nonnegative
+shift. Its new unconditional sector proves all moments positive on a quadratic far ray and every
+one-signed coefficient form positive in a growing cone; any negative witness must change sign.
+One decaying imaginary resolvent mass controls every polynomial-trace deficit and vanishes exactly
+on RH. This localizes Route U's obstruction but does not provide its missing source sign.
 The paper-level parity-jet inertia law further closes the previously unclassified excess-mode
 branch: multiplication by Fourier variable sends terminal even root-jet mass `gamma_r` to odd
 energy `r*gamma_r`, all nonterminal root jets acquire odd null twins, and full-ground
@@ -87,11 +102,28 @@ its source and circle targets are formal Fréchet spaces and the source-specific
 formally nonclosed. Two-endpoint Stokes normalization removes only the Haar ambiguity while the
 surviving coinvariant space, hence normalized-observer freedom, is infinite-dimensional.
 Current Route-R formal classifications close positive prime-diagonal flux, functional-equation
-partner matching, and finite regular Gamma--Stein/translation annihilation as producers. Paper C33
-also closes every functorial positive polarization, source-natural topology/domain, pure index, and
-local algebraic/holomorphic reporter on the dual Gamma source. A viable successor must be a
+partner matching, finite regular Gamma--Stein/translation annihilation, hyperbolic-gauge-natural
+polar landing, reflection-even completion counterterms, and prime-clock linear/cubic
+symmetrization as producers. The umbrella-reachable pre-polar terminal theorem packages these
+classes and proves they cannot annihilate the horizontal carrier coefficient-faithfully. A viable
+successor must be a
 nonfunctorial polar reduction selected by additional numerical Euler--Gamma arithmetic and proved
-to equal the fixed physical Xi metric.
+to equal the fixed physical Xi metric. Existence of the abstract external handoff is itself
+RH-equivalent, so this is an endpoint specification, not a local construction.
+
+Route L now has two further exact formal layers: the Gamma-six shell diagonal has exact
+approximation numbers, lies in weak Schatten one but not trace class, has shell trace mass five,
+and admits both reflected projective edges exactly at neutral grade; the exponent-deformation
+exceptional fibre carries the marked tame exponents and actual physical coefficient. The shell
+moments also resum to the same nonlinear Wold prime-clock profile. These remove source-normal and
+principal-ideal ambiguity but not the global ideal-preserving Rost--Schmid/Meyer comparison.
+
+Route E's finite architecture is now formal through three charts: weighted-Hall projection duality,
+physical-fibre/product-fibre coarea with all-depth dissipation, and two-sided column-load
+Dirichlet reduction. Product-preserving recombination has an exact second-order Gibbs defect.
+Complete signed inverse-load flux is formally circular because it reconstructs the original
+current after the controlled terms are removed. No external result reviewed supplies the
+rate-sharp ordinary-integer fibre/load estimate, aperture admission, or moving seam descent.
 Additional committed modules are not umbrella-reachable and receive only provisional scientific
 classification: Route G's movable-anchor/Clark and two-port wedge laws, and Route L's complete
 adiabatic Möbius--Euler--Gamma/Green--Stokes/transgression chain. Route E's finite entropy-complement
@@ -266,8 +298,16 @@ does not alter C1's spectral-orientation open core.
 Umbrella-reachable `XiResolventTowerLowDegreePositivity.lean` formally extends this diagonal calculation to the first resolvent moment for every nonnegative
 shift and to the second for shifts at least `3/4`, then transports them to squared and cubed
 Cauchy-test Weil diagonals. No exact external collision was located for this source-specific cone
-package, but no priority claim is made. It receives formal credit. It leaves degree two at small shift, all genuinely higher degrees, full Weil
-positivity, and C1 spectral reality open.
+package, but no priority claim is made. The new resolvent suite completes the logical chart:
+`XiResolventHankelEquivalence.lean` proves positivity of every finite Hankel form at any one fixed
+nonnegative shift equivalent to RH. `XiResolventUnconditionalSector.lean` proves all moments
+positive on the quadratic far ray and all one-signed coefficient forms positive in a growing
+sector. `XiResolventTraceMassControl.lean` and `XiResolventMassDecay.lean` bound every remaining
+deficit by one imaginary mass decaying as `(X+1)^(-2)`, whose vanishing is RH-equivalent. The
+external ingredients—Hamburger moment positivity, sector estimates, and elementary polynomial
+bounds—are classical in kind; no external source was located for this exact Xi-resolvent package.
+It is a sharp local synthesis, not a C1 solution: sign-changing Hankel forms and C1 spectral
+reality remain open. The moving first-crossing use of this chart is Route U.
 
 The umbrella-reachable Cayley clock of the squared theta-boundary
 generator and proves RH equivalent to subexponential growth of one fixed rank-two observed orbit.
@@ -617,8 +657,8 @@ with that contractive corner, preserve its source normalization without inverse 
 or Euler-gauge loss, and carry the same moving seam. These paper results refine the target but the
 finite connector receives no Lean credit at this cutoff.
 
-A dependency-closed paper theorem now replaces qualitative column capacity by an exact finite
-producer. For normalized physical source and target laws `alpha,beta` on fixed relation `E`, the
+Umbrella-reachable Lean now replaces qualitative column capacity by an exact finite reporter
+problem. For normalized physical source and target laws `alpha,beta` on fixed relation `E`, the
 minimum centered column energy is `(A^2/B)d_E^2`, where `d_E` is weighted chi-square distance from
 `beta` to the reachable target-marginal polytope. Hilbert projection gives the exact dual
 
@@ -631,11 +671,13 @@ Thus strict half requires `d_E^2<=X^(-1+o(1))`, equivalently an all-reporter def
 `1+epsilon` gives only `d_E^2<=epsilon`, sharply, so `1+o(1)` capacity is not enough; its excess
 must reach `X^(-1+o(1))`, or a two-sided balance must reach `X^(-1/2+o(1))`. Exact partition ANOVA
 also makes the moving seam mismatch an orthogonal energy term, so it must be transported by the
-same recurrence-compatible kernel. This theorem is present as a committed paper card and has no
-Lean formalization.
+same recurrence-compatible kernel. `RouteEWeightedHallANOVA.lean` and
+`RouteEWeightedHallProjectionDuality.lean` formalize the finite normalization, compact reachable
+polytope, canonical projection, zero-distance transport equivalence, variational inequality, and
+extremal reporter. They do not prove the literal relation's distance rate.
 
-A second dependency-closed paper consequence of existing umbrella Lean gives a direct scalar
-lane. On a symmetric parity-flipping physical graph with degrees `d_n`, Gibbs weights, and edge
+A second umbrella-reachable Lean lane uses direct load roughness. On a symmetric parity-flipping
+physical graph with degrees `d_n`, Gibbs weights, and edge
 displacement `H`, canonical degree-normalized conductance proves
 
 ```text
@@ -660,8 +702,9 @@ and prove subpolynomial inverse-load energy, without assuming detailed balance. 
 that exponent-level row/co-degree balance cannot imply it. Existing Lean also makes bounded
 one/two/four-prime replacement graphs isolate every sufficiently friable vertex; the failed-route
 density audit upgrades this to linear isolated Gibbs mass, retiring that local graph. Full growing-
-breadth entropy complement survives. This lane is paper synthesis of committed Lean consumers,
-not a new Lean theorem or an independent route.
+breadth entropy complement survives. `RouteETwoSidedColumnLoadGradient.lean` now proves the
+full-row current bridge, `E_q<=4E_ell`, and exact hydrodynamic same/cross-sector decomposition.
+This is a formal consumer, not an independent route or arithmetic estimate.
 
 Committed but not umbrella-reachable `RouteEOppositeParityMetropolisRejection.lean` certifies the
 abstract Metropolis subclaim for every finite
@@ -676,28 +719,42 @@ The same committed unwired file proves the sharp rate law: a two-sided multiplic
 supports reject all physical mass. This validates the strict-half scale and the one-way-proposal
 no-go, but does not establish either premise for a source-derived arithmetic relation.
 
-Committed but not umbrella-reachable `RouteEDegreeNormalizedGibbsBoundaryVariation.lean`
-independently certifies the finite weighted graph consumer through the exact total-variation and
+Umbrella-reachable `RouteEDegreeNormalizedGibbsBoundaryVariation.lean`
+certifies the finite weighted graph consumer through the exact total-variation and
 co-moving stages: unused minimum-endpoint conductance equals isolated Gibbs mass plus edge
 variation of degree-normalized density, and
 `|J| <= isolated + lambda H Z + inverse-degree variation`. It also converts a source-predeclared
 substochastic recurrence kernel into the weighted graph and identifies inverse degree with
 `2/(row+column)`, then proves the Cauchy--Schwarz/Dirichlet bridge, the final square-root energy
-current bound, and its one-sign/complete-bipartite firewalls. No committed umbrella imports the
-module. These remain consumer theorems: they neither form the arithmetic recurrence relation nor prove
+current bound, and its one-sign/complete-bipartite firewalls. These remain consumer theorems: they neither form the arithmetic recurrence relation nor prove
 the strict-half bounds on isolated mass and inverse-load energy.
 
-Committed but not umbrella-reachable `RouteEWeightedHallANOVA.lean` formally confirms the other
+Umbrella-reachable `RouteEWeightedHallANOVA.lean` formally confirms the other
 rate wall: exact physical normalization and collision expansion, sharp
 `density<=1+epsilon => chiSquare<=epsilon`, two-sided
 `|density-1|<=epsilon => chiSquare<=epsilon^2`, and exact within/between-sector seam ANOVA. The
 one-sided rate has a symbolic sharpness witness. This closes generic finite algebra, not the
-literal arithmetic adjacency. Committed but umbrella-unreachable
-`RouteEWeightedHallProjectionDuality.lean` proposes the remaining generic convex layer: compact
+literal arithmetic adjacency. Umbrella-reachable
+`RouteEWeightedHallProjectionDuality.lean` closes the generic convex layer: compact
 reachable-marginal polytope, canonical weighted projection, variational inequality, extremal
-reporter, and exact greatest-value reporter/projection duality. Current working-tree proof repairs
-are unbuilt. This gives only provisional Lean support for the paper duality and still does not
-define or estimate Route E's physical arithmetic relation.
+reporter, and exact greatest-value reporter/projection duality. This gives formal support for the
+duality but still does not estimate Route E's physical arithmetic relation.
+
+The product-fibre alternative is now formal rather than heuristic. The original physical law
+inside each fibre gives a reversible stationary idempotent conditional kernel, exact coarea, and
+orthogonal variance decomposition. Literal product histories then have an all-depth dissipation
+identity, and equality of product labels is equality of complete prime-exponent histograms. The
+single-source bias squared is always below conditional fibre energy, so raw replica entropy cannot
+be a producer. `RouteEGibbsProductStability.lean` separately proves that equal-product switching
+inside a common aperture has only second-order Gibbs cost. The committed uniform-fibre shuffle
+module gives zero abstract column gradient and an admission-error inequality, but is not
+umbrella-reachable at this cutoff; its missing rejection estimate remains arithmetic.
+
+`RouteESignedInverseLoadFlux.lean` is a formal no-go, not a third cancellation estimate: it
+decomposes signed current exactly into isolated, co-moving, and signed inverse-load terms and
+proves a bound on the last is logically the same bound on the current remainder. No exact external
+collision was located for this finite decomposition or the physical product-fibre package. Their
+novelty significance is conditional on eventually proving a source-specific strict-half estimate.
 
 The generalized Beurling-system layer supplies a complementary firewall. It formalizes the same
 Gibbs decomposition, one-large-prime transition, PNT/Mertens windows, Mellin inversion, and
@@ -732,7 +789,10 @@ equivalent all-reporter/collision estimate, or exact normalized weighted Hall, a
 kernel through the zero/one-large-prime marker and alternating recurrence; or
 `ENTROPY-COMPLEMENT-RECURRENCE-WEIGHTED-INVERSE-LOAD-DIRICHLET-STRICT-HALF`: close the
 parity-agnostic two-sided recurrence kernel on a common aperture and prove isolated mass plus
-subpolynomial inverse-load Dirichlet energy. One-sign specialization is already classified as
+subpolynomial inverse-load Dirichlet energy; or
+`ENTROPY-COMPLEMENT-APERTURE-CONDITIONED-PRODUCT-FIBRE-PARITY-ENERGY`: prove
+`D_(V,m)^nu<=X^(-1+o(1))` for an admissible replica depth, with physical aperture admission and
+the same seam/recurrence descent. One-sign specialization is already classified as
 reverse chi-square. Joint short-interval
 mass remains a supporting source-density obligation. Existing Matomäki--Radziwiłł, Shiu, and sieve
 theorems supply local averages or counting, not this rate-sharp every-source

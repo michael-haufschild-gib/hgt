@@ -267,7 +267,59 @@ Carathéodory bounds, and any unweighted matched-jet norm are therefore blind to
 residue.  A closing analytic theorem must control the Julia-normalized boundary atom `(PCR.13)`,
 or equivalently a boundary derivative/Carleson quantity at $z=-1$.
 
-## 5. Conjecture--failure--pivot
+## 5. Finite-head depletion has no boundary-resolution gain `[PAPER-PROVED]`
+
+A natural repair is to remove the low squared-Xi divisor points.  If a head $S_y$ is subtracted,
+the tail resolvent is positive-real on a larger half-plane
+$\operatorname{Re}Y>-c_y$, where $c_y$ may tend to infinity.  Taking
+$c_y\asymp\sqrt y\log y$ moves a bounded positive pole from disk depth $1/y$ to the apparently
+resolvable depth $(\log y)/\sqrt y$, while the number of removed divisor points is only $o(n)$.
+
+The gain is illusory because every removed divisor point is inserted into the rational approximant
+with the opposite residue.  For the chart with parameter $c_y$, define the coefficient kernel
+
+\[
+ \mathcal K_{y,c_y,k}(a)
+ :=\frac{2(y+c_y)}
+ {(y+a+2c_y)^2\phi_{y,c_y}(a)^{k+1}}.                    \tag{PCR.27}
+\]
+
+The coefficient of $z^k$ contributed by $r/(Y-a)$ is exactly
+$-r\mathcal K_{y,c_y,k}(a)$.  If $a$ and $b$ remain in fixed compact subsets of $\mathbb C$,
+$c_y=o(y)$, and $k=O(\sqrt y)$, then
+
+\[
+ \boxed{
+ \frac{\mathcal K_{y,c_y,k}(a)}
+ {\mathcal K_{y,c_y,k}(b)}\longrightarrow1
+ }
+ \tag{PCR.28}
+\]
+
+uniformly in that range.  Indeed,
+
+\[
+ \partial_a\log\mathcal K_{y,c_y,k}(a)
+ =-\frac2{y+a+2c_y}
+ -(k+1)\left(\frac1{a-y}-\frac1{a+y+2c_y}\right)
+ =O\!\left(\frac{k+1}{y}\right),                         \tag{PCR.29}
+\]
+
+and the right side tends to zero.
+
+For every fixed removed divisor point $\zeta_q$, the subtracted term
+$-1/(Y+\zeta_q)$ has pole $b=-\zeta_q$ and residue $-1$.  Its matched boundary jet therefore points
+asymptotically in the exact opposite direction to the jet of any bounded physical pole of residue
+$+1$.  More generally, any fixed number $M$ of removed divisor copies supplies asymptotic head
+budget $M$ against a bounded physical residue.  Any depletion with $c_y\to\infty$ eventually
+contains arbitrarily many such fixed copies.
+
+Thus moving the positive-real boundary left does not improve the normalized atom inequality: the
+larger analytic half-plane and the inserted head-pole budget are two sides of the same operation.
+Finite-head depletion can redistribute the Julia charge but cannot force it to vanish.  This is
+the Padé boundary analogue of the corpus's Euler-depletion conservativity laws.
+
+## 6. Conjecture--failure--pivot
 
 1. **Conjecture:** diagonal Padé convergence in capacity on the analytic positive resolvent domain
    forces positive-axis residues to vanish.
@@ -283,8 +335,12 @@ or equivalently a boundary derivative/Carleson quantity at $z=-1$.
 4. **Stronger replacement conjecture:** the literal prime--Gamma source has no cofinal
    Julia-normalized Padé atom at $z=-1$.  Unlike ordinary capacity convergence, this statement is
    exactly equivalent to the Route-U target on compact positive mass intervals.
+5. **Conjecture:** remove $o(n)$ low divisor points so the tail half-plane resolves the atom.
+   **FALSIFIED.**  Every removed point reappears as an opposite rational pole, and `(PCR.28)` shows
+   that its entire matched boundary jet is asymptotically indistinguishable from the forbidden
+   atom's jet.  Depletion conserves rather than removes the boundary charge.
 
-## 6. Hostile and literature audit
+## 7. Hostile and literature audit
 
 - `[CORPUS]` The shifted-Xi zeroth-moment asymptotic used in `(PCR.24)` is already Lean-proved in
   `XiShiftedHankelFarRightPositiveDefinite.lean`.  The moving Padé error and residue are paper-proved
@@ -306,7 +362,7 @@ or equivalently a boundary derivative/Carleson quantity at $z=-1$.
 - **Exact killing mechanism:** conformal degeneration turns $O(1)$ physical mass into $O(1/y)$
   ordinary disk residue at depth $O(1/y)$.
 - **Strongest positive survivor:** exact reserve hierarchy `(PCR.19)` and invariant normalized
-  residue `(PCR.13)`.
+  residue `(PCR.13)`, together with depletion covariance `(PCR.28)`.
 - **New insight:** Route U is a boundary-angular-derivative problem, not an ordinary Padé-capacity
   problem.  Every positive atom must draw a vanishingly small payment from the macroscopic
   left-pole reservoir, so bulk or unweighted estimates cannot exclude it.
@@ -317,3 +373,5 @@ or equivalently a boundary derivative/Carleson quantity at $z=-1$.
 
 - 2026-08-11 — positive-real chart, exact reserve hierarchy, conformal residue law, and critical
   finite-jet blindness proved; ordinary Padé-capacity attack retired.
+- 2026-08-11 — growing finite-head depletion falsified by exact boundary-jet covariance; enlarged
+  half-plane and inserted head budget shown to be one conservative operation.

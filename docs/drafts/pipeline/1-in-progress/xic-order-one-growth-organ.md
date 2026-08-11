@@ -261,3 +261,87 @@ Recorded 2026-08-11 after hostile check.
   counterpart with explicit constants.  Lean traps this brick: `div_le_div_iff` renamed
   `div_le_div_iff₀`; prefer `pow_le_pow_left₀` chains over nested nlinarith on fourth powers
   (heartbeat blowups); `set`-folded goals may need `rw [← hdef]` before closing.
+
+## Step 27 (2026-08-11): the unconditional sector of the Hankel criterion — unbounded degree
+
+**Assignment attacked**: close the gap between `M(X) ≤ 2H/(X+1)²` and `0` at one finite shift.
+**Honest verdict first**: the gap IS RH — `M(X) = 0 ⟺ RH` (step 24), and any unconditional proof
+of full Hankel positivity at one shift converts to RH through the corpus converse
+(`riemannHypothesis_of_forall_xiResolventHankelForm_re_nonneg`), so no geometric/soft argument can
+close it. What was closable — and is now closed — is the entire *linear and one-signed* sector of
+the criterion, at every degree.
+
+### New modules (both [LEAN-PROVED], axioms = [propext, Classical.choice, Quot.sound])
+
+`RHTower/XiResolventUnconditionalSector.lean` (wired after XiResolventMassDecay):
+- `sub_nat_mul_mul_pow_le` — Bernoulli induction `(a−nb)aⁿ ≤ (a−b)ⁿa`.
+- `sector_pow_gap` — `(2n+1)b < a ⇒ (n+1)b(a+b)ⁿ < a^{n+1}` (AM-GM + Bernoulli, no trig/sqrt).
+- `norm_pow_sub_re_pow_le`, `re_pow_ge_of_re_nonneg` — geometric-series drift bound
+  `‖z^{n+1} − (Re z)^{n+1}‖ ≤ (n+1)|Im z|(Re z+|Im z|)ⁿ` via `geom_sum₂_mul`.
+- `re_pow_pos_of_sector` — **closed-form sector power law**: `(2n+1)|Im z| < Re z ⇒ 0 < Re z^{n+1}`.
+- `sector_xiSpectralSq_add` — divisor cone at shift: `X ≥ ((2n+1)²+1)/4` puts every `α²+X` in the
+  `1/(2n+1)`-sector (height gap 2<γ² + strip |b|<1/2 + AM-GM `(2n+1)γ ≤ γ²+(2n+1)²/4`).
+- `sector_xiResolventPoint` — cone survives inversion.
+- `xiResolventMoment_re_pos` / `_of_add_one_sq_le` — **every moment `Rₙ(X)` strictly positive for
+  `X ≥ (n+1)²`** — the diagonal of the Hankel criterion holds unconditionally at unbounded degree,
+  quadratic shift law.
+- `xiResolventHankelForm_re_nonneg_of_nonneg` / `_re_pos_of_nonneg` / `_of_sq_le` — the Hankel form
+  is **unconditionally nonneg (strictly positive for nonzero weight) on the whole
+  nonnegative-coefficient cone** for `X ≥ (2N+1)²`.
+- `exists_coeff_neg_and_pos_of_xiResolventHankelForm_re_neg` — **any Hankel negativity witness at
+  admissible shift must have coefficients of both strict signs** (the form is even in the weight).
+
+`RHTower/XiSquaredCompleteMonotonicityFarRay.lean` (composition with the corpus CM module):
+- `xiShiftedReciprocalSquare_eq_xiResolventPoint`, `xiShiftedReciprocalMoment_eq_xiResolventMoment`
+  — the Möbius-translated reciprocal-square atom IS the resolvent coordinate.
+- `xiResolventMoment_im_eq_zero` — every resolvent moment is a real number (conjugation transport).
+- `alternating_iteratedDeriv_squaredXiRadialField_pos_of_sq_le` — **unbounded-order complete
+  monotonicity on the quadratic far ray**: `(−1)ⁿ g⁽ⁿ⁾(y) > 0` for every `n` once `y ≥ (n+1)²`,
+  `g y = ξ′(1/2+√y)/(2√y ξ(1/2+√y))`.
+- `alternating_iteratedDeriv_squaredXiRadialField_pos_of_le_or_far` — the union domain
+  `{n ≤ 18} ∪ {y ≥ (n+1)²}`; a CM failure (RH-forbidden) is confined to the wedge
+  `n ≥ 19, y < (n+1)²`.
+
+### Corpus-first findings (found AFTER writing module 1 — sweep was too narrow again)
+- `HTGeometry/SectorPowerPositivity.lean` already owns the tangent-addition sector calculus
+  (`re_mul_pos_and_abs_im_le`, budget chain `re_pow_pos_and_abs_im_le_of_chain`, 7 powers at c=1/5)
+  — bounded explicit budgets only; my closed-form `(2n+1)`-aperture law is the unbounded-degree
+  complement but LOSES a factor ≈ π versus the tangent chain (tan budget diverges at m ≈ (π/2)/c;
+  closed form gives m ≈ 1/(2c)). Sharpening candidate: parametric tangent-chain budget would give
+  threshold `X ≳ ((n+1)/π)²·4`.
+- `RHTower/SquaredXiCompleteMonotonicity.lean` already owns: moment realness, the termwise
+  derivative ladder `d/dv Rₙ = −(n+1)R_{n+1}` (`hasDerivAt_xiShiftedReciprocalMoment`),
+  `iteratedDeriv_squaredXiRadialField`, CM through order 18 on ALL of y>0 (84-sector from the
+  off-line quartet height gap 85 < v), and the arithmetic identification with `logDeriv ξ` on the
+  ray. Also stronger height gaps than 2: `xiZeroCopy_fortyOne_div_two_lt_im_sq` (20.5 < γ² for all
+  copies), off-line quartet gap 85.
+
+### The wall, sharpened (why nothing further closes)
+1. Full-Hankel positivity at large X unconditional ⇒ RH (corpus converse) ⇒ inaccessible to soft
+   arguments; confirmed the Hankel matrix of decaying moments is never diagonally dominant.
+2. Symmetry alone cannot sign the bilinear sector (step 13b insufficiency theorem).
+3. `RH ⟺ Σ‖u‖² = R₁(X)` (the ℓ²-mass equals the arithmetic second moment); the missing object is a
+   realization computing `Σ‖u‖²` arithmetically — the GNS socket, unchanged.
+4. Degree-2 Turán minor at large X: positive bulk ~ (γ₂²−γ₁²)²/X⁶ vs hypothetical negative core
+   ~ 16γ₀²b₀²/X⁶ — SAME decay rate, constants can favor the core; no unconditional sign at any X.
+
+### External calibration
+The unconditional sector is the resolvent-chart analogue of short-support Weil positivity
+(Bombieri, "Remarks on Weil's quadratic functional…", 2000): support length ↔ degree, shift ↔
+inverse support; both stop exactly at the bilinear sign-changing frontier.
+
+### Recorded next candidates
+- Heine k-tuple expansion of ALL Hankel determinants (generalizing the pair expansion
+  `two_mul_xiResolventTuranMinor_eq_tsum_pair` to k×k minors: Σ over k-tuples of Πu·Vandermonde²)
+  — the multilinear structure of the wedge.
+- π-factor sharpening of the aperture via parametric tangent-chain budgets.
+- Decay `S₁(X) ≤ C·H/√X` (termwise `|Im u| ≤ 1/(2γ²√X)`-type AM-GM) tightening step-24 constants.
+- Quantitative detection floor (lower bound on the best negativity in terms of the largest
+  single-copy deviation) — makes the defect two-sided.
+
+### Session/tree note
+Concurrent session active in this tree during the batch: RouteESignedInverseLoadFlux.lean (Route E
+lane) currently fails to build with genuine proof errors and is umbrella-wired;
+HTGeometry/CriticalSchurIdealInertiaTransport.lean times out under the working-tree state; both are
+the other lane's in-flight work, left untouched. Unwired-but-green Suzuki modules
+(MovableAnchorClarkCoherence, TwoPortProjectiveWedge) were wired into RHTower to fix the lint gate.

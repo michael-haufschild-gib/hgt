@@ -42,28 +42,24 @@ theorem norm_dyadicDirRow_sq (N : ℕ) (t : ℝ) : ‖dyadicDirRow N t‖ ^ 2 = 
 theorem inner_dyadicDirRow (N : ℕ) (t u : ℝ) :
     ⟪dyadicDirRow N t, dyadicDirRow N u⟫_ℂ = dyadicLogSum N (u - t) := by
   rw [PiLp.inner_apply]
-  simp only [dyadicDirRow, dyadicLogSum, RCLike.inner_apply]
-  refine Finset.sum_bij (fun j _ => (j : ℕ)) ?_ ?_ ?_ ?_
-  · intro j hj
-    exact Finset.mem_range.2 j.isLt
-  · intro j hj j' hj' heq
-    exact FinSubtype.ext (by simpa using heq)
-  · intro n hn
-    exact ⟨⟨n, Finset.mem_range.1 hn⟩, Finset.mem_univ _, rfl⟩
-  · intro j hj
-    have hconj : (starRingEnd ℂ)
-        (Complex.exp ((((t * Real.log ((N + (j : ℕ) : ℕ) : ℝ) : ℝ) : ℂ) * Complex.I)))
-        = Complex.exp ((((-(t * Real.log ((N + (j : ℕ) : ℕ) : ℝ)) : ℝ) : ℂ)
-            * Complex.I)) := by
-      rw [← Complex.exp_conj]
-      congr 1
-      rw [map_mul, Complex.conj_I, Complex.conj_ofReal]
-      push_cast
-      ring
-    rw [hconj, ← Complex.exp_add]
+  simp only [dyadicDirRow, RCLike.inner_apply]
+  rw [dyadicLogSum, ← Fin.sum_univ_eq_sum_range
+    (fun j : ℕ => Complex.exp (((((u - t) * Real.log ((N + j : ℕ) : ℝ) : ℝ) : ℂ)
+      * Complex.I))) N]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  have hconj : (starRingEnd ℂ)
+      (Complex.exp ((((t * Real.log ((N + j : ℕ) : ℝ) : ℝ) : ℂ) * Complex.I)))
+      = Complex.exp ((((-(t * Real.log ((N + j : ℕ) : ℝ)) : ℝ) : ℂ)
+          * Complex.I)) := by
+    rw [← Complex.exp_conj]
     congr 1
+    rw [map_mul, Complex.conj_I, Complex.conj_ofReal]
     push_cast
     ring
+  rw [hconj, ← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
 
 /-- The norm depends only on the absolute frequency, in the negative-phase normalisation used by
 `logPhase`. -/
@@ -89,7 +85,6 @@ theorem norm_dyadicLogSum_eq_logPhase_abs (N : ℕ) (t : ℝ) :
               congr 1
               push_cast
               field_simp [Real.pi_ne_zero]
-              ring
       _ = _ := hneg
   · have habs : |t| = -t := abs_of_nonpos ht
     rw [habs, dyadicLogSum]
@@ -100,7 +95,6 @@ theorem norm_dyadicLogSum_eq_logPhase_abs (N : ℕ) (t : ℝ) :
     congr 1
     push_cast
     field_simp [Real.pi_ne_zero]
-    ring
 
 /-- Reciprocal-frequency Gram bound in the non-resonant first-derivative range. -/
 theorem norm_dyadicLogSum_le_kuzminLandau {N : ℕ} (hN : 1 ≤ N) {t : ℝ} (ht : t ≠ 0)
@@ -123,5 +117,19 @@ theorem norm_dyadicLogSum_le_secondDerivative {N : ℕ} (hN : 1 ≤ N) {t : ℝ}
     exact (natCast_cpow_neg_I_mul |t| (N + j) (by omega)).symm
   rw [Finset.sum_congr rfl hphase]
   exact norm_logPhase_dyadic_le_secondDerivative |t| (abs_pos.mpr ht) N hN hlam
+
+/-- Uniform second-derivative bound throughout a frequency window. -/
+theorem norm_dyadicLogSum_le_secondEnvelope {N : ℕ} (hN : 1 ≤ N)
+    {U T t : ℝ} (hU : 0 < U) (hUt : U ≤ |t|) (htT : |t| ≤ T)
+    (hlamT : logDyadicLambda N T ≤ 1) :
+    ‖dyadicLogSum N t‖ ≤ logDyadicSecondEnvelope N U T := by
+  have ht : t ≠ 0 := by
+    intro h
+    rw [h, abs_zero] at hUt
+    linarith
+  have hlam : logDyadicLambda N |t| ≤ 1 :=
+    (logDyadicLambda_mono hN htT).trans hlamT
+  exact (norm_dyadicLogSum_le_secondDerivative hN ht hlam).trans
+    (logDyadicSecondBound_le_envelope hN hU hUt htT)
 
 end RHTower.Sieve

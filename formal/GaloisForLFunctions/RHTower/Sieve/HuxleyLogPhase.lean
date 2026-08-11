@@ -29,6 +29,50 @@ noncomputable def logDyadicSecondBound (N : ℕ) (t : ℝ) : ℝ :=
   256 * ((N : ℝ) * (16 * logDyadicLambda N t) ^ (1 / 2 : ℝ)
     + (logDyadicLambda N t) ^ (-(1 / 2 : ℝ)))
 
+/-- Endpoint envelope for the second-derivative estimate on a frequency window `[U,T]`. -/
+noncomputable def logDyadicSecondEnvelope (N : ℕ) (U T : ℝ) : ℝ :=
+  256 * ((N : ℝ) * (16 * logDyadicLambda N T) ^ (1 / 2 : ℝ)
+    + (logDyadicLambda N U) ^ (-(1 / 2 : ℝ)))
+
+theorem logDyadicLambda_pos {N : ℕ} (hN : 1 ≤ N) {t : ℝ} (ht : 0 < t) :
+    0 < logDyadicLambda N t := by
+  simp only [logDyadicLambda]
+  norm_num
+  positivity
+
+theorem logDyadicLambda_mono {N : ℕ} (hN : 1 ≤ N) {u v : ℝ} (huv : u ≤ v) :
+    logDyadicLambda N u ≤ logDyadicLambda N v := by
+  simp only [logDyadicLambda]
+  norm_num
+  have hden : 0 < 2 * Real.pi := by positivity
+  have hpow : 0 < (2 * (N : ℝ)) ^ 2 := by
+    have hNR : (0 : ℝ) < (N : ℝ) := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hN)
+    positivity
+  exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right huv hden.le) hpow.le
+
+/-- The order-two bound is controlled by the top endpoint in its increasing term and the bottom
+endpoint in its decreasing term. -/
+theorem logDyadicSecondBound_le_envelope {N : ℕ} (hN : 1 ≤ N)
+    {U u T : ℝ} (hU : 0 < U) (hUu : U ≤ u) (huT : u ≤ T) :
+    logDyadicSecondBound N u ≤ logDyadicSecondEnvelope N U T := by
+  have hlamU0 : 0 < logDyadicLambda N U := logDyadicLambda_pos hN hU
+  have hlamUu : logDyadicLambda N U ≤ logDyadicLambda N u :=
+    logDyadicLambda_mono hN hUu
+  have hlamu0 : 0 < logDyadicLambda N u :=
+    logDyadicLambda_pos hN (lt_of_lt_of_le hU hUu)
+  have hlamuT : logDyadicLambda N u ≤ logDyadicLambda N T :=
+    logDyadicLambda_mono hN huT
+  have hfirst : (16 * logDyadicLambda N u) ^ (1 / 2 : ℝ)
+      ≤ (16 * logDyadicLambda N T) ^ (1 / 2 : ℝ) := by
+    refine Real.rpow_le_rpow (mul_nonneg (by norm_num) hlamu0.le)
+      (mul_le_mul_of_nonneg_left hlamuT (by norm_num)) ?_
+    norm_num
+  have hsecond : (logDyadicLambda N u) ^ (-(1 / 2 : ℝ))
+      ≤ (logDyadicLambda N U) ^ (-(1 / 2 : ℝ)) :=
+    Real.rpow_le_rpow_of_nonpos hlamU0 hlamUu (by norm_num)
+  unfold logDyadicSecondBound logDyadicSecondEnvelope
+  gcongr
+
 /-- **Kuzmin--Landau for a dyadic logarithmic block.**  Below the first derivative
 resonance, the unweighted block has reciprocal-frequency size. -/
 theorem norm_logPhase_dyadic_le_kuzminLandau (t : ℝ) (ht : 0 < t) (N : ℕ) (hN : 1 ≤ N)
