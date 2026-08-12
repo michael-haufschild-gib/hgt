@@ -39,6 +39,26 @@ theorem stronglyMeasurable_suzukiOrientedSegment (t : ℝ) :
     funext x
     simp [suzukiOrientedSegment, ht]
 
+theorem integrable_suzukiOrientedSegment (t : ℝ) :
+    Integrable (suzukiOrientedSegment t) := by
+  by_cases ht : 0 ≤ t
+  · have hvol : volume (Ioc 0 t) ≠ ⊤ := by
+      rw [Real.volume_Ioc]
+      exact ENNReal.ofReal_ne_top
+    have h : Integrable ((Ioc 0 t).indicator (fun _ => (1 : ℂ))) :=
+      (MeasureTheory.integrableOn_const hvol).integrable_indicator measurableSet_Ioc
+    convert h using 1
+    funext x
+    simp [suzukiOrientedSegment, ht]
+  · have hvol : volume (Ioc t 0) ≠ ⊤ := by
+      rw [Real.volume_Ioc]
+      exact ENNReal.ofReal_ne_top
+    have h : Integrable (fun x => -((Ioc t 0).indicator (fun _ => (1 : ℂ)) x)) :=
+      ((MeasureTheory.integrableOn_const hvol).integrable_indicator measurableSet_Ioc).neg
+    convert h using 1
+    funext x
+    simp [suzukiOrientedSegment, ht]
+
 theorem suzukiOrientedSegment_eq_zero_of_not_mem_Icc {a t x : ℝ}
     (_ha : 0 ≤ a) (ht : t ∈ Icc (-a) a) (hx : x ∉ Icc (-a) a) :
     suzukiOrientedSegment t x = 0 := by
@@ -211,6 +231,16 @@ theorem stronglyMeasurable_suzukiFiniteOrientedPrimitive {ι : Type*} (s : Finse
   unfold suzukiFiniteOrientedPrimitive
   convert (Finset.stronglyMeasurable_sum s fun i hi =>
     (stronglyMeasurable_suzukiOrientedSegment (τ i)).const_mul (c i)) using 1
+  funext x
+  simp
+
+theorem integrable_suzukiFiniteOrientedPrimitive {ι : Type*} (s : Finset ι)
+    (c : ι → ℂ) (τ : ι → ℝ) :
+    Integrable (suzukiFiniteOrientedPrimitive s c τ) := by
+  unfold suzukiFiniteOrientedPrimitive
+  have h := MeasureTheory.integrable_finsetSum s fun i hi =>
+    (integrable_suzukiOrientedSegment (τ i)).const_mul (c i)
+  convert h using 1
   funext x
   simp
 

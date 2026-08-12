@@ -6,6 +6,7 @@
 - **Lean modules:**
   - `formal/GaloisForLFunctions/RHTower/SourceHorizontalRouteNProjectiveCremonaInvolution.lean`
   - `formal/GaloisForLFunctions/RHTower/SourceHorizontalRouteNDeningerGammaSixCurvatureCollision.lean`
+  - `formal/GaloisForLFunctions/RHTower/SourceHorizontalGammaSixMomentNeutralIndexAmplification.lean`
 
 ## Mathematical delta
 
@@ -61,6 +62,25 @@ This is coefficient faithful and zero exactly at `t=0`.
    every source-curved Poisson character is `1`, hence its reflected difference is identically
    zero for every grade.  The strongest positive survivor is grade two, where the signed difference
    is exactly the marked Gamma-six tame/Calderón reader above.
+6. **C15-F — use grade two as independent force.** Failed positively.  Grade two is the square
+   clock of the same tame character; it preserves its zero set but supplies no independent source
+   equation.
+7. **C15-G — combine Xi reflection with ordered-prime swap so two sign reversals force
+   annihilation.** Failed.  The completed Calderón--Witt source proves the `(p,q)` and `(q,p)`
+   witnesses linearly independent.  Identifying them would erase ordered prime labels.
+8. **C15-H — amplify through complete Gamma-six shells while preserving both orientations.**
+   Proved exactly.  Shell `m` has `5*6^m` coordinates; forward/reflected trace masses are
+   `5*6^(m*delta)` and `5*6^(-m*delta)`, their product is `25`, and distinct shells are disjoint.
+   Their maximum is subexponential in `m` iff `delta=0`.  This does not revive the external
+   rank--trace handoff: off line one orientation grows geometrically, and every independent block
+   still pays the paper's positive-index allowance.
+9. **C15-I — package both coefficients in a moment-neutral Hermitian block.** Failed with a sharp
+   positive classification.  The coefficient-faithful ordered block
+   `[[0,lambda^(1-delta)],[lambda^(1+delta),0]]` has square `lambda^2 I`, so every spectral moment
+   is horizontal-blind.  It is Hermitian iff `delta=0`.  For every `delta` it is nonunitarily
+   diagonally similar to the critical symmetric block `[[0,lambda],[lambda,0]]`; Hermitianization
+   therefore erases exactly the horizontal datum.  This is the precise obstruction to feeding the
+   coefficient-faithful carrier into a Hermitian rank--trace consumer.
 
 ## New universal principle
 
@@ -71,27 +91,30 @@ equation covariance can exchange its sheets but cannot identify them.  The corpu
 
 The source side is now stronger than a scalar receiver: completed-exponent reflection supplies an
 actual anti-birational involution, Gamma-six cyclic homology supplies the physical descent anomaly,
-and Route N supplies its prime-labelled projective odds.  What remains is one independent relation
-forcing the grade-two tame reader to land in a killed target class.  Ordinary Hardy vacuum cannot
-be that target because its depth-zero character is identically orientation-blind.
+Route N supplies its prime-labelled projective odds, and complete Gamma-six shells supply an exact
+asymptotic detector.  Horizontal information is neither an eigenvalue nor an index: it is the
+nonunitary conditioning between two reciprocal coefficients.  Spectral/Hermitian balancing removes
+it, while retaining it creates geometric one-sided trace growth.
 
 ## Exact remaining producer
 
-Construct a source-derived, coefficient-faithful landing of the grade-two marked Gamma-six tame
-reader—not depth-zero Poisson evaluation—into either:
+Construct a source-derived theorem controlling the *unnormalized* two-orientation Gamma-six trace,
+or land the grade-two marked Gamma-six tame reader—not depth-zero Poisson evaluation—into either:
 
-1. a uniformly admitted fixed-source event relation consumed by adaptive contiguity; or
-2. a target-side strict ideal/Calderón class annihilated before scalarization.
+1. a subexponential bound on the explicit complete-shell trace maximum;
+2. a uniformly admitted fixed-source event relation consumed by adaptive contiguity; or
+3. a target-side strict ideal/Calderón class annihilated before scalarization.
 
 The landing must preserve ordered labels `(2,3)`, Xi multiplicity, and both anti-birational
 orientations.  Reflection covariance, Wold stationarity, projective state equality, or cyclic
-descent may not be assumed: each is already formally equivalent to neutrality.
+descent may not be assumed: each is already formally equivalent to neutrality.  Normalized shell
+probabilities are also insufficient because both orientations are uniform on each complete shell;
+the horizontal signal lives in total mass/nonunitary gauge.
 
 ## Verification
 
-- [x] direct Lean check of both modules
+- [x] direct Lean check of all three modules
 - [ ] targeted final module build
 - [ ] axiom audit
 - [ ] scoped forbidden-token scan
 - [ ] diff check
-

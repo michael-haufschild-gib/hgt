@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerGammaSixShellPrincipalIdeal
-import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixTameReaderTransgression
+import GaloisForLFunctions.RHTower.PrimeDepthBVWoldCurvedSourceDifferential
 
 /-!
 # Moment-neutral Gamma-six index amplification
