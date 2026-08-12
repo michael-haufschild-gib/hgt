@@ -9,7 +9,7 @@ the formal counterpart of equations (1.18)--(1.26).
 import GaloisForLFunctions.RHTower.BourgainSectionOneRecurrenceAveraging
 
 open MeasureTheory
-open scoped BigOperators
+open scoped BigOperators ENNReal
 
 namespace RHTower
 
@@ -439,8 +439,8 @@ theorem bourgainSectionOne_recurrenceStep_volumeForm_subpower
           V *
             (∫⁻ x in bourgainTranslatedNormCube
                 (bourgainGridCenter (H ^ (2 : ℕ)) R k) R, Q x) := by
-      rw [← hpartition, Finset.mul_sum]
-      ring
+      rw [← hpartition, Finset.mul_sum, Finset.mul_sum]
+      exact Finset.sum_congr rfl fun k _ => by rw [pow_two, mul_assoc]
     _ ≤ V *
         (A *
           ∑ k : Fin 4 → Fin (H ^ (2 : ℕ)),
@@ -464,7 +464,7 @@ theorem bourgainSectionOne_recurrenceStep_volumeForm_subpower
       mul_le_mul_right haverage A
     _ ≤ A * (W ^ (2 : ℕ) * M) :=
       mul_le_mul_right havg' A
-    _ = _ := by rfl
+    _ = _ := by ring
 
 /-- **Volume-canceled sharp recurrence.**  The radius-doubling averaging
 box has volume exactly `16` times one coarse cube, so after cancellation
@@ -519,7 +519,7 @@ theorem bourgainSectionOne_recurrenceStep_subpower
     positivity
   have hV0 : V ≠ 0 := by
     dsimp [V]
-    rw [ENNReal.ofReal_ne_zero]
+    refine ENNReal.ofReal_ne_zero_iff.mpr ?_
     positivity
   have hVtop : V ≠ ∞ := by
     dsimp [V]

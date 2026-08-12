@@ -36,7 +36,7 @@ theorem meromorphicAt_jetAtom (hσ : 0 < σ.im) (q : ℂ) (j : ℕ) (z : ℂ) :
 
 theorem jetAtom_periodic (σ q : ℂ) (j : ℕ) (z : ℂ) :
     jetAtom σ q j (z + 1) = jetAtom σ q j z :=
-  iteratedDeriv_periodic (lineAtom_periodic σ q) j z
+  iteratedDeriv_periodic_triptic (lineAtom_periodic σ q) j z
 
 theorem laurentCoeff_jetAtom (hσ : 0 < σ.im) (q : ℂ) (j : ℕ) (w : ℂ) (ℓ : ℤ) :
     laurentCoeff (jetAtom σ q j) w ℓ

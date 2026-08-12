@@ -40,7 +40,7 @@ theorem poleFunctionalZeta_eq_lseries {σ : ℝ} (hσ : 1 < σ) :
     poleFunctionalZeta σ = (σ - 1) * ‖LSeries 1 (σ : ℂ)‖ := by
   rw [poleFunctionalZeta, LSeries_one_eq_riemannZeta (by simpa using hσ)]
 
-theorem tendsto_ofReal_nhdsGT_one :
+theorem tendsto_ofReal_nhdsGT_one_ne :
     Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝[>] (1 : ℝ)) (𝓝[≠] (1 : ℂ)) := by
   refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
   · have hcont : Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝 (1 : ℝ)) (𝓝 (((1 : ℝ) : ℂ))) :=
@@ -57,7 +57,7 @@ theorem tendsto_ofReal_nhdsGT_one :
 /-- **The constant sequence's pole functional tends to one.**  This is the simple pole of `ζ`. -/
 theorem tendsto_poleFunctionalZeta :
     Tendsto poleFunctionalZeta (𝓝[>] (1 : ℝ)) (𝓝 1) := by
-  have h := riemannZeta_residue_one.comp tendsto_ofReal_nhdsGT_one
+  have h := riemannZeta_residue_one.comp tendsto_ofReal_nhdsGT_one_ne
   have hnorm : Tendsto (fun σ : ℝ => ‖((σ : ℂ) - 1) * riemannZeta (σ : ℂ)‖)
       (𝓝[>] (1 : ℝ)) (𝓝 1) := by
     have := h.norm

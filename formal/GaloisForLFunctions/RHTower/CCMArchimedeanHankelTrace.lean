@@ -30,8 +30,10 @@ open scoped ENNReal InnerProductSpace Real SchwartzMap Topology symmDiff
 namespace RHTower
 
 -- These instances expose separability of the concrete real-line `L²` space used by `opTrace`.
-local instance : Fact (1 ≤ (2 : ENNReal)) := ⟨by norm_num⟩
-local instance : Fact ((2 : ENNReal) ≠ ∞) := ⟨by norm_num⟩
+local instance factOneLeTwoArchimedeanHankelTrace :
+    Fact (1 ≤ (2 : ENNReal)) := ⟨by norm_num⟩
+local instance factTwoNeTopArchimedeanHankelTrace :
+    Fact ((2 : ENNReal) ≠ ∞) := ⟨by norm_num⟩
 
 /-- Exact diagonal overlap of the two Hilbert--Schmidt fields in the positive Hankel
 factorization.  The subtraction is the finite Volterra boundary term, not a regularized

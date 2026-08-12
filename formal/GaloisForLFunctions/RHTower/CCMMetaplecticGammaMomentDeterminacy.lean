@@ -80,7 +80,7 @@ theorem semilocalArchimedeanGammaDensity_le_exponentialMajorant (s : ℝ) :
       simp only [ccmMetaplecticGammaExponentialMajorantConstant, C]
       ring
 
-theorem integrable_exp_neg_mul_abs {d : ℝ} (hd : 0 < d) :
+theorem integrable_exp_neg_mul_abs_metaplectic {d : ℝ} (hd : 0 < d) :
     Integrable (fun x : ℝ => Real.exp (-d * |x|)) := by
   have hpos : IntegrableOn (fun x : ℝ => Real.exp (-d * |x|)) (Ioi 0) := by
     have h := integrableOn_exp_mul_Ioi (a := -d) (neg_lt_zero.mpr hd) 0
@@ -100,7 +100,7 @@ theorem integrable_exp_pi_div_four_abs_mul_semilocalArchimedeanGammaDensity :
   have hmajor : Integrable (fun s : ℝ =>
       ccmMetaplecticGammaExponentialMajorantConstant *
         Real.exp (-(Real.pi / 4) * |s|)) :=
-    (integrable_exp_neg_mul_abs (by positivity : (0 : ℝ) < Real.pi / 4)).const_mul _
+    (integrable_exp_neg_mul_abs_metaplectic (by positivity : (0 : ℝ) < Real.pi / 4)).const_mul _
   have hstrong : AEStronglyMeasurable (fun s : ℝ =>
       Real.exp ((Real.pi / 4) * |s|) * semilocalArchimedeanGammaDensity s) := by
     exact ((Real.continuous_exp.comp

@@ -193,8 +193,8 @@ theorem exists_positiveReal_maximal_of_forall_weightedPowerMoment_re_nonneg
   have hC : 0 ≤ S₀c / r := div_nonneg hS₀nn hrpos.le
   have hκ0 : 0 ≤ ρ / r := div_nonneg hρ0 hrpos.le
   have hκ1 : ρ / r < 1 := (div_lt_one hrpos).mpr hρlt
-  exact weightedUnitPowerSum_no_decaying_lower_bound
-    hTne hvnorm hvne1 (fun i hi => hw i) hC hκ0 hκ1 hlow
+  exact realWeightedUnitPowerSum_no_decaying_lower_bound hvnorm hvne1
+    (fun i _ => hw i) hi₀T hC hκ0 hκ1 hlow
 
 end
 

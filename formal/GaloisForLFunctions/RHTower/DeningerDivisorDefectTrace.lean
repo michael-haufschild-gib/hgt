@@ -53,7 +53,7 @@ theorem xiSpectralPoint_sub_conj (q : XiZeroCopy) :
 
 /-- Imaginary part of the spectral coordinate: `Im μ = 1/2 - Re ρ`, the critical-line
 displacement. -/
-theorem xiSpectralPoint_im (q : XiZeroCopy) :
+theorem xiSpectralPoint_im_divisorDefect (q : XiZeroCopy) :
     (xiSpectralPoint q).im = 1 / 2 - (q.1 : ℂ).re := by
   simp [xiSpectralPoint, Complex.mul_im, Complex.sub_re, Complex.sub_im]
 
@@ -428,7 +428,7 @@ theorem riemannHypothesis_of_forall_deningerDivisorDefectTrace_eq_zero
     xi_divisor_pos_on_support ⟨s, hmem⟩
   have hn : 0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) s) := by omega
   have him : (xiSpectralPoint (⟨⟨s, hmem⟩, ⟨0, hn⟩⟩ : XiZeroCopy)).im ≠ 0 := by
-    rw [xiSpectralPoint_im]
+    rw [xiSpectralPoint_im_divisorDefect]
     have hre := mem_rightHalf.mp hs
     intro heq
     have : (s : ℂ).re = 1 / 2 := by

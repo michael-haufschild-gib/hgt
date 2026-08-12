@@ -1444,3 +1444,184 @@ precisely the corpus's Gauss-lane Weil-positivity/GNS socket (RH ⟺ Weil form i
 squares; entry = one square realization). LAYER-3 REDIRECT: the uniform mechanism lives in
 the operator lane; this criterion lane's role is the exact countable interface + effectivity,
 now complete through the unconditional floor.
+
+## Step 48 — the pivot pays: an unconditional Weil-positivity cone [PAPER-PROVED → Lean]
+
+Fusing the criterion lane's floor + surrogate (steps 45/47) into the Gauss lane's deviation
+moment identity (its step 13: `Re W(F,F) = Σ‖even F‖² − Σ (Im α)²‖dslope F(ᾱ, α)‖²`, RH ⟺
+deviation ≡ 0, positivity-producer must dominate the moment).
+
+**Theorem (floor localization).** Each deviation summand carries the factor `(Im α)²`, so its
+support lies in the off-line copies — which the floor confines to `65 ≤ (Re α)²`. The
+deviation moment is a TAIL sum.
+
+**Theorem (mass-dominated deviation).** If the test's deviation summands on the tail are
+dominated by resolvent mass — `(Im α_q)²‖dslope F(ᾱ_q, α_q)‖² ≤ C·‖u_q(X)‖` whenever
+`65 ≤ (Re α_q)²` — then by the zero-density surrogate at probe `c`:
+
+  `deviation moment ≤ C · (65 + (c+1/2)²)/(2c(65 − 1/4)) · 2·Re(logDeriv ξ(1/2+c))`.
+
+**Theorem (the unconditional positivity cone).** Under the same domination,
+
+  `Re W(F,F) ≥ Σ‖even F‖² − C·(that explicit ray-jet bound)`,
+
+so Weil positivity holds UNCONDITIONALLY whenever the even energy exceeds the explicit bound —
+numerically at the critical probe: `C·396/6475 ≈ C·0.0612 ≤ Σ‖even F‖²` suffices.
+
+**Significance and audit.** First unconditional Weil-positivity theorem in the corpus beyond
+interface algebra: a quantified cone in test space where the producer's burden is already paid
+by certified spectral geometry (floor + budget). Distinct mechanism from the classical
+"narrow-support" unconditional positivity genre (which kills prime terms by support width;
+ours constrains the divisor side by certified height/mass geometry — flag for priority audit).
+The step-13 verdict stands outside the cone: on ALL of test space, positivity IS RH; the cone
+quantifies exactly how much of test space is already unconditional. ∎ (mod Lean)
+
+**Step 48 status: [LEAN-PROVED].** Module `RHTower/GaussHodgeWeilPositivityCone.lean`
+(imports GaussHodgeWeilDeviationMoment + XiResolventUnconditionalFloor — the first module
+FUSING the criterion lane's certified geometry into the Gauss/Weil lane), four theorems, all
+auditing to [propext, Classical.choice, Quot.sound], olean-built, wired:
+- `deviation_support_subset_tail` — deviation summands supported on `65 ≤ (Re α)²`.
+- `deviation_moment_le_of_tail_dominated` — deviation moment ≤ C·(explicit ray-jet bound),
+  via floor localization (`tsum_subtype_eq_of_support_subset`) + the T = 65 tail surrogate.
+- `xiWeilPolarization_re_nonneg_of_tail_dominated` — THE CONE: Weil positivity whenever the
+  even energy exceeds `C·(65+(c+1/2)²)/(2c(65−1/4))·2Re(logDeriv ξ(1/2+c))`.
+- `xiWeilPolarization_re_nonneg_of_tail_dominated_numeric` — numeric cone at the critical
+  probe: `C·396/6475 ≤ Σ‖even F‖²` suffices. First unconditional Weil-positivity theorem in
+  the corpus beyond interface algebra. [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] provisional
+  (mechanism: certified floor + budget on the divisor side; distinct from the classical
+  narrow-support genre — priority audit pending).
+
+**Next frontier (the cone program).** (i) Populate the cone: exhibit concrete entire
+square-summable tests satisfying the tail domination with computable (C, even-energy) — e.g.
+resolvent-kernel tests F_w(z) = (z²+w)⁻¹ whose dslope decays quadratically; each populated
+test = one new unconditional Weil-positivity instance; (ii) push the cone constant down via
+larger probes (needs Layer-1 certified jets); (iii) the cone's boundary IS the producer's
+residue: quantify the gap between the cone and the full space as a function of the floor
+height — a higher certified floor (Ward machinery at larger budgets) widens the cone toward
+RH; the floor-height → cone-width law is the new quantitative handle on Layer 3.
+
+## Step 49 — the bootstrap proof attempt: executed, and killed with exact constants
+
+Attempted (as directed): prove RH via the gaining loop — cone(H) positivity forces floor
+φ(H) > H, iterate from H = 65. Outcome: the loop is IMPOSSIBLE, for two independent provable
+reasons, both now precise. [FALSIFIED: bootstrap-via-cone; the kills are the science.]
+
+**Kill 1 — the vacuity theorem [LEAN-PROVED].** Cone membership is an unconditional positivity
+certificate, so a cone test's positivity can never be violated by any zero: unconditional
+positivity regions are spectrally SILENT. Sharper, formalized
+(`deviation_moment_eq_zero_of_cone_of_even_energy_eq_zero`,
+`xiWeilPolarization_re_eq_zero_of_cone_of_even_energy_eq_zero`, plus
+`logDeriv_xi_ray_re_pos` discharging jet positivity from the corpus's Euler-ray response):
+a divisor-odd test (the negativity witnesses — even energy ZERO) inside the cone is forced to
+C = 0 and identically vanishing deviation — cones annihilate detectors. Cone ∩ detectors = ∅
+tautologically; same phenomenon as the step-46 supply/certificate disjointness, Weil-side.
+
+**Kill 2 — the floor ceiling law [numerically exact, mechanism-level].** The single-probe
+budget floor mechanism satisfies floor(c) = 8c/B(c) − (c+1/2)²; in the linear regime
+B(c) ≈ 2c·density the ratio 8c/B(c) = 4/density is PROBE-INVARIANT ≈ 86.6, so the mechanism's
+absolute ceiling is height² ≈ 85.6 (true jet value; certified 65 is already 77% of ceiling).
+The floor measures only the global mass density and can never approach RH: pairs deposit
+mass ∝ c and budgets grow ∝ c — scale invariance kills the limit.
+
+**What survives (the exact residue).** (i) One finite improvement: certifying the true
+Λ₀(1) value lifts 65 → ~85.6 — worth doing, bounded value. (ii) Multi-probe Gram/profile
+separation: off-line profiles are Poisson kernels with poles OFF the imaginary axis —
+the ray data separates them in principle, but extraction = analytic continuation = the k → ∞
+derivative asymptotics = the explicit formula read backwards; the infinity persists (the
+pole-beat reformulation: RH ⟺ no off-axis beat in the ray-jet derivative asymptotics).
+(iii) The lane's step-7 verdict is unchanged and is THE entry: an independent bilinear
+evaluation of the vertical pencil (autocorrelated explicit formulas / definitizable Krein
+intertwiner). The bootstrap attempt confirms from a new direction that nothing
+unconditional-and-single-probe can substitute for it.
+
+## Step 50 — the pole-beat rabbit hole: the probe-circle criterion and the Hermitian wall
+
+Followed the surviving direction of step 49 (extract off-axis pole structure from the ray-jet
+family B(c) = 2Re logDeriv ξ(1/2+c)). Full analysis:
+
+**The smearing/masking law [exact identity].** Every copy's probe response is a probe-smeared
+ON-LINE response: with `γ = Re α, b = Im α`,
+`massAt(c)_q = (onLineProfile γ (c−b) + onLineProfile γ (c+b))/2`,
+`onLineProfile γ x = 2x/(γ²+x²)`. An off-line copy answers every probe like an on-line copy
+under probe displacement `±b < 1/2`. This is WHY the single-probe floor caps (step 49 kill 2)
+and why finite probe data are maskable: the probe family cannot resolve below the strip
+half-width by sampling — only analytically.
+
+**The probe-circle criterion [new exact reformulation].** In the pole coordinate
+`x = (c − i·ᾱ)⁻¹` (poles of the probe response sit at `i·ᾱ`), the on-line condition is the
+CIRCLE relation `Re x = c·|x|²` (the image of the critical axis under the probe inversion).
+Hence, for every real `c`: RH ⟺ every divisor copy's probe coordinate lies on the circle.
+
+**Where it dies — the Hermitian wall, third manifestation.** The circle relation is
+`x·x̄ = (x + x̄)/(2c)` — quadratic HERMITIAN in the atoms. Everything the prime side computes
+(the ray jets and all their derivatives, i.e. the full B-family) is a HOLOMORPHIC moment
+`Σ r·xᵏ` of the divisor atoms. Testing the circle needs mixed moments `Σ r·xʲx̄ˡ` — exactly
+the `Σg²` vs `Σ|g|²` holomorphy gap (corpus info-gap theorem
+`no_function_of_fePair_computes_hermitian` is its formal shadow), the same conserved wall as
+the supply/certificate disjointness (46) and the cone/detector vacuity (49). THE LAW, now in
+final form: *prime-side linear data = holomorphic moments of the divisor; RH = one Hermitian
+quadratic relation on the atoms; no functional of holomorphic moments computes a Hermitian
+relation.* The only way through is a Hermitian-valued ARITHMETIC identity — an autocorrelated
+explicit formula (Route E's recorded correlations wall: form-factor computability limited to
+the classical uncertainty range) or a definitizable intertwiner (Gauss step-7 verdict). Three
+routes, one wall — the wall is the theorem.
+
+**Step 50 status: [LEAN-PROVED].** Module `RHTower/XiProbeCircleCriterion.lean`, four theorems
++ two defs, all auditing to [propext, Classical.choice, Quot.sound], olean-built, wired:
+- `xiOnLineProbeProfile` + `xiBudgetMassAt_eq_online_smear` — THE SMEARING LAW: every copy's
+  budget mass = average of the on-line profile at displaced probes `c ∓ b` (pure ring
+  identity); `xiBudgetMassAt_eq_online_of_im_eq_zero` — on-line copies deposit the profile.
+- `xiProbeCoordinate (c) (q) = (c − i·ᾱ)⁻¹` + denominator lemmas (nonvanishing from the
+  32-floor).
+- `xiProbeCoordinate_circle_iff` — the circle law: `Re x = c·|x|²` ⟺ the copy is on-line.
+- **`riemannHypothesis_iff_forall_probeCoordinate_circle`** — for every real probe `c`:
+  RH ⟺ all probe coordinates lie on the probe circle. New exact reformulation; its whole
+  content is the Hermitian relation `x·x̄ = (x+x̄)/(2c)` versus holomorphic ray-jet moments.
+
+**The conserved wall — final ledger (steps 46, 49, 50).** Three independent routes, one wall:
+(i) supply/certificate disjointness; (ii) cone/detector vacuity; (iii) holomorphic/Hermitian
+moment gap. Law: prime-side linear data are holomorphic divisor moments; RH is one Hermitian
+quadratic relation; no functional of the former computes the latter. The entry must be a
+Hermitian-valued arithmetic identity: autocorrelated explicit formulas (Route E correlations
+wall — classical uncertainty range) or a definitizable intertwiner (Gauss step 7). The
+criterion/effectivity programme of steps 36-50 is hereby COMPLETE as an interface; the
+remaining mathematics is the bilinear arithmetic input, and every route now provably points at
+the same door.
+
+## Step 51 — through the door: the bilinear landscape mapped, three fences erected
+
+Followed the Hermitian door with the corpus's own engines. Findings (all audit-grade, recorded
+to prevent rediscovery):
+
+**Fence 1 — pencil sourcing via FE-flow = von Koch [REDISCOVERED, do not rebuild].** The
+natural attack: the FE companion pencil `char_{p·eⁿ}` is prime-sourced unconditionally (Gauss
+step 7), and its sourcing defect per copy is `e^{n·(Reρ−1/2)}`; hence "RH ⟺ the FE-flowed
+pencil stays bounded in n". Decoded: this is EXACTLY von Koch's theorem
+(RH ⟺ ψ(x) = x + O(√x·log²x)) in divisor coordinates — the boundedness of the normalized
+prime remainder. The door reopens onto the original problem; no new blood.
+
+**Fence 2 — Bohr means at convergent abscissas are zero-blind.** The corpus owns the
+unconditional Hermitian prime engine (`norm_integral_normSq_dirPoly_sub_diag_le_log`,
+Sieve/DirichletIntegralMeanValue — the stale "missing Hilbert inequality" note is corrected in
+memory) and Bohr–Parseval extraction (Gauss step 6). But at abscissas σ > 1 each zero's
+Poisson mass in the vertical mean-square is `π/(σ−β)/(2T) → 0`: the computable Hermitian data
+wash out every individual zero (their aggregate matches the Γ-density growth — the
+Riemann–von Mangoldt balance). Entering the strip to see zeros trades exactly against MVT
+window-length resolution — the classical uncertainty, Route E's recorded "long windows" wall.
+Fourth face of the conserved wall: *Hermitian prime data are either zero-blind (convergent
+abscissas) or uncertainty-limited (critical abscissas).*
+
+**Fence 3 — probe-chart Hermitian aggregates need odd-squares.** The probe-circle defect
+`x·x̄ − Re x/c = b/(c|w|²)` is REFLECTION-ODD: conjugate copies cancel identically, so every
+naive Hermitian aggregate of circle defects vanishes unconditionally. A signed detector must
+square the odd part — precisely the H-mass "created positivity" architecture (Gauss step 3),
+which is thereby canonical, not a choice.
+
+**Programme verdict after steps 36–51.** The criterion/effectivity interface is complete; the
+wall has four mapped faces (supply/certificate, cone/detector, holomorphic/Hermitian,
+zero-blind/uncertainty) and one arithmetic face (von Koch). The live frontiers, in order of
+boundedness: (i) Layer-1 certified ray jets (finite, feeds everything numeric); (ii) the
+MRBilinear/Halász lane's own plan (Route E: the last wall is Matomäki–Radziwiłł-type
+correlations — the uncertainty face attacked at its native scale); (iii) the definitizable
+Krein intertwiner (Gauss step 7's other branch). No cheap crossing exists — proven from five
+directions.

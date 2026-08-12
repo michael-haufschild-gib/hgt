@@ -442,7 +442,7 @@ theorem riemannHypothesis_of_forall_threePointDefectTrace_eq_zero
     xi_divisor_pos_on_support ⟨s, hmem⟩
   have hn : 0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) s) := by omega
   have him : (xiSpectralPoint (⟨⟨s, hmem⟩, ⟨0, hn⟩⟩ : XiZeroCopy)).im ≠ 0 := by
-    rw [xiSpectralPoint_im]
+    rw [xiSpectralPoint_im_divisorDefect]
     have hre := mem_rightHalf.mp hs
     intro heq
     have : (s : ℂ).re = 1 / 2 := by

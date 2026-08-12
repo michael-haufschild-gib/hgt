@@ -142,8 +142,9 @@ theorem tendsto_xiShiftedStrictFrontierScaledChristoffelSourceWall_of_remainder_
     simpa only [source, xiShiftedCanonicalAdmissionAdaptiveShear,
       HTGeometry.momentInner_def, xiShiftedBoundaryAdaptiveShearPolynomial] using h
   have hshift : Tendsto (fun t : ℝ => y + t) (𝓝 (0 : ℝ)) (𝓝 y) := by
-    simpa only [Pi.add_apply, Function.const_apply, id_eq, add_zero] using
-      ((continuousAt_const : ContinuousAt (fun _ : ℝ => y) 0).add continuousAt_id)
+    have hlim : Tendsto (fun t : ℝ => y + t) (𝓝 (0 : ℝ)) (𝓝 (y + 0)) :=
+      tendsto_const_nhds.add tendsto_id
+    simpa using hlim
   have hsource : Tendsto (fun t => source (y + t) / 16)
       (𝓝[>] (0 : ℝ)) (𝓝 (source y / 16)) := by
     exact ((hsourceCont.tendsto.comp hshift).div_const 16).mono_left nhdsWithin_le_nhds
@@ -222,8 +223,9 @@ theorem tendsto_xiShiftedStrictFrontierScaledChristoffelSourceWall_atTop_of_rema
     simpa only [source, xiShiftedCanonicalAdmissionAdaptiveShear,
       HTGeometry.momentInner_def, xiShiftedBoundaryAdaptiveShearPolynomial] using h
   have hshift : Tendsto (fun t : ℝ => y + t) (𝓝 (0 : ℝ)) (𝓝 y) := by
-    simpa only [Pi.add_apply, Function.const_apply, id_eq, add_zero] using
-      ((continuousAt_const : ContinuousAt (fun _ : ℝ => y) 0).add continuousAt_id)
+    have hlim : Tendsto (fun t : ℝ => y + t) (𝓝 (0 : ℝ)) (𝓝 (y + 0)) :=
+      tendsto_const_nhds.add tendsto_id
+    simpa using hlim
   have hsource : Tendsto (fun t => source (y + t) / 16)
       (𝓝[>] (0 : ℝ)) (𝓝 (source y / 16)) := by
     exact ((hsourceCont.tendsto.comp hshift).div_const 16).mono_left nhdsWithin_le_nhds

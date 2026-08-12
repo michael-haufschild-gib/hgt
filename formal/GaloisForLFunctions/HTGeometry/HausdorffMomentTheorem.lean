@@ -113,7 +113,7 @@ def hausdorffTest (m : ℕ) : BoundedContinuousFunction HausdorffSourceSpace ℝ
     hausdorffTest m y = (y : ℝ) ^ m := rfl
 
 /-- A cluster point of a convergent sequence is its limit. -/
-theorem eq_of_clusterPt_of_tendsto {X : Type*} [TopologicalSpace X] [T2Space X]
+theorem eq_of_clusterPt_of_tendsto_seq {X : Type*} [TopologicalSpace X] [T2Space X]
     {g : ℕ → X} {y L : X} (hcl : ClusterPt y (Filter.map g atTop))
     (hlim : Tendsto g atTop (𝓝 L)) : y = L := by
   have hmap : Filter.map g atTop ≤ 𝓝 L := hlim
@@ -211,7 +211,7 @@ theorem exists_hausdorffSource_of_completelyMonotone {b : ℕ → ℝ}
             ∫ x, hausdorffTest m x ∂(μ : Measure _))
           hcont.continuousAt tendsto_map
         rwa [Filter.map_map] at hstep
-      exact eq_of_clusterPt_of_tendsto hclmap (hPtendsto m)
+      exact eq_of_clusterPt_of_tendsto_seq hclmap (hPtendsto m)
     have hfinQ : IsFiniteMeasure (ENNReal.ofReal (b 0) •
         ((Q : ProbabilityMeasure HausdorffSourceSpace) : Measure HausdorffSourceSpace)) := by
       constructor

@@ -16,7 +16,7 @@ difference in every second direction — and its complete principal part is a si
 * `lineAtom`, `lineAtom_periodic`, `lineAtom_shift`, `lineAtom_mixed_eq_zero`;
 * `laurentCoeff_lineAtom_line` — residue `1` on the line;
 * `laurentCoeff_lineAtom_of_le`, `laurentCoeff_lineAtom_of_notMem` — and nothing else;
-* `iteratedDeriv_periodic` — a period of a function is a period of all its jets.
+* `iteratedDeriv_periodic_triptic` — a period of a function is a period of all its jets.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -26,7 +26,7 @@ open Complex
 noncomputable section
 
 /-- A period of a function is a period of every one of its iterated derivatives. -/
-theorem iteratedDeriv_periodic {f : ℂ → ℂ} {p : ℂ} (h : ∀ z, f (z + p) = f z) :
+theorem iteratedDeriv_periodic_triptic {f : ℂ → ℂ} {p : ℂ} (h : ∀ z, f (z + p) = f z) :
     ∀ (j : ℕ) (z : ℂ), iteratedDeriv j f (z + p) = iteratedDeriv j f z := by
   intro j
   induction j with

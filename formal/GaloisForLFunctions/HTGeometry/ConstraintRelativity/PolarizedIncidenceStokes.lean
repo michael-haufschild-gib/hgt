@@ -11,7 +11,7 @@ label, no support, no absolute coordinate norm, and nothing at all on edges — 
 capacity and no absolute edge-work functional.
 
 Consequently the capacity residual `r = w - B⁺q` obeys a polarized discrete Stokes law
-`S_ε w = ∂q + S_ε r`, whose augmentation and cut-pairing forms say that the polarized source charge
+`S_ε w = ∂q + S_ε r`, whose piAugmentation and cut-pairing forms say that the polarized source charge
 is a signed cut flux plus an unmatched residual.  On a connected graph the degree-zero quotient is
 one dimensional and the polarized class is exactly the signed total capacity.
 
@@ -229,7 +229,7 @@ theorem abs_polarized_charge_le (hs : ∀ e : E, eps (s e) = 1) (ht : ∀ e : E,
 /-! ## The connected degree-zero quotient -/
 
 /-- Augmentation. -/
-def augmentation : (V → ℂ) →ₗ[ℂ] ℂ where
+def piAugmentation : (V → ℂ) →ₗ[ℂ] ℂ where
   toFun w := ∑ v : V, w v
   map_add' w u := by
     simp only [Pi.add_apply]
@@ -239,7 +239,7 @@ def augmentation : (V → ℂ) →ₗ[ℂ] ℂ where
     rw [Finset.mul_sum]
 
 omit [DecidableEq V] [DecidableEq E] in
-@[simp] theorem augmentation_apply (w : V → ℂ) : augmentation w = ∑ v : V, w v := rfl
+@[simp] theorem augmentation_apply (w : V → ℂ) : piAugmentation w = ∑ v : V, w v := rfl
 
 /-- The edge relation of the multigraph. -/
 def edgeRel (u v : V) : Prop := ∃ e : E, (s e = u ∧ t e = v) ∨ (s e = v ∧ t e = u)
@@ -295,10 +295,10 @@ theorem indicator_sub_mem_range_of_reachable {u v : V}
     rwa [heq] at hsum
 
 /-- **Card `(8)`.**  On a connected multigraph the degree-zero boundaries are exactly the
-augmentation kernel, so the degree-zero quotient is one dimensional. -/
+piAugmentation kernel, so the degree-zero quotient is one dimensional. -/
 theorem range_orientedBoundary_eq_ker_augmentation [Nonempty V]
     (hconn : ∀ u v : V, Relation.ReflTransGen (edgeRel s t) u v) :
-    LinearMap.range (orientedBoundary s t) = LinearMap.ker (augmentation (V := V)) := by
+    LinearMap.range (orientedBoundary s t) = LinearMap.ker (piAugmentation (V := V)) := by
   apply le_antisymm
   · rintro _ ⟨q, rfl⟩
     rw [LinearMap.mem_ker, augmentation_apply]

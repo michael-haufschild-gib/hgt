@@ -15,8 +15,8 @@ noncomputable section
 open IsLocalRing
 open scoped Pointwise
 
-set_option synthInstance.maxHeartbeats 3000000
-set_option maxHeartbeats 4000000
+set_option synthInstance.maxHeartbeats 1200000
+set_option maxHeartbeats 1200000
 /-- Ring automorphism induced by an ideal-inertia element on the normal integral closure. -/
 noncomputable def criticalSchurIdealInertiaIntegralClosureEquiv
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
@@ -24,10 +24,21 @@ noncomputable def criticalSchurIdealInertiaIntegralClosureEquiv
     (σ : criticalSchurIdealInertiaGroup K hm hn) :
     CriticalSchurNormalIntegralClosure K hm hn ≃+*
       CriticalSchurNormalIntegralClosure K hm hn :=
-  MulSemiringAction.toRingAut
-    (criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
-      criticalNormalClosure K m n)
-    (CriticalSchurNormalIntegralClosure K hm hn) σ
+  letI : FiniteDimensional (criticalObservationField K m n)
+      (criticalSourceField K m n) :=
+    criticalSourceField_finiteDimensional_criticalObservationField K hm hn
+  letI : Algebra.IsAlgebraic (criticalObservationField K m n)
+      (criticalSourceAlgebraicClosure K m n) :=
+    Algebra.IsAlgebraic.trans (criticalObservationField K m n)
+      (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n)
+  letI : Normal (criticalObservationField K m n)
+      (criticalSourceAlgebraicClosure K m n) :=
+    { splits' _ := IsAlgClosed.splits _ }
+  (galRestrict (CriticalSchurNormalBaseRing K hm hn)
+      (criticalObservationField K m n) (criticalNormalClosure K m n)
+      (CriticalSchurNormalIntegralClosure K hm hn)
+      (σ : criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
+        criticalNormalClosure K m n)).toRingEquiv
 
 @[simp] theorem criticalSchurIdealInertiaIntegralClosureEquiv_coe
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
@@ -39,9 +50,20 @@ noncomputable def criticalSchurIdealInertiaIntegralClosureEquiv
       criticalNormalClosure K m n) =
       (σ : criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
         criticalNormalClosure K m n) • (x : criticalNormalClosure K m n) := by
-  simp only [criticalSchurIdealInertiaIntegralClosureEquiv,
-    MulSemiringAction.toRingAut_apply, AlgEquiv.smul_def]
-  exact algebraMap_galRestrict_apply (CriticalSchurNormalBaseRing K hm hn) (σ : _) x
+  letI : FiniteDimensional (criticalObservationField K m n)
+      (criticalSourceField K m n) :=
+    criticalSourceField_finiteDimensional_criticalObservationField K hm hn
+  letI : Algebra.IsAlgebraic (criticalObservationField K m n)
+      (criticalSourceAlgebraicClosure K m n) :=
+    Algebra.IsAlgebraic.trans (criticalObservationField K m n)
+      (criticalSourceField K m n) (criticalSourceAlgebraicClosure K m n)
+  letI : Normal (criticalObservationField K m n)
+      (criticalSourceAlgebraicClosure K m n) :=
+    { splits' _ := IsAlgClosed.splits _ }
+  rw [AlgEquiv.smul_def]
+  exact algebraMap_galRestrict_apply (CriticalSchurNormalBaseRing K hm hn)
+    (σ : criticalNormalClosure K m n ≃ₐ[criticalObservationField K m n]
+      criticalNormalClosure K m n) x
 
 /-- Ideal inertia preserves the complement of the contracted prime. -/
 theorem criticalSchurIdealInertiaIntegralClosureEquiv_map_primeCompl
@@ -116,15 +138,14 @@ theorem criticalSchurIdealInertiaUpperEquiv_coe
   let A := criticalNormalClosureSchurValuationSubring K hm hn
   let E := criticalNormalClosure K m n
   let G := E ≃ₐ[criticalObservationField K m n] E
-  let e := criticalSchurIdealInertiaUpperEquiv K hm hn σ
-  have hhom : A.subtype.comp e.toRingHom =
+  have hhom : A.subtype.comp
+      (criticalSchurIdealInertiaUpperEquiv K hm hn σ).toRingHom =
       (σ : G).toRingHom.comp A.subtype := by
     apply IsLocalization.ringHom_ext P.primeCompl
     apply RingHom.ext
     intro x
-    rw [RingHom.comp_apply, RingEquiv.toRingHom_eq_coe,
-      criticalSchurIdealInertiaUpperEquiv_algebraMap K hm hn,
-      RingHom.comp_apply]
+    simp only [RingHom.comp_apply, RingEquiv.toRingHom_eq_coe, RingHom.coe_coe,
+      criticalSchurIdealInertiaUpperEquiv_algebraMap K hm hn]
     change
       ((criticalSchurIdealInertiaIntegralClosureEquiv K hm hn σ x : S) : E) =
         (σ : G) • (x : E)
@@ -193,13 +214,13 @@ theorem criticalSchurIdealInertiaUpperEquiv_residue
   let S := CriticalSchurNormalIntegralClosure K hm hn
   let P := criticalSchurNormalIntegralClosurePrime K hm hn
   let A := criticalNormalClosureSchurValuationSubring K hm hn
-  let e := criticalSchurIdealInertiaUpperEquiv K hm hn σ
-  have hhom : (IsLocalRing.residue A).comp e.toRingHom =
+  have hhom : (IsLocalRing.residue A).comp
+      (criticalSchurIdealInertiaUpperEquiv K hm hn σ).toRingHom =
       IsLocalRing.residue A := by
     apply IsLocalization.ringHom_ext P.primeCompl
     apply RingHom.ext
     intro x
-    rw [RingHom.comp_apply, RingEquiv.toRingHom_eq_coe,
+    simp only [RingHom.comp_apply, RingEquiv.toRingHom_eq_coe, RingHom.coe_coe,
       criticalSchurIdealInertiaUpperEquiv_algebraMap K hm hn]
     rw [← sub_eq_zero, ← map_sub, ← map_sub]
     apply (IsLocalRing.residue_eq_zero_iff _).2
@@ -209,6 +230,14 @@ theorem criticalSchurIdealInertiaUpperEquiv_residue
     exact σ.property x
   exact RingHom.congr_fun hhom a
 
+/-- Residues of the chosen upper valuation ring are hit by its own elements. -/
+theorem criticalSchurUpperResidue_surjective
+    (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    Function.Surjective
+      (IsLocalRing.residue (criticalNormalClosureSchurValuationSubring K hm hn)) :=
+  IsLocalRing.residue_surjective
+
 /-- The decomposition element underlying ideal inertia lies in valuation-theoretic inertia. -/
 theorem criticalSchurIdealInertiaToDecomposition_mem_inertia
     (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
@@ -216,17 +245,13 @@ theorem criticalSchurIdealInertiaToDecomposition_mem_inertia
     (σ : criticalSchurIdealInertiaGroup K hm hn) :
     criticalSchurIdealInertiaToDecomposition K hm hn σ ∈
       criticalSchurInertiaGroup K hm hn := by
-  let A := criticalNormalClosureSchurValuationSubring K hm hn
-  let D := criticalSchurDecompositionGroup K hm hn
-  change MulSemiringAction.toRingAut D (IsLocalRing.ResidueField A)
-      (criticalSchurIdealInertiaToDecomposition K hm hn σ) = 1
-  apply DFunLike.ext _ _
-  intro z
-  obtain ⟨a, rfl⟩ := IsLocalRing.residue_surjective z
+  refine MonoidHom.mem_ker.2 (RingEquiv.ext ?_)
+  refine (criticalSchurUpperResidue_surjective K hm hn).forall.2 fun a => ?_
   change criticalSchurIdealInertiaToDecomposition K hm hn σ •
-      IsLocalRing.residue A a = IsLocalRing.residue A a
-  rw [← IsLocalRing.ResidueField.residue_smul]
-  rw [criticalSchurIdealInertiaToDecomposition_smul_upper K hm hn]
+      IsLocalRing.residue (criticalNormalClosureSchurValuationSubring K hm hn) a =
+      IsLocalRing.residue (criticalNormalClosureSchurValuationSubring K hm hn) a
+  rw [← IsLocalRing.ResidueField.residue_smul,
+    criticalSchurIdealInertiaToDecomposition_smul_upper K hm hn]
   exact criticalSchurIdealInertiaUpperEquiv_residue K hm hn σ a
 
 /-- Canonical injective homomorphism from ideal-theoretic inertia to the chosen-place inertia. -/

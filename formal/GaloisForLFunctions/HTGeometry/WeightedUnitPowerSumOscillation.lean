@@ -363,6 +363,115 @@ theorem weightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι
   have hfin2 := hup N
   nlinarith
 
+/-- **Positive real weights oscillate too.**  Grouping the atoms by their phase and averaging the
+grouped weight against its conjugate class produces a conjugation-equivariant class weight with the
+same moment real parts, so the class form of the oscillation theorem applies. -/
+theorem realWeightedUnitPowerSum_no_decaying_lower_bound {ι : Type*} {s : Finset ι}
+    {v : ι → ℂ} {w : ι → ℝ} (hnorm : ∀ i ∈ s, ‖v i‖ = 1) (hne : ∀ i ∈ s, v i ≠ 1)
+    (hw : ∀ i ∈ s, 0 < w i) {i₀ : ι} (hi₀ : i₀ ∈ s)
+    {C κ : ℝ} (hC : 0 ≤ C) (hκ0 : 0 ≤ κ) (hκ1 : κ < 1)
+    (hlow : ∀ n : ℕ, -(C * κ ^ n) ≤ (∑ i ∈ s, (w i : ℂ) * v i ^ (n + 1)).re) : False := by
+  classical
+  -- the conjugation-closed set of phases
+  set V : Finset ℂ := s.image v ∪ s.image fun i => (starRingEnd ℂ) (v i) with hV
+  -- the fibre mass of a phase
+  set A : ℂ → ℝ := fun u => ∑ i ∈ s.filter fun i => v i = u, w i with hA
+  set W : ℂ → ℂ := fun u => ((A u + A ((starRingEnd ℂ) u) : ℝ) : ℂ) / 2 with hW
+  have hconjV : ∀ u ∈ V, (starRingEnd ℂ) u ∈ V := by
+    intro u hu
+    rw [hV, Finset.mem_union] at hu ⊢
+    rcases hu with hu | hu
+    · obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hu
+      exact Or.inr (Finset.mem_image.mpr ⟨i, hi, rfl⟩)
+    · obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hu
+      exact Or.inl (Finset.mem_image.mpr ⟨i, hi, by simp⟩)
+  have hmapsV : ∀ i ∈ s, v i ∈ V := fun i hi =>
+    Finset.mem_union_left _ (Finset.mem_image.mpr ⟨i, hi, rfl⟩)
+  -- unit modulus and nontriviality survive on phases
+  have hnormV : ∀ u ∈ V, ‖u‖ = 1 := by
+    intro u hu
+    rw [hV, Finset.mem_union] at hu
+    rcases hu with hu | hu
+    · obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hu
+      exact hnorm i hi
+    · obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hu
+      rw [RCLike.norm_conj]
+      exact hnorm i hi
+  have hneV : ∀ u ∈ V, u ≠ 1 := by
+    intro u hu
+    rw [hV, Finset.mem_union] at hu
+    rcases hu with hu | hu
+    · obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hu
+      exact hne i hi
+    · obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hu
+      intro h1
+      exact hne i hi (by simpa using congrArg (starRingEnd ℂ) h1)
+  -- the class weight is real, hence conjugation-equivariant, and constant on phase classes
+  have hWconj : ∀ u ∈ V, ∀ u' ∈ V, u' = (starRingEnd ℂ) u → W u' = (starRingEnd ℂ) (W u) := by
+    intro u _ u' _ hu'
+    subst hu'
+    show ((A ((starRingEnd ℂ) u) + A ((starRingEnd ℂ) ((starRingEnd ℂ) u)) : ℝ) : ℂ) / 2
+        = (starRingEnd ℂ) (((A u + A ((starRingEnd ℂ) u) : ℝ) : ℂ) / 2)
+    rw [Complex.conj_conj, map_div₀, Complex.conj_ofReal, map_ofNat, add_comm]
+  -- fibre decomposition of every moment
+  have hfib : ∀ k : ℕ, ∑ u ∈ V, ((A u : ℝ) : ℂ) * u ^ k = ∑ i ∈ s, (w i : ℂ) * v i ^ k := by
+    intro k
+    rw [← Finset.sum_fiberwise_of_maps_to hmapsV fun i => (w i : ℂ) * v i ^ k]
+    refine Finset.sum_congr rfl fun u _ => ?_
+    rw [hA]
+    push_cast
+    rw [Finset.sum_mul]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    rw [(Finset.mem_filter.mp hi).2]
+  -- the conjugate fibre sum is the conjugate of the fibre sum
+  have hfibconj : ∀ k : ℕ,
+      ∑ u ∈ V, ((A ((starRingEnd ℂ) u) : ℝ) : ℂ) * u ^ k =
+        (starRingEnd ℂ) (∑ u ∈ V, ((A u : ℝ) : ℂ) * u ^ k) := by
+    intro k
+    rw [map_sum]
+    refine Finset.sum_nbij' (fun u => (starRingEnd ℂ) u) (fun u => (starRingEnd ℂ) u)
+      hconjV hconjV (fun u _ => Complex.conj_conj u) (fun u _ => Complex.conj_conj u)
+      fun u _ => ?_
+    rw [map_mul, Complex.conj_ofReal, map_pow, Complex.conj_conj]
+  -- the class weight has the same moment real parts
+  have hre : ∀ k : ℕ,
+      (∑ u ∈ V, W u * u ^ k).re = (∑ i ∈ s, (w i : ℂ) * v i ^ k).re := by
+    intro k
+    have hsplit : ∑ u ∈ V, W u * u ^ k =
+        (∑ u ∈ V, ((A u : ℝ) : ℂ) * u ^ k +
+          ∑ u ∈ V, ((A ((starRingEnd ℂ) u) : ℝ) : ℂ) * u ^ k) / 2 := by
+      rw [← Finset.sum_add_distrib, eq_comm, div_eq_iff (two_ne_zero' ℂ), Finset.sum_mul]
+      refine Finset.sum_congr rfl fun u _ => ?_
+      rw [hW]
+      push_cast
+      ring
+    rw [hsplit, hfibconj k, hfib k]
+    have hz : ∀ z : ℂ, ((z + (starRingEnd ℂ) z) / 2).re = z.re := by
+      intro z
+      simp [Complex.div_re, Complex.add_re, Complex.conj_re]
+    exact hz _
+  -- the marked class carries positive mass
+  have hi₀V : v i₀ ∈ V := hmapsV i₀ hi₀
+  have hApos : 0 < A (v i₀) := by
+    rw [hA]
+    refine Finset.sum_pos' (fun i hi => (hw i (Finset.mem_filter.mp hi).1).le) ⟨i₀, ?_, ?_⟩
+    · exact Finset.mem_filter.mpr ⟨hi₀, rfl⟩
+    · exact hw i₀ hi₀
+  have hAnonneg : ∀ u, 0 ≤ A u := fun u =>
+    Finset.sum_nonneg fun i hi => (hw i (Finset.mem_filter.mp hi).1).le
+  have hW₀ : W (v i₀) ≠ 0 := by
+    rw [hW]
+    have hsum : 0 < A (v i₀) + A ((starRingEnd ℂ) (v i₀)) := by
+      have := hAnonneg ((starRingEnd ℂ) (v i₀)); linarith
+    simp only [ne_eq, div_eq_zero_iff, Complex.ofReal_eq_zero]
+    rintro (h | h)
+    · exact hsum.ne' h
+    · exact two_ne_zero' ℂ h
+  refine weightedUnitPowerSum_no_decaying_lower_bound (v := fun u : ℂ => u) (W := W)
+    hnormV hneV (fun u _ u' _ h => by rw [h]) hWconj hi₀V hW₀ hC hκ0 hκ1 fun n => ?_
+  rw [hre (n + 1)]
+  exact hlow n
+
 end GaloisForLFunctions.HTGeometry
 
 end

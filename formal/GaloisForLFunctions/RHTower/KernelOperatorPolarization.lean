@@ -17,7 +17,8 @@ namespace RHTower
 
 noncomputable section
 
-local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+local instance factTwoNeTopKernelOperatorPolarization :
+    Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 section Kernel
 

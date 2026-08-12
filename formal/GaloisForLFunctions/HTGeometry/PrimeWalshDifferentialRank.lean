@@ -24,7 +24,7 @@ noncomputable section
 set_option maxHeartbeats 800000
 set_option synthInstance.maxHeartbeats 100000
 
-local instance complexFinitePrimeRationalAmbientScalarTower :
+local instance complexFinitePrimeRationalAmbientScalarTowerWalsh :
     IsScalarTower ℂ finitePrimeRationalCoefficientField
       arithmeticFunctionRationalCoordinateField :=
   .of_algebraMap_eq fun c => by
