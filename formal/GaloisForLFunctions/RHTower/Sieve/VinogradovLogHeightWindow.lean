@@ -12,6 +12,11 @@ def routeTLogCentreExponent : ℕ := 200
 
 def routeTLogHalfLengthExponent : ℕ := 99
 
+/-- Uniform multiplier large enough to cover the 200th-power floor-root discretization:
+if `B` is the largest even integer below `X^(1/200)`, then `X < (B+2)^200 ≤ 2^200 B^200`,
+and every convolution centre is below `2^202 B^200`. -/
+def routeTLogCentreMultiplier : ℕ := 2 ^ 202
+
 theorem vinogradovUsefulCoordinate_degree_bounds
     {u : ℕ} (j : Fin (vinogradovRouteTOrder (4 * u)))
     (hj : vinogradovUsefulCoordinate u j) :
@@ -69,19 +74,23 @@ theorem one_div_logTaylorMagnitude
 /-- Explicit base threshold absorbing every coefficient uniformly over
 the Taylor-compatible degree band. -/
 def routeTLogWindowThreshold (u : ℕ) : ℕ :=
-  32 * (240 * u + 1) * 4 ^ (240 * u)
+  32 * (240 * u + 1) * routeTLogCentreMultiplier ^ (240 * u)
 
 theorem routeTLogWindowThreshold_ge_two {u B : ℕ}
     (hB : routeTLogWindowThreshold u ≤ B) : 2 ≤ B := by
   unfold routeTLogWindowThreshold at hB
-  have hfactorPos : 0 < (240 * u + 1) * 4 ^ (240 * u) := by positivity
-  have hfactor : 1 ≤ (240 * u + 1) * 4 ^ (240 * u) := by omega
+  have hmultPos : 0 < routeTLogCentreMultiplier := by
+    norm_num [routeTLogCentreMultiplier]
+  have hfactorPos : 0 < (240 * u + 1) * routeTLogCentreMultiplier ^ (240 * u) := by
+    exact Nat.mul_pos (by omega) (pow_pos hmultPos _)
+  have hfactor : 1 ≤ (240 * u + 1) * routeTLogCentreMultiplier ^ (240 * u) := by
+    omega
   calc
     2 ≤ 32 := by omega
     _ = 32 * 1 := by omega
-    _ ≤ 32 * ((240 * u + 1) * 4 ^ (240 * u)) :=
+    _ ≤ 32 * ((240 * u + 1) * routeTLogCentreMultiplier ^ (240 * u)) :=
       Nat.mul_le_mul_left 32 hfactor
-    _ = 32 * (240 * u + 1) * 4 ^ (240 * u) := by ring
+    _ = 32 * (240 * u + 1) * routeTLogCentreMultiplier ^ (240 * u) := by ring
     _ ≤ B := hB
 
 private theorem cast_pow_pow (B a c : ℕ) :
@@ -178,51 +187,67 @@ theorem routeTLog_coefficient_le_base_cube
     {u B : ℕ} (hB : routeTLogWindowThreshold u ≤ B)
     (j : Fin (vinogradovRouteTOrder (4 * u)))
     (hj : vinogradovUsefulCoordinate u j) :
-    4 * Real.pi * (j.val + 1) * (4 : ℝ) ^ (j.val + 1) + 1 ≤
+    4 * Real.pi * (j.val + 1) *
+        (routeTLogCentreMultiplier : ℝ) ^ (j.val + 1) + 1 ≤
       (B : ℝ) ^ 3 := by
   let d := j.val + 1
   have hd : d ≤ 240 * u := (vinogradovUsefulCoordinate_degree_bounds j hj).2
-  have hpowNat : 4 ^ d ≤ 4 ^ (240 * u) :=
-    pow_le_pow_right₀ (by norm_num : 1 ≤ (4 : ℕ)) hd
-  have hpow : (4 : ℝ) ^ d ≤ (4 : ℝ) ^ (240 * u) := by
+  have hmult1 : 1 ≤ routeTLogCentreMultiplier := by
+    norm_num [routeTLogCentreMultiplier]
+  have hpowNat : routeTLogCentreMultiplier ^ d ≤
+      routeTLogCentreMultiplier ^ (240 * u) :=
+    pow_le_pow_right₀ hmult1 hd
+  have hpow : (routeTLogCentreMultiplier : ℝ) ^ d ≤
+      (routeTLogCentreMultiplier : ℝ) ^ (240 * u) := by
     exact_mod_cast hpowNat
   have hdReal : (d : ℝ) ≤ ((240 * u + 1 : ℕ) : ℝ) := by
     exact_mod_cast (show d ≤ 240 * u + 1 by omega)
   have hpi : 4 * Real.pi ≤ 16 := by
     nlinarith [Real.pi_le_four]
   have hleft :
-      4 * Real.pi * (d : ℝ) * (4 : ℝ) ^ d ≤
-        16 * ((240 * u + 1 : ℕ) : ℝ) * (4 : ℝ) ^ (240 * u) := by
+      4 * Real.pi * (d : ℝ) * (routeTLogCentreMultiplier : ℝ) ^ d ≤
+        16 * ((240 * u + 1 : ℕ) : ℝ) *
+          (routeTLogCentreMultiplier : ℝ) ^ (240 * u) := by
     have hd0 : (0 : ℝ) ≤ d := by positivity
     have hu0 : (0 : ℝ) ≤ ((240 * u + 1 : ℕ) : ℝ) := by positivity
-    have hmul : (d : ℝ) * (4 : ℝ) ^ d ≤
-        ((240 * u + 1 : ℕ) : ℝ) * (4 : ℝ) ^ (240 * u) :=
+    have hmul : (d : ℝ) * (routeTLogCentreMultiplier : ℝ) ^ d ≤
+        ((240 * u + 1 : ℕ) : ℝ) *
+          (routeTLogCentreMultiplier : ℝ) ^ (240 * u) :=
       mul_le_mul hdReal hpow (by positivity) hu0
     calc
-      _ ≤ 16 * ((d : ℝ) * (4 : ℝ) ^ d) := by
-        nlinarith [mul_nonneg hd0 (by positivity : (0 : ℝ) ≤ (4 : ℝ) ^ d)]
-      _ ≤ 16 * (((240 * u + 1 : ℕ) : ℝ) * (4 : ℝ) ^ (240 * u)) := by
+      _ ≤ 16 * ((d : ℝ) * (routeTLogCentreMultiplier : ℝ) ^ d) := by
+        nlinarith [mul_nonneg hd0
+          (by positivity : (0 : ℝ) ≤ (routeTLogCentreMultiplier : ℝ) ^ d)]
+      _ ≤ 16 * (((240 * u + 1 : ℕ) : ℝ) *
+          (routeTLogCentreMultiplier : ℝ) ^ (240 * u)) := by
         gcongr
       _ = _ := by ring
   have hfactorPos : (0 : ℝ) <
-      ((240 * u + 1 : ℕ) : ℝ) * (4 : ℝ) ^ (240 * u) := by positivity
+      ((240 * u + 1 : ℕ) : ℝ) *
+        (routeTLogCentreMultiplier : ℝ) ^ (240 * u) := by positivity
   have hfactor : (1 : ℝ) ≤
-      ((240 * u + 1 : ℕ) : ℝ) * (4 : ℝ) ^ (240 * u) := by
+      ((240 * u + 1 : ℕ) : ℝ) *
+        (routeTLogCentreMultiplier : ℝ) ^ (240 * u) := by
     have h1 : (1 : ℝ) ≤ ((240 * u + 1 : ℕ) : ℝ) := by
       exact_mod_cast (show 1 ≤ 240 * u + 1 by omega)
-    have h2 : (1 : ℝ) ≤ (4 : ℝ) ^ (240 * u) := one_le_pow₀ (by norm_num)
+    have h2 : (1 : ℝ) ≤ (routeTLogCentreMultiplier : ℝ) ^ (240 * u) :=
+      one_le_pow₀ (by exact_mod_cast hmult1)
     nlinarith
   have hthresholdReal :
-      32 * ((240 * u + 1 : ℕ) : ℝ) * (4 : ℝ) ^ (240 * u) ≤ B := by
+      32 * ((240 * u + 1 : ℕ) : ℝ) *
+        (routeTLogCentreMultiplier : ℝ) ^ (240 * u) ≤ B := by
     have hc : (routeTLogWindowThreshold u : ℝ) ≤ B := by exact_mod_cast hB
     simpa [routeTLogWindowThreshold, Nat.cast_mul, Nat.cast_add, Nat.cast_one,
       Nat.cast_pow] using hc
   have hcoefficient :
-      4 * Real.pi * (d : ℝ) * (4 : ℝ) ^ d + 1 ≤ (B : ℝ) := by
+      4 * Real.pi * (d : ℝ) * (routeTLogCentreMultiplier : ℝ) ^ d + 1 ≤
+        (B : ℝ) := by
     calc
-      _ ≤ 16 * ((240 * u + 1 : ℕ) : ℝ) * (4 : ℝ) ^ (240 * u) + 1 := by
+      _ ≤ 16 * ((240 * u + 1 : ℕ) : ℝ) *
+          (routeTLogCentreMultiplier : ℝ) ^ (240 * u) + 1 := by
         linarith
-      _ ≤ 32 * ((240 * u + 1 : ℕ) : ℝ) * (4 : ℝ) ^ (240 * u) := by
+      _ ≤ 32 * ((240 * u + 1 : ℕ) : ℝ) *
+          (routeTLogCentreMultiplier : ℝ) ^ (240 * u) := by
         nlinarith
       _ ≤ B := hthresholdReal
   have hBtwo : 2 ≤ B := routeTLogWindowThreshold_ge_two hB
@@ -239,7 +264,8 @@ theorem routeTLog_upper_window_of_shell
     (ht : 0 < t)
     (hbottom : ((((B ^ routeTLogCentreExponent) ^ (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (hx0 : 0 < x)
-    (hx : x ≤ 4 * (((B ^ routeTLogCentreExponent : ℕ) : ℝ)))
+    (hx : x ≤ routeTLogCentreMultiplier *
+      (((B ^ routeTLogCentreExponent : ℕ) : ℝ)))
     (j : Fin (vinogradovRouteTOrder (4 * u)))
     (hj : vinogradovUsefulCoordinate u j) :
     2 / logTaylorMagnitude t x j + 1 ≤
@@ -256,19 +282,23 @@ theorem routeTLog_upper_window_of_shell
         (B : ℝ) ^ (200 * (4 * u - 4)) := by
     simpa [routeTLogCentreExponent, mul_comm, mul_left_comm, mul_assoc] using
       cast_pow_pow B 200 (4 * u - 4)
-  have hxpow : x ^ d ≤ (4 : ℝ) ^ d * (B : ℝ) ^ (200 * d) := by
+  have hxpow : x ^ d ≤ (routeTLogCentreMultiplier : ℝ) ^ d *
+      (B : ℝ) ^ (200 * d) := by
     have h := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ x) hx d
     calc
-      x ^ d ≤ (4 * (((B ^ routeTLogCentreExponent : ℕ) : ℝ))) ^ d := h
-      _ = (4 : ℝ) ^ d * (B : ℝ) ^ (200 * d) := by
+      x ^ d ≤ (routeTLogCentreMultiplier *
+          (((B ^ routeTLogCentreExponent : ℕ) : ℝ))) ^ d := h
+      _ = (routeTLogCentreMultiplier : ℝ) ^ d * (B : ℝ) ^ (200 * d) := by
         rw [mul_pow]
         congr 1
         simp [routeTLogCentreExponent, pow_mul]
   have hnum :
       4 * Real.pi * d * x ^ d ≤
-        (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ (200 * d) := by
+        (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+          (B : ℝ) ^ (200 * d) := by
     calc
-      _ ≤ 4 * Real.pi * d * ((4 : ℝ) ^ d * (B : ℝ) ^ (200 * d)) := by
+      _ ≤ 4 * Real.pi * d * ((routeTLogCentreMultiplier : ℝ) ^ d *
+          (B : ℝ) ^ (200 * d)) := by
         gcongr
       _ = _ := by ring
   have hproduct :
@@ -280,40 +310,51 @@ theorem routeTLog_upper_window_of_shell
     omega
   have hnumShell :
       4 * Real.pi * d * x ^ d ≤
-        (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A * t := by
+        (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+          (B : ℝ) ^ A * t := by
     calc
-      _ ≤ (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ (200 * d) := hnum
-      _ = (4 * Real.pi * d * (4 : ℝ) ^ d) *
+      _ ≤ (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+          (B : ℝ) ^ (200 * d) := hnum
+      _ = (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
           ((B : ℝ) ^ A * (B : ℝ) ^ (200 * (4 * u - 4))) := by rw [hproduct]
-      _ ≤ (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A * t := by
+      _ ≤ (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+          (B : ℝ) ^ A * t := by
         rw [hbottomPow] at hbottom
         calc
-          _ = ((4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A) *
+          _ = ((4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+              (B : ℝ) ^ A) *
               (B : ℝ) ^ (200 * (4 * u - 4)) := by ring
-          _ ≤ ((4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A) * t :=
+          _ ≤ ((4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+              (B : ℝ) ^ A) * t :=
             mul_le_mul_of_nonneg_left hbottom (by positivity)
           _ = _ := by ring
   have hdiv :
       4 * Real.pi * d * x ^ d / t ≤
-        (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A := by
+        (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+          (B : ℝ) ^ A := by
     rw [div_le_iff₀ ht]
     simpa [mul_assoc] using hnumShell
   have hcoefficient := routeTLog_coefficient_le_base_cube hB j hj
   have hA1 : (1 : ℝ) ≤ (B : ℝ) ^ A :=
     one_le_pow₀ (by exact_mod_cast (show 1 ≤ B by omega))
   have habsorbed :
-      (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A + 1 ≤
+      (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+          (B : ℝ) ^ A + 1 ≤
         (B : ℝ) ^ (A + 3) := by
-    have hcoeff' : 4 * Real.pi * (d : ℝ) * (4 : ℝ) ^ d + 1 ≤
+    have hcoeff' : 4 * Real.pi * (d : ℝ) *
+        (routeTLogCentreMultiplier : ℝ) ^ d + 1 ≤
         (B : ℝ) ^ 3 := by
       simpa [d, Nat.cast_add, Nat.cast_one] using hcoefficient
     calc
-      _ ≤ (4 * Real.pi * d * (4 : ℝ) ^ d + 1) * (B : ℝ) ^ A := by
+      _ ≤ (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d + 1) *
+          (B : ℝ) ^ A := by
         calc
-          _ ≤ (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A +
+          _ ≤ (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+              (B : ℝ) ^ A +
               (B : ℝ) ^ A := by
                 simpa [add_comm] using add_le_add_left hA1
-                  ((4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A)
+                  ((4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+                    (B : ℝ) ^ A)
           _ = _ := by ring
       _ ≤ (B : ℝ) ^ 3 * (B : ℝ) ^ A := by gcongr
       _ = (B : ℝ) ^ (A + 3) := by rw [pow_add]; ring
@@ -330,7 +371,8 @@ theorem routeTLog_upper_window_of_shell
     ring
   rw [hreciprocal]
   have hdivadd : 4 * Real.pi * d * x ^ d / t + 1 ≤
-      (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A + 1 :=
+      (4 * Real.pi * d * (routeTLogCentreMultiplier : ℝ) ^ d) *
+          (B : ℝ) ^ A + 1 :=
     by simpa [add_comm] using add_le_add_right hdiv 1
   have hfinal := hdivadd.trans (habsorbed.trans hpower)
   dsimp [d, e] at hfinal ⊢
@@ -363,7 +405,8 @@ theorem exists_routeT_logTaylor_approximants_of_shell
     (hbottom : ((((B ^ routeTLogCentreExponent) ^ (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ ((((B ^ routeTLogCentreExponent) ^ (4 * u) : ℕ) : ℝ)))
     (hxlower : (((B ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
-    (hxupper : x ≤ 4 * (((B ^ routeTLogCentreExponent : ℕ) : ℝ))) :
+    (hxupper : x ≤ routeTLogCentreMultiplier *
+      (((B ^ routeTLogCentreExponent : ℕ) : ℝ))) :
     ∃ a q : Fin (vinogradovRouteTOrder (4 * u)) → ℕ,
       (∀ j, vinogradovUsefulCoordinate u j → 0 < q j) ∧
       (∀ j, vinogradovUsefulCoordinate u j → Nat.Coprime (a j) (q j)) ∧
@@ -426,7 +469,8 @@ theorem norm_routeTLogUpperHalfBilinearSum_le_rpow_of_shell
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
-    (hxupper : x ≤ 4 * ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
+    (hxupper : x ≤ routeTLogCentreMultiplier *
+      ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
     ‖vinogradovUpperHalfBilinearSum (routeTLogHalfBlock C)
         (fun j : Fin (vinogradovRouteTOrder (4 * u)) =>
           -logTaylorMagnitude t x j)‖ ≤
@@ -497,7 +541,8 @@ theorem norm_routeTLogTwistedUpperHalfBilinearSum_le_rpow_of_shell
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
-    (hxupper : x ≤ 4 * ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
+    (hxupper : x ≤ routeTLogCentreMultiplier *
+      ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
     ‖vinogradovUpperHalfBilinearSum (routeTLogHalfBlock C)
         (routeTLogTwistedTaylorCoefficient
           (k := vinogradovRouteTOrder (4 * u)) t x β)‖ ≤

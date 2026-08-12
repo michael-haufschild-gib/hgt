@@ -58,6 +58,24 @@ theorem MemRectWeakSchattenClass.one_comp_right
       mul_le_mul_of_nonneg_right (hbound n) (norm_nonneg _)
     _ = C * ‖B‖ / ((n : ℝ) + 1) := by ring
 
+/-- A bounded target map preserves rectangular Schatten-one membership. -/
+theorem MemRectSchattenClass.one_comp_left
+    {T : E →L[ℂ] F} (hT : MemRectSchattenClass 1 T)
+    (A : F →L[ℂ] G) :
+    MemRectSchattenClass 1 (A ∘L T) := by
+  apply (memRectSchattenClass_one_iff (A ∘L T)).2
+  exact summable_rectApproxNumber_comp_left
+    ((memRectSchattenClass_one_iff T).1 hT) A
+
+/-- A bounded source map preserves rectangular Schatten-one membership. -/
+theorem MemRectSchattenClass.one_comp_right
+    {T : E →L[ℂ] F} (hT : MemRectSchattenClass 1 T)
+    (B : G →L[ℂ] E) :
+    MemRectSchattenClass 1 (T ∘L B) := by
+  apply (memRectSchattenClass_one_iff (T ∘L B)).2
+  exact summable_rectApproxNumber_comp_right
+    ((memRectSchattenClass_one_iff T).1 hT) B
+
 variable [CompleteSpace E] [CompleteSpace F]
 
 /-- Rectangular Schatten-one maps are closed under subtraction. -/

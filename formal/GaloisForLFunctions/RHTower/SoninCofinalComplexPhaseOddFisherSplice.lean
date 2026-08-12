@@ -1,4 +1,7 @@
 import GaloisForLFunctions.RHTower.SoninCofinalReporterClockCommutatorSeam
+import GaloisForLFunctions.RHTower.FisherDeconvolvedSameCarrierOrientationLaw
+import GaloisForLFunctions.RHTower.SourceHorizontalAbelianClassLawApertureEvacuation
+import GaloisForLFunctions.RHTower.SourceZeroHorizontalCarrier
 
 /-!
 # Signed complex-phase Sonin--Fisher splice
@@ -421,33 +424,34 @@ theorem soninCriticalPhaseOddFisherProfile_eq_difference (t : ℝ) :
     intro h
     have hre := congrArg Complex.re h
     simp at hre
-  have hreal : (1 + (t : ℂ) ^ 2) ≠ 0 := by
-    exact ofReal_ne_zero.mpr (by positivity)
-  push_cast
+  have hrealR : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
+  have hreal : (1 + (t : ℂ) ^ 2) ≠ 0 := by exact_mod_cast hrealR
   field_simp [hplus, hminus, hreal]
-  rw [I_sq]
+  ring_nf
+  simp [I_sq]
   ring
 
 theorem soninCriticalPhaseOddFisherProfile_eq_zero_iff
     {t : ℝ} (ht : |t| < 1) :
     soninCriticalPhaseOddFisherProfile t = 0 ↔ t = 0 := by
-  rw [soninCriticalPhaseOddFisherProfile]
-  have hden : (((1 + t ^ 2) ^ 2 : ℝ) : ℂ) ≠ 0 := by
-    exact ofReal_ne_zero.mpr (by positivity)
-  rw [div_eq_zero_iff]
-  simp only [mul_eq_zero, ofReal_eq_zero, I_ne_zero, OfNat.ofNat_ne_zero,
-    false_or]
   constructor
-  · intro h
-    rcases h with h | h
-    · exact h
-    · have hsquare : t ^ 2 = 1 := by linarith
-      have habs : |t| = 1 := by
-        nlinarith [sq_abs t]
+  · intro hz
+    rw [soninCriticalPhaseOddFisherProfile] at hz
+    have hbaseR : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
+    have hbase : (1 + (t : ℂ) ^ 2) ≠ 0 := by exact_mod_cast hbaseR
+    have hden : (1 + (t : ℂ) ^ 2) ^ 2 ≠ 0 := pow_ne_zero 2 hbase
+    have hnum := (div_eq_zero_iff.mp hz).resolve_right hden
+    simp only [mul_eq_zero, ofReal_eq_zero, I_ne_zero,
+      OfNat.ofNat_ne_zero, false_or] at hnum
+    rcases hnum with ht0 | hfactor
+    · exact ht0
+    · have hfactorR : 1 - t ^ 2 = 0 := by exact_mod_cast hfactor
+      have hsquare : t ^ 2 = 1 := by linarith
+      have hsqlt : t ^ 2 < 1 := by
+        nlinarith [sq_abs t, abs_nonneg t]
       linarith
-  · intro h
-    exact Or.inl h
-  exact hden
+  · rintro rfl
+    simp [soninCriticalPhaseOddFisherProfile]
 
 /-- Shared-depth signed score retaining the two complex phase orientations. -/
 def soninCofinalCriticalPhaseOddFisherScore
@@ -518,11 +522,101 @@ theorem exists_soninCofinalCriticalPhaseOddFisherScore_diagonal
   have hminusSource : Tendsto minusSource atTop
       (nhds (2 * (-I * t) / (1 - I * t) ^ 2)) := by
     convert tendsto_inner_fisherTangent_complexDamped_criticalSequence
-      (u := -I * t) (by simp) using 1 <;> ring
+      (u := -I * t) (by simp) using 1
+    all_goals ring_nf
   have hsourceOdd : Tendsto sourceOdd atTop
       (nhds (soninCriticalPhaseOddFisherProfile t)) := by
     rw [soninCriticalPhaseOddFisherProfile_eq_difference]
     exact hplusSource.sub hminusSource
   exact GaloisForLFunctions.RHTower.tendsto_of_dist_lt_inv hsourceOdd herror
+
+/-! ## Multiplicity-labelled Xi specialization -/
+
+/-- Signed Sonin phase profile attached before summing any Xi divisor copies. -/
+def xiZeroSoninCriticalPhaseOddFisherProfile (q : XiZeroCopy) : ℂ :=
+  soninCriticalPhaseOddFisherProfile
+    (primeDepthBVWoldXiCenteredRate q.1)
+
+/-- The new signed Sonin source profile has exactly the horizontal Xi radical. -/
+theorem xiZeroSoninCriticalPhaseOddFisherProfile_eq_zero_iff
+    (q : XiZeroCopy) :
+    xiZeroSoninCriticalPhaseOddFisherProfile q = 0 ↔
+      (q.1 : ℂ).re = 1 / 2 := by
+  rw [xiZeroSoninCriticalPhaseOddFisherProfile,
+    soninCriticalPhaseOddFisherProfile_eq_zero_iff
+      (sourceHorizontalXiCenteredRate_abs_lt_one q),
+    primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+
+/-- Every multiplicity-labelled Xi divisor copy has one common finite Sonin
+schedule carrying both reflected complex phases.  Its limit vanishes exactly
+when that copy is on the critical line. -/
+theorem exists_xiZeroSoninCofinalCriticalPhaseOddFisherScore_diagonal
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (q : XiZeroCopy) :
+    ∃ Nseq : ℕ → ℕ,
+      (∀ j, j < Nseq j) ∧
+      Tendsto (fun j => soninCofinalCriticalPhaseOddFisherScore
+        a c d r hc hcd hr (primeDepthBVWoldXiCenteredRate q.1)
+          j (Nseq j))
+        atTop (nhds (xiZeroSoninCriticalPhaseOddFisherProfile q)) ∧
+      (xiZeroSoninCriticalPhaseOddFisherProfile q = 0 ↔
+        (q.1 : ℂ).re = 1 / 2) := by
+  obtain ⟨Nseq, hcofinal, hlimit⟩ :=
+    exists_soninCofinalCriticalPhaseOddFisherScore_diagonal
+      a c d r ha hc hcd hda hr harc
+        (primeDepthBVWoldXiCenteredRate q.1)
+  exact ⟨Nseq, hcofinal, hlimit,
+    xiZeroSoninCriticalPhaseOddFisherProfile_eq_zero_iff q⟩
+
+/-- **Horizontal-carrier identification.**  The signed Sonin phase and the
+complete source-zero horizontal carrier have the same zero fibre, copy by
+copy and before any multiplicity sum.  This joins the analytic Sonin limit to
+the resolution/prime-Bockstein carrier without a bounded scalar reader. -/
+theorem xiZeroSoninCriticalPhaseOddFisherProfile_eq_zero_iff_sourceCarrier
+    (K : ℕ) (q : XiZeroCopy) :
+    xiZeroSoninCriticalPhaseOddFisherProfile q = 0 ↔
+      sourceZeroHorizontalCarrierAt K q = 0 := by
+  rw [xiZeroSoninCriticalPhaseOddFisherProfile_eq_zero_iff,
+    sourceZeroHorizontalCarrierAt_eq_zero_iff]
+
+/-- **Same-carrier orientation identification.**  Vanishing of the signed
+Sonin phase is exactly equality of the two coefficient-faithful deconvolved
+reflection transports in their common prime carrier. -/
+theorem xiZeroSoninCriticalPhaseOddFisherProfile_eq_zero_iff_orientationClass
+    (q : XiZeroCopy) :
+    xiZeroSoninCriticalPhaseOddFisherProfile q = 0 ↔
+      fisherDeconvolvedOrientationClass
+          (primeDepthBVWoldXiCenteredRate q.1) =
+        fisherDeconvolvedOrientationClass
+          (-primeDepthBVWoldXiCenteredRate q.1) := by
+  rw [xiZeroSoninCriticalPhaseOddFisherProfile_eq_zero_iff,
+    fisherDeconvolvedOrientationClass_eq_reflected_iff,
+    primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+
+/-- Global vanishing law for the signed, multiplicity-resolved Sonin phase
+profile.  This is stated separately so a future arithmetic producer has one
+precise conclusion to discharge. -/
+def XiZeroSoninCriticalPhaseOddFisherVanishes : Prop :=
+  ∀ q : XiZeroCopy, xiZeroSoninCriticalPhaseOddFisherProfile q = 0
+
+/-- Exact endpoint audit: global annihilation of the signed Sonin phase
+profile is RH.  The preceding theorems construct the observable and its
+cofinal physical carrier; they do not assume this vanishing law. -/
+theorem xiZeroSoninCriticalPhaseOddFisherVanishes_iff_riemannHypothesis :
+    XiZeroSoninCriticalPhaseOddFisherVanishes ↔ RiemannHypothesis := by
+  constructor
+  · intro h
+    rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+    intro rho hzero
+    let rhoSupport : XiDivisorSupport :=
+      ⟨rho, mem_xi_divisor_support_of_eq_zero hzero⟩
+    let q : XiZeroCopy :=
+      ⟨rhoSupport, ⟨0, xiSupportMultiplicity_pos rhoSupport⟩⟩
+    exact (xiZeroSoninCriticalPhaseOddFisherProfile_eq_zero_iff q).1 (h q)
+  · intro hRH q
+    apply (xiZeroSoninCriticalPhaseOddFisherProfile_eq_zero_iff q).2
+    exact (riemannHypothesis_iff_xi_zero_re_eq_half.mp hRH)
+      (q.1 : ℂ) (xi_eq_zero_of_mem_divisor_support q.1)
 
 end RHTower

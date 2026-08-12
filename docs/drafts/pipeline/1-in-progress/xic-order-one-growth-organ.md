@@ -1075,3 +1075,72 @@ minors; the bridge already supplies index 0) — chart the exact arithmetic cont
 nontrivial rational instances; (iii) monotone structure of the rational family (does datum at
 finer node sets dominate coarser ones? a lattice structure on the countable list would give a
 canonical exhaustion).
+
+## Step 42 — arithmetic content of the countable list + order-structure no-go [PAPER-PROVED → Lean]
+
+Three-part attack on the recorded frontier: (A) universal supply, (C) refinement order, (B)
+window optimality (assessed after A/C).
+
+**(A) Universal nodal supply theorem.** Every entry of the countable rational-nodal list is
+priced by the two-scale bridge. For ANY real polynomial `p` with `‖evalRealPolynomial p z‖ ≤ B`
+on the unit disk, partial line placement above `δ` plus the mass inequality
+
+  `8·B⁴·ε·S ≤ 2·(r₁r₂)^{2m+1}·(eval_{r₁} p)²·(eval_{r₂} p)²·(r₁−r₂)²`
+
+(ε = sub-δ mass, S = total mass, r₁ ≠ r₂ two above-δ moduli) forces the `(0,2,1)` single-minor
+datum of `X^m·p` to be nonnegative. Paper proof = step-38 two-scale split with weights: the
+pair expansion of `p` at index `2m` (corpus `two_mul_polyTuranMinorAt_eq_tsum_pair`); above-δ
+pair terms are `(r₁r₂)^{2m+1}·(eval p)²(eval p)²·(r₁−r₂)² ≥ 0` (atoms are positive reals by
+line placement, weights are squares of real evaluations); the block dominates the separated
+witness pair; complement pair terms ≤ `4B⁴ × pair mass ≤ 4B⁴·2εS`. Index transfer by
+`xiPolyMoment_X_pow_mul`. Rational instances: `p = finNodalPolynomial c`, `B = 2^j`, witness
+evaluations `∏(r_k − c_i)`. CHART: the cost of entry `(j, m, c)` degrades exponentially in `m`
+(via `(r₁r₂)^{2m+1}`) and in `j` (via `16^j` and the node-witness distances) — the cheap prefix
+of the list is small `j + m` with nodes away from the witness moduli. ∎ (mod Lean)
+
+**(C) Refinement monotonicity is FALSE — explicit falsifier.** Config: real atom `1/2` with
+multiplicity 6, conjugate pair `(3 ± 4i)/10` (norms ≤ 1, positive real parts, conj-symmetric).
+Plain `(0,2,1)` datum: `M₀ = 18/5, M₁ = 34/25, M₂ = 129/250`, datum `= 1/125 > 0`. One-node
+datum at the RATIONAL node `r = 1/2` (kills the real atom): only the pair survives,
+`N_k = w^{k+1}W + conj`, `W = (w − 1/2)² = (−3−4i)/25`, and by the single-pair identity
+`N₀N₂ − N₁² = |W|²|w|²(w − w̄)² = −4|W|²|w|²·Im(w)² = −4·(1/25)·(1/4)·(4/25) = −4/625 < 0`.
+So passing a coarser instance does NOT imply passing a finer one: the rational family has no
+refinement-monotone order; canonical exhaustion is by enumeration, not domination. Positive
+salvage: the identity `(wW+w̄W̄)(w³W+w̄³W̄) − (w²W+w̄²W̄)² = WW̄·ww̄·(w−w̄)²` (pure ring) shows any
+config reduced by a nodal weight to a single off-line pair has strictly negative datum — the
+node mechanism of detection in closed form. ∎ (mod Lean)
+
+**Step 42 status: (A) and (C) [LEAN-PROVED]; (B) scoped.** Two modules, all six declarations
+auditing to [propext, Classical.choice, Quot.sound], olean-built, wired.
+
+`RHTower/XiResolventNodalSupply.lean`:
+- `polyTuranMinor_supply_of_partial_line` — THE UNIVERSAL SUPPLY THEOREM: for any real
+  polynomial `p` with pointwise disk bound `B`, line placement above `δ` plus
+  `8B⁴εS ≤ 2(r₁r₂)^{2m+1}(eval_{r₁}p)²(eval_{r₂}p)²(r₁−r₂)²` gives the `(0,2,1)` datum of
+  `X^m·p`. Clone of the step-38 two-scale split with squared-real-evaluation weights.
+- `rational_nodal_datum_of_partial_line` — the nodal pricing: disk bound `2^{4j}`, witness
+  factors `∏(r_k − c_i)`. Chart: entry `(j, m, c)` costs `(r₁r₂)^{2m+1}` in the shift and
+  `2^{4j}·∏(r_k − c_i)²`-degradation in the nodes — the cheap prefix of the countable list is
+  small `j + m` with nodes away from the witness moduli.
+- `eval_finNodalPolynomial` — real evaluation = product of node offsets.
+
+`HTGeometry/TuranMinorNodeRefinementNonmonotone.lean`:
+- `pair_minor_identity` — `(wW+w̄W̄)(w³W+w̄³W̄) − (w²W+w̄²W̄)² = WW̄·ww̄·(w−w̄)²` (pure ring).
+- `pair_minor_re_neg` — single off-line pair datum `= −4|W|²|w|²Im(w)² < 0`.
+- `exists_config_turanMinor_nonneg_nodal_refinement_neg` — REFINEMENT MONOTONICITY IS FALSE:
+  explicit config (atom 1/2 ×6, pair (3±4i)/10) with plain datum `+1/125` and node-1/2 datum
+  `−4/625`. The countable family has no refinement-monotone order; exhaustion is by
+  enumeration. [FALSIFIED: refinement-domination conjecture; positive salvage = the pair
+  identity + the explicit unmasking mechanism.]
+
+**Lean traps (new).** `linear_combination e * Complex.I_sq` with polynomial coefficient
+`e = α·I² + β` eliminates I-powers in explicit complex-number identities (compute α, β as the
+x⁴/x²-coefficients of LHS−RHS as a polynomial in x = I); `push_cast` first. `norm_cast` closes
+`(cast-built expression).re = real expression` goals after rewriting atoms to `ofReal` form.
+Unused simp args (`Matrix.head_cons`) are now WARNINGS that fail the gate — trim simp lists.
+
+**(B) window optimality — precise scope for next batch.** Target: a two-pair level family
+parametrized by angle gap θ where the first negative even minor index grows like
+`1/‖V²−1‖` — the Cesàro partial sums of `V^{2n+1}` remain above `−C` until `n ≈ 1/‖V²−1‖`,
+so the master estimate's `CP2/g` term is attained up to constants. Would certify the `S²/g`
+shape of the step-39 window as optimal. Numeric pre-certification first (runpod if needed).

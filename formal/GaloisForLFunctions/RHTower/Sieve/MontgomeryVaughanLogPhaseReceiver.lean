@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.MontgomeryVaughanConvolutionReceiver
+import GaloisForLFunctions.RHTower.Sieve.DirichletBlockAbel
 
 /-!
 # Route T logarithmic phase receiver
@@ -28,6 +29,10 @@ def routeTLogPhaseIntervalSum (C : ℕ) (t : ℝ) : ℂ :=
 
 def routeTLogPhasePartialIntervalSum (C N' : ℕ) (t : ℝ) : ℂ :=
   ∑ n ∈ Finset.Ioc (routeTLogReceiverLength C) N', routeTLogPhase t n
+
+def routeTLogWeightedPartialIntervalSum (C N' : ℕ) (σ t : ℝ) : ℂ :=
+  ∑ n ∈ Finset.Ioc (routeTLogReceiverLength C) N',
+    ((((n : ℕ) : ℝ) ^ (-σ) : ℝ) : ℂ) * routeTLogPhase t n
 
 theorem routeTLogPhasePartialIntervalSum_eq_block
     {C N' : ℕ} (hN' : N' ≤ 2 * routeTLogReceiverLength C) (t : ℝ) :
@@ -97,6 +102,64 @@ theorem routeTLogOneDimensionalSavingExponent_lt_one
   unfold routeTLogOneDimensionalSavingExponent
   have hδ := vinogradovRouteTPowerSavingExponent_le_one_hundredth hu
   linarith
+
+/-- Polynomial order loss: the explicit Route-T moment is cubic in `u`, so the rooted saving is
+at worst quartic.  This quantitative law is what makes the later zeta optimization nontrivial. -/
+theorem routeTLogOneDimensionalSavingExponent_ge
+    {u : ℕ} (hu : 1 ≤ u) :
+    1 / (5000000000000000 * (u : ℝ) ^ 4) ≤
+      routeTLogOneDimensionalSavingExponent u := by
+  let b := vinogradovRouteTMoment (4 * u)
+  let A := vinogradovRouteTMomentSaving u
+  let δ := vinogradovRouteTPowerSavingExponent u
+  have hbNat : b ≤ 16000000 * u ^ 3 := by
+    unfold b vinogradovRouteTMoment vinogradovRouteTOrder
+      vinogradovRouteTMomentSteps
+    have hsub : 2500 * (4 * u) ^ 2 - 200 * (4 * u) ≤ 40000 * u ^ 2 := by
+      calc
+        2500 * (4 * u) ^ 2 - 200 * (4 * u) ≤ 2500 * (4 * u) ^ 2 :=
+          Nat.sub_le _ _
+        _ = 40000 * u ^ 2 := by ring
+    calc
+      100 * (4 * u) * (2500 * (4 * u) ^ 2 - 200 * (4 * u)) ≤
+          400 * u * (40000 * u ^ 2) := by
+            simpa only [show 100 * (4 * u) = 400 * u by ring] using
+              Nat.mul_le_mul_left (400 * u) hsub
+      _ = 16000000 * u ^ 3 := by ring
+  have hb : (b : ℝ) ≤ 16000000 * (u : ℝ) ^ 3 := by exact_mod_cast hbNat
+  have hA : 2 * (u : ℝ) ^ 2 ≤ A := by
+    unfold A vinogradovRouteTMomentSaving
+    have hnat : 2 * u ^ 2 ≤ 20 * u ^ 2 - 1 := by
+      apply Nat.le_sub_of_add_le
+      nlinarith [sq_nonneg (u - 1)]
+    exact_mod_cast hnat
+  have hb0 : (0 : ℝ) < b := by
+    exact_mod_cast (Nat.pos_of_ne_zero
+      (vinogradovRouteTMoment_ne_zero (s := 4 * u) (by omega)))
+  have hu0 : (0 : ℝ) < u := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hu)
+  have hden : (0 : ℝ) < 4 * (b : ℝ) ^ 2 := by positivity
+  have hscale : (0 : ℝ) < 1000000000000000 * (u : ℝ) ^ 4 := by positivity
+  have hbsq : 4 * (b : ℝ) ^ 2 ≤
+      1024000000000000 * (u : ℝ) ^ 6 := by
+    have hsquare : (b : ℝ) ^ 2 ≤
+        (16000000 * (u : ℝ) ^ 3) ^ 2 := by nlinarith [sq_nonneg ((b : ℝ) - 16000000 * u ^ 3)]
+    nlinarith
+  have hδlower : 1 / (1000000000000000 * (u : ℝ) ^ 4) ≤ δ := by
+    unfold δ vinogradovRouteTPowerSavingExponent
+    change 1 / (1000000000000000 * (u : ℝ) ^ 4) ≤
+      (A : ℝ) / (4 * (b : ℝ) ^ 2)
+    rw [div_le_div_iff₀ hscale hden]
+    nlinarith [sq_nonneg (u : ℝ), sq_nonneg ((u : ℝ) ^ 2)]
+  have hδpos : 0 < δ := vinogradovRouteTPowerSavingExponent_pos hu
+  have hdivide :
+      1 / (5000000000000000 * (u : ℝ) ^ 4) =
+        (1 / (1000000000000000 * (u : ℝ) ^ 4)) / 5 := by
+    field_simp
+    ring
+  rw [hdivide]
+  calc
+    (1 / (1000000000000000 * (u : ℝ) ^ 4)) / 5 ≤ δ / 5 := by gcongr
+    _ ≤ 99 * δ / 400 := by nlinarith
 
 theorem routeTLogReceiverBaseThreshold_ge_base
     {u B : ℕ} (hB : routeTLogReceiverBaseThreshold u ≤ B) :
@@ -282,7 +345,11 @@ theorem routeTLogPhase_receiver_inequality
       apply norm_routeTLogTwistedShiftBilinearSum_le_two_rpow_of_shell
         hu hC ht hbottom htop
       · exact_mod_cast (show N ≤ r by omega)
-      · exact_mod_cast (show r ≤ 4 * N by omega))
+      · have hmult : 4 ≤ routeTLogCentreMultiplier := by
+          norm_num [routeTLogCentreMultiplier]
+        exact_mod_cast (show r ≤ routeTLogCentreMultiplier * N by
+          have : r ≤ 4 * N := by omega
+          exact this.trans (Nat.mul_le_mul_right N hmult)))
   have hcoeff := routeTProductMultiplicity_block_lower hQ8 hKprod
   have hfactor : 0 ≤
       ‖mvPhaseBlockSum K N N' (routeTLogPhase t)‖ := norm_nonneg _
@@ -528,6 +595,76 @@ theorem norm_routeTLogPhasePartialIntervalSum_le_rpow
         (1 - routeTLogOneDimensionalSavingExponent u)) := by
   rw [routeTLogPhasePartialIntervalSum_eq_block hN']
   exact norm_routeTLogPhasePartialBlock_le_rpow hu hC hNN' hN' ht hbottom htop
+
+/-- Abel transport of Route T's prefix-uniform phase saving to `n^{-σ}` weights. -/
+theorem norm_routeTLogWeightedPartialIntervalSum_le
+    {u C N' : ℕ} {σ t : ℝ} (hu : 141 ≤ u)
+    (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
+    (hNN' : routeTLogReceiverLength C < N')
+    (hN' : N' ≤ 2 * routeTLogReceiverLength C)
+    (hσ : 0 ≤ σ) (ht : 0 < t)
+    (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
+    (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u) : ℕ) : ℝ))) :
+    ‖routeTLogWeightedPartialIntervalSum C N' σ t‖ ≤
+      (6912 * (((routeTLogReceiverLength C : ℕ) : ℝ) ^
+        (1 - routeTLogOneDimensionalSavingExponent u))) *
+          (((routeTLogReceiverLength C + 1 : ℕ) : ℝ) ^ (-σ)) := by
+  let N := routeTLogReceiverLength C
+  let M := N' + 1
+  let P : ℝ := 6912 * (N : ℝ) ^
+    (1 - routeTLogOneDimensionalSavingExponent u)
+  have hbase := routeTLogReceiverBaseThreshold_ge_base hC
+  have hNpos : 0 < N := by
+    unfold N routeTLogReceiverLength
+    have hB2 := routeTLogBaseThreshold_ge_two hbase
+    positivity
+  have hNM : N + 1 ≤ M := by unfold M N; omega
+  have hP0 : 0 ≤ P := by unfold P; positivity
+  have hpref : ∀ m, N + 1 ≤ m → m ≤ M →
+      ‖∑ n ∈ Finset.Ico (N + 1) m, routeTLogPhase t n‖ ≤ P := by
+    intro m hmN hmM
+    rcases eq_or_lt_of_le hmN with rfl | hmNlt
+    · simp only [Finset.Ico_self, Finset.sum_empty, norm_zero]
+      exact hP0
+    · have hendLower : N < m - 1 := by omega
+      have hendUpper : m - 1 ≤ 2 * N := by
+        unfold M at hmM
+        have hN'local : N' ≤ 2 * N := by simpa only [N] using hN'
+        omega
+      have hbound := norm_routeTLogPhasePartialIntervalSum_le_rpow
+        hu hC (C := C) (N' := m - 1) (t := t)
+        (by simpa only [N] using hendLower) (by simpa only [N] using hendUpper)
+        ht hbottom htop
+      have hsum : (∑ n ∈ Finset.Ico (N + 1) m, routeTLogPhase t n) =
+          routeTLogPhasePartialIntervalSum C (m - 1) t := by
+        unfold routeTLogPhasePartialIntervalSum
+        congr 1
+        ext n
+        simp only [Finset.mem_Ico, Finset.mem_Ioc]
+        change (N + 1 ≤ n ∧ n < m) ↔ N < n ∧ n ≤ m - 1
+        omega
+      rw [hsum]
+      simpa only [P, N] using hbound
+  have hanti : ∀ m, N + 1 ≤ m → m < M →
+      (((m + 1 : ℕ) : ℝ) ^ (-σ)) ≤ (((m : ℕ) : ℝ) ^ (-σ)) := by
+    intro m hm _
+    have hm0 : (0 : ℝ) < m := by exact_mod_cast (show 0 < m by omega)
+    exact Real.rpow_le_rpow_of_nonpos hm0 (by push_cast; linarith) (by linarith)
+  have hM0 : (0 : ℝ) ≤ (M : ℝ) ^ (-σ) := Real.rpow_nonneg (by positivity) _
+  have hab := abel_block_bound (routeTLogPhase t)
+    (fun n => (n : ℝ) ^ (-σ)) (N + 1) M hNM hM0 hanti P hpref
+  have hsum : routeTLogWeightedPartialIntervalSum C N' σ t =
+      ∑ n ∈ Finset.Ico (N + 1) M,
+        ((((n : ℕ) : ℝ) ^ (-σ) : ℝ) : ℂ) * routeTLogPhase t n := by
+    unfold routeTLogWeightedPartialIntervalSum M N
+    congr 1
+    ext n
+    simp only [Finset.mem_Ioc, Finset.mem_Ico]
+    omega
+  rw [hsum]
+  simpa only [P, N] using hab
 
 theorem norm_routeTLogPhaseIntervalSum_le_rpow
     {u C : ℕ} {t : ℝ} (hu : 141 ≤ u)

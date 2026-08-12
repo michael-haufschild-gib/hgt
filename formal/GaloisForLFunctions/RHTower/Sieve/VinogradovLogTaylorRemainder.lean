@@ -260,7 +260,8 @@ theorem norm_routeTLogRatioBilinearSum_le_of_shell
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
-    (hxupper : x ≤ 4 * ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
+    (hxupper : x ≤ routeTLogCentreMultiplier *
+      ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
     ‖routeTLogRatioBilinearSum t x (routeTLogHalfBlock C)‖ ≤
       ((((2 * C) ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
           (2 - vinogradovRouteTPowerSavingExponent u) +
@@ -304,11 +305,15 @@ theorem routeTLog_taylor_term_le_saved_rpow
   have hCB : routeTLogBaseThreshold u ≤ B := by simpa only [B] using hC
   have hwindow : routeTLogWindowThreshold u ≤ B :=
     (le_max_left _ _).trans hCB
-  have hfactorPos : 0 < (240 * u + 1) * 4 ^ (240 * u) := by positivity
+  have hmultPos : 0 < routeTLogCentreMultiplier := by
+    norm_num [routeTLogCentreMultiplier]
+  have hfactorPos : 0 < (240 * u + 1) *
+      routeTLogCentreMultiplier ^ (240 * u) := by
+    exact Nat.mul_pos (by omega) (pow_pos hmultPos _)
   have hB32 : 32 ≤ B := by
     calc
       32 = 32 * 1 := by omega
-      _ ≤ 32 * ((240 * u + 1) * 4 ^ (240 * u)) := by
+      _ ≤ 32 * ((240 * u + 1) * routeTLogCentreMultiplier ^ (240 * u)) := by
         exact Nat.mul_le_mul_left 32 (by omega)
       _ = routeTLogWindowThreshold u := by
         unfold routeTLogWindowThreshold
@@ -372,7 +377,8 @@ theorem norm_routeTLogRatioBilinearSum_le_two_rpow_of_shell
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
-    (hxupper : x ≤ 4 * ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
+    (hxupper : x ≤ routeTLogCentreMultiplier *
+      ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
     ‖routeTLogRatioBilinearSum t x (routeTLogHalfBlock C)‖ ≤
       2 * (((((2 * C) ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
         (2 - vinogradovRouteTPowerSavingExponent u)) := by
@@ -444,7 +450,8 @@ theorem norm_routeTLogShiftBilinearSum_le_two_rpow_of_shell
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
-    (hxupper : x ≤ 4 * ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
+    (hxupper : x ≤ routeTLogCentreMultiplier *
+      ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
     ‖routeTLogShiftBilinearSum t x (routeTLogHalfBlock C)‖ ≤
       2 * (((((2 * C) ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
         (2 - vinogradovRouteTPowerSavingExponent u)) := by
@@ -557,7 +564,8 @@ theorem norm_routeTLogTwistedRatioBilinearSum_le_two_rpow_of_shell
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
-    (hxupper : x ≤ 4 * ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
+    (hxupper : x ≤ routeTLogCentreMultiplier *
+      ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
     ‖routeTLogTwistedRatioBilinearSum t x β (routeTLogHalfBlock C)‖ ≤
       2 * (((((2 * C) ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
         (2 - vinogradovRouteTPowerSavingExponent u)) := by
@@ -650,7 +658,8 @@ theorem norm_routeTLogTwistedShiftBilinearSum_le_two_rpow_of_shell
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
-    (hxupper : x ≤ 4 * ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
+    (hxupper : x ≤ routeTLogCentreMultiplier *
+      ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ))) :
     ‖routeTLogTwistedShiftBilinearSum t x β (routeTLogHalfBlock C)‖ ≤
       2 * (((((2 * C) ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
         (2 - vinogradovRouteTPowerSavingExponent u)) := by

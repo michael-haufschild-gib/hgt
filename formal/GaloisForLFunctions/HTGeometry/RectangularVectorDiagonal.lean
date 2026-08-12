@@ -155,6 +155,126 @@ theorem vectorDiagonalOperator_deningerIsNuclear_of_summable_norm
 
 end
 
+section RectangularBlock
+
+variable {ι : Type}
+variable {E F : ι → Type*}
+variable [∀ i, NormedAddCommGroup (E i)] [∀ i, NormedSpace ℂ (E i)]
+variable [∀ i, NormedAddCommGroup (F i)] [∀ i, NormedSpace ℂ (F i)]
+
+/-- A uniformly bounded family of rectangular blocks preserves Hilbert direct
+sums.  Source and target fibres may differ. -/
+theorem rectangularBlockOperator_memℓp
+    (T : ∀ i, E i →L[ℂ] F i) {C : ℝ} (hC : 0 ≤ C)
+    (hT : ∀ i, ‖T i‖ ≤ C) (x : lp E 2) :
+    Memℓp (fun i => T i (x i)) 2 := by
+  refine memℓp_gen ?_
+  have hx : Summable fun i => ‖(x : ∀ i, E i) i‖ ^ (2 : ℝ) :=
+    (lp.memℓp x).summable (by norm_num)
+  refine Summable.of_nonneg_of_le
+    (fun i => Real.rpow_nonneg (norm_nonneg _) 2) ?_
+    (hx.mul_left (C ^ (2 : ℝ)))
+  intro i
+  have hle : ‖T i ((x : ∀ i, E i) i)‖ ≤
+      C * ‖(x : ∀ i, E i) i‖ :=
+    (T i).le_opNorm _ |>.trans
+      (mul_le_mul_of_nonneg_right (hT i) (norm_nonneg _))
+  calc
+    ‖T i ((x : ∀ i, E i) i)‖ ^ (2 : ℝ) ≤
+        (C * ‖(x : ∀ i, E i) i‖) ^ (2 : ℝ) :=
+      Real.rpow_le_rpow (norm_nonneg _) hle (by norm_num)
+    _ = C ^ (2 : ℝ) * ‖(x : ∀ i, E i) i‖ ^ (2 : ℝ) :=
+      Real.mul_rpow hC (norm_nonneg _)
+
+def rectangularBlockOperatorLinear
+    (T : ∀ i, E i →L[ℂ] F i) {C : ℝ} (hC : 0 ≤ C)
+    (hT : ∀ i, ‖T i‖ ≤ C) : lp E 2 →ₗ[ℂ] lp F 2 where
+  toFun x := ⟨fun i => T i (x i), rectangularBlockOperator_memℓp T hC hT x⟩
+  map_add' x y := by ext i; simp
+  map_smul' c x := by ext i; simp
+
+@[simp] theorem rectangularBlockOperatorLinear_apply
+    (T : ∀ i, E i →L[ℂ] F i) {C : ℝ} (hC : 0 ≤ C)
+    (hT : ∀ i, ‖T i‖ ≤ C) (x : lp E 2) (i : ι) :
+    rectangularBlockOperatorLinear T hC hT x i = T i (x i) := rfl
+
+theorem rectangularBlockOperatorLinear_norm_le
+    (T : ∀ i, E i →L[ℂ] F i) {C : ℝ} (hC : 0 ≤ C)
+    (hT : ∀ i, ‖T i‖ ≤ C) (x : lp E 2) :
+    ‖rectangularBlockOperatorLinear T hC hT x‖ ≤ C * ‖x‖ := by
+  have hleft : 0 ≤ ‖rectangularBlockOperatorLinear T hC hT x‖ := norm_nonneg _
+  have hright : 0 ≤ C * ‖x‖ := mul_nonneg hC (norm_nonneg _)
+  have hy : ‖rectangularBlockOperatorLinear T hC hT x‖ ^ (2 : ℝ) =
+      ∑' i, ‖(rectangularBlockOperatorLinear T hC hT x : ∀ i, F i) i‖ ^
+        (2 : ℝ) := by
+    simpa using lp.norm_rpow_eq_tsum (p := 2) (E := F) (by norm_num)
+      (rectangularBlockOperatorLinear T hC hT x)
+  have hxnorm : ‖x‖ ^ (2 : ℝ) =
+      ∑' i, ‖(x : ∀ i, E i) i‖ ^ (2 : ℝ) := by
+    simpa using lp.norm_rpow_eq_tsum (p := 2) (E := E) (by norm_num) x
+  have hxsum : Summable fun i => ‖(x : ∀ i, E i) i‖ ^ (2 : ℝ) :=
+    (lp.memℓp x).summable (by norm_num)
+  have hysum : Summable fun i =>
+      ‖(rectangularBlockOperatorLinear T hC hT x : ∀ i, F i) i‖ ^
+        (2 : ℝ) := (lp.memℓp _).summable (by norm_num)
+  have hterm : ∀ i,
+      ‖(rectangularBlockOperatorLinear T hC hT x : ∀ i, F i) i‖ ^
+          (2 : ℝ) ≤
+        C ^ (2 : ℝ) * ‖(x : ∀ i, E i) i‖ ^ (2 : ℝ) := by
+    intro i
+    rw [rectangularBlockOperatorLinear_apply]
+    have hle : ‖T i ((x : ∀ i, E i) i)‖ ≤
+        C * ‖(x : ∀ i, E i) i‖ :=
+      (T i).le_opNorm _ |>.trans
+        (mul_le_mul_of_nonneg_right (hT i) (norm_nonneg _))
+    calc
+      ‖T i ((x : ∀ i, E i) i)‖ ^ (2 : ℝ) ≤
+          (C * ‖(x : ∀ i, E i) i‖) ^ (2 : ℝ) :=
+        Real.rpow_le_rpow (norm_nonneg _) hle (by norm_num)
+      _ = C ^ (2 : ℝ) * ‖(x : ∀ i, E i) i‖ ^ (2 : ℝ) :=
+        Real.mul_rpow hC (norm_nonneg _)
+  have hpow : ‖rectangularBlockOperatorLinear T hC hT x‖ ^ (2 : ℝ) ≤
+      (C * ‖x‖) ^ (2 : ℝ) := by
+    rw [hy, Real.mul_rpow hC (norm_nonneg _), hxnorm, ← tsum_mul_left]
+    exact Summable.tsum_le_tsum hterm hysum
+      (hxsum.mul_left (C ^ (2 : ℝ)))
+  have hleft2 : ‖rectangularBlockOperatorLinear T hC hT x‖ ^ (2 : ℝ) =
+      ‖rectangularBlockOperatorLinear T hC hT x‖ ^ (2 : ℕ) := by
+    rw [← Real.rpow_natCast _ 2]
+    norm_num
+  have hright2 : (C * ‖x‖) ^ (2 : ℝ) = (C * ‖x‖) ^ (2 : ℕ) := by
+    rw [← Real.rpow_natCast _ 2]
+    norm_num
+  rw [hleft2, hright2] at hpow
+  have hsqrt := Real.sqrt_le_sqrt hpow
+  rwa [Real.sqrt_sq hleft, Real.sqrt_sq hright] at hsqrt
+
+/-- Canonical rectangular block diagonal on Hilbert direct sums. -/
+noncomputable def rectangularBlockOperator
+    (T : ∀ i, E i →L[ℂ] F i) {C : ℝ} (hC : 0 ≤ C)
+    (hT : ∀ i, ‖T i‖ ≤ C) : lp E 2 →L[ℂ] lp F 2 :=
+  LinearMap.mkContinuous (rectangularBlockOperatorLinear T hC hT) C
+    (rectangularBlockOperatorLinear_norm_le T hC hT)
+
+@[simp] theorem rectangularBlockOperator_apply
+    (T : ∀ i, E i →L[ℂ] F i) {C : ℝ} (hC : 0 ≤ C)
+    (hT : ∀ i, ‖T i‖ ≤ C) (x : lp E 2) (i : ι) :
+    rectangularBlockOperator T hC hT x i = T i (x i) := rfl
+
+theorem rectangularBlockOperator_single [DecidableEq ι]
+    (T : ∀ i, E i →L[ℂ] F i) {C : ℝ} (hC : 0 ≤ C)
+    (hT : ∀ i, ‖T i‖ ≤ C) (i : ι) (x : E i) :
+    rectangularBlockOperator T hC hT (lp.single 2 i x) =
+      lp.single 2 i (T i x) := by
+  ext j
+  rw [rectangularBlockOperator_apply, lp.single_apply, lp.single_apply]
+  by_cases hji : j = i
+  · subst j
+    simp
+  · simp [hji]
+
+end RectangularBlock
+
 section Hilbert
 
 variable {ι : Type} [DecidableEq ι]
