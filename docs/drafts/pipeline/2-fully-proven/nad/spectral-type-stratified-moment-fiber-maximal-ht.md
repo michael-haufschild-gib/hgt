@@ -358,3 +358,72 @@ family is supplied.
   translation HT in every fixed-type chart.
 - 2026-07-12 -- Extended the three pure spectral vertices to every exact spectral mass vector and
   embedded the construction into the normalization-independent Nevanlinna boundary-Bauer retract.
+
+## Log — the classical analytic Nevanlinna carrier family is constructed `[PROVED]`
+
+The moment-fibre bottleneck shared by this card and nine others had two halves.  The first is closed.
+
+`formal/GaloisForLFunctions/HTGeometry/NevLeafCauchyMoebius.lean` proves the **Weyl-disc closed
+form** unconditionally, for every positive definite normalised moment sequence with bounded kernel
+at a point:
+
+```text
+(B(z)*tau - D(z)) * integral (x - z)^(-1) d nu_tau  =  -(A(z)*tau - C(z)),
+integral (x - z)^(-1) d nu_tau  =  -(A(z)*tau - C(z)) / (B(z)*tau - D(z)).
+```
+
+The finite stage `nevTrunc_cauchy_identity` is the quadrature identity multiplied by the common
+factor turning the quasi-orthogonal pair into the truncated Nevanlinna entries; the limit uses the
+weak convergence of the quadrature levels to the leaf together with the entrywise limits, and the
+determinant identity forbids the denominator from vanishing off the real axis.
+`NevLeafInfinityCauchyMoebius.lean` does the same at the parameter at infinity, giving
+`integral (x - z)^(-1) d nu_infinity = -A(z)/B(z)`.
+
+`formal/GaloisForLFunctions/HTGeometry/AnalyticNevanlinnaCarrierConstruction.lean` therefore builds
+
+```text
+analyticNevCarrierFamily h h0b h0 : ClassicalAnalyticNevanlinnaCarrierFamily s
+```
+
+in the carrier convention `(a,b,c,d) = (-A, C, B, -D)`, and
+`exists_classicalAnalyticNevanlinnaCarrierFamily`.  All endpoints have axioms `propext`,
+`Classical.choice`, `Quot.sound`, and the modules are wired into the `HTGeometry` umbrella.
+
+## Log — `MaximalTranslationInputs` is presently uninhabitable `[DISPROVED FIELD]`
+
+`formal/GaloisForLFunctions/HTGeometry/NevanlinnaWeylDiscPole.lean` proves
+
+```text
+nevInf_quotient_im_neg : 0 < z.im -> (D(z)/B(z)).im < 0
+```
+
+so `MaximalTranslationInputs.upperMap : forall z, 0 < z.im -> 0 < (F.quotient z).im` is **false**
+for the constructed family: the pole of the Weyl-disc Möbius map lies strictly below the real axis,
+because the map carries the closed upper half-plane into the Weyl disc and the pole to infinity.
+The proof writes the imaginary part of the Möbius image as `Q(t)/|B t - D|^2` with `Q` a real
+quadratic, notes `Q` vanishes at the pole and is positive on the real axis, and identifies the
+coefficient of `Im t` as `Re(A conj D - C conj B)`, which equals `1` on the real axis, is
+continuous, and cannot vanish on the connected upper half-plane.
+
+The transversality chain therefore has to be restated with the jet poles in the **lower** half-plane
+(or with the abstract lemmas instantiated at the conjugated poles and the conclusion conjugated
+back).  Until then the residual maximal-translation phase theorem is vacuous.
+
+## Log — M. Riesz's theorem is now a single named hypothesis `[REDUCTION PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/NevanlinnaEntryMinimalType.lean` adds `norm_nevBinf_le` and
+`norm_nevCinf_le` to the corpus's existing `norm_nevAinf_le` / `norm_nevDinf_le`, defines
+
+```text
+KernelMinimalExponentialType s :=
+  forall A > 0, exists C >= 1, forall z n,
+    kernelRoot s (monicOrthoC s . z) n <= C * exp (A * |z|)  and the same for secondKindC
+```
+
+and proves `hasMinimalExponentialType_nevAinf`, `...nevBinf`, `...nevCinf`, `...nevDinf` from it.
+So the `minimalExponentialType` field reduces to that one property.  The recurrence route to it is
+closed: the comparison identity is a Volterra equation with Hilbert-Schmidt kernel, whose iterate
+bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather than order one, and a
+small-tail split only improves the constant.  The route that remains is entire-function theoretic
+(real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
+factorization is absent from mathlib.

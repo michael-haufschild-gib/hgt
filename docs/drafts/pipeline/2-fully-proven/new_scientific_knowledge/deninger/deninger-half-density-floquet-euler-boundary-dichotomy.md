@@ -606,14 +606,94 @@ frontier movement.
 - `DAC_DENINGER_EULER_DEPLETED_MEYER_PERIODIZATION_EXTENSION`.
 - `DAC_DENINGER_COFINAL_PRIME_PERIODIZATION_TOMOGRAPHY`.
 
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerFloquetExactSequence.lean`,
+`DeningerFloquetTomography.lean`, `DeningerHalfDensityFloquetEnergy.lean`,
+`DeningerEulerFloquetAdmission.lean`, on the all-prime energy layer
+(`DeningerPeriodizationFundamentalBound.lean`, `DeningerAllPrimeFloquetEnergy.lean`,
+`DeningerAllPrimeFloquetRadical.lean`, `DeningerFloquetEnergyContinuity.lean`) and the reusable
+`formal/GaloisForLFunctions/HTGeometry/PeriodicRotationEnergy.lean`.  Axiom audit for every
+declaration: `propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- **§1, `(1)`--`(7)`: the twisted Floquet sequence.**  The trivialization `U_α F(t) = e^{αt}F(t)`
+  is an automorphism of the source, and `deningerFloquetPeriodizationSum_trivialize` proves
+  `e^{αt}Per_{α,L}h(t) = Per_L(U_α h)(t)` while `deningerExpMulLM_floquetDefect` proves
+  `U_α D_{α,L} = Δ_L U_α`.  Hence the whole twisted sequence is the untwisted one conjugated:
+  **`deningerFloquetDefect_injective`** is `D_{α,L}` injective,
+  **`deningerFloquetPeriodization_range_eq_kernel`** is `(6)` (`ker Per_{α,L} = D_{α,L}H_-`), and
+  **`deningerFloquetPeriodizationMap_surjective`** is surjectivity onto the Floquet line.  The line
+  itself is `DeningerFloquetLine`, defined as the trivialization preimage of `C^∞(ℝ/Lℤ)`, with
+  `mem_deningerFloquetLine_iff` recovering the card's quasi-periodicity `(2)`.
+- **§3, `(13)`: cofinal Floquet tomography.**  `deningerCofinalFloquetTomography` — for any infinite
+  prime family the twisted traces are jointly injective — and
+  `deningerFiniteFloquetTomography_kernel_nontrivial` — no finite family is, the twisted depletion
+  of the source witness being a nonzero common kernel vector.
+- **§4, `(14)`--`(15)`: the all-prime cochain Hodge energy.**  After the trivialization the
+  half-density Floquet trace is the ordinary periodization of `Uh`, so
+  **`deningerHalfDensityFloquetEnergy h = deningerFloquetEnergy (U h)`**.  It is finite
+  (`deningerHalfDensityFloquetEnergy_le`, on the period-uniform bound
+  `deningerPeriodizationSum_norm_le_period` and `∑_q (log q)/q² < ∞`), continuous
+  (**`deningerHalfDensityFloquetEnergy_continuous`**), positive definite
+  (**`deningerHalfDensityFloquetEnergy_eq_zero_iff`**, from cofinal tomography), of arithmetic
+  weight one (**`deningerHalfDensityFloquetEnergy_translate`**: `E_Fl(T_a h) = e^a E_Fl(h)`) and
+  exactly centered-flow invariant (**`deningerHalfDensityFloquetEnergy_centeredFlow`**).  This is
+  the positive escape from the weight-zero obstruction, formalized.
+- **§5, `(19)`--`(19d)`: the Euler comparison and strict Hodge admission.**
+  `deningerHalfDensityLift_defect` shows the trivialized Euler defect is the rotation multiplier
+  `1 - e^{-M/2}τ_M`; **`deningerHalfDensityTrace_defect`** is `(19a)` and
+  **`deningerHalfDensityTrace_defect_same`** is `(19)`, the same-prime scalar `1 - p^{-1/2}`.  The
+  two-sided estimate `(19c)`--`(19d)` is
+  **`deningerHalfDensityFloquetEnergy_defect_bounds`**, proved without any inner-product structure:
+  `HTGeometry/PeriodicRotationEnergy.lean` shows rotation preserves the energy of a periodic
+  function over one period (`intervalIntegral_normSq_rotate`) and bounds the cross term by the
+  arithmetic-geometric inequality, so the triangle and reverse-triangle inequalities squared give
+  `(1-c)²∫‖F‖² ≤ ∫‖F - cF(·+M)‖² ≤ (1+c)²∫‖F‖²`.  `(20)` is `(19)` composed with `Z`, and the
+  content of `(22)` — that the admitted sector is exactly the Floquet trace kernel — is
+  `deningerFloquetPeriodization_range_eq_kernel` at `α = 1/2`.
+
+- **§6, `(24)`: the arithmetic lattice form of the energy.**
+  `formal/GaloisForLFunctions/RHTower/DeningerFloquetParseval.lean`.  The circle periodization is
+  the unit-cell periodization of the rescaled cochain
+  (`deningerPeriodizationSum_eq_l1Periodization`), so the corpus's
+  `HTGeometry/L1PeriodizationFourier.lean` coefficient theorem gives
+  **`deningerFourierCoeffOn_periodization`**: the `m`-th Fourier coefficient of `Per_L h` on
+  `[0,L]` is `L^{-1}𝓕h(m/L)`.  Parseval on the interval (`tsum_sq_fourierCoeffOn`, applicable
+  because the period-uniform bound makes the trace `MemLp 2` on the cell) then gives
+  **`deningerPeriodization_intervalIntegral_normSq`**:
+  `∫_0^L‖Per_L h‖² = L^{-1}∑_{m∈ℤ}‖𝓕h(m/L)‖²`, and summing over primes gives
+  **`deningerHalfDensityFloquetEnergy_eq_tsum`** — this is `(24)`, the energy written on the
+  arithmetic frequency lattice, with the weights `p^{-2}/L_p` of `(23)` appearing explicitly.
+
+### Not yet formalized
+
+- §6, `(23)` as an actual `Measure` and `(26)`--`(28)`: packaging the lattice weights as
+  `μ_Fl`, the unitary identification `H_Fl ≅ L²(μ_Fl)` and the classification of the closed
+  Poisson-boundary space.  The identification needs a density argument for sampled Mellin
+  transforms in `L²(μ_Fl)`, and `(27)` needs the Poisson--Mellin factorization
+  `M_{Zf} = ζ·M_f`, which the corpus does not yet carry.  `(24)` — the analytic content that
+  makes those statements meaningful — is proved.
+- §7, the bounded-correction no-go, which is stated relative to that quotient.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: half-density Floquet source and boundary falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed proofs `(5)`--`(29)`
-- [ ] 2 → 3 formalized: intentionally paused during Lean corpus refactor
+- [ ] 2 → 3 formalized: §1 `(1)`--`(7)`, §3 `(13)`, §4 `(14)`--`(15)`, §5 `(19)`--`(19d)`, `(20)`,
+  `(22)` and §6's `(24)` proved unconditionally; `(23)` as a measure, `(26)`--`(28)` and §7 remain
+  (see *Lean status*)
 - [ ] 3 → 4 publication-ready
 
 ## Log
+
+- 2026-08-12 — Formalized `(24)`: the Fourier coefficient of the prime-circle trace is a
+  Fourier-transform sample, and Parseval turns the circle energy into the arithmetic frequency
+  lattice sum.
+- 2026-08-12 — Formalized the twisted Floquet sequence by conjugation, cofinal Floquet tomography,
+  the all-prime half-density cochain Hodge energy with its positivity, weight-one covariance and
+  continuity, and the two-sided Euler comparison.  §6's Hilbert quotient remains.
 
 - 2026-08-08 — Constructed strict half-density Floquet source, proved its forced weight-one
   covariance, cofinal tomography, continuous positive all-prime cochain energy, and exact

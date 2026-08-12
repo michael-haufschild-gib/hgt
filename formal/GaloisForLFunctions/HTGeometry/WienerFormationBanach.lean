@@ -20,10 +20,10 @@ namespace WienerAlgebra
 
 variable {R : ℝ} [hR : Fact (0 < R)]
 
-instance : CommRing (WienerAlgebra R) :=
+noncomputable instance : CommRing (WienerAlgebra R) :=
   inferInstanceAs (CommRing ↥(wienerScaleAlgebra hR.out.le))
 
-instance : Algebra ℂ (WienerAlgebra R) :=
+noncomputable instance : Algebra ℂ (WienerAlgebra R) :=
   inferInstanceAs (Algebra ℂ ↥(wienerScaleAlgebra hR.out.le))
 
 /-- The underlying formal packet of a Wiener element. -/
@@ -117,12 +117,11 @@ theorem norm_weightCoord (f : WienerAlgebra R) (n : ℕ) :
     abs_of_pos hR.out, wienerScaleWeight]
 
 theorem memLp_weightCoord (f : WienerAlgebra R) : Memℓp (weightCoord f) 1 := by
-  rw [memℓp_gen_iff (by norm_num)]
-  have h : (fun n => ‖weightCoord f n‖ ^ (1 : ℝ≥0∞).toReal)
+  refine memℓp_gen ?_
+  have h : (fun n => ‖weightCoord f n‖ ^ (1 : ENNReal).toReal)
       = wienerScaleWeight R f.toSeries := by
     funext n
-    rw [norm_weightCoord]
-    simp
+    rw [norm_weightCoord, ENNReal.toReal_one, Real.rpow_one]
   rw [h]
   exact f.admissible
 
@@ -134,21 +133,19 @@ theorem coe_toLp (f : WienerAlgebra R) : ((toLp f : lp (fun _ : ℕ => ℂ) 1) :
     = weightCoord f := rfl
 
 theorem norm_toLp (f : WienerAlgebra R) : ‖toLp f‖ = ‖f‖ := by
-  rw [lp.norm_eq_tsum_rpow (by norm_num), norm_def, wienerScaleNorm]
-  have h : (fun n => ‖((toLp f : lp (fun _ : ℕ => ℂ) 1) : ℕ → ℂ) n‖ ^ (1 : ℝ≥0∞).toReal)
-      = wienerScaleWeight R f.toSeries := by
-    funext n
-    rw [coe_toLp, norm_weightCoord]
+  have hlp : ‖toLp f‖ = ∑' n, ‖((toLp f : lp (fun _ : ℕ => ℂ) 1) : ℕ → ℂ) n‖ := by
+    rw [lp.norm_eq_tsum_rpow (by norm_num)]
     simp
-  rw [h]
-  simp
+  rw [hlp, norm_def, wienerScaleNorm]
+  exact tsum_congr fun n => by rw [coe_toLp, norm_weightCoord]
 
 theorem toLp_sub (f g : WienerAlgebra R) : toLp (f - g) = toLp f - toLp g := by
-  refine lp.ext ?_
-  funext n
-  rw [lp.coeFn_sub]
-  simp only [Pi.sub_apply, coe_toLp, weightCoord, toSeries_sub, map_sub]
-  ring
+  refine lp.ext (funext fun n => ?_)
+  have hcoe : ((toLp f - toLp g : lp (fun _ : ℕ => ℂ) 1) : ℕ → ℂ) n
+      = weightCoord f n - weightCoord g n := by
+    rw [lp.coeFn_sub]
+    simp [coe_toLp]
+  rw [hcoe, coe_toLp, weightCoord, weightCoord, weightCoord, toSeries_sub, map_sub, sub_mul]
 
 /-- The inverse of the weight isometry. -/
 noncomputable def ofLpSeries (g : lp (fun _ : ℕ => ℂ) 1) : PowerSeries ℂ :=
@@ -156,18 +153,16 @@ noncomputable def ofLpSeries (g : lp (fun _ : ℕ => ℂ) 1) : PowerSeries ℂ :
 
 theorem admissible_ofLpSeries (g : lp (fun _ : ℕ => ℂ) 1) :
     WienerScaleAdmissible R (ofLpSeries (R := R) g) := by
-  have hRne : ((R : ℂ)) ^ 0 ≠ 0 := by
-    simpa using (Complex.ofReal_ne_zero.mpr hR.out.ne')
-  have hsum : Summable fun n => ‖(g : ℕ → ℂ) n‖ ^ (1 : ℝ≥0∞).toReal :=
-    (memℓp_gen_iff (by norm_num)).mp g.2
+  have hsum : Summable fun n => ‖(g : ℕ → ℂ) n‖ := by
+    have hmem := (memℓp_gen_iff (p := (1 : ENNReal)) (by norm_num)).mp (lp.memℓp g)
+    simpa [ENNReal.toReal_one, Real.rpow_one] using hmem
   have h : wienerScaleWeight R (ofLpSeries (R := R) g) = fun n => ‖(g : ℕ → ℂ) n‖ := by
     funext n
-    have hpow : ((R : ℂ)) ^ n ≠ 0 := pow_ne_zero n (Complex.ofReal_ne_zero.mpr hR.out.ne')
     rw [wienerScaleWeight, ofLpSeries, PowerSeries.coeff_mk, norm_div, norm_pow,
       Complex.norm_real, Real.norm_eq_abs, abs_of_pos hR.out, div_mul_cancel₀]
     exact pow_ne_zero n hR.out.ne'
   rw [WienerScaleAdmissible, h]
-  simpa using hsum
+  exact hsum
 
 /-- The inverse of the weight isometry as a Wiener element. -/
 noncomputable def ofLp (g : lp (fun _ : ℕ => ℂ) 1) : WienerAlgebra R :=
@@ -200,12 +195,27 @@ noncomputable def isometryLp (R : ℝ) [hR : Fact (0 < R)] :
   right_inv := toLp_ofLp
   isometry_toFun := by
     refine Isometry.of_dist_eq fun f g => ?_
-    rw [dist_eq_norm, dist_eq_norm, toLp_sub, norm_toLp]
+    rw [dist_eq_norm, dist_eq_norm, ← toLp_sub, norm_toLp]
 
 /-- **`W_R` is a Banach algebra.** -/
 instance : CompleteSpace (WienerAlgebra R) := by
-  haveI : Fact ((1 : ℝ≥0∞) ≤ 1) := ⟨le_refl _⟩
+  haveI : Fact ((1 : ENNReal) ≤ 1) := ⟨le_refl _⟩
   exact (isometryLp R).completeSpace_iff.mpr inferInstance
+
+/-! ## The receiver spectrum of the Banach algebra -/
+
+/-- Receiver evaluation is contractive on `W_R` for every point of the closed disc. -/
+theorem norm_eval_le (f : WienerAlgebra R) {z : ℂ} (hz : ‖z‖ ≤ R) :
+    ‖wienerScaleEval f.toSeries z‖ ≤ ‖f‖ :=
+  norm_wienerScaleEval_le f.admissible hz
+
+/-- **Continuous character classification.**  Every continuous unital character of the Banach
+algebra `W_R` is receiver evaluation at a point of the closed disc of radius `R`. -/
+theorem exists_eval_of_continuous_character (χ : WienerAlgebra R →ₐ[ℂ] ℂ)
+    (hχ : Continuous χ) :
+    ∃ z : ℂ, ‖z‖ ≤ R ∧ ∀ f : WienerAlgebra R, χ f = wienerScaleEval f.toSeries z := by
+  obtain ⟨C, _, hC⟩ := SemilinearMapClass.bound_of_continuous χ.toLinearMap hχ
+  exact exists_eval_of_bounded_character hR.out χ hC
 
 end WienerAlgebra
 

@@ -417,3 +417,98 @@ absent from mathlib and unformalized, and the analytic measure-to-QFT germ remai
   `geometricCombination_completelyMonotone` / `fwdDiff_iter_geometricCombination`). Reusable and
   absent from mathlib; axioms clean; build green. The Hausdorff converse and the analytic
   measure-to-QFT germ (the actual novel content) remain unformalized. Card stays in 2-fully-proven.
+
+## Lean plan for the Hausdorff converse — worked out, ready to type
+
+The card's open Lean gate is the converse of `hausdorffMoment_isCompletelyMonotone`:
+
+```text
+HausdorffCompletelyMonotone b  ->  exists nu : Measure HausdorffSourceSpace,
+                                     IsFiniteMeasure nu and hausdorffMoment nu = b.
+```
+
+Mathlib has no Hausdorff moment theorem.  The classical atomic-approximation proof is fully
+elementary and the two identities it needs have been derived; what follows is the exact plan.
+
+### The quadrature weights
+
+```text
+hausdorffWeight b N k := (N.choose k) * ((-1)^(N-k) * (fwdDiff 1)^[N-k] b k).
+```
+
+Nonnegativity is immediate from `HausdorffCompletelyMonotone` and `Nat.choose` nonnegativity.
+
+The expansion to use is `Mathlib.Algebra.Group.ForwardDiff.fwdDiff_iter_eq_sum_shift`:
+
+```text
+(fwdDiff 1)^[j] b k = sum over i in range (j+1) of ((-1)^(j-i) * (j.choose i)) • b (k + i),
+```
+
+so, using `(-1)^j * (-1)^(j-i) = (-1)^i` for `i <= j` (write `j = i + d`, then
+`(-1)^(i+d) * (-1)^d = (-1)^i` because `d + d` is even),
+
+```text
+(-1)^j * (fwdDiff 1)^[j] b k = sum over i in range (j+1) of (-1)^i * (j.choose i) * b (k+i).
+```
+
+### Identity one: total mass
+
+```text
+sum over k in range (N+1) of hausdorffWeight b N k = b 0.
+```
+
+Expand, swap to a sum over `n = k + i`, and collect the coefficient of `b n`:
+
+```text
+sum over k <= n of (N.choose k) * ((N-k).choose (n-k)) * (-1)^(n-k).
+```
+
+`Nat.choose_mul` (for `k <= n`) turns `N.choose k * (N-k).choose (n-k)` into
+`N.choose n * n.choose k`, so the coefficient is
+`N.choose n * (sum over k <= n of (-1)^(n-k) * n.choose k)`, and
+`Int.alternating_sum_range_choose` makes that `0` unless `n = 0`, where it is `1`.
+
+### Identity two: the exact moment identity
+
+For `m <= N`,
+
+```text
+sum over k in range (N+1) of hausdorffWeight b N k * (k.descFactorial m)
+  = (N.descFactorial m) * b m.
+```
+
+Same expansion and same collection.  The coefficient of `b n` is
+
+```text
+N.choose n * (sum over k <= n of (-1)^(n-k) * (n.choose k) * (k.descFactorial m)),
+```
+
+and the inner sum is the `n`-th forward difference of the falling factorial `x -> x.descFactorial m`
+evaluated at `0`.  Since `fwdDiff 1 (x -> x.descFactorial m) = m * (x -> x.descFactorial (m-1))`, the
+`n`-fold difference at `0` is `m*(m-1)*...*(m-n+1) * (0.descFactorial (m-n))`, which vanishes for
+`n < m` (because `0.descFactorial j = 0` for `j > 0`) and for `n > m` (the product has a zero
+factor), and equals `m!` at `n = m`.  So only `n = m` survives, with
+`N.choose m * m! = N.descFactorial m`.
+
+### From the weights to the measure
+
+```text
+hausdorffQuadrature b N := sum over k in range (N+1) of
+  ENNReal.ofReal (hausdorffWeight b N k) • Measure.dirac (node N k),
+node N k := the point k/N of [0,1] (use k/(N+1) or handle N = 0 separately).
+```
+
+Each is a finite positive measure of total mass `b 0`.  Identity two plus
+
+```text
+| (k/N)^m - (k.descFactorial m)/(N.descFactorial m) | <= C(m)/N   uniformly in k <= N
+```
+
+gives `integral x^m d(hausdorffQuadrature b N) -> b m`.  For `b 0 = 0` complete monotonicity forces
+`b = 0` and the zero measure works; otherwise normalise by `b 0` to probability measures, use that
+`ProbabilityMeasure` of a compact metric space is compact metrizable to extract a weakly convergent
+subsequence, and pass `x -> x^m` (bounded continuous) to the limit.  Uniqueness is already available
+as `hausdorffSource_eq_of_moments_eq`.
+
+Everything above is finite algebra plus one weak-compactness step; no entire-function theory and no
+missing mathlib area is involved.

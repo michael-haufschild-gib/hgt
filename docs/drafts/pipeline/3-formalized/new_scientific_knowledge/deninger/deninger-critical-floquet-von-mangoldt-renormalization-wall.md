@@ -1,7 +1,7 @@
 # Critical Floquet renormalization and the von Mangoldt wall
 
 - **ID:** `deninger-critical-floquet-von-mangoldt-renormalization-wall`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE TRACE IDENTIFICATION / SHARP POSITIVITY NO-GO / FRONTIER REORIENTATION
 - **Labels:**
   - `DAC_DENINGER_FLOQUET_ADIABATIC_RELATIVE_MONODROMY`;
@@ -13,7 +13,7 @@
   - `DAC_DENINGER_HALF_DENSITY_FLOQUET_EXACT_SEQUENCE`;
   - `DAC_DENINGER_ALL_PRIME_FLOQUET_COCHAIN_HODGE_ENERGY`;
   - `DAC_DENINGER_MERTENS_ADIABATIC_CORNER`.
-- **Lean status:** intentionally paper-only during the corpus refactor.
+- **Lean status:** formalized; see *Lean status* below.
 
 ## 1. Result
 
@@ -379,6 +379,47 @@ not for the component harmonic-analysis identities.
   arXiv:2511.22755.
 - Haakan Hedenmalm, *Spectral interpretation of Riemann zeta zeros*, arXiv:2606.17494.
 
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerCriticalFloquetVonMangoldtWall.lean`,
+`DeningerCriticalFloquetCrossCurrent.lean` and
+`DeningerFloquetDiagonalSignWall.lean`.  Axiom audit for every declaration:
+`propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- **§2, `(2)`--`(4)`: relative monodromy is the adiabatic kernel.**
+  `deningerFloquetRelativeMonodromy`, **`deningerFloquetRelativeMonodromy_eq_adiabatic`**,
+  `deningerFloquetRelativeMonodromy_eq_exp_neg_log`, `deningerFloquetRelativeMonodromy_neg`, and
+  `iteratedDeriv_deningerFloquetRelativeMonodromyComplex_zero`.
+- **§3, `(5)`--`(8)`: prime-circle norm unfolding.**  `deningerPrimeCirclePeriodization`,
+  `deningerMeyerStrongLogAutocorrelation`, and
+  **`deningerPrimeCircleEnergy_eq_tsum_autocorrelation`**: the literal circle norm is the
+  absolutely convergent autocorrelation lattice of the all-weight Meyer source.
+- **§4, `(9)`--`(12)`: the exact von Mangoldt current.**
+  `tsum_prime_iterate_eq_deningerPrimePower_vonMangoldt` (the purely arithmetic reindexing),
+  `deningerPrimeCircleEnergy_sub_autocorrelation_zero`, and
+  **`deningerCriticalFloquetForm_eq_vonMangoldtAutocorrelationCurrent`**, whose analytic premise is
+  discharged in `DeningerCriticalFloquetCrossCurrent.lean` by
+  `exists_deningerAutocorrelationExpBound`, giving the premise-free
+  **`deningerCriticalFloquetForm_eq_vonMangoldtAutocorrelationCurrent_unconditional`**.
+- **§5, `(13)`--`(15)`: the universal sign wall.**  `DeningerFloquetDiagonalSignWall.lean`.  With a
+  source supported in an interval of diameter less than `log 3 - log 2`, the two-bump witnesses
+  `deningerFloquetTwoBumpPlus/Minus` at spacing `log 2` have support of diameter less than `log 3`
+  (`deningerFloquetTwoBump_support`), so every prime circle of circumference at least `log 3`
+  contributes exactly zero to the renormalized diagonal form
+  (**`deningerFloquetDiagonalDefect_of_three_le`**), while the circle of `2` contributes
+  `+‖u₊‖²` and `-‖u₋‖²` respectively (**`deningerFloquetDiagonalDefect_two`**).  The mass is
+  strictly positive for a nonzero source
+  (`deningerMeyerStrongLogAutocorrelation_zero_re_pos`).  Hence for every nonnegative prime
+  weighting `a` with `a₂ > 0` the renormalized form satisfies `Q_a(u₊) = a₂‖u₊‖² > 0` and
+  `Q_a(u₋) = -a₂‖u₋‖² < 0`, which is `(14)`.  Equation `(15)` — that the negative witness is a
+  literal half-density Floquet Euler coboundary — is
+  **`deningerFloquetTwoBumpMinus_eq_floquetDefect`**.
+- The two card inputs are corpus-owned: `DAC_DENINGER_HALF_DENSITY_FLOQUET_EXACT_SEQUENCE` is
+  `DeningerFloquetExactSequence.lean` and `DAC_DENINGER_ALL_PRIME_FLOQUET_COCHAIN_HODGE_ENERGY` is
+  `DeningerHalfDensityFloquetEnergy.lean`.
+
 ## Gates
 
 - [x] exact relative-monodromy/adiabatic identification
@@ -386,4 +427,10 @@ not for the component harmonic-analysis identities.
 - [x] exact von Mangoldt reindexing and convergence
 - [x] universal positive/negative compact witnesses
 - [x] hostile novelty and circularity audit
-- [ ] Lean formalization, paused during corpus refactor
+- [x] Lean formalization: §2--§5 proved unconditionally (see *Lean status*)
+
+## Log
+
+- 2026-08-12 — Completed the Lean formalization: the pre-existing monodromy, autocorrelation and
+  von Mangoldt layers were audited against the card, and the missing `(13)`--`(15)` sign wall was
+  built.  Card moved to stage 3.

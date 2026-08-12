@@ -47,7 +47,7 @@ theorem abs_shiftedSecondDifference_mul_kernel_le {F : ℝ → ℝ} {K B σ : �
           exact mul_le_mul hstep hinv hker.le (by positivity)
       _ = 2 * K + 2 * B * σ * Real.exp σ := by field_simp
   · rw [if_neg hs1]
-    push_neg at hs1
+    rw [not_le] at hs1
     have hbound := abs_shiftedSecondDifference_le_exp hB hσ0 hs.le L
     have hinv : gammaTransportKernel s ≤ 2 * Real.exp (-s) :=
       gammaTransportKernel_le_two_mul_exp_neg hs1.le
@@ -89,5 +89,24 @@ theorem integrableOn_gammaPairingMajorant {K B σ : ℝ} (hσ1 : σ < 1) :
     rw [gammaPairingMajorant, if_neg (by exact not_le.mpr hs)]
   rw [hsplit]
   exact hnear.union hfar
+
+/-- **Scale integrability of the jump integrand.**  For a Lipschitz bounded profile the conjugated
+second difference against the kernel is integrable on the ray, by the majorant. -/
+theorem integrableOn_shiftedSecondDifference_mul_kernel {F : ℝ → ℝ} {K B σ : ℝ}
+    (hmeas : Measurable F)
+    (hK : ∀ x y : ℝ, |F x - F y| ≤ K * |x - y|) (hB : ∀ x, |F x| ≤ B)
+    (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (L : ℝ) :
+    IntegrableOn (fun s => shiftedSecondDifference σ F L s * gammaTransportKernel s)
+      (Ioi 0) := by
+  have hmaj : IntegrableOn (gammaPairingMajorant K B σ) (Ioi 0) :=
+    integrableOn_gammaPairingMajorant hσ1
+  have hsd : Measurable fun s => shiftedSecondDifference σ F L s := by
+    unfold shiftedSecondDifference
+    fun_prop
+  refine Integrable.mono' hmaj
+    (hsd.mul measurable_gammaTransportKernel).aestronglyMeasurable.restrict ?_
+  filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with s hs
+  rw [Real.norm_eq_abs]
+  exact abs_shiftedSecondDifference_mul_kernel_le hK hB hσ0 hs L
 
 end GaloisForLFunctions.HTGeometry

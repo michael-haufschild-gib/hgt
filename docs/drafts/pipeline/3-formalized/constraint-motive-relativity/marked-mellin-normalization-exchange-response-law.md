@@ -1,11 +1,13 @@
 # Marked Mellin normalization, exchange, and phase-response law
 
 - **ID:** `cmr-marked-mellin-normalization-exchange-response`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / LOCAL NORMALIZATION-RESPONSE LAW
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [HOSTILE-ACCEPTED]`
   `[THREE-REPORTER COMPATIBILITY] [ANALYTIC EXCHANGE SEED]`
-  `[DENSE ATOMIC SOURCE NERVE] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[DENSE ATOMIC SOURCE NERVE] [NOT RH] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `marked-mellin-normalization-exchange-response-law-formalized.md`
+  (same directory).
 - **Parent chart:** `marked-euler-shell-mellin-gns-ht-recurrence-normalization-wall-law.md`.
 - **Statement:** Positive coefficient streams have a countable, fully faithful atomic source nerve.
   Marked Mellin normalization has one-dimensional radial kernel. Its differential is a centered

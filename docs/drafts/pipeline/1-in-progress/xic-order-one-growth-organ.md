@@ -751,3 +751,60 @@ p-weighted sequences one p at a time.
 **Traps**: tabs from heredoc python strings break Lean (expand!); rw with a self-referential
 equation (z = f(‖z‖)) rewrites inside the norm — use sub_eq_zero + exact; Set.ncard_lt_ncard has
 autoParam finiteness; Nat.strong_induction_on names the IH `∀ m < N, ...`.
+
+## Step 37 — the moment-index quantifier is redundant: RH as one Cauchy–Schwarz inequality per polynomial [LEAN-PROVED]
+
+**Claim.** At any one shift `X ≥ 0`:
+
+1. `RH ⟺ ∀ p : Polynomial ℝ, 0 ≤ Re(M_p(0)·M_p(2) − M_p(1)²)` — the single index-0 Turán
+   minor per polynomial (`riemannHypothesis_iff_forall_polyTuranMinor_zero_re_nonneg`,
+   `RHTower/XiResolventSingleMinorCriterion.lean`).
+2. `RH ⟺ ∀ f g : Polynomial ℝ, 0 ≤ Re(L(f·f)·L(g·g) − L(f·g)²)` where
+   `L p = Σ'_q u_q · p(u_q)` is the resolvent trace functional — RH is literally the
+   Cauchy–Schwarz inequality of one explicit arithmetic functional at one point
+   (`riemannHypothesis_iff_forall_polyCauchySchwarz`,
+   `RHTower/XiResolventTraceCauchySchwarz.lean`).
+
+**Mechanism.** Two new ingredients over step 36:
+
+- *Index-shift identity* `xiPolyMoment_X_pow_mul`: `M_{X^m·p}(k) = M_p(k + 2m)` (from
+  `u^{k+1}(u^m p(u))² = u^{k+2m+1}p(u)²`). The polynomial quantifier alone regenerates the
+  whole EVEN-index minor ladder from the single index-0 minor.
+- *Parity-robust machine* `forall_level_criticalLine_of_weighted_turanMinors_even`
+  (`RHTower/XiResolventEvenTuranMachine.lean`): the level-cleansing Cesàro argument survives
+  restriction to even minors. Key point: a normalized pair point `V` on the unit circle with
+  `V² = 1, V ≠ 1` would force `u₂ = −conj u₁`, impossible since every resolvent point has
+  strictly positive real part (`xiResolventPoint_re_pos`). Hence odd-power partial sums
+  `Σ V^{2n+1} = V·Σ(V²)^n` stay bounded by `2/‖V²−1‖`, conjugate pairs still contribute the
+  exact negative core `−4β·N` linearly, and the sub-level tail is geometric with ratio
+  `(ρ₂/ℓ)²`. The descent then feeds the machine `hpoly (X^n · P)` instead of `hpoly P n`.
+- The C-S packaging uses the Lagrange pair identity
+  `2(L(f²)L(g²) − L(fg)²) = Σ'_{pairs} u₁u₂ (f₁g₂ − f₂g₁)²` and the specialization
+  `g := X·f`, which recovers exactly `(M_p(0), M_p(1), M_p(2))`.
+
+**Significance.**
+
+- Strict sharpening of step 36: the `∀ n` quantifier is gone. The criterion is now *one real
+  inequality per real polynomial* — the map `p ↦ Re(M_p(0)M_p(2) − M_p(1)²)` must be ≥ 0.
+- The C-S form is sign-blind: negating the functional preserves every inequality on the
+  right-hand side, so the criterion provably does NOT operate through measure positivity —
+  the detection mechanism is the descent oscillation. This separates it structurally from
+  the Hamburger/Weil positivity genre (positivity on squares), where `L(f²) ≥ 0` is the
+  hypothesis. Here no moment is ever assumed nonnegative.
+- Literature: Turán inequalities for ξ (Csordas–Norfolk–Varga etc.) are necessary conditions
+  only; Li/Sekatskii single-point criteria are linear families. A quadratic 2×2-only
+  equivalence at an arbitrary interior point with a descent-proof appears to be new.
+  [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] provisional pending independent priority audit.
+
+**Lean traps (new).** `field_simp` cannot reconcile `ℓ^(n*4)` with `ℓ⁻¹^(n*2)` under
+symbolic exponents — pre-split all powers to matching atoms (`ℓ^(2n)`, `ℓ²`) via
+`← pow_mul` / `← pow_add` before `field_simp` (which then closes fully — drop trailing
+`ring`). `norm_num at h` on a minor inequality expands `Complex.mul_re` — use
+`simpa only [Nat.zero_add] using h` to normalize Nat indices only.
+
+**Next frontier.** (a) Supply the single inequality for concrete `p` (start `p = 1`:
+`Re(R₀R₂ − R₁²) ≥ 0` at one shift — the pure edge case); (b) quantitative descent: replace
+the infinitary Cesàro contradiction by Turán-power-sum effective bounds to get finite jet
+certificates for partial RH; (c) the abstract masking no-go: plain minors (no polynomial
+quantifier) provably cannot detect below the geometric mean of two higher real atoms —
+worth a Lean counterexample to certify sharpness of the polynomial quantifier.

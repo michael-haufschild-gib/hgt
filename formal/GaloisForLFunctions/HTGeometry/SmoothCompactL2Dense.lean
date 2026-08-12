@@ -25,7 +25,8 @@ noncomputable def smoothCompactSubmodule : Submodule ℝ (Lp ℝ 2 (volume : Mea
   zero_mem' := by
     refine ⟨0, ?_, ?_, contDiff_const⟩
     · filter_upwards [Lp.coeFn_zero (E := ℝ) (p := 2) (μ := (volume : Measure ℝ))] with x hx
-      simp [hx]
+      simp only [Pi.zero_apply] at hx ⊢
+      exact hx
     · simpa using HasCompactSupport.zero (α := ℝ) (β := ℝ)
   smul_mem' := by
     rintro c f ⟨g, hfg, hc, hs⟩

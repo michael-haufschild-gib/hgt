@@ -1,7 +1,7 @@
 # One-norm impossibility, formal-receiver collapse, and Wiener-scale fusion law
 
 - **ID:** ULF-FSR-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL LAW-FIELD MECHANISM THEOREM
 - **Parent:** ULF-WFM-1/2/3
 - **Statement:** Faithful formation multiplication and ghost differentiation cannot coexist as
@@ -11,7 +11,7 @@
   exterior conservation obey typed exchange laws.
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM, NOT ROUTE]`
   `[ONE-NORM NO-GO + POSITIVE SCALE SURVIVOR] [FOUR-OPERATION FUSION]`
-  `[RH COMPLETION GATE SHARPENED] [LEAN CORE CERTIFIED] [FULL WIENER CHARACTER THEOREM PENDING]`
+  `[RH COMPLETION GATE SHARPENED] [FULL SURFACE LEAN-CERTIFIED]`
   `[NOT RH]`
 
 ## 1. Why one completion was the wrong type
@@ -498,10 +498,40 @@ Closed in `WienerFormationScale` (the scale `W_R` in coefficient coordinates on 
   `wienerScaleAdmissible_witt_formation`, `wienerScaleAdmissible_witt_exterior`,
   `wienerScaleNorm_geom`.
 
-Remaining Lean surface:
+Closed in `WienerFormationScale` (second pass):
 
-1. Theorem 4.1(1) completeness: the bundled Banach-algebra structure on `W_R`.
-2. Theorem 4.1(3) and `(FSR1.28)`: every bounded unital character of `W_R` is `ev_z` for a unique
-   `z` with `|z| <= R`, so the continuous spectrum is the closed disc.
-3. Theorem 5.3's series-level exchange `(FSR1.21)` and its bound `(FSR1.22)` on `W_r`.
-4. Theorem 3.1 for the literal `T`-adic topology on `C[[T]]`.
+- Theorem 5.3's series-level exchange `(FSR1.21)` and its composite bound `(FSR1.22)` —
+  `derivative_wienerScaleAdams`, `wienerScaleNorm_derivative_adams_le`;
+- the receiver algebra itself as a subalgebra of the formal packets — `wienerScaleAlgebra`;
+- receiver evaluation as an honest character — `wienerScaleEvalHom`;
+- truncation and the exact tail identity — `wienerScaleTrunc`, `coeff_wienerScaleTrunc`,
+  `wienerScaleNorm_sub_trunc`;
+- Theorem 4.1(3): every bounded unital character is `ev_z` with `|z| <= R`, and the receiver point
+  is unique — `exists_eval_of_bounded_character`, `wienerScaleEval_injective_point`.
+
+Closed in `GaloisForLFunctions.HTGeometry.WienerFormationBanach`:
+
+- Theorem 4.1(1) in full: `W_R` carries `NormedCommRing`, `NormedAlgebra C` and `CompleteSpace`
+  structures, so it is a unital Banach algebra, with `norm_one_eq` for the unit;
+- completeness is proved through the weight isometry `f -> (a_n R^n)` onto `l^1(N)` —
+  `weightCoord`, `toLp`, `ofLp`, `isometryLp`;
+- the continuous-character form of Theorem 4.1(3) — `exists_eval_of_continuous_character`,
+  with the contractive direction `norm_eval_le`.
+
+Closed in `GaloisForLFunctions.HTGeometry.FormalAdicReceiverCollapse`:
+
+- Theorem 3.1 for the literal `T`-adic topology: `formalAdicIdeal`,
+  `formalAdic_tendsto_smul_X_pow` for `(FSR1.6)`, `formalAdic_tendsto_trunc`,
+  `formalAdicCharacter_apply_X` for `(FSR1.8)`, and
+  `formalAdicCharacter_eq_constantCoeff` for `(FSR1.9)`, with the uniqueness corollary
+  `formalAdicCharacter_unique`.
+
+Together with `(FSR1.28)`, whose two halves are `wienerScaleEvalHom` plus `norm_eval_le` and
+`exists_eval_of_continuous_character`, and whose Adams action is `wienerScaleEval_adams`, the whole
+displayed surface of sections 2 to 7 is closed unconditionally.  Axiom prints on the whole surface
+report only `propext`, `Classical.choice` and `Quot.sound`.  The three modules are wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`; the foreground umbrella build completes 11,857
+jobs.
+
+The open arithmetic scale/sheaf construction of section 8 is deliberately not formalized: it is the
+successor research problem, not a theorem of this card.

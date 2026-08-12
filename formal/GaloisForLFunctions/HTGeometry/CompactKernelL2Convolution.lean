@@ -275,6 +275,88 @@ theorem integral_abs_kernel_translate_le {g : ℝ → ℝ} {K R : ℝ}
   calc (∫ u in Icc (-R - h) R, d u) ≤ ∫ u in Icc (-R - h) R, (K * h : ℝ) := hmono
     _ = K * h * (2 * R + h) := hvol
 
+/-- The flip form of the convolution integrand is integrable. -/
+theorem integrable_mul_kernel_comp_sub {g V : ℝ → ℝ}
+    (hgm : AEStronglyMeasurable g volume) (hg2 : Integrable (fun u => g u ^ 2))
+    (hVm : AEStronglyMeasurable V volume) (hV2 : Integrable (fun t => V t ^ 2)) (x : ℝ) :
+    Integrable (fun t => V t * g (x - t)) :=
+  integrable_mul_of_sq_integrable hVm (aestronglyMeasurable_comp_sub hgm x)
+    hV2 (integrable_sq_comp_sub hg2 x)
+
+/-- **The squared `L²` translate modulus** of a Lipschitz compactly supported kernel is quadratic
+in the shift. -/
+theorem integral_sq_translate_sub_le_of_lipschitz {g : ℝ → ℝ} {K R : ℝ}
+    (hK : ∀ u v : ℝ, |g u - g v| ≤ K * |u - v|)
+    (hsupp : ∀ u : ℝ, R < |u| → g u = 0) (hR : 0 ≤ R) {h : ℝ}
+    (hh0 : 0 ≤ h) (hh1 : h ≤ 1) :
+    (∫ u, (g (u + h) - g u) ^ 2) ≤ K ^ 2 * (2 * R + 1) * h ^ 2 := by
+  have hKnn : 0 ≤ K := by
+    have h1 := hK 1 0
+    have h2 : |(1 : ℝ) - 0| = 1 := by norm_num
+    rw [h2, mul_one] at h1
+    exact le_trans (abs_nonneg _) h1
+  have hlip : LipschitzWith ⟨K, hKnn⟩ g := lipschitzWith_iff_dist_le_mul.mpr fun u v => by
+    rw [Real.dist_eq, Real.dist_eq]
+    exact_mod_cast hK u v
+  have hgc : Continuous g := hlip.continuous
+  set d : ℝ → ℝ := fun u => (g (u + h) - g u) ^ 2 with hd
+  have hdc : Continuous d := ((hgc.comp (continuous_add_const h)).sub hgc).pow 2
+  have hzero : ∀ u : ℝ, u ∉ Icc (-R - h) R → d u = 0 := by
+    intro u hu
+    rw [mem_Icc, not_and_or] at hu
+    have h1 : g (u + h) = 0 ∧ g u = 0 := by
+      rcases hu with hu | hu
+      · rw [not_le] at hu
+        constructor
+        · refine hsupp _ ?_
+          rw [abs_of_neg (by linarith : u + h < 0)]
+          linarith
+        · refine hsupp _ ?_
+          rw [abs_of_neg (by nlinarith : u < 0)]
+          nlinarith
+      · rw [not_le] at hu
+        constructor
+        · refine hsupp _ ?_
+          rw [abs_of_pos (by linarith : (0:ℝ) < u + h)]
+          linarith
+        · refine hsupp _ ?_
+          rw [abs_of_pos (by linarith : (0:ℝ) < u)]
+          linarith
+    rw [hd]
+    simp [h1.1, h1.2]
+  have hrestrict : (∫ u, d u) = ∫ u in Icc (-R - h) R, d u :=
+    (setIntegral_eq_integral_of_forall_compl_eq_zero hzero).symm
+  have hdint : IntegrableOn d (Icc (-R - h) R) :=
+    hdc.continuousOn.integrableOn_compact isCompact_Icc
+  have hptw : ∀ u ∈ Icc (-R - h) R, d u ≤ K ^ 2 * h ^ 2 := by
+    intro u _
+    rw [hd]
+    have hstep := hK (u + h) u
+    rw [show u + h - u = h from by ring, abs_of_nonneg hh0] at hstep
+    have hnn : (0 : ℝ) ≤ |g (u + h) - g u| := abs_nonneg _
+    calc (g (u + h) - g u) ^ 2 = |g (u + h) - g u| ^ 2 := (sq_abs _).symm
+      _ ≤ (K * h) ^ 2 := pow_le_pow_left₀ hnn hstep 2
+      _ = K ^ 2 * h ^ 2 := by ring
+  have hconst : IntegrableOn (fun _ : ℝ => K ^ 2 * h ^ 2) (Icc (-R - h) R) :=
+    continuousOn_const.integrableOn_compact isCompact_Icc
+  have hmono : (∫ u in Icc (-R - h) R, d u)
+      ≤ ∫ u in Icc (-R - h) R, (K ^ 2 * h ^ 2 : ℝ) :=
+    setIntegral_mono_on hdint hconst measurableSet_Icc hptw
+  have hvol : (∫ u in Icc (-R - h) R, (K ^ 2 * h ^ 2 : ℝ))
+      = K ^ 2 * h ^ 2 * (2 * R + h) := by
+    have hmeasval : (volume : Measure ℝ).real (Icc (-R - h) R) = 2 * R + h := by
+      rw [measureReal_def, Real.volume_Icc,
+        ENNReal.toReal_ofReal (by linarith : (0 : ℝ) ≤ R - (-R - h))]
+      ring
+    rw [setIntegral_const, hmeasval, smul_eq_mul]
+    ring
+  rw [hrestrict]
+  calc (∫ u in Icc (-R - h) R, d u)
+      ≤ ∫ u in Icc (-R - h) R, (K ^ 2 * h ^ 2 : ℝ) := hmono
+    _ = K ^ 2 * h ^ 2 * (2 * R + h) := hvol
+    _ ≤ K ^ 2 * (2 * R + 1) * h ^ 2 := by
+        nlinarith [mul_le_mul_of_nonneg_left hh1 (mul_nonneg (sq_nonneg K) (sq_nonneg h))]
+
 /-- **The support shift.**  A kernel supported in `[−r, r]` convolved against a profile vanishing
 below `a` vanishes below `a − r`. -/
 theorem lineConvolution_eq_zero_of_lt {g V : ℝ → ℝ} {r a : ℝ}

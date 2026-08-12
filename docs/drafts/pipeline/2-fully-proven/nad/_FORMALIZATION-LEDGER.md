@@ -451,3 +451,212 @@ Do not attempt the infinite-fibre shortcut.
 Once this holds, `ClassicalAnalyticNevanlinnaCarrierFamily` is a structure instance, and the ten
 moment-fibre cards reduce to producing a term of `MaximalTranslationInputs`
 (`NevanlinnaBoundaryFaceMaximalTranslation.lean`, six named analytic fields).
+
+## BOTTLENECK 1, ITEM 1 IS CLOSED — the Weyl-disc closed form is proved `[PROVED]`
+
+The statement this file called "the highest-leverage unproved statement in the folder" is now an
+unconditional theorem, and `ClassicalAnalyticNevanlinnaCarrierFamily` is constructed.
+
+Three new modules, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), all wired into
+`GaloisForLFunctions.HTGeometry`, all under the standing hypotheses `PositiveMomentForm s`,
+`BoundedKernel s 0`, `s 0 = 1` and nothing else.
+
+### `HTGeometry/NevLeafCauchyMoebius.lean`
+
+- `nevTrunc_cauchy_identity` — the finite stage, cleared of denominators:
+
+  ```text
+  (Bₙ(z)·τ − Dₙ(z)) · ∫(x − z)⁻¹ dμₙ = −s₀·(Aₙ(z)·τ − Cₙ(z)),
+  μₙ = quasiMeasure s n (nevBeta s n τ / nevAlpha s n τ).
+  ```
+
+  Multiply `quasiMeasure_cauchy_identity_of_im_ne_zero` by the common factor `(h₀/hₙ)·nevAlpha`
+  supplied by `nevTruncNumeratorC_eq_quasi` and `nevTruncDenominatorC_eq_quasi`.
+- `nevInf_cauchy_identity` — the limit `(B(z)·τ − D(z))·∫(x − z)⁻¹ dν_τ = −(A(z)·τ − C(z))`.
+  `exists_tendsto_quasiProbMeasure_nevLeaf` gives weak convergence of the selected quadrature
+  levels; `tendsto_cauchyTransform_of_tendsto` carries the transform; `tendsto_nev{A,B,C,D}truncC`
+  composed with `Tendsto (goodLevel h τ ∘ φ) atTop atTop` carries the entries;
+  `tendsto_nhds_unique` closes it.
+- `nevInf_denominator_ne_zero` — `B·τ − D ≠ 0` off the real axis.  A vanishing denominator forces a
+  vanishing numerator, and then `A D − B C = 0`, contradicting the determinant identity
+  (available at every complex point through `boundedKernel_global`).
+- **`cauchyTransform_nevLeaf_eq_moebius`** — the Weyl-disc closed form
+
+  ```text
+  ∫(x − z)⁻¹ dν_τ = −(A(z)·τ − C(z)) / (B(z)·τ − D(z)).
+  ```
+
+### `HTGeometry/NevLeafInfinityCauchyMoebius.lean`
+
+The same at the parameter `∞`, where the denominator degenerates to `B` alone:
+`nevLeaf_infinity_eq_fiberMeasure`, `exists_tendsto_quasiProbMeasure_nevLeafInf`,
+`ofReal_nevAlphaInf`, `ofReal_nevBetaInf`, `nevAtruncC_closedInf`, `nevBtruncC_closedInf`,
+`nevAtruncC_eq_quasiInf`, `nevBtruncC_eq_quasiInf`, `nevTruncInf_cauchy_identity`,
+`nevInf_cauchy_identity_infty`, `nevBinf_ne_zero`, and
+**`cauchyTransform_nevLeafInf_eq_ratio`**: `∫(x − z)⁻¹ dν_∞ = −A(z)/B(z)`.
+
+### `HTGeometry/AnalyticNevanlinnaCarrierConstruction.lean`
+
+**`analyticNevCarrierFamily h h0b h0 : ClassicalAnalyticNevanlinnaCarrierFamily s`** and
+`exists_classicalAnalyticNevanlinnaCarrierFamily`.  Carrier convention
+`(a, b, c, d) = (−A, C, B, −D)`, so `det = A D − B C = 1`, the real restrictions are exactly
+`toCarrierMatrix`, and the two Cauchy fields are the two closed forms above.
+
+### `HTGeometry/NevanlinnaCarrierDenominatorRow.lean`
+
+Three of the six `MaximalTranslationInputs` fields, for the constructed family:
+`nevInf_no_common_zero` / `analyticNevCarrierFamily_noCommonZero`;
+`exists_nevBrealInf_eq_zero` and `exists_nevBinf_eq_zero` / `analyticNevCarrierFamily_exists_zero`
+(the leaf at infinity is a probability measure carried by the zero set of `B`, so that set is
+nonempty); `nevBinf_I_ne_zero` / `analyticNevCarrierFamily_regular`.  Also
+`analyticNevCarrierFamily_quotient : F.quotient z = D(z)/B(z)`.
+
+### Two corrections to this ledger
+
+- `nevTrunc_moebius_eq_convergent` is **present and proved** in `NevTruncConvergent.lean`; the note
+  saying it was backed out is stale.
+- `NevTruncCauchyTransform.quasiSum_cauchy_eq_nevTruncC` already carried the finite-stage Weyl-disc
+  form.
+
+## BOTTLENECK 1, ITEM 2 IS BLOCKED BY A SIGN ERROR IN THE INTERFACE `[DISPROVED FIELD]`
+
+`MaximalTranslationInputs` (in `NevanlinnaBoundaryFaceMaximalTranslation.lean`) demands
+
+```text
+upperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im,   F.quotient z = −F.d z / F.c z = D(z)/B(z).
+```
+
+`F.quotient z` is the pole of the Möbius map `τ ↦ (a τ + b)/(c τ + d)`.  That map sends
+`ℝ ∪ {∞}` into the **open upper half-plane**, because every image is `∫(x − z)⁻¹ dν_τ`, a Cauchy
+transform of a probability measure at `Im z > 0`.  A Möbius transformation carries one open
+half-plane onto the disc bounded by that circle and the other onto its exterior, and the pole goes
+to `∞`, which is exterior.  The closed upper half-plane maps into the disc, so **the pole lies in
+the open lower half-plane**:
+
+```text
+0 < z.im  ⟹  (F.quotient z).im < 0.
+```
+
+Two independent confirmations.
+
+1. Algebraic.  Writing `Im f(τ) = Q(τ)/|Bτ − D|²` with
+   `Q(τ) = −Im(A B̄)|τ|² + Im((A D̄ − C̄ B) τ) − Im(C D̄)`, a direct computation gives `Q(D/B) = 0`
+   identically, while `Q > 0` on `ℝ`.  With `q = q₁ + i q₂`, subtracting `Q(q₁)` gives
+   `q₂ (α q₂ + Re β) = −Q(q₁) < 0`, where `α = −Im(A B̄) > 0` and `β = A D̄ − C̄ B`.  Hence
+   `Re β ≠ 0`; and `β = G(z, z̄)` for `G(z, w) = A(z)D(w) − C(w)B(z)` with `G(z, z) = 1`, so
+   `Re β → 1` as `z → ℝ`.  `Re β` is continuous and nonvanishing on the connected upper half-plane,
+   so `Re β > 0`, so `q₂ < 0`.
+2. A model of the same shape: `f(τ) = i + ε(τ − i)/(τ + i)` maps `ℝ` onto a small circle about `i`
+   inside the upper half-plane and has its pole at `−i`.
+
+So `MaximalTranslationInputs` is **uninhabitable** for the canonical family, and
+`boundaryCarrierFace_maximalTranslationPhase_dense_residual` is presently vacuous.
+
+**Repair.**  The deepest layer already needs only `≠ 0`
+(`projectiveNevanlinnaValueLinftyControl` takes `hq : (F.quotient z).im ≠ 0`;
+`continuous_projectiveCauchyPower` takes `q.im ≠ 0`).  Two hypothesis families have to move:
+
+* the evaluation points of the Cauchy transform, `0 < z.im`, need only `z.im ≠ 0`;
+* the jet poles `F.quotient (z i)` must stay strictly on **one** side of the real axis — the
+  `Sum.elim x (star ∘ x)` injectivity step in `NormalizedProjectiveCauchyDensityControl` genuinely
+  uses that, so `≠ 0` alone is not enough there.
+
+The consistent repair is therefore to run the packets in the **lower** half-plane in `z`: replace
+`0 < z.im` on evaluation nodes by `z.im < 0`, keep `0 < (F.quotient (z i)).im`, and restate
+`upperMap` as `∀ z, z.im < 0 → 0 < (F.quotient z).im`.  Nineteen modules mention the positivity
+form: `CompactNevanlinnaUniformProbe`, `AnalyticNevanlinnaCarrierRelationFree`,
+`SingularContinuousFullTranslationFamilyFreenessUniversalityLaw`,
+`NevanlinnaNoncriticalProjectiveCompactPatch`, `ConstrainedCauchyJetControllability`,
+`NevanlinnaTranslatedExpandedEvaluationCompactPatch`, `NevanlinnaBoundaryFaceMaximalTranslation`,
+`ProjectiveCauchyDensityControl`, `ProjectiveNevanlinnaGenericity`,
+`AnalyticNevanlinnaCarrierBridge`, `BoundaryCarrierTranslationFreeness`, `NevanlinnaJetTriangular`,
+`CarrierHerglotzPresentationFree`, `ProjectiveNevanlinnaPolynomialEscape`,
+`NormalizedProjectiveCauchyDensityControl`, `NevanlinnaExpandedEvaluationCompactPatch`,
+`SingularContinuousHerglotzMaximalFreenessUniversalityLaw`, and two `RHTower` universality laws.
+
+## What Bottleneck 1 still needs after this
+
+1. the interface repair just described;
+2. **M. Riesz's theorem**: `HasMinimalExponentialType (nevBinf s)`.  The corpus's Gronwall bound
+   (`SecondKindGlobal.boundedKernel_global`) gives only `exp(C‖z‖²)` — order two — so it is useless
+   here.  The classical route runs through `∑ 1/|xₖ| < ∞` over the zeros of `B` and a genus-zero
+   Hadamard product (for each `A > 0`, split off the finitely many zeros with `|xₖ| ≤ R` and bound
+   the tail by `exp(A‖z‖)`).  Hadamard factorization is not in mathlib.
+3. `phase_isGδ : IsGδ {ν | MaximalTranslationDifferentialFree ν}`;
+4. leaf/label covariance under an arbitrary normalization change, to upgrade
+   `carrierProjector_eq_of_leaf_label_covariance` to an unconditional statement.
+
+Items 2 and 3 are the only genuinely analytic ones left; the three easy fields are done.
+
+## The `upperMap` sign error is now a Lean theorem, not an argument `[PROVED]`
+
+`HTGeometry/NevanlinnaWeylDiscPole.lean` proves the sign outright, so the diagnosis above no longer
+rests on a pen-and-paper argument.
+
+- `im_cauchyTransform_pos` — the Cauchy transform of a probability measure on `ℝ` has strictly
+  positive imaginary part at every point of the upper half-plane.
+- `weylForm s z t = Im((−A t + C)·conj(B t − D))`, with `weylForm_expand` identifying it as the real
+  quadratic `weylLead·normSq t + p·Re t + weylTilt·Im t + c`, and
+  `weylForm_eq_im_mul_normSq` identifying it with `Im(Möbius image)·‖B t − D‖²`.
+- `weylForm_pos_ofReal` — positive at every real parameter (each Möbius image is a leaf transform).
+- `weylLead_pos` — `weylLead = Im(−A·conj B) > 0`, from the parameter at infinity.
+- `weylTilt_ofReal` — `weylTilt = Re(A·conj D − C·conj B)` equals `1` on the real axis, by the
+  determinant identity; `continuous_weylTilt`; `weylTilt_ne_zero` on the upper half-plane;
+  `weylTilt_pos` by connectedness of the half-plane (`convex_halfSpace_im_gt`) and the intermediate
+  value theorem.
+- **`nevInf_quotient_im_neg`** — `0 < z.im ⟹ (D(z)/B(z)).im < 0`.
+- **`analyticNevCarrierFamily_quotient_im_neg`** — the same for the constructed carrier family, i.e.
+  `MaximalTranslationInputs.upperMap` is refuted for it.
+
+All axiom-clean, wired into the umbrella.
+
+So the repair described above is mandatory: the jet-pole half-plane in the transversality chain has
+to be the **lower** one.  A survey of the genuine uses found:
+
+* `NormalizedProjectiveCauchyDensityControl` uses positivity only to separate the poles from their
+  own conjugates and from the real axis; both survive a uniform sign flip;
+* everywhere else `0 < (x i).im` is consumed as `(hupper i).ne'`, i.e. only as `(x i).im ≠ 0`;
+* the one quantitative use is `AnalyticNevanlinnaCarrierBridge`'s
+  `compact_finite_strictPositive_uniformLowerBound`, which produces `η₀ ≤ (F.quotient (node)).im`
+  with `0 < η₀` and feeds `projectiveNevanlinnaJetExpansionSmoothControl_coordinate_eq_singleton_last`;
+  under the flip this becomes `(F.quotient (node)).im ≤ −η₀`, so `NevanlinnaJetTriangular` and
+  `LocalNevanlinnaJetTriangular` have to move with it.
+
+An alternative that avoids editing the abstract layer is a conjugation transport: for real `t`,
+`((t − conj q)⁻¹)^{k+1} = conj (((t − q)⁻¹)^{k+1})`, so a full-rank witness at the conjugated poles
+is the entrywise conjugate of the one at the original poles, and injectivity of a matrix's `mulVec`
+is preserved by entrywise conjugation.  Instantiating the abstract lemmas at `conj ∘ F.quotient`
+(which does lie in the upper half-plane) and conjugating the conclusion back would leave the
+abstract modules untouched.  Deciding between the two is the next step on this bottleneck.
+
+## M. Riesz is now a single named hypothesis `[REDUCTION PROVED]`
+
+`HTGeometry/NevanlinnaEntryMinimalType.lean` (axiom-clean, wired) completes the size-bound layer the
+corpus had begun (`norm_nevAinf_le`, `norm_nevDinf_le`) and turns it into a reduction.
+
+- `norm_nevBinf_le`, `norm_nevCinf_le` — the two entries carrying an additive constant:
+  `‖B(z)‖ ≤ 1 + h₀‖z‖·(S_z·P_0)` and `‖C(z)‖ ≤ 1 + h₀‖z‖·(S_0·P_z)`, from `norm_tsum_weighted_le`.
+- `KernelMinimalExponentialType s` — the property that for every `A > 0` there is `C ≥ 1` with
+  `kernelRoot s (monicOrthoC s · z) n ≤ C·exp(A‖z‖)` and the same for `secondKindC`, uniformly in
+  the truncation `n`.
+- `norm_mul_exp_half_le`, `entry_bound_absorb` — `r·exp(A r/2) ≤ (2/A)·exp(A r)`, so the extra
+  linear factor in the entry bounds is absorbed by running the hypothesis at half the exponent.
+- **`hasMinimalExponentialType_nevAinf` / `…nevBinf` / `…nevCinf` / `…nevDinf`** — all four entries
+  have minimal exponential type as soon as `KernelMinimalExponentialType s` holds.
+
+So the only analytic input still missing for the `minimalExponentialType` field of
+`MaximalTranslationInputs` is `KernelMinimalExponentialType s`, i.e. M. Riesz's theorem in its
+kernel form.
+
+**Route audit for that theorem (checked, so it is not re-attempted).**  The Volterra/Gronwall
+machinery the corpus already owns (`SecondKindGlobal`) cannot give it.  The comparison identity is a
+Volterra equation whose kernel is Hilbert–Schmidt, and the sharp bound for iterates of a
+Hilbert–Schmidt Volterra operator is `‖V^m‖ ≤ ‖V‖_HS^m/√(m!)`, whose generating function is
+`exp(c‖z‖²)` — order two, not order one.  Splitting off a small Hilbert–Schmidt tail improves the
+constant but not the order: the tail bound is only valid on `‖z‖ < 1/(2ε)`, and iterating past that
+radius reintroduces `exp(ε²‖z‖²)`.  Minimal type is therefore not reachable from the recurrence
+alone; it needs the entire-function side — the zeros of `B` are real and satisfy `∑ 1/|x_k| < ∞`, and
+a genus-zero Hadamard product then gives minimal type because for each `A > 0` the finitely many
+zeros with `|x_k| ≤ R` contribute a polynomial and the remaining tail contributes `exp(A‖z‖)`.
+Mathlib has Jensen's formula and the `ValueDistribution` package but **no Weierstrass/Hadamard
+factorization**, so that has to be built.
