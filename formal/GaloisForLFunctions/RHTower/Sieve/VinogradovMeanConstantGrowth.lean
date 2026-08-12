@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.MontgomeryVaughanLogPhaseReceiver
+import Mathlib.Analysis.SpecialFunctions.Pow.NthRootLemmas
 
 /-!
 # Polynomial-log growth of the Route-T VMVT constants
@@ -301,7 +302,7 @@ theorem vinogradovRouteTOrder_eq_growthOrder (u : ℕ) :
 theorem vinogradovRouteTMomentSteps_le_growthSteps (u : ℕ) :
     vinogradovRouteTMomentSteps (4 * u) ≤ routeTLogGrowthSteps u := by
   unfold vinogradovRouteTMomentSteps routeTLogGrowthSteps
-  norm_num [mul_pow]
+  rw [show 2500 * (4 * u) ^ 2 = 40000 * u ^ 2 by ring]
   exact Nat.sub_le _ _
 
 theorem vinogradovRouteTMoment_le_growthMoment (u : ℕ) :
@@ -379,8 +380,9 @@ theorem routeTLogWindowThreshold_le_two_pow_polynomial (u : ℕ) :
   calc
     32 * (240 * u + 1) * (2 ^ 202) ^ (240 * u) ≤
         2 ^ 5 * 2 ^ (240 * u + 1) * (2 ^ 202) ^ (240 * u) := by
-      norm_num
-      gcongr
+      simpa only [show 2 ^ 5 = 32 by norm_num] using
+        Nat.mul_le_mul_right ((2 ^ 202) ^ (240 * u))
+          (Nat.mul_le_mul_left 32 hlinear)
     _ = 2 ^ (5 + (240 * u + 1) + 202 * (240 * u)) := by
       rw [← pow_mul, ← pow_add, ← pow_add]
 
@@ -438,6 +440,48 @@ theorem routeTLogReceiverBaseThreshold_le_two_pow_polynomial
         nlinarith
   unfold routeTLogReceiverBaseThreshold
   exact max_le (by simpa only [E] using hbase) hreceiver
+
+theorem routeTLogReceiverBaseThreshold_add_one_le_two_pow_polynomial
+    {u : ℕ} (hu : 1 ≤ u) :
+    routeTLogReceiverBaseThreshold u + 1 ≤
+      2 ^ (routeTLogReceiverPolynomialExponent u + 1) := by
+  have hthreshold := routeTLogReceiverBaseThreshold_le_two_pow_polynomial hu
+  have hone : 1 ≤ 2 ^ routeTLogReceiverPolynomialExponent u :=
+    Nat.one_le_pow _ _ (by omega)
+  calc
+    routeTLogReceiverBaseThreshold u + 1 ≤
+        2 ^ routeTLogReceiverPolynomialExponent u +
+          2 ^ routeTLogReceiverPolynomialExponent u := Nat.add_le_add hthreshold hone
+    _ = 2 ^ (routeTLogReceiverPolynomialExponent u + 1) := by
+      rw [pow_succ]
+      ring
+
+/-- Polynomial size alone now certifies floor-root eligibility; the recursive VMVT constant no
+longer appears in hypotheses consumed by later zeta estimates. -/
+theorem routeTLogReceiverBaseThreshold_le_nthRoot_of_polynomial_size
+    {u X : ℕ} (hu : 1 ≤ u)
+    (hX : 2 ^ (routeTLogCentreExponent *
+        (routeTLogReceiverPolynomialExponent u + 1)) ≤ X) :
+    routeTLogReceiverBaseThreshold u + 1 ≤
+      Nat.nthRoot routeTLogCentreExponent X := by
+  have hdegree : routeTLogCentreExponent ≠ 0 := by
+    norm_num [routeTLogCentreExponent]
+  have hpower : (2 ^ (routeTLogReceiverPolynomialExponent u + 1)) ^
+      routeTLogCentreExponent ≤ X := by
+    calc
+      (2 ^ (routeTLogReceiverPolynomialExponent u + 1)) ^
+          routeTLogCentreExponent =
+        2 ^ ((routeTLogReceiverPolynomialExponent u + 1) *
+          routeTLogCentreExponent) :=
+            (pow_mul 2 (routeTLogReceiverPolynomialExponent u + 1)
+              routeTLogCentreExponent).symm
+      _ =
+        2 ^ (routeTLogCentreExponent *
+          (routeTLogReceiverPolynomialExponent u + 1)) := by
+            rw [mul_comm]
+      _ ≤ X := hX
+  exact (routeTLogReceiverBaseThreshold_add_one_le_two_pow_polynomial hu).trans
+    ((Nat.le_nthRoot_iff hdegree).2 hpower)
 
 end
 

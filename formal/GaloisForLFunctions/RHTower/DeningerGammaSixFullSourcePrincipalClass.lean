@@ -641,13 +641,13 @@ def deningerGammaSixSourceTensorRemainderTraceBound : ℝ :=
 
 theorem deningerGammaSixSourceTensorRemainderTraceBound_nonneg :
     0 ≤ deningerGammaSixSourceTensorRemainderTraceBound :=
-  tsum_nonneg fun n => norm_nonneg _
+  tsum_nonneg fun _n => norm_nonneg _
 
 theorem norm_deningerGammaSixSourceTensorRemainderColumn_le_traceBound
-    (n : ℕ) :
-    ‖deningerGammaSixSourceTensorRemainderColumn n‖ ≤
+    (_n : ℕ) :
+    ‖deningerGammaSixSourceTensorRemainderColumn _n‖ ≤
       deningerGammaSixSourceTensorRemainderTraceBound := by
-  exact summable_norm_deningerGammaSixSourceTensorRemainderColumn.le_tsum n
+  exact summable_norm_deningerGammaSixSourceTensorRemainderColumn.le_tsum _n
     (fun k _hk => norm_nonneg _)
 
 /-- Shell amplification of the complete tensor-square correction. -/

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
 import GaloisForLFunctions.RHTower.SuzukiLagariasMeromorphicInner
+import GaloisForLFunctions.RHTower.SuzukiPositiveHalfLine
 
 /-!
 # Suzuki's canonical Hankel operator: the exact spectral unitary
@@ -216,6 +217,19 @@ theorem measurable_suzukiThetaBoundary
     Measurable (suzukiThetaBoundary omega) :=
   (continuous_suzukiThetaBoundary hinner).measurable
 
+/-- Suzuki's unconditional range: if `omega > 1/2`, the classical zero-free half-plane
+`Re(s) ≥ 1` makes the literal shifted-Xi quotient meromorphic inner. -/
+theorem suzukiCanonicalTheta_meromorphicInner_of_half_lt
+    {omega : ℝ} (homega : 1 / 2 < omega) :
+    SuzukiCanonicalThetaMeromorphicInner omega := by
+  have hzeta : SuzukiZetaZeroFreeRightOf (1 / 2) := by
+    intro s hs _
+    apply riemannZeta_ne_zero_of_one_le_re
+    norm_num at hs ⊢
+    exact hs.le
+  exact suzukiZetaZeroFreeRightOf_implies_theta_meromorphicInner
+    (by norm_num) hzeta omega homega
+
 def suzukiThetaBoundaryMulUnitary
   (omega : ℝ) (hinner : SuzukiCanonicalThetaMeromorphicInner omega) :
     SuzukiSpectralL2 ≃ₗᵢ[ℂ] SuzukiSpectralL2 :=
@@ -274,5 +288,55 @@ theorem norm_suzukiCanonicalHankelUnitary
     (f : evenSubspace) :
     ‖suzukiCanonicalHankelUnitary omega hinner f‖ = ‖f‖ :=
   (suzukiCanonicalHankelUnitary omega hinner).norm_map f
+
+/-! ## Suzuki's literal positive-half-line carrier -/
+
+/-- Normalized shifted Mellin transform on Suzuki's literal `L²((0,∞), dx)` carrier.  The
+positive-half-line unitary is explicit, so this is no longer an identification by convention. -/
+def suzukiPositiveShiftedFourierUnitary :
+    SuzukiPositiveL2 ≃ₗᵢ[ℂ] SuzukiSpectralL2 :=
+  suzukiPositiveHalfLineUnitary.symm.trans suzukiShiftedFourierUnitary
+
+/-- Suzuki's canonical Hankel unitary on the literal positive-half-line carrier, defined by its
+source spectral action `F_{1/2}^{-1} M_{Theta_omega} R F_{1/2}`. -/
+def suzukiCanonicalPositiveHankelUnitary
+    (omega : ℝ) (hinner : SuzukiCanonicalThetaMeromorphicInner omega) :
+    SuzukiPositiveL2 ≃ₗᵢ[ℂ] SuzukiPositiveL2 :=
+  suzukiPositiveShiftedFourierUnitary.trans
+    (spectralReflectionUnitary.trans
+      ((suzukiThetaBoundaryMulUnitary omega hinner).trans
+        suzukiPositiveShiftedFourierUnitary.symm))
+
+/-- **Suzuki (2012), equation (401), on the literal `L²((0,∞),dx)` carrier.** -/
+theorem suzukiPositiveShiftedFourier_canonicalHankel
+    (omega : ℝ) (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
+    (f : SuzukiPositiveL2) :
+    suzukiPositiveShiftedFourierUnitary
+        (suzukiCanonicalPositiveHankelUnitary omega hinner f) =
+      suzukiThetaBoundaryMulUnitary omega hinner
+        (spectralReflectionUnitary (suzukiPositiveShiftedFourierUnitary f)) := by
+  simp [suzukiCanonicalPositiveHankelUnitary]
+
+/-- Pointwise-a.e. source form of equation (401) on `L²((0,∞),dx)`. -/
+theorem suzukiPositiveShiftedFourier_canonicalHankel_ae
+    (omega : ℝ) (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
+    (f : SuzukiPositiveL2) :
+    (suzukiPositiveShiftedFourierUnitary
+        (suzukiCanonicalPositiveHankelUnitary omega hinner f) : ℝ → ℂ)
+      =ᵐ[volume]
+        fun u => suzukiCanonicalTheta omega (u : ℂ) *
+          (suzukiPositiveShiftedFourierUnitary f) (-u) := by
+  rw [suzukiPositiveShiftedFourier_canonicalHankel]
+  filter_upwards [spectralReflectionUnitary_ae (suzukiPositiveShiftedFourierUnitary f),
+    suzukiThetaBoundaryMulUnitary_ae omega hinner
+      (spectralReflectionUnitary (suzukiPositiveShiftedFourierUnitary f))] with u href hmul
+  rw [hmul, href]
+
+/-- The source spectral Hankel extension is an isometry on literal `L²((0,∞),dx)`. -/
+theorem norm_suzukiCanonicalPositiveHankelUnitary
+    (omega : ℝ) (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
+    (f : SuzukiPositiveL2) :
+    ‖suzukiCanonicalPositiveHankelUnitary omega hinner f‖ = ‖f‖ :=
+  (suzukiCanonicalPositiveHankelUnitary omega hinner).norm_map f
 
 end RHTower

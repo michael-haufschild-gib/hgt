@@ -281,6 +281,228 @@ theorem xiShiftedProjectiveNodalTuranCovariantRate_eq_neg_nextArithmetic_of_cont
   rw [xiShiftedProjectiveNodalTuranCovariantRate_eq_neg_higher_of_contact hcontact,
     xiShiftedProjectiveNodalNextCompletedArithmeticLanding_eq_higherMixed hw]
 
+/-- Adjacent Turán compound at arbitrary moment grade. -/
+def xiShiftedProjectiveNodalGradedTuranLanding
+    (y : ℝ) (p : Polynomial ℝ) (k : ℕ) : ℝ :=
+  xiShiftedProjectiveNodalWeightedMoment y p k *
+      xiShiftedProjectiveNodalWeightedMoment y p (k + 2) -
+    xiShiftedProjectiveNodalWeightedMoment y p (k + 1) ^ 2
+
+/-- Higher mixed Plücker coordinate reached from grade `k`. -/
+def xiShiftedProjectiveNodalGradedHigherMixedLanding
+    (y : ℝ) (p : Polynomial ℝ) (k : ℕ) : ℝ :=
+  xiShiftedProjectiveNodalWeightedMoment y p k *
+      xiShiftedProjectiveNodalWeightedMoment y p (k + 3) -
+    xiShiftedProjectiveNodalWeightedMoment y p (k + 1) *
+      xiShiftedProjectiveNodalWeightedMoment y p (k + 2)
+
+/-- Product-rule rate of an arbitrary adjacent Turán grade. -/
+def xiShiftedProjectiveNodalGradedTuranCovariantRate
+    (y : ℝ) (n : ℕ) (a : ℝ) (p : Polynomial ℝ) (k : ℕ) : ℝ :=
+  xiShiftedProjectiveNodalWeightedMomentCovariantRate y p
+      (xiShiftedProjectiveMobiusVelocity n a p) k *
+      xiShiftedProjectiveNodalWeightedMoment y p (k + 2) +
+    xiShiftedProjectiveNodalWeightedMoment y p k *
+      xiShiftedProjectiveNodalWeightedMomentCovariantRate y p
+        (xiShiftedProjectiveMobiusVelocity n a p) (k + 2) -
+    2 * xiShiftedProjectiveNodalWeightedMoment y p (k + 1) *
+      xiShiftedProjectiveNodalWeightedMomentCovariantRate y p
+        (xiShiftedProjectiveMobiusVelocity n a p) (k + 1)
+
+/-- **All-grade contact cascade.** Every adjacent Turán grade raises to its next mixed Plücker
+coordinate with exact coefficient `2n+k+3`. -/
+theorem xiShiftedProjectiveNodalGradedTuranCovariantRate_eq
+    (y : ℝ) (n : ℕ) (a : ℝ) (p : Polynomial ℝ) (k : ℕ) :
+    xiShiftedProjectiveNodalGradedTuranCovariantRate y n a p k =
+      4 * a * xiShiftedProjectiveNodalGradedTuranLanding y p k -
+        ((2 * n + k + 3 : ℕ) : ℝ) *
+          xiShiftedProjectiveNodalGradedHigherMixedLanding y p k := by
+  rw [xiShiftedProjectiveNodalGradedTuranCovariantRate,
+    xiShiftedProjectiveNodalWeightedMomentCovariantRate_eq,
+    xiShiftedProjectiveNodalWeightedMomentCovariantRate_eq,
+    xiShiftedProjectiveNodalWeightedMomentCovariantRate_eq]
+  simp only [Nat.add_assoc, Nat.reduceAdd]
+  unfold xiShiftedProjectiveNodalGradedTuranLanding
+    xiShiftedProjectiveNodalGradedHigherMixedLanding
+  push_cast
+  ring
+
+/-- At any flat adjacent grade, projective orientation is exactly the negative next mixed grade. -/
+theorem xiShiftedProjectiveNodalGradedTuranCovariantRate_eq_neg_higher_of_contact
+    {y : ℝ} {n : ℕ} {a : ℝ} {p : Polynomial ℝ} {k : ℕ}
+    (hcontact : xiShiftedProjectiveNodalGradedTuranLanding y p k = 0) :
+    xiShiftedProjectiveNodalGradedTuranCovariantRate y n a p k =
+      -((2 * n + k + 3 : ℕ) : ℝ) *
+        xiShiftedProjectiveNodalGradedHigherMixedLanding y p k := by
+  rw [xiShiftedProjectiveNodalGradedTuranCovariantRate_eq, hcontact]
+  ring
+
+/-- Division-free successor selected at arbitrary moment grade. -/
+def xiShiftedProjectiveNodalGradedAdaptiveSuccessor
+    (y : ℝ) (p : Polynomial ℝ) (k : ℕ) : Polynomial ℝ :=
+  xiShiftedProjectiveNodalWeightedMoment y p k • (X * p) -
+    xiShiftedProjectiveNodalWeightedMoment y p (k + 1) • p
+
+/-- Every higher Plücker coordinate is an admission-selected bilinear landing. -/
+theorem xiShiftedProjectiveNodalGradedHigherMixedLanding_eq_successorLanding
+    (y : ℝ) (p : Polynomial ℝ) (k : ℕ) :
+    xiShiftedProjectiveNodalGradedHigherMixedLanding y p k =
+      HTGeometry.momentInner
+        (fun j => (xiShiftedReciprocalMoment y j).re) p
+        (X * (X ^ (k + 1) *
+          xiShiftedProjectiveNodalGradedAdaptiveSuccessor y p k)) := by
+  let s : ℕ → ℝ := fun j => (xiShiftedReciprocalMoment y j).re
+  let Mk := xiShiftedProjectiveNodalWeightedMoment y p k
+  let Mk1 := xiShiftedProjectiveNodalWeightedMoment y p (k + 1)
+  let Mk2 := xiShiftedProjectiveNodalWeightedMoment y p (k + 2)
+  let Mk3 := xiShiftedProjectiveNodalWeightedMoment y p (k + 3)
+  let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor y p k
+  have hpoly :
+      p * (X * (X ^ (k + 1) * Q)) =
+        Mk • (X ^ (k + 3) * (p * p)) -
+          Mk1 • (X ^ (k + 2) * (p * p)) := by
+    dsimp only [Q, xiShiftedProjectiveNodalGradedAdaptiveSuccessor]
+    simp only [Polynomial.smul_eq_C_mul, pow_succ]
+    ring
+  change Mk * Mk3 - Mk1 * Mk2 =
+    HTGeometry.momentFunctional s (p * (X * (X ^ (k + 1) * Q)))
+  rw [hpoly, HTGeometry.momentFunctional_sub,
+    HTGeometry.momentFunctional_smul, HTGeometry.momentFunctional_smul]
+  rfl
+
+/-- Literal completed arithmetic packet at arbitrary contact grade. -/
+def xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding
+    (w : ℝ) (p : Polynomial ℝ) (k : ℕ) : ℝ :=
+  let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ 2) p k
+  let c := xiShiftedBilinearCrossingCoefficientPacket p (X ^ (k + 1) * Q)
+  xiShiftedBoundaryRationalGammaAggregate w 1 c -
+    xiShiftedBoundaryVonMangoldtAggregate w 1 c
+
+/-- Every graded packet keeps one admission-selected radial kernel before continuum/prime
+aggregation. -/
+theorem xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding_eq_commonKernel_sourceFormation
+    {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) (k : ℕ) :
+    let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ 2) p k
+    let c := xiShiftedBilinearCrossingCoefficientPacket p (X ^ (k + 1) * Q)
+    xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding w p k =
+      xiShiftedBoundaryArchimedeanAggregate w 1 c +
+        (∫ x in Set.Ioi (1 : ℝ),
+          xiShiftedHankelBoundaryRadialKernel w 1 c x) -
+        ∑' m : ℕ, (ArithmeticFunction.vonMangoldt m : ℝ) *
+          xiShiftedHankelBoundaryRadialKernel w 1 c (m : ℝ) := by
+  dsimp only
+  rw [xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding,
+    xiShiftedBoundaryRationalGammaAggregate_eq_archimedean_add_lebesgue hw,
+    xiShiftedBoundaryVonMangoldtAggregate_eq_labelwise hw]
+
+/-- Literal completed packet at grade `k` is exactly its higher mixed Plücker coordinate. -/
+theorem xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding_eq_higherMixed
+    {w : ℝ} (hw : 1 / 2 < w) (p : Polynomial ℝ) (k : ℕ) :
+    xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding w p k =
+      xiShiftedProjectiveNodalGradedHigherMixedLanding (w ^ 2) p k := by
+  let Q := xiShiftedProjectiveNodalGradedAdaptiveSuccessor (w ^ 2) p k
+  let c := xiShiftedBilinearCrossingCoefficientPacket p (X ^ (k + 1) * Q)
+  rw [xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding]
+  change xiShiftedBoundaryRationalGammaAggregate w 1 c -
+      xiShiftedBoundaryVonMangoldtAggregate w 1 c = _
+  rw [← xiShiftedBoundaryCompletedAggregate_eq_rationalGamma_sub_vonMangoldt hw,
+    ← xiShiftedCompletedMomentAggregate_sq_eq_boundaryCompletedAggregate
+      (by linarith : 0 < w)]
+  change xiShiftedCompletedMomentAggregate (w ^ 2) 1
+      (xiShiftedBilinearCrossingCoefficientPacket p (X ^ (k + 1) * Q)) = _
+  rw [xiShiftedCompletedMomentAggregate_bilinearPacket_eq_momentInner]
+  exact
+    (xiShiftedProjectiveNodalGradedHigherMixedLanding_eq_successorLanding
+      (w ^ 2) p k).symm
+
+/-- **All-grade arithmetic contact transmutation.** Every flat grade lands on its own next
+admission-selected completed Gamma–prime packet. -/
+theorem xiShiftedProjectiveNodalGradedTuranCovariantRate_eq_neg_nextArithmetic_of_contact
+    {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} {a : ℝ} {p : Polynomial ℝ} {k : ℕ}
+    (hcontact : xiShiftedProjectiveNodalGradedTuranLanding (w ^ 2) p k = 0) :
+    xiShiftedProjectiveNodalGradedTuranCovariantRate (w ^ 2) n a p k =
+      -((2 * n + k + 3 : ℕ) : ℝ) *
+        xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding w p k := by
+  rw [xiShiftedProjectiveNodalGradedTuranCovariantRate_eq_neg_higher_of_contact hcontact,
+    xiShiftedProjectiveNodalGradedNextCompletedArithmeticLanding_eq_higherMixed hw]
+
+/-! ## Hostile two-atom audit of cumulative cascade closure -/
+
+/-- Abstract two-atom moment model used to test whether growing cascade coefficients alone force
+nonsummable work. -/
+def projectiveTuranCascadeTwoAtomMoment
+    (A B r s : ℝ) (k : ℕ) : ℝ :=
+  A * r ^ k + B * s ^ k
+
+/-- Adjacent Turán grade of a two-atom moment sequence factors into positive pair separation. -/
+theorem projectiveTuranCascadeTwoAtom_turan_factorization
+    (A B r s : ℝ) (k : ℕ) :
+    projectiveTuranCascadeTwoAtomMoment A B r s k *
+        projectiveTuranCascadeTwoAtomMoment A B r s (k + 2) -
+      projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) ^ 2 =
+        A * B * (r * s) ^ k * (r - s) ^ 2 := by
+  simp only [projectiveTuranCascadeTwoAtomMoment, pow_succ]
+  ring
+
+/-- Higher mixed grade has the same separation square and one additional pair-sum factor. -/
+theorem projectiveTuranCascadeTwoAtom_higherMixed_factorization
+    (A B r s : ℝ) (k : ℕ) :
+    projectiveTuranCascadeTwoAtomMoment A B r s k *
+        projectiveTuranCascadeTwoAtomMoment A B r s (k + 3) -
+      projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) *
+        projectiveTuranCascadeTwoAtomMoment A B r s (k + 2) =
+      A * B * (r * s) ^ k * (r + s) * (r - s) ^ 2 := by
+  simp only [projectiveTuranCascadeTwoAtomMoment, pow_succ]
+  ring
+
+/-- Positive separated atoms make every adjacent and higher mixed grade strictly positive. -/
+theorem projectiveTuranCascadeTwoAtom_all_grades_pos
+    {A B r s : ℝ} (hA : 0 < A) (hB : 0 < B) (hr : 0 < r) (hrs : r < s)
+    (k : ℕ) :
+    0 < projectiveTuranCascadeTwoAtomMoment A B r s k *
+          projectiveTuranCascadeTwoAtomMoment A B r s (k + 2) -
+        projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) ^ 2 ∧
+      0 < projectiveTuranCascadeTwoAtomMoment A B r s k *
+          projectiveTuranCascadeTwoAtomMoment A B r s (k + 3) -
+        projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) *
+          projectiveTuranCascadeTwoAtomMoment A B r s (k + 2) := by
+  have hs : 0 < s := lt_trans hr hrs
+  have hrs0 : r - s ≠ 0 := sub_ne_zero.mpr (ne_of_lt hrs)
+  rw [projectiveTuranCascadeTwoAtom_turan_factorization,
+    projectiveTuranCascadeTwoAtom_higherMixed_factorization]
+  constructor
+  · exact mul_pos (mul_pos (mul_pos hA hB) (pow_pos (mul_pos hr hs) k))
+      (sq_pos_of_ne_zero hrs0)
+  · exact mul_pos
+      (mul_pos (mul_pos (mul_pos hA hB) (pow_pos (mul_pos hr hs) k))
+        (add_pos hr hs))
+      (sq_pos_of_ne_zero hrs0)
+
+/-- **Coefficient-growth no-go.** Even if every higher mixed packet is strictly positive, linear
+growth of contact coefficients does not force nonsummable cumulative work: every separated
+two-atom model inside the geometric disk has a summable weighted cascade. -/
+theorem summable_projectiveTuranCascadeTwoAtom_weighted_higherMixed
+    {A B r s : ℝ} (hcontract : ‖r * s‖ < 1) (c : ℝ) :
+    Summable fun k : ℕ =>
+      (c + k) *
+        (projectiveTuranCascadeTwoAtomMoment A B r s k *
+            projectiveTuranCascadeTwoAtomMoment A B r s (k + 3) -
+          projectiveTuranCascadeTwoAtomMoment A B r s (k + 1) *
+            projectiveTuranCascadeTwoAtomMoment A B r s (k + 2)) := by
+  have hgeo : Summable fun k : ℕ => (r * s) ^ k :=
+    summable_geometric_of_norm_lt_one hcontract
+  have hlinear : Summable fun k : ℕ => (k : ℝ) * (r * s) ^ k := by
+    simpa only [pow_one] using
+      (summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 1 hcontract)
+  have hbase : Summable fun k : ℕ => (c + k) * (r * s) ^ k := by
+    refine ((hgeo.mul_left c).add hlinear).congr ?_
+    intro k
+    ring
+  refine (hbase.mul_right (A * B * (r + s) * (r - s) ^ 2)).congr ?_
+  intro k
+  rw [projectiveTuranCascadeTwoAtom_higherMixed_factorization]
+  ring
+
 end
 
 end RHTower

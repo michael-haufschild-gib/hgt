@@ -901,3 +901,41 @@ These results are formalized in `MontgomeryVaughanArbitraryLogPhaseReceiver.lean
 clean, unconditional, and computation-free.  The surviving obstruction is now quantitative rather
 than geometric: control the growth in `u` of the symbolic receiver threshold strongly enough that
 floor-root eligibility and the quartic saving can coexist at the zeta-optimization scale.
+
+### C23. Recursive VMVT constants have an explicit degree-nine logarithmic envelope
+
+The threshold-growth obstruction is now closed rather than assumed away.  For the recursively
+defined finite VMVT constant `D(k,r)`, `VinogradovMeanConstantGrowth.lean` proves
+
+```text
+D(k,r) <= 2^(r (G(k,r)+4)),
+```
+
+where `G` is an explicit, nonrecursive polynomial built from the reservoir size, prime-power
+constant, and mean-value exponent.  Specializing `k=400u` and
+`r=40000u^2-800u <= 40000u^2` controls the Route-T moment constant, Taylor threshold, receiver
+scale, and the `8^(4b^2)` absorption factor under one explicit polynomial exponent.
+
+`RouteTReceiverThresholdGrowth.lean` then proves the sharp degree statement needed downstream:
+
+```text
+RouteTLogReceiverBaseThreshold(u) <= 2^(C_T (u+1)^9),
+```
+
+for one fully expanded natural constant `C_T`.  Consequently
+
+```text
+2^(200(C_T (u+1)^9+1)) <= X
+```
+
+is sufficient for floor-root eligibility at arbitrary centre `X`; no recursive constant remains in
+the receiver hypothesis.  The arbitrary weighted phase theorem now exposes exactly this
+degree-nine condition.
+
+This changes the big-picture interpretation.  Route T is not blocked by enormous constants:
+constants contribute a polynomial-log eligibility wall.  Combining degree nine with the quartic
+phase saving predicts an admissible near-one scale `1-beta >> (log t)^(-kappa)` for every
+`kappa<4/(9+1)=2/5`.  This is weaker than the source's optimized classical exponent but strictly
+below one, which is the structural requirement of the Route-T endpoint exclusion.  Active core:
+formalize shell-index upper bounds, derive the explicit exponential phase law, and close the
+weighted dyadic zeta growth optimization at one fixed rational `kappa<2/5`.

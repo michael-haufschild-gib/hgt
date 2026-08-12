@@ -3,7 +3,7 @@
 - **ID:** `FR-PIC-1`
 - **Stage:** `1-in-progress`
 - **Type:** cross-route coefficient-faithful source operator
-- **Status:** `[BRIDGE] [PAPER-PROVED] [LEAN-IN-PROGRESS] [NOT RH]`
+- **Status:** `[BRIDGE] [PAPER-PROVED] [LEAN EXACT-BUILT] [UMBRELLA-WIRED] [NOT RH]`
 - **Lean target:**
   `formal/GaloisForLFunctions/RHTower/FrankensteinPluckerInverseIncidenceCurrent.lean`
 
@@ -29,8 +29,10 @@ For selected-pair indices `s,t`, define the canonical pair-dispersion factor
 ```text
 B_(e,n)(a)_(s,t)
   = sqrt(pi_s pi_t / 2)
-      ((selected_s x_(e,n)(a)) - (selected_t x_(e,n)(a))).
+      ((selected_s R_(e,n)x_(e,n)(a)) - (selected_t R_(e,n)x_(e,n)(a))),
 ```
+
+where `R_(e,n)` is P-G92's literal diagonal of square roots of squared reciprocal-gap nodes.
 
 The source current and energy are
 
@@ -64,8 +66,8 @@ sum_(s,t) |sqrt(pi_s pi_t / 2) (selected_s x-selected_t x)|^2
   = Cov_pi(selected x, selected x).
 ```
 
-Thus `B_(e,n)` is a canonical rectangular square root of the exact P-G91 covariance; no spectral
-basis or sign choice is introduced.
+Thus `B_(e,n)` is a canonical rectangular square root of the exact P-G91 covariance after P-G92's
+reciprocal-gap congruence; no spectral basis or sign choice is introduced.
 
 P-G84 gives `sum_(e,n) D_(e,n)<infinity`, hence each `sqrt(D_(e,n))` is bounded by the square root
 of total denominator mass. P-G86's first Koethe estimate gives
@@ -89,7 +91,18 @@ Classification: `[BRIDGE]`, not a claimed new general covariance theorem.
 
 ## Honest boundary
 
-`FR-PIC-1` constructs the previously missing coefficient-faithful nonlocal source current. It does
+`FR-PIC-1` constructs the previously missing coefficient-faithful nonlocal source current. Lean
+also proves both signed orientations recover P-G86's exact complete all-prime layer sums before
+physical weighting. It does
 not identify its energy or resolvent with completed prime--archimedean moments, prove a signed
 anti-Herglotz landing, force vanishing, or prove RH. Those are subsequent falsifiable gates.
 
+## Verification
+
+```text
+lake env lean GaloisForLFunctions/RHTower/FrankensteinPluckerInverseIncidenceCurrent.lean
+lake build GaloisForLFunctions.RHTower.FrankensteinPluckerInverseIncidenceCurrent
+scripts/formal_tools.py lint
+```
+
+All pass. Capstone declarations use only `propext`, `Classical.choice`, and `Quot.sound`.

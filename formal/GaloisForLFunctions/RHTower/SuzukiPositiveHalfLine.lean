@@ -58,14 +58,17 @@ def suzukiPositiveZeroExtensionLinear : SuzukiPositiveL2 →ₗ[ℂ] SoninL2 whe
   map_add' f g := by
     apply Lp.ext
     have hinput := Lp.coeFn_add f g
-    rw [ae_restrict_iff' measurableSet_Ioi] at hinput
+    change ∀ᵐ x ∂volume.restrict (Ioi (0 : ℝ)),
+      (f + g : SuzukiPositiveL2) x = f x + g x at hinput
+    have hinput := (ae_restrict_iff' measurableSet_Ioi).mp hinput
     filter_upwards [suzukiPositiveZeroExtension_ae (f + g),
       suzukiPositiveZeroExtension_ae f,
       suzukiPositiveZeroExtension_ae g,
       Lp.coeFn_add (suzukiPositiveZeroExtension f)
         (suzukiPositiveZeroExtension g), hinput] with x hout hf hg hsum hin
-    rw [hout, hsum, hf, hg]
+    rw [hout, hsum]
     simp only [Pi.add_apply]
+    rw [hf, hg]
     by_cases hx : x ∈ Ioi (0 : ℝ)
     · simp only [suzukiPositiveZeroExtensionFun, indicator_of_mem hx]
       rw [hin hx]
@@ -73,7 +76,9 @@ def suzukiPositiveZeroExtensionLinear : SuzukiPositiveL2 →ₗ[ℂ] SoninL2 whe
   map_smul' c f := by
     apply Lp.ext
     have hinput := Lp.coeFn_smul c f
-    rw [ae_restrict_iff' measurableSet_Ioi] at hinput
+    change ∀ᵐ x ∂volume.restrict (Ioi (0 : ℝ)),
+      (c • f : SuzukiPositiveL2) x = c * f x at hinput
+    have hinput := (ae_restrict_iff' measurableSet_Ioi).mp hinput
     filter_upwards [suzukiPositiveZeroExtension_ae (c • f),
       suzukiPositiveZeroExtension_ae f,
       Lp.coeFn_smul c (suzukiPositiveZeroExtension f), hinput] with x hout hf hsum hin
@@ -84,7 +89,6 @@ def suzukiPositiveZeroExtensionLinear : SuzukiPositiveL2 →ₗ[ℂ] SoninL2 whe
     by_cases hx : x ∈ Ioi (0 : ℝ)
     · simp only [suzukiPositiveZeroExtensionFun, indicator_of_mem hx]
       rw [hin hx]
-      rfl
     · simp [suzukiPositiveZeroExtensionFun, hx]
 
 /-! ## Normalized restriction of the even carrier -/
@@ -99,21 +103,19 @@ theorem suzukiPositiveRestriction_ae (f : evenSubspace) :
   filter_upwards [Lp.coeFn_smul ((Real.sqrt 2 : ℝ) : ℂ)
       (soninHalfLine (f : SoninL2)),
     coeFn_soninHalfLine (f : SoninL2)] with x hsmul hrestrict
-  rw [suzukiPositiveRestriction, hsmul, hrestrict]
-  rfl
+  rw [suzukiPositiveRestriction, hsmul]
+  simp only [Pi.smul_apply, smul_eq_mul]
+  rw [hrestrict]
 
 def suzukiPositiveRestrictionLinear : evenSubspace →ₗ[ℂ] SuzukiPositiveL2 where
   toFun := suzukiPositiveRestriction
   map_add' f g := by
-    change ((Real.sqrt 2 : ℝ) : ℂ) • soninHalfLine ((f + g : evenSubspace).1) =
-      ((Real.sqrt 2 : ℝ) : ℂ) • soninHalfLine f.1 +
-        ((Real.sqrt 2 : ℝ) : ℂ) • soninHalfLine g.1
+    simp only [suzukiPositiveRestriction, soninHalfLine]
     change ((Real.sqrt 2 : ℝ) : ℂ) •
         ((Lp.memLp (f.1 + g.1)).restrict (Ioi (0 : ℝ))).toLp (f.1 + g.1) = _
     rw [Lp_toLp_restrict_add, smul_add]
   map_smul' c f := by
-    change ((Real.sqrt 2 : ℝ) : ℂ) • soninHalfLine ((c • f : evenSubspace).1) =
-      (RingHom.id ℂ) c • (((Real.sqrt 2 : ℝ) : ℂ) • soninHalfLine f.1)
+    simp only [suzukiPositiveRestriction, soninHalfLine]
     change ((Real.sqrt 2 : ℝ) : ℂ) •
         ((Lp.memLp (c • f.1)).restrict (Ioi (0 : ℝ))).toLp (c • f.1) = _
     rw [Lp_toLp_restrict_smul, RingHom.id_apply]
@@ -158,31 +160,14 @@ theorem suzukiEvenExtension_ae (g : SuzukiPositiveL2) :
   change (((Real.sqrt 2 : ℝ) : ℂ)⁻¹ •
       (suzukiPositiveZeroExtension g + l2Reflection (suzukiPositiveZeroExtension g)) :
         SoninL2) x = _
-  rw [hsmul, hadd, href, hzero, hzeroNeg]
-  rfl
-
-def suzukiEvenExtensionLinear : SuzukiPositiveL2 →ₗ[ℂ] evenSubspace where
-  toFun := suzukiEvenExtension
-  map_add' f g := by
-    apply Subtype.ext
-    change ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ •
-        (suzukiPositiveZeroExtension (f + g) +
-          l2Reflection (suzukiPositiveZeroExtension (f + g))) = _
-    change ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ •
-        (suzukiPositiveZeroExtensionLinear (f + g) +
-          l2Reflection (suzukiPositiveZeroExtensionLinear (f + g))) = _
-    rw [map_add, map_add, map_add]
-    module
-  map_smul' c f := by
-    apply Subtype.ext
-    change ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ •
-        (suzukiPositiveZeroExtension (c • f) +
-          l2Reflection (suzukiPositiveZeroExtension (c • f))) = _
-    change ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ •
-        (suzukiPositiveZeroExtensionLinear (c • f) +
-          l2Reflection (suzukiPositiveZeroExtensionLinear (c • f))) = _
-    rw [map_smul, map_smul, map_smul, RingHom.id_apply]
-    module
+  rw [hsmul]
+  simp only [Pi.smul_apply, smul_eq_mul]
+  rw [hadd]
+  simp only [Pi.add_apply]
+  rw [href, hzero]
+  change suzukiPositiveZeroExtension g (-x) =
+    suzukiPositiveZeroExtensionFun g (-x) at hzeroNeg
+  rw [hzeroNeg]
 
 theorem suzukiPositiveRestriction_evenExtension (g : SuzukiPositiveL2) :
     suzukiPositiveRestriction (suzukiEvenExtension g) = g := by
@@ -192,7 +177,9 @@ theorem suzukiPositiveRestriction_evenExtension (g : SuzukiPositiveL2) :
     ae_restrict_mem measurableSet_Ioi] with x hrestrict hext hx
   rw [hrestrict, hext]
   have hneg : -x ∉ Ioi (0 : ℝ) := by
-    simpa only [mem_Ioi, not_lt] using (le_of_lt hx)
+    simp only [mem_Ioi] at hx
+    simp only [mem_Ioi, not_lt]
+    linarith
   rw [suzukiPositiveZeroExtensionFun, indicator_of_mem hx,
     indicator_of_notMem hneg, add_zero]
   rw [← mul_assoc, mul_inv_cancel₀ suzukiSqrtTwo_ne_zero, one_mul]
@@ -202,24 +189,35 @@ theorem suzukiEvenExtension_positiveRestriction (f : evenSubspace) :
   apply Subtype.ext
   apply Lp.ext
   have hrestrict := suzukiPositiveRestriction_ae f
-  rw [ae_restrict_iff' measurableSet_Ioi] at hrestrict
-  have hrestrictNeg := hrestrict.comp_tendsto
+  change ∀ᵐ x ∂volume.restrict (Ioi (0 : ℝ)),
+    suzukiPositiveRestriction f x = ((Real.sqrt 2 : ℝ) : ℂ) * f.1 x at hrestrict
+  have hrestrict := (ae_restrict_iff' measurableSet_Ioi).mp hrestrict
+  have hindicator :
+      (Ioi (0 : ℝ)).indicator (fun x => suzukiPositiveRestriction f x) =ᵐ[volume]
+        (Ioi (0 : ℝ)).indicator (fun x => ((Real.sqrt 2 : ℝ) : ℂ) * f.1 x) := by
+    filter_upwards [hrestrict] with x hx
+    by_cases hxpos : x ∈ Ioi (0 : ℝ)
+    · rw [indicator_of_mem hxpos, indicator_of_mem hxpos, hx hxpos]
+    · rw [indicator_of_notMem hxpos, indicator_of_notMem hxpos]
+  have hindicatorNeg := hindicator.comp_tendsto
     (Measure.measurePreserving_neg (volume : Measure ℝ)).quasiMeasurePreserving.tendsto_ae
   filter_upwards [suzukiEvenExtension_ae (suzukiPositiveRestriction f),
-    hrestrict, hrestrictNeg, coeFn_even_ae f.2, volume.ae_ne (0 : ℝ)] with
-      x hext hpos hneg heven hx0
-  rw [hext]
+    hindicator, hindicatorNeg, coeFn_even_ae f.2, volume.ae_ne (0 : ℝ)] with
+      x hext hind hindNeg heven hx0
+  change (Ioi (0 : ℝ)).indicator (fun y => suzukiPositiveRestriction f y) (-x) =
+      (Ioi (0 : ℝ)).indicator (fun y => ((Real.sqrt 2 : ℝ) : ℂ) * f.1 y) (-x)
+    at hindNeg
+  rw [hext, suzukiPositiveZeroExtensionFun, hind, hindNeg]
   by_cases hx : 0 < x
   · have hxmem : x ∈ Ioi (0 : ℝ) := hx
     have hnegmem : -x ∉ Ioi (0 : ℝ) := by simp [hx.le]
-    rw [suzukiPositiveZeroExtensionFun, indicator_of_mem hxmem,
-      indicator_of_notMem hnegmem, add_zero, hpos hxmem,
+    rw [indicator_of_mem hxmem, indicator_of_notMem hnegmem, add_zero,
       ← mul_assoc, inv_mul_cancel₀ suzukiSqrtTwo_ne_zero, one_mul]
   · have hxlt : x < 0 := lt_of_le_of_ne (le_of_not_gt hx) hx0
-    have hxnot : x ∉ Ioi (0 : ℝ) := by simpa only [mem_Ioi, not_lt] using hx.le
+    have hxnot : x ∉ Ioi (0 : ℝ) := by
+      simpa only [mem_Ioi, not_lt] using le_of_not_gt hx
     have hnegmem : -x ∈ Ioi (0 : ℝ) := by simpa only [mem_Ioi] using neg_pos.mpr hxlt
-    rw [suzukiPositiveZeroExtensionFun, indicator_of_notMem hxnot,
-      indicator_of_mem hnegmem, zero_add, hneg hnegmem,
+    rw [indicator_of_notMem hxnot, indicator_of_mem hnegmem, zero_add,
       ← mul_assoc, inv_mul_cancel₀ suzukiSqrtTwo_ne_zero, one_mul]
     exact heven.symm
 
@@ -235,5 +233,12 @@ def suzukiPositiveHalfLineUnitary : evenSubspace ≃ₗᵢ[ℂ] SuzukiPositiveL2
 
 @[simp] theorem suzukiPositiveHalfLineUnitary_symm_apply (g : SuzukiPositiveL2) :
     suzukiPositiveHalfLineUnitary.symm g = suzukiEvenExtension g := rfl
+
+/-- The inverse carrier identification as a linear map. -/
+def suzukiEvenExtensionLinear : SuzukiPositiveL2 →ₗ[ℂ] evenSubspace :=
+  suzukiPositiveHalfLineUnitary.symm.toLinearMap
+
+@[simp] theorem suzukiEvenExtensionLinear_apply (g : SuzukiPositiveL2) :
+    suzukiEvenExtensionLinear g = suzukiEvenExtension g := rfl
 
 end RHTower

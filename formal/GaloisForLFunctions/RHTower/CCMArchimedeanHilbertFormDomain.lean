@@ -81,7 +81,9 @@ def ccmArchimedeanFourierWeight : CCMFourierWeight where
       hgamma.const_mul_atTop (by norm_num)
     have hshift := tendsto_atTop_add_const_right atTop
       (1 - 2 * gammaHardyPhaseRate 0) htwo
-    convert hshift using 1 <;> funext u <;> ring
+    convert hshift using 1
+    funext u
+    ring
 
 @[simp] theorem ccmArchimedeanFourierWeight_value_abs (xi : ℝ) :
     ccmArchimedeanFourierWeight.value |xi| = ccmArchimedeanFormWeight xi := rfl
@@ -322,8 +324,12 @@ theorem isCompactOperator_ccmArchimedeanFormEmbedding (a : SuzukiPositiveApertur
 theorem isCompactOperator_ccmArchimedeanFormToAperture (a : SuzukiPositiveAperture) :
     IsCompactOperator (ccmArchimedeanFormToAperture a) := by
   apply (isCompactOperator_ccmArchimedeanFormEmbedding a).codRestrict
-  · exact fun f => (ccmArchimedeanFormToAperture a f).property
-  · exact (inferInstance : (suzukiApertureHilbert a).HasOrthogonalProjection).isClosed
+  simpa only [suzukiApertureHilbert, physicalForbidden] using
+    ContinuousLinearMap.IsIdempotentElem.isClosed_range
+      (show IsIdempotentElem (indicatorCutoff (centralInterval a.1)
+        (measurableSet_centralInterval a.1)) from
+        indicatorCutoff_idempotent (centralInterval a.1)
+          (measurableSet_centralInterval a.1))
 
 /-- Exact decomposition of the source archimedean spectral density on the form domain. -/
 theorem ccmArchimedean_form_eq_domainNorm_add_scalar

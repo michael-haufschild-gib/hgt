@@ -1198,3 +1198,67 @@ form, effective windows, supply pricing, order no-go, delay dichotomy), the deep
 returns to arithmetic supply: prove the mass inequality of the supply theorem for the ACTUAL
 ξ spectrum at a concrete shift `X` and scale `δ` from corpus-ownable inputs (zero-counting/
 mass bounds for `Σ 1/|α_q² + X|`), turning the first rational-nodal data unconditional.
+
+## Step 44 — unconditionalizing the supply's quantitative side [PAPER-PROVED → Lean]
+
+Goal: make the supply's mass data unconditional for the ACTUAL ξ spectrum. Honest scoping
+first: the two-scale tail ε(δ) encodes zero-density (its certification at the depth the actual
+spectrum needs ≈ height 3·10¹⁰ at X = 1 is numerical-verification knowledge, not formalizable);
+and hline IS partial RH. What IS unconditionalizable: the TOTAL mass S and the trace bridge.
+
+**Theorem 1 (sector bound, tight at the certified floor).** For every shift `X ≥ 0` and copy:
+`‖u_q(X)‖ ≤ (129/127)·Re(u_q(X))`. Proof: with `g = γ² > 32` (corpus certified floor
+`xiSpectral_re_sq_gt_thirtytwo`), `s = b² < 1/4` (strip), `z = α² + X`:
+`Im(z)² = 4gs ≤ g` and `512(g−1/4)² − 16129g = (g−32)(512g−1) ≥ 0`, so
+`|z|² ≤ (129/127)²Re(z)²` — equality exactly at `g = 32`. Then `‖z⁻¹‖ ≤ (129/127)Re(z⁻¹)`.
+
+**Theorem 2 (norm mass ≤ trace).** `Σ'‖u_q(X)‖ ≤ (129/127)·Re(M₀(X))`; at `X = x²` the
+right side is `(129/127)·Re(logDeriv ξ(1/2+x)/x)` — prime–Gamma data
+(`xiResolventMoment_zero_eq_logDeriv`).
+
+**Theorem 3 (the unconditional numeric mass cap).** `‖u_q(X)‖ ≤ (132/127)·massAt(1/2)_q`
+pointwise — `‖u‖ ≤ 1/(g−1/4)`, `massAt(1/2) ≥ 1/(g+1)` (both denominators from the strip),
+and `127(g+1) ≤ 132(g−1/4) ⟺ g ≥ 32`, again equality at the floor (127·33 = 132·127/4 = 4191).
+With the corpus budget `Σ massAt(1/2) ≤ 3/50`:  **`Σ'‖u_q(X)‖ ≤ 198/3175` for every `X ≥ 0`**
+— a numeric unconditional cap on the total resolvent mass of ξ.
+
+**Theorem 4 (supply with the mass budget discharged).** The universal supply theorem holds with
+hypotheses: hline + sub-δ tail bound `ε ≤ E` + `8B⁴·E·(198/3175) ≤ 2(r₁r₂)^{2m+1}(...)(r₁−r₂)²`
+— the total-mass input is GONE (replaced by the unconditional 198/3175). The remaining
+arithmetic core of the first rational-nodal data is exactly: line placement above one scale +
+one tail-mass (zero-density) bound. Also: every effective window of steps 39-40 can now be
+instantiated with the numeric `S = 198/3175`.
+
+**Step 44 status: [LEAN-PROVED].** Module `RHTower/XiResolventMassBudget.lean`, nine theorems,
+all auditing to [propext, Classical.choice, Quot.sound], olean-built, wired:
+- `xiSpectralPoint_im_sq_lt_quarter` — the open strip in spectral coordinates.
+- `norm_xiResolventPoint_le_re_mul` — the sector bound `‖u‖ ≤ (129/127)·Re u`, tight at the
+  certified floor `γ² > 32` (key algebra: `512(g−1/4)² − 16129g = (g−32)(512g−1)`).
+- `tsum_norm_xiResolventPoint_le_re_moment` — norm mass ≤ (129/127)·Re(M₀(X)).
+- `tsum_norm_xiResolventPoint_le_logDeriv` — the same on prime–Gamma data at `X = x²`:
+  norm mass ≤ (129/127)·Re(logDeriv ξ(1/2+x)/x).
+- `norm_xiResolventPoint_le_budgetMass` — `‖u‖ ≤ (132/127)·massAt(1/2)`, tight at the floor
+  (`127·33 = 132·127/4 = 4191` at `γ² = 32`).
+- **`tsum_norm_xiResolventPoint_le_budget`** — THE NUMERIC CAP: `Σ'‖u_q(X)‖ ≤ 198/3175`
+  (≈ 0.0624) for EVERY shift `X ≥ 0`, unconditional (via the corpus budget
+  `Σ massAt(1/2) ≤ 3/50`; consistency: true mass ≈ 0.046).
+- `polyTuranMinor_supply_of_partial_line_budget` + `rational_nodal_datum_of_partial_line_budget`
+  — the supply with the total-mass input DISCHARGED: hypotheses are now line placement, one
+  sub-δ tail bound `ε ≤ E`, and `8B⁴·E·(198/3175) ≤ witness expression`. The arithmetic core
+  of the first rational-nodal data = partial line placement + one zero-density bound. Honest
+  scoping recorded: the tail bound at the depth the actual spectrum needs (height ≈ 3·10¹⁰ at
+  X = 1) is numerical-verification territory; total mass is now a Lean number.
+- `exists_neg_even_plain_minor_of_offline_top_budget` — the top-level detection window fully
+  numeric: `(2·(198/3175)²/g + (198/3175)²/(ℓ²−ρ₂²))/Im(u)²`.
+
+**Lean traps (new).** `div_add_div_same` no longer exists — use `← add_div`.
+`ring` cannot verify `(c/d)·(1/B) = c/(d·B)` (inverse-of-product); use
+`rw [mul_one_div, div_div]`. `Complex.hasSum_re h.hasSum |>.summable` for re-summability;
+`Complex.re_tsum` needs the complex summability.
+
+**Next frontier.** (i) The tail side: formalizable zero-density surrogates — the budget-probe
+machinery at OTHER probe points `c` gives a FAMILY of mass identities; a probe at large `c`
+weights high zeros more and could yield certified tail decay `ε(δ) ≤ E(δ)` without N(T);
+(ii) numeric evaluation of `Re(logDeriv ξ(1/2+x)/x)` at a rational `x` from the prime–Gamma
+expansion with certified error (corpus `xiSquaredEulerFullResponse` monotonicity) — would make
+the trace-form mass bound concrete and sharpen 198/3175 toward the true ≈ 0.046.

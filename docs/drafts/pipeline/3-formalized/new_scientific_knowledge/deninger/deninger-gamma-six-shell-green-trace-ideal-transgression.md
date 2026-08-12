@@ -1,8 +1,8 @@
 # Gamma-six shell Green principal class and singular Stokes transgression
 
-- **Stage:** 2 — dependency-closed paper proof
+- **Stage:** 3 — formalised in Lean 4
 - **Route:** L — Deninger/Green/Hodge source descent
-- **Status:** [PAPER-PROVED] [PROJECT-SPECIFIC SYNTHESIS] [PRIORITY UNVERIFIED] [NOT RH]
+- **Status:** [FORMALIZED] [PROJECT-SPECIFIC SYNTHESIS] [PRIORITY UNVERIFIED] [NOT RH]
 - **Date:** 2026-08-11
 - **Exact advance:** the full corrected Gamma-six Möbius source, after canonical countertransport
   and tensor square, has a nonzero weak-trace principal class modulo trace class. Its shell Wold
@@ -463,6 +463,46 @@ character because its middle coefficient carries that character. Descending it t
 critical scalar coface is already the RH-bearing step. Theorem 6.1 closes all finite local
 source-valued alternatives and forces the surviving comparison to use the nonlocal trace-ideal
 class of Sections 2--5.
+
+## Lean formalization certificate
+
+Sections 1--6 are formalized unconditionally in the following modules:
+
+- `DeningerGammaSixFullSourcePrincipalClass`: the actual corrected Möbius source, trace-order
+  tensor remainder, ordinary-integer rectangular amplification, trace-class remainder, faithful
+  principal coefficient reader, and full weak-trace principal-class theorem;
+- `DeningerGammaSixSingularGreenStokesCoface`: the literal shell Wold isometry, its adjoint
+  compression, exact principal eigenvalue (1/6), trace-class compressed remainder, and singular
+  Green--Stokes coface;
+- `DeningerGammaSixGreenGibbsPhysicalReader`: the actual diagonal Gibbs weight, partition and
+  Wold-range traces, normalized reader, positive-temperature trace ratio, analytic continuation,
+  equality with the physical BV reader, and reflected curvature identity;
+- `DeningerGammaSixFiniteCofaceClassification`: the Laurent-polynomial coefficient ring, two
+  literal orientation roots, canonical quadratic, divisibility classification, minimal degree,
+  and uniqueness of the monic minimal common annihilator;
+- `DeningerGammaSixShellPrincipalIdeal`: the exact two-orientation Köthe-domain wall and exact
+  per-shell trace mass.
+
+The paper theorems are represented by these headline declarations:
+
+| Paper claim | Lean declaration |
+|---|---|
+| Theorem 1.1 | `summable_deningerGammaSix_shellWeightedRemainder` and `summable_norm_deningerGammaSixSourceTensorRemainderColumn` |
+| Theorem 2.1 | `deningerGammaSix_fullSource_weakTracePrincipalClass` and `deningerGammaSixLeadingTensorReader_comp_principal` |
+| Equation (14) shell invariant | `deningerGammaSixShellTraceMass_eq_five` |
+| Theorem 3.1 | `deningerGammaSixFullSource_singularGreenStokesCoface` |
+| Theorem 4.1 | `DeningerGammaSixBothEdgesInDomain_iff` |
+| Theorem 5.1 | `deningerGammaSixNormalizedGreenGibbsReader_eq`, `deningerGammaSixGreenGibbsContinuation_eq_physicalBV`, and `deningerGammaSixGreenGibbs_reflectedDifference` |
+| Theorem 6.1 | `deningerGammaSix_commonCoface_annihilator_iff` and `deningerGammaSixCommonCofacePolynomial_unique_monic_minimal` |
+
+Reusable Hilbert-space infrastructure lives in `RectangularVectorDiagonal`,
+`RectangularWeakSchatten`, and `LpInjectionCompression`. All new modules are wired into the
+`HTGeometry` or `RHTower` umbrella. Exact-module `lake build` audits pass. A `#print axioms` audit
+of every headline theorem reports only `propext`, `Classical.choice`, and `Quot.sound`; no project
+axioms, hypotheses, `sorry`, `admit`, `opaque`, or `unsafe` declarations occur.
+
+Section 7 is deliberately not claimed as formalized mathematics: it records the exact open
+Route-L comparison theorem exposed by the completed formal package.
 
 ## 7. Exact remaining Route-L theorem
 

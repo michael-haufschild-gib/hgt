@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.Sieve.MontgomeryVaughanLogPhaseReceiver
+import GaloisForLFunctions.RHTower.Sieve.RouteTReceiverThresholdGrowth
 import Mathlib.Analysis.SpecialFunctions.Pow.NthRootLemmas
 
 /-!
@@ -103,6 +103,21 @@ theorem routeTLogRealShellIndex_ge
   apply routeTLogShellIndex_ge hB2
   exact Nat.lt_ceil.mpr hlarge
 
+theorem routeTLogRealShellIndex_le
+    {X v : ℕ} {t : ℝ}
+    (htop : t ≤ (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+      (4 * v) : ℕ) : ℝ)) :
+    routeTLogRealShellIndex X t ≤ v := by
+  unfold routeTLogRealShellIndex routeTLogShellIndex
+  apply Nat.clog_le_of_le_pow
+  have hceil : ⌈t⌉₊ ≤
+      (routeTLogRootBase X ^ routeTLogCentreExponent) ^ (4 * v) :=
+    Nat.ceil_le.mpr htop
+  calc
+    ⌈t⌉₊ ≤ (routeTLogRootBase X ^ routeTLogCentreExponent) ^ (4 * v) := hceil
+    _ = ((routeTLogRootBase X ^ routeTLogCentreExponent) ^ 4) ^ v := by
+      rw [pow_mul]
+
 theorem routeTLogRootBase_cell
     {X : ℕ} (hB2 : 2 ≤ routeTLogRootBase X) :
     routeTLogRootBase X ^ routeTLogCentreExponent ≤ X ∧
@@ -149,6 +164,46 @@ theorem routeTLogRootBase_ge_threshold
   have hmod := Nat.mod_lt (Nat.nthRoot routeTLogCentreExponent X)
     (by omega : 0 < 2)
   omega
+
+/-- Quartic saving with an external shell upper bound. -/
+theorem routeTLogRootSavingFactor_le_explicit
+    {X u v : ℕ} (hB2 : 2 ≤ routeTLogRootBase X)
+    (hu : 1 ≤ u) (huv : u ≤ v) :
+    ((((routeTLogRootBase X ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
+        (-vinogradovRouteTPowerSavingExponent u / 2)) ≤
+      ((((routeTLogRootBase X ^ routeTLogCentreExponent : ℕ) : ℝ)) ^
+        (-(1 / (5000000000000000 * (v : ℝ) ^ 4)))) := by
+  let B := routeTLogRootBase X
+  let δ := vinogradovRouteTPowerSavingExponent u
+  let ε := routeTLogOneDimensionalSavingExponent u
+  have hBpos : (0 : ℝ) < B := by exact_mod_cast (by omega : 0 < B)
+  have hidentity :
+      ((((B ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^ (-δ / 2)) =
+        ((((B ^ routeTLogCentreExponent : ℕ) : ℝ)) ^ (-ε)) := by
+    change ((((B ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^ (-δ / 2)) =
+      ((((B ^ 200 : ℕ) : ℝ)) ^ (-(99 * δ / 400)))
+    push_cast
+    rw [← Real.rpow_natCast (B : ℝ) routeTLogHalfLengthExponent,
+      ← Real.rpow_natCast (B : ℝ) 200,
+      ← Real.rpow_mul hBpos.le, ← Real.rpow_mul hBpos.le]
+    norm_num [routeTLogHalfLengthExponent]
+    ring_nf
+  have hε := routeTLogOneDimensionalSavingExponent_ge hu
+  have hu4v4Nat : u ^ 4 ≤ v ^ 4 := Nat.pow_le_pow_left huv 4
+  have hu4v4 : (u : ℝ) ^ 4 ≤ (v : ℝ) ^ 4 := by exact_mod_cast hu4v4Nat
+  have hdenpos : (0 : ℝ) < 5000000000000000 * (u : ℝ) ^ 4 := by
+    have : (0 : ℝ) < u := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hu)
+    positivity
+  have hinv : 1 / (5000000000000000 * (v : ℝ) ^ 4) ≤
+      1 / (5000000000000000 * (u : ℝ) ^ 4) := by
+    exact one_div_le_one_div_of_le hdenpos (by nlinarith)
+  have haε : 1 / (5000000000000000 * (v : ℝ) ^ 4) ≤ ε := hinv.trans hε
+  have hB0one : (1 : ℝ) ≤ ((B ^ routeTLogCentreExponent : ℕ) : ℝ) := by
+    exact_mod_cast (one_le_pow₀ (by omega : 1 ≤ B) :
+      1 ≤ B ^ routeTLogCentreExponent)
+  rw [hidentity]
+  apply Real.rpow_le_rpow_of_exponent_le hB0one
+  linarith
 
 theorem routeTLogArbitraryPhasePartialSum_eq_block
     {X X' : ℕ} (hX' : X' ≤ 2 * X) (t : ℝ) :
@@ -490,6 +545,139 @@ theorem norm_routeTLogArbitraryWeightedPartialSum_le_automaticShell
     omega
   rw [hsum]
   simpa only [P] using hab
+
+/-- Fully explicit polynomial-threshold form of the arbitrary-centre weighted receiver. -/
+theorem norm_routeTLogArbitraryWeightedPartialSum_le_polynomialThreshold
+    {X X' : ℕ} {σ t : ℝ}
+    (hXsize : 2 ^ (routeTLogCentreExponent *
+        (routeTLogReceiverPolynomialExponent (routeTLogRealShellIndex X t) + 1)) ≤ X)
+    (hlarge : (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+      (4 * 141) : ℕ) : ℝ) < t)
+    (hXX' : X < X') (hX' : X' ≤ 2 * X) (hσ : 0 ≤ σ) :
+    ‖routeTLogArbitraryWeightedPartialSum X X' σ t‖ ≤
+      (6912 * X *
+        ((((routeTLogRootBase X ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
+          (-vinogradovRouteTPowerSavingExponent (routeTLogRealShellIndex X t) / 2))) *
+        ((((X + 1 : ℕ) : ℝ)) ^ (-σ)) := by
+  let u := routeTLogRealShellIndex X t
+  have hdegree : routeTLogCentreExponent ≠ 0 := by
+    norm_num [routeTLogCentreExponent]
+  have hexponent : routeTLogCentreExponent ≤ routeTLogCentreExponent *
+      (routeTLogReceiverPolynomialExponent u + 1) := by
+    exact Nat.le_mul_of_pos_right _ (by omega)
+  have hXdegree : 2 ^ routeTLogCentreExponent ≤ X :=
+    (Nat.pow_le_pow_right (by omega) hexponent).trans (by simpa only [u] using hXsize)
+  have hrootNat : 2 ≤ Nat.nthRoot routeTLogCentreExponent X :=
+    (Nat.le_nthRoot_iff hdegree).2 hXdegree
+  have hhalf : 1 ≤ Nat.nthRoot routeTLogCentreExponent X / 2 := by
+    exact (Nat.le_div_iff_mul_le (by omega)).2 (by simpa using hrootNat)
+  have hB2 : 2 ≤ routeTLogRootBase X := by
+    unfold routeTLogRootBase routeTLogRootHalfBase
+    omega
+  have hu : 1 ≤ u := by
+    have := routeTLogRealShellIndex_ge (v := 141) hB2 hlarge
+    omega
+  have hroot := routeTLogReceiverBaseThreshold_le_nthRoot_of_polynomial_size hu
+    (by simpa only [u] using hXsize)
+  exact norm_routeTLogArbitraryWeightedPartialSum_le_automaticShell
+    (by simpa only [u] using hroot) hlarge hXX' hX' hσ
+
+/-- Degree-nine threshold form: all recursive constants have disappeared from the hypothesis. -/
+theorem norm_routeTLogArbitraryWeightedPartialSum_le_degreeNineThreshold
+    {X X' : ℕ} {σ t : ℝ}
+    (hXsize : 2 ^ (routeTLogCentreExponent *
+        (routeTLogReceiverDegreeNineConstant *
+          (routeTLogRealShellIndex X t + 1) ^ 9 + 1)) ≤ X)
+    (hlarge : (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+      (4 * 141) : ℕ) : ℝ) < t)
+    (hXX' : X < X') (hX' : X' ≤ 2 * X) (hσ : 0 ≤ σ) :
+    ‖routeTLogArbitraryWeightedPartialSum X X' σ t‖ ≤
+      (6912 * X *
+        ((((routeTLogRootBase X ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
+          (-vinogradovRouteTPowerSavingExponent (routeTLogRealShellIndex X t) / 2))) *
+        ((((X + 1 : ℕ) : ℝ)) ^ (-σ)) := by
+  apply norm_routeTLogArbitraryWeightedPartialSum_le_polynomialThreshold
+  · apply (Nat.pow_le_pow_right (by omega) ?_).trans hXsize
+    exact Nat.mul_le_mul_left routeTLogCentreExponent
+      (Nat.add_le_add_right
+        (routeTLogReceiverPolynomialExponent_le_degreeNine
+          (routeTLogRealShellIndex X t)) 1)
+  · exact hlarge
+  · exact hXX'
+  · exact hX'
+  · exact hσ
+
+theorem routeTLogRootBase_ge_two_of_degreeNine_size
+    {X : ℕ} {t : ℝ}
+    (hXsize : 2 ^ (routeTLogCentreExponent *
+        (routeTLogReceiverDegreeNineConstant *
+          (routeTLogRealShellIndex X t + 1) ^ 9 + 1)) ≤ X) :
+    2 ≤ routeTLogRootBase X := by
+  let u := routeTLogRealShellIndex X t
+  have hdegree : routeTLogCentreExponent ≠ 0 := by
+    norm_num [routeTLogCentreExponent]
+  have hexponent : routeTLogCentreExponent ≤ routeTLogCentreExponent *
+      (routeTLogReceiverDegreeNineConstant * (u + 1) ^ 9 + 1) :=
+    Nat.le_mul_of_pos_right _ (by omega)
+  have hXdegree : 2 ^ routeTLogCentreExponent ≤ X :=
+    (Nat.pow_le_pow_right (by omega) hexponent).trans (by simpa only [u] using hXsize)
+  have hrootNat : 2 ≤ Nat.nthRoot routeTLogCentreExponent X :=
+    (Nat.le_nthRoot_iff hdegree).2 hXdegree
+  have hhalf : 1 ≤ Nat.nthRoot routeTLogCentreExponent X / 2 :=
+    (Nat.le_div_iff_mul_le (by omega)).2 (by simpa using hrootNat)
+  unfold routeTLogRootBase routeTLogRootHalfBase
+  omega
+
+/-- External-shell form.  The saving is now the explicit reciprocal quartic in any certified upper
+shell index `v`. -/
+theorem norm_routeTLogArbitraryWeightedPartialSum_le_explicitQuarticSaving
+    {X X' v : ℕ} {σ t : ℝ}
+    (hXsize : 2 ^ (routeTLogCentreExponent *
+        (routeTLogReceiverDegreeNineConstant *
+          (routeTLogRealShellIndex X t + 1) ^ 9 + 1)) ≤ X)
+    (hlarge : (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+      (4 * 141) : ℕ) : ℝ) < t)
+    (htop : t ≤ (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+      (4 * v) : ℕ) : ℝ))
+    (hXX' : X < X') (hX' : X' ≤ 2 * X) (hσ : 0 ≤ σ) :
+    ‖routeTLogArbitraryWeightedPartialSum X X' σ t‖ ≤
+      (6912 * X *
+        ((((routeTLogRootBase X ^ routeTLogCentreExponent : ℕ) : ℝ)) ^
+          (-(1 / (5000000000000000 * (v : ℝ) ^ 4))))) *
+        ((((X + 1 : ℕ) : ℝ)) ^ (-σ)) := by
+  let u := routeTLogRealShellIndex X t
+  have hdegree : routeTLogCentreExponent ≠ 0 := by
+    norm_num [routeTLogCentreExponent]
+  have hexponent : routeTLogCentreExponent ≤ routeTLogCentreExponent *
+      (routeTLogReceiverDegreeNineConstant * (u + 1) ^ 9 + 1) :=
+    Nat.le_mul_of_pos_right _ (by omega)
+  have hXdegree : 2 ^ routeTLogCentreExponent ≤ X :=
+    (Nat.pow_le_pow_right (by omega) hexponent).trans (by simpa only [u] using hXsize)
+  have hrootNat : 2 ≤ Nat.nthRoot routeTLogCentreExponent X :=
+    (Nat.le_nthRoot_iff hdegree).2 hXdegree
+  have hhalf : 1 ≤ Nat.nthRoot routeTLogCentreExponent X / 2 :=
+    (Nat.le_div_iff_mul_le (by omega)).2 (by simpa using hrootNat)
+  have hB2 : 2 ≤ routeTLogRootBase X := by
+    unfold routeTLogRootBase routeTLogRootHalfBase
+    omega
+  have hu : 1 ≤ u := by
+    have := routeTLogRealShellIndex_ge (v := 141) hB2 hlarge
+    omega
+  have huv : u ≤ v := routeTLogRealShellIndex_le htop
+  have hfactor := routeTLogRootSavingFactor_le_explicit hB2 hu huv
+  calc
+    ‖routeTLogArbitraryWeightedPartialSum X X' σ t‖ ≤
+        (6912 * X *
+          ((((routeTLogRootBase X ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
+            (-vinogradovRouteTPowerSavingExponent u / 2))) *
+          ((((X + 1 : ℕ) : ℝ)) ^ (-σ)) :=
+      norm_routeTLogArbitraryWeightedPartialSum_le_degreeNineThreshold
+        (by simpa only [u] using hXsize) hlarge hXX' hX' hσ
+    _ ≤ (6912 * X *
+          ((((routeTLogRootBase X ^ routeTLogCentreExponent : ℕ) : ℝ)) ^
+            (-(1 / (5000000000000000 * (v : ℝ) ^ 4))))) *
+          ((((X + 1 : ℕ) : ℝ)) ^ (-σ)) := by
+      gcongr
 
 end
 
