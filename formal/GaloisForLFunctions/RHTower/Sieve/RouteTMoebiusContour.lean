@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.Sieve.PerronSharpSubstitution
 import GaloisForLFunctions.RHTower.Sieve.MellinDecayUniform
 import GaloisForLFunctions.RHTower.Sieve.InvZetaLowBox
 import GaloisForLFunctions.RHTower.Sieve.InvZetaEdgeBounds
+import GaloisForLFunctions.RHTower.Sieve.MoebiusTwistSharpSubstitution
 
 /-!
 # Route-T Perron rectangle for Möbius sums
@@ -191,11 +192,17 @@ theorem routeT_contour_zero_free
         rw [habs] at him100 hlargePoint hnear
         have hz := riemannZeta_ne_zero_routeT_region
           (β := s.re) (γ := -s.im) hA (by linarith) hlargePoint hre hnear
-        have hzneg := riemannZeta_ne_zero_neg_im hz
+        have hzneg :
+            riemannZeta (((s.re : ℝ) : ℂ) + (s.im : ℂ) * Complex.I) ≠ 0 := by
+          intro hzero
+          apply hz
+          have hc :
+              (((s.re : ℝ) : ℂ) + ((-s.im : ℝ) : ℂ) * Complex.I) =
+                (starRingEnd ℂ) (((s.re : ℝ) : ℂ) + (s.im : ℂ) * Complex.I) := by
+            apply Complex.ext <;> simp
+          rw [hc, riemannZeta_conj, hzero, map_zero]
         have hsdecomp :
-            ((s.re : ℝ) : ℂ) + ((-(-s.im) : ℝ) : ℂ) * Complex.I = s := by
-          rw [neg_neg]
-          exact Complex.re_add_im s
+            ((s.re : ℝ) : ℂ) + (s.im : ℂ) * Complex.I = s := Complex.re_add_im s
         rw [hsdecomp] at hzneg
         exact hzneg
     · exact riemannZeta_ne_zero_of_one_le_re hre.le
@@ -234,6 +241,327 @@ theorem norm_inv_riemannZeta_le_routeT_contour
     unfold routeTContourEdgeBound
     exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hQsq (by norm_num))
   exact hraw.trans hexp
+
+set_option maxHeartbeats 1200000 in
+/-- **Route-T four-edge Perron bound for smoothed Möbius sums.**  No classical `log⁻⁹` width
+remains in the rectangle. -/
+theorem exists_norm_tsum_moebius_smoothWeight_le_routeT :
+    ∃ (A C C' M δ : ℝ), 0 ≤ C ∧ 0 ≤ C' ∧ 0 ≤ M ∧ 0 < δ ∧
+      ∀ N H T : ℝ, 0 < N → 0 < H → routeTInverseBaseHeight ≤ T →
+      ‖(2 * Real.pi : ℝ) • (∑' n : ℕ,
+          (ArithmeticFunction.moebius n : ℂ) *
+            ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
+        ≤ 2 * (routeTContourRightBound A T *
+              (C / H ^ 2 * (N + H + 1) ^ 2 *
+                (N + H + 1) ^ routeTContourRight A T)) / T
+          + routeTContourEdgeBound A T *
+              (C' / H ^ 1 * (N + H + 1) ^ 1 *
+                (N + H + 1) ^ routeTContourRight A T) /
+              T ^ (0 + 1) * (routeTContourRight A T - routeTContourLeft A δ T)
+          + routeTContourEdgeBound A T *
+              (C' / H ^ 1 * (N + H + 1) ^ 1 *
+                (N + H + 1) ^ routeTContourRight A T) /
+              T ^ (0 + 1) * (routeTContourRight A T - routeTContourLeft A δ T)
+          + max M (routeTContourEdgeBound A T) *
+              (2 * ((N + H) ^ routeTContourLeft A δ T /
+                    routeTContourLeft A δ T)
+                + 2 * (C / H ^ 2 * (N + H + 1) ^ 2 *
+                    (N + H + 1) ^ routeTContourLeft A δ T)) := by
+  obtain ⟨A, hA⟩ := exists_pole_bound
+  obtain ⟨C, hC, hdec1⟩ := exists_bound_mellin_smoothWeight_uniform_upto 1
+  obtain ⟨C', hC', hdec0⟩ := exists_bound_mellin_smoothWeight_uniform_upto 0
+  obtain ⟨δz, hδz, hzfbox⟩ := exists_zero_free_box routeTInverseBaseHeight
+  obtain ⟨δm, hδm, M, hM, hbdbox⟩ :=
+    exists_bound_invZeta_fixed_box (by
+      have hbase := routeTInverseBaseHeight_ge
+      linarith : 0 ≤ routeTInverseBaseHeight)
+  let δ := min δz δm
+  have hδ : 0 < δ := lt_min hδz hδm
+  refine ⟨A, C, C', M, δ, hC, hC', hM, hδ, ?_⟩
+  intro N H T hN hH hT
+  let c := routeTContourLeft A δ T
+  let d := routeTContourRight A T
+  let Md := routeTContourRightBound A T
+  let Mh := routeTContourEdgeBound A T
+  let Mc := max M Mh
+  have hTpos : 0 < T := by
+    have hbase := routeTInverseBaseHeight_ge
+    linarith
+  have hT1 : 1 ≤ T := by linarith [routeTInverseBaseHeight_ge]
+  have hc0 : 0 < c := by simpa only [c] using routeTContourLeft_pos (A := A) (δ := δ) (T := T)
+  have hc1 : c ≤ 1 := by simpa only [c] using routeTContourLeft_le_one (A := A) (T := T) hδ
+  have hd1 : 1 < d := by simpa only [d] using routeTContourRight_gt_one A T
+  have hcd : c ≤ d := by simpa only [c, d] using routeTContourLeft_le_right (A := A) (T := T) hδ
+  have hbox : ∀ s : ℂ, 1 - δ ≤ s.re → s.re ≤ 1 →
+      |s.im| ≤ routeTInverseBaseHeight → s ≠ 1 → riemannZeta s ≠ 0 := by
+    intro s hslo hshi him hs1
+    apply hzfbox s
+    · have hδle : δ ≤ δz := min_le_left _ _
+      linarith
+    · exact hshi
+    · exact him
+    · exact hs1
+  have hzf : ∀ s ∈ Set.uIcc c d ×ℂ Set.uIcc (-T) T,
+      s ≠ 1 → riemannZeta s ≠ 0 := by
+    simpa only [c, d] using routeT_contour_zero_free hA hδ hbox hT
+  have hMd : 0 ≤ Md := by
+    dsimp only [Md, routeTContourRightBound]
+    have hD := routeTInverseDelta_pos A T
+    exact mul_nonneg (Real.exp_nonneg _) (by
+      have hinv : 0 < 1 / routeTInverseDelta A T := one_div_pos.mpr hD
+      linarith)
+  have hMh : 0 ≤ Mh := by
+    dsimp only [Mh, routeTContourEdgeBound]
+    exact Real.exp_nonneg _
+  have hMc : 0 ≤ Mc := by
+    dsimp only [Mc]
+    exact le_max_of_le_left hM
+  have hFd : ∀ y : ℝ, ‖invZeta ((d : ℂ) + (y : ℝ) * Complex.I)‖ ≤ Md := by
+    intro y
+    have hright := norm_invZeta_right_le (d := d) (y := y) hd1
+    have heq : Real.exp (22 / 4) * (1 + 1 / (d - 1)) = Md := by
+      dsimp only [d, Md, routeTContourRight, routeTContourRightBound]
+      congr 2
+      ring_nf
+    exact hright.trans_eq heq
+  have hFt : ∀ x ∈ Set.Ioc c d,
+      ‖invZeta ((x : ℂ) + ((T : ℝ) : ℂ) * Complex.I)‖ ≤ Mh := by
+    intro x hx
+    have hne : ((x : ℂ) + ((T : ℝ) : ℂ) * Complex.I) ≠ 1 := by
+      intro heq
+      have him := congrArg Complex.im heq
+      simp at him
+      linarith
+    rw [norm_invZeta_eq hne]
+    exact norm_inv_riemannZeta_le_routeT_contour hA
+      (by rw [abs_of_pos hTpos]; exact hT)
+      (by rw [abs_of_pos hTpos]) hx.1.le hx.2
+  have hFb : ∀ x ∈ Set.Ioc c d,
+      ‖invZeta ((x : ℂ) + ((-T : ℝ) : ℂ) * Complex.I)‖ ≤ Mh := by
+    intro x hx
+    have hne : ((x : ℂ) + ((-T : ℝ) : ℂ) * Complex.I) ≠ 1 := by
+      intro heq
+      have him := congrArg Complex.im heq
+      simp at him
+      linarith
+    rw [norm_invZeta_eq hne]
+    exact norm_inv_riemannZeta_le_routeT_contour hA
+      (by rw [abs_neg, abs_of_pos hTpos]; exact hT)
+      (by rw [abs_neg, abs_of_pos hTpos]) hx.1.le hx.2
+  have hFc : ∀ y ∈ Set.Icc (-T) T,
+      ‖invZeta ((c : ℂ) + (y : ℝ) * Complex.I)‖ ≤ Mc := by
+    intro y hy
+    have hyT : |y| ≤ T := abs_le.2 hy
+    by_cases hylow : |y| ≤ routeTInverseBaseHeight
+    · have hδle : δ ≤ δm := min_le_right _ _
+      have hcbox : 1 - δm ≤ c := by
+        have hshift := routeTContourShift_le_box_half A δ T
+        dsimp only [c, routeTContourLeft]
+        linarith
+      have hlow := hbdbox ((c : ℂ) + (y : ℝ) * Complex.I)
+        (by simpa using hcbox) (by simp; linarith) (by simpa using hylow)
+      exact hlow.trans (le_max_left _ _)
+    · have hybase : routeTInverseBaseHeight ≤ |y| := le_of_lt (lt_of_not_ge hylow)
+      have hne : ((c : ℂ) + (y : ℝ) * Complex.I) ≠ 1 := by
+        intro heq
+        have him := congrArg Complex.im heq
+        simp at him
+        subst y
+        simp at hylow
+        have hbase := routeTInverseBaseHeight_ge
+        linarith
+      rw [norm_invZeta_eq hne]
+      have hhigh := norm_inv_riemannZeta_le_routeT_contour hA hybase hyT
+        (le_refl c) hcd
+      exact hhigh.trans (le_max_right _ _)
+  have hFccont : ContinuousOn
+      (fun y : ℝ => invZeta ((c : ℂ) + (y : ℝ) * Complex.I))
+      (Set.uIcc (-T) T) :=
+    continuousOn_invZeta_left_line hc1 hd1.le hzf
+  exact norm_tsum_moebius_smoothWeight_le_sharp hN hH 0 hd1 hc0 hcd hT1
+    hMd hMh hMc hzf hFd hFt hFb hFc hFccont
+    (fun s hs hsd => hdec1 N H hN hH d s hs hsd)
+    (fun s hs hsd => hdec0 N H hN hH d s hs hsd)
+    (fun s hs hsc => hdec1 N H hN hH c s hs hsc)
+
+private theorem routeT_twist_abs_bounds
+    {τ U y : ℝ}
+    (hU : 0 ≤ U)
+    (hsep : routeTInverseBaseHeight + U ≤ |τ|)
+    (hy : |y| ≤ U) :
+    routeTInverseBaseHeight ≤ |y + τ| ∧ |y + τ| ≤ |τ| + U := by
+  have hrev : |τ| ≤ |y + τ| + |y| := by
+    calc
+      |τ| = |(y + τ) + (-y)| := by ring_nf
+      _ ≤ |y + τ| + |-y| := abs_add _ _
+      _ = |y + τ| + |y| := by rw [abs_neg]
+  have hupp : |y + τ| ≤ |τ| + U := by
+    calc
+      |y + τ| ≤ |y| + |τ| := abs_add _ _
+      _ ≤ U + |τ| := add_le_add_right hy _
+      _ = |τ| + U := by ring
+  constructor
+  · linarith
+  · exact hupp
+
+set_option maxHeartbeats 1200000 in
+/-- **Route-T four-edge Perron bound for twisted smoothed Möbius sums.**  If the contour
+half-height stays below the twist by the fixed Route-T base height, every shifted edge lies in the
+quantitative high-ordinate region.  Thus the same Route-T reciprocal bound controls all three
+non-right edges, with no compact reciprocal constant. -/
+theorem exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT :
+    ∃ (A C C' δ : ℝ), 0 ≤ C ∧ 0 ≤ C' ∧ 0 < δ ∧
+      ∀ N H τ U : ℝ, 0 < N → 0 < H → 1 ≤ U →
+      routeTInverseBaseHeight + U ≤ |τ| →
+      ‖(2 * Real.pi : ℝ) • (∑' n : ℕ,
+          moebiusTwist τ n *
+            ((GaloisForLFunctions.HTGeometry.smoothWeight N H (n : ℝ) : ℝ) : ℂ))‖
+        ≤ 2 * (routeTContourRightBound A (|τ| + U) *
+              (C / H ^ 2 * (N + H + 1) ^ 2 *
+                (N + H + 1) ^ routeTContourRight A (|τ| + U))) / U
+          + routeTContourEdgeBound A (|τ| + U) *
+              (C' / H ^ 1 * (N + H + 1) ^ 1 *
+                (N + H + 1) ^ routeTContourRight A (|τ| + U)) /
+              U ^ (0 + 1) *
+                (routeTContourRight A (|τ| + U) -
+                  routeTContourLeft A δ (|τ| + U))
+          + routeTContourEdgeBound A (|τ| + U) *
+              (C' / H ^ 1 * (N + H + 1) ^ 1 *
+                (N + H + 1) ^ routeTContourRight A (|τ| + U)) /
+              U ^ (0 + 1) *
+                (routeTContourRight A (|τ| + U) -
+                  routeTContourLeft A δ (|τ| + U))
+          + routeTContourEdgeBound A (|τ| + U) *
+              (2 * ((N + H) ^ routeTContourLeft A δ (|τ| + U) /
+                    routeTContourLeft A δ (|τ| + U))
+                + 2 * (C / H ^ 2 * (N + H + 1) ^ 2 *
+                    (N + H + 1) ^ routeTContourLeft A δ (|τ| + U)) ) := by
+  obtain ⟨A, hA⟩ := exists_pole_bound
+  obtain ⟨C, hC, hdec1⟩ := exists_bound_mellin_smoothWeight_uniform_upto 1
+  obtain ⟨C', hC', hdec0⟩ := exists_bound_mellin_smoothWeight_uniform_upto 0
+  obtain ⟨δ, hδ, hzfbox⟩ := exists_zero_free_box routeTInverseBaseHeight
+  refine ⟨A, C, C', δ, hC, hC', hδ, ?_⟩
+  intro N H τ U hN hH hU hsep
+  let S : ℝ := |τ| + U
+  let c : ℝ := routeTContourLeft A δ S
+  let d : ℝ := routeTContourRight A S
+  let Md : ℝ := routeTContourRightBound A S
+  let Mh : ℝ := routeTContourEdgeBound A S
+  have hU0 : 0 ≤ U := by linarith
+  have hS : routeTInverseBaseHeight ≤ S := by
+    dsimp only [S]
+    linarith [abs_nonneg τ]
+  have hc0 : 0 < c := by
+    simpa only [c] using routeTContourLeft_pos (A := A) (δ := δ) (T := S)
+  have hc1 : c ≤ 1 := by
+    simpa only [c] using routeTContourLeft_le_one (A := A) (T := S) hδ
+  have hd1 : 1 < d := by
+    simpa only [d] using routeTContourRight_gt_one A S
+  have hcd : c ≤ d := by
+    simpa only [c, d] using routeTContourLeft_le_right (A := A) (T := S) hδ
+  have hbox : ∀ s : ℂ, 1 - δ ≤ s.re → s.re ≤ 1 →
+      |s.im| ≤ routeTInverseBaseHeight → s ≠ 1 → riemannZeta s ≠ 0 := by
+    intro s hslo hshi him hs1
+    exact hzfbox s hslo hshi him hs1
+  have hzfS : ∀ s ∈ Set.uIcc c d ×ℂ Set.uIcc (-S) S,
+      s ≠ 1 → riemannZeta s ≠ 0 := by
+    simpa only [c, d] using routeT_contour_zero_free hA hδ hbox hS
+  have hzf : ∀ s ∈ Set.uIcc c d ×ℂ Set.uIcc (-(|τ| + U)) (|τ| + U),
+      s ≠ 1 → riemannZeta s ≠ 0 := by
+    simpa only [S] using hzfS
+  have hMd : 0 ≤ Md := by
+    dsimp only [Md, routeTContourRightBound]
+    have hD := routeTInverseDelta_pos A S
+    exact mul_nonneg (Real.exp_nonneg _) (by
+      have hinv : 0 < 1 / routeTInverseDelta A S := one_div_pos.mpr hD
+      linarith)
+  have hMh : 0 ≤ Mh := by
+    dsimp only [Mh, routeTContourEdgeBound]
+    exact Real.exp_nonneg _
+  have hFd : ∀ y : ℝ,
+      ‖invZeta ((d : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I)‖ ≤ Md := by
+    intro y
+    have harg :
+        ((d : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I) =
+          (d : ℂ) + ((y + τ : ℝ) : ℂ) * Complex.I := by
+      push_cast
+      ring
+    rw [harg]
+    have hright := norm_invZeta_right_le (d := d) (y := y + τ) hd1
+    have heq : Real.exp (22 / 4) * (1 + 1 / (d - 1)) = Md := by
+      dsimp only [d, Md, routeTContourRight, routeTContourRightBound]
+      congr 2
+      ring_nf
+    exact hright.trans_eq heq
+  have htop := routeT_twist_abs_bounds hU0 hsep
+    (show |U| ≤ U by rw [abs_of_nonneg hU0])
+  have hbot := routeT_twist_abs_bounds hU0 hsep
+    (show |-U| ≤ U by rw [abs_neg, abs_of_nonneg hU0])
+  have hFt : ∀ x ∈ Set.Ioc c d,
+      ‖invZeta ((x : ℂ) + ((U : ℝ) : ℂ) * Complex.I + (τ : ℂ) * Complex.I)‖ ≤ Mh := by
+    intro x hx
+    have harg :
+        ((x : ℂ) + ((U : ℝ) : ℂ) * Complex.I + (τ : ℂ) * Complex.I) =
+          (x : ℂ) + ((U + τ : ℝ) : ℂ) * Complex.I := by
+      push_cast
+      ring
+    rw [harg]
+    have hne : ((x : ℂ) + ((U + τ : ℝ) : ℂ) * Complex.I) ≠ 1 := by
+      intro heq
+      have him := congrArg Complex.im heq
+      simp at him
+      rw [him, abs_zero] at htop
+      linarith [routeTInverseBaseHeight_ge]
+    rw [norm_invZeta_eq hne]
+    exact norm_inv_riemannZeta_le_routeT_contour hA htop.1
+      (by simpa only [S] using htop.2) hx.1.le hx.2
+  have hFb : ∀ x ∈ Set.Ioc c d,
+      ‖invZeta ((x : ℂ) + ((-U : ℝ) : ℂ) * Complex.I + (τ : ℂ) * Complex.I)‖ ≤ Mh := by
+    intro x hx
+    have harg :
+        ((x : ℂ) + ((-U : ℝ) : ℂ) * Complex.I + (τ : ℂ) * Complex.I) =
+          (x : ℂ) + (((-U) + τ : ℝ) : ℂ) * Complex.I := by
+      push_cast
+      ring
+    rw [harg]
+    have hne : ((x : ℂ) + (((-U) + τ : ℝ) : ℂ) * Complex.I) ≠ 1 := by
+      intro heq
+      have him := congrArg Complex.im heq
+      simp at him
+      rw [him, abs_zero] at hbot
+      linarith [routeTInverseBaseHeight_ge]
+    rw [norm_invZeta_eq hne]
+    exact norm_inv_riemannZeta_le_routeT_contour hA hbot.1
+      (by simpa only [S] using hbot.2) hx.1.le hx.2
+  have hFc : ∀ y ∈ Set.Icc (-U) U,
+      ‖invZeta ((c : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I)‖ ≤ Mh := by
+    intro y hy
+    have hyabs : |y| ≤ U := abs_le.2 hy
+    have hyshift := routeT_twist_abs_bounds hU0 hsep hyabs
+    have harg :
+        ((c : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I) =
+          (c : ℂ) + ((y + τ : ℝ) : ℂ) * Complex.I := by
+      push_cast
+      ring
+    rw [harg]
+    have hne : ((c : ℂ) + ((y + τ : ℝ) : ℂ) * Complex.I) ≠ 1 := by
+      intro heq
+      have him := congrArg Complex.im heq
+      simp at him
+      rw [him, abs_zero] at hyshift
+      linarith [routeTInverseBaseHeight_ge]
+    rw [norm_invZeta_eq hne]
+    exact norm_inv_riemannZeta_le_routeT_contour hA hyshift.1
+      (by simpa only [S] using hyshift.2) (le_refl c) hcd
+  have hFccont : ContinuousOn
+      (fun y : ℝ => invZeta ((c : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I))
+      (Set.uIcc (-U) U) :=
+    continuousOn_invZetaTwist_left_line τ hU0 hc1 hd1.le hzf
+  exact norm_tsum_moebiusTwist_smoothWeight_le_sharp hN hH 0 τ hd1 hc0 hcd hU
+    hMd hMh hMh hzf hFd hFt hFb hFc hFccont
+    (fun s hs hsd => hdec1 N H hN hH d s hs hsd)
+    (fun s hs hsd => hdec0 N H hN hH d s hs hsd)
+    (fun s hs hsc => hdec1 N H hN hH c s hs hsc)
 
 end
 

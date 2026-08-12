@@ -1355,3 +1355,28 @@ even minors of this weight, which by the index shift are exactly the data (iii) 
 height": one verified scale converts the full criterion into a countable relative list living
 entirely on the truncated divisor — and the effective windows/masking/delay theory applies to
 the truncated world verbatim. Quantifies precisely what a height-`T` verification buys.
+
+**Step 46 status: [LEAN-PROVED].** Module `RHTower/XiResolventRelativeNodalCriterion.lean`,
+five theorems, all auditing to [propext, Classical.choice, Quot.sound], olean-built, wired:
+- `xiPolyMoment_mul_eq_tsum_subtype_of_kill` — the truncation identity: `(p·P)²`-weighted
+  moments are supported on the sub-δ copies (`tsum_subtype_eq_of_support_subset`).
+- `eval_norm_mul_kill_eq_zero_of_line` — the bootstrap no-go, formalized: under line placement
+  the supply's witness factor vanishes on every multiple of the killing polynomial.
+- `forall_criticalLine_of_partial_line_and_relative_nodal` — the relative descent (40b clone
+  with the extra `P` factor threaded through kill/nz; short-circuit `δ ≤ ‖u‖ → hline`).
+- `riemannHypothesis_of_partial_line_and_relative_nodal`.
+- **`riemannHypothesis_iff_partial_line_and_relative_nodal`** — THE ENDPOINT: for any scale δ
+  and any real `P` alive below scale, RH ⟺ line placement above δ ∧ the countable relative
+  nodal single-minor list at multiples of `P`. Forward via `xiSpectralPoint_real_of_rh`.
+
+The gap to RH is now formally factored, scale by scale: [verified height] ⟹ hline(δ);
+what remains is EXACTLY the relative list, which lives on the truncated divisor (truncation
+identity) and CANNOT be fed by the two-scale supply (no-go) — it requires new mechanisms
+native to the sub-δ world. All effective machinery (windows, masking, delay, surrogate)
+applies to the truncated world verbatim.
+
+**Next frontier.** (i) Run the effective theory inside the truncated world: the relative
+windows with the sub-δ mass (which the tail surrogate bounds by ray jets!) — the first
+quantitative handle on the relative list; (ii) certified numeric ray jets (Γ/ζ decomposition —
+digamma via mathlib log-convexity of Γ, ζ'/ζ via von Mangoldt Dirichlet series, heavy);
+(iii) is there a P-relative masking no-go (sharpness of the relative family)?

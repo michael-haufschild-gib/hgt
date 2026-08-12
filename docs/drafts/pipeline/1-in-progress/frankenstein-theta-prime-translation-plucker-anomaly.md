@@ -88,6 +88,25 @@ The last scalar is then proved to be the literal coefficient of every lower and 
 Pluecker coordinate. This is an operator/source provenance theorem, not another equality of zero
 sets.
 
+### C7 — reflection reciprocity plus two-sided contractivity
+
+**Proved reduction; fixed-metric realization failed.** Lean proves
+
+```text
+E_p(q) * E_p(lineConj(q)) = 1,
+E_p(q) <= 1 and E_p(lineConj(q)) <= 1  iff  Re(q)=1/2.
+```
+
+Thus reflection already supplies exact reciprocity, and a completed source theorem only needs
+two-sided contractivity at one prime. However `HedenmalmThetaTranslationWeightNoGo.lean` proves
+both positive and negative translations are unbounded in every fixed theta-source Hilbert fibre:
+the weight ratio has doubly exponential blow-up. Ordinary fixed-metric contractivity is therefore
+not the producer.
+
+**Positive survivor.** Required completion must be singular/moving-fibre or a pre-Hilbert
+Euler--Gamma Ward quotient. It must prove both contractive inequalities before specializing to the
+fixed theta metric; a bounded metric repair is formally excluded.
+
 ## Exact Lean certificates
 
 Modules:
@@ -103,6 +122,8 @@ Key theorems:
 - `thetaPrimeTranslation_dirichletExponent_xiSpectralPoint`
 - `sourceEvaluation_integerShift_xiSpectralPoint`
 - `frankensteinThetaPrimeTranslationEnergy_eq`
+- `frankensteinThetaPrimeTranslationEnergy_mul_lineConj`
+- `frankensteinThetaPrimeTranslation_both_energy_le_one_iff`
 - `frankensteinThetaPrimeTranslationImbalance_eq_sourceZeroHorizontalPrimeCarrier`
 - `frankensteinXiLowerPhysicalPluckerHilbertCarrier_apply_eq_primeTranslationImbalance`
 - `frankensteinXiUpperPhysicalPluckerHilbertCarrier_apply_eq_primeTranslationImbalance`
@@ -153,4 +174,4 @@ specialization, retaining forward and reciprocal orientations separately.
 
 ## Log
 
-- 2026-08-12 — C1--C4 falsified with positive survivors; C5 and C6 proved and exact-leaf audited.
+- 2026-08-12 — C1--C4 falsified with positive survivors; C5--C7 proved and exact-leaf audited.

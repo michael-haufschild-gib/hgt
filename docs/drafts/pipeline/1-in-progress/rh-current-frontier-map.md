@@ -8461,3 +8461,11 @@ specific completed pre-zero Ward identity: for one ordinary prime, prove
 Postulating parity-unitarity, source self-adjointness, Wold stationarity, or target bounded inversion
 would restate an RH-equivalent condition or violate P-G97. Further all-prime summability is not
 logically required: one retained prime already detects the line.
+
+The same module sharpens equality to a two-sided contractivity contract:
+`E_p(q)E_p(lineConj(q))=1`, and both energies are at most one exactly on the critical line. A
+fixed-theta-Hilbert implementation is ruled out by
+`HedenmalmThetaTranslationWeightNoGo.lean`: positive and negative shifts both have doubly
+exponentially unbounded weight ratios. Hence the live producer must establish two-sided
+contractivity in a singular moving fibre or completed pre-Hilbert Euler--Gamma Ward quotient,
+before descent to the fixed theta metric.

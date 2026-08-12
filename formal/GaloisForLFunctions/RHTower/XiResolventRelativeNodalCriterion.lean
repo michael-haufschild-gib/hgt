@@ -69,7 +69,6 @@ set_option maxHeartbeats 800000 in
 /-- **The relative nodal descent**: line placement above one scale plus the relative nodal
 single-minor data place every spectral point on the critical line. -/
 theorem forall_criticalLine_of_partial_line_and_relative_nodal {X δ : ℝ} (hX : 0 ≤ X)
-    (hδ : 0 < δ)
     (hline : ∀ q : XiZeroCopy, δ ≤ ‖xiResolventPoint X q‖ → (xiSpectralPoint q).im = 0)
     (P : Polynomial ℝ)
     (hPnz : ∀ q : XiZeroCopy, ‖xiResolventPoint X q‖ < δ →
@@ -89,7 +88,7 @@ theorem forall_criticalLine_of_partial_line_and_relative_nodal {X δ : ℝ} (hX 
       intro q hcard
       by_cases hqδ : δ ≤ ‖xiResolventPoint X q‖
       · exact hline q hqδ
-      push_neg at hqδ
+      rw [not_le] at hqδ
       have hqpos : 0 < ‖xiResolventPoint X q‖ :=
         norm_pos_iff.mpr (xiResolventPoint_ne_zero hX q)
       have hfin : {q' : XiZeroCopy |
@@ -210,7 +209,6 @@ the countable relative nodal single-minor data at multiples of the killing polyn
 the Riemann hypothesis — RH beyond any verified scale is exactly the truncated-spectrum
 list. -/
 theorem riemannHypothesis_of_partial_line_and_relative_nodal {X δ : ℝ} (hX : 0 ≤ X)
-    (hδ : 0 < δ)
     (hline : ∀ q : XiZeroCopy, δ ≤ ‖xiResolventPoint X q‖ → (xiSpectralPoint q).im = 0)
     (P : Polynomial ℝ)
     (hPnz : ∀ q : XiZeroCopy, ‖xiResolventPoint X q‖ < δ →
@@ -220,7 +218,7 @@ theorem riemannHypothesis_of_partial_line_and_relative_nodal {X δ : ℝ} (hX : 
         xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 2 X -
         xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 1 X ^ 2).re) :
     RiemannHypothesis := by
-  have hall := forall_criticalLine_of_partial_line_and_relative_nodal hX hδ hline P
+  have hall := forall_criticalLine_of_partial_line_and_relative_nodal hX hline P
     hPnz hdata
   by_contra hRH
   obtain ⟨q, hq⟩ := exists_spectralSq_im_pos_of_not_riemannHypothesis hRH
@@ -229,6 +227,39 @@ theorem riemannHypothesis_of_partial_line_and_relative_nodal {X δ : ℝ} (hX : 
     ring
   rw [h1] at hq
   exact lt_irrefl 0 hq
+
+end
+
+end RHTower
+namespace RHTower
+
+noncomputable section
+
+/-- **RH beyond any verified scale, as an equivalence**: for any scale `δ` and any killing
+polynomial alive below scale, the Riemann hypothesis is equivalent to line placement above the
+scale together with the countable relative nodal single-minor list. -/
+theorem riemannHypothesis_iff_partial_line_and_relative_nodal {X δ : ℝ} (hX : 0 ≤ X)
+    (P : Polynomial ℝ)
+    (hPnz : ∀ q : XiZeroCopy, ‖xiResolventPoint X q‖ < δ →
+      evalRealPolynomial P (xiResolventPoint X q) ≠ 0) :
+    RiemannHypothesis ↔
+      ((∀ q : XiZeroCopy, δ ≤ ‖xiResolventPoint X q‖ → (xiSpectralPoint q).im = 0) ∧
+        ∀ R : Finset ℝ, (∀ r ∈ R, 0 < r ∧ r ≤ 1) → ∀ m : ℕ,
+          0 ≤ (xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 0 X *
+            xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 2 X -
+            xiPolyMoment (Polynomial.X ^ m * (nodalPolynomial R * P)) 1 X ^ 2).re) := by
+  constructor
+  · intro hRH
+    constructor
+    · intro q _
+      obtain ⟨t, ht⟩ := xiSpectralPoint_real_of_rh hRH q
+      rw [ht, Complex.ofReal_im]
+    · intro R _ m
+      simpa only [Nat.zero_add] using
+        polyTuranMinor_re_nonneg_of_riemannHypothesis hRH hX
+          (Polynomial.X ^ m * (nodalPolynomial R * P)) 0
+  · rintro ⟨hline, hdata⟩
+    exact riemannHypothesis_of_partial_line_and_relative_nodal hX hline P hPnz hdata
 
 end
 
