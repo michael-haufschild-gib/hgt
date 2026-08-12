@@ -46,9 +46,14 @@ closes the missing localized-rational-function carrier.  It also constructs coef
 functoriality, proves identity/composition and Teichmüller naturality, proves preservation of
 monomorphisms, and gives the literal injective inclusion into `1+TA[[T]]`.  The ambient canonical
 big-Witt multiplication is now supplied over every commutative ring by
-`DeningerBigWittRing.lean`, including rings with nilpotents.  What remains is the distinct hard
-statement that the literal rational subcarrier is closed under that multiplication; this closure
-is logically required before Proposition 1.1 can be stated as a ring-localization isomorphism.
+`DeningerBigWittRing.lean`, including rings with nilpotents.
+`DeningerRationalWittCanonicalMultiplication.lean` now proves the formerly missing distinct hard
+statement: the literal rational subcarrier is closed under ambient multiplication over every
+commutative ring.  It constructs an explicit fixed-degree resultant product, descends its
+big-Witt compatibility through a universal integer polynomial ring, gives the cross-product
+fraction representative, and transfers the resulting image subring back to a literal
+commutative-ring carrier.  Proposition 1.1 is therefore no longer blocked on existence of generic
+rational-Witt multiplication; only its Teichmüller coefficient-localization theorem remains.
 The reduced-monoid-algebra comparison is supplied by the algebraically closed-field modules below.
 
 `DeningerRationalWittAlgebraicallyClosedPresentation.lean` now constructs the actual additive
@@ -310,3 +315,9 @@ the missing rational-Witt comparison is logically prior.
   nilpotence.  Proposition 1.1 now reduces to proving that normalized rational functions form a
   subring of this ambient construction and that coefficient localization is the corresponding
   Teichmüller localization.
+- 2026-08-12 — closed the first half of that reduction.  Fixed-degree resultants multiply
+  normalized polynomials without degree-specialization failure; algebraically closed splitting,
+  universal integer-polynomial descent, and coefficient evaluation prove compatibility over
+  arbitrary rings including nilpotent ones.  Cross-products close all normalized fractions, and
+  the literal carrier now has a functorial canonical `CommRing` embedded in `W(A)`.  Deninger
+  Proposition 1.1 is reduced to the remaining localization universal property.

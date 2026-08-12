@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionScaleCompletedArithmeticSource
 import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionDefectEnergy
-import GaloisForLFunctions.RHTower.XiShiftedHankelStrictFrontierCurvatureRenewal
+import GaloisForLFunctions.RHTower.XiShiftedTerminalFrontierZeroPhaseLaw
+import Mathlib.Analysis.SpecialFunctions.NonIntegrable
 
 /-!
 # Christoffel source walls at strict shifted-Xi frontiers
@@ -81,13 +82,30 @@ theorem xiShiftedCanonicalAdmissionAdaptiveShear_eq_norm_mul_jacobiEnergy
     xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho hH
   have hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
   rw [xiShiftedCanonicalAdmissionAdaptiveShear, HTGeometry.momentInner_def]
-  dsimp only
   rw [hP]
-  change HTGeometry.momentFunctional s
-      (HTGeometry.adaptiveOrthoSourcePolynomial s n) = _
+  have hshear :
+      (X * HTGeometry.monicOrtho s n) *
+          (X * xiShiftedBoundaryShiftedEuler 1 (HTGeometry.monicOrtho s n)) =
+        HTGeometry.adaptiveOrthoSourcePolynomial s n := by
+    simp only [xiShiftedBoundaryShiftedEuler,
+      HTGeometry.adaptiveOrthoSourcePolynomial, C_1, one_mul]
+  rw [hshear]
   rw [HTGeometry.momentFunctional_adaptiveOrthoSourcePolynomial_eq_jacobiEnergy_below
     hbelow hn le_rfl]
   rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm hH]
+
+/-- Head positivity alone identifies actual inverse-Hankel admission norm with monic orthogonal
+norm.  No positivity of either following Hankel extension is needed. -/
+theorem xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm_of_head_posDef
+    {y : ℝ} {n : ℕ}
+    (hH : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment y k).re) n).PosDef) :
+    xiShiftedCanonicalAdmissionNorm y n =
+      HTGeometry.monicOrthoNormSq
+        (fun k => (xiShiftedReciprocalMoment y k).re) n := by
+  rw [xiShiftedCanonicalAdmissionNorm,
+    xiShiftedCanonicalAdmissionPolynomial_eq_monicOrtho_of_hankelPosDef hH]
+  rfl
 
 /-- The previous Christoffel edge gives a strict division-free lower bound for actual source. -/
 theorem succ_mul_admissionNorm_mul_prevNormRatio_lt_adaptiveShear
@@ -113,8 +131,13 @@ theorem succ_mul_admissionNorm_mul_prevNormRatio_lt_adaptiveShear
   have hbeta : HTGeometry.monicOrthoBeta s n =
       xiShiftedCanonicalAdmissionNorm y n /
         xiShiftedCanonicalAdmissionNorm y (n - 1) := by
-    obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
-    rw [HTGeometry.monicOrthoBeta, hnorm, hprev]
+    rcases n with _ | m
+    · omega
+    · simp only [HTGeometry.monicOrthoBeta, Nat.succ_sub_one]
+      have hprev' : xiShiftedCanonicalAdmissionNorm y m =
+          HTGeometry.monicOrthoNormSq s m := by
+        simpa only [Nat.succ_sub_one] using hprev
+      rw [hnorm, hprev']
   have hnormPos : 0 < xiShiftedCanonicalAdmissionNorm y n := by
     rw [hnorm]
     exact HTGeometry.monicOrthoNorm_pos_below hbelow (by omega)
@@ -132,12 +155,16 @@ theorem continuousAt_xiShiftedCanonicalAdmissionNorm_of_det
   · have hzero : (fun v => xiShiftedCanonicalAdmissionNorm v 0) =
         (fun v => (xiShiftedReciprocalMoment v 0).re) := by
       funext v
-      simp [xiShiftedCanonicalAdmissionNorm,
-        HTGeometry.monicMomentAdmissionPolynomial,
-        HTGeometry.finiteHankelNullPolynomial,
-        HTGeometry.monicMomentAdmissionVector,
-        HTGeometry.monicMomentAdmissionCoefficients,
-        HTGeometry.momentInner_def, HTGeometry.momentFunctional]
+      let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment v k).re
+      have hP : HTGeometry.monicMomentAdmissionPolynomial s 0 = 1 := by
+        rw [HTGeometry.monicMomentAdmissionPolynomial_eq]
+        simp
+      rw [xiShiftedCanonicalAdmissionNorm]
+      change HTGeometry.momentInner s
+        (HTGeometry.monicMomentAdmissionPolynomial s 0)
+        (HTGeometry.monicMomentAdmissionPolynomial s 0) = _
+      rw [hP, HTGeometry.momentInner_def, one_mul,
+        HTGeometry.momentFunctional_one_eq]
     rw [hzero]
     exact (hasDerivAt_re_xiShiftedReciprocalMoment hy 0).continuousAt
   · exact (hasDerivAt_xiShiftedCanonicalAdmissionNorm_eq_normFlux_of_det
@@ -168,16 +195,24 @@ theorem xiShiftedCanonicalAdmissionVector_mem_ker_of_succ_posSemidef_not_posDef
     simp [d, hlast]
   have heq : d = HTGeometry.monicMomentAdmissionVector
       (fun k => (xiShiftedReciprocalMoment y k).re) n := by
+    have hmatrix : xiShiftedMomentHankelMatrix y n =
+        HTGeometry.momentHankelMatrix
+          (fun k => (xiShiftedReciprocalMoment y k).re) n := by
+      ext i j
+      rfl
     have hhead' : (HTGeometry.momentHankelMatrix
         (fun k => (xiShiftedReciprocalMoment y k).re) n).PosDef := by
-      simpa only [xiShiftedMomentHankelMatrix,
-        GaloisForLFunctions.HTGeometry.finiteHankelMatrix,
-        HTGeometry.momentHankelMatrix] using hhead
+      rw [← hmatrix]
+      exact hhead
+    have hmatrixNext : xiShiftedMomentHankelMatrix y (n + 1) =
+        HTGeometry.momentHankelMatrix
+          (fun k => (xiShiftedReciprocalMoment y k).re) (n + 1) := by
+      ext i j
+      rfl
     apply HTGeometry.eq_monicMomentAdmissionVector_of_kernel_of_last_eq_one
       (ne_of_gt hhead'.det_pos)
-    · simpa only [xiShiftedMomentHankelMatrix,
-        GaloisForLFunctions.HTGeometry.finiteHankelMatrix,
-        HTGeometry.momentHankelMatrix] using hd
+    · rw [← hmatrixNext]
+      exact hd
     · exact hdlast
   rwa [← heq]
 
@@ -195,6 +230,145 @@ theorem xiShiftedCanonicalAdmissionNorm_eq_zero_at_strict_frontier
     xiShiftedCanonicalAdmissionVector_mem_ker_of_succ_posSemidef_not_posDef
       hface.1 hface.2.1 hface.2.2
   exact xiShiftedCanonicalAdmissionNorm_eq_zero_of_flatFace hflat
+
+/-- Canonical monic admission minimizes the moment square among all monic polynomials of the same
+positive degree.  The proof is the exact admission-sensitive Pythagorean decomposition, not a
+fixed reporting functional. -/
+theorem xiShiftedCanonicalAdmissionNorm_le_momentInner_monic
+    {v : ℝ} {m : ℕ} (hm : 0 < m)
+    (hH : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment v k).re) (m + 1)).PosDef)
+    (A : Polynomial ℝ) (hA : A.Monic) (hAdeg : A.natDegree = m) :
+    xiShiftedCanonicalAdmissionNorm v m ≤
+      HTGeometry.momentInner
+        (fun k => (xiShiftedReciprocalMoment v k).re) A A := by
+  let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment v k).re
+  let P : Polynomial ℝ := HTGeometry.monicMomentAdmissionPolynomial s m
+  let R : Polynomial ℝ := A - P
+  have hhead : (HTGeometry.momentHankelMatrix s m).PosDef := by
+    simpa only [s] using xiShiftedMomentHankel_posDef_of_le (by omega) hH
+  have hPmonic : P.Monic := by
+    simpa only [P] using HTGeometry.monicMomentAdmissionPolynomial_monic s m
+  have hPdeg : P.natDegree = m := by
+    simpa only [P] using HTGeometry.monicMomentAdmissionPolynomial_natDegree s m
+  have hRdeg : R.degree < (m : WithBot ℕ) := by
+    have hdeg : A.degree = P.degree := by
+      rw [Polynomial.degree_eq_natDegree hA.ne_zero,
+        Polynomial.degree_eq_natDegree hPmonic.ne_zero, hAdeg, hPdeg]
+    have hlc : A.leadingCoeff = P.leadingCoeff := by
+      rw [hA.leadingCoeff, hPmonic.leadingCoeff]
+    have hlt := Polynomial.degree_sub_lt hdeg hA.ne_zero hlc
+    have hAdegree : A.degree = (m : WithBot ℕ) := by
+      rw [Polynomial.degree_eq_natDegree hA.ne_zero, hAdeg]
+    rw [hAdegree] at hlt
+    simpa only [R] using hlt
+  have hRnat : R.natDegree < m := by
+    by_cases hRzero : R = 0
+    · rw [hRzero, Polynomial.natDegree_zero]
+      exact hm
+    · exact (Polynomial.natDegree_lt_iff_degree_lt hRzero).mpr hRdeg
+  have horth : HTGeometry.momentInner s P R = 0 := by
+    exact HTGeometry.momentInner_monicMomentAdmission_lower_eq_zero
+      (ne_of_gt hhead.det_pos) hRnat
+  have hRnonneg : 0 ≤ HTGeometry.momentInner s R R := by
+    by_cases hRzero : R = 0
+    · simp [hRzero]
+    · exact (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH).self_pos
+        hRzero (hRnat.trans_le (Nat.le_add_right m 1)) |>.le
+  have hsplit : A = P + R := by
+    dsimp only [R]
+    ring
+  rw [xiShiftedCanonicalAdmissionNorm]
+  change HTGeometry.momentInner s P P ≤ HTGeometry.momentInner s A A
+  rw [hsplit, HTGeometry.momentInner_add_left,
+    HTGeometry.momentInner_add_right, HTGeometry.momentInner_add_right,
+    horth, HTGeometry.momentInner_comm s R P, horth]
+  linarith
+
+/-- A moving canonical monic admission is bounded above by the quadratic energy of any frozen
+canonical admission packet of the same degree. -/
+theorem xiShiftedCanonicalAdmissionNorm_le_frozenAdmissionQuadratic
+    {a v : ℝ} {m : ℕ} (hm : 0 < m)
+    (hH : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment v k).re) (m + 1)).PosDef) :
+    xiShiftedCanonicalAdmissionNorm v m ≤
+      xiShiftedMomentHankelQuadratic v (m + 1)
+        (HTGeometry.monicMomentAdmissionVector
+          (fun k => (xiShiftedReciprocalMoment a k).re) m) := by
+  let A := HTGeometry.monicMomentAdmissionPolynomial
+    (fun k => (xiShiftedReciprocalMoment a k).re) m
+  have hmin := xiShiftedCanonicalAdmissionNorm_le_momentInner_monic hm hH A
+    (HTGeometry.monicMomentAdmissionPolynomial_monic _ _)
+    (HTGeometry.monicMomentAdmissionPolynomial_natDegree _ _)
+  calc
+    xiShiftedCanonicalAdmissionNorm v m ≤
+        HTGeometry.momentInner
+          (fun k => (xiShiftedReciprocalMoment v k).re) A A := hmin
+    _ = xiShiftedMomentHankelQuadratic v (m + 1)
+        (HTGeometry.monicMomentAdmissionVector
+          (fun k => (xiShiftedReciprocalMoment a k).re) m) := by
+      have hmatrix : xiShiftedMomentHankelMatrix v (m + 1) =
+          HTGeometry.momentHankelMatrix
+            (fun k => (xiShiftedReciprocalMoment v k).re) (m + 1) := by
+        ext i j
+        rfl
+      rw [xiShiftedMomentHankelQuadratic, hmatrix]
+      simpa only [A, HTGeometry.monicMomentAdmissionPolynomial,
+        HTGeometry.finiteHankelNullPolynomial] using
+        HTGeometry.momentInner_ofFn_ofFn
+          (fun k => (xiShiftedReciprocalMoment v k).re) (m + 1)
+          (HTGeometry.monicMomentAdmissionVector
+            (fun k => (xiShiftedReciprocalMoment a k).re) m)
+          (HTGeometry.monicMomentAdmissionVector
+            (fun k => (xiShiftedReciprocalMoment a k).re) m)
+
+/-- **Linear admission collapse at a strict frontier.**  Freeze the terminal null flag at the
+frontier.  Canonical minimization bounds the moving next norm by that fixed packet, while the
+actual integral Lipschitz theorem bounds the packet by its explicit global weight times distance
+from the frontier. -/
+theorem xiShiftedCanonicalAdmissionNorm_le_lipschitzWeight_mul_sub_at_strict_frontier
+    {n : ℕ} (hne : (xiShiftedHigherBlockFailureSet n).Nonempty)
+    (hstrict : xiShiftedHigherBlockTerminalFrontier n <
+      xiShiftedHigherBlockTerminalFrontier (n + 1))
+    {v : ℝ} (hv : xiShiftedHigherBlockTerminalFrontier (n + 1) < v) :
+    let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
+    let c := HTGeometry.monicMomentAdmissionVector
+      (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)
+    xiShiftedCanonicalAdmissionNorm v (n + 2) ≤
+      xiShiftedMomentHankelQuadraticLipschitzWeight c * (v - y) := by
+  let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
+  let c := HTGeometry.monicMomentAdmissionVector
+    (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)
+  have hy : 0 < y := by
+    obtain ⟨u, hu⟩ := hne
+    have hule := le_xiShiftedHigherBlockTerminalFrontier_of_mem hu
+    exact lt_of_le_of_lt (hu.1.trans hule) hstrict
+  have hv0 : 0 ≤ v := (hy.trans hv).le
+  have hH : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment v k).re) (n + 3)).PosDef := by
+    simpa only [y, Nat.add_assoc] using
+      (xiShiftedHigherBlock_posDef_of_terminalFrontier_lt
+        (n := n + 1) hv0 hv)
+  have hmin : xiShiftedCanonicalAdmissionNorm v (n + 2) ≤
+      xiShiftedMomentHankelQuadratic v (n + 3) c := by
+    simpa only [c, y, Nat.add_assoc] using
+      (xiShiftedCanonicalAdmissionNorm_le_frozenAdmissionQuadratic
+        (a := y) (v := v) (m := n + 2) (by omega) hH)
+  have hface := xiShiftedHigherBlockTerminalFrontier_strict_step_posSemidef hne hstrict
+  dsimp only at hface
+  have hflat :=
+    xiShiftedCanonicalAdmissionVector_mem_ker_of_succ_posSemidef_not_posDef
+      hface.1 hface.2.1 hface.2.2
+  have hzero : xiShiftedMomentHankelQuadratic y (n + 3) c = 0 := by
+    rw [xiShiftedMomentHankelQuadratic]
+    change c ⬝ᵥ (xiShiftedMomentHankelMatrix y (n + 2 + 1) *ᵥ c) = 0
+    rw [hflat, dotProduct_zero]
+  have hLip := abs_xiShiftedMomentHankelQuadratic_sub_le hy hv.le c
+  have hfixed : xiShiftedMomentHankelQuadratic v (n + 3) c ≤
+      xiShiftedMomentHankelQuadraticLipschitzWeight c * (v - y) := by
+    rw [hzero, sub_zero] at hLip
+    exact (le_abs_self _).trans hLip
+  exact hmin.trans hfixed
 
 /-- Previous adaptive source remains strictly positive at an occupied strict frontier. -/
 theorem xiShiftedCanonicalAdmissionAdaptiveShear_pos_at_strict_frontier
@@ -225,7 +399,7 @@ theorem xiShiftedCanonicalAdmissionAdaptiveShear_pos_at_strict_frontier
     have h := continuousAt_xiShiftedCanonicalAdmissionAdaptiveShearMoment
       hy d (ne_of_gt hdH.det_pos)
     simpa only [source, xiShiftedCanonicalAdmissionAdaptiveShear,
-      HTGeometry.momentInner_def] using h
+      HTGeometry.momentInner_def, xiShiftedBoundaryAdaptiveShearPolynomial] using h
   have hnormCont : ContinuousAt
       (fun v => xiShiftedCanonicalAdmissionNorm v d) y :=
     continuousAt_xiShiftedCanonicalAdmissionNorm_of_det
@@ -235,17 +409,43 @@ theorem xiShiftedCanonicalAdmissionAdaptiveShear_pos_at_strict_frontier
     continuousAt_xiShiftedCanonicalAdmissionNorm_of_det
       hy (d - 1) (ne_of_gt hprevH.det_pos)
   have hprevPos : 0 < xiShiftedCanonicalAdmissionNorm y (d - 1) := by
-    rw [xiShiftedCanonicalAdmissionNorm_eq_hankelQuadratic]
-    exact hprevNormH.dotProduct_mulVec_pos (by
-      intro hz
-      have := congrFun hz (Fin.last (d - 1))
-      simpa only [HTGeometry.monicMomentAdmissionVector_last, Pi.zero_apply] using this)
+    have hmatrix : xiShiftedMomentHankelMatrix y d =
+        HTGeometry.momentHankelMatrix
+          (fun k => (xiShiftedReciprocalMoment y k).re) d := by
+      ext i j
+      rfl
+    have hHd : (HTGeometry.momentHankelMatrix
+        (fun k => (xiShiftedReciprocalMoment y k).re) d).PosDef := by
+      rw [← hmatrix]
+      exact hprevNormH
+    have hHhead : (HTGeometry.momentHankelMatrix
+        (fun k => (xiShiftedReciprocalMoment y k).re) (d - 1)).PosDef :=
+      xiShiftedMomentHankel_posDef_of_le (by omega) hHd
+    rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm_of_head_posDef hHhead]
+    exact HTGeometry.monicOrthoNorm_pos_below
+      (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hHd) (by omega)
   have hnormPos : 0 < xiShiftedCanonicalAdmissionNorm y d := by
-    rw [xiShiftedCanonicalAdmissionNorm_eq_hankelQuadratic]
-    exact hface.1.dotProduct_mulVec_pos (by
-      intro hz
-      have := congrFun hz (Fin.last d)
-      simpa only [HTGeometry.monicMomentAdmissionVector_last, Pi.zero_apply] using this)
+    have hmatrixD : xiShiftedMomentHankelMatrix y d =
+        HTGeometry.momentHankelMatrix
+          (fun k => (xiShiftedReciprocalMoment y k).re) d := by
+      ext i j
+      rfl
+    have hHd : (HTGeometry.momentHankelMatrix
+        (fun k => (xiShiftedReciprocalMoment y k).re) d).PosDef := by
+      rw [← hmatrixD]
+      exact hdH
+    have hmatrixNext : xiShiftedMomentHankelMatrix y (d + 1) =
+        HTGeometry.momentHankelMatrix
+          (fun k => (xiShiftedReciprocalMoment y k).re) (d + 1) := by
+      ext i j
+      rfl
+    have hHnext : (HTGeometry.momentHankelMatrix
+        (fun k => (xiShiftedReciprocalMoment y k).re) (d + 1)).PosDef := by
+      rw [← hmatrixNext]
+      simpa only [d] using hface.1
+    rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm_of_head_posDef hHd]
+    exact HTGeometry.monicOrthoNorm_pos_below
+      (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hHnext) (by omega)
   have hlowerPos : 0 < lower y := by
     dsimp only [lower]
     exact mul_pos (mul_pos (by positivity) hnormPos)
@@ -307,7 +507,7 @@ theorem tendsto_xiShiftedCanonicalAdmissionChristoffelSourceWall_at_strict_front
     have h := continuousAt_xiShiftedCanonicalAdmissionAdaptiveShearMoment
       hy d (ne_of_gt hdH.det_pos)
     simpa only [source, xiShiftedCanonicalAdmissionAdaptiveShear,
-      HTGeometry.momentInner_def] using h
+      HTGeometry.momentInner_def, xiShiftedBoundaryAdaptiveShearPolynomial] using h
   have hnextCont : ContinuousAt nextNorm y := by
     have hdet : (xiShiftedMomentHankelMatrix y (d + 1)).det ≠ 0 := by
       simpa only [d] using ne_of_gt hface.1.det_pos
@@ -326,7 +526,10 @@ theorem tendsto_xiShiftedCanonicalAdmissionChristoffelSourceWall_at_strict_front
         (xiShiftedHigherBlock_posDef_of_terminalFrontier_lt
           (n := n + 1) hv0 hv)
     dsimp only [nextNorm]
-    rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm hH]
+    have hhead : (HTGeometry.momentHankelMatrix
+        (fun k => (xiShiftedReciprocalMoment v k).re) (d + 1)).PosDef :=
+      xiShiftedMomentHankel_posDef_of_le (by omega) hH
+    rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm_of_head_posDef hhead]
     exact HTGeometry.monicOrthoNorm_pos_below
       (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH) (by omega)
   have hnextWithin : Tendsto nextNorm (nhdsWithin y (Ioi y))
@@ -368,6 +571,58 @@ theorem two_mul_xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_arithmeticSo
     (2 * xiShiftedCanonicalAdmissionAdaptiveShear (w ^ 2) n) /
       (16 * xiShiftedCanonicalAdmissionNorm (w ^ 2) (n + 1))
   ring
+
+/-- False-RH phase expressed entirely by cofinal actual-frontier source walls. -/
+def XiShiftedCofinalChristoffelSourceWallPhase : Prop :=
+  ∀ A : ℝ, ∃ n : ℕ,
+    (xiShiftedHigherBlockFailureSet n).Nonempty ∧
+      A < xiShiftedHigherBlockTerminalFrontier n ∧
+      xiShiftedHigherBlockTerminalFrontier n <
+        xiShiftedHigherBlockTerminalFrontier (n + 1) ∧
+      Tendsto
+        (fun y => xiShiftedCanonicalAdmissionChristoffelSourceWall y (n + 1))
+        (nhdsWithin (xiShiftedHigherBlockTerminalFrontier (n + 1))
+          (Ioi (xiShiftedHigherBlockTerminalFrontier (n + 1)))) atTop
+
+/-- False RH forces cofinally many actual strict-frontier Christoffel source walls. -/
+theorem xiShiftedCofinalChristoffelSourceWallPhase_of_not_riemannHypothesis
+    (hnot : ¬RiemannHypothesis) :
+    XiShiftedCofinalChristoffelSourceWallPhase := by
+  intro A
+  obtain ⟨n, hne, hA, hstrict, _⟩ :=
+    exists_cofinal_sourceAdaptive_frontierCertificate_of_not_riemannHypothesis hnot A
+  exact ⟨n, hne, hA, hstrict,
+    tendsto_xiShiftedCanonicalAdmissionChristoffelSourceWall_at_strict_frontier
+      hne hstrict⟩
+
+/-- RH excludes the wall phase because every positive-definite failure set is empty. -/
+theorem not_xiShiftedCofinalChristoffelSourceWallPhase_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    ¬XiShiftedCofinalChristoffelSourceWallPhase := by
+  intro hphase
+  obtain ⟨n, hne, _⟩ := hphase 0
+  rw [xiShiftedHigherBlockFailureSet_eq_empty_of_riemannHypothesis hRH n] at hne
+  exact Set.not_nonempty_empty hne
+
+/-- **Closed strict-frontier source-wall phase law.**  RH is exactly absence of the cofinal phase
+of one-sided infinite, admission-sensitive arithmetic source walls.  This theorem has no premises;
+all source formation, frontier admission, and cofinality are internal. -/
+theorem riemannHypothesis_iff_not_xiShiftedCofinalChristoffelSourceWallPhase :
+    RiemannHypothesis ↔ ¬XiShiftedCofinalChristoffelSourceWallPhase := by
+  constructor
+  · exact not_xiShiftedCofinalChristoffelSourceWallPhase_of_riemannHypothesis
+  · intro hnotPhase
+    by_contra hnotRH
+    exact hnotPhase
+      (xiShiftedCofinalChristoffelSourceWallPhase_of_not_riemannHypothesis hnotRH)
+
+/-- Unconditional excluded-phase dichotomy in source-wall coordinates. -/
+theorem riemannHypothesis_or_xiShiftedCofinalChristoffelSourceWallPhase :
+    RiemannHypothesis ∨ XiShiftedCofinalChristoffelSourceWallPhase := by
+  by_cases hRH : RiemannHypothesis
+  · exact Or.inl hRH
+  · exact Or.inr
+      (xiShiftedCofinalChristoffelSourceWallPhase_of_not_riemannHypothesis hRH)
 
 end
 

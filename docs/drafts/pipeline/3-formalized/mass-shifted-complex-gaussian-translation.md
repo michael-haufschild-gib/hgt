@@ -1,9 +1,9 @@
 # Mass-shifted complex Gaussian translation
 
 - **ID:** `mass-shifted-complex-gaussian-translation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Route:** U, C43-Y / PDH.9
-- **Scientific status:** `[PAPER PROVEN] [UNCONDITIONAL] [LEAN PENDING] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER PROVEN] [LEAN FORMALIZED] [UNCONDITIONAL] [NOVELTY UNVERIFIED]`
 - **Depends on:** `mass-shifted-hermite-derivative-energy`
 
 ## Frozen theorem CGT.1
@@ -119,3 +119,26 @@ standalone inequality.
 CGT.1 closes the coefficient-uniform complex-translation component. C43-Y still needs literal Lean
 proofs of completed-square contour translation, Fourier normalization, prime-shell summation,
 Mehler/projector concentration, and completed-source Gamma/polar assembly.
+
+## Lean realization and audit
+
+Formal module:
+`GaloisForLFunctions.HTGeometry.ComplexGaussianPolynomialTranslation`.
+
+Closed capstones:
+
+- `norm_complexTranslatedPolyGauss_le`
+- `norm_complexTranslatedEvenPolyGauss_le`
+
+The module also closes the finite Hasse--Taylor identity and the iterated derivative and factorial
+norm bounds used by the capstones. It is imported by the `HTGeometry` umbrella.
+
+Audit on 12 August 2026:
+
+- `lake build GaloisForLFunctions.HTGeometry.ComplexGaussianPolynomialTranslation`: passed
+  (`3140/3140` jobs);
+- forbidden declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`;
+- `#print axioms` for both capstones: only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This formalization does not claim the Fourier contour shift or the prime--Gamma estimate. Those are
+the next mathematical obligations and remain open.

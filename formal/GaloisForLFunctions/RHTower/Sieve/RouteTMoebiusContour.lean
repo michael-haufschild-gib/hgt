@@ -386,19 +386,18 @@ theorem exists_norm_tsum_moebius_smoothWeight_le_routeT :
 
 private theorem routeT_twist_abs_bounds
     {τ U y : ℝ}
-    (hU : 0 ≤ U)
     (hsep : routeTInverseBaseHeight + U ≤ |τ|)
     (hy : |y| ≤ U) :
     routeTInverseBaseHeight ≤ |y + τ| ∧ |y + τ| ≤ |τ| + U := by
   have hrev : |τ| ≤ |y + τ| + |y| := by
     calc
       |τ| = |(y + τ) + (-y)| := by ring_nf
-      _ ≤ |y + τ| + |-y| := abs_add _ _
+      _ ≤ |y + τ| + |-y| := abs_add_le _ _
       _ = |y + τ| + |y| := by rw [abs_neg]
   have hupp : |y + τ| ≤ |τ| + U := by
     calc
-      |y + τ| ≤ |y| + |τ| := abs_add _ _
-      _ ≤ U + |τ| := add_le_add_right hy _
+      |y + τ| ≤ |y| + |τ| := abs_add_le _ _
+      _ ≤ U + |τ| := add_le_add hy le_rfl
       _ = |τ| + U := by ring
   constructor
   · linarith
@@ -493,9 +492,9 @@ theorem exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT :
       congr 2
       ring_nf
     exact hright.trans_eq heq
-  have htop := routeT_twist_abs_bounds hU0 hsep
+  have htop := routeT_twist_abs_bounds hsep
     (show |U| ≤ U by rw [abs_of_nonneg hU0])
-  have hbot := routeT_twist_abs_bounds hU0 hsep
+  have hbot := routeT_twist_abs_bounds hsep
     (show |-U| ≤ U by rw [abs_neg, abs_of_nonneg hU0])
   have hFt : ∀ x ∈ Set.Ioc c d,
       ‖invZeta ((x : ℂ) + ((U : ℝ) : ℂ) * Complex.I + (τ : ℂ) * Complex.I)‖ ≤ Mh := by
@@ -537,7 +536,7 @@ theorem exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT :
       ‖invZeta ((c : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I)‖ ≤ Mh := by
     intro y hy
     have hyabs : |y| ≤ U := abs_le.2 hy
-    have hyshift := routeT_twist_abs_bounds hU0 hsep hyabs
+    have hyshift := routeT_twist_abs_bounds hsep hyabs
     have harg :
         ((c : ℂ) + (y : ℝ) * Complex.I + (τ : ℂ) * Complex.I) =
           (c : ℂ) + ((y + τ : ℝ) : ℂ) * Complex.I := by

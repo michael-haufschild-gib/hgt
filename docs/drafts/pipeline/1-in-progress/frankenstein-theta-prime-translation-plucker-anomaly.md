@@ -175,3 +175,41 @@ specialization, retaining forward and reciprocal orientations separately.
 ## Log
 
 - 2026-08-12 — C1--C4 falsified with positive survivors; C5--C7 proved and exact-leaf audited.
+
+### C8 — prime translation gives both divisor orientations one common forcing vector
+
+**Conjecture, paper-proved; Lean pending.**  Let
+
+```text
+f_z = sourceModeF(thetaSource,z),
+B   = sourceInverse(thetaSource),
+T_n = normalized integer translation,
+r_n = integerAnomaly(thetaSource,n).
+```
+
+For every theta-source zero `z` in the source strip,
+
+```text
+(B + z⁻¹) T_n f_z = r_n.                         (CF)
+```
+
+Proof: the exact translation commutator is
+
+```text
+B(T_n f) - n^(-1/2) (Bf)(·+log n)
+  = (integral f / thetaSource.mass) r_n.
+```
+
+The canonical divisor mode has `B f_z = -z⁻¹ f_z` and
+`integral f_z = thetaSource.mass`; substitution gives `(CF)` pointwise.  No scalar is chosen from
+the zero.  In particular, `z = xiSpectralPoint(q)` and its line-reflected copy have the literal
+same right-hand side, retaining divisor multiplicity and integer/prime label.  For every prime
+`p`, `r_p` is nonzero because the integer anomaly vanishes identically iff `p = 1`.
+
+**Hostile verdict.**  Shared forcing does not by itself identify the two responses: the two
+resolvents use different spectral scalars `-z⁻¹` and `-(z#)⁻¹`.  The positive survivor is sharper:
+the missing producer is response uniqueness for one universal, nonzero, source-positive interval
+cocycle—not another reflection law or target carrier.  Any theorem identifying the two translated
+responses now forces equality of the spectral scalars once nonvanishing is supplied, hence the
+critical line.  Lean formalization must expose both the common-forcing equality and its exact
+nonvanishing boundary.
