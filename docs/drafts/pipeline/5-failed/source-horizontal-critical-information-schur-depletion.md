@@ -38,11 +38,27 @@ Stronger rational contraction estimates prove their raw mass exceeds `63/1000`, 
 mass alone exceeds `29/625`, while the whole completed seam mass is below `29/625`. Therefore even
 this coefficient-faithful first negative channel leaves too much central mass.
 
+## Measure-level positive survivor
+
+`GammaSewnMobiusApertureStokesCriticalInformationCarrierNoGo.lean` upgrades the scalar identity to
+an exact equality of finite compact positive measures on the unchanged squared Stokes nodes:
+
+```text
+critical squared carrier
+  = information-depleted carrier + critical information carrier.
+```
+
+It proves finiteness, compact support, integrability, and exact moments of both summands. Zeroth
+mass decomposes exactly, the information coenergy is strictly smaller than the raw mass excess,
+and every further additive carrier correction matching the completed seam must have negative total
+mass. Thus the no-go is measure-level, not an artifact of testing only a scalar total.
+
 ## Open core
 
-Closed. `GammaSewnMobiusApertureStokesCriticalInformationSchurDepletion.lean` proves both
-falsifiers and the positive survivor. Any successful completion needs another strictly negative
-central contribution beyond first information depletion. Fitted scaling remains forbidden.
+Closed. `GammaSewnMobiusApertureStokesCriticalInformationSchurDepletion.lean` and
+`GammaSewnMobiusApertureStokesCriticalInformationCarrierNoGo.lean` prove both falsifiers and the
+measure-level positive survivor. Any successful completion needs another strictly negative central
+contribution beyond first information depletion. Fitted scaling remains forbidden.
 
 Next route: non-diagonal Gamma Schur/Feshbach coupling acting before scalar label compression;
 coefficientwise first-information subtraction is now a fully retired producer class.

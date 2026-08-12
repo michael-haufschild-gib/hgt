@@ -452,16 +452,41 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
   `deningerCofinalTrace_quotient_injective` give `(10)` — cross-prime traces are conservative
   modulo any subspace, exactly the argument the card gives.
 
-- **Still not formalized, and the reason is specific.**  Only two items remain.
-  1. §3's *corollary* "the range is not closed".  The card derives it from the **open mapping
-     theorem for Fréchet spaces**: a closed range would make `𝒫_Q : K_p → \operatorname{range}`
-     a continuous bijection of Fréchet spaces, hence a homeomorphism, contradicting
-     `deningerPeriodization_not_isEmbedding`.  mathlib has the open mapping theorem only for Banach
-     spaces, so this needs the Fréchet version built first.  The primary statement it is a
-     corollary of is proved.
-  2. §5's transport corollary `(20)`--`(25)`, which needs
-     `DeningerMeyerHalfDensityL1Completion`.  The card itself records this as transport, not as an
-     independent novelty claim.
+- **§3's corollary "the range is not closed" is now proved unconditionally.**  mathlib has the open
+  mapping theorem only for Banach spaces, so the Fréchet version was built first, in
+  `formal/GaloisForLFunctions/HTGeometry/`: `FrechetOpenMappingBaire.lean`,
+  `FrechetHalvingBasis.lean`, `FrechetOpenMappingStep.lean`, `FrechetTelescoping.lean`,
+  `FrechetCauchy.lean`, `FrechetOpenMapping.lean` (**`isOpenMap_of_surjective`**,
+  `continuous_symm_of_continuous`) and `FrechetClosedRange.lean`
+  (**`not_isClosed_range_of_not_continuous_symm`**).  The Baire step gives
+  `closure (f '' U) ∈ 𝓝 0`; the closure is removed by writing a point of it as the sum of a series
+  whose terms lie in successively smaller members of a halving basis of balanced neighbourhoods.
+  The two Deninger spaces were then given the structure the theorem needs:
+  * `DeningerCircleComplete.lean`, `DeningerCircleCompleteSpace.lean` and
+    `DeningerMeyerComplete.lean`, `DeningerMeyerCompleteSpace.lean` prove
+    **`DeningerCircle.instCompleteSpace`** and **`DeningerMeyerSource.instCompleteSpace`**, on the
+    iterated-derivative uniform-limit theorem `HTGeometry/SmoothUniformLimit.lean`
+    (**`contDiff_of_tendstoUniformly_iteratedDeriv`**) and `HTGeometry/PeriodicUniformComplete.lean`;
+  * `DeningerFrechetInstances.lean` gives both spaces countably generated uniformities, hence
+    **`IsCompletelyPseudoMetrizableSpace`**;
+  * `DeningerCircleSeparating.lean` proves the `C^r` family **separates points**
+    (`DeningerCircle.seminorms_separating`), hence `T₂`, hence
+    **`deningerPeriodizationLM_isClosed_ker`**: `K_p` is closed, so it is itself a Fréchet space;
+  * `DeningerTomographyProduct.lean` assembles **`deningerTomographyLM`** — `(3)` between the
+    *topologised* spaces — with `deningerTomographyLM_continuous`, `deningerTomographyLM_injective`,
+    and **`deningerEscapeSource_mem_ker`**: the escape family stays inside `K_p`, because
+    periodization turns the translation into a rotation.
+  The conclusion is `DeningerTomographyRangeNotClosed.lean`:
+  **`deningerTomography_not_continuous_symm`** (the tomogram of the escape family tends to `0` in
+  the countable product while its Meyer seminorm `q_{1,0}` stays above `‖ψ(0)‖ > 0`) and
+  **`deningerTomography_not_isClosed_range`** — for every infinite prime set `Q` and every auxiliary
+  period `p`, the range of `𝒫_Q : K_p → ∏_{q ∈ Q} C^∞(ℝ/L_qℤ)` **is not closed**.  That is `(11)`.
+- **Still not formalized, and the reason is specific.**  One item remains: §5's transport corollary
+  `(20)`--`(25)`.  The corpus's half-density seminorm `p_{1/2}` and its quotient `p̄_{1/2}` live on
+  `DeningerMeyerStrongLogTarget` (`DeningerMeyerHalfDensityL1Completion.lean`), not on the
+  Schwartz-based `DeningerExpSchwartz` used by the periodization layer, so the transport needs the
+  Euler defect `Δ_p` and its Green inverse built on the strong-log model.  The card itself records
+  this as transport, not as an independent novelty claim.
 - Superseded note, kept for the record: `log q → ∞` along an infinite prime set,
   so the zeros `2π/log q` are distinct and accumulate at `0`; the identity theorem for the entire
   `ĥ` then gives `ĥ ≡ 0`, and matching `ĥ(2πξ)` with mathlib's `𝓕 h ξ` gives `h = 0` by Fourier
@@ -473,13 +498,17 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
 
 - [x] 0 → 1 in-progress: tomography and instability falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed proofs `(5)`--`(25)`
-- [ ] 2 → 3 formalized: `(1)`, `(2)`, `(7)`, `(8)`'s `K_p = Δ_p H_-`, injectivity and
-  commutation of the defects proved unconditionally; `(5)`/`(6)` need an entire Fourier--Laplace
-  transform for `H_-` (see *Lean status*)
+- [ ] 2 → 3 formalized: `(1)`, `(2)`, `(5)`, `(6)`, `(7)`, `(8)`, `(9)`, `(10)`, `(11)`,
+  `(12)`--`(14)` and `(16)`--`(17)` proved unconditionally, including the Fréchet open mapping
+  theorem the non-closed range needs; only §5's transport `(20)`--`(25)` is outstanding
+  (see *Lean status*)
 - [ ] 3 → 4 publication-ready
 
 ## Log
 
+- 2026-08-12 — Built the Fréchet open mapping theorem and the completeness, metrizability and
+  Hausdorff structure of both Deninger spaces, then proved §3's corollary: the cofinal prime
+  tomography restricted to `K_p` has non-closed range.  Only §5's transport remains.
 - 2026-08-08 — Proved cofinal prime-periodization tomography, finite-family failure, ordinary
   product non-strictness, and compact-orbit Tate-weight obstruction. Corpus audit identified the
   existing half-density seminorm, localized it exactly by the Euler Green inverse, and moved the

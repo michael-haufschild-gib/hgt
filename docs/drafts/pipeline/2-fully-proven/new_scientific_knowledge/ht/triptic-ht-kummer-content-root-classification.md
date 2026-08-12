@@ -648,3 +648,20 @@ into `ℤ[G]`, `G = ℂ/H₃`, so that `hasSourceRootModuloKernel_iff_content_dv
 verbatim.  Note that the class is a group only at germ level — as functions, `Y · Y⁻¹ = 1` fails at
 the zeros — so the packaging is over `meroField ℂ`, where every element is by construction a
 fraction of entire germs.
+
+## Lean progress — the charge under powers and quotients
+
+`GaloisForLFunctions/HTGeometry/TripticGammaDivisorRealization.lean` (wired, axiom-clean):
+
+    meromorphicOn_pow, meromorphicOrderAt_pow_ne_top
+    shiftOrder_pow                 the shift order of a power is the multiple
+    shiftOrder_div                 the shift order of a quotient is the difference
+    FiniteShiftSupport             finitely many nonzero shift orders along an orbit
+    finiteShiftSupport_mul, finiteShiftSupport_pow
+    tripticOrbitCharge_pow         **`D_{Y^n} = n·D_Y`**
+    tripticOrbitCharge_div         **`D_{Y₁/Y₂} = D_{Y₁} - D_{Y₂}`**
+
+These are the "integer powers provide signed multiplicities" and "quotients subtract" steps of the
+card's surjectivity argument, in the integral channel.  With `tripticOrbitCharge_mul` they give the
+charge of an arbitrary finite product of translated gamma functions with integer exponents, written
+as a quotient of two natural-power products.

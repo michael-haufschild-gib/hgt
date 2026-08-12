@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiHlogDenseFormCore
 import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 open MeasureTheory Set Filter Topology
 open scoped ENNReal
@@ -158,6 +159,37 @@ theorem measurable_testEnvelope (n : ℕ) (M : ℝ) : Measurable (testEnvelope n
   unfold testEnvelope
   fun_prop
 
+theorem testEnvelope_nonneg (n : ℕ) (M ξ : ℝ) : 0 ≤ testEnvelope n M ξ := by
+  unfold testEnvelope
+  exact mul_nonneg (Real.log_nonneg (by linarith [abs_nonneg ξ])) (sq_nonneg _)
+
+theorem integrable_testEnvelope (n : ℕ) (M : ℝ) : Integrable (testEnvelope n M) := by
+  refine Integrable.mono' (testDom_integrable M)
+    (measurable_testEnvelope n M).aestronglyMeasurable ?_
+  exact ae_of_all _ (norm_testEnvelope_le_testDom n M)
+
+/-- The literal logarithmic weight of Suzuki's form is controlled by the envelope weight.  The
+constant is immaterial; retaining an explicit constant makes the later dominated-convergence
+argument quantitative and assumption-free. -/
+theorem suzukiLogWeight_le_three_mul_log_three_add_abs (ξ : ℝ) :
+    suzukiLogWeight ξ ≤ 3 * Real.log (3 + |ξ|) := by
+  have harg : (2 : ℝ) ≤ 3 + |ξ| := by linarith [abs_nonneg ξ]
+  have hlogTwo : Real.log 2 ≤ Real.log (3 + |ξ|) :=
+    Real.log_le_log (by norm_num) harg
+  have hone : (1 : ℝ) ≤ 2 * Real.log (3 + |ξ|) := by
+    nlinarith [Real.log_two_gt_d9]
+  have hlogNonneg : 0 ≤ Real.log (3 + |ξ|) :=
+    Real.log_nonneg (by linarith [abs_nonneg ξ])
+  have hlogAbs : Real.log |ξ| ≤ Real.log (3 + |ξ|) := by
+    by_cases hξ : ξ = 0
+    · simp only [hξ, abs_zero, Real.log_zero]
+      exact Real.log_nonneg (by norm_num)
+    · exact Real.log_le_log (abs_pos.mpr hξ) (by linarith [abs_nonneg ξ])
+  unfold suzukiLogWeight
+  have hmax : max (Real.log |ξ|) 0 ≤ Real.log (3 + |ξ|) :=
+    max_le hlogAbs hlogNonneg
+  linarith
+
 theorem tendsto_testEnvelope_pointwise (M ξ : ℝ) :
     Tendsto (fun n : ℕ => testEnvelope n M ξ) atTop (𝓝 0) := by
   have hsmall : Tendsto (fun n : ℕ => 2 / ((n : ℝ) + 1)) atTop (𝓝 0) := by
@@ -186,5 +218,59 @@ theorem tendsto_integral_testEnvelope (M : ℝ) :
     (ae_of_all _ fun ξ => tendsto_testEnvelope_pointwise M ξ)
   simpa using h
 
-end RHTower
+/-- Abstract form of Suzuki's equations (3.3)--(3.4): any measurable Fourier family with the
+simultaneous boundary-layer bounds `2/(n+1)` and `M/|ξ|` converges to zero in the exact
+`H^log` energy. -/
+theorem tendsto_integral_suzukiLogWeight_norm_sq_of_fourier_envelope
+    (F : ℕ → ℝ → ℂ) (M : ℝ)
+    (hF : ∀ n, AEStronglyMeasurable (F n) (volume : Measure ℝ))
+    (hbound : ∀ n ξ, ‖F n ξ‖ ≤
+      min (2 / ((n : ℝ) + 1)) (|M| / |ξ|)) :
+    Tendsto (fun n : ℕ => ∫ ξ : ℝ, suzukiLogWeight ξ * ‖F n ξ‖ ^ 2)
+      atTop (𝓝 0) := by
+  have hpoint : ∀ n ξ,
+      suzukiLogWeight ξ * ‖F n ξ‖ ^ 2 ≤ 3 * testEnvelope n M ξ := by
+    intro n ξ
+    have hweight := suzukiLogWeight_le_three_mul_log_three_add_abs ξ
+    have hlog0 : 0 ≤ Real.log (3 + |ξ|) :=
+      Real.log_nonneg (by linarith [abs_nonneg ξ])
+    have hsq : ‖F n ξ‖ ^ 2 ≤
+        min (2 / ((n : ℝ) + 1)) (|M| / |ξ|) ^ 2 := by
+      nlinarith [norm_nonneg (F n ξ), hbound n ξ]
+    unfold testEnvelope
+    calc
+      suzukiLogWeight ξ * ‖F n ξ‖ ^ 2
+          ≤ (3 * Real.log (3 + |ξ|)) * ‖F n ξ‖ ^ 2 :=
+            mul_le_mul_of_nonneg_right hweight (sq_nonneg _)
+      _ ≤ (3 * Real.log (3 + |ξ|)) *
+          min (2 / ((n : ℝ) + 1)) (|M| / |ξ|) ^ 2 :=
+            mul_le_mul_of_nonneg_left hsq (mul_nonneg (by norm_num) hlog0)
+      _ = 3 * (Real.log (3 + |ξ|) *
+          min (2 / ((n : ℝ) + 1)) (|M| / |ξ|) ^ 2) := by ring
+  have hmeas : ∀ n, AEStronglyMeasurable
+      (fun ξ : ℝ => suzukiLogWeight ξ * ‖F n ξ‖ ^ 2) := by
+    intro n
+    exact measurable_suzukiLogWeight.aestronglyMeasurable.mul
+      ((hF n).norm.pow 2)
+  have hint : ∀ n, Integrable
+      (fun ξ : ℝ => suzukiLogWeight ξ * ‖F n ξ‖ ^ 2) := by
+    intro n
+    refine Integrable.mono' ((integrable_testEnvelope n M).const_mul 3) (hmeas n) ?_
+    filter_upwards with ξ
+    rw [Real.norm_eq_abs, abs_of_nonneg
+      (mul_nonneg (suzukiLogWeight_nonneg ξ) (sq_nonneg _))]
+    exact hpoint n ξ
+  have hupper : ∀ n,
+      (∫ ξ : ℝ, suzukiLogWeight ξ * ‖F n ξ‖ ^ 2) ≤
+        3 * ∫ ξ : ℝ, testEnvelope n M ξ := by
+    intro n
+    rw [← integral_const_mul]
+    exact integral_mono (hint n) ((integrable_testEnvelope n M).const_mul 3) (hpoint n)
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (g := fun _ : ℕ => 0) (h := fun n : ℕ => 3 * ∫ ξ : ℝ, testEnvelope n M ξ)
+    tendsto_const_nhds (by simpa using (tendsto_integral_testEnvelope M).const_mul 3) ?_ ?_
+  · exact Eventually.of_forall fun n => integral_nonneg fun ξ =>
+      mul_nonneg (suzukiLogWeight_nonneg ξ) (sq_nonneg _)
+  · exact Eventually.of_forall hupper
 
+end RHTower

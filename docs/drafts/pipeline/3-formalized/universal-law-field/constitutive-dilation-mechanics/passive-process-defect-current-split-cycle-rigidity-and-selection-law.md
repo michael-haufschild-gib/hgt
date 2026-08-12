@@ -1,7 +1,7 @@
 # Passive process defect current, split-cycle rigidity, and selection law
 
 - **ID:** ULF-CDM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** Constitutive Dilation Mechanics field programme
 - **Statement:** Passive process defects compose additively; a passive split cycle has zero defect

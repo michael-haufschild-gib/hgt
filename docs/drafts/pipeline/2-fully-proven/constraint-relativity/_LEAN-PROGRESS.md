@@ -13,6 +13,7 @@ Working note for the promotion sweep.  Not a card.
 | `rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law` | `RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean` |
 | `prime-isotropy-vertical-shear-gauge-torsor-and-nonerasure-dichotomy` | `RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean` |
 | `two-endpoint-prime-orbit-stokes-moduli-and-infinite-coinvariant-law` | `RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean` |
+| `residue-preserving-law-promotion-anomaly-trilemma` | `HTGeometry/ConstraintRelativity/ResiduePromotionAnomaly.lean` |
 
 All modules are wired into their area umbrella, build green, and every listed declaration returns
 only `[propext, Classical.choice, Quot.sound]`.
@@ -24,7 +25,6 @@ only `[propext, Classical.choice, Quot.sound]`.
 - `passive-relation-triangle-energy-and-interaction-cross-fibre-law`
 - `polarized-incidence-stokes-and-e-mass-capacity-phase-law`
 - `provenance-admission-connecting-law-and-flat-completion-cube`
-- `residue-preserving-law-promotion-anomaly-trilemma`
 - `resource-filtered-relation-typicality-and-recurrence-no-go`
 
 ## Scouting notes

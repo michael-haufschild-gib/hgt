@@ -1,7 +1,7 @@
 # Conservative inverse completion, zero exclusion, and RH selection-gate law
 
 - **ID:** ULF-WFM-3
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / DOWNSTREAM SELECTION CONSEQUENCE
 - **Parents:** ULF-WFM-2 and ULF-PUFM-2
 - **Statement:** Exact formation/exterior inversion survives every joint conservative completion;

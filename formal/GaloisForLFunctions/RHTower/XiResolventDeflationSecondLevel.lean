@@ -416,9 +416,9 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
     have hcard : (1 : ℝ) ≤ (T.card : ℝ) := hm1
     have hrn : (0 : ℝ) < r ^ (n + 1) := pow_pos hrpos _
     have hρn : (0 : ℝ) < ρ ^ (n + 1) := pow_pos hρpos _
-    have hDre : -(2 * S₀' ^ 2 * ρ ^ (2 * n + 2)) / r ^ (n + 1) ≤
+    have hDre : -(2 * S₀' ^ 2 * ρ ^ (2 * n + 2) / r ^ (n + 1)) ≤
         (∑' q : XiZeroCopy, u q ^ (n + 1) * W q).re := by
-      rw [div_le_iff₀ hrn]
+      rw [← neg_div, div_le_iff₀ hrn]
       have hcardpos : (0 : ℝ) < (T.card : ℝ) := by linarith
       have hminre2 : (R' n * R' (n + 2) - R' (n + 1) ^ 2).re ≤
           2 * S₀' ^ 2 * ρ ^ (2 * n + 2) := by
@@ -551,7 +551,7 @@ theorem exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg {X : ℝ}
       simp only [hv]
       field_simp
     simp only [hW]
-    rw [h2, hc, ← Complex.conj_ofReal r, ← map_sub, ← map_pow]
+    rw [h2, hc, map_pow, map_sub, Complex.conj_ofReal]
   have hWqs : W qs ≠ 0 := by
     simp only [hW]
     refine pow_ne_zero 2 (sub_ne_zero.mpr fun h1 => ?_)

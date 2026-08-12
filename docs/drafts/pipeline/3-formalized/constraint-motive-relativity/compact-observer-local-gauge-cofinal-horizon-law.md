@@ -1,11 +1,12 @@
 # Compact-observer local-gauge and cofinal-horizon law
 
 - **ID:** `cmr-compact-observer-local-gauge-cofinal-horizon`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CLASSICAL FUNCTIONAL-ANALYTIC CALIBRATION /
   CONDITIONAL ROUTE TEMPLATE
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [CLASSICAL COMPACTNESS CORE]`
-  `[HT/TOPOLOGY/SPECTRAL INTERFACE] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[HT/TOPOLOGY/SPECTRAL INTERFACE] [NOT RH] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `compact-observer-local-gauge-cofinal-horizon-law-formalized.md`
 - **Statement:** A compact observer can be exactly invertible on every finite source chart while
   every cofinal family of inverse gauges becomes singular; its positive shadow retains the same
   singular-value horizon, and every bounded source history has relatively compact observed image.
@@ -271,9 +272,9 @@ only after a typed connection/comparison square is constructed.
 5. A proposed universal geometry that records only algebraic observer density but no coercivity
    profile cannot explain the finite-to-cofinal obstructions.
 
-## 10. Existing formal support and later Lean note
+## 10. Formal support
 
-No Lean was written or built for this card. The corpus already contains the load-bearing compact
+Formalized; see the companion certificate. The corpus already contains the load-bearing compact
 bounded-below theorem in
 `formal/GaloisForLFunctions/HTGeometry/CompactOperatorBoundedBelow.lean`, especially
 `finiteDimensional_of_isCompactOperator_of_bounded_below`. A later formalization can build the
@@ -292,4 +293,5 @@ itself.
 
 ## Log
 
-- 2026-08-09 — theorem and proof closed on paper; no Lean written or built.
+- 2026-08-09 — theorem and proof closed on paper.
+- 2026-08-11 — formalized unconditionally in Lean 4.

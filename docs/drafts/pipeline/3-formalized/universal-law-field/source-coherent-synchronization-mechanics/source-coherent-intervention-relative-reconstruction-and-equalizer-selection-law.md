@@ -1,7 +1,7 @@
 # Source-coherent intervention, relative reconstruction, and equalizer selection law
 
 - **ID:** ULF-SCSM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Status:** PAPER-PROVED / LEAN-CERTIFIED
 - **Type:** universal-law-field finite mechanism theorem
 - **Lean:** `HTGeometry.SourceCoherentInterventionSynchronization`

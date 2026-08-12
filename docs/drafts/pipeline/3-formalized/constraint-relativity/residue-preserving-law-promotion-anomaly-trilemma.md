@@ -1,10 +1,10 @@
 # Residue-preserving law-promotion anomaly trilemma
 
 - **ID:** `residue-preserving-law-promotion-anomaly-trilemma`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER PROOF COMPLETE] [UNCONDITIONAL] [NEW RH-ROUTE LEVERAGE]`
-  `[NO RH CLAIM] [NO LEAN WRITTEN]`
+- **Status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
+  `[PAPER PROOF COMPLETE] [NEW RH-ROUTE LEVERAGE] [NO RH CLAIM]`
 - **Role:** first exact law-event classification theorem in Nomotopy; classifies every cell-attachment
   attempt to kill the physical cyclic-to-paracyclic defect while preserving source residue.
 - **Novelty:** generic proof is elementary homological algebra. Candidate-new content is the exact
@@ -470,9 +470,25 @@ counting alone is insufficient.
 
 ## Lean-return note
 
-No Lean work is authorized. If later requested, formalize generic attachment criterion, minimal
-rank theorem, and arithmetic specialization in separate files. Existing residue formula can be
-imported from `MobiusThetaSourceDaggerMinimalBoundaryLaw`.
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/ResiduePromotionAnomaly.lean`
+(wired into `GaloisForLFunctions.HTGeometry`).  Theorems 1--7 and the literal Riemann-source
+application `(25)`--`(26)` are green and unconditional; the declaration-by-equation map, the corpus
+reuse ledger and the axiom audit are in the companion card
+`residue-preserving-law-promotion-anomaly-trilemma-formalized.md`.  The residue formula is reused
+from `MobiusThetaSourceDaggerMinimalBoundaryLaw` exactly as anticipated.
+
+## Gates
+
+- [x] generic attachment criterion
+- [x] minimal compensator rank
+- [x] fitted compensation is derived-trivial
+- [x] presentation invariance
+- [x] coordinate-stable size law
+- [x] holomorphic compensator no-go
+- [x] mixed separation rank two
+- [x] literal arithmetic specialization
+- [x] Lean formalization
 
 ## Log
 

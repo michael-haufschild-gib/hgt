@@ -486,9 +486,30 @@ The unconditional denominator-free core is formalized in
 - one closed capstone joining those clauses.
 
 The formal identities are polynomial: no positivity premise, denominator nonvanishing, minimizer,
-computation certificate, project axiom, RH statement, or Xi specialization enters them.  The
-coordinate-free projection theorem and divided metric interpretation remain paper proofs; Lean
-certifies the algebraic kernel from which every finite scalar and QFI specialization follows.
+computation certificate, project axiom, RH statement, or Xi specialization enters them.
+
+The coordinate-free theorem of section 2 and the divided-metric (Schur) form of section 4 are
+certified in `GaloisForLFunctions.HTGeometry.QuotientFusionProjectionGenesis`, also imported by
+the universal-law field umbrella:
+
+- `localOptimalHistory`, `norm_sub_apply_sq`, `sum_norm_sub_apply_sq` — the organwise Pythagoras
+  splitting of every shared-gauge residual along `ran (A i)`;
+- `sharedEnergy`, `separateEnergy`, `generatedEnergy`, `quotientFusionGenesis` — `(QFG.1)` and
+  `(QFG.2)` for finitely many finite-dimensional real organs and one shared gauge space;
+- `quotientFusionGenesis_eq`, `quotientFusionGenesis_nonneg` — **Theorem 2.1, `(QFG.3)`**: the
+  genesis is exactly the shared fit of the locally optimal histories, hence nonnegative;
+- `exists_generatedEnergy_eq` — attainment of that fit, through the orthogonal projection onto the
+  range of the joint gauge map in the `L²` product of the organs;
+- `quotientFusionGenesis_eq_zero_iff` — **`(QFG.4)`**: the genesis vanishes exactly when the
+  locally optimal histories have one common realization;
+- `sharedEnergy_decomposition` — **Corollary 2.2, `(QFG.5)`**;
+- `exists_positive_generatedEnergy_with_zero_separateEnergy` — the card's sharp remark that the
+  generated term can be positive while every inherited term vanishes, witnessed by two identity
+  organs carrying opposite data;
+- `schurComplement_sum_eq` — **`(QFG.12)`**: Schur superadditivity with the exact `c`-weighted
+  slope-spread defect.
+
+Every declaration audits to `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Gates
 
@@ -502,3 +523,7 @@ certifies the algebraic kernel from which every finite scalar and QFI specializa
 - [x] unconditional finite algebra formalized and umbrella wired
 - [ ] cofinal closed-range/admission extension
 - [ ] source-forced common gauge spanning independent RH organs
+
+- 2026-08-11 — the coordinate-free projection theorem and the Schur/divided-metric form closed in
+  Lean (`QuotientFusionProjectionGenesis`), including attainment of the shared fit and the
+  positive-genesis-with-zero-inheritance witness.

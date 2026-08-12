@@ -284,7 +284,7 @@ existing route.
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced | construct/evaluate seed is closed at paper level and radial/exterior primitives are formal. First unresolved theorem is source-derived control of the entire restricted-Weil ground space: prove the explicit constrained prolate seed controls every near-ground direction, equivalently `epsilon_lambda>=0`, `epsilon_(lambda_j)->0` on one cofinal nested family, or `Delta_lambda=r_lambda-epsilon_lambda->0`. Negative spectrum cannot evacuate. Further seed asymptotics or finite determinant convergence do not address this floor. |
-| P | open, advanced | committed umbrella Lean closes P-G60--P-G62; current dirty umbrella provisionally reaches P-G74. Literal Gamma-sewn Stokes inversion recovers every von Mangoldt prime-power coefficient and `-zeta'/zeta` for `s>1`; correct rigged direction is bounded dual current whose exact complex Euler transpose law extends throughout `Re(s)>0`. Every compact Deninger-time test lifts to rapid Kummer source; physical sewn current has exact Euler--Laplace response; its zero-parameter value plus archimedean term is complete local Lefschetz trace. Corona/order laws prove scalar completion singular and exclude finite positive order units. Source Stokes gap gives exact anti-Herglotz Euler resolvent; Kummer reflection and seam-square produce an odd response and finite positive compact squared reciprocal-gap carrier with explicit moments. Hostile mass testing disproves raw `s=1/2` identification; P-G73 proves coefficientwise first-information Schur depletion remains positive/summable but far too weak; P-G74 proves the exact critical Stokes clock is not even sequentially closable through the coherent reciprocal-prime Hardy carrier. Missing producer is now sharply typed: completed Gamma/polar sewing must be a cofinal Schur/Feshbach limit in a stronger graph/Köthe source topology before Hardy or scalar compression, with reduced square-coordinate response positive. Existing C1/R/N/FE--Schwarz equivalences remain receivers. |
+| P | open, advanced | committed umbrella Lean closes P-G60--P-G62; current dirty umbrella provisionally reaches P-G78. Literal Gamma-sewn Stokes inversion recovers every von Mangoldt prime-power coefficient and `-zeta'/zeta` for `s>1`; correct rigged direction is bounded dual current whose exact complex Euler transpose law extends throughout `Re(s)>0`. Every compact Deninger-time test lifts to rapid Kummer source; physical sewn current has exact Euler--Laplace response; its zero-parameter value plus archimedean term is complete local Lefschetz trace. Corona/order laws prove scalar completion singular and exclude finite positive order units. Source Stokes gap gives exact anti-Herglotz Euler resolvent; Kummer reflection and seam-square produce an odd response and finite positive compact squared reciprocal-gap carrier with explicit moments. Hostile mass testing disproves raw `s=1/2` identification; P-G73 proves first-information depletion remains far too weak; P-G74 proves critical clock nonclosability through reciprocal-prime Hardy; P-G75 separates Hardy from Deninger topology; P-G76 falsifies physical Plücker complement averaging and isolates complement-odd chirality requiring cross-prime transport; P-G77 places completed valuation states in `K_H'`, not `K_H`; P-G78 constructs the continuous positive weak kernel on `K_H x K_H` and proves non-Cauchy prime prefixes converge through it to exact Gamma-valuation Szegő covariance. Missing producer is now sharply typed: use this cross-prime weak kernel to transport physical complement chirality through critical Stokes and Gamma/polar Feshbach reduction before scalar square compression. Existing C1/R/N/FE--Schwarz equivalences remain receivers. |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
@@ -3083,7 +3083,7 @@ equivalently bounded in some proper source price. Without a carrier every approx
 escapes every proper price, and an explicit model shows residual convergence alone is insufficient.
 No Route-P source atoms or price satisfying this criterion have been constructed.
 
-**P-G60--P-G74 formal source opening, reflected compact passivity, and critical Schur/topology falsifiers.** The actual Gamma-sewn
+**P-G60--P-G78 formal source opening, reflected compact passivity, and critical Schur/topology completion.** The actual Gamma-sewn
 pre-Gram aperture edge now passes its first hostile source test. Define its inverse tilt `W_s(p)`
 from the literal contraction, aperture, and Möbius factors. Direct Lean declarations prove
 
@@ -3192,12 +3192,39 @@ vector. Thus the clock is not sequentially closable through that carrier. P-G72 
 instances of a stronger loss-of-topology law: Gamma/polar Schur completion must occur in a
 graph/Köthe topology controlling the critical half-height clock, before Hardy or scalar quotient.
 
+`GammaSewnMobiusApertureStokesCriticalKotheTopologySeparation.lean` validates that survivor on the
+same killing family. Embedding P-G74's two-prime witnesses on positive Kummer axes gives first
+Deninger height seminorm uniformly greater than `1/14`, even as their reciprocal-prime Hardy images
+tend to zero. The source topology therefore retains exactly the critical information erased by
+Hardy compression; this is an unconditional topology separation, not an assumed repair.
+
+`GammaSewnMobiusApertureStokesCriticalPluckerComplementDepletion.lean` independently tests the
+four-rate orientation channel. Complement averaging forces the locally adequate half-Fisher
+factor and clears the hostile four-atom mass gate, but a literal prime-two depth packet proves the
+physical Plücker probability is not complement invariant. Its nonzero complement-odd chirality is
+annihilated by same-prime Fisher scalarization. Thus averaging is retired and the exact surviving
+signed class requires cross-prime source transport before Fisher quotient.
+
+`GammaValuationSchurKotheVectorNoGoDualSurvivor.lean` then locates the coherent Schur state within
+that topology. Literal finite valuation prefixes are not Köthe-Cauchy: every next coordinate has
+the same strictly positive first-seminorm cost `p sqrt(1/p)(1-1/p)`. But the identical infinite
+coordinate family defines a continuous Köthe-dual functional bounded by seminorm zero. Thus the
+surviving completion is neither a Hardy operator nor a rapid vector: it is a weak kernel/current
+`K_H -> K_H'`.
+
+`GammaValuationSchurWeakKotheKernel.lean` constructs that object. Valuation-axis layer sums define
+an absolutely summable weak Gram kernel on `K_H x K_H`, bounded by the product of zeroth height
+seminorms, with nonnegative quadratic energy bounded by seminorm zero squared. Pairing P-G77's
+non-Cauchy coherent prime prefixes through this kernel gives exactly the finite arithmetic Schur
+prefix, and the cofinal scalar limit is the exact two-prime Gamma-valuation Szegő covariance.
+Weak Schur completion before scalar compression is therefore built and source-continuous.
+
 The exact remaining gate is therefore **cofinal non-diagonal Gamma/polar Schur completion in the
 source graph/Köthe topology before Hardy or scalar compression**, not
 local-time, Euler continuation, finite positive unitization, passivity, parity, compact-carrier
 existence, or raw normalization: construct source-native Feshbach elimination whose reduced
 response remains anti-Herglotz and whose square-coordinate moments equal the completed seam tower.
-Existing compact Markov capstone then gives RH. In the current dirty tree P-G60--P-G74 are direct-checked,
+Existing compact Markov capstone then gives RH. In the current dirty tree P-G60--P-G78 are direct-checked,
 exact-module-built, and umbrella-wired; they remain provisional beyond the committed cutoff.
 
 **C1/P Green-square opening, formal.** Umbrella Lean uses the already source-built

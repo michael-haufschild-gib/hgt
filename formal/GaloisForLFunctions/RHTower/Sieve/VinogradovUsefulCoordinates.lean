@@ -194,11 +194,12 @@ theorem sum_two_mul_fin_succ (k : ℕ) :
     (∑ i ∈ Finset.range k, 2 * (i + 1)) =
         2 * ((∑ i ∈ Finset.range k, i) + k) := by
       calc
-        _ = 2 * (∑ i ∈ Finset.range k, i + 1) := by
-          rw [Finset.mul_sum]
+        _ = 2 * (∑ i ∈ Finset.range k, (i + 1)) := by
+          exact (Finset.mul_sum (Finset.range k) (fun i => i + 1) 2).symm
         _ = 2 * ((∑ i ∈ Finset.range k, i) +
             ∑ _i ∈ Finset.range k, 1) := by
-          rw [Finset.sum_add_distrib]
+          congr 1
+          exact Finset.sum_add_distrib
         _ = 2 * ((∑ i ∈ Finset.range k, i) + k) := by simp
     _ = 2 * (k * (k - 1) / 2 + k) := by rw [Finset.sum_range_id]
     _ = k * (k + 1) := by
@@ -210,8 +211,11 @@ theorem sum_two_mul_fin_succ (k : ℕ) :
             use m
             omega
           exact hk1.two_dvd.mul_left k
-      rw [Nat.mul_div_cancel' heven]
-      ring
+      rw [mul_add, Nat.mul_div_cancel' heven]
+      by_cases hk : k = 0
+      · simp [hk]
+      · have hkm : k - 1 + 1 = k := Nat.sub_add_cancel (by omega)
+        nlinarith
 
 theorem vinogradovUsefulSavingSum_eq_subtype_sum
     {k : ℕ} (U : Fin k → Prop) [DecidablePred U] :
@@ -227,6 +231,28 @@ theorem vinogradovUsefulSavingSum_ge (u : ℕ) :
       vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u) := by
   rw [vinogradovUsefulSavingSum_eq_subtype_sum]
   exact sum_vinogradovCoordinateSavingExponent_ge u
+
+theorem prod_vinogradovUsefulCoordinateEnvelope_le
+    {Q b u : ℕ} (hQ : 1 ≤ Q) :
+    (∏ j : Fin (vinogradovRouteTOrder (4 * u)),
+      vinogradovCoordinateEnvelope (vinogradovUsefulCoordinate u) Q b j) ≤
+      (24 * (b : ℝ) ^ 2) ^ (vinogradovRouteTOrder (4 * u)) *
+        (Q : ℝ) ^
+          (vinogradovRouteTOrder (4 * u) *
+            (vinogradovRouteTOrder (4 * u) + 1)) *
+          ((Q : ℝ) ^ (200 * u ^ 2))⁻¹ := by
+  rw [prod_vinogradovCoordinateEnvelope_eq]
+  rw [sum_two_mul_fin_succ]
+  have hQreal : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
+  have hsum := vinogradovUsefulSavingSum_ge u
+  have hpow : (Q : ℝ) ^ (200 * u ^ 2) ≤
+      (Q : ℝ) ^ vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u) :=
+    pow_le_pow_right₀ hQreal hsum
+  have hinv :
+      ((Q : ℝ) ^ vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u))⁻¹ ≤
+        ((Q : ℝ) ^ (200 * u ^ 2))⁻¹ := by
+    exact inv_anti₀ (by positivity) hpow
+  exact mul_le_mul_of_nonneg_left hinv (by positivity)
 
 end
 

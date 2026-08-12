@@ -66,28 +66,37 @@ theorem norm_intervalFourier_le_boundary_add_integral_deriv
       rw [hibp]
       ring
     rw [hsolve]
+    have htri :
+        ‖boundaryFourierPhase ξ b * f b - boundaryFourierPhase ξ a * f a -
+            ∫ x in a..b, boundaryFourierPhase ξ x * f' x‖
+          ≤ ‖boundaryFourierPhase ξ b * f b‖ +
+              ‖boundaryFourierPhase ξ a * f a‖ +
+              ‖∫ x in a..b, boundaryFourierPhase ξ x * f' x‖ := by
+      calc
+        _ ≤ ‖boundaryFourierPhase ξ b * f b -
+              boundaryFourierPhase ξ a * f a‖ +
+            ‖∫ x in a..b, boundaryFourierPhase ξ x * f' x‖ := norm_sub_le _ _
+        _ ≤ (‖boundaryFourierPhase ξ b * f b‖ +
+              ‖boundaryFourierPhase ξ a * f a‖) +
+            ‖∫ x in a..b, boundaryFourierPhase ξ x * f' x‖ :=
+              add_le_add (norm_sub_le _ _) le_rfl
+        _ = _ := by ring
     calc
       ‖boundaryFourierPhase ξ b * f b - boundaryFourierPhase ξ a * f a -
           ∫ x in a..b, boundaryFourierPhase ξ x * f' x‖
           ≤ ‖boundaryFourierPhase ξ b * f b‖ +
               ‖boundaryFourierPhase ξ a * f a‖ +
-              ‖∫ x in a..b, boundaryFourierPhase ξ x * f' x‖ := by
-                calc
-                  _ ≤ ‖boundaryFourierPhase ξ b * f b -
-                        boundaryFourierPhase ξ a * f a‖ +
-                      ‖∫ x in a..b, boundaryFourierPhase ξ x * f' x‖ := norm_sub_le _ _
-                  _ ≤ _ := add_le_add_right (norm_sub_le _ _) _
+              ‖∫ x in a..b, boundaryFourierPhase ξ x * f' x‖ := htri
       _ ≤ ‖f b‖ + ‖f a‖ + ∫ x in a..b, ‖f' x‖ := by
         gcongr
         · rw [norm_mul, norm_boundaryFourierPhase, one_mul]
         · rw [norm_mul, norm_boundaryFourierPhase, one_mul]
-        · exact intervalIntegral.norm_integral_le_of_norm_le (μ := volume)
-            (ae_of_all _ fun x hx => by
-              rw [norm_mul, norm_boundaryFourierPhase, one_mul]) hf'Int.norm
+        · exact intervalIntegral.norm_integral_le_integral_norm hab
+            |>.trans_eq (intervalIntegral.integral_congr fun x hx => by
+              rw [norm_mul, norm_boundaryFourierPhase, one_mul])
       _ = ‖f a‖ + ‖f b‖ + ∫ x in a..b, ‖f' x‖ := by ring
   rw [hnormc] at hmain
   exact (le_div_iff₀ (mul_pos (by positivity) (abs_pos.mpr hξ))).2 (by
     simpa [mul_comm] using hmain)
 
 end RHTower
-

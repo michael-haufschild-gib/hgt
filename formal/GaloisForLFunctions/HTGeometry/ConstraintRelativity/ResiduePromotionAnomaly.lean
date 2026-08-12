@@ -1,5 +1,7 @@
 import Mathlib
 import GaloisForLFunctions.RHTower.SlabFullWidthAdmissibility
+import GaloisForLFunctions.RHTower.MobiusThetaSourceDaggerMinimalBoundaryLaw
+import GaloisForLFunctions.RHTower.MobiusThetaPhysicalParacyclicSourceNullHomology
 
 /-!
 # The residue-preserving law-promotion anomaly
@@ -546,7 +548,7 @@ theorem infinite_xiC_nonvanishing :
       {w : ℂ | ∃ u : ℂ, u = w ∧ XiC u ≠ 0} := by
     rintro _ ⟨t, ht, rfl⟩
     have ht1 : (1 : ℝ) ≤ t := Set.mem_Ici.mp ht
-    refine ⟨_, rfl, XiC_ne_zero_of_half_le_abs_im ?_⟩
+    refine ⟨_, rfl, RHTower.SlabFullWidthAdmissibility.XiC_ne_zero_of_half_le_abs_im ?_⟩
     have him : ((t : ℂ) * Complex.I).im = t := by simp
     rw [him, abs_of_nonneg (by linarith)]
     linarith
@@ -562,6 +564,43 @@ theorem not_finiteDimensional_of_xiC_coordinateStable (S : Submodule ℂ (ℂ �
     infinite_xiC_nonvanishing
 
 end XiSource
+
+/-! ## The literal arithmetic defect -/
+
+section LiteralSource
+
+open RHTower
+open GaloisForLFunctions.HTGeometry
+
+/-- **Card `(26)` boxed, literal form.**  For the ordinary-prime trace-one cycle the anomaly map of
+the physical cyclic-to-paracyclic defect vanishes exactly on the critical line, so the promotion
+anomaly rank is `0` there and `1` off it. -/
+theorem literal_defect_anomaly_eq_zero_iff {n : ℕ} (hn : 2 ≤ n) (rho : XiDivisorSupport)
+    (x : CCMRationalAdelicDegreeOneCyclicSource)
+    (hx : ccmRationalAdelicDegreeOneTrace x = 1) :
+    ccmRationalAdelicTwoLegCyclicResidue
+        (cyclicParacyclicEquivarianceDefect
+          ccmRationalAdelicDegreeOneCyclicRotation
+          (sourceDaggerNormalizedDegreeOneRotationLinear n (rho : ℂ))
+          (ccmMobiusThetaXiJetTwoLegLanding (xiSupportMultiplicity rho)
+            (xiSpectralPointSupport rho)) x) = 0 ↔ (rho : ℂ).re = 1 / 2 := by
+  rw [ccmMobiusThetaTwoLegParacyclicDefect_residue, hx, mul_one]
+  constructor
+  · intro hzero
+    rcases mul_eq_zero.mp hzero with h1 | h2
+    · have hgain : deningerHalfDensityMateGain n (rho : ℂ) = 1 := by
+        have : ((deningerHalfDensityMateGain n (rho : ℂ) : ℂ)) = 1 := by
+          linear_combination h1
+        exact_mod_cast this
+      exact (deningerHalfDensityMateGain_eq_one_iff_re_eq_half hn (rho : ℂ)).mp hgain
+    · exact absurd h2 (thetaInternalJetLeadingSourceCoefficient_ne_zero rho)
+  · intro hre
+    have hgain : deningerHalfDensityMateGain n (rho : ℂ) = 1 :=
+      (deningerHalfDensityMateGain_eq_one_iff_re_eq_half hn (rho : ℂ)).mpr hre
+    rw [hgain]
+    norm_num
+
+end LiteralSource
 
 end HTGeometry.ConstraintRelativity
 

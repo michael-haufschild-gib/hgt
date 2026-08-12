@@ -3,21 +3,23 @@ import GaloisForLFunctions.RHTower.GammaSewnFourRatePluckerConnector
 import GaloisForLFunctions.RHTower.EulerFisherLowTemperature
 
 /-!
-# Critical Pluecker complement depletion
+# Critical Pluecker complement depletion audit
 
 The first-information channel is too weak because it acts diagonally after source-label
-compression. The existing four-rate Gamma Pluecker carrier provides a coherent pre-compression
-alternative. Its six boundary minors have a canonical complement involution, pairing each selected
-two-cell orientation with the retained complementary orientation.
+compression. The existing four-rate Gamma Pluecker carrier suggests a pre-compression alternative.
+Its six boundary minors have a canonical complement involution, pairing each selected two-cell
+orientation with the retained complementary orientation.
 
 Averaging every boundary probability with its complement forces the complementary Fisher fraction
-to exactly one half of total Fisher mass for every nondegenerate source cell. No scalar is fitted.
-For the hostile critical cell (2,0), (2,1), (3,0), (3,1), rational source bounds prove that applying
-this exact half-factor to the information-depleted masses puts their total below 29/625. Thus the
-coherent complement channel clears the four-atom mass obstruction that survives every diagonal
-first-information subtraction.
+to exactly one half of total Fisher mass for every nondegenerate cell. For the hostile critical
+cell (2,0), (2,1), (3,0), (3,1), rational source bounds prove that applying this exact half-factor
+to the information-depleted masses puts their total below 29/625.
 
-This is an unconditional local adequacy theorem, not a global completed-seam identification.
+The final source-faithfulness audit falsifies the intended interpretation. On the literal physical
+one-prime depth cell `0,1,2,3`, the source Pluecker probability is not complement invariant, and
+the symmetrized probability is not the physical probability. Thus the half-factor is an exact
+locally adequate receiver, but the averaging operation is an additional producer premise. This
+module unconditionally classifies that failure; it is not a global completed-seam identification.
 -/
 
 open Real Set Filter Topology
@@ -54,6 +56,93 @@ theorem gammaSewnCriticalPlucker_sum_symmetrize (weight : Fin 6 → ℝ) :
     ∑ s, gammaSewnCriticalPlucker_symmetrize weight s = ∑ s, weight s := by
   simp [gammaSewnCriticalPlucker_symmetrize, gammaSewnCriticalPlucker_complementIndex, Fin.sum_univ_succ]
   ring
+
+/-- Complement averaging is source-native exactly when the original packet is already invariant
+under complementary-pair exchange.  Thus normalization alone never supplies that invariance. -/
+theorem gammaSewnCriticalPlucker_symmetrize_eq_self_iff_complementInvariant
+    (weight : Fin 6 → ℝ) :
+    (∀ s, gammaSewnCriticalPlucker_symmetrize weight s = weight s) ↔
+      ∀ s, weight (gammaSewnCriticalPlucker_complementIndex s) = weight s := by
+  constructor
+  · intro h s
+    have hs := h s
+    unfold gammaSewnCriticalPlucker_symmetrize at hs
+    linarith
+  · intro h s
+    unfold gammaSewnCriticalPlucker_symmetrize
+    rw [h s]
+    ring
+
+/-- Signed source-horizontal class discarded by complement averaging. -/
+def gammaSewnCriticalPlucker_complementChirality
+    (weight : Fin 6 → ℝ) (s : Fin 6) : ℝ :=
+  weight s - weight (gammaSewnCriticalPlucker_complementIndex s)
+
+theorem gammaSewnCriticalPlucker_complementChirality_complementIndex
+    (weight : Fin 6 → ℝ) (s : Fin 6) :
+    gammaSewnCriticalPlucker_complementChirality weight
+        (gammaSewnCriticalPlucker_complementIndex s) =
+      -gammaSewnCriticalPlucker_complementChirality weight s := by
+  simp [gammaSewnCriticalPlucker_complementChirality,
+    gammaSewnCriticalPlucker_complementIndex_involutive s]
+
+theorem gammaSewnCriticalPlucker_sum_complementChirality
+    (weight : Fin 6 → ℝ) :
+    ∑ s, gammaSewnCriticalPlucker_complementChirality weight s = 0 := by
+  simp [gammaSewnCriticalPlucker_complementChirality,
+    gammaSewnCriticalPlucker_complementIndex, Fin.sum_univ_succ]
+  ring
+
+/-- Exact even--odd decomposition of every boundary packet. -/
+theorem gammaSewnCriticalPlucker_eq_symmetrize_add_half_chirality
+    (weight : Fin 6 → ℝ) (s : Fin 6) :
+    weight s = gammaSewnCriticalPlucker_symmetrize weight s +
+      (1 / 2 : ℝ) * gammaSewnCriticalPlucker_complementChirality weight s := by
+  unfold gammaSewnCriticalPlucker_symmetrize
+    gammaSewnCriticalPlucker_complementChirality
+  ring
+
+/-- **Source-horizontal Fisher decomposition.** The failure of the physical packet to have the
+universal half-factor is exactly one complement-odd signed moment. No information is erased and
+no scalar is fitted. -/
+theorem gammaSewnCriticalPlucker_complementaryFisherMean_eq_half_add_chirality
+    (weight : Fin 6 → ℝ) (cell : Fin 4 → Nat.Primes × ℕ)
+    (hweight : ∑ s, weight s = 1) :
+    RHTower.complementaryFisherMean weight
+        (RHTower.gammaSewnFourRateComplementaryFisher cell) =
+      (1 / 2 : ℝ) * RHTower.gammaSewnFourRateTotalFisher cell +
+        (1 / 2 : ℝ) * ∑ s,
+          gammaSewnCriticalPlucker_complementChirality weight s *
+            RHTower.gammaSewnFourRateComplementaryFisher cell s := by
+  have hselcomp := RHTower.gammaSewnFourRateSelectedFisher_add_complementaryFisher cell
+  have hcomp :
+      (∑ s, weight (gammaSewnCriticalPlucker_complementIndex s) *
+        RHTower.gammaSewnFourRateComplementaryFisher cell s) =
+      ∑ s, weight s * RHTower.gammaSewnFourRateSelectedFisher cell s := by
+    rw [← gammaSewnCriticalPlucker_complementIndex_bijective.sum_comp]
+    apply Finset.sum_congr rfl
+    intro s _hs
+    rw [gammaSewnCriticalPlucker_complementIndex_involutive s,
+      gammaSewnCriticalPlucker_complementaryFisher_complementIndex]
+  have htotal :
+      (∑ s, weight s * RHTower.gammaSewnFourRateSelectedFisher cell s) +
+          ∑ s, weight s * RHTower.gammaSewnFourRateComplementaryFisher cell s =
+        RHTower.gammaSewnFourRateTotalFisher cell := by
+    rw [← Finset.sum_add_distrib]
+    calc
+      (∑ s, (weight s * RHTower.gammaSewnFourRateSelectedFisher cell s +
+        weight s * RHTower.gammaSewnFourRateComplementaryFisher cell s)) =
+          ∑ s, weight s * RHTower.gammaSewnFourRateTotalFisher cell := by
+            apply Finset.sum_congr rfl
+            intro s _hs
+            rw [← mul_add, hselcomp]
+      _ = RHTower.gammaSewnFourRateTotalFisher cell := by
+        rw [← Finset.sum_mul, hweight, one_mul]
+  unfold RHTower.complementaryFisherMean
+    gammaSewnCriticalPlucker_complementChirality
+  simp_rw [sub_mul]
+  rw [Finset.sum_sub_distrib, hcomp]
+  linarith
 
 theorem gammaSewnCriticalPlucker_symmetrized_complementaryFisherMean_eq_half_total
     (weight : Fin 6 → ℝ) (cell : Fin 4 → Nat.Primes × ℕ)
@@ -132,16 +221,16 @@ theorem gammaSewnCriticalPlucker_symSchurFactor_eq_half
       (RHTower.gammaSewnMobiusApertureBoundaryFisherClock_pos _)
   field_simp [htotal.ne']
 
-/-- Dimensionless coherent Schur fraction before scalar compression. -/
+/-- Dimensionless candidate Schur fraction before scalar compression. -/
 def gammaSewnCriticalPlucker_schurFraction
     (weight : Fin 6 → ℝ) (cell : Fin 4 → Nat.Primes × ℕ) : ℝ :=
   RHTower.complementaryFisherMean weight
       (RHTower.gammaSewnFourRateComplementaryFisher cell) /
     RHTower.gammaSewnFourRateTotalFisher cell
 
-/-- Residual critical Stokes weight after the complement-Fisher Schur fraction is removed.  The
-prime-power label remains unchanged; the non-diagonal information is carried by `weight` and
-`cell` before this scalar output is formed. -/
+/-- Candidate residual critical Stokes weight after applying the complement-Fisher fraction. The
+prime-power label remains unchanged. A separate source theorem would be required to identify this
+scalar output with an actual Feshbach elimination. -/
 def gammaSewnCriticalPlucker_reducedWeight
     (weight : Fin 6 → ℝ) (cell : Fin 4 → Nat.Primes × ℕ)
     (pk : Nat.Primes × ℕ) : ℝ :=
@@ -413,9 +502,10 @@ theorem gammaSewnCriticalPlucker_orientationSymmetrizedHostileMass_lt_ceiling :
   simp [Fin.sum_univ_succ, gammaSewnCriticalPlucker_hostileCell]
   nlinarith [gammaSewnCriticalPlucker_criticalRawFourAtomMass_upper]
 
-/-- **Local adequacy.**  On the literal hostile critical four-cell, the coherent Pluecker
-complement reduction leaves less mass than the completed seam ceiling which defeated both raw and
-first-information carriers. -/
+/-- **Conditional local adequacy.** On the literal hostile critical four-cell, complement
+symmetrization leaves less mass than the completed seam ceiling which defeated both raw and
+first-information carriers. The source-faithfulness audit below proves that symmetrization is not
+the physical source probability in general. -/
 theorem gammaSewnCriticalPlucker_reducedHostileMass_lt_ceiling :
     ∑ i : Fin 4,
         gammaSewnCriticalPlucker_reducedWeight
@@ -432,5 +522,164 @@ theorem gammaSewnCriticalPlucker_reducedHostileMass_lt_ceiling :
   intro i _hi
   exact gammaSewnCriticalPlucker_reducedWeight_eq_half
     gammaSewnCriticalPlucker_hostileBoundaryPairPartition_pos.ne' _
+
+/-! ## Source-faithfulness audit
+
+The preceding half-factor is a theorem about the explicitly symmetrized packet.  It is not a
+theorem that the physical Gamma boundary packet is complement invariant.  The following literal
+one-prime/four-depth source cell disproves that missing identification. -/
+
+/-- Four consecutive physical valuation depths at prime two. -/
+def gammaSewnCriticalPlucker_depthTestCell : Fin 4 → Nat.Primes × ℕ :=
+  fun i => (gammaSewnCriticalPlucker_p2, i.val)
+
+/-- Literal midpoint-height rate of the depth test cell. -/
+def gammaSewnCriticalPlucker_depthTestRate (i : Fin 4) : ℝ :=
+  RHTower.gammaSewnMobiusApertureCellMidHeight
+    (gammaSewnCriticalPlucker_depthTestCell i).1
+    (gammaSewnCriticalPlucker_depthTestCell i).2
+
+/-- A positive nonboundary aperture in the same prime-log scale as the physical rates. -/
+def gammaSewnCriticalPlucker_depthTestAperture : ℝ := Real.log 2 / 4
+
+theorem gammaSewnCriticalPlucker_depthTestRate_injective :
+    Function.Injective gammaSewnCriticalPlucker_depthTestRate := by
+  have hlog : Real.log 2 ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))
+  intro i j hij
+  unfold gammaSewnCriticalPlucker_depthTestRate gammaSewnCriticalPlucker_depthTestCell
+    RHTower.gammaSewnMobiusApertureCellMidHeight at hij
+  have hval : (i.val : ℝ) + 1 / 2 = (j.val : ℝ) + 1 / 2 :=
+    mul_right_cancel₀ hlog hij
+  apply Fin.ext
+  exact_mod_cast (show (i.val : ℝ) = j.val by linarith)
+
+theorem gammaSewnCriticalPlucker_depthTest_boundary_ne (i : Fin 4) :
+    gammaSewnCriticalPlucker_depthTestRate i ^ 2 -
+        gammaSewnCriticalPlucker_depthTestAperture ^ 2 ≠ 0 := by
+  have hlog : Real.log 2 ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))
+  fin_cases i <;>
+    simp [gammaSewnCriticalPlucker_depthTestRate,
+      gammaSewnCriticalPlucker_depthTestCell,
+      gammaSewnCriticalPlucker_depthTestAperture,
+      RHTower.gammaSewnMobiusApertureCellMidHeight] <;>
+    field_simp [hlog] <;> norm_num
+
+theorem gammaSewnCriticalPlucker_depthTest_partition_pos :
+    0 < ∑ s, RHTower.gammaSewnFourRateBoundaryPairRawWeight
+      gammaSewnCriticalPlucker_depthTestAperture
+      gammaSewnCriticalPlucker_depthTestRate
+      gammaSewnCriticalPlucker_depthTestCell s := by
+  apply RHTower.gammaSewnFourRateBoundaryPairPartition_pos
+  · unfold gammaSewnCriticalPlucker_depthTestAperture
+    positivity
+  · exact gammaSewnCriticalPlucker_depthTestRate_injective
+  · exact gammaSewnCriticalPlucker_depthTest_boundary_ne
+
+/-- The complementary `{0,1}` and `{2,3}` minors of one actual prime-depth source packet have
+unequal physical Pluecker weights. -/
+theorem gammaSewnCriticalPlucker_depthTest_rawWeight_not_complementInvariant :
+    RHTower.gammaSewnFourRateBoundaryPairRawWeight
+        gammaSewnCriticalPlucker_depthTestAperture
+        gammaSewnCriticalPlucker_depthTestRate
+        gammaSewnCriticalPlucker_depthTestCell 0 ≠
+      RHTower.gammaSewnFourRateBoundaryPairRawWeight
+        gammaSewnCriticalPlucker_depthTestAperture
+        gammaSewnCriticalPlucker_depthTestRate
+        gammaSewnCriticalPlucker_depthTestCell
+          (gammaSewnCriticalPlucker_complementIndex 0) := by
+  have hlog : Real.log 2 ≠ 0 := ne_of_gt (Real.log_pos (by norm_num))
+  have hamp :
+      RHTower.gammaSewnMobiusApertureBoundaryAmplitude gammaSewnCriticalPlucker_p2 ≠ 0 :=
+    ne_of_gt (RHTower.gammaSewnMobiusApertureBoundaryAmplitude_pos _)
+  simp [gammaSewnCriticalPlucker_depthTestAperture,
+    gammaSewnCriticalPlucker_depthTestRate,
+    gammaSewnCriticalPlucker_depthTestCell,
+    gammaSewnCriticalPlucker_complementIndex,
+    RHTower.gammaSewnFourRateBoundaryPairRawWeight,
+    RHTower.twoBoundaryCauchyPairPluckerSq,
+    RHTower.twoBoundaryCauchyPairPlucker,
+    RHTower.fourRatePairLeft, RHTower.fourRatePairRight,
+    RHTower.gammaSewnMobiusApertureCellMidHeight] at hamp ⊢
+  field_simp [hlog, hamp]
+  constructor
+  · norm_num
+  · exact hamp
+
+/-- Normalization cannot repair the failure: the physical source probability itself is not fixed
+by complementary-pair exchange. -/
+theorem gammaSewnCriticalPlucker_depthTest_probability_not_complementInvariant :
+    RHTower.gammaSewnFourRateBoundaryPairProbability
+        gammaSewnCriticalPlucker_depthTestAperture
+        gammaSewnCriticalPlucker_depthTestRate
+        gammaSewnCriticalPlucker_depthTestCell 0 ≠
+      RHTower.gammaSewnFourRateBoundaryPairProbability
+        gammaSewnCriticalPlucker_depthTestAperture
+        gammaSewnCriticalPlucker_depthTestRate
+        gammaSewnCriticalPlucker_depthTestCell
+          (gammaSewnCriticalPlucker_complementIndex 0) := by
+  intro hprob
+  unfold RHTower.gammaSewnFourRateBoundaryPairProbability at hprob
+  field_simp [gammaSewnCriticalPlucker_depthTest_partition_pos.ne'] at hprob
+  exact gammaSewnCriticalPlucker_depthTest_rawWeight_not_complementInvariant hprob
+
+theorem gammaSewnCriticalPlucker_depthTest_chirality_ne_zero :
+    gammaSewnCriticalPlucker_complementChirality
+      (RHTower.gammaSewnFourRateBoundaryPairProbability
+        gammaSewnCriticalPlucker_depthTestAperture
+        gammaSewnCriticalPlucker_depthTestRate
+        gammaSewnCriticalPlucker_depthTestCell) 0 ≠ 0 := by
+  intro hzero
+  apply gammaSewnCriticalPlucker_depthTest_probability_not_complementInvariant
+  unfold gammaSewnCriticalPlucker_complementChirality at hzero
+  linarith
+
+/-- Fisher clock is constant on a one-prime fibre, even though its physical Pluecker chirality is
+nonzero. -/
+theorem gammaSewnCriticalPlucker_depthTest_complementaryFisher (s : Fin 6) :
+    RHTower.gammaSewnFourRateComplementaryFisher
+        gammaSewnCriticalPlucker_depthTestCell s =
+      2 * RHTower.gammaSewnMobiusApertureBoundaryFisherClock
+        gammaSewnCriticalPlucker_p2 := by
+  fin_cases s <;>
+    simp [RHTower.gammaSewnFourRateComplementaryFisher,
+      RHTower.fourRateComplementarySum,
+      RHTower.fourRatePairComplementLeft,
+      RHTower.fourRatePairComplementRight,
+      gammaSewnCriticalPlucker_depthTestCell] <;> ring
+
+/-- **Same-prime scalarization no-go.** The physical complement chirality is nonzero, but its
+Fisher pairing vanishes identically because the prime clock is constant along valuation depth.
+Any source-horizontal Pluecker producer must therefore couple distinct prime labels before Fisher
+scalarization; depth amplification alone cannot orient the retained class. -/
+theorem gammaSewnCriticalPlucker_depthTest_chiralityFisherMoment_eq_zero :
+    (∑ s, gammaSewnCriticalPlucker_complementChirality
+        (RHTower.gammaSewnFourRateBoundaryPairProbability
+          gammaSewnCriticalPlucker_depthTestAperture
+          gammaSewnCriticalPlucker_depthTestRate
+          gammaSewnCriticalPlucker_depthTestCell) s *
+        RHTower.gammaSewnFourRateComplementaryFisher
+          gammaSewnCriticalPlucker_depthTestCell s) = 0 := by
+  simp_rw [gammaSewnCriticalPlucker_depthTest_complementaryFisher]
+  rw [← Finset.sum_mul,
+    gammaSewnCriticalPlucker_sum_complementChirality, zero_mul]
+
+/-- **No-go.**  Even on a literal physical prime-depth packet, the complement-symmetrized law is
+not the source Pluecker probability.  Hence its exact half-factor is a receiver obtained by a new
+averaging operation, not yet the missing coefficient-faithful source Schur producer. -/
+theorem gammaSewnCriticalPlucker_depthTest_symProbability_ne_sourceProbability :
+    gammaSewnCriticalPlucker_symProbability
+        gammaSewnCriticalPlucker_depthTestAperture
+        gammaSewnCriticalPlucker_depthTestRate
+        gammaSewnCriticalPlucker_depthTestCell 0 ≠
+      RHTower.gammaSewnFourRateBoundaryPairProbability
+        gammaSewnCriticalPlucker_depthTestAperture
+        gammaSewnCriticalPlucker_depthTestRate
+        gammaSewnCriticalPlucker_depthTestCell 0 := by
+  intro heq
+  apply gammaSewnCriticalPlucker_depthTest_probability_not_complementInvariant
+  unfold gammaSewnCriticalPlucker_symProbability
+    gammaSewnCriticalPlucker_symmetrize at heq
+  simp only [gammaSewnCriticalPlucker_complementIndex] at heq ⊢
+  linarith
 
 end RHTower.HedenmalmThetaSource

@@ -620,3 +620,83 @@ localization). Mechanism classical-flavored (power sums + Cesàro). Label: [LEAN
 set-bound lambdas needs `simp only [hdef]` (beta) — recurring; `rw` closes `r ≤ r` goals via
 @[refl]-rfl (drop trailing exact le_rfl); `|>.trans_eq (by ring)` fails on metavariable targets —
 use explicit calc; norm-rewrite chains must not mix `norm_pow` targets (first occurrence bites).
+
+## Step 34 (2026-08-12): DEFLATION — the minors see the second level; the ladder descends
+
+**New theorem** `RHTower/XiResolventDeflationSecondLevel.lean` (+ engine
+`HTGeometry/WeightedUnitPowerSumOscillation.lean`), all axioms
+[propext, Classical.choice, Quot.sound], both umbrellas wired:
+- `exists_secondLevel_criticalLine_of_forall_turanMinor_re_nonneg`: **if every consecutive Turán
+  minor at one shift is nonnegative, then among the divisor copies of maximal resolvent modulus
+  STRICTLY BELOW the edge — the second level of lowest zeros — at least one lies on the critical
+  line.** With step 33 (same hypothesis cleans the whole edge): rank-2 Hankel data cleans level 1
+  and sees level 2. The deflation ladder takes its first step down the zero spectrum.
+- Engine: `weightedUnitPowerSum_no_decaying_lower_bound` — oscillation for COMPLEX-weighted unit
+  power sums under class-constancy (v i = v j → W i = W j) and conjugation-symmetry
+  (v j = conj v i → W j = conj W i) with one nonzero weight; the two hypotheses are exactly what
+  keeps the second-moment expansion sign-definite at resonant pairs (both resonance coefficients
+  collapse to ‖W‖²). Reusable for all further deflation rungs.
+- Helpers: `xiResolventPoint_im_eq_zero_of_spectral` (on-line ⇒ real value),
+  `xiResolventPoint_eq_ofReal_of_im_eq_zero` (real max value = the atom).
+
+**Mechanism** (the deflation step, exact): the cleansed edge collapses to the single atom r with
+multiplicity m = |T|; substituting Rₖ = m·r^{k+1} + R'ₖ into the minor gives the identity
+  minor_n = m·r^{n+1}·Dₙ + (R'ₙR'ₙ₊₂ − R'ₙ₊₁²),
+  Dₙ = Σ'_q u^{n+1}(u − r)²  (FULL divisor sum: edge terms vanish identically — no
+  subtype-of-subtype needed, the key formalization trick).
+The deflated minor is O(ρ^{2n+2}); minor positivity therefore forces the decaying floor
+Re Σ_{SF} (u−r)²·(u/ρ)^{n+1} ≥ −C₀κⁿ, κ = max(ρ/r, ρ₂/ρ) < 1, on the second-level system with
+weights (u−r)² — class-constant, conj-symmetric, nonvanishing (‖u‖ = ρ < r) ⇒ engine ⇒ a real
+point at the second level ⇒ height gap ⇒ critical line.
+
+**The graded criterion after steps 32–34**:
+  diagonal (rank 1) ⇒ ∃ on-line at level 1;
+  minors (rank 2) ⇒ ∀ on-line at level 1 AND ∃ on-line at level 2.
+Conjectured continuation (recorded): rank-k principal-minor data cleans levels < k and sees
+level k; full PSD = all levels = RH (consistent with the corpus single-shift iff). Next rung
+needs: 3×3-minor pair/triple expansions (Heine k=3) + iterated deflation (subtract TWO real
+atoms; the weighted engine already covers the needed weight class). The cleansing of level 2
+(∀ vs ∃) needs the step-33 argument on the deflated system — weights now (u−r)², conj-pair
+points at 1 carry weight −4(Im u)²·|(u−r)²|-phase — CHECK: the level-2 cleansing needs the
+pair-sum of the deflated minor: minor'' expansion — recorded as open.
+
+**Lean traps**: `-(a)/b` vs `-(a/b)` are DIFFERENT linarith atoms — normalize with neg_div before
+mixing; `set x : T := e` after a doc-comment: `set_option ... in` must precede the docstring;
+stale oleans from `lake env lean` iterations can shadow a revised signature — `lake build +module`
+after changing a dependency's statement; deprecated `push_neg` → `rw [not_le]`; conj-goals close
+via rewriting the conj SIDE (map_pow, map_sub, conj_ofReal), not by conj-ifying the plain side.
+
+## Step 35 (2026-08-12): LEVEL-2 CLEANSING — the deflated Turán minors; depth two complete
+
+**New theorem** `RHTower/XiResolventDeflatedTuranCleansing.lean` (axioms clean, wired):
+- `xiDeflatedMoment t k X := R_{k+2} − 2tR_{k+1} + t²R_k` — the t-deflated moments = moments of
+  the divisor reweighted by (u−t)²; `xiDeflatedMoment_eq_tsum` (∀ t, unconditional).
+- `two_mul_deflatedTuranMinorAt_eq_tsum_pair`: weighted variance expansion at every level n and
+  every deflation point t.
+- **`forall_secondLevel_criticalLine_of_forall_deflatedTuranMinor_re_nonneg`**: if all plain AND
+  all t-deflated Turán minors at one shift are nonnegative (∀t — these are 2×2 minors of the
+  CUBIC Hankel sections in the deflating basis {u−t, u(u−t)}, hence rank-3 positivity data),
+  then EVERY copy of maximal resolvent modulus strictly below the edge is on the critical line.
+
+**The graded criterion through depth two, all Lean-proved (steps 32–35)**:
+  rank-1 (diagonal)          ⇒ ∃ on-line at level 1;
+  rank-2 (plain minors)      ⇒ ∀ on-line at level 1, ∃ on-line at level 2;
+  rank-3 (deflated minors)   ⇒ ∀ on-line at level 2.
+The induction pattern is now fully exhibited: deflating at the cleansed level-k atom converts
+rank-(k+1) determinant data into rank-2 data of the (u−r₁)²···(u−r_k)²-weighted system, whose
+edge is level k+1; the cleansing and detection arguments repeat verbatim with the weighted
+machinery (weighted oscillation engine + weighted pair expansions — both now in the corpus).
+Conjectured general ladder [PAPER-level, recorded]: iterated-deflated Turán data of depth k
+cleans the first k levels; RH = the full ladder = single-shift Hankel PSD (corpus iff).
+
+**Mechanism of step 35**: plain minors cleanse the edge to the atom r (step 33/34 blocks);
+the weight (u−r)² kills the edge identically, so the deflated pair expansion's maximal pair
+points sit at ρ² (level-2 squared); pair points equal to ρ² are conjugate pairs with weights
+−4(Im u)²·normSq((u−r)²) < 0 at an off-line witness; first-moment Cesàro + geometric tails
+(third-level ρ₂; edge-coordinates give literally zero terms via by_cases q∈T) finish exactly as
+in step 33 one level down.
+
+**Lean traps**: same family as before; new: defeq-`show` rewrites for Prod-projections of
+`set`-pairs ((qh, σqh).1 etc.); set-folded norms can close goals early (rw-rfl on ρ-folded
+‖u qh‖ — remove dead tactics); cast: div_self on ↑(ρ²) needs ofReal_ne_zero, not pow_ne_zero
+of (↑ρ)².

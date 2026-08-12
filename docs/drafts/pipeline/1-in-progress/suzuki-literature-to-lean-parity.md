@@ -92,6 +92,13 @@ must not be relabelled unconditional.
   bounded-interval unit ball, published uniform Fourier-tail estimate, and compact closure for every
   bundled bounded interval.  This closes Suzuki (2026), Proposition 4.1 / the compact-embedding
   ingredient cited from CCM (2025), rather than a discrete or finite-dimensional proxy.
+- `SuzukiScrewNondegeneracy.lean`: constructs the exact zero-extension injection from the literal
+  subtype realization of `L²(-a,a)` used by Suzuki's trace-class integral operator to the whole-line
+  fixed-support realization used by the strict screw-form theorem, proves equality of both literal
+  double-kernel forms, identifies the full sesquilinear interval form with the operator pairing,
+  proves radical-zero nondegeneracy equivalent to operator injectivity, and closes both source
+  formulations of the RH-implies-nondegeneracy/no-zero-eigenvalue half of Suzuki (2023), Theorem
+  1.4.
 - `CompactFourierEntire.lean`: exact entire/exponential-type theorem for compact interval Fourier
   integrals; usable for the entireness clause once the actual deficiency vectors are constructed.
 - `SuzukiFiniteApertureHermiteBiehler.lean`, `SuzukiAllAngleWitnesses.lean`,
@@ -135,7 +142,7 @@ must not be relabelled unconditional.
 | Theorem 1.2, RH iff the literal `g=-Psi` is a Krein screw function on the real line | **EXACT.** `SuzukiScrewFunctionCriterion.lean` proves both implications for the source kernel and all finite kernel matrices. |
 | Theorem 1.3, restricted screw hermitian form iff RH; under RH strict positivity on every nonzero `L²(-a,a)` vector | **EXACT.** `SuzukiScrewL2Form.lean`, `SuzukiScrewSmoothTestCriterion.lean`, `SuzukiCompactL2Fourier.lean`, and `SuzukiScrewStrictPositivity.lean` define the literal form, prove the RH equivalence, and exclude its radical under RH. |
 | Proposition 3.1, derivative of the screw form equals the Weil-distribution convolution form | **EXACT.** `SuzukiScrewWeilIdentity.lean` proves the global source test-function identity, including the prime-power atoms. |
-| Theorem 1.4, RH iff every restricted form/operator is nondegenerate / has no zero eigenvalue | **MISSING EXACT.** Requires the actual bounded integral operator on `L²(-a,a)` and exact radical classification. |
+| Theorem 1.4, RH iff every restricted form/operator is nondegenerate / has no zero eigenvalue | **NECESSITY AND FORM/OPERATOR EQUIVALENCE EXACT; CONVERSE MISSING.** `SuzukiScrewNondegeneracy.lean` bridges the two actual `L²(-a,a)` realizations by an injective zero extension, proves exact equality of the literal screw form and the full sesquilinear operator pairing, proves radical-zero nondegeneracy equivalent to `Function.Injective T_a`, and proves the closed implications from RH in both formulations. The reverse implication is not abstract operator algebra: the source uses a maximal positive aperture and uniform infinite Gram--Schmidt estimates to force a zero mode at the boundary if RH fails. |
 | Theorem 1.5, every actual restricted screw-kernel operator is trace class unconditionally | **EXACT.** `SuzukiScrewTraceClass.lean` constructs the literal bounded-interval operator and proves its unconditional trace-class factorization; `SuzukiScrewTraceFormula.lean` proves the diagonal and eigenvalue-sum identities. |
 | Theorem 1.6, RH iff `Psi=O(1)` on `[0,infinity)` | **EXACT.** `SuzukiScrewBoundednessCriterion.lean` proves the literal boundedness equivalence. |
 | Paragraph after Theorem 1.6, `Psi` belongs to neither `L¹(0,infinity)` nor `L²(0,infinity)` regardless of RH | **EXACT.** `SuzukiScrewNonintegrability.lean` proves both closed negations from the exact Laplace continuation and central Xi-resolvent residue. |
@@ -180,6 +187,9 @@ parity still requires a localized Weil-form/operator stack:
 3. actual first-order derivative on the form completion, adjoint, deficiency indices, and von
    Neumann extensions;
 4. actual characteristic Fourier function and spectral zero equivalence.
+5. for Suzuki (2023), Theorem 1.4's converse, formal maximal-positive-aperture continuation and
+   the source's uniform infinite Gram--Schmidt estimates producing a literal kernel vector at the
+   boundary aperture when RH fails.
 
 Until those objects exist, counting generic Schur, Cayley, CFC, or finite-matrix consequences as
 Suzuki's theorems is theatre.

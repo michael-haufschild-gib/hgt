@@ -618,3 +618,48 @@ one explicit `log(q+1)` loss.  C14's polynomial-in-order reserve absorbs this af
 bound at the Route-T parameters, choose the useful rational coordinates, and prove a uniform
 `N^(1-c/r^4)` single-sum estimate before transporting it through zeta growth to the near-one
 Maynard endpoint.
+
+### C17. Useful-coordinate entropy pays the complete Route-T loss with a strict polynomial reserve
+
+The quantitative extraction is now closed in Lean.  Write the auxiliary Route-T parameter as
+`s=4u`, the phase order as `k=400u`, and the moment as
+`b=k(2500s^2-200s)`.  The upper half of the coordinates contains at least `200u` indices.  Every
+such index has rational-coordinate saving exponent at least `u`, so the product reserve is exactly
+bounded below by
+
+```text
+sum_useful floor((j+1)/200) >= 200u^2.
+```
+
+The two PNT-free Vinogradov mean values and the natural coordinate mass have total excess
+
+```text
+2 E(k,r) + k(k+1) - 4b = 2800u + 4.
+```
+
+Hence the net reserve is the literal natural number
+
+```text
+R(u) = 200u^2 - (2800u+4) >= 100u^2       (u >= 29).
+```
+
+This is not an asymptotic bookkeeping claim.  `VinogradovRouteTSaving.lean` now proves, without
+axioms, the collected `4b^2`-moment estimate, cancels numerator and denominator powers exactly,
+absorbs every finite combinatorial constant once `Q` exceeds one explicit natural threshold, and
+takes the exact real root.  The resulting pointwise theorem is
+
+```text
+|B_Q(alpha)| <= Q^(2-delta_u),
+delta_u = (100u^2-1)/(4b^2) > 0.
+```
+
+The important new principle is quantitative: expanding the coordinate window term by term makes
+the apparent `P/R` block cost cancel against the `q log q` large-sieve term.  Separately bounding
+those factors would destroy the reserve.  After that cancellation, useful-coordinate entropy is
+quadratic in `u`, while every mean-value loss is only linear in `u`; the finite MV24.7 bridge
+therefore produces a genuine polynomial saving without full VMVT or PNT input.
+
+Active core is no longer the bilinear moment estimate.  It is the MV24.11--24.12 transport problem:
+construct simultaneous useful-coordinate rational approximants for Taylor phases, retain the
+explicit denominator window and logarithmic absorption hypotheses, and perturb the proved
+bilinear bound into a one-dimensional logarithmic-phase sum with exponent strictly below one.

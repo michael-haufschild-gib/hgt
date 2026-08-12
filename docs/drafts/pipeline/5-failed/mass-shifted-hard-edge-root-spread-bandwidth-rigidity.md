@@ -1,12 +1,24 @@
 # Mass-shifted hard-edge root-spread bandwidth rigidity
 
 - **ID:** `mass-shifted-hard-edge-root-spread-bandwidth-rigidity`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / target theorem
+- **Stage:** 5-failed
+- **Type:** FALSE CONJECTURE / EXACT NO-GO / POSITIVE SURVIVOR EXTRACTED
 - **Depends on:** `mass-shifted-projective-gauss-root-renewal` and
   `mass-shifted-completed-source-hard-edge-compactness`
 
 ## Target
+
+**FALSIFIED.**  This target uses affine roots as if they were hard coordinates.  If a reciprocal
+hard root `u` stays bounded, its ordinary Gauss root and affine observation are
+
+```text
+x = 1 / (y + u),
+r = 2*y*x - 1 = (y-u)/(y+u) -> 1.
+```
+
+Therefore every bounded, nontrivial hard-root configuration has collapsing affine root spread.
+Completed-source Paley--Wiener compactness is compatible with that collapse.  Equations identifying
+projective work with affine spread remain true, but affine spread cannot close route.
 
 Let `a_j→∞`, `n_j/a_j` stay in a compact positive interval, and let `Q_j` be real-rooted degree
 `n_j` hard-edge admission polynomials. Form normalized Cayley half-density packets
@@ -64,6 +76,23 @@ collapse of every projective-work account at parabolic first contact.
     rescaled unit disk changes the arcsine weight and creates an artificial endpoint. The required
     estimate must retain or quantitatively compare the original Cayley measure. This is the sole
     analytic gap; it cannot be hidden in a generic Remez citation.
+11. **Hostile coordinate test — TARGET FALSIFIED.** For bounded hard levels `u,v`, exact identity
+    ```text
+    (y-u)/(y+u) - (y-v)/(y+v)
+      = 2*y*(v-u)/((y+u)*(y+v))
+    ```
+    shows affine separation is `O(1/y)` even when reciprocal hard separation is nonzero. Hence
+    empirical affine spread collapse is automatic for the compact hard configurations route needs.
+12. **Positive survivor — Möbius source capacity.** Reciprocal clearing sends ordinary root `x`
+    to `u=x⁻¹-y`. At that root, actual diagonal adaptive completed-source producer `T` obeys
+    `T(u)=0` and `T'(u)=-2*x⁻¹*S'(u)^2`. The endogenous capacity
+    `C=-(x/2)T'(u)=S'(u)^2` is nonnegative and retains hard geometry. With Gauss/Padé residue
+    `rho=lambda/x` and terminal mass `Gamma=y*x^4*lambda*P'(x)^2`, exact replacement law is
+    ```text
+    rho * y*x^(2N+1) * C = Gamma.
+    ```
+    This survivor is formalized in
+    `RHTower.XiShiftedHardEdgeAdaptiveSourceTransversality`.
 
 ## Required proof surface
 
@@ -76,5 +105,19 @@ collapse of every projective-work account at parabolic first contact.
   window identity and integral small-arc cap;
 - specialization to actual canonical first-contact packets.
 
-No abstract theorem taking compactness or root concentration as unexplained hypotheses will be
-formalized as route closure. Lean work begins only after dependency-closed paper proof exists.
+This proof surface is retired because its premise-to-contradiction implication is false.  Correct
+open core is source control of reciprocal hard Padé atoms: show actual positive-axis residue mass
+vanishes, or equivalently force terminal divided-root mass to vanish or effective adaptive source
+capacity to diverge.  No affine-spread or constrained-root bandwidth theorem can substitute for
+that source law.
+
+## No-go closure and exact positive survivor
+
+- Exact false step: treating `2*y*x-1` as a faithful carrier of `x⁻¹-y` at `y->infinity`.
+- Exact loss locus: nonproper/infinite-scale coordinate compression, not finite branching or
+  missing root-count estimates.
+- Strongest positive theorem: adaptive completed-source transverse capacity and its exact
+  multiplicative conservation with Padé residue and hard terminal mass.
+- Paper proof: dependency-closed.
+- Lean status: unconditional and compiled; see
+  `XiShiftedHardEdgeAdaptiveSourceTransversality.lean`.
