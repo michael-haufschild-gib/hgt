@@ -1048,3 +1048,30 @@ every δ, hence ≥ 0. Finset-nodal data follow by enumerating each node set as 
 inequalities at one shift. Note: countability per se is not new (Li's criterion is a countable
 list); the content is the structure — single 2×2 minors of nodal reweightings at one point,
 with the density argument powered by our own effective constants.
+
+**Step 41 status: [LEAN-PROVED].** Module `RHTower/XiResolventRationalNodeCriterion.lean`,
+eleven declarations, all auditing to [propext, Classical.choice, Quot.sound], olean-built,
+wired. Key theorems:
+- `norm_evalRealPolynomial_shiftedFinNodal_le` / `_sub_le` — `2^j` bound and `j·2^j·ε`
+  node-displacement bound on the unit disk (via corpus `norm_prod_sub_prod_le`).
+- `norm_xiPolyMoment_shiftedFinNodal_le` / `_sub_le` — moment bounds `S·4^j` and
+  `S·j·2^(2j+1)·ε`.
+- `abs_re_datum_shiftedFinNodal_sub_le` — datum Lipschitz constant `8j·S²·16^j`.
+- `finNodal_datum_re_nonneg_of_rational` — rational density (approximation from below keeps
+  nodes in `(0,1]`; `ε = δ/(L+1)`).
+- **`riemannHypothesis_iff_forall_rational_nodal_single_minor`** — RH ⟺ the countable family
+  of single (0,2,1) minors indexed by `(j, m, c : Fin j → ℚ)`, nodes in `(0,1] ∩ ℚ`.
+- `rational_nodal_index_countable` — the index type is countable (instance-level).
+
+Numerically pre-certified (300 random configs; worst observed ratio 5·10⁻³ of the Lipschitz
+bound). Lean traps (new): a `have h := lemma args` without expected type cannot infer an
+implicit that appears only inside a polynomial argument of the conclusion — pass `(m := m)`
+explicitly; `calc` blocks with `‖_ + _‖` placeholder heads fail to parse — use
+`refine le_trans (mul_le_mul ...) (le_of_eq ?_)` or plain `exact` on the rewritten goal.
+
+**Next frontier.** (i) Window optimality (step-38 masking testbed); (ii) nodal supply: feed the
+two-scale bridge into the FIRST rational-nodal data (R = ∅, j = 0 gives the plain single
+minors; the bridge already supplies index 0) — chart the exact arithmetic content of the first
+nontrivial rational instances; (iii) monotone structure of the rational family (does datum at
+finer node sets dominate coarser ones? a lattice structure on the countable list would give a
+canonical exhaustion).

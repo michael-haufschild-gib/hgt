@@ -9,28 +9,24 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local formal cutoff is committed umbrella-reachable snapshot
-`1c62c8409380618a069d09995e7f4b65128bebce`. Files outside committed umbrellas at this snapshot are
+`b6b29bc9003a4a82f366b3c96c6c9b8ace501164`. Files outside committed umbrellas at this snapshot are
 excluded. Paper-only claims are labeled separately.
 
-The 12 August delta changes frontiers but not route count. Route G now has exact finite-part,
-complete real/complex smooth-core semiboundedness, explicit limiting-log coercivity, exact scaling,
-literal small-aperture source positivity, exact form-nondegeneracy/operator-injectivity comparison,
-and generic simple-eigenvalue perturbation; its external debt begins at closed-form/operator
-representation, not finite-part control. Route L now has canonical arbitrary-base big-Witt ring
-laws, exact Mobius successor blow-up, Gamma-six orientation/residue classification, positive
-half-density Floquet geometry, a universal von-Mangoldt diagonal sign wall, and exact reflected-
-graph radical. Route O's completed-Evans branch has weak Gamma-domain upgrade and exact root-port
-observability. Route U now has full polynomially weighted spectral descent and a single-shift,
-single-index polynomial Turan/Cauchy--Schwarz equivalence to RH; arithmetic supply of that family is
-the open theorem. Route E has concrete cross-system multiplicative-regularization blindness.
-Committed P-G79 clears Route P's hostile local Pluecker chirality cell. Committed Route-T modules
-solve the PNT-free recurrence, close the complete finite MV24.7 bridge, transport it to embedded
-actual intervals, and extract an explicit polynomial bilinear saving. Current provisional work
-globalizes Route-P chirality to every ordered prime pair; specializes Route T to the true upper-half
-box, logarithmic Taylor approximants, and perturbation; closes Suzuki's exact `H^log` boundary
-approximation/form-core realization and canonical shifted-Xi/shift-ratio propositions; strengthens
-Route-U hard-edge capacity limits;
-and constructs coefficient-faithful Helson Fredholm-wall response. None proves RH or creates Route V.
+Current route count is unchanged. Route G has exact finite-part and smooth-core semiboundedness,
+completed `H^log` boundary core, canonical shifted-Xi and meromorphic-inner receivers, and an
+explicit compact kernel with exact archimedean Mellin transform; closed-form/operator
+representation and source admission remain open. Route L has formal big-Witt algebra, Steinberg
+and Gamma-six source-normal transgressions, shell/principal-symbol geometry, and the fixed physical
+reader; the global ideal-preserving singular lift remains open. Route P is formal through P-G89:
+ordered-prime/depth chirality, finite and cofinal assembly, inverse-incidence recovery, positive
+global weak reduction, and the uniform-scalar compact-moment no-go. Route T's committed but
+umbrella-unreachable chain reaches explicit logarithmic shells, `B^-2` Taylor control, finite
+MV24.8--24.10 smoothing/convolution, and a one-dimensional logarithmic-phase receiver. Route U's
+minimal one-shift endpoint has narrowed from arbitrary real polynomials to monic real-rooted nodal
+squares, with effective finite detection, hard-edge worldline conservation, and flat-contact
+source transmutation formal. Route O's two producer branches and Route E's fixed grade-recurrent
+capacity theorem retain their stated open cores. The Helson Fredholm wall remains a candidate,
+not Route V. None proves or disproves RH.
 
 The answer is asymmetric. The corpus contains many source-specific identities, completeness laws,
 sharp boundaries, and no-go classifications for which no exact external collision was located.
@@ -96,22 +92,22 @@ remaining external input has moved beyond all-short formation. Committed but umb
 Lean now makes grouped Heath--Brown selection, exact heterogeneous factorization, finite power-sum
 incidence, all-residue energy, fixed Bertrand reservoir, collision recurrence, integer-exponent
 mean-value induction, exact Fejer smoothing, both Holder steps, embedded actual intervals, and an
-explicit polynomial bilinear saving literal. Current provisional modules specialize that bound to
-the true upper-half source box, construct simultaneous reciprocal/logarithmic Taylor approximants,
-and isolate Taylor error. The capstone now absorbs the large-sieve logarithm from one explicit
-natural threshold. Missing theorem is source-specific: verify the two exact useful-coordinate
-windows and that threshold uniformly at MV24.11 Taylor centres, absorb the Taylor remainder, and
-perform MV24.11--24.12 single-sum transport to ultra-near-one long-Mobius
-exclusion. More VMVT, recurrence, Perron packaging, or pointwise selection does not address it.
+explicit polynomial bilinear saving literal. Committed source modules now also specialize to the
+true upper-half box, discharge both logarithmic coefficient windows on the explicit height shell,
+bound Taylor error by `B^-2`, formalize finite Montgomery--Vaughan 24.8--24.10 smoothing and
+convolution, and reach the one-dimensional logarithmic-phase receiver. Missing theorem is the
+remaining explicit saving-versus-block comparison, simplification to a phase-block power bound,
+and MV24.11--24.12 transport to ultra-near-one long-Mobius exclusion. More VMVT, recurrence,
+Perron packaging, or pointwise selection does not address it.
 Route U's finite positive-chamber Jacobi flow, adaptive curvature price, projective surplus, and
 adjacent-norm capitalization remain exact local source mechanisms. Its terminal receiver is now
-strictly sharper. Committed polynomially weighted Turan descent cleans every resolvent-modulus
-level and proves RH equivalent, at one shift, to one index-zero inequality per real polynomial,
-equivalently one arithmetic resolvent-trace Cauchy--Schwarz family. Plain minors are formally
-insufficient by an explicit nonreal masking configuration; the available two-scale supply theorem
-assumes partial line control. Thus current science is arithmetic supply or effective finite descent
-for the polynomial family. Odd-sector/full-ground, Padé, hard-edge hyperbolicity, and cofinal
-price synchronization are structural source models for that supply, not alternate endpoints.
+strictly sharper. Effective polynomial descent cleans every resolvent-modulus level, and the nodal
+criterion proves RH equivalent, at one shift, to one index-zero inequality for each monic real-
+rooted weight `Polynomial.X^m * product_(r in R)(Polynomial.X-r)`, with finite
+`R subset (0,1]`. Plain minors are formally insufficient; arbitrary-polynomial Cauchy--Schwarz is
+a valid but nonminimal Hamburger receiver. Hard-edge worldline conservation and flat-contact
+source transmutation expose possible arithmetic producers, but neither supplies the nodal family.
+Odd-sector/full-ground, Padé, and cofinal price models remain structural, not alternate endpoints.
 Route L's cofinal prime-period tomography is algebraically injective but topologically non-strict;
 its source and circle targets are formal Fréchet spaces and the source-specific tomography range is
 formally nonclosed. Two-endpoint Stokes normalization removes only the Haar ambiguity while the

@@ -269,7 +269,7 @@ private theorem tendsto_restrictedWeil_abelInterior_nhdsGT_zero
     have hexple : Real.exp (-(delta * h)) ≤ 1 :=
       Real.exp_le_one_iff.mpr (neg_nonpos.mpr hprod)
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hexp0 hq0)]
-    exact mul_le_mul_of_nonneg_right hexple hq0
+    simpa only [one_mul] using mul_le_mul_of_nonneg_right hexple hq0
   have hlim : ∀ᵐ h : ℝ ∂volume, h ∈ uIoc 0 R →
       Tendsto (fun delta : ℝ => Real.exp (-(delta * h)) * q h)
         (𝓝[>] 0) (𝓝 (q h)) := by
@@ -281,7 +281,7 @@ private theorem tendsto_restrictedWeil_abelInterior_nhdsGT_zero
       simpa using hfull.mono_left nhdsWithin_le_nhds
     have he : Tendsto (fun delta : ℝ => Real.exp (-(delta * h)))
         (𝓝[>] 0) (𝓝 1) := by
-      simpa only [Function.comp_apply, Real.exp_zero] using
+      simpa only [Function.comp_def, Real.exp_zero] using
         Real.continuous_exp.continuousAt.tendsto.comp hz
     simpa using he.mul_const (q h)
   simpa [R, q] using
@@ -331,5 +331,84 @@ theorem tendsto_suzukiRestrictedWeilPhysicalRenormalization_nhdsGT_zero
   rw [suzukiFinitePartEnergy_eq_translationDifference A u]
   dsimp [M, R]
   ring
+
+private theorem integrable_suzukiLogFourierSpectralDensity
+    (f : SchwartzMap ℝ ℂ) :
+    Integrable (_root_.RHTower.suzukiLogFourierSpectralDensity f) := by
+  refine (_root_.RHTower.integrable_abs_log_fourierSpectralDensity f).mono'
+    (((Real.measurable_log.comp
+      ((measurable_const.mul measurable_id).abs)).mul
+        ((GaloisForLFunctions.RHTower.continuous_fourier_of_integrable
+          f.integrable).norm.measurable.pow_const 2)).aestronglyMeasurable) ?_
+  filter_upwards with xi
+  simp only [_root_.RHTower.suzukiLogFourierSpectralDensity, Real.norm_eq_abs,
+    abs_mul, abs_pow, abs_norm]
+  exact le_rfl
+
+/-- Suzuki's finite-part formula before combining the Euler term into the Fourier integrand.
+This is equation (2.6), obtained by uniqueness of the physical and spectral Abel limits. -/
+theorem suzukiFinitePartEnergy_eq_logFourier_add_eulerMass
+    (A : _root_.RHTower.SuzukiPositiveAperture) (u : SuzukiRestrictedWeilCore A.1) :
+    suzukiFinitePartEnergy A.1 u =
+      (∫ xi : ℝ, _root_.RHTower.suzukiLogFourierSpectralDensity
+        (suzukiRestrictedWeilSchwartz u) xi) +
+      Real.eulerMascheroniConstant * (∫ x : ℝ, u x ^ 2) := by
+  let f := suzukiRestrictedWeilSchwartz u
+  have hfourier :=
+    _root_.RHTower.tendsto_suzukiAbelRenormalizedDifferenceEnergy_nhdsGT_zero f
+  have hphysical :=
+    tendsto_suzukiRestrictedWeilPhysicalRenormalization_nhdsGT_zero A u
+  have henergy (delta : ℝ) :
+      _root_.RHTower.suzukiAbelRenormalizedDifferenceEnergy delta f =
+        (1 / 2 : ℝ) * _root_.RHTower.abelSchwartzPhysicalEnergyR delta f +
+        Real.log delta * (∫ x : ℝ, u x ^ 2) := by
+    rw [_root_.RHTower.suzukiAbelRenormalizedDifferenceEnergy,
+      integral_fourierNormSq_restrictedWeilSchwartz_eq_mass]
+  have hphysical' := hphysical.congr'
+    (Eventually.of_forall fun delta => (henergy delta).symm)
+  have huniq := tendsto_nhds_unique hfourier hphysical'
+  dsimp only [f] at huniq
+  linarith
+
+/-- Suzuki equation (2.6) on the literal restricted Weil core.  All support, regularity, and
+aperture conditions are intrinsic to the two inputs; there are no analytic premises. -/
+theorem suzukiFinitePartEnergy_eq_logFourier
+    (A : _root_.RHTower.SuzukiPositiveAperture) (u : SuzukiRestrictedWeilCore A.1) :
+    suzukiFinitePartEnergy A.1 u =
+      ∫ xi : ℝ, (Real.log (|2 * Real.pi * xi|) + Real.eulerMascheroniConstant) *
+        ‖𝓕 (suzukiRestrictedWeilSchwartz u : ℝ → ℂ) xi‖ ^ 2 := by
+  let f := suzukiRestrictedWeilSchwartz u
+  have hbase := suzukiFinitePartEnergy_eq_logFourier_add_eulerMass A u
+  have hlog : Integrable (_root_.RHTower.suzukiLogFourierSpectralDensity f) :=
+    integrable_suzukiLogFourierSpectralDensity f
+  have hmass := _root_.RHTower.integrable_fourierNormSq_schwartz f
+  calc
+    suzukiFinitePartEnergy A.1 u =
+        (∫ xi : ℝ, _root_.RHTower.suzukiLogFourierSpectralDensity f xi) +
+          Real.eulerMascheroniConstant * (∫ x : ℝ, u x ^ 2) := by
+      simpa only [f] using hbase
+    _ = (∫ xi : ℝ, _root_.RHTower.suzukiLogFourierSpectralDensity f xi) +
+          Real.eulerMascheroniConstant *
+            (∫ xi : ℝ, ‖𝓕 (f : ℝ → ℂ) xi‖ ^ 2) := by
+      rw [integral_fourierNormSq_restrictedWeilSchwartz_eq_mass]
+    _ = ∫ xi : ℝ, _root_.RHTower.suzukiLogFourierSpectralDensity f xi +
+          Real.eulerMascheroniConstant * ‖𝓕 (f : ℝ → ℂ) xi‖ ^ 2 := by
+      rw [← MeasureTheory.integral_const_mul]
+      exact (MeasureTheory.integral_add hlog
+        (hmass.const_mul Real.eulerMascheroniConstant)).symm
+    _ = ∫ xi : ℝ, (Real.log (|2 * Real.pi * xi|) + Real.eulerMascheroniConstant) *
+          ‖𝓕 (suzukiRestrictedWeilSchwartz u : ℝ → ℂ) xi‖ ^ 2 := by
+      refine integral_congr_ae (Eventually.of_forall fun xi => ?_)
+      dsimp [f, _root_.RHTower.suzukiLogFourierSpectralDensity]
+      ring
+
+/-- Literal finite-part block form of Suzuki equation (2.6). -/
+theorem suzukiWeilFinitePartBlock_eq_logFourier
+    (A : _root_.RHTower.SuzukiPositiveAperture) (u : SuzukiRestrictedWeilCore A.1) :
+    weilFinitePartBlock A.1 u u =
+      ∫ xi : ℝ, (Real.log (|2 * Real.pi * xi|) + Real.eulerMascheroniConstant) *
+        ‖𝓕 (suzukiRestrictedWeilSchwartz u : ℝ → ℂ) xi‖ ^ 2 := by
+  rw [suzukiWeilFinitePartBlock_eq_energy,
+    suzukiFinitePartEnergy_eq_logFourier]
 
 end GaloisForLFunctions.RHTower

@@ -813,3 +813,43 @@ direct-check clean in Lean.
 Active core is now sharply isolated: choose and verify the square-root smoothing length, prove the
 finite MV24.10 convolution rearrangement, and specialize its full twisted polynomial to C19's
 uniform logarithmic block.  No Taylor, Diophantine, or coefficient-smoothing premise remains open.
+
+### C21. Product-box mass closes MV24.10 and yields a strict one-dimensional saving
+
+The feared coefficient lower bound does not require a divisor asymptotic.  The explicit injection
+
+```text
+(a,b) in [0,Q/4)^2  |->  (Q+a+1,Q+b)
+```
+
+lands inside `Q^2 < lm <= 2Q^2` for `Q>=8`.  Thus Route T's product multiplicity has receiver-block
+mass at least `Q^2/64`.  This endpoint-shifted box is the exact positive survivor of the convolution
+geometry: it both avoids the excluded lower endpoint and stays uniformly below `2Q^2`.
+
+`MontgomeryVaughanConvolutionReceiver.lean` now proves the full finite MV24.10 chain: product
+regrouping by additive centre, exact edge slices, inheritance of balanced-divisor domination,
+square-root coefficient smoothing, product-fibre multiplicity, and identification of every full
+twisted convolution polynomial with C19's logarithmic bilinear sum.
+
+`MontgomeryVaughanLogPhaseReceiver.lean` supplies a symbolic, non-evaluated base threshold and
+proves, unconditionally on the full Route-T height shell,
+
+```text
+|sum_(N<n<=2N) exp(i t log n)| <= 6912 N P^(-delta_u/2),
+P=(2C)^99,  N=(2C)^200,  delta_u>0.
+```
+
+The threshold is explicit:
+
+```text
+max(RouteTLogBaseThreshold(u), 8^(4 b(4u)^2)) <= 2C.
+```
+
+It guarantees `8<=P^delta_u`, exactly the condition needed for the bilinear saving to fit below
+the coefficient-block length.  No computation, asymptotic notation, density premise, or hidden
+coefficient hypothesis remains.  This is the first axiom-free strict one-dimensional exponent
+saving produced by Route T.
+
+Active core: rewrite `P^(-delta_u/2)` as
+`N^(-99 delta_u/400)` and carry this exponent through the Maynard/Huxley near-one zero-free
+receiver.  The convolution obstacle itself is closed.
