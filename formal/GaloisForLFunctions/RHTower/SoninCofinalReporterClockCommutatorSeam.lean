@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.SoninCofinalContractiveMobiusGammaXiIncidence
 import GaloisForLFunctions.RHTower.SoninCofinalAmbidextrousInwardIncidence
 import GaloisForLFunctions.RHTower.MobiusCriticalFisherReporterRankOneReduction
 import GaloisForLFunctions.RHTower.MobiusCriticalComplexPhaseHardySource
+import GaloisForLFunctions.RHTower.CCMGalerkinDiagonalTransfer
 
 /-!
 # Sonin--reporter arithmetic-clock commutator seam
@@ -435,5 +436,160 @@ theorem soninCofinal_complexFisherScore_eq_reporterTerm_of_commutator_zero
   rw [soninCofinal_complexFisherScore_eq_reporterTerm_add_commutator,
     hcomm]
   simp
+
+/-! ## Source-derived cofinal Fisher profile -/
+
+/-- The complex source with real aperture is definitionally the original
+real-damped physical source, including its `ell²` certificate.  This is the
+coefficient-faithful identification needed to feed the real Euler theorem
+through the non-equivariant Sonin transport. -/
+theorem infiniteMobiusCriticalComplexDampedSignedWeightLp_ofReal
+    {sigma u : ℝ} (hsigma : 1 < sigma) (hu : 0 ≤ u) :
+    infiniteMobiusCriticalComplexDampedSignedWeightLp
+        sigma (u : ℂ) hsigma (by simpa using hu) =
+      infiniteMobiusCriticalDampedSignedWeightLp sigma u hsigma hu := by
+  apply lp.ext
+  funext n
+  change infiniteMobiusCriticalComplexDampedSignedWeight sigma (u : ℂ) n =
+    infiniteMobiusCriticalDampedSignedWeight sigma u n
+  simp [infiniteMobiusCriticalComplexDampedSignedWeight]
+
+/-- FIXED-SOURCE SONIN--EULER SPLICE: at every admissible Euler parameter,
+the actual transported Sonin score converges to the coefficient computed by
+the squarefree Möbius Fisher law.  No finite-depth equivariance or realization
+hypothesis is assumed. -/
+theorem tendsto_soninCofinal_complexFisherScore_ofReal
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (sigma u : ℝ) (hsigma : 1 < sigma) (hu : 0 ≤ u) :
+    Tendsto (fun N =>
+      inner ℂ
+          (soninCofinalSourceCorner a c d r hc hcd hr N
+            (infiniteMobiusCriticalFisherTangentLp sigma hsigma))
+          (soninCofinalSourceCorner a c d r hc hcd hr N
+            (infiniteMobiusCriticalComplexDampedSignedWeightLp
+              sigma (u : ℂ) hsigma (by simpa using hu))))
+      atTop
+      (nhds (infiniteMobiusCriticalFisherTangentDampedCoefficient sigma u)) := by
+  simp_rw [inner_soninCofinalSourceCorner_eq_pullback]
+  have hpull : Tendsto (fun N =>
+      soninCofinalPositiveSourcePullback a c d r hc hcd hr N
+        (infiniteMobiusCriticalComplexDampedSignedWeightLp
+          sigma (u : ℂ) hsigma (by simpa using hu)))
+      atTop
+      (nhds (infiniteMobiusCriticalComplexDampedSignedWeightLp
+        sigma (u : ℂ) hsigma (by simpa using hu))) := by
+    apply tendsto_iff_norm_sub_tendsto_zero.mpr
+    exact tendsto_norm_soninCofinalPositiveSourcePullback_sub
+      a c d r ha hc hcd hda hr harc
+        (infiniteMobiusCriticalComplexDampedSignedWeightLp
+          sigma (u : ℂ) hsigma (by simpa using hu))
+  have hinner := Filter.Tendsto.inner (𝕜 := ℂ)
+    (tendsto_const_nhds : Tendsto
+      (fun _ : ℕ => infiniteMobiusCriticalFisherTangentLp sigma hsigma)
+      atTop (nhds (infiniteMobiusCriticalFisherTangentLp sigma hsigma)))
+    hpull
+  rw [infiniteMobiusCriticalComplexDampedSignedWeightLp_ofReal
+      hsigma hu,
+    inner_fisherTangent_damped_eq_coefficient hsigma hu] at hinner
+  convert hinner using 1
+  ext N
+  rw [infiniteMobiusCriticalComplexDampedSignedWeightLp_ofReal hsigma hu]
+
+/-- Explicit source-half-plane schedule approaching the critical boundary. -/
+def soninMobiusCriticalSigmaSequence (j : ℕ) : ℝ :=
+  1 + 1 / (j + 1)
+
+theorem soninMobiusCriticalSigmaSequence_gt_one (j : ℕ) :
+    1 < soninMobiusCriticalSigmaSequence j := by
+  rw [soninMobiusCriticalSigmaSequence]
+  have hden : (0 : ℝ) < j + 1 := by positivity
+  have hinv : (0 : ℝ) < 1 / (j + 1) := one_div_pos.mpr hden
+  linarith
+
+theorem tendsto_soninMobiusCriticalSigmaSequence :
+    Tendsto soninMobiusCriticalSigmaSequence atTop
+      (nhdsWithin 1 (Set.Ioi 1)) := by
+  apply tendsto_nhdsWithin_iff.mpr
+  constructor
+  · have hzero : Tendsto (fun j : ℕ => (1 : ℝ) / (j + 1))
+        atTop (nhds 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat
+    simpa only [soninMobiusCriticalSigmaSequence, add_zero] using!
+      tendsto_const_nhds.add hzero
+  · exact Filter.Eventually.of_forall
+      soninMobiusCriticalSigmaSequence_gt_one
+
+/-- The one scalar observed after simultaneously choosing a critical Euler
+level `j` and a finite Sonin depth `N`. -/
+def soninCofinalCriticalFisherScore
+    (a c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r)
+    (u : ℝ) (hu : 0 ≤ u) (j N : ℕ) : ℂ :=
+  inner ℂ
+    (soninCofinalSourceCorner a c d r hc hcd hr N
+      (infiniteMobiusCriticalFisherTangentLp
+        (soninMobiusCriticalSigmaSequence j)
+        (soninMobiusCriticalSigmaSequence_gt_one j)))
+    (soninCofinalSourceCorner a c d r hc hcd hr N
+      (infiniteMobiusCriticalComplexDampedSignedWeightLp
+        (soninMobiusCriticalSigmaSequence j) (u : ℂ)
+        (soninMobiusCriticalSigmaSequence_gt_one j)
+        (by simpa using hu)))
+
+/-- COFINAL SOURCE-DIAGONAL LAW: one genuinely finite-depth Sonin sequence
+tracks the physical Möbius coefficient while the Euler parameter approaches
+the critical boundary.  The selected depths are cofinal, the tracking error
+is quantitatively `O(1/j)`, and the transported scores converge to the exact
+positive Fisher profile `2u/(1+u)²`.
+
+This is the corpus-wide Frankenstein splice: Sonin strong recovery supplies
+each finite-depth approximation, the Galerkin route supplies diagonal
+selection, and the squarefree Euler route supplies the terminal coefficient. -/
+theorem exists_soninCofinalCriticalFisherScore_diagonal
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (u : ℝ) (hu : 0 ≤ u) :
+    ∃ Nseq : ℕ → ℕ,
+      (∀ j, j < Nseq j) ∧
+      (∀ j,
+        dist (soninCofinalCriticalFisherScore
+          a c d r hc hcd hr u hu j (Nseq j))
+          (infiniteMobiusCriticalFisherTangentDampedCoefficient
+            (soninMobiusCriticalSigmaSequence j) u) <
+          1 / (j + 1 : ℝ)) ∧
+      Tendsto (fun j => soninCofinalCriticalFisherScore
+        a c d r hc hcd hr u hu j (Nseq j))
+        atTop (nhds (((2 * u / (1 + u) ^ 2 : ℝ) : ℂ))) := by
+  let F : ℕ → ℕ → ℝ := fun j N =>
+    dist (soninCofinalCriticalFisherScore
+      a c d r hc hcd hr u hu j N)
+      (infiniteMobiusCriticalFisherTangentDampedCoefficient
+        (soninMobiusCriticalSigmaSequence j) u)
+  have happrox : ∀ j : ℕ, ∀ ε > 0, ∃ M, j < M ∧ F j M < ε := by
+    intro j ε hε
+    have hfixed := tendsto_soninCofinal_complexFisherScore_ofReal
+      a c d r ha hc hcd hda hr harc
+      (soninMobiusCriticalSigmaSequence j) u
+      (soninMobiusCriticalSigmaSequence_gt_one j) hu
+    have hfixed' : Tendsto (fun N =>
+        soninCofinalCriticalFisherScore a c d r hc hcd hr u hu j N)
+        atTop
+        (nhds (infiniteMobiusCriticalFisherTangentDampedCoefficient
+          (soninMobiusCriticalSigmaSequence j) u)) := by
+      exact hfixed
+    rw [Metric.tendsto_atTop] at hfixed'
+    obtain ⟨N, hN⟩ := hfixed' ε hε
+    refine ⟨max N (j + 1), by omega, ?_⟩
+    exact hN _ (le_max_left _ _)
+  obtain ⟨Nseq, hcofinal, herror⟩ :=
+    GaloisForLFunctions.RHTower.exists_diagonal_lt happrox
+  refine ⟨Nseq, hcofinal, herror, ?_⟩
+  have hcoeff : Tendsto (fun j =>
+      infiniteMobiusCriticalFisherTangentDampedCoefficient
+        (soninMobiusCriticalSigmaSequence j) u)
+      atTop (nhds (((2 * u / (1 + u) ^ 2 : ℝ) : ℂ))) :=
+    (tendsto_infiniteMobiusCriticalFisherTangentDampedCoefficient hu).comp
+      tendsto_soninMobiusCriticalSigmaSequence
+  exact GaloisForLFunctions.RHTower.tendsto_of_dist_lt_inv hcoeff herror
 
 end RHTower

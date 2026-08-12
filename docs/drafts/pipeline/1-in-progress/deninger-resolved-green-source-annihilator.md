@@ -285,7 +285,7 @@ non-absolutely summable, but singularity alone earns no credit without `(1)` and
     strict place-marked mixed \(L^1/L^2\) transport of the forward tail and contragredient
     opposite pole into the literal Meyer--Poisson range, with a genuine fixed-reader
     residue-cancellation law. Full proof:
-    ../2-fully-proven/new_scientific_knowledge/deninger/deninger-mobius-gamma-six-normal-transgression.md.
+    ../3-formalized/new_scientific_knowledge/deninger/deninger-mobius-gamma-six-normal-transgression.md.
 
 12. **Conjecture:** the reciprocal Gamma-six normal supplies a second vanishing-source singular
     edge which cancels the forward endpoint. **Falsified sharply, with a positive pole-germ

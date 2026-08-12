@@ -768,3 +768,48 @@ MV24.11 convolution receiver: transfer this bilinear block saving to the one-dim
 Dirichlet polynomial with divisor-convolution coefficients, preserve the `delta_u` gain through
 dyadic decomposition and coefficient norms, then feed that exponent into the Maynard/Huxley
 near-one zero-free receiver.
+
+### C20. The convolution receiver forces a wider centre window and admits an exact finite Fejer law
+
+Auditing Montgomery--Vaughan Lemmas 24.8--24.11 exposed a second real compatibility condition.
+The convolution centre ranges to `2N+2Q^2`, so C19's `x<=2N` window did not contain every Taylor
+centre consumed by the receiver.  Enlarging to `x<=4N` is sufficient.  It changes the uniform
+coefficient cost from `2^d` to `4^d`, absorbed by the explicit threshold
+
+```text
+32(240u+1)4^(240u) <= B,
+```
+
+without changing the useful-coordinate reserve or `delta_u`.  The widened height-window and both
+twisted logarithmic phase theorems are Lean-closed.
+
+The finite coefficient-smoothing mechanism is also now explicit and formalized in
+`MontgomeryVaughanCoefficientSmoothing.lean`.  With the project's twice-classical Fejer kernel,
+the difference kernel
+
+```text
+K_(M,L) = (M+L)/(2L) Delta_(M+L) - M/(2L) Delta_M
+```
+
+has multiplier exactly one on `|h-H|<=M`, tapers between `M` and `M+L`, vanishes outside, and has
+the exact `L1` cost
+
+```text
+integral_0^1 |K_(M,L)(beta)| dbeta <= 2M/L + 1.
+```
+
+Consequently the source's Lemma 24.8 is proved for every finite coefficient sequence, with the
+boundary annulus retained rather than hidden in `O` notation.  For coefficients dominated by the
+number of divisors in `[Q,2Q]`, direct divisor swapping gives the new local law
+
+```text
+sum_(A<n<=B) tau_[Q,2Q](n) <= 2(B-A)+Q+1,
+```
+
+and hence the two annuli cost at most `4L+2Q+2`.  Arbitrary intervals `(Y,Z]` reduce to the symmetric
+kernel with only one endpoint coefficient loss.  These statements are unconditional, finite, and
+direct-check clean in Lean.
+
+Active core is now sharply isolated: choose and verify the square-root smoothing length, prove the
+finite MV24.10 convolution rearrangement, and specialize its full twisted polynomial to C19's
+uniform logarithmic block.  No Taylor, Diophantine, or coefficient-smoothing premise remains open.

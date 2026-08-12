@@ -3,7 +3,7 @@
 - **ID:** `mass-shifted-hard-edge-worldline-source-conservation`
 - **Stage:** 3-formalized
 - **Type:** THEOREM / ARITHMETIC SOURCE PRODUCER / EFFECTIVITY INTERFACE
-- **Scientific status:** `[LEAN-PROVED] [CORPUS-NOVEL] [EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[LEAN-PROVED] [CORPUS-NOVEL] [SCALE INTERPRETATION CORRECTED] [EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` §9.3 exact open core
 
 ## Result
@@ -55,7 +55,10 @@ Any uniform speed cap `dot u <= K`, `K>0`, forces
 Gamma/h_n >= 4*n*w^3*x^2/K.
 ```
 
-Thus terminal-mass extinction is not free disappearance. It is exactly inverse-mobility escape.
+The last two identities control **relative** mass `Gamma/h_n` inside a positive chamber. They do
+not control absolute terminal mass `Gamma` at a flat face, where `h_n=0`. In particular,
+`Gamma -> 0` does not imply `Gamma/h_n -> 0`, and no speed-escape conclusion follows without a
+separate lower comparison between `Gamma` and `h_n`.
 
 ## Conjecture → proof/failure loop
 
@@ -68,29 +71,34 @@ Thus terminal-mass extinction is not free disappearance. It is exactly inverse-m
    derivative plus source-native half-density connection evaluates exactly at every admitted root.
 4. **Ordinary confluent Darboux needs an infinite positive moment form — FALSIFIED.** One finite
    positive block proves exact derivative/Christoffel coupling.
-5. **Zero terminal mass can coexist with bounded critical root motion — FALSIFIED.** Bounded-speed
-   corollary supplies explicit positive mass floor whenever parabolic forcing stays positive.
+5. **Zero absolute terminal mass forces unbounded critical root motion — FALSIFIED.** The
+   bounded-speed corollary supplies a floor only for `Gamma/h_n`; at flat contact both numerator
+   and norm can vanish. This was a scale error, not a missing estimate.
 
 ## Higher universal principle
 
-Source capacity, Padé residue, and root motion form force–mass–mobility variables:
+Source capacity, Padé residue, and root motion form force–relative-mass–mobility variables inside
+the open positive chamber:
 
 ```text
 source forcing = root speed * residue * adaptive source capacity.
 ```
 
-Previous zero-mass obstruction was shadow of nonproper dynamics. In finite-to-global taxonomy,
-remaining escape sits specifically in infinite branching/nonproperness: root speed can diverge as
-degree and mass coevolve. Observer topology and fixed reporters are no longer relevant at this
-stage.
+At the singular face, this coordinate chart degenerates because orthogonal norm vanishes. The
+positive survivor is exact chamber dynamics; the correct boundary invariant must retain contact
+order. Subsequent flat-contact transmutation proves first-order hard-root mobility vanishes while
+adaptive completed source survives in a higher norm-flux jet.
 
 ## Exact remaining burden
 
-Prove source-specific tightness of parabolic hard-root speeds on critical growing-degree schedules,
-or an equivalent effectivity theorem for normalized canonical admission coefficients. Existing
-fixed-degree recession and integral-Lipschitz results do not provide growing-degree uniformity.
-With such a speed bound, exact floor above rules out zero terminal mass; existing capacity law then
-forces positive Padé residue and feeds hard-limit contradiction. RH is not yet proved.
+No root-speed theorem can repair the absolute/relative scale mismatch by itself. Route now splits:
+
+1. positive terminal mass: exclude surviving positive-axis Padé atoms by a source-derived local
+   boundedness/extinction theorem for canonical Padé resolvents;
+2. zero terminal mass: exploit parity-doubled radical and higher contact-order adaptive source.
+
+Flat-contact source transmutation is formalized separately in
+`XiShiftedCanonicalAdmissionFlatContactSourceTransmutation`. RH is not yet proved.
 
 ## Lean realization
 

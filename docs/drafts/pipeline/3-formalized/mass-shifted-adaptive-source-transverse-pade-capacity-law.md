@@ -93,11 +93,13 @@ clearing and differentiation of source producer at its admission-selected zero.
 
 Compact-normalized capacity is now proved to converge to the nonzero divided-root derivative square
 at every simple normalized hard root, so capacity divergence is removed from generic branch.
-Subsequent worldline/source conservation identifies terminal mass as inverse hard-root mobility:
-on parabolic schedule, normalized terminal mass times actual hard speed equals explicit forcing
-`4*n*w^3*x^2`. Route closure now requires source-specific growing-degree speed tightness, which
-would force positive terminal-mass floor. Existing fixed integral-Lipschitz theorem controls
-quadratic forms, not root mobility. RH is not claimed.
+Subsequent worldline/source conservation identifies **relative** terminal mass `Gamma/h_n` as
+inverse hard-root mobility inside a positive chamber: on parabolic schedule, relative mass times
+actual hard speed equals `4*n*w^3*x^2`. This gives no floor for absolute `Gamma` at a flat face,
+where `h_n=0`. Flat-contact source transmutation instead proves first-order hard-root freeze and
+moves arithmetic forcing into higher norm-flux/contact jets. Route closure still requires either
+positive-axis Padé-atom extinction in positive terminal-mass branch or exploitation of
+parity-doubled radical in zero-mass branch. RH is not claimed.
 
 ## Lean realization
 

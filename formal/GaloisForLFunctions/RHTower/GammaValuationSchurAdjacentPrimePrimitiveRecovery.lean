@@ -41,7 +41,9 @@ theorem nthPrimeSubtype_index_add_two_le (n : ℕ) :
   | zero => exact (nthPrimeSubtype 0).2.two_le
   | succ n ih =>
       have hmono := nthPrimeSubtype_strictMono (Nat.lt_succ_self n)
-      omega
+      have hnext : n + 3 ≤ (nthPrimeSubtype (n + 1) : ℕ) :=
+        Nat.succ_le_of_lt (lt_of_le_of_lt ih hmono)
+      simpa [Nat.succ_eq_add_one, Nat.add_assoc] using hnext
 
 private theorem nthPrimeIndexWeight_le_height (e n : ℕ) :
     (n + 1 : ℝ) ≤ deningerHeight (gammaValuationNthPrimeAxis e n) := by
@@ -89,7 +91,10 @@ theorem summable_gammaValuationAdjacentPrimitiveTerm
   have hmajor : Summable (fun n : ℕ => w n + w (n + 1)) := hw.add hshift
   refine Summable.of_norm_bounded hmajor fun n => ?_
   rw [gammaValuationAdjacentPrimitiveTerm, norm_mul]
-  have hcast : ‖(((n + 1 : ℕ) : ℂ))‖ = (n + 1 : ℝ) := by simp
+  have hcast : ‖(((n + 1 : ℕ) : ℂ))‖ = (n + 1 : ℝ) := by
+    rw [show (((n + 1 : ℕ) : ℂ)) = (((n + 1 : ℕ) : ℝ) : ℂ) by norm_num,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    norm_num
   rw [hcast]
   calc
     (n + 1 : ℝ) *
@@ -101,7 +106,8 @@ theorem summable_gammaValuationAdjacentPrimitiveTerm
       mul_le_mul_of_nonneg_left (norm_sub_le _ _) (by positivity)
     _ ≤ w n + w (n + 1) := by
       dsimp [w]
-      nlinarith [norm_nonneg (gammaValuationNthPrimeCoord e a (n + 1))]
+      rw [mul_add]
+      exact add_le_add le_rfl (mul_le_mul_of_nonneg_right (by norm_num) (norm_nonneg _))
 
 def gammaValuationAdjacentPrimitive
     (e : ℕ) (a : DeningerHeightKothe) : ℂ :=
@@ -130,9 +136,13 @@ private theorem tendsto_gammaValuationNthPrimeCoord_boundary_zero
   apply squeeze_zero' (Eventually.of_forall fun N => norm_nonneg _)
     (Eventually.of_forall fun N => ?_) hzero
   rw [norm_mul]
-  have hcast : ‖(N : ℂ)‖ = (N : ℝ) := by simp
+  have hcast : ‖(N : ℂ)‖ = (N : ℝ) := by
+    rw [show ((N : ℂ)) = ((N : ℝ) : ℂ) by norm_num,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg]
+    positivity
   rw [hcast]
-  exact mul_le_mul_of_nonneg_right (by positivity) (norm_nonneg _)
+  apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+  exact_mod_cast Nat.le_succ N
 
 private theorem summable_gammaValuationNthPrimeCoord
     (e : ℕ) (a : DeningerHeightKothe) :

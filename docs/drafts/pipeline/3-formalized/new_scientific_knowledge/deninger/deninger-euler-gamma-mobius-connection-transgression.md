@@ -1,7 +1,7 @@
 # The all-prime Euler connection transgresses exactly to the Möbius--Fourier defect
 
 - **ID:** `deninger-euler-gamma-mobius-connection-transgression`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / STRICT SOURCE CONSTRUCTION / ROUTE-L FRONTIER ADVANCE
 - **Scientific status:** `[PROVED HERE] [CORPUS-NEW SYNTHESIS]`
   `[EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
@@ -16,7 +16,7 @@
   - `DAC_DENINGER_MOBIUS_FOURIER_COMMUTATOR_EXACT_KERNEL`;
   - Meyer's Poisson/Fourier intertwining;
   - the unconditional PNT-strength Mertens bound already present in the corpus.
-- **Lean status:** partially formalized; see *Lean status* below.
+- **Lean status:** fully formalized, unconditional, and umbrella-wired; see *Lean status* below.
 
 ## 1. Result
 
@@ -462,59 +462,58 @@ Fourier oddness, target-cycle nilpotence, or a quotient declaring Green vector r
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerAdiabaticMobiusPreimage.lean`,
-`DeningerAdiabaticMobiusEndpoint.lean`, `DeningerMobiusFourierCommutator.lean` and
-`DeningerVonMangoldtMoebiusConvolution.lean`.  Axiom audit for every declaration:
-`propext, Classical.choice, Quot.sound`.
+Fully formalized over the concrete Meyer source and tempered-distribution collars.  Terminal
+modules are imported directly by `GaloisForLFunctions.RHTower`.
 
-### Done
+- **`(2)`, `(7)`, critical half of `(11)`:**
+  `DeningerAdiabaticMobiusPreimage.lean`, `DeningerAdiabaticMobiusEndpoint.lean`, and
+  `DeningerAdiabaticDistributionEndpoint.lean` construct the all-integer Möbius family, prove all
+  polynomial moments, strict `a ↓ 0` convergence, and distributional endpoint convergence.
+- **`(8)`, `(24)`--`(26)`:** `DeningerAdiabaticEulerConnection.lean` defines the literal
+  von-Mangoldt connection and proves `deningerAdiabaticEulerPositive_eq_parameterDerivative`;
+  `DeningerAdiabaticGreenStokes.lean` upgrades this to the full-line `L¹` derivative, almost
+  everywhere, by `deningerAdiabaticEulerPositiveLp_ae_eq_parameterDerivative` and identifies the
+  literal physical series by `deningerAdiabaticEulerPositiveLp_ae_eq_physical`.
+- **`(9)`, `(28)`, `(29)`:** `DeningerAdiabaticContragredient.lean` proves
+  `fourier_deningerAdiabaticPhysicalEulerTerm`, including the exact factor `m⁻¹`, then sums it in
+  `deningerAdiabaticEulerNegativeDistribution_apply_eq_inverseDilation_tsum` and identifies the
+  first collar derivative with the negative connection.
+- **`(10)`, `(30)`:** `DeningerAdiabaticGreenStokes.lean` defines the unsquared two-collar lift,
+  boundary, diagonal derivative, and flux; `hasDerivAt_deningerAdiabaticMobiusBoundaryPairing` and
+  `deningerAdiabaticGreenStokesFlux_eq` are the exact weak covariant Green--Stokes law.
+- **upper half of `(11)`:** `DeningerAdiabaticGammaEndpoint.lean` proves the strict full-line `L¹`
+  Gamma endpoint and both boundary endpoints in tempered distributions.
+- **`(12)`, `(31)`:** `DeningerAdiabaticTransgression.lean` proves finite-collar integration,
+  both cofinal limits, `deningerAdiabaticGreenStokesTransgression_cofinal`, and the strict
+  distribution identity `XI_BV_GREEN_STOKES_STRICT_DESCENT`.
+- **`(13)`, `(14)`:** `deningerAdiabaticMobiusBoundary_zero`,
+  `deningerAdiabaticMobiusBoundary_zero_iff`, and
+  `deningerAdiabaticMobiusBoundary_exact_kernel` identify the literal critical boundary with the
+  pre-existing commutator and its kernel with the concrete Meyer--Poisson image.
+- **`(25)`:** `DeningerVonMangoldtMoebiusConvolution.lean` proves
+  `vonMangoldt_mul_moebius`, the exact convolution identity used in the derivative.
 
-- **`(2)`: the adiabatic Möbius lift, with no prime cutoff.**  `deningerAdiabaticSource`,
-  `deningerAdiabaticMobiusCoefficient`, **`deningerAdiabaticMobiusPreimage`** and
-  `deningerAdiabaticMobiusPreimage_eq_tsum`.  The exact gauge factorization
-  `M_a h(x) = x^a f_{exp(-a·)h}(x)` places the lift on the already formalized critical Möbius
-  preimage domain, so `deningerAdiabaticMobiusPreimage_zero` is the canonical preimage at `a = 0`
-  and `deningerAdiabaticMobiusPreimage_moment_integrable` gives every polynomial moment for every
-  `a ≥ 0`.  The moment norms `(15)` are `deningerAdiabaticMomentFun`,
-  `deningerAdiabaticMomentFun_memLp`, `deningerAdiabaticMomentLp`.
-- **`(7)`, and the `a → 0` half of `(11)`: the strict endpoint.**
-  `deningerMobiusPreimage_sub_meyer`, `deningerAdiabaticBoundaryError` with its majorant and
-  `tendsto_integral_norm_deningerAdiabaticBoundaryError`, `tendsto_deningerAdiabaticSource_zero`,
-  `deningerAdiabaticMomentLp_dist_le` and **`tendsto_deningerAdiabaticMomentLp_zero`** — strict `L¹`
-  convergence in every polynomial moment, with both singular effects at `a = 0` (the source moving
-  in Meyer's projective topology and the physical multiplier `x^a` losing uniform boundedness)
-  handled separately.
-- **`(14)`: the Möbius--Fourier commutator.**  `deningerFourierSq_apply`,
-  `deningerEvenDistribution_fourierSq`, `deningerPreimageDistribution`,
-  **`deningerMobiusCommutator`** and **`deningerMobiusCommutator_fourier_covariance`**
-  (`𝔖_μ(Jh) = -ℱ(𝔖_μ h)`).
-- **`(25)`: the arithmetic step of the Euler connection.**
-  `DeningerVonMangoldtMoebiusConvolution.lean`: `arithmeticFunction_mul_zeta_injective` and
-  **`vonMangoldt_mul_moebius`**, the identity `Λ * μ = -(μ · log)` that turns the `a`-derivative of
-  `(2)` into the Euler connection.  mathlib carries `∑_{d|n} μ(d)log d = -Λ(n)`; the convolution
-  form the card uses follows by convolving with `ζ` and inverting.
-
-### Not yet formalized
-
-- `(8)`, `(24)`, `(26)`: the Euler connection `∂_a M_a u = A_a^+ M_a u` itself — the operators
-  `A_a^±` and term-by-term differentiation of `(2)` in the moment norms.
-- `(9)`, `(28)`, `(29)`: the Fourier intertwining `ℱ A_a^+ = A_a^- ℱ`.
-- `(10)`, `(30)`: the transgression ODE for `𝔖_a`.
-- `(12)`, `(31)`: the Pettis-integral transgression identity in `𝒮'(ℝ)`.
-- `(13)`: the substitution of `M_0(Zf) = f`, `JZf = Z f̂` into `(5)`.
+No theorem adds an RH-equivalent premise or a new axiom.  Declaration-level axiom audit of the
+headline derivative, Fourier, endpoint, cofinal-transgression, strict-descent, and exact-kernel
+theorems reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 → 1 in-progress: explicit source family, topology, boundary map, and falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed proof `(7)`--`(14)` and hostile audit complete
-- [ ] 2 → 3 formalized: `(2)`, `(7)`, `(11)`'s endpoint, `(14)` and `(25)` proved
-  unconditionally; the connection `(8)`--`(10)` and the transgression `(12)`--`(13)` remain
-  (see *Lean status*)
+- [x] 2 → 3 formalized: `(2)`, `(7)`--`(14)`, `(24)`--`(31)` proved unconditionally and terminal
+  connection/transgression modules umbrella-wired
 - [ ] 3 → 4 publication-ready
 - [ ] source successor: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
 - [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 
 ## Log
+
+- 2026-08-12 — Closure audit found the card's remaining list stale.  Certified exact existing
+  formalizations of the Euler derivative, inverse-dilation Fourier modulus, two-collar weak ODE,
+  strict Gamma and Möbius endpoints, cofinal Pettis transgression, strict descent, and literal
+  Meyer--Poisson kernel.  Directly wired terminal contragredient and transgression modules into the
+  RHTower umbrella and promoted the card to Stage 3.
 
 - 2026-08-12 — Corpus audit: the adiabatic lift, its strict endpoint and the Möbius--Fourier
   commutator were already built.  Added the von Mangoldt--Möbius convolution identity `(25)`, the

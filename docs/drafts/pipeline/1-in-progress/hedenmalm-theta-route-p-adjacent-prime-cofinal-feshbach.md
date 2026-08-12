@@ -85,17 +85,14 @@ Build completed successfully (12736 jobs).
 
 Capstone `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
-## Next conjecture P-G85
+## P-G85 outcome and P-G86 survivor
 
-Identify which part of P-G78's all-prime weak Köthe Gram kernel is represented by adjacent-prime
-cofinal assembly. Required theorem must either:
-
-1. derive adjacent incidence from global Gamma/polar Feshbach geometry and prove exact response
-   equality; or
-2. exhibit a nonzero de-duplication/flux-at-infinity defect, then construct and formalize the
-   corrected source-forced incidence current.
-
-Do not infer identification from positivity or absolute summability alone.
+P-G85 proves direct local identification false: an absolutely summable adjacent edge Gram vanishes
+between nonadjacent prime deltas, while P-G78's weak kernel equals one there. P-G86 then constructs
+the exact correction. Cumulative weighted adjacent differences have vanishing terminal flux under
+first Köthe seminorm and recover every all-prime layer sum, hence the full weak kernel. Remaining
+gate is physical: lift literal Pluecker/Fisher Schur elimination through this inverse-incidence
+primitive before taking scalar fractions.
 
 ## Honest boundary
 

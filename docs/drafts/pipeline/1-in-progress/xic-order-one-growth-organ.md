@@ -934,3 +934,90 @@ higher real atoms) to certify partial RH down to scale δ from finitely many pol
 minors with explicit polynomials and windows; interface with the two-scale supply bridge
 (step 38) closes the loop data-side. Also open: window optimality (is the `S²/g` shape tight?
 the masking config of step 38 gives a lower-bound testbed).
+
+## Step 40 — effective descent, part II: the polynomial descent step [PAPER-PROVED → Lean]
+
+The window theorem instantiated at killing-polynomial weights, phrased so the finite
+certificate consists of **single-minor data** (the step-37 criterion instances).
+
+**Theorem (polynomial window).** Same two-scale setup; `P : ℝ[X]` with
+`P(u_q) = 0` for every copy above level `ℓ` (a real polynomial can kill ANY conj-symmetric
+finite set — non-real pairs via `(X−w)(X−w̄)` — so no descent induction is needed to state the
+step); witness `qh` at level, off-line, `P(u_qh) ≠ 0`. If the even `P`-weighted minors are ≥ 0
+for `n < N`, then `N ≤ (2S²b⁴/g + b⁴S²/(ℓ²−ρ₂²)) / (Im(u_qh)²·‖P(u_qh)‖⁴)` with
+`b = evalRealPolynomialNormBound P 1`.
+
+**Paper proof.** Instantiate the step-39 window with `Wf := P(u)²`, `BW := b²`:
+`‖P(u)²‖ = ‖P(u)‖² ≤ b²` (norm bound on the unit disk); conj-symmetry from
+`evalRealPolynomial_conj` and `map_pow`; kill from `P(u)² = 0`; defect
+`normSq(P(u_qh)²) = ‖P(u_qh)‖⁴`; `(b²)² = b⁴`. ∎
+
+**Single-minor phrasing.** By the index shift `M_{X^n·P}(k) = M_P(k+2n)` (step 37), the even
+minor hypothesis at `n` equals the (0,2,1) single-minor datum at the polynomial `X^n·P`. So the
+finite certificate reads: *the step-37 single-minor data at the `N` polynomials `X^n·P`,
+`n < N`, clean level `ℓ`* — one real inequality per polynomial, `N` explicit. Certificate
+corollary: any copy at the level not killed by `P` and with window below `N` is on the line.
+
+Numeric pre-certification inherited from step 39 (the 200-config sweep used arbitrary bounded
+weights, which covers polynomial weights).
+
+## Step 40b — the nodal single-minor criterion: sharpening the RH endpoint [PAPER-PROVED → Lean]
+
+Reading the spectral descent's proof shows it consumes polynomial Turán data ONLY at killing
+products `∏(X − r)` over higher real atoms (nodes in `(0,1]` — norms of resolvent points), and
+the step-37 single-minor reduction consumes only `X^m`-shifts of those. Hence the step-37
+RH-equal endpoint strengthens:
+
+**Theorem (nodal single-minor criterion).** For any shift `X ≥ 0`:
+RH ⟺ for every finite set `R ⊂ (0,1]` of real nodes and every `m : ℕ`,
+`0 ≤ Re(M_p(0)M_p(2) − M_p(1)²)` for `p = X^m·∏_{r∈R}(X − r)`.
+
+The test family shrinks from all real polynomials (arbitrary coefficients) to *monic real-rooted
+polynomials with roots in `[0,1]`* — squares of real-rooted multipliers suffice (echoes the
+Laguerre–Pólya/Jensen hyperbolicity circle, but as a reweighting criterion, not a coefficient
+condition).
+
+**Paper proof.** Forward: RH ⇒ all polynomial data (step 36 forward), a fortiori nodal.
+Backward: clone the descent's strong induction on the count of higher-modulus copies; at each
+step the killing polynomial IS `nodalPolynomial atoms` with atoms = norms of strictly-higher
+copies (real by the induction hypothesis, in `(0,1]` since `0 < ‖u q‖ < r = ‖u q'‖ ≤ 1`); the
+even machine (step 37) needs only even-index minors of the `P`-reweighted moments, and the
+`(2n, 2n+2, 2n+1)` minor of `P` is the `(0,2,1)` single minor of `X^n·P` by the index shift. ∎
+
+**Steps 40 + 40b status: [LEAN-PROVED].** Two modules, all theorems auditing to
+[propext, Classical.choice, Quot.sound], olean-built, wired into RHTower.lean.
+
+`RHTower/XiResolventEffectivePolynomialDescent.lean`:
+- `poly_minor_truncation_le_of_offline_level` — the polynomial detection window: for `P` real
+  killing every copy above level `ℓ`, truncation `N` with all even `P`-weighted minors ≥ 0
+  satisfies `N ≤ (2S²b⁴/g + b⁴S²/(ℓ²−ρ₂²))/(Im(u_qh)²‖P(u_qh)‖⁴)`, `b = normBound P 1`.
+- `poly_single_minor_truncation_le_of_offline_level` — same window with data = the `(0,2,1)`
+  single minors at the `N` polynomials `X^n·P` (one real inequality per polynomial).
+- `level_criticalLine_of_poly_single_minors_window` — the finite polynomial jet certificate.
+
+`RHTower/XiResolventNodalSingleMinorCriterion.lean`:
+- `nodalPolynomial R = ∏_{r∈R}(X − C r)` + complex evaluation lemma.
+- `forall_criticalLine_of_forall_nodal_single_minor` — nodal descent (strong induction; killing
+  polynomial IS a nodal polynomial with nodes in `(0,1]`; even machine per level).
+- `riemannHypothesis_of_forall_nodal_single_minor`.
+- **`riemannHypothesis_iff_forall_nodal_single_minor`** — the sharpened endpoint: at any one
+  shift `X ≥ 0`, RH ⟺ ∀ finite `R ⊂ (0,1]`, ∀ m, single `(0,2,1)` Turán minor of the
+  `(X^m·∏_{r∈R}(X−r))²`-reweighted moments is ≥ 0. STRICT strengthening of the step-37
+  capstone: the test family collapses from all real polynomials to monic real-rooted
+  polynomials with roots in `[0,1]`.
+
+**Audit notes.** In classical moment theory, restricting positivity tests to real-rooted squares
+weakens a positive-definiteness condition; here the equivalence survives at the thin family
+because detection is descent oscillation (the killing weights are constructed inside the
+family), not square positivity — the criterion is NOT a Hamburger-type condition (route-u
+correction stands). Literature echo: Laguerre–Pólya/Jensen hyperbolicity (Griffin–Ono–Rolen–
+Zagier) is a coefficient-side statement about ξ; ours is a moment-reweighting test family.
+[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] provisional for the nodal collapse, pending independent
+priority audit; inherits the step 36-39 arc.
+
+**Next frontier.** (i) Window optimality (masking config as lower-bound testbed); (ii) node
+continuity: the nodal family is indexed by finite subsets of the compact `(0,1]` — quantify
+stability of the datum in the nodes (Lipschitz in the node positions with the effective
+constants), toward a countable dense sub-family criterion (rational nodes) — that would make
+the RH endpoint a countable list of closed-form real inequalities; (iii) arithmetic supply of
+the first nodal data via the two-scale bridge.

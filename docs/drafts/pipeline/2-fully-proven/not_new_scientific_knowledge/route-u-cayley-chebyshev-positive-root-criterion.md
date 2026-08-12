@@ -1,6 +1,10 @@
 # Route U: Cayley–Chebyshev positive-root criterion
 
-**Status:** `[PAPER-PROVED] [UNCONDITIONAL] [NO COMPUTATION] [LEAN NOT STARTED] [NOT RH] [CANDIDATE NEW]`
+**Status:** `[PAPER-PROVED] [BRIDGE] [UNCONDITIONAL] [NO COMPUTATION] [LEAN NOT STARTED] [NOT RH]`
+
+**Hostile verdict:** `REDISCOVERED/BRIDGE`. The detecting sequence is a new local reduction in
+Route U, but its Cayley mechanism and source arithmetic lie inside generalized
+Bombieri--Lagarias/Li theory. It is not candidate-new scientific knowledge.
 
 ## Result
 
@@ -24,6 +28,39 @@ Then
 \]
 
 This is not a proof of RH. It replaces Route U's quantification over all real polynomial squares by one explicit polynomial square in each degree. Those polynomials have an explicit positive-root source transform.
+
+## Exact generalized-Li collision
+
+Put \(\alpha_q=\operatorname{xiSpectralPoint}(q)\) and
+\[
+ y_q=\frac{1+i\alpha_q}{1-i\alpha_q}.
+\]
+Functional-equation reflection sends \(\alpha_q\) to \(-\alpha_q\) and hence \(y_q\) to
+\(y_q^{-1}\). Let \(\ell_m\) be the multiplicity-exact, reflection-paired generalized Li sum
+\[
+ \ell_m=\sum_q\bigl(1-(-y_q)^m\bigr).
+\]
+This is the \(\tau=2\) Li coordinate after translating the zero variable by \(1/2\): if
+\(z=\rho+1/2=1+i\alpha\), then
+\[
+ \frac{z}{z-2}=-\frac{1+i\alpha}{1-i\alpha}=-y.
+\]
+
+For every reflected pair \(y,y^{-1}\), algebra gives
+\[
+ u=\frac{2+y+y^{-1}}4,
+ \qquad
+ T_n(2u-1)^2=\frac{2+y^{2n}+y^{-2n}}4.
+\]
+Consequently
+\[
+ \boxed{\quad C_0=\frac{\ell_1}{2},\qquad
+ C_n=\frac{\ell_{2n+1}-2\ell_{2n}+\ell_{2n-1}+2\ell_1}{8}
+ \quad(n\ge1).\quad}
+\]
+Thus the criterion is an exact positive trigonometric stencil in the generalized Li chart. Its
+maximal-shell converse is the Bombieri--Lagarias exterior-Cayley mechanism with a different
+positive detecting kernel, not a source proof beyond that parent theory.
 
 ## Inputs already established in the corpus
 
@@ -161,6 +198,185 @@ On the real spectral line, the corresponding rational square is
   =\frac{\cos^2(2n\arctan x)}{1+x^2}.
 \]
 
+For the Fourier convention
+\(\widehat f(\xi)=\int_{\mathbb R}f(x)e^{-i\xi x}\,dx\), its transform is, for \(n\ge1\),
+\[
+ \boxed{\quad
+ \widehat F_n(\xi)=\frac{\pi}{4}e^{-|\xi|}
+ \left(2+L_{2n}^{(-1)}(2|\xi|)\right),
+ \qquad
+ F_n(x)=\frac{\cos^2(2n\arctan x)}{1+x^2}.
+ \quad}
+\]
+Indeed, with \(Y=(1+ix)/(1-ix)\),
+\(F_n=(2+Y^{2n}+Y^{-2n})/[4(1+x^2)]\). For \(m\ge1\), residue evaluation or the Gamma integral
+for \((1-ix)^{-k}\) gives
+\[
+ \widehat{\frac{Y^m}{1+x^2}}(\xi)
+ =\begin{cases}
+ \pi(-1)^m e^{-\xi}L_m^{(-1)}(2\xi),&\xi>0,\\
+ 0,&\xi<0,
+ \end{cases}
+\]
+and the inverse power supplies the reflected half-line. This is the associated-Laguerre prime
+kernel already characteristic of arithmetic formulas for generalized Li coefficients.
+
+The kernel is not coefficientwise positive. At the first nontrivial hostile test,
+\[
+ 2+L_4^{(-1)}(6)=-4.
+\]
+Therefore von-Mangoldt positivity cannot orient the source term prime by prime. Any closure must
+retain valuation-summed prime--Gamma compensation.
+
+## Full valuation towers still have both signs
+
+The first failure does not disappear after summing every prime-power depth. For a prime \(p\), put
+
+\[
+ S_2(p):=\sum_{e\ge1}p^{-3e/2}
+ \left(2+L_4^{(-1)}(2e\log p)\right).
+\]
+
+This is, up to the fixed positive factor \((\log p)/4\), the complete \(p\)-tower occurring in
+the prime face of the explicit formula for \(F_2\). The source formula itself carries the opposite
+overall sign. The exact local towers satisfy
+
+\[
+ \boxed{S_2(7)>0,\qquad S_2(19)<0.}
+\]
+
+Hence neither sign convention makes all completed local prime towers positive.
+
+### Proof
+
+Set
+
+\[
+ f(t):=2+L_4^{(-1)}(2t)
+ =2-2t+6t^2-4t^3+\frac23t^4
+ =\frac23t^2(t-3)^2-2t+2.                         \tag{1}
+\]
+
+We first record elementary logarithmic bounds without decimal or numerical evaluation. The
+exponential series gives
+
+\[
+ e<1+1+\frac12+\frac16+\frac1{24}\sum_{j\ge0}4^{-j}
+ =\frac{49}{18}<\frac{11}{4},
+ \qquad e^{1/10}>1+\frac1{10}=\frac{11}{10}.       \tag{2}
+\]
+
+Consequently
+
+\[
+ e^{19/10}<\frac{(11/4)^2}{11/10}=\frac{55}{8}<7,
+ \qquad
+ e^{29/10}<\frac{(11/4)^3}{11/10}=\frac{605}{32}<19. \tag{3}
+\]
+
+Also \(e^2>7\), because its exponential series through degree four equals \(7\) and the tail is
+strictly positive, while
+
+\[
+ e^3>\sum_{k=0}^{6}\frac{3^k}{k!}=\frac{1553}{80}>19. \tag{4}
+\]
+
+Thus
+
+\[
+ \frac{19}{10}<\log7<2,
+ \qquad
+ \frac{29}{10}<\log19<3.                              \tag{5}
+\]
+
+On \([19/10,2]\), equation (1) gives \(f'<0\), so
+
+\[
+ f(\log7)>f(2)=\frac23>0.                              \tag{6}
+\]
+
+For \(t\ge19/5\),
+
+\[
+ f'(t)=\frac43t(t-3)(2t-3)-2>0,
+ \qquad
+ f(19/5)=\frac{1052}{1875}>0.                          \tag{7}
+\]
+
+Every depth \(e\ge2\) has \(e\log7>19/5\). Equations (6)--(7) make every summand of
+\(S_2(7)\) strictly positive, proving the first sign.
+
+For the second sign, write \(\ell=\log19\) and \(q=19^{-3/2}\). From (1) and (5),
+
+\[
+ f(\ell)
+ <\frac23\cdot9\cdot\frac1{100}-\frac{29}{5}+2
+ =-\frac{187}{50}.                                     \tag{8}
+\]
+
+The rational square bounds
+
+\[
+ \frac{87}{20}<\sqrt{19}<\frac{22}{5}
+\]
+
+give
+
+\[
+ \frac5{418}<q<\frac{20}{1653}<\frac1{82}.             \tag{9}
+\]
+
+Thus the first depth is bounded above by
+
+\[
+ qf(\ell)<-\frac{935}{20900}<-\frac1{23}.              \tag{10}
+\]
+
+For every \(e\ge2\), one has \(e\ell>29/5\). The monotonicity in (7), now used on the
+larger interval, and \(\ell<3\) imply
+
+\[
+ f(e\ell)<f(3e),qquad f(6)=206,qquad
+ f(3e)<54e^4\quad(e\ge3).                              \tag{11}
+\]
+
+For \(a_e=e^4/82^e\) and \(e\ge3\),
+
+\[
+ \frac{a_{e+1}}{a_e}
+ \le\frac{(4/3)^4}{82}<\frac1{25}.
+\]
+
+Using (9)--(11), the complete tail therefore satisfies
+
+\[
+ \begin{aligned}
+ \sum_{e\ge2}q^ef(e\ell)
+ &<\frac{206}{82^2}
+   +54\frac{3^4}{82^3}\frac{25}{24}\\
+ &<\frac{31}{1000}+\frac9{1000}
+ =\frac1{25}.                                           \tag{12}
+ \end{aligned}
+\]
+
+Combining (10) and (12) yields
+
+\[
+ S_2(19)<-\frac1{23}+\frac1{25}=-\frac2{575}<0.
+\]
+
+This proves both signs. No prime cutoff was used: each \(S_2(p)\) contains its entire valuation
+tower.
+
+### Conjecture verdict and positive survivor
+
+The conjecture that cofinal valuation summation repairs the Laguerre sign defect locally is
+\([FALSIFIED]\). The surviving source requirement is sharper: a successful proof must retain the
+polar and Gamma counterterms and any cross-prime covariance through completion, and only then
+take the scalar Cayley coefficient. Arithmetic Schur cofinal exhaustion by itself supplies a
+positive kernel, but this theorem shows that the linear Cayley readout is not a positive local
+prime functional on that kernel.
+
 This is coefficient-faithful: it preserves phase through the full degree sequence, unlike a single norm-amplifying polynomial.
 
 ## Recurrences and resolvent generating function
@@ -207,17 +423,18 @@ Prove, from the prime/Gamma source alone and without importing an equivalent \(\
 \]
 This burden is still equivalent to RH. The gain is an exact collapse from all polynomial tests to one explicit positive-root Cayley–Chebyshev test per degree, together with a recurrence and a resolvent generating function that are absent for an arbitrary test polynomial.
 
-## Novelty audit
+## Parent-theory audit
 
-Internal collision searches found the Cayley rational identity, general polynomial trace-Hankel criteria, positive-root Schur packets, and effective Turán detection windows, but not this complete-sequence criterion or its maximal-Green-shell proof. It is compatible with, and strictly refines, the recorded failure of a single Chebyshev amplifier.
+Internal collision searches found the Cayley rational identity, general polynomial trace-Hankel criteria, positive-root Schur packets, effective Turán detection windows, and an existing Li reciprocal-Chebyshev atlas. The exact one-test-per-degree reduction was not found internally, but the identity above places its mechanism in generalized Li theory. It remains a useful Route U bridge, not a novelty claim.
 
-Nearby external literature includes Faber/Faber–Walsh asymptotics, extremal polynomial growth off a compact interval, and Jensen-polynomial criteria for \(\xi\), but the exact shift-one resolvent criterion and positive-root source handoff were not found:
+Primary parent literature:
 
-- Sète and Liesen, *Properties and Examples of Faber–Walsh Polynomials* (arXiv:1306.1347).
-- O'Sullivan, *Zeros of Jensen polynomials and asymptotics for the Riemann xi function* (arXiv:2007.13582).
-- Christiansen, Simon, and Zinchenko, *Asymptotics of Chebyshev Polynomials, I* (Constructive Approximation, 2021).
+- Bombieri and Lagarias, *Complements to Li's Criterion for the Riemann Hypothesis*, Journal of Number Theory 77 (1999), 274--287.
+- Sekatskii, *Generalized Bombieri--Lagarias' theorem and generalized Li's criterion*, Ukrainian Mathematical Journal 64 (2014), 371--383; arXiv:1304.7895.
+- Ernvall-Hytönen, Odžak, Smajlović, and Sušić, *On generalized Li criterion for a certain class of L-functions*, arXiv:1410.4384, especially the associated-Laguerre arithmetic formula.
+- Lagarias, *Li coefficients for automorphic L-functions*, Annales de l'Institut Fourier 57 (2007), 1689--1740.
 
-No external priority claim is made.
+No scientific-priority claim is made. Exact novelty of the reduced stencil itself is unverified and immaterial to its Route U use.
 
 ## Formal status
 

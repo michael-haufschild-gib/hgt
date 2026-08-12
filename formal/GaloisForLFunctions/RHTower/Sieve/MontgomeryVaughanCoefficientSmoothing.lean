@@ -289,6 +289,34 @@ def mvShiftedTrigSum (K : ℕ) (c : Fin K → ℂ) (H : ℤ) (β : ℝ) : ℂ :=
   ∑ n : Fin K, c n *
     finitePhaseChar (((n.val : ℤ) - H : ℤ) * β)
 
+/-- Unshifted full trigonometric polynomial. -/
+def mvTrigSum (K : ℕ) (c : Fin K → ℂ) (β : ℝ) : ℂ :=
+  ∑ n : Fin K, c n * finitePhaseChar ((n.val : ℝ) * β)
+
+theorem mvShiftedTrigSum_eq_phase_mul
+    (K : ℕ) (c : Fin K → ℂ) (H : ℤ) (β : ℝ) :
+    mvShiftedTrigSum K c H β =
+      finitePhaseChar (-(H : ℝ) * β) * mvTrigSum K c β := by
+  unfold mvShiftedTrigSum mvTrigSum
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro n _
+  calc
+    c n * finitePhaseChar (((n.val : ℤ) - H : ℤ) * β) =
+        c n * (finitePhaseChar (-(H : ℝ) * β) *
+          finitePhaseChar ((n.val : ℝ) * β)) := by
+      rw [← finitePhaseChar_add]
+      congr 2
+      push_cast
+      ring
+    _ = finitePhaseChar (-(H : ℝ) * β) *
+        (c n * finitePhaseChar ((n.val : ℝ) * β)) := by ring
+
+theorem norm_mvShiftedTrigSum_eq
+    (K : ℕ) (c : Fin K → ℂ) (H : ℤ) (β : ℝ) :
+    ‖mvShiftedTrigSum K c H β‖ = ‖mvTrigSum K c β‖ := by
+  rw [mvShiftedTrigSum_eq_phase_mul, norm_mul, norm_finitePhaseChar, one_mul]
+
 theorem continuous_finitePhaseChar_intMul (z : ℤ) :
     Continuous fun β : ℝ => finitePhaseChar ((z : ℝ) * β) := by
   unfold finitePhaseChar
@@ -580,6 +608,363 @@ theorem norm_mvCenteredCoefficientSum_le
       ‖W‖ + ‖mvCenteredCoefficientSum K c H M - W‖ :=
     norm_le_norm_add_norm_sub' _ _
   exact htriangle.trans (add_le_add hW (by simpa [W] using hboundary))
+
+/-- Arithmetic control of the two smoothing annuli by balanced-divisor multiplicity. -/
+theorem mvBoundaryCoefficientMass_le
+    {K Q H M L : ℕ} (hQ : 1 ≤ Q) (hM : 0 < M) (hL : 0 < L)
+    (hMLH : M + L ≤ H)
+    (hHK : H + M + L ≤ K) (c : Fin K → ℂ)
+    (hc : ∀ n : Fin K, ‖c n‖ ≤ mvBalancedDivisorCount Q n.val) :
+    mvBoundaryCoefficientMass K c (H : ℤ) M L ≤
+      4 * (L : ℝ) + 2 * Q + 2 := by
+  let g : ℕ → ℝ := fun n => mvBalancedDivisorCount Q n
+  let left : Finset ℕ := Finset.Ioc (H - (M + L)) (H - M)
+  let right : Finset ℕ := Finset.Ioc (H + M) (H + M + L - 1)
+  have hHleK : H ≤ K := by omega
+  have hleftSubset : left ⊆ Finset.range K := by
+    intro n hn
+    change n ∈ Finset.Ioc (H - (M + L)) (H - M) at hn
+    rw [Finset.mem_Ioc] at hn
+    rw [Finset.mem_range]
+    omega
+  have hrightSubset : right ⊆ Finset.range K := by
+    intro n hn
+    change n ∈ Finset.Ioc (H + M) (H + M + L - 1) at hn
+    rw [Finset.mem_Ioc] at hn
+    rw [Finset.mem_range]
+    omega
+  have hfilterLeft : (Finset.range K).filter (fun n => n ∈ left) = left := by
+    ext n
+    simp only [Finset.mem_filter]
+    constructor
+    · exact fun hn => hn.2
+    · exact fun hn => ⟨hleftSubset hn, hn⟩
+  have hfilterRight : (Finset.range K).filter (fun n => n ∈ right) = right := by
+    ext n
+    simp only [Finset.mem_filter]
+    constructor
+    · exact fun hn => hn.2
+    · exact fun hn => ⟨hrightSubset hn, hn⟩
+  rw [mvBoundaryCoefficientMass, Finset.sum_fin_eq_sum_range]
+  have hpoint : ∀ (n : ℕ) (hn : n ∈ Finset.range K),
+      (if M < (((n : ℤ) - (H : ℤ)).natAbs) ∧
+          (((n : ℤ) - (H : ℤ)).natAbs) < M + L
+        then ‖c ⟨n, Finset.mem_range.mp hn⟩‖ else 0) ≤
+        (if n ∈ left then g n else 0) + (if n ∈ right then g n else 0) := by
+    intro n hn
+    have hnK : n < K := Finset.mem_range.mp hn
+    by_cases hb : M < (((n : ℤ) - (H : ℤ)).natAbs) ∧
+        (((n : ℤ) - (H : ℤ)).natAbs) < M + L
+    · rw [if_pos hb]
+      have hcg : ‖c ⟨n, hnK⟩‖ ≤ g n := by
+        simpa [g] using hc ⟨n, hnK⟩
+      rcases le_or_gt n H with hnH | hHn
+      · have hnleft : n ∈ left := by
+          change n ∈ Finset.Ioc (H - (M + L)) (H - M)
+          rw [Finset.mem_Ioc]
+          constructor <;> omega
+        rw [if_pos hnleft]
+        exact hcg.trans (le_add_of_nonneg_right (by positivity))
+      · have hnright : n ∈ right := by
+          change n ∈ Finset.Ioc (H + M) (H + M + L - 1)
+          rw [Finset.mem_Ioc]
+          constructor <;> omega
+        rw [if_pos hnright]
+        exact hcg.trans (le_add_of_nonneg_left (by positivity))
+    · rw [if_neg hb]
+      positivity
+  calc
+    _ ≤ ∑ n ∈ Finset.range K,
+        ((if n ∈ left then g n else 0) + (if n ∈ right then g n else 0)) := by
+      apply Finset.sum_le_sum
+      intro n hn
+      simp only [dif_pos (Finset.mem_range.mp hn)]
+      exact hpoint n hn
+    _ = (∑ n ∈ left, g n) + ∑ n ∈ right, g n := by
+      rw [Finset.sum_add_distrib]
+      congr 1
+      · rw [← Finset.sum_filter, hfilterLeft]
+      · rw [← Finset.sum_filter, hfilterRight]
+    _ ≤ (2 * (((H - M) - (H - (M + L)) : ℕ) : ℝ) + Q + 1) +
+          (2 * (((H + M + L - 1) - (H + M) : ℕ) : ℝ) + Q + 1) := by
+      exact add_le_add
+        (sum_mvBalancedDivisorCount_Ioc_le hQ (by omega))
+        (sum_mvBalancedDivisorCount_Ioc_le hQ (by omega))
+    _ ≤ 4 * (L : ℝ) + 2 * Q + 2 := by
+      have hleftLen : (H - M) - (H - (M + L)) = L := by omega
+      have hrightLen : H + M + L - 1 - (H + M) = L - 1 := by omega
+      rw [hleftLen, hrightLen]
+      have hcast : (((L - 1 : ℕ) : ℝ)) ≤ (L : ℝ) := by exact_mod_cast (Nat.sub_le L 1)
+      push_cast
+      linarith
+
+/-- MV24.8 plus balanced-divisor annulus accounting. -/
+theorem norm_mvCenteredCoefficientSum_le_of_balancedDivisors
+    {K Q H M L : ℕ} (hQ : 1 ≤ Q) (hM : 0 < M) (hL : 0 < L)
+    (hMLH : M + L ≤ H) (hHK : H + M + L ≤ K)
+    (c : Fin K → ℂ)
+    (hc : ∀ n : Fin K, ‖c n‖ ≤ mvBalancedDivisorCount Q n.val)
+    {S : ℝ} (hS : 0 ≤ S) (hfull : ∀ β : ℝ, ‖mvTrigSum K c β‖ ≤ S) :
+    ‖mvCenteredCoefficientSum K c (H : ℤ) M‖ ≤
+      (2 * (M : ℝ) / L + 1) * S + (4 * (L : ℝ) + 2 * Q + 2) := by
+  have hsmooth := norm_mvCenteredCoefficientSum_le hM hL c (H : ℤ) hS
+    (fun β => by simpa [norm_mvShiftedTrigSum_eq] using hfull β)
+  have hboundary := mvBoundaryCoefficientMass_le hQ hM hL hMLH hHK c hc
+  linarith
+
+/-- Coefficient sum on the natural interval `(Y,Z]`. -/
+def mvIntervalCoefficientSum (K : ℕ) (c : Fin K → ℂ) (Y Z : ℕ) : ℂ :=
+  ∑ n : Fin K, c n * if Y < n.val ∧ n.val ≤ Z then 1 else 0
+
+private theorem midpoint_radius_geometry
+    {Y Z : ℕ} (hYZ : Y ≤ Z) :
+    let H := (Y + Z + 1) / 2
+    let M := (Z - Y) / 2
+    H + M = Z ∧ Y ≤ H - M := by
+  omega
+
+private theorem midpoint_indicator_eq_of_ne_left
+    {Y Z n : ℕ} (hYZ : Y ≤ Z) (hnY : n ≠ Y) :
+    (((n : ℤ) - (((Y + Z + 1) / 2 : ℕ) : ℤ)).natAbs ≤ (Z - Y) / 2) ↔
+      Y < n ∧ n ≤ Z := by
+  omega
+
+/-- Midpoint symmetrization changes `(Y,Z]` by at most its left endpoint. -/
+theorem norm_mvIntervalCoefficientSum_le_midpoint
+    {K Y Z : ℕ} (hYZ : Y ≤ Z) (hYK : Y < K)
+    (c : Fin K → ℂ) :
+    ‖mvIntervalCoefficientSum K c Y Z‖ ≤
+      ‖mvCenteredCoefficientSum K c (((Y + Z + 1) / 2 : ℕ) : ℤ)
+        ((Z - Y) / 2)‖ + ‖c ⟨Y, hYK⟩‖ := by
+  let y : Fin K := ⟨Y, hYK⟩
+  let H : ℕ := (Y + Z + 1) / 2
+  let M : ℕ := (Z - Y) / 2
+  have hdiff : ‖mvIntervalCoefficientSum K c Y Z -
+      mvCenteredCoefficientSum K c (H : ℤ) M‖ ≤ ‖c y‖ := by
+    rw [mvIntervalCoefficientSum, mvCenteredCoefficientSum,
+      ← Finset.sum_sub_distrib]
+    let F : Fin K → ℂ := fun n =>
+      (c n * (if Y < n.val ∧ n.val ≤ Z then 1 else 0)) -
+        c n * (if (((n.val : ℤ) - (H : ℤ)).natAbs ≤ M) then 1 else 0)
+    have hsum : (∑ n : Fin K, F n) = F y := by
+      apply Finset.sum_eq_single y
+      · intro n _ hn
+        have hnval : n.val ≠ Y := by
+          intro heq
+          apply hn
+          apply Fin.ext
+          simpa [y] using heq
+        have hiff := midpoint_indicator_eq_of_ne_left hYZ hnval
+        by_cases hi : Y < n.val ∧ n.val ≤ Z
+        · dsimp [F]
+          rw [if_pos hi, if_pos (hiff.mpr hi)]
+          ring
+        · dsimp [F]
+          rw [if_neg hi, if_neg (fun h => hi (hiff.mp h))]
+          ring
+      · intro hy
+        exact False.elim (hy (Finset.mem_univ y))
+    change ‖∑ n : Fin K, F n‖ ≤ ‖c y‖
+    rw [hsum]
+    dsimp [F]
+    calc
+      _ = ‖c y‖ *
+          ‖(if Y < y.val ∧ y.val ≤ Z then (1 : ℂ) else 0) -
+            (if (((y.val : ℤ) - (H : ℤ)).natAbs ≤ M) then (1 : ℂ) else 0)‖ := by
+        rw [← norm_mul]
+        congr 1
+        ring
+      _ ≤ ‖c y‖ * 1 := by
+        gcongr
+        split_ifs <;> simp
+      _ = ‖c y‖ := mul_one _
+  have htriangle : ‖mvIntervalCoefficientSum K c Y Z‖ ≤
+      ‖mvCenteredCoefficientSum K c (H : ℤ) M‖ +
+        ‖mvIntervalCoefficientSum K c Y Z -
+          mvCenteredCoefficientSum K c (H : ℤ) M‖ :=
+    norm_le_norm_add_norm_sub' _ _
+  have := htriangle.trans (add_le_add (le_refl _) hdiff)
+  simpa [H, M, y] using this
+
+/-- Finite explicit MV24.9 before optimizing smoothing length `L`. -/
+theorem norm_mvIntervalCoefficientSum_le_of_balancedDivisors
+    {K Q Y Z L : ℕ} (hQ : 1 ≤ Q) (hYZ : Y ≤ Z) (hYK : Y < K)
+    (hwidth : 2 ≤ Z - Y) (hL : 0 < L) (hLY : L ≤ Y) (hZLK : Z + L ≤ K)
+    (c : Fin K → ℂ)
+    (hc : ∀ n : Fin K, ‖c n‖ ≤ mvBalancedDivisorCount Q n.val)
+    {S : ℝ} (hS : 0 ≤ S) (hfull : ∀ β : ℝ, ‖mvTrigSum K c β‖ ≤ S) :
+    ‖mvIntervalCoefficientSum K c Y Z‖ ≤
+      (2 * (((Z - Y) / 2 : ℕ) : ℝ) / L + 1) * S +
+        (4 * (L : ℝ) + 3 * Q + 3) := by
+  let H : ℕ := (Y + Z + 1) / 2
+  let M : ℕ := (Z - Y) / 2
+  have hM : 0 < M := by omega
+  have hgeom := midpoint_radius_geometry hYZ
+  dsimp only at hgeom
+  have hMLH : M + L ≤ H := by omega
+  have hHK : H + M + L ≤ K := by omega
+  have hmid := norm_mvIntervalCoefficientSum_le_midpoint hYZ hYK c
+  have hcentre := norm_mvCenteredCoefficientSum_le_of_balancedDivisors
+    hQ hM hL hMLH hHK c hc hS hfull
+  have hendpoint : ‖c ⟨Y, hYK⟩‖ ≤ ((Q + 1 : ℕ) : ℝ) := by
+    have hcY := hc ⟨Y, hYK⟩
+    have hcard : mvBalancedDivisorCount Q Y ≤ Q + 1 := by
+      unfold mvBalancedDivisorCount
+      calc
+        _ ≤ (Finset.Icc Q (2 * Q)).card := Finset.card_filter_le _ _
+        _ = Q + 1 := by rw [Nat.card_Icc]; omega
+    exact hcY.trans (by exact_mod_cast hcard)
+  have hendpoint' : ‖c ⟨Y, hYK⟩‖ ≤ (Q : ℝ) + 1 := by
+    simpa using hendpoint
+  dsimp only [H, M] at hmid hcentre ⊢
+  linarith [hendpoint']
+
+/-- Square-root smoothing length used in MV24.9. -/
+def mvOptimalSmoothingLength (A : ℕ) (S : ℝ) : ℕ :=
+  max 1 ⌈Real.sqrt ((A : ℝ) * S)⌉₊
+
+/-- **Montgomery--Vaughan Lemma 24.9, finite explicit square-root form.** -/
+theorem norm_mvIntervalCoefficientSum_le_sqrt
+    {K Q A Y Z : ℕ} (hQ : 1 ≤ Q) (hA : 1 ≤ A)
+    (hYZ : Y ≤ Z) (hYK : Y < K) (hwidthLower : 2 ≤ Z - Y)
+    (hwidthUpper : Z - Y ≤ A) (hAY : A ≤ Y) (hZAK : Z + A ≤ K)
+    (c : Fin K → ℂ)
+    (hc : ∀ n : Fin K, ‖c n‖ ≤ mvBalancedDivisorCount Q n.val)
+    {S : ℝ} (hS : 0 ≤ S) (hSA : S ≤ A)
+    (hfull : ∀ β : ℝ, ‖mvTrigSum K c β‖ ≤ S) :
+    ‖mvIntervalCoefficientSum K c Y Z‖ ≤
+      7 * Real.sqrt ((A : ℝ) * S) + 3 * Q + 7 := by
+  let r : ℝ := Real.sqrt ((A : ℝ) * S)
+  let L : ℕ := mvOptimalSmoothingLength A S
+  have hAS : 0 ≤ (A : ℝ) * S := mul_nonneg (by positivity) hS
+  have hr0 : 0 ≤ r := by dsimp [r]; positivity
+  have hrA : r ≤ (A : ℝ) := by
+    dsimp [r]
+    rw [Real.sqrt_le_iff]
+    constructor
+    · positivity
+    · have hAr : (0 : ℝ) ≤ A := by positivity
+      nlinarith
+  have hceilA : ⌈r⌉₊ ≤ A := Nat.ceil_le.mpr hrA
+  have hL : 0 < L := by unfold L mvOptimalSmoothingLength; omega
+  have hLA : L ≤ A := by
+    unfold L mvOptimalSmoothingLength
+    simpa only [r] using max_le hA hceilA
+  have hrL : r ≤ (L : ℝ) := by
+    unfold L mvOptimalSmoothingLength
+    rw [Nat.cast_max]
+    exact (Nat.le_ceil r).trans (le_max_right _ _)
+  have hLupper : (L : ℝ) ≤ r + 1 := by
+    unfold L mvOptimalSmoothingLength
+    rw [Nat.cast_max]
+    apply max_le
+    · norm_num
+      linarith
+    · exact (Nat.ceil_lt_add_one hr0).le
+  have hLY : L ≤ Y := hLA.trans hAY
+  have hZLK : Z + L ≤ K := (Nat.add_le_add_left hLA Z).trans hZAK
+  have hraw := norm_mvIntervalCoefficientSum_le_of_balancedDivisors
+    hQ hYZ hYK hwidthLower hL hLY hZLK c hc hS hfull
+  have hhalfA : (Z - Y) / 2 ≤ A := (Nat.div_le_self _ _).trans hwidthUpper
+  have hLr : (0 : ℝ) < L := by exact_mod_cast hL
+  have hrsq : r ^ 2 = (A : ℝ) * S := by
+    dsimp [r]
+    exact Real.sq_sqrt hAS
+  have hquot : (A : ℝ) * S / L ≤ r := by
+    rw [div_le_iff₀ hLr]
+    rw [← hrsq]
+    simpa [pow_two] using mul_le_mul_of_nonneg_left hrL hr0
+  have hhalfQuot :
+      (((Z - Y) / 2 : ℕ) : ℝ) * S / L ≤ r := by
+    have hm : ((((Z - Y) / 2 : ℕ) : ℝ)) ≤ (A : ℝ) := by exact_mod_cast hhalfA
+    have hmul : ((((Z - Y) / 2 : ℕ) : ℝ)) * S ≤ (A : ℝ) * S :=
+      mul_le_mul_of_nonneg_right hm hS
+    exact (div_le_div_of_nonneg_right hmul hLr.le).trans hquot
+  have hSr : S ≤ r := by
+    dsimp [r]
+    rw [Real.le_sqrt hS hAS]
+    have hSA' : S ≤ (A : ℝ) := by exact_mod_cast hSA
+    nlinarith
+  dsimp only [r, L] at hraw ⊢
+  have hLupper' : ((mvOptimalSmoothingLength A S : ℕ) : ℝ) ≤
+      Real.sqrt ((A : ℝ) * S) + 1 := by simpa [r, L] using hLupper
+  have hhalfQuot' :
+      (((Z - Y) / 2 : ℕ) : ℝ) * S /
+          (mvOptimalSmoothingLength A S : ℝ) ≤
+        Real.sqrt ((A : ℝ) * S) := by simpa [r, L] using hhalfQuot
+  have hSr' : S ≤ Real.sqrt ((A : ℝ) * S) := by simpa [r] using hSr
+  calc
+    _ ≤ (2 * (((Z - Y) / 2 : ℕ) : ℝ) /
+          (mvOptimalSmoothingLength A S : ℝ) + 1) * S +
+        (4 * (mvOptimalSmoothingLength A S : ℝ) + 3 * Q + 3) := hraw
+    _ ≤ 7 * Real.sqrt ((A : ℝ) * S) + 3 * Q + 7 := by
+      have hrewrite :
+          (2 * (((Z - Y) / 2 : ℕ) : ℝ) /
+              (mvOptimalSmoothingLength A S : ℝ) + 1) * S =
+            2 * ((((Z - Y) / 2 : ℕ) : ℝ) * S /
+              (mvOptimalSmoothingLength A S : ℝ)) + S := by ring
+      rw [hrewrite]
+      push_cast
+      linarith
+
+/-- A coefficient interval of width at most one contains at most one term. -/
+theorem norm_mvIntervalCoefficientSum_le_short
+    {K Q Y Z : ℕ} (hQ : 1 ≤ Q) (hYZ : Y ≤ Z) (hwidth : Z - Y < 2)
+    (c : Fin K → ℂ)
+    (hc : ∀ n : Fin K, ‖c n‖ ≤ mvBalancedDivisorCount Q n.val) :
+    ‖mvIntervalCoefficientSum K c Y Z‖ ≤ (Q : ℝ) + 1 := by
+  let active : Finset (Fin K) := (Finset.univ : Finset (Fin K)).filter fun n =>
+    Y < n.val ∧ n.val ≤ Z
+  have hsum : mvIntervalCoefficientSum K c Y Z = ∑ n ∈ active, c n := by
+    unfold mvIntervalCoefficientSum
+    rw [Finset.sum_filter]
+    apply Finset.sum_congr rfl
+    intro n _
+    by_cases hn : Y < n.val ∧ n.val ≤ Z
+    · rw [if_pos hn, if_pos (by simpa [active] using hn), mul_one]
+    · rw [if_neg hn, if_neg (by simpa [active] using hn), mul_zero]
+  have hcard : active.card ≤ 1 := by
+    apply Finset.card_le_one.mpr
+    intro a ha b hb
+    simp only [active, Finset.mem_filter, Finset.mem_univ, true_and] at ha hb
+    apply Fin.ext
+    omega
+  have hterm : ∀ n ∈ active, ‖c n‖ ≤ (Q : ℝ) + 1 := by
+    intro n _
+    have hcN := hc n
+    have hcount : mvBalancedDivisorCount Q n.val ≤ Q + 1 := by
+      unfold mvBalancedDivisorCount
+      calc
+        _ ≤ (Finset.Icc Q (2 * Q)).card := Finset.card_filter_le _ _
+        _ = Q + 1 := by rw [Nat.card_Icc]; omega
+    exact hcN.trans (by exact_mod_cast hcount)
+  rw [hsum]
+  calc
+    _ ≤ ∑ n ∈ active, ‖c n‖ := norm_sum_le _ _
+    _ ≤ active.card • ((Q : ℝ) + 1) :=
+      Finset.sum_le_card_nsmul active (fun n => ‖c n‖) ((Q : ℝ) + 1) hterm
+    _ ≤ 1 • ((Q : ℝ) + 1) := by
+      gcongr
+    _ = (Q : ℝ) + 1 := by simp
+
+/-- MV24.9 including the degenerate endpoint slices arising in MV24.10. -/
+theorem norm_mvIntervalCoefficientSum_le_sqrt_all
+    {K Q A Y Z : ℕ} (hQ : 1 ≤ Q) (hA : 1 ≤ A)
+    (hYZ : Y ≤ Z) (hYK : Y < K)
+    (hwidthUpper : Z - Y ≤ A) (hAY : A ≤ Y) (hZAK : Z + A ≤ K)
+    (c : Fin K → ℂ)
+    (hc : ∀ n : Fin K, ‖c n‖ ≤ mvBalancedDivisorCount Q n.val)
+    {S : ℝ} (hS : 0 ≤ S) (hSA : S ≤ A)
+    (hfull : ∀ β : ℝ, ‖mvTrigSum K c β‖ ≤ S) :
+    ‖mvIntervalCoefficientSum K c Y Z‖ ≤
+      7 * Real.sqrt ((A : ℝ) * S) + 3 * Q + 7 := by
+  by_cases hwidthLower : 2 ≤ Z - Y
+  · exact norm_mvIntervalCoefficientSum_le_sqrt hQ hA hYZ hYK hwidthLower
+      hwidthUpper hAY hZAK c hc hS hSA hfull
+  · have hshort := norm_mvIntervalCoefficientSum_le_short hQ hYZ (by omega) c hc
+    have hsqrt : 0 ≤ Real.sqrt ((A : ℝ) * S) := by positivity
+    have hQr : (0 : ℝ) ≤ Q := by positivity
+    linarith
 
 end
 

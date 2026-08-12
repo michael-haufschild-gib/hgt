@@ -1,7 +1,7 @@
 # Strict pro-log collar and Arakelov trace kernel
 
 - **ID:** `deninger-strict-pro-log-collar-trace-kernel`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE ANALYTIC EXACTNESS THEOREM
 - **Labels:** `DAC_STRICT_PRO_LOG_COLLAR_SECTION`,
   `DAC_COMPLETED_ARAKELOV_TRACE_KERNEL`
@@ -264,7 +264,7 @@ generic boundaries.
 - `DAC_COFINITE_DIVISOR_SPLIT_STRICTNESS`
 - `DAC_REAL_KUMMER_ARAKELOV_BOUNDARY`
 
-**Verdict:** `FULLY PROVEN ON PAPER; STRICT ALL-PRIME RESIDUE
+**Verdict:** `FORMALISED IN LEAN; STRICT ALL-PRIME RESIDUE
 TRACE-KERNEL EXACTNESS AND THE ORIENTATION COKERNEL ARE CLOSED FOR THE
 MIXED PRO-LOG COLLAR COMPLETION`.
 
@@ -424,6 +424,13 @@ both halves already in the corpus.
   the logarithmic differential has no component differentiating the adjoined generator because that
   generator is closed.
 
-What is left of the geometric side is only the passage from this algebra to a sheaf on the chart,
-which the corpus's local-predicate machinery supports; the card's own card for the object is
-`docs/drafts/pipeline/1-in-progress/log-de-rham-residue-sheaf.md`.
+That former geometric remainder is closed by
+`docs/drafts/pipeline/3-formalized/log-de-rham-residue-sheaf.md`.
+`DeningerDivisorIdeal.lean` supplies the short exact coordinate-divisor ideal sequence,
+`DeningerResidueSequence.lean` supplies exactness and surjectivity of the residue sequence, and
+`DeningerFiniteProLogTateGraphResidueSplitting.lean` supplies the continuous split residue on the
+finite chart together with graph-core strictness and seminorm control.  The graph completion is
+formalized by `HTGeometry/SeminormCompletion.lean`, the mixed packet completion by
+`DeningerMixedPrimeBanach.lean`, and the completed trace-kernel exactness and orientation-line
+cokernel by `DeningerArakelovTraceKernel.lean`.  These modules are umbrella-wired and their named
+theorems have standard kernel axiom footprints only.

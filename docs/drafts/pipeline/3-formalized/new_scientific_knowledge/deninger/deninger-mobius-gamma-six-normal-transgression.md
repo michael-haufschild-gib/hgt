@@ -1,14 +1,24 @@
 # Deninger--Möbius Gamma-six normal transgression
 
-- **Stage:** 2 — dependency-closed paper proof
+- **Stage:** 3 — formalised in Lean 4
 - **Type:** SOURCE CONSTRUCTION / GAMMA-CLOCK NORMAL TRANSGRESSION / ROUTE-L FRONTIER ADVANCE
-- **Status:** `[PAPER-PROVED] [PROJECT-SPECIFIC NEW KNOWLEDGE] [NOT RH] [NO LEAN WORK DURING CORPUS REFACTOR]`
+- **Status:** `[LEAN-PROVED] [PAPER-PROVED] [PROJECT-SPECIFIC NEW KNOWLEDGE] [NOT RH]`
 - **Corpus inputs:**
   `MobiusThetaPhysicalSourceToXiLanding.lean`,
   `DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean`,
   `DeningerBurnolConormalRadialTopBoundaryComparison.lean`,
   `DeningerCofinalCountercharacterTopBoundaryTransgression.lean`, and
   `TateKummerWoldGammaIntervalCharacter.lean`.
+- **Lean counterpart:**
+  `formal/GaloisForLFunctions/RHTower/DeningerMobiusGammaSixNormalTransgression.lean`.
+- **Formal closure:** the Lean module constructs the literal finite-corrected tail; proves its
+  equality with the inverse-transported complete six packet; constructs the honest complementary
+  rational Steinberg cell and normalized cubic Kummer selector; extracts both `[6^m]-1` and
+  `[6^{-m}]-1`; proves the oriented regulator `2m log 6` and multiplier-K1 non-boundary theorem;
+  builds both strict Tate primitives; identifies their half-density images with the forward and
+  reciprocal physical transports; and proves forward endpoint survival, reciprocal contraction,
+  and operator-norm blow-up. All declarations are theorem-kernel checked without `sorry`, `admit`,
+  added axioms, `opaque`, or `unsafe` declarations.
 
 ## 1. Why the successor ratio is not the physical clock
 

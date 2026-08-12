@@ -1,7 +1,7 @@
 # Pro-log-Stein Kummer residue square
 
 - **ID:** `deninger-pro-log-stein-kummer-residue-square`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE ANALYTIC RESIDUE THEOREM
 - **Labels:** `DAC_PRO_LOG_STEIN_KUMMER_RESIDUE_SQUARE`,
   `DAC_SOURCE_STRATUM_RESIDUE_SHEAF_MORPHISM_FINITE`
@@ -331,7 +331,7 @@ the analytic Kummer boundary equal the arithmetic valuation before
 coarse invariants.  This removes the need for unsupported ordinary
 Cartier purity of Deninger's generalized function \([p]\).
 
-**Verdict:** `FULLY PROVEN ON PAPER; FINITE-PLACE SOURCE RESIDUE
+**Verdict:** `FORMALISED IN LEAN; FINITE-PLACE SOURCE RESIDUE
 MORPHISM CONSTRUCTED ON ALL TATE--MILNOR CELLS; ALL-PRIME COMPLETION
 AND REAL SIGNATURE REMAIN OPEN`.
 
@@ -418,6 +418,10 @@ both halves already in the corpus.
   the logarithmic differential has no component differentiating the adjoined generator because that
   generator is closed.
 
-What is left of the geometric side is only the passage from this algebra to a sheaf on the chart,
-which the corpus's local-predicate machinery supports; the card's own card for the object is
-`docs/drafts/pipeline/1-in-progress/log-de-rham-residue-sheaf.md`.
+That former geometric remainder is now closed by the Stage-3 card
+`docs/drafts/pipeline/3-formalized/log-de-rham-residue-sheaf.md`.  In particular,
+`DeningerDivisorIdeal.lean` proves the coordinate-divisor ideal sequence short exact and
+`DeningerResidueSequence.lean` proves exactness and surjectivity of the logarithmic residue
+sequence.  Together with `DeningerFreeSheafAcyclic.lean`, `DeningerCellFiltration.lean`, and
+`DeningerProIndSections.lean`, this supplies the sheaf, acyclicity, and filtered-passage layer that
+previously kept this card at Stage 2.  All named modules are wired into the project umbrellas.

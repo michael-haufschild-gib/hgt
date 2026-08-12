@@ -102,11 +102,11 @@ private theorem mellinProductKernel_integrable
     change (∫ x in Ioi (0 : ℝ), ‖F (y, x)‖) = _
     exact hslice y hy
 
-/-- Mellin's product theorem for multiplicative convolution. -/
-theorem mellin_positiveMellinConvolution
+/-- Mellin's product theorem for multiplicative convolution, including absolute convergence. -/
+theorem hasMellin_positiveMellinConvolution
     {f g : ℝ → ℂ} (hfmeas : Measurable f) (hgmeas : Measurable g) {s : ℂ}
     (hf : MellinConvergent f s) (hg : MellinConvergent g s) :
-    mellin (positiveMellinConvolution f g) s = mellin f s * mellin g s := by
+    HasMellin (positiveMellinConvolution f g) s (mellin f s * mellin g s) := by
   let mu : Measure ℝ := volume.restrict (Ioi 0)
   let F : ℝ × ℝ → ℂ := fun p =>
     (p.2 : ℂ) ^ (s - 1) * (f p.1 * g (p.2 / p.1) / p.1)
@@ -147,10 +147,17 @@ theorem mellin_positiveMellinConvolution
               (f y / y) * ((y : ℂ) ^ s * mellin g s)
                   = ((y : ℂ) ^ s / y) * f y * mellin g s := by ring
               _ = (y : ℂ) ^ (s - 1) * f y * mellin g s := by rw [hpow]
-  rw [mellin]
-  simp only [positiveMellinConvolution]
-  simp only [smul_eq_mul]
-  calc
+  constructor
+  · rw [MellinConvergent]
+    refine hF.integral_prod_right.congr ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    change (∫ y in Ioi (0 : ℝ), F (y, x)) =
+      (x : ℂ) ^ (s - 1) * positiveMellinConvolution f g x
+    rw [positiveMellinConvolution, ← integral_const_mul]
+  · rw [mellin]
+    simp only [positiveMellinConvolution]
+    simp only [smul_eq_mul]
+    calc
     (∫ x in Ioi (0 : ℝ),
         (x : ℂ) ^ (s - 1) * ∫ y in Ioi (0 : ℝ), f y * g (x / y) / y)
         = ∫ x in Ioi (0 : ℝ), ∫ y in Ioi (0 : ℝ), F (y, x) := by
@@ -174,5 +181,12 @@ theorem mellin_positiveMellinConvolution
     _ = (∫ y in Ioi (0 : ℝ), (y : ℂ) ^ (s - 1) * f y) * mellin g s := by
           rw [integral_mul_const]
     _ = mellin f s * mellin g s := rfl
+
+/-- Value-only form of Mellin's multiplicative-convolution product theorem. -/
+theorem mellin_positiveMellinConvolution
+    {f g : ℝ → ℂ} (hfmeas : Measurable f) (hgmeas : Measurable g) {s : ℂ}
+    (hf : MellinConvergent f s) (hg : MellinConvergent g s) :
+    mellin (positiveMellinConvolution f g) s = mellin f s * mellin g s :=
+  (hasMellin_positiveMellinConvolution hfmeas hgmeas hf hg).2
 
 end RHTower

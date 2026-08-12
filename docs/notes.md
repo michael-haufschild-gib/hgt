@@ -256,3 +256,13 @@ Trying to prove Re(R₀R₂ − R₁²) ≥ 0 outright, I first established that
 Effective descent — replacing the machine's infinitary Cesàro contradiction with Turán power-sum quantitative bounds, so that finitely many jet inequalities of ξ at one real point certify partial RH. The supply theorem above is deliberately its terminal interface. This is a multi-batch program; its opening move (a quantitative oscillation lemma with explicit constants) is recorded on the card.
 
 The picture after this batch is pleasingly sharp: the single-minor criterion is now pinched from both sides — the no-go proves its polynomial quantifier is minimal, and the supply theorem shows exactly what arithmetic input buys its first instance. Nothing about the criterion is decorative.
+
+riemannHypothesis_iff_forall_nodal_single_minor (RHTower/XiResolventNodalSingleMinorCriterion.lean): at any one shift X ≥ 0,
+
+  RH ⟺ for every finite node set R ⊂ (0,1] and every m ∈ ℕ:  Re(M_p(0)·M_p(2) − M_p(1)²) ≥ 0,  where p = Xᵐ·∏_{r∈R}(X − r).
+
+The step-37 endpoint quantified over all real polynomials (arbitrary coefficients); this quantifies only over monic real-rooted polynomials with roots in [0,1] — a strict strengthening of the equivalence, since the backward direction now needs far less data. The proof is a descent clone that keeps the killing weights inside the nodal family, plus the even machine and the index-shift identity per level. Notably, in classical moment theory restricting positivity tests to real-rooted squares weakens a positive-definiteness condition — the equivalence survives here precisely because the criterion detects through descent oscillation rather than square positivity, which re-confirms the route-u structural picture.
+
+The effective descent step, completed [LEAN-PROVED]
+
+RHTower/XiResolventEffectivePolynomialDescent.lean finishes part II of the effective program: for a real polynomial P killing every copy above a level, the detection window is explicit — N ≤ (2S²b⁴/g + b⁴S²/(ℓ²−ρ₂²)) / (Im(u)²·‖P(u)‖⁴) with b the coefficient norm bound of P — and the finite certificate is phrased as single (0,2,1) minors at the N polynomials Xⁿ·P: one real inequality per polynomial cleans the level (level_criticalLine_of_poly_single_minors_window). A pleasant simplification surfaced along the way: a real polynomial can kill any conjugation-symmetric set (non-real pairs via real quadratics), so the descent step needs no reality assumption on higher copies.

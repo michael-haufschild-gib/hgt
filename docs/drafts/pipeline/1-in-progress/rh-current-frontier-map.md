@@ -17,7 +17,8 @@ Suzuki's cutoff/nondegeneracy repairs, the generic simple-eigenvalue branch, and
 hard-edge capacity-limit lemmas are now in the committed snapshot. Current provisional work
 relevant to this map consists of P-G80's universal ordered-prime chirality, P-G81's all-depth
 extension, P-G82's exact finite physical block assembly, P-G83's complete-graph multiplicity
-no-go, P-G84's summable adjacent-prime cofinal assembly, Route T's true
+no-go, P-G84's summable adjacent-prime cofinal assembly, P-G85's local-incidence identification
+no-go, P-G86's exact cumulative-prime primitive recovery, Route T's true
 upper-half/Taylor/log-derivative transport, Suzuki's exact `H^log` boundary convergence and
 form-core realization, canonical shifted-Xi equivalence and shift-ratio receiver, the strengthened
 shifted-Xi hard-edge capacity limit, and the
@@ -83,7 +84,7 @@ formal rational-prime/Beurling comparison proving that every finite multiplicati
 of Mertens-normal log-jet Grams is zero-set blind. These are new mechanisms, receivers, and no-gos;
 none supplies the still-missing source theorem of its route or creates an additional route.
 Route P's hostile-cell chirality theorem and Route T's finite MV24.7 extraction are also committed;
-their first open problems have moved respectively to global weak-kernel/Feshbach identification and
+their first open problems have moved respectively to physical cumulative-incidence Feshbach sewing and
 source-specific logarithmic Taylor denominator windows. A current Helson/Fredholm wall theorem
 supplies a substantial candidate architecture, but without a canonical Xi coefficient stream,
 fixed RH threshold, or global wall-orientation law it is not yet a twelfth route.
@@ -311,7 +312,7 @@ existing route.
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced; two internal producer branches | Prolate branch: construct/evaluate seed is closed at paper level and radial/exterior primitives are formal. First unresolved theorem is source-derived control of the entire restricted-Weil ground space: prove the explicit constrained prolate seed controls every near-ground direction, equivalently `epsilon_lambda>=0`, `epsilon_(lambda_j)->0` on one cofinal nested family, or `Delta_lambda=r_lambda-epsilon_lambda->0`. Negative spectrum cannot evacuate. Completed-Evans branch: formal weak Gamma-tail coercivity upgrades a tested supported equation to `U in L2`, `V in H1`, eliminating both derivative-scattering charges; exact root-port Gram proves every nonzero endpoint trace is visible at first prime grade once `a>(log 2)/2`. Its first open theorem is the literal completed-zero-mode to support-pruned carrier/cutoff intertwiner, including square summability and compressed-prime-adjacency compatibility, followed by the trace-zero channel and raw Evans injectivity. These are Route-O subbranches, not a new lettered route. |
-| P | open, advanced | committed umbrella Lean closes P-G79: continuous positive weak kernel on `K_H x K_H`, exact Gamma-valuation Szego covariance, and literal hostile-cell physical Pluecker theorem. Provisional P-G80 proves sign for every ordered prime pair; P-G81 proves it at every depth; P-G82 proves arbitrary nonempty finite physical block assembly. P-G83 proves naïve complete-pair assembly diverges because same-prime minors have infinite incidence. P-G84 proves canonical adjacent-prime assembly is absolutely summable, exhaustion-order independent, and has cofinal Schur fraction in `(1/2,1)` with positive sub-half residual at every label. Obstruction is no longer hostile-cell sign, prime order, Kummer-depth coverage, finite block compatibility, or existence of one canonical summable infinite physical assembly. Missing producer is exact identification of source-forced incidence with P-G78's all-prime weak-kernel Gamma/polar Feshbach completion, followed by completed Julia saturation/compact positive-carrier landing. |
+| P | open, advanced | committed umbrella Lean closes P-G79: continuous positive weak kernel on `K_H x K_H`, exact Gamma-valuation Szego covariance, and literal hostile-cell physical Pluecker theorem. Provisional P-G80 proves sign for every ordered prime pair; P-G81 proves it at every depth; P-G82 proves arbitrary finite physical block assembly. P-G83 proves naïve complete-pair assembly diverges from infinite repeated-minor incidence. P-G84 proves canonical adjacent-prime assembly is absolutely summable with cofinal Schur fraction in `(1/2,1)`. P-G85 proves a local adjacent edge Gram cannot equal all-prime weak covariance. P-G86 proves the exact positive survivor: cumulative weighted adjacent differences have vanishing terminal flux in first Köthe topology and recover every all-prime layer sum, hence P-G78's weak kernel exactly. Obstruction is no longer local sign, depth, finite/infinite summability, or abstract adjacent-to-global weak-kernel reconstruction. Missing producer is a literal physical Pluecker/Fisher Schur form that applies cumulative inverse incidence before elimination and identifies its response with completed Gamma/polar moments, followed by Julia saturation/compact positive-carrier landing. |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
@@ -2486,7 +2487,7 @@ physical odd Gamma-six coefficient. Remaining theorem is promotion of this carri
 place-marked Rost--Schmid/Meyer domain and construction of the signed relative differential for
 the reduced odd pole pair, with a genuine
 fixed-reader residue-cancellation law. Full proofs:
-`../2-fully-proven/new_scientific_knowledge/deninger/deninger-mobius-gamma-six-normal-transgression.md`;
+`../3-formalized/new_scientific_knowledge/deninger/deninger-mobius-gamma-six-normal-transgression.md`;
 `../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-orientation-residue-wall.md`;
 `../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-cyclotomic-denominator-admission.md`;
 `../2-fully-proven/new_scientific_knowledge/deninger/deninger-gamma-six-critical-edge-coface-rigidity.md`.
@@ -3207,7 +3208,7 @@ equivalently bounded in some proper source price. Without a carrier every approx
 escapes every proper price, and an explicit model shows residual convergence alone is insufficient.
 No Route-P source atoms or price satisfying this criterion have been constructed.
 
-**P-G60--P-G79 formal source opening, provisional P-G80--P-G84, reflected compact passivity, and critical Schur/topology completion.** The actual Gamma-sewn
+**P-G60--P-G79 formal source opening, provisional P-G80--P-G86, reflected compact passivity, and critical Schur/topology completion.** The actual Gamma-sewn
 pre-Gram aperture edge now passes its first hostile source test. Define its inverse tilt `W_s(p)`
 from the literal contraction, aperture, and Möbius factors. Direct Lean declarations prove
 
@@ -3396,17 +3397,34 @@ strictly below half the information-depleted weight at every label. P-G84 closes
 exhaustion-order independence for one canonical infinite physical packetization without fitted
 damping. It does not identify that path with P-G78's all-prime weak kernel.
 
-The exact remaining gate is therefore **source-forced incidence identification and non-diagonal
-Gamma/polar Feshbach completion in source graph/Köthe topology before Hardy or scalar compression**,
+`GammaValuationSchurAdjacentPrimeIncidenceNoGo.lean` makes that non-identification exact. The
+natural adjacent edge-block Gram is absolutely summable on the Köthe source but vanishes between
+prime-axis deltas at ordered indices zero and two. P-G78's weak kernel equals one on the same
+deltas because each valuation layer carries complete rank-one prime covariance. Thus local bounded
+incidence and global weak covariance are different operators; summability alone cannot identify
+them. P-G85 rules out direct edgewise operator landing.
+
+`GammaValuationSchurAdjacentPrimePrimitiveRecovery.lean` constructs the nonlocal survivor. First
+Deninger height controls `(n+1)|a_(p_n,e)|`, so the terminal path flux `N a_(p_N,e)` tends to zero.
+Finite Abel summation then proves
+`sum_n (n+1)(a_(p_n,e)-a_(p_(n+1),e)) = sum_p a_(p,e)` at every depth. Taking the Gram after this
+cumulative primitive recovers P-G78's weak kernel exactly, including nonadjacent covariance.
+P-G86 identifies the universal law: global Gamma covariance is Gram after inverse incidence, not
+sum of local edge Grams. Ordered adjacent-prime geometry and all-prime Köthe completion are now
+formally bridged at the abstract source level.
+
+The exact remaining gate is therefore **physical cumulative-incidence Pluecker/Fisher completion
+and non-diagonal Gamma/polar Feshbach sewing before Hardy or scalar compression**,
 not
 local-time, Euler continuation, finite positive unitization, passivity, parity, compact-carrier
 existence, or raw normalization: construct source-native Feshbach elimination whose reduced
 response remains anti-Herglotz and whose square-coordinate moments equal the completed seam tower.
 Existing compact Markov capstone then gives RH. P-G60--P-G79 are committed and umbrella-wired at
-the cutoff. P-G80--P-G84 are current provisional worktree Lean. P-G83 rules out complete packet
-overlap; P-G84 supplies a summable adjacent path. Neither proves that adjacent incidence is selected
-by source geometry, compatibility with P-G78's all-prime cross covariance, archimedean/polar
-sewing, or equality with the actual global Feshbach response.
+the cutoff. P-G80--P-G86 are current provisional worktree Lean. P-G83 rules out complete packet
+overlap; P-G84 supplies a summable adjacent path; P-G85 rejects its local edge Gram as the weak
+kernel; P-G86 proves cumulative inverse incidence recovers that kernel exactly. Missing connector
+is now literal physical: prove Pluecker/Fisher elimination implements this cumulative primitive,
+then establish archimedean/polar sewing and equality with completed-seam response.
 
 **C1/P Green-square opening, formal.** Umbrella Lean uses the already source-built
 Hedenmalm inverse `B` and its singular theta metric `G` to isolate
@@ -6822,6 +6840,8 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCriticalFinitePacketFeshbachAssembly.lean
 - formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCriticalCompleteGraphMultiplicityNoGo.lean
 - formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCriticalAdjacentPrimeCofinalFeshbach.lean
+- formal/GaloisForLFunctions/RHTower/GammaValuationSchurAdjacentPrimeIncidenceNoGo.lean
+- formal/GaloisForLFunctions/RHTower/GammaValuationSchurAdjacentPrimePrimitiveRecovery.lean
 
 ### Q
 
@@ -7329,8 +7349,10 @@ Current worktree beyond cutoff has six route-relevant effects and receives provi
 Route P's P-G80 module globalizes positive chirality/Fisher covariance to every ordered prime pair,
 P-G81 extends it across every consecutive valuation depth, and P-G82 closes arbitrary finite
 raw-mass block assembly. P-G83 proves complete packet overlap is nonsummable; P-G84 proves the
-canonical adjacent-prime path is absolutely summable with strict cofinal physical gain. Exact
-identification with the all-prime weak Köthe/Feshbach response remains open. Route T's upper-half, reciprocal-approximation,
+canonical adjacent-prime path is absolutely summable with strict cofinal physical gain. P-G85
+proves local edge-kernel identification false; P-G86 proves cumulative inverse incidence recovers
+the all-prime weak Köthe kernel exactly. Physical Pluecker/Fisher realization of that primitive and
+completed Gamma/polar response equality remain open. Route T's upper-half, reciprocal-approximation,
 log-derivative, and Taylor-perturbation modules leave only explicit useful-window verification and
 one-dimensional MV24.11--24.12 transport. Route L's big-Witt strengthening proves injective
 Teichmuller embedding and exact nilpotence preservation, without changing its singular comparison
