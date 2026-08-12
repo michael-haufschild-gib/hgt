@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.SoninCofinalAmbidextrousInwardIncidence
 import GaloisForLFunctions.RHTower.MobiusCriticalFisherReporterRankOneReduction
 import GaloisForLFunctions.RHTower.MobiusCriticalComplexPhaseHardySource
 import GaloisForLFunctions.RHTower.CCMGalerkinDiagonalTransfer
+import GaloisForLFunctions.RHTower.MobiusCoMovingDiffuseCodiagonal
 
 /-!
 # Sonin--reporter arithmetic-clock commutator seam
@@ -591,5 +592,95 @@ theorem exists_soninCofinalCriticalFisherScore_diagonal
     (tendsto_infiniteMobiusCriticalFisherTangentDampedCoefficient hu).comp
       tendsto_soninMobiusCriticalSigmaSequence
   exact GaloisForLFunctions.RHTower.tendsto_of_dist_lt_inv hcoeff herror
+
+/-- SONIN--PHYSICAL-CODIAGONAL LANDING: one cofinal finite Sonin sequence and
+Route E's literal prime-labelled lower Fisher corner become the same scalar
+source current at the critical boundary.  The lower corner is not an abstract
+reporter: it contains one representative of every unordered pair and retains
+the collision correction at finite `j`. -/
+theorem exists_soninCofinalCriticalFisherScore_oneCorner_landing
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (u : ℝ) (hu : 0 ≤ u) :
+    ∃ Nseq : ℕ → ℕ,
+      (∀ j, j < Nseq j) ∧
+      Tendsto (fun j =>
+        soninCofinalCriticalFisherScore
+            a c d r hc hcd hr u hu j (Nseq j) -
+          (mobiusFisherOneCornerCodiagonal
+            (soninMobiusCriticalSigmaSequence j) u : ℂ))
+        atTop (nhds 0) ∧
+      Tendsto (fun j =>
+        (mobiusFisherOneCornerCodiagonal
+          (soninMobiusCriticalSigmaSequence j) u : ℂ))
+        atTop (nhds (((2 * u / (1 + u) ^ 2 : ℝ) : ℂ))) := by
+  obtain ⟨Nseq, hcofinal, _herror, hsonin⟩ :=
+    exists_soninCofinalCriticalFisherScore_diagonal
+      a c d r ha hc hcd hda hr harc u hu
+  have hcorner : Tendsto (fun j =>
+      (mobiusFisherOneCornerCodiagonal
+        (soninMobiusCriticalSigmaSequence j) u : ℂ))
+      atTop (nhds (((2 * u / (1 + u) ^ 2 : ℝ) : ℂ))) :=
+    (tendsto_ofReal_mobiusFisherOneCornerCodiagonal hu).comp
+      tendsto_soninMobiusCriticalSigmaSequence
+  refine ⟨Nseq, hcofinal, ?_, hcorner⟩
+  convert hsonin.sub hcorner using 1
+  simp
+
+/-- POSITIVE-SCALARIZATION WALL: at every strictly positive aperture, the
+common Sonin/physical-codiagonal current is eventually strictly positive on
+both carriers.  Therefore these two routes cannot annihilate an off-neutral
+orientation after taking this Fisher scalar; a successful splice must retain
+a reflection-odd coordinate before this landing. -/
+theorem exists_soninCofinalCriticalFisherScore_eventually_positive
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (u : ℝ) (hu : 0 < u) :
+    ∃ Nseq : ℕ → ℕ,
+      (∀ j, j < Nseq j) ∧
+      ∀ᶠ j : ℕ in atTop,
+        0 < (soninCofinalCriticalFisherScore
+          a c d r hc hcd hr u hu.le j (Nseq j)).re ∧
+        0 < mobiusFisherOneCornerCodiagonal
+          (soninMobiusCriticalSigmaSequence j) u := by
+  obtain ⟨Nseq, hcofinal, hlanding, hcorner⟩ :=
+    exists_soninCofinalCriticalFisherScore_oneCorner_landing
+      a c d r ha hc hcd hda hr harc u hu.le
+  let L : ℂ := ((2 * u / (1 + u) ^ 2 : ℝ) : ℂ)
+  have hsonin : Tendsto (fun j =>
+      soninCofinalCriticalFisherScore
+        a c d r hc hcd hr u hu.le j (Nseq j))
+      atTop (nhds L) := by
+    have hadd := hlanding.add hcorner
+    convert hadd using 1
+    · funext j
+      ring
+    · simp [L]
+  have hLpos : 0 < L.re := by
+    dsimp only [L]
+    simp only [ofReal_re]
+    positivity
+  have hsoninRe : Tendsto (fun j =>
+      (soninCofinalCriticalFisherScore
+        a c d r hc hcd hr u hu.le j (Nseq j)).re)
+      atTop (nhds L.re) :=
+    Complex.continuous_re.continuousAt.tendsto.comp hsonin
+  have hcornerRe : Tendsto (fun j =>
+      mobiusFisherOneCornerCodiagonal
+        (soninMobiusCriticalSigmaSequence j) u)
+      atTop (nhds (2 * u / (1 + u) ^ 2)) := by
+    have hre := Complex.continuous_re.continuousAt.tendsto.comp hcorner
+    change Tendsto (fun j =>
+      mobiusFisherOneCornerCodiagonal
+        (soninMobiusCriticalSigmaSequence j) u)
+      atTop (nhds (2 * u / (1 + u) ^ 2)) at hre
+    exact hre
+  have hprofilePos : 0 < 2 * u / (1 + u) ^ 2 := by
+    positivity
+  refine ⟨Nseq, hcofinal, ?_⟩
+  filter_upwards
+    [hsoninRe.eventually (Ioi_mem_nhds hLpos),
+      hcornerRe.eventually (Ioi_mem_nhds hprofilePos)] with j hsj hcj
+  exact ⟨hsj, hcj⟩
 
 end RHTower

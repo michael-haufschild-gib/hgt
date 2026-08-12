@@ -84,16 +84,16 @@ Build completed successfully (12742 jobs).
 
 Capstone `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
-## Next conjecture P-G87
+## Successor status
 
-Lift P-G80--P-G84 physical Pluecker/Fisher data through cumulative inverse incidence. Construct the
-nonlocal physical Schur form before scalar quotient and prove its reduced response is positive,
-summable, and exactly the P-G86 weak kernel response. Edgewise fractions cannot be averaged after
-elimination; cumulative primitive must precede Gram/Feshbach completion.
+P-G87 proves edgewise scalar depletion cannot repair missing nonadjacent covariance. P-G88 proves
+the positive survivor: cumulative primitive first, then global Gram and cofinal scalar reduction,
+is exactly the reduced P-G86/P-G78 weak response. P-G89 proves that covariance-correct scalar still
+cannot be pushed unchanged to compact reciprocal-gap atoms; node-dependent transfer is forced.
 
 ## Honest boundary
 
-P-G86 identifies cumulative adjacent incidence with P-G78's abstract weak kernel exactly. It does
-not prove P-G84's edge-local scalar fraction implements that inverse incidence, connect the
-physical Pluecker/Fisher Schur complement to this kernel, prove completed-seam moment equality,
-complete Julia saturation, or prove RH.
+P-G86 identifies cumulative adjacent incidence with P-G78's abstract weak kernel exactly. P-G88
+now connects P-G84's scalar residual to this global kernel in correct order. Neither result builds
+the node-dependent physical Schur transfer forced by P-G89, proves completed-seam moment equality,
+completes Julia saturation, or proves RH.

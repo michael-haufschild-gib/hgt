@@ -285,6 +285,39 @@ def routeTProductMultiplicity
     {K Q : ℕ} (hK : 4 * Q ^ 2 < K) (n : Fin K) : ℂ :=
   Fintype.card {p : Fin Q × Fin Q // routeTUpperHalfProductIndex hK p = n}
 
+/-- A rectangular family of products lying strictly inside the receiver block
+`Q² < lm ≤ 2Q²`.  Shifting the first coordinate by one avoids the lower endpoint. -/
+def routeTProductLowerBox
+    {Q : ℕ} (hQ : 8 ≤ Q) (p : Fin (Q / 4) × Fin (Q / 4)) : Fin Q × Fin Q :=
+  (⟨p.1.val + 1, by have := p.1.isLt; omega⟩,
+    ⟨p.2.val, by have := p.2.isLt; omega⟩)
+
+theorem routeTProductLowerBox_mem
+    {Q : ℕ} (hQ : 8 ≤ Q) (p : Fin (Q / 4) × Fin (Q / 4)) :
+    Q ^ 2 < routeTUpperHalfProductNat Q (routeTProductLowerBox hQ p) ∧
+      routeTUpperHalfProductNat Q (routeTProductLowerBox hQ p) ≤ 2 * Q ^ 2 := by
+  have ha := p.1.isLt
+  have hb := p.2.isLt
+  have ha4 : 4 * (p.1.val + 1) ≤ Q := by omega
+  have hb4 : 4 * p.2.val ≤ Q := by omega
+  unfold routeTUpperHalfProductNat routeTProductLowerBox
+  constructor <;> dsimp
+  · nlinarith
+  · have hleft : 4 * (Q + (p.1.val + 1)) ≤ 5 * Q := by omega
+    have hright : 4 * (Q + p.2.val) ≤ 5 * Q := by omega
+    nlinarith [sq_nonneg (Q : ℤ)]
+
+theorem routeTProductLowerBox_injective
+    {Q : ℕ} (hQ : 8 ≤ Q) : Function.Injective (routeTProductLowerBox hQ) := by
+  intro p q hpq
+  apply Prod.ext
+  · apply Fin.ext
+    have := congrArg (fun z : Fin Q × Fin Q => z.1.val) hpq
+    dsimp [routeTProductLowerBox] at this
+    omega
+  · apply Fin.ext
+    exact congrArg (fun z : Fin Q × Fin Q => z.2.val) hpq
+
 theorem norm_routeTProductMultiplicity_le
     {K Q : ℕ} (hQ : 1 ≤ Q) (hK : 4 * Q ^ 2 < K) (n : Fin K) :
     ‖routeTProductMultiplicity hK n‖ ≤ mvBalancedDivisorCount Q n.val := by
@@ -324,6 +357,48 @@ theorem mvTrigSum_routeTProductMultiplicity
   exact sum_comp_eq_sum_card_fiber_mul_complex
     (routeTUpperHalfProductIndex hK) w
 
+/-- Route T's product multiplicity has unconditional mass in the receiver block. -/
+theorem routeTProductMultiplicity_block_lower
+    {K Q : ℕ} (hQ : 8 ≤ Q) (hK : 4 * Q ^ 2 < K) :
+    ((Q : ℝ) ^ 2) / 64 ≤
+      ‖mvCoefficientBlockSum K (Q ^ 2) (routeTProductMultiplicity hK)‖ := by
+  classical
+  let good : Finset (Fin Q × Fin Q) :=
+    Finset.univ.filter fun p =>
+      Q ^ 2 < routeTUpperHalfProductNat Q p ∧
+        routeTUpperHalfProductNat Q p ≤ 2 * Q ^ 2
+  have hmaps : ∀ p ∈ (Finset.univ : Finset (Fin (Q / 4) × Fin (Q / 4))),
+      routeTProductLowerBox hQ p ∈ good := by
+    intro p _
+    simp only [good, Finset.mem_filter, Finset.mem_univ, true_and]
+    exact routeTProductLowerBox_mem hQ p
+  have hinj : Set.InjOn (routeTProductLowerBox hQ)
+      (Finset.univ : Finset (Fin (Q / 4) × Fin (Q / 4))) :=
+    (routeTProductLowerBox_injective hQ).injOn
+  have hcard : (Q / 4) ^ 2 ≤ good.card := by
+    have h := Finset.card_le_card_of_injOn _ hmaps hinj
+    simpa [Fintype.card_prod, Fintype.card_fin, pow_two] using h
+  have hblock : mvCoefficientBlockSum K (Q ^ 2) (routeTProductMultiplicity hK) =
+      (good.card : ℂ) := by
+    unfold mvCoefficientBlockSum
+    rw [← mvTrigSum_routeTProductMultiplicity hK]
+    change (∑ p : Fin Q × Fin Q,
+        if Q ^ 2 < (routeTUpperHalfProductIndex hK p).val ∧
+            (routeTUpperHalfProductIndex hK p).val ≤ 2 * Q ^ 2 then 1 else 0) = _
+    rw [← Finset.sum_filter]
+    simp only [good, routeTUpperHalfProductIndex, Finset.sum_const, nsmul_eq_mul,
+      mul_one, Nat.cast_ofNat]
+  rw [hblock, Complex.norm_natCast]
+  have hdiv : Q ≤ 8 * (Q / 4) := by omega
+  have hrealCard : (((Q / 4) ^ 2 : ℕ) : ℝ) ≤ good.card := by
+    exact_mod_cast hcard
+  have hq : (0 : ℝ) ≤ Q := by positivity
+  have hdivReal : (Q : ℝ) ≤ 8 * (Q / 4 : ℕ) := by exact_mod_cast hdiv
+  calc
+    ((Q : ℝ) ^ 2) / 64 ≤ (((Q / 4 : ℕ) : ℝ) ^ 2) := by nlinarith
+    _ = (((Q / 4) ^ 2 : ℕ) : ℝ) := by push_cast; rfl
+    _ ≤ good.card := hrealCard
+
 theorem routeTProductMultiplicity_twistedLog_eq
     {K Q : ℕ} (hK : 4 * Q ^ 2 < K) {t x β : ℝ}
     (hx : (4 * Q ^ 2 : ℕ) < x) :
@@ -350,6 +425,17 @@ theorem mvTrigSum_routeTLogConvolution_eq
           (fun n => finitePhaseChar (t / (2 * Real.pi) * Real.log n))) β =
       routeTLogTwistedShiftBilinearSum t r β Q := by
   unfold mvTrigSum mvConvolutionCoefficient
+  have hassoc : (∑ n : Fin K,
+      routeTProductMultiplicity hK n *
+          finitePhaseChar (t / (2 * Real.pi) * Real.log (((r - n.val : ℕ) : ℝ))) *
+        finitePhaseChar ((n.val : ℝ) * β)) =
+      ∑ n : Fin K, routeTProductMultiplicity hK n *
+        (finitePhaseChar (t / (2 * Real.pi) * Real.log (((r - n.val : ℕ) : ℝ))) *
+          finitePhaseChar ((n.val : ℝ) * β)) := by
+    apply Finset.sum_congr rfl
+    intro n _
+    ring
+  rw [hassoc]
   rw [← mvTrigSum_routeTProductMultiplicity hK]
   unfold routeTLogTwistedShiftBilinearSum
   rw [← Finset.sum_product']
@@ -364,11 +450,11 @@ theorem mvTrigSum_routeTLogConvolution_eq
   calc
     finitePhaseChar
           (t / (2 * Real.pi) *
-              Real.log (r - (routeTUpperHalfProductIndex hK p).val)) *
+              Real.log (((r - (routeTUpperHalfProductIndex hK p).val : ℕ) : ℝ))) *
         finitePhaseChar (((routeTUpperHalfProductIndex hK p).val : ℝ) * β) =
       finitePhaseChar
         (t / (2 * Real.pi) *
-            Real.log (r - (routeTUpperHalfProductIndex hK p).val) +
+            Real.log (((r - (routeTUpperHalfProductIndex hK p).val : ℕ) : ℝ)) +
           ((routeTUpperHalfProductIndex hK p).val : ℝ) * β) := by
       rw [finitePhaseChar_add]
     _ = finitePhaseChar
@@ -376,9 +462,11 @@ theorem mvTrigSum_routeTLogConvolution_eq
             Real.log (r - vinogradovUpperHalfProduct Q p.1 p.2) +
           β * vinogradovUpperHalfProduct Q p.1 p.2) := by
       congr 1
-      unfold routeTUpperHalfProductIndex routeTUpperHalfProductNat
-        vinogradovUpperHalfProduct
+      have hval : (routeTUpperHalfProductIndex hK p).val =
+          routeTUpperHalfProductNat Q p := rfl
+      rw [hval]
       rw [Nat.cast_sub (le_of_lt hprodR)]
+      unfold routeTUpperHalfProductNat vinogradovUpperHalfProduct
       push_cast
       ring
 

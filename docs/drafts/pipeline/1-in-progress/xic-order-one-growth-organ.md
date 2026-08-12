@@ -1021,3 +1021,30 @@ stability of the datum in the nodes (Lipschitz in the node positions with the ef
 constants), toward a countable dense sub-family criterion (rational nodes) — that would make
 the RH endpoint a countable list of closed-form real inequalities; (iii) arithmetic supply of
 the first nodal data via the two-scale bridge.
+
+## Step 41 — rational nodes: RH as a countable list of real inequalities [PAPER-PROVED → Lean]
+
+Densify the nodal criterion: the datum is Lipschitz in the node positions with explicit
+constant, so rational nodes suffice — the RH endpoint becomes a countable family indexed by
+`(j, m, c : Fin j → ℚ)`.
+
+**Stability lemma.** For node tuples `c, c' ∈ [0,1]^j` with `|c_i − c'_i| ≤ ε`, shift `m`,
+`p = X^m·∏(X−c_i)`, `S ≥ Σ'‖u‖`:
+- eval bound: `‖p(u)‖ ≤ 2^j` on the closed unit disk (each factor ≤ 2);
+- eval difference: `‖∏(u−c_i) − ∏(u−c'_i)‖ ≤ j·2^j·ε` (corpus `norm_prod_sub_prod_le`,
+  factors bounded by 2, per-factor difference `|c_i − c'_i| ≤ ε`);
+- squared difference: `‖p² − p'²‖ = ‖p−p'‖·‖p+p'‖ ≤ j·2^j·ε · 2^{j+1} = j·2^{2j+1}ε`;
+- moment difference: `|M_c(k) − M_{c'}(k)| ≤ S·j·2^{2j+1}ε`; moment bound `|M(k)| ≤ S·4^j`;
+- datum difference: `|Re(M0M2−M1²) − Re(M0'M2'−M1'²)| ≤ 4·(S4^j)·(Sj2^{2j+1}ε) = 8jS²16^j·ε`.
+
+**Density.** Given real nodes `c ∈ (0,1]^j` and `δ > 0`: pick rationals
+`q_i ∈ (max(c_i−ε, c_i/2), c_i)` (dense order), so `q_i ∈ (0,1] ∩ ℚ`, `|c_i − q_i| ≤ ε`;
+with `ε := δ/(L+1)`, `L = 8jS²16^j`, the rational datum ≥ 0 forces the real datum ≥ −δ for
+every δ, hence ≥ 0. Finset-nodal data follow by enumerating each node set as a tuple
+(`orderIsoOfFin` + product transport), and RH follows from the step-40b nodal criterion. ∎
+
+**Capstone.** RH ⟺ ∀ (j m : ℕ) (c : Fin j → ℚ ∩ (0,1]),
+`0 ≤ Re(M_p(0)M_p(2) − M_p(1)²)`, `p = X^m·∏(X − c_i)` — a COUNTABLE family of real
+inequalities at one shift. Note: countability per se is not new (Li's criterion is a countable
+list); the content is the structure — single 2×2 minors of nodal reweightings at one point,
+with the density argument powered by our own effective constants.

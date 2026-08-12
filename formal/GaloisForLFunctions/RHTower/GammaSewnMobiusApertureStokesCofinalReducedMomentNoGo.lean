@@ -293,4 +293,218 @@ theorem gammaSewnCriticalPrimeTwoDepthZero_node_gt_four_over_oneTwentyOne :
     RHTower.gammaSewnMobiusApertureStokesReciprocalGapNode]
   nlinarith [sq_nonneg (g⁻¹ - 2 / 11)]
 
+theorem summable_gammaSewnCriticalAdjacentPrime_CofinalReducedWeight :
+    Summable gammaSewnCriticalAdjacentPrime_CofinalReducedWeight := by
+  apply Summable.of_nonneg_of_le
+    (fun pk => (gammaSewnCriticalAdjacentPrime_CofinalReducedWeight_mem pk).1.le)
+    (fun pk => (gammaSewnCriticalAdjacentPrime_CofinalReducedWeight_mem pk).2.le)
+    (summable_gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight.mul_left
+      (1 / 2 : ℝ))
+
+/-- Literal compact atomic carrier obtained by applying P-G84's cofinal scalar reduction to every
+information-depleted Stokes atom. -/
+def gammaSewnCriticalCofinalReducedCarrier : MeasureTheory.Measure ℝ :=
+  MeasureTheory.Measure.sum fun pk : Nat.Primes × ℕ =>
+    ENNReal.ofReal (gammaSewnCriticalAdjacentPrime_CofinalReducedWeight pk) •
+      MeasureTheory.Measure.dirac
+        (RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) pk)
+
+theorem integrable_one_gammaSewnCriticalCofinalReducedCarrier :
+    MeasureTheory.Integrable (fun _ : ℝ => (1 : ℝ))
+      gammaSewnCriticalCofinalReducedCarrier := by
+  rw [gammaSewnCriticalCofinalReducedCarrier]
+  apply MeasureTheory.integrable_sum_dirac
+    (fun pk => by simp [ENNReal.ofReal_ne_top])
+  apply summable_gammaSewnCriticalAdjacentPrime_CofinalReducedWeight.congr
+  intro pk
+  rw [ENNReal.toReal_ofReal
+    (gammaSewnCriticalAdjacentPrime_CofinalReducedWeight_mem pk).1.le]
+  simp
+
+theorem gammaSewnCriticalCofinalReducedCarrier_finite :
+    MeasureTheory.IsFiniteMeasure gammaSewnCriticalCofinalReducedCarrier := by
+  exact (MeasureTheory.integrable_const_iff_isFiniteMeasure one_ne_zero).mp
+    integrable_one_gammaSewnCriticalCofinalReducedCarrier
+
+theorem ae_gammaSewnCriticalCofinalReducedCarrier_mem_compact :
+    ∀ᵐ y : ℝ ∂gammaSewnCriticalCofinalReducedCarrier,
+      0 ≤ y ∧ |y| ≤ ((Real.log 2)⁻¹) ^ 2 := by
+  rw [gammaSewnCriticalCofinalReducedCarrier, MeasureTheory.Measure.ae_sum_iff]
+  intro pk
+  apply MeasureTheory.Measure.ae_smul_measure
+  exact (MeasureTheory.ae_dirac_iff
+    (measurableSet_Ici.inter
+      (measurableSet_le measurable_id.abs measurable_const))).2
+    ⟨(RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_pos
+        (by norm_num) pk).le,
+      by
+        change |RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode
+          (1 / 2) pk| ≤ ((Real.log 2)⁻¹) ^ 2
+        rw [abs_of_pos
+          (RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_pos
+            (by norm_num) pk)]
+        exact RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_le
+          (by norm_num) (by norm_num) pk⟩
+
+theorem integral_pow_gammaSewnCriticalCofinalReducedCarrier_eq_tsum (n : ℕ) :
+    ∫ y : ℝ, y ^ n ∂gammaSewnCriticalCofinalReducedCarrier =
+      ∑' pk : Nat.Primes × ℕ,
+        gammaSewnCriticalAdjacentPrime_CofinalReducedWeight pk *
+          RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode
+            (1 / 2) pk ^ n := by
+  rw [gammaSewnCriticalCofinalReducedCarrier,
+    MeasureTheory.integral_sum_dirac
+      (fun pk => by simp [ENNReal.ofReal_ne_top])]
+  apply tsum_congr
+  intro pk
+  rw [ENNReal.toReal_ofReal
+    (gammaSewnCriticalAdjacentPrime_CofinalReducedWeight_mem pk).1.le]
+  simp only [smul_eq_mul]
+
+private theorem cofinalCriticalInformationFactor_two_zero_lt :
+    gammaSewnMobiusApertureStokesCriticalInformationFactor
+        (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0) < 3 / 10 := by
+  have h := gammaSewnMobiusApertureStokesCriticalInformationFactor_le_cubic
+    RHTower.gammaSewnMobiusApertureStokesPrimeTwo 0
+  have hlog : Real.log 2 < 7 / 10 := Real.log_two_lt_d9.trans (by norm_num)
+  have hu0 : 0 ≤ Real.log 2 / 2 := by positivity
+  have hu : Real.log 2 / 2 < 7 / 20 := by linarith
+  have hexp : Real.exp (-(Real.log 2 / 2)) ≤ 1 := by
+    rw [Real.exp_le_one_iff]
+    linarith [Real.log_pos (by norm_num : (1 : ℝ) < 2)]
+  norm_num only [Nat.cast_zero, zero_add, Nat.cast_one, one_mul, mul_one] at h
+  calc
+    gammaSewnMobiusApertureStokesCriticalInformationFactor
+        (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0) ≤
+      4 / 3 * ((Real.log 2 / 2) ^ 3 * Real.exp (-(Real.log 2 / 2))) := h
+    _ < 4 / 3 * ((7 / 20 : ℝ) ^ 3 * Real.exp (-(Real.log 2 / 2))) := by gcongr
+    _ ≤ 4 / 3 * ((7 / 20 : ℝ) ^ 3 * 1) := by gcongr
+    _ < 3 / 10 := by norm_num
+
+theorem gammaSewnCriticalCofinalReducedPrimeTwoDepthZero_firstMoment_lower :
+    (9 / 50000 : ℝ) <
+      gammaSewnCriticalAdjacentPrime_CofinalReducedWeight
+          (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0) *
+        RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2)
+          (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0) := by
+  let pk : Nat.Primes × ℕ :=
+    (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0)
+  let raw := RHTower.gammaSewnMobiusApertureStokesSquaredWeight (1 / 2) pk
+  let depleted := gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight pk
+  let reduced := gammaSewnCriticalAdjacentPrime_CofinalReducedWeight pk
+  let node := RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) pk
+  have hraw : (33 / 1000 : ℝ) < raw := by
+    simpa only [raw, pk] using
+      gammaSewnCriticalPrimeTwoDepthZero_weight_gt_thirtyThree_thousandths
+  have hk := cofinalCriticalInformationFactor_two_zero_lt
+  have href : 0 < RHTower.gammaSewnMobiusApertureStokesReflectedWeight (1 / 2) pk :=
+    RHTower.gammaSewnMobiusApertureStokesReflectedWeight_pos (by norm_num) pk
+  have hdepRaw : (17 / 20 : ℝ) * raw < depleted := by
+    dsimp only [depleted, raw]
+    rw [
+      gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight,
+      RHTower.gammaSewnMobiusApertureStokesSquaredWeight]
+    simpa only [pk] using
+      (show (17 / 20 : ℝ) *
+          (2 * RHTower.gammaSewnMobiusApertureStokesReflectedWeight (1 / 2) pk) <
+        (2 - gammaSewnMobiusApertureStokesCriticalInformationFactor pk) *
+          RHTower.gammaSewnMobiusApertureStokesReflectedWeight (1 / 2) pk by
+        nlinarith [mul_pos (sub_pos.mpr hk) href])
+  have hdep : (561 / 20000 : ℝ) < depleted := by nlinarith
+  have hres := gammaSewnCriticalCofinalResidualFactor_ge_one_fifth
+  have hred : (561 / 100000 : ℝ) < reduced := by
+    have hfirst : (1 / 5 : ℝ) * (561 / 20000 : ℝ) <
+        (1 / 5 : ℝ) * depleted := mul_lt_mul_of_pos_left hdep (by norm_num)
+    have hsecond : (1 / 5 : ℝ) * depleted ≤
+        gammaSewnCriticalCofinalResidualFactor * depleted :=
+      mul_le_mul_of_nonneg_right hres
+        (gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight_pos pk).le
+    change (1 / 5 : ℝ) * depleted ≤ reduced at hsecond
+    change (561 / 100000 : ℝ) < reduced
+    norm_num at hfirst
+    exact hfirst.trans_le hsecond
+  have hnode : (4 / 121 : ℝ) < node := by
+    simpa only [node, pk] using
+      gammaSewnCriticalPrimeTwoDepthZero_node_gt_four_over_oneTwentyOne
+  have hprod : (561 / 100000 : ℝ) * (4 / 121 : ℝ) < reduced * node :=
+    (mul_lt_mul_of_pos_right hred (by norm_num)).trans
+      (mul_lt_mul_of_pos_left hnode
+        (lt_trans (by norm_num) hred))
+  have hprod' : (51 / 275000 : ℝ) < reduced * node := by
+    norm_num at hprod ⊢
+    exact hprod
+  have hnumeric : (9 / 50000 : ℝ) < (51 / 275000 : ℝ) := by norm_num
+  have := hnumeric.trans hprod'
+  simpa only [reduced, node, pk] using this
+
+theorem normalizedPrimeArchMoment_one_lt_integral_gammaSewnCriticalCofinalReducedCarrier :
+    RHTower.normalizedPrimeArchMoment 1 <
+      ∫ y : ℝ, y ^ 1 ∂gammaSewnCriticalCofinalReducedCarrier := by
+  rw [integral_pow_gammaSewnCriticalCofinalReducedCarrier_eq_tsum]
+  simp only [pow_one]
+  let f := fun pk : Nat.Primes × ℕ =>
+    gammaSewnCriticalAdjacentPrime_CofinalReducedWeight pk *
+      RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode (1 / 2) pk
+  have hfnonneg : ∀ pk, 0 ≤ f pk := fun pk => mul_nonneg
+    (gammaSewnCriticalAdjacentPrime_CofinalReducedWeight_mem pk).1.le
+    (RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_pos
+      (by norm_num) pk).le
+  have hfsum : Summable f := by
+    refine Summable.of_nonneg_of_le hfnonneg (fun pk => ?_)
+      (summable_gammaSewnCriticalAdjacentPrime_CofinalReducedWeight.mul_left
+        (((Real.log 2)⁻¹) ^ 2))
+    have hw := (gammaSewnCriticalAdjacentPrime_CofinalReducedWeight_mem pk).1.le
+    have hn := RHTower.gammaSewnMobiusApertureStokesSquaredReciprocalGapNode_le
+      (s := (1 / 2 : ℝ)) (by norm_num) (by norm_num) pk
+    dsimp only [f]
+    simpa [mul_comm] using mul_le_mul_of_nonneg_left hn hw
+  have hselected :
+      f (RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0) ≤ ∑' pk, f pk := by
+    have hle := hfsum.sum_le_tsum
+      ({(RHTower.gammaSewnMobiusApertureStokesPrimeTwo, 0)} :
+        Finset (Nat.Primes × ℕ))
+      (fun pk _ => hfnonneg pk)
+    simpa only [Finset.sum_singleton] using hle
+  exact RHTower.normalizedPrimeArchMoment_one_lt_nine_over_fiftyThousand.trans
+    (gammaSewnCriticalCofinalReducedPrimeTwoDepthZero_firstMoment_lower.trans_le
+      hselected)
+
+def GammaSewnCriticalCofinalReducedMomentIdentification : Prop :=
+  RHTower.completedSeamMomentGerm =ᶠ[nhds 0]
+    RHTower.compactMarkovTransform gammaSewnCriticalCofinalReducedCarrier
+
+/-- **P-G89 no-go.** The covariance-correct cofinal scalar carrier cannot be the completed seam
+carrier. Its first prime-two atom already carries more first moment than the entire completed
+source. -/
+theorem not_gammaSewnCriticalCofinalReducedMomentIdentification :
+    ¬ GammaSewnCriticalCofinalReducedMomentIdentification := by
+  intro hgerm
+  let B : ℝ := ((Real.log 2)⁻¹) ^ 2
+  letI : MeasureTheory.IsFiniteMeasure gammaSewnCriticalCofinalReducedCarrier :=
+    gammaSewnCriticalCofinalReducedCarrier_finite
+  have hB : 0 < B := by
+    dsimp [B]
+    exact sq_pos_of_pos (inv_pos.mpr (Real.log_pos (by norm_num)))
+  have hbound : ∀ᵐ x : ℝ ∂gammaSewnCriticalCofinalReducedCarrier, |x| ≤ B :=
+    ae_gammaSewnCriticalCofinalReducedCarrier_mem_compact.mono fun _ hx => hx.2
+  have hder := hgerm.iteratedDeriv_eq 1
+  rw [RHTower.iteratedDeriv_completedSeamMomentGerm,
+    RHTower.iteratedDeriv_compactMarkovTransform
+      gammaSewnCriticalCofinalReducedCarrier hB hbound 1
+      (by simpa using (show (0 : ℝ) < 1 / (2 * B) by positivity)),
+    RHTower.compactMarkovKernelMoment_zero_node] at hder
+  have hintc :
+      (∫ x : ℝ, (x : ℂ) ∂gammaSewnCriticalCofinalReducedCarrier) =
+        ((∫ x : ℝ, x ∂gammaSewnCriticalCofinalReducedCarrier : ℝ) : ℂ) := by
+    exact integral_ofReal
+      (X := ℝ) (μ := gammaSewnCriticalCofinalReducedCarrier) (𝕜 := ℂ)
+      (f := fun x : ℝ => x)
+  simp only [pow_one, Nat.factorial_one, Nat.cast_one, one_mul] at hder
+  rw [hintc] at hder
+  norm_num at hder
+  have heq : RHTower.normalizedPrimeArchMoment 1 =
+      ∫ x : ℝ, x ^ 1 ∂gammaSewnCriticalCofinalReducedCarrier := by
+    simpa only [pow_one] using hder
+  linarith [normalizedPrimeArchMoment_one_lt_integral_gammaSewnCriticalCofinalReducedCarrier]
+
 end RHTower.HedenmalmThetaSource

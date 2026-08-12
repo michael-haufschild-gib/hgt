@@ -48,7 +48,7 @@ theorem phase_second_deriv_neg {σ t : ℝ} (hσ : 0 < σ) (ht : 0 < t) :
 
 /-- **It does not involve the imaginary part.**  Dividing by a real number leaves the real part free of
 the imaginary component: `Re((σ + iτ)/r) = σ/r`. -/
-theorem re_div_ofReal (σ τ r : ℝ) (hr : r ≠ 0) :
+theorem re_add_mul_I_div_ofReal (σ τ r : ℝ) (hr : r ≠ 0) :
     ((σ + τ * Complex.I) / (r : ℂ)).re = σ / r := by
   rw [Complex.div_re]
   simp [Complex.normSq_ofReal]
