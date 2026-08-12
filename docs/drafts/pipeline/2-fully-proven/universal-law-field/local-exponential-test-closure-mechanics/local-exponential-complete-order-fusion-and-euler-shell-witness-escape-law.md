@@ -564,8 +564,29 @@ scalar endgame's continuity argument available:
   `f -> int ‖f‖^2 g dmu` is the real part of the multiplier form `<f, g.f>`.  Continuity of the
   functional therefore reduces to continuity of the inner product and of the multiplier.
 
+Also closed — **the scalar endgame (item 3c)**:
+
+- `lipschitzWith_weightMul`, `continuous_weightedSq`: the weighted quadratic functional
+  `f -> int ‖f‖^2 g dmu` is continuous on `L^2(mu;C)`.
+- `weightedSq_nonneg`: nonnegativity propagates from the polynomial submodule to all of
+  `L^2(mu;C)` by density and continuity.
+- `ae_nonneg_of_forall_sq_poly_integral_nonneg`: **a bounded real density that pairs
+  nonnegatively with every squared polynomial modulus is nonnegative almost everywhere.**
+  Tested at the indicator of `E = {g < 0}`: `int_E g dmu >= 0` together with `g < 0` on `E`
+  forces `mu E = 0`.
+
 Remaining Lean surface, in dependency order:
 
+3d. Assemble Theorem 3.1's converse from `integral_normSq_poly_mul_matQuad_nonneg` and
+   `ae_nonneg_of_forall_sq_poly_integral_nonneg`: for each direction `u` the scalar density
+   `g_u(x) = (matQuad (J x) u).re` is bounded (by `C * (sum_k ‖u k‖)^2`) and measurable, so it is
+   nonnegative almost everywhere; intersect the resulting full-measure sets over a countable dense
+   set of `u` (`Fin d -> C` is separable) and extend to all `u` by continuity.  Finish with
+   `Matrix.posSemidef_iff_dotProduct_mulVec`, which needs the Hermitian hypothesis to see that
+   `star u ⬝ᵥ (J x *ᵥ u)` is real, plus `matQuad_eq_dotProduct`.  Corollary 3.2 is the
+   contrapositive.
+
+OLD ROUTE (superseded, kept only for reference):
 3c. The scalar endgame: a bounded real density `g` with `int ‖eval x P‖^2 g dmu >= 0` for every
    polynomial `P` is nonnegative almost everywhere.  Route, now that the multiplier layer exists
    and needs NO second measure: `weightedSq mu g` is continuous on `L^2(mu;C)` by

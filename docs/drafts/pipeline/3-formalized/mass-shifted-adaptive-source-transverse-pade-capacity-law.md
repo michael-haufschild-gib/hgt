@@ -129,4 +129,5 @@ affineHardEdgeCoordinate_sub_affineHardEdgeCoordinate
 
 - direct `lake env lean` check: passed;
 - umbrella import: present;
-- targeted `lake build` and axiom audit: pending final route audit.
+- targeted `lake build` passed (`11757/11757`);
+- eleven capstone axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.

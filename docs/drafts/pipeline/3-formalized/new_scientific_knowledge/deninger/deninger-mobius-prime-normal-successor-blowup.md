@@ -229,8 +229,14 @@ equivalent to imposing the critical line and is forbidden.
   `mobiusSuccessor_indicator_eq` kills every index strictly between `p` and its successor, and
   **`mobiusThetaPrimeNormalAmplitude_successor`** is the identity
   `(r/p)^{ms}(M_{p,m}(s) - μ(p)) = M_{r,m}(s)`.
+  The literal multiplier used by the complete internal-jet source is connected directly by
+  **`mobiusThetaPrimeNormalResidualMultiplier_successor_transport`**; its honest convergence
+  inequality is encoded in `MobiusSuccessorSpectralPoint`, not supplied as an analytic premise.
 - **`(7)`: the conormal pair at a divisor.**  `mobiusThetaInternalJetRawHeadConormalPair` and
-  `mobiusThetaInternalJetRawHeadConormalPair_at_divisor` in the jet module.
+  `mobiusThetaInternalJetRawHeadConormalPair_at_divisor` in the jet module, plus
+  `mobiusThetaTwoThreeTargetConormalPair` and
+  **`eventually_mobiusThetaTwoThreeTargetConormalPair_at_divisor`** for the complete transported
+  `3`-residual.  The latter retains the first nonzero Xi jet at arbitrary analytic multiplicity.
 - **`(8)`, `(9)`: forced nonclosability.**  `mobiusThetaTwoThreeCofinalSource`,
   `mobiusThetaTwoThreeCofinalTarget`, `tendsto_mobiusThetaTwoThreeCofinalSource_zero`,
   `tendsto_mobiusThetaTwoThreeCofinalTarget`, `xiThetaSourceL2_ne_zero`,
@@ -255,3 +261,6 @@ equivalent to imposing the critical line and is forbidden.
 - 2026-08-12 — Audited the corpus against the card: the source transport, nonclosability, norm
   divergence and reflection anomaly were already built; added the missing scalar shadow `(6)` and
   wired the module into the umbrella.  Card moved to stage 3.
+- 2026-08-12 — Strengthened `(6)` from the independent amplitude presentation to the exact
+  `mobiusThetaPrimeNormalResidualMultiplier` used by the complete internal-jet source; added the
+  named transported `2 → 3` arbitrary-multiplicity conormal theorem.

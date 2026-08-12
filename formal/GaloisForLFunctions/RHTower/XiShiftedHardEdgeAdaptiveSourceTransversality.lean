@@ -219,6 +219,39 @@ def xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity
     (y : ℝ) (N : ℕ) (P : Polynomial ℝ) (x : ℝ) : ℝ :=
   y * x ^ (2 * N + 1) * xiShiftedHardEdgeAdaptiveSourceTransverseCapacity y N P x
 
+/-- Hard-edge amplitude in the compactness normalization.  It is the reciprocal clearing divided
+by its moving center to the admission depth, so its value is
+`(1 + U / y)^N P((y + U)⁻¹)` whenever `y ≠ 0`. -/
+def xiShiftedHardEdgeNormalizedReciprocalClearing
+    (y : ℝ) (N : ℕ) (P : Polynomial ℝ) : Polynomial ℝ :=
+  (y ^ N)⁻¹ • xiShiftedHardEdgeReciprocalClearing y N P
+
+/-- Differentiation commutes with hard-edge normalization by the moving-center scalar. -/
+theorem derivative_xiShiftedHardEdgeNormalizedReciprocalClearing_eval
+    (y : ℝ) (N : ℕ) (P : Polynomial ℝ) (u : ℝ) :
+    (xiShiftedHardEdgeNormalizedReciprocalClearing y N P).derivative.eval u =
+      (y ^ N)⁻¹ *
+        (xiShiftedHardEdgeReciprocalClearing y N P).derivative.eval u := by
+  simp [xiShiftedHardEdgeNormalizedReciprocalClearing]
+
+/-- **Compact-normalized source-capacity law.** At an admitted hard root, effective adaptive
+source capacity is exactly the squared derivative of the compact-normalized hard amplitude,
+weighted only by the dimensionless node `y*x`.  Hence for a simple compact hard root the source
+factor itself has no hidden growing or vanishing normalization; any Padé-residue extinction must
+come through terminal mass. -/
+theorem xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity_eq_normalizedDerivative_sq
+    {P : Polynomial ℝ} {N : ℕ} (hP : P.natDegree ≤ N)
+    {y x : ℝ} (hy : y ≠ 0) (hx : x ≠ 0) (hroot : P.eval x = 0) :
+    xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity y N P x =
+      (y * x) ^ (2 * N + 1) *
+        ((xiShiftedHardEdgeNormalizedReciprocalClearing y N P).derivative.eval
+          (x⁻¹ - y)) ^ 2 := by
+  rw [xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity,
+    xiShiftedHardEdgeAdaptiveSourceTransverseCapacity_eq_sq y hP hx hroot,
+    derivative_xiShiftedHardEdgeNormalizedReciprocalClearing_eval]
+  field_simp [pow_ne_zero N hy]
+  ring
+
 /-- **Adaptive source-capacity/Padé-residue law.** At every nonzero admitted root, actual Gauss
 residue times endogenous completed-source transverse capacity is exactly hard terminal mass, with
 the forced reciprocal weight.  This is source-first and nonlinear in current admission. -/
@@ -308,6 +341,12 @@ def xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity
   (w ^ 2) * x ^ (2 * n + 1) *
     xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity w n x
 
+/-- Compact-normalized hard amplitude of the actual shifted-Xi inverse-Hankel admission. -/
+def xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing
+    (w : ℝ) (n : ℕ) : Polynomial ℝ :=
+  xiShiftedHardEdgeNormalizedReciprocalClearing (w ^ 2) n
+    (HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n)
+
 /-- Canonical source-transverse capacity is the square of the reciprocal-cleared admission
 derivative at every nonzero root. -/
 theorem xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity_eq_sq
@@ -370,6 +409,31 @@ theorem xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue_mul_effectiveSourceC
   simpa only [mul_assoc] using
     (xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue_mul_sourceTransverseCapacity_eq_terminalMass
       hx hroot)
+
+/-- **Literal compact-normalized shifted-Xi capacity law.** The effective capacity of the actual
+adaptive mixed/completed source has exactly the compact hard-amplitude normalization. -/
+theorem xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity_eq_normalizedDerivative_sq
+    {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} {x : ℝ} (hx : x ≠ 0)
+    (hroot :
+      (HTGeometry.monicMomentAdmissionPolynomial
+        (xiShiftedRealMomentSequence w) n).eval x = 0) :
+    xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity w n x =
+      (w ^ 2 * x) ^ (2 * n + 1) *
+        ((xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing w n).derivative.eval
+          (x⁻¹ - w ^ 2)) ^ 2 := by
+  let P := HTGeometry.monicMomentAdmissionPolynomial (xiShiftedRealMomentSequence w) n
+  have hP : P.natDegree ≤ n := by
+    dsimp only [P]
+    rw [HTGeometry.monicMomentAdmissionPolynomial_natDegree]
+  have hw0 : w ^ 2 ≠ 0 := pow_ne_zero 2 (ne_of_gt (lt_trans (by norm_num) hw))
+  simpa only [xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity,
+    xiShiftedCanonicalAdmissionHardEdgeSourceTransverseCapacity,
+    xiShiftedCanonicalAdmissionHardEdgeSource,
+    xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing,
+    xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity,
+    xiShiftedHardEdgeAdaptiveSourceTransverseCapacity, P] using
+    (xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity_eq_normalizedDerivative_sq
+      hP hw0 hx hroot)
 
 /-- In a positive shifted-Xi chamber, every positive canonical Gauss node has positive absolute
 Padé residue. -/

@@ -505,6 +505,93 @@ private theorem mobiusThetaSuccessorSpectralCoefficient_transport
     mobiusThetaPrimeNormalResidualSpectralCoefficient, hindex]
   rw [← mul_assoc, mobiusSuccessor_cpow_mul_index_cpow]
 
+private theorem mobiusThetaPrimeNormalResidualSpectralCoefficient_eq_zero_before_successor
+    (p : MobiusPositiveIndex) (m : ℕ) (w : ℂ) (j : ℕ)
+    (hjpos : 0 < j) (hjlt : j < mobiusSuccessor p - p) :
+    mobiusThetaPrimeNormalResidualSpectralCoefficient p m w j = 0 := by
+  have hpn : p < p + j := by omega
+  have hnr : p + j < mobiusSuccessor p := by
+    have := lt_mobiusSuccessor p
+    omega
+  have hmu := moebius_eq_zero_of_lt_mobiusSuccessor hpn hnr
+  rw [mobiusThetaPrimeNormalResidualSpectralCoefficient,
+    LSeries.term_of_ne_zero (by omega : p + j ≠ 0), hmu]
+  simp
+
+private theorem sum_mobiusThetaPrimeNormalResidualSpectralCoefficient_before_successor
+    (p : MobiusPositiveIndex) (m : ℕ) (w : ℂ) :
+    ∑ j ∈ Finset.range (mobiusSuccessor p - p),
+        mobiusThetaPrimeNormalResidualSpectralCoefficient p m w j =
+      ((ArithmeticFunction.moebius p : ℤ) : ℂ) := by
+  rw [Finset.sum_eq_single 0]
+  · exact mobiusThetaPrimeNormalResidualSpectralCoefficient_zero
+      (by omega : 0 < (p : ℕ)) m w
+  · intro j hj hjne
+    exact mobiusThetaPrimeNormalResidualSpectralCoefficient_eq_zero_before_successor
+      p m w j (Nat.pos_of_ne_zero hjne) (Finset.mem_range.mp hj)
+  · simp [Nat.sub_pos_of_lt (lt_mobiusSuccessor p)]
+
+/-- Honest scalar convergence point for the complete residual multiplier. -/
+abbrev MobiusSuccessorSpectralPoint (m : MobiusHonestDepth) :=
+  {w : ℂ // 1 / (m : ℝ) < (mobiusThetaCenteredParameter w).re}
+
+/-- **Exact spectral successor transport.**  This is the Fourier--Laplace shadow of the complete
+physical source theorem.  The honest Dirichlet convergence inequality is carried by the point's
+type; no zero location or RH premise occurs. -/
+theorem mobiusThetaPrimeNormalResidualMultiplier_successor_transport
+    (p : MobiusPositiveIndex) (m : MobiusHonestDepth)
+    (w : MobiusSuccessorSpectralPoint m) :
+    mobiusThetaSuccessorSpectralNormalizer p m (mobiusThetaCenteredParameter w) *
+        (mobiusThetaPrimeNormalResidualMultiplier p m w -
+          ((ArithmeticFunction.moebius p : ℤ) : ℂ)) =
+      mobiusThetaPrimeNormalResidualMultiplier (mobiusSuccessor p) m w := by
+  have hm0 : (m : ℕ) ≠ 0 := by omega
+  have hsnorm := summable_norm_mobiusThetaPrimeNormalResidualSpectralCoefficient
+    (p := p) hm0 w.2
+  have hs : Summable
+      (mobiusThetaPrimeNormalResidualSpectralCoefficient p m w) := hsnorm.of_norm
+  rw [mobiusThetaPrimeNormalResidualMultiplier,
+    ← hs.sum_add_tsum_nat_add (mobiusSuccessor p - p),
+    sum_mobiusThetaPrimeNormalResidualSpectralCoefficient_before_successor]
+  have hcancel :
+      ((ArithmeticFunction.moebius p : ℤ) : ℂ) +
+          (∑' k : ℕ, mobiusThetaPrimeNormalResidualSpectralCoefficient p m w
+            (k + (mobiusSuccessor p - p))) -
+          ((ArithmeticFunction.moebius p : ℤ) : ℂ) =
+        ∑' k : ℕ, mobiusThetaPrimeNormalResidualSpectralCoefficient p m w
+          (k + (mobiusSuccessor p - p)) := by abel
+  rw [hcancel, ← tsum_mul_left, mobiusThetaPrimeNormalResidualMultiplier]
+  apply tsum_congr
+  intro k
+  have hindex : k + (mobiusSuccessor p - p) =
+      mobiusSuccessor p - p + k := by omega
+  rw [hindex]
+  exact mobiusThetaSuccessorSpectralCoefficient_transport p m w k
+
+/-- Internal-jet conormal carried by the exact `2 → 3` physical output. -/
+def mobiusThetaTwoThreeTargetConormalPair
+    (k m : ℕ) (w : ℂ) : ℂ × ℂ :=
+  mobiusThetaInternalJetPrimeNormalResidualConormalPair k 3 m w
+
+/-- The transported `3`-head retains the first nonzero Xi jet at every divisor, including
+arbitrary analytic multiplicity.  Nonannihilation is derived from prime-normal isolation. -/
+theorem eventually_mobiusThetaTwoThreeTargetConormalPair_at_divisor
+    (rho : XiDivisorSupport) :
+    ∀ᶠ m : ℕ in atTop,
+      mobiusThetaTwoThreeTargetConormalPair
+          (xiSupportMultiplicity rho - 1) m (xiSpectralPointSupport rho) =
+        (0, mobiusThetaPrimeNormalResidualMultiplier 3 m
+          (xiSpectralPointSupport rho) *
+            iteratedDeriv (xiSupportMultiplicity rho) XiC
+              (xiSpectralPointSupport rho)) ∧
+      mobiusThetaPrimeNormalResidualMultiplier 3 m
+          (xiSpectralPointSupport rho) *
+            iteratedDeriv (xiSupportMultiplicity rho) XiC
+              (xiSpectralPointSupport rho) ≠ 0 := by
+  simpa only [mobiusThetaTwoThreeTargetConormalPair] using
+    eventually_mobiusThetaInternalJetPrimeNormalResidualConormalPair_at_divisor
+      Nat.prime_three rho
+
 end
 
 end RHTower

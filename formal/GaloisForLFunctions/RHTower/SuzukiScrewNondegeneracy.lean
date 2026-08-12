@@ -228,6 +228,15 @@ theorem inner_suzukiScrewIntegralOperator_eq_intervalForm_pair {a : ℝ} (ha : 0
   filter_upwards with u
   ring
 
+/-- Suzuki's literal interval form is Hermitian. -/
+theorem suzukiScrewIntervalForm_conj_symm {a : ℝ} (ha : 0 ≤ a)
+    (f g : SuzukiApertureIntervalL2 a) :
+    (starRingEnd ℂ) (suzukiScrewIntervalForm a g f) = suzukiScrewIntervalForm a f g := by
+  rw [← inner_suzukiScrewIntegralOperator_eq_intervalForm_pair ha,
+    ← inner_suzukiScrewIntegralOperator_eq_intervalForm_pair ha,
+    inner_conj_symm]
+  exact suzukiScrewIntegralOperator_isSymmetric ha g f
+
 /-- Radical-zero definition of nondegeneracy for Suzuki's literal interval form. -/
 def SuzukiScrewIntervalFormNondegenerate (a : ℝ) : Prop :=
   ∀ f : SuzukiApertureIntervalL2 a,
@@ -254,6 +263,24 @@ theorem suzukiScrewIntervalForm_nondegenerate_iff_operator_injective {a : ℝ} (
       rw [inner_suzukiScrewIntegralOperator_eq_intervalForm_pair ha]
       exact hf (suzukiScrewIntegralOperator a f)
     exact (inner_self_eq_zero (𝕜 := ℂ)).mp hself
+
+/-- Exact point-spectrum wording of Suzuki's operator condition: zero is absent as an eigenvalue
+exactly when the literal interval operator is injective. -/
+theorem suzukiScrewIntegralOperator_zero_not_eigenvalue_iff_injective (a : ℝ) :
+    ¬ Module.End.HasEigenvalue
+        (suzukiScrewIntegralOperator a : Module.End ℂ (SuzukiApertureIntervalL2 a)) 0 ↔
+      Function.Injective (suzukiScrewIntegralOperator a) := by
+  rw [Module.End.hasEigenvalue_iff, Module.End.eigenspace_zero, not_ne_iff]
+  exact LinearMap.ker_eq_bot
+
+/-- The two formulations printed in Suzuki (2023), Theorem 1.4 are literally equivalent: the
+Hermitian form has zero radical iff zero is not an eigenvalue of its integral operator. -/
+theorem suzukiScrewIntervalForm_nondegenerate_iff_zero_not_eigenvalue {a : ℝ} (ha : 0 ≤ a) :
+    SuzukiScrewIntervalFormNondegenerate a ↔
+      ¬ Module.End.HasEigenvalue
+        (suzukiScrewIntegralOperator a : Module.End ℂ (SuzukiApertureIntervalL2 a)) 0 := by
+  rw [suzukiScrewIntervalForm_nondegenerate_iff_operator_injective ha,
+    suzukiScrewIntegralOperator_zero_not_eigenvalue_iff_injective]
 
 /-- RH excludes zero from the point spectrum of Suzuki's literal bounded-aperture operator. -/
 theorem suzukiScrewIntegralOperator_injective_of_riemannHypothesis
@@ -301,6 +328,16 @@ theorem riemannHypothesis_implies_suzukiScrewOperators_nondegenerate :
       ∀ a : ℝ, 0 < a → Function.Injective (suzukiScrewIntegralOperator a) := by
   intro hRH a ha
   exact suzukiScrewIntegralOperator_injective_of_riemannHypothesis hRH ha
+
+/-- Closed point-spectrum wording of the necessity half of Suzuki (2023), Theorem 1.4. -/
+theorem riemannHypothesis_implies_suzukiScrewOperators_zero_not_eigenvalue :
+    RiemannHypothesis →
+      ∀ a : ℝ, 0 < a →
+        ¬ Module.End.HasEigenvalue
+          (suzukiScrewIntegralOperator a : Module.End ℂ (SuzukiApertureIntervalL2 a)) 0 := by
+  intro hRH a ha
+  exact (suzukiScrewIntegralOperator_zero_not_eigenvalue_iff_injective a).2
+    (suzukiScrewIntegralOperator_injective_of_riemannHypothesis hRH ha)
 
 /-- Closed form-language necessity half of Suzuki (2023), Theorem 1.4. -/
 theorem riemannHypothesis_implies_suzukiScrewIntervalForms_nondegenerate :

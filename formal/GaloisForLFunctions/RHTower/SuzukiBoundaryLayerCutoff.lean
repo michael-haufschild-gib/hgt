@@ -273,6 +273,194 @@ theorem integral_norm_suzukiBoundaryError_le_two_mul {a ε κ : ℝ}
     (integrable_suzukiBoundaryShellMajorant a ε)
     (fun x => norm_suzukiBoundaryError_le_shellMajorant hε hεa)
 
+theorem hasDerivAt_suzukiBoundaryCutoff (a ε x : ℝ) :
+    HasDerivAt (suzukiBoundaryCutoff a ε)
+      (deriv (suzukiBoundaryCutoff a ε) x) x :=
+  ((contDiff_suzukiBoundaryCutoff a ε).differentiable (by simp)).differentiableAt.hasDerivAt
+
+theorem continuous_deriv_suzukiBoundaryCutoff (a ε : ℝ) :
+    Continuous (deriv (suzukiBoundaryCutoff a ε)) :=
+  (contDiff_suzukiBoundaryCutoff a ε).continuous_deriv (by simp)
+
+theorem deriv_suzukiBoundaryCutoff_eq_zero_of_inner {a ε x : ℝ}
+    (hε : 0 < ε) (hx : x ∈ Ioo (-a + ε) (a - ε)) :
+    deriv (suzukiBoundaryCutoff a ε) x = 0 := by
+  have heq : suzukiBoundaryCutoff a ε =ᶠ[nhds x] (fun _ : ℝ => 1) := by
+    filter_upwards [isOpen_Ioo.mem_nhds hx] with y hy
+    exact suzukiBoundaryCutoff_eq_one_of_mem_inner hε ⟨hy.1.le, hy.2.le⟩
+  rw [Filter.EventuallyEq.deriv_eq heq, deriv_const]
+
+theorem deriv_suzukiBoundaryCutoff_eq_zero_of_lt_neg {a ε x : ℝ}
+    (hε : 0 < ε) (hx : x < -a) :
+    deriv (suzukiBoundaryCutoff a ε) x = 0 := by
+  have heq : suzukiBoundaryCutoff a ε =ᶠ[nhds x] (fun _ : ℝ => 0) := by
+    filter_upwards [Iio_mem_nhds hx] with y hy
+    exact suzukiBoundaryCutoff_eq_zero_of_le_neg hε hy.le
+  rw [Filter.EventuallyEq.deriv_eq heq, deriv_const]
+
+theorem deriv_suzukiBoundaryCutoff_eq_zero_of_aperture_lt {a ε x : ℝ}
+    (hε : 0 < ε) (hx : a < x) :
+    deriv (suzukiBoundaryCutoff a ε) x = 0 := by
+  have heq : suzukiBoundaryCutoff a ε =ᶠ[nhds x] (fun _ : ℝ => 0) := by
+    filter_upwards [Ioi_mem_nhds hx] with y hy
+    exact suzukiBoundaryCutoff_eq_zero_of_aperture_le hε hy.le
+  rw [Filter.EventuallyEq.deriv_eq heq, deriv_const]
+
+theorem exists_uniform_deriv_bound_suzukiBoundaryCutoff :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {a ε x : ℝ}, 0 < ε →
+      |deriv (suzukiBoundaryCutoff a ε) x| ≤ 2 * C / ε := by
+  obtain ⟨C, hC, hbound⟩ :=
+    GaloisForLFunctions.HTGeometry.exists_bound_iteratedDeriv_smoothTransition 1
+  refine ⟨C, hC, fun {a ε x} hε => ?_⟩
+  let L : ℝ → ℝ := Real.smoothTransition ∘ fun y => (y + a) / ε
+  let R : ℝ → ℝ := Real.smoothTransition ∘ fun y => (a - y) / ε
+  have hinnerL : HasDerivAt (fun y : ℝ => (y + a) / ε) (1 / ε) x := by
+    simpa using ((hasDerivAt_id x).add_const a).div_const ε
+  have hinnerR : HasDerivAt (fun y : ℝ => (a - y) / ε) (-1 / ε) x := by
+    simpa using ((hasDerivAt_const x a).sub (hasDerivAt_id x)).div_const ε
+  have hdiffST : Differentiable ℝ Real.smoothTransition :=
+    (Real.smoothTransition.contDiff (n := (1 : ℕ∞))).differentiable (by norm_num)
+  have houterL : HasDerivAt Real.smoothTransition
+      (deriv Real.smoothTransition ((x + a) / ε)) ((x + a) / ε) :=
+    hdiffST.differentiableAt.hasDerivAt
+  have houterR : HasDerivAt Real.smoothTransition
+      (deriv Real.smoothTransition ((a - x) / ε)) ((a - x) / ε) :=
+    hdiffST.differentiableAt.hasDerivAt
+  have hL : HasDerivAt L
+      (deriv Real.smoothTransition ((x + a) / ε) * (1 / ε)) x := by
+    exact houterL.comp x hinnerL
+  have hR : HasDerivAt R
+      (deriv Real.smoothTransition ((a - x) / ε) * (-1 / ε)) x := by
+    exact houterR.comp x hinnerR
+  have hprod : HasDerivAt (fun y => L y * R y)
+      ((deriv Real.smoothTransition ((x + a) / ε) * (1 / ε)) * R x +
+        L x * (deriv Real.smoothTransition ((a - x) / ε) * (-1 / ε))) x :=
+    hL.mul hR
+  have hcut : deriv (suzukiBoundaryCutoff a ε) x =
+      (deriv Real.smoothTransition ((x + a) / ε) * (1 / ε)) * R x +
+        L x * (deriv Real.smoothTransition ((a - x) / ε) * (-1 / ε)) := by
+    rw [show suzukiBoundaryCutoff a ε = fun y => L y * R y by rfl]
+    exact hprod.deriv
+  have hboundL : |deriv Real.smoothTransition ((x + a) / ε)| ≤ C := by
+    simpa [iteratedDeriv_one] using hbound ((x + a) / ε)
+  have hboundR : |deriv Real.smoothTransition ((a - x) / ε)| ≤ C := by
+    simpa [iteratedDeriv_one] using hbound ((a - x) / ε)
+  have hL01 : 0 ≤ L x ∧ L x ≤ 1 := by
+    exact ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  have hR01 : 0 ≤ R x ∧ R x ≤ 1 := by
+    exact ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  have hεinv : 0 < ε⁻¹ := inv_pos.mpr hε
+  have hboundLabs : |deriv Real.smoothTransition ((x + a) / ε) * (1 / ε) * R x| ≤
+      C * ε⁻¹ := by
+    rw [one_div, abs_mul, abs_mul, abs_of_nonneg hR01.1, abs_of_pos hεinv]
+    calc
+      |deriv Real.smoothTransition ((x + a) / ε)| * ε⁻¹ * R x
+          ≤ C * ε⁻¹ * R x :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_right hboundL hεinv.le) hR01.1
+      _ ≤ C * ε⁻¹ * 1 :=
+            mul_le_mul_of_nonneg_left hR01.2 (mul_nonneg hC hεinv.le)
+      _ = C * ε⁻¹ := by ring
+  have hboundRabs : |L x * (deriv Real.smoothTransition ((a - x) / ε) * (-1 / ε))| ≤
+      C * ε⁻¹ := by
+    simp only [neg_div, one_div, abs_mul, abs_neg, abs_one, one_mul,
+      abs_of_pos hεinv, abs_of_nonneg hL01.1]
+    calc
+      L x * (|deriv Real.smoothTransition ((a - x) / ε)| * ε⁻¹)
+          ≤ L x * (C * ε⁻¹) :=
+            mul_le_mul_of_nonneg_left
+              (mul_le_mul_of_nonneg_right hboundR hεinv.le) hL01.1
+      _ ≤ 1 * (C * ε⁻¹) :=
+            mul_le_mul_of_nonneg_right hL01.2 (mul_nonneg hC hεinv.le)
+      _ = C * ε⁻¹ := by ring
+  rw [hcut]
+  calc
+    |deriv Real.smoothTransition ((x + a) / ε) * (1 / ε) * R x +
+        L x * (deriv Real.smoothTransition ((a - x) / ε) * (-1 / ε))|
+        ≤ |deriv Real.smoothTransition ((x + a) / ε) * (1 / ε) * R x| +
+          |L x * (deriv Real.smoothTransition ((a - x) / ε) * (-1 / ε))| := abs_add_le _ _
+    _ ≤ C * ε⁻¹ + C * ε⁻¹ := add_le_add hboundLabs hboundRabs
+    _ = 2 * C / ε := by rw [div_eq_mul_inv]; ring
+
+def suzukiBoundaryCutoffDerivMajorant (C a ε x : ℝ) : ℝ :=
+  (2 * C / ε) * suzukiBoundaryShellMajorant a ε x
+
+theorem integrable_suzukiBoundaryCutoffDerivMajorant (C a ε : ℝ) :
+    Integrable (suzukiBoundaryCutoffDerivMajorant C a ε) :=
+  (integrable_suzukiBoundaryShellMajorant a ε).const_mul (2 * C / ε)
+
+theorem integral_suzukiBoundaryCutoffDerivMajorant {C a ε : ℝ} (hε : 0 < ε) :
+    (∫ x : ℝ, suzukiBoundaryCutoffDerivMajorant C a ε x) = 4 * C := by
+  unfold suzukiBoundaryCutoffDerivMajorant
+  rw [integral_const_mul, integral_suzukiBoundaryShellMajorant hε.le]
+  field_simp [hε.ne']
+  ring
+
+theorem abs_deriv_suzukiBoundaryCutoff_le_majorant
+    {C a ε x : ℝ} (hC : 0 ≤ C) (hε : 0 < ε)
+    (hbound : ∀ {a ε x : ℝ}, 0 < ε →
+      |deriv (suzukiBoundaryCutoff a ε) x| ≤ 2 * C / ε) :
+    |deriv (suzukiBoundaryCutoff a ε) x| ≤
+      suzukiBoundaryCutoffDerivMajorant C a ε x := by
+  have hcoeff : 0 ≤ 2 * C / ε := div_nonneg (mul_nonneg (by norm_num) hC) hε.le
+  by_cases hleft : x ∈ Icc (-a) (-a + ε)
+  · have hshell : 1 ≤ suzukiBoundaryShellMajorant a ε x := by
+      unfold suzukiBoundaryShellMajorant
+      rw [indicator_of_mem hleft]
+      exact le_add_of_nonneg_right (by
+        by_cases hx : x ∈ Icc (a - ε) a <;> simp [hx])
+    exact (hbound hε).trans (by
+      unfold suzukiBoundaryCutoffDerivMajorant
+      simpa using mul_le_mul_of_nonneg_left hshell hcoeff)
+  by_cases hright : x ∈ Icc (a - ε) a
+  · have hshell : 1 ≤ suzukiBoundaryShellMajorant a ε x := by
+      unfold suzukiBoundaryShellMajorant
+      rw [indicator_of_mem hright]
+      exact le_add_of_nonneg_left (by
+        by_cases hx : x ∈ Icc (-a) (-a + ε) <;> simp [hx])
+    exact (hbound hε).trans (by
+      unfold suzukiBoundaryCutoffDerivMajorant
+      simpa using mul_le_mul_of_nonneg_left hshell hcoeff)
+  have hzero : deriv (suzukiBoundaryCutoff a ε) x = 0 := by
+    rcases lt_or_ge x (-a) with hx | hx
+    · exact deriv_suzukiBoundaryCutoff_eq_zero_of_lt_neg hε hx
+    rcases lt_or_ge a x with hx' | hx'
+    · exact deriv_suzukiBoundaryCutoff_eq_zero_of_aperture_lt hε hx'
+    · apply deriv_suzukiBoundaryCutoff_eq_zero_of_inner hε
+      constructor
+      · by_contra hxi
+        apply hleft
+        exact ⟨hx, le_of_not_gt hxi⟩
+      · by_contra hxi
+        apply hright
+        exact ⟨le_of_not_gt hxi, hx'⟩
+  rw [hzero, abs_zero]
+  unfold suzukiBoundaryCutoffDerivMajorant
+  exact mul_nonneg hcoeff (by
+    unfold suzukiBoundaryShellMajorant
+    by_cases hl : x ∈ Icc (-a) (-a + ε) <;>
+      by_cases hr : x ∈ Icc (a - ε) a <;> simp [hl, hr])
+
+/-- Uniform total variation of Suzuki's product cutoff.  This is the quantitative input which
+prevents the integration-by-parts constant from blowing up as the boundary width shrinks. -/
+theorem exists_uniform_integral_abs_deriv_suzukiBoundaryCutoff :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {a ε : ℝ}, 0 < ε →
+      (∫ x : ℝ, |deriv (suzukiBoundaryCutoff a ε) x|) ≤ 4 * C := by
+  obtain ⟨C, hC, hbound⟩ := exists_uniform_deriv_bound_suzukiBoundaryCutoff
+  refine ⟨C, hC, fun {a ε} hε => ?_⟩
+  have hmaj := integrable_suzukiBoundaryCutoffDerivMajorant C a ε
+  have hpoint : ∀ x : ℝ, |deriv (suzukiBoundaryCutoff a ε) x| ≤
+      suzukiBoundaryCutoffDerivMajorant C a ε x :=
+    fun x => abs_deriv_suzukiBoundaryCutoff_le_majorant hC hε hbound
+  have hderivInt : Integrable (fun x : ℝ => |deriv (suzukiBoundaryCutoff a ε) x|) := by
+    refine Integrable.mono' hmaj
+      ((continuous_abs.comp (continuous_deriv_suzukiBoundaryCutoff a ε)).aestronglyMeasurable) ?_
+    filter_upwards with x
+    rw [Real.norm_eq_abs, abs_of_nonneg (abs_nonneg _)]
+    exact hpoint x
+  rw [← integral_suzukiBoundaryCutoffDerivMajorant (C := C) (a := a) hε]
+  exact integral_mono hderivInt hmaj hpoint
+
 end RHTower
 
 end

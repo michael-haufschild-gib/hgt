@@ -586,6 +586,154 @@ theorem norm_vinogradovRouteTUsefulBilinearSum_le_rpow
   rw [← hroot_eq]
   exact hroot
 
+/-- Generic constant absorption for any object satisfying the collected
+Route-T moment inequality.  This separates analytic production of the
+moment bound from its exact arithmetic endgame. -/
+theorem routeTMoment_powerSaving_of_collected
+    {u Q : ℕ} {z : ℂ} (hu : 29 ≤ u)
+    (hQ : vinogradovRouteTMomentConstant u ≤ Q)
+    (hcollected :
+      ‖z‖ ^ (4 * vinogradovRouteTMoment (4 * u) ^ 2) ≤
+        (vinogradovMeanConstant
+            (vinogradovRouteTOrder (4 * u))
+            (vinogradovRouteTMomentSteps (4 * u)) : ℝ) ^ 2 *
+          (24 * (vinogradovRouteTMoment (4 * u) : ℝ) ^ 2) ^
+            vinogradovRouteTOrder (4 * u) *
+          (Q : ℝ) ^
+            (8 * vinogradovRouteTMoment (4 * u) ^ 2 + (2800 * u + 4)) *
+          ((Q : ℝ) ^ (200 * u ^ 2))⁻¹) :
+      ‖z‖ ^ (4 * vinogradovRouteTMoment (4 * u) ^ 2) ≤
+        (Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2) *
+          ((Q : ℝ) ^ vinogradovRouteTMomentSaving u)⁻¹ := by
+  have hconstant_pos : 1 ≤ vinogradovRouteTMomentConstant u := by
+    unfold vinogradovRouteTMomentConstant
+    have hmean : 1 ≤ vinogradovMeanConstant
+        (vinogradovRouteTOrder (4 * u))
+        (vinogradovRouteTMomentSteps (4 * u)) := by
+      generalize vinogradovRouteTMomentSteps (4 * u) = r
+      cases r with
+      | zero => simp [vinogradovMeanConstant]
+      | succ r => simp only [vinogradovMeanConstant]; omega
+    have hb : 1 ≤ vinogradovRouteTMoment (4 * u) :=
+      Nat.one_le_iff_ne_zero.mpr
+        (vinogradovRouteTMoment_ne_zero (by omega))
+    have hbase : 1 ≤ 24 * vinogradovRouteTMoment (4 * u) ^ 2 := by
+      exact Nat.mul_pos (by omega) (pow_pos (by omega) 2)
+    exact Nat.mul_pos (pow_pos (by omega) 2)
+      (pow_pos (by omega) (vinogradovRouteTOrder (4 * u)))
+  have hQ1 : 1 ≤ Q := hconstant_pos.trans hQ
+  have hcost : 2800 * u + 4 ≤ 200 * u ^ 2 := by nlinarith
+  have hsplitReserve :
+      (2800 * u + 4) + vinogradovRouteTUsefulReserve u = 200 * u ^ 2 := by
+    unfold vinogradovRouteTUsefulReserve
+    omega
+  have hQ0 : (Q : ℝ) ≠ 0 := by positivity
+  have hreserveCancel :
+      (Q : ℝ) ^
+          (8 * vinogradovRouteTMoment (4 * u) ^ 2 + (2800 * u + 4)) *
+          ((Q : ℝ) ^ (200 * u ^ 2))⁻¹ =
+        (Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2) *
+          ((Q : ℝ) ^ vinogradovRouteTUsefulReserve u)⁻¹ := by
+    rw [← hsplitReserve]
+    exact pow_add_mul_inv_pow_add hQ0 _ _ _
+  have hconstant_cast :
+      (vinogradovRouteTMomentConstant u : ℝ) =
+        (vinogradovMeanConstant
+            (vinogradovRouteTOrder (4 * u))
+            (vinogradovRouteTMomentSteps (4 * u)) : ℝ) ^ 2 *
+          (24 * (vinogradovRouteTMoment (4 * u) : ℝ) ^ 2) ^
+            vinogradovRouteTOrder (4 * u) := by
+    simp [vinogradovRouteTMomentConstant, Nat.cast_mul, Nat.cast_pow]
+  have hconstant_le : (vinogradovRouteTMomentConstant u : ℝ) ≤ Q := by
+    exact_mod_cast hQ
+  have hreserve := vinogradovRouteTUsefulReserve_ge hu
+  have hpow :
+      (Q : ℝ) ^ (100 * u ^ 2) ≤
+        (Q : ℝ) ^ vinogradovRouteTUsefulReserve u :=
+    pow_le_pow_right₀ (by exact_mod_cast hQ1) hreserve
+  have hinv :
+      ((Q : ℝ) ^ vinogradovRouteTUsefulReserve u)⁻¹ ≤
+        ((Q : ℝ) ^ (100 * u ^ 2))⁻¹ :=
+    inv_anti₀ (by positivity) hpow
+  have hsplitSaving :
+      1 + vinogradovRouteTMomentSaving u = 100 * u ^ 2 := by
+    unfold vinogradovRouteTMomentSaving
+    have : 1 ≤ 100 * u ^ 2 := by nlinarith
+    omega
+  have hsavingCancel :
+      (Q : ℝ) * (Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2) *
+          ((Q : ℝ) ^ (100 * u ^ 2))⁻¹ =
+        (Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2) *
+          ((Q : ℝ) ^ vinogradovRouteTMomentSaving u)⁻¹ := by
+    calc
+      _ = (Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2 + 1) *
+          ((Q : ℝ) ^ (1 + vinogradovRouteTMomentSaving u))⁻¹ := by
+            rw [hsplitSaving, pow_add, pow_one]
+            ring
+      _ = _ := pow_add_mul_inv_pow_add hQ0 _ _ _
+  calc
+    _ ≤ (vinogradovMeanConstant
+          (vinogradovRouteTOrder (4 * u))
+          (vinogradovRouteTMomentSteps (4 * u)) : ℝ) ^ 2 *
+        (24 * (vinogradovRouteTMoment (4 * u) : ℝ) ^ 2) ^
+          vinogradovRouteTOrder (4 * u) *
+        (Q : ℝ) ^
+          (8 * vinogradovRouteTMoment (4 * u) ^ 2 + (2800 * u + 4)) *
+        ((Q : ℝ) ^ (200 * u ^ 2))⁻¹ := hcollected
+    _ = (vinogradovRouteTMomentConstant u : ℝ) *
+        ((Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2) *
+          ((Q : ℝ) ^ vinogradovRouteTUsefulReserve u)⁻¹) := by
+      rw [hconstant_cast, hreserveCancel]
+      ring
+    _ ≤ (Q : ℝ) *
+        (Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2) *
+          ((Q : ℝ) ^ vinogradovRouteTUsefulReserve u)⁻¹ := by
+      exact mul_le_mul_of_nonneg_right hconstant_le (by positivity)
+    _ ≤ (Q : ℝ) *
+        (Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2) *
+          ((Q : ℝ) ^ (100 * u ^ 2))⁻¹ := by
+      exact mul_le_mul_of_nonneg_left hinv (by positivity)
+    _ = _ := hsavingCancel
+
+/-- Generic exact-root extraction from the Route-T saved moment. -/
+theorem norm_le_rpow_of_routeTMomentSaving
+    {u Q : ℕ} {z : ℂ} (hu : 29 ≤ u) (hQ : 1 ≤ Q)
+    (hmoment :
+      ‖z‖ ^ (4 * vinogradovRouteTMoment (4 * u) ^ 2) ≤
+        (Q : ℝ) ^ (8 * vinogradovRouteTMoment (4 * u) ^ 2) *
+          ((Q : ℝ) ^ vinogradovRouteTMomentSaving u)⁻¹) :
+    ‖z‖ ≤ (Q : ℝ) ^ (2 - vinogradovRouteTPowerSavingExponent u) := by
+  let b := vinogradovRouteTMoment (4 * u)
+  let M := 4 * b ^ 2
+  let S := vinogradovRouteTMomentSaving u
+  have hb : b ≠ 0 := vinogradovRouteTMoment_ne_zero (by omega)
+  have hM : M ≠ 0 := by unfold M; positivity
+  have hQpos : 0 < (Q : ℝ) := by exact_mod_cast (show 0 < Q by omega)
+  have hy : 0 ≤ (Q : ℝ) ^ (8 * b ^ 2) * ((Q : ℝ) ^ S)⁻¹ := by
+    positivity
+  have hroot : ‖z‖ ≤
+      ((Q : ℝ) ^ (8 * b ^ 2) * ((Q : ℝ) ^ S)⁻¹) ^ ((M : ℝ)⁻¹) := by
+    apply le_rpow_inv_nat_of_pow_le hM hy
+    simpa [b, M, S] using hmoment
+  have hexponent :
+      ((((8 * b ^ 2 : ℕ) : ℝ) + -(S : ℝ)) * (M : ℝ)⁻¹) =
+        2 - vinogradovRouteTPowerSavingExponent u := by
+    unfold vinogradovRouteTPowerSavingExponent
+    change ((((8 * b ^ 2 : ℕ) : ℝ) + -(S : ℝ)) * (M : ℝ)⁻¹) =
+      2 - (S : ℝ) / (4 * (b : ℝ) ^ 2)
+    simp only [M, Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat]
+    have hbR : (b : ℝ) ≠ 0 := by exact_mod_cast hb
+    field_simp [hbR]
+    ring
+  have hroot_eq :
+      ((Q : ℝ) ^ (8 * b ^ 2) * ((Q : ℝ) ^ S)⁻¹) ^ ((M : ℝ)⁻¹) =
+        (Q : ℝ) ^ (2 - vinogradovRouteTPowerSavingExponent u) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_natCast]
+    rw [← Real.rpow_neg hQpos.le, ← Real.rpow_add hQpos]
+    rw [← Real.rpow_mul hQpos.le, hexponent]
+  rw [← hroot_eq]
+  exact hroot
+
 end
 
 end RHTower.Sieve
