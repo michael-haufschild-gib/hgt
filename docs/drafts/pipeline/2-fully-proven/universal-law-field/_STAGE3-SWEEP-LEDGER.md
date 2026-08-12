@@ -20,7 +20,7 @@ card has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/
 | 8 | `nonvacuous-independence-and-polarization-import-law.md` | BLOCKED-ON-PREREQ — quantitative core certified (SelbergSpectralParameter); the rest is citation-level and needs a hyperbolic-surface spectral layer (Laplace spectrum, Eisenstein series, Maass-Selberg truncation, Selberg trace formula and zeta) absent from mathlib and the corpus |
 | 9 | `odd-coordinate-mechanism-universal-law-set.md` | NEEDS-LEAN — law set; Law 6 proved here |
 | 10 | `parity-duality-rg-shell-splitting-and-multiplicative-resolution-cap-law.md` | NEEDS-LEAN — signed-sector and organ-scope law |
-| 11 | `pole-purchase-escape-and-collision-gap-law.md` | NEEDS-LEAN — necessity axiom N6 and amplification-gap opening |
+| 11 | `pole-purchase-escape-and-collision-gap-law.md` | IN PROGRESS — new module `RHTower/PolePurchaseCollisionGap.lean`: Thm 2.1 (the certified modulus-collided gap) closed both ways, modulus collision, falsity of the strengthened cap, and both ends of (INV3.2).  Left: the (INV3.2) log-derivative identity `3(−ζ'/ζ)(σ) + 4Re(−ζ'/ζ)(σ+it) + Re(−ζ'/ζ)(σ+2it) = ∑ Λ(n)n^{−σ}(3+4cos+cos2)` — needs `L(Λ,s) = −ζ'/ζ(s)` on `Re s > 1` plus the real-part interchange |
 | 12 | `route-q-ratio-gate-decision.md` | BLOCKED-ON-NUMERICS — gate mechanism certified (DivisorHeightRatioGate: height damping, unconditional geometric decay, `9 < c` implies the gate); remaining inputs are gamma_1 > 9 (verified-zero computation) and a signed-moment lower bound (zero-location input) |
 | 13 | `specification-consistency-polarization-independence-and-cusp-concentration-law.md` | NEEDS-LEAN — consistency and independence metatheorem for the inverse-theory axioms |
 

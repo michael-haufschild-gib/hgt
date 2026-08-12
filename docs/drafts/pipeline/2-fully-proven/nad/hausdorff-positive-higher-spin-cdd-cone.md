@@ -683,3 +683,33 @@ is the finiteness input of `(19)`.  What remains for `(19)` is the atomic measur
 `ENNReal.ofReal_tsum_of_nonneg` and the summability just proved, and the fact that it is carried by
 the open interval (each atom `r_j^2` lies in `(0,1)`), after which
 `hausdorffMoment_strict_completelyMonotone` gives every inequality strictly.
+
+### Log — the geometric q-ladder `(19)` is formalized `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/QLadderSource.lean`, axiom-clean and wired:
+
+```text
+qLadderCoupling C q j = C * q^(-j),   one_lt_qLadderCoupling
+qLadderRadius C q j   = shellRadius (qLadderCoupling C q j)
+qLadderRadius_pos, qLadderRadius_lt_one, qLadderRadius_le, summable_qLadderRadius
+qLadderAtom C q j     -- the atom at r_j^2, with qLadderAtom_coe and qLadderAtom_mem_open
+qLadderSource C q     = sum_j ofReal (r_j) * dirac (r_j^2)
+qLadderSource_univ, isFiniteMeasure_qLadderSource
+qLadderSource_ae_mem_open        -- carried by the OPEN unit interval
+qLadder_strict_completelyMonotone -- every inequality (10) is strict
+```
+
+So `(19)` is now a theorem: the geometric ladder is a finite positive source carried strictly inside
+the interval, hence an interior point of the Hausdorff cone.
+
+**Card status.**  Theorem A is complete (equivalence, uniqueness, strict form `(9)`, finite strict
+form `(10)`).  Theorem B is complete: `(4)` (`hasSum_cddPhaseKernel`), `(11) = (13)`
+(`hasSum_hausdorffCDDPhase`), `(15)`, `(16)`, `(17)`.  The extreme-ray endpoints `(18a)`, `(18b)` and
+the paired-shell identity `(3)` are in `HausdorffCDDMeasureSource.lean`; `(19)` is done.
+
+The one numbered item still unformalized is the *classification* half of `(18)`: that the extreme
+rays of the cone of finite positive measures on `[0,1]` are exactly the point masses.  That is a
+Choquet-type statement about the cone, independent of the CDD material.  The card's other open gates
+(global regularity for non-atomic measures, quasilocal density and compact-local QFT flow,
+universality from locality and unitarity) are research items the card itself lists as extensions, not
+formalization gates.

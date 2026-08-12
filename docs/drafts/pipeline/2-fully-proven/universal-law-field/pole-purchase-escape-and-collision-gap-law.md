@@ -14,7 +14,7 @@
   poles of amplified objects. Necessity axiom N6: any engine beating the caps must consume pole
   data; the frozen barrier conjecture: bounded amplification degree bounds what poles can buy.
 - **Status:** [PAPER-PROVED CORE] [CAP CLASSES READ FROM LEAN SOURCE] [N6 EXTRACTED]
-  [BARRIER CONJECTURE FROZEN] [CLASSICAL COMPONENTS DISCLAIMED] [NOT RH] [NO LEAN]
+  [BARRIER CONJECTURE FROZEN] [CLASSICAL COMPONENTS DISCLAIMED] [NOT RH] [LEAN PARTIAL — Thm 2.1 certified; (INV3.2) identity open]
 
 ## 1. The cap laws, as formalized
 
@@ -154,3 +154,39 @@ must be audited first, since the degree-1 statement may be implicit there.
 - 2026-08-09 — created after reading `CoefficientFreeCap.lean` in source; collision gap proved;
   VP retyped as degree-1 pole-purchase; N6 extracted; ULF-INV-4 frozen with its literature-audit
   precondition.
+- 2026-08-12 — Theorem 2.1 fully formalized (`RHTower/PolePurchaseCollisionGap.lean`), together
+  with the modulus collision, the falsity of the strengthened cap, and both ends of (INV3.2).  The
+  (INV3.2) log-derivative identity itself remains open in Lean; card stays at stage 2.
+
+## Lean certification (partial)
+
+Module: `formal/GaloisForLFunctions/RHTower/PolePurchaseCollisionGap.lean`
+(wired into `GaloisForLFunctions.RHTower`).
+
+| Card statement | Lean name |
+|---|---|
+| §1 cap laws (pre-existing) | `RHTower.Sieve.le_of_coefficientFree_bound`, `le_of_modulusOnly_bound`, `max_le_of_modulusOnly_bound` |
+| Thm 2.1, `Φ_σ(1) → 1` | `tendsto_poleFunctionalZeta` (from `riemannZeta_residue_one`) |
+| Thm 2.1, `Φ_σ(λ) → 0` | `tendsto_poleFunctionalLiouville` (from the corpus's `LSeries_liouvilleC_mul_riemannZeta`) |
+| Thm 2.1, the gap itself | `exists_collision_gap` |
+| modulus collision of `λ` with `1` | `norm_liouvilleC`, `norm_liouvilleC_eq_norm_one` |
+| §2.2 point 2, the strengthened cap is false | `exists_modulusCollided_gap` |
+| (INV3.2) positive input | `vallee_poussin_identity`, `vallee_poussin_nonneg` |
+| (INV3.2) conclusion `ζ(1+it) ≠ 0` | `riemannZeta_ne_zero_one_add_I_mul` |
+
+`Φ_σ(1)` is the pole functional at the constant sequence; `poleFunctionalZeta_eq_lseries` identifies
+it with `(σ−1)‖L(1, σ)‖` on the half-plane of absolute convergence, so the functional really is the
+card's `Φ_σ` evaluated at `g = 1`.
+
+**Not yet formalized.**  The middle of (INV3.2) — the identity
+
+`3(−ζ'/ζ)(σ) + 4 Re(−ζ'/ζ)(σ+it) + Re(−ζ'/ζ)(σ+2it) = ∑_n Λ(n) n^{−σ} (3 + 4cos(t log n) + cos(2t log n))`
+
+— is not in the module.  Its positive input and its conclusion both are; what is missing is the
+Dirichlet-series bookkeeping (`L(Λ, s) = −ζ'(s)/ζ(s)` on `Re s > 1`, the real part of each term, and
+the interchange of `Re` with the sum).  The card labels Theorem 2.2 "classical, retyped", and its
+conclusion is mathlib's `riemannZeta_ne_zero_of_one_le_re`; the identity is nevertheless a displayed
+statement of this card and the card stays at stage 2 until it is closed.
+
+§3 is calibration with literature citations, not proof.  §4 (ULF-INV-4) is a frozen conjecture with
+a declared `[OPEN CORE]` and is a research frontier, not a Lean gate.

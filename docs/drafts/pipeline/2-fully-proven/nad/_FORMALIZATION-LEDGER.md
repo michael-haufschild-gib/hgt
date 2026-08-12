@@ -695,3 +695,23 @@ limit.
 Card 13 is not yet promotable: `(11) = (13)`, the extreme-ray classification, and the q-ladder
 instance remain.  But its named classical blocker is gone, and Theorem A is unconditional in both
 directions with uniqueness.
+
+## Card 13 — Theorems A and B are now fully formalized
+
+Beyond Hausdorff's moment theorem recorded above:
+
+- `HTGeometry/HausdorffKernelSeries.lean` — `hasSum_cddPhaseKernel` (equation `(4)`, from
+  `Real.hasSum_arctan`), `cddPhaseKernel_eq_tsum`, `abs_sinh_le_exp_abs`, and
+  **`hasSum_hausdorffCDDPhase`** (equation `(11) = (13)`: the source transform is the odd-spin
+  series in the moments, by `hasSum_integral_of_summable_integral_norm` with the geometric majorant
+  `8·exp|θ|·(R² exp 2|θ|)^m`).
+- `HTGeometry/CddShellRadius.lean` — `shellRadius B = B − √(B²−1)`, `shellRadius_mul_conj`,
+  `shellRadius_pos`, `shellRadius_lt_one`, `shellRadius_add_inv` (`(r + r⁻¹)/2 = B`),
+  `shellRadius_le_inv`, `shellRadius_geometric_le`.
+- `HTGeometry/QLadderSource.lean` — the geometric q-ladder `(19)`: `qLadderCoupling`,
+  `qLadderRadius`, `summable_qLadderRadius`, `qLadderAtom`, `qLadderSource`,
+  `isFiniteMeasure_qLadderSource`, `qLadderSource_ae_mem_open`, and
+  **`qLadder_strict_completelyMonotone`**.
+
+Fourteen new modules were added to `GaloisForLFunctions.HTGeometry` in this session, all axiom-clean
+and all wired into the umbrella.
