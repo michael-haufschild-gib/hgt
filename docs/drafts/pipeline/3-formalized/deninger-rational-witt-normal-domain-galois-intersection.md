@@ -1,12 +1,12 @@
 # Normal-domain rational-Witt Galois intersection
 
 - **ID:** `deninger-rational-witt-normal-domain-galois-intersection`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) · SOURCE CORRECTION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) · SOURCE CORRECTION
 - **Route:** L — rational-Witt source foundation
 - **Primary source:** Christopher Deninger, *Rational Witt vectors and associated sheaves*,
   arXiv:2508.05329v1, Theorem 1.2 (source label `t1.1`).
-- **Status:** `[PROVED HERE] [DEPENDENCY-CLOSED] [NOVELTY-UNCLEAR]`
+- **Status:** `[LEAN-PROVED] [DEPENDENCY-CLOSED] [NOVELTY-UNCLEAR]`
 
 ## Statement
 
@@ -133,11 +133,28 @@ literature-new without author-level review.
 
 - [x] 0 -> 1: exact false source clause and sharp counterexample identified
 - [x] 1 -> 2: dependency-closed proof above; all invoked algebraic ingredients already formalized
-- [ ] 2 -> 3: Lean theorem, umbrella import, direct check, axiom audit, targeted module build
+- [x] 2 -> 3: Lean theorem, umbrella import, direct check, axiom audit, targeted module build
 - [ ] 3 -> 4: standalone publication treatment and external author review
+
+## Lean formalization
+
+- **Module:** `GaloisForLFunctions.RHTower.DeningerRationalWittNormalDomainGaloisIntersection`
+- **Capstone:**
+  `deningerRationalWittNormalDomain_galoisFixed_normalization_iff_exists_base`
+- **Sharp obstruction:** `deningerCuspPerfectGaloisFixed_counterexample`
+- **Normality necessity:**
+  `deningerRationalWittTeichmullerDescent_implies_integralClosedness`
+
+Supporting theorems formalize normalization-presentation naturality, integrality of positive and
+negative atoms, integrality of atom-polynomial coefficients, polynomial descent through a normal
+base, and transfer of algebraic closedness through the fraction-field equivalence.
 
 ## Log
 
 - 2026-08-12 — derived corrected theorem after refuting unrestricted source statement.
 - 2026-08-12 — completed hostile paper proof via canonical positive/negative atom polynomials;
   avoided false implication `integrally closed => Fatou`.
+- 2026-08-12 — formalized capstone and all missing infrastructure in Lean; wired Route-L umbrella;
+  direct module check and targeted build passed. Axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`. Repository lint finds no defect in this module but remains
+  nonzero because seven unrelated Route-T/Suzuki modules are not reachable from the umbrella.

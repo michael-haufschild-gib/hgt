@@ -186,10 +186,11 @@ theorem suzukiCanonicalLogHankelUnitary_maps_upper_to_reflected_lower
   calc
     dist (P (H q)) (H q) ≤
         dist (P (H q)) (P (H v)) + dist (P (H v)) (H v) + dist (H v) (H q) := by
-          exact (dist_triangle _ (P (H v)) _).trans
-            (add_le_add_left (dist_triangle _ (H v) _) _)
+          have h₁ := dist_triangle (P (H q)) (P (H v)) (H q)
+          have h₂ := dist_triangle (P (H v)) (H v) (H q)
+          linarith
     _ = dist (P (H q)) (P (H v)) + dist (H v) (H q) := by rw [hPv, dist_self, add_zero]
-    _ ≤ dist q v + dist (H v) (H q) := add_le_add_right hPdist _
+    _ ≤ dist q v + dist (H v) (H q) := add_le_add hPdist le_rfl
     _ = dist q v + dist v q := by rw [H.dist_map]
     _ < ε / 3 + ε / 3 := add_lt_add hqg (by simpa [dist_comm] using hqg)
     _ < ε := by linarith

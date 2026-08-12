@@ -23,11 +23,20 @@ two; in particular, a merely sublinear charge estimate would only imply density 
 enough for RH.
 -/
 
-open Complex Set Metric
+open Complex Set Metric Filter
 
 namespace RHTower
 
 noncomputable section
+
+/-- Total Xi divisor order in the positive-height strip window. -/
+def xiStripWindowTotalOrder (T : ℝ) : ℕ :=
+  ∑ rho ∈ (stripZeros_finite T).toFinset, (analyticOrderAt xi rho).toNat
+
+/-- Total critical-line Xi order in the positive-height strip window. -/
+def xiStripWindowLineOrder (T : ℝ) : ℕ :=
+  ∑ rho ∈ (stripZeros_finite T).toFinset.filter (fun rho => rho.re = 1 / 2),
+    (analyticOrderAt xi rho).toNat
 
 /-- Total off-critical Xi order in the positive-height strip window. -/
 def xiStripWindowOffLineOrder (T : ℝ) : ℕ :=
@@ -60,6 +69,14 @@ def xiStripWindowHorizontalSquareSum (T : ℝ) : ℕ :=
 def xiStripWindowLocalSquareSum (T : ℝ) : ℕ :=
   ∑ rho ∈ (stripZeros_finite T).toFinset,
     ((analyticOrderAt xi rho).toNat) ^ 2
+
+/-- Strip-zero finsets grow with the height cutoff. -/
+theorem stripZeros_toFinset_mono {T U : ℝ} (hTU : T ≤ U) :
+    (stripZeros_finite T).toFinset ⊆ (stripZeros_finite U).toFinset := by
+  intro rho hrho
+  rw [Set.Finite.mem_toFinset] at hrho ⊢
+  exact ⟨⟨hrho.1.1, hrho.1.2.1, hrho.1.2.2.1,
+    hrho.1.2.2.2.trans_le hTU⟩, hrho.2⟩
 
 /-- Every strip-window zero belongs to its complete exact-height Xi fibre. -/
 theorem mem_stripHeightFinset_of_mem_stripZeros {T : ℝ} {rho : ℂ}
@@ -170,6 +187,21 @@ theorem xiHorizontalCollisionCharge_eq_sum_pairs (T : ℝ) :
       intro z _
       simp [eq_comm]
 
+/-- Ordered horizontal-collision pairs persist when the height cutoff increases. -/
+theorem xiHorizontalCollisionPairs_mono {T U : ℝ} (hTU : T ≤ U) :
+    xiHorizontalCollisionPairs T ⊆ xiHorizontalCollisionPairs U := by
+  intro p hp
+  rw [xiHorizontalCollisionPairs, Finset.mem_filter, Finset.mem_product] at hp ⊢
+  exact ⟨⟨stripZeros_toFinset_mono hTU hp.1.1,
+    stripZeros_toFinset_mono hTU hp.1.2⟩, hp.2⟩
+
+/-- Horizontal collision charge is monotone in the height cutoff. -/
+theorem xiHorizontalCollisionCharge_mono : Monotone xiHorizontalCollisionCharge := by
+  intro T U hTU
+  rw [xiHorizontalCollisionCharge_eq_sum_pairs,
+    xiHorizontalCollisionCharge_eq_sum_pairs]
+  exact Finset.sum_le_sum_of_subset (xiHorizontalCollisionPairs_mono hTU)
+
 /-- **Quadratic census identity.** The horizontal square census is the local square census plus
 collision charge.  Equivalently, collision charge is
 `sum_gamma H_gamma^2 - sum_rho m_rho^2`. -/
@@ -212,7 +244,10 @@ theorem xiStripWindowHorizontalSquareSum_eq_localSquare_add_collisionCharge
     intro rho hrho
     have hle : m rho ≤ H rho.im :=
       xi_order_le_horizontalMultiplicity_of_mem_stripZeros hrho
-    omega
+    calc
+      m rho * H rho.im = m rho * (m rho + (H rho.im - m rho)) := by
+        rw [Nat.add_sub_of_le hle]
+      _ = m rho ^ 2 + m rho * (H rho.im - m rho) := by ring
   rw [xiStripWindowHorizontalSquareSum, xiStripWindowLocalSquareSum,
     xiHorizontalCollisionCharge]
   change (∑ gamma ∈ G, H gamma ^ 2) =
@@ -326,6 +361,30 @@ theorem xiStripWindowOffLineOrder_le_horizontalCollisionCharge (T : ℝ) :
     exact Finset.sum_le_sum_of_subset (Finset.filter_subset _ _)
   exact hfiltered.trans hpart
 
+/-- The strip divisor splits exactly into its critical-line and off-line parts. -/
+theorem xiStripWindowTotalOrder_eq_line_add_offLine (T : ℝ) :
+    xiStripWindowTotalOrder T =
+      xiStripWindowLineOrder T + xiStripWindowOffLineOrder T := by
+  classical
+  let S := (stripZeros_finite T).toFinset
+  let m : ℂ → ℕ := fun rho => (analyticOrderAt xi rho).toNat
+  have hsplit :=
+    Finset.sum_filter_add_sum_filter_not S (fun rho => rho.re = 1 / 2) m
+  change
+    (∑ rho ∈ S, m rho) =
+      (∑ rho ∈ S.filter (fun rho => rho.re = 1 / 2), m rho) +
+        ∑ rho ∈ S.filter (fun rho => rho.re ≠ 1 / 2), m rho
+  exact hsplit.symm
+
+/-- **User-facing deficit inequality.** The critical-line order is at least total order minus
+horizontal collision charge: `N₀(T) ≥ N(T) - O(T)`. -/
+theorem xiStripWindowTotalOrder_sub_collisionCharge_le_lineOrder (T : ℝ) :
+    xiStripWindowTotalOrder T - xiHorizontalCollisionCharge T ≤
+      xiStripWindowLineOrder T := by
+  have hsplit := xiStripWindowTotalOrder_eq_line_add_offLine T
+  have hoff := xiStripWindowOffLineOrder_le_horizontalCollisionCharge T
+  omega
+
 /-- The off-line window mass is exactly twice the right-half window mass. -/
 theorem xiStripWindowOffLineOrder_eq_two_mul_rightOrder (T : ℝ) :
     xiStripWindowOffLineOrder T = 2 * xiStripWindowRightOrder T := by
@@ -421,6 +480,33 @@ theorem riemannHypothesis_of_forall_nat_horizontalCollisionCharge_lt_two
       hrho.1.2.2.2.trans hn⟩, hrho.2⟩
   rw [hnempty] at hrhoN
   exact Set.notMem_empty rho hrhoN
+
+/-- A strict two-unit estimate on any cofinal family of height windows proves RH.  This is the
+precise form needed from a source estimate: it need not control every cutoff. -/
+theorem riemannHypothesis_of_cofinal_horizontalCollisionCharge_lt_two
+    (hcharge : ∀ T : ℝ, ∃ U : ℝ,
+      T ≤ U ∧ xiHorizontalCollisionCharge U < 2) :
+    RiemannHypothesis := by
+  rw [rh_iff_forall_boxZeros_empty]
+  intro T
+  obtain ⟨U, hTU, hU⟩ := hcharge T
+  have hUempty : boxZeros U = ∅ :=
+    boxZeros_eq_empty_of_horizontalCollisionCharge_lt_two hU
+  rw [Set.eq_empty_iff_forall_notMem]
+  intro rho hrho
+  have hrhoU : rho ∈ boxZeros U := boxZeros_mono hTU hrho
+  rw [hUempty] at hrhoU
+  exact hrhoU
+
+/-- An eventual source estimate below the indivisible collision quantum is enough.  In contrast,
+an estimate only after division by the total zero count is not enough. -/
+theorem riemannHypothesis_of_eventually_horizontalCollisionCharge_lt_two
+    (hcharge : ∀ᶠ T : ℝ in atTop, xiHorizontalCollisionCharge T < 2) :
+    RiemannHypothesis := by
+  obtain ⟨T₀, hT₀⟩ := eventually_atTop.1 hcharge
+  apply riemannHypothesis_of_cofinal_horizontalCollisionCharge_lt_two
+  intro T
+  exact ⟨max T T₀, le_max_left T T₀, hT₀ _ (le_max_right T T₀)⟩
 
 end
 

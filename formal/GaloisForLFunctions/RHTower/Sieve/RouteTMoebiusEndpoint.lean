@@ -167,10 +167,7 @@ theorem fourth_power_le_half_height_of_maynard_cutoff
 absorption. -/
 theorem maynard_moebius_amplitude_le_routeTEndpointDeficit
     {A C C' delta T S : ℝ} {L q : ℕ} {c y U : ℝ}
-    (hC : 0 ≤ C) (hC' : 0 ≤ C') (hdelta : 0 < delta)
-    (hq : 1 ≤ q) (hNL : 2 ^ q ≤ L) (hc : 0 ≤ c)
-    (hU : (((2 ^ q : ℕ) : ℝ)) ^ (4 : ℕ) ≤ U)
-    (hsep : routeTInverseBaseHeight + U ≤ |y|)
+    (hC : 0 ≤ C) (hC' : 0 ≤ C') (hq : 1 ≤ q)
     (hS : S = |y| + U)
     (hsize : 2 * Real.log
         (2 * routeTMoebiusPowerConstant C C' * routeTContourEdgeBound A S) ≤
@@ -217,7 +214,7 @@ theorem maynard_moebius_amplitude_le_routeTEndpointDeficit
   have hpow : N ^ (1 - c - shift / 3) =
       N ^ (1 - c) * N ^ (-(shift / 3)) := by
     rw [← Real.rpow_add hN0]
-    ring
+    exact congrArg (fun e : ℝ => N ^ e) (by ring)
   have hupper :
       ‖LSeries (complexCoeff (arithmeticDyadicBlock (truncatedMoebius L) q))
           ((c : ℂ) + (y : ℝ) * Complex.I)‖ ≤
@@ -341,5 +338,96 @@ theorem eventually_routeT_endpoint_moebius_coefficient_ready
       _ = (routeTContourShift A delta S / 3) * (Real.log T / 216000) := by
         ring
   simpa only [U, S] using (And.intro hready (And.intro hcommon hsep))
+
+/-- **Unconditional endpoint-long Möbius exclusion.**  The constants are the literal constants
+delivered by the Route-T reciprocal contour.  Every positive-length Möbius coordinate above the
+Maynard endpoint threshold has a common amplitude deficit at all sufficiently large heights. -/
+theorem exists_eventually_maynard_endpoint_moebius_amplitude_deficit :
+    ∃ (A C C' delta : ℝ), 0 ≤ C ∧ 0 ≤ C' ∧ 0 < delta ∧
+      ∀ᶠ T : ℝ in atTop,
+        ∀ (L X : ℕ), 1 ≤ L → ∀ mu : ℝ, 4 / 3 ≤ mu → mu ≤ 19 / 9 →
+          (L : ℝ) ≤ T ^ (mu / 60) →
+          ∀ box : HeathBrownBoxChoice L X 60,
+            IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+            ∀ j : PositiveHeathBrownBoxFactorIndex box,
+              heathBrownBoxFactorKind 60 box.m j = .moebius →
+              (∑ i : PositiveHeathBrownBoxFactorIndex box,
+                  dyadicLogExponent T
+                    (heathBrownBoxFactorExponent box.a box.b box.q i)) /
+                    (40 * 60 : ℕ) ≤
+                dyadicLogExponent T
+                  (heathBrownBoxFactorExponent box.a box.b box.q j) →
+              ∀ c y : ℝ, 0 ≤ c → T ≤ y → y ≤ 2 * T →
+                0 < ‖heathBrownBoxFactorValue L X 60 box
+                  ((c : ℂ) + (y : ℝ) * Complex.I) j‖ →
+                maynardAmplitude c
+                    (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ))
+                    ‖heathBrownBoxFactorValue L X 60 box
+                      ((c : ℂ) + (y : ℝ) * Complex.I) j‖ ≤
+                  1 - routeTEndpointMoebiusDeficit A delta T := by
+  obtain ⟨A, C, C', delta, hC, hC', hdelta, hmain⟩ :=
+    exists_norm_LSeries_truncatedMoebius_dyadic_le_routeTPower
+  refine ⟨A, C, C', delta, hC, hC', hdelta, ?_⟩
+  filter_upwards [eventually_routeT_endpoint_moebius_coefficient_ready
+      A C C' delta hC hC' hdelta,
+    eventually_ge_atTop (4 : ℝ)] with T hready hT4
+  intro L X hL mu hmu_lo hmu_hi hcut box helig j hkind hlong c y hc hylo hyhi hV
+  let q : ℕ := heathBrownBoxFactorExponent box.a box.b box.q j
+  let N : ℝ := (((2 ^ q : ℕ) : ℝ))
+  let U : ℝ := |y| / 2
+  let S : ℝ := |y| + U
+  have hT : 1 < T := by linarith
+  have hy0 : 0 < y := lt_trans zero_lt_one (hT.trans_le hylo)
+  have hq : 1 ≤ q := by simpa only [q] using j.property
+  have hNL : 2 ^ q ≤ L := by
+    dsimp only [q]
+    exact box.moebius_factor_pow_le_cutoff hL j hkind
+  have hNcut : N ≤ T ^ (mu / 60) := by
+    have hreal : (((2 ^ q : ℕ) : ℝ)) ≤ (L : ℝ) := by exact_mod_cast hNL
+    exact hreal.trans hcut
+  have hNU : N ^ (4 : ℕ) ≤ U := by
+    have hpow := fourth_power_le_half_height_of_maynard_cutoff
+      hT4 hmu_hi (by dsimp only [N]; positivity) hNcut
+    dsimp only [U]
+    rw [abs_of_pos hy0]
+    linarith
+  have hlongTotal :
+      heathBrownBoxTotalExponent L X 60 T box / (40 * 60 : ℕ) ≤
+        dyadicLogExponent T q := by
+    rw [← sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent box]
+    simpa only [q] using hlong
+  have hNroot : T ^ (1 / 216000 : ℝ) ≤ N := by
+    simpa only [N, q] using
+      dyadic_length_ge_maynard_endpoint_root box hT hmu_lo helig j hlongTotal
+  have hroot0 : 0 < T ^ (1 / 216000 : ℝ) := by positivity
+  have hlogN : (1 / 216000 : ℝ) * Real.log T ≤ Real.log N := by
+    have hlog := Real.log_le_log hroot0 hNroot
+    rwa [Real.log_rpow (by linarith : 0 < T)] at hlog
+  have hready' :
+      2 * Real.log
+          (2 * routeTMoebiusPowerConstant C C' * routeTContourEdgeBound A S) ≤
+        (routeTContourShift A delta S / 3) * (Real.log T / 216000) ∧
+      routeTContourShift A delta (3 * T) ≤ routeTContourShift A delta S ∧
+      routeTInverseBaseHeight + U ≤ |y| := by
+    simpa only [U, S] using hready y hylo hyhi
+  rcases hready' with ⟨hcost, hcommon, hsep⟩
+  have hshift0 : 0 ≤ routeTContourShift A delta S / 3 := by
+    exact div_nonneg (routeTContourShift_pos (A := A) (T := S) hdelta).le (by norm_num)
+  have hlogN' : Real.log T / 216000 ≤ Real.log N := by
+    calc
+      Real.log T / 216000 = (1 / 216000 : ℝ) * Real.log T := by ring
+      _ ≤ Real.log N := hlogN
+  have hsize :
+      2 * Real.log
+          (2 * routeTMoebiusPowerConstant C C' * routeTContourEdgeBound A S) ≤
+        (routeTContourShift A delta S / 3) * Real.log N :=
+    hcost.trans (mul_le_mul_of_nonneg_left hlogN' hshift0)
+  have hatom := hmain L q c y U hq hNL hc hNU hsep
+  have hlocal := maynard_moebius_amplitude_le_routeTEndpointDeficit
+    (A := A) (C := C) (C' := C') (delta := delta) (T := T) (S := S)
+      hC hC' hq (by rfl) hsize hcommon (by
+        simpa only [heathBrownBoxFactorValue, hkind, q, heathBrownFactorBase] using hV) (by
+        simpa only [q, S] using hatom)
+  simpa only [heathBrownBoxFactorValue, hkind, q, heathBrownFactorBase] using hlocal
 
 end RHTower.Sieve

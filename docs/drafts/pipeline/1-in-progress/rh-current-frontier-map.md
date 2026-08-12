@@ -346,7 +346,7 @@ existing route.
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
 | T | open, sharply narrowed | The committed unwired chain discharges the polynomial threshold, assembles hybrid zeta blocks, proves near-one polylogarithmic growth, a subunit zero-free region, reciprocal-zeta control, and a four-edge Perron contour. `RouteTMoebiusSharp.lean` proves sharp twisted prefixes plus the cancellation-preserving dyadic Abel bridge. `RouteTZetaAsymptotics.lean` replaces binary shell, Landau-radius, growth, zero-free-budget, zero-free-width, and contour-edge parameters by explicit monotone continuous log-height envelopes. None is umbrella-reachable. Remaining arithmetic handoff is propagation through the literal Heath--Brown/Maynard boxes to exclude every long Möbius factor with required amplitude-cell uniformity. The Wold chart separately requires a signed pole-preserving landing; positive or absolute closure is impossible. |
-| U | open, two source frontiers | Umbrella Lean gives the uniform resolvent mass budget `sum ||u_q(X)|| <= 198/3175`, ray-jet tail bounds, and relative nodal equivalence. A committed unwired floor theorem proves every atom above `1/(X+259/4)` lies on line and therefore removes the relative criterion's line-placement premise at that explicit scale; the remaining polynomial nonvanishing/nodal-sign hypothesis is still RH-bearing. Terminal-frontier zero phase is RH-equivalent; unconditional cofinal positive schedules retire recession positivity. Filtered Gamma transmutation, sharp Hermite derivative energy, and coefficient-uniform complex Gaussian translation close finite-dimensional imaginary-shift control. The strengthened Christoffel wall proves reciprocal blow-up, nonintegrable local action, and a cofinal nonintegrable-wall phase equivalent to false RH; that is a sharp disproof receiver, not an unconditional exclusion. Live cores are: sign the explicit floor-scale rational-nodal landing, or prove the remaining Mehler/small-ball and completed prime--Gamma estimates excluding the finite nonzero parabolic boundary state. |
+| U | open, two source frontiers | Umbrella Lean gives the uniform resolvent mass budget `sum ||u_q(X)|| <= 198/3175`, ray-jet tail bounds, and relative nodal equivalence. A committed unwired floor theorem proves every atom above `1/(X+259/4)` lies on line and therefore removes the relative criterion's line-placement premise at that explicit scale; the remaining polynomial nonvanishing/nodal-sign hypothesis is still RH-bearing. Terminal-frontier zero phase is RH-equivalent; unconditional cofinal positive schedules retire recession positivity. Filtered Gamma transmutation, sharp Hermite derivative energy, coefficient-uniform complex Gaussian translation, exact Fourier aperture, and native polynomial--Gaussian local concentration close finite-dimensional imaginary-shift and small-ball control. The local estimate is obtained from oscillator energy plus one-dimensional Sobolev evaluation, so no Mehler projector is needed. The strengthened Christoffel wall proves reciprocal blow-up, nonintegrable local action, and a cofinal nonintegrable-wall phase equivalent to false RH; that is a sharp disproof receiver, not an unconditional exclusion. Live cores are: sign the explicit floor-scale rational-nodal landing, or prove the completed prime--Gamma assembly and global lower/tail estimates excluding the finite nonzero parabolic boundary state. |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -2431,7 +2431,13 @@ rational-Witt carrier. More generally,
 `deningerRationalWittTeichmullerDescent_implies_integralClosedness` proves that descent of all
 integral Teichmüller vectors forces `A` to be integrally closed. Route L must therefore use a
 corrected normal-domain descent theorem; unrestricted domain descent is retired, not an open Lean
-gap. The committed umbrella suite separately closes the literal rational-Witt source and ring,
+gap. Umbrella-reachable `DeningerRationalWittNormalDomainGaloisIntersection.lean` now proves that
+correction: over every integrally closed domain with perfect fraction field, the Galois-fixed
+literal rational-Witt vectors coming from the absolute normalization are exactly the vectors
+coming from the base domain. Its proof descends canonical positive/negative atom polynomials and
+uses normality only to return integral fraction-field coefficients to the base. This closes the
+perfect-field source-descent repair but does not touch Route L's singular source-to-physical
+comparison. The committed umbrella suite separately closes the literal rational-Witt source and ring,
 algebraically closed comparison, perfect-field Galois descent, algebraic-integer domain
 comparison, field intersection/equalizer, nilpotent-kernel classification, Fatou intersection, and
 `Spec Z` Frobenius divisor pullback. These are exact positive survivors of the failed arbitrary-
@@ -5725,10 +5731,22 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     coefficient growth from imaginary translation and supplies exact `sqrt(degree)` generator
     scale in PDH.9. Direct Lean, targeted module build, forbidden-declaration scan, and axiom audit
     pass. Umbrella-formal `ComplexGaussianPolynomialTranslation.lean` now integrates the generator
-    and proves the coefficient-uniform bound
-    `exp(||z|| sqrt(4 pi degree(P)))`. Remaining C43-Y wall is the finite Hermite projector/Mehler
-    small-ball estimate and literal completed-source prime/archimedean assembly; complex
-    translation itself is no longer open.
+    and proves the coefficient-uniform bound `exp(||z|| sqrt(4 pi degree(P)))`.
+    `PolynomialGaussianFourierAperture.lean` supplies exact native dilation, mass, and Fourier
+    aperture. `PolynomialGaussianLocalConcentration.lean` then proves, for every real polynomial
+    `Q`, positive `t`, and `R>=0`,
+
+    ~~~
+    integral_[-R,R] |Q(x^2)^2 exp(-t*x^2)| dx
+      <= 18*R*sqrt(t*(natDegree(Q)+1))*M_Q(t).
+    ~~~
+
+    The proof composes finite oscillator derivative energy with the already-formal
+    one-dimensional Gallagher--Sobolev inequality, giving the pointwise law
+    `|P(x)exp(-pi*x^2)|^2 <= 9*sqrt(deg(P)+1)*||P exp(-pi*x^2)||_2^2`. Thus the claimed finite
+    Mehler-projector dependency was a shadow, not a wall: C43-Y's local small-ball estimate is
+    umbrella-formal without it. Remaining parabolic work is literal completed-source
+    prime/archimedean assembly, global lower envelope, and Gamma-tail domination.
 
 80. Umbrella-formal `XiResolventMassBudget.lean` removes the unknown total-mass constant from the
     stationary supply chart. The sector geometry of every shifted spectral square gives
@@ -8603,3 +8621,50 @@ conormal character kills the nonzero common residual.  Further operator packagin
 injection, reflection covariance, or conormal testing cannot close this gate.  Required new input
 must select one eigenresponse before quotient evaluation—equivalently force the fixed-frame
 covariant defect to be reflection invariant at one positive integer label.
+
+### Frankenstein seam: horizontal collision charge is quantized, not merely sparse
+
+Umbrella-wired `XiHorizontalCollisionChargeEndpoint.lean` converts horizontal-fibre geometry into
+an exact integer endpoint.  For the positive-height Xi divisor window, with local order `m_rho`
+and complete same-ordinate order `H_rho`, define
+
+```text
+O(T)=sum_rho m_rho(H_rho-m_rho).
+```
+
+Lean proves the ordered-distinct-pair normal form, monotonicity, evenness, and the exact identity
+
+```text
+O(T)=sum_gamma H_gamma^2-sum_rho m_rho^2.
+```
+
+The reflected partner of every off-line point lies in the same horizontal fibre with the same
+positive order.  Consequently complete off-line divisor mass is at most `O(T)`, is exactly twice
+right-half divisor mass, and
+
+```text
+N(T)-O(T) <= N_0(T).
+```
+
+The indivisible reflected-pair quantum sharpens this density statement to
+
+```text
+RH <-> forall T, O(T)<2 <-> forall T, O(T)=0.
+```
+
+It is enough that `O(T)<2` hold eventually or on any cofinal family of cutoffs.  Exact leaf build
+and axiom audit pass; only `propext`, `Classical.choice`, and `Quot.sound` occur.
+
+Heavy-conjecture audit kills the tempting asymptotic shortcut.  `O(T)=o(N(T))` permits one
+persistent reflected off-line pair with constant charge two, so it proves only density one.  The
+corpus's finite prime-phase recurrence and locally uniform zero transfer do not repair this:
+their literal recurrent divisor is a depth-three Dirichlet factor, not Xi.  Full positive-density
+zeta self-recurrence is Bagchi's RH-equivalent strong recurrence, while Voronin universality is
+zero-target blind.  Existing source-horizontal, Gamma-six, Wold, and rank amplifiers create source
+blocks rather than new Xi divisor points.
+
+The new exact producer target is therefore discrete and cofinal: derive `O(T)<2` on one unbounded
+cutoff family from a literal completed prime--Gamma identity, or prove a charge-specific divisor
+replication law without assuming full zeta self-approximation.  Any normalized estimate against
+`N(T)`, any carrier replication, or any finite Euler-factor recurrence leaves the permanent
+two-unit defect untouched.

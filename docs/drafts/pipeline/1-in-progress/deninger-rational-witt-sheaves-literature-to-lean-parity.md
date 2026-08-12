@@ -213,6 +213,15 @@ element lies in `A`.  Thus the source descent conclusion itself forces integral 
 normality is a necessary hypothesis, not a technical proof gap.  No Lean formalization may state
 the published arbitrary-domain equality as an axiom or hypothesis disguised as infrastructure.
 
+`DeningerRationalWittNormalDomainGaloisIntersection.lean` now proves the sharp corrected theorem.
+For every integrally closed domain `A` with perfect fraction field, a literal rational-Witt vector
+over the algebraic closure is absolute-Galois-fixed and comes from the absolute normalization iff
+it comes from `W_rat(A)`.  The forward proof transports the normalization presentation to the
+reduced monoid algebra, proves every positive and negative atom integral over `A`, descends the two
+canonical Galois-stable atom polynomials to `Frac(A)`, and applies normality coefficientwise.
+No Fatou-domain premise or desired descent conclusion is assumed.  Together with the cusp module,
+this closes the exact corrected perfect-quotient-field intersection and proves normality sharp.
+
 ## Newly closed presentation theorem
 
 `DeningerRationalWittCyclotomicExhaustion.lean` proves two global facts that the previous finite
@@ -242,9 +251,9 @@ the missing rational-Witt comparison is logically prior.
 
 ## Formalization order
 
-1. Replace the false arbitrary-domain Galois-descent claim by a corrected normal-domain theorem;
-   prove it only after an independent paper proof and source audit.  Then treat the
-   inseparability-divisibility subring and valid localization/integral-closure consequences.
+1. Treat the imperfect-quotient-field inseparability-divisibility subring and valid
+   localization/integral-closure consequences.  Corrected perfect-quotient-field normal-domain
+   descent is now closed.
 2. Replace presentation-only claims in finite packet modules by comparison maps to the constructed
    rational-Witt ring, then formalize sheaf and correspondence theorems in source order.
 
@@ -328,3 +337,9 @@ the missing rational-Witt comparison is logically prior.
   surjectivity; finite product annihilators give the kernel condition when coefficient localization
   is noninjective.  Lean installs `IsLocalization ([M]) W_rat(M⁻¹A)` and the canonical ring
   equivalence. Nilpotents and zero-divisor denominators are retained.
+- 2026-08-12 — proved the corrected normal-domain Galois intersection.  Absolute-normalization
+  incidence makes canonical positive and negative atom-polynomial coefficients integral; perfect
+  fixed-field descent lands them in `Frac(A)`; normality returns them to `A`.  The cusp
+  counterexample proves this repair sharp.  Remaining source-literature frontier starts with the
+  imperfect-field inseparability-divisibility subring, not generic multiplication or perfect-field
+  normal-domain descent.

@@ -1208,3 +1208,75 @@ All stated results are direct-check clean and emitted to the local olean cache. 
 algebraic rather than asymptotic: bound the exact four contour edges with smoothing width
 `H=N^(1-s/4)`, obtain a literal `N^(1-c-s/8)` Möbius factor bound, and feed its vanishing deficit
 through Maynard's `19/20` endpoint mass law.
+
+### C29. The literal four-edge contour has an endpoint-stable power saving
+
+The algebraic core left by C28 is now closed in `RouteTMoebiusPowerSaving.lean`.  The correct
+smoothing choice is the contour-adapted width
+
+```text
+H = N^(1-s/3),   U = N^4,
+```
+
+where `s` is the actual Route-T contour shift at ordinate scale `S`.  Each of the four sharp
+Perron edges, including the Abel boundary terms, is bounded by the same power envelope.  The exact
+result for every literal truncated dyadic Möbius atom has shape
+
+```text
+|M_N(c+iy)| <= C_edge(A,C,C',delta,S,N) * N^(1-c-s/6).
+```
+
+No smooth surrogate remains: the theorem is stated for the actual `LSeries` of the truncated
+Möbius dyadic block consumed by a Heath--Brown box.  `RouteTMoebiusEndpoint.lean` then proves that
+every endpoint-long positive Möbius coordinate has
+
+```text
+log N >= log T / 216000,
+S = |y| + |y|/2 <= 3T.
+```
+
+The fixed multiplier `12*216000*(1+|log F|)` absorbs the full contour coefficient into the local
+shift.  Monotonicity of the actual shift at `3T` yields the common positive deficit
+
+```text
+Delta_M(A,T) = routeTContourShiftEnvelope(A,3T)/6.
+```
+
+Thus every endpoint-long Möbius factor has amplitude at most `1-Delta_M(A,T)`, uniformly in the
+literal cutoff, box, factor coordinate, Perron abscissa, and ordinate band.  This closes C6's
+analytic factor theorem unconditionally; no zero-free, growth, or large-value premise remains.
+
+### C30. Universal deficit envelope makes the near-one Perron aggregate empty
+
+The endpoint cannot use a minimum of unrelated local deficits: such a definition destroys the
+explicit asymptotic budget needed to absorb the unique logarithmic slack.  The successful common
+quantity in `RouteTEndpointAmplitudeExclusion.lean` is instead
+
+```text
+D(T) = routeTContourShiftEnvelope(A,3T)/6.
+```
+
+It is positive for every positive height, eventually lies below both the actual Möbius deficit
+and the fixed zeta/log derivative deficit, and retains the exact C28 tenth-power asymptotic.
+The complete logarithmic-atom slack is eventually at most `D(T)/4`.  Since Maynard's endpoint mass
+law places at least `19/20` of the positive logarithmic mass above the relative cutoff, the product
+amplitude has the explicit surviving gap
+
+```text
+(19/20) D(T) - D(T)/4 = (7/10) D(T) > 0.
+```
+
+Lean now proves both levels of the endpoint statement:
+
+1. every eligible Perron-relevant degree-60 box whose core dominates the amplitude threshold has
+   `alpha <= 1-(7/10)D(T)`;
+2. if a positive Perron-relevant aggregate and its reserve select such a box, then every
+   `alpha>1-(7/10)D(T)` gives `False`.
+
+The second statement retains the exact signed aggregate selector, binomial coefficient, box-card
+cost, literal core product, canonical polynomial height window, and cutoff constraint.  Hence the
+near-one endpoint is empty before coloring or Huxley energy loss is paid.  Both new modules are
+direct-check clean and emitted to the local olean cache.  Active core moves downstream: compose
+this endpoint emptiness with the non-endpoint Maynard alternatives to prove the unconditional
+`11/8` consecutive-prime-gap prefix moment, then audit whether Route T's residual continuation or
+another source law supplies the remaining RH implication.

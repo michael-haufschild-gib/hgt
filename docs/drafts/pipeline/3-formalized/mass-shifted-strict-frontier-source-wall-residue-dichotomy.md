@@ -1,18 +1,19 @@
 # Mass-shifted strict-frontier source-wall residue dichotomy
 
 - **ID:** `mass-shifted-strict-frontier-source-wall-residue-dichotomy`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CANDIDATE contact-order classification
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md`, §9.3 exact open core
-- **Claim:** Every occupied strict frontier has exactly one of two source-wall asymptotics:
-  a finite positive simple-pole residue determined by the negative first omitted monic remainder,
-  or an infinite scaled residue when that remainder vanishes.
+- **Claim:** Every occupied strict frontier has exact source-first contact trichotomy: finite
+  positive simple residue from negative first omitted remainder; finite positive double residue
+  from zero remainder and positive successor adaptive arithmetic source; or infinite quadratic
+  residue when both first remainder and successor source vanish.
 
 ## Gates
 
 - [x] 0 → 1: exact source-first claim, corpus frontier and falsifiers identified
 - [x] 1 → 2: dependency-closed paper proof survives hostile audit
-- [ ] 2 → 3: exact Lean theorem, targeted build, axiom audit, umbrella wiring
+- [x] 2 → 3: exact Lean theorem, targeted build, axiom audit, umbrella wiring
 - [ ] 3 → 4: standalone presentation and independent novelty audit
 
 ## Internal frontier
@@ -58,8 +59,13 @@ scaled residue.
 3. **C3 — positive right chamber forces `R<=0`. `[PAPER-PROVED]`** Since `N(y)=0` and
    `N(v)>0` for `v>y`, the right derivative is nonnegative. The exact derivative law gives
    `-(2m+1)R>=0`, hence `R<=0`.
-4. **C4 — strict frontiers have an exhaustive finite/infinite scaled-residue dichotomy.
-   `[PAPER-PROVED]`** By C3, either `R<0`, giving C2, or `R=0`, giving C1's positive survivor.
+4. **C4 — zero remainder is merely an unclassified infinite residue. `[FALSIFIED]`** Division-free
+   norm flux is derivative of admitted norm in right chamber and its derivative at tangency is
+   exactly twice the contact factor times next adaptive source.
+5. **C5 — tangency activates exact second source jet. `[LEAN-PROVED]`** If `R=0`, then
+   `N(v)/(v-y)^2 -> (2m+1) S_m(y)` and right positivity forces `S_m(y)>=0`.
+6. **C6 — strict frontiers have simple/double/flatter trichotomy. `[LEAN-PROVED]`** Positive
+   `S_m(y)` gives exact positive double residue; zero `S_m(y)` gives infinite quadratic residue.
 
 ## Dependency-closed paper proof
 
@@ -94,14 +100,27 @@ If `R<0`, then `a>0`, so division of these limits yields
 (v-y) Wall(v) -> S(y)/(16a) > 0.
 ```
 
-If `R=0`, then `a=0` and the slope is positive on the right chamber. Its reciprocal tends to
-`+infinity`; multiplication by `S(v)/16 -> S(y)/16>0` gives
+If `R=0`, then `a=0`.  Let `F_m` be division-free norm flux.  On right chamber `N'=F_m`; singular
+producer law gives `F_m(y)=0` and `F_m'(y)=2(2m+1)S_m(y)`.  L'Hopital yields
 
 ```text
-(v-y) Wall(v) -> +infinity.
+N(v)/(v-y)^2 -> (2m+1) S_m(y).
 ```
 
-These cases are exhaustive by `R<=0`.
+Positivity of `N(v)` forces `S_m(y)>=0`.  If it is positive, then
+
+```text
+(v-y)^2 Wall(v) -> S_(m-1)(y)/(16(2m+1)S_m(y)) > 0.
+```
+
+If it vanishes, positivity of quadratic quotient and reciprocal inversion give
+
+```text
+(v-y)^2 Wall(v) -> +infinity.
+```
+
+These three cases are exhaustive.  At physical mass, `2 S_m(y)` is exactly literal adaptive mixed
+completed arithmetic source of canonical degree-`m` admission.
 
 ## Hostile audit and significance
 
@@ -110,12 +129,29 @@ These cases are exhaustive by `R<=0`.
 - This does not exclude strict frontiers and is not an RH proof.
 - Generic tau-function pole classification is not new. Exact adaptive-source residue and the
   identification of tangency as infinite scaled residue are `[NOVELTY UNVERIFIED]`.
-- Mathematical delta: failed universal simple-residue claim is replaced by an exact exhaustive
-  contact-order law. Any future finite-action renormalization must pay either the explicit
-  transversal residue or an unbounded tangential residue.
+- Mathematical delta: failed universal simple-residue and unclassified-tangency claims are
+  replaced by exact source-capitalized contact law. Any finite-action renormalization must pay
+  explicit simple residue, explicit next-source double residue, or unbounded quadratic residue.
 
 ## Exact next question
 
-Can shifted-Xi arithmetic exclude the tangential branch, or force a nonsummable lower bound on
-the explicit transversal residues along cofinal strict rungs? Either result would turn local wall
-classification into genuine phase exclusion.
+Can shifted-Xi arithmetic exclude arbitrarily high successive source-jet vanishing, or force a
+nonsummable intrinsic lower bound on explicit simple/double/higher residues along cofinal strict
+rungs? Either result would turn local classification into genuine phase exclusion.
+
+## Lean formalization and audit
+
+Formalized in:
+
+- `formal/GaloisForLFunctions/RHTower/XiShiftedStrictFrontierChristoffelSourceWallResidue.lean`;
+- `formal/GaloisForLFunctions/RHTower/XiShiftedStrictFrontierChristoffelSourceWallSecondResidue.lean`.
+
+Both are imported by `formal/GaloisForLFunctions/RHTower.lean`.  Direct `lake env lean` passed for
+both modules.  Final targeted
+`lake build GaloisForLFunctions.RHTower.XiShiftedStrictFrontierChristoffelSourceWallSecondResidue`
+completed successfully.  `#print axioms` for first-remainder sign, quadratic norm jet, literal
+successor arithmetic source, and both closed RH phase laws reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+Corpus lint found no forbidden declaration in these modules.  Global lint remains red only on
+pre-existing umbrella reachability for unrelated Route-T/Suzuki modules.
