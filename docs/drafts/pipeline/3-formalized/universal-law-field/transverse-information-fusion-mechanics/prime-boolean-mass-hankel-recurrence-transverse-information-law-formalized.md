@@ -3,9 +3,10 @@
 - **ID:** ULF-TIF-1
 - **Stage:** 3 — formalized in Lean 4
 - **Paper card:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/transverse-information-fusion-mechanics/prime-boolean-mass-hankel-recurrence-transverse-information-law.md`
-- **Lean module:**
-  `GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion`
+  `docs/drafts/pipeline/3-formalized/universal-law-field/transverse-information-fusion-mechanics/prime-boolean-mass-hankel-recurrence-transverse-information-law.md`
+- **Lean modules:**
+  `GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion`,
+  `GaloisForLFunctions.HTGeometry.PrimeBooleanFusionSourcePacket`
 - **Umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
 
 ## Certified mechanism

@@ -108,3 +108,18 @@ Cross-area findings during this sweep (not universal-law-field cards, recorded s
   `HTGeometry.EllipticGammaJetRealization` and `RHTower.XiMassRadialRiemannLebesgue` unreachable
   from their area umbrellas.  Those belong to another session's in-flight work; do not rewire them
   blind.
+
+## Lint-gate status during this sweep
+
+The formal lint gate cannot be brought green while another session is writing to the tree.  Two
+error classes appear, both from that session, neither from the universal-law-field sweep:
+
+1. `owned module unreachable from theorem-area umbrella` — currently `RHTower.Sieve.Vinogradov*`,
+   `RHTower.Suzuki*`, `RHTower.XiResolvent*`, `HTGeometry.ConstraintMotiveRelativity.*`,
+   `HTGeometry.CriticalSchurIdealInertiaTransport`.  These are modules added but not yet wired.
+2. `stale generated file` for `LEAN_API.md`, `LEAN_GAPS.md`, `LEAN_OVERVIEW.md` — they are stale
+   again within minutes of `formal_tools.py index` because Lean files keep changing underneath.
+
+Every module this sweep added is reachable: all twelve are imported by
+`GaloisForLFunctions.HTGeometry.UniversalLawField`, which `GaloisForLFunctions.HTGeometry`
+imports.  Verified module by module.  Re-run the gate when the other session is idle.

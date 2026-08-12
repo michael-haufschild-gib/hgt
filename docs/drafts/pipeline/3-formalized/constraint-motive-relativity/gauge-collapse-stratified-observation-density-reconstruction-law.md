@@ -1,11 +1,12 @@
 # Gauge collapse and stratified observation-density reconstruction law
 
 - **ID:** `cmr-gauge-collapse-stratified-observation-density-reconstruction`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [GLOBAL ANTI-THEATRE LAW]`
   `[STRATIFIED OBSERVATION NERVE] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+  `[LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `gauge-collapse-stratified-observation-density-reconstruction-law-formalized.md`
 - **Parent field:**
   `../../1-in-progress/constraint-motive-relativity/polarized-constraint-duality-geometry.md`.
 - **Statement:** A theory in which every doctrine transition is a gauge necessarily makes every

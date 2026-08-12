@@ -700,3 +700,54 @@ in step 33 one level down.
 `set`-pairs ((qh, σqh).1 etc.); set-folded norms can close goals early (rw-rfl on ρ-folded
 ‖u qh‖ — remove dead tactics); cast: div_self on ↑(ρ²) needs ofReal_ne_zero, not pow_ne_zero
 of (↑ρ)².
+
+## Step 36 (2026-08-12): THE FULL LADDER — spectral descent equivalence [LEAN-PROVED]
+
+**The capstone of the arc.** Two new modules (axioms [propext, Classical.choice, Quot.sound]):
+
+`RHTower/XiResolventWeightedTuranMachine.lean` — **the universal level-cleansing machine**
+`forall_level_criticalLine_of_weighted_turanMinors`: for ANY weight Wf on the divisor with
+(a) uniform bound, (b) value-conjugation symmetry (u q' = conj u q → Wf q' = conj Wf q),
+(c) vanishing above a level ℓ, (d) nonvanishing on it: nonnegativity of the Turán minors of the
+Wf-weighted moments Σ'u^{k+1}Wf forces every copy at level ℓ onto the critical line. Subsumes
+steps 33 and 35 as instances (Wf = 1 — vacuous kill above the top level — and Wf = (u−r)²).
+Also `xiWeightedResolventMoment` (def).
+
+`RHTower/XiResolventSpectralDescent.lean` — **RH as the polynomial Turán ladder**:
+- `xiPolyMoment p k X` = Σ' u^{k+1}·(evalRealPolynomial p u)² — the p-weighted moments;
+  polynomially weighted variance expansion `two_mul_polyTuranMinorAt_eq_tsum_pair`.
+- `polyTuranMinor_re_nonneg_of_riemannHypothesis`: RH ⇒ all polynomial Turán minors ≥ 0.
+- `forall_criticalLine_of_forall_polyTuranMinor_re_nonneg`: **SPECTRAL DESCENT** — polynomial
+  Turán data at one shift places the ENTIRE divisor on the critical line. Proof: strong
+  induction on ncard{q' : ‖u q'‖ ≥ ‖u q‖}: all strictly-higher copies are real atoms by IH;
+  P := ∏_{r ∈ atoms}(X − C r) kills them as a weight; the machine at hpoly P cleanses q's level.
+- **`riemannHypothesis_iff_forall_polyTuranMinor_re_nonneg`**: at any one shift X ≥ 0,
+    RH ⟺ ∀ p : Polynomial ℝ, ∀ n, 0 ≤ Re(M_p n · M_p(n+2) − M_p(n+1)²).
+
+**Significance.** (i) A new single-shift RH equivalence whose sufficient data is a THIN SLICE of
+Hankel positivity: only the Turán (log-convexity) inequalities of polynomially reweighted moment
+sequences — 2×2 minors — versus the corpus's previous criterion needing all N×N forms. For
+general moment functionals this slice does NOT imply full positivity; the implication here runs
+through the divisor's specific structure (finite modulus levels, conjugation stability, height
+gap). (ii) The forward mechanism is INFINITE DESCENT DOWN THE ZERO SPECTRUM — the criterion
+locates the zeros on the line level by level from the lowest upward; the ladder conjectured at
+step 34 and built through steps 32–35 is now closed in full generality, in one induction.
+(iii) In classical language: RH ⟺ the log-convexity of all sequences n ↦ Σ_ρ (ρ(1−ρ)+X)^{−n−1}
+weighted by squared real polynomials in (ρ(1−ρ)+X)^{−1} — Turán inequalities appear in the zeta
+literature only as NECESSARY conditions (Csordas–Norfolk–Varga; Li-coefficient variants); an
+equivalence, localized, with a descent proof, is to our knowledge new. Label: [LEAN-PROVED] +
+[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] provisional pending expert/priority audit.
+
+**Arc summary (steps 32–36, five sessions of one program)**: diagonal ⇒ edge existence;
+minors ⇒ edge cleansing + second-level existence; deflated minors ⇒ second-level cleansing;
+universal machine + descent ⇒ the full ladder ⟺ RH. Everything rests on: the pair/variance
+expansions, the conjugate-pair negative core −4(Im u)²·normSq(W), first/second-moment Cesàro
+arguments, finite level sets, and the height gap. The open frontier moves to: SUPPLYING the
+polynomial Turán data — for each fixed p a ONE-DIMENSIONAL family of inequalities on an
+arithmetic-jet sequence (M_p is a finite combination of moments R_{k+i+j}, all arithmetic).
+The GNS/certificate program now has a strictly easier target: realize positivity of the
+p-weighted sequences one p at a time.
+
+**Traps**: tabs from heredoc python strings break Lean (expand!); rw with a self-referential
+equation (z = f(‖z‖)) rewrites inside the norm — use sub_eq_zero + exact; Set.ncard_lt_ncard has
+autoParam finiteness; Nat.strong_induction_on names the IH `∀ m < N, ...`.

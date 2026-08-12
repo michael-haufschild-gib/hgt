@@ -249,3 +249,64 @@ theorem det_ge_of_cartanWork_le [Nonempty n] {S : Matrix n n ℂ} (hS : IsUnit S
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Matrix
+open scoped ComplexOrder
+
+noncomputable section
+
+variable {n : Type*} [Fintype n] [DecidableEq n]
+
+/-! ## A polynomial description of the work sublevel -/
+
+/-- The trace of the inverse is a rational function of the entries: the adjugate trace over the
+determinant.  This is what turns the work sublevel into a locus cut out by polynomials. -/
+theorem trace_inv_eq_det_inv_mul_trace_adjugate (A : Matrix n n ℂ) :
+    (A⁻¹).trace = (A.det)⁻¹ * (A.adjugate).trace := by
+  rw [Matrix.inv_def, Matrix.trace_smul, Ring.inverse_eq_inv, smul_eq_mul]
+
+/-- The polynomial that cuts out the work sublevel: for invertible `S` the inequality
+`cartanWorkNumerator S C ≤ 0` is exactly `cartanWork S ≤ C`. -/
+def cartanWorkNumerator (S : Matrix n n ℂ) (C : ℝ) : ℝ :=
+  ((Sᴴ * S).det.re) * ((Sᴴ * S).trace.re - 2 * Fintype.card n - C)
+    + ((Sᴴ * S).adjugate.trace.re)
+
+/-- **The sublevel is a polynomial locus.**  On the invertible matrices the Cartan work sublevel
+is cut out by one polynomial inequality in the entries, because the determinant of `SᴴS` is a
+positive real there. -/
+theorem cartanWork_le_iff_numerator {S : Matrix n n ℂ} (hS : IsUnit S) (C : ℝ) :
+    cartanWork S ≤ C ↔ cartanWorkNumerator S C ≤ 0 := by
+  have hpd := posDef_conjTranspose_mul_self hS
+  have hH := hpd.1
+  have hdetpos : 0 < (Sᴴ * S).det.re := by
+    have hdet : (Sᴴ * S).det = ∏ i, ((hH.eigenvalues i : ℝ) : ℂ) := hH.det_eq_prod_eigenvalues
+    have hre : (Sᴴ * S).det.re = ∏ i, hH.eigenvalues i := by
+      rw [hdet, ← Complex.ofReal_prod, Complex.ofReal_re]
+    rw [hre]
+    exact Finset.prod_pos (fun i _ => hpd.eigenvalues_pos i)
+  have hdetne : (Sᴴ * S).det ≠ 0 := by
+    intro h
+    rw [h] at hdetpos
+    simp at hdetpos
+  have htrinv : ((Sᴴ * S)⁻¹).trace.re
+      = ((Sᴴ * S).det.re)⁻¹ * ((Sᴴ * S).adjugate.trace.re) := by
+    rw [trace_inv_eq_det_inv_mul_trace_adjugate]
+    have hdetreal : ((Sᴴ * S).det) = (((Sᴴ * S).det.re : ℝ) : ℂ) := by
+      have hstar : star ((Sᴴ * S).det) = (Sᴴ * S).det := by
+        rw [← Matrix.det_conjTranspose, hH.eq]
+      exact (Complex.conj_eq_iff_re.mp hstar).symm
+    rw [hdetreal, ← Complex.ofReal_inv, Complex.re_ofReal_mul]
+  rw [cartanWork, htrinv, cartanWorkNumerator]
+  rw [div_le_iff₀ hdetpos |>.symm.le_iff_le]
+  constructor
+  · intro h
+    have := mul_le_mul_of_nonneg_left h hdetpos.le
+    nlinarith [hdetpos]
+  · intro h
+    nlinarith [hdetpos, inv_pos.mpr hdetpos]
+
+end
+
+end GaloisForLFunctions.HTGeometry
