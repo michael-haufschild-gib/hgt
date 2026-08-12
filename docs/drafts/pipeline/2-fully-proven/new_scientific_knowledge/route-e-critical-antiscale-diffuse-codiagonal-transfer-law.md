@@ -5,16 +5,29 @@
 - **Type:** `[EXACT DISSIPATION CLASSIFICATION]` / `[CENTERED TRANSFER LAW]` /
   `[PROOF-BURDEN REDUCTION]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
-- **Companions:** `route-e-ramare-recombination-ternary-antiscale-law.md`,
+- **Companions:** `../../3-formalized/new_scientific_knowledge/route-e-ramare-recombination-ternary-antiscale-law.md`,
   `route-e-source-faithful-euler-tilt-unit-shell-law.md`,
   `../../3-formalized/new_scientific_knowledge/route-e-weighted-hall-anova-projection-duality-law.md`,
-  `../../3-formalized/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md`
+  `../../3-formalized/new_scientific_knowledge/route-e-degree-normalized-gibbs-boundary-variation-law.md`,
+  `../../3-formalized/new_scientific_knowledge/route-e-ramare-incidence-conditional-negativity.md`
 - **RH used:** no
 - **Computation used:** no
 - **Literature used:** no; internal-corpus derivation only
-- **Lean status:** paper synthesis only. The constituent general Fisher-codiagonal contraction,
-  squarefree critical lower-corner budget, and diffuse Möbius codiagonal recovery are already
-  formal in the read-only corpus. No Lean source was edited during the active refactor.
+- **Lean status:** Theorems A--B are now closed unconditionally in umbrella-wired Lean by
+  `RouteECriticalAntiscaleDissipationSaturation`; exact Stage-3 child:
+  `../../3-formalized/new_scientific_knowledge/route-e-critical-antiscale-dissipation-saturation.md`.
+  This includes local escape classification, cofinal recurrence, all-order squarefree expansion,
+  exact finite-height constant, coefficient mass, arbitrary divergent-packet decay, and canonical
+  `0<r<=1` aperture decay. Theorems C--D, including their literal finite complex form and
+  maximum-atom collision estimate, and Theorems E, F, and H are now closed by
+  `RouteEFinitePhysicalCodiagonalGaugeCollapse`; its one-corner refinement strengthens `(35)` and
+  `(38)` by a factor `sqrt 2`. Exact Stage-3 child:
+  `../../3-formalized/new_scientific_knowledge/route-e-finite-physical-codiagonal-gauge-collapse.md`.
+  Theorem G's exact outward-node equation, half-line observer divergence, and stronger
+  phase-independent non-`l2` classification are now closed by
+  `RouteEStrictRightMellinObserverFirewall`; exact Stage-3 child:
+  `../../3-formalized/new_scientific_knowledge/route-e-strict-right-mellin-observer-firewall.md`.
+  The relation-specific estimate `(50)` and signed recurrence seam keep this parent at Stage 2.
 
 ## 1. Result
 
@@ -58,6 +71,10 @@ The companion weighted-Hall projection law gives an exact equivalent: after norm
 source and target laws, required variance is squared distance from target law to relation's
 reachable marginal polytope. Its dual is an all-reporter minimum-neighbor inequality. It also
 proves that an unquantified one-sided column ceiling \(1+o(1)\) is not rate-sufficient.
+The exact Ramaré incidence decomposition further proves that the arithmetic
+incidence-complement kernel is conditionally negative definite. Therefore its centered component
+is already favorable once the physical cofactor reporter is shown to land in that exact kernel;
+the landing, scalar mean estimate, and recurrence seam remain open.
 
 ## 2. One-sided critical dissipation for every \(0<r\le1\)
 
@@ -464,7 +481,7 @@ For every orthogonal cutoff \(e\), every contraction \(D\), lower corner
 \[
  \boxed{
  |\langle B,\operatorname{Reporter}_D\rangle_{HS}|
- \le\sqrt2\,|\varepsilon|\sqrt{V_{\sigma,S}}.}
+ \le|\varepsilon|\sqrt{V_{\sigma,S}}.}
 \tag{35}
 \]
 
@@ -486,9 +503,17 @@ Möbius signs have unit modulus on squarefree states, so \(\|\psi\|=1\). Centeri
 \]
 
 The two rank-one terms in `(33)` are Hilbert--Schmidt orthogonal and each has squared norm
-\(\|h\|^2\|\psi\|^2\). The factor \(2^{-1/2}\) proves `(34)`. Orthogonal compression cannot
-increase Hilbert--Schmidt norm, so \(\|B\|_{HS}^2\le4\varepsilon^2V\). Apply half-unit contraction
-`(27)` and take square roots to obtain `(35)`. ∎
+\(\|h\|^2\|\psi\|^2\). The factor \(2^{-1/2}\) proves `(34)`. More precisely than generic
+compression, the two oriented off-diagonal corners of the self-adjoint pointed connection have
+equal Hilbert--Schmidt energy. Hence one lower corner satisfies
+
+\[
+ \|B\|_{HS}^2\le\frac12\|F_{\sigma,S}\|_{HS}^2
+ =2\varepsilon^2V_{\sigma,S}.
+\]
+
+Apply half-unit joined-reporter contraction `(27)` once more. The squared pairing is at most
+\(\frac12\|B\|_{HS}^2\le\varepsilon^2V_{\sigma,S}\), proving `(35)`. ∎
 
 At source-faithful cofinal tilt from the existing unit-shell theorem,
 
@@ -527,15 +552,15 @@ Then `(34)`--`(35)` give
  \qquad
  |\langle(1-e)\widehat F_{\sigma,S}e,
        \operatorname{Reporter}_D\rangle_{HS}|
- \le\sqrt{2V_{\sigma,S}}.}
+ \le\sqrt{V_{\sigma,S}}.}
 \tag{38}
 \]
 
 At the source-faithful tilt `(37)`, the right side is
 
 \[
- \sqrt{2V_{\sigma,S}}
- =\ell\left(1+O\!\left(\frac{\log\ell}{\ell}\right)\right).
+ \sqrt{V_{\sigma,S}}
+ =\frac{\ell}{\sqrt2}\left(1+O\!\left(\frac{\log\ell}{\ell}\right)\right).
 \tag{39}
 \]
 
@@ -644,6 +669,15 @@ At \(\Re s=1/2\), `(46)` diverges. It is exactly the nonclosable scalar codiagon
 graph-normal reporter. The diffuse-codiagonal recovery theorem does not change this: it recovers
 the centered Fisher score \(\sum p_na_nd_n\), not the raw Möbius Dirichlet sum. Hence `(45)` does
 not smuggle an RH-strength estimate out of the safe Hilbert source.
+
+Lean now proves more than this pointwise statement. For every `Re s<=sigma/2`, the norm-square
+profile in `(46)` is non-summable because its cofinal prime subsequence is bounded below by the
+positive squarefree partition mass. Consequently every complex coefficient sequence with that
+same magnitude profile is outside `l2`, independently of phase. The exact declarations are
+`not_summable_routeEMellinObserverNormSqProfile`,
+`routeEMellinHalfLineObserver_not_memℓp`, and
+`routeEStrictRightMellinObserverFirewall` in
+`RouteEStrictRightMellinObserverFirewall.lean`.
 
 ### Theorem H — finite column ANOVA is the physical centered energy
 
@@ -817,7 +851,9 @@ by the strictly weaker and source-aligned target
    identify its centered codiagonal energy exactly;
 3. prove column ANOVA bound `(50)`, or equivalent unit-capacity estimate, without importing the
    scalar signed discrepancy being estimated. Universal Fisher budget cannot supply it:
-   gauge-neutralization grows like `(39)` and forced critical clock gives only `(41)`;
+   gauge-neutralization grows like `(39)` and forced critical clock gives only `(41)`. For the
+   exact Ramaré incidence kernel, conditional negativity closes the centered upper bound after a
+   source-faithful landing; proving that landing and controlling its scalar mean remain necessary;
 4. take the same reporter through the normalized zero/one-large-prime seam and exact signed
    recurrence;
 5. use `(24)`--`(25)` for state mean and collision, rather than proving uniform statewise

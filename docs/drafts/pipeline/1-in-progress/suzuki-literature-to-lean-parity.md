@@ -1,7 +1,7 @@
 # Suzuki literature-to-Lean parity audit
 
 **Status:** in progress  
-**Audit date:** 2026-08-11  
+**Audit date:** 2026-08-12  
 **Scope:** Suzuki's Riemann-zeta screw-function/operator route and direct operator-theoretic
 predecessors needed by the current frontier.  This is a parity ledger, not a claim of new science.
 
@@ -62,7 +62,8 @@ must not be relabelled unconditional.
 |---|---|
 | Lemma 2.2, common-translation invariance of `f* * g` and `q(f,g)` | **EXACT.** `CCMTranslationInvariance.lean` defines the literal complex `L¹(ℝ,dx)` source, CCM translation convention, involution, additive convolution, and even Hermitian correlation, then proves both common-translation identities as closed theorems. |
 | Lemma 2.3, exact convolution formulas for finite-interval Fourier modes | **EXACT.** `CCMZeroExtendedFourierCorrelation.lean` defines the normalized periodic modes on `[0,L]`, extends them by zero to `ℝ`, defines the literal convolution correlation, and proves equations (2.7), (2.10), and the complete diagonal/off-diagonal Lemma 2.3 formula. Positive aperture and legal lag are bundled, so the final theorem is closed and has no spectral or RH premise. |
-| Proposition 3.2, logarithmic isometry and restriction of the Weil form to `Ψ#(q(f,g)∘log)` | **PARTIAL.** Literal restricted functional/matrix has been defined, but full `L²` logarithmic isometry and form transport have not been identified as one exact theorem. |
+| Inversion-splitting lemma preceding Proposition 3.2, `Ψ(H)=Ψ#(H+H∘ι)` | **EXACT FINITE-APERTURE FORM.** `CCMLogarithmicWeilFormTransport.lean` defines literal complex two-sided `Ψ` and one-sided `Ψ#` from the published polar, archimedean, and finite von Mangoldt components and proves their exact inversion/evenization identity without integrability assumptions hidden as premises. |
+| Proposition 3.2, logarithmic isometry and restriction of the Weil form to `Ψ#(q(f,g)∘log)` | **EXACT.** `CCMLogarithmicApertureUnitary.lean` proves the literal onto isometry `L²([0,2 log λ],dx) ≃ L²([λ⁻¹,λ],d*u)` for bundled `λ>1`, its a.e. formula `κf(u)=f(log(λu))`, sharp-support intertwining, and the induced equivalence of extendably smooth closed-interval functions. `CCMLogarithmicWeilFormTransport.lean` constructs literal complex `L¹(ℝ₊*,d*u)`, multiplicative involution and Haar convolution, proves logarithmic transport of the involutive convolution algebra, and derives the exact closed theorem `QW(κf,κg)=Ψ#(q(f,g)∘log)` for bundled interval sources. |
 | Theorem 3.6 analytic compactness ingredient, compact embedding for Fourier weights tending to infinity; Suzuki specialization `H^log(I) ↪ L²(I)` | **EXACT.** `CCMGeneralFourierWeightCompactEmbedding.lean` proves the published theorem for every bundled positive monotone Fourier weight tending to infinity, on every bounded interval. `SuzukiHlogCompactEmbedding.lean` separately proves the literal `1 + log⁺|ξ|` specialization used by Suzuki, including its exact tail estimate and compact closure. Both use actual `L²(ℝ)` zero extensions and time-band compact operators, not sequence or finite-dimensional proxies. |
 | Theorem 1.1(i), rank-one perturbed scaling operator is self-adjoint under simple/even lowest-eigenvector assumptions | **GENERIC CORE ONLY.** Boundary-completion and metric-self-adjoint matrix laws exist. Actual source matrix is defined. The simple/even assumptions are not proved universally and must not be erased. |
 | Theorem 1.1(ii), regularized determinant formula | **MISSING EXACT.** |
@@ -80,11 +81,33 @@ must not be relabelled unconditional.
 
 ## arXiv:2206.03682 and arXiv:1204.1827
 
-These remain source-level audits in progress.  Existing screw-series, kernel, inner-function,
-Hermite--Biehler, and canonical-system modules must be checked statement-by-statement.  Similar
-names do not establish parity.  The 2012 explicit canonical system is unconditional only in the
-paper's proved parameter range (`ω > 1`); extension to the critical range is not literature-known
-and must not be postulated.
+### arXiv:2206.03682v4 theorem parity
+
+| Source result | Corpus status |
+|---|---|
+| Theorem 1.1(i), one-sided Fourier transform of the literal `Psi` for `Im z > 1/2` | **EXACT.** `SuzukiScrewFourierTransform.lean` proves the source transform with the literal prime--Lerch `suzukiPsi` and centered Xi logarithmic derivative. |
+| Theorem 1.1(ii), multiplicity-exact Xi-zero series for every `t >= 0` and its even extension | **EXACT.** `SuzukiExplicitScrewZeroSeries.lean` proves the literal prime--Lerch formula equals the unconditional full Xi screw divisor, including multiplicity and conjugation symmetry. |
+| Proposition 2.1, `sum_{n <= exp t} Lambda(n)/sqrt(n) (t-log n) = 4 exp(t/2) + O(exp(t/2-c sqrt t))` | **EXACT.** `SuzukiScrewGrowthBound.lean` proves the finite Abel identity against the sharp Chebyshev function, transfers the corpus's unconditional stronger Littlewood PNT through an exact split at `exp(t/2)`, and proves the stated source asymptotic with closed existential constants. |
+| Theorem 1.1(iii), `Psi(t) << exp(t/2-c sqrt t)` | **EXACT.** `SuzukiScrewGrowthBound.lean` proves both an explicit eventual bound and the `IsBigO atTop` source statement for literal `suzukiPsi`; the Lerch and archimedean terms are bounded after the exact Proposition 2.1 cancellation. |
+| Lemma 2.1, an exponential-type entire function constant on every Xi zero is constant | **EXACT.** `TitchmarshZetaInputs.lean`, `TitchmarshCircleChain.lean`, `TitchmarshZeroGap.lean`, and `SuzukiTitchmarshUniqueness.lean` supply the unconditional quantitative distinct-zero input and close Suzuki's exact exponential-type uniqueness statement. |
+| Theorem 1.2, RH iff the literal `g=-Psi` is a Krein screw function on the real line | **EXACT.** `SuzukiScrewFunctionCriterion.lean` proves both implications for the source kernel and all finite kernel matrices. |
+| Theorem 1.3, restricted screw hermitian form iff RH; under RH strict positivity on every nonzero `L²(-a,a)` vector | **EXACT.** `SuzukiScrewL2Form.lean`, `SuzukiScrewSmoothTestCriterion.lean`, `SuzukiCompactL2Fourier.lean`, and `SuzukiScrewStrictPositivity.lean` define the literal form, prove the RH equivalence, and exclude its radical under RH. |
+| Proposition 3.1, derivative of the screw form equals the Weil-distribution convolution form | **EXACT.** `SuzukiScrewWeilIdentity.lean` proves the global source test-function identity, including the prime-power atoms. |
+| Theorem 1.4, RH iff every restricted form/operator is nondegenerate / has no zero eigenvalue | **MISSING EXACT.** Requires the actual bounded integral operator on `L²(-a,a)` and exact radical classification. |
+| Theorem 1.5, every actual restricted screw-kernel operator is trace class unconditionally | **EXACT.** `SuzukiScrewTraceClass.lean` constructs the literal bounded-interval operator and proves its unconditional trace-class factorization; `SuzukiScrewTraceFormula.lean` proves the diagonal and eigenvalue-sum identities. |
+| Theorem 1.6, RH iff `Psi=O(1)` on `[0,infinity)` | **EXACT.** `SuzukiScrewBoundednessCriterion.lean` proves the literal boundedness equivalence. |
+| Paragraph after Theorem 1.6, `Psi` belongs to neither `L¹(0,infinity)` nor `L²(0,infinity)` regardless of RH | **EXACT.** `SuzukiScrewNonintegrability.lean` proves both closed negations from the exact Laplace continuation and central Xi-resolvent residue. |
+| Theorem 1.7, RH iff pointwise `Psi >= 0`; under RH `Psi(t)>0` for `t != 0` | **EXACT.** `SuzukiScrewPointwiseNonnegativityCriterion.lean` closes the equivalence and `SuzukiScrewStrictPositivity.lean` closes strict positivity using the now-exact uniqueness theorem. |
+| Theorem 1.8, published determinant-chain criterion | **PUBLISHED CONVERSE INVALID AS PROVED; CORRECTED EXACT THEOREM CLOSED.** `SuzukiStieltjesDeterminantCounterexample.lean` gives a closed sequence with both determinant chains nonnegative but a negative shifted Hankel form, disproving the generic implication used in the paper. `StieltjesSemidefiniteExistence.lean`, `HardyStieltjesDeterminacy.lean`, `SuzukiStieltjesMoments.lean`, and `SuzukiStieltjesCriterion.lean` prove the literal corrected theorem: RH iff both ordinary and shifted Hankel forms are positive semidefinite. The valid RH-to-determinant direction is also exact. Whether the determinant-only converse happens to hold for this special moment sequence remains open; the printed proof does not establish it. |
+| Theorem 4.1, local positivity | **WEAK SOURCE-SUFFICIENT FORM EXACT; STRONG PRINTED RANGE OPEN.** `SuzukiScrewFirstGap.lean` proves symbolically that `Psi(t)>0` on `0<t<1/20`, which the source explicitly says suffices for Theorem 1.4. It also proves the exact first-gap derivative and exposes a missing `-(log pi)/2` in the printed formula. The claimed `t₀>log 2` proof still depends on computer-found derivative roots and is not yet formalized. |
+| Theorems 4.2--4.3, small-aperture positive definiteness and Yoshida coercivity | **MISSING; PUBLISHED PROOF HAS A FORM-DOMINATION GAP.** Twice the proof infers a quadratic-form inequality for arbitrary complex `phi` from a pointwise kernel inequality. That implication is false for general kernels. Correct repair must factor the kernels through the oriented-primitive Gram map: contour shift becomes bounded exponential multiplication, while low-frequency loss follows from Cauchy--Schwarz on compact support. This is the active hard boundary. |
+
+### arXiv:1204.1827
+
+Statement-by-statement audit remains open. The 2012 explicit canonical system is unconditional only
+in the paper's proved parameter range (`omega > 1`); extension to the critical range is not
+literature-known and must not be postulated. Similar canonical-system names in corpus do not
+establish parity.
 
 ## Route-G paper theorems SR-94--SR-109
 

@@ -298,6 +298,115 @@ theorem norm_sum_gaussDigammaSeriesTerm_threeQuarter_le
       _ ≤ _ := by
         nlinarith [norm_nonneg (Complex.digamma s), abs_nonneg Real.eulerMascheroniConstant]
 
+/-- Uniform-in-cutoff Gauss partial-sum bound on the critical archimedean line
+`Re s = 1/4`.  This is the quarter-line counterpart of
+`norm_sum_gaussDigammaSeriesTerm_threeQuarter_le`; the coefficient `5` is the sharp
+elementary cost of the lower bound `‖s+n‖ ≥ (n+1)/4`. -/
+theorem norm_sum_gaussDigammaSeriesTerm_oneQuarter_le
+    {s : ℂ} (hre : s.re = 1 / 4) (N : ℕ) :
+    ‖∑ n ∈ Finset.range N, gaussDigammaSeriesTerm s n‖ ≤
+      ‖Complex.digamma s‖ + |Real.eulerMascheroniConstant| + 1 +
+        5 * (1 + Real.log (1 + 2 * ‖s - 1‖)) := by
+  have hs : 0 < s.re := by rw [hre]; norm_num
+  have hlog0 : 0 ≤ Real.log (1 + 2 * ‖s - 1‖) :=
+    Real.log_nonneg (by nlinarith [norm_nonneg (s - 1)])
+  rcases eq_or_ne N 0 with rfl | hN0
+  · simp only [Finset.range_zero, Finset.sum_empty, norm_zero]
+    positivity
+  have hN : 1 ≤ N := Nat.one_le_iff_ne_zero.mpr hN0
+  by_cases hthr : 2 * ‖s - 1‖ ≤ (N : ℝ)
+  · have hsN : 0 < (s + (N : ℂ)).re := by
+      rw [Complex.add_re, Complex.natCast_re, hre]
+      positivity
+    have htail := digamma_shift_diff_bound hN hsN hthr
+    rw [sum_gaussDigammaSeriesTerm_eq_digamma_shift hs N]
+    calc
+      ‖Complex.digamma s + (Real.eulerMascheroniConstant : ℂ) -
+          (Complex.digamma (s + N) - Complex.digamma ((N : ℂ) + 1))‖ ≤
+          ‖Complex.digamma s‖ + |Real.eulerMascheroniConstant| +
+            ‖Complex.digamma (s + N) - Complex.digamma ((N : ℂ) + 1)‖ := by
+        calc
+          _ ≤ ‖Complex.digamma s + (Real.eulerMascheroniConstant : ℂ)‖ +
+              ‖Complex.digamma (s + N) - Complex.digamma ((N : ℂ) + 1)‖ :=
+            norm_sub_le _ _
+          _ ≤ (‖Complex.digamma s‖ + ‖(Real.eulerMascheroniConstant : ℂ)‖) +
+              ‖Complex.digamma (s + N) - Complex.digamma ((N : ℂ) + 1)‖ := by
+            gcongr
+            exact norm_add_le _ _
+          _ = _ := by
+            rw [Complex.norm_real, Real.norm_eq_abs]
+      _ ≤ ‖Complex.digamma s‖ + |Real.eulerMascheroniConstant| + 1 := by
+        have hfrac : 2 * ‖s - 1‖ / (N : ℝ) ≤ 1 := by
+          rw [div_le_one (by positivity : (0 : ℝ) < N)]
+          exact hthr
+        linarith
+      _ ≤ _ := by nlinarith [hlog0]
+  · have hNlt : (N : ℝ) < 1 + 2 * ‖s - 1‖ := by
+      have := lt_of_not_ge hthr
+      linarith
+    have hterm : ∀ n : ℕ,
+        ‖gaussDigammaSeriesTerm s n‖ ≤ 5 / ((n : ℝ) + 1) := by
+      intro n
+      have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+      have hn1 : 0 < (n : ℝ) + 1 := by positivity
+      have hsnre : (1 / 4 : ℝ) * ((n : ℝ) + 1) ≤ (s + (n : ℂ)).re := by
+        rw [Complex.add_re, Complex.natCast_re, hre]
+        nlinarith
+      have hsnorm : (1 / 4 : ℝ) * ((n : ℝ) + 1) ≤ ‖s + (n : ℂ)‖ :=
+        hsnre.trans (Complex.re_le_norm _)
+      have hsnpos : 0 < ‖s + (n : ℂ)‖ := lt_of_lt_of_le (by positivity) hsnorm
+      unfold gaussDigammaSeriesTerm
+      calc
+        ‖1 / ((n : ℂ) + 1) - 1 / (s + n)‖ ≤
+            ‖1 / ((n : ℂ) + 1)‖ + ‖1 / (s + n)‖ := norm_sub_le _ _
+        _ = 1 / ((n : ℝ) + 1) + 1 / ‖s + (n : ℂ)‖ := by
+          rw [norm_div, norm_one, norm_div, norm_one]
+          congr 2
+          rw [show ((n : ℂ) + 1) = (((n : ℝ) + 1 : ℝ) : ℂ) by
+            push_cast
+            ring]
+          rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hn1]
+        _ ≤ 1 / ((n : ℝ) + 1) + 4 / ((n : ℝ) + 1) := by
+          apply add_le_add_right
+          rw [div_le_div_iff₀ hsnpos hn1]
+          nlinarith [hsnorm]
+        _ = 5 / ((n : ℝ) + 1) := by ring
+    have hsum :
+        ‖∑ n ∈ Finset.range N, gaussDigammaSeriesTerm s n‖ ≤
+          5 * (harmonic N : ℝ) := by
+      calc
+        ‖∑ n ∈ Finset.range N, gaussDigammaSeriesTerm s n‖ ≤
+            ∑ n ∈ Finset.range N, ‖gaussDigammaSeriesTerm s n‖ := norm_sum_le _ _
+        _ ≤ ∑ n ∈ Finset.range N, 5 / ((n : ℝ) + 1) :=
+          Finset.sum_le_sum fun n _ => hterm n
+        _ = 5 * (harmonic N : ℝ) := by
+          calc
+            ∑ n ∈ Finset.range N, 5 / ((n : ℝ) + 1) =
+                ∑ n ∈ Finset.range N, 5 * (1 / ((n : ℝ) + 1)) := by
+              apply Finset.sum_congr rfl
+              intro n _
+              ring
+            _ = 5 * ∑ n ∈ Finset.range N, 1 / ((n : ℝ) + 1) :=
+              (Finset.mul_sum _ _ _).symm
+            _ = 5 * (harmonic N : ℝ) := by
+              congr 1
+              simp only [harmonic, one_div]
+              push_cast
+              rfl
+    have hharm : (harmonic N : ℝ) ≤
+        1 + Real.log (1 + 2 * ‖s - 1‖) := by
+      calc
+        (harmonic N : ℝ) ≤ 1 + Real.log N := harmonic_le_one_add_log N
+        _ ≤ 1 + Real.log (1 + 2 * ‖s - 1‖) := by
+          have hlog := Real.log_le_log (by positivity : (0 : ℝ) < N) hNlt.le
+          linarith
+    calc
+      ‖∑ n ∈ Finset.range N, gaussDigammaSeriesTerm s n‖ ≤
+          5 * (harmonic N : ℝ) := hsum
+      _ ≤ 5 * (1 + Real.log (1 + 2 * ‖s - 1‖)) := by gcongr
+      _ ≤ _ := by
+        nlinarith [norm_nonneg (Complex.digamma s), abs_nonneg Real.eulerMascheroniConstant]
+
 /-! ## Elementary Laplace realization -/
 
 /-- The time-domain exponential difference whose Laplace integral is one Gauss-series term. -/

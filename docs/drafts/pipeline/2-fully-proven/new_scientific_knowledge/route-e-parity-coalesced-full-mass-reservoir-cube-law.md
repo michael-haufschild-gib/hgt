@@ -7,7 +7,11 @@
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** intentionally not started during corpus refactor
+- **Lean status:** exact finite parity-coalescence and two-sided Wold-drift core is formalized in
+  `RHTower/MobiusParityCoalescedFullMassCube.lean`: explicit odd/even packets, both `+1` and `-1`
+  drift for odd arity and even arity at least four, exact arity-two downward boundary, sign
+  reversal, and subset grade control. Sparse-forbidden token supply, physical co-degree, mixed
+  Gibbs asymptotics, and seam flux remain paper-only.
 
 ## 1. Result
 

@@ -587,18 +587,98 @@ seam descent, not at finite shuffle, counting, Gibbs distortion, or measure-chan
   `RouteEUniformComparisonEndpoint.lean`, and `RouteEGibbsUniformCellComparison.lean`.
 - 2026-08-11 — closed the multiplicative component-history splice and balanced-incidence endpoint
   in `RouteEComponentHistoryGibbsParity.lean`.
+- 2026-08-12 — propagated the sharp square-root likelihood defect through arbitrary-multiplicity
+  component histograms, balanced-incidence absolute means, singleton histories, and both squared
+  parity-energy endpoints.
 
 ## Lean implementation and verification
 
 - Exact product-multinomial orbit cardinality, arbitrary-anchor joint marginals, product-character
   means, and binary hostile identities are unconditional Lean theorems.
-- Pairwise logarithmic weight oscillation gives physical-versus-uniform mean defect at most
-  `exp(eta)-1`; equal-product histories instantiate
-  `eta=|R| H^2/(X(X-H))`; physical-fibre conditional energy gives the endpoint.
+- Pairwise logarithmic weight oscillation gives the stronger physical-versus-uniform mean defect
+  `2 tanh(eta/4)` (with `exp(eta)-1` retained as a coarse corollary); equal-product histories
+  instantiate `eta=|R| H^2/(X(X-H))`; physical-fibre conditional energy gives the endpoint.
 - Component histograms now discharge equal-product histories exactly.  Arbitrary binary
   multiplicities give the physical bias `prod_c(1-2k_c/M)`, balanced-mass exponential bound
-  `(30d)`, and corresponding conditional parity-energy inequality.
+  `(30d)`, and sharp `2 tanh(eta/4)` conditional parity-energy inequalities.
 - Targeted builds of `RouteEComponentHistoryShuffle`, `RouteEGibbsUniformCellComparison`, and
   `RouteEPhysicalProductFibreReplica` pass.  Targeted build of
   `RouteEComponentHistoryGibbsParity` also passes.  No umbrella or full build was run.
 - Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Sharp square-root likelihood-ratio strengthening
+
+Let `Omega` be finite and nonempty, let `w_x>0`, and suppose
+
+\[
+ \left|\log{w_x\over w_y}\right|\le\eta
+ \qquad(x,y\in\Omega).
+\tag{31}
+\]
+
+For every `|f_x|<=1`, write `a=|Omega|^{-1} sum_x w_x`.  Then
+
+\[
+ \boxed{
+ \left|{\sum_xw_xf_x\over\sum_xw_x}
+       -{\sum_xf_x\over|\Omega|}\right|
+ \le 2\tanh(\eta/4).}
+\tag{32}
+\]
+
+Indeed, put `L=min_x w_x`, `s=exp(eta/2)`, and `U=s^2L`.  Pairwise oscillation gives
+`L<=w_x<=U`.  Since the centered deviations sum to zero,
+
+\[
+ \sum_x|w_x-a|=2\sum_x(w_x-a)_+.
+\]
+
+The interval bounds imply pointwise
+
+\[
+ (w_x-a)_+
+ \le {U-a\over U-L}(w_x-L),
+\]
+
+and hence
+
+\[
+ {1\over |\Omega|a}\sum_x|w_x-a|
+ \le {2(U-a)(a-L)\over a(U-L)}.
+\]
+
+The entire improvement over `exp(eta)-1` is the exact square identity
+
+\[
+ aL(s-1)^2-(U-a)(a-L)=(a-sL)^2\ge0.
+\]
+
+Using `U-L=(s-1)(s+1)L` gives `(32)` because
+
+\[
+ {2(s-1)\over s+1}=2\tanh(\eta/4).
+\]
+
+Combining `(23)` with `(32)`, equal-product histories in one common aperture satisfy
+
+\[
+ \boxed{
+ |\mathbb E_{\rm Gibbs}f-\mathbb E_{\rm unif}f|
+ \le 2\tanh\!\left({mH^2\over4X(X-H)}\right).}
+\tag{33}
+\]
+
+The physical-fibre endpoint correspondingly strengthens to
+
+\[
+ |\mathbb E_{\rm physical}\sigma|
+ \le
+ \sqrt{2\mathfrak D_{\rm uniform}
+       +2\left(2\tanh(\eta/4)\right)^2}.
+\tag{34}
+\]
+
+All statements `(31)`--`(34)` are formalized unconditionally in
+`RouteEGibbsUniformCellComparison.lean`.  This removes the exponential blow-up of the old coarse
+defect while leaving the genuine Route E producer unchanged: prime-histogram bias/energy,
+common-aperture admission, and recurrence-compatible seam descent.

@@ -65,6 +65,168 @@ theorem norm_xiShiftedReciprocalMoment_le_absoluteMass
       funext q
       simp
 
+/-- **Actual global moment Lipschitz law.**  On every positive right-moving mass interval, the
+real shifted-Xi moment of order `k` has an explicit Lipschitz constant given by `k+1` times the
+unshifted reciprocal-square absolute mass.  This is uniform in both endpoints and uses the
+integral-differentiated moment recursion, not finite-dimensional compactness. -/
+theorem abs_re_xiShiftedReciprocalMoment_sub_le
+    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (k : ℕ) :
+    |(xiShiftedReciprocalMoment b k).re -
+        (xiShiftedReciprocalMoment a k).re| ≤
+      ((k : ℝ) + 1) *
+        (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖) * (b - a) := by
+  let f : ℝ → ℝ := fun y => (xiShiftedReciprocalMoment y k).re
+  let C : ℝ := ((k : ℝ) + 1) *
+    (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖)
+  have hdiff : ∀ y ∈ Set.Icc a b, DifferentiableAt ℝ f y := by
+    intro y hy
+    exact (hasDerivAt_re_xiShiftedReciprocalMoment
+      (lt_of_lt_of_le ha hy.1) k).differentiableAt
+  have hbound : ∀ y ∈ Set.Icc a b, ‖deriv f y‖ ≤ C := by
+    intro y hy
+    have hy0 : 0 ≤ y := (lt_of_lt_of_le ha hy.1).le
+    have hderiv := (hasDerivAt_re_xiShiftedReciprocalMoment
+      (lt_of_lt_of_le ha hy.1) k).deriv
+    have hmoment :
+        ‖xiShiftedReciprocalMoment y (k + 1)‖ ≤
+          ∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ := by
+      calc
+        ‖xiShiftedReciprocalMoment y (k + 1)‖ ≤
+            ∑' q : XiZeroCopy, ‖xiShiftedReciprocalSquare y q‖ :=
+          norm_xiShiftedReciprocalMoment_le_absoluteMass hy0 (k + 1)
+        _ ≤ ∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ := by
+          apply Summable.tsum_le_tsum
+          · intro q
+            exact norm_xiShiftedReciprocalSquare_le hy0 q
+          · simpa using (summable_xiShiftedReciprocalSquare_pow hy0 0).norm
+          · simpa using (summable_xiZeroCopyReciprocalSquare_pow 0).norm
+    have hre :
+        |(xiShiftedReciprocalMoment y (k + 1)).re| ≤
+          ∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖ :=
+      (Complex.abs_re_le_norm _).trans hmoment
+    rw [hderiv]
+    dsimp only [f, C]
+    rw [Real.norm_eq_abs, abs_mul, abs_neg, abs_of_nonneg (by positivity)]
+    exact mul_le_mul_of_nonneg_left hre (by positivity)
+  have hmv := (convex_Icc a b).norm_image_sub_le_of_norm_deriv_le
+    hdiff hbound (Set.left_mem_Icc.mpr hab) (Set.right_mem_Icc.mpr hab)
+  dsimp only [f, C] at hmv
+  simp only [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hab)] at hmv
+  simpa [mul_assoc] using hmv
+
+/-- Explicit right-Lipschitz weight of a fixed finite shifted-Xi Hankel quadratic. -/
+def xiShiftedMomentHankelQuadraticLipschitzWeight
+    {N : ℕ} (x : Fin N → ℝ) : ℝ :=
+  ∑ i : Fin N, ∑ j : Fin N,
+    |x i * x j| * (((i : ℕ) + (j : ℕ) : ℝ) + 1) *
+      (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖)
+
+/-- Exact factorization of finite Hankel Lipschitz cost into ordinary and half-degree-weighted
+coefficient `ℓ¹` masses.  This exposes all degree dependence; no matrix norm or hidden compactness
+constant remains. -/
+theorem xiShiftedMomentHankelQuadraticLipschitzWeight_eq_l1_mul_weightedL1
+    {N : ℕ} (x : Fin N → ℝ) :
+    xiShiftedMomentHankelQuadraticLipschitzWeight x =
+      2 * (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖) *
+        (∑ i : Fin N, |x i|) *
+        (∑ i : Fin N, |x i| * ((i : ℝ) + 1 / 2)) := by
+  let C : ℝ := ∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖
+  let U : ℝ := ∑ i : Fin N, |x i|
+  let V : ℝ := ∑ i : Fin N, |x i| * ((i : ℝ) + 1 / 2)
+  rw [xiShiftedMomentHankelQuadraticLipschitzWeight]
+  simp only [abs_mul]
+  change (∑ i : Fin N, ∑ j : Fin N,
+    |x i| * |x j| * ((i : ℝ) + (j : ℝ) + 1) * C) = 2 * C * U * V
+  have hsplit (i j : Fin N) :
+      |x i| * |x j| * ((i : ℝ) + (j : ℝ) + 1) * C =
+        (|x i| * ((i : ℝ) + 1 / 2)) * |x j| * C +
+        |x i| * (|x j| * ((j : ℝ) + 1 / 2)) * C := by
+    ring
+  simp_rw [hsplit, Finset.sum_add_distrib]
+  change
+    (∑ i : Fin N, ∑ j : Fin N,
+        (|x i| * ((i : ℝ) + 1 / 2)) * |x j| * C) +
+      (∑ i : Fin N, ∑ j : Fin N,
+        |x i| * (|x j| * ((j : ℝ) + 1 / 2)) * C) = 2 * C * U * V
+  have hfirst :
+      (∑ i : Fin N, ∑ j : Fin N,
+        (|x i| * ((i : ℝ) + 1 / 2)) * |x j| * C) = V * U * C := by
+    dsimp only [U, V]
+    symm
+    rw [Finset.sum_mul, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [Finset.mul_sum, Finset.sum_mul]
+  have hsecond :
+      (∑ i : Fin N, ∑ j : Fin N,
+        |x i| * (|x j| * ((j : ℝ) + 1 / 2)) * C) = U * V * C := by
+    dsimp only [U, V]
+    symm
+    rw [Finset.sum_mul, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [Finset.mul_sum, Finset.sum_mul]
+  rw [hfirst, hsecond]
+  ring
+
+theorem xiShiftedMomentHankelQuadraticLipschitzWeight_nonneg
+    {N : ℕ} (x : Fin N → ℝ) :
+    0 ≤ xiShiftedMomentHankelQuadraticLipschitzWeight x := by
+  apply Finset.sum_nonneg
+  intro i _
+  apply Finset.sum_nonneg
+  intro j _
+  positivity
+
+/-- **Actual integral Lipschitz law for finite Hankel quadratics.**  Every fixed finite
+coefficient vector has a global explicit right-Lipschitz modulus on positive mass.  The modulus
+retains all coefficient and degree dependence and is therefore suitable for quantitative
+admission-moat estimates. -/
+theorem abs_xiShiftedMomentHankelQuadratic_sub_le
+    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) {N : ℕ} (x : Fin N → ℝ) :
+    |xiShiftedMomentHankelQuadratic b N x -
+        xiShiftedMomentHankelQuadratic a N x| ≤
+      xiShiftedMomentHankelQuadraticLipschitzWeight x * (b - a) := by
+  rw [xiShiftedMomentHankelQuadratic_eq,
+    xiShiftedMomentHankelQuadratic_eq]
+  simp only [xiShiftedReciprocalHankelQuadratic]
+  rw [← Finset.sum_sub_distrib]
+  simp_rw [← Finset.sum_sub_distrib, ← mul_sub]
+  calc
+    |∑ i : Fin N, ∑ j : Fin N,
+        x i * x j *
+          ((xiShiftedReciprocalMoment b ((i : ℕ) + (j : ℕ))).re -
+            (xiShiftedReciprocalMoment a ((i : ℕ) + (j : ℕ))).re)| ≤
+        ∑ i : Fin N, |∑ j : Fin N,
+          x i * x j *
+            ((xiShiftedReciprocalMoment b ((i : ℕ) + (j : ℕ))).re -
+              (xiShiftedReciprocalMoment a ((i : ℕ) + (j : ℕ))).re)| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ i : Fin N, ∑ j : Fin N,
+        |x i * x j *
+          ((xiShiftedReciprocalMoment b ((i : ℕ) + (j : ℕ))).re -
+            (xiShiftedReciprocalMoment a ((i : ℕ) + (j : ℕ))).re)| := by
+      apply Finset.sum_le_sum
+      intro i _
+      exact Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ i : Fin N, ∑ j : Fin N,
+        (|x i * x j| * (((i : ℕ) + (j : ℕ) : ℝ) + 1) *
+          (∑' q : XiZeroCopy, ‖xiZeroCopyReciprocalSquare q‖)) * (b - a) := by
+      apply Finset.sum_le_sum
+      intro i _
+      apply Finset.sum_le_sum
+      intro j _
+      rw [abs_mul]
+      have h := mul_le_mul_of_nonneg_left
+        (abs_re_xiShiftedReciprocalMoment_sub_le ha hab
+          ((i : ℕ) + (j : ℕ))) (abs_nonneg (x i * x j))
+      simpa only [Nat.cast_add, mul_assoc] using h
+    _ = xiShiftedMomentHankelQuadraticLipschitzWeight x * (b - a) := by
+      rw [xiShiftedMomentHankelQuadraticLipschitzWeight, Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [Finset.sum_mul]
+
 theorem xiShiftedCassiniMomentPowerSeries_radius_pos
     {y : ℝ} (hy : 0 ≤ y) :
     0 < (xiShiftedCassiniMomentPowerSeries y).radius := by

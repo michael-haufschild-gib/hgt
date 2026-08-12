@@ -69,7 +69,7 @@ Complex Ramaré factorization, Abel-weighted PNT control, and the rough cofactor
 the apparent square-multiple polynomial is identically zero for Möbius. Every fixed frequency height,
 and in fact a cofinal unbounded
 low-height window governed by the `o(M)` Möbius Abel scale, is unconditionally good. The remaining
-Gallagher input is not genuinely a sparse prime-pair object: exact paper-level recombination shows
+Gallagher input is not genuinely a sparse prime-pair object: exact umbrella-formal recombination shows
 that the `p != q` term contains positive same-integer block collisions of size `O(WM)` and leaves
 every coprime Möbius integer pair with coefficient exactly one. Its untouched core is therefore the
 coprime Möbius near-diagonal covariance in the moving moderate/high-height range. A new ternary
@@ -92,6 +92,10 @@ and its raw Möbius scalar observer is not in `l2`. Missing object is therefore 
 physical centered relation/capacity estimate with the moving seam retained, not another universal
 Fisher parameter choice. Exact finite ANOVA now identifies this estimate as
 `N Var_(nu/N)(rho/nu) <= X^(o(1))`, the non-scalar component of existing column chi-square.
+The strict-right obstruction is now fully umbrella-wired Lean: exact half-line node equation,
+non-summability throughout `Re(s)<=sigma/2`, phase-independent non-`l2`, and the
+no-Hilbert-observer capstone are in `RouteEStrictRightMellinObserverFirewall`. This closes the
+analytic shortcut as a formal no-go; it does not change the finite physical producer target.
 Its exact graph form is weighted projection distance
 `d_E^2 <= X^(-1+o(1))`; equivalently every target reporter satisfies normalized
 minimum-neighbor defect `<= X^(-1/2+o(1))*sqrt(Var)`. Exact normalized weighted Hall makes this
@@ -293,11 +297,11 @@ existing route.
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced | source-side subexponential upper bound for the actual restricted-Weil negative floor, equivalently no negative spectral birth. Prolate profile exhaustion is one structural producer, not the route-wide endpoint; completed Suzuki/Evans and noncompact incidence/direct-floor producers remain live |
-| P | open, newly cross-linked to C1/R/N | construct a pre-divisor source proof that the explicit theta Green-current Kakutani polarization is all-prime summable, equivalently neutralize `i R_2 B`, then derive the compact completed-seam Thorin/Markov measure without passing through RH or a zero-selected spectral measure. Umbrella Lean proves positive nonzero spectrum of `B^2` is equivalent to both P endpoints and C1/RH; it now also identifies each local Route N Hellinger defect as a strictly positive unit times squared theta flux. Reflection cancels signed flux but doubles this positive polarization. These are exact receivers/obstruction localization; they do not prove source admission or construct a direct measure |
+| P | open, newly cross-linked to C1/R/N and the FE--Schwarz seam | prove completed Euler--Gamma source saturation/vanishing of the now source-constructed finite covariant moving-horizon response; equivalently force the actual source Julia/Cayley coordinate to zero, exclude every exceptional transverse mode, and neutralize `i R_2 B`; then derive compact completed-seam Thorin/Markov measure without RH or zero-selected spectral data. Lean proves positive nonzero spectrum of `B^2` equivalent to both P endpoints and C1/RH, coefficient-exact theta/FE--Schwarz transport, quantized harmonic escape `0/1` (reflection pair `2`), and all square-summable, permutation, fixed-principal, continuous-principal, adaptive-`l1`, codiagonal-output, and scalar-reader repairs impossible. Physical Möbius profile is exactly Route P polarization. P-G25's completed-response identity is demoted by P-G26: `Q+(1/2)D` depends only on row marginal, while zero-marginal completed gauge has cofinal strict negative quadratic directions, so no generic response sign survives. P-G27--P-G33 identify higher universal obstruction: normalized endpoint trace is `0/1`; missing tail has continuous energy `4/d=2/|Im rho|`, exactly Route R transverse Cauchy energy; physical prime sampling is `8 sum_p log(p)p^(-1-2d)` with exact decomposition `4/d+A(d)`, `A` continuous at wall. Coefficient four is uniquely forced for scalar pole cancellation but cancels every nearby off-wall depth. Actual conjugate quartet coherence adds a strictly positive height cross-term and every exceptional quartet exceeds eight. Arbitrary constant signed reflection incidence reduces exactly to `(alpha-beta)^2` times original packet energy. P-G34 supplies regular positive stable-channel detector: moving-horizon connection yields summable energy `E_cov(d)=d^2 E_prime(d)~4d`, zero exactly at neutrality. P-G35 proves full analytic reflection doublet adds unstable term `d^2 p^(-1+2d)` and is nonsummable off wall. P-G36 closes stable projection provenance: the strict-right Xi canonical Hardy ray has critical symmetric square exactly equal to P-G34 coefficientwise. P-G37--P-G40 expose intrinsic half-density wall and exact Julia geometry: raw two-sided norm is `(1+2u)^-1`, negative aperture expands, unit normalization leaves strict Hardy overlap `K`, and `K^2+C^2=1` with `C` literally the Xi Ward Cayley factor. Rapidity `eta=log sqrt(1+2u)` makes this normalized curve exactly the Route R horizontal-boost orbit, with constant split theta current. Remaining gap is a source theorem breaking this orbit and forcing Julia saturation/Cayley vanishing, not projection construction, another entire doublet, normalization, renormalization, or domain criterion |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open, narrowed | absolute critical graph norm is formally impossible: Lean proves even left endpoint variation plus critical gap energy contradicts unconditional critical-line zeta-zero existence. Live source is signed/coherent continuation of centered residual atoms, or Maynard aggregate cancellation supplying mesh energy without imposing absolute residual boundary trace. A committed unwired Huxley/Maynard suite now includes literal grouped Heath--Brown coefficients, exact multiplicative group pigeonholing, grouped Huxley application, uniform `6121`-block ceiling, smooth-aggregate-to-box selection with one fixed-degree polylogarithmic loss, exact heterogeneous box factorization with explicit `2^k` scalar cost, robust `[t,4t)` weight packing, and a widened all-short reserve of `73/1440`. Missing theorem is literal exponent instantiation plus uniform ordinate counting: pay box/group multiplicities inside the reserve, verify one common Huxley absorption schedule, and sum selected packets. Ultra-near-one long-Möbius remains separate |
+| T | open, narrowed | absolute critical graph norm is formally impossible: Lean proves even left endpoint variation plus critical gap energy contradicts unconditional critical-line zeta-zero existence. Live source is signed/coherent continuation or Maynard aggregate cancellation. Fixed-abscissa audit now separates Perron `c` from amplitude `alpha`; arbitrary-`rho` energy gives fibre exponent `(1367/2160)(2+rho-2alpha)` with exact slope reserve `73/1080`. Actual factor norms now have exact amplitude coordinates; unique log-factor slack is only `log log`, and every Perron-relevant long zeta/log box has fixed global deficit `maynardDerivativeDeficit 47/380`. Canonical degree-60 cutoff eliminates long Möbius atoms. Remaining theorem is Perron-relevant aggregate restriction, exponent-zero trimming, amplitude-label fibre counting, and smooth-window Maynard-to-prime-gap assembly. |
 | U | open, new | two branches remain. Degenerate/root-sign branch: exclude positive-axis atoms of the canonical selected Padé-pole measure or force the corresponding ground-pole degeneracy. Simple-birth branch: supply a literal prime--Gamma/global-Xi sign/full-ground parity law. Fixed-degree terminal recession, exact geometric/arithmetic resolvent mass gap, line-reflection defect, continued-Cauchy source-moment totality, all-polarization endpoint, and finite arithmetic Hankel-matrix ladder are now umbrella-formal. These results identify `4M(X)` with squared distance between two independently reconstructed orientations in one source carrier and package RH as all-rung positive semidefiniteness, so carrier membership or finite-matrix repackaging cannot close U. Equality of all unsquared source polarizations remains an RH-equivalent receiver; neither it nor the formal quartic collapse target supplies full-ground sign or diagonal decay |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
@@ -682,6 +686,44 @@ fibres, injective and surjective evaluation, and pointwise sign-reflection Real 
 Untwisted Lefschetz action is Real-even; multiplication by i supplies canonical anti-Real
 transgression.
 
+The archimedean CCM source calculus is now exact through Connes--Consani's full `quantsmooth`
+lemma. Umbrella Lean constructs the literal Hardy projection and quantized differential,
+identifies its reflected Fourier crossblock with the positive-quadrant Hankel operator, and proves
+that operator's approximation numbers decay faster than every integral power. The proof uses the
+source smooth cutoff and all oscillator powers, then proves its positive compression equals the
+actual Hankel block; trace class is only a corollary, not a substitute for rapid decay. This closes
+a primary-literature gap but supplies no Weil positivity or Route-C1 spectral orientation.
+
+The source's next analytic prerequisite is also closed.  Umbrella module
+`CCMArchimedeanPhaseTemperate.lean` derives global all-order polynomial bounds for
+`u_infinity(t)=conj(zetaChi(1/2+it))=exp(2 i theta(t))` from the vertical digamma and polygamma
+bounds plus the exact normalized-Gamma phase ODE. Thus `hat f*u_infinity` is constructed as an
+actual Schwartz function for every Schwartz `hat f`, and its quantized differential is
+infinite-order. `CCMArchimedeanConvolutionRepresentation.lean` separately proves the exact Haar
+law `rho(g*h)=rho(g)rho(h)` and the starred square law by Bochner/Fubini/shear arguments.
+`CCMArchimedeanPhaseOperatorProduct.lean` proves the exact source Leibniz identity and makes the
+tested spectral operator infinite-order, Schatten one, and trace class.
+`CCMArchimedeanMellinTransport.lean` proves exact Mellin diagonalization of every intrinsic `L¹`
+log kernel and transports this result back to the literal geometric operator
+`rho(f)(1/2)(u_infinity^* d u_infinity)^g`, which is trace class for every Schwartz log source.
+`CCMArchimedeanFourierMellinScattering.lean` further proves the exact Connes--Consani identity
+`F_eR^w = I ∘ u_infinity^g` on the full even `L²` carrier. Its endpoint has no density,
+integrability, Gamma-normalization, or intertwining hypothesis; those facts are proved on the
+dense even-Schwartz core and extended by continuity. Therefore the live Proposition 7(iv) gap is
+no longer phase regularity, representation product, Mellin operator identification,
+Fourier--Mellin scattering, trace-classness, or Lemma `sch3` geometric kernels. Umbrella modules
+`CCMArchimedeanGeometricScatteringKernel.lean` and
+`CCMArchimedeanGeometricCommutatorKernel.lean` prove the literal kernels of `sch3(i),(ii)` on the
+actual multiplicative-Haar carrier, including the sharp projection on the required even
+`L¹∩L²` core. `CCMArchimedeanGeometricCompositeKernel.lean` proves `sch3(iii)` as an exact
+operator/distributional pairing. It also exposes and closes a rigor point hidden by the source's
+notation: the displayed pointwise composition integral is not Bochner integrable. At `ν=μ=1` its
+tail is `-4 cos²(2πy)`; Lean proves its truncated positive mass tends to `+∞` and the literal tail
+is not Lebesgue integrable. The live primary-literature gap is therefore Proposition `lemsch7`:
+scaled kernel, rigorous diagonal trace distribution, equality with the archimedean Weil
+distribution, and tested trace identity. No current theorem may count a
+second proof of any closed item as Route O progress.
+
 An adjacent Connes--Consani quasi-inner lane now has exact Lean-certified scalar and literal
 `L²(R/Z)` operator inputs plus a diagonal-model critical residue. For every Gauss component
 `(m,k)` the model residue of the `2m`-th positive power is independent of `k` and equals
@@ -816,10 +858,16 @@ critical Mertens cancellation and RH.
    observable/relation is independent of `sigma`; critical-versus-moving parameter transfer costs
    zero when the full physical multiplier is retained.
 
-Lean formally closes critical terminal variance minimax, physical-saddle antiscale barrier,
-shell-conditioned parity--energy regression, product-truncated reservoir mass, source-faithful
-Euler-tilt unit shell, parity-coalesced full-mass cube, and harmonic reservoir capacity. Paper cards
-prove stronger relation-level convolution laws where noted.
+Lean formally closes the finite algebraic cores of critical terminal variance minimax,
+physical-saddle antiscale barrier, shell-conditioned parity--energy regression, product-truncated
+reservoir mass, source-faithful Euler-tilt unit shell, parity-coalesced full-mass cube, and harmonic
+reservoir capacity. Their Stage-2 paper cards contain stronger PNT, saddle, or relation-level laws
+where stated and are not thereby fully formalized.
+For physical Gaussian shells, exact covariance invariance, positive-Laplace obstruction,
+cross-shell polarization, and recurrence-weighted odd-cube preservation are Stage 3 in
+`RouteEPhysicalShellParityEnergyRegression`. The claimed prime-array determinant asymptotic is
+back at Stage 1: its present saddle lemma lacks a typed uniform cumulant remainder and off-saddle
+majorant. It is not available as a Route E input.
 
 Umbrella-reachable Lean proves the entropy-complement finite mechanism exactly: divided-Poisson
 convolution, denominator-free conditional-binomial variance, a central
@@ -837,10 +885,24 @@ The physical source-parameter mismatch is closed exactly, not by approximation. 
 P_(sigma,N) nu_(sigma,N)(T) W_(sigma,x)(T) = exp(-x m(T)).
 ~~~
 
-Thus normalized source-faithful observables and relation flows are Euler-gauge invariant. The
-forced moving tilt locates the unit-shell mass but does not deform its physical atom weights. A
+Umbrella-reachable `RouteESourceFaithfulEulerTiltUnitShell.lean` now proves the corresponding
+finite sum and normalized equality for every predeclared real observable, not only the atomwise
+identity. Thus normalized source-faithful observables and relation flows are Euler-gauge invariant.
+The forced moving tilt locates the unit-shell mass but does not deform its physical atom weights. A
 proof may use the critical or moving gauge with zero loss, provided it retains the matching
 physical multiplier.
+
+The same module closes the sharp local physical receiver. For any finite opposite-sign matching
+with normalized unmatched physical mass `u`, pair gaps at most `H`, and Gibbs scale `X`, Lean proves
+
+~~~
+|J|/Z <= u + tanh(H/(2X)) <= u + H/(2X).
+~~~
+
+Pair polarization is an exact identity, not a first-order estimate. Hence neither Euler-gauge
+transfer nor local Gibbs distortion remains open. The producer must construct one
+source-predeclared recurrence-compatible flow with `u <= X^(-1/2+o(1))`,
+`H <= X^(1/2+o(1))`, unit physical column load, and the moving seam orientation.
 
 Separately, for fixed observables under the bare Euler Bernoulli product laws below aperture `N`,
 the exact finite likelihood product and local defect comparison give
@@ -876,15 +938,21 @@ RH-equivalent receiver, while `GaussPositiveCubicCriticalMass.lean` has no sourc
 Möbius relation. No abstract capacity, Pauli incidence, or shell-completion theorem removes the
 ordinary-integer joint incidence/seam producer.
 
-The new Deninger adiabatic endpoint also does not remove that producer.  For
-`V(t)=exp(-exp t)`, no nonzero finite linear combination of distinct dilates
-`sum_j c_j V(t+log a_j)` lies in `DeningerExpSchwartz`: all-orders left-collar decay forces the
-Vandermonde moments `sum_j c_j a_j^m` to vanish, hence every coefficient is zero.  In particular,
+The new Deninger adiabatic endpoint also does not remove that producer.
+`RouteEDeningerVacuumFiniteDilationFracture.lean` now proves the sharper source-domain theorem:
+if an analytic germ `G` has a strict-source logarithmic pull `G(exp t)`, then its analytic order at
+zero is infinite; if `G` is entire, it is identically zero. Consequently, for
+`V(t)=exp(-exp t)`, no nonzero finite linear combination of distinct positive dilates
+`sum_j c_j V(t+log a_j)` lies in `DeningerExpSchwartz`; the formal iff uses the actual source
+definition and Vandermonde rigidity, not a finite-jet surrogate. In particular,
 every nonempty finite Route E current has exact first left-collar jet
 `(-1)^(|S|+1) prod_(p in S)(p-1) x`; prime defects amplify it rather than enter the Meyer domain.
-A smooth cutoff splits the vacuum into a Meyer tail plus one fixed collar, but the collar's
-Möbius inverse is literally a smoothed Mertens sum through `O(1/x)`.  Thus strict adiabatic
-convergence controls the easy tail and isolates, without estimating, `OPEN-SOURCE-001`.
+`RouteEDeningerVacuumCollarDecomposition.lean` now closes that smooth split exactly. It constructs
+the cutoff tail as a literal `DeningerExpSchwartz` vector, proves pointwise absolute summability of
+its Möbius-dilation series, and rewrites the collar contribution as a finite sum over
+`n < floor(2/x)+1`. It deliberately does not claim that the full Möbius tail is a strict-source
+vector. The finite collar remains a smoothed Mertens sum through `O(1/x)`; strict adiabatic
+structure isolates, without estimating, `OPEN-SOURCE-001`.
 
 There is now a sharp two-sided-flow alternative to direct unit Carleson.  For any source-fixed
 parity-flipping row kernel `P` on physical weights `w`, let `Q(n,v)=w_n P(n,v)` and accept symmetric
@@ -1038,7 +1106,7 @@ The resulting rough-polynomial mean square lies inside `2 W M + epsilon M^2` onc
 `RamareBilinearMeanSquare.lean` transfers the remaining question exactly to the prime-supported
 Ramaré bilinear form. The now-wired energy companion proves that its diagonal block energy is
 bounded by the original polynomial energy and places the summed cofactor-polynomial budget within
-`10 W M + epsilon M^2` under the formal square-reciprocal threshold. Paper-level exact
+`10 W M + epsilon M^2` under the formal square-reciprocal threshold. Umbrella-formal exact
 recombination shows that the apparent prime off-diagonal retains every coprime Möbius integer pair
 with coefficient one and includes positive same-integer block collisions. The live analytic
 residue is therefore coprime Möbius near-diagonal covariance in the moving range
@@ -1058,7 +1126,7 @@ and bounds the complete Möbius mean square by the established diagonal/remainde
 that one prime-pair term. No hidden square-multiple, rough, or diagonal estimate remains inside
 the Route-E Gallagher premise.
 
-Paper-level recombination now corrects the interpretation of this final term. For
+Unconditional Lean recombination now corrects the interpretation of this final term. For
 `k_n=omega_P(n)` and `c_P(n,m)=omega_P(gcd(n,m))`, the Ramaré bilinear polynomial is exactly
 
 ~~~
@@ -1123,6 +1191,14 @@ torus point, and finite-height quadratic mass is at most
 The product is bounded by `exp(-(1/2) sum_(p in Q)p^(-r))`, so it vanishes exactly throughout
 critical range `0<r<=1`, despite cofinal modulus-one recurrence.
 
+This one-sided critical classification is now unconditional umbrella Lean in
+`RouteECriticalAntiscaleDissipationSaturation`. Formal proof includes exact all-order squarefree
+frequency expansion, unique-factorization spacing `1/R_Q`, exact coefficient energy `V_(Q,r)`,
+harmonic finite-height Schur constant, arbitrary divergent-packet decay, and canonical prime
+aperture decay. Stronger formal boundary: local deficit, unique all-antiscale modulus-one locus,
+and cofinal saturation hold for every real `r`; `0<r<=1` enters only accumulated prime-mass
+divergence. Critical dissipation saturation is therefore closed and is no longer Route E frontier.
+
 State-dependent cofactor transfer has also been recut. For any finite probability weights `w_s`,
 centered state blocks `A_s`, and unit-modulus reporters `d_s`,
 
@@ -1135,7 +1211,9 @@ and collision has norm at most `2 w_max ||A||_(L2(w))`. Reciprocal ternary state
 `w_max=product_p(1+2/p)^(-1)`, which vanishes with harmonic marker mass. Thus tensorized uniform
 cofactor flatness is not the actual missing theorem. Mean component is handled by ternary
 dissipation, centered component is one off-diagonal codiagonal reporter, and atomic collision is
-diffuse.
+diffuse. `RouteEFinitePhysicalCodiagonalGaugeCollapse.lean` now proves this identity and collision
+bound literally for arbitrary finite complex state cofactors; the earlier countable real theorem
+is no longer carrying a type mismatch against paper Theorems C--D.
 
 This reduction is reinforced by newly relevant umbrella Lean. The general infinite joined
 one-corner theorem and its squarefree Möbius specialization give
@@ -1145,7 +1223,20 @@ one-corner theorem and its squarefree Möbius specialization give
   <= (1/2) hsNormSq(sourceCorner),
 ~~~
 
-while critical lower-corner energy is at most `4(1-exp(-u))` and has density four at `u=0`.
+`RouteEFinitePhysicalCodiagonalGaugeCollapse.lean` now closes stronger composed geometry. When
+`sourceCorner` is itself lower corner of unit-state pointed Fisher connection with tangent `chi`,
+
+~~~
+hsNormSq(sourceCorner) <= (1/2)||chi||^2,
+|hsInner(sourceCorner, contractiveReporter)|^2 <= (1/4)||chi||^2.
+~~~
+
+For every all-order finite squarefree Euler history packet this improves raw gauge-collapse from
+`sqrt(2)|sigma-1|sqrt(V)` to `|sigma-1|sqrt(V)`. Division-free gauge neutralization, valid even at
+`sigma=1`, improves corresponding receiver from `sqrt(2V)` to `sqrt(V)`. This is genuine constant
+progress but not missing power: at source-faithful tilt `sqrt(V)` still grows like `ell/sqrt(2)`.
+
+Separately, critical lower-corner energy is at most `4(1-exp(-u))` and has density four at `u=0`.
 Abstract small-cutoff output is therefore `<=sqrt(2u)`. This is a genuine square-root receiver,
 but it does not reduce the physical producer to a freely chosen cutoff. At forced Euler tilt the
 unit shell has critical clock
@@ -1158,7 +1249,9 @@ so even the limiting profile has only `2 sqrt(log ell/ell)(1+o(1))` scale there.
 Euler gauge makes the finite one-corner norm grow like `ell`; shrinking the tilt cannot create
 cancellation. The new singular graph-normal source cancels this gauge exactly and is contractive
 at every complex inward node, but those nodes satisfy `Re(s)>1`. Moving it to `Re(s)=1/2` requires
-an outward parameter and the scalar observer has divergent `l2` norm. Hence no theorem identifies
+an outward parameter and the scalar observer has divergent `l2` norm. Both assertions, including
+phase-independent divergence on the larger range `Re(s)<=sigma/2`, are now unconditional Lean in
+`RouteEStrictRightMellinObserverFirewall`. Hence no theorem identifies
 the finite sharp Ramaré/unit-shell centered reporter with a strict-half physical corner. Revised
 analytic/physical target is
 `FINITE-PHYSICAL-COLUMN-ANOVA-STRICT-HALF-AND-SIGNED-RECURRENCE-SEAM`, not statewise flatness or
@@ -1169,7 +1262,9 @@ chiSquare(rho|nu)
   = N * Var_(nu/N)(rho/nu) + (sum rho - sum nu)^2/N
 ~~~
 
-shows centered codiagonal energy is precisely non-scalar column ANOVA. At `N=X^(1+o(1))`, its
+is now an unconditional umbrella Lean theorem for arbitrary finite unequal masses, including empty
+index type without a nonzero-total premise. It shows centered codiagonal energy is precisely
+non-scalar column ANOVA. At `N=X^(1+o(1))`, its
 endpoint target is `N*Var <= X^(o(1))`. Cauchy--Schwarz then puts centered score and atomic
 codiagonal correction at unnormalized size `X^(1/2+o(1))`; maximum-state diffuseness is no longer
 another power obligation. Scalar term is signed discrepancy itself and cannot be assumed small.
@@ -1277,6 +1372,46 @@ but arbitrary endpoint-dependent max-flow is not recurrence-compatible evidence.
 critical Fisher energy cannot supply this because gauge-neutralized energy and forced clock have
 wrong scale. Uniform statewise cofactor flatness is no longer required.
 
+Finite ternary marker analysis is now umbrella-formal.  Exact Lean theorems retain all
+`3^|Q|` alternating Möbius histories, prove prime-log frequency injectivity and `R_Q^(-2)`
+separation, identify the two products as coprime squarefree integers with the actual Möbius-product
+coefficient, and establish both unweighted and reciprocal-Gibbs finite-height mean-square bounds.
+The reciprocal coefficient mass tends to zero along canonical prime packets even though antiscale
+modulus-one escape recurs cofinally. Therefore neither marker recurrence, finite spacing,
+alternating signs, reciprocal weights, nor prime-block-to-integer incidence recombination remain
+open. `RouteERamareTernaryAntiscaleCapstone.lean` now removes zero-padded nonsquarefree support,
+identifies the literal integer shared-incidence diagonal with the original prime-block diagonal,
+proves exact collision/distinct decomposition and the `2WM` collision budget, realizes both
+ternary reporters as their real-cosine products, upgrades late near-saturation to exact `IsLUB`
+tail suprema, and proves the literal measurable-set large-value laws `(28)` and `(30f)`.
+The complete Ramaré--ternary result card has therefore moved to Stage 3. Equation `(33)` was never
+part of that closed finite theorem: it remains this section's source-faithful moving seam.
+`RouteERamareIntegerIncidence.lean` proves the exact normalized distinct-incidence count,
+its `[0,1]` complement law, and the full finite-volume Möbius-sign/Mellin-kernel pair formula.
+`RouteERamareIncidenceConditionalNegative.lean` now proves the stronger Gram law
+
+~~~
+Q(c)=|sum_n c_n|^2-sum_(p in P)|sum_(p|n)c_n/omega_P(n)|^2.
+~~~
+
+Thus the exact incidence-complement kernel is conditionally negative definite: for centered
+histories `Q(c)<=0`, with equality exactly when every normalized prime load cancels. Centered
+incidence covariance itself is no longer a positive analytic burden.
+`RouteERamareGibbsMeanLeakage.lean` composes this with sharp pairwise Gibbs likelihood-ratio
+oscillation. On every finite incidence cell,
+
+~~~
+Q(a) <= (|uniformMean| + 2 tanh(eta/4))^2,
+~~~
+
+and every equal-product history of order `r` has the exact curvature
+`eta=r H^2/(X(X-H))`. Therefore Gibbs curvature and centered covariance are closed jointly at all
+orders. Missing theorem is now source-faithful decomposition of the actual sharp Ramaré cofactors
+into these common-aperture incidence cells, signed enumeration/cancellation of their explicit
+uniform scalar means at affine strict-half scale, and transport through moving Gallagher and
+physical recurrence seams. The general physical weighted-projection/ANOVA estimate remains open
+for components not shown to land in the Ramaré incidence kernel.
+
 Grown umbrella theorem `abs_sum_sign_weight_le_degreeNormalizedReplacementDefect` opens an
 alternate direct producer. For symmetric parity-flipping physical graph with degrees `d_n`,
 Gibbs weights, and edge displacement at most `H`, exact paper consequence is
@@ -1356,19 +1491,20 @@ aperture admission, or the moving seam. Umbrella-reachable
 reference-fibre energy and cellwise defect to a mean bound. Umbrella-reachable
 `RouteEGibbsUniformCellComparison.lean` closes the finite measure-change step: pairwise logarithmic
 weight oscillation at most `eta` makes every bounded weighted cell mean differ from its uniform
-mean by at most `exp(eta)-1`. It composes this with the product-history theorem: on any equal-product
+mean by at most the square-root likelihood defect `2 tanh(eta/4)`; `exp(eta)-1` remains only a
+coarse corollary. It composes this with the product-history theorem: on any equal-product
 `m`-history cell inside `[X-H,X+H]`, normalized product-Gibbs and uniform character means differ by
 at most
 
 ~~~
-exp(m H^2/(X(X-H))) - 1.
+2 tanh(m H^2/(4X(X-H))).
 ~~~
 
 Its physical-fibre capstone then gives
 
 ~~~
 |physical signed mean|
-  <= sqrt(2 uniform-reference energy + 2(exp(eta)-1)^2).
+  <= sqrt(2 uniform-reference energy + 2(2 tanh(eta/4))^2).
 ~~~
 
 Gibbs distortion and finite physical measure change inside a fixed product cell are therefore no
@@ -1395,9 +1531,15 @@ prod_c (1-2 k_c(true)/(m+1)).
 ~~~
 
 On a common aperture `[X-H,X+H]`, physical Gibbs parity differs from this explicit bias by at most
-`exp((m+1)H^2/(X(X-H)))-1`; Lean also gives the corresponding squared-energy endpoint and the
-singleton specialization. Thus neither finite product equality nor Gibbs-to-uniform measure
-change remains open. The same umbrella-reachable module bounds the histogram bias by `exp(-2 B)`,
+
+~~~
+2 tanh((m+1)H^2/(4X(X-H))).
+~~~
+
+Lean propagates this sharp defect through arbitrary histograms, the balanced-incidence absolute
+bound, both squared-energy endpoints, and the singleton specialization. Thus neither finite
+product equality nor Gibbs-to-uniform measure change remains open. The same umbrella-reachable
+module bounds the histogram bias by `exp(-2 B)`,
 where `B` is total balanced
 incidence mass `sum_c min(k_c(true)/(m+1),1-k_c(true)/(m+1))`; this replaces orbit size by
 the exact arithmetic statistic a producer must make large. It does not prove that the ordinary-
@@ -1425,6 +1567,11 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
 
 **Closed chain and constraints.**
 
+- the 2022 scalar Suzuki source layer now includes exact unconditional Lean proofs of Theorem
+  1.1(i)--(iii), including Proposition 2.1's weighted von Mangoldt asymptotic via sharp Abel
+  summation and Littlewood PNT, Theorems 1.2 and 1.6, and the stated `L¹`/`L²`
+  nonintegrability. Theorem 1.7 is exact through nonnegative equivalence but not its strict clause.
+  This closes a literature-parity prerequisite, not Route G's cofinal two-angle/operator endpoint;
 - finite self-adjoint extensions, anti-Pick identities, residue signs, Herglotz representation,
   and support theorem are formalized;
 - parity Hankel blocks have infinite rank and, after first prime seam, infinite positive and
@@ -2036,6 +2183,21 @@ longer missing:
   earlier nonembedding sequence to an exact nonclosed-range theorem; it confirms that every
   trace-faithful comparison must retain singular/noncompact information and does not select the
   Burnol/Deninger coefficient.
+
+**Rational-Witt source correction, Lean-closed.** The 2025 rational-Witt source literature cannot
+be imported verbatim. Its arbitrary-integral-domain perfect-quotient-field Galois-descent claim is
+false. For the cusp ring `A=ℚ[X²,X³]`, the integral fraction-field element `t=X³/X²` gives a
+Teichmüller vector that comes from the absolute normalization and is fixed by every absolute
+Galois automorphism, but does not come from `W_rat(A)`. The umbrella-reachable theorem
+`deningerCuspPerfectGaloisFixed_counterexample` proves all three assertions on the literal
+rational-Witt carrier. More generally,
+`deningerRationalWittTeichmullerDescent_implies_integralClosedness` proves that descent of all
+integral Teichmüller vectors forces `A` to be integrally closed. Route L must therefore use a
+corrected normal-domain descent theorem; unrestricted domain descent is retired, not an open Lean
+gap. Independently, `deningerRationalWittFatouIntersection_iff` proves the valid extension-domain
+intersection theorem for every Fatou base on the literal localized-polynomial carrier. These
+corrections protect the coefficient foundation but do not solve the singular source-to-physical
+specialization below.
 
 A committed but not yet umbrella-reachable adiabatic chain now closes substantially more source
 analysis provisionally. It proves strong convergence of the exponential gauge in Meyer's
@@ -2926,9 +3088,235 @@ All-prime summability of this theta-flux polarization is exactly same-fibre curr
 individual Route P node positivity. Missing producer is now a source-domain theorem, not selection
 of a metric or local positive density.
 
-**Open core.** Construct from literal coupled prime--polar--Gamma/theta source a pre-scalar
-proof that every multiplicity-resolved theta divisor mode lies in the all-prime Kakutani
-polarization domain, equivalently a neutralization of `i R_2 B` that forces the nonzero Green-square spectrum positive, and derive one
+**Prime-harmonic coercivity, formal.** Off neutral grade, each local polarization dominates
+`(1-2^(-|a|))^2/p`; the coefficient is strictly positive exactly when theta flux is nonzero.
+Reflection doubles this floor. Consequently uniform boundedness of polarization sums over all
+finite prime sets is already equivalent to positivity of the individual Route P node. The live
+producer can therefore be finite-stage: derive one source Green/Gamma upper bound independent of
+the chosen finite prime set. Cofinal rearrangement and reflected aggregation are formally excluded.
+
+**FE--Schwarz seam transport, formal.** For the literal prime seam
+`S_p(q)=log(p)(p^(-conj(q))-p^(-(1-q)))`, Lean proves
+
+~~~
+||S_p(q)||^2
+ = (log p)^2 p^|a(q)| Omega_p(q) F(q)^2.
+~~~
+
+The source factor is explicit and strictly positive, so normalized seam energy is exactly the
+theta/Kakutani polarization without dividing by centered grade. At one prime seam vanishing is
+already equivalent to positivity of that individual Route-P node; uniformly bounded normalized
+finite-prime seam energy is the coefficient-faithful finite-stage producer contract. This closes
+the source-to-theta comparison interface and identifies P's harmonic escape with a diagonal energy
+of the same canonical seam appearing in the two-particle Sonin branch. It does not supply the
+upper bound.
+
+**Quantized harmonic escape, formal.** For `d=|a(q)|`, local polarization has the exact form
+`p^(-1)(1-p^(-d))^2`. Off center, its difference from `1/p` is the absolutely summable radial
+deficit `2p^(-(1+d))-p^(-(1+2d))`. Consequently finite-prime polarization divided by
+reciprocal-prime mass converges to exactly one for every nonneutral oriented copy, zero on a
+neutral copy, and two for a nonneutral reflected pair. Distance from the line changes only the
+summable finite part. This upgrades a grade-dependent coercive floor to a universal integer escape
+index and identifies the likely higher source invariant: a pre-divisor Fredholm/Calkin or Green
+law must force index zero rather than merely compare positive energies.
+
+**Signed-index correction, formal.** Escape multiplicity is reflection-even. The balanced Toeplitz
+model with that multiplicity has identically zero Fredholm index but unsigned defect energy twice
+the multiplicity; for a nonneutral theta reflection pair this unsigned energy is exactly the
+cofinal limit two. No reflection-odd integer index can represent positive escape on both members.
+Thus ordinary Fredholm/`K_1` index cancellation is another folded producer no-go. The live source
+target is simultaneous vanishing of both positive defect channels—invertibility, product-sector
+equivalence, or an unsigned Green bound—not equality of kernel and cokernel dimensions.
+
+**Weak-Hilbert ideal barrier, formal.** The critical prime amplitude `u_p=p^(-1/2)` is not in
+`ℓ²`, while every nonneutral twisted amplitude `v_p(t)=p^(-1/2-|t|)` is in `ℓ²`. For every
+square-summable correction `w`, Lean proves `u-w` is still not square summable. Since prime
+permutations preserve square summability, no relabeling makes the critical and nonneutral twisted
+sectors equivalent; existence of such a relabeling is exactly neutral grade, theta-flux zero, and
+positivity of the individual Route P squared node. This excludes finite-support,
+finite-dimensional, square-summable archimedean/Gamma repair and all coordinate matching as
+producers. Live construction target is source-side cancellation of a second `p^(-1/2)` principal
+symbol before Hilbert completion, or an explicitly controlled non-coordinatewise operator.
+
+**Principal-counterterm polarity no-go, formal.** The corpus's unit-double Euler response supplies
+an actual opposite harmonic source symbol. After normalization by prime log it is exactly
+`-p^(-1)+2p^(-2)`. Adding it to the Route P Hellinger gap produces a summable prime family exactly
+at nonzero grade, equivalently nonzero theta flux; squared-node positivity is equivalent to
+failure of this corrected summability. Adding any summable remainder leaves the reversal
+unchanged. Thus fixed principal subtraction is not the missing producer: it cancels every
+off-center escape unit and makes the neutral fibre non-trace-class. Surviving target is a
+grade-sensitive operator Ward/range identity whose principal coefficient vanishes before fibre
+evaluation and positive completion.
+
+**Principal-class trichotomy, formal.** Modulo all summable prime tails, the Route P gap has class
+zero at neutral grade and universal class `[1/p]` at every nonneutral grade. For a fixed principal
+coefficient `c`, corrected summability occurs exactly for `(t=0,c=0)` or `(t!=0,c=-1)`. Hence
+`c=0` is the unique neutral-only selector, `c=-1` is the complementary nonneutral selector, and
+all other fixed coefficients select nothing. This exhausts diagonal principal renormalization.
+The only live use of the quotient is to prove actual Xi fibres have zero unrenormalized class;
+translation by a source counterterm cannot supply that theorem.
+
+**Continuous-principal wall-jump no-go, formal.** Even grade-dependent diagonal renormalization is
+regularly impossible as a universal source law. If every radial grade is summable modulo an
+arbitrary grade-dependent summable tail, the coefficient must satisfy `c(0)=0` and `c(t)=-1` for
+every `t!=0`. Lean proves no coefficient continuous at the critical wall can do this. Thus
+analytic functional calculus and bounded regular completion cannot provide universal admission;
+the remaining architecture must be singular at the wall or non-diagonal before fibre evaluation,
+consistent with the corpus's unbounded Möbius prime-normal graph reader.
+
+**Physical Möbius profile weld, formal.** The remaining singular architecture is no longer only
+qualitatively compatible. For the literal raw amplitude `A_p(rho)` of the existing Möbius
+prime-normal source graph, the oriented reflection profile is exactly
+`p^a-p^(-a)`, where `a` is centered Xi grade, and
+
+~~~
+primeValuationHellingerGap(-|a|,p)
+ = [1/(p(1+p^|a|)^2)] (p^a-p^(-a))^2.
+~~~
+
+The gauge is strictly positive. Hence physical profile vanishing is exactly same-fibre theta
+Green-flux neutrality, and all-prime weighted profile admission is exactly positivity of the
+individual Route P squared node. This is a coefficient-exact source/receiver identification, not
+an admission theorem. Live core is a uniform finite-packet Ward bound derived from the Möbius
+source graph itself.
+
+**Finite physical Ward contract, formal.** For finite `F`, let `E_F(q)` be the sum over `p in F`
+of the displayed physical profile energy. Lean proves `E_F(q)` equals theta/Kakutani packet energy
+coefficientwise. Existence of one bound uniform in every finite `F` is exactly positivity of the
+individual Route P squared node; the contract on every Xi copy is equivalent to RH. This is the
+precise finite source estimate still missing, not an infinite-completion hypothesis.
+
+**Adaptive-`l1` domain no-go, formal.** Normalizing raw profile by
+`p^(-1/2)/(1+p^|a|)` gives its canonical half-density. It is exactly the oriented difference
+`p^(-1/2)-p^(-1/2-|a|)`, and its square is the physical Ward density. Absolute summability and
+representability in the existing `AdaptivePrimeL1` codiagonal domain are each equivalent to
+same-fibre theta neutrality; global domain admission is RH. Thus the codiagonal's unconditional
+lower bound and closed range cannot prove Route P by first admitting this vector. Surviving target
+is a quadratic finite-packet Ward law or a closable singular extension on weak-`l2` boundary data.
+
+**Actual codiagonal packet blow-up, formal.** Every finite physical half-density packet belongs to
+`AdaptivePrimeL1`. For its literal adaptive codiagonal output `C_q h_F`, Lean proves
+`E_F(q) <= ||h_F||_1 <= (4/3)||C_q h_F||_1`. Hence uniform boundedness of actual arithmetic output
+norms is exactly same-fibre neutrality and individual Route P node positivity. Off center, for
+every threshold some finite packet output exceeds it; global boundedness is RH. The source law
+must therefore cancel before positive `l1` output completion, not invoke closed range afterward.
+
+**Signed scalar-reader blow-up, formal.** Positive output norm is not sole obstruction. On one
+oriented copy all physical half-density coefficients have same real sign, and every exact adaptive
+Möbius divisor-reader column is within `1/4` of `-1`. Consequently signed complex scalar output
+retains at least `3/4` of packet mass, controls Route P packet energy, and exceeds every threshold
+off center. Uniform scalar-output boundedness is copywise neutrality and globally RH. New source
+must supply opposite principal phase or non-diagonal oscillation before this reader.
+
+**Corrected completed-response weld and marginal-gauge no-go, formal.** Existing
+valuation-corrected physical-endpoint coupling has row marginal `log(p)/p`; normalization
+`phi_p=sqrt(p/log(p))h_p` makes its marginal square exactly Route P energy. For each packet,
+`E_F=Q_F+(1/2)D_F`. However Lean now proves this identity for every symmetric coupling with the
+same marginal. Completed response minus diagonal marginal is a zero-row-sum gauge `K` satisfying
+`Q_K+(1/2)D_K=0`; the combined budget is marginal-only and contains no response estimate.
+Moreover, arbitrarily late positive adjacent-prime response edges give two-point packets with
+`Q_K=-c(phi_p-phi_r)^2<0` and `D_K=2c(phi_p-phi_r)^2>0`. Generic gauge positivity and generic
+Dirichlet negativity are both excluded. Any surviving sign must be restricted by literal
+theta/entire structure.
+
+**Logarithmic boundary and Hardy--Green residual, formal.** At centered depth `d`, the normalized
+endpoint profile obeys `log(p)phi_p^2=(1-p^(-d))^2`; its prime trace is zero at `d=0` and one at
+every `d>0`. Off center `phi_p^2~1/log(p)`, so ordinary prime-`l2` admission is already equivalent
+to same-fibre neutrality. The missing endpoint tail `r_d(x)=2sqrt(2)e^(-dx)` has exact complement
+`8log(p)phi_p^2=(2sqrt(2)-r_d(log p))^2` and energy
+`integral r_d^2=4/d=2/|Im rho|`, exactly four times Route R's transverse Cauchy self-kernel. Every
+exceptional copy exceeds four; global four-unit control is RH-equivalent, not yet a source bound.
+
+**Prime/continuous Hardy--Green scaling, formal.** Physical prime sampling is coefficient-exact:
+`E_prime(d)=8 sum_p log(p)p^(-1-2d)=8 Re P_log(1+2d)`. The prime-log pole decomposition gives
+`d E_prime(d)->4` and `(d/4)E_prime(d)->1` as `d->0+`. Thus primes reproduce the continuous
+Hardy--Green blow-up `4/d`; no discretization loss can provide cancellation. Combined with the
+critical-clock divisor-blindness no-go, live mechanism is an exact theta/entire/pole-order
+cancellation removing this residue before positive completion, or direct exclusion of its
+exceptional mode.
+
+**Hardy--Green principal renormalization no-go, formal.** Exact decomposition is
+`E_prime(d)=4/d+A(d)`, where
+`A(d)=8 Re(zetaLogDerivReg(1+2d)-primeHigher(1+2d))` extends continuously to the wall. For every
+scalar `c`, `d(E_prime(d)-c/d)->4-c`; coefficient four is uniquely forced by pole cancellation,
+but then `E_prime(d)-4/d` converges for every positive depth approaching zero. Scalar principal
+renormalization therefore has the same wrong selector polarity as the earlier `0/-1` diagonal
+class: after fibre scalarization it either misses or cancels all off-wall principal classes. The
+survivor must operate before scalar quotient or couple depth to a genuinely theta-entire source
+invariant.
+
+**Symmetric-quartet height-phase no-go, formal.** For actual conjugate right-half divisor pair,
+Lean identifies Cauchy-Gram energy as twice one-copy Route P residual energy plus
+`4a/(a²+gamma²)`, with `a` transverse depth and `gamma` height. The cross-term is strictly positive,
+so every exceptional quartet exceeds eight; neutral quartet energy is zero, and global eight-unit
+control is RH-equivalent. Positive divisor multiplicities and functional-equation/conjugation
+assembly amplify rather than cancel exceptional pole. Surviving entire-source mechanism needs a
+signed pre-divisor coefficient or mode annihilation before positive Gram completion.
+
+**Reflection-incidence trichotomy, formal.** The moving-horizon physical half-density is exactly
+reflection-odd. After retaining both same-copy and mixed-copy completed-response/Dirichlet terms,
+arbitrary constant copy coefficients obey
+`E_copy(alpha,beta)=(alpha-beta)² E_packet`. Symmetric incidence therefore cancels every fibre
+unconditionally; every fixed nonsymmetric incidence has the original copywise Ward contract and
+is globally RH-equivalent. Constant signed cross-copy mixing cannot select neutrality. Surviving
+source law must make incidence depend nontrivially on arithmetic/theta data before the reflection
+quotient, or annihilate the antisymmetric component on the actual Xi divisor.
+
+**Covariant Hardy--Green regularization, formal.** Physical moving-horizon connection is the
+required nonconstant pre-quotient action. On continuous physical half-density it annihilates
+universal `p^-1/2` carrier and returns
+`orientation(q)|a(q)|exp(-(1/2+|a(q)|)L)`. Its logarithmically weighted prime square is summable on
+every fibre and has exact energy `E_cov(d)=d²E_prime(d)`. Hence
+`E_cov(d)/d->4` and `E_cov(d)->0`: exceptional `4/d` pole becomes regular positive `4d` wall
+response. Copywise zero energy is exactly theta-flux neutrality; global zero is RH. Open core is
+stable-channel provenance followed by unconditional completed-source trace identity forcing this
+finite positive response to vanish, not domain-admission or scalar-renormalization theorem.
+
+**Analytic-doublet stable-projection obstruction, formal.** P-G34's finite term is exactly stable
+branch of analytic covariant doublet. Full reflection-entire doublet has prime energy
+`t²p^(-1-2|t|)+t²p^(-1+2|t|)`. For every nonzero grade, unstable exponent is at least `-1`, so
+prime sum diverges. Doublet admission is copywise neutrality and globally RH. Thus entireness
+alone cannot produce finite positive detector; it preserves both stable and unstable channels.
+At the P-G35 stage, required new object was a source-derived stable/Hardy projection switching
+branches under reflection without zero-selected grade. P-G36 below constructs it and moves the
+shared external-polar obstruction with Route R to source saturation.
+
+**Source Hardy symmetric-square weld, formal.** That projection is now constructed from the
+literal strict-right Xi canonical product. Its anti-causal Paley--Wiener ray at physical half
+density is `exp(-(1/2+lambda)L)`. Since theta depth is `d=2 Re(lambda)`, critical renormalization
+of its norm square is exactly `exp(-(1/2+d)L)`, coefficient-identical at every prime to P-G34's
+stable channel. Moving-horizon connection multiplies this source Hardy square by `d`, and every
+strict-right source factor contributes strictly positive finite covariant energy. Stable-channel
+provenance is closed; remaining question is why completed Euler--Gamma source should saturate and
+therefore contain no such factor.
+
+**Two-sided aperture wall and normalized Hardy rigidity, formal.** Squarefree-Möbius damping
+extends as an actual Hilbert vector precisely through `u>-1/2`, with critical squared norm
+`(1+2u)^-1`; every negative aperture in this range is strictly expansive. Exact positive
+unitarization gives a two-sided unit-vector curve with critical Gram
+`K(u,v)=sqrt(1+2u)sqrt(1+2v)/(1+u+v)`. Its loss is an explicit square, so `K=1` exactly at
+`u=v`. Reversible raw contraction is false, while scalar normalization preserves strict
+off-wall angle.
+
+**Source Julia--Pythagoras identification, formal.** In half-density coordinates, Cayley
+discrepancy `C(u,v)=(u-v)/(1+u+v)` is literally the positive-real specialization of the Xi Ward
+half-plane Cayley factor and satisfies `C^2+K^2=1`. Thus Möbius normalized Hardy loss and Xi Ward
+strict contractivity are complementary coordinates of one Julia cell. Normalization cannot be a
+producer: it transfers displacement into `C`. The live source theorem must force actual completed
+Julia saturation `K=1`, equivalently `C=0`, before reflection/divisor aggregation.
+
+**P/R hyperbolic rapidity unification, formal.** The normalized source aperture is literally the
+Route R horizontal-boost orbit. With `eta(u)=log sqrt(1+2u)`, Cayley discrepancy is
+`tanh(eta(u)-eta(v))` and normalized Hardy overlap is `sech(eta(u)-eta(v))`. The corresponding
+two-sector point `(sqrt(1+2u),sqrt(1+2u)^-1)` is the boost of `(1,1)`, while the common theta/Route
+R split current is constant `-2` along the entire curve. Thus P's Julia saturation wall and R's
+external polar-gauge wall are one obstruction. Intrinsic conserved current cannot select zero
+rapidity; literal Euler--Gamma data must break this orbit in the fixed source-positive frame.
+
+**Open core.** Prove from literal coupled prime--polar--Gamma/theta source that the actual completed
+source Julia cell saturates, equivalently its source-selected finite P-G34 covariant response has
+zero completed trace/Cayley coordinate. This excludes every P-G28 exceptional Hardy--Green mode
+and neutralizes `i R_2 B`; then derive one
 finite positive compact measure with the local Thorin/Markov identity without zero locations or a
 pre-assumed positive moment functional. A direct compact-carrier construction satisfying the
 coalitional tightness criterion remains an alternate P producer until a typed theorem proves it
@@ -3788,6 +4176,57 @@ polynomial.
     The surviving high-`sigma` cases are now exact: all factors short enough for a raised Huxley
     estimate, and the ultra-near-one configuration whose long factor can be Möbius and therefore
     requires a polynomial-height quantitative inverse-zeta contour (or new aggregate cancellation).
+
+56. Hostile fixed-abscissa audit invalidates the preceding provisional interface but replaces it
+    with a stronger exact one. Maynard evaluates every factor at the one Perron abscissa
+    `c=1+1/log x` and assigns independent magnitude exponents `alpha_i`; earlier Route-T Huxley
+    files evaluated factors at `sigma+it` and used threshold `N^(1-sigma)`, conflating these two
+    variables. Direct-checked, currently umbrella-unreachable
+    `Sieve/MaynardPerronAmplitude.lean` repairs the local Huxley theorem: coefficient weights are
+    `D^(-c)`, selected thresholds are `Y^(alpha-c)`, `c` cancels, and the fibre exponent is
+    `1367/2160*(81/40-2alpha)`. Direct-checked
+    `Sieve/MaynardArbitraryEnergy.lean` then removes the fixed `41/40` loss entirely. For every
+    `rho>0`, one constant controls every selected group of at most `120` factors and every raising
+    power at most `51` by `Y^(1+rho)`. Consequently
+    `Sieve/MaynardArbitraryAmplitudeCount.lean` proves the corrected fibre count
+
+    ~~~
+    R_fibre <= C(rho,K,delta) T0^((1367/2160)*(2+rho-2alpha)).
+    ~~~
+
+    The exact reserve against Maynard alternative (i) is
+    `(mu-2*1367/2160)*(1-alpha)-1367*rho/2160`. Since
+    `4/3-2*1367/2160=73/1080`, choosing `rho=(73/1367)d` for any proved amplitude deficit
+    `d<=1-alpha` leaves positive reserve `73d/2160`; every fixed label/energy constant is
+    eventually absorbed. This removes the former fixed-loss ultra-band obstruction.
+
+    Direct-checked `Sieve/MaynardAmplitudeCells.lean` constructs the missing amplitude cells from
+    actual positive factor norms, rather than assuming bin exponents or a complementary exponent.
+    Global amplitude is exactly the length-logarithmic weighted mean of local amplitudes. One
+    factor of relative length `ell` and local deficit `Delta` forces global deficit
+    `ell*Delta`; with nonuniform local slacks the exact survivor is
+    `ell*Delta-E`, where `E log x` is total slack mass. Möbius and zeta atoms have zero trivial
+    amplitude slack. A literal Heath--Brown box has exactly one nonzero slack, from its unique
+    logarithm atom, and Lean proves its total mass is exactly `log log(2^(q+1))=o(log T)`.
+
+    Direct-checked `Sieve/MaynardLongAmplitudeExclusion.lean` composes the order-47 derivative
+    test with this exact slack law. A Perron-relevant long factor occupies relative length at
+    least `1/95`; after constant absorption its local deficit is
+    `maynardDerivativeDeficit 47/2`; paying half the resulting global saving to the logarithmic
+    slack leaves the fixed product-amplitude deficit
+
+    ~~~
+    d_long = maynardDerivativeDeficit 47 / 380 > 0.
+    ~~~
+
+    Uniform eventual theorems discharge both derivative-constant and box-slack inequalities, and
+    the capstone maps an actual fixed-`c` long zeta/log box core to `alpha<=1-d_long`. Canonical
+    degree-60 cutoff already makes every Möbius atom short, so the former “ultra-near-one long
+    Möbius” survivor is stale. Remaining exact assembly obligations are now: trim harmless
+    exponent-zero factors; restrict the pointwise eligible aggregate to Perron-relevant boxes
+    (`coreLower<=X`) before aggregate-to-box selection; add amplitude/selection labels to the
+    finite fibre count; and feed the resulting Maynard alternative into the smooth-window
+    prime-gap moment receiver.
 
 Three committed but umbrella-unreachable files now supply the local Huxley engine provisionally.
 `Sieve/HuxleyLogPhase.lean` proves a Kuzmin--Landau reciprocal-frequency bound below the first
@@ -5449,12 +5888,15 @@ open. Numerical evidence is not accepted as proof or disproof.
    `OffDiagonalSmall mu hh` premise. Its fixed/cofinally low-height and rough parts are closed; the analytic
    target is the coprime Möbius near-diagonal covariance hidden inside the Ramaré off-diagonal in
    the moving range `delta_M^(-2/3) << T << M`. The new ternary-marker mean-square theorem handles
-   the finite marker cube. Statewise rough-cofactor flatness has now been reduced to one centered
-   diffuse codiagonal reporter, and its exact physical energy is weighted marginal-projection
-   distance. Prove all-reporter rate or recurrence-compatible collision defect, with same moving
-   seam. Maximum-state collision and mean Euler component are already bounded; prime spacing,
-   square-multiple control, universal Fisher corner identification, critical-clock parameter
-   choice, and strict-right graph normalization are not live gaps.
+   the finite marker cube unconditionally in Lean, including exact alternating coefficients,
+   reciprocal Gibbs weights, cofinal antiscale saturation, canonical vanishing quadratic mass, and
+   the actual coprime Möbius-product bridge. Statewise rough-cofactor flatness has now been reduced
+   to one centered diffuse codiagonal reporter, and its exact physical energy is weighted
+   marginal-projection distance. Prove cofactor tensoring plus all-reporter rate or
+   recurrence-compatible collision defect, with same moving seam. Maximum-state collision and mean
+   Euler component are already bounded; prime spacing, finite marker dissipation, square-multiple
+   control, universal Fisher corner identification, critical-clock parameter choice, and
+   strict-right graph normalization are not live gaps.
    Alternate direct lane: instantiate grown Lean conductance on actual recurrence kernel `P` and
    prove weighted-isolated mass `<=X^(1/2+o(1))` and inverse row-plus-column-load Dirichlet
    energy `E_P<=X^(o(1))` on full physical entropy-complement graph. One-sign restriction gives
@@ -5570,12 +6012,14 @@ formal credit. The direct-Cayley/two-port/Esscher/theta--Xi-mass cluster is also
 - formal/GaloisForLFunctions/RHTower/EigenPairRectangleIdentity.lean
 - formal/GaloisForLFunctions/RHTower/EigenPairVerticalBound.lean
 - formal/GaloisForLFunctions/RHTower/CCMRationalAdelicBruhatSchwartzSpace.lean
+- formal/GaloisForLFunctions/RHTower/CCMArchimedeanInfiniteOrder.lean
 
 ### E
 
 All Route-E anchors listed here are umbrella-reachable at this cutoff.
 
 - formal/GaloisForLFunctions/RHTower/RouteECriticalTerminalVarianceMinimax.lean
+- formal/GaloisForLFunctions/RHTower/RouteEDeningerVacuumFiniteDilationFracture.lean
 - formal/GaloisForLFunctions/RHTower/RouteEPhysicalSaddleAntiscaleBarrier.lean
 - formal/GaloisForLFunctions/RHTower/RouteEPhysicalShellParityEnergyRegression.lean
 - formal/GaloisForLFunctions/RHTower/RouteEProductTruncatedReservoirMass.lean
@@ -5645,6 +6089,8 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 - formal/GaloisForLFunctions/RHTower/Sieve/RamareEnergy.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/RamareSquareMultiple.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/RamarePrimeOffDiagonal.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/RouteERamareTernaryAntiscale.lean
+- formal/GaloisForLFunctions/RHTower/Sieve/RouteERamareTernaryAntiscaleCapstone.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/LowHeightPoly.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/LowHeightMoebius.lean
 - formal/GaloisForLFunctions/RHTower/BeurlingSystemTransitionAsymptotic.lean
@@ -6327,6 +6773,234 @@ is the reciprocal-domain shadow of the same properness principle: both orientati
 at zero grade. The exact Frankenstein producer is now source-derived simultaneous
 forward/reciprocal landing, or an equivalent pre-zero bound on this literal polar orbit. Ambient
 `l1/l2` admission, reflection exchange, and positivity do not supply that theorem.
+
+### Frankenstein seam: adaptive statistical transport versus frozen Fisher frame
+
+Umbrella-reachable `SourceHorizontalAdaptiveFisherReflectionCurvature.lean` now identifies one
+cross-corpus obstruction shared by abelian formation, source Gamma-six, Gauss-Hodge, and Wold
+prime-clock routes. At prime `p` and horizontal grade `t`, adaptive Bernoulli occupation has odds
+`p^(t-1)`, while frozen Gamma-Bockstein transport keeps neutral Fisher density `p/(p+1)^2`. Their
+exact frame distortion is
+
+```text
+D_p(t)=((p+p^t)(p+p^(-t)))/(p+1)^2
+      =1+F_p*GammaSix(t log p).
+```
+
+Frozen Hodge work equals `D_p(t)` times actual symmetric Bernoulli KL work. Excess is strictly
+positive exactly off center, both readings preserve reflection orientations, and Xi specialization
+retains every analytic multiplicity copy. The assembled Gauss-Hodge current factors through same
+adaptive information while retaining literal residue and prime label. Consequently global equality
+of frozen and adaptive works on Xi copies is formally equivalent to RH.
+
+This is not RH: reflection and functional-equation KL isometries preserve each work separately and
+do not identify frames. Direct frozen/adaptive work equality remains sufficient, but the chirality
+seam below proves it is stronger than necessary.
+
+### Frankenstein seam: directed KL chirality and balanced hidden fibres
+
+`SourceHorizontalAdaptiveFisherChiralitySelection.lean` now gives a strictly weaker signed producer
+than frozen/adaptive symmetric-work equality. Adaptive occupation is exactly
+
+```text
+q_p(t)=sigmoid((t-1)log p).
+```
+
+For reflected grades its two Bernoulli natural parameters have center `-log p` and half-separation
+`t log p`. The directed KL chirality has derivative
+
+```text
+2s(V(c+s)-V(c-s)),   V(x)=sigmoid(x)(1-sigmoid(x)),
+```
+
+and is strictly faithful whenever `c<0` and `|s|<-c`. Every Xi divisor lies in exactly this open
+window, so adaptive prime chirality vanishes iff the retained centered rate vanishes; global
+vanishing is formally equivalent to RH and retains every Xi multiplicity copy.
+
+The first conjectured reversal fails exactly: Boolean complement sends `t` to `2-t` and never sends
+`t` to `-t`. Thus producer cannot be an equivariant bit flip. The second conjecture—full
+pair-sufficiency—is overstrong. Observer-current conservation shows source reversal plus zero
+*signed* fibre chirality suffices. In conditional form, hidden forward and reverse KL costs may be
+nonzero; only their equality is required. Lean proves that a fibre-balanced reversible source
+certificate for each Xi copy at prime two implies RH.
+
+Exact source-reversal calculus sharpens this once more. For involution `theta`, Lean proves
+
+```text
+CondKL(P,R,q)=CondKL(R,P,q∘theta).
+```
+
+The proposed same-source producer is now terminalized rather than assumed. Under source reversal,
+adaptive reflected Boolean marginals, finite losses, and the Xi strip, Lean proves
+
+```text
+CondKL(R,P,q∘theta)=CondKL(R,P,q) iff t=0.
+```
+
+It is therefore an exact RH-equivalent socket, not an independent consequence waiting to be found.
+Literal Hasse recovery at reflected prime clocks also does not balance automatically (pre-formal
+exact-formula numerics falsify that shortcut). Viable producer must act earlier than observer
+conditional invariance.
+
+### Frankenstein seam: adaptive information chirality = Route-T cubic anomaly
+
+Umbrella-reachable
+`SourceHorizontalAdaptiveFisherChiralityWoldCubicBridge.lean` disproves independence of the two
+newest seams. Adaptive directed KL chirality has first nonzero neutral jet at order three. For every
+prime `p`, its cubic jet `A_p` and Route-T Wold prime-deformation cubic jet `W_p` obey
+
+```text
+A_p = G_p W_p,
+G_p = 8p^5/((p-1)^2(p+1)^3),
+1 <= G_p <= 32.
+```
+
+This is uniformly coefficient-faithful: `A_p=0 iff W_p=0` and `W_p <= A_p <= 32W_p`. More
+importantly, inverse-gauged finite adaptive-information sum equals natural Route-T cubic moment
+exactly, prime by prime. After terminal-prime holonomy subtraction, adaptive residual coefficient
+is literally Route-T residual coefficient, with same normalized cofinal limit `-2/3`. Xi-copy
+specialization equals existing Wold cubic response, preserves multiplicity, and reverses under line
+conjugation.
+
+New big-picture interpretation: frozen/adaptive Fisher distortion is even metric shell, adaptive KL
+chirality is odd local current, and Route-T cubic remnant is same current after ordered all-prime
+transport. Reflection-pair cancellation is automatic and useless; same-source conditional
+invariance is equivalent to desired conclusion. Missing producer is a pre-zero, one-orientation
+arithmetic conservation law equating terminal holonomy current with inverse-gauged adaptive
+information current before reflection pairing. Such a law would force adaptive residual horizon to
+vanish; formal `(-2/3)t^3` limit would then force `t=0` for every Xi copy. No such source law is yet
+proved, so RH remains open.
+
+### Frankenstein seam: moment-neutral amplification = failure of source contiguity
+
+Umbrella-reachable
+`SourceHorizontalAdaptiveFisherCofinalContiguitySelection.lean` supplies a different selector from
+the equality and residual-current sockets above. For adaptive occupation
+
+```text
+q_p(u)=p^u/(p+p^u),
+```
+
+Lean proves reflected Jeffreys work grows at least linearly for `u>=1`, hence a fixed finite
+full-source Jeffreys budget cannot support Boolean observers with marginals
+
+```text
+P(q_n=true)=q_p(d^n|t|),
+R(q_n=true)=q_p(-d^n|t|)
+```
+
+unless `t=0`. The heavy-conjecture pivot is sharper: finite KL is unnecessary. If `t!=0`, these
+same event probabilities tend to one under `P` and zero under `R`. For finite measures, `P << R`
+forces every `R`-vanishing event sequence to vanish under `P`, by Radon--Nikodym uniform
+integrability. Therefore one-sided absolute continuity alone forces `t=0`.
+
+This becomes source-derived rather than hypothetical on the compatibility side: corpus already
+proves every pair of convergent abelian zeta class laws mutually absolutely continuous. Lean now
+proves that exact adaptive scale observers on two fixed such class laws force each retained Xi
+copy onto the critical line; certificates for every multiplicity copy at prime two and dilation
+two imply RH. Absolute continuity is not a certificate premise—it is discharged by the existing
+class-law theorem. Exact arithmetic observer construction remains open, so this is not RH.
+
+This reinterprets the rank--trace/shared-reservoir wall. Moment-neutral packets amplify raw inertia
+only while their spectral weights collapse. Turning that scale-free orientation into a
+coefficient-faithful cofinal statistical test would make forward and reflected sources
+asymptotically singular, contradicting source contiguity. Thus missing operation is not further
+index amplification. It is an arithmetic probability-law landing of the already-amplified
+orientation on one fixed source pair. Weight-dependent sign normalization can create such a test
+only through the same unbounded two-orientation domain whose simultaneous source derivation would
+already force neutrality.
+
+Exact new producer target: construct from completed prime--Gamma/abelian-group source, for every
+`XiZeroCopy q`, a single observer family on two fixed convergent class laws with the displayed
+adaptive marginals at grades `2^n |2 Re(q)-1|`; equivalently construct a coefficient-faithful
+shared-reservoir orientation readout with forward and reflected error tending to zero. This target
+preserves prime label, divisor multiplicity, and both orientations, and it acts before bounded
+scalarization.
+
+### Frankenstein seam: Route-N parity × prime-vacuum fusion
+
+`SourceHorizontalAdaptiveVacuumFusion.lean` narrows that producer and closes its scalar arithmetic
+formula. Adaptive odds factor before scalarization as
+
+```text
+p^(t-1) = p^t * p^-1.
+```
+
+Equality postselection of a centered horizontal bit with odds `p^t` and the prime-vacuum bit with
+odds `p^-1` recovers adaptive occupation exactly. Its admission is not a shrinking-aperture trick:
+for every real grade it is at least `1/(p+1)`. Lean proves a variable-aperture strengthening of
+cofinal contiguity: conditional adaptive marginals on varying admitted events still force neutral
+grade whenever forward admission has any uniform positive floor.
+
+The existing Route-N squarefree source supplies an unexpected exact doublet. Write
+
+```text
+C_p     = critical squarefree parity odds = p^-1,
+T_(p,t) = twisted squarefree parity odds  = p^(-1-2|t|).
+```
+
+Then the inward and outward adaptive odds on the same labelled scalar carrier are
+
+```text
+inward  = T_(p,t),
+outward = C_p^2 / T_(p,t),
+inward * outward = C_p^2.
+```
+
+Their parity probabilities are exactly `q_p(-2|t|)` and `q_p(2|t|)`. Thus every cofinal adaptive
+grade is already coefficient-faithful Route-N critical/twisted parity data; prime label, vacuum
+bias, and both reflection orientations are no longer missing formulas. The earlier request for
+unconditioned adaptive observers was overstrong.
+
+Exact remaining producer is event-level and source-relative: realize `T` and reciprocal
+orientation `C^2/T` as conditional masses of one uniformly admitted event family on two fixed
+convergent abelian class laws for every Xi multiplicity copy. Absolute continuity is discharged by
+the class-law theorem, and the new Lean certificate shows such realizations imply RH. This is not
+RH: no theorem yet constructs reciprocal orientation on the admitted source carrier. Big-picture
+identification is sharper: adaptive baseline `-log p` is precisely the forbidden prime-vacuum
+grade from the first-trace/Calderón transition atlas, while Route-N twisted parity supplies the
+singular inward branch. Missing Frankenstein map is their uniformly admitted non-equivariant
+fusion, not another scalar observer, index amplifier, or parity calculation.
+
+### Frankenstein seam: Route-N Cremona polarity = Route-P/R rapidity = Gamma-six curvature
+
+`SourceHorizontalRouteNProjectiveCremonaInvolution.lean` identifies the nonlinear operation that
+was missing from the scalar parity formula. At critical odds `C`, horizontal reflection is the
+positive Cremona involution
+
+```text
+x |-> C^2/x.
+```
+
+It is involutive, fixes positive odds only at `x=C`, and negates the exact Julia/Cayley coordinate
+`(x-C)/(x+C)`. Route-N inward/outward odds are marked odds of one residue projective clock at
+opposite weights. Route-P's existing duality--adjunction fracture then proves ordinary Weyl
+transport cannot implement this polarity: it preserves projective weight and meets the dual state
+only at zero rapidity. Thus N's parity doublet, P's Julia cell, and R's horizontal boost are one
+birational source geometry, not three independent constraints.
+
+`SourceHorizontalRouteNDeningerGammaSixCurvatureCollision.lean` identifies its literal source
+carrier at the ordered prime pair `(2,3)`. Multiplying the two labelled Route-N cells gives critical
+odds `1/6` and orientations `6^(-1±2|t|)`. After critical normalization, the inward branch is
+exactly Deninger's mixed reflection--Wold curvature `(1/6)^(2|t|)` and the outward branch is its
+reciprocal. One Gamma-six Wold step therefore carries the normalized Route-N inward odds exactly.
+The signed orientation is already the grade-two marked tame/Calderón reader:
+
+```text
+outward_6 - inward_6
+  = (1/6) * deningerGammaSixExceptionalTameReader 2 ((1+|t|)/2),
+```
+
+and vanishes exactly at `t=0`.
+
+The direct S1 Hardy-vacuum conjecture fails unconditionally: depth zero of every source-curved
+Poisson character is `1`, so its reflected difference is identically zero at every horizontal
+grade. The positive survivor is therefore grade two, not vacuum. Exact producer is now a
+coefficient-faithful landing of this already source-derived grade-two tame reader into either a
+uniformly admitted fixed-source event relation or a strict target ideal/Calderón class killed before
+scalarization. It must preserve labels `(2,3)`, divisor multiplicity, and both anti-birational
+orientations. Weyl equality, Wold stationarity, cyclic descent, or reflection invariance cannot be
+used as inputs because corpus proves each is the RH-equivalent collision itself.
 
 ## Final frontier statement
 

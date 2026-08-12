@@ -130,3 +130,53 @@ These are corpus-wide tests.  They do not privilege Route R, L, G, O, or any oth
 - [ ] summable cofinal boundary theorem establishing `(GED.1)`
 - [ ] pre-zero application to every relevant spectral state
 - [ ] RH consequence
+
+## 8. Global properness mechanism now closed on paper
+
+The operator-level properness question is no longer vague. The Stage-2 theorem
+
+`../formation-laplacian-properness-mechanics/compact-formation-semifredholm-transduction-joint-recovery-and-carrier-defect-bifurcation-law.md`
+
+proves the exact fusion law. If the coefficient-faithful local source channel `A` is compact and
+the cofinal boundary transducer is `R`, then `(A,R)` is bounded below exactly when:
+
+1. `R` has closed range;
+2. `ker R` is finite-dimensional;
+3. `A` is injective on `ker R`.
+
+It also constructs the joint recovery map
+
+```text
+L(y,z)=S z + J(y-A S z)
+```
+
+and proves carrier--defect bifurcation: structural `R` must remain present, while a separate
+relative channel `delta R` may vanish in the compact quotient at selection. FE and common-recovery
+packet lifts preserve all formation margins and information exactly.
+
+This closes **Law IV as an abstract formation theorem** and sharpens Law V. Reciprocal finite-work
+conservation cannot be implemented by making the sole carrier vanish. The producer must construct:
+
+```text
+one retained semi-Fredholm transducer
+  + one FE-covariant relative defect on that carrier.
+```
+
+The remaining source problem is not “find a noncompact archimedean operator.” The corpus already
+has those. Nor is pointwise Calkin frame coverage sufficient. The Stage-2 theorem
+
+`../formation-laplacian-properness-mechanics/formation-quotient-interchange-tight-recovery-and-residual-coverage-law.md`
+
+proves that countable formation does not commute with quotienting by local compact operators:
+rank-one residuals can assemble into a noncompact projection with infinite kernel, and finite-rank
+local leakage can make the global analysis map non-Bessel. The exact source gate is therefore:
+
+1. construct the formed source analysis operator;
+2. prove its directed Gram residual converges to a bounded operator `G`;
+3. prove `2 I + G` has closed range and finite-dimensional kernel (the stronger sufficient bound
+   is `||G|| < 2`);
+4. prove the compact coefficient packet separates that kernel;
+5. only then derive the reciprocal defect comparison `(GED.1)` without fitting it from a Xi fibre.
+
+Functional equation conjugates this residual and its decoder, hence is information-neutral. It
+cannot improve the global lower frame margin.

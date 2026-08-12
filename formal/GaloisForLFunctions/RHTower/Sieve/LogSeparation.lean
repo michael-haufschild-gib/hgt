@@ -33,6 +33,38 @@ theorem log_sub_ge {x y : ℝ} (hy : 0 < y) (hyx : y ≤ x) :
   rw [hxy] at hle
   linarith
 
+/-- Distinct positive integers bounded by `R` have logarithms separated by at least `1 / R`.
+This form is useful when frequencies are logarithms of integer products rather than consecutive
+indices. -/
+theorem one_div_nat_upper_le_abs_log_sub
+    {a b R : ℕ} (ha : 0 < a) (hb : 0 < b) (haR : a ≤ R) (hbR : b ≤ R)
+    (hab : a ≠ b) :
+    1 / (R : ℝ) ≤ |Real.log (a : ℝ) - Real.log (b : ℝ)| := by
+  have hR : (0 : ℝ) < (R : ℝ) := by exact_mod_cast lt_of_lt_of_le ha haR
+  have ha' : (0 : ℝ) < (a : ℝ) := by exact_mod_cast ha
+  have hb' : (0 : ℝ) < (b : ℝ) := by exact_mod_cast hb
+  rcases lt_or_gt_of_ne hab with hablt | hbalt
+  · have habSucc : (a : ℝ) + 1 ≤ (b : ℝ) := by exact_mod_cast hablt
+    have hgap : (1 : ℝ) ≤ (b : ℝ) - (a : ℝ) := by linarith
+    have habLe : (a : ℝ) ≤ (b : ℝ) := by exact_mod_cast hablt.le
+    have hlog := log_sub_ge ha' habLe
+    have hfrac : 1 / (R : ℝ) ≤ ((b : ℝ) - (a : ℝ)) / (b : ℝ) := by
+      rw [div_le_div_iff₀ hR hb']
+      have hbR' : (b : ℝ) ≤ (R : ℝ) := by exact_mod_cast hbR
+      nlinarith
+    rw [abs_of_nonpos (sub_nonpos.mpr (Real.log_le_log ha' habLe))]
+    linarith
+  · have hbaSucc : (b : ℝ) + 1 ≤ (a : ℝ) := by exact_mod_cast hbalt
+    have hgap : (1 : ℝ) ≤ (a : ℝ) - (b : ℝ) := by linarith
+    have hbaLe : (b : ℝ) ≤ (a : ℝ) := by exact_mod_cast hbalt.le
+    have hlog := log_sub_ge hb' hbaLe
+    have hfrac : 1 / (R : ℝ) ≤ ((a : ℝ) - (b : ℝ)) / (a : ℝ) := by
+      rw [div_le_div_iff₀ hR ha']
+      have haR' : (a : ℝ) ≤ (R : ℝ) := by exact_mod_cast haR
+      nlinarith
+    rw [abs_of_nonneg (sub_nonneg.mpr (Real.log_le_log hb' hbaLe))]
+    linarith
+
 /-- **Logarithmic separation of distinct indices.** -/
 theorem abs_log_succ_sub_ge {m n N : ℕ} (hm : m < N) (hn : n < N) :
     |(m : ℝ) - (n : ℝ)| / (N : ℝ)

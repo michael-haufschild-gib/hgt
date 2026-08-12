@@ -5322,7 +5322,7 @@ single frequency it is the Halász deficit of unit 4.
 ## Unit 38 — correction: Ramaré recombination, coprime firewall, and ternary marker survivor
 
 Paper proof:
-`../2-fully-proven/new_scientific_knowledge/route-e-ramare-recombination-ternary-antiscale-law.md`.
+`../3-formalized/new_scientific_knowledge/route-e-ramare-recombination-ternary-antiscale-law.md`.
 Lean was inspected read-only and was not changed during corpus refactoring.
 
 The last sentence of unit 37 is not correct after integer reindexing. The prime blocks are sparse

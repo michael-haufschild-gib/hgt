@@ -44,6 +44,39 @@ theorem sqMultCount_le_card_primeFactorsIn (P : Finset ℕ) (n : ℕ) :
 def sqMultCoeff (P : Finset ℕ) (n : ℕ) : ℂ :=
   ((μ n : ℤ) : ℂ) * (sqMultCount P n : ℂ) / ((primeFactorsIn P n).card : ℂ)
 
+/-- **The Möbius square-multiple coefficient vanishes identically.**  If its numerator count is
+nonzero, some designated prime square divides `n`; hence `n` is not squarefree and `μ(n)=0`.
+The denominator convention is therefore irrelevant. -/
+theorem sqMultCoeff_eq_zero {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime) (n : ℕ) :
+    sqMultCoeff P n = 0 := by
+  classical
+  by_cases hcount : sqMultCount P n = 0
+  · simp [sqMultCoeff, hcount]
+  · have hnonempty : {p ∈ P | p * p ∣ n}.Nonempty := by
+      rw [← Finset.card_pos]
+      simpa [sqMultCount] using Nat.pos_of_ne_zero hcount
+    obtain ⟨p, hp⟩ := hnonempty
+    rw [Finset.mem_filter] at hp
+    obtain ⟨hpP, hp2⟩ := hp
+    have hpprime : p.Prime := hPprime p hpP
+    have hnonsq : ¬ Squarefree n := by
+      intro hn
+      have hppsq : Squarefree (p * p) := hn.squarefree_of_dvd hp2
+      have hcop := Nat.coprime_of_squarefree_mul hppsq
+      exact hpprime.ne_one (by simpa [Nat.coprime_self] using hcop)
+    rw [sqMultCoeff, ArithmeticFunction.moebius_eq_zero_of_not_squarefree hnonsq]
+    simp
+
+/-- The square-multiple Dirichlet polynomial is literally zero, not merely small in mean square. -/
+theorem logPoly_sqMultCoeff_eq_zero {P : Finset ℕ} (hPprime : ∀ p ∈ P, p.Prime)
+    (s : Finset ℕ) (w : ℝ) :
+    logPoly (sqMultCoeff P) s w = 0 := by
+  rw [logPoly]
+  apply Finset.sum_eq_zero
+  intro n hn
+  rw [sqMultCoeff_eq_zero hPprime]
+  simp
+
 theorem norm_sqMultCoeff_le (P : Finset ℕ) (n : ℕ) :
     ‖sqMultCoeff P n‖ ≤ (sqMultCount P n : ℝ) := by
   classical
@@ -237,6 +270,16 @@ theorem logPoly_moebius_eq_ramare_decomp {P : Finset ℕ} (hPprime : ∀ q ∈ P
       = logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w := by
     rw [roughSet, logPoly_moebius_eq_sum_moebiusPhase]
   rw [hbil, hrough]
+
+/-- **Exact two-way Möbius Ramaré decomposition.**  The apparent square-multiple error in the
+three-way decomposition vanishes coefficientwise. -/
+theorem logPoly_moebius_eq_ramare_add_rough {P : Finset ℕ}
+    (hPprime : ∀ q ∈ P, q.Prime) (M : ℕ) (w : ℝ) :
+    logPoly (fun n => ((μ n : ℤ) : ℂ)) (Finset.Icc 1 M) w
+      = ramareBilinear P M w
+        + logPoly (fun n => ((μ n : ℤ) : ℂ)) (roughSet P M) w := by
+  simpa [logPoly_sqMultCoeff_eq_zero hPprime (Finset.Icc 1 M) w] using
+    logPoly_moebius_eq_ramare_decomp hPprime M w
 
 /-- A weighted triangle inequality for squared norms: the main term keeps a factor `1 + δ`. -/
 theorem normSq_add_le_weighted (a u : ℂ) {δ : ℝ} (hδ : 0 < δ) :

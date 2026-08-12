@@ -6,10 +6,11 @@
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** no Lean written while corpus refactor is active; exact finite Gibbs--Mellin
-  factorization and Mellin \(L^2\) transport already exist unconditionally in
-  `RHTower/GibbsCriticalDissipationAntiscaleResonance.lean` and
-  `RHTower/L2MellinUnitary.lean`
+- **Lean status:** exact analytic saddle core is formalized in
+  `RHTower/RouteEPhysicalSaddleAntiscaleBarrier.lean`: all exponential factorial moments, unique
+  correction `pi/a`, residual `pi^2/a^3`, local Euler deficit, and finite-product deficit.
+  `RHTower/GibbsAntiscaleDeterminantOddCube.lean` supplies exact growing odd grades. PNT transport
+  from these identities to `(3)`--`(10)` remains paper-only.
 - **Scientific status:** candidate project-new synthesis; external priority not claimed
 
 ## Result

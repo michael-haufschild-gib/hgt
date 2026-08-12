@@ -1103,3 +1103,26 @@ green; remaining steps are completeness, not discovery). No Lean until step 2 pa
   and probabilistic symmetry breaking own the static mathematics. Field dynamics remains open:
   one allocation must change which next challenge the source generates. Fixed reporter lists and
   stabilizer intersections do not count.
+
+## 2026-08-12 -- recovery-cocycle mechanics crosses the nonabelian execution boundary
+
+- Rejected likelihood-ledger generation as an internal rediscovery. ULF-TRLC-1 already gives the
+  source likelihood cocycle, fluctuation identity, observer/fibre KL decomposition, and recurrent
+  finite observation with open production.
+- Proved ULF-RCM-2 on paper. Group-valued ledgers over a finite invertible observer are classified
+  up to state-dependent recovery gauge by cycle-holonomy conjugacy packets.
+- For a source-marked word metric, minimum linear gauge work is shortest conjugacy length. Minimum
+  quadratic work is the exact balanced-square partition `B_m(L)` of that length. Linear work is
+  refinement invariant; quadratic work is formation-depth dependent.
+- Two marked source executions generate a persistent ledger through the schedule commutator
+  `ABA^(-1)B^(-1)`. This is endogenous history genesis, not an appended counter or fitted route
+  defect.
+- Common recovery remains an exact KL isometry for arbitrary nonabelian ledgers. Edgewise unitary
+  Gram data are identically trivial while ordered holonomy survives. A finite quotient observer
+  can recur while marked cycle-periodic action grows linearly.
+- Hostile boundary: graph-gauge holonomy and word metrics are classical parents. Open field gates
+  are source-derived noncommuting arithmetic executions, noninvertible/higher observer holonomy,
+  and a global source law forcing finite admission or trivial commutator before divisor
+  specialization.
+- No Lean file written or built in this read-only formal audit turn. Lean research found no
+  existing nonabelian recovery-cocycle or sandpile-odometer theorem; formalization remains pending.

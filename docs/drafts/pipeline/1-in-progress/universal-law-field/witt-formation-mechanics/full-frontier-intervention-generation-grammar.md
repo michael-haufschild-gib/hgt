@@ -262,6 +262,189 @@ transport of one sufficient scalar formation statistic whose endpoint laws are e
 reflection.  The field problem is to generate one of those comparison laws from the literal source;
 constructing another endpoint receiver does not address it.
 
+### 5.2 Infinite-orbit induction: local smallness becomes global obstruction
+
+The local-to-global formation law is now exact.  Let one bounded defect (D:H\to K) be transported
+unitarily over a countably infinite homogeneous source orbit and form the block operator
+
+\[
+ \operatorname{Ind}(D)=\bigoplus_i V_iDU_i^{-1}.
+\]
+
+The Stage-2 orbit-induction theorem proves
+
+\[
+ \boxed{
+ \|\operatorname{Ind}(D)\|_{\mathrm{ess}}=\|D\|,
+ \qquad
+ \gamma(\operatorname{Ind}(D))=\gamma(D).}
+ \tag{WFG.9}
+\]
+
+Thus a nonzero compact local defect is never a compact global defect.  Finite local kernel and
+cokernel dimensions become infinite multiplicities; the induced operator is Fredholm exactly when
+the local block is invertible.  For independently formed observer packets, common recovery gives
+the parallel identity
+
+\[
+ \boxed{J_F=|F|J_1.}
+ \tag{WFG.10}
+\]
+
+Finite response rank obeys the same multiplicity law.  These are not three analogies: they are
+three executions of one source operation, orbit induction.  Functional reflection only permutes
+the induced blocks and is neutral for all three invariants.
+
+This supplies the missing higher selection mechanism.  Any source theorem proving one of
+
+1. compact/Schatten global defect,
+2. Fredholm global formation, or
+3. bounded cofinal common-recovery work
+
+forces the one-block defect to vanish.  The next RH step is therefore not another local positivity
+or compactness estimate.  It is a literal proof that the pre-zero arithmetic defect is formed
+homogeneously over an infinite source orbit and that one global admission law holds.  Pointwise
+Calkin vanishing is explicitly insufficient because local quotient and infinite formation do not
+commute.
+
+The weighted extension closes the first hostile escape.  For orbit amplitudes \((a_i)\), global
+compactness is equivalent to \(a_i\to0\), Schatten \(p\)-admission to \((a_i)\in\ell^p\), and
+closed range to a positive infimum of the nonzero amplitudes.  Independent packet work is bounded
+exactly when the local Jeffreys divergences are summable.  Therefore infinite orbit alone is not a
+selector.  The literal source must be proved to lie in the nonsummable/essential regime, or a
+nonzero local defect can survive global admission.
+
+### 5.3 Character transgression and positive resonance
+
+ULF-OISM-4 identifies the missing internal dynamics of an induced orbit.  If `alpha` is the phase
+transport, then `delta = 1-alpha` has a bounded primitive on every nontrivial character and no
+bounded primitive on the neutral character.  Positive Gram formation does not preserve that
+exactness: self-pairing sends every character `chi` to `conj(chi)chi=1`.  In a finite phase packet
+this gives the exact decomposition
+
+\[
+ \boxed{X=\Pi_UX+(1-\operatorname{Ad}_U)G_U(X).}
+ \tag{WFG.11}
+\]
+
+Here `Pi_U` is the phase-orbit average onto the commutant.  For positive nonzero `X`, the survivor
+`Pi_U X` is positive, trace preserving, and nonzero.  For a rank-one packet `vv*`, its rank is the
+number of occupied phase classes.  The Hilbert--Schmidt Pythagorean identity conserves total packet
+energy between this resonant population and the exact oscillatory coherence.
+
+This also closes the global properness question for countable pure-point packets:
+
+\[
+ \boxed{
+ \operatorname{ran}(1-\operatorname{Ad}_U)\text{ is closed on }S_2
+ \iff U\text{ has finitely many distinct phase classes}.}
+ \tag{WFG.12}
+\]
+
+Every finite aperture is exact off resonance.  Infinite phase diversity crowds the neutral
+character, makes inverse transgression norms diverge, and produces a nonclosed cofinal range.
+Functional reflection `U -> U*` preserves the phase partition, gap, survivor, rank, and recovered
+information.  It is neutral for this mechanism.
+
+Equation `(WFG.11)` is the first exact fusion of signed transport, positive formation, recurrence
+characters, response rank, and cofinal topology.  The next source problem is no longer “find a
+cancellation object.”  It is: construct the pre-zero phase representation and compute its
+commutant survivor.
+
+### 5.4 Atomless formation and ideal-relative actuality
+
+ULF-OISM-5 proves that an atomless phase representation has no nonzero Hilbert--Schmidt commutant.
+Consequently `1-Ad_U` has dense nonclosed range on `S_2`, and every Hilbert--Schmidt Cesaro packet
+converges to zero.  Positive trace-class packets nevertheless retain their complete trace norm and
+cannot converge in `S_1`.
+
+The Haar model gives an exact calibration from a single rank-one source state:
+
+\[
+ M_N(\rho)=P_N/N,qquad
+ (\operatorname{rank},\|\cdot\|,\|\cdot\|_2,\|\cdot\|_1,S)
+ =(N,N^{-1},N^{-1/2},1,\log N).
+ \tag{WFG.13}
+\]
+
+Thus formation does not possess one observer-independent size.  It has an **ideal profile**.  A
+packet can disappear in `S_2`, retain all positive mass in `S_1`, and generate unbounded rank and
+entropy simultaneously.  This supplies an exact topology-information fusion and separates two
+global source questions that were previously conflated:
+
+1. what is the source phase spectral type; and
+2. in which operator ideal is global admission imposed?
+
+### 5.5 Mixed spectral formation classification
+
+ULF-OISM-6 removes the remaining pure-point/atomless dichotomy.  For every separable unitary source
+action, Hilbert--Schmidt formation retains exactly the atomic equal-phase blocks.  For a positive
+trace-class packet `T`, its continuous spectral mass is the exact trace missing from the
+Hilbert--Schmidt limit and the exact obstruction to trace-norm convergence:
+
+\[
+ \boxed{
+ M_N(T)\to\Pi_{\rm at}T\text{ in }S_1
+ \iff \operatorname{tr}(TP_c)=0.}
+ \tag{WFG.14}
+\]
+
+Independently,
+
+\[
+ \boxed{
+ \operatorname{ran}(1-\operatorname{Ad}_U)\text{ is closed on }S_2
+ \iff \sigma(U)\text{ is finite}.}
+ \tag{WFG.15}
+\]
+
+These laws identify three noninterchangeable formation coordinates: spectral cardinality, spectral
+type, and packet spectral mass.  They decide global topology and ideal admission for any literal
+unitary source realization before an RH-specific selector is considered.
+
+### 5.6 Nonabelian schedule formation and refinement-covariant work
+
+ULF-RCM-2 crosses a boundary that every additive history model leaves open.  Let two marked
+reversible executions act in a group `G`.  Their four-step schedule generates the commutator
+
+\[
+ H=ABA^{-1}B^{-1}
+ \tag{WFG.16}
+\]
+
+as a persistent ledger.  No extra history coordinate is declared.  On a finite invertible
+observer, state-dependent recovery gauges classify group-valued ledgers exactly by conjugacy
+classes of cycle holonomies.
+
+For a source-marked word metric, put `L=ell_conj(H)`.  The minimum work on an `m`-edge cycle is
+
+\[
+ \boxed{
+ W_1^{\min}=L,
+ \qquad
+ W_2^{\min}=(m-r)q^2+r(q+1)^2,
+ \quad L=mq+r, 0\le r<m.}
+ \tag{WFG.17}
+\]
+
+This is an exact formation law.  Ordered holonomy and linear work survive arbitrary subdivision;
+quadratic work is redistributed by the number of execution slots.  Common recovery remains an
+exact KL isometry for every group-valued ledger.  A finite quotient of the ledger can recur while
+cycle-periodic action grows linearly.  Edgewise positive unitary Gram data are identically the
+identity and erase the schedule, while ordered holonomy retains it.
+
+The field consequence is sharper than “history may be nonabelian.”  It separates two candidate
+source works:
+
+1. linear conjugacy work is a refinement-invariant law coordinate;
+2. quadratic action is a formation-depth realization and cannot be used cofinally without a
+   marked depth or renormalization law.
+
+Thus any global producer based on quadratic energy must explain its refinement covariance.  A
+depth-forgetting producer must use linear conjugacy work, stable translation length, or a
+source-derived replacement.  Functional reflection transports this work isometrically but does
+not trivialize commutator holonomy.
+
 ## Gates
 
 - [x] all live frontier dossiers typed by one operation grammar
@@ -285,6 +468,23 @@ constructing another endpoint receiver does not address it.
 - [x] source-generated scale properness: bounded full formation work iff displacement is zero
 - [x] directed formation chronology, observer-fibre conservation, serial current composition,
   sufficient-reversal selection, and fourth-organ hidden-current localization formalized in Lean
+- [x] infinite-orbit induction theorem: exact essential norm, semi-Fredholm classification,
+  common-recovery information amplification, and unbounded response-rank prediction
+- [x] weighted orbit classification: exact `c0`, `ell^p`, reduced-gap, and information-summability
+  thresholds
+- [x] character transgression classification and exact resonant/exact conservation law
+- [x] positive self-pair resonance and rank transmutation theorem
+- [x] countable phase-diversity / nonclosed-range properness theorem
+- [x] atomless phase dense-nonclosed transgression and ideal-escape theorem
+- [x] exact Haar rank/Schatten/entropy formation calibration
+- [x] complete mixed-spectral atomic-retention / continuous-escape classification
+- [x] trace-norm convergence iff zero continuous mass
+- [x] closed transgression range iff finite spectrum
+- [x] finite nonabelian schedule formation: holonomy-conjugacy classification, exact linear and
+  quadratic work, commutator genesis, and recurrent open action
+- [ ] construct a literal pre-zero homogeneous orbit for one neutral-only local defect and prove
+  compact, Fredholm, or bounded-work global admission
+- [ ] construct the literal pre-zero phase representation and compute its commutant survivor
 - [ ] construct the literal joint formation/exterior completion on `Re(s)>1/2`
 - [ ] identify Gauss Hodge mass with one pre-zero acceleration--boundary-anomaly balance
 - [ ] construct either the physical uniform full-work bound or the pre-zero sufficient reflected
@@ -304,3 +504,21 @@ constructing another endpoint receiver does not address it.
 - 2026-08-11 — global formation-selection mechanics added: scale properness and directed
   information chronology give two independent neutrality selectors; observer-fibre conservation
   turns every failed reversible comparison into a quantitative hidden-history obligation.
+- 2026-08-12 — orbit-induction selection mechanics added: one local compact/informational/rank
+  defect, repeated over an infinite source orbit, becomes respectively essential, linearly
+  coercive, and infinite-rank.  Global compactness, Fredholmness, or bounded work now gives an exact
+  zero-defect selector.
+- 2026-08-12 — character-transgression fusion added: oscillatory characters are bounded
+  coboundaries, positive self-pairs land in the neutral obstruction, and infinite phase diversity
+  forces both survivor-rank growth and nonclosed cofinal transgression.  This replaces the search
+  for an arbitrary opposite coupling by the exact commutant survivor `(WFG.11)`.
+- 2026-08-12 — atomless ideal-escape law added: positive orbit averages vanish in Hilbert--Schmidt
+  norm while retaining unit trace norm; the Haar packet has exact rank `N`, `S_2` norm
+  `N^(-1/2)`, and entropy `log N`.  Global admission must therefore name both spectral type and
+  operator ideal.
+- 2026-08-12 — mixed spectral classification added: atomic equal-phase blocks are the complete
+  `S_2` survivor, continuous packet mass is exactly the `S_1` convergence obstruction, and global
+  transgression has closed range exactly for finite unitary spectrum.
+- 2026-08-12 — nonabelian schedule formation added: execution order itself generates commutator
+  holonomy; shortest conjugacy length is the refinement-invariant work, while quadratic work obeys
+  an exact depth-dependent balanced-factorization law.

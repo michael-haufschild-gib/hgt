@@ -992,7 +992,7 @@ strict-half budget plus unit column load and normalized prime-dilation recurrenc
 counts and Ramaré diagonal energy do not imply this statewise flatness.
 
 Full proof:
-`../2-fully-proven/new_scientific_knowledge/route-e-ramare-recombination-ternary-antiscale-law.md`.
+`../3-formalized/new_scientific_knowledge/route-e-ramare-recombination-ternary-antiscale-law.md`.
 No Lean source was edited or built.
 
 ## 2026-08-11 critical antiscale diffuse-codiagonal reduction

@@ -45,26 +45,30 @@ The diagonal sign hypothesis is therefore non-hereditary under atom subtraction.
   smaller reflection-conjugate off-axis pair.  `exists_reflectionConjugate_diagonalMomentPositive_not_deflationStable`
   gives an unconditional counterexample; ordinary edge subtraction destroys moment
   nonnegativity.
-- **Strongest positive survivor:** Any iterative edge argument must prove positivity of the
-  residual through a localized moment functional—equivalently, signs after applying an
-  edge-annihilating (Christoffel) polynomial.  Raw diagonal signs contain enough information for
-  one edge detection but not for deflation.  For an edge value `r`, the first nontrivial producer
-  has shape
+- **Strongest positive survivor:** Raw diagonal signs contain enough information for one edge
+  detection but not for deflation.  Two exact repairs survive.  An iterative argument must prove
+  positivity of the residual through an edge-annihilating Christoffel polynomial, whose first
+  nontrivial producer has shape
   \[
     \operatorname{Re}(m_{n+2}-2r m_{n+1}+r^2m_n)\ge0,
   \]
-  rather than another copy of `Re m_n ≥ 0`.
-- **New insight:** Diagonal resolvent positivity is a one-shot edge certificate.  Frankenstein
-  route must weld arithmetic/source geometry to a dynamically localized principal-ideal sign
-  law.  This is narrower than assuming full Hankel PSD but strictly stronger than diagonal
-  positivity; it identifies exact missing transport from a certified edge to its complement.
+  rather than another copy of `Re m_n ≥ 0`.  Better, a non-iterative repair is now proved: weight
+  every divisor copy by bounded nonlinear Wold polar work `W/(1+W)`, which is positive exactly off
+  line.  One weighted edge detection then kills the whole off-line carrier without subtraction.
+- **New insight:** Diagonal resolvent positivity is a one-shot edge certificate, so successful
+  Frankenstein use must alter the carrier before edge detection rather than alter moments after
+  it.  `SourceHorizontalWoldResolventEdge.lean` implements the coefficient-faithful repair and
+  reduces RH to signs of one full-divisor weighted diagonal sequence.  Missing transport is now a
+  pre-zero Euler--Green/Wold functional-calculus trace identity, not edge deflation.
 - **Status:** Countermodel proved on paper and in axiom-clean Lean in
-  `formal/GaloisForLFunctions/RHTower/XiResolventDiagonalDeflationNoGo.lean`.  Localized-sign
-  producer remains open and must be source-derived; target-pulled selection of an Xi zero is not
-  acceptable.
+  `formal/GaloisForLFunctions/RHTower/XiResolventDiagonalDeflationNoGo.lean`.  The one-shot weighted
+  repair and its RH endpoint are proved in `SourceHorizontalWoldResolventEdge.lean`.  Its pre-zero
+  trace/sign producer remains open; target-pulled Xi selection is not acceptable.
 
 ## Log
 
 - 2026-08-11 — Iterated diagonal-edge conjecture attacked and falsified.
 - 2026-08-11 — Exact reflection-compatible countermodel formalized; localized/Christoffel
-  positivity extracted as strongest positive survivor.
+  positivity extracted as initial positive survivor.
+- 2026-08-11 — Positive survivor strengthened: bounded Wold-weighted one-shot edge collapse proved
+  in Lean, eliminating need for deflation; source trace/sign producer remains open.

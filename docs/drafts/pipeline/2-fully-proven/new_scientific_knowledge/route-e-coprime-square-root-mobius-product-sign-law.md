@@ -41,6 +41,10 @@
   admissible window range.**  The card's `(3)` and its consequence are now unconditional theorems for
   every window law `h` with `mertensSup(3\sqrt x)/h \to 0` --- in particular for `h = \sqrt x`
   (`Sieve/SqrtWindowLaw.lean`), where the input reduces to the corpus's own prime number theorem.
+  This exact unconditional capstone is promoted separately as the Stage-3 child
+  `../../3-formalized/new_scientific_knowledge/route-e-coprime-square-root-mobius-sign-density.md`;
+  this parent remains Stage 2 because it also records stronger below-square-root synthesis and
+  representation/multiplicity programmes not closed by that child.
   The reduction chain (fibre decomposition, logarithmic block means, Cauchy--Schwarz, maximal
   windows, four-fold multiplicity, truncation machinery for both squarefree weights) is in
   `Sieve/PairFibre*.lean`, `Sieve/LogSumFromCount.lean`, `Sieve/Fibre*Separation.lean`,

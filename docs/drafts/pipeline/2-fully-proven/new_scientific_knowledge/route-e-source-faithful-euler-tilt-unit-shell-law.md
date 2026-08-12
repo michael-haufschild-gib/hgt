@@ -4,15 +4,17 @@
 - **Stage:** 2-fully-proven
 - **Type:** `[PAPER-PROVED] [EXACT FINITE SOURCE IDENTITY] [COFINAL SADDLE CLASSIFICATION]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
-- **Companions:** `route-e-physical-shell-conditioned-parity-energy-regression-law.md`,
+- **Companions:** `../../1-in-progress/route-e-physical-shell-conditioned-parity-energy-regression-law.md`,
   `route-e-product-truncated-reservoir-harmonic-mass-law.md`,
-  `../../3-formalized/new_scientific_knowledge/route-e-moving-euler-tilt-chi-square-contiguity-law.md`
+  `../../3-formalized/new_scientific_knowledge/route-e-moving-euler-tilt-chi-square-contiguity-law.md`,
+  `../../3-formalized/new_scientific_knowledge/route-e-exact-euler-gauge-local-matching-receiver-law.md`
 - **RH used:** no
 - **Computation used:** no
 - **Lean status:** exact finite source identity and unit-shell profile are formalized in
   `RouteESourceFaithfulEulerTiltUnitShell.lean`; the moving-to-critical chi-square bridge is
-  formalized in `RouteEMovingEulerTiltChiSquareContiguity.lean`. The PNT asymptotics `(9)`--`(14)`
-  remain paper-only, so this full card remains stage 2.
+  formalized in `RouteEMovingEulerTiltChiSquareContiguity.lean`; arbitrary-observable gauge
+  cancellation `(29)` and the sharp matching receiver `(30)` are now formalized in the source
+  module. The PNT asymptotics `(9)`--`(14)` remain paper-only, so this full card remains stage 2.
 - **Scientific status:** project-local new synthesis; external priority unclaimed
 
 ## 1. Result
@@ -483,6 +485,8 @@ unit-shell lower mass (\gg1/\log Y), its normalized Cauchy--Schwarz error at for
 also discard the exact compensating factor (m^\sigma) in `(28)`. The correct proof route is exact
 gauge cancellation `(28)`--`(29)` plus physical locality `(30)`.
 
-The atomwise identity `(28)` is already Lean-certified as
-`routeEEulerTiltTerm_eq_gibbsTerm`. Arbitrary-observable and matching corollaries are recorded on
-paper only while the Lean corpus is under refactor.
+The atomwise identity `(28)` is Lean-certified as `routeEEulerTiltTerm_eq_gibbsTerm`.
+`routeEEulerTiltObservableMean_eq_gibbsObservableMean` now certifies `(29)` for every finite real
+observable. `routeEGibbsPair_abs_sub_div_add_eq_tanh` proves exact pair polarization, while
+`RouteELocalPhysicalMatchingReceiver.abs_signedCurrent_div_totalMass_le_unmatchedFraction_add_tanh`
+and its linear-gap corollary certify `(30)` with explicit unmatched mass.

@@ -1471,3 +1471,49 @@ Direct foreground elaboration and the 2,351-job leaf build pass.  The module is 
 `HTGeometry.UniversalLawField`; final foreground umbrella build completes 11,832 jobs.  Scratch
 axiom prints for headline theorems report only `propext`, `Classical.choice`, and `Quot.sound`.
 Lean certifies the selection mechanism, not the open global source-duality producer or RH.
+
+## Session 2026-08-12 addition (Formation-Factorization Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-FFM-1 | Exact semantic/lineage common recovery, scaled-idempotent formed carrier, pointwise certificate conjugacy, certificate-independent recovery ghosts, first-order ghost recurrence, and one-mode Witt comparison | `HTGeometry.ConstitutiveSemanticLineageWittFusion` |
+
+Lean certifies that every formed carrier `P_A=Q_AB_A` satisfies `P_A^2=|ι|P_A`, every certificate
+family is pointwise conjugate to the identity family, and every recovery ghost is
+`|ι|^(n+1)I`.  Thus carrier polynomial/ghost data are exactly certificate-blind; constitutive
+information can survive only in the factorization fibre. Direct elaboration and the leaf build
+pass. The module is wired into `HTGeometry.UniversalLawField`; final foreground umbrella build
+completes 11,838 jobs. Scratch axiom prints report only `propext`, `Classical.choice`, and
+`Quot.sound`. No RH premise or route-specific specialization occurs.
+
+## Session 2026-08-12 addition (Self-dual Factorization Geometry)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-FFM-2-CORE | Exact recovery/gauge equivalence, adjoint-reversal fixed locus, reciprocal-Gram conservation, and finite Cartan-packet bounded-work selection | `HTGeometry.ConstitutiveSelfDualFactorizationGeometry` |
+
+The module proves that exact recovery pairs form a gauge torsor rather than a scalar invariant,
+adjoint reversal fixes exactly balanced gauges, and the two leg-Gram reporters multiply to the
+identity.  Its Cartan work is nonnegative and reversal invariant; a finite packet with uniformly
+bounded work along all natural formation depths has zero radial rate. Direct elaboration and the
+8,656-job leaf build pass. The module is wired into `HTGeometry.UniversalLawField`. Scratch axiom
+prints report only `propext`, `Classical.choice`, and `Quot.sound`. No RH premise or route-specific
+specialization occurs. Final foreground `HTGeometry.UniversalLawField` build completes 11,840
+jobs.
+
+## Session 2026-08-12 addition (Involutive Formation-Properness Mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-PFM-2 | Functional-equation action lift through split formation, strict action composition on formed laws, involution, common-recovery KL/Jeffreys isometry, and two-sheet swap | `HTGeometry.ConstitutiveFunctionalEquationPacketLift` |
+| ULF-RFTM-3B | Positive reciprocal-packet reconstruction and complete bi-axis logarithmic-work properness | `HTGeometry.ConstitutivePositiveFormationProperness` |
+| ULF-IFPM-1 | Finite escort reflection response, exact KL/Jeffreys work, complete-amplification properness, and hidden-information escape under bounded observation | `HTGeometry.ConstitutiveFiniteEscortFormationProperness` |
+
+Lean certifies one common mechanism in stochastic, positive-matrix, and finite-information charts.
+Common recovery is exactly information-neutral; reflection alone does not select.  Complete
+amplification makes reflected work proper, and every bounded observer of a nonconstant reflected
+escort family forces an unbounded hidden-loss sequence.  Direct elaboration and all three leaf
+builds pass.  Modules are wired into `HTGeometry.UniversalLawField`; final foreground umbrella
+build completes 11,848 jobs.  Scratch axiom prints for capstones report only `propext`,
+`Classical.choice`, and `Quot.sound`.  Scoped scans contain no forbidden declaration.  No RH premise
+or zero specialization occurs; literal source-generated bounded-work conservation remains open.

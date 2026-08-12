@@ -8,6 +8,10 @@
 - **RH used:** no
 - **Computation used:** no
 - **Lean target:** RHTower/MobiusWholeAnchorCapacityDisplacement.lean
+- **Lean status:** target module now formalizes exact finite core: E3 breadth addition, reservoir
+  band decoding, opposite-sign/displacement packet, full-subset reciprocal Euler mass, and sharp
+  row-stochastic capacity inequalities. Global E3 counting, reciprocal-prime Mertens transport,
+  and moving-parameter asymptotics `(2)`--`(6)` remain paper-only.
 
 ## 1. Statement
 

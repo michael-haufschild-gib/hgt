@@ -96,8 +96,12 @@ private theorem correlation_integrand_eq_indicator
       exact_mod_cast hsR
     rw [hsC]
     congr 2
-    field_simp [ne_of_gt L.property]
-    ring
+    · rw [div_eq_mul_inv, one_mul]
+    · simp only [map_mul, map_div₀, Complex.conj_ofReal, Complex.conj_I,
+        map_intCast, map_ofNat]
+      field_simp [ne_of_gt L.property]
+      push_cast
+      ring
   · rw [Set.indicator_of_notMem hx]
     by_cases hxn : x ∈ Icc (0 : ℝ) (L : ℝ)
     · have hxy : x < (y : ℝ) := by

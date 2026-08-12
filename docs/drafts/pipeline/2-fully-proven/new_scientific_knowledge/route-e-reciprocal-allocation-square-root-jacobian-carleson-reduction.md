@@ -7,7 +7,11 @@
 - **Source:** OPEN-SOURCE-001
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** intentionally not started during corpus refactor
+- **Lean status:** exact finite reciprocal-allocation core is formalized in
+  `RHTower/MobiusReciprocalAllocationJacobian.lean`: positive harmonic normalizer, nonnegative
+  kernel, exact row stochasticity after physical projection, square-root Jacobian cancellation,
+  unique neutral tilt `lambda=1`, and average-column capacity. The stretched-`L` asymptotic column
+  estimate `(4)` and co-moving flux remain paper-only.
 
 ## 1. Result
 

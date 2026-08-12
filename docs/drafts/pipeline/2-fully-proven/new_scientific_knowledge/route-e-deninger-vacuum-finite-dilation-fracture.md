@@ -7,8 +7,13 @@
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** paper-only while the Lean corpus is being refactored; existing Lean certifies
-  all finite-aperture Taylor jets and the Meyer-source definitions used below
+- **Lean status:** All three exact theorem blocks are formalized. Section 1 and its stronger
+  analytic log-pull classification are in
+  `RHTower/RouteEDeningerVacuumFiniteDilationFracture.lean`; Section 2's complete finite-aperture
+  jet was already formalized; Section 3 is in
+  `RHTower/RouteEDeningerVacuumCollarDecomposition.lean`. Claim-complete Stage 3 children certify
+  finite-dilation fracture and positive collar decomposition separately; this parent remains the
+  Stage 2 synthesis card.
 
 ## 1. The finite-dilation theorem
 
@@ -61,8 +66,13 @@ it never moves the vacuum into Meyer space.
 Existing Lean theorem
 `iteratedDeriv_finitePrimeParityPartition_zero_eq_prod` in
 `RHTower/MobiusExponentialGibbsBoundary.lean` certifies the complete finite-aperture jet formula
-behind `(5)`.  `RHTower/DeningerExpSchwartz.lean` defines the faster-than-every-exponential
-two-sided source.  No new Lean source is written during refactor.
+behind `(5)`. `RHTower/RouteEDeningerVacuumFiniteDilationFracture.lean` proves `(1)` as the exact
+iff `exists_deningerExpSchwartz_shiftedVacuum_iff` and proves the stronger survivor: any analytic
+log-pull in the strict source has infinite analytic order at zero, while any entire log-pull is
+identically zero. The claim-complete formalized child is
+`../../3-formalized/new_scientific_knowledge/route-e-deninger-analytic-log-pull-finite-dilation-fracture.md`.
+`RHTower/DeningerExpSchwartz.lean` supplies the actual faster-than-every-exponential two-sided
+source used by these proofs.
 
 ## 3. Exact positive collar decomposition
 
@@ -82,9 +92,11 @@ tail and decays superexponentially on the right.  Consequently
  =\sum_{n\ge1}\mu(n)H_{\rm Mey}(nx)
   +\sum_{n\le2/x}\mu(n)C_{\rm vac}(nx).                \tag{7}
 \]
-The first term is in the strict Deninger calculus and is absolutely controlled by the existing
-Meyer preimage theory.  The second term is a fixed compact-collar smoothing of Mertens mass through
-scale \(2/x\).  It contains the entire non-Meyer source and is exactly the Route E hard component.
+The tail kernel is a literal strict Deninger-source vector, and its Möbius series is absolutely
+summable at every fixed \(x>0\). This statement does **not** assert that the full Möbius tail sum,
+as a function of logarithmic radius, is itself a strict-source vector. The second term is a fixed
+compact-collar smoothing of Mertens mass through scale \(2/x\). It contains the entire non-Meyer
+source and is exactly the Route E hard component.
 
 Thus the adiabatic endpoint gives a canonical easy-tail/hard-collar decomposition, but no estimate
 for the hard collar.  Calling `(7)` a Route E closure would merely rename the Möbius source.
@@ -102,9 +114,8 @@ for the hard collar.  Calling `(7)` a Route E closure would merely rename the M�
 
 ## 5. Frontier consequence
 
-The new Deninger adiabatic theorems reduce no arithmetic burden in Route E.  Their maximal honest
-use is `(7)`: strict endpoint control handles the Meyer tail and isolates one fixed vacuum collar
-whose Möbius inverse remains `OPEN-SOURCE-001`.  Any viable Deninger continuation must add an
+The new Deninger adiabatic theorems reduce no arithmetic burden in Route E. Their maximal honest
+use is `(7)`: strict endpoint control certifies the tail kernel and isolates one fixed vacuum
+collar whose Möbius inverse remains `OPEN-SOURCE-001`. Any viable Deninger continuation must add an
 independent estimate on that collar; topology, distributional convergence, and the exact
 Meyer--Poisson kernel do not supply it.
-

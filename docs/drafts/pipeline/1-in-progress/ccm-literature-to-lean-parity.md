@@ -30,7 +30,7 @@ formalized as theorems.
 |---|---|---|---|
 | Connes, *Trace formula in noncommutative geometry and the zeros of the Riemann zeta function* | semilocal trace formula and quotient spectral realization | `PARTIAL`: rational adelic/Bruhat and trace-norm infrastructure exists; no theorem-level source audit yet | inventory exact numbered results against declarations |
 | Connes--Consani, arXiv:1910.14368 | semilocal Fourier unitary; cutoff trace formula; projection/logarithmic-derivative sign criterion | `PARTIAL`: exact class-space pieces exist; source trace formula not identified end-to-end | formalize missing exact operator identities |
-| Connes--Consani, arXiv:2006.13771 | Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `PARTIAL-EXACT`: source-normalized integrated scaling, Haar involution/adjoint, cutoff-one Sonin projection, and positive compressed Gram operator are unconditional and umbrella-wired; trace-classness, trace identity, and inequality remain open | formalize source trace-class bridge, trace identity, and exact non-computational inequality; separately audit paper's numerical spectral bound |
+| Connes--Consani, arXiv:2006.13771 | quantized differential is infinitesimal of infinite order; Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `PARTIAL-EXACT`: source-normalized integrated scaling, exact Haar convolution representation law, Haar involution/adjoint, cutoff-one Sonin projection, positive compressed Gram operator, literal Fourier crossblock/Hankel equality, explicit Schatten-one factorization, full rapid approximation-number decay, unconditional all-order temperate growth of the literal phase `u_infinity`, exact Mellin diagonalization of every intrinsic `L¹` kernel, the exact Fourier--Mellin scattering identity `F_eR^w = I ∘ u_infinity^g`, trace-classness of the literal geometric `rho(f) (1/2)(u_infinity^* d u_infinity)^g` product, and all three geometric-kernel parts of Lemma `sch3` in their rigorous operator/distributional sense are umbrella-wired; Proposition `lemsch7` trace/Weil distribution and final inequality remain open | formalize scaled kernel, trace/diagonal distribution, compressed trace bridge, and exact non-computational inequality; separately audit paper's numerical spectral bound |
 | Connes--Consani, arXiv:2106.01715 | lower-semicontinuous restricted Weil form; spectral triples; exact zeta-cycle spectral theorem | `MISSING/PARTIAL`: many restricted-Weil and prolate pieces exist; no literal zeta-cycle theorem located | formalize exact circle periodization, orthogonal complement, and spectral characterization |
 | Connes--Consani--Moscovici, arXiv:2310.18423 | semilocal Sonin Hilbert isomorphism; common de Branges image; Gamma-quarter Jacobi/metaplectic model; semilocal prolate operator | `PARTIAL`: Gamma density, moments, Jacobi recurrence, relative traces, and continuous Sonin pieces exist; exact Hilbert isomorphism not located | prove missing source-space isometries and identify every local surrogate |
 | Connes--Consani--Moscovici, arXiv:2511.22755 | finite simple-even ground rank-one perturbation is self-adjoint in the Weil quotient; regularized determinant equals the ground Fourier transform; every transform zero is real | `CONDITIONAL SOURCE THEOREM`: literal finite matrix, unconditional ground shift, source/response completion, determinant lemma, and real-rooted completion already exist; paper does not discharge simplicity/evenness or convergence | do not add a hypothesis-packaging theorem; only an unconditional proof of the literal eta-channel assumptions would move parity |
@@ -66,10 +66,45 @@ strongest unconditional trace identity preceding it.
 3. Formalize source test algebra and integrated scaling representation.  Integrated L1 scaling,
    contractivity, Haar involution, and adjoint law are complete in
    `CCMArchimedeanIntegratedScaling.lean` and `CCMArchimedeanScalingStar.lean`.
+   `CCMArchimedeanConvolutionRepresentation.lean` proves the intrinsic Haar convolution is
+   `L1`, expands the two Bochner integrals, and proves `rho(g*h)=rho(g)rho(h)` by the
+   measure-preserving shear, with no representation premise.
    The literal half-line projection `P`, Hardy projection `F P F⁻¹`, involution
    `H = 2 F P F⁻¹ - 1`, intrinsic Schwartz multiplier, and exact cross-Hardy-block decomposition
-   are complete in `CCMArchimedeanQuantizedCalculus.lean`.  This is only the algebraic reduction
-   preceding Lemma `quantsmooth`; it does not count as trace-class coverage.
+   are complete in `CCMArchimedeanQuantizedCalculus.lean`.  In
+   `CCMArchimedeanHankelTraceClass.lean`, both explicit half-line factors are unconditionally
+   Hilbert--Schmidt, their composite is Schatten one, the Volterra factor has its exact integral
+   representative, and the factor kernels integrate exactly to the paper's `g(x+y)` Hankel
+   kernel.  `CCMArchimedeanHankelKernel.lean` and
+   `CCMArchimedeanFourierCrossBlock.lean` identify that operator with the literal reflected Fourier
+   crossblock.  `CCMArchimedeanInfiniteOrder.lean` implements the paper's smooth cutoff, proves
+   all oscillator-power kernel operators Hilbert--Schmidt, derives rapid Hermite approximation
+   numbers, identifies the positive compression with the actual Hankel operator, and transports
+   rapid decay through reflection, adjoint, Fourier conjugation, addition, and scalar
+   multiplication to the literal quantized differential.  `CCMArchimedeanPhaseTemperate.lean`
+   proves from Gamma/digamma asymptotics that the paper-convention phase
+   `u_infinity(t)=conj(zetaChi(1/2+it))=exp(2 i theta(t))` has temperate growth, so multiplication
+   by `u_infinity` sends every Schwartz Mellin symbol back to Schwartz and its quantized
+   differential is an infinitesimal of infinite order. `CCMArchimedeanPhaseOperatorProduct.lean`
+   proves the exact source Leibniz identity and makes the tested logarithmic phase differential
+   infinite-order, Schatten one, and trace class. `CCMArchimedeanMellinTransport.lean` then proves
+   for every intrinsic logarithmic `L¹` kernel that integrated physical scaling is exactly its
+   normalized Fourier--Mellin multiplier; for Schwartz log kernels it transports the preceding
+   result back to the literal geometric product and proves that product trace class.
+   `CCMArchimedeanFourierMellinScattering.lean` proves the exact source identity
+   `archimedeanMellinUnitary (evenFourierTransform f) =
+   l2Reflection (ccmArchimedeanScatteringL2Multiplier (archimedeanMellinUnitary f))` for every
+   even `L²` vector. Critical-line weighted integrability, Gamma normalization, and density of the
+   even-Schwartz core are discharged internally; no intertwining premise remains.
+   `CCMArchimedeanGeometricScatteringKernel.lean` and
+   `CCMArchimedeanGeometricCommutatorKernel.lean` then prove the literal kernels in Lemma
+   `sch3(i)` and `(ii)` on the actual multiplicative-Haar carrier.  The commutator proof extends
+   the kernel identity to the even `L¹∩L²` core because the sharp projection destroys Schwartz
+   regularity. `CCMArchimedeanGeometricCompositeKernel.lean` proves `sch3(iii)` as the exact
+   iterated operator pairing. It also proves that the source's displayed pointwise composition
+   cannot be a Bochner integral: at `ν=μ=1` its `y>1` integrand is `-4 cos²(2πy)`, its truncated
+   positive mass tends to `+∞`, and it is not Lebesgue integrable. Thus subsequent use must remain
+   distributional; Lean's totalized integral is not an admissible pointwise definition.
 4. Formalize exact Sonin projection and compressed positive trace.  Cutoff-one projection and
    bounded-operator positivity are complete in
    `CCMArchimedeanSoninCompressionPositive.lean`; trace-classness and trace nonnegativity remain.
@@ -88,9 +123,85 @@ strongest unconditional trace identity preceding it.
 - [x] Numerical convergence and experimental claims excluded.
 - [x] Conditional arXiv:2511.22755 hypothesis packaging rejected as non-progress.
 - [x] Source-normalized integrated scaling representation exact and umbrella-reachable.
+- [x] Exact intrinsic Haar convolution representation law exact and umbrella-reachable.
 - [x] Archimedean compressed bounded-operator positivity exact and umbrella-reachable.
+- [x] Positive-quadrant Hankel kernel has an unconditional explicit Schatten-one factorization.
+- [x] Literal Fourier cross block equals the factorized Hankel operator.
+- [x] Quantized differential is infinitesimal of infinite order (not only trace class).
+- [x] Literal archimedean phase is an unconditional Schwartz multiplier at every derivative order.
+- [x] Exact Mellin diagonalization of intrinsic `L¹` scaling and literal geometric phase product trace-classness.
+- [x] Exact Connes--Consani Fourier--Mellin scattering intertwining on the full even `L²` carrier.
 - [ ] Archimedean compressed operator trace-class and trace positivity exact.
 - [ ] Semilocal Sonin/de Branges source isomorphisms exact and umbrella-reachable.
 - [ ] Zeta-cycle spectral theorem exact and umbrella-reachable.
 - [ ] Continuous Connes--van Suijlekom theorem exact and umbrella-reachable.
 - [ ] Joint C1/O frontier recomputed only after parity closure.
+
+## 2026-08-12 literature-ingestion audit: `quantsmooth`
+
+`[MECHANICAL INGESTION] [NOT NEW SCIENCE]` The full published infinite-order conclusion is now
+`RHTower.ccmQuantizedDifferential_isInfinitesimalOfInfiniteOrder` in
+`CCMArchimedeanInfiniteOrder.lean`.  Its endpoint universally quantifies over the intrinsic
+Schwartz symbol and has no proposition-valued analytic premise.  The proof does not infer rapid
+decay from trace class: it constructs the source cutoff kernel, proves every oscillator-power
+synthesis operator Hilbert--Schmidt, derives explicit approximation-number decay through the
+complete Hermite basis, and proves the cutoff compression equals the already identified literal
+Hankel block before transporting the result to `[H,M_f]`.
+
+Audit evidence: file Lean passed; targeted build
+`GaloisForLFunctions.RHTower.CCMArchimedeanInfiniteOrder` passed; formal lint passed; `#print
+axioms` for both the compression equality and final theorem reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+## 2026-08-12 literature-ingestion audit: Proposition 7(iv) analytic phase input
+
+`[MECHANICAL INGESTION] [NOT NEW SCIENCE] [NOT THE TRACE FORMULA]` The source proof of Proposition
+7(iv) uses that `hat f * u_infinity` is Schwartz.  That claim is now unconditional in
+`CCMArchimedeanPhaseTemperate.lean`; it is not represented by an assumed temperate multiplier.
+The module proves:
+
+1. every positive-real-part vertical digamma restriction has logarithmic zeroth growth and
+   polynomially bounded derivatives of every order, globally in both height directions;
+2. the exact normalized-Gamma phase ODE transfers those bounds through universal Bell
+   polynomials, giving `RHTower.gammaHardyPhase_hasTemperateGrowth`;
+3. squaring and conjugating identifies the literal source convention
+   `u_infinity(t)=conj(zetaChi(linePt t))` and gives
+   `RHTower.ccmArchimedeanScatteringPhase_hasTemperateGrowth`;
+4. `RHTower.ccmArchimedeanScatteringPhaseMul` is therefore a genuine Schwartz function for every
+   Schwartz input, and its quantized differential satisfies the stronger infinite-order endpoint
+   `RHTower.ccmArchimedeanScatteringPhase_quantizedDifferential_isInfinitesimalOfInfiniteOrder`.
+
+The same ingestion pass closes the exact integrated representation product in
+`CCMArchimedeanConvolutionRepresentation.lean`:
+`rho(g*h)=rho(g)rho(h)` and `rho(g*g_star)=rho(g)rho(g)^*`.  Fubini integrability and the Haar shear
+are proved internally.
+
+**Frontier moved, but Proposition 7 is not yet closed.** The analytic regularity, literal
+trace-class assertion, and Fourier--Mellin phase intertwining are no longer gaps.
+`CCMArchimedeanPhaseOperatorProduct.lean` proves the exact source operator identity, while
+`CCMArchimedeanMellinTransport.lean` proves exact Mellin diagonalization of `rho(f)` and
+trace-classness of the literal geometric product
+
+~~~
+rho(f) * (1/2) * (u_infinity^* d u_infinity)^g,
+~~~
+
+for every Schwartz logarithmic source, hence in particular for the paper's compactly supported
+smooth tests. `CCMArchimedeanFourierMellinScattering.lean` now proves, for every even `L²` vector,
+the exact source relation `F_eR^w = I ∘ u_infinity^g`; its proof derives critical-line
+integrability and the exact Gamma ratio on a dense even-Schwartz core and extends by continuity.
+The literal geometric kernels in Lemma `sch3(i)--(iii)` are now closed. Part `(iii)` is necessarily
+an operator/distributional kernel identity: the new diagonal divergence theorem rules out the
+naive Bochner reading of the paper's composition integral. The exact missing source content is now
+Proposition `lemsch7`: scaled kernel, rigorous diagonal trace distribution, its equality with the
+archimedean Weil distribution, and the tested trace identity. Those are the next hard objects; repackaging
+`quantsmooth`, phase regularity, Mellin transport, scattering intertwining, or trace-classness
+again would be rediscovery.
+
+Audit evidence: all three geometric-kernel files pass `lake env lean`; targeted build
+`GaloisForLFunctions.RHTower.CCMArchimedeanGeometricCompositeKernel` passes; and `RHTower.lean`
+elaborates with all modules umbrella-wired. `#print axioms` for the scattering kernel,
+sharp-commutator kernel, composite distributional pairing, and diagonal nonintegrability endpoint
+reports only `propext`, `Classical.choice`, and `Quot.sound`. Global formal lint is presently blocked by
+unrelated dirty-tree modules that are not umbrella-wired; the new CCM module is not in the
+reported unreachable set.

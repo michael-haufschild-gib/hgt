@@ -214,6 +214,37 @@ theorem xiShiftedCanonicalAdmission_firstEvenContact_source_pos_rankFill_then_es
   · exact xiShiftedMomentHankelMatrix_succ_not_posSemidef_of_first_even_contact
       hm c hlast hzero hfirst.ne'
 
+/-- **Automatic finite extension exit.**  No positive singular shifted-Xi Hankel face can remain
+positive semidefinite through every higher principal extension.  The infinite Xi divisor forces a
+finite first Padé defect.  Odd contact makes the next lifted extension indefinite; even contact
+may fill one terminal rank, but its following extension is already indefinite.  No compactness,
+local finiteness, or global moment representation is assumed. -/
+theorem exists_xiShiftedMomentHankelMatrix_higher_not_posSemidef_of_flatFace
+    {y : ℝ} (hy : 0 < y) {n : ℕ} (c : Fin (n + 1) → ℝ)
+    (hhead : (xiShiftedMomentHankelMatrix y n).PosDef)
+    (hc : xiShiftedMomentHankelMatrix y (n + 1) *ᵥ c = 0)
+    (hlast : c (Fin.last n) ≠ 0) :
+    ∃ N : ℕ, n + 1 < N ∧
+      ¬ (xiShiftedMomentHankelMatrix y N).PosSemidef := by
+  obtain ⟨d, hd, hzero, hfirst⟩ :=
+    exists_first_xiShiftedHankelBoundaryPadeDefect hy c hhead hc hlast
+  rcases Nat.even_or_odd d with ⟨m, hm⟩ | ⟨m, hm⟩
+  · have hdform : d = 2 * m := by omega
+    have hmpos : 0 < m := by omega
+    refine ⟨n + m + 2, by omega, ?_⟩
+    apply xiShiftedMomentHankelMatrix_succ_not_posSemidef_of_first_even_contact
+      hmpos c hlast
+    · intro k hk
+      exact hzero k (by omega)
+    · simpa only [hdform] using hfirst
+  · have hdform : d = 2 * m + 1 := by omega
+    refine ⟨n + m + 2, by omega, ?_⟩
+    apply xiShiftedMomentHankelMatrix_succ_not_posSemidef_of_first_odd_contact
+      c hhead hc hlast
+    · intro k hk
+      exact hzero k (by omega)
+    · simpa only [hdform] using hfirst
+
 end
 
 end RHTower

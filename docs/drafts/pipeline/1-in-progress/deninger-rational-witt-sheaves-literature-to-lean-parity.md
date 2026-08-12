@@ -36,7 +36,171 @@ closed arithmetic specialization before Route L returns to conjectural frontier 
 `DeningerPrimeComplexifiedRationalWittPresentation` to be the complex monoid algebra of
 algebraic-closure units and cites the published identification with `W_rat`.  It does not define
 the rational Witt ring or prove that identification.  Therefore the 2025 source theorems are not
-formalized by the existing `Presentation` abbreviation.
+formalized by that `Presentation` abbreviation.
+
+`DeningerRationalWittSource.lean` now constructs the literal source underlying additive group:
+the kernel of evaluation at zero on the units of `A[T]` localized at polynomials with constant
+coefficient one.  It proves that this localization embeds into `A[[T]]` over every commutative ring
+and that every kernel element has a normalized `P/Q` representative with `P(0)=Q(0)=1`.  This
+closes the missing localized-rational-function carrier.  It also constructs coefficientwise
+functoriality, proves identity/composition and Teichmüller naturality, proves preservation of
+monomorphisms, and gives the literal injective inclusion into `1+TA[[T]]`.  Witt multiplication and
+the reduced-monoid-algebra comparison are supplied by the algebraically closed-field modules below;
+generic-ring Witt multiplication still remains open.
+
+`DeningerRationalWittAlgebraicallyClosedPresentation.lean` now constructs the actual additive
+comparison `ℤ[Kˣ] → W_rat(K)` for a field `K`; it does not alias `W_rat(K)` to the presentation.
+For every algebraically closed field it proves the exact normalized factorization
+
+`P(0)=1  ⇒  P(T)=∏_{r∈roots(P)}(1-r⁻¹T)`
+
+and uses this to prove comparison-map surjectivity.  The closed specialization to
+`K = AlgebraicClosure (ZMod p)` says every literal rational Witt vector is represented by a finite
+integral sum of nonzero Teichmüller atoms.  This is new source-level parity: it closes the
+surjective half of the field case of Deninger's reduced-monoid-algebra comparison.
+
+The same module now also proves the injective half over every field.  Roots of a finite product of
+`1-aT` recover the complete atom multiset; every integral group-ring element is a difference of two
+positive atom sums.  Hence the literal additive comparison is an equivalence over every
+algebraically closed field, including a closed arithmetic-closure specialization.
+
+`DeningerRationalWittAlgebraicallyClosedRing.lean` resolves the notation collision between
+rational-function multiplication (Witt addition) and Witt multiplication by wrapping the literal
+carrier.  It transports a `CommRing` structure across the proved comparison, proves that ring
+addition is exactly literal rational-function multiplication, and proves `[a] * [b] = [ab]` for
+all field elements, including zero.  It gives a closed ring equivalence
+
+`ℤ[(AlgebraicClosure (ZMod p))ˣ] ≃+* W_rat(AlgebraicClosure (ZMod p))`.
+
+Thus the field-level reduced-monoid-algebra theorem is now formalized as an actual literal-carrier
+ring equivalence, not merely a presentation convention.
+
+`DeningerRationalWittLiteralGaloisDescent.lean` next proves the integral fixed-point theorem on
+`ℤ[(AlgebraicClosure (ZMod p))ˣ]` and conjugates the action through that literal ring equivalence.
+For every literal rational Witt vector over the arithmetic closure it proves unconditionally
+
+`Frobenius(w)=w ↔ ∀g ∈ Gal(AlgebraicClosure(F_p)/F_p), g(w)=w`.
+
+This removes the earlier presentation-only qualifier from the fixed-point equivalence.
+
+`DeningerRationalWittBaseFieldDescent.lean` now closes the exact prime-field specialization of
+Theorem 1.2, equation (4).  It proves unconditionally that
+
+`Frobenius(w)=w ↔ w lies in image(W_rat(F_p) → W_rat(AlgebraicClosure(F_p)))`.
+
+The forward proof does not descend Teichmüller atoms individually (which would be false).  It
+canonically separates positive and negative atom multiplicities, proves both multisets are
+Frobenius-stable, multiplies each orbit into a normalized Frobenius-fixed polynomial, descends its
+coefficients to `F_p`, and reconstructs an explicit literal normalized fraction over `F_p`.  The
+reverse proof establishes naturality of the literal comparison under coefficient automorphisms.
+Thus base-field image identification is closed.  It does not establish generic-domain
+inseparability or integral-closure descent; the unrestricted version is refuted below.
+
+`DeningerRationalWittPerfectFieldGaloisDescent.lean` strengthens that prime-field result to every
+perfect field `K`, proving the exact field case of Theorem 1.2, equation (4):
+
+`W_rat(K) = W_rat(AlgebraicClosure(K))^Gal(AlgebraicClosure(K)/K)`.
+
+The proof descends invariant normalized numerator and denominator coefficients using the infinite
+Galois fixed-field theorem.  It is literal-carrier descent, not merely an equality in the reduced
+monoid-algebra presentation.  This proves the field case, not the source's unrestricted
+integral-domain equality, which is refuted below.  Remaining legitimate work is a corrected
+normal-domain theorem and the inseparability-divisibility subring required when the quotient field
+is imperfect.
+
+`DeningerRationalWittPerfectFieldRing.lean` upgrades this carrier equality to the literal ring
+statement.  It constructs the absolute-Galois fixed subring of the algebraic-closure Witt ring,
+proves the base literal carrier equivalent to it, transports the commutative ring structure, and
+verifies both literal rational-function addition and `[a] * [b] = [ab]`.  Hence the perfect-field
+case now has an actual fixed-subring ring equivalence rather than only an existential image theorem.
+
+`DeningerRationalWittAICDomainComparison.lean` closes the older Deninger Proposition 1.1(a)
+comparison that the 2025 paper invokes for the integral closure.  For every integrally closed
+domain `A` whose quotient field is algebraically closed, it proves an additive equivalence
+
+`ℤ[A \ {0}] ≃+ W_rat(A)`
+
+on the literal localized-polynomial carrier, transports the corresponding commutative-ring
+structure, and proves both literal rational-function addition and `[a] * [b] = [ab]`.  The
+surjectivity proof is not a field-case alias: for every normalized polynomial over `A`, the inverse
+of each quotient-field root satisfies the monic reverse polynomial, hence is integral and descends
+to `A`; algebraic closedness then yields exact factorization into nonzero base-ring Teichmüller
+atoms.  This is the aic-domain foundation used by Theorem 1.2.  It does not yet prove the 2025
+paper's Proposition 1.1 localization theorem.  The generic-domain fixed-ring intersection and
+inseparability statement is false for nonnormal domains, as recorded below.
+
+`DeningerRationalWittFieldIntersection.lean` closes Corollary 1.10(1) (source label `t1.8`) for every field extension
+`L/K` on the literal carriers:
+
+`W_rat(L) ∩ W(K) = W_rat(K)` inside `W(L)`.
+
+The Lean statement expresses both intersections as equality of images under the proved injective
+coefficient maps.  Its proof splits `K → L` by a `K`-linear retraction and applies that retraction
+coefficientwise to an arbitrary normalized `P/Q` over `L`.  Linearity commutes with multiplication
+by the base power series, producing normalized numerator and denominator in `K[T]`.  This is a
+direct, closed descent proof and does not assume Kronecker's Hankel theorem.  Corollary 1.10(2),
+Fatou-domain descent, is now closed by the next module.
+
+`DeningerRationalWittFatouIntersection.lean` formulates the source Fatou equality literally as the
+descent of every localized polynomial over `Frac(A)` whose power series lies over `A`.  This is a
+property of all of `A[T]_S`, not a renamed rational-Witt intersection premise.  It proves that a
+localized element with evaluation one is already a unit, derives fraction-field rational-Witt
+descent from the Fatou property, and then proves Corollary 1.10(2) for every injective extension of
+domains `A → B`:
+
+`W_rat(B) ∩ W(A) = W_rat(A)` inside `W(B)`.
+
+The proof maps through `Frac(B)`, applies the already formalized field-intersection theorem to
+`Frac(A) → Frac(B)`, uses Fatou descent back to `A`, and reflects equality through the injective
+map `B → Frac(B)`.  It also adds functorial composition and injectivity for literal big-Witt
+additive maps.  No Noetherian, normality, separability, or Hankel-rank premise is introduced.
+
+`DeningerRationalWittFieldEqualizer.lean` closes Corollary 1.12(1) (source label `t1.10`) for every field extension
+`L/K` on the literal rational-Witt carrier:
+
+`W_rat(K) = Eq(W_rat(L) ⇉ W_rat(L ⊗_K L))`.
+
+Equality of the two tensor-square pullbacks descends every power-series coefficient using
+mathlib's faithfully-flat effectiveness theorem
+`K → L ⇉ L ⊗_K L`.  The resulting power series over `K` is then converted to a literal rational
+presentation by the already proved field-intersection theorem.  Conversely, the two pullbacks of
+every base vector agree by functorial composition and the tensor-product algebra relation.  The
+proof does not assume fpqc descent for `W_rat`; it proves this field equalizer directly.
+
+`DeningerRationalWittNilpotentKernel.lean` closes Remark 1.3.  It constructs the actual quotient
+ring `ℤ[A]/((0))`, descends the Teichmüller comparison to its underlying additive group, and proves
+the advertised kernel witnesses.  If `a ≠ 0` and `a² = 0`, the class `2(a) - (2a)` is nonzero but
+maps to zero.  If `A` has characteristic a prime `p`, `a ≠ 0`, and `a^p = 0`, then `[a]` is nonzero
+in literal `W_rat(A)`, `p(a)` is nonzero in the reduced monoid algebra, and `p[a] = 0`.  The module
+deduces noninjectivity of both the comparison and `p`-multiplication; all quotient nonvanishing
+claims are proved coefficientwise.
+
+## Falsified source theorem: arbitrary-domain perfect Galois descent
+
+The perfect-quotient-field assertion in displayed Theorem 1.2 (source label `t1.1`, equation label
+`eq:4`) is false for arbitrary integral domains.  Let
+
+`A = ℚ[X²,X³] = {P ∈ ℚ[X] | coeff_X(P)=0}`
+
+and let `t=X³/X²` in `Frac(A)`.  Then `t²=X²`, so `t` is integral over `A`, while comparison of the
+`X³` coefficient in `aX²=X³` proves `t∉A`.  The Teichmüller vector `[t]` comes from the absolute
+normalization and, because `Frac(A)` has characteristic zero and hence is perfect, its lift to an
+algebraic closure is fixed by every absolute Galois automorphism.  It cannot come from
+`W_rat(A)`: functoriality into power series would force its degree-one coefficient `-t` to lie in
+the image of `A`.
+
+`DeningerRationalWittDomainDescentCounterexample.lean` formalizes every part of this counterexample
+on the literal carrier.  Its final theorem
+`deningerCuspPerfectGaloisFixed_counterexample` simultaneously proves Galois fixedness, an absolute
+normalization preimage, and absence of a base rational-Witt preimage.  The module also proves the
+sharp structural survivor
+
+`deningerRationalWittTeichmullerDescent_implies_integralClosedness`:
+
+if every integral element of `Frac(A)` has a Teichmüller preimage from `W_rat(A)`, then every such
+element lies in `A`.  Thus the source descent conclusion itself forces integral closedness;
+normality is a necessary hypothesis, not a technical proof gap.  No Lean formalization may state
+the published arbitrary-domain equality as an axiom or hypothesis disguised as infrastructure.
 
 ## Newly closed presentation theorem
 
@@ -67,14 +231,13 @@ the missing rational-Witt comparison is logically prior.
 
 ## Formalization order
 
-1. Define the big rational-Witt subring using localized polynomials/power series and its Teichmüller
-   map.
-2. Prove the closed `Spec ℤ` localization instance of Proposition 1.1.
-3. Construct the literal rational-Witt comparison and transport the now-proved presentation-level
-   absolute-Galois fixed-point equality across it.
-4. Replace presentation-only claims in finite packet modules by comparison maps to the constructed
-   rational-Witt ring.
-5. Formalize the sheaf and correspondence theorems in source order.
+1. Prove Proposition 1.1 on localization, beginning with its closed `Spec ℤ` instance; the aic
+   domain comparison it later uses is now closed.
+2. Replace the false arbitrary-domain Galois-descent claim by a corrected normal-domain theorem;
+   prove it only after an independent paper proof and source audit.  Then treat the
+   inseparability-divisibility subring and valid localization/integral-closure consequences.
+3. Replace presentation-only claims in finite packet modules by comparison maps to the constructed
+   rational-Witt ring, then formalize sheaf and correspondence theorems in source order.
 
 ## Log
 
@@ -87,3 +250,55 @@ the missing rational-Witt comparison is logically prior.
 - 2026-08-11 — proved that arithmetic-Frobenius invariants in the full presentation are exactly
   absolute-Galois invariants.  Proof passes through finite intermediate fields and uses no descent
   hypothesis; transport to literal `W_rat` remains open.
+- 2026-08-11 — constructed the literal localized-polynomial/kernel carrier, proved its faithful
+  embedding into formal power series, and proved normalized-fraction existence.  Witt-ring
+  multiplication and comparison remain the next hard source layer.
+- 2026-08-11 — completed source functoriality, monomorphism preservation, Teichmüller naturality,
+  and the literal injection into the big-Witt additive carrier.  Constructed the reduced
+  monoid-algebra comparison over fields and proved it surjective over every algebraically closed
+  field by exact root factorization, including the closed arithmetic-closure specialization.
+  Injectivity/unique factorization was then proved by root-multiset recovery and integral
+  positive/negative atom decomposition.  Transported the commutative Witt-ring structure to the
+  literal carrier and proved the full Teichmüller multiplication law.  Field-level comparison is
+  now closed; localization and literal Galois descent are next.
+- 2026-08-11 — proved integral and literal-carrier Frobenius/Galois fixed-point equivalence over
+  the prime-field arithmetic closure.  The proof uses finite support plus finite-field Frobenius
+  generation, and transports through the actual rational-Witt ring equivalence.  Base-field image
+  identification, not presentation transport, is now the exact Galois-descent blocker.
+- 2026-08-11 — proved exact literal base-field image descent, the closed prime-field specialization
+  of Theorem 1.2, equation (4).  Frobenius-stable positive/negative atom orbit products descend coefficientwise
+  to normalized numerator/denominator polynomials over `F_p`; comparison naturality proves the
+  converse.  The arithmetic-closure fixed ring is now exactly the image of literal `W_rat(F_p)`.
+- 2026-08-12 — generalized literal fixed-point descent from prime fields to every perfect field,
+  closing the field case of Theorem 1.2, equation (4).  Absolute-Galois invariance of canonical orbit-product
+  polynomials descends coefficients through infinite Galois theory and reconstructs a base-field
+  normalized fraction.  Integral-domain intersection/integral-closure descent remains open.
+- 2026-08-12 — constructed the perfect-field literal rational-Witt `CommRing` as the proved
+  absolute-Galois fixed subring over the algebraic closure.  The ring equivalence preserves the
+  literal normalized-rational-function carrier; Witt addition and Teichmüller multiplication are
+  verified explicitly.
+- 2026-08-12 — proved the exact aic-domain reduced-monoid-algebra comparison cited in the 2025
+  source.  Reverse-polynomial integrality descends inverse roots from the algebraically closed
+  quotient field to the integrally closed domain; this gives literal normalized factorization,
+  comparison bijectivity, the induced Witt-ring equivalence, and the full Teichmüller
+  multiplication law.  The current paper's localization proposition remains open; the
+  arbitrary-domain Galois intersection was subsequently refuted rather than left as a proof gap.
+- 2026-08-12 — proved Corollary 1.10(1) exactly for every field extension.  A coefficientwise linear
+  retraction descends a normalized rational presentation whenever its power series lies over the
+  base field, yielding equality of the literal rational-Witt/base-big-Witt intersection with the
+  image of base rational Witt vectors.  No Hankel-rank premise or separability hypothesis is used.
+- 2026-08-12 — proved Corollary 1.10(2) exactly for every injective extension of domains with Fatou
+  base.  The Fatou condition is stated on the full localized-polynomial carrier; fraction-field
+  intersection and unit reflection then give the rational-Witt intersection in the extension.
+- 2026-08-12 — proved Corollary 1.12(1) exactly for every field extension.  Faithfully-flat
+  effectiveness descends the coefficients equalized in `L ⊗_K L`; field intersection then
+  reconstructs the base rational-Witt vector without assuming the desired fpqc sheaf property.
+- 2026-08-12 — formalized Remark 1.3 on the exact reduced monoid-algebra quotient and literal
+  rational-Witt carrier.  The square-zero class `2(a)-(2a)` and prime-characteristic class `p(a)`
+  are proved nonzero before their images are proved zero; noninjectivity of both `ω` and
+  `p`-multiplication follows unconditionally from the stated ring-theoretic hypotheses.
+- 2026-08-12 — refuted the paper's arbitrary-domain perfect-quotient-field Galois-descent theorem
+  by the cusp ring `ℚ[X²,X³]`.  Lean proves the integral element `t=X³/X²` yields an
+  absolute-Galois-fixed Teichmüller vector coming from the absolute normalization but not from the
+  base rational-Witt carrier.  The positive survivor is stronger than a counterexample:
+  Teichmüller descent for all integral fraction-field elements forces integral closedness.

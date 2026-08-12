@@ -21,6 +21,65 @@ private theorem sum_subtype_mem_eq_sum
     (∑ x : {x // x ∈ u}, f x) = ∑ x ∈ u, f x := by
   simpa only [Finset.univ_eq_attach] using Finset.sum_attach u f
 
+/-- Generic reindexing from the dependent box type to the original four nested finite sums. -/
+theorem sum_heathBrownBoxChoice_eq_nested
+    {M : Type*} [AddCommMonoid M] (L X k : ℕ)
+    (f : (m : ℕ) → (q : ℕ) →
+      (Fin (k - m - 1) → ℕ) → (Fin (k - m) → ℕ) → M) :
+    (∑ c : HeathBrownBoxChoice L X k, f c.m c.q c.b c.a) =
+      ∑ m ∈ Finset.range k,
+        ∑ q ∈ Finset.range (Nat.log 2 X + 1),
+          ∑ b ∈ dyadicChoiceSet (k - m - 1) X,
+            ∑ a ∈ dyadicChoiceSet (k - m) L, f m q b a := by
+  classical
+  rw [Fintype.sum_sigma]
+  simp only [Fintype.sum_prod_type,
+    HeathBrownBoxChoice.m, HeathBrownBoxChoice.q,
+    HeathBrownBoxChoice.a, HeathBrownBoxChoice.b]
+  calc
+    (∑ m : Fin k, ∑ q : Fin (Nat.log 2 X + 1),
+      ∑ b : {b // b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X},
+        ∑ a : {a // a ∈ dyadicChoiceSet (k - (m : ℕ)) L},
+          f (m : ℕ) (q : ℕ) b a) =
+        ∑ m : Fin k, ∑ q : Fin (Nat.log 2 X + 1),
+          ∑ b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X,
+            ∑ a ∈ dyadicChoiceSet (k - (m : ℕ)) L,
+              f (m : ℕ) (q : ℕ) b a := by
+      apply Fintype.sum_congr
+      intro m
+      apply Fintype.sum_congr
+      intro q
+      calc
+        (∑ b : {b // b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X},
+          ∑ a : {a // a ∈ dyadicChoiceSet (k - (m : ℕ)) L},
+            f (m : ℕ) (q : ℕ) b a) =
+            ∑ b : {b // b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X},
+              ∑ a ∈ dyadicChoiceSet (k - (m : ℕ)) L,
+                f (m : ℕ) (q : ℕ) b a := by
+          apply Fintype.sum_congr
+          intro b
+          exact sum_subtype_mem_eq_sum
+            (dyadicChoiceSet (k - (m : ℕ)) L)
+            (fun a => f (m : ℕ) (q : ℕ) b a)
+        _ = ∑ b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X,
+              ∑ a ∈ dyadicChoiceSet (k - (m : ℕ)) L,
+                f (m : ℕ) (q : ℕ) b a :=
+          sum_subtype_mem_eq_sum
+            (dyadicChoiceSet (k - (m : ℕ) - 1) X)
+            (fun b => ∑ a ∈ dyadicChoiceSet (k - (m : ℕ)) L,
+              f (m : ℕ) (q : ℕ) b a)
+    _ = _ := by
+      rw [Fin.sum_univ_eq_sum_range (fun m : ℕ =>
+        ∑ q : Fin (Nat.log 2 X + 1),
+          ∑ b ∈ dyadicChoiceSet (k - m - 1) X,
+            ∑ a ∈ dyadicChoiceSet (k - m) L, f m q b a) k]
+      apply Finset.sum_congr rfl
+      intro m hm
+      rw [Fin.sum_univ_eq_sum_range (fun q : ℕ =>
+        ∑ b ∈ dyadicChoiceSet (k - m - 1) X,
+          ∑ a ∈ dyadicChoiceSet (k - m) L, f m q b a)
+        (Nat.log 2 X + 1)]
+
 /-- Literal signed term indexed by a dependent box choice. -/
 def heathBrownBoxTerm (L X k : ℕ) (c : HeathBrownBoxChoice L X k) (s : ℂ) : ℂ :=
   heathBrownDyadicTermProduct L X k c.m c.a c.b c.q s
@@ -44,56 +103,9 @@ def heathBrownFlatDyadicAggregate (L X k : ℕ) (s : ℂ) : ℂ :=
 theorem heathBrownFlatDyadicAggregate_eq
     (L X k : ℕ) (s : ℂ) :
     heathBrownFlatDyadicAggregate L X k s = heathBrownDyadicAggregate L X k s := by
-  classical
-  unfold heathBrownFlatDyadicAggregate heathBrownDyadicAggregate
-  rw [Fintype.sum_sigma]
-  simp only [Fintype.sum_prod_type, heathBrownBoxTerm,
-    HeathBrownBoxChoice.m, HeathBrownBoxChoice.q,
-    HeathBrownBoxChoice.a, HeathBrownBoxChoice.b]
-  calc
-    (∑ m : Fin k, ∑ q : Fin (Nat.log 2 X + 1),
-      ∑ b : {b // b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X},
-        ∑ a : {a // a ∈ dyadicChoiceSet (k - (m : ℕ)) L},
-          heathBrownDyadicTermProduct L X k (m : ℕ) a b (q : ℕ) s) =
-        ∑ m : Fin k, ∑ q : Fin (Nat.log 2 X + 1),
-          ∑ b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X,
-            ∑ a ∈ dyadicChoiceSet (k - (m : ℕ)) L,
-              heathBrownDyadicTermProduct L X k (m : ℕ) a b (q : ℕ) s := by
-      apply Fintype.sum_congr
-      intro m
-      apply Fintype.sum_congr
-      intro q
-      calc
-        (∑ b : {b // b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X},
-          ∑ a : {a // a ∈ dyadicChoiceSet (k - (m : ℕ)) L},
-            heathBrownDyadicTermProduct L X k (m : ℕ) a b (q : ℕ) s) =
-            ∑ b : {b // b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X},
-              ∑ a ∈ dyadicChoiceSet (k - (m : ℕ)) L,
-                heathBrownDyadicTermProduct L X k (m : ℕ) a b (q : ℕ) s := by
-          apply Fintype.sum_congr
-          intro b
-          exact sum_subtype_mem_eq_sum
-            (dyadicChoiceSet (k - (m : ℕ)) L)
-            (fun a => heathBrownDyadicTermProduct L X k (m : ℕ) a b (q : ℕ) s)
-        _ = ∑ b ∈ dyadicChoiceSet (k - (m : ℕ) - 1) X,
-              ∑ a ∈ dyadicChoiceSet (k - (m : ℕ)) L,
-                heathBrownDyadicTermProduct L X k (m : ℕ) a b (q : ℕ) s :=
-          sum_subtype_mem_eq_sum
-            (dyadicChoiceSet (k - (m : ℕ) - 1) X)
-            (fun b => ∑ a ∈ dyadicChoiceSet (k - (m : ℕ)) L,
-              heathBrownDyadicTermProduct L X k (m : ℕ) a b (q : ℕ) s)
-    _ = _ := by
-      rw [Fin.sum_univ_eq_sum_range (fun m : ℕ =>
-        ∑ q : Fin (Nat.log 2 X + 1),
-          ∑ b ∈ dyadicChoiceSet (k - m - 1) X,
-            ∑ a ∈ dyadicChoiceSet (k - m) L,
-              heathBrownDyadicTermProduct L X k m a b q s) k]
-      apply Finset.sum_congr rfl
-      intro m hm
-      rw [Fin.sum_univ_eq_sum_range (fun q : ℕ =>
-        ∑ b ∈ dyadicChoiceSet (k - m - 1) X,
-          ∑ a ∈ dyadicChoiceSet (k - m) L,
-            heathBrownDyadicTermProduct L X k m a b q s) (Nat.log 2 X + 1)]
+  rw [heathBrownFlatDyadicAggregate, heathBrownDyadicAggregate]
+  exact sum_heathBrownBoxChoice_eq_nested L X k
+    (fun m q b a => heathBrownDyadicTermProduct L X k m a b q s)
 
 /-- Signed aggregate restricted to boxes with enough total logarithmic length. -/
 def heathBrownEligibleDyadicAggregate

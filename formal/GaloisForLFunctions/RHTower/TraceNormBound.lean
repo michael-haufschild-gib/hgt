@@ -26,8 +26,12 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 /-- **Bessel for Hilbert–Schmidt sums.**  The squared image norms of a Hilbert–Schmidt operator
 over any orthonormal-with-zeros family are dominated by the Hilbert–Schmidt norm: extend the
 nonzero members to a Hilbert basis and compare with the full series. -/
-theorem sum_normSq_apply_le_hsNormSq {T : H →L[ℂ] H} (hT : T.IsHilbertSchmidt)
-    (v : ℕ → H) (hv : ∀ n, v n = 0 ∨ ‖v n‖ = 1)
+theorem sum_normSq_apply_le_hsNormSq
+    {E F : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    [NormedAddCommGroup F] [InnerProductSpace ℂ F] [CompleteSpace F]
+    {T : E →L[ℂ] F} (hT : T.IsHilbertSchmidt)
+    (v : ℕ → E) (hv : ∀ n, v n = 0 ∨ ‖v n‖ = 1)
     (horth : ∀ m n, m ≠ n → inner ℂ (v m) (v n) = 0) (s : Finset ℕ) :
     ∑ n ∈ s, ‖T (v n)‖ ^ 2 ≤ ContinuousLinearMap.hsNormSq T := by
   classical
@@ -54,7 +58,7 @@ theorem sum_normSq_apply_le_hsNormSq {T : H →L[ℂ] H} (hT : T.IsHilbertSchmid
     have h0 := horth m n hne
     rw [hmn, inner_self_eq_norm_sq_to_K, hunit n hn] at h0
     norm_num at h0
-  have hA_orth : Orthonormal ℂ (Subtype.val : (v '' t) → H) := by
+  have hA_orth : Orthonormal ℂ (Subtype.val : (v '' t) → E) := by
     rw [orthonormal_subtype_iff_ite]
     rintro x ⟨m, hm, rfl⟩ y ⟨n, hn, rfl⟩
     by_cases hxy : v m = v n
@@ -71,15 +75,15 @@ theorem sum_normSq_apply_le_hsNormSq {T : H →L[ℂ] H} (hT : T.IsHilbertSchmid
       ↑t.attach := by
     intro p hp q hq h
     exact Subtype.ext (hinj p.2 q.2 (congrArg Subtype.val h))
-  have hsum_eq : ∑ n ∈ t, ‖T (v n)‖ ^ 2 = ∑ x ∈ u, ‖T (↑x : H)‖ ^ 2 := by
+  have hsum_eq : ∑ n ∈ t, ‖T (v n)‖ ^ 2 = ∑ x ∈ u, ‖T (↑x : E)‖ ^ 2 := by
     rw [hu, Finset.sum_image himg_inj, Finset.sum_attach t (fun n => ‖T (v n)‖ ^ 2)]
   rw [hsum_eq]
-  have hsummable : Summable (fun x : ↥w => ‖T (↑x : H)‖ ^ 2) := by
+  have hsummable : Summable (fun x : ↥w => ‖T (↑x : E)‖ ^ 2) := by
     have h1 := hT.summable b
     refine h1.congr fun x => ?_
     rw [hb]
-  calc ∑ x ∈ u, ‖T (↑x : H)‖ ^ 2
-      ≤ ∑' x : ↥w, ‖T (↑x : H)‖ ^ 2 :=
+  calc ∑ x ∈ u, ‖T (↑x : E)‖ ^ 2
+      ≤ ∑' x : ↥w, ‖T (↑x : E)‖ ^ 2 :=
         hsummable.sum_le_tsum u (fun x _ => by positivity)
     _ = ContinuousLinearMap.hsNormSq T := by
         rw [hsNormSq_eq hT b]
@@ -87,7 +91,8 @@ theorem sum_normSq_apply_le_hsNormSq {T : H →L[ℂ] H} (hT : T.IsHilbertSchmid
 
 section TraceNorm
 
-variable {A B : H →L[ℂ] H}
+variable {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+variable {A : K →L[ℂ] H} {B : H →L[ℂ] K}
 
 /-- **The partial trace-norm bound.**  Every finite sum of approximation numbers of `A∘B` is
 bounded by `‖A‖_HS·‖B‖_HS`. -/

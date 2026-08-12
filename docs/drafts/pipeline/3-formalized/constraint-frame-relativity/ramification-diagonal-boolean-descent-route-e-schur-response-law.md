@@ -328,7 +328,7 @@ changes with `F`.
 
 Only now compare with the target corpus. For `F={p:p<=Y}` and `1/2<=sigma<1`, `(RB.10)` is exactly
 the finite Route-E parity--energy Schur capacity `D_Y` in
-`../new_scientific_knowledge/route-e-physical-shell-conditioned-parity-energy-regression-law.md`,
+`../../1-in-progress/route-e-physical-shell-conditioned-parity-energy-regression-law.md`,
 equations `(1)`--`(5)`. The asymptotics and physical Gaussian shell conditioning from that card
 were not used above. Formulas `(RB.18)`--`(RB.21)` are exact new consequences for this descended
 capacity and are absent from that cited Route-E card. This document does not certify an

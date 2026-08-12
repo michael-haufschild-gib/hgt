@@ -5,10 +5,13 @@
 - **Type:** `[PAPER-PROVED EXACT SOURCE FACTORIZATION]` / `[SPECTRAL TRANSVERSALITY LAW]`
 - **Scientific status:** `[PAPER-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL PRIORITY UNCLAIMED]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
-- **Companion:** `route-e-critical-half-density-terminal-frame-minimax-law.md`
+- **Companion:** `../../3-formalized/new_scientific_knowledge/route-e-critical-half-density-terminal-frame-minimax-law.md`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** intentionally not started during corpus refactor
+- **Lean status:** exact finite determinant/odd-cube/rapidity core is formalized in
+  `RHTower/GibbsAntiscaleDeterminantOddCube.lean`, umbrella-reachable through
+  `RHTower/RouteEPhysicalSaddleAntiscaleBarrier.lean`. Four-field Mellin polarization and PNT
+  terminal lower bounds remain paper-only.
 
 ## 1. Literal Gibbs determinant
 

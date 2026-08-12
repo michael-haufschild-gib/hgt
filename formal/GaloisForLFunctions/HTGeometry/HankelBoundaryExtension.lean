@@ -43,6 +43,163 @@ theorem dotProduct_finiteHankelMatrix_padTerminalZero_eq_zero
   simp only [padTerminalZero, Fin.lastCases_castSucc, Fin.lastCases_last, mul_zero, add_zero]
   simpa using mul_eq_zero_of_right (c i) hi
 
+/-- **Exact two-degree determinant loss at odd contact.**  A terminal-normalized kernel of the
+current Hankel block forces the determinant two sizes higher to be minus the square of its first
+omitted coupling times the preceding determinant.  Thus odd boundary source is exactly signed
+determinant curvature, not merely a witness that positive semidefiniteness fails. -/
+theorem det_finiteHankelMatrix_add_two_of_monic_kernel
+    (m : ℕ → ℝ) (n : ℕ) (c : Fin (n + 1) → ℝ)
+    (hlast : c (Fin.last n) = 1)
+    (hc : finiteHankelMatrix m (n + 1) *ᵥ c = 0) :
+    (finiteHankelMatrix m (n + 2)).det =
+      -(hankelFirstOmittedCoupling m (n + 1) c) ^ 2 *
+        (finiteHankelMatrix m n).det := by
+  let M := finiteHankelMatrix m (n + 2)
+  let v : Fin (n + 2) → ℝ := padTerminalZero c
+  let k : Fin (n + 2) := (Fin.last n).castSucc
+  let ell : Fin (n + 2) := Fin.last (n + 1)
+  let gamma := hankelFirstOmittedCoupling m (n + 1) c
+  let B := M.updateCol k (M *ᵥ v)
+  have hMv_cast (i : Fin (n + 1)) : (M *ᵥ v) i.castSucc = 0 := by
+    change (∑ j : Fin (n + 2), m ((i : ℕ) + (j : ℕ)) * v j) = 0
+    rw [Fin.sum_univ_castSucc]
+    simp only [v, padTerminalZero, Fin.lastCases_castSucc, Fin.val_castSucc,
+      Fin.lastCases_last, mul_zero, add_zero]
+    simpa [finiteHankelMatrix, Matrix.mulVec, dotProduct] using congrFun hc i
+  have hMv_last : (M *ᵥ v) ell = gamma := by
+    change (∑ j : Fin (n + 2), m ((ell : ℕ) + (j : ℕ)) * v j) = gamma
+    rw [Fin.sum_univ_castSucc]
+    simp only [v, padTerminalZero, Fin.lastCases_castSucc, Fin.lastCases_last,
+      mul_zero, add_zero, ell, Fin.val_last]
+    simp only [gamma, hankelFirstOmittedCoupling]
+    apply Finset.sum_congr rfl
+    intro j _
+    change m (n + 1 + (j : ℕ)) * c j = c j * m (n + 1 + (j : ℕ))
+    ring
+  have hcol : (fun r => ∑ j, v j • M r j) = M *ᵥ v := by
+    funext r
+    simp only [Matrix.mulVec, dotProduct, smul_eq_mul]
+    apply Finset.sum_congr rfl
+    intro j _
+    ring
+  have hBdet : B.det = M.det := by
+    have h := Matrix.det_updateCol_sum M k v
+    rw [hcol] at h
+    simpa [B, v, k, padTerminalZero, hlast] using h
+  let N : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ :=
+    B.submatrix ell.succAbove k.succAbove
+  have hBdet_expand : B.det = -gamma * N.det := by
+    rw [Matrix.det_succ_column B k]
+    rw [Finset.sum_eq_single ell]
+    · have hsign : (-1 : ℝ) ^ ((ell : ℕ) + (k : ℕ)) = -1 := by
+        change (-1 : ℝ) ^ ((n + 1) + n) = -1
+        rw [show n + 1 + n = 2 * n + 1 by omega, pow_succ]
+        simp
+      rw [hsign]
+      simp only [B, Matrix.updateCol_self, hMv_last, N]
+      ring
+    · intro i _ hi
+      have hik : i ≠ ell := hi
+      have hi0 : (M *ᵥ v) i = 0 := by
+        revert hik
+        refine Fin.lastCases ?_ (fun j => ?_) i
+        · intro hik
+          exact (hik rfl).elim
+        · intro _
+          exact hMv_cast j
+      simp [B, hi0]
+    · simp
+  let R : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ :=
+    N.updateRow (Fin.last n) (∑ i, c i • N i)
+  have hRdet : R.det = N.det := by
+    simpa [R, hlast] using Matrix.det_updateRow_sum N (Fin.last n) c
+  have hk_cast (j : Fin n) : k.succAbove j.castSucc = j.castSucc.castSucc := by
+    dsimp only [k]
+    rw [Fin.succAbove_castSucc_of_lt]
+    exact Fin.castSucc_lt_last j
+  have hk_last : k.succAbove (Fin.last n) = ell := by
+    dsimp only [k, ell]
+    rw [Fin.succAbove_castSucc_self]
+    rfl
+  have hR_cast (j : Fin n) : R (Fin.last n) j.castSucc = 0 := by
+    simp only [R, Matrix.updateRow_self, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+    change (∑ i : Fin (n + 1), c i *
+      B (ell.succAbove i) (k.succAbove j.castSucc)) = 0
+    rw [hk_cast]
+    simp only [ell, Fin.succAbove_last]
+    have hne : j.castSucc.castSucc ≠ k := by
+      apply Fin.ne_of_lt
+      change (j : ℕ) < n
+      exact j.isLt
+    have hsum : (∑ i : Fin (n + 1), c i * B i.castSucc j.castSucc.castSucc) =
+        ∑ i : Fin (n + 1), c i * m ((i : ℕ) + (j : ℕ)) := by
+      apply Finset.sum_congr rfl
+      intro i _
+      change c i * (M.updateCol k (M *ᵥ v)) i.castSucc j.castSucc.castSucc = _
+      rw [Matrix.updateCol_ne hne]
+      rfl
+    rw [hsum]
+    have hj := congrFun hc j.castSucc
+    simp only [finiteHankelMatrix, Matrix.mulVec, dotProduct, Pi.zero_apply,
+      Fin.val_castSucc] at hj
+    simpa [mul_comm, add_comm] using hj
+  have hR_last : R (Fin.last n) (Fin.last n) = gamma := by
+    simp only [R, Matrix.updateRow_self, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+    change (∑ i : Fin (n + 1), c i *
+      B (ell.succAbove i) (k.succAbove (Fin.last n))) = gamma
+    rw [hk_last]
+    simp only [ell, Fin.succAbove_last]
+    have hne : ell ≠ k := by
+      exact Fin.ne_of_gt (by
+        simpa only [ell, k] using Fin.castSucc_lt_last (Fin.last n))
+    simp only [gamma, hankelFirstOmittedCoupling]
+    apply Finset.sum_congr rfl
+    intro i _
+    change c i * (M.updateCol k (M *ᵥ v)) i.castSucc ell = _
+    rw [Matrix.updateCol_ne hne]
+    change c i * m ((i : ℕ) + (n + 1)) = c i * m (n + 1 + (i : ℕ))
+    rw [add_comm (i : ℕ) (n + 1)]
+  have hminor :
+      (R.submatrix (Fin.last n).succAbove (Fin.last n).succAbove).det =
+        (finiteHankelMatrix m n).det := by
+    congr 1
+    ext i j
+    rw [Matrix.submatrix_apply, Fin.succAbove_last_apply,
+      Fin.succAbove_last_apply]
+    have hi : i.castSucc ≠ Fin.last n := Fin.ne_of_lt (Fin.castSucc_lt_last i)
+    change (N.updateRow (Fin.last n) (∑ q, c q • N q)) i.castSucc j.castSucc = _
+    rw [Matrix.updateRow_ne hi]
+    change (B.submatrix ell.succAbove k.succAbove) i.castSucc j.castSucc = _
+    rw [Matrix.submatrix_apply, Fin.succAbove_last_apply]
+    rw [hk_cast]
+    have hne : j.castSucc.castSucc ≠ k := by
+      apply Fin.ne_of_lt
+      change (j : ℕ) < n
+      exact j.isLt
+    change (M.updateCol k (M *ᵥ v)) i.castSucc.castSucc j.castSucc.castSucc = _
+    rw [Matrix.updateCol_ne hne]
+    rfl
+  have hRdet_expand : R.det = gamma * (finiteHankelMatrix m n).det := by
+    rw [Matrix.det_succ_row R (Fin.last n)]
+    rw [Finset.sum_eq_single (Fin.last n)]
+    · simp only [hR_last, Fin.val_last, hminor]
+      rw [show (-1 : ℝ) ^ (n + n) = 1 by
+        rw [show n + n = 2 * n by omega]
+        simp]
+      ring
+    · intro j _ hj
+      have hj0 : R (Fin.last n) j = 0 := by
+        revert hj
+        refine Fin.lastCases ?_ (fun q => ?_) j
+        · intro hj
+          exact (hj rfl).elim
+        · intro _
+          exact hR_cast q
+      simp [hj0]
+    · simp
+  rw [← hBdet, hBdet_expand, ← hRdet, hRdet_expand]
+  ring
+
 /-- **PSD extension rigidity.** If a null polynomial of the current block survives one
 positive-semidefinite Hankel extension, its pairing with the first omitted monomial is zero. -/
 theorem hankelFirstOmittedCoupling_eq_zero_of_posSemidef_succ_of_kernel
