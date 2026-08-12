@@ -1,41 +1,78 @@
-# nad card `hausdorff-positive-higher-spin-cdd-cone` — algebraic core of the converse is proved
+# nad card `hausdorff-positive-higher-spin-cdd-cone` — **Hausdorff's moment theorem is PROVED**
 
-Card gate: the Hausdorff converse (completely monotone ⇒ representing measure on `[0,1]`), absent
-from mathlib.  `HausdorffCDDMeasureSource.lean` already had necessity
-(`hausdorffMoment_isCompletelyMonotone`) and uniqueness (`hausdorffSource_eq_of_moments_eq`).
+Mathlib has no Hausdorff moment theorem.  It is now in the tree, in five modules, all axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound`) and wired into `GaloisForLFunctions.HTGeometry`.
+The card already had necessity (`hausdorffMoment_isCompletelyMonotone`) and determinacy
+(`hausdorffSource_eq_of_moments_eq`) in `HausdorffCDDMeasureSource.lean`.
 
-## Landed 2026-08-12 — `HTGeometry/HausdorffQuadratureWeights.lean` (axiom-clean, wired)
+## `HTGeometry/HausdorffQuadratureWeights.lean` — the algebra
 
 ```text
-hausdorffCoeff  b N k = (-1)^(N-k) * (fwdDiff 1)^[N-k] b k          -- "T(N,k)"
+hausdorffCoeff  b N k = (-1)^(N-k) * (fwdDiff 1)^[N-k] b k          -- T(N,k)
 hausdorffWeight b N k = (N.choose k) * hausdorffCoeff b N k
 ```
 
-- `hausdorffCoeff_nonneg`, `hausdorffWeight_nonneg` from `HausdorffCompletelyMonotone`.
-- **`hausdorffCoeff_refine`** — `T(N,k) = T(N+1,k) + T(N+1,k+1)` for `k ≤ N`.  This is the whole
-  trick: the forward-difference recursion with the sign folded in.  It turns the total-mass identity
-  into a one-line induction, so **no double sum and no triangle reindexing is needed** (mathlib has
-  no lemma for `∑_{k≤N} ∑_{i≤N-k} = ∑_{n≤N} ∑_{k≤n}`; `exact?` finds nothing).
-- `sum_hausdorffWeight_succ` (Pascal + `Finset.sum_range_succ'` + `Nat.choose_succ_self`),
-  **`sum_hausdorffWeight : ∑_{k ∈ range (N+1)} hausdorffWeight b N k = b 0`**.
-- `hausdorffCoeff_shift` — `hausdorffCoeff b N (m+l) = hausdorffCoeff (fun n => b (n+m)) (N-m) l`,
-  via `fwdDiff_iter_comp_add`.
-- `choose_mul_descFactorial_shift` — `C(N,m+l)·(m+l)ₘ = Nₘ·C(N−m,l)`, via `Nat.choose_mul` and
-  `Nat.descFactorial_eq_factorial_mul_choose`.
-- **`sum_hausdorffWeight_descFactorial`** — for `m ≤ N`,
-  `∑_{k ∈ range (N+1)} hausdorffWeight b N k · (k.descFactorial m) = (N.descFactorial m) · b m`.
-  The two lemmas above reduce it to the mass identity for the shifted sequence, so it needs no
-  separate induction either.
+- **`hausdorffCoeff_refine`** — `T(N,k) = T(N+1,k) + T(N+1,k+1)` for `k ≤ N`.  The whole trick: it
+  turns the mass identity into a one-line induction (with Pascal, `Finset.sum_range_succ'`,
+  `Nat.choose_succ_self`), so **no double sum and no triangle reindexing** — mathlib has no lemma
+  for `∑_{k≤N} ∑_{i≤N-k} = ∑_{n≤N} ∑_{k≤n}` (`exact?` finds nothing).
+- **`sum_hausdorffWeight`** — every level has total mass `b 0`.
+- `hausdorffCoeff_shift` (via `fwdDiff_iter_comp_add`), `choose_mul_descFactorial_shift` (via
+  `Nat.choose_mul` and `Nat.descFactorial_eq_factorial_mul_choose`), and
+  **`sum_hausdorffWeight_descFactorial`** — `∑ₖ w(N,k)·(k)ₘ = (N)ₘ·b m` for `m ≤ N`, reduced to the
+  mass identity for the shifted sequence.
 
-## What is left of the converse (analytic only)
+## `HTGeometry/HausdorffQuadratureMeasure.lean`
 
-1. the atomic measures `∑ₖ ENNReal.ofReal (hausdorffWeight b N k) • dirac (k/N)` on `[0,1]`;
-2. `|(k/N)^m − (k.descFactorial m)/(N.descFactorial m)| ≤ C(m)/N` uniformly in `k ≤ N`.  Proof
-   sketch: `(k)ₘ/(N)ₘ = ∏_{i<m}(k−i)/(N−i) ≤ (k/N)^m` for `k ≤ N`, and
-   `k/N − (k−i)/(N−i) = i(N−k)/(N(N−i)) ≤ (m−1)/(N−m+1)`, so `a^m − b^m ≤ m(a−b)` finishes;
-3. one weak-compactness extraction in `ProbabilityMeasure ↥(Icc 0 1)` (compact metrizable), after
-   normalising by `b 0` and treating `b 0 = 0` separately (complete monotonicity then forces
-   `b = 0`).
+`integral_finsetWeightedDirac_general`, `hausdorffNode` (`k/N` clamped into `[0,1]`, with
+`hausdorffNode_coe`), `hausdorffQuadrature` + `IsFiniteMeasure` instance,
+`integral_hausdorffQuadrature`, `hausdorffQuadrature_mass`, `hausdorffMoment_hausdorffQuadrature`.
 
-No entire-function theory and no missing mathlib area is involved — unlike the Nevanlinna
-bottleneck, this card's gate is finishable.
+## `HTGeometry/HausdorffNodeComparison.lean`
+
+`pow_sub_pow_le_nsmul_sub` (`a^m − b^m ≤ m(a−b)` on `0 ≤ b ≤ a ≤ 1`), `cast_descFactorial_eq_prod`,
+`descFactorial_ratio_eq_prod`, and **`abs_node_pow_sub_ratio_le`**:
+`|(k/N)^m − (k)ₘ/(N)ₘ| ≤ m²/N` for `m ≤ N`, `k ≤ N`, `0 < N`.  Above the diagonal the ratio is
+`∏ (k−i)/(N−i)`, each factor between `(k−m+1)/N` and `k/N`, so it is squeezed between the two
+corresponding powers; below it the ratio vanishes and `x^m ≤ x = k/N < m/N`.
+
+## `HTGeometry/HausdorffMomentTheorem.lean`
+
+`sum_hausdorffWeight_ratio`, `abs_hausdorffMoment_hausdorffQuadrature_sub_le`,
+`tendsto_hausdorffMoment_hausdorffQuadrature`, `hausdorffTest`, `eq_of_clusterPt_of_tendsto`,
+`hausdorffCompletelyMonotone_antitone`, `hausdorffCompletelyMonotone_nonneg`, and
+
+- **`exists_hausdorffSource_of_completelyMonotone`**
+- **`hausdorffCompletelyMonotone_iff_exists_source`**
+- **`existsUnique_hausdorffSource_of_completelyMonotone`**
+- `hausdorffMoment_strict_completelyMonotone` (equation `(9)`).
+
+**No metrizability is needed for the limit**: `CompactSpace (ProbabilityMeasure ↥(Icc 0 1))` is an
+instance, `exists_clusterPt_of_compactSpace` gives a cluster point, and
+`ProbabilityMeasure.continuous_integral_boundedContinuousFunction` + `ClusterPt.map` +
+`eq_of_clusterPt_of_tendsto` pin its moments.  The case `b 0 = 0` forces `b = 0` by antitonicity and
+nonnegativity; the zero measure serves.
+
+## `HTGeometry/HausdorffStrictCddCone.lean`
+
+`geometricCombination_strict_completelyMonotone`, `cddCoupling_strict_completelyMonotone` —
+equation `(10)` in strict form for a nonempty positive shell configuration inside `(0,1)`.
+
+## Card status — still NOT promotable
+
+Theorem A is unconditional in both directions with uniqueness, and `(9)`/`(10)` strictness is done.
+Still unformalized:
+
+1. `(11) = (13)` — the sinh series equals the source transform.  Needs the arctan power series
+   (`arctan t = ∑ (-1)^m t^{2m+1}/(2m+1)` for `|t| ≤ 1`; check whether mathlib has it), the pointwise
+   kernel identity `K(y,θ) = 8 ∑ (-1)^m y^m sinh((2m+1)θ)/(2m+1)` valid when `√y·e^{|θ|} ≤ 1`, and a
+   series/integral interchange with a geometric majorant.
+2. the extreme-ray dictionary `(18)` as a classification statement (the atom laws
+   `hausdorffCDDPhase_atom`, `_zero_atom`, `_shell_atom` already exist);
+3. the geometric q-ladder instance `(19)`: needs the `arccosh` estimate `r_j ≍ q^j/(2C)` to see the
+   atomic family is summable and lands strictly inside `(0,1)`; the strict inequalities then follow
+   from the two theorems above.
+
+The card's other open gates (global regularity for non-atomic measures, quasilocal density and
+compact-local QFT flow, universality from locality/unitarity) are research items, not formalization
+ones.

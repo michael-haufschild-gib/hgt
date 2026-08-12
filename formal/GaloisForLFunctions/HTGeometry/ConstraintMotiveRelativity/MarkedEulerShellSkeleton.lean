@@ -18,6 +18,7 @@ atomic sources.
 namespace HTGeometry.ConstraintMotiveRelativity
 
 open RHTower
+open scoped Matrix
 
 section Skeleton
 
@@ -64,7 +65,6 @@ theorem massCoeff_eq_shellJet {p : ℕ} (hp : p.Prime) {m : ℕ} (hm : m ≠ 0) 
   have hm0 : (m : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hm
   rw [massCoeff, shellJet_prime_pow hp m 1, pow_one]
   field_simp
-  ring
 
 /-- **`(ESG.8)`.**  The Weil tangent coefficient is a second shell jet. -/
 theorem weilCoeff_eq_shellJet {p : ℕ} (hp : p.Prime) {m : ℕ} (hm : m ≠ 0) :
@@ -72,7 +72,6 @@ theorem weilCoeff_eq_shellJet {p : ℕ} (hp : p.Prime) {m : ℕ} (hm : m ≠ 0) 
   have hm0 : (m : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hm
   rw [weilCoeff, shellJet_prime_pow hp m 2]
   field_simp
-  ring
 
 /-- **`(ESG.9)`.**  The prime phase is the exponential of a first shell jet. -/
 theorem primePhase_eq_shellJet {p : ℕ} (hp : p.Prime) {m : ℕ} (hm : m ≠ 0) (t : ℝ) :
@@ -84,7 +83,6 @@ theorem primePhase_eq_shellJet {p : ℕ} (hp : p.Prime) {m : ℕ} (hm : m ≠ 0)
   rw [shellJet_prime_pow hp m 1, pow_one]
   push_cast
   field_simp
-  ring
 
 end Skeleton
 
@@ -155,7 +153,7 @@ theorem shellMoment_eq_shellJet (F : Finset ℕ) (hF : ∀ p ∈ F, p.Prime) {m 
     rw [show r + (r + 2) = 2 * r + 2 by ring, pow_add, pow_mul]
     norm_num
   field_simp
-  nlinarith [hsign, sq_nonneg ((Real.log p) ^ (r + 2))]
+  rw [mul_assoc, hsign, mul_one]
 
 /-- The positive prime weight `(log p)²/p`. -/
 noncomputable def primeWeight (p : ℕ) : ℝ := (Real.log p) ^ 2 / p
@@ -179,19 +177,184 @@ theorem hankel_quadratic (F : Finset ℕ) (R : ℕ) (c : Fin (R + 1) → ℝ) :
     rw [primeWeight]
     rw [show (i : ℕ) + (j : ℕ) + 2 = ((i : ℕ) + (j : ℕ)) + 2 from rfl, pow_add, pow_add]
     ring
-  calc ∑ i : Fin (R + 1), ∑ j : Fin (R + 1), c i * c j * shellMoment F ((i : ℕ) + (j : ℕ))
-      = ∑ i : Fin (R + 1), ∑ j : Fin (R + 1), ∑ p ∈ F,
-          primeWeight p * ((c i * (Real.log p) ^ (i : ℕ)) * (c j * (Real.log p) ^ (j : ℕ))) := by
-        refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-        rw [shellMoment, Finset.mul_sum]
-        exact Finset.sum_congr rfl fun p hp => hterm p hp i j
-    _ = ∑ p ∈ F, primeWeight p * (∑ i : Fin (R + 1), c i * (Real.log p) ^ (i : ℕ)) ^ 2 := by
-        rw [Finset.sum_comm]
-        refine Finset.sum_congr rfl fun i _ => ?_
-        rw [Finset.sum_comm]
-        rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
-        exact Finset.sum_congr rfl fun j _ => by rw [Finset.mul_sum]
+  have hexpand : ∀ i j : Fin (R + 1), c i * c j * shellMoment F ((i : ℕ) + (j : ℕ))
+      = ∑ p ∈ F, primeWeight p * ((c i * (Real.log p) ^ (i : ℕ)) * (c j * (Real.log p) ^ (j : ℕ))) := by
+    intro i j
+    rw [shellMoment, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun p hp => hterm p hp i j
+  have s1 : ∑ i : Fin (R + 1), ∑ j : Fin (R + 1), ∑ p ∈ F,
+        primeWeight p * ((c i * (Real.log p) ^ (i : ℕ)) * (c j * (Real.log p) ^ (j : ℕ)))
+      = ∑ i : Fin (R + 1), ∑ p ∈ F, ∑ j : Fin (R + 1),
+        primeWeight p * ((c i * (Real.log p) ^ (i : ℕ)) * (c j * (Real.log p) ^ (j : ℕ))) :=
+    Finset.sum_congr rfl fun i _ => Finset.sum_comm
+  have s2 : ∑ i : Fin (R + 1), ∑ p ∈ F, ∑ j : Fin (R + 1),
+        primeWeight p * ((c i * (Real.log p) ^ (i : ℕ)) * (c j * (Real.log p) ^ (j : ℕ)))
+      = ∑ p ∈ F, ∑ i : Fin (R + 1), ∑ j : Fin (R + 1),
+        primeWeight p * ((c i * (Real.log p) ^ (i : ℕ)) * (c j * (Real.log p) ^ (j : ℕ))) :=
+    Finset.sum_comm
+  have s3 : ∀ p : ℕ, ∑ i : Fin (R + 1), ∑ j : Fin (R + 1),
+        primeWeight p * ((c i * (Real.log p) ^ (i : ℕ)) * (c j * (Real.log p) ^ (j : ℕ)))
+      = primeWeight p * (∑ i : Fin (R + 1), c i * (Real.log p) ^ (i : ℕ)) ^ 2 := by
+    intro p
+    rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by rw [Finset.mul_sum]
+  rw [Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => hexpand i j)), s1, s2]
+  exact Finset.sum_congr rfl fun p _ => s3 p
 
 end Moments
+
+/-! ### The Hankel block and its rank -/
+
+section Hankel
+
+/-- **`(ESG.12)`.**  The moment Hankel block through order `R`. -/
+noncomputable def hankelBlock (F : Finset ℕ) (R : ℕ) : Matrix (Fin (R + 1)) (Fin (R + 1)) ℝ :=
+  Matrix.of fun i j => shellMoment F ((i : ℕ) + (j : ℕ))
+
+/-- The weighted Vandermonde factor of the Hankel block. -/
+noncomputable def shellGram (F : Finset ℕ) (R : ℕ) : Matrix ↥F (Fin (R + 1)) ℝ :=
+  Matrix.of fun p i => Real.sqrt (primeWeight (p : ℕ)) * (Real.log (p : ℕ)) ^ (i : ℕ)
+
+theorem hankelBlock_eq_gram (F : Finset ℕ) (hF : ∀ p ∈ F, p.Prime) (R : ℕ) :
+    hankelBlock F R = (shellGram F R)ᵀ * shellGram F R := by
+  ext i j
+  rw [Matrix.mul_apply]
+  simp only [hankelBlock, shellGram, Matrix.of_apply, Matrix.transpose_apply]
+  rw [shellMoment, ← Finset.sum_coe_sort F]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  have hsq : Real.sqrt (primeWeight (p : ℕ)) * Real.sqrt (primeWeight (p : ℕ))
+      = primeWeight (p : ℕ) := Real.mul_self_sqrt (primeWeight_pos (hF _ p.2)).le
+  calc (Real.log (p : ℕ)) ^ ((i : ℕ) + (j : ℕ) + 2) / (p : ℕ)
+      = primeWeight (p : ℕ) * ((Real.log (p : ℕ)) ^ (i : ℕ) * (Real.log (p : ℕ)) ^ (j : ℕ)) := by
+        rw [primeWeight, ← pow_add]
+        rw [show (i : ℕ) + (j : ℕ) + 2 = ((i : ℕ) + (j : ℕ)) + 2 from rfl, pow_add]
+        ring
+    _ = (Real.sqrt (primeWeight (p : ℕ)) * (Real.log (p : ℕ)) ^ (i : ℕ))
+          * (Real.sqrt (primeWeight (p : ℕ)) * (Real.log (p : ℕ)) ^ (j : ℕ)) := by
+        rw [mul_mul_mul_comm, hsq]
+
+/-- **`(ESG.12)`.**  The rank of the moment Hankel block is `min(R+1, |F|)`: the block is the Gram
+matrix of a weighted Vandermonde system at the distinct prime-log nodes. -/
+theorem rank_hankelBlock (F : Finset ℕ) (hF : ∀ p ∈ F, p.Prime) (R : ℕ) :
+    (hankelBlock F R).rank = min (R + 1) F.card := by
+  classical
+  rw [hankelBlock_eq_gram F hF R, Matrix.rank_transpose_mul_self]
+  refine le_antisymm (le_min ?_ ?_) ?_
+  · simpa using Matrix.rank_le_card_width (shellGram F R)
+  · simpa [Fintype.card_coe] using Matrix.rank_le_card_height (shellGram F R)
+  · have hk1 : min (R + 1) F.card ≤ R + 1 := min_le_left _ _
+    have hk2 : min (R + 1) F.card ≤ Fintype.card ↥F := by
+      rw [Fintype.card_coe]; exact min_le_right _ _
+    set k := min (R + 1) F.card with hkdef
+    set row : Fin k → ↥F := fun i => (Fintype.equivFin ↥F).symm (Fin.castLE hk2 i) with hrow
+    have hrowinj : Function.Injective row := fun a b hab =>
+      Fin.castLE_injective hk2 ((Fintype.equivFin ↥F).symm.injective hab)
+    set S := (shellGram F R).submatrix row (Fin.castLE hk1) with hS
+    have hSapply : ∀ i j : Fin k,
+        S i j = Real.sqrt (primeWeight ((row i : ↥F) : ℕ))
+          * (Real.log ((row i : ↥F) : ℕ)) ^ (j : ℕ) := fun i j => rfl
+    have hST : Sᵀ = Matrix.of (fun j i => Real.sqrt (primeWeight ((row i : ↥F) : ℕ))
+        * (Matrix.vandermonde (fun i => Real.log ((row i : ↥F) : ℕ)))ᵀ j i) := by
+      ext j i
+      rw [Matrix.transpose_apply, hSapply]
+      simp [Matrix.vandermonde]
+    have hdetS : S.det = (∏ i, Real.sqrt (primeWeight ((row i : ↥F) : ℕ)))
+        * (Matrix.vandermonde (fun i => Real.log ((row i : ↥F) : ℕ))).det := by
+      rw [← Matrix.det_transpose S, hST, Matrix.det_mul_row, Matrix.det_transpose]
+    have hprod : (∏ i, Real.sqrt (primeWeight ((row i : ↥F) : ℕ))) ≠ 0 :=
+      Finset.prod_ne_zero_iff.mpr fun i _ =>
+        (Real.sqrt_pos.mpr (primeWeight_pos (hF _ (row i).2))).ne'
+    have hnodes : Function.Injective (fun i => Real.log ((row i : ↥F) : ℕ)) := by
+      intro a b hab
+      have hpos : ∀ i : Fin k, (0 : ℝ) < (((row i : ↥F) : ℕ) : ℝ) := fun i => by
+        exact_mod_cast (hF _ (row i).2).pos
+      have h1 := Real.log_injOn_pos (Set.mem_Ioi.mpr (hpos a)) (Set.mem_Ioi.mpr (hpos b)) hab
+      have h2 : ((row a : ↥F) : ℕ) = ((row b : ↥F) : ℕ) := by exact_mod_cast h1
+      exact hrowinj (Subtype.ext h2)
+    have hvdm : (Matrix.vandermonde (fun i => Real.log ((row i : ↥F) : ℕ))).det ≠ 0 := by
+      rw [Matrix.det_vandermonde]
+      refine Finset.prod_ne_zero_iff.mpr fun i _ => Finset.prod_ne_zero_iff.mpr fun j hj => ?_
+      have hij : i ≠ j := (Finset.mem_Ioi.mp hj).ne
+      exact sub_ne_zero.mpr fun h => hij (hnodes h).symm
+    have hdet : S.det ≠ 0 := by rw [hdetS]; exact mul_ne_zero hprod hvdm
+    have hrankS : S.rank = k := by
+      rw [Matrix.rank_of_isUnit S ((Matrix.isUnit_iff_isUnit_det S).mpr
+        (isUnit_iff_ne_zero.mpr hdet)), Fintype.card_fin]
+    calc k = S.rank := hrankS.symm
+      _ ≤ (shellGram F R).rank := Matrix.rank_submatrix_le _ _ _
+
+end Hankel
+
+/-! ### Successor nonuniqueness of a truncated moment face -/
+
+section Successor
+
+/-- **`(ESG.12)`.**  A truncated moment face through order `2R` does not determine the successor
+moment among positive atomic sources: two positive weight systems on the same `2R+2` distinct nodes
+share every moment through `2R` and differ at `2R+1`.  The perturbation is the preimage of the last
+coordinate vector under the invertible full Vandermonde system. -/
+theorem exists_positive_moment_ambiguity (R : ℕ) (x : Fin (2 * R + 2) → ℝ)
+    (hx : Function.Injective x) :
+    ∃ w₁ w₂ : Fin (2 * R + 2) → ℝ, (∀ j, 0 < w₁ j) ∧ (∀ j, 0 < w₂ j) ∧
+      (∀ r : Fin (2 * R + 1), ∑ j, w₁ j * x j ^ (r : ℕ) = ∑ j, w₂ j * x j ^ (r : ℕ)) ∧
+      ∑ j, w₁ j * x j ^ (2 * R + 1) ≠ ∑ j, w₂ j * x j ^ (2 * R + 1) := by
+  classical
+  set A : Matrix (Fin (2 * R + 2)) (Fin (2 * R + 2)) ℝ := (Matrix.vandermonde x)ᵀ with hA
+  have hdet : IsUnit A.det := by
+    refine isUnit_iff_ne_zero.mpr ?_
+    rw [hA, Matrix.det_transpose, Matrix.det_vandermonde]
+    refine Finset.prod_ne_zero_iff.mpr fun i _ => Finset.prod_ne_zero_iff.mpr fun j hj => ?_
+    exact sub_ne_zero.mpr fun h => (Finset.mem_Ioi.mp hj).ne' (hx h)
+  set e : Fin (2 * R + 2) → ℝ := Pi.single (Fin.last (2 * R + 1)) 1 with he
+  set c : Fin (2 * R + 2) → ℝ := A⁻¹.mulVec e with hc
+  have hAc : A.mulVec c = e := by
+    rw [hc, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv A hdet, Matrix.one_mulVec]
+  have hrow : ∀ r : Fin (2 * R + 2), ∑ j, c j * x j ^ (r : ℕ) = e r := by
+    intro r
+    have h : (∑ j, A r j * c j) = e r := congrFun hAc r
+    rw [← h]
+    exact Finset.sum_congr rfl fun j _ => by
+      rw [hA, Matrix.transpose_apply, Matrix.vandermonde_apply, mul_comm]
+  have hcvan : ∀ r : Fin (2 * R + 1), ∑ j, c j * x j ^ (r : ℕ) = 0 := by
+    intro r
+    have hne : (Fin.castSucc r) ≠ Fin.last (2 * R + 1) := Fin.castSucc_lt_last r |>.ne
+    have := hrow (Fin.castSucc r)
+    rw [he, Pi.single_apply, if_neg hne] at this
+    simpa using this
+  have hclast : ∑ j, c j * x j ^ (2 * R + 1) = 1 := by
+    have := hrow (Fin.last (2 * R + 1))
+    rw [he, Pi.single_apply, if_pos rfl] at this
+    simpa using this
+  obtain ⟨M, hM⟩ : ∃ M : ℝ, ∀ j, |c j| ≤ M :=
+    ⟨Finset.univ.sup' ⟨0, Finset.mem_univ 0⟩ (fun j => |c j|),
+      fun j => Finset.le_sup' (fun j => |c j|) (Finset.mem_univ j)⟩
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg (c 0)) (hM 0)
+  set ε : ℝ := (2 * (M + 1))⁻¹ with hε
+  have hεpos : 0 < ε := by rw [hε]; positivity
+  have hsmall : ∀ j, |ε * c j| < 1 := by
+    intro j
+    rw [abs_mul, abs_of_pos hεpos, hε, inv_mul_eq_div, div_lt_one (by positivity)]
+    linarith [hM j]
+  refine ⟨fun j => 1 + ε * c j, fun j => 1 - ε * c j, fun j => ?_, fun j => ?_, fun r => ?_, ?_⟩
+  · have h := abs_lt.mp (hsmall j); linarith [h.1]
+  · have h := abs_lt.mp (hsmall j); linarith [h.2]
+  · have hdiff : ∑ j, (1 + ε * c j) * x j ^ (r : ℕ) - ∑ j, (1 - ε * c j) * x j ^ (r : ℕ)
+        = (2 * ε) * ∑ j, c j * x j ^ (r : ℕ) := by
+      rw [← Finset.sum_sub_distrib, Finset.mul_sum]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    rw [hcvan r, mul_zero] at hdiff
+    linarith [hdiff]
+  · have hdiff : ∑ j, (1 + ε * c j) * x j ^ (2 * R + 1)
+        - ∑ j, (1 - ε * c j) * x j ^ (2 * R + 1)
+        = (2 * ε) * ∑ j, c j * x j ^ (2 * R + 1) := by
+      rw [← Finset.sum_sub_distrib, Finset.mul_sum]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    rw [hclast, mul_one] at hdiff
+    intro heq
+    rw [heq, sub_self] at hdiff
+    have h2 : (0 : ℝ) < 2 * ε := by positivity
+    linarith [hdiff]
+
+end Successor
 
 end HTGeometry.ConstraintMotiveRelativity

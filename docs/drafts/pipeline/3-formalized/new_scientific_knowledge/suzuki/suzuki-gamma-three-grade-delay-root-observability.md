@@ -1,7 +1,7 @@
 # Gamma transport first changes Suzuki's prime normal expansion at grade three
 
 - **ID:** `suzuki-gamma-three-grade-delay-root-observability`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** SHARP ASYMPTOTIC / ROOT-PORT OBSERVABILITY LAW
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
@@ -359,9 +359,23 @@ suzukiFirstGrade_rootTrace_injective
 ```
 
 Thus one strictly visible step unconditionally separates both root coefficients in the actual
-oriented `lp` carrier.  The exact finite-step squared norm sum `(11)` remains a formal target.
-The analytic asymptotic `(4)` depends on the Hilbert-valued oscillatory Gamma theorem still absent
-from Lean and is not introduced as an axiom.
+oriented `lp` carrier.  **The exact finite-step squared norm sum `(11)` is now formal**, in
+
+```text
+formal/GaloisForLFunctions/RHTower/SuzukiRootPortObservationGram.lean
+  suzukiRootPortObservation                 the compressed transported trace P T beta
+  suzukiRootPortObservation_left_coordinate exact left descendant coordinate -w_i beta_-
+  suzukiRootPortObservation_right_coordinate  exact right descendant coordinate -w_i beta_+
+  suzukiRootPortObservation_norm_sq         (11) for any injective visible alphabet
+  suzukiRootPortObservation_primePower_norm_sq  (11) at Suzuki's alphabet, c_a^2 = sum (log p)^2/p^j
+  two_visible_of_gt_half_log_two            (14): 2^1 is strictly visible past (log 2)/2
+  suzukiRootPort_gram_pos                   c_a^2 > 0 on any alphabet containing 2^1
+  suzukiRootPortObservation_ne_zero         no nonzero endpoint trace is dark at first grade
+```
+
+All audit to `[propext, Classical.choice, Quot.sound]`.  The analytic asymptotic `(4)` depends on
+the Hilbert-valued oscillatory Gamma theorem still absent from Lean and is not introduced as an
+axiom; it is a named shared-infrastructure target, not a gate of this card.
 
 ## Gates
 
@@ -373,7 +387,7 @@ from Lean and is not introduced as an axiom.
 - [x] prove first-grade injectivity for \(a>(\log2)/2\)
 - [x] prove inverse-log first descendant is not spatial \(H^1\)
 - [x] formalize strict-step root-port coordinate injectivity in Lean
-- [ ] formalize exact finite-step root-port observation Gram in Lean
+- [x] formalize exact finite-step root-port observation Gram in Lean
 - [ ] prove completed-source normal-family intertwining
 - [ ] close trace-zero weighted source gate
 - [ ] RH or whole-program no-go

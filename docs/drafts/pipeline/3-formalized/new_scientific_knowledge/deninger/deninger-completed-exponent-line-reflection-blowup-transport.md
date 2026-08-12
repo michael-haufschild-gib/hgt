@@ -1,8 +1,8 @@
 # Completed-exponent line-reflection blow-up transport
 
-- **Stage:** 2 — dependency-closed paper proof
+- **Stage:** 3-formalized
 - **Route:** L — Deninger/Green/Hodge source descent
-- **Status:** [PAPER-PROVED] [PROJECT-SPECIFIC SYNTHESIS] [PRIORITY UNVERIFIED] [NOT RH]
+- **Status:** [FORMALIZED] [PROJECT-SPECIFIC SYNTHESIS] [PRIORITY UNVERIFIED] [NOT RH]
 - **Date:** 2026-08-11
 - **Exact advance:** functional-equation reflection is lifted from the Xi divisor to an explicit
   involution of the two-variable completed exponent source. Its exceptional-fibre action is forced,
@@ -137,3 +137,52 @@ fixed-reader cyclicity identity.
 4. The advance over the bare functional equation is the explicit lift through the exponent
    deformation and its multiplicity-exact exceptional divisor action. Parent functional-equation
    symmetry itself is not claimed as novel.
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerExponentLineReflectionBlowupTransport.lean`, with the
+coefficient forms in `DeningerExponentGammaSixShellTransportRigidity.lean`.  Axiom audit for every
+declaration: `propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- **`(1)`--`(3)`: the forced lift and its covariance.**
+  `deningerCompletedExponentDeformationActivation` is `E_Ξ(z,s) = ξ(s)/ξ(zs)`,
+  `deningerCompletedExponentLineReflection` is the map `(1)`,
+  `deningerCompletedExponentLineReflection_snd` and
+  **`deningerCompletedExponentLineReflection_mul`** are the two coordinate identities, the second
+  being `(2)`, and **`deningerCompletedExponentDeformationActivation_lineReflection`** is `(3)`:
+  the lifted involution conjugates the completed exponent deformation.
+  **`deningerCompletedExponentLineReflection_involutive`** and
+  `deningerCompletedExponentLineReflectionEquiv` show it is an actual involution of the open-strip
+  source, not a divisor relabelling.
+- **`(5)`: the exceptional-divisor action.**  `xiDivisorSupport_ne_zero` and
+  `xiDivisorSupport_lineReflection_ne_zero` give the two nonvanishing factors,
+  `deningerExponentExceptionalLineReflectionDirection` is `j_ρ`, with
+  `deningerExponentExceptionalLineReflectionDirection_zero` (the divisor direction is fixed),
+  **`deningerExponentExceptionalLineReflectionDirection_sourcePole`** (the marked pole `-ρ` goes to
+  `-ρ^#`), `deningerExponentExceptionalLineReflectionDirection_add`,
+  **`deningerExponentExceptionalLineReflectionDirection_involutive`**, and
+  **`existsUnique_deningerExponentExceptionalLineReflectionCoefficient`**, which is the card's
+  forcedness claim: the degree-one anti-linear form together with the marked-pole condition
+  determines the coefficient uniquely.
+- **`(6)`: multiplicity-exact equivariance.**
+  **`deningerExponentExceptionalOrder_lineReflection`** is `d_{ρ^#} = d_ρ`, and
+  **`deningerExponentExceptionalRawProfile_lineReflection`** is
+  `P_{ρ^#}(j_ρ(w)) = conj(P_ρ(w))` — the complete multiplicity profile, not only its pole support.
+- **The oriented Gamma-six readout.**
+  `deningerGammaSixExceptionalTameReader_lineReflection` is the sign change of the horizontal
+  Deninger character asserted at the end of §3.
+
+## Gates
+
+- [x] 1 → 2 fully-proven: dependency-closed paper proof `(1)`--`(6)`
+- [x] 2 → 3 formalized: `(1)`--`(6)` proved unconditionally (see *Lean status*)
+- [ ] 3 → 4 publication-ready
+
+## Log
+
+- 2026-08-12 — Corpus audit: the whole card was already formalized in
+  `DeningerExponentLineReflectionBlowupTransport.lean`, which the card did not cite.  Verified the
+  module is wired into the umbrella and that every headline declaration audits to
+  `propext, Classical.choice, Quot.sound`.  Card moved to stage 3.

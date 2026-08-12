@@ -499,14 +499,86 @@ Closed so far — the analytic heart of Theorem 2.1:
 
 Axiom prints: only `propext`, `Classical.choice`, `Quot.sound`.
 
+Also closed — **Theorem 2.1 itself**, in both the real and the complex form:
+
+- `pow_div_factorial_le_exp`, `abs_pow_le_const_mul_exp`: exponential domination of every monomial.
+- `memLp_two_exp_half`, `memLp_two_pow`, `memLp_two_complex_pow`: the half window and every
+  monomial lie in `L^2(mu)`, so `(LEF.3)` is available as an honest Cauchy-Schwarz pairing
+  (`integrable_mul_of_le_exp_half`).
+- `posWeight`, `negWeight` and their coefficient identities: the Jordan split of a real density.
+- `lintegral_toNNReal_ne_top`, `memLp_two_coe_weight`, `window_subset_integrableExpSet`: each
+  Jordan part gives a finite measure that inherits the half window `(-a/2, a/2)`.
+- `ae_eq_zero_of_forall_moment_eq_zero`: if `mu` is finite with `int e^{a|x|} dmu < infinity`, `f`
+  is in `L^2(mu)` and every moment `int x^n f dmu` vanishes, then `f = 0` almost everywhere.
+- `ae_eq_zero_of_forall_complex_moment_eq_zero`: the same for complex densities, by real and
+  imaginary parts.
+
+Together these say exactly that the orthogonal complement of the polynomials in `L^2(mu)` and in
+`L^2(mu;C)` is trivial, which is the content of Theorem 2.1.
+
+Also closed — **polynomial density in `L^2(mu;C)`**:
+
+- `monomialLp`, `coeFn_monomialLp`, `polySubmodule`, `monomialLp_mem`: the monomials and the
+  submodule they span inside `L^2(mu;C)`.
+- `polySubmodule_orthogonal`: the orthogonal complement of that submodule is trivial — Theorem 2.1
+  in Hilbert form.
+- `dense_polySubmodule`: hence the polynomials are dense in `L^2(mu;C)`.
+
+Also closed — the **block-Hankel / multiplier identity (LEF.9)** and the forward half of
+Theorem 3.1, in a second module
+`GaloisForLFunctions.HTGeometry.LocalExponentialMatrixSignCone`:
+
+- `matrixMoment`, `blockHankel`, `vectorPoly`, `matQuad`, `multiplierForm`: the entrywise matrix
+  moments `(LEF.7)`, the order-`N` block section `(LEF.8)`, the vector polynomial, the Hermitian
+  quadratic form, and the integrated multiplier form `(LEF.11)`.  Matrix-valued Bochner
+  integration is avoided: moments are defined entry by entry.
+- `integrable_abs_pow`, `integrable_pow_mul_entry`: every entrywise moment integrand of a bounded
+  matrix density is integrable in the exponential window.
+- `matQuad_blockHankel_eq_multiplierForm`: **(LEF.9)** exactly — the block-Hankel quadratic form
+  at a block coefficient family equals the integrated multiplier form of the associated vector
+  polynomial.
+- `matQuad_eq_dotProduct`: the bridge to the standard `star v ⬝ᵥ M *ᵥ v` pairing.
+- `integrable_matQuad_vectorPoly`, `re_matQuad_blockHankel_nonneg`: **Theorem 3.1, forward
+  direction** — a positive semidefinite density has positive semidefinite block Hankel sections.
+
+Also closed — the **rank-one reduction** of the converse:
+
+- `exists_polynomial_of_mem_polySubmodule` (in `LocalExponentialTestClosure`): every element of
+  the polynomial submodule of `L^2(mu;C)` is almost everywhere an honest polynomial function
+  `x -> eval x P`.  Proved by span induction over `Polynomial C`.
+- `conj_mul_self`, `matQuad_smul_vector`, `vectorPoly_rankOne`: the algebra of a rank-one block
+  coefficient family `v (i,k) = P.coeff i * u k`, whose vector polynomial is
+  `eval x P * u` and whose multiplier form is the squared modulus times the scalar density.
+- `integral_normSq_poly_mul_matQuad_nonneg`: **the rank-one test.**  Positivity of every block
+  Hankel section forces `int ‖eval x P‖^2 * (u* J(x) u).re dmu >= 0` for every polynomial `P` and
+  every direction `u`.
+
+Also closed — the **bounded weight multiplier** on `L^2(mu;C)`, the operator that makes the
+scalar endgame's continuity argument available:
+
+- `memLp_weight_mul`, `weightMul`, `coeFn_weightMul`: multiplication by a bounded real weight `g`
+  maps `L^2(mu;C)` to itself.
+- `weightMul_sub`, `norm_weightMul_le`: the multiplier is additive and has operator norm at most
+  the bound `C`, so it is Lipschitz.
+- `weightedSq`, `weightedSq_eq_re_inner`: the weighted quadratic functional
+  `f -> int ‖f‖^2 g dmu` is the real part of the multiplier form `<f, g.f>`.  Continuity of the
+  functional therefore reduces to continuity of the inner product and of the multiplier.
+
 Remaining Lean surface, in dependency order:
 
-1. Theorem 2.1 as stated: if `f` is in `L^2(mu)` and every moment `int x^n f dmu` vanishes, then
-   `f = 0` a.e.  Route: split `f = f^+ - f^-`, form `mu.withDensity` of each, check that both
-   inherit the exponential window by Cauchy-Schwarz against `e^{a|x|}`, and apply
-   `measure_eq_of_forall_moment_eq`.
-2. Polynomial density in `L^2(mu)` as a Hilbert-space statement (trivial orthogonal complement
-   implies dense closure), and its vector-valued form for `L^2(mu; C^d)`.
+3c. The scalar endgame: a bounded real density `g` with `int ‖eval x P‖^2 g dmu >= 0` for every
+   polynomial `P` is nonnegative almost everywhere.  Route, now that the multiplier layer exists
+   and needs NO second measure: `weightedSq mu g` is continuous on `L^2(mu;C)` by
+   `weightedSq_eq_re_inner` plus `norm_weightMul_le`; it is nonnegative on the polynomial
+   submodule by hypothesis and `exists_polynomial_of_mem_polySubmodule`; by `dense_polySubmodule`
+   it is nonnegative everywhere; test at the indicator of `E = {g < 0}` to get
+   `int_E g dmu >= 0`, and since `g < 0` on `E` this forces `mu E = 0`.
+3d. Assemble Theorem 3.1's converse: apply 3c to `g_u = (u* J u).re` for `u` in a countable dense
+   set, intersect the full-measure sets, and extend to all `u` by continuity of the quadratic
+   form.  Corollary 3.2 is then the contrapositive.
+2b. The vector-valued density statement for `L^2(mu; C^d)`, obtained coordinatewise from
+   `dense_polySubmodule` (only needed if the multiplier route is preferred over the rank-one
+   route above).
 3. Theorem 3.1 and Corollary 3.2: the bounded Hermitian multiplier sign cone through block Hankel
    sections `(LEF.9)`/`(LEF.10)`/`(LEF.13)`.
 4. Lemma 4.1 and Theorem 4.2: rational-phase density and the phase/Hankel/source fusion `(LEF.15)`.

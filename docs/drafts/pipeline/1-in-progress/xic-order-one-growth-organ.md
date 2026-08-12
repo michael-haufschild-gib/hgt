@@ -808,3 +808,55 @@ the infinitary Cesàro contradiction by Turán-power-sum effective bounds to get
 certificates for partial RH; (c) the abstract masking no-go: plain minors (no polynomial
 quantifier) provably cannot detect below the geometric mean of two higher real atoms —
 worth a Lean counterexample to certify sharpness of the polynomial quantifier.
+
+## Step 38 — the frontier pair: masking no-go + two-scale supply [LEAN-PROVED]
+
+Attack on the three frontier items of step 37; outcome: (c) fully proved, (a) resolved by a
+no-go analysis plus a bridge theorem, (b) scoped as the next program.
+
+**(c) The masking no-go — the polynomial quantifier is not removable.**
+`GaloisForLFunctions.HTGeometry.exists_nonreal_config_forall_turanMinor_re_nonneg`
+(`HTGeometry/TuranMinorSubEdgeMasking.lean`): an explicit conjugation-symmetric
+configuration — real atoms `12/25`, `5/12` with multiplicity 100, non-real pair
+`w = (50 + 35i)/149` — in the open right unit half-disk with ALL moments ≥ 0 and ALL plain
+Turán minors ≥ 0 at every index n, yet `Im w ≠ 0`. Mechanism: `|w| < 5/12`, so every pair
+interaction involving `w` lives at scale ≤ `(1/5)^{n+1}` = the scale of the real-real pair
+mass, and multiplicity 100² beats 100 uniformly in n (single rational bracket inequality,
+n-free after scale comparison). The point w is numerically realizable as an actual resolvent
+point (γ² = 1 + √149/10 ≈ 2.22 > 2, b = 7/(10γ) ≈ 0.47 < 1/2, X = 0), and its modulus
+lies below the geometric mean √(1/5) of the two real atoms. CONSEQUENCE: the inference
+"plain minors ⇒ all points real" is FALSE under every structural hypothesis the
+level-cleansing machinery uses; detection below the geometric mean of two higher real atoms
+REQUIRES a weight vanishing on the higher atoms. The polynomial quantifier in
+`riemannHypothesis_iff_forall_polyTuranMinor_zero_re_nonneg` is essential, not an artifact.
+
+**(a) Status resolved: the p = 1 datum is not abstractly winnable; it IS a bridge theorem.**
+Analysis (recorded): an adversarial admissible configuration (one non-real pair + tiny tail)
+makes `Re(R₀R₂ − R₁²) < 0`, so no proof from the resolvent-chart axioms alone can supply the
+datum — it genuinely requires arithmetic knowledge of where zeta's zeros are. The winnable
+form is the **two-scale supply theorem**
+`RHTower.xiResolventTuranMinor_zero_re_nonneg_of_partial_line`
+(`RHTower/XiResolventPartialLineSupply.lean`): if every copy with resolvent modulus ≥ δ lies
+on the critical line, and `8εS ≤ 2r₁r₂(r₁−r₂)²` (ε = sub-δ norm-mass tail, S = total norm
+mass, r₁ ≠ r₂ two above-δ moduli), then the index-0 plain minor at X is ≥ 0. Proof: split
+the variance pair expansion at scale δ; above δ all atoms are positive reals (block ≥ the
+separated witness pair 2r₁r₂(r₁−r₂)²); the complement pair mass is
+S² − (S−ε)² ≤ 2εS, each pair term ≤ 4× its mass. Companion
+`polyTuranMinor_one_zero_re_nonneg_of_partial_line` phrases it for the p = 1 instance of the
+single-minor criterion via `xiPolyMoment_one : xiPolyMoment 1 k X = xiResolventMoment k X`.
+So the first Turán datum = (partial RH at one scale) + (one checkable mass inequality) —
+exactly the interface the effective program (b) must fill.
+
+**(b) Scoped, not yet attacked**: effective Turán power-sum bounds → finite-n oscillation
+windows → finite jet certificates for partial RH. Opens with formalizing a quantitative
+version of the machine's Cesàro contradiction.
+
+All four theorems audit to [propext, Classical.choice, Quot.sound]. Wired:
+HTGeometry.lean (EOF append), RHTower.lean (after XiResolventTraceCauchySchwarz).
+
+**Lean traps (new).** `rw [norm_mul, norm_pow, norm_mul, pow_one]` on ‖(uv)^{0+1}(u−v)²‖
+normalizes only the FIRST power — state subsequent bounds against the actual residual form.
+`set x := e` performed after the theorem's binders rewrites e inside hypotheses too — a later
+`rw [← hx] at h` then fails with "pattern not found" because h already mentions x.
+Multiplicity-4 configurations: prove `![a,b,w,w'] 2 = w` etc. as `rfl` facts and pass them to
+`norm_num` — bare norm_num only reduces vecCons indices 0 and 1.

@@ -16,7 +16,7 @@
   - `DAC_DENINGER_MOBIUS_FOURIER_COMMUTATOR_EXACT_KERNEL`;
   - Meyer's Poisson/Fourier intertwining;
   - the unconditional PNT-strength Mertens bound already present in the corpus.
-- **Lean status:** intentionally paper-only while the Lean corpus is being refactored.
+- **Lean status:** partially formalized; see *Lean status* below.
 
 ## 1. Result
 
@@ -460,16 +460,65 @@ Fourier oddness, target-cycle nilpotence, or a quotient declaring Green vector r
 - `../../not_new_scientific_knowledge/semilocal-dual-pair-euler-connection-source-law.md`.
 - `../../../1-in-progress/deninger-enhanced-adiabatic-milnor-calderon-vanishing-cycle.md`.
 
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerAdiabaticMobiusPreimage.lean`,
+`DeningerAdiabaticMobiusEndpoint.lean`, `DeningerMobiusFourierCommutator.lean` and
+`DeningerVonMangoldtMoebiusConvolution.lean`.  Axiom audit for every declaration:
+`propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- **`(2)`: the adiabatic Möbius lift, with no prime cutoff.**  `deningerAdiabaticSource`,
+  `deningerAdiabaticMobiusCoefficient`, **`deningerAdiabaticMobiusPreimage`** and
+  `deningerAdiabaticMobiusPreimage_eq_tsum`.  The exact gauge factorization
+  `M_a h(x) = x^a f_{exp(-a·)h}(x)` places the lift on the already formalized critical Möbius
+  preimage domain, so `deningerAdiabaticMobiusPreimage_zero` is the canonical preimage at `a = 0`
+  and `deningerAdiabaticMobiusPreimage_moment_integrable` gives every polynomial moment for every
+  `a ≥ 0`.  The moment norms `(15)` are `deningerAdiabaticMomentFun`,
+  `deningerAdiabaticMomentFun_memLp`, `deningerAdiabaticMomentLp`.
+- **`(7)`, and the `a → 0` half of `(11)`: the strict endpoint.**
+  `deningerMobiusPreimage_sub_meyer`, `deningerAdiabaticBoundaryError` with its majorant and
+  `tendsto_integral_norm_deningerAdiabaticBoundaryError`, `tendsto_deningerAdiabaticSource_zero`,
+  `deningerAdiabaticMomentLp_dist_le` and **`tendsto_deningerAdiabaticMomentLp_zero`** — strict `L¹`
+  convergence in every polynomial moment, with both singular effects at `a = 0` (the source moving
+  in Meyer's projective topology and the physical multiplier `x^a` losing uniform boundedness)
+  handled separately.
+- **`(14)`: the Möbius--Fourier commutator.**  `deningerFourierSq_apply`,
+  `deningerEvenDistribution_fourierSq`, `deningerPreimageDistribution`,
+  **`deningerMobiusCommutator`** and **`deningerMobiusCommutator_fourier_covariance`**
+  (`𝔖_μ(Jh) = -ℱ(𝔖_μ h)`).
+- **`(25)`: the arithmetic step of the Euler connection.**
+  `DeningerVonMangoldtMoebiusConvolution.lean`: `arithmeticFunction_mul_zeta_injective` and
+  **`vonMangoldt_mul_moebius`**, the identity `Λ * μ = -(μ · log)` that turns the `a`-derivative of
+  `(2)` into the Euler connection.  mathlib carries `∑_{d|n} μ(d)log d = -Λ(n)`; the convolution
+  form the card uses follows by convolving with `ζ` and inverting.
+
+### Not yet formalized
+
+- `(8)`, `(24)`, `(26)`: the Euler connection `∂_a M_a u = A_a^+ M_a u` itself — the operators
+  `A_a^±` and term-by-term differentiation of `(2)` in the moment norms.
+- `(9)`, `(28)`, `(29)`: the Fourier intertwining `ℱ A_a^+ = A_a^- ℱ`.
+- `(10)`, `(30)`: the transgression ODE for `𝔖_a`.
+- `(12)`, `(31)`: the Pettis-integral transgression identity in `𝒮'(ℝ)`.
+- `(13)`: the substitution of `M_0(Zf) = f`, `JZf = Z f̂` into `(5)`.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: explicit source family, topology, boundary map, and falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed proof `(7)`--`(14)` and hostile audit complete
-- [ ] 2 → 3 formalized: paused during Lean corpus refactor
+- [ ] 2 → 3 formalized: `(2)`, `(7)`, `(11)`'s endpoint, `(14)` and `(25)` proved
+  unconditionally; the connection `(8)`--`(10)` and the transgression `(12)`--`(13)` remain
+  (see *Lean status*)
 - [ ] 3 → 4 publication-ready
 - [ ] source successor: `DAC_DENINGER_RESOLVED_GREEN_SOURCE_ANNIHILATOR`
 - [ ] endpoint falsifier: `XI_TWO_PRIME_ORIENTED_BOUNDARY_STRICT_TRANSPORT`
 
 ## Log
+
+- 2026-08-12 — Corpus audit: the adiabatic lift, its strict endpoint and the Möbius--Fourier
+  commutator were already built.  Added the von Mangoldt--Möbius convolution identity `(25)`, the
+  arithmetic step of the Euler connection.
 
 - 2026-08-08 — Constructed all-prime-first adiabatic Möbius family, proved strict PNT endpoint,
   derived physical/Fourier contragredient connection and unsquared Green--Stokes law, and identified

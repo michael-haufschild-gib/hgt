@@ -10,7 +10,7 @@ card has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/
 
 | # | Card | Status |
 |---|---|---|
-| 1 | `beurling-cross-system-blindness-of-multiplicative-regularization-law.md` | NEEDS-LEAN — card flagged [NO LEAN]; corpus parent MultiplicativeRegularizationBlind.lean exists, necessity axiom N1 needs its own module |
+| 1 | `beurling-cross-system-blindness-of-multiplicative-regularization-law.md` | **DONE 2026-08-12** — promoted to `3-formalized/`.  New modules `HTGeometry/BeurlingCrossSystemBlindness.lean` (38 decls) and `RHTower/BeurlingRationalPrimeSystem.lean` (13 decls); all axiom-clean |
 | 2 | `c1-o-open-core-reduction-theorem.md` | NEEDS-LEAN — assembly card flagged [NO LEAN — user directive]; components are in-tree |
 | 3 | `condensed-phase-probabilistic-death-modulus-budget-and-gaussian-fluctuation-law.md` | NEEDS-LEAN — audit which clauses already have modules |
 | 4 | `critical-locus-hessian-classification-and-crystalline-transversality-law.md` | IN PROGRESS — Theta1 certified, Theta2 second-jet identity, Theta3.2 and Theta3.1 kernel identity certified (CriticalLocusQuadrupleEvenness, CrystallineShadowTransversality). Left: Theta2 per-zero necessity/mixture (detector-predicate layer), Theta3.1 integral packaging, Theta4 (configuration-family IFT layer) |
@@ -25,6 +25,14 @@ card has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/
 | 13 | `specification-consistency-polarization-independence-and-cusp-concentration-law.md` | NEEDS-LEAN — consistency and independence metatheorem for the inverse-theory axioms |
 
 Completed and promoted:
+
+- `beurling-cross-system-blindness-of-multiplicative-regularization-law.md` — 2026-08-12.
+  Beurling systems as a structure (`System ι`); the Gram entry as an exact layer-cake integral;
+  Lemma 2.1 with the explicit error `2M L^{k+1}`; cross-system blindness with the compensation
+  derived rather than assumed; the swapped-generator Euler product and the zero-set separation at
+  `s₀ = 2πi/log 2` via the functional equation; and the concrete pair (rational primes vs. `2`
+  replaced by a second `3`) with both Mertens defects bounded, the first from the corpus's own
+  `Mertens.mertens_first`.
 
 - `source-formation-harmonic-mechanics/source-native-five-shadow-formation-fusion-and-selection-gate-law.md` — 2026-08-11 (FF.19/FF.20 receiver clauses added)
 - `source-formation-harmonic-mechanics/bilateral-reflection-formation-energy-unitarity-selection-law.md` — 2026-08-11

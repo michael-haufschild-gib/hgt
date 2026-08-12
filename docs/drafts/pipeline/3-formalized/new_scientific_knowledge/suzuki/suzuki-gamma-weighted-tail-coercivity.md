@@ -1,7 +1,7 @@
 # Gamma numerical-range coercivity kills the two Suzuki derivative charges
 
 - **ID:** `suzuki-gamma-weighted-tail-coercivity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / SOURCE-SUPPORTED WEAK REGULARITY
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
@@ -368,10 +368,28 @@ formal/GaloisForLFunctions/HTGeometry/MollifierPositionCommutator.lean
   mollify_add, mollify_zero
 ```
 
-What is still paper mathematics is the *limit* in section 4 — that the mollified equation `(18)`
-passes to `(5)` as the mollifier concentrates — together with the identification of `R_sigma` with
-multiplication by `r_sigma` on the Fourier side.  Lean does not replace either by an assumed
-completed-source map.
+**Section 4 — the weak-domain upgrade — is now fully formal**, in physical space, with no Fourier
+identification anywhere: the numerical range, the `L²` boundedness of `R_σ` on the mollified
+family, and the limit `(18) → (5)` are all Lean theorems.  See
+`./suzuki-gamma-weighted-tail-coercivity-formalized.md` for the complete card-to-Lean map.  The
+chain is:
+
+```text
+formal/GaloisForLFunctions/RHTower/SuzukiGammaMollifiedEquation.lean
+  SuzukiGammaTestedEquation            (5) in its honest tested form
+  suzukiGamma_mollified_equation       (16)-(19) run pointwise: the mollified equation (18)
+formal/GaloisForLFunctions/RHTower/SuzukiGammaWeakDomainUpgrade.lean
+  suzukiGamma_uniform_energy_bound     (20)-(22) + (13): the uniform L² bound on U_eps
+  suzukiGamma_weakDomain_upgrade       the section-4 limit: U in L², i.e. (6)
+  suzukiGamma_profile_H1               V in H1: the weak derivative sigma*V + u is in L²
+```
+
+with the supporting reusable layer in `HTGeometry/`: `CompactKernelL2Convolution` (the mollified
+profile's regularity), `GammaJumpL2Bound` (`‖R_σP‖₂ ≤ ∫ kν` by weighted Cauchy–Schwarz and
+Tonelli in `ℝ≥0∞`, replacing the Fourier argument for `R_σU_ε ∈ L²`), `L1FromWeightedL2`
+(`U ∈ L²`, `LU ∈ L² ⇒ U ∈ L¹`), `MollifierTestPairing` (transposition, integration by parts,
+uniform approximation), and `SmoothCompactL2Dense` (the dense smooth subspace the weak limit
+tests against).  Every theorem audits to `[propext, Classical.choice, Quot.sound]`.
 
 ## Gates
 
@@ -381,6 +399,7 @@ completed-source map.
 - [x] separate arbitrary forced ODE charges from source-supported Suzuki charges
 - [x] formalize exact Gamma integrand lower bound
 - [x] formalize coercive Hilbert energy estimate
+- [x] formalize the section-4 mollifier limit and the weak-domain upgrade `(6)` in Lean
 - [ ] construct literal completed support-pruned carrier map
 - [ ] apply theorem to every completed trace-zero zero mode
 - [ ] identify resulting state with raw Evans kernel

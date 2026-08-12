@@ -543,3 +543,143 @@ What remains of the converse is analytic, not algebraic: the atomic measures
 `|(k/N)^m - (k.descFactorial m)/(N.descFactorial m)| <= C(m)/N` uniformly in `k <= N`, and one
 weak-compactness extraction in `ProbabilityMeasure [0,1]` (compact metrizable), after normalising by
 `b 0` and treating `b 0 = 0` separately.  Uniqueness is already `hausdorffSource_eq_of_moments_eq`.
+
+### Log — **Theorem A is now fully formalized: Hausdorff's moment theorem is proved** `[PROVED]`
+
+The converse direction, named on this card as the missing classical input and absent from mathlib,
+is done.  Four new modules, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), all wired
+into the `HTGeometry` umbrella.
+
+`HTGeometry/HausdorffQuadratureWeights.lean` — the algebraic core (see the previous log entry):
+`hausdorffCoeff_refine`, `sum_hausdorffWeight`, `sum_hausdorffWeight_descFactorial`.
+
+`HTGeometry/HausdorffQuadratureMeasure.lean`
+- `integral_finsetWeightedDirac_general` — integration against a finite weighted Dirac family on any
+  measurable space with measurable singletons;
+- `hausdorffNode N k` — the node `k/N` clamped into `[0,1]`, with `hausdorffNode_coe`;
+- `hausdorffQuadrature b N` — the level-`N` measure, with its `IsFiniteMeasure` instance,
+  `integral_hausdorffQuadrature`, `hausdorffQuadrature_mass` (total mass `b 0`), and
+  `hausdorffMoment_hausdorffQuadrature`.
+
+`HTGeometry/HausdorffNodeComparison.lean`
+- `pow_sub_pow_le_nsmul_sub` — `a^m − b^m ≤ m(a−b)` on `0 ≤ b ≤ a ≤ 1`;
+- `cast_descFactorial_eq_prod`, `descFactorial_ratio_eq_prod`;
+- **`abs_node_pow_sub_ratio_le`** — `|(k/N)^m − (k)_m/(N)_m| ≤ m²/N` for `m ≤ N`, `k ≤ N`, `0 < N`.
+  Above the diagonal the ratio is a product of fractions each between `(k−m+1)/N` and `k/N`, so it
+  is squeezed between the corresponding powers; below it the ratio vanishes and the node power is at
+  most `k/N < m/N`.
+
+`HTGeometry/HausdorffMomentTheorem.lean`
+- `sum_hausdorffWeight_ratio` — the exact identity in ratio form;
+- `abs_hausdorffMoment_hausdorffQuadrature_sub_le` — the moments of level `N` are within
+  `b 0 · m²/N` of `b m`;
+- `tendsto_hausdorffMoment_hausdorffQuadrature` — hence they converge;
+- `hausdorffTest`, `eq_of_clusterPt_of_tendsto`, `hausdorffCompletelyMonotone_antitone`,
+  `hausdorffCompletelyMonotone_nonneg`;
+- **`exists_hausdorffSource_of_completelyMonotone`** — every completely monotone sequence is the
+  moment sequence of a finite positive measure on `[0,1]`.  After normalising by `b 0` the levels
+  are probability measures on a compact space, whose space of probability measures is compact; a
+  cluster point has exactly the prescribed moments because integrating a bounded continuous test
+  function is continuous and a cluster point of a convergent sequence is its limit.  The degenerate
+  case `b 0 = 0` forces `b = 0` by monotonicity and nonnegativity, and the zero measure serves;
+- **`hausdorffCompletelyMonotone_iff_exists_source`** — the equivalence of Theorem A;
+- **`existsUnique_hausdorffSource_of_completelyMonotone`** — existence and uniqueness together,
+  using the card's `hausdorffSource_eq_of_moments_eq`.
+
+**Theorem A of this card is therefore unconditional in Lean, in both directions and with
+uniqueness.**  What is still unformalized on the card: equation `(9)` (strict positivity for a
+nonzero source supported in the open interval), the identification `(11) = (13)` of the sinh series
+with the source transform (normal convergence on `|Re θ| < −log R` plus termwise integration), the
+extreme-ray classification, and the geometric q-ladder strict-cone instance.  The remaining
+scientific gates — global regularity for non-atomic measures, the quasilocal density and
+compact-local QFT flow, and the universality theorem — are research items, not formalization ones.
+
+### Log — strict positivity is formalized `[PROVED]`
+
+- `HausdorffMomentTheorem.hausdorffMoment_strict_completelyMonotone` — equation `(9)`: a nonzero
+  source almost everywhere carried by the *open* interval makes every signed iterated difference
+  strictly positive.  The signed difference is `∫ y^m (1−y)^k dν`, whose integrand is a.e. positive,
+  so its support carries the whole mass.
+- `HTGeometry/HausdorffStrictCddCone.lean` — the finite-configuration companion, i.e. `(10)` in
+  strict form: `geometricCombination_strict_completelyMonotone` and
+  `cddCoupling_strict_completelyMonotone` for a nonempty positive shell configuration with radii
+  strictly inside `(0,1)`.
+
+Both axiom-clean and wired.  Remaining unformalized on this card: the identification `(11) = (13)`
+of the sinh series with the source transform (normal convergence on `|Re θ| < −log R` and termwise
+integration), the extreme-ray dictionary `(18)` as a classification statement, and the geometric
+q-ladder instance `(19)` (which needs the `arccosh` estimate `r_j ≍ q^j/(2C)` to see that the atomic
+family is summable and lands strictly inside the open interval; once that is available the strict
+inequalities follow from the two theorems just listed).
+
+### Log — equation `(4)` is formalized as a kernel series `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/HausdorffKernelSeries.lean`, axiom-clean, wired:
+
+```text
+hasSum_cddPhaseKernel :
+  0 <= y  ->  sqrt y * exp |theta| < 1  ->
+  HasSum (fun m => 8 * ((-1)^m * y^m * sinh ((2m+1) theta) / (2m+1))) (cddPhaseKernel y theta)
+cddPhaseKernel_eq_tsum -- the same in `tsum` form
+```
+
+Inside `sqrt y * exp |theta| < 1` both arctangents are given by `Real.hasSum_arctan`, and
+subtracting the two series pairs each exponential with its reciprocal into `2 sinh((2m+1)theta)`;
+the factor `u^(2m+1) = y^m * u` cancels the `4/u` prefactor into `8`.  The zero shell is the
+single-term case, matching the endpoint value `K(0,theta) = 8 sinh theta`.
+
+What remains for `(11) = (13)` is only the termwise integration: with `nu` almost everywhere carried
+by `[0,R^2]` and `R * exp |theta| < 1`, the majorant `|8 (-1)^m y^m sinh((2m+1)theta)/(2m+1)| <=
+8 R^(2m) exp((2m+1)|theta|)/(2m+1)` is summable with ratio `R^2 exp(2|theta|) < 1`, so
+`MeasureTheory.hasSum_integral_of_summable_integral_norm` (or `integral_tsum`) exchanges the sum and
+the integral and turns the coefficients into the moments `b_m`.
+
+### Log — **`(11) = (13)` is formalized: Theorem B's analytic core is done** `[PROVED]`
+
+`HausdorffKernelSeries.hasSum_hausdorffCDDPhase`, axiom-clean and wired:
+
+```text
+nu finite,  0 <= R,  (a.e.) y <= R^2,  R * exp |theta| < 1
+  ->  HasSum (fun m => 8 * ((-1)^m * hausdorffMoment nu m * sinh ((2m+1) theta) / (2m+1)))
+             (hausdorffCDDPhase nu theta)
+```
+
+i.e. the source transform `(13)` is exactly the odd-spin series `(11)` in the moments.  The proof
+uses `hasSum_cddPhaseKernel` pointwise almost everywhere (`sqrt y <= R` gives the disc condition),
+the majorant `|8(-1)^m y^m sinh((2m+1)theta)/(2m+1)| <= 8 exp|theta| * (R^2 exp(2|theta|))^m` with
+ratio `(R exp|theta|)^2 < 1`, and `hasSum_integral_of_summable_integral_norm`; the helper
+`abs_sinh_le_exp_abs` supplies the sinh bound.
+
+**Status of this card's numbered content.**  Theorem A: complete (both directions, uniqueness,
+strict form `(9)`, and the finite strict form `(10)`).  Theorem B: `(13)`, `(15)`, `(16)`, `(17)` were
+already in `HausdorffCDDMeasureSource.lean`, and `(4)`/`(11) = (13)` are now proved.  Remaining:
+the extreme-ray dictionary `(18)` as a classification statement — its load-bearing instances
+`hausdorffCDDPhase_shell_atom` and `hausdorffCDDPhase_zero_atom` already exist, what is missing is
+the statement that the extreme rays of the cone of finite positive measures are exactly the point
+masses — and the geometric q-ladder instance `(19)`.
+
+For `(19)` the route is: define the shell radius `shellRadius B = B - sqrt (B^2 - 1)` for `B > 1`,
+prove `0 < shellRadius B < 1`, `(shellRadius B + (shellRadius B)⁻¹)/2 = B`, and
+`shellRadius B <= 1/B` (because `B - sqrt(B^2-1) = 1/(B + sqrt(B^2-1))`); then `r_j <= q^j/C` is
+summable, the atomic measure `sum_j r_j delta_(r_j^2)` is finite and carried by the open interval,
+and `hausdorffMoment_strict_completelyMonotone` gives all inequalities strictly.
+
+### Log — the shell-radius dictionary of `(19)` is formalized `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/CddShellRadius.lean`, axiom-clean and wired:
+
+```text
+shellRadius B = B - sqrt (B^2 - 1)
+shellRadius_mul_conj  -- shellRadius B * (B + sqrt (B^2-1)) = 1
+shellRadius_pos, shellRadius_lt_one          -- 0 < r < 1 for B > 1
+shellRadius_add_inv   -- (r + r^{-1})/2 = B, i.e. B = cosh eta with r = e^{-eta}
+shellRadius_le_inv    -- r <= 1/B
+shellRadius_geometric_le  -- shellRadius (C q^{-j}) <= q^j / C  for C > 1, 0 < q < 1
+```
+
+So the geometric ladder `B_j = C q^{-j}` has radii dominated by a convergent geometric series, which
+is the finiteness input of `(19)`.  What remains for `(19)` is the atomic measure
+`sum_j r_j delta_(r_j^2)` itself: its `IsFiniteMeasure` instance from
+`ENNReal.ofReal_tsum_of_nonneg` and the summability just proved, and the fact that it is carried by
+the open interval (each atom `r_j^2` lies in `(0,1)`), after which
+`hausdorffMoment_strict_completelyMonotone` gives every inequality strictly.

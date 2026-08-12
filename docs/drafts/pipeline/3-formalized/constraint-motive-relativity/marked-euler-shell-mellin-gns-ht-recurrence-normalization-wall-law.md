@@ -1,11 +1,14 @@
 # Marked Euler-shell Mellin--GNS, HT, recurrence, and normalization-wall law
 
 - **ID:** `cmr-marked-euler-shell-mellin-gns-ht-recurrence-wall`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CROSS-DOCTRINE SOURCE COMPARISON
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LITERAL PRE-ZERO SOURCE]`
   `[HT/POSITIVE/SPECTRAL/RECURRENCE/MASS-WEIL WELD] [NORMALIZATION WALL]`
-  `[NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[NOT RH] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:**
+  `marked-euler-shell-mellin-gns-ht-recurrence-normalization-wall-law-formalized.md` (same
+  directory).
 - **Statement:** One marked exponent-shell coefficient source has Mass/Weil/phase shadows that are
   coefficient-faithful on the marked pure-prime skeleton, positive Mellin--GNS and genuine HT
   realizations, compact-resolvent
@@ -410,7 +413,7 @@ normalization obstruction inside the HGT corpus. No external novelty claim is ne
 
 ## 12. Lean-return note
 
-No Lean was written or built. Existing formal parents to reuse later:
+Formalized unconditionally in Lean 4; see the companion certificate.  Formal parents reused:
 
 - `formal/GaloisForLFunctions/RHTower/HighExponentShellClockMeasure.lean`;
 - `formal/GaloisForLFunctions/RHTower/HighExponentShellClockMoments.lean`;
@@ -421,3 +424,4 @@ No Lean was written or built. Existing formal parents to reuse later:
 ## Log
 
 - 2026-08-09 — exact paper comparison and normalization wall closed; no Lean written or built.
+- 2026-08-12 — formalized unconditionally in Lean 4 and promoted to stage 3.

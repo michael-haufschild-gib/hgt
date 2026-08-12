@@ -660,3 +660,38 @@ a genus-zero Hadamard product then gives minimal type because for each `A > 0` t
 zeros with `|x_k| ≤ R` contribute a polynomial and the remaining tail contributes `exp(A‖z‖)`.
 Mathlib has Jensen's formula and the `ValueDistribution` package but **no Weierstrass/Hadamard
 factorization**, so that has to be built.
+
+## Hausdorff's moment theorem is proved `[PROVED]` — card 13's classical gate is closed
+
+Mathlib has no Hausdorff moment theorem.  It is now in the tree, axiom-clean and wired, in five
+modules.
+
+- `HTGeometry/HausdorffQuadratureWeights.lean` — `hausdorffCoeff`, `hausdorffWeight`, the
+  **refinement identity** `T(N,k) = T(N+1,k) + T(N+1,k+1)`, `sum_hausdorffWeight` (every level has
+  mass `b 0`), `hausdorffCoeff_shift`, `choose_mul_descFactorial_shift`, and
+  `sum_hausdorffWeight_descFactorial` (the exact falling-factorial moment identity).  The refinement
+  identity turns both into inductions and avoids the triangle reindexing mathlib lacks.
+- `HTGeometry/HausdorffQuadratureMeasure.lean` — `integral_finsetWeightedDirac_general`,
+  `hausdorffNode`, `hausdorffQuadrature` with its finiteness instance, `integral_hausdorffQuadrature`,
+  `hausdorffQuadrature_mass`, `hausdorffMoment_hausdorffQuadrature`.
+- `HTGeometry/HausdorffNodeComparison.lean` — `pow_sub_pow_le_nsmul_sub`,
+  `cast_descFactorial_eq_prod`, `descFactorial_ratio_eq_prod`, and **`abs_node_pow_sub_ratio_le`**:
+  `|(k/N)^m − (k)_m/(N)_m| ≤ m²/N`.
+- `HTGeometry/HausdorffMomentTheorem.lean` — `sum_hausdorffWeight_ratio`,
+  `abs_hausdorffMoment_hausdorffQuadrature_sub_le`, `tendsto_hausdorffMoment_hausdorffQuadrature`,
+  `hausdorffTest`, `eq_of_clusterPt_of_tendsto`, and
+  **`exists_hausdorffSource_of_completelyMonotone`**,
+  **`hausdorffCompletelyMonotone_iff_exists_source`**,
+  **`existsUnique_hausdorffSource_of_completelyMonotone`**,
+  `hausdorffMoment_strict_completelyMonotone`.
+- `HTGeometry/HausdorffStrictCddCone.lean` — `geometricCombination_strict_completelyMonotone`,
+  `cddCoupling_strict_completelyMonotone`.
+
+The limit step needs no metrizability: `ProbabilityMeasure ↥(Icc 0 1)` is a compact space, and a
+cluster point of the normalised quadrature sequence has the right moments because integrating a
+bounded continuous test function is continuous and a cluster point of a convergent sequence is its
+limit.
+
+Card 13 is not yet promotable: `(11) = (13)`, the extreme-ray classification, and the q-ladder
+instance remain.  But its named classical blocker is gone, and Theorem A is unconditional in both
+directions with uniqueness.

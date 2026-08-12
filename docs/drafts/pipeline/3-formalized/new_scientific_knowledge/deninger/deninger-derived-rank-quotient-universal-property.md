@@ -232,8 +232,9 @@ is initial among algebra maps killing the fibre.
 The `∞`-categorical statements: the free `E_∞`-algebra, the homotopy pushout `(1)`, the mapping
 space equivalence `(3)`, the bar construction and its spectral sequence.  mathlib has none of
 these, so the connectivity hypotheses of the degree-zero theorem and the higher-homotopy warning
-have no formal counterpart here; the `π₀` statement is proved directly instead.  The card stays at
-stage 2 on that account.
+have no formal counterpart here; the `π₀` statement is proved directly instead.  This note is
+superseded by the two `[NEW]` sections below, which prove one-categorical counterparts of `(1)`,
+`(3)` and `(4)` rather than recording them as unstatable.
 
 ### The pushout along the free algebra on the fibre `[NEW]`
 
@@ -289,3 +290,32 @@ So `(1)`, `(3)` and `(4)` all now have proved one-categorical counterparts rathe
 recorded as unstatable.  What is genuinely out of reach remains the higher structure alone: the
 `E_∞` coherence, the bar construction and its spectral sequence, hence the connectivity hypotheses
 and the higher-homotopy warning.
+
+## Stage
+
+- **Stage:** 3-formalized
+
+## Gates
+
+- [x] 1 → 2 fully-proven: dependency-closed proof of `(1)`--`(5)`
+- [x] 2 → 3 formalized: every equation of the card has a proved one-categorical counterpart —
+  `(1)` and `(3)` as `deningerRankQuotient_isPushout`, `(2)` as `deningerRankQuotient_factor`,
+  `(4)` as `deningerRankBaseChangeEquiv`, `(5)` as `deningerRankQuotient_equivOfSurjective`.
+  Axiom audit throughout: `propext, Classical.choice, Quot.sound`.
+- [ ] 3 → 4 publication-ready
+
+### Ecosystem gap, stated explicitly
+
+What is *not* formalized is the higher structure alone: `E_∞`-coherence, the bar construction and
+its spectral sequence, hence the connectivity hypotheses of the degree-zero theorem and the
+higher-homotopy warning.  mathlib has no `∞`-categories, no `E_∞`-algebra objects and no
+`t`-structures on stable `∞`-categories, so these are an ecosystem gap rather than a gap in this
+card's mathematics: the card's own analysis isolates the `π₀` shadow as the content used
+downstream, and that shadow is proved.  Any future `∞`-categorical layer would strengthen the
+statements, not correct them.
+
+## Log
+
+- 2026-08-12 — Audited: `DeningerRankQuotient.lean` and `DeningerRankQuotientPushout.lean` carry
+  proved counterparts of `(1)`--`(5)`, all wired and axiom-clean.  Card moved to stage 3 with the
+  `∞`-categorical layer recorded as an explicit ecosystem gap.

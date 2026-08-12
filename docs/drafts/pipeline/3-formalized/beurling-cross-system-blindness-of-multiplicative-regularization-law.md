@@ -1,7 +1,7 @@
 # Beurling cross-system blindness of multiplicative regularization
 
 - **ID:** ULF-INV-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / FIRST NECESSITY AXIOM OF THE INVERSE THEORY
 - **Source:** inversion of the corpus blindness theorem (`rh-producer-map-corpus.md` §17,
   `HTGeometry/MultiplicativeRegularizationBlind.lean`) from an internal limit statement into a
@@ -11,7 +11,7 @@
   alone — constant across systems — and therefore determines neither the zero set nor the system.
   Any finite pairing that detects zeros must consume input beyond Mertens-normal moment data.
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [NECESSITY AXIOM N1] [CORPUS PARENT CITED]
-  [NOT RH] [NO LEAN]
+  [NOT RH] [LEAN CERTIFIED]
 
 ## 1. Setting
 
@@ -172,3 +172,75 @@ the pairing cannot factor through the multiplicative-regularization functor.
 
 - 2026-08-09 — created as the first executed step of the inverse theory: corpus no-go inverted
   into a cross-system impossibility with explicit comparison pair, and read as necessity axiom N1.
+- 2026-08-12 — fully formalized in Lean and promoted to stage 3.  Two new modules:
+  `HTGeometry/BeurlingCrossSystemBlindness.lean` (Beurling systems, layer-cake Gram entries,
+  cross-system blindness, zero-set separation) and `RHTower/BeurlingRationalPrimeSystem.lean`
+  (the concrete pair).  51 declarations, all axiom-clean.
+
+## Lean certification
+
+Module: `formal/GaloisForLFunctions/HTGeometry/BeurlingCrossSystemBlindness.lean`
+(wired into `GaloisForLFunctions.HTGeometry`; 38 declarations, all audited to
+`[propext, Classical.choice, Quot.sound]`; no `sorry`, no added axiom).
+
+A Beurling system is carried by the structure `System ι`: magnitudes `mag i ≥ 1`, nonnegative
+weights, finitely many atoms below every threshold.  `System.mertens` is `S`, `System.jet k` is
+`H_{k+1}`.  Mertens-normality is used in the *bounded* form `|S(x) − log x − C| ≤ M` for `x ≥ 1`,
+which is weaker than (INV.1), so every theorem below is correspondingly stronger.
+
+| Card statement | Lean name |
+|---|---|
+| Lemma 2.1, (INV.3) | `System.jet_sub_main_abs_le` — `\|H_{k+1}(N) − L^{k+2}/(k+2)\| ≤ 2M L^{k+1}` |
+| Lemma 2.1, layer-cake form | `jetIntegral_sub_main_abs_le`, `integral_layer_main` |
+| sum = Stieltjes integral | `System.jet_eq_jetIntegral`, `integral_layer_atom`, `System.mertens_sub` |
+| Thm 3.1, normalized limit | `System.tendsto_jet_ratio` — `H_{k+1}(N)/L^{k+2} → 1/(k+2)` |
+| Thm 3.1, (INV.4) | `tendsto_normalizer_of_tendsto_ratio` — `c·L^{k+2} → (k+2)ℓ`, compensation derived |
+| Thm 3.1, (INV.5) | `regularized_jet_limit_eq_of_systems`, `tendsto_mul_cross_system` |
+| Thm 3.2 item 1 | `mertensNormal_swapMertens`, `tendsto_geomTail`, `tendsto_geomCount` |
+| Thm 3.2 item 2, (INV.6) | `hasProd_deletedEulerFactor`, `swappedZeta_eq_tprod` |
+| Thm 3.2 item 2, zero split | `zeroSets_differ`, `cpow_two_genFreq`, `cpow_three_genFreq_ne_one`, `riemannZeta_genFreq_ne_zero` |
+| Cor 3.3, N1 | `regularized_limit_const_on_family`, `regularized_limit_eq` |
+
+Notes on the formal renderings.
+
+- The Riemann-Stieltjes step of Lemma 2.1 is replaced by an exact layer-cake identity
+  (`System.jet_eq_jetIntegral`): `(log t)^{k+1} = ∫_0^L (k+1)u^k [u < log t] du`, summed over the
+  aperture.  The error term is proved in the sharper form `2M L^{k+1}` with the explicit constant,
+  not merely `O_k(L^k)`.
+- The comparison generator is `β = 3`, and the disjointness input is the card's own weakest
+  sufficient condition: `log 3 / log 2 ∉ ℤ`, proved from `2 < 3 < 4`
+  (`log_three_div_log_two_not_int`).
+- `swappedZeta` is *defined* by the meromorphic formula `ζ(s)(1−2^{-s})/(1−3^{-s})`;
+  `swappedZeta_eq_tprod` proves it agrees with the swapped Euler product on `Re s > 1`, which is
+  exactly what (INV.6) asserts.  `riemannZeta_genFreq_ne_zero` runs the functional equation
+  `riemannZeta_one_sub` at `1 − s₀` (real part `1`) and discharges the four factors: `Γ ≠ 0`,
+  `(2π)^{-s} ≠ 0`, `cos(πs/2) ≠ 0` (its argument has nonzero imaginary part), `ζ ≠ 0` on `Re = 1`.
+
+### The concrete comparison pair
+
+Module: `formal/GaloisForLFunctions/RHTower/BeurlingRationalPrimeSystem.lean`
+(wired into `GaloisForLFunctions.RHTower`; 13 declarations, all audited to
+`[propext, Classical.choice, Quot.sound]`).
+
+Both systems are built on the index type `ℕ` with magnitudes `max n 1`, so they share an aperture.
+
+| Card statement | Lean name |
+|---|---|
+| `𝒫` = rational primes, Mertens-normal (§1, classical Mertens) | `rationalPrimeSystem`, `exists_rationalPrimeSystem_bound` |
+| `𝒫'` = `2` deleted, `3` doubled | `swappedPrimeSystem` (`swapWeight`) |
+| Thm 3.2 item 1, `𝒫'` Mertens-normal | `exists_swappedPrimeSystem_bound` |
+| generator tail `∑_{q^k ≤ x} Λ(q^k)/q^k ≤ log q` | `genPow_tail_le`, `sum_inv_pow_le` |
+| Thm 3.2, whole statement | `rationalPrime_swap_blindness` |
+
+The Mertens-normality of the rational primes is discharged by the corpus's own elementary
+`RHTower.Mertens.mertens_first` (`|∑_{d ≤ n} Λ(d)/d − log n| ≤ log 4 + 4`, no prime number theorem),
+transferred from integer to real apertures by `abs_log_sub_log_floor_le`.  So §1's "classical
+Mertens" citation is discharged inside the corpus rather than assumed.
+
+`rationalPrime_swap_blindness` is the card's Theorem 3.2 in one statement: for every exponent, every
+normalizer, and any two limits the normalizer produces on the two systems, the limits are equal,
+`swappedZeta` vanishes at `s₀ = 2πi/log 2`, and `ζ(s₀) ≠ 0`.
+
+**Card status: fully formalized.**  Every displayed statement of §§2–3 (Lemma 2.1, Theorem 3.1
+including (INV.4)/(INV.5), Theorem 3.2 items 1–3 including (INV.6), Corollary 3.3) has an
+unconditional Lean proof.  §4's "hostile scope" contains no theorem.

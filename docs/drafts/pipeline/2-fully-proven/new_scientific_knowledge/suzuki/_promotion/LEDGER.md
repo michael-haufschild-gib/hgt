@@ -43,6 +43,8 @@ promotion; gates that name missing Lean do.
 - `suzuki-finite-morse-resolvent-jet-completion`
 - `suzuki-finite-shift-flat-projective-resolvent-holonomy`
 - `suzuki-full-frequency-neumann-holonomy-survivor`
+- `suzuki-gamma-three-grade-delay-root-observability`
+- `suzuki-gamma-weighted-tail-coercivity`
 - `suzuki-global-local-compound-bezoutian-weld`
 - `suzuki-global-phase-conjugacy-divisor-flow`
 - `suzuki-ground-edge-aperture-robin-obstruction`
@@ -125,9 +127,7 @@ All eight are wired into their area umbrella, build green, and are axiom-clean.
 - `suzuki-gamma-homogeneous-half-log-scattering-classification`
 - `suzuki-gamma-prime-normal-corona-equivalence`
 - `suzuki-gamma-skew-frequency-flux-liouville`
-- `suzuki-gamma-three-grade-delay-root-observability`
 - `suzuki-gamma-wall-block-hardy-and-derivative-scattering`
-- `suzuki-gamma-weighted-tail-coercivity`
 - `suzuki-interior-seam-indicial-dipole-exclusion`
 - `suzuki-log-recurrence-polynomial-carrier-trichotomy`
 - `suzuki-neumann-dominated-shift-cone-obstruction`
@@ -5339,3 +5339,90 @@ identities, and the jump term needs exactly one Fubini.  Modules, in build order
 
 Mollifier family: `scaledMollifier ρ₁ ε` with `ρ₁ = bumpMollifier (ε := 1)`, so `(20)` is exactly
 `integral_abs_firstMomentKernel_scaled` / `integral_abs_firstMomentDeriv_scaled`.
+
+## FE. Section-4 assembly — modules 1–6 built and green
+
+```text
+HTGeometry/CompactKernelL2Convolution.lean   g ⋆ V regularity for compactly supported kernels
+                                             against L² profiles: derivative on the kernel
+                                             (bridged to mathlib's convolution calculus), sup and
+                                             Lipschitz bounds, L² membership, translate moduli
+                                             (L¹ linear and L² quadratic), flip identities,
+                                             support shift
+HTGeometry/GammaJumpL2Bound.lean             the L² scale majorant ν of the second difference,
+                                             ∫ D_σP(·,s)² ≤ ν(s)², k·ν integrable iff σ < 1, and
+                                             ‖∫_s D_σP k ds‖_{L²} ≤ ∫ kν — weighted Cauchy–Schwarz
+                                             plus Tonelli in ℝ≥0∞, replacing continuous Minkowski
+HTGeometry/L1FromWeightedL2.lean             P ∈ L², xP ∈ L² ⇒ P ∈ L¹ (Cauchy-kernel AM-GM)
+HTGeometry/MollifierTestPairing.lean         ∫ (g⋆V)φ = ∫ V ψ_g, IBP ψ_{ρ′} = −ψ_ρ[φ′], uniform
+                                             modulus bound for the transported test
+HTGeometry/SmoothCompactL2Dense.lean         the smooth compactly supported submodule of Lp ℝ 2,
+                                             dense via Lp.dense_hasCompactSupport_contDiff
+RHTower/SuzukiGammaMollifiedEquation.lean    the smooth scaled mollifier family; the TESTED weak
+                                             equation (5) as SuzukiGammaTestedEquation; the jump
+                                             transposition R_{−σ}ᵀ; the jump Fubini
+                                             ∫ V·(R_σg)(x−·) = R_σ(g⋆V)(x); and the pointwise
+                                             mollified equation (18):
+                                             suzukiGamma_mollified_equation
+```
+
+Traps recorded this round: `.abs` on AEStronglyMeasurable resolves to `Exists.abs` (route through
+continuity or `Measurable`); `integral_sub/add` used via `rw` fails on Pi-operations — bind the
+integrability facts with explicitly-typed `have`s and use term-mode calc steps;
+`ContDiff.differentiable` now takes `n ≠ 0`; the `∞` exponent needs `(by exact_mod_cast le_top)`
+against `1 ≤ ∞`; `AEStronglyMeasurable.integral_prod_left'` does not exist — swap through
+`Measure.measurePreserving_swap` and use `integral_prod_right'`.
+
+Remaining for the card: `RHTower/SuzukiGammaWeakDomainUpgrade.lean` — the U_ε property package
+(bounds, Lipschitz, support, L², translate modulus, jump L²), the uniform energy bound via the
+coercive pairing, and the weak-limit capstone = the card's (6).
+
+## FF. 82/103 — `suzuki-gamma-weighted-tail-coercivity` promoted
+
+The section-4 assembly is complete and the card is moved, with certificate.  The two big new
+theorems:
+
+```text
+RHTower/SuzukiGammaMollifiedEquation.lean
+  SuzukiGammaTestedEquation       (5) in tested distributional form
+  suzukiGamma_mollified_equation  the pointwise mollified equation (18), including the jump
+                                  Fubini ∫V·(R_σg)(x−·) = R_σ(g⋆V)(x)
+RHTower/SuzukiGammaWeakDomainUpgrade.lean
+  suzukiGamma_uniform_energy_bound  c² ∫U_ε² ≤ 3∫G² + (3 + 12Λ²)∫V², uniform in the width
+  suzukiGamma_weakDomain_upgrade    the card's (6): U ∈ L²
+  suzukiGamma_profile_H1            V ∈ H¹
+```
+
+All audit to `[propext, Classical.choice, Quot.sound]`.  The paper's Fourier step
+(`R_σU_ε ∈ L²` from Schwartz decay of `ρ̂`) is replaced by `HTGeometry/GammaJumpL2Bound.lean`:
+`‖R_σP‖₂ ≤ ∫ kν` for any profile with a linear `L²` translate modulus, by weighted
+Cauchy–Schwarz against `kν` and Tonelli in `ℝ≥0∞`.  That module, with
+`CompactKernelL2Convolution`, `L1FromWeightedL2`, `MollifierTestPairing`, and
+`SmoothCompactL2Dense`, is reusable far beyond this card.
+
+New umbrella wiring: five `HTGeometry` leaves and two `RHTower` leaves appended.
+
+## FG. 83/103 — `suzuki-gamma-three-grade-delay-root-observability` promoted
+
+The one open Lean gate — the exact finite-step root-port observation Gram `(11)` — is closed in
+`RHTower/SuzukiRootPortObservationGram.lean`:
+
+```text
+suzukiRootPortObservation_norm_sq            ‖P T β‖² = (∑ w_i²)(‖β₋‖² + ‖β₊‖²), any injective
+                                             visible alphabet
+suzukiRootPortObservation_primePower_norm_sq the same at Suzuki's alphabet, c_a² = ∑ (log p)²/p^j
+two_visible_of_gt_half_log_two               (14)
+suzukiRootPort_gram_pos                      c_a² > 0 once 2¹ is visible
+suzukiRootPortObservation_ne_zero            no dark endpoint trace at first grade
+```
+
+The proof is exactly D1's admissibility count: the negative arm of every visible step is
+inadmissible from either root (`suzuki{Left,Right}Root_negStep_not_admissible`), the positive arm
+survives with the step's weight (`..._left/right_coordinate` by `Finset.sum_eq_single` against
+valuation injectivity), the observation vanishes off the two descendant families
+(`..._eq_zero`), and the `ℓ²` norm of the finitely supported amplitude is the finite coordinate
+sum (`suzukiSeamHilbert_norm_sq_eq_sum`, via `lp.inner_eq_tsum` + `tsum_eq_sum`).  All audit to
+`[propext, Classical.choice, Quot.sound]`.  Card + certificate moved; umbrella wired.
+
+Trap: `lp.single`/`Pi.single` standalone need the function-type ascription
+`(Pi.single q (1:ℂ) : SuzukiSeamVertex → ℂ)` or the family metavariable sticks.

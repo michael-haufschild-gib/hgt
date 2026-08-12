@@ -357,3 +357,85 @@ deninger-gamma-six-critical-edge-coface-rigidity.md.
 - [ ] prove completed Green landing in both critical-edge orientation slots
 - [ ] construct strict Rost--Schmid-to-Meyer realization and relative differential for \((21)\)
 - [ ] prove fixed-reader cyclicity on that transported, provenance-retaining boundary
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerGammaSixOrientationAsymmetry.lean`, on the physical
+`L²` layer `L2MellinUnitary.lean` and `DeningerMobiusPrimeNormalSuccessorBlowup.lean`.  Axiom audit
+for every declaration: `propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- **`(2)`: the oriented six-normal and its inverse.**  `deningerSixNormal` is
+  `T_m = 6^{m/2}U_{m log 6}` and `deningerSixNormalInv` is `V_m = 6^{-m/2}U_{-m log 6}`, with
+  `additiveTranslationUnitary_zero_apply` and **`deningerSixNormal_inv`** (`T_m V_m = 1`).
+- **The exact contraction rates.**  `norm_deningerSixNormalInv` (`‖V_m f‖ = 6^{-m/2}‖f‖`, from
+  unitarity of the translation) and `norm_deningerSixNormalInv_sq` (`‖V_m² f‖ = 6^{-m}‖f‖`).
+- **Theorem 2.1, `(4)`: analytic orientation asymmetry.**
+  `tendsto_deningerSixNormalInv_sq_zero` shows the reciprocal face of a convergent sequence dies,
+  and **`deningerSixOrientation_asymmetry`** is the card's boxed statement: the oriented normal acts
+  on the complete source `V_m R_m` by `R_m - V_m² R_m`, which is *identically* the forward term
+  minus a vanishing one, and converges to the forward endpoint alone.
+- **Theorem 2.2, `(5)`--`(6)`: no reciprocal blow-up from a vanishing `L²` source.**
+  **`tendsto_norm_atTop_of_deningerSixNormalInv_tendsto`**: if the inverted normals converge to a
+  nonzero limit then `‖K_m‖ → ∞`, so no sequence tending to zero in `L²` can realize a nonzero
+  reciprocal endpoint.
+
+- **§3, `(8)`--`(13)`: the Gamma-residue landing and the counterterm wall.**
+  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixResidueLanding.lean`.
+  `deningerArchimedeanFactor` is `A(s) = ½s(s-1)π^{-s/2}Γ(s/2)`, `deningerXi` the factored
+  `Ξ = A·ζ` of `(8)`, `deningerSixTailCorrection` and `deningerSixTailMultiplier` the
+  continuation `(9)`, and `deningerXiSixTailContinuation` the right-hand side `A + Ξ P₆`.
+  **`deningerArchimedeanFactor_ne_zero`** is the key nonvanishing: in the critical strip `ρ ≠ 0`
+  and `ρ ≠ 1`, the complex power of `π` never vanishes, and `Γ` has no zeros.
+  **`deningerXiSixTail_eq`** is `(10)` off the zeta zeros;
+  **`deningerXiSixTailContinuation_at_zero`** is Theorem 3.1 `(11)` — the continuation lands on
+  `A(ρ) ≠ 0`; **`deningerXiSixTail_regular_counterterm`** is Theorem 3.2 `(12)` — a counterterm
+  holomorphic at the zero changes nothing; and **`deningerXiSixTail_counterterm_germ`** is `(13)` —
+  an annihilating counterterm is forced to supply exactly `-A(ρ)`, which is nonzero, so it must have
+  a pole along the Xi divisor with the opposite principal germ.
+
+- **§4, `(14)`--`(16)`: the functional-equation mate.**
+  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixReciprocalFace.lean`.
+  `deningerGammaR_ne_zero` and **`deningerXi_eq_completed`** identify the factored `Ξ = A·ζ` with
+  `½s(s-1)` times mathlib's completed zeta on the right half plane, so
+  **`deningerXi_one_sub`** is the functional equation `Ξ(1-s) = Ξ(s)`.
+  `deningerArchimedeanRatio` is `G(s) = A(s)/A(1-s)`, **`deningerArchimedeanRatio_div`** is `(15)`
+  (`G(s)/ζ(1-s) = 1/ζ(s)`), and **`deningerSixTail_reciprocal_face`** is the boxed `(16)`: the
+  paired multiplier is exactly the finite Stokes remainder `P₆(s) - G(s)P₆(1-s)`, so every
+  nontrivial-divisor pole cancels before a zero is selected.
+- **§5, `(19)`: the place-marked regulators.**  `deningerSixPlaceRegulator` and
+  **`deningerSixPlaceRegulator_sum_zero`**: the three placewise Kummer regulators
+  `2m log 6, -2m log 2, -2m log 3` sum to zero, because `log 6 = log 2 + log 3`.
+
+- **§5, `(17)`--`(18)`, `(20)`: the place-marked Stokes polygon.**
+  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixStokesPolygon.lean`.
+  **`deningerPlaceTelescope`** is the general marked telescope in the group algebra of any
+  commutative group: two composition relations `ab = c` and `cd = 1` make the three faces cancel.
+  **`deningerSixPositivePath`** and **`deningerSixReciprocalPath`** are `(17)` and `(18)` for the
+  places `u₂`, `u₃` with `u₆ = u₂u₃`, so they hold in the group algebra of the positive rational
+  units on instantiating the two place generators.  Under the horizontal character,
+  **`deningerHorizontalFinitePositive`** and `deningerHorizontalFiniteReciprocal` evaluate each
+  finite face to `1 - 6^{±x}` (the computation resting on `6^x 2^{-x} = 3^x`), and
+  **`deningerHorizontalFace_difference`** is `(20)`: the two paths differ by exactly the arch face
+  `-(6^{x} - 6^{-x})`.  So a reader discarding the finite faces while keeping the arch face would
+  cease to be a chain map, and a reader seeing the whole polygon gets the tautology.
+
+## Gates
+
+- [x] 1 → 2 fully-proven: dependency-closed paper proof
+- [x] 2 → 3 formalized: §2's `(2)`--`(7)`, §3's `(8)`--`(13)`, §4's `(14)`--`(16)` and §5's
+  `(17)`--`(20)` all proved unconditionally.  Axiom audit throughout:
+  `propext, Classical.choice, Quot.sound`.  §6's surviving Route-L theorem is the card's own
+  statement of what remains open, not a formalization gap.
+- [ ] 3 → 4 publication-ready
+
+## Log
+
+- 2026-08-12 — Formalized §2 (the oriented six-normal, its exact contraction rates from unitarity,
+  the orientation asymmetry `(4)` and the reciprocal no-blow-up theorem `(5)`--`(6)`) and §3 (the
+  archimedean nonvanishing, the exact Gamma-residue landing `(10)`--`(11)` and the
+  regular-counterterm impossibility `(12)`--`(13)`), then §4 (the functional equation, the
+  archimedean ratio identity `(15)` and the reciprocal face `(16)`) and §5 (the marked place
+  telescopes `(17)`--`(18)`, the regulator sum `(19)` and the horizontal-character evaluation
+  `(20)`).  Card moved to stage 3.

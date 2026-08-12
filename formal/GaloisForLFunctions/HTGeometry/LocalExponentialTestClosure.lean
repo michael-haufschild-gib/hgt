@@ -351,4 +351,268 @@ theorem ae_eq_zero_of_forall_complex_moment_eq_zero {a : ℝ} (ha : 0 < a)
 
 end Density
 
+/-! ## Polynomial density in `L²(μ;ℂ)` -/
+
+section L2Density
+
+variable {μ : Measure ℝ} [IsFiniteMeasure μ] {a : ℝ} (ha : 0 < a)
+  (hexp : Integrable (fun x => Real.exp (a * |x|)) μ)
+
+/-- The `n`-th monomial as an element of `L²(μ;ℂ)`. -/
+noncomputable def monomialLp (n : ℕ) : Lp ℂ 2 μ :=
+  MemLp.toLp _ (memLp_two_complex_pow ha hexp n)
+
+omit [IsFiniteMeasure μ] in
+theorem coeFn_monomialLp (n : ℕ) :
+    (monomialLp ha hexp n : ℝ → ℂ) =ᵐ[μ] fun x => (x : ℂ) ^ n :=
+  MemLp.coeFn_toLp _
+
+/-- The polynomial submodule of `L²(μ;ℂ)`. -/
+noncomputable def polySubmodule : Submodule ℂ (Lp ℂ 2 μ) :=
+  Submodule.span ℂ (Set.range (monomialLp ha hexp))
+
+omit [IsFiniteMeasure μ] in
+theorem monomialLp_mem (n : ℕ) : monomialLp ha hexp n ∈ polySubmodule ha hexp :=
+  Submodule.subset_span ⟨n, rfl⟩
+
+/-- **Theorem 2.1 in Hilbert form.**  The polynomials have trivial orthogonal complement. -/
+theorem polySubmodule_orthogonal : (polySubmodule ha hexp)ᗮ = ⊥ := by
+  refine (Submodule.eq_bot_iff _).mpr fun f hf => ?_
+  have hmom : ∀ n : ℕ, ∫ x : ℝ, (x : ℂ) ^ n * (f : ℝ → ℂ) x ∂μ = 0 := by
+    intro n
+    have h := (Submodule.mem_orthogonal _ f).mp hf (monomialLp ha hexp n)
+      (monomialLp_mem ha hexp n)
+    rw [L2.inner_def] at h
+    rw [← h]
+    refine integral_congr_ae ?_
+    filter_upwards [coeFn_monomialLp ha hexp n] with x hx
+    rw [hx, RCLike.inner_apply, ← Complex.ofReal_pow, Complex.conj_ofReal, Complex.ofReal_pow]
+    ring
+  exact Lp.eq_zero_iff_ae_eq_zero.mpr
+    (ae_eq_zero_of_forall_complex_moment_eq_zero ha hexp (Lp.memLp f) hmom)
+
+omit [IsFiniteMeasure μ] in
+/-- Every element of the polynomial submodule is almost everywhere an actual polynomial
+function. -/
+theorem exists_polynomial_of_mem_polySubmodule {f : Lp ℂ 2 μ} (hf : f ∈ polySubmodule ha hexp) :
+    ∃ P : Polynomial ℂ, (f : ℝ → ℂ) =ᵐ[μ] fun x => Polynomial.eval (x : ℂ) P := by
+  induction hf using Submodule.span_induction with
+  | mem g hg =>
+      obtain ⟨n, rfl⟩ := hg
+      refine ⟨Polynomial.X ^ n, ?_⟩
+      filter_upwards [coeFn_monomialLp ha hexp n] with x hx
+      rw [hx]
+      simp
+  | zero =>
+      refine ⟨0, ?_⟩
+      filter_upwards [Lp.coeFn_zero ℂ 2 μ] with x hx
+      rw [hx]
+      simp
+  | add g h _ _ ihg ihh =>
+      obtain ⟨P, hP⟩ := ihg
+      obtain ⟨Q, hQ⟩ := ihh
+      refine ⟨P + Q, ?_⟩
+      filter_upwards [Lp.coeFn_add g h, hP, hQ] with x hx hp hq
+      rw [hx]
+      simp [hp, hq]
+  | smul c g _ ih =>
+      obtain ⟨P, hP⟩ := ih
+      refine ⟨c • P, ?_⟩
+      filter_upwards [Lp.coeFn_smul c g, hP] with x hx hp
+      rw [hx]
+      simp [hp]
+
+/-- **Polynomial density.**  The polynomials are dense in `L²(μ;ℂ)` as soon as `μ` has one
+exponential window. -/
+theorem dense_polySubmodule :
+    Dense ((polySubmodule ha hexp : Submodule ℂ (Lp ℂ 2 μ)) : Set (Lp ℂ 2 μ)) :=
+  Submodule.dense_iff_topologicalClosure_eq_top.mpr
+    (Submodule.topologicalClosure_eq_top_iff.mpr (polySubmodule_orthogonal ha hexp))
+
+end L2Density
+
+/-! ## The bounded weight multiplier on `L²(μ;ℂ)` -/
+
+section WeightMultiplier
+
+variable {μ : Measure ℝ} {g : ℝ → ℝ} {C : ℝ}
+
+theorem memLp_weight_mul (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ)
+    (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C) (f : Lp ℂ 2 μ) :
+    MemLp (fun x => ((g x : ℂ)) * (f : ℝ → ℂ) x) 2 μ := by
+  refine MemLp.of_le ((Lp.memLp f).const_mul (C : ℂ)) ?_ ?_
+  · exact (Complex.continuous_ofReal.comp_aestronglyMeasurable hg).mul (Lp.aestronglyMeasurable f)
+  · filter_upwards [hbdd] with x hx
+    rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_nonneg hC]
+    exact mul_le_mul_of_nonneg_right hx (norm_nonneg _)
+
+/-- Multiplication by a bounded real weight, as an operator on `L²(μ;ℂ)`. -/
+noncomputable def weightMul (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ)
+    (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C) (f : Lp ℂ 2 μ) : Lp ℂ 2 μ :=
+  (memLp_weight_mul hC hg hbdd f).toLp _
+
+theorem coeFn_weightMul (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ)
+    (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C) (f : Lp ℂ 2 μ) :
+    (weightMul hC hg hbdd f : ℝ → ℂ) =ᵐ[μ] fun x => (g x : ℂ) * (f : ℝ → ℂ) x :=
+  MemLp.coeFn_toLp _
+
+theorem weightMul_sub (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ)
+    (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C) (f h : Lp ℂ 2 μ) :
+    weightMul hC hg hbdd (f - h) = weightMul hC hg hbdd f - weightMul hC hg hbdd h := by
+  refine Lp.ext ?_
+  filter_upwards [coeFn_weightMul hC hg hbdd (f - h), Lp.coeFn_sub f h,
+    Lp.coeFn_sub (weightMul hC hg hbdd f) (weightMul hC hg hbdd h),
+    coeFn_weightMul hC hg hbdd f, coeFn_weightMul hC hg hbdd h] with x h1 h2 h3 h4 h5
+  simp only [h1, h2, h3, h4, h5, Pi.sub_apply, mul_sub]
+
+theorem norm_weightMul_le (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ)
+    (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C) (f : Lp ℂ 2 μ) :
+    ‖weightMul hC hg hbdd f‖ ≤ C * ‖f‖ := by
+  have hle : ‖weightMul hC hg hbdd f‖ ≤ ‖(C : ℂ) • f‖ := by
+    refine Lp.norm_le_norm_of_ae_le ?_
+    filter_upwards [coeFn_weightMul hC hg hbdd f, Lp.coeFn_smul (C : ℂ) f, hbdd] with x h1 h2 hx
+    rw [h1, h2, Pi.smul_apply, smul_eq_mul, norm_mul, norm_mul, Complex.norm_real,
+      Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hC]
+    exact mul_le_mul_of_nonneg_right hx (norm_nonneg _)
+  refine hle.trans (le_of_eq ?_)
+  rw [norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hC]
+
+/-- The weighted quadratic functional of a bounded real weight. -/
+noncomputable def weightedSq (μ : Measure ℝ) (g : ℝ → ℝ) (f : Lp ℂ 2 μ) : ℝ :=
+  ∫ x : ℝ, ‖(f : ℝ → ℂ) x‖ ^ 2 * g x ∂μ
+
+/-- The weighted quadratic functional is the real part of the multiplier form. -/
+theorem weightedSq_eq_re_inner (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ)
+    (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C) (f : Lp ℂ 2 μ) :
+    weightedSq μ g f = RCLike.re (inner ℂ f (weightMul hC hg hbdd f)) := by
+  rw [L2.inner_def, weightedSq]
+  have hint : Integrable (fun x : ℝ =>
+      inner ℂ ((f : ℝ → ℂ) x) ((weightMul hC hg hbdd f : ℝ → ℂ) x)) μ :=
+    L2.integrable_inner f (weightMul hC hg hbdd f)
+  rw [← integral_re hint]
+  refine integral_congr_ae ?_
+  filter_upwards [coeFn_weightMul hC hg hbdd f] with x hx
+  rw [hx, RCLike.inner_apply, RCLike.re_to_complex]
+  simp [Complex.mul_re]
+  rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+  ring
+
+theorem lipschitzWith_weightMul (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ)
+    (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C) :
+    LipschitzWith (Real.toNNReal C) (weightMul hC hg hbdd) := by
+  refine LipschitzWith.of_dist_le_mul fun f h => ?_
+  rw [dist_eq_norm, dist_eq_norm, ← weightMul_sub, Real.coe_toNNReal C hC]
+  exact norm_weightMul_le hC hg hbdd (f - h)
+
+theorem continuous_weightedSq (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ)
+    (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C) : Continuous (weightedSq μ g) := by
+  have hcont : Continuous fun f : Lp ℂ 2 μ => inner ℂ f (weightMul hC hg hbdd f) :=
+    continuous_inner.comp
+      (continuous_id.prodMk (lipschitzWith_weightMul hC hg hbdd).continuous)
+  have heq : weightedSq μ g = fun f : Lp ℂ 2 μ =>
+      (inner ℂ f (weightMul hC hg hbdd f)).re := by
+    funext f
+    rw [weightedSq_eq_re_inner hC hg hbdd f, RCLike.re_to_complex]
+  rw [heq]
+  exact Complex.continuous_re.comp hcont
+
+end WeightMultiplier
+
+/-! ## The scalar endgame -/
+
+section ScalarEndgame
+
+variable {μ : Measure ℝ} [IsFiniteMeasure μ] {a : ℝ} {g : ℝ → ℝ} {C : ℝ}
+
+/-- Nonnegativity of the weighted quadratic functional propagates from the polynomials to all of
+`L²(μ;ℂ)` by density and continuity. -/
+theorem weightedSq_nonneg (ha : 0 < a)
+    (hexp : Integrable (fun x => Real.exp (a * |x|)) μ)
+    (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ) (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C)
+    (hpos : ∀ P : Polynomial ℂ, 0 ≤ ∫ x : ℝ, ‖Polynomial.eval (x : ℂ) P‖ ^ 2 * g x ∂μ)
+    (f : Lp ℂ 2 μ) : 0 ≤ weightedSq μ g f := by
+  have hclosed : IsClosed {u : Lp ℂ 2 μ | 0 ≤ weightedSq μ g u} :=
+    isClosed_le continuous_const (continuous_weightedSq hC hg hbdd)
+  have hsub : ((polySubmodule ha hexp : Submodule ℂ (Lp ℂ 2 μ)) : Set (Lp ℂ 2 μ))
+      ⊆ {u : Lp ℂ 2 μ | 0 ≤ weightedSq μ g u} := by
+    intro u hu
+    obtain ⟨P, hP⟩ := exists_polynomial_of_mem_polySubmodule ha hexp hu
+    show 0 ≤ weightedSq μ g u
+    rw [weightedSq, integral_congr_ae (by filter_upwards [hP] with x hx; rw [hx])]
+    exact hpos P
+  have huniv := hclosed.closure_subset_iff.mpr hsub
+  rw [(dense_polySubmodule ha hexp).closure_eq] at huniv
+  exact huniv (Set.mem_univ f)
+
+/-- **The scalar endgame.**  A bounded real density pairing nonnegatively with every squared
+polynomial modulus is nonnegative almost everywhere. -/
+theorem ae_nonneg_of_forall_sq_poly_integral_nonneg (ha : 0 < a)
+    (hexp : Integrable (fun x => Real.exp (a * |x|)) μ)
+    (hC : 0 ≤ C) (hg : AEStronglyMeasurable g μ) (hbdd : ∀ᵐ x ∂μ, |g x| ≤ C)
+    (hpos : ∀ P : Polynomial ℂ, 0 ≤ ∫ x : ℝ, ‖Polynomial.eval (x : ℂ) P‖ ^ 2 * g x ∂μ) :
+    0 ≤ᵐ[μ] g := by
+  classical
+  set g' : ℝ → ℝ := hg.mk g with hg'def
+  have hg'meas : StronglyMeasurable g' := hg.stronglyMeasurable_mk
+  have hgg' : g =ᵐ[μ] g' := hg.ae_eq_mk
+  set E : Set ℝ := {x : ℝ | g' x < 0} with hEdef
+  have hE : MeasurableSet E := hg'meas.measurable measurableSet_Iio
+  have hμE : μ E ≠ ⊤ := (measure_lt_top μ E).ne
+  have hgint : Integrable g μ := by
+    refine Integrable.mono (integrable_const C) hg ?_
+    filter_upwards [hbdd] with x hx
+    rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hC]
+    exact hx
+  set fE : Lp ℂ 2 μ := indicatorConstLp 2 hE hμE (1 : ℂ) with hfE
+  have hval : weightedSq μ g fE = ∫ x : ℝ in E, g x ∂μ := by
+    rw [weightedSq, ← integral_indicator hE]
+    refine integral_congr_ae ?_
+    have hind := indicatorConstLp_coeFn (p := (2 : ENNReal)) (hs := hE) (hμs := hμE)
+      (c := (1 : ℂ))
+    filter_upwards [hind] with x hx
+    rw [hx]
+    by_cases hxE : x ∈ E <;> simp [hxE]
+  have hge : 0 ≤ ∫ x : ℝ in E, g x ∂μ := by
+    rw [← hval]
+    exact weightedSq_nonneg ha hexp hC hg hbdd hpos fE
+  have hneg : ∀ᵐ x ∂(μ.restrict E), g x < 0 := by
+    rw [ae_restrict_iff' hE]
+    filter_upwards [hgg'] with x hx hxE
+    rw [hx]
+    exact hxE
+  have hle : ∫ x : ℝ in E, g x ∂μ ≤ 0 := by
+    refine integral_nonpos_of_ae ?_
+    filter_upwards [hneg] with x hx
+    exact hx.le
+  have hzero : ∫ x : ℝ in E, (-g x) ∂μ = 0 := by
+    rw [integral_neg]
+    have : ∫ x : ℝ in E, g x ∂μ = 0 := le_antisymm hle hge
+    rw [this, neg_zero]
+  have hnonneg : 0 ≤ᵐ[μ.restrict E] fun x => -g x := by
+    filter_upwards [hneg] with x hx
+    show (0 : ℝ) ≤ -g x
+    linarith
+  have haezero := (integral_eq_zero_iff_of_nonneg_ae hnonneg
+    (hgint.restrict.neg)).mp hzero
+  have hcontra : ∀ᵐ _x ∂(μ.restrict E), False := by
+    filter_upwards [haezero, hneg] with x h1 h2
+    have : -g x = 0 := h1
+    linarith
+  have hEzero : μ E = 0 := by
+    have hbot : μ.restrict E = 0 := by
+      rw [← Measure.measure_univ_eq_zero]
+      have := (Filter.eventually_false_iff_eq_bot (f := ae (μ.restrict E))).mp hcontra
+      simpa [MeasureTheory.ae_eq_bot] using this
+    rwa [Measure.restrict_eq_zero] at hbot
+  have hnot : ∀ᵐ x ∂μ, x ∉ E := by
+    rw [MeasureTheory.ae_iff]
+    simpa using hEzero
+  filter_upwards [hgg', hnot] with x h1 h2
+  show (0 : ℝ) ≤ g x
+  rw [h1]
+  exact not_lt.mp h2
+
+end ScalarEndgame
+
 end HTGeometry
