@@ -45,6 +45,22 @@ def xiHorizontalCollisionCharge (T : ℝ) : ℕ :=
     (analyticOrderAt xi rho).toNat *
       (xiHorizontalMultiplicity rho.im - (analyticOrderAt xi rho).toNat)
 
+/-- Ordered distinct pairs of Xi zeros lying in the same horizontal window fibre. -/
+def xiHorizontalCollisionPairs (T : ℝ) : Finset (ℂ × ℂ) :=
+  (((stripZeros_finite T).toFinset ×ˢ (stripZeros_finite T).toFinset).filter
+    (fun p => p.1.im = p.2.im ∧ p.1 ≠ p.2))
+
+/-- Sum of squared total horizontal-fibre multiplicities over the ordinates occurring in a strip
+window. -/
+def xiStripWindowHorizontalSquareSum (T : ℝ) : ℕ :=
+  ∑ gamma ∈ (stripZeros_finite T).toFinset.image Complex.im,
+    (xiHorizontalMultiplicity gamma) ^ 2
+
+/-- Sum of squared local Xi multiplicities over a strip window. -/
+def xiStripWindowLocalSquareSum (T : ℝ) : ℕ :=
+  ∑ rho ∈ (stripZeros_finite T).toFinset,
+    ((analyticOrderAt xi rho).toNat) ^ 2
+
 /-- Every strip-window zero belongs to its complete exact-height Xi fibre. -/
 theorem mem_stripHeightFinset_of_mem_stripZeros {T : ℝ} {rho : ℂ}
     (hrho : rho ∈ (stripZeros_finite T).toFinset) :
@@ -62,6 +78,179 @@ theorem xi_order_le_horizontalMultiplicity_of_mem_stripZeros
     (s := stripHeightFinset rho.im)
     (f := fun z => (analyticOrderAt xi z).toNat)
     (fun z _ => Nat.zero_le _) (mem_stripHeightFinset_of_mem_stripZeros hrho)
+
+/-- Inside a strip window, the full exact-height fibre through a member is precisely the window
+slice at that ordinate.  The height bounds transfer from the chosen member because all points in
+the fibre have the same imaginary part. -/
+theorem stripHeightFinset_eq_stripZeros_filter_im
+    {T : ℝ} {rho : ℂ} (hrho : rho ∈ (stripZeros_finite T).toFinset) :
+    stripHeightFinset rho.im =
+      (stripZeros_finite T).toFinset.filter (fun z => z.im = rho.im) := by
+  ext z
+  rw [mem_stripHeightFinset, Finset.mem_filter, Set.Finite.mem_toFinset]
+  constructor
+  · rintro ⟨hzre0, hzre1, hzim, hzero⟩
+    have hrhoData := (stripZeros_finite T).mem_toFinset.mp hrho
+    refine ⟨⟨⟨hzre0, hzre1, ?_, ?_⟩, hzero⟩, hzim⟩
+    · rw [hzim]
+      exact hrhoData.1.2.2.1
+    · rw [hzim]
+      exact hrhoData.1.2.2.2
+  · rintro ⟨hz, hzim⟩
+    exact ⟨hz.1.1, hz.1.2.1, hzim, hz.2⟩
+
+/-- At every ordinate represented in the window, the horizontal multiplicity is exactly the
+local-order sum over the corresponding window fibre. -/
+theorem horizontalMultiplicity_eq_sum_stripZeros_filter_im
+    {T gamma : ℝ}
+    (hgamma : gamma ∈ (stripZeros_finite T).toFinset.image Complex.im) :
+    xiHorizontalMultiplicity gamma =
+      ∑ rho ∈ (stripZeros_finite T).toFinset.filter (fun z => z.im = gamma),
+        (analyticOrderAt xi rho).toNat := by
+  obtain ⟨rho, hrho, hrhoIm⟩ := Finset.mem_image.mp hgamma
+  subst gamma
+  rw [xiHorizontalMultiplicity,
+    stripHeightFinset_eq_stripZeros_filter_im hrho]
+
+/-- Removing the local order from its horizontal multiplicity leaves exactly the sum over the
+other points in the same window fibre. -/
+theorem horizontalMultiplicity_sub_order_eq_sum_same_im_erase
+    {T : ℝ} {rho : ℂ} (hrho : rho ∈ (stripZeros_finite T).toFinset) :
+    xiHorizontalMultiplicity rho.im - (analyticOrderAt xi rho).toNat =
+      ∑ z ∈ ((stripZeros_finite T).toFinset.filter
+        (fun z => z.im = rho.im)).erase rho,
+          (analyticOrderAt xi z).toNat := by
+  let F := (stripZeros_finite T).toFinset.filter (fun z => z.im = rho.im)
+  have hrhoF : rho ∈ F := Finset.mem_filter.mpr ⟨hrho, rfl⟩
+  have hsum := Finset.sum_erase_add F
+    (fun z => (analyticOrderAt xi z).toNat) hrhoF
+  rw [xiHorizontalMultiplicity,
+    stripHeightFinset_eq_stripZeros_filter_im hrho]
+  change
+    (∑ z ∈ F, (analyticOrderAt xi z).toNat) -
+        (analyticOrderAt xi rho).toNat =
+      ∑ z ∈ F.erase rho, (analyticOrderAt xi z).toNat
+  omega
+
+/-- **Ordered-pair normal form.** Collision charge is the multiplicity-weighted mass of all
+ordered distinct pairs in common horizontal fibres. -/
+theorem xiHorizontalCollisionCharge_eq_sum_pairs (T : ℝ) :
+    xiHorizontalCollisionCharge T =
+      ∑ p ∈ xiHorizontalCollisionPairs T,
+        (analyticOrderAt xi p.1).toNat * (analyticOrderAt xi p.2).toNat := by
+  classical
+  let S := (stripZeros_finite T).toFinset
+  let m : ℂ → ℕ := fun rho => (analyticOrderAt xi rho).toNat
+  rw [xiHorizontalCollisionCharge]
+  change ∑ rho ∈ S, m rho * (xiHorizontalMultiplicity rho.im - m rho) = _
+  calc
+    (∑ rho ∈ S, m rho * (xiHorizontalMultiplicity rho.im - m rho)) =
+        ∑ rho ∈ S, ∑ z ∈ (S.filter (fun z => z.im = rho.im)).erase rho,
+          m rho * m z := by
+      apply Finset.sum_congr rfl
+      intro rho hrho
+      rw [horizontalMultiplicity_sub_order_eq_sum_same_im_erase hrho,
+        Finset.mul_sum]
+    _ = ∑ rho ∈ S, ∑ z ∈ S.filter (fun z => z.im = rho.im ∧ z ≠ rho),
+          m rho * m z := by
+      apply Finset.sum_congr rfl
+      intro rho _
+      apply Finset.sum_congr
+      · ext z
+        simp only [Finset.mem_erase, Finset.mem_filter]
+        tauto
+      · intro z _
+        rfl
+    _ = ∑ p ∈ xiHorizontalCollisionPairs T, m p.1 * m p.2 := by
+      rw [xiHorizontalCollisionPairs, Finset.sum_filter, Finset.sum_product]
+      apply Finset.sum_congr rfl
+      intro rho _
+      rw [Finset.sum_filter]
+      apply Finset.sum_congr rfl
+      intro z _
+      simp [eq_comm]
+
+/-- **Quadratic census identity.** The horizontal square census is the local square census plus
+collision charge.  Equivalently, collision charge is
+`sum_gamma H_gamma^2 - sum_rho m_rho^2`. -/
+theorem xiStripWindowHorizontalSquareSum_eq_localSquare_add_collisionCharge
+    (T : ℝ) :
+    xiStripWindowHorizontalSquareSum T =
+      xiStripWindowLocalSquareSum T + xiHorizontalCollisionCharge T := by
+  classical
+  let S := (stripZeros_finite T).toFinset
+  let G := S.image Complex.im
+  let m : ℂ → ℕ := fun rho => (analyticOrderAt xi rho).toNat
+  let H : ℝ → ℕ := xiHorizontalMultiplicity
+  have hgroup :
+      (∑ gamma ∈ G, H gamma ^ 2) = ∑ rho ∈ S, m rho * H rho.im := by
+    calc
+      (∑ gamma ∈ G, H gamma ^ 2) =
+          ∑ gamma ∈ G,
+            ∑ rho ∈ S.filter (fun z => z.im = gamma), m rho * H gamma := by
+        apply Finset.sum_congr rfl
+        intro gamma hgamma
+        rw [← Finset.sum_mul]
+        have hmass := horizontalMultiplicity_eq_sum_stripZeros_filter_im hgamma
+        change H gamma = ∑ rho ∈ S.filter (fun z => z.im = gamma), m rho at hmass
+        rw [← hmass]
+        ring
+      _ = ∑ gamma ∈ G,
+          ∑ rho ∈ S.filter (fun z => z.im = gamma), m rho * H rho.im := by
+        apply Finset.sum_congr rfl
+        intro gamma _
+        apply Finset.sum_congr rfl
+        intro rho hrho
+        have him := (Finset.mem_filter.mp hrho).2
+        rw [him]
+      _ = ∑ rho ∈ S, m rho * H rho.im := by
+        exact Finset.sum_fiberwise_of_maps_to
+          (fun rho hrho => Finset.mem_image.mpr ⟨rho, hrho, rfl⟩)
+          (fun rho => m rho * H rho.im)
+  have hpoint : ∀ rho ∈ S,
+      m rho * H rho.im = m rho ^ 2 + m rho * (H rho.im - m rho) := by
+    intro rho hrho
+    have hle : m rho ≤ H rho.im :=
+      xi_order_le_horizontalMultiplicity_of_mem_stripZeros hrho
+    omega
+  rw [xiStripWindowHorizontalSquareSum, xiStripWindowLocalSquareSum,
+    xiHorizontalCollisionCharge]
+  change (∑ gamma ∈ G, H gamma ^ 2) =
+    (∑ rho ∈ S, m rho ^ 2) + ∑ rho ∈ S, m rho * (H rho.im - m rho)
+  rw [hgroup, ← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl hpoint
+
+/-- User-facing difference form of the same quadratic identity. -/
+theorem xiHorizontalCollisionCharge_eq_horizontalSquare_sub_localSquare (T : ℝ) :
+    xiHorizontalCollisionCharge T =
+      xiStripWindowHorizontalSquareSum T - xiStripWindowLocalSquareSum T := by
+  have h := xiStripWindowHorizontalSquareSum_eq_localSquare_add_collisionCharge T
+  omega
+
+/-- Collision charge is even: swapping an ordered pair is a fixed-point-free involution and keeps
+its multiplicity product unchanged. -/
+theorem xiHorizontalCollisionCharge_even (T : ℝ) :
+    Even (xiHorizontalCollisionCharge T) := by
+  classical
+  rw [xiHorizontalCollisionCharge_eq_sum_pairs, even_iff_two_dvd,
+    ← ZMod.natCast_eq_zero_iff
+      (∑ p ∈ xiHorizontalCollisionPairs T,
+        (analyticOrderAt xi p.1).toNat * (analyticOrderAt xi p.2).toNat) 2]
+  push_cast
+  refine Finset.sum_involution (fun p _ => (p.2, p.1)) ?_ ?_ ?_ ?_
+  · intro p _
+    rw [mul_comm]
+    exact CharTwo.add_self_eq_zero _
+  · intro p hp _ hfix
+    have hpne := (Finset.mem_filter.mp hp).2.2
+    apply hpne
+    exact congrArg Prod.fst hfix.symm
+  · intro p hp
+    rw [xiHorizontalCollisionPairs, Finset.mem_filter,
+      Finset.mem_product] at hp ⊢
+    exact ⟨⟨hp.1.2, hp.1.1⟩, hp.2.1.symm, fun h => hp.2.2 h.symm⟩
+  · intro p _
+    rfl
 
 /-- At an off-line strip zero, the complete horizontal fibre contains two disjoint copies of its
 local order: the point and its critical-line reflection. -/
@@ -108,7 +297,7 @@ theorem xi_order_le_horizontalCollisionTerm_of_offLine
   let H := xiHorizontalMultiplicity rho.im
   have hm : 1 ≤ m := by
     apply Nat.one_le_iff_ne_zero.mpr
-    exact xi_order_toNat_ne_zero ((Set.Finite.mem_toFinset _).mp hrho).2
+    exact xi_order_toNat_ne_zero ((stripZeros_finite T).mem_toFinset.mp hrho).2
   have hpair : 2 * m ≤ H := by
     exact two_mul_xi_order_le_horizontalMultiplicity_of_offLine hrho hoff
   have hgap : 1 ≤ H - m := by omega
@@ -190,7 +379,7 @@ theorem xiHorizontalCollisionCharge_eq_zero_of_riemannHypothesis
   classical
   rw [xiHorizontalCollisionCharge, Finset.sum_eq_zero]
   intro rho hrho
-  have hzero : xi rho = 0 := ((Set.Finite.mem_toFinset _).mp hrho).2
+  have hzero : xi rho = 0 := ((stripZeros_finite T).mem_toFinset.mp hrho).2
   rw [xiHorizontalMultiplicity_eq_order_of_RH hRH hzero, Nat.sub_self, mul_zero]
 
 /-- **Exact quantized collision endpoint.** RH is equivalent to a strict two-unit collision bound

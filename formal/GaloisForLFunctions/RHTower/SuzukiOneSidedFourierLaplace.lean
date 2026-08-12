@@ -155,6 +155,90 @@ theorem suzukiOpenUpperCutoff_eq_logHalflineCutoff (A : ℝ) :
   · have hnle : ¬t ≤ A := fun hle => hne (le_antisymm hle (le_of_not_gt hlt))
     simp [hlt, hnle]
 
+/-! ## Support-preserving compact-smooth density -/
+
+/-- `L²` class of a compactly supported smooth function, without imposing any Suzuki-specific
+decay data.  Compact support supplies every exponential decay condition when the function is later
+inserted into the literal Hankel core. -/
+def suzukiOneSidedCompactSmoothL2
+    (g : ℝ → ℂ) (hcompact : HasCompactSupport g)
+    (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g) : SoninL2 :=
+  (hsmooth.continuous.memLp_of_hasCompactSupport hcompact).toLp g
+
+theorem suzukiOneSidedCompactSmoothL2_ae
+    (g : ℝ → ℂ) (hcompact : HasCompactSupport g)
+    (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g) :
+    (suzukiOneSidedCompactSmoothL2 g hcompact hsmooth : ℝ → ℂ) =ᵐ[volume] g :=
+  (hsmooth.continuous.memLp_of_hasCompactSupport hcompact).coeFn_toLp
+
+/-- Smooth compactly supported functions which vanish on `[A,∞)` are dense in the exact fixed
+space of the sharp upper-half-line projection.  This is the source-faithful density theorem needed
+to extend Suzuki's literal `C_c∞` Hankel formula to every `L²(0,a)` source. -/
+theorem exists_suzukiOneSidedCompactSmoothL2_dist_lt
+    {A : ℝ} {q : SoninL2} (hq : logHalflineCutoff A q = q)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (g : ℝ → ℂ) (hcompact : HasCompactSupport g)
+        (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g),
+      (∀ t, A ≤ t → g t = 0) ∧
+        dist q (suzukiOneSidedCompactSmoothL2 g hcompact hsmooth) < ε := by
+  let T : ℕ → SoninL2 →L[ℂ] SoninL2 := fun n =>
+    lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ))
+      (measurable_suzukiUpperSmoothCutoff A n) (C := 1) (by norm_num)
+      (norm_suzukiUpperSmoothCutoff_le_one A n)
+  have hTq : Tendsto (fun n => T n q) atTop (nhds q) := by
+    have hconv := tendsto_suzukiUpperSmoothCutoff_mul A q
+    rw [suzukiOpenUpperCutoff_eq_logHalflineCutoff A, hq] at hconv
+    exact hconv
+  obtain ⟨n, hn⟩ : ∃ n : ℕ, dist q (T n q) < ε / 2 := by
+    obtain ⟨N, hN⟩ :=
+      (Metric.tendsto_atTop.1 hTq) (ε / 2) (by linarith)
+    exact ⟨N, by simpa [dist_comm] using hN N le_rfl⟩
+  let D : Set SoninL2 :=
+    {v | ∃ g : ℝ → ℂ, (v : ℝ → ℂ) =ᵐ[volume] g ∧
+      HasCompactSupport g ∧ ContDiff ℝ (⊤ : ℕ∞) g}
+  have hD : Dense D := by
+    simpa only [D] using
+      (MeasureTheory.Lp.dense_hasCompactSupport_contDiff
+        (F := ℂ) (μ := (volume : Measure ℝ)) (p := 2) (by norm_num))
+  obtain ⟨v, hvD, hv⟩ := hD.exists_dist_lt q (show 0 < ε / 2 by linarith)
+  obtain ⟨g, hvg, hgcompact, hgsmooth⟩ := hvD
+  let g' : ℝ → ℂ := fun t => suzukiUpperSmoothCutoff A n t * g t
+  have hg'smooth : ContDiff ℝ (⊤ : ℕ∞) g' :=
+    (contDiff_suzukiUpperSmoothCutoff A n).mul hgsmooth
+  have hg'compact : HasCompactSupport g' := by
+    change HasCompactSupport (suzukiUpperSmoothCutoff A n * g)
+    exact hgcompact.mul_left
+  have hg'zero : ∀ t, A ≤ t → g' t = 0 := by
+    intro t ht
+    change suzukiUpperSmoothCutoff A n t * g t = 0
+    rw [suzukiUpperSmoothCutoff_eq_zero_of_le A n ht, zero_mul]
+  have hTv : T n v = suzukiOneSidedCompactSmoothL2 g' hg'compact hg'smooth := by
+    apply Lp.ext
+    filter_upwards [
+      lpBoundedMulCLM_coeFn (p := 2) (μ := (volume : Measure ℝ))
+        (measurable_suzukiUpperSmoothCutoff A n) (C := 1) (by norm_num)
+        (norm_suzukiUpperSmoothCutoff_le_one A n) v,
+      hvg,
+      suzukiOneSidedCompactSmoothL2_ae g' hg'compact hg'smooth
+    ] with t hmul hbase hout
+    change T n v t = suzukiOneSidedCompactSmoothL2 g' hg'compact hg'smooth t
+    rw [hmul, hbase, hout]
+  refine ⟨g', hg'compact, hg'smooth, hg'zero, ?_⟩
+  rw [← hTv]
+  have hnormT : ‖T n‖ ≤ 1 :=
+    norm_lpBoundedMulCLM_le (measurable_suzukiUpperSmoothCutoff A n)
+      (by norm_num) (norm_suzukiUpperSmoothCutoff_le_one A n)
+  have hmap : dist (T n q) (T n v) ≤ dist q v := by
+    calc
+      dist (T n q) (T n v) ≤ ‖T n‖ * dist q v := (T n).dist_le_opNorm q v
+      _ ≤ 1 * dist q v :=
+        mul_le_mul_of_nonneg_right hnormT (dist_nonneg.trans_eq rfl)
+      _ = dist q v := one_mul _
+  calc
+    dist q (T n v) ≤ dist q (T n q) + dist (T n q) (T n v) := dist_triangle _ _ _
+    _ < ε / 2 + ε / 2 := add_lt_add hn (hmap.trans_lt hv)
+    _ = ε := by ring
+
 /-! ## Upper-supported bounded Fourier--Laplace evaluation -/
 
 /-- Raw Hilbert feature for `∫_{t≤A} exp(-I z t) q(t) dt`. -/

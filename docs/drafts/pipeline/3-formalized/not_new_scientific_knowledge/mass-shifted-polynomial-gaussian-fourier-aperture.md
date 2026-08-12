@@ -1,9 +1,9 @@
 # Mass-shifted polynomial--Gaussian Fourier aperture
 
 - **ID:** `mass-shifted-polynomial-gaussian-fourier-aperture`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Route:** U, C43-Y / PDH.9
-- **Scientific status:** `[BRIDGE] [PAPER-PROVED] [UNCONDITIONAL] [LEAN TARGET FROZEN]`
+- **Scientific status:** `[BRIDGE] [PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL]`
 - **Depends on:** `mass-shifted-complex-gaussian-translation`; `StripHorizontalShift`
 
 ## Exact frozen claim FGA.1
@@ -179,14 +179,27 @@ of the actual degree. Substitution gives
 
 Thus FGA.2 follows exactly.
 
-## Lean target and completed normalization audit
+## Lean closure and completed normalization audit
 
 Active-toolchain inspection confirms that `Real.fourier_real_eq_integral_exp_smul` uses the
 `exp(-2 * pi * I * eta * x)` convention frozen in FGA.1, while
 `MeasureTheory.Measure.integral_comp_mul_left` supplies the positive real dilation needed for
 FGA.2. Stage 2 is therefore dependency-closed without changing any constant or quantifier.
 
-The exact Lean target is FGA.1 for every `P : Polynomial R` and `eta : R`, followed by its
-positive-dilation specialization FGA.2. Formalization must use the already closed complex Gaussian
-translation theorem and the lower-strip contour theorem; a weaker nonnegative-frequency, even, or
-unnormalized surrogate does not discharge this card.
+The exact target is now closed in
+`formal/GaloisForLFunctions/RHTower/PolynomialGaussianFourierAperture.lean`:
+
+- `norm_fourier_polynomialGaussianEnergy_le` proves FGA.1 for every real polynomial and every
+  signed frequency.
+- `norm_routeUPolynomialGaussianFourier_le` proves the native unnormalized Route-U estimate before
+  division.
+- `routeUPolynomialGaussianFourier_div_mass_le` proves FGA.2 with positivity of `t` encoded in its
+  subtype and with no nonzero-polynomial or positive-mass premise. The zero-mass case is closed.
+
+The module is imported by `GaloisForLFunctions.RHTower`. `lake env lean` passed, and the final audit
+`lake build GaloisForLFunctions.RHTower.PolynomialGaussianFourierAperture` built `8825/8825` jobs.
+`#print axioms` for all three capstones reports only `propext`, `Classical.choice`, and `Quot.sound`.
+No `sorry`, `admit`, added `axiom`, `opaque`, or `unsafe` declaration occurs in the module.
+
+Corpus-wide lint still reports unrelated pre-existing modules unreachable from theorem-area
+umbrellas. It does not report a banned declaration or reachability failure for this module.

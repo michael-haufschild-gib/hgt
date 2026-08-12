@@ -27,6 +27,60 @@ noncomputable def xiShiftedStrictFrontierScaledChristoffelSourceWall
   t * xiShiftedCanonicalAdmissionChristoffelSourceWall
     (xiShiftedHigherBlockTerminalFrontier (n + 1) + t) (n + 1)
 
+/-- Literal rational--Gamma minus von Mangoldt completed source divided by the newborn admission
+norm, rescaled by distance from the strict frontier.  Its polynomial is the adaptive canonical
+amplitude at the current square mass, so source formation precedes reflection aggregation. -/
+noncomputable def xiShiftedStrictFrontierScaledArithmeticSourceWall
+    (n : ℕ) (t : ℝ) : ℝ :=
+  let v := xiShiftedHigherBlockTerminalFrontier (n + 1) + t
+  t * (xiShiftedAdaptiveMixedCompletedArithmeticSource (Real.sqrt v)
+      (HTGeometry.monicMomentAdmissionPolynomial
+        (xiShiftedRealMomentSequence (Real.sqrt v)) (n + 1)) /
+    (32 * xiShiftedCanonicalAdmissionNorm v (n + 2)))
+
+/-- In the physical square-mass chamber, the Christoffel source wall is exactly the literal
+adaptive mixed completed arithmetic source over the next admission norm. -/
+theorem xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_arithmeticSource_div
+    {v : ℝ} (hv : 1 / 4 < v) (n : ℕ) :
+    xiShiftedCanonicalAdmissionChristoffelSourceWall v n =
+      xiShiftedAdaptiveMixedCompletedArithmeticSource (Real.sqrt v)
+          (HTGeometry.monicMomentAdmissionPolynomial
+            (xiShiftedRealMomentSequence (Real.sqrt v)) n) /
+        (32 * xiShiftedCanonicalAdmissionNorm v (n + 1)) := by
+  have hv0 : 0 ≤ v := by linarith
+  have hsq : (Real.sqrt v) ^ 2 = v := Real.sq_sqrt hv0
+  have hsqrt0 : 0 ≤ Real.sqrt v := Real.sqrt_nonneg v
+  have hsqrt : 1 / 2 < Real.sqrt v := by nlinarith
+  have hsource :=
+    two_mul_xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_arithmeticSource_div_nextNorm
+      hsqrt n
+  rw [hsq] at hsource
+  calc
+    xiShiftedCanonicalAdmissionChristoffelSourceWall v n =
+        (2 * xiShiftedCanonicalAdmissionChristoffelSourceWall v n) / 2 := by ring
+    _ = (xiShiftedAdaptiveMixedCompletedArithmeticSource (Real.sqrt v)
+          (HTGeometry.monicMomentAdmissionPolynomial
+            (xiShiftedRealMomentSequence (Real.sqrt v)) n) /
+        (16 * xiShiftedCanonicalAdmissionNorm v (n + 1))) / 2 := by rw [hsource]
+    _ = xiShiftedAdaptiveMixedCompletedArithmeticSource (Real.sqrt v)
+          (HTGeometry.monicMomentAdmissionPolynomial
+            (xiShiftedRealMomentSequence (Real.sqrt v)) n) /
+        (32 * xiShiftedCanonicalAdmissionNorm v (n + 1)) := by ring
+
+/-- Past the physical threshold, literal arithmetic-source and shear-coordinate scaled walls agree
+on the entire positive germ of a strict frontier. -/
+theorem eventuallyEq_xiShiftedStrictFrontierScaledArithmeticSourceWall
+    {n : ℕ}
+    (hphysical : 1 / 4 < xiShiftedHigherBlockTerminalFrontier (n + 1)) :
+    xiShiftedStrictFrontierScaledArithmeticSourceWall n =ᶠ[𝓝[>] (0 : ℝ)]
+      xiShiftedStrictFrontierScaledChristoffelSourceWall n := by
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  change 0 < t at ht
+  have hv : 1 / 4 < xiShiftedHigherBlockTerminalFrontier (n + 1) + t := by linarith
+  rw [xiShiftedStrictFrontierScaledArithmeticSourceWall,
+    xiShiftedStrictFrontierScaledChristoffelSourceWall,
+    xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_arithmeticSource_div hv]
+
 /-- The next canonical admission norm is positive immediately to the right of every occupied
 strict frontier. -/
 theorem eventually_pos_xiShiftedCanonicalAdmissionNorm_add_at_strict_frontier
@@ -163,7 +217,6 @@ theorem tendsto_xiShiftedStrictFrontierScaledChristoffelSourceWall_of_remainder_
       (𝓝[>] (0 : ℝ)) (𝓝 (source y / (16 * a))) := by
     convert hsource.mul hinv using 1
     field_simp [ne_of_gt ha]
-    <;> ring
   have hnorm :=
     eventually_pos_xiShiftedCanonicalAdmissionNorm_add_at_strict_frontier hne hstrict
   apply hprod.congr'
@@ -173,7 +226,6 @@ theorem tendsto_xiShiftedStrictFrontierScaledChristoffelSourceWall_of_remainder_
   dsimp only [xiShiftedStrictFrontierScaledChristoffelSourceWall,
     xiShiftedCanonicalAdmissionChristoffelSourceWall, source, N, y, a]
   field_simp
-  <;> ring
 
 /-- A transversal strict-frontier residue is strictly positive. -/
 theorem xiShiftedStrictFrontier_residue_pos_of_remainder_neg
@@ -253,7 +305,6 @@ theorem tendsto_xiShiftedStrictFrontierScaledChristoffelSourceWall_atTop_of_rema
   dsimp only [xiShiftedStrictFrontierScaledChristoffelSourceWall,
     xiShiftedCanonicalAdmissionChristoffelSourceWall, source, N, y]
   field_simp
-  <;> ring
 
 /-- **Exact strict-frontier contact-order law.**  Every occupied strict frontier has either a
 finite positive transversal residue, explicitly determined by the negative first omitted monic
@@ -283,5 +334,94 @@ theorem xiShiftedStrictFrontier_sourceWall_residue_dichotomy
   · exact Or.inr ⟨hzero,
       tendsto_xiShiftedStrictFrontierScaledChristoffelSourceWall_atTop_of_remainder_eq_zero
         hne hstrict hzero⟩
+
+/-- Literal arithmetic-source form of the exact strict-frontier contact-order law.  This is not an
+orientation map or fixed linear reporter: the numerator is the adaptive mixed amplitude/completed
+`P^sharp` aggregate formed at each current square mass. -/
+theorem xiShiftedStrictFrontier_arithmeticSource_residue_dichotomy
+    {n : ℕ} (hne : (xiShiftedHigherBlockFailureSet n).Nonempty)
+    (hstrict : xiShiftedHigherBlockTerminalFrontier n <
+      xiShiftedHigherBlockTerminalFrontier (n + 1))
+    (hphysical : 1 / 4 < xiShiftedHigherBlockTerminalFrontier (n + 1)) :
+    let residue := xiShiftedCanonicalAdmissionAdaptiveShear
+      (xiShiftedHigherBlockTerminalFrontier (n + 1)) (n + 1) /
+        (16 * (-((2 * (n + 2) + 1 : ℕ) : ℝ) *
+          xiShiftedStrictFrontierFirstOmittedRemainder n))
+    (xiShiftedStrictFrontierFirstOmittedRemainder n < 0 ∧
+      Tendsto (xiShiftedStrictFrontierScaledArithmeticSourceWall n)
+        (𝓝[>] (0 : ℝ)) (𝓝 residue) ∧
+      0 < residue) ∨
+    (xiShiftedStrictFrontierFirstOmittedRemainder n = 0 ∧
+      Tendsto (xiShiftedStrictFrontierScaledArithmeticSourceWall n)
+        (𝓝[>] (0 : ℝ)) atTop) := by
+  dsimp only
+  have heq :=
+    eventuallyEq_xiShiftedStrictFrontierScaledArithmeticSourceWall (n := n) hphysical
+  rcases xiShiftedStrictFrontier_sourceWall_residue_dichotomy hne hstrict with hfin | hinf
+  · exact Or.inl ⟨hfin.1, hfin.2.1.congr' heq.symm, hfin.2.2⟩
+  · exact Or.inr ⟨hinf.1, hinf.2.congr' heq.symm⟩
+
+/-- False-RH phase in literal source-first coordinates: cofinally many physical strict frontiers
+carry either their exact positive transversal residue or an infinite tangential scaled residue. -/
+def XiShiftedCofinalArithmeticSourceResiduePhase : Prop :=
+  ∀ A : ℝ, ∃ n : ℕ,
+    (xiShiftedHigherBlockFailureSet n).Nonempty ∧
+      A < xiShiftedHigherBlockTerminalFrontier n ∧
+      xiShiftedHigherBlockTerminalFrontier n <
+        xiShiftedHigherBlockTerminalFrontier (n + 1) ∧
+      (let residue := xiShiftedCanonicalAdmissionAdaptiveShear
+          (xiShiftedHigherBlockTerminalFrontier (n + 1)) (n + 1) /
+            (16 * (-((2 * (n + 2) + 1 : ℕ) : ℝ) *
+              xiShiftedStrictFrontierFirstOmittedRemainder n))
+       (xiShiftedStrictFrontierFirstOmittedRemainder n < 0 ∧
+          Tendsto (xiShiftedStrictFrontierScaledArithmeticSourceWall n)
+            (𝓝[>] (0 : ℝ)) (𝓝 residue) ∧ 0 < residue) ∨
+       (xiShiftedStrictFrontierFirstOmittedRemainder n = 0 ∧
+          Tendsto (xiShiftedStrictFrontierScaledArithmeticSourceWall n)
+            (𝓝[>] (0 : ℝ)) atTop))
+
+/-- False RH forces the cofinal literal arithmetic-source residue phase. -/
+theorem xiShiftedCofinalArithmeticSourceResiduePhase_of_not_riemannHypothesis
+    (hnot : ¬RiemannHypothesis) :
+    XiShiftedCofinalArithmeticSourceResiduePhase := by
+  intro A
+  obtain ⟨n, hne, hA, hstrict, _⟩ :=
+    exists_cofinal_sourceAdaptive_frontierCertificate_of_not_riemannHypothesis hnot
+      (max A (1 / 4))
+  have hA' : A < xiShiftedHigherBlockTerminalFrontier n :=
+    lt_of_le_of_lt (le_max_left _ _) hA
+  have hphysical : 1 / 4 < xiShiftedHigherBlockTerminalFrontier (n + 1) :=
+    lt_trans (lt_of_le_of_lt (le_max_right _ _) hA) hstrict
+  exact ⟨n, hne, hA', hstrict,
+    xiShiftedStrictFrontier_arithmeticSource_residue_dichotomy hne hstrict hphysical⟩
+
+/-- RH excludes the cofinal arithmetic-source residue phase because every failure set is empty. -/
+theorem not_xiShiftedCofinalArithmeticSourceResiduePhase_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    ¬XiShiftedCofinalArithmeticSourceResiduePhase := by
+  intro hphase
+  obtain ⟨n, hne, _⟩ := hphase 0
+  rw [xiShiftedHigherBlockFailureSet_eq_empty_of_riemannHypothesis hRH n] at hne
+  exact Set.not_nonempty_empty hne
+
+/-- **Closed adaptive arithmetic-source phase law.**  RH is exactly absence of cofinally many
+source-first strict-frontier contacts carrying either the explicit positive transversal residue or
+an infinite tangential scaled residue.  No premises, schedules, orientations, or reporters remain. -/
+theorem riemannHypothesis_iff_not_xiShiftedCofinalArithmeticSourceResiduePhase :
+    RiemannHypothesis ↔ ¬XiShiftedCofinalArithmeticSourceResiduePhase := by
+  constructor
+  · exact not_xiShiftedCofinalArithmeticSourceResiduePhase_of_riemannHypothesis
+  · intro hnotPhase
+    by_contra hnotRH
+    exact hnotPhase
+      (xiShiftedCofinalArithmeticSourceResiduePhase_of_not_riemannHypothesis hnotRH)
+
+/-- Premise-free arithmetic-source contact dichotomy. -/
+theorem riemannHypothesis_or_xiShiftedCofinalArithmeticSourceResiduePhase :
+    RiemannHypothesis ∨ XiShiftedCofinalArithmeticSourceResiduePhase := by
+  by_cases hRH : RiemannHypothesis
+  · exact Or.inl hRH
+  · exact Or.inr
+      (xiShiftedCofinalArithmeticSourceResiduePhase_of_not_riemannHypothesis hRH)
 
 end RHTower
