@@ -1,7 +1,7 @@
 # Mass-shifted strict-frontier Christoffel source wall
 
 - **ID:** `mass-shifted-strict-frontier-christoffel-source-wall`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CANDIDATE arithmetic source law
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md`, §9.3 exact open core
 - **Statement:** Every occupied strict terminal-frontier rung annihilates next canonical admitted
@@ -18,8 +18,8 @@ completed-source walls.
 ## Gates
 
 - [x] 0 → 1 in-progress: source-pure, well-posed, corpus dependencies identified
-- [ ] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean capstones, targeted build green, axiom audit
+- [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3 formalized: Lean capstones, targeted build green, axiom audit
 - [ ] 3 → 4 publication-ready: standalone paper and external specialist novelty audit
 
 ## Conjecture → proof/fail loop
@@ -121,8 +121,10 @@ phase. This is phase equivalence, not RH proof.
   ordinary source recession. It is an arithmetic admission-effectivity law proving local finite
   action/admissibility for exact Christoffel-completed producer, which would exclude every strict
   frontier.
-- **Status:** dependency-closed paper proof and direct Lean proof complete. Target build/axiom
-  audit pending before promotion.
+- **Status:** dependency-closed paper proof and Lean formalization complete. Direct Lean and
+  targeted module build pass. Axiom audit reports only `propext`, `Classical.choice`, and
+  `Quot.sound`. Repository lint does not flag this wired module; its nonzero exit is caused by
+  unrelated concurrently unwired modules and existing large-file warnings.
 
 ## External audit
 
@@ -137,3 +139,5 @@ proved.
 - 2026-08-12 — created in 1-in-progress after corpus and broad recent-literature audit.
 - 2026-08-12 — C4--C5 proved in Lean; C6 and universal simple-residue C7 falsified; strongest
   survivor upgraded to infinite local action and closed cofinal non-integrable phase law.
+- 2026-08-12 — direct Lean, targeted module build, umbrella wiring, and axiom audit passed;
+  promoted to `3-formalized`.

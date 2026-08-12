@@ -78,5 +78,5 @@ the closing audit. Module is imported by the `RHTower` umbrella.
 The mathematical closure theorem is classical. New contribution is first in-corpus unconditional
 Lean proof on the literal localized-polynomial carrier, including nilpotent coefficient rings and
 without target ghost injectivity. This closes prerequisite that previously blocked formal statement
-of Deninger Proposition 1.1 as a ring-localization isomorphism. Proposition 1.1 itself remains next
-primary-source obligation.
+of Deninger Proposition 1.1 as a ring-localization isomorphism. Proposition 1.1 is now closed in
+the downstream Stage-3 card `deninger-rational-witt-localization`.

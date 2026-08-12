@@ -501,6 +501,21 @@ def suzukiCompactSmoothLiteralPositiveHankelL2
       (suzukiCompactSmoothLiteralLogHankelL2 omega c homega hc hinner
         g hsmooth hcompact))
 
+/-- The positive-half-line and even-carrier realizations of Suzuki's spectral unitary are exactly
+conjugate by the explicit carrier equivalence. -/
+theorem suzukiCanonicalPositiveHankelUnitary_positiveHalfLineUnitary
+    (omega : ℝ) (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
+    (f : evenSubspace) :
+    suzukiCanonicalPositiveHankelUnitary omega hinner
+        (suzukiPositiveHalfLineUnitary f) =
+      suzukiPositiveHalfLineUnitary
+        (suzukiCanonicalHankelUnitary omega hinner f) := by
+  simp [suzukiCanonicalPositiveHankelUnitary,
+    suzukiPositiveShiftedFourierUnitary,
+    suzukiCanonicalHankelUnitary,
+    suzukiShiftedFourierUnitary,
+    suzukiEvenExtension_positiveRestriction]
+
 /-- **Suzuki (2012), Lemma 4.1 on the literal positive-half-line carrier.** -/
 theorem suzuki2012_lemma_four_one_positive_half_line_literal_kernel
     {omega c : ℝ} (homega : 0 < omega) (hc : 1 / 2 + omega < c)
@@ -513,12 +528,9 @@ theorem suzuki2012_lemma_four_one_positive_half_line_literal_kernel
         g hsmooth hcompact := by
   simp only [suzukiCompactSmoothPositiveL2,
     suzukiCompactSmoothLiteralPositiveHankelL2]
-  change suzukiPositiveHalfLineUnitary
-      (suzukiCanonicalHankelUnitary omega hinner
-        (logEvenUnitary.symm (suzukiCompactSmoothLogL2 g hsmooth hcompact))) = _
+  rw [suzukiCanonicalPositiveHankelUnitary_positiveHalfLineUnitary]
   rw [suzuki2012_lemma_four_one_literal_kernel_on_compact_smooth_log_core
     homega hc hinner g hsmooth hcompact]
-  rfl
 
 end
 end RHTower

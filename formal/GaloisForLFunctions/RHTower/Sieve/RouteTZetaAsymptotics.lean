@@ -671,6 +671,218 @@ theorem eventually_routeTContourShiftEnvelope_le
   unfold routeTContourShift
   exact le_min (routeTContourShiftEnvelope_le_inverseDelta hT) hsmall.le
 
+/-- The only residual absorption ratio: four powers of `log log` lose to the spare tenth-power
+left by Route T's degree-nine shell. -/
+theorem tendsto_one_add_log_log_pow_four_div_log_rpow_zero :
+    Tendsto (fun T : ℝ =>
+      (1 + Real.log (Real.log T)) ^ (4 : ℕ) /
+        (Real.log T) ^ ((1 : ℝ) / 10)) atTop (𝓝 0) := by
+  have hcore : Tendsto (fun x : ℝ =>
+      Real.log x ^ (4 : ℝ) / x ^ ((1 : ℝ) / 10)) atTop (𝓝 0) :=
+    (isLittleO_log_rpow_rpow_atTop 4 (by norm_num : (0 : ℝ) < 1 / 10)).tendsto_div_nhds_zero
+  have hupper : Tendsto (fun x : ℝ =>
+      16 * (Real.log x ^ (4 : ℝ) / x ^ ((1 : ℝ) / 10))) atTop (𝓝 0) := by
+    simpa using hcore.const_mul 16
+  have hbase : Tendsto (fun x : ℝ =>
+      (1 + Real.log x) ^ (4 : ℕ) / x ^ ((1 : ℝ) / 10)) atTop (𝓝 0) := by
+    refine squeeze_zero' ?_ ?_ hupper
+    · filter_upwards [Real.tendsto_log_atTop.eventually_ge_atTop 1,
+        eventually_gt_atTop (0 : ℝ)] with x hlog hx
+      positivity
+    · filter_upwards [Real.tendsto_log_atTop.eventually_ge_atTop 1,
+        eventually_gt_atTop (0 : ℝ)] with x hlog hx
+      have hsum : 1 + Real.log x ≤ 2 * Real.log x := by linarith
+      have hpow : (1 + Real.log x) ^ (4 : ℕ) ≤ (2 * Real.log x) ^ (4 : ℕ) :=
+        pow_le_pow_left₀ (by linarith) hsum 4
+      have hden : 0 < x ^ ((1 : ℝ) / 10) := Real.rpow_pos_of_pos hx _
+      rw [div_le_iff₀ hden]
+      calc
+        (1 + Real.log x) ^ (4 : ℕ) ≤ (2 * Real.log x) ^ (4 : ℕ) := hpow
+        _ = 16 * Real.log x ^ (4 : ℕ) := by ring
+        _ = (16 * (Real.log x ^ (4 : ℝ) / x ^ ((1 : ℝ) / 10))) *
+            x ^ ((1 : ℝ) / 10) := by
+          rw [show Real.log x ^ (4 : ℝ) = Real.log x ^ (4 : ℕ) by
+            norm_num [Real.rpow_natCast]]
+          field_simp
+  simpa only [Function.comp_def] using hbase.comp Real.tendsto_log_atTop
+
+/-- On the endpoint range, the continuous shell envelope is at most eight natural logarithms. -/
+theorem eventually_routeTLogHeightEnvelope_four_add_le_eight_log :
+    ∀ᶠ T : ℝ in atTop,
+      1 ≤ Real.log T ∧
+      routeTLogHeightEnvelope (4 * (T + 1)) ≤ 8 * Real.log T := by
+  filter_upwards [eventually_ge_atTop (4 : ℝ),
+    Real.tendsto_log_atTop.eventually_ge_atTop 1] with T hT hlog
+  have hT0 : 0 < T := by linarith
+  have harg0 : 0 < 4 * (T + 1) + 2 := by positivity
+  have hcubic : 4 * (T + 1) + 2 ≤ T ^ (3 : ℕ) := by
+    have hT2 : 4 * T ≤ T ^ 2 := by nlinarith
+    have hT3 : 4 * T + 6 ≤ T * T ^ 2 := by
+      nlinarith [mul_le_mul_of_nonneg_left hT2 (by linarith : 0 ≤ T)]
+    norm_num [pow_succ] at hT3 ⊢
+    nlinarith
+  have hlogArg := Real.log_le_log harg0 hcubic
+  have hlogPow : Real.log (T ^ (3 : ℕ)) = 3 * Real.log T := by
+    rw [Real.log_pow]
+    norm_num
+  rw [hlogPow] at hlogArg
+  refine ⟨hlog, ?_⟩
+  unfold routeTLogHeightEnvelope
+  nlinarith
+
+/-- The logarithm of the shell envelope is bounded by the corresponding `log log` scale. -/
+theorem eventually_log_routeTLogHeightEnvelope_four_add_le :
+    ∀ᶠ T : ℝ in atTop,
+      1 + Real.log (routeTLogHeightEnvelope (4 * (T + 1))) ≤
+        8 * (1 + Real.log (Real.log T)) := by
+  filter_upwards [eventually_routeTLogHeightEnvelope_four_add_le_eight_log,
+    (Real.tendsto_log_atTop.comp Real.tendsto_log_atTop).eventually_ge_atTop 0,
+    eventually_ge_atTop (1 : ℝ)] with T hZ hloglog hT
+  have hlogT0 : 0 < Real.log T := by linarith
+  have hZ0 : 0 < routeTLogHeightEnvelope (4 * (T + 1)) := by
+    exact lt_of_lt_of_le (by norm_num) (routeTLogHeightEnvelope_one_le (by
+      have hT0 : 0 < T := by linarith
+      positivity))
+  have hlogZ := Real.log_le_log hZ0 hZ.2
+  have hsplit : Real.log (8 * Real.log T) = Real.log 8 + Real.log (Real.log T) := by
+    rw [Real.log_mul (by norm_num) (ne_of_gt hlogT0)]
+  rw [hsplit] at hlogZ
+  simp only [Function.comp_apply] at hloglog
+  have hlog8 : Real.log 8 < 7 := by
+    have := Real.log_lt_sub_one_of_pos (by norm_num : (0 : ℝ) < 8)
+    have h := this (by norm_num)
+    norm_num at h
+    exact h
+  linarith
+
+/-- Any fixed multiple of the contour edge cost is eventually paid by the endpoint gain
+`shift(T) * log T`. -/
+theorem eventually_const_mul_routeTContourEdgeLogEnvelope_le_shiftGain
+    (A K : ℝ) (hK : 0 ≤ K) :
+    ∀ᶠ T : ℝ in atTop,
+      K * routeTContourEdgeLogEnvelope A T ≤
+        routeTContourShiftEnvelope A T * Real.log T := by
+  let P : ℝ := 20 * routeTZeroFreeDeltaEnvelopeConstant A * K *
+    (400 * (routeTZeroFreeBudgetEnvelopeConstant A + 2) ^ 2) * 8 * 8 ^ (4 : ℕ)
+  have hP0 : 0 ≤ P := by
+    dsimp only [P]
+    positivity [routeTZeroFreeDeltaEnvelopeConstant_pos A]
+  have hsmallLimit : Tendsto (fun T : ℝ =>
+      P * ((1 + Real.log (Real.log T)) ^ (4 : ℕ) /
+        (Real.log T) ^ ((1 : ℝ) / 10))) atTop (𝓝 0) := by
+    simpa using tendsto_one_add_log_log_pow_four_div_log_rpow_zero.const_mul P
+  have hsmall : ∀ᶠ T : ℝ in atTop,
+      P * ((1 + Real.log (Real.log T)) ^ (4 : ℕ) /
+        (Real.log T) ^ ((1 : ℝ) / 10)) ≤ 1 := by
+    have := hsmallLimit.eventually (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1))
+    filter_upwards [this] with T hT
+    exact hT.le
+  filter_upwards [hsmall, eventually_routeTLogHeightEnvelope_four_add_le_eight_log,
+    eventually_log_routeTLogHeightEnvelope_four_add_le,
+    eventually_ge_atTop (0 : ℝ)] with T hsmallT hZ hlogZ hT0
+  let Z := routeTLogHeightEnvelope (4 * (T + 1))
+  let L := 1 + Real.log Z
+  have hlogT0 : 0 < Real.log T := by linarith
+  have hZ1 : 1 ≤ Z := by
+    dsimp only [Z]
+    exact routeTLogHeightEnvelope_one_le (by positivity)
+  have hL1 : 1 ≤ L := by
+    dsimp only [L]
+    linarith [Real.log_nonneg hZ1]
+  have hZpow : Z ^ ((9 : ℝ) / 10) ≤ 8 * (Real.log T) ^ ((9 : ℝ) / 10) := by
+    have hmono := Real.rpow_le_rpow (by linarith : 0 ≤ Z) hZ.2
+      (by norm_num : (0 : ℝ) ≤ 9 / 10)
+    have hmul : (8 * Real.log T) ^ ((9 : ℝ) / 10) =
+        8 ^ ((9 : ℝ) / 10) * (Real.log T) ^ ((9 : ℝ) / 10) := by
+      rw [Real.mul_rpow (by norm_num) hlogT0.le]
+    have h8 : (8 : ℝ) ^ ((9 : ℝ) / 10) ≤ 8 :=
+      Real.rpow_le_self_of_one_le (by norm_num) (by norm_num)
+    rw [hmul] at hmono
+    exact hmono.trans (mul_le_mul_of_nonneg_right h8 (Real.rpow_nonneg hlogT0.le _))
+  have hLpow : L ^ (4 : ℕ) ≤
+      8 ^ (4 : ℕ) * (1 + Real.log (Real.log T)) ^ (4 : ℕ) := by
+    have hbase : L ≤ 8 * (1 + Real.log (Real.log T)) := by
+      simpa only [L, Z] using hlogZ
+    have hright0 : 0 ≤ 1 + Real.log (Real.log T) := by linarith
+    have hp := pow_le_pow_left₀ (by linarith) hbase 4
+    calc
+      L ^ (4 : ℕ) ≤ (8 * (1 + Real.log (Real.log T))) ^ (4 : ℕ) := hp
+      _ = 8 ^ (4 : ℕ) * (1 + Real.log (Real.log T)) ^ (4 : ℕ) := by ring
+  have hsmallMul : P * (1 + Real.log (Real.log T)) ^ (4 : ℕ) ≤
+      (Real.log T) ^ ((1 : ℝ) / 10) := by
+    have hshape : P * ((1 + Real.log (Real.log T)) ^ (4 : ℕ) /
+        (Real.log T) ^ ((1 : ℝ) / 10)) =
+      (P * (1 + Real.log (Real.log T)) ^ (4 : ℕ)) /
+        (Real.log T) ^ ((1 : ℝ) / 10) := by ring
+    rw [hshape, div_le_iff₀ (Real.rpow_pos_of_pos hlogT0 _)] at hsmallT
+    simpa only [mul_assoc, one_mul] using hsmallT
+  have hcollapse : (Real.log T) ^ ((9 : ℝ) / 10) *
+      (Real.log T) ^ ((1 : ℝ) / 10) = Real.log T := by
+    rw [← Real.rpow_add hlogT0]
+    norm_num
+  have hcost : 20 * routeTZeroFreeDeltaEnvelopeConstant A *
+      (K * routeTContourEdgeLogEnvelope A T) * Z ^ ((9 : ℝ) / 10) * L ^ 2 ≤
+        Real.log T := by
+    have hLsq : L ^ 2 * L ^ 2 = L ^ (4 : ℕ) := by ring
+    have hraw : 20 * routeTZeroFreeDeltaEnvelopeConstant A * K *
+        (400 * (routeTZeroFreeBudgetEnvelopeConstant A + 2) ^ 2) *
+        Z ^ ((9 : ℝ) / 10) * L ^ (4 : ℕ) ≤
+      P * (Real.log T) ^ ((9 : ℝ) / 10) *
+        (1 + Real.log (Real.log T)) ^ (4 : ℕ) := by
+      let C0 : ℝ := 20 * routeTZeroFreeDeltaEnvelopeConstant A * K *
+        (400 * (routeTZeroFreeBudgetEnvelopeConstant A + 2) ^ 2)
+      have hC0 : 0 ≤ C0 := by
+        dsimp only [C0]
+        positivity [routeTZeroFreeDeltaEnvelopeConstant_pos A]
+      calc
+        20 * routeTZeroFreeDeltaEnvelopeConstant A * K *
+              (400 * (routeTZeroFreeBudgetEnvelopeConstant A + 2) ^ 2) *
+              Z ^ ((9 : ℝ) / 10) * L ^ (4 : ℕ) =
+            C0 * Z ^ ((9 : ℝ) / 10) * L ^ (4 : ℕ) := by rfl
+        _ ≤ C0 * (8 * (Real.log T) ^ ((9 : ℝ) / 10)) * L ^ (4 : ℕ) :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left hZpow hC0) (by positivity)
+        _ ≤ C0 * (8 * (Real.log T) ^ ((9 : ℝ) / 10)) *
+            (8 ^ (4 : ℕ) * (1 + Real.log (Real.log T)) ^ (4 : ℕ)) :=
+          mul_le_mul_of_nonneg_left hLpow (by positivity)
+        _ = P * (Real.log T) ^ ((9 : ℝ) / 10) *
+            (1 + Real.log (Real.log T)) ^ (4 : ℕ) := by
+          dsimp only [C0, P]
+          ring
+    have hraw2 : P * (Real.log T) ^ ((9 : ℝ) / 10) *
+        (1 + Real.log (Real.log T)) ^ (4 : ℕ) ≤ Real.log T := by
+      calc
+        P * (Real.log T) ^ ((9 : ℝ) / 10) *
+            (1 + Real.log (Real.log T)) ^ (4 : ℕ) =
+          (Real.log T) ^ ((9 : ℝ) / 10) *
+            (P * (1 + Real.log (Real.log T)) ^ (4 : ℕ)) := by ring
+        _ ≤ (Real.log T) ^ ((9 : ℝ) / 10) *
+            (Real.log T) ^ ((1 : ℝ) / 10) :=
+          mul_le_mul_of_nonneg_left hsmallMul (Real.rpow_nonneg hlogT0.le _)
+        _ = Real.log T := hcollapse
+    have heq : 20 * routeTZeroFreeDeltaEnvelopeConstant A *
+        (K * routeTContourEdgeLogEnvelope A T) * Z ^ ((9 : ℝ) / 10) * L ^ 2 =
+      20 * routeTZeroFreeDeltaEnvelopeConstant A * K *
+        (400 * (routeTZeroFreeBudgetEnvelopeConstant A + 2) ^ 2) *
+        Z ^ ((9 : ℝ) / 10) * L ^ (4 : ℕ) := by
+      unfold routeTContourEdgeLogEnvelope
+      ring
+    rw [heq]
+    exact hraw.trans hraw2
+  have hden0 : 0 < 20 * routeTZeroFreeDeltaEnvelopeConstant A *
+      Z ^ ((9 : ℝ) / 10) * L ^ 2 := by
+    positivity [routeTZeroFreeDeltaEnvelopeConstant_pos A]
+  unfold routeTContourShiftEnvelope
+  dsimp only [Z, L] at hcost hden0 ⊢
+  rw [show 1 / (20 * routeTZeroFreeDeltaEnvelopeConstant A *
+      routeTLogHeightEnvelope (4 * (T + 1)) ^ ((9 : ℝ) / 10) *
+      (1 + Real.log (routeTLogHeightEnvelope (4 * (T + 1)))) ^ 2) * Real.log T =
+      Real.log T / (20 * routeTZeroFreeDeltaEnvelopeConstant A *
+        routeTLogHeightEnvelope (4 * (T + 1)) ^ ((9 : ℝ) / 10) *
+        (1 + Real.log (routeTLogHeightEnvelope (4 * (T + 1)))) ^ 2) by ring]
+  rw [le_div_iff₀ hden0]
+  nlinarith [hcost]
+
 end
 
 end RHTower.Sieve

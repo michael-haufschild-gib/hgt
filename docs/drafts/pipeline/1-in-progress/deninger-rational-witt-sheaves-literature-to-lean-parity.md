@@ -52,8 +52,10 @@ statement: the literal rational subcarrier is closed under ambient multiplicatio
 commutative ring.  It constructs an explicit fixed-degree resultant product, descends its
 big-Witt compatibility through a universal integer polynomial ring, gives the cross-product
 fraction representative, and transfers the resulting image subring back to a literal
-commutative-ring carrier.  Proposition 1.1 is therefore no longer blocked on existence of generic
-rational-Witt multiplication; only its Teichmüller coefficient-localization theorem remains.
+commutative-ring carrier. `DeningerRationalWittLocalization.lean` now closes Proposition 1.1 at
+its full arbitrary-ring strength: coefficient localization is exactly localization at the
+Teichmüller submonoid, including with nilpotents, zero divisors, and a noninjective coefficient
+map.
 The reduced-monoid-algebra comparison is supplied by the algebraically closed-field modules below.
 
 `DeningerRationalWittAlgebraicallyClosedPresentation.lean` now constructs the actual additive
@@ -134,7 +136,8 @@ surjectivity proof is not a field-case alias: for every normalized polynomial ov
 of each quotient-field root satisfies the monic reverse polynomial, hence is integral and descends
 to `A`; algebraic closedness then yields exact factorization into nonzero base-ring Teichmüller
 atoms.  This is the aic-domain foundation used by Theorem 1.2.  It does not yet prove the 2025
-paper's Proposition 1.1 localization theorem.  The generic-domain fixed-ring intersection and
+paper's Proposition 1.1 localization theorem by itself; that theorem is now closed separately by
+`DeningerRationalWittLocalization.lean`. The generic-domain fixed-ring intersection and
 inseparability statement is false for nonnormal domains, as recorded below.
 
 `DeningerRationalWittFieldIntersection.lean` closes Corollary 1.10(1) (source label `t1.8`) for every field extension
@@ -239,12 +242,10 @@ the missing rational-Witt comparison is logically prior.
 
 ## Formalization order
 
-1. Prove Proposition 1.1 on localization, beginning with its closed `Spec ℤ` instance; the aic
-   domain comparison it later uses is now closed.
-2. Replace the false arbitrary-domain Galois-descent claim by a corrected normal-domain theorem;
+1. Replace the false arbitrary-domain Galois-descent claim by a corrected normal-domain theorem;
    prove it only after an independent paper proof and source audit.  Then treat the
    inseparability-divisibility subring and valid localization/integral-closure consequences.
-3. Replace presentation-only claims in finite packet modules by comparison maps to the constructed
+2. Replace presentation-only claims in finite packet modules by comparison maps to the constructed
    rational-Witt ring, then formalize sheaf and correspondence theorems in source order.
 
 ## Log
@@ -320,4 +321,10 @@ the missing rational-Witt comparison is logically prior.
   universal integer-polynomial descent, and coefficient evaluation prove compatibility over
   arbitrary rings including nilpotent ones.  Cross-products close all normalized fractions, and
   the literal carrier now has a functorial canonical `CommRing` embedded in `W(A)`.  Deninger
-  Proposition 1.1 is reduced to the remaining localization universal property.
+  At this checkpoint Proposition 1.1 reduced to the localization universal property; the next log
+  entry records its closure.
+- 2026-08-12 — closed Proposition 1.1 at full arbitrary-ring strength.  Universal-polynomial
+  descent proves `[b]⊙f(T)=f(bT)` without ghost injectivity; weighted common-denominator lifts give
+  surjectivity; finite product annihilators give the kernel condition when coefficient localization
+  is noninjective.  Lean installs `IsLocalization ([M]) W_rat(M⁻¹A)` and the canonical ring
+  equivalence. Nilpotents and zero-divisor denominators are retained.

@@ -1146,3 +1146,65 @@ the binary-depth premise without numerical evaluation.  This is genuine new know
 has both its subunit zero-free width and a quantitative reciprocal on a fixed fraction of that
 width.  Active core is the Route-T four-edge Perron rectangle, combining this high-height estimate
 with one compact low-height box, followed by the literal long-Mobius factor exclusion.
+### C28. Degree-nine shell leaves exactly one tenth-power to absorb the shifted contour
+
+The sharp Möbius/Abel bridge reduced the endpoint obstruction to a quantitative comparison between
+the Route-T contour width and its reciprocal-zeta edge cost.  This comparison is now formal and
+unconditional in `RouteTZetaAsymptotics.lean`.
+
+Define the continuous binary-height envelope
+
+```text
+Z(t) = 2 log(t+2) + 1.
+```
+
+The exact `clog` and `nthRoot` definitions prove, without replacing integer parameters by
+asymptotic equivalents,
+
+```text
+(V_band(t)+1)^9 <= 4^9 Z(t)^(9/10),
+R_Landau(gamma) >= 1 / (K_R Z(4 gamma)^(9/10)),
+Phi(gamma) <= K_Phi Z(4 gamma),
+Q_A(gamma) <= (K_A+2)(1+log Z(4 gamma)),
+Delta_A(gamma) >=
+  1 / (K_D(A) Z(4 gamma)^(9/10)(1+log Z(4 gamma))^2).
+```
+
+Consequently the actual compact-box/Route-T contour shift eventually dominates the explicit
+positive envelope
+
+```text
+s_env(A,T) =
+  1 / (20 K_D(A) Z(4(T+1))^(9/10)(1+log Z(4(T+1)))^2).
+```
+
+The high-edge reciprocal cost satisfies
+
+```text
+log M_edge(A,T)
+ <= 400 (K_A+2)^2 (1+log Z(4(T+1)))^2.
+```
+
+The remaining ratio is exactly
+
+```text
+(1+log log T)^4 / (log T)^(1/10) -> 0.
+```
+
+Lean proves the decisive uniform absorption theorem
+
+```text
+forall K >= 0, eventually
+  K * log M_edge(A,T) <= s_env(A,T) * log T.
+```
+
+Thus the degree-nine receiver threshold consumes nine tenths of the logarithmic height and leaves
+one genuine tenth-power reserve.  Landau and reciprocal-zeta each add only `log log` powers; neither
+can erase that reserve.  This is the higher universal principle behind the earlier stalls: the
+endpoint works precisely because receiver eligibility has degree strictly below the height-shell
+degree.  Equal degrees would leave no absorption reserve.
+
+All stated results are direct-check clean and emitted to the local olean cache.  Active core is now
+algebraic rather than asymptotic: bound the exact four contour edges with smoothing width
+`H=N^(1-s/4)`, obtain a literal `N^(1-c-s/8)` Möbius factor bound, and feed its vanishing deficit
+through Maynard's `19/20` endpoint mass law.

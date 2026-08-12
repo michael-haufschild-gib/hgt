@@ -89,7 +89,8 @@ lemma deningerWittTensorPolynomial_teichmuller_isAlgClosed
                   congr 1
                   ext (_ | _ | n) <;>
                     simp [deningerRationalWittTeichmullerPolynomial, bu,
-                      Polynomial.coeff_one] <;> ring
+                      Polynomial.coeff_one]
+                  all_goals ring_nf
         _ = deningerPolynomialDilation b
               (deningerRationalWittAtomPolynomial (a ::ₘ s)) := by
                 congr 1
@@ -156,7 +157,7 @@ theorem deningerWittTensorPolynomial_teichmuller_arbitrary
   rw [hPUmapdeg, hPUdeg] at hfield
   have htensorMap := deningerWittTensorPolynomial_map ι
     (deningerRationalWittTeichmullerPolynomial bU) PU 1 P.natDegree
-    (by simpa [hPUdeg]) hPU0
+    (by simp [hPUdeg]) hPU0
   rw [hbpolyMap] at htensorMap
   have hdilationMap := deningerPolynomialDilation_map ι bU PU
   have hU :
@@ -174,7 +175,7 @@ theorem deningerWittTensorPolynomial_teichmuller_arbitrary
   have hm := congrArg (Polynomial.map ev) hU
   have htensorEv := deningerWittTensorPolynomial_map ev
     (deningerRationalWittTeichmullerPolynomial bU) PU 1 P.natDegree
-    (by simpa [hPUdeg]) hPU0
+    (by simp [hPUdeg]) hPU0
   have hdilationEv := deningerPolynomialDilation_map ev bU PU
   have hbpolyEv :
       (deningerRationalWittTeichmullerPolynomial bU).map ev =
@@ -357,7 +358,7 @@ theorem deningerPolynomialDilation_exists_normalized_lift
     (deningerPolynomialDilation_commonDenom_mem_lifts M P hP)
   let P₀ : Polynomial A := L.erase 0 + 1
   refine ⟨P₀, ?_, ?_⟩
-  · simp [P₀, Polynomial.coeff_erase]
+  · simp [P₀]
   · ext n
     by_cases hn : n = 0
     · subst n
@@ -368,7 +369,7 @@ theorem deningerPolynomialDilation_exists_normalized_lift
               (algebraMap A S (IsLocalization.commonDenom M P.support P.coeff : A)) P).coeff n := by
           have hc := congrArg (fun R : Polynomial S => R.coeff n) hL
           simpa using hc
-      simp [P₀, Polynomial.coeff_erase, hn, hcoeffL]
+      simp [P₀, hn, hcoeffL]
       rw [Polynomial.coeff_one, if_neg hn]
 
 theorem deningerPolynomialDilation_dilation (b c : A) (P : Polynomial A) :
@@ -644,6 +645,59 @@ theorem deningerCanonicalRationalWittCoefficientMap_surj
   exact deningerCanonicalRationalWittNormalizedFraction_congr
     (by simp [hP]) (by simp [hQ]) (by simp [hP₀]) (by simp [hQ₀])
     hP₀map.symm hQ₀map.symm
+
+theorem deningerCanonicalRationalWittCoefficientMap_map_units
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S]
+    (c : deningerCanonicalRationalWittDenominatorSubmonoid M) :
+    IsUnit (algebraMap (DeningerCanonicalRationalWittRing A)
+      (DeningerCanonicalRationalWittRing S) c) := by
+  obtain ⟨a, ha, hac⟩ := c.prop
+  rw [← hac]
+  change IsUnit (deningerCanonicalRationalWittMap (algebraMap A S)
+    (deningerCanonicalRationalWittTeichmuller a))
+  rw [deningerCanonicalRationalWittMap_teichmuller]
+  exact (IsLocalization.map_units S ⟨a, ha⟩).map
+    deningerCanonicalRationalWittTeichmullerMonoidHom
+
+/-- Deninger Proposition 1.1: `W_rat(S)` is the localization of `W_rat(A)` at `[M]` whenever
+`S` is the localization of `A` at `M`.  This instance is valid for arbitrary commutative rings,
+including rings with nilpotents and localization submonoids containing zero divisors. -/
+noncomputable instance deningerCanonicalRationalWitt_isLocalization
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S] :
+    IsLocalization (deningerCanonicalRationalWittDenominatorSubmonoid M)
+      (DeningerCanonicalRationalWittRing S) where
+  map_units := deningerCanonicalRationalWittCoefficientMap_map_units M
+  surj := deningerCanonicalRationalWittCoefficientMap_surj M
+  exists_of_eq := by
+    intro x y hxy
+    apply deningerCanonicalRationalWittCoefficientMap_exists_of_eq (S := S) M
+    exact hxy
+
+/-- Algebra equivalence form of Deninger's Proposition 1.1. -/
+noncomputable def deningerCanonicalRationalWittLocalizationAlgEquiv
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S] :
+    Localization (deningerCanonicalRationalWittDenominatorSubmonoid M) ≃ₐ[
+      DeningerCanonicalRationalWittRing A] DeningerCanonicalRationalWittRing S :=
+  IsLocalization.algEquiv
+    (deningerCanonicalRationalWittDenominatorSubmonoid M)
+    (Localization (deningerCanonicalRationalWittDenominatorSubmonoid M))
+    (DeningerCanonicalRationalWittRing S)
+
+/-- Canonical ring equivalence in Deninger's Proposition 1.1. -/
+noncomputable def deningerCanonicalRationalWittLocalizationEquiv
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S] :
+    Localization (deningerCanonicalRationalWittDenominatorSubmonoid M) ≃+*
+      DeningerCanonicalRationalWittRing S :=
+  (deningerCanonicalRationalWittLocalizationAlgEquiv M).toRingEquiv
+
+@[simp] theorem deningerCanonicalRationalWittLocalizationEquiv_algebraMap
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S]
+    (w : DeningerCanonicalRationalWittRing A) :
+    deningerCanonicalRationalWittLocalizationEquiv M
+        (algebraMap (DeningerCanonicalRationalWittRing A)
+          (Localization (deningerCanonicalRationalWittDenominatorSubmonoid M)) w) =
+      deningerCanonicalRationalWittMap (algebraMap A S) w := by
+  exact (deningerCanonicalRationalWittLocalizationAlgEquiv M).commutes w
 
 end
 end RHTower

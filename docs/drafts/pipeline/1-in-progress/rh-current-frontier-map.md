@@ -102,9 +102,11 @@ selection remain open. Route T's committed unwired chain now includes sharp twis
 dyadic Abel handoff, and continuous envelopes for every discrete contour parameter. Route U's
 formal Christoffel wall is reciprocal-dominating and locally nonintegrable, while committed
 unwired `XiResolventUnconditionalFloor.lean` discharges line placement above the explicit scale
-`1/(X+259/4)`. Route L's committed unwired rational-Witt module proves arbitrary-ring
-Teichmuller dilation, normalized-fraction transport, common-denominator lifting, and
-torsion-aware kernel clearing; the full localization universal property is still absent.
+`1/(X+259/4)`. Route L's rational-Witt module now proves arbitrary-ring Teichmuller dilation,
+normalized-fraction transport, common-denominator lifting, torsion-aware kernel clearing, the full
+localization universal property, and Deninger's canonical Proposition-1.1 ring equivalence. It is
+umbrella-wired. This closes algebraic source infrastructure but does not construct physical
+coefficient selection.
 
 These additions do not instantiate Route V. The Frankenstein construction is source-isogenous to
 P, R, and L and terminates at the same horizontal metric anomaly. The CCM operator chain is the
@@ -335,7 +337,7 @@ existing route.
 | I | retired | exact collision with C2 width |
 | J | retired negatively | unrenormalized energy budget impossible |
 | K | retired | all-order survivor belongs to P |
-| L | open, advanced | Strict resolved chain provenance, complete corrected Gamma-six source, singular Wold coface, normalized Gibbs/Burnol reader, finite common-coface classification, and both source normals are formal. Critical-edge rigidity proves simultaneous forward/reflected admission only at neutral grade; cyclotomic denominators expose infinitely many reflection-even rational-Witt survivors. Generic rational-Witt multiplication is formal. A committed unwired localization module proves arbitrary-ring Teichmuller dilation on normalized rational fractions, common-denominator normalized lifting, the denominator submonoid/algebra interface, and torsion-aware kernel clearing. It still does not prove Deninger's full localization universal property. None selects the physical coefficient. First unresolved theorem remains the source-derived singular comparison from completed Green/BV boundary flatness to the coefficient-faithful Burnol/Deninger physical landing, before divisor specialization, preserving multiplicity, prime provenance, and both orientations. |
+| L | open, advanced | Strict resolved chain provenance, complete corrected Gamma-six source, singular Wold coface, normalized Gibbs/Burnol reader, finite common-coface classification, and both source normals are formal. Critical-edge rigidity proves simultaneous forward/reflected admission only at neutral grade; cyclotomic denominators expose infinitely many reflection-even rational-Witt survivors. Generic rational-Witt multiplication and Deninger's full arbitrary-ring localization theorem are umbrella-formal, including nilpotents and noninjective coefficient localizations. None selects the physical coefficient. First unresolved theorem remains the source-derived singular comparison from completed Green/BV boundary flatness to the coefficient-faithful Burnol/Deninger physical landing, before divisor specialization, preserving multiplicity, prime provenance, and both orientations. |
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced; two internal producer branches | Prolate branch: construct/evaluate seed is closed at paper level and radial/exterior primitives are formal. First unresolved theorem is source-derived control of the entire restricted-Weil ground space: prove the explicit constrained prolate seed controls every near-ground direction, equivalently `epsilon_lambda>=0`, `epsilon_(lambda_j)->0` on one cofinal nested family, or `Delta_lambda=r_lambda-epsilon_lambda->0`. Negative spectrum cannot evacuate. Completed-Evans branch: formal weak Gamma-tail coercivity upgrades a tested supported equation to `U in L2`, `V in H1`, eliminating both derivative-scattering charges; exact root-port Gram proves every nonzero endpoint trace is visible at first prime grade once `a>(log 2)/2`. Its first open theorem is the literal completed-zero-mode to support-pruned carrier/cutoff intertwiner, including square summability and compressed-prime-adjacency compatibility, followed by the trace-zero channel and raw Evans injectivity. These are Route-O subbranches, not a new lettered route. |
@@ -2442,8 +2444,18 @@ fixed-degree resultant product is checked after algebraically closed splitting a
 integer-polynomial source and then evaluated into the target. The module supplies a literal
 `CommRing`, injective big-Witt embedding, coefficientwise ring maps, and `[a][b]=[ab]`. Generic
 multiplication is therefore no longer a Route-L infrastructure gap. Deninger Proposition 1.1 is
-reduced to its still-open Teichmuller coefficient-localization universal property; that algebraic
-localization does not supply the missing singular source-to-physical map.
+now also Lean-closed by the downstream localization module; that algebraic localization does not
+supply the missing singular source-to-physical map.
+
+Umbrella-reachable `DeningerRationalWittLocalization.lean` proves the exact
+Teichmuller dilation formula `[b]⊙f(T)=f(bT)` for normalized rational fractions over arbitrary
+commutative rings. For a coefficient localization it constructs common-denominator normalized
+polynomial lifts even when the localization map has kernel, defines the Teichmuller denominator
+submonoid and coefficient algebra, and proves torsion-aware kernel clearing: equality after
+localization becomes literal equality after one common Teichmuller dilation. It then proves the
+unit, surjectivity, and kernel clauses of `IsLocalization` and exports canonical algebra/ring
+equivalences, closing Deninger Proposition 1.1 even with nilpotents and zero-divisor denominators.
+It does not compare completed Green/BV flatness with the fixed Burnol/Deninger physical class.
 
 The committed umbrella-reachable `DeningerBigWittEuler`, `Ghost`, and
 `Multiplication` suite gives division-free triangular Euler coordinates, a carrier equivalence
@@ -8527,15 +8539,21 @@ mass, Route-P Gamma Bockstein, and negative Fisher multiple of the normalized Bu
 holonomy are identical. Thus the admitted P detector is already the orientation of an actual
 Sonine aperture defect; remaining issue is not finding a source interpretation.
 
-Committed but umbrella-unreachable `FrankensteinThetaPrimeTranslationCommonForcing.lean` proves
-both reflected theta divisor modes solve the same nonzero inhomogeneous source equation with the
-same prime label and multiplicity. Equality of the two response modes implies RH, but no theorem
-forces equality from common forcing: the resolvents differ by their spectral parameters. Current
-worktree `BurnolCoPoissonTopConormalPluckerJuliaCayleyLanding.lean` further identifies normalized
-holonomy as `4C/(1-C^2)` for the source Julia coordinate `C`; it receives no formal credit.
-Ordinary Hardy contractivity proves only `|C|<1`, whereas P needs saturation `C=0`. These additions
-narrow the producer to a common-forcing resolvent symmetry or completed source Ward saturation;
-they do not create Route V.
+Umbrella-formal `FrankensteinThetaPrimeTranslationCommonForcing.lean` constructs a rank-one
+prime-covariant source inverse that is flat on the full integrable translated source class. Both
+reflected Xi divisor modes are eigenresponses of this same operator to the same nonzero,
+coefficient-one integer anomaly with unchanged prime label and multiplicity. Equality of the two
+response modes is equivalent to line placement, and universal response equality implies RH. No
+theorem forces equality from common forcing: the resolvent parameters remain different, while the
+forcing itself lies in every retained Xi conormal kernel.
+
+Umbrella-formal `BurnolCoPoissonTopConormalPluckerJuliaCayleyLanding.lean` identifies normalized
+holonomy as `4C/(1-C^2)` for the literal source Xi-Ward coordinate `C`, and the actual top conormal
+as its negative Fisher-weighted normal coordinate. Ordinary Hardy contractivity proves only
+`|C|<1`—automatically for every divisor fibre, including off-line fibres—whereas P needs
+saturation `C=0`. Unit Hardy-Gram saturation is exactly conormal vanishing. These additions narrow
+the producer to a common-forcing response-identification theorem or completed source Ward
+saturation; they do not create Route V.
 
 ### Frankenstein seam: common forcing = flat rank-one prime covariance
 
