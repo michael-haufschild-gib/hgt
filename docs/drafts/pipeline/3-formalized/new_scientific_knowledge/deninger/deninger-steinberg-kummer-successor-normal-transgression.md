@@ -1,8 +1,10 @@
 # Deninger Steinberg--Kummer successor normal transgression
 
-- **Stage:** 2 — dependency-closed paper proof
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** SOURCE CONSTRUCTION / FULL-GRADE NORMAL TRANSGRESSION / ROUTE-L FRONTIER ADVANCE
-- **Status:** `[PAPER-PROVED] [PROJECT-SPECIFIC NEW KNOWLEDGE] [NOT RH] [NO LEAN WORK DURING CORPUS REFACTOR]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [PROJECT-SPECIFIC NEW KNOWLEDGE] [NOT RH]`
+- **Lean counterpart:**
+  `formal/GaloisForLFunctions/RHTower/DeningerSteinbergKummerSuccessorNormalTransgression.lean`
 - **Corpus inputs:**
   `RouteRKummerCyclicOneCocycleDetector.lean`,
   `DeningerMeyerDilationFlow.lean`,
@@ -254,6 +256,11 @@ is multiplicative.  Equation \((10)\) becomes
 \tag{20}
 \]
 
+The algebraic representation identity holds for every \(m\ge1\).  Statements below involving the
+complete Möbius source \(h_m\) use the honest analytic range \(m\ge3\), exactly where the corpus
+proves unconditional \(L^2\)-summability of the complete prime-normal tail.  No claim is made that
+the divergent depth-one or depth-two tail is an \(L^2\) vector.
+
 Put \(h_m=R_{2,m}+\Theta\), where \(R_{p,m}\) is the complete prime-normal Möbius source.  The
 exact successor theorem gives
 
@@ -421,6 +428,11 @@ the old zero boundary.
 - [x] exact complete-source representation and vertical limit
 - [x] proof that ordinary Milnor/Hochschild descent is impossible
 - [x] genuine Tate--Wold interval primitive and strict relative source boundary
+- [x] Lean construction of the actual rational-adelic Steinberg ideal and augmentation square
+- [x] Lean proof that the cubic selector is the normalized polynomial in the existing Kummer derivation
+- [x] Lean proof of conormal escape, non-Milnor descent, and non-Hochschild-boundary cyclic class
+- [x] Lean construction of the multiplicative half-density group-algebra representation
+- [x] Lean proof of complete-source transport, cofinal theta defect, and exponential norm divergence
 - [ ] singular Tate--Wold/Kummer-to-Meyer admission of that primitive
 - [ ] actual Gamma/Meyer target differential compatibility
 - [ ] fixed-reader boundary annihilation preserving Xi multiplicity

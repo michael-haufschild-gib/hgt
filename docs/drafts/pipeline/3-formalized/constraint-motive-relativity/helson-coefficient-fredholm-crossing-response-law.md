@@ -1,10 +1,12 @@
 # Helson coefficient-faithful Fredholm crossing response law
 
 - **ID:** `cmr-helson-coefficient-fredholm-crossing-response`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GLOBAL SPECTRAL RECEIVER
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [BRIDGE] [NOT RH]`
-  `[PORT NOT SOURCE-SELECTED] [NO LEAN WRITTEN OR BUILT]`
+  `[PORT NOT SOURCE-SELECTED] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `helson-coefficient-fredholm-crossing-response-law-formalized.md`
+  (same directory).
 - **Field successor:**
   `../../1-in-progress/constraint-motive-relativity/determinantal-constraint-holography-and-singular-reporter-correspondence-conjecture.md`.
 - **Rank-law companion:**
@@ -355,9 +357,10 @@ global-to-local determinant compatibility conjectured by the field card.
 This is a dependency-closed paper theorem and a classical functional-analytic bridge. It makes no
 novelty claim, no RH claim, and no claim that a Helson operator is the unique spectral receiver.
 
-No Lean code was written or built. A later formalization should first isolate finite-rank
-truncations of `(HFR.2)--(HFR.9)`; the trace-class limit and Fredholm determinant require a separate
-analytic formalization plan.
+Formalized unconditionally in Lean 4; see the companion certificate. The trace-class limit and the
+whole of `(HFR.2)--(HFR.12)` are formalized directly in the infinite-dimensional setting, without
+passing through finite-rank truncations. The Fredholm determinant itself is not constructed: the
+wall condition `Delta_tau(a)=0` is formalized in its Fredholm-alternative form.
 
 ## Gates
 
@@ -369,9 +372,10 @@ analytic formalization plan.
 - [x] normalized projective response proved
 - [x] positivity, threshold, eigenline, summability, and rank-one limitations stated
 - [x] local Stokes compatibility left explicitly open
-- [ ] Lean formalization deferred by instruction
+- [x] Lean formalization completed unconditionally
 
 ## Log
 
 - 2026-08-09 — extracted after broad Helson, transfer-operator, arithmetic Stokes, and Fredholm
   literature audit. Accepted as global spectral receiver; rejected as standalone source selector.
+- 2026-08-12 — formalized unconditionally in Lean 4 and promoted to stage 3.

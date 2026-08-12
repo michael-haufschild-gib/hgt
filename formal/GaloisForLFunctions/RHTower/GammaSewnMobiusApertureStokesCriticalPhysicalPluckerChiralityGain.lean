@@ -259,6 +259,114 @@ theorem gammaSewnCriticalPhysicalPlucker_schurFraction_gt_half :
   apply (lt_div_iff₀ htotal).2
   nlinarith [gammaSewnCriticalPhysicalPlucker_chiralityFisherMoment_pos]
 
+/-- Physical complementary Fisher mass is strictly below total Fisher mass. This is the upper
+bound needed to prove that the source-derived residual is a positive carrier, rather than merely
+having small signed total mass. -/
+theorem gammaSewnCriticalPhysicalPlucker_complementaryFisherMean_lt_total :
+    RHTower.complementaryFisherMean gammaSewnCriticalPhysicalPlucker_probability
+        (RHTower.gammaSewnFourRateComplementaryFisher
+          gammaSewnCriticalPlucker_hostileCell) <
+      RHTower.gammaSewnFourRateTotalFisher gammaSewnCriticalPlucker_hostileCell := by
+  have hsum : ∑ s, gammaSewnCriticalPhysicalPlucker_probability s = 1 :=
+    RHTower.sum_gammaSewnFourRateBoundaryPairProbability
+      gammaSewnCriticalPlucker_hostileBoundaryPairPartition_pos.ne'
+  have hwpos : ∀ s, 0 < gammaSewnCriticalPhysicalPlucker_probability s := fun s =>
+    RHTower.gammaSewnFourRateBoundaryPairProbability_pos
+      gammaSewnCriticalPlucker_hostileHarmonicAperture_pos.ne'
+      gammaSewnCriticalPlucker_hostileRate_injective
+      gammaSewnCriticalPlucker_hostileHarmonicAperture_boundary_ne s
+  have hselpos :
+      0 < ∑ s, gammaSewnCriticalPhysicalPlucker_probability s *
+        RHTower.gammaSewnFourRateSelectedFisher
+          gammaSewnCriticalPlucker_hostileCell s := by
+    apply Finset.sum_pos
+    · intro s _hs
+      exact mul_pos (hwpos s) (by
+        unfold RHTower.gammaSewnFourRateSelectedFisher RHTower.fourRateSelectedSum
+        exact add_pos
+          (RHTower.gammaSewnMobiusApertureBoundaryFisherClock_pos _)
+          (RHTower.gammaSewnMobiusApertureBoundaryFisherClock_pos _))
+    · exact Finset.univ_nonempty
+  have htotal :=
+    RHTower.gammaSewnFourRateSelectedFisher_add_complementaryFisher
+      gammaSewnCriticalPlucker_hostileCell
+  unfold RHTower.complementaryFisherMean
+  have hid :
+      (∑ s, gammaSewnCriticalPhysicalPlucker_probability s *
+          RHTower.gammaSewnFourRateComplementaryFisher
+            gammaSewnCriticalPlucker_hostileCell s) =
+        RHTower.gammaSewnFourRateTotalFisher gammaSewnCriticalPlucker_hostileCell -
+          ∑ s, gammaSewnCriticalPhysicalPlucker_probability s *
+            RHTower.gammaSewnFourRateSelectedFisher
+              gammaSewnCriticalPlucker_hostileCell s := by
+    calc
+      (∑ s, gammaSewnCriticalPhysicalPlucker_probability s *
+          RHTower.gammaSewnFourRateComplementaryFisher
+            gammaSewnCriticalPlucker_hostileCell s) =
+        ∑ s, gammaSewnCriticalPhysicalPlucker_probability s *
+          (RHTower.gammaSewnFourRateTotalFisher gammaSewnCriticalPlucker_hostileCell -
+            RHTower.gammaSewnFourRateSelectedFisher
+              gammaSewnCriticalPlucker_hostileCell s) := by
+          apply Finset.sum_congr rfl
+          intro s _hs
+          rw [← htotal s]
+          ring
+      _ = RHTower.gammaSewnFourRateTotalFisher gammaSewnCriticalPlucker_hostileCell *
+            (∑ s, gammaSewnCriticalPhysicalPlucker_probability s) -
+          ∑ s, gammaSewnCriticalPhysicalPlucker_probability s *
+            RHTower.gammaSewnFourRateSelectedFisher
+              gammaSewnCriticalPlucker_hostileCell s := by
+          rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+          apply Finset.sum_congr rfl
+          intro s _hs
+          ring
+      _ = _ := by rw [hsum]; ring
+  rw [hid]
+  linarith
+
+/-- The physical hostile-cell Schur fraction lies in the strict interval `(1/2,1)`. -/
+theorem gammaSewnCriticalPhysicalPlucker_schurFraction_lt_one :
+    gammaSewnCriticalPlucker_schurFraction
+        gammaSewnCriticalPhysicalPlucker_probability
+        gammaSewnCriticalPlucker_hostileCell < 1 := by
+  have htotal : 0 < RHTower.gammaSewnFourRateTotalFisher
+      gammaSewnCriticalPlucker_hostileCell := by
+    unfold RHTower.gammaSewnFourRateTotalFisher RHTower.fourRateTotalSum
+    exact add_pos
+      (add_pos
+        (add_pos
+          (RHTower.gammaSewnMobiusApertureBoundaryFisherClock_pos _)
+          (RHTower.gammaSewnMobiusApertureBoundaryFisherClock_pos _))
+        (RHTower.gammaSewnMobiusApertureBoundaryFisherClock_pos _))
+      (RHTower.gammaSewnMobiusApertureBoundaryFisherClock_pos _)
+  unfold gammaSewnCriticalPlucker_schurFraction
+  rw [div_lt_iff₀ htotal]
+  simpa using gammaSewnCriticalPhysicalPlucker_complementaryFisherMean_lt_total
+
+/-- Every coefficient of the literal physical hostile-cell residual remains strictly positive. -/
+theorem gammaSewnCriticalPhysicalPlucker_reducedWeight_pos
+    (pk : Nat.Primes × ℕ) :
+    0 < gammaSewnCriticalPlucker_reducedWeight
+      gammaSewnCriticalPhysicalPlucker_probability
+      gammaSewnCriticalPlucker_hostileCell pk := by
+  unfold gammaSewnCriticalPlucker_reducedWeight
+  exact mul_pos (sub_pos.mpr gammaSewnCriticalPhysicalPlucker_schurFraction_lt_one)
+    (gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight_pos pk)
+
+/-- Physical chirality improves strictly on the symmetrized half residual, coefficient by
+coefficient. -/
+theorem gammaSewnCriticalPhysicalPlucker_reducedWeight_lt_half
+    (pk : Nat.Primes × ℕ) :
+    gammaSewnCriticalPlucker_reducedWeight
+        gammaSewnCriticalPhysicalPlucker_probability
+        gammaSewnCriticalPlucker_hostileCell pk <
+      (1 / 2 : ℝ) *
+        gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight pk := by
+  unfold gammaSewnCriticalPlucker_reducedWeight
+  apply mul_lt_mul_of_pos_right _
+    (gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight_pos pk)
+  linarith [gammaSewnCriticalPhysicalPlucker_schurFraction_gt_half]
+
 /-- **Unconditional physical local adequacy.**  The literal Gamma-sewn Cauchy--Binet packet clears
 the critical four-cell mass ceiling which defeated raw and first-information carriers. -/
 theorem gammaSewnCriticalPhysicalPlucker_reducedHostileMass_lt_ceiling :
@@ -278,10 +386,8 @@ theorem gammaSewnCriticalPhysicalPlucker_reducedHostileMass_lt_ceiling :
         (1 / 2 : ℝ) *
           gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight
             (gammaSewnCriticalPlucker_hostileCell i) := by
-    unfold gammaSewnCriticalPlucker_reducedWeight
-    have hweight := gammaSewnMobiusApertureStokesCriticalInformationDepletedWeight_pos
+    exact gammaSewnCriticalPhysicalPlucker_reducedWeight_lt_half
       (gammaSewnCriticalPlucker_hostileCell i)
-    nlinarith [gammaSewnCriticalPhysicalPlucker_schurFraction_gt_half]
   simp [Fin.sum_univ_succ]
   nlinarith [hterm 0, hterm 1, hterm 2, hterm 3]
 

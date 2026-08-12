@@ -663,3 +663,108 @@ Active core is no longer the bilinear moment estimate.  It is the MV24.11--24.12
 construct simultaneous useful-coordinate rational approximants for Taylor phases, retain the
 explicit denominator window and logarithmic absorption hypotheses, and perturb the proved
 bilinear bound into a one-dimensional logarithmic-phase sum with exponent strictly below one.
+
+### C18. Arbitrary interval embeddings preserve both Vinogradov fibre bounds
+
+A source audit found a real logical seam: Montgomery--Vaughan 24.7 and 24.11 use the product
+interval `(Q,2Q]^2`, whereas C17's finite bridge summed over prefix boxes.  Pointwise domination by
+a prefix sum is false for complex exponential sums, so silently replacing one by the other would
+invalidate the transport.
+
+The correct universal principle is fibre-monotonicity, not sum-monotonicity.  If `e : A ↪ [0,N)` is
+any injective interval embedding, then the induced map on every `b`-tuple pair is injective.
+Consequently each exact power-difference fibre of the restricted interval embeds into the
+corresponding full-box fibre.  This works independently at both Fejér groupings.
+
+`VinogradovEmbeddedActualMoment.lean` and `VinogradovEmbeddedBilinear.lean` now prove this complete
+embedded MV24.7 bridge.  Outer Hölder costs the actual interval cardinalities, while both
+Vinogradov mean values and all coordinate kernels use the chosen ambient boxes.  Specializing the
+embedding to
+
+```text
+Fin Q -> Fin (2Q),       n |-> Q+n
+```
+
+gives the exact source interval.  `VinogradovUpperHalfSaving.lean` proves the resulting unconditional
+bound
+
+```text
+|sum_{Q<l,m<=2Q} e(sum_j alpha_j (lm)^j)|
+  <= (2Q)^(2-delta_u),
+delta_u = (100u^2-1)/(4b^2) > 0,
+```
+
+under the explicit useful-coordinate denominator windows and a single explicit natural threshold.
+No cancellation comparison with a prefix sum occurs.
+
+`VinogradovTaylorPerturbation.lean` additionally proves that a uniform phase error `|epsilon_lm|<=eta`
+costs at most `2*pi*eta*Q^2`.  Thus Taylor remainder is cleanly separated from Diophantine saving:
+the former is an additive perturbation budget, the latter remains the exact C17 power reserve.
+
+Active core is now the denominator-production theorem.  For logarithmic derivatives one must prove,
+uniformly over Taylor centres, simultaneous reduced rational approximants in the exact useful
+windows required by C17, including absorption of the explicit `log(q+1)` term.  Once produced, the
+compiled upper-half theorem is already in the form consumed by MV24.11.
+
+### C19. Taylor compatibility forces a narrow coordinate band and closes the full log phase
+
+The height-shell audit disproved C17's original choice of every degree `200u <= d <= 400u`.
+This was a substantive obstruction, not a constant loss.  Write the Taylor centre as
+`N=B^200`, ambient bilinear length as `P=B^99`, and height shell as
+
+```text
+N^(4u-1) <= t <= N^(4u).
+```
+
+For a rational saving exponent `e=floor(d/200)`, denominator transport requires
+
+```text
+200(d-(4u-1)) + O(1) <= 198(d-e),
+```
+
+while Taylor decay requires `2*99<200`.  At `d=400u` these conditions conflict.  The compatible
+band is instead
+
+```text
+200u <= d <= 240u.
+```
+
+It contains `40u` coordinates and retains aggregate saving `40u^2`.  After the exact mean-value
+loss `2800u+4`, this leaves at least `20u^2` reserve for `u>=141`, hence the revised unconditional
+pointwise saving
+
+```text
+delta_u = (20u^2-1)/(4b^2) > 0.
+```
+
+This narrow-band law is the first higher compatibility principle exposed by Route T: useful
+coordinates cannot be selected from Diophantine entropy alone.  Their degree support must lie in
+the intersection of the rational-denominator cone and Taylor-remainder cone.
+
+The entire intersection is now formalized:
+
+- `VinogradovUsefulCoordinates.lean` proves the `40u^2` band reserve;
+- `VinogradovRouteTSaving.lean` proves the revised rooted saving and the useful quantitative bound
+  `0<delta_u<=1/100`;
+- `VinogradovLogHeightWindow.lean` proves both reciprocal denominator windows from the exact shell,
+  constructs all simultaneous reduced approximants, absorbs `log(q+1)`, and feeds them into the
+  true upper-half bilinear theorem;
+- `VinogradovLogTaylorRemainder.lean` proves the exact logarithmic series remainder.  Since
+  `lm/x<=B^-2`, order `400u` contributes `B^(-2(400u+1))`, which cancels the height
+  `B^(800u)` and leaves the sharp uniform error `B^-2`;
+- the same module restores the Taylor constant and proves the source phase estimate
+
+```text
+|sum_{Q<l,m<=2Q} e((t/2pi) log(x-lm))|
+  <= 2 * (B^99)^(2-delta_u),
+Q = (B^99)/2,
+```
+
+under one explicit natural base threshold, uniformly for `N<=x<=2N` and the full height shell.
+All statements are axiom-free and contain no numerical computation.
+
+Active core has moved beyond Taylor and denominator production.  Next step is the exact
+MV24.11 convolution receiver: transfer this bilinear block saving to the one-dimensional
+Dirichlet polynomial with divisor-convolution coefficients, preserve the `delta_u` gain through
+dyadic decomposition and coefficient norms, then feed that exponent into the Maynard/Huxley
+near-one zero-free receiver.

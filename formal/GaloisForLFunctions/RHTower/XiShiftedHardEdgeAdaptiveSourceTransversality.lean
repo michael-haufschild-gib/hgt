@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionHardEdgeSourceLaw
 import GaloisForLFunctions.HTGeometry.FiniteGaussQuadrature
+import GaloisForLFunctions.HTGeometry.PowerLinearizationBound
 
 /-!
 # Adaptive completed-source transversality at hard Gauss nodes
@@ -16,7 +17,7 @@ at every simple hard root.  This is the local quantity appearing in the denomina
 hard-edge Padé-residue law; affine root spread is not.
 -/
 
-open Complex Matrix Polynomial
+open Complex Matrix Polynomial Filter Topology
 
 namespace RHTower
 
@@ -234,6 +235,60 @@ theorem derivative_xiShiftedHardEdgeNormalizedReciprocalClearing_eval
         (xiShiftedHardEdgeReciprocalClearing y N P).derivative.eval u := by
   simp [xiShiftedHardEdgeNormalizedReciprocalClearing]
 
+/-- If total first-order displacement `m*|b|` vanishes, a moving natural power of `1+b`
+converges to one.  Unlike the fixed-exponent continuity lemma, this retains the cofinal degree
+needed at the hard edge. -/
+theorem tendsto_one_add_pow_of_nat_mul_abs_tendsto_zero
+    {b : ℕ → ℝ} {m : ℕ → ℕ}
+    (hsmall : Tendsto (fun k => (m k : ℝ) * |b k|) atTop (nhds 0)) :
+    Tendsto (fun k => (1 + b k) ^ m k) atTop (nhds 1) := by
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  simp only [Real.norm_eq_abs]
+  apply squeeze_zero'
+  · exact Eventually.of_forall fun k => abs_nonneg _
+  · exact Eventually.of_forall fun k => by
+      calc
+        |(1 + b k) ^ m k - 1| =
+            |((1 + b k) ^ m k - 1 - (m k : ℝ) * b k) +
+              (m k : ℝ) * b k| := by ring_nf
+        _ ≤ |(1 + b k) ^ m k - 1 - (m k : ℝ) * b k| +
+              |(m k : ℝ) * b k| := abs_add_le _ _
+        _ ≤ ((m k : ℝ) * |b k|) ^ 2 *
+              Real.exp ((m k : ℝ) * |b k|) +
+              (m k : ℝ) * |b k| := by
+            gcongr
+            · exact HTGeometry.abs_pow_sub_one_sub_le (b k) (m k)
+            · rw [abs_mul, abs_of_nonneg (Nat.cast_nonneg (m k))]
+  · have hexp : Tendsto
+        (fun k => Real.exp ((m k : ℝ) * |b k|)) atTop (nhds 1) := by
+      have hcomp := Real.continuous_exp.continuousAt.tendsto.comp hsmall
+      change Tendsto (fun k => Real.exp ((m k : ℝ) * |b k|))
+        atTop (nhds (Real.exp 0)) at hcomp
+      simpa only [Real.exp_zero] using hcomp
+    simpa using (hsmall.pow 2).mul hexp |>.add hsmall
+
+/-- The compact hard-node factor has no residual normalization whenever degree times reciprocal
+hard displacement vanishes. -/
+theorem tendsto_hardEdgeNodeFactor_one
+    {y u : ℕ → ℝ} {N : ℕ → ℕ}
+    (hdenom : ∀ k, y k + u k ≠ 0)
+    (hsmall : Tendsto
+      (fun k => ((2 * N k + 1 : ℕ) : ℝ) * |u k / (y k + u k)|)
+      atTop (nhds 0)) :
+    Tendsto
+      (fun k => (y k * (y k + u k)⁻¹) ^ (2 * N k + 1))
+      atTop (nhds 1) := by
+  have hsmall' : Tendsto
+      (fun k => ((2 * N k + 1 : ℕ) : ℝ) *
+        |-u k / (y k + u k)|) atTop (nhds 0) := by
+    simpa only [abs_div, abs_neg] using hsmall
+  have hpow := tendsto_one_add_pow_of_nat_mul_abs_tendsto_zero hsmall'
+  convert hpow using 1
+  funext k
+  congr 1
+  field_simp [hdenom k]
+  ring
+
 /-- **Compact-normalized source-capacity law.** At an admitted hard root, effective adaptive
 source capacity is exactly the squared derivative of the compact-normalized hard amplitude,
 weighted only by the dimensionless node `y*x`.  Hence for a simple compact hard root the source
@@ -434,6 +489,50 @@ theorem xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity_eq_normalized
     xiShiftedHardEdgeAdaptiveSourceTransverseCapacity, P] using
     (xiShiftedHardEdgeAdaptiveEffectiveSourceCapacity_eq_normalizedDerivative_sq
       hP hw0 hx hroot)
+
+/-- **Compact-limit elimination of capacity escape.** Along actual canonical shifted-Xi
+admissions, if the hard node has coordinate `u`, the cofinal degree resolves that coordinate with
+vanishing total displacement, and normalized hard derivatives converge to `d`, then effective
+adaptive source capacity converges to `d^2`.  Thus at a simple compact hard root (`d ≠ 0`) Padé
+extinction cannot be caused by source-capacity blow-up or collapse. -/
+theorem tendsto_xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity
+    {w : ℕ → ℝ} {n : ℕ → ℕ} {x u : ℕ → ℝ} {d : ℝ}
+    (hw : ∀ k, 1 / 2 < w k)
+    (hdenom : ∀ k, w k ^ 2 + u k ≠ 0)
+    (hx : ∀ k, x k = (w k ^ 2 + u k)⁻¹)
+    (hroot : ∀ k,
+      (HTGeometry.monicMomentAdmissionPolynomial
+        (xiShiftedRealMomentSequence (w k)) (n k)).eval (x k) = 0)
+    (hsmall : Tendsto
+      (fun k => ((2 * n k + 1 : ℕ) : ℝ) *
+        |u k / (w k ^ 2 + u k)|) atTop (nhds 0))
+    (hderiv : Tendsto
+      (fun k =>
+        (xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing
+          (w k) (n k)).derivative.eval ((x k)⁻¹ - w k ^ 2))
+      atTop (nhds d)) :
+    Tendsto
+      (fun k =>
+        xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity
+          (w k) (n k) (x k))
+      atTop (nhds (d ^ 2)) := by
+  have hfactor : Tendsto
+      (fun k => (w k ^ 2 * x k) ^ (2 * n k + 1)) atTop (nhds 1) := by
+    have hfactor' := tendsto_hardEdgeNodeFactor_one
+      (y := fun k => w k ^ 2) (u := u) (N := n) hdenom hsmall
+    simpa only [hx] using hfactor'
+  have hproduct := hfactor.mul (hderiv.pow 2)
+  have heq :
+      (fun k => (w k ^ 2 * x k) ^ (2 * n k + 1) *
+        ((xiShiftedCanonicalAdmissionHardEdgeNormalizedClearing
+          (w k) (n k)).derivative.eval ((x k)⁻¹ - w k ^ 2)) ^ 2) =ᶠ[atTop]
+      (fun k => xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity
+        (w k) (n k) (x k)) := by
+    filter_upwards with k
+    symm
+    exact xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity_eq_normalizedDerivative_sq
+      (hw k) (by rw [hx k]; exact inv_ne_zero (hdenom k)) (hroot k)
+  simpa only [one_mul] using hproduct.congr' heq
 
 /-- In a positive shifted-Xi chamber, every positive canonical Gauss node has positive absolute
 Padé residue. -/

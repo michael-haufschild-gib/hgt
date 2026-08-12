@@ -94,11 +94,21 @@ Formal modules:
   completed ghost multiplicativity, and torsion-free ghost injectivity.
 - `DeningerBigWittRing.lean`: universal integer-polynomial descent of associativity, identity,
   absorption, and distributivity to arbitrary commutative rings; literal `CommRing`, functorial ring
-  maps, Teichmüller multiplication, and positive ghost-component ring homomorphisms.
+  maps, Teichmüller multiplication, positive ghost-component ring homomorphisms, injectivity of the
+  Teichmüller map, and exact preservation/reflection of every vanishing power and nilpotence.
 
 All target theorems quantify only over `[CommRing A]`. Target ghost injectivity, reducedness,
 torsion-freeness, characteristic zero, and field hypotheses are absent. The only torsion-free use is
 inside the universal source `MvPolynomial (Fin d × ℕ) ℤ`, before evaluation into `A`.
+
+Nilpotent retention is certified internally, not inferred from prose: for every `a : A` and `n`,
+
+```text
+[a]^n = 0  ↔  a^n = 0,
+IsNilpotent [a]  ↔  IsNilpotent a.
+```
+
+Thus the construction neither reduces the coefficient ring nor silently kills its nilradical.
 
 Verification: direct foreground Lean checks passed for every module; targeted final build of
 `GaloisForLFunctions.RHTower.DeningerBigWittRing` passed. The whole-repository formal lint finds no

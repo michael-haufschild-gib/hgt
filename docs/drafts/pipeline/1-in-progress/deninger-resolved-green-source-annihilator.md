@@ -228,7 +228,7 @@ non-absolutely summable, but singularity alone earns no credit without `(1)` and
     \(m\log(3/2)\ne0\), proving it is not an ordinary Milnor/Hochschild boundary.  Remaining
     clock-matching problem is solved in item 11; singular Meyer--Poisson admission and boundary
     annihilation remain.  Full proof:
-    `../2-fully-proven/new_scientific_knowledge/deninger/deninger-steinberg-kummer-successor-normal-transgression.md`.
+    `../3-formalized/new_scientific_knowledge/deninger/deninger-steinberg-kummer-successor-normal-transgression.md`.
 
 11. **Conjecture:** a finite Möbius correction produces the actual full-grade Gamma clock directly,
     so no fitted \(3/2\to6\) gauge is needed. **Proved, including the exact physical coefficient.**

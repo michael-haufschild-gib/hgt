@@ -157,10 +157,36 @@ must not be relabelled unconditional.
 
 ### arXiv:1204.1827
 
-Statement-by-statement audit remains open. The 2012 explicit canonical system is unconditional only
-in the paper's proved parameter range (`omega > 1`); extension to the critical range is not
-literature-known and must not be postulated. Similar canonical-system names in corpus do not
-establish parity.
+This source is now inventoried statement by statement. The explicit canonical system is
+unconditional only in the paper's proved parameter range (`omega > 1`); extension to the critical
+range is not literature-known and must not be postulated. Similar canonical-system names in corpus
+do not establish parity.
+
+| Source statement | Exact Lean status |
+|---|---|
+| Introductory shifted-Xi identities and Proposition `prop_basic`: RH iff every literal `A^omega` has only real zeros for all `omega>0` | **EXACT.** `SuzukiCanonicalShiftedXi.lean` defines the paper's literal `A^omega,B^omega`, proves the centered-Xi identities and Schwarz reflection, proves RH gives strict shifted-modulus separation off the real axis, constructs the explicit positive shifts `omega_n=1/(n+1)`, proves their locally uniform convergence to `XiC`, and applies the closed-locus Hurwitz transfer to prove the converse. |
+| Equations (105_1)--(108): literal `E^omega`, `Theta_omega=E^sharp/E`, meromorphicity, reflection/product law, unit-modulus real boundary, normalization at zero, and Hermite--Biehler/disk equivalence | **EXACT AT THE MEROMORPHIC REPRESENTATIVE LEVEL.** `SuzukiCanonicalShiftRatio.lean` defines the literal source ratio, proves all unconditional numerator/reflection identities, global meromorphicity, `Theta_omega(0)=1`, the unit-modulus law at every regular real point, and the exact Hermite--Biehler iff denominator-regular strict-disk law. The printed product identity is correctly stated on the regular locus because Lean's total quotient assigns `0/0=0`; claiming pointwise equality at poles would be false representation, not formalization. |
+| Proposition `intro_2`: the zeta zero-free half-plane `Re s>1/2+omega_0` iff every `Theta_omega`, `omega>omega_0`, is meromorphic inner | **EXACT.** `SuzukiLagariasMeromorphicInner.lean` formalizes the hard cited dependency, Lagarias--Suzuki (2006), Theorem 4, from the multiplicity-exact Xi Hadamard product: reflection-paired factors remove genus-one exponentials, every finite block has the strict modulus inequality, and a positive-real infinite-product proof preserves strictness. It then defines the source-faithful meromorphic-inner predicate, proves both directions including isolated-zero shift selection and an exact meromorphic-order pole contradiction, and closes the full quantified theorem as `suzuki2012_zetaZeroFree_iff_forall_theta_meromorphicInner`. The zeta predicate explicitly excludes `s=1`, correctly treating it as a meromorphic pole rather than Lean's totalized point value. |
+| Proposition `prop_1`: the absolutely convergent Mellin transform of literal `h_omega` equals `Theta_omega` for `omega>0`, `Im z>1/2+omega` | **MISSING EXACT.** Neither literal `c_omega`, `g_omega`, `h_omega` nor the arithmetic/gamma Mellin calculation is formalized. |
+| Theorem `thm_2`: innerness of `Theta_omega` iff each of the three exact convolution/support/`L²` conditions | **MISSING EXACT.** Requires the literal shifted Mellin transform, Hardy/Mellin identification, and closed convolution operator. |
+| Lemma `lem_301`: `Theta_omega H² subset H²` implies literal `Theta_omega` inner | **MISSING EXACT.** Requires pole exclusion plus the paper's Phragmen--Lindelof strip bound for the literal ratio. |
+| Lemma `lem_401`: the literal Hankel integral extends to an `L²(0,infinity)` isometry and satisfies the shifted Mellin intertwining identity, including compact-support continuation to `Im z>=0` | **MISSING EXACT.** No literal `h_omega(xy)` Hankel operator exists in corpus. |
+| Lemma `lem_402`: for `omega>1/2`, the compressed literal Hankel operator is self-adjoint Hilbert--Schmidt for `a>1` and zero for `0<a<=1` | **MISSING EXACT.** Requires local `L²` singularity control for literal `h_omega`. |
+| Lemma `lem_403`: a nonzero `H_omega P_a f` cannot have compact support | **MISSING EXACT.** Requires the literal transform identity, pole-cancellation factorization, Xi zero-density lower bound, and exponential-type zero-count upper bound. |
+| Lemma `lem_404`: exact annihilated subspace, strict vector contraction, operator norm `<1`, and invertibility of `1 plus/minus H_{omega,a}` | **MISSING EXACT.** Depends on exact Lemmas `lem_401`--`lem_403` and compact self-adjoint spectral theory. |
+| Lemma `lem_405`: unique real Fredholm solutions `phi_a^plus/minus`, their support, and continuity for `omega>1` | **MISSING EXACT.** Requires the literal resolvent and source-kernel continuity. |
+| Lemma `lem_406`: unique extended `L²` and continuous solutions on larger intervals/the half-line | **MISSING EXACT.** Depends on the exact Fredholm solutions. |
+| Lemma `lem_ad1`: piecewise continuous differentiability of extended `phi_a^plus/minus` in `x` | **MISSING EXACT.** Requires source Fredholm minors and uniform derivative estimates. |
+| Lemma `lem_ad2`: continuity and punctured continuous differentiability of `phi_a^plus/minus` in aperture `a` | **MISSING EXACT.** Requires aperture-differentiated Fredholm determinants/minors. |
+| Lemma `lem_407`: convergence and meromorphic/upper-half-plane analytic continuation of literal `Psi_a` | **MISSING EXACT.** Depends on the exact Hankel transform and extended Fredholm solutions. |
+| Lemma `lem_408`: continuation, `Theta_omega` functional equation, and entire Xi-products for `tilde E_a,tilde E_a*` | **MISSING EXACT.** Depends on Lemma `lem_407` and the exact Mellin-Hankel intertwining identity. |
+| Lemma `lem_409`: continuation, entire completion, parity, and `Theta_omega` covariance of `A_a,B_a` | **MISSING EXACT.** Depends on Lemma `lem_408`. |
+| Lemma `lem_411`: `A_a,B_a` are real entire functions | **MISSING EXACT.** Requires the literal theta-Mellin representation and source solutions. |
+| Lemma `lem_410`: `A_a,B_a` converge locally uniformly to `A^omega,B^omega` as `a -> 1+` | **MISSING EXACT.** Requires quantitative source Fredholm convergence. |
+| Theorem `thm_4`: for `omega>1`, the complete literal Fredholm-determinant Hamiltonian and canonical system with solution `A_a,B_a` | **MISSING EXACT.** This is the dependency closure of Lemmas `lem_401`--`lem_411`; abstract canonical systems elsewhere do not instantiate the source. |
+| Theorem `thm_3` parts (1)--(5): exact model-space kernel formula, `L²` tail equivalence, eventual-sign and limit sufficient conditions, and RH-family asymptotic for `h_omega^{<1>}` | **MISSING EXACT.** Literal `h_omega^{<1>}` and its Mellin/model-space theory are absent. |
+| Theorem `thm_5`: the differentiated `h_omega^{<1>}` transform extends to the literal `H_omega` isometry | **MISSING EXACT.** Depends on `thm_3`, `prop_a1`, and exact operator closure. |
+| Proposition `prop_a1`: absolutely convergent Mellin transform of `h_omega^{<1>}` equals `(i/z)Theta_omega` | **MISSING EXACT.** Depends on literal arithmetic kernel construction and Mellin integration. |
 
 ## Route-G paper theorems SR-94--SR-109
 

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.DeningerBigWittGhost
 import Mathlib.Algebra.Ring.TransferInstance
 import Mathlib.RingTheory.MvPolynomial.Basic
+import Mathlib.RingTheory.Nilpotent.Defs
 
 /-!
 # Canonical big-Witt ring over an arbitrary commutative ring
@@ -537,6 +538,47 @@ noncomputable def deningerBigWittGhostComponent (k : ℕ) (hk : 0 < k) :
     deningerBigWittGhostComponent k hk (deningerBigWittRingTeichmuller a) =
       a ^ k := by
   exact deningerBigWittGhostCoeff_teich a hk
+
+/-! ## Nilpotents are retained, not killed by descent -/
+
+/-- The Teichmüller map is injective over every commutative ring.  The first ghost component is
+already a left inverse; no reducedness or target-ghost injectivity is involved. -/
+theorem deningerBigWittRingTeichmuller_injective :
+    Function.Injective (deningerBigWittRingTeichmuller (A := A)) := by
+  intro a b hab
+  have hghost := congrArg (deningerBigWittGhostComponent 1 Nat.zero_lt_one) hab
+  simpa using hghost
+
+/-- Teichmüller representatives preserve every power exactly. -/
+@[simp] theorem deningerBigWittRingTeichmuller_pow (a : A) (n : ℕ) :
+    deningerBigWittRingTeichmuller a ^ n =
+      deningerBigWittRingTeichmuller (a ^ n) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [pow_succ, pow_succ, ih, deningerBigWittRingTeichmuller_mul]
+
+/-- No nilpotent order is lost in the arbitrary-ring construction: a Teichmüller power vanishes
+exactly when the corresponding power in the coefficient ring vanishes. -/
+@[simp] theorem deningerBigWittRingTeichmuller_pow_eq_zero_iff (a : A) (n : ℕ) :
+    deningerBigWittRingTeichmuller a ^ n = 0 ↔ a ^ n = 0 := by
+  rw [deningerBigWittRingTeichmuller_pow]
+  constructor
+  · intro h
+    exact deningerBigWittRingTeichmuller_injective
+      (h.trans deningerBigWittRingTeichmuller_zero.symm)
+  · intro h
+    rw [h, deningerBigWittRingTeichmuller_zero]
+
+/-- Nilpotence is both preserved and reflected by the canonical Teichmüller embedding over an
+arbitrary commutative ring, including nonreduced rings. -/
+@[simp] theorem deningerBigWittRingTeichmuller_isNilpotent_iff (a : A) :
+    IsNilpotent (deningerBigWittRingTeichmuller a) ↔ IsNilpotent a := by
+  constructor
+  · rintro ⟨n, hn⟩
+    exact ⟨n, (deningerBigWittRingTeichmuller_pow_eq_zero_iff a n).mp hn⟩
+  · rintro ⟨n, hn⟩
+    exact ⟨n, (deningerBigWittRingTeichmuller_pow_eq_zero_iff a n).mpr hn⟩
 
 end
 

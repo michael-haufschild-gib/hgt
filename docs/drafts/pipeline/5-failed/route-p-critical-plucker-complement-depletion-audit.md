@@ -87,8 +87,13 @@ Headline declarations:
 
 ## Positive survivor and next conjecture
 
-Construct a cofinal cross-prime graph transport `T` on physical Pluecker packets and prove an exact
-source law for
+P-G79 answers the first finite cross-prime test on the hostile cell. Its physical chirality--Fisher
+moment is strictly positive, its Schur fraction lies strictly in `(1/2,1)`, and the resulting
+positive coefficientwise residual clears the `29/625` mass ceiling. Thus cross-prime transport is
+not only necessary; on the first source-faithful packet it has the required orientation.
+
+Remaining conjecture: construct a cofinal cross-prime graph transport `T` on physical Pluecker
+packets and prove an exact source law for
 
 ```text
 sum_s chi_(T w)(s) F_comp(s).

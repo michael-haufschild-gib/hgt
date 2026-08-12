@@ -91,15 +91,13 @@ clearing and differentiation of source producer at its admission-selected zero.
 
 ## Exact remaining obstruction
 
-For a simple negative limiting hard root with positive terminal mass, effective source capacity
-converges to the nonzero divided-root derivative square, so Padé residue survives. Route closure
-still requires an arithmetic theorem forcing positive-axis Padé atom extinction—equivalently:
-
-- terminal divided-root mass vanishes on every negative hard root; or
-- effective completed-source capacity diverges there; or
-- canonical Padé resolvents are locally bounded across positive mass axis.
-
-Neither source transversality nor its sign supplies this global law. RH is not claimed.
+Compact-normalized capacity is now proved to converge to the nonzero divided-root derivative square
+at every simple normalized hard root, so capacity divergence is removed from generic branch.
+Subsequent worldline/source conservation identifies terminal mass as inverse hard-root mobility:
+on parabolic schedule, normalized terminal mass times actual hard speed equals explicit forcing
+`4*n*w^3*x^2`. Route closure now requires source-specific growing-degree speed tightness, which
+would force positive terminal-mass floor. Existing fixed integral-Lipschitz theorem controls
+quadratic forms, not root mobility. RH is not claimed.
 
 ## Lean realization
 
@@ -123,6 +121,12 @@ xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue_mul_sourceTransverseCapacity
 xiShiftedCanonicalAdmissionHardEdgeGaussPadeResidue_pos
 xiShiftedCanonicalAdmissionHardEdgeEffectiveSourceCapacity_pos
 affineHardEdgeCoordinate_sub_affineHardEdgeCoordinate
+```
+
+Successor module:
+
+```text
+GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionHardEdgeWorldlineSourceLaw
 ```
 
 ## Verification

@@ -218,25 +218,67 @@ theorem tendsto_integral_testEnvelope (M : ℝ) :
     (ae_of_all _ fun ξ => tendsto_testEnvelope_pointwise M ξ)
   simpa using h
 
+/-- Every member of a simultaneous Suzuki boundary-layer Fourier envelope has finite exact
+`H^log` energy.  The exclusion of `ξ = 0` is harmless because a singleton is null; retaining it
+is essential, since the tail expression `M / |ξ|` is zero at the origin in Lean's totalized field. -/
+theorem integrable_suzukiLogWeight_norm_sq_of_fourier_envelope
+    (F : ℝ → ℂ) (n : ℕ) (M : ℝ)
+    (hF : AEStronglyMeasurable F (volume : Measure ℝ))
+    (hbound : ∀ ξ, ξ ≠ 0 → ‖F ξ‖ ≤
+      min (2 / ((n : ℝ) + 1)) (|M| / |ξ|)) :
+    Integrable (fun ξ : ℝ => suzukiLogWeight ξ * ‖F ξ‖ ^ 2) := by
+  have hne : ∀ᵐ ξ : ℝ ∂volume, ξ ≠ 0 := by
+    rw [ae_iff]
+    simp
+  have hpoint : ∀ᵐ ξ : ℝ ∂volume,
+      suzukiLogWeight ξ * ‖F ξ‖ ^ 2 ≤ 3 * testEnvelope n M ξ := by
+    filter_upwards [hne] with ξ hξ
+    have hweight := suzukiLogWeight_le_three_mul_log_three_add_abs ξ
+    have hlog0 : 0 ≤ Real.log (3 + |ξ|) :=
+      Real.log_nonneg (by linarith [abs_nonneg ξ])
+    have hsq : ‖F ξ‖ ^ 2 ≤
+        min (2 / ((n : ℝ) + 1)) (|M| / |ξ|) ^ 2 := by
+      nlinarith [norm_nonneg (F ξ), hbound ξ hξ]
+    unfold testEnvelope
+    calc
+      suzukiLogWeight ξ * ‖F ξ‖ ^ 2
+          ≤ (3 * Real.log (3 + |ξ|)) * ‖F ξ‖ ^ 2 :=
+            mul_le_mul_of_nonneg_right hweight (sq_nonneg _)
+      _ ≤ (3 * Real.log (3 + |ξ|)) *
+          min (2 / ((n : ℝ) + 1)) (|M| / |ξ|) ^ 2 :=
+            mul_le_mul_of_nonneg_left hsq (mul_nonneg (by norm_num) hlog0)
+      _ = 3 * (Real.log (3 + |ξ|) *
+          min (2 / ((n : ℝ) + 1)) (|M| / |ξ|) ^ 2) := by ring
+  refine Integrable.mono' ((integrable_testEnvelope n M).const_mul 3)
+    (measurable_suzukiLogWeight.aestronglyMeasurable.mul (hF.norm.pow 2)) ?_
+  filter_upwards [hpoint] with ξ hξ
+  rw [Real.norm_eq_abs, abs_of_nonneg
+    (mul_nonneg (suzukiLogWeight_nonneg ξ) (sq_nonneg _))]
+  exact hξ
+
 /-- Abstract form of Suzuki's equations (3.3)--(3.4): any measurable Fourier family with the
 simultaneous boundary-layer bounds `2/(n+1)` and `M/|ξ|` converges to zero in the exact
 `H^log` energy. -/
 theorem tendsto_integral_suzukiLogWeight_norm_sq_of_fourier_envelope
     (F : ℕ → ℝ → ℂ) (M : ℝ)
     (hF : ∀ n, AEStronglyMeasurable (F n) (volume : Measure ℝ))
-    (hbound : ∀ n ξ, ‖F n ξ‖ ≤
+    (hbound : ∀ n ξ, ξ ≠ 0 → ‖F n ξ‖ ≤
       min (2 / ((n : ℝ) + 1)) (|M| / |ξ|)) :
     Tendsto (fun n : ℕ => ∫ ξ : ℝ, suzukiLogWeight ξ * ‖F n ξ‖ ^ 2)
       atTop (𝓝 0) := by
-  have hpoint : ∀ n ξ,
+  have hne : ∀ᵐ ξ : ℝ ∂volume, ξ ≠ 0 := by
+    rw [ae_iff]
+    simp
+  have hpoint : ∀ n, ∀ᵐ ξ : ℝ ∂volume,
       suzukiLogWeight ξ * ‖F n ξ‖ ^ 2 ≤ 3 * testEnvelope n M ξ := by
-    intro n ξ
+    intro n
+    filter_upwards [hne] with ξ hξ
     have hweight := suzukiLogWeight_le_three_mul_log_three_add_abs ξ
     have hlog0 : 0 ≤ Real.log (3 + |ξ|) :=
       Real.log_nonneg (by linarith [abs_nonneg ξ])
     have hsq : ‖F n ξ‖ ^ 2 ≤
         min (2 / ((n : ℝ) + 1)) (|M| / |ξ|) ^ 2 := by
-      nlinarith [norm_nonneg (F n ξ), hbound n ξ]
+      nlinarith [norm_nonneg (F n ξ), hbound n ξ hξ]
     unfold testEnvelope
     calc
       suzukiLogWeight ξ * ‖F n ξ‖ ^ 2
@@ -256,16 +298,16 @@ theorem tendsto_integral_suzukiLogWeight_norm_sq_of_fourier_envelope
       (fun ξ : ℝ => suzukiLogWeight ξ * ‖F n ξ‖ ^ 2) := by
     intro n
     refine Integrable.mono' ((integrable_testEnvelope n M).const_mul 3) (hmeas n) ?_
-    filter_upwards with ξ
+    filter_upwards [hpoint n] with ξ hξ
     rw [Real.norm_eq_abs, abs_of_nonneg
       (mul_nonneg (suzukiLogWeight_nonneg ξ) (sq_nonneg _))]
-    exact hpoint n ξ
+    exact hξ
   have hupper : ∀ n,
       (∫ ξ : ℝ, suzukiLogWeight ξ * ‖F n ξ‖ ^ 2) ≤
         3 * ∫ ξ : ℝ, testEnvelope n M ξ := by
     intro n
     rw [← integral_const_mul]
-    exact integral_mono (hint n) ((integrable_testEnvelope n M).const_mul 3) (hpoint n)
+    exact integral_mono_ae (hint n) ((integrable_testEnvelope n M).const_mul 3) (hpoint n)
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     (g := fun _ : ℕ => 0) (h := fun n : ℕ => 3 * ∫ ξ : ℝ, testEnvelope n M ξ)
     tendsto_const_nhds (by simpa using (tendsto_integral_testEnvelope M).const_mul 3) ?_ ?_

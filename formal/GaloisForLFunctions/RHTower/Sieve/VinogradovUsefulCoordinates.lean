@@ -9,7 +9,7 @@ noncomputable section
 
 def vinogradovUsefulCoordinate (u : ℕ)
     (j : Fin (vinogradovRouteTOrder (4 * u))) : Prop :=
-  200 * u ≤ j.val + 1
+  200 * u ≤ j.val + 1 ∧ j.val + 1 ≤ 240 * u
 
 instance vinogradovUsefulCoordinateDecidable (u : ℕ)
     (j : Fin (vinogradovRouteTOrder (4 * u))) :
@@ -18,7 +18,7 @@ instance vinogradovUsefulCoordinateDecidable (u : ℕ)
   infer_instance
 
 def vinogradovUsefulCoordinateEmbedding (u : ℕ) :
-    Fin (200 * u) ↪
+    Fin (40 * u) ↪
       {j : Fin (vinogradovRouteTOrder (4 * u)) //
         vinogradovUsefulCoordinate u j} where
   toFun n := ⟨⟨200 * u + n.val, by
@@ -26,8 +26,9 @@ def vinogradovUsefulCoordinateEmbedding (u : ℕ) :
     change 200 * u + n.val < 100 * (4 * u)
     omega⟩, by
       unfold vinogradovUsefulCoordinate
-      change 200 * u ≤ (200 * u + n.val) + 1
-      omega⟩
+      change 200 * u ≤ (200 * u + n.val) + 1 ∧
+        (200 * u + n.val) + 1 ≤ 240 * u
+      constructor <;> omega⟩
   inj' := by
     intro a b h
     have hval := congrArg
@@ -38,7 +39,7 @@ def vinogradovUsefulCoordinateEmbedding (u : ℕ) :
     omega
 
 theorem card_vinogradovUsefulCoordinate_ge (u : ℕ) :
-    200 * u ≤ Fintype.card
+    40 * u ≤ Fintype.card
       {j : Fin (vinogradovRouteTOrder (4 * u)) //
         vinogradovUsefulCoordinate u j} := by
   simpa using Fintype.card_le_of_embedding
@@ -52,19 +53,19 @@ theorem vinogradovCoordinateSavingExponent_ge
   unfold vinogradovCoordinateSavingExponent
   rw [Nat.le_div_iff_mul_le (by norm_num : 0 < 200)]
   unfold vinogradovUsefulCoordinate at j
-  simpa [mul_comm] using j.2
+  simpa [mul_comm] using j.2.1
 
-/-- Exact aggregate power reserve from the useful upper half of the
-Route-T coordinates.  This is the integer invariant behind the eventual
-`u^-4` Weyl saving. -/
+/-- Exact aggregate power reserve from the Taylor-compatible coordinate
+band `200u ≤ d ≤ 240u`.  The upper cutoff is forced by simultaneous
+compatibility of logarithmic Taylor remainder and denominator transport. -/
 theorem sum_vinogradovCoordinateSavingExponent_ge (u : ℕ) :
-    200 * u ^ 2 ≤
+    40 * u ^ 2 ≤
       ∑ j : {j : Fin (vinogradovRouteTOrder (4 * u)) //
         vinogradovUsefulCoordinate u j},
           vinogradovCoordinateSavingExponent j.1 := by
   have hcard := card_vinogradovUsefulCoordinate_ge u
   calc
-    200 * u ^ 2 = (200 * u) * u := by ring
+    40 * u ^ 2 = (40 * u) * u := by ring
     _ ≤ Fintype.card
         {j : Fin (vinogradovRouteTOrder (4 * u)) //
           vinogradovUsefulCoordinate u j} * u :=
@@ -227,7 +228,7 @@ theorem vinogradovUsefulSavingSum_eq_subtype_sum
     (by intro j; simp) (fun j => vinogradovCoordinateSavingExponent j)
 
 theorem vinogradovUsefulSavingSum_ge (u : ℕ) :
-    200 * u ^ 2 ≤
+    40 * u ^ 2 ≤
       vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u) := by
   rw [vinogradovUsefulSavingSum_eq_subtype_sum]
   exact sum_vinogradovCoordinateSavingExponent_ge u
@@ -240,17 +241,17 @@ theorem prod_vinogradovUsefulCoordinateEnvelope_le
         (Q : ℝ) ^
           (vinogradovRouteTOrder (4 * u) *
             (vinogradovRouteTOrder (4 * u) + 1)) *
-          ((Q : ℝ) ^ (200 * u ^ 2))⁻¹ := by
+          ((Q : ℝ) ^ (40 * u ^ 2))⁻¹ := by
   rw [prod_vinogradovCoordinateEnvelope_eq]
   rw [sum_two_mul_fin_succ]
   have hQreal : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
   have hsum := vinogradovUsefulSavingSum_ge u
-  have hpow : (Q : ℝ) ^ (200 * u ^ 2) ≤
+  have hpow : (Q : ℝ) ^ (40 * u ^ 2) ≤
       (Q : ℝ) ^ vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u) :=
     pow_le_pow_right₀ hQreal hsum
   have hinv :
       ((Q : ℝ) ^ vinogradovUsefulSavingSum (vinogradovUsefulCoordinate u))⁻¹ ≤
-        ((Q : ℝ) ^ (200 * u ^ 2))⁻¹ := by
+        ((Q : ℝ) ^ (40 * u ^ 2))⁻¹ := by
     exact inv_anti₀ (by positivity) hpow
   exact mul_le_mul_of_nonneg_left hinv (by positivity)
 

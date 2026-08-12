@@ -786,11 +786,13 @@ autoParam finiteness; Nat.strong_induction_on names the IH `∀ m < N, ...`.
 
 - Strict sharpening of step 36: the `∀ n` quantifier is gone. The criterion is now *one real
   inequality per real polynomial* — the map `p ↦ Re(M_p(0)M_p(2) − M_p(1)²)` must be ≥ 0.
-- The C-S form is sign-blind: negating the functional preserves every inequality on the
-  right-hand side, so the criterion provably does NOT operate through measure positivity —
-  the detection mechanism is the descent oscillation. This separates it structurally from
-  the Hamburger/Weil positivity genre (positivity on squares), where `L(f²) ≥ 0` is the
-  hypothesis. Here no moment is ever assumed nonnegative.
+- The displayed C-S defects are abstractly invariant under negating a functional, but that does
+  **not** make the literal Xi criterion sign-blind. Actual Xi has real `L` and an unconditional
+  positive anchor `L(1)>0`; setting `g=1` forces `L(f²)>=0` for every `f`. Hence the all-pairs
+  packaging is equivalent to Hamburger/Weil square positivity. The genuinely thin result is the
+  diagonal family `g=Xf`, whose second vector depends on the first; its converse uses descent
+  oscillation and does not assume square positivity. This correction is paper-proved on
+  `route-u-positive-anchor-cauchy-schwarz-collapse.md`.
 - Literature: Turán inequalities for ξ (Csordas–Norfolk–Varga etc.) are necessary conditions
   only; Li/Sekatskii single-point criteria are linear families. A quadratic 2×2-only
   equivalence at an arbitrary interior point with a descent-proof appears to be new.
@@ -860,3 +862,75 @@ normalizes only the FIRST power — state subsequent bounds against the actual r
 `rw [← hx] at h` then fails with "pattern not found" because h already mentions x.
 Multiplicity-4 configurations: prove `![a,b,w,w'] 2 = w` etc. as `rfl` facts and pass them to
 `norm_num` — bare norm_num only reduces vecCons indices 0 and 1.
+
+## Step 39 — effective descent, part I: the explicit detection window [PAPER-PROVED → Lean in progress]
+
+Frontier item (b) of step 37, opening move. The even machine's master estimate
+`0 ≤ −4βN + CP2 + CT` already uses minor nonnegativity only for `n < N`; re-quantifying it
+turns the infinitary contradiction into an **explicit detection-index bound**.
+
+**Theorem (effective even-minor detection).** Setup: `X ≥ 0`; weight `Wf` conj-symmetric,
+`‖Wf‖ ≤ BW`, vanishing above level `ℓ > 0`; `ρ₂ ∈ [0, ℓ)` dominating all sub-level moduli;
+`S ≥ Σ'‖u_q‖` (total resolvent mass); `g > 0` lower-bounding `‖V² − 1‖` over non-resonant
+level pairs (`V = u₁u₂/ℓ²`); `qh` at level `ℓ` off-line with `Wf qh ≠ 0`. If the even
+weighted minors `M(2n)M(2n+2) − M(2n+1)²` have nonnegative real part for all `n < N`, then
+
+  N ≤ (2S²BW²/g + BW²S²/(ℓ² − ρ₂²)) / (Im(u_qh)²·|Wf qh|²).
+
+**Paper proof.** Master estimate as in the even machine (its proof consumes minors only at
+`n < N`): `0 ≤ −4βN + CP2 + CT` with `β = Im(u_qh)²|Wf qh|²`,
+`CP2 = Σ_{non-resonant level pairs} ‖W₁W₂(u₁−u₂)²‖·2/‖V²−1‖`,
+`CT = 4BW²P₀/ℓ² · 1/(1−(ρ₂/ℓ)²)`, `P₀` = complement pair mass. Three elementary bounds:
+(i) level cardinality: `|SF|·ℓ = Σ_{SF}‖u‖ ≤ Σ'‖u‖ ≤ S`, so `|SF| ≤ S/ℓ`;
+(ii) each CP2 term ≤ `(BW²·4ℓ²)·(2/g)`, count ≤ `|SF|²`, so `CP2 ≤ 8S²BW²/g`;
+(iii) `P₀ ≤ Σ'_{all pairs}‖u₁‖‖u₂‖ = (Σ'‖u‖)² ≤ S²` and
+`CT = 4BW²P₀/(ℓ²−ρ₂²) ≤ 4BW²S²/(ℓ²−ρ₂²)`. Combine: `4βN ≤ 8S²BW²/g + 4BW²S²/(ℓ²−ρ₂²)`;
+divide by `4β`. ∎
+
+Corollaries: detection form (`N > bound ⇒ ∃ n < N` with a negative even minor); certificate
+form (finitely many even minors clean the level down to any defect threshold); top-level
+plain-minor form (`Wf = 1`, `BW = 1`, level = maximal modulus — finitely many *plain* even
+minors `R_{2n}R_{2n+2} − R_{2n+1}²` detect an off-line zero at the top level, window
+`(2S²/g + S²/(ℓ²−ρ₂²))/Im(u_qh)²`).
+
+Numerically pre-certified: 200 random two-scale configurations, first negative even minor
+always within the bound (session scratch, 2026-08-12).
+
+**Step 39 status: [LEAN-PROVED].** Module
+`RHTower/XiResolventEffectiveTuranDetection.lean`, five theorems, all auditing to
+[propext, Classical.choice, Quot.sound], olean-built, wired into RHTower.lean:
+
+- `even_minor_truncation_le_of_offline_level` — the window bound: any truncation length `N`
+  with all even weighted minors `n < N` nonnegative satisfies
+  `N ≤ (2S²B²/g + B²S²/(ℓ²−ρ₂²)) / (Im(u_qh)²·|W qh|²)`.
+- `exists_neg_even_minor_of_offline_level` — detection form (negative minor inside the window).
+- `level_criticalLine_of_even_minors_window` — the finite jet certificate: minors on a finite
+  window clean the level down to any defect threshold.
+- `xiWeightedResolventMoment_one` — weight-1 bridge to the raw moments.
+- `exists_neg_even_plain_minor_of_offline_top` — top level (maximal modulus): finitely many
+  PLAIN even minors `R_{2n}R_{2n+2} − R_{2n+1}²` detect an off-line zero, window
+  `(2S²/g + S²/(ℓ²−ρ₂²))/Im(u_qh)²`.
+
+**Key structural point vs literature.** Classical Turán power-sum lower bounds
+(Turán's main theorems, Tijdeman, Montgomery's lectures) give detection constants that decay
+*exponentially* in the truncation length (`(N/(2e(m+N)))^N`-type); the minor family detects in a
+window *polynomial* in the configuration data — the conjugate-pair term is linearly negative in
+the truncation length while all oscillating pairs stay bounded (`2/g`) and the sub-level tail
+sums geometrically. Hankel–Turán literature for special-function zeros (order-moment transport
+arXiv:2606.31647; Rayleigh-sum Hankel determinants; ultraspherical Turán revisited) is
+closed-form/qualitative, not detection-window quantitative. The effectivization is of OUR
+criterion, so novelty rides on the criterion; label the window theorems [LEAN-PROVED], candidate
+significance inherited from the step-36/37 arc.
+
+**Lean traps (new).** linarith cannot connect division atoms across scalar multiples
+(`8*S^2*BW^2/g` vs `2*S^2*BW^2/g`) inside a large local context — name the divided quantities
+via `obtain ⟨A, hA⟩ : ∃ A, A = S^2*BW^2/g := ⟨_, rfl⟩` and rewrite the bounds to `8*A`, `2*A`
+first; then linarith is purely linear. `push_neg` now emits a deprecation warning on this
+toolchain (gate fails on warnings) — use `simp only [not_exists, not_and, not_lt]` instead.
+
+**Next frontier (b, part II).** Effective descent iteration: compose the per-level window with
+the killing-polynomial construction of the spectral descent (weight `P(u)²`, `P = ∏(X−r)` over
+higher real atoms) to certify partial RH down to scale δ from finitely many polynomial-weighted
+minors with explicit polynomials and windows; interface with the two-scale supply bridge
+(step 38) closes the loop data-side. Also open: window optimality (is the `S²/g` shape tight?
+the masking config of step 38 gives a lower-bound testbed).
