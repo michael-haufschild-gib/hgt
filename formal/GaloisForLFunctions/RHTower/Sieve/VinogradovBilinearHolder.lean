@@ -260,6 +260,68 @@ theorem norm_vinogradovBilinearSum_pow_le_rationalProduct
             hX (hq j) α j (hcop j) (happrox j)
       · positivity
 
+def vinogradovMixedCoordinateCost
+    {k : ℕ} (U : Fin k → Prop) [DecidablePred U]
+    (X Y b : ℕ) (q : Fin k → ℕ) (j : Fin k) : ℝ :=
+  if U j then vinogradovRationalCoordinateCost X Y b (q j) j
+  else vinogradovTrivialCoordinateCost X Y b j
+
+theorem vinogradovMixedCoordinateCost_nonneg
+    {k : ℕ} (U : Fin k → Prop) [DecidablePred U]
+    (X Y b : ℕ) (q : Fin k → ℕ) (j : Fin k) :
+    0 ≤ vinogradovMixedCoordinateCost U X Y b q j := by
+  unfold vinogradovMixedCoordinateCost
+  split_ifs
+  · exact vinogradovRationalCoordinateCost_nonneg X Y b (q j) j
+  · exact vinogradovTrivialCoordinateCost_nonneg X Y b j
+
+/-- Mixed MV24.7 bound: rational approximation is consumed only on the
+useful coordinates.  Remaining coordinates use the unconditional trivial
+kernel mass, so no artificial denominator hypotheses leak into the
+single-sum argument. -/
+theorem norm_vinogradovBilinearSum_pow_le_mixedProduct
+    {X Y b k : ℕ} (hb : b ≠ 0) (hX : X ≠ 0) (hY : Y ≠ 0)
+    (α : Fin k → ℝ) (U : Fin k → Prop) [DecidablePred U]
+    (a q : Fin k → ℕ)
+    (hq : ∀ j, U j → 0 < q j)
+    (hcop : ∀ j, U j → Nat.Coprime (a j) (q j))
+    (happrox : ∀ j, U j →
+      |α j - (a j : ℝ) / (q j : ℝ)| ≤ 1 / (q j : ℝ) ^ 2) :
+    ‖vinogradovBilinearSum (X := X) (Y := Y) α‖ ^ (4 * b ^ 2) ≤
+      (((X : ℝ) ^ (2 * b - 1)) ^ (2 * b) *
+        (Fintype.card ((Fin b → Fin Y) × (Fin b → Fin Y)) : ℝ) ^ (2 * b - 1)) *
+        ((Fintype.card (VinogradovDiagonalSolution Y b k) : ℝ) *
+          Fintype.card (VinogradovDiagonalSolution X b k)) *
+            ∏ j : Fin k, vinogradovMixedCoordinateCost U X Y b q j := by
+  calc
+    _ ≤ (((X : ℝ) ^ (2 * b - 1)) ^ (2 * b) *
+        (Fintype.card ((Fin b → Fin Y) × (Fin b → Fin Y)) : ℝ) ^
+          (2 * b - 1)) *
+        ((Fintype.card (VinogradovDiagonalSolution Y b k) : ℝ) *
+          Fintype.card (VinogradovDiagonalSolution X b k)) *
+            ∏ j : Fin k,
+              ∑ g : Fin (vinogradovDifferenceBoxSize X b k),
+                vinogradovCoordinateKernelWeight (Y := Y) α j g :=
+      norm_vinogradovBilinearSum_pow_le_coordinateProduct hb hX hY α
+    _ ≤ (((X : ℝ) ^ (2 * b - 1)) ^ (2 * b) *
+        (Fintype.card ((Fin b → Fin Y) × (Fin b → Fin Y)) : ℝ) ^
+          (2 * b - 1)) *
+        ((Fintype.card (VinogradovDiagonalSolution Y b k) : ℝ) *
+          Fintype.card (VinogradovDiagonalSolution X b k)) *
+            ∏ j : Fin k, vinogradovMixedCoordinateCost U X Y b q j := by
+      apply mul_le_mul_of_nonneg_left
+      · apply Finset.prod_le_prod
+        · intro j _
+          exact Finset.sum_nonneg fun g _ =>
+            vinogradovCoordinateKernelWeight_nonneg α j g
+        · intro j _
+          unfold vinogradovMixedCoordinateCost
+          split_ifs with hj
+          · exact sum_vinogradovCoordinateKernelWeight_le_rationalApprox
+              hX (hq j hj) α j (hcop j hj) (happrox j hj)
+          · exact sum_vinogradovCoordinateKernelWeight_le_trivial hX α j
+      · positivity
+
 end
 
 end RHTower.Sieve

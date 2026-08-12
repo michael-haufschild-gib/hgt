@@ -287,7 +287,6 @@ theorem integral_cayleyHalfDensityPolynomialSq_eq_arcMass
     have hden : a ^ 2 + x ^ 2 ≠ 0 := by
       nlinarith [sq_pos_of_pos ha, sq_nonneg x]
     field_simp [hden]
-    ring
   have hend : phi (-R) = -phi R := by
     exact cayleyAngularCoordinate_neg a R
   rw [hleft, hsubst, hend]

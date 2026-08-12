@@ -21,6 +21,17 @@ def vinogradovRationalCoordinateCost
   2 * ((vinogradovFejerCoordinateBound X b j / ((q + 1) / 2) + 1 : ℕ) : ℝ) *
     vinogradovSeparatedBlockCost (vinogradovFejerLength Y b j) q
 
+def vinogradovTrivialCoordinateCost
+    (X Y b : ℕ) {k : ℕ} (j : Fin k) : ℝ :=
+  4 * (vinogradovFejerCoordinateBound X b j + 1 : ℕ) *
+    vinogradovFejerLength Y b j
+
+theorem vinogradovTrivialCoordinateCost_nonneg
+    (X Y b : ℕ) {k : ℕ} (j : Fin k) :
+    0 ≤ vinogradovTrivialCoordinateCost X Y b j := by
+  unfold vinogradovTrivialCoordinateCost
+  positivity
+
 theorem vinogradovRationalCoordinateCost_nonneg
     (X Y b q : ℕ) {k : ℕ} (j : Fin k) :
     0 ≤ vinogradovRationalCoordinateCost X Y b q j := by
@@ -267,8 +278,7 @@ theorem sum_vinogradovCoordinateKernelWeight_le_trivial
     (α : Fin k → ℝ) (j : Fin k) :
     (∑ g : Fin (vinogradovDifferenceBoxSize X b k),
       vinogradovCoordinateKernelWeight (Y := Y) α j g) ≤
-      4 * (vinogradovFejerCoordinateBound X b j + 1 : ℕ) *
-        vinogradovFejerLength Y b j := by
+      vinogradovTrivialCoordinateCost X Y b j := by
   calc
     _ ≤ 2 * ∑ n ∈ Finset.range (vinogradovFejerCoordinateBound X b j + 1),
         finiteFejerKernel (vinogradovFejerLength Y b j)
@@ -279,10 +289,10 @@ theorem sum_vinogradovCoordinateKernelWeight_le_trivial
       gcongr with n hn
       exact finiteFejerKernel_le_two_mul_length
         (vinogradovFejerLength_ne_zero Y b j) _
-    _ = 4 * (vinogradovFejerCoordinateBound X b j + 1 : ℕ) *
-        vinogradovFejerLength Y b j := by
+    _ = vinogradovTrivialCoordinateCost X Y b j := by
       rw [Finset.sum_const, Finset.card_range]
       simp only [nsmul_eq_mul]
+      unfold vinogradovTrivialCoordinateCost
       push_cast
       ring
 

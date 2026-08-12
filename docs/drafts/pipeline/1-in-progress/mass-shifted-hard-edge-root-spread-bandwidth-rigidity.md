@@ -53,15 +53,27 @@ collapse of every projective-work account at parabolic first contact.
    central root arc is negligible and transfer the two exterior estimates through the original
    arcsine/Cayley measure. Remez must control interaction between concentrated core and exceptional
    factor; this transfer is not yet claimed.
+8. Integral bandwidth-to-tightness bridge. **Proved in Lean.** If original angular energy satisfies
+   `E(Q)<=B^2 M(Q)`, then an arc of radius `delta` carries at most
+   `2 delta (1/(2 pi)+2B) M(Q)`.  Exact Cayley substitution sends `[-R,R]` to the arc of radius
+   `2 arctan(R/a)`. Consequently `B/a->0` makes every fixed physical-window mass vanish.
+9. Physical derivative lower bound. **No longer needed.** Completed-source tightness already says
+   some fixed physical window retains almost all normalized mass. The exact arc cap contradicts
+   this directly once the original-measure constrained energy estimate is available.
+10. Affine-interval transfer. **Failed as an automatic step.** Moving an interior core outside a
+    rescaled unit disk changes the arcsine weight and creates an artificial endpoint. The required
+    estimate must retain or quantitatively compare the original Cayley measure. This is the sole
+    analytic gap; it cannot be hidden in a generic Remez citation.
 
 ## Required proof surface
 
 - finite real-rooted polynomial factorization into concentrated core and sublinear outliers
   (outlier count and its arithmetic price are Lean-proved);
 - quantitative endpoint lower-width law for core factor;
-- Remez/Bernstein lower-width law for outlier factor inside core endpoint window;
-- transfer from angular width to physical Cayley width `x=a tan(theta/2)`;
-- contradiction with completed-source logarithmic tightness and norm-one strong compactness;
+- local constrained-zero energy law in the original Cayley arcsine measure;
+- endpoint-potential/Remez exclusion when the concentrated core lies at the invisible endpoint;
+- contradiction with completed-source logarithmic tightness through the Lean-proved exact Cayley
+  window identity and integral small-arc cap;
 - specialization to actual canonical first-contact packets.
 
 No abstract theorem taking compactness or root concentration as unexplained hypotheses will be
