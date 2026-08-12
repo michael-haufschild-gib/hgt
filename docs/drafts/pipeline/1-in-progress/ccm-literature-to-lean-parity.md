@@ -30,7 +30,7 @@ formalized as theorems.
 |---|---|---|---|
 | Connes, *Trace formula in noncommutative geometry and the zeros of the Riemann zeta function* | semilocal trace formula and quotient spectral realization | `PARTIAL`: rational adelic/Bruhat and trace-norm infrastructure exists; no theorem-level source audit yet | inventory exact numbered results against declarations |
 | Connes--Consani, arXiv:1910.14368 | semilocal Fourier unitary; cutoff trace formula; projection/logarithmic-derivative sign criterion | `PARTIAL`: exact class-space pieces exist; source trace formula not identified end-to-end | formalize missing exact operator identities |
-| Connes--Consani, arXiv:2006.13771 | quantized differential is infinitesimal of infinite order; Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `PARTIAL-EXACT`: source-normalized integrated scaling, exact Haar convolution representation law, Haar involution/adjoint, cutoff-one Sonin projection, positive compressed Gram operator, literal Fourier crossblock/Hankel equality, explicit Schatten-one factorization, full rapid approximation-number decay, unconditional all-order temperate growth of the literal phase `u_infinity`, exact Mellin diagonalization of every intrinsic `L¹` kernel, the exact Fourier--Mellin scattering identity `F_eR^w = I ∘ u_infinity^g`, trace-classness of the literal geometric `rho(f) (1/2)(u_infinity^* d u_infinity)^g` product, and all three geometric-kernel parts of Lemma `sch3` in their rigorous operator/distributional sense are umbrella-wired; Proposition `lemsch7` trace/Weil distribution and final inequality remain open | formalize scaled kernel, trace/diagonal distribution, compressed trace bridge, and exact non-computational inequality; separately audit paper's numerical spectral bound |
+| Connes--Consani, arXiv:2006.13771 | quantized differential is infinitesimal of infinite order; Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `PARTIAL-EXACT`: all source-normalized scaling, convolution, Sonin/Hankel, infinite-order, phase, Mellin, scattering, and geometric-kernel layers are umbrella-wired. The scaled kernel `lemsch7(i)`, geometric--spectral bridge, literal Proposition 7(iv) phase trace identity, exact trace cocycles, and an independent global finite-part archimedean Weil distribution with finite-aperture/tail split are now also exact. Missing theorem is the equality of the literal geometric tested trace/phase-rate functional with that finite-part Weil distribution for the paper's compact log test, followed by the support-limited inequality | formalize only this final trace-to-Weil identification and exact non-computational inequality; separately audit paper's numerical spectral bound |
 | Connes--Consani, arXiv:2106.01715 | lower-semicontinuous restricted Weil form; spectral triples; exact zeta-cycle spectral theorem | `MISSING/PARTIAL`: many restricted-Weil and prolate pieces exist; no literal zeta-cycle theorem located | formalize exact circle periodization, orthogonal complement, and spectral characterization |
 | Connes--Consani--Moscovici, arXiv:2310.18423 | semilocal Sonin Hilbert isomorphism; common de Branges image; Gamma-quarter Jacobi/metaplectic model; semilocal prolate operator | `PARTIAL`: Gamma density, moments, Jacobi recurrence, relative traces, and continuous Sonin pieces exist; exact Hilbert isomorphism not located | prove missing source-space isometries and identify every local surrogate |
 | Connes--Consani--Moscovici, arXiv:2511.22755 | finite simple-even ground rank-one perturbation is self-adjoint in the Weil quotient; regularized determinant equals the ground Fourier transform; every transform zero is real | `CONDITIONAL SOURCE THEOREM`: literal finite matrix, unconditional ground shift, source/response completion, determinant lemma, and real-rooted completion already exist; paper does not discharge simplicity/evenness or convergence | do not add a hypothesis-packaging theorem; only an unconditional proof of the literal eta-channel assumptions would move parity |
@@ -105,10 +105,10 @@ strongest unconditional trace identity preceding it.
    cannot be a Bochner integral: at `ν=μ=1` its `y>1` integrand is `-4 cos²(2πy)`, its truncated
    positive mass tends to `+∞`, and it is not Lebesgue integrable. Thus subsequent use must remain
    distributional; Lean's totalized integral is not an admissible pointwise definition.
-4. Formalize exact Sonin projection and compressed positive trace.  Cutoff-one projection and
-   bounded-operator positivity are complete in
-   `CCMArchimedeanSoninCompressionPositive.lean`; trace-classness and trace nonnegativity remain.
-5. Formalize trace-remainder identity.
+4. Exact Sonin projection, compressed positive trace, scaled geometric kernel, geometric--spectral
+   bridge, tested phase trace, and finite-part Weil distribution are complete.
+5. Prove the final equality between the tested geometric trace/phase-rate functional and
+   `ccmArchimedeanWeilSharpDistribution`, then its finite-aperture/tail remainder identity.
 6. Prove an exact analytic replacement for the numerical spectral step, or classify the source
    endpoint as not presently unconditional at published proof level.
 7. Wire every completed exact module into `RHTower.lean`; run file Lean, targeted module build,
@@ -131,7 +131,10 @@ strongest unconditional trace identity preceding it.
 - [x] Literal archimedean phase is an unconditional Schwartz multiplier at every derivative order.
 - [x] Exact Mellin diagonalization of intrinsic `L¹` scaling and literal geometric phase product trace-classness.
 - [x] Exact Connes--Consani Fourier--Mellin scattering intertwining on the full even `L²` carrier.
-- [ ] Archimedean compressed operator trace-class and trace positivity exact.
+- [x] Archimedean tested operator trace-class, exact trace cocycles, and phase trace identity.
+- [x] Scaled geometric kernel and independent finite-part Weil distribution exact.
+- [ ] Literal tested trace functional equals the finite-part Weil distribution.
+- [ ] Support-limited lower bound without numerical spectral input.
 - [ ] Semilocal Sonin/de Branges source isomorphisms exact and umbrella-reachable.
 - [ ] Zeta-cycle spectral theorem exact and umbrella-reachable.
 - [ ] Continuous Connes--van Suijlekom theorem exact and umbrella-reachable.
@@ -176,7 +179,7 @@ The same ingestion pass closes the exact integrated representation product in
 `rho(g*h)=rho(g)rho(h)` and `rho(g*g_star)=rho(g)rho(g)^*`.  Fubini integrability and the Haar shear
 are proved internally.
 
-**Frontier moved, but Proposition 7 is not yet closed.** The analytic regularity, literal
+**Frontier moved, but the archimedean inequality is not yet closed.** The analytic regularity, literal
 trace-class assertion, and Fourier--Mellin phase intertwining are no longer gaps.
 `CCMArchimedeanPhaseOperatorProduct.lean` proves the exact source operator identity, while
 `CCMArchimedeanMellinTransport.lean` proves exact Mellin diagonalization of `rho(f)` and
@@ -192,11 +195,14 @@ the exact source relation `F_eR^w = I ∘ u_infinity^g`; its proof derives criti
 integrability and the exact Gamma ratio on a dense even-Schwartz core and extends by continuity.
 The literal geometric kernels in Lemma `sch3(i)--(iii)` are now closed. Part `(iii)` is necessarily
 an operator/distributional kernel identity: the new diagonal divergence theorem rules out the
-naive Bochner reading of the paper's composition integral. The exact missing source content is now
-Proposition `lemsch7`: scaled kernel, rigorous diagonal trace distribution, its equality with the
-archimedean Weil distribution, and the tested trace identity. Those are the next hard objects; repackaging
-`quantsmooth`, phase regularity, Mellin transport, scattering intertwining, or trace-classness
-again would be rediscovery.
+naive Bochner reading of the paper's composition integral. Subsequent committed modules close the
+scaled kernel, its geometric--spectral conjugacy, the tested phase trace identity, exact trace
+cocycles, and the independent finite-part Weil distribution with restricted/tail decomposition.
+The exact missing source content is now one comparison theorem: identify the literal geometric
+tested trace/phase-rate functional with `ccmArchimedeanWeilSharpDistribution` on the paper's
+compact logarithmic test. Only then derive the support-limited inequality. Repackaging
+`quantsmooth`, phase regularity, Mellin transport, scattering, kernels, or trace class again would
+be rediscovery.
 
 Audit evidence: all three geometric-kernel files pass `lake env lean`; targeted build
 `GaloisForLFunctions.RHTower.CCMArchimedeanGeometricCompositeKernel` passes; and `RHTower.lean`

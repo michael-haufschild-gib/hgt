@@ -60,6 +60,57 @@ theorem dvd_vinogradovDifferenceProduct_of_cast_eq
   exact Finset.dvd_prod_of_mem
     (fun ij : Fin k × Fin k => Nat.dist (m ij.1).val (m ij.2).val) hmem
 
+/-- An injective tuple is separated modulo at least one prime in the fixed
+Bertrand reservoir used by every tuple at this scale. -/
+theorem exists_vinogradovAvoidingReservoirIndex
+    {N k : ℕ} (hk : k ≠ 0) (hN : N ≠ 0)
+    (m : Fin k → Fin N) (hm : Function.Injective m) :
+    ∃ i : Fin (k * (k * k - k) + 1),
+      Function.Injective (fun j =>
+        ((m j).val : ZMod (vinogradovBertrandPrimeReservoir
+          (vinogradovCeilRoot k N + k)
+          (k * (k * k - k) + 1) i))) := by
+  let y := vinogradovCeilRoot k N
+  let d := k * k - k
+  let M := k * d
+  let A := vinogradovDifferenceProduct m
+  have hy : 0 < y := vinogradovCeilRoot_pos hk hN
+  have hA : A ≠ 0 := vinogradovDifferenceProduct_ne_zero hm
+  have hA_N : A ≤ N ^ d := vinogradovDifferenceProduct_le m
+  have hN_y : N ≤ y ^ k := le_vinogradovCeilRoot_pow hk
+  have hA_y : A ≤ y ^ M := by
+    calc
+      A ≤ N ^ d := hA_N
+      _ ≤ (y ^ k) ^ d := Nat.pow_le_pow_left hN_y d
+      _ = y ^ M := by simp [M, d, pow_mul]
+  have hA_start : A ≤ (y + k) ^ M :=
+    hA_y.trans (Nat.pow_le_pow_left (Nat.le_add_right y k) M)
+  obtain ⟨i, hi⟩ := exists_vinogradovBertrandPrimeReservoir_not_dvd
+    (y := y + k) (M := M) (A := A) (by omega) hA hA_start
+  refine ⟨i, ?_⟩
+  intro a b hab
+  by_contra hne
+  exact hi (dvd_vinogradovDifferenceProduct_of_cast_eq m hne hab)
+
+theorem vinogradovAvoidingReservoirPrime_gt_k
+    {N k : ℕ} (i : Fin (k * (k * k - k) + 1)) :
+    k < vinogradovBertrandPrimeReservoir
+      (vinogradovCeilRoot k N + k) (k * (k * k - k) + 1) i := by
+  have h := lt_vinogradovBertrandPrimeReservoir
+    (vinogradovCeilRoot k N + k) (k * (k * k - k) + 1) i
+  omega
+
+theorem vinogradovAvoidingReservoirPrime_pow_gt
+    {N k : ℕ} (hk : k ≠ 0)
+    (i : Fin (k * (k * k - k) + 1)) :
+    N < (vinogradovBertrandPrimeReservoir
+      (vinogradovCeilRoot k N + k)
+      (k * (k * k - k) + 1) i) ^ k := by
+  have hcover := le_vinogradovCeilRoot_pow (k := k) (N := N) hk
+  have hpgt := lt_vinogradovBertrandPrimeReservoir
+    (vinogradovCeilRoot k N + k) (k * (k * k - k) + 1) i
+  exact hcover.trans_lt (Nat.pow_lt_pow_left (by omega) hk)
+
 /-- A prime selected from the Bertrand reservoir that avoids every
 pairwise difference of an injective tuple. -/
 theorem exists_vinogradovAvoidingPrime

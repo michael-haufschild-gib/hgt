@@ -104,6 +104,18 @@ theorem integral_suzukiOrientedSegment_mul_cexp (t z : ℝ) (hz : z ≠ 0) :
   simpa [mul_assoc] using
     (integral_exp_mul_complex (a := 0) (b := t) hc)
 
+theorem integrable_suzukiOrientedSegment_mul_cexp (t z : ℝ) :
+    Integrable (fun x => suzukiOrientedSegment t x *
+      Complex.exp (Complex.I * (z : ℂ) * (x : ℂ))) := by
+  have hm : StronglyMeasurable (fun x => suzukiOrientedSegment t x *
+      Complex.exp (Complex.I * (z : ℂ) * (x : ℂ))) :=
+    (stronglyMeasurable_suzukiOrientedSegment t).mul (by fun_prop)
+  apply (integrable_suzukiOrientedSegment t).norm.mono' hm.aestronglyMeasurable
+  filter_upwards with x
+  simp only [norm_mul]
+  rw [Complex.norm_exp]
+  simp
+
 /-- The literal free screw kernel used in Suzuki (2022), Eq. (4.3). -/
 def suzukiFreeScrewKernel (t u : ℝ) : ℝ :=
   (|t| + |u| - |t - u|) / 2
@@ -241,8 +253,6 @@ theorem integrable_suzukiFiniteOrientedPrimitive {ι : Type*} (s : Finset ι)
   have h := MeasureTheory.integrable_finsetSum s fun i hi =>
     (integrable_suzukiOrientedSegment (τ i)).const_mul (c i)
   convert h using 1
-  funext x
-  simp
 
 theorem suzukiFiniteOrientedPrimitive_eq_zero_of_not_mem_Icc {ι : Type*}
     (s : Finset ι) (c : ι → ℂ) (τ : ι → ℝ) {a x : ℝ} (ha : 0 ≤ a)
@@ -259,6 +269,37 @@ def suzukiFreeKernelQuadraticForm {ι : Type*} (s : Finset ι)
     (c : ι → ℂ) (τ : ι → ℝ) : ℂ :=
   ∑ i ∈ s, ∑ j ∈ s,
     star (c i) * (suzukiFreeScrewKernel (τ i) (τ j) : ℂ) * c j
+
+/-- Suzuki's finite-source divided-exponential feature. -/
+def suzukiFiniteDividedExponentialFeature {ι : Type*} (s : Finset ι)
+    (c : ι → ℂ) (τ : ι → ℝ) (z : ℝ) : ℂ :=
+  ∑ i ∈ s, c i *
+    ((Complex.exp (Complex.I * (z : ℂ) * (τ i : ℂ)) - 1) /
+      (Complex.I * (z : ℂ)))
+
+/-- **Exact finite Suzuki feature factorization.**  Away from the removable point `z = 0`, the
+divided-exponential feature is the angular Fourier transform of the oriented primitive. -/
+theorem suzukiFiniteDividedExponentialFeature_eq_integral {ι : Type*} (s : Finset ι)
+    (c : ι → ℂ) (τ : ι → ℝ) (z : ℝ) (hz : z ≠ 0) :
+    suzukiFiniteDividedExponentialFeature s c τ z =
+      ∫ x, suzukiFiniteOrientedPrimitive s c τ x *
+        Complex.exp (Complex.I * (z : ℂ) * (x : ℂ)) := by
+  unfold suzukiFiniteDividedExponentialFeature suzukiFiniteOrientedPrimitive
+  rw [show (fun x => (∑ i ∈ s, c i * suzukiOrientedSegment (τ i) x) *
+      Complex.exp (Complex.I * (z : ℂ) * (x : ℂ))) = fun x =>
+        ∑ i ∈ s, c i * (suzukiOrientedSegment (τ i) x *
+          Complex.exp (Complex.I * (z : ℂ) * (x : ℂ))) by
+    funext x
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro i hi
+    ring]
+  rw [MeasureTheory.integral_finsetSum s]
+  · apply Finset.sum_congr rfl
+    intro i hi
+    rw [integral_const_mul, integral_suzukiOrientedSegment_mul_cexp (τ i) z hz]
+  · intro i hi
+    exact (integrable_suzukiOrientedSegment_mul_cexp (τ i) z).const_mul _
 
 /-- **Finite-source form identity.**  The free screw-kernel quadratic form is exactly squared
 Gram energy of the directed-interval primitive.  Unlike entrywise kernel ordering, this identity

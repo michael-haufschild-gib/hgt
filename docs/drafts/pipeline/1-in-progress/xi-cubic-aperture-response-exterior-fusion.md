@@ -525,12 +525,12 @@ and its source-value limit.
 - [x] complete Gram, prime summability, and fixed-aperture all-rank laws formalized in Lean source
 - [x] all-order Rees principal-symbol law `(16a)`--`(16b)` and unbounded exact prime-log rank proved
       on paper
-- [ ] complete the narrow Lean verification of `GammaSewnMobiusValuationContraction.lean`
-- [ ] complete the Lean formalization of the Rees principal-symbol limit and determinant
-- [ ] derive the pre-Gram aperture Stokes coefficient formula from `(15)` and the inverse-tilted
+- [x] complete the narrow Lean verification of `GammaSewnMobiusValuationContraction.lean`
+- [x] complete the Lean formalization of the Rees principal-symbol limit and determinant
+- [x] derive the pre-Gram aperture Stokes coefficient formula from `(15)` and the inverse-tilted
       coefficients
 - [ ] construct the finite KMS completion only after the signed coefficient identity is known
-- [ ] pass the safe-half-plane coefficient test prime-power by prime-power
+- [x] pass the safe-half-plane coefficient test prime-power by prime-power
 - [ ] prove locally uniform, path-independent cofinal response convergence
 - [ ] discharge `riemannHypothesis_of_finiteKMSWightmanResponse_tendsto`
 - [ ] external specialist novelty audit

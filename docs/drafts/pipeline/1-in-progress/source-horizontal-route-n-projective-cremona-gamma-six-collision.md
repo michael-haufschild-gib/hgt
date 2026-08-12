@@ -114,7 +114,7 @@ the horizontal signal lives in total mass/nonunitary gauge.
 ## Verification
 
 - [x] direct Lean check of all three modules
-- [ ] targeted final module build
-- [ ] axiom audit
-- [ ] scoped forbidden-token scan
-- [ ] diff check
+- [x] exact leaf build (amplification module rebuilt as dependency of conditioning capstone)
+- [x] axiom audit (`propext`, `Classical.choice`, `Quot.sound` only)
+- [x] scoped forbidden-token scan
+- [x] diff/whitespace check

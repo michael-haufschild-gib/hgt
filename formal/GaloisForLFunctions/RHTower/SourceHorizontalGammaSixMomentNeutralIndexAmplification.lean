@@ -27,6 +27,11 @@ namespace RHTower
 
 noncomputable section
 
+private theorem deningerGammaSixShellEigenvalue_pos_amplification (n : ℕ) :
+    0 < deningerGammaSixShellEigenvalue n := by
+  rw [deningerGammaSixShellEigenvalue]
+  positivity
+
 /-- Forward coefficient-faithful horizontal weight on the Gamma-six Green carrier. -/
 def sourceHorizontalGammaSixForwardAmplifiedWeight (delta : ℝ) (n : ℕ) : ℝ :=
   deningerGammaSixShellEigenvalue n ^ (1 - delta)
@@ -308,6 +313,73 @@ theorem deningerGammaSixTwoOrientationTraceSubexponential_iff
       deningerGammaSixReflectedShellTraceMass_eq hm]
     norm_num [div_eq_mul_inv]
 
+/-- Normalizing the forward mass on a complete shell produces the uniform law, independently of
+horizontal rate. -/
+theorem deningerGammaSixForwardShellNormalizedWeight_eq_uniform
+    {m n : ℕ} (hm : 3 ≤ m) (hn : n ∈ deningerGammaSixShellCoordinates m)
+    (delta : ℝ) :
+    sourceHorizontalGammaSixForwardAmplifiedWeight delta n /
+        deningerGammaSixForwardShellTraceMass delta m =
+      ((deningerGammaSixShellCoordinates m).card : ℝ)⁻¹ := by
+  have hwpos : 0 < sourceHorizontalGammaSixForwardAmplifiedWeight delta n :=
+    Real.rpow_pos_of_pos (deningerGammaSixShellEigenvalue_pos_amplification n) _
+  have hcardpos : (0 : ℝ) < (deningerGammaSixShellCoordinates m).card := by
+    rw [deningerGammaSixShellCoordinates_card hm]
+    positivity
+  rw [deningerGammaSixForwardShellTraceMass]
+  have hsum :
+      (∑ k ∈ deningerGammaSixShellCoordinates m,
+          sourceHorizontalGammaSixForwardAmplifiedWeight delta k) =
+        ∑ _k ∈ deningerGammaSixShellCoordinates m,
+          sourceHorizontalGammaSixForwardAmplifiedWeight delta n := by
+    apply Finset.sum_congr rfl
+    intro k hk
+    rw [sourceHorizontalGammaSixForwardAmplifiedWeight,
+      sourceHorizontalGammaSixForwardAmplifiedWeight,
+      deningerGammaSixShellEigenvalue_eq_on_shell hm hk,
+      deningerGammaSixShellEigenvalue_eq_on_shell hm hn]
+  rw [hsum, Finset.sum_const, nsmul_eq_mul]
+  field_simp [hwpos.ne', hcardpos.ne']
+
+/-- Reflected shell normalization gives the same uniform law. -/
+theorem deningerGammaSixReflectedShellNormalizedWeight_eq_uniform
+    {m n : ℕ} (hm : 3 ≤ m) (hn : n ∈ deningerGammaSixShellCoordinates m)
+    (delta : ℝ) :
+    sourceHorizontalGammaSixReflectedAmplifiedWeight delta n /
+        deningerGammaSixReflectedShellTraceMass delta m =
+      ((deningerGammaSixShellCoordinates m).card : ℝ)⁻¹ := by
+  have hwpos : 0 < sourceHorizontalGammaSixReflectedAmplifiedWeight delta n :=
+    Real.rpow_pos_of_pos (deningerGammaSixShellEigenvalue_pos_amplification n) _
+  have hcardpos : (0 : ℝ) < (deningerGammaSixShellCoordinates m).card := by
+    rw [deningerGammaSixShellCoordinates_card hm]
+    positivity
+  rw [deningerGammaSixReflectedShellTraceMass]
+  have hsum :
+      (∑ k ∈ deningerGammaSixShellCoordinates m,
+          sourceHorizontalGammaSixReflectedAmplifiedWeight delta k) =
+        ∑ _k ∈ deningerGammaSixShellCoordinates m,
+          sourceHorizontalGammaSixReflectedAmplifiedWeight delta n := by
+    apply Finset.sum_congr rfl
+    intro k hk
+    rw [sourceHorizontalGammaSixReflectedAmplifiedWeight,
+      sourceHorizontalGammaSixReflectedAmplifiedWeight,
+      deningerGammaSixShellEigenvalue_eq_on_shell hm hk,
+      deningerGammaSixShellEigenvalue_eq_on_shell hm hn]
+  rw [hsum, Finset.sum_const, nsmul_eq_mul]
+  field_simp [hwpos.ne', hcardpos.ne']
+
+/-- **Probability scalarization no-go.**  After normalizing total shell mass, the two orientations
+are coefficientwise identical for every horizontal rate. -/
+theorem deningerGammaSixShellNormalizedOrientations_eq
+    {m n : ℕ} (hm : 3 ≤ m) (hn : n ∈ deningerGammaSixShellCoordinates m)
+    (delta : ℝ) :
+    sourceHorizontalGammaSixForwardAmplifiedWeight delta n /
+        deningerGammaSixForwardShellTraceMass delta m =
+      sourceHorizontalGammaSixReflectedAmplifiedWeight delta n /
+        deningerGammaSixReflectedShellTraceMass delta m := by
+  rw [deningerGammaSixForwardShellNormalizedWeight_eq_uniform hm hn,
+    deningerGammaSixReflectedShellNormalizedWeight_eq_uniform hm hn]
+
 /-! ## Coefficient-faithful hyperbolic block and the Hermitianization wall -/
 
 /-- One coordinate of shell `m`, with both reciprocal orientations retained as ordered
@@ -334,6 +406,16 @@ def deningerGammaSixHyperbolicBalancingGaugeInv
 
 private theorem deningerGammaSixShellBase_pos (m : ℕ) :
     0 < (1 / 6 : ℝ) ^ m := by positivity
+
+private theorem deningerGammaSixNormalizedShellBase_pos (m : ℕ) :
+    0 < ((6 : ℝ) ^ m)⁻¹ := by positivity
+
+private theorem deningerGammaSixRpowPair_mul
+    (delta : ℝ) {x : ℝ} (hx : 0 < x) :
+    x ^ (1 - delta) * x ^ (1 + delta) = x ^ 2 := by
+  rw [← Real.rpow_add hx,
+    show (1 - delta) + (1 + delta) = (2 : ℝ) by ring,
+    Real.rpow_two]
 
 /-- Reciprocal coefficient product is exactly the square of the critical shell eigenvalue. -/
 theorem deningerGammaSixAmplifiedShellWeights_mul (delta : ℝ) (m : ℕ) :
@@ -362,23 +444,29 @@ theorem deningerGammaSixCoefficientFaithfulHyperbolicBlock_sq
     simp [deningerGammaSixCoefficientFaithfulHyperbolicBlock,
       Matrix.mul_apply, Fin.sum_univ_two]
   all_goals
-    rw [mul_comm]
-    exact deningerGammaSixAmplifiedShellWeights_mul delta m
+    first
+    | simpa [inv_pow] using
+        deningerGammaSixRpowPair_mul delta
+          (deningerGammaSixNormalizedShellBase_pos m)
+    | simpa [mul_comm, inv_pow] using
+        deningerGammaSixRpowPair_mul delta
+          (deningerGammaSixNormalizedShellBase_pos m)
 
 /-- Transposition exchanges the two retained horizontal orientations. -/
 theorem deningerGammaSixCoefficientFaithfulHyperbolicBlock_transpose
     (delta : ℝ) (m : ℕ) :
-    (deningerGammaSixCoefficientFaithfulHyperbolicBlock delta m)ᵀ =
+    Matrix.transpose (deningerGammaSixCoefficientFaithfulHyperbolicBlock delta m) =
       deningerGammaSixCoefficientFaithfulHyperbolicBlock (-delta) m := by
+  have hexp : 1 + -delta = 1 - delta := by ring
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [deningerGammaSixCoefficientFaithfulHyperbolicBlock]
+    simp [deningerGammaSixCoefficientFaithfulHyperbolicBlock, hexp]
 
 /-- At every nontrivial shell, coefficient faithfulness and Hermitian symmetry coexist exactly at
 neutral horizontal rate. -/
 theorem deningerGammaSixCoefficientFaithfulHyperbolicBlock_transpose_eq_iff
     {m : ℕ} (hm : 0 < m) (delta : ℝ) :
-    (deningerGammaSixCoefficientFaithfulHyperbolicBlock delta m)ᵀ =
+    Matrix.transpose (deningerGammaSixCoefficientFaithfulHyperbolicBlock delta m) =
         deningerGammaSixCoefficientFaithfulHyperbolicBlock delta m ↔
       delta = 0 := by
   rw [deningerGammaSixCoefficientFaithfulHyperbolicBlock_transpose]
@@ -386,10 +474,9 @@ theorem deningerGammaSixCoefficientFaithfulHyperbolicBlock_transpose_eq_iff
   · intro hblock
     have hoffdiag := congrArg
       (fun A : Matrix (Fin 2) (Fin 2) ℝ => A 0 1) hblock
-    simp only [deningerGammaSixCoefficientFaithfulHyperbolicBlock,
-      Matrix.cons_val_zero, Matrix.cons_val_one] at hoffdiag
+    simp only [deningerGammaSixCoefficientFaithfulHyperbolicBlock] at hoffdiag
     have hbaseLt : (1 / 6 : ℝ) ^ m < 1 :=
-      pow_lt_one₀ (by positivity) (by norm_num) hm
+      pow_lt_one₀ (by positivity) (by norm_num) (Nat.ne_of_gt hm)
     have hexp : 1 - (-delta) = 1 - delta :=
       (Real.rpow_right_inj (deningerGammaSixShellBase_pos m)
         (ne_of_lt hbaseLt)).mp hoffdiag
@@ -407,7 +494,7 @@ theorem deningerGammaSixHyperbolicBalancingGaugeInv_mul
     simp [deningerGammaSixHyperbolicBalancingGaugeInv,
       deningerGammaSixHyperbolicBalancingGauge,
       Matrix.mul_apply, Fin.sum_univ_two]
-  rw [← Real.rpow_add (deningerGammaSixShellBase_pos m)]
+  rw [← Real.rpow_add (deningerGammaSixNormalizedShellBase_pos m)]
   norm_num
 
 /-- **Hermitianization wall.**  The coefficient-faithful block is diagonally similar to the
@@ -427,12 +514,10 @@ theorem deningerGammaSixHyperbolicBalancing_similarity
       deningerGammaSixHyperbolicBalancingGauge,
       deningerGammaSixCriticalHyperbolicBlock,
       Matrix.mul_apply, Fin.sum_univ_two]
-  · rw [← Real.rpow_add (deningerGammaSixShellBase_pos m)]
-    congr 1
-    ring
-  · rw [← Real.rpow_add (deningerGammaSixShellBase_pos m)]
-    congr 1
-    ring
+  · rw [← Real.rpow_add (deningerGammaSixNormalizedShellBase_pos m),
+      show (1 - delta) + delta = (1 : ℝ) by ring, Real.rpow_one]
+  · rw [← Real.rpow_add (deningerGammaSixNormalizedShellBase_pos m),
+      show -delta + (1 + delta) = (1 : ℝ) by ring, Real.rpow_one]
 
 /-! ## Multiplicity-labelled Xi specialization -/
 
