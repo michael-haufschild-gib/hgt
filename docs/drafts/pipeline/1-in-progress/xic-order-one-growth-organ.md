@@ -1408,3 +1408,39 @@ UNCONDITIONAL.
 - The supply theorems at scales `δ ≥ 1/(X+259/4)` lose hline: data from witnesses + one mass
   inequality alone (witness existence above the floor scale remains spectrum-dependent).
 ∎ (mod Lean)
+
+**Step 47 status: [LEAN-PROVED].** Module `RHTower/XiResolventUnconditionalFloor.lean`, four
+theorems, all auditing to [propext, Classical.choice, Quot.sound], olean-built, wired:
+- `offline_height_sq_gt_sixtyfive` — chart transfer of the Ward floor: every off-line
+  XiZeroCopy has `65 < (Re α)²` (reflection for left copies, Schwarz-conj for lower
+  representatives).
+- `hline_of_floor` — LINE PLACEMENT IS A THEOREM at every scale `δ ≥ 1/(X + 259/4)`.
+- **`riemannHypothesis_iff_relative_nodal_floor`** — the unconditional scale-factored
+  endpoint: for any `P` alive below the floor scale, RH ⟺ the relative nodal list alone.
+  No arithmetic hypothesis remains on the verified-region side.
+- `polyTuranMinor_supply_of_floor` — supply above the floor scale without hline.
+
+**Layer 1 assessment (certified ray jets) — exact recipe recorded.** The corpus certifies
+`logDeriv ξ(1) = Λ₀(1)` with `‖Λ₀(1)‖ ≤ 3/100` via the theta-kernel Mellin machinery
+(`XiThetaExplicitBounds`: even-kernel bounds, `norm_mellin_f_modif_half_le`). `s = 1` is
+special (the log-derivative collapses to a value). A second ray point `s = 1/2 + c` needs:
+(i) certified two-sided `‖ξ(s)‖` via the same even-kernel integrals at general real `s`;
+(ii) certified `‖ξ'(s)‖` via log-weighted kernel integrals (log-weighted analogs of
+`outer_mellin_piece_le` / the inner majorants); (iii) the quotient bound. Well-scoped,
+dedicated campaign (~the size of the theta module). This is the single missing capability for
+numerically explicit surrogate depth and for certifying first list entries.
+
+**Layer 3 (uniform mechanism) — conjecture formulated and hostile-audited.**
+Candidate mechanism: complete monotonicity of the Euler-ray response `u ↦ Σ Re(α²+u)⁻¹`
+(⟸ RH trivially, term-by-term). VERDICT: FALSE as a mechanism — CM of the response is exactly
+moment-ladder positivity `R_k ≥ 0`, and the step-38 masking theorem exhibits chart-realizable
+configurations with ALL moments nonnegative and an off-line point: CM cannot detect below the
+geometric mean; only the nodal-weighted MINOR ladder can. Sharpened meta-frame [CONJECTURE]:
+no mechanism consuming only finitely many exact ξ-jet constraints can prove RH inside the
+chart — finite atom configurations can interpolate any finite jet list while carrying an
+off-line pair (moment-problem flexibility); a uniform mechanism must consume the global
+analytic structure (Hadamard rigidity + functional equation + Euler product jointly). This is
+precisely the corpus's Gauss-lane Weil-positivity/GNS socket (RH ⟺ Weil form is a sum of
+squares; entry = one square realization). LAYER-3 REDIRECT: the uniform mechanism lives in
+the operator lane; this criterion lane's role is the exact countable interface + effectivity,
+now complete through the unconditional floor.

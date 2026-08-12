@@ -213,3 +213,82 @@ cocycle—not another reflection law or target carrier.  Any theorem identifying
 responses now forces equality of the spectral scalars once nonvanishing is supplied, hence the
 critical line.  Lean formalization must expose both the common-forcing equality and its exact
 nonvanishing boundary.
+
+### C9 — response identification is exactly horizontal annihilation
+
+**Proved in Lean.**  For every retained Xi multiplicity copy `q` and every positive integer label
+`n`,
+
+```text
+T_n f_q = T_n f_lineConj(q)  iff  Im(xiSpectralPoint(q)) = 0.
+```
+
+The forward proof does not invoke an abstract target injection.  It subtracts the two literal
+common-forcing equations, uses the canonical source mass to prove `T_n f_q` is nonzero, and then
+forces equality of reciprocal eigenvalues.  Equality of the spectral point and its conjugate is
+horizontal annihilation.  Consequently, one source theorem identifying these responses for all
+Xi copies at any single positive integer label implies `RiemannHypothesis`.
+
+**Hostile verdict.**  This is a sharp endpoint bridge, not the producer.  Source involution only
+exchanges the two responses.  Sesquilinear Weil compatibility also permits conjugate eigenvalues,
+and the theta Green commutator measures their horizontal boundary flux instead of killing it.
+
+### C10 — universal anomaly is a flat rank-one prime connection
+
+**Proved in Lean.**  Define
+
+```text
+K_n(g) = B(g) -
+  (sourceFunctional(g)/(n^(-1/2) thetaSource.mass)) r_n.
+```
+
+For every integrable source vector and every positive integer `n`,
+
+```text
+K_n(T_n f) = T_n(B f).
+```
+
+Moreover the connection is multiplicatively flat:
+
+```text
+K_(mn)(T_(mn) f) = T_m(K_n(T_n f)).
+```
+
+Thus both retained Xi orientations are genuine eigenmodes of one literal, coefficient-faithful
+prime covariant operator.  Prime label, divisor multiplicity, and both reflection orientations
+survive in one fixed source carrier.  The common nonzero residual is nevertheless annihilated by
+every retained Xi conormal character, exposing the exact quotient blindness that prevented prior
+target-only arguments.
+
+**Hostile verdict.**  Flat covariance removes the different-target/fibre ambiguity but does not
+select between the two conjugate eigenvalues.  The remaining producer is an independent arithmetic
+fixed-frame law forcing equality of the two translated Xi responses (equivalently equality of the
+two eigenvalues) at one positive integer label.  Operator construction, reflection covariance,
+sesquilinear pairing, and conormal evaluation cannot supply that selection.
+
+## C8--C10 Lean certificate
+
+Module:
+
+- `formal/GaloisForLFunctions/RHTower/FrankensteinThetaPrimeTranslationCommonForcing.lean`
+
+Key theorems:
+
+- `thetaPrimeTranslatedSourceResidual_eq_integerAnomaly`
+- `thetaIntegerCovariantSourceInverse_integerShift`
+- `thetaIntegerCovariantSourceInverse_flat`
+- `thetaIntegerCovariantSourceInverse_thetaXi_both_eigen`
+- `thetaXiPrimeTranslatedSourceMode_eq_lineConj_iff`
+- `riemannHypothesis_of_thetaXiPrimeTranslatedSourceMode_eq_lineConj`
+- `integral_thetaXiPrimeTranslatedSourceResidual_mul_sourceChar_eq_zero`
+
+Verification:
+
+```text
+lake env lean GaloisForLFunctions/RHTower/FrankensteinThetaPrimeTranslationCommonForcing.lean
+lake build GaloisForLFunctions.RHTower.FrankensteinThetaPrimeTranslationCommonForcing
+```
+
+Both exact checks pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`;
+targeted forbidden-declaration scan is empty.  Module is wired into
+`formal/GaloisForLFunctions/RHTower.lean`; no umbrella build was run.

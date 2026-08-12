@@ -175,6 +175,8 @@ def routeTLandauRadiusEnvelopeConstant : ℝ :=
 
 theorem routeTLandauRadiusEnvelopeConstant_pos :
     0 < routeTLandauRadiusEnvelopeConstant := by
+  have hD : (0 : ℝ) < routeTStripDenominator := by
+    exact_mod_cast routeTStripDenominator_pos
   unfold routeTLandauRadiusEnvelopeConstant
   positivity
 
@@ -229,6 +231,10 @@ theorem routeTGlobalExponent_bandShell_cast_le
       ((routeTBandShell t + 1 : ℕ) : ℝ) ^ (9 : ℕ) ≤
         (4 : ℝ) ^ (9 : ℕ) * routeTLogHeightEnvelope t :=
     hshell.trans (mul_le_mul_of_nonneg_left hZpow (by positivity))
+  have hshellLinear' :
+      ((routeTBandShell t : ℝ) + 1) ^ (9 : ℕ) ≤
+        (4 : ℝ) ^ (9 : ℕ) * routeTLogHeightEnvelope t := by
+    simpa only [Nat.cast_add, Nat.cast_one] using hshellLinear
   rw [routeTGlobalExponent_eq]
   push_cast
   have hinner :
@@ -236,10 +242,18 @@ theorem routeTGlobalExponent_bandShell_cast_le
           ((routeTBandShell t : ℝ) + 1) ^ (9 : ℕ) + 1 ≤
         ((routeTLogReceiverDegreeNineConstant : ℝ) * (4 : ℝ) ^ (9 : ℕ) + 1) *
           routeTLogHeightEnvelope t := by
-    have hmul := mul_le_mul_of_nonneg_left hshellLinear
+    have hmul := mul_le_mul_of_nonneg_left hshellLinear'
       (by positivity : (0 : ℝ) ≤ routeTLogReceiverDegreeNineConstant)
     nlinarith
-  exact mul_le_mul_of_nonneg_left hinner (by positivity)
+  have hc0 : (0 : ℝ) ≤ (routeTLogCentreExponent : ℝ) := by positivity
+  calc
+    (routeTLogCentreExponent : ℝ) *
+        ((routeTLogReceiverDegreeNineConstant : ℝ) *
+          ((routeTBandShell t : ℝ) + 1) ^ (9 : ℕ) + 1) ≤
+      (routeTLogCentreExponent : ℝ) *
+        (((routeTLogReceiverDegreeNineConstant : ℝ) * (4 : ℝ) ^ (9 : ℕ) + 1) *
+          routeTLogHeightEnvelope t) := mul_le_mul_of_nonneg_left hinner hc0
+    _ = _ := by ring
 
 /-- The chosen cubic truncation exponent contributes only linearly in `log(t)`. -/
 theorem topExponent_prev_cast_le_six_log
@@ -249,7 +263,8 @@ theorem topExponent_prev_cast_le_six_log
   have hpi1 : (1 : ℝ) ≤ 8 * Real.pi := by
     nlinarith [Real.pi_gt_three]
   have htprev : 8 * Real.pi ≤ t - 1 := by linarith
-  have harg0 : 0 < (t - 1) / (8 * Real.pi) := by positivity
+  have harg0 : 0 < (t - 1) / (8 * Real.pi) :=
+    div_pos (by linarith) hpi0
   have hargle : (t - 1) / (8 * Real.pi) ≤ t + 2 := by
     calc
       (t - 1) / (8 * Real.pi) ≤ t - 1 := div_le_self (by linarith) hpi1
@@ -259,7 +274,7 @@ theorem topExponent_prev_cast_le_six_log
   have hlogarg0 : 0 ≤ Real.log ((t - 1) / (8 * Real.pi)) := by
     apply Real.log_nonneg
     rw [le_div_iff₀ hpi0]
-    exact htprev
+    simpa only [one_mul] using htprev
   have htop := topExponent_le htprev
   have hlog2 : (1 / 2 : ℝ) < Real.log 2 := by
     linarith [Real.log_two_gt_d9]
@@ -269,7 +284,7 @@ theorem topExponent_prev_cast_le_six_log
     rwa [le_div_iff₀ (Real.log_pos (by norm_num : (1 : ℝ) < 2))] at htop
   have hhalf : (topExponent (t - 1) : ℝ) / 2 ≤
       (topExponent (t - 1) : ℝ) * Real.log 2 := by
-    exact mul_le_mul_of_nonneg_left hlog2.le htop0
+    nlinarith [mul_nonneg htop0 (sub_nonneg.mpr hlog2.le)]
   nlinarith
 
 /-- Route T's full rectangle majorant grows at most linearly in the log-height envelope. -/
@@ -294,8 +309,25 @@ theorem routeTBandGrowthBound_logHeight_upper
   have htop := topExponent_prev_cast_le_six_log ht
   have hlognonneg : 0 ≤ Real.log (t + 2) :=
     Real.log_nonneg (by linarith : (1 : ℝ) ≤ t + 2)
-  unfold routeTBandGrowthBound routeTBandGrowthEnvelopeConstant routeTLogHeightEnvelope
-  nlinarith
+  let C : ℝ := (routeTLogCentreExponent : ℝ) *
+    ((routeTLogReceiverDegreeNineConstant : ℝ) * (4 : ℝ) ^ (9 : ℕ) + 1)
+  let Z : ℝ := routeTLogHeightEnvelope t
+  have hC0 : 0 ≤ C := by dsimp only [C]; positivity
+  have htopTerm : (topExponent (t - 1) : ℝ) * 6912 ≤
+      41472 * Real.log (t + 2) := by nlinarith
+  calc
+    routeTBandGrowthBound t ≤ 20 + 2 * C * Z +
+        41472 * Real.log (t + 2) := by
+      unfold routeTBandGrowthBound
+      dsimp only [C, Z]
+      linarith
+    _ ≤ (20 + 2 * C + 20736) * Z := by
+      dsimp only [Z, routeTLogHeightEnvelope]
+      nlinarith
+    _ = routeTBandGrowthEnvelopeConstant * routeTLogHeightEnvelope t := by
+      unfold routeTBandGrowthEnvelopeConstant
+      dsimp only [C, Z]
+      ring
 
 theorem routeTLogHeightEnvelope_mono {s t : ℝ}
     (hs : 0 ≤ s) (hst : s ≤ t) :
@@ -352,8 +384,9 @@ theorem one_add_inv_routeTLandauRadius_logHeight_upper
   have hKZ0 : 0 < K * Z ^ ((9 : ℝ) / 10) := by positivity
   have hR := routeTLandauRadius_logHeight_lower hγ
   have hinv : 1 / routeTLandauRadius γ ≤ K * Z ^ ((9 : ℝ) / 10) := by
-    have hh := one_div_le_one_div_of_le (routeTLandauRadius_pos γ) hR
-    simpa only [one_div_div, one_mul, Z, K] using hh
+    have hlower0 : 0 < 1 / (K * Z ^ ((9 : ℝ) / 10)) := by positivity
+    have hh := one_div_le_one_div_of_le hlower0 (by simpa only [Z, K] using hR)
+    simpa only [one_div_div, one_mul, div_one, Z, K] using hh
   have hpow : K * Z ^ ((9 : ℝ) / 10) ≤ K * Z :=
     mul_le_mul_of_nonneg_left hZpow hK0.le
   dsimp only [Z, K] at *
@@ -393,17 +426,25 @@ theorem routeTZeroFreeBudget_logHeight_upper
       Real.log (routeTLandauPhiEnvelopeConstant * routeTLogHeightEnvelope (4 * γ)) =
         Real.log routeTLandauPhiEnvelopeConstant +
           Real.log (routeTLogHeightEnvelope (4 * γ)) := by
-    rw [Real.log_mul (by positivity) (by positivity)]
+    rw [Real.log_mul (ne_of_gt (lt_of_lt_of_le zero_lt_one
+      routeTLandauPhiEnvelopeConstant_one_le))
+      (ne_of_gt (lt_of_lt_of_le zero_lt_one hZ1))]
   rw [hlogPhiSplit] at hlogPhi
   have hRadius := one_add_inv_routeTLandauRadius_logHeight_upper hγ1
-  have hRadius0 : 0 < 1 + 1 / routeTLandauRadius γ := by positivity
+  have hRadius0 : 0 < 1 + 1 / routeTLandauRadius γ := by
+    have hinv : 0 < 1 / routeTLandauRadius γ :=
+      one_div_pos.mpr (routeTLandauRadius_pos γ)
+    linarith
   have hlogRadius := Real.log_le_log hRadius0 hRadius
   have hlogRadiusSplit :
       Real.log ((1 + routeTLandauRadiusEnvelopeConstant) *
           routeTLogHeightEnvelope (4 * γ)) =
         Real.log (1 + routeTLandauRadiusEnvelopeConstant) +
           Real.log (routeTLogHeightEnvelope (4 * γ)) := by
-    rw [Real.log_mul (by positivity) (by positivity)]
+    rw [Real.log_mul
+      (ne_of_gt (by nlinarith [routeTLandauRadiusEnvelopeConstant_pos] :
+        (0 : ℝ) < 1 + routeTLandauRadiusEnvelopeConstant))
+      (ne_of_gt (lt_of_lt_of_le zero_lt_one hZ1))]
   rw [hlogRadiusSplit] at hlogRadius
   unfold routeTZeroFreeBudget routeTZeroFreeBudgetEnvelopeConstant
   linarith
@@ -417,7 +458,8 @@ theorem routeTZeroFreeBudget_polylog_upper
   have hmain := routeTZeroFreeBudget_logHeight_upper (A := A) hγ
   have hC0 := routeTZeroFreeBudgetEnvelopeConstant_pos A
   have hlog0 : 0 ≤ Real.log (routeTLogHeightEnvelope (4 * γ)) :=
-    Real.log_nonneg (routeTLogHeightEnvelope_one_le (by positivity : 0 ≤ 4 * γ))
+    Real.log_nonneg (routeTLogHeightEnvelope_one_le (by
+      nlinarith [Real.pi_pos] : 0 ≤ 4 * γ))
   nlinarith
 
 /-- Fixed coefficient in the explicit lower envelope for the Route-T zero-free displacement. -/
@@ -428,8 +470,9 @@ def routeTZeroFreeDeltaEnvelopeConstant (A : ℝ) : ℝ :=
 theorem routeTZeroFreeDeltaEnvelopeConstant_pos (A : ℝ) :
     0 < routeTZeroFreeDeltaEnvelopeConstant A := by
   have hC := routeTZeroFreeBudgetEnvelopeConstant_pos A
+  have hR := routeTLandauRadiusEnvelopeConstant_pos
   unfold routeTZeroFreeDeltaEnvelopeConstant
-  positivity
+  exact mul_pos (mul_pos (by norm_num) hR) (sq_pos_of_pos (by linarith))
 
 /-- Explicit lower envelope for the displacement in the Route-T zero-free region. -/
 theorem routeTZeroFreeDelta_polylog_lower
@@ -472,9 +515,14 @@ theorem routeTZeroFreeDelta_polylog_lower
       _ ≤ routeTLandauRadius γ / (10000 * routeTZeroFreeBudget A γ ^ 2) :=
         div_le_div_of_nonneg_left (routeTLandauRadius_pos γ).le hdenQ0 hden
   unfold routeTZeroFreeDelta
-  unfold routeTZeroFreeDeltaEnvelopeConstant
-  dsimp only [B, KR, Z] at hstep ⊢
-  convert hstep using 1 <;> ring
+  calc
+    1 / (routeTZeroFreeDeltaEnvelopeConstant A * Z ^ ((9 : ℝ) / 10) *
+        (1 + Real.log Z) ^ 2) =
+        (1 / (KR * Z ^ ((9 : ℝ) / 10))) / (10000 * B ^ 2) := by
+      unfold routeTZeroFreeDeltaEnvelopeConstant
+      dsimp only [B, KR]
+      field_simp [ne_of_gt hKR0, ne_of_gt hB0]
+    _ ≤ routeTLandauRadius γ / (10000 * routeTZeroFreeBudget A γ ^ 2) := hstep
 
 /-- Exponential cost envelope for every high edge of the shifted Möbius contour. -/
 def routeTContourEdgeLogEnvelope (A γ : ℝ) : ℝ :=
@@ -490,12 +538,138 @@ theorem routeTContourEdgeBound_logHeight_upper
   have hB0 : 0 < (routeTZeroFreeBudgetEnvelopeConstant A + 2) *
       (1 + Real.log (routeTLogHeightEnvelope (4 * (γ + 1)))) := by
     have hC := routeTZeroFreeBudgetEnvelopeConstant_pos A
-    have hZ := routeTLogHeightEnvelope_one_le (by positivity : 0 ≤ 4 * (γ + 1))
+    have hZ := routeTLogHeightEnvelope_one_le (by
+      nlinarith [Real.pi_pos] : 0 ≤ 4 * (γ + 1))
     have hlog := Real.log_nonneg hZ
     positivity
   have hsq := pow_le_pow_left₀ hQ0.le hQ 2
-  unfold routeTContourEdgeBound routeTContourEdgeLogEnvelope
-  exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hsq (by norm_num))
+  unfold routeTContourEdgeBound routeTContourEdgeLogEnvelope routeTInverseHeight
+  apply Real.exp_le_exp.mpr
+  calc
+    400 * routeTZeroFreeBudget A (γ + 1) ^ 2 ≤
+        400 * ((routeTZeroFreeBudgetEnvelopeConstant A + 2) *
+          (1 + Real.log (routeTLogHeightEnvelope (4 * (γ + 1))))) ^ 2 :=
+      mul_le_mul_of_nonneg_left hsq (by norm_num)
+    _ = 400 * (routeTZeroFreeBudgetEnvelopeConstant A + 2) ^ 2 *
+        (1 + Real.log (routeTLogHeightEnvelope (4 * (γ + 1)))) ^ 2 := by ring
+
+/-- The right edge is always cheaper than the high-edge reciprocal majorant. -/
+theorem routeTContourRightBound_le_edgeBound (A T : ℝ) :
+    routeTContourRightBound A T ≤ routeTContourEdgeBound A T := by
+  let Q := routeTZeroFreeBudget A (routeTInverseHeight T)
+  let d := routeTInverseDelta A T
+  have hQ := routeTZeroFreeBudget_ge A (routeTInverseHeight T)
+  have hQ0 : 0 < Q := by
+    simpa only [Q] using routeTZeroFreeBudget_pos A (routeTInverseHeight T)
+  have hd0 : 0 < d := by simpa only [d] using routeTInverseDelta_pos A T
+  have harg0 : 0 < 1 + 1 / d := by positivity
+  have hlog := routeT_log_delta_le_budget_sq A (routeTInverseHeight T)
+  have hlogShape : Real.log (1 + 1 / d) ≤ Q ^ 2 := by
+    simpa only [d, routeTInverseDelta, Q] using hlog
+  have hbudget : 22 / 4 + Real.log (1 + 1 / d) ≤ 400 * Q ^ 2 := by
+    nlinarith
+  have hexp := Real.exp_le_exp.mpr hbudget
+  have hrewrite : Real.exp (22 / 4) * (1 + 1 / d) =
+      Real.exp (22 / 4 + Real.log (1 + 1 / d)) := by
+    rw [Real.exp_add, Real.exp_log harg0]
+  unfold routeTContourRightBound routeTContourEdgeBound
+  simpa only [d, Q, hrewrite] using hexp
+
+/-- Explicit vanishing lower envelope for the actual contour shift. -/
+def routeTContourShiftEnvelope (A T : ℝ) : ℝ :=
+  1 / (20 * routeTZeroFreeDeltaEnvelopeConstant A *
+    (routeTLogHeightEnvelope (4 * (T + 1))) ^ ((9 : ℝ) / 10) *
+    (1 + Real.log (routeTLogHeightEnvelope (4 * (T + 1)))) ^ 2)
+
+theorem routeTContourShiftEnvelope_pos (A : ℝ) {T : ℝ} (hT : 0 ≤ T) :
+    0 < routeTContourShiftEnvelope A T := by
+  have hK := routeTZeroFreeDeltaEnvelopeConstant_pos A
+  have hZ := routeTLogHeightEnvelope_one_le (by positivity : 0 ≤ 4 * (T + 1))
+  have hlog := Real.log_nonneg hZ
+  unfold routeTContourShiftEnvelope
+  positivity
+
+/-- The explicit envelope lies below one twentieth of the inverse-zeta displacement. -/
+theorem routeTContourShiftEnvelope_le_inverseDelta
+    {A T : ℝ} (hT : 8 * Real.pi ≤ T) :
+    routeTContourShiftEnvelope A T ≤ routeTInverseDelta A T / 20 := by
+  have hdelta := routeTZeroFreeDelta_polylog_lower
+    (A := A) (γ := T + 1) (by linarith)
+  have hD : 0 < routeTZeroFreeDeltaEnvelopeConstant A :=
+    routeTZeroFreeDeltaEnvelopeConstant_pos A
+  have hZ : 1 ≤ routeTLogHeightEnvelope (4 * (T + 1)) :=
+    routeTLogHeightEnvelope_one_le (by nlinarith [Real.pi_pos])
+  have hfac : 0 < 1 + Real.log (routeTLogHeightEnvelope (4 * (T + 1))) := by
+    have := Real.log_nonneg hZ
+    linarith
+  unfold routeTInverseDelta routeTInverseHeight
+  unfold routeTContourShiftEnvelope
+  calc
+    1 / (20 * routeTZeroFreeDeltaEnvelopeConstant A *
+        routeTLogHeightEnvelope (4 * (T + 1)) ^ ((9 : ℝ) / 10) *
+        (1 + Real.log (routeTLogHeightEnvelope (4 * (T + 1)))) ^ 2) =
+      (1 / (routeTZeroFreeDeltaEnvelopeConstant A *
+        routeTLogHeightEnvelope (4 * (T + 1)) ^ ((9 : ℝ) / 10) *
+        (1 + Real.log (routeTLogHeightEnvelope (4 * (T + 1)))) ^ 2)) / 20 := by
+      field_simp [ne_of_gt hD, ne_of_gt hfac]
+    _ ≤ routeTZeroFreeDelta A (T + 1) / 20 :=
+      div_le_div_of_nonneg_right hdelta (by norm_num)
+
+theorem tendsto_routeTLogHeightEnvelope_four_add_atTop :
+    Tendsto (fun T : ℝ => routeTLogHeightEnvelope (4 * (T + 1))) atTop atTop := by
+  have hlinear : Tendsto (fun T : ℝ => 4 * (T + 1) + 2) atTop atTop := by
+    apply tendsto_atTop.2
+    intro b
+    filter_upwards [eventually_ge_atTop ((b - 6) / 4)] with T hT
+    linarith
+  have hlog := Real.tendsto_log_atTop.comp hlinear
+  have hmul := hlog.const_mul_atTop (by norm_num : (0 : ℝ) < 2)
+  simpa only [routeTLogHeightEnvelope, Function.comp_apply] using
+    (tendsto_atTop_add_const_right atTop 1 hmul)
+
+/-- The contour-shift lower envelope vanishes; hence it eventually fits every fixed compact box. -/
+theorem tendsto_routeTContourShiftEnvelope_zero (A : ℝ) :
+    Tendsto (routeTContourShiftEnvelope A) atTop (𝓝 0) := by
+  let Z : ℝ → ℝ := fun T => routeTLogHeightEnvelope (4 * (T + 1))
+  let K : ℝ := 20 * routeTZeroFreeDeltaEnvelopeConstant A
+  have hK0 : 0 < K := by
+    dsimp only [K]
+    positivity [routeTZeroFreeDeltaEnvelopeConstant_pos A]
+  have hZ : Tendsto Z atTop atTop := by
+    simpa only [Z] using tendsto_routeTLogHeightEnvelope_four_add_atTop
+  have hpow : Tendsto (fun T => Z T ^ ((9 : ℝ) / 10)) atTop atTop :=
+    (tendsto_rpow_atTop (by norm_num)).comp hZ
+  have hden : Tendsto (fun T => K * Z T ^ ((9 : ℝ) / 10)) atTop atTop :=
+    hpow.const_mul_atTop hK0
+  have hupper : Tendsto (fun T => 1 / (K * Z T ^ ((9 : ℝ) / 10))) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, one_div] using tendsto_inv_atTop_zero.comp hden
+  refine squeeze_zero' ?_ ?_ hupper
+  · filter_upwards [eventually_ge_atTop (0 : ℝ)] with T hT
+    exact (routeTContourShiftEnvelope_pos A hT).le
+  · filter_upwards [eventually_ge_atTop (0 : ℝ)] with T hT
+    have hZ1 : 1 ≤ Z T := by
+      dsimp only [Z]
+      exact routeTLogHeightEnvelope_one_le (by positivity)
+    have hlog : 0 ≤ Real.log (Z T) := Real.log_nonneg hZ1
+    have hlogfac : 1 ≤ (1 + Real.log (Z T)) ^ 2 := by nlinarith
+    have hbase : 0 < K * Z T ^ ((9 : ℝ) / 10) := by positivity
+    have hdenle : K * Z T ^ ((9 : ℝ) / 10) ≤
+        K * Z T ^ ((9 : ℝ) / 10) * (1 + Real.log (Z T)) ^ 2 := by
+      nlinarith
+    have hinv := one_div_le_one_div_of_le hbase hdenle
+    simpa only [routeTContourShiftEnvelope, Z, K, mul_assoc] using hinv
+
+/-- Once the compact reciprocal box is fixed, the actual contour shift dominates the explicit
+polylogarithmic envelope. -/
+theorem eventually_routeTContourShiftEnvelope_le
+    {A δ : ℝ} (hδ : 0 < δ) :
+    ∀ᶠ T : ℝ in atTop,
+      routeTContourShiftEnvelope A T ≤ routeTContourShift A δ T := by
+  have hbox : ∀ᶠ T : ℝ in atTop, routeTContourShiftEnvelope A T < δ / 2 :=
+    (tendsto_routeTContourShiftEnvelope_zero A).eventually (eventually_lt_nhds (by linarith))
+  filter_upwards [hbox, eventually_ge_atTop (8 * Real.pi)] with T hsmall hT
+  unfold routeTContourShift
+  exact le_min (routeTContourShiftEnvelope_le_inverseDelta hT) hsmall.le
 
 end
 

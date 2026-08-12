@@ -399,6 +399,126 @@ theorem suzukiCanonicalHankelUnitary_eq_literal_on_compact_smooth_log_core
   exact (suzuki_reflection_dilation_symbolL2_eq_theta_dilation_fourier
     hinner g hg).symm
 
+/-! ## Source-faithful `C_c^∞` formulation -/
+
+/-- Every compactly supported smooth logarithmic test belongs to the all-exponential strong
+target.  This removes the subtype-packaging assumption from the statement of Suzuki's test core. -/
+theorem deningerMeyerStrongLogDecay_of_contDiff_hasCompactSupport
+    {g : ℝ → ℂ} (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g)
+    (hcompact : HasCompactSupport g) :
+    DeningerMeyerStrongLogDecay g where
+  smooth := hsmooth
+  decayTop := by
+    intro n a
+    have hderivCompact : HasCompactSupport (iteratedDeriv n g) := by
+      induction n with
+      | zero => simpa only [iteratedDeriv_zero] using hcompact
+      | succ n ih =>
+          rw [show n + 1 = Nat.succ n by omega, iteratedDeriv_succ]
+          exact ih.deriv
+    have heventCocompact : iteratedDeriv n g =ᶠ[cocompact ℝ] 0 := by
+      rw [← Filter.coclosedCompact_eq_cocompact]
+      exact hasCompactSupport_iff_eventuallyEq.mp hderivCompact
+    have heventTop : iteratedDeriv n g =ᶠ[atTop] 0 :=
+      heventCocompact.filter_mono atTop_le_cocompact
+    apply Asymptotics.IsBigO.of_bound 0
+    filter_upwards [heventTop] with t ht
+    change iteratedDeriv n g t = 0 at ht
+    simp [ht]
+  decayBot := by
+    intro n b
+    have hderivCompact : HasCompactSupport (iteratedDeriv n g) := by
+      induction n with
+      | zero => simpa only [iteratedDeriv_zero] using hcompact
+      | succ n ih =>
+          rw [show n + 1 = Nat.succ n by omega, iteratedDeriv_succ]
+          exact ih.deriv
+    have heventCocompact : iteratedDeriv n g =ᶠ[cocompact ℝ] 0 := by
+      rw [← Filter.coclosedCompact_eq_cocompact]
+      exact hasCompactSupport_iff_eventuallyEq.mp hderivCompact
+    have heventBot : iteratedDeriv n g =ᶠ[atBot] 0 :=
+      heventCocompact.filter_mono atBot_le_cocompact
+    apply Asymptotics.IsBigO.of_bound 0
+    filter_upwards [heventBot] with t ht
+    change iteratedDeriv n g t = 0 at ht
+    simp [ht]
+
+/-- Arbitrary `C_c^∞(ℝ)` source packaged in the exact strong logarithmic target. -/
+def suzukiCompactSmoothStrongLogTarget
+    (g : ℝ → ℂ) (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g)
+    (hcompact : HasCompactSupport g) : DeningerMeyerStrongLogTarget :=
+  ⟨g, deningerMeyerStrongLogDecay_of_contDiff_hasCompactSupport hsmooth hcompact⟩
+
+/-- `L²(dt)` class of an arbitrary compactly supported smooth logarithmic source. -/
+def suzukiCompactSmoothLogL2
+    (g : ℝ → ℂ) (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g)
+    (hcompact : HasCompactSupport g) : SoninL2 :=
+  suzukiStrongLogL2
+    (suzukiCompactSmoothStrongLogTarget g hsmooth hcompact) hcompact
+
+/-- Literal logarithmic Hankel output for an arbitrary compactly supported smooth source. -/
+def suzukiCompactSmoothLiteralLogHankelL2
+    (omega c : ℝ) (homega : 0 < omega) (hc : 1 / 2 + omega < c)
+    (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
+    (g : ℝ → ℂ) (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g)
+    (hcompact : HasCompactSupport g) : SoninL2 :=
+  suzukiLiteralLogHankelL2 omega c homega hc hinner
+    (suzukiCompactSmoothStrongLogTarget g hsmooth hcompact) hcompact
+
+/-- **Suzuki (2012), Lemma 4.1, literal-kernel identification on `C_c^∞`.**
+The spectral unitary is exactly the `L²` extension of the literal `h_ω(xy)` integral after the
+unitary logarithmic half-density coordinate change. -/
+theorem suzuki2012_lemma_four_one_literal_kernel_on_compact_smooth_log_core
+    {omega c : ℝ} (homega : 0 < omega) (hc : 1 / 2 + omega < c)
+    (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
+    (g : ℝ → ℂ) (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g)
+    (hcompact : HasCompactSupport g) :
+    suzukiCanonicalHankelUnitary omega hinner
+        (logEvenUnitary.symm (suzukiCompactSmoothLogL2 g hsmooth hcompact)) =
+      logEvenUnitary.symm
+        (suzukiCompactSmoothLiteralLogHankelL2 omega c homega hc hinner
+          g hsmooth hcompact) := by
+  exact suzukiCanonicalHankelUnitary_eq_literal_on_compact_smooth_log_core
+    homega hc hinner
+      (suzukiCompactSmoothStrongLogTarget g hsmooth hcompact) hcompact
+
+/-- Source vector on Suzuki's literal `L²((0,∞),dx)` carrier corresponding to a logarithmic
+compact-smooth half-density. -/
+def suzukiCompactSmoothPositiveL2
+    (g : ℝ → ℂ) (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g)
+    (hcompact : HasCompactSupport g) : SuzukiPositiveL2 :=
+  suzukiPositiveHalfLineUnitary
+    (logEvenUnitary.symm (suzukiCompactSmoothLogL2 g hsmooth hcompact))
+
+/-- Literal output vector on Suzuki's positive-half-line carrier. -/
+def suzukiCompactSmoothLiteralPositiveHankelL2
+    (omega c : ℝ) (homega : 0 < omega) (hc : 1 / 2 + omega < c)
+    (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
+    (g : ℝ → ℂ) (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g)
+    (hcompact : HasCompactSupport g) : SuzukiPositiveL2 :=
+  suzukiPositiveHalfLineUnitary
+    (logEvenUnitary.symm
+      (suzukiCompactSmoothLiteralLogHankelL2 omega c homega hc hinner
+        g hsmooth hcompact))
+
+/-- **Suzuki (2012), Lemma 4.1 on the literal positive-half-line carrier.** -/
+theorem suzuki2012_lemma_four_one_positive_half_line_literal_kernel
+    {omega c : ℝ} (homega : 0 < omega) (hc : 1 / 2 + omega < c)
+    (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
+    (g : ℝ → ℂ) (hsmooth : ContDiff ℝ (⊤ : ℕ∞) g)
+    (hcompact : HasCompactSupport g) :
+    suzukiCanonicalPositiveHankelUnitary omega hinner
+        (suzukiCompactSmoothPositiveL2 g hsmooth hcompact) =
+      suzukiCompactSmoothLiteralPositiveHankelL2 omega c homega hc hinner
+        g hsmooth hcompact := by
+  simp only [suzukiCompactSmoothPositiveL2,
+    suzukiCompactSmoothLiteralPositiveHankelL2]
+  change suzukiPositiveHalfLineUnitary
+      (suzukiCanonicalHankelUnitary omega hinner
+        (logEvenUnitary.symm (suzukiCompactSmoothLogL2 g hsmooth hcompact))) = _
+  rw [suzuki2012_lemma_four_one_literal_kernel_on_compact_smooth_log_core
+    homega hc hinner g hsmooth hcompact]
+  rfl
+
 end
 end RHTower
-

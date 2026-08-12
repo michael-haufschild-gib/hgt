@@ -399,13 +399,14 @@ theorem deningerCanonicalRationalWittNormalizedFraction_congr
 rational-Witt ring. -/
 noncomputable def deningerCanonicalRationalWittTeichmullerMonoidHom :
     A →* DeningerCanonicalRationalWittRing A where
-  toFun := deningerCanonicalRationalWittTeichmuller
+  toFun a := deningerCanonicalRationalWittTeichmuller a
   map_one' := deningerCanonicalRationalWittTeichmuller_one
-  map_mul' := deningerCanonicalRationalWittTeichmuller_mul
+  map_mul' a b := (deningerCanonicalRationalWittTeichmuller_mul a b).symm
 
 @[simp] theorem deningerCanonicalRationalWittTeichmullerMonoidHom_apply (a : A) :
     deningerCanonicalRationalWittTeichmullerMonoidHom a =
-      deningerCanonicalRationalWittTeichmuller a := rfl
+      deningerCanonicalRationalWittTeichmuller a := by
+  simp [deningerCanonicalRationalWittTeichmullerMonoidHom]
 
 /-- Deninger's denominator submonoid `[M]` inside the rational-Witt ring. -/
 noncomputable def deningerCanonicalRationalWittDenominatorSubmonoid (M : Submonoid A) :
@@ -413,11 +414,17 @@ noncomputable def deningerCanonicalRationalWittDenominatorSubmonoid (M : Submono
   M.map deningerCanonicalRationalWittTeichmullerMonoidHom
 
 /-- Coefficientwise map supplies the base algebra structure for Deninger's localization theorem. -/
-noncomputable def deningerCanonicalRationalWittCoefficientAlgebra
+@[reducible] noncomputable def deningerCanonicalRationalWittCoefficientAlgebra
     [Algebra A S] :
     Algebra (DeningerCanonicalRationalWittRing A)
       (DeningerCanonicalRationalWittRing S) :=
   (deningerCanonicalRationalWittMap (algebraMap A S)).toAlgebra
+
+noncomputable instance deningerCanonicalRationalWittCoefficientAlgebraInstance
+    [Algebra A S] :
+    Algebra (DeningerCanonicalRationalWittRing A)
+      (DeningerCanonicalRationalWittRing S) :=
+  deningerCanonicalRationalWittCoefficientAlgebra
 
 @[simp] theorem deningerCanonicalRationalWittCoefficientAlgebra_algebraMap
     [Algebra A S] :
@@ -451,8 +458,8 @@ theorem deningerPolynomial_exists_common_annihilator_of_map_eq
         rw [Finset.mem_insert] at hk
         rcases hk with rfl | hk
         · calc
-            ((c * m : M) : A) * (P.coeff n - Q.coeff n) =
-                (m : A) * ((c : A) * P.coeff n - (c : A) * Q.coeff n) := by
+            ((c * m : M) : A) * (P.coeff k - Q.coeff k) =
+                (m : A) * ((c : A) * P.coeff k - (c : A) * Q.coeff k) := by
                   simp only [Submonoid.coe_mul]
                   ring
             _ = 0 := by rw [hc, sub_self, mul_zero]
@@ -493,6 +500,150 @@ theorem deningerPolynomialDilation_eq_of_map_eq
       rw [deningerPolynomialDilation_coeff, deningerPolynomialDilation_coeff]
       have hmn := hm (n + 1)
       linear_combination (m : A) ^ n * hmn
+
+theorem deningerCanonicalRationalWittNormalizedFraction_eq_zero_iff
+    (P Q : Polynomial A) (hP : P.coeff 0 = 1) (hQ : Q.coeff 0 = 1) :
+    deningerCanonicalRationalWittNormalizedFraction P Q hP hQ = 0 ↔ P = Q := by
+  constructor
+  · intro hzero
+    have hembed := congrArg (deningerCanonicalRationalWittEmbedding (A := A)) hzero
+    rw [deningerCanonicalRationalWittEmbedding_normalizedFraction, map_zero] at hembed
+    have hbig : deningerNormalizedPolynomialBigWitt P hP =
+        deningerNormalizedPolynomialBigWitt Q hQ := sub_eq_zero.mp hembed
+    have hrational :
+        deningerRationalWittNormalizedPolynomial P hP =
+          deningerRationalWittNormalizedPolynomial Q hQ := by
+      apply deningerRationalWittToBigWittAdditive_injective A
+      have hv := congrArg DeningerBigWittRing.additiveVal hbig
+      exact Additive.ofMul.injective hv
+    have hlocal := congrArg (fun w : DeningerRationalWittAdditive A =>
+      ((w.1 : (DeningerRationalWittLocalization A)ˣ) :
+        DeningerRationalWittLocalization A)) hrational
+    change (deningerRationalWittNormalizedPolynomialUnit P hP :
+        DeningerRationalWittLocalization A) =
+      (deningerRationalWittNormalizedPolynomialUnit Q hQ :
+        DeningerRationalWittLocalization A) at hlocal
+    rw [deningerRationalWittNormalizedPolynomialUnit_val,
+      deningerRationalWittNormalizedPolynomialUnit_val] at hlocal
+    exact IsLocalization.injective (DeningerRationalWittLocalization A)
+      (deningerRationalWittDenominators_le_nonZeroDivisors A) hlocal
+  · intro hPQ
+    subst Q
+    apply deningerCanonicalRationalWittEmbedding_injective
+    rw [deningerCanonicalRationalWittEmbedding_normalizedFraction, sub_self, map_zero]
+
+/-- Kernel condition for Deninger's coefficientwise rational-Witt localization map.  It is stated
+directly in the form required by `IsLocalization.exists_of_eq`. -/
+theorem deningerCanonicalRationalWittCoefficientMap_exists_of_eq
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S]
+    {x y : DeningerCanonicalRationalWittRing A}
+    (hxy : deningerCanonicalRationalWittMap (algebraMap A S) x =
+      deningerCanonicalRationalWittMap (algebraMap A S) y) :
+    ∃ c : deningerCanonicalRationalWittDenominatorSubmonoid M,
+      (c : DeningerCanonicalRationalWittRing A) * x = c * y := by
+  obtain ⟨P, Q, hP, hQ, hrep⟩ :=
+    deningerCanonicalRationalWitt_eq_normalizedFraction (x - y)
+  have hmapzero :
+      deningerCanonicalRationalWittMap (algebraMap A S) (x - y) = 0 := by
+    rw [map_sub, hxy, sub_self]
+  rw [hrep, deningerCanonicalRationalWittMap_normalizedFraction] at hmapzero
+  have hPQmap : P.map (algebraMap A S) = Q.map (algebraMap A S) :=
+    (deningerCanonicalRationalWittNormalizedFraction_eq_zero_iff
+      (P.map (algebraMap A S)) (Q.map (algebraMap A S))
+      (by simp [hP]) (by simp [hQ])).mp hmapzero
+  obtain ⟨m, hm⟩ := deningerPolynomialDilation_eq_of_map_eq M P Q hP hQ hPQmap
+  let c : deningerCanonicalRationalWittDenominatorSubmonoid M :=
+    ⟨deningerCanonicalRationalWittTeichmuller (m : A), by
+      exact ⟨m, m.prop, by
+        simp [deningerCanonicalRationalWittTeichmullerMonoidHom]⟩⟩
+  refine ⟨c, ?_⟩
+  have hcsub : (c : DeningerCanonicalRationalWittRing A) * (x - y) = 0 := by
+    change deningerCanonicalRationalWittTeichmuller (m : A) * (x - y) = 0
+    rw [hrep, deningerCanonicalRationalWittTeichmuller_mul_normalizedFraction]
+    exact (deningerCanonicalRationalWittNormalizedFraction_eq_zero_iff
+      (deningerPolynomialDilation (m : A) P)
+      (deningerPolynomialDilation (m : A) Q)
+      (by simp [hP]) (by simp [hQ])).mpr hm
+  rw [mul_sub, sub_eq_zero] at hcsub
+  exact hcsub
+
+/-- Every rational Witt vector over a coefficient localization is one Teichmüller denominator
+away from a coefficientwise lift. -/
+theorem deningerCanonicalRationalWittCoefficientMap_surj
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S]
+    (w : DeningerCanonicalRationalWittRing S) :
+    ∃ x : DeningerCanonicalRationalWittRing A ×
+        deningerCanonicalRationalWittDenominatorSubmonoid M,
+      w * algebraMap (DeningerCanonicalRationalWittRing A)
+          (DeningerCanonicalRationalWittRing S) x.2 =
+        algebraMap (DeningerCanonicalRationalWittRing A)
+          (DeningerCanonicalRationalWittRing S) x.1 := by
+  obtain ⟨P, Q, hP, hQ, hrep⟩ :=
+    deningerCanonicalRationalWitt_eq_normalizedFraction w
+  let dP : M := IsLocalization.commonDenom M P.support P.coeff
+  let dQ : M := IsLocalization.commonDenom M Q.support Q.coeff
+  obtain ⟨LP, hLP0, hLPmap⟩ :=
+    deningerPolynomialDilation_exists_normalized_lift M P hP
+  obtain ⟨LQ, hLQ0, hLQmap⟩ :=
+    deningerPolynomialDilation_exists_normalized_lift M Q hQ
+  let m : M := dP * dQ
+  let P₀ : Polynomial A := deningerPolynomialDilation (dQ : A) LP
+  let Q₀ : Polynomial A := deningerPolynomialDilation (dP : A) LQ
+  have hP₀ : P₀.coeff 0 = 1 := by simp [P₀, hLP0]
+  have hQ₀ : Q₀.coeff 0 = 1 := by simp [Q₀, hLQ0]
+  have hP₀map : P₀.map (algebraMap A S) =
+      deningerPolynomialDilation (algebraMap A S (m : A)) P := by
+    calc
+      P₀.map (algebraMap A S) =
+          deningerPolynomialDilation (algebraMap A S (dQ : A))
+            (LP.map (algebraMap A S)) := by
+              exact deningerPolynomialDilation_map (algebraMap A S) (dQ : A) LP
+      _ = deningerPolynomialDilation (algebraMap A S (dQ : A))
+            (deningerPolynomialDilation (algebraMap A S (dP : A)) P) := by
+              rw [hLPmap]
+      _ = deningerPolynomialDilation
+            (algebraMap A S (dP : A) * algebraMap A S (dQ : A)) P :=
+              deningerPolynomialDilation_dilation _ _ _
+      _ = deningerPolynomialDilation (algebraMap A S (m : A)) P := by
+              congr 2
+              simp [m, dP, dQ]
+  have hQ₀map : Q₀.map (algebraMap A S) =
+      deningerPolynomialDilation (algebraMap A S (m : A)) Q := by
+    calc
+      Q₀.map (algebraMap A S) =
+          deningerPolynomialDilation (algebraMap A S (dP : A))
+            (LQ.map (algebraMap A S)) := by
+              exact deningerPolynomialDilation_map (algebraMap A S) (dP : A) LQ
+      _ = deningerPolynomialDilation (algebraMap A S (dP : A))
+            (deningerPolynomialDilation (algebraMap A S (dQ : A)) Q) := by
+              rw [hLQmap]
+      _ = deningerPolynomialDilation
+            (algebraMap A S (dQ : A) * algebraMap A S (dP : A)) Q :=
+              deningerPolynomialDilation_dilation _ _ _
+      _ = deningerPolynomialDilation (algebraMap A S (m : A)) Q := by
+              congr 2
+              simp [m, dP, dQ, mul_comm]
+  let f := deningerCanonicalRationalWittNormalizedFraction P₀ Q₀ hP₀ hQ₀
+  let c : deningerCanonicalRationalWittDenominatorSubmonoid M :=
+    ⟨deningerCanonicalRationalWittTeichmuller (m : A), by
+      exact ⟨m, m.prop, by
+        simp [deningerCanonicalRationalWittTeichmullerMonoidHom]⟩⟩
+  refine ⟨⟨f, c⟩, ?_⟩
+  change w * deningerCanonicalRationalWittMap (algebraMap A S)
+      (c : DeningerCanonicalRationalWittRing A) =
+    deningerCanonicalRationalWittMap (algebraMap A S) f
+  rw [hrep]
+  change deningerCanonicalRationalWittNormalizedFraction P Q hP hQ *
+      deningerCanonicalRationalWittMap (algebraMap A S)
+        (deningerCanonicalRationalWittTeichmuller (m : A)) =
+    deningerCanonicalRationalWittMap (algebraMap A S)
+      (deningerCanonicalRationalWittNormalizedFraction P₀ Q₀ hP₀ hQ₀)
+  rw [deningerCanonicalRationalWittMap_teichmuller,
+    deningerCanonicalRationalWittMap_normalizedFraction, mul_comm,
+    deningerCanonicalRationalWittTeichmuller_mul_normalizedFraction]
+  exact deningerCanonicalRationalWittNormalizedFraction_congr
+    (by simp [hP]) (by simp [hQ]) (by simp [hP₀]) (by simp [hQ₀])
+    hP₀map.symm hQ₀map.symm
 
 end
 end RHTower
