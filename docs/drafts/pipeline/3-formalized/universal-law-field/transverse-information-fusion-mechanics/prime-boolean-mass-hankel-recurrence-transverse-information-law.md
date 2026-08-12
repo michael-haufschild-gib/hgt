@@ -1,7 +1,7 @@
 # Prime Boolean--Mass--Hankel fusion and recurrent transverse-information law
 
 - **ID:** ULF-TIFM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** LITERAL CROSS-ORGAN FUSION / CONSERVATION / FOURTH-ORGAN PREDICTION
 - **Source:** high-exponent Euler shell on its ramification diagonal
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LITERAL ROUTE-E ORGAN]
@@ -418,22 +418,42 @@ No external theorem supplies the arithmetic identification `(TIF.10)` or the con
 
 ## 9. Lean certification
 
-The unconditional finite theorem is formalized in
-`GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion`:
+The whole displayed surface is formalized in two modules,
+`GaloisForLFunctions.HTGeometry.PrimeBooleanMassHankelQuantumFusion` (the abstract clock packet)
+and `GaloisForLFunctions.HTGeometry.PrimeBooleanFusionSourcePacket` (the literal prime source).
 
-- Mass norm equals the clock variance `C`;
-- Hankel determinant equals `AC-B^2`;
-- transverse QFI equals four times Schur capacity;
-- four-organ conservation `(TIF.21)`;
-- strict positivity under positive weights and two distinct clocks;
-- finite-tilt QFI response `(TIF.22)` by reuse of the existing Boolean response theorem;
-- prime-log large-return recurrence by reuse of the existing phase-history theorem.
+Abstract clock packet:
 
-The module directly elaborates and its foreground leaf build completes 8,675 jobs.  It is wired
-into `HTGeometry.UniversalLawField`; that foreground umbrella build completes 11,659 jobs.  Axiom
-prints for the pure-state QFI identity, four-organ conservation, positivity, Mass damping, tilt
-response, reconstruction, and recurrence capstones report only `propext`, `Classical.choice`, and
-`Quot.sound`.  Repository formal lint and the target forbidden-declaration scan pass.
+- Mass norm equals the clock variance `C` — `(TIF.9)`;
+- Hankel block `(TIF.12)` with determinant `AC-B^2` — `(TIF.13)`, positive semidefinite, and its
+  identification as the moment matrix `(TIF.11)`;
+- Schur capacity is the exact least variance `(TIF.5)` with minimiser `(TIF.6)`;
+- two-parameter pure-state QFI `(TIF.19)`, and `(TIF.20)` as an exact infimum;
+- three-organ conservation `(TIF.14)`, its clock-gap form `(TIF.15)`, and four-organ conservation
+  `(TIF.21)`;
+- the single-clock degeneration of §6.1: one marked clock forces `D = Δ = 𝓘_⊥ = 0`;
+- finite-tilt QFI response `(TIF.22)`;
+- finite joint reconstruction `(TIF.16)`–`(TIF.17)` by the corpus Prony theorem.
+
+Literal prime source:
+
+- the aperture fugacity, occupation `q_p = 1/(1+p^σ)` and weight `w_p = p^σ/(1+p^σ)^2` of
+  `(TIF.2)`, and the identification of `w` with the Bernoulli variance of `(TIF.3)`;
+- the exact half-density Mass damping `(TIF.10)`;
+- the derived positivity of the clock energy moment, so every conservation and positivity statement
+  at the prime source carries no analytic hypothesis;
+- strict positivity of capacity, Hankel determinant, and transverse QFI for two marked primes
+  — `(TIF.23)`;
+- the refutation of the zero-transverse-information criticality selector of §7;
+- recovery of the marked prime from its clock and of `σ` from one marked Gibbs weight, completing
+  Theorem 4.2;
+- the normalised Boolean state `(TIF.18)` as a unit vector of `ℓ²(𝒫(F))`, and Theorem 5.1's
+  norm recurrence of its pure clock orbit at arbitrarily late times.
+
+Both modules directly elaborate with no diagnostics; the source-packet leaf build completes 8,677
+jobs, and the `HTGeometry.UniversalLawField` umbrella build completes 11,852 jobs.  Axiom prints
+report only `propext`, `Classical.choice`, and `Quot.sound`.  The target forbidden-declaration scan
+passes.
 
 No RH statement or cofinal source completion is asserted in Lean.
 
@@ -447,4 +467,19 @@ No RH statement or cofinal source completion is asserted in Lean.
 - [x] direct zero-QFI RH selector refuted with positive survivor
 - [x] Lean formalization and umbrella wiring
 - [x] reflected second-packet equality rejected as a circular/regressive receiver condition
+- [x] every displayed clause of §§2–7 closed unconditionally in Lean
 - [ ] source-forced common-gauge compatibility theorem across independent organs
+      (successor card: `quotient-fusion-genesis-mechanics/shared-gauge-quotient-fusion-genesis-and-partition-qfi-law.md`)
+
+## 10. Formalization log
+
+- 2026-08-12 — stage 3.  New module
+  `GaloisForLFunctions.HTGeometry.PrimeBooleanFusionSourcePacket` closes the clauses that the
+  original certification left as paper statements: the Mass norm identity `(TIF.9)`, the moment
+  block `(TIF.11)`–`(TIF.12)`, three-organ conservation `(TIF.14)`–`(TIF.15)`, the two-parameter
+  QFI `(TIF.19)` and its infimum form `(TIF.20)`, the single-clock degeneration of §6.1, the
+  literal prime Gibbs coordinates `(TIF.2)` with the exact half-density damping `(TIF.10)`, the
+  `σ`-and-label half of Theorem 4.2, the unit-norm Boolean state `(TIF.18)` with the norm
+  recurrence of Theorem 5.1, and the §7 refutation of the zero-transverse-information selector.
+  At the prime source the clock energy moment is derived, so those statements carry no analytic
+  hypothesis.

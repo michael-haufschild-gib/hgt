@@ -549,9 +549,37 @@ paper proof uses:
 - `det_ge_of_cartanWork_le` — **no kernel in the limit**: `det(SᴴS) ≥ (C+2r)^{−r}` uniformly, so
   the closure of the sublevel cannot meet the singular locus.
 
-Together these are the bounded-and-bounded-away-from-degeneracy content of the compactness proof;
-what remains is only the Heine–Borel packaging of those two bounds into `IsCompact`, together with
-the compact unitary recurrence statement of Theorem 7.1.
+The sublevel is moreover a *polynomial* locus, which is what makes it closed:
+
+- `trace_inv_eq_det_inv_mul_trace_adjugate` — the trace of an inverse is the adjugate trace over
+  the determinant, so no matrix inversion appears in the defining condition;
+- `cartanWorkNumerator`, `cartanWork_le_iff_numerator` — on the invertible matrices,
+  `W(S) ≤ C` is equivalent to the single polynomial inequality
+  `det(SᴴS)·(tr(SᴴS) − 2r − C) + tr(adj(SᴴS)) ≤ 0`, because `det(SᴴS)` is a positive real there.
+
+Together with the uniform determinant lower bound this exhibits the sublevel as the intersection of
+two loci cut out by continuous functions of the entries, inside a bounded set.
+
+`cartanWorkSublevel`, `cartanWorkSublevel_eq` and `isClosed_cartanWorkSublevel` complete the
+closedness half: for `0 < C + 2r` the sublevel is *exactly*
+
+`{S | K ≤ (SᴴS).det.re} ∩ {S | cartanWorkNumerator S C ≤ 0}`,  `K = (C + 2r)^{-r}`,
+
+and both conditions are continuous in the entries, assembled from `Continuous.matrix_conjTranspose`,
+`Continuous.matrix_det`, `Continuous.matrix_adjugate` and `Continuous.matrix_trace`.  The reverse
+inclusion is where the determinant floor earns its keep: `K > 0` forces `det(SᴴS) ≠ 0`, hence
+invertibility, which is the "cannot acquire a kernel" step made into a set identity.
+
+`isBounded_cartanWorkSublevel` and `isCompact_cartanWorkSublevel` complete **Theorem 6.1**: the
+sublevel is bounded entrywise by `√(C + 2r)` and therefore compact.  Boundedness needs a norm on
+matrices, and mathlib declares none by default — there are several natural choices — so the
+statement fixes the entrywise sup norm by activating `Matrix.seminormedAddCommGroup`,
+`Matrix.normedAddCommGroup` and `Matrix.normedSpace` as local instances.  That topology is the
+product topology, so it agrees with the one under which the sublevel was shown closed.
+
+Theorem 6.1 is therefore fully certified: exact work formula, rigidity, invariance, and properness.
+
+Theorem 7.1's compact unitary recurrence statement is still open.
 
 ## Log
 
@@ -567,3 +595,9 @@ the compact unitary recurrence statement of Theorem 7.1.
 - 2026-08-12 — the sublevel Hilbert-Schmidt bound, the uniform two-sided spectral bound, and the
   uniform determinant lower bound certified; the compact-sublevel theorem is reduced to Heine-Borel
   packaging.
+- 2026-08-12 — the work sublevel exhibited as a polynomial locus
+  (`cartanWork_le_iff_numerator`), removing matrix inversion from its defining condition and
+  leaving only Heine-Borel assembly for the compactness clause.
+- 2026-08-12 — the sublevel set identity and its closedness certified; boundedness is pending a
+  choice of scoped matrix norm instance, which mathlib does not supply by default.
+- 2026-08-12 — Theorem 6.1 completed: the work sublevel is compact, in the entrywise sup norm.

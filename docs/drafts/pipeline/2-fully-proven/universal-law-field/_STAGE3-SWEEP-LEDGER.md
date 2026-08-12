@@ -26,14 +26,14 @@ has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/`.
 | 17 | `formation-chirality-reversal-mechanics/formation-cumulant-chirality-and-involutive-selection-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
 | 18 | `formation-chirality-reversal-mechanics/observer-fibre-chirality-conservation-and-sufficient-reversal-selection-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
 | 19 | `formation-depth-properness-mechanics/source-depth-graph-properness-and-cofinal-mixer-selection-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
-| 20 | `formation-factorization-mechanics/self-dual-factorization-torsor-reciprocal-gram-and-cartan-properness-law.md` | IN PROGRESS — (CT.19), zero locus, (CT.20), HS bound, uniform two-sided spectral bound and uniform det lower bound all certified (CartanWorkProperness). Left: Heine-Borel packaging into IsCompact, and Theorem 7.1 compact unitary recurrence |
+| 20 | `formation-factorization-mechanics/self-dual-factorization-torsor-reciprocal-gram-and-cartan-properness-law.md` | IN PROGRESS — Theorem 6.1 fully certified including compactness of the work sublevel (CartanWorkProperness, 14 theorems). Only Theorem 7.1 compact unitary recurrence remains |
 | 21 | `formation-factorization-mechanics/semantic-lineage-scaled-idempotent-ghost-neutrality-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
 | 22 | `formation-holonomy-mechanics/base-preserving-affine-formation-current-and-four-organ-bianchi-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
 | 23 | `formation-holonomy-mechanics/split-formation-corner-flatness-vertical-normal-form-and-four-organ-conservation-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
 | 24 | `formation-laplacian-properness-mechanics/compact-formation-semifredholm-transduction-joint-recovery-and-carrier-defect-bifurcation-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
 | 25 | `formation-laplacian-properness-mechanics/formation-quotient-interchange-tight-recovery-and-residual-coverage-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
 | 26 | `formation-laplacian-properness-mechanics/source-response-laplacian-properness-pluecker-and-adaptive-escape-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
-| 27 | `formation-scale-mechanics/one-norm-impossibility-formal-receiver-collapse-and-wiener-scale-fusion-law.md` | OPEN — not yet audited in this sweep |
+| 27 | `formation-scale-mechanics/one-norm-impossibility-formal-receiver-collapse-and-wiener-scale-fusion-law.md` | IN PROGRESS — audited 2026-08-12.  `FormationScaleReceiver` already has Thm 2.1 (`no_bounded_derivation_of_generator`), a receiver-collapse surrogate, and the polynomial-level Thm 5.3 exchange.  Left: the actual Wiener scale `W_R` as a Banach algebra (Thm 4.1(1)), the sharp collar constant `1/(R-r)` (Thm 5.1), Adams aperture transport (Thm 5.2), the `W_R`-level exchange and bound (FSR1.21)/(FSR1.22)/(FSR1.23), finite Witt admission/conservation (Thm 6.1), the full character classification (Thm 4.1(3), FSR1.28), and Thm 3.1 for the literal `T`-adic `ℂ[[T]]` |
 | 28 | `g-u-structure-admission-split-law.md` | NEEDS-LEAN — typing-grade split law flagged [NO LEAN — directive] |
 | 29 | `generative-response-mechanics/centered-intervention-phase-gram-support-generation-law.md` | HARD — needs the coordinate-free spectral reduction of an arbitrary positive corank-one Gram face to diagonal gauge |
 | 30 | `generative-response-mechanics/cofinal-generative-admission-gauge-and-three-cone-data-processing-law.md` | HARD — needs the full ell^1 closure identity and the Fourier uniqueness clause |
@@ -85,7 +85,7 @@ has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/`.
 | 76 | `route-q-ratio-gate-decision.md` | BLOCKED-ON-NUMERICS — gate mechanism certified (DivisorHeightRatioGate: height damping, unconditional geometric decay, `9 < c` implies the gate); remaining inputs are gamma_1 > 9 (verified-zero computation) and a signed-moment lower bound (zero-location input) |
 | 77 | `specification-consistency-polarization-independence-and-cusp-concentration-law.md` | NEEDS-LEAN — consistency and independence metatheorem for the inverse-theory axioms |
 | 78 | `static-heterogeneity-observer-mechanics/positive-rate-mixture-posterior-curvature-finite-window-properness-law.md` | UNAUDITED — added to stage 2 by a concurrent session after this sweep started |
-| 79 | `transverse-information-fusion-mechanics/prime-boolean-mass-hankel-recurrence-transverse-information-law.md` | OPEN — not yet audited in this sweep |
+| 79 | `transverse-information-fusion-mechanics/prime-boolean-mass-hankel-recurrence-transverse-information-law.md` | DONE — promoted 2026-08-12 |
 
 Completed and promoted:
 
@@ -96,6 +96,14 @@ Completed and promoted:
 - `complete-test-closure-mechanics/complete-atomic-fourier-hankel-order-and-inertia-fusion-law.md` — 2026-08-11
   (Theorem 5.1 closed by a new complex-Hermitian inertia layer: `HermitianInertia`,
   `CompleteAtomicInertiaFusion`; Theorems 3.1 and 4.1 also closed in concrete matrix form)
+- `transverse-information-fusion-mechanics/prime-boolean-mass-hankel-recurrence-transverse-information-law.md` — 2026-08-12
+  (new module `PrimeBooleanFusionSourcePacket`: Mass norm identity, moment/Hankel block,
+  three-organ conservation and its clock-gap form, two-parameter QFI with the infimum form, the
+  single-clock degeneration, the literal prime Gibbs coordinates with the exact half-density
+  damping, the `σ`/label half of the reconstruction theorem, the unit-norm Boolean state on
+  `ℓ²(𝒫(F))` with its norm recurrence, and the refutation of the zero-transverse-information
+  criticality selector.  At the prime source the clock energy moment is derived, so no
+  nondegeneracy hypothesis survives)
 
 Cross-area findings during this sweep (not universal-law-field cards, recorded so they are not lost):
 

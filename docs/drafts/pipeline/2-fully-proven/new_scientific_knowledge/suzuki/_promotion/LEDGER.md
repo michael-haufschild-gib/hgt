@@ -5297,3 +5297,45 @@ Two traps worth keeping:
   restriction of the *full* product: `Measure.prod_restrict` only fires when **both** factors are
   restrictions, so replace `volume` by `volume.restrict univ` first (this is the same trap already
   recorded for `Measure.prod_restrict` elsewhere in the corpus).
+
+## FD. Section-4 assembly plan — the weak-domain upgrade as Lean
+
+The remaining Lean for `suzuki-gamma-weighted-tail-coercivity` is the card's section 4 as an
+actual theorem.  Scalar physical instance (`T = τ` on `X = ℝ`).  The distributional equation `(5)`
+is taken in its honest tested form: for every smooth compactly supported `φ`,
+
+```text
+-2 int V (φ + L φ') - 2σ int V L φ                        ⟨2L U, φ⟩
+- int V (shiftedGammaJump (-σ) φ') - σ int V (shiftedGammaJump (-σ) φ)   ⟨R_σ U, φ⟩
++ τ int V φ' + τσ int V φ                                 -⟨τU, φ⟩
++ int V φ = int G φ
+```
+
+with `U(ψ) = -int V ψ' - σ int V ψ` the derivative pairing.  Plugging the translated scaled
+mollifier `φ = ρ_ε(x - ·)` and running the kernel algebra reproduces `(18)` at `x` with
+`U_ε = (ρ_ε' - σρ_ε) ⋆ V` — the position commutator `(17)` and `(19)` appear as pointwise kernel
+identities, and the jump term needs exactly one Fubini.  Modules, in build order:
+
+```text
+1 HTGeometry/CompactKernelL2Convolution.lean   g ⋆ V for smooth compactly supported g, V ∈ L²:
+                                               derivative = g' ⋆ V, bound, Lipschitz, L² membership,
+                                               translate modulus ≤ ‖g(·+s)-g‖₁ ‖V‖₂, support shift
+2 HTGeometry/GammaJumpL2Bound.lean             L² majorant ν(s) for the second difference of a
+                                               translate-modulus profile; ∫ k ν < ∞ (σ < 1);
+                                               ‖shiftedGammaJump σ P‖₂ ≤ ∫ kν  by weighted CS +
+                                               Tonelli — continuous Minkowski avoided
+3 HTGeometry/L1FromWeightedL2.lean             P ∈ L², id·P ∈ L² ⇒ P ∈ L¹
+4 HTGeometry/MollifierTestPairing.lean         ∫ (g⋆V) φ = ∫ V ψ_g,  ψ_{ρ'} = -ψ_ρ(φ'),
+                                               ∫ U_ε φ → -∫ V φ' - σ ∫ V φ
+5 HTGeometry/SmoothCompactL2Dense.lean         the submodule of Lp ℝ 2 with smooth compactly
+                                               supported representatives is dense
+                                               (Lp.dense_hasCompactSupport_contDiff)
+6 RHTower/SuzukiGammaMollifiedEquation.lean    tested equation ⇒ (18) pointwise, incl. the jump
+                                               Fubini via module 2's s-section bound
+7 RHTower/SuzukiGammaWeakDomainUpgrade.lean    uniform bound via (20)+Young+coercivity, weak limit
+                                               via exists_weakLimit_of_bounded, identification;
+                                               capstone = the card's (6): U ∈ L², V ∈ H¹
+```
+
+Mollifier family: `scaledMollifier ρ₁ ε` with `ρ₁ = bumpMollifier (ε := 1)`, so `(20)` is exactly
+`integral_abs_firstMomentKernel_scaled` / `integral_abs_firstMomentDeriv_scaled`.

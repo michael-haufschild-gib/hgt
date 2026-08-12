@@ -273,6 +273,19 @@ def cartanWorkNumerator (S : Matrix n n ℂ) (C : ℝ) : ℝ :=
   ((Sᴴ * S).det.re) * ((Sᴴ * S).trace.re - 2 * Fintype.card n - C)
     + ((Sᴴ * S).adjugate.trace.re)
 
+theorem sublevel_algebra {t a d C r : ℝ} (hd : 0 < d) :
+    (t + d⁻¹ * a - 2 * r ≤ C ↔ d * (t - 2 * r - C) + a ≤ 0) := by
+  constructor
+  · intro h
+    have hmul := mul_le_mul_of_nonneg_left h hd.le
+    have hda : d * (d⁻¹ * a) = a := by field_simp
+    nlinarith [hmul, hda]
+  · intro h
+    have hd' : 0 < d⁻¹ := inv_pos.mpr hd
+    have hmul := mul_le_mul_of_nonneg_left h hd'.le
+    have hda : d⁻¹ * (d * (t - 2 * r - C)) = t - 2 * r - C := by field_simp
+    nlinarith [hmul, hda]
+
 /-- **The sublevel is a polynomial locus.**  On the invertible matrices the Cartan work sublevel
 is cut out by one polynomial inequality in the entries, because the determinant of `SᴴS` is a
 positive real there. -/
@@ -286,10 +299,6 @@ theorem cartanWork_le_iff_numerator {S : Matrix n n ℂ} (hS : IsUnit S) (C : �
       rw [hdet, ← Complex.ofReal_prod, Complex.ofReal_re]
     rw [hre]
     exact Finset.prod_pos (fun i _ => hpd.eigenvalues_pos i)
-  have hdetne : (Sᴴ * S).det ≠ 0 := by
-    intro h
-    rw [h] at hdetpos
-    simp at hdetpos
   have htrinv : ((Sᴴ * S)⁻¹).trace.re
       = ((Sᴴ * S).det.re)⁻¹ * ((Sᴴ * S).adjugate.trace.re) := by
     rw [trace_inv_eq_det_inv_mul_trace_adjugate]
@@ -298,14 +307,174 @@ theorem cartanWork_le_iff_numerator {S : Matrix n n ℂ} (hS : IsUnit S) (C : �
         rw [← Matrix.det_conjTranspose, hH.eq]
       exact (Complex.conj_eq_iff_re.mp hstar).symm
     rw [hdetreal, ← Complex.ofReal_inv, Complex.re_ofReal_mul]
+    simp
   rw [cartanWork, htrinv, cartanWorkNumerator]
-  rw [div_le_iff₀ hdetpos |>.symm.le_iff_le]
+  exact sublevel_algebra hdetpos
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Matrix
+open scoped ComplexOrder
+
+noncomputable section
+
+variable {n : Type*} [Fintype n] [DecidableEq n]
+
+/-! ## Compactness of the work sublevel -/
+
+/-- The work sublevel, as a subset of all matrices. -/
+def cartanWorkSublevel (C : ℝ) : Set (Matrix n n ℂ) :=
+  {S | IsUnit S ∧ cartanWork S ≤ C}
+
+theorem isUnit_of_det_conjTranspose_mul_self_ne_zero {S : Matrix n n ℂ}
+    (h : (Sᴴ * S).det ≠ 0) : IsUnit S := by
+  rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+  intro hdet
+  apply h
+  rw [Matrix.det_mul, hdet, mul_zero]
+
+/-- **The sublevel is a polynomial locus, globally.**  With `K` the uniform determinant floor the
+sublevel is exactly the intersection of two loci cut out by continuous functions of the entries. -/
+theorem cartanWorkSublevel_eq [Nonempty n] {C : ℝ} (hCpos : 0 < C + 2 * Fintype.card n) :
+    cartanWorkSublevel C
+      = {S : Matrix n n ℂ | ((C + 2 * Fintype.card n)⁻¹) ^ Fintype.card n ≤ (Sᴴ * S).det.re}
+        ∩ {S : Matrix n n ℂ | cartanWorkNumerator S C ≤ 0} := by
+  have hKpos : (0 : ℝ) < ((C + 2 * Fintype.card n)⁻¹) ^ Fintype.card n :=
+    pow_pos (inv_pos.mpr hCpos) _
+  ext S
   constructor
-  · intro h
-    have := mul_le_mul_of_nonneg_left h hdetpos.le
-    nlinarith [hdetpos]
-  · intro h
-    nlinarith [hdetpos, inv_pos.mpr hdetpos]
+  · rintro ⟨hS, hC⟩
+    have hre : (Sᴴ * S).det.re = ∏ i, (posDef_conjTranspose_mul_self hS).1.eigenvalues i := by
+      rw [(posDef_conjTranspose_mul_self hS).1.det_eq_prod_eigenvalues]
+      norm_cast
+    refine ⟨?_, (cartanWork_le_iff_numerator hS C).mp hC⟩
+    show ((C + 2 * Fintype.card n)⁻¹) ^ Fintype.card n ≤ (Sᴴ * S).det.re
+    rw [hre]
+    exact det_ge_of_cartanWork_le hS hC
+  · rintro ⟨hdet, hnum⟩
+    have hdet' : ((C + 2 * Fintype.card n)⁻¹) ^ Fintype.card n ≤ (Sᴴ * S).det.re := hdet
+    have hne : (Sᴴ * S).det ≠ 0 := by
+      intro h0
+      rw [h0] at hdet'
+      simp only [Complex.zero_re] at hdet'
+      linarith
+    have hS : IsUnit S := isUnit_of_det_conjTranspose_mul_self_ne_zero hne
+    exact ⟨hS, (cartanWork_le_iff_numerator hS C).mpr hnum⟩
+
+/-- **The work sublevel is closed.** -/
+theorem isClosed_cartanWorkSublevel [Nonempty n] {C : ℝ}
+    (hCpos : 0 < C + 2 * Fintype.card n) :
+    IsClosed (cartanWorkSublevel (n := n) C) := by
+  have hgram : Continuous fun S : Matrix n n ℂ => Sᴴ * S :=
+    (continuous_id.matrix_conjTranspose).mul continuous_id
+  have hdet : Continuous fun S : Matrix n n ℂ => (Sᴴ * S).det.re :=
+    Complex.continuous_re.comp hgram.matrix_det
+  have hnum : Continuous fun S : Matrix n n ℂ => cartanWorkNumerator S C := by
+    have htr : Continuous fun S : Matrix n n ℂ => (Sᴴ * S).trace.re :=
+      Complex.continuous_re.comp hgram.matrix_trace
+    have hadj : Continuous fun S : Matrix n n ℂ => (Sᴴ * S).adjugate.trace.re :=
+      Complex.continuous_re.comp (hgram.matrix_adjugate.matrix_trace)
+    have h := (hdet.mul (htr.sub (continuous_const (y := 2 * (Fintype.card n : ℝ) + C)))).add hadj
+    refine h.congr (fun S => ?_)
+    simp only [Pi.add_apply, Pi.mul_apply, Pi.sub_apply, cartanWorkNumerator]
+    ring
+  rw [cartanWorkSublevel_eq hCpos]
+  exact (isClosed_le continuous_const hdet).inter (isClosed_le hnum continuous_const)
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Matrix
+open scoped ComplexOrder
+
+attribute [local instance] Matrix.seminormedAddCommGroup Matrix.normedAddCommGroup
+  Matrix.normedSpace
+
+noncomputable section
+
+variable {n : Type*} [Fintype n] [DecidableEq n]
+
+/-- **The work sublevel is bounded** in the entrywise sup norm, by the square root of the level. -/
+theorem isBounded_cartanWorkSublevel (C : ℝ) :
+    Bornology.IsBounded (cartanWorkSublevel (n := n) C) := by
+  rw [Metric.isBounded_iff_subset_closedBall 0]
+  refine ⟨Real.sqrt (C + 2 * Fintype.card n), fun S hS => ?_⟩
+  obtain ⟨hunit, hle⟩ := hS
+  have hsum := sum_norm_sq_le_of_cartanWork_le hunit hle
+  rw [Metric.mem_closedBall, dist_zero_right]
+  refine (Matrix.norm_le_iff (Real.sqrt_nonneg _)).mpr (fun j i => ?_)
+  have hinner : ‖S j i‖ ^ 2 ≤ ∑ k, ‖S k i‖ ^ 2 :=
+    Finset.single_le_sum (f := fun k => ‖S k i‖ ^ 2) (fun k _ => sq_nonneg _) (Finset.mem_univ j)
+  have houter : (∑ k, ‖S k i‖ ^ 2) ≤ ∑ l, ∑ k, ‖S k l‖ ^ 2 :=
+    Finset.single_le_sum (f := fun l => ∑ k, ‖S k l‖ ^ 2)
+      (fun l _ => Finset.sum_nonneg (fun k _ => sq_nonneg _)) (Finset.mem_univ i)
+  have hb : ‖S j i‖ ^ 2 ≤ C + 2 * Fintype.card n := by linarith
+  have hnn : (0 : ℝ) ≤ C + 2 * Fintype.card n := le_trans (sq_nonneg _) hb
+  calc ‖S j i‖ = Real.sqrt (‖S j i‖ ^ 2) := by
+        rw [Real.sqrt_sq (norm_nonneg _)]
+    _ ≤ Real.sqrt (C + 2 * Fintype.card n) := Real.sqrt_le_sqrt hb
+
+/-- **Theorem 6.1, properness.**  Every Cartan work sublevel is compact. -/
+theorem isCompact_cartanWorkSublevel [Nonempty n] {C : ℝ}
+    (hCpos : 0 < C + 2 * Fintype.card n) :
+    IsCompact (cartanWorkSublevel (n := n) C) :=
+  Metric.isCompact_of_isClosed_isBounded (isClosed_cartanWorkSublevel hCpos)
+    (isBounded_cartanWorkSublevel C)
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+/-! ## Proper radial selection -/
+
+/-- **Theorem 7.1, the selection core.**  A Cartan ray has bounded work exactly when its radial
+generator is neutral: the hyperbolic profile `4 ∑ sinh²(t λⱼ)` is bounded in `t` if and only if
+every `λⱼ` vanishes.  A recurrent unitary phase therefore cannot keep the factorization history
+closed unless the radial generator is zero. -/
+theorem bounded_sinh_sq_sum_iff {ι : Type*} [Fintype ι] (lam : ι → ℝ) :
+    (∃ C : ℝ, ∀ t : ℝ, 4 * ∑ j, Real.sinh (t * lam j) ^ 2 ≤ C) ↔ ∀ j, lam j = 0 := by
+  constructor
+  · rintro ⟨C, hC⟩ j
+    by_contra hne
+    obtain ⟨M, hM0, hMC⟩ : ∃ M : ℝ, 0 ≤ M ∧ C < M ^ 2 := by
+      refine ⟨max C 0 + 1, by positivity, ?_⟩
+      have h0 : (0 : ℝ) ≤ max C 0 := le_max_right _ _
+      have h1 : C ≤ max C 0 := le_max_left _ _
+      nlinarith
+    have ht := hC (M / lam j)
+    have harg : (M / lam j) * lam j = M := by field_simp
+    have hge : M / 2 ≤ Real.sinh M := by
+      rw [Real.sinh_eq]
+      have h1 : M + 1 ≤ Real.exp M := Real.add_one_le_exp M
+      have h2 : Real.exp (-M) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+      linarith
+    have hsq : M ^ 2 / 4 ≤ Real.sinh ((M / lam j) * lam j) ^ 2 := by
+      rw [harg]
+      nlinarith [hge, hM0]
+    have hsingle : Real.sinh ((M / lam j) * lam j) ^ 2
+        ≤ ∑ k, Real.sinh ((M / lam j) * lam k) ^ 2 :=
+      Finset.single_le_sum (f := fun k => Real.sinh ((M / lam j) * lam k) ^ 2)
+        (fun k _ => sq_nonneg _) (Finset.mem_univ j)
+    nlinarith
+  · intro hall
+    refine ⟨0, fun t => ?_⟩
+    have hz : ∀ j, Real.sinh (t * lam j) ^ 2 = 0 := by
+      intro j
+      rw [hall j, mul_zero, Real.sinh_zero]
+      ring
+    rw [Finset.sum_congr rfl (fun j _ => hz j)]
+    simp
 
 end
 

@@ -231,6 +231,77 @@ theorem coeff_eq_sSup {c : ℕ → ℝ} {n : ℕ} (hc : 0 ≤ c n) :
     have hqpos : (0 : ℚ) < q := by exact_mod_cast lt_of_le_of_lt h0 hq1
     exact absurd (hy (Or.inr ⟨q, hqpos, rfl, hq2.le⟩)) (by push Not; exact hq1)
 
+/-! ### Expectation, covariance and the Fisher bound -/
+
+/-- Expectation against the normalized weights. -/
+noncomputable def expect (σ : ℝ) (c : ℕ → ℝ) (f : ℕ → ℂ) : ℂ :=
+  ∑' n, (normWeight σ c n : ℂ) * f n
+
+theorem expect_const (σ : ℝ) (c : ℕ → ℝ) (a : ℂ) :
+    expect σ c (fun _ => a) = (∑' n, (normWeight σ c n : ℂ)) * a := by
+  rw [expect, ← tsum_mul_right]
+
+/-- **`(MER.6)`.**  The phase correlation is the expectation of the character. -/
+theorem phaseCorr_eq_expect {c : ℕ → ℝ} (hZ : totalMass σ c ≠ 0) (t : ℝ) :
+    phaseCorr σ c t = expect σ c (atomChar t) := by
+  have hZc : ((totalMass σ c : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hZ
+  rw [phaseCorr, expect, div_eq_mul_inv, ← tsum_mul_right]
+  refine tsum_congr fun n => ?_
+  rw [normWeight, div_eq_mul_inv]
+  push_cast
+  ring
+
+/-- **`(MER.14)`.**  For a multiplicative score the response is the bilinear covariance of the
+score against the phase character. -/
+theorem phaseResponse_covariance {c r : ℕ → ℝ} (hZ : totalMass σ c ≠ 0) (t : ℝ)
+    (hs1 : Summable fun n => (normWeight σ c n : ℂ) * ((r n : ℂ) * atomChar t n))
+    (hs2 : Summable fun n => (normWeight σ c n : ℂ) * (r n : ℂ)) :
+    phaseResponse σ c (fun n => c n * r n) t
+      = expect σ c (fun n => (r n : ℂ) * atomChar t n)
+        - expect σ c (fun n => (r n : ℂ)) * phaseCorr σ c t := by
+  have hZc : ((totalMass σ c : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hZ
+  have hterm : ∀ n : ℕ,
+      (mellinWeight σ (fun n => c n * r n) n : ℂ) * (atomChar t n - phaseCorr σ c t)
+        * ((totalMass σ c : ℝ) : ℂ)⁻¹
+        = (normWeight σ c n : ℂ) * ((r n : ℂ) * atomChar t n)
+          - (normWeight σ c n : ℂ) * (r n : ℂ) * phaseCorr σ c t := by
+    intro n
+    simp only [mellinWeight, normWeight]
+    push_cast
+    field_simp
+  rw [phaseResponse, div_eq_mul_inv, ← tsum_mul_right, tsum_congr hterm,
+    hs1.tsum_sub (hs2.mul_right (phaseCorr σ c t)), tsum_mul_right]
+  rfl
+
+/-- The `P_c`-variance of a real score. -/
+noncomputable def variance (σ : ℝ) (c : ℕ → ℝ) (r : ℕ → ℝ) : ℂ :=
+  expect σ c (fun n => ((r n : ℂ)) ^ 2) - (expect σ c (fun n => (r n : ℂ))) ^ 2
+
+/-- The Hermitian variance of the phase character. -/
+noncomputable def hermVarianceChar (σ : ℝ) (c : ℕ → ℝ) (t : ℝ) : ℂ :=
+  expect σ c (fun n => atomChar t n * (starRingEnd ℂ) (atomChar t n))
+    - phaseCorr σ c t * (starRingEnd ℂ) (phaseCorr σ c t)
+
+@[simp] theorem atomChar_mul_conj (t : ℝ) (n : ℕ) :
+    atomChar t n * (starRingEnd ℂ) (atomChar t n) = 1 := by
+  have h : ‖atomChar t n‖ = 1 := by
+    rw [atomChar, Complex.norm_exp]
+    simp
+  have := Complex.mul_conj (atomChar t n)
+  rw [this, Complex.normSq_eq_norm_sq, h]
+  norm_num
+
+/-- **`(MER.17)`, the variance identity.**  The Hermitian variance of the character is
+`1 - |C_c(t)|²`. -/
+theorem hermVarianceChar_eq {c : ℕ → ℝ} (t : ℝ)
+    (hone : ∑' n, (normWeight σ c n : ℂ) = 1) :
+    hermVarianceChar σ c t = 1 - (‖phaseCorr σ c t‖ ^ 2 : ℝ) := by
+  have h1 : expect σ c (fun n => atomChar t n * (starRingEnd ℂ) (atomChar t n)) = 1 := by
+    rw [expect]
+    simp only [atomChar_mul_conj, mul_one]
+    exact hone
+  rw [hermVarianceChar, h1, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+
 end MarkedMellin
 
 end HTGeometry.ConstraintMotiveRelativity

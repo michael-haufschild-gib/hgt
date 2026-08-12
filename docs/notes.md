@@ -218,3 +218,26 @@ where I verified the digamma terms and the prime terms each carry manifestly pos
 5. Honest verdict and the next move
 
 Where it leads: the ladder was worth climbing precisely because it proved its own limitation — verification-shaped routes are exhausted, in the strong sense that their failure is now derived from formalized theorems rather than experience. What remains live is one construction problem with a written specification: vacuum = pole atom, continuum = X^{−1/2}, primes entering by conjugation, trace identity = explicit formula. The next mathematical move is to attack that specification directly — try the smallest candidate algebras (single generator with the subordinator as a transfer operator; the corpus's CC-compression) and check each against the sign constraint before any formal work, exactly as the method demands. If the construction exists, the corpus is unusually well positioned to recognize it: it owns the single-shift converse, so any successful realization at one shift finishes everything.
+
+
+full Wold profile is not arbitrary nonlinear residue. Coefficients \(1/(2k+1)\) identify it as an inverse Euler-dilation Green response:
+\[
+F=(D^{-1}-I)\sinh,\qquad D=u\partial_u.
+\]So Route-L Green quotient, Route-T residual, Route-R horizontal deformation, and Route-U inverse-response geometry meet at one operator.
+
+
+The ladder is closed — in full generality, in one theorem. This push produced the capstone of the entire arc:
+
+riemannHypothesis_iff_forall_polyTuranMinor_re_nonneg
+
+At any one shift X ≥ 0: RH ⟺ for every real polynomial p and every n, the Turán minor M_p(n)·M_p(n+2) − M_p(n+1)² ≥ 0 of the p²-weighted resolvent moments M_p(k) = Σ_q u_q^{k+1}·p(u_q)².
+
+Axiom-clean, wired, recorded. Two modules made it happen:
+
+The universal level-cleansing machine (XiResolventWeightedTuranMachine.lean): for any bounded, conjugation-symmetric weight that vanishes above a modulus level and is nonzero on it, weighted Turán positivity forces that entire level onto the critical line. One proof, subsuming steps 33 and 35 as the instances W = 1 and W = (u−r)² — the rung machinery, proved once and for all.
+
+The spectral descent (XiResolventSpectralDescent.lean): strong induction on the number of copies of larger resolvent modulus. The induction hypothesis makes everything above a given zero a finite set of real atoms; the polynomial P = ∏(X − r) over those atoms kills them as a weight; and the machine, fed the Turán data at P, cleanses the zero's own level. Every copy is reached — the whole divisor lands on the critical line. The conjectured ladder of steps 32–35 didn't need rung-by-rung construction after all: it collapses into a single descent.
+
+Why this is the strongest result of the arc. First, it is a thin-slice criterion: the corpus's previous single-shift equivalence needed the full N×N Hankel positivity; this one needs only 2×2 minors — the log-convexity inequalities of polynomially reweighted moment sequences. For a general moment functional that slice does not imply full positivity; the implication here runs irreducibly through zeta's divisor structure — finite modulus levels, conjugation stability, the height gap. Second, the proof mechanism is, to my knowledge, without precedent in the criterion literature: infinite descent down the zero spectrum, locating zeros on the line level by level from the lowest upward. Turán-type inequalities appear in the zeta literature strictly as necessary conditions (Csordas–Norfolk–Varga on ξ's coefficients, Li-coefficient variants); a localized equivalence with a descent proof is new. Labels as always: [LEAN-PROVED], [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] provisional.
+
+Where the frontier now stands. Since each M_p is a finite combination of the arithmetic moments R_{k+i+j} — jets of logDeriv ξ on the Euler ray — the open core has become: supply the Turán data for one polynomial weight at a time, a one-parameter family of log-convexity inequalities on explicit arithmetic sequences. And the GNS/certificate program inherits a strictly easier-shaped target: it no longer must manufacture all of Hankel positivity at once, only the positivity of each reweighted sequence — level by level, exactly the granularity the experiment said the problem wants.
