@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 12 August 2026, committed snapshot
-**8313f92f42b7f8e7f5774134fc00ed1c2a7cf95b**.
+**1db3918471cc3123177da4a0357e5e00d74ba014**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -13,7 +13,7 @@ formal frontier. The map records present state, not research chronology.
 Current worktree results newer than this commit are audited in explicitly marked provisional
 paragraphs. They receive no formal credit until committed, umbrella-reachable, and independently
 checked. This separation matters here: active Route-P, Route-T, Route-U, and horizontal-source
-work is moving while this map is maintained.
+work, plus Route-G and Route-L infrastructure, is moving while this map is maintained.
 
 ## Abstract
 
@@ -208,34 +208,16 @@ widening-limit assembly left. Route Q's selected ratio gate is paper-proved to h
 selected continuous power-reciprocal carrier is now closed negatively at all degrees: its diffuse
 theta ray leaves mass off the countable Xi thermal-node set forced by complete moment rigidity.
 Surviving work is direct Cassini saturation or a source-derived discontinuous quantization law,
-not another continuous scalar reporter. Route T now has an exact
-divisor-preserving centered prime-tail carrier together with passivity and positive-completion
-no-gos. Route U's degree-one obstruction is an explicit theta-cumulant contact; exact pair-energy
-transport and an all-degree hyperedge conformal law show that the true missing theorem is a
-source-specific contact-weighted hyperedge orientation. The proposed quantitative
-fourth-cumulant reserve is now equivalent at contact to the terminal-flux/adjacent-minor sign and
-is therefore circular rather than an independent producer. Canonical first-face rank filling is
-now fully classified: a nonzero odd remainder preempts positive extension, while at tangency the
-  completed source sign is exactly equivalent to positivity of the next principal block. A
-  umbrella-reachable theorem now goes further: at any first nonzero even contact, positive rank
-  fill survives exactly one block and the following block is indefinite.
-  The canonical-admission laws remove both amplitude and coordinate gauges: after division
-  by admitted norm and the current Christoffel scale, the literal arithmetic source is the
-  universal edge `(n+1)/16` plus a strictly positive adaptive Gaussian bulk. Fixed-mass
-  transgression is exact; umbrella Lean reduces moving-mass debt to odd defect-energy drift plus
-  canonical norm flux and gives its exact integrated source-density budget, while a positive three-atom countermodel rules out
-  signing it from generic finite moment geometry. At paper
-  level, completed prime--Gamma coercivity now makes every `N=O(sqrt(y))` first-contact packet
-  strongly precompact with a nonzero finite-type Paley--Wiener limit; translation-to-infinity is
-  closed. Möbius numerator clearing now transports finite real-rootedness to a squared-variable
-  Laguerre--Polya limit satisfying a literal finite-prime Gamma equation. The remaining object is
-  therefore an explicit hyperbolic Weil-boundary state, not arbitrary degree or spectral escape.
-  The completed resolvent-Hankel chart is also formal. At every fixed nonnegative shift,
-  positivity of all resolvent Hankel forms is equivalent to RH. Unconditionally, every moment is
-  positive on a quadratic far ray and every one-signed coefficient form is positive in a growing
-  sector; any negative witness there must change sign. Its entire deficit is bounded by one
-  imaginary resolvent mass, which decays quadratically with shift and vanishes exactly on RH.
-  This is Route U's stationary chart, not a new route.
+not another continuous scalar reporter. Route T's finite Maynard formation, relevance, trimming,
+selection, and fibre count are closed provisionally; its zero-reserve endpoint now exposes the
+classical finite Vinogradov incidence/`p`-adic induction as first producer. Route U's source
+selection has advanced beyond a generic hyperedge orientation request: false RH forces cofinal
+strict terminal renewals, and umbrella Lean identifies the literal adaptive source square with an
+exact positive curvature price paid at each renewal. Remaining theorem is to prevent those
+normalized prices from becoming summably negligible under degree change, or find a conserved
+aggregate charging between-contact travel. The fourth-cumulant reserve remains circular. Padé,
+full-ground, and hyperbolic boundary laws classify possible low-efficiency schedules; they do not
+replace this quantitative synchronization core.
 
 A now umbrella-reachable Cassini--Wold/Deninger chain recuts Route T exactly. It
 identifies a positive Stieltjes--Cassini orientation defect, its reflected phase-clock and BV--Wold
@@ -292,22 +274,22 @@ existing route.
 | D2 | open | finite high-frequency ceiling for continued literal prime--Gamma source |
 | E | open, advanced | exact relation formation is no longer open. Paper-level `R_X^gr` is a fixed grade-recurrent entropy-spread cube relation built before imbalance is observed; row admission, central corners, parity/grade recurrence, annular harmonic normalization, endpoint-sector crossing, and mixed Gibbs cost are proved. First unresolved theorem is `ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY`: choose source-first weights on this fixed relation and prove physical incoming co-degree at most one, interval Hall expansion for distinct opposite-parity integers, weighted moving zero/one-large-prime flux, and total mixed cost at strict-half scale. Equivalent formal lanes remain weighted-Hall projection, recurrence-weighted inverse-load Dirichlet energy, and physical product-fibre histogram parity; complete signed inverse-load flux is circular. Separate analytic lane remains coprime Möbius near-diagonal covariance. |
 | F | retired | finite-height Sonin transfer has wrong asymptotic order |
-| G | open, narrowed | Suzuki 2022 source parity is now exact through Theorems 1.1(i)--(iii), 1.2, 1.3, 1.5, 1.6, Proposition 3.1, both parts of 1.7, and the valid Stieltjes PSD formulation. Lean disproves the paper's generic determinant-only implication by counterexample; only the special Suzuki determinant-only converse remains open. Route-level first gate is still literal zero-shift normalized-Hankel admission: control the centered critical Mellin defect in the common logarithmic form topology or construct a source-aligned cofinal edge. Only then prove full paired compactified occupancy/all-smoothing-trace convergence. |
+| G | open, narrowed | Suzuki 2022 source parity is now exact through Theorems 1.1(i)--(iii), 1.2, 1.3, 1.5, 1.6, Proposition 3.1, both parts of 1.7, and the valid Stieltjes PSD formulation. Lean disproves the paper's generic determinant-only implication by counterexample; only the special Suzuki determinant-only converse remains open. The printed entrywise-to-form step in Theorems 4.2--4.3 is invalid, but the finite-source repair is formal and current provisional `L2` work gives the actual-source primitive, free-kernel Gram identity, literal Eq. (4.2) factorization, and both disputed form inequalities. Provisional dirty-umbrella Lean also removes the apparent singularity in the exact 2026 smooth Weil remainder, source-locks every parameter in the four-block restricted form, proves the visible-prime sector's exact jump-energy decomposition and lower bound, proves the literal smooth block is an `L2`-bounded perturbation, and proves the exact Eq. (2.2) origin decomposition with continuous bounded renormalized curvature. Only finite-part semiboundedness remains before closure of the source form. This repairs analytic interfaces and literature parity, not Route G's source edge. Route-level first gate remains literal zero-shift normalized-Hankel admission: control the centered critical Mellin defect in the common logarithmic form topology or construct a source-aligned cofinal edge. Only then prove full paired compactified occupancy/all-smoothing-trace convergence. |
 | G2 | retired | required germ is RH-equivalent |
 | H | retired | finite Taylor/theta current loses required source information |
 | I | retired | exact collision with C2 width |
 | J | retired negatively | unrenormalized energy budget impossible |
 | K | retired | all-order survivor belongs to P |
-| L | open, advanced | strict resolved chain provenance is closed. First unresolved theorem is the source-derived singular comparison square from `completed Green tensor BV_1` to a resolved target whose degree-zero map is exactly the existing Burnol/Deninger physical landing and whose fixed reader kills target boundaries, while retaining prime labels, multiplicity jets, and pre-divisor construction. At `n=6` it would force `c_rho K_6(rho)=0`. Rational-Witt source foundations have advanced: exact field/perfect-field/Fatou equalizers and intersections and the `Spec Z` Frobenius divisor pullback are formal, while Lean refutes arbitrary-domain perfect-quotient-field descent by the cusp-ring counterexample. New arbitrary-ring integral Euler coordinates are provisional source infrastructure, not this missing comparison. |
+| L | open, advanced | strict resolved chain provenance is closed. First unresolved theorem is the source-derived singular comparison square from `completed Green tensor BV_1` to a resolved target whose degree-zero map is exactly the existing Burnol/Deninger physical landing and whose fixed reader kills target boundaries, while retaining prime labels, multiplicity jets, and pre-divisor construction. At `n=6` it would force `c_rho K_6(rho)=0`. Rational-Witt source foundations have advanced: exact field/perfect-field/Fatou equalizers and intersections and the `Spec Z` Frobenius divisor pullback are formal, while Lean refutes arbitrary-domain perfect-quotient-field descent by the cusp-ring counterexample. Beyond the committed cutoff, umbrella-wired Lean now completes the division-free arbitrary-base big-Witt source as a canonical commutative ring by universal polynomial descent. This closes coefficient algebra, not the missing singular comparison. |
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced | construct/evaluate seed is closed at paper level and radial/exterior primitives are formal. First unresolved theorem is source-derived control of the entire restricted-Weil ground space: prove the explicit constrained prolate seed controls every near-ground direction, equivalently `epsilon_lambda>=0`, `epsilon_(lambda_j)->0` on one cofinal nested family, or `Delta_lambda=r_lambda-epsilon_lambda->0`. Negative spectrum cannot evacuate. Further seed asymptotics or finite determinant convergence do not address this floor. |
-| P | open, advanced | the actual Gamma-sewn pre-Gram Stokes edge now has an exact source inverse: for every `s>1` it recovers each von Mangoldt prime-power coefficient and the complete current `-zeta'(s)/zeta(s)`. At `s=1` the inverse grows beyond `log p`, so bounded ambient-Hilbert specialization is impossible; however current worktree Lean proves uniform one prime-log-height growth and projective convergence in every defining seminorm of the Deninger nuclear height-Köthe source. Thus the critical chamber wall is topological, not a source-coefficient failure. First unresolved theorem is a Gamma-corrected Köthe/corona boundary landing yielding the fixed finite continued response before Gram/KMS completion, followed by the existing Julia/Cayley saturation and compact Thorin/Markov endpoint. Existing C1/R/N/FE--Schwarz equivalences remain receivers and no bounded or normalized repair closes this gate. |
+| P | open, advanced | committed umbrella Lean closes P-G60--P-G62; current dirty umbrella provisionally reaches P-G73. Literal Gamma-sewn Stokes inversion recovers every von Mangoldt prime-power coefficient and `-zeta'/zeta` for `s>1`; correct rigged direction is bounded dual current whose exact complex Euler transpose law extends throughout `Re(s)>0`. Every compact Deninger-time test lifts to rapid Kummer source; physical sewn current has exact Euler--Laplace response; its zero-parameter value plus archimedean term is complete local Lefschetz trace. Corona/order laws prove scalar completion singular and exclude finite positive order units. Source Stokes gap gives exact anti-Herglotz Euler resolvent; Kummer reflection and seam-square produce an odd response and finite positive compact squared reciprocal-gap carrier with explicit moments. Hostile mass testing disproves raw `s=1/2` identification, and P-G73 proves coefficientwise first-information Schur depletion remains positive/summable but is quantitatively far too weak. Missing producer is now sharply typed: completed Gamma/polar sewing must act as a coherent non-diagonal Schur/Feshbach block before scalar label compression, with reduced square-coordinate response positive. Existing C1/R/N/FE--Schwarz equivalences remain receivers. |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open, narrowed | relevance restriction, exponent-zero trimming, exact box selection, and amplitude-label fibre counting are closed in committed direct-checked Lean, though the new suite is not yet umbrella-rooted. Canonical degree 60 does not remove Maynard's smaller-cutoff long-Möbius endpoint. Fixed positive amplitude gaps are closed; reserve vanishes at `alpha=1`. Active unconditional producer is polynomial-in-phase-order loss via classical Vinogradov mean value/Linnik induction. Lean proves power-sum rigidity, diagonal moment, Linnik lifting/count, an explicit Bertrand avoiding-prime reservoir, and modular collision infrastructure. Current worktree adds finite Fourier energy, fibre partition/cover, and exact collision recurrence. First open theorem is the finite incidence/p-adic induction from moment order `kr` to `k(r-1)` strongly enough for any finite polynomial order loss, then transport to the near-one endpoint and smooth-window receiver. |
-| U | open, advanced | producer existence is no longer open: false RH gives cofinal occupied strict terminal-frontier renewals, and the literal adaptive mixed/completed source is exactly twice the first odd defect. Umbrella Lean proves its squared source carries a strictly positive integral-Lipschitz curvature price paid by the same finite terminal frontier. Fixed-degree and adjacent-degree recession, complete Hausdorff diagonal landing, and diagonal edge detection are also closed; naive deflation is not iterable. First unresolved theorem is quantitative: prevent the normalized source price from becoming summably negligible along every cofinal degree-changing renewal schedule, or find a stronger conserved aggregate coupling priced contacts to unpriced positive-chamber travel. Older Padé/root-sign and full-ground formulations are structural realizations of this same efficiency/synchronization debt, not missing source construction. |
+| T | open, narrowed | relevance restriction, exponent-zero trimming, exact box selection, and amplitude-label fibre counting are closed in committed direct-checked Lean, though the suite is not yet umbrella-rooted. Canonical degree 60 does not remove Maynard's smaller-cutoff long-Möbius endpoint. Fixed positive amplitude gaps are closed; reserve vanishes at `alpha=1`. Active unconditional producer is polynomial-in-phase-order loss via classical Vinogradov mean value/Linnik induction. The committed unwired suite proves power-sum rigidity, diagonal moment, Linnik lifting/count, a common Bertrand avoiding-prime reservoir, finite Fourier/fibre energy, Hölder class cost, affine power-sum equivalence, fibre partition/cover, and exact collision recurrence. Provisional additions now close the entire finite incidence recurrence and its elementary scale control: affine residue quotienting, tail reduction, shifted Linnik compatibility, all-residue separated energy, fixed Bertrand-reservoir cover, combination with the colliding term, `p^k<=C_kN`, and the explicit small-range cutoff. First open theorem has moved from incidence formation to solving and iterating this explicit PNT-free recurrence at `r` of polynomial size in phase order, extracting a uniform polynomial-in-order Weyl saving, and transporting it to near-one exclusion and the smooth-window receiver. |
+| U | open, advanced | producer existence is no longer open: false RH gives cofinal occupied strict terminal-frontier renewals, and the literal adaptive mixed/completed source is exactly twice the first odd defect. Umbrella Lean proves its squared source carries a strictly positive integral-Lipschitz curvature price paid by the same finite terminal frontier. Provisional Lean identifies a second intrinsic producer: after subtracting Jacobi drift, literal arithmetic source has strict projective surplus `(2n+1)D_n-F_n^2>0`; normalized work per squared flux tends exactly to one at every fixed positive degree and is velocity of reciprocal projective clock. New dirty-umbrella Lean proves this work source-capitalizes the next admitted monic norm with a strictly positive retained Jacobi inventory at every positive block. A further dirty-umbrella theorem proves all consecutive Turán-minor signs at one shift force every maximal-resolvent divisor copy onto the critical line. Fixed-degree recession, one-step degree renewal, complete Hausdorff diagonal landing, and depth-one edge cleansing are therefore closed provisionally; cofinal iteration and naive deflation remain open. First unresolved theorem is quantitative: control normalized loss while composing the adjacent-admission capitalization through every cofinal degree-changing schedule, or propagate Turán cleansing to lower modulus layers by a source-derived positivity law. Older Padé/root-sign and full-ground formulations are structural realizations of this synchronization debt, not missing source construction. |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -734,11 +716,15 @@ conjugate of the tested spectral phase differential; and
 identity. Independently, `CCMArchimedeanWeilDistribution.lean` constructs the finite-part global
 archimedean Weil distribution, proves its integrability, and splits it into finite-aperture and
 tail terms. Exact real, circle, Hankel, and quantized trace cocycles now avoid any diagonal-kernel
-trace axiom. The sole remaining source identification is to prove that the literal geometric
+trace axiom. The previously sole remaining source identification was to prove that the literal geometric
 tested trace/phase-rate functional equals this finite-part Weil distribution for the paper's
-compact logarithmic test, then derive the support-limited lower bound without numerical spectral
-input. Search of the corpus finds the distribution used only in its construction module: this
-last bridge is not hidden elsewhere. It is CCM/C1 parity work, not Route-O ground-floor progress.
+compact logarithmic test. That identification is now closed by the committed, umbrella-reachable
+`CCMArchimedeanPhaseWeilBridge.lean`: finite Gauss sums and exact Fourier resolvents yield the
+normalization-sensitive Gamma/digamma transform, the spectral trace equals the explicit Weil
+distribution, and unitary Mellin conjugacy gives the literal geometric-space trace formula. Thus
+Connes--Consani Proposition 7(iv) is exact in Lean. Remaining archimedean parity debt is only the
+support-limited lower bound without the paper's numerical spectral input. This is CCM/C1 parity
+work, not Route-O ground-floor progress.
 
 An adjacent Connes--Consani quasi-inner lane now has exact Lean-certified scalar and literal
 `L²(R/Z)` operator inputs plus a diagonal-model critical residue. For every Gauss component
@@ -1596,6 +1582,34 @@ collapse source. Any order-one pre-Gamma packet-diagonal successor is a new rout
   and shifted Hankel matrix, via Stieltjes existence and determinacy. RH still implies both
   determinant chains for the Suzuki sequence; whether this special sequence has an additional
   determinant-only converse is open and cannot be imported as generic moment theory;
+- the form-domination gap in published Theorems 4.2--4.3 is now sharply localized and provisionally
+  repaired at the actual source level. Umbrella Lean gives a positive-semidefinite entrywise-order
+  counterexample, so the printed kernel-to-form inference is invalid; it then factors every finite
+  source through the oriented-interval Gram primitive and proves the contour-shift and low-frequency
+  energy bounds at quadratic-form level. Committed unwired `SuzukiL2GramRepair.lean` constructs the
+  actual `L2(-a,a)` primitive, support, and integrability. Current dirty umbrella-wired additions
+  prove finite physical energy, exact free-kernel Gram factorization, literal Eq. (4.2)
+  factorization through the angular Fourier transform, and both disputed form inequalities for
+  every actual `L2` source. They also prove corrected archimedean weight normalization, global
+  minimum, high-frequency coercivity, and the compact-band lower envelope. A generic dirty
+  umbrella-wired Friedrichs construction supplies positive self-adjoint form operators, compact
+  resolvent under compact embedding, and exact core extension. Dirty umbrella-wired
+  `SuzukiWeilRemainderRegularity.lean` independently evaluates the removable singularity of the
+  literal 2026 smooth remainder as `-7/4`, installs its continuous even extension, and proves
+  boundedness and integrability on every finite aperture. Its dirty umbrella-wired successor
+  `SuzukiRestrictedWeilSourceForm.lean` inserts the literal archimedean constant, exact visible
+  prime-power indices, and this kernel into the four-block restricted form; it proves the complete
+  prime sector is nonnegative jump energy minus its exact scalar potential and supplies the
+  uniform smooth-kernel difference bound. No analytic kernel or aperture list remains free. The
+  umbrella-wired `SuzukiRestrictedWeilSmoothBound.lean` further proves the literal smooth block is
+  bounded below by an explicit finite multiple of interval `L2` energy on every positive aperture.
+  Provisional dirty-umbrella `SuzukiOriginLogarithmicRemainder.lean` independently derives the literal
+  Eq. (2.2) origin decomposition, identifies the renormalized second derivative with a continuous
+  curvature taking value `-7/4` at zero, and proves a uniform local curvature bound. This closes
+  origin-remainder provenance needed by the small-aperture expansion, not spectral perturbation.
+  The finite-part block is now the only source-form semiboundedness debt. Commit, direct audit,
+  parameter-dependent form continuity, and concrete Suzuki form-domain/Friedrichs assembly remain
+  before Theorems 4.2--4.3 or the 2026 localized operator package receive complete formal credit;
 - finite self-adjoint extensions, anti-Pick identities, residue signs, Herglotz representation,
   and support theorem are formalized;
 - parity Hankel blocks have infinite rank and, after first prime seam, infinite positive and
@@ -2222,11 +2236,20 @@ gap. The committed umbrella suite separately closes the literal rational-Witt so
 algebraically closed comparison, perfect-field Galois descent, algebraic-integer domain
 comparison, field intersection/equalizer, nilpotent-kernel classification, Fatou intersection, and
 `Spec Z` Frobenius divisor pullback. These are exact positive survivors of the failed arbitrary-
-domain claim. Current worktree `DeningerBigWittEuler.lean` further gives division-free triangular
-Euler coordinates and a carrier equivalence `Lambda(A) equiv (N -> A)` for every commutative ring,
-including torsion and nilpotents; the canonical arbitrary-ring multiplication is still an open
-card, so no ring-law claim is credited yet. These corrections protect the coefficient foundation
-but do not solve the singular source-to-physical specialization below.
+domain claim. The committed but umbrella-unreachable `DeningerBigWittEuler`, `Ghost`, and
+`Multiplication` suite gives division-free triangular Euler coordinates, a carrier equivalence
+`Lambda(A) equiv (N -> A)`, logarithmic ghosts with torsion-free injectivity, and the natural
+commutative gcd--lcm product construction for every commutative ring, including torsion and
+nilpotents. Beyond that committed cutoff, the current dirty umbrella imports those modules and
+`DeningerBigWittRing.lean`. The latter first proves the ring laws over additively torsion-free
+rings, then descends them from simultaneous universal integer-polynomial vectors to every
+commutative target ring. It installs the canonical commutative big-Witt ring, functorial ring maps,
+multiplicative Teichmuller representatives, and positive ghost components as ring homomorphisms.
+Current dirty ghost work also computes every integral Euler-factor ghost coefficient, finite-
+product ghost laws, and partial gcd--lcm coefficient identities. Therefore full arbitrary-ring
+big-Witt algebra is closed provisionally in current umbrella Lean; it is no longer an open
+foundation item. This protects and strengthens coefficient provenance but does not solve the
+singular source-to-physical specialization below.
 
 A committed but not yet umbrella-reachable adiabatic chain now closes substantially more source
 analysis provisionally. It proves strong convergence of the exponential gauge in Meyer's
@@ -3060,7 +3083,7 @@ equivalently bounded in some proper source price. Without a carrier every approx
 escapes every proper price, and an explicit model shows residual convergence alone is insufficient.
 No Route-P source atoms or price satisfying this criterion have been constructed.
 
-**P-G60--P-G62 source coefficient and phase opening, current worktree provisional.** The actual Gamma-sewn
+**P-G60--P-G73 formal source opening, reflected compact passivity, and critical Schur falsifiers.** The actual Gamma-sewn
 pre-Gram aperture edge now passes its first hostile source test. Define its inverse tilt `W_s(p)`
 from the literal contraction, aperture, and Möbius factors. Direct Lean declarations prove
 
@@ -3077,12 +3100,96 @@ height-Köthe vector, the aperture-to-critical difference tends to zero in every
 projective seminorm. The phase-response module further proves the signed Stokes connection is odd
 under Kummer reflection and that every centered Mellin jet, hence the full complex height phase,
 has a path-independent right boundary value before norm, Gram, determinant, or reflection folding.
-The exact remaining gate is therefore not coefficient production, source continuity, or phase
-retention. It is a Gamma-corrected Köthe/corona value landing whose source response is the fixed
-`continuedPrimeArchSourceRelativeTrace`, constructed before Gram/KMS positivity, then Julia/Cayley
-saturation and compact moment assembly. All three modules are umbrella-wired and direct Lean green;
-P-G60 and P-G61 exact-module builds are green. They receive no final formal cutoff credit before
-umbrella/lint/axiom audit.
+P-G63 proves every fixed-vector response is entire in its phase parameter, so no
+fixed nuclear source vector can agree even punctured-locally with the completed logarithmic
+derivative at any actual Xi divisor point. Its positive survivor is no longer merely a proposed
+codomain. `GammaSewnMobiusApertureStokesDualCurrent.lean` constructs the actual aperture
+edge as a coefficient functional continuous against the zeroth height seminorm, with coefficients
+in `[0,1]`. On each positive prime-power Kummer axis, transpose action of the P-G61 Stokes operator
+is exactly the safe von Mangoldt Euler current, and total coefficient mass is the complete Euler
+flux for `s>1`. Thus the forced rigged direction `K_H -> K_H'` and the uncompleted Euler landing are
+constructed source-first before Gram/KMS positivity.
+
+`GammaSewnMobiusApertureStokesPositiveChamber.lean` removes the Euler line as a source
+boundary. For every fixed `s>0`, inverse tilt grows by at most one prime factor, the full Kummer
+frequency costs at most two height steps, and the resulting source operator is continuous in every
+height seminorm. Its transpose against the same sewn dual current is exactly the Euler current for
+every `s>0`, with a continuous dual bound even where the scalar total mass diverges. This is
+source-distribution continuation, not zeta analytic continuation and not a completed Xi landing;
+the module is direct-checked, exact-built, and umbrella-wired.
+
+`GammaSewnMobiusApertureStokesComplexHalfPlaneCurrent.lean` then restores vertical
+phase without any source loss: the Kummer phase is norm one in every height seminorm, and composing
+it with the real-aperture operator produces the exact complex von Mangoldt coefficient at every
+`sigma+it` with `sigma>0`. The complex Euler current is continuous on rapid tests with the same
+two-height-step bound throughout `Re(s)>0`. This closes source-native Euler continuation on the
+whole positive half-plane, not completed Gamma/polar current, divisor poles, or passive order. The
+module is direct-checked, exact-built, and umbrella-wired.
+
+`GammaSewnMobiusApertureStokesDeningerTimeCorona.lean` now determines
+exactly what this continuation already sees. Every compactly supported Deninger-time test lifts to
+a finite rapid Kummer vector; pairing the complex Euler current with that lift is its finite Euler--
+Laplace response, and the physical sewn/phase transport has the same response throughout the
+positive half-plane. At zero parameter this welds to the independently constructed prime
+distribution, and adjoining the archimedean local term gives the complete prime--archimedean
+Lefschetz trace on every compact support stage. The missing global direction is provably singular:
+exactly seeing value one on the first `N` powers of prime two costs zeroth height seminorm at least
+`N`, so no uniformly bounded rapid-test family approximates the constant-one corona.
+
+`GammaSewnMobiusApertureStokesCoronaOrderNoGo.lean` strengthens seminorm escape
+to an order-unit obstruction. Finite prime-two indicators lie in the coefficientwise real unit
+interval, but their zero-parameter Euler current is exactly `N log 2`. Hence the current is
+unbounded on that order interval and admits no finite positive order-unit extension. Ordinary
+positive unital completion is retired; any surviving passivity must be parameter-dependent
+resolvent/reflection order or a genuinely renormalized signed channel. It is direct-checked,
+exact-module-built, and umbrella-wired.
+
+`GammaSewnMobiusApertureStokesSubcriticalPassiveResponse.lean` constructs the positive survivor.
+On prime-power axis `(p,e)`, physical coefficient times source Stokes gap is exactly the Euler
+intensity `log(p)p^(-s(e+1))`. A new lower gap law and product majorant prove one subtraction at
+zero makes the countable resolvent absolutely summable for every `0<s<1`; its imaginary part is
+nonpositive throughout the upper half-plane. This closes unconditional source-native passive
+order in the RH-relevant chamber without Xi divisors. It is direct-checked, exact-module-built,
+and umbrella-wired.
+
+`GammaSewnMobiusApertureStokesReflectedCompactCarrier.lean` resolves the centered-parity
+obstruction. Kummer reflection pairs gaps `g` and `-g`; the paired Euler resolvent is exactly odd,
+remains anti-Herglotz, and cancels both subtraction constants. Placing mass `b/g` at reciprocal
+nodes `+1/g` and `-1/g` produces a finite positive source-native carrier supported in
+`[-(log 2)^(-1),(log 2)^(-1)]`; its local Markov transform times `-z` is exactly the reflected
+response. The correct endpoint variable is consequently the square pushforward `y=g^(-2)` with
+mass `2b/g`, matching the seam-square law. This module is direct-checked, exact-module-built, and
+umbrella-wired.
+
+`GammaSewnMobiusApertureStokesSquaredCompactMarkovCandidate.lean` constructs that square
+pushforward unconditionally. It is finite, positive, compactly supported, and has exact all-degree
+moments `2 sum_(p,e) b_s/g_s^(2n+1)`. Its Markov transform satisfies the literal seam-square
+response law `R_s^ref(z)=-z K_s(z^2)`. Thus reflection and endpoint coordinate are fully
+constructed, not conjectural.
+
+`GammaSewnMobiusApertureStokesCriticalMassNoGo.lean` then rejects raw critical identification.
+Exact rational bounds prove four atoms—depths zero and one at primes two and three—already exceed
+`29/625`, while the complete normalized seam mass is below `29/625`. Therefore the raw `s=1/2`
+carrier cannot equal the completed germ. Any additive completed Gamma/polar correction must have
+strictly negative central mass; positive orthogonal direct-sum completion is ruled out.
+
+`GammaSewnMobiusApertureStokesCriticalInformationSchurDepletion.lean` next tests the first literal
+negative channel supplied by source-horizontal information coenergy. Its coefficient `kappa` lies
+strictly in `(0,2)` on every prime-power label, so depletion `(2-kappa)w` remains positive and
+summable. The sign mechanism is real, but adequacy fails: a cubic virial bound gives `kappa<3/10`
+on the hostile four atoms, sharper Gamma-contraction bounds put their raw mass above `63/1000`,
+and their depleted mass still exceeds `29/625`, larger than the complete seam mass. Thus
+coefficientwise first-information subtraction is formally retired. The obstruction is an
+order-of-operations law: coherent Gamma/valuation Schur elimination must precede scalar compact
+carrier compression.
+
+The exact remaining gate is therefore **coherent non-diagonal Gamma/polar Schur completion before
+scalar compression**, not
+local-time, Euler continuation, finite positive unitization, passivity, parity, compact-carrier
+existence, or raw normalization: construct source-native Feshbach elimination whose reduced
+response remains anti-Herglotz and whose square-coordinate moments equal the completed seam tower.
+Existing compact Markov capstone then gives RH. In the current dirty tree P-G60--P-G73 are direct-checked,
+exact-module-built, and umbrella-wired; they remain provisional beyond the committed cutoff.
 
 **C1/P Green-square opening, formal.** Umbrella Lean uses the already source-built
 Hedenmalm inverse `B` and its singular theta metric `G` to isolate
@@ -4288,18 +4395,44 @@ polynomial.
     power-sum rigidity, the diagonal bound `J_k(N,b)<=b!N^b`, exact Linnik lifting and fibre count,
     an explicit iterated-Bertrand prime reservoir, and a common reservoir prime separating every
     injective tuple. Modular moment and collision-block modules provide the next incidence layer.
-    Current worktree `FinitePowerSumFourier`, `FinitePowerSumHolder`, `FiniteFiberPartition`,
-    `FiniteFiberCover`, and `VinogradovCollisionRecurrence` add exact character orthogonality,
-    Fourier-energy/fibre identities, class Hölder cost, and the recurrence
+    The same committed direct-checked unwired suite now includes `FinitePowerSumFourier`,
+    `FinitePowerSumHolder`, `FiniteFiberPartition`, `FiniteFiberCover`,
+    `PowerSumAffineEquivalence`, and `VinogradovCollisionRecurrence`. It proves exact character
+    orthogonality, Fourier-energy/fibre identities, class Hölder cost, affine invariance of power
+    sums, and the recurrence
 
     ~~~
     J_(k+b,k)(N) <= 2*(injective-fibre energy
       + ((k^2-k)N^(k-1))^2 J_(b,k)(N)).
     ~~~
 
-    These are unconditional finite combinatorics but untracked/unwired at this snapshot. The first
-    missing theorem is the injective-block/prime-assignment and `p`-adic incidence induction from
-    moment order `kr` to `k(r-1)` with polynomial, rather than exponential, loss in phase order.
+    These are unconditional finite combinatorics but umbrella-unreachable at this snapshot.
+    Provisional `FiniteFiberInjectiveTransform.lean`, `PowerSumAffineTransform.lean`, and
+    `VinogradovResidueClass.lean`, `VinogradovResidueTailCorrelation.lean`,
+    `VinogradovLinnikPartner.lean`, `VinogradovShiftedLinnikPartner.lean`,
+    `VinogradovShiftedCompatibility.lean`, and `PowerSumTranslationRing.lean` close more of the transform layer: injectively transformed
+    fixed-shift fibres are bounded by original energy; energy decreases under domain embeddings;
+    the triangular affine power-signature map is injective when its scale is a unit; every residue
+    class embeds in a shorter quotient with exact affine signature; fixed-block residue tails are
+    bounded by the shorter diagonal moment; every full residue-tail solution forces translated
+    nested compatibility of its fixed injective blocks; and ordinary or translated compatible
+    partners satisfy the Linnik bound `k! p^(k(k-1)/2)`. Finally,
+    `VinogradovResidueGoodCount.lean` decomposes every good completion in one residue class into
+    injective block, shifted compatible partner, and residue tail, giving the exact aggregate bound
+    `N^k * k! p^(k(k-1)/2) * J_b,k(ceil(N/p))`. The newer unwired
+    `VinogradovResidueGoodEnergy.lean` identifies that count with the corresponding fibre energy
+    and sums every residue class at a fixed prime, proving the separated-energy bound
+    `p^(2b) N^k k! p^(k(k-1)/2) J_b,k(ceil(N/p))`. Thus residue summation is closed. The first
+    newer `VinogradovReservoirRecurrence.lean` passes from fixed-prime separation to the entire
+    injective energy using an explicit Bertrand reservoir and one global prime Fourier modulus,
+    then combines it with the colliding-block bound. The resulting unconditional PNT-free theorem
+    is the full finite recurrence for `J_k(N,k+b)`. Unwired
+    `VinogradovReservoirScale.lean` then proves the explicit reservoir bound is linear in the
+    ceiling `k`th root, every reservoir prime satisfies `p^k <= C_k N`, failure of
+    `reservoirBound<=N` lies below an explicit finite threshold, and
+    `p*ceil(N/p)<=2N` in the large regime. The first missing theorem is now quantitative: solve and
+    iterate this recurrence from moment order `kr` to `k(r-1)` at `r` polynomial in `k`, with
+    polynomial rather than exponential phase-order loss.
     After that, transport the resulting near-one exclusion through the already built selection
     fibre and smooth-window prime-gap receiver.
 
@@ -4314,8 +4447,8 @@ zero-reserve near-one endpoint in item 57.
 **Open core.** Route T has two equivalent live analytic charts, but only one current first
 producer.
 
-- In the Maynard chart, prove the finite Vinogradov incidence/p-adic induction strongly enough to
-  obtain any polynomial-in-phase-order loss, transport it to unconditional near-one factor
+- In the Maynard chart, solve and iterate the now-proved fixed-reservoir Vinogradov recurrence
+  strongly enough to obtain any polynomial-in-phase-order loss. Then transport it to unconditional near-one factor
   exclusion, and compose the already built relevance/trimming/selection/fibre machinery with the
   smooth-window prime-gap receiver. The exact obstruction is zero reserve at amplitude one.
   Another fixed-order derivative test, scalar Bourgain recurrence, label estimate, or box
@@ -4876,6 +5009,47 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     all diagonal moments detects at least one maximal-resolvent divisor copy on the critical line;
     subtracting the detected atom cannot be iterated. The prime/depth-labelled Gauss--Hodge edge
     gives an RH-equivalent all-moment/complete-monotonicity receiver, not its source bound.
+74. Provisional `XiShiftedCanonicalAdmissionProjectiveArithmeticSurplus.lean` extracts a stronger
+    intrinsic quantity from the same literal adaptive mixed/completed source. After admitted-norm
+    normalization and subtraction of current Jacobi drift, its projective surplus is exactly
+
+    ~~~
+    (2n+1) D_n - F_n^2 > 0,
+    ~~~
+
+    by strict weighted Cauchy in every positive admission block. In the fixed-degree far-right
+    gauge this surplus tends to `(2n+1)^2/4`, its ratio to `F_n^2` tends exactly to one, and in
+    actual mass coordinates that ratio is the derivative of the reciprocal projective flux clock.
+    This proves local arithmetic work survives monic-norm collapse and coordinate dilation. Alone
+    it does not control diagonal `n -> infinity` escape or cofinal degree-renewal composition. The
+    module is dirty-umbrella-wired beyond the cutoff; its promoted formal card reports targeted
+    module build and axiom audit passing. It remains provisional for this committed-cutoff map
+    until committed and umbrella-audited.
+
+75. Provisional dirty-umbrella
+    `XiShiftedCanonicalAdmissionProjectiveNextAdmissionRenewal.lean` closes the first genuine
+    degree-changing step. In every positive admission block, current-norm-scaled arithmetic work
+    splits exactly as
+
+    ~~~
+    Work_n = 2(2n+1)(n+1) Norm_(n+1) + Retained_n,
+    Retained_n > 0.
+    ~~~
+
+    The retained term is weighted adjacent-trace variance plus lower-edge Jacobi inventory.
+    Therefore the source surplus does not merely survive at fixed degree: it strictly capitalizes
+    the next admitted monic norm. What remains is cofinal composition with normalized control;
+    this one-step identity alone does not prevent the capitalized share or retained inventory from
+    becoming summably negligible along an escaping degree schedule.
+
+Dirty-umbrella `XiResolventTuranEdgeCleansing.lean` now completes the next spectral layer. It proves
+the all-level variance expansion and, unconditionally, that nonnegativity of every consecutive
+Turán minor at one shift forces **every** maximal-resolvent divisor copy onto the critical line.
+The current route card records only standard foundational axioms, and generated API reaches the
+capstone; because the module is beyond the committed cutoff it receives provisional rather than
+formal-cutoff credit. This strengthens diagonal detection from existence of one critical edge copy
+to cleansing the whole edge. It does not show the deflated sequence retains minor positivity, so
+lower modulus layers and RH remain open.
 
 **Revised open core.** Prevent the dimensionless source efficiency
 
@@ -4884,10 +5058,13 @@ positive completed-source crossing proves required shifted-Hankel positivity and
 ~~~
 
 from becoming summably negligible along every cofinal renewal schedule, including degree-changing
-contacts, or construct a stronger conserved aggregate that charges the intervening positive-
-chamber travel. Producer existence, cofinal false-RH admission, and the local price identity are
-closed. The older Padé/root-sign and simple-birth/full-ground alternatives below are structural
-ways this efficiency debt can manifest; they are not independent missing-source branches.
+contacts, or compose the provisional adjacent-admission capitalization with a uniform normalized
+lower budget through those renewals. Equivalently, construct a conserved aggregate that charges
+intervening positive-chamber travel. Producer existence, cofinal false-RH admission, local price,
+and one-step next-norm landing are closed; no theorem yet controls their cofinal product/sum. The
+older Padé/root-sign and
+simple-birth/full-ground alternatives below are structural ways this efficiency debt can manifest;
+they are not independent missing-source branches.
 
 **Earlier equivalent structural formulation.** In the degenerate/root-sign branch, items
 55--58 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
@@ -6036,6 +6213,11 @@ formal credit. The direct-Cayley/two-port/Esscher/theta--Xi-mass cluster is also
 - formal/GaloisForLFunctions/RHTower/EigenPairVerticalBound.lean
 - formal/GaloisForLFunctions/RHTower/CCMRationalAdelicBruhatSchwartzSpace.lean
 - formal/GaloisForLFunctions/RHTower/CCMArchimedeanInfiniteOrder.lean
+- formal/GaloisForLFunctions/RHTower/CCMArchimedeanGeometricScaledKernel.lean
+- formal/GaloisForLFunctions/RHTower/CCMArchimedeanGeometricSpectralBridge.lean
+- formal/GaloisForLFunctions/RHTower/CCMArchimedeanPhaseTraceFormula.lean
+- formal/GaloisForLFunctions/RHTower/CCMArchimedeanWeilDistribution.lean
+- formal/GaloisForLFunctions/RHTower/CCMArchimedeanPhaseWeilBridge.lean
 
 ### E
 
@@ -6120,6 +6302,12 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 
 ### G
 
+- formal/GaloisForLFunctions/RHTower/SuzukiExplicitScrewZeroSeries.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiScrewTraceFormula.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiScrewStrictPositivity.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiStieltjesMoments.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiStieltjesCriterion.lean
+- formal/GaloisForLFunctions/HTGeometry/SuzukiStieltjesDeterminantCounterexample.lean
 - formal/GaloisForLFunctions/RHTower/SuzukiMovableAnchorClarkCoherence.lean
 - formal/GaloisForLFunctions/RHTower/SuzukiTwoPortProjectiveWedge.lean
 
@@ -6142,6 +6330,14 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean
 - formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean
 - formal/GaloisForLFunctions/RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean
+- formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesInverseTilt.lean
+- formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesKotheBoundary.lean
+- formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesMellinResponse.lean
+- formal/GaloisForLFunctions/RHTower/SourceHorizontalGammaSixThetaConditioningLyapunov.lean
+- formal/GaloisForLFunctions/RHTower/DeningerRationalWittFatouIntersection.lean
+- formal/GaloisForLFunctions/RHTower/DeningerRationalWittFieldEqualizer.lean
+- formal/GaloisForLFunctions/RHTower/DeningerRationalWittDomainDescentCounterexample.lean
+- formal/GaloisForLFunctions/RHTower/DeningerSpecZFrobeniusDivisorPullback.lean
 - formal/GaloisForLFunctions/RHTower/DeningerChainLiftObstruction.lean
 - formal/GaloisForLFunctions/RHTower/DeningerCircleComplete.lean
 - formal/GaloisForLFunctions/RHTower/DeningerGreenSumSource.lean
@@ -6341,6 +6537,12 @@ umbrella-reachable; their listed declarations receive formal credit.
 
 ### U
 
+- formal/GaloisForLFunctions/RHTower/XiShiftedHankelFirstContactCurvatureQuotient.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedHankelStrictFrontierCurvatureRenewal.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedAdaptiveMixedFrontierPrice.lean
+- formal/GaloisForLFunctions/RHTower/XiResolventDiagonalEdgeDetection.lean
+- formal/GaloisForLFunctions/RHTower/XiResolventDiagonalDeflationNoGo.lean
+- formal/GaloisForLFunctions/RHTower/GaussHodgeWeightedResolventEdge.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelBoundaryExtensionClass.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelBoundaryKreinCrossing.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedHankelBoundaryQuadrature.lean
@@ -6707,29 +6909,66 @@ credit until wired:
   declarations are direct-checked but remain outside the committed umbrella. Their remaining
   scientific premise is no longer uniform ordinate packaging: it is the zero-reserve near-one
   endpoint now attacked by the Vinogradov modules in Route-T item 57;
+- `Sieve/VinogradovPowerSumRigidity.lean`, `VinogradovDiagonalMoment.lean`,
+  `VinogradovLinnikLifting.lean`, `VinogradovLinnikCount.lean`,
+  `VinogradovBertrandReservoir.lean`, `VinogradovAvoidingPrime.lean`,
+  `FiniteFiberPartition.lean`, `FiniteFiberCover.lean`, `FinitePowerSumFourier.lean`,
+  `FinitePowerSumHolder.lean`, `PowerSumAffineEquivalence.lean`, and
+  `VinogradovCollisionRecurrence.lean` — committed direct-checked finite VMVT incidence base and
+  recurrence, not yet reached by committed umbrella;
+- `DeningerBigWittEuler.lean`, `DeningerBigWittGhost.lean`, and
+  `DeningerBigWittMultiplication.lean` — division-free arbitrary-ring Euler coordinates, ghost
+  laws, and natural commutative gcd--lcm product construction; full ring laws remain open and the
+  suite is not umbrella-reachable;
 
 Latest committed formal delta strengthens CCM/C1, G, L, E, O, and U without changing route count.
 Archimedean CCM now has the scaled kernel, geometric--spectral bridge, tested phase trace formula,
-and independently constructed finite-part Weil distribution; only their final identification and
-support inequality remain. Suzuki 2022 parity now includes strict Theorem 1.7 and the corrected
+independently constructed finite-part Weil distribution, and the exact phase/geometric trace-to-
+Weil identification; only the support inequality remains. Suzuki 2022 parity now includes strict Theorem 1.7 and the corrected
 Stieltjes PSD criterion, while a Lean counterexample rejects generic determinant-only sufficiency.
 Rational-Witt field/Fatou equalizers and `Spec Z` Frobenius divisor pullback are formal, with the
-arbitrary-domain descent claim corrected negatively. Route U now has complete source-selected
+arbitrary-domain descent claim corrected negatively. Route P now has exact coefficient inversion,
+Köthe wall crossing, and phase-sensitive Mellin response. Route U has complete source-selected
 cofinal renewal and terminal curvature-price theorems. Route E's fixed grade-recurrent relation and
 Route O's complete seed law remain paper-level; their capacity/full-ground theorems remain open.
 
-Current work beyond the cutoff is provisional. Route P has exact safe-half-plane Stokes inversion,
-Euler landing, critical ambient-Hilbert no-go, and now projective critical convergence on the
-Deninger height-Köthe source. Route T has finite character orthogonality, Fourier energy, class
-Hölder, common avoiding-prime selection, fibre partition/cover, and exact Vinogradov collision
-recurrence. Route U's mixed adaptive source-to-curvature price is dirty-umbrella wired and its card
-has moved to Stage 3. `DeningerBigWittEuler.lean` gives arbitrary-ring integral Euler-coordinate
-reconstruction but not yet the canonical big-Witt multiplication. The Gamma-six balancing
-Lyapunov module identifies shell-normalized nonunitary gauge distortion with absolute theta
-boundary flux; global vanishing is RH-equivalent, so it is a coefficient-faithful receiver, not a
-producer. New universal polarized-contact/formation theorems and generic constitutive properness
-laws have no Xi-typed arithmetic source or physical landing. They constrain any future Route V
-but do not instantiate one. No new lettered route appears in the current worktree.
+Committed but umbrella-unreachable Route-T modules now give finite character/Fourier energy,
+class Hölder, common avoiding-prime selection, fibre partition/cover, affine power-sum
+equivalence, and exact Vinogradov collision recurrence. The committed unwired big-Witt suite gives
+Euler coordinates, ghosts, and a natural commutative product construction, but not full ring laws.
+The Gamma-six balancing Lyapunov module is umbrella-formal and identifies shell-normalized
+nonunitary gauge distortion with absolute theta boundary flux; global vanishing is RH-equivalent,
+so it is a receiver, not a producer. Current work beyond cutoff has six precise effects.
+P-G63 excludes every fixed Köthe vector as completed Xi landing, while its dual-current successor
+constructs the source-defined continuous Euler functional and exact transpose Stokes law but not
+the completed Gamma/Xi landing. Transitively dirty-umbrella successors extend this current through
+the full complex half-plane `Re(s)>0`, identify all compact Deninger-time responses and the local
+completed Lefschetz trace, and prove uniformly bounded rapid tests cannot realize the constant-one
+corona. An unwired no-go further excludes finite positive order-unit completion because the
+zero-parameter current is unbounded on its coefficientwise unit interval. Route-T
+files close generic injective-fibre, affine-signature, residue-tail moment reduction, translated
+compatibility, Linnik-partner bounds, all-residue separated energy, whole-injective Bertrand-
+reservoir coverage, the complete collision-plus-good recurrence, and elementary reservoir-scale
+bounds, but not its quantitative iteration. Route-U work proves strict projective arithmetic surplus and exact capitalization of
+each next admitted norm with positive retained inventory, but not cofinal normalized
+synchronization; its completed Turán layer
+cleanses every maximal-resolvent edge copy under all-minor positivity but does not propagate through
+deflation. Dirty Suzuki work reaches
+exact actual-source Gram and transform factorizations, both disputed form bounds, and corrected
+archimedean two-band coercivity; generic Friedrichs operator infrastructure is also dirty-
+umbrella-wired. The literal 2026 smooth Weil remainder now has its removable value `-7/4`, a
+continuous even extension, and finite-aperture boundedness/integrability; the source-locked
+four-block form, its visible-prime lower bound, and its smooth-block `L2` lower bound are also exact,
+while dirty-umbrella origin analysis closes Eq. (2.2) and bounded renormalized curvature. Finite-part
+semiboundedness remains before concrete Suzuki operator assembly. Dirty umbrella big-Witt work computes
+integral Euler-factor/finite-product
+ghosts and completes universal descent to a functorial canonical commutative ring over every
+commutative base, including torsion and nilpotents. Dirty-umbrella source-horizontal Lean
+now realizes exact adaptive class-law events, proves their minimal exponential evacuation, and
+proves mass-weighted adaptive information evacuation for every Xi multiplicity copy. All these
+effects are provisional beyond the committed cutoff.
+Generic polarized-contact/formation laws have no Xi-typed arithmetic source or physical landing
+and do not instantiate Route V.
 
 ### Frankenstein seam: source-horizontal neutral jet = Route-T residual increment
 
@@ -6906,7 +7145,20 @@ proves every pair of convergent abelian zeta class laws mutually absolutely cont
 proves that exact adaptive scale observers on two fixed such class laws force each retained Xi
 copy onto the critical line; certificates for every multiplicity copy at prime two and dilation
 two imply RH. Absolute continuity is not a certificate premise—it is discharged by the existing
-class-law theorem. Exact arithmetic observer construction remains open, so this is not RH.
+class-law theorem. Stage-3 `source-horizontal-abelian-class-law-aperture-evacuation` now closes
+coefficient-level observer construction for a canonical two-class aperture: under two fixed
+convergent class laws, the classes `(Z/pZ)^(N+1)` and `Z/p^(2N)Z` realize the two reflected adaptive
+odds exactly. Their total admitted mass, however, decays exponentially. The same paper proves this
+pair is order/socle-minimal among all two-class prime-primary realizations of those odds, so the
+evacuation is structural in that class. Current
+`SourceHorizontalAbelianClassLawApertureEvacuation.lean` directly formalizes the two conditional
+laws, exponential evacuation in both orientations, statistic minimality, and every-Xi-copy
+specialization; it is dirty-umbrella-wired, exact-leaf-built, axiom-audited, and generated-API-
+visible, but not committed-cutoff certified. Umbrella-wired
+`SourceHorizontalAbelianClassLawInformationEvacuation.lean` proves a stronger failure: although
+reflected adaptive Jeffreys work grows linearly, each actual admission times that work tends to
+zero, in both orientations and for every multiplicity-labelled Xi divisor copy. No theorem
+provides a cofinal admitted source.
 
 This reinterprets the rank--trace/shared-reservoir wall. Moment-neutral packets amplify raw inertia
 only while their spectral weights collapse. Turning that scale-free orientation into a
@@ -6917,12 +7169,33 @@ orientation on one fixed source pair. Weight-dependent sign normalization can cr
 only through the same unbounded two-orientation domain whose simultaneous source derivation would
 already force neutrality.
 
-Exact new producer target: construct from completed prime--Gamma/abelian-group source, for every
-`XiZeroCopy q`, a single observer family on two fixed convergent class laws with the displayed
-adaptive marginals at grades `2^n |2 Re(q)-1|`; equivalently construct a coefficient-faithful
-shared-reservoir orientation readout with forward and reflected error tending to zero. This target
-preserves prime label, divisor multiplicity, and both orientations, and it acts before bounded
-scalarization.
+Exact new producer target is therefore no longer event realization. Construct from the completed
+prime--Gamma/abelian-group source a renewal/cobordism that replenishes the exact adaptive apertures
+without losing coefficient fidelity, and prove nonsummable or uniformly positive admitted mass
+along the cofinal grades `2^n |2 Re(q)-1|` for every `XiZeroCopy q`. Equivalently construct a
+shared-reservoir orientation readout whose forward and reflected errors tend to zero without the
+canonical aperture's exponential evacuation. This target preserves prime label, divisor
+multiplicity, and both orientations, and acts before bounded scalarization.
+
+The cross-corpus universal shadow is **information evacuation**. Fixed finite receivers do not
+destroy an off-line orientation; they export it to a vanishing aperture, an ill-conditioned
+nonnormal direction, or a summably negligible renewal price. This is now a theorem for the
+two-class abelian observer, not an analogy. Route U exhibits the same failure shape, but no current
+theorem identifies its curvature price with class-law information influx. Heavy-conjecture target
+is therefore a source conservation law
+
+```text
+renewal information influx = aperture loss + transported projective work,
+```
+
+with a nonsummable left side supplied by literal prime/Gamma coefficients. Such an identity would
+prevent both class-law evacuation and Route-U price disappearance simultaneously. Treating either
+side as a free positive hypothesis would merely restate RH and receives no producer credit.
+Conjecture that information disintegration itself was missing is falsified: existing Lean proves
+the exact KL observer chain rule. The new mass-weighted theorem shows why that identity alone cannot
+close the seam—the canonical observer contributes asymptotically zero conditional information.
+Required novelty is literal source *injection* or renewal, not another decomposition of a fixed
+information budget.
 
 ### Frankenstein seam: Route-N parity × prime-vacuum fusion
 
@@ -6959,15 +7232,18 @@ grade is already coefficient-faithful Route-N critical/twisted parity data; prim
 bias, and both reflection orientations are no longer missing formulas. The earlier request for
 unconditioned adaptive observers was overstrong.
 
-Exact remaining producer is event-level and source-relative: realize `T` and reciprocal
-orientation `C^2/T` as conditional masses of one uniformly admitted event family on two fixed
-convergent abelian class laws for every Xi multiplicity copy. Absolute continuity is discharged by
-the class-law theorem, and the new Lean certificate shows such realizations imply RH. This is not
-RH: no theorem yet constructs reciprocal orientation on the admitted source carrier. Big-picture
-identification is sharper: adaptive baseline `-log p` is precisely the forbidden prime-vacuum
-grade from the first-trace/Calderón transition atlas, while Route-N twisted parity supplies the
-singular inward branch. Missing Frankenstein map is their uniformly admitted non-equivariant
-fusion, not another scalar observer, index amplifier, or parity calculation.
+Exact reciprocal orientations can now be realized conditionally on the canonical two-class
+abelian aperture, but that aperture evacuates exponentially and is statistic-minimal in its
+two-class prime-primary class. The remaining producer is event-level and source-relative:
+construct a renewal or larger physical relation that realizes `T` and `C^2/T` for every Xi
+multiplicity copy while proving nonsummable, preferably uniformly positive, admission on the two
+fixed convergent class laws. Absolute continuity is discharged by the class-law theorem, and the
+Lean certificate shows such non-evacuating realizations imply RH. This is not RH: no theorem
+replenishes the admitted source carrier. Big-picture identification is sharper: adaptive baseline
+`-log p` is precisely the forbidden prime-vacuum grade from the first-trace/Calderón transition
+atlas, while Route-N twisted parity supplies the singular inward branch. Missing Frankenstein map
+is their non-evacuating non-equivariant fusion, not another scalar observer, index amplifier, or
+parity calculation.
 
 ### Frankenstein seam: Route-N Cremona polarity = Route-P/R rapidity = Gamma-six curvature
 
@@ -7077,6 +7353,52 @@ pre-divisor arithmetic law forcing zero relative metric entropy in the fixed sou
 reflection gives only cross-fibre adjointness, and importing same-fibre self-adjointness, Wold
 stationarity, subexponential two-orientation mass, or theta-flux vanishing would assume the same
 RH-equivalent condition.
+
+The most literal cross-corpus renewal has now been attacked rather than left as a slogan: multiply
+the canonical two-class abelian source apertures at ordered prime labels `(2,3)` by the complete
+coefficient-faithful Gamma-six shell.  `SourceHorizontalGammaSixAbelianStripSlack.lean` proves that
+this fusion still evacuates every multiplicity-labelled Xi divisor copy.  With
+`a=|2 Re(rho)-1|<1`, sharp geometric majorants have bases
+
+```text
+forward: 6^(2a-2) = 6^(-2(1-a)),
+reverse: 6^(a-2).
+```
+
+Thus shell rank does not replenish source admission anywhere in the open Xi strip.  Forward
+orientation is exact bottleneck: its residual exponent is twice strip slack.  This yields a new
+producer invariant: **strip slack is renewal codimension**.  Any successful coefficient-faithful
+source injection into this carrier must contribute at least two prime-clock exponent units on the
+forward branch (or replace multiplicative renewal by a non-mass-preserving source law).  Ordinary
+flags cannot do this because they preserve probability mass; Big-Witt relocation cannot do it
+because corpus already proves its sharp per-index cost.  This closes the literal fusion while
+narrowing the missing source theorem quantitatively; it is not an RH proof.
+
+### Frankenstein seam: reflected Stokes subtraction = two-clock information coenergy
+
+The quantitative Gamma-six obstruction now has one literal cross-route realization.  Pair the
+P-G55 prime-power information virial at the functional-equation complementary coordinate
+`t=(1-s)/2` with P-G70's reflected Stokes weight on the **same** `(p,e)` label.  The unconditional
+module `SourceHorizontalStokesConditionedInformationCoenergy.lean` proves
+
+```text
+0 < J_s(p,e)
+  <= 4(1-s) p^(-2) (p^(-s))^(2e) / (e+1)^2,
+0 < s < 1,
+```
+
+and summability over every prime and valuation depth, with strictly positive total coenergy.  This
+is an exact coefficient-faithful recovery of the two exponent units demanded by renewal
+codimension: the information factor contributes `r^(e+1)`, reflected inverse-gap susceptibility
+contributes `r^e/r`, and their product retains `r^(2e)` while the Möbius aperture contributes the
+universal `p^(-2)` envelope.  P-G58's divergent information observable and P-G70's finite compact
+carrier are therefore not separate facts; one source subtraction is the missing reciprocal
+coenergy payment.
+
+This does **not** close RH or rank--trace amplification.  The now-sharp open core is a completed
+prime--Gamma seam identity placing this positive coenergy against a source-forced zero or opposite
+sign.  More damping, summability, carrier construction, or abstract Herglotz realization is not
+progress on that gate.
 
 ## Final frontier statement
 

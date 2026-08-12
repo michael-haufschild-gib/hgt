@@ -30,7 +30,7 @@ formalized as theorems.
 |---|---|---|---|
 | Connes, *Trace formula in noncommutative geometry and the zeros of the Riemann zeta function* | semilocal trace formula and quotient spectral realization | `PARTIAL`: rational adelic/Bruhat and trace-norm infrastructure exists; no theorem-level source audit yet | inventory exact numbered results against declarations |
 | Connes--Consani, arXiv:1910.14368 | semilocal Fourier unitary; cutoff trace formula; projection/logarithmic-derivative sign criterion | `PARTIAL`: exact class-space pieces exist; source trace formula not identified end-to-end | formalize missing exact operator identities |
-| Connes--Consani, arXiv:2006.13771 | quantized differential is infinitesimal of infinite order; Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `PARTIAL-EXACT`: all source-normalized scaling, convolution, Sonin/Hankel, infinite-order, phase, Mellin, scattering, and geometric-kernel layers are umbrella-wired. The scaled kernel `lemsch7(i)`, geometric--spectral bridge, literal Proposition 7(iv) phase trace identity, exact trace cocycles, and an independent global finite-part archimedean Weil distribution with finite-aperture/tail split are now also exact. Missing theorem is the equality of the literal geometric tested trace/phase-rate functional with that finite-part Weil distribution for the paper's compact log test, followed by the support-limited inequality | formalize only this final trace-to-Weil identification and exact non-computational inequality; separately audit paper's numerical spectral bound |
+| Connes--Consani, arXiv:2006.13771 | quantized differential is infinitesimal of infinite order; Sonin compressed trace identity; archimedean Weil lower bound for support `[2^(-1/2),2^(1/2)]` with the paper's Fourier vanishing hypotheses | `EXACT THROUGH TRACE FORMULA`: all source-normalized scaling, convolution, Sonin/Hankel, infinite-order, phase, Mellin, scattering, geometric-kernel, scaled-kernel, trace-cocycle, and finite-part Weil-distribution layers are umbrella-wired. `CCMArchimedeanPhaseWeilBridge.lean` proves the normalization-sensitive Gamma/digamma transform and identifies both spectral and literal geometric traces with the explicit Weil distribution. Only the support-limited lower bound remains | prove an exact non-computational support inequality; separately audit the paper's numerical spectral bound |
 | Connes--Consani, arXiv:2106.01715 | lower-semicontinuous restricted Weil form; spectral triples; exact zeta-cycle spectral theorem | `MISSING/PARTIAL`: many restricted-Weil and prolate pieces exist; no literal zeta-cycle theorem located | formalize exact circle periodization, orthogonal complement, and spectral characterization |
 | Connes--Consani--Moscovici, arXiv:2310.18423 | semilocal Sonin Hilbert isomorphism; common de Branges image; Gamma-quarter Jacobi/metaplectic model; semilocal prolate operator | `PARTIAL`: Gamma density, moments, Jacobi recurrence, relative traces, and continuous Sonin pieces exist; exact Hilbert isomorphism not located | prove missing source-space isometries and identify every local surrogate |
 | Connes--Consani--Moscovici, arXiv:2511.22755 | finite simple-even ground rank-one perturbation is self-adjoint in the Weil quotient; regularized determinant equals the ground Fourier transform; every transform zero is real | `CONDITIONAL SOURCE THEOREM`: literal finite matrix, unconditional ground shift, source/response completion, determinant lemma, and real-rooted completion already exist; paper does not discharge simplicity/evenness or convergence | do not add a hypothesis-packaging theorem; only an unconditional proof of the literal eta-channel assumptions would move parity |
@@ -107,8 +107,8 @@ strongest unconditional trace identity preceding it.
    distributional; Lean's totalized integral is not an admissible pointwise definition.
 4. Exact Sonin projection, compressed positive trace, scaled geometric kernel, geometric--spectral
    bridge, tested phase trace, and finite-part Weil distribution are complete.
-5. Prove the final equality between the tested geometric trace/phase-rate functional and
-   `ccmArchimedeanWeilSharpDistribution`, then its finite-aperture/tail remainder identity.
+5. Final equality between tested spectral/geometric trace and the finite-part Weil distribution is
+   complete in `CCMArchimedeanPhaseWeilBridge.lean`.
 6. Prove an exact analytic replacement for the numerical spectral step, or classify the source
    endpoint as not presently unconditional at published proof level.
 7. Wire every completed exact module into `RHTower.lean`; run file Lean, targeted module build,
@@ -133,7 +133,7 @@ strongest unconditional trace identity preceding it.
 - [x] Exact Connes--Consani Fourier--Mellin scattering intertwining on the full even `L²` carrier.
 - [x] Archimedean tested operator trace-class, exact trace cocycles, and phase trace identity.
 - [x] Scaled geometric kernel and independent finite-part Weil distribution exact.
-- [ ] Literal tested trace functional equals the finite-part Weil distribution.
+- [x] Literal tested spectral and geometric trace functionals equal the finite-part Weil distribution.
 - [ ] Support-limited lower bound without numerical spectral input.
 - [ ] Semilocal Sonin/de Branges source isomorphisms exact and umbrella-reachable.
 - [ ] Zeta-cycle spectral theorem exact and umbrella-reachable.
@@ -198,9 +198,10 @@ an operator/distributional kernel identity: the new diagonal divergence theorem 
 naive Bochner reading of the paper's composition integral. Subsequent committed modules close the
 scaled kernel, its geometric--spectral conjugacy, the tested phase trace identity, exact trace
 cocycles, and the independent finite-part Weil distribution with restricted/tail decomposition.
-The exact missing source content is now one comparison theorem: identify the literal geometric
-tested trace/phase-rate functional with `ccmArchimedeanWeilSharpDistribution` on the paper's
-compact logarithmic test. Only then derive the support-limited inequality. Repackaging
+`CCMArchimedeanPhaseWeilBridge.lean` now closes that comparison theorem: the literal spectral and
+geometric tested traces equal `ccmArchimedeanWeilDistribution` on every intrinsic compact
+Schwartz log test. The only remaining source content in this archimedean paper is the exact
+support-limited inequality without numerical spectral input. Repackaging
 `quantsmooth`, phase regularity, Mellin transport, scattering, kernels, or trace class again would
 be rediscovery.
 
@@ -208,6 +209,7 @@ Audit evidence: all three geometric-kernel files pass `lake env lean`; targeted 
 `GaloisForLFunctions.RHTower.CCMArchimedeanGeometricCompositeKernel` passes; and `RHTower.lean`
 elaborates with all modules umbrella-wired. `#print axioms` for the scattering kernel,
 sharp-commutator kernel, composite distributional pairing, and diagonal nonintegrability endpoint
-reports only `propext`, `Classical.choice`, and `Quot.sound`. Global formal lint is presently blocked by
-unrelated dirty-tree modules that are not umbrella-wired; the new CCM module is not in the
-reported unreachable set.
+reports only `propext`, `Classical.choice`, and `Quot.sound`. At that audit, global formal lint was
+blocked by unrelated dirty-tree modules then outside umbrella reach; this is historical audit
+evidence, not a claim about the current moving worktree. The new CCM module was not in the reported
+unreachable set.

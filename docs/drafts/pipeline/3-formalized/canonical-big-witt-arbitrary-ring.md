@@ -1,6 +1,6 @@
 # Canonical big-Witt multiplication over arbitrary rings
 
-Status: in progress
+Status: formalized in Lean 4 (2026-08-12)
 
 ## Exact target
 
@@ -83,3 +83,25 @@ natural under coefficient-ring maps.
 - Transporting a ring structure from a field or reduced quotient.
 - Adding an abstract operation as data and restating its axioms.
 - Proving only the Teichmüller-factor law without closing all commutative-ring laws.
+
+## Closure
+
+Formal modules:
+
+- `DeningerBigWittEuler.lean`: unique integral Euler coordinates and functorial reconstruction.
+- `DeningerBigWittMultiplication.lean`: coefficientwise-complete gcd--lcm pair product.
+- `DeningerBigWittGhost.lean`: integral logarithmic ghost, factor formula, pair reindexing,
+  completed ghost multiplicativity, and torsion-free ghost injectivity.
+- `DeningerBigWittRing.lean`: universal integer-polynomial descent of associativity, identity,
+  absorption, and distributivity to arbitrary commutative rings; literal `CommRing`, functorial ring
+  maps, Teichmüller multiplication, and positive ghost-component ring homomorphisms.
+
+All target theorems quantify only over `[CommRing A]`. Target ghost injectivity, reducedness,
+torsion-freeness, characteristic zero, and field hypotheses are absent. The only torsion-free use is
+inside the universal source `MvPolynomial (Fin d × ℕ) ℤ`, before evaluation into `A`.
+
+Verification: direct foreground Lean checks passed for every module; targeted final build of
+`GaloisForLFunctions.RHTower.DeningerBigWittRing` passed. The whole-repository formal lint finds no
+proof debt or wiring error in these modules, but exits nonzero on unrelated pre-existing unreachable
+modules in the Bourgain, adiabatic Deninger, Sieve/Maynard, and HTGeometry areas. Axiom audit reports
+only standard `propext`, `Classical.choice`, and `Quot.sound` dependencies.

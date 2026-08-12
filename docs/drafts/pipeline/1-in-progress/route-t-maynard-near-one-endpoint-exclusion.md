@@ -451,3 +451,170 @@ The arithmetic core is now unconditional in Lean:
 
 Active core is now the finite incidence recurrence itself: collision split, prime assignment,
 Linnik fibre count, and reduction from moment order `kr` to `k(r-1)`.
+
+### C13. Fixed-reservoir Linnik recurrence is unconditional in Lean
+
+The full finite incidence recurrence is now closed.  The decisive correction to the source-level
+sketch is to choose one global prime Fourier modulus above both the exact-moment threshold and the
+entire Bertrand reservoir.  The original convenient modulus
+`2(k+b)N^k+1` can share a factor with a reservoir prime, so affine residue-class scaling need not be
+invertible.  `VinogradovReservoirRecurrence.lean` instead constructs
+
+```text
+q = BertrandNext(max(2(k+b)N^k, reservoirBound(N,k))).
+```
+
+Thus every reservoir prime `p` satisfies `p<q`, hence is a unit modulo `q`, while equality modulo
+`q` still equals integer power-sum equality exactly.
+
+The closed chain is:
+
+- `FiniteFiberPartition.lean` partitions each solution pair into injective and colliding leading
+  blocks at binary square cost;
+- `FiniteFiberCover.lean` covers every injective leading block by the fixed reservoir, at its exact
+  cardinal cost;
+- `FinitePowerSumHolder.lean` forces all tail variables into one residue class, with factor
+  `p^(2b-1)`;
+- `VinogradovShiftedCompatibility.lean` extracts the shifted nested Linnik congruences forced by a
+  same-residue tail solution;
+- `VinogradovResidueGoodCount.lean` bounds every single-class completion by
+  `N^k k! p^(k(k-1)/2) J_k(ceil(N/p),b)`;
+- `VinogradovResidueGoodEnergy.lean` identifies this count with the relevant fibre energy and sums
+  the `p` residue classes, producing the exact `p^(2b)` factor;
+- `VinogradovReservoirRecurrence.lean` sums over the reservoir and combines the result with the
+  colliding-block term
+  `((k^2-k)N^(k-1))^2 J_k(N,b)`.
+
+This proves, without PNT, computation, assumptions, or axioms, a dependency-closed recurrence for
+`J_k(N,k+b)`.  Active core has moved from incidence geometry to solving this explicit recurrence
+at `r≈k^2` and extracting a uniform polynomial-in-order Weyl saving.
+
+### C14. PNT-free mean-value induction admits an integer-exponent invariant
+
+`VinogradovMeanValueBound.lean` solves the recurrence without introducing real powers.  For moment
+length `kr`, define
+
+```text
+E(k,r) = k + (2k-2)(r-1).
+```
+
+The theorem proves
+
+```text
+J_k(N,kr) <= D(k,r) N^E(k,r)
+```
+
+for every step budget satisfying
+
+```text
+2u + k(k-1)/2 <= (k-1)(k-2)       (1 <= u < r).
+```
+
+Mechanism is exact.  Collision branch multiplies by `N^(2k-2)`.  In noncollision branch,
+`p ceil(N/p) <= 2N` absorbs the tail scale, while the reservoir estimate `p^k <= C_k N` absorbs
+the remaining Linnik power; the same exponent increment `2k-2` results.  If the reservoir itself
+exceeds `N`, `VinogradovReservoirScale.lean` proves that `N` lies below an explicit `k`-dependent
+threshold and trivial counting is absorbed into `D(k,r)`.
+
+The later Route-T parameters are already closed arithmetically:
+
+```text
+k = 100s,
+r = 2500s^2 - 200s.
+```
+
+Lean proves this entire range admissible.  Since
+
+```text
+E(k,r) - (2kr - k(k+1)/2) = O(k),
+```
+
+the mean-value excess is linear in phase order.  This is substantially stronger than needed for
+the `k^-4` PNT-free Weyl target.  Active core is now the analytic mean-value-to-exponential-sum
+bridge (Montgomery--Vaughan 24.7--24.13), not VMVT.
+
+### C15. Exact-box Fejér smoothing closes the multivariate MV24.7 core
+
+The analytic bridge no longer needs a guessed weighted VMVT interface.  A dependency-closed Lean
+chain now constructs the exact smoothing used in Montgomery--Vaughan Theorem 24.7:
+
+- `PhaseGeometricBound.lean` identifies phase distance with the additive-circle norm, proves the
+  chord lower bound `4||x|| <= |e(x)-1|`, and derives the exact Fejér-scale estimate
+  `(2/H)|sum_{n<H}e(nx)|^2 <= min(2H, (2H||x||^2)^-1)` off resonance;
+- `VinogradovWideDifference.lean` doubles the exact signed-difference box while retaining the same
+  uniform Vinogradov fibre bound, so every Fejér pair difference is represented without modular
+  aliasing;
+- `VinogradovFejerMajorant.lean` proves the new constructive majorant principle: if tuple power sums
+  are `A,B <= B0`, then the `B0+1` shifted pairs `(A+t,B+t)` all have the same difference.  With
+  `H=2B0+1`, their normalized fibre mass is greater than one.  No absolute-value split or closed
+  triangular-coefficient formula is required;
+- `VinogradovFejerFourier.lean` tensorizes those fibre weights and proves their Fourier transform is
+  exactly the product of one-dimensional Fejér kernels;
+- `VinogradovSmoothedMoment.lean` expands the polynomial `2b`-moment, applies the tensorized identity,
+  and groups the remaining tuple differences by the proved shifted Vinogradov bound;
+- `VinogradovRectangularKernel.lean` inserts coordinate support `|g_j| <= bX^(j+1)` before
+  factorization.  This prevents the common-box radius `bX^k` from creating a fatal `X^(k^2)` loss.
+
+Consequently the entire second-Hölder and multivariate smoothing part of MV24.7 is now reduced in
+Lean to a product of one-dimensional finite kernel sums, with the sharp coordinate ranges and no
+unproved positivity, periodicity, or fibre assumptions.
+
+A further corpus-guided pivot removes the need to duplicate MV Lemma 24.6 literally.  The existing
+formal large-sieve chain bounds Fejér mass on every circle-separated block.  If
+`|alpha-a/q| <= q^-2`, any block of at most `(q+1)/2` consecutive integer frequencies is
+`1/(2q)`-separated.  Applying the existing explicit separated large sieve gives a block cost
+`O(H+q log q)` and hence the coordinate sum
+
+```text
+O(GH/q + G log q + H + q log q).
+```
+
+The extra logarithm is harmless because C14 supplies a fixed polynomial saving after the
+`1/(4b^2)` root.  Active core is now formal separation, finite block partition, and the two outer
+Hölder steps of MV24.7.
+
+### C16. The complete finite MV24.7 bridge is unconditional in Lean
+
+The remaining analytic seams in C15 are now closed.  The key new principle is that no separate
+weighted-VMVT hypothesis is needed: the constructive Fejér weight is at least one on every actual
+power-difference vector, so exact wide-box fibre grouping converts actual tuple moments into the
+smoothed moment with the single sharp factor `J_k(Y,b)`.
+
+The dependency-closed chain is:
+
+- `PhaseGeometricBound.lean` proves Fejér evenness and its global `2H` bound;
+- `VinogradovFejerBlockPartition.lean` partitions `[0,G]` into consecutive blocks of length
+  `(q+1)/2`, proves every block has diameter at most `q/2`, and retains the exact quotient count
+  `floor(G/((q+1)/2))+1`;
+- `VinogradovCoordinateKernelBound.lean` maps the centered signed box to absolute indices with
+  fibre cardinality at most two, applies the existing separated large sieve blockwise, and proves
+
+```text
+sum_g K_j(g)
+  <= 2 (floor(G_j/((q_j+1)/2))+1) BlockCost(H_j,q_j).
+```
+
+  It also closes the trivial coordinate estimate used when no rational saving is available;
+- `VinogradovActualMoment.lean` proves the pointwise Fejér majorant dominates every actual
+  `Y`-tuple difference, groups those differences by exact fibres, and obtains
+
+```text
+sum_actual_moments
+  <= J_k(Y,b) J_k(X,b) product_j coordinateKernelSum_j.
+```
+
+- `VinogradovBilinearHolder.lean` proves both outer Hölder steps from finite sums, expands and
+  regroups the first moment exactly, and composes the result with simultaneous rational
+  approximations in every coordinate.
+
+Thus the finite bilinear content of Montgomery--Vaughan Theorem 24.7 is now a proved Lean theorem,
+including its two outer Hölder steps, both Vinogradov mean-value factors, exact Fejér smoothing,
+and explicit rational-approximation product.  No logarithmic endpoint completion, unproved
+weighted norm, asymptotic placeholder, computation, or axiom remains in this bridge.
+
+The source theorem's constants are deliberately not copied: the formal large-sieve block cost has
+one explicit `log(q+1)` loss.  C14's polynomial-in-order reserve absorbs this after the
+`1/(4b^2)` root.  Active core is now quantitative exponent extraction: insert the C14 mean-value
+bound at the Route-T parameters, choose the useful rational coordinates, and prove a uniform
+`N^(1-c/r^4)` single-sum estimate before transporting it through zeta growth to the near-one
+Maynard endpoint.

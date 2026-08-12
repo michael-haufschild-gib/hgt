@@ -31,10 +31,10 @@ must not be relabelled unconditional.
 
 | Source result | Exact content | Corpus status | Required closure |
 |---|---|---|---|
-| Theorem 1.1 | For every `a > 0`, the actual self-adjoint operator `A_a` associated with the localized Weil form is the Friedrichs extension of the actual symmetric `B_a = D* G_a D`. | **MISSING.** `SuzukiRestrictedWeilForm.lean` defines and decomposes a real test-function form and explicitly says no operator is constructed. No corpus declaration defines these actual unbounded operators or proves the extension equality. | Construct the localized complex `L²` form, prove closability/lower semiboundedness, construct its representing self-adjoint operator, construct `B_a` on `H₀¹`, and prove graph/form-core equality giving the Friedrichs extension. |
-| Corollary 1.2 | Infimum attained in form closure and equals the Rayleigh infimum over `C_c^∞(-a,a)`. | **MISSING EXACT.** Generic Rayleigh and compact-operator results exist, but no literal localized Weil form domain/core theorem. | Form-core density plus representation theorem and exact equality `Q_W^a(v)=⟨B_av,v⟩`. |
-| Theorem 1.3 | Actual lowest eigenvalue `a ↦ λ_a` is continuous. | **MISSING OPERATOR INSTANTIATION.** No actual `λ_a` is defined. The exact bounded-interval `H^log` compact embedding needed by the proof is now formalized. Generic resolvent-limit modules still do not instantiate Suzuki's scaled logarithmic form. | Formalize fixed-interval scaled forms `q_a`, upper semicontinuity by a common smooth core, and lower semicontinuity using `SuzukiHlogCompactEmbedding.lean` plus continuity of the literal bounded remainder forms. |
-| Theorem 1.4 | For small `a`, `λ_a` is positive and simple, has the stated logarithmic asymptotic, and its eigenfunction is even. | **MISSING.** Kernel asymptotic pieces exist, but no spectral instantiation. | Exact small-aperture form asymptotic, compactness, first eigenvalue of the limiting logarithmic form, perturbative simplicity, reflection commutation, and even-sector ground-state selection. |
+| Theorem 1.1 | For every `a > 0`, the actual self-adjoint operator `A_a` associated with the localized Weil form is the Friedrichs extension of the actual symmetric `B_a = D* G_a D`. | **MISSING OPERATOR THEOREM; EXACT COMPLEX TEST-CORE SEMIBOUND CLOSED.** `SuzukiRestrictedWeilSourceForm.lean` fixes the literal archimedean constant, visible prime-power aperture, and continuous smooth kernel in the four-block real test-function form. `SuzukiRestrictedWeilFinitePart.lean`, `SuzukiRestrictedWeilSmoothBound.lean`, `SuzukiRestrictedWeilSemibounded.lean`, and `SuzukiRestrictedWeilComplexCore.lean` prove exact finite-part, smooth, full real, and literal complex `C_c^∞(-a,a)` semibounds. No corpus declaration yet completes the form in complex `L²`, defines actual `A_a` and `B_a`, or proves their extension equality. | Construct the localized complex closed-form completion and representing self-adjoint operator, construct `B_a` on `H₀¹`, and prove graph/form-core equality giving the Friedrichs extension. |
+| Corollary 1.2 | Infimum attained in form closure and equals the Rayleigh infimum over `C_c^∞(-a,a)`. | **MISSING EXACT.** A literal smooth compact-support core type now exists and the prime/smooth blocks have unconditional lower bounds. No completed localized form domain, core-density theorem, or actual Rayleigh minimizer is constructed. | Finite-part lower bound, form completion and core density, representation theorem, and exact equality `Q_W^a(v)=⟨B_av,v⟩`. |
+| Theorem 1.3 | Actual lowest eigenvalue `a ↦ λ_a` is continuous. | **MISSING OPERATOR INSTANTIATION.** No actual `λ_a` is defined. The exact bounded-interval `H^log` compact embedding is formalized. Provisional umbrella `SuzukiWeilRemainderRegularity.lean` removes the apparent singularity of the literal smooth remainder, fixes its value at zero to `-7/4`, and proves the resulting even kernel continuous and bounded/integrable on finite apertures. Generic resolvent-limit modules still do not instantiate Suzuki's scaled logarithmic form. | Formalize fixed-interval scaled forms `q_a`, turn kernel regularity into parameter-dependent bounded-form continuity, prove upper semicontinuity on a common smooth core, and prove lower semicontinuity using `SuzukiHlogCompactEmbedding.lean`. |
+| Theorem 1.4 | For small `a`, `λ_a` is positive and simple, has the stated logarithmic asymptotic, and its eigenfunction is even. | **ACTUAL SMOOTH SOURCE-FORM POSITIVITY CLOSED; SPECTRAL CLOSURE MISSING.** `SuzukiOriginLogarithmicRemainder.lean`, `SuzukiOriginRemainderFirstJet.lean`, and `SuzukiOriginRemainderRegularity.lean` prove the literal Eq. (2.2) decomposition, exact first jet, global `C²`, sharp `r(t)/t² → -7/8`, and `O(t²)`. `SuzukiLimitingLogFormCoercivity.lean` proves the new explicit bound `L(u) ≥ ‖u‖²₂/24`. `SuzukiPrimeFreeScaledCoercivity.lean` proves a uniform source-remainder bound and a coefficient tending to `+∞`. Crucially, `SuzukiScaledFormBridge.lean` proves the exact change-of-variables identity from that fixed-interval expression to `(1/a)` times the literal restricted Weil form on rescaled complex test cores, and hence strict positivity for normalized tests at bundled sufficiently small apertures. No closed-form completion, actual `λ_a`, simplicity theorem, or even ground state is constructed. | Extend quantitative coercivity through the form completion; construct the associated compact-resolvent operator and actual lowest eigenvalue; prove perturbative simplicity and reflection commutation; select the even ground sector. |
 | Theorem 1.5 | Actual minimal derivative on the completed form space has deficiency indices `(1,1)`; the actual `W(a,θ;z)` is entire, its zeros are exactly the spectrum of the actual self-adjoint extension, and every zero is real. | **MISSING EXACT.** `SuzukiFiniteApertureHermiteBiehler.lean` begins from `SuzukiAllAngleRealZeros`; the comment says Suzuki supplies it. `SuzukiProjectedContinuousDeficiency.lean` proves interval identities under ODE and regularity premises. Neither defines the actual completion/operator/deficiency vectors. | Build `H(T_a)`, the densely defined derivative `𝒟_a`, its adjoint and one-dimensional deficiency spaces; construct von Neumann extensions; define actual normalized `v_±`; prove the Lagrange identity and characteristic equivalence; derive reality from self-adjointness. |
 | Corollary 1.6 | Compact-open convergence of gauged `W(a,θ(a);·)` to `z² ξ/ξ'` implies RH. | **PARTIAL EXACT NO-GO, NOT THE COROLLARY.** `SuzukiCharacteristicEntireLimitNoGo.lean` treats an ordinary one-angle holomorphic-gauge target obstruction. | Formalize the literal meromorphic target and Hurwitz/pole-removal implication, while retaining the source's convergence premise as a premise because it is conjectural rather than a theorem. Do not claim that premise. |
 
@@ -44,8 +44,50 @@ must not be relabelled unconditional.
   derivative identities, including the Suzuki constants.
 - `SuzukiScrewDistributionalKernel.lean`: distributional second-derivative/integration-by-parts
   bridge on prime-free intervals.
-- `SuzukiRestrictedWeilForm.lean`: explicit four-block test-function form and representative
-  decomposition; deliberately stops before constructing `A_a` or `B_a`.
+- `SuzukiRestrictedWeilForm.lean`: generic four-block test-function form and representative
+  decomposition; deliberately stops before fixing every source parameter or constructing `A_a`
+  or `B_a`.
+- `SuzukiWeilRemainderRegularity.lean` (**current dirty umbrella, provisional**): exact two-step
+  l'Hopital evaluation of the smooth remainder at zero as `-7/4`, continuous removal of the
+  singularity, continuous even source kernel, and unconditional finite-aperture boundedness and
+  interval integrability. This closes literal source-kernel regularity, not form-parameter
+  continuity or operator construction.
+- `SuzukiRestrictedWeilSourceForm.lean` (**current dirty umbrella, provisional**): inserts the
+  literal archimedean constant, exact visible prime-power indices, and continuous remainder into
+  the four-block form; proves its exact distributional representative, complete prime-block
+  jump-energy decomposition and lower bound, and uniform finite-aperture smooth-kernel difference
+  bound. Every source parameter is fixed. Finite-part semiboundedness and operator construction
+  remain.
+- `SuzukiRestrictedWeilSmoothBound.lean` (**current dirty umbrella, provisional**): chooses the
+  canonical compact-aperture kernel bound and proves the literal smooth quadratic block is bounded
+  below by an explicit finite multiple of interval `L²` energy. No regularity premise remains.
+- `SuzukiOriginLogarithmicRemainder.lean` (**current dirty umbrella, provisional**): proves literal Eq.
+  (2.2), its even source remainder, the exact `-7/4` renormalized curvature at the origin,
+  continuity on the line, and a uniform local curvature bound. This closes origin-remainder
+  analysis, not the small-aperture eigenvalue theorem.
+- `SuzukiOriginRemainderFirstJet.lean` and `SuzukiOriginRemainderRegularity.lean` (**current dirty
+  umbrella, provisional**): identify the exact first jet, prove its derivative is the continuous
+  curvature, prove global `C²` regularity of the source remainder, the sharp two-sided limit
+  `r(t)/t² → -7/8`, and the exact `O(t²)` germ.  This closes the analytic origin expansion used by
+  the scaled-form argument.
+- `SuzukiRestrictedWeilFinitePart.lean`, `SuzukiRestrictedWeilSmoothBound.lean`,
+  `SuzukiRestrictedWeilSemibounded.lean`, and `SuzukiRestrictedWeilComplexCore.lean` (**current
+  dirty umbrella, provisional**): close the literal finite-part identity and semibound, smooth
+  perturbation bound, complete real source-core semibound, and its extension to mathlib's literal
+  complex test-function space.  Form completion and operator identification remain.
+- `SuzukiLimitingLogFormCoercivity.lean` (**current dirty umbrella, provisional; new strengthening**):
+  defines Suzuki's exact complex limiting form on `C_c^∞((-1,1),ℂ)` and proves unconditionally
+  `L(u) ≥ ‖u‖²₂/24`.  Suzuki's paper establishes only an unnamed positive ground constant by
+  compactness/contradiction; the explicit constant is new quantitative information, not parity
+  busywork.  It does not by itself construct the finite-aperture operator or eigenvalue.
+- `SuzukiPrimeFreeScaledCoercivity.lean` and `SuzukiScaledFormBridge.lean` (**current dirty umbrella,
+  provisional; exact source bridge**): prove the visible prime layer is empty for
+  `2a < log 2`, replace Suzuki's fixed-vector `O(a)` in (5.1) by a uniform Schur form bound, prove
+  the resulting coercivity coefficient tends to `+∞`, construct the exact rescaled source cores,
+  and prove `(1/a) Q_W^a(u(·/a))` equals the literal prime-free fixed-interval numerator.  The final
+  closed theorem gives strict positivity of the actual smooth source form for normalized complex
+  tests at intrinsically bundled sufficiently small apertures.  Extending this bound through the
+  closed form and identifying its lowest eigenvalue remain open.
 - `SuzukiHlogCompactEmbedding.lean`: exact source weight `1 + log⁺|ξ|`, exact zero-extended
   bounded-interval unit ball, published uniform Fourier-tail estimate, and compact closure for every
   bundled bounded interval.  This closes Suzuki (2026), Proposition 4.1 / the compact-embedding
@@ -100,7 +142,7 @@ must not be relabelled unconditional.
 | Theorem 1.7, RH iff pointwise `Psi >= 0`; under RH `Psi(t)>0` for `t != 0` | **EXACT.** `SuzukiScrewPointwiseNonnegativityCriterion.lean` closes the equivalence and `SuzukiScrewStrictPositivity.lean` closes strict positivity using the now-exact uniqueness theorem. |
 | Theorem 1.8, published determinant-chain criterion | **PUBLISHED CONVERSE INVALID AS PROVED; CORRECTED EXACT THEOREM CLOSED.** `SuzukiStieltjesDeterminantCounterexample.lean` gives a closed sequence with both determinant chains nonnegative but a negative shifted Hankel form, disproving the generic implication used in the paper. `StieltjesSemidefiniteExistence.lean`, `HardyStieltjesDeterminacy.lean`, `SuzukiStieltjesMoments.lean`, and `SuzukiStieltjesCriterion.lean` prove the literal corrected theorem: RH iff both ordinary and shifted Hankel forms are positive semidefinite. The valid RH-to-determinant direction is also exact. Whether the determinant-only converse happens to hold for this special moment sequence remains open; the printed proof does not establish it. |
 | Theorem 4.1, local positivity | **WEAK SOURCE-SUFFICIENT FORM EXACT; STRONG PRINTED RANGE OPEN.** `SuzukiScrewFirstGap.lean` proves symbolically that `Psi(t)>0` on `0<t<1/20`, which the source explicitly says suffices for Theorem 1.4. It also proves the exact first-gap derivative and exposes a missing `-(log pi)/2` in the printed formula. The claimed `t₀>log 2` proof still depends on computer-found derivative roots and is not yet formalized. |
-| Theorems 4.2--4.3, small-aperture positive definiteness and Yoshida coercivity | **MISSING; PUBLISHED PROOF HAS A FORM-DOMINATION GAP.** Twice the proof infers a quadratic-form inequality for arbitrary complex `phi` from a pointwise kernel inequality. That implication is false for general kernels. Correct repair must factor the kernels through the oriented-primitive Gram map: contour shift becomes bounded exponential multiplication, while low-frequency loss follows from Cauchy--Schwarz on compact support. This is the active hard boundary. |
+| Theorems 4.2--4.3, small-aperture positive definiteness and Yoshida coercivity | **PARTIAL REPAIR, ANALYTIC INTERFACES PROVISIONALLY CLOSED.** Lean proves by a PSD matrix counterexample that entrywise kernel order does not imply quadratic-form order. `SuzukiOrientedPrimitive.lean` and committed `SuzukiGramDominationRepair.lean` give exact finite-packet Gram and form bounds. Current dirty umbrella-wired `SuzukiL2GramRepair.lean` proves finite energy, exact actual-source free-kernel Gram factorization, literal Eq. (4.2) Fourier factorization, and both disputed form bounds for every `L²(-a,a)` source. Dirty umbrella-wired `SuzukiArchimedeanCoercivity.lean` proves corrected weight normalization, global minimum, high-frequency coercivity, and compact-band lower envelope. Generic dirty umbrella-wired `HTGeometry/FriedrichsFormOperator.lean` supplies positive self-adjoint form operators, compact resolvent under compact embedding, and core extension. Commit, direct audit, and concrete Suzuki coercivity/form-domain/Friedrichs assembly remain. |
 
 ### arXiv:1204.1827
 
@@ -128,10 +170,12 @@ The recent source-realization paper developments are not literature parity.  Cur
 ## Current hard boundary
 
 Literature remains ahead of corpus at the unbounded-operator layer, not at finite scalar algebra.
-The logarithmic compact-embedding item is now closed. Exact parity still requires a localized
-Weil-form/operator stack:
+The logarithmic compact-embedding, literal smooth-remainder regularity and `L²` block bound, and
+source-locked four-block test form are now closed (last items provisionally beyond the committed cutoff). Exact
+parity still requires a localized Weil-form/operator stack:
 
-1. complex localized Weil sesquilinear form on a genuine `L²(-a,a)` domain;
+1. finite-part semiboundedness and the resulting complex localized Weil sesquilinear form on a
+   genuine `L²(-a,a)` domain;
 2. lower-semibounded closed-form representation/Friedrichs extension;
 3. actual first-order derivative on the form completion, adjoint, deficiency indices, and von
    Neumann extensions;

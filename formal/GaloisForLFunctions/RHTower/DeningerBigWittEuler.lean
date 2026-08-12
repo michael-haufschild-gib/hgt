@@ -63,7 +63,7 @@ def deningerBigWittFactor (a : A) (m : ℕ) : PowerSeries A :=
 
 @[simp] theorem deningerBigWittFactor_constantCoeff (a : A) (m : ℕ) (hm : m ≠ 0) :
     PowerSeries.constantCoeff (deningerBigWittFactor a m) = 1 := by
-  simp [deningerBigWittFactor, PowerSeries.coeff_X_pow, hm]
+  simp [deningerBigWittFactor, hm]
 
 /-- Product of the first `N` positive-degree Euler factors. -/
 def deningerBigWittEulerPartial (x : ℕ → A) (N : ℕ) : PowerSeries A :=
@@ -186,7 +186,7 @@ theorem deningerBigWittEulerApprox_coeff
   | zero =>
       have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
       subst k
-      simpa [PowerSeries.coeff_zero_eq_constantCoeff, hf]
+      simp [PowerSeries.coeff_zero_eq_constantCoeff, hf]
   | succ N ih =>
       rcases lt_or_eq_of_le hk with hklt | rfl
       · rw [deningerBigWittEulerApprox_coeff_stable_step f (Nat.le_of_lt_succ hklt)]
@@ -345,6 +345,34 @@ def deningerBigWittMap (f : A →+* B) :
   change PowerSeries.map f (deningerBigWittEulerSeries x) =
     deningerBigWittEulerSeries (f ∘ x)
   simp
+
+@[simp] theorem deningerBigWittMap_id (w : DeningerBigWittAdditive A) :
+    deningerBigWittMap (RingHom.id A) w = w := by
+  apply Subtype.ext
+  apply Units.ext
+  apply PowerSeries.ext
+  intro n
+  change PowerSeries.coeff n
+      (PowerSeries.map (RingHom.id A) (deningerBigWittSeries w)) =
+    PowerSeries.coeff n (deningerBigWittSeries w)
+  rw [PowerSeries.coeff_map]
+  rfl
+
+@[simp] theorem deningerBigWittMap_comp
+    {C : Type*} [CommRing C] (g : B →+* C) (f : A →+* B)
+    (w : DeningerBigWittAdditive A) :
+    deningerBigWittMap (g.comp f) w =
+      deningerBigWittMap g (deningerBigWittMap f w) := by
+  apply Subtype.ext
+  apply Units.ext
+  apply PowerSeries.ext
+  intro n
+  change PowerSeries.coeff n
+      (PowerSeries.map (g.comp f) (deningerBigWittSeries w)) =
+    PowerSeries.coeff n
+      (PowerSeries.map g (PowerSeries.map f (deningerBigWittSeries w)))
+  simp only [PowerSeries.coeff_map]
+  rfl
 
 end
 

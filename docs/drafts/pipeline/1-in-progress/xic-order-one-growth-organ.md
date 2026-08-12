@@ -578,3 +578,45 @@ n ≤ √X₀ only; the missing tail is the edge content again — the hypothesi
 `split`; targeted `Finset.add_sum_erase` needs the explicit function argument or it rewrites the
 wrong Σ; `field_simp` can close goals fully (remove trailing `ring`); Complex division by a real:
 rw-chain ofReal_pow/div_eq_mul_inv/ofReal_inv/mul_re/ofReal_re/ofReal_im, NOT bare simp.
+
+## Step 33 (2026-08-12): TURÁN MINORS CLEANSE THE EDGE — the depth-graded criterion begins
+
+**New theorem** `RHTower/XiResolventTuranEdgeCleansing.lean` (axioms [propext, Classical.choice,
+Quot.sound], wired after XiResolventDiagonalEdgeDetection):
+- `forall_edge_criticalLine_of_forall_turanMinor_re_nonneg`: **if every consecutive Turán minor
+  `Rₙ·R_{n+2} − R_{n+1}²` at ONE shift X ≥ 0 is nonnegative, then EVERY divisor copy of maximal
+  resolvent modulus — all the lowest zeros of ξ — lies on the critical line.** Strictly stronger
+  conclusion than step 32 (∀ edge copies vs ∃ one), from the next Hankel layer.
+- `two_mul_turanMinorAt_eq_tsum_pair`: the variance expansion at every level n —
+  2(RₙR_{n+2} − R_{n+1}²) = Σ'_{(q,r)} (u_qu_r)^{n+1}(u_q−u_r)² (generalizes the corpus's n = 0
+  pair expansion).
+- `xiResolventPoint_im_ne_zero_of_spectral`: off-critical spectral points have off-real
+  resolvent values (γ ≠ 0 from the height gap).
+- `re_div_ofReal`: (z/↑a).re = z.re/a (reusable).
+
+**Mechanism** (first-moment Cesàro only — simpler than step 32): normalize the edge pair points
+u_qu_r (modulus r²) to the unit circle; the pair points EQUAL to r² are exactly the conjugate
+pairs u_r = conj u_q, whose weights are the exact negative reals −4(Im u_q)² — the negative core
+of the corpus's Turán ladder, now at every level n. Truncated at N: conjugate pairs contribute
+−4(Im u_q)²·N per off-line edge copy (the witness pair (q, lineConj q) always exists by
+conjugation stability); all other unit pair points contribute boundedly (geometric sums ≤
+2/‖V−1‖, engine of step 32 reused); the sub-edge tail is a convergent geometric series
+(4P₀/(1−ρ/r)). Minor nonnegativity ⇒ 4(Im u)²N bounded ∀N ⇒ Im u = 0 ⇒ (height gap) on the line.
+
+**The emerging depth-graded picture** (steps 32–33): the Hankel criterion resolves the zero
+spectrum from the edge downward — diagonal (rank 1) SEES the edge (∃ on-line copy); first minors
+(rank 2) CLEAN the edge (∀ on-line). Conjectured continuation: rank-k data cleans/reaches the
+k-th modulus level (deflation: subtract the now-known-real edge contributions and iterate —
+needs positivity of deflated sequences, open). This grading is the theorem-form of the step-31
+experimental structure (equilibrium bulk + edge locking).
+
+**Novelty**: statement not found in literature (searched: Turán inequalities appear for ξ Taylor
+coefficients (Csordas–Norfolk–Varga) and Li coefficients — never as zero-LOCALIZING hypotheses in
+a resolvent chart at one shift; arXiv:1510.03420 remains the closest, a full iff without
+localization). Mechanism classical-flavored (power sums + Cesàro). Label: [LEAN-PROVED] +
+[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] provisional.
+
+**Lean traps**: `Summable.of_norm_bounded` now takes (hg) before the bound; `rw [hdef]` on
+set-bound lambdas needs `simp only [hdef]` (beta) — recurring; `rw` closes `r ≤ r` goals via
+@[refl]-rfl (drop trailing exact le_rfl); `|>.trans_eq (by ring)` fails on metavariable targets —
+use explicit calc; norm-rewrite chains must not mix `norm_pow` targets (first occurrence bites).
