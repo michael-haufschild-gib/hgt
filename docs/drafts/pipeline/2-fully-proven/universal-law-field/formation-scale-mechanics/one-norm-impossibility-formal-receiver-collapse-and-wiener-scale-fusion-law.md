@@ -460,3 +460,48 @@ Do not formalize the open arithmetic scale/sheaf construction.
 - 2026-08-11 — one-topology conjecture attacked.  One-norm model and purely formal analytic
   receiver both failed exactly; Wiener-scale construction, character classification, exchange
   identity, and corrected RH completion gate closed on paper.
+
+## 12. Formalization state and remaining Lean surface
+
+Modules: `GaloisForLFunctions.HTGeometry.FormationScaleReceiver` (the original core) and
+`GaloisForLFunctions.HTGeometry.WienerFormationScale` (the scale itself), both wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField`.
+
+Closed in `FormationScaleReceiver`:
+
+- Theorem 2.1, `(FSR1.2)`--`(FSR1.5)` — `no_bounded_derivation_of_generator`;
+- a receiver-collapse surrogate — `continuous_receiver_kills_formal_generator`;
+- the polynomial-level Theorem 5.3 exchange — `derivative_formationAdams`,
+  `eval_formationAdams`, `eval_derivative_formationAdams`;
+- a logarithmic-collar version of the ghost transport — `formationWienerSummable_ghost`,
+  `formationWienerNorm_ghost_le`.
+
+Closed in `WienerFormationScale` (the scale `W_R` in coefficient coordinates on `C[[X]]`):
+
+- admission `WienerScaleAdmissible` and the norm `wienerScaleNorm` of `(FSR1.10)`, with the values
+  on `0`, `1`, `X^m`;
+- closure under sum, negation, scalar action and Cauchy product, and the submultiplicative bound
+  `(FSR1.11)` — `WienerScaleAdmissible.mul`, `wienerScaleNorm_mul_le`;
+- radius monotonicity — `WienerScaleAdmissible.mono`, `wienerScaleNorm_mono`;
+- receiver evaluation `(FSR1.12)`, its contractive bound `(FSR1.13)`, additivity, scalar
+  homogeneity, and multiplicativity — `wienerScaleEval`, `norm_wienerScaleEval_le`,
+  `wienerScaleEval_mul`;
+- Theorem 5.1 with the sharp constant `(FSR1.15)` — `wienerScale_collar_bound`,
+  `WienerScaleAdmissible.derivative`, `wienerScaleNorm_derivative_le`;
+- Theorem 5.2 with the exact radius law `norm of Psi_q f at r equals norm of f at r^q` —
+  `wienerScaleNorm_adams`, `WienerScaleAdmissible.adams`, `wienerScaleNorm_adams_le` for
+  `(FSR1.19)`;
+- the receiver covariance `(FSR1.23)`, unconditionally — `wienerScaleEval_adams`;
+- Theorem 6.1: the exterior/formation inverse identity `(FSR1.26)` for an arbitrary finite marked
+  mode family, the admission of both packets, and the exact margin `(FSR1.27)` —
+  `one_sub_mul_wienerScaleGeom`, `wienerScale_witt_fusion`,
+  `wienerScaleAdmissible_witt_formation`, `wienerScaleAdmissible_witt_exterior`,
+  `wienerScaleNorm_geom`.
+
+Remaining Lean surface:
+
+1. Theorem 4.1(1) completeness: the bundled Banach-algebra structure on `W_R`.
+2. Theorem 4.1(3) and `(FSR1.28)`: every bounded unital character of `W_R` is `ev_z` for a unique
+   `z` with `|z| <= R`, so the continuous spectrum is the closed disc.
+3. Theorem 5.3's series-level exchange `(FSR1.21)` and its bound `(FSR1.22)` on `W_r`.
+4. Theorem 3.1 for the literal `T`-adic topology on `C[[T]]`.

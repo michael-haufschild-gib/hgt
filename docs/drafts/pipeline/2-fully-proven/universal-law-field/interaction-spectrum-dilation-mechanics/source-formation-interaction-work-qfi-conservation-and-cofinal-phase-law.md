@@ -343,6 +343,14 @@ forced by the Euler-shell product source.
 - [x] cofinal tight/escaping properness phase
 - [x] reciprocal phase classifier
 - [x] Lean finite formation, reconstruction, passivity, work--QFI, prime phase, and reflection core
-- [ ] Lean cofinal fixed-degree escape limit `(ISD.22)--(ISD.23)`
+- [x] Lean analytic core of the cofinal fixed-degree escape limit `(ISD.22)`:
+      `GaloisForLFunctions.HTGeometry.InteractionDegreeEscape.tendsto_mean_div_gap_sq` certifies
+      that the Chebyshev bound `mu/(mu-D)^2` vanishes as the mean diverges, for every fixed degree
+      threshold `D`, by the gap estimate `mu - D >= mu/2` past `mu >= 2D`
+- [ ] Lean probabilistic wrapper of `(ISD.22)--(ISD.23)`: `P(K_n <= D) <= Var K_n/(mu_n - D)^2`
+      together with the critical-value statement at `sigma = 1`
 - [ ] source-native reflection comparison preserving formation phase
 - [ ] RH selection consequence
+
+- 2026-08-12 — the analytic core of the fixed-degree escape limit certified in Lean; only the
+  probabilistic wrapper remains on this card.

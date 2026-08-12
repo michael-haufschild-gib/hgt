@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.HilbertSchmidtOperator
 
 /-!
 # Marked Mellin normalization exchange and phase response
@@ -301,6 +302,486 @@ theorem hermVarianceChar_eq {c : ℕ → ℝ} (t : ℝ)
     simp only [atomChar_mul_conj, mul_one]
     exact hone
   rw [hermVarianceChar, h1, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+
+/-! ### The marked probability state -/
+
+/-- The standing marked hypotheses: the normalized atomic weights form a probability vector. -/
+structure IsMarkedState (σ : ℝ) (c : ℕ → ℝ) : Prop where
+  /-- The normalized weights are nonnegative. -/
+  nonneg : ∀ n, 0 ≤ normWeight σ c n
+  /-- The normalized weights are summable. -/
+  summable : Summable (normWeight σ c)
+  /-- The normalized weights carry total mass one. -/
+  total : ∑' n, normWeight σ c n = 1
+
+namespace IsMarkedState
+
+variable {c : ℕ → ℝ}
+
+/-- A marked state has nonzero total mass: a vanishing mass normalizes every weight to zero. -/
+theorem totalMass_ne_zero (hc : IsMarkedState σ c) : totalMass σ c ≠ 0 := by
+  intro h
+  have hz : ∀ n, normWeight σ c n = 0 := fun n => by rw [normWeight, h, div_zero]
+  have h1 := hc.total
+  rw [tsum_congr hz, tsum_zero] at h1
+  exact zero_ne_one h1
+
+theorem summable_complex (hc : IsMarkedState σ c) :
+    Summable fun n => ((normWeight σ c n : ℝ) : ℂ) :=
+  Summable.of_norm_bounded hc.summable fun n => le_of_eq (by
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hc.nonneg n)])
+
+theorem total_complex (hc : IsMarkedState σ c) :
+    ∑' n, ((normWeight σ c n : ℝ) : ℂ) = 1 := by
+  rw [← Complex.ofReal_tsum, hc.total, Complex.ofReal_one]
+
+/-- A uniformly bounded observable is `P_c`-summable. -/
+theorem summable_mul_of_bounded (hc : IsMarkedState σ c) {f : ℕ → ℂ} {M : ℝ}
+    (hf : ∀ n, ‖f n‖ ≤ M) : Summable fun n => ((normWeight σ c n : ℝ) : ℂ) * f n := by
+  refine Summable.of_norm_bounded (hc.summable.mul_right M) fun n => ?_
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hc.nonneg n)]
+  exact mul_le_mul_of_nonneg_left (hf n) (hc.nonneg n)
+
+end IsMarkedState
+
+@[simp] theorem norm_atomChar (t : ℝ) (n : ℕ) : ‖atomChar t n‖ = 1 := by
+  rw [atomChar, Complex.norm_exp]
+  simp
+
+theorem norm_atomChar_sub_le (σ : ℝ) (c : ℕ → ℝ) (t : ℝ) (n : ℕ) :
+    ‖atomChar t n - phaseCorr σ c t‖ ≤ 1 + ‖phaseCorr σ c t‖ := by
+  simpa using norm_sub_le (atomChar t n) (phaseCorr σ c t)
+
+namespace IsMarkedState
+
+variable {c : ℕ → ℝ}
+
+theorem summable_atomChar (hc : IsMarkedState σ c) (t : ℝ) :
+    Summable fun n => ((normWeight σ c n : ℝ) : ℂ) * atomChar t n :=
+  hc.summable_mul_of_bounded (M := 1) fun n => (norm_atomChar t n).le
+
+theorem expect_atomChar (hc : IsMarkedState σ c) (t : ℝ) :
+    expect σ c (atomChar t) = phaseCorr σ c t :=
+  (phaseCorr_eq_expect hc.totalMass_ne_zero t).symm
+
+theorem tsum_normWeight_mul_atomChar (hc : IsMarkedState σ c) (t : ℝ) :
+    ∑' n, ((normWeight σ c n : ℝ) : ℂ) * atomChar t n = phaseCorr σ c t :=
+  (phaseCorr_eq_expect hc.totalMass_ne_zero t).symm
+
+theorem summable_centered_atomChar (hc : IsMarkedState σ c) (t : ℝ) :
+    Summable fun n => ((normWeight σ c n : ℝ) : ℂ) * (atomChar t n - phaseCorr σ c t) :=
+  hc.summable_mul_of_bounded (M := 1 + ‖phaseCorr σ c t‖) fun n => norm_atomChar_sub_le σ c t n
+
+end IsMarkedState
+
+/-- The centered phase character has zero `P_c`-mean. -/
+theorem tsum_centered_atomChar {c : ℕ → ℝ} (hc : IsMarkedState σ c) (t : ℝ) :
+    ∑' n, ((normWeight σ c n : ℝ) : ℂ) * (atomChar t n - phaseCorr σ c t) = 0 := by
+  have hterm : ∀ n : ℕ, ((normWeight σ c n : ℝ) : ℂ) * (atomChar t n - phaseCorr σ c t)
+      = ((normWeight σ c n : ℝ) : ℂ) * atomChar t n
+        - ((normWeight σ c n : ℝ) : ℂ) * phaseCorr σ c t := fun n => by ring
+  rw [tsum_congr hterm, (hc.summable_atomChar t).tsum_sub
+      (hc.summable_complex.mul_right (phaseCorr σ c t)),
+    hc.tsum_normWeight_mul_atomChar t, tsum_mul_right, hc.total_complex, one_mul, sub_self]
+
+/-! ### The Fisher form -/
+
+/-- The `P_c`-mean of a real score. -/
+noncomputable def mean (σ : ℝ) (c r : ℕ → ℝ) : ℝ := ∑' n, normWeight σ c n * r n
+
+/-- **`(MER.16)`.**  The quotient Fisher form of a real score: its `P_c`-variance. -/
+noncomputable def fisherVar (σ : ℝ) (c r : ℕ → ℝ) : ℝ :=
+  ∑' n, normWeight σ c n * (r n - mean σ c r) ^ 2
+
+/-- The Hermitian `P_c`-variance of a complex observable. -/
+noncomputable def hermVar (σ : ℝ) (c : ℕ → ℝ) (f : ℕ → ℂ) : ℝ :=
+  ∑' n, normWeight σ c n * ‖f n - expect σ c f‖ ^ 2
+
+theorem fisherVar_nonneg {c : ℕ → ℝ} (hc : IsMarkedState σ c) (r : ℕ → ℝ) :
+    0 ≤ fisherVar σ c r :=
+  tsum_nonneg fun n => mul_nonneg (hc.nonneg n) (sq_nonneg _)
+
+theorem hermVar_nonneg {c : ℕ → ℝ} (hc : IsMarkedState σ c) (f : ℕ → ℂ) :
+    0 ≤ hermVar σ c f :=
+  tsum_nonneg fun n => mul_nonneg (hc.nonneg n) (sq_nonneg _)
+
+/-- **`(MER.17)`, the character variance.**  `Var^H_{P_c}(e^{-itx}) = 1 - |C_c(t)|²`, because the
+character has modulus one and its `P_c`-mean is the phase correlation. -/
+theorem hermVar_atomChar {c : ℕ → ℝ} (hc : IsMarkedState σ c) (t : ℝ) :
+    hermVar σ c (atomChar t) = 1 - ‖phaseCorr σ c t‖ ^ 2 := by
+  have hE : expect σ c (atomChar t) = phaseCorr σ c t := hc.expect_atomChar t
+  have hu : ∀ n : ℕ, normWeight σ c n * ‖atomChar t n - phaseCorr σ c t‖ ^ 2
+      = normWeight σ c n * (1 + ‖phaseCorr σ c t‖ ^ 2)
+        - 2 * (normWeight σ c n
+            * (atomChar t n * (starRingEnd ℂ) (phaseCorr σ c t)).re) := by
+    intro n
+    have h := Complex.normSq_sub (atomChar t n) (phaseCorr σ c t)
+    rw [Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq,
+      norm_atomChar] at h
+    rw [h]
+    ring
+  have hbound : ∀ n : ℕ,
+      |(atomChar t n * (starRingEnd ℂ) (phaseCorr σ c t)).re| ≤ ‖phaseCorr σ c t‖ := by
+    intro n
+    refine (Complex.abs_re_le_norm _).trans ?_
+    rw [norm_mul, norm_atomChar, one_mul, Complex.norm_conj]
+  have hsum1 : Summable fun n => normWeight σ c n * (1 + ‖phaseCorr σ c t‖ ^ 2) :=
+    hc.summable.mul_right _
+  have hsum2 : Summable fun n => 2 * (normWeight σ c n
+      * (atomChar t n * (starRingEnd ℂ) (phaseCorr σ c t)).re) := by
+    refine Summable.of_norm_bounded (hc.summable.mul_right (2 * ‖phaseCorr σ c t‖)) fun n => ?_
+    have h1 : |2 * (normWeight σ c n
+        * (atomChar t n * (starRingEnd ℂ) (phaseCorr σ c t)).re)|
+        = 2 * (normWeight σ c n
+            * |(atomChar t n * (starRingEnd ℂ) (phaseCorr σ c t)).re|) := by
+      rw [abs_mul, abs_mul, abs_of_nonneg (hc.nonneg n)]
+      norm_num
+    rw [Real.norm_eq_abs, h1]
+    nlinarith [hbound n, hc.nonneg n, norm_nonneg (phaseCorr σ c t)]
+  have hval : ∑' n, normWeight σ c n
+      * (atomChar t n * (starRingEnd ℂ) (phaseCorr σ c t)).re = ‖phaseCorr σ c t‖ ^ 2 := by
+    have hterm : ∀ n : ℕ, normWeight σ c n
+        * (atomChar t n * (starRingEnd ℂ) (phaseCorr σ c t)).re
+        = (((normWeight σ c n : ℝ) : ℂ) * atomChar t n
+            * (starRingEnd ℂ) (phaseCorr σ c t)).re := by
+      intro n
+      rw [mul_assoc, Complex.re_ofReal_mul]
+    have hsc : Summable fun n => ((normWeight σ c n : ℝ) : ℂ) * atomChar t n
+        * (starRingEnd ℂ) (phaseCorr σ c t) :=
+      (hc.summable_atomChar t).mul_right _
+    rw [tsum_congr hterm, ← Complex.re_tsum hsc, tsum_mul_right,
+      hc.tsum_normWeight_mul_atomChar t, Complex.mul_conj, Complex.ofReal_re,
+      Complex.normSq_eq_norm_sq]
+  rw [hermVar, hE, tsum_congr hu, hsum1.tsum_sub hsum2, tsum_mul_right, hc.total, one_mul,
+    tsum_mul_left, hval]
+  ring
+
+/-! ### The centered response and the Fisher bound -/
+
+/-- The multiplicative response is the `P_c`-covariance of the centered score against the centered
+character, for every centering constant. -/
+theorem phaseResponse_centered {c r : ℕ → ℝ} (hc : IsMarkedState σ c)
+    (hr : Summable fun n => normWeight σ c n * |r n|) (m : ℝ) (t : ℝ) :
+    phaseResponse σ c (fun n => c n * r n) t
+      = ∑' n, ((normWeight σ c n : ℝ) : ℂ) * ((r n - m : ℝ) : ℂ)
+          * (atomChar t n - phaseCorr σ c t) := by
+  have hZ := hc.totalMass_ne_zero
+  have hZc : ((totalMass σ c : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hZ
+  have hsm : Summable fun n => normWeight σ c n * |r n - m| := by
+    refine Summable.of_nonneg_of_le
+      (fun n => mul_nonneg (hc.nonneg n) (abs_nonneg _)) ?_
+      (hr.add (hc.summable.mul_right |m|))
+    intro n
+    have h1 : |r n - m| ≤ |r n| + |m| := by
+      simpa [sub_eq_add_neg] using abs_add_le (r n) (-m)
+    nlinarith [hc.nonneg n, abs_nonneg (r n), abs_nonneg m]
+  have hS0 : Summable fun n => ((normWeight σ c n : ℝ) : ℂ) * ((r n : ℝ) : ℂ)
+      * (atomChar t n - phaseCorr σ c t) := by
+    refine Summable.of_norm_bounded (hr.mul_right (1 + ‖phaseCorr σ c t‖)) fun n => ?_
+    rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_nonneg (hc.nonneg n)]
+    nlinarith [norm_atomChar_sub_le σ c t n,
+      mul_nonneg (hc.nonneg n) (abs_nonneg (r n))]
+  have hS2 := hc.summable_centered_atomChar t
+  have hsplit : ∀ n : ℕ, ((normWeight σ c n : ℝ) : ℂ) * ((r n - m : ℝ) : ℂ)
+      * (atomChar t n - phaseCorr σ c t)
+      = ((normWeight σ c n : ℝ) : ℂ) * ((r n : ℝ) : ℂ) * (atomChar t n - phaseCorr σ c t)
+        - (m : ℂ) * (((normWeight σ c n : ℝ) : ℂ) * (atomChar t n - phaseCorr σ c t)) := by
+    intro n
+    push_cast
+    ring
+  have hterm : ∀ n : ℕ,
+      ((mellinWeight σ (fun n => c n * r n) n : ℝ) : ℂ) * (atomChar t n - phaseCorr σ c t)
+          * ((totalMass σ c : ℝ) : ℂ)⁻¹
+        = ((normWeight σ c n : ℝ) : ℂ) * ((r n : ℝ) : ℂ)
+            * (atomChar t n - phaseCorr σ c t) := by
+    intro n
+    simp only [mellinWeight, normWeight]
+    push_cast
+    field_simp
+  rw [phaseResponse, div_eq_mul_inv, ← tsum_mul_right, tsum_congr hterm, tsum_congr hsplit,
+    hS0.tsum_sub (hS2.mul_left (m : ℂ)), tsum_mul_left, tsum_centered_atomChar hc t,
+    mul_zero, sub_zero]
+
+/-- **`(MER.17)`.**  Weighted Cauchy–Schwarz: the quotient Fisher seminorm dominates every phase
+character response, with the sharp character factor `1 - |C_c(t)|²`. -/
+theorem phaseResponse_normSq_le {c r : ℕ → ℝ} (hc : IsMarkedState σ c)
+    (hr : Summable fun n => normWeight σ c n * |r n|)
+    (hr2 : Summable fun n => normWeight σ c n * r n ^ 2) (t : ℝ) :
+    ‖phaseResponse σ c (fun n => c n * r n) t‖ ^ 2
+      ≤ fisherVar σ c r * (1 - ‖phaseCorr σ c t‖ ^ 2) := by
+  have hwr : Summable fun n => normWeight σ c n * r n := by
+    refine Summable.of_norm_bounded hr fun n => le_of_eq ?_
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hc.nonneg n)]
+  have hsm : Summable fun n => normWeight σ c n * |r n - mean σ c r| := by
+    refine Summable.of_nonneg_of_le
+      (fun n => mul_nonneg (hc.nonneg n) (abs_nonneg _)) ?_
+      (hr.add (hc.summable.mul_right |mean σ c r|))
+    intro n
+    have h1 : |r n - mean σ c r| ≤ |r n| + |mean σ c r| := by
+      simpa [sub_eq_add_neg] using abs_add_le (r n) (-(mean σ c r))
+    nlinarith [hc.nonneg n, abs_nonneg (r n), abs_nonneg (mean σ c r)]
+  have hFV : Summable fun n => normWeight σ c n * (r n - mean σ c r) ^ 2 := by
+    have hs := (hr2.sub (hwr.mul_left (2 * mean σ c r))).add
+      (hc.summable.mul_left (mean σ c r ^ 2))
+    refine hs.congr fun n => ?_
+    ring
+  have hHV : Summable fun n => normWeight σ c n * ‖atomChar t n - phaseCorr σ c t‖ ^ 2 := by
+    refine Summable.of_nonneg_of_le
+      (fun n => mul_nonneg (hc.nonneg n) (sq_nonneg _)) ?_
+      (hc.summable.mul_right ((1 + ‖phaseCorr σ c t‖) ^ 2))
+    intro n
+    have h3 : ‖atomChar t n - phaseCorr σ c t‖ ^ 2 ≤ (1 + ‖phaseCorr σ c t‖) ^ 2 := by
+      nlinarith [norm_atomChar_sub_le σ c t n, norm_nonneg (atomChar t n - phaseCorr σ c t)]
+    exact mul_le_mul_of_nonneg_left h3 (hc.nonneg n)
+  have hA : Summable fun n => (Real.sqrt (normWeight σ c n) * |r n - mean σ c r|) ^ 2 :=
+    hFV.congr fun n => by rw [mul_pow, Real.sq_sqrt (hc.nonneg n), sq_abs]
+  have hB : Summable fun n =>
+      (Real.sqrt (normWeight σ c n) * ‖atomChar t n - phaseCorr σ c t‖) ^ 2 :=
+    hHV.congr fun n => by rw [mul_pow, Real.sq_sqrt (hc.nonneg n)]
+  have hA' : ∑' n, (Real.sqrt (normWeight σ c n) * |r n - mean σ c r|) ^ 2
+      = fisherVar σ c r := by
+    rw [fisherVar]
+    exact tsum_congr fun n => by rw [mul_pow, Real.sq_sqrt (hc.nonneg n), sq_abs]
+  have hB' : ∑' n, (Real.sqrt (normWeight σ c n) * ‖atomChar t n - phaseCorr σ c t‖) ^ 2
+      = 1 - ‖phaseCorr σ c t‖ ^ 2 := by
+    rw [← hermVar_atomChar hc t, hermVar, hc.expect_atomChar t]
+    exact tsum_congr fun n => by rw [mul_pow, Real.sq_sqrt (hc.nonneg n)]
+  have hprod : ∀ n : ℕ, (Real.sqrt (normWeight σ c n) * |r n - mean σ c r|)
+      * (Real.sqrt (normWeight σ c n) * ‖atomChar t n - phaseCorr σ c t‖)
+      = normWeight σ c n * |r n - mean σ c r| * ‖atomChar t n - phaseCorr σ c t‖ := by
+    intro n
+    have h := Real.mul_self_sqrt (hc.nonneg n)
+    calc (Real.sqrt (normWeight σ c n) * |r n - mean σ c r|)
+          * (Real.sqrt (normWeight σ c n) * ‖atomChar t n - phaseCorr σ c t‖)
+        = (Real.sqrt (normWeight σ c n) * Real.sqrt (normWeight σ c n))
+            * (|r n - mean σ c r| * ‖atomChar t n - phaseCorr σ c t‖) := by ring
+      _ = normWeight σ c n * |r n - mean σ c r| * ‖atomChar t n - phaseCorr σ c t‖ := by
+          rw [h]; ring
+  have hnormsum : Summable fun n =>
+      ‖((normWeight σ c n : ℝ) : ℂ) * ((r n - mean σ c r : ℝ) : ℂ)
+        * (atomChar t n - phaseCorr σ c t)‖ := by
+    refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) ?_
+      (hsm.mul_right (1 + ‖phaseCorr σ c t‖))
+    intro n
+    rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_nonneg (hc.nonneg n)]
+    nlinarith [norm_atomChar_sub_le σ c t n,
+      mul_nonneg (hc.nonneg n) (abs_nonneg (r n - mean σ c r))]
+  have hle : ‖phaseResponse σ c (fun n => c n * r n) t‖
+      ≤ Real.sqrt (fisherVar σ c r) * Real.sqrt (1 - ‖phaseCorr σ c t‖ ^ 2) := by
+    rw [phaseResponse_centered hc hr (mean σ c r) t]
+    refine (norm_tsum_le_tsum_norm hnormsum).trans ?_
+    have heq : ∀ n : ℕ, ‖((normWeight σ c n : ℝ) : ℂ) * ((r n - mean σ c r : ℝ) : ℂ)
+        * (atomChar t n - phaseCorr σ c t)‖
+        = (Real.sqrt (normWeight σ c n) * |r n - mean σ c r|)
+          * (Real.sqrt (normWeight σ c n) * ‖atomChar t n - phaseCorr σ c t‖) := by
+      intro n
+      rw [hprod n, norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
+        Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (hc.nonneg n)]
+    rw [tsum_congr heq, ← hA', ← hB']
+    exact ContinuousLinearMap.tsum_mul_le_sqrt_mul_sqrt hA hB
+  have hF0 : 0 ≤ fisherVar σ c r := fisherVar_nonneg hc r
+  have hH0 : 0 ≤ 1 - ‖phaseCorr σ c t‖ ^ 2 := by
+    rw [← hermVar_atomChar hc t]
+    exact hermVar_nonneg hc _
+  have hsq : (Real.sqrt (fisherVar σ c r) * Real.sqrt (1 - ‖phaseCorr σ c t‖ ^ 2)) ^ 2
+      = fisherVar σ c r * (1 - ‖phaseCorr σ c t‖ ^ 2) := by
+    rw [mul_pow, Real.sq_sqrt hF0, Real.sq_sqrt hH0]
+  have h2 : ‖phaseResponse σ c (fun n => c n * r n) t‖ ^ 2
+      ≤ (Real.sqrt (fisherVar σ c r) * Real.sqrt (1 - ‖phaseCorr σ c t‖ ^ 2)) ^ 2 := by
+    nlinarith [hle, norm_nonneg (phaseResponse σ c (fun n => c n * r n) t)]
+  rw [hsq] at h2
+  exact h2
+
+/-- **`(MER.17)`.**  The coarse Fisher-cost bound. -/
+theorem phaseResponse_normSq_le_fisherVar {c r : ℕ → ℝ} (hc : IsMarkedState σ c)
+    (hr : Summable fun n => normWeight σ c n * |r n|)
+    (hr2 : Summable fun n => normWeight σ c n * r n ^ 2) (t : ℝ) :
+    ‖phaseResponse σ c (fun n => c n * r n) t‖ ^ 2 ≤ fisherVar σ c r := by
+  refine (phaseResponse_normSq_le hc hr hr2 t).trans ?_
+  nlinarith [fisherVar_nonneg hc r, sq_nonneg ‖phaseCorr σ c t‖]
+
+/-- **`(MER.17)`, the kernel.**  The quotient Fisher seminorm vanishes exactly on scores that are
+constant on the active support of `P_c`. -/
+theorem fisherVar_eq_zero_iff {c r : ℕ → ℝ} (hc : IsMarkedState σ c)
+    (hFV : Summable fun n => normWeight σ c n * (r n - mean σ c r) ^ 2) :
+    fisherVar σ c r = 0 ↔ ∀ n, normWeight σ c n ≠ 0 → r n = mean σ c r := by
+  constructor
+  · intro h n hn
+    have hle : normWeight σ c n * (r n - mean σ c r) ^ 2 ≤ fisherVar σ c r :=
+      hFV.le_tsum n fun m _ => mul_nonneg (hc.nonneg m) (sq_nonneg _)
+    rw [h] at hle
+    have h0 : normWeight σ c n * (r n - mean σ c r) ^ 2 = 0 :=
+      le_antisymm hle (mul_nonneg (hc.nonneg n) (sq_nonneg _))
+    rcases mul_eq_zero.mp h0 with h1 | h1
+    · exact absurd h1 hn
+    · have h2 : r n - mean σ c r = 0 := sq_eq_zero_iff.mp h1
+      linarith
+  · intro h
+    have hz : ∀ n, normWeight σ c n * (r n - mean σ c r) ^ 2 = 0 := by
+      intro n
+      by_cases hn : normWeight σ c n = 0
+      · rw [hn, zero_mul]
+      · rw [h n hn, sub_self]
+        norm_num
+    rw [fisherVar, tsum_congr hz, tsum_zero]
+
+/-! ### Time jets -/
+
+/-- The `k`-th log moment of the phase character against a weight sequence. -/
+noncomputable def weightMoment (w : ℕ → ℝ) (k : ℕ) (t : ℝ) : ℂ :=
+  ∑' n, ((w n : ℝ) : ℂ) * ((logAtom n : ℂ) ^ k * atomChar t n)
+
+/-- The phase character has time derivative `-i log n` times itself. -/
+theorem hasDerivAt_atomChar (n : ℕ) (t : ℝ) :
+    HasDerivAt (fun s : ℝ => atomChar s n)
+      (-(Complex.I * (logAtom n : ℂ)) * atomChar t n) t := by
+  have hpt : ∀ s : ℝ, Complex.exp ((-(Complex.I * (logAtom n : ℂ))) * (s : ℂ))
+      = atomChar s n := by
+    intro s
+    rw [atomChar]
+    congr 1
+    push_cast
+    ring
+  have h1 : HasDerivAt (fun s : ℝ => (-(Complex.I * (logAtom n : ℂ))) * (s : ℂ))
+      (-(Complex.I * (logAtom n : ℂ))) t := by
+    simpa using ((hasDerivAt_id t).ofReal_comp).const_mul (-(Complex.I * (logAtom n : ℂ)))
+  have h2 := h1.cexp
+  rw [hpt t, funext hpt] at h2
+  simpa [mul_comm] using h2
+
+/-- Differentiation under the sum: the time derivative of a log moment raises its order. -/
+theorem hasDerivAt_weightMoment {w : ℕ → ℝ}
+    (hdom : ∀ k, Summable fun n => |w n| * |logAtom n| ^ k) (k : ℕ) (t : ℝ) :
+    HasDerivAt (weightMoment w k) (-Complex.I * weightMoment w (k + 1) t) t := by
+  have hg : ∀ (n : ℕ) (s : ℝ),
+      HasDerivAt (fun s : ℝ => ((w n : ℝ) : ℂ) * ((logAtom n : ℂ) ^ k * atomChar s n))
+        (((w n : ℝ) : ℂ) * ((logAtom n : ℂ) ^ k
+          * (-(Complex.I * (logAtom n : ℂ)) * atomChar s n))) s :=
+    fun n s => ((hasDerivAt_atomChar n s).const_mul ((logAtom n : ℂ) ^ k)).const_mul _
+  have hb : ∀ (n : ℕ) (s : ℝ),
+      ‖((w n : ℝ) : ℂ) * ((logAtom n : ℂ) ^ k
+        * (-(Complex.I * (logAtom n : ℂ)) * atomChar s n))‖
+        ≤ |w n| * |logAtom n| ^ (k + 1) := by
+    intro n s
+    refine le_of_eq ?_
+    simp only [norm_mul, norm_pow, norm_neg, Complex.norm_real, Real.norm_eq_abs,
+      Complex.norm_I, norm_atomChar, one_mul, mul_one]
+    rw [pow_succ]
+  have h0 : Summable fun n => ((w n : ℝ) : ℂ) * ((logAtom n : ℂ) ^ k * atomChar t n) := by
+    refine Summable.of_norm_bounded (hdom k) fun n => le_of_eq ?_
+    simp only [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, norm_atomChar, mul_one]
+  have hsum : ∑' n, ((w n : ℝ) : ℂ) * ((logAtom n : ℂ) ^ k
+      * (-(Complex.I * (logAtom n : ℂ)) * atomChar t n))
+      = -Complex.I * weightMoment w (k + 1) t := by
+    rw [weightMoment, ← tsum_mul_left]
+    refine tsum_congr fun n => ?_
+    rw [pow_succ]
+    ring
+  rw [← hsum]
+  exact hasDerivAt_tsum (hdom (k + 1)) hg hb h0 t
+
+/-- Every time jet of a linear combination of two log moments is the corresponding higher log
+moment, scaled by `(-i)^k`. -/
+theorem iteratedDeriv_weightMoment_comb {w v : ℕ → ℝ}
+    (hw : ∀ k, Summable fun n => |w n| * |logAtom n| ^ k)
+    (hv : ∀ k, Summable fun n => |v n| * |logAtom n| ^ k) (α β : ℂ) (j k : ℕ) :
+    ∀ t : ℝ, iteratedDeriv k (fun s => α * weightMoment w j s + β * weightMoment v j s) t
+      = (-Complex.I) ^ k
+        * (α * weightMoment w (j + k) t + β * weightMoment v (j + k) t) := by
+  induction k with
+  | zero => intro t; simp
+  | succ k ih =>
+    intro t
+    have hfun : iteratedDeriv k (fun s => α * weightMoment w j s + β * weightMoment v j s)
+        = fun s => (-Complex.I) ^ k
+            * (α * weightMoment w (j + k) s + β * weightMoment v (j + k) s) := funext ih
+    have hd : HasDerivAt (fun s => (-Complex.I) ^ k
+          * (α * weightMoment w (j + k) s + β * weightMoment v (j + k) s))
+        ((-Complex.I) ^ k * (α * (-Complex.I * weightMoment w (j + (k + 1)) t)
+          + β * (-Complex.I * weightMoment v (j + (k + 1)) t))) t :=
+      (((hasDerivAt_weightMoment hw (j + k) t).const_mul α).add
+        ((hasDerivAt_weightMoment hv (j + k) t).const_mul β)).const_mul _
+    rw [iteratedDeriv_succ, hfun, hd.deriv]
+    ring
+
+theorem weightMoment_div_totalMass {c : ℕ → ℝ} (k : ℕ) (t : ℝ) :
+    weightMoment (mellinWeight σ c) k t / ((totalMass σ c : ℝ) : ℂ)
+      = expect σ c (fun n => (logAtom n : ℂ) ^ k * atomChar t n) := by
+  rw [weightMoment, expect, div_eq_mul_inv, ← tsum_mul_right]
+  refine tsum_congr fun n => ?_
+  rw [normWeight, div_eq_mul_inv]
+  push_cast
+  ring
+
+/-- **`(MER.18)`.**  Every time jet of the phase correlation is `(-i)^k` times the `k`-th log
+moment of the marked probability. -/
+theorem iteratedDeriv_phaseCorr {c : ℕ → ℝ} (hZ : totalMass σ c ≠ 0)
+    (hdc : ∀ k, Summable fun n => |mellinWeight σ c n| * |logAtom n| ^ k) (k : ℕ) (t : ℝ) :
+    iteratedDeriv k (phaseCorr σ c) t
+      = (-Complex.I) ^ k * expect σ c (fun n => (logAtom n : ℂ) ^ k * atomChar t n) := by
+  have hZc : ((totalMass σ c : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hZ
+  have hfun : phaseCorr σ c = fun s =>
+      ((totalMass σ c : ℝ) : ℂ)⁻¹ * weightMoment (mellinWeight σ c) 0 s
+        + (0 : ℂ) * weightMoment (mellinWeight σ c) 0 s := by
+    funext s
+    simp only [weightMoment, pow_zero, one_mul, zero_mul, add_zero]
+    rw [phaseCorr, div_eq_mul_inv, mul_comm]
+  rw [hfun, iteratedDeriv_weightMoment_comb hdc hdc _ _ 0 k t, ← weightMoment_div_totalMass k t]
+  simp only [Nat.zero_add, zero_mul, add_zero]
+  rw [div_eq_mul_inv, mul_comm (weightMoment (mellinWeight σ c) k t)]
+
+/-- **`(MER.18a)`.**  Every time jet of the phase response is the centered `k`-th log moment,
+predicted by the marked reporter and the current jet of the correlation. -/
+theorem iteratedDeriv_phaseResponse {c h : ℕ → ℝ} (hZ : totalMass σ c ≠ 0)
+    (hdc : ∀ k, Summable fun n => |mellinWeight σ c n| * |logAtom n| ^ k)
+    (hdh : ∀ k, Summable fun n => |mellinWeight σ h n| * |logAtom n| ^ k) (k : ℕ) (t : ℝ) :
+    iteratedDeriv k (phaseResponse σ c h) t
+      = (-Complex.I) ^ k
+        * ((weightMoment (mellinWeight σ h) k t
+              - ((totalMass σ h : ℝ) : ℂ)
+                * expect σ c (fun n => (logAtom n : ℂ) ^ k * atomChar t n))
+            / ((totalMass σ c : ℝ) : ℂ)) := by
+  have hZc : ((totalMass σ c : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hZ
+  have hsh : Summable fun n => |mellinWeight σ h n| := by simpa using hdh 0
+  have hs1 : Summable fun n => ((mellinWeight σ h n : ℝ) : ℂ) * atomChar t n := by
+    refine Summable.of_norm_bounded hsh fun n => le_of_eq ?_
+    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_atomChar, mul_one]
+  have hcomb : ∀ s : ℝ, phaseResponse σ c h s
+      = ((totalMass σ c : ℝ) : ℂ)⁻¹ * weightMoment (mellinWeight σ h) 0 s
+        + (-((totalMass σ h : ℝ) : ℂ) * (((totalMass σ c : ℝ) : ℂ)⁻¹) ^ 2)
+          * weightMoment (mellinWeight σ c) 0 s := by
+    intro s
+    have hs1' : Summable fun n => ((mellinWeight σ h n : ℝ) : ℂ) * atomChar s n := by
+      refine Summable.of_norm_bounded hsh fun n => le_of_eq ?_
+      simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_atomChar, mul_one]
+    have hs2 : Summable fun n => ((mellinWeight σ h n : ℝ) : ℂ) := by
+      refine Summable.of_norm_bounded hsh fun n => le_of_eq ?_
+      simp only [Complex.norm_real, Real.norm_eq_abs]
+    have hZh : ∑' n, ((mellinWeight σ h n : ℝ) : ℂ) = ((totalMass σ h : ℝ) : ℂ) := by
+      rw [totalMass, Complex.ofReal_tsum]
+    have hMh : weightMoment (mellinWeight σ h) 0 s
+        = ∑' n, ((mellinWeight σ h n : ℝ) : ℂ) * atomChar s n := by
+      rw [weightMoment]
+      exact tsum_congr fun n => by rw [pow_zero, one_mul]
+    have hMc : phaseCorr σ c s
+        = weightMoment (mellinWeight σ c) 0 s * ((totalMass σ c : ℝ) : ℂ)⁻¹ := by
+      rw [phaseCorr, weightMoment, div_eq_mul_inv]
+      congr 1
+      exact tsum_congr fun n => by rw [pow_zero, one_mul]
+    have hterm : ∀ n : ℕ, ((mellinWeight σ h n : ℝ) : ℂ) * (atomChar s n - phaseCorr σ c s)
+        = ((mellinWeight σ h n : ℝ) : ℂ) * atomChar s n
+          - ((mellinWeight σ h n : ℝ) : ℂ) * phaseCorr σ c s := fun n => by ring
+    rw [phaseResponse, tsum_congr hterm, hs1'.tsum_sub (hs2.mul_right (phaseCorr σ c s)),
+      tsum_mul_right, hZh, ← hMh, hMc]
+    field_simp
+    ring
+  rw [funext hcomb, iteratedDeriv_weightMoment_comb hdh hdc _ _ 0 k t,
+    ← weightMoment_div_totalMass k t]
+  simp only [Nat.zero_add]
+  field_simp
+  ring
 
 end MarkedMellin
 

@@ -241,9 +241,31 @@ for this module. Contents, all hypothesis-free:
   second central jet equals 2·(XiC″(1/2+γi) + XiC″(1/2−γi)) — the "first surviving
   information" law, formalized.
 
+Module: `formal/GaloisForLFunctions/RHTower/CrystallineShadowTransversality.lean` — wired into
+the `GaloisForLFunctions.RHTower` umbrella, axiom audit exactly
+`[propext, Classical.choice, Quot.sound]`:
+
+- `shadowDensity` — the finite multi-splitting shadow density
+  `ρ(x) = 4 ∑_j cos(γ_j x)(cosh(t_j x) − 1)`, with `shadowDensity_zero`;
+- `shadowDensity_pos_of_ne_zero`, `shadowDensity_ne_zero_fun` — **Θ3.2**: when every displacement
+  is genuine the density is somewhere strictly positive, hence not identically zero, hence the
+  shadow has a nonzero absolutely continuous part and cannot be atomic;
+- `quadrupleExp_eq`, `quadrupleExp_sub_undisplaced` — **Θ3.1's kernel identity**: the four
+  splitting exponentials of one displaced conjugate pair sum to `4 cos(γx) cosh(tx)`, and
+  subtracting the undisplaced value leaves exactly `4 cos(γx)(cosh(tx) − 1)`.  This is the whole
+  algebraic content of Θ3.1; passing to `⟨Δν, h⟩` is then linearity of the integral against `h`.
+
+The certificate is local, not spectral: at any `x` with every `γ_j x` inside the first quarter
+period all the cosines are positive while every `cosh(t_j x) − 1` is strictly positive, so the sum
+is.  The exponential-independence route of the paper proof is therefore not needed at all, and
+`HurwitzExp.expLin_linearIndependent` is not consumed.
+
 Not formalized (recorded honestly): Θ2's per-zero necessity and mixture statements (their
-natural formalization requires a detector-predicate layer), Θ3 (its exponential-independence
-core is already corpus-owned: `HurwitzExp.expLin_linearIndependent` — cite, do not rebuild),
+natural formalization requires a detector-predicate layer), Θ3.1's passage from the kernel identity to
+the paired integral against `h` (needs the explicit-formula kernel as a Lean integral),
 Θ4 (needs a configuration-family IFT layer), and the other stage-2 cards (ULF-MECH-3/4
 are assemblies over large existing layers; ULF-MECH-5's gate needs in-Lean zero enclosures,
 i.e. computation, excluded by the session's Lean rules).
+
+- 2026-08-12 — Θ3.2 certified in Lean by a local positivity certificate, which replaces the
+  paper proof's exponential-independence argument entirely.- 2026-08-12 — Θ3.1's kernel identity certified; only its integral packaging remains.

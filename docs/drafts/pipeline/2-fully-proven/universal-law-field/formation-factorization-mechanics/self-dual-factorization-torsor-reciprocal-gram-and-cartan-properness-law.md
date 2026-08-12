@@ -579,7 +579,16 @@ product topology, so it agrees with the one under which the sublevel was shown c
 
 Theorem 6.1 is therefore fully certified: exact work formula, rigidity, invariance, and properness.
 
-Theorem 7.1's compact unitary recurrence statement is still open.
+`bounded_sinh_sq_sum_iff` certifies the selection core of **Theorem 7.1**, `(CT.24)`: the
+hyperbolic work profile `4 ∑ sinh²(t λⱼ)` of `(CT.23)` is bounded in `t` if and only if every
+radial eigenvalue `λⱼ` vanishes.  So a recurrent unitary phase cannot keep the factorization
+history closed unless the radial generator is neutral — proper factorization work selects `X = 0`
+exactly.  The proof needs no compactness input: `sinh M ≥ M/2` from `M + 1 ≤ exp M` already forces
+the single `j`-th summand past any bound.
+
+What remains of section 7 is only the operator packaging of `(CT.21)`–`(CT.23)`: identifying the
+singular values of `e^{tY}e^{tX}` with `e^{tλⱼ}` under `[X,Y] = 0`, which feeds the certified
+scalar selection above.
 
 ## Log
 
@@ -601,3 +610,5 @@ Theorem 7.1's compact unitary recurrence statement is still open.
 - 2026-08-12 — the sublevel set identity and its closedness certified; boundedness is pending a
   choice of scoped matrix norm instance, which mathlib does not supply by default.
 - 2026-08-12 — Theorem 6.1 completed: the work sublevel is compact, in the entrywise sup norm.
+- 2026-08-12 — Theorem 7.1's selection core (CT.24) certified; only the operator packaging of
+  (CT.21)-(CT.23) remains on this card.
