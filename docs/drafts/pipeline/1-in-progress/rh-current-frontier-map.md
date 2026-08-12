@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 12 August 2026, committed snapshot
-**febfe3616c93dcd93c3ab746a36b6c73d8751876**.
+**a956e8efaf306b28b5438c6c9a320c0a877330c5**.
 
 Formal status means theorem declarations reachable from the committed HTGeometry, HilbertMetric,
 or RHTower umbrellas at this snapshot. A proof present only in a paper card is marked
@@ -20,18 +20,22 @@ Burnol-conormal, and fixed-prime-translation identifications. It also makes Suzu
 compressed-kernel operator, Route U's unconditional resolvent mass/tail budgets and relative
 nodal criterion, its cofinal-recession no-go and filtered Gamma transmutation, Route L's critical-
 edge/cyclotomic classifications and generic rational-Witt multiplication, and the sharp Hermite
-derivative-energy estimate umbrella-formal.
+derivative-energy and coefficient-uniform complex Gaussian translation estimates umbrella-formal.
+The fixed-source P seam additionally lands the Route-P detector in the actual finite Sonine/Burnol
+aperture holonomy; this is another exact source coordinate, not its annihilation.
 
 Certification tiers still matter. Route T's chain from polynomial receiver thresholds through
 hybrid zeta growth, a subunit zero-free region, reciprocal-zeta bounds, and the smooth twisted-
 Möbius Perron rectangle is committed but umbrella-unreachable. The exact CCM archimedean form-
 domain equivalence, dense and boundary-layer cores, bounded prime/polar remainder, canonical
 Friedrichs operator, true ground eigenstate, and aperture antitonicity are also committed but
-umbrella-unreachable. Suzuki's separate contour-shift file does not yet identify the spectral
-unitary with the literal kernel, although the compressed literal-kernel operator itself is formal.
-Current worktree-only candidates are the sharp Route-T Möbius/Abel bridge, coefficient-uniform
-complex Gaussian translation for Route U, and CCM metaplectic Gamma-moment determinacy. They
-receive no cutoff-formal credit. No running foreground process counts as certification.
+umbrella-unreachable. Suzuki's committed unwired inversion file now proves the exact high-line
+literal-kernel integral identity, but still does not identify the spectral and literal compressed
+operators. Route T's sharp Möbius/Abel bridge and explicit asymptotic envelopes, CCM metaplectic
+Gamma-moment determinacy/series, rational-Witt localization infrastructure, and a common-forcing
+theta bridge are committed but umbrella-unreachable. Current worktree-only P code adds the Julia--
+Cayley rationalization of the Burnol holonomy. It receives no cutoff-formal credit. No running
+foreground process counts as certification.
 
 ## Abstract
 
@@ -318,22 +322,22 @@ existing route.
 | D2 | open | finite high-frequency ceiling for continued literal prime--Gamma source |
 | E | open, advanced | exact relation formation is no longer open. Paper-level `R_X^gr` is a fixed grade-recurrent entropy-spread cube relation built before imbalance is observed; row admission, central corners, parity/grade recurrence, annular harmonic normalization, endpoint-sector crossing, and mixed Gibbs cost are proved. First unresolved theorem is `ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY`: choose source-first weights on this fixed relation and prove physical incoming co-degree at most one, interval Hall expansion for distinct opposite-parity integers, weighted moving zero/one-large-prime flux, and total mixed cost at strict-half scale. Equivalent formal lanes remain weighted-Hall projection, recurrence-weighted inverse-load Dirichlet energy, and physical product-fibre histogram parity; complete signed inverse-load flux is circular. Separate analytic lane remains coprime Möbius near-diagonal covariance. New formal Beurling cross-system blindness retires every finite multiplicative regularization of Mertens-normal prime log-jet Grams: rational primes and the delete-2/double-3 system have different zero sets but identical regularized limits. Any producer must use physical incidence/seam data beyond those moments. |
 | F | retired | finite-height Sonin transfer has wrong asymptotic order |
-| G | open, narrowed | Umbrella Lean now includes Suzuki's literal compressed operator with kernel `h_omega(xy)` on `L²(0,a)`, including local `L²` threshold `omega>1/2`, exact integral formula, Hilbert--Schmidt property, and self-adjointness. It does not yet identify that operator with the conditional spectral unitary; the committed unwired kernel-bridge module proves only the required contour shift. A separate committed unwired CCM chain constructs the exact closed restricted-Weil form, canonical Friedrichs operator, compact resolvent, genuine ground eigenstate, and aperture-antitone floor. Thus operator existence is certification debt, not the route's scientific core. Remaining source gate is identification of spectral and literal-kernel realizations plus source-derived selection/control of the complete ground family, then paired compactified occupancy/all-smoothing-trace convergence or an unconditional positive admissible shift. |
+| G | open, narrowed | Umbrella Lean includes Suzuki's literal compressed operator with kernel `h_omega(xy)` on `L²(0,a)`, including local `L²` threshold `omega>1/2`, exact integral formula, Hilbert--Schmidt property, and self-adjointness. The committed unwired inversion chain now proves uniform contour shift and the exact high-line integral identity with the literal logarithmic kernel, but not equality of the spectral and compressed operators. A separate committed unwired CCM chain constructs the exact closed restricted-Weil form, canonical Friedrichs operator, compact resolvent, genuine ground eigenstate, and aperture-antitone floor. Remaining source gate is spectral/literal-operator identification plus source-derived selection/control of the complete ground family, then paired compactified occupancy/all-smoothing-trace convergence or an unconditional positive admissible shift. |
 | G2 | retired | required germ is RH-equivalent |
 | H | retired | finite Taylor/theta current loses required source information |
 | I | retired | exact collision with C2 width |
 | J | retired negatively | unrenormalized energy budget impossible |
 | K | retired | all-order survivor belongs to P |
-| L | open, advanced | Strict resolved chain provenance, complete corrected Gamma-six source, singular Wold coface, normalized Gibbs/Burnol reader, finite common-coface classification, and both source normals are formal. New critical-edge rigidity proves simultaneous forward/reflected critical admission only at neutral grade and finite polynomial convolution cannot flatten a nonzero interval; the cyclotomic denominator module exhibits infinitely many tame/Kummer-null but rational-Witt-visible places, reflection-even common-pole residues, and exact mixed `L¹/L²` admission. Generic rational-Witt multiplication over arbitrary commutative rings is also formal. None selects the physical coefficient. First unresolved theorem remains the source-derived singular comparison from completed Green/BV boundary flatness to the coefficient-faithful Burnol/Deninger physical landing, before divisor specialization, preserving multiplicity, prime provenance, and both orientations. |
+| L | open, advanced | Strict resolved chain provenance, complete corrected Gamma-six source, singular Wold coface, normalized Gibbs/Burnol reader, finite common-coface classification, and both source normals are formal. Critical-edge rigidity proves simultaneous forward/reflected admission only at neutral grade; cyclotomic denominators expose infinitely many reflection-even rational-Witt survivors. Generic rational-Witt multiplication is formal. A committed unwired localization module proves Teichmuller dilation and denominator-clearing infrastructure but not yet Deninger's full localization equivalence. None selects the physical coefficient. First unresolved theorem remains the source-derived singular comparison from completed Green/BV boundary flatness to the coefficient-faithful Burnol/Deninger physical landing, before divisor specialization, preserving multiplicity, prime provenance, and both orientations. |
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced; two internal producer branches | Prolate branch: construct/evaluate seed is closed at paper level and radial/exterior primitives are formal. First unresolved theorem is source-derived control of the entire restricted-Weil ground space: prove the explicit constrained prolate seed controls every near-ground direction, equivalently `epsilon_lambda>=0`, `epsilon_(lambda_j)->0` on one cofinal nested family, or `Delta_lambda=r_lambda-epsilon_lambda->0`. Negative spectrum cannot evacuate. Completed-Evans branch: formal weak Gamma-tail coercivity upgrades a tested supported equation to `U in L2`, `V in H1`, eliminating both derivative-scattering charges; exact root-port Gram proves every nonzero endpoint trace is visible at first prime grade once `a>(log 2)/2`. Its first open theorem is the literal completed-zero-mode to support-pruned carrier/cutoff intertwiner, including square summability and compressed-prime-adjacency compatibility, followed by the trace-zero channel and raw Evans injectivity. These are Route-O subbranches, not a new lettered route. |
-| P | open, advanced | P-G79--P-G97 and the later Frankenstein seam are umbrella-formal. Local spectral movement, positive trace-class cofinal assembly, shared physical-lattice overlap, global injectivity, actual-Xi Hilbert admission, and continuous zero-boundary spectrum are closed. Covariant inverse incidence now constructs the summable horizontal carrier; fixed theta prime translation and the actual Burnol top conormal both land exactly in the same source-zero horizontal carrier. For any one ordinary prime, their Fisher-weighted reflected energy imbalance vanishes exactly on the critical line. Singular boundary inversion recovers the carrier but has norm `1/epsilon`; its cancellation is RH-equivalent. First unresolved producer is therefore one specific completed pre-zero Ward/contractivity theorem forcing equality of the two fixed-prime translation energies in a singular moving Euler--Gamma fibre before P-G95. Bounded inversion, post hoc target cancellation, extra all-prime summability, or declaring intertwining cannot close it. |
+| P | open, advanced | P-G79--P-G97 and the fixed-source Frankenstein seam are umbrella-formal. Fixed theta translation, actual Burnol top conormal, and now finite Sonine/Burnol aperture holonomy all land in the same source-zero horizontal carrier. One prime detects the line; singular boundary cancellation is RH-equivalent. Committed unwired common-forcing code proves the two reflected theta modes solve the same nonzero source equation and equality of their responses forces RH, but supplies no resolvent symmetry making them equal. Worktree-only Julia--Cayley code rationalizes the holonomy as `4C/(1-C²)` and confirms ordinary Hardy contractivity `|C|<1` is weaker than the required saturation `C=0`. First unresolved producer remains a completed pre-zero Ward/contractivity theorem forcing that saturation in a singular moving Euler--Gamma fibre. |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open, sharply narrowed | The committed unwired chain now discharges the polynomial threshold, assembles the hybrid zeta blocks, proves explicit near-one polylogarithmic growth, a subunit zero-free region, a reciprocal-zeta bound, and a four-edge Perron contour for smooth untwisted and twisted Möbius sums. Thus MV24.11--24.12 analytic infrastructure and the long-factor contour are no longer conjectural. Current worktree code converts the smooth estimate to sharp twisted prefixes and gives the cancellation-preserving Abel bridge for dyadic `n^{-c}` factors; it receives no cutoff credit. Remaining arithmetic handoff is to certify/wire that sharp bridge and propagate it through the literal Heath--Brown/Maynard boxes to exclude every long Möbius factor with the required amplitude-cell uniformity. The Wold chart separately requires a signed pole-preserving landing; positive or absolute closure is impossible. |
-| U | open, two source frontiers | Umbrella Lean adds the unconditional uniform resolvent mass budget `sum ||u_q(X)|| <= 198/3175`, ray-jet tail bounds, and a relative nodal equivalence reducing RH beyond any verified scale to the truncated nodal family. These remove an abstract zero-density/tail premise but not partial line placement or the witness inequalities. The terminal-frontier zero-phase law is an RH equivalence, while unconditional cofinal positive schedules with divergent spread and harmonic work retire recession positivity as a producer. Filtered Gamma transmutation gives the exact coefficient-dependent parabolic kernel, and sharp Hermite derivative energy supplies its `sqrt(degree)` infinitesimal control. Current worktree complex-translation bounds close that finite-dimensional integration step but receive no cutoff credit. Live cores are: sign every explicit rational-nodal arithmetic landing from source, or prove the coefficient-uniform ultraviolet/Mehler and completed prime--Gamma estimates excluding the finite nonzero parabolic boundary state. These are two Route-U charts, not new routes. |
+| T | open, sharply narrowed | The committed unwired chain discharges the polynomial threshold, assembles hybrid zeta blocks, proves near-one polylogarithmic growth, a subunit zero-free region, reciprocal-zeta control, and a four-edge Perron contour. `RouteTMoebiusSharp.lean` is now committed and proves sharp twisted prefixes plus the cancellation-preserving dyadic Abel bridge. `RouteTZetaAsymptotics.lean` gives explicit continuous logarithmic envelopes. None is umbrella-reachable. Remaining arithmetic handoff is propagation through the literal Heath--Brown/Maynard boxes to exclude every long Möbius factor with required amplitude-cell uniformity. The Wold chart separately requires a signed pole-preserving landing; positive or absolute closure is impossible. |
+| U | open, two source frontiers | Umbrella Lean gives the uniform resolvent mass budget `sum ||u_q(X)|| <= 198/3175`, ray-jet tail bounds, and relative nodal equivalence. Terminal-frontier zero phase is RH-equivalent; unconditional cofinal positive schedules retire recession positivity. Filtered Gamma transmutation, sharp Hermite derivative energy, and now coefficient-uniform complex Gaussian translation close the finite-dimensional imaginary-shift estimate. The strengthened Christoffel wall proves reciprocal blow-up, nonintegrable local action, and a cofinal nonintegrable-wall phase equivalent to false RH; that is a sharp disproof receiver, not an unconditional exclusion. Live cores are: sign every explicit rational-nodal arithmetic landing, or prove the remaining Mehler/small-ball and completed prime--Gamma estimates excluding the finite nonzero parabolic boundary state. |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -2122,9 +2126,12 @@ formula, and proves it Hilbert--Schmidt and self-adjoint. Lemma 4.1 remains open
 identifies the spectral unitary with
 `f ↦ ∫ h_omega(xy)f(y)dy` on the compact smooth core or proves compact-support continuation to
 `Im z≥0`. Committed but umbrella-unreachable `SuzukiCanonicalHankelKernelBridge.lean` proves the
-needed uniform quadratic Mellin-strip decay and horizontal contour shift, but contains no operator-
-equality theorem; its title must not be counted as closure. This is conditional spectral
-realization, not unconditional source admission.
+needed uniform quadratic Mellin-strip decay and horizontal contour shift.
+`SuzukiCanonicalHankelKernelInversion.lean` continues this to the exact high-line Fourier-inversion
+identity: its contour integral equals `2*pi` times the literal logarithmic Hankel convolution for
+compactly supported smooth sources. Neither file proves equality of the spectral unitary and the
+compressed kernel operator, so Lemma 4.1 is still incomplete at operator level. This is
+conditional spectral realization, not unconditional source admission.
 
 The umbrella-reachable Abel stack culminates in
 `SuzukiFinitePartLogFourier.lean`. On the literal restricted-Weil core it proves that Abel-damped
@@ -5004,10 +5011,12 @@ No zeta-scale polynomial premise remains.
 
 Committed but umbrella-unreachable `RouteTMoebiusContour.lean` uses that reciprocal bound plus one
 compact low-height box to construct the full four-edge zero-free Perron rectangle. Its capstones
-bound smooth untwisted and frequency-twisted Möbius sums. Current worktree-only
+bound smooth untwisted and frequency-twisted Möbius sums. Committed but umbrella-unreachable
 `RouteTMoebiusSharp.lean` converts the smooth estimate to an exact sharp twisted prefix bound and
-proves the cancellation-preserving Abel bridge for dyadic `n^{-c}` factors. This file receives no
-cutoff-formal credit.
+proves the cancellation-preserving Abel bridge for dyadic `n^{-c}` factors. The committed
+`RouteTZetaAsymptotics.lean` supplies explicit continuous log-height envelopes for shell, Landau-
+radius, growth, and zero-free budget parameters. These files receive committed-module but not
+formal cutoff credit.
 
 The earlier local Huxley, raised-factor, literal grouping, aggregate selection, box
 factorization, greedy packing/coloring, Perron relevance, exponent-zero trimming, and fibre-count
@@ -5021,8 +5030,8 @@ committed-module level.
 **Open core.** Route T has two equivalent live analytic charts, but only one current first
 producer.
 
-- In the Maynard chart, certify and umbrella-wire the sharp Möbius-prefix/Abel bridge, then
-  propagate it through the literal Heath--Brown atoms and Maynard amplitude cells. Prove the
+- In the Maynard chart, propagate the sharp Möbius-prefix/Abel bridge through the literal Heath--
+  Brown atoms and Maynard amplitude cells. Prove the
   required uniform exclusion of every long Möbius factor without losing the Route-T saving at
   dyadic boundaries. Polynomial threshold, near-one zeta growth, zero-free region, inverse-zeta
   bound, and smooth Perron packaging are no longer scientific gaps.
@@ -5691,11 +5700,11 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     for every real polynomial `P`, with equality for every `hermitePoly n`. This removes
     coefficient growth from imaginary translation and supplies exact `sqrt(degree)` generator
     scale in PDH.9. Direct Lean, targeted module build, forbidden-declaration scan, and axiom audit
-    pass. Remaining C43-Y wall is integration of this generator to complex translation together
-    with the finite Hermite projector/Mehler small-ball estimate and literal completed-source
-    prime/archimedean assembly; derivative energy alone supplies no Xi sign. Current worktree-only
-    `ComplexGaussianPolynomialTranslation.lean` proves the coefficient-uniform integrated bound
-    `exp(||z|| sqrt(4 pi degree(P)))`; it receives no cutoff-formal credit.
+    pass. Umbrella-formal `ComplexGaussianPolynomialTranslation.lean` now integrates the generator
+    and proves the coefficient-uniform bound
+    `exp(||z|| sqrt(4 pi degree(P)))`. Remaining C43-Y wall is the finite Hermite projector/Mehler
+    small-ball estimate and literal completed-source prime/archimedean assembly; complex
+    translation itself is no longer open.
 
 80. Umbrella-formal `XiResolventMassBudget.lean` removes the unknown total-mass constant from the
     stationary supply chart. The sector geometry of every shifted spectral square gives
@@ -5723,11 +5732,14 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     theorem; the line-placement premise still contains the unverified remainder of RH.
 
 83. Umbrella-formal `XiShiftedTerminalFrontierZeroPhaseLaw.lean` proves RH equivalent to every
-    shifted higher-block terminal frontier being zero. Conversely, the Christoffel source-wall
-    module proves the completed adaptive source diverges positively at every actual strict
-    frontier while the next admitted norm vanishes. Together with item 77, this rules out terminal-
-    frontier existence, cofinal positivity, or positive source blow-up as producers by themselves:
-    the missing information is orientation/exclusion of the finite nonzero boundary phase.
+    shifted higher-block terminal frontier being zero. The strengthened Christoffel source-wall
+    module proves at every occupied strict frontier that the wall dominates reciprocal distance,
+    has infinite local action on every right interval, and diverges to `+infinity`. Existence of a
+    cofinal strict-frontier wall phase—and even of a cofinal nonintegrable wall phase—is equivalent
+    to failure of RH. This is a sharp formal disproof certificate, not an unconditional
+    contradiction: the corpus does not rule out the phase. Together with item 77 it retires
+    terminal-frontier existence, cofinal positivity, or positive blow-up as producers by
+    themselves; missing information is exclusion/orientation of the finite nonzero boundary phase.
 
 **Committed polynomial Turan descent and one-point criterion.** The route has advanced past edge
 cleansing. `XiResolventWeightedTuranMachine.lean` proves a universal weighted level-cleansing
@@ -7875,6 +7887,21 @@ credit until wired:
   real-height shell selection, and Abel-weighted prefixes under explicit threshold eligibility;
 - `Sieve/VinogradovMeanConstantGrowth.lean` — explicit power-of-two envelope for the complete
   recursive VMVT receiver threshold, with exponent polynomial in shell order;
+- `Sieve/RouteTReceiverThresholdGrowth.lean`, `RouteTZetaBlock.lean`, the `RouteTHybridZeta*` and
+  `RouteTZeta*` chain through `RouteTZetaInverseBound.lean`, and `RouteTMoebiusContour.lean` —
+  degree-nine threshold discharge, hybrid block assembly, explicit near-one zeta growth, subunit
+  zero-free region, reciprocal-zeta estimate, and smooth twisted-Möbius Perron rectangle;
+- `CCMArchimedeanLogWeightEquivalence.lean`, `CCMArchimedeanFormDomainEquivalence.lean`,
+  `CCMArchimedeanDenseFormCore.lean`, `CCMArchimedeanBoundaryLayerFormCore.lean`,
+  `CCMRestrictedWeilBoundedRemainder.lean`, `CCMRestrictedWeilFriedrichsOperator.lean`, and
+  `CCMRestrictedWeilApertureMonotonicity.lean` — exact localized form equivalence and cores,
+  literal prime/polar remainder, canonical self-adjoint compact-resolvent operator, true ground
+  state, and aperture-antitone floor;
+- `SuzukiCanonicalHankelKernelBridge.lean` — uniform Mellin-strip decay and horizontal contour
+  shift only; it does not prove the spectral/literal-kernel operator equality advertised by its
+  title;
+- `CCMCyclicPairJacobiLiterature.lean` and `CCMMetaplecticJacobiRigidity.lean` — exact formal
+  cyclic-pair identities and uniqueness of the nonnegative metaplectic Jacobi coefficients;
 - `SuzukiMellinConvolution.lean` — auxiliary Mellin-convolution identity not yet reached by the
   RHTower umbrella;
 - `formal/GaloisForLFunctions/HTGeometry/RectangularVectorDiagonal.lean` and
@@ -7882,14 +7909,8 @@ credit until wired:
   one criterion, weak rectangular Schatten equivalence, and composition/subtraction stability;
 - `formal/GaloisForLFunctions/HTGeometry/LpInjectionCompression.lean` — generic isometric scalar
   injection, coordinate pullback, and exact adjoint infrastructure;
-- `formal/GaloisForLFunctions/RHTower/DeningerGammaSixFullSourcePrincipalClass.lean` and
-  `DeningerGammaSixSingularGreenStokesCoface.lean` — complete corrected Gamma-six tensor source as
-  weak principal class plus rectangular trace-class remainder, and exact `1/6` Wold coface modulo
-  that ideal;
 - `formal/GaloisForLFunctions/RHTower/CCMArchimedeanHilbertFormDomain.lean` — exact phase-rate
   Hilbert form domain, injective compact aperture embedding, and archimedean form decomposition;
-- `formal/GaloisForLFunctions/RHTower/SuzukiPositiveHalfLine.lean` — normalized restriction/even-
-  extension unitary between the corpus even carrier and literal `L²((0,∞),dx)`;
 - `formal/GaloisForLFunctions/HTGeometry/BoundedPerturbedFriedrichsOperator.lean` — generic
   bounded self-adjoint perturbation representation, compact negative-shift inverse, and compact-
   resolvent Friedrichs operator. It does not construct Suzuki's literal localized form or prove
@@ -7897,66 +7918,28 @@ credit until wired:
 
 ### Working-tree candidates excluded from formal status
 
-- current extensions of `Sieve/VinogradovMeanConstantGrowth.lean` and
-  `Sieve/MontgomeryVaughanArbitraryLogPhaseReceiver.lean` — exact implication from one polynomial
-  size premise to automatic floor-root eligibility and the weighted arbitrary-centre estimate;
-- current extensions of `SuzukiPositiveHalfLine.lean` and
-  `SuzukiCanonicalHankelOperator.lean` — equation (401) and isometry on literal positive-half-line
-  `L²`; literal `h_omega(xy)` integral-kernel identification remains open;
-- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerSpectralMatrix.lean`
-  — P-G92 local positive-semidefinite rank-three spectral matrix, explicit kernel, nonzero cross
-  entry, and zero mode off the positive bare-node grid;
-- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCofinalPluckerSpectralOperator.lean`
-  — P-G93 source-normalized positive Schatten-one compact direct sum, exact weighted block
-  matrix, and one proved nonzero global common-mode kernel vector per block;
-- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerSpectralOperator.lean`
-  — P-G94 shared physical-lattice descent, positive Schatten-one compact overlap operator, exact
-  local matrices, and strict neighboring-block detection of every embedded local null mode;
-- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerFaithfulness.lean`
-  — P-G95 global-kernel classification, exact Stokes-gap gauge section, exclusion of every
-  nonzero glued gauge from physical `ell^2`, operator injectivity, and strict positive energy;
-- `formal/GaloisForLFunctions/RHTower/FrankensteinPluckerXiHilbertAdmission.lean`
-  — P-G96 square-summable coefficient-faithful Xi reporter charts, reflection-odd physical
-  Hilbert vectors, exact critical-line zero radical, and strictly positive off-line detector energy;
-- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerBoundarySpectrum.lean`
-  — P-G97 infinite-dimensionality, normalized approximate unit kernels, dense nonclosed proper
-  range, and zero in continuous spectrum rather than point spectrum;
-- `formal/GaloisForLFunctions/RHTower/DeningerGammaSixGreenGibbsPhysicalReader.lean` — exact
-  normalized source Gibbs trace, continuation to the fixed physical BV coefficient, and reflected
-  mate-curvature difference;
-- `formal/GaloisForLFunctions/RHTower/DeningerGammaSixFiniteCofaceClassification.lean` — exact
-  divisibility and unique minimal-monic classification of finite common forward/reflected cofaces;
-- `formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilBoundedRemainder.lean` — exact bounded self-
-  adjoint scalar, polar, and visible finite-prime remainder on every aperture.
+- `formal/GaloisForLFunctions/RHTower/Sieve/RouteTMoebiusSharp.lean` — sharp twisted Möbius prefix
+  bound and cancellation-preserving dyadic Abel bridge; untracked and not umbrella-reachable;
+- `formal/GaloisForLFunctions/HTGeometry/ComplexGaussianPolynomialTranslation.lean` — coefficient-
+  uniform complex translation of Gaussian polynomials; untracked, although the worktree HTGeometry
+  umbrella imports it;
+- `formal/GaloisForLFunctions/RHTower/CCMMetaplecticGammaMomentDeterminacy.lean` — exponential
+  Gamma-density majorant and uniqueness of the associated probability moment fibre; untracked and
+  not umbrella-reachable.
 
-**Cutoff-state implication.** Route count is unchanged. P-G80--P-G91 and Route L's two original
-source normals are cutoff-formal. P-G92 closes local spectral pole movement; P-G93
-closes canonical positive trace-class cofinal direct-sum assembly but proves it retains a blockwise
-null bundle. P-G94 proves that bundle is an artifact of copied labels and removes every
-embedded local null mode by literal physical overlap. P-G95 proves no residual global
-zero mode belongs to physical `ell^2`; the only algebraic gauge section is the growing Stokes gap.
-P-G96 proves actual-Xi reporter admission and exact off-line energy detection; completed
-source annihilation remains open.
-P-G97 classifies zero-boundary spectrum and rules out bounded inversion at the remaining
-Gamma/polar seam.
-Route L's complete source and Wold coface are committed unwired; working Gibbs
-reader and finite-coface classification remove reader/coface formation but not the global ideal-
-preserving singular lift. Route G's canonical
-kernel, literal arithmetic Mellin/Xi-ratio source, shifted-Xi/inner receivers, equation-(2.6)
-bridge, completed boundary core, and conditional spectral Hankel unitary are formal. Its committed
-positive-half-line carrier and current composite leave literal kernel identification, full
-localized operator representation, and normalized-Hankel
-source admission open. Route U's minimal receiver is the countable rational-nodal adaptive
-arithmetic landing family; its literal formation and conditional two-scale supply budget are
-formal, nodal-refinement induction is formally dead, and formal horizontal-jet/contact-cascade/
-detection-delay laws do not provide sign. Route T's committed unwired chain proves the
-arbitrary-centre phase saving, automatic shell/Abel formation, and constant-growth envelope;
-working composition leaves one explicit automatic-shell polynomial inequality before
-MV24.11--24.12. CCM's committed form domain and working bounded remainder close operator pieces,
-not the four-unit incidence. Signed complex Sonin
-orientation is formal cross-route infrastructure but has no completed-Xi metric handoff. Route E's
-grade-recurrent capacity and Route O's whole-ground control remain their RH-bearing paper-level
-gates.
+**Cutoff-state implication.** Route count is unchanged. P-G80--P-G97 and the fixed-source
+Frankenstein seam are umbrella-formal; P's first open theorem is the completed pre-zero fixed-prime
+two-sided Ward law, not assembly, admission, spectrum, or post hoc boundary transfer. Route L's
+complete source, Wold coface, Gibbs reader, coface classification, critical-edge rigidity,
+cyclotomic admission, and generic rational-Witt multiplication are formal; the singular source-to-
+fixed-physical comparison remains open. Route G has the literal compressed Suzuki operator in
+formal status and the exact CCM Friedrichs/ground/antitonicity chain in committed unwired status;
+spectral-kernel equality and whole-ground source selection remain open. Route U has formal numeric
+mass and ray-jet tail control, relative nodal descent, filtered Gamma transmutation, and cofinal-
+recession no-go; sign and parabolic ultraviolet control remain open. Route T has committed unwired
+hybrid zeta growth, zero-free region, reciprocal-zeta bound, and smooth Möbius contour; only its
+sharp prefix/Abel successor is worktree-only. Route E's grade-recurrent capacity and Route O's
+whole-ground control remain RH-bearing paper-level gates.
 
 The Gamma-six balancing Lyapunov law remains a receiver: global vanishing is RH-equivalent. The
 Helson Fredholm wall remains a Route-V candidate, lacking a canonical Xi stream, fixed threshold,
@@ -8525,3 +8508,19 @@ fixed-theta-Hilbert implementation is ruled out by
 exponentially unbounded weight ratios. Hence the live producer must establish two-sided
 contractivity in a singular moving fibre or completed pre-Hilbert Euler--Gamma Ward quotient,
 before descent to the fixed theta metric.
+
+Umbrella-formal `BurnolCoPoissonTopConormalPluckerHolonomyLanding.lean` adds the literal finite-
+aperture source coordinate. For every Xi copy and prime, the top-conormal reflected-minus-forward
+mass, Route-P Gamma Bockstein, and negative Fisher multiple of the normalized Burnol co-Poisson
+holonomy are identical. Thus the admitted P detector is already the orientation of an actual
+Sonine aperture defect; remaining issue is not finding a source interpretation.
+
+Committed but umbrella-unreachable `FrankensteinThetaPrimeTranslationCommonForcing.lean` proves
+both reflected theta divisor modes solve the same nonzero inhomogeneous source equation with the
+same prime label and multiplicity. Equality of the two response modes implies RH, but no theorem
+forces equality from common forcing: the resolvents differ by their spectral parameters. Current
+worktree `BurnolCoPoissonTopConormalPluckerJuliaCayleyLanding.lean` further identifies normalized
+holonomy as `4C/(1-C^2)` for the source Julia coordinate `C`; it receives no formal credit.
+Ordinary Hardy contractivity proves only `|C|<1`, whereas P needs saturation `C=0`. These additions
+narrow the producer to a common-forcing resolvent symmetry or completed source Ward saturation;
+they do not create Route V.

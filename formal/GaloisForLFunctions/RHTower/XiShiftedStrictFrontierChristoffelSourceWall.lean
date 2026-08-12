@@ -477,6 +477,166 @@ theorem xiShiftedCanonicalAdmissionAdaptiveShear_pos_at_strict_frontier
   dsimp only [source] at hle
   exact lt_of_lt_of_le hlowerPos hle
 
+/-- The strict-frontier wall dominates an explicit positive multiple of the reciprocal distance.
+The coefficient uses only the actual boundary source and the global integral-Lipschitz weight of
+the frozen terminal null flag. -/
+theorem eventually_strictFrontier_reciprocal_le_christoffelSourceWall
+    {n : ℕ} (hne : (xiShiftedHigherBlockFailureSet n).Nonempty)
+    (hstrict : xiShiftedHigherBlockTerminalFrontier n <
+      xiShiftedHigherBlockTerminalFrontier (n + 1)) :
+    let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
+    let source0 := xiShiftedCanonicalAdmissionAdaptiveShear y (n + 1)
+    let c := HTGeometry.monicMomentAdmissionVector
+      (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)
+    ∀ᶠ v in 𝓝[>] y,
+      (source0 /
+          (32 * (xiShiftedMomentHankelQuadraticLipschitzWeight c + 1))) *
+          (v - y)⁻¹ ≤
+        xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1) := by
+  let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
+  let source : ℝ → ℝ := fun v =>
+    xiShiftedCanonicalAdmissionAdaptiveShear v (n + 1)
+  let source0 := source y
+  let c := HTGeometry.monicMomentAdmissionVector
+    (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)
+  let W := xiShiftedMomentHankelQuadraticLipschitzWeight c
+  have hy : 0 < y := by
+    obtain ⟨u, hu⟩ := hne
+    have hule := le_xiShiftedHigherBlockTerminalFrontier_of_mem hu
+    exact lt_of_le_of_lt (hu.1.trans hule) hstrict
+  have hsource0 : 0 < source0 := by
+    simpa only [source0, source, y] using
+      xiShiftedCanonicalAdmissionAdaptiveShear_pos_at_strict_frontier hne hstrict
+  have hface := xiShiftedHigherBlockTerminalFrontier_strict_step_posSemidef hne hstrict
+  dsimp only at hface
+  have hhead : (xiShiftedMomentHankelMatrix y (n + 1)).PosDef :=
+    xiShiftedMomentHankel_posDef_of_le (by omega) hface.1
+  have hsourceCont : ContinuousAt source y := by
+    have h := continuousAt_xiShiftedCanonicalAdmissionAdaptiveShearMoment
+      hy (n + 1) (ne_of_gt hhead.det_pos)
+    simpa only [source, xiShiftedCanonicalAdmissionAdaptiveShear,
+      HTGeometry.momentInner_def, xiShiftedBoundaryAdaptiveShearPolynomial] using h
+  have hsourceLower : ∀ᶠ v in 𝓝 y, source0 / 2 < source v := by
+    exact continuousAt_const.eventually_lt hsourceCont (by linarith)
+  have hW : 0 ≤ W := by
+    exact xiShiftedMomentHankelQuadraticLipschitzWeight_nonneg c
+  filter_upwards [hsourceLower.filter_mono nhdsWithin_le_nhds,
+    self_mem_nhdsWithin] with v hsourcev hv
+  have hv0 : 0 ≤ v := (hy.trans hv).le
+  have hH : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment v k).re) (n + 3)).PosDef := by
+    simpa only [y, Nat.add_assoc] using
+      (xiShiftedHigherBlock_posDef_of_terminalFrontier_lt
+        (n := n + 1) hv0 hv)
+  have hnextPos : 0 < xiShiftedCanonicalAdmissionNorm v (n + 2) := by
+    have hnextHead : (HTGeometry.momentHankelMatrix
+        (fun k => (xiShiftedReciprocalMoment v k).re) (n + 2)).PosDef :=
+      xiShiftedMomentHankel_posDef_of_le (by omega) hH
+    rw [xiShiftedCanonicalAdmissionNorm_eq_monicOrthoNorm_of_head_posDef hnextHead]
+    exact HTGeometry.monicOrthoNorm_pos_below
+      (HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH) (by omega)
+  have hcollapse : xiShiftedCanonicalAdmissionNorm v (n + 2) ≤
+      W * (v - y) := by
+    simpa only [W, c, y] using
+      (xiShiftedCanonicalAdmissionNorm_le_lipschitzWeight_mul_sub_at_strict_frontier
+        hne hstrict hv)
+  have hdelta : 0 < v - y := sub_pos.mpr hv
+  have hL : 0 < W + 1 := by linarith
+  have hcollapse' : xiShiftedCanonicalAdmissionNorm v (n + 2) ≤
+      (W + 1) * (v - y) := by
+    nlinarith
+  have hK : 0 < source0 / (32 * (W + 1)) := by positivity
+  rw [xiShiftedCanonicalAdmissionChristoffelSourceWall]
+  apply (le_div_iff₀ (mul_pos (by norm_num) hnextPos)).2
+  calc
+    source0 / (32 * (W + 1)) * (v - y)⁻¹ *
+          (16 * xiShiftedCanonicalAdmissionNorm v (n + 2)) ≤
+        source0 / (32 * (W + 1)) * (v - y)⁻¹ *
+          (16 * ((W + 1) * (v - y))) := by
+      gcongr
+    _ = source0 / 2 := by
+      field_simp [ne_of_gt hdelta, ne_of_gt hL]
+      all_goals ring
+    _ ≤ source v := hsourcev.le
+
+/-- Reciprocal distance is asymptotically bounded by the actual adaptive Christoffel source wall
+on the positive side of every occupied strict frontier. -/
+theorem strictFrontier_sub_inv_isBigO_christoffelSourceWall
+    {n : ℕ} (hne : (xiShiftedHigherBlockFailureSet n).Nonempty)
+    (hstrict : xiShiftedHigherBlockTerminalFrontier n <
+      xiShiftedHigherBlockTerminalFrontier (n + 1)) :
+    let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
+    (fun v => (v - y)⁻¹) =O[𝓝[>] y]
+      (fun v => xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1)) := by
+  let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
+  let source0 := xiShiftedCanonicalAdmissionAdaptiveShear y (n + 1)
+  let c := HTGeometry.monicMomentAdmissionVector
+    (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)
+  let K := source0 /
+    (32 * (xiShiftedMomentHankelQuadraticLipschitzWeight c + 1))
+  have hsource0 : 0 < source0 := by
+    simpa only [source0, y] using
+      xiShiftedCanonicalAdmissionAdaptiveShear_pos_at_strict_frontier hne hstrict
+  have hW : 0 ≤ xiShiftedMomentHankelQuadraticLipschitzWeight c :=
+    xiShiftedMomentHankelQuadraticLipschitzWeight_nonneg c
+  have hK : 0 < K := by dsimp only [K]; positivity
+  have hevent :=
+    eventually_strictFrontier_reciprocal_le_christoffelSourceWall hne hstrict
+  dsimp only at hevent
+  rw [Asymptotics.isBigO_iff'']
+  refine ⟨K, hK, ?_⟩
+  filter_upwards [hevent, self_mem_nhdsWithin] with v hvwall hv
+  have hinv : 0 < (v - y)⁻¹ := inv_pos.mpr (sub_pos.mpr hv)
+  have hwall : 0 < xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1) :=
+    lt_of_lt_of_le (mul_pos hK hinv) (by simpa only [K, source0, c, y] using hvwall)
+  simpa only [Real.norm_eq_abs, abs_of_pos hinv, abs_of_pos hwall, K, source0, c, y]
+    using hvwall
+
+/-- **Infinite local action at a strict frontier.**  The actual adaptive source wall is not
+Bochner-integrable on any nontrivial interval starting at an occupied strict frontier. -/
+theorem not_intervalIntegrable_xiShiftedCanonicalAdmissionChristoffelSourceWall_at_strict_frontier
+    {n : ℕ} (hne : (xiShiftedHigherBlockFailureSet n).Nonempty)
+    (hstrict : xiShiftedHigherBlockTerminalFrontier n <
+      xiShiftedHigherBlockTerminalFrontier (n + 1))
+    {b : ℝ} (hb : xiShiftedHigherBlockTerminalFrontier (n + 1) < b) :
+    ¬IntervalIntegrable
+      (fun v => xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1))
+      MeasureTheory.volume (xiShiftedHigherBlockTerminalFrontier (n + 1)) b := by
+  let y := xiShiftedHigherBlockTerminalFrontier (n + 1)
+  let wall : ℝ → ℝ := fun v =>
+    xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1)
+  have hbig : (fun v => (v - y)⁻¹) =O[𝓝[>] y] wall := by
+    simpa only [wall, y] using
+      strictFrontier_sub_inv_isBigO_christoffelSourceWall hne hstrict
+  have hderiv : ∀ᶠ v in 𝓝[>] y,
+      HasDerivAt (fun z => Real.log (z - y)) (v - y)⁻¹ v := by
+    filter_upwards [self_mem_nhdsWithin] with v hv
+    simpa only [id_eq, one_div] using
+      ((hasDerivAt_id v).sub_const y).log (sub_ne_zero.mpr hv.ne')
+  have hsubN : Tendsto (fun v => v - y) (𝓝 y) (𝓝 0) := by
+    have h : Tendsto (fun v => v - y) (𝓝 y) (𝓝 (y - y)) :=
+      ((hasDerivAt_id y).sub_const y).continuousAt
+    simpa using h
+  have hsub : Tendsto (fun v => v - y) (𝓝[>] y) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+      (hsubN.mono_left nhdsWithin_le_nhds) ?_
+    filter_upwards [self_mem_nhdsWithin] with v hv
+    change 0 < v - y
+    exact sub_pos.mpr hv
+  have hlog : Tendsto (fun v => ‖Real.log (v - y)‖) (𝓝[>] y) atTop := by
+    rw [show (fun v => ‖Real.log (v - y)‖) =
+        abs ∘ Real.log ∘ (fun v => v - y) by
+      funext v
+      simp only [Function.comp_apply, Real.norm_eq_abs]]
+    exact tendsto_abs_atBot_atTop.comp (Real.tendsto_log_nhdsGT_zero.comp hsub)
+  have hderivBig : deriv (fun z => Real.log (z - y)) =O[𝓝[>] y] wall :=
+    hbig.congr' (hderiv.mono fun v hv => hv.deriv.symm) EventuallyEq.rfl
+  rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hb.le]
+  simpa only [wall, y] using
+    (not_integrableOn_of_tendsto_norm_atTop_of_deriv_isBigO_filter
+      (𝓝[>] y) (Ioc_mem_nhdsGT hb)
+        (hderiv.mono fun v hv => hv.differentiableAt) hlog hderivBig)
+
 /-- **Strict-frontier Christoffel source wall.**  Approaching every occupied strict terminal
 frontier from its positive chamber, preceding actual adaptive source divided by next admitted norm
 tends to `+∞`. -/
@@ -584,6 +744,20 @@ def XiShiftedCofinalChristoffelSourceWallPhase : Prop :=
         (nhdsWithin (xiShiftedHigherBlockTerminalFrontier (n + 1))
           (Ioi (xiShiftedHigherBlockTerminalFrontier (n + 1)))) atTop
 
+/-- False-RH phase sharpened from pointwise wall divergence to infinite local action of the actual
+admission-completed arithmetic source at cofinally many strict frontiers. -/
+def XiShiftedCofinalNonintegrableChristoffelSourceWallPhase : Prop :=
+  ∀ A : ℝ, ∃ n : ℕ,
+    (xiShiftedHigherBlockFailureSet n).Nonempty ∧
+      A < xiShiftedHigherBlockTerminalFrontier n ∧
+      xiShiftedHigherBlockTerminalFrontier n <
+        xiShiftedHigherBlockTerminalFrontier (n + 1) ∧
+      ∀ b : ℝ, xiShiftedHigherBlockTerminalFrontier (n + 1) < b →
+        ¬IntervalIntegrable
+          (fun v => xiShiftedCanonicalAdmissionChristoffelSourceWall v (n + 1))
+          MeasureTheory.volume
+          (xiShiftedHigherBlockTerminalFrontier (n + 1)) b
+
 /-- False RH forces cofinally many actual strict-frontier Christoffel source walls. -/
 theorem xiShiftedCofinalChristoffelSourceWallPhase_of_not_riemannHypothesis
     (hnot : ¬RiemannHypothesis) :
@@ -595,10 +769,31 @@ theorem xiShiftedCofinalChristoffelSourceWallPhase_of_not_riemannHypothesis
     tendsto_xiShiftedCanonicalAdmissionChristoffelSourceWall_at_strict_frontier
       hne hstrict⟩
 
+/-- False RH forces cofinally many strict frontiers with infinite local arithmetic-source action. -/
+theorem xiShiftedCofinalNonintegrableChristoffelSourceWallPhase_of_not_riemannHypothesis
+    (hnot : ¬RiemannHypothesis) :
+    XiShiftedCofinalNonintegrableChristoffelSourceWallPhase := by
+  intro A
+  obtain ⟨n, hne, hA, hstrict, _⟩ :=
+    exists_cofinal_sourceAdaptive_frontierCertificate_of_not_riemannHypothesis hnot A
+  exact ⟨n, hne, hA, hstrict, fun _b hb =>
+    not_intervalIntegrable_xiShiftedCanonicalAdmissionChristoffelSourceWall_at_strict_frontier
+      hne hstrict hb⟩
+
 /-- RH excludes the wall phase because every positive-definite failure set is empty. -/
 theorem not_xiShiftedCofinalChristoffelSourceWallPhase_of_riemannHypothesis
     (hRH : RiemannHypothesis) :
     ¬XiShiftedCofinalChristoffelSourceWallPhase := by
+  intro hphase
+  obtain ⟨n, hne, _⟩ := hphase 0
+  rw [xiShiftedHigherBlockFailureSet_eq_empty_of_riemannHypothesis hRH n] at hne
+  exact Set.not_nonempty_empty hne
+
+/-- RH excludes the infinite-local-action phase because every positive-definite failure set is
+empty. -/
+theorem not_xiShiftedCofinalNonintegrableChristoffelSourceWallPhase_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    ¬XiShiftedCofinalNonintegrableChristoffelSourceWallPhase := by
   intro hphase
   obtain ⟨n, hne, _⟩ := hphase 0
   rw [xiShiftedHigherBlockFailureSet_eq_empty_of_riemannHypothesis hRH n] at hne
@@ -623,6 +818,31 @@ theorem riemannHypothesis_or_xiShiftedCofinalChristoffelSourceWallPhase :
   · exact Or.inl hRH
   · exact Or.inr
       (xiShiftedCofinalChristoffelSourceWallPhase_of_not_riemannHypothesis hRH)
+
+/-- **Closed infinite-action source-wall phase law.**  RH is exactly absence of cofinally many
+locally non-integrable, admission-completed adaptive arithmetic source walls.  No premises or
+external schedules remain. -/
+theorem riemannHypothesis_iff_not_xiShiftedCofinalNonintegrableChristoffelSourceWallPhase :
+    RiemannHypothesis ↔
+      ¬XiShiftedCofinalNonintegrableChristoffelSourceWallPhase := by
+  constructor
+  · exact
+      not_xiShiftedCofinalNonintegrableChristoffelSourceWallPhase_of_riemannHypothesis
+  · intro hnotPhase
+    by_contra hnotRH
+    exact hnotPhase
+      (xiShiftedCofinalNonintegrableChristoffelSourceWallPhase_of_not_riemannHypothesis
+        hnotRH)
+
+/-- Unconditional dichotomy in infinite-local-action arithmetic-source coordinates. -/
+theorem riemannHypothesis_or_xiShiftedCofinalNonintegrableChristoffelSourceWallPhase :
+    RiemannHypothesis ∨
+      XiShiftedCofinalNonintegrableChristoffelSourceWallPhase := by
+  by_cases hRH : RiemannHypothesis
+  · exact Or.inl hRH
+  · exact Or.inr
+      (xiShiftedCofinalNonintegrableChristoffelSourceWallPhase_of_not_riemannHypothesis
+        hRH)
 
 end
 

@@ -3079,12 +3079,30 @@ to first order, and the surviving norm flux is the adaptive completed source for
 reflection. No located external theorem supplies these source-specific laws. They do not derive
 their positive-chamber/cofinal hypotheses or the nodal inequalities.
 
-Exact remaining theorem is unconditional orientation of these explicit countable arithmetic
-landings: verify the explicit line-placement/tail-mass supply budgets from literal prime--Gamma/
-global-Xi data for every datum, or give another source-effective generator of those finite sign
-certificates. Landing and conditional supply formation are no longer open; refinement induction is
-dead. Equivalently, prove the horizontal curvature sign or a terminal/cumulative law for the
-projective contact cascade without assuming moment positivity. Adaptive
+`XiResolventMassBudget.lean` discharges the former unknown total-mass factor numerically and gives
+finite top-level detection windows. `XiResolventTailSurrogate.lean` bounds every remaining tail by
+one real-ray value `2 Re(logDeriv xi(1/2+c))` with explicit scale factor. Thus zero-density is no
+longer a free literature input. `XiResolventRelativeNodalCriterion.lean` proves that line placement
+above one scale plus the nodal minors of the surviving truncated divisor is equivalent to RH.
+This is useful after finite verification but does not derive its partial-line premise.
+
+In the dynamic chart, `XiShiftedCanonicalAdmissionCofinalScheduleNoGo.lean` proves cofinal
+positivity, arbitrarily prescribed spread-rate escape, and harmonic source work can all occur
+unconditionally; none detects RH. `XiShiftedFilteredGammaTransmutation.lean` identifies each
+shifted Hankel quadratic with an exact polynomial-filtered completed-Xi Gamma integral before
+averaging. `HermitePolynomialDerivativeEnergy.lean` gives the sharp `sqrt(degree)` generator
+bound. Remaining analytic import is not generic Mehler theory alone, but a coefficient-uniform
+small-ball/Gamma-tail estimate wired to the literal prime--archimedean source.
+
+Exact remaining theorem has two source-equivalent charts. In the stationary chart, orient the
+explicit countable arithmetic landings: prove partial line placement and the separated-witness
+inequalities after substituting the now-unconditional mass and ray-jet tail bounds, or give another
+source-effective generator of those finite sign certificates. In the dynamic chart, prove the
+coefficient-uniform ultraviolet/Mehler lower bound, Gamma-tail domination, and completed prime--
+archimedean assembly excluding every finite nonzero parabolic boundary state. Landing, total-mass
+control, tail surrogate, and conditional supply formation are no longer open; refinement
+induction and recession positivity are dead. Equivalently, prove the horizontal curvature sign or
+a terminal/cumulative law for the projective contact cascade without assuming moment positivity. Adaptive
 frontier prices, projective surplus, hard-edge worldlines, flat-contact transmutation, and next-
 admission capitalization are possible producer mechanisms, not alternate endpoints. Classical
 Turan, Hamburger, and Laguerre--Polya theory supplies parent methods but no located theorem supplies
@@ -3768,14 +3786,12 @@ with the completed Gamma/polar source. No external import advances that open cor
 
 External results that can still strengthen a live route, in dependency order, are:
 
-1. Suzuki's 2026 localized form/Friedrichs/deficiency/characteristic-function construction:
-   formalize the literal Suzuki form-domain, deficiency, and characteristic-function objects and
-   their source comparison (Route G; not retired G2). Generic Friedrichs construction is already
-   umbrella-formal, including self-adjointness, positivity, compact resolvent under compact
-   embedding, and core extension. These generic representation theorems are exact; Suzuki's
-   literal 2026 Theorems 1.1 and 1.5 remain missing at operator/deficiency instantiation. Theorems 4.2--4.3 are now a local
-   concrete-assembly task after formal actual-`L2` and archimedean repairs, not
-   an external theorem import.
+1. Suzuki's 2026 deficiency/characteristic-function and named-operator comparison: exact closed
+   form, canonical Friedrichs representation, compact resolvent, true ground state, and aperture
+   antitonicity now exist in committed CCM Lean but need umbrella wiring and comparison with the
+   paper's `A_a/B_a`. Formalize the remaining continuity/simplicity/even-sector and deficiency/
+   characteristic assertions. Suzuki's literal compressed 2012 kernel operator is formal, but its
+   equality with the spectral unitary remains a separate Lemma-4.1 bridge.
 2. Matomäki--Radziwiłł--Tao's general averaged Elliott theorem: formalize the exact quantitative
    statement, prove its nonpretentious Möbius specialization, and discharge the rates required by
    `AveragedChowlaUniform mu` (Route E's analytic support, not its physical producer).
@@ -3808,23 +3824,18 @@ but unwired queue is `DeningerMeyerAdiabatic.lean`,
 `Sieve/VinogradovMeanConstantGrowth.lean`. These modules already prove the strict one-dimensional
 phase saving through arbitrary integer-centre prefixes, automatic real-height shell selection,
 Abel transport, and a polynomial receiver-threshold envelope; umbrella wiring, not those facts,
-is the certification debt. Also unwired are `SuzukiMellinConvolution.lean`,
-`SuzukiPositiveHalfLine.lean`, generic
+is the certification debt. The same unwired Route-T chain now continues through hybrid zeta
+assembly, explicit zero-free and reciprocal-zeta theorems, and `RouteTMoebiusContour.lean`.
+Also unwired are `SuzukiMellinConvolution.lean`, generic
 `HTGeometry/RectangularVectorDiagonal.lean`, `RectangularWeakSchatten.lean`, and
-`HTGeometry/LpInjectionCompression.lean`, `CCMArchimedeanHilbertFormDomain.lean`,
-`DeningerGammaSixFullSourcePrincipalClass.lean`,
-`DeningerGammaSixSingularGreenStokesCoface.lean`, and
-`BoundedPerturbedFriedrichsOperator.lean`. The bounded-perturbation module gives a generic
-Friedrichs representation but does not instantiate Suzuki's literal localized form. Their
-provisional route effects are recorded above, but they are excluded from formal credit at this
-cutoff. Current working-tree-only candidates are the polynomial-threshold composition in the two
-Route-T modules; the literal-positive-carrier extension of `SuzukiCanonicalHankelOperator.lean`;
-`GammaSewnMobiusApertureStokesPhysicalPluckerSpectralMatrix.lean`;
-`DeningerGammaSixGreenGibbsPhysicalReader.lean`;
-`DeningerGammaSixFiniteCofaceClassification.lean`; and
-`CCMRestrictedWeilBoundedRemainder.lean`. The current uncommitted umbrella imports P-G92, the
-positive-half-line Suzuki bridge, and the Deninger full-source/coface/reader/classification chain,
-but none receives committed-cutoff formal credit. `SoninCofinalComplexPhaseOddFisherSplice.lean` is now
+`HTGeometry/LpInjectionCompression.lean`; the exact CCM form-domain/remainder/Friedrichs/
+aperture-monotonicity chain; `SuzukiCanonicalHankelKernelBridge.lean`; and the cyclic-pair/
+metaplectic Jacobi parity modules. Their provisional route effects are recorded above, but they
+are excluded from formal credit at this cutoff. Current worktree-only candidates are
+`Sieve/RouteTMoebiusSharp.lean`, `HTGeometry/ComplexGaussianPolynomialTranslation.lean`, and
+`CCMMetaplecticGammaMomentDeterminacy.lean`. P-G92--P-G97, the positive-half-line Suzuki bridge,
+and the Deninger full-source/coface/reader/rigidity chain are committed and umbrella-formal.
+`SoninCofinalComplexPhaseOddFisherSplice.lean` is now
 umbrella-reachable at the committed cutoff.
 `XiHeatCassiniWoldResidualODEClosure.lean`, `HTGeometry/MellinGrowthBounds.lean`,
 `RHTower/XiExplicitFormulaLogDeriv.lean`, `XiHeatCassiniPrimeGapMomentBigOBridge.lean`,
@@ -3869,28 +3880,17 @@ and greedy-packing modules remain committed but unwired. The former conditional 
 spectral-triple packaging was deleted and receives no credit. None
 changes route count or closes a Tier-1 endpoint.
 
-The cutoff includes umbrella-formal Route P through P-G91; Route U's effective and countable rational-nodal
-descent, literal adaptive arithmetic-source landing, conditional nodal-supply budget,
-node-refinement no-go, horizontal curvature, projective contact cascade, finite detection-delay,
-hard-edge worldline, and flat-contact source law; Route G's complex smooth-
-core semibound, canonical shifted-Xi/inner receivers, canonical Mellin kernel, literal arithmetic
-Mellin/Xi-ratio source, completed `H^log` core, equation-(2.6) bridge, conditional spectral Hankel
-unitary, source positivity, and
-nondegeneracy/operator-injectivity bridge; Route L's arbitrary-base big-Witt ring and both formal
-source-normal transgressions; Route O's weak Gamma-domain/root-port layers; Route E's cross-system
-blindness; and the Helson Fredholm-wall candidate. Committed unwired Route-T modules extend the
-finite MV24.7 saving through literal logarithmic shells, Taylor error, MV24.8--24.10 smoothing/
-convolution, the strict arbitrary-centre logarithmic-phase power estimate, automatic shell/Abel
-formation, and polynomial threshold envelope. The real Sonin/
-Route-E seam and its signed complex-phase extension are formal. Generic formation laws without
-literal Xi-typed source and landing do not create Route V.
+The cutoff includes umbrella-formal Route P through P-G97 and its fixed-source anomaly seam;
+Route U's numeric mass/tail budgets, relative nodal criterion, filtered Gamma transmutation,
+terminal zero-phase law, and cofinal-recession no-go; Route G's literal compressed Suzuki operator;
+and Route L's complete Gamma-six source/reader/critical-edge/cyclotomic chain plus canonical
+rational-Witt multiplication. Committed unwired Route-T modules extend all the way through the
+smooth twisted-Möbius Perron rectangle, and committed unwired CCM modules construct the exact
+restricted-Weil operator and ground floor. None changes route count or closes a Tier-1 endpoint.
 
-Current uncommitted candidates add Suzuki's literal positive-half-line equation-(401) bridge,
-Route P's P-G92 local spectral pole movement, Route T's polynomial-threshold composition, CCM's
-bounded restricted-Weil remainder, and Route L's Gibbs reader plus finite-coface classification.
-Each narrows an existing route or its
-certification backlog. None changes endpoint, supplies the missing sign/annihilation/coercivity
-theorem, or creates another route.
+Current uncommitted candidates add only the sharp Route-T Möbius/Abel handoff, coefficient-uniform
+complex Gaussian translation for U, and CCM Gamma-moment determinacy. Each narrows an existing
+route or certification backlog; none instantiates Route V.
 
 The remaining scientific gap is spectral reality/positive symmetrization; the parallel
 explicit-form connector has one widening-limit assembly left. Route Q's structural absolute-moment

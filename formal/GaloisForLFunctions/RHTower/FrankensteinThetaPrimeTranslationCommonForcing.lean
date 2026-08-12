@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.FrankensteinThetaPrimeTranslationPluckerLanding
 import GaloisForLFunctions.RHTower.HedenmalmThetaSourceModeNormalization
 import GaloisForLFunctions.RHTower.HedenmalmThetaIntervalTransform
+import GaloisForLFunctions.RHTower.HedenmalmPrimeTranslationJordanCapstone
 import GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
 
 /-!
@@ -62,6 +63,64 @@ theorem thetaPrimeTranslatedSourceResidual_eq_integerAnomaly {z : ℂ}
               ring
     _ = integerAnomaly thetaSource n x := hcomm
 
+/-! ## Absorbing the anomaly into a rank-one prime connection -/
+
+/-- Scalar half-density used by normalized integer translation. -/
+def thetaIntegerShiftScale (n : ℕ) : ℂ :=
+  (((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)
+
+/-- Prime-dependent covariant source inverse.  Its rank-one connection subtracts exactly the
+universal translation anomaly, with coefficient read from the translated source mass. -/
+def thetaIntegerCovariantSourceInverse (n : ℕ) (g : ℝ → ℂ) (x : ℝ) : ℂ :=
+  sourceInverse thetaSource g x -
+    (sourceFunctional g /
+      (thetaIntegerShiftScale n * (thetaSource.mass : ℂ))) *
+        integerAnomaly thetaSource n x
+
+theorem thetaIntegerShiftScale_ne_zero {n : ℕ} (hn : 0 < n) :
+    thetaIntegerShiftScale n ≠ 0 := by
+  have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  exact Complex.ofReal_ne_zero.mpr (Real.rpow_pos_of_pos hnR _).ne'
+
+/-- **Exact prime covariance.**  After the universal rank-one connection is included, normalized
+integer translation literally intertwines the original source inverse with the covariant one.
+This holds for every integrable source vector, not only at Xi zeros. -/
+theorem thetaIntegerCovariantSourceInverse_integerShift
+    {n : ℕ} (hn : 0 < n) (f : ℝ → ℂ) (hf : Integrable f) :
+    thetaIntegerCovariantSourceInverse n (integerShift n f) =
+      integerShift n (sourceInverse thetaSource f) := by
+  funext x
+  have hcomm := sourceInverse_integerShift thetaSource f hf n x
+  have hc : thetaIntegerShiftScale n ≠ 0 := thetaIntegerShiftScale_ne_zero hn
+  have hM : (thetaSource.mass : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr thetaSource.mass_ne_zero
+  have hcoef :
+      (thetaIntegerShiftScale n * sourceFunctional f) /
+          (thetaIntegerShiftScale n * (thetaSource.mass : ℂ)) =
+        sourceFunctional f / (thetaSource.mass : ℂ) := by
+    field_simp [hc, hM]
+  unfold thetaIntegerCovariantSourceInverse
+  rw [sourceFunctional_integerShift]
+  change sourceInverse thetaSource (integerShift n f) x -
+      (thetaIntegerShiftScale n * sourceFunctional f /
+        (thetaIntegerShiftScale n * (thetaSource.mass : ℂ))) *
+          integerAnomaly thetaSource n x = _
+  rw [hcoef]
+  rw [integerShift]
+  linear_combination hcomm
+
+/-- The rank-one prime connection is flat on the entire integrable translated source class:
+transport by `mn` agrees with transport by `n` followed by transport by `m`. -/
+theorem thetaIntegerCovariantSourceInverse_flat
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (f : ℝ → ℂ) (hf : Integrable f) :
+    thetaIntegerCovariantSourceInverse (m * n) (integerShift (m * n) f) =
+      integerShift m
+        (thetaIntegerCovariantSourceInverse n (integerShift n f)) := by
+  rw [thetaIntegerCovariantSourceInverse_integerShift (Nat.mul_pos hm hn) f hf,
+    thetaIntegerCovariantSourceInverse_integerShift hn f hf]
+  exact HedenmalmPrimeTranslation.integerShift_mul
+    (sourceInverse thetaSource f) hm hn
+
 /-- The common-forcing residual specialized to one multiplicity-exact Xi divisor copy. -/
 def thetaXiPrimeTranslatedSourceResidual (q : XiZeroCopy) (n : ℕ) (x : ℝ) : ℂ :=
   thetaPrimeTranslatedSourceResidual (xiSpectralPoint q) n x
@@ -73,6 +132,45 @@ theorem thetaXiPrimeTranslatedSourceResidual_eq_integerAnomaly
   exact thetaPrimeTranslatedSourceResidual_eq_integerAnomaly
     (thetaXiSpectralPoint_mem_sourceStrip q)
     (xiC_thetaSource_xiSpectralPoint_eq_zero q) n x
+
+/-- Every translated Xi divisor mode is now a genuine homogeneous eigenmode of the same
+prime-dependent covariant source inverse. -/
+theorem thetaIntegerCovariantSourceInverse_thetaXi_eigen
+    (q : XiZeroCopy) {n : ℕ} (hn : 0 < n) :
+    thetaIntegerCovariantSourceInverse n
+        (integerShift n (sourceModeF thetaSource (xiSpectralPoint q))) =
+      fun x => thetaXiReciprocalEigenvalue q *
+        integerShift n (sourceModeF thetaSource (xiSpectralPoint q)) x := by
+  rw [thetaIntegerCovariantSourceInverse_integerShift hn
+    (sourceModeF thetaSource (xiSpectralPoint q))
+    (integrable_sourceModeF_thetaSource
+      (thetaXiSpectralPoint_mem_sourceStrip q)
+      (xiC_thetaSource_xiSpectralPoint_eq_zero q))]
+  funext x
+  rw [integerShift,
+    sourceInverse_sourceModeF_eq_smul_thetaSource
+      (thetaXiSpectralPoint_mem_sourceStrip q)
+      (xiC_thetaSource_xiSpectralPoint_eq_zero q)]
+  unfold thetaXiReciprocalEigenvalue integerShift
+  ring
+
+/-- The original and retained reflected copies are homogeneous eigenmodes of one literal
+covariant operator, with no change of prime label or coefficient frame. -/
+theorem thetaIntegerCovariantSourceInverse_thetaXi_both_eigen
+    (q : XiZeroCopy) {n : ℕ} (hn : 0 < n) :
+    (thetaIntegerCovariantSourceInverse n
+        (integerShift n (sourceModeF thetaSource (xiSpectralPoint q))) =
+      fun x => thetaXiReciprocalEigenvalue q *
+        integerShift n (sourceModeF thetaSource (xiSpectralPoint q)) x) ∧
+    (thetaIntegerCovariantSourceInverse n
+        (integerShift n (sourceModeF thetaSource
+          (xiSpectralPoint (xiZeroCopyLineConjEquiv q)))) =
+      fun x => thetaXiReciprocalEigenvalue (xiZeroCopyLineConjEquiv q) *
+        integerShift n (sourceModeF thetaSource
+          (xiSpectralPoint (xiZeroCopyLineConjEquiv q))) x) :=
+  ⟨thetaIntegerCovariantSourceInverse_thetaXi_eigen q hn,
+    thetaIntegerCovariantSourceInverse_thetaXi_eigen
+      (xiZeroCopyLineConjEquiv q) hn⟩
 
 /-- The two retained cofinal orientations have literally equal residuals on the same source
 carrier; reflection does not alter the forcing coefficient or the integer label. -/

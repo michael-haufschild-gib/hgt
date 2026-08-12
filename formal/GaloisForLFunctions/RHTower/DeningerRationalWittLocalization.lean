@@ -315,5 +315,184 @@ theorem deningerCanonicalRationalWittTeichmuller_mul_normalizedFraction
     deningerBigWittTeichmuller_mul_normalizedPolynomial,
     deningerBigWittTeichmuller_mul_normalizedPolynomial]
 
+/-- A common coefficient denominator clears a normalized polynomial after the weighted
+substitution `T ↦ dT`.  Degree `n` receives `d^n`, which is precisely why one common ordinary
+denominator suffices. -/
+theorem deningerPolynomialDilation_commonDenom_mem_lifts
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S]
+    (P : Polynomial S) (hP : P.coeff 0 = 1) :
+    deningerPolynomialDilation
+        (algebraMap A S (IsLocalization.commonDenom M P.support P.coeff : A)) P ∈
+      Polynomial.lifts (algebraMap A S) := by
+  rw [Polynomial.lifts_iff_coeff_lifts]
+  intro n
+  cases n with
+  | zero =>
+      refine ⟨1, ?_⟩
+      simp [hP]
+  | succ n =>
+      by_cases hn : n + 1 ∈ P.support
+      · let i : P.support := ⟨n + 1, hn⟩
+        refine ⟨IsLocalization.integerMultiple M P.support P.coeff i *
+            (IsLocalization.commonDenom M P.support P.coeff : A) ^ n, ?_⟩
+        rw [map_mul, map_pow, IsLocalization.map_integerMultiple]
+        rw [deningerPolynomialDilation_coeff, pow_succ']
+        simp only [i, Submonoid.smul_def, Algebra.smul_def]
+        ring
+      · refine ⟨0, ?_⟩
+        have hcoeff : P.coeff (n + 1) = 0 := by
+          simpa [Polynomial.mem_support_iff] using hn
+        simp [deningerPolynomialDilation_coeff, hcoeff]
+
+/-- A normalized lift can be chosen with literal source constant coefficient one, even when the
+coefficient-localization map has a kernel. -/
+theorem deningerPolynomialDilation_exists_normalized_lift
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S]
+    (P : Polynomial S) (hP : P.coeff 0 = 1) :
+    ∃ P₀ : Polynomial A, P₀.coeff 0 = 1 ∧
+      P₀.map (algebraMap A S) =
+        deningerPolynomialDilation
+          (algebraMap A S (IsLocalization.commonDenom M P.support P.coeff : A)) P := by
+  obtain ⟨L, hL⟩ := (Polynomial.mem_lifts _).mp
+    (deningerPolynomialDilation_commonDenom_mem_lifts M P hP)
+  let P₀ : Polynomial A := L.erase 0 + 1
+  refine ⟨P₀, ?_, ?_⟩
+  · simp [P₀, Polynomial.coeff_erase]
+  · ext n
+    by_cases hn : n = 0
+    · subst n
+      simp [P₀, hP]
+    · have hcoeffL :
+          algebraMap A S (L.coeff n) =
+            (deningerPolynomialDilation
+              (algebraMap A S (IsLocalization.commonDenom M P.support P.coeff : A)) P).coeff n := by
+          have hc := congrArg (fun R : Polynomial S => R.coeff n) hL
+          simpa using hc
+      simp [P₀, Polynomial.coeff_erase, hn, hcoeffL]
+      rw [Polynomial.coeff_one, if_neg hn]
+
+theorem deningerPolynomialDilation_dilation (b c : A) (P : Polynomial A) :
+    deningerPolynomialDilation b (deningerPolynomialDilation c P) =
+      deningerPolynomialDilation (c * b) P := by
+  ext n
+  simp [deningerPolynomialDilation_coeff, mul_pow]
+  ring
+
+theorem deningerCanonicalRationalWittNormalizedFraction_congr
+    {P Q R U : Polynomial A}
+    (hP : P.coeff 0 = 1) (hQ : Q.coeff 0 = 1)
+    (hR : R.coeff 0 = 1) (hU : U.coeff 0 = 1)
+    (hPR : P = R) (hQU : Q = U) :
+    deningerCanonicalRationalWittNormalizedFraction P Q hP hQ =
+      deningerCanonicalRationalWittNormalizedFraction R U hR hU := by
+  subst R
+  subst U
+  rfl
+
+@[simp] theorem deningerCanonicalRationalWittTeichmuller_one :
+    deningerCanonicalRationalWittTeichmuller (1 : A) = 1 := by
+  apply deningerCanonicalRationalWittEmbedding_injective
+  rw [deningerCanonicalRationalWittEmbedding_teichmuller,
+    deningerBigWittRingTeichmuller_one, map_one]
+
+/-- Multiplicative Teichmüller map used to transport a coefficient submonoid into the
+rational-Witt ring. -/
+noncomputable def deningerCanonicalRationalWittTeichmullerMonoidHom :
+    A →* DeningerCanonicalRationalWittRing A where
+  toFun := deningerCanonicalRationalWittTeichmuller
+  map_one' := deningerCanonicalRationalWittTeichmuller_one
+  map_mul' := deningerCanonicalRationalWittTeichmuller_mul
+
+@[simp] theorem deningerCanonicalRationalWittTeichmullerMonoidHom_apply (a : A) :
+    deningerCanonicalRationalWittTeichmullerMonoidHom a =
+      deningerCanonicalRationalWittTeichmuller a := rfl
+
+/-- Deninger's denominator submonoid `[M]` inside the rational-Witt ring. -/
+noncomputable def deningerCanonicalRationalWittDenominatorSubmonoid (M : Submonoid A) :
+    Submonoid (DeningerCanonicalRationalWittRing A) :=
+  M.map deningerCanonicalRationalWittTeichmullerMonoidHom
+
+/-- Coefficientwise map supplies the base algebra structure for Deninger's localization theorem. -/
+noncomputable def deningerCanonicalRationalWittCoefficientAlgebra
+    [Algebra A S] :
+    Algebra (DeningerCanonicalRationalWittRing A)
+      (DeningerCanonicalRationalWittRing S) :=
+  (deningerCanonicalRationalWittMap (algebraMap A S)).toAlgebra
+
+@[simp] theorem deningerCanonicalRationalWittCoefficientAlgebra_algebraMap
+    [Algebra A S] :
+    @algebraMap (DeningerCanonicalRationalWittRing A)
+        (DeningerCanonicalRationalWittRing S) _ _
+        deningerCanonicalRationalWittCoefficientAlgebra =
+      deningerCanonicalRationalWittMap (algebraMap A S) := rfl
+
+/-- Equality after coefficient localization has one common annihilator for all coefficients of two
+polynomials.  The proof multiplies finitely many annihilators and does not assume regularity of
+the localization submonoid. -/
+theorem deningerPolynomial_exists_common_annihilator_of_map_eq
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S]
+    (P Q : Polynomial A)
+    (hmap : P.map (algebraMap A S) = Q.map (algebraMap A S)) :
+    ∃ m : M, ∀ n : ℕ, (m : A) * (P.coeff n - Q.coeff n) = 0 := by
+  classical
+  have hcoeffMap (n : ℕ) :
+      algebraMap A S (P.coeff n) = algebraMap A S (Q.coeff n) := by
+    have hc := congrArg (fun R : Polynomial S => R.coeff n) hmap
+    simpa using hc
+  have hfinite (F : Finset ℕ) :
+      ∃ m : M, ∀ n ∈ F, (m : A) * (P.coeff n - Q.coeff n) = 0 := by
+    induction F using Finset.induction_on with
+    | empty => exact ⟨1, by simp⟩
+    | @insert n F hn ih =>
+        obtain ⟨c, hc⟩ := IsLocalization.exists_of_eq (M := M) (hcoeffMap n)
+        obtain ⟨m, hm⟩ := ih
+        refine ⟨c * m, ?_⟩
+        intro k hk
+        rw [Finset.mem_insert] at hk
+        rcases hk with rfl | hk
+        · calc
+            ((c * m : M) : A) * (P.coeff n - Q.coeff n) =
+                (m : A) * ((c : A) * P.coeff n - (c : A) * Q.coeff n) := by
+                  simp only [Submonoid.coe_mul]
+                  ring
+            _ = 0 := by rw [hc, sub_self, mul_zero]
+        · calc
+            ((c * m : M) : A) * (P.coeff k - Q.coeff k) =
+                (c : A) * ((m : A) * (P.coeff k - Q.coeff k)) := by
+                  simp only [Submonoid.coe_mul]
+                  ring
+            _ = 0 := by rw [hm k hk, mul_zero]
+  obtain ⟨m, hm⟩ := hfinite (P.support ∪ Q.support)
+  refine ⟨m, fun n => ?_⟩
+  by_cases hn : n ∈ P.support ∪ Q.support
+  · exact hm n hn
+  · have hnP : P.coeff n = 0 := by
+      rw [Finset.mem_union, not_or] at hn
+      simpa [Polynomial.mem_support_iff] using hn.1
+    have hnQ : Q.coeff n = 0 := by
+      rw [Finset.mem_union, not_or] at hn
+      simpa [Polynomial.mem_support_iff] using hn.2
+    simp [hnP, hnQ]
+
+/-- Torsion-aware kernel clearing: equality after coefficient localization becomes literal
+polynomial equality after one Teichmüller dilation. -/
+theorem deningerPolynomialDilation_eq_of_map_eq
+    (M : Submonoid A) [Algebra A S] [IsLocalization M S]
+    (P Q : Polynomial A) (hP : P.coeff 0 = 1) (hQ : Q.coeff 0 = 1)
+    (hmap : P.map (algebraMap A S) = Q.map (algebraMap A S)) :
+    ∃ m : M,
+      deningerPolynomialDilation (m : A) P =
+        deningerPolynomialDilation (m : A) Q := by
+  obtain ⟨m, hm⟩ :=
+    deningerPolynomial_exists_common_annihilator_of_map_eq M P Q hmap
+  refine ⟨m, ?_⟩
+  ext n
+  cases n with
+  | zero => simp [hP, hQ]
+  | succ n =>
+      rw [deningerPolynomialDilation_coeff, deningerPolynomialDilation_coeff]
+      have hmn := hm (n + 1)
+      linear_combination (m : A) ^ n * hmn
+
 end
 end RHTower

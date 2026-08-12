@@ -1380,3 +1380,31 @@ windows with the sub-δ mass (which the tail surrogate bounds by ray jets!) — 
 quantitative handle on the relative list; (ii) certified numeric ray jets (Γ/ζ decomposition —
 digamma via mathlib log-convexity of Γ, ζ'/ζ via von Mangoldt Dirichlet series, heavy);
 (iii) is there a P-relative masking no-go (sharpness of the relative family)?
+
+## Step 47 — Layer 2 seed: hline is a THEOREM at the Ward floor scale [PAPER-PROVED → Lean]
+
+The corpus owns an unconditional off-line height floor
+(`xiWard_offlinePair_height_sq_gt_sixtyfive`): every off-critical ξ zero has squared height
+> 65 (no off-critical zero below height 8), certified from the theta representation and the
+3/50 budget — no numerical zero location anywhere.
+
+**Bridge (chart transfer).** For `q : XiZeroCopy` with `Im(α_q) ≠ 0`: if `Im α < 0` the copy
+is strictly right (`(I·α).re = −Im α > 0`); if `Im α > 0` reflect
+(`xiSpectralPoint_reflect: α ↦ −α`). For a right copy, pass to the upper Schwarz
+representative (directly, or via `xiRightZeroCopyConjEquiv` with
+`xiRightCenteredZero_conj` flipping the sign; `xiRightCenteredZero_im_ne_zero` excludes the
+boundary). Since `xiRightCenteredZero = I·α` has `im = Re α` (the height), Ward gives
+`65 < (Re α_q)²` for every off-line copy.
+
+**hline at the floor scale.** For `X ≥ 0` and any `δ ≥ 1/(X + 259/4)`: if `‖u_q(X)‖ ≥ δ` and
+`q` were off-line, then `Re(α² + X) = γ² − b² + X > 65 − 1/4 + X`, so
+`‖u‖ ≤ 1/Re < 1/(X + 259/4) ≤ δ` — contradiction. Line placement above the floor scale is
+UNCONDITIONAL.
+
+**Consequences (all hypotheses discharged at the floor).**
+- The step-46 endpoint loses its line-placement hypothesis: for any `P` alive below the floor
+  scale, RH ⟺ the relative nodal list alone — the first fully unconditional scale-factored
+  RH equivalence with a certified nonempty verified region.
+- The supply theorems at scales `δ ≥ 1/(X+259/4)` lose hline: data from witnesses + one mass
+  inequality alone (witness existence above the floor scale remains spectrum-dependent).
+∎ (mod Lean)
