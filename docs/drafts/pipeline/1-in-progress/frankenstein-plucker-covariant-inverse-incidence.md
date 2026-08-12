@@ -3,7 +3,7 @@
 - **ID:** `FR-PCII-1`
 - **Stage:** `1-in-progress`
 - **Type:** coefficient-faithful cross-route bridge
-- **Status:** `[FROZEN] [PAPER-PROVED] [LEAN-PENDING] [NOT RH]`
+- **Status:** `[BRIDGE] [PAPER-PROVED] [LEAN EXACT-BUILT] [UMBRELLA-WIRED] [NOT RH]`
 - **Lean target:**
   `formal/GaloisForLFunctions/RHTower/FrankensteinPluckerCovariantInverseIncidence.lean`
 
@@ -84,3 +84,42 @@ the generic finite identity is new.
 This theorem will expose, not sign, the exact two missing source channels.  It does not prove their
 cancellation, identify a completed Xi target, or prove RH.  Next admissible conjecture must derive
 the sign or cancellation of connection plus mismatch from an independent source law.
+
+## Hostile post-formalization audit
+
+The concurrent cofinal Pluecker spectral operator places each positive rank-three packet block in
+an orthogonal `(e,n)` fibre.  That preserves local positivity but cannot perform P-G86 shared-prime
+gluing.  `FR-PCII-1` identifies the missing gluing datum exactly: right coordinate of packet `n`
+and left coordinate of packet `n+1` represent same prime/depth source coordinate in different
+physical reporter frames.
+
+Conjecture that identity transport already identifies those frames is false.  Lean proves two
+literal witnesses:
+
+```text
+rho_(e,n,0,3,0) != rho_(e,n,0,3,2),
+rho_(e,n,0,2,1) != rho_(e,n,0,2,3).
+```
+
+In each case coefficients have opposite signs and strictly positive magnitudes because Pluecker
+probabilities, P-G84 denominator mass, and P-G92 nodes are strictly positive.  Thus both retained
+orientations have unavoidable nonzero reporter mismatch.  No scalar identity gluing can close the
+current.
+
+**Positive survivor.**  Missing producer is now narrower: construct source-derived non-identity
+transport between neighboring rank-three Pluecker fibres which maps two realizations of each
+shared prime/depth coordinate before cumulative inverse incidence.  Transport must retain literal
+P-G84/P-G91/P-G92 coefficients and make connection plus mismatch a controlled covariant term.  A
+freely chosen rank-one map would be theatre; required map must be forced by another corpus source
+law or universal property.
+
+## Verification
+
+```text
+lake env lean GaloisForLFunctions/RHTower/FrankensteinPluckerCovariantInverseIncidence.lean
+lake build GaloisForLFunctions.RHTower.FrankensteinPluckerCovariantInverseIncidence
+scripts/formal_tools.py lint
+```
+
+All pass.  Exact leaf build completed at `[12749/12749]`; umbrella was wired but not built.
+Capstone declarations use only `propext`, `Classical.choice`, and `Quot.sound`.

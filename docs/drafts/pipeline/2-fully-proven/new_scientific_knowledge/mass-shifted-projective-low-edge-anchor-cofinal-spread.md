@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs independent specialist audit
 - **Route:** U, cofinal projective curvature renewal
 - **Type:** THEOREM + FRONTIER REDUCTION (paper)
-- **Scientific status:** [PAPER-PROVED] [CORPUS-NOVEL] [EXTERNAL NOVELTY UNVERIFIED] [LEAN GATED] [NOT RH]
+- **Scientific status:** [PAPER-PROVED] [CORPUS-NOVEL] [EXTERNAL NOVELTY UNVERIFIED] [LEAN-PROVED SURVIVOR] [NOT RH]
 - **Depends on:** mass-shifted-projective-arithmetic-surplus,
   mass-shifted-projective-next-admission-renewal,
   mass-shifted-projective-gauss-root-renewal, and fixed-degree shifted-Xi arcsine recession
@@ -482,9 +482,13 @@ observation.
   algebra. Candidate-new content is source-specific fusion with shifted-Xi recession, yielding
   (LAR.6), (LAR.11), and degree-uniform literal bound (LAR.21), plus exact identification of
   hyperbolic reset action as remaining projective synchronization invariant.
-- **Lean status.** No declaration is added. Discrete reset conjecture is now falsified at generic
-  positive-moment level. Formalizing finite algebra in isolation would not provide Xi-specific
-  denominator control identified in (LAR.30), so it remains gated by no-theatre rule.
+- **Lean status.** The positive survivor—degree renewal, cofinal spread under positive-block
+  admission, and uniform harmonic source work—is formalized in
+  `XiShiftedCanonicalAdmissionProjectiveCofinalSpread.lean`. Targeted `lake build` and axiom audit
+  pass. The cofinal theorem remains an implication from positive Hankel blocks; Lean does not prove
+  those blocks, a normalized-flux floor, the hyperbolic-action budget, or RH. The generic reset
+  counterfamily and Xi-specific denominator obstruction remain paper-only because formalizing that
+  negative algebra would not close the source gap.
 
 ## 13. Log
 
@@ -492,4 +496,6 @@ observation.
   anchor, and uniform harmonic work bound proved.
 - 2026-08-12 — ordinary variance/spread reset-charge conjecture falsified by exact positive-Jacobi
   counterfamily; denominator-weighted hyperbolic action isolated as corrected synchronization
-  invariant. No Lean added.
+  invariant.
+- 2026-08-12 — positive survivor formalized and built; semantic positive-block premise and
+  denominator-weighted synchronization gap remain explicit.

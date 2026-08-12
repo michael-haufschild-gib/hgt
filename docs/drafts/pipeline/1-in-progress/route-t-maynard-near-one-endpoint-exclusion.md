@@ -939,3 +939,104 @@ phase saving predicts an admissible near-one scale `1-beta >> (log t)^(-kappa)` 
 below one, which is the structural requirement of the Route-T endpoint exclusion.  Active core:
 formalize shell-index upper bounds, derive the explicit exponential phase law, and close the
 weighted dyadic zeta growth optimization at one fixed rational `kappa<2/5`.
+
+### C24. The shell cutoff is an exact hybrid handoff, not a missing Route-T regime
+
+The first attempt to use the arbitrary-centre receiver globally exposed an apparent gap: its
+`u>=141` premise only treats heights above
+
+```text
+(R(X)^200)^564 < t.
+```
+
+This premise must not be weakened inside the VMVT argument.  Its failure is precisely the regime
+where the existing finite derivative-test schedule becomes uniform.  The floor-root cell gives
+`R(X)^200<=X`; hence failure of the high shell implies
+
+```text
+t <= (R(X)^200)^564 <= (X+1)^564.
+```
+
+At derivative order `566`, the upper derivative window follows from this inequality, while the
+schedule gives the fixed off-line saving
+
+```text
+2560 (X+1)^(1-sigma) (X+1)^(-1/(3*2^566)).
+```
+
+`RouteTHybridZetaBlock.lean` now proves the exact endpoint conversion from Route T's `(X,X']` sum
+to the standard `Ico` zeta block, transports the derivative schedule to that block, proves the
+generic law that height `t<=N^q` is admitted at order `q+2`, and closes the dichotomy.  Its theorem
+`norm_routeTZetaBlockSum_le_automaticHybrid` says every degree-nine-eligible block obeys the
+branch-selected Route-T reciprocal-quartic exponential bound or fixed order-566 power bound.  The
+selection is retained as an exact `if`, rather than weakened to the maximum (which would erase the
+saving from the active branch).  No height regime is omitted, no asymptotic notation is used, and
+the theorem is direct-check clean.
+
+This is the higher compatibility principle behind the stalled global transport:
+
+> Moment depth should grow only while height dominates block scale.  Once block scale catches the
+> height, bounded derivative depth is stronger.  The floor-root shell boundary is their canonical
+> switching surface.
+
+The earlier `kappa<2/5` calculation measures when the quartic Route-T phase saving dominates the
+off-line weight on eligible blocks.  It does not by itself measure the final zero-free width.
+Degree-nine eligibility creates a head near `log X ~ (log t)^(9/10)`; unless that head is reduced,
+the first unconditional global growth law is expected to have logarithmic exponent `9/10`, still
+strictly below one and sufficient for the endpoint exclusion.  Active core is now only to prove
+the explicit eligibility cutoff, sum the hybrid dyadic blocks, and feed the resulting near-one zeta
+growth into the zero-free and Maynard/Huxley receivers.
+
+### C25. Degree-nine eligibility closes global zeta growth; Landau costs one logarithm
+
+The predicted global handoff is now formal and unconditional.  The canonical parameters are
+
+```text
+L(t) = clog_2(ceil t),
+V(t) = floor(L(t)^(1/10)) + 1,
+A(t) = 2^(200(C_T(V(t)+1)^9+1)),
+delta(t) = 1/(D(V(t)+1)^9).
+```
+
+The perfect-power choice of `A` makes its floor-root cell exact.  The tenth-root shell pays both
+the degree-nine receiver threshold and the height upper window.  An explicit tenth-power binary
+height threshold proves
+
+```text
+globalExponent(V(t)) + 1 <= topExponent(t),
+```
+
+so the dyadic tail reaches the cubic Euler--Maclaurin truncation with no depth premise.  The proof
+also establishes directly that binary height is below `topExponent(t)` beyond height eleven; no
+asymptotic floor argument is hidden.
+
+`RouteTHybridZetaAssembly.lean`, `RouteTZetaParameters.lean`, `RouteTZetaDepth.lean`, and
+`RouteTZetaFinalGrowth.lean` now prove:
+
+- exact dyadic assembly with the branch-selected hybrid estimate and no missing height range;
+- the canonical parameter theorem for the actual `riemannZeta`;
+- both Euler--Maclaurin tails have total norm at most `9` at cubic truncation;
+- on the complete interval `1-delta(t) <= sigma < 1`, the same cancellation proof gives
+
+```text
+|zeta(sigma+it)|
+  <= 11 + 2 log A(t) + 6912 globalBlocks(t).
+```
+
+The extension across the strip does not compare complex sums by monotonicity.  It reruns the exact
+hybrid dyadic estimate at the requested abscissa and uses only the monotonicity of the positive head
+majorant.  All named modules are direct-check clean.
+
+This creates the first unconditional sublinear near-one zeta-growth law in the corpus.  Since
+`log A(t)=O(L(t)^(9/10))` and the block count is `O(log t)`, the displayed zeta bound is polynomial
+in `log t`, hence its logarithm is `O(log log t)`.  General-radius Landau therefore introduces one
+genuine additional logarithm: radius `delta(t)` yields a zero-free width of first expected shape
+
+```text
+delta(t) / log log t
+  ~ (log t)^(-9/10) / log log t,
+```
+
+not a pure `(log t)^(-9/10)` width.  This is still wider than `(log t)^(-kappa)` for every fixed
+`kappa>9/10`, and is sufficient for Route T.  Active core is now exact height-band growth on the
+two Landau discs, followed by the explicit DLVP optimization and the inverse-zeta/Perron receiver.

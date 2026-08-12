@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FriedrichsFormOperator
 import GaloisForLFunctions.HTGeometry.ObserverHorizonStability
+import Mathlib.Analysis.InnerProductSpace.StarOrder
 
 /-!
 # Friedrichs realization of a boundedly perturbed compact form embedding
@@ -272,6 +273,26 @@ theorem boundedPerturbedFormRieszInv_isSelfAdjoint
   rw [← hx, ← hy]
   exact hRself.isSymmetric u v |>.symm
 
+/-- The inverse shifted-form Riesz operator is positive. -/
+theorem boundedPerturbedFormRieszInv_isPositive
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B) :
+    ContinuousLinearMap.IsPositive (boundedPerturbedFormRieszInv J B hB) := by
+  refine ⟨(boundedPerturbedFormRieszInv_isSelfAdjoint J B hB).isSymmetric, ?_⟩
+  intro x
+  let u := boundedPerturbedFormRieszInv J B hB x
+  have hx : boundedPerturbedFormRiesz J B u = x :=
+    (boundedPerturbedFormRieszEquiv J B hB).apply_symm_apply x
+  have hsymm := (boundedPerturbedFormRiesz_isSelfAdjoint J B hB).isSymmetric u u
+  change 0 ≤ (inner ℂ (boundedPerturbedFormRieszInv J B hB x) x).re
+  change 0 ≤ (inner ℂ u x).re
+  rw [← hx]
+  calc
+    0 ≤ ‖u‖ ^ 2 := sq_nonneg _
+    _ ≤ (inner ℂ (boundedPerturbedFormRiesz J B u) u).re :=
+      boundedPerturbedFormRiesz_coercive J B u
+    _ = (inner ℂ u (boundedPerturbedFormRiesz J B u)).re :=
+      congrArg Complex.re hsymm
+
 /-- Compact covariance of the shifted perturbed form. -/
 def boundedPerturbedFormCovariance
     (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B) : H →L[ℂ] H :=
@@ -281,6 +302,42 @@ theorem boundedPerturbedFormCovariance_isSelfAdjoint
     (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B) :
     IsSelfAdjoint (boundedPerturbedFormCovariance J B hB) := by
   exact (boundedPerturbedFormRieszInv_isSelfAdjoint J B hB).conj_adjoint J
+
+/-- The shifted covariance is positive. -/
+theorem boundedPerturbedFormCovariance_isPositive
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B) :
+    ContinuousLinearMap.IsPositive (boundedPerturbedFormCovariance J B hB) := by
+  exact (boundedPerturbedFormRieszInv_isPositive J B hB).conj_adjoint J
+
+/-- A positive operator squared is bounded by its norm times itself. -/
+theorem positiveOperator_sq_le_norm_smul
+    (C : H →L[ℂ] H) (hC : ContinuousLinearMap.IsPositive C) :
+    C * C ≤ ((‖C‖ : ℂ) • C) := by
+  have hnonneg : 0 ≤ C := (ContinuousLinearMap.nonneg_iff_isPositive C).2 hC
+  have hle := (IsSelfAdjoint.of_nonneg hnonneg).le_algebraMap_norm_self
+  have hconj := star_left_conjugate_le_conjugate hle (CFC.sqrt C)
+  have hsnonneg : 0 ≤ CFC.sqrt C := CFC.sqrt_nonneg C
+  have hsstar : star (CFC.sqrt C) = CFC.sqrt C :=
+    (IsSelfAdjoint.of_nonneg hsnonneg).star_eq
+  have hsquare : CFC.sqrt C * CFC.sqrt C = C :=
+    CFC.sqrt_mul_sqrt_self C
+  rw [hsstar] at hconj
+  calc
+    C * C = (CFC.sqrt C * CFC.sqrt C) *
+        (CFC.sqrt C * CFC.sqrt C) := congrArg₂ (· * ·) hsquare.symm hsquare.symm
+    _ = CFC.sqrt C * (CFC.sqrt C * CFC.sqrt C) * CFC.sqrt C := by
+      simp only [mul_assoc]
+    _ = CFC.sqrt C * C * CFC.sqrt C :=
+      congrArg (fun T => CFC.sqrt C * T * CFC.sqrt C) hsquare
+    _ ≤ CFC.sqrt C * algebraMap ℝ (H →L[ℂ] H) ‖C‖ * CFC.sqrt C := hconj
+    _ = ((‖C‖ : ℂ) • C) := by
+      rw [Algebra.algebraMap_eq_smul_one]
+      calc
+        CFC.sqrt C * (‖C‖ • (1 : H →L[ℂ] H)) * CFC.sqrt C =
+            (‖C‖ : ℂ) • (CFC.sqrt C * CFC.sqrt C) := by
+          ext x
+          simp
+        _ = (‖C‖ : ℂ) • C := by rw [hsquare]
 
 theorem boundedPerturbedFormCovariance_injective
     (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
@@ -314,6 +371,98 @@ theorem boundedPerturbedFormCovariance_isCompact
   exact hJcompact.comp_clm
     (boundedPerturbedFormRieszInv J B hB ∘L J.adjoint)
 
+/-- The graph inverse is a left inverse on its full graph domain. -/
+theorem closedDenseInverse_C_apply
+    (C : H →L[ℂ] H) (hC : Function.Injective C)
+    (x : (closedDenseInverse C).domain) :
+    C (closedDenseInverse C x) = (x : H) := by
+  have hxRange : (x : H) ∈ C.range := by
+    simpa only [closedDenseInverse_domain] using x.property
+  rcases hxRange with ⟨y, hy⟩
+  have happ := (closedDenseInverse_apply_C C hC y).2
+  let Cy : (closedDenseInverse C).domain :=
+    ⟨C y, (closedDenseInverse_apply_C C hC y).1⟩
+  have heq : x = Cy := Subtype.ext hy.symm
+  have happly : closedDenseInverse C x = y := by
+    rw [heq]
+    exact happ
+  rw [happly]
+  exact hy
+
+/-- Rayleigh lower bound for the graph inverse of a positive injective covariance. -/
+theorem closedDenseInverse_re_inner_lower
+    [Nontrivial H] (C : H →L[ℂ] H)
+    (hCinj : Function.Injective C) (hCpos : ContinuousLinearMap.IsPositive C)
+    (x : (closedDenseInverse C).domain) :
+    ‖C‖⁻¹ * ‖(x : H)‖ ^ 2 ≤
+      (inner ℂ (closedDenseInverse C x) (x : H)).re := by
+  have hCne : C ≠ 0 := by
+    intro hzero
+    obtain ⟨z, hz⟩ := exists_ne (0 : H)
+    apply hz
+    apply hCinj
+    simp [hzero]
+  have hmu : 0 < ‖C‖ := (norm_pos_iff (E := H →L[ℂ] H)).mpr hCne
+  let y : H := closedDenseInverse C x
+  have hCy : C y = (x : H) := closedDenseInverse_C_apply C hCinj x
+  have horder : C * C ≤ ((‖C‖ : ℂ) • C) :=
+    positiveOperator_sq_le_norm_smul C hCpos
+  have hdiff : ContinuousLinearMap.IsPositive (((‖C‖ : ℂ) • C) - C * C) :=
+    (ContinuousLinearMap.le_def _ _).mp horder
+  have hnonneg := hdiff.re_inner_nonneg_left y
+  have hCsymm := hCpos.inner_left_eq_inner_right
+  have hineq : ‖(x : H)‖ ^ 2 ≤
+      ‖C‖ * (inner ℂ y (x : H)).re := by
+    change 0 ≤ (inner ℂ
+      ((‖C‖ : ℂ) • C y - C (C y)) y).re at hnonneg
+    rw [inner_sub_left, Complex.sub_re, inner_smul_left] at hnonneg
+    have hfirst : (inner ℂ (C y) y).re = (inner ℂ y (C y)).re := by
+      exact congrArg Complex.re (hCsymm y y)
+    have hsecond : (inner ℂ (C (C y)) y).re = ‖C y‖ ^ 2 := by
+      rw [hCsymm (C y) y, inner_self_eq_norm_sq_to_K]
+      norm_cast
+    have hscalar :
+        ((starRingEnd ℂ) (‖C‖ : ℂ) * inner ℂ (C y) y).re =
+          ‖C‖ * (inner ℂ (C y) y).re := by
+      norm_num [Complex.mul_re]
+    rw [hscalar, hfirst, hsecond, hCy] at hnonneg
+    linarith
+  exact (inv_mul_le_iff₀ hmu).2 hineq
+
+/-- A compact positive injective covariance has a nonzero eigenvector at its operator norm. -/
+theorem boundedPerturbedFormCovariance_exists_norm_eigenvector
+    [Nontrivial H]
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
+    (hJinj : Function.Injective J) (hDense : Dense (J.range : Set H))
+    (hJcompact : IsCompactOperator J) :
+    ∃ x : H, x ≠ 0 ∧
+      boundedPerturbedFormCovariance J B hB x =
+        ((‖boundedPerturbedFormCovariance J B hB‖ : ℝ) : ℂ) • x := by
+  let C := boundedPerturbedFormCovariance J B hB
+  have hCinj : Function.Injective C :=
+    boundedPerturbedFormCovariance_injective J B hB hJinj hDense
+  have hCne : C ≠ 0 := by
+    intro hzero
+    obtain ⟨x, hx⟩ := exists_ne (0 : H)
+    apply hx
+    apply hCinj
+    simp [hzero]
+  have hnorm : ‖C‖ ≠ 0 := norm_ne_zero_iff.mpr hCne
+  have hpositive : ContinuousLinearMap.IsPositive C :=
+    boundedPerturbedFormCovariance_isPositive J B hB
+  have hnonneg : 0 ≤ C := (ContinuousLinearMap.nonneg_iff_isPositive C).2 hpositive
+  have hspecReal : ‖C‖ ∈ spectrum ℝ C :=
+    CStarAlgebra.norm_mem_spectrum_of_nonneg hnonneg
+  have hspecComplex : ((‖C‖ : ℝ) : ℂ) ∈ spectrum ℂ C :=
+    spectrum.algebraMap_mem ℂ hspecReal
+  have hmu : ((‖C‖ : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast hnorm
+  have heigen : Module.End.HasEigenvalue (C : Module.End ℂ H) ((‖C‖ : ℝ) : ℂ) :=
+    (IsCompactOperator.hasEigenvalue_iff_mem_spectrum
+      (boundedPerturbedFormCovariance_isCompact J B hB hJcompact) hmu).2 hspecComplex
+  obtain ⟨x, hxmem, hxne⟩ := heigen.exists_hasEigenvector
+  exact ⟨x, hxne, Module.End.mem_eigenspace_iff.mp hxmem⟩
+
 /-- Self-adjoint operator representing the original, unshifted perturbed form. -/
 def boundedPerturbedFriedrichsOperator
     (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B) : H →ₗ.[ℂ] H :=
@@ -342,6 +491,139 @@ theorem boundedPerturbedFriedrichsOperator_apply
     ContinuousLinearMap.id_apply]
   rw [sub_eq_add_neg]
   congr 2
+
+/-- The covariance-norm value is a quadratic-form lower bound on the full operator domain. -/
+theorem boundedPerturbedFriedrichsOperator_ground_mul_norm_sq_le
+    [Nontrivial H]
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
+    (hJinj : Function.Injective J) (hDense : Dense (J.range : Set H))
+    (x : (boundedPerturbedFriedrichsOperator J B hB).domain) :
+    (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
+          boundedPerturbedFormShift B) * ‖(x : H)‖ ^ 2 ≤
+      (inner ℂ (boundedPerturbedFriedrichsOperator J B hB x) (x : H)).re := by
+  let x0 : (closedDenseInverse
+      (boundedPerturbedFormCovariance J B hB)).domain :=
+    ⟨(x : H), by
+      simpa only [boundedPerturbedFriedrichsOperator_domain] using x.property⟩
+  have hCinj : Function.Injective (boundedPerturbedFormCovariance J B hB) :=
+    boundedPerturbedFormCovariance_injective J B hB hJinj hDense
+  have hCpos : ContinuousLinearMap.IsPositive
+      (boundedPerturbedFormCovariance J B hB) :=
+    boundedPerturbedFormCovariance_isPositive J B hB
+  have hlower := closedDenseInverse_re_inner_lower
+    (boundedPerturbedFormCovariance J B hB) hCinj hCpos x0
+  rw [boundedPerturbedFriedrichsOperator_apply]
+  change
+    (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
+          boundedPerturbedFormShift B) * ‖(x : H)‖ ^ 2 ≤
+      (inner ℂ
+        (closedDenseInverse (boundedPerturbedFormCovariance J B hB) x0 -
+          (boundedPerturbedFormShift B : ℂ) • (x : H))
+        (x : H)).re
+  rw [inner_sub_left, Complex.sub_re, inner_smul_left]
+  have hscalar :
+      ((starRingEnd ℂ) (boundedPerturbedFormShift B : ℂ) *
+          inner ℂ (x : H) (x : H)).re =
+        boundedPerturbedFormShift B * ‖(x : H)‖ ^ 2 := by
+    calc
+      _ = ((starRingEnd ℂ) (boundedPerturbedFormShift B : ℂ) *
+          (‖(x : H)‖ : ℂ) ^ 2).re := by
+            rw [inner_self_eq_norm_sq_to_K]
+            rfl
+      _ = boundedPerturbedFormShift B * ‖(x : H)‖ ^ 2 := by
+        exact (by
+          intro s r
+          have hsre : ((starRingEnd ℂ) (s : ℂ)).re = s := by norm_num
+          have hsim : ((starRingEnd ℂ) (s : ℂ)).im = 0 := by norm_num
+          have hpre : ((r : ℂ) ^ 2).re = r ^ 2 := by
+            rw [pow_two, Complex.mul_re]
+            norm_num
+            ring
+          have hpim : ((r : ℂ) ^ 2).im = 0 := by
+            rw [pow_two, Complex.mul_im]
+            norm_num
+          rw [Complex.mul_re, hsre, hsim, hpre, hpim]
+          ring : ∀ s r : ℝ,
+            (((starRingEnd ℂ) (s : ℂ)) * (r : ℂ) ^ 2).re = s * r ^ 2)
+          (boundedPerturbedFormShift B) ‖(x : H)‖
+  rw [hscalar]
+  change ‖boundedPerturbedFormCovariance J B hB‖⁻¹ * ‖(x : H)‖ ^ 2 ≤ _ at hlower
+  nlinarith
+
+/-- The covariance-norm eigenvalue is below every real eigenvalue of the represented operator. -/
+theorem boundedPerturbedFriedrichsOperator_ground_le_eigenvalue
+    [Nontrivial H]
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
+    (hJinj : Function.Injective J) (hDense : Dense (J.range : Set H))
+    {lam : ℝ} (x : (boundedPerturbedFriedrichsOperator J B hB).domain)
+    (hxne : (x : H) ≠ 0)
+    (hx : boundedPerturbedFriedrichsOperator J B hB x = (lam : ℂ) • (x : H)) :
+    ‖boundedPerturbedFormCovariance J B hB‖⁻¹ - boundedPerturbedFormShift B ≤ lam := by
+  let C := boundedPerturbedFormCovariance J B hB
+  let A0 := closedDenseInverse C
+  let r : ℝ := lam + boundedPerturbedFormShift B
+  have hCinj : Function.Injective C :=
+    boundedPerturbedFormCovariance_injective J B hB hJinj hDense
+  have hCne : C ≠ 0 := by
+    intro hzero
+    obtain ⟨z, hz⟩ := exists_ne (0 : H)
+    apply hz
+    apply hCinj
+    simp [hzero]
+  have hmu : 0 < ‖C‖ :=
+    (norm_pos_iff (E := H →L[ℂ] H)).mpr hCne
+  let x0 : A0.domain := ⟨(x : H), by
+    simpa only [A0, boundedPerturbedFriedrichsOperator_domain] using x.property⟩
+  have hA0 : A0 x0 = (r : ℂ) • (x : H) := by
+    have hxapply := boundedPerturbedFriedrichsOperator_apply J B hB x
+    rw [hx] at hxapply
+    change (lam : ℂ) • (x : H) = A0 x0 -
+      (boundedPerturbedFormShift B : ℂ) • (x : H) at hxapply
+    change A0 x0 = ((lam + boundedPerturbedFormShift B : ℝ) : ℂ) • (x : H)
+    push_cast
+    rw [add_smul, hxapply]
+    exact (sub_add_cancel _ _).symm
+  have hCA0 : C (A0 x0) = (x : H) :=
+    closedDenseInverse_C_apply C hCinj x0
+  have hrCx : (r : ℂ) • C (x : H) = (x : H) := by
+    rw [← map_smul, ← hA0]
+    exact hCA0
+  have hrne : (r : ℂ) ≠ 0 := by
+    intro hrzero
+    rw [hrzero, zero_smul] at hrCx
+    exact hxne hrCx.symm
+  have hCx : C (x : H) = ((r : ℂ)⁻¹) • (x : H) := by
+    calc
+      C (x : H) = (1 : ℂ) • C (x : H) := (one_smul ℂ _).symm
+      _ = ((r : ℂ)⁻¹ * (r : ℂ)) • C (x : H) := by rw [inv_mul_cancel₀ hrne]
+      _ = ((r : ℂ)⁻¹) • ((r : ℂ) • C (x : H)) := by rw [smul_smul]
+      _ = ((r : ℂ)⁻¹) • (x : H) := by rw [hrCx]
+  have hrneReal : r ≠ 0 := by exact_mod_cast hrne
+  have hCpos := boundedPerturbedFormCovariance_isPositive J B hB
+  have hquad : 0 ≤ (r⁻¹) * ‖(x : H)‖ ^ 2 := by
+    have h := hCpos.re_inner_nonneg_left (x : H)
+    rw [hCx, inner_smul_left, inner_self_eq_norm_sq_to_K] at h
+    norm_num [Complex.mul_re, pow_two] at h
+    simpa [pow_two] using h
+  have hxnorm : 0 < ‖(x : H)‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hxne)
+  have hrInvPos : 0 < r⁻¹ := by
+    have hrInvNe : r⁻¹ ≠ 0 := inv_ne_zero hrneReal
+    by_contra hnot
+    have hle : r⁻¹ ≤ 0 := le_of_not_gt hnot
+    have hlt : r⁻¹ < 0 := lt_of_le_of_ne hle hrInvNe
+    exact (not_lt_of_ge hquad) (mul_neg_of_neg_of_pos hlt hxnorm)
+  have hrpos : 0 < r := inv_pos.mp hrInvPos
+  have hop := C.le_opNorm (x : H)
+  rw [hCx, norm_smul, norm_inv, Complex.norm_real,
+    Real.norm_eq_abs,
+    abs_of_pos hrpos] at hop
+  have hInvLe : r⁻¹ ≤ ‖C‖ := by
+    exact le_of_mul_le_mul_right hop (norm_pos_iff.mpr hxne)
+  have hfloor : ‖C‖⁻¹ ≤ r := by
+    simpa using (inv_le_inv₀ hmu hrInvPos).2 hInvLe
+  change ‖C‖⁻¹ - boundedPerturbedFormShift B ≤ lam
+  dsimp only [r] at hfloor
+  linarith
 
 theorem boundedPerturbedFriedrichsOperator_isSelfAdjoint
     (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
@@ -445,6 +727,69 @@ theorem boundedPerturbedFriedrichsOperator_represents_form
   rw [hform]
   change _ = inner ℂ u v + inner ℂ (B (J u)) (J v)
   simp [boundedPerturbedFormShift]
+
+/-- Injectivity of an embedding makes the adjoint range dense. -/
+theorem continuousLinearMap_adjoint_dense_range_of_injective
+    (J : V →L[ℂ] H) (hJinj : Function.Injective J) :
+    DenseRange J.adjoint := by
+  change Dense ((J.adjoint.range : Submodule ℂ V) : Set V)
+  rw [Submodule.dense_iff_topologicalClosure_eq_top,
+    Submodule.topologicalClosure_eq_top_iff]
+  rw [J.adjoint.orthogonal_range, ContinuousLinearMap.adjoint_adjoint]
+  exact LinearMap.ker_eq_bot.mpr hJinj
+
+/-- The form vectors represented by the graph domain form a dense core. -/
+theorem boundedPerturbedRepresentationCore_denseRange
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
+    (hJinj : Function.Injective J) :
+    DenseRange
+      (boundedPerturbedFormRieszInv J B hB ∘L J.adjoint) := by
+  have hAdj : DenseRange J.adjoint :=
+    continuousLinearMap_adjoint_dense_range_of_injective J hJinj
+  have hInv : DenseRange (boundedPerturbedFormRieszInv J B hB) :=
+    (boundedPerturbedFormRieszEquiv J B hB).symm.surjective.denseRange
+  exact hInv.comp hAdj (boundedPerturbedFormRieszInv J B hB).continuous
+
+/-- The covariance-norm value is the lower Rayleigh floor on the entire closed form domain. -/
+theorem boundedPerturbedForm_ground_mul_norm_sq_le
+    [Nontrivial H]
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
+    (hJinj : Function.Injective J) (hDense : Dense (J.range : Set H))
+    (u : V) :
+    (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
+          boundedPerturbedFormShift B) * ‖J u‖ ^ 2 ≤
+      (inner ℂ u u + inner ℂ (B (J u)) (J u)).re := by
+  let L : H →L[ℂ] V := boundedPerturbedFormRieszInv J B hB ∘L J.adjoint
+  let P : V → Prop := fun v =>
+    (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
+          boundedPerturbedFormShift B) * ‖J v‖ ^ 2 ≤
+      (inner ℂ v v + inner ℂ (B (J v)) (J v)).re
+  apply DenseRange.induction_on (p := P)
+    (boundedPerturbedRepresentationCore_denseRange J B hB hJinj) u
+  · exact isClosed_le (by fun_prop) (by fun_prop)
+  · intro y
+    let C := boundedPerturbedFormCovariance J B hB
+    let x : (boundedPerturbedFriedrichsOperator J B hB).domain :=
+      ⟨C y, by
+        change C y ∈ (closedDenseInverse C).domain
+        exact (closedDenseInverse_apply_C C
+          (boundedPerturbedFormCovariance_injective J B hB hJinj hDense) y).1⟩
+    let v := boundedPerturbedFormRieszInv J B hB (J.adjoint y)
+    have hrep := boundedPerturbedFriedrichsOperator_represents_form
+      J B hB hJinj hDense y v
+    dsimp only at hrep
+    have hxv : (x : H) = J v := hrep.1
+    have hform : inner ℂ (boundedPerturbedFriedrichsOperator J B hB x) (J v) =
+        inner ℂ v v + inner ℂ (B (J v)) (J v) := hrep.2
+    have hlower := boundedPerturbedFriedrichsOperator_ground_mul_norm_sq_le
+      J B hB hJinj hDense x
+    change P (L y)
+    change
+      (‖boundedPerturbedFormCovariance J B hB‖⁻¹ -
+            boundedPerturbedFormShift B) * ‖J v‖ ^ 2 ≤
+        (inner ℂ v v + inner ℂ (B (J v)) (J v)).re
+    rw [← hform, ← hxv]
+    exact hlower
 
 end
 

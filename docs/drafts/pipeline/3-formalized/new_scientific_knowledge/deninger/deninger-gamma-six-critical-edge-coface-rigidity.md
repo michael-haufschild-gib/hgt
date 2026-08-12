@@ -1,9 +1,10 @@
 # Gamma-six critical-edge Köthe and local-coface rigidity
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalised in Lean 4
 - **Route:** L — Deninger/Green/Hodge source descent
-- **Status:** [PAPER-PROVED] [NOVELTY AUDITED, PRIORITY UNVERIFIED] [NOT RH]
+- **Status:** [FORMALIZED] [NOVELTY AUDITED, PRIORITY UNVERIFIED] [NOT RH]
 - **Date:** 2026-08-11
+- **Formalization date:** 2026-08-12
 - **Exact advance:** the complete Gamma-six source has sharp tensor-square decay exponent one;
   its two evaluated normal orientations return to the corresponding critical-edge nuclear Köthe
   domain simultaneously exactly on the critical line. The natural adjacent-grade coface has
@@ -428,6 +429,42 @@ modulo trace class, while its normalized Green Gibbs reader is exactly
 place-marked comparison preserving this trace-class subobject and carrying its two reflected
 principal symbols to the completed Xi Green/Calderón--Witt target. Full proof:
 `deninger-gamma-six-shell-green-trace-ideal-transgression.md`.
+
+## Lean formalization certificate
+
+Sections 2--6 are formalized unconditionally in
+`RHTower/DeningerGammaSixCriticalEdgeCofaceRigidity.lean`, with exact source infrastructure from
+`DeningerGammaSixFullSourcePrincipalClass`, finite-coface infrastructure from
+`DeningerGammaSixFiniteCofaceClassification`, and the all-weight Euler source from
+`DeningerStrongLogEulerGreenTransport`.
+
+| Paper claim | Lean declaration |
+|---|---|
+| Theorem 2.1, completed source | `tendsto_deningerGammaSixCompleteSourceNormRatio_one` |
+| Theorem 2.1, tensor square | `tendsto_deningerGammaSixTensorSourceNormRatio_one` |
+| Nuclear critical-edge carrier | `deningerGammaSixCriticalKotheData_isNuclear` and `deningerGammaSixCriticalKothe_mem_iff` |
+| Theorem 3.1 | `DeningerGammaSixForwardCriticalEdgeMem_iff`, `DeningerGammaSixReflectedCriticalEdgeMem_iff`, and `DeningerGammaSixBothCriticalEdgesMem_iff` |
+| Theorem 3.2 | `DeningerGammaSixCriticalMultiplierPreserves_iff`, `deningerGammaSixCriticalMultiplier_seminorm_le`, and `deningerGammaSix_biaxialMultiplierSuperselection` |
+| Theorem 4.1 | `deningerGammaSix_orientationSpecificCofaces_flat`, `deningerGammaSix_criticalCofaceEndpointCharge`, and `deningerGammaSix_criticalCofaceEndpointCharge_eval` |
+| Theorem 5.1, fixed finite convolution | `deningerGammaSixFiniteConvolution_eq` and `deningerGammaSixFiniteConvolution_rigidity` |
+| Theorem 5.1, minimal two-root annihilator | `deningerGammaSix_commonCoface_annihilator_iff` and `deningerGammaSixCommonCofacePolynomial_unique_monic_minimal` |
+| Equation (26) | `deningerGammaSix_eulerDepletion_admissionConservative` |
+
+The source asymptotic is proved for the literal completed Möbius source through its unitary
+countertransport equality, not for a scalar replacement. The Köthe space is an actual
+`DeningerKotheCarrier` with a cofinal discrete exponent family and a proved nuclearity condition.
+Finite-convolution rigidity acts on literal finite shifts and obtains polynomial vanishing from an
+infinite injective image of the open character interval. Euler conservativity uses injectivity of
+the actual all-weight Meyer defect.
+
+The module is wired into the `RHTower` umbrella. Direct `lake env lean` and exact-module
+`lake build GaloisForLFunctions.RHTower.DeningerGammaSixCriticalEdgeCofaceRigidity` pass. A
+`#print axioms` audit of all headline theorems reports only `propext`, `Classical.choice`, and
+`Quot.sound`; no project axioms, hypotheses, `sorry`, `admit`, `opaque`, or `unsafe` declarations
+occur.
+
+Section 7 is not claimed as proved: it remains the exact source-derived completed-Xi strict-landing
+theorem exposed by the formalized no-go and selector package.
 
 ## 8. Novelty and hostile audit
 

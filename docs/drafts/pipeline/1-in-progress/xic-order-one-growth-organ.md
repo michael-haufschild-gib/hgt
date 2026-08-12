@@ -1262,3 +1262,60 @@ weights high zeros more and could yield certified tail decay `ε(δ) ≤ E(δ)` 
 (ii) numeric evaluation of `Re(logDeriv ξ(1/2+x)/x)` at a rational `x` from the prime–Gamma
 expansion with certified error (corpus `xiSquaredEulerFullResponse` monotonicity) — would make
 the trace-form mass bound concrete and sharpen 198/3175 toward the true ≈ 0.046.
+
+## Step 45 — the zero-density surrogate: certified tail decay from ray jets [PAPER-PROVED → Lean]
+
+The corpus's budget identity holds at EVERY probe `c ≥ 1/2`
+(`tsum_xiBudgetMassAt_eq` + `XiC_probeAt_ne_zero_of_half_le`):
+`Σ' massAt(c) = 2·Re(logDeriv ξ(1/2 + c))`. Probes at large `c` weight high zeros more:
+
+**Theorem (tail comparison).** For `g = γ² ≥ T ≥ 1/2`, `c ≥ 1/2`, `X ≥ 0`:
+- `‖u_q(X)‖ ≤ 1/(g − 1/4)` (strip);
+- `massAt(c)_q ≥ 2c/(g + (c+1/2)²)` (each term `(c∓b)/(g+(c∓b)²) ≥ (c∓b)/(g+(c+1/2)²)`,
+  numerators sum to `2c`);
+- the ratio `(g+K)/(g−1/4)` (`K = (c+1/2)²`) is decreasing in `g`
+  (cross-multiplied: `(g−T)(K+1/4) ≥ 0`), so on the tail
+  `‖u_q(X)‖ ≤ (T+K)/(2c(T−1/4)) · massAt(c)_q`.
+
+**Theorem (the surrogate law).** Summing over the tail and applying the budget identity:
+
+  `Σ'_{γ² ≥ T} ‖u_q(X)‖ ≤ (T + (c+1/2)²)/(2c(T − 1/4)) · 2·Re(logDeriv ξ(1/2 + c))`.
+
+With `c ≍ √T` the prefactor is `≍ 1/√T` and the jet grows only logarithmically — certified
+tail decay at the TRUE rate `log√T/√T`, with `N(T)` replaced by one ξ-jet value on the real
+ray (prime–Gamma computable). Numeric check: `T = 10⁶, c = 10³`: bound ≈ 6.9·10⁻³ ≪ total
+mass 0.046 ✓ genuine certified decay.
+
+**δ-form for the supply.** `‖u_q(X)‖ < δ ⟹ γ² > 1/δ − X − 1/4` (since
+`‖u‖ ≥ 1/(γ² + 1/4 + X)`), so for any `T ≤ 1/δ − X − 1/4` the sub-δ tail obeys the same
+bound — the supply's tail hypothesis `ε ≤ E` is now dischargeable by a ray-jet value: the
+first rational-nodal data rest on line placement + ξ-jet data alone. ∎ (mod Lean)
+
+**Step 45 status: [LEAN-PROVED].** Module `RHTower/XiResolventTailSurrogate.lean`, seven
+theorems, all auditing to [propext, Classical.choice, Quot.sound], olean-built, wired:
+- `norm_xiResolventPoint_le_inv_floor` — `‖u‖ ≤ 1/(γ² − 1/4)` (standalone).
+- `lt_re_sq_of_norm_xiResolventPoint_lt` — `‖u‖ < δ ⟹ γ² > 1/δ − X − 1/4` (scale-to-height).
+- `norm_xiResolventPoint_le_budgetMass_of_tail` — pointwise tail domination
+  `‖u‖ ≤ (T+(c+1/2)²)/(2c(T−1/4))·massAt(c)` for `γ² ≥ T` (ratio monotone:
+  `(g−T)(K+1/4) ≥ 0`; corpus already owned `xiBudgetMassAt_ge` and `_nonneg` — reused).
+- **`tsum_norm_xiResolventPoint_tail_le_logDeriv`** — THE SURROGATE LAW:
+  `Σ'_{γ²≥T}‖u_q(X)‖ ≤ (T+(c+1/2)²)/(2c(T−1/4)) · 2·Re(logDeriv ξ(1/2+c))`, every `X ≥ 0`,
+  `c ≥ 1/2`, `T ≥ 1/2`. At `c ≍ √T`: prefactor ≍ 1/√T, jet ≍ log √T — certified decay at the
+  TRUE zero-density rate `log√T/√T` with `N(T)` replaced by one ξ-jet on the real ray.
+- `tsum_norm_xiResolventPoint_subdelta_le_logDeriv` — the δ-form (the supply's ε input).
+- `tsum_norm_xiResolventPoint_subdelta_le_numeric` — numeric instance at the critical probe:
+  `ε(δ) ≤ (T+1)/(T−1/4)·3/50`.
+- **`rational_nodal_datum_of_partial_line_rayJet`** — the composed capstone: every entry of
+  the countable rational-nodal criterion follows from partial line placement above one scale
+  plus ONE inequality whose spectral inputs are the unconditional budget `198/3175` and one
+  `Re(logDeriv ξ(1/2+c))` value — no counting function, no tail hypothesis, no mass tsum.
+
+The supply's arithmetic core after steps 44-45: line placement (= partial RH, the essential
+content) + ξ-jet VALUES on the real ray (prime–Gamma computable). Zero-density has been
+eliminated as a separate input — the first Lean-ownable surrogate.
+
+**Next frontier.** (i) Certified numeric upper bounds for `Re(logDeriv ξ(1/2+c))` at concrete
+`c` (prime sum + Gamma part with certified error; corpus `xiSquaredEulerFullResponse`
+machinery) — would make the surrogate numerically explicit at depth and quantify exactly which
+partial-RH height certifies the first list entries; (ii) sharpen `198/3175` via the trace at a
+larger shift; (iii) the window-optimality asymptotic family (trig-arc, stretch).

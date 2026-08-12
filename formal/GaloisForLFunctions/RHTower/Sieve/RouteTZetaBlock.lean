@@ -116,8 +116,15 @@ theorem routeTLogRootCell_log_lower
   have hlog := Real.log_le_log hXpos hcast
   rw [Real.log_mul (by positivity : (2 : ℝ) ^ 200 ≠ 0) hB0pos.ne',
     Real.log_pow] at hlog
-  simpa only [Nat.cast_ofNat, B0] using (show
-    Real.log X - 200 * Real.log 2 ≤ Real.log B0 by linarith)
+  have h200 : ((200 : ℕ) : ℝ) = (200 : ℝ) := rfl
+  have hresult : Real.log X - 200 * Real.log 2 ≤ Real.log B0 := by
+    rw [h200] at hlog
+    apply sub_le_iff_le_add.mpr
+    simpa only [add_comm] using hlog
+  rw [show ((B0 : ℕ) : ℝ) =
+      ((routeTLogRootBase X : ℝ) ^ routeTLogCentreExponent) by
+        simp only [B0, Nat.cast_pow]] at hresult
+  exact hresult
 
 theorem routeTLogRootDecay_le_exp
     {X v : ℕ} (hX : 1 ≤ X) (hB2 : 2 ≤ routeTLogRootBase X)
@@ -139,10 +146,13 @@ theorem routeTLogRootDecay_le_exp
   rw [Real.rpow_def_of_pos hB0pos (-a)]
   apply Real.exp_le_exp.2
   dsimp only [B0, a] at hlog ⊢
-  nlinarith
+  have hcoeff : -(1 / (5000000000000000 * (v : ℝ) ^ 4)) ≤ 0 := by
+    exact neg_nonpos.mpr (by positivity)
+  have hmul := mul_le_mul_of_nonpos_left hlog hcoeff
+  simpa only [Nat.cast_pow, mul_comm] using hmul
 
 theorem routeTZetaWeightFront_le_exp
-    {X : ℕ} (hX : 1 ≤ X) {σ : ℝ} (hσ : 0 ≤ σ) :
+    {X : ℕ} (hX : 1 ≤ X) {σ : ℝ} (_hσ : 0 ≤ σ) :
     (X : ℝ) * (((X + 1 : ℕ) : ℝ) ^ (-σ)) ≤
       Real.exp ((1 - σ) * Real.log (X + 1)) := by
   have hXp : (0 : ℝ) < (X + 1 : ℕ) := by positivity
@@ -151,6 +161,7 @@ theorem routeTZetaWeightFront_le_exp
     (X : ℝ) * (((X + 1 : ℕ) : ℝ) ^ (-σ)) ≤
         ((X + 1 : ℕ) : ℝ) * (((X + 1 : ℕ) : ℝ) ^ (-σ)) := by
       gcongr
+      exact_mod_cast (Nat.le_succ X)
     _ = (((X + 1 : ℕ) : ℝ) ^ (1 - σ)) := by
       calc
         ((X + 1 : ℕ) : ℝ) * (((X + 1 : ℕ) : ℝ) ^ (-σ)) =
@@ -162,6 +173,7 @@ theorem routeTZetaWeightFront_le_exp
     _ = Real.exp ((1 - σ) * Real.log (X + 1)) := by
       rw [Real.rpow_def_of_pos hXp]
       congr 1
+      push_cast
       ring
 
 /-- Exponential form consumed by zeta growth optimization. -/
@@ -206,7 +218,7 @@ theorem norm_routeTZetaBlockSum_le_explicitExponential
     _ = 6912 * Real.exp ((1 - σ) * Real.log (X + 1) -
         (1 / (5000000000000000 * (v : ℝ) ^ 4)) *
           (Real.log X - 200 * Real.log 2)) := by
-      rw [← Real.exp_add]
+      rw [mul_assoc, ← Real.exp_add]
       congr 2
       ring
 
