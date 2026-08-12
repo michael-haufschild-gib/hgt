@@ -361,39 +361,31 @@ theorem harmonicSeq_not_memℓp_one : ¬ Memℓp (fun n : ℕ => (harmonicSeq n 
   refine not_summable_harmonicSeq ?_
   simpa using (memℓp_gen_iff (p := 1) (by norm_num)).mp hmem
 
-/-- The inclusion of the source-admitted `ℓ¹` sequences into the formal `ℓ²` ones. -/
-def ellOneToEllTwo : lp (fun _ : ℕ => ℝ) 1 →ₗ[ℝ] lp (fun _ : ℕ => ℝ) 2 where
-  toFun f := ⟨(f : ∀ _ : ℕ, ℝ), f.2.of_exponent_ge one_le_two⟩
-  map_add' f g := Subtype.ext rfl
-  map_smul' c f := Subtype.ext rfl
-
-@[simp] theorem ellOneToEllTwo_coe (f : lp (fun _ : ℕ => ℝ) 1) :
-    ((ellOneToEllTwo f : lp (fun _ : ℕ => ℝ) 2) : ∀ _ : ℕ, ℝ) = (f : ∀ _ : ℕ, ℝ) := rfl
+/-- The source-admitted `ℓ¹` sequences, as a submodule of the formal `ℓ²` cochains. -/
+def ellOneInsideEllTwo : Submodule ℝ (lp (fun _ : ℕ => ℝ) 2) where
+  carrier := {f | Memℓp (f : ∀ _ : ℕ, ℝ) 1}
+  zero_mem' := zero_memℓp
+  add_mem' := fun hf hg => hf.add hg
+  smul_mem' := fun c _ hf => hf.const_smul c
 
 /-- The harmonic sequence as a formal `ℓ²` cochain. -/
-def harmonicEllTwo : lp (fun _ : ℕ => ℝ) 2 := ⟨_, harmonicSeq_memℓp_two⟩
+def harmonicEllTwo : lp (fun _ : ℕ => ℝ) 2 :=
+  ⟨fun n : ℕ => harmonicSeq n, harmonicSeq_memℓp_two⟩
 
-/-- **Card `(5.1)`.**  The harmonic sequence has a formal primitive but no source-admitted one:
-its admission-curvature class in `ℓ² / ℓ¹` is nonzero. -/
-theorem harmonicEllTwo_notMem_range : harmonicEllTwo ∉ LinearMap.range ellOneToEllTwo := by
-  rintro ⟨f, hf⟩
-  refine harmonicSeq_not_memℓp_one ?_
-  have hcoe : (f : ∀ _ : ℕ, ℝ) = fun n : ℕ => harmonicSeq n := by
-    rw [← ellOneToEllTwo_coe f, hf]
-    rfl
-  have := f.2
-  rwa [hcoe] at this
+/-- **Card `(5.1)`.**  The harmonic sequence is a formal `ℓ²` boundary with no source-admitted
+`ℓ¹` primitive. -/
+theorem harmonicEllTwo_notMem : harmonicEllTwo ∉ ellOneInsideEllTwo :=
+  harmonicSeq_not_memℓp_one
 
-/-- **Card `(5.1)`.**  The admission-curvature class of the harmonic sequence is nonzero. -/
+/-- **Card `(5.1)`.**  Its admission-curvature class in `ℓ² / ℓ¹` is nonzero. -/
 theorem harmonicAdmissionClass_ne_zero :
     escapeClass (d1 := (LinearMap.id : lp (fun _ : ℕ => ℝ) 2 →ₗ[ℝ] lp (fun _ : ℕ => ℝ) 2))
-        (S0 := LinearMap.range ellOneToEllTwo) (S1 := ⊤)
-        (ell := harmonicEllTwo) (by trivial) ≠ 0 := by
+        (S0 := ellOneInsideEllTwo) (S1 := ⊤) (ell := harmonicEllTwo) (by trivial) ≠ 0 := by
   rw [Ne, escapeClass_eq_zero_iff]
   rintro ⟨s, hs, hsd⟩
   have hseq : s = harmonicEllTwo := hsd
   rw [hseq] at hs
-  exact harmonicEllTwo_notMem_range hs
+  exact harmonicEllTwo_notMem hs
 
 end AnalyticCountermodel
 

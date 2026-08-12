@@ -1,7 +1,7 @@
 # Centered Bregman evenization, fibre current, and jet reconstruction law
 
 - **ID:** ULF-RFCM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FORMATION / COMPLETION / INFORMATION-LOSS CLASSIFICATION THEOREM
 - **Statement:** A centered two-endpoint first jet modulo affine gauge is classified by one
   symmetric response and one directed fibre current; these reconstruct both directed Bregman

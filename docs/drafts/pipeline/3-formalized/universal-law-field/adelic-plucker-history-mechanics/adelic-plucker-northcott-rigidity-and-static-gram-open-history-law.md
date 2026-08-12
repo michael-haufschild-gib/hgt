@@ -1,7 +1,7 @@
 # Adelic Plücker--Northcott rigidity and static-Gram/open-history law
 
 - **ID:** ULF-APHM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CROSS-ORGAN FUSION / RECONSTRUCTION / ADELIC CONSERVATION / FOURTH-ORGAN PREDICTION
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [NUMBER-FIELD SOURCE]
   [MATROID EXCHANGE] [NORTHCOTT RIGIDITY] [STATIC POSITIVE OBSERVER]

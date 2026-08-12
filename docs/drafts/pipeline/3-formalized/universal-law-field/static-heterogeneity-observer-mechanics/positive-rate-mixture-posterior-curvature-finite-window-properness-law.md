@@ -1,7 +1,7 @@
 # Positive rate-mixture posterior curvature, finite-window, and properness law
 
 - **ID:** ULF-SHPC-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [DEPENDENCY-CLOSED] [BRIDGE] [UNIVERSAL-LAW MECHANISM] [NOT A FIRST-PASSAGE CLASSIFICATION] [NOT RH]`
 - **External stimulus:** M. Møller, P. Rahe, S. Ghaderzadeh, E. Besley, P. Moriarty, [*Static heterogeneity generates apparent universality in first-passage bursty dynamics*](https://arxiv.org/abs/2604.15084) (2026).

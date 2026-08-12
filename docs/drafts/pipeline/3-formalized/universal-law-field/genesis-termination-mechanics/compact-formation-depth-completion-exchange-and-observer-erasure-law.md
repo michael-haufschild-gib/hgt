@@ -1,7 +1,7 @@
 # Compact formation depth, completion exchange, and observer erasure
 
 - **ID:** ULF-GTM-3
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL LAW-FIELD MECHANISM THEOREM
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [MECHANISM NOT OBJECT]
   [FINITE-FORMATION/COMPLETION EXCHANGE] [PRESENTATION-COARSE]
@@ -389,15 +389,44 @@ project axioms:
 4. bounded-saturation no-birth corollary;
 5. bounded-dictionary reach inclusions and boundary invariance;
 6. equivariant-observer boundary inclusion and injective equality;
-7. the finite-signature sharp countermodel on the one-point compactification of `ℕ`.
+7. the finite-signature sharp countermodel on the one-point compactification of `ℕ` (section 6.2).
 
-Direct foreground elaboration, forbidden-token lint, axiom audit, and the final Universal Law
-Field umbrella build all pass. Every audited capstone depends only on `propext`,
-`Classical.choice`, and `Quot.sound`. Declaration-level certificate is recorded in matching
-Stage-3 card.
+`GaloisForLFunctions.HTGeometry.FormationCompletionExchangeCalibration` adds two more of the
+section-6 calibrations, also wired into the umbrella:
+
+- section 6.3, **compactness is load-bearing** — `noncompact_depthOne_completionExchange_fails`:
+  on the closed ray `[1,∞)` the single continuous formation `x ↦ 1/(1+x²)` puts `0` in the
+  completion of the depth-one reach but not in the depth-one reach of the completion;
+- section 6.4, **continuity is load-bearing** —
+  `discontinuous_depthOne_completionExchange_fails`: a formation equal to `1` at the origin and
+  `0` elsewhere carries the completed input to `1`, which is outside the completion of the formed
+  input.
+
+- section 6.1, **a compact system with nonempty completion boundary** —
+  `rotationCalibration_completionBoundary_nonempty`: on the circle `ℝ/ℤ` the two-generator
+  rotation system `{· + α, · − α}` at irrational `α` has formation words realizing exactly the
+  `ℤ`-orbit of the starting law (`rotationCalibration_saturation`), that orbit is dense
+  (`rotationCalibration_dense`, from mathlib's `AddCircle.denseRange_zsmul_coe_iff`), and it is
+  proper because `α/2` is not on it — so completion produces laws no finite word reaches.  The
+  two-generator form is what makes the words give the full `ℤ`-orbit; a single generator would
+  give only the forward orbit and would need minimality instead;
+- section 6.5, **unbounded depth is necessary but not sufficient** —
+  `unbounded_depth_not_sufficient`: `x ↦ x/(1+x)` from `{0,1}` has infinite saturation
+  `{0} ∪ {1/(k+1)}`, so no finite depth exhausts it, yet that set is already closed and the
+  completion boundary is empty.  Supporting: `runFormations_unit` and `formationSaturation_unit`,
+  which identify one-generator formation words with iteration.
+
+All of section 6 is therefore certified, and every declaration audits to `propext`,
+`Classical.choice`, `Quot.sound`.
 
 ## Log
 
 - 2026-08-09 — compactness-escape alone rejected as an already-formalized RBD/Kőnig law.
 - 2026-08-09 — stronger finite-depth exchange, presentation invariance, and observer-erasure
   mechanism proved on paper.
+
+- 2026-08-12 — calibrations 6.3 and 6.4 certified in Lean
+  (`FormationCompletionExchangeCalibration`); 6.1 and 6.5 are the only remaining obligations, and
+  the earlier note that Kronecker density is absent from mathlib is corrected — it is present as
+  `AddCircle.denseRange_zsmul_iff`.
+- 2026-08-12 — calibrations 6.1 and 6.5 certified as well; section 6 is complete in Lean.

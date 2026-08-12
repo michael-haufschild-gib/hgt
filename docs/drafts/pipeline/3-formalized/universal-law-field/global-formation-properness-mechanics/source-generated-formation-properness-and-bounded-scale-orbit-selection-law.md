@@ -1,7 +1,7 @@
 # Source-generated formation properness and bounded-scale-orbit selection law
 
 - **ID:** ULF-GFPM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** GLOBAL FORMATION / PROPERNESS / SELECTION THEOREM
 - **Parent field:** Global Formation-Properness Mechanics
 - **Statement:** Two marked source formations generate a central intervention; source depth

@@ -1,7 +1,7 @@
 # Multi-parent tropical-projective work, observer reconstruction, and prime-recurrence law
 
 - **ID:** ULF-DDEM-TPW-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FIELD LAW / THREE-ORGAN FUSION / EXACT CONSERVATION / FOURTH-ORGAN PREDICTION
 - **Source:** full-frontier intervention grammar; multi-parent revealed-work open core; finite
   prime Boolean--Mass--Hankel packet
@@ -129,7 +129,8 @@ Choose a reference parent (p_0) and use the affine chart
 
 For any observer (q:X\to Q), the following are equivalent:
 
-1. (ho_{p_0}) factors through the attained range of (q);
+1. (
+ho_{p_0}) factors through the attained range of (q);
 2. whenever (q(x)=q(y)), one has (H_A(x,y)=0);
 3. every relative potential (A_p-A_r) factors through the attained range of (q).
 

@@ -1,10 +1,11 @@
 # Kummer--Gamma one-sided corona flow and intervention rigidity law
 
 - **ID:** `cmr-kummer-gamma-one-sided-corona-flow-intervention-rigidity`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / DIAGONAL-INTERVENTION NO-GO
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [FIXED-OBSERVER HOLONOMY]`
-  `[SCALAR/DIAGONAL/MOVING-IDEAL PROGRAMS CLOSED] [NOT RH] [NO LEAN WRITTEN OR BUILT]`
+  `[SCALAR/DIAGONAL/MOVING-IDEAL PROGRAMS CLOSED] [NOT RH] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `kummer-gamma-one-sided-corona-flow-intervention-rigidity-law-formalized.md`
 - **Parents:**
   `../nomological-geometry-and-dynamics/marked-half-character-duality-soldering-and-cofinal-diagonal-inverse-obstruction-law.md`;
   `../constraint-relativity/prime-valuation-cyclic-coframe-and-diagonal-dagger-defect-law.md`.
@@ -320,7 +321,7 @@ identification `(11)` of finite holonomy with the physical Bockstein.
 - [x] coframe-extension anomaly identified as necessary survivor
 - [x] no RH or source-null-homology claim
 - [ ] non-diagonal source chain event
-- [ ] no Lean until field interface stabilizes
+- [x] Lean formalization of §§1–5 (unconditional, no sorry, no axiom)
 
 ## Log
 

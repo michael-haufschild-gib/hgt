@@ -1,10 +1,11 @@
 # Prime Gamma--Bockstein/Rees event germ and cofinal normal nonuniformity law
 
 - **ID:** `cmr-prime-gamma-bockstein-rees-event-germ-cofinal-normal-nonuniformity`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-SPECIFIC CROSS-CHART EVENT LAW
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [PRE-XI] [BRIDGE] [NOT RH]`
-  `[FORMAL NORMALIZATION DISCONTINUITY FOUND] [NO LEAN WRITTEN OR BUILT]`
+  `[FORMAL NORMALIZATION DISCONTINUITY FOUND] [LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `prime-gamma-bockstein-rees-event-germ-and-cofinal-normal-nonuniformity-law-formalized.md`
 - **Formal parents:**
   `../../../../../formal/GaloisForLFunctions/RHTower/PrimeGammaCofinalBocksteinDeterminantTransgression.lean`,
   `../../../../../formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldReesCoronaQuotient.lean`,
@@ -272,10 +273,10 @@ They may later be related by a source correspondence, but they are not interchan
 
 ## 9. Formalization note
 
-The ingredients are already formalized separately, including the pointwise quotient comparison.
-The new paper result identifies the analytic removable value and the cofinal asymptotic. By user
-instruction, no Lean code was written or built. Later formalization should introduce a new analytic
-extension rather than silently change the old zero-radical coordinate.
+The ingredients were already formalized separately, including the pointwise quotient comparison.
+The new paper result identifies the analytic removable value and the cofinal asymptotic.  These are
+now formalized in a *new* module carrying the analytic extension `eventGerm`; the old zero-radical
+coordinate is untouched, exactly as required.
 
 ## Gates
 
@@ -288,7 +289,7 @@ extension rather than silently change the old zero-radical coordinate.
 - [x] central-holonomy versus structural-contact boundary stated
 - [x] RH/nonselection boundary stated
 - [x] hostile independent audit
-- [ ] Lean formalization deferred by instruction
+- [x] Lean formalization of §§2–5 (unconditional, no sorry, no axiom)
 
 ## Log
 

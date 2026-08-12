@@ -1,7 +1,7 @@
 # Cofinal prime-periodization tomography and its strict Hodge obstruction
 
 - **ID:** `deninger-cofinal-prime-periodization-tomography-instability`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE TOMOGRAPHY / TOPOLOGICAL NO-GO / POSITIVE CLASSIFICATION
 - **Labels:**
   - `DAC_DENINGER_COFINAL_PRIME_PERIODIZATION_TOMOGRAPHY`;
@@ -481,12 +481,25 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
   the countable product while its Meyer seminorm `q_{1,0}` stays above `‖ψ(0)‖ > 0`) and
   **`deningerTomography_not_isClosed_range`** — for every infinite prime set `Q` and every auxiliary
   period `p`, the range of `𝒫_Q : K_p → ∏_{q ∈ Q} C^∞(ℝ/L_qℤ)` **is not closed**.  That is `(11)`.
-- **Still not formalized, and the reason is specific.**  One item remains: §5's transport corollary
-  `(20)`--`(25)`.  The corpus's half-density seminorm `p_{1/2}` and its quotient `p̄_{1/2}` live on
-  `DeningerMeyerStrongLogTarget` (`DeningerMeyerHalfDensityL1Completion.lean`), not on the
-  Schwartz-based `DeningerExpSchwartz` used by the periodization layer, so the transport needs the
-  Euler defect `Δ_p` and its Green inverse built on the strong-log model.  The card itself records
-  this as transport, not as an independent novelty claim.
+- **§5's transport corollary `(20)`--`(25)` is proved unconditionally** —
+  `formal/GaloisForLFunctions/RHTower/DeningerStrongLogEulerGreenTransport.lean`.  The corpus's
+  half-density seminorm `p_{1/2}` and its quotient `p̄_{1/2}` live on
+  `DeningerMeyerStrongLogTarget`, so the Euler defect and its Green inverse are built there:
+  `deningerMeyerStrongLogDecay_tendsto_zero_atTop` (all-weight decay at `+∞`),
+  `deningerMeyerStrongLogDecay_eq_zero_of_periodic` (a periodic all-weight cochain vanishes),
+  `deningerStrongLogDefect` (`Δ_L = 1 - T_{-L}`) and **`deningerStrongLogDefect_injective`**, hence
+  **`deningerStrongLogGreen`**, the Green inverse `G_L : K_L ≃ H`.  Then
+  **`deningerStrongLogRelativeSeminorm`** is `(20)`, `r_L = p̄_{1/2} ∘ G_L`, and
+  **`deningerStrongLogRelativeSeminorm_defect`** is `(21)`, `r_L(Δ_L g) = p̄_{1/2}([g])`.  The four
+  listed consequences follow: `deningerStrongLogRelativeSeminorm_boundary` kills `B_p`;
+  `deningerStrongLogDefect_centeredFlow` and
+  **`deningerStrongLogRelativeSeminorm_centeredFlow`** give `r_L(V_a h) = r_L(h)`;
+  **`deningerStrongLogRelativeSeminorm_independent`** shows the value does not depend on the
+  auxiliary period; **`deningerStrongLogRelativeSeminorm_eq_zero_setOf`** is `(22)`, the radical
+  transported through `G_L`.  Finally
+  **`norm_xiSupportEvaluation_le_strongLogRelativeSeminorm`** is `(23)`: every critical actual Xi
+  evaluation is bounded by `r_L`, so `r_L` is not the zero seminorm.  `(24)`--`(25)` are the
+  conjunction of that with §3's `deningerTomography_not_isClosed_range`.
 - Superseded note, kept for the record: `log q → ∞` along an infinite prime set,
   so the zeros `2π/log q` are distinct and accumulate at `0`; the identity theorem for the entire
   `ĥ` then gives `ĥ ≡ 0`, and matching `ĥ(2πξ)` with mathlib's `𝓕 h ξ` gives `h = 0` by Fourier
@@ -498,14 +511,17 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
 
 - [x] 0 → 1 in-progress: tomography and instability falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed proofs `(5)`--`(25)`
-- [ ] 2 → 3 formalized: `(1)`, `(2)`, `(5)`, `(6)`, `(7)`, `(8)`, `(9)`, `(10)`, `(11)`,
-  `(12)`--`(14)` and `(16)`--`(17)` proved unconditionally, including the Fréchet open mapping
-  theorem the non-closed range needs; only §5's transport `(20)`--`(25)` is outstanding
-  (see *Lean status*)
+- [x] 2 → 3 formalized: `(1)`, `(2)`, `(5)`--`(14)`, `(16)`--`(17)` and `(20)`--`(25)` all proved
+  unconditionally, including the Fréchet open mapping theorem the non-closed range needs.  Axiom
+  audit throughout: `propext, Classical.choice, Quot.sound`.  `(26)` remains explicitly open, as the
+  card states.
 - [ ] 3 → 4 publication-ready
 
 ## Log
 
+- 2026-08-12 — Formalized §5's transport `(20)`--`(25)`: the Euler defect and Green inverse on the
+  all-weight logarithmic target, and the half-density quotient seminorm carried through it.  Card
+  moved to stage 3.
 - 2026-08-12 — Built the Fréchet open mapping theorem and the completeness, metrizability and
   Hausdorff structure of both Deninger spaces, then proved §3's corollary: the cofinal prime
   tomography restricted to `K_p` has non-closed range.  Only §5's transport remains.

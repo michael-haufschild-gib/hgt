@@ -14,6 +14,7 @@ Working note for the promotion sweep.  Not a card.
 | `prime-isotropy-vertical-shear-gauge-torsor-and-nonerasure-dichotomy` | `RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean` |
 | `two-endpoint-prime-orbit-stokes-moduli-and-infinite-coinvariant-law` | `RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean` |
 | `residue-preserving-law-promotion-anomaly-trilemma` | `HTGeometry/ConstraintRelativity/ResiduePromotionAnomaly.lean` |
+| `provenance-admission-connecting-law-and-flat-completion-cube` | `HTGeometry/ConstraintRelativity/ProvenanceAdmissionCube.lean` |
 
 All modules are wired into their area umbrella, build green, and every listed declaration returns
 only `[propext, Classical.choice, Quot.sound]`.
@@ -24,7 +25,6 @@ only `[propext, Classical.choice, Quot.sound]`.
 - `factor-framed-tensor-jacobian-defect-law`
 - `passive-relation-triangle-energy-and-interaction-cross-fibre-law`
 - `polarized-incidence-stokes-and-e-mass-capacity-phase-law`
-- `provenance-admission-connecting-law-and-flat-completion-cube`
 - `resource-filtered-relation-typicality-and-recurrence-no-go`
 
 ## Scouting notes
@@ -53,3 +53,12 @@ The two hard equations need machinery mathlib does **not** have:
 `(BHR.12)` (layer = kernel of the cut projection) and `(BHR.18)` (modular pairing covariance) are
 elementary once the pairing is set up.  `(BHR.21)`–`(BHR.24)` (the finite thermofield
 countermodel) are finite-dimensional and independent of the above.
+
+### `resource-filtered-relation-typicality-and-recurrence-no-go` — partly deferred
+
+Theorem 4.1 (recurrence forbids a nonconstant monotone complexity law) and Theorem 5.1 (exact
+normal acceleration `h''(0) = 2‖(I−P)Ax‖²`) are elementary.  Theorem 2.1 claims 2–3 need
+"a proper real-analytic subset of a connected real-analytic manifold has empty interior and
+measure zero"; mathlib has the identity theorem (empty interior) but no Lebesgue-measure-zero
+statement for real-analytic zero sets, and Corollary 2.2 additionally needs Haar-measure zero of a
+proper analytic subset of a compact Lie group.  Both must be built.

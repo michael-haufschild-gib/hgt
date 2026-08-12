@@ -287,6 +287,30 @@ theorem memℓp_diagMul (x : SourceL2 Nat.Primes) :
     nlinarith [norm_nonneg (diagCoef p)]
   exact mul_le_mul_of_nonneg_right h1 (by positivity)
 
+theorem norm_diagMul_le (x : SourceL2 Nat.Primes) :
+    ‖(⟨fun p => diagCoef p * (x : Nat.Primes → ℂ) p, memℓp_diagMul x⟩ : SourceL2 Nat.Primes)‖
+      ≤ 32 * ‖x‖ := by
+  set y : SourceL2 Nat.Primes :=
+    ⟨fun p => diagCoef p * (x : Nat.Primes → ℂ) p, memℓp_diagMul x⟩ with hy
+  have hcoord : ∀ p : Nat.Primes,
+      ‖(y : Nat.Primes → ℂ) p‖ ^ 2 ≤ (32 : ℝ) ^ 2 * ‖(x : Nat.Primes → ℂ) p‖ ^ 2 := by
+    intro p
+    have hval : (y : Nat.Primes → ℂ) p = diagCoef p * (x : Nat.Primes → ℂ) p := rfl
+    rw [hval, norm_mul, mul_pow]
+    have h1 : ‖diagCoef p‖ ^ 2 ≤ (32 : ℝ) ^ 2 := by
+      have := norm_diagCoef_le p
+      nlinarith [norm_nonneg (diagCoef p)]
+    exact mul_le_mul_of_nonneg_right h1 (by positivity)
+  have hsum : Summable fun p : Nat.Primes => (32 : ℝ) ^ 2 * ‖(x : Nat.Primes → ℂ) p‖ ^ 2 :=
+    (memℓp_two_iff.1 x.2).mul_left _
+  have hsq : ‖y‖ ^ 2 ≤ (32 : ℝ) ^ 2 * ‖x‖ ^ 2 := by
+    rw [norm_sq_eq_tsum, norm_sq_eq_tsum]
+    calc ∑' p : Nat.Primes, ‖(y : Nat.Primes → ℂ) p‖ ^ 2
+        ≤ ∑' p : Nat.Primes, (32 : ℝ) ^ 2 * ‖(x : Nat.Primes → ℂ) p‖ ^ 2 :=
+          (memℓp_two_iff.1 y.2).tsum_le_tsum hcoord hsum
+      _ = (32 : ℝ) ^ 2 * ∑' p : Nat.Primes, ‖(x : Nat.Primes → ℂ) p‖ ^ 2 := tsum_mul_left
+  nlinarith [norm_nonneg y, norm_nonneg x]
+
 /-- **`(GBR.12)`.**  The diagonal comparison map on the prime source chart. -/
 noncomputable def diagCompare : SourceL2 Nat.Primes →L[ℂ] SourceL2 Nat.Primes :=
   LinearMap.mkContinuous
@@ -298,22 +322,7 @@ noncomputable def diagCompare : SourceL2 Nat.Primes →L[ℂ] SourceL2 Nat.Prime
       map_smul' := fun a x => by
         refine lp.ext (funext fun p => ?_)
         simp only [lp.coeFn_smul, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
-        ring } 32 fun x => by
-    have hsq : ‖(⟨fun p => diagCoef p * (x : Nat.Primes → ℂ) p, memℓp_diagMul x⟩ :
-        SourceL2 Nat.Primes)‖ ^ 2 ≤ (32 * ‖x‖) ^ 2 := by
-      rw [norm_sq_eq_tsum, mul_pow, norm_sq_eq_tsum]
-      have hsum : Summable fun p : Nat.Primes => (32 : ℝ) ^ 2 * ‖(x : Nat.Primes → ℂ) p‖ ^ 2 :=
-        (memℓp_two_iff.1 x.2).mul_left _
-      rw [← hsum.tsum_mul_left]
-      refine (memℓp_two_iff.1 (memℓp_diagMul x)).tsum_le_tsum (fun p => ?_) hsum
-      rw [norm_mul, mul_pow]
-      have h1 : ‖diagCoef p‖ ^ 2 ≤ (32 : ℝ) ^ 2 := by
-        have := norm_diagCoef_le p
-        nlinarith [norm_nonneg (diagCoef p)]
-      exact mul_le_mul_of_nonneg_right h1 (by positivity)
-    have hnn : (0 : ℝ) ≤ 32 * ‖x‖ := by positivity
-    nlinarith [norm_nonneg (⟨fun p => diagCoef p * (x : Nat.Primes → ℂ) p, memℓp_diagMul x⟩ :
-      SourceL2 Nat.Primes)]
+        ring } 32 norm_diagMul_le
 
 @[simp] theorem diagCompare_apply (x : SourceL2 Nat.Primes) (p : Nat.Primes) :
     (diagCompare x : Nat.Primes → ℂ) p = diagCoef p * (x : Nat.Primes → ℂ) p := rfl
@@ -331,8 +340,8 @@ theorem norm_diagCompare_srcBasis (p : Nat.Primes) :
     refine lp.ext (funext fun q => ?_)
     rw [diagCompare_apply, lp.single_apply, srcBasis_apply]
     by_cases h : q = p
-    · subst h; simp [Pi.single_apply]
-    · simp [Pi.single_apply, h]
+    · subst h; simp
+    · simp [h]
   rw [hval, lp.norm_single (by norm_num), norm_diagCoef]
 
 theorem norm_srcBasis (p : Nat.Primes) : ‖(srcBasis p : SourceL2 Nat.Primes)‖ = 1 := by

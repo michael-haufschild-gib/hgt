@@ -1,7 +1,7 @@
 # Product primitive saturation, resolvent current, and formation-depth properness law
 
 - **ID:** ULF-PFRM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ROUTE-INDEPENDENT COMPLETION CLASSIFICATION + GLOBAL FORMATION-PROPERNESS THEOREM
 - **Parent:** `two-packet-rational-primitive-rigidity-and-finite-formation-no-new-current-law.md`
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [PRODUCT COMPLETION CLASSIFIED]`

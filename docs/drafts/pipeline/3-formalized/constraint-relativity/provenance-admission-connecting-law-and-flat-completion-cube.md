@@ -1,9 +1,10 @@
 # Provenance-admission connecting law and flat completion cube
 
 - **ID:** `provenance-admission-connecting-law-flat-completion-cube`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / FRAMED PROVENANCE GEOMETRY / RELATIVE EXACTNESS
-- **Scientific status:** `[PAPER-PROVED] [NO LEAN WRITTEN OR BUILT] [NOT RH]`
+- **Scientific status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
+  `[PAPER-PROVED] [NOT RH]`
 - **Novelty status:** mapping-cone and Boolean-cube ingredients are classical. Candidate-new role
   is foundational: obstruction is exact in formal completion but nonexact in source-admitted
   cochains; absolute representation geometry is flat while provenance admission carries class.
@@ -363,6 +364,11 @@ source-canonical strict diagram and coefficient-faithful realization can advance
 
 ## 9. Lean handoff notes
 
-No Lean code was written or built. Later formalization can start from the algebraic isomorphism
-`(3.3)` for short exact cochain complexes, then isolate the finite Boolean closure cube. The
-bornological, pro-, corpus, and physical realizations are separate future interfaces.
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/ProvenanceAdmissionCube.lean`
+(wired into `GaloisForLFunctions.HTGeometry`).  Theorem 2.1, Proposition 2.2, Theorem 3.1 and both
+countermodels are green and unconditional; the declaration-by-equation map and the axiom audit are
+in the companion card
+`provenance-admission-connecting-law-and-flat-completion-cube-formalized.md`.  The bornological,
+pro-, corpus and physical realizations remain separate future interfaces, and the source-framed
+strict fracture conjecture `(7.1)` is untouched.
