@@ -44,9 +44,12 @@ coefficient one.  It proves that this localization embeds into `A[[T]]` over eve
 and that every kernel element has a normalized `P/Q` representative with `P(0)=Q(0)=1`.  This
 closes the missing localized-rational-function carrier.  It also constructs coefficientwise
 functoriality, proves identity/composition and Teichmüller naturality, proves preservation of
-monomorphisms, and gives the literal injective inclusion into `1+TA[[T]]`.  Witt multiplication and
-the reduced-monoid-algebra comparison are supplied by the algebraically closed-field modules below;
-generic-ring Witt multiplication still remains open.
+monomorphisms, and gives the literal injective inclusion into `1+TA[[T]]`.  The ambient canonical
+big-Witt multiplication is now supplied over every commutative ring by
+`DeningerBigWittRing.lean`, including rings with nilpotents.  What remains is the distinct hard
+statement that the literal rational subcarrier is closed under that multiplication; this closure
+is logically required before Proposition 1.1 can be stated as a ring-localization isomorphism.
+The reduced-monoid-algebra comparison is supplied by the algebraically closed-field modules below.
 
 `DeningerRationalWittAlgebraicallyClosedPresentation.lean` now constructs the actual additive
 comparison `ℤ[Kˣ] → W_rat(K)` for a field `K`; it does not alias `W_rat(K)` to the presentation.
@@ -302,3 +305,8 @@ the missing rational-Witt comparison is logically prior.
   absolute-Galois-fixed Teichmüller vector coming from the absolute normalization but not from the
   base rational-Witt carrier.  The positive survivor is stronger than a counterexample:
   Teichmüller descent for all integral fraction-field elements forces integral closedness.
+- 2026-08-12 — closed canonical big-Witt multiplication over every commutative ring, with universal
+  integer-polynomial descent of all ring laws and exact preservation/reflection of Teichmüller
+  nilpotence.  Proposition 1.1 now reduces to proving that normalized rational functions form a
+  subring of this ambient construction and that coefficient localization is the corresponding
+  Teichmüller localization.

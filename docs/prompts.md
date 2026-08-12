@@ -4,7 +4,7 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from these: docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge (oldest card by modified at file date first, ignore subfolders)
+else: pick a card from any subfolder within docs/drafts/pipeline/2-fully-proven/universal-law-field/ 
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
@@ -33,8 +33,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/constraint-frame-relativity
-
+formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/nad
+  
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
@@ -160,22 +160,21 @@ where mathematical knowledge is missing use the $hgt-fields-medalist skill to cr
 
 ## research paper
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about:
-- Brown–Susskind’s full growth–plateau–recurrence law
-- the black hole interior volume paradox
-- Quantum Recurrence
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about the hadamard conjecture and prove or disprove it.
 
-collect enough novel and significant knowledge to write a paper that meets the publishing requirements of Nature: the paper must report a fundamental new insight or startling discovery that significantly shifts the scientific conversation across multiple fields.
+collect enough novel and significant knowledge that cannot be found in literature and advances beyond current SOTA research as of August 2026.
 
 research rules:
-- use heavy conjecturing
+- use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
 - always check that you do not play theatre and actually are creating new knowledge
-- focus on hard problems
+- focus on hard problems, NO THEATRE, NO INFRASTRUCTURE, EVERY STEP MUST DELIVER PROGRESS
+- take a step back and look at the big picture and conjecture how you could reinterpret everything we know so far and where the reasons we got stuck are shadows of a higher universal principle
+- pivot when necessary.
 
 add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications.
 
 Lean rules:
-1. Proofs must be unconditional in lean.
+1. Proofs must be unconditional in lean, no hypotheses, new axioms, prop interfaces, ...
 2. Always build in the foreground, 1 process per single agent. You can run builds in parallel to other agents, but only 1 at a time.
 3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
 4. No computations.
@@ -187,7 +186,7 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about route N from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about route P from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
 
 collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. 
 

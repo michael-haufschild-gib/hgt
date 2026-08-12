@@ -1319,3 +1319,39 @@ eliminated as a separate input — the first Lean-ownable surrogate.
 machinery) — would make the surrogate numerically explicit at depth and quantify exactly which
 partial-RH height certifies the first list entries; (ii) sharpen `198/3175` via the trace at a
 larger shift; (iii) the window-optimality asymptotic family (trig-arc, stretch).
+
+## Step 46 — the relative nodal criterion: RH beyond any verification height [PAPER-PROVED → Lean]
+
+**Bootstrap no-go (structural discovery).** The two-scale supply cannot feed the descent below
+its own placement scale: a descent certificate at a level `ℓ < δ` needs weights VANISHING at
+every copy above `ℓ` — in particular at every potential witness (norms ≥ δ) — while the supply
+theorem's witness expression carries the factor `(eval_{r₁}p)²(eval_{r₂}p)²`, which such a
+weight annihilates (under `hline`, `u_{q₁} = r₁` real, so `eval P(u_{q₁}) = 0 ⟹
+eval_{r₁}P = 0 ⟹` RHS `= 0`). The supply family (polynomials alive at the on-line spectrum)
+and the certificate family (polynomials dead above the working level) are DISJOINT. No
+self-improvement circle exists in this representation.
+
+**The positive endpoint (relative criterion).** What descent below `δ` needs is exactly the
+criterion of the TRUNCATED spectrum: for `P` killing every copy with `‖u‖ ≥ δ` and alive on
+the sub-`δ` copies, the `(P·p)²`-weighted moments see only the sub-`δ` world
+(`support ⊆ {‖u‖ < δ}`), and:
+
+**Theorem.** For any shift `X ≥ 0` and scale `δ > 0`, if
+(i) every copy with `‖u‖ ≥ δ` lies on the line (partial RH at one scale),
+(ii) `P` kills every copy above scale and is nonvanishing below,
+(iii) the single `(0,2,1)` minors of `X^m·(∏_{r∈R}(X−r))·P` are nonnegative for every finite
+`R ⊂ (0,1]` and every `m`,
+then RH.
+
+**Paper proof.** Strong induction on the count of higher-modulus copies. Copies with
+`‖u‖ ≥ δ`: on line by (i). At a level `ℓ < δ`: all strictly-higher copies are real (≥ δ by
+(i), in `(ℓ,δ)` by induction), with norms in `(0,1]`; the weight
+`(nodalPolynomial(atoms)·P)²` kills everything above `ℓ` (nodal factor) and is nonzero on the
+level (nodal: nodes exceed `ℓ`; `P`: by (ii) since `ℓ < δ`); the even machine consumes the
+even minors of this weight, which by the index shift are exactly the data (iii) at
+`R = atoms`. ∎
+
+**Significance.** The first exact statement in the corpus of "RH beyond any verification
+height": one verified scale converts the full criterion into a countable relative list living
+entirely on the truncated divisor — and the effective windows/masking/delay theory applies to
+the truncated world verbatim. Quantifies precisely what a height-`T` verification buys.

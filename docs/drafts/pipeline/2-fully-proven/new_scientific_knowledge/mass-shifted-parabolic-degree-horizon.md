@@ -3,7 +3,7 @@
 - **ID:** `mass-shifted-parabolic-degree-horizon`
 - **Stage:** 2-fully-proven / needs specialist audit
 - **Route:** U, mass-shifted reciprocal-Hankel propagation
-- **Scientific status:** `[PAPER PROOF COMPLETE] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER PROOF COMPLETE] [NOVELTY UNVERIFIED] [LEAN PARTIAL]`
 - **Depends on:** `mass-xi-finite-true-prime-cone`, especially C43-Y and C43-BA
 
 ## Result
@@ -243,8 +243,16 @@ priority claim is made without specialist audit.
 
 ## Lean status
 
-No Lean declaration is claimed. Formalization must include the exact completed-source formula,
-coefficient-uniform Hermite translation bound, shell estimate, filtered Gamma transmutation, and
-Gamma-tail comparison for the literal Xi objects. An abstract theorem taking (PDH.6) or (PDH.7)
-as hypotheses would violate the route's unconditional-proof requirement and is intentionally not
-being added.
+Two load-bearing pieces are now unconditional Lean:
+
+1. `XiShiftedFilteredGammaTransmutation.lean` proves exact literal filtered Gamma identity
+   (PDH.4).
+2. `HermitePolynomialDerivativeEnergy.lean` proves sharp coefficient-uniform generator estimate
+   `‖P' exp(-pi*x^2)‖_2^2 <= 4*pi*natDegree(P)*‖P exp(-pi*x^2)‖_2^2`, with equality on Hermite
+   modes. This is derivative-norm input for imaginary translation in (PDH.9).
+
+Remaining formalization: integrate generator to full complex-translation exponential, prove finite
+Hermite projector/Mehler concentration, instantiate completed-source formula and prime-shell sum,
+then close Gamma-tail comparison for literal Xi objects. An abstract theorem taking (PDH.6) or
+(PDH.7) as hypotheses would violate route's unconditional-proof requirement and is intentionally
+not being added.

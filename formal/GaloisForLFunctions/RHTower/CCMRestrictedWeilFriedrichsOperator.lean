@@ -476,4 +476,87 @@ theorem ccmRestrictedWeilOperator_represents_form
     (denseRange_ccmArchimedeanFormToAperture a)
     y v
 
+/-- The bottom eigenstate has an exact nonzero representative in the literal source form domain. -/
+theorem ccmRestrictedWeilSource_exists_groundFormState
+    (a : SuzukiPositiveAperture) :
+    ∃ u : CCMArchimedeanFormDomain a,
+      ccmArchimedeanFormToAperture a u ≠ 0 ∧
+        ccmRestrictedWeilSourceQuadratic a u =
+          ccmRestrictedWeilGroundEnergy a *
+            ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
+  obtain ⟨x, hxne, hx⟩ := ccmRestrictedWeilOperator_exists_groundEigenstate a
+  let C := ccmRestrictedWeilCovariance a
+  have hxRange : (x : suzukiApertureHilbert a) ∈ C.range := by
+    have hxdom : (x : suzukiApertureHilbert a) ∈
+        (closedDenseInverse C).domain := by
+      simpa only [C, ccmRestrictedWeilCovariance, ccmRestrictedWeilOperator,
+        boundedPerturbedFriedrichsOperator_domain] using x.property
+    rwa [closedDenseInverse_domain] at hxdom
+  rcases hxRange with ⟨y, hy⟩
+  let u := boundedPerturbedFormRieszInv
+    (ccmArchimedeanFormToAperture a)
+    (ccmRestrictedWeilBoundedRemainder a)
+    (ccmRestrictedWeilBoundedRemainder_isSelfAdjoint a)
+    ((ccmArchimedeanFormToAperture a).adjoint y)
+  have hJu : ccmArchimedeanFormToAperture a u =
+      (x : suzukiApertureHilbert a) := by
+    change C y = (x : suzukiApertureHilbert a)
+    exact hy
+  have hrep := ccmRestrictedWeilOperator_represents_form a y u
+  dsimp only at hrep
+  let xC : (ccmRestrictedWeilOperator a).domain :=
+    ⟨C y, by
+      change C y ∈ (closedDenseInverse C).domain
+      exact (closedDenseInverse_apply_C C
+        (ccmRestrictedWeilCovariance_injective a) y).1⟩
+  have hxC : xC = x := Subtype.ext hy
+  have hform : inner ℂ (ccmRestrictedWeilOperator a x)
+      (ccmArchimedeanFormToAperture a u) = ccmRestrictedWeilForm a u u := by
+    rw [← hxC]
+    exact hrep.2
+  refine ⟨u, ?_, ?_⟩
+  · rw [hJu]
+    exact hxne
+  · rw [← ccmRestrictedWeilForm_self_re_eq_source]
+    rw [← hform, hJu, hx]
+    have hsmul : inner ℂ
+        ((ccmRestrictedWeilGroundEnergy a : ℂ) •
+          (x : suzukiApertureHilbert a))
+        (x : suzukiApertureHilbert a) =
+      (starRingEnd ℂ) (ccmRestrictedWeilGroundEnergy a : ℂ) *
+        inner ℂ (x : suzukiApertureHilbert a)
+          (x : suzukiApertureHilbert a) := by
+      exact inner_smul_left (x : suzukiApertureHilbert a)
+        (x : suzukiApertureHilbert a)
+        (ccmRestrictedWeilGroundEnergy a : ℂ)
+    rw [hsmul, Complex.mul_re]
+    have hgRe : ((starRingEnd ℂ)
+        (ccmRestrictedWeilGroundEnergy a : ℂ)).re =
+          ccmRestrictedWeilGroundEnergy a := by norm_num
+    have hgIm : ((starRingEnd ℂ)
+        (ccmRestrictedWeilGroundEnergy a : ℂ)).im = 0 := by norm_num
+    have hxRe : (inner ℂ (x : suzukiApertureHilbert a)
+        (x : suzukiApertureHilbert a)).re = ‖(x : suzukiApertureHilbert a)‖ ^ 2 := by
+      calc
+        _ = (((‖(x : suzukiApertureHilbert a)‖ : ℂ) ^ 2)).re :=
+          congrArg Complex.re
+            (inner_self_eq_norm_sq_to_K (𝕜 := ℂ)
+              (x : suzukiApertureHilbert a))
+        _ = ‖(x : suzukiApertureHilbert a)‖ ^ 2 := by
+          rw [pow_two, Complex.mul_re]
+          norm_num
+          ring
+    have hxIm : (inner ℂ (x : suzukiApertureHilbert a)
+        (x : suzukiApertureHilbert a)).im = 0 := by
+      calc
+        _ = (((‖(x : suzukiApertureHilbert a)‖ : ℂ) ^ 2)).im :=
+          congrArg Complex.im
+            (inner_self_eq_norm_sq_to_K (𝕜 := ℂ)
+              (x : suzukiApertureHilbert a))
+        _ = 0 := by
+          rw [pow_two, Complex.mul_im]
+          norm_num
+    rw [hgRe, hgIm, hxRe, hxIm]
+    ring
+
 end RHTower

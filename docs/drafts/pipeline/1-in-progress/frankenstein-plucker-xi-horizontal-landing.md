@@ -3,7 +3,7 @@
 - **ID:** `FR-PXHL-1`
 - **Stage:** `1-in-progress`
 - **Type:** coefficient-faithful actual-Xi source landing
-- **Status:** `[BRIDGE] [PAPER-PROVED] [LEAN EXACT-BUILT] [UMBRELLA-WIRED] [NOT RH]`
+- **Status:** `[BRIDGE] [PAPER-PROVED] [LEAN EXACT-BUILT] [UMBRELLA-WIRED] [HILBERT-ADMITTED] [NOT RH]`
 - **Lean target:**
   `formal/GaloisForLFunctions/RHTower/FrankensteinPluckerXiHorizontalLanding.lean`
 
@@ -62,15 +62,19 @@ Both edge currents remain reflection-odd.
 
 ## Honest boundary
 
-This closes actual Xi landing into both retained positive Pluecker orientations.  It does not prove
-summability of these actual-Xi sequences, vanishing of their terminal flux, equality of same-source
-reflected fibres, or an annihilating global source trace.  Pointwise/global zero remains exactly the
-critical-line condition.
+This closes actual Xi landing into both retained positive Pluecker orientations.
+`FrankensteinPluckerXiHilbertAdmission.lean` now proves both sequences square summable on the
+physical prime-depth lattice, defines their literal P-G95 Hilbert vectors, and retains exact
+reflection oddness and critical-line zero radical. It does not prove vanishing of terminal flux,
+equality of same-source reflected fibres, or an annihilating global source trace.
+Pointwise/Hilbert zero remains exactly the critical-line condition.
 
 P-G95 proves the P-G94 physical-overlap operator globally injective: its only algebraically glued
-local gauge is the linearly growing, non-square-summable Stokes-gap section. No current theorem
-proves this Xi carrier square summable or places it in the overlap operator kernel. Claiming either
-property without a source proof would be theatre; injectivity alone cannot supply annihilation.
+local gauge is the linearly growing, non-square-summable Stokes-gap section. P-G96 proves the Xi
+carrier square summable and consequently proves its physical quadratic energy strictly positive
+exactly off the critical line. No theorem places a nonzero Xi carrier in the overlap operator
+kernel or forces this energy to vanish. Claiming annihilation without a completed source law would
+be theatre; injectivity and admission alone cannot supply it.
 
 ## Verification
 

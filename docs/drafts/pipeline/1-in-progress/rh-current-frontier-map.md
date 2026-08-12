@@ -21,12 +21,15 @@ Helson Fredholm wall. The cutoff additionally makes Suzuki's literal arithmetic 
 source and conditional spectral Hankel unitary, Route U's conditional nodal-supply pricing,
 horizontal nodal curvature, projective contact cascade, node-refinement and seven-index detection-
 delay theorems, and the signed complex-phase Sonin splice umbrella-formal. Route P's P-G91
-physical Pluecker covariance is cutoff-formal. Working-tree P-G92--P-G95 are umbrella-wired and
+physical Pluecker covariance is cutoff-formal. Working-tree P-G92--P-G97 are umbrella-wired and
 direct-checked but receive no cutoff-formal credit: P-G92 constructs the local rank-three spectral
 matrix, P-G93 constructs its source-normalized positive trace-class cofinal direct sum, and P-G94
 descends it to the literal shared physical lattice. P-G95 proves the resulting positive compact
 operator injective: the glued local gauge is exactly a linearly growing, non-square-summable
-Stokes-gap section. Route
+Stokes-gap section. P-G96 admits both coefficient-faithful Xi reporter charts to that physical
+Hilbert space and makes their positive energy vanish exactly on the critical line. P-G97 proves
+zero is continuous boundary spectrum: approximate unit kernels exist, range is dense nonclosed,
+and zero is spectral but not an eigenvalue. Route
 T's fixed- and arbitrary-centre logarithmic-phase receiver modules are committed but umbrella-
 unreachable; their committed state includes automatic real-height shell selection, Abel-weighted
 prefixes, and a coarse explicit VMVT-constant growth envelope. Generic rectangular diagonal/
@@ -95,7 +98,12 @@ nonzero global kernel vector per disjoint block. Working P-G94 replaces packet c
 literal shared physical labels, remains positive/Schatten-one/compact, and proves every embedded
 local null vector has strictly positive neighboring-block energy. Working P-G95 classifies every
 putative global zero, identifies its depth section with the Stokes gap, and proves global
-injectivity because no nonzero such section lies in the physical `ell^2` space. Route T's committed unwired chain proves an explicit strict one-dimensional
+injectivity because no nonzero such section lies in the physical `ell^2` space. Working P-G96
+proves both fixed positive actual-Xi reporter charts square summable and constructs their
+reflection-odd Hilbert vectors; their faithful quadratic energy is positive exactly off line.
+Working P-G97 proves the compact faithful operator has dense nonclosed proper range, approximate
+unit gauges, and zero in spectrum without a zero eigenvector.
+Route T's committed unwired chain proves an explicit strict one-dimensional
 logarithmic-phase power saving, automatic real-height shell selection, Abel transport, and an
 explicit polynomial threshold envelope, and the committed
 unwired Sonin splice retains a nontrivial reflection-odd phase on one common cofinal schedule.
@@ -107,8 +115,9 @@ formal rational-prime/Beurling comparison proving that every finite multiplicati
 of Mertens-normal log-jet Grams is zero-set blind. These are new mechanisms, receivers, and no-gos;
 none supplies the still-missing source theorem of its route or creates an additional route.
 Their first open problems remain respectively literal orientation of U's completed arithmetic
-landing, G's literal kernel/closed operator/source admission, P-G95's source-selected resolvent and
-completed-moment identification on the faithful physical-overlap operator, and T's discharge of one explicit zeta-scale polynomial
+landing, G's literal kernel/closed operator/source admission, P-G96's completed source-annihilation
+law and P-G97-compatible renormalized boundary resolvent/moment identification for the admitted Xi
+detector, and T's discharge of one explicit zeta-scale polynomial
 size inequality followed by MV24.11--24.12 near-one transport. A current Helson/Fredholm wall theorem
 supplies a substantial candidate architecture, but without a canonical Xi coefficient stream,
 fixed RH threshold, or global wall-orientation law it is not yet a twelfth route.
@@ -336,7 +345,7 @@ existing route.
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced; two internal producer branches | Prolate branch: construct/evaluate seed is closed at paper level and radial/exterior primitives are formal. First unresolved theorem is source-derived control of the entire restricted-Weil ground space: prove the explicit constrained prolate seed controls every near-ground direction, equivalently `epsilon_lambda>=0`, `epsilon_(lambda_j)->0` on one cofinal nested family, or `Delta_lambda=r_lambda-epsilon_lambda->0`. Negative spectrum cannot evacuate. Completed-Evans branch: formal weak Gamma-tail coercivity upgrades a tested supported equation to `U in L2`, `V in H1`, eliminating both derivative-scattering charges; exact root-port Gram proves every nonzero endpoint trace is visible at first prime grade once `a>(log 2)/2`. Its first open theorem is the literal completed-zero-mode to support-pruned carrier/cutoff intertwiner, including square summability and compressed-prime-adjacency compatibility, followed by the trace-zero channel and raw Evans injectivity. These are Route-O subbranches, not a new lettered route. |
-| P | open, advanced | Cutoff-formal Lean closes P-G79--P-G91. Working P-G92 gives rank-three non-diagonal local pole movement. P-G93 uses normalized P-G84 denominator terms to construct a positive Schatten-one compact cofinal direct sum, exposing a spurious null vector per copied block. P-G94 corrects the Hilbert space: packet labels descend to the shared `(depth,prime-index)` lattice. P-G95 proves the overlapped operator globally injective: every putative zero glues into the exact Stokes-gap section, which grows linearly in depth and is not square summable. The operator remains positive, Schatten-one, and compact, with exact weighted local matrices and strictly positive quadratic form away from zero. Thus coefficient choice, trace/summability, compactness, physical sewing, faithfulness, and local pole movement are closed. Missing theorem is the source-selected anti-Herglotz resolvent/Gamma-polar transfer for this faithful operator, equality of every completed moment, and Julia saturation. |
+| P | open, advanced | Cutoff-formal Lean closes P-G79--P-G91. Working P-G92 gives rank-three non-diagonal local pole movement. P-G93 constructs a positive Schatten-one compact cofinal direct sum and exposes a spurious null vector per copied block. P-G94 descends packet labels to the shared `(depth,prime-index)` lattice. P-G95 proves the overlap operator globally injective: every putative zero glues into the linearly growing, non-square-summable Stokes-gap section. P-G96 proves both coefficient-faithful actual-Xi reporter charts square summable, reflection odd, and zero exactly on line; faithful overlap energy is positive exactly off line. P-G97 proves zero remains continuous boundary spectrum: approximate unit kernels exist, range is dense nonclosed and proper, and zero is spectral but not an eigenvalue. Thus coefficient choice, trace/summability, compactness, physical sewing, faithfulness, Xi admission, boundary-spectrum type, and local pole movement are closed. Missing theorem is completed Gamma/polar source annihilation of the admitted detector, its renormalized zero-boundary transfer/moment equality, and Julia saturation. |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
@@ -3318,7 +3327,7 @@ equivalently bounded in some proper source price. Without a carrier every approx
 escapes every proper price, and an explicit model shows residual convergence alone is insufficient.
 No Route-P source atoms or price satisfying this criterion have been constructed.
 
-**P-G60--P-G91 cutoff-formal source opening and working P-G92--P-G95 successors.** The actual Gamma-sewn
+**P-G60--P-G91 cutoff-formal source opening and working P-G92--P-G97 successors.** The actual Gamma-sewn
 pre-Gram aperture edge now passes its first hostile source test. Define its inverse tilt `W_s(p)`
 from the literal contraction, aperture, and Möbius factors. Direct Lean declarations prove
 
@@ -3602,14 +3611,32 @@ coefficient through every prime index. Lean proves the physical operator injecti
 quadratic form strictly positive on every nonzero vector. Local gauge survives only as a
 non-normalizable boundary mode, not as a zero eigenvector.
 
-The exact remaining gate is therefore **the anti-Herglotz resolvent and Gamma/polar transfer of
-P-G95's faithful physically overlapped compact operator**,
+Working-tree `FrankensteinPluckerXiHilbertAdmission.lean` closes P-G96. Every actual Xi centered
+Bockstein coefficient has magnitude at most one in the open strip, while each fixed positive
+reporter scale squared is bounded by P-G84's summable denominator term times the uniform node
+bound. Both coefficient-faithful reporter charts therefore define literal vectors in the P-G95
+physical Hilbert space. They remain reflection odd and vanish exactly at `Re(q)=1/2`. P-G95
+faithfulness then makes the lower vector's overlap-operator image zero, equivalently its real
+quadratic energy zero, exactly on the critical line. This is a positive detector, not a proof that
+completed source geometry annihilates it.
+
+Working-tree `GammaSewnMobiusApertureStokesPhysicalOverlapPluckerBoundarySpectrum.lean` closes
+P-G97. The physical Hilbert space contains an infinite orthonormal prime-depth family. Compactness
+and P-G95 injectivity force normalized approximate unit kernels and nonclosed range; positivity
+makes the operator self-adjoint, so injectivity also makes its range dense. The range is proper,
+zero lies in spectrum, and P-G95 simultaneously excludes zero as an eigenvalue. The remaining
+transfer must therefore be singular and renormalized at zero; bounded inversion there is formally
+ruled out.
+
+The exact remaining gate is therefore **completed Gamma/polar source annihilation and the
+renormalized zero-boundary transfer of P-G96's admitted Xi detector through P-G97's continuous-
+spectrum geometry**,
 not
 local-time, Euler continuation, finite positive unitization, passivity, parity, compact-carrier
 existence, or raw normalization: construct source-native Feshbach elimination whose reduced
 response remains anti-Herglotz and whose square-coordinate moments equal the completed seam tower.
 Existing compact Markov capstone then gives RH. P-G60--P-G91 are cutoff-formal;
-P-G92--P-G95 are working-tree umbrella-wired.
+P-G92--P-G97 are working-tree umbrella-wired.
 P-G83 rules out complete packet
 overlap; P-G84 supplies a summable adjacent path; P-G85 rejects its local edge Gram as the weak
 kernel; P-G86 proves cumulative inverse incidence recovers that kernel exactly; P-G87--P-G88 fix
@@ -3619,10 +3646,12 @@ sector; P-G92 proves the corresponding local spectral block moves the bare node 
 constructs the canonical positive trace-class cofinal direct sum and exposes its blockwise null
 bundle; P-G94 descends packet copies to the shared physical lattice and proves neighboring blocks
 remove each embedded local null mode; P-G95 classifies every global zero and excludes it from
-`ell^2` by exact Stokes-gap growth. Missing connector is no longer a coefficient, summability,
-sewing, or faithfulness theorem. Construct the faithful operator's source-selected
-resolvent/transfer function, prove its exact spectral moments equal all completed moments, and
-establish Gamma/polar completed-seam response equality.
+`ell^2` by exact Stokes-gap growth; P-G96 admits the literal Xi carrier and proves its faithful
+energy detects off-line displacement; P-G97 classifies zero as continuous boundary spectrum.
+Missing connector is no longer a coefficient, summability, sewing, faithfulness, admission, or
+spectral-type theorem. Prove completed Gamma/polar source geometry annihilates the admitted
+detector, construct its renormalized zero-boundary transfer, prove exact spectral moments equal all
+completed moments, and establish completed-seam response equality.
 
 **C1/P Green-square opening, formal.** Umbrella Lean uses the already source-built
 Hedenmalm inverse `B` and its singular theta metric `G` to isolate
@@ -3905,7 +3934,7 @@ R split current is constant `-2` along the entire curve. Thus P's Julia saturati
 external polar-gauge wall are one obstruction. Intrinsic conserved current cannot select zero
 rapidity; literal Euler--Gamma data must break this orbit in the fixed source-positive frame.
 
-**P-G79--P-G91 cutoff-formal source advance and working P-G92--P-G95 spectral successors.** The umbrella chain extends hostile-cell chirality to every
+**P-G79--P-G91 cutoff-formal source advance and working P-G92--P-G97 spectral successors.** The umbrella chain extends hostile-cell chirality to every
 ordered prime pair and valuation depth, assembles arbitrary finite packets, proves complete-graph
 overlap nonsummable, and constructs the summable adjacent-prime survivor. It then proves local edge
 Gram cannot equal all-prime covariance, recovers that covariance by cumulative inverse incidence,
@@ -3926,10 +3955,15 @@ Schatten-one compactness, and exact local matrices survive, while every embedded
 has strictly positive neighboring-block energy and is not globally null. Working P-G95 classifies
 all possible global zeros: overlap forces one depthwise gauge whose canonical section is the
 linearly growing Stokes gap. No nonzero section is square summable, so the overlap operator is
-injective and strictly positive away from zero.
+injective and strictly positive away from zero. Working P-G96 proves both fixed positive actual-Xi
+reporter charts square summable on this physical lattice. Their admitted vectors remain
+reflection odd and zero exactly on line; faithful quadratic energy is positive exactly off line.
+Working P-G97 proves zero is continuous boundary spectrum: range is dense nonclosed and proper,
+normalized approximate unit gauges exist, and zero is spectral but not an eigenvalue.
 
-**Open core.** Construct the faithful overlap operator's source-selected anti-Herglotz
-resolvent/transfer function and exact trace-moment expansion. Prove Gamma/polar sewing identifies
+**Open core.** Prove completed Gamma/polar source geometry annihilates the admitted Xi detector.
+Construct its renormalized P-G97 zero-boundary transfer and exact trace-moment expansion. Prove
+Gamma/polar sewing identifies
 its moved-pole moments with every completed seam
 moment. Then prove from
 that literal coupled source that the completed Julia cell saturates, equivalently its source-selected
@@ -5176,7 +5210,12 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     contact at shift `y` has `N>sqrt(y/K)`. The proof filters by the actual reciprocal polynomial
     before Gamma averaging, obtains a coefficient-free global source lower envelope, and uses an
     exponential Gamma-tail separation. It is paper-proved in
-    `mass-shifted-parabolic-degree-horizon`; Lean formalization has not started.
+    `mass-shifted-parabolic-degree-horizon`. Lean now proves one sharp load-bearing component:
+    `HermitePolynomialDerivativeEnergy.lean` establishes for every real polynomial `P`
+    `‖P' exp(-pi*x^2)‖_2^2 <= 4*pi*natDegree(P)*‖P exp(-pi*x^2)‖_2^2`, with exact equality on
+    every Hermite mode. This is C43-Y's coefficient-uniform differentiation generator after
+    Gaussian cancellation; full imaginary translation, Mehler concentration, source formula,
+    prime-shell sum, and Gamma-tail comparison remain.
 43. Hard-edge Chebyshev packets now close the opposite scale inequality. Every even
     Paley--Wiener divisor test is the complete-divisor limit of reciprocal polynomials of degree
     `O(sqrt(y))`. If RH is false, Fourier truncation of an existing negative Gaussian test gives
@@ -5602,6 +5641,41 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     problem is exclusion of the resulting finite-type restricted-Weil boundary state's finite
     nonzero zero-edge capacity branch, including its odd/multiple-root alternatives—not another
     recession schedule or generic Jacobi flux floor.
+
+78. The load-bearing filter-before-average identity behind the paper-proved parabolic horizon is
+    now literal umbrella Lean, not a paper placeholder. For every positive shift `y`, degree `d`,
+    tail cutoff `M`, and real coefficient vector `c`,
+
+    ~~~
+    integral t^(2M+2d) exp(-yt) H_(Q_c)(t) dt
+      = (2M+2d)! sum_(i,j) c_i c_j mu_(2M+i+j)(y),
+    ~~~
+
+    where `Q_c(W)=sum_i c_i(W+y)^(d-i)` and `H_(Q_c)` is the actual multiplicity-exact
+    polynomial-square Xi heat trace. At `M=0`, taking real parts gives exactly `(2d)!` times the
+    shifted-Xi Hankel quadratic. `XiShiftedFilteredGammaTransmutation.lean` proves shifted-reversal
+    evaluation, exact divisor-level power cancellation, absolute integral-norm summability,
+    integral--divisor interchange, complex and real transmutations, and the normalized PDH.4
+    identity. No RH premise or abstract analytic hypothesis enters. Exact remaining parabolic
+    work is coefficient-uniform ultraviolet lower bound, global lower envelope, and Gamma-tail
+    domination for these literal kernels; identity alone supplies no sign and no RH proof.
+
+79. The first sharp coefficient-uniform analytic estimate inside the ultraviolet bound is now
+    unconditional Lean. `HermitePolynomialDerivativeEnergy.lean` proves finite Hermite degree
+    localization, the number-operator ceiling, exact Gaussian cancellation of the annihilation
+    operator, and
+
+    ~~~
+    ‖(P') exp(-pi*x^2)‖_2^2
+      <= 4*pi*natDegree(P) * ‖P exp(-pi*x^2)‖_2^2
+    ~~~
+
+    for every real polynomial `P`, with equality for every `hermitePoly n`. This removes
+    coefficient growth from imaginary translation and supplies exact `sqrt(degree)` generator
+    scale in PDH.9. Direct Lean, targeted module build, forbidden-declaration scan, and axiom audit
+    pass. Remaining C43-Y wall is integration of this generator to complex translation together
+    with the finite Hermite projector/Mehler small-ball estimate and literal completed-source
+    prime/archimedean assembly; derivative energy alone supplies no Xi sign.
 
 **Committed polynomial Turan descent and one-point criterion.** The route has advanced past edge
 cleansing. `XiResolventWeightedTuranMachine.lean` proves a universal weighted level-cleansing
@@ -7785,6 +7859,12 @@ credit until wired:
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerFaithfulness.lean`
   — P-G95 global-kernel classification, exact Stokes-gap gauge section, exclusion of every
   nonzero glued gauge from physical `ell^2`, operator injectivity, and strict positive energy;
+- `formal/GaloisForLFunctions/RHTower/FrankensteinPluckerXiHilbertAdmission.lean`
+  — P-G96 square-summable coefficient-faithful Xi reporter charts, reflection-odd physical
+  Hilbert vectors, exact critical-line zero radical, and strictly positive off-line detector energy;
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerBoundarySpectrum.lean`
+  — P-G97 infinite-dimensionality, normalized approximate unit kernels, dense nonclosed proper
+  range, and zero in continuous spectrum rather than point spectrum;
 - `formal/GaloisForLFunctions/RHTower/DeningerGammaSixGreenGibbsPhysicalReader.lean` — exact
   normalized source Gibbs trace, continuation to the fixed physical BV coefficient, and reflected
   mate-curvature difference;
@@ -7799,6 +7879,10 @@ closes canonical positive trace-class cofinal direct-sum assembly but proves it 
 null bundle. Working P-G94 proves that bundle is an artifact of copied labels and removes every
 embedded local null mode by literal physical overlap. Working P-G95 proves no residual global
 zero mode belongs to physical `ell^2`; the only algebraic gauge section is the growing Stokes gap.
+Working P-G96 proves actual-Xi reporter admission and exact off-line energy detection; completed
+source annihilation remains open.
+Working P-G97 classifies zero-boundary spectrum and rules out bounded inversion at the remaining
+Gamma/polar seam.
 Route L's complete source and Wold coface are committed unwired; working Gibbs
 reader and finite-coface classification remove reader/coface formation but not the global ideal-
 preserving singular lift. Route G's canonical
@@ -8321,9 +8405,9 @@ source to the fixed Gamma/co-Poisson target, not another source normal, compact 
 scalar diagonal form. Route O now has two internal producer branches: whole-ground
 control beyond the prolate seed, and the completed-zero-mode-to-support-pruned-carrier intertwiner
 beyond the closed weak Gamma and root-port steps. Route P has cutoff-formal P-G79--P-G91 source
-geometry and working P-G92--P-G95 local/cofinal/overlap/faithfulness spectral realization, but
-still lacks the faithful overlap operator's exact completed-moment and Gamma/polar Feshbach
-realization.
+geometry and working P-G92--P-G97 local/cofinal/overlap/faithfulness/Xi-admission/boundary-spectrum
+realization, but still lacks completed source annihilation and the faithful overlap operator's
+renormalized exact-moment Gamma/polar Feshbach realization.
 Route T's Wold-side wall is a signed/distributional pole-preserving landing; its arithmetic wall has
 moved past Perron relevance, finite incidence formation, recurrence solution, actual-interval
 embedding, logarithmic windows, Taylor control, finite convolution, and polynomial bilinear saving
@@ -8351,3 +8435,29 @@ Beurling system layer is a Route-E firewall rather than a new producer.
 RH remains open. Any claim of progress must now prove one named source theorem above, refute one
 route with an exact no-go and positive survivor, or construct a literal new source architecture
 with an unconditional handoff not source-isogenous to an existing route.
+
+### Frankenstein seam: theta prime translation = Gamma Bockstein = P-G95 anomaly
+
+`FrankensteinThetaPluckerIntertwiningAnomaly.lean` and
+`FrankensteinThetaPrimeTranslationPluckerLanding.lean` now remove the fitted-coefficient ambiguity
+from the P-G96 source handoff. The fixed normalized Hedenmalm integer translation has conormal gain
+`p^(-q)` because `dirichletExponent(xiSpectralPoint(q))=q`. Its prime-normalized energy is
+
+```text
+E_p(q)=p|p^(-q)|^2=p^(-(2 Re(q)-1)).
+```
+
+On the retained functional-equation orientation it is `p^(2 Re(q)-1)`. Their Fisher-weighted
+difference is exactly `sourceZeroHorizontalPrimeCarrier(q,p)`, hence exactly every lower and upper
+coordinate of the admitted physical Pluecker vectors. The pinned theta lift is coefficient-faithful
+on the whole off-line divisor eigenspace; its failure to intertwine the exact theta source pencil
+with P-G95 is precisely P-G95 applied to this translation-imbalance carrier. Both anomalies vanish
+simultaneously exactly at `Re(q)=1/2` and reverse under reflection.
+
+This closes literal operator provenance, both orientations, divisor multiplicity, Hilbert
+admission, and faithful target detection. It does not close RH. The remaining producer is now one
+specific completed pre-zero Ward identity: for one ordinary prime, prove
+`E_p(q)=E_p(lineConj(q))` on every actual divisor mode from completed Euler--Gamma source geometry.
+Postulating parity-unitarity, source self-adjointness, Wold stationarity, or target bounded inversion
+would restate an RH-equivalent condition or violate P-G97. Further all-prime summability is not
+logically required: one retained prime already detects the line.

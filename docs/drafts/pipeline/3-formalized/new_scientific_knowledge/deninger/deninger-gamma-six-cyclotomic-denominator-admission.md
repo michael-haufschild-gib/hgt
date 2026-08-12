@@ -1,8 +1,8 @@
 # Gamma-six cyclotomic denominator parity wall
 
-- **Stage:** 2 — dependency-closed paper proof
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** SOURCE-SUPPORT CORRECTION / SHARP PARITY NO-GO / POSITIVE EVEN ADMISSION
-- **Status:** PAPER-PROVED / PROJECT-SPECIFIC NEW KNOWLEDGE / NOT RH / NO LEAN WORK DURING CORPUS REFACTOR
+- **Status:** FORMALIZED / PROJECT-SPECIFIC NEW KNOWLEDGE / NOT RH
 - **Parents:** deninger-mobius-gamma-six-normal-transgression.md and
   deninger-gamma-six-orientation-residue-wall.md
 - **Corpus inputs:** DeningerRationalWittFiniteEvaluationBridge.lean,
@@ -601,7 +601,51 @@ Gamma/Burnol/BV landing.
 - No Xi-zero location, RH premise, positivity assumption, numerical experiment, new reader, or
   quotient defined by the desired kernel is used.
 
-## 11. Frontier ledger
+## 11. Formalization certificate
+
+- **Lean module:**
+  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixCyclotomicDenominatorAdmission.lean`
+- **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
+- **Closed capstone:** `gammaSixCyclotomicDenominatorAdmission_closed`
+- **Denominator infinitude:** `gammaSixFermatDenominator_coprime`,
+  `gammaSixDenominatorPrime_injective`, and `gammaSixDenominatorPlaceSet_infinite` use the explicit
+  source family (m_n=2^n).  Pairwise coprimality of (6^{2^n}+1) yields distinct least prime
+  divisors and strengthens the recursive cofinal construction needed in Section 2 without a
+  primitive-divisor theorem.
+- **Local arithmetic:** `gammaSix_denominatorExactValuations` and
+  `gammaSix_denominatorExactTameKummer` prove the two exact valuations, unit ratio, trivial tame
+  symbol, and zero (p)-adic logarithmic norm at every denominator prime.
+- **Actual common-pole residue:** `gammaSix_forward_commonPoleResidue_eq_epsilon`,
+  `gammaSix_reciprocal_commonPoleResidue_eq_epsilon`, and
+  `gammaSix_denominator_orientationCollapse` prove the forward/reciprocal equality and exact odd
+  collapse in the concrete group algebra `MonoidAlgebra ℂ (ZMod p)ˣ`.
+- **Canonical rational-Witt survivor:** `gammaSixParityWittResidue_ne_zero`,
+  `gammaSixParityWittResidue_evaluation`, and
+  `gammaSixPrimeRationalWittParityResidue_frobenius_fixed` prove nonvanishing, evaluation (-2),
+  and Frobenius fixation.  `gammaSixParityResidueInclusion_maps_epsilon` constructs the canonical
+  order-two packet embedding and proves that its parity class maps to the actual denominator
+  residue ([-1]-[1]), rather than merely matching it by an abstract coefficient.
+- **Cofinal and mixed admission:** `gammaSixEvenDenominatorPacket_mixed_admission`,
+  `gammaSixMixedKotheData_isNuclear`, `gammaSixMixedKothe_mem_iff`, and
+  `gammaSixMixedHorizontalEvaluation_continuityGrade` construct the cofinal packet, nuclear
+  two-slot Köthe carrier, exact carrier characterization, and bounded horizontal evaluation.
+- **Sharp strip and rigidity:** `gammaSixMixedEvaluatedPair_admission_iff`,
+  `gammaSixMixedReflection_evaluatedPair`, and
+  `gammaSixMixedOddRead_evaluatedPair_eq_zero_iff` prove exact ℓ¹/ℓ² admission iff
+  |δ|<1, the reflection law, and odd-reader vanishing iff δ=0.
+- **Functorial no-go:** `gammaSixCommonPole_factor_odd_zero` proves collapse after every additive
+  transport factoring through the honest common-pole residue.
+- **Verification:** direct source check with
+  `lake env lean GaloisForLFunctions/RHTower/DeningerGammaSixCyclotomicDenominatorAdmission.lean`
+  and exact module audit with
+  `lake build GaloisForLFunctions.RHTower.DeningerGammaSixCyclotomicDenominatorAdmission` both
+  pass.  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound` for all audited
+  headline theorems.  Source contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
+- **Scope:** `[NOT RH]`.  Formalization closes denominator classification and admission; it does
+  not supply completed Green landing in both critical-edge slots, strict Rost--Schmid-to-Meyer
+  descent, or cyclicity of the fixed physical reader.
+
+## 12. Frontier ledger
 
 - [x] identify full pre-normal denominator support
 - [x] prove denominator places form an infinite cofinal family

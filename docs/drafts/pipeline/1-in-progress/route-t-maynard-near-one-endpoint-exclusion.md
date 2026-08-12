@@ -1040,3 +1040,109 @@ delta(t) / log log t
 not a pure `(log t)^(-9/10)` width.  This is still wider than `(log t)^(-kappa)` for every fixed
 `kappa>9/10`, and is sufficient for Route T.  Active core is now exact height-band growth on the
 two Landau discs, followed by the explicit DLVP optimization and the inverse-zeta/Perron receiver.
+
+### C26. Unit-band rectangles and canonical DLVP close an explicit subunit zero-free region
+
+The height-band obstruction is closed without assuming shell stability.  Define the reserve shell
+
+```text
+V_band(t) = floor(L(t)^(1/10)) + 2.
+```
+
+`RouteTZetaBandParameters.lean` proves that increasing the pointwise shell by one buys two binary
+exponent units.  Consequently its receiver start lies below `topExponent(t-1)`, while every
+ordinate `y in [t-1,t+1]` remains inside the same upper height shell.  This is the exact discrete
+reserve required by a moving Landau disc.
+
+`RouteTZetaBandGrowth.lean` and `RouteTZetaBandRectangle.lean` prove one uniform bound across the
+full rectangle
+
+```text
+t-1 <= Im(s) <= t+1,
+1-delta_band(t) <= Re(s) <= 2.
+```
+
+Below one it uses the Route-T hybrid cancellation at the requested abscissa.  At and above one it
+uses the harmonic head at the identical cubic truncation.  The Euler--Maclaurin tail theorem at
+`sigma=1` supplies the required norm/truncation ratio, so the shared majorant is
+
+```text
+Phi_band(t) = 20 + 2 log A_band(t) + 6912 topExponent(t-1).
+```
+
+For a zero at height `gamma`, `RouteTZetaLandauGrowth.lean` chooses the common disc radius
+
+```text
+R(gamma) = delta_band(4 gamma)/2
+```
+
+and one `Phi` equal to the sum of the bounds at `gamma,2gamma,4gamma` plus one.  Shell and width
+monotonicity certify both Landau discs; the fourth-height point supplies the three-four-one input.
+`RouteTZetaDLVP.lean` then discharges every analytic hypothesis of the general zero-retaining DLVP
+inequality.
+
+The scalar optimization is closed in `RouteTZetaZeroFree.lean`.  If `A` is the absolute pole
+constant, put
+
+```text
+Q(gamma) = 10001 + |A| + log Phi(gamma) + log(1+1/R(gamma)),
+Delta(gamma) = R(gamma)/(10000 Q(gamma)^2),
+W(gamma) = Delta(gamma)/10.
+```
+
+Lean proves `log(1+1/Delta)<=Q^2`, substitutes every term into DLVP, and obtains the strict numeric
+contradiction
+
+```text
+31283 Q^2/R < (400000/11) Q^2/R < 4/(1+Delta-beta).
+```
+
+Therefore, beyond the explicit binary-height threshold,
+
+```text
+beta <= 1  and  1-W(|gamma|) < beta
+  ==> zeta(beta+i gamma) != 0.
+```
+
+`RouteTZetaZeroFreeAbs.lean` closes reflection to negative heights.  This is an unconditional,
+axiom-free zero-free region whose logarithmic exponent is strictly below one; it is no longer a
+conjectural receiver.  Active core moves to a quantitative reciprocal-zeta bound on this region,
+the truncated Perron shift for long Möbius factors, and propagation through Maynard amplitude
+cells.
+
+### C27. Antitone width converts pointwise zero-freeness into a quantitative reciprocal theorem
+
+The apparent obstruction after C26 was vertical instability: a Harnack disc around
+`1+Delta(gamma)+i gamma` moves the ordinate, while the pointwise zero-free width contains integer
+ceilings, binary logarithms, tenth roots, and changing truncation depths.  A finite chain is not
+needed.  Every discrete parameter is oriented monotonically.  `RouteTZetaZeroFreeMonotonicity.lean`
+proves, beyond the fixed analytic base height,
+
+```text
+s <= t  ==>  Phi(s) <= Phi(t), Q(s) <= Q(t), R(t) <= R(s), W(t) <= W(s).
+```
+
+Thus the single worst-case width at `gamma+1` controls the whole unit ordinate band, including every
+shell jump.  Put `delta = Delta(gamma+1)`.  The disc centred at
+`1+delta+i gamma` with outer radius `43 delta/40` has left edge
+`1-3 delta/40`, strictly to the right of the zero-free boundary `1-delta/10`.  Its inner radius
+`21 delta/20` contains the complete horizontal segment
+
+```text
+1-delta/20 <= sigma <= 1+delta.
+```
+
+`RouteTZetaInverseBound.lean` proves this disc is zero-free, bounds zeta on it by the Route-T unit
+band majorant, and anchors its modulus on the right by the three-four-one inequality.  Applying the
+formal Borel--Caratheodory minimum-modulus theorem gives the unconditional explicit result
+
+```text
+|1 / zeta(sigma+i gamma)| <= exp(400 Q(gamma+1)^2)
+```
+
+throughout that segment.  Reflection closes both signs of the ordinate, and an existence theorem
+hides only the already-proved absolute pole constant.  A symbolic fixed base height also discharges
+the binary-depth premise without numerical evaluation.  This is genuine new knowledge: Route T now
+has both its subunit zero-free width and a quantitative reciprocal on a fixed fraction of that
+width.  Active core is the Route-T four-edge Perron rectangle, combining this high-height estimate
+with one compact low-height box, followed by the literal long-Mobius factor exclusion.

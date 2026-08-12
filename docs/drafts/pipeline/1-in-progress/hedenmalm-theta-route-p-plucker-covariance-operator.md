@@ -1,7 +1,8 @@
-# Hedenmalm theta Route P: physical Pluecker spectral operator (P-G91--P-G95)
+# Hedenmalm theta Route P: physical Pluecker spectral operator (P-G91--P-G97)
 
-Status: local pole movement, cofinal trace-class assembly, physical overlap sewing, and global
-faithfulness fully proved in Lean; resolvent/completed-moment identification is open
+Status: local pole movement, cofinal trace-class assembly, physical overlap sewing, global
+faithfulness, and actual-Xi Hilbert admission fully proved in Lean; source annihilation and
+resolvent/completed-moment identification are open; zero boundary spectrum is classified
 
 ## Conjecture P-G91
 
@@ -108,6 +109,41 @@ every depth line; horizontal overlap then propagates zero across every prime lab
 25. the physical overlap operator is injective, and its real quadratic form is strictly positive
     on every nonzero physical vector.
 
+P-G96 closes actual-Xi Hilbert admission. The two involution-fixed positive charts from the
+coefficient-faithful horizontal landing have coordinates
+
+```text
+reporterScale(e,n) * sourceZeroHorizontalPrimeCarrier(q,p_n).
+```
+
+Every actual Xi centered rate lies in `(-1,1)`, so the Bockstein magnitude is at most
+`p^(|t|-1) <= 1`. The reporter scale squared is bounded by P-G84's summable physical denominator
+term times the fixed reciprocal-gap node bound. Lean therefore proves:
+
+26. both fixed positive Xi reporter charts are square summable over the physical prime-depth
+    lattice and define literal P-G95 Hilbert vectors;
+27. both vectors are reflection odd and vanish exactly when `Re(q)=1/2`;
+28. the faithful physical operator kills the lower admitted Xi vector exactly on the critical
+    line;
+29. its quadratic energy is strictly positive exactly off the critical line.
+
+This is a source-faithful positive detector, not an annihilation theorem. The remaining producer
+must force this already-defined energy to vanish from completed Gamma/polar source geometry.
+
+P-G97 classifies the spectral boundary forced by P-G95. The physical Hilbert space contains an
+infinite orthonormal prime-depth family. A compact injective operator on this space cannot have
+closed range. Positivity makes the operator self-adjoint, and self-adjoint injectivity makes its
+range dense. Lean proves:
+
+30. the physical prime-depth Hilbert space is not finite dimensional;
+31. normalized unit vectors exist whose P-G95 images converge to zero;
+32. the operator range is dense, nonclosed, proper, and the operator is not surjective;
+33. zero belongs to the operator spectrum but is not an eigenvalue.
+
+Thus P-G95 did not remove zero from spectral geometry. It converted exact local nullity into a
+continuous boundary singularity. Any Gamma/polar transfer regular at zero or using a bounded
+inverse there is now formally impossible.
+
 Formal file:
 
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerCovariance.lean`
@@ -115,6 +151,8 @@ Formal file:
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCofinalPluckerSpectralOperator.lean`
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerSpectralOperator.lean`
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerFaithfulness.lean`
+- `formal/GaloisForLFunctions/RHTower/FrankensteinPluckerXiHilbertAdmission.lean`
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerBoundarySpectrum.lean`
 
 Headline declarations:
 
@@ -143,6 +181,14 @@ Headline declarations:
 - `gammaSewnCriticalPhysicalPluckerSpectralOperator_injective`;
 - `gammaSewnCriticalPhysicalPluckerSpectralOperator_apply_eq_zero_iff`;
 - `gammaSewnCriticalPhysicalPluckerSpectralOperator_re_inner_pos_iff`.
+- `summable_norm_sq_frankensteinXiLowerPrimeCarrier`;
+- `frankensteinXiLowerPhysicalPluckerHilbertCarrier_eq_zero_iff`;
+- `gammaSewnCriticalPhysicalPluckerSpectralOperator_apply_xiLower_eq_zero_iff`;
+- `gammaSewnCriticalPhysicalPluckerSpectralOperator_xiLower_energy_pos_iff`.
+- `gammaSewnCriticalPhysicalPluckerSpectralOperator_hasApproximateUnitKernel`;
+- `gammaSewnCriticalPhysicalPluckerSpectralOperator_denseRange`;
+- `gammaSewnCriticalPhysicalPluckerSpectralOperator_zero_mem_spectrum`;
+- `gammaSewnCriticalPhysicalPluckerSpectralOperator_zero_not_eigenvalue`.
 
 ## P-G93 higher principle
 
@@ -174,6 +220,22 @@ geometry makes that gap grow instead of decay. Thus **local nullity becomes a no
 boundary mode rather than a global eigenmode**. The source did not destroy gauge freedom; physical
 completion expelled it to the boundary of `ell^2`. Any later resolvent construction must respect
 zero as a boundary-spectral phenomenon and must not reinsert this section as a normalizable state.
+
+## P-G96 higher principle
+
+Normalizability is not the Xi obstruction. Physical denominator decay admits the literal
+coefficient-faithful Xi reporters to the same Hilbert space on which local gauges are expelled.
+Faithfulness then converts horizontal displacement into strictly positive bulk energy. Thus the
+remaining wall is an **annihilation/trace law, not an admission or kernel-classification law**:
+completed Gamma/polar geometry must explain why every actual divisor has zero detector energy.
+
+## P-G97 higher principle
+
+Faithfulness and compactness force a third state between kernel and invertibility: **zero is
+continuous boundary spectrum**. Local Stokes gauges become approximate unit gauges, not
+normalizable eigenvectors. This explains why earlier routes alternated between spurious kernels
+and nonclosable clocks: both are shadows of one boundary-spectral law. Correct completion must use
+a singular, renormalized zero-boundary transfer; a bounded zero resolvent cannot exist.
 
 ## Numerical pre-certification of next operator
 
@@ -214,8 +276,10 @@ by fitting: it is forced by cardinality-two Pluecker incidence law.
 
 ## Completion gate
 
-Construct the P-G95 faithful compact operator's source-selected anti-Herglotz resolvent/transfer
-function and exact trace moments; identify its Gamma/polar sewn transfer and every moment with
-`normalizedPrimeArchMoment`; then invoke Julia saturation. Zero may occur only as a
-non-normalizable boundary mode, not as an added Hilbert-space kernel vector. No additional
-inter-block coefficient is permitted: physical overlap is the sewing.
+Construct a source-selected renormalized boundary resolvent/transfer compatible with P-G97's
+continuous zero spectrum and P-G96's admitted Xi carrier. Prove completed Gamma/polar source
+geometry annihilates its faithful detector energy, equivalently identify the sewn transfer and
+every moment with `normalizedPrimeArchMoment`; then invoke Julia saturation. Zero may occur only
+as a non-normalizable gauge boundary mode or the literal zero Xi carrier, not as an added
+Hilbert-space kernel vector. No additional inter-block coefficient is permitted: physical overlap
+is the sewing.
